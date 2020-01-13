@@ -5,8 +5,25 @@ import './types/apps/form';
 import './types/apps/i18n';
 import './types/apps/templates';
 
+//-- Forms
+
 import './types/apps/forms/actor';
+import './types/apps/forms/forms';
 import './types/apps/forms/item';
+import './types/apps/forms/permission';
+import './types/apps/forms/roll-table-config';
+import './types/apps/forms/scene';
+
+//-- HUD
+
+import './types/apps/hud/chatbubble';
+import './types/apps/hud/container';
+import './types/apps/hud/controls';
+import './types/apps/hud/hud';
+import './types/apps/hud/menu';
+import './types/apps/hud/navigation';
+import './types/apps/hud/pause';
+import './types/apps/hud/players';
 
 // Core
 

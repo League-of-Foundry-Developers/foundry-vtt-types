@@ -70,7 +70,7 @@ declare class FormApplication extends Application {
 	 * Extend the logic applied when the application is closed to destroy any remaining MCE instances
 	 * This function returns a Promise which resolves once the window closing animation concludes
 	 */
-	close(): Promise<any>
+	close(): Promise<void>
 
 	/**
 	 * Manually sumbmit the contents of a Form Application, processing its content as defined by the Application
