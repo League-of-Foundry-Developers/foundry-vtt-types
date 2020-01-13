@@ -35,6 +35,12 @@ import './types/apps/journal/note-config';
 import './types/apps/placeables/placeables-config';
 import './types/apps/placeables/placeables-hud';
 
+//-- Sidebar
+
+import './types/apps/sidebar/sidebar';
+import './types/apps/sidebar/tab-base';
+import './types/apps/sidebar/tab-directory';
+
 // Core
 
 import './types/core/audio';
