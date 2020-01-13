@@ -13,6 +13,7 @@
   },
   "homepage": "https://gitlab.com/foundry-projects/foundry-pc/foundry-pc-types#readme",
   "dependencies": {
+    "@types/jquery": "^3.3.31",
     "@types/socket.io": "^2.1.4"
   }
 }
