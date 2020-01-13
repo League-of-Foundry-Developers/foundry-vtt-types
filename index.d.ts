@@ -64,5 +64,15 @@ import './types/framework/entities/folder';
 import './types/framework/entities/item';
 import './types/framework/entities/user';
 
-import './types/init';
+// UI
+
+import './types/ui/dialog';
+import './types/ui/editor';
+import './types/ui/filepicker';
+import './types/ui/notifications';
+import './types/ui/tabs';
+
+// -------- //
+
 import './types/handlebars';
+import './types/init';
