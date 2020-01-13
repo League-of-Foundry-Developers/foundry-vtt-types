@@ -11,5 +11,8 @@
   "bugs": {
     "url": "https://gitlab.com/foundry-projects/foundry-pc/foundry-pc-types/issues"
   },
-  "homepage": "https://gitlab.com/foundry-projects/foundry-pc/foundry-pc-types#readme"
+  "homepage": "https://gitlab.com/foundry-projects/foundry-pc/foundry-pc-types#readme",
+  "dependencies": {
+    "@types/socket.io": "^2.1.4"
+  }
 }
