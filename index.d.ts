@@ -25,6 +25,16 @@ import './types/apps/hud/navigation';
 import './types/apps/hud/pause';
 import './types/apps/hud/players';
 
+//-- Journal
+
+import './types/apps/journal/journal-sheet';
+import './types/apps/journal/note-config';
+
+//-- Placeables
+
+import './types/apps/placeables/placeables-config';
+import './types/apps/placeables/placeables-hud';
+
 // Core
 
 import './types/core/audio';
