@@ -126,7 +126,7 @@ declare class Application {
 	 * @param options.renderData	The data change which motivated the render request
 	 *
 	 */
-	render(force: boolean, options: RenderOptions): Application;
+	render(force: boolean, options?: RenderOptions): Application;
 
 	/**
 	 * Once the HTML for an Application has been rendered, activate event listeners which provide interactivity for

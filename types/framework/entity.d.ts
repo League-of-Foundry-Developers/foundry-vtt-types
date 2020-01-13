@@ -17,6 +17,12 @@
  * let actor = new Actor(actorData);
  */
 declare class Entity {
+	/** The Entity references the raw source data for the object provided through game.data */
+	data: any;
+
+	/** Additional options which were used to configure the Entity */
+	options: any;
+
 	constructor(data: object, options: object);
 
 	/**

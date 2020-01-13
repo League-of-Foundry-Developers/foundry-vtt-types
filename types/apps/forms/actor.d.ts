@@ -38,7 +38,7 @@ declare class ActorSheet extends BaseEntitySheet {
 	 * Prepare data for rendering the Actor sheet
 	 * The prepared data object contains both the actor data as well as additional sheet options
 	 */
-	getData(): object;
+	getData(): any;
 
 	/**
 	 * Remove references to an active Token when the sheet is closed

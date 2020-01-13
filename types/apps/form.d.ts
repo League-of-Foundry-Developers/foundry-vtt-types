@@ -77,6 +77,8 @@ declare class FormApplication extends Application {
 	 * @returns	Return a self-reference for convenient method chaining
 	 */
 	submit(): FormApplication;
+
+	_onSubmit(event: Event | JQuery.Event, { preventClose }?: { preventClose: boolean }): Promise<any>;
 }
 
 declare class BaseEntitySheet extends FormApplication {

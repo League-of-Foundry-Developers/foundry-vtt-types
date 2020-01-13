@@ -1,3 +1,5 @@
+/// <reference types="JQuery"/>
+
 // Apps
 
 import './types/apps/app';
@@ -76,3 +78,4 @@ import './types/ui/tabs';
 
 import './types/handlebars';
 import './types/init';
+import './types/prototypes';

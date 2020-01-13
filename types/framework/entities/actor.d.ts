@@ -32,5 +32,31 @@ declare class Actors extends Collection {
  * inhabit the World.
  */
 declare class Actor extends Entity {
-	constructor(...args: any);
+	token: Token;
+
+	items: Item[];
+
+	constructor(...args: any[]);
+
+	/**
+	 * Get an owned item by it's ID, initialized as an Item entity class
+	 * @param itemId	The ID of the owned item
+	 * @return		An Item class instance for that owned item or null if the itemId does not exist
+	 */
+	getOwnedItem(itemId: number): Item | null;
+
+	/**
+	 * Create a new item owned by this Actor.
+	 * @param itemData				Data for the newly owned item
+	 * @param options				Item creation options
+	 * @param options.displaySheet	Render the Item sheet for the newly created item data
+	 * @return						A Promise containing the newly created owned Item instance
+	 */
+	createOwnedItem(itemData: any, options?: any): Promise<Item>;
+
+	updateOwnedItem(itemData: any, options?: any): Promise<Item>;
+
+	updateManyOwnedItem(data: any, options?: any): Promise<Item[]>;
+
+	deleteOwnedItem(itemId: number, options?: any): Promise<number>;
 }

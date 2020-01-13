@@ -25,5 +25,8 @@ declare class Items extends Collection {
 }
 
 declare class Item extends Entity {
-
+	/**
+	 * A convenience reference to the item type (data.type) of this Item
+	 */
+	get type(): string;
 }
