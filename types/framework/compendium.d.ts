@@ -192,7 +192,7 @@ declare class Compendium extends Application {
 	/**
 	 * Customize Compendium closing behavior to toggle the sidebar folder status icon
 	 */
-	close(): void;
+	close(): any;
 
 	/**
 	 * Register event listeners for Compendium directories

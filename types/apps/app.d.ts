@@ -197,7 +197,7 @@ declare class Application {
 	 * Once the HTML for an Application has been rendered, activate event listeners which provide interactivity for
 	 * the application
 	 */
-	activateListeners(html: JQuery | HTMLElement): void;
+	protected activateListeners(html: JQuery | HTMLElement): void;
 
 	/* -------------------------------------------- */
 	/*  Methods                                     */
@@ -207,7 +207,7 @@ declare class Application {
 	 * Close the application and un-register references to it within UI mappings
 	 * This function returns a Promise which resolves once the window closing animation concludes
 	 */
-	close(): Promise<void>;
+	close(): Promise<any>;
 
 	/**
 	 * Minimize the pop-out window, collapsing it to a small tab
@@ -226,7 +226,7 @@ declare class Application {
 	/**
 	 * Set the application position and store it's new location
 	 */
-	setPosition({ left, top, width, height, scale }: Position): any;
+	setPosition({ left, top, width, height, scale }: ApplicationPosition): any;
 
 	/**
 	 * Handle application minimization behavior - collapsing content and reducing the size of the header

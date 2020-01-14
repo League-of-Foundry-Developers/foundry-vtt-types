@@ -100,7 +100,7 @@ declare class Entity {
 	 * A boolean indicator for whether or not the current game User has ownership rights for this Entity
 	 * This property has a setter which allows for ownership rights to be overridden specifically on a per-instance basis
 	 */
-	protected set owner(isOwner: boolean): void;
+	set owner(isOwner: boolean);
 
 	get owner(): boolean;
 

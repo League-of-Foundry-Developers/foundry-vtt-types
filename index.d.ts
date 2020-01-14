@@ -1,4 +1,5 @@
-/// <reference types="JQuery"/>
+/// <reference types="jquery"/>
+/// <reference types="socket.io"/>
 
 // Apps
 
@@ -13,8 +14,8 @@ import './types/apps/forms/item';
 import './types/apps/forms/scene';
 
 import './types/apps/sidebar/sidebar';
-import './types/apps/sidebar/tab-base';
-import './types/apps/sidebar/tab-directory';
+import './types/apps/sidebar/sidebartab';
+import './types/apps/sidebar/sidebardirectory';
 
 // Core
 
@@ -39,6 +40,12 @@ import './types/framework/entities/folder';
 import './types/framework/entities/item';
 import './types/framework/entities/user';
 
+// PIXI
+
+import './types/pixi/canvaslayer';
+import './types/pixi/placeable';
+import './types/pixi/placeableslayer';
+
 // UI
 
 import './types/ui/dialog';
@@ -51,5 +58,6 @@ import './types/ui/tabs';
 
 import './types/game';
 import './types/handlebars';
+import './types/pixi';
 import './types/prototypes';
 import './types/utils';

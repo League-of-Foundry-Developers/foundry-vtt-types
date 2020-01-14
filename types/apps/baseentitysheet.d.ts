@@ -33,5 +33,5 @@ declare class BaseEntitySheet extends FormApplication {
 	 * Implement the _updateObject method as required by the parent class spec
 	 * This defines how to update the subject of the form when the form is submitted
 	 */
-	protected _updateObject(event: Event | JQuery.Event, formData: any): void;
+	protected _updateObject(event: Event | JQuery.Event, formData: any): Promise<any>;
 }

@@ -118,7 +118,7 @@ declare class FormApplication extends Application {
 	 * @param formData	The object of validated form data with which to update the object
 	 * @returns			A Promise which resolves once the update operation has completed 
 	 */
-	abstract _updateObject(event: Event | JQuery.Event, formData: any): Promise<any>;
+	protected _updateObject(event: Event | JQuery.Event, formData: any): Promise<any>;
 
 	/* -------------------------------------------- */
 	/*  TinyMCE Editor
@@ -150,5 +150,5 @@ declare class FormApplication extends Application {
 	 * @param updateData	Additional data updates to submit in addition to those parsed from the form
 	 * @returns				Return a self-reference for convenient method chaining
 	 */
-	submit({ updateData }: { updateDate?: any }): FormApplication;
+	submit({ updateData }: { updateData?: any }): FormApplication;
 }

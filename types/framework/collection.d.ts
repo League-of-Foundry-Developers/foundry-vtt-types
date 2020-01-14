@@ -107,7 +107,7 @@ declare class Collection {
 	 * Activate socket listeners related to this particular Entity type
 	 * @param socket	The open game socket
 	 */
-	static socketListeners(socket: SocketIO.Socket): void;
+	protected static socketListeners(socket: SocketIO.Socket): void;
 
 	/**
 	 * Handle Entity creation workflow using the server response from the create<Entity> socket
@@ -141,5 +141,5 @@ declare class Collection {
 	 *
 	 * @return			The deleted Entity instance
 	 */
-	protected _deleteEntity({ deleted, options, userId }: { delete: any, options: any, userId: string }): Entity;
+	protected _deleteEntity({ deleted, options, userId }: { deleted: any, options: any, userId: string }): Entity;
 }
