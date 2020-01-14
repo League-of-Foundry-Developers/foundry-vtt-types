@@ -23,7 +23,7 @@ declare class Entity {
 	/** Additional options which were used to configure the Entity */
 	options: any;
 
-	constructor(data: object, options: object);
+	constructor(data: any, options: any);
 
 	/**
 	 * The parent class name of the base entity type.
@@ -46,6 +46,11 @@ declare class Entity {
 	 * A convenience accessor for the _id attribute of the Entity data object
 	 */
 	get id(): string;
+
+	/**
+	 * An alias of the id property
+	 */
+	protected get _id(): string;
 
 	/**
 	 * A convenience accessor for the name attribute of the Entity data object
@@ -75,6 +80,12 @@ declare class Entity {
 	get sheet(): BaseEntitySheet;
 
 	/**
+	 * Obtain a reference to the BaseEntitySheet implementation which should be used to render the Entity instance
+	 * configuration sheet.
+	 */
+	protected get _sheetClass(): any;
+
+	/**
 	 * Return a reference to the Folder which this Entity belongs to, if any
 	 */
 	get folder(): Folder | null;
@@ -89,6 +100,8 @@ declare class Entity {
 	 * A boolean indicator for whether or not the current game User has ownership rights for this Entity
 	 * This property has a setter which allows for ownership rights to be overridden specifically on a per-instance basis
 	 */
+	protected set owner(isOwner: boolean): void;
+
 	get owner(): boolean;
 
 	/**
@@ -105,11 +118,8 @@ declare class Entity {
 	 * Prepare data for the Entity whenever the instance is first created or later updated.
 	 * This method can be used to derive any internal attributes which are computed in a formulaic manner.
 	 * For example, in a d20 system - computing an ability modifier based on the value of that ability score.
-	 *
-	 * @param data	The original data before additional preparation
-	 * @return		The updated data with new prepared attributes
 	 */
-	prepareData(data: object): object;
+	prepareData(): any;
 
 	/**
 	 * Render all of the applications which are connected to this Entity
@@ -126,7 +136,7 @@ declare class Entity {
 	 * 						or greater permission level.
 	 * @return				Whether or not the user has the permission for this Entity
 	 */
-	hasPerm(user: User, permission: number, exact: boolean): boolean;
+	hasPerm(user: User, permission: number, exact?: boolean): boolean;
 
 	/**
 	 * Create a new entity using provided input data
@@ -142,7 +152,12 @@ declare class Entity {
 	 * 
 	 * @return						A Promise which resolves to contain the created Entity     
 	 */
-	static create(data: object, options: object): Promise<Entity>;
+	static create(data: any, options?: any): Promise<Entity>;
+
+	/**
+	 * Entity-specific actions that should occur when the Entity is first created
+	 */
+	protected _onCreate(data: any, options: any, userId: string, context: any): void;
 
 	/**
 	 * Update the current entity using new data
@@ -156,14 +171,28 @@ declare class Entity {
 	 *
 	 * @return				A Promise which resolves to the updated Entity
 	 */
-	update(data: object, options: object): Promise<Entity>;
+	update(data: any, options?: any): Promise<Entity>;
+
+	/**
+	 * Entity-specific actions that should occur when the Entity is updated
+	 */
+	protected _onUpdate(data: any, options: any, userId: string, context: any): void;
 
 	/**
 	 * Delete the entity, removing it from its collection and deleting its data record
 	 * @param options	Additional options which customize the deletion workflow
 	 * @return			A Promise which resolves to the ID of the deleted Entity once handled by the server
 	 */
-	delete(options: object): Promise<string>;
+	delete(options?: any): Promise<string>;
+
+	/**
+	 * Entity-specific actions that should occur when the Entity is deleted
+	 */
+	protected _onDelete(id: string, options: any, userId: string, context: any): void;
+
+	/* -------------------------------------------- */
+	/*  Embedded Entities                           */
+	/* -------------------------------------------- */
 
 	/**
 	 * Get an Embedded Entity by it's ID from a named collection in the parent
@@ -212,12 +241,20 @@ declare class Entity {
 	 */
 	unsetFlag(scope: string, key: string): Promise<Entity>;
 
+	/* -------------------------------------------- */
+	/*  Sorting                                     */
+	/* -------------------------------------------- */
+
 	/**
 	 * Sort this Entity relative a target by providing the target, an Array of siblings and other options.
 	 * See SortingHelper.performIntegerSort for more details
 	 */
 	sortRelative({ target, siblings, sortKey, sortBefore, updateData }:
-		{target: any, siblings: any[], sortKey: string, sortBefore: boolean, updateData: object}): void;
+		{target: any, siblings: any[], sortKey: string, sortBefore: boolean, updateData: any}): void;
+
+	/* -------------------------------------------- */
+	/*  Saving and Loading
+	/* -------------------------------------------- */
 
 	/**
 	 * Export entity data to a JSON file which can be saved by the client and later imported into a different session

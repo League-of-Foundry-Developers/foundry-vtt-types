@@ -21,8 +21,8 @@ declare class SocketInterface {
 	 */
 	static trigger(
 		eventName: string,
-		eventData: object,
-		options: object,
+		eventData: any,
+		options: any,
 		{
 			preHook,
 			postHook,
@@ -60,9 +60,9 @@ declare class SocketInterface {
 	 */
 	static triggerMany(
 		eventName: string,
-		eventData: object,
-		options: object,
-		targets: object[],
+		eventData: any,
+		options: any,
+		targets: any[],
 		{
 			preHook,
 			postHook,

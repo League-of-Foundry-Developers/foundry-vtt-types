@@ -95,7 +95,7 @@ declare const CONFIG: {
 	/**
 	 * Available Weather Effects implemntations
 	 */
-	weatherEffects: object,
+	weatherEffects: any,
 
 	/**
 	 * An array of status effect icons which can be applied to Tokens

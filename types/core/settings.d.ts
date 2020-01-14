@@ -4,15 +4,15 @@
  */
 declare class ClientSettings {
 	/** An object of registered game settings for this scope */
-	settings: object;
+	settings: any;
 	
 	/**
 	 * The storage interfaces used for persisting settings
 	 * Each storage interface shares the same API as window.localStorage
 	 */
-	storage: object;
+	storage: any;
 
-	constructor(worldSettings: object);
+	constructor(worldSettings: any);
 
 	/**
 	 * Return a singleton instance of the Game Settings Configuration app
@@ -25,7 +25,7 @@ declare class ClientSettings {
 	 * @param key		The key name for the setting under the namespace module
 	 * @param data		Configuration for setting data
 	 */
-	register(module: string, key: string, data: object): void;
+	register(module: string, key: string, data: any): void;
 
 	/**
 	 * Get the value of a game setting for a certain module and setting key

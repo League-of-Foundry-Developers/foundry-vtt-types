@@ -16,7 +16,7 @@ declare const vtt;
  */
 declare class Game {
 	/** The object of world data passed from the server */
-	data: object;
+	data: any;
 
 	/** The id of the active game user */
 	userId: string;
@@ -37,7 +37,7 @@ declare class Game {
 	audio: AudioHelper;
 
 	/** A singleton instance of the Video Helper class */
-	video: VideHelper;
+	video: VideoHelper;
 
 	/** Whether the Game is running in debug mode */
 	debug: boolean;
@@ -45,24 +45,24 @@ declare class Game {
 	/** A flag for whether the Game has successfully reached the "ready" hook */
 	ready: boolean;
 
-	constructor(worldData: object, userId: string, socket: SocketIO.Socket);
+	constructor(worldData: any, userId: string, socket: SocketIO.Socket);
 
 	/**
 	 * Fetch World data and return a Game instance
 	 * @return {Promise}  A Promise which resolves to the created Game instance
 	 */
-	static create(): Game;
+	static create(): Promise<Game>;
 
 	
 	/**
 	 * Request World data from server and return it
 	 */
-	static getWorldData(socket: SocketIO.Socket): Promise<object>;
+	static getWorldData(socket: SocketIO.Socket): Promise<any>;
 
 	/**
 	 * Request setup data from server and return it
 	 */
-	static getSetupData(socket: SocketIO.Socket): Promise<object>;
+	static getSetupData(socket: SocketIO.Socket): Promise<any>;
 
 	/**
 	 * Initialize the Game for the current window location
@@ -112,17 +112,17 @@ declare class Game {
 	/**
 	 * Metadata regarding the current game World
 	 */
-	get world(): object;
+	get world(): any;
 
 	/**
 	 * Metadata regarding the game System which powers this World
 	 */
-	get system(): object;
+	get system(): any;
 
 	/**
 	 * An Array of metadata for each Module which is active within this game World
 	 */
-	get modules(): object[];
+	get modules(): any[];
 
 	/**
 	 * A convenience accessor for the currently active Combat encounter
@@ -143,9 +143,9 @@ declare class Game {
 	 * Toggle the pause state of the game
 	 * Trigger the `pauseGame` Hook when the paused state changes
 	 * @param pause	The new pause state
-	 * @param push]	Push the pause state change to other connected clients?
+	 * @param push	Push the pause state change to other connected clients?
 	 */
-	togglePause(pause: boolean, push: boolean);
+	togglePause(pause: boolean, push?: boolean): void;
 
 	static getCookies(): object;
 

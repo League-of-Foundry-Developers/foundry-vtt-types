@@ -1,8 +1,12 @@
 interface FormApplicationOptions extends ApplicationOptions {
+	/** (true) Is the form editable, or should its fields be disabled? */
+	editable: boolean,
+	/** (true) Automatically close the form when the submit button is pressed. */
 	closeOnSubmit: boolean,
+	/** (false) Automatically submit the form if the application window is closed. */
 	submitOnClose: boolean,
-	submitOnUnfocus: boolean,
-	editable: boolean
+	/** (false) Automatically submit the form if an input field is unfocused. */
+	submitOnUnfocus: boolean
 }
 
 /**
@@ -13,17 +17,15 @@ interface FormApplicationOptions extends ApplicationOptions {
  * 2) The template used contains one (and only one) HTML <form> as it's outer-most element
  * 3) This abstract layer has no knowledge of what is being updated, so the implementation must define _updateObject
  *
- * @param object					Some object or entity which is the target to be updated.
+ * @param object	Some object or entity which is the target to be updated.
  *
- * @param options					Additional options which modify the rendering of the sheet.
- * @param options.editable			(true) Is the form editable, or should its fields be disabled?
- * @param options.closeOnSubmit		(true) Automatically close the form when the submit button is pressed.
- * @param options.submitOnClose		(false) Automatically submit the form if the application window is closed.
- * @param options.submitOnUnfocus	(false) Automatically submit the form if an input field is unfocused.
+ * @param options	Additional options which modify the rendering of the sheet.
  */
 declare class FormApplication extends Application {
+	options: FormApplicationOptions;
+
 	/** The object target which we are using this form to modify */
-	object: FormApplicationOptions;
+	object: any;
 
 	/** A convenience reference to the form HTLMElement */
 	form: HTMLElement;
@@ -38,9 +40,9 @@ declare class FormApplication extends Application {
 	 * Keep track of any mce editors which may be active as part of this form
 	 * The values of this Array are inner-objects with references to the MCE editor and other metadata
 	 */
-	editors: object;
+	editors: any;
 
-	constructor();
+	constructor(object: any, options: FormApplicationOptions);
 
 	/**
 	 * Assign the default options which are supported by the entity edit sheet
@@ -56,7 +58,24 @@ declare class FormApplication extends Application {
 	 * Provide data to the form
 	 * @return	The data provided to the template when rendering the form
 	 */
-	getData(): object;
+	getData(): any;
+
+	/**
+	 * Render the FormApplication inner sheet content.
+	 * See `Application._renderInner` for more detail.
+	 */
+	protected _renderInner(...args: any[]): Promise<JQuery | HTMLElement>;
+
+	/**
+	 * A helper function to transform an HTML form into a FormData object which is ready for dispatch
+	 * @param form	The form-type HTMLElement
+	 * @return		The prepared FormData object
+	 */
+	protected _getFormData(form: JQuery | HTMLElement): FormData;
+
+	/* -------------------------------------------- */
+	/*  Event Listeners and Handlers                */
+	/* -------------------------------------------- */
 
 	/**
 	 * Activate the default set of listeners for the Entity sheet
@@ -64,7 +83,61 @@ declare class FormApplication extends Application {
 	 *
 	 * @param html	The rendered template ready to have listeners attached
 	 */
-	activateListeners(html: JQuery): void;
+	activateListeners(html: JQuery | HTMLElement): void;
+
+	/**
+	 * If the form is not editable, disable its input fields
+	 */
+	protected _disableFields(form: JQuery | HTMLElement): void;
+
+	/**
+	 * Handle the change of a color picker input which enters it's chosen value into a related input field
+	 */
+	protected _onColorPickerChange(event: Event | JQuery.Event): void;
+
+	/**
+	 * Handle standard form submission steps
+	 * @param event			The submit event which triggered this handler
+	 * @param updateData	Additional specific data keys/values which override or extend the contents of
+	 *						the parsed form. This can be used to update other flags or data fields at the
+	 *						same time as processing a form submission to avoid multiple database operations.
+	 * @param preventClose	Override the standard behavior of whether to close the form on submit
+	 * @returns				A promise which resolves to the validated update data
+	 */
+	protected _onSubmit(event: Event | JQuery.Event, { updateData, preventClose }?: { updateData?: any, preventClose?: boolean }): Promise<any>;
+
+	/**
+	 * Handle unfocusing an input on form - maybe trigger an update if ``options.liveUpdate`` has been set to true
+	 * @param event	The initial triggering event
+	 */
+	protected _onUnfocus(event: Event | JQuery.Event): void;
+
+	/**
+	 * This method is called upon form submission after form data is validated
+	 * @param event		The initial triggering submission event
+	 * @param formData	The object of validated form data with which to update the object
+	 * @returns			A Promise which resolves once the update operation has completed 
+	 */
+	abstract _updateObject(event: Event | JQuery.Event, formData: any): Promise<any>;
+
+	/* -------------------------------------------- */
+	/*  TinyMCE Editor
+	/* -------------------------------------------- */
+
+	/**
+	 * Activate a TinyMCE editor instance present within the form
+	 */
+	protected _activateEditor(div: JQuery | HTMLElement): void;
+
+	/**
+	 * By default, when the editor is saved treat it as a form submission event
+	 */
+	protected _onEditorSave(target: any, element: JQuery | HTMLElement, content: string): void;
+
+	/**
+	 * Activate a FilePicker instance present within the form
+	 */
+	protected _activateFilePicker(button: JQuery | HTMLElement): void;
 
 	/**
 	 * Extend the logic applied when the application is closed to destroy any remaining MCE instances
@@ -73,14 +146,9 @@ declare class FormApplication extends Application {
 	close(): Promise<void>
 
 	/**
-	 * Manually sumbmit the contents of a Form Application, processing its content as defined by the Application
-	 * @returns	Return a self-reference for convenient method chaining
+	 * Submit the contents of a Form Application, processing its content as defined by the Application
+	 * @param updateData	Additional data updates to submit in addition to those parsed from the form
+	 * @returns				Return a self-reference for convenient method chaining
 	 */
-	submit(): FormApplication;
-
-	_onSubmit(event: Event | JQuery.Event, { preventClose }?: { preventClose: boolean }): Promise<any>;
-}
-
-declare class BaseEntitySheet extends FormApplication {
-	
+	submit({ updateData }: { updateDate?: any }): FormApplication;
 }

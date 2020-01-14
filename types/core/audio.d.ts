@@ -4,7 +4,7 @@
  */
 declare class AudioHelper {
 	/** The set of Howl instances which have been created for different audio paths */
-	sounds: object;
+	sounds: any;
 
 	/**
 	 * A user gesture must be registered before audio can be played.
@@ -61,7 +61,7 @@ declare class AudioHelper {
 	 * Create a Howl object and load it to be ready for later playback
 	 * @param data	The audio data to preload
 	 */
-	static preload(data: object): void;
+	static preload(data: any): void;
 
 	/**
 	 * Returns the volume value based on a range input volume control's position.

@@ -4,7 +4,7 @@
  */
 declare class VideoHelper {
 	/** A collectinon of HTML5 video objects which are currently active within the FVTT page */
-	videos: object[];
+	videos: any[];
 
 	/**
 	 * A user gesture must be registered before video playback can begin.

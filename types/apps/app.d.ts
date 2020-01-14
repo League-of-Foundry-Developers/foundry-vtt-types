@@ -1,35 +1,56 @@
-interface ApplicationOptions {
-	width: number,
-	height: number,
-	top: number,
-	left: number,
-	popOut: boolean,
-	minimizable: boolean,
-	resizable: boolean,
-	id: string,
-	classes: string[],
-	title: string,
-	template: string,
+interface ApplicationOptions extends Object {
+	/** A named "base application" which generates an additional hook */
+	baseApplication?: string,
+	/** The default pixel width for the rendered HTML */
+	width?: number,
+	/** The default pixel height for the rendered HTML */
+	height?: number,
+	/** The default offset-top position for the rendered HTML */
+	top?: number,
+	/** The default offset-left position for the rendered HTML */
+	left?: number,
+	/** Whether to display the application as a pop-out container */
+	popOut?: boolean,
+	/** Whether the rendered application can be minimized (popOut only) */
+	minimizable?: boolean,
+	/** Whether the rendered application can be drag-resized (popOut only) */
+	resizable?: boolean,
+	/** The default CSS id to assign to the rendered HTML */
+	id?: string,
+	/** An array of CSS string classes to apply to the rendered HTML */
+	classes?: string[],
+	/** A default window title string (popOut only) */
+	title?: string,
+	/** The default HTML template path to render for this Application */
+	template?: string,
 	[key: string]: any
 }
 
-interface RenderOptions {
-	left: number,
-	top: number,
-	width: number,
-	height: number,
-	scale: number,
-	log: boolean,
-	renderContext: string,
-	renderData: any
+interface RenderOptions extends Object {
+	/** The left positioning attribute */
+	left?: number,
+	/** The top positioning attribute */
+	top?: number,
+	/** The rendered width */
+	width?: number,
+	/** The rendered height */
+	height?: number,
+	/** The rendered transformation scale */
+	scale?: number,
+	/** Whether to display a log message that the Application was rendered */
+	log?: boolean,
+	/** A context-providing string which suggests what event triggered the render */
+	renderContext?: string,
+	/** The data change which motivated the render request */
+	renderData?: any
 }
 
-interface Position {
-	left: number | null;
-	top: number | null;
-	width: number | null;
-	height: number | string | null;
-	scale: number;
+interface ApplicationPosition extends Object {
+	width: number,
+	height: number,
+	left: number,
+	top: number,
+	scale: number
 }
 
 declare const MIN_WINDOW_WIDTH: number,
@@ -37,23 +58,11 @@ declare const MIN_WINDOW_WIDTH: number,
 
 /**
  * The standard application window that is rendered for a large variety of UI elements in Foundry VTT
- *
- * @param options				Configuration options which control how the application is rendered
- *
- * @param options.height		The height in pixels (or "auto") for the rendered element
- * @param options.width			The width in pixels (or "auto") for the rendered element
- * @param options.top			The vertical position (from the top) of the rendered element
- * @param options.left			The horizontal position (from the left) of the rendered element
- * @param options.template		The default HTML template path to use for applications of this type
- * @param options.popOut		Display the element wrapped in a containing window frame (true, the default) or
- *								only the inner HTML (false).
- * @param options.minimizable	Customize whether the application is able to be minimized by double-clicking
- *								the header. Default behavior is the value of `options.popOut`
- * @param options.resizable		Customize whether a window application window may be re-sized by dragging a
- *								handle in the bottom-right corner of the window display.
  */
 declare class Application {
-	/** The options provided to this application upon initialization */
+	/**
+	 * The options provided to this application upon initialization
+	 */
 	options: ApplicationOptions;
 
 	/**
@@ -65,12 +74,29 @@ declare class Application {
 	/**
 	 * Track the current position and dimensions of the Application UI
 	 */
-	position: object;
-	
-	constructor();
+	position: ApplicationPosition;
 
 	/**
-	 * Assign the default options which are supported by this Application
+	 * An internal reference to the HTML element this application renders
+	 */
+	private _element: JQuery;
+
+	/**
+	 * Track whether the Application is currently minimized
+	 */
+	private _minimize: boolean;
+
+	/**
+	 * Track whether the Application has been successfully rendered
+	 */
+	private _rendered: boolean;
+	
+	constructor(options: ApplicationOptions);
+
+	/**
+	 * Assign the default options which are supported by all Application classes.
+	 * Application subclasses may include additional options which are specific to their usage.
+	 * All keys are optional, descriptions and default values are listed below:
 	 */
 	static get defaultOptions(): ApplicationOptions;
 
@@ -100,33 +126,72 @@ declare class Application {
 	 */
 	get title(): string;
 
+	/* -------------------------------------------- */
+	/* Application rendering
+	/* -------------------------------------------- */
+
 	/**
 	 * An application should define the data object used to render its template.
 	 * This function may either return an Object directly, or a Promise which resolves to an Object
 	 * If undefined, the default implementation will return an empty object allowing only for rendering of static HTML
 	 */
-	getData(options: object): object | Promise<object>;
+	getData(options: any): any | Promise<any>;
 
 	/**
 	 * Render the Application by evaluating it's HTML template against the object of data provided by the getData method
 	 * If the Application is rendered as a pop-out window, wrap the contained HTML in an outer frame with window controls
-	 *
-	 * @param force					Add the rendered application to the DOM if it is not already present. If false, the
-	 *								Application will only be re-rendered if it is already present.
-	 * @param options				Additional rendering options which are applied to customize the way that the Application
-	 *								is rendered in the DOM.
-	 *
-	 * @param options.left			The left positioning attribute
-	 * @param options.top			The top positioning attribute
-	 * @param options.width			The rendered width
-	 * @param options.height		The rendered height
-	 * @param options.scale			The rendered transformation scale
-	 * @param options.log			Whether to display a log message that the Application was rendered
-	 * @param options.renderContext	A context-providing string which suggests what event triggered the render
-	 * @param options.renderData	The data change which motivated the render request
-	 *
+	 * 
+	 * @param force		Add the rendered application to the DOM if it is not already present. If false, the
+	 *					Application will only be re-rendered if it is already present.
+	 * @param options	Additional rendering options which are applied to customize the way that the Application
+	 *					is rendered in the DOM.
 	 */
 	render(force: boolean, options?: RenderOptions): Application;
+
+	/**
+	 * An asynchronous inner function which handles the rendering of the Application
+	 * @param options	Provided rendering options, see the render function for details
+	 */
+	protected _render(force?: boolean, options?: any): void;
+
+	/**
+	 * Render the outer application wrapper
+	 * @return	A promise resolving to the constructed jQuery object
+	 */
+	protected _renderOuter(options: any): Promise<JQuery | HTMLElement>;
+
+	/**
+	 * Render the inner application content
+	 * @param data	The data used to render the inner template
+	 * @return		A promise resolving to the constructed jQuery object
+	 */
+	protected _renderInner(data: any, options: any): Promise<JQuery | HTMLElement>;
+
+	/**
+	 * Customize how inner HTML is replaced when the application is refreshed
+	 * @param element	The original HTML element
+	 * @param html		New updated HTML
+	 */
+	protected _replaceHTML(element: JQuery | HTMLElement, html: JQuery | HTMLElement): void;
+
+	/**
+	 * Customize how a new HTML Application is added and first appears in the DOC
+	 */
+	protected _injectHTML(html: JQuery | HTMLElement, options: any): void;
+
+	/**
+	 * Specify the set of config buttons which should appear in the Application header
+	 * Buttons should be returned as an Array of Objects with the following keys:
+	 * label: The button label
+	 * icon: A font-awesome glyph icon
+	 * class: the css class of the button
+	 * onclick: the button click handler
+	 */
+	protected _getHeaderButtons(): any[];
+
+	/* -------------------------------------------- */
+	/* Event Listeners and Handlers
+	/* -------------------------------------------- */
 
 	/**
 	 * Once the HTML for an Application has been rendered, activate event listeners which provide interactivity for
@@ -134,11 +199,15 @@ declare class Application {
 	 */
 	activateListeners(html: JQuery | HTMLElement): void;
 
+	/* -------------------------------------------- */
+	/*  Methods                                     */
+	/* -------------------------------------------- */
+
 	/**
 	 * Close the application and un-register references to it within UI mappings
 	 * This function returns a Promise which resolves once the window closing animation concludes
 	 */
-	close(): Promise<void> | boolean;
+	close(): Promise<void>;
 
 	/**
 	 * Minimize the pop-out window, collapsing it to a small tab
@@ -157,5 +226,15 @@ declare class Application {
 	/**
 	 * Set the application position and store it's new location
 	 */
-	setPosition({ left, top, width, height, scale }: Position): void;
+	setPosition({ left, top, width, height, scale }: Position): any;
+
+	/**
+	 * Handle application minimization behavior - collapsing content and reducing the size of the header
+	 */
+	protected _onToggleMinimize(ev: Event | JQuery.Event): void;
+
+	/**
+	 * Additional actions to take when the application window is resized
+	 */
+	protected _onResize(event: Event | JQuery.Event): void;
 }

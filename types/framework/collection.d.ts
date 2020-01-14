@@ -5,6 +5,21 @@
  * @param apps	An Array of Application instances which the Collection modifies
  */
 declare class Collection {
+	/**
+	 * An Array of all the Entity instances of this type which are contained within the collection
+	 */
+	entities: Entity[];
+
+	/**
+	 * A reference to the original source data provided by the server
+	 */
+	protected _source: any;
+
+	/**
+	 * An Array of application references which will be automatically updated when the collection content changes
+	 */
+	apps: Application[];
+
 	constructor(data: any[], apps: any[]);
 
 	/**
@@ -82,11 +97,49 @@ declare class Collection {
 	 * @param updateData	Data used to update the imported Entity before it is created in the World
 	 * @return				A Promise containing the imported Entity
 	 */
-	importFromCollection(collection: string, entryId: string, updateData: object): Promise<Entity>;
+	importFromCollection(collection: string, entryId: string, updateData: any): Promise<Entity>;
+
+	/* -------------------------------------------- */
+	/*  Socket Listeners and Handlers               */
+	/* -------------------------------------------- */
 
 	/**
 	 * Activate socket listeners related to this particular Entity type
 	 * @param socket	The open game socket
 	 */
 	static socketListeners(socket: SocketIO.Socket): void;
+
+	/**
+	 * Handle Entity creation workflow using the server response from the create<Entity> socket
+	 *
+	 * @param created	The created Entity data
+	 * @param options	Additional options which describe the creation request
+	 * @param userId	The ID of the triggering User
+	 *
+	 * @return			The created Entity instance
+	 */
+	protected _createEntity({ created, options, userId }: { created: any, options: any, userId: string }): Entity;
+
+	/**
+	 * Handle Entity update workflow using the server response from the update<Entity> socket
+	 *
+	 * @param updated	The updated Entity data
+	 * @param options	Additional options which describe the update request
+	 * @param userId	The ID of the triggering User
+	 *
+	 * @return			The updated Entity instance
+	 */
+	protected _updateEntity({ updated, options, userId }: { updated: any, options: any, userId: string }): Entity;
+
+	/**
+	 * Handle Entity deletion workflow using the server response from the delete<Entity> socket
+	 * @private
+	 *
+	 * @param deleted	The ID of the deleted Entity
+	 * @param options	Additional options which describe the deletion request
+	 * @param userId	The ID of the triggering User
+	 *
+	 * @return			The deleted Entity instance
+	 */
+	protected _deleteEntity({ deleted, options, userId }: { delete: any, options: any, userId: string }): Entity;
 }

@@ -34,7 +34,7 @@ declare const KEYS: {
 
 declare class KeyboardManager {
 	/** A mapping of known key codes */
-	keys: object;
+	keys: any;
 
 	/** The set of key codes which should be captured */
 	codes: Set<number>;
