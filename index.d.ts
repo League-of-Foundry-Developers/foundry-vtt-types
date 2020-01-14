@@ -46,6 +46,8 @@ import './types/pixi/canvaslayer';
 import './types/pixi/placeable';
 import './types/pixi/placeableslayer';
 
+import './types/pixi/placeables/token';
+
 // UI
 
 import './types/ui/dialog';
