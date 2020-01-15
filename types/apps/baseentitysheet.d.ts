@@ -1,3 +1,12 @@
+declare interface BaseEntitySheetData {
+	entity: Entity,
+	owner: boolean,
+	limited: boolean,
+	options: any,
+	editable: boolean,
+	cssClass: string
+}
+
 /**
  * A simple implementation of the FormApplication pattern which is specialized in editing Entity instances
  */
@@ -27,7 +36,7 @@ declare class BaseEntitySheet extends FormApplication {
 	/**
 	 * Default data preparation logic for the entity sheet
 	 */
-	getData(): any;
+	getData(): BaseEntitySheetData;
 
 	/**
 	 * Implement the _updateObject method as required by the parent class spec

@@ -1,3 +1,9 @@
+declare interface ActorSheetData extends BaseEntitySheetData {
+	actor: Actor,
+	data: any,
+	items: any[]
+}
+
 /**
  * The default Actor Sheet
  *
@@ -43,7 +49,7 @@ declare class ActorSheet extends BaseEntitySheet {
 	 * Prepare data for rendering the Actor sheet
 	 * The prepared data object contains both the actor data as well as additional sheet options
 	 */
-	getData(): any;
+	getData(): ActorSheetData;
 
 	/**
 	 * Extend the Header Button configuration for the ActorSheet to add Token configuration buttons

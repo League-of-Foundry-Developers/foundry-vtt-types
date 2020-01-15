@@ -1,3 +1,9 @@
+declare interface BaseEntityData {
+	name: string,
+	type: string,
+	flags: any
+}
+
 /**
  * An abstract class pattern for all primary data entities within the Foundry VTT Framework
  * An entity represents a primary data concept, for example: Actor, Item, Scene, or ChatMessage.
@@ -18,12 +24,12 @@
  */
 declare class Entity {
 	/** The Entity references the raw source data for the object provided through game.data */
-	data: any;
+	data: BaseEntityData;
 
 	/** Additional options which were used to configure the Entity */
 	options: any;
 
-	constructor(data: any, options: any);
+	constructor(data: BaseEntityData, options: any);
 
 	/**
 	 * The parent class name of the base entity type.
@@ -119,7 +125,7 @@ declare class Entity {
 	 * This method can be used to derive any internal attributes which are computed in a formulaic manner.
 	 * For example, in a d20 system - computing an ability modifier based on the value of that ability score.
 	 */
-	prepareData(): any;
+	prepareData(): BaseEntityData;
 
 	/**
 	 * Render all of the applications which are connected to this Entity

@@ -1,8 +1,15 @@
+declare interface ActorData extends BaseEntityData {
+	img: string,
+	
+}
+
 /**
  * The :class:`Collection` of :class:`Actor` entities
  * The actors collection is accessible within the game as ``game.actors``
  */
 declare class Actors extends Collection {
+	data: ActorData;
+
 	/**
 	 * Elements of the Actors collection are instances of the Actor class, or a subclass thereof
 	 * @type {Actor}

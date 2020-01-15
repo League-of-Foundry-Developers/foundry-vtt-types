@@ -1,3 +1,8 @@
+declare interface ItemSheetData extends BaseEntitySheetData {
+	item: Item,
+	data: any
+}
+
 /**
  * The default Item Sheet
  *
@@ -34,7 +39,7 @@ declare class ItemSheet extends BaseEntitySheet {
 	/**
 	 * Customize the data provided to the item sheet for rendering. By default we just duplicate the item data.
 	 */
-	getData(): object;
+	getData(): ItemSheetData;
 
 	/**
 	 * Activate listeners which provide interactivity for item sheet events
