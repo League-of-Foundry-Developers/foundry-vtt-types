@@ -8,9 +8,9 @@ Due to how the Node Package Manager (NPM) works, it is not possible to simply up
 
 To quickly do this, execute the following commands inside the project directory:
 
-```cmd
+```
 npm uninstall foundry-pc-types
-npm install gitlab:foundry-projects/foundry-pc/foundry-pc-types
+npm install --save-dev gitlab:foundry-projects/foundry-pc/foundry-pc-types
 ```
 
 ## Configuration
