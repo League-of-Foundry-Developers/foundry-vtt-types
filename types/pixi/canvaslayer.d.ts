@@ -25,7 +25,7 @@ declare class CanvasLayer extends PIXI.Container {
 	/*  Methods
 	/* -------------------------------------------- */
 
-	activate();
+	activate(): void;
 
-	deactivate();
+	deactivate(): void;
 }

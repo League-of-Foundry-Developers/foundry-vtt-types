@@ -1,3 +1,5 @@
+// @TODO: Types
+
 /**
  * An instance of the Token class represents an Actor within a viewed Scene on the game canvas.
  * Each Token is reference using a numeric id which indexes its position within the scene.

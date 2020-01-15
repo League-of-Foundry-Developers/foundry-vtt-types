@@ -1,3 +1,5 @@
+// @TODO: Assign class types
+
 declare const CONFIG: {
 	
 	/**
@@ -31,7 +33,7 @@ declare const CONFIG: {
 	 */
 	JournalEntry: {
 		entityClass: JournalEntry,
-		sheetClass,
+		sheetClass: JournalSheet,
 		noteIcons: {
 			"Anchor": string,
 			[key: string]: string
@@ -44,8 +46,9 @@ declare const CONFIG: {
 	 */
 	Scene: {
 		entityClass: Scene,
-		sheetClass,
-		notesClass,
+		collection: Scenes,
+		sheetClass: any,
+		notesClass: any,
 		sidebarIcon: string
 	},
 

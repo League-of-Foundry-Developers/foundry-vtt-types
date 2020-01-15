@@ -1,3 +1,5 @@
+// @TODO: Types
+
 declare interface LayerOptions {
 	canDragCreate: boolean,
 	controllableObjects: boolean,

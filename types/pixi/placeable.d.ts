@@ -136,7 +136,7 @@ declare class PlaceableObject extends PIXI.Container {
 	 * @param key	The flag key
 	 * @return		The flag value
 	 */
-	getFlat(scope: string, key: string): any;
+	getFlag(scope: string, key: string): any;
 
 	/**
 	 * Assign a "flag" to this Entity.
@@ -157,7 +157,7 @@ declare class PlaceableObject extends PIXI.Container {
 	 *
 	 * @return		A Promise resolving to the updated PlaceableObject
 	 */
-	setFlag(scope: string, key: string, value: any): Promise<any>;
+	setFlag(scope: string, key: string, value: any): Promise<PlaceableObject>;
 
 	/**
 	 * Remove a flag assigned to the Entity
@@ -165,7 +165,7 @@ declare class PlaceableObject extends PIXI.Container {
 	 * @param key	The flag key
 	 * @return		A Promise resolving to the updated Entity
 	 */
-	unsetFlat(scope: string, key: string): Promise<Entity>;
+	unsetFlag(scope: string, key: string): Promise<Entity>;
 
 	/* -------------------------------------------- */
 	/*  Socket Listeners and Handlers               */

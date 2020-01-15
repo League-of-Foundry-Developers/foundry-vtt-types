@@ -1,8 +1,10 @@
+// @TODO: Add types
+
 declare let socket,
 	canvas,
 	keyboard,
 	game: Game,
-	ui: object;
+	ui: any;
 
 declare const vtt;
 

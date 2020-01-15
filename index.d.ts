@@ -10,8 +10,26 @@ import './types/apps/i18n';
 import './types/apps/templates';
 
 import './types/apps/forms/actor';
+import './types/apps/forms/forms';
 import './types/apps/forms/item';
+import './types/apps/forms/permission';
+import './types/apps/forms/roll-table-config';
 import './types/apps/forms/scene';
+
+import './types/apps/hud/chatbubble';
+import './types/apps/hud/container';
+import './types/apps/hud/controls';
+import './types/apps/hud/hud';
+import './types/apps/hud/menu';
+import './types/apps/hud/navigation';
+import './types/apps/hud/pause';
+import './types/apps/hud/players';
+
+import './types/apps/journal/journal-sheet';
+import './types/apps/journal/note-config';
+
+import './types/apps/placeables/placeables-config';
+import './types/apps/placeables/placeables-hud';
 
 import './types/apps/sidebar/sidebar';
 import './types/apps/sidebar/sidebartab';
@@ -38,6 +56,7 @@ import './types/framework/entity';
 import './types/framework/entities/actor';
 import './types/framework/entities/folder';
 import './types/framework/entities/item';
+import './types/framework/entities/journal';
 import './types/framework/entities/user';
 
 // PIXI
