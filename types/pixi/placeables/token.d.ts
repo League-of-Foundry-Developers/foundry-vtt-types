@@ -66,7 +66,7 @@ declare class Token extends PlaceableObject {
 	/**
 	 * A Boolean flag for whether the current game User has permission to control this token
 	 */
-	get owner(): User;
+	get owner(): boolean;
 
 	/**
 	 * Does the current user have at least LIMITED permission to the Token

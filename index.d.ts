@@ -31,6 +31,8 @@ import './types/apps/journal/note-config';
 import './types/apps/placeables/placeables-config';
 import './types/apps/placeables/placeables-hud';
 
+import './types/apps/sidebar/apps/clientsettings';
+
 import './types/apps/sidebar/sidebar';
 import './types/apps/sidebar/sidebartab';
 import './types/apps/sidebar/sidebardirectory';
@@ -54,16 +56,20 @@ import './types/framework/compendium';
 import './types/framework/entity';
 
 import './types/framework/entities/actor';
+import './types/framework/entities/combat';
 import './types/framework/entities/folder';
 import './types/framework/entities/item';
 import './types/framework/entities/journal';
+import './types/framework/entities/scene';
 import './types/framework/entities/user';
 
 // PIXI
 
 import './types/pixi/canvaslayer';
-import './types/pixi/placeable';
+import './types/pixi/placeableobject';
 import './types/pixi/placeableslayer';
+
+import './types/pixi/helpers/controlicon';
 
 import './types/pixi/placeables/token';
 
