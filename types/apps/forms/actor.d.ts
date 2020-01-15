@@ -63,7 +63,7 @@ declare class ActorSheet extends BaseEntitySheet {
 	 *
 	 * @param html	The rendered template ready to have listeners attached
 	 */
-	activateListeners(html: JQuery | HTMLElement): void;
+	protected activateListeners(html: JQuery | HTMLElement): void;
 
 	/**
 	 * Handle requests to configure the prototype Token for the Actor
