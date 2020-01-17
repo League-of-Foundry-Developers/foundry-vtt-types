@@ -15,7 +15,7 @@ declare class RollTableConfig extends BaseEntitySheet {
 	/**
 	 * Default data preparation logic for the entity sheet
 	 */
-	getData(): object;
+	getData(): BaseEntitySheetData;
 
 	/**
 	 * Activate event listeners for the RollTable Configuration Sheet

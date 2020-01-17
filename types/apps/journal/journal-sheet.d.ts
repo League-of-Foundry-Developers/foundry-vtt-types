@@ -19,5 +19,5 @@ declare class JournalSheet extends BaseEntitySheet {
 	 * Prepare data used to render the Journal Sheet
 	 * @return	The data object used to render the journal entry
 	 */
-	getData(): object;
+	getData(): BaseEntitySheetData;
 }

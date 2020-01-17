@@ -32,7 +32,7 @@ declare class ClientSettings {
 	 * @param module	The module namespace under which the setting is registered
 	 * @param key 		The setting key to retrieve
 	 */
-	get(module: string, key: string): void;
+	get(module: string, key: string): any;
 
 	/**
 	 * Get the value of a game setting for a certain module and setting key
@@ -40,7 +40,7 @@ declare class ClientSettings {
 	 * @param key	The setting key to retrieve
 	 * @param value	The data to assign to the setting key
 	 */
-	set(module: string, key: string, value: any): any;
+	set(module: string, key: string, value: any): Promise<any>;
 
 	/**
 	 * Update the setting storage with a new value

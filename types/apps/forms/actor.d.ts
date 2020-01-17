@@ -1,7 +1,7 @@
 declare interface ActorSheetData extends BaseEntitySheetData {
 	actor: Actor,
 	data: any,
-	items: any[]
+	items: Item[]
 }
 
 /**

@@ -83,7 +83,7 @@ declare class FormApplication extends Application {
 	 *
 	 * @param html	The rendered template ready to have listeners attached
 	 */
-	activateListeners(html: JQuery | HTMLElement): void;
+	protected activateListeners(html: JQuery | HTMLElement): void;
 
 	/**
 	 * If the form is not editable, disable its input fields

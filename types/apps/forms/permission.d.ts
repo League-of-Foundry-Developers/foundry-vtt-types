@@ -10,5 +10,5 @@ declare class PermissionControl extends BaseEntitySheet {
 	/**
 	 * Prepare permissions data as an array of users and levels for which to configure the entity
 	 */
-	getData(): object;
+	getData(): BaseEntitySheetData;
 }

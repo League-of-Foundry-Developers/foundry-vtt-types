@@ -12,7 +12,6 @@ declare class Actors extends Collection {
 
 	/**
 	 * Elements of the Actors collection are instances of the Actor class, or a subclass thereof
-	 * @type {Actor}
 	 */
 	get object(): Actor;
 
@@ -108,14 +107,14 @@ declare class Actor extends Entity {
 	/**
 	 * Construct the Array of Item instances for the Actor
 	 */
-	items: Actor[];
+	items: Item[];
 
 	constructor(...args: any[]);
 
 	/**
 	 * Prepare data for the Actor instance whenever it is first created or later updated.
 	 */
-	prepareData(): void;
+	prepareData(): ActorData;
 
 	/**
 	 * A convenient reference to the file path of the Actor's profile image
