@@ -1,6 +1,6 @@
 declare interface ActorSheetData extends BaseEntitySheetData {
 	actor: Actor,
-	data: any,
+	data: ActorData,
 	items: Item[]
 }
 

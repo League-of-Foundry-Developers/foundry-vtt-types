@@ -8,8 +8,6 @@ declare interface ActorData extends BaseEntityData {
  * The actors collection is accessible within the game as ``game.actors``
  */
 declare class Actors extends Collection {
-	data: ActorData;
-
 	/**
 	 * Elements of the Actors collection are instances of the Actor class, or a subclass thereof
 	 */
@@ -99,6 +97,8 @@ declare class Actors extends Collection {
  * inhabit the World.
  */
 declare class Actor extends Entity {
+	data: ActorData;
+	
 	/**
 	 * A reference to a placed Token which creates a synthetic Actor
 	 */
@@ -241,5 +241,5 @@ declare class Actor extends Entity {
 	 * @param options	Item deletion options
 	 * @return			A Promise resolving to the deleted item ID
 	 */
-	deleteOwnedItem(itemId: number, options?: any): Promise<number>;
+	deleteOwnedItem(itemId: string, options?: any): Promise<number>;
 }
