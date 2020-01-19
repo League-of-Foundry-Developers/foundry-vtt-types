@@ -4,7 +4,7 @@ This package provides type definitions for the Foundry VTT API, useful for both 
 
 Unlike other packages, this will gradually be updated as I add more type definitions. Therefore, I will not use version numbers and tags to tag releases.
 
-Due to how the Node Package Manager (NPM) works, it is not possible to simply update a package installed from Git using `git install`. Simply reinstall the package with the command below to retrieve the latest version.
+Due to how the Node Package Manager (NPM) works, it is not possible to simply update a package installed from Git using `npm install`. Simply reinstall the package with the command below to retrieve the latest version.
 
 ```
 npm install --save-dev gitlab:foundry-projects/foundry-pc/foundry-pc-types
