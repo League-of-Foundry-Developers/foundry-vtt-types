@@ -35,7 +35,7 @@ declare class Tabs {
 	/** The currently active tab */
 	active: JQuery;
 
-	constructor(tabs: JQuery|HTMLElement, { initial, callback, container }: { initial: JQuery | HTMLElement, callback: (tab: JQuery) => void, container?: JQuery | HTMLElement });
+	constructor(tabs: JQuery|HTMLElement, { initial, callback, container }: { initial: string, callback: (tab: JQuery) => void, container?: JQuery | HTMLElement });
 
 	/**
 	 * The named tab group
