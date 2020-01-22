@@ -45,5 +45,5 @@ declare class ItemSheet extends BaseEntitySheet {
 	 * Activate listeners which provide interactivity for item sheet events
 	 * @param html	The HTML object returned by template rendering
 	 */
-	activateListeners(html: JQuery): void;
+	protected activateListeners(html: JQuery): void;
 }
