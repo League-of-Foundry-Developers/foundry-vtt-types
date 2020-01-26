@@ -146,7 +146,7 @@ declare class Application {
 	 * @param options	Additional rendering options which are applied to customize the way that the Application
 	 *					is rendered in the DOM.
 	 */
-	render(force: boolean, options?: RenderOptions): Application;
+	render(force?: boolean, options?: RenderOptions): Application;
 
 	/**
 	 * An asynchronous inner function which handles the rendering of the Application

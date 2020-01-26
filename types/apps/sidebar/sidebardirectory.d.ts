@@ -37,7 +37,7 @@ declare class SidebarDirectory extends SidebarTab {
 	/**
 	 * When rendering a SidebarDirectory, check the render context to rebuild the tree structure if needed
 	 */
-	render(force: boolean, options?: RenderOptions): SidebarDirectory;
+	render(force?: boolean, options?: RenderOptions): SidebarDirectory;
 
 	/**
 	 * Collapse all subfolders in this directory
