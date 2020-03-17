@@ -63,7 +63,7 @@ declare class User extends Entity {
 	 * @override
 	 * @deprecated
 	 */
-	get permission(): string;
+	get permission(): number;
 
 	/**
 	 * A convenience shortcut for the permissions object of the current User

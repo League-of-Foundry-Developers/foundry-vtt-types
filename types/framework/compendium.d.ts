@@ -75,12 +75,12 @@ declare class Compendium extends Application {
 	/**
 	 * Assign the default options which are supported by the Compendium UI
 	 */
-	protected static get defaultOptions(): ApplicationOptions;
+	static get defaultOptions(): ApplicationOptions;
 
 	/**
 	 * The Compendium title
 	 */
-	protected get title(): string;
+	get title(): string;
 
 	/**
 	 * The canonical Compendium name - comprised of the originating package and the pack name
