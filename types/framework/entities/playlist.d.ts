@@ -1,4 +1,4 @@
-class Playlists extends Collection {
+declare class Playlists extends Collection {
 	/** @override */
 	get object(): Playlist;
 
@@ -16,7 +16,7 @@ class Playlists extends Collection {
 	protected _onUpdateScene(scene: Scene, data: object, options: object): void;
 }
 
-class Playlist extends Entity {
+declare class Playlist extends Entity {
 	/**
 	 * Each sound which is played within the Playlist has a created Howl instance.
 	 * The keys of this object are the sound IDs and the values are the Howl instances.
