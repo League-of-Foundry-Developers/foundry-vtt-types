@@ -153,6 +153,21 @@ declare class Actor extends Entity {
 	 */
 	getTokenImages(): Promise<any>;
 
+	/**
+	 * Handle how changes to a Token attribute bar are applied to the Actor.
+	 * This allows for game systems to override this behavior and deploy special logic.
+	 * @param attribute	The attribute path
+	 * @param value		The target attribute value
+	 * @param isDelta	Whether the number represents a relative change (true) or an absolute change (false)
+	 * @param isBar		Whether the new value is part of an attribute bar, or just a direct value
+	 */
+	modifyTokenAttributes(
+		attribute: string,
+		value: number,
+		isDelta?: boolean,
+		isBar?: boolean
+	): Promise<Actor>;
+
 	/* -------------------------------------------- */
 	/*  Socket Listeners and Handlers
 	/* -------------------------------------------- */
@@ -184,12 +199,13 @@ declare class Actor extends Entity {
 		options?: object
 	): Promise<Actor>;
 
-	/**
-	 * Additional updating steps for the Actor entity when new data is saved which trigger some related updates.
-	 * Re-render the parent collection if names, images, or permissions have changed
-	 * Re-render active tokens if their linked attribute has changed
-	 */
-	protected _onUpdate(data: object, ...args: any[]): void;
+	/** @override */
+	protected _onUpdate(
+		data: object,
+		options: object,
+		userId: string,
+		context: object
+	): void;
 
 	/* -------------------------------------------- */
 	/* Owned Item Management
@@ -215,7 +231,7 @@ declare class Actor extends Entity {
 	 * Create a new item owned by this Actor.
 	 * @param itemData				Data for the newly owned item
 	 * @param options				Item creation options
-	 * @param options.displaySheet	Render the Item sheet for the newly created item data
+	 * @param options.rendeSheet	Render the Item sheet for the newly created item data
 	 * @return						A Promise containing the newly created owned Item instance
 	 */
 	createOwnedItem(itemData: object, options?: object): Promise<Item>;

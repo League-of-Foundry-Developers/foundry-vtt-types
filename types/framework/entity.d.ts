@@ -37,7 +37,7 @@ declare class Entity {
 	apps: Application;
 
 	/**
-	 * The Entity may optionally the belong to a parent Compendium pack. If so this attribute will contain a reference
+	 * The Entity may optionally belong to a parent Compendium pack. If so this attribute will contain a reference
 	 * to that Compendium object. Otherwise null.
 	 */
 	compendium: Compendium;
@@ -55,6 +55,11 @@ declare class Entity {
 		collection: Collection;
 		embeddedEntities: any;
 	};
+
+	/**
+	 * A Universally Unique Identifier (uuid) for this Entity instance
+	 */
+	get uuid(): string;
 
 	/**
 	 * Initialize data structure for the Entity.
@@ -224,14 +229,13 @@ declare class Entity {
 	/**
 	 * Create a new entity using provided input data
 	 * The data for entity creation is typically provided from the server through the 'create<Entity>' socket
-	 * Alternatively, the creation event may originate locally and the new entity can be pushed back to the server
+	 * Alternatively, the creation event may originate locally and the new entity can be pushed back to the server.
 	 *
 	 * @param data					The data with which to create the entity
 	 * @param options				Additional options which customize the creation workflow
 	 * @param options.temporary		Create a temporary entity which is not saved to the world database.
-	 * 								Default is false.
-	 * @param options.displaySheet	Show the configuration sheet for the created entity once it is created.
-	 *								Default is true.
+	 *								Default is false.
+	 * @param options.renderSheet	Display the sheet for the created entity once it is created. Default is false.
 	 *
 	 * @return						A Promise which resolves to contain the created Entity
 	 *
@@ -248,7 +252,7 @@ declare class Entity {
 	 * @param data					The data with which to create the entity
 	 * @param options				Additional options which customize the creation workflow
 	 * @param options.temporary		Created entities are temporary and not saved to the database. Default false.
-	 * @param options.displaySheet	Display sheets of the created entities. Default false.
+	 * @param options.renderSheet	Display sheets for each created entities. Default false.
 	 *
 	 * @return						A Promise which resolves to contain the created Entities
 	 *

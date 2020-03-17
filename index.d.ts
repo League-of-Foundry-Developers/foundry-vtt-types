@@ -41,6 +41,7 @@ import './types/apps/sidebar/sidebardirectory';
 
 import './types/core/audio';
 import './types/core/config';
+import './types/core/dicepool';
 import './types/core/die';
 import './types/core/fonts';
 import './types/core/hooks';

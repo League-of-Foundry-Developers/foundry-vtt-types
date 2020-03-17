@@ -22,20 +22,49 @@
  * console.log(r.total);    // 22
  */
 declare class Roll {
-	_formula: string;
-
+	/**
+	 * The original provided data
+	 */
 	data: any;
 
-	terms: any[];
+	/**
+	 * The original "raw" formula before any substitutions or evaluation
+	 */
+	_formula: string;
 
+	/**
+	 * The processed formula resulting from substitution and evaluation
+	 */
+	formula: string;
+
+	/**
+	 * An array of evaluate Roll parts
+	 */
 	parts: any[];
 
+	/**
+	 * An Array of Die instance which were included as part of this Roll
+	 */
+	_dice: Die[];
+
+	/**
+	 * An internal flag for whether the Roll object has been rolled
+	 */
 	_rolled: boolean;
 
+	/**
+	 * Cache the rolled total to avoid re-evaluating it multiple times
+	 */
 	_result: any;
 
+	/**
+	 * Cache the evaluated total to avoid re-evaluating it
+	 */
 	_total: any;
 
+	/**
+	 * Regular expression patterns
+	 */
 	rgx: {
 		reroll: RegExp;
 		explode: RegExp;
@@ -46,9 +75,15 @@ declare class Roll {
 	constructor(formula: string, data?: object);
 
 	/**
-	 * Express the Roll as a formatted string formula
+	 * Replace referenced data attributes in the roll formula with the syntax `@attr` with the corresponding key from
+	 * the provided `data` object.
+	 * @param formula	The original formula within which to replace
 	 */
-	get formula(): string;
+	protected _replaceData(formula: string): string;
+
+	/* -------------------------------------------- */
+	/*  Properties                                  */
+	/* -------------------------------------------- */
 
 	/**
 	 * The resulting arithmetic expression after rolls have been evaluated
@@ -61,7 +96,7 @@ declare class Roll {
 	get total(): number;
 
 	/**
-	 * Get an Array of any :class:`Die` objects which were rolled as part of the evaluation of this roll
+	 * Get an Array of any Die objects which were rolled as part of the evaluation of this roll
 	 */
 	get dice(): Die[];
 
@@ -70,33 +105,12 @@ declare class Roll {
 	 */
 	protected static get diceRgx(): string;
 
+	static get rgx(): { dice: string; pool: string };
+
 	/**
 	 * Record supported arithmetic operators for Roll instances
 	 */
 	protected static get arithmeticOperators(): string[];
-
-	/* -------------------------------------------- */
-	/*  Initialization                              */
-	/* -------------------------------------------- */
-
-	/**
-	 * Initialize the roll object using a provided formula
-	 * @param formula	The roll formula
-	 */
-	protected _init(formula: string): void;
-
-	/**
-	 * Replace referenced data attributes in the roll formula with the syntax `@attr` with the corresponding key from
-	 * the provided `data` object.
-	 * @param formula	The original formula within which to replace
-	 */
-	protected _replaceData(formula: string): string;
-
-	/**
-	 * Parse a string formula, extracting arithmetic operators and enforcing standardized spacing
-	 * Return the terms of the formula as an Array
-	 */
-	protected _getTerms(formula: string): string[];
 
 	/* -------------------------------------------- */
 	/*  Methods                                     */
@@ -120,13 +134,36 @@ declare class Roll {
 	 */
 	reroll(): Roll;
 
-	/**
-	 * Replace terms within a formula group which match a dice roll syntax with a :class:`Die` instance
-	 * Basic syntax is {n}d{X}{mods}
-	 */
-	protected _replaceDice(terms: string[]): Die[];
+	/* -------------------------------------------- */
+	/*  Helpers
+	/* -------------------------------------------- */
 
-	protected _validateResult(result: string): string;
+	/**
+	 * Separate a dice roll formula into parenthetical terms to be evaluated first
+	 * @param formula
+	 */
+	protected _evalParentheticalTerms(formula: string): string[];
+
+	/**
+	 * Isolate any Dice Pool terms within a formula and evaluate them
+	 * @param formula
+	 */
+	protected _evalPoolTerms(formula: string): string[];
+
+	/**
+	 * Expand and reallocate an array of terms, separating them based on arithmetic operators
+	 */
+	protected _expandArithmeticTerms(terms): any;
+
+	/**
+	 * Replace a dice roll term enclosed in {brackets} with a DicePool instance
+	 * @param term	The string term being replaced
+	 * @param rgx	The regexp match for the term
+	 * @return		The replaced DicePool
+	 */
+	protected _replacePool(term: string, rgx: RegExpMatchArray): DicePool;
+
+	protected _validateResult(result: any): any;
 
 	/**
 	 * Safely evaluate a formulaic expression using a Proxy environment which is allowed access to Math commands
@@ -134,33 +171,6 @@ declare class Roll {
 	 * @return				The returned numeric result
 	 */
 	protected _safeEval(expression: string): number;
-
-	/**
-	 * Parse options and determine their order of operations
-	 * @param query	The dice roll options query
-	 */
-	protected _parseOptions(query: string): string[];
-
-	/**
-	 * Reroll a single die by parsing the option string
-	 */
-	protected _rerollDie(die: Die, option: string): void;
-
-	/**
-	 * Explode a single die by parsing the option string
-	 */
-	protected _explodeDie(die: Die, option: string): void;
-
-	/**
-	 * Keep or drop die by parsing the option string
-	 * @private
-	 */
-	protected _keepDropDie(die: Die, option: string): void;
-
-	/**
-	 * Count successes or margin of success
-	 */
-	protected _successDie(die: Die, option: string): void;
 
 	/* -------------------------------------------- */
 	/*  HTML Rendering

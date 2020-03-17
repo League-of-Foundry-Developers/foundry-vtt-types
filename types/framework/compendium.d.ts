@@ -68,19 +68,8 @@ declare class Compendium extends Application {
 	// Internal flags
 	searchString: string | null;
 	protected _searchTime: number;
-	protected _scrollTop: number;
 
 	constructor(metadata: object, options: object);
-
-	/**
-	 * Assign the default options which are supported by the Compendium UI
-	 */
-	static get defaultOptions(): ApplicationOptions;
-
-	/**
-	 * The Compendium title
-	 */
-	get title(): string;
 
 	/**
 	 * The canonical Compendium name - comprised of the originating package and the pack name
@@ -92,19 +81,6 @@ declare class Compendium extends Application {
 	 * The Entity type which is allowed to be stored in this collection
 	 */
 	get entity(): string;
-
-	/**
-	 * Return the Compendium index as the data for rendering
-	 * First query the server to obtain the index and then return it once prepared
-	 * @return	The data to render
-	 */
-	getData(): Promise<any>;
-
-	/**
-	 * Override the default :class:`Application` rendering logic to wrap the render call in a promise which
-	 * retrieves the compendium data.
-	 */
-	protected _render(...args: any[]): Promise<void>;
 
 	/* ----------------------------------------- */
 	/*  Methods
@@ -140,22 +116,21 @@ declare class Compendium extends Application {
 	 * Get a single Compendium entry as an Object
 	 * @param entryId	The compendium entry ID to retrieve
 	 *
-	 * @return			A Promise containing the return entry data, or undefined
+	 * @return			A Promise containing the return entry data, or null
 	 */
 	getEntry(entryId: string): Promise<any>;
 
 	/**
 	 * Get a single Compendium entry as an Entity instance
-	 * @param entryId 	The compendium entry ID to instantiate
-	 *
-	 * @return			A Promise containing the returned Entity
+	 * @param entryId	The compendium entry ID to load and instantiate
+	 * @return			A Promise containing the returned Entity, if it exists, otherwise null
 	 */
 	getEntity(entryId: string): Promise<Entity>;
 
 	/**
 	 * Cast entry data to an Entity class
 	 */
-	protected _toEntity(entryData: any): Entity;
+	protected _toEntity(entryData?: object): Entity;
 
 	/**
 	 * Import a new Entity into a Compendium pack

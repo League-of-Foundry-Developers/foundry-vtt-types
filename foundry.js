@@ -5,6 +5,7 @@
 const CONST = {
 	vtt: 'Foundry VTT',
 	VTT: 'Foundry Virtual Tabletop',
+	WEBSITE_URL: 'https://foundryvtt.com',
 };
 
 /**
@@ -53,6 +54,19 @@ CONST.DEFAULT_TOKEN = 'icons/svg/mystery-man.svg';
 CONST.DEFAULT_NOTE_ICON = 'icons/svg/book.svg';
 
 /**
+ * The supported dice roll visibility modes
+ * @type {Object}
+ */
+CONST.DICE_ROLL_MODES = {
+	PUBLIC: 'roll',
+	PRIVATE: 'gmroll',
+	BLIND: 'blindroll',
+	SELF: 'selfroll',
+};
+
+/* -------------------------------------------- */
+
+/**
  * The allowed Drawing types which may be saved
  * @type {Object}
  */
@@ -78,6 +92,29 @@ CONST.DRAWING_FILL_TYPES = {
 };
 
 /**
+ * The default configuration values used for Drawing objects
+ * @type {Object}
+ */
+CONST.DRAWING_DEFAULT_VALUES = {
+	width: 0,
+	height: 0,
+	rotation: 0,
+	z: 0,
+	hidden: false,
+	locked: false,
+	fillType: CONST.DRAWING_FILL_TYPES.NONE,
+	fillAlpha: 0.5,
+	bezierFactor: 0.1,
+	strokeAlpha: 1.0,
+	strokeWidth: 8,
+	fontSize: 48,
+	textAlpha: 1.0,
+	textColor: '#FFFFFF',
+};
+
+/* -------------------------------------------- */
+
+/**
  * Define the allowed Entity class types
  * @type {Array}
  */
@@ -99,7 +136,7 @@ CONST.ENTITY_TYPES = [
  * EULA version number
  * @type {String}
  */
-CONST.EULA_VERSION = '0.3.8';
+CONST.EULA_VERSION = '0.4.7';
 
 /**
  * Define the allowed permission levels for a non-user Entity.
@@ -200,6 +237,11 @@ CONST.PACKAGE_AVAILABILITY_CODES = {
 	REQUIRES_DEPENDENCY: 3,
 	REQUIRES_CORE: 4,
 };
+
+/**
+ * A safe password string which can be displayed
+ */
+CONST.PASSWORD_SAFE_STRING = '•'.repeat(16);
 
 /**
  * The default sorting density for manually ordering child objects within a parent
@@ -374,6 +416,10 @@ try {
 	module.exports = CONST;
 } catch (err) {}
 
+try {
+	window.CONST = CONST;
+} catch (err) {}
+
 /* -------------------------------------------- */
 /*  Math Functions                              */
 /* -------------------------------------------- */
@@ -487,7 +533,7 @@ Number.between = function(num, a, b, inclusive = true) {
  */
 Number.isNumeric = function(n) {
 	if (n instanceof Array) return false;
-	else if (n === null) return false;
+	else if ([null, ''].includes(n)) return false;
 	return +n === +n;
 };
 
@@ -1004,6 +1050,37 @@ validateForm = function(formElement) {
 };
 
 /* -------------------------------------------- */
+/*  URL Manipulation                            */
+/* -------------------------------------------- */
+
+/**
+ * Encode a url-like string by replacing any characters which need encoding
+ * @param {string} path     A fully-qualified URL or url component (like a relative path)
+ * @return {string}         An encoded URL string
+ */
+function encodeURL(path) {
+	// Determine whether the path is a well-formed URL
+	let url = null;
+	try {
+		url = new URL(path);
+	} catch (err) {}
+
+	// If URL, remove the initial protocol
+	if (url) path = path.replace(url.protocol, '');
+
+	// Split and encode each URL part
+	path = path
+		.split('/')
+		.map(p => encodeURIComponent(p).replace("'", '%27'))
+		.join('/');
+
+	// Return the encoded URL
+	return url ? url.protocol + path : path;
+}
+
+/* -------------------------------------------- */
+/*  Datetime Manipulation
+/* -------------------------------------------- */
 
 /**
  * Express a timestamp as a relative string
@@ -1240,6 +1317,7 @@ try {
 		diffObject,
 		filterObject,
 		flattenObject,
+		encodeURL,
 		expandObject,
 		invertObject,
 		isObjectEmpty,
@@ -1258,258 +1336,6 @@ try {
 } catch (err) {}
 
 /* -------------------------------------------- */
-
-const CONFIG = {
-	/**
-	 * Configure debugging flags to display additional information
-	 */
-	debug: {
-		hooks: false,
-		sight: false,
-		av: false,
-		avclient: false,
-	},
-
-	/**
-	 * Configuration for the default Actor entity class
-	 * @private
-	 */
-	Actor: {
-		entityClass: null,
-		collection: null,
-		sheetClasses: {},
-		sidebarIcon: 'fas fa-user',
-	},
-
-	/**
-	 * Configuration for the default Item entity class
-	 */
-	Item: {
-		entityClass: null,
-		collection: null,
-		sheetClass: null,
-		sheetClasses: {},
-		sidebarIcon: 'fas fa-suitcase',
-	},
-
-	/**
-	 * Configuration for the JournalEntry entity
-	 */
-	JournalEntry: {
-		entityClass: null,
-		sheetClass: null,
-		noteIcons: {
-			Anchor: 'icons/svg/anchor.svg',
-			Book: 'icons/svg/book.svg',
-			Bridge: 'icons/svg/bridge.svg',
-			Cave: 'icons/svg/cave.svg',
-			Castle: 'icons/svg/castle.svg',
-			City: 'icons/svg/city.svg',
-			'Hanging Sign': 'icons/svg/hanging-sign.svg',
-			House: 'icons/svg/house.svg',
-			Mountain: 'icons/svg/mountain.svg',
-			'Oak Tree': 'icons/svg/oak.svg',
-			Obelisk: 'icons/svg/obelisk.svg',
-			Ruins: 'icons/svg/ruins.svg',
-			Temple: 'icons/svg/temple.svg',
-			Tower: 'icons/svg/tower.svg',
-			Skull: 'icons/svg/skull.svg',
-			Statue: 'icons/svg/statue.svg',
-			Sword: 'icons/svg/sword.svg',
-			Village: 'icons/svg/village.svg',
-			Waterfall: 'icons/svg/waterfall.svg',
-			Windmill: 'icons/svg/windmill.svg',
-		},
-		sidebarIcon: 'fas fa-book-open',
-	},
-
-	Macro: {
-		entityClass: null,
-		collection: null,
-		sheetClass: null,
-		sidebarIcon: 'fas fa-terminal',
-	},
-
-	/**
-	 * Configuration for the default Scene entity class
-	 * @private
-	 */
-	Scene: {
-		entityClass: null,
-		collection: null,
-		sheetClass: null,
-		notesClass: null,
-		sidebarIcon: 'fas fa-map',
-	},
-
-	/**
-	 * Configuration for the default Playlist entity class
-	 * @private
-	 */
-	Playlist: {
-		entityClass: null,
-		collection: null,
-		sheetClass: null,
-		sidebarIcon: 'fas fa-music',
-	},
-
-	/**
-	 * Configuration for RollTable random draws
-	 * @private
-	 */
-	RollTable: {
-		entityClass: null,
-		collection: null,
-		sheetClass: null,
-		sidebarIcon: 'fas fa-th-list',
-		resultIcon: 'icons/svg/d20-black.svg',
-	},
-
-	/**
-	 * Configure the default Token text style so that it may be reused and overridden by modules
-	 * @type {PIXI.TextStyle}
-	 */
-	canvasTextStyle: new PIXI.TextStyle({
-		fontFamily: 'Signika',
-		fontSize: 36,
-		fill: '#FFFFFF',
-		stroke: '#111111',
-		strokeThickness: 1,
-		dropShadow: true,
-		dropShadowColor: '#000000',
-		dropShadowBlur: 4,
-		dropShadowAngle: 0,
-		dropShadowDistance: 0,
-		align: 'center',
-		wordWrap: false,
-	}),
-
-	/**
-	 * The control icons used for rendering common HUD operations
-	 * @type {Object}
-	 */
-	controlIcons: {
-		combat: 'icons/svg/combat.svg',
-		visibility: 'icons/svg/cowled.svg',
-		effects: 'icons/svg/aura.svg',
-		lock: 'icons/svg/padlock.svg',
-		up: 'icons/svg/up.svg',
-		down: 'icons/svg/down.svg',
-		defeated: 'icons/svg/skull.svg',
-	},
-
-	/**
-	 * Suggested font families that are displayed wherever a choice is presented
-	 * @type {Array}
-	 */
-	fontFamilies: [
-		'Arial',
-		'Arial Black',
-		'Comic Sans MS',
-		'Courier New',
-		'Times New Roman',
-		'Signika',
-	],
-
-	/**
-	 * The default font family used for text labels on the PIXI Canvas
-	 * @type {String}
-	 */
-	defaultFontFamily: 'Signika',
-
-	/**
-	 * Available Weather Effects implemntations
-	 * @type {Array}
-	 */
-	weatherEffects: {},
-
-	/**
-	 * An array of status effect icons which can be applied to Tokens
-	 * @type {Array}
-	 */
-	statusEffects: [
-		'icons/svg/skull.svg',
-		'icons/svg/unconscious.svg',
-		'icons/svg/sleep.svg',
-		'icons/svg/daze.svg',
-
-		'icons/svg/falling.svg',
-		'icons/svg/blind.svg',
-		'icons/svg/deaf.svg',
-		'icons/svg/stoned.svg',
-
-		'icons/svg/target.svg',
-		'icons/svg/eye.svg',
-		'icons/svg/net.svg',
-		'icons/svg/blood.svg',
-
-		'icons/svg/terror.svg',
-		'icons/svg/radiation.svg',
-		'icons/svg/biohazard.svg',
-		'icons/svg/poison.svg',
-
-		'icons/svg/regen.svg',
-		'icons/svg/degen.svg',
-		'icons/svg/sun.svg',
-		'icons/svg/angel.svg',
-
-		'icons/svg/fire.svg',
-		'icons/svg/frozen.svg',
-		'icons/svg/lightning.svg',
-		'icons/svg/acid.svg',
-
-		'icons/svg/fire-shield.svg',
-		'icons/svg/ice-shield.svg',
-		'icons/svg/mage-shield.svg',
-		'icons/svg/holy-shield.svg',
-	],
-
-	/**
-	 * A mapping of core audio effects used which can be replaced by systems or mods
-	 * @type {Object}
-	 */
-	sounds: {
-		dice: 'sounds/dice.wav',
-		lock: 'sounds/lock.wav',
-		notification: 'sounds/notify.wav',
-		combat: 'sounds/drums.wav',
-	},
-
-	/**
-	 * Define the set of supported languages for localization
-	 * @type {Object}
-	 */
-	supportedLanguages: {
-		en: 'English',
-	},
-
-	/**
-	 * Maximum canvas zoom scale
-	 * @type {Number}
-	 */
-	maxCanvasZoom: 3.0,
-
-	/**
-	 * Default configuration options for TinyMCE editors
-	 */
-	TinyMCE: {
-		css: ['/css/mce.css'],
-		plugins: 'lists image table hr code save',
-		toolbar:
-			'styleselect bullist numlist image table hr removeformat code save',
-	},
-
-	/**
-	 * Configuration for the WebRTC implementation class
-	 * @type {Object}
-	 */
-	WebRTC: {
-		clientClass: null,
-		emitVolumeInterval: 50,
-		speakingThresholdEvents: 2,
-		speakingHistoryLength: 10,
-	},
-};
 
 /**
  * A helper class to provide common functionality for working with HTML5 audio and Howler instances
@@ -1569,13 +1395,15 @@ class AudioHelper {
 		 * }
 		 *
 		 * @type {Object}
+		 * @private
 		 */
 		this._analyserStreams = {};
 
 		/**
 		 * Interval ID as returned by setInterval for analysing the volume of streams
 		 * When set to 0, means no timer is set.
-		 * @type {Number}
+		 * @type {number}
+		 * @private
 		 */
 		this._analyserInterval = 0;
 
@@ -1585,6 +1413,7 @@ class AudioHelper {
 		 * then filled by the analyser repeatedly. We only generate it when we need to listen to
 		 * a stream's level, so we initialize it to null.
 		 * @type {Float32Array}
+		 * @private
 		 */
 		this._fftArray = null;
 	}
@@ -1984,8 +1813,11 @@ class AudioHelper {
  * @type {Number}
  */
 AudioHelper.levelAnalyserNativeInterval = 50;
-
-FONTS = {
+/**
+ * A configuration of font families which are initialized when the page loads
+ * @type{Object}
+ */
+const FONTS = {
 	Signika: {
 		custom: {
 			families: ['Signika'],
@@ -2044,7 +1876,7 @@ class Hooks {
 	 * @param {Function} fn   The callback function which should be triggered when the hook event occurs
 	 */
 	static on(hook, fn) {
-		console.log(`${vtt} | Registered callback for ${hook} hook`);
+		console.debug(`${vtt} | Registered callback for ${hook} hook`);
 		const id = this._id++;
 		this._hooks[hook] = this._hooks[hook] || [];
 		this._hooks[hook].push(fn);
@@ -2075,7 +1907,7 @@ class Hooks {
 	 * @param {Function} fn   The function that should be removed from the set of hooked callbacks
 	 */
 	static off(hook, fn) {
-		console.log(`${vtt} | Unregistered callback for ${hook} hook`);
+		console.debug(`${vtt} | Unregistered callback for ${hook} hook`);
 		if (typeof fn === 'number') {
 			let id = fn;
 			fn = this._ids[fn];
@@ -2159,68 +1991,11 @@ Hooks._ids = {};
 Hooks._id = 1;
 
 /**
- * An enumeration of keyboard codes where the keys are constant key names and the values are numeric codes
- * @type {Object}
+ * A set of helpers and management functions for dealing with user input from keyboard events.
+ * {@link https://keycode.info/}
  */
-const KEYS = {
-	BACKSPACE: 8,
-	TAB: 9,
-	ENTER: 13,
-	SHIFT: 16,
-	CTRL: 17,
-	ALT: 18,
-	ESC: 27,
-	SPACE: 32,
-	LEFT: 37,
-	UP: 38,
-	RIGHT: 39,
-	DOWN: 40,
-	DELETE: 46,
-	DIGIT0: 48,
-	DIGIT1: 49,
-	DIGIT2: 50,
-	DIGIT3: 51,
-	DIGIT4: 52,
-	DIGIT5: 53,
-	DIGIT6: 54,
-	DIGIT7: 55,
-	DIGIT8: 56,
-	DIGIT9: 57,
-	A: 65,
-	D: 68,
-	S: 83,
-	W: 87,
-	Z: 90,
-	C: 67,
-	V: 86,
-	NUM1: 97,
-	NUM2: 98,
-	NUM3: 99,
-	NUM4: 100,
-	NUM5: 101,
-	NUM6: 102,
-	NUM7: 103,
-	NUM8: 104,
-	NUM9: 105,
-	F5: 116,
-};
-
-/* -------------------------------------------- */
-
 class KeyboardManager {
 	constructor() {
-		/**
-		 * A mapping of known key codes
-		 * @type {Object}
-		 */
-		this.keys = KEYS;
-
-		/**
-		 * The set of key codes which should be captured
-		 * @type {Set}
-		 */
-		this.codes = new Set(Object.values(KEYS));
-
 		/**
 		 * The set of key codes which are currently depressed (down)
 		 * @type {Set}
@@ -2232,12 +2007,14 @@ class KeyboardManager {
 		 * @type {Set}
 		 */
 		this._handled = null;
-		this._reset();
 
 		// Status handlers
 		this._moveTime = null;
 		this._tabState = 0;
 		this._wheelTime = 0;
+
+		// Initial reset
+		this._reset();
 
 		// Activate input listeners
 		window.addEventListener('keydown', e => this._onKeyDown(e));
@@ -2265,12 +2042,12 @@ class KeyboardManager {
 	/* -------------------------------------------- */
 
 	/**
-	 * Return whether the keyCode is currently in the DOWN state
-	 * @param {Number} keyCode    The key code to test
+	 * Return whether the key code is currently in the DOWN state
+	 * @param {string} code    The key code to test
 	 * @type {Boolean}
 	 */
-	isDown(keyCode) {
-		return this._downKeys.has(keyCode);
+	isDown(code) {
+		return this._downKeys.has(code);
 	}
 
 	/* -------------------------------------------- */
@@ -2281,69 +2058,110 @@ class KeyboardManager {
 	 * @return {Boolean}
 	 */
 	isCtrl(event) {
-		event = event.hasOwnProperty('ctrlKey')
-			? event
-			: event.data.originalEvent;
+		event = 'ctrlKey' in event ? event : event.data.originalEvent;
 		return event.ctrlKey || event.metaKey;
 	}
 
 	/* -------------------------------------------- */
 
+	/**
+	 * Get a standardized keyboard code for a given event
+	 * @param {KeyboardEvent} event   The originating keypress event
+	 * @return {string}               The standardized string code to use
+	 */
+	getKey(event) {
+		// Spacebar gets a code because its key is misleading
+		if (event.code === 'Space') return event.code;
+
+		// Enforce that numpad keys are differentiated from digits
+		if (event.location === 3 && this.digitKeys.includes(event.key)) {
+			return event.code;
+		}
+
+		// Otherwise always use the character key
+		return event.key;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * The key codes which represent a possible movement key
+	 * @return {Array.<string>}
+	 */
 	get moveKeys() {
 		return [
-			KEYS.UP,
-			KEYS.LEFT,
-			KEYS.DOWN,
-			KEYS.RIGHT,
-			KEYS.W,
-			KEYS.A,
-			KEYS.S,
-			KEYS.D,
-			KEYS.NUM1,
-			KEYS.NUM2,
-			KEYS.NUM3,
-			KEYS.NUM4,
-			KEYS.NUM5,
-			KEYS.NUM6,
-			KEYS.NUM7,
-			KEYS.NUM8,
-			KEYS.NUM9,
+			'w',
+			'a',
+			's',
+			'd',
+			'W',
+			'A',
+			'S',
+			'D',
+			'ArrowUp',
+			'ArrowRight',
+			'ArrowDown',
+			'ArrowLeft',
+			'Numpad1',
+			'Numpad2',
+			'Numpad3',
+			'Numpad4',
+			'Numpad5',
+			'Numpad6',
+			'Numpad7',
+			'Numpad8',
+			'Numpad9',
 		];
 	}
 
 	/* -------------------------------------------- */
 
+	/**
+	 * The key codes which represent a digit key
+	 * @return {Array.<string>}
+	 */
+	get digitKeys() {
+		return ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Test whether an input currently has focus
+	 * @return {boolean}
+	 */
 	get hasFocus() {
-		return $(':focus').length ? true : false;
+		return $(':focus').length > 0;
 	}
 
 	/* -------------------------------------------- */
 	/*  Event Listeners and Handlers                */
 	/* -------------------------------------------- */
 
+	/**
+	 * Handle a key press into the down position
+	 * @param {KeyboardEvent} event   The originating keyboard event
+	 * @private
+	 */
 	_onKeyDown(event) {
-		let kc = event.keyCode;
-		if ([91, 224].includes(kc)) kc = KEYS.CTRL;
-
-		// Don't handle codes which are not tracked, or have already been handled
-		if (!this.codes.has(kc) || this._handled.has(kc)) return;
-
-		// Register that the key is down and handle it
-		this._downKeys.add(kc);
-		this._handleKeys(event, kc, false);
+		const code = this.getKey(event);
+		if (this._handled.has(code)) return;
+		this._downKeys.add(code);
+		this._handleKeys(event, code, false);
 	}
 
 	/* -------------------------------------------- */
 
+	/**
+	 * Handle a key release into the up position
+	 * @param {KeyboardEvent} event   The originating keyboard event
+	 * @private
+	 */
 	_onKeyUp(event) {
-		let kc = event.keyCode;
-		if ([91, 224].includes(kc)) kc = KEYS.CTRL;
-
-		// Handle valid codes
-		if (!this.codes.has(kc)) return;
-		this._downKeys.delete(kc);
-		this._handled.delete(kc);
-		this._handleKeys(event, kc, true);
+		const code = this.getKey(event);
+		this._downKeys.delete(code);
+		this._handleKeys(event, code, true);
+		this._handled.delete(code);
 	}
 
 	/* -------------------------------------------- */
@@ -2351,33 +2169,34 @@ class KeyboardManager {
 	/**
 	 * Delegate tracked key codes by dispatching to their various handlers
 	 * @param {Event} event     The keydown or keyup event
-	 * @param {Number} kc       The key-code being executed
+	 * @param {string} code     The key-code being executed
 	 * @param {Boolean} up      A flag for whether the key is down or up
 	 * @private
 	 */
-	_handleKeys(event, kc, up) {
+	_handleKeys(event, code, up) {
 		// Collect meta modifiers
 		const modifiers = {
+			code: code,
 			isShift: event.shiftKey,
-			isCtrl: event.ctrlKey || event.modKey,
+			isCtrl: event.ctrlKey || event.metaKey,
 			isAlt: event.altKey,
 			hasFocus: this.hasFocus,
 		};
 
-		// Disptach events to bound handlers
-		if (kc === KEYS.TAB) this._onTab(event, up, modifiers);
-		else if (kc === KEYS.ESC) this._onEscape(event, up, modifiers);
-		else if (kc === KEYS.SPACE) this._onSpace(event, up, modifiers);
-		else if (this.moveKeys.includes(kc))
+		// Dispatch events to bound handlers
+		if (code === 'Tab') this._onTab(event, up, modifiers);
+		else if (code === 'Escape') this._onEscape(event, up, modifiers);
+		else if (code === 'Space') this._onSpace(event, up, modifiers);
+		else if (this.moveKeys.includes(code))
 			this._onMovement(event, up, modifiers);
-		else if (Number.between(kc, KEYS.DIGIT0, KEYS.DIGIT9))
+		else if (this.digitKeys.includes(code))
 			this._onDigit(event, up, modifiers);
-		else if (kc === KEYS.Z) this._onUndo(event, up, modifiers);
-		else if ([KEYS.DELETE, KEYS.BACKSPACE].includes(kc))
+		else if (['Delete', 'Backspace'].includes(code))
 			this._onDelete(event, up, modifiers);
-		else if (kc === KEYS.ALT) this._onAlt(event, up, modifiers);
-		else if (kc === KEYS.C) this._onCopy(event, up, modifiers);
-		else if (kc === KEYS.V) this._onPaste(event, up, modifiers);
+		else if (code === 'Alt') this._onAlt(event, up, modifiers);
+		else if (code === 'z') this._onUndo(event, up, modifiers);
+		else if (code === 'c') this._onCopy(event, up, modifiers);
+		else if (code === 'v') this._onPaste(event, up, modifiers);
 	}
 
 	/* -------------------------------------------- */
@@ -2467,7 +2286,7 @@ class KeyboardManager {
 		else ui.menu.toggle();
 
 		// Flag the keydown workflow as handled
-		this._handled.add(event.keyCode);
+		this._handled.add(modifiers.code);
 	}
 
 	/* -------------------------------------------- */
@@ -2496,7 +2315,7 @@ class KeyboardManager {
 		}
 
 		// Flag the keydown workflow as handled
-		this._handled.add(event.keyCode);
+		this._handled.add(modifiers.code);
 	}
 
 	/* -------------------------------------------- */
@@ -2526,7 +2345,7 @@ class KeyboardManager {
 		}
 
 		// Flag the keydown workflow as handled
-		if (!up) this._handled.add(event.keyCode);
+		if (!up) this._handled.add(modifiers.code);
 	}
 
 	/* -------------------------------------------- */
@@ -2568,25 +2387,28 @@ class KeyboardManager {
 			dy = 0;
 
 		// Regular movement
-		if ([KEYS.W, KEYS.UP, KEYS.NUM8].some(k => this.isDown(k))) dy -= 1;
-		if ([KEYS.A, KEYS.LEFT, KEYS.NUM4].some(k => this.isDown(k))) dx -= 1;
-		if ([KEYS.S, KEYS.DOWN, KEYS.NUM2].some(k => this.isDown(k))) dy += 1;
-		if ([KEYS.D, KEYS.RIGHT, KEYS.NUM6].some(k => this.isDown(k))) dx += 1;
+		if (['w', 'W', 'ArrowUp', 'Numpad8'].some(k => this.isDown(k))) dy -= 1;
+		if (['a', 'A', 'ArrowLeft', 'Numpad4'].some(k => this.isDown(k)))
+			dx -= 1;
+		if (['s', 'S', 'ArrowDown', 'Numpad2'].some(k => this.isDown(k)))
+			dy += 1;
+		if (['d', 'D', 'ArrowRight', 'Numpad6'].some(k => this.isDown(k)))
+			dx += 1;
 
 		// Diagonal movement
-		if (this.isDown(KEYS.NUM1)) {
+		if (this.isDown('Numpad1')) {
 			dx -= 1;
 			dy += 1;
 		}
-		if (this.isDown(KEYS.NUM3)) {
+		if (this.isDown('Numpad3')) {
 			dx += 1;
 			dy += 1;
 		}
-		if (this.isDown(KEYS.NUM7)) {
+		if (this.isDown('Numpad7')) {
 			dx -= 1;
 			dy -= 1;
 		}
-		if (this.isDown(KEYS.NUM9)) {
+		if (this.isDown('Numpad9')) {
 			dx += 1;
 			dy -= 1;
 		}
@@ -2606,10 +2428,10 @@ class KeyboardManager {
 	 */
 	_onDigit(event, up, modifiers) {
 		if (modifiers.hasFocus || up) return;
-		const num = event.keyCode - KEYS.DIGIT0;
+		const num = parseInt(event.key);
 		const slot = ui.hotbar.macros.find(m => m.key === num);
 		if (slot.macro) slot.macro.execute();
-		this._handled.add(event.keyCode);
+		this._handled.add(modifiers.code);
 	}
 
 	/* -------------------------------------------- */
@@ -2885,6 +2707,93 @@ class WorldSettingsStorage {
 
 /* -------------------------------------------- */
 /**
+ * A library of package management commands which are used by various interfaces around the software.
+ */
+class SetupConfiguration {
+	/**
+	 * A reference to the setup URL used under the current route prefix, if any
+	 * @return {string}
+	 */
+	static get setupURL() {
+		return ROUTE_PREFIX ? `/${ROUTE_PREFIX}/setup` : '/setup';
+	}
+
+	/* -------------------------------------------- */
+	/*  Package Management                          */
+	/* -------------------------------------------- */
+
+	/**
+	 * Check with the server whether a package of a certain type is able to be installed or updated.
+	 * @param {string} type       The package type to check
+	 * @param {string} name       The package name to check
+	 * @param {string} manifest   The manifest URL to check
+	 * @return {Promise<Object>}  The return manifest
+	 */
+	static async checkPackage({
+		type = 'module',
+		name = null,
+		manifest = null,
+	} = {}) {
+		const request = await this.post({
+			action: 'checkPackage',
+			type,
+			name,
+			manifest,
+		});
+		return request.json();
+	}
+
+	/* -------------------------------------------- */
+
+	static async installPackage({
+		type = 'module',
+		name = null,
+		manifest = null,
+	} = {}) {
+		const request = await this.post({
+			action: 'installPackage',
+			type,
+			name,
+			manifest,
+		});
+		return request.json();
+	}
+
+	/* -------------------------------------------- */
+
+	static async uninstallPackage({ type = 'module', name = null } = {}) {
+		const request = await this.post({
+			action: 'uninstallPackage',
+			type,
+			name,
+		});
+		return request.json();
+	}
+
+	/* -------------------------------------------- */
+	/*  Helper Functions                            */
+	/* -------------------------------------------- */
+
+	/**
+	 * A helper method to submit a POST request to setup configuration with a certain body, returning the JSON response
+	 * @param {Object} body         The request body to submit
+	 * @return {Promise<Object>}    The response body
+	 * @private
+	 */
+	static async post(body) {
+		if (game.ready && !game.user.isGM) {
+			throw new Error(
+				'You may not submit POST requests to the setup page as a non-GM user'
+			);
+		}
+		return await fetch(this.setupURL, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(body),
+		});
+	}
+}
+/**
  * A collection of helper methods designed to orchestrate the client side socket workflow in a standardized way.
  */
 class SocketInterface {
@@ -3080,6 +2989,9 @@ class SocketInterface {
 	}
 }
 
+/**
+ * A collection of functions related to sorting objects within a parent container.
+ */
 class SortingHelpers {
 	/**
 	 * Given a source object to sort, a target to sort relative to, and an Array of siblings in the container:
@@ -3253,13 +3165,37 @@ function readTextFromFile(file) {
 /* -------------------------------------------- */
 
 /**
- * Escapes a string to be used in a regular expression.
- * Regexps special characters will be escaped to avoid getting interpreted by the regular expression machine
- * @param {String} string    The string to escape
+ * Retrieve an Entity or Embedded Entity by its Universally Unique Identifier (uuid).
+ * @param {string} uuid   The uuid of the Entity or Embedded Entity to retrieve
+ * @return {Promise.<Entity|Object|null>}
  */
-function escapeStringForRegexp(string) {
-	return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+async function fromUuid(uuid) {
+	const parts = uuid.split('.');
+
+	// Compendium Entries
+	if (parts[0] === 'Compendium') {
+		if (parts.length < 4)
+			throw new Error(
+				`Incorrect UUID format for Compendium entry: ${uuid}`
+			);
+		const [prefix, scope, packName, entryId] = parts;
+		const pack = game.packs.find(
+			p => p.collection === `${scope}.${packName}`
+		);
+		return pack.getEntity(entryId);
+	}
+
+	// World Entities
+	const [entityName, entityId, embeddedName, embeddedId] = parts;
+	const entity = CONFIG[entityName].entityClass.collection.get(entityId);
+	if (entity === null) return null;
+
+	// Embedded Entities
+	if (parts.length === 4) {
+		return entity.getEmbeddedEntity(embeddedName, embeddedId);
+	} else return entity;
 }
+
 /**
  * A helper class to provide common functionality for working with HTML5 video objects
  * A singleton instance of this class is available as ``game.video``
@@ -3368,22 +3304,28 @@ const MIN_WINDOW_WIDTH = 200,
 	MIN_WINDOW_HEIGHT = 50;
 
 /**
- * The standard application window that is rendered for a large variety of UI elements in Foundry VTT
+ * The standard application window that is rendered for a large variety of UI elements in Foundry VTT.
  * @abstract
  *
- * @param options {Object}    Configuration options which control how the application is rendered
- *
- * @param options.height {Number}   The height in pixels (or "auto") for the rendered element
- * @param options.width {Number}    The width in pixels (or "auto") for the rendered element
- * @param options.top {Number}      The vertical position (from the top) of the rendered element
- * @param options.left {Number}     The horizontal position (from the left) of the rendered element
- * @param options.template {String} The default HTML template path to use for applications of this type
- * @param options.popOut {Boolean}  Display the element wrapped in a containing window frame (true, the default) or
- *                                  only the inner HTML (false).
- * @param options.minimizable {Boolean} Customize whether the application is able to be minimized by double-clicking
- *                                  the header. Default behavior is the value of `options.popOut`
- * @param options.resizable {Boolean} Customize whether a window application window may be re-sized by dragging a
- *                                  handle in the bottom-right corner of the window display.
+ * @param {Object} options                      Configuration options which control how the application is rendered.
+ *                                              Application subclasses may add additional supported options, but the
+ *                                              following configurations are supported for all Applications. The values
+ *                                              passed to the constructor are combined with the defaultOptions defined
+ *                                              at the class level.
+ * @param {string} options.baseApplication      A named "base application" which generates an additional hook
+ * @param {number} options.width                The default pixel width for the rendered HTML
+ * @param {number} options.height               The default pixel height for the rendered HTML
+ * @param {number} options.top                  The default offset-top position for the rendered HTML
+ * @param {number} options.left                 The default offset-left position for the rendered HTML
+ * @param {boolean} options.popOut              Whether to display the application as a pop-out container
+ * @param {boolean} options.minimizable         Whether the rendered application can be minimized (popOut only)
+ * @param {boolean} options.resizable           Whether the rendered application can be drag-resized (popOut only)
+ * @param {string} options.id                   The default CSS id to assign to the rendered HTML
+ * @param {Array.<string>} options.classes      An array of CSS string classes to apply to the rendered HTML
+ * @param {string} options.title                A default window title string (popOut only)
+ * @param {string} options.template             The default HTML template path to render for this Application
+ * @param {Array.<string>} options.scrollY      A list of unique CSS selectors which target containers that should
+ *                                              have their vertical scroll positions preserved during a re-render.
  */
 class Application {
 	constructor(options) {
@@ -3429,42 +3371,35 @@ class Application {
 
 		/**
 		 * Track whether the Application is currently minimized
-		 * @type {Boolean}
+		 * @type {boolean}
 		 * @private
 		 */
 		this._minimized = false;
 
 		/**
-		 * Track whether the Application has been successfully rendered
-		 * @type {Boolean}
+		 * Track the render state of the Application
+		 * @see {Application.RENDER_STATES}
+		 * @type {number}
 		 * @private
 		 */
-		this._rendered = false;
+		this._state = Application.RENDER_STATES.NONE;
+
+		/**
+		 * Track the most recent scroll positions for any vertically scrolling containers
+		 * @type {Object|null}
+		 */
+		this._scrollPositions = null;
 	}
 
 	/* -------------------------------------------- */
 
 	/**
-	 * Assign the default options which are supported by all Application classes.
+	 * Assign the default options configuration which is used by this Application class. The options and values defined
+	 * in this object are merged with any provided option values which are passed to the constructor upon initialization.
 	 * Application subclasses may include additional options which are specific to their usage.
-	 * All keys are optional, descriptions and default values are listed below:
-	 *
-	 * @returns {Object} options                    The default options for this Application class
-	 * @returns {string} options.baseApplication    A named "base application" which generates an additional hook
-	 * @returns {number} options.width              The default pixel width for the rendered HTML
-	 * @returns {number} options.height             The default pixel height for the rendered HTML
-	 * @returns {number} options.top                The default offset-top position for the rendered HTML
-	 * @returns {number} options.left               The default offset-left position for the rendered HTML
-	 * @returns {boolean} options.popOut            Whether to display the application as a pop-out container
-	 * @returns {boolean} options.minimizable       Whether the rendered application can be minimized (popOut only)
-	 * @returns {boolean} options.resizable         Whether the rendered application can be drag-resized (popOut only)
-	 * @returns {string} options.id                 The default CSS id to assign to the rendered HTML
-	 * @returns {Array.<string>} options.classes    An array of CSS string classes to apply to the rendered HTML
-	 * @returns {string} options.title              A default window title string (popOut only)
-	 * @returns {string} options.template           The default HTML template path to render for this Application
 	 */
 	static get defaultOptions() {
-		let config = CONFIG[this.name] || {};
+		let config = CONFIG[this.name] || {}; // TODO: Deprecate this aspect of CONFIG
 		return {
 			baseApplication: null,
 			width: config.width,
@@ -3478,6 +3413,7 @@ class Application {
 			classes: [],
 			title: '',
 			template: config.template,
+			scrollY: [],
 		};
 	}
 
@@ -3523,6 +3459,16 @@ class Application {
 		return this.options.popOut !== undefined
 			? Boolean(this.options.popOut)
 			: true;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Return a flag for whether the Application instance is currently rendered
+	 * @type {boolean}
+	 */
+	get rendered() {
+		return this._state === Application.RENDER_STATES.RENDERED;
 	}
 
 	/* -------------------------------------------- */
@@ -3580,21 +3526,29 @@ class Application {
 
 	/**
 	 * An asynchronous inner function which handles the rendering of the Application
+	 * @param {boolean} force     Render and display the application even if it is not currently displayed.
 	 * @param {Object} options    Provided rendering options, see the render function for details
 	 * @return {Promise}
 	 * @private
 	 */
 	async _render(force = false, options = {}) {
-		this._rendered = false;
-
-		// Get the existing HTML element and data for rendering
-		const element = this.element;
-		if (!force && !element.length) return;
-		if (options.log || (force && !element.length))
+		// Do not render under certain conditions
+		const states = Application.RENDER_STATES;
+		if ([states.CLOSING, states.RENDERING].includes(this._state)) return;
+		if (!force && this._state <= states.NONE) return;
+		if ([states.NONE, states.CLOSED].includes(this._state)) {
 			console.log(`${vtt} | Rendering ${this.constructor.name}`);
+		}
+		this._state = states.RENDERING;
 
-		// Obtain application data used for rendering
+		// Get the existing HTML element and application data used for rendering
+		const element = this.element;
 		const data = await this.getData(options);
+
+		// Store scroll positions
+		const scrollY = this.options.scrollY;
+		if (element.length && scrollY)
+			this._saveScrollPositions(element, scrollY);
 
 		// Render the inner content
 		const inner = await this._renderInner(data, options);
@@ -3621,22 +3575,49 @@ class Application {
 		// Set the application position (if it's not currently minimized)
 		if (this.popOut && !this._minimized) this.setPosition(this.position);
 
+		// Restore scroll positions
+		if (scrollY) this._restoreScrollPositions(html, scrollY);
+
 		// Dispatch Hooks for rendering the base and subclass applications
-		if (
-			this.options.baseApplication &&
-			this.options.baseApplication !== this.constructor.name
-		) {
-			Hooks.call(
-				`render${this.options.baseApplication}`,
-				this,
-				html,
-				data
-			);
+		const base = this.options.baseApplication;
+		if (base && base !== this.constructor.name) {
+			Hooks.call(`render${base}`, this, html, data);
 		}
 		Hooks.call('render' + this.constructor.name, this, html, data);
+		this._state = states.RENDERED;
+	}
 
-		// Flag successful rendering
-		this._rendered = true;
+	/* -------------------------------------------- */
+
+	/**
+	 * Persist the scroll positions of containers within the app before re-rendering the content
+	 * @param {jQuery} html
+	 * @param {Array} selectors
+	 * @private
+	 */
+	_saveScrollPositions(html, selectors) {
+		selectors = selectors || [];
+		this._scrollPositions = selectors.reduce((pos, sel) => {
+			const el = html.find(sel);
+			if (el.length === 1) pos[sel] = el[0].scrollTop;
+			return pos;
+		}, {});
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Restore the scroll positions of containers within the app after re-rendering the content
+	 * @param {jQuery} html
+	 * @param {Array} selectors
+	 * @private
+	 */
+	_restoreScrollPositions(html, selectors) {
+		const positions = this._scrollPositions || {};
+		for (let sel of selectors) {
+			const el = html.find(sel);
+			if (el.length === 1) el[0].scrollTop = positions[sel] || 0;
+		}
 	}
 
 	/* -------------------------------------------- */
@@ -3687,7 +3668,7 @@ class Application {
 
 		// Set the outer frame z-index
 		if (Object.keys(ui.windows).length === 0) _maxZ = 100;
-		html.css({ zIndex: ++_maxZ });
+		html.css({ zIndex: Math.min(++_maxZ, 9999) });
 
 		// Return the outer frame
 		return html;
@@ -3788,15 +3769,32 @@ class Application {
 	 * @return {Promise}
 	 */
 	async close() {
+		const states = Application.RENDER_STATES;
+		if (this._state !== states.RENDERED) return;
+		this._state = states.CLOSING;
+
+		// Get the element
 		let el = this.element;
-		if (!el.length) return Promise.resolve();
 		el.css({ minHeight: 0 });
+
+		// Dispatch Hooks for closing the base and subclass applications
+		const base = this.options.baseApplication;
+		if (base && base !== this.constructor.name) {
+			Hooks.call(`close${base}`, this, el);
+		}
+		Hooks.call('close' + this.constructor.name, this, el);
+
+		// Animate closing the element
 		return new Promise(resolve => {
 			el.slideUp(200, () => {
 				el.remove();
+
+				// Clean up data
 				this._element = null;
 				delete ui.windows[this.appId];
-				this._rendered = this._minimized = false;
+				this._minimized = false;
+				this._scrollPositions = null;
+				this._state = states.CLOSED;
 				resolve();
 			});
 		});
@@ -3901,9 +3899,8 @@ class Application {
 
 		// If Height is "auto" unset current preference
 		if (height === 'auto' || this.options.height === 'auto') {
-			el.style.height = 'auto';
-			p.height = null;
-			if (height === 'auto') height = null;
+			el.style.height = '';
+			height = null;
 		}
 
 		// Update Width
@@ -3984,6 +3981,15 @@ class Application {
 
 /* -------------------------------------------- */
 
+Application.RENDER_STATES = {
+	CLOSING: -2,
+	CLOSED: -1,
+	NONE: 0,
+	RENDERING: 1,
+	RENDERED: 2,
+};
+Object.freeze(Application.RENDER_STATES);
+
 /**
  * An abstract pattern for defining an Application responsible for updating some object using an HTML form
  *
@@ -3995,12 +4001,7 @@ class Application {
  * @type {Application}
  *
  * @param object {*}                    Some object or entity which is the target to be updated.
- *
  * @param [options] {Object}            Additional options which modify the rendering of the sheet.
- * @param options.editable {Boolean}        (true) Is the form editable, or should its fields be disabled?
- * @param options.closeOnSubmit {Boolean}   (true) Automatically close the form when the submit button is pressed.
- * @param options.submitOnClose {Boolean}   (false) Automatically submit the form if the application window is closed.
- * @param options.submitOnUnfocus {Boolean} (false) Automatically submit the form if an input field is unfocused.
  */
 class FormApplication extends Application {
 	constructor(object, options) {
@@ -4043,10 +4044,10 @@ class FormApplication extends Application {
 	 * @returns {Object} options                    The default options for this FormApplication class, see Application
 	 * @returns {boolean} options.closeOnSubmit     Whether to automatically close the application when it's contained
 	 *                                              form is submitted. Default is true.
+	 * @returns {boolean} options.submitOnChange    Whether to automatically submit the contained HTML form when an input
+	 *                                              or select element is changed. Default is false.
 	 * @returns {boolean} options.submitOnClose     Whether to automatically submit the contained HTML form when the
 	 *                                              application window is manually closed. Default is false.
-	 * @returns {boolean} options.submitOnUnfocus   Whether to automatically submit the contained HTML form when a text
-	 *                                              input element loses focus.
 	 * @returns {boolean} options.editable          Whether the application form is editable - if true, it's fields will
 	 *                                              be unlocked and the form can be submitted. If false, all form fields
 	 *                                              will be disabled and the form cannot be submitted. Default is true.
@@ -4055,8 +4056,8 @@ class FormApplication extends Application {
 		return mergeObject(super.defaultOptions, {
 			classes: ['form'],
 			closeOnSubmit: true,
+			submitOnChange: false,
 			submitOnClose: false,
-			submitOnUnfocus: false,
 			editable: true,
 		});
 	}
@@ -4112,26 +4113,39 @@ class FormApplication extends Application {
 		const dtypes = {};
 		const editorTargets = Object.keys(this.editors);
 
-		// Iterate over standard form data
-		for (let k of FD.keys()) {
-			let input = form[k];
-			if (input.disabled) FD.delete(k);
-			if (input.dataset.dtype) dtypes[k] = input.dataset.dtype;
-		}
+		// Always include checkboxes
+		for (let el of form.elements) {
+			if (!el.name) continue;
 
-		// Explicitly handle all checkboxes in the form
-		for (let box of form.querySelectorAll('input[type="checkbox"]')) {
-			FD.set(box.name, box.checked || false);
-			dtypes[box.name] = 'Boolean';
+			// Handle Radio groups
+			if (form[el.name] instanceof RadioNodeList) {
+				const inputs = Array.from(form[el.name]);
+				if (inputs.every(i => i.disabled)) FD.delete(k);
+				let values = inputs.map(i =>
+					i.type === 'checkbox' ? i.checked || false : i.value
+				);
+				FD.set(el.name, JSON.stringify(values));
+				dtypes[el.name] = 'Radio';
+			}
+
+			// Remove disabled elements
+			else if (el.disabled) FD.delete(el.name);
+			// Checkboxes
+			else if (el.type === 'checkbox') {
+				FD.set(el.name, el.checked || false);
+				dtypes[el.name] = 'Boolean';
+			}
+
+			// Include dataset dtype
+			else if (el.dataset.dtype) dtypes[el.name] = el.dataset.dtype;
 		}
 
 		// Process editable images
 		for (let img of form.querySelectorAll('img[data-edit]')) {
 			if (img.getAttribute('disabled')) continue;
-			FD.set(
-				img.dataset.edit,
-				img.src.replace(window.location.origin + '/', '')
-			);
+			let basePath = window.location.origin + '/';
+			if (ROUTE_PREFIX) basePath += ROUTE_PREFIX + '/';
+			FD.set(img.dataset.edit, img.src.replace(basePath, ''));
 		}
 
 		// Process editable divs (excluding MCE editors)
@@ -4176,9 +4190,14 @@ class FormApplication extends Application {
 
 		// Maybe process unfocus events
 		if (this.options.submitOnUnfocus) {
-			html.find('input')
-				.not('[type="checkbox"]')
-				.focusout(this._onUnfocus.bind(this));
+			console.warn(
+				'The submitOnUnfocus option for FormApplication subclass has been deprecated in favor of submitOnChange'
+			);
+		}
+
+		// Maybe process input change events
+		if (this.options.submitOnChange) {
+			html.find('input,select').change(this._onChangeInput.bind(this));
 		}
 
 		// Detect and activate TinyMCE rich text editors
@@ -4195,6 +4214,9 @@ class FormApplication extends Application {
 		html.find('input[type="color"][data-edit]').change(
 			this._onColorPickerChange.bind(this)
 		);
+
+		// Range change inputs
+		html.find('input[type="range"]').change(this._onChangeRange.bind(this));
 	}
 
 	/* -------------------------------------------- */
@@ -4239,19 +4261,21 @@ class FormApplication extends Application {
 	 */
 	async _onSubmit(event, { updateData = null, preventClose = false } = {}) {
 		event.preventDefault();
-		if (!this._rendered || !this.options.editable || this._submitting)
+		if (!this.rendered || !this.options.editable || this._submitting)
 			return false;
 		this._submitting = true;
 
 		// Acquire and validate Form Data
 		const form = this.element.find('form').first()[0];
-		let formData = this._getFormData(form);
+		const FD = this._getFormData(form);
+		const dtypes = FD._dtypes;
 
 		// Construct update data object by casting form data
-		formData = Array.from(formData).reduce((obj, [k, v]) => {
-			let dt = formData._dtypes[k];
-			if (dt === 'Number') obj[k] = Number(v);
+		let formData = Array.from(FD).reduce((obj, [k, v]) => {
+			let dt = dtypes[k];
+			if (dt === 'Number') obj[k] = v !== '' ? Number(v) : null;
 			else if (dt === 'Boolean') obj[k] = v === 'true';
+			else if (dt === 'Radio') obj[k] = JSON.parse(v);
 			else obj[k] = v;
 			return obj;
 		}, {});
@@ -4271,17 +4295,25 @@ class FormApplication extends Application {
 	/* -------------------------------------------- */
 
 	/**
-	 * Handle unfocusing an input on form - maybe trigger an update if ``options.liveUpdate`` has been set to true
-	 * @param event {Event}   The initial triggering event
+	 * Handle changes to an input element, submitting the form if options.submitOnChange is true
+	 * @param {Event} event  The initial change event
 	 * @private
 	 */
-	_onUnfocus(event) {
-		this._submitting = true;
-		setTimeout(() => {
-			let hasFocus = $(':focus').length;
-			if (!hasFocus) this._onSubmit(event);
-			this._submitting = false;
-		}, 25);
+	_onChangeInput(event) {
+		this._onSubmit(event);
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Handle changes to a range type input by propagating those changes to the sibling range-value element
+	 * @param {Event} event  The initial change event
+	 * @private
+	 */
+	_onChangeRange(event) {
+		event.preventDefault();
+		const value = event.target.parentElement.querySelector('.range-value');
+		if (value) value.innerHTML = event.target.value;
 	}
 
 	/* -------------------------------------------- */
@@ -4432,7 +4464,7 @@ class FormApplication extends Application {
 	 * @return {Promise}
 	 */
 	async close(options = {}) {
-		if (!this._rendered) return;
+		if (!this.rendered) return;
 
 		// Optionally trigger a save
 		const submit = options.hasOwnProperty('submit')
@@ -4444,6 +4476,7 @@ class FormApplication extends Application {
 		this.filepickers.forEach(fp => {
 			if (fp.app) fp.app.close();
 		});
+		this.filepickers = [];
 
 		// Close any open MCE editors
 		Object.values(this.editors).forEach(ed => {
@@ -4480,10 +4513,6 @@ class FormApplication extends Application {
 
  * @param {Entity} object                           An Entity which should be managed by this form sheet.
  * @param {Object} [options]                        Optional configuration parameters for how the form behaves.
- * @param {boolean} [options.editable=true]         Is the form editable, or should its fields be disabled?
- * @param {boolean} [options.closeOnSubmit=true]    Automatically close the form when the submit button is pressed.
- * @param {boolean} [options.submitOnClose=false]   Automatically submit the form if the application window is closed.
- * @param {boolean} [options.submitOnUnfocus=false] Automatically submit the form if an input field is unfocused.
  */
 class BaseEntitySheet extends FormApplication {
 	constructor(object, options) {
@@ -4795,6 +4824,9 @@ async function loadTemplates(paths) {
  * Get and render a template using provided data and handle the returned HTML
  * Support asynchronous file template file loading with a client-side caching layer
  *
+ * Allow resolution of prototype methods and properties since this all occurs within the safety of the client.
+ * @see {@link https://handlebarsjs.com/api-reference/runtime-options.html#options-to-control-prototype-access}
+ *
  * @param {String} path             The file path to the target HTML template
  * @param {Object} data             A data object against which to compile the template
  *
@@ -4802,7 +4834,10 @@ async function loadTemplates(paths) {
  */
 function renderTemplate(path, data) {
 	return getTemplate(path).then(template => {
-		return template(data || {});
+		return template(data || {}, {
+			allowProtoMethodsByDefault: true,
+			allowProtoPropertiesByDefault: true,
+		});
 	});
 }
 
@@ -4813,9 +4848,7 @@ function renderTemplate(path, data) {
  * Escape the string as handlebars would, then escape any regexp characters in it
  */
 Handlebars.registerHelper('select', function(selected, options) {
-	const escapedValue = escapeStringForRegexp(
-		Handlebars.escapeExpression(selected)
-	);
+	const escapedValue = RegExp.escape(Handlebars.escapeExpression(selected));
 	const rgx = new RegExp(' value="' + escapedValue + '"');
 	const html = options.fn(this);
 	return html.replace(rgx, '$& selected');
@@ -4915,12 +4948,14 @@ Handlebars.registerHelper('localize', function(value, options) {
 
 /* -------------------------------------------- */
 
-/* Client Globals */
-let socket,
-	canvas,
-	keyboard,
-	game = {},
-	ui = { windows: {} };
+/* Global Variables */
+let socket = null;
+let canvas = null;
+let keyboard = null;
+let game = {};
+const ui = {
+	windows: {},
+};
 const vtt = CONST.vtt;
 
 /**
@@ -4928,11 +4963,17 @@ const vtt = CONST.vtt;
  * The singleton instance of the Game class is available as the global variable ``game``.
  *
  * @param {Object} worldData    An object of all the World data vended by the server when the client first connects
- * @param {String} userId       The ID of the currently active user, retrieved from their session cookie
+ * @param {string} sessionId    The ID of the currently active client session retrieved from the browser cookie
  * @param {Socket} socket       The open web-socket which should be used to transact game-state data
  */
 class Game {
-	constructor(worldData, userId, socket) {
+	constructor(worldData, sessionId, socket) {
+		/**
+		 * The client session id which is currently active
+		 * @type {string}
+		 */
+		this.sessionId = sessionId;
+
 		/**
 		 * The object of world data passed from the server
 		 * @type {Object}
@@ -4940,10 +4981,10 @@ class Game {
 		this.data = worldData;
 
 		/**
-		 * The id of the active game user
-		 * @type {String}
+		 * The id of the active World user, if any
+		 * @type {string}
 		 */
-		this.userId = userId;
+		this.userId = worldData.userId || null;
 
 		/**
 		 * A reference to the open Socket.io connection
@@ -5001,27 +5042,87 @@ class Game {
 	 * @return {Promise}  A Promise which resolves to the created Game instance
 	 */
 	static async create() {
-		// Get the session user
-		const cookies = Game.getCookies();
-		const userId = cookies.user;
-		console.log(`${vtt} | Authenticated as User ${userId}`);
+		// Display ASCII welcome
+		console.log(`_______________________________________________________________
+ _____ ___  _   _ _   _ ____  ______   __ __     _______ _____ 
+|  ___/ _ \\| | | | \\ | |  _ \\|  _ \\ \\ / / \\ \\   / |_   _|_   _|
+| |_ | | | | | | |  \\| | | | | |_) \\ V /   \\ \\ / /  | |   | |  
+|  _|| |_| | |_| | |\\  | |_| |  _ < | |     \\ V /   | |   | |  
+|_|   \\___/ \\___/|_| \\_|____/|_| \\_\\|_|      \\_/    |_|   |_|  
+===============================================================`);
 
-		// Connect to the game socket, passing the userId as an initial data packet
-		const socket = io.connect(window.location.origin, {
-			reconnection: true,
-			reconnectionDelay: 1000,
-			reconnectionAttempts: 3,
-			reconnectionDelayMax: 5000,
-			query: { userId: userId || null },
-		});
-		console.log(`${vtt} | Connected to server socket`);
+		// Retrieve the client session from cookies
+		const cookies = Game.getCookies();
+		const sessionId = cookies.session;
+		if (!sessionId) {
+			console.error(
+				`No client session ID available, redirecting to login`
+			);
+			window.location.href = '/join';
+		}
+		console.log(
+			`${vtt} | Attempting connection using session ${sessionId}`
+		);
+
+		// Connect to the game socket, passing the client session ID to handshake
+		const socket = await this.connect(sessionId);
+		console.log(
+			`${vtt} | Connected to server socket using session ${sessionId}`
+		);
 
 		// Fetch World data, or Setup data if no world is configured
 		let gameData = await this.getWorldData(socket);
 		if (!gameData.world) gameData = await this.getSetupData(socket);
 
 		// Create the Game instance
-		return new Game(gameData, userId, socket);
+		return new Game(gameData, sessionId, socket);
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Establish a live connection to the game server through the socket.io URL
+	 * @param {string} sessionId  The client session ID with which to establish the connection
+	 * @return {Promise}          A promise which resolves to the connected socket, if successful
+	 */
+	static async connect(sessionId) {
+		const socketPath = ROUTE_PREFIX
+			? `/${ROUTE_PREFIX}/socket.io`
+			: '/socket.io';
+		return new Promise((resolve, reject) => {
+			const socket = io.connect({
+				path: socketPath,
+				reconnection: true,
+				reconnectionDelay: 1000,
+				reconnectionAttempts: 3,
+				reconnectionDelayMax: 5000,
+				query: { session: sessionId },
+			});
+			socket.on('connect', () => resolve(socket));
+			socket.on('connectTimeout', timeout => {
+				reject(
+					new Error(
+						'Failed to establish a socket connection within allowed timeout.'
+					)
+				);
+			});
+			socket.on('connectError', err => reject(err));
+		});
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Retrieve the cookies which are attached to the client session
+	 * @return {Object}   The session cookies
+	 */
+	static getCookies() {
+		const cookies = {};
+		for (let cookie of document.cookie.split('; ')) {
+			let [name, value] = cookie.split('=');
+			cookies[name] = decodeURIComponent(value);
+		}
+		return cookies;
 	}
 
 	/* -------------------------------------------- */
@@ -5083,20 +5184,13 @@ class Game {
 	/* -------------------------------------------- */
 
 	/**
-	 * Shut down the currently active Game.
-	 * Requires GameMaster user permission
+	 * Shut down the currently active Game. Requires GameMaster user permission.
 	 * @return {Promise}
 	 */
 	async shutDown() {
-		if (!game.user.isGM)
-			throw new Error('You can not shut down the currently active Game');
-		await fetch('./setup', {
-			method: 'POST',
-			body: { shutdown: true },
-		}).then(resp => {
-			if (resp.status === 200 && resp.redirected)
-				window.location.href = resp.url;
-		});
+		const resp = await SetupConfiguration.post({ shutdown: true });
+		if (resp.status === 200 && resp.redirected)
+			window.location.href = resp.url;
 	}
 
 	/* -------------------------------------------- */
@@ -5183,15 +5277,19 @@ class Game {
 	 * Initialize core UI elements
 	 */
 	initializeUI() {
-		ui.nav = new SceneNavigation().render();
-		ui.controls = new SceneControls();
-		ui.notifications = new Notifications().render();
-		ui.sidebar = new Sidebar().render();
-		ui.players = new PlayerList().render();
-		ui.hotbar = new Hotbar().render();
-		ui.webrtc = new CameraViews(this.webrtc).render();
-		ui.pause = new Pause().render();
-		ui.menu = new MainMenu();
+		// Initialize all applications
+		for (let [k, cls] of Object.entries(CONFIG.ui)) {
+			ui[k] = new cls();
+		}
+
+		// Render some applications
+		ui.nav.render(true);
+		ui.notifications.render(true);
+		ui.sidebar.render(true);
+		ui.players.render(true);
+		ui.hotbar.render(true);
+		ui.webrtc.render(true);
+		ui.pause.render(true);
 	}
 
 	/* -------------------------------------------- */
@@ -5203,7 +5301,9 @@ class Game {
 		if (document.getElementById('board')) {
 			try {
 				canvas = new Canvas();
-				await canvas.draw();
+				const scene = game.scenes.viewed;
+				if (scene) await scene.view();
+				else await canvas.draw();
 			} catch (err) {
 				console.error(
 					`Failed to render WebGL canvas! Be sure to read the following error carefully.`
@@ -5219,8 +5319,7 @@ class Game {
 	 * Initialize Keyboard and Mouse controls
 	 */
 	initializeKeyboard() {
-		keyboard = new KeyboardManager();
-		this.keyboard = keyboard;
+		keyboard = this.keyboard = new KeyboardManager();
 	}
 
 	/* -------------------------------------------- */
@@ -5248,7 +5347,7 @@ class Game {
 			config: false,
 			default: {},
 			type: Object,
-			onChange: settings => console.log(settings),
+			onChange: settings => window.location.reload(),
 		});
 
 		// Register compendium visibility setting
@@ -5399,11 +5498,11 @@ class Game {
 	/* -------------------------------------------- */
 
 	/**
-	 * The currently connected User
-	 * @type {User}
+	 * The currently connected User entity, or null if Users is not yet initialized
+	 * @type {User|null}
 	 */
 	get user() {
-		return this.users ? this.users.get(this.userId) : null;
+		return this.users ? this.users.current : null;
 	}
 
 	/* -------------------------------------------- */
@@ -5439,11 +5538,11 @@ class Game {
 	/* -------------------------------------------- */
 
 	/**
-	 * A convenience accessor for the currently active Combat encounter
+	 * A convenience accessor for the currently viewed Combat encounter
 	 * @type {Combat}
 	 */
 	get combat() {
-		return this.combats.active;
+		return this.combats.viewed;
 	}
 
 	/* -------------------------------------------- */
@@ -5488,24 +5587,14 @@ class Game {
 	}
 
 	/* -------------------------------------------- */
-	/*  Cookie Management                           */
-	/* -------------------------------------------- */
 
-	static getCookies() {
-		const cookies = {};
-		for (let cookie of document.cookie.split('; ')) {
-			let [name, value] = cookie.split('=');
-			cookies[name] = decodeURIComponent(value);
-		}
-		return cookies;
-	}
-
-	/* -------------------------------------------- */
-
-	static clearCookies() {
-		document.cookie =
-			'user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-		return true;
+	/**
+	 * Log out of the game session by returning to the Join screen
+	 */
+	logOut() {
+		const joinURL = ROUTE_PREFIX ? `${ROUTE_PREFIX}/join` : '/join';
+		this.socket.disconnect();
+		window.location.href = joinURL;
 	}
 
 	/* -------------------------------------------- */
@@ -5530,7 +5619,6 @@ class Game {
 		Folders.socketListeners(this.socket);
 		Macros.socketListeners(this.socket);
 		ClientSettings.socketListeners(this.socket);
-		ControlsLayer.socketListeners(this.socket);
 	}
 
 	/* -------------------------------------------- */
@@ -5588,12 +5676,56 @@ class Game {
 		// Handle window resizing
 		window.addEventListener('resize', event => this._onResize(event));
 
+		// Disable dropping external content
+		window.addEventListener('dragover', this._onPreventDragover);
+		window.addEventListener('drop', this._onPreventDrop);
+
 		// Entity links
 		TextEditor.activateListeners();
 
 		// Await gestures to begin audio and video playback
 		game.audio.awaitFirstGesture();
 		game.video.awaitFirstGesture();
+
+		// Handle window shutdown/unload events
+		window.onbeforeunload = this._onBeforeUnload;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Handle window unload operations to clean up any data which may be pending a final save
+	 * @param {Event} event     The window unload event which is about to occur
+	 * @private
+	 */
+	_onBeforeUnload(event) {
+		if (canvas && canvas.ready) canvas.sight.saveFog();
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Disallow dragging of external content onto anything but a file input element
+	 * @param {DragEvent} event   The requested drag event
+	 * @private
+	 */
+	_onPreventDragover(event) {
+		const target = event.target;
+		if (target.tagName === 'INPUT' && target.type === 'file') return;
+		else event.preventDefault();
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Disallow dropping of external content onto anything but a file input element
+	 * @param {DragEvent} event   The requested drag event
+	 * @private
+	 */
+	_onPreventDrop(event) {
+		const target = event.target;
+		if (target.tagName === 'INPUT' && target.type === 'file') return;
+		else event.preventDefault();
 	}
 
 	/* -------------------------------------------- */
@@ -5620,10 +5752,10 @@ class Game {
 		// Require a valid user cookie and EULA acceptance
 		if (!SIGNED_EULA) window.location.href = ROUTE_PREFIX + '/no';
 		if (!this.userId) {
-			let err =
-				'Something went wrong with your user cookie, please reload your session.';
-			$('body').html($(`<div class="banner error">${err}</div>`));
-			throw new Error(err);
+			console.error(
+				'Invalid user session provided - returning to login screen.'
+			);
+			this.logOut();
 		}
 
 		// Setup the game
@@ -5635,9 +5767,7 @@ class Game {
 			console.log(
 				`${vtt} | Ending demo session after 10 minutes. Thanks for testing!`
 			);
-			this.socket.disconnect();
-			Game.clearCookies();
-			window.location.href = ROUTE_PREFIX + '/join';
+			this.logOut();
 		}, 1000 * 60 * 10);
 
 		// Context menu listeners
@@ -5658,9 +5788,14 @@ class Game {
 	 * @private
 	 */
 	async _initializeSetupView() {
-		ui.notifications = new Notifications().render();
+		ui.notifications = new Notifications().render(true);
+
+		// No action is required if we are authenticating the admin key
+		if (document.body.classList.contains('auth')) return;
+
+		// Otherwise display setup apps
 		if (!SIGNED_EULA) new EULA().render(true);
-		ui.setup = new SetupConfiguration(game.data).render(true);
+		ui.setup = new SetupConfigurationForm(game.data).render(true);
 	}
 
 	/* -------------------------------------------- */
@@ -5670,7 +5805,7 @@ class Game {
 	 * @private
 	 */
 	async _initializeJoinView() {
-		ui.notifications = new Notifications().render();
+		ui.notifications = new Notifications().render(true);
 		const form = document.getElementById('join-form');
 		form.addEventListener('submit', this._onJoinFormSubmit.bind(this));
 	}
@@ -5721,7 +5856,7 @@ class Game {
 		this.users = new Users(this.data.users).initialize();
 		this.messages = new Messages(this.data.messages).initialize();
 		this.actors = new Actors(this.data.actors).initialize();
-		ui.chat = new ChatLog({ stream: true }).render();
+		ui.chat = new ChatLog({ stream: true }).render(true);
 		Messages.socketListeners(this.socket);
 	}
 
@@ -5736,7 +5871,7 @@ class Game {
 		this.users = new Users(this.data.users).initialize();
 		this.players = new UserManagement(this.users);
 		this.players.render(true);
-		ui.notifications = new Notifications().render();
+		ui.notifications = new Notifications().render(true);
 		Users.socketListeners(this.socket);
 	}
 }
@@ -6096,8 +6231,210 @@ class Die {
 	_getTooltip(result) {
 		return result;
 	}
+
+	/* -------------------------------------------- */
+	/*  Factory Method                              */
+	/* -------------------------------------------- */
+
+	/**
+	 * Given a string formula, create and return a rolled Die object
+	 * @param {string} formula    The string formula to parse
+	 * @return {Die|null}         The rolled Die object if the formula was valid, null otherwise
+	 */
+	static fromFormula(formula) {
+		const rgx = formula.match(this.rgx.die);
+		if (!rgx) return null;
+		let [number, sides, modifiers] = rgx.slice(1);
+
+		// Get die sides
+		let cls = this;
+		if (/f|F/.test(sides)) cls = FateDie;
+		else sides = parseInt(sides);
+		if (sides > 10000)
+			throw new Error('You may not roll dice with more than 10000 sides');
+
+		// Get number of dice
+		number = parseInt(number || 1);
+		if (!Number.isFinite(number) || number <= 0)
+			throw new Error('Invalid number of rolled dice.');
+		if (number > 100)
+			throw new Error('You may not roll more than 100 dice at a time');
+
+		// Create the Die and roll it
+		let die = new cls(sides);
+		die.roll(number);
+
+		// Apply modifiers
+		modifiers = modifiers || '';
+		die.applyModifiers(modifiers);
+		die.formula = `${number}d${sides}${modifiers.toLowerCase()}`;
+
+		// Return the created and rolled Die
+		return die;
+	}
+
+	/* -------------------------------------------- */
+	/*  Roll Modifiers                              */
+	/* -------------------------------------------- */
+
+	/**
+	 * Apply suffix options and modifiers to the result of this Die roll
+	 * @param {string} query
+	 */
+	applyModifiers(query) {
+		// Step 1 - parse query to an Array of modifiers
+		let mods = [];
+		if (query) {
+			for (let r of Object.values(Die.rgx)) {
+				query = query.replace(RegExp(r, 'g'), match => match + ';');
+			}
+			mods = query.split(';').filter(o => o !== '');
+		}
+
+		// Step 2 - apply modifiers
+		for (let mod of mods) {
+			this._applyReroll(mod);
+			this._applyExplode(mod);
+			this._applyKeepDrop(mod);
+			this._applySuccess(mod);
+		}
+
+		// Return the modified Die
+		return this;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Reroll a single die by parsing the option string
+	 * @private
+	 */
+	_applyReroll(option) {
+		let rr = option.match(Die.rgx.reroll);
+		if (!rr) return;
+
+		// Determine the reroll range
+		let target,
+			nrr = parseInt(rr[2] || 1);
+		if (rr[1]) {
+			if (rr[1] === '<') target = Array.fromRange(nrr);
+			else if (rr[1] === '<=')
+				target = Array.fromRange(nrr).map(n => n + 1);
+			else if (rr[1] === '>')
+				target = Array.fromRange(this.faces - nrr).map(
+					n => n + nrr + 1
+				);
+			else if (rr[1] === '>=')
+				target = Array.fromRange(this.faces - nrr + 1).map(
+					n => n + nrr
+				);
+		} else target = [nrr];
+
+		// Reroll the die
+		this.reroll(target);
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Explode a single die by parsing the option string
+	 * @private
+	 */
+	_applyExplode(option) {
+		let ex = option.match(Die.rgx.explode);
+		if (!ex) return;
+		let operator = ex[1];
+		let target = parseInt(ex[2] || this.faces);
+
+		// Define target arrays
+		let range = this.sides.filter(s => {
+			if (operator === '<') return s < target;
+			else if (operator === '<=') return s <= target;
+			else if (operator === '>') return s > target;
+			else if (operator === '>=') return s >= target;
+			return s === target;
+		});
+
+		// Explode the die
+		this.explode(range);
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Keep or drop die by parsing the option string
+	 * @private
+	 */
+	_applyKeepDrop(option) {
+		let kd = option.match(Die.rgx.keep);
+		if (!kd) return;
+		let nr = this.results.length,
+			mode = kd[1],
+			num = parseInt(kd[2] || 1);
+
+		// Highest
+		if (['kh', 'dl'].includes(mode)) {
+			if (mode === 'dl') num = Math.max(nr - num, 1);
+			this.keepHighest(num);
+		}
+
+		// Lowest
+		else if (['kl', 'dh'].includes(mode)) {
+			if (mode === 'dh') num = Math.min(nr - num);
+			this.keepLowest(num);
+		}
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Count successes or margin of success
+	 * @private
+	 */
+	_applySuccess(option) {
+		let cs = option.match(Die.rgx.success);
+		if (!cs) return;
+		let mode = cs[1],
+			operator = cs[2],
+			target = parseInt(cs[3]);
+
+		// Count successes or failures
+		if (['cs', 'cf'].includes(mode)) {
+			// Flip the operator for counting failures
+			if (mode === 'cf') {
+				operator = {
+					'>=': '<',
+					'>': '<=',
+					'<': '>=',
+					'<=': '>',
+				}[operator];
+			}
+
+			// Apply the die function
+			this.countSuccess(target, operator);
+		}
+
+		// Margin of success or failure
+		else if (mode === 'ms') {
+			if (['>', '>=', '=', undefined].includes(operator))
+				this.options['marginSuccess'] = target;
+			else if (['<', '<='].includes(operator))
+				this.options['marginFailure'] = target;
+		}
+	}
 }
 
+/**
+ * Define regular expression option matches for the Die class
+ * @type {Object}
+ */
+Die.rgx = {
+	die: new RegExp('([0-9]+)?[dD]([0-9fF]+)([a-z][a-z0-9<=>]+)?'),
+	reroll: /r(<=|>=|<|>)?([0-9]+)?/,
+	explode: /x(<=|>=|<|>)?([0-9]+)?/,
+	keep: /(kh|kl|dh|dl)([0-9]+)?/,
+	success: /(cs|cf|ms)(<=?|>=?|=)?([0-9]+)?/,
+};
 /**
  * A special die used by Fate/Fudge systems
  * Mathematically behaves like 1d3-2
@@ -6126,6 +6463,270 @@ class FateDie extends Die {
 }
 
 /**
+ * A dice pool represents a set of Roll expressions which are collectively modified to compute an effective total
+ * across all Rolls in the pool. The final total for the pool is defined as the sum over kept rolls, relative to any
+ * success count or margin.
+ *
+ * @example
+ * // Consider 3 rolls
+ * let r1 = new Roll("4d6");
+ * let r2 = new Roll("3d8");
+ * let r3 = new Roll("2d10");
+ * // Keep the highest of the 3 roll expressions
+ * let pool = new DicePool([r1,r2,r3], "kh");
+ *
+ * @example
+ * // Construct a DicePool from a string formula
+ * let pool = DicePool.fromFormula("{4d6,3d8,2d10}kh");
+ */
+class DicePool {
+	constructor(rolls, modifiers) {
+		/**
+		 * The elements of a Dice Pool must be Roll objects
+		 * @type {Array.<Roll>}
+		 */
+		this.rolls = rolls;
+
+		/**
+		 * The string modifiers applied to resolve the pool
+		 * @type {string}
+		 */
+		this.modifiers = modifiers;
+
+		/**
+		 * An Array of rolled Die instances created through this Pool
+		 * @type {Array}
+		 */
+		this.dice = [];
+
+		/**
+		 * The final numeric total resulting from the rolled DicePool
+		 * @type {number|null}
+		 */
+		this.total = null;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * For now, for testing purposes, choose the maximum result always
+	 */
+	roll() {
+		// Roll everything in the DicePool
+		const dice = [];
+		for (let r of this.rolls) {
+			if (!r._rolled) r.roll();
+			dice.push(...r.dice);
+		}
+
+		// Identify and sort results in ascending order of total
+		const results = this.rolls.map(r => {
+			return {
+				roll: r,
+				total: r.total,
+				keep: true,
+			};
+		});
+		results.sort((a, b) => a.total - b.total);
+
+		// Parse modifiers
+		const mods = this._parseModifiers(this.modifiers);
+		for (let mod of mods) {
+			this._keepOrDrop(results, mod);
+			this._countSuccess(results, mod);
+		}
+
+		// The total for the pool is defined as the sum over kept rolls
+		const total = results.reduce((total, r) => {
+			if (r.keep) total += r.total;
+			return total;
+		}, 0);
+
+		// Flag the total and return
+		this.results = results;
+		this.dice = dice;
+		this.total = total;
+		return this;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Parse a modifier query string into an ordered Array of modifiers to apply.
+	 * @param {string} modifiers
+	 * @return {Array.<string>}
+	 * @private
+	 */
+	_parseModifiers(modifiers) {
+		let patterns = [DicePool.rgx.keep, DicePool.rgx.success];
+		for (let p of patterns) {
+			modifiers = modifiers.replace(RegExp(p, 'g'), '$&;');
+		}
+		return modifiers.split(';').filter(m => m !== '');
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Iterate over the results Array and apply a keep-or-drop modifier
+	 * @param {Array} results
+	 * @param {string} mod
+	 * @private
+	 */
+	_keepOrDrop(results, mod) {
+		const kd = mod.match(DicePool.rgx.keep);
+		if (!kd) return;
+
+		// Determine the number to keep or drop
+		let mode = kd[1];
+		let n = parseInt(kd[2] || 1);
+
+		// Highest
+		if (['kh', 'dl'].includes(mode)) {
+			n =
+				mode === 'kh'
+					? Math.clamped(n, 1, results.length)
+					: Math.clamped(n, 0, results.length - 1);
+			results.forEach((r, i) => (r.keep = i >= results.length - n));
+		}
+
+		// Lowest
+		else {
+			n =
+				mode === 'kl'
+					? Math.clamped(n, 1, results.length)
+					: Math.clamped(n, 0, results.length - 1);
+			results.forEach((r, i) => (r.keep = i < results.length - n));
+		}
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Iterate over the results Array and count successes or compute margin of success
+	 * @param {Array} results
+	 * @param {string} mod
+	 * @private
+	 */
+	_countSuccess(results, mod) {
+		const cs = mod.match(DicePool.rgx.success);
+		if (!cs) return;
+
+		// Determine the threshold for flagging
+		let mode = cs[1];
+		let operator = cs[2];
+		let tgt = parseInt(cs[3]);
+
+		// Count successes
+		if (['cs', 'cf'].includes(mode)) {
+			for (let r of results) {
+				if (operator === '>') r.total = Number(r.total > tgt);
+				else if (operator === '>=') r.total = Number(r.total >= tgt);
+				else if (operator === '<') r.total = Number(r.total < tgt);
+				else if (operator === '<=') r.total = Number(r.total <= tgt);
+				if (mode === 'cf') r.total = 1 - r.total;
+			}
+		}
+
+		// Margin of success
+		else if (mode === 'ms') {
+			for (let r of results) {
+				if (['>', '>=', '='].includes(operator))
+					r.total = r.total - tgt;
+				else r.total = tgt - r.total;
+			}
+		}
+	}
+
+	/* -------------------------------------------- */
+	/*  Factory Method                              */
+	/* -------------------------------------------- */
+
+	/**
+	 * Given a string formula, create and return an evaluated DicePool object
+	 * @param {string} formula    The string formula to parse
+	 * @return {DicePool|null}    The evaluated DicePool object or null if the formula is invalid
+	 */
+	static fromFormula(formula) {
+		const rgx = formula.match(this.rgx.pool);
+		if (!rgx) return null;
+		let [terms, modifiers] = rgx.slice(1);
+
+		// Transform each term of the pool into a Roll instance
+		const rolls = terms.split(',').reduce((arr, t) => {
+			t = t.trim();
+			arr.push(new Roll(t));
+			return arr;
+		}, []);
+
+		// Create the Pool object
+		modifiers = modifiers || '';
+		const pool = new this(rolls, modifiers);
+		pool.roll();
+		return pool;
+	}
+
+	/* -------------------------------------------- */
+	/*  Serialization and Storage                   */
+	/* -------------------------------------------- */
+
+	/**
+	 * Convert the DicePool instance into an Object which can be serialized to JSON
+	 * @return {Object}     The converted data
+	 */
+	toJSON() {
+		return {
+			class: 'DicePool',
+			rolls: this.rolls.map(r => r.toJSON()),
+			total: this.total,
+			modifiers: this.modifiers,
+		};
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Reconstruct a DicePool instance from a provided data Object
+	 * @param {Object} data   The provided data
+	 * @return {DicePool}     The constructed Dice Pool
+	 */
+	static fromData(data) {
+		// Reconstitute inner rolls
+		const rolls = data.rolls.map(r => Roll.fromData(r));
+
+		// Reconstitute the pool itself
+		const pool = new this(rolls, data.modifiers);
+
+		// Restore additional data
+		pool.total = data.total;
+		pool.dice = rolls.reduce((dice, r) => {
+			dice.push(...r.dice);
+			return dice;
+		}, []);
+
+		// Return the restored pool
+		return pool;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Reconstruct a DicePool instance from a provided data Object
+	 * @param {string} json   The serialized JSON string
+	 * @return {DicePool}     The constructed Dice Pool
+	 */
+	static fromJSON(json) {
+		return this.fromData(JSON.parse(json));
+	}
+}
+
+DicePool.rgx = {
+	pool: RegExp('{([^}]+)}([A-z]{1}[A-z0-9<=>]+)?'),
+	keep: /(kh|kl|dh|dl)([0-9]+)?/,
+	success: /(cs|cf|ms)(<=?|>=?|=)?([0-9]+)?/,
+};
+
+/**
  * This class provides an interface and API for conducting dice rolls.
  * The basic structure for a dice roll is a string formula and an object of data against which to parse it.
  *
@@ -6149,14 +6750,7 @@ class FateDie extends Die {
  * console.log(r.total);    // 22
  */
 class Roll {
-	constructor(formula, data) {
-		/**
-		 * The original provided formula
-		 * This formula will be reinterpreted once components have been parsed
-		 * @type {String}
-		 */
-		this._formula = formula;
-
+	constructor(formula, data = {}) {
 		/**
 		 * The original provided data
 		 * @type {Object}
@@ -6164,16 +6758,29 @@ class Roll {
 		this.data = data;
 
 		/**
-		 * An array of parsed formula terms
-		 * @type {Array}
+		 * The original "raw" formula before any substitutions or evaluation
+		 * @type {string}
 		 */
-		this.terms = [];
+		this._formula = formula;
+
+		/**
+		 * The processed formula resulting from substitution and evaluation
+		 * @type {string}
+		 */
+		this.formula = this._replaceData(formula);
 
 		/**
 		 * An array of evaluate Roll parts
 		 * @type {Array}
 		 */
 		this.parts = [];
+
+		/**
+		 * An Array of Die instance which were included as part of this Roll
+		 * @type {Array.<Die>}
+		 * @private
+		 */
+		this._dice = [];
 
 		/**
 		 * An internal flag for whether the Roll object has been rolled
@@ -6195,95 +6802,14 @@ class Roll {
 		 * Regular expression patterns
 		 */
 		this.rgx = {
+			dice: new RegExp(this.constructor.rgx.dice),
+			pool: new RegExp(this.constructor.rgx.pool),
 			reroll: /r(<=|>=|<|>)?([0-9]+)?/,
 			explode: /x(<=|>=|<|>)?([0-9]+)?/,
-			keep: /(kh|kl|dh|dl)([0-9]+)?/,
-			success: /(cs|cf|ms)(<=?|>=?|=)?([0-9]+)?/,
+			keep: this.constructor.rgx.keep,
+			success: this.constructor.rgx.success,
+			parenthetical: /^\((.*)\)$/,
 		};
-
-		// Initialize the roll
-		this._init(this._formula);
-	}
-
-	/* -------------------------------------------- */
-	/*  Properties                                  */
-	/* -------------------------------------------- */
-
-	/**
-	 * Express the Roll as a formatted string formula
-	 * @return {String}
-	 */
-	get formula() {
-		if (!this._rolled) return this._formula;
-		return this.parts
-			.map(p => (p instanceof Die ? p.formula : p))
-			.join(' ');
-	}
-
-	/**
-	 * The resulting arithmetic expression after rolls have been evaluated
-	 * @return {String}
-	 */
-	get result() {
-		return this._result;
-	}
-
-	/**
-	 * Express the total result of the roll and cache the result to avoid re-evaluating
-	 * @return {Number}
-	 */
-	get total() {
-		if (!this._rolled) return null;
-		if (!this._total) {
-			let total = this._safeEval(this.result);
-			this._total = Number.isInteger(total)
-				? total
-				: Math.round(total * 100) / 100;
-		}
-		return this._total;
-	}
-
-	/**
-	 * Get an Array of any :class:`Die` objects which were rolled as part of the evaluation of this roll
-	 * @type {Array}
-	 */
-	get dice() {
-		return this.parts.filter(p => p instanceof Die);
-	}
-
-	/**
-	 * The regular expression used to identify a Die component of a Roll
-	 * @private
-	 * @type {String}
-	 */
-	static get diceRgx() {
-		return '([0-9]+)?[dD]([0-9fF]+)([a-z][a-z0-9<=>]+)?';
-	}
-
-	/**
-	 * Record supported arithmetic operators for Roll instances
-	 * @private
-	 * @type {Array.<String>}
-	 */
-	static get arithmeticOperators() {
-		return ['+', '-', '*', '/'];
-	}
-
-	/* -------------------------------------------- */
-	/*  Initialization                              */
-	/* -------------------------------------------- */
-
-	/**
-	 * Initialize the roll object using a provided formula
-	 * @param formula {String}    The roll formula
-	 * @private
-	 */
-	_init(formula) {
-		// Step 1 - Substitute provided data
-		formula = this._replaceData(formula);
-
-		// Step 2 - Parse the substituted formula into parts
-		this.terms = this._getTerms(formula);
 	}
 
 	/* -------------------------------------------- */
@@ -6303,23 +6829,58 @@ class Roll {
 	}
 
 	/* -------------------------------------------- */
+	/*  Properties                                  */
+	/* -------------------------------------------- */
 
 	/**
-	 * Parse a string formula, extracting arithmetic operators and enforcing standardized spacing
-	 * Return the terms of the formula as an Array
-	 * @private
+	 * The resulting arithmetic expression after rolls have been evaluated
+	 * @return {String}
 	 */
-	_getTerms(formula) {
-		let arith = this.constructor.arithmeticOperators,
-			math = arith.concat(['(', ')']),
-			split = new RegExp(math.map(t => '\\' + t).join('|'), 'g'),
-			terms = formula.replace(split, t => `;${t};`).split(';');
-		return terms
-			.map(t => t.trim())
-			.filter(t => t !== '')
-			.filter((t, i, arr) => {
-				return !(t === '+' && arr[i - 1] === '+');
-			});
+	get result() {
+		return this._result;
+	}
+
+	/**
+	 * Express the total result of the roll and cache the result to avoid re-evaluating
+	 * @return {Number}
+	 */
+	get total() {
+		if (!this._rolled) return null;
+		return this._total;
+	}
+
+	/**
+	 * Get an Array of any Die objects which were rolled as part of the evaluation of this roll
+	 * @type {Array.<Die>}
+	 */
+	get dice() {
+		if (!this._rolled) return null;
+		return this._dice;
+	}
+
+	/**
+	 * The regular expression used to identify a Die component of a Roll
+	 * @private
+	 * @type {String}
+	 */
+	static get diceRgx() {
+		return '([0-9]+)?[dD]([0-9fF]+)([a-z][a-z0-9<=>]+)?';
+	}
+
+	static get rgx() {
+		return {
+			dice: '([0-9]+)?[dD]([0-9fF]+)([a-z][a-z0-9<=>]+)?',
+			pool: '{([A-z0-9 ,]+)}([A-z]{1}[A-z0-9<=>]+)',
+		};
+	}
+
+	/**
+	 * Record supported arithmetic operators for Roll instances
+	 * @private
+	 * @type {Array.<String>}
+	 */
+	static get arithmeticOperators() {
+		return ['+', '-', '*', '/'];
 	}
 
 	/* -------------------------------------------- */
@@ -6338,15 +6899,63 @@ class Roll {
 	roll() {
 		if (this._rolled)
 			throw new Error('This Roll object has already been rolled.');
-		this.parts = this._replaceDice(this.terms);
+		const dice = [];
 
-		// Evaluate the result to make sure it is safe
-		let result = this.parts
-			.map(p => (p instanceof Die ? p.total : p))
-			.join(' ');
-		this._result = this._validateResult(result);
+		// Step 1 - first evaluate parenthetical terms as inner Roll instances
+		let terms = this._evalParentheticalTerms(this.formula).map(t => {
+			if (t instanceof Roll) {
+				t.roll();
+				dice.push(...t.dice);
+				return t.total;
+			}
+			return t;
+		});
+		this.formula = this.constructor.cleanFormula(terms.join(''));
 
-		// Denote that the roll has been evaluated
+		// Step 2 - evaluate dice pools
+		terms = this._evalPoolTerms(this.formula);
+
+		// Step 3 - separate arithmetic terms
+		terms = this._expandArithmeticTerms(terms);
+
+		// Step 4 - evaluate remaining Die terms
+		const results = terms.reduce(
+			(arr, t) => {
+				// Dice Pools
+				if (t instanceof DicePool) {
+					dice.push(...t.dice);
+					arr[0].push(t);
+					arr[1].push(t.total);
+					return arr;
+				}
+
+				// Single die
+				let die = Die.fromFormula(t);
+				if (die) {
+					dice.push(die);
+					arr[0].push(die);
+					arr[1].push(die.total);
+					return arr;
+				}
+
+				// Arithmetic terms
+				arr[0].push(t);
+				arr[1].push(t);
+				return arr;
+			},
+			[[], []]
+		);
+		terms = results[0];
+		let result = this._validateResult(results[1].join(' '));
+
+		// Step 5 - safely evaluate the final formula
+		const total = this._safeEval(result);
+
+		// Step 6 - Store outputs
+		this.parts = terms;
+		this._dice = dice;
+		this._result = result;
+		this._total = total;
 		this._rolled = true;
 		return this;
 	}
@@ -6359,68 +6968,123 @@ class Roll {
 	 * @returns {Roll}    A new Roll object, rolled using the same formula and data
 	 */
 	reroll() {
-		let r = new this.constructor(this._formula, this.data);
+		let r = new this.constructor(this.formula, this.data);
 		return r.roll();
+	}
+
+	/* -------------------------------------------- */
+	/*  Helpers
+  /* -------------------------------------------- */
+
+	/**
+	 * Separate a dice roll formula into parenthetical terms to be evaluated first
+	 * @param {string} formula
+	 * @return {Array.<string>}
+	 * @private
+	 */
+	_evalParentheticalTerms(formula) {
+		// Replace parentheses with semicolons to use for splitting
+		let toSplit = formula
+			.replace(/([A-z]+)?\(/g, (match, prefix) => {
+				return prefix in Math ? `;${prefix};(` : ';(';
+			})
+			.replace(/\)/g, ');');
+		let terms = toSplit.split(';');
+
+		// Match parenthetical groups
+		let nOpen = 0;
+		terms = terms.reduce((arr, t) => {
+			// Handle cases where the prior term is a math function
+			const beginMathFn = t[0] === '(' && arr[arr.length - 1] in Math;
+
+			// Add terms to the array
+			if (nOpen > 0 || beginMathFn) arr[arr.length - 1] += t;
+			else arr.push(t);
+
+			// Increment the number of open parentheses
+			if (!beginMathFn && t === '(') nOpen++;
+			if (nOpen > 0 && t === ')') nOpen--;
+			return arr;
+		}, []);
+
+		// Convert parenthetical groups to inner Roll objects
+		return terms.reduce((arr, t) => {
+			if (t === '') return arr;
+			let pt = t.match(this.rgx.parenthetical);
+			arr.push(pt ? new Roll(pt[1], this.data) : t);
+			return arr;
+		}, []);
 	}
 
 	/* -------------------------------------------- */
 
 	/**
-	 * Replace terms within a formula group which match a dice roll syntax with a :class:`Die` instance
-	 * Basic syntax is {n}d{X}{mods}
+	 * Isolate any Dice Pool terms within a formula and evaluate them
+	 * @param {string} formula
+	 * @return {Array.<string>}
 	 * @private
 	 */
-	_replaceDice(terms) {
-		return terms.map((term, i) => {
-			// Recursively delegate inner groups
-			if (term instanceof Array) {
-				return this._replaceDice(term);
-			}
+	_evalPoolTerms(formula) {
+		let terms = formula
+			.replace(/{/g, ';{')
+			.replace(/}([A-z0-9<=>]+)?/g, '$&;')
+			.split(';');
+		let nOpen = 0;
 
-			// Check for match
-			let rgx = term.match(new RegExp(this.constructor.diceRgx));
-			if (!rgx) return term;
+		// Match outer-bracketed groups
+		terms = terms.reduce((arr, t) => {
+			if (nOpen > 0) arr[arr.length - 1] += t;
+			else arr.push(t);
+			if (t === '{') nOpen = Math.max(1, nOpen + 1);
+			if (t === '}') nOpen = Math.max(0, nOpen - 1);
+			return arr;
+		}, []);
 
-			// Get die sides
-			let sides = rgx[2],
-				cls = Die;
-			if (/[f|F]/.test(sides)) cls = FateDie;
+		// Convert bracketed groups to inner DicePool objects
+		return terms.reduce((arr, t) => {
+			if (t === '') return arr;
+			const pool = DicePool.fromFormula(t);
+			arr.push(pool ? pool : t);
+			return arr;
+		}, []);
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Expand and reallocate an array of terms, separating them based on arithmetic operators
+	 * @private
+	 */
+	_expandArithmeticTerms(terms) {
+		const arith = this.constructor.arithmeticOperators.concat(['(', ')']);
+		let split = new RegExp(arith.map(t => '\\' + t).join('|'), 'g');
+		return terms.reduce((arr, t) => {
+			if (t === '') return arr;
+			if (t instanceof DicePool) arr.push(t);
 			else {
-				sides = parseInt(sides);
-				if (sides > 10000)
-					throw new Error(
-						'You may not roll dice with more than 10000 sides'
-					);
+				let ts = t.replace(split, ';$&;').split(';');
+				for (let s of ts) {
+					s = s.trim();
+					if (s !== '') arr.push(s);
+				}
 			}
+			return arr;
+		}, []);
+	}
 
-			// Get dice number and sides
-			let number = parseInt(rgx[1] || 1);
-			if (!Number.isFinite(number) || number <= 0)
-				throw new Error('Invalid number of rolled dice.');
-			else if (number > 100)
-				throw new Error(
-					'You may not roll more than 100 dice at a time'
-				);
+	/* -------------------------------------------- */
 
-			// Determine which roll options are requested
-			let options = this._parseOptions(rgx[3]);
-
-			// Create the Die and roll it
-			let die = new cls(sides);
-			die.roll(number);
-
-			// Apply any modifiers
-			for (let option of options) {
-				this._rerollDie(die, option);
-				this._explodeDie(die, option);
-				this._keepDropDie(die, option);
-				this._successDie(die, option);
-			}
-
-			// Replace the part with the Die
-			die.formula = `${number}d${sides}${options.join('').toLowerCase()}`;
-			return die;
-		});
+	/**
+	 * Replace a dice roll term enclosed in {brackets} with a DicePool instance
+	 * @param {string} term           The string term being replaced
+	 * @param {RegExpMatchArray} rgx  The regexp match for the term
+	 * @return {DicePool}             The replaced DicePool
+	 * @private
+	 */
+	_replacePool(term, rgx) {
+		const pool = new DicePool(rgx[1], rgx[2]);
+		pool.roll();
+		return pool;
 	}
 
 	/* -------------------------------------------- */
@@ -6448,137 +7112,6 @@ class Roll {
 		const src = 'with (sandbox) { return ' + expression + '}';
 		const evl = new Function('sandbox', src);
 		return evl(CONFIG.Roll.mathProxy);
-	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * Parse options and determine their order of operations
-	 * @param {String} query    The dice roll options query
-	 */
-	_parseOptions(query) {
-		if (!query) return [];
-		for (let p of Object.values(this.rgx)) {
-			query = query.replace(RegExp(p, 'g'), match => match + ';');
-		}
-		let options = query.split(';').filter(o => o !== '');
-		return options;
-	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * Reroll a single die by parsing the option string
-	 * @private
-	 */
-	_rerollDie(die, option) {
-		let rr = option.match(this.rgx.reroll);
-		if (!rr) return;
-
-		// Determine the reroll range
-		let target,
-			nrr = parseInt(rr[2] || 1);
-		if (rr[1]) {
-			if (rr[1] === '<') target = Array.fromRange(nrr);
-			else if (rr[1] === '<=')
-				target = Array.fromRange(nrr).map(n => n + 1);
-			else if (rr[1] === '>')
-				target = Array.fromRange(die.faces - nrr).map(n => n + nrr + 1);
-			else if (rr[1] === '>=')
-				target = Array.fromRange(die.faces - nrr + 1).map(n => n + nrr);
-		} else target = [nrr];
-
-		// Reroll the die
-		die.reroll(target);
-	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * Explode a single die by parsing the option string
-	 * @private
-	 */
-	_explodeDie(die, option) {
-		let ex = option.match(this.rgx.explode);
-		if (!ex) return;
-		let operator = ex[1];
-		let target = parseInt(ex[2] || die.faces);
-
-		// Define target arrays
-		let range = die.sides.filter(s => {
-			if (operator === '<') return s < target;
-			else if (operator === '<=') return s <= target;
-			else if (operator === '>') return s > target;
-			else if (operator === '>=') return s >= target;
-			return s === target;
-		});
-
-		// Explode the die
-		die.explode(range);
-	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * Keep or drop die by parsing the option string
-	 * @private
-	 */
-	_keepDropDie(die, option) {
-		let kd = option.match(this.rgx.keep);
-		if (!kd) return;
-		let nr = die.results.length,
-			mode = kd[1],
-			num = parseInt(kd[2] || 1);
-
-		// Highest
-		if (['kh', 'dl'].includes(mode)) {
-			if (mode === 'dl') num = Math.max(nr - num, 1);
-			die.keepHighest(num);
-		}
-
-		// Lowest
-		else if (['kl', 'dh'].includes(mode)) {
-			if (mode === 'dh') num = Math.min(nr - num);
-			die.keepLowest(num);
-		}
-	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * Count successes or margin of success
-	 * @private
-	 */
-	_successDie(die, option) {
-		let cs = option.match(this.rgx.success);
-		if (!cs) return;
-		let mode = cs[1],
-			operator = cs[2],
-			target = parseInt(cs[3]);
-
-		// Count successes or failures
-		if (['cs', 'cf'].includes(mode)) {
-			// Flip the operator for counting failures
-			if (mode === 'cf') {
-				operator = {
-					'>=': '<',
-					'>': '<=',
-					'<': '>=',
-					'<=': '>',
-				}[operator];
-			}
-
-			// Apply the die function
-			die.countSuccess(target, operator);
-		}
-
-		// Margin of success or failure
-		else if (mode === 'ms') {
-			if (['>', '>=', '=', undefined].includes(operator))
-				die.options['marginSuccess'] = target;
-			else if (['<', '<='].includes(operator))
-				die.options['marginFailure'] = target;
-		}
 	}
 
 	/* -------------------------------------------- */
@@ -6641,8 +7174,7 @@ class Roll {
 		};
 
 		// Prepare dice parts
-		const dice = this.parts.filter(p => p instanceof Die);
-		data['parts'] = dice.map(d => {
+		data['parts'] = this.dice.map(d => {
 			let minRoll = Math.min(...d.sides),
 				maxRoll = Math.max(...d.sides);
 
@@ -6702,11 +7234,8 @@ class Roll {
 		);
 		chatData.roll = JSON.stringify(this);
 
-		// Handle different roll modes TODO: remove chatData.rollMode in 0.5.x
-		rollMode =
-			rollMode ||
-			chatData.rollMode ||
-			game.settings.get('core', 'rollMode');
+		// Handle different roll modes
+		rollMode = rollMode || game.settings.get('core', 'rollMode');
 		switch (rollMode) {
 			case 'gmroll':
 				chatData['whisper'] = game.users.entities
@@ -6744,24 +7273,65 @@ class Roll {
 	 * > 9d8 + 4 + 5d4
 	 */
 	alter(add, multiply) {
-		let rgx = new RegExp(Roll.diceRgx, 'g');
 		if (this._rolled)
 			throw new Error(
 				'You may not alter a Roll which has already been rolled'
 			);
-
-		// Update dice roll terms
-		this.terms = this.terms.map(t => {
-			return t.replace(rgx, (match, nd, d, mods) => {
-				nd = nd * (multiply || 1) + (add || 0);
-				mods = mods || '';
-				return nd + 'd' + d + mods;
-			});
+		const rgx = new RegExp(Die.rgx.die, 'g');
+		this.formula = this.formula.replace(rgx, (match, nd, d, mods) => {
+			nd = nd * (multiply || 1) + (add || 0);
+			mods = mods || '';
+			return nd + 'd' + d + mods;
 		});
-
-		// Update the formula
-		this._formula = this.terms.join(' ');
 		return this;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Clean a dice roll formula, returning the formatted string with proper spacing
+	 * @param formula
+	 * @return {*}
+	 */
+	static cleanFormula(formula) {
+		// Replace multiple white spaces
+		formula = formula.replace(/\s{2,}/, ' ');
+
+		// Clean arithmetic
+		const arith = this.arithmeticOperators;
+		const split = new RegExp(arith.map(t => '\\' + t).join('|'), 'g');
+		const terms = formula.replace(split, ';$&;').split(';');
+		const cleaned = terms.reduce((arr, t) => {
+			let ix = arr.length - 1;
+			t = t.trim();
+			if (t === '') return arr; // Exclude white space
+			let prior = arr[ix];
+
+			// De-dupe addition and multiplication
+			if (['+', '*'].includes(t) && prior === t) return arr;
+
+			// Negate double subtraction
+			if (t === '-' && prior === '-') {
+				arr[ix] = '+';
+				return arr;
+			}
+
+			// Negate double division
+			if (t === '/' && prior === '/') {
+				arr[ix] = '*';
+				return arr;
+			}
+
+			// Subtract a negative value
+			if (['-+', '+-'].includes(t + prior)) {
+				arr[ix] = '-';
+				return arr;
+			}
+
+			arr.push(t);
+			return arr;
+		}, []);
+		return cleaned.join(' ');
 	}
 
 	/* -------------------------------------------- */
@@ -6772,15 +7342,11 @@ class Roll {
 	 * @return {Roll}               A Roll instance representing the minimal roll
 	 */
 	static minimize(formula) {
-		const roll = new Roll(formula).roll();
-		for (let d of roll.dice) {
-			Object.values(d.rolls).forEach(r => (r.roll = d.sides[0]));
-		}
-		roll._result = roll._validateResult(
-			roll.parts.map(p => (p instanceof Die ? p.total : p)).join(' ')
-		);
-		roll._total = null;
-		return roll;
+		const rgx = new RegExp(Die.rgx.die, 'g');
+		formula = formula.replace(rgx, (match, nd, d, mods) => {
+			return `(${nd}*1)`;
+		});
+		return new this(formula).roll();
 	}
 
 	/* -------------------------------------------- */
@@ -6791,17 +7357,11 @@ class Roll {
 	 * @return {Roll}               A Roll instance representing the maximal roll
 	 */
 	static maximize(formula) {
-		const roll = new Roll(formula).roll();
-		for (let d of roll.dice) {
-			Object.values(d.rolls).forEach(
-				r => (r.roll = d.sides[d.sides.length - 1])
-			);
-		}
-		roll._result = roll._validateResult(
-			roll.parts.map(p => (p instanceof Die ? p.total : p)).join(' ')
-		);
-		roll._total = null;
-		return roll;
+		const rgx = new RegExp(Die.rgx.die, 'g');
+		formula = formula.replace(rgx, (match, nd, d, mods) => {
+			return `(${nd}*${d})`;
+		});
+		return new this(formula).roll();
 	}
 
 	/* -------------------------------------------- */
@@ -6853,24 +7413,35 @@ class Roll {
 	 * @return {Object}     Structured data which can be serialized into JSON
 	 */
 	toJSON() {
-		// Structure roll parts
+		// Structure rolled dice
+		const dice = this.dice.map(d => {
+			return {
+				class: d.constructor.name,
+				faces: d.faces,
+				rolls: d.rolls,
+				formula: d.formula,
+				options: d.options,
+			};
+		});
+
+		// Substitute parts
 		const parts = this.parts.map(p => {
 			if (p instanceof Die) {
-				return {
-					class: p.constructor.name,
-					faces: p.faces,
-					rolls: p.rolls,
-					formula: p.formula,
-					options: p.options,
-				};
-			} else return p;
+				let idx = this.dice.findIndex(d => d === p);
+				return '_d' + idx;
+			} else if (p instanceof DicePool) {
+				return p.toJSON();
+			}
+			return p;
 		});
 
 		// Serialize roll equation
 		return {
 			class: this.constructor.name,
 			formula: this.formula,
+			dice: dice,
 			parts: parts,
+			result: this.result,
 			total: this.total,
 		};
 	}
@@ -6879,58 +7450,62 @@ class Roll {
 
 	/**
 	 * Recreate a Roll instance using a provided JSON string
-	 * @param {String} json   Serialized JSON data representing the Roll
+	 * @param {string} json   Serialized JSON data representing the Roll
 	 * @return {Roll}         A revived Roll instance
 	 */
 	static fromJSON(json) {
-		const data = JSON.parse(json);
+		return this.fromData(JSON.parse(json));
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Recreate a Roll instance using a provided JSON string
+	 * @param {Object} data   Unpacked data representing the Roll
+	 * @return {Roll}         A revived Roll instance
+	 */
+	static fromData(data) {
 		if (data.class !== 'Roll')
 			throw new Error(
 				'Unable to recreate Roll instance from provided data'
 			);
 
-		// Create the instance
+		// Create the instance and assign data
 		let roll = new this(data.formula);
+		roll._result = data.result;
+		roll._total = data.total;
 
-		// Update parts
+		/// Rehydrate Die rolls
+		roll._dice = data.dice.map(d => {
+			let cls = CONFIG.diceTypes.find(t => d.class === t.name);
+			if (!cls) throw new Error(`Unrecognized die type ${d.class}`);
+			let die = new cls(d.faces, d.options);
+			die.rolls = d.rolls;
+			die.formula = d.formula;
+			return die;
+		});
+
+		// Re-map dice as parts
 		roll.parts = data.parts.map(p => {
-			// Die rolls
-			if (p instanceof Object && p.class) {
-				let cls = CONFIG.diceTypes.find(d => d.name === p.class);
-				if (!cls) throw new Error(`Unrecognized die type ${p.class}`);
-				let d = new cls(p.faces, p.options);
-				d.rolls = p.rolls;
-				d.formula = p.formula;
-				return d;
+			// Dice pools
+			if (p.class === 'DicePool') {
+				return DicePool.fromData(p);
+			}
+
+			// Dice rolls
+			else if (typeof p === 'string' && p.startsWith('_d')) {
+				let idx = parseInt(p.slice(2));
+				return roll._dice[idx];
 			}
 
 			// String parts
 			return p;
 		});
 
-		// Ensure we re-derived the correct total
-		roll._result = roll.parts
-			.map(p => (p instanceof Die ? p.total : p))
-			.join(' ');
 		roll._rolled = true;
-		if (roll.total !== data.total)
-			throw new Error(
-				'The result of the recombined Roll was inconsistent.'
-			);
 		return roll;
 	}
 }
-
-CONFIG.Roll = {
-	template: 'templates/dice/roll.html',
-	tooltip: 'templates/dice/tooltip.html',
-	mathProxy: new Proxy(Math, {
-		has: () => true,
-		get: (t, k) => (k === Symbol.unscopables ? undefined : t[k]),
-	}),
-};
-
-CONFIG.diceTypes = [Die, FateDie];
 
 const MAX_INT = 4294967296.0,
 	N = 624,
@@ -7991,32 +8566,25 @@ class Compendium extends Application {
 		// Internal flags
 		this.searchString = null;
 		this._searchTime = 0;
-		this._scrollTop = 0;
 	}
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Assign the default options which are supported by the Compendium UI
-	 * @private
-	 */
+	/** @override */
 	static get defaultOptions() {
-		const options = super.defaultOptions;
-		options.template = 'templates/apps/compendium.html';
-		options.width = 350;
-		options.height = window.innerHeight - 100;
-		options.top = 70;
-		options.left = 120;
-		return options;
+		return mergeObject(super.defaultOptions, {
+			template: 'templates/apps/compendium.html',
+			width: 350,
+			height: window.innerHeight - 100,
+			top: 70,
+			left: 120,
+			scrollY: ['.directory-list'],
+		});
 	}
 
 	/* ----------------------------------------- */
 
-	/**
-	 * The Compendium title
-	 * @private
-	 * @type {String}
-	 */
+	/** @override */
 	get title() {
 		return this.metadata.label;
 	}
@@ -8043,11 +8611,7 @@ class Compendium extends Application {
 
 	/* ----------------------------------------- */
 
-	/**
-	 * Return the Compendium index as the data for rendering
-	 * First query the server to obtain the index and then return it once prepared
-	 * @return {Promise.Object}     The data to render
-	 */
+	/** @override */
 	async getData() {
 		await this.getIndex();
 		return {
@@ -8063,18 +8627,11 @@ class Compendium extends Application {
 
 	/* ----------------------------------------- */
 
-	/**
-	 * Override the default :class:`Application` rendering logic to wrap the render call in a promise which
-	 * retrieves the compendium data.
-	 */
+	/** @override */
 	async _render(...args) {
-		const ol = this._rendered ? this.element.find('.directory-list') : null;
-		const scroll = ol ? ol[0].scrollTop : 0;
 		await super._render(...args);
-		if (this._rendered) {
-			if (this.searchString) this._onSearch(this.searchString);
-			this.element.find('.directory-list')[0].scrollTop = scroll;
-		}
+		if (this.rendered && this.searchString)
+			this._onSearch(this.searchString);
 	}
 
 	/* ----------------------------------------- */
@@ -8175,7 +8732,7 @@ class Compendium extends Application {
 	 * Get a single Compendium entry as an Object
 	 * @param entryId {String}  The compendium entry ID to retrieve
 	 *
-	 * @return {Promise}        A Promise containing the return entry data, or undefined
+	 * @return {Promise.<Object|null>}  A Promise containing the return entry data, or null
 	 */
 	getEntry(entryId) {
 		return new Promise((resolve, reject) => {
@@ -8192,14 +8749,12 @@ class Compendium extends Application {
 
 	/**
 	 * Get a single Compendium entry as an Entity instance
-	 * @param entryId {String}    The compendium entry ID to instantiate
-	 *
-	 * @return {Promise}          A Promise containing the returned Entity
+	 * @param {string} entryId          The compendium entry ID to load and instantiate
+	 * @return {Promise.<Entity|null>}   A Promise containing the returned Entity, if it exists, otherwise null
 	 */
-	getEntity(entryId) {
-		return this.getEntry(entryId).then(entryData =>
-			this._toEntity(entryData)
-		);
+	async getEntity(entryId) {
+		const entry = await this.getEntry(entryId);
+		return entry ? this._toEntity(entry) : null;
 	}
 
 	/* ----------------------------------------- */
@@ -8209,7 +8764,7 @@ class Compendium extends Application {
 	 * @param {Object} entryData
 	 * @private
 	 */
-	_toEntity(entryData) {
+	_toEntity(entryData = {}) {
 		const cls = CONFIG[this.entity].entityClass;
 		return new cls(entryData, { compendium: this });
 	}
@@ -8400,7 +8955,7 @@ class Compendium extends Application {
 	 * @private
 	 */
 	_onSearch(searchString) {
-		let rgx = new RegExp(searchString, 'i');
+		let rgx = new RegExp(RegExp.escape(searchString), 'i');
 		this.element.find('li.directory-item').each((i, el) => {
 			let name = el.getElementsByClassName('entry-name')[0].textContent;
 			el.style.display = name.match(rgx) ? 'flex' : 'none';
@@ -8513,9 +9068,14 @@ class Compendium extends Application {
 				name: 'Import',
 				icon: '<i class="fas fa-download"></i>',
 				callback: li => {
-					let entryId = li.attr('data-entry-id');
-					let entities = CONFIG[this.entity].entityClass.collection;
-					entities.importFromCollection(this.collection, entryId);
+					const entryId = li.attr('data-entry-id');
+					const entities = CONFIG[this.entity].entityClass.collection;
+					return entities.importFromCollection(
+						this.collection,
+						entryId,
+						{},
+						{ renderSheet: true }
+					);
 				},
 			},
 			{
@@ -8607,7 +9167,7 @@ class Entity {
 		this.apps = {};
 
 		/**
-		 * The Entity may optionally the belong to a parent Compendium pack. If so this attribute will contain a reference
+		 * The Entity may optionally belong to a parent Compendium pack. If so this attribute will contain a reference
 		 * to that Compendium object. Otherwise null.
 		 * @type {Compendium|null}
 		 */
@@ -8630,6 +9190,18 @@ class Entity {
 		throw new Error(
 			`The ${this.name} subclass must define the Entity.config object`
 		);
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * A Universally Unique Identifier (uuid) for this Entity instance
+	 * @type {string}
+	 */
+	get uuid() {
+		if (this.compendium)
+			return `Compendium.${this.compendium.collection}.${this.id}`;
+		return `${this.entity}.${this.id}`;
 	}
 
 	/* -------------------------------------------- */
@@ -8956,6 +9528,9 @@ class Entity {
 	 * entity.limited;
 	 */
 	hasPerm(user, permission, exact = false) {
+		// If the entity does not have a permission object (e.g. Folder), only GM has any permission
+		if (!this.data.permission) return user.isGM;
+
 		// Get the user's permission level
 		let level = this.data.permission[user._id];
 		level = Number.isInteger(level)
@@ -8981,10 +9556,9 @@ class Entity {
 	 *
 	 * @param {Object} data         The data with which to create the entity
 	 * @param {Object} options      Additional options which customize the creation workflow
-	 * @param {Boolean} options.temporary     Create a temporary entity which is not saved to the world database.
+	 * @param {boolean} options.temporary     Create a temporary entity which is not saved to the world database.
 	 *                                        Default is false.
-	 * @param {Boolean} options.displaySheet  Show the configuration sheet for the created entity once it is created.
-	 *                                        Default is true.
+	 * @param {boolean} options.renderSheet   Display the sheet for the created entity once it is created. Default is false.
 	 *
 	 * @return {Promise}            A Promise which resolves to contain the created Entity
 	 *
@@ -8997,7 +9571,7 @@ class Entity {
 		const collection = this.collection;
 		const name = this.entity;
 		options = mergeObject(
-			{ temporary: false, displaySheet: true },
+			{ temporary: false, renderSheet: false },
 			options
 		);
 		return SocketInterface.trigger('create' + name, { data }, options, {
@@ -9017,7 +9591,7 @@ class Entity {
 	 * @param {Array.<Object>} data           The data with which to create the entity
 	 * @param {Object} options                Additional options which customize the creation workflow
 	 * @param {Boolean} options.temporary     Created entities are temporary and not saved to the database. Default false.
-	 * @param {Boolean} options.displaySheet  Display sheets of the created entities. Default false.
+	 * @param {Boolean} options.renderSheet   Display sheets for each created entities. Default false.
 	 *
 	 * @return {Promise}                      A Promise which resolves to contain the created Entities
 	 *
@@ -9030,7 +9604,7 @@ class Entity {
 		const collection = this.collection;
 		const name = this.entity;
 		options = mergeObject(
-			{ temporary: false, displaySheet: false },
+			{ temporary: false, renderSheet: false },
 			options
 		);
 		return SocketInterface.triggerMany(
@@ -9214,7 +9788,7 @@ class Entity {
 	 * @private
 	 */
 	_onCreate(data, options, userId, context) {
-		if (options.displaySheet && userId === game.user._id) {
+		if (options.renderSheet && userId === game.user._id) {
 			if (this.sheet) this.sheet.render(true, context);
 		}
 	}
@@ -9360,7 +9934,7 @@ class Entity {
 	 */
 	async updateEmbeddedEntity(embeddedName, updateData, options = {}) {
 		// Validate inputs
-		const collection = this.getEmbeddedCollection(embeddedName);
+		this.getEmbeddedCollection(embeddedName);
 		if (!options.currentData && !updateData._id) {
 			throw new Error(
 				`You must provide the child object or it's id in order to update a ${embeddedName}`
@@ -9460,7 +10034,7 @@ class Entity {
 	 */
 	async deleteEmbeddedEntity(embeddedName, childId, options = {}) {
 		// Validate inputs
-		const collection = this.getEmbeddedCollection(embeddedName);
+		this.getEmbeddedCollection(embeddedName);
 		options['embeddedName'] = embeddedName;
 
 		// Dispatch the update request and return the resolution
@@ -9654,7 +10228,7 @@ class Entity {
 			const update = mergeObject(updateData, u.update, {
 				inplace: false,
 			});
-			if (ent.sheet && ent.sheet._rendered)
+			if (ent.sheet && ent.sheet.rendered)
 				await ent.sheet.submit({ updateData: update });
 			else await ent.update(update);
 		}
@@ -9682,9 +10256,20 @@ class Entity {
 	 * Export entity data to a JSON file which can be saved by the client and later imported into a different session
 	 */
 	exportToJSON() {
+		// Prepare export data
 		const data = duplicate(this.data);
 		delete data.folder;
 		delete data.permission;
+
+		// Flag some metadata about where the entity was exported some - in case migration is needed later
+		data.flags['exportSource'] = {
+			world: game.world.id,
+			system: game.system.id,
+			coreVersion: game.data.version,
+			systemVersion: game.system.data.version,
+		};
+
+		// Trigger file save procedure
 		const filename = `fvtt-${this.entity}-${this.name.replace(
 			/\s/g,
 			'_'
@@ -9903,31 +10488,22 @@ class Canvas {
 	/**
 	 * When re-drawing the canvas, first tear down or discontinue some existing processes
 	 */
-	tearDown() {
+	async tearDown() {
+		const layer = this.activeLayer;
+		const layers = this.layers;
+
 		// Track current data which should be restored on draw
 		this._reload = {
 			scene: this.scene._id,
-			layer: this.activeLayer.name,
-			tokens: Object.keys(this.tokens._controlled),
+			layer: layer.name,
+			controlledTokens: Object.keys(this.tokens._controlled),
+			targetedTokens: Array.from(game.user.targets).map(t => t.id),
 		};
 
-		// Stop background video playback
-		if (this.background.isVideo) this.background.source.pause();
-
-		// Release controlled objects
-		canvas.activeLayer.releaseAll();
-
-		// Conclude token animations
-		this.tokens.concludeAnimation();
-
-		// Save current fog of war progress
-		this.sight.saveFog();
-
-		// Terminate ambient audio playback
-		this.sounds.stopAll();
-
-		// Reset the collection of synthetic Token actors
-		game.actors.tokens = {};
+		// Perform layer-specific tear-down actions
+		for (let l of layers) {
+			await l.tearDown();
+		}
 	}
 
 	/* -------------------------------------------- */
@@ -9937,10 +10513,11 @@ class Canvas {
 	 */
 	async draw(scene) {
 		scene = (scene === undefined ? game.scenes.viewed : scene) || null;
+		const wasReady = this.ready;
+		this.ready = false;
 
 		// Tear down any existing scene
-		if (this.ready) this.tearDown();
-		this.ready = false;
+		if (wasReady) await this.tearDown();
 
 		// Confirm there is an active scene
 		if (scene === null) {
@@ -9951,18 +10528,25 @@ class Canvas {
 			throw new Error(
 				'You must provide a Scene entity to draw the VTT canvas.'
 			);
-		} else {
-			canvas.app.view.style.display = 'block';
-			console.log(`${vtt} | Drawing game canvas for scene ${scene.name}`);
 		}
 
-		// Configure stage dimensions
+		// Configure Scene to draw
 		this.id = scene._id;
-		this.scene = game.scenes.viewed;
+		this.scene = scene;
 		this.dimensions = this.getDimensions();
-		let ww2 = window.innerWidth / 2;
-		let wh2 = window.innerHeight / 2;
-		this.stage.position.set(ww2, wh2);
+		canvas.app.view.style.display = 'block';
+		document.documentElement.style.setProperty(
+			'--gridSize',
+			this.dimensions.size + 'px'
+		);
+		console.log(
+			`${vtt} | Drawing game canvas for scene ${this.scene.name}`
+		);
+		Hooks.callAll('canvasInit', this);
+
+		// Configure primary canvas stage
+		this.stage.visible = false;
+		this.stage.position.set(window.innerWidth / 2, window.innerHeight / 2);
 		this.stage.hitArea = new PIXI.Rectangle(
 			0,
 			0,
@@ -9970,16 +10554,14 @@ class Canvas {
 			this.dimensions.height
 		);
 		this.stage.interactive = true;
-
-		// Set background color
-		if (scene.data.backgroundColor) {
+		if (this.scene.data.backgroundColor) {
 			this.app.renderer.backgroundColor = colorStringToHex(
-				scene.data.backgroundColor
+				this.scene.data.backgroundColor
 			);
 		}
 
 		// Load required textures
-		await loadSceneTextures(scene);
+		await loadSceneTextures(this.scene);
 
 		// Draw layers
 		for (let l of this.layers) {
@@ -9987,22 +10569,16 @@ class Canvas {
 		}
 
 		// Initialize starting conditions
-		Hooks.callAll('canvasInit', this);
 		this._initialize();
 
 		// Add interactivity
 		this._addListeners();
 
 		// Check if the window was re-sized before the draw operation concluded
-		if (
-			this.app.renderer.width !== window.innerWidth ||
-			this.app.renderer.height !== window.innerHeight
-		) {
-			this._onResize(new Event('resize'));
-		}
+		this._onResize(new Event('resize'));
 
 		// Mark the canvas as ready and call hooks
-		this.ready = true;
+		this.stage.visible = this.ready = true;
 		Hooks.call('canvasReady', this);
 		this._reload = {};
 		return this;
@@ -10046,25 +10622,24 @@ class Canvas {
 	 * Once the canvas is drawn, initialize control, visibility, and audio states
 	 */
 	_initialize() {
+		// Clear the set of targeted Tokens for the current user
+		game.user.targets.clear();
+
 		// Render the HUD layer
 		this.hud.render(true);
 
 		// Initialize canvas conditions
 		this._initializeCanvasPosition();
 		this._initializeCanvasLayer();
-		this._initializeTokenControl();
 
-		// Set the user's current scene
-		game.user.update({ scene: this.id });
-
-		// Clear the set of targeted Tokens for the current user
-		game.user.targets.clear();
-
-		// Initialize starting sight conditions
+		// Initialize starting layer conditions
 		this.sight.initialize();
-
-		// Initialize audio
+		this.lighting.initialize();
 		this.sounds.initialize();
+
+		// Initialize Token control
+		this._initializeTokenControl();
+		game.user.broadcastActivity({ sceneId: this.scene.id });
 	}
 
 	/* -------------------------------------------- */
@@ -10112,28 +10687,16 @@ class Canvas {
 	/* -------------------------------------------- */
 
 	/**
-	 * Initialize a token or set of tokens which should be controlled
-	 * If we are re-loading a scene which was previously rendered - restore control over prior controlled tokens
-	 * Otherwise look for an impersonated (preferred) or observed (fallback) token to control
+	 * Initialize a token or set of tokens which should be controlled.
+	 * Restore controlled and targeted tokens from before the re-draw.
 	 * @private
 	 */
 	_initializeTokenControl() {
 		let isReload = this._reload.scene === this.scene._id;
 
-		// Restore cached control set
-		const cached = isReload ? this._reload.tokens : {};
-		if (isReload) {
-			canvas.tokens._controlled = cached.reduce((obj, id) => {
-				obj[id] = canvas.tokens.get(id);
-				return obj;
-			}, {});
-			Object.values(canvas.tokens._controlled).forEach(t =>
-				t.control({ initializeSight: false })
-			);
-		}
-
-		// Control initial token
-		else if (!game.user.isGM) {
+		// Determine controlled token set (if any)
+		const controlledTokens = isReload ? this._reload.controlledTokens : [];
+		if (!isReload && !game.user.isGM) {
 			let token = game.user.character
 				? game.user.character.getActiveTokens().shift()
 				: null;
@@ -10144,16 +10707,27 @@ class Canvas {
 					)
 					.shift();
 			}
-			if (token) {
-				token.control({ initializeSight: false });
-				if (!isReload)
-					this.animatePan({
-						x: token.data.x,
-						y: token.data.y,
-						duration: 250,
-					});
-			}
+			if (token) controlledTokens.push(token.id);
 		}
+		const targetedTokens = isReload ? this._reload.targetedTokens : [];
+
+		// Iterate over tokens
+		let panToken = null;
+		for (let t of canvas.tokens.placeables) {
+			if (controlledTokens.includes(t.id)) {
+				if (!panToken) panToken = t;
+				t.control({ initializeSight: false, releaseOthers: false });
+			}
+			if (targetedTokens.includes(t.id))
+				t.setTarget(true, {
+					releaseOthers: false,
+					groupSelection: true,
+				});
+		}
+
+		// Pan camera to controlled token
+		if (panToken && !isReload)
+			this.pan({ x: panToken.x, y: panToken.y, duration: 250 });
 	}
 
 	/* -------------------------------------------- */
@@ -10198,7 +10772,7 @@ class Canvas {
 	 * Pan the canvas to a certain {x,y} coordinate and a certain zoom level
 	 * @param {number|null} x      The x-coordinate of the pan destination
 	 * @param {number|null} y      The y-coordinate of the pan destination
-	 * @param {number|null} scale  The zoom level (max of CONFIG.maxCanvasZoom) of the action
+	 * @param {number|null} scale  The zoom level (max of CONFIG.Canvas.maxZoom) of the action
 	 */
 	pan({ x = null, y = null, scale = null } = {}) {
 		// Pan the canvas to the new destination
@@ -10220,6 +10794,12 @@ class Canvas {
 
 		// Align the HUD
 		this.hud.align();
+
+		// Adjust the level of blur as we zoom out
+		if (scale) {
+			canvas.sight.blurDistance =
+				20 / (CONFIG.Canvas.maxZoom - Math.round(scale) + 1);
+		}
 	}
 
 	/* -------------------------------------------- */
@@ -10273,14 +10853,14 @@ class Canvas {
 	/* -------------------------------------------- */
 
 	/**
-	 * Get the constrained zoom scale parameter which is allowed by the maxCanvasZoom value
+	 * Get the constrained zoom scale parameter which is allowed by the maxZoom parameter
 	 * @param {Number} scale    The requested scale
 	 * @return {Number}         The allowed scale
 	 * @private
 	 */
 	_constrainScale(scale) {
 		const d = canvas.dimensions;
-		const max = CONFIG.maxCanvasZoom;
+		const max = CONFIG.Canvas.maxZoom;
 		const ratio = Math.max(
 			d.width / window.innerWidth,
 			d.height / window.innerHeight,
@@ -10427,11 +11007,6 @@ class Canvas {
 			event.data.cursorTime = now;
 		}
 
-		// Update the client's active status every 5000ms
-		if (now - ct > 5000) {
-			game.user.update({ active: true });
-		}
-
 		// Continue a measurement event if we have moved at least half a grid unit
 		const ruler = this.controls.ruler;
 		if (ruler._state > 0) ruler._onMouseMove(event);
@@ -10545,18 +11120,23 @@ class Canvas {
 	 * @param {Event} event   The Window resize event
 	 * @private
 	 */
-	_onResize(event) {
+	async _onResize(event) {
 		if (!this.ready) return false;
 
+		// Record the original width
+		const w = window.innerWidth;
+		const h = window.innerHeight;
+
 		// Resize the renderer
-		let w = window.innerWidth,
-			h = window.innerHeight;
 		this.app.renderer.view.style.width = w + 'px';
 		this.app.renderer.view.style.height = h + 'px';
 		this.app.renderer.resize(w, h);
 
-		// Re-draw the canvas
-		this.draw();
+		// Adjust the stage position and pivot
+		this.stage.position.set(w / 2, h / 2);
+		const dx = (window.innerWidth - w) / 2;
+		const dy = (window.innerHeight - h) / 2;
+		this.pan({ x: this.stage.pivot.x + dx, y: this.stage.pivot.y + dy });
 	}
 
 	/* -------------------------------------------- */
@@ -10674,14 +11254,20 @@ class CanvasLayer extends PIXI.Container {
   /* -------------------------------------------- */
 
 	/**
+	 * Deconstruct data used in the current layer in preparation to re-draw the canvas
+	 */
+	tearDown() {
+		this.removeChildren().forEach(c => c.destroy({ children: true }));
+	}
+
+	/* -------------------------------------------- */
+
+	/**
 	 * Draw the canvas layer, rendering its internal components and returning a Promise
 	 * The Promise resolves to the drawn layer once its contents are successfully rendered.
 	 * @return {Promise.<CanvasLayer>}
 	 */
 	async draw() {
-		// Clear existing layer contents
-		this.removeChildren().forEach(c => c.destroy({ children: true }));
-
 		// Set basic dimensions
 		const d = canvas.dimensions;
 		this.width = d.width;
@@ -10774,6 +11360,16 @@ class PlaceableObject extends PIXI.Container {
 	/* -------------------------------------------- */
 
 	/**
+	 * A Universally Unique Identifier (uuid) for this Embedded Entity instance
+	 * @type {string}
+	 */
+	get uuid() {
+		return `${this.scene.uuid}.${this.constructor.name}.${this.id}`;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
 	 * Provide a reference to the canvas layer which contains placeable objects of this type
 	 * @type {PlaceablesLayer}
 	 */
@@ -10851,13 +11447,12 @@ class PlaceableObject extends PIXI.Container {
 
 	/**
 	 * Assume control over a PlaceableObject, flagging it as controlled and enabling downstream behaviors
-	 * @param {Boolean} multiSelect       Is this object being selected as part of a group?
 	 * @param {Boolean} releaseOthers     Release any other controlled objects first
 	 * @return {Boolean}                  A Boolean flag denoting whether or not control was successful.
 	 */
-	control({ multiSelect = false, releaseOthers = true } = {}) {
+	control({ releaseOthers = true } = {}) {
 		if (this._controlled) return true;
-		if (releaseOthers) this.layer.releaseAll({ resetSight: false });
+		if (releaseOthers) this.layer.releaseAll();
 
 		// Prevent control if the user is not an object owner
 		if (!this.owner) return false;
@@ -11451,7 +12046,8 @@ class PlaceablesLayer extends CanvasLayer {
 	 */
 	static get layerOptions() {
 		return {
-			canDragCreate: true,
+			canDragCreate: game.user.isGM,
+			canDelete: game.user.isGM,
 			controllableObjects: false,
 			rotatableObjects: false,
 			snapToGrid: true,
@@ -11543,15 +12139,28 @@ class PlaceablesLayer extends CanvasLayer {
 	/*  Rendering
   /* -------------------------------------------- */
 
+	/** @override */
+	async tearDown() {
+		// Reset layer history
+		this.history = [];
+
+		// Release all controlled objects
+		if (this.options.controllableObjects) {
+			this._controlled = {};
+		}
+
+		// Destroy the layer children
+		return super.tearDown();
+	}
+
+	/* -------------------------------------------- */
+
 	/**
 	 * Draw the PlaceablesLayer.
 	 * Draw each Sound within the scene as a child of the sounds container.
 	 */
 	async draw() {
 		await super.draw();
-
-		// Reset history
-		this.history = [];
 
 		// Create objects container
 		this.objects = this.addChild(new PIXI.Container());
@@ -11564,15 +12173,8 @@ class PlaceablesLayer extends CanvasLayer {
 			await this.createObject(data);
 		}
 
-		// Sort and control objects
+		// Sort objects
 		this.sortObjects();
-		if (this.options.controllableObjects) {
-			const controlledIds = Object.keys(this._controlled);
-			this._controlled = {};
-			controlledIds.forEach(id =>
-				this.get(id).control({ releaseOthers: false })
-			);
-		}
 		return this;
 	}
 
@@ -11642,12 +12244,11 @@ class PlaceablesLayer extends CanvasLayer {
 
 	/**
 	 * Release all controlled PlaceableObject instance from this layer.
-	 * @param {Object} options    Additional options which customize the Object releasing behavior
 	 * @return {Number}           The number of PlaceableObject instances which were released
 	 */
-	releaseAll(options) {
+	releaseAll() {
 		const controlled = this.placeables.filter(t => t._controlled);
-		controlled.forEach(obj => obj.release(options));
+		controlled.forEach(obj => obj.release());
 		return controlled.length;
 	}
 
@@ -11780,10 +12381,7 @@ class PlaceablesLayer extends CanvasLayer {
 		// Undo creation
 		if (event.type === 'create') {
 			let obj = this.get(event.data._id);
-			if (obj)
-				return obj
-					.delete({ isUndo: true })
-					.then(() => this.history.pop());
+			if (obj) return obj.delete({ isUndo: true });
 		} else if (event.type === 'createMany') {
 			return this.deleteMany(
 				event.data.map(d => d._id),
@@ -11794,23 +12392,16 @@ class PlaceablesLayer extends CanvasLayer {
 		// Undo updates
 		else if (event.type === 'update') {
 			let obj = this.get(event.data._id);
-			if (obj)
-				return obj
-					.update(event.data, { isUndo: true })
-					.then(() => this.history.pop());
+			if (obj) return obj.update(event.data, { isUndo: true });
 		} else if (event.type === 'updateMany') {
 			return this.updateMany(event.data, { isUndo: true });
 		}
 
 		// Undo deletion
 		else if (event.type === 'delete') {
-			return cls
-				.create(event.data, { isUndo: true })
-				.then(() => this.history.pop());
+			return cls.create(event.data, { isUndo: true });
 		} else if (event.type === 'deleteMany') {
-			return this.createMany(event.data, { isUndo: true }).then(() =>
-				this.history.pop()
-			);
+			return this.createMany(event.data, { isUndo: true });
 		}
 	}
 
@@ -12000,7 +12591,7 @@ class PlaceablesLayer extends CanvasLayer {
 	 * @param {Number} height The height of the selection rectangle
 	 * @param {Object} releaseOptions   Optional arguments provided to any called release() method
 	 * @param {Object} controlOptions   Optional arguments provided to any called control() method
-	 * @return {Number}       The number of PlaceableObject instances which were controlled.
+	 * @return {boolean}       A boolean for whether the controlled set was changed in the operation
 	 */
 	selectObjects({
 		x,
@@ -12011,6 +12602,8 @@ class PlaceablesLayer extends CanvasLayer {
 		controlOptions = {},
 	}) {
 		const oldSet = Object.values(this._controlled);
+
+		// Identify controllable objects
 		const controllable = this.placeables.filter(
 			obj => obj.visible && obj.control instanceof Function
 		);
@@ -12022,17 +12615,17 @@ class PlaceablesLayer extends CanvasLayer {
 			);
 		});
 
-		// Release or Control objects
-		oldSet
-			.filter(obj => !newSet.includes(obj))
-			.forEach(obj => obj.release(releaseOptions));
-		if (isObjectEmpty(controlOptions)) controlOptions.releaseOthers = false;
-		newSet
-			.filter(obj => !oldSet.includes(obj))
-			.forEach(obj => obj.control(controlOptions));
+		// Release objects no longer controlled
+		const toRelease = oldSet.filter(obj => !newSet.includes(obj));
+		toRelease.forEach(obj => obj.release(releaseOptions));
 
-		// Return the number of selected objects
-		return controllable.length;
+		// Control new objects
+		if (isObjectEmpty(controlOptions)) controlOptions.releaseOthers = false;
+		const toControl = newSet.filter(obj => !oldSet.includes(obj));
+		toControl.forEach(obj => obj.control(controlOptions));
+
+		// Return a boolean for whether the control set was changed
+		return toRelease.length > 0 || toControl.length > 0;
 	}
 
 	/* -------------------------------------------- */
@@ -12130,10 +12723,7 @@ class PlaceablesLayer extends CanvasLayer {
 			event.data.destination.y - event.data.origin.y
 		);
 		if (distance >= canvas.dimensions.size / 2) {
-			this.constructor.placeableClass.create(
-				canvas.scene._id,
-				event.data.object.data
-			);
+			this.constructor.placeableClass.create(event.data.object.data);
 		}
 		this._onDragCancel(event);
 	}
@@ -12175,7 +12765,8 @@ class PlaceablesLayer extends CanvasLayer {
 		keyboard._wheelTime = t;
 
 		// Determine the incremental angle of rotation from event data
-		let snap = event.shiftKey ? 45 : 15;
+		const dBig = canvas.grid.type > CONST.GRID_TYPES.SQUARE ? 60 : 45;
+		let snap = event.shiftKey ? dBig : 15;
 		let delta = snap * Math.sign(event.deltaY);
 
 		// Call the rotateMany method to handle the request
@@ -12201,6 +12792,7 @@ class PlaceablesLayer extends CanvasLayer {
 	 * @private
 	 */
 	async _onDeleteKey(event) {
+		if (!this.options.canDelete) return;
 		let ids = null;
 		if (this.options.controllableObjects)
 			ids = this.controlled.map(obj => obj.id);
@@ -12435,20 +13027,20 @@ class ContextMenu {
  * Create a modal dialog window displaying a title, a message, and a set of buttons which trigger callback functions.
  * @type {Application}
  *
- * @param dialogData {Object}           An object of dialog data which configures how the modal window is rendered
- * @param dialogData.title {String}     The window title
- * @param dialogData.content {String}   HTML content
- * @param dialogData.close {Function}   Common callback operations to perform when the dialog is closed
- * @param dialogData.buttons {Object}   Action buttons which trigger callback functions.
+ * @param {Object} dialogData           An object of dialog data which configures how the modal window is rendered
+ * @param {string} dialogData.title     The window title
+ * @param {string} dialogData.content   HTML content
+ * @param {Function} dialogData.close   Common callback operations to perform when the dialog is closed
+ * @param {Object} dialogData.buttons   Action buttons which trigger callback functions.
  *                                      Buttons are defined as an Object with the format ``{name: buttonData}``.
  *                                      Valid keys for buttonData include:
  *
- * @param dialogData.buttons.button.icon {String} A button icon
- * @param dialogData.buttons.button.label {String} A button label
- * @param dialogData.buttons.button.callback {Function} A callback function taking no arguments
+ * @param {string} dialogData.buttons.button.icon A button icon
+ * @param {string} dialogData.buttons.button.label A button label
+ * @param {Function} dialogData.buttons.button.callback A callback function taking no arguments
  *
- * @param options {Object}              Dialog rendering options, see :class:`Application`
- * @param options.default               The name of the default button which should be triggered on Enter
+ * @param {Object} options              Dialog rendering options, see :class:`Application`
+ * @param {string} options.default      The name of the default button which should be triggered on Enter
  *
  * @example
  * let d = new Dialog({
@@ -12521,9 +13113,9 @@ class Dialog extends Application {
 		});
 
 		// Default choice selection
-		$(document).on('keydown.chooseDefault', ev => {
-			if (ev.keyCode === KEYS.ENTER && this.data.default) {
-				ev.preventDefault();
+		$(document).on('keydown.chooseDefault', event => {
+			if (event.key === 'Enter' && this.data.default) {
+				event.preventDefault();
 				this._submit(this.data.buttons[this.data.default], html);
 			}
 		});
@@ -12806,7 +13398,7 @@ class Draggable {
 			window.document.defaultView.getComputedStyle(this.element).zIndex
 		);
 		if (z <= _maxZ) {
-			this.element.style.zIndex = ++_maxZ;
+			this.element.style.zIndex = Math.min(++_maxZ, 9999);
 		}
 	}
 }
@@ -13181,6 +13773,9 @@ class TextEditor {
 		}
 	}
 }
+
+// Global Export
+window.TextEditor = TextEditor;
 
 /* -------------------------------------------- */
 /*  Backwards Compatibility Globals             */
@@ -13609,11 +14204,11 @@ class FilePicker extends Application {
 
 	/**
 	 * Handle user submission of the address bar to request an explicit target
-	 * @param {Event} event     The originating keydown event
+	 * @param {KeyboardEvent} event     The originating keydown event
 	 * @private
 	 */
 	_onRequestTarget(event) {
-		if (event.keyCode === KEYS.ENTER) {
+		if (event.key === 'Enter') {
 			event.preventDefault();
 			this.browse(event.target.value);
 		}
@@ -13629,7 +14224,7 @@ class FilePicker extends Application {
 	_onPick(event) {
 		const li = event.currentTarget;
 		if (li.classList.contains('dir')) return this.browse(li.dataset.path);
-		else li.closest('form').file.value = encodeURI(li.dataset.path);
+		else li.closest('form').file.value = li.dataset.path;
 	}
 
 	/* -------------------------------------------- */
@@ -13733,8 +14328,9 @@ class FilePicker extends Application {
 		formData.append('source', this.activeSource);
 
 		// Create a POST request
-		let xhr = new XMLHttpRequest();
-		xhr.open('POST', '/upload', true);
+		const xhr = new XMLHttpRequest();
+		const uploadURL = ROUTE_PREFIX ? `/${ROUTE_PREFIX}/upload` : '/upload';
+		xhr.open('POST', uploadURL, true);
 		xhr.onloadstart = event => (upload.disabled = true);
 		xhr.onreadystatechange = () => {
 			if (xhr.readyState !== 4) return;
@@ -13807,7 +14403,7 @@ $(document).ready(function() {
  * Submitted notifications are added to a queue, and up to 3 notifications are displayed at once.
  * Each notification is displayed for 5 seconds at which point further notifications are pulled from the queue.
  *
- * @type {Application}
+ * @extends {Application}
  *
  * @example
  * ui.notifications.info("This is an info message");
@@ -13830,20 +14426,35 @@ class Notifications extends Application {
 		 * @type {Array}
 		 */
 		this.active = [];
+
+		this.initialize();
 	}
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Configure the default behavior of the notifications application
-	 */
+	/** @override */
 	static get defaultOptions() {
-		const options = super.defaultOptions;
-		return mergeObject(options, {
+		return mergeObject(super.defaultOptions, {
 			popOut: false,
 			id: 'notifications',
 			template: 'templates/hud/notifications.html',
 		});
+	}
+
+	/* -------------------------------------------- */
+
+	initialize() {
+		if (!MESSAGES) return;
+		for (let m of MESSAGES) {
+			this.notify(m.message, m.type);
+		}
+	}
+
+	/* -------------------------------------------- */
+
+	async _render(...args) {
+		await super._render(...args);
+		while (this.queue.length) this.fetch();
 	}
 
 	/* -------------------------------------------- */
@@ -13863,7 +14474,7 @@ class Notifications extends Application {
 		this.queue.push(n);
 
 		// Call the fetch method
-		this.fetch();
+		if (this.rendered) this.fetch();
 	}
 
 	/* -------------------------------------------- */
@@ -13876,6 +14487,8 @@ class Notifications extends Application {
 		this.notify(message, 'info');
 	}
 
+	/* -------------------------------------------- */
+
 	/**
 	 * Display a notification with the "warning" type
 	 * @param {String} message    The content of the notification message
@@ -13883,6 +14496,8 @@ class Notifications extends Application {
 	warn(message) {
 		this.notify(message, 'warning');
 	}
+
+	/* -------------------------------------------- */
 
 	/**
 	 * Display a notification with the "error" type
@@ -13901,22 +14516,31 @@ class Notifications extends Application {
 	 */
 	async fetch() {
 		if (this.queue.length === 0 || this.active.length >= 3) return;
+		const next = this.queue.pop();
+		const now = Date.now();
+		let cleared = false;
 
-		// Display a new notification
-		let next = this.queue.pop(),
-			li = $(
-				`<li class="notification ${next.type}">${next.message}</li>`
-			);
-		this.element.prepend(li);
-		li.hide().slideDown(250);
-		this.active.push(li);
-
-		// Remove the notification 5 seconds later
-		window.setTimeout(() => {
-			li.fadeOut(250, () => li.remove());
+		// Define the function to remove the notification
+		const _remove = li => {
+			if (cleared) return;
+			li.fadeOut(66, () => li.remove());
 			this.active.pop();
 			this.fetch();
-		}, 5000);
+		};
+
+		// Construct a new notification
+		const li = $(
+			`<li class="notification ${next.type}">${next.message}</li>`
+		);
+		li.click(ev => {
+			if (Date.now() - now > 250) _remove(li);
+		});
+		this.element.prepend(li);
+		li.hide().slideDown(132);
+		this.active.push(li);
+
+		// Schedule clearing the notification 5 seconds later
+		window.setTimeout(() => _remove(li), 5000);
 	}
 }
 
@@ -14141,26 +14765,22 @@ class WebRTC {
 		if (this.settings.mode === WebRTCSettings.WEBRTC_MODE.DISABLED)
 			return false;
 
-		// TODO: when using FVTT server, we shouldn't need to set the username/password. Auth should be session based.
-		let connectionOptions = {
-			host: null,
-			room: null,
-			username: game.user.id,
-			password: game.user.data.password,
-		};
-
-		// If using custom server, replace the connection settings
-		if (
+		// Set initial connection options
+		const isCustom =
 			this.settings.serverType === 'custom' &&
-			this.settings.serverUrl !== ''
-		) {
-			connectionOptions = {
-				host: this.settings.serverUrl,
-				room: this.settings.serverRoom,
-				username: this.settings.serverUsername,
-				password: this.settings.serverPassword,
-			};
-		}
+			this.settings.serverUrl !== '';
+		let connectionOptions = isCustom
+			? {
+					host: this.settings.serverUrl,
+					room: this.settings.serverRoom,
+					username: this.settings.serverUsername,
+					password: this.settings.serverPassword,
+			  }
+			: {
+					host: null,
+					room: null,
+					sessionId: game.sessionId,
+			  };
 
 		// Disconnect from any existing session
 		await this.disconnect();
@@ -15866,7 +16486,7 @@ class ActorSheet extends BaseEntitySheet {
 			template: 'templates/sheets/actor-sheet.html',
 			closeOnSubmit: false,
 			submitOnClose: true,
-			submitOnUnfocus: true,
+			submitOnChange: true,
 			resizable: true,
 			baseApplication: 'ActorSheet',
 		});
@@ -15982,12 +16602,6 @@ class ActorSheet extends BaseEntitySheet {
 
 		// Everything below is only needed if the sheet is editable
 		if (!this.options.editable) return;
-
-		// Update the sheet when we un-focus an input unless we have acquired focus on another input
-		html.find('input').focusout(this._onUnfocus.bind(this));
-
-		// Update the sheet when a select field is changed
-		html.find('select').change(this._onSubmit.bind(this));
 
 		// Make the Actor sheet droppable for Items
 		this.form.ondragover = ev => this._onDragOver(ev);
@@ -16149,7 +16763,7 @@ class ActorSheet extends BaseEntitySheet {
 
 		// Get the drop target
 		const dropTarget = event.target.closest('.item');
-		const targetId = dropTarget ? Number(dropTarget.dataset.itemId) : null;
+		const targetId = dropTarget ? dropTarget.dataset.itemId : null;
 		const target = siblings.find(s => s.data._id === targetId);
 
 		// Ensure we are only sorting like-types
@@ -16593,17 +17207,25 @@ class ImagePopout extends FormApplication {
  *
  * @param item {Item}                   The Item instance being displayed within the sheet.
  * @param [options] {Object}            Additional options which modify the rendering of the item.
- * @param [options.editable] {Boolean}  Is the item editable? Default is true.
  */
 class ItemSheet extends BaseEntitySheet {
-	/** @extends {BaseEntitySheet.defaultOptions} */
+	constructor(...args) {
+		super(...args);
+		if (this.actor) {
+			this.actor.apps[this.appId] = this;
+		}
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
 	static get defaultOptions() {
 		return mergeObject(super.defaultOptions, {
 			template: 'templates/sheets/item-sheet.html',
 			width: 500,
 			closeOnSubmit: false,
 			submitOnClose: true,
-			submitOnUnfocus: true,
+			submitOnChange: true,
 			resizable: true,
 			baseApplication: 'ItemSheet',
 		});
@@ -16611,10 +17233,7 @@ class ItemSheet extends BaseEntitySheet {
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Provide a unique CSS ID for owned Item sheets
-	 * @type {String}
-	 */
+	/** @override */
 	get id() {
 		if (this.actor) return `actor-${this.actor.id}-item-${this.item.id}`;
 		else return super.id;
@@ -16642,9 +17261,7 @@ class ItemSheet extends BaseEntitySheet {
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Customize the data provided to the item sheet for rendering. By default we just duplicate the item data.
-	 */
+	/** @override */
 	getData() {
 		const data = super.getData();
 		data.item = data.entity;
@@ -16654,12 +17271,7 @@ class ItemSheet extends BaseEntitySheet {
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Extend the Header Button configuration for the ActorSheet to add Token configuration buttons
-	 * See Application._getHeaderButtons for documentation of the return Array structure.
-	 * @return {Array.<Object>}
-	 * @private
-	 */
+	/** @override */
 	_getHeaderButtons() {
 		let buttons = super._getHeaderButtons();
 		let canConfigure = this.isEditable && game.user.isTrusted;
@@ -16672,22 +17284,6 @@ class ItemSheet extends BaseEntitySheet {
 			icon: 'fas fa-cog',
 			onclick: ev => this._onConfigureSheet(ev),
 		});
-
-		// Compendium Import
-		if (this.entity.compendium) {
-			buttons.unshift({
-				label: 'Import',
-				class: 'import',
-				icon: 'fas fa-download',
-				onclick: async () => {
-					await this.close();
-					this.entity.collection.importFromCollection(
-						this.options.compendium,
-						this.entity._id
-					);
-				},
-			});
-		}
 		return buttons;
 	}
 
@@ -16695,16 +17291,10 @@ class ItemSheet extends BaseEntitySheet {
 	/*  Event Listeners and Handlers                */
 	/* -------------------------------------------- */
 
-	/**
-	 * Activate listeners which provide interactivity for item sheet events
-	 * @param html {jQuery}   The HTML object returned by template rendering
-	 */
+	/** @override */
 	activateListeners(html) {
 		super.activateListeners(html);
 		if (!this.options.editable) return;
-
-		// Update the sheet when a select field is changed
-		html.find('select').change(ev => this._onSubmit(ev));
 
 		// Update when we change the image
 		html.find('img[data-edit="img"]').click(ev => this._onEditImage(ev));
@@ -16743,8 +17333,6 @@ class ItemSheet extends BaseEntitySheet {
 		}).browse(this.item.data.img);
 	}
 }
-
-CONFIG.Item.sheetClass = ItemSheet;
 
 /**
  * A Macro configuration sheet
@@ -16786,7 +17374,6 @@ class MacroConfig extends BaseEntitySheet {
 	/** @override */
 	activateListeners(html) {
 		super.activateListeners(html);
-		// Support Image updates
 		html.find('img[data-edit="img"]').click(ev => this._onEditImage(ev));
 	}
 
@@ -16802,7 +17389,7 @@ class MacroConfig extends BaseEntitySheet {
 			current: this.object.data.img,
 			callback: path => {
 				event.currentTarget.src = path;
-				this._onSubmit(event);
+				this._onSubmit(event, { preventClose: true });
 			},
 			top: this.position.top + 40,
 			left: this.position.left + 10,
@@ -16814,45 +17401,41 @@ class MacroConfig extends BaseEntitySheet {
 	/** @override */
 	_updateObject(event, formData) {
 		if (!this.object.data._id) {
-			return Macro.create(formData, { displaySheet: false });
+			return Macro.create(formData);
 		} else {
 			super._updateObject(event, formData);
 		}
 	}
 }
 
-CONFIG.Macro.sheetClass = MacroConfig;
-
 /**
  * Template Measurement Config Sheet
- * @type {FormApplication}
+ * @extends {FormApplication}
  *
- * @param template {MeasureTemplate} The template object being configured
- * @param options {Object}           Additional application rendering options
- * @param options.preview {Boolean}  Configure a preview version of a sound which is not yet saved
+ * @param {MeasureTemplate} template The template object being configured
+ * @param {Object} options           Additional application rendering options
+ * @param {boolean} options.preview  Configure a preview version of a sound which is not yet saved
  */
 class MeasuredTemplateConfig extends FormApplication {
+	/** @override */
 	static get defaultOptions() {
-		const options = super.defaultOptions;
-		options.id = 'template-config';
-		options.classes = ['sheet', 'template-sheet'];
-		options.title = 'Measurement Template Configuration';
-		options.template = 'templates/scene/template-config.html';
-		options.width = 400;
-		return options;
+		return mergeObject(super.defaultOptions, {
+			id: 'template-config',
+			classes: ['sheet', 'template-sheet'],
+			title: 'Measurement Template Configuration',
+			template: 'templates/scene/template-config.html',
+			width: 400,
+		});
 	}
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Construct and return the data object used to render the HTML template for this form application.
-	 * @return {Object}
-	 */
+	/** @override */
 	getData() {
 		return {
 			object: duplicate(this.object.data),
 			options: this.options,
-			templateTypes: CONFIG.templateTypes,
+			templateTypes: CONFIG.MeasuredTemplate.types,
 			gridUnits: canvas.scene.data.gridUnits,
 			submitText: this.options.preview ? 'Create' : 'Update',
 		};
@@ -16860,23 +17443,16 @@ class MeasuredTemplateConfig extends FormApplication {
 
 	/* -------------------------------------------- */
 
-	/**
-	 * This method is called upon form submission after form data is validated
-	 * @param event {Event}       The initial triggering submission event
-	 * @param formData {Object}   The object of validated form data with which to update the object
-	 * @private
-	 */
+	/** @override */
 	_updateObject(event, formData) {
 		if (!game.user.isTrusted)
 			throw 'You do not have the ability to configure a MeasurementTemplate.';
 		if (this.object.id) {
 			formData['id'] = this.object.id;
-			this.object.update(canvas.scene._id, formData);
-		} else this.object.constructor.create(canvas.scene._id, formData);
+			this.object.update(formData);
+		} else this.object.constructor.create(formData);
 	}
 }
-
-/* -------------------------------------------- */
 
 /**
  * A generic application for configuring permissions for various Entity types
@@ -17040,7 +17616,6 @@ class PlayerConfig extends FormApplication {
 		// Release the currently selected character
 		html.find('button[name="release"]').click(ev => {
 			if (canvas.tokens) canvas.tokens.releaseAll();
-			if (canvas.sight) canvas.sight.initialize();
 			this.user
 				.update({ character: null })
 				.then(() => this.render(false));
@@ -17223,24 +17798,20 @@ class RollTableConfig extends BaseEntitySheet {
 		options.width = 720;
 		options.height = 'auto';
 		options.closeOnSubmit = false;
+		options.scrollY = ['ol.table-results'];
 		return options;
 	}
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Return a dynamic application title for the configuration sheet
-	 * @return {String}
-	 */
+	/** @override */
 	get title() {
 		return `${game.i18n.localize('TABLE.SheetTitle')}: ${this.entity.name}`;
 	}
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Default data preparation logic for the entity sheet
-	 */
+	/** @override */
 	getData() {
 		const results = this.entity.results.map(r => {
 			r = duplicate(r);
@@ -17271,9 +17842,7 @@ class RollTableConfig extends BaseEntitySheet {
 	/* 	Event Listeners and Handlers								*/
 	/* -------------------------------------------- */
 
-	/**
-	 * Activate event listeners for the RollTable Configuration Sheet
-	 */
+	/** @override */
 	activateListeners(html) {
 		super.activateListeners(html);
 
@@ -17430,7 +17999,7 @@ class RollTableConfig extends BaseEntitySheet {
 	 */
 	async _onNormalizeResults(event) {
 		event.preventDefault();
-		if (!this._rendered || this._submitting) return false;
+		if (!this.rendered || this._submitting) return false;
 
 		// Save any pending changes
 		await this._onSubmit(event);
@@ -17627,14 +18196,12 @@ class RollTableConfig extends BaseEntitySheet {
 	}
 }
 
-CONFIG.RollTable.sheetClass = RollTableConfig;
-
 /**
  * A Scene configuration sheet
  * @extends {BaseEntitySheet}
  * @see {@link Scene} The Scene Entity which is being configured
  */
-class SceneSheet extends BaseEntitySheet {
+class SceneConfig extends BaseEntitySheet {
 	/** @override */
 	static get defaultOptions() {
 		return mergeObject(super.defaultOptions, {
@@ -17649,6 +18216,18 @@ class SceneSheet extends BaseEntitySheet {
 	/** @override */
 	get id() {
 		return `scene-config-${this.object._id}`;
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
+	getData() {
+		const data = super.getData();
+		data.gridTypes = this._getGridTypes();
+		data.weatherTypes = this._getWeatherTypes();
+		data.playlists = this._getEntities(game.playlists);
+		data.journals = this._getEntities(game.journal);
+		return data;
 	}
 
 	/* -------------------------------------------- */
@@ -17690,13 +18269,18 @@ class SceneSheet extends BaseEntitySheet {
 
 	/* -------------------------------------------- */
 
-	/** @override */
-	getData() {
-		const data = super.getData();
-		data.gridTypes = this._getGridTypes();
-		data.weatherTypes = this._getWeatherTypes();
-		data.playlists = game.playlists.entities;
-		return data;
+	/**
+	 * Get the alphabetized entities which can be chosen as a configuration for the scene
+	 * @param {Collection} collection
+	 * @return {Array}
+	 * @private
+	 */
+	_getEntities(collection) {
+		const entities = collection.entities.map(e => {
+			return { _id: e.data._id, name: e.data.name };
+		});
+		entities.sort((a, b) => a.name.localeCompare(b.name));
+		return entities;
 	}
 
 	/* -------------------------------------------- */
@@ -17727,49 +18311,32 @@ class SceneSheet extends BaseEntitySheet {
 			'Captured canvas position as initial view in the Scene configuration form.'
 		);
 	}
-}
 
-/* -------------------------------------------- */
+	/* -------------------------------------------- */
 
-/**
- * Long-form Scene notes
- * @type {BaseEntitySheet}
- */
-class SceneNotes extends BaseEntitySheet {
-	static get defaultOptions() {
-		const options = super.defaultOptions;
-		options.template = 'templates/scene/scene-notes.html';
-		options.width = 600;
-		options.height = window.innerHeight * 0.9;
-		options.top = 10;
-		options.left = window.innerWidth - 600 - 320;
-		options.classes = ['sheet', 'scene-notes'];
-		return options;
+	/** @override */
+	_onChangeRange(event) {
+		super._onChangeRange(event);
+		const rng = event.target;
+		if (rng.name === 'darkness' && this.object.isView) {
+			canvas.lighting.update(Number(rng.value));
+		}
 	}
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Give each Scene Configuration sheet a unique css ID based on their entity ID
-	 * @return {string}
-	 */
-	get id() {
-		return `scene-notes-${this.object._id}`;
-	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * Put the Scene name in the window title
-	 * @return {String}
-	 */
-	get title() {
-		return `${this.entity.name}: Notes`;
+	/** @override */
+	_updateObject(event, formData) {
+		const initialViewAttrs = ['initial.x', 'initial.y', 'initial.scale'];
+		if (initialViewAttrs.every(a => !formData[a])) {
+			for (let a of initialViewAttrs) {
+				delete formData[a];
+			}
+			formData.initial = null;
+		}
+		return super._updateObject(event, formData);
 	}
 }
-
-CONFIG.Scene.sheetClass = SceneSheet;
-CONFIG.Scene.notesClass = SceneNotes;
 
 /**
  * Entity Sheet Configuration Application
@@ -18101,7 +18668,7 @@ class CameraViews extends Application {
 		 * The WebRTCImplementation to display
 		 * @type {WebRTC}
 		 */
-		this.webrtc = webrtc;
+		this.webrtc = webrtc || game.webrtc;
 
 		// Render the camera views app when Users change
 		game.users.apps.push(this);
@@ -18729,8 +19296,12 @@ class ChatBubbles {
 		// Clear any existing bubble for the speaker
 		await this._clearBubble(token);
 
-		// Create the HTML
+		// Create the HTML and call the chatBubble hook
 		let html = $(await this._renderHTML({ token, message, emote }));
+		const allowed = Hooks.call('chatBubble', token, html, message, {
+			emote,
+		});
+		if (allowed === false) return;
 
 		// Set initial dimensions
 		let dimensions = this._getMessageDimensions(message);
@@ -19275,6 +19846,28 @@ class SceneControls extends Application {
 					button: true,
 				},
 				{
+					name: 'day',
+					title: 'CONTROLS.LightDay',
+					icon: 'fas fa-sun',
+					onClick: () =>
+						canvas.scene.update(
+							{ darkness: 0.0 },
+							{ animateDarkness: true }
+						),
+					button: true,
+				},
+				{
+					name: 'night',
+					title: 'CONTROLS.LightNight',
+					icon: 'fas fa-moon',
+					onClick: () =>
+						canvas.scene.update(
+							{ darkness: 1.0 },
+							{ animateDarkness: true }
+						),
+					button: true,
+				},
+				{
 					name: 'reset',
 					title: 'CONTROLS.LightReset',
 					icon: 'fas fa-cloud',
@@ -19723,8 +20316,28 @@ class Hotbar extends Application {
 	_onHoverMacro(event) {
 		event.preventDefault();
 		const li = event.currentTarget;
-		if (event.type === 'mouseenter') this._hover = li.dataset.slot;
-		else this._hover = null;
+		const hasAction = !li.classList.contains('inactive');
+
+		// Remove any existing tooltip
+		const tooltip = li.querySelector('.tooltip');
+		if (tooltip) li.removeChild(tooltip);
+
+		// Handle hover-in
+		if (event.type === 'mouseenter') {
+			this._hover = li.dataset.slot;
+			if (hasAction) {
+				const macro = game.macros.get(li.dataset.macroId);
+				const tooltip = document.createElement('SPAN');
+				tooltip.classList.add('tooltip');
+				tooltip.textContent = macro.name;
+				li.appendChild(tooltip);
+			}
+		}
+
+		// Handle hover-out
+		else {
+			this._hover = null;
+		}
 	}
 
 	/* -------------------------------------------- */
@@ -19958,9 +20571,7 @@ class BasePlaceableHUD extends Application {
 	 */
 	async _onToggleVisibility(event) {
 		event.preventDefault();
-		await this.object.update(canvas.scene._id, {
-			hidden: !this.object.data.hidden,
-		});
+		await this.object.update({ hidden: !this.object.data.hidden });
 		$(event.currentTarget).toggleClass('active');
 	}
 
@@ -19972,9 +20583,7 @@ class BasePlaceableHUD extends Application {
 	 */
 	async _onToggleLocked(event) {
 		event.preventDefault();
-		await this.object.update(canvas.scene._id, {
-			locked: !this.object.data.locked,
-		});
+		await this.object.update({ locked: !this.object.data.locked });
 		$(event.currentTarget).toggleClass('active');
 	}
 
@@ -20019,16 +20628,12 @@ class MainMenu extends Application {
 		return options;
 	}
 
-	/* -------------------------------------------- */
-
-	getData() {
-		return {
-			items: this.items,
-		};
-	}
-
 	/* ----------------------------------------- */
 
+	/**
+	 * The structure of menu items
+	 * @return {Object}
+	 */
 	get items() {
 		return {
 			reload: {
@@ -20037,11 +20642,11 @@ class MainMenu extends Application {
 				enabled: true,
 				onClick: () => window.location.reload(),
 			},
-			player: {
+			logout: {
 				label: 'MENU.Logout',
 				icon: '<i class="fas fa-user"></i>',
 				enabled: true,
-				onClick: () => (window.location.href = './join'),
+				onClick: () => game.logOut(),
 			},
 			players: {
 				label: 'MENU.Players',
@@ -20058,8 +20663,18 @@ class MainMenu extends Application {
 		};
 	}
 
+	/* -------------------------------------------- */
+
+	/** @override */
+	getData() {
+		return {
+			items: this.items,
+		};
+	}
+
 	/* ----------------------------------------- */
 
+	/** @override */
 	activateListeners(html) {
 		for (let [k, v] of Object.entries(this.items)) {
 			html.find('.menu-' + k).click(ev => v.onClick());
@@ -20163,7 +20778,7 @@ class SceneNavigation extends Application {
 		const scenes = this.scenes.map(s => {
 			let data = duplicate(s.data);
 			let users = game.users.entities.filter(
-				u => u.active && u.data.scene === s._id
+				u => u.active && u.viewedScene === s._id
 			);
 			data.name = data.navName || data.name;
 			data.users = users.map(u => {
@@ -20291,10 +20906,19 @@ class SceneNavigation extends Application {
 			{
 				name: 'SCENES.Notes',
 				icon: '<i class="fas fa-scroll"></i>',
-				condition: game.user.isGM,
+				condition: li => {
+					if (!game.user.isGM) return false;
+					const scene = game.scenes.get(li.data('sceneId'));
+					return !!scene.journal;
+				},
 				callback: li => {
-					let scene = game.scenes.get(li.attr('data-scene-id'));
-					scene.notes.render(true);
+					const scene = game.scenes.get(li.data('sceneId'));
+					const entry = scene.journal;
+					if (entry) {
+						const sheet = entry.sheet;
+						sheet.options.sheetMode = 'text';
+						sheet.render(true);
+					}
 				},
 			},
 			{
@@ -20676,7 +21300,7 @@ class JournalSheet extends BaseEntitySheet {
 		// Determine the sheet rendering mode
 		const mode = options.sheetMode || this._sheetMode;
 		if (mode === null) return false;
-		if (mode === this._sheetMode && this._rendered)
+		if (mode === this._sheetMode && this.rendered)
 			return super._render(force, options);
 
 		// Asynchronously begin closing the current sheet
@@ -20750,22 +21374,6 @@ class JournalSheet extends BaseEntitySheet {
 				onclick: ev => this._onShowPlayers(ev),
 			});
 		}
-
-		// Compendium Import
-		if (this.entity.compendium) {
-			buttons.unshift({
-				label: 'Import',
-				class: 'import',
-				icon: 'fas fa-download',
-				onclick: async ev => {
-					await this.close();
-					this.entity.collection.importFromCollection(
-						this.options.compendium,
-						this.entity._id
-					);
-				},
-			});
-		}
 		return buttons;
 	}
 
@@ -20821,8 +21429,6 @@ class JournalSheet extends BaseEntitySheet {
 	}
 }
 
-CONFIG.JournalEntry.sheetClass = JournalSheet;
-
 /**
  * Placeable Note configuration sheet
  * @type {FormApplication}
@@ -20875,9 +21481,9 @@ class NoteConfig extends FormApplication {
 	_updateObject(event, formData) {
 		if (this.object.id) {
 			formData['id'] = this.object.id;
-			this.object.update(canvas.scene._id, formData);
+			this.object.update(formData);
 		} else {
-			this.object.constructor.create(canvas.scene._id, formData);
+			this.object.constructor.create(formData);
 			canvas.notes.preview.removeChildren();
 		}
 	}
@@ -20904,18 +21510,19 @@ class NoteConfig extends FormApplication {
  */
 class DrawingConfig extends FormApplication {
 	static get defaultOptions() {
-		const options = super.defaultOptions;
-		options.id = 'drawing-config';
-		options.classes = ['sheet'];
-		options.template = 'templates/scene/drawing-config.html';
-		options.width = 480;
-		options.height = 360;
-		options.configureDefault = false;
-		return options;
+		return mergeObject(super.defaultOptions, {
+			id: 'drawing-config',
+			classes: ['sheet'],
+			template: 'templates/scene/drawing-config.html',
+			width: 480,
+			height: 360,
+			configureDefault: false,
+		});
 	}
 
 	/* -------------------------------------------- */
 
+	/** @override */
 	get title() {
 		let title = 'Drawing Configuration';
 		return this.options.configureDefault ? 'Default ' + title : title;
@@ -20923,10 +21530,7 @@ class DrawingConfig extends FormApplication {
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Construct and return the data object used to render the HTML template for this form application.
-	 * @return {Object}
-	 */
+	/** @override */
 	getData() {
 		const author = game.users.get(this.object.data.author);
 
@@ -20954,12 +21558,7 @@ class DrawingConfig extends FormApplication {
 
 	/* -------------------------------------------- */
 
-	/**
-	 * This method is called upon form submission after form data is validated
-	 * @param event {Event}       The initial triggering submission event
-	 * @param formData {Object}   The object of validated form data with which to update the object
-	 * @private
-	 */
+	/** @override */
 	_updateObject(event, formData) {
 		if (!this.object.owner)
 			throw new Error(
@@ -20984,9 +21583,7 @@ class DrawingConfig extends FormApplication {
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Extend the application close method to clear any preview sound aura if one exists
-	 */
+	/** @override */
 	close() {
 		super.close();
 		if (this.preview) {
@@ -20999,9 +21596,7 @@ class DrawingConfig extends FormApplication {
 	/*  Event Listeners and Handlers                */
 	/* -------------------------------------------- */
 
-	/**
-	 * Activate listeners to handle events in the rendered HTML
-	 */
+	/** @override */
 	activateListeners(html) {
 		super.activateListeners(html);
 
@@ -21011,26 +21606,10 @@ class DrawingConfig extends FormApplication {
 			callback: clicked => (this._tab = clicked.data('tab')),
 		});
 
-		// Range inputs
-		html.find('input[type="range"]').change(this._onRangeChange.bind(this));
-
 		// Reset default
 		html.find('button[name="resetDefault"]').click(
 			this._onResetDefaults.bind(this)
 		);
-	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * Handle changes to a range type input by propagating those changes to the sibling span element
-	 * @param event
-	 * @private
-	 */
-	_onRangeChange(event) {
-		event.preventDefault();
-		let span = $(event.target).siblings('.range-value');
-		span.text(event.target.value);
 	}
 
 	/* -------------------------------------------- */
@@ -21096,28 +21675,26 @@ class DrawingHUD extends BasePlaceableHUD {
 
 /**
  * Light Source Configuration Sheet
- * @type {FormApplication}
+ * @extends {FormApplication}
  *
  * @param light {AmbientLight} The AmbientLight object for which settings are being configured
  * @param options {Object}     LightConfig ui options (see Application)
  */
 class LightConfig extends FormApplication {
+	/** @override */
 	static get defaultOptions() {
-		const options = super.defaultOptions;
-		options.id = 'light-config';
-		options.classes = ['sheet', 'light-config'];
-		options.title = 'Light Source Configuration';
-		options.template = 'templates/scene/light-config.html';
-		options.width = 480;
-		return options;
+		return mergeObject(super.defaultOptions, {
+			id: 'light-config',
+			classes: ['sheet', 'light-sheet'],
+			title: 'Light Source Configuration',
+			template: 'templates/scene/light-config.html',
+			width: 480,
+		});
 	}
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Construct and return the data object used to render the HTML template for this form application.
-	 * @return {Object}
-	 */
+	/** @override */
 	getData() {
 		return {
 			object: duplicate(this.object.data),
@@ -21127,74 +21704,40 @@ class LightConfig extends FormApplication {
 	}
 
 	/* -------------------------------------------- */
-	/*  Event Listeners and Handlers                */
-	/* -------------------------------------------- */
 
-	/**
-	 * Activate listeners to handle events in the rendered HTML
-	 */
-	activateListeners(html) {
-		super.activateListeners(html);
-
-		// Range inputs
-		html.find('input[type="range"]').change(this._onRangeChange.bind(this));
-	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * Handle changes to a range type input by propagating those changes to the sibling span element
-	 * @param event
-	 * @private
-	 */
-	_onRangeChange(event) {
-		event.preventDefault();
-		const span = event.target.parentElement.querySelector('.range-value');
-		span.innerHTML = event.target.value;
-	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * This method is called upon form submission after form data is validated
-	 * @param event {Event}       The initial triggering submission event
-	 * @param formData {Object}   The object of validated form data with which to update the object
-	 * @private
-	 */
+	/** @override */
 	_updateObject(event, formData) {
 		if (!game.user.isGM)
 			throw 'You do not have the ability to configure an AmbientLight object.';
 		if (this.object.id) {
 			formData['id'] = this.object.id;
-			this.object.update(canvas.scene._id, formData);
-		} else this.object.constructor.create(canvas.scene._id, formData);
+			this.object.update(formData);
+		} else this.object.constructor.create(formData);
 	}
 }
 
 /**
  * Ambient Sound Config Sheet
- * @type {FormApplication}
+ * @extends {FormApplication}
  *
  * @param sound {AmbientSound}       The sound object being configured
  * @param options {Object}           Additional application rendering options
  * @param options.preview {Boolean}  Configure a preview version of a sound which is not yet saved
  */
 class AmbientSoundConfig extends FormApplication {
+	/** @override */
 	static get defaultOptions() {
-		const options = super.defaultOptions;
-		options.id = 'sound-config';
-		options.classes = ['sheet', 'sound-sheet'];
-		options.title = 'Ambient Sound Configuration';
-		options.template = 'templates/scene/sound-config.html';
-		return options;
+		return mergeObject(super.defaultOptions, {
+			id: 'sound-config',
+			classes: ['sheet', 'sound-sheet'],
+			title: 'Ambient Sound Configuration',
+			template: 'templates/scene/sound-config.html',
+		});
 	}
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Construct and return the data object used to render the HTML template for this form application.
-	 * @return {Object}
-	 */
+	/** @override */
 	getData() {
 		return {
 			object: duplicate(this.object.data),
@@ -21205,26 +21748,19 @@ class AmbientSoundConfig extends FormApplication {
 
 	/* -------------------------------------------- */
 
-	/**
-	 * This method is called upon form submission after form data is validated
-	 * @param event {Event}       The initial triggering submission event
-	 * @param formData {Object}   The object of validated form data with which to update the object
-	 * @private
-	 */
+	/** @override */
 	_updateObject(event, formData) {
 		if (!game.user.isGM)
 			throw 'You do not have the ability to configure an AmbientSound object.';
 		if (this.object.id) {
 			formData['id'] = this.object.id;
-			this.object.update(canvas.scene._id, formData);
-		} else this.object.constructor.create(canvas.scene._id, formData);
+			this.object.update(formData);
+		} else this.object.constructor.create(formData);
 	}
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Extend the application close method to clear any preview sound aura if one exists
-	 */
+	/** @override */
 	close() {
 		super.close();
 		if (this.preview) {
@@ -21238,29 +21774,27 @@ class AmbientSoundConfig extends FormApplication {
 
 /**
  * Tile Config Sheet
- * @type {FormApplication}
+ * @extends {FormApplication}
  *
- * @param tile {Tile}                The Tile object being configured
- * @param options {Object}           Additional application rendering options
- * @param options.preview {Boolean}  Configure a preview version of a tile which is not yet saved
+ * @param {Tile} tile                The Tile object being configured
+ * @param {Object} options           Additional application rendering options
+ * @param {boolean} options.preview  Configure a preview version of a tile which is not yet saved
  */
 class TileConfig extends FormApplication {
+	/** @override */
 	static get defaultOptions() {
-		const options = super.defaultOptions;
-		options.id = 'tile-config';
-		options.classes = ['sheet', 'tile-sheet'];
-		options.title = 'Tile Configuration';
-		options.template = 'templates/scene/tile-config.html';
-		options.width = 400;
-		return options;
+		return mergeObject(super.defaultOptions, {
+			id: 'tile-config',
+			classes: ['sheet', 'tile-sheet'],
+			title: 'Tile Configuration',
+			template: 'templates/scene/tile-config.html',
+			width: 400,
+		});
 	}
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Construct and return the data object used to render the HTML template for this form application.
-	 * @return {Object}
-	 */
+	/** @override */
 	getData() {
 		return {
 			object: duplicate(this.object.data),
@@ -21271,26 +21805,19 @@ class TileConfig extends FormApplication {
 
 	/* -------------------------------------------- */
 
-	/**
-	 * This method is called upon form submission after form data is validated
-	 * @param event {Event}       The initial triggering submission event
-	 * @param formData {Object}   The object of validated form data with which to update the object
-	 * @private
-	 */
+	/** @override */
 	_updateObject(event, formData) {
 		if (!game.user.isGM)
 			throw 'You do not have the ability to configure a Tile object.';
 		if (this.object.id) {
 			formData['id'] = this.object.id;
-			this.object.update(canvas.scene._id, formData);
-		} else this.object.constructor.create(canvas.scene._id, formData);
+			this.object.update(formData);
+		} else this.object.constructor.create(formData);
 	}
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Extend the application close method to clear any preview sound aura if one exists
-	 */
+	/** @override */
 	close() {
 		super.close();
 		if (this.preview) {
@@ -21299,8 +21826,6 @@ class TileConfig extends FormApplication {
 		}
 	}
 }
-
-/* -------------------------------------------- */
 
 /**
  * An implementation of the PlaceableHUD base class which renders a heads-up-display interface for Tile objects.
@@ -21431,13 +21956,17 @@ class TokenConfig extends FormApplication {
 			gridUnits: canvas.ready
 				? canvas.scene.data.gridUnits
 				: game.system.gridUnits,
-			barAttributes: this.getBarAttributes(),
+			barAttributes: this.getBarAttributeChoices(),
+			bar1: this.object.getBarAttribute('bar1'),
+			bar2: this.object.getBarAttribute('bar2'),
 			displayModes: this.displayModes,
 			actors: game.actors.entities
-				.map(a => {
-					return { _id: a._id, name: a.name };
-				})
-				.sort(),
+				.reduce((actors, a) => {
+					if (!a.owner) return actors;
+					actors.push({ _id: a._id, name: a.name });
+					return actors;
+				}, [])
+				.sort((a, b) => a.name.localeCompare(b.name)),
 			dispositions: Object.keys(CONST.TOKEN_DISPOSITIONS).reduce(
 				(obj, key) => {
 					obj[game.i18n.localize(`TOKEN.${key}`)] =
@@ -21455,36 +21984,58 @@ class TokenConfig extends FormApplication {
 	 * Inspect the Actor data model and identify the set of attributes which could be used for a Token Bar
 	 * @return {Array}
 	 */
-	getBarAttributes() {
-		let actor = this.token.actor;
-		if (actor) {
-			let valid = this._getBarAttributes(actor.data.data);
-			return valid.map(v => v.join('.'));
-		}
-		return [];
+	getBarAttributeChoices() {
+		const attributes = this._getBarAttributes(this.actor.data.data, []);
+		attributes.bar = attributes.bar.map(v => v.join('.'));
+		attributes.bar.sort((a, b) => a.localeCompare(b));
+		attributes.value = attributes.value.map(v => v.join('.'));
+		attributes.value.sort((a, b) => a.localeCompare(b));
+		return {
+			'TOKEN.BarAttributes': attributes.bar,
+			'TOKEN.BarValues': attributes.value,
+		};
 	}
 
 	/* -------------------------------------------- */
 
 	/**
 	 * Test whether an individual data object is a valid attribute - containing both a numeric value and max
+	 * @param {Object} data     The data object to search
+	 * @param {Array} path      The attribute path being recursed
+	 * @return {Object}         An object containing both bar and value attribute paths
 	 * @private
 	 */
-	_getBarAttributes(data, parent) {
-		parent = parent || [];
-		let valid = [];
+	_getBarAttributes(data, path) {
+		// Track the path and record found attributes
+		path = path || [];
+		const attributes = {
+			bar: [],
+			value: [],
+		};
+
+		// Recursively explore the object
 		for (let [k, v] of Object.entries(data)) {
+			let p = path.concat([k]);
+
+			// Check objects for both a "value" and a "max"
 			if (v instanceof Object) {
-				let p = parent.concat([k]);
-				if (
+				const isBar =
 					Number.isFinite(parseFloat(v.value)) &&
-					Number.isFinite(parseFloat(v.max))
-				)
-					valid.push(p);
-				else valid = valid.concat(this._getBarAttributes(data[k], p));
+					Number.isFinite(parseFloat(v.max));
+				if (isBar) attributes.bar.push(p);
+				else {
+					const inner = this._getBarAttributes(data[k], p);
+					attributes.bar.push(...inner.bar);
+					attributes.value.push(...inner.value);
+				}
+			}
+
+			// Otherwise identify numeric values
+			else if (Number.isFinite(v)) {
+				attributes.value.push(p);
 			}
 		}
-		return valid;
+		return attributes;
 	}
 
 	/* -------------------------------------------- */
@@ -21511,22 +22062,13 @@ class TokenConfig extends FormApplication {
 		super.activateListeners(html);
 
 		// Activate tab navigation
-		new Tabs(
-			html.find('.tabs'),
-			this.token.data.flags['_configTab'],
-			clicked => {
-				this.actor.data.flags['_configTab'] = clicked.attr('data-tab');
-			}
-		);
+		new Tabs(html.find('.tabs'), {
+			initial: this._tab,
+			callback: clicked => (this._tab = clicked.attr('data-tab')),
+		});
 
 		// Update bar data when the target attribute is changed
 		html.find('.bar-attribute').change(this._onBarChange.bind(this));
-
-		// Scale tooltip
-		html.find('[name="scale"]').change(ev => {
-			ev.currentTarget.nextElementSibling.textContent =
-				ev.currentTarget.value;
-		});
 
 		// Alternate image assignment
 		html.find('.alternate-images').change(
@@ -21583,7 +22125,6 @@ class TokenConfig extends FormApplication {
 			}
 		}
 		actorData['token'] = mergeObject(actor.data.token, update, {
-			insertKeys: false,
 			inplace: false,
 		});
 
@@ -21634,14 +22175,15 @@ class TokenConfig extends FormApplication {
 	 * Handle changing the attribute bar in the drop-down selector to update the default current and max value
 	 * @private
 	 */
-	_onBarChange(ev) {
+	async _onBarChange(ev) {
 		const form = ev.target.form;
-		const bar = ev.target.name.split('.')[0];
-		let data = ev.target.value
-			? getProperty(this.actor.data.data, ev.target.value)
-			: { value: '', max: '' };
-		form.querySelector(`input.${bar}-value`).value = data.value;
-		form.querySelector(`input.${bar}-max`).value = data.max;
+		const attr = this.object.getBarAttribute(null, {
+			alternative: ev.target.value,
+		});
+		const bar = ev.target.name.split('.').shift();
+		form.querySelector(`input.${bar}-value`).value = attr.value;
+		form.querySelector(`input.${bar}-max`).value =
+			attr.type === 'bar' ? attr.max : '';
 	}
 }
 
@@ -21664,9 +22206,7 @@ class TokenHUD extends BasePlaceableHUD {
 
 	/* -------------------------------------------- */
 
-	/**
-	 * When the TokenHUD is bound to a new Token, set the status effects flag back to false
-	 */
+	/** @override */
 	bind(object) {
 		this._statusEffects = false;
 		super.bind(object);
@@ -21674,32 +22214,33 @@ class TokenHUD extends BasePlaceableHUD {
 
 	/* -------------------------------------------- */
 
+	/** @override */
 	setPosition() {
+		const td = this.object.data;
+		const ratio = canvas.dimensions.size / 100;
 		const position = {
-			width: this.object.w + 160,
-			height: this.object.h + 100,
-			left: this.object.x - 80,
-			top: this.object.y - 50,
+			width: td.width * 100,
+			height: td.height * 100,
+			left: this.object.x,
+			top: this.object.y,
 		};
+		if (ratio !== 1) position.transform = `scale(${ratio})`;
 		this.element.css(position);
 	}
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Extend the data object provided to render HTML for the Token HUD
-	 * @return {Object}
-	 */
+	/** @override */
 	getData() {
 		const data = super.getData();
 		const bar1 = this.object.getBarAttribute('bar1');
 		const bar2 = this.object.getBarAttribute('bar2');
 		return mergeObject(data, {
 			canConfigure: game.user.isTrusted,
-			canToggleCombat: canvas.scene.active,
-			displayBar1: bar1.attribute && Number.isNumeric(bar1.value),
+			canToggleCombat: ui.combat !== null,
+			displayBar1: bar1 && bar1.type !== 'none',
 			bar1Data: bar1,
-			displayBar2: bar2.attribute && Number.isNumeric(bar2.value),
+			displayBar2: bar2 && bar2.type !== 'none',
 			bar2Data: bar2,
 			visibilityClass: data.hidden ? 'active' : '',
 			effectsClass: this._statusEffects ? 'active' : '',
@@ -21719,22 +22260,18 @@ class TokenHUD extends BasePlaceableHUD {
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Activate event listeners which provide interactivity for the Token HUD application
-	 * @param html
-	 */
+	/** @override */
 	activateListeners(html) {
 		// Attribute Bars
 		let attributeUpdate = this._onAttributeUpdate.bind(this);
 		html.find('.attribute input')
 			.click(this._onAttributeClick)
-			.focusout(attributeUpdate)
-			.keydown(attributeUpdate);
+			.change(attributeUpdate);
 
 		// Token Control Icons
 		html.find('.config').click(this._onTokenConfig.bind(this));
 		html.find('.combat').click(this._onToggleCombat.bind(this));
-		html.find('.effects').click(this._onTokenEffects.bind(this));
+		html.find('.effects > img').click(this._onTokenEffects.bind(this));
 		html.find('.visibility').click(this._onToggleVisibility.bind(this));
 		html.find('.target').click(this._onToggleTarget.bind(this));
 
@@ -21766,17 +22303,12 @@ class TokenHUD extends BasePlaceableHUD {
 	 * @private
 	 */
 	_onAttributeUpdate(event) {
-		// Filter keydown events for Enter
-		if (event.type === 'keydown') {
-			if (event.keyCode === KEYS.ENTER) this.clear();
-			return;
-		}
 		event.preventDefault();
 
 		// Acquire string input
 		const input = event.currentTarget;
 		let strVal = input.value.trim();
-		let isRelative = strVal.startsWith('+') || strVal.startsWith('-');
+		let isDelta = strVal.startsWith('+') || strVal.startsWith('-');
 		if (strVal.startsWith('=')) strVal = strVal.slice(1);
 		let value = Number(strVal);
 
@@ -21784,24 +22316,25 @@ class TokenHUD extends BasePlaceableHUD {
 		let bar = input.dataset.bar;
 		if (bar) {
 			const actor = this.object.actor;
-			const data = this.object.getBarAttribute(bar);
-			const current = getProperty(actor.data.data, data.attribute);
-			if (isRelative)
-				value = Math.clamped(
-					0,
-					Number(current.value) + value,
-					current.max
-				);
-			actor.update({ [`data.${data.attribute}.value`]: value });
+			const attr = this.object.getBarAttribute(bar);
+			actor.modifyTokenAttribute(
+				attr.attribute,
+				value,
+				isDelta,
+				attr.type === 'bar'
+			);
 		}
 
 		// Otherwise update the Token
 		else {
 			const current = this.object.data[input.name];
 			this.object.update(canvas.scene._id, {
-				[input.name]: isRelative ? current + value : value,
+				[input.name]: isDelta ? current + value : value,
 			});
 		}
+
+		// Clear the HUD
+		this.clear();
 	}
 
 	/* -------------------------------------------- */
@@ -21848,8 +22381,8 @@ class TokenHUD extends BasePlaceableHUD {
 	_onTokenEffects(event) {
 		event.preventDefault();
 		this._statusEffects = !this._statusEffects;
-		let btn = $(event.currentTarget);
-		let fx = btn.parents('.col').siblings('.status-effects');
+		let btn = $(event.currentTarget.parentElement);
+		let fx = btn.find('.status-effects');
 		btn.toggleClass('active');
 		fx.toggleClass('active');
 	}
@@ -21910,7 +22443,6 @@ class WallConfig extends FormApplication {
 		options.title = 'Wall Configuration';
 		options.template = 'templates/scene/wall-config.html';
 		options.width = 400;
-		options.editMany = false;
 		options.editTargets = [];
 		return options;
 	}
@@ -21922,7 +22454,9 @@ class WallConfig extends FormApplication {
 	 * @type {String}
 	 */
 	get title() {
-		let title = this.options.editMany ? 'WALLS.TitleMany' : 'WALLS.Title';
+		let title = this.options.editTargets.length
+			? 'WALLS.TitleMany'
+			: 'WALLS.Title';
 		return game.i18n.localize(title);
 	}
 
@@ -21985,13 +22519,13 @@ class WallConfig extends FormApplication {
 	_updateObject(event, formData) {
 		// Update many walls
 		const wallIds = this.options.editTargets;
-		if (this.options.editMany) {
+		if (wallIds.length) {
 			const updateData = canvas.scene.data.walls.reduce((arr, w) => {
-				if (wallIds.includes(w.id))
+				if (wallIds.includes(w._id))
 					arr.push(mergeObject(w, formData, { inplace: false }));
 				return arr;
 			}, []);
-			return canvas.walls.updateMany(updateData);
+			return canvas.scene.updateManyEmbeddedEntities('Wall', updateData);
 		}
 
 		// Update single wall
@@ -22014,6 +22548,9 @@ class EULA extends Application {
 		return options;
 	}
 
+	/* -------------------------------------------- */
+
+	/** @override */
 	async getData() {
 		let html = await fetch('license.html').then(r => r.text());
 		return {
@@ -22022,33 +22559,93 @@ class EULA extends Application {
 	}
 
 	/* -------------------------------------------- */
+
+	/** @override */
+	async _renderOuter(options) {
+		const id = this.id;
+		const classes = Array.from(
+			options.classes || this.options.classes
+		).join(' ');
+
+		// Override the normal window app wrapper so it cannot be closed or minimized
+		const parsed = $.parseHTML(`<div id="${id}" class="app window-app ${classes}" data-appid="${this.appId}">
+      <header class="window-header flexrow">
+          <h4 class="window-title">${this.title}</h4>
+      </header>
+      <section class="window-content"></section>
+    </div>`);
+		const html = $(parsed[0]);
+
+		// Make the outer window draggable
+		const header = html.find('header')[0];
+		new Draggable(this, html, header, this.options.resizable);
+
+		// Set the outer frame z-index
+		if (Object.keys(ui.windows).length === 0) _maxZ = 100;
+		html.css({ zIndex: Math.min(++_maxZ, 9999) });
+		return html;
+	}
+
+	/* -------------------------------------------- */
 	/*  Event Listeners and Handlers                */
 	/* -------------------------------------------- */
 
+	/** @override */
 	activateListeners(html) {
 		super.activateListeners(html);
+		html.find('#sign').click(this._onAccept.bind(this));
+		html.find('#decline').click(this._onDecline.bind(this));
+	}
 
-		// Agree and submit
-		html.find('#sign').click(ev => {
-			ev.preventDefault();
-			if (!ev.target.form.agree.checked) {
-				ui.notifications.error(
-					`You must agree to the ${this.options.title} before proceeding.`
-				);
-				return false;
-			}
-			game.socket.emit('signEULA', signed => {
-				ui.notifications.info(
-					'Thank you. Please enjoy Foundry Virtual Tabletop!'
-				);
-				this.close();
-			});
+	/* -------------------------------------------- */
+
+	/**
+	 * Handle acceptance of the EULA by checking the agreement box and clicking the agree button
+	 * @param {MouseEvent} event    The orginating click event
+	 */
+	async _onAccept(event) {
+		event.preventDefault();
+		const button = event.currentTarget;
+		button.disabled = true;
+
+		// Require the agreement box to have been checked
+		if (!event.target.form.agree.checked) {
+			ui.notifications.error(
+				`You must agree to the ${this.options.title} before proceeding.`
+			);
+			button.disabled = false;
+			return false;
+		}
+
+		// Submit the acceptance
+		const request = await SetupConfiguration.post({
+			action: 'eulaSign',
+			signed: true,
 		});
+		const response = await request.json();
 
-		// Disagree and quit
-		html.find('#cancel').click(ev => {
-			ev.preventDefault();
-			window.location.href = ROUTE_PREFIX + '/quit';
+		// Display an error message if one occurred
+		if (response.error) {
+			return ui.notifications.error(response.error);
+		}
+
+		// Display a notification and close the window
+		ui.notifications.info(response.message);
+		return this.close();
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Handle refusal of the EULA by checking the decline button
+	 * @param {MouseEvent} event    The originating click event
+	 */
+	_onDecline(event) {
+		event.preventDefault();
+		event.currentTarget.disabled = true;
+		const quitURL = ROUTE_PREFIX ? `/${ROUTE_PREFIX}/quit` : '/quit';
+		fetch(quitURL, { method: 'POST' }).then(response => {
+			window.location.href = CONST.WEBSITE_URL;
 		});
 	}
 }
@@ -22057,7 +22654,7 @@ class EULA extends Application {
  * The Package Configuration setup application
  * @type {Application}
  */
-class SetupConfiguration extends FormApplication {
+class SetupConfigurationForm extends FormApplication {
 	constructor({ systems, modules, worlds, currentWorld = null } = {}) {
 		super({});
 
@@ -22090,6 +22687,15 @@ class SetupConfiguration extends FormApplication {
 		 * @type {String}
 		 */
 		this._tab = 'worlds';
+
+		/**
+		 * Track the button elements which represent updates for different named packages
+		 * @type {HTMLElement|null}
+		 */
+		this._progressButton = null;
+
+		// Activate socket listeners used in the setup view
+		this.activateSocketListeners();
 	}
 
 	/* -------------------------------------------- */
@@ -22097,7 +22703,7 @@ class SetupConfiguration extends FormApplication {
 	/** @override */
 	static get defaultOptions() {
 		return mergeObject(super.defaultOptions, {
-			id: 'package-configuration',
+			id: 'setup-configuration',
 			classes: ['dark'],
 			template: 'templates/setup/setup-config.html',
 			width: 960,
@@ -22110,9 +22716,17 @@ class SetupConfiguration extends FormApplication {
 
 	/** @override */
 	getData() {
+		// Configuration options
+		const options = game.data.options;
+		options.upnp = options.upnp !== false;
+
 		return {
 			systems: this.systems,
 			modules: this.modules,
+			options: options,
+			adminKeyPlaceholder: options.adminKey
+				? CONST.PASSWORD_SAFE_STRING
+				: '',
 			worlds: this.worlds.map(w => {
 				w.active = w.id === this.current;
 				w.shortDesc =
@@ -22155,77 +22769,155 @@ class SetupConfiguration extends FormApplication {
 			container: html,
 		});
 
-		// Update Core
-		html.find('button.update-core').click(this._onCoreUpdate.bind(this));
+		// Confirm Admin Changes
+		html.find('button#admin-save').click(this._onSaveAdmin.bind(this));
+
+		// Create or Edit World
+		html.find('button#create-world, button.edit-world').click(
+			this._onWorldConfig.bind(this)
+		);
+
+		// Generic Submission Button
+		html.find('button[type="submit"]').click(
+			this._onSubmitButton.bind(this)
+		);
 
 		// Install Package
-		html.find('button.install').click(this._onInstall.bind(this));
+		html.find('button.install-package').click(
+			this._onInstallPackage.bind(this)
+		);
 
 		// Update Package
-		html.find('button.update').click(this._onUpdate.bind(this));
-
-		// Uninstall Package
-		html.find('button.uninstall').click(this._onUninstall.bind(this));
-
-		// Create World
-		html.find('button.create').click(this._onWorldCreate.bind(this));
-
-		// Launch World
-		html.find('button.launch').click(this._onWorldLaunch.bind(this));
-
-		// Edit World
-		html.find('button.edit-world').click(this._onWorldEdit.bind(this));
+		html.find('button.update').click(this._onUpdatePackage.bind(this));
 
 		// Update All Packages
-		html.find('button.update-all').click(this._onUpdateAll.bind(this));
+		html.find('button.update-packages').click(
+			this._onUpdatePackages.bind(this)
+		);
+
+		// Uninstall Package
+		html.find('button.uninstall').click(
+			this._onUninstallPackage.bind(this)
+		);
+
+		// Update Core
+		html.find('button#update-core').click(this._onCoreUpdate.bind(this));
 	}
 
 	/* -------------------------------------------- */
 
 	/**
-	 * Handle button clicks to update the core VTT software
-	 * @param {Event} event
+	 * Post the setup configuration form
+	 * @param {Object} data
+	 * @return {Promise}
 	 * @private
 	 */
-	_onCoreUpdate(event) {
-		const button = event.currentTarget;
-		const form = button.form || $(button).closest('form')[0];
-		button.disabled = true;
-
-		// Retrieve the update key
-		let key = form.updateKey.value;
-		form.updateKey.disabled = true;
-
-		// Condition on the button action
-		switch (button.dataset.action) {
-			// Check for update
-			case 'check':
-				const label = button.children[1];
-				label.innerHTML = 'Checking for Update';
-				game.socket.emit('updateCheck', key, target => {
-					if (target) {
-						label.innerHTML = 'Download Update';
-						button.setAttribute('data-action', 'download');
-						if (target && target.notes)
-							new UpdateNotes(target).render(true);
-						button.disabled = false;
-					} else {
-						label.innerHTML = 'No Update Available';
-					}
-				});
-				break;
-
-			// Download update
-			case 'download':
-				this._activateProgressListener($(button));
-				game.socket.emit('updateDownload', key, target => {
-					if (target && target.notes)
-						new UpdateNotes(target).render(true);
-				});
-				break;
+	async _post(data) {
+		const formData = new FormData(this.form);
+		for (let [k, v] of Object.entries(data)) {
+			formData.set(k, v);
 		}
+		const request = await fetch(SetupConfiguration.setupURL, {
+			method: 'POST',
+			body: formData,
+		});
+
+		// Handle redirects
+		if (request.redirected) window.location.href = request.url;
+
+		// Process response
+		const response = await request.json();
+		if (response.error) {
+			const err = new Error(response.error);
+			err.stack = response.stack;
+			ui.notifications.error(response.error);
+			throw err;
+		}
+		return response;
 	}
 
+	/* -------------------------------------------- */
+
+	/**
+	 * Reload the setup view by re-acquiring setup data and re-rendering the form
+	 * @private
+	 */
+	_reload() {
+		Game.getSetupData(game.socket).then(setupData => {
+			mergeObject(game.data, setupData);
+			mergeObject(this, setupData);
+			this.render();
+		});
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Generic button handler for the setup form which submits a POST request including any dataset on the button itself
+	 * @param {MouseEvent} event    The originating mouse click event
+	 * @return {Promise}
+	 * @private
+	 */
+	async _onSubmitButton(event) {
+		event.preventDefault();
+		const button = event.currentTarget;
+		button.disabled = true;
+		const data = duplicate(button.dataset);
+		data.action = button.value;
+		const response = await this._post(data);
+		button.disabled = false;
+		return response;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Confirm user intent when saving admin changes to the application configuration
+	 * @param {MouseEvent} event    The originating mouse click event
+	 * @return {Promise}
+	 * @private
+	 */
+	async _onSaveAdmin(event) {
+		event.preventDefault();
+		event.stopImmediatePropagation();
+		return Dialog.confirm({
+			title: 'Save Application Configuration',
+			content: `<p class="notification">Modifying these configuration options will cause the server to be shut down and 
+            require that you restart the server manually. Do you wish to continue?</p>`,
+			yes: () => {
+				this._post({ action: 'adminConfigure' });
+				this.element.html(
+					`<p>The Foundry VTT server has been terminated to apply changes. You must restart manually.</p>`
+				);
+			},
+			defaultYes: false,
+		});
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Begin creation of a new World using the config form
+	 * @param {MouseEvent} event    The originating mouse click event
+	 * @private
+	 */
+	_onWorldConfig(event) {
+		event.preventDefault();
+		const button = event.currentTarget;
+		let data = {};
+		const options = {};
+		if (button.dataset.world) {
+			data = game.data.worlds.find(
+				w => w.data.name === button.dataset.world
+			);
+		} else {
+			options.create = true;
+		}
+		new WorldConfig(data, options).render(true);
+	}
+
+	/* -------------------------------------------- */
+	/*  Package Management                          */
 	/* -------------------------------------------- */
 
 	/**
@@ -22233,60 +22925,56 @@ class SetupConfiguration extends FormApplication {
 	 * @param {Event} event
 	 * @private
 	 */
-	_onInstall(event) {
+	_onInstallPackage(event) {
 		event.preventDefault(event);
 
 		// Get the package type
-		let btn = $(event.currentTarget);
-		let type = btn
-			.parent()
-			.siblings('.package-list')
-			.data('packageType');
+		let button = event.currentTarget;
+		const list = button.closest('.tab').querySelector('.package-list');
+		const type = list.dataset.packageType;
 
-		// Prompt for the manifest URL
-		const form = `<form><div class="form-group">
-                  <label>Manifest URL:</label>
-                  <input type="text" name="manifestURL" placeholder="http://path/to/manifest.json" required/>
-                  </div></form>`;
+		// Create a simple installation form
+		const form = `
+    <form>
+      <p class="notes">${game.i18n.localize('SETUP.InstallHint')}</p>
+      <div class="form-group">
+        <label>${game.i18n.localize('SETUP.ManifestURL')}:</label>
+        <input type="text" name="manifestURL" placeholder="https://path/to/manifest.json" required/>
+      </div>
+    </form>`;
+
+		// Display the form as a dialog
 		new Dialog({
-			title: `Install New ${type.titleCase()}`,
+			title: game.i18n.localize('SETUP.Install' + type.titleCase()),
 			content: form,
 			buttons: {
 				install: {
 					icon: '<i class="fas fa-download"></i>',
 					label: game.i18n.localize('Install'),
-					callback: html => {
+					callback: async html => {
 						let manifestURL = html
 							.find('input[name="manifestURL"]')
 							.val();
-						if (!manifestURL) return;
-						game.socket.emit(
-							`${type}Install`,
-							manifestURL.trim(),
-							response => {
-								// Handle error response
-								if (response.error) {
-									ui.notifications.error(response.error);
-									return this._reload();
-								}
-
-								// Activate Socket listener and handle completion
-								ui.notifications.info(response.message);
-								this._activateProgressListener(btn)
-									.then(() => {
-										ui.notifications.info(
-											`Installation successful for ${response.manifest.name}`
-										);
-										this._reload();
-									})
-									.catch(err => {
-										ui.notifications.error(
-											`Installation unsuccessful for ${response.manifest.name}`
-										);
-										this._reload();
-									});
-							}
+						this._progressButton = button;
+						const response = await SetupConfiguration.installPackage(
+							{ type, manifest: manifestURL }
 						);
+						this._progressButton = null;
+						if (response.error) {
+							ui.notifications.error(
+								game.i18n.localize('SETUP.InstallFailure')
+							);
+							const err = new Error(response.error);
+							err.stack = response.stack;
+							console.error(err);
+						} else {
+							ui.notifications.info(
+								`${type.titleCase()} ${
+									response.name
+								} ${game.i18n.localize('SETUP.InstallSuccess')}`
+							);
+						}
+						this._reload();
 					},
 				},
 				cancel: {
@@ -22305,7 +22993,7 @@ class SetupConfiguration extends FormApplication {
 	 * @param {Event} event
 	 * @private
 	 */
-	_onUpdate(event) {
+	_onUpdatePackage(event) {
 		event.preventDefault();
 
 		// Disable the button
@@ -22332,27 +23020,27 @@ class SetupConfiguration extends FormApplication {
 
 	/**
 	 * Execute upon an update check for a single Package
-	 * @param {string} type         The package type
-	 * @param {string} id           The package id
+	 * @param {string} type         The package type to check
+	 * @param {string} name         The package name to check
 	 * @param {HTMLElement} button  The update button for the package
-	 * @return {Promise<Boolean>}
+	 * @return {Promise<boolean>}
 	 * @private
 	 */
-	async _updateCheckOne(type, id, button) {
-		return new Promise(resolve => {
-			game.socket.emit(`${type}Check`, id, available => {
-				if (available) {
-					button.innerHTML = '<i class="fas fa-download"></i> Update';
-					button.dataset.state = 'update';
-					button.disabled = false;
-				} else {
-					button.innerHTML = '<i class="fas fa-check"></i> Updated';
-					button.dataset.state = 'none';
-					button.disabled = true;
-				}
-				resolve(available);
-			});
-		});
+	async _updateCheckOne(type, name, button) {
+		const manifest = await SetupConfiguration.checkPackage({ type, name });
+		if (manifest.isUpgrade) {
+			button.innerHTML =
+				'<i class="fas fa-download"></i><label>Update</label>';
+			button.dataset.state = 'update';
+			button.dataset.manifest = manifest.manifest;
+			button.disabled = false;
+		} else {
+			button.innerHTML =
+				'<i class="fas fa-check"></i><label>Updated</label>';
+			button.dataset.state = 'none';
+			button.disabled = true;
+		}
+		return manifest.isUpgrade;
 	}
 
 	/* -------------------------------------------- */
@@ -22360,35 +23048,95 @@ class SetupConfiguration extends FormApplication {
 	/**
 	 * Execute upon an update download for a single Package
 	 * Returns a Promise which resolves once the download has successfully started
-	 * @param {String} type         The package type
-	 * @param {String} id           The package id
+	 * @param {string} type         The package type to install
+	 * @param {string} name         The package name to install
 	 * @param {HTMLElement} button  The Download button
 	 * @return {Promise}
 	 * @private
 	 */
-	async _updateDownloadOne(type, id, button) {
-		return new Promise((resolve, reject) => {
-			game.socket.emit(`${type}Update`, id, response => {
-				button.dataset.state = 'none';
+	async _updateDownloadOne(type, name, button) {
+		this._progressButton = button;
+		const manifest = await SetupConfiguration.installPackage({
+			type,
+			name,
+			manifest: button.dataset.manifest,
+		});
+		this._progressButton = null;
+		if (manifest.error) {
+			ui.notifications.error(game.i18n.localize('SETUP.UpdateFailure'));
+			const err = new Error(manifest.error);
+			err.stack = manifest.stack;
+			console.error(err);
+			button.innerHTML =
+				'<i class="fas fa-times"></i><label>Failed</label>';
+		} else if (manifest.installed) {
+			const pack = game.data[type + 's'].find(
+				p => p.data.name === manifest.name
+			);
+			mergeObject(pack.data, manifest);
+			ui.notifications.info(
+				`${type.titleCase()} ${name} ${game.i18n.localize(
+					'SETUP.UpdateSuccess'
+				)}.`
+			);
+			this.render();
+		}
+		return manifest;
+	}
 
-				// Handle failure
-				if (response.error) {
-					ui.notifications.error(response.error);
-					button.innerHTML = '<i class="fas fa-times"></i> Failed';
-					return reject(response.error);
-				}
+	/* -------------------------------------------- */
 
-				// Handle success
-				const { manifest, message } = response;
-				this._activateProgressListener(button).then(() => {
-					button
-						.closest('li.package')
-						.querySelector('.package-version').innerHTML =
-						manifest.version;
+	/**
+	 * Handle uninstall button clicks to remove existing packages
+	 * @param {Event} event
+	 * @private
+	 */
+	_onUninstallPackage(event) {
+		event.preventDefault();
+
+		// Disable the button
+		let button = event.currentTarget;
+		button.disabled = true;
+
+		// Obtain the package metadata
+		let li = $(button).parents('li.package');
+		let name = li.data('packageId');
+		let type = li.parents('ul.package-list').data('packageType');
+
+		// Get the target package
+		let collection = game.data[type + 's'];
+		let idx = collection.findIndex(p => p.id === name);
+		let pack = collection[idx];
+
+		// Confirm deletion request
+		let msg = `<p>Are you sure you want to delete <strong>${pack.data.title}</strong>?</p>
+               <p><strong>Warning:</strong> This operation cannot be un-done.</p>`;
+		Dialog.confirm({
+			title: `Delete ${type.titleCase()}: ${pack.data.title}`,
+			content: msg,
+			yes: async () => {
+				const response = await SetupConfiguration.uninstallPackage({
+					type,
+					name,
 				});
-				ui.notifications.info(message);
-				return resolve(manifest);
-			});
+				if (response.error) {
+					ui.notifications.error(
+						game.i18n.localize('SETUP.UninstallFailure')
+					);
+					const err = new Error(response.error);
+					err.stack = response.stack;
+					console.error(err);
+				} else {
+					ui.notifications.info(
+						`${type.titleCase()} ${name} ${game.i18n.localize(
+							'SETUP.UninstallSuccess'
+						)}.`
+					);
+					collection.splice(idx, 1);
+				}
+				this.render();
+			},
+			no: () => (button.disabled = false),
 		});
 	}
 
@@ -22399,7 +23147,7 @@ class SetupConfiguration extends FormApplication {
 	 * @param {Event} event
 	 * @private
 	 */
-	async _onUpdateAll(event) {
+	async _onUpdatePackages(event) {
 		event.preventDefault();
 		let button = event.currentTarget;
 		button.disabled = true;
@@ -22435,190 +23183,105 @@ class SetupConfiguration extends FormApplication {
 	}
 
 	/* -------------------------------------------- */
-
-	/**
-	 * Handle uninstall button clicks to remove existing packages
-	 * @param {Event} event
-	 * @private
-	 */
-	_onUninstall(event) {
-		event.preventDefault();
-
-		// Disable the button
-		let button = event.currentTarget;
-		button.disabled = true;
-
-		// Obtain the package metadata
-		let li = $(button).parents('li.package');
-		let id = li.data('packageId');
-		let type = li.parents('ul.package-list').data('packageType');
-
-		// Get the target package
-		let collection = game.data[type + 's'];
-		let idx = collection.findIndex(p => p.id === id);
-		let pack = collection[idx];
-
-		// Confirm deletion request and dispatch the socket request
-		let msg = `<p>Are you sure you want to delete <strong>${pack.data.title}</strong>?</p>
-               <p><strong>Warning:</strong> This operation cannot be un-done.</p>`;
-		Dialog.confirm({
-			title: `Delete ${type.titleCase()}: ${pack.data.title}`,
-			content: msg,
-			yes: () => {
-				game.socket.emit(`${type}Delete`, id, uninstalled => {
-					if (uninstalled)
-						ui.notifications.info(
-							`${type.titleCase()} ${id} uninstalled successfully.`
-						);
-					else
-						ui.notifications.error(
-							`${type.titleCase()} ${id} was not successfully uninstalled.`
-						);
-					button.disabled = false;
-					collection.splice(idx, 1);
-					this.render();
-				});
-			},
-			no: () => (button.disabled = false),
-		});
-	}
-
+	/*  Core Software Update                        */
 	/* -------------------------------------------- */
 
 	/**
-	 * Handle button press events to launch a specific World
+	 * Handle button clicks to update the core VTT software
 	 * @param {Event} event
 	 * @private
 	 */
-	_onWorldLaunch(event) {
-		event.preventDefault();
-		let button = event.currentTarget;
-		button.disabled = true;
-		let li = $(button).parents('li.package');
-		let id = li.data('packageId');
-
-		// Populate some additional form fields
+	async _onCoreUpdate(event) {
+		const button = event.currentTarget;
 		const form = button.form;
-		form.id.value = id;
-		form.submit();
+		const label = button.children[1];
+		button.disabled = true;
+		form.updateKey.disabled = true;
+
+		// Condition next step based on action
+		if (button.value === 'updateDownload') {
+			this._progressButton = button;
+		}
+
+		// Post the update request
+		const response = await this._post({
+			action: button.value,
+			updateKey: form.updateKey.value,
+		}).catch(err => {
+			button.disabled = false;
+			form.updateKey.disabled = false;
+			throw err;
+		});
+
+		// Proceed to download step
+		if (button.value === 'updateCheck') {
+			ui.notifications.info(
+				`An update to Foundry Virtual Tabletop version ${response.version} is available!`
+			);
+			label.textContent = `Download Update ${response.version}`;
+			button.value = 'updateDownload';
+			button.disabled = false;
+			if (response.notes) new UpdateNotes(response).render(true);
+		} else {
+			ui.notifications.info(response.message);
+			this.close();
+		}
+	}
+
+	/* -------------------------------------------- */
+	/*  Socket Listeners and Handlers               */
+	/* -------------------------------------------- */
+
+	/**
+	 * Activate socket listeners related to the Setup Configuration form
+	 */
+	activateSocketListeners() {
+		const socket = game.socket;
+		socket.on('progress', data => {
+			this._updateProgressBar(data);
+			this._updateProgressButton(data);
+		});
 	}
 
 	/* -------------------------------------------- */
 
-	_onWorldCreate(event) {
-		event.preventDefault();
-		new WorldConfig({}, { create: true }).render(true);
+	_updateProgressBar(data) {
+		const tabName =
+			data.type === 'core' ? 'configuration' : data.type + 's';
+		const tab = this.element.find(`.tab[data-tab="${tabName}"]`);
+		if (!tab.hasClass('active')) return;
+		const progress = tab.find('.progress-bar');
+		progress.css('visibility', 'visible');
+
+		// Update bar and label position
+		let pl = `${data.pct}%`;
+		let bar = progress.children('.bar');
+		bar.css('width', pl);
+		let barLabel = progress.children('.pct');
+		barLabel.text(pl);
+		barLabel.css('left', pl);
 	}
 
 	/* -------------------------------------------- */
 
 	/**
-	 * Handle button press events to launch a specific World
-	 * @param {Event} event
+	 * Update installation progress for a particular button which triggered the action
+	 * @param {Object} data   The progress update data
 	 * @private
 	 */
-	_onWorldEdit(event) {
-		event.preventDefault();
-		let button = event.currentTarget;
-		let li = $(button).parents('li.package');
-		let id = li.data('packageId');
-		const worldData = game.data.worlds.find(w => w.id === id);
-		new WorldConfig(worldData).render(true);
-	}
+	_updateProgressButton(data) {
+		const button = this._progressButton;
+		if (!button) return;
+		button.disabled = data.pct < 100;
 
-	/* -------------------------------------------- */
+		// Update Icon
+		const icon = button.querySelector('i');
+		if (data.pct < 100) icon.className = 'fas fa-spinner fa-pulse';
 
-	_reload() {
-		Game.getSetupData(game.socket).then(setupData => {
-			mergeObject(game.data, setupData);
-			mergeObject(this, setupData);
-			this.render();
-		});
-	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * Start a socket listener for update status updates which updates the progress bar
-	 * Unhook the listener once the update has completed
-	 * @param {HTMLElement} button     The button element to update during the process
-	 * @private
-	 */
-	_activateProgressListener(button) {
-		const eventName = `updateProgress`;
-		const disabledButtons = [];
-
-		// TODO - Use jQuery for now
-		button = $(button);
-		const icon = button.children('i');
-		const label = button.children('label');
-		const initialButtonText = label.text();
-
-		// Define an unhook event and unhook any existing listeners
-		const unhook = () => {
-			game.socket.off(eventName);
-			$('.progress-bar').css('visibility', 'hidden');
-			disabledButtons.forEach(btn => (btn.disabled = false));
-			label.text(initialButtonText);
-		};
-		unhook();
-
-		// Disable all other buttons until the update is complete
-		$('button').each((i, btn) => {
-			if (btn.disabled === false) {
-				btn.disabled = true;
-				disabledButtons.push(btn);
-			}
-		});
-
-		// Initial button update
-		icon.replaceWith('<i class="fas fa-spinner fa-pulse"></i>');
-		label.text('Starting Update');
-
-		// Hook a new listener
-		return new Promise((resolve, reject) => {
-			game.socket.on(eventName, ({ packageName, msg, pct, step }) => {
-				let progress = this.element.find('.tab.active .progress-bar');
-				if (!progress) return unhook();
-				progress.css('visibility', 'visible');
-
-				// Update bar and label position
-				let pl = `${pct}%`;
-				let bar = progress.children('.bar');
-				bar.css('width', pl);
-				let barLabel = progress.children('.pct');
-				barLabel.text(pl);
-				barLabel.css('left', pl);
-
-				// Update the button display
-				label.text(step);
-
-				// Maybe reload
-				if (step === 'RELOAD') {
-					unhook();
-					label.text('Update Complete - Reload Application');
-					if (
-						!Object.values(ui.windows).some(
-							ui => ui instanceof UpdateNotes
-						)
-					) {
-						window.location.href = ROUTE_PREFIX + '/setup';
-					}
-				}
-
-				// Unhook when complete or failed
-				else if (step === 'Done') {
-					unhook();
-					button[0].innerHTML =
-						'<i class="fas fa-check"></i> Success';
-					resolve();
-				} else if (step === 'Failed') {
-					unhook();
-					button[0].innerHTML = '<i class="fas fa-times"></i> Failed';
-					reject();
-				}
-			});
-		});
+		// Update label
+		const label = button.querySelector('label');
+		if (label) label.textContent = data.step;
+		else button.textContent = ' ' + data.step;
 	}
 }
 
@@ -22797,7 +23460,7 @@ class WorldConfig extends FormApplication {
 		return mergeObject(super.defaultOptions, {
 			id: 'world-config',
 			template: 'templates/setup/world-config.html',
-			width: 560,
+			width: 600,
 			height: 600,
 			create: false,
 		});
@@ -22842,9 +23505,11 @@ class WorldConfig extends FormApplication {
 	async _onSubmit(event) {
 		event.preventDefault();
 		const FD = this._getFormData(event.target || this.form);
-		FD.set('id', this.object.id);
-		if (this.options.create) FD.set('target', 'create');
-		else FD.set('target', 'edit');
+		if (this.options.create) FD.set('action', 'createWorld');
+		else {
+			FD.set('action', 'editWorld');
+			FD.set('id', this.object.data.id);
+		}
 
 		// Dispatch the POST request
 		const response = await fetch(window.location.pathname, {
@@ -22856,8 +23521,8 @@ class WorldConfig extends FormApplication {
 		if (response.error) return ui.notifications.error(response.error);
 
 		// Handle successful creation
-		const world = game.data.worlds.find(w => w.id === response.name);
-		if (world) mergeObject(world.data, response);
+		const world = game.data.worlds.find(w => w.id === response.id);
+		if (world) mergeObject(world.data, response.data);
 		else game.data.worlds.push(response);
 		ui.setup.render();
 		this.close();
@@ -22942,33 +23607,31 @@ class Sidebar extends Application {
 		// Extend the default rendering function to re-render all contained sidebar tabs
 		await super._render(...args);
 
-		// Register named sidebar apps
-		const apps = {
-			chat: ChatLog,
-			combat: CombatTracker,
-			scenes: SceneDirectory,
-			actors: ActorDirectory,
-			items: ItemDirectory,
-			journal: JournalDirectory,
-			tables: RollTableDirectory,
-			playlists: PlaylistDirectory,
-			compendium: CompendiumDirectory,
-			settings: Settings,
-		};
-		if (!game.user.isGM) delete apps['scenes'];
+		// Define the sidebar tab names to render
+		const tabs = [
+			'chat',
+			'combat',
+			'actors',
+			'items',
+			'journal',
+			'tables',
+			'playlists',
+			'compendium',
+			'settings',
+		];
+		if (game.user.isGM) tabs.push('scenes');
 
 		// Render sidebar Applications
-		for (let [name, cls] of Object.entries(apps)) {
-			let app = (ui[name] = new cls({ tabName: name }));
-			await app._render(true, {}).catch(err => {
-				console.error(`Failed to render Sidebar tab ${cls.name}`);
+		for (let name of tabs) {
+			const app = ui[name];
+			try {
+				await app._render(true, {});
+			} catch (err) {
+				console.error(`Failed to render Sidebar tab ${name}`);
 				console.error(err);
-			});
+			}
 		}
 		this.activateTab(this.activeTab);
-
-		// Maintain a reference to the Macro directory
-		ui.macros = new MacroDirectory({ tabName: 'macros' });
 	}
 
 	/* -------------------------------------------- */
@@ -23104,14 +23767,14 @@ class Sidebar extends Application {
  * @abstract
  */
 class SidebarTab extends Application {
-	constructor(options) {
-		super(options);
+	constructor(...args) {
+		super(...args);
 
 		/**
-		 * The name of this sidebar tab
+		 * The base name of this sidebar tab
 		 * @type {string}
 		 */
-		this.tabName = options.tabName;
+		this.tabName = this.constructor.defaultOptions.id;
 
 		/**
 		 * A reference to the pop-out variant of this SidebarTab, if one exists
@@ -23122,31 +23785,18 @@ class SidebarTab extends Application {
 
 		/**
 		 * Denote whether or not this is the original version of the sidebar tab, or a pop-out variant
-		 * @type {Boolean}
+		 * @type {SidebarTab}
 		 */
-		this._original = options.original;
-
-		/**
-		 * Remember the scroll position of the sidebar tab to restore it upon render
-		 * @type {Number}
-		 */
-		this._scrollTop = null;
-
-		// Back-link to the original tab
-		if (this._original) this._original._popout = this;
+		this._original = null;
 	}
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Assign the default options which are supported by this Application
-	 * @return {Object}     The default application options for SidebarTab subclasses
-	 */
+	/** @override */
 	static get defaultOptions() {
 		return mergeObject(super.defaultOptions, {
 			popOut: false,
 			width: 300,
-			scrollContainer: 'ol.directory-list',
 			baseApplication: 'SidebarTab',
 		});
 	}
@@ -23155,12 +23805,7 @@ class SidebarTab extends Application {
 	/*  Rendering                                   */
 	/* -------------------------------------------- */
 
-	/**
-	 * Extend the logic used to render the inner application content
-	 * @param {Object} data         The data used to render the inner template
-	 * @return {Promise.<jQuery>}   A promise resolving to the constructed jQuery object
-	 * @private
-	 */
+	/** @override */
 	async _renderInner(data) {
 		let html = await super._renderInner(data);
 		if (ui.sidebar && ui.sidebar.activeTab === this.options.id)
@@ -23171,14 +23816,20 @@ class SidebarTab extends Application {
 
 	/* -------------------------------------------- */
 
-	/**
-	 * When re-rendering the sidebar tab, also render its pop-out version if it exists
-	 */
+	/** @override */
 	async _render(...args) {
-		if (this.options.popOut) this.position.height = 'auto';
-		await super._render(...args);
-		if (this._popout) this._popout.render();
-		return this;
+		// Trigger rendering of pop-out tabs
+		if (this._popout) {
+			this._popout.render(...args);
+		}
+
+		// Resize pop-out tabs
+		if (this._original) {
+			this.position.height = 'auto';
+		}
+
+		// Parent rendering logic
+		return super._render(...args);
 	}
 
 	/* -------------------------------------------- */
@@ -23194,13 +23845,11 @@ class SidebarTab extends Application {
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Only close the pop-out version of the sidebar tab
-	 * @return {boolean}
-	 */
+	/** @override */
 	async close() {
 		if (this.popOut) {
-			this._original._popout = null;
+			const base = this._original;
+			base._popout = null;
 			return super.close();
 		}
 		return false;
@@ -23209,39 +23858,29 @@ class SidebarTab extends Application {
 	/* -------------------------------------------- */
 
 	/**
-	 * Render the SidebarTab as a pop-out container
+	 * Create a second instance of this SidebarTab class which represents a singleton popped-out container
+	 * @return {SidebarTab}   The popped out sidebar tab instance
 	 */
-	renderPopout() {
+	createPopout() {
+		if (this._popout) return this._popout;
 		const pop = new this.constructor({
-			id: this.options.id + '-popout',
-			classes: ['sidebar-popout'],
+			id: `${this.options.id}-popout`,
+			classes: this.options.classes.concat([['sidebar-popout']]),
 			popOut: true,
-			tabName: this.tabName,
-			original: this,
 		});
-		pop.render(true);
+		this._popout = pop;
+		pop._original = this;
+		return pop;
 	}
 
 	/* -------------------------------------------- */
-	/*  Event Listeners and Handlers                */
-	/* -------------------------------------------- */
 
 	/**
-	 * Activate event listeners triggered within the Actor Directory HTML
+	 * Render the SidebarTab as a pop-out container
 	 */
-	activateListeners(html) {
-		super.activateListeners(html);
-
-		// Remember the current scrolling position
-		if (this.options.scrollContainer) {
-			const scroll = html[0].querySelector(this.options.scrollContainer);
-			scroll.addEventListener(
-				'scroll',
-				ev => (this._scrollTop = ev.target.scrollTop),
-				{ passive: true }
-			);
-			if (this._scrollTop !== null) scroll.scrollTop = this._scrollTop;
-		}
+	renderPopout() {
+		const pop = this.createPopout();
+		pop.render(true);
 	}
 }
 
@@ -23252,7 +23891,6 @@ class SidebarTab extends Application {
 class SidebarDirectory extends SidebarTab {
 	constructor(options) {
 		super(options);
-		this.constructor.collection.apps.push(this);
 
 		/**
 		 * References to the set of Entities which are displayed in the Sidebar
@@ -23281,6 +23919,9 @@ class SidebarDirectory extends SidebarTab {
 
 		// Initialize sidebar content
 		this.initialize();
+
+		// Record the directory as an application of the collection if it is not a popout
+		if (!this.options.popOut) this.constructor.collection.apps.push(this);
 	}
 
 	/* -------------------------------------------- */
@@ -23320,6 +23961,8 @@ class SidebarDirectory extends SidebarTab {
 		entities = entities.filter(a => a.visible);
 		let children = [{ _id: null }];
 		const depths = [];
+
+		// Track which folders we have handled to prevent recursive or circular structures
 		const assigned = new Set();
 
 		// First sort both Entities and Folders
@@ -23334,6 +23977,7 @@ class SidebarDirectory extends SidebarTab {
 		for (let i = 0; i < CONST.FOLDER_MAX_DEPTH; i++) {
 			let depth = [];
 			for (let folder of children) {
+				if (assigned.has(folder._id)) continue;
 				let [f, c, e] = this._populate(folder, folders, entities);
 				depth = depth.concat(c);
 				folders = f;
@@ -23419,6 +24063,7 @@ class SidebarDirectory extends SidebarTab {
 			dragItemSelector: '.directory-item',
 			renderUpdateKeys: ['name', 'img', 'permission', 'sort', 'folder'],
 			canDrag: game.user.isGM,
+			scrollY: ['ol.directory-list'],
 		});
 	}
 
@@ -23440,9 +24085,7 @@ class SidebarDirectory extends SidebarTab {
 	/*  Application Rendering
 	/* -------------------------------------------- */
 
-	/**
-	 * When rendering a SidebarDirectory, check the render context to rebuild the tree structure if needed
-	 */
+	/** @override */
 	render(force, context = {}) {
 		const { renderContext, renderData } = context;
 		const e = this.constructor.entity;
@@ -23469,10 +24112,7 @@ class SidebarDirectory extends SidebarTab {
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Prepare the data used to render the ActorList application
-	 * @return {Object}
-	 */
+	/** @override */
 	getData() {
 		return {
 			user: game.user,
@@ -23650,7 +24290,7 @@ class SidebarDirectory extends SidebarTab {
 		// Only a single type
 		if (types.length <= 1) {
 			createData.types = types[0];
-			return cls.create(createData);
+			return cls.create(createData, { renderSheet: true });
 		}
 
 		// Render the entity creation form
@@ -23677,7 +24317,7 @@ class SidebarDirectory extends SidebarTab {
 							createData,
 							validateForm(dlg[0].children[0])
 						);
-						cls.create(createData);
+						cls.create(createData, { renderSheet: true });
 					},
 				},
 			},
@@ -23831,10 +24471,13 @@ class SidebarDirectory extends SidebarTab {
 
 		// Case 2 - Data to import from a Compendium pack
 		else if (data.pack) {
+			const updateData = { folder: closestFolderId };
+			const options = { renderSheet: true };
 			return this.constructor.collection.importFromCollection(
 				data.pack,
 				data.id,
-				{ folder: closestFolderId }
+				updateData,
+				options
 			);
 		}
 
@@ -24073,10 +24716,7 @@ class SidebarDirectory extends SidebarTab {
 					const entity = this.constructor.collection.get(
 						li.data('entityId')
 					);
-					return entity.clone(
-						{ name: `${entity.name} (Copy)` },
-						{ displaySheet: false }
-					);
+					return entity.clone({ name: `${entity.name} (Copy)` });
 				},
 			},
 			{
@@ -24284,7 +24924,22 @@ class Actor extends Entity {
 
 	/** @override */
 	prepareEmbeddedEntities() {
-		this.items = this.data.items.map(i => Item.createOwned(i, this));
+		// Index existing item instances - do this to avoid re-creating Item instances if possible
+		const existing = (this.items || []).reduce((obj, i) => {
+			obj[i.id] = i;
+			return obj;
+		}, {});
+
+		// Prepare the new Item index
+		const items = this.data.items.map(i => {
+			if (i._id in existing) {
+				const item = existing[i._id];
+				item.data = i;
+				item.prepareData();
+				return item;
+			} else return Item.createOwned(i, this);
+		});
+		this.items = items;
 	}
 
 	/* -------------------------------------------- */
@@ -24412,6 +25067,38 @@ class Actor extends Entity {
 	}
 
 	/* -------------------------------------------- */
+
+	/**
+	 * Handle how changes to a Token attribute bar are applied to the Actor.
+	 * This allows for game systems to override this behavior and deploy special logic.
+	 * @param {string} attribute    The attribute path
+	 * @param {number} value        The target attribute value
+	 * @param {boolean} isDelta     Whether the number represents a relative change (true) or an absolute change (false)
+	 * @param {boolean} isBar       Whether the new value is part of an attribute bar, or just a direct value
+	 * @return {Promise}
+	 */
+	async modifyTokenAttribute(
+		attribute,
+		value,
+		isDelta = false,
+		isBar = true
+	) {
+		const current = getProperty(this.data.data, attribute);
+		if (isBar) {
+			if (isDelta)
+				value = Math.clamped(
+					0,
+					Number(current.value) + value,
+					current.max
+				);
+			return this.update({ [`data.${attribute}.value`]: value });
+		} else {
+			if (isDelta) value = Number(current) + value;
+			return this.update({ [`data.${attribute}`]: value });
+		}
+	}
+
+	/* -------------------------------------------- */
 	/*  Socket Listeners and Handlers
   /* -------------------------------------------- */
 
@@ -24476,15 +25163,17 @@ class Actor extends Entity {
 	/* -------------------------------------------- */
 
 	/** @override */
-	_onUpdate(data, ...args) {
-		super._onUpdate(data, ...args);
-
+	_onUpdate(data, options, userId, context) {
 		// Get the changed attributes
 		const keys = Object.keys(data).filter(k => k !== '_id');
 		const changed = new Set(keys);
 
-		// If the items array was updated, we need to re-build the owned item entities
+		// Re-prepare Actor data
 		if (changed.has('items')) this.prepareEmbeddedEntities();
+		this.prepareData();
+
+		// Render associated applications
+		this.render(false, context);
 
 		// Additional options only apply to Actors which are not synthetic Tokens
 		if (this.isToken) return;
@@ -24519,7 +25208,6 @@ class Actor extends Entity {
 			if (this.getActiveTokens().length) {
 				canvas.tokens.releaseAll();
 				canvas.tokens.cycleTokens(1, true);
-				canvas.sight.initialize();
 			}
 		}
 	}
@@ -24530,7 +25218,7 @@ class Actor extends Entity {
 	_onCreateEmbeddedEntity({ embeddedName, created, options, userId }) {
 		const item = Item.createOwned(created, this);
 		this.items.push(item);
-		if (options.displaySheet && userId === game.user._id) {
+		if (options.renderSheet && userId === game.user._id) {
 			item.sheet.render(true, {
 				renderContext: 'create' + embeddedName,
 				renderData: created,
@@ -24544,10 +25232,6 @@ class Actor extends Entity {
 	_onUpdateEmbeddedEntity({ embeddedName, data, options, userId }) {
 		const item = this.getOwnedItem(data._id);
 		item.prepareData();
-		item.sheet.render(false, {
-			renderContext: 'update' + embeddedName,
-			renderData: data,
-		});
 	}
 
 	/* -------------------------------------------- */
@@ -24600,7 +25284,7 @@ class Actor extends Entity {
 	 *
 	 * @param {Object} itemData     Data for the newly owned item
 	 * @param {Object} options      Item creation options
-	 * @param {boolean} options.displaySheet Render the Item sheet for the newly created item data
+	 * @param {boolean} options.renderSheet Render the Item sheet for the newly created item data
 	 * @return {Promise.<Object>}   A Promise resolving to the created Owned Item data
 	 */
 	async createOwnedItem(itemData, options = {}) {
@@ -24648,10 +25332,6 @@ class Actor extends Entity {
 		return this.deleteEmbeddedEntity('OwnedItem', itemId, options);
 	}
 }
-
-CONFIG.Actor.entityClass = Actor;
-CONFIG.Actor.collection = Actors;
-Actors.registerSheet('core', ActorSheet);
 
 /* -------------------------------------------- */
 
@@ -24745,6 +25425,16 @@ class CombatEncounters extends Collection {
 	 */
 	get active() {
 		return this.combats.find(c => c.data.active);
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * The currently viewed Combat encounter
+	 * @return {Combat|null}
+	 */
+	get viewed() {
+		return ui.combat.combat;
 	}
 
 	/* -------------------------------------------- */
@@ -24861,7 +25551,7 @@ class Combat extends Entity {
 	 * @return {string}               The initiative formula to use for this combatant.
 	 */
 	_getInitiativeFormula(combatant) {
-		return CONFIG.initiative.formula || game.system.data.initiative;
+		return CONFIG.Combat.initiative.formula || game.system.data.initiative;
 	}
 
 	/* -------------------------------------------- */
@@ -24941,15 +25631,19 @@ class Combat extends Entity {
 	/* -------------------------------------------- */
 
 	/**
-	 * Set the current Combat encounter as active within the Scene
+	 * Set the current Combat encounter as active within the Scene.
+	 * Deactivate all other Combat encounters within the viewed Scene and set this one as active
 	 * @return {Promise.<Combat>}
 	 */
 	async activate() {
-		let active = this.constructor.collection.active;
-		if (active && active._id !== this._id) {
-			await active.update({ active: false });
-		}
-		return this.update({ active: true });
+		const scene = game.scenes.viewed;
+		const updates = this.collection.entities.reduce((arr, c) => {
+			if (c.data.scene === scene.id && c.data.active)
+				arr.push({ _id: c.data._id, active: false });
+			return arr;
+		}, []);
+		updates.push({ _id: this.id, active: true });
+		return this.constructor.updateMany(updates);
 	}
 
 	/* -------------------------------------------- */
@@ -24971,7 +25665,7 @@ class Combat extends Entity {
 				c.players = c.actor
 					? players.filter(u => c.actor.hasPerm(u, 'OWNER'))
 					: [];
-				c.owner = c.actor ? c.actor.owner : false;
+				c.owner = game.user.isGM || (c.actor ? c.actor.owner : false);
 				c.visible = c.owner || !c.hidden;
 				return c;
 			})
@@ -24979,7 +25673,9 @@ class Combat extends Entity {
 
 		// Sort turns into initiative order: (1) initiative, (2) name, (3) tokenId
 		turns = turns.sort((a, b) => {
-			let ci = (b.initiative || -9999) - (a.initiative || -9999);
+			const ia = Number.isNumeric(a.initiative) ? a.initiative : -9999;
+			const ib = Number.isNumeric(b.initiative) ? b.initiative : -9999;
+			let ci = ib - ia;
 			if (ci !== 0) return ci;
 			let [an, bn] = [a.token.name || '', b.token.name || ''];
 			let cn = an.localeCompare(bn);
@@ -25157,10 +25853,10 @@ class Combat extends Entity {
 				const c = this.getCombatant(id);
 				if (!c) return results;
 				const actorData = c.actor ? c.actor.data.data : {};
-				formula = formula || this._getInitiativeFormula(c);
 
 				// Roll initiative
-				const roll = new Roll(formula, actorData).roll();
+				const cf = formula || this._getInitiativeFormula(c);
+				const roll = new Roll(cf, actorData).roll();
 				updates.push({ _id: id, initiative: roll.total });
 
 				// Construct chat message data
@@ -25213,14 +25909,14 @@ class Combat extends Entity {
 
 	/**
 	 * Roll initiative for all non-player actors who have not already rolled
-	 * @param {...*}  Additional arguments forwarded to the Combat.rollInitiative method
+	 * @param {...*}  args    Additional arguments forwarded to the Combat.rollInitiative method
 	 */
 	async rollNPC(...args) {
 		const npcs = this.turns.filter(
 			t => (!t.actor || !t.players.length) && !t.initiative
 		);
 		return this.rollInitiative(
-			npcs.map(t => t.id),
+			npcs.map(t => t._id),
 			...args
 		);
 	}
@@ -25229,7 +25925,7 @@ class Combat extends Entity {
 
 	/**
 	 * Roll initiative for all combatants which have not already rolled
-	 * @param {...*}  Additional arguments forwarded to the Combat.rollInitiative method
+	 * @param {...*} args     Additional arguments forwarded to the Combat.rollInitiative method
 	 */
 	async rollAll(...args) {
 		const unrolled = this.turns.filter(t => !t.initiative);
@@ -25265,6 +25961,13 @@ class Combat extends Entity {
   /* -------------------------------------------- */
 
 	/** @override */
+	_onCreate(...args) {
+		if (!this.collection.viewed) ui.combat.initialize(this);
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
 	_onUpdate(data, ...args) {
 		super._onUpdate(data, ...args);
 
@@ -25277,10 +25980,18 @@ class Combat extends Entity {
 			tokenId: c ? c.tokenId : null,
 		};
 
+		// If the Combat was set as active, initialize the sidebar
+		if (
+			data.active === true &&
+			this.data.scene === game.scenes.viewed._id
+		) {
+			ui.combat.initialize(this);
+		}
+
 		// Render the sidebar
 		if (['combatants', 'round', 'turn'].some(k => data.hasOwnProperty(k))) {
 			if (data.combatants) this.setupTurns();
-			this.collection.render(false, { resetScroll: true });
+			ui.combat.scrollToTurn();
 		}
 	}
 
@@ -25288,12 +25999,7 @@ class Combat extends Entity {
 
 	/** @override */
 	_onDelete(...args) {
-		super._onDelete(...args);
-		if (this.data.active && this.collection.entities.length) {
-			this.collection.entities[0]
-				.update({ active: true })
-				.then(() => this.collection.render());
-		}
+		if (this.collection.viewed === this) ui.combat.initialize(null);
 	}
 
 	/* -------------------------------------------- */
@@ -25301,15 +26007,10 @@ class Combat extends Entity {
 	/** @override */
 	_onModifyEmbeddedEntity(response) {
 		this.setupTurns();
-		if (this.data.active) this.collection.render();
+		if (this === this.collection.viewed) this.collection.render();
 	}
 }
-
 Combat.CONFIG_SETTING = 'combatTrackerConfig';
-CONFIG.initiative = {
-	formula: null,
-	decimals: 0,
-};
 
 /**
  * The Folders Collection
@@ -25545,6 +26246,14 @@ class Item extends Entity {
 
 	/* -------------------------------------------- */
 
+	/** @override */
+	get uuid() {
+		if (this.actor) return `Actor.${this.actor.id}.OwnedItem.${this.id}`;
+		return super.uuid;
+	}
+
+	/* -------------------------------------------- */
+
 	prepareData() {
 		super.prepareData();
 		if (!this.data.img) this.data.img = CONST.DEFAULT_TOKEN;
@@ -25652,10 +26361,6 @@ class Item extends Entity {
 		return new Item(itemData, { actor: actor });
 	}
 }
-
-CONFIG.Item.entityClass = Item;
-CONFIG.Item.collection = Items;
-Items.registerSheet('core', ItemSheet);
 
 /**
  * The Journal collection
@@ -25824,9 +26529,6 @@ class JournalEntry extends Entity {
 	}
 }
 
-CONFIG.JournalEntry.entityClass = JournalEntry;
-CONFIG.JournalEntry.collection = Journal;
-
 /**
  * The Collection of Macro entities
  * @extends {Collection}
@@ -25943,9 +26645,6 @@ class Macro extends Entity {
 		}
 	}
 }
-
-CONFIG.Macro.collection = Macros;
-CONFIG.Macro.entityClass = Macro;
 
 /**
  * A :class:`Collection` of class:`ChatMessage` entities
@@ -26333,8 +27032,6 @@ class ChatMessage extends Entity {
 		// Handle Roll content
 		if (this.isRoll) {
 			let r = this.roll;
-
-			// Start with any text content
 			if (this.data.content && this.data.content !== 'undefined') {
 				content.push(
 					$(`<div>${this.data.content}</div>`)
@@ -26342,26 +27039,9 @@ class ChatMessage extends Entity {
 						.trim()
 				);
 			}
-
-			// Add flavor text
 			let flavor = this.data.flavor;
 			if (flavor && flavor !== r.formula) content.push(flavor);
-
-			// Add formula content
-			let result = r.parts
-				.map(p => {
-					if (p instanceof Die)
-						return (
-							'[' +
-							Object.values(p.rolls)
-								.map(r => r.roll)
-								.join(',') +
-							']'
-						);
-					else return p;
-				})
-				.join(' ');
-			content.push(`${r.formula} = ${result} = ${r.total}`);
+			content.push(`${r.formula} = ${r.result} = ${r.total}`);
 		}
 
 		// Handle HTML content
@@ -26560,16 +27240,6 @@ class ChatMessage extends Entity {
 		};
 	}
 }
-
-/* -------------------------------------------- */
-
-/**
- * Configure the ChatMessage entity
- * @type {string}
- */
-CONFIG.ChatMessage = {
-	template: 'templates/sidebar/chat-message.html',
-};
 
 /**
  * The Collection of Playlist entities.
@@ -27055,9 +27725,6 @@ class Playlist extends Entity {
 	}
 }
 
-CONFIG.Playlist.collection = Playlists;
-CONFIG.Playlist.entityClass = Playlist;
-
 /**
  * The collection of Scene entities
  */
@@ -27095,7 +27762,9 @@ class Scenes extends Collection {
 	static socketListeners(socket) {
 		super.socketListeners(socket);
 		socket.on('preloadScene', sceneId => this.instance.preload(sceneId));
-		socket.on('resetFogExploration', this._onFogReset);
+		socket.on('resetFogExploration', data =>
+			canvas.sight._onResetFog(data)
+		);
 		socket.on('pullToScene', this._pullToScene);
 	}
 
@@ -27114,22 +27783,6 @@ class Scenes extends Collection {
 		let scene = this.get(sceneId);
 		if (!canvas.app.loader.resources.hasOwnProperty(scene.data.img)) {
 			canvas.app.loader.add(scene.data.img).load();
-		}
-	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * Handle a Fog of War exploration reset request
-	 * @param {Object} resetData
-	 * @private
-	 */
-	static _onFogReset(resetData) {
-		if (resetData.reset && resetData.scene === canvas.scene._id) {
-			canvas.sight.fogData = {};
-			canvas.sight.fogPositions = {};
-			canvas.sight.draw();
-			canvas.sight.initialize();
 		}
 	}
 
@@ -27281,12 +27934,6 @@ class Scene extends Entity {
 		 * @type {Object}
 		 */
 		this._viewPosition = {};
-
-		/**
-		 * A reference to the active Scene Notes instance for this Scene
-		 * @type {SceneNotes}
-		 */
-		this._notes = null;
 	}
 
 	/* -------------------------------------------- */
@@ -27349,15 +27996,11 @@ class Scene extends Entity {
 	/* -------------------------------------------- */
 
 	/**
-	 * A singleton instance of the SheetNotes class
-	 * @type {SheetNotes}
+	 * A reference to the JournalEntry entity associated with this Scene, or null
+	 * @return {JournalEntry|null}
 	 */
-	get notes() {
-		if (this._notes) return this._notes;
-		let cls = CONFIG.Scene.notesClass;
-		if (!cls) return null;
-		this._notes = new cls(this, { editable: this.owner });
-		return this._notes;
+	get journal() {
+		return this.data.journal ? game.journal.get(this.data.journal) : null;
 	}
 
 	/* -------------------------------------------- */
@@ -27377,7 +28020,7 @@ class Scene extends Entity {
 	/**
 	 * Set this scene as the current view
 	 */
-	view() {
+	async view() {
 		// Switch the viewed scene
 		this.collection.entities.forEach(scene => {
 			scene._view = scene._id === this._id;
@@ -27386,11 +28029,12 @@ class Scene extends Entity {
 		// Re-draw the canvas if the view is different
 		if (canvas.id !== this._id) {
 			console.log(`Foundry VTT | Viewing Scene ${this.name}`);
-			canvas.draw();
+			await canvas.draw();
 		}
 
 		// Render apps for the collection
 		this.collection.render();
+		ui.combat.initialize();
 	}
 
 	/* -------------------------------------------- */
@@ -27444,9 +28088,17 @@ class Scene extends Entity {
 
 	/* -------------------------------------------- */
 
-	/** @extends {Entity._onUpdate} */
-	_onUpdate(data, ...args) {
-		super._onUpdate(data, ...args);
+	/** @override */
+	_onCreate(data, ...args) {
+		super._onCreate(data, ...args);
+		if (data.active === true) this._onActivate(true);
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
+	_onUpdate(data, options, userId, context) {
+		super._onUpdate(data, options, userId, context);
 
 		// Get the changed attributes
 		let changed = new Set(Object.keys(data).filter(k => k !== '_id'));
@@ -27484,7 +28136,37 @@ class Scene extends Entity {
 				'weather',
 			];
 			if (redraw.some(k => changed.has(k))) canvas.draw();
+			// Progress darkness level
+			else if (changed.has('darkness')) {
+				if (options.animateDarkness)
+					canvas.lighting.animateDarkness(data.darkness);
+				else canvas.lighting.update(data.darkness);
+			}
 		}
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
+	_onDelete(...args) {
+		super._onDelete(...args);
+		if (canvas.scene._id === this._id) canvas.draw();
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Handle Scene activation workflow if the active state is changed to true
+	 * @private
+	 */
+	_onActivate(active) {
+		const collection = this.collection;
+		if (active) {
+			collection.entities.forEach(
+				scene => (scene.data.active = scene._id === this._id)
+			);
+			return this.view();
+		} else canvas.draw(null);
 	}
 
 	/* -------------------------------------------- */
@@ -27495,7 +28177,7 @@ class Scene extends Entity {
 		const layer = canvas.getLayerByEmbeddedName(embeddedName);
 		const object = layer.createObject(created);
 		object._onCreate();
-		if (options.displaySheet && object.sheet) object.sheet.render(true);
+		if (options.renderSheet && object.sheet) object.sheet.render(true);
 		return object;
 	}
 
@@ -27530,37 +28212,7 @@ class Scene extends Entity {
 	_onModifyEmbeddedEntity(response) {
 		canvas.triggerPendingOperations();
 	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * Handle Scene activation workflow if the active state is changed to true
-	 * @private
-	 */
-	_onActivate(active) {
-		const collection = this.collection;
-		if (active) {
-			collection.entities.forEach(
-				scene => (scene.data.active = scene._id === this._id)
-			);
-			this.view();
-			game.combats.render();
-		} else canvas.draw(null);
-	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * Additional updating steps for the Scene entity the entity is deleted
-	 */
-	_onDelete(...args) {
-		super._onDelete(...args);
-		if (canvas.scene._id === this._id) canvas.draw();
-	}
 }
-
-CONFIG.Scene.collection = Scenes;
-CONFIG.Scene.entityClass = Scene;
 
 /**
  * The Collection of RollTable entities
@@ -27652,7 +28304,7 @@ class RollTable extends Entity {
 	 */
 	async draw({ roll = null, result = null } = {}, { rollMode = null } = {}) {
 		// If a roll and result were not provided, obtain them
-		if ((roll === result) === null) {
+		if (roll === null && result === null) {
 			[roll, result] = this.roll();
 		}
 		if (result === null) return;
@@ -27714,14 +28366,18 @@ class RollTable extends Entity {
 		}
 
 		// Render the template
-		chatData['content'] = `
-    <div class="table-result" data-table-id="${this._id}" data-result-id="${
-			result._id
-		}">
-        <img class="result-image" src="${result.img ||
+		let c = `<div class="table-result" data-table-id="${this._id}" data-result-id="${result._id}">`;
+		if (this.data.description) {
+			let d = TextEditor.enrichHTML(this.data.description, {
+				entities: true,
+			});
+			c += `<div class="table-description">${d}</div>`;
+		}
+		c += `<img class="result-image" src="${result.img ||
 			CONFIG.RollTable.resultIcon}"/>
-        <h4 class="result-text">${text}</h4>
+          <h4 class="result-text">${text}</h4>
     </div>`;
+		chatData['content'] = c;
 
 		// Create the chat message
 		return ChatMessage.create(chatData);
@@ -27877,15 +28533,34 @@ class RollTable extends Entity {
 	}
 }
 
-CONFIG.RollTable.collection = RollTables;
-CONFIG.RollTable.entityClass = RollTable;
-
 /**
  * The collection of User entities which is accessible through ``game.users``.
  * The array of User entities within this collection is accessible through ``game.users.entities``.
  * @type {Collection}
  */
 class Users extends Collection {
+	constructor(...args) {
+		super(...args);
+
+		/**
+		 * The User entity of the currently connected user
+		 * @type {User|null}
+		 */
+		this.current = null;
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
+	initialize() {
+		super.initialize();
+		this.current = this.get(game.userId);
+		this.current.active = true;
+		return this;
+	}
+
+	/* -------------------------------------------- */
+
 	/**
 	 * Elements of the Users collection are instances of the User class
 	 * @return {User}
@@ -27903,6 +28578,66 @@ class Users extends Collection {
 			u => u.isRole('PLAYER') || u.isRole('TRUSTED')
 		);
 	}
+
+	/* -------------------------------------------- */
+	/*  Socket Listeners and Handlers               */
+	/* -------------------------------------------- */
+
+	/** @override */
+	static socketListeners(socket) {
+		super.socketListeners(socket);
+		socket.on('userActivity', this._handleUserActivity);
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Handle receipt of activity data from another User connected to the Game session
+	 * @param {string} userId         The User id who generated the activity data
+	 * @param {Object} activityData   The object of activity data
+	 * @private
+	 */
+	static _handleUserActivity(userId, activityData = {}) {
+		if (!game.ready) return;
+		const user = game.users.get(userId);
+
+		// User activity
+		let active = 'active' in activityData ? activityData.active : true;
+		if (user.active !== active) {
+			user.active = active;
+			ui.players.render();
+			if (active === false) ui.nav.render();
+		}
+
+		// Viewed scene
+		if ('sceneId' in activityData) {
+			user.viewedScene = activityData.sceneId;
+			ui.nav.render();
+		}
+
+		// Cursor position
+		if ('cursor' in activityData) {
+			canvas.controls.updateCursor(user, activityData.cursor);
+		}
+
+		// Ruler measurement
+		if ('ruler' in activityData) {
+			canvas.controls.updateRuler(user, activityData.ruler);
+		}
+
+		// Token targets
+		if ('targets' in activityData) {
+			user.updateTokenTargets(activityData.targets);
+		}
+
+		// Dispatch pings
+		if (activityData.ping) {
+		}
+
+		// Dispatch focus pulls
+		if (activityData.focus) {
+		}
+	}
 }
 
 /* -------------------------------------------- */
@@ -27910,7 +28645,7 @@ class Users extends Collection {
 /**
  * The User entity
  * Each player who connects to a Foundry Virtual Tabletop session is a User. 
- * Users represent human beigns (or possibly programmatic players) and are the cornerstone of identity in Foundry VTT.
+ * Users represent human beings (or possibly programmatic players) and are the cornerstone of identity in Foundry VTT.
  * @type {Entity}
  * 
  * @param {Object} data           The source data for the User entity, usually retrieved from the database.
@@ -27920,7 +28655,6 @@ class Users extends Collection {
  * @param {Object} data.permissions  An object of key-value permissions for the User which extend the default functionality
                                   of the User's role.
  * @param {string} data.avatar    A web-accessible file path to an avatar image used to represent the User.
- * @param {string} data.scenes    The _id of the Scene entity that the User is currently viewing.
  * @param {string} data.character The _id of the Actor entity that the User has chosen as their primary character.
  * @param {string} data.color     A color string which represents the visual color associated with this particular User.
  * @param {Object} data.flags     A free-form object of key-value pairs which allows modules and systems the ability 
@@ -27933,10 +28667,22 @@ class User extends Entity {
 		super(data, options);
 
 		/**
+		 * Track whether the user is currently active in the game
+		 * @type {boolean}
+		 */
+		this.active = data.active || false;
+
+		/**
 		 * Track references to the current set of Tokens which are targeted by the User
 		 * @type {Set.<Token>}
 		 */
 		this.targets = new UserTargets(this);
+
+		/**
+		 * Track the ID of the Scene that is currently being viewed by the User
+		 * @type {string|null}
+		 */
+		this.viewedScene = data.viewedScene || null;
 	}
 
 	/* ---------------------------------------- */
@@ -27971,14 +28717,6 @@ class User extends Entity {
 	 */
 	get character() {
 		return game.actors.get(this.data.character);
-	}
-
-	/**
-	 * Return a flag for whether this User is currently active
-	 * @type {Boolean}
-	 */
-	get active() {
-		return this.data.active;
 	}
 
 	/**
@@ -28056,6 +28794,8 @@ class User extends Entity {
 		return level && this.data.role === level;
 	}
 
+	/* -------------------------------------------- */
+
 	/**
 	 * Test whether the User has at least a specific permission
 	 * @param {string} permissionName    The permission name from USER_PERMISSIONS to test
@@ -28068,6 +28808,8 @@ class User extends Entity {
 		return this.hasRole(CONST.USER_PERMISSIONS[permissionName]);
 	}
 
+	/* -------------------------------------------- */
+
 	/**
 	 * Sets a user's permission
 	 * Modifies the user permissions to grant or restrict access to a feature.
@@ -28077,6 +28819,35 @@ class User extends Entity {
 	 */
 	setPermission(permission, allowed) {
 		this.update({ permissions: { [permission]: allowed } });
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Submit User activity data to the server for broadcast to other players.
+	 * This type of data is transient, persisting only for the duration of the session and not saved to any database.
+	 *
+	 * @param {Object} activityData             An object of User activity data to submit to the server for broadcast.
+	 * @param {Object} activityData.cursor      The coordinates of the user's cursor
+	 * @param {boolean} activityData.focus      Is the user pulling focus to the cursor coordinates?
+	 * @param {boolean} activityData.ping       Is the user emitting a ping at the cursor coordinates?
+	 * @param {string} activityData.ruler       Serialized Ruler coordinate data in JSON format
+	 * @param {string} activityData.sceneId     The id of the Scene currently being viewed by the User
+	 * @param {Array} activityData.targets      An id of Token ids which are targeted by the User
+	 */
+	broadcastActivity(activityData = {}) {
+		if (!this.active) {
+			this.active = true;
+			ui.players.render();
+		}
+		if (
+			'sceneId' in activityData &&
+			this.viewedScene !== activityData.sceneId
+		) {
+			this.viewedScene = activityData.sceneId;
+			ui.nav.render();
+		}
+		game.socket.emit('userActivity', this.id, activityData);
 	}
 
 	/* -------------------------------------------- */
@@ -28137,7 +28908,54 @@ class User extends Entity {
 	}
 
 	/* -------------------------------------------- */
+
+	updateTokenTargets(targetIds) {
+		const currentIds = this.targets.ids;
+		targetIds = targetIds || [];
+		if (currentIds.equals(targetIds)) return;
+
+		// Update in the current scene
+		if (this.viewedScene === canvas.scene._id) {
+			const toRemove = Array.from(this.targets).filter(
+				i => !targetIds.includes(i)
+			);
+			const toAdd = targetIds
+				.filter(i => !toRemove.includes(i))
+				.map(id => canvas.tokens.get(id));
+			toRemove.forEach(t =>
+				t.setTarget(false, {
+					user: this,
+					releaseOthers: false,
+					groupSelection: true,
+				})
+			);
+			toAdd.forEach(t =>
+				t.setTarget(true, {
+					user: this,
+					releaseOthers: false,
+					groupSelection: true,
+				})
+			);
+		}
+
+		// Otherwise remove any current Token targets
+		else
+			this.targets.forEach(t =>
+				t.setTarget(false, {
+					user: this,
+					releaseOthers: false,
+					groupSelection: true,
+				})
+			);
+	}
+
+	/* -------------------------------------------- */
 	/*  Socket Listeners and Handlers               */
+	/* -------------------------------------------- */
+
+	/** @override */
+	_onCreate(...args) {}
+
 	/* -------------------------------------------- */
 
 	/**
@@ -28156,8 +28974,13 @@ class User extends Entity {
 		// Get the changed attributes
 		let changed = Object.keys(data).filter(k => k !== '_id');
 
+		// If your own password or role changed - you must re-authenticate
+		const isSelf = data._id === game.userId;
+		if (isSelf && changed.some(p => ['password', 'role'].includes(p)))
+			return game.logOut();
+
 		// Redraw Navigation
-		if (changed.some(p => ['active', 'scene', 'color', 'role'].includes(p)))
+		if (changed.some(p => ['active', 'color', 'role'].includes(p)))
 			ui.nav.render();
 
 		// Redraw Players UI
@@ -28176,9 +28999,6 @@ class User extends Entity {
 		if (game.webrtc && changed.some(p => webrtcChanges.includes(p)))
 			game.webrtc.settings.onSettingsChanged();
 
-		// Initialize Scene controls
-		if (changed.includes('role')) ui.controls.initialize();
-
 		// Update Canvas
 		if (canvas.ready) {
 			// Redraw Cursor
@@ -28192,7 +29012,7 @@ class User extends Entity {
 
 			// Modify impersonated character
 			if (changed.includes('character')) {
-				canvas.sight.initialize();
+				canvas.sight.initializeTokens();
 				canvas.tokens.cycleTokens(1, true);
 			}
 		}
@@ -28214,6 +29034,14 @@ class UserTargets extends Set {
 				`User ${user.id} already has a targets set defined`
 			);
 		this.user = user;
+	}
+
+	/**
+	 * Return the Token IDs which are user targets
+	 * @return {Array.<string>}
+	 */
+	get ids() {
+		return Array.from(this).map(t => t.id);
 	}
 
 	/** @override */
@@ -28963,9 +29791,14 @@ class Ray {
 	/* -------------------------------------------- */
 
 	static fromAngle(x, y, radians, distance) {
-		let dx = Math.cos(radians),
-			dy = Math.sin(radians);
-		return Ray.fromArrays([x, y], [x + dx * distance, y + dy * distance]);
+		const dx = Math.cos(radians);
+		const dy = Math.sin(radians);
+		const ray = Ray.fromArrays(
+			[x, y],
+			[x + dx * distance, y + dy * distance]
+		);
+		ray.angle = radians;
+		return ray;
 	}
 
 	/* -------------------------------------------- */
@@ -29051,6 +29884,58 @@ class Ray {
 }
 
 /**
+ * A helper class used by the Sight Layer to represent a source of vision or illumination.
+ * @see {SightLayer}
+ * @see {Token}
+ * @see {AmbientLight}
+ *
+ * @param {number} x          The x-coordinate of the source location
+ * @param {number} y          The y-coordinate of the source location
+ * @param {PIXI.Polygon} los  The computed line-of-sight polygon for the source
+ * @param {PIXI.Polygon} fov  The computed field-of-view polygon for the source
+ * @param {number} dim        The allowed radius of dim vision or illumination
+ * @param {number} bright     The allowed radius of bright vision or illumination
+ * @param {string} color      A tint color for the emitted light, if any
+ * @param {number} alpha      An opacity for the emitted light, if any
+ */
+class SightLayerSource {
+	constructor({
+		x = null,
+		y = null,
+		los = null,
+		fov = null,
+		dim = null,
+		bright = null,
+		color = null,
+		alpha = null,
+	} = {}) {
+		this.x = x;
+		this.y = y;
+		this.fov = fov;
+		this.los = los;
+		this.channels = {
+			dim: 0,
+			bright: 0,
+			dark: 0,
+			black: 0,
+		};
+		this.color = color
+			? colorStringToHex(color)
+			: CONFIG.Canvas.normalLightColor;
+		this.alpha = alpha || 0.6;
+
+		// Add bright or black channels
+		if (bright < 0) this.channels.black = bright * -1;
+		else if (bright > 0) this.channels.bright = bright;
+
+		// Add dim or dark channels
+		if (dim < 0 && Math.abs(dim) > Math.abs(bright))
+			this.channels.dark = dim * -1;
+		else if (dim > 0 && dim > Math.abs(bright)) this.channels.dim = dim;
+	}
+}
+
+/**
  * A PIXI.Container subclass of CanvasLayer responsible for rendering the scene background image.
  * The singleton instance of this class is accessed through ``canvas.background``.
  *
@@ -29108,6 +29993,23 @@ class BackgroundLayer extends CanvasLayer {
 	/*  Rendering
   /* -------------------------------------------- */
 
+	/** @override */
+	async tearDown() {
+		// Stop background video playback
+		if (this.isVideo) this.source.pause();
+
+		// Destroy the current background texture so it does not stay in memory
+		if (this.img) {
+			this.img.destroy({ texture: false, baseTexture: false });
+			this.img = null;
+		}
+
+		// Destroy the layer's children
+		return super.tearDown();
+	}
+
+	/* -------------------------------------------- */
+
 	/**
 	 * Draw the background image.
 	 * We first load the image texture and store it in the PIXI loader.
@@ -29116,10 +30018,6 @@ class BackgroundLayer extends CanvasLayer {
 	 * @return {Promise.<BackgroundLayer>}    Returns the instance of the Background Layer for convenient chaining
 	 */
 	async draw() {
-		if (this.img) {
-			this.img.destroy({ texture: false, baseTexture: false });
-			this.img = null;
-		}
 		if (!canvas.scene.data.img) return;
 
 		// Load the background texture
@@ -29233,6 +30131,7 @@ class DrawingsLayer extends PlaceablesLayer {
 	static get layerOptions() {
 		return {
 			canDragCreate: true,
+			canDelete: true,
 			controllableObjects: true,
 			rotatableObjects: true,
 			snapToGrid: true,
@@ -29392,33 +30291,23 @@ class DrawingsLayer extends PlaceablesLayer {
 	_getNewDrawingData(origin) {
 		const tool = game.activeTool;
 
-		// Initial Defaults
-		const data = {
-			fillType: CONST.DRAWING_FILL_TYPES.NONE,
-			fillColor: game.user.color,
-			fillAlpha: 0.5,
-			strokeAlpha: 1.0,
-			strokeWidth: 8,
-			strokeColor: game.user.color,
-			fontFamily: CONFIG.defaultFontFamily,
-			fontSize: 48,
-		};
-
 		// Update with User Defaults
-		const userDefault = game.settings.get(
+		const saved = game.settings.get(
 			'core',
 			this.constructor.DEFAULT_CONFIG_SETTING
 		);
-		for (let [k, v] of Object.entries(userDefault)) {
-			if (v === '') delete userDefault[k];
-		}
-		mergeObject(data, userDefault);
+		const defaults = mergeObject(CONST.DRAWING_DEFAULT_VALUES, saved, {
+			inplace: false,
+		});
 
-		// Mandatory Overrides
-		mergeObject(data, {
+		// Client-level overrides
+		const data = mergeObject(defaults, {
 			author: game.user._id,
 			x: origin.x,
 			y: origin.y,
+			fillColor: game.user.color,
+			strokeColor: game.user.color,
+			fontFamily: CONFIG.defaultFontFamily,
 		});
 
 		// Tool-based settings
@@ -29478,7 +30367,7 @@ class DrawingsLayer extends PlaceablesLayer {
 			hasDistance ||
 			(object.isPolygon && object.data.points.length > 2)
 		) {
-			object.constructor.create(canvas.scene._id, object.data);
+			object.constructor.create(object.data);
 		}
 		this._onDragCancel(event);
 	}
@@ -29516,8 +30405,8 @@ class EffectsLayer extends CanvasLayer {
 
 	/* -------------------------------------------- */
 
+	/** @override */
 	async draw() {
-		// Draw the weather layer
 		this.drawWeather();
 	}
 
@@ -29542,13 +30431,26 @@ class EffectsLayer extends CanvasLayer {
  * @extends {PlaceablesLayer}
  */
 class LightingLayer extends PlaceablesLayer {
-	constructor() {
-		super();
+	constructor(...args) {
+		super(...args);
+
+		/**
+		 * The current darkness level, defined by the scene value
+		 * @type {number}
+		 * @private
+		 */
+		this._darkness = 0;
+
+		/**
+		 * A flag for whether the darkness level is currently animating
+		 * @type {boolean}
+		 */
+		this._animating = false;
 	}
 
 	/* -------------------------------------------- */
 
-	/** @extends {PlaceablesLayer.layerOptions} */
+	/** @override */
 	static get layerOptions() {
 		return mergeObject(super.layerOptions, {
 			rotatableObjects: true,
@@ -29569,46 +30471,66 @@ class LightingLayer extends PlaceablesLayer {
 	/*  Rendering
   /* -------------------------------------------- */
 
-	/**
-	 * Draw the PlaceablesLayer.
-	 * Draw each Sound within the scene as a child of the sounds container.
-	 */
+	/** @override */
 	async draw() {
+		this.lighting = this.addChild(this._drawLightingContainer());
 		await super.draw();
 	}
 
 	/* -------------------------------------------- */
 
 	/**
-	 * Override the activation behavior of the PlaceablesLayer.
-	 * While active, ambient sound previews are displayed.
+	 * Draw the nighttime overlay for the scene
 	 */
+	_drawLightingContainer() {
+		const c = new PIXI.Container();
+		const d = canvas.dimensions;
+
+		// Define the underlying darkness
+		c.darkness = c.addChild(new PIXI.Graphics());
+
+		// Define the overlay lights
+		c.lights = c.addChild(new PIXI.Graphics());
+
+		// Apply blur to the lights only
+		const bf = new PIXI.filters.BlurFilter(16);
+		bf.padding = 256;
+		if (game.settings.get('core', 'softShadows')) c.lights.filters = [bf];
+
+		// Apply alpha filter to the parent container
+		const af = new PIXI.filters.AlphaFilter(1.0);
+		af.blendMode = PIXI.BLEND_MODES.MULTIPLY;
+		c.filters = [af];
+
+		// Mask the container by the outer rectangle
+		const mask = c.addChild(new PIXI.Graphics());
+		mask.beginFill(0xffffff, 1.0)
+			.drawRect(0, 0, d.width, d.height)
+			.endFill();
+		c.mask = mask;
+		return c;
+	}
+
+	/* -------------------------------------------- */
+	/*  Layer Methods                               */
+	/* -------------------------------------------- */
+
+	/** @override */
 	activate() {
 		super.activate();
 		if (this.objects) {
-			this.placeables.forEach(p => {
-				p.controlIcon.visible = true;
-				p.field.light.visible = true;
-				p.field.lines.visible = true;
-			});
+			this.placeables.forEach(l => l.refresh());
 		}
 	}
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Override the deactivation behavior of the PlaceablesLayer.
-	 * Keep templates visible, even when the layer is inactive.
-	 */
+	/** @override */
 	deactivate() {
 		super.deactivate();
 		if (this.objects) {
 			this.objects.visible = true;
-			this.placeables.forEach(p => {
-				p.controlIcon.visible = false;
-				p.field.light.visible = p.hasTint;
-				p.field.lines.visible = false;
-			});
+			this.placeables.forEach(l => l.refresh());
 		}
 	}
 
@@ -29619,6 +30541,72 @@ class LightingLayer extends PlaceablesLayer {
 	 */
 	initialize() {
 		this.placeables.forEach(s => s.refresh());
+		this.update();
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Update the nighttime overlay for the Scene
+	 */
+	update(alpha = null) {
+		const d = canvas.dimensions;
+		const c = this.lighting;
+
+		// Draw darkness layer
+		this._darkness = alpha !== null ? alpha : canvas.scene.data.darkness;
+		if (this._darkness > 0) {
+			const darknessPenalty = 0.8;
+			let darknessColor =
+				canvas.scene.getFlag('core', 'darknessColor') ||
+				CONFIG.Canvas.darknessColor;
+			if (typeof darknessColor === 'string')
+				darknessColor = colorStringToHex(darknessColor);
+			c.darkness
+				.clear()
+				.beginFill(darknessColor, this._darkness * darknessPenalty)
+				.drawRect(d.paddingX, d.paddingY, d.sceneWidth, d.sceneHeight)
+				.endFill();
+		}
+
+		// Draw lighting atop the darkness
+		c.lights.clear();
+		for (let s of canvas.sight.sources.lights.values()) {
+			c.lights
+				.beginFill(s.color, s.alpha)
+				.drawPolygon(s.fov)
+				.endFill();
+		}
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Animate a smooth transition of the darkness overlay to a target value.
+	 * Only begin animating if another animation is not already in progress.
+	 * @param {number} target     The target darkness level between 0 and 1
+	 * @param {number} duration   The desired animation time in milliseconds. Default is 10 seconds
+	 * @return {Promise}
+	 */
+	async animateDarkness(target = 1.0, { duration = 10000 } = {}) {
+		if (this._animating) return;
+		const animationData = [
+			{
+				parent: { darkness: this._darkness },
+				attribute: 'darkness',
+				to: Math.clamped(target, 0, 1),
+			},
+		];
+
+		// Trigger the animation function
+		this._animating = true;
+		return CanvasAnimation.animateLinear(animationData, {
+			name: 'lighting.animateDarkness',
+			duration: duration,
+			ontick: (dt, attributes) => {
+				this.update(attributes[0].parent.darkness);
+			},
+		}).then(() => (this._animating = false));
 	}
 
 	/* -------------------------------------------- */
@@ -29689,7 +30677,7 @@ class NotesLayer extends PlaceablesLayer {
 	/*  Methods
   /* -------------------------------------------- */
 
-	/** @extends {PlaceablesLayer.activate} */
+	/** @override */
 	activate() {
 		super.activate();
 		if (this.objects) {
@@ -29699,7 +30687,7 @@ class NotesLayer extends PlaceablesLayer {
 
 	/* -------------------------------------------- */
 
-	/** @extends {PlaceablesLayer.deactivate} */
+	/** @override */
 	deactivate() {
 		super.deactivate();
 		const isToggled = game.settings.get(
@@ -29774,191 +30762,484 @@ class NotesLayer extends PlaceablesLayer {
 NotesLayer.TOGGLE_SETTING = 'notesDisplayToggle';
 /**
  * The Sight Layer which implements dynamic vision, lighting, and fog of war
- * @type {CanvasLayer}
+ * This layer uses an event-driven workflow to perform the minimal required calculation in response to changes.
+ *
+ * Structure of the Container
+ *  darkness (Graphics)
+ *  fog (Container)
+ *    explored (Sprite)
+ *    update (Container) [mask=los]
+ *      fov (Graphics)
+ *      los (Graphics)
+ *  sources (Container) [mask=los]
+ *    dim (Graphics)
+ *    bright (Graphics)
+ *    dark (Graphics)
+ *    black (Graphics)
+ *    los (Graphics)
+ *
+ * @see {SightLayerSource}
+ * @extends {CanvasLayer}
  */
 class SightLayer extends CanvasLayer {
 	constructor() {
 		super();
 
-		/**
-		 * The shadow map container which renders dark, dim, and bright light sources
-		 * @type {PIXI.Container}
-		 */
-		this.map = null;
+		/* -------------------------------------------- */
+		/*  Layer Data                                  */
+		/* -------------------------------------------- */
 
 		/**
-		 * The fog container which includes fog of war and exploration layers
-		 * @type {PIXI.Container}
+		 * Configure the opacity levels used for each channel of the lighting map
+		 * @type {Object|null}
 		 */
-		this.fog = null;
+		this.alphas = null;
 
 		/**
 		 * Fog of War data object
 		 * @type {Object}
 		 */
-		this.fogData = {};
-
-		/**
-		 * Classify arrays of tokens which either have vision or emit light
-		 * @type {Object}
-		 */
-		this.tokens = {
-			vision: [],
-			light: [],
+		this.fogData = {
+			_id: null,
+			explored: null,
+			positions: {},
 		};
 
 		/**
-		 * Track currently active field-of-view polygons
-		 * @type {Array}
+		 * A mapping of the sources of lighting and vision which are active within the rendered Scene
+		 * @type {Object.<Map>}
 		 */
-		this.fov = {
-			tokens: [],
-			lights: [],
+		this.sources = {
+			vision: new Map(),
+			lights: new Map(),
 		};
 
-		/**
-		 * Track currently active line-of-sight polygons
-		 * @type {Object}
-		 */
-		this.los = {
-			tokens: [],
-			lights: [],
-		};
+		/* -------------------------------------------- */
+		/*  Layer Configurations                        */
+		/* -------------------------------------------- */
 
 		/**
-		 * Track whether or not Token vision is enabled for this Scene
-		 * @type {Boolean}
+		 * The blur distance for soft shadows
+		 * @type {number|null}
 		 */
-		this.tokenVision;
+		this._blurDistance = null;
 
 		/**
-		 * Track whether or not fog of war exploration is enabled for this Scene
-		 * @type {Boolean}
+		 * The lighting channels which are an input to the ShadowMap
+		 * @type {Object|null}
 		 */
-		this.fogExploration;
+		this._channels = null;
 
 		/**
-		 * Track the distinct grid positions which have had fog of war explored at a certain visible radius
-		 * @type {Object}
+		 * An Array which specifies the cull multiplier, minimum, and maximum distance to use
+		 * This depends dynamically on the number of walls in the Scene
+		 * @type {Array.<number>}
 		 */
-		this.fogPositions;
+		this._cull = [10, 100, 1000];
 
 		/**
-		 * Store the different opacity levels used for elements of the Sight Layer
-		 * @type {Object}
+		 * A status flag for whether the layer initialization workflow has succeeded
+		 * @type {boolean}
+		 * @private
 		 */
-		this.alphas;
+		this._initialized = false;
 
 		/**
-		 * Light source rendering queues divide the contents of the shadow-map into 4 lighting levels, each of which
-		 * override the precedence of the previous level
-		 *
-		 * 1) dim
-		 * 2) bright
-		 * 3) dark
-		 * 4) black
-		 *
-		 * @type {Object}
+		 * The downscaling resolution used for the saved fog texture
+		 * @type {number|null}
 		 */
-		this.queues;
+		this._fogResolution = null;
 
 		/**
-		 * A special ColorMatrixFilter which transforms greyscale to alpha
-		 * @type {PIXI.filters.ColorMatrixFilter}
+		 * Track whether fog of war exploration has been updated and required saving
+		 * @type {boolean}
+		 * @private
 		 */
-		this.shadowMapFilter;
-
-		// Save fog once per minute if it has been updated
-		this._updateFog = false;
 		this._fogUpdated = false;
-		setInterval(() => this.saveFog(), 1000 * 60);
+
+		/**
+		 * While updating individual tokens, record whether any of them require fog of war updates
+		 * @type {boolean}
+		 * @private
+		 */
+		this._updateFog = false;
 	}
 
 	/* -------------------------------------------- */
 
 	/**
-	 * Create the shadow-map channel queues
-	 * @private
+	 * Does the currently viewed Scene support Token field of vision?
+	 * @type {boolean}
 	 */
-	_createQueues() {
-		return {
-			dim: {
-				hex: PIXI.utils.rgb2hex([1, 1, 1].map(c => this.alphas.dim)),
-				lights: [],
-				tokens: [],
-			},
-			bright: {
-				hex: PIXI.utils.rgb2hex([1, 1, 1].map(c => this.alphas.bright)),
-				lights: [],
-				tokens: [],
-			},
-			dark: {
-				hex: PIXI.utils.rgb2hex([1, 1, 1].map(c => this.alphas.dark)),
-				lights: [],
-				tokens: [],
-			},
-			black: {
-				hex: PIXI.utils.rgb2hex(
-					[1, 1, 1].map(c => this.alphas.unexplored)
-				),
-				lights: [],
-				tokens: [],
-			},
+	get tokenVision() {
+		return canvas.scene.data.tokenVision;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Does the currently viewed Scene support fog of war exploration?
+	 * @type {boolean}
+	 */
+	get fogExploration() {
+		return canvas.scene.data.fogExploration;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * A getter to retrieve the current value of blur distance
+	 * @return {number}
+	 */
+	get blurDistance() {
+		return this._blurDistance;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * A setter to apply a new blur distance value
+	 * @return {number}
+	 */
+	set blurDistance(d) {
+		this._blurDistance = d;
+		if (this.blurFilter) this.blurFilter.blur = Math.clamped(d, 4, 16);
+	}
+
+	/* -------------------------------------------- */
+	/*  Initialization                              */
+	/* -------------------------------------------- */
+
+	/** @override */
+	async tearDown() {
+		// Save pending fog of war changes
+		await this.saveFog();
+
+		// Reset fog data
+		this.fogData = {
+			_id: null,
+			explored: null,
+			positions: {},
 		};
+
+		// Reset sources
+		this.sources = {
+			vision: new Map(),
+			lights: new Map(),
+		};
+
+		// Destroy the layer children
+		return this.removeChildren().forEach(c =>
+			c.destroy({ children: true, texture: true, baseTexture: true })
+		);
 	}
 
 	/* -------------------------------------------- */
 
 	/**
-	 * Create the shadow map filter which converts greyscale colors to alpha layer
-	 * @private
+	 * Initialize the Sight Layer. Initialization has the following hierarchical workflow:
+	 *
+	 * Initialize Layer (reset entire layer)
+	 *  InitializeLights (used to reset all lights)
+	 *    UpdateLight (update a single light)
+	 *  InitializeTokens (reset all tokens)
+	 *    UpdateToken (update a single token)
+	 *  Initialize Fog (reset FOW state)
 	 */
-	_createShadowMapFilter() {
-		let f = new PIXI.filters.ColorMatrixFilter();
-		let a = 1 / 3;
-		f.matrix = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, a, a, a, 0, 0];
-		return f;
+	async initialize() {
+		this._initialized = false;
+
+		// If Token Vision is not used in this scene, we can simply hide the layer
+		if (!this.tokenVision) {
+			return (this.visible = false);
+		} else this.visible = true;
+
+		// Initialize Lights
+		this.initializeLights();
+
+		// Initialize Tokens
+		this.initializeTokens();
+
+		// Initialize Fog
+		await this.initializeFog();
+		this._initialized = true;
+
+		// If the player has no vision tokens in a visibility-restricted scene, display a warning on a slight delay
+		if (!game.user.isGM && !this.sources.vision.size) {
+			setTimeout(
+				() =>
+					ui.notifications.warn(
+						'You do not own any Token with vision in this Scene'
+					),
+				100
+			);
+		}
+
+		// Update vision
+		this.update();
 	}
 
 	/* -------------------------------------------- */
-	/*  Initialization and Rendering                */
+
+	/**
+	 * Initialize the sight layer for all AmbientLight based sources.
+	 * This method calls the SightLayer#updateLight function for each Ambient Light object.
+	 */
+	initializeLights() {
+		if (!this.tokenVision) return;
+		const walls = canvas.walls.blockVision;
+		canvas.lighting.placeables.forEach(l =>
+			this.updateLight(l, { walls, defer: true })
+		);
+		this.update();
+	}
+
 	/* -------------------------------------------- */
 
 	/**
-	 * Draw Sight Layer canvas elements
-	 * @return {SightLayer}
+	 * Initialize the sight layer for all Token based sources.
+	 * This method calls the SightLayer#updateToken function for each Token object.
 	 */
-	draw() {
-		super.draw();
+	initializeTokens() {
+		if (!this.tokenVision) return;
+		const tokens = canvas.tokens.placeables;
+		const anyControlled = tokens.some(t => t._controlled);
+		const forceVision = !anyControlled && !game.user.isGM;
+		const walls = canvas.walls.blockVision;
+		tokens.forEach(t =>
+			this.updateToken(t, { force: forceVision, walls, defer: true })
+		);
+		this.update();
+	}
 
-		// Initialize Layer data
-		this.tokenVision = canvas.scene.data.tokenVision;
-		this.fogExploration = canvas.scene.data.fogExploration;
-		this.fogPositions = {};
+	/* -------------------------------------------- */
 
-		// Reset the alpha channels used for this Scene
-		this.alphas = duplicate(this.constructor.DEFAULT_ALPHAS);
-		this.alphas.unexplored = game.user.isGM
-			? this.alphas.gmUnexplored
-			: this.alphas.unexplored;
-		this.alphas.dark = this.fogExploration
-			? this.alphas.dark
-			: this.alphas.unexplored;
+	/**
+	 * Initialize fog of war - resetting it when switching scenes or re-drawing the canvas
+	 * @return {Promise}
+	 */
+	async initializeFog() {
+		if (!this.tokenVision) return;
+		if (this.fogData._id === null) await this.loadFog();
+	}
 
-		// Create vision queues and filters
-		this.queues = this._createQueues();
-		this.shadowMapFilter = this._createShadowMapFilter();
+	/* -------------------------------------------- */
 
-		// Draw the ShadowMap container
-		this.map = this.addChild(this._drawShadowMapContainer());
+	/**
+	 * Update lighting data for a single light source, storing it as a source in the Sight Layer
+	 * @param {AmbientLight} light      The light object being rendered
+	 * @param {boolean} defer           Defer rendering the update until later? Default is false
+	 * @param {boolean} deleted         An optional flag which denotes that the light object has been deleted
+	 * @param {Array} walls             Optionally pass an array of Walls which block vision for efficient computation
+	 */
+	updateLight(light, { defer = false, deleted = false, walls = null } = {}) {
+		const sourceId = `Light.${light.id}`;
+		this.sources.lights.delete(sourceId);
+		if (deleted) return defer ? null : this.update();
 
-		// Draw the fog container
+		// Compute light polygons
+		const dim = light.dimRadius;
+		const bright = light.brightRadius;
+		const radius =
+			Math.max(Math.abs(dim), Math.abs(bright)) +
+			canvas.dimensions.size * 0.1;
+		const { los, fov } = light.computeFOV({
+			radius,
+			cull: this._cull,
+			walls,
+		});
+
+		// Compute the source object
+		const source = new SightLayerSource({
+			x: light.x,
+			y: light.y,
+			los: light.global ? los : null,
+			fov: fov,
+			dim: dim,
+			bright: bright,
+			color: light.data.tintColor,
+			alpha: light.data.tintAlpha,
+		});
+
+		// Store the source
+		this.sources.lights.set(sourceId, source);
+		if (CONFIG.debug.sight)
+			console.debug(`Updated SightLayer source for ${sourceId}`);
+		if (!defer) this.update();
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Update lighting data for a single Token source, storing it as a source in the Sight Layer
+	 * @param {Token} token             The Token object being rendered
+	 * @param {boolean} defer           Defer rendering the update until later? Default is false
+	 * @param {boolean} deleted         An optional flag which denotes that the Token object has been deleted
+	 * @param {boolean} force           An optional flag for whether to force vision for the Token if it is not controlled
+	 * @param {Array} walls             Optionally pass an array of Walls which block vision for efficient computation
+	 * @param {boolean} updateFog       Update fog exploration progress for the current Token position?
+	 */
+	updateToken(
+		token,
+		{
+			defer = false,
+			force = false,
+			deleted = false,
+			walls = null,
+			updateFog = true,
+		} = {}
+	) {
+		let sourceId = `Token.${token.id}`;
+		this.sources.vision.delete(sourceId);
+		this.sources.lights.delete(sourceId);
+		if (deleted) return defer ? null : this.update();
+
+		// Take no action for Tokens which are invisible or Tokens that have no sight or light
+		if (token.data.hidden && !game.user.isGM) return;
+		const globalLight = canvas.scene.data.globalLight;
+		const isObserved =
+			token.actor && token.actor.hasPerm(game.user, 'OBSERVER');
+		let isVisionSource =
+			token.hasSight && (token._controlled || (force && isObserved));
+		let isLightSource = token.emitsLight;
+
+		// If the Token is no longer a source, we don't need further work
+		if (!isVisionSource && !isLightSource) return;
+
+		// Prepare some common data
+		const center = token.getSightOrigin();
+		const maxR = globalLight
+			? Math.max(canvas.dimensions.width, canvas.dimensions.height)
+			: null;
+		let [cullMult, cullMin, cullMax] = this._cull;
+		if (globalLight) cullMin = maxR;
+
+		// Prepare vision sources
+		if (isVisionSource) {
+			// Compute vision polygons
+			let dim = globalLight
+				? 0
+				: token.getLightRadius(token.data.dimSight);
+			const bright = globalLight
+				? maxR
+				: token.getLightRadius(token.data.brightSight);
+			if (dim === 0 && bright === 0) dim = canvas.dimensions.size * 0.6;
+			const radius = Math.max(Math.abs(dim), Math.abs(bright));
+			const { los, fov } = this.constructor.computeSight(center, radius, {
+				angle: token.data.sightAngle,
+				cullMult: cullMult,
+				cullMin: cullMin,
+				cullMax: cullMax,
+				density: 6,
+				rotation: token.data.rotation,
+				walls: walls,
+			});
+
+			// Add a vision source
+			const source = new SightLayerSource({
+				x: center.x,
+				y: center.y,
+				los: los,
+				fov: fov,
+				dim: dim,
+				bright: bright,
+			});
+			this.sources.vision.set(sourceId, source);
+
+			// Update fog exploration for the token position
+			this.updateFog(
+				center.x,
+				center.y,
+				Math.max(dim, bright),
+				token.data.sightAngle !== 360,
+				updateFog
+			);
+		}
+
+		// Prepare light sources
+		if (isLightSource) {
+			// Compute light emission polygons
+			const dim = token.getLightRadius(token.data.dimLight);
+			const bright = token.getLightRadius(token.data.brightLight);
+			const radius = Math.max(Math.abs(dim), Math.abs(bright));
+			const { fov } = this.constructor.computeSight(center, radius, {
+				angle: token.data.lightAngle,
+				cullMult: cullMult,
+				cullMin: cullMin,
+				cullMax: cullMax,
+				density: 6,
+				rotation: token.data.rotation,
+				walls: walls,
+			});
+
+			// Add a light source
+			const source = new SightLayerSource({
+				x: center.x,
+				y: center.y,
+				los: null,
+				fov: fov,
+				dim: dim,
+				bright: bright,
+				color: token.data.lightColor,
+			});
+			this.sources.lights.set(sourceId, source);
+		}
+
+		// Maybe update
+		if (CONFIG.debug.sight)
+			console.debug(`Updated SightLayer source for ${sourceId}`);
+		if (!defer) this.update();
+	}
+
+	/* -------------------------------------------- */
+	/*  Initial Layer Drawing                       */
+	/* -------------------------------------------- */
+
+	/** @override */
+	async draw() {
+		await super.draw();
+
+		// Configure variables
+		const d = canvas.dimensions;
+		const bd = this._blurDistance;
+		const vw = d.width + 2 * bd;
+		const vh = d.height + 2 * bd;
+		this._blurDistance = this._configureBlurDistance();
+		this._channels = this._configureChannels();
+		this._cull = this._configureCullThreshold();
+		this._fogResolution = this._configureFogResolution();
+
+		// Mask the container to prevent overflow
+		this.msk = this.addChild(new PIXI.Graphics());
+		this.msk
+			.beginFill(0xffffff, 1.0)
+			.drawRect(-bd, -bd, vw, vh)
+			.endFill();
+		this.mask = this.msk;
+
+		// Create the darkness layer
+		this.darkness = this.addChild(new PIXI.Graphics());
+		this.darkness
+			.beginFill(this._channels.black.hex, 1.0)
+			.drawRect(-bd, -bd, vw, vh)
+			.endFill();
+
+		// Create fog container
 		this.fog = this.addChild(this._drawFogContainer());
 
-		// Enable soft shadow blur filtering
-		this.filters = game.settings.get('core', 'softShadows')
-			? [new PIXI.filters.BlurFilter(5)]
-			: null;
+		// Create lighting sources container
+		this.light = this.addChild(this._drawLightContainer());
+
+		// Create Shadow Map and Blur filters
+		this.shadowMapFilter = this._createShadowMapFilter();
+		this.blurFilter = new PIXI.filters.BlurFilter(this._blurDistance);
+		this.filters =
+			this._blurDistance > 0
+				? [this.shadowMapFilter, this.blurFilter]
+				: [this.shadowMapFilter];
+
+		// Shift next to the map for testing
+		if (CONFIG.debug.sight) this.position.x = -1 * d.width;
 
 		// Return a reference to the layer
 		return this;
@@ -29967,43 +31248,51 @@ class SightLayer extends CanvasLayer {
 	/* -------------------------------------------- */
 
 	/**
-	 * Draw the shadow map container which spans the entire map and renders light into a container in greyscale.
-	 * The greyscale light is then color-mapped to alpha channel.
+	 * Create and return the Fog of War (FOW) container
+	 * @return {PIXI.Container}
 	 * @private
 	 */
-	_drawShadowMapContainer() {
-		let d = canvas.dimensions;
-		let map = new PIXI.Container();
+	_drawFogContainer() {
+		const d = canvas.dimensions;
+		const fog = new PIXI.Container();
+		const fd = this.fogData;
 
-		// Darkness
-		map.dark = map.addChild(new PIXI.Graphics());
-		map.dark
-			.beginFill(this.queues.dark.hex, 1.0)
-			.drawRect(0, 0, d.width, d.height)
-			.endFill();
+		// Retrieve the existing exploration data, if any
+		const tex = fd.explored
+			? PIXI.Texture.from(fd.explored)
+			: PIXI.Texture.EMPTY;
+		fog.rendered = fog.addChild(new PIXI.Sprite(tex));
+		fog.rendered.width = d.width;
+		fog.rendered.height = d.height;
 
-		// Parent container for all light sources - lights or tokens
-		map.sources = map.addChild(new PIXI.Container());
-
-		// Ambient light sources
-		map.sources.lights = map.sources.addChild(new PIXI.Container());
-
-		// Token light sources
-		map.sources.tokens = map.sources.addChild(new PIXI.Container());
-
-		// Line-of-sight masking
-		map.los = map.addChild(new PIXI.Graphics());
-		map.sources.mask = map.los;
-
-		// ColorMatrix Filter for Alpha channel
-		map.filters = [this.shadowMapFilter];
-		return map;
+		// Draw the update container
+		fog.update = fog.addChild(new PIXI.Container());
+		fog.update.fov = fog.update.addChild(new PIXI.Graphics());
+		fog.update.los = fog.update.addChild(new PIXI.Graphics());
+		fog.update.mask = fog.update.los;
+		return fog;
 	}
 
 	/* -------------------------------------------- */
 
-	_enqueueSource(level, type, data) {
-		this.queues[level][type].push(data);
+	/**
+	 * Create and return the container of light sources
+	 * @return {PIXI.Container}
+	 * @private
+	 */
+	_drawLightContainer() {
+		const light = new PIXI.Container();
+
+		// Create channel layers
+		light.dim = light.addChild(new PIXI.Container());
+		light.bright = light.addChild(new PIXI.Container());
+		light.dark = light.addChild(new PIXI.Container());
+		light.black = light.addChild(new PIXI.Container());
+
+		// Add a line-of-sight mask
+		light.los = light.addChild(new PIXI.Graphics());
+		light.mask = light.los;
+		return light;
 	}
 
 	/* -------------------------------------------- */
@@ -30017,7 +31306,7 @@ class SightLayer extends CanvasLayer {
 	 * @param {PIXI.Polygon} fov  The field-of-view polygon for the source
 	 * @private
 	 */
-	_drawShadowMap(hex, { x, y, radius, fov } = {}) {
+	_drawSource(hex, { x, y, radius, fov } = {}) {
 		let source = new PIXI.Container();
 		source.light = source.addChild(new PIXI.Graphics());
 		source.light
@@ -30036,556 +31325,133 @@ class SightLayer extends CanvasLayer {
 	/* -------------------------------------------- */
 
 	/**
-	 * Imagine the fog of war layer as a black blanket over the map with holes cut out where the player has explored.
-	 * To render the fog layer we draw a container using different greyscale tones and then apply a shadow-map transform
-	 * to translate into the alpha channel.
+	 * Create a RenderTexture used to stage the Fog of War exploration progress and save it to a single texture
+	 * @return {PIXI.RenderTexture}
 	 * @private
-	 *
-	 * @return {PIXI.Container} The fog container
 	 */
-	_drawFogContainer() {
-		const d = canvas.dimensions,
-			fog = new PIXI.Container();
-
-		// Determine a downscaling resolution
-		let res = 1.0;
-		if (d.width * d.height > 16000 ** 2) res = 0.25;
-		else if (d.width * d.height > 8000 ** 2) res = 0.5;
-
-		// Draw the obscured area
-		fog.obscured = fog.addChild(new PIXI.Graphics());
-		fog.obscured
-			.beginFill(this.queues.black.hex, 1.0)
-			.drawRect(0, 0, d.width, d.height)
-			.endFill();
-
-		// Draw the explored area
-		fog.explored = fog.addChild(new PIXI.Container());
-
-		// Draw the initial exploration state
-		fog.rendered = fog.explored.addChild(new PIXI.Sprite());
-		fog.rendered.width = canvas.dimensions.width;
-		fog.rendered.height = canvas.dimensions.height;
-
-		// Draw the explored polygon
-		fog.update = fog.explored.addChild(new PIXI.Container());
-
-		// Have a staging texture to use to composite fog graphics
-		fog.staging = new PIXI.RenderTexture.create({
+	_createFogStagingTexture() {
+		const d = canvas.dimensions;
+		return PIXI.RenderTexture.create({
 			width: d.width,
 			height: d.height,
-			scaleMode: 1,
-			resolution: res,
-		});
-
-		// Shadow-map matrix transformation
-		fog.filters = [this.shadowMapFilter];
-		return fog;
-	}
-
-	/* -------------------------------------------- */
-	/*  Layer Initialization                        */
-	/* -------------------------------------------- */
-
-	/**
-	 * Initialize starting sight for non-GM players
-	 */
-	async initialize() {
-		await this.initializeFog();
-		await this.initializeSight();
-	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * Initialize the fog container by resetting tracked fog positions and loading existing fog layer for the scene.
-	 * @return {Promise}    A Promise which resolves once fog of war is fully loaded
-	 */
-	async initializeFog() {
-		// If Token vision is not enforced, we don't need the fog layer
-		if (!this.tokenVision) {
-			this.fog.visible = false;
-			return;
-		}
-
-		// Set up the fog layer
-		this.fogPositions = {};
-		this._fogUpdated = false;
-		this.fog.visible = !game.user.isGM;
-
-		// Load existing fog data
-		return this.loadFog();
-	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * Initialize sight and visibility
-	 * @param {Object} options
-	 * @param {boolean} options.updateFog
-	 */
-	initializeSight({ updateFog = true } = {}) {
-		// If Token vision is not enforced, we can hide the shadow-map completely
-		if (!this.tokenVision) {
-			this.map.visible = false;
-			return;
-		}
-
-		// Adjust the cull multiplier and distance based on the number of walls
-		let nw = canvas.scene.data.walls.length;
-		if (nw <= 50) this._cull = [10, 100, 1000];
-		else if (nw <= 150) this._cull = [3, 50, 500];
-		else this._cull = [2, 10, 50];
-
-		// Allocate tokens as either FOV or light sources
-		let [fovTokens, lightTokens] = this._getTokens();
-		this.tokens = {
-			vision: fovTokens,
-			light: lightTokens,
-		};
-
-		// Draw ambient lights when sight is first initialized, as these do not need to be updated frequently
-		this.updateLights();
-
-		// Create the shadow layer and draw sight
-		this.updateSight({ updateFog });
-
-		// If the player has no vision tokens in a visibility-restricted scene, display a warning on a slight delay
-		if (!game.user.isGM && !fovTokens.length) {
-			setTimeout(
-				() =>
-					ui.notifications.warn(
-						'You do not own any Token with vision in this Scene'
-					),
-				250
-			);
-		}
-	}
-
-	/* -------------------------------------------- */
-	/*  Ambient Light Sources                       */
-	/* -------------------------------------------- */
-
-	/**
-	 * Draw light containers for all ambient lights which do not change when a token is moved
-	 *
-	 * First, iterate through each light and register light-level data. For each light source, store their light radii
-	 * in a queue for rendering. Sort the queue in descending order of radius to ensure that we draw bright light after
-	 * dim light, and negative light values last of all.
-	 */
-	updateLights() {
-		// Reset the list of light source FOV polygons we are tracking
-		this.fov.lights = [];
-		this.los.lights = [];
-
-		// Empty the shadow map rendering queues for each lighting level
-		Object.values(this.queues).forEach(q => (q.lights = []));
-
-		// If we are not using token vision, no work is required
-		if (!this.tokenVision) return;
-
-		// Classify each ambient light source for rendering
-		canvas.lighting.placeables.forEach(l => {
-			let dim = l.dimRadius,
-				bright = l.brightRadius;
-
-			// Compute and track the light source FOV polygon
-			l.computeFOV();
-
-			// Store bright or dim emission to the relevant queue
-			if (dim) {
-				if (dim > 0)
-					this._enqueueSource('dim', 'lights', {
-						x: l.x,
-						y: l.y,
-						radius: dim,
-						fov: l.fov,
-					});
-				else
-					this._enqueueSource('dark', 'lights', {
-						x: l.x,
-						y: l.y,
-						radius: -1 * dim,
-						fov: l.fov,
-					});
-			}
-			if (bright) {
-				if (bright > 0)
-					this._enqueueSource('bright', 'lights', {
-						x: l.x,
-						y: l.y,
-						radius: bright,
-						fov: l.fov,
-					});
-				else
-					this._enqueueSource('black', 'lights', {
-						x: l.x,
-						y: l.y,
-						radius: -1 * bright,
-						fov: l.fov,
-					});
-			}
-
-			// Store and draw masking FOV or LOS polygons for fog and lighting
-			if (dim >= 0 || bright >= 0) {
-				this.fov.lights.push(l.fov);
-				if (l.global) this.los.lights.push(l.fov);
-			}
+			scale: 1,
+			resolution: this._fogResolution,
 		});
 	}
 
 	/* -------------------------------------------- */
-	/*  Token Light Sources                         */
+	/*  Layer Rendering                             */
 	/* -------------------------------------------- */
 
 	/**
-	 * Get the subset of Tokens which are controllable and have a field of vision
-	 * First determine whether the token is a potential source of vision
-	 * Tokens which are controlled are always vision sources
-	 * For players which control no tokens, if the represented Actor is Observed, it can be a vision source
-	 * @return {Array<Array>}
-	 * @private
+	 * Update the display of the sight layer.
+	 * Organize sources into rendering queues and draw lighting containers for each source
 	 */
-	_getTokens() {
-		// Get the set of tokens which may be observed
-		const tokens = canvas.tokens.placeables.filter(
-				t => game.user.isGM || !t.data.hidden
-			),
-			anyControlled = tokens.some(t => t._controlled),
-			globalLight = canvas.scene.data.globalLight;
+	update() {
+		if (!this._initialized) return;
+		const light = this.light;
+		const fog = this.fog.update;
+		const channels = this._channels;
+		const pNow = CONFIG.debug.sight ? performance.now() : null;
 
-		// Allocate all tokens into vision sources and light sources
-		return tokens.reduce(
-			(arr, t) => {
-				let [vision, light] = arr;
-
-				// Determine whether the Token is an eligible vision source
-				let isVisionSource = false;
-				if (t.hasSight) {
-					if (t._controlled) isVisionSource = true;
-					else if (!game.user.isGM && !anyControlled)
-						isVisionSource =
-							t.actor && t.actor.hasPerm(game.user, 'OBSERVER');
-				}
-				let isLightSource = !globalLight && t.emitsLight;
-
-				// Assign Token to source groups
-				if (isVisionSource) vision.push(t);
-				if (isLightSource) light.push(t);
-				return arr;
-			},
-			[[], []]
-		);
-	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * Draw the sight polygon for a specified token
-	 * Support a number of options to configure how sight is updated
-	 *
-	 * @param options {Object}
-	 * @param options.updateFog {Boolean}
-	 */
-	updateSight({ updateFog = false } = {}) {
-		// Destroy currently rendered light sources
-		this.map.sources
-			.removeChildren()
-			.forEach(c =>
-				c.destroy({ children: true, texture: true, baseTexture: true })
-			);
-		this.map.los.clear();
-
-		// Empty the shadow map rendering queues for each lighting level
-		Object.values(this.queues).forEach(q => (q.tokens = []));
-
-		// Reset the array of tracked token FOV and LOS polygons we are tracking
-		this.fov.tokens = [];
-		this.los.tokens = [];
-
-		// Track whether a fog of war exploration update is required
-		this._updateFog = false;
-
-		// Case 1 - no vision required
-		if (!this.tokenVision) this.map.visible = this.fog.visible = false;
-		// Case 2 - no vision sources
-		else if (!this.tokens.vision.length)
-			this.map.visible = this.fog.visible = !game.user.isGM;
-		// Case 3 - regular vision
-		else {
-			let pNow = null;
-
-			// Begin debug loop
-			if (CONFIG.debug.sight) {
-				if (!canvas.controls.debugSight)
-					canvas.controls.debugSight = canvas.controls.addChild(
-						new PIXI.Graphics()
-					);
-				canvas.controls.debugSight.clear();
-				canvas.controls.debugSight.alpha = 0.25;
-				this._rayCount = 0;
-				pNow = performance.now();
-			}
-
-			// Obtain the walls which affect vision
-			const visionWalls = canvas.walls.blockVision;
-
-			// Update each token which is a vision source
-			this.tokens.vision.forEach(t =>
-				this._updateToken(t, {
-					vision: true,
-					hasVision: true,
-					updateFog: updateFog,
-					visionWalls: visionWalls,
-				})
-			);
-
-			// Update additional tokens which are light emission sources
-			this.tokens.light.forEach(t =>
-				this._updateToken(t, {
-					light: true,
-					hasVision: false,
-					updateFog: updateFog,
-					visionWalls: visionWalls,
-				})
-			);
-
-			// Draw LOS polygons for global light sources
-			this.los.lights.forEach(los => {
-				this.map.los
-					.beginFill(0xffffff, 1.0)
-					.drawPolygon(los)
-					.endFill();
-			});
-
-			// Once all tokens have been classified, render each lighting level queue to the shadow map
-			Object.values(this.queues).forEach(q => {
-				q.lights.concat(q.tokens).forEach(s => {
-					this.map.sources.addChild(this._drawShadowMap(q.hex, s));
-				});
-			});
-
-			// If necessary, draw a fog update
-			if (this._updateFog) this.drawFogExploration();
-
-			// Update visibility of layers and placeables
-			this.map.visible = this.fog.visible = true;
-
-			// Log debug status
-			if (CONFIG.debug.sight) {
-				let ns = performance.now() - pNow;
-				console.log(
-					`Rendered sight with ${this._rayCount} rays in ${ns}ms`
+		// Clear currently rendered sources
+		for (let channel of light.children) {
+			channel
+				.removeChildren()
+				.forEach(c =>
+					c.destroy({
+						children: true,
+						texture: true,
+						baseTexture: true,
+					})
 				);
+		}
+		light.los.clear();
+
+		// NoIf token vision is not used, simply disable the layer
+		if (!this.tokenVision) return (this.visible = false);
+
+		// If no vision sources exist, simply restrict visibility and return
+		if (!this.sources.vision.size) {
+			if (game.user.isGM) this.visible = false;
+			return this.restrictVisibility();
+		}
+		this.visible = true;
+
+		// Iterate over all sources and render them
+		for (let sources of Object.values(this.sources)) {
+			for (let s of sources.values()) {
+				// Draw line of sight polygons
+				if (s.los) {
+					light.los
+						.beginFill(0xffffff, 1.0)
+						.drawPolygon(s.los)
+						.endFill();
+					if (this._updateFog)
+						fog.los
+							.beginFill(0xffffff, 1.0)
+							.drawPolygon(s.los)
+							.endFill();
+				}
+
+				// Draw fog exploration polygons
+				if (this._updateFog && s.channels.dim + s.channels.bright > 0) {
+					fog.fov
+						.beginFill(channels.explored.hex, 1.0)
+						.drawPolygon(s.fov)
+						.endFill();
+				}
+
+				// Draw the source for each vision channel
+				for (let [c, r] of Object.entries(s.channels)) {
+					if (r !== 0) {
+						let channel = light[c];
+						channel.addChild(
+							this._drawSource(channels[c].hex, {
+								x: s.x,
+								y: s.y,
+								radius: r,
+								fov: s.fov,
+							})
+						);
+					}
+				}
 			}
 		}
 
-		// Update visibility of placeables
+		// Draw fog exploration
+		if (this._updateFog) this._commitFogUpdate();
+
+		// Restrict visibility of objects
 		this.restrictVisibility();
+
+		// Log debug status
+		if (CONFIG.debug.sight) {
+			let ns = performance.now() - pNow;
+			console.log(`Rendered Sight Layer update in ${ns}ms`);
+		}
 	}
 
 	/* -------------------------------------------- */
 
 	/**
-	 * Handle each token which is a potential vision or light source
-	 * @param {Token} token                 The token instance
-	 * @param {Boolean} light               Whether we are updating the Token as a light source (true) or as a vision source (false)
-	 * @param {Boolean} updateFog           Whether or not to forcibly update the fog layer
-	 * @private
+	 * Restrict the visibility of certain canvas assets (like Tokens or DoorControls) based on the visibility polygon
+	 * These assets should only be displayed if they are visible given the current player's field of view
 	 */
-	_updateToken(
-		token,
-		{ light = false, updateFog = false, visionWalls } = {}
-	) {
-		// Determine default vision arguments
-		let dim = token._getLightRadius(
-			light ? token.data.dimLight : token.data.dimSight
-		);
-		let bright = token._getLightRadius(
-			light ? token.data.brightLight : token.data.brightSight
-		);
-		let [cullMult, cullMin, cullMax] = this._cull;
-
-		// Adapt for case of global illumination
-		if (canvas.scene.data.globalLight) {
-			dim = Math.max(canvas.dimensions.width, canvas.dimensions.height);
-			bright = dim;
-			cullMin = dim;
+	restrictVisibility() {
+		// Tokens
+		for (let t of canvas.tokens.placeables) {
+			t.visible = (!this.tokenVision && !t.data.hidden) || t.isVisible;
 		}
 
-		// Adapt for case of no vision
-		if (dim === 0 && bright === 0) {
-			if (light) return;
-			else dim = canvas.dimensions.size * 0.6;
-		}
-
-		// Evaluate sight polygons for the Token using provided radius and options
-		const angle = light ? token.data.lightAngle : token.data.sightAngle;
-		const center = token.getSightOrigin();
-		const radius = Math.max(Math.abs(dim), Math.abs(bright));
-		const [rays, los, fov] = this.checkSight(center, radius, {
-			angle: angle,
-			cullMinDistance: cullMin,
-			cullMultiplier: cullMult,
-			cullMaxDistance: cullMax,
-			radialDensity: 6,
-			rotation: token.data.rotation,
-			walls: visionWalls,
-		});
-
-		// Store bright or dim emission to the relevant queue
-		if (dim) {
-			if (dim > 0)
-				this._enqueueSource('dim', 'tokens', {
-					x: center.x,
-					y: center.y,
-					radius: dim,
-					fov: fov,
-				});
-			else
-				this._enqueueSource('dark', 'tokens', {
-					x: center.x,
-					y: center.y,
-					radius: -1 * dim,
-					fov: fov,
-				});
-		}
-		if (bright) {
-			if (bright > 0)
-				this._enqueueSource('bright', 'tokens', {
-					x: center.x,
-					y: center.y,
-					radius: bright,
-					fov: fov,
-				});
-			else
-				this._enqueueSource('black', 'tokens', {
-					x: center.x,
-					y: center.y,
-					radius: -1 * bright,
-					fov: fov,
-				});
-		}
-
-		// Add both sight and light tokens as token-based FOV polygons
-		this.fov.tokens.push(fov);
-
-		// Add sight tokens as LOS polygons and draw them to the LOS mask
-		if (!light) {
-			this.los.tokens.push(los);
-			this.map.los
-				.beginFill(0xffffff, 1.0)
-				.drawPolygon(los)
-				.endFill();
-		}
-
-		// Update fog exploration for the token position
-		this.updateFog(center.x, center.y, radius, angle !== 360, updateFog);
-
-		// Draw debugging
-		if (CONFIG.debug.sight && !light) {
-			this._debugSight(rays, los, fov);
-			this._rayCount += rays.length;
+		// Door Icons
+		for (let d of canvas.controls.doors.children) {
+			d.visible = !this.tokenVision || d.isVisible;
 		}
 	}
 
 	/* -------------------------------------------- */
-	/*  Fog Exploration Controls                    */
-	/* -------------------------------------------- */
-
-	/**
-	 * Update the fog layer when a player token reaches a board position which was not previously explored
-	 * @param {Number} x          The origin x-coordinate from which to update fog exploration
-	 * @param {Number} y          The origin y-coordinate from which to update fog exploration
-	 * @param {Number} radius     The vision radius of the exploration from this point
-	 * @param {Boolean} limit     Was the position explored by a limited viewpoint?
-	 * @param {Boolean} force     Force the fog location to be updated even if it is not a larger radius
-	 */
-	updateFog(x, y, radius, limit, force) {
-		// Standardize fog coordinate key
-		let coords = Math.round(x) + '_' + Math.round(y),
-			pos = this.fogPositions[coords];
-
-		// Check whether the position has already been explored
-		let explored = pos && pos.limit !== true && pos.radius >= radius;
-		if (explored && !force) return;
-
-		// Update the explored positions
-		this.fogPositions[coords] = { radius, limit };
-		this._updateFog = true;
-	}
-
-	/* -------------------------------------------- */
-
-	async drawFogExploration() {
-		if (game.debug)
-			console.log(`${vtt} | Drawing for of war exploration update.`);
-		let exp = new PIXI.Container();
-
-		// Draw FOV polygons
-		exp.fov = exp.addChild(new PIXI.Graphics()).beginFill(0x000000, 1.0);
-		for (let fov of this.fov.tokens.concat(this.fov.lights)) {
-			exp.fov.drawPolygon(fov);
-		}
-		exp.fov.endFill();
-
-		// Draw LOS mask
-		exp.los = exp.addChild(new PIXI.Graphics()).beginFill(0xffffff, 1.0);
-		for (let los of this.los.tokens.concat(this.los.lights)) {
-			exp.los.drawPolygon(los);
-		}
-		exp.los.endFill();
-		exp.mask = exp.los;
-
-		// Add the exploration container to the explored layer
-		this.fog.update.addChild(exp);
-
-		// Render the swapped fog
-		return this._swapStagingToRendered();
-	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * Once a new Fog of War location is explored, composite the explored container with the current staging sprite
-	 * Save that staging Sprite as the rendered fog exploration and swap it out for a fresh staging texture
-	 * Do all this asynchronously, so it doesn't block token movement animation since this takes some extra time
-	 * @return {Promise<void>}
-	 * @private
-	 */
-	async _swapStagingToRendered() {
-		const fog = this.fog,
-			staging = fog.staging;
-
-		// Render the staging texture and swap
-		canvas.app.renderer.render(fog.explored, fog.staging);
-
-		// Swap the staging texture to the rendered Sprite
-		const old = fog.rendered.texture;
-		fog.rendered.texture = fog.staging;
-		old.destroy(true);
-
-		// Clear update container
-		fog.update
-			.removeChildren()
-			.forEach(c =>
-				c.destroy({ children: true, texture: true, baseTexture: true })
-			);
-
-		// Create a new Staging texture
-		fog.staging = new PIXI.RenderTexture.create({
-			width: staging.width,
-			height: staging.height,
-			scaleMode: 1,
-			resolution: staging.baseTexture.resolution,
-		});
-
-		// Record that fog was updated
-		this._fogUpdated = true;
-	}
-
-	/* -------------------------------------------- */
-	/*  Fog of War Controls                         */
+	/*  Fog of War Methods                          */
 	/* -------------------------------------------- */
 
 	/**
@@ -30595,17 +31461,16 @@ class SightLayer extends CanvasLayer {
 	async loadFog() {
 		if (!this.tokenVision) return;
 
+		// Remove the previous render texture if one exists
+		this.fog.rendered.texture.destroy(true);
+
 		// Load fog of war exploration data
 		let fogData = await this._loadFogServerStorage();
-		if (!fogData) fogData = this._loadFogLocalStorage();
-		this.fogData = fogData || {};
 		if (!fogData) return;
+		mergeObject(this.fogData, fogData);
 
 		// Extract the fog data image
-		let render = tex => {
-			this.fog.rendered.texture = tex;
-			this.fog.rendered.tint = 0x000000;
-		};
+		let render = tex => (this.fog.rendered.texture = tex);
 		return await new Promise(resolve => {
 			let tex = PIXI.Texture.from(fogData.explored);
 			if (tex.baseTexture.valid) {
@@ -30622,44 +31487,26 @@ class SightLayer extends CanvasLayer {
 	/* -------------------------------------------- */
 
 	/**
-	 * Load Fog of War exploration data for a user from Server Storage
-	 * @return {Promise}
-	 * @private
+	 * Reset the fog of war by clearing current exploration progress
+	 * This approach currently takes the nuclear option of clearing any saved fog and redrawing the entire canvas
+	 * It's not that inefficient, so it could be worth just keeping it this way for simplicity
 	 */
-	async _loadFogServerStorage() {
-		const eventData = { user: game.user._id, scene: canvas.scene._id };
+	async resetFog() {
+		const eventData = { scene: canvas.scene._id };
 		return SocketInterface.trigger(
-			'getFogExploration',
+			'resetFogExploration',
 			eventData,
 			{},
 			{
 				context: this,
 				success: response => {
-					if (response.data)
-						window.localStorage.removeItem(
-							`${game.world.id}.fog.${canvas.scene._id}`
-						);
-					return response.data || null;
+					console.log(
+						`${vtt} | Reset fog of war exploration data for all users`
+					);
+					return this._onResetFog(response);
 				},
 			}
 		);
-	}
-
-	/* -------------------------------------------- */
-
-	_loadFogLocalStorage() {
-		const fogKey = `${game.world.id}.fog.${canvas.scene._id}`;
-		let fogData = window.localStorage.getItem(fogKey);
-		if (!fogData) return null;
-		try {
-			fogData = JSON.parse(fogData);
-			fogData.explored = fogData.data;
-			console.log(`${vtt} | Loaded fog of war from Local Storage data.`);
-			return fogData;
-		} catch (err) {
-			window.localStorage.removeItem(this.fogKey);
-			return null;
-		}
 	}
 
 	/* -------------------------------------------- */
@@ -30683,19 +31530,384 @@ class SightLayer extends CanvasLayer {
 		const stage = new PIXI.Container();
 		stage.addChild(fog);
 
-		// Construct the fog data to store
-		this.fogData = {
-			_id: this.fogData._id,
-			user: game.user._id,
-			scene: canvas.scene._id,
-			explored: canvas.app.renderer.extract.base64(stage),
-			positions: this.fogPositions,
-			timestamp: Date.now(),
-		};
+		// Update the fog data to store
+		this.fogData.user = game.user._id;
+		this.fogData.scene = canvas.scene._id;
+		this.fogData.explored = canvas.app.renderer.extract.base64(stage);
+		this.fogData.timestmp = Date.now();
 
 		// Create or update the fog
 		await this._createOrUpdateFogExploration(this.fogData);
 		stage.destroy({ children: true });
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Update the fog layer when a player token reaches a board position which was not previously explored
+	 * @param {Number} x          The origin x-coordinate from which to update fog exploration
+	 * @param {Number} y          The origin y-coordinate from which to update fog exploration
+	 * @param {Number} radius     The vision radius of the exploration from this point
+	 * @param {Boolean} limit     Was the position explored by a limited viewpoint?
+	 * @param {Boolean} force     Force the fog location to be updated even if it is not a larger radius
+	 */
+	updateFog(x, y, radius, limit, force) {
+		// Standardize fog coordinate key
+		const coords = Math.round(x) + '_' + Math.round(y);
+		const pos = this.fogData.positions[coords];
+
+		// Check whether the position has already been explored
+		let explored = pos && pos.limit !== true && pos.radius >= radius;
+		if (explored && !force) return;
+
+		// Update the explored positions
+		this.fogData.positions[coords] = { radius, limit };
+		this._updateFog = true;
+	}
+
+	/* -------------------------------------------- */
+	/*  Sight Polygon Computation                   */
+	/* -------------------------------------------- */
+
+	/**
+	 * Evaluate the sight polygons for a given origin position and vision radius
+	 * This method generates two polygons - one for line of sight, and another for field of vision
+	 * The line-of-sight polygon defines the unrestricted area of visibility for the source
+	 * The field-of-vision polygon defines the restricted area of visibility for the source
+	 *
+	 * @param {Object} origin         An object with coordinates x and y representing the origin of the test
+	 * @param {Number} radius         A distance in canvas position units which reflects the visible range
+	 * @param {Number} minAngle       The minimum angle of restricted sight or light emission
+	 * @param {Number} maxAngle       The maximum angle of restricted sight or light emission
+	 * @param {Number} cullDistance   The minimum number of grid spaces after which to begin culling walls.
+	 * @param {Number} cullMult       The multiplier on the provided radius against which to cull wall endpoint checks.
+	 *                                Default is 2
+	 * @param {Number} density        The density in degrees to which to guarantee that rays are broadcast. Default is 6
+	 * @param {Array} walls           A specific Array of Walls to test collision against
+	 *
+	 * @returns {Object}              An Array of Ray objects, and the two vision polygons
+	 */
+	static computeSight(
+		origin,
+		radius,
+		{
+			minAngle = null,
+			maxAngle = null,
+			cullMin = 10,
+			cullMult = 2,
+			cullMax = 20,
+			density = 6,
+			walls,
+			rotation = 0,
+			angle = 360,
+		} = {}
+	) {
+		// Get the maximum sight distance and the limiting radius
+		let d = canvas.dimensions,
+			{ x, y } = origin,
+			distance = Math.max(d.width, d.height),
+			limit = radius / distance,
+			cullDistance = Math.clamped(
+				radius * cullMult,
+				cullMin * d.size,
+				cullMax * d.size
+			);
+
+		// Determine the direction of facing, the angle of vision, and the angles of boundary rays
+		const limitAngle = angle.between(0, 360, false);
+		const aMin = limitAngle
+			? normalizeRadians(toRadians(rotation + 90 - angle / 2))
+			: -Math.PI;
+		const aMax = limitAngle ? aMin + toRadians(angle) : Math.PI;
+
+		// Cast sight rays needed to determine the polygons
+		let rays = this._castSightRays(
+			x,
+			y,
+			distance,
+			cullDistance,
+			density,
+			limitAngle,
+			aMin,
+			aMax
+		);
+
+		// Iterate over rays and record their points of collision with blocking walls
+		walls = walls || canvas.walls.blockVision;
+		for (let r of rays) {
+			// The central ray in a limited angle
+			if (r._isCenter) {
+				r.collision = r.limit = r.project(0.5);
+				continue;
+			}
+
+			// Otherwise test wall collisions and determine the closest one
+			let collisions = this._getWallCollisionsForRay(r, walls);
+			let closest = this._getClosestCollisionPoint(r, collisions);
+			r.collision = closest;
+			r.limit =
+				closest.t0 <= limit
+					? closest
+					: { x: r.A.x + limit * r.dx, y: r.A.y + limit * r.dy };
+		}
+
+		// Reduce collisions and limits to line-of-sight and field-of-view polygons
+		let [losPoints, fovPoints] = rays.reduce(
+			(acc, r, i) => {
+				acc[0].push(r.collision.x, r.collision.y);
+				acc[1].push(r.limit.x, r.limit.y);
+				return acc;
+			},
+			[[], []]
+		);
+
+		// Construct visibility polygons and return them with the rays
+		const los = new PIXI.Polygon(...losPoints);
+		const fov = new PIXI.Polygon(...fovPoints);
+		return { rays, los, fov };
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Test whether a point on the Canvas is visible based on the current vision and LOS polygons
+	 *
+	 * @param {Object|PIXI.Point} point   The point in space to test. This can be an Object with x and y coordinates or
+	 *                                    a Point object.
+	 * @param {number} tolerance          A numeric radial offset which allows for a non-exact match. For example, if
+	 *                                    tolerance is 2 then the test will pass if the point is within 2px of a vision
+	 *                                    polygon.
+	 *
+	 * @return {boolean}                  Whether the point is currently visible.
+	 */
+	testVisibility(point, { tolerance = 2 } = {}) {
+		// If there are no vision sources - visibility is GM only
+		const sources = this.sources.vision;
+		if (!sources.size) return game.user.isGM;
+
+		// Determine the array of offset points to test
+		const t = tolerance;
+		const offsets =
+			t > 0
+				? [
+						[0, 0],
+						[-t, 0],
+						[t, 0],
+						[0, -t],
+						[0, t],
+						[-t, -t],
+						[-t, t],
+						[t, t],
+						[t, -t],
+				  ]
+				: [[0, 0]];
+		const points = offsets.map(
+			o => new PIXI.Point(point.x + o[0], point.y + o[1])
+		);
+
+		// Test that any point falls inside a line-of-sight polygon
+		const los = points.some(p => this.light.los.geometry.containsPoint(p));
+		if (!los) return false;
+
+		// Test the FOV polygons within each visible channel
+		const channels = ['dim', 'bright', 'dark'];
+		for (let c of channels) {
+			const visible = this.light[c].children.some(s => {
+				return points.some(p => s.fov.geometry.containsPoint(p));
+			});
+			if (visible === true) return true;
+		}
+		return false;
+	}
+
+	/* -------------------------------------------- */
+	/*  Helper Functions                            */
+	/* -------------------------------------------- */
+
+	/**
+	 * Choose the blur distance, if any, to apply to create soft shadows
+	 * @return {number}
+	 * @private
+	 */
+	_configureBlurDistance() {
+		const ss = game.settings.get('core', 'softShadows');
+		return ss ? 16 : 0;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Configure the lighting channels which are inputs to the ShadowMap
+	 * @return {Object}
+	 * @private
+	 */
+	_configureChannels() {
+		// Set up the default channel order and alphas (with no darkness)
+		const channels = {
+			black: { alpha: 1.0 },
+			explored: { alpha: 0.9 },
+			dark: { alpha: 0.7 },
+			dim: { alpha: 0.5 },
+			bright: { alpha: 0.0 },
+		};
+
+		// Modify alpha levels for darkness value and compute hex code
+		for (let c of Object.values(channels)) {
+			c.hex = PIXI.utils.rgb2hex([c.alpha, c.alpha, c.alpha]);
+		}
+		return channels;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Get the cull threshold array for this Scene based on its wall count
+	 * @return {Array.<number>}
+	 * @private
+	 */
+	_configureCullThreshold() {
+		let nw = canvas.scene.data.walls.length;
+		if (nw <= 50) return [10, 100, 1000];
+		else if (nw <= 150) return [3, 50, 500];
+		else return [2, 10, 50];
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Choose an adaptive fog rendering resolution which downscales the saved fog textures for larger dimension Scenes
+	 * @return {number}
+	 * @private
+	 */
+	_configureFogResolution() {
+		const d = canvas.dimensions;
+		let res = 1.0;
+		if (d.width * d.height > 16000 ** 2) res = 0.25;
+		else if (d.width * d.height > 8000 ** 2) res = 0.5;
+		return res;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Create a Shadow Map filter which transforms greyscale into transparency channels
+	 * @return {PIXI.filters.ColorMatrixFilter}
+	 * @private
+	 */
+	_createShadowMapFilter() {
+		const smf = new PIXI.filters.ColorMatrixFilter();
+		let a = 1 / 3;
+		smf.matrix = [
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			a,
+			a,
+			a,
+			0,
+			0,
+		];
+		return smf;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * A helper method responsible for casting rays at wall endpoints
+	 * Rays are restricted by allowed angles and culling distance
+	 * @returns {Array}   An array of Ray objects
+	 */
+	static _castSightRays(
+		x,
+		y,
+		distance,
+		cullDistance,
+		radialDensity,
+		limitAngle,
+		aMin,
+		aMax
+	) {
+		const endpointOffsetAngle = 0.01;
+
+		// Enforce that all rays increase in angle from minimum towards maximum
+		const rMin = limitAngle ? Ray.fromAngle(x, y, aMin, distance) : null;
+		const rMax = limitAngle ? Ray.fromAngle(x, y, aMax, distance) : null;
+
+		// Check each unique wall endpoint as a candidate target
+		let rays = canvas.walls.endpoints.reduce((rays, e) => {
+			let r = new Ray({ x, y }, { x: e[0], y: e[1] });
+			if (limitAngle) r.angle = this._adjustRayAngle(aMin, r.angle);
+
+			// Exclude rays which exceed the allowed culling distance
+			if (r.distance > cullDistance) return rays;
+
+			// Exclude rays which do not lie within the allowed threshold angles
+			if (limitAngle && !Number.between(r.angle, aMin, aMax)) return rays;
+
+			// Emit 3 rays, one directly at the point, and two slightly to either side
+			const ray = Ray.fromAngle(x, y, r.angle, distance);
+			return rays.concat([
+				ray.shiftAngle(-endpointOffsetAngle),
+				ray,
+				ray.shiftAngle(endpointOffsetAngle),
+			]);
+		}, []);
+
+		// Add limiting rays and an additional ray which "collides" just behind the source
+		if (limitAngle) {
+			const aCenter = aMin + (aMax - aMin) / 2 + Math.PI;
+			const rCenter = Ray.fromAngle(
+				x,
+				y,
+				aCenter,
+				canvas.dimensions.size
+			);
+			rCenter._isCenter = true;
+			rays.push(rMin, rCenter, rMax);
+		}
+
+		// De-dupe rays based on their angle of emission to reduce required collision checks
+		const angles = new Set();
+		rays = rays.filter(r => {
+			let a = Math.round(r.angle / endpointOffsetAngle);
+			if (angles.has(a)) return false;
+			angles.add(a);
+			return true;
+		});
+
+		// Insert additional rays for any non-represented angles given a target radial density
+		const da = toRadians(radialDensity);
+		const emitted = new Set(rays.map(r => Math.round(r.angle / da) * da));
+		const nfill = Math.ceil((aMax - aMin) / da);
+		const toFill = Array.fromRange(nfill).map(a => aMin + a * da);
+		for (let a of toFill) {
+			if (!emitted.has(a)) rays.push(Ray.fromAngle(x, y, a, distance));
+		}
+
+		// Sort rays counter-clockwise (increasing radians)
+		rays.sort((r1, r2) => r1.angle - r2.angle);
+		return rays;
+	}
+
+	/* -------------------------------------------- */
+
+	static _adjustRayAngle(aMin, angle) {
+		while (angle < aMin) {
+			angle += Math.PI;
+		}
+		return angle;
 	}
 
 	/* -------------------------------------------- */
@@ -30710,260 +31922,50 @@ class SightLayer extends CanvasLayer {
 		let eventName = fogData._id
 			? 'updateFogExploration'
 			: 'createFogExploration';
-		return SocketInterface.trigger(
-			eventName,
-			{ data: fogData },
-			{},
-			{
-				context: this,
-				success: response => {
-					let size =
-						Math.round(
-							(fogData.explored.length * 100) / (1000 * 1000)
-						) / 100;
-					console.log(
-						`${vtt} | Saved user fog of war exploration to server - ${size} MB`
-					);
-					if (!fogData._id) this.fogData._id = response.created._id;
-					return response;
-				},
-			}
-		);
-	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * Reset the fog of war by clearing current exploration progress
-	 * This approach currently takes the nuclear option of clearing any saved fog and redrawing the entire canvas
-	 * It's not that inefficient, so it could be worth just keeping it this way for simplicity
-	 */
-	async resetFog() {
-		const eventData = { scene: canvas.scene._id };
-		return SocketInterface.trigger(
-			'resetFogExploration',
-			eventData,
-			{},
-			{
-				context: this,
-				success: response => {
-					console.log(
-						`${vtt} | Reset fog of war exploration data for all users`
-					);
-					Scenes._onFogReset(response);
-				},
-			}
-		);
-	}
-
-	/* -------------------------------------------- */
-
-	debugFog() {
-		let tex = PIXI.Texture.from(this.fogData.explored);
-		let debug = new PIXI.Sprite(tex);
-		this.addChild(debug);
-		debug.x = -canvas.dimensions.width;
-		debug.y = -canvas.dimensions.height;
-	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * Restrict the visibility of certain canvas assets (like Tokens or DoorControls) based on the visibility polygon
-	 * These assets should only be displayed if they are visible given the current player's field of view
-	 */
-	async restrictVisibility() {
-		// Tokens
-		for (let t of canvas.tokens.placeables) {
-			t.visible = (!this.tokenVision && !t.data.hidden) || t.isVisible;
-		}
-
-		// Door Icons
-		for (let d of canvas.controls.doors.children) {
-			d.visible = !this.tokenVision || d.isVisible;
-		}
-	}
-
-	/* -------------------------------------------- */
-	/*  Helper and Utility Functions                */
-	/* -------------------------------------------- */
-
-	/**
-	 * Evaluate the sight polygons for a given origin position and vision radius
-	 * This method generates two polygons - one for line of sight, and another for field of vision
-	 * The line-of-sight polygon defines the unrestricted area of visibility for the source
-	 * The field-of-vision polygon defines the restricted area of visibility for the source
-	 *
-	 * @param {Object} origin         An object with coordinates x and y representing the origin of the test
-	 * @param {Number} radius         A distance in canvas position units which reflects the visible range
-	 * @param {Number} minAngle       [Optional] The minimum angle of restricted sight or light emission
-	 * @param {Number} maxAngle       [Optional] The maximum angle of restricted sight or light emission
-	 * @param {Number} cullDistance   [Optional] The minimum number of grid spaces after which to begin culling walls.
-	 * @param {Number} cullMultiplier [Optional] The multiplier on the provided radius against which to cull wall endpoint checks. Default is 2
-	 * @param {Number} radialDensity  [Optional] The density in degrees to which to guarantee that rays are broadcast. Default is 6
-	 * @param {Array} walls           [Optional] A specific Array of Walls to test collision against
-	 *
-	 * @returns {Array}               An Array of Ray objects, and the two vision polygons
-	 */
-	checkSight(
-		origin,
-		radius,
-		{
-			minAngle = null,
-			maxAngle = null,
-			cullMinDistance = 10,
-			cullMultiplier = 2,
-			cullMaxDistance = 20,
-			radialDensity = 6,
-			walls,
-			rotation = 0,
-			angle = 360,
-		} = {}
-	) {
-		// Get the maximum sight distance and the limiting radius
-		let d = canvas.dimensions,
-			{ x, y } = origin,
-			distance = Math.max(d.width, d.height),
-			limit = radius / distance,
-			cullDistance = Math.clamped(
-				radius * cullMultiplier,
-				cullMinDistance * d.size,
-				cullMaxDistance * d.size
+		return new Promise(resolve => {
+			SocketInterface.trigger(
+				eventName,
+				{ data: fogData },
+				{},
+				{
+					context: this,
+					success: response => {
+						let size =
+							Math.round(
+								(fogData.explored.length * 100) / (1000 * 1000)
+							) / 100;
+						console.log(
+							`${vtt} | Saved user fog of war exploration to server - ${size} MB`
+						);
+						if (!fogData._id)
+							this.fogData._id = response.created._id;
+						resolve(response);
+					},
+				}
 			);
-
-		// Determine limiting angles of visibility
-		const limitAngle = angle !== 360 && angle !== 0;
-		const aMin = limitAngle
-			? normalizeRadians(toRadians(90 + rotation - angle / 2))
-			: -Math.PI;
-		const aMax = limitAngle
-			? normalizeRadians(toRadians(90 + rotation + angle / 2))
-			: Math.PI;
-
-		// Cast sight rays needed to determine the polygons
-		let rays = this._castSightRays(
-			x,
-			y,
-			distance,
-			cullDistance,
-			radialDensity,
-			limitAngle,
-			aMin,
-			aMax
-		);
-
-		// Iterate over rays and record their points of collision with blocking walls
-		walls = walls || canvas.walls.blockVision;
-		for (let r of rays) {
-			let collisions = this._getWallCollisionsForRay(r, walls);
-			let closest = this._getClosestCollisionPoint(r, collisions);
-			r.collision = closest;
-			r.limit =
-				closest.t0 <= limit
-					? closest
-					: { x: r.A.x + limit * r.dx, y: r.A.y + limit * r.dy };
-		}
-
-		// For angle-limited polygons - add an additional ray which collides just behind the source's "head"
-		if (limitAngle) {
-			const aCenter = normalizeRadians(
-				aMin + toRadians(angle / 2) + Math.PI
-			);
-			const cRay = Ray.fromAngle(x, y, aCenter, d.size);
-			const head = cRay.project(0.5);
-			cRay.collision = cRay.limit = head;
-			rays.push(cRay);
-		}
-
-		// Sort rays clockwise by angle
-		rays.sort((r1, r2) => r1.angle - r2.angle);
-
-		// Reduce collisions and limits to line-of-sight and field-of-view polygons
-		let [losPoints, fovPoints] = rays.reduce(
-			(acc, r, i) => {
-				acc[0].push(r.collision.x, r.collision.y);
-				acc[1].push(r.limit.x, r.limit.y);
-				return acc;
-			},
-			[[], []]
-		);
-
-		// Construct visibiliy polygons and return them with the rays
-		const los = new PIXI.Polygon(...losPoints),
-			fov = new PIXI.Polygon(...fovPoints);
-		return [rays, los, fov];
-	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * A helper method responsible for casting rays at wall endpoints
-	 * Rays are restricted by allowed angles and culling distance
-	 * @returns {Array}   An array of Ray objects
-	 */
-	_castSightRays(
-		x,
-		y,
-		distance,
-		cullDistance,
-		radialDensity,
-		limitAngle,
-		aMin,
-		aMax
-	) {
-		// Create angle-limiting rays
-		const endpointOffsetAngle = 0.01;
-		const isSplit180 = (Math.sign(aMin) || 1) !== (Math.sign(aMax) || 1);
-		const rMin = limitAngle ? Ray.fromAngle(x, y, aMin, distance) : null;
-		const rMax = limitAngle ? Ray.fromAngle(x, y, aMax, distance) : null;
-
-		// Check each unique wall endpoint as a candidate target
-		let rays = canvas.walls.endpoints.reduce((rays, e) => {
-			let r = new Ray({ x, y }, { x: e[0], y: e[1] });
-			let ra = r.angle;
-
-			// Exclude rays which exceed the allowed culling distance
-			if (r.distance > cullDistance) return rays;
-
-			// Exclude rays which do not lie within the allowed threshold angles
-			if (limitAngle) {
-				if (isSplit180 && ra < 0 && ra > aMax) return rays;
-				else if (isSplit180 && ra > 0 && ra < aMin) return rays;
-				else if (!Number.between(r.angle, aMin, aMax)) return rays;
-			}
-
-			// Emit 3 rays, one directly at the point, and two slightly to either side
-			const ray = Ray.fromAngle(x, y, ra, distance);
-			return rays.concat([
-				ray.shiftAngle(-endpointOffsetAngle),
-				ray,
-				ray.shiftAngle(endpointOffsetAngle),
-			]);
-		}, []);
-
-		// Add limiting Rays
-		if (limitAngle) rays.push(rMin, rMax);
-
-		// De-dupe rays before testing collision
-		const angles = new Set();
-		rays = rays.filter(r => {
-			let a = Math.round(r.angle / endpointOffsetAngle);
-			if (angles.has(a)) return false;
-			angles.add(a);
-			return true;
 		});
+	}
 
-		// Insert additional rays for any non-represented angles given a target radial density
-		const da = toRadians(radialDensity),
-			nfill = Math.ceil(
-				(aMax < aMin ? aMax + 2 * Math.PI - aMin : aMax - aMin) / da
-			),
-			targets = Array.fromRange(nfill).map(a => aMin + a * da),
-			emitted = rays.map(r => Math.round(r.angle / da) * da);
-		for (let t of targets.filter(t => !emitted.includes(t))) {
-			rays.push(Ray.fromAngle(x, y, t, distance));
+	/* -------------------------------------------- */
+
+	/**
+	 * Get the closest collision point from an Array of collision points
+	 * @param {Ray} ray             The Ray object against which to test collision
+	 * @param {Array} collisions    The Array of collision point Objects
+	 * @returns {Object}            The closest collision point to the origin of the Ray
+	 * @private
+	 */
+	static _getClosestCollisionPoint(ray, collisions) {
+		collisions.sort((a, b) => a.t0 - b.t0);
+		let closest;
+		if (collisions.length) {
+			closest =
+				collisions[0].sense === CONST.WALL_SENSE_TYPES.LIMITED
+					? collisions[1]
+					: collisions[0];
 		}
-		return rays;
+		if (!closest) closest = { x: ray.B.x, y: ray.B.y, t0: 1, t1: 0 };
+		return closest;
 	}
 
 	/* -------------------------------------------- */
@@ -30975,7 +31977,7 @@ class SightLayer extends CanvasLayer {
 	 * @return {Array}                  An array of collision points
 	 * @private
 	 */
-	_getWallCollisionsForRay(ray, walls) {
+	static _getWallCollisionsForRay(ray, walls) {
 		let collisions = {};
 		for (let w of walls) {
 			// Skip directional walls where the ray angle is not in the same hemisphere as the wall direction
@@ -31007,54 +32009,62 @@ class SightLayer extends CanvasLayer {
 	/* -------------------------------------------- */
 
 	/**
-	 * Get the closest collision point from an Array of collision points
-	 * @param {Array} collisions    The Array of collision point Objects
-	 * @returns {Object}            The closest collision point to the origin of the Ray
+	 * Load Fog of War exploration data for a user from Server Storage
+	 * @return {Promise}
 	 * @private
 	 */
-	_getClosestCollisionPoint(ray, collisions) {
-		collisions.sort((a, b) => a.t0 - b.t0);
-		let closest;
-		if (collisions.length) {
-			closest =
-				collisions[0].sense === CONST.WALL_SENSE_TYPES.LIMITED
-					? collisions[1]
-					: collisions[0];
-		}
-		if (!closest) closest = { x: ray.B.x, y: ray.B.y, t0: 1, t1: 0 };
-		return closest;
+	async _loadFogServerStorage() {
+		const eventData = { user: game.user._id, scene: canvas.scene._id };
+		return SocketInterface.trigger(
+			'getFogExploration',
+			eventData,
+			{},
+			{
+				context: this,
+				success: response => {
+					return response.data || null;
+				},
+			}
+		);
 	}
 
 	/* -------------------------------------------- */
 
 	/**
-	 * Debug a sight check by plotting the tested rays and their collision points
+	 * Once a new Fog of War location is explored, composite the explored container with the current staging sprite
+	 * Save that staging Sprite as the rendered fog exploration and swap it out for a fresh staging texture
+	 * Do all this asynchronously, so it doesn't block token movement animation since this takes some extra time
+	 * @return {Promise<void>}
 	 * @private
 	 */
-	_debugSight(rays, los, fov) {
-		const d = canvas.controls.debugSight;
+	async _commitFogUpdate() {
+		const fog = this.fog;
+		this._updateFog = false;
 
-		// Draw rays in green and collisions in red
-		for (let r of rays) {
-			d.lineStyle(1, 0x00ff00, 1.0)
-				.moveTo(r.A.x, r.A.y)
-				.lineTo(r.B.x, r.B.y)
-				.drawCircle(r.B.x, r.B.y, 4);
-			d.lineStyle(1, 0xff0000, 1.0).drawCircle(
-				r.collision.x,
-				r.collision.y,
-				4
-			);
+		// Protect against an invalid render texture
+		if (!fog.rendered.texture.valid) {
+			fog.rendered.texture = PIXI.Texture.EMPTY;
 		}
 
-		// Lastly highlight the visible polygon in green
-		d.beginFill(0x00ff00, 0.1).drawPolygon(los);
-		d.beginFill(0xff0000, 0.05).drawPolygon(fov);
+		// Create a staging texture and render the entire fog container to it
+		const staging = this._createFogStagingTexture();
+		canvas.app.renderer.render(fog, staging);
+
+		// Swap the staging texture to the rendered Sprite
+		fog.rendered.texture.destroy(true);
+		fog.rendered.texture = staging;
+
+		// Dump progress from the update container
+		fog.update.fov.clear();
+		fog.update.los.clear();
+
+		// Record that fog was updated
+		this._fogUpdated = true;
 	}
 
 	/* -------------------------------------------- */
-	/*  Event Listeners and Handlers
-  /* -------------------------------------------- */
+	/*  Event Handlers                              */
+	/* -------------------------------------------- */
 
 	/**
 	 * Handle changing of the Soft Shadows canvas setting
@@ -31064,19 +32074,22 @@ class SightLayer extends CanvasLayer {
 		this.draw();
 		this.initialize();
 	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * If fog of war data is reset from the server, re-draw the canvas
+	 * @param {Object} resetData    Fog reset data sent by the server
+	 * @return {Promise}
+	 */
+	async _onResetFog(resetData) {
+		if (resetData.reset && resetData.scene === canvas.scene._id) {
+			this._fogUpdated = false;
+			canvas.draw();
+		}
+	}
 }
 
-/**
- * The default sight visibility layer alpha channels
- * @type {Object}
- */
-SightLayer.DEFAULT_ALPHAS = {
-	unexplored: 1.0,
-	gmUnexplored: 0.7,
-	dark: 0.75,
-	dim: 0.5,
-	bright: 0.0,
-};
 /**
  * The Ambient Sounds Container
  * @extends {PlaceablesLayer}
@@ -31096,11 +32109,19 @@ class SoundsLayer extends PlaceablesLayer {
 	/*  Methods                                     */
 	/* -------------------------------------------- */
 
+	/** @override */
+	async tearDown() {
+		this.stopAll();
+		return super.tearDown();
+	}
+
+	/* -------------------------------------------- */
+
 	/**
 	 * Initialize the field of "view" for all AmbientSound effects in the layer
 	 */
 	initialize() {
-		this.placeables.forEach(s => s.computeFOV());
+		this.placeables.forEach(s => s.refresh());
 		if (Howler.state === 'suspended')
 			game.audio.pending.push(() => this.update());
 		else this.update();
@@ -31247,6 +32268,7 @@ class TemplateLayer extends PlaceablesLayer {
 	static get layerOptions() {
 		return {
 			canDragCreate: true,
+			canDelete: true,
 			controllableObjects: false,
 			rotatableObjects: true,
 			snapToGrid: true,
@@ -31268,27 +32290,35 @@ class TemplateLayer extends PlaceablesLayer {
 	/*  Methods                                     */
 	/* -------------------------------------------- */
 
-	/** @extends {PlaceablesLayer.activate} */
+	/** @override */
 	activate() {
 		super.activate();
 		if (this.objects) {
 			this.placeables.forEach(p => {
-				p.controlIcon.visible = true;
-				p.ruler.visible = true;
+				try {
+					p.controlIcon.visible = true;
+					p.ruler.visible = true;
+				} catch (err) {
+					console.error(err);
+				}
 			});
 		}
 	}
 
 	/* -------------------------------------------- */
 
-	/** @extends {PlaceablesLayer.deactivate} */
+	/** @override */
 	deactivate() {
 		super.deactivate();
 		if (this.objects) {
 			this.objects.visible = true;
 			this.placeables.forEach(p => {
-				p.controlIcon.visible = false;
-				p.ruler.visible = false;
+				try {
+					p.controlIcon.visible = false;
+					p.ruler.visible = false;
+				} catch (err) {
+					console.error(err);
+				}
 			});
 		}
 	}
@@ -31578,13 +32608,12 @@ class TokenLayer extends PlaceablesLayer {
 
 	/** @override */
 	static get layerOptions() {
-		return {
+		return mergeObject(super.layerOptions, {
 			canDragCreate: false,
 			controllableObjects: true,
 			rotatableObjects: true,
-			snapToGrid: true,
 			gridPrecision: 1,
-		};
+		});
 	}
 
 	/* -------------------------------------------- */
@@ -31633,6 +32662,20 @@ class TokenLayer extends PlaceablesLayer {
   /* -------------------------------------------- */
 
 	/** @override */
+	async tearDown() {
+		// Conclude token animation
+		this.concludeAnimation();
+
+		// Reset the synthetic token collection
+		game.actors.tokens = {};
+
+		// Release tokens and destroy the layer
+		return super.tearDown();
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
 	deactivate() {
 		super.deactivate();
 		if (this.objects) this.objects.visible = true;
@@ -31666,17 +32709,25 @@ class TokenLayer extends PlaceablesLayer {
 			return false;
 
 		// Send the token creation request to the server and wait for acknowledgement
-		await Token.create(canvas.scene._id, tokenData);
+		await Token.create(tokenData);
 		this.activate();
 	}
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Select all the tokens within a provided set of rectangular coordinates.
-	 * Control any tokens within the area which you are able to control based on token permissions.
-	 * See the parent PlaceablesLayer.selectObject method for more details
-	 */
+	/** @override */
+	releaseAll() {
+		const controlled = this.placeables.filter(t => t._controlled);
+		if (controlled.length) {
+			controlled.forEach(obj => obj.release({ resetSight: false }));
+			canvas.sight.initializeTokens();
+		}
+		return controlled.length;
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
 	selectObjects({
 		x,
 		y,
@@ -31685,9 +32736,9 @@ class TokenLayer extends PlaceablesLayer {
 		releaseOptions = {},
 		controlOptions = {},
 	}) {
-		releaseOptions = { releaseSight: false };
+		releaseOptions = { resetSight: false };
 		controlOptions = { releaseOthers: false, initializeSight: false };
-		const cl = super.selectObjects({
+		const changed = super.selectObjects({
 			x,
 			y,
 			width,
@@ -31695,8 +32746,8 @@ class TokenLayer extends PlaceablesLayer {
 			releaseOptions,
 			controlOptions,
 		});
-		canvas.sight.initializeSight();
-		return cl;
+		if (changed) canvas.sight.initializeTokens();
+		return changed;
 	}
 
 	/* -------------------------------------------- */
@@ -31728,15 +32779,24 @@ class TokenLayer extends PlaceablesLayer {
 		if (releaseOthers) {
 			for (let t of user.targets) {
 				if (!targets.includes(t))
-					t.setTarget(false, { releaseOthers: false });
+					t.setTarget(false, {
+						releaseOthers: false,
+						groupSelection: true,
+					});
 			}
 		}
 
 		// Acquire targets for tokens which are not yet targeted
 		targets.forEach(t => {
 			if (!user.targets.has(t))
-				t.setTarget(true, { releaseOthers: false });
+				t.setTarget(true, {
+					releaseOthers: false,
+					groupSelection: true,
+				});
 		});
+
+		// Broadcast the target change
+		user.broadcastActivity({ targets: user.targets.ids });
 
 		// Return the number of targeted tokens
 		return user.targets.size;
@@ -31828,7 +32888,12 @@ class TokenLayer extends PlaceablesLayer {
 		// Acquire Actor entity
 		let actor;
 		if (data.pack)
-			actor = await game.actors.importFromCollection(data.pack, data.id);
+			actor = await game.actors.importFromCollection(
+				data.pack,
+				data.id,
+				{},
+				{ renderSheet: true }
+			);
 		else actor = game.actors.get(data.id);
 
 		// Acquire cursor position transformed to Canvas coordinates
@@ -31846,7 +32911,7 @@ class TokenLayer extends PlaceablesLayer {
 		};
 
 		// Call the Actor drop method
-		this.dropActor(actor, tokenData);
+		return this.dropActor(actor, tokenData);
 	}
 }
 
@@ -31882,10 +32947,17 @@ class WallsLayer extends PlaceablesLayer {
 
 		/**
 		 * Track the most recently created or updated wall data for use with the clone tool
-		 * @type {Object}
+		 * @type {Object|null}
 		 * @private
 		 */
 		this._cloneType = null;
+
+		/**
+		 * Record the coordinates of the most recently created wall as a potential starting point for chaining
+		 * @type {Array.<number>|null}
+		 * @private
+		 */
+		this._lastCoords = null;
 	}
 
 	/* -------------------------------------------- */
@@ -31901,11 +32973,9 @@ class WallsLayer extends PlaceablesLayer {
 
 	/** @override */
 	static get layerOptions() {
-		return {
-			canDragCreate: true,
+		return mergeObject(super.layerOptions, {
 			controllableObjects: true,
-			snapToGrid: true,
-		};
+		});
 	}
 
 	/* -------------------------------------------- */
@@ -31980,6 +33050,7 @@ class WallsLayer extends PlaceablesLayer {
 	 * Initialize the Walls Layer. This operation is needed when the canvas is first drawn, or when walls data changes.
 	 */
 	initialize() {
+		this._lastCoords = null;
 		this._getVisionEndpoints();
 	}
 
@@ -31992,6 +33063,23 @@ class WallsLayer extends PlaceablesLayer {
 		this.chain = this.addChildAt(new PIXI.Graphics(), 0);
 		this.highlightControlledSegments();
 		return this;
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
+	activate() {
+		super.activate();
+		if (canvas.controls) canvas.controls.doors.visible = false;
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
+	deactivate() {
+		super.deactivate();
+		if (this.chain) this.chain.clear();
+		if (canvas.controls) canvas.controls.doors.visible = true;
 	}
 
 	/* -------------------------------------------- */
@@ -32014,19 +33102,19 @@ class WallsLayer extends PlaceablesLayer {
 
 	/* -------------------------------------------- */
 
-	/** @override */
-	activate() {
-		super.activate();
-		if (canvas.controls) canvas.controls.doors.visible = false;
-	}
-
-	/* -------------------------------------------- */
-
-	/** @override */
-	deactivate() {
-		super.deactivate();
-		if (this.chain) this.chain.clear();
-		if (canvas.controls) canvas.controls.doors.visible = true;
+	/**
+	 * Given a point and the coordinates of a wall, determine which endpoint is closer to the point
+	 * @param {Object} point
+	 * @param {Array} coords
+	 * @return {Array}
+	 * @private
+	 */
+	_getClosestEndoint(point, coords) {
+		const a = coords.slice(0, 2);
+		const da = Math.hypot(point.x - a[0], point.y - a[1]);
+		const b = coords.slice(2);
+		const db = Math.hypot(point.x - b[0], point.y - b[1]);
+		return da < db ? a : b;
 	}
 
 	/* -------------------------------------------- */
@@ -32157,10 +33245,12 @@ class WallsLayer extends PlaceablesLayer {
 	_onMouseDown(event) {
 		event.stopPropagation();
 		let { createState, object, originalEvent } = event.data;
+		const isCtrl = game.keyboard.isCtrl(originalEvent);
 		if (object && createState === 2) {
 			this._onDragCreate(event);
-			if (!(originalEvent.ctrlKey || originalEvent.metaKey)) return;
+			if (!isCtrl) return;
 		}
+		event.data.chain = isCtrl;
 		super._onMouseDown(event);
 	}
 
@@ -32172,18 +33262,34 @@ class WallsLayer extends PlaceablesLayer {
 
 		// Construct wall data, coercing location to the nearest pixel
 		const data = this._getWallDataFromActiveTool(game.activeTool);
+		const { chain, origin, originalEvent } = event.data;
 
 		// Get initial coordinates and construct the new Wall
-		let dest = this._getWallEndpointCoordinates(event, event.data.origin);
-		data.c = event.data.chainStart
-			? event.data.chainStart.concat(dest)
-			: dest.concat(dest);
+		let coords = [];
+		if (chain) {
+			const priorCoords = this._hover
+				? this._hover.data.c
+				: this._lastCoords;
+			if (priorCoords)
+				coords = this._getClosestEndoint(origin, priorCoords);
+		}
+		if (!coords.length)
+			coords = this._getWallEndpointCoordinates(origin, {
+				snap: !originalEvent.shiftKey,
+			});
+
+		// Use the current mouse position as the terminal coordinate
+		coords.push(origin.x, origin.y);
+
+		// Create the new Wall object
+		data.c = coords;
 		const wall = new Wall(data).draw();
+		this.preview.addChild(wall);
 
 		// Update event data
-		event.data.origin = { x: dest[0], y: dest[1] };
-		event.data.object = this.preview.addChild(wall);
-		delete event.data.chainStart;
+		event.data.origin = { x: coords[0], y: coords[1] };
+		event.data.object = wall;
+		event.data.chain = false;
 	}
 
 	/* -------------------------------------------- */
@@ -32191,18 +33297,19 @@ class WallsLayer extends PlaceablesLayer {
 	/**
 	 * Get the endpoint coordinates for a wall placement, snapping to grid at a specified precision
 	 * Require snap-to-grid until a redesign of the wall chaining system can occur.
-	 * @param {PIXI.interaction.InteractionEvent} event
-	 * @param {Object} point
+	 * @param {Object} point          The initial candidate point
+	 * @param {boolean} [snap=true]   Whether to snap to grid
 	 * @return {Array}
 	 * @private
 	 */
-	_getWallEndpointCoordinates(event, point) {
-		let snapped = canvas.grid.getSnappedPosition(
-			point.x,
-			point.y,
-			this.gridPrecision
-		);
-		return [snapped.x, snapped.y].map(Math.round);
+	_getWallEndpointCoordinates(point, { snap = true } = {}) {
+		if (snap)
+			point = canvas.grid.getSnappedPosition(
+				point.x,
+				point.y,
+				this.gridPrecision
+			);
+		return [point.x, point.y].map(Math.round);
 	}
 
 	/* -------------------------------------------- */
@@ -32298,7 +33405,7 @@ class WallsLayer extends PlaceablesLayer {
 
 	/** @override */
 	_onMouseUp(event) {
-		let { createState, createTime, object } = event.data;
+		let { createState, createTime, destination, object } = event.data;
 		event.stopPropagation();
 
 		// Handle successful creation and chaining
@@ -32310,10 +33417,15 @@ class WallsLayer extends PlaceablesLayer {
 
 			// Create a new Wall
 			this._onDragCreate(event);
+
+			// Chain into creation for another wall
 			if (game.keyboard.isCtrl(event)) {
-				event.data.chainStart = object.data.c.slice(2, 4);
+				event.data.chain = true;
 				this._onDragStart(event);
-			} else event.data.createState = 0;
+			}
+
+			// Otherwise end the creation workflow
+			else event.data.createState = 0;
 		}
 	}
 
@@ -32324,12 +33436,11 @@ class WallsLayer extends PlaceablesLayer {
 		const wall = event.data.object;
 		if (!wall) return;
 		let [x0, y0] = wall.data.c.slice(0, 2);
-		let dest = this._getWallEndpointCoordinates(
-			event,
-			event.data.destination
-		);
+		let dest = this._getWallEndpointCoordinates(event.data.destination, {
+			snap: !event.data.originalEvent.shiftKey,
+		});
 		if (!(x0 === dest[0] && y0 === dest[1])) {
-			wall.data.c = [x0, y0].concat(dest);
+			wall.data.c = this._lastCoords = [x0, y0].concat(dest);
 			this.constructor.placeableClass.create(wall.data);
 		}
 		this._onDragCancel(event);
@@ -32340,7 +33451,7 @@ class WallsLayer extends PlaceablesLayer {
 	/** @override */
 	_onDragCancel(event) {
 		super._onDragCancel(event);
-		delete event.data.chainStart;
+		delete event.data.chain;
 	}
 
 	/* -------------------------------------------- */
@@ -32540,9 +33651,9 @@ class Drawing extends PlaceableObject {
 		this.shape = this.drawing.addChild(new PIXI.Graphics());
 
 		// Overlay Text
-		if (this.data.text) {
-			this.text = this.drawing.addChild(this._createText());
-		}
+		this.text = this.data.text
+			? this.drawing.addChild(this._createText())
+			: null;
 	}
 
 	/* -------------------------------------------- */
@@ -32615,12 +33726,15 @@ class Drawing extends PlaceableObject {
 
 		// Fill Color or Texture
 		if (this.data.fillType) {
-			let fc = colorStringToHex(this.data.fillColor);
-			let fillOpts = fc ? [fc, this.data.fillAlpha] : [];
+			const fc = colorStringToHex(this.data.fillColor);
 			if (this.data.fillType === CONST.DRAWING_FILL_TYPES.PATTERN) {
-				this.shape.beginTextureFill(this.texture, ...fillOpts);
+				this.shape.beginTextureFill({
+					texture: this.texture,
+					color: fc || 0xffffff,
+					alpha: fc ? this.data.fillAlpha : 1,
+				});
 			} else {
-				this.shape.beginFill(...fillOpts);
+				this.shape.beginFill(fc, this.data.fillAlpha);
 			}
 		}
 
@@ -33319,11 +34433,9 @@ class AmbientLight extends PlaceableObject {
 		this.clear();
 
 		// Draw components
-		this.field = this.drawField();
+		this.preview = this.addChild(new PIXI.Graphics());
 		this.controlIcon = this.addChild(this._drawControlIcon());
-
-		// Draw the light field graphic
-		this.refresh();
+		if (canvas.ready) this.refresh();
 
 		// Add control interactivity if the placeable has an ID
 		if (this.id) {
@@ -33337,27 +34449,6 @@ class AmbientLight extends PlaceableObject {
 			});
 		}
 		return this;
-	}
-
-	/* -------------------------------------------- */
-
-	drawField() {
-		let field = new PIXI.Container();
-
-		// Light field tint
-		field.light = field.addChild(new PIXI.Graphics());
-		field.light.blendMode = PIXI.BLEND_MODES.OVERLAY;
-		field.light.alpha = this.data.tintAlpha || 0.1;
-		field.light.filters = [new PIXI.filters.BlurFilter(10)];
-
-		// Area guide lines
-		field.lines = field.addChild(new PIXI.Graphics());
-
-		// Masking polygon
-		field.msk = field.addChild(new PIXI.Graphics());
-		field.msk.position.set(...this.coords.map(c => -1 * c));
-		field.mask = field.msk;
-		return this.addChild(field);
 	}
 
 	/* -------------------------------------------- */
@@ -33376,49 +34467,37 @@ class AmbientLight extends PlaceableObject {
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Render the light field which previews the light source area of effect
-	 */
+	/** @override */
 	refresh() {
+		const active = this.layer._active;
+
 		// Update position and FOV
 		this.position.set(this.data.x, this.data.y);
 		this.computeFOV();
 
-		// Draw the light field
-		let dimR = Math.abs(this.dimRadius);
-		let brightR = Math.abs(this.brightRadius);
-		this.field.lines
-			.clear()
-			.lineStyle(1, 0xffffff, 0.5)
-			.drawCircle(0, 0, dimR)
-			.lineStyle(1, 0xffffff, 0.5)
-			.drawCircle(0, 0, brightR);
-
-		// Update the tint field
-		let color =
-			Math.min(this.dimRadius, this.brightRadius) < 0
-				? 0xff6633
-				: 0xffcc99;
-		if (this.hasTint) color = colorStringToHex(this.data.tintColor);
-		this.field.light
-			.clear()
-			.beginFill(color, 1.0)
-			.drawCircle(0, 0, Math.max(dimR, brightR))
-			.endFill();
-
-		// Update the masking polygon
-		this.field.msk
-			.clear()
-			.beginFill(0xffffff)
-			.drawPolygon(this.fov)
-			.endFill();
-		this.field.msk.position.set(-this.data.x, -this.data.y);
+		// Draw the preview shape
+		const p = this.preview.clear();
+		if (active) {
+			let dim = Math.abs(this.dimRadius);
+			let bright = Math.abs(this.brightRadius);
+			let isDarkness = this.dimRadius < 0 || this.brightRadius < 0;
+			const color = this.data.tintColor
+				? colorStringToHex(this.data.tintColor)
+				: isDarkness
+				? 0xff4444
+				: 0xffcc22;
+			p.lineStyle(1, color, 0.5)
+				.drawCircle(0, 0, dim)
+				.lineStyle(1, color, 0.5)
+				.drawCircle(0, 0, bright);
+			p.beginFill(color, 0.05)
+				.drawCircle(0, 0, Math.max(dim, bright))
+				.endFill();
+		}
 
 		// Update visibility
-		const layerActive = this.layer._active;
-		this.controlIcon.visible = layerActive;
-		this.field.light.visible = layerActive || this.hasTint;
-		this.field.lines.visible = layerActive;
+		this.controlIcon.visible = active;
+		return this;
 	}
 
 	/* -------------------------------------------- */
@@ -33427,17 +34506,35 @@ class AmbientLight extends PlaceableObject {
 	 * Compute the field-of-vision for an object, determining its effective line-of-sight and field-of-vision polygons
 	 * @returns {Object}      An object containing the rays, LOS polygon, and FOV polygon for the light
 	 */
-	computeFOV() {
-		const radius =
-			Math.max(Math.abs(this.dimRadius), Math.abs(this.brightRadius)) +
-			canvas.dimensions.size * 0.1;
-		let [rays, los, fov] = canvas.sight.checkSight(this.center, radius, {
-			angle: this.data.angle,
-			cullMultiplier: 1.0,
-			radialDensity: 6.0,
-			rotation: this.data.rotation,
-		});
+	computeFOV({ radius = null, cull = null, walls = null } = {}) {
+		if (!radius) {
+			const dim = this.dimRadius;
+			const bright = this.brightRadius;
+			radius =
+				Math.max(Math.abs(dim), Math.abs(bright)) +
+				canvas.dimensions.size * 0.1;
+		}
+		const [cullMult, cullMin, cullMax] = cull || canvas.sight._cull;
+		walls = walls || canvas.walls.blockVision;
+
+		// Compute the polygon
+		const { los, fov, rays } = SightLayer.computeSight(
+			this.center,
+			radius,
+			{
+				angle: this.data.angle,
+				cullMult: cullMult,
+				cullMin: cullMin,
+				cullMax: cullMax,
+				density: 6,
+				rotation: this.data.rotation,
+				walls: walls,
+			}
+		);
+
+		// Store and return
 		this.fov = fov;
+		this.los = los;
 		return { rays, los, fov };
 	}
 
@@ -33448,11 +34545,8 @@ class AmbientLight extends PlaceableObject {
 	/** @extends {PlaceableObject._onCreate} */
 	_onCreate() {
 		super._onCreate();
-		canvas.addPendingOperation(
-			`SightLayer.initialize`,
-			canvas.sight.initialize,
-			canvas.sight
-		);
+		canvas.sight.updateLight(this);
+		this.layer.update();
 	}
 
 	/* -------------------------------------------- */
@@ -33461,11 +34555,8 @@ class AmbientLight extends PlaceableObject {
 	_onUpdate(data) {
 		super._onUpdate(data);
 		this.draw();
-		canvas.addPendingOperation(
-			`SightLayer.initialize`,
-			canvas.sight.initialize,
-			canvas.sight
-		);
+		canvas.sight.updateLight(this);
+		this.layer.update();
 	}
 
 	/* -------------------------------------------- */
@@ -33473,11 +34564,8 @@ class AmbientLight extends PlaceableObject {
 	/** @extends {PlaceableObject._onDelete} */
 	_onDelete() {
 		super._onDelete();
-		canvas.addPendingOperation(
-			`SightLayer.initialize`,
-			canvas.sight.initialize,
-			canvas.sight
-		);
+		canvas.sight.updateLight(this, { deleted: true });
+		this.layer.update();
 	}
 }
 
@@ -33880,9 +34968,6 @@ class AmbientSound extends PlaceableObject {
 		this.field = this.drawField();
 		this.controlIcon = this.addChild(this._drawControlIcon());
 
-		// Render the Sound appearance
-		this.refresh();
-
 		// Add control interactivity if the placeable has an ID
 		if (this.id) {
 			new HandleManager(this.controlIcon, this.layer, {
@@ -33968,25 +35053,24 @@ class AmbientSound extends PlaceableObject {
 	 * @returns {Object}      An object containing the rays, LOS polygon, and FOV polygon for the light
 	 */
 	computeFOV() {
+		const center = this.center;
+		const radius = this.radius + canvas.dimensions.size * 0.1;
+
 		// Global audio
 		if (this.type === 'g') {
-			this.fov = new PIXI.Circle(
-				...Object.values(this.center),
-				this.radius
-			);
+			this.fov = new PIXI.Circle(center.x, center.y, this.radius);
 			return { rays: null, fov: this.fov, los: null };
 		}
 
-		// Local audio
-		else {
-			let r = this.radius * 1.02;
-			let [rays, los, fov] = canvas.sight.checkSight(this.center, r, {
-				cullMultiplier: 1,
-				radialDensity: 6,
-			});
-			this.fov = fov;
-			return { rays, los, fov };
-		}
+		// Compute the polygon
+		const { los, fov, rays } = SightLayer.computeSight(center, radius, {
+			cullMult: 1,
+			density: 6,
+		});
+
+		// Store and return
+		this.fov = fov;
+		return { rays, los, fov };
 	}
 
 	/* -------------------------------------------- */
@@ -34228,7 +35312,10 @@ class MeasuredTemplate extends PlaceableObject {
 			.beginFill(0x000000, 0.0);
 
 		// Fill Color or Texture
-		if (this.texture) this.template.beginTextureFill(this.texture);
+		if (this.texture)
+			this.template.beginTextureFill({
+				texture: this.texture,
+			});
 		else this.template.beginFill(0x000000, 0.0);
 
 		// Draw the shape
@@ -34274,7 +35361,10 @@ class MeasuredTemplate extends PlaceableObject {
 		}
 
 		// For flat cones, direct point-to-point
-		else angles = [angle / -2, angle / 2];
+		else {
+			angles = [angle / -2, angle / 2];
+			distance /= Math.cos(toRadians(angle / 2));
+		}
 
 		// Get the cone shape as a polygon
 		const rays = angles.map(a =>
@@ -34476,13 +35566,6 @@ class MeasuredTemplate extends PlaceableObject {
 		canvas.grid.destroyHighlightLayer(`Template.${this.id}`);
 	}
 }
-
-CONFIG.templateTypes = {
-	circle: 'Circle',
-	cone: 'Cone',
-	rect: 'Rectangle',
-	ray: 'Ray',
-};
 
 /**
  * A Tile is an implementation of PlaceableObject which represents a static piece of artwork or prop within the Scene.
@@ -35039,9 +36122,9 @@ class Token extends PlaceableObject {
 	 * @type {boolean}
 	 */
 	get inCombat() {
-		if (!canvas.scene.active) return false;
-		if (!game.combat) return false;
-		let combatant = game.combat.getCombatantByToken(this.id);
+		const combat = ui.combat.combat;
+		if (!combat) return false;
+		const combatant = combat.getCombatantByToken(this.id);
 		return combatant !== undefined;
 	}
 
@@ -35059,56 +36142,21 @@ class Token extends PlaceableObject {
 
 	/**
 	 * Determine whether the Token is visible to the calling user's perspective.
-	 * If the user is a GM, all tokens are visible
-	 * If the user is a player, owned tokens which are not hidden are visible
-	 * Otherwise only tokens whose corner or center are within the vision polygon are visible.
+	 * Hidden Tokens are only displayed to GM Users.
+	 * Non-hidden Tokens are always visible if Token Vision is not required.
+	 * Controlled tokens are always visible.
+	 * All Tokens are visible to a GM user if no Token is controlled.
 	 *
+	 * @see {SightLayer#testVisibility}
 	 * @type {boolean}
 	 */
 	get isVisible() {
-		// If token vision is not required
-		if (!canvas.sight.tokenVision) {
-			if (this.data.hidden) return game.user.isGM;
-			return true;
-		}
-
-		// Controlled tokens are always visible
+		const gm = game.user.isGM;
+		if (this.data.hidden) return gm;
+		if (!canvas.sight.tokenVision) return true;
 		if (this._controlled) return true;
-
-		// Hidden tokens are not visible for players
-		if (this.data.hidden && !game.user.isGM) return false;
-
-		// GM users when there are no controlled tokens can see everything
-		if (game.user.isGM && !canvas.sight.tokens.vision.length) return true;
-
-		// Get the set of points to test for a token
-		const c = this.center;
-		let d = canvas.dimensions.size / 4;
-		const [x0, y0, x1, y1] = [
-			this.data.x,
-			this.data.y,
-			this.data.x + this.w,
-			this.data.y + this.h,
-		];
-		const points = [
-			[c.x, c.y],
-			[x0 + d, y0 + d],
-			[x1 - d, y0 + d],
-			[x0 + d, y1 - d],
-			[x1 - d, y1 - d],
-		];
-
-		// First test that the token falls within a token line-of-sight
-		let los = canvas.sight.los;
-		let hasLOS = los.tokens.concat(los.lights).some(l => {
-			return points.some(p => l.contains(...p));
-		});
-
-		// If the token falls in some line of sight, check if it also falls within a field-of-vision
-		if (!hasLOS) return false;
-		let fov = canvas.sight.fov;
-		return fov.tokens.concat(fov.lights).some(f => {
-			return points.some(p => f.contains(...p));
+		return canvas.sight.testVisibility(this.center, {
+			tolerance: canvas.dimensions.size / 4,
 		});
 	}
 
@@ -35158,7 +36206,7 @@ class Token extends PlaceableObject {
 			Math.abs(this.data.dimLight) > Math.abs(this.data.dimSight)
 				? this.data.dimLight
 				: this.data.dimSight;
-		return this._getLightRadius(r);
+		return this.getLightRadius(r);
 	}
 
 	/* -------------------------------------------- */
@@ -35172,7 +36220,7 @@ class Token extends PlaceableObject {
 			Math.abs(this.data.dimLight) > Math.abs(this.data.brightLight)
 				? this.data.dimLight
 				: this.data.brightLight;
-		return this._getLightRadius(r);
+		return this.getLightRadius(r);
 	}
 
 	/* -------------------------------------------- */
@@ -35186,7 +36234,7 @@ class Token extends PlaceableObject {
 			Math.abs(this.data.brightLight) > Math.abs(this.data.brightSight)
 				? this.data.brightLight
 				: this.data.brightSight;
-		return this._getLightRadius(r);
+		return this.getLightRadius(r);
 	}
 
 	/* -------------------------------------------- */
@@ -35196,7 +36244,7 @@ class Token extends PlaceableObject {
 	 * @return {number}
 	 */
 	get brightLightRadius() {
-		return this._getLightRadius(this.data.brightLight);
+		return this.getLightRadius(this.data.brightLight);
 	}
 
 	/* -------------------------------------------- */
@@ -35223,16 +36271,21 @@ class Token extends PlaceableObject {
 		// Draw Token components
 		this.border = this.addChild(new PIXI.Graphics());
 		this.icon = this.addChild(await this._drawIcon());
-		this.bars = this.addChild(this._drawBars());
+		this.bars = this.addChild(this._drawAttributeBars());
 		this.nameplate = this.addChild(this._drawNameplate());
 		this.tooltip = this.addChild(new PIXI.Container());
 		this.effects = this.addChild(new PIXI.Container());
 		this.target = this.addChild(new PIXI.Graphics());
 
-		// Define interactivity
+		// Define initial interactivity and visibility state
 		this.hitArea = new PIXI.Rectangle(0, 0, this.w, this.h);
 		this.interactive = true;
 		this.buttonMode = true;
+
+		// Constrain initial position
+		const d = canvas.dimensions;
+		this.data.x = Math.clamped(this.data.x, 0, d.width - this.w);
+		this.data.y = Math.clamped(this.data.y, 0, d.height - this.h);
 
 		// Draw the initial position
 		this.refresh();
@@ -35258,7 +36311,8 @@ class Token extends PlaceableObject {
 				},
 				{
 					canhover: true,
-					canclick: event => this.canViewSheet,
+					canclick: event =>
+						game.activeTool === 'target' || this.canViewSheet,
 					candrag: event => {
 						if (!this._controlled) return false;
 						let isRuler =
@@ -35279,6 +36333,19 @@ class Token extends PlaceableObject {
 	/* -------------------------------------------- */
 
 	/**
+	 * Draw resource bars for the Token
+	 * @private
+	 */
+	_drawAttributeBars() {
+		const bars = new PIXI.Container();
+		bars.bar1 = bars.addChild(new PIXI.Graphics());
+		bars.bar2 = bars.addChild(new PIXI.Graphics());
+		return bars;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
 	 * Draw the Sprite icon for the Token
 	 * @return {Promise}
 	 * @private
@@ -35287,12 +36354,11 @@ class Token extends PlaceableObject {
 		// Create Sprite using the loaded texture
 		let icon = new PIXI.Sprite(this.texture);
 		icon.anchor.set(0.5, 0.5);
+		if (!this.texture) return icon;
 
 		// Ensure playback state for video tokens
-		if (
-			getProperty(this.texture, 'baseTexture.resource.source.tagName') ===
-			'VIDEO'
-		) {
+		const source = getProperty(this.texture, 'baseTexture.resource.source');
+		if (source && source.tagName === 'VIDEO') {
 			source.loop = true;
 			source.muted = true;
 			game.video.play(source);
@@ -35308,19 +36374,20 @@ class Token extends PlaceableObject {
 	refresh() {
 		// Token position and visibility
 		if (!this._movement) this.position.set(this.data.x, this.data.y);
-		this.visible = game.user.isGM ? true : !this.data.hidden;
 
 		// Refresh icon display
 		let d = Math.round((this.w + this.h) / 2);
-		this.icon.scale.x =
-			((d * this.data.scale) / this.texture.width) *
-			(this.data.mirrorX ? -1 : 1);
-		this.icon.height = d * this.data.scale;
-		this.icon.rotation = toRadians(
-			this.data.lockRotation ? 0 : this.data.rotation
-		);
-		this.icon.position.set(this.w / 2, this.h / 2);
-		this.icon.alpha = this.data.hidden ? 0.5 : 1.0;
+		if (this.texture) {
+			this.icon.scale.x =
+				((d * this.data.scale) / this.texture.width) *
+				(this.data.mirrorX ? -1 : 1);
+			this.icon.height = d * this.data.scale;
+			this.icon.rotation = toRadians(
+				this.data.lockRotation ? 0 : this.data.rotation
+			);
+			this.icon.position.set(this.w / 2, this.h / 2);
+			this.icon.alpha = this.data.hidden ? 0.5 : 1.0;
+		}
 
 		// Refresh Token border and target
 		this._refreshBorder();
@@ -35459,43 +36526,41 @@ class Token extends PlaceableObject {
 
 	/**
 	 * A helper method to retrieve the underlying data behind one of the Token's attribute bars
-	 * @param barName
+	 * @param {string} barName        The named bar to retrieve the attribute for
+	 * @param {string} alternative    An alternative attribute path to get instead of the default one
 	 * @return {Object}
 	 */
-	getBarAttribute(barName) {
-		const attr = this.data[barName].attribute;
-		if (!attr) return {};
-		const data = this.actor
-			? duplicate(getProperty(this.actor.data.data, attr) || {})
-			: {};
-		data.bar = barName;
-		data.attribute = attr;
-		return data;
-	}
+	getBarAttribute(barName, { alternative = null } = {}) {
+		const attr = alternative || this.data[barName].attribute;
+		if (!attr || !this.actor) return null;
+		const data = duplicate(getProperty(this.actor.data.data, attr));
 
-	/* -------------------------------------------- */
+		// Single values
+		if (Number.isFinite(data)) {
+			return {
+				type: 'value',
+				attribute: attr,
+				value: data,
+			};
+		}
 
-	/**
-	 * Draw resource bars for the Token
-	 * @private
-	 */
-	_drawBars() {
-		const bars = new PIXI.Container();
-
-		// Primary bar
-		bars.bar1 = bars.addChild(new PIXI.Graphics());
-		bars.bar1.position.set(0, this.h - Math.max(this.h / 16, 8));
-
-		// Secondary bar
-		bars.bar2 = bars.addChild(new PIXI.Graphics());
-		bars.bar2.position.set(0, 0);
-		return bars;
+		// Attribute bars
+		else if (typeof data === 'object' && 'value' in data && 'max' in data) {
+			return {
+				type: 'bar',
+				attribute: attr,
+				value: parseInt(data.value || 0),
+				max: parseInt(data.max || 0),
+			};
+		}
+		return null;
 	}
 
 	/* -------------------------------------------- */
 
 	/**
 	 * Refresh the display of Token attribute bars, rendering latest resource data
+	 * If the bar attribute is valid (has a value and max), draw the bar. Otherwise hide it.
 	 * @private
 	 */
 	drawBars() {
@@ -35505,18 +36570,11 @@ class Token extends PlaceableObject {
 		)
 			return;
 		['bar1', 'bar2'].forEach((b, i) => {
-			const config = this.data[b],
-				bar = this.bars[b];
-
-			// If there is no attribute present, hide the bar
-			bar.visible = config.attribute;
-			if (!config.attribute) return;
-
-			// Pull the current data and draw the bar
-			const data = this.getBarAttribute(b);
-			config.value = data.value;
-			config.max = data.max;
-			this._drawBar(i, bar, config);
+			const bar = this.bars[b];
+			const attr = this.getBarAttribute(b);
+			if (!attr || attr.type !== 'bar') return (bar.visible = false);
+			this._drawBar(i, bar, attr);
+			bar.visible = true;
 		});
 	}
 
@@ -35524,17 +36582,16 @@ class Token extends PlaceableObject {
 
 	/**
 	 * Draw a single resource bar, given provided data
-	 * @param {Number} number       The Bar number
+	 * @param {number} number       The Bar number
 	 * @param {PIXI.Graphics} bar   The Bar container
 	 * @param {Object} data         Resource data for this bar
 	 * @private
 	 */
 	_drawBar(number, bar, data) {
-		// Process bar data
-		let val = Number(data.value),
-			max = data.max,
-			pct = Math.clamped(val, 0, max) / max,
-			h = Math.max(this.h / 16, 8);
+		const val = Number(data.value);
+		const pct = Math.clamped(val, 0, data.max) / data.max;
+		let h = Math.max(canvas.dimensions.size / 12, 8);
+		if (this.data.height >= 2) h *= 1.6; // Enlarge the bar for large tokens
 
 		// Draw the bar
 		let color =
@@ -35548,6 +36605,10 @@ class Token extends PlaceableObject {
 			.beginFill(PIXI.utils.rgb2hex(color), 0.8)
 			.lineStyle(1, 0x000000, 0.8)
 			.drawRoundedRect(1, 1, pct * (this.w - 2), h - 2, 2);
+
+		// Set position
+		let posY = number === 0 ? this.h - h : 0;
+		bar.position.set(0, posY);
 	}
 
 	/* -------------------------------------------- */
@@ -35558,9 +36619,10 @@ class Token extends PlaceableObject {
 	 */
 	_drawNameplate() {
 		// Gate font size based on grid size
+		const gs = canvas.dimensions.size;
 		let h = 24;
-		if (canvas.dimensions.size >= 200) h = 36;
-		else if (canvas.dimensions.size < 50) h = 18;
+		if (gs >= 200) h = 36;
+		else if (gs <= 70) h = 20;
 
 		// Create the nameplate text
 		const name = new PIXI.Text(
@@ -35568,8 +36630,8 @@ class Token extends PlaceableObject {
 			CONFIG.canvasTextStyle.clone()
 		);
 
-		// Anchor to the middle of the nameplate
-		name.anchor.set(0.5, 0.5);
+		// Anchor to the top-center of the nameplate
+		name.anchor.set(0.5, 0);
 
 		// Adjust dimensions
 		let bounds = name.getBounds(),
@@ -35590,7 +36652,8 @@ class Token extends PlaceableObject {
 		name.width = h * nrows * r;
 
 		// Set position at bottom of token
-		name.position.set(this.w / 2, this.h + nrows * 12);
+		let ox = gs / 24;
+		name.position.set(this.w / 2, this.h + ox);
 		return name;
 	}
 
@@ -35789,23 +36852,23 @@ class Token extends PlaceableObject {
 	/**
 	 * Assume control over a PlaceableObject, flagging it as controlled and enabling downstream behaviors
 	 * See PlaceableObject.control() for full details
-	 * @param {Boolean} multiSelect       Is this object being selected as part of a group?
-	 * @param {Boolean} releaseOthers     Release any other controlled objects first
-	 * @param {Boolean} initializeSight   Reinitialize the sight layer
+	 * @param {boolean} releaseOthers     Release any other controlled objects first
+	 * @param {boolean} initializeSight   Reinitialize the sight layer
+	 * @param {boolean} pan               Pan the canvas view to the Token once it becomes controlled
 	 * @return {Boolean}                  A Boolean flag denoting whether or not control was successful.
 	 */
 	control({
-		multiSelect = false,
 		releaseOthers = true,
 		initializeSight = true,
-		initializeSound = true,
+		pan = false,
 	} = {}) {
 		_token = this;
 		let initial = this._controlled;
-		let controlled = super.control({ multiSelect, releaseOthers });
+		let controlled = super.control({ releaseOthers, pan });
 		if (controlled && !initial) {
 			this.displayToFront();
-			if (initializeSight) canvas.sight.initializeSight();
+			if (initializeSight) canvas.sight.updateToken(this);
+			if (pan) canvas.animatePan({ x: this.x, y: this.y });
 			canvas.sounds.update();
 		}
 		return controlled;
@@ -35816,14 +36879,14 @@ class Token extends PlaceableObject {
 	/**
 	 * Release control over a PlaceableObject, removing it from the controlled set
 	 * See PlaceableObject.release() for full details
-	 * @param resetSight {Boolean}      Trigger a re-initialization of the sight layer, this may not be necessary
+	 * @param {boolean} resetSight      Trigger a re-initialization of the sight layer, this may not be necessary
 	 * @return {Boolean}                A Boolean flag confirming the object was released.
 	 */
 	release({ resetSight = true } = {}) {
 		let initial = this._controlled;
 		let released = super.release();
 		if (initial && released) {
-			if (resetSight) canvas.sight.initializeSight();
+			if (resetSight) canvas.sight.updateToken(this);
 			if (game.user.isGM) canvas.sounds.update();
 		}
 		return released;
@@ -35923,8 +36986,12 @@ class Token extends PlaceableObject {
 	 * @param {boolean} targeted        Is the Token now targeted?
 	 * @param {User|null} user          Assign the token as a target for a specific User
 	 * @param {boolean} releaseOthers   Release other active targets for the same player?
+	 * @param {boolean} groupSelection  Is this target being set as part of a group selection workflow?
 	 */
-	setTarget(targeted = true, { user = null, releaseOthers = true } = {}) {
+	setTarget(
+		targeted = true,
+		{ user = null, releaseOthers = true, groupSelection = false } = {}
+	) {
 		user = user || game.user;
 
 		// Release other targets
@@ -35952,22 +37019,30 @@ class Token extends PlaceableObject {
 
 		// Refresh the Token HUD
 		if (this.hasActiveHUD) this.layer.hud.render();
+
+		// Broadcast the target change
+		if (!groupSelection)
+			user.broadcastActivity({ targets: user.targets.ids });
 	}
 
 	/* -------------------------------------------- */
 
 	/**
 	 * Add or remove the currently controlled Tokens from the active combat encounter
+	 * @param {Combat|null} combat    A Combat encounter from which to add or remove the Token
 	 * @return {Promise}
 	 */
-	async toggleCombat() {
-		// Ensure we are operating on an active Combat entity which applies to the current Scene
-		if (!game.combat) {
-			if (game.user.isGM)
-				await Combat.create({ scene: canvas.scene._id, active: true });
-			else return this;
+	async toggleCombat(combat = null) {
+		// Reference the combat encounter displayed in the Sidebar if none was provided
+		combat = combat || ui.combat.combat;
+		if (!combat) {
+			if (game.user.isGM) {
+				combat = await Combat.create({
+					scene: canvas.scene._id,
+					active: true,
+				});
+			} else return this;
 		}
-		if (game.combat.scene._id !== canvas.scene._id) return this;
 
 		// Determine whether we are adding to, or removing from combat based on the target token
 		let inCombat = this.inCombat;
@@ -35976,16 +37051,14 @@ class Token extends PlaceableObject {
 			: [this];
 
 		// Remove tokens from the Combat (GM Only)
-		if (inCombat && game.user.isGM) {
+		if (inCombat) {
+			if (!game.user.isGM) return;
 			const tokenIds = new Set(tokens.map(t => t.id));
-			const combatantIds = game.combat.combatants.reduce((ids, c) => {
+			const combatantIds = combat.combatants.reduce((ids, c) => {
 				if (tokenIds.has(c.tokenId)) ids.push(c._id);
 				return ids;
 			}, []);
-			await game.combat.deleteManyEmbeddedEntities(
-				'Combatant',
-				combatantIds
-			);
+			await combat.deleteManyEmbeddedEntities('Combatant', combatantIds);
 		}
 
 		// Add tokens to the Combat
@@ -35993,10 +37066,7 @@ class Token extends PlaceableObject {
 			const createData = tokens.map(t => {
 				return { tokenId: t.id, hidden: t.data.hidden };
 			});
-			await game.combat.createManyEmbeddedEntities(
-				'Combatant',
-				createData
-			);
+			await combat.createManyEmbeddedEntities('Combatant', createData);
 		}
 		return this;
 	}
@@ -36014,7 +37084,7 @@ class Token extends PlaceableObject {
 			idx = tfx.findIndex(e => e === texture);
 		if (idx === -1) tfx.push(texture);
 		else tfx.splice(idx, 1);
-		await this.update(canvas.scene._id, { effects: tfx });
+		await this.update({ effects: tfx });
 		this.drawEffects();
 	}
 
@@ -36027,7 +37097,7 @@ class Token extends PlaceableObject {
 	 */
 	async toggleOverlay(texture) {
 		let effect = this.data.overlayEffect === texture ? null : texture;
-		await this.update(canvas.scene._id, { overlayEffect: effect });
+		await this.update({ overlayEffect: effect });
 		this.drawEffects();
 	}
 
@@ -36072,7 +37142,7 @@ class Token extends PlaceableObject {
 	 * @param units {Number}  The radius in grid units
 	 * @return {number}       The radius in canvas units
 	 */
-	_getLightRadius(units) {
+	getLightRadius(units) {
 		if (units === 0) return 0;
 		return (
 			(units / canvas.dimensions.distance) * canvas.dimensions.size +
@@ -36092,7 +37162,7 @@ class Token extends PlaceableObject {
 	 */
 	async shiftPosition(dx, dy) {
 		let moveData = this._getShiftedPosition(dx, dy);
-		return this.update(canvas.scene._id, moveData);
+		return this.update(moveData);
 	}
 
 	/* -------------------------------------------- */
@@ -36140,17 +37210,27 @@ class Token extends PlaceableObject {
 
 	/** @override */
 	async _onCreate() {
+		// Initialize Tokens on the Sight Layer if the Token could be a vision source or emits light
 		const canSee =
-			this.actor &&
-			this.data.vision &&
-			this.actor.hasPerm(game.user, 'OBSERVER');
+			this.data.vision && this.actor.hasPerm(game.user, 'OBSERVER');
 		if (canSee || this.emitsLight) {
 			canvas.addPendingOperation(
-				`SightLayer.initialize`,
-				canvas.sight.initialize,
+				`SightLayer.initializeTokens`,
+				canvas.sight.initializeTokens,
 				canvas.sight
 			);
+			canvas.addPendingOperation(
+				'LightingLayer.update',
+				canvas.lighting.update,
+				canvas.lighting
+			);
 		}
+
+		// Pan the camera to the newly created player token - dirty hack to delay for drawing to finish
+		if (!game.user.isGM && this.owner) {
+			setTimeout(() => this.control({ pan: true }), 250);
+		}
+		this.visible = this.isVisible;
 	}
 
 	/* -------------------------------------------- */
@@ -36171,7 +37251,7 @@ class Token extends PlaceableObject {
 		const fullRedraw = ['img', 'name', 'width', 'height'].some(r =>
 			changed.has(r)
 		);
-		const visiblityChange = changed.has('hidden');
+		const visibilityChange = changed.has('hidden');
 		const positionChange = ['x', 'y'].some(c => changed.has(c));
 
 		// Change in Token appearance
@@ -36185,51 +37265,18 @@ class Token extends PlaceableObject {
 			this.refresh();
 		}
 
-		// Change in Token visibility
-		if (visiblityChange && !game.user.isGM) {
+		// Changes to Token control eligibility due to visibility changes
+		if (visibilityChange && !game.user.isGM) {
 			if (this._controlled && data.hidden) this.release();
 			else if (!data.hidden && !canvas.tokens.controlled.length)
-				this.control();
+				this.control({ pan: true });
+			this.visible = this.isVisible;
 		}
 
 		// Process SightLayer changes
-		const sl = canvas.sight;
 		if (this.data.vision || changed.has('vision') || this.emitsLight) {
-			const visionAttrs = [
-				'vision',
-				'dimSight',
-				'brightSight',
-				'sightAngle',
-				'dimLight',
-				'brightLight',
-				'lightAngle',
-			];
-			const visionChange =
-				(visiblityChange && this._controlled) ||
-				visionAttrs.some(c => changed.has(c));
-			if (visionChange)
-				canvas.addPendingOperation(
-					`SightLayer.initialize`,
-					sl.initialize,
-					sl
-				);
-			else if (
-				positionChange ||
-				visiblityChange ||
-				(changed.has('rotation') && this.hasLimitedVisionAngle)
-			) {
-				canvas.addPendingOperation(
-					`SightLayer.updateSight`,
-					sl.updateSight,
-					sl
-				);
-			}
-		} else if (positionChange) {
-			canvas.addPendingOperation(
-				`SightLayer.restrictVisibility`,
-				sl.restrictVisibility,
-				sl
-			);
+			canvas.sight.updateToken(this);
+			canvas.lighting.update();
 		}
 
 		// Process Sound changes
@@ -36252,9 +37299,9 @@ class Token extends PlaceableObject {
 			}
 			if (['effects', 'name'].some(k => changed.has(k))) {
 				canvas.addPendingOperation(
-					`Combat.render`,
-					game.combat.render,
-					game.combat
+					`CombatTracker.render`,
+					ui.combat.render,
+					ui.combat
 				);
 			}
 		}
@@ -36266,20 +37313,18 @@ class Token extends PlaceableObject {
 	_onDelete(sceneId) {
 		this._movement = null;
 		let hasActor = this.actor && this.actor.hasPerm(game.user, 'OBSERVER');
-		let updateSight = (hasActor && this.data.vision) || this.emitsLight;
-		if (updateSight)
+		if (hasActor) {
+			if (this.data.vision || this.emitsLight) {
+				canvas.sight.updateToken(this, { deleted: true });
+				canvas.lighting.update();
+			}
 			canvas.addPendingOperation(
-				`SightLayer.initialize`,
-				canvas.sight.initialize,
-				canvas.sight
-			);
-		if (hasActor)
-			canvas.addPendingOperation(
-				`SightLayer.initialize`,
+				`SoundsLayer.initialize`,
 				canvas.sounds.initialize,
 				canvas.sounds
 			);
-		super._onDelete(sceneId);
+		}
+		return super._onDelete(sceneId);
 	}
 
 	/* -------------------------------------------- */
@@ -36474,9 +37519,7 @@ class Token extends PlaceableObject {
 		}
 
 		// Update token movement
-		this.update(canvas.scene._id, target).then(p =>
-			this._onDragCancel(event)
-		);
+		this.update(target).then(p => this._onDragCancel(event));
 	}
 }
 
@@ -36918,12 +37961,28 @@ class Wall extends PlaceableObject {
 		if (data.hasOwnProperty('dir')) this.draw();
 		else this.refresh();
 
-		// Trigger downstream operations
+		// Wall layer operations
 		canvas.addPendingOperation(
 			'WallsLayer.initialize',
 			this.layer.initialize,
 			this.layer
 		);
+		if ('door' in data || this.data.door > 0) {
+			canvas.addPendingOperation(
+				'ControlsLayer.drawDoors',
+				canvas.controls.drawDoors,
+				canvas.controls
+			);
+		}
+		if (this._controlled) {
+			canvas.addPendingOperation(
+				'WallsLayer.highlightControlledSegments',
+				this.layer.highlightControlledSegments,
+				this.layer
+			);
+		}
+
+		// Downstream layer operations
 		canvas.addPendingOperation(
 			'SightLayer.initialize',
 			canvas.sight.initialize,
@@ -36939,20 +37998,6 @@ class Wall extends PlaceableObject {
 			canvas.sounds.initialize,
 			canvas.sounds
 		);
-		if (this.data.door > 0) {
-			canvas.addPendingOperation(
-				'ControlsLayer.drawDoors',
-				canvas.controls.drawDoors,
-				canvas.controls
-			);
-		}
-		if (this._controlled) {
-			canvas.addPendingOperation(
-				'WallsLayer.highlightControlledSegments',
-				this.layer.highlightControlledSegments,
-				this.layer
-			);
-		}
 		this.layer._cloneType = duplicate(this.data);
 	}
 
@@ -37004,9 +38049,7 @@ class Wall extends PlaceableObject {
 	/** @override */
 	_onDoubleLeft(event) {
 		const sheet = this.sheet;
-		const wallIds = Object.keys(this.layer._controlled).map(Number);
-		sheet.options.editMany = wallIds.length > 1;
-		sheet.options.editTargets = wallIds;
+		sheet.options.editTargets = Object.keys(this.layer._controlled);
 		this.sheet.render(true);
 	}
 
@@ -37015,6 +38058,7 @@ class Wall extends PlaceableObject {
 	/** @override */
 	_onMouseOver(event) {
 		this.displayToFront();
+		this.layer._lastCoords = this.data.c;
 		super._onMouseOver(event);
 	}
 
@@ -37114,12 +38158,15 @@ class Wall extends PlaceableObject {
 			fixed,
 			fixedPoint,
 			handleState,
+			originalEvent,
 			wasControlled,
 		} = event.data;
 		if (handleState === 0) return;
 
 		// Update destination
-		let dest = this.layer._getWallEndpointCoordinates(event, destination);
+		let dest = this.layer._getWallEndpointCoordinates(destination, {
+			snap: !originalEvent.shiftKey,
+		});
 		let coords = fixedPoint === 0 ? fixed.concat(dest) : dest.concat(fixed);
 
 		// If we have collapsed the wall - delete it, otherwise update
@@ -37128,13 +38175,13 @@ class Wall extends PlaceableObject {
 		else {
 			await wall.update({ c: coords });
 			if (wasControlled) this.control();
+			this.layer._lastCoords = coords;
 		}
 		this._onDragCancel(event);
 
 		// If we are holding CTRL - chain the drag completion into creating a new wall segment
-		let oe = event.data.originalEvent;
-		if (oe.ctrlKey || oe.metaKey) {
-			event.data.chainStart = coords.slice(2, 4);
+		if (game.keyboard.isCtrl(originalEvent)) {
+			event.data.chain = true;
 			this.layer._onMouseDown(event);
 		}
 	}
@@ -37321,36 +38368,30 @@ class InvitationLinks extends Application {
  * This application provides a view of which modules are available to be used and allows for configuration of the
  * set of modules which are active within the World.
  *
- * @type {Application}
+ * @extends {FormApplication}
  */
 class ModuleManagement extends FormApplication {
 	static get defaultOptions() {
-		const options = super.defaultOptions;
-		options.title = game.i18n.localize('MODMANAGE.Title');
-		options.id = 'module-management';
-		options.template = 'templates/sidebar/apps/module-management.html';
-		options.popOut = true;
-		options.editable = game.user.isGM;
-		options.width = 600;
-		return options;
+		return mergeObject(super.defaultOptions, {
+			title: game.i18n.localize('MODMANAGE.Title'),
+			id: 'module-management',
+			template: 'templates/sidebar/apps/module-management.html',
+			popOut: true,
+			editable: game.user.isGM,
+			width: 600,
+		});
 	}
 
 	/* -------------------------------------------- */
 
-	/**
-	 * Obtain module metadata and merge it with game settings which track current module visibility
-	 * @return {Object}   The data provided to the template when rendering the form
-	 */
+	/** @override */
 	getData() {
-		// Get the available modules
-		const modules = game.modules.map(m => m.data),
-			settings = game.settings.get(
-				'core',
-				this.constructor.CONFIG_SETTING
-			);
-
-		// Flag the current module state
-		for (let mod of modules) {
+		const settings = game.settings.get(
+			'core',
+			this.constructor.CONFIG_SETTING
+		);
+		const modules = game.modules.map(m => {
+			const mod = duplicate(m.data);
 			mod.active = settings[mod.name] === true;
 			mod.hasPacks = mod.packs.length > 0;
 			mod.hasScripts = mod.scripts.length > 0;
@@ -37358,39 +38399,21 @@ class ModuleManagement extends FormApplication {
 			mod.systemOnly =
 				mod.systems && mod.systems.indexOf(game.system.id) !== -1;
 			mod.systemTag = game.system.id;
-		}
-
-		// Return data to the template
-		return {
-			user: game.user,
-			modules: modules,
-		};
+			return mod;
+		});
+		return { user: game.user, modules };
 	}
 
 	/* -------------------------------------------- */
-	/*  Event Listeners and Handlers                */
-	/* -------------------------------------------- */
 
-	/**
-	 * This method is called upon form submission after form data is validated
-	 * @param event {Event}       The initial triggering submission event
-	 * @param formData {Object}   The object of validated form data with which to update the object
-	 * @private
-	 */
+	/** @override */
 	_updateObject(event, formData) {
 		const settings = game.settings.get(
 			'core',
 			this.constructor.CONFIG_SETTING
 		);
-		game.settings
-			.set(
-				'core',
-				this.constructor.CONFIG_SETTING,
-				mergeObject(settings, formData)
-			)
-			.then(() => {
-				window.location.reload();
-			});
+		const setting = mergeObject(settings, formData);
+		game.settings.set('core', this.constructor.CONFIG_SETTING, setting);
 	}
 }
 
@@ -38005,16 +39028,18 @@ class ChatLog extends SidebarTab {
 	 * @private
 	 */
 	_onChatKeyDown(event) {
+		const code = game.keyboard.getKey(event);
+
 		// UP/DOWN ARROW -> Recall Previous Messages
-		if ([KEYS.UP, KEYS.DOWN].includes(event.keyCode)) {
+		if (['ArrowUp', 'ArrowDown'].includes(code)) {
 			event.preventDefault();
 			let textarea = event.currentTarget,
-				message = this._recall(event.keyCode === KEYS.UP ? 1 : -1);
+				message = this._recall(code === 'ArrowUp' ? 1 : -1);
 			if (message) textarea.value = message;
 		}
 
 		// ENTER -> Send Message
-		else if (event.keyCode === KEYS.ENTER && !event.shiftKey) {
+		else if (code === 'Enter' && !event.shiftKey) {
 			event.preventDefault();
 			let textarea = event.currentTarget,
 				message = textarea.value;
@@ -38099,15 +39124,6 @@ class ChatLog extends SidebarTab {
 	}
 }
 
-/* -------------------------------------------- */
-
-CONFIG.rollModes = {
-	roll: 'CHAT.RollPublic',
-	gmroll: 'CHAT.RollPrivate',
-	blindroll: 'CHAT.RollBlind',
-	selfroll: 'CHAT.RollSelf',
-};
-
 /**
  * The combat and turn order tracker tab
  * @type {SidebarTab}
@@ -38115,7 +39131,7 @@ CONFIG.rollModes = {
 class CombatTracker extends SidebarTab {
 	constructor(options) {
 		super(options);
-		game.combats.apps.push(this);
+		if (!this.popOut) game.combats.apps.push(this);
 
 		/**
 		 * Record a reference to the currently highlighted Token
@@ -38125,25 +39141,72 @@ class CombatTracker extends SidebarTab {
 		this._highlighted = null;
 
 		/**
+		 * Record the currently tracked Combat encounter
+		 * @type {Combat|null}
+		 */
+		this.combat = null;
+
+		/**
 		 * Cache the values of additional tracked resources for each Token in Combat
 		 * @type {Object}
 		 */
-		this.trackedResources = this.updateTrackedResources();
+		this.trackedResources = {};
 	}
 
 	/* -------------------------------------------- */
 
 	/** @override */
 	static get defaultOptions() {
-		const options = super.defaultOptions;
-		options.id = 'combat';
-		options.template = 'templates/sidebar/combat-tracker.html';
-		options.title = 'Combat Tracker';
-		return options;
+		return mergeObject(super.defaultOptions, {
+			id: 'combat',
+			template: 'templates/sidebar/combat-tracker.html',
+			title: 'Combat Tracker',
+			scrollY: ['.directory-list'],
+		});
 	}
 
 	/* -------------------------------------------- */
 	/*  Methods
+	/* -------------------------------------------- */
+
+	/** @override */
+	createPopout() {
+		const pop = super.createPopout();
+		pop.initialize(this.combat);
+		return pop;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Initialize the combat tracker to display a specific combat encounter.
+	 * If no encounter is provided, the tracker will be initialized with the first encounter in the viewed scene.
+	 * @param {Combat|null} combat   The combat encounter to initialize
+	 */
+	initialize(combat = null) {
+		// Retrieve a default encounter if none was provided
+		if (combat === null) {
+			const view = canvas.scene;
+			const combats = view
+				? game.combats.entities.filter(c => c.data.scene === view._id)
+				: [];
+			combat = combats.length
+				? combats.find(c => c.data.active) || combats[0]
+				: null;
+		}
+
+		// Assign data
+		this._highlighted = null;
+		this.combat = combat;
+
+		// Trigger data computation
+		if (combat && !combat.turns) combat.turns = combat.setupTurns();
+		this.updateTrackedResources();
+
+		// Render the tracker
+		this.render();
+	}
+
 	/* -------------------------------------------- */
 
 	/**
@@ -38151,10 +39214,10 @@ class CombatTracker extends SidebarTab {
 	 * @return {Object}
 	 */
 	updateTrackedResources() {
-		const combat = game.combat;
+		const combat = this.combat;
 		if (!combat) return (this.trackedResources = {});
 		const resources = [combat.settings.resource]; // For future tracking of multiple resources
-		this.trackedResources = game.combat.turns.reduce((obj, t) => {
+		this.trackedResources = combat.turns.reduce((obj, t) => {
 			const token = new Token(t.token);
 			let obs = t.actor && t.actor.hasPerm(game.user, 'OBSERVER');
 			obj[token.id] = resources.reduce((res, r) => {
@@ -38178,7 +39241,8 @@ class CombatTracker extends SidebarTab {
 	 * Scroll the combat log container to ensure the current Combatant turn is centered vertically
 	 */
 	scrollToTurn() {
-		const combat = game.combat;
+		const combat = this.combat;
+		if (!combat) return;
 		let active = this.element.find('.active')[0];
 		if (!active) return;
 		let container = active.parentElement;
@@ -38186,70 +39250,53 @@ class CombatTracker extends SidebarTab {
 			container.offsetHeight / active.offsetHeight
 		);
 		container.scrollTop =
-			combat.turn * active.offsetHeight -
+			this.combat.turn * active.offsetHeight -
 			(nViewable / 2) * active.offsetHeight;
 	}
 
 	/* -------------------------------------------- */
 
 	/** @override */
-	async _render(force, options) {
-		await super._render(force, options);
-		if (options.resetScroll || this._scrollTop === null)
-			this.scrollToTurn();
-	}
-
-	/* -------------------------------------------- */
-
-	/** @override */
 	getData() {
-		let activeScene = game.scenes.active;
-
-		// Get combat encounters for the scene
-		const combats = activeScene
-			? game.combats.entities.filter(
-					c => c.data.scene === activeScene._id
-			  )
+		// Get the combat encounters possible for the viewed Scene
+		const combat = this.combat;
+		const hasCombat = combat !== null;
+		const view = canvas.scene;
+		const combats = view
+			? game.combats.entities.filter(c => c.data.scene === view._id)
 			: [];
-		const activeIdx = combats.findIndex(c => c.data.active);
-		const hasCombat = activeIdx !== -1;
+		const currentIdx = combats.findIndex(c => c === this.combat);
+		const previousId = currentIdx > 0 ? combats[currentIdx - 1].id : null;
+		const nextId =
+			currentIdx < combats.length - 1 ? combats[currentIdx + 1].id : null;
 		const settings = game.settings.get('core', Combat.CONFIG_SETTING);
 
 		// Prepare rendering data
 		const data = {
 			user: game.user,
 			combats: combats,
-			currentIndex: activeIdx + 1,
-			previousId: activeIdx > 0 ? combats[activeIdx - 1]._id : '',
-			nextId:
-				activeIdx < combats.length - 1
-					? combats[activeIdx + 1]._id
-					: '',
+			currentIndex: currentIdx + 1,
 			combatCount: combats.length,
 			hasCombat: hasCombat,
+			combat,
+			turns: [],
+			previousId,
+			nextId,
 			started: this.started,
-			settings: settings,
+			control: false,
+			settings,
 		};
-
-		if (!hasCombat) {
-			return mergeObject(data, {
-				turns: [],
-				control: false,
-			});
-		}
+		if (!hasCombat) return data;
 
 		// Add active combat data
-		const combat = combats[activeIdx];
-		if (!combat.turns) combat.turns = combat.setupTurns();
 		const combatant = combat.combatant;
-
-		// Does the player have current control?
-		let hasControl =
+		const hasControl =
 			combatant &&
 			combatant.players &&
 			combatant.players.includes(game.user);
 
 		// Update data for combatant turns
+		const decimals = CONFIG.Combat.initiative.decimals;
 		const turns = combat.turns
 			.map((t, i) => {
 				// Name and Image
@@ -38262,7 +39309,7 @@ class CombatTracker extends SidebarTab {
 				t.active = i === combat.turn;
 				t.initiative = isNaN(parseFloat(t.initiative))
 					? null
-					: Number(t.initiative).toFixed(CONFIG.initiative.decimals);
+					: Number(t.initiative).toFixed(decimals);
 				t.hasRolled = t.initiative !== null;
 
 				// Styling rules
@@ -38284,7 +39331,6 @@ class CombatTracker extends SidebarTab {
 
 		// Merge update data for rendering
 		return mergeObject(data, {
-			combat: combat,
 			round: combat.data.round,
 			turn: combat.data.turn,
 			turns: turns,
@@ -38341,11 +39387,11 @@ class CombatTracker extends SidebarTab {
 	 */
 	async _onCombatCreate(event) {
 		event.preventDefault();
-		let scene = game.scenes.active;
+		let scene = game.scenes.viewed;
 		if (!scene) return;
 		let cbt = await Combat.create({ scene: scene._id });
 		await cbt.activate();
-		this.render();
+		this.initialize(cbt);
 	}
 
 	/* -------------------------------------------- */
@@ -38361,11 +39407,6 @@ class CombatTracker extends SidebarTab {
 		if (btn.hasAttribute('disabled')) return;
 		let cbt = game.combats.get(btn.getAttribute('data-combat-id'));
 		await cbt.delete();
-		if (!game.combats.active) {
-			let first = game.combats.combats.shift();
-			if (first) await first.activate();
-		}
-		this.render();
 	}
 
 	/* -------------------------------------------- */
@@ -38380,8 +39421,9 @@ class CombatTracker extends SidebarTab {
 		let btn = event.currentTarget,
 			combatId = btn.getAttribute('data-combat-id');
 		if (!combatId) return;
-		await game.combats.get(combatId).activate();
-		this.render();
+		const combat = game.combats.get(combatId);
+		await combat.activate();
+		this.initialize(combat);
 	}
 
 	/* -------------------------------------------- */
@@ -38396,8 +39438,8 @@ class CombatTracker extends SidebarTab {
 		const ctrl = event.currentTarget;
 		if (ctrl.getAttribute('disabled')) return;
 		else ctrl.setAttribute('disabled', true);
-		const fn = game.combat[ctrl.dataset.control];
-		if (fn) await fn.bind(game.combat)();
+		const fn = this.combat[ctrl.dataset.control];
+		if (fn) await fn.bind(this.combat)();
 		ctrl.removeAttribute('disabled');
 	}
 
@@ -38412,13 +39454,13 @@ class CombatTracker extends SidebarTab {
 		event.preventDefault();
 		const btn = event.currentTarget;
 		const li = btn.closest('.combatant');
-		const c = game.combat.getCombatant(li.dataset.combatantId);
+		const c = this.combat.getCombatant(li.dataset.combatantId);
 
 		// Switch control action
 		switch (btn.dataset.control) {
 			// Toggle combatant visibility
 			case 'toggleHidden':
-				await game.combat.updateCombatant({
+				await this.combat.updateCombatant({
 					_id: c._id,
 					hidden: !c.hidden,
 				});
@@ -38427,7 +39469,7 @@ class CombatTracker extends SidebarTab {
 			// Toggle combatant defeated flag
 			case 'toggleDefeated':
 				let isDefeated = !c.defeated;
-				await game.combat.updateCombatant({
+				await this.combat.updateCombatant({
 					_id: c._id,
 					defeated: isDefeated,
 				});
@@ -38446,7 +39488,7 @@ class CombatTracker extends SidebarTab {
 
 			// Roll combatant initiative
 			case 'rollInitiative':
-				await game.combat.rollInitiative([c._id]);
+				await this.combat.rollInitiative([c._id]);
 				break;
 		}
 
@@ -38536,13 +39578,13 @@ class CombatTracker extends SidebarTab {
 				name: 'Reroll',
 				icon: '<i class="fas fa-dice-d20"></i>',
 				callback: li =>
-					game.combat.rollInitiative(li.data('combatant-id')),
+					this.combat.rollInitiative(li.data('combatant-id')),
 			},
 			{
 				name: 'Remove',
 				icon: '<i class="fas fa-skull"></i>',
 				callback: li =>
-					game.combat.deleteCombatant(li.data('combatant-id')),
+					this.combat.deleteCombatant(li.data('combatant-id')),
 			},
 		];
 	}
@@ -38555,7 +39597,7 @@ class CombatTracker extends SidebarTab {
 	 * @private
 	 */
 	_showModifyCombatantInitiativeContext(li) {
-		const combatant = game.combat.getCombatant(li.data('combatant-id'));
+		const combatant = this.combat.getCombatant(li.data('combatant-id'));
 		new Dialog(
 			{
 				title: `Modify ${combatant.name} Initiative`,
@@ -38572,7 +39614,7 @@ class CombatTracker extends SidebarTab {
 							let init = parseFloat(
 								html.find('input[name="initiative"]').val()
 							);
-							game.combat.setInitiative(
+							this.combat.setInitiative(
 								combatant._id,
 								Math.round(init * 100) / 100
 							);
@@ -38984,9 +40026,8 @@ class MacroDirectory extends SidebarDirectory {
 
 	/** @override */
 	async _render(...args) {
-		if (this._popout) return this._popout.render();
-		await Application.prototype._render.call(this, ...args);
-		return this;
+		if (this._popout) return this._popout.render(...args);
+		else return super._render(...args);
 	}
 
 	/* -------------------------------------------- */
@@ -39595,12 +40636,13 @@ class SceneDirectory extends SidebarDirectory {
 	 * @private
 	 */
 	_onCreate(event) {
-		let noneActive = !game.scenes.active;
-		return Scene.create({
+		const noneActive = !game.scenes.active;
+		const createData = {
 			name: 'New Scene',
 			active: noneActive,
 			navigation: true,
-		}).then(scene => {
+		};
+		return Scene.create(createData, { renderSheet: true }).then(scene => {
 			if (noneActive) canvas.draw();
 		});
 	}
@@ -39627,9 +40669,18 @@ class SceneDirectory extends SidebarDirectory {
 			{
 				name: 'SIDEBAR.SceneNotes',
 				icon: '<i class="fas fa-scroll"></i>',
+				condition: li => {
+					const scene = game.scenes.get(li.data('entityId'));
+					return !!scene.journal;
+				},
 				callback: li => {
 					const scene = game.scenes.get(li.data('entityId'));
-					scene.notes.render(true);
+					const entry = scene.journal;
+					if (entry) {
+						const sheet = entry.sheet;
+						sheet.options.sheetMode = 'text';
+						sheet.render(true);
+					}
 				},
 			},
 			{
@@ -39722,14 +40773,14 @@ class Settings extends SidebarTab {
 				new ModuleManagement().render(true);
 				break;
 			case 'players':
-				return (window.location.href = ROUTE_PREFIX + '/players');
+				return ui.menu.items.players.onClick();
 			case 'setup':
 				return game.shutDown();
 			case 'controls':
 				new ControlsReference().render(true);
 				break;
 			case 'docs':
-				new Documentation('http://foundryvtt.com', {
+				new Documentation('https://foundryvtt.com', {
 					title: 'Foundry VTT Documentation',
 				}).render(true);
 				break;
@@ -39742,7 +40793,7 @@ class Settings extends SidebarTab {
 				new InvitationLinks().render(true);
 				break;
 			case 'logout':
-				return (window.location.href = ROUTE_PREFIX + '/join');
+				return ui.menu.items.logout.onClick();
 		}
 	}
 }
@@ -39995,44 +41046,15 @@ class DoorControl extends PIXI.Container {
 
 	/**
 	 * Determine whether the DoorControl is visible to the calling user's perspective.
-	 * @type {Boolean}
+	 * The control is always visible if the user is a GM and no Tokens are controlled.
+	 *
+	 * @see {SightLayer#testVisibility}
+	 * @type {boolean}
 	 */
 	get isVisible() {
-		// Under some circumstances, controls are always visible
-		if (game.user.isGM && !canvas.sight.tokens.vision.length) return true;
-
-		// Check that there is are LOS polygons to test
-		let los = canvas.sight.los;
-		if (canvas.sight && (los.tokens.length || los.lights.length)) {
-			let fov = canvas.sight.fov;
-			let [x, y] = this.wall.midpoint;
-
-			// Iterate over positional offsets
-			let offsets = [
-				[0, 0],
-				[-2, -2],
-				[2, -2],
-				[2, 2],
-				[-2, 2],
-			];
-			return offsets.some(o => {
-				let p = { x: x + o[0], y: y + o[1] };
-
-				// The point must fall within a LOS polygon
-				let hasLOS = los.tokens.some(
-					v =>
-						v.contains(p.x, p.y) ||
-						los.lights.some(v => v.contains(p.x, p.y))
-				);
-				if (!hasLOS) return false;
-				// The center must also fall within some FOV
-				else
-					return (
-						fov.tokens.some(v => v.contains(p.x, p.y)) ||
-						fov.lights.some(v => v.contains(p.x, p.y))
-					);
-			});
-		}
+		const [x, y] = this.wall.midpoint;
+		const point = new PIXI.Point(x, y);
+		return canvas.sight.testVisibility(point, { tolerance: 2 });
 	}
 
 	/* -------------------------------------------- */
@@ -40085,7 +41107,7 @@ class DoorControl extends PIXI.Container {
 
 		// Toggle between OPEN and CLOSED states
 		state = state === states.CLOSED ? states.OPEN : states.CLOSED;
-		this.wall.update(canvas.scene._id, { ds: state });
+		this.wall.update({ ds: state });
 	}
 
 	/* -------------------------------------------- */
@@ -40103,7 +41125,7 @@ class DoorControl extends PIXI.Container {
 			states = CONST.WALL_DOOR_STATES;
 		if (state === states.OPEN) return;
 		state = state === states.LOCKED ? states.CLOSED : states.LOCKED;
-		this.wall.update(canvas.scene._id, { ds: state });
+		this.wall.update({ ds: state });
 	}
 }
 
@@ -40194,7 +41216,6 @@ class ControlsLayer extends CanvasLayer {
 	 * Draw current cursor UI elements
 	 */
 	draw() {
-		this.removeChildren().forEach(c => c.destroy({ children: true }));
 		this.drawCursors();
 		this.drawDoors();
 		this.drawRulers();
@@ -40282,61 +41303,6 @@ class ControlsLayer extends CanvasLayer {
 	}
 
 	/* -------------------------------------------- */
-	/*  Socket Listeners and Handlers               */
-	/* -------------------------------------------- */
-
-	/**
-	 * Listen for new cursor data sent from the server.
-	 * Cursor data sent by the server is pre-validated, so no further checks are required here.
-	 *
-	 * @param socket {Socket}       The open socket client.
-	 */
-	static socketListeners(socket) {
-		socket.on('cursor', (userId, cursorData) => {
-			// Get the user
-			let user = game.users.get(userId);
-
-			// Update cursor position
-			if (cursorData.hasOwnProperty('position')) {
-				canvas.controls.updateCursor(user, cursorData.position);
-			}
-
-			// Update Ruler measurement
-			if (cursorData.hasOwnProperty('ruler')) {
-				canvas.controls.updateRuler(user, cursorData.ruler);
-			}
-
-			// Update Token targets
-			if (cursorData.hasOwnProperty('targets')) {
-				const current = Array.from(user.targets);
-				if (cursorData.targets.equals(current.map(t => t.id))) return;
-
-				// Update in the current scene
-				if (user.data.scene === canvas.scene._id) {
-					const toRemove = current.filter(
-						t => !cursorData.targets.includes(t.id)
-					);
-					const toAdd = cursorData.targets
-						.filter(t => !toRemove.includes(t))
-						.map(id => canvas.tokens.get(id));
-					toRemove.forEach(t =>
-						t.setTarget(false, { user, releaseOthers: false })
-					);
-					toAdd.forEach(t =>
-						t.setTarget(true, { user, releaseOthers: false })
-					);
-				}
-
-				// Otherwise remove any current Token targets
-				else
-					current.forEach(t =>
-						t.setTarget(false, { user, releaseOthers: false })
-					);
-			}
-		});
-	}
-
-	/* -------------------------------------------- */
 	/*  Event Listeners and Handlers
   /* -------------------------------------------- */
 
@@ -40345,15 +41311,10 @@ class ControlsLayer extends CanvasLayer {
 	 * @param {PIXI.interaction.InteractionEvent} event
 	 */
 	_onMoveCursor(event, position) {
-		// Construct cursor data
-		const cursorData = {
-			position: position,
+		game.user.broadcastActivity({
+			cursor: position,
 			ruler: this.ruler._state > 0 ? this.ruler.toJSON() : null,
-			targets: Array.from(game.user.targets).map(t => t.id),
-		};
-
-		// Emit the cursor update event
-		game.socket.emit('cursor', game.user._id, cursorData);
+		});
 	}
 
 	/* -------------------------------------------- */
@@ -40392,7 +41353,7 @@ class ControlsLayer extends CanvasLayer {
 	 * Update the cursor when the user moves to a new position
 	 */
 	updateCursor(user, position) {
-		if (!this._showCursors) return;
+		if (!this._showCursors || !this.cursors) return;
 		if (user === game.user) return;
 
 		// Get Cursor element
@@ -40400,7 +41361,7 @@ class ControlsLayer extends CanvasLayer {
 		cursor = cursor || this.cursors.addChild(this.drawCursor(user));
 
 		// Ignore inactive cursors
-		if (position === null || user.data.scene !== canvas.scene._id) {
+		if (position === null || user.viewedScene !== canvas.scene._id) {
 			if (cursor) cursor.visible = false;
 			return;
 		}
@@ -40706,7 +41667,7 @@ class Ruler extends PIXI.Container {
 
 		// Once all animations are complete we can clear the ruler
 		this.clear();
-		game.socket.emit('cursor', game.user._id, { ruler: null });
+		game.user.broadcastActivity({ ruler: null });
 	}
 
 	/* -------------------------------------------- */
@@ -40863,7 +41824,7 @@ class Ruler extends PIXI.Container {
 	 */
 	_onEndMeasurement(event) {
 		this.clear();
-		game.socket.emit('cursor', game.user._id, { ruler: null });
+		game.user.broadcastActivity({ ruler: null });
 	}
 
 	/* -------------------------------------------- */
@@ -41108,7 +42069,6 @@ AutumnLeavesWeatherEffect.LEAF_CONFIG = mergeObject(
 	},
 	{ inplace: false }
 );
-CONFIG.weatherEffects.autumn = AutumnLeavesWeatherEffect;
 
 /**
  * A special full-screen weather effect which uses two Emitters to render drops and splashes
@@ -41251,7 +42211,6 @@ RainWeatherEffect.SPLASH_CONFIG = mergeObject(
 	},
 	{ inplace: false }
 );
-CONFIG.weatherEffects.rain = RainWeatherEffect;
 
 /**
  * A special full-screen weather effect which uses one Emitters to render snowflakes
@@ -41332,7 +42291,6 @@ SnowWeatherEffect.SNOW_CONFIG = mergeObject(
 	},
 	{ inplace: false }
 );
-CONFIG.weatherEffects.snow = SnowWeatherEffect;
 
 /**
  * The base grid class.
@@ -42470,7 +43428,7 @@ class EasyRTCClient extends WebRTCInterface {
 	/* -------------------------------------------- */
 
 	/**
-	 * Connect to the signalling server.
+	 * Connect to the signaling server.
 	 * Any existing connections will be dropped and any existing calls hung up.
 	 * Once a connection to the server is established and the user authenticated, join a room and automatically
 	 * establish a call with other users in that same room.
@@ -42485,7 +43443,7 @@ class EasyRTCClient extends WebRTCInterface {
 	 * a different path for it instead with easyrtc.useThisSocketConnection(game.socket)
 	 *
 	 * @param {string} host            Server host address. Set to `null` to use current FVTT server
-	 * @param {string} room            Name of the room to join on the signalling server
+	 * @param {string} room            Name of the room to join on the signaling server
 	 * @param {string} username        Username to authenticate to the server (if needed)
 	 * @param {string} password        Password to authenticate the user (if needed)
 	 * @return {Promise.boolean}       Returns success/failure to connect
@@ -42498,8 +43456,7 @@ class EasyRTCClient extends WebRTCInterface {
 			let credential = { username, password };
 			if (host == null) {
 				host = window.location.origin;
-				// TODO: switch to session based cookie authentication and ignore username/password
-				credential = { password: password || '' };
+				credential = { sessionId: game.sessionId };
 			}
 
 			// Configure the socket target and connection credentials
@@ -42590,7 +43547,7 @@ class EasyRTCClient extends WebRTCInterface {
 	/* -------------------------------------------- */
 
 	/**
-	 * Disconnect from the signalling server, any existing calls will be terminated.
+	 * Disconnect from the signaling server, any existing calls will be terminated.
 	 * This is also called whenever the server configuration is changed.
 	 *
 	 * @return {Promise.boolean}       Returns success/failure to connect
@@ -43157,7 +44114,7 @@ class EasyRTCClient extends WebRTCInterface {
 	/* -------------------------------------------- */
 
 	/**
-	 * Called when the connection to the signalling server is lost
+	 * Called when the connection to the signaling server is lost
 	 * @private
 	 */
 	_onDisconnect() {
@@ -43232,4 +44189,399 @@ class EasyRTCClient extends WebRTCInterface {
 	}
 }
 
-CONFIG.WebRTC.clientClass = EasyRTCClient;
+/**
+ * Runtime configuration settings for Foundry VTT which exposes a large number of variables which determine how
+ * aspects of the software behaves.
+ *
+ * Unlike the CONST analog which is frozen and immutable, the CONFIG object may be updated during the course of a
+ * session or modified by system and module developers to adjust how the application behaves.
+ *
+ * @type {Object}
+ */
+const CONFIG = {
+	/**
+	 * Configure debugging flags to display additional information
+	 */
+	debug: {
+		hooks: false,
+		sight: false,
+		av: false,
+		avclient: false,
+	},
+
+	/**
+	 * Configuration for the default Actor entity class
+	 */
+	Actor: {
+		entityClass: Actor,
+		collection: Actors,
+		sheetClasses: {},
+		sidebarIcon: 'fas fa-user',
+	},
+
+	/**
+	 * Configuration settings for the Canvas and its contained layers and objects
+	 * @type {Object}
+	 */
+	Canvas: {
+		darknessColor: 0x110033,
+		normalLightColor: 0xfffefe,
+		maxZoom: 3.0,
+	},
+
+	/**
+	 * Configuration for the ChatMessage entity
+	 */
+	ChatMessage: {
+		entityClass: ChatMessage,
+		collection: Messages,
+		template: 'templates/sidebar/chat-message.html',
+		sidebarIcon: 'fas fa-comments',
+	},
+
+	/**
+	 * Configuration for the Combat entity
+	 */
+	Combat: {
+		entityClass: Combat,
+		sheetClass: CombatEncounters,
+		sidebarIcon: 'fas fa-fist-raised',
+		initiative: {
+			formula: null,
+			decimals: 0,
+		},
+	},
+
+	/**
+	 * Configuration for dice rolling behaviors in the Foundry VTT client
+	 * @type {Object}
+	 */
+	Dice: {
+		types: [Die, FateDie],
+		template: 'templates/dice/roll.html',
+		tooltip: 'templates/dice/tooltip.html',
+		mathProxy: new Proxy(Math, {
+			has: () => true,
+			get: (t, k) => (k === Symbol.unscopables ? undefined : t[k]),
+		}),
+		rollModes: Object.entries(CONST.DICE_ROLL_MODES).reduce((obj, e) => {
+			let [k, v] = e;
+			obj[v] = `CHAT.Roll${k.titleCase()}`;
+			return obj;
+		}, {}),
+	},
+
+	/**
+	 * Configuration for the Folder entity
+	 */
+	Folder: {
+		entityClass: Folder,
+		sheetClass: FolderConfig,
+	},
+
+	/**
+	 * Configuration for the default Item entity class
+	 */
+	Item: {
+		entityClass: Item,
+		collection: Items,
+		sheetClass: ItemSheet,
+		sheetClasses: {},
+		sidebarIcon: 'fas fa-suitcase',
+	},
+
+	/**
+	 * Configuration for the JournalEntry entity
+	 */
+	JournalEntry: {
+		entityClass: JournalEntry,
+		collection: Journal,
+		sheetClass: JournalSheet,
+		noteIcons: {
+			Anchor: 'icons/svg/anchor.svg',
+			Book: 'icons/svg/book.svg',
+			Bridge: 'icons/svg/bridge.svg',
+			Cave: 'icons/svg/cave.svg',
+			Castle: 'icons/svg/castle.svg',
+			City: 'icons/svg/city.svg',
+			'Hanging Sign': 'icons/svg/hanging-sign.svg',
+			House: 'icons/svg/house.svg',
+			Mountain: 'icons/svg/mountain.svg',
+			'Oak Tree': 'icons/svg/oak.svg',
+			Obelisk: 'icons/svg/obelisk.svg',
+			Ruins: 'icons/svg/ruins.svg',
+			Temple: 'icons/svg/temple.svg',
+			Tower: 'icons/svg/tower.svg',
+			Skull: 'icons/svg/skull.svg',
+			Statue: 'icons/svg/statue.svg',
+			Sword: 'icons/svg/sword.svg',
+			Village: 'icons/svg/village.svg',
+			Waterfall: 'icons/svg/waterfall.svg',
+			Windmill: 'icons/svg/windmill.svg',
+		},
+		sidebarIcon: 'fas fa-book-open',
+	},
+
+	/**
+	 * Configuration for the Macro entity
+	 */
+	Macro: {
+		entityClass: Macro,
+		collection: Macros,
+		sheetClass: MacroConfig,
+		sidebarIcon: 'fas fa-terminal',
+	},
+
+	/**
+	 * Configuration for MeasuredTemplate settings and options
+	 */
+	MeasuredTemplate: {
+		types: {
+			circle: 'Circle',
+			cone: 'Cone',
+			rect: 'Rectangle',
+			ray: 'Ray',
+		},
+	},
+
+	/**
+	 * Configuration for the default Playlist entity class
+	 */
+	Playlist: {
+		entityClass: Playlist,
+		collection: Playlists,
+		sheetClass: null,
+		sidebarIcon: 'fas fa-music',
+	},
+
+	/**
+	 * Configuration for RollTable random draws
+	 */
+	RollTable: {
+		entityClass: RollTable,
+		collection: RollTables,
+		sheetClass: RollTableConfig,
+		sidebarIcon: 'fas fa-th-list',
+		resultIcon: 'icons/svg/d20-black.svg',
+	},
+
+	/**
+	 * Configuration for the default Scene entity class
+	 */
+	Scene: {
+		entityClass: Scene,
+		collection: Scenes,
+		sheetClass: SceneConfig,
+		sidebarIcon: 'fas fa-map',
+	},
+
+	/**
+	 * Configuration for the default Playlist entity class
+	 */
+	User: {
+		entityClass: User,
+		collection: Users,
+		sheetClass: PlayerConfig,
+	},
+
+	/**
+	 * Configure the default Token text style so that it may be reused and overridden by modules
+	 * @type {PIXI.TextStyle}
+	 */
+	canvasTextStyle: new PIXI.TextStyle({
+		fontFamily: 'Signika',
+		fontSize: 36,
+		fill: '#FFFFFF',
+		stroke: '#111111',
+		strokeThickness: 1,
+		dropShadow: true,
+		dropShadowColor: '#000000',
+		dropShadowBlur: 4,
+		dropShadowAngle: 0,
+		dropShadowDistance: 0,
+		align: 'center',
+		wordWrap: false,
+	}),
+
+	/**
+	 * The control icons used for rendering common HUD operations
+	 * @type {Object}
+	 */
+	controlIcons: {
+		combat: 'icons/svg/combat.svg',
+		visibility: 'icons/svg/cowled.svg',
+		effects: 'icons/svg/aura.svg',
+		lock: 'icons/svg/padlock.svg',
+		up: 'icons/svg/up.svg',
+		down: 'icons/svg/down.svg',
+		defeated: 'icons/svg/skull.svg',
+	},
+
+	/**
+	 * Suggested font families that are displayed wherever a choice is presented
+	 * @type {Array}
+	 */
+	fontFamilies: [
+		'Arial',
+		'Arial Black',
+		'Comic Sans MS',
+		'Courier New',
+		'Times New Roman',
+		'Signika',
+	],
+
+	/**
+	 * The default font family used for text labels on the PIXI Canvas
+	 * @type {String}
+	 */
+	defaultFontFamily: 'Signika',
+
+	/**
+	 * An array of status effect icons which can be applied to Tokens
+	 * @type {Array}
+	 */
+	statusEffects: [
+		'icons/svg/skull.svg',
+		'icons/svg/unconscious.svg',
+		'icons/svg/sleep.svg',
+		'icons/svg/daze.svg',
+
+		'icons/svg/falling.svg',
+		'icons/svg/blind.svg',
+		'icons/svg/deaf.svg',
+		'icons/svg/stoned.svg',
+
+		'icons/svg/target.svg',
+		'icons/svg/eye.svg',
+		'icons/svg/net.svg',
+		'icons/svg/blood.svg',
+
+		'icons/svg/terror.svg',
+		'icons/svg/radiation.svg',
+		'icons/svg/biohazard.svg',
+		'icons/svg/poison.svg',
+
+		'icons/svg/regen.svg',
+		'icons/svg/degen.svg',
+		'icons/svg/sun.svg',
+		'icons/svg/angel.svg',
+
+		'icons/svg/fire.svg',
+		'icons/svg/frozen.svg',
+		'icons/svg/lightning.svg',
+		'icons/svg/acid.svg',
+
+		'icons/svg/fire-shield.svg',
+		'icons/svg/ice-shield.svg',
+		'icons/svg/mage-shield.svg',
+		'icons/svg/holy-shield.svg',
+	],
+
+	/**
+	 * A mapping of core audio effects used which can be replaced by systems or mods
+	 * @type {Object}
+	 */
+	sounds: {
+		dice: 'sounds/dice.wav',
+		lock: 'sounds/lock.wav',
+		notification: 'sounds/notify.wav',
+		combat: 'sounds/drums.wav',
+	},
+
+	/**
+	 * Define the set of supported languages for localization
+	 * @type {Object}
+	 */
+	supportedLanguages: {
+		en: 'English',
+	},
+
+	/**
+	 * Default configuration options for TinyMCE editors
+	 */
+	TinyMCE: {
+		css: ['/css/mce.css'],
+		plugins: 'lists image table hr code save',
+		toolbar:
+			'styleselect bullist numlist image table hr removeformat code save',
+	},
+
+	/**
+	 * Configure the Application classes used to render various core UI elements in the application
+	 */
+	ui: {
+		actors: ActorDirectory,
+		chat: ChatLog,
+		combat: CombatTracker,
+		compendium: CompendiumDirectory,
+		controls: SceneControls,
+		hotbar: Hotbar,
+		items: ItemDirectory,
+		journal: JournalDirectory,
+		macros: MacroDirectory,
+		menu: MainMenu,
+		nav: SceneNavigation,
+		notifications: Notifications,
+		pause: Pause,
+		players: PlayerList,
+		playlists: PlaylistDirectory,
+		scenes: SceneDirectory,
+		settings: Settings,
+		sidebar: Sidebar,
+		tables: RollTableDirectory,
+		webrtc: CameraViews,
+	},
+
+	/**
+	 * Available Weather Effects implementations
+	 * @type {Object}
+	 */
+	weatherEffects: {
+		leaves: AutumnLeavesWeatherEffect,
+		rain: RainWeatherEffect,
+		snow: SnowWeatherEffect,
+	},
+
+	/**
+	 * Configuration for the WebRTC implementation class
+	 * @type {Object}
+	 */
+	WebRTC: {
+		clientClass: EasyRTCClient,
+		emitVolumeInterval: 50,
+		speakingThresholdEvents: 2,
+		speakingHistoryLength: 10,
+	},
+};
+
+// Default Entity sheet registrations
+Actors.registerSheet('core', ActorSheet);
+Items.registerSheet('core', ItemSheet);
+
+/** @deprecated */
+CONFIG.Roll = CONFIG.Dice;
+/** @deprecated */
+CONFIG.diceTypes = CONFIG.Dice.types;
+/** @deprecated */
+CONFIG.rollModes = CONFIG.Dice.rollModes;
+/** @deprecated */
+CONFIG.templateTypes = CONFIG.MeasuredTemplate.types;
+/** @deprecated */
+CONFIG.initiative = CONFIG.Combat.initiative;
+
+// "Export" the CONFIG by adding it to the window global
+window.CONFIG = CONFIG;
+
+// Window Exports
+window.CONST = CONST;
+window.CONFIG = CONFIG;
+window.socket = socket;
+window.game = game;
+window.ui = ui;
+window.canvas = canvas;
+window.keyboard = keyboard;
+
+// Helper classes
+window.Hooks = Hooks;
+window.TextEditor = TextEditor;
+window.SortingHelpers = SortingHelpers;
