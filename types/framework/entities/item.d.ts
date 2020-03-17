@@ -92,7 +92,7 @@ declare class Item extends Entity {
 	 * @param options	Additional options which customize the update workflow
 	 * @return			A Promise which resolves to the updated Entity
 	 */
-	async update(data: any, options: any): Promise<Item>;
+	update(data: any, options: any): Promise<Item>;
 
 	/**
 	 * A convenience constructor method to create an Item instance which is owned by an Actor

@@ -98,7 +98,7 @@ declare class Compendium extends Application {
 	 * First query the server to obtain the index and then return it once prepared
 	 * @return	The data to render
 	 */
-	async getData(): Promise<any>;
+	getData(): Promise<any>;
 
 	/**
 	 * Override the default :class:`Application` rendering logic to wrap the render call in a promise which
@@ -120,7 +120,7 @@ declare class Compendium extends Application {
 	 * Delete a world Compendium pack
 	 * This is only allowed for world-level packs by a GM user
 	 */
-	async delete(): Promise<Compendium>;
+	delete(): Promise<Compendium>;
 
 	/**
 	 * Get the Compendium index
@@ -134,7 +134,7 @@ declare class Compendium extends Application {
 	 * Get the complete set of content for this compendium, loading all entries in full
 	 * Returns a Promise that resolves to an Array of entries
 	 */
-	async getContent(): Promise<Entity[]>;
+	getContent(): Promise<Entity[]>;
 
 	/**
 	 * Get a single Compendium entry as an Object
@@ -210,7 +210,7 @@ declare class Compendium extends Application {
 	/**
 	 * Handle opening a single compendium entry by invoking the configured entity class and its sheet
 	 */
-	protected async _onEntry(entryId: string): Promise<void>;
+	protected _onEntry(entryId: string): Promise<void>;
 
 	/**
 	 * Handle a new drag event from the compendium, create a placeholder token for dropping the item
@@ -225,7 +225,7 @@ declare class Compendium extends Application {
 	/**
 	 * Handle data being dropped into a Compendium pack
 	 */
-	protected async _onDrop(event: Event | JQuery.Event): Promise<boolean>;
+	protected _onDrop(event: Event | JQuery.Event): Promise<boolean>;
 
 	/**
 	 * Render the ContextMenu which applies to each compendium entry

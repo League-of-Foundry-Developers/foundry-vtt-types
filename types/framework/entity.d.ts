@@ -53,7 +53,7 @@ declare class Entity {
 	static get config(): {
 		baseEntity: Entity;
 		collection: Collection;
-		embeddedEntities: Array<any>;
+		embeddedEntities: any;
 	};
 
 	/**
@@ -257,10 +257,7 @@ declare class Entity {
 	 * const entries = await Entity.createMany(dataArray); // Saved to the database
 	 * const temps = await Entity.createMany(dataArray, {temporary: true}); // Not saved to the database
 	 */
-	static async createMany(
-		data: object[],
-		options?: object
-	): Promise<Entity[]>;
+	static createMany(data: object[], options?: object): Promise<Entity[]>;
 
 	/**
 	 * Update the current entity using new data
@@ -278,7 +275,7 @@ declare class Entity {
 	 * const updateData = {name: "New Name"};
 	 * const updated = await entity.update(updateData);
 	 */
-	async update(data: object, options?: object): Promise<Entity>;
+	update(data: object, options?: object): Promise<Entity>;
 
 	/**
 	 * Update multiple Entities using an Array of provided update Objects which define incremental data for each Entity.
@@ -292,10 +289,7 @@ declare class Entity {
 	 * const updateArray = [{_id: "dgfkjt34kjdgfkjt34", name: "Name 1"}, {_id: "dfskjkj2r3kjdvkj2", name: "Name 2"}];
 	 * const updated = await Entity.updateMany(updateArray);
 	 */
-	static async updateMany(
-		data: object[],
-		options?: object
-	): Promise<Entity[]>;
+	static updateMany(data: object[], options?: object): Promise<Entity[]>;
 
 	/**
 	 * Delete the entity, removing it from its collection and deleting its data record
@@ -319,7 +313,7 @@ declare class Entity {
 	 * const deleteIds = ["dskjfk23jf23kdjs", "g90klju9yujl9hj2", "23hjdfewh23rgf3"];
 	 * const deleted = await Entity.deleteMany(deleteIds);
 	 */
-	static async deleteMany(ids: string[], options: object): Promise<string[]>;
+	static deleteMany(ids: string[], options: object): Promise<string[]>;
 
 	/**
 	 * Entity-specific actions that should occur when the Entity is first created
@@ -386,7 +380,7 @@ declare class Entity {
 	 * @param options		Additional creation options which modify the request
 	 * @return				A Promise which resolves to this Entity once the creation request is successful
 	 */
-	async createEmbeddedEntity(
+	createEmbeddedEntity(
 		embeddedName: string,
 		createData: object,
 		options?: object
@@ -402,7 +396,7 @@ declare class Entity {
 	 * @param options		Additional update options which modify the request
 	 * @return				A Promise which resolves to this Entity once the creation request is successful
 	 */
-	async createManyEmbeddedEntities(
+	createManyEmbeddedEntities(
 		embeddedName: string,
 		createData: object[],
 		options?: object
@@ -418,7 +412,7 @@ declare class Entity {
 	 * @param options		Additional update options which modify the request
 	 * @return				A Promise which resolves to this Entity once the update request is successful
 	 */
-	async updateEmbeddedEntity(
+	updateEmbeddedEntity(
 		embeddedName: string,
 		updateData: object,
 		options?: object
@@ -434,7 +428,7 @@ declare class Entity {
 	 * @param options		Additional update options which modify the request
 	 * @return				A Promise which resolves to this Entity once the update request is successful
 	 */
-	async updateManyEmbeddedEntities(
+	updateManyEmbeddedEntities(
 		embeddedName: string,
 		updateData: object[],
 		options?: object
@@ -450,7 +444,7 @@ declare class Entity {
 	 * @param options		Additional deletion options which modify the request
 	 * @return				A Promise which resolves to this Entity once the deletion request is successful
 	 */
-	async deleteEmbeddedEntity(
+	deleteEmbeddedEntity(
 		embeddedName: string,
 		childId: string,
 		options?: object
@@ -466,7 +460,7 @@ declare class Entity {
 	 * @param options		Additional update options which modify the request
 	 * @return				A Promise which resolves to this Entity once the update request is successful
 	 */
-	async deleteManyEmbeddedEntities(
+	deleteManyEmbeddedEntities(
 		embeddedName: string,
 		deleteIds: string[],
 		options?: object
@@ -542,7 +536,7 @@ declare class Entity {
 	 * @param key	The flag key
 	 * @return		A Promise resolving to the updated Entity
 	 */
-	async unsetFlag(scope: string, key: string): Promise<Entity>;
+	unsetFlag(scope: string, key: string): Promise<Entity>;
 
 	/* -------------------------------------------- */
 	/*  Sorting                                     */
@@ -552,7 +546,7 @@ declare class Entity {
 	 * Sort this Entity relative a target by providing the target, an Array of siblings and other options.
 	 * See SortingHelper.performIntegerSort for more details
 	 */
-	async sortRelative({
+	sortRelative({
 		target,
 		siblings,
 		sortKey,
@@ -577,7 +571,7 @@ declare class Entity {
 	 * @param options		Additional creation options passed to the Entity.create method
 	 * @returns				A Promise which resolves to the created clone Entity
 	 */
-	async clone(createData?: object, options?: object): Promise<Entity>;
+	clone(createData?: object, options?: object): Promise<Entity>;
 
 	/**
 	 * Export entity data to a JSON file which can be saved by the client and later imported into a different session
@@ -589,12 +583,12 @@ declare class Entity {
 	 * @param json	JSON data string
 	 * @return		The updated Entity
 	 */
-	async importFromJSON(json: string): Promise<Entity>;
+	importFromJSON(json: string): Promise<Entity>;
 
 	/**
 	 * Render an import dialog for updating the data related to this Entity through an exported JSON file
 	 */
-	async importFromJSONDialog(): Promise<void>;
+	importFromJSONDialog(): Promise<void>;
 
 	/**
 	 * Serializing an Entity should simply serialize it's inner data, not the entire instance

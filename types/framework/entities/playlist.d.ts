@@ -49,7 +49,7 @@ declare class Playlist extends Entity {
 	 *
 	 * @param soundId	The sound ID of the track which is ending playback
 	 */
-	protected async _onEnd(soundId: string): Promise<void>;
+	protected _onEnd(soundId: string): Promise<void>;
 
 	/**
 	 * Generate a new playback order for the playlist.
@@ -98,17 +98,17 @@ declare class Playlist extends Entity {
 	 * Begin simultaneous playback for all sounds in the Playlist
 	 * @return	A Promise which resolves once the Playlist update is complete
 	 */
-	async playAll(): Promise<Playlist>;
+	playAll(): Promise<Playlist>;
 
 	/**
 	 * End playback for any/all currently playing sounds within the Playlist
 	 * @return	A Promise which resolves once the Playlist update is complete
 	 */
-	async stopAll(): Promise<Playlist>;
+	stopAll(): Promise<Playlist>;
 
 	/**
 	 * Cycle the playlist mode
 	 * @return	A promise which resolves to the updated Playlist instance
 	 */
-	async cycleMode(): Promise<Playlist>;
+	cycleMode(): Promise<Playlist>;
 }

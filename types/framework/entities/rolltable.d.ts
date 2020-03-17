@@ -24,7 +24,7 @@ declare class RollTable extends Entity {
 	 * @param rollMode	The chat roll mode to use when displaying the result
 	 * @returns			A promise resolving to the selected Table Result object
 	 */
-	async draw(
+	draw(
 		{ roll, result }?: { roll?: Roll; result?: object },
 		{ rollMode }?: { rollMode?: string }
 	): Promise<any>;
@@ -44,12 +44,12 @@ declare class RollTable extends Entity {
 	/**
 	 * Normalize the probabilities of rolling each item in the RollTable based on their assigned weights
 	 */
-	async normalize(): Promise<RollTable>;
+	normalize(): Promise<RollTable>;
 
 	/**
 	 * Reset the state of the RollTable to return any drawn items to the table
 	 */
-	async reset(): Promise<RollTable>;
+	reset(): Promise<RollTable>;
 
 	/**
 	 * Evaluate a RollTable, returning a the drawn result

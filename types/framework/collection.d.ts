@@ -113,7 +113,7 @@ declare class Collection {
 	 * @param updateData	Data used to update the imported Entity before it is created in the World
 	 * @return				A Promise containing the imported Entity
 	 */
-	async importFromCollection(
+	importFromCollection(
 		collection: string,
 		entryId: string,
 		updateData?: object,

@@ -127,7 +127,7 @@ declare class User extends Entity {
 	 * @param {number} [fromSlot] An optional origin slot from which the Macro is being shifted
 	 * @return {Promise}          A Promise which resolves once the User update is complete
 	 */
-	async assignHotbarMacro(
+	assignHotbarMacro(
 		macro: Macro | null,
 		slot: number,
 		{ fromSlot }: { fromSlot?: number }

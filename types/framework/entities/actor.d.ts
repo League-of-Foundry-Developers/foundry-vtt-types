@@ -151,34 +151,34 @@ declare class Actor extends Entity {
 	/**
 	 * Get an Array of Token images which could represent this Actor
 	 */
-	async getTokenImages(): Promise<any>;
+	getTokenImages(): Promise<any>;
 
 	/* -------------------------------------------- */
 	/*  Socket Listeners and Handlers
 	/* -------------------------------------------- */
 
 	/** @override */
-	async update(data: object, options?: object): Promise<Actor>;
+	update(data: object, options?: object): Promise<Actor>;
 
 	/** @override */
-	async delete(options?: object): Promise<string>;
+	delete(options?: object): Promise<string>;
 
 	/** @override */
-	async createEmbeddedEntity(
+	createEmbeddedEntity(
 		embeddedName: string,
 		createData: object,
 		options?: object
 	): Promise<Actor>;
 
 	/** @override */
-	async updateEmbeddedEntity(
+	updateEmbeddedEntity(
 		embeddedName: string,
 		updateData: object,
 		options?: object
 	): Promise<Actor>;
 
 	/** @override */
-	async deleteEmbeddedEntity(
+	deleteEmbeddedEntity(
 		embeddedName: string,
 		childId: string,
 		options?: object
@@ -218,7 +218,7 @@ declare class Actor extends Entity {
 	 * @param options.displaySheet	Render the Item sheet for the newly created item data
 	 * @return						A Promise containing the newly created owned Item instance
 	 */
-	async createOwnedItem(itemData: object, options?: object): Promise<Item>;
+	createOwnedItem(itemData: object, options?: object): Promise<Item>;
 
 	/**
 	 * Update an owned item using provided new data
@@ -226,12 +226,12 @@ declare class Actor extends Entity {
 	 * @param options	Item update options
 	 * @return			A Promise resolving to the updated Item object
 	 */
-	async updateOwnedItem(itemData: object, options?: object): Promise<Item>;
+	updateOwnedItem(itemData: object, options?: object): Promise<Item>;
 
 	/**
 	 * @deprecated since 0.4.4 in favor of Entity.updateManyEmbeddedEntities()
 	 */
-	async updateManyOwnedItems(data: object, options?: object): Promise<Item[]>;
+	updateManyOwnedItems(data: object, options?: object): Promise<Item[]>;
 
 	/**
 	 * Delete an owned item by its id. This redirects its arguments to the deleteEmbeddedEntity method.
@@ -239,5 +239,5 @@ declare class Actor extends Entity {
 	 * @param options	Item deletion options
 	 * @return			A Promise resolving to the deleted Owned Item data
 	 */
-	async deleteOwnedItem(itemId: string, options?: object): Promise<Item>;
+	deleteOwnedItem(itemId: string, options?: object): Promise<Item>;
 }

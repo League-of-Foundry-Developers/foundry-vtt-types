@@ -171,7 +171,7 @@ declare class Roll {
 	 * @param chatOptions	An object configuring the behavior of the resulting chat message.
 	 * @return				A Promise which resolves to the rendered HTML
 	 */
-	async render(chatOptions?: object): Promise<JQuery | HTMLElement>;
+	render(chatOptions?: object): Promise<JQuery | HTMLElement>;
 
 	/**
 	 * Render the tooltip HTML for a Roll instance
