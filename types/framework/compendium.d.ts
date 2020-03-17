@@ -1,12 +1,12 @@
 /**
- * The Compendium class provides an interface for interacting with compendium packs which are 
+ * The Compendium class provides an interface for interacting with compendium packs which are
  * collections of similar Entities which are stored outside of the world database but able to
  * be easily imported into an active session.
- * 
- * When the game session is initialized, each available compendium pack is constructed and 
+ *
+ * When the game session is initialized, each available compendium pack is constructed and
  * added to the ``game.packs``.
  *
- * Each Compendium is distinctly referenced using its canonical "collection" name which is a 
+ * Each Compendium is distinctly referenced using its canonical "collection" name which is a
  * unique string that contains the package name which provides the compendium as well as the
  * name of the pack within that package. For example, in the D&D5e system, the compendium pack
  * which provides the spells available within the SRD has the collection name "dnd5e.spells".
@@ -20,25 +20,25 @@
  *
  * // Suppose we are working with a particular pack named "dnd5e.spells"
  * const pack = game.packs.find(p => p.collection === "dnd5e.spells");
- * 
+ *
  * // We can load the index of the pack which contains all entity IDs, names, and image icons
  * pack.getIndex().then(index => console.log(index));
- * 
+ *
  * // We can find a specific entry in the compendium by its name
  * let entry = pack.index.find(e => e.name === "Acid Splash");
- * 
+ *
  * // Given the entity ID of "Acid Splash" we can load the full Entity from the compendium
  * pack.getEntity(entry.id).then(spell => console.log(spell));
- * 
+ *
  * @example
  * // We often may want to programmatically create new Compendium content
  * // Let's start by creating a custom spell as an Item instance
  * let itemData = {name: "Custom Death Ray", type: "Spell"};
  * let item = new Item(itemData);
- * 
+ *
  * // Once we have an entity for our new Compendium entry we can import it, if the pack is unlocked
  * pack.importEntity(item);
- * 
+ *
  * // When the entity is imported into the compendium it will be assigned a new ID, so let's find it
  * pack.getIndex().then(index => {
  *   let entry = index.find(e => e.name === itemData.name));
@@ -70,15 +70,17 @@ declare class Compendium extends Application {
 	protected _searchTime: number;
 	protected _scrollTop: number;
 
+	constructor(metadata: object, options: object);
+
 	/**
 	 * Assign the default options which are supported by the Compendium UI
 	 */
-	static get defaultOptions(): ApplicationOptions;
+	protected static get defaultOptions(): ApplicationOptions;
 
 	/**
 	 * The Compendium title
 	 */
-	get title(): string;
+	protected get title(): string;
 
 	/**
 	 * The canonical Compendium name - comprised of the originating package and the pack name
@@ -96,7 +98,7 @@ declare class Compendium extends Application {
 	 * First query the server to obtain the index and then return it once prepared
 	 * @return	The data to render
 	 */
-	getData(): Promise<any>;
+	async getData(): Promise<any>;
 
 	/**
 	 * Override the default :class:`Application` rendering logic to wrap the render call in a promise which
@@ -112,13 +114,13 @@ declare class Compendium extends Application {
 	 * Create a new Compendium pack using provided
 	 * @param metadata	The compendium metadata used to create the new pack
 	 */
-	static create(metadata: any): Promise<Compendium>;
+	static create(metadata: object): Promise<Compendium>;
 
 	/**
 	 * Delete a world Compendium pack
 	 * This is only allowed for world-level packs by a GM user
 	 */
-	delete(): Promise<Compendium>;
+	async delete(): Promise<Compendium>;
 
 	/**
 	 * Get the Compendium index
@@ -132,7 +134,7 @@ declare class Compendium extends Application {
 	 * Get the complete set of content for this compendium, loading all entries in full
 	 * Returns a Promise that resolves to an Array of entries
 	 */
-	getContent(): Promise<Entity[]>;
+	async getContent(): Promise<Entity[]>;
 
 	/**
 	 * Get a single Compendium entry as an Object
@@ -208,7 +210,7 @@ declare class Compendium extends Application {
 	/**
 	 * Handle opening a single compendium entry by invoking the configured entity class and its sheet
 	 */
-	protected _onEntry(entryId: string): Promise<void>;
+	protected async _onEntry(entryId: string): Promise<void>;
 
 	/**
 	 * Handle a new drag event from the compendium, create a placeholder token for dropping the item
@@ -223,7 +225,7 @@ declare class Compendium extends Application {
 	/**
 	 * Handle data being dropped into a Compendium pack
 	 */
-	protected _onDrop(event: Event | JQuery.Event): Promise<boolean>;
+	protected async _onDrop(event: Event | JQuery.Event): Promise<boolean>;
 
 	/**
 	 * Render the ContextMenu which applies to each compendium entry

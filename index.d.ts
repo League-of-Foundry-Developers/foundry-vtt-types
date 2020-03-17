@@ -60,6 +60,7 @@ import './types/framework/entities/combat';
 import './types/framework/entities/folder';
 import './types/framework/entities/item';
 import './types/framework/entities/journal';
+import './types/framework/entities/playlist';
 import './types/framework/entities/scene';
 import './types/framework/entities/user';
 

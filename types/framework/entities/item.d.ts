@@ -27,16 +27,22 @@ declare class Items extends Collection {
 }
 
 declare class Item extends Entity {
+	/**
+	 * Configure the attributes of the ChatMessage Entity
+	 *
+	 * @returns baseEntity			The parent class which directly inherits from the Entity interface.
+	 * @returns collection			The Collection class to which Entities of this type belong.
+	 * @returns embeddedEntities	The names of any Embedded Entities within the Entity data structure.
+	 */
+	static get config(): {
+		baseEntity: Item;
+		collection: Items;
+		embeddedEntities: {};
+	};
+
 	/* -------------------------------------------- */
 	/*  Properties                                  */
 	/* -------------------------------------------- */
-
-	/**
-	 * A convenience accessor for the identifier of the Item object
-	 * For owned items, this points to the data.id
-	 * For unowned (world) Items, this points to data._id
-	 */
-	get id(): string;
 
 	/**
 	 * A convenience reference to the Actor entity which owns this item, if any
@@ -62,7 +68,7 @@ declare class Item extends Entity {
 	 * A flag for whether the item is owned by an Actor entity
 	 */
 	get isOwned(): boolean;
-	
+
 	/* -------------------------------------------- */
 	/*  Methods                                     */
 	/* -------------------------------------------- */
@@ -73,7 +79,7 @@ declare class Item extends Entity {
 	 * @return	Whether or not the user has the permission for this item
 	 */
 	hasPerm(...args: any[]): boolean;
-	
+
 	/* -------------------------------------------- */
 	/*  Socket Listeners and Handlers               */
 	/* -------------------------------------------- */
@@ -86,7 +92,7 @@ declare class Item extends Entity {
 	 * @param options	Additional options which customize the update workflow
 	 * @return			A Promise which resolves to the updated Entity
 	 */
-	update(data: any, options: any): Promise<Item>;
+	async update(data: any, options: any): Promise<Item>;
 
 	/**
 	 * A convenience constructor method to create an Item instance which is owned by an Actor

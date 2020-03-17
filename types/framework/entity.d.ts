@@ -1,7 +1,7 @@
 declare interface BaseEntityData {
-	name: string,
-	type: string,
-	flags: any
+	name: string;
+	type: string;
+	flags: any;
 }
 
 /**
@@ -29,23 +29,93 @@ declare class Entity {
 	/** Additional options which were used to configure the Entity */
 	options: any;
 
+	/**
+	 * A collection of Application instances which should be re-rendered whenever this Entity experiences an update to
+	 * its data. The keys of this object are the application ids and the values are Application instances. Each
+	 * Application in this object will have its render method called by @{link Entity#render}.
+	 */
+	apps: Application;
+
+	/**
+	 * The Entity may optionally the belong to a parent Compendium pack. If so this attribute will contain a reference
+	 * to that Compendium object. Otherwise null.
+	 */
+	compendium: Compendium;
+
 	constructor(data: BaseEntityData, options: any);
 
 	/**
-	 * The parent class name of the base entity type.
-	 * For subclass Entities, this will examine the inheritance chain and return the base type.
-	 *
-	 * @example
-	 * class Actor2ndGen extends Actor {
-	 *   // ...
-	 * }
-	 * Actor2ndGen.entity    // Actor
+	 * Configure the attributes of this Entity class
+	 * @property {Entity} baseEntity       The parent class which directly inherits from the Entity interface.
+	 * @property {Collection} collection   The Collection instance to which Entities of this type belong.
+	 * @property {Array} embeddedEntities  The names of any Embedded Entities within the Entity data structure.
 	 */
-	static get entity(): Entity;
+	static get config(): {
+		baseEntity: Entity;
+		collection: Collection;
+		embeddedEntities: Array<any>;
+	};
 
 	/**
-	 * A instance-level convenience accessor for the class-level entity property
+	 * Initialize data structure for the Entity.
+	 * First initialize any Embedded Entities and prepare their data.
+	 * Next prepare data for the Entity itself, which may depend on Embedded Entities.
 	 */
+	initialize(): void;
+
+	/**
+	 * Prepare data for the Entity whenever the instance is first created or later updated.
+	 * This method can be used to derive any internal attributes which are computed in a formulaic manner.
+	 * For example, in a d20 system - computing an ability modifier based on the value of that ability score.
+	 */
+	prepareData(): BaseEntityData;
+
+	/**
+	 * Prepare Embedded Entities which exist within this parent Entity.
+	 * For example, in the case of an Actor, this method is responsible for preparing the Owned Items the Actor contains.
+	 */
+	prepareEmbeddedEntities(): void;
+
+	/**
+	 * Prepare data for a single Embedded Entity which exists within the parent Entity.
+	 * @param embeddedName	The name of the Embedded Entity type
+	 * @param data			The data used to initialize it
+	 * @returns				The Embedded Entity object
+	 */
+	private _constructEmbeddedEntity(embeddedName: string, data: object): void;
+
+	/**
+	 * Obtain a reference to the Array of source data within the data object for a certain Embedded Entity name
+	 * @param embeddedName	The name of the Embedded Entity type
+	 * @return				The Array of source data where Embedded Entities of this type are stored
+	 */
+	getEmbeddedCollection(embeddedName: string): Array<any>;
+
+	/* -------------------------------------------- */
+	/*  Properties
+	/* -------------------------------------------- */
+
+	/**
+	 * Return a reference to the Collection instance which stores Entity instances of this type. This property is
+	 * available as both a static and instance method and should be overridden by subclass Entity implementations.
+	 */
+	static get collection(): Collection;
+
+	/** @alias Entity.collection */
+	get collection(): Collection;
+
+	/**
+	 * The class name of the base Entity type, for example "Actor". This is useful in cases where there is an inheritance
+	 * chain. Many places throughout the framework rely upon the canonical entity name which may not always be equal
+	 * to the class name. This property is available as both a static and instance method.
+	 *
+	 * @example
+	 * class Actor2ndGen extends Actor {...}
+	 * Actor2ndGen.entity // "Actor"
+	 */
+	static get entity(): string;
+
+	/** @alias Entity.entity */
 	get entity(): Entity;
 
 	/**
@@ -53,9 +123,7 @@ declare class Entity {
 	 */
 	get id(): string;
 
-	/**
-	 * An alias of the id property
-	 */
+	/** @alias Entity.id */
 	protected get _id(): string;
 
 	/**
@@ -64,24 +132,12 @@ declare class Entity {
 	get name(): string;
 
 	/**
-	 * Return a reference to the Collection class which stores Entity instances of this type.
-	 * This property should be overridden by child class implementations.
-	 */
-	static get collection(): Collection;
-
-	/**
-	 * Return a reference to the Collection class which stores Entity instances of this type.
-	 * This property simply references the static class property for convenience.
-	 */
-	get collection(): Collection;
-
-	/**
 	 * A property which gets or creates a singleton instance of the sheet class used to render and edit data for this
 	 * particular entity type.
 	 *
-	 * @example
+	 * @example <caption>A subclass of the Actor entity</caption>
 	 * let actor = game.entities.actors[0];
-	 * actor.sheet      // ActorSheet
+	 * actor.sheet; // ActorSheet
 	 */
 	get sheet(): BaseEntitySheet;
 
@@ -92,13 +148,24 @@ declare class Entity {
 	protected get _sheetClass(): any;
 
 	/**
-	 * Return a reference to the Folder which this Entity belongs to, if any
+	 * Return a reference to the Folder which this Entity belongs to, if any.
+	 *
+	 * @example <caption>Entities may belong to Folders</caption>
+	 * let folder = game.folders.entities[0];
+	 * let actor = await Actor.create({name: "New Actor", folder: folder.id});
+	 * console.log(actor.data.folder); // folder.id;
+	 * console.log(actor.folder); // folder;
 	 */
 	get folder(): Folder | null;
 
 	/**
 	 * Return the permission level that the current game User has over this Entity.
 	 * See the CONST.ENTITY_PERMISSIONS object for an enumeration of these levels.
+	 *
+	 * @example
+	 * game.user.id; // "dkasjkkj23kjf"
+	 * entity.data.permission; // {default: 1, "dkasjkkj23kjf": 2};
+	 * entity.permission; // 2
 	 */
 	get permission(): number;
 
@@ -117,32 +184,42 @@ declare class Entity {
 
 	/**
 	 * A boolean indicator for whether the current game user has ONLY limited visibility for this Entity.
+	 * Note that a GM user's perspective of an Entity is never limited.
 	 */
 	get limited(): boolean;
 
-	/**
-	 * Prepare data for the Entity whenever the instance is first created or later updated.
-	 * This method can be used to derive any internal attributes which are computed in a formulaic manner.
-	 * For example, in a d20 system - computing an ability modifier based on the value of that ability score.
-	 */
-	prepareData(): BaseEntityData;
+	/* -------------------------------------------- */
+	/* Methods
+	/* -------------------------------------------- */
 
 	/**
-	 * Render all of the applications which are connected to this Entity
-	 * @param args	Variable arguments which are forwarded to each Application.render() call
+	 * Render all of the Application instances which are connected to this Entity by calling their respective
+	 * {@link Application#render} methods.
+	 * @param {...*} args      Variable arguments which are forwarded to each Application's render call
 	 */
 	render(...args: any): void;
 
 	/**
-	 * Test whether a provided User has ownership permission over the Entity instance
-	 *
+	 * Test whether a provided User a specific permission level (or greater) over the Entity instance
 	 * @param user			The user to test for permission
-	 * @param permission	The permission level to test
-	 * @param exact			Tests for an exact permission level match, by default this method tests for an equal
-	 * 						or greater permission level.
-	 * @return				Whether or not the user has the permission for this Entity
+	 * @param permission	The permission level or level name to test
+	 * @param exact			Tests for an exact permission level match, by default this method tests for
+	 *						an equal or greater permission level.
+	 * @return				Whether or not the user has the permission for this Entity.
+	 *
+	 * @example <caption>Test whether a specific user has a certain permission</caption>
+	 * // These two are equivalent
+	 * entity.hasPerm(game.user, "OWNER");
+	 * entity.owner;
+	 * // These two are also equivalent
+	 * entity.hasPerm(game.user, "LIMITED", true);
+	 * entity.limited;
 	 */
-	hasPerm(user: User, permission: number, exact?: boolean): boolean;
+	hasPerm(user: User, permission: string | number, exact?: boolean): boolean;
+
+	/* -------------------------------------------- */
+	/*  Entity Management Methods                   */
+	/* -------------------------------------------- */
 
 	/**
 	 * Create a new entity using provided input data
@@ -155,15 +232,35 @@ declare class Entity {
 	 * 								Default is false.
 	 * @param options.displaySheet	Show the configuration sheet for the created entity once it is created.
 	 *								Default is true.
-	 * 
-	 * @return						A Promise which resolves to contain the created Entity     
+	 *
+	 * @return						A Promise which resolves to contain the created Entity
+	 *
+	 * @example
+	 * const createData = {name: "New Entity", img: "path/to/profile.jpg"};
+	 * const created = await Entity.create(createData); // Saved to the database
+	 * const temp = await Entity.create(createData, {temporary: true}); // Not saved to the database
 	 */
-	static create(data: any, options?: any): Promise<Entity>;
+	static create(data: object, options?: object): Promise<Entity>;
 
 	/**
-	 * Entity-specific actions that should occur when the Entity is first created
+	 * Create multiple new Entities using provided input data Array, containing one Object per created Entity.
+	 *
+	 * @param data					The data with which to create the entity
+	 * @param options				Additional options which customize the creation workflow
+	 * @param options.temporary		Created entities are temporary and not saved to the database. Default false.
+	 * @param options.displaySheet	Display sheets of the created entities. Default false.
+	 *
+	 * @return						A Promise which resolves to contain the created Entities
+	 *
+	 * @example
+	 * const dataArray = [{name: "Entry 1"}, {name: "Entry 2"}, {name: "Entry 3"}];
+	 * const entries = await Entity.createMany(dataArray); // Saved to the database
+	 * const temps = await Entity.createMany(dataArray, {temporary: true}); // Not saved to the database
 	 */
-	protected _onCreate(data: any, options: any, userId: string, context: any): void;
+	static async createMany(
+		data: object[],
+		options?: object
+	): Promise<Entity[]>;
 
 	/**
 	 * Update the current entity using new data
@@ -176,28 +273,86 @@ declare class Entity {
 	 * 						difference to the server. Default is true.
 	 *
 	 * @return				A Promise which resolves to the updated Entity
+	 *
+	 * @example
+	 * const updateData = {name: "New Name"};
+	 * const updated = await entity.update(updateData);
 	 */
-	update(data: any, options?: any): Promise<Entity>;
+	async update(data: object, options?: object): Promise<Entity>;
 
 	/**
-	 * Entity-specific actions that should occur when the Entity is updated
+	 * Update multiple Entities using an Array of provided update Objects which define incremental data for each Entity.
+	 *
+	 * @param data		Data with which to update each Entity. Each Object must include the _id
+	 * @param options	Additional options which customize the update workflow
+	 *
+	 * @return			A Promise which resolves to contain the updated Entities
+	 *
+	 * @example
+	 * const updateArray = [{_id: "dgfkjt34kjdgfkjt34", name: "Name 1"}, {_id: "dfskjkj2r3kjdvkj2", name: "Name 2"}];
+	 * const updated = await Entity.updateMany(updateArray);
 	 */
-	protected _onUpdate(data: any, options: any, userId: string, context: any): void;
+	static async updateMany(
+		data: object[],
+		options?: object
+	): Promise<Entity[]>;
 
 	/**
 	 * Delete the entity, removing it from its collection and deleting its data record
 	 * @param options	Additional options which customize the deletion workflow
 	 * @return			A Promise which resolves to the ID of the deleted Entity once handled by the server
+	 *
+	 * @example
+	 * const deleted = await entity.delete();
 	 */
-	delete(options?: any): Promise<string>;
+	delete(options?: object): Promise<string>;
+
+	/**
+	 * Delete multiple Entities using a provided Array of ids, one per Entity.
+	 *
+	 * @param ids				The data with which to create the entity
+	 * @param options			Additional options which customize the deletion workflow
+	 * @param options.deleteAll	An optional flag which specifies that all Entities should be deleted
+	 * @return					A Promise which resolves to contain the created Entities
+	 *
+	 * @example
+	 * const deleteIds = ["dskjfk23jf23kdjs", "g90klju9yujl9hj2", "23hjdfewh23rgf3"];
+	 * const deleted = await Entity.deleteMany(deleteIds);
+	 */
+	static async deleteMany(ids: string[], options: object): Promise<string[]>;
+
+	/**
+	 * Entity-specific actions that should occur when the Entity is first created
+	 */
+	protected _onCreate(
+		data: object,
+		options: object,
+		userId: string,
+		context: object
+	): void;
+
+	/**
+	 * Entity-specific actions that should occur when the Entity is updated
+	 */
+	protected _onUpdate(
+		data: object,
+		options: object,
+		userId: string,
+		context: object
+	): void;
 
 	/**
 	 * Entity-specific actions that should occur when the Entity is deleted
 	 */
-	protected _onDelete(id: string, options: any, userId: string, context: any): void;
+	protected _onDelete(
+		id: string,
+		options: object,
+		userId: string,
+		context: any
+	): void;
 
 	/* -------------------------------------------- */
-	/*  Embedded Entities                           */
+	/*  Embedded Entity Management                  */
 	/* -------------------------------------------- */
 
 	/**
@@ -206,7 +361,149 @@ declare class Entity {
 	 * @param id			The numeric ID of the child to retrieve
 	 * @return				Retrieved data for the requested child, or null
 	 */
-	getEmbeddedEntity(collection: string, id: number): any;
+	getEmbeddedEntity(
+		collection: string,
+		id: number,
+		{ strict }: { strict?: boolean }
+	): any;
+
+	/**
+	 * Remove an Embedded Entity from the parent Entity data by it's id.
+	 *
+	 * @param embeddedName	The name of the Embedded Entity type to retrieve
+	 * @param id			The numeric ID of the child to retrieve
+	 * @return				The embedded entity data that was removed
+	 */
+	removeEmbeddedEntity(embeddedName: string, id: number): any;
+
+	/**
+	 * Create one EmbeddedEntity within this parent Entity.
+	 * Dispatch the creation request to the server for handling.
+	 * The result will be acknowledged to this client, and broadcast to other connected clients.
+	 *
+	 * @param embeddedName	The name of the Embedded Entity class to create
+	 * @param createData	An object of initial data from which to create the Embedded Entity
+	 * @param options		Additional creation options which modify the request
+	 * @return				A Promise which resolves to this Entity once the creation request is successful
+	 */
+	async createEmbeddedEntity(
+		embeddedName: string,
+		createData: object,
+		options?: object
+	): Promise<Entity>;
+
+	/**
+	 * Create multiple Embedded Entities within this parent Entity using an Array of creation data.
+	 * Dispatch the update request to the server for handling.
+	 * The result will be acknowledged to this client, and broadcast to other connected clients.
+	 *
+	 * @param embeddedName	The name of the Embedded Entity class to update
+	 * @param createData	An Array of initial data objects from which to create the Embedded Entities.
+	 * @param options		Additional update options which modify the request
+	 * @return				A Promise which resolves to this Entity once the creation request is successful
+	 */
+	async createManyEmbeddedEntities(
+		embeddedName: string,
+		createData: object[],
+		options?: object
+	): Promise<Entity[]>;
+
+	/**
+	 * Update one EmbeddedEntity within this parent Entity using incremental data.
+	 * Dispatch the update request to the server for handling.
+	 * The result will be acknowledged to this client, and broadcast to other connected clients.
+	 *
+	 * @param embeddedName	The name of the Embedded Entity class to update
+	 * @param updateData	An object of incremental data from which to update the Embedded Entity
+	 * @param options		Additional update options which modify the request
+	 * @return				A Promise which resolves to this Entity once the update request is successful
+	 */
+	async updateEmbeddedEntity(
+		embeddedName: string,
+		updateData: object,
+		options?: object
+	): Promise<Entity>;
+
+	/**
+	 * Update multiple Embedded Entities within this parent Entity using incremental data.
+	 * Dispatch the update request to the server for handling.
+	 * The result will be acknowledged to this client, and broadcast to other connected clients.
+	 *
+	 * @param embeddedName	The name of the Embedded Entity class to update
+	 * @param updateData	An Array of incremental data, one per Embedded Entity, with which to update the Entity
+	 * @param options		Additional update options which modify the request
+	 * @return				A Promise which resolves to this Entity once the update request is successful
+	 */
+	async updateManyEmbeddedEntities(
+		embeddedName: string,
+		updateData: object[],
+		options?: object
+	): Promise<Entity[]>;
+
+	/**
+	 * Delete one EmbeddedEntity within this parent Entity.
+	 * Dispatch the deletion request to the server for handling.
+	 * The result will be acknowledged to this client, and broadcast to other connected clients.
+	 *
+	 * @param embeddedName	The name of the Embedded Entity class to delete
+	 * @param childId		The id of the existing Embedded Entity child to delete
+	 * @param options		Additional deletion options which modify the request
+	 * @return				A Promise which resolves to this Entity once the deletion request is successful
+	 */
+	async deleteEmbeddedEntity(
+		embeddedName: string,
+		childId: string,
+		options?: object
+	): Promise<Entity>;
+
+	/**
+	 * Delete multiple Embedded Entities within this parent Entity by an Array of child ids.
+	 * Dispatch the update request to the server for handling.
+	 * The result will be acknowledged to this client, and broadcast to other connected clients.
+	 *
+	 * @param embeddedName	The name of the Embedded Entity class to update
+	 * @param deleteIds		An Array of Embedded Entity ids to delete from the parent Entity
+	 * @param options		Additional update options which modify the request
+	 * @return				A Promise which resolves to this Entity once the update request is successful
+	 */
+	async deleteManyEmbeddedEntities(
+		embeddedName: string,
+		deleteIds: string[],
+		options?: object
+	): Promise<Entity>;
+
+	/**
+	 * Handle Embedded Entity creation within this Entity with specific callback steps.
+	 * This callback function is triggered by Collection._createEmbeddedEntity once the source data is updated.
+	 */
+	protected _onCreateEmbeddedEntity(response: any): void;
+
+	/**
+	 * Handle Embedded Entity update within this Entity with specific callback steps.
+	 * This callback function is triggered by Collection._updateEmbeddedEntity once the source data is updated.
+	 */
+	protected _onUpdateEmbeddedEntity(response: any): void;
+
+	/**
+	 * Handle Embedded Entity deletion within this Entity with specific callback steps.
+	 * This callback function is triggered by Collection._deleteEmbeddedEntity once the source data is updated.
+	 */
+	protected _onDeleteEmbeddedEntity(response: any): void;
+
+	/**
+	 * A generic helper since we take the same actions for every type of Embedded Entity update
+	 */
+	protected _onModifyEmbeddedEntity({
+		embeddedName,
+		renderContext,
+	}: {
+		embeddedName: string;
+		renderContext: object;
+	}): void;
+
+	/* -------------------------------------------- */
+	/*  Data Flags                                  */
+	/* -------------------------------------------- */
 
 	/**
 	 * Get the value of a "flag" for this Entity
@@ -245,7 +542,7 @@ declare class Entity {
 	 * @param key	The flag key
 	 * @return		A Promise resolving to the updated Entity
 	 */
-	unsetFlag(scope: string, key: string): Promise<Entity>;
+	async unsetFlag(scope: string, key: string): Promise<Entity>;
 
 	/* -------------------------------------------- */
 	/*  Sorting                                     */
@@ -255,12 +552,32 @@ declare class Entity {
 	 * Sort this Entity relative a target by providing the target, an Array of siblings and other options.
 	 * See SortingHelper.performIntegerSort for more details
 	 */
-	sortRelative({ target, siblings, sortKey, sortBefore, updateData }:
-		{target: any, siblings: any[], sortKey: string, sortBefore: boolean, updateData: any}): void;
+	async sortRelative({
+		target,
+		siblings,
+		sortKey,
+		sortBefore,
+		updateData,
+	}: {
+		target?: any;
+		siblings?: any[];
+		sortKey?: string;
+		sortBefore?: boolean;
+		updateData?: any;
+	}): void;
 
 	/* -------------------------------------------- */
 	/*  Saving and Loading
 	/* -------------------------------------------- */
+
+	/**
+	 * Clone an Entity, creating a new Entity using the current data as well as provided creation overrides.
+	 *
+	 * @param createData	Additional data which overrides current Entity data at the time of creation
+	 * @param options		Additional creation options passed to the Entity.create method
+	 * @returns				A Promise which resolves to the created clone Entity
+	 */
+	async clone(createData?: object, options?: object): Promise<Entity>;
 
 	/**
 	 * Export entity data to a JSON file which can be saved by the client and later imported into a different session
@@ -272,10 +589,15 @@ declare class Entity {
 	 * @param json	JSON data string
 	 * @return		The updated Entity
 	 */
-	importFromJSON(json: string): Promise<Entity>;
+	async importFromJSON(json: string): Promise<Entity>;
 
 	/**
 	 * Render an import dialog for updating the data related to this Entity through an exported JSON file
 	 */
-	importFromJSONDialog(): Promise<void>;
+	async importFromJSONDialog(): Promise<void>;
+
+	/**
+	 * Serializing an Entity should simply serialize it's inner data, not the entire instance
+	 */
+	toJSON(): BaseEntityData;
 }

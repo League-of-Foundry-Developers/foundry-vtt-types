@@ -1,12 +1,8 @@
 // @TODO: Add types
 
-declare let socket,
-	canvas,
-	keyboard,
-	game: Game,
-	ui: any;
+declare let socket: any, canvas: any, keyboard: any, game: Game, ui: any;
 
-declare const vtt;
+declare const vtt: string;
 
 /**
  * The core Game instance which encapsulates the data, settings, and states relevant for managing the game experience.
@@ -47,7 +43,7 @@ declare class Game {
 	/** A flag for whether the Game has successfully reached the "ready" hook */
 	ready: boolean;
 
-	constructor(worldData: any, userId: string, socket: SocketIO.Socket);
+	constructor(worldData: object, userId: string, socket: SocketIO.Socket);
 
 	/**
 	 * Fetch World data and return a Game instance
@@ -55,7 +51,6 @@ declare class Game {
 	 */
 	static create(): Promise<Game>;
 
-	
 	/**
 	 * Request World data from server and return it
 	 */

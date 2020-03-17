@@ -1,19 +1,21 @@
 /**
- * A class pattern for collections of Entity objects within the Foundry VTT Framework
+ * An iterable container of Entity objects within the Foundry Virtual Tabletop framework.
+ * Each Entity type has it's own subclass of Collection, which defines the abstract interface.
+ * @abstract
  *
  * @param data	An Array of Entity data from which to create instances
  * @param apps	An Array of Application instances which the Collection modifies
  */
 declare class Collection {
 	/**
-	 * An Array of all the Entity instances of this type which are contained within the collection
-	 */
-	entities: Entity[];
-
-	/**
 	 * A reference to the original source data provided by the server
 	 */
 	protected _source: any;
+
+	/**
+	 * An Array of all the Entity instances of this type which are contained within the collection
+	 */
+	entities: Entity[];
 
 	/**
 	 * An Array of application references which will be automatically updated when the collection content changes
@@ -21,6 +23,21 @@ declare class Collection {
 	apps: Application[];
 
 	constructor(data: any[], apps: any[]);
+
+	/**
+	 * Initialize the Collection instance by preparing all of it's contained Entities
+	 * @return A reference to the initialized Collection
+	 */
+	initialize(): Collection;
+
+	/**
+	 * Re-render any currently visible applications associated with this Collection
+	 */
+	render(...args: any): void;
+
+	/* -------------------------------------------- */
+	/*  Collection Properties                       */
+	/* -------------------------------------------- */
 
 	/**
 	 * The Collection name
@@ -36,7 +53,7 @@ declare class Collection {
 	/**
 	 * Return a reference to the SidebarDirectory application for this Collection
 	 */
-	static get directory(): any;
+	get directory(): any;
 
 	/**
 	 * Return a reference to the Entity subclass which should be used when creating elements of this Collection
@@ -55,6 +72,10 @@ declare class Collection {
 	 */
 	get entity(): string;
 
+	/* -------------------------------------------- */
+	/*  Collection Management Methods               */
+	/* -------------------------------------------- */
+
 	/**
 	 * Add a new Entity to the Collection, asserting that they are of the correct type
 	 *
@@ -70,12 +91,12 @@ declare class Collection {
 	remove(id: string): void;
 
 	/**
-	 * Get an element from the collection by ID
-	 *
-	 * @param id	The entity ID to retrieve from the collection
-	 * @return		The retrieved Entity, if the ID was found, otherwise null;
+	 * Get an element from the collection by ID.
+	 * @param id		The entity ID to retrieve from the collection
+	 * @param strict	Throw an Error if the requested id does not exist, otherwise return null. Default false.
+	 * @return			The retrieved Entity, if the ID was found, otherwise null;
 	 */
-	get(id: string): Entity;
+	get(id: string, { strict }: { strict?: boolean }): Entity;
 
 	/**
 	 * Retrieve the index of an entity within the collection by its ID
@@ -86,18 +107,18 @@ declare class Collection {
 	index(id: string): number;
 
 	/**
-	 * Re-render any currently visible applications associated with this Collection
-	 */
-	render(...args: any): void;
-
-	/**
 	 * Import an Entity from a compendium collection, adding it to the current World
 	 * @param collection	The name of the pack from which to import
 	 * @param entryId		The ID of the compendium entry to import
 	 * @param updateData	Data used to update the imported Entity before it is created in the World
 	 * @return				A Promise containing the imported Entity
 	 */
-	importFromCollection(collection: string, entryId: string, updateData: any): Promise<Entity>;
+	async importFromCollection(
+		collection: string,
+		entryId: string,
+		updateData?: object,
+		options?: object
+	): Promise<Entity>;
 
 	/* -------------------------------------------- */
 	/*  Socket Listeners and Handlers               */
@@ -118,7 +139,34 @@ declare class Collection {
 	 *
 	 * @return			The created Entity instance
 	 */
-	protected _createEntity({ created, options, userId }: { created: any, options: any, userId: string }): Entity;
+	protected _createEntity({
+		created,
+		options,
+		userId,
+	}: {
+		created: object;
+		options: object;
+		userId: string;
+	}): Entity;
+
+	/**
+	 * Handle creation of multiple Entities using data provided from a server response.
+	 *
+	 * @param data		An Array of created Entity data
+	 * @param options	Additional options which describe the creation request
+	 * @param userId	The ID of the triggering User
+	 *
+	 * @return 			The created Entity instances
+	 */
+	protected _createManyEntities({
+		data,
+		options,
+		userId,
+	}: {
+		data: object[];
+		options: object;
+		userId: string;
+	}): Entity[];
 
 	/**
 	 * Handle Entity update workflow using the server response from the update<Entity> socket
@@ -129,11 +177,37 @@ declare class Collection {
 	 *
 	 * @return			The updated Entity instance
 	 */
-	protected _updateEntity({ updated, options, userId }: { updated: any, options: any, userId: string }): Entity;
+	protected _updateEntity({
+		updated,
+		options,
+		userId,
+	}: {
+		updated: object;
+		options: object;
+		userId: string;
+	}): Entity;
+
+	/**
+	 * Handle updates to multiple Entities using data provided from a server response.
+	 *
+	 * @param data		An Array of incremental Entity update data
+	 * @param options	Additional options which describe the update request
+	 * @param userId	The ID of the triggering User
+	 *
+	 * @return			The updated Entity instances
+	 */
+	protected _updateManyEntities({
+		data,
+		options,
+		userId,
+	}: {
+		data: object[];
+		options: object;
+		userId: string;
+	}): Entity[];
 
 	/**
 	 * Handle Entity deletion workflow using the server response from the delete<Entity> socket
-	 * @private
 	 *
 	 * @param deleted	The ID of the deleted Entity
 	 * @param options	Additional options which describe the deletion request
@@ -141,5 +215,164 @@ declare class Collection {
 	 *
 	 * @return			The deleted Entity instance
 	 */
-	protected _deleteEntity({ deleted, options, userId }: { deleted: any, options: any, userId: string }): Entity;
+	protected _deleteEntity({
+		deleted,
+		options,
+		userId,
+	}: {
+		deleted: object;
+		options: object;
+		userId: string;
+	}): Entity;
+
+	/**
+	 * Handle deletion of multiple Entities using an Array of ids provided from a server response.
+	 *
+	 * @param data		An Array of Entity ids to delete
+	 * @param options	Additional options which describe the deletion request
+	 * @param userId	The ID of the triggering User
+	 *
+	 * @return			The deleted Entity instances
+	 */
+	protected _deleteManyEntities({
+		data,
+		options,
+		userId,
+	}: {
+		data: object[];
+		options: object;
+		userId: string;
+	}): Entity[];
+
+	/**
+	 * Handle the creation of a new Embedded Entity within a parent Entity in response to server-side socket broadcast.
+	 *
+	 * @param parentId	The parent Entity ID
+	 * @param created	The created Embedded Entity data
+	 * @param options	Additional options which modify the creation request
+	 * @param userId	The id of the requesting user
+	 *
+	 * @return			The created Embedded Entity data
+	 */
+	protected _createEmbeddedEntity({
+		parentId,
+		created,
+		options,
+		userId,
+	}: {
+		parentId: string;
+		created: object;
+		options: object;
+		userId: string;
+	}): Entity;
+
+	/**
+	 * Handle creation of multiple Embedded Entities within a parent Entity in response to server-side socket broadcast.
+	 *
+	 * @param parentId	The parent Entity ID
+	 * @param data		An Array of created Embedded Entity data
+	 * @param options	Additional options which modify the creation request
+	 * @param userId	The id of the requesting user
+	 *
+	 * @return			The created Embedded Entity Array
+	 */
+	protected _createManyEmbeddedEntities({
+		parentId,
+		data,
+		options,
+		userId,
+	}: {
+		parentId: string;
+		data: object[];
+		options: object;
+		userId: string;
+	}): Entity[];
+
+	/**
+	 * Handle updates to an Embedded Entity within a parent Entity in response to server-side socket broadcast.
+	 *
+	 * @param parentId	The parent Entity ID
+	 * @param data		The updated Embedded Entity data
+	 * @param options	Additional options which modify the update request
+	 * @param userId	The id of the requesting user
+	 *
+	 * @return			The updated Embedded Entity data
+	 */
+	protected _updateEmbeddedEntity({
+		parentId,
+		data,
+		options,
+		userId,
+	}: {
+		parentId: string;
+		data: object;
+		options: object;
+		userId: string;
+	}): Entity;
+
+	/**
+	 * Handle updates to a multiple Embedded Entities within a parent Entity in response to server-side socket broadcast.
+	 *
+	 * @param parentId	The parent Entity ID
+	 * @param data		An Array of embedded entity data updates
+	 * @param options	Additional options which modify the update request
+	 * @param userId	The id of the requesting user
+	 *
+	 * @return			The updated Embedded Entity Array
+	 */
+	protected _updateManyEmbeddedEntities({
+		parentId,
+		data,
+		options,
+		userId,
+	}: {
+		parentId: string;
+		data: object[];
+		options: object;
+		userId: string;
+	}): Entity[];
+
+	/**
+	 * Handle deletion of an Embedded Entity within a parent Entity in response to server-side socket broadcast.
+	 *
+	 * @param parentId	The parent Entity ID
+	 * @param deleted	The Embedded Entity id to delete from the parent
+	 * @param options	Additional options which modify the deletion request
+	 * @param userId	The id of the requesting user
+	 *
+	 * @return			The deleted Embedded Entity data
+	 */
+	protected _deleteEmbeddedEntity({
+		parentId,
+		deleted,
+		options,
+		userId,
+	}: {
+		parentId: string;
+		deleted: string;
+		options: object;
+		userId: string;
+	}): Entity;
+
+	/**
+	 * Handle deletion of multiple Embedded Entities within a parent Entity in response to server-side socket broadcast.
+	 *
+	 * @param parentId	The parent Entity ID
+	 * @param data		An Array of Embedded Entity ids to delete
+	 * @param options	Additional options which modify the update request
+	 * @param userId	The id of the requesting user
+	 *
+	 * @return			The deleted Embedded Entity Array
+	 */
+	protected _deleteManyEmbeddedEntities({
+		parentId,
+		data,
+		options,
+		userId,
+	}: {
+		parentId: string;
+		data: string[];
+		options: object;
+		userId: string;
+	}): Entity[];
 }

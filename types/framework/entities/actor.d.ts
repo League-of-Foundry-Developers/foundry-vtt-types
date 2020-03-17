@@ -1,77 +1,29 @@
 declare interface ActorData extends BaseEntityData {
-	img: string,
-	
+	img: string;
 }
 
 /**
- * The :class:`Collection` of :class:`Actor` entities
- * The actors collection is accessible within the game as ``game.actors``
+ * The Collection of Actor entities.
+ *
+ * @see {@link Actor} The Actor entity.
+ * @see {@link ActorDirectory} All Actors which exist in the world are rendered within the ActorDirectory sidebar tab.
+ *
+ * @example <caption>Retrieve an existing Actor by its id</caption>
+ * let actor = game.actors.get(actorId);
  */
 declare class Actors extends Collection {
 	/**
-	 * Elements of the Actors collection are instances of the Actor class, or a subclass thereof
+	 * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
+	 * Each Actor is referenced by the Token.id.
+	 * @type {Object}
 	 */
+	tokens: Token[];
+
+	/** @override */
 	get object(): Actor;
 
-	/**
-	 * Open Socket listeners which transact Actor data
-	 */
-	protected static socketListeners(socket: SocketIO.Socket): void;
-
-	/**
-	 * Handle OwnedItem creation given a server-side Socket response
-	 *
-	 * @param parentId	The parent Actor ID
-	 * @param created	The created Item data
-	 * @param options	Additional options which modify the request
-	 * @param userId	The ID of the requesting user
-	 *
-	 * @return			The created Item instance
-	 */
-	protected static _createOwnedItem({ parentId, created, options, userId }:
-		{ parentId: string, created: any, options: any, userId: string }): Item;
-
-	/**
-	 * Handle OwnedItem updates given a server-side Socket response
-	 *
-	 * @param parentId	The parent Actor ID
-	 * @param updated	The updated Item data
-	 * @param options	Additional options which modify the request
-	 * @param userId	The ID of the requesting user
-	 *
-	 * @return			The updated Item instance
-	 */
-	protected static _updateOwnedItem({ parentId, updated, options, userId }:
-		{ parentId: string, updated: any, options: any, userId: string }): Item;
-
-	/**
-	 * Handle the server response to update many OwnedItems in a parent Actor
-	 *
-	 * @param parentId	The parent Entity ID
-	 * @param data		The Array of data updates performed
-	 * @param options	Additional options which were included with the update request
-	 * @param userId	The ID of the triggering User
-	 *
-	 * @return 			The updated Actor instance
-	 */
-	protected static _updateManyOwnedItem({ parentId, data, options, userId }:
-		{ parentId: string, data: any[], options: any, userId: string }): Item;
-
-	/**
-	 * Handle OwnedItem deletion given a server-side Socket response
-	 *
-	 * @param parentId	The parent Actor ID
-	 * @param deleted	The deleted Item ID
-	 * @param options	Additional options which modify the request
-	 * @param userId	The ID of the requesting user
-	 *
-	 * @return			The deleted Item instance
-	 */
-	protected static _deleteOwnedItem({ parentId, deleted, options, userId }:
-		{ parentId: string, deleted: number, options: any, userId: string }): Item;
-
 	/* -------------------------------------------- */
-	/*  Methods
+	/*  Sheet Registration Methods                  */
 	/* -------------------------------------------- */
 
 	/**
@@ -93,12 +45,33 @@ declare class Actors extends Collection {
 }
 
 /**
- * The Actor class is a type of :class:`Entity` which represents the protagonists, characters, enemies, and more that
- * inhabit the World.
+ * The Actor Entity which represents the protagonists, characters, enemies, and more that inhabit and take actions
+ * within the World.
+ *
+ * @see {@link Actors} Each Actor belongs to the Actors collection.
+ * @see {@link ActorSheet} Each Actor is edited using the ActorSheet application or a subclass thereof.
+ * @see {@link ActorDirectory} All Actors which exist in the world are rendered within the ActorDirectory sidebar tab.
+ *
+ *
+ * @example <caption>Create a new Actor</caption>
+ * let actor = await Actor.create({
+ *   name: "New Test Actor",
+ *   type: "character",
+ *   img: "artwork/character-profile.jpg",
+ *   folder: folder.data._id,
+ *   sort: 12000,
+ *   data: {},
+ *   token: {},
+ *   items: [],
+ *   flags: {}
+ * });
+ *
+ * @example <caption>Retrieve an existing Actor</caption>
+ * let actor = game.actors.get(actorId);
  */
 declare class Actor extends Entity {
 	data: ActorData;
-	
+
 	/**
 	 * A reference to a placed Token which creates a synthetic Actor
 	 */
@@ -109,24 +82,33 @@ declare class Actor extends Entity {
 	 */
 	items: Item[];
 
-	constructor(...args: any[]);
+	/**
+	 * Cache an Array of allowed Token images if using a wildcard path
+	 */
+	protected _tokenImages: any[];
+
+	/** @override */
+	static get config(): {
+		baseEntity: Actor;
+		collection: Actors;
+		embeddedEntities: { OwnedItem: string };
+	};
 
 	/**
 	 * Prepare data for the Actor instance whenever it is first created or later updated.
 	 */
 	prepareData(): ActorData;
 
+	prepareEmbeddedEntities();
+
+	/* -------------------------------------------- */
+	/*  Properties                                  */
+	/* -------------------------------------------- */
+
 	/**
 	 * A convenient reference to the file path of the Actor's profile image
 	 */
 	get img(): string;
-
-	/**
-	 * Get an owned item by it's ID, initialized as an Item entity class
-	 * @param itemId	The ID of the owned item
-	 * @return		An Item class instance for that owned item or null if the itemId does not exist
-	 */
-	getOwnedItem(itemId: number): Item | null;
 
 	/**
 	 * A boolean flag for whether this Actor is a player-owned character.
@@ -141,12 +123,19 @@ declare class Actor extends Entity {
 
 	/**
 	 * Create a synthetic Actor using a provided Token instance
-	 * 
 	 * If the Token data is linked, return the true Actor entity
-	 * 
 	 * If the Token data is not linked, create a synthetic Actor using the Token's actorData override
+	 * @param token
 	 */
 	static fromToken(token: Token): Actor;
+
+	/**
+	 * Create a synthetic Token Actor instance which is used in place of an actual Actor.
+	 * Cache the result in Actors.tokens.
+	 * @param baseActor
+	 * @param token
+	 */
+	static createTokenActor(baseActor: Actor, token: Token): Actor;
 
 	/**
 	 * Retrieve an Array of active tokens which represent this Actor in the current canvas Scene.
@@ -162,28 +151,45 @@ declare class Actor extends Entity {
 	/**
 	 * Get an Array of Token images which could represent this Actor
 	 */
-	getTokenImages(): Promise<any>;
+	async getTokenImages(): Promise<any>;
 
 	/* -------------------------------------------- */
 	/*  Socket Listeners and Handlers
 	/* -------------------------------------------- */
 
-	/**
-	 * Extend the default update method to enhance data before submission.
-	 * See the parent Entity.update method for full details.
-	 *
-	 * @param data		data with which to update the Actor
-	 * @param options	Additional options which customize the update workflow
-	 * @return			A Promise which resolves to the updated Entity
-	 */
-	update(data: any, options: any): Promise<Actor>;
+	/** @override */
+	async update(data: object, options?: object): Promise<Actor>;
+
+	/** @override */
+	async delete(options?: object): Promise<string>;
+
+	/** @override */
+	async createEmbeddedEntity(
+		embeddedName: string,
+		createData: object,
+		options?: object
+	): Promise<Actor>;
+
+	/** @override */
+	async updateEmbeddedEntity(
+		embeddedName: string,
+		updateData: object,
+		options?: object
+	): Promise<Actor>;
+
+	/** @override */
+	async deleteEmbeddedEntity(
+		embeddedName: string,
+		childId: string,
+		options?: object
+	): Promise<Actor>;
 
 	/**
 	 * Additional updating steps for the Actor entity when new data is saved which trigger some related updates.
 	 * Re-render the parent collection if names, images, or permissions have changed
 	 * Re-render active tokens if their linked attribute has changed
 	 */
-	protected _onUpdate(data: any, ...args: any[]): void;
+	protected _onUpdate(data: object, ...args: any[]): void;
 
 	/* -------------------------------------------- */
 	/* Owned Item Management
@@ -199,11 +205,6 @@ declare class Actor extends Entity {
 	importItemFromCollection(collection: string, entryId: string): Item;
 
 	/**
-	 * Prepare an Array of Owned Items for the Actor
-	 */
-	protected _getItems(): Item[];
-
-	/**
 	 * Get an owned item by it's ID, initialized as an Item entity class
 	 * @param itemId	The ID of the owned item
 	 * @return			An Item class instance for that owned item or null if the itemId does not exist
@@ -217,7 +218,7 @@ declare class Actor extends Entity {
 	 * @param options.displaySheet	Render the Item sheet for the newly created item data
 	 * @return						A Promise containing the newly created owned Item instance
 	 */
-	createOwnedItem(itemData: any, options?: any): Promise<Item>;
+	async createOwnedItem(itemData: object, options?: object): Promise<Item>;
 
 	/**
 	 * Update an owned item using provided new data
@@ -225,21 +226,18 @@ declare class Actor extends Entity {
 	 * @param options	Item update options
 	 * @return			A Promise resolving to the updated Item object
 	 */
-	updateOwnedItem(itemData: any, options?: any): Promise<Item>;
+	async updateOwnedItem(itemData: object, options?: object): Promise<Item>;
 
 	/**
-	 * Update multiple owned items within the parent Actor
-	 * @param data		The multi-object update to perform
-	 * @param options	Owned Item update options
-	 * @return			A Promise resolving to the updated Actor
+	 * @deprecated since 0.4.4 in favor of Entity.updateManyEmbeddedEntities()
 	 */
-	updateManyOwnedItem(data: any, options?: any): Promise<Item[]>;
+	async updateManyOwnedItems(data: object, options?: object): Promise<Item[]>;
 
 	/**
-	 * Delete an owned item by its ID
+	 * Delete an owned item by its id. This redirects its arguments to the deleteEmbeddedEntity method.
 	 * @param itemId	The ID of the item to delete
 	 * @param options	Item deletion options
-	 * @return			A Promise resolving to the deleted item ID
+	 * @return			A Promise resolving to the deleted Owned Item data
 	 */
-	deleteOwnedItem(itemId: string, options?: any): Promise<number>;
+	async deleteOwnedItem(itemId: string, options?: object): Promise<Item>;
 }
