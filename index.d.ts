@@ -41,9 +41,11 @@ import './types/apps/sidebar/sidebardirectory';
 
 import './types/core/audio';
 import './types/core/config';
+import './types/core/die';
 import './types/core/fonts';
 import './types/core/hooks';
 import './types/core/keyboard';
+import './types/core/roll';
 import './types/core/settings';
 import './types/core/socket';
 import './types/core/sorting';
