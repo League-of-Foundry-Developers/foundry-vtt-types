@@ -40,6 +40,9 @@ declare class Item extends Entity {
 		embeddedEntities: {};
 	};
 
+	/** @override */
+	prepareData(): void;
+
 	/* -------------------------------------------- */
 	/*  Properties                                  */
 	/* -------------------------------------------- */

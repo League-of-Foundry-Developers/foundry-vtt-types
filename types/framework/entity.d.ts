@@ -32,7 +32,7 @@ declare class Entity {
 	/**
 	 * A collection of Application instances which should be re-rendered whenever this Entity experiences an update to
 	 * its data. The keys of this object are the application ids and the values are Application instances. Each
-	 * Application in this object will have its render method called by @{link Entity#render}.
+	 * Application in this object will have its render method called by {@link Entity#render}.
 	 */
 	apps: Application;
 
@@ -73,7 +73,7 @@ declare class Entity {
 	 * This method can be used to derive any internal attributes which are computed in a formulaic manner.
 	 * For example, in a d20 system - computing an ability modifier based on the value of that ability score.
 	 */
-	prepareData(): BaseEntityData;
+	prepareData(): BaseEntityData | void;
 
 	/**
 	 * Prepare Embedded Entities which exist within this parent Entity.

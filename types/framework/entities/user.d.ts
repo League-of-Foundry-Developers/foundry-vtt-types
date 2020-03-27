@@ -124,6 +124,24 @@ declare class User extends Entity {
 	/* ---------------------------------------- */
 
 	/**
+	 * Test whether the User is able to perform a certain permission action. Game Master users are always allowed to
+	 * perform every action, regardless of permissions.
+	 *
+	 * @param permission	The action to test
+	 */
+	can(permission: string): boolean;
+
+	/**
+	 * Test whether the User has a specific permission entitled .This differs from user#can because it does not always
+	 * return true for Game Master users and should be used in cases where a permission could be withheld even from
+	 * a GM player (for example cursor display, or A/V audio).
+	 *
+	 * @param permission	The action to test
+	 * @return				Does the user have explicit permission to perform this action?
+	 */
+	hasPermission(permission: string): boolean;
+
+	/**
 	 * Test whether the User has at least the permission level of a certain role
 	 * @param role	The role name from USER_ROLES to test
 	 * @return		Does the user have at least this role level?
@@ -136,13 +154,6 @@ declare class User extends Entity {
 	 * @return		Does the user have exactly this role level?
 	 */
 	isRole(role: string | number): boolean;
-
-	/**
-	 * Test whether the User has at least a specific permission
-	 * @param permissionName	The permission name from USER_PERMISSIONS to test
-	 * @return					Does the user have at least this permission
-	 */
-	hasPermission(permissionName: string): boolean;
 
 	/**
 	 * Sets a user's permission

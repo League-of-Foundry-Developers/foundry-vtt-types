@@ -94,12 +94,11 @@ declare class Actor extends Entity {
 		embeddedEntities: { OwnedItem: string };
 	};
 
-	/**
-	 * Prepare data for the Actor instance whenever it is first created or later updated.
-	 */
-	prepareData(): ActorData;
+	/** @override */
+	prepareData(): void;
 
-	prepareEmbeddedEntities();
+	/** @override */
+	prepareEmbeddedEntities(): void;
 
 	/* -------------------------------------------- */
 	/*  Properties                                  */
