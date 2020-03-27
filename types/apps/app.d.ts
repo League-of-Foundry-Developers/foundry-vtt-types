@@ -1,60 +1,59 @@
 interface ApplicationOptions extends Object {
 	/** A named "base application" which generates an additional hook */
-	baseApplication?: string,
+	baseApplication?: string;
 	/** The default pixel width for the rendered HTML */
-	width?: number,
+	width?: number;
 	/** The default pixel height for the rendered HTML */
-	height?: number,
+	height?: number;
 	/** The default offset-top position for the rendered HTML */
-	top?: number,
+	top?: number;
 	/** The default offset-left position for the rendered HTML */
-	left?: number,
+	left?: number;
 	/** Whether to display the application as a pop-out container */
-	popOut?: boolean,
+	popOut?: boolean;
 	/** Whether the rendered application can be minimized (popOut only) */
-	minimizable?: boolean,
+	minimizable?: boolean;
 	/** Whether the rendered application can be drag-resized (popOut only) */
-	resizable?: boolean,
+	resizable?: boolean;
 	/** The default CSS id to assign to the rendered HTML */
-	id?: string,
+	id?: string;
 	/** An array of CSS string classes to apply to the rendered HTML */
-	classes?: string[],
+	classes?: string[];
 	/** A default window title string (popOut only) */
-	title?: string,
+	title?: string;
 	/** The default HTML template path to render for this Application */
-	template?: string,
-	[key: string]: any
+	template?: string;
+	[key: string]: any;
 }
 
 interface RenderOptions extends Object {
 	/** The left positioning attribute */
-	left?: number,
+	left?: number;
 	/** The top positioning attribute */
-	top?: number,
+	top?: number;
 	/** The rendered width */
-	width?: number,
+	width?: number;
 	/** The rendered height */
-	height?: number,
+	height?: number;
 	/** The rendered transformation scale */
-	scale?: number,
+	scale?: number;
 	/** Whether to display a log message that the Application was rendered */
-	log?: boolean,
+	log?: boolean;
 	/** A context-providing string which suggests what event triggered the render */
-	renderContext?: string,
+	renderContext?: string;
 	/** The data change which motivated the render request */
-	renderData?: any
+	renderData?: any;
 }
 
 interface ApplicationPosition extends Object {
-	width: number,
-	height: number,
-	left: number,
-	top: number,
-	scale: number
+	width?: number;
+	height?: number;
+	left?: number;
+	top?: number;
+	scale?: number;
 }
 
-declare const MIN_WINDOW_WIDTH: number,
-			  MIN_WINDOW_HEIGHT: number;
+declare const MIN_WINDOW_WIDTH: number, MIN_WINDOW_HEIGHT: number;
 
 /**
  * The standard application window that is rendered for a large variety of UI elements in Foundry VTT
@@ -90,8 +89,8 @@ declare class Application {
 	 * Track whether the Application has been successfully rendered
 	 */
 	private _rendered: boolean;
-	
-	constructor(options: ApplicationOptions);
+
+	constructor(options?: ApplicationOptions);
 
 	/**
 	 * Assign the default options which are supported by all Application classes.
@@ -140,7 +139,7 @@ declare class Application {
 	/**
 	 * Render the Application by evaluating it's HTML template against the object of data provided by the getData method
 	 * If the Application is rendered as a pop-out window, wrap the contained HTML in an outer frame with window controls
-	 * 
+	 *
 	 * @param force		Add the rendered application to the DOM if it is not already present. If false, the
 	 *					Application will only be re-rendered if it is already present.
 	 * @param options	Additional rendering options which are applied to customize the way that the Application
@@ -165,14 +164,20 @@ declare class Application {
 	 * @param data	The data used to render the inner template
 	 * @return		A promise resolving to the constructed jQuery object
 	 */
-	protected _renderInner(data: any, options: any): Promise<JQuery | HTMLElement>;
+	protected _renderInner(
+		data: any,
+		options: any
+	): Promise<JQuery | HTMLElement>;
 
 	/**
 	 * Customize how inner HTML is replaced when the application is refreshed
 	 * @param element	The original HTML element
 	 * @param html		New updated HTML
 	 */
-	protected _replaceHTML(element: JQuery | HTMLElement, html: JQuery | HTMLElement): void;
+	protected _replaceHTML(
+		element: JQuery | HTMLElement,
+		html: JQuery | HTMLElement
+	): void;
 
 	/**
 	 * Customize how a new HTML Application is added and first appears in the DOC

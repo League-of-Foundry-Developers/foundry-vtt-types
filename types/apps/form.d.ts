@@ -1,12 +1,12 @@
 interface FormApplicationOptions extends ApplicationOptions {
 	/** (true) Is the form editable, or should its fields be disabled? */
-	editable: boolean,
+	editable?: boolean;
 	/** (true) Automatically close the form when the submit button is pressed. */
-	closeOnSubmit: boolean,
+	closeOnSubmit?: boolean;
 	/** (false) Automatically submit the form if the application window is closed. */
-	submitOnClose: boolean,
+	submitOnClose?: boolean;
 	/** (false) Automatically submit the form if an input field is unfocused. */
-	submitOnUnfocus: boolean
+	submitOnUnfocus?: boolean;
 }
 
 /**
@@ -42,7 +42,7 @@ declare class FormApplication extends Application {
 	 */
 	editors: any;
 
-	constructor(object: any, options: FormApplicationOptions);
+	constructor(object: any, options?: FormApplicationOptions);
 
 	/**
 	 * Assign the default options which are supported by the entity edit sheet
@@ -104,7 +104,13 @@ declare class FormApplication extends Application {
 	 * @param preventClose	Override the standard behavior of whether to close the form on submit
 	 * @returns				A promise which resolves to the validated update data
 	 */
-	protected _onSubmit(event: Event | JQuery.Event, { updateData, preventClose }?: { updateData?: any, preventClose?: boolean }): Promise<any>;
+	protected _onSubmit(
+		event: Event | JQuery.Event,
+		{
+			updateData,
+			preventClose,
+		}?: { updateData?: any; preventClose?: boolean }
+	): Promise<any>;
 
 	/**
 	 * Handle unfocusing an input on form - maybe trigger an update if ``options.liveUpdate`` has been set to true
@@ -116,9 +122,12 @@ declare class FormApplication extends Application {
 	 * This method is called upon form submission after form data is validated
 	 * @param event		The initial triggering submission event
 	 * @param formData	The object of validated form data with which to update the object
-	 * @returns			A Promise which resolves once the update operation has completed 
+	 * @returns			A Promise which resolves once the update operation has completed
 	 */
-	protected _updateObject(event: Event | JQuery.Event, formData: any): Promise<any>;
+	protected _updateObject(
+		event: Event | JQuery.Event,
+		formData: any
+	): Promise<any>;
 
 	/* -------------------------------------------- */
 	/*  TinyMCE Editor
@@ -132,7 +141,11 @@ declare class FormApplication extends Application {
 	/**
 	 * By default, when the editor is saved treat it as a form submission event
 	 */
-	protected _onEditorSave(target: any, element: JQuery | HTMLElement, content: string): void;
+	protected _onEditorSave(
+		target: any,
+		element: JQuery | HTMLElement,
+		content: string
+	): void;
 
 	/**
 	 * Activate a FilePicker instance present within the form
@@ -143,7 +156,7 @@ declare class FormApplication extends Application {
 	 * Extend the logic applied when the application is closed to destroy any remaining MCE instances
 	 * This function returns a Promise which resolves once the window closing animation concludes
 	 */
-	close(): Promise<void>
+	close(): Promise<void>;
 
 	/**
 	 * Submit the contents of a Form Application, processing its content as defined by the Application
