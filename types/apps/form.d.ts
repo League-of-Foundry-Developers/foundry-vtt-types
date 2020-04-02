@@ -55,12 +55,6 @@ declare class FormApplication extends Application {
 	get isEditable(): boolean;
 
 	/**
-	 * Provide data to the form
-	 * @return	The data provided to the template when rendering the form
-	 */
-	getData(): any;
-
-	/**
 	 * Render the FormApplication inner sheet content.
 	 * See `Application._renderInner` for more detail.
 	 */

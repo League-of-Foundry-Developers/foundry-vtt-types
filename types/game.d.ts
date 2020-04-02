@@ -43,6 +43,22 @@ declare class Game {
 	/** A flag for whether the Game has successfully reached the "ready" hook */
 	ready: boolean;
 
+	/* -------------------------------------------- */
+	/*  Entities
+	/* -------------------------------------------- */
+
+	users: Users;
+	messages: Messages;
+	scenes: Scenes;
+	actors: Actors;
+	items: Items;
+	journal: Journal;
+	macros: Macros;
+	playlists: Playlists;
+	combats: CombatEncounters;
+	tables: RollTables;
+	fodlers: Folders;
+
 	constructor(worldData: object, userId: string, socket: SocketIO.Socket);
 
 	/**
@@ -79,7 +95,12 @@ declare class Game {
 	/**
 	 * Initialization actions for compendium packs
 	 */
-	initializePacks(): Promise<Compendium>;
+	initializePacks(config: any): Promise<void>;
+
+	/**
+	 * Initialize the WebRTC implementation
+	 */
+	initializeRTC(): void;
 
 	/**
 	 * Initialize core UI elements

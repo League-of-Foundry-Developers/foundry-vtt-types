@@ -15,7 +15,7 @@ declare class PlaceableObject extends PIXI.Container {
 	controlIcon: ControlIcon;
 
 	constructor(data: any, scene: Scene);
-	
+
 	/* -------------------------------------------- */
 	/* Properties
 	/* -------------------------------------------- */
@@ -43,7 +43,7 @@ declare class PlaceableObject extends PIXI.Container {
 	/**
 	 * The central coordinate pair of the placeable object based on it's own width and height
 	 */
-	get center(): { x: number, y: number };
+	get center(): { x: number; y: number };
 
 	/**
 	 * A Boolean flag for whether the current game User has permission to control this token
@@ -54,7 +54,7 @@ declare class PlaceableObject extends PIXI.Container {
 	 * A placeable object should define the logic to create
 	 */
 	get sheet(): Application;
-	
+
 	/* -------------------------------------------- */
 	/* Methods
 	/* -------------------------------------------- */
@@ -70,8 +70,13 @@ declare class PlaceableObject extends PIXI.Container {
 	 * @param releaseOthers	Release any other controlled objects first
 	 * @return				A Boolean flag denoting whether or not control was successful.
 	 */
-	control({ multiSelect, releaseOthers }?:
-		{ multiSelect?: boolean, releaseOthers?: boolean }): boolean;
+	control({
+		multiSelect,
+		releaseOthers,
+	}?: {
+		multiSelect?: boolean;
+		releaseOthers?: boolean;
+	}): boolean;
 
 	/**
 	 * Obtain the shifted position for the Object
@@ -79,7 +84,10 @@ declare class PlaceableObject extends PIXI.Container {
 	 * @param dy	The number of grid units to shift along the Y-axis
 	 * @return		The target movement coordinates subject to some offset
 	 */
-	protected _getShiftedPosition(dx: number, dy: number): { x: number, y: number };
+	protected _getShiftedPosition(
+		dx: number,
+		dy: number
+	): { x: number; y: number };
 
 	/**
 	 * Release control over a PlaceableObject, removing it from the controlled set
@@ -171,53 +179,33 @@ declare class PlaceableObject extends PIXI.Container {
 	/*  Socket Listeners and Handlers               */
 	/* -------------------------------------------- */
 
-	/**
-	 * Create a new Placeable Object using provided data
-	 *
-	 * @param sceneId				The ID of the Scene within which to create the placeable object
-	 * @param data					The data with which to create the placeable object
-	 * @param options				Additional options which customize the creation workflow
-	 * @param options.displaySheet	Render the object configuration sheet when created
-	 * @return						A Promise resolving to the created PlaceableObject instance
-	 */
-	static create(sceneId: string, data: any, options?: any): Promise<PlaceableObject>;
+	/** @extends {Entity.createEmbeddedEntity} */
+	static create(
+		createData: object,
+		options?: object
+	): Promise<PlaceableObject>;
+
+	/** @extends {Entity.updateEmbeddedEntity} */
+	update(updateData: object, options?: object): Promise<PlaceableObject>;
+
+	/** @extends {Entity.deleteEmbeddedEntity} */
+	delete(createData: object, options?: object): Promise<PlaceableObject>;
 
 	/**
-	 * Update an existing placeable object using provided data
-	 *
-	 * @param sceneId	The ID of the Scene within which to update the placeable object
-	 * @param data		The data with which to update the placeable object
-	 * @param options	Additional options which customize the update workflow
-	 *
-	 * @return			A Promise which resolves to the returned socket response (if successful)
+	 * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
 	 */
-	update(sceneId: string, data: any, options?: any): Promise<any>;
-
-	/**
-	 * Delete an existing placeable object within a specific Scene
-	 *
-	 * @param sceneId	The ID of the Scene within which to update the placeable object
-	 * @param options	Additional options which customize the deletion workflow
-	 *
-	 * @return			A Promise which resolves to the returned socket response (if successful)
-	 */
-	delete(sceneId: string, options?: any): Promise<any>;
-
-	/**
-	 * Define additional steps taken when a new placeable object of this type is first created
-	 */
-	protected _onCreate(sceneId: string, data: any): void;
+	protected _onCreate(): void;
 
 	/**
 	 * Define additional steps taken when an existing placeable object of this type is updated with new data
 	 */
-	protected _onUpdate(sceneId: string, data: any): void;
+	protected _onUpdate(data: object): void;
 
 	/**
 	 * Define additional steps taken when an existing placeable object of this type is deleted
 	 */
-	protected _onDelete(sceneId: string): void;
-	
+	protected _onDelete(): void;
+
 	/* -------------------------------------------- */
 	/*  Event Listeners and Handlers                */
 	/* -------------------------------------------- */

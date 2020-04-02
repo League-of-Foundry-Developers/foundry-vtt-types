@@ -1,6 +1,8 @@
 /// <reference types="jquery"/>
 /// <reference types="socket.io"/>
 
+import './types/constants';
+
 // Apps
 
 import './types/apps/app';
