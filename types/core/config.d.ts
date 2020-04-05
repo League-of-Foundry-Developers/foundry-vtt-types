@@ -14,26 +14,26 @@ declare const CONFIG: {
 	 * Configuration for the default Actor entity class
 	 */
 	Actor: {
-		entityClass: Actor,
+		entityClass: typeof Actor,
 		collection: Actors,
-		sheetClasses: ActorSheet
+		sheetClasses: typeof ActorSheet
 	},
 
 	/**
 	 * Configuration for the default Item entity class
 	 */
 	Item: {
-		entityClass: Item,
+		entityClass: typeof Item,
 		collection: Items,
-		sheetClasses: ItemSheet
+		sheetClasses: typeof ItemSheet
 	},
 
 	/**
 	 * Configuration for the JournalEntry entity
 	 */
 	JournalEntry: {
-		entityClass: JournalEntry,
-		sheetClass: JournalSheet,
+		entityClass: typeof JournalEntry,
+		sheetClass: typeof JournalSheet,
 		noteIcons: {
 			"Anchor": string,
 			[key: string]: string
@@ -45,7 +45,7 @@ declare const CONFIG: {
 	 * Configuration for the default Scene entity class
 	 */
 	Scene: {
-		entityClass: Scene,
+		entityClass: typeof Scene,
 		collection: Scenes,
 		sheetClass: any,
 		notesClass: any,
