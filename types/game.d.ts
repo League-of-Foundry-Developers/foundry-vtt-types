@@ -57,7 +57,8 @@ declare class Game {
 	playlists: Playlists;
 	combats: CombatEncounters;
 	tables: RollTables;
-	fodlers: Folders;
+	folders: Folders;
+	packs: Compendium[];
 
 	constructor(worldData: object, userId: string, socket: SocketIO.Socket);
 
