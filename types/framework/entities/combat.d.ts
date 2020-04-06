@@ -91,7 +91,7 @@ declare class Combat extends Entity {
 	/**
 	 * @extends {Entity.getEmbeddedEntity}
 	 */
-	getCombatant(): Promise<any>;
+	getCombatant(id: string): Promise<any>;
 
 	/**
 	 * Get a Combatant using its Token id
