@@ -100,11 +100,11 @@ declare class Compendium extends Application {
 
 	/**
 	 * Get the Compendium index
-	 * Contains names and IDs of all data in the compendium
+	 * Contains names, images and IDs of all data in the compendium
 	 *
 	 * @return	A Promise containing an index of all compendium entries
 	 */
-	getIndex(): Promise<string>;
+	getIndex(): Promise<Object[]>;
 
 	/**
 	 * Get the complete set of content for this compendium, loading all entries in full
