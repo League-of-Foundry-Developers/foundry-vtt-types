@@ -1,15 +1,12 @@
 declare class Journal extends Collection {
 	// @TODO Add Journal class
-	constructor(...args);
-	[key: string]: any
+	[key: string]: any;
 }
-
 
 /**
  * The JournalEntry class
  */
 declare class JournalEntry extends Entity {
-
 	/**
 	 * Return a reference to the Note instance for this JournalEntry in the current Scene, if any
 	 */
@@ -21,7 +18,7 @@ declare class JournalEntry extends Entity {
 	visible: boolean;
 
 	/**
-	 * 
+	 *
 	 */
 	_onUpdate(): void;
 
@@ -31,13 +28,13 @@ declare class JournalEntry extends Entity {
 	panToNote(): void;
 
 	/**
-	 * Show the JournalEntry to connected players. 
-	 * By default the entry will only be shown to players who have permission to observe it. 
+	 * Show the JournalEntry to connected players.
+	 * By default the entry will only be shown to players who have permission to observe it.
 	 * If the parameter force is passed, the entry will be shown to all players regardless of normal permission.
 	 * @param mode Which JournalEntry mode to display? Default is text.
 	 * @param force Display the entry to all players regardless of normal permissions
 	 * @returns A Promise that resolves back to the shown entry once the request is processed
 	 */
 
-	show(mode: String, force: boolean): Promise<JournalEntry>;
+	show(mode: string, force: boolean): Promise<JournalEntry>;
 }

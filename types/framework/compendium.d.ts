@@ -104,7 +104,7 @@ declare class Compendium extends Application {
 	 *
 	 * @return	A Promise containing an index of all compendium entries
 	 */
-	getIndex(): Promise<Object[]>;
+	getIndex(): Promise<any[]>;
 
 	/**
 	 * Get the complete set of content for this compendium, loading all entries in full

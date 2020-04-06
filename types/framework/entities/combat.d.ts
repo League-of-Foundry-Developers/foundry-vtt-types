@@ -2,7 +2,6 @@
  * The Collection of Combat entities
  */
 declare class CombatEncounters extends Collection {
-
 	/**
 	 * The currently active Combat instance
 	 */
@@ -16,7 +15,7 @@ declare class CombatEncounters extends Collection {
 	/**
 	 * A reference to the world combat configuration settings
 	 */
-	settings: Object;
+	settings: any;
 
 	/**
 	 * The currently viewed Combat encounter
@@ -29,21 +28,20 @@ declare class CombatEncounters extends Collection {
  * Combat instances belong to the CombatEncounters collection
  */
 declare class Combat extends Entity {
-
 	/**
 	 * Get the data object for the Combatant who has the current turn
 	 */
-	combatant: Object;
+	combatant: any;
 
 	/**
 	 * A convenience reference to the Array of combatant data within the Combat entity
 	 */
-	combatants: Object[];
+	combatants: any[];
 
 	/**
 	 * The numeric round of the Combat encounte
 	 */
-	round: Number;
+	round: number;
 
 	/**
 	 * Get the Scene entity for this Combat encounter
@@ -53,7 +51,7 @@ declare class Combat extends Entity {
 	/**
 	 * Return the object of settings which modify the Combat Tracker behavior
 	 */
-	settings: Object;
+	settings: any;
 
 	/**
 	 * Has this combat encounter been started?
@@ -63,7 +61,7 @@ declare class Combat extends Entity {
 	/**
 	 * The numeric turn of the combat round in the Combat encounter
 	 */
-	turn: Number;
+	turn: number;
 
 	/**
 	 * Track the sorted turn order of this combat encounter
@@ -78,12 +76,12 @@ declare class Combat extends Entity {
 	/**
 	 * @extends {Entity.createEmbeddedEntity}
 	 */
-	createCombatant(): Promise<Object>;
+	createCombatant(): Promise<any>;
 
 	/**
 	 * @extends {Entity.deleteEmbeddedEntity}
 	 */
-	deleteCombatant(): Promise<String>;
+	deleteCombatant(): Promise<string>;
 
 	/**
 	 * Display a dialog querying the GM whether they wish to end the combat encounter and empty the tracker
@@ -93,13 +91,13 @@ declare class Combat extends Entity {
 	/**
 	 * @extends {Entity.getEmbeddedEntity}
 	 */
-	getCombatant(): Promise<Object>;
+	getCombatant(): Promise<any>;
 
 	/**
 	 * Get a Combatant using its Token id
 	 * @param tokenId The id of the Token for which to acquire the combatant
 	 */
-	getCombatantByToken(tokenId: String): Object;
+	getCombatantByToken(tokenId: string): any;
 
 	/**
 	 * Advance the combat to the next round
@@ -112,7 +110,7 @@ declare class Combat extends Entity {
 	nextTurn(): Promise<void>;
 
 	/**
-	 * Prepare Embedded Entities which exist within the parent Combat. 
+	 * Prepare Embedded Entities which exist within the parent Combat.
 	 * For example, in the case of an Actor, this method is responsible for preparing the Owned Items the Actor contains.
 	 */
 	prepareEmbeddedEntities(): void;
@@ -141,7 +139,11 @@ declare class Combat extends Entity {
 	 * @param messageOptions Additional options with which to customize created Chat Messages
 	 * @returns A promise which resolves to the updated Combat entity once updates are complete.
 	 */
-	rollInitiative(ids: String[] | String, formula: String | null, messageOptions: Object): Promise<Combat>;
+	rollInitiative(
+		ids: string[] | string,
+		formula: string | null,
+		messageOptions: object
+	): Promise<Combat>;
 
 	/**
 	 * Roll initiative for all non-player actors who have not already rolled
@@ -156,7 +158,7 @@ declare class Combat extends Entity {
 	 * @param id The combatant ID for which to set initiative
 	 * @param id A specific initiative value to set
 	 */
-	setInitiative(id: String, value: Number): Promise<void>;
+	setInitiative(id: string, value: number): Promise<void>;
 
 	/**
 	 * Return the Array of combatants sorted into initiative order, breaking ties alphabetically by name
@@ -171,5 +173,5 @@ declare class Combat extends Entity {
 	/**
 	 * @extends {Entity.updateEmbeddedEntity}
 	 */
-	updateCombatant(): Promise<Object>;
+	updateCombatant(): Promise<any>;
 }
