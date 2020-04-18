@@ -96,7 +96,7 @@ declare class Collection extends Map {
 	 * @param strict	Throw an Error if the requested id does not exist, otherwise return null. Default false.
 	 * @return			The retrieved Entity, if the ID was found, otherwise null;
 	 */
-	get(id: string, { strict }: { strict?: boolean }): Entity;
+	get(id: string, { strict }?: { strict?: boolean }): Entity;
 
 	/**
 	 * Retrieve the index of an entity within the collection by its ID
