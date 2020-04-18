@@ -81,6 +81,8 @@ import './types/pixi/placeableslayer';
 import './types/pixi/helpers/controlicon';
 
 import './types/pixi/placeables/token';
+import './types/pixi/placeables/note';
+import './types/pixi/placeables/tile';
 
 // UI
 

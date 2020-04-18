@@ -6,14 +6,14 @@
  * @param data	An Array of Entity data from which to create instances
  * @param apps	An Array of Application instances which the Collection modifies
  */
-declare class Collection {
+declare class Collection extends Map {
 	/**
 	 * A reference to the original source data provided by the server
 	 */
 	protected _source: any;
 
 	/**
-	 * An Array of all the Entity instances of this type which are contained within the collection
+	 * An array of all the Entities in the Collection. Since Collection is now a Map, it would be preferred to use Collection#values directly to obtain an iterator
 	 */
 	entities: Entity[];
 
@@ -375,4 +375,11 @@ declare class Collection {
 		options: object;
 		userId: string;
 	}): Entity[];
+
+	/**
+	 * Get an Entity from the Collection by name
+	 * @param name The name of the Entity to retrieve
+	 * @param strict Throw an Error if the requested id does not exist, otherwise return null. Default false.
+	 */
+	getName(name: string, strict?: boolean): Entity | null;
 }
