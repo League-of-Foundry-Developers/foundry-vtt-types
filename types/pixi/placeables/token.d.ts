@@ -58,7 +58,7 @@ declare class Token extends PlaceableObject {
 	 * Provide a reference to the canvas layer which contains placeable objects of this type
 	 */
 	static get layer(): PlaceablesLayer;
-	
+
 	/* -------------------------------------------- */
 	/*  Permission Attributes
 	/* -------------------------------------------- */
@@ -202,5 +202,11 @@ declare class Token extends PlaceableObject {
 
 	drawEffects(): void;
 
-	
+	/**
+	 * Toggle an active effect by it's texture path. Copy the existing Array in order to ensure the update method detects the data as changed.
+	 * @param texture The texture file-path of the effect icon to toggle on the Token.
+	 */
+	toggleEffect(texture: string): Promise<void>;
+
+
 }
