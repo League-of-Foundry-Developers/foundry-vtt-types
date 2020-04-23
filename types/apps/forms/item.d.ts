@@ -1,6 +1,6 @@
 declare interface ItemSheetData extends BaseEntitySheetData {
-	item: Item,
-	data: any
+	item?: Item;
+	data?: any;
 }
 
 /**
