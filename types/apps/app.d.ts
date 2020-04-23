@@ -19,10 +19,17 @@ interface ApplicationOptions extends Object {
 	id?: string;
 	/** An array of CSS string classes to apply to the rendered HTML */
 	classes?: string[];
+	/** Track Tab navigation handlers which are active for this Application */
+	tabs?: TabV2Options[];
 	/** A default window title string (popOut only) */
 	title?: string;
 	/** The default HTML template path to render for this Application */
 	template?: string;
+	/**
+	 * A list of unique CSS selectors which target containers that should
+	 * have their vertical scroll positions preserved during a re-render.
+	 */
+	scrollY?: string[];
 	[key: string]: any;
 }
 
