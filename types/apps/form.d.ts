@@ -1,12 +1,25 @@
 interface FormApplicationOptions extends ApplicationOptions {
-	/** (true) Is the form editable, or should its fields be disabled? */
+	/**
+	 * Whether the application form is editable - if true, it's fields will
+	 * be unlocked and the form can be submitted. If false, all form fields
+	 * will be disabled and the form cannot be submitted. Default is true.
+	 */
 	editable?: boolean;
-	/** (true) Automatically close the form when the submit button is pressed. */
+	/**
+	 * Whether to automatically close the application when it's contained
+	 * form is submitted. Default is true.
+	 */
 	closeOnSubmit?: boolean;
-	/** (false) Automatically submit the form if the application window is closed. */
+	/**
+	 * Whether to automatically submit the contained HTML form when the
+	 * application window is manually closed. Default is false.
+	 */
 	submitOnClose?: boolean;
-	/** (false) Automatically submit the form if an input field is unfocused. */
-	submitOnUnfocus?: boolean;
+	/**
+	 * Whether to automatically submit the contained HTML form when an input
+	 * or select element is changed. Default is false.
+	 */
+	submitOnChange?: boolean;
 }
 
 /**
