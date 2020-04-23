@@ -47,7 +47,24 @@ declare function getType(token: any): string;
  *
  * @returns				The original source object including updated, inserted, or overwritten records
  */
-declare function mergeObject<T>(original: T, other: T): T;
+declare function mergeObject<T>(
+	original: T,
+	other?: T,
+	{
+		insertKeys,
+		insertValues,
+		overwrite,
+		inplace,
+		enforceTypes,
+	}?: {
+		insertKeys?: boolean;
+		insertValues?: boolean;
+		overwrite?: boolean;
+		inplace?: boolean;
+		enforceTypes?: boolean;
+	},
+	_d?: number
+): T;
 
 /**
  * A temporary shim to invert an object, flipping keys and values
