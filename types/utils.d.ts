@@ -4,7 +4,11 @@
  * @param type		The type of
  * @param filename	The filename of the resulting download
  */
-declare function saveDataToFile(data: string, type: string, filename: string): void;
+declare function saveDataToFile(
+	data: string,
+	type: string,
+	filename: string
+): void;
 
 /**
  * Read text data from a user provided File object
@@ -43,7 +47,7 @@ declare function getType(token: any): string;
  *
  * @returns				The original source object including updated, inserted, or overwritten records
  */
-declare function mergeObject(original: any, other: any): any;
+declare function mergeObject<T>(original: T, other: T): T;
 
 /**
  * A temporary shim to invert an object, flipping keys and values
@@ -67,7 +71,12 @@ declare function invertObject(obj: object): object;
  * filterObject(source, template); // {foo: {number: 1, name: "Tim"}};
  * filterObject(source, template, {templateValues: true}); // {foo: {number: 0, name: "Mit"}};
  */
-declare function filterObject(source: object, template: object, keepSpecial?: boolean, templateValues?: boolean): object;
+declare function filterObject(
+	source: object,
+	template: object,
+	keepSpecial?: boolean,
+	templateValues?: boolean
+): object;
 
 /**
  * Flatten a possibly multi-dimensional object to a one-dimensional one by converting all nested keys to dot notation
@@ -217,7 +226,10 @@ declare function colorStringToHex(color: string): number;
  * @param v1
  * @return
  */
-declare function isNewerVersion(v1: number|string, v0: number|string): boolean;
+declare function isNewerVersion(
+	v1: number | string,
+	v0: number | string
+): boolean;
 
 /**
  * Generate a random ID
