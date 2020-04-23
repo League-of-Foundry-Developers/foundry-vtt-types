@@ -1,8 +1,8 @@
 declare interface TabV2Options {
-	navSelector: string;
-	contentSelector: string;
-	initial: string;
-	callback: Function;
+	navSelector?: string;
+	contentSelector?: string;
+	initial?: string;
+	callback?: Function;
 }
 
 /**
