@@ -64,6 +64,12 @@ declare class Compendium extends Application {
 	 * This index is not guaranteed to be current - call getIndex() to reload the index
 	 */
 	index: string[];
+	
+	/**
+     * Track whether the compendium pack is locked for editing
+     * @type {boolean}
+     */
+     locked: boolean;
 
 	// Internal flags
 	searchString: string | null;
