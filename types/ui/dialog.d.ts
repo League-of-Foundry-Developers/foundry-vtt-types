@@ -2,7 +2,8 @@ interface ConfirmDialog {
 	title: string,
 	content: string,
 	yes: Function,
-	no: Function
+	no: Function,
+	defaultYes?: boolean;
 }
 
 /**
@@ -53,6 +54,7 @@ declare class Dialog extends Application {
 	 * @param content	The confirmation message
 	 * @param yes		Callback function upon yes
 	 * @param no		Callback function upon no
+	 * @param defaultYes
 	 */
-	confirmDialog({ title, content, yes, no }: ConfirmDialog, options: object): void;
+	static confirm({ title, content, yes, no, defaultYes }: ConfirmDialog, options: any): Promise<void>;
 }
