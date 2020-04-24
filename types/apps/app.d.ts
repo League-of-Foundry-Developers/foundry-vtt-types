@@ -2,9 +2,9 @@ interface ApplicationOptions extends Object {
 	/** A named "base application" which generates an additional hook */
 	baseApplication?: string;
 	/** The default pixel width for the rendered HTML */
-	width?: any;
+	width?: number | string;
 	/** The default pixel height for the rendered HTML */
-	height?: any;
+	height?: number | string;
 	/** The default offset-top position for the rendered HTML */
 	top?: number;
 	/** The default offset-left position for the rendered HTML */
