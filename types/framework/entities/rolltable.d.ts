@@ -1,4 +1,6 @@
-declare class RollTables extends Collection {}
+declare class RollTables extends Collection {
+	entities: RollTable[];
+}
 
 declare class RollTable extends Entity {
 	/** @override */
