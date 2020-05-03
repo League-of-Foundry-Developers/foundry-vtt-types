@@ -1,8 +1,12 @@
 declare class Messages extends Collection {
+	entities: ChatMessage[];
+
 	/**
 	 * Elements of the Messages collection are instances of the ChatMessage class
 	 */
 	get object(): ChatMessage;
+
+	values(): IterableIterator<ChatMessage>;
 
 	/* -------------------------------------------- */
 	/*  Socket Listeners and Handlers

@@ -18,6 +18,8 @@ declare interface UserActivityData {
  * The array of User entities within this collection is accessible through ``game.users.entities``.
  */
 declare class Users extends Collection {
+	entities: User[];
+
 	/**
 	 * Elements of the Users collection are instances of the User class
 	 */
@@ -27,6 +29,8 @@ declare class Users extends Collection {
 	 * Get the users with player roles
 	 */
 	get players(): User[];
+
+	values(): IterableIterator<User>;
 
 	/* -------------------------------------------- */
 	/*  Socket Listeners and Handlers               */

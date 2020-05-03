@@ -2,6 +2,10 @@
  * The Collection of Combat entities
  */
 declare class CombatEncounters extends Collection {
+	entities: Combat[];
+
+	values(): IterableIterator<Combat>;
+
 	/**
 	 * The currently active Combat instance
 	 */

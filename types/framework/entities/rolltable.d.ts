@@ -1,5 +1,7 @@
 declare class RollTables extends Collection {
 	entities: RollTable[];
+
+	values(): IterableIterator<RollTable>;
 }
 
 declare class RollTable extends Entity {

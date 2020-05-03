@@ -1,6 +1,10 @@
 declare class Playlists extends Collection {
+	entities: Playlist[];
+
 	/** @override */
 	get object(): Playlist;
+
+	values(): IterableIterator<Playlist>;
 
 	/**
 	 * Return the subset of Playlist entities which are currently playing

@@ -24,6 +24,8 @@ declare class Collection extends Map {
 
 	constructor(data: any[], apps: any[]);
 
+	values(): IterableIterator<Entity>;
+
 	/**
 	 * Initialize the Collection instance by preparing all of it's contained Entities
 	 * @return A reference to the initialized Collection

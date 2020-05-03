@@ -3,10 +3,14 @@
  * The items collection is accessible within the game as game.items
  */
 declare class Items extends Collection {
+	entities: Item[];
+
 	/**
 	 * Elements of the Items collection are instances of the Item class, or a subclass thereof
 	 */
 	get object(): Item;
+
+	values(): IterableIterator<Item>;
 
 	/**
 	 * Register an Item sheet class as a candidate which can be used to display Items of a given type

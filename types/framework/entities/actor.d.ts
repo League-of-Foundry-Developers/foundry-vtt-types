@@ -12,6 +12,8 @@ declare interface ActorData extends BaseEntityData {
  * let actor = game.actors.get(actorId);
  */
 declare class Actors extends Collection {
+	entities: Actor[];
+
 	/**
 	 * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
 	 * Each Actor is referenced by the Token.id.
@@ -21,6 +23,8 @@ declare class Actors extends Collection {
 
 	/** @override */
 	get object(): Actor;
+
+	values(): IterableIterator<Actor>;
 
 	/* -------------------------------------------- */
 	/*  Sheet Registration Methods                  */

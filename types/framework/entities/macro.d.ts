@@ -3,6 +3,10 @@
  * @extends {Collection}
  */
 declare class Macros extends Collection {
+	entities: Macro[];
+
+	values(): IterableIterator<Macro>;
+
 	/* -------------------------------------------- */
 	/*  Properties                                  */
 	/* -------------------------------------------- */
