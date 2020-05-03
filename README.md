@@ -1,4 +1,13 @@
+<div align=center>
+
 # Foundry Project Creator Types
+
+[![Chat on Discord](https://img.shields.io/discord/520640779534729226?style=flat-square&label=discord&logo=discord)](https://discord.gg/59Tz2X7)
+[![Twitter Follow](https://img.shields.io/badge/follow-%40NickEastNL-blue.svg?style=flat-square&logo=twitter)](https://twitter.com/NickEastNL)
+[![Become a Patron](https://img.shields.io/badge/support-patreon-orange.svg?style=flat-square&logo=patreon)](https://www.patreon.com/nick_east)
+[![Donate via Ko-Fi](https://img.shields.io/badge/support-ko--fi-ff4646?style=flat-square&logo=ko-fi)](https://ko-fi.com/nickeast)
+
+</div>
 
 This package provides type definitions for the Foundry VTT API, useful for both vanilla JS and TypeScript to get autocomplete, Intellisense, and type checking.
 
@@ -33,3 +42,7 @@ TypeScript is configured with a `tsconfig.json` file in your project root. Add t
 ```
 
 For vanilla JavaScript, you may need to use `jsconfig.json` with the above configuration, or allow TypeScript to also parse JavaScript files. Please refer to the documentation of your IDE and/or TypeScript to learn how to properly configure your environment.
+
+## Support
+
+All the work that I do for Foundry I do in my spare time. If you love using it, please consider supporting me through either [Patreon](https://www.patreon.com/nick_east) or [Ko-Fi](https://ko-fi.com/nickeast) so that I can continue my work and worry less about life itself.
