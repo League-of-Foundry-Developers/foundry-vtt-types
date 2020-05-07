@@ -93,6 +93,13 @@ declare class Collection extends Map {
 	remove(id: string): void;
 
 	/**
+	 * Filter the Collection, obtaining an Array of Entities which match the filtering function. 
+	 * This is preferred to Array.from().filter() since it avoids iterating twice.
+	 * @param func The filtering function to apply
+	 */
+	filter(func): Promise<Entity[]>
+
+	/**
 	 * Get an element from the collection by ID.
 	 * @param id		The entity ID to retrieve from the collection
 	 * @param strict	Throw an Error if the requested id does not exist, otherwise return null. Default false.
