@@ -5,12 +5,26 @@
 declare class Items extends Collection {
 	entities: Item[];
 
+	values(): IterableIterator<Item>;
+
+	/* -------------------------------------------- */
+	/*  Collection Properties                       */
+	/* -------------------------------------------- */
+
+	static get instance(): Items;
+
 	/**
 	 * Elements of the Items collection are instances of the Item class, or a subclass thereof
 	 */
 	get object(): Item;
 
-	values(): IterableIterator<Item>;
+	/* -------------------------------------------- */
+	/*  Collection Management Methods               */
+	/* -------------------------------------------- */
+
+	insert(entity: Item): void;
+
+	get(id: string, { strict }?: { strict?: boolean }): Item;
 
 	/**
 	 * Register an Item sheet class as a candidate which can be used to display Items of a given type
