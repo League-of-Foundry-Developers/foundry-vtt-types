@@ -58,7 +58,7 @@ declare class Game {
 	combats: CombatEncounters;
 	tables: RollTables;
 	folders: Folders;
-	packs: EntityCollection;
+	packs: Collection;
 
 	constructor(worldData: object, userId: string, socket: SocketIO.Socket);
 

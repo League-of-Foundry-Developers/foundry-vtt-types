@@ -1,12 +1,9 @@
 /**
- * An iterable container of Entity objects within the Foundry Virtual Tabletop framework.
- * Each Entity type has it's own subclass of EntityCollection, which defines the abstract interface.
- * @abstract
- *
- * @param data	An Array of Entity data from which to create instances
- * @param apps	An Array of Application instances which the EntityCollection modifies
+ * A reusable storage concept which blends the functionality of an Array with the efficient key-based lookup of a Map.
+ * This concept is reused throughout Foundry VTT where a collection of uniquely identified elements is required.
+ * @extends {Map}
  */
-declare class EntityCollection extends Map {
+declare class Collection extends Map {
 	/**
 	 * A reference to the original source data provided by the server
 	 */
@@ -93,11 +90,39 @@ declare class EntityCollection extends Map {
 	remove(id: string): void;
 
 	/**
-	 * Filter the EntityCollection, obtaining an Array of Entities which match the filtering function. 
-	 * This is preferred to Array.from().filter() since it avoids iterating twice.
-	 * @param func The filtering function to apply
-	 */
-	filter(func): Promise<Entity[]>
+   * Filter the Collection, returning an Array of entries which match a functional condition.
+   * @see {Array#filter}
+   * @param {Function} condition	The functional condition to test
+   * @return		                An Array of matched values
+   *
+   * @example
+   * let c = new Collection([["a", "AA"], ["b", "AB"], ["c", "CC"]]);
+   * let hasA = c.filters(entry => entry.slice(0) === "A");
+   */
+	filter(condition): Promise<any[]>
+
+
+	/**
+   * Transform each element of the Collection into a new form, returning an Array of transformed values
+   * @param {Function} transformer		The transformation function to apply to each entry value
+   * @return 		                 	An Array of transformed values
+   */
+	map(transformer): any[]
+
+	/**
+   * Reduce the Collection by applying an evaluator function and accumulating entries
+   * @see {Array#reduce}
+   * @param {Function} evaluator	A function which mutates the accumulator each iteration
+   * @param initial					An initial value which accumulates with each iteration
+   * @return						The accumulated result
+   *
+   * @example
+   * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
+   * let letters = c.reduce((s, l) => {
+   *   return s + l;
+   * }, ""); // "ABC"
+   */
+	reduce(evaluator, initial): any;
 
 	/**
 	 * Get an element from the collection by ID.
