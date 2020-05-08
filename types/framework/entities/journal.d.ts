@@ -1,4 +1,4 @@
-declare class Journal extends Collection {
+declare class Journal extends EntityCollection {
 	// @TODO Add Journal class
 	[key: string]: any;
 }

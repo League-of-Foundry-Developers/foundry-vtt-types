@@ -11,7 +11,7 @@ declare interface ActorData extends BaseEntityData {
  * @example <caption>Retrieve an existing Actor by its id</caption>
  * let actor = game.actors.get(actorId);
  */
-declare class Actors extends Collection {
+declare class Actors extends EntityCollection {
 	entities: Actor[];
 
 	/**

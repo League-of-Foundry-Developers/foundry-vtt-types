@@ -1,7 +1,7 @@
 /**
  * The Collection of Combat entities
  */
-declare class CombatEncounters extends Collection {
+declare class CombatEncounters extends EntityCollection {
 	entities: Combat[];
 
 	values(): IterableIterator<Combat>;

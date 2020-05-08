@@ -1,19 +1,19 @@
 /**
  * An iterable container of Entity objects within the Foundry Virtual Tabletop framework.
- * Each Entity type has it's own subclass of Collection, which defines the abstract interface.
+ * Each Entity type has it's own subclass of EntityCollection, which defines the abstract interface.
  * @abstract
  *
  * @param data	An Array of Entity data from which to create instances
- * @param apps	An Array of Application instances which the Collection modifies
+ * @param apps	An Array of Application instances which the EntityCollection modifies
  */
-declare class Collection extends Map {
+declare class EntityCollection extends Map {
 	/**
 	 * A reference to the original source data provided by the server
 	 */
 	protected _source: any;
 
 	/**
-	 * An array of all the Entities in the Collection. Since Collection is now a Map, it would be preferred to use Collection#values directly to obtain an iterator
+	 * An array of all the Entities in the EntityCollection. Since EntityCollection is now a Map, it would be preferred to use EntityCollection#values directly to obtain an iterator
 	 */
 	entities: Entity[];
 
@@ -27,38 +27,38 @@ declare class Collection extends Map {
 	values(): IterableIterator<Entity>;
 
 	/**
-	 * Initialize the Collection instance by preparing all of it's contained Entities
-	 * @return A reference to the initialized Collection
+	 * Initialize the EntityCollection instance by preparing all of it's contained Entities
+	 * @return A reference to the initialized EntityCollection
 	 */
-	initialize(): Collection;
+	initialize(): EntityCollection;
 
 	/**
-	 * Re-render any currently visible applications associated with this Collection
+	 * Re-render any currently visible applications associated with this EntityCollection
 	 */
 	render(...args: any): void;
 
 	/* -------------------------------------------- */
-	/*  Collection Properties                       */
+	/*  EntityCollection Properties                       */
 	/* -------------------------------------------- */
 
 	/**
-	 * The Collection name
+	 * The EntityCollection name
 	 */
 	get name(): string;
 
 	/**
-	 * Return a reference to the singleton instance of this Collection
-	 * By default, a Collection is located in `game[Collection.name]`, for example `game.actors`
+	 * Return a reference to the singleton instance of this EntityCollection
+	 * By default, a EntityCollection is located in `game[EntityCollection.name]`, for example `game.actors`
 	 */
-	static get instance(): Collection;
+	static get instance(): EntityCollection;
 
 	/**
-	 * Return a reference to the SidebarDirectory application for this Collection
+	 * Return a reference to the SidebarDirectory application for this EntityCollection
 	 */
 	get directory(): any;
 
 	/**
-	 * Return a reference to the Entity subclass which should be used when creating elements of this Collection
+	 * Return a reference to the Entity subclass which should be used when creating elements of this EntityCollection
 	 *
 	 * This should always be an explicit reference to the class which is used in this game to represent the entity,
 	 * and not the base implementation of that entity type.
@@ -75,25 +75,25 @@ declare class Collection extends Map {
 	get entity(): string;
 
 	/* -------------------------------------------- */
-	/*  Collection Management Methods               */
+	/*  EntityCollection Management Methods               */
 	/* -------------------------------------------- */
 
 	/**
-	 * Add a new Entity to the Collection, asserting that they are of the correct type
+	 * Add a new Entity to the EntityCollection, asserting that they are of the correct type
 	 *
 	 * @param entity	The entity instance to add to the collection
 	 */
 	insert(entity: Entity): void;
 
 	/**
-	 * Remove an Entity from the Collection by its ID.
+	 * Remove an Entity from the EntityCollection by its ID.
 	 *
 	 * @param id {String}   The entity ID which should be removed
 	 */
 	remove(id: string): void;
 
 	/**
-	 * Filter the Collection, obtaining an Array of Entities which match the filtering function. 
+	 * Filter the EntityCollection, obtaining an Array of Entities which match the filtering function. 
 	 * This is preferred to Array.from().filter() since it avoids iterating twice.
 	 * @param func The filtering function to apply
 	 */
@@ -386,7 +386,7 @@ declare class Collection extends Map {
 	}): Entity[];
 
 	/**
-	 * Get an Entity from the Collection by name
+	 * Get an Entity from the EntityCollection by name
 	 * @param name The name of the Entity to retrieve
 	 * @param strict Throw an Error if the requested id does not exist, otherwise return null. Default false.
 	 */

@@ -2,7 +2,7 @@
  * The Collection of Macro entities
  * @extends {Collection}
  */
-declare class Macros extends Collection {
+declare class Macros extends EntityCollection {
 	entities: Macro[];
 
 	values(): IterableIterator<Macro>;

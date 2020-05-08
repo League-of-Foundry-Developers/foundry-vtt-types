@@ -1,5 +1,5 @@
 
-declare class Folders extends Collection {
+declare class Folders extends EntityCollection {
 
 }
 

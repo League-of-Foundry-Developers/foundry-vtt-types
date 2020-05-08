@@ -1,4 +1,4 @@
-declare class Playlists extends Collection {
+declare class Playlists extends EntityCollection {
 	entities: Playlist[];
 
 	/** @override */
