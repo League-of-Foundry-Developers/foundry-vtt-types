@@ -1,7 +1,7 @@
 declare interface ActorSheetData extends BaseEntitySheetData {
-	actor: Actor,
-	data: ActorData,
-	items: Item[]
+	actor: Actor;
+	data: ActorData;
+	items: Item[];
 }
 
 /**
@@ -99,8 +99,8 @@ declare class ActorSheet extends BaseEntitySheet {
 	/**
 	 * Handle dropped data on the Actor sheet
 	 */
-	protected _onDrop(event: Event | JQuery.Event): boolean;
-	
+	protected _onDrop(event: Event | JQuery.Event): Promise<boolean | any>;
+
 	/* -------------------------------------------- */
 	/*  Owned Item Sorting
 	/* -------------------------------------------- */
