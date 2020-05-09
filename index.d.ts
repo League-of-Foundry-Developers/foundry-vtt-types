@@ -88,6 +88,7 @@ import './types/pixi/placeables/tile';
 
 // UI
 
+import './types/ui/context';
 import './types/ui/dialog';
 import './types/ui/editor';
 import './types/ui/filepicker';
