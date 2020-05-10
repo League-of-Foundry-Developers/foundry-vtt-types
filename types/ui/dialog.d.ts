@@ -1,8 +1,22 @@
+interface DialogData {
+	title?: string;
+	content?: string;
+	close?: (html: HTMLElement | JQuery) => void;
+	buttons?: Record<string, DialogButton>;
+	default?: string;
+}
+
+interface DialogButton {
+	icon?: string;
+	label?: string;
+	callback?: (html: HTMLElement | JQuery) => void;
+}
+
 interface ConfirmDialog {
-	title: string,
-	content: string,
-	yes: Function,
-	no: Function,
+	title: string;
+	content: string;
+	yes: Function;
+	no: Function;
 	defaultYes?: boolean;
 }
 
@@ -46,6 +60,8 @@ interface ConfirmDialog {
  * d.render(true);
  */
 declare class Dialog extends Application {
+	constructor(dialogData: DialogData, options?: ApplicationOptions);
+
 	/**
 	 * A helper function to reduce code duplication when creating confirmation dialog windows.
 	 * These windows are limited in flexibility, for simple yes/no prompts.
@@ -56,5 +72,8 @@ declare class Dialog extends Application {
 	 * @param no		Callback function upon no
 	 * @param defaultYes
 	 */
-	static confirm({ title, content, yes, no, defaultYes }: ConfirmDialog, options: any): Promise<void>;
+	static confirm(
+		{ title, content, yes, no, defaultYes }?: ConfirmDialog,
+		options?: ApplicationOptions
+	): Promise<void>;
 }

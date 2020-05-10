@@ -16,20 +16,29 @@ declare class Game {
 	/** The object of world data passed from the server */
 	data: any;
 
-	/** The id of the active game user */
-	userId: string;
-
-	/** A reference to the open Socket.io connection */
-	socket: WebSocket;
-
-	/** Client settings which are used to configure application behavior */
-	settings: ClientSettings;
-
 	/** Localization support */
 	i18n: Localization;
 
 	/** The Keyboard Manager */
 	keyboard: KeyboardManager;
+
+	/** A mapping of installed modules */
+	modules: Map<any, any>;
+
+	/** The user role permissions setting */
+	permissions: any;
+
+	/** The client session id which is currently active */
+	sessionId: string;
+
+	/** Client settings which are used to configure application behavior */
+	settings: ClientSettings;
+
+	/** A reference to the open Socket.io connection */
+	socket: WebSocket;
+
+	/** The id of the active game user */
+	userId: string;
 
 	/** A singleton instance of the Audio Helper class */
 	audio: AudioHelper;
@@ -39,6 +48,11 @@ declare class Game {
 
 	/** Whether the Game is running in debug mode */
 	debug: boolean;
+
+	/**
+	 * A flag for whether texture assets for the game canvas are currently loading
+	 */
+	loading: boolean;
 
 	/** A flag for whether the Game has successfully reached the "ready" hook */
 	ready: boolean;
@@ -137,11 +151,6 @@ declare class Game {
 	 * Metadata regarding the game System which powers this World
 	 */
 	get system(): any;
-
-	/**
-	 * An Array of metadata for each Module which is active within this game World
-	 */
-	get modules(): any[];
 
 	/**
 	 * A convenience accessor for the currently active Combat encounter
