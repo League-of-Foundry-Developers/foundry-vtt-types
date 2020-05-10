@@ -2,6 +2,7 @@ declare interface BaseEntityData {
 	name: string;
 	type: string;
 	flags: any;
+	data: any;
 }
 
 /**
