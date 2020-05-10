@@ -1,15 +1,15 @@
 interface DialogData {
-	title: string;
-	content: string;
-	close: (html: HTMLElement | JQuery) => void;
-	buttons: Record<string, DialogButton>;
-	default: string;
+	title?: string;
+	content?: string;
+	close?: (html: HTMLElement | JQuery) => void;
+	buttons?: Record<string, DialogButton>;
+	default?: string;
 }
 
 interface DialogButton {
-	icon: string;
-	label: string;
-	callback: (html: HTMLElement | JQuery) => void;
+	icon?: string;
+	label?: string;
+	callback?: (html: HTMLElement | JQuery) => void;
 }
 
 interface ConfirmDialog {
@@ -60,7 +60,7 @@ interface ConfirmDialog {
  * d.render(true);
  */
 declare class Dialog extends Application {
-	constructor(dialogData: DialogData, options: ApplicationOptions);
+	constructor(dialogData: DialogData, options?: ApplicationOptions);
 
 	/**
 	 * A helper function to reduce code duplication when creating confirmation dialog windows.
