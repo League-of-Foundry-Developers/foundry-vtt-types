@@ -10,7 +10,7 @@ declare class Collection extends Map {
 	protected _source: any;
 
 	/**
-	 * An array of all the Entities in the EntityCollection. Since EntityCollection is now a Map, it would be preferred to use EntityCollection#values directly to obtain an iterator
+	 * An array of all the Entities in the Collection. Since Collection is now a Map, it would be preferred to use Collection#values directly to obtain an iterator
 	 */
 	entities: Entity[];
 
@@ -24,13 +24,13 @@ declare class Collection extends Map {
 	values(): IterableIterator<Entity>;
 
 	/**
-	 * Initialize the EntityCollection instance by preparing all of it's contained Entities
-	 * @return A reference to the initialized EntityCollection
+	 * Initialize the Collection instance by preparing all of it's contained Entities
+	 * @return A reference to the initialized Collection
 	 */
-	initialize(): EntityCollection;
+	initialize(): Collection;
 
 	/**
-	 * Re-render any currently visible applications associated with this EntityCollection
+	 * Re-render any currently visible applications associated with this Collection
 	 */
 	render(...args: any): void;
 
@@ -44,18 +44,18 @@ declare class Collection extends Map {
 	get name(): string;
 
 	/**
-	 * Return a reference to the singleton instance of this EntityCollection
-	 * By default, a EntityCollection is located in `game[EntityCollection.name]`, for example `game.actors`
+	 * Return a reference to the singleton instance of this Collection
+	 * By default, a Collection is located in `game[Collection.name]`, for example `game.actors`
 	 */
 	static get instance(): EntityCollection;
 
 	/**
-	 * Return a reference to the SidebarDirectory application for this EntityCollection
+	 * Return a reference to the SidebarDirectory application for this Collection
 	 */
 	get directory(): any;
 
 	/**
-	 * Return a reference to the Entity subclass which should be used when creating elements of this EntityCollection
+	 * Return a reference to the Entity subclass which should be used when creating elements of this Collection
 	 *
 	 * This should always be an explicit reference to the class which is used in this game to represent the entity,
 	 * and not the base implementation of that entity type.
@@ -76,14 +76,14 @@ declare class Collection extends Map {
 	/* -------------------------------------------- */
 
 	/**
-	 * Add a new Entity to the EntityCollection, asserting that they are of the correct type
+	 * Add a new Entity to the Collection, asserting that they are of the correct type
 	 *
 	 * @param entity	The entity instance to add to the collection
 	 */
 	insert(entity: Entity): void;
 
 	/**
-	 * Remove an Entity from the EntityCollection by its ID.
+	 * Remove an Entity from the Collection by its ID.
 	 *
 	 * @param id {String}   The entity ID which should be removed
 	 */
