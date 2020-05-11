@@ -35,11 +35,11 @@ declare class Collection extends Map {
 	render(...args: any): void;
 
 	/* -------------------------------------------- */
-	/*  EntityCollection Properties                       */
+	/*  Collection  Properties                       */
 	/* -------------------------------------------- */
 
 	/**
-	 * The EntityCollection name
+	 * The Collection  name
 	 */
 	get name(): string;
 
@@ -47,7 +47,7 @@ declare class Collection extends Map {
 	 * Return a reference to the singleton instance of this Collection
 	 * By default, a Collection is located in `game[Collection.name]`, for example `game.actors`
 	 */
-	static get instance(): EntityCollection;
+	static get instance(): Collection;
 
 	/**
 	 * Return a reference to the SidebarDirectory application for this Collection
@@ -72,7 +72,7 @@ declare class Collection extends Map {
 	get entity(): string;
 
 	/* -------------------------------------------- */
-	/*  EntityCollection Management Methods               */
+	/*  Collection  Management Methods               */
 	/* -------------------------------------------- */
 
 	/**
@@ -411,7 +411,7 @@ declare class Collection extends Map {
 	}): Entity[];
 
 	/**
-	 * Get an Entity from the EntityCollection by name
+	 * Get an Entity from the Collection  by name
 	 * @param name The name of the Entity to retrieve
 	 * @param strict Throw an Error if the requested id does not exist, otherwise return null. Default false.
 	 */
