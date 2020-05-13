@@ -1,6 +1,6 @@
 interface DialogData {
 	title?: string;
-	content?: string;
+	content?: string | HTMLElement;
 	close?: (html: HTMLElement | JQuery) => void;
 	buttons?: Record<string, DialogButton>;
 	default?: string;

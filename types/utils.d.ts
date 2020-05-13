@@ -21,7 +21,7 @@ declare function readTextFromFile(file: File): Promise<string>;
  * A cheap data duplication trick, surprisingly relatively performant
  * @param original	Some sort of data
  */
-declare function duplicate(original: any): any;
+declare function duplicate<T>(original: T): T;
 
 /**
  * Learn the named type of a token - extending the functionality of typeof to recognize some core Object types
