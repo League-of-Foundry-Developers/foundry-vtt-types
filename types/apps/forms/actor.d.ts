@@ -108,7 +108,10 @@ declare class ActorSheet extends BaseEntitySheet {
 	/**
 	 * Handle a drop event for an existing Owned Item to sort that item
 	 */
-	protected _onSortItem(event: Event | JQuery.Event): any;
+	protected _onSortItem(
+		event: Event | JQuery.Event,
+		itemData: object
+	): Promise<any>;
 
 	protected _getSortSiblings(source: any): any;
 }
