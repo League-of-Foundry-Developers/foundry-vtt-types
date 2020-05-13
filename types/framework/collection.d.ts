@@ -99,7 +99,7 @@ declare class Collection extends Map {
    * let c = new Collection([["a", "AA"], ["b", "AB"], ["c", "CC"]]);
    * let hasA = c.filters(entry => entry.slice(0) === "A");
    */
-	filter(condition): Promise<any[]>
+	filter(condition): any[]
 
 
 	/**
