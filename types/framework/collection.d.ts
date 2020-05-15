@@ -3,7 +3,7 @@
  * This concept is reused throughout Foundry VTT where a collection of uniquely identified elements is required.
  * @extends {Map}
  */
-declare class Collection extends Map {
+declare class Collection<T extends Entity> extends Map {
 	/**
 	 * A reference to the original source data provided by the server
 	 */
@@ -12,7 +12,7 @@ declare class Collection extends Map {
 	/**
 	 * An array of all the Entities in the Collection. Since Collection is now a Map, it would be preferred to use Collection#values directly to obtain an iterator
 	 */
-	entities: Entity[];
+	entities: T[];
 
 	/**
 	 * An Array of application references which will be automatically updated when the collection content changes
@@ -21,13 +21,13 @@ declare class Collection extends Map {
 
 	constructor(data: any[], apps: any[]);
 
-	values(): IterableIterator<Entity>;
+	values(): IterableIterator<T>;
 
 	/**
 	 * Initialize the Collection instance by preparing all of it's contained Entities
 	 * @return A reference to the initialized Collection
 	 */
-	initialize(): Collection;
+	initialize(): Collection<T>;
 
 	/**
 	 * Re-render any currently visible applications associated with this Collection
@@ -47,7 +47,7 @@ declare class Collection extends Map {
 	 * Return a reference to the singleton instance of this Collection
 	 * By default, a Collection is located in `game[Collection.name]`, for example `game.actors`
 	 */
-	static get instance(): Collection;
+	static get instance(): Collection<Entity>;
 
 	/**
 	 * Return a reference to the SidebarDirectory application for this Collection
@@ -61,7 +61,7 @@ declare class Collection extends Map {
 	 * and not the base implementation of that entity type.
 	 * For example :class:`Actor5e` not :class:`Actor`
 	 */
-	get object(): Entity;
+	get object(): T;
 
 	/**
 	 * Return the base Entity name which this collection manages.
@@ -80,7 +80,7 @@ declare class Collection extends Map {
 	 *
 	 * @param entity	The entity instance to add to the collection
 	 */
-	insert(entity: Entity): void;
+	insert(entity: T): void;
 
 	/**
 	 * Remove an Entity from the Collection by its ID.
@@ -130,7 +130,7 @@ declare class Collection extends Map {
 	 * @param strict	Throw an Error if the requested id does not exist, otherwise return null. Default false.
 	 * @return			The retrieved Entity, if the ID was found, otherwise null;
 	 */
-	get(id: string, { strict }?: { strict?: boolean }): Entity;
+	get(id: string, { strict }?: { strict?: boolean }): T;
 
 	/**
 	 * Retrieve the index of an entity within the collection by its ID
@@ -152,7 +152,7 @@ declare class Collection extends Map {
 		entryId: string,
 		updateData?: object,
 		options?: object
-	): Promise<Entity>;
+	): Promise<T>;
 
 	/* -------------------------------------------- */
 	/*  Socket Listeners and Handlers               */
@@ -181,7 +181,7 @@ declare class Collection extends Map {
 		created: object;
 		options: object;
 		userId: string;
-	}): Entity;
+	}): T;
 
 	/**
 	 * Handle creation of multiple Entities using data provided from a server response.
@@ -200,7 +200,7 @@ declare class Collection extends Map {
 		data: object[];
 		options: object;
 		userId: string;
-	}): Entity[];
+	}): T[];
 
 	/**
 	 * Handle Entity update workflow using the server response from the update<Entity> socket
@@ -219,7 +219,7 @@ declare class Collection extends Map {
 		updated: object;
 		options: object;
 		userId: string;
-	}): Entity;
+	}): T;
 
 	/**
 	 * Handle updates to multiple Entities using data provided from a server response.
@@ -238,7 +238,7 @@ declare class Collection extends Map {
 		data: object[];
 		options: object;
 		userId: string;
-	}): Entity[];
+	}): T[];
 
 	/**
 	 * Handle Entity deletion workflow using the server response from the delete<Entity> socket
@@ -257,7 +257,7 @@ declare class Collection extends Map {
 		deleted: object;
 		options: object;
 		userId: string;
-	}): Entity;
+	}): T;
 
 	/**
 	 * Handle deletion of multiple Entities using an Array of ids provided from a server response.
@@ -276,7 +276,7 @@ declare class Collection extends Map {
 		data: object[];
 		options: object;
 		userId: string;
-	}): Entity[];
+	}): T[];
 
 	/**
 	 * Handle the creation of a new Embedded Entity within a parent Entity in response to server-side socket broadcast.
@@ -298,7 +298,7 @@ declare class Collection extends Map {
 		created: object;
 		options: object;
 		userId: string;
-	}): Entity;
+	}): T;
 
 	/**
 	 * Handle creation of multiple Embedded Entities within a parent Entity in response to server-side socket broadcast.
@@ -320,7 +320,7 @@ declare class Collection extends Map {
 		data: object[];
 		options: object;
 		userId: string;
-	}): Entity[];
+	}): T[];
 
 	/**
 	 * Handle updates to an Embedded Entity within a parent Entity in response to server-side socket broadcast.
@@ -342,7 +342,7 @@ declare class Collection extends Map {
 		data: object;
 		options: object;
 		userId: string;
-	}): Entity;
+	}): T;
 
 	/**
 	 * Handle updates to a multiple Embedded Entities within a parent Entity in response to server-side socket broadcast.
@@ -364,7 +364,7 @@ declare class Collection extends Map {
 		data: object[];
 		options: object;
 		userId: string;
-	}): Entity[];
+	}): T[];
 
 	/**
 	 * Handle deletion of an Embedded Entity within a parent Entity in response to server-side socket broadcast.
@@ -386,7 +386,7 @@ declare class Collection extends Map {
 		deleted: string;
 		options: object;
 		userId: string;
-	}): Entity;
+	}): T;
 
 	/**
 	 * Handle deletion of multiple Embedded Entities within a parent Entity in response to server-side socket broadcast.
@@ -408,12 +408,12 @@ declare class Collection extends Map {
 		data: string[];
 		options: object;
 		userId: string;
-	}): Entity[];
+	}): T[];
 
 	/**
 	 * Get an Entity from the Collection  by name
 	 * @param name The name of the Entity to retrieve
 	 * @param strict Throw an Error if the requested id does not exist, otherwise return null. Default false.
 	 */
-	getName(name: string, strict?: boolean): Entity | null;
+	getName(name: string, strict?: boolean): T | null;
 }

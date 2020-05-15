@@ -11,7 +11,7 @@ declare interface ActorData extends BaseEntityData {
  * @example <caption>Retrieve an existing Actor by its id</caption>
  * let actor = game.actors.get(actorId);
  */
-declare class Actors extends EntityCollection {
+declare class Actors extends Collection<Actor> {
 	entities: Actor[];
 
 	/**
@@ -85,7 +85,7 @@ declare class Actor extends Entity {
 	 * Construct the Map of Item instances for the Actor
 	 * @type {Collection<string,OwnedItem>}
 	 */
-	items: Collection;
+	items: Collection<any>;
 
 	/**
 	 * Cache an Array of allowed Token images if using a wildcard path

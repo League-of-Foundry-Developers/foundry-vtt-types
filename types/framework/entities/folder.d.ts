@@ -1,8 +1,3 @@
+declare class Folders extends Collection<Folder> { }
 
-declare class Folders extends EntityCollection {
-
-}
-
-declare class Folder extends Entity {
-	
-}
+declare class Folder extends Entity { }

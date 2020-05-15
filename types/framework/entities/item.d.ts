@@ -2,7 +2,7 @@
  * The Collection of Item entities
  * The items collection is accessible within the game as game.items
  */
-declare class Items extends EntityCollection {
+declare class Items extends Collection<Item> {
 	entities: Item[];
 
 	values(): IterableIterator<Item>;

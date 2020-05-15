@@ -1,4 +1,4 @@
-declare class Messages extends EntityCollection {
+declare class Messages extends Collection<ChatMessage> {
 	entities: ChatMessage[];
 
 	/**

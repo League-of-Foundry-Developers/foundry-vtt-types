@@ -1,7 +1,7 @@
 /**
  * The collection of Scene entities
  */
-declare class Scenes extends EntityCollection {
+declare class Scenes extends Collection<Scene> {
 	// @TODO: Declare
 }
 
