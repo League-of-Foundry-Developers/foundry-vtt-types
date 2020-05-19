@@ -72,7 +72,7 @@ declare class Game {
 	combats: CombatEncounters;
 	tables: RollTables;
 	folders: Folders;
-	packs: Collection;
+	packs: Compendium[];
 
 	constructor(worldData: object, userId: string, socket: SocketIO.Socket);
 
