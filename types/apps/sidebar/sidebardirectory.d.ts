@@ -32,7 +32,7 @@ declare class SidebarDirectory extends SidebarTab {
 
 	static get entityLower(): Entity;
 
-	static get collection(): Collection;
+	static get collection(): Collection<Entity>;
 
 	/**
 	 * When rendering a SidebarDirectory, check the render context to rebuild the tree structure if needed
