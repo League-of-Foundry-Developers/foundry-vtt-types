@@ -53,7 +53,7 @@ declare class Entity {
 	 */
 	static get config(): {
 		baseEntity: Entity;
-		collection: Collection;
+		collection: Collection<Entity>;
 		embeddedEntities: any;
 	};
 
@@ -105,10 +105,10 @@ declare class Entity {
 	 * Return a reference to the Collection instance which stores Entity instances of this type. This property is
 	 * available as both a static and instance method and should be overridden by subclass Entity implementations.
 	 */
-	static get collection(): Collection;
+	static get collection(): Collection<Entity>;
 
 	/** @alias Entity.collection */
-	get collection(): Collection;
+	get collection(): Collection<Entity>;
 
 	/**
 	 * The class name of the base Entity type, for example "Actor". This is useful in cases where there is an inheritance
