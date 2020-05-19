@@ -82,9 +82,10 @@ declare class Actor extends Entity {
 	token: Token;
 
 	/**
-	 * Construct the Array of Item instances for the Actor
+	 * Construct the Map of Item instances for the Actor
+	 * @type {Collection<string,OwnedItem>}
 	 */
-	items: Item[];
+	items: Collection<any>;
 
 	/**
 	 * Cache an Array of allowed Token images if using a wildcard path

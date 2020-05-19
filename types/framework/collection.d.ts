@@ -1,10 +1,7 @@
 /**
- * An iterable container of Entity objects within the Foundry Virtual Tabletop framework.
- * Each Entity type has it's own subclass of Collection, which defines the abstract interface.
- * @abstract
- *
- * @param data	An Array of Entity data from which to create instances
- * @param apps	An Array of Application instances which the Collection modifies
+ * A reusable storage concept which blends the functionality of an Array with the efficient key-based lookup of a Map.
+ * This concept is reused throughout Foundry VTT where a collection of uniquely identified elements is required.
+ * @extends {Map}
  */
 declare class Collection<T extends Entity> extends Map {
 	/**
@@ -38,11 +35,11 @@ declare class Collection<T extends Entity> extends Map {
 	render(...args: any): void;
 
 	/* -------------------------------------------- */
-	/*  Collection Properties                       */
+	/*  Collection  Properties                       */
 	/* -------------------------------------------- */
 
 	/**
-	 * The Collection name
+	 * The Collection  name
 	 */
 	get name(): string;
 
@@ -75,7 +72,7 @@ declare class Collection<T extends Entity> extends Map {
 	get entity(): string;
 
 	/* -------------------------------------------- */
-	/*  Collection Management Methods               */
+	/*  Collection  Management Methods               */
 	/* -------------------------------------------- */
 
 	/**
@@ -91,6 +88,41 @@ declare class Collection<T extends Entity> extends Map {
 	 * @param id {String}   The entity ID which should be removed
 	 */
 	remove(id: string): void;
+
+	/**
+   * Filter the Collection, returning an Array of entries which match a functional condition.
+   * @see {Array#filter}
+   * @param {Function} condition	The functional condition to test
+   * @return		                An Array of matched values
+   *
+   * @example
+   * let c = new Collection([["a", "AA"], ["b", "AB"], ["c", "CC"]]);
+   * let hasA = c.filters(entry => entry.slice(0) === "A");
+   */
+	filter(condition): any[]
+
+
+	/**
+   * Transform each element of the Collection into a new form, returning an Array of transformed values
+   * @param {Function} transformer		The transformation function to apply to each entry value
+   * @return 		                 	An Array of transformed values
+   */
+	map(transformer): any[]
+
+	/**
+   * Reduce the Collection by applying an evaluator function and accumulating entries
+   * @see {Array#reduce}
+   * @param {Function} evaluator	A function which mutates the accumulator each iteration
+   * @param initial					An initial value which accumulates with each iteration
+   * @return						The accumulated result
+   *
+   * @example
+   * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
+   * let letters = c.reduce((s, l) => {
+   *   return s + l;
+   * }, ""); // "ABC"
+   */
+	reduce(evaluator, initial): any;
 
 	/**
 	 * Get an element from the collection by ID.
@@ -379,7 +411,7 @@ declare class Collection<T extends Entity> extends Map {
 	}): T[];
 
 	/**
-	 * Get an Entity from the Collection by name
+	 * Get an Entity from the Collection  by name
 	 * @param name The name of the Entity to retrieve
 	 * @param strict Throw an Error if the requested id does not exist, otherwise return null. Default false.
 	 */

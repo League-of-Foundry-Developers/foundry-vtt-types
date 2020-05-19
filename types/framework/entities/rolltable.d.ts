@@ -23,15 +23,41 @@ declare class RollTable extends Entity {
 
 	/**
 	 * Draw a result from the RollTable based on the table formula or a provided Roll instance
-	 * @param roll		An existing Roll instance to use for drawing from the table
-	 * @param result	A roll table result or null, to draw randomly based on the roll
-	 * @param rollMode	The chat roll mode to use when displaying the result
-	 * @returns			A promise resolving to the selected Table Result object
+	 * @param roll			An existing Roll instance to use for drawing from the table
+	 * @param results		A roll table result or null, to draw randomly based on the roll
+	 * @param displayChat	Whether to automatically display the results in chat
+	 * @param rollMode		The chat roll mode to use when displaying the result
+	 * @returns			 	Promise which resolves to an object containing the executed roll and the produced results
 	 */
-	draw(
-		{ roll, result }?: { roll?: Roll; result?: object },
-		{ rollMode }?: { rollMode?: string }
-	): Promise<any>;
+	draw({
+		roll,
+		results,
+		displayChat,
+		rollMode
+	}?: {
+		roll?: Roll;
+		results?: any[];
+		displayChat?: boolean
+		rollMode?: string
+	}): Promise<{ roll: Roll, results: any[] }>;
+
+	/**
+	 * Draw multiple results from a RollTable, constructing a final synthetic Roll as a dice pool of inner rolls.
+	 * @param number     	The number of results to draw
+	 * @param roll      	An optional pre-configured Roll instance which defines the dice roll to use
+	 * @param displayChat   Automatically display the drawn results in chat? Default is true
+	 * @param rollMode      Customize the roll mode used to display the drawn results
+	 * @return 				A Promise which resolves to an object containing the executed roll and the produced results
+	 */
+	drawMany(number: number, {
+		roll,
+		displayChat,
+		rollMode
+	}?: {
+		roll?: Roll;
+		displayChat?: boolean
+		rollMode?: string
+	}): Promise<{ roll: Roll, results: any[] }>;
 
 	/**
 	 * Display the result drawn from the table as a chat message
