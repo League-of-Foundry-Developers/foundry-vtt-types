@@ -1,3 +1,3 @@
-declare class EntityCollection extends Collection {
+declare class EntityCollection extends Collection<Entity> {
     // @TODO declare class
 }
