@@ -57,7 +57,6 @@ import './types/core/video';
 // Framework
 
 import './types/framework/collection';
-import './types/framework/entitycollection';
 import './types/framework/compendium';
 import './types/framework/entity';
 

@@ -5,7 +5,7 @@
 declare class ClientSettings {
 	/** An object of registered game settings for this scope */
 	settings: any;
-
+	
 	/**
 	 * The storage interfaces used for persisting settings
 	 * Each storage interface shares the same API as window.localStorage
@@ -26,15 +26,6 @@ declare class ClientSettings {
 	 * @param data		Configuration for setting data
 	 */
 	register(module: string, key: string, data: any): void;
-
-	/**
-	 * Register a new sub-settings menu
-	 * @param module 	The namespace under which the menu is registered
-	 * @param key		The key name for the setting under the namespace module
-	 * @param data 		Configuration for setting data
-	 */
-	registerMenu(module: string, key: string, data: any): void;
-
 
 	/**
 	 * Get the value of a game setting for a certain module and setting key
