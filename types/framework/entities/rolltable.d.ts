@@ -21,17 +21,33 @@ declare class RollTable extends Entity {
 	/*  Methods
 	/* -------------------------------------------- */
 
-	/**
-	 * Draw a result from the RollTable based on the table formula or a provided Roll instance
-	 * @param roll		An existing Roll instance to use for drawing from the table
-	 * @param result	A roll table result or null, to draw randomly based on the roll
-	 * @param rollMode	The chat roll mode to use when displaying the result
-	 * @returns			A promise resolving to the selected Table Result object
-	 */
+  /**
+   * Draw a result from the RollTable based on the table formula or a provided Roll instance
+   * @param {Roll|null} roll			An existing Roll instance to use for drawing from the table
+   * @param {Array<any>} results		One or more table results which have been drawn
+   *
+   * @param {boolean} displayChat		Whether to automatically display the results in chat
+   * @param {string|null} rollMode		The chat roll mode to use when displaying the result
+   *
+   * @return {Promise<{roll: Roll, results: any[]}>}   A Promise which resolves to an object containing the
+   *                                                      	executed roll and the produced results
+   */
 	draw(
-		{ roll, result }?: { roll?: Roll; result?: object },
-		{ rollMode }?: { rollMode?: string }
-	): Promise<any>;
+		{ roll, results, displayChat, rollMode }?: { roll?: Roll, results?: any[], displayChat?: boolean, rollMode?: string }
+	): Promise<{roll: Roll, results: any[]}>;
+
+
+  /**
+   * Draw multiple results from a RollTable, constructing a final synthetic Roll as a dice pool of inner rolls.
+   * @param {number} number     	The number of results to draw
+   * @param {Roll} roll       		An optional pre-configured Roll instance which defines the dice roll to use
+   * @param {boolean} displayChat   Automatically display the drawn results in chat? Default is true
+   * @param {string} rollMode       Customize the roll mode used to display the drawn results
+   * @return {Promise<{roll: Roll, results: any[]}>}
+   */
+	drawMany(
+		number?: number, { roll, displayChat, rollMode }?: { roll?: Roll, displayChat?: boolean, rollMode?: string }
+	): Promise<{roll: Roll, results: any[]}>;
 
 	/**
 	 * Display the result drawn from the table as a chat message
