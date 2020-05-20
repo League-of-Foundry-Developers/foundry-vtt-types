@@ -97,6 +97,12 @@ declare class Collection<T extends Entity> extends Map {
 	 * @param id		The entity ID to retrieve from the collection
 	 * @param strict	Throw an Error if the requested id does not exist, otherwise return null. Default false.
 	 * @return			The retrieved Entity, if the ID was found, otherwise null;
+	 * 
+	 * @example
+	 * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
+	 * c.get("a"); // "A"
+	 * c.get("d"); // null
+	 * c.get("d", {strict: true}); // throws Error
 	 */
 	get(id: string, { strict }?: { strict?: boolean }): T;
 
@@ -108,6 +114,40 @@ declare class Collection<T extends Entity> extends Map {
 	 */
 	index(id: string): number;
 
+	 /**
+	  * Filter the Collection, returning an Array of entries which match a functional condition.
+	  * @param condition 	The functional condition to test
+	  * 
+	  * @example
+      * let c = new Collection([["a", "AA"], ["b", "AB"], ["c", "CC"]]);
+   	  * let hasA = c.filters(entry => entry.slice(0) === "A");
+   	  */
+	filter(condition: any): any[];
+	/**
+	 * Find an entry in the Map using an functional condition.
+	 * @param condition 	The functional condition to test
+	 */
+	find(condition: any): any|null;
+
+	/**
+     * Transform each element of the Collection into a new form, returning an Array of transformed values
+     * @param {Function} transformer  The transformation function to apply to each entry value
+	 */
+	map(transformer: any): any[];
+
+	/**
+	 * Reduce the Collection by applying an evaluator function and accumulating entries
+	 * @param evaluator A function which mutates the accumulator each iteration
+	 * @param initial 	An initial value which accumulates with each iteration
+	 * 
+   	 * @example
+   	 * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
+  	 * let letters = c.reduce((s, l) => {
+  	 *   return s + l;
+   	 * }, ""); // "ABC"
+   	 */
+	reduce(evaluator: any, initial: any): any
+
 	/**
 	 * Import an Entity from a compendium collection, adding it to the current World
 	 * @param collection	The name of the pack from which to import
@@ -115,6 +155,7 @@ declare class Collection<T extends Entity> extends Map {
 	 * @param updateData	Data used to update the imported Entity before it is created in the World
 	 * @return				A Promise containing the imported Entity
 	 */
+
 	importFromCollection(
 		collection: string,
 		entryId: string,
