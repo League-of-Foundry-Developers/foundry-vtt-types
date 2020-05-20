@@ -84,7 +84,7 @@ declare class Actor extends Entity {
 	/**
 	 * Construct the Array of Item instances for the Actor
 	 */
-	items: Item[];
+	items: Collection<Item>;
 
 	/**
 	 * Cache an Array of allowed Token images if using a wildcard path
