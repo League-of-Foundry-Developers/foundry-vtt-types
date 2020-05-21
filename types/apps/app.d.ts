@@ -62,6 +62,9 @@ interface ApplicationPosition extends Object {
 
 declare const MIN_WINDOW_WIDTH: number, MIN_WINDOW_HEIGHT: number;
 
+declare let _appId: number;
+declare let _maxZ: number;
+
 /**
  * The standard application window that is rendered for a large variety of UI elements in Foundry VTT
  */
