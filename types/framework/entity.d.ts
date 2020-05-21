@@ -387,11 +387,12 @@ declare class Entity {
 	 */
 	createEmbeddedEntity(
 		embeddedName: string,
-		createData: object,
+		createData: object|object[],
 		options?: object
 	): Promise<Entity>;
 
 	/**
+	 * @deprecated
 	 * Create multiple Embedded Entities within this parent Entity using an Array of creation data.
 	 * Dispatch the update request to the server for handling.
 	 * The result will be acknowledged to this client, and broadcast to other connected clients.
@@ -419,11 +420,12 @@ declare class Entity {
 	 */
 	updateEmbeddedEntity(
 		embeddedName: string,
-		updateData: object,
+		updateData: object|object[],
 		options?: object
 	): Promise<Entity>;
 
 	/**
+	 * @deprecated
 	 * Update multiple Embedded Entities within this parent Entity using incremental data.
 	 * Dispatch the update request to the server for handling.
 	 * The result will be acknowledged to this client, and broadcast to other connected clients.
@@ -451,11 +453,12 @@ declare class Entity {
 	 */
 	deleteEmbeddedEntity(
 		embeddedName: string,
-		childId: string,
+		childId: string|string[],
 		options?: object
 	): Promise<Entity>;
 
 	/**
+	 * @deprecated
 	 * Delete multiple Embedded Entities within this parent Entity by an Array of child ids.
 	 * Dispatch the update request to the server for handling.
 	 * The result will be acknowledged to this client, and broadcast to other connected clients.
