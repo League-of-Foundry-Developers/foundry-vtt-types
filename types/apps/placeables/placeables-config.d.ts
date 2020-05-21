@@ -47,11 +47,11 @@ declare class TileConfig extends FormApplication {}
  *
  * @param options.configureDefault	Configure the default actor token on submit
  */
-declare class TokenConfg extends FormApplication {}
+declare class TokenConfig extends FormApplication {}
 
 /**
  * Wall Configuration Sheet
- * 
+ *
  * @param object	The Wall object for which settings are being configured
  * @param options	Additional options which configure the rendering of the configuration sheet.
  */

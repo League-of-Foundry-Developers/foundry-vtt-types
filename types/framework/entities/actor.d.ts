@@ -1,5 +1,6 @@
 declare interface ActorData extends BaseEntityData {
 	img: string;
+	token: Token;
 }
 
 /**
