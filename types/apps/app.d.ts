@@ -85,17 +85,19 @@ declare class Application {
 	/**
 	 * An internal reference to the HTML element this application renders
 	 */
-	private _element: JQuery;
+	protected _element: JQuery;
 
 	/**
 	 * Track whether the Application is currently minimized
 	 */
-	private _minimize: boolean;
+	protected _minimize: boolean;
 
 	/**
 	 * Track whether the Application has been successfully rendered
 	 */
-	private _rendered: boolean;
+	protected _rendered: boolean;
+
+	protected RENDER_STATES: any;
 
 	constructor(options?: ApplicationOptions);
 
