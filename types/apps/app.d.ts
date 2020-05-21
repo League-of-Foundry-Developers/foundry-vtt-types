@@ -113,7 +113,7 @@ declare class Application {
 	 */
 	protected _scrollPositions: any | null;
 
-	protected RENDER_STATES: any;
+	protected static RENDER_STATES: any;
 
 	constructor(options?: ApplicationOptions);
 
