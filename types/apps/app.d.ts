@@ -88,18 +88,46 @@ declare class Application {
 	protected _element: JQuery;
 
 	/**
-	 * Track whether the Application is currently minimized
+	 * DragDrop workflow handlers which are active for this Application
 	 */
-	protected _minimize: boolean;
+	protected _dragDrop: DragDrop[];
 
 	/**
-	 * Track whether the Application has been successfully rendered
+	 * Tab navigation handlers which are active for this Application
 	 */
-	protected _rendered: boolean;
+	protected _tabs: TabsV2[];
+
+	/**
+	 * Track whether the Application is currently minimized
+	 */
+	protected _minimized: boolean;
+
+	/**
+	 * Track the render state of the Application
+	 * @see {Application.RENDER_STATES}
+	 */
+	protected _state: any;
+
+	/**
+	 * Track the most recent scroll positions for any vertically scrolling containers
+	 */
+	protected _scrollPositions: any | null;
 
 	protected RENDER_STATES: any;
 
 	constructor(options?: ApplicationOptions);
+
+	/**
+	 * Create drag-and-drop workflow handlers for this Application
+	 * @return	An array of DragDrop handlers
+	 */
+	protected _createDragDropHandlers(): DragDrop[];
+
+	/**
+	 * Create tabbed navigation handlers for this Application
+	 * @return	An array of TabsV2 handlers
+	 */
+	protected _createTabHandlers(): TabsV2[];
 
 	/**
 	 * Assign the default options which are supported by all Application classes.
@@ -128,6 +156,11 @@ declare class Application {
 	 * wrapper window, otherwise only the inner app content is rendered
 	 */
 	get popOut(): boolean;
+
+	/**
+	 * Return a flag for whether the Application instance is currently rendered
+	 */
+	get rendered(): boolean;
 
 	/**
 	 * An Application window should define its own title definition logic which may be dynamic depending on its data
@@ -163,6 +196,19 @@ declare class Application {
 	protected _render(force?: boolean, options?: any): void;
 
 	/**
+	 * Persist the scroll positions of containers within the app before re-rendering the content
+	 */
+	protected _saveScrollPositions(html: HTMLElement | JQuery, selectors: string[]): void;
+
+	/**
+	 * Restore the scroll positions of containers within the app after re-rendering the content
+	 */
+	protected _restoreScrollPositions(
+		html: HTMLElement | JQuery,
+		selectors: string[]
+	): void;
+
+	/**
 	 * Render the outer application wrapper
 	 * @return	A promise resolving to the constructed jQuery object
 	 */
@@ -173,10 +219,7 @@ declare class Application {
 	 * @param data	The data used to render the inner template
 	 * @return		A promise resolving to the constructed jQuery object
 	 */
-	protected _renderInner(
-		data: any,
-		options: any
-	): Promise<JQuery | HTMLElement>;
+	protected _renderInner(data: any, options: any): Promise<JQuery | HTMLElement>;
 
 	/**
 	 * Customize how inner HTML is replaced when the application is refreshed
@@ -185,7 +228,8 @@ declare class Application {
 	 */
 	protected _replaceHTML(
 		element: JQuery | HTMLElement,
-		html: JQuery | HTMLElement
+		html: JQuery | HTMLElement,
+		options: any
 	): void;
 
 	/**
@@ -212,6 +256,46 @@ declare class Application {
 	 * the application
 	 */
 	protected activateListeners(html: JQuery | HTMLElement): void;
+
+	/**
+	 * Handle changes to the active tab in a configured Tabs controller
+	 * @param event		A left click event
+	 * @param tabs		The TabsV2 controller
+	 * @param active	The new active tab name
+	 */
+	protected _onChangeTab(event: MouseEvent, tabs: TabsV2, active: string): void;
+
+	/**
+	 * Define whether a user is able to begin a dragstart workflow for a given drag selector
+	 * @param selector	The candidate HTML selector for dragging
+	 * @return			Can the current user drag this selector?
+	 */
+	protected _canDragStart(selector: string): boolean;
+
+	/**
+	 * Define whether a user is able to conclude a drag-and-drop workflow for a given drop selector
+	 * @param selector	The candidate HTML selector for the drop target
+	 * @return			Can the current user drop on this selector?
+	 */
+	protected _canDragDrop(selector: string): boolean;
+
+	/**
+	 * Callback actions which occur at the beginning of a drag start workflow.
+	 * @param event	The originating DragEvent
+	 */
+	protected _onDragStart(event: DragEvent): void;
+
+	/**
+	 * Callback actions which occur when a dragged element is over a drop target.
+	 * @param event	The originating DragEvent
+	 */
+	protected _onDragOver(event: DragEvent): void;
+
+	/**
+	 * Callback actions which occur when a dragged element is dropped on a target.
+	 * @param event	The originating DragEvent
+	 */
+	protected _onDrop(event: DragEvent): void;
 
 	/* -------------------------------------------- */
 	/*  Methods                                     */
