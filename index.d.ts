@@ -90,6 +90,7 @@ import './types/pixi/placeables/tile';
 
 import './types/ui/context';
 import './types/ui/dialog';
+import './types/ui/dragdrop';
 import './types/ui/editor';
 import './types/ui/filepicker';
 import './types/ui/notifications';
