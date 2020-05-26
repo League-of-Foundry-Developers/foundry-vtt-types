@@ -28,6 +28,7 @@ declare interface TabV2Options {
  * });
  *
  * @param tabs {HTMLElement|JQuery} An HTML element or JQuery object representing the tab navigation container.
+ * @deprecated in 0.5.2 will be removed in 0.6.2
  */
 declare class Tabs {
 	/** The collection of tabs */
@@ -125,12 +126,7 @@ declare class TabsV2 {
 	 */
 	protected _content: HTMLElement;
 
-	constructor({
-		navSelector,
-		contentSelector,
-		initial,
-		callback,
-	}: TabV2Options);
+	constructor({ navSelector, contentSelector, initial, callback }: TabV2Options);
 
 	/**
 	 * Bind the Tabs controller to an HTML application
@@ -143,10 +139,7 @@ declare class TabsV2 {
 	 * @param tabName
 	 * @param triggerCallback
 	 */
-	activate(
-		tabName: string,
-		{ triggerCallback }?: { triggerCallback?: boolean }
-	): void;
+	activate(tabName: string, { triggerCallback }?: { triggerCallback?: boolean }): void;
 
 	/**
 	 * Handle click events on the tab navigation entries
