@@ -63,6 +63,17 @@ declare class Die {
 	 */
 	options: any;
 
+	/**
+	 * Define regular expression option matches for the Die class
+	 */
+	static rgx: {
+		die: RegExp;
+		reroll: RegExp;
+		explode: RegExp;
+		keep: RegExp;
+		success: RegExp;
+	};
+
 	constructor(faces: number, options?: object);
 
 	/**
@@ -186,6 +197,46 @@ declare class Die {
 	 * @param result	The rolled die result
 	 */
 	protected _getTooltip(result: number): number;
+
+	/* -------------------------------------------- */
+	/*  Factory Method                              */
+	/* -------------------------------------------- */
+
+	/**
+	 * Given a string formula, create and return a rolled Die object
+	 * @param formula	The string formula to parse
+	 * @return			The rolled Die object if the formula was valid, null otherwise
+	 */
+	static fromFormula(formula: string): Die | null;
+
+	/* -------------------------------------------- */
+	/*  Roll Modifiers                              */
+	/* -------------------------------------------- */
+
+	/**
+	 * Apply suffix options and modifiers to the result of this Die roll
+	 */
+	applyModifiers(query: string): Die;
+
+	/**
+	 * Reroll a single die by parsing the option string
+	 */
+	protected _applyReroll(option: string): void;
+
+	/**
+	 * Explode a single die by parsing the option string
+	 */
+	protected _applyExplode(option: string): void;
+
+	/**
+	 * Keep or drop die by parsing the option string
+	 */
+	protected _applyKeepDrop(option: string): void;
+
+	/**
+	 * Count successes or margin of success
+	 */
+	protected _applySuccess(option: string): void;
 }
 
 /**
