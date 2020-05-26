@@ -75,6 +75,7 @@ import './types/framework/entities/user';
 // PIXI
 
 import './types/pixi/canvaslayer';
+import './types/pixi/mouseinteractionmanager';
 import './types/pixi/placeableobject';
 import './types/pixi/placeableslayer';
 

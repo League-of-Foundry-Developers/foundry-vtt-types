@@ -1,24 +1,76 @@
 /**
- * A PlaceableObject base container class
+ * An Abstract Base Class which defines a Placeable Object which represents an Entity placed on the Canvas
  */
 declare class PlaceableObject extends PIXI.Container {
+	/**
+	 * The underlying data object which provides the basis for this placeable object
+	 */
 	data: any;
 
+	/**
+	 * Retain a reference to the Scene within which this Placeable Object resides
+	 */
 	scene: Scene;
 
-	fov: PIXI.Polygon;
+	/**
+	 * Track the field of vision for the placeable object.
+	 * This is necessary to determine whether a player has line-of-sight towards a placeable object or vice-versa
+	 */
+	vision: {
+		fov: PIXI.Polygon | null;
+		los: PIXI.Polygon | null;
+	};
 
-	protected _hover: boolean;
+	/**
+	 * A control icon for interacting with the object
+	 */
+	controlIcon: ControlIcon;
 
+	/**
+	 * A mouse interaction manager instance which handles mouse workflows related to this object.
+	 */
+	mouseInteractionManager: MouseInteractionManager;
+
+	/**
+	 * An indicator for whether the object is currently controlled
+	 */
 	protected _controlled: boolean;
 
-	controlIcon: ControlIcon;
+	/**
+	 * An indicator for whether the object is currently a hover target
+	 */
+	protected _hover: boolean;
+
+	/**
+	 * A singleton reference to the FormApplication class which configures this object
+	 */
+	protected _sheet: FormApplication | null;
 
 	constructor(data: any, scene: Scene);
 
 	/* -------------------------------------------- */
 	/* Properties
 	/* -------------------------------------------- */
+
+	/**
+	 * The central coordinate pair of the placeable object based on it's own width and height
+	 */
+	get center(): PIXI.Point;
+
+	/**
+	 * This EmbeddedEntity ID of the underlying data object
+	 */
+	get id(): string;
+
+	/**
+	 * The field-of-vision polygon for the object, if it has been computed
+	 */
+	get fov(): PIXI.Polygon | null;
+
+	/**
+	 * Identify the official EmbeddedEntity name for this PlaceableObject class
+	 */
+	static get embeddedName(): string;
 
 	/**
 	 * Provide a reference to the canvas layer which contains placeable objects of this type
@@ -31,93 +83,87 @@ declare class PlaceableObject extends PIXI.Container {
 	get layer(): PlaceablesLayer;
 
 	/**
-	 * This EmbeddedEntity ID of the underlying data object
+	 * The line-of-sight polygon for the object, if it has been computed
 	 */
-	get id(): number;
+	get los(): PIXI.Polygon | null;
 
 	/**
-	 * The [x,y] coordinates of the placeable object within the Scene container
+	 * A Form Application which is used to configure the properties of this Placeable Object or the EmbeddedEntity
+	 * it represents.
 	 */
-	get coords(): number[];
+	get sheet(): FormApplication;
 
 	/**
-	 * The central coordinate pair of the placeable object based on it's own width and height
+	 * A Universally Unique Identifier (uuid) for this EmbeddedEntity
 	 */
-	get center(): { x: number; y: number };
-
-	/**
-	 * A Boolean flag for whether the current game User has permission to control this token
-	 */
-	get owner(): boolean;
-
-	/**
-	 * A placeable object should define the logic to create
-	 */
-	get sheet(): Application;
+	get uuid(): string;
 
 	/* -------------------------------------------- */
-	/* Methods
+	/*  Permission Controls                         */
+	/* -------------------------------------------- */
+
+	/**
+	 * Test whether a user can perform a certain interaction with regards to a Placeable Object
+	 * @param user		The User performing the action
+	 * @param action	The named action being attempted
+	 * @return			Does the User have rights to perform the action?
+	 */
+	can(user: User, action: string): boolean;
+
+	/**
+	 * Can the User access the HUD for this Placeable Object?
+	 */
+	protected _canHUD(user: User, event?: Event): boolean;
+
+	/**
+	 * Does the User have permission to configure the Placeable Object?
+	 */
+	protected _canConfigure(user: User, event?: Event): boolean;
+
+	/**
+	 * Does the User have permission to control the Placeable Object?
+	 */
+	protected _canControl(user: User, event?: Event): boolean;
+
+	/**
+	 * Does the User have permission to view details of the Placeable Object?
+	 */
+	protected _canView(user: User, event?: Event): boolean;
+
+	/**
+	 * Does the User have permission to create the underlying Embedded Entity?
+	 */
+	protected _canCreate(user: User, event?: Event): boolean;
+
+	/**
+	 * Does the User have permission to drag this Placeable Object?
+	 */
+	protected _canDrag(user: User, event?: Event): boolean;
+
+	/**
+	 * Does the User have permission to hover on this Placeable Object?
+	 */
+	protected _canHover(user: User, event?: Event): boolean;
+
+	/**
+	 * Does the User have permission to update the underlying Embedded Entity?
+	 */
+	protected _canUpdate(user: User, event?: Event): boolean;
+
+	/**
+	 * Does the User have permission to delete the underlying Embedded Entity?
+	 */
+	protected _canDelete(user: User, event?: Event): boolean;
+
+	/* -------------------------------------------- */
+	/*  Rendering                                   */
 	/* -------------------------------------------- */
 
 	/**
 	 * Clear the display of the existing object
+	 * @return	The cleared object
 	 */
-	clear(): void;
-
-	/**
-	 * Assume control over a PlaceableObject, flagging it as controlled and enabling downstream behaviors
-	 * @param multiSelect	Is this object being selected as part of a group?
-	 * @param releaseOthers	Release any other controlled objects first
-	 * @return				A Boolean flag denoting whether or not control was successful.
-	 */
-	control({
-		multiSelect,
-		releaseOthers,
-	}?: {
-		multiSelect?: boolean;
-		releaseOthers?: boolean;
-	}): boolean;
-
-	/**
-	 * Obtain the shifted position for the Object
-	 * @param dx	The number of grid units to shift along the X-axis
-	 * @param dy	The number of grid units to shift along the Y-axis
-	 * @return		The target movement coordinates subject to some offset
-	 */
-	protected _getShiftedPosition(
-		dx: number,
-		dy: number
-	): { x: number; y: number };
-
-	/**
-	 * Release control over a PlaceableObject, removing it from the controlled set
-	 * @return	A Boolean flag confirming the object was released.
-	 */
-	release(): boolean;
-
-	/**
-	 * Draw the placeable object into its parent container
-	 */
-	draw(): void;
-
-	refresh(): void;
-
-	/**
-	 * Sort the PlaceableObject to the front of the rendering stack, above all other siblings.
-	 * Update the database with the new maximal Z-index
-	 */
-	sortToFront(): void;
-
-	/**
-	 * Sort the PlaceableObject to the back of the rendering stack, behind all other siblings.
-	 * Update the database with the new minimal Z-index
-	 */
-	sortToBack(): void;
-
-	/**
-	 * Shift the display of the PlaceableObject to the top of the rendering stack, above all other siblings
-	 */
-	displayToFront(): void;
+	clear(): PlaceableObject;
 
 	/**
 	 * Clone the placeable object, returning a new object with identical attributes
@@ -129,12 +175,29 @@ declare class PlaceableObject extends PIXI.Container {
 	clone(): PlaceableObject;
 
 	/**
-	 * Rotate the PlaceableObject to a certain angle of facing
-	 * @param angle	The desired angle of rotation
-	 * @param snap	Snap the angle of rotation to a certain target degree increment
-	 * @return		A Promise which resolves once the rotation has completed
+	 * Draw the placeable object into its parent container
 	 */
-	rotate(angle: number, snap: number): Promise<any>;
+	draw(): Promise<PlaceableObject>;
+
+	/**
+	 * Draw the primary Sprite for the PlaceableObject
+	 */
+	protected _drawPrimarySprite(texture?: PIXI.Sprite): PIXI.Sprite;
+
+	/**
+	 * Refresh the current display state of the Placeable Object
+	 * @return	The refreshed object
+	 */
+	refresh(): PlaceableObject;
+
+	/** @extends {Entity.createEmbeddedEntity} */
+	static create(data: object, options?: object): Promise<PlaceableObject>;
+
+	/** @extends {Entity.updateEmbeddedEntity} */
+	update(updateData: object, options?: object): Promise<PlaceableObject>;
+
+	/** @extends {Entity.deleteEmbeddedEntity} */
+	delete(createData: object, options?: object): Promise<PlaceableObject>;
 
 	/**
 	 * Get the value of a "flag" for this PlaceableObject
@@ -175,22 +238,6 @@ declare class PlaceableObject extends PIXI.Container {
 	 */
 	unsetFlag(scope: string, key: string): Promise<Entity>;
 
-	/* -------------------------------------------- */
-	/*  Socket Listeners and Handlers               */
-	/* -------------------------------------------- */
-
-	/** @extends {Entity.createEmbeddedEntity} */
-	static create(
-		createData: object,
-		options?: object
-	): Promise<PlaceableObject>;
-
-	/** @extends {Entity.updateEmbeddedEntity} */
-	update(updateData: object, options?: object): Promise<PlaceableObject>;
-
-	/** @extends {Entity.deleteEmbeddedEntity} */
-	delete(createData: object, options?: object): Promise<PlaceableObject>;
-
 	/**
 	 * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
 	 */
@@ -207,47 +254,132 @@ declare class PlaceableObject extends PIXI.Container {
 	protected _onDelete(): void;
 
 	/* -------------------------------------------- */
-	/*  Event Listeners and Handlers                */
+	/*  Methods                                     */
 	/* -------------------------------------------- */
 
 	/**
-	 * Handle mouse-over events which trigger a hover
+	 * Assume control over a PlaceableObject, flagging it as controlled and enabling downstream behaviors
+	 * @param options				Additional options which modify the control request
+	 * @param options.releaseOthers	Release any other controlled objects first
+	 * @return						A flag denoting whether or not control was successful
 	 */
-	protected _onMouseOver(event: PIXI.interaction.InteractionEvent): boolean;
+	control(options?: object): boolean;
 
 	/**
-	 * Handle mouse-out events after a hover
+	 * Additional events which trigger once control of the object is established
+	 * @param options	Optional parameters which apply for specific implementations
 	 */
-	protected _onMouseOut(event: PIXI.interaction.InteractionEvent): boolean;
+	protected _onControl(options?: object): void;
 
 	/**
-	 * Default handling for mouse-move event during a PlaceableObject drag workflow
-	 * @param event	The mousemove event being handled
+	 * Release control over a PlaceableObject, removing it from the controlled set
+	 * @return	A Boolean flag confirming the object was released.
 	 */
-	protected _onMouseMove(event: PIXI.interaction.InteractionEvent): boolean;
+	release(options?: object): boolean;
 
 	/**
-	 * Default handling for Placeable mouse-up event concluding a drag workflow
+	 * Additional events which trigger once control of the object is released
+	 * @param options	Options which modify the releasing workflow
 	 */
-	protected _onMouseUp(event: PIXI.interaction.InteractionEvent): boolean;
+	protected _onRelease(options?: object): void;
 
 	/**
-	 * Default handling for Placeable double left-click event
+	 * Rotate the PlaceableObject to a certain angle of facing
+	 * @param angle	The desired angle of rotation
+	 * @param snap	Snap the angle of rotation to a certain target degree increment
+	 * @return		A Promise which resolves once the rotation has completed
 	 */
-	protected _onDoubleLeft(event: PIXI.interaction.InteractionEvent): boolean;
+	rotate(angle: number, snap: number): Promise<PlaceableObject>;
 
 	/**
-	 * Default handling for Placeable drag cancel through right-click
+	 * Determine a new angle of rotation for a PlaceableObject either from an explicit angle or from a delta offset.
+	 * @param angle	An explicit angle, either this or delta must be provided
+	 * @param delta	A relative angle delta, either this or the angle must be provided
+	 * @param snap	A precision (in degrees) to which the resulting angle should snap. Default is 0.
+	 * @return		The new rotation angle for the object
 	 */
-	protected _OnDragCancel(event: PIXI.interaction.InteractionEvent): boolean;
+	protected _updateRotation({
+		angle,
+		delta,
+		snap,
+	}?: {
+		angle?: number;
+		delta?: number;
+		snap?: number;
+	}): number;
 
 	/**
-	 * Default event-handling logic for a left-mouse click event on the PlaceableObject container
+	 * Obtain the shifted position for the Object
+	 * @param dx	The number of grid units to shift along the X-axis
+	 * @param dy	The number of grid units to shift along the Y-axis
+	 * @return		The target movement coordinates subject to some offset
 	 */
-	protected _onMouseDown(event: PIXI.interaction.InteractionEvent): boolean;
+	protected _getShiftedPosition(dx: number, dy: number): { x: number; y: number };
+
+	/* -------------------------------------------- */
+	/*  Interactivity                               */
+	/* -------------------------------------------- */
 
 	/**
-	 * Default event-handling logic for a right-mouse click event on the PlaceableObject container
+	 * Activate interactivity for the Placeable Object
 	 */
-	protected _onRightDown(event: PIXI.interaction.InteractionEvent): boolean;
+	activateListeners(): void;
+
+	/**
+	 * Create a standard MouseInteractionManager for the PlaceableObject
+	 */
+	protected _createInteractionManager(): MouseInteractionManager;
+
+	/**
+	 * Actions that should be taken for this Placeable Object when a mouseover event occurs
+	 */
+	protected _onHoverIn(
+		event: PIXI.interaction.InteractionEvent,
+		{ hoverOutOthers }?: { hoverOutOthers?: boolean }
+	): boolean;
+
+	/**
+	 * Actions that should be taken for this Placeable Object when a mouseout event occurs
+	 */
+	protected _onHoverOut(event: PIXI.interaction.InteractionEvent): boolean;
+
+	/**
+	 * Callback actions which occur on a single left-click event to assume control of the object
+	 */
+	protected _onClickLeft(event: PIXI.interaction.InteractionEvent): boolean;
+
+	/**
+	 * Callback actions which occur on a double left-click event to activate
+	 */
+	protected _onClickLeft2(event: PIXI.interaction.InteractionEvent): boolean;
+
+	/**
+	 * Callback actions which occur on a single right-click event to configure properties of the object
+	 */
+	protected _onClickRight(event: PIXI.interaction.InteractionEvent): void;
+
+	/**
+	 * Callback actions which occur on a double right-click event to configure properties of the object
+	 */
+	protected _onClickRight2(event: PIXI.interaction.InteractionEvent): void;
+
+	/**
+	 * Callback actions which occur when a mouse-drag action is first begun.
+	 */
+	protected _onDragLeftStart(event: PIXI.interaction.InteractionEvent): void;
+
+	/**
+	 * Callback actions which occur on a mouse-move operation.
+	 */
+	protected _onDragLeftMove(event: PIXI.interaction.InteractionEvent): void;
+
+	/**
+	 * Callback actions which occur on a mouse-move operation.
+	 */
+	protected _onDragLeftDrop(event: PIXI.interaction.InteractionEvent): Entity;
+
+	/**
+	 * Callback actions which occur on a mouse-move operation.
+	 */
+	protected _onDragLeftCancel(event: PIXI.interaction.InteractionEvent): void;
 }
