@@ -4,9 +4,9 @@
  * An instance of the Token class represents an Actor within a viewed Scene on the game canvas.
  * Each Token is reference using a numeric id which indexes its position within the scene.
  * See the initialization signature of the parent PlaceableObject class for more details.
- * 
+ *
  * @param data	An object of token data which is used to construct a new Token.
- * @param scene	The parent Scene entity within which the Token resides. 
+ * @param scene	The parent Scene entity within which the Token resides.
  */
 declare class Token extends PlaceableObject {
 	/**
@@ -23,7 +23,7 @@ declare class Token extends PlaceableObject {
 	/**
 	 * The Token's most recent valid position
 	 */
-	protected _validPosition: { x: number, y: number };
+	protected _validPosition: { x: number; y: number };
 
 	/**
 	 * Provide a temporary flag through which this Token can be overridden to bypass any movement animation
@@ -176,7 +176,7 @@ declare class Token extends PlaceableObject {
 
 	draw(): Promise<any>;
 
-	refresh(): void;
+	refresh(): PlaceableObject;
 
 	protected _refreshBorder(): void;
 
@@ -207,6 +207,4 @@ declare class Token extends PlaceableObject {
 	 * @param texture The texture file-path of the effect icon to toggle on the Token.
 	 */
 	toggleEffect(texture: string): Promise<void>;
-
-
 }
