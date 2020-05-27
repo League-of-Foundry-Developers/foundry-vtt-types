@@ -202,7 +202,7 @@ declare class Roll {
 	toMessage(
 		chatData?: object,
 		{ rollMode, create }?: { rollMode?: string; create?: boolean }
-	): Promise<ChatMessage>;
+	): Promise<ChatMessage | any>;
 
 	/* -------------------------------------------- */
 	/*  Methods

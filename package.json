@@ -17,7 +17,8 @@
 	"homepage": "https://gitlab.com/foundry-projects/foundry-pc/foundry-pc-types#readme",
 	"dependencies": {
 		"@types/jquery": "^3.3.31",
-		"@types/socket.io": "^2.1.4"
+		"@types/socket.io": "^2.1.4",
+		"@types/tinymce": "^4.5.24"
 	},
 	"devDependencies": {
 		"@typescript-eslint/eslint-plugin": "^3.0.1",
