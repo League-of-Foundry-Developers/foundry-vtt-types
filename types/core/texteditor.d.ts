@@ -1,5 +1,3 @@
-import { Editor } from 'tinymce';
-
 /**
  * A collection of helper functions and utility methods related to the rich text editor
  */
@@ -10,7 +8,7 @@ declare class TextEditor {
 	 * @param content	Initial HTML or text content to populate the editor with
 	 * @return			The editor instance.
 	 */
-	static create(options: object, content: string): Editor;
+	static create(options: object, content: string): import('tinymce').Editor;
 
 	/**
 	 * Enrich HTML content by replacing or augmenting components of it
@@ -141,6 +139,6 @@ declare class TextEditor {
 	 */
 	protected static _onDropEditorData(
 		event: Event,
-		editor: Editor
+		editor: import('tinymce').Editor
 	): Promise<boolean>;
 }
