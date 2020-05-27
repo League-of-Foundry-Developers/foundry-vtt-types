@@ -53,6 +53,7 @@ import './types/core/roll';
 import './types/core/settings';
 import './types/core/socket';
 import './types/core/sorting';
+import './types/core/texteditor';
 import './types/core/video';
 
 // Framework
@@ -93,7 +94,6 @@ import './types/pixi/placeables/tile';
 import './types/ui/context';
 import './types/ui/dialog';
 import './types/ui/dragdrop';
-import './types/ui/editor';
 import './types/ui/filepicker';
 import './types/ui/notifications';
 import './types/ui/tabs';

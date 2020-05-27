@@ -1,8 +1,10 @@
 // @TODO: Add types
 
-declare let socket: any, canvas: any, keyboard: any, game: Game, ui: any;
-
-declare const vtt: string;
+declare let socket: any;
+declare let canvas: any;
+declare let keyboard: any;
+declare let game: Game;
+declare let ui: { notification: Notifications };
 
 /**
  * The core Game instance which encapsulates the data, settings, and states relevant for managing the game experience.
