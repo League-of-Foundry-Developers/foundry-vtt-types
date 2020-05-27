@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"description": "TypeScript type definitions for Foundry VTT",
 	"scripts": {
-		"lint": "eslint types/**/*.d.ts"
+		"lint": "tsc && eslint types/**/*.d.ts"
 	},
 	"repository": {
 		"type": "git",
