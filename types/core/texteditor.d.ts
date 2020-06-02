@@ -8,7 +8,7 @@ declare class TextEditor {
 	 * @param content	Initial HTML or text content to populate the editor with
 	 * @return			The editor instance.
 	 */
-	static create(options: object, content: string): import('tinymce').Editor;
+	static create(options: object, content: string): Promise<import('tinymce').Editor>;
 
 	/**
 	 * Enrich HTML content by replacing or augmenting components of it
@@ -37,9 +37,7 @@ declare class TextEditor {
 	 * If dynamic content links are used from a certain compendium, we will go ahead and preload the index for that
 	 * Compendium pack in the background so the links can function better.
 	 */
-	protected static _preloadCompendiumIndices(
-		matches: string[]
-	): Promise<void>;
+	protected static _preloadCompendiumIndices(matches: string[]): Promise<void>;
 
 	/**
 	 * Handle replacement of content links within HTML by delegating to different helper methods based on entity type
@@ -117,9 +115,7 @@ declare class TextEditor {
 	 * Handle left-mouse clicks on an inline roll, dispatching the formula or displaying the tooltip
 	 * @param event	The initiating click event
 	 */
-	protected static _onClickInlineRoll(
-		event: Event
-	): Promise<ChatMessage | any | null>;
+	protected static _onClickInlineRoll(event: Event): Promise<ChatMessage | any | null>;
 
 	/**
 	 * Begin a Drag+Drop workflow for a dynamic content link
