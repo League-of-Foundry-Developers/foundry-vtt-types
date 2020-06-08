@@ -4,7 +4,11 @@ declare let socket: any;
 declare let canvas: any;
 declare let keyboard: any;
 declare let game: Game;
-declare let ui: { notifications: Notifications, tables: object };
+declare let ui: { 
+	notifications: Notifications, 
+	tables: RollTableDirectory, 
+	combat: CombatTracker 
+};
 
 /**
  * The core Game instance which encapsulates the data, settings, and states relevant for managing the game experience.

@@ -35,10 +35,13 @@ import './types/apps/placeables/placeables-config';
 import './types/apps/placeables/placeables-hud';
 
 import './types/apps/sidebar/apps/clientsettings';
+import './types/apps/sidebar/apps/rolltabledirectory';
+import './types/apps/sidebar/apps/combattracker';
 
 import './types/apps/sidebar/sidebar';
 import './types/apps/sidebar/sidebartab';
 import './types/apps/sidebar/sidebardirectory';
+
 
 // Core
 
