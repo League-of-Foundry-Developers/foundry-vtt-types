@@ -7,7 +7,8 @@ declare let game: Game;
 declare let ui: { 
 	notifications: Notifications, 
 	tables: RollTableDirectory, 
-	combat: CombatTracker 
+	combat: CombatTracker,
+	actors: ActorDirectory
 };
 
 /**
