@@ -362,8 +362,8 @@ declare class Entity {
 	 */
 	getEmbeddedEntity(
 		collection: string,
-		id: number,
-		{ strict }: { strict?: boolean }
+		id: string,
+		{ strict }?: { strict?: boolean }
 	): any;
 
 	/**
@@ -373,7 +373,7 @@ declare class Entity {
 	 * @param id			The numeric ID of the child to retrieve
 	 * @return				The embedded entity data that was removed
 	 */
-	removeEmbeddedEntity(embeddedName: string, id: number): any;
+	removeEmbeddedEntity(embeddedName: string, id: string): any;
 
 	/**
 	 * Create one EmbeddedEntity within this parent Entity.
