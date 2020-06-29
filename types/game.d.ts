@@ -4,11 +4,12 @@ declare let socket: any;
 declare let canvas: any;
 declare let keyboard: any;
 declare let game: Game;
-declare let ui: { 
-	notifications: Notifications, 
-	tables: RollTableDirectory, 
-	combat: CombatTracker,
-	actors: ActorDirectory
+declare let ui: {
+	notifications: Notifications;
+	tables: RollTableDirectory;
+	combat: CombatTracker;
+	actors: ActorDirectory;
+	windows: Application[];
 };
 
 /**

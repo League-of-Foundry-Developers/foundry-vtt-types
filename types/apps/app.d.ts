@@ -53,8 +53,8 @@ interface RenderOptions extends Object {
 }
 
 interface ApplicationPosition extends Object {
-	width?: number;
-	height?: number;
+	width?: number | string;
+	height?: number | string;
 	left?: number;
 	top?: number;
 	scale?: number;
@@ -201,7 +201,10 @@ declare class Application {
 	/**
 	 * Persist the scroll positions of containers within the app before re-rendering the content
 	 */
-	protected _saveScrollPositions(html: HTMLElement | JQuery, selectors: string[]): void;
+	protected _saveScrollPositions(
+		html: HTMLElement | JQuery,
+		selectors: string[]
+	): void;
 
 	/**
 	 * Restore the scroll positions of containers within the app after re-rendering the content
@@ -222,7 +225,10 @@ declare class Application {
 	 * @param data	The data used to render the inner template
 	 * @return		A promise resolving to the constructed jQuery object
 	 */
-	protected _renderInner(data: any, options: any): Promise<JQuery | HTMLElement>;
+	protected _renderInner(
+		data: any,
+		options: any
+	): Promise<JQuery | HTMLElement>;
 
 	/**
 	 * Customize how inner HTML is replaced when the application is refreshed
@@ -266,7 +272,11 @@ declare class Application {
 	 * @param tabs		The TabsV2 controller
 	 * @param active	The new active tab name
 	 */
-	protected _onChangeTab(event: MouseEvent, tabs: TabsV2, active: string): void;
+	protected _onChangeTab(
+		event: MouseEvent,
+		tabs: TabsV2,
+		active: string
+	): void;
 
 	/**
 	 * Define whether a user is able to begin a dragstart workflow for a given drag selector
