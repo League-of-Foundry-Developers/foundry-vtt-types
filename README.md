@@ -15,7 +15,11 @@ Unlike other packages, this will gradually be updated as I add more type definit
 
 Considering the size of the Foundry API and the frequent changes to it, please be aware that not all types may be accurate. If in doubt, double-check to make sure what you're attempting to do is possible (such as by temporarily disabling typechecking). If types are missing, outdated, or otherwise incorrect, please report it in the Issue Tracker.
 
-If you are updating the types yourself, Pull Requests are much appreciated, as I cannot consistently keep track of every API change and update everything by myself.
+### Contributions
+
+Due to the difficulty of managing different Merge Requests and ensuring all contributions follow the standards of this repository, it is no longer possible to submit Merge Requests directly. Instead it is now recommended to use Issue reports only to inform us about missing or incorrect types.
+
+When posting an Issue, please ensure you mention which version of Foundry you are using, as well as as much information about the correct types as possible, preferably the line numbers and suggestions for the signature.
 
 ## Installing
 

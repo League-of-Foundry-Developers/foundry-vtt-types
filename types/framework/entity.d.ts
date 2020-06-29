@@ -387,7 +387,7 @@ declare class Entity {
 	 */
 	createEmbeddedEntity(
 		embeddedName: string,
-		createData: object|object[],
+		createData: object | object[],
 		options?: object
 	): Promise<Entity>;
 
@@ -420,7 +420,7 @@ declare class Entity {
 	 */
 	updateEmbeddedEntity(
 		embeddedName: string,
-		updateData: object|object[],
+		updateData: object | object[],
 		options?: object
 	): Promise<Entity>;
 
@@ -453,7 +453,7 @@ declare class Entity {
 	 */
 	deleteEmbeddedEntity(
 		embeddedName: string,
-		childId: string|string[],
+		childId: string | string[],
 		options?: object
 	): Promise<Entity>;
 

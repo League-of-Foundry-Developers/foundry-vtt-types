@@ -86,11 +86,11 @@ declare class Actor extends Entity {
 	 * Construct the Array of Item instances for the Actor
 	 */
 	items: Collection<Item>;
-	
+
 	/**
 	 * Classify Owned Items by their type
 	 */
-	get itemTypes(): { [itemType: string]: Item[] }
+	get itemTypes(): { [key: string]: Item[] };
 
 	/**
 	 * Cache an Array of allowed Token images if using a wildcard path

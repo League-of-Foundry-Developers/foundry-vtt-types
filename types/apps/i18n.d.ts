@@ -23,7 +23,7 @@ declare class Localization {
 	/**
 	 * Discover the available supported languages from the set of packages which are provided
 	 */
-	protected _discoverLanguages(): void
+	protected _discoverLanguages(): void;
 
 	/**
 	 * Prepare the dictionary of translation strings for the requested language
@@ -53,17 +53,17 @@ declare class Localization {
 	localize(stringId: string): string;
 
 	/**
-   	 * Localize a string including variable formatting for input arguments.
-     * Provide a string ID which defines the localized template.
-     * Variables can be included in the template enclosed in braces and will be substituted using those named keys.
-     *
-     * @param {string} stringId     The string ID to translate
-     * @param {Object} data         Provided input data
-     * @return {string}             The translated and formatted string
-     *
-     * @example
-     * const stringId = "MY_TEST_STRING"; // "Your name is {name}"
-     * game.i18n.format("MY_TEST_STRING", {name: "Andrew"}); // Produces "Your name is Andrew"
-     */
-	format(stringId: string, replacements: any): string
+	 * Localize a string including variable formatting for input arguments.
+	 * Provide a string ID which defines the localized template.
+	 * Variables can be included in the template enclosed in braces and will be substituted using those named keys.
+	 *
+	 * @param {string} stringId     The string ID to translate
+	 * @param {Object} data         Provided input data
+	 * @return {string}             The translated and formatted string
+	 *
+	 * @example
+	 * const stringId = "MY_TEST_STRING"; // "Your name is {name}"
+	 * game.i18n.format("MY_TEST_STRING", {name: "Andrew"}); // Produces "Your name is Andrew"
+	 */
+	format(stringId: string, replacements: any): string;
 }
