@@ -1,5 +1,4 @@
 declare class SortingHelpers {
-
 	/**
 	 * Given a source object to sort, a target to sort relative to, and an Array of siblings in the container:
 	 * Determine the updated sort keys for the source object, or all siblings if a reindex is required.
@@ -18,7 +17,18 @@ declare class SortingHelpers {
 	 *
 	 * @returns				An Array of updates for the caller of the helper function to perform
 	 */
-	static performIntegerSort(source: any, { target, siblings, sortKey, sortBefore }:
-		{ target: any, siblings: any[], sortKey: string, sortBefore: boolean}): any[];
-
+	static performIntegerSort(
+		source: any,
+		{
+			target,
+			siblings,
+			sortKey,
+			sortBefore,
+		}: {
+			target: any;
+			siblings: any[];
+			sortKey?: string;
+			sortBefore?: boolean;
+		}
+	): any[];
 }
