@@ -33,7 +33,6 @@ import "./types/apps/journal/note-config";
 
 import "./types/apps/placeables/placeables-config";
 import "./types/apps/placeables/placeables-hud";
-import "./types/apps/placeables/measuredtemplate";
 
 import "./types/apps/sidebar/apps/clientsettings";
 import "./types/apps/sidebar/apps/rolltabledirectory";
@@ -83,6 +82,7 @@ import "./types/framework/entities/user";
 import "./types/pixi/canvaslayer";
 import "./types/pixi/mouseinteractionmanager";
 import "./types/pixi/placeableobject";
+import "./types/pixi/measuredtemplate";
 import "./types/pixi/placeableslayer";
 
 import "./types/pixi/helpers/controlicon";
