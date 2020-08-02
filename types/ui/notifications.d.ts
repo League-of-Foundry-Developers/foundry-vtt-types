@@ -22,24 +22,37 @@ declare class Notifications extends Application {
 	 * Push a new notification into the queue
 	 * @param message	The content of the notification message
 	 * @param type		The type of notification, currently "info", "warning", and "error" are supported
+	 * @param permanent	Whether the notification should be permanently displayed unless otherwise dismissed
 	 */
-	notify(message: string, type: 'info' | 'warning' | 'error'): void;
+	notify(
+		message: string,
+		type: 'info' | 'warning' | 'error',
+		{ permanent }?: { permanent?: boolean }
+	): void;
 
 	/**
 	 * Display a notification with the "info" type
 	 * @param message	The content of the notification message
+	 * @param options	Notification options passed to the notify function
 	 */
-	info(message: string): void;
+	info(message: string, { permanent }?: { permanent?: boolean }): void;
 
 	/**
 	 * Display a notification with the "warning" type
 	 * @param message	The content of the notification message
+	 * @param options	Notification options passed to the notify function
 	 */
-	warn(message: string): void;
+	warn(message: string, { permanent }?: { permanent?: boolean }): void;
 
 	/**
 	 * Display a notification with the "error" type
 	 * @param message	The content of the notification message
+	 * @param options	Notification options passed to the notify function
 	 */
-	error(message: string): void;
+	error(message: string, { permanent }?: { permanent?: boolean }): void;
+
+	/**
+	 * Retrieve a pending notification from the queue and display it
+	 */
+	protected fetch(): Promise<any>;
 }

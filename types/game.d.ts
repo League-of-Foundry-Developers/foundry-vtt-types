@@ -1,6 +1,6 @@
 // @TODO: Add types
 
-declare let socket: any;
+declare let socket: SocketIOClient.Socket;
 declare let canvas: any;
 declare let keyboard: any;
 declare let game: Game;
@@ -43,7 +43,7 @@ declare class Game {
 	settings: ClientSettings;
 
 	/** A reference to the open Socket.io connection */
-	socket: WebSocket;
+	socket: SocketIOClient.Socket;
 
 	/** The id of the active game user */
 	userId: string;
@@ -82,7 +82,11 @@ declare class Game {
 	folders: Folders;
 	packs: Collection<any>;
 
-	constructor(worldData: object, userId: string, socket: SocketIO.Socket);
+	constructor(
+		worldData: object,
+		userId: string,
+		socket: SocketIOClient.Socket
+	);
 
 	/**
 	 * Fetch World data and return a Game instance
@@ -93,12 +97,12 @@ declare class Game {
 	/**
 	 * Request World data from server and return it
 	 */
-	static getWorldData(socket: SocketIO.Socket): Promise<any>;
+	static getWorldData(socket: SocketIOClient.Socket): Promise<any>;
 
 	/**
 	 * Request setup data from server and return it
 	 */
-	static getSetupData(socket: SocketIO.Socket): Promise<any>;
+	static getSetupData(socket: SocketIOClient.Socket): Promise<any>;
 
 	/**
 	 * Initialize the Game for the current window location
@@ -195,7 +199,7 @@ declare class Game {
 	/**
 	 * General game-state socket listeners and event handlers
 	 */
-	static socketListeners(socket: SocketIO.Socket): void;
+	static socketListeners(socket: SocketIOClient.Socket): void;
 
 	/**
 	 * Activate Event Listeners which apply to every Game View

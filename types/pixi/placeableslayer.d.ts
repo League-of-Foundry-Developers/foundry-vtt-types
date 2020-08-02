@@ -1,11 +1,11 @@
 // @TODO: Types
 
 declare interface LayerOptions {
-	canDragCreate: boolean,
-	controllableObjects: boolean,
-	rotatableObjects: boolean,
-	snapToGrid: boolean,
-	gridPrecision: number
+	canDragCreate: boolean;
+	controllableObjects: boolean;
+	rotatableObjects: boolean;
+	snapToGrid: boolean;
+	gridPrecision: number;
 }
 
 /**
@@ -103,12 +103,7 @@ declare class PlaceablesLayer extends CanvasLayer {
 	/**
 	 * Draw a single placeable object
 	 */
-	drawObject(data: any): PlaceableObject;
-
-	/**
-	 * Reorder the child objects of the layer according to their z-index (if one exists)
-	 */
-	sortObjects(): number;
+	createObject(data: any): Promise<PlaceableObject>;
 
 	/* -------------------------------------------- */
 	/*  Methods                                     */
@@ -152,14 +147,23 @@ declare class PlaceablesLayer extends CanvasLayer {
   
 	 * @return		The resulting Promise from the Scene.update operation
 	 */
-	rotateMany({ angle, delta, snap, ids }?:
-		{ angle?: number, delta?: number, snap?: number, ids?: number[] | Set<number> }): Promise<any>;
-	
+	rotateMany({
+		angle,
+		delta,
+		snap,
+		ids,
+	}?: {
+		angle?: number;
+		delta?: number;
+		snap?: number;
+		ids?: number[] | Set<number>;
+	}): Promise<any>;
+
 	/**
 	 * Simultaneously move multiple PlaceableObjects via keyboard movement offsets.
 	 * This executes a single database operation using Scene.update.
 	 * If moving only a single object, this will delegate to PlaceableObject.update for performance reasons.
-	 * 
+	 *
 	 * @param dx		The number of incremental grid units in the horizontal direction
 	 * @param dy		The number of incremental grid units in the vertical direction
 	 * @param rotate	Rotate the token to the keyboard direction instead of moving
@@ -167,14 +171,33 @@ declare class PlaceablesLayer extends CanvasLayer {
 	 *
 	 * @return			The resulting Promise from the Scene.update operation
 	 */
-	moveMany({ dx, dy, rotate, ids }?:
-		{ dx?: number, dy?: number, rotate?: boolean, ids?: number[] | Set<number> }): Promise<any>;
+	moveMany({
+		dx,
+		dy,
+		rotate,
+		ids,
+	}?: {
+		dx?: number;
+		dy?: number;
+		rotate?: boolean;
+		ids?: number[] | Set<number>;
+	}): Promise<any>;
 
 	/**
 	 * Undo a change to the objects in this layer
 	 * This method is typically activated using CTRL+Z while the layer is active
 	 */
 	undoHistory(): Promise<any>;
+
+	/**
+	 * Create multiple embedded entities in a parent Entity collection using an Array of provided data
+	 *
+	 * @param data		An Array of update data Objects which provide incremental data
+	 * @param options	Additional options which customize the update workflow
+	 *
+	 * @return			A Promise which resolves to the returned socket response (if successful)
+	 */
+	createMany(data: any[], options?: any): Promise<any>;
 
 	/**
 	 * Update multiple embedded entities in a parent Entity collection using an Array of provided data
@@ -209,7 +232,7 @@ declare class PlaceablesLayer extends CanvasLayer {
 	 * @param type	The event type (create, update, delete)
 	 * @param data	The object data
 	 */
-	protected _storeHistory(type: string, data: any): void;
+	storeHistory(type: string, data: any): void;
 
 	/**
 	 * Copy currently controlled PlaceableObjects to a temporary Array, ready to paste back into the scene later
@@ -221,7 +244,10 @@ declare class PlaceablesLayer extends CanvasLayer {
 	 * Paste currently copied PlaceableObjects back to the layer by creating new copies
 	 * @return	An Array of created Objects
 	 */
-	pasteObjects(position: { x: number, y: number }, { hidden }?: { hidden?: boolean }): Promise<any[]>;
+	pasteObjects(
+		position: { x: number; y: number },
+		{ hidden }?: { hidden?: boolean }
+	): Promise<any[]>;
 
 	/**
 	 * Select all PlaceableObject instances which fall within a coordinate rectangle.
@@ -234,87 +260,33 @@ declare class PlaceablesLayer extends CanvasLayer {
 	 * @param controlOptions	Optional arguments provided to any called control() method
 	 * @return					The number of PlaceableObject instances which were controlled.
 	 */
-	selectObjects({ x, y, width, height, releaseOptions, controlOptions }:
-		{ x: number, y: number, width: number, height: number, releaseOptions?: any, controlOptions?: any }): number;
+	selectObjects({
+		x,
+		y,
+		width,
+		height,
+		releaseOptions,
+		controlOptions,
+	}: {
+		x: number;
+		y: number;
+		width: number;
+		height: number;
+		releaseOptions?: any;
+		controlOptions?: any;
+	}): number;
 
 	/* -------------------------------------------- */
-	/*  Socket Listeners and Handlers               */
+	/*  Event Listeners and Handlers                */
 	/* -------------------------------------------- */
 
-	/**
-	 * Activate socket listeners which transact basic CRUD operations for Placeable Objects contained within this layer
-	 */
-	protected static socketListeners(socket: SocketIO.Socket): void;
-
-	/**
-	 * Create a new placeable object given input data
-	 *
-	 * @param parentId	The parent Scene ID
-	 * @param created	The created PlaceableObject data
-	 * @param options	Additional options which modify the creation request
-	 * @param userId	The ID of the triggering User
-	 *
-	 * @return			The created PlaceableObject instance
-	 */
-	protected static _createPlaceableObject({ parentId, created, options, userId }:
-		{ parentId: string, created: any, options: any, userId: string }): PlaceableObject;
-
-	/**
-	 * Update an existing placeable object using new data
-	 *
-	 * @param parentId	The parent Scene ID
-	 * @param updated	The updated PlaceableObject data
-	 * @param options	Additional options which modify the update request
-	 * @param userId	The ID of the triggering User
-	 *
-	 * @return			The updated PlaceableObject instance
-	 */
-	protected static _updatePlaceableObject({ parentId, updated, options, userId }:
-		{ parentId: string, updated: any, options: any, userId: string }): PlaceableObject;
-
-	/**
-	 * Handle the server response to update many Embedded Entities in a parent Entity collection
-	 *
-	 * @param parentId	The parent Entity ID
-	 * @param data		The Array of data updates performed
-	 * @param options	Additional options which were included with the update request
-	 * @param userId	The ID of the triggering User
-	 *
-	 * @return			The updated PlaceableObject instance
-	 */
-	protected static _updateManyPlaceableObjects({ parentId, data, options, userId }:
-		{ parentId: string, data: any[], options: any, userId: string }): PlaceableObject;
-	
-	/**
-	 * Delete an existing placeable object by its ID within the Scene
-	 *
-	 * @param parentId	The ID of the Scene which contains this placeable object
-	 * @param deleted	The ID of the PlaceableObject to delete
-	 * @param options	Additional options which modify the update request
-	 * @param userId	The ID of the triggering User
-	 *
-	 * @return			The deleted PlaceableObject instance
-	 */
-	protected static _deletePlaceableObject({ parentId, deleted, options, userId }:
-		{ parentId: string, deleted: any, options: any, userId: string }): PlaceableObject;
-
-	/**
-	 * Handle the server response to delete many Embedded Entities from a parent Entity collection
-	 *
-	 * @param parentId	The parent Entity ID
-	 * @param data		An Array of deleted object IDs
-	 * @param options	Additional options which were included with the delete request
-	 * @param userId	The ID of the triggering User
-	 *
-	 * @return			The updated PlaceableObject instance
-	 */
-	protected static _deleteManyPlaceableObjects({ parentId, data, options, userId }:
-		{ parentId: string, data: any[], options: any, userId: string }): PlaceableObject;
-	
 	/**
 	 * Default mouse-down event handling implementation
 	 */
-	protected _onMouseDown(event: PIXI.interaction.InteractionEvent, { isRuler, isCtrlRuler, isSelect }?): void;
+	protected _onMouseDown(
+		event: PIXI.interaction.InteractionEvent,
+		{ isRuler, isCtrlRuler, isSelect }?
+	): void;
 
 	/**
 	 * Default handling of drag start events by left click + dragging

@@ -1,5 +1,5 @@
 /// <reference types="jquery"/>
-/// <reference types="socket.io"/>
+/// <reference types="socket.io-client"/>
 /// <reference types="tinymce"/>
 
 import './types/constants';

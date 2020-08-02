@@ -1,3 +1,7 @@
+declare interface ItemData<DataType = any> extends EntityData<DataType> {
+	img: string;
+}
+
 /**
  * The Collection of Item entities
  * The items collection is accessible within the game as game.items
@@ -45,6 +49,8 @@ declare class Items extends Collection<Item> {
 }
 
 declare class Item<DataType = any> extends Entity<DataType> {
+	data: ItemData<DataType>;
+
 	/**
 	 * Configure the attributes of the ChatMessage Entity
 	 *
