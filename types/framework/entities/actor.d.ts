@@ -158,6 +158,11 @@ declare class Actor<DataType = any> extends Entity {
 	getActiveTokens(linked?: boolean): Token[];
 
 	/**
+	 * Prepare a data object which defines the data schema used by dice roll commands against this Actor
+	 */
+	getRollData(): DataType;
+
+	/**
 	 * Get an Array of Token images which could represent this Actor
 	 */
 	getTokenImages(): Promise<any>;
