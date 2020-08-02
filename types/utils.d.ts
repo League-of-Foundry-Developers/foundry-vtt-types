@@ -71,7 +71,7 @@ declare function mergeObject<T>(
  * @param obj    Some object where the values are unique
  * @return       An inverted object where the values of the original object are the keys of the new object
  */
-declare function invertObject(obj: object): object;
+declare function invertObject(obj: object): any;
 
 /**
  * Filter the contents of some source object using the structure of a template object.
@@ -93,7 +93,7 @@ declare function filterObject(
 	template: object,
 	keepSpecial?: boolean,
 	templateValues?: boolean
-): object;
+): any;
 
 /**
  * Flatten a possibly multi-dimensional object to a one-dimensional one by converting all nested keys to dot notation
@@ -101,7 +101,7 @@ declare function filterObject(
  * @param _d   Recursion depth, to prevent overflow
  * @return     A flattened object
  */
-declare function flattenObject(obj: object, _d?: number): object;
+declare function flattenObject(obj: object, _d?: number): any;
 
 /**
  * Expand a flattened object to be a standard multi-dimensional nested Object by converting all dot-notation keys to
@@ -111,7 +111,7 @@ declare function flattenObject(obj: object, _d?: number): object;
  * @param _d   Recursion depth, to prevent overflow
  * @return     An expanded object
  */
-declare function expandObject(obj: object, _d?: number): object;
+declare function expandObject(obj: object, _d?: number): any;
 
 /**
  * A simple function to test whether or not an Object is empty
@@ -126,7 +126,7 @@ declare function isObjectEmpty(obj: object): boolean;
  * @param other
  * @return
  */
-declare function diffObject(original: object, other: object): object;
+declare function diffObject(original: object, other: object): any;
 
 /**
  * A helper function which tests whether an object has a property or nested property given a string key.
@@ -165,7 +165,7 @@ declare function normalizeDegrees(degrees: number): number;
 declare function toRadians(degree: number): number;
 declare function normalizeRadians(rad: number): number;
 
-declare function validateForm(formElement: HTMLElement): object;
+declare function validateForm(formElement: HTMLElement): any;
 
 /**
  * Encode a url-like string by replacing any characters which need encoding
@@ -264,4 +264,7 @@ declare function randomID(length?: number): string;
  * @param src 		The requested texture source
  * @param fallback 	A fallback texture to use if the requested source is unavailable or invalid
  */
-declare function loadTexture(src:string, fallback?: string): Promise<PIXI.Texture>;
+declare function loadTexture(
+	src: string,
+	fallback?: string
+): Promise<PIXI.Texture>;

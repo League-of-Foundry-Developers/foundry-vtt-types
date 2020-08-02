@@ -1,5 +1,5 @@
-declare interface BaseEntitySheetData {
-	entity?: Entity;
+declare interface BaseEntitySheetData<DataType = any> {
+	entity?: Entity<DataType>;
 	owner?: boolean;
 	limited?: boolean;
 	options?: any;
@@ -10,13 +10,16 @@ declare interface BaseEntitySheetData {
 /**
  * A simple implementation of the FormApplication pattern which is specialized in editing Entity instances
  */
-declare class BaseEntitySheet extends FormApplication {
+declare class BaseEntitySheet<
+	DataType = any,
+	EntityType extends Entity<DataType> = any
+> extends FormApplication {
 	constructor(...args: any);
 
 	/**
 	 * A convenience accessor for the object property of the inherited FormApplication instance
 	 */
-	get entity(): Entity;
+	get entity(): EntityType;
 
 	/**
 	 * The BaseEntitySheet requires that the form itself be editable as well as the entity be owned
@@ -36,7 +39,7 @@ declare class BaseEntitySheet extends FormApplication {
 	/**
 	 * Default data preparation logic for the entity sheet
 	 */
-	getData(): BaseEntitySheetData;
+	getData(): BaseEntitySheetData<DataType>;
 
 	/**
 	 * Implement the _updateObject method as required by the parent class spec

@@ -1,5 +1,6 @@
-declare interface ItemSheetData extends BaseEntitySheetData {
-	item?: Item;
+declare interface ItemSheetData<DataType = any>
+	extends BaseEntitySheetData<DataType> {
+	item?: Item<DataType>;
 	data?: any;
 }
 
@@ -15,7 +16,10 @@ declare interface ItemSheetData extends BaseEntitySheetData {
  * @param options			Additional options which modify the rendering of the item.
  * @param options.editable	Is the item editable? Default is true.
  */
-declare class ItemSheet extends BaseEntitySheet {
+declare class ItemSheet<
+	DataType = any,
+	ItemType extends Item<DataType> = any
+> extends BaseEntitySheet {
 	/**
 	 * Assign the default options which are supported by this Application
 	 */
@@ -29,17 +33,17 @@ declare class ItemSheet extends BaseEntitySheet {
 	/**
 	 * A convenience reference to the Item entity
 	 */
-	get item(): Item;
+	get item(): ItemType;
 
 	/**
 	 * The Actor instance which owns this item. This may be null if the item is unowned.
 	 */
-	get actor(): Actor;
+	get actor(): Actor<DataType>;
 
 	/**
 	 * Customize the data provided to the item sheet for rendering. By default we just duplicate the item data.
 	 */
-	getData(): ItemSheetData;
+	getData(): ItemSheetData<DataType>;
 
 	/**
 	 * Activate listeners which provide interactivity for item sheet events
