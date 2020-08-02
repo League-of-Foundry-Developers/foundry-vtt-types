@@ -7,7 +7,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://gitlab.com/foundry-projects/foundry-pc/foundry-pc-types.git"
+		"url": "https://gitlab.com/foundry-projects/foundry-pc/foundry-pc-types.git"
 	},
 	"author": "N. van Oosten",
 	"license": "MIT",
