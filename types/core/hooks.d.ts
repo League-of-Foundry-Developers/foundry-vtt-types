@@ -7,7 +7,20 @@ declare class Hooks {
 	 */
 	static on(hook: string, fn: Function): number;
 
+	/**
+	 * Called during initialization of Foundry
+	 */
 	static on(hook: 'init', fn: Function): number;
+
+	/**
+	 * Called during game setup
+	 */
+	static on(hook: 'setup', fn: Function): number;
+
+	/**
+	 * Called when Foundry is ready
+	 */
+	static on(hook: 'ready', fn: Function): number;
 
 	/**
 	 * Register a callback handler for an event which is only triggered once the first time the event occurs.
@@ -18,7 +31,20 @@ declare class Hooks {
 	 */
 	static once(hook: string, fn: Function): number;
 
+	/**
+	 * Called once during initialization of Foundry
+	 */
 	static once(hook: 'init', fn: Function): number;
+
+	/**
+	 * Called once during game setup
+	 */
+	static once(hook: 'setup', fn: Function): number;
+
+	/**
+	 * Called once when Foundry is ready
+	 */
+	static once(hook: 'ready', fn: Function): number;
 
 	/**
 	 * Unregister a callback handler for a particular hook event
