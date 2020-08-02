@@ -15,7 +15,7 @@ declare interface String {
 	 * @param {boolean} strict        Replace all non-alphanumeric characters, or allow them? Default false
 	 * @return {string}               The cleaned slug string
 	 */
-	slugify(replacement?: string, strict?: boolean): string;
+	slugify(options: { replacement?: string; strict?: boolean }): string;
 }
 
 /* -------------------------------------------- */

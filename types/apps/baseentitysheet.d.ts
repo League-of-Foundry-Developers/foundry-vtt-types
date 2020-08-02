@@ -1,5 +1,5 @@
 declare interface BaseEntitySheetData<DataType = any> {
-	entity?: Entity<DataType>;
+	entity?: EntityData<DataType>;
 	owner?: boolean;
 	limited?: boolean;
 	options?: any;

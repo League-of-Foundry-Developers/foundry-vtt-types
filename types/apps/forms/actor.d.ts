@@ -2,7 +2,7 @@ declare interface ActorSheetData<DataType = any>
 	extends BaseEntitySheetData<DataType> {
 	actor: Actor;
 	data: ActorData<DataType>;
-	items: ItemSheetData[];
+	items: Collection<Item>;
 }
 
 /**
