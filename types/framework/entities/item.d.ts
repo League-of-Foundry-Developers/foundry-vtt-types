@@ -44,7 +44,7 @@ declare class Items extends Collection<Item> {
 	static get registeredSheets(): any[];
 }
 
-declare class Item extends Entity {
+declare class Item<DataType = any> extends Entity<DataType> {
 	/**
 	 * Configure the attributes of the ChatMessage Entity
 	 *
@@ -113,7 +113,7 @@ declare class Item extends Entity {
 	 * @param options	Additional options which customize the update workflow
 	 * @return			A Promise which resolves to the updated Entity
 	 */
-	update(data: any, options: any): Promise<Item>;
+	update(data: any, options: any): Promise<this>;
 
 	/**
 	 * A convenience constructor method to create an Item instance which is owned by an Actor

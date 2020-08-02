@@ -1,4 +1,4 @@
-declare interface ActorData extends BaseEntityData {
+declare interface ActorData<DataType = any> extends EntityData<DataType> {
 	img: string;
 	token: Token;
 }
@@ -74,8 +74,8 @@ declare class Actors extends Collection<Actor> {
  * @example <caption>Retrieve an existing Actor</caption>
  * let actor = game.actors.get(actorId);
  */
-declare class Actor extends Entity {
-	data: ActorData;
+declare class Actor<DataType = any> extends Entity {
+	data: ActorData<DataType>;
 
 	/**
 	 * A reference to a placed Token which creates a synthetic Actor
@@ -175,46 +175,7 @@ declare class Actor extends Entity {
 		value: number,
 		isDelta?: boolean,
 		isBar?: boolean
-	): Promise<Actor>;
-
-	/* -------------------------------------------- */
-	/*  Socket Listeners and Handlers
-	/* -------------------------------------------- */
-
-	/** @override */
-	update(data: object, options?: object): Promise<Actor>;
-
-	/** @override */
-	delete(options?: object): Promise<string>;
-
-	/** @override */
-	createEmbeddedEntity(
-		embeddedName: string,
-		createData: object,
-		options?: object
-	): Promise<Actor>;
-
-	/** @override */
-	updateEmbeddedEntity(
-		embeddedName: string,
-		updateData: object,
-		options?: object
-	): Promise<Actor>;
-
-	/** @override */
-	deleteEmbeddedEntity(
-		embeddedName: string,
-		childId: string,
-		options?: object
-	): Promise<Actor>;
-
-	/** @override */
-	protected _onUpdate(
-		data: object,
-		options: object,
-		userId: string,
-		context: object
-	): void;
+	): Promise<Actor<DataType>>;
 
 	/* -------------------------------------------- */
 	/* Owned Item Management

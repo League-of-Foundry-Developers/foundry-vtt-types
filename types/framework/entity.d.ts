@@ -1,8 +1,8 @@
-declare interface BaseEntityData {
+declare interface EntityData<DataType = any> {
 	name: string;
 	type: string;
 	flags: any;
-	data: any;
+	data: DataType;
 }
 
 /**
@@ -23,9 +23,9 @@ declare interface BaseEntityData {
  * let actorData = {name: "John Doe", type: "character", img: "icons/mystery-man.png"};
  * let actor = new Actor(actorData);
  */
-declare class Entity {
+declare class Entity<DataType = any> {
 	/** The Entity references the raw source data for the object provided through game.data */
-	data: BaseEntityData;
+	data: EntityData<DataType>;
 
 	/** Additional options which were used to configure the Entity */
 	options: any;
@@ -43,7 +43,7 @@ declare class Entity {
 	 */
 	compendium: Compendium;
 
-	constructor(data: BaseEntityData, options: any);
+	constructor(data: EntityData<DataType>, options: any);
 
 	/**
 	 * Configure the attributes of this Entity class
@@ -74,7 +74,7 @@ declare class Entity {
 	 * This method can be used to derive any internal attributes which are computed in a formulaic manner.
 	 * For example, in a d20 system - computing an ability modifier based on the value of that ability score.
 	 */
-	prepareData(): BaseEntityData | void;
+	prepareData(): EntityData<DataType> | void;
 
 	/**
 	 * Prepare Embedded Entities which exist within this parent Entity.
@@ -108,7 +108,7 @@ declare class Entity {
 	static get collection(): Collection<Entity>;
 
 	/** @alias Entity.collection */
-	get collection(): Collection<Entity>;
+	get collection(): Collection<Entity<DataType>>;
 
 	/**
 	 * The class name of the base Entity type, for example "Actor". This is useful in cases where there is an inheritance
@@ -122,7 +122,7 @@ declare class Entity {
 	static get entity(): string;
 
 	/** @alias Entity.entity */
-	get entity(): Entity;
+	get entity(): Entity<DataType>;
 
 	/**
 	 * A convenience accessor for the _id attribute of the Entity data object
@@ -280,7 +280,7 @@ declare class Entity {
 	 * const updateData = {name: "New Name"};
 	 * const updated = await entity.update(updateData);
 	 */
-	update(data: object, options?: object): Promise<Entity>;
+	update(data: object, options?: object): Promise<this>;
 
 	/**
 	 * Update multiple Entities using an Array of provided update Objects which define incremental data for each Entity.
@@ -389,7 +389,7 @@ declare class Entity {
 		embeddedName: string,
 		createData: object | object[],
 		options?: object
-	): Promise<Entity>;
+	): Promise<this>;
 
 	/**
 	 * @deprecated
@@ -406,7 +406,7 @@ declare class Entity {
 		embeddedName: string,
 		createData: object[],
 		options?: object
-	): Promise<Entity[]>;
+	): Promise<this[]>;
 
 	/**
 	 * Update one EmbeddedEntity within this parent Entity using incremental data.
@@ -422,7 +422,7 @@ declare class Entity {
 		embeddedName: string,
 		updateData: object | object[],
 		options?: object
-	): Promise<Entity>;
+	): Promise<this>;
 
 	/**
 	 * @deprecated
@@ -439,7 +439,7 @@ declare class Entity {
 		embeddedName: string,
 		updateData: object[],
 		options?: object
-	): Promise<Entity[]>;
+	): Promise<this[]>;
 
 	/**
 	 * Delete one EmbeddedEntity within this parent Entity.
@@ -455,7 +455,7 @@ declare class Entity {
 		embeddedName: string,
 		childId: string | string[],
 		options?: object
-	): Promise<Entity>;
+	): Promise<this>;
 
 	/**
 	 * @deprecated
@@ -472,7 +472,7 @@ declare class Entity {
 		embeddedName: string,
 		deleteIds: string[],
 		options?: object
-	): Promise<Entity>;
+	): Promise<this>;
 
 	/**
 	 * Handle Embedded Entity creation within this Entity with specific callback steps.
@@ -536,7 +536,7 @@ declare class Entity {
 	 *
 	 * @return		A Promise resolving to the updated Entity
 	 */
-	setFlag(scope: string, key: string, value: any): Promise<Entity>;
+	setFlag(scope: string, key: string, value: any): Promise<this>;
 
 	/**
 	 * Remove a flag assigned to the Entity
@@ -544,7 +544,7 @@ declare class Entity {
 	 * @param key	The flag key
 	 * @return		A Promise resolving to the updated Entity
 	 */
-	unsetFlag(scope: string, key: string): Promise<Entity>;
+	unsetFlag(scope: string, key: string): Promise<this>;
 
 	/* -------------------------------------------- */
 	/*  Sorting                                     */
@@ -579,7 +579,7 @@ declare class Entity {
 	 * @param options		Additional creation options passed to the Entity.create method
 	 * @returns				A Promise which resolves to the created clone Entity
 	 */
-	clone(createData?: object, options?: object): Promise<Entity>;
+	clone(createData?: object, options?: object): Promise<this>;
 
 	/**
 	 * Export entity data to a JSON file which can be saved by the client and later imported into a different session
@@ -591,7 +591,7 @@ declare class Entity {
 	 * @param json	JSON data string
 	 * @return		The updated Entity
 	 */
-	importFromJSON(json: string): Promise<Entity>;
+	importFromJSON(json: string): Promise<this>;
 
 	/**
 	 * Render an import dialog for updating the data related to this Entity through an exported JSON file
@@ -601,5 +601,5 @@ declare class Entity {
 	/**
 	 * Serializing an Entity should simply serialize it's inner data, not the entire instance
 	 */
-	toJSON(): BaseEntityData;
+	toJSON(): EntityData;
 }
