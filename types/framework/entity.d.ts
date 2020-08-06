@@ -35,7 +35,7 @@ declare class Entity<DataType = any> {
 	 * its data. The keys of this object are the application ids and the values are Application instances. Each
 	 * Application in this object will have its render method called by {@link Entity#render}.
 	 */
-	apps: Application;
+	apps: Record<string, Application>;
 
 	/**
 	 * The Entity may optionally belong to a parent Compendium pack. If so this attribute will contain a reference
@@ -122,7 +122,7 @@ declare class Entity<DataType = any> {
 	static get entity(): string;
 
 	/** @alias Entity.entity */
-	get entity(): Entity<DataType>;
+	get entity(): string;
 
 	/**
 	 * A convenience accessor for the _id attribute of the Entity data object
