@@ -97,7 +97,7 @@ declare class Collection<T extends Entity> extends Map {
 	 * @param id		The entity ID to retrieve from the collection
 	 * @param strict	Throw an Error if the requested id does not exist, otherwise return null. Default false.
 	 * @return			The retrieved Entity, if the ID was found, otherwise null;
-	 * 
+	 *
 	 * @example
 	 * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
 	 * c.get("a"); // "A"
@@ -114,24 +114,24 @@ declare class Collection<T extends Entity> extends Map {
 	 */
 	index(id: string): number;
 
-	 /**
-	  * Filter the Collection, returning an Array of entries which match a functional condition.
-	  * @param condition 	The functional condition to test
-	  * 
-	  * @example
-      * let c = new Collection([["a", "AA"], ["b", "AB"], ["c", "CC"]]);
-   	  * let hasA = c.filters(entry => entry.slice(0) === "A");
-   	  */
+	/**
+	 * Filter the Collection, returning an Array of entries which match a functional condition.
+	 * @param condition 	The functional condition to test
+	 *
+	 * @example
+	 * let c = new Collection([["a", "AA"], ["b", "AB"], ["c", "CC"]]);
+	 * let hasA = c.filters(entry => entry.slice(0) === "A");
+	 */
 	filter(condition: any): any[];
 	/**
 	 * Find an entry in the Map using an functional condition.
 	 * @param condition 	The functional condition to test
 	 */
-	find(condition: any): any|null;
+	find(condition: any): any | null;
 
 	/**
-     * Transform each element of the Collection into a new form, returning an Array of transformed values
-     * @param {Function} transformer  The transformation function to apply to each entry value
+	 * Transform each element of the Collection into a new form, returning an Array of transformed values
+	 * @param {Function} transformer  The transformation function to apply to each entry value
 	 */
 	map(transformer: any): any[];
 
@@ -139,14 +139,14 @@ declare class Collection<T extends Entity> extends Map {
 	 * Reduce the Collection by applying an evaluator function and accumulating entries
 	 * @param evaluator A function which mutates the accumulator each iteration
 	 * @param initial 	An initial value which accumulates with each iteration
-	 * 
-   	 * @example
-   	 * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
-  	 * let letters = c.reduce((s, l) => {
-  	 *   return s + l;
-   	 * }, ""); // "ABC"
-   	 */
-	reduce(evaluator: any, initial: any): any
+	 *
+	 * @example
+	 * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
+	 * let letters = c.reduce((s, l) => {
+	 *   return s + l;
+	 * }, ""); // "ABC"
+	 */
+	reduce(evaluator: any, initial: any): any;
 
 	/**
 	 * Import an Entity from a compendium collection, adding it to the current World
@@ -164,14 +164,8 @@ declare class Collection<T extends Entity> extends Map {
 	): Promise<T>;
 
 	/* -------------------------------------------- */
-	/*  Socket Listeners and Handlers               */
+	/*  Handlers            					    */
 	/* -------------------------------------------- */
-
-	/**
-	 * Activate socket listeners related to this particular Entity type
-	 * @param socket	The open game socket
-	 */
-	protected static socketListeners(socket: SocketIO.Socket): void;
 
 	/**
 	 * Handle Entity creation workflow using the server response from the create<Entity> socket
