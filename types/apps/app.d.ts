@@ -332,7 +332,7 @@ declare class Application {
 	 * Take no action for applications which are not of the pop-out variety or are already maximized
 	 * @return	A Promise which resolves to true once the maximization action has completed
 	 */
-	maximise(): Promise<boolean>;
+	maximize(): Promise<boolean>;
 
 	/**
 	 * Set the application position and store it's new location
