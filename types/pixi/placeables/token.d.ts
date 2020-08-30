@@ -31,6 +31,11 @@ declare class Token extends PlaceableObject {
 	protected _noAnimate: boolean;
 
 	/**
+	 * Convenience access to the token's nameplate string
+	 */
+	name: string;
+
+	/**
 	 * Track the set of User entities which are currently targeting this Token
 	 */
 	targeted: Set<User>;
@@ -41,16 +46,6 @@ declare class Token extends PlaceableObject {
 	 * Otherwise, the Actor entity is a synthetic, constructed using the Token actorData
 	 */
 	actor: Actor;
-
-	/**
-	 * The Token's most recently computed line-of-sight polygon
-	 */
-	los: PIXI.Polygon;
-
-	/**
-	 * The Token's most recently computed field-of-vision polygon
-	 */
-	fov: PIXI.Polygon;
 
 	constructor(...args: any[]);
 
@@ -79,14 +74,19 @@ declare class Token extends PlaceableObject {
 	get hasActiveHUD(): boolean;
 
 	/**
-	 * Convenience access to the token's nameplate string
-	 */
-	get name(): string;
-
-	/**
 	 * Provide a singleton reference to the TileConfig sheet for this Tile instance
 	 */
 	get sheet(): any;
+
+	/**
+	 * The Token's most recently computed line-of-sight polygon
+	 */
+	get los(): PIXI.Polygon;
+
+	/**
+	 * The Token's most recently computed field-of-vision polygon
+	 */
+	get fov(): PIXI.Polygon;
 
 	/* -------------------------------------------- */
 	/*  Rendering Attributes

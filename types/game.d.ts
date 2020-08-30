@@ -9,7 +9,7 @@ declare let ui: {
 	tables: RollTableDirectory;
 	combat: CombatTracker;
 	actors: ActorDirectory;
-	windows: Application[];
+	windows: Record<number, Application>;
 };
 
 declare const _templateCache: Record<string, unknown>;

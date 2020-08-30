@@ -8,7 +8,7 @@ declare class CanvasLayer extends PIXI.Container {
 	/*  Properties and Attributes
 	/* -------------------------------------------- */
 
-	get name(): string;
+	name: string;
 
 	/* -------------------------------------------- */
 	/*  Rendering
