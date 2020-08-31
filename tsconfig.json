@@ -2,7 +2,8 @@
 	"compilerOptions": {
 		"target": "ES2017",
 		"lib": ["DOM", "ES6", "ES2017"],
-		"noEmit": true
+		"noEmit": true,
+		"useDefineForClassFields": true
 	},
 	"include": ["types"]
 }
