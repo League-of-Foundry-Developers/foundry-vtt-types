@@ -63,6 +63,11 @@ declare class Entity<DataType = any> {
 	get uuid(): string;
 
 	/**
+	 * Test for whether this Entity can be owned by any non-gamemaster player.
+	 */
+	get hasPlayerOwner(): boolean;
+
+	/**
 	 * Initialize data structure for the Entity.
 	 * First initialize any Embedded Entities and prepare their data.
 	 * Next prepare data for the Entity itself, which may depend on Embedded Entities.

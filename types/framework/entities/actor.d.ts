@@ -120,6 +120,9 @@ declare class Actor<DataType = any> extends Entity {
 	get img(): string;
 
 	/**
+	 * @deprecated
+	 * deprecated in favor of the more general Entity#hasPlayerOwner
+	 *
 	 * A boolean flag for whether this Actor is a player-owned character.
 	 * True if any User who is not a GM has ownership rights over the Actor entity.
 	 */
