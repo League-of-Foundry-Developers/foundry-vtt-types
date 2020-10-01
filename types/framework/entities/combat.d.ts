@@ -178,4 +178,21 @@ declare class Combat extends Entity {
 	 * @extends {Entity.updateEmbeddedEntity}
 	 */
 	updateCombatant(): Promise<any>;
+
+	/**
+	 * Prepare turn data for one specific combatant.
+	 */
+	protected _prepareCombatant(
+		c: any,
+		scene: Scene,
+		players: any[],
+		settings?: any
+	): any;
+
+	/**
+	 * Define how the array of Combatants is sorted in the displayed list of the tracker.
+	 * This method can be overridden by a system or module which needs to display combatants in an alternative order.
+	 * By default sort by initiative, falling back to name
+	 */
+	protected _sortCombatants(a, b);
 }
