@@ -194,5 +194,5 @@ declare class Combat extends Entity {
 	 * This method can be overridden by a system or module which needs to display combatants in an alternative order.
 	 * By default sort by initiative, falling back to name
 	 */
-	protected _sortCombatants(a, b);
+	_sortCombatants(a, b);
 }
