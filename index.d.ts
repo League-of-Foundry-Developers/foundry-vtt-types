@@ -76,6 +76,7 @@ import './types/framework/entities/playlist';
 import './types/framework/entities/rolltable';
 import './types/framework/entities/scene';
 import './types/framework/entities/user';
+import './types/framework/entities/embeddedentity';
 
 // PIXI
 
