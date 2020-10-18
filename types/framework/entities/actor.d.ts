@@ -234,4 +234,9 @@ declare class Actor<DataType = any> extends Entity {
 	 * @return			A Promise resolving to the deleted Owned Item data
 	 */
 	deleteOwnedItem(itemId: string, options?: object): Promise<Item>;
+
+	/**
+	 * Apply any transformations to the Actor data which are caused by ActiveEffects.
+	 */
+	protected applyActiveEffects(): void;
 }

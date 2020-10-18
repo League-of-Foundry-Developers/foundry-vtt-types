@@ -101,6 +101,7 @@ import './types/ui/dragdrop';
 import './types/ui/filepicker';
 import './types/ui/notifications';
 import './types/ui/tabs';
+import './types/ui/activeeffectconfig';
 
 //-- --//
 
