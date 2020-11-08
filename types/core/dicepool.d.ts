@@ -16,6 +16,15 @@
  * let pool = DicePool.fromFormula("{4d6,3d8,2d10}kh");
  */
 declare class DicePool {
+	constructor({
+		rolls,
+		modifiers,
+		options,
+	}: {
+		rolls: Roll[];
+		modifiers?: string[];
+		options?: object;
+	});
 	/**
 	 * The elements of a Dice Pool must be Roll objects
 	 */
@@ -24,24 +33,29 @@ declare class DicePool {
 	/**
 	 * The string modifiers applied to resolve the pool
 	 */
-	modifiers: string;
+	modifiers: string[];
 
 	/**
-	 * An Array of rolled Die instances created through this Pool
+	 * An object of additional options which modify the pool
 	 */
-	dice: Die[];
+	options: object;
 
-	/**
-	 * The final numeric total resulting from the rolled DicePool
-	 */
-	total: number;
-
-	constructor(rolls: Roll[], modifiers: string);
+	results: object[];
 
 	/**
 	 * For now, for testing purposes, choose the maximum result always
 	 */
 	roll(): DicePool;
+
+	/**
+	 * Return a standardized representation for the displayed formula associated with this DicePool.
+	 */
+	get formula(): string;
+
+	/**
+	 * Return an array of rolled values which are still active within the DicePool
+	 */
+	get values(): number[];
 
 	/**
 	 * Parse a modifier query string into an ordered Array of modifiers to apply.
@@ -69,10 +83,17 @@ declare class DicePool {
 
 	/**
 	 * Given a string formula, create and return an evaluated DicePool object
-	 * @param formula	The string formula to parse
-	 * @return			The evaluated DicePool object or null if the formula is invalid
+	 * @param {string} formula    The string formula to parse
+	 * @param {object} [options]  Additional options applied to the DicePool
+	 * @param {object} [data]     A data object which defines data substitutions for Rolls in the DicePool
+	 *
+	 * @return {DicePool|null}    The evaluated DicePool object or null if the formula is invalid
 	 */
-	static fromFormula(formula: string): DicePool;
+	static fromExpression(
+		formula: string,
+		options?: object,
+		data?: object
+	): DicePool;
 
 	/* -------------------------------------------- */
 	/*  Serialization and Storage                   */

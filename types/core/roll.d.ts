@@ -37,15 +37,12 @@ declare class Roll {
 	 */
 	formula: string;
 
-	/**
-	 * An array of evaluate Roll parts
-	 */
-	parts: any[];
+	terms: [Roll | DicePool | DiceTerm | number | string];
 
 	/**
 	 * An Array of Die instance which were included as part of this Roll
 	 */
-	_dice: Die[];
+	_dice: DiceTerm[];
 
 	/**
 	 * An internal flag for whether the Roll object has been rolled
@@ -98,7 +95,7 @@ declare class Roll {
 	/**
 	 * Get an Array of any Die objects which were rolled as part of the evaluation of this roll
 	 */
-	get dice(): Die[];
+	get dice(): DiceTerm[];
 
 	/**
 	 * The regular expression used to identify a Die component of a Roll
