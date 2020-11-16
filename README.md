@@ -9,6 +9,8 @@
 
 </div>
 
+**Unfortunately due to circumstances the type definitions are not up-to-date with the most recent versions of Foundry VTT. Other parties are working on more efficient methods to create type definitions which may hopefully replace this. At this point, I have decided to focus on the definitions I need for my work but am now unable to fully support the entire API as intended.**
+
 This package provides type definitions for the Foundry VTT API, useful for both vanilla JS and TypeScript to get autocomplete, Intellisense, and type checking.
 
 Unlike other packages, this will gradually be updated as I add more type definitions. Therefore, I will not use version numbers and tags to tag releases.
@@ -17,9 +19,11 @@ Considering the size of the Foundry API and the frequent changes to it, please b
 
 ### Contributions
 
-Due to the difficulty of managing different Merge Requests and ensuring all contributions follow the standards of this repository, it is no longer possible to submit Merge Requests directly. Instead it is now recommended to use Issue reports only to inform us about missing or incorrect types.
+~~Due to the difficulty of managing different Merge Requests and ensuring all contributions follow the standards of this repository, it is no longer possible to submit Merge Requests directly. Instead it is now recommended to use Issue reports only to inform us about missing or incorrect types.~~
 
-When posting an Issue, please ensure you mention which version of Foundry you are using, as well as as much information about the correct types as possible, preferably the line numbers and suggestions for the signature.
+~~When posting an Issue, please ensure you mention which version of Foundry you are using, as well as as much information about the correct types as possible, preferably the line numbers and suggestions for the signature.~~
+
+**As explained above, I anticipate no more complete updates other than the types I need. Therefore, it's highly ulikely suggestions and issues will be handled.**
 
 ## Installing
 
