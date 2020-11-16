@@ -9,7 +9,7 @@
 
 </div>
 
-**Unfortunately due to circumstances the type definitions are not up-to-date with the most recent versions of Foundry VTT. Other parties are working on more efficient methods to create type definitions which may hopefully replace this. At this point, I have decided to focus on the definitions I need for my work but am now unable to fully support the entire API as intended.**
+**Unfortunately due to circumstances the type definitions are not up-to-date with the most recent versions of Foundry VTT. Other parties are working on more efficient methods to create type definitions which may hopefully replace this. The size of the API and the frequent updates combined with my own changed plans make it too difficult to provide the full type definitions. I have decided therefore to focus on the definitions I require for my work and leave it in the hands of people more capable than me to provide better definitions.**
 
 This package provides type definitions for the Foundry VTT API, useful for both vanilla JS and TypeScript to get autocomplete, Intellisense, and type checking.
 
