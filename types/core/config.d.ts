@@ -104,7 +104,7 @@ declare const CONFIG: {
 	/**
 	 * An array of status effect icons which can be applied to Tokens
 	 */
-	statusEffects: string[];
+	statusEffects: object[];
 
 	/**
 	 * A mapping of core audio effects used which can be replaced by systems or mods
