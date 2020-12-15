@@ -163,7 +163,7 @@ declare class Actor<DataType = any> extends Entity {
 	/**
 	 * Prepare a data object which defines the data schema used by dice roll commands against this Actor
 	 */
-	getRollData(): DataType;
+	getRollData(): object;
 
 	/**
 	 * Get an Array of Token images which could represent this Actor
