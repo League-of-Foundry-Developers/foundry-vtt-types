@@ -18,6 +18,13 @@ declare function saveDataToFile(
 declare function readTextFromFile(file: File): Promise<string>;
 
 /**
+ * Obtain references to the parent classes of a certain class.
+ * @param cls      An ES6 Class definition
+ * @return An array of parent Classes which the provided class extends
+ */
+declare function getParentClasses(cls: () => {}): Array<() => {}>;
+
+/**
  * A cheap data duplication trick, surprisingly relatively performant
  * @param original	Some sort of data
  */
@@ -160,9 +167,48 @@ declare function getProperty(object: object, key: string): any;
  */
 declare function setProperty(object: object, key: string, value: any): boolean;
 
+/**
+ * Bound a number between some minimum and maximum value, inclusively
+ * @param num    The current value
+ * @param min    The minimum allowed value
+ * @param max    The maximum allowed value
+ * @return The clamped number
+ */
+declare function clampNumber(num: number, min: number, max: number): number;
+
+/**
+ * Round a floating point number to a certain number of decimal places
+ * @param number  A floating point number
+ * @param places  An integer number of decimal places
+ */
+declare function roundDecimals(number: number, places: number): number;
+
+/**
+ * Transform an angle in radians to a number in degrees
+ * @param angle    An angle in radians
+ * @return An angle in degrees
+ */
 declare function toDegrees(angle: number): number;
+
+/**
+ * Transform an angle in degrees to be bounded within the domain [0, 360]
+ * @param degrees  An angle in degrees
+ * @return The same angle on the range [0, 360]
+ */
 declare function normalizeDegrees(degrees: number): number;
+
+/**
+ * Transform an angle in degrees to an angle in radians
+ * @param angle    An angle in degrees
+ * @return An angle in radians
+ */
 declare function toRadians(degree: number): number;
+
+/**
+ * Transform an angle in radians to be bounded within the domain [-PI, PI]
+ * @param radians  An angle in degrees
+ * @return The same angle on the range [-PI, PI]
+ */
 declare function normalizeRadians(rad: number): number;
 
 declare function validateForm(formElement: HTMLElement): any;
@@ -180,6 +226,17 @@ declare function encodeURL(path: string): string;
  * @return
  */
 declare function timeSince(timeStamp: Date): string;
+
+/**
+ * Wrap a callback in a debounced timeout.
+ * Delay execution of the callback function until the function has not been called for delay milliseconds
+ * @param callback       A function to execute once the debounced threshold has been passed
+ * @param delay            An amount of time in milliseconds to delay
+ */
+declare function debounce(
+	callback: (this: Function, ...args: any) => void,
+	delay: number
+): (...args: any) => void;
 
 /**
  * Converts an RGB color value to HSV. Conversion formula
@@ -258,6 +315,8 @@ declare function isNewerVersion(
  * @return          Return a string containing random letters and numbers
  */
 declare function randomID(length?: number): string;
+
+declare function benchmark(func: Function, iterations: number): void;
 
 /**
  * Load a single texture and return a Promise which resolves once the texture is ready to use

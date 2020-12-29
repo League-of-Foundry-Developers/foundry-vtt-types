@@ -25,6 +25,10 @@ declare interface String {
 declare interface Math {
 	clamped(x: number, min: number, max: number): number;
 	decimals(number: number, places: number): number;
+	toDegrees(angle: number): number;
+	normalizeDegrees(degrees: number): number;
+	toRadians(degree: number): number;
+	normalizeRadians(rad: number): number;
 }
 
 /* -------------------------------------------- */

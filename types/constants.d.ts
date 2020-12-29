@@ -9,7 +9,30 @@ declare const CONST: {
 	vtt: 'Foundry VTT';
 	VTT: 'Foundry Virtual Tabletop';
 	WEBSITE_URL: 'https://foundryvtt.com';
+	ASCII: `_______________________________________________________________
+ _____ ___  _   _ _   _ ____  ______   __ __     _______ _____ 
+|  ___/ _ \\| | | | \\ | |  _ \\|  _ \\ \\ / / \\ \\   / |_   _|_   _|
+| |_ | | | | | | |  \\| | | | | |_) \\ V /   \\ \\ / /  | |   | |  
+|  _|| |_| | |_| | |\\  | |_| |  _ < | |     \\ V /   | |   | |  
+|_|   \\___/ \\___/|_| \\_|____/|_| \\_\\|_|      \\_/    |_|   |_|  
+===============================================================`;
 
+	/**
+	 * Define the allowed ActiveEffect application modes
+	 */
+	ACTIVE_EFFECT_MODES: {
+		CUSTOM: 0,
+		MULTIPLY: 1,
+		ADD: 2,
+		DOWNGRADE: 3,
+		UPGRADE: 4,
+		OVERRIDE: 5
+	};
+
+	/**
+	 * Define the string name used for the base entity type when specific
+	 * sub-types are not defined by the system
+	 */
 	BASE_ENTITY_TYPE: 'base';
 
 	/**
@@ -37,6 +60,11 @@ declare const CONST: {
 		'RollTable',
 		'Playlist'
 	];
+
+	/**
+	 * Define the set of languages which have built-in support in the core software
+	 */
+	CORE_SUPPORTED_LANGUAGES: ["en"];
 
 	/**
 	 * The default artwork used for Token images if none is provided
@@ -91,9 +119,9 @@ declare const CONST: {
 		z: 0;
 		hidden: false;
 		locked: false;
-		fillType: number;
+		fillType: 0;
 		fillAlpha: 0.5;
-		bezierFactor: 0.1;
+		bezierFactor: 0.0;
 		strokeAlpha: 1.0;
 		strokeWidth: 8;
 		fontSize: 48;
@@ -175,6 +203,15 @@ declare const CONST: {
 	};
 
 	/**
+	 * Enumerate the source types which can be used for an AmbientLight placeable object
+	 */
+	SOURCE_TYPES: {
+	  LOCAL: "l",
+	  GLOBAL: "g",
+	  UNIVERSAL: "u"
+	};
+
+	/**
 	 * The minimum allowed grid size which is supported by the software
 	 */
 	GRID_MIN_SIZE: 50;
@@ -207,6 +244,7 @@ declare const CONST: {
 	 * Encode the reasons why a package may be available or unavailable for use
 	 */
 	PACKAGE_AVAILABILITY_CODES: {
+		UNKNOWN: -1;
 		AVAILABLE: 0;
 		REQUIRES_UPDATE: 1;
 		REQUIRES_SYSTEM: 2;
@@ -218,6 +256,15 @@ declare const CONST: {
 	 * A safe password string which can be displayed
 	 */
 	PASSWORD_SAFE_STRING: string;
+
+	/**
+	 * The allowed software update channels
+	 */
+	SOFTWARE_UPDATE_CHANNELS: {
+	  alpha: "SETUP.UpdateAlpha",
+	  beta: "SETUP.UpdateBeta",
+	  release: "SETUP.UpdateRelease"
+	};
 
 	/**
 	 * The default sorting density for manually ordering child objects within a parent
@@ -289,7 +336,42 @@ declare const CONST: {
 	/**
 	 * Invert the User Role mapping to recover role names from a role integer
 	 */
-	USER_ROLE_NAMES: any;
+	USER_ROLE_NAMES: {
+		0: 'NONE';
+		1: 'PLAYER';
+		2: 'TRUSTED';
+		3: 'ASSISTANT';
+		4: 'GAMEMASTER';
+	};
+
+	/**
+	 * A list of MIME types which are treated as uploaded "media", which are allowed to overwrite existing files.
+	 * Any non-media MIME type is not allowed to replace an existing file.
+	 */
+	MEDIA_MIME_TYPES: [
+	  "image/apng",
+	  "image/bmp",
+	  "image/gif",
+	  "image/jpeg",
+	  "image/png",
+	  "image/svg+xml",
+	  "image/tiff",
+	  "image/webp",
+	  "audio/wave",
+	  "audio/wav",
+	  "audio/webm",
+	  "audio/ogg",
+	  "audio/midi",
+	  "audio/mpeg",
+	  "audio/opus",
+	  "audio/aac",
+	  "video/mpeg",
+	  "video/mp4",
+	  "video/ogg",
+	  "application/json",
+	  "application/ogg",
+	  "application/pdf",
+	];
 
 	/**
 	 * Define the named actions which users or user roles can be permitted to do.
@@ -338,6 +420,12 @@ declare const CONST: {
 			disableGM: false;
 			defaultRole: number;
 		};
+		JOURNAL_CREATE: {
+			label: "PERMISSION.JournalCreate";
+			hint: "PERMISSION.JournalCreateHint";
+			disableGM: false;
+			defaultRole: number;
+		},
 		MACRO_SCRIPT: {
 			label: 'PERMISSION.MacroScript';
 			hint: 'PERMISSION.MacroScriptHint';
@@ -362,6 +450,12 @@ declare const CONST: {
 			disableGM: true;
 			defaultRole: number;
 		};
+		SHOW_RULER: {
+			label: "PERMISSION.ShowRuler";
+			hint: "PERMISSION.ShowRulerHint";
+			disableGM: true;
+			defaultRole: number;
+		},
 		TEMPLATE_CREATE: {
 			label: 'PERMISSION.TemplateCreate';
 			hint: 'PERMISSION.TemplateCreateHint';
@@ -447,6 +541,12 @@ declare const CONST: {
 	};
 
 	/**
+	 * The allowed set of HTML template extensions
+	 * @type {string[]}
+	 */
+	HTML_FILE_EXTENSIONS: ["html", "hbs"];
+
+	/**
 	 * The supported file extensions for image-type files
 	 */
 	IMAGE_FILE_EXTENSIONS: ['jpg', 'jpeg', 'png', 'svg', 'webp'];
@@ -454,7 +554,7 @@ declare const CONST: {
 	/**
 	 * The supported file extensions for video-type files
 	 */
-	VIDEO_FILE_EXTENSIONS: ['mp4', 'ogg', 'webm'];
+	VIDEO_FILE_EXTENSIONS: ['mp4', 'ogg', 'webm', "m4v"];
 
 	/**
 	 * The supported file extensions for audio-type files
