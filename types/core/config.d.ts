@@ -57,8 +57,8 @@ declare const CONFIG: {
 	 * Configuration for the default Playlist entity class
 	 */
 	Playlist: {
-		entityClass;
-		sheetClass;
+		entityClass: any;
+		sheetClass: any;
 		sidebarIcon: string;
 	};
 
@@ -66,8 +66,8 @@ declare const CONFIG: {
 	 * Configuration for RollTable random draws
 	 */
 	RollTable: {
-		entityClass;
-		sheetClass;
+		entityClass: any;
+		sheetClass: any;
 		sidebarIcon: string;
 		resultIcon: string;
 	};

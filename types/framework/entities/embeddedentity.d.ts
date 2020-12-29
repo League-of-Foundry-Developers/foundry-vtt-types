@@ -85,7 +85,7 @@ declare class ActiveEffect extends EmbeddedEntity {
 	 * @param {Options} options     Configuration options which modify the request.
 	 * @return                      The updated ActiveEffect data.
 	 */
-	update(data, options?: any): Promise<any>;
+	update(data: any, options?: any): Promise<any>;
 
 	/**
 	 * A convenience method for deleting an ActiveEffect instance in an parent Actor or Item.
@@ -100,5 +100,5 @@ declare class ActiveEffect extends EmbeddedEntity {
 	 * @param args      Initialization arguments passed to the ActiveEffect constructor.
 	 * @return          The constructed ActiveEffect instance.
 	 */
-	static create(...args): Promise<ActiveEffect>;
+	static create(...args: any[]): Promise<ActiveEffect>;
 }

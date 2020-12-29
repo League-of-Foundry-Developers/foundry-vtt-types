@@ -134,7 +134,7 @@ declare class Combat extends Entity {
 	 * @param args Additional arguments forwarded to the Combat.rollInitiative method
 	 * @returns A promise which resolves to the updated Combat entity once updates are complete.
 	 */
-	rollAll(...args): Promise<Combat>;
+	rollAll(...args: any[]): Promise<Combat>;
 
 	/**
 	 * Roll initiative for one or multiple Combatants within the Combat entity
@@ -155,7 +155,7 @@ declare class Combat extends Entity {
 	 * @returns A promise which resolves to the updated Combat entity once updates are complete.
 	 */
 
-	rollNPC(...args): Promise<Combat>;
+	rollNPC(...args: any[]): Promise<Combat>;
 
 	/**
 	 * Set initiative for a single Combatant within the Combat encounter. Turns will be updated to keep the same combatant as current in the turn order
@@ -194,5 +194,5 @@ declare class Combat extends Entity {
 	 * This method can be overridden by a system or module which needs to display combatants in an alternative order.
 	 * By default sort by initiative, falling back to name
 	 */
-	_sortCombatants(a, b);
+	_sortCombatants(a: any, b: any): any;
 }

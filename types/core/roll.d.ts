@@ -150,7 +150,7 @@ declare class Roll {
 	/**
 	 * Expand and reallocate an array of terms, separating them based on arithmetic operators
 	 */
-	protected _expandArithmeticTerms(terms): any;
+	protected _expandArithmeticTerms(terms: any): any;
 
 	/**
 	 * Replace a dice roll term enclosed in {brackets} with a DicePool instance

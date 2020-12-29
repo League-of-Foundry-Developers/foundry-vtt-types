@@ -285,7 +285,15 @@ declare class PlaceablesLayer extends CanvasLayer {
 	 */
 	protected _onMouseDown(
 		event: PIXI.interaction.InteractionEvent,
-		{ isRuler, isCtrlRuler, isSelect }?
+		{
+			isRuler,
+			isCtrlRuler,
+			isSelect
+		}?: {
+			isRuler: any,
+			isCtrlRuler: any,
+			isSelect: any
+		}
 	): void;
 
 	/**

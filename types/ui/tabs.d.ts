@@ -66,7 +66,7 @@ declare class Tabs {
 	 * Activate a tab by it's name. This gets called automatically when a tab in the navigation is clicked,
 	 * however you may also call this function directly.
 	 */
-	activateTab(tab: JQuery);
+	activateTab(tab: JQuery): any;
 }
 
 /**

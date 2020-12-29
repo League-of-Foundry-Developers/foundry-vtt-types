@@ -23,7 +23,7 @@ declare class NormalizedRectangle extends PIXI.Rectangle {}
  * });
  */
 declare class MeasuredTemplate extends PlaceableObject {
-  constructor(any);
+  constructor(any: any);
 
   // TODO properly declare the creation data object
 
@@ -69,7 +69,7 @@ declare class MeasuredTemplate extends PlaceableObject {
    * Draw the rotation control handle and assign event listeners
    * @private
    */
-  _drawRotationHandle(radius): void;
+  _drawRotationHandle(radius: any): void;
 
   /**
    * Update the displayed ruler tooltip text
@@ -80,5 +80,5 @@ declare class MeasuredTemplate extends PlaceableObject {
   /**
    * Highlight the grid squares which should be shown under the area of effect
    */
-  highlightGrid();
+  highlightGrid(): void;
 }
