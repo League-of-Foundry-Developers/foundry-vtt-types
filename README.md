@@ -1,3 +1,15 @@
+# (Inofficial) Foundry VTT Types
+
+This was originally created by @NickEastNL for his Project Creator over on
+[GitLab](https://gitlab.com/foundry-projects/foundry-pc/foundry-pc-types). This
+fork is an attempt to update the types to 0.7.9 of Foundry and to provide better
+maintenance. The work for enhancing this to the current Foundry version is done
+in the `foundry-0.7.9` branch. Merge requests for splitting up the work is
+welcome, otherwise I will just work through this from top to bottom of the
+original foundry.js file.
+
+What follows is the original README.
+
 <div align=center>
 
 # Foundry Project Creator Types
