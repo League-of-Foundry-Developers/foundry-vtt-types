@@ -1,5 +1,5 @@
 {
-	"name": "foundry-pc-types",
+	"name": "foundry-vtt-types",
 	"version": "0.1.0",
 	"description": "TypeScript type definitions for Foundry VTT",
 	"scripts": {
@@ -9,7 +9,7 @@
 		"type": "git",
 		"url": "https://gitlab.com/foundry-projects/foundry-pc/foundry-pc-types.git"
 	},
-	"author": "N. van Oosten",
+	"author": "Kai Moschcau",
 	"license": "MIT",
 	"bugs": {
 		"url": "https://gitlab.com/foundry-projects/foundry-pc/foundry-pc-types/issues"
