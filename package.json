@@ -16,6 +16,7 @@
 	},
 	"homepage": "https://gitlab.com/foundry-projects/foundry-pc/foundry-pc-types#readme",
 	"dependencies": {
+		"@types/howler": "^2.2.1",
 		"@types/jquery": "^3.5.1",
 		"@types/socket.io-client": "^1.4.33",
 		"@types/tinymce": "^4.5.24"
