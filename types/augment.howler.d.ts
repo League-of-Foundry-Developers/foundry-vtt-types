@@ -1,3 +1,5 @@
 import * as howler from 'howler'
-export as namespace howler
-export = howler
+
+declare global {
+	type Howl = howler.Howl
+}

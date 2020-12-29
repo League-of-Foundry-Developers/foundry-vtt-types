@@ -15,7 +15,7 @@ declare class AudioHelper {
 	 * This Array contains the Howl instances which are requested for playback prior to a gesture.
 	 * Once a gesture is observed, we begin playing all elements of this Array.
 	 */
-	pending: howler.Howl[];
+	pending: Howl[];
 
 	/**
 	 * A flag for whether video playback is currently locked by awaiting a user gesture
@@ -53,7 +53,7 @@ declare class AudioHelper {
 		html5: boolean
 		volume: number,
 		loop: boolean
-	}): howler.Howl;
+	}): Howl;
 
 	/**
 	 * Test whether a source file has a supported audio extension type
@@ -104,7 +104,7 @@ declare class AudioHelper {
 			loop: boolean
 		},
 		push: boolean
-	): howler.Howl;
+	): Howl;
 
 	/**
 	 * Create a Howl object and load it to be ready for later playback
