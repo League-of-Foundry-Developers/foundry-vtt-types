@@ -52,6 +52,7 @@ import './types/core/diceterm';
 import './types/core/die';
 import './types/core/fonts';
 import './types/core/hooks';
+import './types/core/images';
 import './types/core/keyboard';
 import './types/core/roll';
 import './types/core/settings';
