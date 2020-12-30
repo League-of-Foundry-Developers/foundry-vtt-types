@@ -19,7 +19,8 @@
 		"@types/howler": "^2.2.1",
 		"@types/jquery": "^3.5.1",
 		"@types/socket.io-client": "^1.4.33",
-		"@types/tinymce": "^4.5.24"
+		"@types/tinymce": "^4.5.24",
+		"pixi.js": "^5.3.7"
 	},
 	"devDependencies": {
 		"@typescript-eslint/eslint-plugin": "^3.10.1",
