@@ -284,7 +284,7 @@ declare class PlaceablesLayer extends CanvasLayer {
 	 * Default mouse-down event handling implementation
 	 */
 	protected _onMouseDown(
-		event: PIXI.interaction.InteractionEvent,
+		event: PIXI.InteractionEvent,
 		{
 			isRuler,
 			isCtrlRuler,
@@ -299,44 +299,44 @@ declare class PlaceablesLayer extends CanvasLayer {
 	/**
 	 * Default handling of drag start events by left click + dragging
 	 */
-	protected _onDragStart(event: PIXI.interaction.InteractionEvent): void;
+	protected _onDragStart(event: PIXI.InteractionEvent): void;
 
 	/**
 	 * Default handling of mouse move events during a dragging workflow
 	 */
-	protected _onMouseMove(event: PIXI.interaction.InteractionEvent): void;
+	protected _onMouseMove(event: PIXI.InteractionEvent): void;
 
 	/**
 	 * Default handling of drag cancel events by right clicking during a drag creation
 	 */
-	protected _onDragCancel(event: PIXI.interaction.InteractionEvent): void;
+	protected _onDragCancel(event: PIXI.InteractionEvent): void;
 
 	/**
 	 * Handle successful creation of an object through the drag creation workflow.
 	 * This logic requires that the drag exceeded some minimum distance for the new object to be created.
 	 */
-	protected _onDragCreate(event: PIXI.interaction.InteractionEvent): void;
+	protected _onDragCreate(event: PIXI.InteractionEvent): void;
 
 	/**
 	 * Default handling of mouse-up events which conclude a new object creation after dragging
 	 */
-	protected _onMouseUp(event: PIXI.interaction.InteractionEvent): void;
+	protected _onMouseUp(event: PIXI.InteractionEvent): void;
 
 	/**
 	 * Handle mouse-wheel events at the PlaceableObjects layer level to rotate multiple objects at once.
 	 * This handler will rotate all controlled objects by some incremental angle.
 	 * @param event	The mousewheel event which originated the request
 	 */
-	protected _onMouseWheel(event: PIXI.interaction.InteractionEvent): void;
+	protected _onMouseWheel(event: PIXI.InteractionEvent): void;
 
 	/**
 	 * Handle right mouse-click events which occur while this layer is active
 	 */
-	protected _onRightDown(event: PIXI.interaction.InteractionEvent): void;
+	protected _onRightDown(event: PIXI.InteractionEvent): void;
 
 	/**
 	 * Handle a DELETE keypress while a placeable object is hovered
 	 * @param event	The delete key press event which triggered the request
 	 */
-	protected _onDeleteKey(event: PIXI.interaction.InteractionEvent): void;
+	protected _onDeleteKey(event: PIXI.InteractionEvent): void;
 }
