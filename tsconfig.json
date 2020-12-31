@@ -1,16 +1,16 @@
 {
-	"compilerOptions": {
-		"lib": [
-			"DOM",
-			"ES6",
-			"ES2017"
-		],
-		"noEmit": true,
-		"strict": true,
-		"target": "ES2017"
-	},
-	"include": [
-		"./node_modules/pixi.js/pixi.js.d.ts",
-		"./types"
-	]
+  "compilerOptions": {
+    "lib": [
+      "DOM",
+      "ES6",
+      "ES2017"
+    ],
+    "noEmit": true,
+    "strict": true,
+    "target": "ES2017"
+  },
+  "include": [
+    "./node_modules/pixi.js/pixi.js.d.ts",
+    "types"
+  ]
 }
