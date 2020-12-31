@@ -1,10 +1,16 @@
 {
-	"compilerOptions": {
-		"target": "ES2017",
-		"lib": ["DOM", "ES6", "ES2017"],
-		"strict": true,
-		"noEmit": true,
-		"useDefineForClassFields": true
-	},
-	"include": ["types"]
+  "compilerOptions": {
+    "lib": [
+      "DOM",
+      "ES6",
+      "ES2017"
+    ],
+    "noEmit": true,
+    "strict": true,
+    "target": "ES2017",
+    "useDefineForClassFields": true
+  },
+  "include": [
+    "types"
+  ]
 }
