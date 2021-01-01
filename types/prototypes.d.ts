@@ -158,7 +158,8 @@ declare global {
     * Round a number to the nearest number which is a multiple of a given
     * interval
     * @param interval - The interval to round the number to the nearest multiple
-    *                   of; defaults to 1
+    *                   of
+    *                   (default: `1`)
     * @returns The rounded number
     *
     * @example
@@ -187,10 +188,10 @@ declare global {
 
     /**
     * Transform any string into a url-viable slug string
-    * @param replacement - The replacement character to separate terms;
-    *                      default is '-'
+    * @param replacement - The replacement character to separate terms
+    *                      (default: `'-'`)
     * @param strict - Replace all non-alphanumeric characters, or allow them?
-    *                 Default false
+    *                 (default: `false`)
     * @returns The cleaned slug string
     */
     slugify: (options: { replacement?: string, strict?: boolean }) => string

@@ -35,7 +35,8 @@ declare function debounce (
 * @param original - An object comparing data against which to compare.
 * @param other - An object containing potentially different data.
 * @param inner - Only recognize differences in other for keys which also exist
-*                in original. Defaults to `false`
+*                in original.
+*                (default: `false`)
 * @returns An object of the data in other which differs from that in original.
 */
 declare function diffObject (
@@ -61,7 +62,8 @@ declare function encodeURL (path: string): string
 * Expand a flattened object to be a standard multi-dimensional nested Object by
 * converting all dot-notation keys to inner objects.
 * @param obj - The object to expand
-* @param _d - Recursion depth, to prevent overflow; defaults to 0
+* @param _d - Recursion depth, to prevent overflow
+*             (default: `0`)
 * @returns An expanded object
 */
 declare function expandObject (obj: object, _d?: number): any
@@ -73,7 +75,8 @@ declare function expandObject (obj: object, _d?: number): any
 *
 * @param source - An object which contains the data you wish to filter
 * @param template - An object which contains the structure you wish to preserve
-* @param options - additional options; defaults to `{}`
+* @param options - additional options
+*                  (default: `{}`)
 * @param keepSpecial - Whether to keep special tokens like deletion keys
 * @param templateValues - Instead of keeping values from the source, instead
 *                         draw values from the template
@@ -96,7 +99,8 @@ declare function filterObject (
 * Flatten a possibly multi-dimensional object to a one-dimensional one by
 * converting all nested keys to dot notation
 * @param obj - The object to flatten
-* @param _d - Recursion depth, to prevent overflow; defaults to 0
+* @param _d - Recursion depth, to prevent overflow
+*             (default: `0`)
 * @returns A flattened object
 */
 declare function flattenObject (obj: object, _d?: number): any
@@ -148,7 +152,8 @@ declare function hexToRGB (hex: number): number[]
 * Convert a hex color code to an RGBA color string which can be used for CSS
 * styling
 * @param hex - A hex color number
-* @param alpha - A level of transparency; defaults to 1.0
+* @param alpha - A level of transparency
+*                (default: `1.0`)
 * @returns An rgba style string
 */
 declare function hexToRGBAString (hex: number, alpha?: number): string
@@ -197,9 +202,11 @@ declare function isObjectEmpty (obj: object): boolean
 * Load a single texture and return a Promise which resolves once the texture is
 * ready to use
 * @param src - The requested texture source
-* @param options - additional options; defaults to `{}`
+* @param options - additional options
+*                  (default: `{}`)
 * @param fallback - A fallback texture to use if the requested source is
-*                   unavailable or invalid; defaults to `null`
+*                   unavailable or invalid
+*                   (default: `null`)
 */
 declare function loadTexture (
   src: string,
@@ -211,7 +218,8 @@ declare function loadTexture (
 * target object.
 * @param original - The initial object which should be updated with values from the target
 * @param other - A new object whose values should replace those in the source
-* @param options - additional options; defaults to `{}`
+* @param options - additional options
+*                  (default: `{}`)
 * @param insertKeys - Control whether to insert new top-level objects into the
 *                     resulting structure which do not previously exist in the
 *                     original object.
@@ -285,7 +293,8 @@ declare function normalizeRadians (radians: number): number
 * As long as the string is not long enough, generate more random data into it
 * Use substring in case we generated a string with a length higher than the
 * requested length
-* @param length - The length of the random ID to generate; defaults to 10
+* @param length - The length of the random ID to generate
+*                 (default: `10`)
 * @returns Return a string containing random letters and numbers
 */
 declare function randomID (length?: number): string
