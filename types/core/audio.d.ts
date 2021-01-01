@@ -80,8 +80,9 @@ declare class AudioHelper {
 
   /**
   * Open socket listeners which transact ChatMessage data
+  * @internal
   */
-  protected static socketListeners (socket: any): void
+  static socketListeners (socket: any): void
 
   /**
   * The Native interval for the AudioHelper to analyse audio levels from streams
@@ -192,15 +193,17 @@ declare class AudioHelper {
   /**
   * Cancel the global analyser timer
   * If the timer is running and has become unnecessary, stops it.
+  * @internal
   */
-  protected _cancelAnalyserTimer (): void
+  _cancelAnalyserTimer (): void
 
   /**
   * Capture audio level for all speakers and emit a webrtcVolumes custom event
   * with all the volume levels detected since the last emit.
   * The event's detail is in the form of `{userId: decibelLevel}`
+  * @internal
   */
-  protected _emitVolumes (): void
+  _emitVolumes (): void
 
   /**
   * Ensures the global analyser timer is started
@@ -211,6 +214,7 @@ declare class AudioHelper {
   * that limiting the number of timers running at the same time is good practice
   * and with JS itself, there's a potential for a timer congestion phenomenon if
   * too many are created.
+  * @internal
   */
-  protected _ensureAnalyserTimer (): void
+  _ensureAnalyserTimer (): void
 }
