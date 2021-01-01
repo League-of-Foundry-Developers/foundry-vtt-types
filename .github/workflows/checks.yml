@@ -32,9 +32,7 @@ jobs:
       - name: npm install
         uses: jaid/action-npm-install@v1.2.1
       - name: run eslint
-        uses: Krizzu/eslint-check-action@v1.1.0
+        uses: tinovyatkin/action-eslint@v1
         with:
-          ghToken: ${{ secrets.GITHUB_TOKEN }}
-          eslintFiles: 'types, index.d.ts'
-          eslintConfig: .eslintrc.json
-          eslintExt: 'ts'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          check-name: lint
