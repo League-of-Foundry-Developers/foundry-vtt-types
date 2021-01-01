@@ -17,12 +17,24 @@
     "@typescript-eslint"
   ],
   "rules": {
-    "semi": [
+    "semi": "off",
+    "tsdoc/syntax": "warn",
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/member-delimiter-style": [
+      "error",
+      {
+        "multiline": {
+          "delimiter": "none"
+        },
+        "singleline": {
+          "delimiter": "comma"
+        }
+      }
+    ],
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/semi": [
       "error",
       "never"
-    ],
-    "tsdoc/syntax": "warn",
-    "@typescript-eslint/ban-types": 0,
-    "@typescript-eslint/no-explicit-any": 0
+    ]
   }
 }
