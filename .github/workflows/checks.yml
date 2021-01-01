@@ -1,0 +1,38 @@
+name: checks
+on:
+  - push
+  - pull_request
+jobs:
+  typecheck:
+    name: type check code base
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+      - name: install node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: npm install
+        uses: jaid/action-npm-install@v1.2.1
+      - name: run typescript error reporter
+        uses: andoshin11/typescript-error-reporter-action@v1.0.2
+  lint:
+    name: lint code base
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: install node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: npm install
+        uses: jaid/action-npm-install@v1.2.1
+      - name: run eslint
+        uses: tinovyatkin/action-eslint@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          check-name: lint
