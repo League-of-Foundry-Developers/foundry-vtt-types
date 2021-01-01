@@ -170,7 +170,11 @@ declare global {
     toNearest: (interval?: number) => number
   }
 
-  interface RegExp {
+  /* -------------------------------------------- */
+  /*  RegExp Helpers                              */
+  /* -------------------------------------------- */
+
+  interface RegExpConstructor {
     escape: (string: string) => string
   }
 
