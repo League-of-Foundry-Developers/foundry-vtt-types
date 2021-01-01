@@ -31,6 +31,14 @@
         }
       }
     ],
+    "@typescript-eslint/member-ordering": [
+      "warn",
+      {
+        "default": {
+          "order": "alphabetically"
+        }
+      }
+    ],
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/semi": [
       "error",
