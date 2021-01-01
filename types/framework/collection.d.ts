@@ -3,6 +3,7 @@
 * efficient key-based lookup of a Map.
 * This concept is reused throughout Foundry VTT where a collection of uniquely
 * identified elements is required.
+* @typeParam T - The type of the objects contained in the Collection
 */
 declare class Collection<T extends Entity> extends Map<string, T> {
   constructor (entries: T)
@@ -86,6 +87,7 @@ declare class Collection<T extends Entity> extends Map<string, T> {
   * of transformed values
   * @param transformer - The transformation function to apply to each entry
   *                      value
+  * @typeParam U - The output type of the map operation
   * @returns An Array of transformed values
   */
   map<U>(transformer: (entity: T) => U): U[]
@@ -95,6 +97,7 @@ declare class Collection<T extends Entity> extends Map<string, T> {
   * entries
   * @param evaluator - A function which mutates the accumulator each iteration
   * @param initial - An initial value which accumulates with each iteration
+  * @typeParam U - The type of the accumulator and the return value
   * @returns The accumulated result
   * @see {@link Array#reduce}
   * @example
