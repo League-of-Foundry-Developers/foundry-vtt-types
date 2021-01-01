@@ -17,6 +17,10 @@
     "@typescript-eslint"
   ],
   "rules": {
+    "semi": [
+      "error",
+      "never"
+    ],
     "tsdoc/syntax": "warn",
     "@typescript-eslint/ban-types": 0,
     "@typescript-eslint/no-explicit-any": 0
