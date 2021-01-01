@@ -9,6 +9,34 @@
 */
 declare class AudioHelper {
   /**
+  * The Native interval for the AudioHelper to analyse audio levels from streams
+  * Any interval passed to startLevelReports() would need to be a multiple of
+  * this value. This number is specified in milliseconds.
+  * @defaultValue `50`
+  */
+  levelAnalyserNativeInterval: number
+
+  /**
+  * A flag for whether video playback is currently locked by awaiting a user
+  * gesture
+  */
+  locked: boolean
+
+  /**
+  * A user gesture must be registered before audio can be played.
+  * This Array contains the Howl instances which are requested for playback
+  * prior to a gesture. Once a gesture is observed, we begin playing all
+  * elements of this Array.
+  */
+  pending: Howl[]
+
+  /** The set of Howl instances which have been created for different audio
+  * paths */
+  sounds: any
+
+  constructor ()
+
+  /**
   * Test whether a source file has a supported audio extension type
   * @param src - A requested audio source path
   * @returns Does the filename end with a valid audio extension?
@@ -50,10 +78,10 @@ declare class AudioHelper {
   */
   static play (
     data: {
-      src: string
-      volume: number
       autoplay: boolean
       loop: boolean
+      src: string
+      volume: number
     },
     push: boolean
   ): Howl
@@ -70,6 +98,12 @@ declare class AudioHelper {
   static registerSettings (): void
 
   /**
+  * Open socket listeners which transact ChatMessage data
+  * @internal
+  */
+  static socketListeners (socket: any): void
+
+  /**
   * Counterpart to inputToVolume()
   * Returns the input range value based on a volume
   * @param volume - Value between [0, 1] of the volume level
@@ -79,38 +113,38 @@ declare class AudioHelper {
   static volumeToInput (volume: number, order?: number): number
 
   /**
-  * Open socket listeners which transact ChatMessage data
+  * Cancel the global analyser timer
+  * If the timer is running and has become unnecessary, stops it.
   * @internal
   */
-  static socketListeners (socket: any): void
+  _cancelAnalyserTimer (): void
 
   /**
-  * The Native interval for the AudioHelper to analyse audio levels from streams
-  * Any interval passed to startLevelReports() would need to be a multiple of
-  * this value. This number is specified in milliseconds.
-  * @defaultValue `50`
+  * Capture audio level for all speakers and emit a webrtcVolumes custom event
+  * with all the volume levels detected since the last emit.
+  * The event's detail is in the form of `{userId: decibelLevel}`
+  * @internal
   */
-  levelAnalyserNativeInterval: 50
+  _emitVolumes (): void
 
   /**
-  * A flag for whether video playback is currently locked by awaiting a user
-  * gesture
+  * Ensures the global analyser timer is started
+  * We create only one timer that runs every 50ms and only create it if needed,
+  * this is meant to optimize things and avoid having multiple timers running if
+  * we want to analyse multiple streams at the same time.
+  * I don't know if it actually helps much with performance but it's expected
+  * that limiting the number of timers running at the same time is good practice
+  * and with JS itself, there's a potential for a timer congestion phenomenon if
+  * too many are created.
+  * @internal
   */
-  locked: boolean
+  _ensureAnalyserTimer (): void
 
   /**
-  * A user gesture must be registered before audio can be played.
-  * This Array contains the Howl instances which are requested for playback
-  * prior to a gesture. Once a gesture is observed, we begin playing all
-  * elements of this Array.
+  * Handle the first observed user gesture
+  * @param event - The mouse-move event which enables playback
   */
-  pending: Howl[]
-
-  /** The set of Howl instances which have been created for different audio
-  * paths */
-  sounds: any
-
-  constructor ()
+  _onFirstGesture (event: Event): void
 
   /**
   * Register an event listener to await the first mousemove gesture and begin
@@ -128,12 +162,12 @@ declare class AudioHelper {
   * @param loop - (default: `false`)
   */
   create (options?: {
-    src: string
-    preload: boolean
     autoplay: boolean
     html5: boolean
-    volume: number
     loop: boolean
+    preload: boolean
+    src: string
+    volume: number
   }): Howl
 
   /**
@@ -183,38 +217,4 @@ declare class AudioHelper {
   * @param id - The id of the reports that passed to startLevelReports.
   */
   stopLevelReports (id: string): void
-
-  /**
-  * Handle the first observed user gesture
-  * @param event - The mouse-move event which enables playback
-  */
-  _onFirstGesture (event: Event): void
-
-  /**
-  * Cancel the global analyser timer
-  * If the timer is running and has become unnecessary, stops it.
-  * @internal
-  */
-  _cancelAnalyserTimer (): void
-
-  /**
-  * Capture audio level for all speakers and emit a webrtcVolumes custom event
-  * with all the volume levels detected since the last emit.
-  * The event's detail is in the form of `{userId: decibelLevel}`
-  * @internal
-  */
-  _emitVolumes (): void
-
-  /**
-  * Ensures the global analyser timer is started
-  * We create only one timer that runs every 50ms and only create it if needed,
-  * this is meant to optimize things and avoid having multiple timers running if
-  * we want to analyse multiple streams at the same time.
-  * I don't know if it actually helps much with performance but it's expected
-  * that limiting the number of timers running at the same time is good practice
-  * and with JS itself, there's a potential for a timer congestion phenomenon if
-  * too many are created.
-  * @internal
-  */
-  _ensureAnalyserTimer (): void
 }

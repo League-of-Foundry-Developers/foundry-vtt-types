@@ -269,11 +269,11 @@ declare function mergeObject<T> (
   original: T,
   other?: T,
   options?: {
+    enforceTypes?: boolean
+    inplace?: boolean
     insertKeys?: boolean
     insertValues?: boolean
     overwrite?: boolean
-    inplace?: boolean
-    enforceTypes?: boolean
   },
   _d?: number
 ): T
