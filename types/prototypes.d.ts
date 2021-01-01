@@ -161,12 +161,13 @@ declare global {
     *                   of
     *                   (default: `1`)
     * @returns The rounded number
-    *
     * @example
+    * ```
     * let n = 17.18;
     * n.toNearest(5); // 15
     * n.toNearest(10); // 20
     * n.toNearest(0.25); // 17.25
+    * ```
     */
     toNearest: (interval?: number) => number
   }
