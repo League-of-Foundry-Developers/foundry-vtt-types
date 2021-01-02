@@ -4,7 +4,7 @@
 * ({@link HooksCallbacks.Generic}) for callback functions and additionally
 * constants (where applicable) and types for other Hooks callbacks. Some hooks
 * do not have constants for their names, because the names are dynamically
-* generated at runtime. Callback types returning `undefined` are called by
+* generated at runtime. Callback types returning `void` are called by
 * {@link Hooks.callAll} and do not care about the return value of the callback.
 * Callback types returning `boolean` are called with {@link Hooks.call} and do
 * care about the return value and will stop executing remaining callbacks if
@@ -33,7 +33,7 @@ declare namespace HooksCallbacks {
   * @remarks The name is 'canvasInit'.
   * @see {@link Canvas#draw}
   */
-  type CanvasInit = (canvas: Canvas) => undefined
+  type CanvasInit = (canvas: Canvas) => void
 
   /**
   * Called when the {@link Canvas} is panned. When called during animated
@@ -44,7 +44,7 @@ declare namespace HooksCallbacks {
   * @see {@link Canvas#pan}
   * @see {@link Canvas#animatePan}
   */
-  type CanvasPan = (canvas: Canvas, view: CanvasView) => undefined
+  type CanvasPan = (canvas: Canvas, view: CanvasView) => void
 
   /**
   * Called after the {@link SceneNavigation} is expanded or collapsed.
@@ -55,7 +55,7 @@ declare namespace HooksCallbacks {
   * @see {@link SceneNavigation#collapse}
   */
   type CollapseSceneNavigation =
-    (nav: SceneNavigation, collapsed: boolean) => undefined
+    (nav: SceneNavigation, collapsed: boolean) => void
 
   /**
   * Called after assuming or releasing control over a {@link PlaceableObject}.
@@ -67,7 +67,7 @@ declare namespace HooksCallbacks {
   * @see {@link PlaceableObject#release}
   */
   type ControlPlaceableObject =
-    (object: PlaceableObject, controlled: boolean) => undefined
+    (object: PlaceableObject, controlled: boolean) => void
 
   /**
   * Called after creating an embedded {@link Entity}.
@@ -85,7 +85,7 @@ declare namespace HooksCallbacks {
     data: T,
     options: EntityCreateOptions,
     userId: number
-  ) => undefined
+  ) => void
 
   /**
   * Called after creating an {@link Entity}.
@@ -97,7 +97,7 @@ declare namespace HooksCallbacks {
   * @see {@link Entity#_handleCreate}
   */
   type CreateEntity =
-    (entity: Entity, options: EntityCreateOptions, userId: number) => undefined
+    (entity: Entity, options: EntityCreateOptions, userId: number) => void
 
   /**
   * Called after deleting an embedded {@link Entity}.
@@ -114,7 +114,7 @@ declare namespace HooksCallbacks {
     entity: Entity,
     options: EntityDeleteOptions,
     userId: number
-  ) => undefined
+  ) => void
 
   /**
   * Called after deleting an {@link Entity}.
@@ -126,17 +126,15 @@ declare namespace HooksCallbacks {
   * @see {@link Entity#_handleDelete}
   */
   type DeleteEntity =
-    (entity: Entity, options: EntityDeleteOptions, userId: number) => undefined
+    (entity: Entity, options: EntityDeleteOptions, userId: number) => void
 
   /**
-  * A generic type for the Hooks callback functions. The parameters differ,
+  * A general type for the Hooks callback functions. The parameters differ,
   * depending on the hook. Have a look at the more specific types.
   * @param args - The arguments passed to the callback
   * @returns Whether additional callbacks should be called after this
   */
-  type General =
-    ((...args: any[]) => boolean) |
-    ((...args: any[]) => undefined)
+  type General = (...args: any[]) => any
 
   /**
   * Called after the initial {@link SceneControls} have been set up.
@@ -144,7 +142,7 @@ declare namespace HooksCallbacks {
   * @remarks The name is 'getSceneControlButtons'.
   * @see {@link SceneControls#_getControlButtons}
   */
-  type GetSceneControlButtons = (controls: SceneControl[]) => undefined
+  type GetSceneControlButtons = (controls: SceneControl[]) => void
 
   /**
   * Called when the user mouse is entering or leaving a hover state over a
@@ -157,7 +155,7 @@ declare namespace HooksCallbacks {
   * @see {@link PlaceableObject#_onHoverOut}
   */
   type HoverPlaceableObject =
-    (object: PlaceableObject, hover: boolean) => undefined
+    (object: PlaceableObject, hover: boolean) => void
 
   /**
   * Called before the {@link Game} is initialized for the current window
@@ -165,7 +163,7 @@ declare namespace HooksCallbacks {
   * @remarks The name is 'init'.
   * @see {@link Game#initialize}
   */
-  type Init = () => undefined
+  type Init = () => void
 
   /**
   * Called when initializing shaders for a {@link PointSource}.
@@ -177,14 +175,14 @@ declare namespace HooksCallbacks {
   type InitializePointSourceShaders = (
     pointSource: PointSource,
     animationType: string
-  ) => undefined
+  ) => void
 
   /**
   * Called after refreshing the {@link LightingLayer}.
   * @param layer - the LightingLayer
   * @see {@link LightingLayer#refresh}
   */
-  type LightingRefresh = (lighting: LightingLayer) => undefined
+  type LightingRefresh = (lighting: LightingLayer) => void
 
   /**
   * Called after the {@link Game} pause is toggled
@@ -192,14 +190,14 @@ declare namespace HooksCallbacks {
   * @remarks The name is 'pauseGame'.
   * @see {@link Game#togglePause}
   */
-  type PauseGame = (paused: boolean) => undefined
+  type PauseGame = (paused: boolean) => void
 
   /**
   * Called after the {@link Game} is fully set up.
   * @remarks The name is 'ready'.
   * @see {@link Game#setupGame}
   */
-  type Ready = () => undefined
+  type Ready = () => void
 
   /**
   * Called after {@link AVSettings} are changed.
@@ -207,14 +205,14 @@ declare namespace HooksCallbacks {
   * @param changed - an object reflecting the changed settings
   * @see {@link AVSettings#_onSettingsChanged}
   */
-  type RtcSettingsChanged = (settings: AVSettings, changed: object) => undefined
+  type RtcSettingsChanged = (settings: AVSettings, changed: object) => void
 
   /**
   * Called before the {@link Game} is fully set up.
   * @remarks The name is 'setup'.
   * @see {@link Game#setupGame}
   */
-  type Setup = () => undefined
+  type Setup = () => void
 
   /**
   * Called when expanding or collapsing a {@link Sidebar}.
@@ -224,14 +222,14 @@ declare namespace HooksCallbacks {
   * @see {@link Sidebar#expand}
   * @see {@link Sidebar#collapse}
   */
-  type SidebarCollapse = (sidebar: Sidebar, collapsed: boolean) => undefined
+  type SidebarCollapse = (sidebar: Sidebar, collapsed: boolean) => void
 
   /**
   * Called after refreshing the {@link SightLayer}.
   * @param layer - the SightLayer
   * @see {@link SightLayer#restrictVisibility}
   */
-  type SightRefresh = (layer: SightLayer) => undefined
+  type SightRefresh = (layer: SightLayer) => void
 
   /**
   * Called after the targeted state for a {@link Token} changed.
@@ -241,7 +239,7 @@ declare namespace HooksCallbacks {
   * @remarks The name is 'targetToken'.
   * @see {@link UserTargets#_hook}
   */
-  type TargetToken = (user: User, token: Token, targeted: boolean) => undefined
+  type TargetToken = (user: User, token: Token, targeted: boolean) => void
 
   /**
   * Called after updating an embedded {@link Entity}.
@@ -261,7 +259,7 @@ declare namespace HooksCallbacks {
     data: T,
     options: EntityUpdateOptions,
     userId: number
-  ) => undefined
+  ) => void
 
   /**
   * Called after updating an {@link Entity}.
@@ -279,7 +277,7 @@ declare namespace HooksCallbacks {
     data: T,
     options: EntityUpdateOptions,
     userId: number
-  ) => undefined
+  ) => void
 
   /**
   * Called when the official world time changes.
@@ -288,7 +286,7 @@ declare namespace HooksCallbacks {
   * @remarks The name is 'updateWorldTime'.
   * @see {@link GameTime#onUpdateWorldTime}
   */
-  type UpdateWorldTime = (worldTime: number, dt: number) => undefined
+  type UpdateWorldTime = (worldTime: number, dt: number) => void
 }
 
 /**
