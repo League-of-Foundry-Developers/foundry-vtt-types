@@ -162,7 +162,7 @@ declare global {
     *                   (default: `1`)
     * @returns The rounded number
     * @example
-    * ```
+    * ```javascript
     * let n = 17.18;
     * n.toNearest(5); // 15
     * n.toNearest(10); // 20

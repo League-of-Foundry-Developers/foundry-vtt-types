@@ -71,7 +71,7 @@ declare class AudioHelper {
   *               (default: `false`)
   * @returns A Howl instance which controls audio playback.
   * @example
-  * ```
+  * ```javascript
   * // Play the sound of a locked door for all players
   * AudioHelper.play({src: "sounds/lock.wav", volume: 0.8, autoplay: true, loop: false}, true);
   * ```

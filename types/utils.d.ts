@@ -81,7 +81,7 @@ declare function expandObject (obj: object, _d?: number): any
 * @param templateValues - Instead of keeping values from the source, instead
 *                         draw values from the template
 * @example
-* ```
+* ```javascript
 * const source = {foo: {number: 1, name: "Tim", topping: "olives"}, bar: "baz"};
 * const template = {foo: {number: 0, name: "Mit", style: "bold"}, other: 72};
 * filterObject(source, template); // {foo: {number: 1, name: "Tim"}};
@@ -244,24 +244,24 @@ declare function loadTexture (
 * @returns The original source object including updated, inserted, or
 *          overwritten records.
 * @example <caption>Control how new keys and values are added</caption>
-* ```
+* ```javascript
 * mergeObject({k1: "v1"}, {k2: "v2"}, {insertKeys: false}); // {k1: "v1"}
 * mergeObject({k1: "v1"}, {k2: "v2"}, {insertKeys: true});  // {k1: "v1", k2: "v2"}
 * mergeObject({k1: {i1: "v1"}}, {k1: {i2: "v2"}}, {insertValues: false}); // {k1: {i1: "v1"}}
 * mergeObject({k1: {i1: "v1"}}, {k1: {i2: "v2"}}, {insertValues: true}); // {k1: {i1: "v1", i2: "v2"}}
 * ```
 * @example <caption>Control how existing data is overwritten</caption>
-* ```
+* ```javascript
 * mergeObject({k1: "v1"}, {k1: "v2"}, {overwrite: true}); // {k1: "v2"}
 * mergeObject({k1: "v1"}, {k1: "v2"}, {overwrite: false}); // {k1: "v1"}
 * ```
 * @example <caption>Control whether merges are performed recursively</caption>
-* ```
+* ```javascript
 * mergeObject({k1: {i1: "v1"}}, {k1: {i2: "v2"}}, {recursive: false}); // {k1: {i1: "v2"}}
 * mergeObject({k1: {i1: "v1"}}, {k1: {i2: "v2"}}, {recursive: true}); // {k1: {i1: "v1", i2: "v2"}}
 * ```
 * @example <caption>Deleting an existing object key</caption>
-* ```
+* ```javascript
 * mergeObject({k1: "v1", k2: "v2"}, {"-=k1": null});   // {k2: "v2"}
 * ```
 */

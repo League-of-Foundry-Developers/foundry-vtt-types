@@ -30,7 +30,7 @@ declare class Collection<T extends Entity> extends Map<string, T> {
   * @returns An Array of matched values
   * @see {@link Array#filter}
   * @example
-  * ```
+  * ```javascript
   * let c = new Collection([["a", "AA"], ["b", "AB"], ["c", "CC"]]);
   * let hasA = c.filters(entry => entry.slice(0) === "A");
   * ```
@@ -43,7 +43,7 @@ declare class Collection<T extends Entity> extends Map<string, T> {
   * @returns The value, if found, otherwise null
   * @see {@link Array#find}
   * @example
-  * ```
+  * ```javascript
   * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
   * let a = c.find(entry => entry === "A");
   * ```
@@ -59,7 +59,7 @@ declare class Collection<T extends Entity> extends Map<string, T> {
   *                 (default: `false`)
   * @returns The retrieved entry value, if the key exists, otherwise null
   * @example
-  * ```
+  * ```javascript
   * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
   * c.get("a"); // "A"
   * c.get("d"); // null
@@ -101,7 +101,7 @@ declare class Collection<T extends Entity> extends Map<string, T> {
   * @returns The accumulated result
   * @see {@link Array#reduce}
   * @example
-  * ```
+  * ```javascript
   * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
   * let letters = c.reduce((s, l) => {
   *   return s + l;
