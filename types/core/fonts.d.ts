@@ -1,6 +1,6 @@
 /**
-* A configuration of font families which are initialized when the page loads
-*/
+ * A configuration of font families which are initialized when the page loads
+ */
 declare const FONTS: {
   'FontAwesome': {
     custom: {
@@ -27,7 +27,7 @@ declare const FONTS: {
 }
 
 /**
-* Load font, and perform a callback once the font has been rendered
-* @deprecated since 0.6.4, to be removed in 0.8.x
-*/
+ * Load font, and perform a callback once the font has been rendered
+ * @deprecated since 0.6.4, to be removed in 0.8.x
+ */
 declare function loadFont (fontName: string, callback: () => void): void

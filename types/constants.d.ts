@@ -5,12 +5,12 @@ declare const WEBSITE_URL: string
 declare const vtt: string
 
 /**
-* The global CONSTANTS object
-*/
+ * The global CONSTANTS object
+ */
 declare const CONST: {
   /**
-  * Define the allowed ActiveEffect application modes
-  */
+   * Define the allowed ActiveEffect application modes
+   */
   ACTIVE_EFFECT_MODES: {
     /* eslint-disable @typescript-eslint/member-ordering */
     CUSTOM: 0
@@ -31,8 +31,8 @@ declare const CONST: {
   ===============================================================`
 
   /**
-  * The supported file extensions for audio-type files
-  */
+   * The supported file extensions for audio-type files
+   */
   AUDIO_FILE_EXTENSIONS: [
     'flac',
     'mp3',
@@ -42,14 +42,14 @@ declare const CONST: {
   ]
 
   /**
-  * Define the string name used for the base entity type when specific
-  * sub-types are not defined by the system
-  */
+   * Define the string name used for the base entity type when specific
+   * sub-types are not defined by the system
+   */
   BASE_ENTITY_TYPE: 'base'
 
   /**
-  * Valid Chat Message types
-  */
+   * Valid Chat Message types
+   */
   CHAT_MESSAGE_TYPES: {
     /* eslint-disable @typescript-eslint/member-ordering */
     OTHER: 0
@@ -62,9 +62,9 @@ declare const CONST: {
   }
 
   /**
-  * The allowed Entity types which may exist within a Compendium pack
-  * This is a subset of ENTITY_TYPES
-  */
+   * The allowed Entity types which may exist within a Compendium pack
+   * This is a subset of ENTITY_TYPES
+   */
   COMPENDIUM_ENTITY_TYPES: [
     'Actor',
     'Item',
@@ -76,25 +76,26 @@ declare const CONST: {
   ]
 
   /**
-  * Define the set of languages which have built-in support in the core software
-  */
+   * Define the set of languages which have built-in support in the core
+   * software
+   */
   CORE_SUPPORTED_LANGUAGES: [
     'en'
   ]
 
   /**
-  * The default artwork used for Note placeables if none is provided
-  */
+   * The default artwork used for Note placeables if none is provided
+   */
   DEFAULT_NOTE_ICON: 'icons/svg/book.svg'
 
   /**
-  * The default artwork used for Token images if none is provided
-  */
+   * The default artwork used for Token images if none is provided
+   */
   DEFAULT_TOKEN: 'icons/svg/mystery-man.svg'
 
   /**
-  * The supported dice roll visibility modes
-  */
+   * The supported dice roll visibility modes
+   */
   DICE_ROLL_MODES: {
     /* eslint-disable @typescript-eslint/member-ordering */
     PUBLIC: 'roll'
@@ -105,8 +106,8 @@ declare const CONST: {
   }
 
   /**
-  * The default configuration values used for Drawing objects
-  */
+   * The default configuration values used for Drawing objects
+   */
   DRAWING_DEFAULT_VALUES: {
     bezierFactor: 0.0
     fillAlpha: 0.5
@@ -125,11 +126,11 @@ declare const CONST: {
   }
 
   /**
-  * The allowed fill types which a Drawing object may display
-  * NONE: The drawing is not filled
-  * SOLID: The drawing is filled with a solid color
-  * PATTERN: The drawing is filled with a tiled image pattern
-  */
+   * The allowed fill types which a Drawing object may display
+   * NONE: The drawing is not filled
+   * SOLID: The drawing is filled with a solid color
+   * PATTERN: The drawing is filled with a tiled image pattern
+   */
   DRAWING_FILL_TYPES: {
     /* eslint-disable @typescript-eslint/member-ordering */
     NONE: 0
@@ -139,8 +140,8 @@ declare const CONST: {
   }
 
   /**
-  * The allowed Drawing types which may be saved
-  */
+   * The allowed Drawing types which may be saved
+   */
   DRAWING_TYPES: {
     /* eslint-disable @typescript-eslint/member-ordering */
     RECTANGLE: 'r'
@@ -152,8 +153,8 @@ declare const CONST: {
   }
 
   /**
-  * Define the allowed Entity types which may be dynamically linked in chat
-  */
+   * Define the allowed Entity types which may be dynamically linked in chat
+   */
   ENTITY_LINK_TYPES: [
     'Actor',
     'Item',
@@ -164,10 +165,10 @@ declare const CONST: {
   ]
 
   /**
-  * Define the allowed permission levels for a non-user Entity.
-  * Each level is assigned a value in ascending order. Higher levels grant more
-  * permissions.
-  */
+   * Define the allowed permission levels for a non-user Entity.
+   * Each level is assigned a value in ascending order. Higher levels grant more
+   * permissions.
+   */
   ENTITY_PERMISSIONS: {
     /* eslint-disable @typescript-eslint/member-ordering */
     NONE: 0
@@ -178,8 +179,8 @@ declare const CONST: {
   }
 
   /**
-  * Define the allowed Entity class types
-  */
+   * Define the allowed Entity class types
+   */
   ENTITY_TYPES: [
     'Actor',
     'ChatMessage',
@@ -195,13 +196,13 @@ declare const CONST: {
   ]
 
   /**
-  * EULA version number
-  */
+   * EULA version number
+   */
   EULA_VERSION: string
 
   /**
-  * Define the allowed Entity types which Folders may contain
-  */
+   * Define the allowed Entity types which Folders may contain
+   */
   FOLDER_ENTITY_TYPES: [
     'Actor',
     'Item',
@@ -211,18 +212,18 @@ declare const CONST: {
   ]
 
   /**
-  * The maximum allowed level of depth for Folder nesting
-  */
+   * The maximum allowed level of depth for Folder nesting
+   */
   FOLDER_MAX_DEPTH: 3
 
   /**
-  * The minimum allowed grid size which is supported by the software
-  */
+   * The minimum allowed grid size which is supported by the software
+   */
   GRID_MIN_SIZE: 50
 
   /**
-  * The allowed Grid types which are supported by the software
-  */
+   * The allowed Grid types which are supported by the software
+   */
   GRID_TYPES: {
     /* eslint-disable @typescript-eslint/member-ordering */
     GRIDLESS: 0
@@ -235,16 +236,16 @@ declare const CONST: {
   }
 
   /**
-  * The allowed set of HTML template extensions
-  */
+   * The allowed set of HTML template extensions
+   */
   HTML_FILE_EXTENSIONS: [
     'html',
     'hbs'
   ]
 
   /**
-  * The supported file extensions for image-type files
-  */
+   * The supported file extensions for image-type files
+   */
   IMAGE_FILE_EXTENSIONS: [
     'jpg',
     'jpeg',
@@ -254,8 +255,8 @@ declare const CONST: {
   ]
 
   /**
-  * An Array of valid MacroAction scope values
-  */
+   * An Array of valid MacroAction scope values
+   */
   MACRO_SCOPES: [
     'global',
     'actors',
@@ -263,10 +264,10 @@ declare const CONST: {
   ]
 
   /**
-  * A list of MIME types which are treated as uploaded "media", which are
-  * allowed to overwrite existing files.
-  * Any non-media MIME type is not allowed to replace an existing file.
-  */
+   * A list of MIME types which are treated as uploaded "media", which are
+   * allowed to overwrite existing files.
+   * Any non-media MIME type is not allowed to replace an existing file.
+   */
   MEDIA_MIME_TYPES: [
     'image/apng',
     'image/bmp',
@@ -293,8 +294,8 @@ declare const CONST: {
   ]
 
   /**
-  * Encode the reasons why a package may be available or unavailable for use
-  */
+   * Encode the reasons why a package may be available or unavailable for use
+   */
   PACKAGE_AVAILABILITY_CODES: {
     /* eslint-disable @typescript-eslint/member-ordering */
     UNKNOWN: -1
@@ -307,18 +308,18 @@ declare const CONST: {
   }
 
   /**
-  * A safe password string which can be displayed
-  */
+   * A safe password string which can be displayed
+   */
   PASSWORD_SAFE_STRING: string
 
   /**
-  * The allowed playback modes for an audio Playlist
-  * DISABLED: The playlist does not play on its own, only individual Sound
-  *          tracks played as a soundboard
-  * SEQUENTIAL: The playlist plays sounds one at a time in sequence
-  * SHUFFLE: The playlist plays sounds one at a time in randomized order
-  * SIMULTANEOUS: The playlist plays all contained sounds at the same time
-  */
+   * The allowed playback modes for an audio Playlist
+   * DISABLED: The playlist does not play on its own, only individual Sound
+   *          tracks played as a soundboard
+   * SEQUENTIAL: The playlist plays sounds one at a time in sequence
+   * SHUFFLE: The playlist plays sounds one at a time in randomized order
+   * SIMULTANEOUS: The playlist plays all contained sounds at the same time
+   */
   PLAYLIST_MODES: {
     /* eslint-disable @typescript-eslint/member-ordering */
     DISABLED: -1
@@ -329,14 +330,14 @@ declare const CONST: {
   }
 
   /**
-  * Define the threshold version which packages must support as their
-  * minimumCoreVersion in order to be usable
-  */
+   * Define the threshold version which packages must support as their
+   * minimumCoreVersion in order to be usable
+   */
   REQUIRED_PACKAGE_CORE_VERSION: string
 
   /**
-  * The allowed software update channels
-  */
+   * The allowed software update channels
+   */
   SOFTWARE_UPDATE_CHANNELS: {
     alpha: 'SETUP.UpdateAlpha'
     beta: 'SETUP.UpdateBeta'
@@ -344,15 +345,15 @@ declare const CONST: {
   }
 
   /**
-  * The default sorting density for manually ordering child objects within a
-  * parent
-  */
+   * The default sorting density for manually ordering child objects within a
+   * parent
+   */
   SORT_INTEGER_DENSITY: 100000
 
   /**
-  * Enumerate the source types which can be used for an AmbientLight placeable
-  * object
-  */
+   * Enumerate the source types which can be used for an AmbientLight placeable
+   * object
+   */
   SOURCE_TYPES: {
     /* eslint-disable @typescript-eslint/member-ordering */
     LOCAL: 'l'
@@ -362,8 +363,8 @@ declare const CONST: {
   }
 
   /**
-  * The allowed types of a TableResult document
-  */
+   * The allowed types of a TableResult document
+   */
   TABLE_RESULT_TYPES: {
     /* eslint-disable @typescript-eslint/member-ordering */
     TEXT: 0
@@ -373,9 +374,9 @@ declare const CONST: {
   }
 
   /**
-  * Define the valid anchor locations for a Tooltip displayed on a Placeable
-  * Object
-  */
+   * Define the valid anchor locations for a Tooltip displayed on a Placeable
+   * Object
+   */
   TEXT_ANCHOR_POINTS: {
     /* eslint-disable @typescript-eslint/member-ordering */
     CENTER: 0
@@ -387,15 +388,15 @@ declare const CONST: {
   }
 
   /**
-  * Describe the various thresholds of token control upon which to show certain
-  * pieces of information
-  * NONE - no information is displayed
-  * CONTROL - displayed when the token is controlled
-  * OWNER HOVER - displayed when hovered by a GM or a user who owns the actor
-  * HOVER - displayed when hovered by any user
-  * OWNER - always displayed for a GM or for a user who owns the actor
-  * ALWAYS - always displayed for everyone
-  */
+   * Describe the various thresholds of token control upon which to show certain
+   * pieces of information
+   * NONE - no information is displayed
+   * CONTROL - displayed when the token is controlled
+   * OWNER HOVER - displayed when hovered by a GM or a user who owns the actor
+   * HOVER - displayed when hovered by any user
+   * OWNER - always displayed for a GM or for a user who owns the actor
+   * ALWAYS - always displayed for everyone
+   */
   TOKEN_DISPLAY_MODES: {
     /* eslint-disable @typescript-eslint/member-ordering */
     NONE: 0
@@ -408,11 +409,11 @@ declare const CONST: {
   }
 
   /**
-  * The allowed Token disposition types
-  * HOSTILE - Displayed as an enemy with a red border
-  * NEUTRAL - Displayed as neutral with a yellow border
-  * FRIENDLY - Displayed as an ally with a cyan border
-  */
+   * The allowed Token disposition types
+   * HOSTILE - Displayed as an enemy with a red border
+   * NEUTRAL - Displayed as neutral with a yellow border
+   * FRIENDLY - Displayed as an ally with a cyan border
+   */
   TOKEN_DISPOSITIONS: {
     /* eslint-disable @typescript-eslint/member-ordering */
     HOSTILE: -1
@@ -422,10 +423,10 @@ declare const CONST: {
   }
 
   /**
-  * Define the named actions which users or user roles can be permitted to do.
-  * Each key of this Object denotes an action for which permission may be
-  * granted (true) or withheld (false)
-  */
+   * Define the named actions which users or user roles can be permitted to do.
+   * Each key of this Object denotes an action for which permission may be
+   * granted (true) or withheld (false)
+   */
   USER_PERMISSIONS: {
     ACTOR_CREATE: {
       defaultRole: number
@@ -532,10 +533,10 @@ declare const CONST: {
   }
 
   /**
-  * Define the allowed User permission levels.
-  * Each level is assigned a value in ascending order. Higher levels grant more
-  * permissions.
-  */
+   * Define the allowed User permission levels.
+   * Each level is assigned a value in ascending order. Higher levels grant more
+   * permissions.
+   */
   USER_ROLES: {
     /* eslint-disable @typescript-eslint/member-ordering */
     NONE: 0
@@ -547,8 +548,8 @@ declare const CONST: {
   }
 
   /**
-  * Invert the User Role mapping to recover role names from a role integer
-  */
+   * Invert the User Role mapping to recover role names from a role integer
+   */
   USER_ROLE_NAMES: {
     0: 'NONE'
     1: 'PLAYER'
@@ -558,18 +559,18 @@ declare const CONST: {
   }
 
   /**
-  * The supported file extensions for video-type files
-  */
+   * The supported file extensions for video-type files
+   */
   VIDEO_FILE_EXTENSIONS: ['mp4', 'ogg', 'webm', 'm4v']
 
   VTT: 'Foundry Virtual Tabletop'
 
   /**
-  * The allowed directions of effect that a Wall can have
-  * BOTH: The wall collides from both directions
-  * LEFT: The wall collides only when a ray strikes its left side
-  * RIGHT: The wall collides only when a ray strikes its right side
-  */
+   * The allowed directions of effect that a Wall can have
+   * BOTH: The wall collides from both directions
+   * LEFT: The wall collides only when a ray strikes its left side
+   * RIGHT: The wall collides only when a ray strikes its right side
+   */
   WALL_DIRECTIONS: {
     BOTH: 0
     LEFT: 1
@@ -577,11 +578,11 @@ declare const CONST: {
   }
 
   /**
-  * The allowed door states which may describe a Wall that contains a door
-  * CLOSED: The door is closed
-  * OPEN: The door is open
-  * LOCKED: The door is closed and locked
-  */
+   * The allowed door states which may describe a Wall that contains a door
+   * CLOSED: The door is closed
+   * OPEN: The door is open
+   * LOCKED: The door is closed and locked
+   */
   WALL_DOOR_STATES: {
     /* eslint-disable @typescript-eslint/member-ordering */
     CLOSED: 0
@@ -591,11 +592,11 @@ declare const CONST: {
   }
 
   /**
-  * The allowed door types which a Wall may contain
-  * NONE: The wall does not contain a door
-  * DOOR: The wall contains a regular door
-  * SECRET: The wall contains a secret door
-  */
+   * The allowed door types which a Wall may contain
+   * NONE: The wall does not contain a door
+   * DOOR: The wall contains a regular door
+   * SECRET: The wall contains a secret door
+   */
   WALL_DOOR_TYPES: {
     /* eslint-disable @typescript-eslint/member-ordering */
     NONE: 0
@@ -605,21 +606,21 @@ declare const CONST: {
   }
 
   /**
-  * The types of movement collision which a Wall may impose
-  * NONE: Movement does not collide with this wall
-  * NORMAL: Movement collides with this wall
-  */
+   * The types of movement collision which a Wall may impose
+   * NONE: Movement does not collide with this wall
+   * NORMAL: Movement collides with this wall
+   */
   WALL_MOVEMENT_TYPES: {
     NONE: 0
     NORMAL: 1
   }
 
   /**
-  * The types of sensory collision which a Wall may impose
-  * NONE: Senses do not collide with this wall
-  * NORMAL: Senses collide with this wall
-  * LIMITED: Senses collide with the second intersection, bypassing the first
-  */
+   * The types of sensory collision which a Wall may impose
+   * NONE: Senses do not collide with this wall
+   * NORMAL: Senses collide with this wall
+   * LIMITED: Senses collide with the second intersection, bypassing the first
+   */
   WALL_SENSE_TYPES: {
     /* eslint-disable @typescript-eslint/member-ordering */
     NONE: 0
