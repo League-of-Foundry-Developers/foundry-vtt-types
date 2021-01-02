@@ -1,4 +1,23 @@
-// @TODO:
+declare interface SceneControl {
+  activeTool: string
+  icon: string
+  layer: string
+  name: string
+  title: string
+  tools: ControlTool[]
+  visible?: boolean
+}
+
+declare interface ControlTool {
+  active?: boolean
+  button?: boolean
+  icon: string
+  name: string
+  onClick?: () => void
+  title: string
+  toggle?: boolean
+  visible?: boolean
+}
 
 /**
  * Scene controls navigation menu

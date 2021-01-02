@@ -1,3 +1,55 @@
+/**
+* Common {@link Entity} create options
+*/
+declare interface EntityCreateOptions {
+  /**
+  * Block the dispatch of preCreate hooks for this operation.
+  * @defaultValue `false`
+  */
+  noHook?: boolean
+
+  /**
+  * Display the sheet for the created entity once it is created.
+  * @defaultValue `false`
+  */
+  renderSheet?: boolean
+
+  /**
+  * Create a temporary entity which is not saved to the world database.
+  * @defaultValue `false`
+  */
+  temporary?: boolean
+}
+
+/**
+* Common {@link Entity} delete options
+*/
+declare interface EntityDeleteOptions {
+  /**
+  * Block the dispatch of preDelete hooks for this operation.
+  * @defaultValue `false`
+  */
+  noHook?: boolean
+}
+
+/**
+* Common {@link Entity} update options
+*/
+declare interface EntityUpdateOptions {
+  /**
+  * Difference the provided data against the current to eliminate unnecessary
+  * changes.
+  * @defaultValue `true`
+  */
+  diff?: boolean
+
+  /**
+  * Block the dispatch of preUpdate hooks for this operation.
+  * @defaultValue `false`
+  */
+  noHook?: boolean
+}
+
 declare interface EntityData<DataType = any> {
 	name: string;
 	type: string;
