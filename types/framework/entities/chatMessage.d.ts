@@ -1,3 +1,19 @@
+declare interface ChatData {
+  speaker: object
+  user: number
+}
+
+declare interface MessageData {
+  alias: string
+  author: User
+  borderColor: string
+  cssClass: string
+  isWhisper: boolean
+  message: object
+  user: User
+  whisperTo: string
+}
+
 declare class Messages extends Collection<ChatMessage> {
 	entities: ChatMessage[];
 

@@ -51,11 +51,17 @@ declare abstract class EmbeddedEntity {
 	unsetFlag(scope: string, key: string): Promise<EmbeddedEntity>;
 }
 
+declare interface ActiveEffectChange {
+  key: string
+  mode: number
+  priority: number
+  value: any
+}
+
 /**
  * An Active Effect instance within a parent Actor or Item.
  * @see {@link Actor#effects}
  * @see {@link Item#effects} *
- * @typedef {{key: string, value: *, mode: number, priority: number}} ActiveEffectChange
  */
 declare class ActiveEffect extends EmbeddedEntity {
 	get duration(): any;

@@ -1,3 +1,10 @@
+declare interface ContextMenuOption {
+  callback: (header: any) => {}
+  condition: boolean | ((header: any) => boolean)
+  icon: string
+  name: string
+}
+
 /**
  * Display a right-click activated Context Menu which provides a dropdown menu of options
  * A ContextMenu is constructed by designating a parent HTML container and a target selector
