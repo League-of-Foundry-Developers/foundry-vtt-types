@@ -4,7 +4,7 @@ import 'tinymce'
 
 // Apps
 
-import './types/applications/app'
+import './types/applications/application'
 import './types/applications/button'
 import './types/applications/baseEntitySheet'
 import './types/applications/form'
