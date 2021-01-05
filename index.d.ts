@@ -59,7 +59,7 @@ import './types/core/keyboard'
 import './types/core/roll'
 import './types/core/setupConfiguration'
 import './types/core/socketInterface'
-import './types/core/sorting'
+import './types/core/sortingHelpers'
 import './types/core/textEditor'
 import './types/core/video'
 
