@@ -57,11 +57,15 @@ import './types/core/hooks'
 import './types/core/images'
 import './types/core/keyboard'
 import './types/core/roll'
-import './types/core/settings'
 import './types/core/socket'
 import './types/core/sorting'
 import './types/core/textEditor'
 import './types/core/video'
+
+// settings
+
+import './types/core/settings/clientSettings'
+import './types/core/settings/worldSettingsStorage'
 
 // Framework
 
