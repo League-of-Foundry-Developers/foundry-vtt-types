@@ -58,6 +58,21 @@ declare class KeyboardManager {
   constructor ()
 
   /**
+   * Test whether an input currently has focus
+   */
+  get hasFocus (): boolean
+
+  /**
+   * The key codes which represent a possible movement key
+   */
+  get moveKeys (): Record<string, string[]>
+
+  /**
+   * Return the key codes used for zooming the canvas
+   */
+  get zoomKeys (): Record<string, string>
+
+  /**
    * Handle panning the canvas using CTRL + directional keys
    */
   _handleCanvasPan (): Promise<void>
@@ -241,24 +256,4 @@ declare class KeyboardManager {
    * @param code - key code to test
    */
   isDown (code: string): boolean
-
-  /**
-   * The key codes which represent a digit key
-   */
-  get digitKeys (): string[]
-
-  /**
-   * Test whether an input currently has focus
-   */
-  get hasFocus (): boolean
-
-  /**
-   * The key codes which represent a possible movement key
-   */
-  get moveKeys (): Record<string, string[]>
-
-  /**
-   * Return the key codes used for zooming the canvas
-   */
-  get zoomKeys (): Record<string, string>
 }
