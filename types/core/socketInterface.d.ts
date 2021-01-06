@@ -13,10 +13,12 @@ declare class SocketInterface {
    * are handled
    * @param eventName - The socket event name being handled
    * @param request - Data provided to the Socket event
+   *                  (originally documented as type `SocketRequest`)
    * @returns A Promise which resolves to the SocketResponse
+   *          (originally documented as type `SocketResponse`)
    */
   static dispatch (
     eventName: string,
-    request: SocketRequest
-  ): Promise<SocketResponse>
+    request: any
+  ): Promise<any>
 }
