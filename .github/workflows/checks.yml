@@ -32,7 +32,7 @@ jobs:
       - name: npm install
         run: npm install
       - name: run eslint
-        run: eslint --output-file eslint_report.json --format json index.d.ts types
+        run: npm run eslint:report
         continue-on-error: true
       - name: annotate code linting results
         uses: ataylorme/eslint-annotate-action@1.1.2
