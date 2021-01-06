@@ -1,24 +1,24 @@
 /**
  * The Collection of Macro entities
- * @extends {Collection}
+ * @extends {EntityCollection}
  */
 declare class Macros extends Collection<Macro> {
-	entities: Macro[];
+  entities: Macro[]
 
-	values(): IterableIterator<Macro>;
+  values (): IterableIterator<Macro>;
 
-	/* -------------------------------------------- */
-	/*  Properties                                  */
-	/* -------------------------------------------- */
+  /* -------------------------------------------- */
+  /*  Properties                                  */
+  /* -------------------------------------------- */
 
-	/**
-	 * Determine whether a given User is allowed to use JavaScript macros
-	 * @param user	The User entity to test
-	 * @return		Can the User use scripts?
-	 */
-	static canUseScripts(user: User): boolean;
+  /**
+   * Determine whether a given User is allowed to use JavaScript macros
+   * @param user  The User entity to test
+   * @return    Can the User use scripts?
+   */
+  static canUseScripts (user: User): boolean;
 
-	static registerSettings(): void;
+  static registerSettings (): void;
 }
 
 /**
@@ -26,20 +26,39 @@ declare class Macros extends Collection<Macro> {
  * All users have permission to create and use chat-based Macros, but users must be given special permission to use
  * script-based macros.
  *
+ * @extends {Entity}
+ *
  * @see {@link Macros}        The Collection of Macro entities
  * @see {@link MacroConfig}   The Macro Configuration sheet
  * @see {@link Hotbar}        The Hotbar interface application
  */
-declare class Macro extends Entity {
-	/** @override */
-	static get config(): {
-		baseEntity: Macro;
-		collection: Macros;
-		embeddedEntities: [];
-	};
+declare class Macro<D extends Macro.Data = Macro.Data> extends Entity<D> {
+  /** @override */
+  static get config (): EntityConfig;
 
-	/**
-	 * Execute the Macro command
-	 */
-	execute(): Promise<any>;
+  /**
+   * Is the current User the author of this macro?
+   * @type {boolean}
+   */
+  get isAuthor (): boolean;
+
+  /** @override */
+  static can (user: User, action: string, target: Macro): boolean;
+
+  /**
+   * Execute the Macro command
+   */
+  execute (): void;
+}
+
+declare namespace Macro {
+  interface Data extends EntityData {
+    actorIds: string[]
+    author: string
+    command: string
+    img: string
+    scope: string
+    type: 'script' | 'chat'
+  }
+
 }
