@@ -32,7 +32,15 @@ jobs:
       - name: npm install
         uses: jaid/action-npm-install@v1.2.1
       - name: run eslint
-        uses: tinovyatkin/action-eslint@v1
+        run: eslint --output-file eslint_report.json --format json index.d.ts types
+        continue-on-error: true
+      - name: annotate code linting results
+        uses: ataylorme/eslint-annotate-action@1.1.2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          check-name: lint
+          report-json: eslint_report.json
+      - name: upload eslint report
+        uses: actions/upload-artifact@v1
+        with:
+          name: eslint_report.json
+          path: eslint_report.json
