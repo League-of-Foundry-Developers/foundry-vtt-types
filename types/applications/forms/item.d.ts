@@ -1,7 +1,7 @@
 declare interface ItemSheetData<DataType = any>
-	extends BaseEntitySheetData<DataType> {
-	item?: Item<DataType>;
-	data?: any;
+  extends BaseEntitySheetData<DataType> {
+  item?: Item<DataType>
+  data?: any
 }
 
 /**
@@ -17,37 +17,37 @@ declare interface ItemSheetData<DataType = any>
  * @param options.editable	Is the item editable? Default is true.
  */
 declare class ItemSheet<
-	DataType = any,
-	ItemType extends Item<DataType> = any
+  DataType = any,
+  ItemType extends Item<DataType> = any
 > extends BaseEntitySheet {
-	/**
+  /**
 	 * Assign the default options which are supported by this Application
 	 */
-	static get defaultOptions(): FormApplicationOptions;
+  static get defaultOptions (): FormApplicationOptions;
 
-	/**
+  /**
 	 * Provide a unique CSS ID for owned Item sheets
 	 */
-	get id(): string;
+  get id (): string;
 
-	/**
+  /**
 	 * A convenience reference to the Item entity
 	 */
-	get item(): ItemType;
+  get item (): ItemType;
 
-	/**
+  /**
 	 * The Actor instance which owns this item. This may be null if the item is unowned.
 	 */
-	get actor(): Actor<DataType>;
+  get actor (): Actor<DataType>;
 
-	/**
+  /**
 	 * Customize the data provided to the item sheet for rendering. By default we just duplicate the item data.
 	 */
-	getData(): ItemSheetData<DataType>;
+  getData (): ItemSheetData<DataType>;
 
-	/**
+  /**
 	 * Activate listeners which provide interactivity for item sheet events
 	 * @param html	The HTML object returned by template rendering
 	 */
-	protected activateListeners(html: JQuery): void;
+  protected activateListeners (html: JQuery): void;
 }

@@ -9,99 +9,99 @@
  * @param {object} termData.options         Additional options that modify the term
  */
 declare class DiceTerm {
-	constructor({
-		number,
-		faces,
-		modifiers,
-		options,
-	}?: {
-		number?: number;
-		faces?: number;
-		modifiers?: string[];
-		options?: object;
-	});
-	/**
+  constructor ({
+    number,
+    faces,
+    modifiers,
+    options
+  }?: {
+    number?: number
+    faces?: number
+    modifiers?: string[]
+    options?: object
+  });
+  /**
 	 * The number of dice of this term to roll, before modifiers are applied
 	 */
-	number: number;
+  number: number
 
-	/**
+  /**
 	 * The number of faces on the die
 	 */
-	faces: number;
+  faces: number
 
-	/**
+  /**
 	 * An Array of dice term modifiers which are applied
 	 */
-	modifiers: string[];
+  modifiers: string[]
 
-	/**
+  /**
 	 * An object of additional options which modify the dice term
 	 */
-	options: object;
+  options: object
 
-	/**
+  /**
 	 * The array of dice term results which have been rolled
 	 */
-	results: object[];
+  results: object[]
 
-	/**
+  /**
 	 * Return a standardized representation for the displayed formula associated with this DiceTerm
 	 */
-	get formula(): string;
+  get formula (): string;
 
-	/**
+  /**
 	 * Return the total result of the DiceTerm if it has been evaluated
 	 */
-	get total(): number;
+  get total (): number;
 
-	/**
+  /**
 	 * Return an array of rolled values which are still active within this term
 	 */
-	get values(): number[];
+  get values (): number[];
 
-	/**
+  /**
 	 * Roll the DiceTerm by mapping a random uniform draw against the faces of the dice term.
 	 * @param [minimize]    Apply the minimum possible result instead of a random result.
 	 * @param [maximize]    Apply the maximum possible result instead of a random result.
 	 * @return {object}
 	 */
-	roll({
-		minimize,
-		maximize,
-	}?: {
-		minimize: boolean;
-		maximize: boolean;
-	}): object;
+  roll ({
+    minimize,
+    maximize
+  }?: {
+    minimize: boolean
+    maximize: boolean
+  }): object;
 
-	/**
+  /**
 	 * Alter the DiceTerm by adding or multiplying the number of dice which are rolled
 	 * @param  multiply   A factor to multiply. Dice are multiplied before any additions.
 	 * @param add        A number of dice to add. Dice are added after multiplication.
 	 * @return           The altered term
 	 */
-	alter(multiply: number, add: number): DiceTerm;
+  alter (multiply: number, add: number): DiceTerm;
 
-	/**
+  /**
 	 * Serialize the DiceTerm to a JSON string which allows it to be saved in the database or embedded in text.
 	 * This method should return an object suitable for passing to the JSON.stringify function.
 	 */
-	toJSON(): object;
+  toJSON (): object;
 
-	/**
+  /**
 	 * Reconstruct a DiceTerm instance from a provided JSON string
 	 * @param json   A serialized JSON representation of a DiceTerm
 	 * @return       A reconstructed DiceTerm from the provided JSON
 	 */
-	static fromJSON(json: string): DiceTerm;
+  static fromJSON (json: string): DiceTerm;
 
-	/**
+  /**
 	 * Return a string used as the label for each rolled result
 	 */
-	static getResultLabel(result: string): string;
+  static getResultLabel (result: string): string;
 
-	/**
+  /**
 	 * Define the denomination string used to register this Dice type in CONFIG.Dice.terms
 	 */
-	static DENOMINATION: string;
+  static DENOMINATION: string
 }

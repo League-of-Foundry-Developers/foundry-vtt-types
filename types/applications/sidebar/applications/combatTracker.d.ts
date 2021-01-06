@@ -3,6 +3,6 @@
  * @type {SidebarTab}
  */
 declare class CombatTracker extends SidebarTab {
-    //@TODO Declare Classes
-    [key: string]: any;
+  // @TODO Declare Classes
+  [key: string]: any;
 }

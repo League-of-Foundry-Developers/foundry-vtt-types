@@ -23,7 +23,7 @@ declare class NormalizedRectangle extends PIXI.Rectangle {}
  * });
  */
 declare class MeasuredTemplate extends PlaceableObject {
-  constructor(any: any);
+  constructor (any: any);
 
   // TODO properly declare the creation data object
 
@@ -31,13 +31,13 @@ declare class MeasuredTemplate extends PlaceableObject {
    * Get a Circular area of effect given a radius of effect
    * @private
    */
-  _getCircleShape(distance: number): PIXI.Circle;
+  _getCircleShape (distance: number): PIXI.Circle;
 
   /**
    * Get a Conical area of effect given a direction, angle, and distance
    * @private
    */
-  _getConeShape(
+  _getConeShape (
     direction: number,
     angle: number,
     distance: number
@@ -47,13 +47,13 @@ declare class MeasuredTemplate extends PlaceableObject {
    * Get a Rectangular area of effect given a width and height
    * @private
    */
-  _getRectShape(direction: number, distance: number): NormalizedRectangle;
+  _getRectShape (direction: number, distance: number): NormalizedRectangle;
 
   /**
    * Get a rotated Rectangular area of effect given a width, height, and direction
    * @private
    */
-  _getRayShape(
+  _getRayShape (
     direction: number,
     distance: number,
     width: number
@@ -63,22 +63,22 @@ declare class MeasuredTemplate extends PlaceableObject {
    * Draw the Text label used for the MeasuredTemplate
    * @private
    */
-  _drawRulerText(): PIXI.Text;
+  _drawRulerText (): PIXI.Text;
 
   /**
    * Draw the rotation control handle and assign event listeners
    * @private
    */
-  _drawRotationHandle(radius: any): void;
+  _drawRotationHandle (radius: any): void;
 
   /**
    * Update the displayed ruler tooltip text
    * @private
    */
-  _refreshRulerText(): void;
+  _refreshRulerText (): void;
 
   /**
    * Highlight the grid squares which should be shown under the area of effect
    */
-  highlightGrid(): void;
+  highlightGrid (): void;
 }

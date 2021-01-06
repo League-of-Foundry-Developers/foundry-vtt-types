@@ -37,194 +37,194 @@
  * 		action: dragRightCancel
  */
 declare class MouseInteractionManager {
-	object: PlaceableObject;
-	layer: PlaceablesLayer;
-	permissions: object;
-	callbacks: object;
-	options: object;
+  object: PlaceableObject
+  layer: PlaceablesLayer
+  permissions: object
+  callbacks: object
+  options: object
 
-	/**
+  /**
 	 * The current interaction state
 	 */
-	state: number;
+  state: number
 
-	/**
+  /**
 	 * Bound handlers which can be added and removed
 	 */
-	handlers: { [x: string]: Function };
+  handlers: { [x: string]: Function }
 
-	/**
+  /**
 	 * The drag handling time
 	 */
-	dragTime: number;
+  dragTime: number
 
-	/**
+  /**
 	 * The time of the last left-click event
 	 */
-	lcTime: number;
+  lcTime: number
 
-	/**
+  /**
 	 * The time of the last right-click event
 	 */
-	rcTime: number;
+  rcTime: number
 
-	/**
+  /**
 	 * A flag for whether we are right-click dragging
 	 */
-	protected _dragRight: boolean;
+  protected _dragRight: boolean
 
-	constructor(
-		object: PlaceableObject,
-		layer: PlaceablesLayer,
-		permissions?: object,
-		callbacks?: object,
-		options?: object
-	);
+  constructor (
+    object: PlaceableObject,
+    layer: PlaceablesLayer,
+    permissions?: object,
+    callbacks?: object,
+    options?: object
+  );
 
-	/**
+  /**
 	 * Get the target
 	 */
-	get target(): any;
+  get target (): any;
 
-	/**
+  /**
 	 * Activate interactivity for the handled object
 	 */
-	activate(): MouseInteractionManager;
+  activate (): MouseInteractionManager;
 
-	/**
+  /**
 	 * Test whether the current user has permission to perform a step of the workflow
 	 * @param action	The action being attempted
 	 * @param event		The event being handled
 	 * @return			Can the action be performed?
 	 */
-	can(action: string, event: Event): boolean;
+  can (action: string, event: Event): boolean;
 
-	/**
+  /**
 	 * Execute a callback function associated with a certain action in the workflow
 	 * @param action	The action being attempted
 	 * @param event		The event being handled
 	 */
-	callback(action: string, event: Event): any;
+  callback (action: string, event: Event): any;
 
-	/**
+  /**
 	 * A reference to the possible interaction states which can be observed
 	 */
-	get states(): { [x: string]: number };
+  get states (): { [x: string]: number };
 
-	/* -------------------------------------------- */
-	/*  Listener Activation and Deactivation        */
-	/* -------------------------------------------- */
+  /* -------------------------------------------- */
+  /*  Listener Activation and Deactivation        */
+  /* -------------------------------------------- */
 
-	/**
+  /**
 	 * Activate a set of listeners which handle hover events on the target object
 	 */
-	protected _activateHoverEvents(): void;
+  protected _activateHoverEvents (): void;
 
-	/**
+  /**
 	 * Activate a new set of listeners for click events on the target object
 	 */
-	protected _activateClickEvents(): void;
+  protected _activateClickEvents (): void;
 
-	/**
+  /**
 	 * Deactivate event listeners for click events on the target object
 	 */
-	protected _deactivateClickEvents(): void;
+  protected _deactivateClickEvents (): void;
 
-	/**
+  /**
 	 * Activate events required for handling a drag-and-drop workflow
 	 */
-	protected _activateDragEvents(): void;
+  protected _activateDragEvents (): void;
 
-	/**
+  /**
 	 * Deactivate events required for handling drag-and-drop workflow.
 	 */
-	protected _deactivateDragEvents(): void;
+  protected _deactivateDragEvents (): void;
 
-	/* -------------------------------------------- */
-	/*  Hover In and Hover Out                      */
-	/* -------------------------------------------- */
+  /* -------------------------------------------- */
+  /*  Hover In and Hover Out                      */
+  /* -------------------------------------------- */
 
-	/**
+  /**
 	 * Handle mouse-over events which activate downstream listeners and do not stop propagation.
 	 */
-	protected _handleMouseOver(event: Event): any;
+  protected _handleMouseOver (event: Event): any;
 
-	/**
+  /**
 	 * Handle mouse-out events which terminate hover workflows and do not stop propagation.
 	 */
-	protected _handleMouseOut(event: Event): any;
+  protected _handleMouseOut (event: Event): any;
 
-	/* -------------------------------------------- */
-	/*  Left Click and Double Click                 */
-	/* -------------------------------------------- */
+  /* -------------------------------------------- */
+  /*  Left Click and Double Click                 */
+  /* -------------------------------------------- */
 
-	/**
+  /**
 	 * Handle mouse-down events which activate downstream listeners.
 	 * Stop further propagation only if the event is allowed by either single or double-click.
 	 */
-	protected _handleMouseDown(event: Event): any;
+  protected _handleMouseDown (event: Event): any;
 
-	/**
+  /**
 	 * Handle mouse-down which trigger a single left-click workflow.
 	 */
-	protected _handleClickLeft(event: Event): void;
+  protected _handleClickLeft (event: Event): void;
 
-	/**
+  /**
 	 * Handle mouse-down which trigger a single left-click workflow.
 	 */
-	protected _handleClickLeft2(event: Event): any;
+  protected _handleClickLeft2 (event: Event): any;
 
-	/* -------------------------------------------- */
-	/*  Right Click and Double Click                */
-	/* -------------------------------------------- */
+  /* -------------------------------------------- */
+  /*  Right Click and Double Click                */
+  /* -------------------------------------------- */
 
-	/**
+  /**
 	 * Handle right-click mouse-down events.
 	 * Stop further propagation only if the event is allowed by either single or double-click.
 	 */
-	protected _handleRightDown(event: Event): any;
+  protected _handleRightDown (event: Event): any;
 
-	/**
+  /**
 	 * Handle single right-click actions.
 	 */
-	protected _handleClickRight(event: Event): void;
+  protected _handleClickRight (event: Event): void;
 
-	/**
+  /**
 	 * Handle double right-click actions.
 	 */
-	protected _handleClickRight2(event: Event): any;
+  protected _handleClickRight2 (event: Event): any;
 
-	/* -------------------------------------------- */
-	/*  Drag and Drop                               */
-	/* -------------------------------------------- */
+  /* -------------------------------------------- */
+  /*  Drag and Drop                               */
+  /* -------------------------------------------- */
 
-	/**
+  /**
 	 * Handle mouse movement during a drag workflow
 	 */
-	protected _handleMouseMove(event: Event): any;
+  protected _handleMouseMove (event: Event): any;
 
-	/**
+  /**
 	 * Handle the beginning of a new drag start workflow, moving all controlled objects on the layer
 	 */
-	protected _handleDragStart(event: Event): any;
+  protected _handleDragStart (event: Event): any;
 
-	/**
+  /**
 	 * Handle the continuation of a drag workflow, moving all controlled objects on the layer
 	 */
-	protected _handleDragMove(event: Event): any;
+  protected _handleDragMove (event: Event): any;
 
-	/**
+  /**
 	 * Handle mouse up events which may optionally conclude a drag workflow
 	 */
-	protected _handleMouseUp(event: Event): void;
+  protected _handleMouseUp (event: Event): void;
 
-	/**
+  /**
 	 * Handle the conclusion of a drag workflow, placing all dragged objects back on the layer
 	 */
-	protected _handleDragDrop(event: Event): void;
+  protected _handleDragDrop (event: Event): void;
 
-	/**
+  /**
 	 * Handle the cancellation of a drag workflow, resetting back to the original state
 	 */
-	protected _handleDragCancel(event: Event): void;
+  protected _handleDragCancel (event: Event): void;
 }

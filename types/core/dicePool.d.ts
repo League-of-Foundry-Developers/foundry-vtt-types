@@ -16,72 +16,72 @@
  * let pool = DicePool.fromFormula("{4d6,3d8,2d10}kh");
  */
 declare class DicePool {
-	constructor({
-		rolls,
-		modifiers,
-		options,
-	}: {
-		rolls: Roll[];
-		modifiers?: string[];
-		options?: object;
-	});
-	/**
+  constructor ({
+    rolls,
+    modifiers,
+    options
+  }: {
+    rolls: Roll[]
+    modifiers?: string[]
+    options?: object
+  });
+  /**
 	 * The elements of a Dice Pool must be Roll objects
 	 */
-	rolls: Roll[];
+  rolls: Roll[]
 
-	/**
+  /**
 	 * The string modifiers applied to resolve the pool
 	 */
-	modifiers: string[];
+  modifiers: string[]
 
-	/**
+  /**
 	 * An object of additional options which modify the pool
 	 */
-	options: object;
+  options: object
 
-	results: object[];
+  results: object[]
 
-	/**
+  /**
 	 * For now, for testing purposes, choose the maximum result always
 	 */
-	roll(): DicePool;
+  roll (): DicePool;
 
-	/**
+  /**
 	 * Return a standardized representation for the displayed formula associated with this DicePool.
 	 */
-	get formula(): string;
+  get formula (): string;
 
-	/**
+  /**
 	 * Return an array of rolled values which are still active within the DicePool
 	 */
-	get values(): number[];
+  get values (): number[];
 
-	/**
+  /**
 	 * Parse a modifier query string into an ordered Array of modifiers to apply.
 	 * @param modifiers
 	 */
-	protected _parseModifiers(modifiers: string): string[];
+  protected _parseModifiers (modifiers: string): string[];
 
-	/**
+  /**
 	 * Iterate over the results Array and apply a keep-or-drop modifier
 	 * @param results
 	 * @param mod
 	 */
-	protected _keepOrDrop(results: any[], mod: string): void;
+  protected _keepOrDrop (results: any[], mod: string): void;
 
-	/**
+  /**
 	 * Iterate over the results Array and count successes or compute margin of success
 	 * @param results
 	 * @param mod
 	 */
-	protected _countSuccess(results: any[], mod: string): void;
+  protected _countSuccess (results: any[], mod: string): void;
 
-	/* -------------------------------------------- */
-	/*  Factory Method                              */
-	/* -------------------------------------------- */
+  /* -------------------------------------------- */
+  /*  Factory Method                              */
+  /* -------------------------------------------- */
 
-	/**
+  /**
 	 * Given a string formula, create and return an evaluated DicePool object
 	 * @param {string} formula    The string formula to parse
 	 * @param {object} [options]  Additional options applied to the DicePool
@@ -89,38 +89,38 @@ declare class DicePool {
 	 *
 	 * @return {DicePool|null}    The evaluated DicePool object or null if the formula is invalid
 	 */
-	static fromExpression(
-		formula: string,
-		options?: object,
-		data?: object
-	): DicePool;
+  static fromExpression (
+    formula: string,
+    options?: object,
+    data?: object
+  ): DicePool;
 
-	/* -------------------------------------------- */
-	/*  Serialization and Storage                   */
-	/* -------------------------------------------- */
+  /* -------------------------------------------- */
+  /*  Serialization and Storage                   */
+  /* -------------------------------------------- */
 
-	/**
+  /**
 	 * Convert the DicePool instance into an Object which can be serialized to JSON
 	 * @return	The converted data
 	 */
-	toJSON(): {
-		class: string;
-		rolls: Roll[];
-		total: number;
-		modifiers: string;
-	};
+  toJSON (): {
+    class: string
+    rolls: Roll[]
+    total: number
+    modifiers: string
+  };
 
-	/**
+  /**
 	 * Reconstruct a DicePool instance from a provided data Object
 	 * @param data	The provided data
 	 * @return		The constructed Dice Pool
 	 */
-	static fromData(data: any): DicePool;
+  static fromData (data: any): DicePool;
 
-	/**
+  /**
 	 * Reconstruct a DicePool instance from a provided data Object
 	 * @param json	The serialized JSON string
 	 * @return		The constructed Dice Pool
 	 */
-	static fromJSON(json: string): DicePool;
+  static fromJSON (json: string): DicePool;
 }

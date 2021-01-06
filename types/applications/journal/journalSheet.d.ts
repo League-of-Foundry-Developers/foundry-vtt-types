@@ -5,19 +5,19 @@
  * @param options	Application options
  */
 declare class JournalSheet extends BaseEntitySheet {
-	/**
+  /**
 	 * Provide a unique CSS ID for Entity Sheets
 	 */
-	get id(): string;
+  get id (): string;
 
-	/**
+  /**
 	 * Suppress the JournalEntry title when an image is shown to players whom do not have at least limited permission
 	 */
-	get title(): string;
+  get title (): string;
 
-	/**
+  /**
 	 * Prepare data used to render the Journal Sheet
 	 * @return	The data object used to render the journal entry
 	 */
-	getData(): BaseEntitySheetData;
+  getData (): BaseEntitySheetData;
 }

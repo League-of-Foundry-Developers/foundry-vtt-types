@@ -1,3 +1,3 @@
 declare class ActiveEffectConfig extends FormApplication {
-	//TODO Declare class
+  // TODO Declare class
 }
