@@ -79,10 +79,10 @@ declare interface ThumbnailReturn {
 declare class ImageHelper {
   /**
    * Composite a canvas object by rendering it to a single texture
-   * @param object - The DisplayObject to render to a texture
+   * @param object - The {@link PIXI.DisplayObject} to render to a texture
    * @param options - Additional named options
    *                  (default: `{}`)
-   * @returns The composite Texture object
+   * @returns The composite {@link PIXI.Texture} object
    */
   static compositeCanvasTexture (
     object: PIXI.DisplayObject,
@@ -91,8 +91,8 @@ declare class ImageHelper {
 
   /**
    * Create thumbnail preview for a provided image path.
-   * @param src - The string URL or DisplayObject of the texture to render to a
-   *              thumbnail
+   * @param src - The string URL or {@link PIXI.DisplayObject} of the texture to
+   *              render to a thumbnail
    * @param options - Additional named options passed to the
    *                  {@link ImageHelper.compositeCanvasTexture} method
    *                  (default: `{}`)
@@ -105,7 +105,7 @@ declare class ImageHelper {
 
   /**
    * Extract a texture to a base64 PNG string
-   * @param texture - The Texture object to extract
+   * @param texture - The {@link PIXI.Texture} object to extract
    * @returns A base64 png string of the texture
    */
   static textureToImage (texture: PIXI.Texture): string
