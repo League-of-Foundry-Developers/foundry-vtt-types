@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "description": "TypeScript type definitions for Foundry VTT",
   "scripts": {
-    "lint": "tsc && eslint types"
+    "lint": "tsc && eslint index.d.ts types",
+    "eslint:report": "eslint --output-file eslint_report.json --format json index.d.ts types"
   },
   "repository": {
     "type": "git",
