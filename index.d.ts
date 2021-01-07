@@ -62,7 +62,7 @@ import './types/core/setupConfiguration'
 import './types/core/socketInterface'
 import './types/core/sortingHelpers'
 import './types/core/textEditor'
-import './types/core/video'
+import './types/core/videoHelper'
 
 // settings
 
