@@ -3,12 +3,13 @@
  * The controller manages the following actions: dragstart, dragover, drop
  * @see {@link Application}
  *
- * @param dragSelector	The CSS selector used to target draggable elements.
- * @param dropSelector	The CSS selector used to target viable drop targets.
- * @param permissions	An object of permission test functions for each action
- * @param callbacks		An object of callback functions for each action
+ * @param dragSelector - The CSS selector used to target draggable elements.
+ * @param dropSelector - The CSS selector used to target viable drop targets.
+ * @param permissions - An object of permission test functions for each action
+ * @param callbacks - An object of callback functions for each action
  *
  * @example
+ * ```javascript
  * const dragDrop = new DragDrop({
  *   dragSelector: ".item",
  *   dropSelector: ".items",
@@ -16,6 +17,7 @@
  *   callbacks: { dragstart: this._onDragStart.bind(this), drop: this._onDragDrop.bind(this) }
  * });
  * dragDrop.bind(html);
+ * ```
  */
 declare class DragDrop {
   // TODO

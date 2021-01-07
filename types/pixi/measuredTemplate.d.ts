@@ -6,9 +6,8 @@ declare class NormalizedRectangle extends PIXI.Rectangle {}
 /**
  * A MeasuredTemplate is an implementation of PlaceableObject which represents an area of the canvas grid which is
  * covered by some effect.
- * @extends {PlaceableObject}
- *
  * @example
+ * ```javascript
  * MeasuredTemplate.create({
  *   t: "cone",
  *   user: game.user._id,
@@ -21,6 +20,7 @@ declare class NormalizedRectangle extends PIXI.Rectangle {}
  *   fillColor: "#FF3366",
  *   texture: "tiles/fire.jpg"
  * });
+ * ```
  */
 declare class MeasuredTemplate extends PlaceableObject {
   constructor (any: any);
@@ -29,13 +29,13 @@ declare class MeasuredTemplate extends PlaceableObject {
 
   /**
    * Get a Circular area of effect given a radius of effect
-   * @private
+   * @internal
    */
   _getCircleShape (distance: number): PIXI.Circle;
 
   /**
    * Get a Conical area of effect given a direction, angle, and distance
-   * @private
+   * @internal
    */
   _getConeShape (
     direction: number,
@@ -45,13 +45,13 @@ declare class MeasuredTemplate extends PlaceableObject {
 
   /**
    * Get a Rectangular area of effect given a width and height
-   * @private
+   * @internal
    */
   _getRectShape (direction: number, distance: number): NormalizedRectangle;
 
   /**
    * Get a rotated Rectangular area of effect given a width, height, and direction
-   * @private
+   * @internal
    */
   _getRayShape (
     direction: number,
@@ -61,19 +61,19 @@ declare class MeasuredTemplate extends PlaceableObject {
 
   /**
    * Draw the Text label used for the MeasuredTemplate
-   * @private
+   * @internal
    */
   _drawRulerText (): PIXI.Text;
 
   /**
    * Draw the rotation control handle and assign event listeners
-   * @private
+   * @internal
    */
   _drawRotationHandle (radius: any): void;
 
   /**
    * Update the displayed ruler tooltip text
-   * @private
+   * @internal
    */
   _refreshRulerText (): void;
 

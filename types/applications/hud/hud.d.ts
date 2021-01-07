@@ -5,25 +5,25 @@
  */
 declare class BasePlaceableHUD extends Application {
   /**
-	 * Reference a PlaceableObject this HUD is currently bound to
-	 */
-  object: PlaceableObject
-
-  /**
-	 * BasePlaceableHUD display states
-	 */
+   * BasePlaceableHUD display states
+   */
   DISPLAY_STATES: object
 
-  constructor (...args: any[]);
+  /**
+   * Reference a PlaceableObject this HUD is currently bound to
+   */
+  object: PlaceableObject
+
+  constructor (...args: any[])
 
   /**
-	 * Bind the HUD to a new PlaceableObject and display it
-	 * @param object	A PlaceableObject instance to which the HUD should be bound
-	 */
-  bind (object: PlaceableObject): void;
+   * Bind the HUD to a new PlaceableObject and display it
+   * @param object - A PlaceableObject instance to which the HUD should be bound
+   */
+  bind (object: PlaceableObject): void
 
   /**
-	 * Clear the HUD by fading out it's active HTML and recording the new display state
-	 */
-  clear (): void;
+   * Clear the HUD by fading out it's active HTML and recording the new display state
+   */
+  clear (): void
 }

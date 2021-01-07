@@ -28,6 +28,7 @@ declare interface PackageSelector {
 /**
  * A library of package management commands which are used by various interfaces around the software.
  */
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 declare class SetupConfiguration {
   /**
    * A reference to the setup URL used under the current route prefix, if any

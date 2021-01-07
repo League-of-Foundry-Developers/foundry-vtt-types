@@ -1,61 +1,44 @@
 // @TODO: Assign class types
 
 declare const CONFIG: {
-  /**
-	 * Configure debugging flags to display additional information
-	 */
-  debug: {
-    hooks: boolean
-    sight: boolean
-  }
+  [key: string]: any
 
   /**
-	 * Configuration for the default Actor entity class
-	 */
+   * Configuration for the default Actor entity class
+   */
   Actor: {
-    entityClass: typeof Actor
     collection: Actors
+    entityClass: typeof Actor
     sheetClasses: typeof ActorSheet
     typeLabels: any
   }
 
   /**
-	 * Configuration for the default Item entity class
-	 */
+   * Configuration for the default Item entity class
+   */
   Item: {
-    entityClass: typeof Item
     collection: Items
+    entityClass: typeof Item
     sheetClasses: typeof ItemSheet
     typeLabels: any
   }
 
   /**
-	 * Configuration for the JournalEntry entity
-	 */
+   * Configuration for the JournalEntry entity
+   */
   JournalEntry: {
     entityClass: typeof JournalEntry
-    sheetClass: typeof JournalSheet
     noteIcons: {
-      Anchor: string
       [key: string]: string
+      Anchor: string
     }
+    sheetClass: typeof JournalSheet
     sidebarIcon: string
   }
 
   /**
-	 * Configuration for the default Scene entity class
-	 */
-  Scene: {
-    entityClass: typeof Scene
-    collection: Scenes
-    sheetClass: any
-    notesClass: any
-    sidebarIcon: string
-  }
-
-  /**
-	 * Configuration for the default Playlist entity class
-	 */
+   * Configuration for the default Playlist entity class
+   */
   Playlist: {
     entityClass: any
     sheetClass: any
@@ -63,71 +46,88 @@ declare const CONFIG: {
   }
 
   /**
-	 * Configuration for RollTable random draws
-	 */
+   * Configuration for RollTable random draws
+   */
   RollTable: {
     entityClass: any
+    resultIcon: string
     sheetClass: any
     sidebarIcon: string
-    resultIcon: string
   }
 
   /**
-	 * The control icons used for rendering common HUD operations
-	 */
+   * Configuration for the default Scene entity class
+   */
+  Scene: {
+    collection: Scenes
+    entityClass: typeof Scene
+    notesClass: any
+    sheetClass: any
+    sidebarIcon: string
+  }
+
+  /**
+   * The control icons used for rendering common HUD operations
+   */
   controlIcons: {
+    [key: string]: string
     combat: string
-    visibility: string
+    defeated: string
+    down: string
     effects: string
     lock: string
     up: string
-    down: string
-    defeated: string
-    [key: string]: string
+    visibility: string
   }
 
   /**
-	 * Suggested font families that are displayed wherever a choice is presented
-	 */
-  fontFamilies: string[]
+   * Configure debugging flags to display additional information
+   */
+  debug: {
+    hooks: boolean
+    sight: boolean
+  }
 
   /**
-	 * The default font family used for text labels on the PIXI Canvas
-	 */
+   * The default font family used for text labels on the PIXI Canvas
+   */
   defaultFontFamily: string
 
   /**
-	 * Available Weather Effects implemntations
-	 */
-  weatherEffects: any
+   * Suggested font families that are displayed wherever a choice is presented
+   */
+  fontFamilies: string[]
 
   /**
-	 * An array of status effect icons which can be applied to Tokens
-	 */
-  statusEffects: object[]
+   * Maximum canvas zoom scale
+   */
+  maxCanvasZoom: number
 
   /**
-	 * A mapping of core audio effects used which can be replaced by systems or mods
-	 */
+   * A mapping of core audio effects used which can be replaced by systems or mods
+   */
   sounds: {
+    combat: string
     dice: string
     lock: string
     notification: string
-    combat: string
   }
 
   /**
-	 * Define the set of supported languages for localization
-	 */
+   * An array of status effect icons which can be applied to Tokens
+   */
+  statusEffects: object[]
+
+  /**
+   * Define the set of supported languages for localization
+   */
   supportedLanguages: {
-    en: string
     [key: string]: string
+    en: string
   }
 
   /**
-	 * Maximum canvas zoom scale
-	 */
-  maxCanvasZoom: number
-
-  [key: string]: any
+   * Available Weather Effects implemntations
+   */
+  weatherEffects: any
 }

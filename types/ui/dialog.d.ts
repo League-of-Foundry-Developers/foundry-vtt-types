@@ -1,44 +1,45 @@
 interface DialogData {
-  title?: string
-  content?: string | HTMLElement
-  close?: (html: HTMLElement | JQuery) => void
   buttons?: Record<string, DialogButton>
+  close?: (html: HTMLElement | JQuery) => void
+  content?: string | HTMLElement
   default?: string
+  title?: string
 }
 
 interface DialogButton {
+  callback?: (html: HTMLElement | JQuery) => void
   icon?: string
   label?: string
-  callback?: (html: HTMLElement | JQuery) => void
 }
 
 interface ConfirmDialog {
-  title: string
   content: string
-  yes: Function
-  no: Function
   defaultYes?: boolean
+  no: Function
+  title: string
+  yes: Function
 }
 
 /**
  * Create a modal dialog window displaying a title, a message, and a set of buttons which trigger callback functions.
  *
- * @param dialogData			An object of dialog data which configures how the modal window is rendered
- * @param dialogData.title		The window title
- * @param dialogData.content	HTML content
- * @param dialogData.close		Common callback operations to perform when the dialog is closed
- * @param dialogData.buttons	Action buttons which trigger callback functions.
- *								Buttons are defined as an Object with the format ``{name: buttonData}``.
- *								Valid keys for buttonData include:
+ * @param dialogData - An object of dialog data which configures how the modal window is rendered
+ * @param title - The window title
+ * @param content - HTML content
+ * @param close - Common callback operations to perform when the dialog is closed
+ * @param buttons - Action buttons which trigger callback functions.
+ *                             Buttons are defined as an Object with the format `{name: buttonData}`.
+ *                             Valid keys for buttonData include:
  *
- * @param dialogData.buttons.button.icon		A button icon
- * @param dialogData.buttons.button.label		A button label
- * @param dialogData.buttons.button.callback	A callback function taking no arguments
+ * @param icon - A button icon
+ * @param label - A button label
+ * @param callback - A callback function taking no arguments
  *
- * @param options			Dialog rendering options, see :class:`Application`
- * @param options.default	The name of the default button which should be triggered on Enter
+ * @param options - Dialog rendering options, see :class:`Application`
+ * @param default - The name of the default button which should be triggered on Enter
  *
  * @example
+ * ```javascript
  * let d = new Dialog({
  *  title: "Test Dialog",
  *  content: "<p>You must choose either Option 1, or Option 2</p>",
@@ -58,22 +59,23 @@ interface ConfirmDialog {
  *  close: () => console.log("This always is logged no matter which option is chosen")
  * });
  * d.render(true);
+ * ```
  */
 declare class Dialog extends Application {
   constructor (dialogData: DialogData, options?: ApplicationOptions);
 
   /**
-	 * A helper function to reduce code duplication when creating confirmation dialog windows.
-	 * These windows are limited in flexibility, for simple yes/no prompts.
-	 * If you require more flexibility, a custom Dialog instance is preferred.
-	 * @param title		The confirmation window title
-	 * @param content	The confirmation message
-	 * @param yes		Callback function upon yes
-	 * @param no		Callback function upon no
-	 * @param defaultYes
-	 */
+   * A helper function to reduce code duplication when creating confirmation dialog windows.
+   * These windows are limited in flexibility, for simple yes/no prompts.
+   * If you require more flexibility, a custom Dialog instance is preferred.
+   * @param title - The confirmation window title
+   * @param content - The confirmation message
+   * @param yes - Callback function upon yes
+   * @param no - Callback function upon no
+   * @param defaultYes -
+   */
   static confirm (
-    { title, content, yes, no, defaultYes }?: ConfirmDialog,
+    kwargs?: ConfirmDialog,
     options?: ApplicationOptions
   ): Promise<void>;
 }

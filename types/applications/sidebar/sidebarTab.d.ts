@@ -3,12 +3,12 @@
  */
 declare class SidebarTab extends Application {
   /**
-	 * Only close the pop-out version of the sidebar tab
-	 */
-  close (): any;
+   * Render the SidebarTab as a pop-out container
+   */
+  static renderPopout (original: SidebarTab): void
 
   /**
-	 * Render the SidebarTab as a pop-out container
-	 */
-  static renderPopout (original: SidebarTab): void;
+   * Only close the pop-out version of the sidebar tab
+   */
+  close (): any
 }
