@@ -14,17 +14,18 @@ declare class VideoHelper {
    * A user gesture must be registered before video playback can begin.
    * This Set records the video elements which await such a gesture.
    */
-  pending: Set<any>
+  pending: Set<HTMLVideoElement>
 
   /**
    * A mapping of base64 video thumbnail images
    */
   thumbs: Map<string, string>
 
-  /** A collectinon of HTML5 video objects which are currently active within the
+  /**
+   * A collectinon of HTML5 video objects which are currently active within the
    * FVTT page
    */
-  videos: any[]
+  videos: HTMLVideoElement[]
 
   constructor ();
 
