@@ -108,6 +108,13 @@ declare function filterObject (
 declare function flattenObject (obj: object, _d?: number): any
 
 /**
+ * Retrieve an Entity or Embedded Entity by its Universally Unique Identifier
+ * (uuid).
+ * @param uuid - The uuid of the Entity or Embedded Entity to retrieve
+ */
+declare function fromUuid (uuid: string): Promise<Entity | object | null>
+
+/**
  * Obtain references to the parent classes of a certain class.
  * @param cls - An ES6 Class definition
  * @returns An array of parent Classes which the provided class extends
