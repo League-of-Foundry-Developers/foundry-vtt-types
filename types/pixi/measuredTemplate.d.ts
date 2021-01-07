@@ -25,6 +25,18 @@ declare class NormalizedRectangle extends PIXI.Rectangle {}
 declare class MeasuredTemplate extends PlaceableObject {
   constructor (any: any);
 
+  /**
+   * Draw the rotation control handle and assign event listeners
+   * @internal
+   */
+  _drawRotationHandle (radius: any): void;
+
+  /**
+   * Draw the Text label used for the MeasuredTemplate
+   * @internal
+   */
+  _drawRulerText (): PIXI.Text;
+
   // TODO properly declare the creation data object
 
   /**
@@ -44,12 +56,6 @@ declare class MeasuredTemplate extends PlaceableObject {
   ): PIXI.Polygon;
 
   /**
-   * Get a Rectangular area of effect given a width and height
-   * @internal
-   */
-  _getRectShape (direction: number, distance: number): NormalizedRectangle;
-
-  /**
    * Get a rotated Rectangular area of effect given a width, height, and direction
    * @internal
    */
@@ -60,16 +66,10 @@ declare class MeasuredTemplate extends PlaceableObject {
   ): PIXI.Polygon;
 
   /**
-   * Draw the Text label used for the MeasuredTemplate
+   * Get a Rectangular area of effect given a width and height
    * @internal
    */
-  _drawRulerText (): PIXI.Text;
-
-  /**
-   * Draw the rotation control handle and assign event listeners
-   * @internal
-   */
-  _drawRotationHandle (radius: any): void;
+  _getRectShape (direction: number, distance: number): NormalizedRectangle;
 
   /**
    * Update the displayed ruler tooltip text

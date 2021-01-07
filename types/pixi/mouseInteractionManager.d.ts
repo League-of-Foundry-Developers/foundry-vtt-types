@@ -115,10 +115,6 @@ declare class MouseInteractionManager {
    */
   can (action: string, event: Event): boolean;
 
-  /* -------------------------------------------- */
-  /*  Listener Activation and Deactivation        */
-  /* -------------------------------------------- */
-
   /**
    * Activate a new set of listeners for click events on the target object
    */
@@ -143,25 +139,6 @@ declare class MouseInteractionManager {
    * Deactivate events required for handling drag-and-drop workflow.
    */
   protected _deactivateDragEvents (): void;
-
-  /* -------------------------------------------- */
-  /*  Hover In and Hover Out                      */
-  /* -------------------------------------------- */
-
-  /**
-   * Handle mouse-out events which terminate hover workflows and do not stop propagation.
-   */
-  protected _handleMouseOut (event: Event): any;
-
-  /**
-   * Handle mouse-over events which activate downstream listeners and do not stop propagation.
-   */
-  protected _handleMouseOver (event: Event): any;
-
-  /* -------------------------------------------- */
-  /*  Left Click and Double Click                 */
-  /* -------------------------------------------- */
-
   /**
    * Handle mouse-down which trigger a single left-click workflow.
    */
@@ -173,16 +150,6 @@ declare class MouseInteractionManager {
   protected _handleClickLeft2 (event: Event): any;
 
   /**
-   * Handle mouse-down events which activate downstream listeners.
-   * Stop further propagation only if the event is allowed by either single or double-click.
-   */
-  protected _handleMouseDown (event: Event): any;
-
-  /* -------------------------------------------- */
-  /*  Right Click and Double Click                */
-  /* -------------------------------------------- */
-
-  /**
    * Handle single right-click actions.
    */
   protected _handleClickRight (event: Event): void;
@@ -191,16 +158,6 @@ declare class MouseInteractionManager {
    * Handle double right-click actions.
    */
   protected _handleClickRight2 (event: Event): any;
-
-  /**
-   * Handle right-click mouse-down events.
-   * Stop further propagation only if the event is allowed by either single or double-click.
-   */
-  protected _handleRightDown (event: Event): any;
-
-  /* -------------------------------------------- */
-  /*  Drag and Drop                               */
-  /* -------------------------------------------- */
 
   /**
    * Handle the cancellation of a drag workflow, resetting back to the original state
@@ -223,12 +180,34 @@ declare class MouseInteractionManager {
   protected _handleDragStart (event: Event): any;
 
   /**
+   * Handle mouse-down events which activate downstream listeners.
+   * Stop further propagation only if the event is allowed by either single or double-click.
+   */
+  protected _handleMouseDown (event: Event): any;
+
+  /**
    * Handle mouse movement during a drag workflow
    */
   protected _handleMouseMove (event: Event): any;
 
   /**
+   * Handle mouse-out events which terminate hover workflows and do not stop propagation.
+   */
+  protected _handleMouseOut (event: Event): any;
+
+  /**
+   * Handle mouse-over events which activate downstream listeners and do not stop propagation.
+   */
+  protected _handleMouseOver (event: Event): any;
+
+  /**
    * Handle mouse up events which may optionally conclude a drag workflow
    */
   protected _handleMouseUp (event: Event): void;
+
+  /**
+   * Handle right-click mouse-down events.
+   * Stop further propagation only if the event is allowed by either single or double-click.
+   */
+  protected _handleRightDown (event: Event): any;
 }

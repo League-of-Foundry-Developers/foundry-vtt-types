@@ -26,20 +26,54 @@ declare class Game {
   // Added so developers can easily add system/module specific stuff to the game object
   [key: string]: any;
 
+  actors: Actors
+
+  /** A singleton instance of the Audio Helper class */
+  audio: AudioHelper
+
+  combats: CombatEncounters
+
   /** The object of world data passed from the server */
   data: any
+
+  /** Whether the Game is running in debug mode */
+  debug: boolean
+
+  folders: Folders
 
   /** Localization support */
   i18n: Localization
 
+  items: Items
+
+  journal: Journal
+
   /** The Keyboard Manager */
   keyboard: KeyboardManager
+
+  /**
+   * A flag for whether texture assets for the game canvas are currently loading
+   */
+  loading: boolean
+
+  macros: Macros
+
+  messages: Messages
 
   /** A mapping of installed modules */
   modules: Map<any, any>
 
+  packs: Collection<any>
+
   /** The user role permissions setting */
   permissions: any
+
+  playlists: Playlists
+
+  /** A flag for whether the Game has successfully reached the "ready" hook */
+  ready: boolean
+
+  scenes: Scenes
 
   /** The client session id which is currently active */
   sessionId: string
@@ -50,42 +84,15 @@ declare class Game {
   /** A reference to the open Socket.io connection */
   socket: SocketIOClient.Socket
 
+  tables: RollTables
+
   /** The id of the active game user */
   userId: string
 
-  /** A singleton instance of the Audio Helper class */
-  audio: AudioHelper
+  users: Users
 
   /** A singleton instance of the Video Helper class */
   video: VideoHelper
-
-  /** Whether the Game is running in debug mode */
-  debug: boolean
-
-  /**
-   * A flag for whether texture assets for the game canvas are currently loading
-   */
-  loading: boolean
-
-  /** A flag for whether the Game has successfully reached the "ready" hook */
-  ready: boolean
-
-  /* -------------------------------------------- */
-  /*  Entities
-  /* -------------------------------------------- */
-
-  users: Users
-  messages: Messages
-  scenes: Scenes
-  actors: Actors
-  items: Items
-  journal: Journal
-  macros: Macros
-  playlists: Playlists
-  combats: CombatEncounters
-  tables: RollTables
-  folders: Folders
-  packs: Collection<any>
 
   constructor (
     worldData: object,
@@ -94,15 +101,44 @@ declare class Game {
   );
 
   /**
+   * A convenient reference to the currently active canvas tool
+   */
+  get activeTool (): string;
+
+  /**
+   * A convenience accessor for the currently active Combat encounter
+   */
+  get combat (): Combat;
+
+  /**
+   * A state variable which tracks whether or not the game session is currently paused
+   */
+  get paused (): boolean;
+
+  /**
+   * Metadata regarding the game System which powers this World
+   */
+  get system (): any;
+
+  /**
+   * The currently connected User
+   */
+  get user (): User;
+
+  /**
+   * Metadata regarding the current game World
+   */
+  get world (): any;
+
+  static clearCookies (): boolean;
+
+  /**
    * Fetch World data and return a Game instance
    * @returns A Promise which resolves to the created Game instance
    */
   static create (): Promise<Game>;
 
-  /**
-   * Request World data from server and return it
-   */
-  static getWorldData (socket: SocketIOClient.Socket): Promise<any>;
+  static getCookies (): object;
 
   /**
    * Request setup data from server and return it
@@ -110,19 +146,39 @@ declare class Game {
   static getSetupData (socket: SocketIOClient.Socket): Promise<any>;
 
   /**
+   * Request World data from server and return it
+   */
+  static getWorldData (socket: SocketIOClient.Socket): Promise<any>;
+
+  /**
+   * General game-state socket listeners and event handlers
+   */
+  static socketListeners (socket: SocketIOClient.Socket): void;
+
+  /**
+   * Activate Event Listeners which apply to every Game View
+   */
+  activateListeners (): void;
+
+  /**
    * Initialize the Game for the current window location
    */
   initialize (): Promise<void>;
 
   /**
-   * Fully set up the game state, initializing Entities, UI applications, and the Canvas
+   * Initialize the game Canvas
    */
-  setupGame (): Promise<void>;
+  initializeCanvas (): Promise<void>;
 
   /**
    * Initialize game state data by creating Collections for all Entity types
    */
   initializeEntities (): void;
+
+  /**
+   * Initialize Keyboard and Mouse controls
+   */
+  initializeKeyboard (): void;
 
   /**
    * Initialization actions for compendium packs
@@ -140,14 +196,9 @@ declare class Game {
   initializeUI (): void;
 
   /**
-   * Initialize the game Canvas
+   * Open socket listeners which transact game state data
    */
-  initializeCanvas (): Promise<void>;
-
-  /**
-   * Initialize Keyboard and Mouse controls
-   */
-  initializeKeyboard (): void;
+  openSockets (): void;
 
   /**
    * Register core game settings
@@ -155,34 +206,9 @@ declare class Game {
   registerSettings (): void;
 
   /**
-   * The currently connected User
+   * Fully set up the game state, initializing Entities, UI applications, and the Canvas
    */
-  get user (): User;
-
-  /**
-   * Metadata regarding the current game World
-   */
-  get world (): any;
-
-  /**
-   * Metadata regarding the game System which powers this World
-   */
-  get system (): any;
-
-  /**
-   * A convenience accessor for the currently active Combat encounter
-   */
-  get combat (): Combat;
-
-  /**
-   * A state variable which tracks whether or not the game session is currently paused
-   */
-  get paused (): boolean;
-
-  /**
-   * A convenient reference to the currently active canvas tool
-   */
-  get activeTool (): string;
+  setupGame (): Promise<void>;
 
   /**
    * Toggle the pause state of the game
@@ -191,23 +217,4 @@ declare class Game {
    * @param push - Push the pause state change to other connected clients?
    */
   togglePause (pause: boolean, push?: boolean): void;
-
-  static getCookies (): object;
-
-  static clearCookies (): boolean;
-
-  /**
-   * Open socket listeners which transact game state data
-   */
-  openSockets (): void;
-
-  /**
-   * General game-state socket listeners and event handlers
-   */
-  static socketListeners (socket: SocketIOClient.Socket): void;
-
-  /**
-   * Activate Event Listeners which apply to every Game View
-   */
-  activateListeners (): void;
 }

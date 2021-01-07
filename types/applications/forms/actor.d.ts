@@ -15,7 +15,7 @@ declare interface ActorSheetData<DataType = any>
  *
  * @param actor - The Actor instance being displayed within the sheet.
  * @param options - Additional options which modify the rendering of the Actor's sheet.
- * @param options.editable - Is the Actor editable? Default is true.
+ * @param editable - Is the Actor editable? Default is true.
  */
 declare class ActorSheet<
   DataType = any,
@@ -35,6 +35,11 @@ declare class ActorSheet<
   static get defaultOptions (): FormApplicationOptions
 
   /**
+   * A convenience reference to the Actor entity
+   */
+  get actor (): ActorType
+
+  /**
    * Define a unique and dynamic element ID for the rendered ActorSheet application
    */
   get id (): string
@@ -45,9 +50,10 @@ declare class ActorSheet<
   get title (): string
 
   /**
-   * A convenience reference to the Actor entity
+   * Remove references to an active Token when the sheet is closed
+   * See Application.close for more detail
    */
-  get actor (): ActorType
+  close (): Promise<void>
 
   /**
    * Prepare data for rendering the Actor sheet
@@ -61,24 +67,7 @@ declare class ActorSheet<
    */
   protected _getHeaderButtons (): any[]
 
-  /**
-   * Remove references to an active Token when the sheet is closed
-   * See Application.close for more detail
-   */
-  close (): Promise<void>
-
-  /**
-   * Activate the default set of listeners for the Actor Sheet
-   * These listeners handle basic stuff like form submission or updating images
-   *
-   * @param html - The rendered template ready to have listeners attached
-   */
-  protected activateListeners (html: JQuery | HTMLElement): void
-
-  /**
-   * Handle requests to configure the prototype Token for the Actor
-   */
-  protected _onConfigureToken (event: Event | JQuery.Event): void
+  protected _getSortSiblings (source: any): any
 
   /**
    * Handle requests to configure the default sheet used by this Actor
@@ -86,9 +75,9 @@ declare class ActorSheet<
   protected _onConfigureSheet (event: Event | JQuery.Event): void
 
   /**
-   * Handle changing the actor profile image by opening a FilePicker
+   * Handle requests to configure the prototype Token for the Actor
    */
-  protected _onEditImage (event: Event | JQuery.Event): void
+  protected _onConfigureToken (event: Event | JQuery.Event): void
 
   /**
    * Default handler for beginning a drag-drop workflow of an Owned Item on an Actor Sheet
@@ -105,9 +94,10 @@ declare class ActorSheet<
    */
   protected _onDrop (event: Event | JQuery.Event): Promise<boolean | any>
 
-  /* -------------------------------------------- */
-  /*  Owned Item Sorting
-  /* -------------------------------------------- */
+  /**
+   * Handle changing the actor profile image by opening a FilePicker
+   */
+  protected _onEditImage (event: Event | JQuery.Event): void
 
   /**
    * Handle a drop event for an existing Owned Item to sort that item
@@ -117,5 +107,11 @@ declare class ActorSheet<
     itemData: object
   ): Promise<any>
 
-  protected _getSortSiblings (source: any): any
+  /**
+   * Activate the default set of listeners for the Actor Sheet
+   * These listeners handle basic stuff like form submission or updating images
+   *
+   * @param html - The rendered template ready to have listeners attached
+   */
+  protected activateListeners (html: JQuery | HTMLElement): void
 }

@@ -25,9 +25,9 @@
  */
 declare class Roll {
   /**
-   * The original provided data
+   * An Array of Die instance which were included as part of this Roll
    */
-  data: any
+  _dice: DiceTerm[]
 
   /**
    * The original "raw" formula before any substitutions or evaluation
@@ -35,16 +35,9 @@ declare class Roll {
   _formula: string
 
   /**
-   * The processed formula resulting from substitution and evaluation
+   * Cache the rolled total to avoid re-evaluating it multiple times
    */
-  formula: string
-
-  terms: [Roll | DicePool | DiceTerm | number | string]
-
-  /**
-   * An Array of Die instance which were included as part of this Roll
-   */
-  _dice: DiceTerm[]
+  _result: any
 
   /**
    * An internal flag for whether the Roll object has been rolled
@@ -52,14 +45,19 @@ declare class Roll {
   _rolled: boolean
 
   /**
-   * Cache the rolled total to avoid re-evaluating it multiple times
-   */
-  _result: any
-
-  /**
    * Cache the evaluated total to avoid re-evaluating it
    */
   _total: any
+
+  /**
+   * The original provided data
+   */
+  data: any
+
+  /**
+   * The processed formula resulting from substitution and evaluation
+   */
+  formula: string
 
   /**
    * Regular expression patterns
@@ -71,18 +69,26 @@ declare class Roll {
     success: RegExp
   }
 
+  terms: [Roll | DicePool | DiceTerm | number | string]
+
   constructor (formula: string, data?: object);
 
-  /**
-   * Replace referenced data attributes in the roll formula with the syntax `@attr` with the corresponding key from
-   * the provided `data` object.
-   * @param formula - The original formula within which to replace
-   */
-  protected _replaceData (formula: string): string;
+  static get rgx (): { dice: string, pool: string };
 
-  /* -------------------------------------------- */
-  /*  Properties                                  */
-  /* -------------------------------------------- */
+  /**
+   * Record supported arithmetic operators for Roll instances
+   */
+  protected static get arithmeticOperators (): string[];
+
+  /**
+   * The regular expression used to identify a Die component of a Roll
+   */
+  protected static get diceRgx (): string;
+
+  /**
+   * Get an Array of any Die objects which were rolled as part of the evaluation of this roll
+   */
+  get dice (): DiceTerm[];
 
   /**
    * The resulting arithmetic expression after rolls have been evaluated
@@ -95,25 +101,70 @@ declare class Roll {
   get total (): number;
 
   /**
-   * Get an Array of any Die objects which were rolled as part of the evaluation of this roll
+   * Recreate a Roll instance using a provided JSON string
+   * @param json - Serialized JSON data representing the Roll
+   * @returns A revived Roll instance
    */
-  get dice (): DiceTerm[];
+  static fromJSON (json: string): Roll;
 
   /**
-   * The regular expression used to identify a Die component of a Roll
+   * Acquire data object representing the most-likely current actor.
+   * This data can be included in the invocation of a Roll instance for evaluating dynamic attributes.
+   *
+   * @returns An object of data representing the current Actor (if any)
    */
-  protected static get diceRgx (): string;
-
-  static get rgx (): { dice: string, pool: string };
+  static getActorData (): any;
 
   /**
-   * Record supported arithmetic operators for Roll instances
+   * Return the maximum possible Dice roll which can result from the given formula
+   * @param formula - A dice roll formula to maximize
+   * @returns A Roll instance representing the maximal roll
    */
-  protected static get arithmeticOperators (): string[];
+  static maximize (formula: string): Roll;
 
-  /* -------------------------------------------- */
-  /*  Methods                                     */
-  /* -------------------------------------------- */
+  /**
+   * Return the minimum possible Dice roll which can result from the given formula
+   * @param formula - A dice roll formula to minimize
+   * @returns A Roll instance representing the minimal roll
+   */
+  static minimize (formula: string): Roll;
+
+  static simulate (formula: string, n: number): number[];
+
+  /**
+   * Alter the Roll formula by adding or multiplying the number of dice included in each roll term
+   *
+   * @param add - A number of dice to add to each Die term
+   * @param multiply - A multiplier for the number of dice in each Die term
+   *
+   * @example
+   * ```javascript
+   * let r = new Roll("4d8 + 4 + 2d4");
+   * r.alter(1, 2);
+   * r.formula;
+   * > 9d8 + 4 + 5d4
+   * ```
+   */
+  alter (add: number, multiple: number): Roll;
+
+  /**
+   * Render the tooltip HTML for a Roll instance
+   */
+  getTooltip (): Promise<JQuery | HTMLElement>;
+
+  /**
+   * Render a Roll instance to HTML
+   * @param chatOptions - An object configuring the behavior of the resulting chat message.
+   * @returns A Promise which resolves to the rendered HTML
+   */
+  render (chatOptions?: object): Promise<JQuery | HTMLElement>;
+
+  /**
+   * Create a new Roll object using the original provided formula and data
+   * Each roll is immutable, so this method returns a new Roll instance using the same data.
+   * @returns A new Roll object, rolled using the same formula and data
+   */
+  reroll (): Roll;
 
   /**
    * Execute the Roll, replacing dice and evaluating the total result
@@ -129,65 +180,10 @@ declare class Roll {
   roll (): Roll;
 
   /**
-   * Create a new Roll object using the original provided formula and data
-   * Each roll is immutable, so this method returns a new Roll instance using the same data.
-   * @returns A new Roll object, rolled using the same formula and data
+   * Structure the Roll data as an object suitable for JSON stringification
+   * @returns Structured data which can be serialized into JSON
    */
-  reroll (): Roll;
-
-  /* -------------------------------------------- */
-  /*  Helpers
-  /* -------------------------------------------- */
-
-  /**
-   * Separate a dice roll formula into parenthetical terms to be evaluated first
-   * @param formula -
-   */
-  protected _evalParentheticalTerms (formula: string): string[];
-
-  /**
-   * Isolate any Dice Pool terms within a formula and evaluate them
-   * @param formula -
-   */
-  protected _evalPoolTerms (formula: string): string[];
-
-  /**
-   * Expand and reallocate an array of terms, separating them based on arithmetic operators
-   */
-  protected _expandArithmeticTerms (terms: any): any;
-
-  /**
-   * Replace a dice roll term enclosed in \{brackets\} with a DicePool instance
-   * @param term - The string term being replaced
-   * @param rgx - The regexp match for the term
-   * @returns The replaced DicePool
-   */
-  protected _replacePool (term: string, rgx: RegExpMatchArray): DicePool;
-
-  protected _validateResult (result: any): any;
-
-  /**
-   * Safely evaluate a formulaic expression using a Proxy environment which is allowed access to Math commands
-   * @param expression - The formula expression to evaluate
-   * @returns The returned numeric result
-   */
-  protected _safeEval (expression: string): number;
-
-  /* -------------------------------------------- */
-  /*  HTML Rendering
-  /* -------------------------------------------- */
-
-  /**
-   * Render a Roll instance to HTML
-   * @param chatOptions - An object configuring the behavior of the resulting chat message.
-   * @returns A Promise which resolves to the rendered HTML
-   */
-  render (chatOptions?: object): Promise<JQuery | HTMLElement>;
-
-  /**
-   * Render the tooltip HTML for a Roll instance
-   */
-  getTooltip (): Promise<JQuery | HTMLElement>;
+  toJSON (): any;
 
   /**
    * Transform a Roll instance into a ChatMessage, displaying the roll result.
@@ -208,64 +204,44 @@ declare class Roll {
     }
   ): Promise<ChatMessage | any>;
 
-  /* -------------------------------------------- */
-  /*  Methods
-  /* -------------------------------------------- */
+  /**
+   * Separate a dice roll formula into parenthetical terms to be evaluated first
+   * @param formula -
+   */
+  protected _evalParentheticalTerms (formula: string): string[];
 
   /**
-   * Alter the Roll formula by adding or multiplying the number of dice included in each roll term
-   *
-   * @param add - A number of dice to add to each Die term
-   * @param multiply - A multiplier for the number of dice in each Die term
-   *
-   * @example
-   * ```javascript
-   * let r = new Roll("4d8 + 4 + 2d4");
-   * r.alter(1, 2);
-   * r.formula;
-   * > 9d8 + 4 + 5d4
-   * ```
+   * Isolate any Dice Pool terms within a formula and evaluate them
+   * @param formula -
    */
-  alter (add: number, multiple: number): Roll;
+  protected _evalPoolTerms (formula: string): string[];
 
   /**
-   * Return the minimum possible Dice roll which can result from the given formula
-   * @param formula - A dice roll formula to minimize
-   * @returns A Roll instance representing the minimal roll
+   * Expand and reallocate an array of terms, separating them based on arithmetic operators
    */
-  static minimize (formula: string): Roll;
+  protected _expandArithmeticTerms (terms: any): any;
 
   /**
-   * Return the maximum possible Dice roll which can result from the given formula
-   * @param formula - A dice roll formula to maximize
-   * @returns A Roll instance representing the maximal roll
+   * Replace referenced data attributes in the roll formula with the syntax `@attr` with the corresponding key from
+   * the provided `data` object.
+   * @param formula - The original formula within which to replace
    */
-  static maximize (formula: string): Roll;
+  protected _replaceData (formula: string): string;
 
   /**
-   * Acquire data object representing the most-likely current actor.
-   * This data can be included in the invocation of a Roll instance for evaluating dynamic attributes.
-   *
-   * @returns An object of data representing the current Actor (if any)
+   * Replace a dice roll term enclosed in \{brackets\} with a DicePool instance
+   * @param term - The string term being replaced
+   * @param rgx - The regexp match for the term
+   * @returns The replaced DicePool
    */
-  static getActorData (): any;
-
-  static simulate (formula: string, n: number): number[];
-
-  /* -------------------------------------------- */
-  /*  Saving and Loading
-  /* -------------------------------------------- */
+  protected _replacePool (term: string, rgx: RegExpMatchArray): DicePool;
 
   /**
-   * Structure the Roll data as an object suitable for JSON stringification
-   * @returns Structured data which can be serialized into JSON
+   * Safely evaluate a formulaic expression using a Proxy environment which is allowed access to Math commands
+   * @param expression - The formula expression to evaluate
+   * @returns The returned numeric result
    */
-  toJSON (): any;
+  protected _safeEval (expression: string): number;
 
-  /**
-   * Recreate a Roll instance using a provided JSON string
-   * @param json - Serialized JSON data representing the Roll
-   * @returns A revived Roll instance
-   */
-  static fromJSON (json: string): Roll;
+  protected _validateResult (result: any): any;
 }

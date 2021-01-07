@@ -8,6 +8,11 @@
  */
 declare abstract class DiceTerm {
   /**
+   * Define the denomination string used to register this Dice type in CONFIG.Dice.terms
+   */
+  static DENOMINATION: string
+
+  /**
    * The number of faces on the die
    */
   faces: number
@@ -38,6 +43,7 @@ declare abstract class DiceTerm {
     number?: number
     options?: object
   });
+
   /**
    * Return a standardized representation for the displayed formula associated with this DiceTerm
    */
@@ -54,30 +60,6 @@ declare abstract class DiceTerm {
   get values (): number[];
 
   /**
-   * Roll the DiceTerm by mapping a random uniform draw against the faces of the dice term.
-   * @param minimize - Apply the minimum possible result instead of a random result.
-   * @param maximize - Apply the maximum possible result instead of a random result.
-   */
-  roll (options?: {
-    maximize: boolean
-    minimize: boolean
-  }): object;
-
-  /**
-   * Alter the DiceTerm by adding or multiplying the number of dice which are rolled
-   * @param multiply - A factor to multiply. Dice are multiplied before any additions.
-   * @param add - A number of dice to add. Dice are added after multiplication.
-   * @returns The altered term
-   */
-  alter (multiply: number, add: number): DiceTerm;
-
-  /**
-   * Serialize the DiceTerm to a JSON string which allows it to be saved in the database or embedded in text.
-   * This method should return an object suitable for passing to the JSON.stringify function.
-   */
-  toJSON (): object;
-
-  /**
    * Reconstruct a DiceTerm instance from a provided JSON string
    * @param json - A serialized JSON representation of a DiceTerm
    * @returns A reconstructed DiceTerm from the provided JSON
@@ -90,7 +72,26 @@ declare abstract class DiceTerm {
   static getResultLabel (result: string): string;
 
   /**
-   * Define the denomination string used to register this Dice type in CONFIG.Dice.terms
+   * Alter the DiceTerm by adding or multiplying the number of dice which are rolled
+   * @param multiply - A factor to multiply. Dice are multiplied before any additions.
+   * @param add - A number of dice to add. Dice are added after multiplication.
+   * @returns The altered term
    */
-  static DENOMINATION: string
+  alter (multiply: number, add: number): DiceTerm;
+
+  /**
+   * Roll the DiceTerm by mapping a random uniform draw against the faces of the dice term.
+   * @param minimize - Apply the minimum possible result instead of a random result.
+   * @param maximize - Apply the maximum possible result instead of a random result.
+   */
+  roll (options?: {
+    maximize: boolean
+    minimize: boolean
+  }): object;
+
+  /**
+   * Serialize the DiceTerm to a JSON string which allows it to be saved in the database or embedded in text.
+   * This method should return an object suitable for passing to the JSON.stringify function.
+   */
+  toJSON (): object;
 }

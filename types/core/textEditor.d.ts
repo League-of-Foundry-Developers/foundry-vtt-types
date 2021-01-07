@@ -2,6 +2,8 @@
  * A collection of helper functions and utility methods related to the rich text editor
  */
 declare class TextEditor {
+  static activateListeners (): void;
+
   /**
    * Create a Rich Text Editor. The current implementation uses TinyMCE
    * @param options - Configuration options provided to the Editor init
@@ -34,20 +36,37 @@ declare class TextEditor {
   static previewHTML (content: string, length: number): string;
 
   /**
+   * Handle click events on Entity Links
+   */
+  protected static _onClickEntityLink (event: Event): Promise<any>;
+
+  /**
+   * Handle left-mouse clicks on an inline roll, dispatching the formula or displaying the tooltip
+   * @param event - The initiating click event
+   */
+  protected static _onClickInlineRoll (event: Event): Promise<ChatMessage | any | null>;
+
+  /**
+   * Begin a Drag+Drop workflow for a dynamic content link
+   * @param event - The originating drag event
+   */
+  protected static _onDragEntityLink (event: Event): boolean;
+
+  /**
+   * Handle dropping of transferred data onto the active rich text editor
+   * @param event - The originating drop event which triggered the data transfer
+   * @param editor - The TinyMCE editor instance being dropped on
+   */
+  protected static _onDropEditorData (
+    event: Event,
+    editor: import('tinymce').Editor
+  ): Promise<boolean>;
+
+  /**
    * If dynamic content links are used from a certain compendium, we will go ahead and preload the index for that
    * Compendium pack in the background so the links can function better.
    */
   protected static _preloadCompendiumIndices (matches: string[]): Promise<void>;
-
-  /**
-   * Handle replacement of content links within HTML by delegating to different helper methods based on entity type
-   */
-  protected static _replaceContentLinks (
-    match: string,
-    entityType: string,
-    id: string,
-    name: string
-  ): string;
 
   /**
    * Replace a matched Entity Link with an actual HTML link to that entity
@@ -59,6 +78,16 @@ declare class TextEditor {
    */
   protected static _replaceCompendiumLink (
     match: string,
+    id: string,
+    name: string
+  ): string;
+
+  /**
+   * Handle replacement of content links within HTML by delegating to different helper methods based on entity type
+   */
+  protected static _replaceContentLinks (
+    match: string,
+    entityType: string,
     id: string,
     name: string
   ): string;
@@ -100,41 +129,8 @@ declare class TextEditor {
     ...args: any[]
   ): string;
 
-  /* -------------------------------------------- */
-  /*  Event Listeners and Handlers                */
-  /* -------------------------------------------- */
-
-  static activateListeners (): void;
-
-  /**
-   * Handle click events on Entity Links
-   */
-  protected static _onClickEntityLink (event: Event): Promise<any>;
-
-  /**
-   * Handle left-mouse clicks on an inline roll, dispatching the formula or displaying the tooltip
-   * @param event - The initiating click event
-   */
-  protected static _onClickInlineRoll (event: Event): Promise<ChatMessage | any | null>;
-
-  /**
-   * Begin a Drag+Drop workflow for a dynamic content link
-   * @param event - The originating drag event
-   */
-  protected static _onDragEntityLink (event: Event): boolean;
-
   /**
    * Begin a a data transfer drag event with default handling
    */
   protected _onDragStart (event: Event): void;
-
-  /**
-   * Handle dropping of transferred data onto the active rich text editor
-   * @param event - The originating drop event which triggered the data transfer
-   * @param editor - The TinyMCE editor instance being dropped on
-   */
-  protected static _onDropEditorData (
-    event: Event,
-    editor: import('tinymce').Editor
-  ): Promise<boolean>;
 }

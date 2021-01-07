@@ -37,13 +37,11 @@ interface FormApplicationOptions extends ApplicationOptions {
  * @param options - Additional options which modify the rendering of the sheet.
  */
 declare class FormApplication extends Application {
-  options: FormApplicationOptions
-
-  /** The object target which we are using this form to modify */
-  object: any
-
-  /** A convenience reference to the form HTLMElement */
-  form: HTMLElement
+  /**
+   * Keep track of any mce editors which may be active as part of this form
+   * The values of this Array are inner-objects with references to the MCE editor and other metadata
+   */
+  editors: any
 
   /**
    * Keep track of any FilePicker instances which are associated with this form
@@ -51,18 +49,15 @@ declare class FormApplication extends Application {
    */
   filepickers: any[]
 
-  /**
-   * Keep track of any mce editors which may be active as part of this form
-   * The values of this Array are inner-objects with references to the MCE editor and other metadata
-   */
-  editors: any
+  /** A convenience reference to the form HTLMElement */
+  form: HTMLElement
+
+  /** The object target which we are using this form to modify */
+  object: any
+
+  options: FormApplicationOptions
 
   constructor (object: any, options?: FormApplicationOptions)
-
-  /**
-   * Assign the default options which are supported by the entity edit sheet
-   */
-  static get defaultOptions (): FormApplicationOptions
 
   /**
    * Is the Form Application currently editable?
@@ -70,10 +65,37 @@ declare class FormApplication extends Application {
   get isEditable (): boolean
 
   /**
-   * Render the FormApplication inner sheet content.
-   * See `Application._renderInner` for more detail.
+   * Assign the default options which are supported by the entity edit sheet
    */
-  protected _renderInner (...args: any[]): Promise<JQuery | HTMLElement>
+  static get defaultOptions (): FormApplicationOptions
+
+  /**
+   * Extend the logic applied when the application is closed to destroy any remaining MCE instances
+   * This function returns a Promise which resolves once the window closing animation concludes
+   */
+  close (): Promise<void>
+
+  /**
+   * Submit the contents of a Form Application, processing its content as defined by the Application
+   * @param updateData - Additional data updates to submit in addition to those parsed from the form
+   * @returns Return a self-reference for convenient method chaining
+   */
+  submit ({ updateData }: { updateData?: any }): FormApplication
+
+  /**
+   * Activate a TinyMCE editor instance present within the form
+   */
+  protected _activateEditor (div: JQuery | HTMLElement): void
+
+  /**
+   * Activate a FilePicker instance present within the form
+   */
+  protected _activateFilePicker (button: JQuery | HTMLElement): void
+
+  /**
+   * If the form is not editable, disable its input fields
+   */
+  protected _disableFields (form: JQuery | HTMLElement): void
 
   /**
    * A helper function to transform an HTML form into a FormData object which is ready for dispatch
@@ -82,27 +104,19 @@ declare class FormApplication extends Application {
    */
   protected _getFormData (form: JQuery | HTMLElement): FormData
 
-  /* -------------------------------------------- */
-  /*  Event Listeners and Handlers                */
-  /* -------------------------------------------- */
-
-  /**
-   * Activate the default set of listeners for the Entity sheet
-   * These listeners handle basic stuff like form submission or updating images
-   *
-   * @param html - The rendered template ready to have listeners attached
-   */
-  protected activateListeners (html: JQuery | HTMLElement): void
-
-  /**
-   * If the form is not editable, disable its input fields
-   */
-  protected _disableFields (form: JQuery | HTMLElement): void
-
   /**
    * Handle the change of a color picker input which enters it's chosen value into a related input field
    */
   protected _onColorPickerChange (event: Event | JQuery.Event): void
+
+  /**
+   * By default, when the editor is saved treat it as a form submission event
+   */
+  protected _onEditorSave (
+    target: any,
+    element: JQuery | HTMLElement,
+    content: string
+  ): void
 
   /**
    * Handle standard form submission steps
@@ -128,6 +142,12 @@ declare class FormApplication extends Application {
   protected _onUnfocus (event: Event | JQuery.Event): void
 
   /**
+   * Render the FormApplication inner sheet content.
+   * See `Application._renderInner` for more detail.
+   */
+  protected _renderInner (...args: any[]): Promise<JQuery | HTMLElement>
+
+  /**
    * This method is called upon form submission after form data is validated
    * @param event - The initial triggering submission event
    * @param formData - The object of validated form data with which to update the object
@@ -138,39 +158,11 @@ declare class FormApplication extends Application {
     formData: any
   ): Promise<any>
 
-  /* -------------------------------------------- */
-  /*  TinyMCE Editor
-  /* -------------------------------------------- */
-
   /**
-   * Activate a TinyMCE editor instance present within the form
+   * Activate the default set of listeners for the Entity sheet
+   * These listeners handle basic stuff like form submission or updating images
+   *
+   * @param html - The rendered template ready to have listeners attached
    */
-  protected _activateEditor (div: JQuery | HTMLElement): void
-
-  /**
-   * By default, when the editor is saved treat it as a form submission event
-   */
-  protected _onEditorSave (
-    target: any,
-    element: JQuery | HTMLElement,
-    content: string
-  ): void
-
-  /**
-   * Activate a FilePicker instance present within the form
-   */
-  protected _activateFilePicker (button: JQuery | HTMLElement): void
-
-  /**
-   * Extend the logic applied when the application is closed to destroy any remaining MCE instances
-   * This function returns a Promise which resolves once the window closing animation concludes
-   */
-  close (): Promise<void>
-
-  /**
-   * Submit the contents of a Form Application, processing its content as defined by the Application
-   * @param updateData - Additional data updates to submit in addition to those parsed from the form
-   * @returns Return a self-reference for convenient method chaining
-   */
-  submit ({ updateData }: { updateData?: any }): FormApplication
+  protected activateListeners (html: JQuery | HTMLElement): void
 }

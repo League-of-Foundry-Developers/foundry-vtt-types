@@ -60,10 +60,19 @@ declare class Ruler extends PIXI.Container {
   constructor (user: User, color?: number);
 
   /**
-   * Measure the distance between two points and render the ruler UI to illustrate it
-   * @param destination - The destination point to which to measure
+   * Acquire a Token, if any, which is eligible to perform a movement based on the starting point of the Ruler
+   * @internal
    */
-  public measure (destination: PIXI.Point, gridSpaces?: boolean): void;
+  public _getMovementToken (): Token;
+
+  /**
+   * A helper method to return an Array of Ray objects constructed from the waypoints of the measurement
+   * @param waypoints - An Array of waypoint \{x, y\} Objects
+   * @param destination - An optional destination point to append to the existing waypoints
+   * @returns An Array of Ray objects which represent the segemnts of the waypoint path
+   * @internal
+   */
+  public _getRaysFromWaypoints (waypoints: PIXI.Point[], destination: PIXI.Point): Ray[];
 
   /**
    * Get the text label for a segment of the measured path
@@ -83,35 +92,25 @@ declare class Ruler extends PIXI.Container {
   public _highlightMeasurement (ray: Ray): void;
 
   /**
-   * Determine whether a SPACE keypress event entails a legal token movement along a measured ruler
-   *
-   * @returns An indicator for whether a token was successfully moved or not. If True the event should be
-   *          prevented from propagating further, if False it should move on to other handlers.
-   *
-   * @remarks confirm with Atropos whether this should return void or not. The JSDoc says it returns a boolean,
-   * but the code doesn't return anything.
-   */
-  public moveToken (): void;
-
-  /**
-   * A helper method to return an Array of Ray objects constructed from the waypoints of the measurement
-   * @param waypoints - An Array of waypoint \{x, y\} Objects
-   * @param destination - An optional destination point to append to the existing waypoints
-   * @returns An Array of Ray objects which represent the segemnts of the waypoint path
+   * Handle the addition of a new waypoint in the Ruler measurement path
+   * @param event -
    * @internal
    */
-  public _getRaysFromWaypoints (waypoints: PIXI.Point[], destination: PIXI.Point): Ray[];
+  public _onAddWaypoint (event: PIXI.InteractionEvent): void;
 
   /**
-   * Acquire a Token, if any, which is eligible to perform a movement based on the starting point of the Ruler
+   * Handle the removal of a waypoint in the Ruler measurement path
+   * @param event -
    * @internal
    */
-  public _getMovementToken (): Token;
+  public _onCancelWaypoint (event: PIXI.InteractionEvent): void;
 
   /**
-   * Clear display of the current Ruler
+   * Handle the conclusion of a Ruler measurement workflow
+   * @param event -
+   * @internal
    */
-  public clear (): void;
+  public _onEndMeasurement (event: PIXI.InteractionEvent): void;
 
   /**
    * General handler for mouse-down events which should affect the Ruler in some way
@@ -137,25 +136,26 @@ declare class Ruler extends PIXI.Container {
   public _onStartMeasurement (event: PIXI.InteractionEvent): void;
 
   /**
-   * Handle the addition of a new waypoint in the Ruler measurement path
-   * @param event -
-   * @internal
+   * Clear display of the current Ruler
    */
-  public _onAddWaypoint (event: PIXI.InteractionEvent): void;
+  public clear (): void;
 
   /**
-   * Handle the removal of a waypoint in the Ruler measurement path
-   * @param event -
-   * @internal
+   * Measure the distance between two points and render the ruler UI to illustrate it
+   * @param destination - The destination point to which to measure
    */
-  public _onCancelWaypoint (event: PIXI.InteractionEvent): void;
+  public measure (destination: PIXI.Point, gridSpaces?: boolean): void;
 
   /**
-   * Handle the conclusion of a Ruler measurement workflow
-   * @param event -
-   * @internal
+   * Determine whether a SPACE keypress event entails a legal token movement along a measured ruler
+   *
+   * @returns An indicator for whether a token was successfully moved or not. If True the event should be
+   *          prevented from propagating further, if False it should move on to other handlers.
+   *
+   * @remarks confirm with Atropos whether this should return void or not. The JSDoc says it returns a boolean,
+   * but the code doesn't return anything.
    */
-  public _onEndMeasurement (event: PIXI.InteractionEvent): void;
+  public moveToken (): void;
 
   public toJSON (): RulerData;
 

@@ -21,22 +21,10 @@ declare interface ContextMenuOption {
  * @param callback - A callback function to trigger when the entry of the menu is clicked
  */
 declare class ContextMenu {
-  constructor (
-    element: HTMLElement | JQuery,
-    selector: string,
-    menuItems: any[],
-    options?: { eventName?: string }
-  );
-
   /**
    * The target HTMLElement being selected
    */
   element: HTMLElement
-
-  /**
-   * The target CSS selector which activates the menu
-   */
-  selector: string
 
   /**
    * An interaction event name which activates the menu
@@ -49,9 +37,21 @@ declare class ContextMenu {
   menuItems: any[]
 
   /**
+   * The target CSS selector which activates the menu
+   */
+  selector: string
+
+  /**
    * Track which direction the menu is expanded in
    */
   protected _expandUp: boolean
+
+  constructor (
+    element: HTMLElement | JQuery,
+    selector: string,
+    menuItems: any[],
+    options?: { eventName?: string }
+  );
 
   /**
    * A convenience accessor to the context menu HTML object
@@ -68,14 +68,14 @@ declare class ContextMenu {
    */
   close (): Promise<void>;
 
-  protected _animateOpen (menu: JQuery): Promise<any>;
-
-  protected _animateClose (menu: JQuery): Promise<any>;
-
   /**
    * Render the Context Menu by iterating over the menuItems it contains
    * Check the visibility of each menu item, and only render ones which are allowed by the item's logical condition
    * Attach a click handler to each item which is rendered
    */
   render (target: any): Promise<any>;
+
+  protected _animateClose (menu: JQuery): Promise<any>;
+
+  protected _animateOpen (menu: JQuery): Promise<any>;
 }

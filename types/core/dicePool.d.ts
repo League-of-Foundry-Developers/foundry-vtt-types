@@ -52,33 +52,11 @@ declare class DicePool {
   get values (): number[]
 
   /**
-   * For now, for testing purposes, choose the maximum result always
+   * Reconstruct a DicePool instance from a provided data Object
+   * @param data - The provided data
+   * @returns The constructed Dice Pool
    */
-  roll (): DicePool
-
-  /**
-   * Parse a modifier query string into an ordered Array of modifiers to apply.
-   * @param modifiers -
-   */
-  protected _parseModifiers (modifiers: string): string[]
-
-  /**
-   * Iterate over the results Array and apply a keep-or-drop modifier
-   * @param results -
-   * @param mod -
-   */
-  protected _keepOrDrop (results: any[], mod: string): void
-
-  /**
-   * Iterate over the results Array and count successes or compute margin of success
-   * @param results -
-   * @param mod -
-   */
-  protected _countSuccess (results: any[], mod: string): void
-
-  /* -------------------------------------------- */
-  /*  Factory Method                              */
-  /* -------------------------------------------- */
+  static fromData (data: any): DicePool
 
   /**
    * Given a string formula, create and return an evaluated DicePool object
@@ -94,9 +72,17 @@ declare class DicePool {
     data?: object
   ): DicePool | null
 
-  /* -------------------------------------------- */
-  /*  Serialization and Storage                   */
-  /* -------------------------------------------- */
+  /**
+   * Reconstruct a DicePool instance from a provided data Object
+   * @param json - The serialized JSON string
+   * @returns The constructed Dice Pool
+   */
+  static fromJSON (json: string): DicePool
+
+  /**
+   * For now, for testing purposes, choose the maximum result always
+   */
+  roll (): DicePool
 
   /**
    * Convert the DicePool instance into an Object which can be serialized to JSON
@@ -110,16 +96,22 @@ declare class DicePool {
   }
 
   /**
-   * Reconstruct a DicePool instance from a provided data Object
-   * @param data - The provided data
-   * @returns The constructed Dice Pool
+   * Iterate over the results Array and count successes or compute margin of success
+   * @param results -
+   * @param mod -
    */
-  static fromData (data: any): DicePool
+  protected _countSuccess (results: any[], mod: string): void
 
   /**
-   * Reconstruct a DicePool instance from a provided data Object
-   * @param json - The serialized JSON string
-   * @returns The constructed Dice Pool
+   * Iterate over the results Array and apply a keep-or-drop modifier
+   * @param results -
+   * @param mod -
    */
-  static fromJSON (json: string): DicePool
+  protected _keepOrDrop (results: any[], mod: string): void
+
+  /**
+   * Parse a modifier query string into an ordered Array of modifiers to apply.
+   * @param modifiers -
+   */
+  protected _parseModifiers (modifiers: string): string[]
 }

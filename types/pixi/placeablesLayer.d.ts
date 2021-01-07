@@ -89,30 +89,30 @@ declare class PlaceablesLayer extends CanvasLayer {
    */
   get controlled (): PlaceableObject[];
 
-  /* -------------------------------------------- */
-  /*  Rendering
-  /* -------------------------------------------- */
-
-  /**
-   * Draw the PlaceablesLayer.
-   * Draw each Sound within the scene as a child of the sounds container.
-   */
-  draw (): Promise<PlaceablesLayer>;
-
-  /**
-   * Draw a single placeable object
-   */
-  createObject (data: any): Promise<PlaceableObject>;
-
-  /* -------------------------------------------- */
-  /*  Methods                                     */
-  /* -------------------------------------------- */
-
   /**
    * Override the activation behavior of the PlaceablesLayer.
    * While active, ambient sound previews are displayed.
    */
   activate (): void;
+
+  /**
+   * Copy currently controlled PlaceableObjects to a temporary Array, ready to paste back into the scene later
+   * @returns The Array of copied Objects
+   */
+  copyObjects (): any[];
+
+  /**
+   * Create multiple embedded entities in a parent Entity collection using an Array of provided data
+   * @param data - An Array of update data Objects which provide incremental data
+   * @param options - Additional options which customize the update workflow
+   * @returns A Promise which resolves to the returned socket response (if successful)
+   */
+  createMany (data: any[], options?: any): Promise<any>;
+
+  /**
+   * Draw a single placeable object
+   */
+  createObject (data: any): Promise<PlaceableObject>;
 
   /**
    * Override the deactivation behavior of the PlaceablesLayer.
@@ -121,11 +121,60 @@ declare class PlaceablesLayer extends CanvasLayer {
   deactivate (): void;
 
   /**
+   * A helper method to prompt for deletion of all PlaceableObject instances within the Scene
+   * Renders a confirmation dialogue to confirm with the requester that all objects will be deleted
+   */
+  deleteAll (): void;
+
+  /**
+   * Simultaneously delete multiple PlaceableObjects.
+   * This executes a single database operation using Scene.update.
+   * If deleting only a single object, this will delegate to PlaceableObject.delete for performance reasons.
+   * @param ids - An Array of object IDs to target for deletion
+   * @param options - Additional options which customize the update workflow
+   * @returns A Promise which resolves to the returned socket response (if successful)
+   */
+  deleteMany (ids: number[], options?: any): Promise<any>;
+
+  /**
+   * Draw the PlaceablesLayer.
+   * Draw each Sound within the scene as a child of the sounds container.
+   */
+  draw (): Promise<PlaceablesLayer>;
+
+  /**
    * Get a PlaceableObject contained in this layer by it's ID
    * @param objectId - The ID of the contained object to retrieve
    * @returns The object instance, or undefined
    */
   get (objectId: number): PlaceableObject;
+
+  /**
+   * Simultaneously move multiple PlaceableObjects via keyboard movement offsets.
+   * This executes a single database operation using Scene.update.
+   * If moving only a single object, this will delegate to PlaceableObject.update for performance reasons.
+   *
+   * @param dx - The number of incremental grid units in the horizontal direction
+   * @param dy - The number of incremental grid units in the vertical direction
+   * @param rotate - Rotate the token to the keyboard direction instead of moving
+   * @param ids - An Array or Set of object IDs to target for rotation
+   * @returns The resulting Promise from the Scene.update operation
+   */
+  moveMany (options?: {
+    dx?: number
+    dy?: number
+    ids?: number[] | Set<number>
+    rotate?: boolean
+  }): Promise<any>;
+
+  /**
+   * Paste currently copied PlaceableObjects back to the layer by creating new copies
+   * @returns An Array of created Objects
+   */
+  pasteObjects (
+    position: { x: number, y: number },
+    { hidden }?: { hidden?: boolean }
+  ): Promise<any[]>;
 
   /**
    * Release all controlled PlaceableObject instance from this layer.
@@ -152,84 +201,6 @@ declare class PlaceablesLayer extends CanvasLayer {
   }): Promise<any>;
 
   /**
-   * Simultaneously move multiple PlaceableObjects via keyboard movement offsets.
-   * This executes a single database operation using Scene.update.
-   * If moving only a single object, this will delegate to PlaceableObject.update for performance reasons.
-   *
-   * @param dx - The number of incremental grid units in the horizontal direction
-   * @param dy - The number of incremental grid units in the vertical direction
-   * @param rotate - Rotate the token to the keyboard direction instead of moving
-   * @param ids - An Array or Set of object IDs to target for rotation
-   * @returns The resulting Promise from the Scene.update operation
-   */
-  moveMany (options?: {
-    dx?: number
-    dy?: number
-    ids?: number[] | Set<number>
-    rotate?: boolean
-  }): Promise<any>;
-
-  /**
-   * Undo a change to the objects in this layer
-   * This method is typically activated using CTRL+Z while the layer is active
-   */
-  undoHistory (): Promise<any>;
-
-  /**
-   * Create multiple embedded entities in a parent Entity collection using an Array of provided data
-   * @param data - An Array of update data Objects which provide incremental data
-   * @param options - Additional options which customize the update workflow
-   * @returns A Promise which resolves to the returned socket response (if successful)
-   */
-  createMany (data: any[], options?: any): Promise<any>;
-
-  /**
-   * Update multiple embedded entities in a parent Entity collection using an Array of provided data
-   * @param data - An Array of update data Objects which provide incremental data
-   * @param options - Additional options which customize the update workflow
-   * @returns A Promise which resolves to the returned socket response (if successful)
-   */
-  updateMany (data: any[], options?: any): Promise<any>;
-
-  /**
-   * Simultaneously delete multiple PlaceableObjects.
-   * This executes a single database operation using Scene.update.
-   * If deleting only a single object, this will delegate to PlaceableObject.delete for performance reasons.
-   * @param ids - An Array of object IDs to target for deletion
-   * @param options - Additional options which customize the update workflow
-   * @returns A Promise which resolves to the returned socket response (if successful)
-   */
-  deleteMany (ids: number[], options?: any): Promise<any>;
-
-  /**
-   * A helper method to prompt for deletion of all PlaceableObject instances within the Scene
-   * Renders a confirmation dialogue to confirm with the requester that all objects will be deleted
-   */
-  deleteAll (): void;
-
-  /**
-   * Record a new CRUD event in the history log so that it can be undone later
-   * @param type - The event type (create, update, delete)
-   * @param data - The object data
-   */
-  storeHistory (type: string, data: any): void;
-
-  /**
-   * Copy currently controlled PlaceableObjects to a temporary Array, ready to paste back into the scene later
-   * @returns The Array of copied Objects
-   */
-  copyObjects (): any[];
-
-  /**
-   * Paste currently copied PlaceableObjects back to the layer by creating new copies
-   * @returns An Array of created Objects
-   */
-  pasteObjects (
-    position: { x: number, y: number },
-    { hidden }?: { hidden?: boolean }
-  ): Promise<any[]>;
-
-  /**
    * Select all PlaceableObject instances which fall within a coordinate rectangle.
    *
    * @param x - The top-left x-coordinate of the selection rectangle
@@ -249,9 +220,48 @@ declare class PlaceablesLayer extends CanvasLayer {
     y: number
   }): number;
 
-  /* -------------------------------------------- */
-  /*  Event Listeners and Handlers                */
-  /* -------------------------------------------- */
+  /**
+   * Record a new CRUD event in the history log so that it can be undone later
+   * @param type - The event type (create, update, delete)
+   * @param data - The object data
+   */
+  storeHistory (type: string, data: any): void;
+
+  /**
+   * Undo a change to the objects in this layer
+   * This method is typically activated using CTRL+Z while the layer is active
+   */
+  undoHistory (): Promise<any>;
+
+  /**
+   * Update multiple embedded entities in a parent Entity collection using an Array of provided data
+   * @param data - An Array of update data Objects which provide incremental data
+   * @param options - Additional options which customize the update workflow
+   * @returns A Promise which resolves to the returned socket response (if successful)
+   */
+  updateMany (data: any[], options?: any): Promise<any>;
+
+  /**
+   * Handle a DELETE keypress while a placeable object is hovered
+   * @param event - The delete key press event which triggered the request
+   */
+  protected _onDeleteKey (event: PIXI.InteractionEvent): void;
+
+  /**
+   * Default handling of drag cancel events by right clicking during a drag creation
+   */
+  protected _onDragCancel (event: PIXI.InteractionEvent): void;
+
+  /**
+   * Handle successful creation of an object through the drag creation workflow.
+   * This logic requires that the drag exceeded some minimum distance for the new object to be created.
+   */
+  protected _onDragCreate (event: PIXI.InteractionEvent): void;
+
+  /**
+   * Default handling of drag start events by left click + dragging
+   */
+  protected _onDragStart (event: PIXI.InteractionEvent): void;
 
   /**
    * Default mouse-down event handling implementation
@@ -266,25 +276,9 @@ declare class PlaceablesLayer extends CanvasLayer {
   ): void;
 
   /**
-   * Default handling of drag start events by left click + dragging
-   */
-  protected _onDragStart (event: PIXI.InteractionEvent): void;
-
-  /**
    * Default handling of mouse move events during a dragging workflow
    */
   protected _onMouseMove (event: PIXI.InteractionEvent): void;
-
-  /**
-   * Default handling of drag cancel events by right clicking during a drag creation
-   */
-  protected _onDragCancel (event: PIXI.InteractionEvent): void;
-
-  /**
-   * Handle successful creation of an object through the drag creation workflow.
-   * This logic requires that the drag exceeded some minimum distance for the new object to be created.
-   */
-  protected _onDragCreate (event: PIXI.InteractionEvent): void;
 
   /**
    * Default handling of mouse-up events which conclude a new object creation after dragging
@@ -302,10 +296,4 @@ declare class PlaceablesLayer extends CanvasLayer {
    * Handle right mouse-click events which occur while this layer is active
    */
   protected _onRightDown (event: PIXI.InteractionEvent): void;
-
-  /**
-   * Handle a DELETE keypress while a placeable object is hovered
-   * @param event - The delete key press event which triggered the request
-   */
-  protected _onDeleteKey (event: PIXI.InteractionEvent): void;
 }

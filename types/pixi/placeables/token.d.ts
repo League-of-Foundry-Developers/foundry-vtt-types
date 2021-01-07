@@ -54,10 +54,6 @@ declare class Token extends PlaceableObject {
    */
   static get layer (): PlaceablesLayer;
 
-  /* -------------------------------------------- */
-  /*  Permission Attributes
-  /* -------------------------------------------- */
-
   /**
    * A Boolean flag for whether the current game User has permission to control this token
    */
@@ -88,10 +84,6 @@ declare class Token extends PlaceableObject {
    */
   get fov (): PIXI.Polygon;
 
-  /* -------------------------------------------- */
-  /*  Rendering Attributes
-  /* -------------------------------------------- */
-
   /**
    * Translate the token's grid width into a pixel width based on the canvas size
    */
@@ -106,10 +98,6 @@ declare class Token extends PlaceableObject {
    * The Token's current central position
    */
   get center (): any;
-
-  /* -------------------------------------------- */
-  /*  State Attributes
-  /* -------------------------------------------- */
 
   /**
    * An indicator for whether or not this token is currently involved in the active combat encounter.
@@ -128,10 +116,6 @@ declare class Token extends PlaceableObject {
    * Otherwise only tokens whose corner or center are within the vision polygon are visible.
    */
   get isVisible (): boolean;
-
-  /* -------------------------------------------- */
-  /*  Lighting and Vision Attributes
-  /* -------------------------------------------- */
 
   /**
    * Test whether the Token has sight (or blindness) at any radius
@@ -170,41 +154,37 @@ declare class Token extends PlaceableObject {
    */
   get brightLightRadius (): number;
 
-  /* -------------------------------------------- */
-  /* Rendering
-  /* -------------------------------------------- */
-
   draw (): Promise<any>;
 
-  refresh (): PlaceableObject;
-
-  protected _refreshBorder (): void;
-
-  protected _getBorderColor (): any;
-
-  protected _refreshTarget (): void;
-
-  protected _drawIcon (): Promise<any>;
-
-  getBarAttribute (barName: any): any;
-
-  protected _drawBars (): PIXI.Container;
-
-  protected drawBars (): void;
-
-  protected _drawBar (number: number, bar: PIXI.Graphics, data: any): void;
-
-  protected _drawNameplate (): PIXI.Text;
+  drawEffects (): void;
 
   drawTooltip (): void;
 
-  protected _getTooltipText (): string;
+  getBarAttribute (barName: any): any;
 
-  drawEffects (): void;
+  refresh (): PlaceableObject;
 
   /**
    * Toggle an active effect by it's texture path. Copy the existing Array in order to ensure the update method detects the data as changed.
    * @param texture - The texture file-path of the effect icon to toggle on the Token.
    */
   toggleEffect (texture: string): Promise<void>;
+
+  protected _drawBar (number: number, bar: PIXI.Graphics, data: any): void;
+
+  protected _drawBars (): PIXI.Container;
+
+  protected _drawIcon (): Promise<any>;
+
+  protected _drawNameplate (): PIXI.Text;
+
+  protected _getBorderColor (): any;
+
+  protected _getTooltipText (): string;
+
+  protected _refreshBorder (): void;
+
+  protected _refreshTarget (): void;
+
+  protected drawBars (): void;
 }
