@@ -25,17 +25,17 @@ declare interface CompleteClientSettingsData<T>
 }
 
 declare interface PartialMenuSettings
-<T extends FormApplication = FormApplication> {
+<F extends FormApplication = FormApplication> {
   hint?: string
   icon?: string
   label?: string
   name?: string
   restricted: boolean
-  type: new (...args: any) => T
+  type: new (...args: any) => F
 }
 
 declare interface CompleteMenuSettings
-<T extends FormApplication = FormApplication> extends PartialMenuSettings<T> {
+<F extends FormApplication = FormApplication> extends PartialMenuSettings<F> {
   key: string
   module: string
 }
