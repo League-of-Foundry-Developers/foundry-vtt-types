@@ -1,25 +1,43 @@
-declare interface Settings {
+declare interface PartialClientSettingsData<T> {
   choices?: Record<string, string>
   config?: boolean
-  default?: string
+  default?: T
   hint?: string
-  key: string
-  module: string
   name?: string
-  onChange?: (value: any) => void
+  onChange?: (value: T) => void
   range?: {
     max: number
     min: number
     step: number
   }
-  scope: string
-  type?: () => {}
+  type?: new (...args: any) => T
 }
 
-declare interface MenuSettings {
+declare interface UpdateableClientSettingsData<T>
+  extends PartialClientSettingsData<T> {
+  scope: string
+}
+
+declare interface CompleteClientSettingsData<T>
+  extends UpdateableClientSettingsData<T> {
   key: string
   module: string
-  type: FormApplication
+}
+
+declare interface PartialMenuSettings
+<T extends FormApplication = FormApplication> {
+  hint?: string
+  icon?: string
+  label?: string
+  name?: string
+  restricted: boolean
+  type: new (...args: any) => T
+}
+
+declare interface CompleteMenuSettings
+<T extends FormApplication = FormApplication> extends PartialMenuSettings<T> {
+  key: string
+  module: string
 }
 
 /**
@@ -37,12 +55,12 @@ declare class ClientSettings {
   /**
    * Registered settings menus which trigger secondary applications
    */
-  menus: Map<string, MenuSettings>
+  menus: Map<string, CompleteMenuSettings>
 
   /**
    * A object of registered game settings for this scope
    */
-  settings: Map<string, Settings>
+  settings: Map<string, CompleteClientSettingsData<any>>
 
   /**
    * The storage interfaces used for persisting settings
@@ -66,7 +84,11 @@ declare class ClientSettings {
   /**
    * Locally update a setting given a provided key and value
    */
-  _update<T> (setting: Settings, key: string, value: T): T
+  _update<T> (
+    setting: UpdateableClientSettingsData<T>,
+    key: string,
+    value: T
+  ): T
 
   /**
    * Get the value of a game setting for a certain module and setting key
@@ -125,7 +147,11 @@ declare class ClientSettings {
    * });
    * ```
    */
-  register (module: string, key: string, data: Settings): void
+  register<T> (
+    module: string,
+    key: string,
+    data: PartialClientSettingsData<T>
+  ): void
 
   /**
    * Register a new sub-settings menu
@@ -145,7 +171,11 @@ declare class ClientSettings {
    * });
    * ```
    */
-  registerMenu (module: string, key: string, data: MenuSettings): void
+  registerMenu (
+    module: string,
+    key: string,
+    data: PartialMenuSettings
+  ): void
 
   /**
    * Set the value of a game setting for a certain module and setting key
