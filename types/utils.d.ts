@@ -119,7 +119,9 @@ declare function fromUuid (uuid: string): Promise<Entity | object | null>
  * @param cls - An ES6 Class definition
  * @returns An array of parent Classes which the provided class extends
  */
-declare function getParentClasses (cls: () => {}): Array<() => {}>
+declare function getParentClasses (
+  cls: new (...args: any) => {}
+): Array<new (...args: any) => {}>
 
 /**
  * A helper function which searches through an object to retrieve a value by a
