@@ -44,6 +44,8 @@ import './types/applications/sidebar/sidebar'
 import './types/applications/sidebar/sidebarDirectory'
 import './types/applications/sidebar/sidebarTab'
 
+import './types/applications/widgets/searchFilter'
+
 // Core
 
 import './types/core/audio'

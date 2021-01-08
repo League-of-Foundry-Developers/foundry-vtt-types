@@ -1,54 +1,139 @@
-interface ApplicationOptions extends Object {
-  [key: string]: any
-  /** A named "base application" which generates an additional hook */
-  baseApplication?: string
-  /** An array of CSS string classes to apply to the rendered HTML */
-  classes?: string[]
-  /** The default pixel height for the rendered HTML */
-  height?: number | string
-  /** The default CSS id to assign to the rendered HTML */
-  id?: string
-  /** The default offset-left position for the rendered HTML */
-  left?: number
-  /** Whether the rendered application can be minimized (popOut only) */
-  minimizable?: boolean
-  /** Whether to display the application as a pop-out container */
-  popOut?: boolean
-  /** Whether the rendered application can be drag-resized (popOut only) */
-  resizable?: boolean
+interface ApplicationOptions {
   /**
-   * A list of unique CSS selectors which target containers that should
-   * have their vertical scroll positions preserved during a re-render.
+   * A named "base application" which generates an additional hook
+   * @defaultValue `null`
+   */
+  baseApplication?: string
+
+  /**
+   * An array of CSS string classes to apply to the rendered HTML
+   * @defaultValue `[]`
+   */
+  classes?: string[]
+
+  /**
+   * @defaultValue `[]`
+   */
+  dragDrop?: DragDrop[]
+
+  /**
+   * @defaultValue `[]`
+   */
+  filters?: SearchFilter[]
+
+  /**
+   * The default pixel height for the rendered HTML
+   * @defaultValue `null`
+   */
+  height?: number
+
+  /**
+   * The default CSS id to assign to the rendered HTML
+   * @defaultValue `''`
+   */
+  id?: string
+
+  /**
+   * The default offset-left position for the rendered HTML
+   * @defaultValue `null`
+   */
+  left?: number
+
+  /**
+   * Whether the rendered application can be minimized (popOut only)
+   * @defaultValue `true`
+   */
+  minimizable?: boolean
+
+  /**
+   * Whether to display the application as a pop-out container
+   * @defaultValue `true`
+   */
+  popOut?: boolean
+
+  /**
+   * Whether the rendered application can be drag-resized (popOut only)
+   * @defaultValue `false`
+   */
+  resizable?: boolean
+
+  /**
+   * A list of unique CSS selectors which target containers that should have
+   * their vertical scroll positions preserved during a re-render.
+   * @defaultValue `[]`
    */
   scrollY?: string[]
-  /** Track Tab navigation handlers which are active for this Application */
+
+  /**
+   * Track Tab navigation handlers which are active for this Application
+   * @defaultValue `[]`
+   */
   tabs?: TabV2Options[]
-  /** The default HTML template path to render for this Application */
+
+  /**
+   * The default HTML template path to render for this Application
+   * @defaultValue `null`
+   */
   template?: string
-  /** A default window title string (popOut only) */
+
+  /**
+   * A default window title string (popOut only)
+   * @defaultValue `''`
+   */
   title?: string
-  /** The default offset-top position for the rendered HTML */
+
+  /**
+   * The default offset-top position for the rendered HTML
+   * @defaultValue `null`
+   */
   top?: number
-  /** The default pixel width for the rendered HTML */
-  width?: number | string
+
+  /**
+   * The default pixel width for the rendered HTML
+   * @defaultValue `null`
+   */
+  width?: number
 }
 
-interface RenderOptions extends Object {
-  /** The rendered height */
+interface RenderOptions {
+  /**
+   * The rendered height
+   */
   height?: number
-  /** The left positioning attribute */
+
+  /**
+   * The left positioning attribute
+   */
   left?: number
-  /** Whether to display a log message that the Application was rendered */
+
+  /**
+   * Whether to display a log message that the Application was rendered
+   */
   log?: boolean
-  /** A context-providing string which suggests what event triggered the render */
+
+  /**
+   * A context-providing string which suggests what event triggered the render
+   */
   renderContext?: string
-  /** The data change which motivated the render request */
-  renderData?: any
-  /** The rendered transformation scale */
+
+  /**
+   * The data change which motivated the render request
+   */
+  renderData?: object
+
+  /**
+   * The rendered transformation scale
+   */
   scale?: number
-  /** The top positioning attribute */
+
+  /**
+   * The top positioning attribute
+   */
   top?: number
-  /** The rendered width */
+
+  /**
+   * The rendered width
+   */
   width?: number
 }
 
@@ -60,20 +145,84 @@ interface ApplicationPosition extends Object {
   width?: number | string
 }
 
-declare const MIN_WINDOW_WIDTH: number, MIN_WINDOW_HEIGHT: number
+declare enum ApplicationRenderState {
+  Closing = -2,
+  Closed = -1,
+  None = 0,
+  Rendering = 1,
+  Rendered = 2,
+  Error = 3
+}
+
+declare const MIN_WINDOW_HEIGHT: number
+declare const MIN_WINDOW_WIDTH: number
 
 declare let _appId: number
 declare let _maxZ: number
 
 /**
- * The standard application window that is rendered for a large variety of UI elements in Foundry VTT
+ * The standard application window that is rendered for a large variety of UI
+ * elements in Foundry VTT.
+ *
+ * Hooks:
+ *   renderApplication
+ *   closeApplication
+ *   getApplicationHeaderButtons
  */
 declare class Application {
-  protected static RENDER_STATES: any
+  static RENDER_STATES: Readonly<{
+    /* eslint-disable @typescript-eslint/member-ordering */
+    CLOSING: ApplicationRenderState.Closing
+    CLOSED: ApplicationRenderState.Closed
+    NONE: ApplicationRenderState.None
+    RENDERING: ApplicationRenderState.Rendering
+    RENDERED: ApplicationRenderState.Rendered
+    ERROR: ApplicationRenderState.Error
+    /* eslint-enable @typescript-eslint/member-ordering */
+  }>
 
   /**
-   * The application ID is a unique incrementing integer which is used to identify every application window
-   * drawn by the VTT
+   * DragDrop workflow handlers which are active for this Application
+   */
+  _dragDrop: DragDrop[]
+
+  /**
+   * An internal reference to the HTML element this application renders
+   */
+  _element: JQuery
+
+  /**
+   * Track whether the Application is currently minimized
+   * @internal
+   */
+  _minimized: boolean
+
+  /**
+   * Track the most recent scroll positions for any vertically scrolling containers
+   */
+  _scrollPositions: object | null
+
+  /**
+   * SearchFilter handlers which are active for this Application
+   */
+  _searchFilters: SearchFilter[]
+
+  /**
+   * Track the render state of the Application
+   * @defaultValue {@link ApplicationRenderState.None}
+   * @see {@link Application.RENDER_STATES}
+   * @internal
+   */
+  _state: number
+
+  /**
+   * Tab navigation handlers which are active for this Application
+   */
+  _tabs: Tabs[]
+
+  /**
+   * The application ID is a unique incrementing integer which is used to
+   * identify every application window drawn by the VTT
    */
   appId: number
 
@@ -88,49 +237,28 @@ declare class Application {
   position: ApplicationPosition
 
   /**
-   * DragDrop workflow handlers which are active for this Application
+   * @param options - Configuration options which control how the application is
+   *                  rendered. Application subclasses may add additional
+   *                  supported options, but the following configurations are
+   *                  supported for all Applications. The values passed to the
+   *                  constructor are combined with the defaultOptions defined
+   *                  at the class level.
    */
-  protected _dragDrop: DragDrop[]
-
-  /**
-   * An internal reference to the HTML element this application renders
-   */
-  protected _element: JQuery
-
-  /**
-   * Track whether the Application is currently minimized
-   */
-  protected _minimized: boolean
-
-  /**
-   * Track the most recent scroll positions for any vertically scrolling containers
-   */
-  protected _scrollPositions: any | null
-
-  /**
-   * Track the render state of the Application
-   * @see {@link Application.RENDER_STATES}
-   */
-  protected _state: any
-
-  /**
-   * Tab navigation handlers which are active for this Application
-   */
-  protected _tabs: TabsV2[]
-
   constructor (options?: ApplicationOptions)
 
   /**
-   * Assign the default options which are supported by all Application classes.
-   * Application subclasses may include additional options which are specific to their usage.
-   * All keys are optional, descriptions and default values are listed below:
+   * Assign the default options configuration which is used by this Application
+   * class. The options and values defined in this object are merged with any
+   * provided option values which are passed to the constructor upon
+   * initialization. Application subclasses may include additional options which
+   * are specific to their usage.
    */
   static get defaultOptions (): ApplicationOptions
 
   /**
    * Return the active application element, if it currently exists in the DOM
    */
-  get element (): JQuery | HTMLElement
+  get element (): JQuery
 
   /**
    * Return the CSS application ID which uniquely references this UI element
@@ -138,8 +266,9 @@ declare class Application {
   get id (): string
 
   /**
-   * Control the rendering style of the application. If popOut is true, the application is rendered in its own
-   * wrapper window, otherwise only the inner app content is rendered
+   * Control the rendering style of the application. If popOut is true, the
+   * application is rendered in its own wrapper window, otherwise only the inner
+   * app content is rendered
    */
   get popOut (): boolean
 
@@ -149,190 +278,259 @@ declare class Application {
   get rendered (): boolean
 
   /**
-   * The path to the HTML template file which should be used to render the inner content of the app
+   * The path to the HTML template file which should be used to render the inner
+   * content of the app
    */
   get template (): string
 
   /**
-   * An Application window should define its own title definition logic which may be dynamic depending on its data
+   * An Application window should define its own title definition logic which
+   * may be dynamic depending on its data
    */
   get title (): string
 
   /**
-   * Close the application and un-register references to it within UI mappings
-   * This function returns a Promise which resolves once the window closing animation concludes
+   * Return the inheritance chain for this Application class up to (and
+   * including) it's base Application class.
+   * @internal
    */
-  close (): Promise<any>
+  static _getInheritanceChain (): Application[]
 
   /**
-   * An application should define the data object used to render its template.
-   * This function may either return an Object directly, or a Promise which resolves to an Object
-   * If undefined, the default implementation will return an empty object allowing only for rendering of static HTML
-   */
-  getData (options?: any): any | Promise<any>
-
-  /**
-   * Maximize the pop-out window, expanding it to its original size
-   * Take no action for applications which are not of the pop-out variety or are already maximized
-   * @returns A Promise which resolves to true once the maximization action has completed
-   */
-  maximize (): Promise<boolean>
-
-  /**
-   * Minimize the pop-out window, collapsing it to a small tab
-   * Take no action for applications which are not of the pop-out variety or apps which are already minimized
-   * @returns A Promise which resolves to true once the minimization action has completed
-   */
-  minimize (): Promise<boolean>
-
-  /**
-   * Render the Application by evaluating it's HTML template against the object of data provided by the getData method
-   * If the Application is rendered as a pop-out window, wrap the contained HTML in an outer frame with window controls
-   * @param force - Add the rendered application to the DOM if it is not already present. If false, the
-   *                Application will only be re-rendered if it is already present.
-   * @param options - Additional rendering options which are applied to customize the way that the Application
-   *                  is rendered in the DOM.
-   */
-  render (force?: boolean, options?: RenderOptions): Application
-
-  /**
-   * Set the application position and store it's new location
-   */
-  setPosition ({ left, top, width, height, scale }: ApplicationPosition): any
-
-  /**
-   * Define whether a user is able to conclude a drag-and-drop workflow for a given drop selector
+   * Define whether a user is able to conclude a drag-and-drop workflow for a
+   * given drop selector
    * @param selector - The candidate HTML selector for the drop target
    * @returns Can the current user drop on this selector?
+   * @internal
    */
-  protected _canDragDrop (selector: string): boolean
+  _canDragDrop (selector: string): boolean
 
   /**
-   * Define whether a user is able to begin a dragstart workflow for a given drag selector
+   * Define whether a user is able to begin a dragstart workflow for a given
+   * drag selector
    * @param selector - The candidate HTML selector for dragging
    * @returns Can the current user drag this selector?
+   * @internal
    */
-  protected _canDragStart (selector: string): boolean
+  _canDragStart (selector: string): boolean
 
   /**
    * Create drag-and-drop workflow handlers for this Application
    * @returns An array of DragDrop handlers
+   * @internal
    */
-  protected _createDragDropHandlers (): DragDrop[]
+  _createDragDropHandlers (): DragDrop[]
+
+  /**
+   * Create search filter handlers for this Application
+   * @returns An array of SearchFilter handlers
+   * @internal
+   */
+  _createSearchFilters (): SearchFilter[]
 
   /**
    * Create tabbed navigation handlers for this Application
-   * @returns An array of TabsV2 handlers
+   * @returns An array of Tabs handlers
+   * @internal
    */
-  protected _createTabHandlers (): TabsV2[]
+  _createTabHandlers (): Tabs[]
 
   /**
-   * Specify the set of config buttons which should appear in the Application header
-   * Buttons should be returned as an Array of Objects with the following keys:
-   * label: The button label
-   * icon: A font-awesome glyph icon
-   * class: the css class of the button
-   * onclick: the button click handler
+   * Specify the set of config buttons which should appear in the Application
+   * header.
+   * Buttons should be returned as an Array of objects.
+   * The header buttons which are added to the application can be modified by
+   * the getApplicationHeaderButtons hook.
+   * @internal
    */
-  protected _getHeaderButtons (): any[]
+  _getHeaderButtons (): ApplicationHeaderButton[]
 
   /**
    * Customize how a new HTML Application is added and first appears in the DOC
+   * @internal
    */
-  protected _injectHTML (html: JQuery | HTMLElement, options: any): void
+  _injectHTML (html: JQuery, _options: any): void
 
   /**
    * Handle changes to the active tab in a configured Tabs controller
    * @param event - A left click event
-   * @param tabs - The TabsV2 controller
+   * @param tabs - The Tabs controller
    * @param active - The new active tab name
+   * @internal
    */
-  protected _onChangeTab (
-    event: MouseEvent,
-    tabs: TabsV2,
-    active: string
-  ): void
+  _onChangeTab (event: MouseEvent, tabs: Tabs, active: string): void
 
   /**
    * Callback actions which occur when a dragged element is over a drop target.
-   * @param event - The originating DragEvent
+   * @param event - originating DragEvent
+   * @internal
    */
-  protected _onDragOver (event: DragEvent): void
+  _onDragOver (event: DragEvent): void
 
   /**
    * Callback actions which occur at the beginning of a drag start workflow.
    * @param event - The originating DragEvent
+   * @internal
    */
-  protected _onDragStart (event: DragEvent): void
+  _onDragStart (event: DragEvent): void
 
   /**
    * Callback actions which occur when a dragged element is dropped on a target.
    * @param event - The originating DragEvent
+   * @internal
    */
-  protected _onDrop (event: DragEvent): void
+  _onDrop (event: DragEvent): void
 
   /**
    * Additional actions to take when the application window is resized
+   * @internal
    */
-  protected _onResize (event: Event | JQuery.Event): void
+  _onResize (event: Event): void
 
   /**
-   * Handle application minimization behavior - collapsing content and reducing the size of the header
+   * Handle changes to search filtering controllers which are bound to the
+   * Application
+   * @param event - The key-up event from keyboard input
+   * @param query - The regular expression to test against
+   * @param html - The HTML element which should be filtered
+   * @internal
    */
-  protected _onToggleMinimize (ev: Event | JQuery.Event): void
+  _onSearchFilter (event: KeyboardEvent, query: RegExp, html: HTMLElement): void
 
   /**
-   * An asynchronous inner function which handles the rendering of the Application
-   * @param options - Provided rendering options, see the render function for details
+   * Handle application minimization behavior - collapsing content and reducing
+   * the size of the header
+   * @internal
    */
-  protected _render (force?: boolean, options?: any): void
+  _onToggleMinimize (ev: Event): void
+
+  /**
+   * An asynchronous inner function which handles the rendering of the
+   * Application
+   * @param force - Render and display the application even if it is not
+   *                currently displayed.
+   *                (default: `false`)
+   * @param options - Provided rendering options, see the render function for
+   *                  details
+   *                  (default: `{}`)
+   * @returns A Promise that resolves to the Application once rendering is
+   *          complete
+   * @internal
+   */
+  _render (force: boolean, options: RenderOptions): Promise<void>
 
   /**
    * Render the inner application content
    * @param data - The data used to render the inner template
    * @returns A promise resolving to the constructed jQuery object
+   * @internal
    */
-  protected _renderInner (
-    data: any,
-    options: any
-  ): Promise<JQuery | HTMLElement>
+  _renderInner (data: object, _options: any): Promise<JQuery>
 
   /**
    * Render the outer application wrapper
-   * @returns - A promise resolving to the constructed jQuery object
+   * @returns A promise resolving to the constructed jQuery object
+   * @internal
    */
-  protected _renderOuter (options: any): Promise<JQuery | HTMLElement>
+  _renderOuter (options: RenderOptions): Promise<JQuery>
 
   /**
    * Customize how inner HTML is replaced when the application is refreshed
    * @param element - The original HTML element
    * @param html - New updated HTML
+   * @internal
    */
-  protected _replaceHTML (
-    element: JQuery | HTMLElement,
-    html: JQuery | HTMLElement,
-    options: any
-  ): void
+  _replaceHTML (element: JQuery, html: JQuery, _options: any): void
 
   /**
-   * Restore the scroll positions of containers within the app after re-rendering the content
+   * Restore the scroll positions of containers within the app after
+   * re-rendering the content
+   * @param html - The HTML object being traversed
+   * @param selectors - CSS selectors which designate elements to restore
+   * @internal
    */
-  protected _restoreScrollPositions (
-    html: HTMLElement | JQuery,
-    selectors: string[]
-  ): void
+  _restoreScrollPositions (html: JQuery, selectors: string[]): void
 
   /**
-   * Persist the scroll positions of containers within the app before re-rendering the content
+   * Persist the scroll positions of containers within the app before
+   * re-rendering the content
+   * @param html - The HTML object being traversed
+   * @param selectors - CSS selectors which designate elements to save
+   * @internal
    */
-  protected _saveScrollPositions (
-    html: HTMLElement | JQuery,
-    selectors: string[]
-  ): void
+  _saveScrollPositions (html: JQuery, selectors: string[]): void
 
   /**
-   * Once the HTML for an Application has been rendered, activate event listeners which provide interactivity for
-   * the application
+   * Once the HTML for an Application has been rendered, activate event
+   * listeners which provide interactivity for the application
    */
-  protected activateListeners (html: JQuery | HTMLElement): void
+  activateListeners (html: JQuery): void
+
+  /**
+   * Bring the application to the top of the rendering stack
+   */
+  bringToTop (): void
+
+  /**
+   * Close the application and un-register references to it within UI mappings
+   * This function returns a Promise which resolves once the window closing
+   * animation concludes
+   * @param _options - (default: `{}`)
+   * @returns A Promise which resolves once the application is closed
+   */
+  close (_options?: object): Promise<void>
+
+  /**
+   * An application should define the data object used to render its template.
+   * This function may either return an Object directly, or a Promise which
+   * resolves to an Object
+   * If undefined, the default implementation will return an empty object
+   * allowing only for rendering of static HTML
+   */
+  getData (options?: object): object | Promise<object>
+
+  /**
+   * Maximize the pop-out window, expanding it to its original size
+   * Take no action for applications which are not of the pop-out variety or are
+   * already maximized
+   * @returns A Promise which resolves once the maximization action has completed
+   */
+  maximize (): Promise<void>
+
+  /**
+   * Minimize the pop-out window, collapsing it to a small tab
+   * Take no action for applications which are not of the pop-out variety or
+   * apps which are already minimized
+   * @returns A Promise which resolves once the minimization action has completed
+   */
+  minimize (): Promise<void>
+
+  /**
+   * Render the Application by evaluating it's HTML template against the object
+   * of data provided by the getData method
+   * If the Application is rendered as a pop-out window, wrap the contained HTML
+   * in an outer frame with window controls
+   * @param force - Add the rendered application to the DOM if it is not already
+   *                present. If false, the Application will only be re-rendered
+   *                if it is already present.
+   *                (default: `false`)
+   * @param options - Additional rendering options which are applied to
+   *                  customize the way that the Application is rendered in the
+   *                  DOM.
+   *                  (default: `{}`)
+   */
+  render (force?: boolean, options?: RenderOptions): Application
+
+  /**
+   * Set the application position and store it's new location.
+   * @param left - The left offset position in pixels
+   * @param top - The top offset position in pixels
+   * @param width - The application width in pixels
+   * @param height - The application height in pixels
+   * @param scale - The application scale as a numeric factor where 1.0 is
+   *                default
+   * @returns The updated position object for the application containing the new
+   *          values
+   */
+  setPosition (appPos?: ApplicationPosition): ApplicationPosition
 }
