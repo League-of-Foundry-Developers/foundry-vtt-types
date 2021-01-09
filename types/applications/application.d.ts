@@ -26,14 +26,12 @@ declare class Application<D = {}> {
    * @see {@link Application.RenderState}
    */
   static RENDER_STATES: Readonly<{
-    /* eslint-disable @typescript-eslint/member-ordering */
-    CLOSING: Application.RenderState.Closing
     CLOSED: Application.RenderState.Closed
-    NONE: Application.RenderState.None
-    RENDERING: Application.RenderState.Rendering
-    RENDERED: Application.RenderState.Rendered
+    CLOSING: Application.RenderState.Closing
     ERROR: Application.RenderState.Error
-    /* eslint-enable @typescript-eslint/member-ordering */
+    NONE: Application.RenderState.None
+    RENDERED: Application.RenderState.Rendered
+    RENDERING: Application.RenderState.Rendering
   }>
 
   /**
