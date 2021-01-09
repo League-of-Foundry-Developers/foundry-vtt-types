@@ -9,15 +9,23 @@
  * @param item - The Item instance being displayed within the sheet.
  * @param options - Additional options which modify the rendering of the item.
  * @param editable - Is the item editable? Default is true.
+ * @typeParam T - the type of the data used to render the inner template
+ * @typeParam D - the type of the data in the Entity
+ * @typeParam O - the type of the Entity which should be managed by this form
+ *                sheet
+ * @typeParam F - the type of the of validated form data with which to update
+ *                the Entity
  */
 declare class ItemSheet<
-  DataType = any,
-  ItemType extends Item<DataType> = any
-> extends BaseEntitySheet {
+  T = object,
+  D = object,
+  O extends Item<D> = Item<D>,
+  F = object
+> extends BaseEntitySheet<T, D, O, F> {
   /**
    * Assign the default options which are supported by this Application
    */
-  static get defaultOptions (): FormApplication.Options
+  static get defaultOptions (): BaseEntitySheet.Options
 
   /**
    * Provide a unique CSS ID for owned Item sheets
@@ -27,18 +35,18 @@ declare class ItemSheet<
   /**
    * A convenience reference to the Item entity
    */
-  get item (): ItemType
+  get item (): O
 
   /**
    * The Actor instance which owns this item. This may be null if the item is unowned.
    */
-  get actor (): Actor<DataType>
+  get actor (): Actor<D>
 
   /**
    * @param options - (unused)
    * @override
    */
-  getData (options?: any): ItemSheet.Data<DataType>
+  getData (options?: any): ItemSheet.Data<D, O>
 
   /**
    * Activate listeners which provide interactivity for item sheet events
@@ -48,8 +56,13 @@ declare class ItemSheet<
 }
 
 declare namespace ItemSheet {
-  interface Data<DataType = any> extends BaseEntitySheet.Data<DataType> {
+  /**
+   * @typeParam D - the type of the data in the Entity
+   * @typeParam O - the type of the Entity which should be managed by this form
+   *                sheet
+   */
+  interface Data<D, O> extends BaseEntitySheet.Data<D, O> {
     data: any
-    item: Item<DataType>
+    item: Item<D>
   }
 }

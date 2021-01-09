@@ -11,5 +11,5 @@ declare class PermissionControl extends BaseEntitySheet {
    * @param options - (unused)
    * @override
    */
-  getData (options?: any): BaseEntitySheet.Data
+  getData (options?: any): BaseEntitySheet.Data<object, Entity>
 }

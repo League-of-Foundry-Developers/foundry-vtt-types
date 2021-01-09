@@ -5,32 +5,42 @@
  *
  * System modifications may elect to override this class to better suit their own game system by re-defining the value
  * `CONFIG.Actor.sheetClass`.
- *
- * @param actor - The Actor instance being displayed within the sheet.
- * @param options - Additional options which modify the rendering of the Actor's sheet.
- * @param editable - Is the Actor editable? Default is true.
+ * @typeParam T - the type of the data used to render the inner template
+ * @typeParam D - the type of the data in the Entity
+ * @typeParam O - the type of the Entity which should be managed by this form
+ *                sheet
+ * @typeParam F - the type of the of validated form data with which to update
+ *                the Entity
  */
 declare class ActorSheet<
-  DataType = any,
-  ActorType extends Actor<DataType> = any
-> extends BaseEntitySheet {
+  T = object,
+  D = object,
+  O extends Actor<D> = Actor<D>,
+  F = object
+> extends BaseEntitySheet<T, D, O, F> {
   /**
    * If this Actor Sheet represents a synthetic Token actor, reference the active Token
    */
   token: Token
 
+  /**
+   * @param actor - The Actor instance being displayed within the sheet.
+   * @param options - Additional options which modify the rendering of the
+   *                  Actor's sheet.
+   * @param editable - Is the Actor editable? Default is true.
+   */
   constructor (...args: any)
 
   /**
    * Default rendering and configuration options used for the ActorSheet and its subclasses.
    * See `Application.defaultOptions` and `FormApplication.defaultOptions` for more details.
    */
-  static get defaultOptions (): FormApplication.Options
+  static get defaultOptions (): BaseEntitySheet.Options
 
   /**
    * A convenience reference to the Actor entity
    */
-  get actor (): ActorType
+  get actor (): O
 
   /**
    * Define a unique and dynamic element ID for the rendered ActorSheet application
@@ -52,7 +62,7 @@ declare class ActorSheet<
    * @param options - (unused)
    * @override
    */
-  getData (options?: any): ActorSheet.Data<DataType>
+  getData (options?: any): ActorSheet.Data<D, O>
 
   /**
    * Extend the Header Button configuration for the ActorSheet to add Token configuration buttons
@@ -110,9 +120,14 @@ declare class ActorSheet<
 }
 
 declare namespace ActorSheet {
-  interface Data<DataType = any> extends BaseEntitySheet.Data<DataType> {
+  /**
+   * @typeParam D - the type of the data in the Entity
+   * @typeParam O - the type of the Entity which should be managed by this form
+   *                sheet
+   */
+  interface Data<D, O> extends BaseEntitySheet.Data<D, O> {
     actor: Actor
-    data: ActorData<DataType>
+    data: ActorData<D>
     items: Collection<Item>
   }
 }

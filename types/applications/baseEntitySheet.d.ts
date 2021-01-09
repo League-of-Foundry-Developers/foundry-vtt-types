@@ -63,7 +63,7 @@ declare class BaseEntitySheet <
    * @param options - (unused)
    * @override
    */
-  getData (options?: any): BaseEntitySheet.Data<O, D>
+  getData (options?: any): BaseEntitySheet.Data<D, O>
 
   /**
    * @override
@@ -77,7 +77,7 @@ declare namespace BaseEntitySheet {
    * @typeParam O - the type of the Entity which should be managed by this form
    *                sheet
    */
-  interface Data<O, D> extends FormApplication.Data<O> {
+  interface Data<D, O> extends FormApplication.Data<O> {
     cssClass: string
     editable: boolean
     entity: EntityData<D>
