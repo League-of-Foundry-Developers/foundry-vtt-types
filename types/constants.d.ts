@@ -1,8 +1,8 @@
-declare const VTT: string
+declare const VTT: 'Foundry Virtual Tabletop'
 
-declare const WEBSITE_URL: string
+declare const WEBSITE_URL: 'https://foundryvtt.com'
 
-declare const vtt: string
+declare const vtt: 'Foundry VTT'
 
 /**
  * The global CONSTANTS object
