@@ -12,14 +12,12 @@ declare const CONST: {
    * Define the allowed ActiveEffect application modes
    */
   ACTIVE_EFFECT_MODES: {
-    /* eslint-disable @typescript-eslint/member-ordering */
-    CUSTOM: 0
-    MULTIPLY: 1
-    ADD: 2
-    DOWNGRADE: 3
-    UPGRADE: 4
-    OVERRIDE: 5
-    /* eslint-enable @typescript-eslint/member-ordering */
+    ADD: ConstTypes.ActiveEffectModes.Add
+    CUSTOM: ConstTypes.ActiveEffectModes.Custom
+    DOWNGRADE: ConstTypes.ActiveEffectModes.Downgrade
+    MULTIPLY: ConstTypes.ActiveEffectModes.Multiply
+    OVERRIDE: ConstTypes.ActiveEffectModes.Override
+    UPGRADE: ConstTypes.ActiveEffectModes.Upgrade
   }
 
   ASCII: `_______________________________________________________________
@@ -51,14 +49,12 @@ declare const CONST: {
    * Valid Chat Message types
    */
   CHAT_MESSAGE_TYPES: {
-    /* eslint-disable @typescript-eslint/member-ordering */
-    OTHER: 0
-    OOC: 1
-    IC: 2
-    EMOTE: 3
-    WHISPER: 4
-    ROLL: 5
-    /* eslint-enable @typescript-eslint/member-ordering */
+    EMOTE: ConstTypes.ChatMessageTypes.Emote
+    IC: ConstTypes.ChatMessageTypes.IC
+    OOC: ConstTypes.ChatMessageTypes.OOC
+    OTHER: ConstTypes.ChatMessageTypes.Other
+    ROLL: ConstTypes.ChatMessageTypes.Roll
+    WHISPER: ConstTypes.ChatMessageTypes.Whisper
   }
 
   /**
@@ -97,12 +93,10 @@ declare const CONST: {
    * The supported dice roll visibility modes
    */
   DICE_ROLL_MODES: {
-    /* eslint-disable @typescript-eslint/member-ordering */
-    PUBLIC: 'roll'
-    PRIVATE: 'gmroll'
-    BLIND: 'blindroll'
-    SELF: 'selfroll'
-    /* eslint-enable @typescript-eslint/member-ordering */
+    BLIND: ConstTypes.DiceRollModes.Blind
+    PRIVATE: ConstTypes.DiceRollModes.Private
+    PUBLIC: ConstTypes.DiceRollModes.Public
+    SELF: ConstTypes.DiceRollModes.Self
   }
 
   /**
@@ -132,24 +126,20 @@ declare const CONST: {
    * PATTERN: The drawing is filled with a tiled image pattern
    */
   DRAWING_FILL_TYPES: {
-    /* eslint-disable @typescript-eslint/member-ordering */
-    NONE: 0
-    SOLID: 1
-    PATTERN: 2
-    /* eslint-enable @typescript-eslint/member-ordering */
+    NONE: ConstTypes.DrawingFillTypes.None
+    PATTERN: ConstTypes.DrawingFillTypes.Pattern
+    SOLID: ConstTypes.DrawingFillTypes.Solid
   }
 
   /**
    * The allowed Drawing types which may be saved
    */
   DRAWING_TYPES: {
-    /* eslint-disable @typescript-eslint/member-ordering */
-    RECTANGLE: 'r'
-    ELLIPSE: 'e'
-    TEXT: 't'
-    POLYGON: 'p'
-    FREEHAND: 'f'
-    /* eslint-enable @typescript-eslint/member-ordering */
+    ELLIPSE: ConstTypes.DrawingTypes.Ellipse
+    FREEHAND: ConstTypes.DrawingTypes.Freehand
+    POLYGON: ConstTypes.DrawingTypes.Polygon
+    RECTANGLE: ConstTypes.DrawingTypes.Rectangle
+    TEXT: ConstTypes.DrawingTypes.Text
   }
 
   /**
@@ -170,12 +160,10 @@ declare const CONST: {
    * permissions.
    */
   ENTITY_PERMISSIONS: {
-    /* eslint-disable @typescript-eslint/member-ordering */
-    NONE: 0
-    LIMITED: 1
-    OBSERVER: 2
-    OWNER: 3
-    /* eslint-enable @typescript-eslint/member-ordering */
+    LIMITED: ConstTypes.EntityPermissions.Limited
+    NONE: ConstTypes.EntityPermissions.None
+    OBSERVER: ConstTypes.EntityPermissions.Observer
+    OWNER: ConstTypes.EntityPermissions.Owner
   }
 
   /**
@@ -225,14 +213,12 @@ declare const CONST: {
    * The allowed Grid types which are supported by the software
    */
   GRID_TYPES: {
-    /* eslint-disable @typescript-eslint/member-ordering */
-    GRIDLESS: 0
-    SQUARE: 1
-    HEXODDR: 2
-    HEXEVENR: 3
-    HEXODDQ: 4
-    HEXEVENQ: 5
-    /* eslint-enable @typescript-eslint/member-ordering */
+    GRIDLESS: ConstTypes.GridTypes.Gridless
+    HEXEVENQ: ConstTypes.GridTypes.HexEvenQ
+    HEXEVENR: ConstTypes.GridTypes.HexEvenR
+    HEXODDQ: ConstTypes.GridTypes.HexOddQ
+    HEXODDR: ConstTypes.GridTypes.HexOddR
+    SQUARE: ConstTypes.GridTypes.Square
   }
 
   /**
@@ -297,14 +283,12 @@ declare const CONST: {
    * Encode the reasons why a package may be available or unavailable for use
    */
   PACKAGE_AVAILABILITY_CODES: {
-    /* eslint-disable @typescript-eslint/member-ordering */
-    UNKNOWN: -1
-    AVAILABLE: 0
-    REQUIRES_UPDATE: 1
-    REQUIRES_SYSTEM: 2
-    REQUIRES_DEPENDENCY: 3
-    REQUIRES_CORE: 4
-    /* eslint-enable @typescript-eslint/member-ordering */
+    AVAILABLE: ConstTypes.PackageAvailabilityCodes.Available
+    REQUIRES_CORE: ConstTypes.PackageAvailabilityCodes.RequiresCore
+    REQUIRES_DEPENDENCY: ConstTypes.PackageAvailabilityCodes.RequiresDependency
+    REQUIRES_SYSTEM: ConstTypes.PackageAvailabilityCodes.RequiresSystem
+    REQUIRES_UPDATE: ConstTypes.PackageAvailabilityCodes.RequiresUpdate
+    UNKNOWN: ConstTypes.PackageAvailabilityCodes.Unknown
   }
 
   /**
@@ -321,12 +305,10 @@ declare const CONST: {
    * SIMULTANEOUS: The playlist plays all contained sounds at the same time
    */
   PLAYLIST_MODES: {
-    /* eslint-disable @typescript-eslint/member-ordering */
-    DISABLED: -1
-    SEQUENTIAL: 0
-    SHUFFLE: 1
-    SIMULTANEOUS: 2
-    /* eslint-enable @typescript-eslint/member-ordering */
+    DISABLED: ConstTypes.PlaylistModes.Disabled
+    SEQUENTIAL: ConstTypes.PlaylistModes.Sequential
+    SHUFFLE: ConstTypes.PlaylistModes.Shuffle
+    SIMULTANEOUS: ConstTypes.PlaylistModes.Simultaneous
   }
 
   /**
@@ -339,9 +321,9 @@ declare const CONST: {
    * The allowed software update channels
    */
   SOFTWARE_UPDATE_CHANNELS: {
-    alpha: 'SETUP.UpdateAlpha'
-    beta: 'SETUP.UpdateBeta'
-    release: 'SETUP.UpdateRelease'
+    alpha: ConstTypes.SoftwareUpdateChannels.Alpha
+    beta: ConstTypes.SoftwareUpdateChannels.Beta
+    release: ConstTypes.SoftwareUpdateChannels.Release
   }
 
   /**
@@ -355,22 +337,18 @@ declare const CONST: {
    * object
    */
   SOURCE_TYPES: {
-    /* eslint-disable @typescript-eslint/member-ordering */
-    LOCAL: 'l'
-    GLOBAL: 'g'
-    UNIVERSAL: 'u'
-    /* eslint-enable @typescript-eslint/member-ordering */
+    GLOBAL: ConstTypes.SourceTypes.Global
+    LOCAL: ConstTypes.SourceTypes.Local
+    UNIVERSAL: ConstTypes.SourceTypes.Universal
   }
 
   /**
    * The allowed types of a TableResult document
    */
   TABLE_RESULT_TYPES: {
-    /* eslint-disable @typescript-eslint/member-ordering */
-    TEXT: 0
-    ENTITY: 1
-    COMPENDIUM: 2
-    /* eslint-enable @typescript-eslint/member-ordering */
+    COMPENDIUM: ConstTypes.TableResultTypes.Compendium
+    ENTITY: ConstTypes.TableResultTypes.Entity
+    TEXT: ConstTypes.TableResultTypes.Text
   }
 
   /**
@@ -378,13 +356,11 @@ declare const CONST: {
    * Object
    */
   TEXT_ANCHOR_POINTS: {
-    /* eslint-disable @typescript-eslint/member-ordering */
-    CENTER: 0
-    BOTTOM: 1
-    TOP: 2
-    LEFT: 3
-    RIGHT: 4
-    /* eslint-enable @typescript-eslint/member-ordering */
+    BOTTOM: ConstTypes.TextAnchorPoints.Bottom
+    CENTER: ConstTypes.TextAnchorPoints.Center
+    LEFT: ConstTypes.TextAnchorPoints.Left
+    RIGHT: ConstTypes.TextAnchorPoints.Right
+    TOP: ConstTypes.TextAnchorPoints.Top
   }
 
   /**
@@ -398,14 +374,12 @@ declare const CONST: {
    * ALWAYS - always displayed for everyone
    */
   TOKEN_DISPLAY_MODES: {
-    /* eslint-disable @typescript-eslint/member-ordering */
-    NONE: 0
-    CONTROL: 10
-    OWNER_HOVER: 20
-    HOVER: 30
-    OWNER: 40
-    ALWAYS: 50
-    /* eslint-enable @typescript-eslint/member-ordering */
+    ALWAYS: ConstTypes.TokenDisplayModes.Always
+    CONTROL: ConstTypes.TokenDisplayModes.Control
+    HOVER: ConstTypes.TokenDisplayModes.Hover
+    NONE: ConstTypes.TokenDisplayModes.None
+    OWNER: ConstTypes.TokenDisplayModes.Owner
+    OWNER_HOVER: ConstTypes.TokenDisplayModes.OwnerHover
   }
 
   /**
@@ -415,11 +389,9 @@ declare const CONST: {
    * FRIENDLY - Displayed as an ally with a cyan border
    */
   TOKEN_DISPOSITIONS: {
-    /* eslint-disable @typescript-eslint/member-ordering */
-    HOSTILE: -1
-    NEUTRAL: 0
-    FRIENDLY: 1
-    /* eslint-enable @typescript-eslint/member-ordering */
+    FRIENDLY: ConstTypes.TokenDispositions.Friendly
+    HOSTILE: ConstTypes.TokenDispositions.Hostile
+    NEUTRAL: ConstTypes.TokenDispositions.Neutral
   }
 
   /**
@@ -429,103 +401,103 @@ declare const CONST: {
    */
   USER_PERMISSIONS: {
     ACTOR_CREATE: {
-      defaultRole: number
+      defaultRole: ConstTypes.UserRoles.Assistant
       disableGM: false
       hint: 'PERMISSION.ActorCreateHint'
       label: 'PERMISSION.ActorCreate'
     }
     BROADCAST_AUDIO: {
-      defaultRole: number
+      defaultRole: ConstTypes.UserRoles.Trusted
       disableGM: true
       hint: 'PERMISSION.BroadcastAudioHint'
       label: 'PERMISSION.BroadcastAudio'
     }
     BROADCAST_VIDEO: {
-      defaultRole: number
+      defaultRole: ConstTypes.UserRoles.Trusted
       disableGM: true
       hint: 'PERMISSION.BroadcastVideoHint'
       label: 'PERMISSION.BroadcastVideo'
     }
     DRAWING_CREATE: {
-      defaultRole: number
+      defaultRole: ConstTypes.UserRoles.Trusted
       disableGM: false
       hint: 'PERMISSION.DrawingCreateHint'
       label: 'PERMISSION.DrawingCreate'
     }
     FILES_BROWSE: {
-      defaultRole: number
+      defaultRole: ConstTypes.UserRoles.Trusted
       disableGM: false
       hint: 'PERMISSION.FilesBrowseHint'
       label: 'PERMISSION.FilesBrowse'
     }
     FILES_UPLOAD: {
-      defaultRole: number
+      defaultRole: ConstTypes.UserRoles.Assistant
       disableGM: false
       hint: 'PERMISSION.FilesUploadHint'
       label: 'PERMISSION.FilesUpload'
     }
     ITEM_CREATE: {
-      defaultRole: number
+      defaultRole: ConstTypes.UserRoles.Assistant
       disableGM: false
       hint: 'PERMISSION.ItemCreateHint'
       label: 'PERMISSION.ItemCreate'
     }
     JOURNAL_CREATE: {
-      defaultRole: number
+      defaultRole: ConstTypes.UserRoles.Trusted
       disableGM: false
       hint: 'PERMISSION.JournalCreateHint'
       label: 'PERMISSION.JournalCreate'
     }
     MACRO_SCRIPT: {
-      defaultRole: number
+      defaultRole: ConstTypes.UserRoles.Player
       disableGM: false
       hint: 'PERMISSION.MacroScriptHint'
       label: 'PERMISSION.MacroScript'
     }
     MESSAGE_WHISPER: {
-      defaultRole: number
+      defaultRole: ConstTypes.UserRoles.Player
       disableGM: false
       hint: 'PERMISSION.MessageWhisperHint'
       label: 'PERMISSION.MessageWhisper'
     }
     SETTINGS_MODIFY: {
-      defaultRole: number
+      defaultRole: ConstTypes.UserRoles.Assistant
       disableGM: false
       hint: 'PERMISSION.SettingsModifyHint'
       label: 'PERMISSION.SettingsModify'
     }
     SHOW_CURSOR: {
-      defaultRole: number
+      defaultRole: ConstTypes.UserRoles.Player
       disableGM: true
       hint: 'PERMISSION.ShowCursorHint'
       label: 'PERMISSION.ShowCursor'
     }
     SHOW_RULER: {
-      defaultRole: number
+      defaultRole: ConstTypes.UserRoles.Player
       disableGM: true
       hint: 'PERMISSION.ShowRulerHint'
       label: 'PERMISSION.ShowRuler'
     }
     TEMPLATE_CREATE: {
-      defaultRole: number
+      defaultRole: ConstTypes.UserRoles.Player
       disableGM: false
       hint: 'PERMISSION.TemplateCreateHint'
       label: 'PERMISSION.TemplateCreate'
     }
     TOKEN_CONFIGURE: {
-      defaultRole: number
+      defaultRole: ConstTypes.UserRoles.Trusted
       disableGM: false
       hint: 'PERMISSION.TokenConfigureHint'
       label: 'PERMISSION.TokenConfigure'
     }
     TOKEN_CREATE: {
-      defaultRole: number
+      defaultRole: ConstTypes.UserRoles.Assistant
       disableGM: false
       hint: 'PERMISSION.TokenCreateHint'
       label: 'PERMISSION.TokenCreate'
     }
     WALL_DOORS: {
-      defaultRole: number
+      defaultRole: ConstTypes.UserRoles.Player
       disableGM: false
       hint: 'PERMISSION.WallDoorsHint'
       label: 'PERMISSION.WallDoors'
@@ -538,13 +510,11 @@ declare const CONST: {
    * permissions.
    */
   USER_ROLES: {
-    /* eslint-disable @typescript-eslint/member-ordering */
-    NONE: 0
-    PLAYER: 1
-    TRUSTED: 2
-    ASSISTANT: 3
-    GAMEMASTER: 4
-    /* eslint-enable @typescript-eslint/member-ordering */
+    ASSISTANT: ConstTypes.UserRoles.Assistant
+    GAMEMASTER: ConstTypes.UserRoles.GameMaster
+    NONE: ConstTypes.UserRoles.None
+    PLAYER: ConstTypes.UserRoles.Player
+    TRUSTED: ConstTypes.UserRoles.Trusted
   }
 
   /**
@@ -572,9 +542,9 @@ declare const CONST: {
    * RIGHT: The wall collides only when a ray strikes its right side
    */
   WALL_DIRECTIONS: {
-    BOTH: 0
-    LEFT: 1
-    RIGHT: 2
+    BOTH: ConstTypes.WallDirections.Both
+    LEFT: ConstTypes.WallDirections.Left
+    RIGHT: ConstTypes.WallDirections.Right
   }
 
   /**
@@ -584,11 +554,9 @@ declare const CONST: {
    * LOCKED: The door is closed and locked
    */
   WALL_DOOR_STATES: {
-    /* eslint-disable @typescript-eslint/member-ordering */
-    CLOSED: 0
-    OPEN: 1
-    LOCKED: 2
-    /* eslint-enable @typescript-eslint/member-ordering */
+    CLOSED: ConstTypes.WallDoorStates.Closed
+    LOCKED: ConstTypes.WallDoorStates.Locked
+    OPEN: ConstTypes.WallDoorStates.Open
   }
 
   /**
@@ -598,11 +566,9 @@ declare const CONST: {
    * SECRET: The wall contains a secret door
    */
   WALL_DOOR_TYPES: {
-    /* eslint-disable @typescript-eslint/member-ordering */
-    NONE: 0
-    DOOR: 1
-    SECRET: 2
-    /* eslint-enable @typescript-eslint/member-ordering */
+    DOOR: ConstTypes.WallDoorTypes.Door
+    NONE: ConstTypes.WallDoorTypes.None
+    SECRET: ConstTypes.WallDoorTypes.Secret
   }
 
   /**
@@ -611,8 +577,8 @@ declare const CONST: {
    * NORMAL: Movement collides with this wall
    */
   WALL_MOVEMENT_TYPES: {
-    NONE: 0
-    NORMAL: 1
+    NONE: ConstTypes.WallMovementTypes.None
+    NORMAL: ConstTypes.WallMovementTypes.Normal
   }
 
   /**
@@ -622,14 +588,185 @@ declare const CONST: {
    * LIMITED: Senses collide with the second intersection, bypassing the first
    */
   WALL_SENSE_TYPES: {
-    /* eslint-disable @typescript-eslint/member-ordering */
-    NONE: 0
-    NORMAL: 1
-    LIMITED: 2
-    /* eslint-enable @typescript-eslint/member-ordering */
+    LIMITED: ConstTypes.WallSenseTypes.Limited
+    NONE: ConstTypes.WallSenseTypes.None
+    NORMAL: ConstTypes.WallSenseTypes.Normal
   }
 
   WEBSITE_URL: 'https://foundryvtt.com'
 
   vtt: 'Foundry VTT'
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+declare namespace ConstTypes {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum ActiveEffectModes {
+    Custom = 0,
+    Multiply = 1,
+    Add = 2,
+    Downgrade = 3,
+    Upgrade = 4,
+    Override = 5
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum ChatMessageTypes {
+    Other = 0,
+    OOC = 1,
+    IC = 2,
+    Emote = 3,
+    Whisper = 4,
+    Roll = 5
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum DiceRollModes {
+    Public = 'roll',
+    Private = 'gmroll',
+    Blind = 'blindroll',
+    Self = 'selfroll'
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum DrawingFillTypes {
+    None = 0,
+    Solid = 1,
+    Pattern = 2
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum DrawingTypes {
+    Rectangle = 'r',
+    Ellipse = 'e',
+    Text = 't',
+    Polygon = 'p',
+    Freehand = 'f'
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum EntityPermissions {
+    None = 0,
+    Limited = 1,
+    Observer = 2,
+    Owner = 3
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum GridTypes {
+    Gridless = 0,
+    Square = 1,
+    HexOddR = 2,
+    HexEvenR = 3,
+    HexOddQ = 4,
+    HexEvenQ = 5
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum PackageAvailabilityCodes {
+    Unknown = -1,
+    Available = 0,
+    RequiresUpdate = 1,
+    RequiresSystem = 2,
+    RequiresDependency = 3,
+    RequiresCore = 4
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum PlaylistModes {
+    Disabled = -1,
+    Sequential = 0,
+    Shuffle = 1,
+    Simultaneous = 2
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum SoftwareUpdateChannels {
+    Alpha = 'SETUP.UpdateAlpha',
+    Beta = 'SETUP.UpdateBeta',
+    Release = 'SETUP.UpdateRelease'
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum SourceTypes {
+    Local = 'l',
+    Global = 'g',
+    Universal = 'u'
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum TableResultTypes {
+    Text = 0,
+    Entity = 1,
+    Compendium = 2
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum TextAnchorPoints {
+    Center = 0,
+    Bottom = 1,
+    Top = 2,
+    Left = 3,
+    Right = 4
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum TokenDisplayModes {
+    None = 0,
+    Control = 10,
+    OwnerHover = 20,
+    Hover = 30,
+    Owner = 40,
+    Always = 50
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum TokenDispositions {
+    Hostile = -1,
+    Neutral = 0,
+    Friendly = 1
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum UserRoles {
+    None = 0,
+    Player = 1,
+    Trusted = 2,
+    Assistant = 3,
+    GameMaster = 4
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum WallDirections {
+    Both = 0,
+    Left = 1,
+    Right = 2
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum WallDoorStates {
+    Closed = 0,
+    Open = 1,
+    Locked = 2
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum WallDoorTypes {
+    None = 0,
+    Door = 1,
+    Secret = 2
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum WallMovementTypes {
+    None = 0,
+    Normal = 1
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum WallSenseTypes {
+    None = 0,
+    Normal = 1,
+    Limited = 2
+  }
 }
