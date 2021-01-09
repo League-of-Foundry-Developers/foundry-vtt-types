@@ -45,7 +45,7 @@ declare abstract class EntityCollection<T extends Entity>
    * Return a reference to the base Entity name which is contained within this
    * EntityCollection.
    */
-  abstract get entity (): never
+  abstract get entity (): void
 
   /**
    * The EntityCollection name
