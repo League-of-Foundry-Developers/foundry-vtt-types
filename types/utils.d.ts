@@ -1,3 +1,9 @@
+/**
+ * Support mousewheel control for range type input elements
+ * @param event - A Mouse Wheel scroll event
+ */
+declare function _handleMouseWheelInputChange (event: WheelEvent): void
+
 declare function benchmark (func: Function, iterations: number): void
 
 /**
