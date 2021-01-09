@@ -1,10 +1,3 @@
-declare interface ActorSheetData<DataType = any>
-  extends BaseEntitySheetData<DataType> {
-  actor: Actor
-  data: ActorData<DataType>
-  items: Collection<Item>
-}
-
 /**
  * The default Actor Sheet
  *
@@ -56,53 +49,53 @@ declare class ActorSheet<
   close (): Promise<void>
 
   /**
-   * Prepare data for rendering the Actor sheet
-   * The prepared data object contains both the actor data as well as additional sheet options
+   * @param options - (unused)
+   * @override
    */
-  getData (): ActorSheetData<DataType>
+  getData (options?: any): ActorSheet.Data<DataType>
 
   /**
    * Extend the Header Button configuration for the ActorSheet to add Token configuration buttons
    * See Application._getHeaderButtons for documentation of the return Array structure.
    */
-  protected _getHeaderButtons (): any[]
+  _getHeaderButtons (): any[]
 
-  protected _getSortSiblings (source: any): any
+  _getSortSiblings (source: any): any
 
   /**
    * Handle requests to configure the default sheet used by this Actor
    */
-  protected _onConfigureSheet (event: Event | JQuery.Event): void
+  _onConfigureSheet (event: Event | JQuery.Event): void
 
   /**
    * Handle requests to configure the prototype Token for the Actor
    */
-  protected _onConfigureToken (event: Event | JQuery.Event): void
+  _onConfigureToken (event: Event | JQuery.Event): void
 
   /**
    * Default handler for beginning a drag-drop workflow of an Owned Item on an Actor Sheet
    */
-  protected _onDragItemStart (event: Event | JQuery.Event): boolean
+  _onDragItemStart (event: Event | JQuery.Event): boolean
 
   /**
    * Allow the Actor sheet to be a displayed as a valid drop-zone
    */
-  protected _onDragOver (event: Event | JQuery.Event): boolean
+  _onDragOver (event: Event | JQuery.Event): boolean
 
   /**
    * Handle dropped data on the Actor sheet
    */
-  protected _onDrop (event: Event | JQuery.Event): Promise<boolean | any>
+  _onDrop (event: Event | JQuery.Event): Promise<boolean | any>
 
   /**
    * Handle changing the actor profile image by opening a FilePicker
    */
-  protected _onEditImage (event: Event | JQuery.Event): void
+  _onEditImage (event: Event | JQuery.Event): void
 
   /**
    * Handle a drop event for an existing Owned Item to sort that item
    */
-  protected _onSortItem (
+  _onSortItem (
     event: Event | JQuery.Event,
     itemData: object
   ): Promise<any>
@@ -113,5 +106,13 @@ declare class ActorSheet<
    *
    * @param html - The rendered template ready to have listeners attached
    */
-  protected activateListeners (html: JQuery | HTMLElement): void
+  activateListeners (html: JQuery | HTMLElement): void
+}
+
+declare namespace ActorSheet {
+  interface Data<DataType = any> extends BaseEntitySheet.Data<DataType> {
+    actor: Actor
+    data: ActorData<DataType>
+    items: Collection<Item>
+  }
 }

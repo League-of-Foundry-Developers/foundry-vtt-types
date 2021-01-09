@@ -74,7 +74,7 @@ declare class Compendium extends Application {
   // Internal flags
   searchString: string | null
 
-  protected _searchTime: number
+  _searchTime: number
 
   constructor (metadata: object, options: object);
 
@@ -172,41 +172,41 @@ declare class Compendium extends Application {
   /**
    * Render the ContextMenu which applies to each compendium entry
    */
-  protected _contextMenu (html: JQuery | HTMLElement): void;
+  _contextMenu (html: JQuery | HTMLElement): void;
 
   /**
    * Allow data transfer events to be dragged over this as a drop zone
    */
-  protected _onDragOver (event: Event | JQuery.Event): boolean;
+  _onDragOver (event: Event | JQuery.Event): boolean;
 
   /**
    * Handle a new drag event from the compendium, create a placeholder token for dropping the item
    */
-  protected _onDragStart (event: Event | JQuery.Event): boolean;
+  _onDragStart (event: Event | JQuery.Event): boolean;
 
   /**
    * Handle data being dropped into a Compendium pack
    */
-  protected _onDrop (event: Event | JQuery.Event): Promise<boolean>;
+  _onDrop (event: Event | JQuery.Event): Promise<boolean>;
 
   /**
    * Handle opening a single compendium entry by invoking the configured entity class and its sheet
    */
-  protected _onEntry (entryId: string): Promise<void>;
+  _onEntry (entryId: string): Promise<void>;
 
   /**
    * Handle compendium filtering through search field
    * Toggle the visibility of indexed compendium entries by name (for now) match
    */
-  protected _onSearch (searchString: string): void;
+  _onSearch (searchString: string): void;
 
   /**
    * Cast entry data to an Entity class
    */
-  protected _toEntity (entryData?: object): Entity;
+  _toEntity (entryData?: object): Entity;
 
   /**
    * Register event listeners for Compendium directories
    */
-  protected activateListeners (html: JQuery | HTMLElement): void;
+  activateListeners (html: JQuery | HTMLElement): void;
 }

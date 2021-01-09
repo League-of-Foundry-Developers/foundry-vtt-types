@@ -18,7 +18,8 @@ declare class RollTableConfig extends BaseEntitySheet {
   activateListeners (html: JQuery): void
 
   /**
-   * Default data preparation logic for the entity sheet
+   * @param options - (unused)
+   * @override
    */
-  getData (): BaseEntitySheetData
+  getData (options?: any): BaseEntitySheet.Data
 }

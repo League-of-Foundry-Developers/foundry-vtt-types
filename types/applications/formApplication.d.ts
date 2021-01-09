@@ -188,11 +188,7 @@ declare abstract class FormApplication
    * @param options - (unused) (default: `{}`)
    * @override
    */
-  getData (options?: any): {
-    object: O
-    options: FormApplication.Options
-    title: string
-  }
+  getData (options?: any): FormApplication.Data<O>
 
   /**
    * Handle saving the content of a specific editor by name
@@ -221,12 +217,18 @@ declare abstract class FormApplication
    *                   (unused)
    * @returns A Promise which resolves once the update operation has completed
    */
-  abstract _updateObject (event?: Event, formData?: object): never
+  abstract _updateObject (event?: Event, formData?: object): void
 }
 
 declare namespace FormApplication {
   interface CloseOptions extends Application.CloseOptions {
     submit?: boolean
+  }
+
+  interface Data<O> {
+    object: O
+    options: FormApplication.Options
+    title: string
   }
 
   interface Editor {

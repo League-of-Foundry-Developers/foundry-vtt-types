@@ -33,5 +33,5 @@ declare class SceneNavigation extends Application {
    * Extend the Application.render logic to first check the rendering context to see what was changed
    * If a specific context was provided, make sure an update to the navigation is necessary before rendering
    */
-  render (force?: boolean, options?: Application.RenderOptions): Application
+  render (force?: boolean, options?: Application.RenderOptions): this
 }

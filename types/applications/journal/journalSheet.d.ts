@@ -16,8 +16,8 @@ declare class JournalSheet extends BaseEntitySheet {
   get title (): string
 
   /**
-   * Prepare data used to render the Journal Sheet
-   * @returns The data object used to render the journal entry
+   * @param options - (unused)
+   * @override
    */
-  getData (): BaseEntitySheetData
+  getData (options?: any): BaseEntitySheet.Data
 }

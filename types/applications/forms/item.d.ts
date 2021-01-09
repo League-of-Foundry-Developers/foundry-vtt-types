@@ -1,9 +1,3 @@
-declare interface ItemSheetData<DataType = any>
-  extends BaseEntitySheetData<DataType> {
-  data?: any
-  item?: Item<DataType>
-}
-
 /**
  * The default Item Sheet
  *
@@ -41,13 +35,21 @@ declare class ItemSheet<
   get actor (): Actor<DataType>
 
   /**
-   * Customize the data provided to the item sheet for rendering. By default we just duplicate the item data.
+   * @param options - (unused)
+   * @override
    */
-  getData (): ItemSheetData<DataType>
+  getData (options?: any): ItemSheet.Data<DataType>
 
   /**
    * Activate listeners which provide interactivity for item sheet events
    * @param html - The HTML object returned by template rendering
    */
-  protected activateListeners (html: JQuery): void
+  activateListeners (html: JQuery): void
+}
+
+declare namespace ItemSheet {
+  interface Data<DataType = any> extends BaseEntitySheet.Data<DataType> {
+    data: any
+    item: Item<DataType>
+  }
 }

@@ -1,12 +1,3 @@
-declare interface BaseEntitySheetData<DataType = any> {
-  cssClass?: string
-  editable?: boolean
-  entity?: EntityData<DataType>
-  limited?: boolean
-  options?: any
-  owner?: boolean
-}
-
 /**
  * A simple implementation of the FormApplication pattern which is specialized in editing Entity instances
  */
@@ -37,16 +28,37 @@ declare class BaseEntitySheet<
   get title (): string
 
   /**
-   * Default data preparation logic for the entity sheet
+   * @param event - (unused)
+   * @override
    */
-  getData (): BaseEntitySheetData<DataType>
+  _updateObject (
+    event: Event,
+    formData: any
+  ): Promise<Entity>
 
   /**
-   * Implement the _updateObject method as required by the parent class spec
-   * This defines how to update the subject of the form when the form is submitted
+   * Default data preparation logic for the entity sheet
+   * @param options - (unused)
+   * @override
    */
-  protected _updateObject (
-    event: Event | JQuery.Event,
-    formData: any
-  ): Promise<any>
+  getData (options?: any): BaseEntitySheet.Data
+}
+
+declare namespace BaseEntitySheet {
+  interface Data<DataType = any> extends FormApplication.Data<object> {
+    cssClass: string
+    editable: boolean
+    entity: EntityData<DataType>
+    limited: boolean
+
+    /**
+     * @remarks This property is not populated and only exists to make the
+     *          typescript compile.
+     */
+    object: object
+
+    options: any
+    owner: boolean
+    title: string
+  }
 }

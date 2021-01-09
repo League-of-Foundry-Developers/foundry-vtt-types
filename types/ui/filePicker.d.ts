@@ -105,51 +105,51 @@ declare class FilePicker extends Application {
   /**
    * Get the valid file extensions for a given named file picker type
    */
-  protected _getExtensions (type: string): string[];
+  _getExtensions (type: string): string[];
 
   /**
    * Given a current file path, determine the directory it belongs to
    * @param target - The currently requested target path
    * @returns An array of the inferred source and target path
    */
-  protected _inferCurrentDirectory (target: string): [string, string];
+  _inferCurrentDirectory (target: string): [string, string];
 
   /**
    * Handle backwards navigation of the folder structure
    */
-  protected _onBack (event: Event): any;
+  _onBack (event: Event): any;
 
-  protected _onChangeBucket (event: Event): any;
+  _onChangeBucket (event: Event): any;
 
   /**
    * Handle a drop event to support dropping files onto the file picker and automatically uploading them
    */
-  protected _onDrop (event: Event): Promise<any>;
+  _onDrop (event: Event): Promise<any>;
 
   /**
    * Handle a keyup event in the filter box to restrict the set of files shown in the FilePicker
    */
-  protected _onFilterResults (event: Event): void;
+  _onFilterResults (event: Event): void;
 
   /**
    * Handle file or folder selection within the file picker
    * @param event - The originating click event
    */
-  protected _onPick (event: Event): any;
+  _onPick (event: Event): any;
 
   /**
    * Handle user submission of the address bar to request an explicit target
    * @param event - The originating keydown event
    */
-  protected _onRequestTarget (event: Event): void;
+  _onRequestTarget (event: Event): void;
 
   /**
    * Handle file picker form submission
    */
-  protected _onSubmit (ev: Event): any;
+  _onSubmit (ev: Event): any;
 
   /**
    * Handle file upload
    */
-  protected _onUpload (ev: Event): Promise<any>;
+  _onUpload (ev: Event): Promise<any>;
 }

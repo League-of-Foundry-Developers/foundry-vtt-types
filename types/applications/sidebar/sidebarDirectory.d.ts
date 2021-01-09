@@ -53,5 +53,5 @@ declare class SidebarDirectory extends SidebarTab {
   render (
     force?: boolean,
     options?: Application.RenderOptions
-  ): SidebarDirectory
+  ): this
 }
