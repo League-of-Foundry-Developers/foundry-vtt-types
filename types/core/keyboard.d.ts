@@ -6,9 +6,8 @@
 declare class KeyboardManager {
   /**
    * Enumerate the "digit keys"
-   * @defaultValue `['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']`
    */
-  DIGIT_KEYS: string[]
+  DIGIT_KEYS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
 
   /**
    * Specify a rate limit for mouse wheel to gate repeated scrolling.
@@ -16,19 +15,46 @@ declare class KeyboardManager {
    * hundreds of events per second.
    * This designates a minimum number of milliseconds which must pass before
    * another wheel event is handled
-   * @defaultValue `50`
    */
-  MOUSE_WHEEL_RATE_LIMIT: number
+  MOUSE_WHEEL_RATE_LIMIT: 50
 
   /**
    * Map keys used for movement
    */
-  MOVEMENT_KEYS: Record<string, string[]>
+  MOVEMENT_KEYS: {
+    /* eslint-disable @typescript-eslint/member-ordering */
+    w: ['up']
+    a: ['left']
+    s: ['down']
+    d: ['right']
+    W: ['up']
+    A: ['left']
+    S: ['down']
+    D: ['right']
+    ArrowUp: ['up']
+    ArrowRight: ['right']
+    ArrowDown: ['down']
+    ArrowLeft: ['left']
+    Numpad1: ['down', 'left']
+    Numpad2: ['down']
+    Numpad3: ['down', 'right']
+    Numpad4: ['left']
+    Numpad6: ['right']
+    Numpad7: ['up', 'left']
+    Numpad8: ['up']
+    Numpad9: ['up', 'right']
+    /* eslint-enable @typescript-eslint/member-ordering */
+  }
 
   /**
    * Map keys used for canvas zooming
    */
-  ZOOM_KEYS: Record<string, string>
+  ZOOM_KEYS: {
+    NumpadAdd: 'in'
+    NumpadSubtract: 'out'
+    PageDown: 'out'
+    PageUp: 'in'
+  }
 
   /**
    * The set of key codes which have been already handled per workflow
