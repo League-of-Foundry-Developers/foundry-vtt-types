@@ -1,30 +1,3 @@
-declare interface Package {
-  error: any
-  isSupported: boolean
-  isUpgrade: boolean
-  manifest: any
-  minimumCoreVersion: string
-  name: string
-}
-
-declare interface PackageSelector {
-  /**
-   * The package manifest URL
-   */
-  manifest: string
-
-  /**
-   * The canonical package name
-   */
-  name: string
-
-  /**
-   * The package type, one in ['module', 'system', 'world']
-   * @defaultValue `'module'`
-   */
-  type: string
-}
-
 /**
  * A library of package management commands which are used by various interfaces around the software.
  */
@@ -47,7 +20,9 @@ declare class SetupConfiguration {
    *                   (default: `null`)
    * @returns The return manifest
    */
-  static checkPackage (selector: PackageSelector): Promise<Package>
+  static checkPackage (
+    selector: SetupConfiguration.PackageSelector
+  ): Promise<SetupConfiguration.Package>
 
   /**
    * Return the named scopes which can exist for packages.
@@ -62,7 +37,9 @@ declare class SetupConfiguration {
    * @param options - (default: `{}`)
    * @param type - (default: `'system'`)
    */
-  static getPackages (options: { type: string }): Promise<Package[]>
+  static getPackages (
+    options: { type: string }
+  ): Promise<SetupConfiguration.Package[]>
 
   /**
    * Install a set of dependency modules which are required by an installed
@@ -83,7 +60,9 @@ declare class SetupConfiguration {
    *                   (default: `null`)
    * @returns A Promise which resolves to the installed package manifest
    */
-  static installPackage (selector: PackageSelector): Promise<object>
+  static installPackage (
+    selector: SetupConfiguration.PackageSelector
+  ): Promise<object>
 
   /**
    * A helper method to submit a POST request to setup configuration with a
@@ -110,4 +89,33 @@ declare class SetupConfiguration {
       type: string
     }
   ): Promise<object>
+}
+
+declare namespace SetupConfiguration {
+  interface Package {
+    error: any
+    isSupported: boolean
+    isUpgrade: boolean
+    manifest: any
+    minimumCoreVersion: string
+    name: string
+  }
+
+  interface PackageSelector {
+    /**
+     * The package manifest URL
+     */
+    manifest: string
+
+    /**
+     * The canonical package name
+     */
+    name: string
+
+    /**
+     * The package type, one in ['module', 'system', 'world']
+     * @defaultValue `'module'`
+     */
+    type: string
+  }
 }

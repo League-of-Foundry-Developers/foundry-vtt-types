@@ -1,9 +1,3 @@
-declare interface Timestamps {
-  clientTime: number
-  serverTime: number
-  worldTime: number
-}
-
 /**
  * A singleton class {@link game#time} which keeps the official Server and World
  * time stamps.
@@ -33,7 +27,7 @@ declare class GameTime {
    * The most recently synchronized timestamps retrieved from the server.
    * @defaultValue `{}`
    */
-  _time: Timestamps
+  _time: GameTime.Timestamps
 
   /**
    * @param socket - Originally documented as type `Socket`.
@@ -71,4 +65,12 @@ declare class GameTime {
    * server
    */
   sync (socket: WebSocket): Promise<GameTime>
+}
+
+declare namespace GameTime {
+  interface Timestamps {
+    clientTime: number
+    serverTime: number
+    worldTime: number
+  }
 }

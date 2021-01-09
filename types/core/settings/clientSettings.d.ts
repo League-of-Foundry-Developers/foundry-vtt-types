@@ -1,45 +1,3 @@
-declare interface PartialClientSettingsData<T> {
-  choices?: Record<string, string>
-  config?: boolean
-  default?: T
-  hint?: string
-  name?: string
-  onChange?: (value: T) => void
-  range?: {
-    max: number
-    min: number
-    step: number
-  }
-  type?: new (...args: any) => T
-}
-
-declare interface UpdateableClientSettingsData<T>
-  extends PartialClientSettingsData<T> {
-  scope: string
-}
-
-declare interface CompleteClientSettingsData<T>
-  extends UpdateableClientSettingsData<T> {
-  key: string
-  module: string
-}
-
-declare interface PartialMenuSettings
-<F extends FormApplication = FormApplication> {
-  hint?: string
-  icon?: string
-  label?: string
-  name?: string
-  restricted: boolean
-  type: new (...args: any) => F
-}
-
-declare interface CompleteMenuSettings
-<F extends FormApplication = FormApplication> extends PartialMenuSettings<F> {
-  key: string
-  module: string
-}
-
 /**
  * An abstract interface for managing defined game settings or settings menus
  * for different packages.
@@ -55,12 +13,12 @@ declare class ClientSettings {
   /**
    * Registered settings menus which trigger secondary applications
    */
-  menus: Map<string, CompleteMenuSettings>
+  menus: Map<string, ClientSettings.CompleteMenuSettings>
 
   /**
    * A object of registered game settings for this scope
    */
-  settings: Map<string, CompleteClientSettingsData<any>>
+  settings: Map<string, ClientSettings.CompleteData<any>>
 
   /**
    * The storage interfaces used for persisting settings
@@ -85,7 +43,7 @@ declare class ClientSettings {
    * Locally update a setting given a provided key and value
    */
   _update<T> (
-    setting: UpdateableClientSettingsData<T>,
+    setting: ClientSettings.UpdateableData<T>,
     key: string,
     value: T
   ): T
@@ -150,7 +108,7 @@ declare class ClientSettings {
   register<T> (
     module: string,
     key: string,
-    data: PartialClientSettingsData<T>
+    data: ClientSettings.PartialData<T>
   ): void
 
   /**
@@ -174,7 +132,7 @@ declare class ClientSettings {
   registerMenu (
     module: string,
     key: string,
-    data: PartialMenuSettings
+    data: ClientSettings.PartialMenuSettings
   ): void
 
   /**
@@ -189,4 +147,46 @@ declare class ClientSettings {
    * ```
    */
   set<T> (module: string, key: string, value: T): Promise<T>
+}
+
+declare namespace ClientSettings {
+  interface PartialData<T> {
+    choices?: Record<string, string>
+    config?: boolean
+    default?: T
+    hint?: string
+    name?: string
+    onChange?: (value: T) => void
+    range?: {
+      max: number
+      min: number
+      step: number
+    }
+    type?: new (...args: any) => T
+  }
+
+  interface UpdateableData<T> extends PartialData<T> {
+    scope: string
+  }
+
+  interface CompleteData<T> extends UpdateableData<T> {
+    key: string
+    module: string
+  }
+
+  interface PartialMenuSettings
+  <F extends FormApplication = FormApplication> {
+    hint?: string
+    icon?: string
+    label?: string
+    name?: string
+    restricted: boolean
+    type: new (...args: any) => F
+  }
+
+  interface CompleteMenuSettings
+  <F extends FormApplication = FormApplication> extends PartialMenuSettings<F> {
+    key: string
+    module: string
+  }
 }

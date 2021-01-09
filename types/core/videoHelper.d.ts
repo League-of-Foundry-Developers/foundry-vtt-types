@@ -54,7 +54,10 @@ declare class VideoHelper {
    * @param options - Thumbnail creation options, including width and height
    * @returns The created and cached base64 thumbnail image
    */
-  createThumbnail (src: string, options: CompositeOptions): Promise<string>
+  createThumbnail (
+    src: string,
+    options: ImageHelper.CompositeOptions
+  ): Promise<string>
 
   /**
    * Play a single video source

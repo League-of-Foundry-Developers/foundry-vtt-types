@@ -1,11 +1,3 @@
-declare interface MetaModifiers {
-  hasFocus: boolean
-  isAlt: boolean
-  isCtrl: boolean
-  isShift: boolean
-  key: string
-}
-
 /**
  * A set of helpers and management functions for dealing with user input from
  * keyboard events.
@@ -98,9 +90,14 @@ declare class KeyboardManager {
    * @param event - The originating keyboard event
    * @param up - Is the key being released?
    * @param modifiers - The identified modifiers attached to this keypress
+   *                    (unused)
    * @internal
    */
-  _onAlt (event: KeyboardEvent, up: boolean, modifiers: MetaModifiers): void
+  _onAlt (
+    event: KeyboardEvent,
+    up: boolean,
+    modifiers: KeyboardManager.MetaModifiers
+  ): void
 
   /**
    * Input events do not fire with isComposing = false at the end of a
@@ -116,16 +113,25 @@ declare class KeyboardManager {
    * @param modifiers - The identified modifiers attached to this keypress
    * @internal
    */
-  _onDelete (event: KeyboardEvent, up: boolean, _modifiers: MetaModifiers): void
+  _onDelete (
+    event: KeyboardEvent,
+    up: boolean,
+    modifiers: KeyboardManager.MetaModifiers
+  ): void
 
   /**
    * Handle number key presses
    * @param event - The original digit key press
+   *                (unused)
    * @param up - Is it a keyup?
    * @param modifiers - What modifiers affect the keypress?
    * @internal
    */
-  _onDigit (_event: Event, up: boolean, modifiers: MetaModifiers): void
+  _onDigit (
+    event: Event,
+    up: boolean,
+    modifiers: KeyboardManager.MetaModifiers
+  ): void
 
   /**
    * Handle ESC keypress events
@@ -134,16 +140,25 @@ declare class KeyboardManager {
    * @param modifiers - The identified modifiers attached to this keypress
    * @internal
    */
-  _onEscape (event: KeyboardEvent, up: boolean, modifiers: MetaModifiers): void
+  _onEscape (
+    event: KeyboardEvent,
+    up: boolean,
+    modifiers: KeyboardManager.MetaModifiers
+  ): void
 
   /**
    * Handle "A" keypress events (CTRL only) to select all objects
    * @param event - The originating keyboard event
+   *                (unused)
    * @param up - Is the key being released?
    * @param modifiers - The identified modifiers attached to this keypress
    * @internal
    */
-  _onKeyA (_event: KeyboardEvent, up: boolean, modifiers: MetaModifiers): void
+  _onKeyA (
+    event: KeyboardEvent,
+    up: boolean,
+    modifiers: KeyboardManager.MetaModifiers
+  ): void
 
   /**
    * Handle "C" keypress events to copy data to clipboard
@@ -152,7 +167,11 @@ declare class KeyboardManager {
    * @param modifiers - The identified modifiers attached to this keypress
    * @internal
    */
-  _onKeyC (event: KeyboardEvent, up: boolean, modifiers: MetaModifiers): void
+  _onKeyC (
+    event: KeyboardEvent,
+    up: boolean,
+    modifiers: KeyboardManager.MetaModifiers
+  ): void
 
   /**
    * Handle a key press into the down position
@@ -175,7 +194,11 @@ declare class KeyboardManager {
    * @param modifiers - The identified modifiers attached to this keypress
    * @internal
    */
-  _onKeyV (event: KeyboardEvent, up: boolean, modifiers: MetaModifiers): void
+  _onKeyV (
+    event: KeyboardEvent,
+    up: boolean,
+    modifiers: KeyboardManager.MetaModifiers
+  ): void
 
   /**
    * Handle Z Keypress Events to generally undo previous actions
@@ -184,7 +207,11 @@ declare class KeyboardManager {
    * @param modifiers - The identified modifiers attached to this keypress
    * @internal
    */
-  _onKeyZ (event: KeyboardEvent, up: boolean, modifiers: MetaModifiers): void
+  _onKeyZ (
+    event: KeyboardEvent,
+    up: boolean,
+    modifiers: KeyboardManager.MetaModifiers
+  ): void
 
   /**
    * Handle presses to keyboard zoom keys
@@ -193,7 +220,11 @@ declare class KeyboardManager {
    * @param modifiers - The identified modifiers attached to this keypress
    * @internal
    */
-  _onKeyZoom (event: KeyboardEvent, up: boolean, modifiers: MetaModifiers): void
+  _onKeyZoom (
+    event: KeyboardEvent,
+    up: boolean,
+    modifiers: KeyboardManager.MetaModifiers
+  ): void
 
   /**
    * Handle movement keypress events
@@ -205,7 +236,7 @@ declare class KeyboardManager {
   _onMovement (
     event: KeyboardEvent,
     up: boolean,
-    modifiers: MetaModifiers
+    modifiers: KeyboardManager.MetaModifiers
   ): void
 
   /**
@@ -215,7 +246,11 @@ declare class KeyboardManager {
    * @param modifiers - The identified modifiers attached to this keypress
    * @internal
    */
-  _onSpace (event: KeyboardEvent, up: boolean, modifiers: MetaModifiers): void
+  _onSpace (
+    event: KeyboardEvent,
+    up: boolean,
+    modifiers: KeyboardManager.MetaModifiers
+  ): void
 
   /**
    * Handle TAB keypress events
@@ -224,7 +259,11 @@ declare class KeyboardManager {
    * @param modifiers - The identified modifiers attached to this keypress
    * @internal
    */
-  _onTab (event: KeyboardEvent, up: boolean, modifiers: MetaModifiers): void
+  _onTab (
+    event: KeyboardEvent,
+    up: boolean,
+    modifiers: KeyboardManager.MetaModifiers
+  ): void
 
   /**
    * Master mouse-wheel event keyboard handler
@@ -256,4 +295,14 @@ declare class KeyboardManager {
    * @param code - key code to test
    */
   isDown (code: string): boolean
+}
+
+declare namespace KeyboardManager {
+  interface MetaModifiers {
+    hasFocus: boolean
+    isAlt: boolean
+    isCtrl: boolean
+    isShift: boolean
+    key: string
+  }
 }
