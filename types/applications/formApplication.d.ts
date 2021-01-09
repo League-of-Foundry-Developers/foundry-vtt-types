@@ -8,12 +8,12 @@
  *    element
  * 3) This abstract layer has no knowledge of what is being updated, so the
  *    implementation must define _updateObject
- * @typeParam D - the type of the data used to render the inner template
+ * @typeParam T - the type of the data used to render the inner template
  * @typeParam O - the type of the object target which we are using this form to
  *                modify
  */
 declare abstract class FormApplication
-<D = object, O = object> extends Application<D> {
+<T = object, O = object> extends Application<T> {
   /**
    * Keep track of any mce editors which may be active as part of this form
    * The values of this Array are inner-objects with references to the MCE
@@ -154,7 +154,7 @@ declare abstract class FormApplication
    * @param options - (unused)
    * @override
    */
-  _renderInner (data: D, options?: any): Promise<JQuery>
+  _renderInner (data: T, options?: any): Promise<JQuery>
 
   /**
    * Activate a named TinyMCE text editor

@@ -3,18 +3,25 @@
  * or editing Entity instances.
  * See the FormApplication documentation for more complete description of this
  * interface.
+ * @typeParam T - the type of the data used to render the inner template
  * @typeParam D - the type of the data in the Entity
- * @typeParam E - the type of the Entity which should be managed by this form
+ * @typeParam O - the type of the Entity which should be managed by this form
  *                sheet
+ * @typeParam F - the type of the of validated form data with which to update
+ *                the Entity
  */
-declare class BaseEntitySheet
-<D = object, E extends Entity<D> = Entity<D>> extends FormApplication {
+declare class BaseEntitySheet <
+  T = object,
+  D = object,
+  O extends Entity<D> = Entity<D>,
+  F = object
+> extends FormApplication<T, O> {
   /**
    * @param object - An Entity which should be managed by this form sheet.
    * @param options - Optional configuration parameters for how the form
    *                  behaves.
    */
-  constructor (object: E, options: BaseEntitySheet.Options)
+  constructor (object: O, options: BaseEntitySheet.Options)
 
   /**
    * @override
@@ -25,7 +32,7 @@ declare class BaseEntitySheet
    * A convenience accessor for the object property, which in the case of a
    * BaseEntitySheet is an Entity instance.
    */
-  get entity (): E
+  get entity (): O
 
   /**
    * @override
@@ -49,14 +56,14 @@ declare class BaseEntitySheet
   _updateObject (
     event: Event,
     formData: object
-  ): Promise<E>
+  ): Promise<O>
 
   /**
    * Default data preparation logic for the entity sheet
    * @param options - (unused)
    * @override
    */
-  getData (options?: any): BaseEntitySheet.Data<D>
+  getData (options?: any): BaseEntitySheet.Data<O, D>
 
   /**
    * @override
@@ -65,7 +72,12 @@ declare class BaseEntitySheet
 }
 
 declare namespace BaseEntitySheet {
-  interface Data<D = object> extends FormApplication.Data<object> {
+  /**
+   * @typeParam D - the type of the data in the Entity
+   * @typeParam O - the type of the Entity which should be managed by this form
+   *                sheet
+   */
+  interface Data<O, D> extends FormApplication.Data<O> {
     cssClass: string
     editable: boolean
     entity: EntityData<D>
@@ -75,7 +87,7 @@ declare namespace BaseEntitySheet {
      * @remarks This property is not populated and only exists to make the
      *          typescript compile.
      */
-    object: object
+    object: O
 
     options: any
     owner: boolean

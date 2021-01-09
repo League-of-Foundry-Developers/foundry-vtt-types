@@ -19,9 +19,9 @@ declare let _maxZ: number
  *   renderApplication
  *   closeApplication
  *   getApplicationHeaderButtons
- * @typeParam D - the type of the data used to render the inner template
+ * @typeParam T - the type of the data used to render the inner template
  */
-declare class Application<D = {}> {
+declare class Application<T = object> {
   /**
    * @see {@link Application.RenderState}
    */
@@ -292,7 +292,7 @@ declare class Application<D = {}> {
    * @returns A promise resolving to the constructed jQuery object
    * @internal
    */
-  _renderInner (data: D, options?: any): Promise<JQuery>
+  _renderInner (data: T, options?: any): Promise<JQuery>
 
   /**
    * Render the outer application wrapper
