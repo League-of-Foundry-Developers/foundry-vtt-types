@@ -112,7 +112,7 @@ declare abstract class EntityCollection<T extends Entity>
    * @returns A reference to the rendered EntityCollection
    * @see {@link Application.render}
    */
-  render (force?: boolean, options?: RenderOptions): this
+  render (force?: boolean, options?: Application.RenderOptions): this
 
   /**
    * Update all objects in this EntityCollection with a provided transformation.

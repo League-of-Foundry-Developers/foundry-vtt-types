@@ -244,18 +244,18 @@ declare namespace HooksCallbacks {
   type General = (...args: any[]) => any
 
   /**
-   * This is called when creating {@link ApplicationHeaderButton}s for an
+   * This is called when creating {@link Application.HeaderButton}s for an
    * {@link Application}. This is called once for each Application class in the
    * inheritance chain.
    * @param app - the Application
-   * @param buttons - the Array of ApplicationHeaderButtons
+   * @param buttons - the Array of HeaderButtons
    * @typeParam A - the type of the Application
    * @remarks The name for this hook is dynamically created by joining 'get'
    * with the type name of the Application and 'HeaderButtons'.
    * @see {@link Application#_getHeaderButtons}
    */
   type GetApplicationHeaderButtons<A extends Application = Application> =
-    (app: A, buttons: ApplicationHeaderButton[]) => void
+    (app: A, buttons: Application.HeaderButton[]) => void
 
   /**
    * This is called after getting the {@link ContextMenu} options for a

@@ -5,9 +5,9 @@ import 'tinymce'
 // Apps
 
 import './types/applications/application'
-import './types/applications/button'
 import './types/applications/baseEntitySheet'
-import './types/applications/form'
+import './types/applications/formApplication'
+import './types/applications/formDataExtended'
 import './types/applications/i18n'
 import './types/applications/templates'
 
@@ -125,6 +125,7 @@ import './types/ui/tabs'
 // --
 
 import './types/augment.howler'
+import './types/augment.tinyMCE'
 import './types/constants'
 import './types/game'
 import './types/handlebars'

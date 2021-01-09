@@ -1,163 +1,14 @@
-interface ApplicationOptions {
-  /**
-   * A named "base application" which generates an additional hook
-   * @defaultValue `null`
-   */
-  baseApplication?: string
+declare const MIN_WINDOW_HEIGHT: 50
+declare const MIN_WINDOW_WIDTH: 200
 
-  /**
-   * An array of CSS string classes to apply to the rendered HTML
-   * @defaultValue `[]`
-   */
-  classes?: string[]
-
-  /**
-   * @defaultValue `[]`
-   */
-  dragDrop?: DragDrop[]
-
-  /**
-   * @defaultValue `[]`
-   */
-  filters?: SearchFilter[]
-
-  /**
-   * The default pixel height for the rendered HTML
-   * @defaultValue `null`
-   */
-  height?: number
-
-  /**
-   * The default CSS id to assign to the rendered HTML
-   * @defaultValue `''`
-   */
-  id?: string
-
-  /**
-   * The default offset-left position for the rendered HTML
-   * @defaultValue `null`
-   */
-  left?: number
-
-  /**
-   * Whether the rendered application can be minimized (popOut only)
-   * @defaultValue `true`
-   */
-  minimizable?: boolean
-
-  /**
-   * Whether to display the application as a pop-out container
-   * @defaultValue `true`
-   */
-  popOut?: boolean
-
-  /**
-   * Whether the rendered application can be drag-resized (popOut only)
-   * @defaultValue `false`
-   */
-  resizable?: boolean
-
-  /**
-   * A list of unique CSS selectors which target containers that should have
-   * their vertical scroll positions preserved during a re-render.
-   * @defaultValue `[]`
-   */
-  scrollY?: string[]
-
-  /**
-   * Track Tab navigation handlers which are active for this Application
-   * @defaultValue `[]`
-   */
-  tabs?: TabV2Options[]
-
-  /**
-   * The default HTML template path to render for this Application
-   * @defaultValue `null`
-   */
-  template?: string
-
-  /**
-   * A default window title string (popOut only)
-   * @defaultValue `''`
-   */
-  title?: string
-
-  /**
-   * The default offset-top position for the rendered HTML
-   * @defaultValue `null`
-   */
-  top?: number
-
-  /**
-   * The default pixel width for the rendered HTML
-   * @defaultValue `null`
-   */
-  width?: number
-}
-
-interface RenderOptions {
-  /**
-   * The rendered height
-   */
-  height?: number
-
-  /**
-   * The left positioning attribute
-   */
-  left?: number
-
-  /**
-   * Whether to display a log message that the Application was rendered
-   */
-  log?: boolean
-
-  /**
-   * A context-providing string which suggests what event triggered the render
-   */
-  renderContext?: string
-
-  /**
-   * The data change which motivated the render request
-   */
-  renderData?: object
-
-  /**
-   * The rendered transformation scale
-   */
-  scale?: number
-
-  /**
-   * The top positioning attribute
-   */
-  top?: number
-
-  /**
-   * The rendered width
-   */
-  width?: number
-}
-
-interface ApplicationPosition extends Object {
-  height?: number | string
-  left?: number
-  scale?: number
-  top?: number
-  width?: number | string
-}
-
-declare enum ApplicationRenderState {
-  Closing = -2,
-  Closed = -1,
-  None = 0,
-  Rendering = 1,
-  Rendered = 2,
-  Error = 3
-}
-
-declare const MIN_WINDOW_HEIGHT: number
-declare const MIN_WINDOW_WIDTH: number
-
+/**
+ * @defaultValue `0`
+ */
 declare let _appId: number
+
+/**
+ * @defaultValue `100`
+ */
 declare let _maxZ: number
 
 /**
@@ -168,16 +19,20 @@ declare let _maxZ: number
  *   renderApplication
  *   closeApplication
  *   getApplicationHeaderButtons
+ * @typeParam D - the type of the data used to render the inner template
  */
-declare class Application {
+declare class Application<D = {}> {
+  /**
+   * @see {@link Application.RenderState}
+   */
   static RENDER_STATES: Readonly<{
     /* eslint-disable @typescript-eslint/member-ordering */
-    CLOSING: ApplicationRenderState.Closing
-    CLOSED: ApplicationRenderState.Closed
-    NONE: ApplicationRenderState.None
-    RENDERING: ApplicationRenderState.Rendering
-    RENDERED: ApplicationRenderState.Rendered
-    ERROR: ApplicationRenderState.Error
+    CLOSING: Application.RenderState.Closing
+    CLOSED: Application.RenderState.Closed
+    NONE: Application.RenderState.None
+    RENDERING: Application.RenderState.Rendering
+    RENDERED: Application.RenderState.Rendered
+    ERROR: Application.RenderState.Error
     /* eslint-enable @typescript-eslint/member-ordering */
   }>
 
@@ -193,6 +48,7 @@ declare class Application {
 
   /**
    * Track whether the Application is currently minimized
+   * @defaultValue `false`
    * @internal
    */
   _minimized: boolean
@@ -200,7 +56,7 @@ declare class Application {
   /**
    * Track the most recent scroll positions for any vertically scrolling containers
    */
-  _scrollPositions: object | null
+  _scrollPositions: Record<string, number>
 
   /**
    * SearchFilter handlers which are active for this Application
@@ -229,12 +85,12 @@ declare class Application {
   /**
    * The options provided to this application upon initialization
    */
-  options: ApplicationOptions
+  options: Application.Options
 
   /**
    * Track the current position and dimensions of the Application UI
    */
-  position: ApplicationPosition
+  position: Application.Position
 
   /**
    * @param options - Configuration options which control how the application is
@@ -244,7 +100,7 @@ declare class Application {
    *                  constructor are combined with the defaultOptions defined
    *                  at the class level.
    */
-  constructor (options?: ApplicationOptions)
+  constructor (options?: Application.Options)
 
   /**
    * Assign the default options configuration which is used by this Application
@@ -253,7 +109,7 @@ declare class Application {
    * initialization. Application subclasses may include additional options which
    * are specific to their usage.
    */
-  static get defaultOptions (): ApplicationOptions
+  static get defaultOptions (): Application.Options
 
   /**
    * Return the active application element, if it currently exists in the DOM
@@ -300,6 +156,7 @@ declare class Application {
    * Define whether a user is able to conclude a drag-and-drop workflow for a
    * given drop selector
    * @param selector - The candidate HTML selector for the drop target
+   *                   (unused)
    * @returns Can the current user drop on this selector?
    * @internal
    */
@@ -309,6 +166,7 @@ declare class Application {
    * Define whether a user is able to begin a dragstart workflow for a given
    * drag selector
    * @param selector - The candidate HTML selector for dragging
+   *                   (unused)
    * @returns Can the current user drag this selector?
    * @internal
    */
@@ -343,19 +201,23 @@ declare class Application {
    * the getApplicationHeaderButtons hook.
    * @internal
    */
-  _getHeaderButtons (): ApplicationHeaderButton[]
+  _getHeaderButtons (): Application.HeaderButton[]
 
   /**
    * Customize how a new HTML Application is added and first appears in the DOC
+   * @param options - (unused)
    * @internal
    */
-  _injectHTML (html: JQuery, _options: any): void
+  _injectHTML (html: JQuery, options?: any): void
 
   /**
    * Handle changes to the active tab in a configured Tabs controller
    * @param event - A left click event
+   *                (unused)
    * @param tabs - The Tabs controller
+   *               (unused)
    * @param active - The new active tab name
+   *                 (unused)
    * @internal
    */
   _onChangeTab (event: MouseEvent, tabs: Tabs, active: string): void
@@ -363,6 +225,7 @@ declare class Application {
   /**
    * Callback actions which occur when a dragged element is over a drop target.
    * @param event - originating DragEvent
+   *                (unused)
    * @internal
    */
   _onDragOver (event: DragEvent): void
@@ -370,6 +233,7 @@ declare class Application {
   /**
    * Callback actions which occur at the beginning of a drag start workflow.
    * @param event - The originating DragEvent
+   *                (unused)
    * @internal
    */
   _onDragStart (event: DragEvent): void
@@ -377,6 +241,7 @@ declare class Application {
   /**
    * Callback actions which occur when a dragged element is dropped on a target.
    * @param event - The originating DragEvent
+   *                (unused)
    * @internal
    */
   _onDrop (event: DragEvent): void
@@ -391,8 +256,11 @@ declare class Application {
    * Handle changes to search filtering controllers which are bound to the
    * Application
    * @param event - The key-up event from keyboard input
+   *                (unused)
    * @param query - The regular expression to test against
+   *                (unused)
    * @param html - The HTML element which should be filtered
+   *               (unused)
    * @internal
    */
   _onSearchFilter (event: KeyboardEvent, query: RegExp, html: HTMLElement): void
@@ -417,30 +285,32 @@ declare class Application {
    *          complete
    * @internal
    */
-  _render (force: boolean, options: RenderOptions): Promise<void>
+  _render (force?: boolean, options?: Application.RenderOptions): Promise<void>
 
   /**
    * Render the inner application content
    * @param data - The data used to render the inner template
+   * @param options - (unused)
    * @returns A promise resolving to the constructed jQuery object
    * @internal
    */
-  _renderInner (data: object, _options: any): Promise<JQuery>
+  _renderInner (data: D, options?: any): Promise<JQuery>
 
   /**
    * Render the outer application wrapper
    * @returns A promise resolving to the constructed jQuery object
    * @internal
    */
-  _renderOuter (options: RenderOptions): Promise<JQuery>
+  _renderOuter (options: Application.RenderOptions): Promise<JQuery>
 
   /**
    * Customize how inner HTML is replaced when the application is refreshed
    * @param element - The original HTML element
    * @param html - New updated HTML
+   * @param options - (unused)
    * @internal
    */
-  _replaceHTML (element: JQuery, html: JQuery, _options: any): void
+  _replaceHTML (element: JQuery, html: JQuery, options?: any): void
 
   /**
    * Restore the scroll positions of containers within the app after
@@ -475,10 +345,10 @@ declare class Application {
    * Close the application and un-register references to it within UI mappings
    * This function returns a Promise which resolves once the window closing
    * animation concludes
-   * @param _options - (default: `{}`)
+   * @param options - (default: `{}`)
    * @returns A Promise which resolves once the application is closed
    */
-  close (_options?: object): Promise<void>
+  close (options?: Application.CloseOptions): Promise<void>
 
   /**
    * An application should define the data object used to render its template.
@@ -486,8 +356,9 @@ declare class Application {
    * resolves to an Object
    * If undefined, the default implementation will return an empty object
    * allowing only for rendering of static HTML
+   * @param options - (unused)
    */
-  getData (options?: object): object | Promise<object>
+  getData (options?: any): {}
 
   /**
    * Maximize the pop-out window, expanding it to its original size
@@ -519,7 +390,7 @@ declare class Application {
    *                  DOM.
    *                  (default: `{}`)
    */
-  render (force?: boolean, options?: RenderOptions): Application
+  render (force?: boolean, options?: Application.RenderOptions): this
 
   /**
    * Set the application position and store it's new location.
@@ -532,5 +403,178 @@ declare class Application {
    * @returns The updated position object for the application containing the new
    *          values
    */
-  setPosition (appPos?: ApplicationPosition): ApplicationPosition
+  setPosition (appPos?: Application.Position): Application.Position
+}
+
+declare namespace Application {
+  interface CloseOptions {
+    force?: boolean
+  }
+
+  interface HeaderButton {
+    class: string
+    icon: string
+    label: string
+    onclick?: () => void
+  }
+
+  interface Options {
+    /**
+     * A named "base application" which generates an additional hook
+     * @defaultValue `null`
+     */
+    baseApplication?: string
+
+    /**
+     * An array of CSS string classes to apply to the rendered HTML
+     * @defaultValue `[]`
+     */
+    classes?: string[]
+
+    /**
+     * @defaultValue `[]`
+     */
+    dragDrop?: DragDrop[]
+
+    /**
+     * @defaultValue `[]`
+     */
+    filters?: SearchFilter[]
+
+    /**
+     * The default pixel height for the rendered HTML
+     * @defaultValue `null`
+     */
+    height?: number
+
+    /**
+     * The default CSS id to assign to the rendered HTML
+     * @defaultValue `''`
+     */
+    id?: string
+
+    /**
+     * The default offset-left position for the rendered HTML
+     * @defaultValue `null`
+     */
+    left?: number
+
+    /**
+     * Whether the rendered application can be minimized (popOut only)
+     * @defaultValue `true`
+     */
+    minimizable?: boolean
+
+    /**
+     * Whether to display the application as a pop-out container
+     * @defaultValue `true`
+     */
+    popOut?: boolean
+
+    /**
+     * Whether the rendered application can be drag-resized (popOut only)
+     * @defaultValue `false`
+     */
+    resizable?: boolean
+
+    /**
+     * A list of unique CSS selectors which target containers that should have
+     * their vertical scroll positions preserved during a re-render.
+     * @defaultValue `[]`
+     */
+    scrollY?: string[]
+
+    /**
+     * Track Tab navigation handlers which are active for this Application
+     * @defaultValue `[]`
+     */
+    tabs?: TabV2Options[]
+
+    /**
+     * The default HTML template path to render for this Application
+     * @defaultValue `null`
+     */
+    template?: string
+
+    /**
+     * A default window title string (popOut only)
+     * @defaultValue `''`
+     */
+    title?: string
+
+    /**
+     * The default offset-top position for the rendered HTML
+     * @defaultValue `null`
+     */
+    top?: number
+
+    /**
+     * The default pixel width for the rendered HTML
+     * @defaultValue `null`
+     */
+    width?: number
+  }
+
+  interface Position {
+    height?: number | string
+    left?: number
+    scale?: number
+    top?: number
+    width?: number | string
+  }
+
+  interface RenderOptions {
+    /**
+     * The rendered height
+     */
+    height?: number
+
+    /**
+     * The left positioning attribute
+     */
+    left?: number
+
+    /**
+     * Whether to display a log message that the Application was rendered
+     */
+    log?: boolean
+
+    /**
+     * A context-providing string which suggests what event triggered the render
+     */
+    renderContext?: string
+
+    /**
+     * The data change which motivated the render request
+     */
+    renderData?: object
+
+    /**
+     * The rendered transformation scale
+     */
+    scale?: number
+
+    /**
+     * The top positioning attribute
+     */
+    top?: number
+
+    /**
+     * The rendered width
+     */
+    width?: number
+  }
+
+  /**
+   * @see {@link Application.RENDER_STATES}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enum RenderState {
+    Closing = -2,
+    Closed = -1,
+    None = 0,
+    Rendering = 1,
+    Rendered = 2,
+    Error = 3
+  }
 }

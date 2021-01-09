@@ -24,7 +24,7 @@ declare class FilePicker extends Application {
   /** The general file type which controls the set of extensions which will be accepted */
   type: string
 
-  constructor (options: ApplicationOptions);
+  constructor (options: Application.Options);
 
   /**
    * Return the source object for the currently active source

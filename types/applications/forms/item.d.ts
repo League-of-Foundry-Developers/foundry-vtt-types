@@ -23,7 +23,7 @@ declare class ItemSheet<
   /**
    * Assign the default options which are supported by this Application
    */
-  static get defaultOptions (): FormApplicationOptions
+  static get defaultOptions (): FormApplication.Options
 
   /**
    * Provide a unique CSS ID for owned Item sheets

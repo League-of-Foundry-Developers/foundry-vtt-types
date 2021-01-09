@@ -62,7 +62,7 @@ interface ConfirmDialog {
  * ```
  */
 declare class Dialog extends Application {
-  constructor (dialogData: DialogData, options?: ApplicationOptions);
+  constructor (dialogData: DialogData, options?: Application.Options);
 
   /**
    * A helper function to reduce code duplication when creating confirmation dialog windows.
@@ -76,6 +76,6 @@ declare class Dialog extends Application {
    */
   static confirm (
     kwargs?: ConfirmDialog,
-    options?: ApplicationOptions
+    options?: Application.Options
   ): Promise<void>;
 }

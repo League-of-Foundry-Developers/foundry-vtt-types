@@ -16,7 +16,7 @@ declare class Notifications extends Application {
   /** Submitted notifications which are queued for display */
   queue: any[]
 
-  constructor (options: ApplicationOptions);
+  constructor (options: Application.Options);
 
   /**
    * Display a notification with the "error" type

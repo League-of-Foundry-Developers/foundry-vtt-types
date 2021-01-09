@@ -32,7 +32,7 @@ declare class ActorSheet<
    * Default rendering and configuration options used for the ActorSheet and its subclasses.
    * See `Application.defaultOptions` and `FormApplication.defaultOptions` for more details.
    */
-  static get defaultOptions (): FormApplicationOptions
+  static get defaultOptions (): FormApplication.Options
 
   /**
    * A convenience reference to the Actor entity

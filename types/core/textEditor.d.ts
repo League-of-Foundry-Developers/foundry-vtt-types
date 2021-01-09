@@ -10,7 +10,7 @@ declare class TextEditor {
    * @param content - Initial HTML or text content to populate the editor with
    * @returns The editor instance.
    */
-  static create (options: object, content: string): Promise<Array<import('tinymce').Editor>>;
+  static create (options: TextEditor.Options, content: string): Promise<Editor>
 
   /**
    * Enrich HTML content by replacing or augmenting components of it
@@ -133,4 +133,88 @@ declare class TextEditor {
    * Begin a a data transfer drag event with default handling
    */
   protected _onDragStart (event: Event): void;
+}
+
+declare namespace TextEditor {
+  interface Options {
+    /**
+     * @defaultValue `false`
+     */
+    branding?: boolean
+
+    /**
+     * @defaultValue `['/css/mce.css']`
+     */
+    content_css?: string[]
+
+    /**
+     * @defaultValue `false`
+     */
+    menubar?: boolean
+
+    /**
+     * @defaultValue `'lists image table hr code save link'`
+     */
+    plugins?: string
+
+    /**
+     * @defaultValue `true`
+     */
+    save_enablewhendirty?: boolean
+
+    /**
+     * @defaultValue `false`
+     */
+    statusbar?: boolean
+
+    style_formats?: [
+      {
+        items?: [
+          {
+            /**
+             * @defaultValue `'section'`
+             */
+            block?: string
+
+            /**
+             * @defaultValue `'secrect'`
+             */
+            classes?: string
+
+            /**
+             * @defaultValue `'Secret'`
+             */
+            title?: string
+
+            /**
+             * @defaultValue `true`
+             */
+            wrapper?: boolean
+          }
+        ]
+
+        /**
+         * @defaultValue `'Custom'`
+         */
+        title?: string
+      }
+    ]
+
+    /**
+     * @defaultValue `true`
+     */
+    style_formats_merge?: boolean
+
+    /**
+     * @defaultValue `{}`
+     */
+    table_default_styles?: object
+
+    target: HTMLElement
+
+    /**
+     * @defaultValue `'styleselect bullist numlist image table hr link removeformat code save'`
+     */
+    toolbar?: string
+  }
 }

@@ -7,7 +7,7 @@ declare class SceneNavigation extends Application {
   /**
    * Assign the default options which are supported by the SceneNavigation UI
    */
-  static get defaultOptions (): ApplicationOptions
+  static get defaultOptions (): Application.Options
 
   /**
    * Return an Array of Scenes which are displayed in the Navigation bar
@@ -33,5 +33,5 @@ declare class SceneNavigation extends Application {
    * Extend the Application.render logic to first check the rendering context to see what was changed
    * If a specific context was provided, make sure an update to the navigation is necessary before rendering
    */
-  render (force?: boolean, options?: RenderOptions): Application
+  render (force?: boolean, options?: Application.RenderOptions): Application
 }

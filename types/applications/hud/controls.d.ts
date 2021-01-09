@@ -29,7 +29,7 @@ declare class SceneControls extends Application {
   /** The Array of Scene Control buttons which are currently rendered */
   controls: object[]
 
-  constructor (options: ApplicationOptions)
+  constructor (options: Application.Options)
 
   /**
    * Return the active control set
