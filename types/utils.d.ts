@@ -397,4 +397,4 @@ declare function toRadians (angle: number): number
  * @deprecated since 0.7.0
  * @see {@link FormApplication.processForm}
  */
-declare function validateForm (formElement: HTMLElement): any
+declare function validateForm (formElement: HTMLFormElement): FormDataExtended
