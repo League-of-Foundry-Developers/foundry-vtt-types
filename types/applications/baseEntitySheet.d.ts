@@ -1,31 +1,46 @@
 /**
- * A simple implementation of the FormApplication pattern which is specialized in editing Entity instances
+ * Extend the FormApplication pattern to incorporate specific logic for viewing
+ * or editing Entity instances.
+ * See the FormApplication documentation for more complete description of this
+ * interface.
+ * @typeParam D - the type of the data in the Entity
+ * @typeParam E - the type of the Entity which should be managed by this form
+ *                sheet
  */
-declare class BaseEntitySheet<
-  DataType = any,
-  EntityType extends Entity<DataType> = any
-> extends FormApplication {
-  constructor (...args: any)
-
+declare class BaseEntitySheet
+<D = object, E extends Entity<D> = Entity<D>> extends FormApplication {
   /**
-   * A convenience accessor for the object property of the inherited FormApplication instance
+   * @param object - An Entity which should be managed by this form sheet.
+   * @param options - Optional configuration parameters for how the form
+   *                  behaves.
    */
-  get entity (): EntityType
+  constructor (object: E, options: BaseEntitySheet.Options)
 
   /**
-   * The BaseEntitySheet requires that the form itself be editable as well as the entity be owned
+   * @override
+   */
+  static get defaultOptions (): BaseEntitySheet.Options
+
+  /**
+   * A convenience accessor for the object property, which in the case of a
+   * BaseEntitySheet is an Entity instance.
+   */
+  get entity (): E
+
+  /**
+   * @override
    */
   get isEditable (): boolean
 
   /**
-   * Assign the default options which are supported by the entity edit sheet
-   */
-  static get defaultOptions (): any
-
-  /**
-   * The displayed window title for the sheet - the entity name by default
+   * @override
    */
   get title (): string
+
+  /**
+   * @override
+   */
+  _getHeaderButtons (): Application.HeaderButton[]
 
   /**
    * @param event - (unused)
@@ -33,22 +48,27 @@ declare class BaseEntitySheet<
    */
   _updateObject (
     event: Event,
-    formData: any
-  ): Promise<Entity>
+    formData: object
+  ): Promise<E>
 
   /**
    * Default data preparation logic for the entity sheet
    * @param options - (unused)
    * @override
    */
-  getData (options?: any): BaseEntitySheet.Data
+  getData (options?: any): BaseEntitySheet.Data<D>
+
+  /**
+   * @override
+   */
+  render (force: boolean, options: Application.RenderOptions): this
 }
 
 declare namespace BaseEntitySheet {
-  interface Data<DataType = any> extends FormApplication.Data<object> {
+  interface Data<D = object> extends FormApplication.Data<object> {
     cssClass: string
     editable: boolean
-    entity: EntityData<DataType>
+    entity: EntityData<D>
     limited: boolean
 
     /**
@@ -60,5 +80,25 @@ declare namespace BaseEntitySheet {
     options: any
     owner: boolean
     title: string
+  }
+
+  interface Options extends FormApplication.Options {
+    /**
+     * @defaultValue `['sheet']`
+     */
+    classes: string[]
+
+    /**
+     * @defaultValue
+     * ```javascript
+     * `templates/sheets/${this.name.toLowerCase()}.html`
+     * ```
+     */
+    template: string
+
+    /**
+     * @defaultValue {@link ConstTypes.EntityPermissions.Limited}
+     */
+    viewPermission: ConstTypes.EntityPermissions
   }
 }
