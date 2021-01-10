@@ -8,7 +8,7 @@ import './types/applications/application'
 import './types/applications/baseEntitySheet'
 import './types/applications/formApplication'
 import './types/applications/formDataExtended'
-import './types/applications/i18n'
+import './types/applications/localization'
 import './types/applications/templates'
 
 import './types/applications/forms/actor'
