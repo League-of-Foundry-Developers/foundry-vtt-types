@@ -5,7 +5,7 @@
  * identified elements is required.
  * @typeParam T - The type of the objects contained in the Collection
  */
-declare class Collection<T extends Entity> extends Map<string, T> {
+declare class Collection<T extends Entity | Compendium> extends Map<string, T> {
   constructor (entries: T)
 
   /**
