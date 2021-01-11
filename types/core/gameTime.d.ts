@@ -29,10 +29,7 @@ declare class GameTime {
    */
   _time: GameTime.Timestamps
 
-  /**
-   * @param socket - Originally documented as type `Socket`.
-   */
-  constructor (socket: WebSocket)
+  constructor (socket: SocketIOClient.Socket)
 
   /**
    * The current server time based on the last synchronization point and the
@@ -64,7 +61,7 @@ declare class GameTime {
    * Synchronize the local client game time with the official time kept by the
    * server
    */
-  sync (socket: WebSocket): Promise<GameTime>
+  sync (socket: SocketIOClient.Socket): Promise<GameTime>
 }
 
 declare namespace GameTime {
