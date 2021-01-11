@@ -43,7 +43,7 @@ declare class ClientSettings {
    * Locally update a setting given a provided key and value
    */
   _update<T> (
-    setting: ClientSettings.UpdateableData<T>,
+    setting: ClientSettings.PartialData<T>,
     key: string,
     value: T
   ): T
@@ -162,14 +162,11 @@ declare namespace ClientSettings {
       min: number
       step: number
     }
+    scope: string
     type?: new (...args: any) => T
   }
 
-  interface UpdateableData<T> extends PartialData<T> {
-    scope: string
-  }
-
-  interface CompleteData<T> extends UpdateableData<T> {
+  interface CompleteData<T> extends PartialData<T> {
     key: string
     module: string
   }
