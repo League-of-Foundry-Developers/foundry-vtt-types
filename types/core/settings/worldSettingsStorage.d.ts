@@ -3,9 +3,16 @@
  * by localStorage
  */
 declare class WorldSettingsStorage extends Map {
-  constructor (settings: Record<string, string>)
+  constructor (settings: WorldSettingsStorage.Setting[])
 
   getItem (key: string): string | null
 
   setItem (key: string, value: string): void
+}
+
+declare namespace WorldSettingsStorage {
+  interface Setting {
+    key: string
+    value: string
+  }
 }

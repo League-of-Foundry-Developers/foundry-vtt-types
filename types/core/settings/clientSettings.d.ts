@@ -26,7 +26,7 @@ declare class ClientSettings {
    */
   storage: Map<string, Storage>
 
-  constructor (worldSettings: any)
+  constructor (worldSettings: WorldSettingsStorage.Setting[])
 
   /**
    * Handle changes to a Setting document to apply them to the world setting
