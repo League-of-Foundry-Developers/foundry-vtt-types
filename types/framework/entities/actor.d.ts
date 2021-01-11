@@ -1,8 +1,3 @@
-declare interface ActorData<DataType = any> extends EntityData<DataType> {
-	img: string;
-	token: any;
-}
-
 /**
  * The Collection of Actor entities.
  *
@@ -13,40 +8,40 @@ declare interface ActorData<DataType = any> extends EntityData<DataType> {
  * let actor = game.actors.get(actorId);
  */
 declare class Actors extends Collection<Actor> {
-	entities: Actor[];
+  entities: Actor[]
 
-	/**
-	 * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
-	 * Each Actor is referenced by the Token.id.
-	 * @type {Object}
-	 */
-	tokens: Token[];
+  /**
+   * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
+   * Each Actor is referenced by the Token.id.
+   * @type {Object}
+   */
+  tokens: Token[]
 
-	/** @override */
-	get object(): Actor;
+  /** @override */
+  get object (): Actor;
 
-	values(): IterableIterator<Actor>;
+  values (): IterableIterator<Actor>;
 
-	/* -------------------------------------------- */
-	/*  Sheet Registration Methods                  */
-	/* -------------------------------------------- */
+  /* -------------------------------------------- */
+  /*  Sheet Registration Methods                  */
+  /* -------------------------------------------- */
 
-	/**
-	 * Register an Actor sheet class as a candidate which can be used to display Actors of a given type
-	 * See EntitySheetConfig.registerSheet for details
-	 */
-	static registerSheet(...args: any): void;
+  /**
+   * Register an Actor sheet class as a candidate which can be used to display Actors of a given type
+   * See EntitySheetConfig.registerSheet for details
+   */
+  static registerSheet (...args: any): void;
 
-	/**
-	 * Unregister an Actor sheet class, removing it from the list of avaliable sheet Applications to use
-	 * See EntitySheetConfig.unregisterSheet for details
-	 */
-	static unregisterSheet(...args: any): void;
+  /**
+   * Unregister an Actor sheet class, removing it from the list of avaliable sheet Applications to use
+   * See EntitySheetConfig.unregisterSheet for details
+   */
+  static unregisterSheet (...args: any): void;
 
-	/**
-	 * Return an Array of currently registered sheet classes for this Entity type
-	 */
-	static get registeredSheets(): any[];
+  /**
+   * Return an Array of currently registered sheet classes for this Entity type
+   */
+  static get registeredSheets (): any[];
 }
 
 /**
@@ -74,169 +69,301 @@ declare class Actors extends Collection<Actor> {
  * @example <caption>Retrieve an existing Actor</caption>
  * let actor = game.actors.get(actorId);
  */
-declare class Actor<DataType = any> extends Entity {
-	data: ActorData<DataType>;
+declare class Actor<DD = any, D extends Actor.Data = Actor.Data<DD>> extends Entity {
+  constructor (data?: D, options?: EntityCreateOptions)
 
-	/**
-	 * A reference to a placed Token which creates a synthetic Actor
-	 */
-	token: Token;
+  /**
+     * A reference to a placed Token which creates a synthetic Actor
+     * @type {Token}
+     */
+  token: Token | null
 
-	/**
-	 * Construct the Array of Item instances for the Actor
-	 */
-	items: Collection<Item>;
+  /**
+     * Construct the Array of Item instances for the Actor
+     * Items are prepared by the Actor.prepareEmbeddedEntities() method
+     * @type {Collection<string,OwnedItem>}
+     */
+  items: Collection<Item>
 
-	/**
-	 * Classify Owned Items by their type
-	 */
-	get itemTypes(): { [key: string]: Item[] };
+  /**
+     * ActiveEffects are prepared by the Actor.prepareEmbeddedEntities() method
+     */
+  effects: Collection<ActiveEffect>
 
-	/**
-	 * Cache an Array of allowed Token images if using a wildcard path
-	 */
-	protected _tokenImages: any[];
+  /**
+     * A set that tracks which keys in the data model were modified by active effects
+     * @type {Data}
+     */
+  overrides: DD
 
-	/** @override */
-	static get config(): {
-		baseEntity: Actor;
-		collection: Actors;
-		embeddedEntities: { OwnedItem: string };
-	};
+  /**
+     * Cache an Array of allowed Token images if using a wildcard path
+     * @type {string[]}
+     * @private
+     */
+  _tokenImages: string[]
 
-	/** @override */
-	prepareData(): void;
+  /** @override */
+  static get config (): EntityConfig
 
-	/** @override */
-	prepareEmbeddedEntities(): void;
+  /* -------------------------------------------- */
+  /*  Properties                                  */
+  /* -------------------------------------------- */
 
-	/* -------------------------------------------- */
-	/*  Properties                                  */
-	/* -------------------------------------------- */
+  /**
+   * A convenient reference to the file path of the Actor's profile image
+   * @type {string}
+   */
+  get img (): string
 
-	/**
-	 * A convenient reference to the file path of the Actor's profile image
-	 */
-	get img(): string;
+  /**
+   * Classify Owned Items by their type
+   * @type {Object<string,Array>}
+   */
+  get itemTypes (): {
+    [prop: string]: any[]
+  }
 
-	/**
-	 * @deprecated
-	 * deprecated in favor of the more general Entity#hasPlayerOwner
-	 *
-	 * A boolean flag for whether this Actor is a player-owned character.
-	 * True if any User who is not a GM has ownership rights over the Actor entity.
-	 */
-	get isPC(): boolean;
+  /**
+   * Test whether an Actor entity is a synthetic representation of a Token (if true) or a full Entity (if false)
+   * @type {boolean}
+   */
+  get isToken (): boolean
 
-	/**
-	 * Test whether an Actor entity is a synthetic representation of a Token (if true) or a full Entity (if false)
-	 */
-	get isToken(): boolean;
+  /**
+   * An array of ActiveEffect instances which are present on the Actor which have a limited duration.
+   * @return {ActiveEffect[]}
+   */
+  get temporaryEffects (): ActiveEffect[]
 
-	/**
-	 * Create a synthetic Actor using a provided Token instance
-	 * If the Token data is linked, return the true Actor entity
-	 * If the Token data is not linked, create a synthetic Actor using the Token's actorData override
-	 * @param token
-	 */
-	static fromToken(token: Token): Actor;
+  /* -------------------------------------------- */
+  /*  Data Preparation                            */
+  /* -------------------------------------------- */
 
-	/**
-	 * Create a synthetic Token Actor instance which is used in place of an actual Actor.
-	 * Cache the result in Actors.tokens.
-	 * @param baseActor
-	 * @param token
-	 */
-	static createTokenActor(baseActor: Actor, token: Token): Actor;
+  /**
+   * @remarks
+   * Returns void
+   * @override
+   */
+  prepareData (): any
 
-	/**
-	 * Retrieve an Array of active tokens which represent this Actor in the current canvas Scene.
-	 * If the canvas is not currently active, or there are no linked actors, the returned Array will be empty.
-	 *
-	 * @param linked	Only return tokens which are linked to the Actor. Default (false) is to return all
-	 *					tokens even those which are not linked.
-	 *
-	 * @return			An array of tokens in the current Scene which reference this Actor.
-	 */
-	getActiveTokens(linked?: boolean): Token[];
+  /**
+   * First prepare any derived data which is actor-specific and does not depend on Items or Active Effects
+   */
+  prepareBaseData (): void
 
-	/**
-	 * Prepare a data object which defines the data schema used by dice roll commands against this Actor
-	 */
-	getRollData(): object;
+  /**
+   * Apply final transformations to the Actor data after all effects have been applied
+   */
+  prepareDerivedData (): void
 
-	/**
-	 * Get an Array of Token images which could represent this Actor
-	 */
-	getTokenImages(): Promise<any>;
+  /** @override */
+  prepareEmbeddedEntities (): void
 
-	/**
-	 * Handle how changes to a Token attribute bar are applied to the Actor.
-	 * This allows for game systems to override this behavior and deploy special logic.
-	 * @param attribute	The attribute path
-	 * @param value		The target attribute value
-	 * @param isDelta	Whether the number represents a relative change (true) or an absolute change (false)
-	 * @param isBar		Whether the new value is part of an attribute bar, or just a direct value
-	 */
-	modifyTokenAttributes(
-		attribute: string,
-		value: number,
-		isDelta?: boolean,
-		isBar?: boolean
-	): Promise<Actor<DataType>>;
+  /**
+   * Prepare a Collection of OwnedItem instances which belong to this Actor.
+   * @param {object[]} items  The raw array of item objects
+   * @return {Collection<string,Item>} The prepared owned items collection
+   * @private
+   */
+  _prepareOwnedItems (items: Item.Data[]): Collection<Item>
 
-	/* -------------------------------------------- */
-	/* Owned Item Management
-	/* -------------------------------------------- */
+  /**
+   * Prepare a Collection of ActiveEffect instances which belong to this Actor.
+   * @param {object[]} effects  The raw array of active effect objects
+   * @return {Collection<string,ActiveEffect>}  The prepared active effects collection
+   * @private
+   */
+  _prepareActiveEffects (effects: ActiveEffect[]): Collection<ActiveEffect>
 
-	/**
-	 * Import a new owned Item from a compendium collection
-	 * The imported Item is then added to the Actor as an owned item.
-	 *
-	 * @param collection	The name of the pack from which to import
-	 * @param entryId		The ID of the compendium entry to import
-	 */
-	importItemFromCollection(collection: string, entryId: string): Item;
+  /**
+   * Apply any transformations to the Actor data which are caused by ActiveEffects.
+   */
+  applyActiveEffects (): void
 
-	/**
-	 * Get an owned item by it's ID, initialized as an Item entity class
-	 * @param itemId	The ID of the owned item
-	 * @return			An Item class instance for that owned item or null if the itemId does not exist
-	 */
-	getOwnedItem(itemId: string): Item | null;
+  /* -------------------------------------------- */
+  /*  Methods                                     */
+  /* -------------------------------------------- */
 
-	/**
-	 * Create a new item owned by this Actor.
-	 * @param itemData				Data for the newly owned item
-	 * @param options				Item creation options
-	 * @param options.rendeSheet	Render the Item sheet for the newly created item data
-	 * @return						A Promise containing the newly created owned Item instance
-	 */
-	createOwnedItem(itemData: object, options?: object): Promise<Item>;
+  /**
+   * Create a synthetic Actor using a provided Token instance
+   * If the Token data is linked, return the true Actor entity
+   * If the Token data is not linked, create a synthetic Actor using the Token's actorData override
+   * @param {Token} token
+   * @return {Actor}
+   */
+  static fromToken (token: Token): Actor
 
-	/**
-	 * Update an owned item using provided new data
-	 * @param itemData	Data for the item to update
-	 * @param options	Item update options
-	 * @return			A Promise resolving to the updated Item object
-	 */
-	updateOwnedItem(itemData: object, options?: object): Promise<Item>;
+  /**
+   * Create a synthetic Token Actor instance which is used in place of an actual Actor.
+   * Cache the result in Actors.tokens.
+   * @param {Actor} baseActor
+   * @param {Token} token
+   * @return {Actor}
+   */
+  static createTokenActor (baseActor: Actor, token: Token): Actor
 
-	/**
-	 * @deprecated since 0.4.4 in favor of Entity.updateManyEmbeddedEntities()
-	 */
-	updateManyOwnedItems(data: object, options?: object): Promise<Item[]>;
+  /**
+   * Retrieve an Array of active tokens which represent this Actor in the current canvas Scene.
+   * If the canvas is not currently active, or there are no linked actors, the returned Array will be empty.
+   *
+   * @param [linked] {boolean}  Only return tokens which are linked to the Actor. Default (false) is to return all
+   *                            tokens even those which are not linked.
+   *
+   * @return {Token[]}          An array of tokens in the current Scene which reference this Actor.
+   */
+  getActiveTokens (linked?: boolean): Token[]
 
-	/**
-	 * Delete an owned item by its id. This redirects its arguments to the deleteEmbeddedEntity method.
-	 * @param itemId	The ID of the item to delete
-	 * @param options	Item deletion options
-	 * @return			A Promise resolving to the deleted Owned Item data
-	 */
-	deleteOwnedItem(itemId: string, options?: object): Promise<Item>;
+  /**
+   * Prepare a data object which defines the data schema used by dice roll commands against this Actor
+   * @return {Object}
+   */
+  getRollData (): DD
 
-	/**
-	 * Apply any transformations to the Actor data which are caused by ActiveEffects.
-	 */
-	protected applyActiveEffects(): void;
+  /**
+   * Get an Array of Token images which could represent this Actor
+   * @return {Promise<string[]>}
+   */
+  getTokenImages (): Promise<string[]>
+
+  /**
+   * Handle how changes to a Token attribute bar are applied to the Actor.
+   * This allows for game systems to override this behavior and deploy special logic.
+   * @param {string} attribute    The attribute path
+   * @param {number} value        The target attribute value
+   * @param {boolean} isDelta     Whether the number represents a relative change (true) or an absolute change (false)
+   * @param {boolean} isBar       Whether the new value is part of an attribute bar, or just a direct value
+   * @return {Promise<Actor>}     The updated Actor entity
+   */
+  modifyTokenAttribute (attribute: string, value: any, isDelta?: boolean, isBar?: boolean): Promise<this>
+
+  /**
+   * Roll initiative for all Combatants in the currently active Combat encounter which are associated with this Actor.
+   * If viewing a full Actor entity, all Tokens which map to that actor will be targeted for initiative rolls.
+   * If viewing a synthetic Token actor, only that particular Token will be targeted for an initiative roll.
+   *
+   * @param {object} options                Configuration for how initiative for this Actor is rolled.
+   * @param {boolean} [options.createCombatants]      Create new Combatant entries for Tokens associated with this actor.
+   * @param {boolean} [options.rerollInitiative]      Re-roll the initiative for this Actor if it has already been rolled.
+   * @param {object} [options.initiativeOptions]      Additional options passed to the Combat#rollInitiative method.
+   * @return {Promise<Combat|null>}         A promise which resolves to the Combat entity once rolls are complete.
+   */
+  rollInitiative ({ createCombatants, rerollInitiative, initiativeOptions }?: {
+    createCombatants?: boolean
+    rerollInitiative?: boolean
+    initiativeOptions?: any
+  }): Promise<Combat|null>
+
+  /* -------------------------------------------- */
+  /*  Socket Listeners and Handlers
+  /* -------------------------------------------- */
+
+  /** @override */
+  update (data: D, options?: EntityUpdateOptions): Promise<this>
+
+  /** @override */
+  delete (options?: EntityDeleteOptions): Promise<Actor>
+
+  /** @override */
+  _onUpdate (data: D, options: EntityUpdateOptions, userId: string, context?: any): void
+
+  /** @override */
+  createEmbeddedEntity (embeddedName: string, data: ActiveEffect | any, options?: any): ActiveEffect | any // OwnedItem
+
+  /**
+   * When Owned Items are created process each item and extract Active Effects to transfer to the Actor.
+   * @param {Data[]} created        Created owned Item data objects
+   * @param {boolean} [temporary]   Is this a temporary item creation?
+   * @return {Data[]}               An array of effects to transfer to the Actor
+   * @private
+   */
+  _createItemActiveEffects (created: ActiveEffect, { temporary }?: { temporary?: boolean}): ActiveEffect
+
+  /** @override */
+  _onCreateEmbeddedEntity (embeddedName: string, child: Item.Data|ActiveEffect, options: any, userId: string): void
+
+  /** @override */
+  deleteEmbeddedEntity (embeddedName: string, data: string, options?: any): Promise<Item.Data|ActiveEffect>
+
+  /**
+   * When Owned Items are created process each item and extract Active Effects to transfer to the Actor.
+   * @param {Data[]} deleted   The array of deleted owned Item data
+   * @private
+   */
+  _deleteItemActiveEffects (deleted: Item.Data): ActiveEffect|ActiveEffect[]
+
+  /** @override */
+  _onDeleteEmbeddedEntity (embeddedName: string, child: Item.Data|ActiveEffect, options: any, userId: string): void
+
+  /** @override */
+  _onModifyEmbeddedEntity (embeddedName: string, changes: any[], options: any, userId: string, context?: any): void
+
+  /* -------------------------------------------- */
+  /*  Owned Item Management                       */
+  /* -------------------------------------------- */
+
+  /**
+   * Get an Item instance corresponding to the Owned Item with a given id
+   * @param {string} itemId   The owned Item id to retrieve
+   * @return {Item}           An Item instance representing the Owned Item within the Actor entity
+   */
+  getOwnedItem (itemId: string): Item
+
+  /**
+   * Create a new item owned by this Actor. This redirects its arguments to the createEmbeddedEntity method.
+   * @see {Entity#createEmbeddedEntity}
+   *
+   * @param {Object} itemData     Data for the newly owned item
+   * @param {Object} options      Item creation options
+   * @param {boolean} options.renderSheet Render the Item sheet for the newly created item data
+   * @return {Promise.<Object>}   A Promise resolving to the created Owned Item data
+   */
+  createOwnedItem (itemData: Item.Data, options?: any): Promise<Item.Data>
+
+  /**
+   * Update an owned item using provided new data. This redirects its arguments to the updateEmbeddedEntity method.
+   * @see {Entity#updateEmbeddedEntity}
+   *
+   * @param {Object} itemData     Data for the item to update
+   * @param {Object} options      Item update options
+   * @return {Promise.<Object>}   A Promise resolving to the updated Owned Item data
+   */
+  updateOwnedItem (itemData: Item.Data, options?: any): Promise<any>
+
+  /* -------------------------------------------- */
+
+  /**
+   * Delete an owned item by its id. This redirects its arguments to the deleteEmbeddedEntity method.
+   * @see {Entity#deleteEmbeddedEntity}
+   *
+   * @param {string} itemId       The ID of the item to delete
+   * @param {Object} options      Item deletion options
+   * @return {Promise.<Object>}   A Promise resolving to the deleted Owned Item data
+   */
+  deleteOwnedItem (itemId: string, options?: any): Promise<any>
+
+  /* -------------------------------------------- */
+  /*  DEPRECATED                                  */
+  /* -------------------------------------------- */
+
+  /**
+   * @deprecated since 0.7.0
+   */
+  importItemFromCollection (collection: string, entryId: String): Promise<any>
+
+  /**
+   * @deprecated since 0.7.2
+   * @see {@link Entity#hasPlayerOwner}
+   */
+  get isPC (): boolean
+}
+
+declare namespace Actor {
+  interface Data<D = any> extends EntityData {
+    img?: string
+    token?: any
+    data?: D
+    items?: Item.Data[]
+    effects?: ActiveEffect[]
+  }
 }
