@@ -48,7 +48,6 @@ import './types/applications/widgets/searchFilter'
 // Core
 
 import './types/core/audio'
-import './types/core/avSettings'
 import './types/core/config'
 import './types/core/dicePool'
 import './types/core/diceTerm'
@@ -65,6 +64,11 @@ import './types/core/socketInterface'
 import './types/core/sortingHelpers'
 import './types/core/textEditor'
 import './types/core/videoHelper'
+
+// webRTC
+
+import './types/core/webRtc/avMaster'
+import './types/core/webRtc/avSettings'
 
 // settings
 
