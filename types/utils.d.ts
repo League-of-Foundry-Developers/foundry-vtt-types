@@ -140,6 +140,17 @@ declare function getParentClasses (
 declare function getProperty (object: object, key: string): any
 
 /**
+ * Get the URL route for a certain path which includes a path prefix, if one is
+ * set
+ * @param path - The Foundry VTT URL path
+ * @param options - (default: `{}`)
+ * @param prefix - A path prefix to apply
+ *                 (default: `null`)
+ * @returns The absolute URL path
+ */
+declare function getRoute (path: string, options?: { prefix?: string }): string
+
+/**
  * Learn the named type of a token - extending the functionality of typeof to
  * recognize some core Object types
  * @param token - Some passed token
