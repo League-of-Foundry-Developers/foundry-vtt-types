@@ -7,20 +7,19 @@
  * @example <caption>Retrieve an existing Actor by its id</caption>
  * let actor = game.actors.get(actorId);
  */
-declare class Actors extends Collection<Actor> {
-  entities: Actor[]
+declare class Actors extends EntityCollection<Actor> {
 
-  /**
-   * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
-   * Each Actor is referenced by the Token.id.
-   * @type {Object}
-   */
-  tokens: Token[]
+    /**
+     * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
+     * Each Actor is referenced by the Token.id.
+     * @type {Object}
+     */
+  tokens: {
+    [id: string]: Actor
+  }
 
   /** @override */
-  get object (): Actor;
-
-  values (): IterableIterator<Actor>;
+  get entity(): string
 
   /* -------------------------------------------- */
   /*  Sheet Registration Methods                  */
@@ -29,24 +28,43 @@ declare class Actors extends Collection<Actor> {
   /**
    * Register an Actor sheet class as a candidate which can be used to display Actors of a given type
    * See EntitySheetConfig.registerSheet for details
+   * @static
+   *
+   * @example <caption>Register a new ActorSheet subclass for use with certain Actor types.</caption>
+   * Actors.registerSheet("dnd5e", ActorSheet5eCharacter, { types: ["character"], makeDefault: true });
    */
-  static registerSheet (...args: any): void;
+  static registerSheet(scope: string, sheetClass: () => Application, {label, types, makeDefault}?: {
+    label?: string
+    types?: (() => Application)[]
+    makeDefault?: boolean
+  }): void
 
   /**
    * Unregister an Actor sheet class, removing it from the list of avaliable sheet Applications to use
    * See EntitySheetConfig.unregisterSheet for details
+   * @static
+   *
+   * @example <caption>Deregister the default ActorSheet subclass to replace it with others.</caption>
+   * Actors.unregisterSheet("core", ActorSheet);
    */
-  static unregisterSheet (...args: any): void;
+  static unregisterSheet(scope: string, sheetClass: () => Application, {types}?: {
+    types?: (() => Application)[]
+  }): void
 
   /**
    * Return an Array of currently registered sheet classes for this Entity type
+   * @type {ActorSheet[]}
    */
-  static get registeredSheets (): any[];
+  static get registeredSheets(): (() => ActorSheet)[]
 }
 
 /**
  * The Actor Entity which represents the protagonists, characters, enemies, and more that inhabit and take actions
  * within the World.
+ *
+ * @typeParam DD - Actor.data.data field
+ * @typeParam I - Item.Data for owned items
+ * @typeParam D - Actor.data field
  *
  * @see {@link Actors} Each Actor belongs to the Actors collection.
  * @see {@link ActorSheet} Each Actor is edited using the ActorSheet application or a subclass thereof.
@@ -69,7 +87,7 @@ declare class Actors extends Collection<Actor> {
  * @example <caption>Retrieve an existing Actor</caption>
  * let actor = game.actors.get(actorId);
  */
-declare class Actor<DD = any, D extends Actor.Data = Actor.Data<DD>> extends Entity {
+declare class Actor<DD = any, I extends Item.Data = Item.Data, D extends Actor.Data = Actor.Data<DD, I>> extends Entity {
   constructor (data?: D, options?: EntityCreateOptions)
 
   /**
@@ -81,7 +99,7 @@ declare class Actor<DD = any, D extends Actor.Data = Actor.Data<DD>> extends Ent
   /**
      * Construct the Array of Item instances for the Actor
      * Items are prepared by the Actor.prepareEmbeddedEntities() method
-     * @type {Collection<string,OwnedItem>}
+     * @type {Collection<string,I>}
      */
   items: Collection<Item>
 
@@ -121,7 +139,7 @@ declare class Actor<DD = any, D extends Actor.Data = Actor.Data<DD>> extends Ent
    * @type {Object<string,Array>}
    */
   get itemTypes (): {
-    [prop: string]: any[]
+    [prop: string]: Item<I>[]
   }
 
   /**
@@ -166,7 +184,7 @@ declare class Actor<DD = any, D extends Actor.Data = Actor.Data<DD>> extends Ent
    * @return {Collection<string,Item>} The prepared owned items collection
    * @private
    */
-  _prepareOwnedItems (items: Item.Data[]): Collection<Item>
+  _prepareOwnedItems (items: I[]): Collection<Item>
 
   /**
    * Prepare a Collection of ActiveEffect instances which belong to this Actor.
@@ -280,20 +298,20 @@ declare class Actor<DD = any, D extends Actor.Data = Actor.Data<DD>> extends Ent
   _createItemActiveEffects (created: ActiveEffect, { temporary }?: { temporary?: boolean}): ActiveEffect
 
   /** @override */
-  _onCreateEmbeddedEntity (embeddedName: string, child: Item.Data|ActiveEffect, options: any, userId: string): void
+  _onCreateEmbeddedEntity (embeddedName: string, child: I|ActiveEffect, options: any, userId: string): void
 
   /** @override */
-  deleteEmbeddedEntity (embeddedName: string, data: string, options?: any): Promise<Item.Data|ActiveEffect>
+  deleteEmbeddedEntity (embeddedName: string, data: string, options?: any): Promise<I|ActiveEffect>
 
   /**
    * When Owned Items are created process each item and extract Active Effects to transfer to the Actor.
    * @param {Data[]} deleted   The array of deleted owned Item data
    * @private
    */
-  _deleteItemActiveEffects (deleted: Item.Data): ActiveEffect|ActiveEffect[]
+  _deleteItemActiveEffects (deleted: I): ActiveEffect|ActiveEffect[]
 
   /** @override */
-  _onDeleteEmbeddedEntity (embeddedName: string, child: Item.Data|ActiveEffect, options: any, userId: string): void
+  _onDeleteEmbeddedEntity (embeddedName: string, child: I|ActiveEffect, options: any, userId: string): void
 
   /** @override */
   _onModifyEmbeddedEntity (embeddedName: string, changes: any[], options: any, userId: string, context?: any): void
@@ -318,7 +336,7 @@ declare class Actor<DD = any, D extends Actor.Data = Actor.Data<DD>> extends Ent
    * @param {boolean} options.renderSheet Render the Item sheet for the newly created item data
    * @return {Promise.<Object>}   A Promise resolving to the created Owned Item data
    */
-  createOwnedItem (itemData: Item.Data, options?: any): Promise<Item.Data>
+  createOwnedItem (itemData: I, options?: any): Promise<I>
 
   /**
    * Update an owned item using provided new data. This redirects its arguments to the updateEmbeddedEntity method.
@@ -328,7 +346,7 @@ declare class Actor<DD = any, D extends Actor.Data = Actor.Data<DD>> extends Ent
    * @param {Object} options      Item update options
    * @return {Promise.<Object>}   A Promise resolving to the updated Owned Item data
    */
-  updateOwnedItem (itemData: Item.Data, options?: any): Promise<any>
+  updateOwnedItem (itemData: I, options?: any): Promise<any>
 
   /* -------------------------------------------- */
 
@@ -359,11 +377,11 @@ declare class Actor<DD = any, D extends Actor.Data = Actor.Data<DD>> extends Ent
 }
 
 declare namespace Actor {
-  interface Data<D = any> extends EntityData {
+  interface Data<D = any, I extends Item.Data = Item.Data> extends EntityData {
     img?: string
     token?: any
     data?: D
-    items?: Item.Data[]
+    items?: I[]
     effects?: ActiveEffect[]
   }
 }

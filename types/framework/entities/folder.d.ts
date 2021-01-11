@@ -1,4 +1,34 @@
-declare class Folders extends Collection<Folder> {}
+/**
+ * The Folders EntityCollection
+ * @extends {EntityCollection}
+ */
+declare class Folders extends EntityCollection<Folder> {
+    /**
+     * This tracks which folders are currently expanded in the UI
+     * @private
+     */
+    _expanded: {
+      [id: string]: boolean
+    }
+
+  /* -------------------------------------------- */
+
+  /** @override */
+  get entity(): string
+
+  /* -------------------------------------------- */
+
+  /** @override */
+  render(force?: boolean, context?: any): any
+
+  /* -------------------------------------------- */
+
+  /**
+   * Refresh the display of any active JournalSheet instances where the folder list will change.
+   * @private
+   */
+  _refreshJournalEntrySheets(): void
+}
 
 declare class Folder<D extends Folder.Data = Folder.Data> extends Entity<D> {
   /** @override */

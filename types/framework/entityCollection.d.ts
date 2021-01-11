@@ -45,7 +45,7 @@ declare abstract class EntityCollection<T extends Entity>
    * Return a reference to the base Entity name which is contained within this
    * EntityCollection.
    */
-  abstract get entity (): void
+  abstract get entity (): string
 
   /**
    * The EntityCollection name
@@ -59,7 +59,7 @@ declare abstract class EntityCollection<T extends Entity>
    * this game to represent the entity, and not the base implementation of that
    * entity type.
    */
-  get object (): () => EntityCollection<T>
+  get object (): () => T
 
   /**
    * Initialize the Map object and all its contained entities

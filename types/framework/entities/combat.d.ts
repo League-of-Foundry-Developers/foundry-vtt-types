@@ -1,30 +1,48 @@
 /**
  * The Collection of Combat entities
  */
-declare class CombatEncounters extends Collection<Combat> {
-  entities: Combat[]
+declare class CombatEncounters extends EntityCollection<Combat> {
 
-  values (): IterableIterator<Combat>
+  /** @override */
+  get entity(): string
 
   /**
-   * The currently active Combat instance
+   * Provide the settings object which configures the Combat entity
+   * @return {object}
    */
-  active: Combat
+  get settings(): {
+    resource: string
+    skipDefeated: boolean
+  }
 
   /**
    * Get an Array of Combat instances which apply to the current canvas scene
+   * @type {Combat[]}
    */
-  combats: Combat[]
+  get combats(): Combat[]
 
   /**
-   * A reference to the world combat configuration settings
+   * The currently active Combat instance
+   * @return {Combat}
    */
-  settings: any
+  get active(): Combat
 
   /**
    * The currently viewed Combat encounter
+   * @return {Combat|null}
    */
-  viewed: Combat
+  get viewed(): Combat | null
+
+  /** @override */
+  static get instance(): CombatEncounters
+
+  /**
+   * When a Token is deleted, remove it as a combatant from any combat encounters which included the Token
+   * @param {string} sceneId
+   * @param {string} tokenId
+   * @private
+   */
+  _onDeleteToken(sceneId: string, tokenId: string): Promise<void>
 }
 
 /**

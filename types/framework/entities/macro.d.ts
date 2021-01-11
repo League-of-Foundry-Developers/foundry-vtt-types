@@ -2,23 +2,26 @@
  * The Collection of Macro entities
  * @extends {EntityCollection}
  */
-declare class Macros extends Collection<Macro> {
-  entities: Macro[]
+declare class Macros extends EntityCollection<Macro> {
 
-  values (): IterableIterator<Macro>;
+  /** @override */
+  get entity(): string
 
-  /* -------------------------------------------- */
-  /*  Properties                                  */
-  /* -------------------------------------------- */
+  /** @override */
+  static get instance(): Macros
+
+  /** @override */
+  get directory(): any // MacroDirectory
 
   /**
    * Determine whether a given User is allowed to use JavaScript macros
-   * @param user  The User entity to test
-   * @return    Can the User use scripts?
+   * @param {User} user   The User entity to test
+   * @return {boolean}    Can the User use scripts?
    */
-  static canUseScripts (user: User): boolean;
+  static canUseScripts(user: User): boolean
 
-  static registerSettings (): void;
+  /** @override */
+  fromCompendium(data: Macro.Data): Macro.Data
 }
 
 /**

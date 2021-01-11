@@ -1,33 +1,34 @@
-declare class Messages extends Collection<ChatMessage> {
-  entities: ChatMessage[]
+/**
+ * A :class:`EntityCollection` of class:`ChatMessage` entities
+ * The Messages collection is accessible within the game as `game.messages`.
+ *
+ * @type {EntityCollection}
+ */
+declare class Messages extends EntityCollection<ChatMessage> {
+  /** @override */
+  get entity(): string
 
-  /**
-   * Elements of the Messages collection are instances of the ChatMessage class
-   */
-  get object (): ChatMessage;
-
-  values (): IterableIterator<ChatMessage>;
-
-  /* -------------------------------------------- */
-  /*  Socket Listeners and Handlers               */
-  /* -------------------------------------------- */
+  /** @override */
+  render(force?: boolean, options?: any): any
 
   /**
    * If requested, dispatch a Chat Bubble UI for the newly created message
-   * @param response  The created ChatMessage response
+   * @param {ChatMessage} message     The ChatMessage entity to say
+   * @private
    */
-  protected _sayBubble (response: object): void;
+  sayBubble(message: ChatMessage): void
 
   /**
    * Handle export of the chat log to a text file
+   * @private
    */
-  protected export (): void;
+  export(): void
 
   /**
    * Allow for bulk deletion of all chat messages, confirm first with a yes/no dialog.
    * @see {@link Dialog.confirm}
    */
-  flush (): Promise<any>;
+  flush(): Promise<void>
 }
 
 /**

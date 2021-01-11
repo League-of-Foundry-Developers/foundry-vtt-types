@@ -1,12 +1,55 @@
 /**
  * The collection of Scene entities
  */
-declare class Scenes extends Collection<Scene> {
+declare class Scenes extends EntityCollection<Scene> {
+
+  /** @override */
+  get entity(): string
+
   /**
    * Return a reference to the Scene which is currently active
+   * @return {Scene}
    */
-  active: Scene
-  // @TODO: Declare
+  get active(): Scene
+
+  /**
+   * Return a reference to the Scene which is currently viewed
+   * @return {Scene}
+   */
+  get viewed(): Scene
+
+  /* -------------------------------------------- */
+  /*  Socket Listeners and Handlers               */
+  /* -------------------------------------------- */
+
+  /** @override */
+  static socketListeners(socket: SocketIOClient.Socket): void
+
+  /**
+   * Augment the standard modifyDocument listener to flush fog exploration
+   * @private
+   */
+  static _resetFog(response: {
+    scene: Scene
+    reset: boolean
+  }): Promise<Canvas>
+
+  /**
+   * Handle pre-loading the art assets for a Scene
+   * @param {string} sceneId    The Scene id to begin loading
+   * @param {boolean} push      Trigger other connected clients to also pre-load Scene resources
+   */
+  preload(sceneId: string, push?: boolean): Promise<void>
+
+  /**
+   * Handle requests pulling the current User to a specific Scene
+   * @param {string} sceneId
+   * @private
+   */
+  static _pullToScene(sceneId: string): void
+
+  /** @override */
+  fromCompendium(data: Scene.Data): Scene.Data
 }
 
 /**

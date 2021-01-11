@@ -2,46 +2,37 @@
  * The Collection of Item entities
  * The items collection is accessible within the game as game.items
  */
-declare class Items extends Collection<Item> {
-  entities: Item[]
-
-  values (): IterableIterator<Item>;
+declare class Items extends EntityCollection<Item> {
+  /** @override */
+  get entity(): string
 
   /* -------------------------------------------- */
-  /*  Collection Properties                       */
+  /*  Methods
   /* -------------------------------------------- */
-
-  static get instance (): Items;
 
   /**
-   * Elements of the Items collection are instances of the Item class, or a subclass thereof
-   */
-  get object (): Item;
-
-  /* -------------------------------------------- */
-  /*  Collection Management Methods               */
-  /* -------------------------------------------- */
-
-  insert (entity: Item): void;
-
-  get (id: string, { strict }?: { strict?: boolean }): Item;
-
-  /**
-   * Register an Item sheet class as a candidate which can be used to display Items of a given type
+   * Register an Actor sheet class as a candidate which can be used to display Actors of a given type
    * See EntitySheetConfig.registerSheet for details
    */
-  static registerSheet (...args: any): void;
+  static registerSheet(scope: string, sheetClass: () => Application, {label, types, makeDefault}?: {
+    label?: string
+    types?: (() => Application)[]
+    makeDefault?: boolean
+  }): void
 
   /**
-   * Unregister an Item sheet class, removing it from the list of avaliable sheet Applications to use
+   * Unregister an Actor sheet class, removing it from the list of avaliable sheet Applications to use
    * See EntitySheetConfig.unregisterSheet for details
    */
-  static unregisterSheet (...args: any): void;
+  static unregisterSheet(scope: string, sheetClass: () => Application, {types}?: {
+    types?: (() => Application)[]
+  }): void
 
   /**
    * Return an Array of currently registered sheet classes for this Entity type
+   * @type {ItemSheet[]}
    */
-  static get registeredSheets (): any[];
+  static get registeredSheets(): (() => ItemSheet)[]
 }
 
 declare class Item<DD = any, D extends Item.Data = Item.Data<DD>> extends Entity<D> {

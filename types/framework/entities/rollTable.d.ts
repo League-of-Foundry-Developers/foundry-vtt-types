@@ -1,7 +1,26 @@
-declare class RollTables extends Collection<RollTable> {
-  entities: RollTable[]
+/**
+ * The EntityCollection of RollTable entities
+ * @extends {EntityCollection}
+ */
+declare class RollTables extends EntityCollection<RollTable> {
 
-  values (): IterableIterator<RollTable>;
+  /* -------------------------------------------- */
+  /*  Properties                                  */
+  /* -------------------------------------------- */
+
+  /** @override */
+  get entity(): string
+
+  /** @override */
+  static get instance(): RollTables
+
+  /** @override */
+  get directory(): RollTableDirectory
+
+  /**
+   * Register world settings related to RollTable entities
+   */
+  static registerSettings(): void
 }
 
 declare class RollTable<D extends RollTable.Data = RollTable.Data> extends Entity<D> {

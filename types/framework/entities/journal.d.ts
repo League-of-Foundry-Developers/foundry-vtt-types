@@ -1,6 +1,32 @@
-declare class Journal extends Collection<JournalEntry> {
-  // @TODO Add Journal class
-  [key: string]: any;
+/**
+ * The JournalEntry Configuration Sheet
+ * @implements {BaseEntitySheet}
+ *
+ * @param {JournalEntry} entity     The JournalEntry instance which is being edited
+ * @param {object} [options]        Application options
+ */
+declare class Journal extends EntityCollection<JournalEntry> {
+  /** @override */
+  get entity(): string
+
+  /* -------------------------------------------- */
+  /*  Socket Listeners and Handlers               */
+  /* -------------------------------------------- */
+
+  /**
+   * Open Socket listeners which transact JournalEntry data
+   * @private
+   */
+  static socketListeners(socket: SocketIOClient.Socket): void
+
+  /**
+   * Handle a received request to show a JournalEntry to the current client
+   * @param {string} entryId      The ID of the journal entry to display for other players
+   * @param {string} mode         The JournalEntry mode to display
+   * @param {boolean} force       Display the entry to all players regardless of normal permissions
+   * @private
+   */
+  static _showEntry(entryId: string, mode?: "text" | "image", force?: boolean): void
 }
 
 /**

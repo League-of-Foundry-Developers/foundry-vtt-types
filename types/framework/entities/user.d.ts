@@ -2,31 +2,43 @@
  * The collection of User entities which is accessible through ``game.users``.
  * The array of User entities within this collection is accessible through ``game.users.entities``.
  */
-declare class Users extends Collection<User> {
-  entities: User[]
+declare class Users extends EntityCollection<User> {
+  /**
+   * The User entity of the currently connected user
+   * @type {User|null}
+   */
+  current: User | null
 
   /**
-   * Elements of the Users collection are instances of the User class
+   * Initialize the Map object and all its contained entities
+   * @param {Object[]} data
+   * @private
    */
-  get object (): User;
+  _initialize(data: User[]): void
+
+  /** @override */
+  get entity(): string
 
   /**
    * Get the users with player roles
+   * @return {Array.<User>}
    */
-  get players (): User[];
-
-  values (): IterableIterator<User>;
+  get players(): User[]
 
   /* -------------------------------------------- */
   /*  Socket Listeners and Handlers               */
   /* -------------------------------------------- */
 
+  /** @override */
+  static socketListeners(socket: SocketIOClient.Socket): void
+
   /**
    * Handle receipt of activity data from another User connected to the Game session
-   * @param userId    The User id who generated the activity data
-   * @param activityData  The object of activity data
+   * @param {string} userId         The User id who generated the activity data
+   * @param {Object} activityData   The object of activity data
+   * @private
    */
-  static _handleUserActivity (userId: string, activityData?: object): void;
+  static _handleUserActivity(userId: string, activityData: User.ActivityData): void
 }
 
 /**

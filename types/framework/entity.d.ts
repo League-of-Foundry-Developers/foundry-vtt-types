@@ -476,7 +476,7 @@ _data: DataType
         * @param {Options} options             Additional options which customize the update workflow
         * @return {Promise<Entity>}            The updated Entity
         */
-       update (data: DataType, options?: EntityUpdateOptions): Promise<Entity>;
+       update (data: DataType, options?: EntityUpdateOptions): Promise<this>;
 
        /**
         * Delete one or multiple existing entities using provided ids.

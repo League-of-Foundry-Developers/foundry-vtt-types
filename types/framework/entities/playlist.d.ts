@@ -1,23 +1,26 @@
-declare class Playlists extends Collection<Playlist> {
-  entities: Playlist[]
+/**
+ * The EntityCollection of Playlist entities.
+ * @extends {EntityCollection}
+ */
+declare class Playlists extends EntityCollection<Playlist> {
 
   /** @override */
-  get object (): Playlist;
-
-  values (): IterableIterator<Playlist>;
+  get entity(): string
 
   /**
    * Return the subset of Playlist entities which are currently playing
+   * @type {Playlist[]}
    */
-  get playing (): Playlist[];
+  get playing(): Playlist
 
   /**
    * Handle changes to a Scene to determine whether to trigger changes to Playlist entities.
-   * @param scene    The Scene entity being updated
-   * @param data    Incremental update data
-   * @param options  Update options
+   * @param {Scene} scene       The Scene entity being updated
+   * @param {Object} data       Incremental update data
+   * @param {Object} options    Update options
+   * @private
    */
-  protected _onUpdateScene (scene: Scene, data: object, options: object): void;
+  _onUpdateScene(scene: Scene, data: Scene.Data, options: EntityUpdateOptions): void
 }
 
 declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D> {
