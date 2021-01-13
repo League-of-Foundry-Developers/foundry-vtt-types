@@ -150,6 +150,17 @@ declare class ClientSettings {
 }
 
 declare namespace ClientSettings {
+  interface CompleteData<T> extends PartialData<T> {
+    key: string
+    module: string
+  }
+
+  interface CompleteMenuSettings
+  <F extends FormApplication = FormApplication> extends PartialMenuSettings<F> {
+    key: string
+    module: string
+  }
+
   interface PartialData<T> {
     choices?: Record<string, string>
     config?: boolean
@@ -166,11 +177,6 @@ declare namespace ClientSettings {
     type?: new (...args: any) => T
   }
 
-  interface CompleteData<T> extends PartialData<T> {
-    key: string
-    module: string
-  }
-
   interface PartialMenuSettings
   <F extends FormApplication = FormApplication> {
     hint?: string
@@ -179,11 +185,5 @@ declare namespace ClientSettings {
     name?: string
     restricted: boolean
     type: new (...args: any) => F
-  }
-
-  interface CompleteMenuSettings
-  <F extends FormApplication = FormApplication> extends PartialMenuSettings<F> {
-    key: string
-    module: string
   }
 }
