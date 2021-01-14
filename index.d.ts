@@ -77,6 +77,10 @@ import './types/core/rolls/die'
 import './types/core/rolls/mersenneTwister'
 import './types/core/rolls/roll'
 
+// dice terms
+
+import './types/core/rolls/diceTerms/coin'
+
 // settings
 
 import './types/core/settings/clientSettings'

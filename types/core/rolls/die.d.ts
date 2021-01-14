@@ -116,18 +116,6 @@ declare class Die extends DiceTerm {
   subtractFailures (modifier: string): void;
 }
 
-declare class Coin extends DiceTerm {
-  /**
-   * Call the result of the coin flip, marking any coins that matched the called target as a success
-   *
-   * 3dcc1      Flip 3 coins and treat "heads" as successes
-   * 2dcc0      Flip 2 coins and treat "tails" as successes
-   *
-   * @param modifier - The matched modifier query
-   */
-  call (modifier: string): void;
-}
-
 /**
  * A special die used by Fate/Fudge systems
  * Mathematically behaves like 1d3-2
