@@ -78,14 +78,7 @@ declare abstract class DiceTerm {
    * @param options - Additional options that modify the term
    *                  (default: `{}`)
    */
-  constructor (
-    termData?: {
-      faces: number
-      modifiers: string[]
-      number: number
-      options: DiceTerm.Options
-    }
-  )
+  constructor (termData?: DiceTerm.TermData)
 
   /**
    * Return the dice expression portion of the full term formula, excluding any
@@ -228,12 +221,7 @@ declare abstract class DiceTerm {
    * ```
    */
   static fromResults (
-    options: {
-      faces: number
-      modifiers: string[]
-      number: number
-      options: DiceTerm.Options
-    },
+    options: DiceTerm.TermData,
     results: DiceTerm.Result[]
   ): DiceTerm
 
@@ -306,6 +294,13 @@ declare abstract class DiceTerm {
 }
 
 declare namespace DiceTerm {
+  interface TermData {
+    faces: number
+    modifiers: string[]
+    number: number
+    options: DiceTerm.Options
+  }
+
   interface OldTerm {
     formula: string
     rolls: Array<{
