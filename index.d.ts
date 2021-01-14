@@ -74,6 +74,7 @@ import './types/core/videoHelper'
 import './types/core/rolls/dicePool'
 import './types/core/rolls/diceTerm'
 import './types/core/rolls/die'
+import './types/core/rolls/mersenneTwister'
 import './types/core/rolls/roll'
 
 // settings
