@@ -57,31 +57,34 @@ import './types/applications/widgets/searchFilter'
 
 import './types/core/audio'
 import './types/core/config'
-import './types/core/dicePool'
-import './types/core/diceTerm'
-import './types/core/die'
 import './types/core/fonts'
 import './types/core/gameTime'
 import './types/core/handlebarsHelpers'
 import './types/core/hooks'
 import './types/core/imageHelper'
 import './types/core/keyboard'
-import './types/core/roll'
 import './types/core/setupConfiguration'
 import './types/core/socketInterface'
 import './types/core/sortingHelpers'
 import './types/core/textEditor'
 import './types/core/videoHelper'
 
-// webRTC
+// rolls
 
-import './types/core/webRtc/avMaster'
-import './types/core/webRtc/avSettings'
+import './types/core/rolls/dicePool'
+import './types/core/rolls/diceTerm'
+import './types/core/rolls/die'
+import './types/core/rolls/roll'
 
 // settings
 
 import './types/core/settings/clientSettings'
 import './types/core/settings/worldSettingsStorage'
+
+// webRTC
+
+import './types/core/webRtc/avMaster'
+import './types/core/webRtc/avSettings'
 
 // Framework
 
