@@ -73,13 +73,14 @@ import './types/core/videoHelper'
 
 import './types/core/rolls/dicePool'
 import './types/core/rolls/diceTerm'
-import './types/core/rolls/die'
 import './types/core/rolls/mersenneTwister'
 import './types/core/rolls/roll'
 
 // dice terms
 
 import './types/core/rolls/diceTerms/coin'
+import './types/core/rolls/diceTerms/die'
+import './types/core/rolls/diceTerms/fateDie'
 
 // settings
 
