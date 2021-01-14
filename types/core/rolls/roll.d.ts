@@ -30,30 +30,30 @@ declare class Roll<D = {}> {
    * expression
    * @defaultValue `['+', '-', '*', '/']`
    */
-  ARITHMETIC: string[]
+  static ARITHMETIC: string[]
 
   /**
    * @defaultValue `'templates/dice/roll.html'`
    */
-  CHAT_TEMPLATE: string
+  static CHAT_TEMPLATE: string
 
   /**
    * A Proxy environment for safely evaluating a string using only available
    * Math functions
    */
-  MATH_PROXY: Roll.MathProxy
+  static MATH_PROXY: Roll.MathProxy
 
   /**
    * A regular expression used to identify the Roll formula for parenthetical
    * terms
    * @defaultValue `/^\((.*)\)$/`
    */
-  PARENTHETICAL_RGX: RegExp
+  static PARENTHETICAL_RGX: RegExp
 
   /**
    * @defaultValue `'templates/dice/tooltip.html'`
    */
-  TOOLTIP_TEMPLATE: string
+  static TOOLTIP_TEMPLATE: string
 
   /**
    * An array of inner terms which were rolled parenthetically
