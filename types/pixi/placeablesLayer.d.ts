@@ -1,13 +1,3 @@
-// @TODO: Types
-
-declare interface LayerOptions {
-  canDragCreate: boolean
-  controllableObjects: boolean
-  gridPrecision: number
-  rotatableObjects: boolean
-  snapToGrid: boolean
-}
-
 /**
  * The base PlaceablesLayer subclass of CanvasLayer
  */
@@ -52,7 +42,7 @@ declare class PlaceablesLayer extends CanvasLayer {
   /**
    * Customize behaviors of this PlaceablesLayer by modifying some behaviors at a class level
    */
-  static get layerOptions (): LayerOptions;
+  static get layerOptions (): PlaceablesLayer.LayerOptions;
 
   /**
    * Return a reference to the active instance of this canvas layer
@@ -93,7 +83,7 @@ declare class PlaceablesLayer extends CanvasLayer {
    * Override the activation behavior of the PlaceablesLayer.
    * While active, ambient sound previews are displayed.
    */
-  activate (): void;
+  activate (): this;
 
   /**
    * Copy currently controlled PlaceableObjects to a temporary Array, ready to paste back into the scene later
@@ -140,7 +130,7 @@ declare class PlaceablesLayer extends CanvasLayer {
    * Draw the PlaceablesLayer.
    * Draw each Sound within the scene as a child of the sounds container.
    */
-  draw (): Promise<PlaceablesLayer>;
+  draw (): Promise<PlaceableObject[]>;
 
   /**
    * Get a PlaceableObject contained in this layer by it's ID
@@ -296,4 +286,14 @@ declare class PlaceablesLayer extends CanvasLayer {
    * Handle right mouse-click events which occur while this layer is active
    */
   protected _onRightDown (event: PIXI.InteractionEvent): void;
+}
+
+declare namespace PlaceablesLayer {
+  interface LayerOptions extends CanvasLayer.LayerOptions {
+    canDragCreate: boolean
+    controllableObjects: boolean
+    gridPrecision: number
+    rotatableObjects: boolean
+    snapToGrid: boolean
+  }
 }

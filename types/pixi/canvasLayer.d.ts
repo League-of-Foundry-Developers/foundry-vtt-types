@@ -57,7 +57,7 @@ declare class CanvasLayer extends PIXI.Container {
    * The Promise resolves to the drawn layer once its contents are successfully
    * rendered.
    */
-  draw (): Promise<this>
+  draw (): Promise<this | PlaceableObject[]>
 
   /**
    * Deconstruct data used in the current layer in preparation to re-draw the
