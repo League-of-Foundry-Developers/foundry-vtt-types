@@ -54,7 +54,7 @@ declare namespace HooksCallbacks {
    * @see {@link Canvas#pan}
    * @see {@link Canvas#animatePan}
    */
-  type CanvasPan = (canvas: Canvas, view: CanvasView) => void
+  type CanvasPan = (canvas: Canvas, view: Canvas.View) => void
 
   /**
    * This is called after a {@link Canvas} is done initializing.
@@ -267,7 +267,7 @@ declare namespace HooksCallbacks {
    * @see {@link ChatLog#_contextMenu}
    */
   type GetChatLogEntryContext =
-    (jq: JQuery, entryOptions: ContextMenuOption[]) => void
+    (jq: JQuery, entryOptions: ContextMenu.Option[]) => void
 
   /**
    * This is called after getting the {@link ContextMenu} options for a
@@ -279,7 +279,7 @@ declare namespace HooksCallbacks {
    * @see {@link CombatTracker#_contextMenu}
    */
   type GetCombatTrackerEntryContext =
-    (jq: JQuery, entryOptions: ContextMenuOption[]) => void
+    (jq: JQuery, entryOptions: ContextMenu.Option[]) => void
 
   /**
    * This is called after getting the {@link ContextMenu} options for a
@@ -291,7 +291,7 @@ declare namespace HooksCallbacks {
    * @see {@link CompendiumDirectory#_contextMenu}
    */
   type GetCompendiumDirectoryEntryContext =
-    (jq: JQuery, entryOptions: ContextMenuOption[]) => void
+    (jq: JQuery, entryOptions: ContextMenu.Option[]) => void
 
   /**
    * This is called after getting the {@link ContextMenu} options for a
@@ -303,7 +303,7 @@ declare namespace HooksCallbacks {
    * @see {@link PlaylistDirectory#_contextMenu}
    */
   type GetPlaylistDirectorySoundContext =
-    (jq: JQuery, entryOptions: ContextMenuOption[]) => void
+    (jq: JQuery, entryOptions: ContextMenu.Option[]) => void
 
   /**
    * This is called after the initial {@link SceneControls} have been set up.
@@ -322,7 +322,7 @@ declare namespace HooksCallbacks {
    * @see {@link SceneNavigation#activateListeners}
    */
   type GetSceneNavigationContext =
-    (jq: JQuery, contextOptions: ContextMenuOption[]) => void
+    (jq: JQuery, contextOptions: ContextMenu.Option[]) => void
 
   /**
    * This is called after getting the {@link ContextMenu} options for a
@@ -334,7 +334,7 @@ declare namespace HooksCallbacks {
    * @see {@link SidebarDirectory#_contextMenu}
    */
   type GetSiderbarDirectoryEntryContext =
-    (jq: JQuery, entryOptions: ContextMenuOption[]) => void
+    (jq: JQuery, entryOptions: ContextMenu.Option[]) => void
 
   /**
    * This is called after getting the {@link ContextMenu} options for a
@@ -346,7 +346,7 @@ declare namespace HooksCallbacks {
    * @see {@link SidebarDirectory#_contextMenu}
    */
   type GetSiderbarDirectoryFolderContext =
-    (jq: JQuery, folderOptions: ContextMenuOption[]) => void
+    (jq: JQuery, folderOptions: ContextMenu.Option[]) => void
 
   /**
    * This is called after getting the {@link ContextMenu} options for a
@@ -357,7 +357,7 @@ declare namespace HooksCallbacks {
    * @see {@link PlayerList#activateListeners}
    */
   type GetUserContextOptions =
-    (jq: JQuery, contextOptions: ContextMenuOption[]) => void
+    (jq: JQuery, contextOptions: ContextMenu.Option[]) => void
 
   /**
    * This is called during the drop portion of a drag-and-drop event on the
