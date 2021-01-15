@@ -235,6 +235,7 @@ declare function isObjectEmpty (obj: object): boolean
  * @param fallback - A fallback texture to use if the requested source is
  *                   unavailable or invalid
  *                   (default: `null`)
+ * @returns (type: `Promise<PIXI.Texture>`)
  */
 declare function loadTexture (
   src: string,
