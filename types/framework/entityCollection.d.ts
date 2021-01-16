@@ -5,7 +5,7 @@
  * abstract interface.
  * @typeParam T - The type of Entities in the EntityCollection
  */
-declare abstract class EntityCollection<T extends Entity>
+declare abstract class EntityCollection<T extends Entity = Entity>
   extends Collection<T> {
   /**
    * The source data is, itself, a mapping of IDs to data objects
