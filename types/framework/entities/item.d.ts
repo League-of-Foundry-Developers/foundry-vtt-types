@@ -37,7 +37,7 @@ declare class Items extends EntityCollection<Item> {
 
 declare class Item<DD = any, D extends Item.Data = Item.Data<DD>> extends Entity<D> {
   /** @override */
-  static get config (): EntityConfig
+  static get config (): Entity.Config
 
   /** @override */
   get uuid (): string
@@ -124,10 +124,10 @@ declare class Item<DD = any, D extends Item.Data = Item.Data<DD>> extends Entity
   /* -------------------------------------------- */
 
   /** @override */
-  update (data: D, options: EntityUpdateOptions): Promise<this>
+  update (data: D, options: Entity.UpdateOptions): Promise<this>
 
   /** @override */
-  delete (options?: EntityDeleteOptions): Promise<Item>
+  delete (options?: Entity.DeleteOptions): Promise<Item>
 
   /**
    * A convenience constructor method to create an Item instance which is owned by an Actor
@@ -138,7 +138,7 @@ declare class Item<DD = any, D extends Item.Data = Item.Data<DD>> extends Entity
 }
 
 declare namespace Item {
-  interface Data<D = any> extends EntityData {
+  interface Data<D = any> extends Entity.Data {
     data?: D
     img?: string
   }

@@ -101,7 +101,7 @@ declare class User<D extends User.Data = User.Data> extends Entity<D> {
   /* ---------------------------------------- */
 
   /** @override */
-  static get config (): EntityConfig;
+  static get config (): Entity.Config;
 
   /**
    * Return the User avatar icon or the controlled actor's image
@@ -241,14 +241,14 @@ declare class User<D extends User.Data = User.Data> extends Entity<D> {
    *
    * @private
    */
-  _onUpdate (data: D, options: EntityUpdateOptions, userId: string): void;
+  _onUpdate (data: D, options: Entity.UpdateOptions, userId: string): void;
 
   /** @override */
-  _onDelete (options: EntityDeleteOptions, userId: string): void;
+  _onDelete (options: Entity.DeleteOptions, userId: string): void;
 }
 
 declare namespace User {
-  interface Data extends EntityData {
+  interface Data extends Entity.Data {
     active: boolean
     avatar: string
     character: string

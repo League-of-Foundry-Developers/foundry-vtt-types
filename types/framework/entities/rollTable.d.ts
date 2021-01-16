@@ -25,7 +25,7 @@ declare class RollTables extends EntityCollection<RollTable> {
 
 declare class RollTable<D extends RollTable.Data = RollTable.Data> extends Entity<D> {
   /** @override */
-  static get config (): EntityConfig
+  static get config (): Entity.Config
 
   /** @override */
   prepareEmbeddedEntities (): void
@@ -178,11 +178,11 @@ declare class RollTable<D extends RollTable.Data = RollTable.Data> extends Entit
    * @param {object} options      Additional options passed to the RollTable.create method
    * @return {Promise<RollTable>}
    */
-  static fromFolder (folder: Folder, options: EntityCreateOptions): Promise<RollTable>
+  static fromFolder (folder: Folder, options: Entity.CreateOptions): Promise<RollTable>
 }
 
 declare namespace RollTable {
-  interface Data extends EntityData {
+  interface Data extends Entity.Data {
     results: any[]
   }
 }

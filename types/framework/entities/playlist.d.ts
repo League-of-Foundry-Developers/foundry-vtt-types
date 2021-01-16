@@ -20,7 +20,7 @@ declare class Playlists extends EntityCollection<Playlist> {
    * @param {Object} options    Update options
    * @private
    */
-  _onUpdateScene(scene: Scene, data: Scene.Data, options: EntityUpdateOptions): void
+  _onUpdateScene(scene: Scene, data: Scene.Data, options: Entity.UpdateOptions): void
 }
 
 declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D> {
@@ -29,7 +29,13 @@ declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D
    * The keys of this object are the sound IDs and the values are the Howl instances.
    * @type {Object}
    */
-  audio: any
+  audio: {
+    [soundId: string]: {
+      id: string | undefined
+      howl: Howl
+      sound: string
+    }
+  }
 
   /**
    * Playlists may have a playback order which defines the sequence of Playlist Sounds
@@ -38,7 +44,7 @@ declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D
   playbackOrder: string[]
 
   /** @override */
-  static get config (): EntityConfig
+  static get config (): Entity.Config
 
   /** @override */
   prepareEmbeddedEntities (): void
@@ -75,7 +81,7 @@ declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D
    * @return {Object}           The sound data for the next sound to play
    * @private
    */
-  _getNextSound (soundId: string): any // TODO sound data
+  _getNextSound (soundId: string): Playlist.Sound
 
   /* -------------------------------------------- */
   /*  Properties                                  */
@@ -85,7 +91,7 @@ declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D
    * An Array of the sound data contained within this Playlist entity
    * @type {object[]}
    */
-  get sounds (): any[] // TODO this.data.sounds; sound data
+  get sounds (): Playlist.Sound[]
 
   /**
    * The playback mode for the Playlist instance
@@ -107,7 +113,7 @@ declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D
    * Play (or stop) a single sound from the Playlist
    * @param sound {Object}       The sound object to begin playback
    */
-  playSound (sound: any): void // sound data
+  playSound (sound: Playlist.Sound): void
 
   /**
    * Begin simultaneous playback for all sounds in the Playlist.
@@ -132,16 +138,16 @@ declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D
   /* -------------------------------------------- */
 
   /** @override */
-  _onUpdate (data: D, options: EntityUpdateOptions, userId: string): void
+  _onUpdate (data: D, options: Entity.UpdateOptions, userId: string): void
 
   /** @override */
-  _onCreateEmbeddedEntity (embeddedName: string, child: Playlist.Sound, options: EntityUpdateOptions, userId: string): void
+  _onCreateEmbeddedEntity (embeddedName: string, child: Playlist.Sound, options: Entity.UpdateOptions, userId: string): void
 
   /** @override */
-  _onUpdateEmbeddedEntity (embeddedName: string, child: Playlist.Sound, updateData: any, options: EntityUpdateOptions, userId: string): void
+  _onUpdateEmbeddedEntity (embeddedName: string, child: Playlist.Sound, updateData: any, options: Entity.UpdateOptions, userId: string): void
 
   /** @override */
-  _onDeleteEmbeddedEntity (embeddedName: string, child: Playlist.Sound, options: EntityUpdateOptions, userId: string): void
+  _onDeleteEmbeddedEntity (embeddedName: string, child: Playlist.Sound, options: Entity.UpdateOptions, userId: string): void
 
   /** @override */
   _onModifyEmbeddedEntity (embeddedName: string, changes: any[], options: any, userId: string, context?: any): void
@@ -151,7 +157,7 @@ declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D
   /* -------------------------------------------- */
 
   /** @override */
-  toCompendium (): any
+  toCompendium (): Promise<D>
 }
 
 declare namespace Playlist {
@@ -166,8 +172,8 @@ declare namespace Playlist {
     _id?: string
   }
 
-  interface Data extends EntityData {
-    sounds?: any[]
+  interface Data extends Entity.Data {
+    sounds?: Sound[]
     mode?: number
     playing?: boolean
     sort?: number

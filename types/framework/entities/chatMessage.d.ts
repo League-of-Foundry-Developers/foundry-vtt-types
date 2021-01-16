@@ -9,7 +9,7 @@ declare class Messages extends EntityCollection<ChatMessage> {
   get entity(): string
 
   /** @override */
-  render(force?: boolean, options?: any): any
+  render(force?: boolean, options?: any): any // Mismatched types
 
   /**
    * If requested, dispatch a Chat Bubble UI for the newly created message
@@ -54,7 +54,7 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
    * @returns {EntityCollection} collection   The EntityCollection class to which Entities of this type belong.
    * @returns {string[]} embeddedEntities  The names of any Embedded Entities within the Entity data structure.
    */
-  static get config (): EntityConfig
+  static get config (): Entity.Config
 
   /* -------------------------------------------- */
   /*  Properties and Attributes                   */
@@ -113,7 +113,7 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
    * Render the HTML for the ChatMessage which should be added to the log
    * @return {Promise.<HTMLElement>}
    */
-  render (force: boolean, options: any): Promise<HTMLElement>
+  render (force?: boolean, options?: any): Promise<HTMLElement>
 
   /* -------------------------------------------- */
   /*  Socket Listeners and Handlers               */
@@ -123,7 +123,7 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
    * @inheritdoc
    * @see {@link Entity.create}
    */
-  static create (data: ChatMessage.Data|ChatMessage.Data[], options: EntityCreateOptions): Promise<ChatMessage<ChatMessage.Data>|Array<ChatMessage<ChatMessage.Data>>>
+  static create (data: ChatMessage.Data|ChatMessage.Data[], options: Entity.CreateOptions): Promise<ChatMessage<ChatMessage.Data>|Array<ChatMessage<ChatMessage.Data>>>
 
   /**
    * Preprocess the data object used to create a new Chat Message to automatically convert some Objects to the
@@ -138,13 +138,13 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
   }): ChatMessage.Data
 
   /** @override */
-  _onCreate (data: D, options: EntityCreateOptions, userId: string): void
+  _onCreate (data: D, options: Entity.CreateOptions, userId: string): void
 
   /** @override */
-  _onUpdate (data: D, options: EntityUpdateOptions, userId: string): void
+  _onUpdate (data: D, options: Entity.UpdateOptions, userId: string): void
 
   /** @override */
-  _onDelete (options: EntityDeleteOptions, userId: string): void
+  _onDelete (options: Entity.DeleteOptions, userId: string): void
 
   /* -------------------------------------------- */
   /*  Saving and Loading                          */
@@ -225,6 +225,8 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
 
   /**
    * Obtain a data object used to evaluate any dice rolls associated with this particular chat message
+   * @remarks
+   * Returns Actor.data.data
    * @return {Object}
    */
   getRollData (): any // Actor.data.data
@@ -238,7 +240,7 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
 }
 
 declare namespace ChatMessage {
-  interface Data extends EntityData {
+  interface Data extends Entity.Data {
     content: string
     speaker?: SpeakerData
     timestamp?: number

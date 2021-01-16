@@ -8,8 +8,7 @@
  * let actor = game.actors.get(actorId);
  */
 declare class Actors extends EntityCollection<Actor> {
-
-    /**
+  /**
      * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
      * Each Actor is referenced by the Token.id.
      * @type {Object}
@@ -19,7 +18,7 @@ declare class Actors extends EntityCollection<Actor> {
   }
 
   /** @override */
-  get entity(): string
+  get entity (): string
 
   /* -------------------------------------------- */
   /*  Sheet Registration Methods                  */
@@ -33,9 +32,9 @@ declare class Actors extends EntityCollection<Actor> {
    * @example <caption>Register a new ActorSheet subclass for use with certain Actor types.</caption>
    * Actors.registerSheet("dnd5e", ActorSheet5eCharacter, { types: ["character"], makeDefault: true });
    */
-  static registerSheet(scope: string, sheetClass: () => Application, {label, types, makeDefault}?: {
+  static registerSheet (scope: string, sheetClass: () => Application, { label, types, makeDefault }?: {
     label?: string
-    types?: (() => Application)[]
+    types?: Array<() => Application>
     makeDefault?: boolean
   }): void
 
@@ -47,15 +46,15 @@ declare class Actors extends EntityCollection<Actor> {
    * @example <caption>Deregister the default ActorSheet subclass to replace it with others.</caption>
    * Actors.unregisterSheet("core", ActorSheet);
    */
-  static unregisterSheet(scope: string, sheetClass: () => Application, {types}?: {
-    types?: (() => Application)[]
+  static unregisterSheet (scope: string, sheetClass: () => Application, { types }?: {
+    types?: Array<() => Application>
   }): void
 
   /**
    * Return an Array of currently registered sheet classes for this Entity type
    * @type {ActorSheet[]}
    */
-  static get registeredSheets(): (() => ActorSheet)[]
+  static get registeredSheets (): Array<() => ActorSheet>
 }
 
 /**
@@ -63,8 +62,9 @@ declare class Actors extends EntityCollection<Actor> {
  * within the World.
  *
  * @typeParam DD - Actor.data.data field
- * @typeParam I - Item.Data for owned items
- * @typeParam D - Actor.data field
+ * @typeParam OI - Item.Data for owned items
+ * @typeParam I - Full Item type for owned item instances
+ * @typeParam D - Actor.data field, should contain a data field that matches the type of DD
  *
  * @see {@link Actors} Each Actor belongs to the Actors collection.
  * @see {@link ActorSheet} Each Actor is edited using the ActorSheet application or a subclass thereof.
@@ -87,8 +87,8 @@ declare class Actors extends EntityCollection<Actor> {
  * @example <caption>Retrieve an existing Actor</caption>
  * let actor = game.actors.get(actorId);
  */
-declare class Actor<DD = any, I extends Item.Data = Item.Data, D extends Actor.Data = Actor.Data<DD, I>> extends Entity {
-  constructor (data?: D, options?: EntityCreateOptions)
+declare class Actor<DD = any, OI extends Item.Data = Item.Data, I extends Item = Item, D extends Actor.Data = Actor.Data<DD, OI>> extends Entity<D> {
+  constructor (data?: D, options?: Entity.CreateOptions)
 
   /**
      * A reference to a placed Token which creates a synthetic Actor
@@ -99,9 +99,9 @@ declare class Actor<DD = any, I extends Item.Data = Item.Data, D extends Actor.D
   /**
      * Construct the Array of Item instances for the Actor
      * Items are prepared by the Actor.prepareEmbeddedEntities() method
-     * @type {Collection<string,I>}
+     * @type {Collection<string,OI>}
      */
-  items: Collection<Item>
+  items: Collection<I>
 
   /**
      * ActiveEffects are prepared by the Actor.prepareEmbeddedEntities() method
@@ -112,7 +112,7 @@ declare class Actor<DD = any, I extends Item.Data = Item.Data, D extends Actor.D
      * A set that tracks which keys in the data model were modified by active effects
      * @type {Data}
      */
-  overrides: DD
+  overrides: D
 
   /**
      * Cache an Array of allowed Token images if using a wildcard path
@@ -122,7 +122,7 @@ declare class Actor<DD = any, I extends Item.Data = Item.Data, D extends Actor.D
   _tokenImages: string[]
 
   /** @override */
-  static get config (): EntityConfig
+  static get config (): Entity.Config
 
   /* -------------------------------------------- */
   /*  Properties                                  */
@@ -139,7 +139,7 @@ declare class Actor<DD = any, I extends Item.Data = Item.Data, D extends Actor.D
    * @type {Object<string,Array>}
    */
   get itemTypes (): {
-    [prop: string]: Item<I>[]
+    [itemType: string]: I[]
   }
 
   /**
@@ -181,10 +181,10 @@ declare class Actor<DD = any, I extends Item.Data = Item.Data, D extends Actor.D
   /**
    * Prepare a Collection of OwnedItem instances which belong to this Actor.
    * @param {object[]} items  The raw array of item objects
-   * @return {Collection<string,Item>} The prepared owned items collection
+   * @return {Collection<string,I>} The prepared owned items collection
    * @private
    */
-  _prepareOwnedItems (items: I[]): Collection<Item>
+  _prepareOwnedItems (items: OI[]): Collection<I>
 
   /**
    * Prepare a Collection of ActiveEffect instances which belong to this Actor.
@@ -253,7 +253,7 @@ declare class Actor<DD = any, I extends Item.Data = Item.Data, D extends Actor.D
    * @param {boolean} isBar       Whether the new value is part of an attribute bar, or just a direct value
    * @return {Promise<Actor>}     The updated Actor entity
    */
-  modifyTokenAttribute (attribute: string, value: any, isDelta?: boolean, isBar?: boolean): Promise<this>
+  modifyTokenAttribute (attribute: string, value: number, isDelta?: boolean, isBar?: boolean): Promise<this>
 
   /**
    * Roll initiative for all Combatants in the currently active Combat encounter which are associated with this Actor.
@@ -277,16 +277,16 @@ declare class Actor<DD = any, I extends Item.Data = Item.Data, D extends Actor.D
   /* -------------------------------------------- */
 
   /** @override */
-  update (data: D, options?: EntityUpdateOptions): Promise<this>
+  update (data: D, options?: Entity.UpdateOptions): Promise<this>
 
   /** @override */
-  delete (options?: EntityDeleteOptions): Promise<Actor>
+  delete (options?: Entity.DeleteOptions): Promise<Actor>
 
   /** @override */
-  _onUpdate (data: D, options: EntityUpdateOptions, userId: string, context?: any): void
+  _onUpdate (data: D, options: Entity.UpdateOptions, userId: string, context?: any): void
 
   /** @override */
-  createEmbeddedEntity (embeddedName: string, data: ActiveEffect | any, options?: any): ActiveEffect | any // OwnedItem
+  createEmbeddedEntity (embeddedName: string, data: ActiveEffect | OI, options?: any): Promise<ActiveEffect | OI>
 
   /**
    * When Owned Items are created process each item and extract Active Effects to transfer to the Actor.
@@ -298,23 +298,23 @@ declare class Actor<DD = any, I extends Item.Data = Item.Data, D extends Actor.D
   _createItemActiveEffects (created: ActiveEffect, { temporary }?: { temporary?: boolean}): ActiveEffect
 
   /** @override */
-  _onCreateEmbeddedEntity (embeddedName: string, child: I|ActiveEffect, options: any, userId: string): void
+  _onCreateEmbeddedEntity (embeddedName: string, child: OI|ActiveEffect, options: any, userId: string): void
 
   /** @override */
-  deleteEmbeddedEntity (embeddedName: string, data: string, options?: any): Promise<I|ActiveEffect>
+  deleteEmbeddedEntity (embeddedName: string, data: string, options?: any): Promise<OI|ActiveEffect>
 
   /**
    * When Owned Items are created process each item and extract Active Effects to transfer to the Actor.
    * @param {Data[]} deleted   The array of deleted owned Item data
    * @private
    */
-  _deleteItemActiveEffects (deleted: I): ActiveEffect|ActiveEffect[]
+  _deleteItemActiveEffects (deleted: OI|OI[]): ActiveEffect|ActiveEffect[]
 
   /** @override */
-  _onDeleteEmbeddedEntity (embeddedName: string, child: I|ActiveEffect, options: any, userId: string): void
+  _onDeleteEmbeddedEntity (embeddedName: string, child: OI|ActiveEffect, options: any, userId: string): void
 
   /** @override */
-  _onModifyEmbeddedEntity (embeddedName: string, changes: any[], options: any, userId: string, context?: any): void
+  _onModifyEmbeddedEntity (embeddedName: string, changes: OI[]|ActiveEffect[], options: any, userId: string, context?: any): void
 
   /* -------------------------------------------- */
   /*  Owned Item Management                       */
@@ -323,9 +323,9 @@ declare class Actor<DD = any, I extends Item.Data = Item.Data, D extends Actor.D
   /**
    * Get an Item instance corresponding to the Owned Item with a given id
    * @param {string} itemId   The owned Item id to retrieve
-   * @return {Item}           An Item instance representing the Owned Item within the Actor entity
+   * @return {I}           An Item instance representing the Owned Item within the Actor entity
    */
-  getOwnedItem (itemId: string): Item
+  getOwnedItem (itemId: string): I
 
   /**
    * Create a new item owned by this Actor. This redirects its arguments to the createEmbeddedEntity method.
@@ -336,7 +336,7 @@ declare class Actor<DD = any, I extends Item.Data = Item.Data, D extends Actor.D
    * @param {boolean} options.renderSheet Render the Item sheet for the newly created item data
    * @return {Promise.<Object>}   A Promise resolving to the created Owned Item data
    */
-  createOwnedItem (itemData: I, options?: any): Promise<I>
+  createOwnedItem (itemData: OI, options?: any): Promise<OI>
 
   /**
    * Update an owned item using provided new data. This redirects its arguments to the updateEmbeddedEntity method.
@@ -346,7 +346,7 @@ declare class Actor<DD = any, I extends Item.Data = Item.Data, D extends Actor.D
    * @param {Object} options      Item update options
    * @return {Promise.<Object>}   A Promise resolving to the updated Owned Item data
    */
-  updateOwnedItem (itemData: I, options?: any): Promise<any>
+  updateOwnedItem (itemData: OI, options?: any): Promise<ActiveEffect|OI>
 
   /* -------------------------------------------- */
 
@@ -358,7 +358,7 @@ declare class Actor<DD = any, I extends Item.Data = Item.Data, D extends Actor.D
    * @param {Object} options      Item deletion options
    * @return {Promise.<Object>}   A Promise resolving to the deleted Owned Item data
    */
-  deleteOwnedItem (itemId: string, options?: any): Promise<any>
+  deleteOwnedItem (itemId: string, options?: any): Promise<ActiveEffect|OI>
 
   /* -------------------------------------------- */
   /*  DEPRECATED                                  */
@@ -377,11 +377,11 @@ declare class Actor<DD = any, I extends Item.Data = Item.Data, D extends Actor.D
 }
 
 declare namespace Actor {
-  interface Data<D = any, I extends Item.Data = Item.Data> extends EntityData {
+  interface Data<D = any, OI extends Item.Data = Item.Data> extends Entity.Data {
     img?: string
-    token?: any
+    token?: any // TODO: Token.data
     data?: D
-    items?: I[]
+    items?: OI[]
     effects?: ActiveEffect[]
   }
 }

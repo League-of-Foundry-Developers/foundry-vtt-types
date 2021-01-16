@@ -83,7 +83,7 @@ declare class Combat<D extends Combat.Data = Combat.Data> extends Entity<D> {
   static CONFIG_SETTING: string
 
   /** @override */
-  static get config (): EntityConfig
+  static get config (): Entity.Config
 
   /**
    * Prepare Embedded Entities which exist within the parent Combat.
@@ -302,16 +302,16 @@ declare class Combat<D extends Combat.Data = Combat.Data> extends Entity<D> {
   _onCreate (data: D, options: any, userId: string): void
 
   /** @override */
-  _onUpdate (data: D, options: EntityUpdateOptions, userId: string): void
+  _onUpdate (data: D, options: Entity.UpdateOptions, userId: string): void
 
   /** @override */
-  _onDelete (options: EntityDeleteOptions, userId: string): void
+  _onDelete (options: Entity.DeleteOptions, userId: string): void
 
   /** @override */
   _onDeleteEmbeddedEntity (
     embeddedName: string,
     child: Combat.Combatant,
-    options: EntityUpdateOptions,
+    options: Entity.UpdateOptions,
     userId: string
   ): void
 
@@ -329,7 +329,7 @@ declare namespace Combat {
 /**
  * Data extension for Combat
  */
-  interface Data extends EntityData {
+  interface Data extends Entity.Data {
     active?: boolean
     combatants?: any[]
     round?: number
@@ -350,5 +350,4 @@ declare namespace Combat {
   interface Combatant {
     [propName: string]: any
   }
-
 }

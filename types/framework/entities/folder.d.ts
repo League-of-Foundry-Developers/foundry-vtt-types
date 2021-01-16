@@ -19,7 +19,7 @@ declare class Folders extends EntityCollection<Folder> {
   /* -------------------------------------------- */
 
   /** @override */
-  render(force?: boolean, context?: any): any
+  render(force?: boolean, context?: any): any // Mismatched return type
 
   /* -------------------------------------------- */
 
@@ -32,7 +32,7 @@ declare class Folders extends EntityCollection<Folder> {
 
 declare class Folder<D extends Folder.Data = Folder.Data> extends Entity<D> {
   /** @override */
-  static get config (): EntityConfig;
+  static get config (): Entity.Config;
 
   /**
    * Return whether the folder is displayed in the sidebar to the current user
@@ -62,7 +62,7 @@ declare class Folder<D extends Folder.Data = Folder.Data> extends Entity<D> {
    * A reference to the EntityCollection of Entities for this folder type.
    * @return {EntityCollection}
    */
-  get collection (): any // TODO EntityColection
+  get collection (): EntityCollection
 
   /**
    * Return an Array of the Entities which are contained within this Folder
@@ -110,11 +110,11 @@ declare class Folder<D extends Folder.Data = Folder.Data> extends Entity<D> {
     request: any
     result: any
     userId: any
-  }): any // TODO Folder, Entity wants Array
+  }): any // Folder, mismatched
 }
 
 declare namespace Folder {
-  interface Data extends EntityData {
+  interface Data extends Entity.Data {
     parent?: Folder | null
     sort?: number
     sorting?: string

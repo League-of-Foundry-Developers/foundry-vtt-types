@@ -35,7 +35,7 @@ declare class Journal extends EntityCollection<JournalEntry> {
  */
 declare class JournalEntry<D extends JournalEntry.Data = JournalEntry.Data> extends Entity<D> {
   /** @override */
-  static get config (): EntityConfig
+  static get config (): Entity.Config
 
   /**
    * A boolean indicator for whether or not the JournalEntry is visible to the current user in the directory sidebar
@@ -48,13 +48,13 @@ declare class JournalEntry<D extends JournalEntry.Data = JournalEntry.Data> exte
   get sceneNote (): Note;
 
   /** @override */
-  _onCreate (data: D, options: EntityCreateOptions, userId: string): void
+  _onCreate (data: D, options: Entity.CreateOptions, userId: string): void
 
   /** @override */
-  _onUpdate (data: D, options: EntityUpdateOptions, userId: string): void
+  _onUpdate (data: D, options: Entity.UpdateOptions, userId: string): void
 
   /** @override */
-  _onDelete (options: EntityDeleteOptions, userId: string): void
+  _onDelete (options: Entity.DeleteOptions, userId: string): void
 
   /* -------------------------------------------- */
   /*  Methods
@@ -81,7 +81,7 @@ declare class JournalEntry<D extends JournalEntry.Data = JournalEntry.Data> exte
 }
 
 declare namespace JournalEntry {
-  interface Data extends EntityData {
+  interface Data extends Entity.Data {
     content?: string
     folder?: string
     img?: string

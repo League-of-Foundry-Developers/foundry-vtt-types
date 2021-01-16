@@ -3,25 +3,24 @@
  * @extends {EntityCollection}
  */
 declare class Macros extends EntityCollection<Macro> {
+  /** @override */
+  get entity (): string
 
   /** @override */
-  get entity(): string
+  static get instance (): Macros
 
   /** @override */
-  static get instance(): Macros
-
-  /** @override */
-  get directory(): any // MacroDirectory
+  get directory (): any // MacroDirectory, type mismatch
 
   /**
    * Determine whether a given User is allowed to use JavaScript macros
    * @param {User} user   The User entity to test
    * @return {boolean}    Can the User use scripts?
    */
-  static canUseScripts(user: User): boolean
+  static canUseScripts (user: User): boolean
 
   /** @override */
-  fromCompendium(data: Macro.Data): Macro.Data
+  fromCompendium (data: Macro.Data): Macro.Data
 }
 
 /**
@@ -37,7 +36,7 @@ declare class Macros extends EntityCollection<Macro> {
  */
 declare class Macro<D extends Macro.Data = Macro.Data> extends Entity<D> {
   /** @override */
-  static get config (): EntityConfig;
+  static get config (): Entity.Config;
 
   /**
    * Is the current User the author of this macro?
@@ -55,7 +54,7 @@ declare class Macro<D extends Macro.Data = Macro.Data> extends Entity<D> {
 }
 
 declare namespace Macro {
-  interface Data extends EntityData {
+  interface Data extends Entity.Data {
     actorIds: string[]
     author: string
     command: string

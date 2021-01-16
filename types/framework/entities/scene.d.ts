@@ -75,7 +75,7 @@ declare class Scene<D extends Scene.Data = Scene.Data> extends Entity<D> {
   }
 
   /** @extends {EntityCollection.config} */
-  static get config (): EntityConfig
+  static get config (): Entity.Config
 
   /** @override */
   prepareData (): D
@@ -134,22 +134,22 @@ declare class Scene<D extends Scene.Data = Scene.Data> extends Entity<D> {
   /* -------------------------------------------- */
 
   /** @override */
-  clone (createData?: D, options?: EntityCreateOptions): Promise<Scene<D>>
+  clone (createData?: D, options?: Entity.CreateOptions): Promise<Scene<D>>
 
   /** @override */
-  static create (data: Scene.Data, options?: EntityCreateOptions): Promise<Scene<Scene.Data>>
+  static create (data: Scene.Data, options?: Entity.CreateOptions): Promise<Scene<Scene.Data>>
 
   /** @override */
-  update (data: D, options: EntityUpdateOptions): Promise<this>
+  update (data: D, options: Entity.UpdateOptions): Promise<this>
 
   /** @override */
   _onCreate (data: D, options: any, userId: string): void
 
   /** @override */
-  _onUpdate (data: D, options: EntityUpdateOptions, userId: string): void
+  _onUpdate (data: D, options: Entity.UpdateOptions, userId: string): void
 
   /** @override */
-  _onDelete (options: EntityDeleteOptions, userId: string): void
+  _onDelete (options: Entity.DeleteOptions, userId: string): void
 
   /**
    * Handle Scene activation workflow if the active state is changed to true
@@ -205,7 +205,7 @@ declare class Scene<D extends Scene.Data = Scene.Data> extends Entity<D> {
 }
 
 declare namespace Scene {
-  interface Data extends EntityData {
+  interface Data extends Entity.Data {
     active?: boolean
     backgroundColor?: string
     darkness?: number
