@@ -241,7 +241,7 @@ declare class User<D extends User.Data = User.Data> extends Entity<D> {
    *
    * @private
    */
-  _onUpdate (data: D, options: Entity.UpdateOptions, userId: string): void;
+  _onUpdate (data: Optional<D>, options: Entity.UpdateOptions, userId: string): void;
 
   /** @override */
   _onDelete (options: Entity.DeleteOptions, userId: string): void;

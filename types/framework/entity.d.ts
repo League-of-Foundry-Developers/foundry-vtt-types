@@ -220,7 +220,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
 
   /**
    * A boolean indicator for whether or not the current game User has at least limited visibility for this Entity.
-   * @type {boolean}
+  g* @type {boolean}
    */
   get visible (): boolean
 
@@ -358,7 +358,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const data = [{_id: "12ekjf43kj2312ds", name: "New Name 1"}, {_id: "kj549dk48k34jk34", name: "New Name 2"}]}
    * const updated = await Entity.update(data) // Returns an Array of Entities, updated in the database
    */
-  static update (data: Entity.Data, options?: Entity.UpdateOptions): Promise<Entity|Entity[]>
+  static update (data: Optional<Entity.Data>, options?: Entity.UpdateOptions): Promise<Entity|Entity[]>
 
   /**
    * Handle a SocketResponse from the server when one or multiple Entities are updated
@@ -374,7 +374,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Entity-specific actions that should occur when the Entity is updated
    * @private
    */
-  _onUpdate (data: D, options: Entity.UpdateOptions, userId: string): void
+  _onUpdate (data: Optional<D>, options: Entity.UpdateOptions, userId: string): void
 
   /**
    * Update the current Entity using provided input data.
@@ -385,7 +385,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param {Options} options             Additional options which customize the update workflow
    * @return {Promise<Entity>}            The updated Entity
    */
-  update (data: D, options?: Entity.UpdateOptions): Promise<this>
+  update (data: Optional<D>, options?: Entity.UpdateOptions): Promise<this>
 
   /**
    * Delete one or multiple existing entities using provided ids.
@@ -406,7 +406,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const ids = ["12ekjf43kj2312ds", "kj549dk48k34jk34"]
    * const deleted = await Entity.delete(ids) // Returns an Array of deleted Entities
    */
-  static delete (data: Entity.Data, options?: Entity.DeleteOptions): Promise<Entity|Entity[]>
+  static delete (data: string|string[], options?: Entity.DeleteOptions): Promise<Entity|Entity[]>
 
   /**
    * Handle a SocketResponse from the server when one or multiple Entities are deleted
@@ -683,7 +683,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
   /**
    * A helper function to handle obtaining the dropped Entity data from a dropped event. Entity drop data could have:
    * 1. A compendium pack and entry id
-   * 2. A World Entity _id
+   *2. A World Entity _id
    * 3. A data object explicitly provided
    *
    * @param {object} data     The data object extracted from a DataTransfer event
@@ -801,21 +801,20 @@ declare namespace Entity {
     /**
      * The id assigned by the database
      */
-    _id?: string
+    _id: string
 
     /**
      * The entity's name
      */
-    name?: string
+    name: string
 
     /**
      * The Entity type of the entity
      */
-    type?: string
 
     /**
      * Flags for arbitrary data from modules &c.
      */
-    flags?: any
+    flags: any
   }
 }

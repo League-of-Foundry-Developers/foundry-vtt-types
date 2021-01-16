@@ -62,5 +62,4 @@ declare namespace Macro {
     scope: string
     type: 'script' | 'chat'
   }
-
 }

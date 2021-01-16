@@ -9,10 +9,10 @@
  */
 declare class Actors extends EntityCollection<Actor> {
   /**
-     * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
-     * Each Actor is referenced by the Token.id.
-     * @type {Object}
-     */
+   * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
+   * Each Actor is referenced by the Token.id.
+   * @type {Object}
+   */
   tokens: {
     [id: string]: Actor
   }
@@ -87,38 +87,38 @@ declare class Actors extends EntityCollection<Actor> {
  * @example <caption>Retrieve an existing Actor</caption>
  * let actor = game.actors.get(actorId);
  */
-declare class Actor<DD = any, OI extends Item.Data = Item.Data, I extends Item = Item, D extends Actor.Data = Actor.Data<DD, OI>> extends Entity<D> {
+declare class Actor<I extends Item = Item, D extends Actor.Data = Actor.Data<any, Actor.OwnedItem<I>>> extends Entity<D> {
   constructor (data?: D, options?: Entity.CreateOptions)
 
   /**
-     * A reference to a placed Token which creates a synthetic Actor
-     * @type {Token}
-     */
+   * A reference to a placed Token which creates a synthetic Actor
+   * @type {Token}
+   */
   token: Token | null
 
   /**
-     * Construct the Array of Item instances for the Actor
-     * Items are prepared by the Actor.prepareEmbeddedEntities() method
-     * @type {Collection<string,OI>}
-     */
+   * Construct the Array of Item instances for the Actor
+   * Items are prepared by the Actor.prepareEmbeddedEntities() method
+   * @type {Collection<string,OI>}
+   */
   items: Collection<I>
 
   /**
-     * ActiveEffects are prepared by the Actor.prepareEmbeddedEntities() method
-     */
+   * ActiveEffects are prepared by the Actor.prepareEmbeddedEntities() method
+   */
   effects: Collection<ActiveEffect>
 
   /**
-     * A set that tracks which keys in the data model were modified by active effects
-     * @type {Data}
-     */
+   * A set that tracks which keys in the data model were modified by active effects
+   * @type {Data}
+   */
   overrides: D
 
   /**
-     * Cache an Array of allowed Token images if using a wildcard path
-     * @type {string[]}
-     * @private
-     */
+   * Cache an Array of allowed Token images if using a wildcard path
+   * @type {string[]}
+   * @private
+   */
   _tokenImages: string[]
 
   /** @override */
@@ -184,7 +184,7 @@ declare class Actor<DD = any, OI extends Item.Data = Item.Data, I extends Item =
    * @return {Collection<string,I>} The prepared owned items collection
    * @private
    */
-  _prepareOwnedItems (items: OI[]): Collection<I>
+  _prepareOwnedItems (items: Actor.OwnedItem<I>[]): Collection<I>
 
   /**
    * Prepare a Collection of ActiveEffect instances which belong to this Actor.
@@ -236,7 +236,7 @@ declare class Actor<DD = any, OI extends Item.Data = Item.Data, I extends Item =
    * Prepare a data object which defines the data schema used by dice roll commands against this Actor
    * @return {Object}
    */
-  getRollData (): DD
+  getRollData (): Actor.DataData<D>
 
   /**
    * Get an Array of Token images which could represent this Actor
@@ -277,16 +277,16 @@ declare class Actor<DD = any, OI extends Item.Data = Item.Data, I extends Item =
   /* -------------------------------------------- */
 
   /** @override */
-  update (data: D, options?: Entity.UpdateOptions): Promise<this>
+  update (data: Optional<D>, options?: Entity.UpdateOptions): Promise<this>
 
   /** @override */
   delete (options?: Entity.DeleteOptions): Promise<Actor>
 
   /** @override */
-  _onUpdate (data: D, options: Entity.UpdateOptions, userId: string, context?: any): void
+  _onUpdate (data: Optional<D>, options: Entity.UpdateOptions, userId: string, context?: any): void
 
   /** @override */
-  createEmbeddedEntity (embeddedName: string, data: ActiveEffect | OI, options?: any): Promise<ActiveEffect | OI>
+  createEmbeddedEntity (embeddedName: string, data: Optional<ActiveEffect | Actor.OwnedItem<I>>, options?: any): Promise<ActiveEffect | Actor.OwnedItem<I>>
 
   /**
    * When Owned Items are created process each item and extract Active Effects to transfer to the Actor.
@@ -298,23 +298,23 @@ declare class Actor<DD = any, OI extends Item.Data = Item.Data, I extends Item =
   _createItemActiveEffects (created: ActiveEffect, { temporary }?: { temporary?: boolean}): ActiveEffect
 
   /** @override */
-  _onCreateEmbeddedEntity (embeddedName: string, child: OI|ActiveEffect, options: any, userId: string): void
+  _onCreateEmbeddedEntity (embeddedName: string, child: Actor.OwnedItem<I>|ActiveEffect, options: any, userId: string): void
 
   /** @override */
-  deleteEmbeddedEntity (embeddedName: string, data: string, options?: any): Promise<OI|ActiveEffect>
+  deleteEmbeddedEntity (embeddedName: string, data: string, options?: any): Promise<Actor.OwnedItem<I>|ActiveEffect>
 
   /**
    * When Owned Items are created process each item and extract Active Effects to transfer to the Actor.
    * @param {Data[]} deleted   The array of deleted owned Item data
    * @private
    */
-  _deleteItemActiveEffects (deleted: OI|OI[]): ActiveEffect|ActiveEffect[]
+  _deleteItemActiveEffects (deleted: Actor.OwnedItem<I>|Actor.OwnedItem<I>[]): ActiveEffect|ActiveEffect[]
 
   /** @override */
-  _onDeleteEmbeddedEntity (embeddedName: string, child: OI|ActiveEffect, options: any, userId: string): void
+  _onDeleteEmbeddedEntity (embeddedName: string, child: Actor.OwnedItem<I>|ActiveEffect, options: any, userId: string): void
 
   /** @override */
-  _onModifyEmbeddedEntity (embeddedName: string, changes: OI[]|ActiveEffect[], options: any, userId: string, context?: any): void
+  _onModifyEmbeddedEntity (embeddedName: string, changes: Actor.OwnedItem<I>[]|ActiveEffect[], options: any, userId: string, context?: any): void
 
   /* -------------------------------------------- */
   /*  Owned Item Management                       */
@@ -336,7 +336,7 @@ declare class Actor<DD = any, OI extends Item.Data = Item.Data, I extends Item =
    * @param {boolean} options.renderSheet Render the Item sheet for the newly created item data
    * @return {Promise.<Object>}   A Promise resolving to the created Owned Item data
    */
-  createOwnedItem (itemData: OI, options?: any): Promise<OI>
+  createOwnedItem (itemData: Actor.OwnedItem<I>, options?: any): Promise<Actor.OwnedItem<I>>
 
   /**
    * Update an owned item using provided new data. This redirects its arguments to the updateEmbeddedEntity method.
@@ -346,7 +346,7 @@ declare class Actor<DD = any, OI extends Item.Data = Item.Data, I extends Item =
    * @param {Object} options      Item update options
    * @return {Promise.<Object>}   A Promise resolving to the updated Owned Item data
    */
-  updateOwnedItem (itemData: OI, options?: any): Promise<ActiveEffect|OI>
+  updateOwnedItem (itemData: Actor.OwnedItem<I>, options?: any): Promise<ActiveEffect|Actor.OwnedItem<I>>
 
   /* -------------------------------------------- */
 
@@ -358,7 +358,7 @@ declare class Actor<DD = any, OI extends Item.Data = Item.Data, I extends Item =
    * @param {Object} options      Item deletion options
    * @return {Promise.<Object>}   A Promise resolving to the deleted Owned Item data
    */
-  deleteOwnedItem (itemId: string, options?: any): Promise<ActiveEffect|OI>
+  deleteOwnedItem (itemId: string, options?: any): Promise<ActiveEffect|Actor.OwnedItem<I>>
 
   /* -------------------------------------------- */
   /*  DEPRECATED                                  */
@@ -377,11 +377,22 @@ declare class Actor<DD = any, OI extends Item.Data = Item.Data, I extends Item =
 }
 
 declare namespace Actor {
+  /**
+   * Typing for the data.data field
+   */
+  type DataData<T> = T extends Data<infer D, Item.Data> ? D : never;
+
+  /**
+   * Owned item data stored in Actor.data
+   */
+  type OwnedItem<I> = I extends Item<any, infer D> ? D : never;
+
   interface Data<D = any, OI extends Item.Data = Item.Data> extends Entity.Data {
-    img?: string
-    token?: any // TODO: Token.data
-    data?: D
-    items?: OI[]
-    effects?: ActiveEffect[]
+    img: string
+    type: string
+    token: any // TODO: Token.data
+    data: D
+    items: OI[]
+    effects: ActiveEffect[]
   }
 }

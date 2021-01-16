@@ -124,7 +124,7 @@ declare class Item<DD = any, D extends Item.Data = Item.Data<DD>> extends Entity
   /* -------------------------------------------- */
 
   /** @override */
-  update (data: D, options: Entity.UpdateOptions): Promise<this>
+  update (data: Optional<D>, options: Entity.UpdateOptions): Promise<this>
 
   /** @override */
   delete (options?: Entity.DeleteOptions): Promise<Item>
@@ -139,7 +139,8 @@ declare class Item<DD = any, D extends Item.Data = Item.Data<DD>> extends Entity
 
 declare namespace Item {
   interface Data<D = any> extends Entity.Data {
-    data?: D
-    img?: string
+    data: D
+    img: string
+    type: string
   }
 }

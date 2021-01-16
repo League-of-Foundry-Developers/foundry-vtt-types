@@ -138,10 +138,10 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
   }): ChatMessage.Data
 
   /** @override */
-  _onCreate (data: D, options: Entity.CreateOptions, userId: string): void
+  _onCreate (data: Optional<D>, options: Entity.CreateOptions, userId: string): void
 
   /** @override */
-  _onUpdate (data: D, options: Entity.UpdateOptions, userId: string): void
+  _onUpdate (data: Optional<D>, options: Entity.UpdateOptions, userId: string): void
 
   /** @override */
   _onDelete (options: Entity.DeleteOptions, userId: string): void
@@ -242,11 +242,11 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
 declare namespace ChatMessage {
   interface Data extends Entity.Data {
     content: string
-    speaker?: SpeakerData
-    timestamp?: number
-    type?: number | any // number, type mismatch
-    user?: string
-    whisper?: string[]
+    speaker: SpeakerData
+    timestamp: number
+    type: number
+    user: string
+    whisper: string[]
   }
 
   interface ChatData {

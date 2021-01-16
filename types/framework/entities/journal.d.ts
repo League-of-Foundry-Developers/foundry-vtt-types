@@ -51,7 +51,7 @@ declare class JournalEntry<D extends JournalEntry.Data = JournalEntry.Data> exte
   _onCreate (data: D, options: Entity.CreateOptions, userId: string): void
 
   /** @override */
-  _onUpdate (data: D, options: Entity.UpdateOptions, userId: string): void
+  _onUpdate (data: Optional<D>, options: Entity.UpdateOptions, userId: string): void
 
   /** @override */
   _onDelete (options: Entity.DeleteOptions, userId: string): void
@@ -82,9 +82,9 @@ declare class JournalEntry<D extends JournalEntry.Data = JournalEntry.Data> exte
 
 declare namespace JournalEntry {
   interface Data extends Entity.Data {
-    content?: string
-    folder?: string
-    img?: string
-    sort?: number
+    content: string
+    folder: string
+    img: string
+    sort: number
   }
 }

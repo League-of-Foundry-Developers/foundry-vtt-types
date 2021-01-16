@@ -23,7 +23,8 @@
     "@types/socket.io-client": "^1.4.33",
     "@types/tinymce": "^4.5.24",
     "handlebars": "4.7.6",
-    "pixi.js": "5.3.4"
+    "pixi.js": "5.3.4",
+    "utility-types": "^3.10.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.11.1",

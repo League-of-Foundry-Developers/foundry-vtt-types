@@ -140,13 +140,13 @@ declare class Scene<D extends Scene.Data = Scene.Data> extends Entity<D> {
   static create (data: Scene.Data, options?: Entity.CreateOptions): Promise<Scene<Scene.Data>>
 
   /** @override */
-  update (data: D, options: Entity.UpdateOptions): Promise<this>
+  update (data: Optional<D>, options: Entity.UpdateOptions): Promise<this>
 
   /** @override */
   _onCreate (data: D, options: any, userId: string): void
 
   /** @override */
-  _onUpdate (data: D, options: Entity.UpdateOptions, userId: string): void
+  _onUpdate (data: Optional<D>, options: Entity.UpdateOptions, userId: string): void
 
   /** @override */
   _onDelete (options: Entity.DeleteOptions, userId: string): void
@@ -206,48 +206,48 @@ declare class Scene<D extends Scene.Data = Scene.Data> extends Entity<D> {
 
 declare namespace Scene {
   interface Data extends Entity.Data {
-    active?: boolean
-    backgroundColor?: string
-    darkness?: number
-    description?: string
-    fogExploration?: boolean
-    globalLight?: boolean
-    globalLightThreshold?: number
-    grid?: number
-    gridAlpha?: number
-    gridColor?: string
-    gridDistance?: number
-    gridType?: number // There's probably an enum TODO
-    gridUnits?: string
-    height?: number
-    img?: string
-    initial?: {
+    active: boolean
+    backgroundColor: string
+    darkness: number
+    description: string
+    fogExploration: boolean
+    globalLight: boolean
+    globalLightThreshold: number
+    grid: number
+    gridAlpha: number
+    gridColor: string
+    gridDistance: number
+    gridType: number // There's probably an enum TODO
+    gridUnits: string
+    height: number
+    img: string
+    initial: {
       x: number
       y: number
       scale: number
     }
-    journal?: string
-    navName?: string
-    navOrder?: number
-    navigation?: boolean
-    padding?: number
-    playlist?: string
-    shiftX?: number
-    shiftY?: number
-    size?: number
-    sort?: number
-    tokenVision?: boolean
-    weather?: string
-    width?: number
+    journal: string
+    navName: string
+    navOrder: number
+    navigation: boolean
+    padding: number
+    playlist: string
+    shiftX: number
+    shiftY: number
+    size: number
+    sort: number
+    tokenVision: boolean
+    weather: string
+    width: number
 
     // EmbeddedEntities, arrays of the type of the data param of these
-    drawings?: any[] // TODO Drawing class (PlaceableObject)
-    lights?: any[] // TODO AmbientLight class (PlaceableObject)
-    notes?: any[] // TODO Note class (PlaceableObject)
-    sounds?: any[] // TODO AmbientSound class (PlaceableObject)
-    templates?: any[] // TODO MeasuredTemplate class (PlaceableObject)
-    tiles?: any[] // TODO Tile class (PlaceableObject)
-    tokens?: any[] // Token.data
-    walls?: any[] // Wall.data
+    drawings: any[] // TODO Drawing class (PlaceableObject)
+    lights: any[] // TODO AmbientLight class (PlaceableObject)
+    notes: any[] // TODO Note class (PlaceableObject)
+    sounds: any[] // TODO AmbientSound class (PlaceableObject)
+    templates: any[] // TODO MeasuredTemplate class (PlaceableObject)
+    tiles: any[] // TODO Tile class (PlaceableObject)
+    tokens: any[] // Token.data
+    walls: any[] // Wall.data
   }
 }

@@ -138,7 +138,7 @@ declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D
   /* -------------------------------------------- */
 
   /** @override */
-  _onUpdate (data: D, options: Entity.UpdateOptions, userId: string): void
+  _onUpdate (data: Optional<D>, options: Entity.UpdateOptions, userId: string): void
 
   /** @override */
   _onCreateEmbeddedEntity (embeddedName: string, child: Playlist.Sound, options: Entity.UpdateOptions, userId: string): void
@@ -162,20 +162,20 @@ declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D
 
 declare namespace Playlist {
   interface Sound {
-    flags?: any
-    name?: string
-    path?: string
-    playing?: boolean
-    repeat?: boolean
-    streaming?: boolean
-    volume?: number
-    _id?: string
+    flags: any
+    name: string
+    path: string
+    playing: boolean
+    repeat: boolean
+    streaming: boolean
+    volume: number
+    _id: string
   }
 
   interface Data extends Entity.Data {
-    sounds?: Sound[]
-    mode?: number
-    playing?: boolean
-    sort?: number
+    sounds: Sound[]
+    mode: number
+    playing: boolean
+    sort: number
   }
 }

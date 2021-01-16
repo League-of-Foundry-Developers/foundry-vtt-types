@@ -183,6 +183,28 @@ declare class RollTable<D extends RollTable.Data = RollTable.Data> extends Entit
 
 declare namespace RollTable {
   interface Data extends Entity.Data {
-    results: any[]
+    description: string
+    displayRoll: boolean
+    formula: string
+    img: string
+    permission: {
+      default: number
+      [user: string]: number
+    }
+    replacement: boolean
+    results: Result[]
+    sort: number
+  }
+
+  interface Result {
+    drawn: boolean
+    flags: any
+    img: string
+    range: [number, number]
+    resultId: string
+    text: string
+    type: number
+    weight: number
+    _id: string
   }
 }

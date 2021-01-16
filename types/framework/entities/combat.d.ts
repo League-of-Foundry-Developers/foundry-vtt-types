@@ -302,7 +302,7 @@ declare class Combat<D extends Combat.Data = Combat.Data> extends Entity<D> {
   _onCreate (data: D, options: any, userId: string): void
 
   /** @override */
-  _onUpdate (data: D, options: Entity.UpdateOptions, userId: string): void
+  _onUpdate (data: Optional<D>, options: Entity.UpdateOptions, userId: string): void
 
   /** @override */
   _onDelete (options: Entity.DeleteOptions, userId: string): void
@@ -330,11 +330,11 @@ declare namespace Combat {
  * Data extension for Combat
  */
   interface Data extends Entity.Data {
-    active?: boolean
-    combatants?: any[]
-    round?: number
-    turn?: number
-    scene?: string
+    active: boolean
+    combatants: any[]
+    round: number
+    turn: number
+    scene: string
   }
 
   /**

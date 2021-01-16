@@ -115,9 +115,9 @@ declare class Folder<D extends Folder.Data = Folder.Data> extends Entity<D> {
 
 declare namespace Folder {
   interface Data extends Entity.Data {
-    parent?: Folder | null
-    sort?: number
-    sorting?: string
+    parent: Folder | null
+    sort: number
+    sorting: string
     type: string
   }
 }
