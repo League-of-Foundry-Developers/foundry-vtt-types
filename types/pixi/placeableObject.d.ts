@@ -63,6 +63,7 @@ declare abstract class PlaceableObject<D = {}> extends PIXI.Container {
 
   /**
    * Identify the official EmbeddedEntity name for this PlaceableObject class
+   * @remarks This getter is abstract in {@link PlaceableObject}.
    */
   static get embeddedName (): never
 
