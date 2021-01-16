@@ -11,7 +11,8 @@ declare class Collection<T> extends Map<string, T> {
   /**
    * When iterating over a Collection, we should iterate over its values instead
    * of over its entries
-   * @returns IterableIterator<T> - Typescript doesn't allow this
+   * @returns Typescript doesn't allow this
+   *          (type: `IterableIterator<T>`)
    */
   [Symbol.iterator] (): any
 
@@ -19,7 +20,8 @@ declare class Collection<T> extends Map<string, T> {
    * Return an Array of all the entry values in the Collection
    * @remarks
    * This is an accessor in the original Javascript
-   * @returns Array<T> - Typescript doesn't allow this
+   * @returns Typescript doesn't allow this
+   *          (type: `Array<T>`)
    */
   entries (): any
 
@@ -91,7 +93,7 @@ declare class Collection<T> extends Map<string, T> {
    * @typeParam U - The output type of the map operation
    * @returns An Array of transformed values
    */
-  map<U>(transformer: (entity: T) => U): U[]
+  map<U> (transformer: (entity: T) => U): U[]
 
   /**
    * Reduce the Collection by applying an evaluator function and accumulating
@@ -109,5 +111,5 @@ declare class Collection<T> extends Map<string, T> {
    * }, ""); // "ABC"
    * ```
    */
-  reduce<U>(evaluator: (accumulator: U, entity: T) => U, initial: U): U
+  reduce<U> (evaluator: (accumulator: U, entity: T) => U, initial: U): U
 }
