@@ -1,5 +1,6 @@
 /**
  * An abstract pattern for primary layers of the game canvas to implement
+ * (extends: `PIXI.Container`)
  */
 declare class CanvasLayer extends PIXI.Container {
   /**
