@@ -55,7 +55,7 @@ import './types/applications/widgets/searchFilter'
 
 // Core
 
-import './types/core/audio'
+import './types/core/audioHelper'
 import './types/core/config'
 import './types/core/fonts'
 import './types/core/gameTime'
