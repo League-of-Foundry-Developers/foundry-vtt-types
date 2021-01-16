@@ -95,7 +95,7 @@ declare namespace HooksCallbacks {
    * @see {@link ChatLog#processMessage}
    */
   type ChatMessage =
-    (chatLog: ChatLog, message: string, chatData: ChatMessage.Data) => boolean
+    (chatLog: ChatLog, message: string, chatData: ChatMessage.ChatData) => boolean
 
   /**
    * This is called when closing an {@link Application}. This is called once for

@@ -244,8 +244,14 @@ declare namespace ChatMessage {
     content: string
     speaker?: SpeakerData
     timestamp?: number
-    user?: number
+    type?: number | any // number, type mismatch
+    user?: string
     whisper?: string[]
+  }
+
+  interface ChatData {
+    user: string
+    speaker: SpeakerData
   }
 
   interface MessageData {
