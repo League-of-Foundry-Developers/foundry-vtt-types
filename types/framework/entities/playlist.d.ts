@@ -1,33 +1,28 @@
 /**
  * The EntityCollection of Playlist entities.
- * @extends {EntityCollection}
  */
 declare class Playlists extends EntityCollection<Playlist> {
-
   /** @override */
-  get entity(): string
+  get entity (): string
 
   /**
    * Return the subset of Playlist entities which are currently playing
-   * @type {Playlist[]}
    */
-  get playing(): Playlist
+  get playing (): Playlist
 
   /**
    * Handle changes to a Scene to determine whether to trigger changes to Playlist entities.
-   * @param {Scene} scene       The Scene entity being updated
-   * @param {Object} data       Incremental update data
-   * @param {Object} options    Update options
-   * @private
+   * @param scene - The Scene entity being updated
+   * @param data - Incremental update data
+   * @param options - Update options
    */
-  _onUpdateScene(scene: Scene, data: Scene.Data, options: Entity.UpdateOptions): void
+  _onUpdateScene (scene: Scene, data: Scene.Data, options: Entity.UpdateOptions): void
 }
 
 declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D> {
   /**
    * Each sound which is played within the Playlist has a created Howl instance.
    * The keys of this object are the sound IDs and the values are the Howl instances.
-   * @type {Object}
    */
   audio: {
     [soundId: string]: {
@@ -39,7 +34,6 @@ declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D
 
   /**
    * Playlists may have a playback order which defines the sequence of Playlist Sounds
-   * @type {string[]}
    */
   playbackOrder: string[]
 
@@ -51,9 +45,8 @@ declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D
 
   /**
    * Set up the Howl object by calling the core AudioHelper utility
-   * @param {Object} sound    The PlaylistSound for which to create an audio object
-   * @return {Object}         The created audio object
-   * @private
+   * @param sound - The PlaylistSound for which to create an audio object
+   * @returns The created audio object
    */
   _createAudio (sound: Playlist.Sound): void
 
@@ -62,8 +55,7 @@ declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D
    * Mark the concluded sound as no longer playing and possibly trigger playback for a subsequent sound depending on
    * the playlist mode.
    *
-   * @param {string} soundId  The sound ID of the track which is ending playback
-   * @private
+   * @param soundId - The sound ID of the track which is ending playback
    */
   _onEnd (soundId: string): Promise<void>
 
@@ -71,15 +63,13 @@ declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D
    * Generate a new playback order for the playlist.
    * Use a seed for randomization to (hopefully) guarantee that all clients generate the same random order.
    * The seed is based on the first 9 characters of the UTC datetime multiplied by the index order of the playlist.
-   * @private
    */
   _getPlaybackOrder (): string[]
 
   /**
    * Get the next sound which should be played in the Playlist after the current sound completes
-   * @param {string} soundId    The ID of the currently playing sound
-   * @return {Object}           The sound data for the next sound to play
-   * @private
+   * @param soundId - The ID of the currently playing sound
+   * @returns The sound data for the next sound to play
    */
   _getNextSound (soundId: string): Playlist.Sound
 
@@ -89,19 +79,16 @@ declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D
 
   /**
    * An Array of the sound data contained within this Playlist entity
-   * @type {object[]}
    */
   get sounds (): Playlist.Sound[]
 
   /**
    * The playback mode for the Playlist instance
-   * @type {number}
    */
   get mode (): number
 
   /**
    * An indicator for whether any Sound within the Playlist is currently playing
-   * @type {boolean}
    */
   get playing (): boolean
 
@@ -111,25 +98,25 @@ declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D
 
   /**
    * Play (or stop) a single sound from the Playlist
-   * @param sound {Object}       The sound object to begin playback
+   * @param sound - The sound object to begin playback
    */
   playSound (sound: Playlist.Sound): void
 
   /**
    * Begin simultaneous playback for all sounds in the Playlist.
-   * @returns {Promise<Playlist>} The updated Playlist entity
+   * @returns The updated Playlist entity
    */
   playAll (): Promise<this>
 
   /**
    * End playback for any/all currently playing sounds within the Playlist.
-   * @returns {Promise<Playlist>} The updated Playlist entity
+   * @returns The updated Playlist entity
    */
   stopAll (): Promise<this>
 
   /**
    * Cycle the playlist mode
-   * @return {Promise.<Playlist>}   A promise which resolves to the updated Playlist instance
+   * @returns A promise which resolves to the updated Playlist instance
    */
   cycleMode (): Promise<this>
 

@@ -2,47 +2,44 @@
  * The Collection of Combat entities
  */
 declare class CombatEncounters extends EntityCollection<Combat> {
-
   /** @override */
-  get entity(): string
+  get entity (): string
 
   /**
    * Provide the settings object which configures the Combat entity
-   * @return {object}
+   * @returns
    */
-  get settings(): {
+  get settings (): {
     resource: string
     skipDefeated: boolean
   }
 
   /**
    * Get an Array of Combat instances which apply to the current canvas scene
-   * @type {Combat[]}
    */
-  get combats(): Combat[]
+  get combats (): Combat[]
 
   /**
    * The currently active Combat instance
-   * @return {Combat}
+   * @returns
    */
-  get active(): Combat
+  get active (): Combat
 
   /**
    * The currently viewed Combat encounter
-   * @return {Combat|null}
+   * @returns
    */
-  get viewed(): Combat | null
+  get viewed (): Combat | null
 
   /** @override */
-  static get instance(): CombatEncounters
+  static get instance (): CombatEncounters
 
   /**
    * When a Token is deleted, remove it as a combatant from any combat encounters which included the Token
-   * @param {string} sceneId
-   * @param {string} tokenId
-   * @private
+   * @param sceneId -
+   * @param tokenId -
    */
-  _onDeleteToken(sceneId: string, tokenId: string): Promise<void>
+  _onDeleteToken (sceneId: string, tokenId: string): Promise<void>
 }
 
 /**
@@ -57,28 +54,21 @@ declare class Combat<D extends Combat.Data = Combat.Data> extends Entity<D> {
 
   /**
    * Record the current round, turn, and tokenId to understand changes in the encounter state
-   * @type {{round: number|null, turn: number|null, tokenId: string|null}}
-   * @private
    */
   current: Combat.CurrentTurn
 
   /**
    * Track the previous round, turn, and tokenId to understand changes in the encounter state
-   * @type {{round: number|null, turn: number|null, tokenId: string|null}}
-   * @private
    */
   previous: Combat.CurrentTurn
 
   /**
    * Track whether a sound notification is currently being played to avoid double-dipping
-   * @type {boolean}
-   * @private
    */
   _soundPlaying: boolean
 
   /**
    * The configuration setting used to record Combat preferences
-   * @type {string}
    */
   static CONFIG_SETTING: string
 
@@ -98,7 +88,6 @@ declare class Combat<D extends Combat.Data = Combat.Data> extends Entity<D> {
 
   /**
    * Prepare turn data for one specific combatant.
-   * @private
    */
   _prepareCombatant (c: Combat.Combatant, scene: Scene, players: User[], settings?: any): Combat.Combatant
 
@@ -106,7 +95,6 @@ declare class Combat<D extends Combat.Data = Combat.Data> extends Entity<D> {
    * Define how the array of Combatants is sorted in the displayed list of the tracker.
    * This method can be overridden by a system or module which needs to display combatants in an alternative order.
    * By default sort by initiative, falling back to name
-   * @private
    */
   _sortCombatants (a: Combat.Combatant, b: Combat.Combatant): number
 
@@ -186,7 +174,7 @@ declare class Combat<D extends Combat.Data = Combat.Data> extends Entity<D> {
 
   /**
    * Reset all combatant initiative scores, setting the turn back to zero
-   * @return {Promise<Combat>}
+   * @returns
    */
   resetAll (): Promise<this>
 
@@ -200,31 +188,30 @@ declare class Combat<D extends Combat.Data = Combat.Data> extends Entity<D> {
   /* -------------------------------------------- */
 
   /**
-   * @extends {Entity.getEmbeddedEntity}
    */
   getCombatant (id: string): Combat.Combatant
 
   /**
    * Get a Combatant using its Token id
-   * @param tokenId The id of the Token for which to acquire the combatant
+   * @param tokenId - The id of the Token for which to acquire the combatant
    */
   getCombatantByToken (tokenId: string): Combat.Combatant
 
   /**
    * Set initiative for a single Combatant within the Combat encounter. Turns will be updated to keep the same combatant as current in the turn order
-   * @param id The combatant ID for which to set initiative
-   * @param id A specific initiative value to set
+   * @param id - The combatant ID for which to set initiative
+   * @param value - A specific initiative value to set
    */
   setInitiative (id: string, value: number): Promise<void>
 
   /**
    * Roll initiative for one or multiple Combatants within the Combat entity
-   * @param {string|string[]} ids     A Combatant id or Array of ids for which to roll
-   * @param {string|null} [formula]   A non-default initiative formula to roll. Otherwise the system default is used.
-   * @param {boolean} [updateTurn]    Update the Combat turn after adding new initiative scores to keep the turn on
-   *                                  the same Combatant.
-   * @param {object} [messageOptions] Additional options with which to customize created Chat Messages
-   * @return {Promise<Combat>}        A promise which resolves to the updated Combat entity once updates are complete.
+   * @param ids - A Combatant id or Array of ids for which to roll
+   * @param formula - A non-default initiative formula to roll. Otherwise the system default is used.
+   * @param updateTurn - Update the Combat turn after adding new initiative scores to keep the turn on
+   *                     the same Combatant.
+   * @param messageOptions - Additional options with which to customize created Chat Messages
+   * @returns A promise which resolves to the updated Combat entity once updates are complete.
    */
   rollInitiative (
     ids: string[] | string,
@@ -238,27 +225,25 @@ declare class Combat<D extends Combat.Data = Combat.Data> extends Entity<D> {
   /**
    * Acquire the default dice formula which should be used to roll initiative for a particular combatant.
    * Modules or systems could choose to override or extend this to accommodate special situations.
-   * @private
    *
-   * @param {object} combatant      Data for the specific combatant for whom to acquire an initiative formula. This
+   * @param combatant - Data for the specific combatant for whom to acquire an initiative formula. This
    *                                is not used by default, but provided to give flexibility for modules and systems.
-   * @return {string}               The initiative formula to use for this combatant.
+   * @returns The initiative formula to use for this combatant.
    */
   _getInitiativeFormula (combatant: Combat.Combatant): string|null
 
   /**
    * Get a Roll object which represents the initiative roll for a given combatant.
-   * @private
-   * @param {object} combatant      Data for the specific combatant for whom to acquire an initiative formula. This
+   * @param combatant - Data for the specific combatant for whom to acquire an initiative formula. This
    *                                is not used by default, but provided to give flexibility for modules and systems.
-   * @param {string} formula        An explicit Roll formula to use for the combatant.
-   * @return {Roll}                 The Roll instance to use for the combatant.
+   * @param formula - An explicit Roll formula to use for the combatant.
+   * @returns The Roll instance to use for the combatant.
    */
   _getInitiativeRoll (combatant: Combat.Combatant, formula: string): Roll
 
   /**
    * Roll initiative for all non-player actors who have not already rolled
-   * @param args Additional arguments forwarded to the Combat.rollInitiative method
+   * @param args - Additional arguments forwarded to the Combat.rollInitiative method
    * @returns A promise which resolves to the updated Combat entity once updates are complete.
    */
   rollNPC (args?: {
@@ -269,7 +254,7 @@ declare class Combat<D extends Combat.Data = Combat.Data> extends Entity<D> {
 
   /**
    * Roll initiative for all combatants which have not already rolled
-   * @param args Additional arguments forwarded to the Combat.rollInitiative method
+   * @param args - Additional arguments forwarded to the Combat.rollInitiative method
    * @returns A promise which resolves to the updated Combat entity once updates are complete.
    */
   rollAll (args?: {
@@ -284,14 +269,10 @@ declare class Combat<D extends Combat.Data = Combat.Data> extends Entity<D> {
    */
   createCombatant (data: Combat.Combatant|Combat.Combatant[], options?: any): Promise<any>
 
-  /**
-   * @extends {Entity.updateEmbeddedEntity}
-   */
+  /** @override */
   updateCombatant (data: Combat.Combatant|Combat.Combatant[], options?: any): Promise<any>
 
-  /**
-   * @extends {Entity.deleteEmbeddedEntity}
-   */
+  /** @override */
   deleteCombatant (id: string|string[], options?: any): Promise<any>
 
   /* -------------------------------------------- */

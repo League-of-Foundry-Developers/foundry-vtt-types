@@ -1,13 +1,9 @@
 /**
- * The JournalEntry Configuration Sheet
- * @implements {BaseEntitySheet}
- *
- * @param {JournalEntry} entity     The JournalEntry instance which is being edited
- * @param {object} [options]        Application options
+ * A directory list of JournalEntry entities in the Sidebar
  */
 declare class Journal extends EntityCollection<JournalEntry> {
   /** @override */
-  get entity(): string
+  get entity (): string
 
   /* -------------------------------------------- */
   /*  Socket Listeners and Handlers               */
@@ -15,23 +11,20 @@ declare class Journal extends EntityCollection<JournalEntry> {
 
   /**
    * Open Socket listeners which transact JournalEntry data
-   * @private
    */
-  static socketListeners(socket: SocketIOClient.Socket): void
+  static socketListeners (socket: SocketIOClient.Socket): void
 
   /**
    * Handle a received request to show a JournalEntry to the current client
-   * @param {string} entryId      The ID of the journal entry to display for other players
-   * @param {string} mode         The JournalEntry mode to display
-   * @param {boolean} force       Display the entry to all players regardless of normal permissions
-   * @private
+   * @param entryId - The ID of the journal entry to display for other players
+   * @param mode - The JournalEntry mode to display
+   * @param force - Display the entry to all players regardless of normal permissions
    */
-  static _showEntry(entryId: string, mode?: "text" | "image", force?: boolean): void
+  static _showEntry (entryId: string, mode?: 'text' | 'image', force?: boolean): void
 }
 
 /**
  * The JournalEntry class
- * @extends {Entity}
  */
 declare class JournalEntry<D extends JournalEntry.Data = JournalEntry.Data> extends Entity<D> {
   /** @override */

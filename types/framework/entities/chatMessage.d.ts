@@ -2,39 +2,35 @@
  * A :class:`EntityCollection` of class:`ChatMessage` entities
  * The Messages collection is accessible within the game as `game.messages`.
  *
- * @type {EntityCollection}
  */
 declare class Messages extends EntityCollection<ChatMessage> {
   /** @override */
-  get entity(): string
+  get entity (): string
 
   /** @override */
-  render(force?: boolean, options?: any): any // Mismatched types
+  render (force?: boolean, options?: any): any // Mismatched types
 
   /**
    * If requested, dispatch a Chat Bubble UI for the newly created message
-   * @param {ChatMessage} message     The ChatMessage entity to say
-   * @private
+   * @param message - The ChatMessage entity to say
    */
-  sayBubble(message: ChatMessage): void
+  sayBubble (message: ChatMessage): void
 
   /**
    * Handle export of the chat log to a text file
-   * @private
    */
-  export(): void
+  export (): void
 
   /**
    * Allow for bulk deletion of all chat messages, confirm first with a yes/no dialog.
    * @see {@link Dialog.confirm}
    */
-  flush(): Promise<void>
+  flush (): Promise<void>
 }
 
 /**
  * The Chat Message class is a type of :class:`Entity` which represents individual messages in the chat log.
  *
- * @type {Entity}
  */
 declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends Entity<D> {
   /**
@@ -49,10 +45,6 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
 
   /**
    * Configure the attributes of the ChatMessage Entity
-   *
-   * @returns {Entity} baseEntity       The parent class which directly inherits from the Entity interface.
-   * @returns {EntityCollection} collection   The EntityCollection class to which Entities of this type belong.
-   * @returns {string[]} embeddedEntities  The names of any Embedded Entities within the Entity data structure.
    */
   static get config (): Entity.Config
 
@@ -64,7 +56,6 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
    * Return the recommended String alias for this message.
    * The alias could be a Token name in the case of in-character messages or dice rolls.
    * Alternatively it could be a User name in the case of OOC chat or whispers.
-   * @type {string}
    */
   get alias (): string
 
@@ -74,25 +65,21 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
   /**
    * Return whether the ChatMessage is visible to the current user
    * Messages may not be visible if they are private whispers
-   * @type {boolean}
    */
   get visible (): boolean
 
   /**
    * Is the current User the author of this message?
-   * @type {boolean}
    */
   get isAuthor (): boolean
 
   /**
    * Test whether the chat message contains a dice roll
-   * @type {boolean}
    */
   get isRoll (): boolean
 
   /**
    * Return whether the content of the message is visible to the current user
-   * @type {boolean}
    */
   get isContentVisible (): boolean
 
@@ -101,7 +88,6 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
 
   /**
    * Return the Roll instance contained in this chat message, if one is present
-   * @type {Roll}
    */
   get roll (): Roll
 
@@ -111,7 +97,6 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
 
   /**
    * Render the HTML for the ChatMessage which should be added to the log
-   * @return {Promise.<HTMLElement>}
    */
   render (force?: boolean, options?: any): Promise<HTMLElement>
 
@@ -119,19 +104,15 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
   /*  Socket Listeners and Handlers               */
   /* -------------------------------------------- */
 
-  /**
-   * @inheritdoc
-   * @see {@link Entity.create}
-   */
+  /** @override */
   static create (data: ChatMessage.Data|ChatMessage.Data[], options: Entity.CreateOptions): Promise<ChatMessage<ChatMessage.Data>|Array<ChatMessage<ChatMessage.Data>>>
 
   /**
    * Preprocess the data object used to create a new Chat Message to automatically convert some Objects to the
    * data format expected by the database handler.
-   * @param {Object} data       Single ChatMessage creation data
-   * @param {string} [rollMode] The visibility mode applied to all dice rolls
-   * @return {Object}           Processed message creation data
-   * @private
+   * @param data - Single ChatMessage creation data
+   * @param rollMode - The visibility mode applied to all dice rolls
+   * @returns Processed message creation data
    */
   static _preprocessCreateData (data: ChatMessage.Data, { rollMode }?: {
     rollMode?: string | null
@@ -152,23 +133,22 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
 
   /**
    * Export the content of the chat message into a standardized log format
-   * @return {string}
    */
   export (): string
 
   /**
    * Transform a provided object of ChatMessage data by applying a certain rollMode to the data object.
-   * @param {object} chatData     The object of ChatMessage data prior to applying a rollMode preference
-   * @param {string} rollMode     The rollMode preference to apply to this message data
-   * @returns {object}            The modified ChatMessage data with rollMode preferences applied
+   * @param chatData - The object of ChatMessage data prior to applying a rollMode preference
+   * @param rollMode - The rollMode preference to apply to this message data
+   * @returns The modified ChatMessage data with rollMode preferences applied
    */
   static applyRollMode (chatData: ChatMessage.Data, rollMode: string): ChatMessage.Data
 
   /**
    * Given a string whisper target, return an Array of the user IDs which should be targeted for the whisper
    *
-   * @param {string} name   The target name of the whisper target
-   * @return {User[]}       An array of User instances
+   * @param name - The target name of the whisper target
+   * @returns An array of User instances
    */
   static getWhisperRecipients (name: string): User[]
 
@@ -176,23 +156,17 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
    * Attempt to determine who is the speaking character (and token) for a certain Chat Message
    * First assume that the currently controlled Token is the speaker
    *
-   * @param {Scene} [scene]     The Scene in which the speaker resides
-   * @param {Actor} [actor]     The Actor whom is speaking
-   * @param {Token} [token]     The Token whom is speaking
-   * @param {string} [alias]     The name of the speaker to display
+   * @param scene - The Scene in which the speaker resides
+   * @param actor - The Actor whom is speaking
+   * @param token - The Token whom is speaking
+   * @param alias - The name of the speaker to display
    *
-   * @returns {Object}  The identified speaker data
+   * @returns The identified speaker data
    */
-  static getSpeaker ({ scene, actor, token, alias }?: {
-    scene?: Scene
-    actor?: Actor
-    token?: Token
-    alias?: string
-  }): ChatMessage.SpeakerData
+  static getSpeaker (speaker: Optional<ChatMessage.SpeakerData>): ChatMessage.SpeakerData
 
   /**
    * A helper to prepare the speaker object based on a target Token
-   * @private
    */
   static _getSpeakerFromToken ({ token, alias }: {
     token: Token
@@ -201,7 +175,6 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
 
   /**
    * A helper to prepare the speaker object based on a target Actor
-   * @private
    */
   static _getSpeakerFromActor ({ scene, actor, alias }: {
     scene?: Scene
@@ -211,7 +184,6 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
 
   /**
    * A helper to prepare the speaker object based on a target User
-   * @private
    */
   static _getSpeakerFromUser ({ scene, user, alias }: {
     scene?: Scene
@@ -227,14 +199,12 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
    * Obtain a data object used to evaluate any dice rolls associated with this particular chat message
    * @remarks
    * Returns Actor.data.data
-   * @return {Object}
    */
   getRollData (): any // Actor.data.data
 
   /**
    * Obtain an Actor instance which represents the speaker of this message (if any)
-   * @param {Object} speaker    The speaker data object
-   * @return {Actor|null}
+   * @param speaker - The speaker data object
    */
   static getSpeakerActor (speaker: ChatMessage.SpeakerData): Actor | null
 }

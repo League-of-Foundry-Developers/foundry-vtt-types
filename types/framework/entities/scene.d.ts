@@ -2,54 +2,51 @@
  * The collection of Scene entities
  */
 declare class Scenes extends EntityCollection<Scene> {
-
   /** @override */
-  get entity(): string
+  get entity (): string
 
   /**
    * Return a reference to the Scene which is currently active
-   * @return {Scene}
+   * @returns
    */
-  get active(): Scene
+  get active (): Scene
 
   /**
    * Return a reference to the Scene which is currently viewed
-   * @return {Scene}
+   * @returns
    */
-  get viewed(): Scene
+  get viewed (): Scene
 
   /* -------------------------------------------- */
   /*  Socket Listeners and Handlers               */
   /* -------------------------------------------- */
 
   /** @override */
-  static socketListeners(socket: SocketIOClient.Socket): void
+  static socketListeners (socket: SocketIOClient.Socket): void
 
   /**
    * Augment the standard modifyDocument listener to flush fog exploration
-   * @private
    */
-  static _resetFog(response: {
+  static _resetFog (response: {
     scene: Scene
     reset: boolean
   }): Promise<Canvas>
 
   /**
    * Handle pre-loading the art assets for a Scene
-   * @param {string} sceneId    The Scene id to begin loading
-   * @param {boolean} push      Trigger other connected clients to also pre-load Scene resources
+   * @param sceneId - The Scene id to begin loading
+   * @param push - Trigger other connected clients to also pre-load Scene resources
    */
-  preload(sceneId: string, push?: boolean): Promise<void>
+  preload (sceneId: string, push?: boolean): Promise<void>
 
   /**
    * Handle requests pulling the current User to a specific Scene
-   * @param {string} sceneId
-   * @private
+   * @param sceneId -
    */
-  static _pullToScene(sceneId: string): void
+  static _pullToScene (sceneId: string): void
 
   /** @override */
-  fromCompendium(data: Scene.Data): Scene.Data
+  fromCompendium (data: Scene.Data): Scene.Data
 }
 
 /**
@@ -58,7 +55,6 @@ declare class Scenes extends EntityCollection<Scene> {
 declare class Scene<D extends Scene.Data = Scene.Data> extends Entity<D> {
   /**
    * Track whether the scene is the active view
-   * @type {boolean}
    */
   _view: boolean
 
@@ -66,7 +62,6 @@ declare class Scene<D extends Scene.Data = Scene.Data> extends Entity<D> {
    * Track the viewed position of each scene (while in memory only, not persisted)
    * When switching back to a previously viewed scene, we can automatically pan to the previous position.
    * Object with keys: x, y, scale
-   * @type {Object}
    */
   viewPosition: {
     x: number
@@ -74,7 +69,6 @@ declare class Scene<D extends Scene.Data = Scene.Data> extends Entity<D> {
     scale: number
   }
 
-  /** @extends {EntityCollection.config} */
   static get config (): Entity.Config
 
   /** @override */
@@ -89,43 +83,39 @@ declare class Scene<D extends Scene.Data = Scene.Data> extends Entity<D> {
 
   /**
    * A convenience accessor for the background image of the Scene
-   * @type {string}
    */
   get img (): string
 
   /**
    * A convenience accessor for whether the Scene is currently active
-   * @type {boolean}
    */
   get active (): boolean
 
   /**
    * A convenience accessor for whether the Scene is currently viewed
-   * @type {boolean}
    */
   get isView (): boolean
 
   /**
    * A reference to the JournalEntry entity associated with this Scene, or null
-   * @return {JournalEntry|null}
+   * @returns
    */
   get journal (): JournalEntry | null
 
   /**
    * A reference to the Playlist entity for this Scene, or null
-   * @type {Playlist|null}
    */
   get playlist (): Playlist | null
 
   /**
    * Set this scene as the current view
-   * @return {Promise<void>}
+   * @returns
    */
   view (): Promise<void>
 
   /**
    * Set this scene as currently active
-   * @return {Promise<Scene>}  A Promise which resolves to the current scene once it has been successfully activated
+   * @returns A Promise which resolves to the current scene once it has been successfully activated
    */
   activate (): Promise<this>
 
@@ -153,7 +143,6 @@ declare class Scene<D extends Scene.Data = Scene.Data> extends Entity<D> {
 
   /**
    * Handle Scene activation workflow if the active state is changed to true
-   * @private
    */
   _onActivate (active: boolean): void
 
@@ -191,11 +180,11 @@ declare class Scene<D extends Scene.Data = Scene.Data> extends Entity<D> {
 
   /**
    * Create a 300px by 100px thumbnail image for this scene background
-   * @param {string} [string|null]  A background image to use for thumbnail creation, otherwise the current scene
-   *                          background is used.
-   * @param {number} [width]        The desired thumbnail width. Default is 300px
-   * @param {number} [height]       The desired thumbnail height. Default is 100px;
-   * @return {Promise<object>}      The created thumbnail data.
+   * @param img - A background image to use for thumbnail creation, otherwise the current scene
+   *              background is used.
+   * @param width - The desired thumbnail width. Default is 300px
+   * @param height - The desired thumbnail height. Default is 100px;
+   * @returns The created thumbnail data.
    */
   createThumbnail ({ img, width, height }: {
     img: string | null

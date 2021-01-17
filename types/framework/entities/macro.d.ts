@@ -1,6 +1,5 @@
 /**
  * The Collection of Macro entities
- * @extends {EntityCollection}
  */
 declare class Macros extends EntityCollection<Macro> {
   /** @override */
@@ -14,8 +13,8 @@ declare class Macros extends EntityCollection<Macro> {
 
   /**
    * Determine whether a given User is allowed to use JavaScript macros
-   * @param {User} user   The User entity to test
-   * @return {boolean}    Can the User use scripts?
+   * @param user - The User entity to test
+   * @returns Can the User use scripts?
    */
   static canUseScripts (user: User): boolean
 
@@ -28,8 +27,6 @@ declare class Macros extends EntityCollection<Macro> {
  * All users have permission to create and use chat-based Macros, but users must be given special permission to use
  * script-based macros.
  *
- * @extends {Entity}
- *
  * @see {@link Macros}        The Collection of Macro entities
  * @see {@link MacroConfig}   The Macro Configuration sheet
  * @see {@link Hotbar}        The Hotbar interface application
@@ -40,7 +37,6 @@ declare class Macro<D extends Macro.Data = Macro.Data> extends Entity<D> {
 
   /**
    * Is the current User the author of this macro?
-   * @type {boolean}
    */
   get isAuthor (): boolean;
 
