@@ -79,12 +79,12 @@ import './types/core/videoHelper'
 // rolls
 
 import './types/core/rolls/dicePool'
-import './types/core/rolls/diceTerm'
 import './types/core/rolls/roll'
 
 // dice terms
 
 import './types/core/rolls/diceTerms/coin'
+import './types/core/rolls/diceTerms/diceTerm'
 import './types/core/rolls/diceTerms/die'
 import './types/core/rolls/diceTerms/fateDie'
 
