@@ -10,7 +10,6 @@
  * @param options - Additional options which modify the rendering of the item.
  * @param editable - Is the item editable? Default is true.
  * @typeParam T - the type of the data used to render the inner template
- * @typeParam D - the type of the data in the Entity
  * @typeParam O - the type of the Entity which should be managed by this form
  *                sheet
  * @typeParam F - the type of the of validated form data with which to update
@@ -18,10 +17,9 @@
  */
 declare class ItemSheet<
   T = object,
-  D = object,
-  O extends Item<D> = Item<D>,
+  O extends Item = Item,
   F = object
-> extends BaseEntitySheet<T, D, O, F> {
+> extends BaseEntitySheet<T, O, F> {
   /**
    * Assign the default options which are supported by this Application
    */
@@ -38,9 +36,10 @@ declare class ItemSheet<
   get item (): O
 
   /**
-   * The Actor instance which owns this item. This may be null if the item is unowned.
+   * The Actor instance which owns this item. This may be null if the item is
+   * unowned.
    */
-  get actor (): Actor<D>
+  get actor (): Actor
 
   /**
    * Activate listeners which provide interactivity for item sheet events
@@ -52,17 +51,16 @@ declare class ItemSheet<
    * @param options - (unused)
    * @override
    */
-  getData (options?: any): ItemSheet.Data<D, O>
+  getData (options?: any): ItemSheet.Data<O>
 }
 
 declare namespace ItemSheet {
   /**
-   * @typeParam D - the type of the data in the Entity
    * @typeParam O - the type of the Entity which should be managed by this form
    *                sheet
    */
-  interface Data<D, O> extends BaseEntitySheet.Data<D, O> {
+  interface Data<O extends Item = Item> extends BaseEntitySheet.Data<O> {
     data: any
-    item: Item<D>
+    item: Item<O extends Item<infer D> ? D : never>
   }
 }
