@@ -229,7 +229,7 @@ declare class Canvas {
    * @param event - (unused)
    * @internal
    */
-  _onDragRightDrop (event?: PIXI.InteractionEvent): void
+  _onDragRightDrop (event?: any): void
 
   /**
    * Handle right-mouse drag events occuring on the Canvas stage or an active

@@ -243,7 +243,7 @@ declare abstract class PlaceableObject<D = {}> extends PIXI.Container {
    *                  (unused)
    * @internal
    */
-  _onControl (options?: object): void
+  _onControl (options?: any): void
 
   /**
    * Register pending canvas operations which should occur after a new

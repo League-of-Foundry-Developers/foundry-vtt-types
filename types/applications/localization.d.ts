@@ -74,7 +74,7 @@ declare class Localization {
    * @param fallback - Allow fallback translations to count?
    *                   (unused)
    */
-  has (stringId: string, fallback: boolean): boolean
+  has (stringId: string, fallback?: any): boolean
 
   /**
    * Initialize the Localization module

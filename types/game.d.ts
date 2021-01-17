@@ -357,7 +357,7 @@ declare class Game {
    *                (unused)
    * @internal
    */
-  _onWindowBeforeUnload (event: any): void
+  _onWindowBeforeUnload (event?: any): void
 
   /**
    * Handle cases where the browser window loses focus to reset detection of
@@ -370,7 +370,7 @@ declare class Game {
   /**
    * @param event - (unused)
    */
-  _onWindowPopState (event: any): void
+  _onWindowPopState (event?: any): void
 
   /**
    * Handle resizing of the game window
@@ -378,7 +378,7 @@ declare class Game {
    * @param event - (unused)
    * @internal
    */
-  _onWindowResize (event: any): void
+  _onWindowResize (event?: any): void
 
   /**
    * Activate Event Listeners which apply to every Game View

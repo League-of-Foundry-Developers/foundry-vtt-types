@@ -217,7 +217,7 @@ declare abstract class FormApplication
    *                   (unused)
    * @returns A Promise which resolves once the update operation has completed
    */
-  abstract _updateObject (event?: Event, formData?: object): void
+  abstract _updateObject (event?: any, formData?: object): void
 }
 
 declare namespace FormApplication {

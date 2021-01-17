@@ -54,7 +54,7 @@ declare class BaseEntitySheet <
    * @override
    */
   _updateObject (
-    event: Event,
+    event: any,
     formData: object
   ): Promise<O>
 
