@@ -53,6 +53,13 @@ import './types/applications/sidebar/sidebarTab'
 
 import './types/applications/widgets/searchFilter'
 
+// Augments
+
+import './types/augments/PIXI'
+import './types/augments/handlebars'
+import './types/augments/howler'
+import './types/augments/tinyMCE'
+
 // Core
 
 import './types/core/audioHelper'
@@ -145,10 +152,6 @@ import './types/ui/tabs'
 
 // --
 
-import './types/augment.PIXI'
-import './types/augment.handlebars'
-import './types/augment.howler'
-import './types/augment.tinyMCE'
 import './types/constants'
 import './types/game'
 import './types/handlebars'
