@@ -124,7 +124,7 @@ declare namespace ActorSheet {
    */
   interface Data<O extends Actor = Actor> extends BaseEntitySheet.Data<O> {
     actor: Actor
-    data: ActorData<O extends Actor<infer D> ? D : never>
+    data: O extends Actor<infer D> ? D : never
     items: Collection<Item>
   }
 }

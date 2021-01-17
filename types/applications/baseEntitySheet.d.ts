@@ -78,7 +78,7 @@ declare namespace BaseEntitySheet {
   interface Data<O extends Entity = Entity> extends FormApplication.Data<O> {
     cssClass: string
     editable: boolean
-    entity: EntityData<O extends Entity<infer D> ? D : never>
+    entity: O extends Entity<infer D> ? D : never
     limited: boolean
 
     /**

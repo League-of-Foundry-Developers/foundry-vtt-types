@@ -95,7 +95,7 @@ declare namespace HooksCallbacks {
    * @see {@link ChatLog#processMessage}
    */
   type ChatMessage =
-    (chatLog: ChatLog, message: string, chatData: ChatData) => boolean
+    (chatLog: ChatLog, message: string, chatData: ChatMessage.Data) => boolean
 
   /**
    * This is called when closing an {@link Application}. This is called once for
@@ -150,7 +150,7 @@ declare namespace HooksCallbacks {
   type CreateEmbeddedEntity<D, P extends Entity = Entity> = (
     parent: P,
     data: D,
-    options: EntityCreateOptions,
+    options: Entity.CreateOptions,
     userId: number
   ) => void
 
@@ -165,7 +165,7 @@ declare namespace HooksCallbacks {
    * @see {@link Entity#_handleCreate}
    */
   type CreateEntity<E extends Entity = Entity> =
-    (entity: E, options: EntityCreateOptions, userId: number) => void
+    (entity: E, options: Entity.CreateOptions, userId: number) => void
 
   /**
    * This is called after deleting an embedded {@link Entity}.
@@ -181,7 +181,7 @@ declare namespace HooksCallbacks {
   <E extends Entity = Entity, P extends Entity = Entity> = (
     parent: P,
     entity: E,
-    options: EntityDeleteOptions,
+    options: Entity.DeleteOptions,
     userId: number
   ) => void
 
@@ -196,7 +196,7 @@ declare namespace HooksCallbacks {
    * @see {@link Entity#_handleDelete}
    */
   type DeleteEntity<E extends Entity = Entity> =
-    (entity: E, options: EntityDeleteOptions, userId: number) => void
+    (entity: E, options: Entity.DeleteOptions, userId: number) => void
 
   /**
    * This is called during the drop portion of a drag-and-drop event on an actor
@@ -490,7 +490,7 @@ declare namespace HooksCallbacks {
   type PreCreateEmbeddedEntity<D, P extends Entity = Entity> = (
     parent: P,
     data: D,
-    options: EntityCreateOptions,
+    options: Entity.CreateOptions,
     userId: number
   ) => boolean
 
@@ -508,7 +508,7 @@ declare namespace HooksCallbacks {
    * @see {@link Entity.create}
    */
   type PreCreateEntity<D> =
-    (data: D, options: EntityCreateOptions, userId: number) => boolean
+    (data: D, options: Entity.CreateOptions, userId: number) => boolean
 
   /**
    * This is called before deleting an embedded {@link Entity}.
@@ -527,7 +527,7 @@ declare namespace HooksCallbacks {
   <E extends Entity = Entity, P extends Entity = Entity> = (
     parent: P,
     entity: E,
-    options: EntityDeleteOptions,
+    options: Entity.DeleteOptions,
     userId: number
   ) => boolean
 
@@ -545,7 +545,7 @@ declare namespace HooksCallbacks {
    * @see {@link Entity.delete}
    */
   type PreDeleteEntity<E extends Entity = Entity> =
-    (entity: E, options: EntityDeleteOptions, userId: number) => boolean
+    (entity: E, options: Entity.DeleteOptions, userId: number) => boolean
 
   /**
    * This is called before updating an embedded {@link Entity}.
@@ -567,7 +567,7 @@ declare namespace HooksCallbacks {
     parent: P,
     entity: E,
     update: object,
-    options: EntityUpdateOptions,
+    options: Entity.UpdateOptions,
     userId: number
   ) => boolean
 
@@ -587,7 +587,7 @@ declare namespace HooksCallbacks {
   type PreUpdateEntity<E extends Entity = Entity> = (
     entity: E,
     data: object,
-    options: EntityUpdateOptions,
+    options: Entity.UpdateOptions,
     userId: number
   ) => boolean
 
@@ -622,7 +622,7 @@ declare namespace HooksCallbacks {
    * @see {@link ChatMessage#render}
    */
   type RenderChatMessage =
-    (message: ChatMessage, jq: JQuery, messageData: MessageData) => void
+    (message: ChatMessage, jq: JQuery, messageData: ChatMessage.MessageData) => void
 
   /**
    * This is called after {@link AVSettings} are changed.
@@ -685,7 +685,7 @@ declare namespace HooksCallbacks {
     parent: P,
     entity: E,
     data: object,
-    options: EntityUpdateOptions,
+    options: Entity.UpdateOptions,
     userId: number
   ) => void
 
@@ -704,7 +704,7 @@ declare namespace HooksCallbacks {
   type UpdateEntity<E extends Entity = Entity> = (
     entity: E,
     data: object,
-    options: EntityUpdateOptions,
+    options: Entity.UpdateOptions,
     userId: number
   ) => void
 
