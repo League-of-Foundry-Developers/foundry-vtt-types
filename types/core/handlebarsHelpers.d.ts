@@ -1,6 +1,7 @@
 /**
  * A collection of Handlebars template helpers which can be used within HTML templates.
  */
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 declare class HandlebarsHelpers {
   /**
    * For checkboxes, if the value of the checkbox is true, add the "checked"

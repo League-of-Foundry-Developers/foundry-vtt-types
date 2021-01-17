@@ -96,13 +96,6 @@ declare class FilePicker extends Application {
   ): Promise<boolean>;
 
   /**
-   * Browse to a specific location for this FilePicker instance
-   * @param target - The target within the currently active source location.
-   * @param options - Browsing options
-   */
-  browse (target: string, options?: object): Promise<any>;
-
-  /**
    * Get the valid file extensions for a given named file picker type
    */
   _getExtensions (type: string): string[];
@@ -152,4 +145,11 @@ declare class FilePicker extends Application {
    * Handle file upload
    */
   _onUpload (ev: Event): Promise<any>;
+
+  /**
+   * Browse to a specific location for this FilePicker instance
+   * @param target - The target within the currently active source location.
+   * @param options - Browsing options
+   */
+  browse (target: string, options?: object): Promise<any>;
 }

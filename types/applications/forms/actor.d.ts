@@ -53,18 +53,6 @@ declare class ActorSheet<
   get title (): string
 
   /**
-   * Remove references to an active Token when the sheet is closed
-   * See Application.close for more detail
-   */
-  close (): Promise<void>
-
-  /**
-   * @param options - (unused)
-   * @override
-   */
-  getData (options?: any): ActorSheet.Data<D, O>
-
-  /**
    * Extend the Header Button configuration for the ActorSheet to add Token configuration buttons
    * See Application._getHeaderButtons for documentation of the return Array structure.
    */
@@ -117,6 +105,18 @@ declare class ActorSheet<
    * @param html - The rendered template ready to have listeners attached
    */
   activateListeners (html: JQuery | HTMLElement): void
+
+  /**
+   * Remove references to an active Token when the sheet is closed
+   * See Application.close for more detail
+   */
+  close (): Promise<void>
+
+  /**
+   * @param options - (unused)
+   * @override
+   */
+  getData (options?: any): ActorSheet.Data<D, O>
 }
 
 declare namespace ActorSheet {

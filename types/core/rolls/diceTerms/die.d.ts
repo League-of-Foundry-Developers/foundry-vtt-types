@@ -159,7 +159,7 @@ declare class Die extends DiceTerm {
    * possible value if no target is given.
    * Applying a deduct-failures modifier to the results counts all failed
    * results as -1.
-   * 6d6df<3    Subtract the value of results which rolled less than 3 from the
+   * 6d6df\<3    Subtract the value of results which rolled less than 3 from the
    *           non-failed total.
    * @param modifier - The matched modifier query
    */

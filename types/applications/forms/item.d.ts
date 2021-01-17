@@ -43,16 +43,16 @@ declare class ItemSheet<
   get actor (): Actor<D>
 
   /**
-   * @param options - (unused)
-   * @override
-   */
-  getData (options?: any): ItemSheet.Data<D, O>
-
-  /**
    * Activate listeners which provide interactivity for item sheet events
    * @param html - The HTML object returned by template rendering
    */
   activateListeners (html: JQuery): void
+
+  /**
+   * @param options - (unused)
+   * @override
+   */
+  getData (options?: any): ItemSheet.Data<D, O>
 }
 
 declare namespace ItemSheet {
