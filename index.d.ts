@@ -73,7 +73,6 @@ import './types/core/videoHelper'
 
 import './types/core/rolls/dicePool'
 import './types/core/rolls/diceTerm'
-import './types/core/rolls/mersenneTwister'
 import './types/core/rolls/roll'
 
 // dice terms
@@ -153,6 +152,7 @@ import './types/augment.tinyMCE'
 import './types/constants'
 import './types/game'
 import './types/handlebars'
+import './types/mersenneTwister'
 import './types/prototypes'
 import './types/templateUtils'
 import './types/utils'
