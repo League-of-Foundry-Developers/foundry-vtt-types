@@ -119,19 +119,20 @@ import './types/pixi/canvasLayer'
 import './types/pixi/lightingLayer'
 import './types/pixi/measuredTemplate'
 import './types/pixi/mouseInteractionManager'
-import './types/pixi/placeableObject'
+import './types/pixi/normalizedRectangle'
 import './types/pixi/placeablesLayer'
 import './types/pixi/pointSource'
 import './types/pixi/sightLayer'
-import './types/pixi/wall'
 
 import './types/pixi/helpers/controlIcon'
 import './types/pixi/helpers/ray'
 import './types/pixi/helpers/ruler'
 
-import './types/pixi/placeables/note'
-import './types/pixi/placeables/tile'
-import './types/pixi/placeables/token'
+import './types/pixi/placeableObjects/note'
+import './types/pixi/placeableObjects/placeableObject'
+import './types/pixi/placeableObjects/tile'
+import './types/pixi/placeableObjects/token'
+import './types/pixi/placeableObjects/wall'
 
 // UI
 

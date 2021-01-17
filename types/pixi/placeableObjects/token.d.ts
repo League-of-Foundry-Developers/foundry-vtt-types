@@ -1,5 +1,3 @@
-// @TODO: Types
-
 /**
  * An instance of the Token class represents an Actor within a viewed Scene on the game canvas.
  * Each Token is reference using a numeric id which indexes its position within the scene.
@@ -53,6 +51,8 @@ declare class Token extends PlaceableObject {
    * Provide a reference to the canvas layer which contains placeable objects of this type
    */
   static get layer (): PlaceablesLayer;
+
+  get bounds (): NormalizedRectangle
 
   /**
    * A Boolean flag for whether the current game User has permission to control this token

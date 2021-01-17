@@ -2,7 +2,7 @@
  * An Abstract Base Class which defines a Placeable Object which represents an Entity placed on the Canvas
  * (extends: `PIXI.Container`)
  */
-declare abstract class PlaceableObject<D = {}> extends PIXI.Container {
+declare abstract class PlaceableObject<D = object> extends PIXI.Container {
   /**
    * An indicator for whether the object is currently controlled
    * @defaultValue `false`
@@ -116,11 +116,11 @@ declare abstract class PlaceableObject<D = {}> extends PIXI.Container {
    */
   abstract get bounds (): NormalizedRectangle
 
-  static create<D> (
-    data: D,
+  static create<O> (
+    data: O,
     options: any // TODO: type this when Entity is typed
   ): Promise<(
-    D extends any[] ? Array<PlaceableObject<D>> : PlaceableObject<D>
+    O extends Array<infer D> ? Array<PlaceableObject<D>> : PlaceableObject<O>
   ) |
   null>
 
