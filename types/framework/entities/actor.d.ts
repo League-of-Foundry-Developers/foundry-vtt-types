@@ -368,7 +368,7 @@ declare namespace Actor {
   /**
    * Owned item data stored in Actor.data
    */
-  type OwnedItem<I> = I extends Item<any, infer D> ? D : never
+  type OwnedItem<I> = I extends Item<infer D> ? D : never
 
   interface Data<D = any, OI extends Item.Data = Item.Data> extends Entity.Data {
     data: D

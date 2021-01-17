@@ -34,7 +34,7 @@ declare class Items extends EntityCollection<Item> {
   static get registeredSheets (): Array<() => ItemSheet>
 }
 
-declare class Item<DD = any, D extends Item.Data = Item.Data<DD>> extends Entity<D> {
+declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
   /** @override */
   static get config (): Entity.Config
 
@@ -60,9 +60,8 @@ declare class Item<DD = any, D extends Item.Data = Item.Data<DD>> extends Entity
 
   /**
    * Prepare a data object which defines the data schema used by dice roll commands against this Item
-   * @returns
    */
-  getRollData (): DD
+  getRollData (): Item.DataData<D>
 
   /* -------------------------------------------- */
   /*  Properties                                  */
@@ -132,6 +131,11 @@ declare class Item<DD = any, D extends Item.Data = Item.Data<DD>> extends Entity
 }
 
 declare namespace Item {
+  /**
+   * Typing for the data.data field
+   */
+  type DataData<T> = T extends Data<infer D> ? D : never
+
   interface Data<D = any> extends Entity.Data {
     data: D
     img: string
