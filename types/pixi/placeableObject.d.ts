@@ -76,13 +76,11 @@ declare abstract class PlaceableObject<D = {}> extends PIXI.Container {
   /**
    * The central coordinate pair of the placeable object based on it's own width
    * and height
-   * (type: `PIXI.Point`)
    */
   get center (): PIXI.Point
 
   /**
    * The field-of-vision polygon for the object, if it has been computed
-   * (type: `PIXI.Polygon | null`)
    */
   get fov (): PIXI.Polygon | null
 
@@ -98,7 +96,6 @@ declare abstract class PlaceableObject<D = {}> extends PIXI.Container {
 
   /**
    * The line-of-sight polygon for the object, if it has been computed
-   * (type: `PIXI.Polygon | null`)
    */
   get los (): PIXI.Polygon | null
 
@@ -199,8 +196,6 @@ declare abstract class PlaceableObject<D = {}> extends PIXI.Container {
 
   /**
    * Draw the primary Sprite for the PlaceableObject
-   * @param texture - (type: `PIXI.Texture`)
-   * @returns (type: `PIXI.Sprite | null`)
    * @internal
    */
   _drawPrimarySprite (texture: PIXI.Texture): PIXI.Sprite | null
@@ -217,14 +212,12 @@ declare abstract class PlaceableObject<D = {}> extends PIXI.Container {
   /**
    * Callback actions which occur on a single left-click event to assume control
    * of the object
-   * @param event - (type: `PIXI.InteractionEvent`)
    * @internal
    */
   _onClickLeft (event: PIXI.InteractionEvent): boolean | null
 
   /**
    * Callback actions which occur on a double left-click event to activate
-   * @param event - (type: `PIXI.InteractionEvent`)
    * @internal
    */
   _onClickLeft2 (event: PIXI.InteractionEvent): void
@@ -232,7 +225,6 @@ declare abstract class PlaceableObject<D = {}> extends PIXI.Container {
   /**
    * Callback actions which occur on a single right-click event to configure
    * properties of the object
-   * @param event - (type: `PIXI.InteractionEvent`)
    * @internal
    */
   _onClickRight (event: PIXI.InteractionEvent): void
@@ -240,7 +232,6 @@ declare abstract class PlaceableObject<D = {}> extends PIXI.Container {
   /**
    * Callback actions which occur on a double right-click event to configure
    * properties of the object
-   * @param event - (type: `PIXI.InteractionEvent`)
    * @internal
    */
   _onClickRight2 (event: PIXI.InteractionEvent): void
@@ -270,14 +261,12 @@ declare abstract class PlaceableObject<D = {}> extends PIXI.Container {
 
   /**
    * Callback actions which occur on a mouse-move operation.
-   * @param event - (type: `PIXI.InteractionEvent`)
    * @internal
    */
   _onDragLeftCancel (event: PIXI.InteractionEvent): void
 
   /**
    * Callback actions which occur on a mouse-move operation.
-   * @param event - (type: `PIXI.InteractionEvent`)
    * @internal
    */
   _onDragLeftDrop (
@@ -286,14 +275,12 @@ declare abstract class PlaceableObject<D = {}> extends PIXI.Container {
 
   /**
    * Callback actions which occur on a mouse-move operation.
-   * @param event - (type: `PIXI.InteractionEvent`)
    * @internal
    */
   _onDragLeftMove (event: PIXI.InteractionEvent): void
 
   /**
    * Callback actions which occur when a mouse-drag action is first begun.
-   * @param event - (type: `PIXI.InteractionEvent`)
    * @internal
    */
   _onDragLeftStart (event: PIXI.InteractionEvent): void
@@ -301,7 +288,6 @@ declare abstract class PlaceableObject<D = {}> extends PIXI.Container {
   /**
    * Actions that should be taken for this Placeable Object when a mouseover
    * event occurs
-   * @param event - (type: `PIXI.InteractionEvent`)
    * @param options - (default: `{}`)
    * @param hoverOutOthers - (default: `true`)
    * @internal
@@ -314,7 +300,6 @@ declare abstract class PlaceableObject<D = {}> extends PIXI.Container {
   /**
    * Actions that should be taken for this Placeable Object when a mouseout
    * event occurs
-   * @param event - (type: `PIXI.InteractionEvent`)
    * @internal
    */
   _onHoverOut (event: PIXI.InteractionEvent): boolean | null
@@ -469,14 +454,8 @@ declare abstract class PlaceableObject<D = {}> extends PIXI.Container {
 
 declare namespace PlaceableObject {
   interface Vision {
-    /**
-     * (type: `PIXI.Polygon`)
-     */
     fos: PIXI.Polygon | null
 
-    /**
-     * (type: `PIXI.Polygon`)
-     */
     los: PIXI.Polygon | null
   }
 }

@@ -50,9 +50,6 @@ declare class Canvas {
    */
   _zoomTime: number
 
-  /**
-   * (type: `PIXI.Application`)
-   */
   app: PIXI.Application
 
   dimensions: null
@@ -82,9 +79,6 @@ declare class Canvas {
 
   scene: null
 
-  /**
-   * (type: `PIXI.Container`)
-   */
   stage: PIXI.Container
 
   constructor ()
@@ -136,7 +130,6 @@ declare class Canvas {
   /**
    * Create the layers of the game Canvas.
    * @param stage - The primary canvas stage
-   *                (type: `PIXI.Container`)
    * @internal
    */
   _createLayers (stage: PIXI.Container): void
@@ -172,7 +165,6 @@ declare class Canvas {
   /**
    * Handle left mouse-click events occurring on the Canvas stage or its active
    * Layer.
-   * @param event - (type: `PIXI.InteractionEvent`)
    * @see {@link MouseInteractionManager#_handleClickLeft}
    * @internal
    */
@@ -180,7 +172,6 @@ declare class Canvas {
 
   /**
    * Handle double left-click events occurring on the Canvas stage.
-   * @param event - (type: `PIXI.InteractionEvent`)
    * @see {@link MouseInteractionManager#_handleClickLeft2}
    */
   _onClickLeft2 (event: PIXI.InteractionEvent): void
@@ -188,7 +179,6 @@ declare class Canvas {
   /**
    * Handle right mouse-click events occurring on the Canvas stage or it's
    * active layer
-   * @param event - (type: `PIXI.InteractionEvent`)
    * @see {@link MouseInteractionManager#_handleClickRight}
    * @internal
    */
@@ -212,7 +202,6 @@ declare class Canvas {
   /**
    * Handle the conclusion of a left-mouse drag workflow when the mouse button
    * is released.
-   * @param event - (type: `PIXI.InteractionEvent`)
    * @see {@link MouseInteractionManager#_handleDragDrop}
    * @internal
    */
@@ -221,7 +210,6 @@ declare class Canvas {
   /**
    * Handle mouse movement events occurring on the Canvas stage or it's active
    * layer
-   * @param event - (type: `PIXI.InteractionEvent`)
    * @see {@link MouseInteractionManager#_handleDragMove}
    * @internal
    */
@@ -230,7 +218,6 @@ declare class Canvas {
   /**
    * Handle the beginning of a left-mouse drag workflow on the Canvas stage or
    * its active Layer.
-   * @param event - (type: `PIXI.InteractionEvent`)
    * @see {@link MouseInteractionManager#_handleDragStart}
    * @internal
    */
@@ -239,23 +226,21 @@ declare class Canvas {
   /**
    * Handle the conclusion of a right-mouse drag workflow the Canvas stage.
    * @see {@link MouseInteractionManager#_handleDragDrop}
-   * @param event - (type: `PIXI.InteractionEvent`) (unused)
+   * @param event - (unused)
    * @internal
    */
-  _onDragRightDrop (event: PIXI.InteractionEvent): void
+  _onDragRightDrop (event?: PIXI.InteractionEvent): void
 
   /**
    * Handle right-mouse drag events occuring on the Canvas stage or an active
    * Layer
    * @see {@link MouseInteractionManager#_handleDragMove}
-   * @param event - (type: `PIXI.InteractionEvent`)
    * @internal
    */
   _onDragRightMove (event: PIXI.InteractionEvent): void
 
   /**
    * Determine selection coordinate rectangle during a mouse-drag workflow
-   * @param event - (type: `PIXI.InteractionEvent`)
    * @internal
    */
   _onDragSelect (event: PIXI.InteractionEvent): void
@@ -388,16 +373,10 @@ declare namespace Canvas {
 
     ratio: number
 
-    /**
-     * (type: `PIXI.Rectangle`)
-     */
     rect: PIXI.Rectangle
 
     sceneHeight: number
 
-    /**
-     * (type: `PIXI.Rectangle`)
-     */
     sceneRect: PIXI.Rectangle
 
     sceneWidth: number

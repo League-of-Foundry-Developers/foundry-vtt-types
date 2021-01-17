@@ -1,6 +1,5 @@
 /**
  * Global template cache
- * (type: `Record<string, Handlebars.TemplateDelegate>`)
  */
 declare let _templateCache: Record<string, Handlebars.TemplateDelegate>
 
@@ -9,7 +8,6 @@ declare let _templateCache: Record<string, Handlebars.TemplateDelegate>
  * result
  * @param path - The web-accessible HTML template URL
  * @returns A Promise which resolves to the compiled Handlebars template
- *          (type: `Promise<Handlebars.TemplateDelegate>`)
  */
 declare function getTemplate (
   path: string
@@ -18,7 +16,6 @@ declare function getTemplate (
 /**
  * Load and cache a set of templates by providing an Array of paths
  * @param paths - An array of template file paths to load
- * @returns (type: `Promise<Handlebars.TemplateDelegate[]>`)
  */
 declare function loadTemplates (
   paths: string[]

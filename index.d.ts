@@ -145,6 +145,8 @@ import './types/ui/tabs'
 
 // --
 
+import './types/augment.PIXI'
+import './types/augment.handlebars'
 import './types/augment.howler'
 import './types/augment.tinyMCE'
 import './types/constants'
