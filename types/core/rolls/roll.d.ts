@@ -24,7 +24,7 @@
  * console.log(r.total);    // 22
  * ```
  */
-declare class Roll<D = {}> {
+declare class Roll<D = object> {
   /**
    * Allowed arithmetic operators which can join together terms in a Roll
    * expression
@@ -172,7 +172,7 @@ declare class Roll<D = {}> {
    * @param args - Arguments passed to the Roll instance constructor
    * @returns The constructed Roll instance
    */
-  static create<D = {}> (formula: string, data?: D): Roll<D>
+  static create<D = object> (formula: string, data?: D): Roll<D>
 
   /**
    * Recreate a Roll instance using a provided data object
