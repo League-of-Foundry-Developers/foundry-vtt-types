@@ -1,128 +1,144 @@
-declare interface ItemData<DataType = any> extends EntityData<DataType> {
-	img: string;
-}
-
 /**
  * The Collection of Item entities
  * The items collection is accessible within the game as game.items
  */
-declare class Items extends Collection<Item> {
-	entities: Item[];
+declare class Items extends EntityCollection<Item> {
+  /** @override */
+  get entity (): string
 
-	values(): IterableIterator<Item>;
+  /* -------------------------------------------- */
+  /*  Methods
+  /* -------------------------------------------- */
 
-	/* -------------------------------------------- */
-	/*  Collection Properties                       */
-	/* -------------------------------------------- */
+  /**
+   * Register an Actor sheet class as a candidate which can be used to display Actors of a given type
+   * See EntitySheetConfig.registerSheet for details
+   */
+  static registerSheet (scope: string, sheetClass: () => Application, { label, types, makeDefault }?: {
+    label?: string
+    types?: Array<() => Application>
+    makeDefault?: boolean
+  }): void
 
-	static get instance(): Items;
+  /**
+   * Unregister an Actor sheet class, removing it from the list of avaliable sheet Applications to use
+   * See EntitySheetConfig.unregisterSheet for details
+   */
+  static unregisterSheet (scope: string, sheetClass: () => Application, { types }?: {
+    types?: Array<() => Application>
+  }): void
 
-	/**
-	 * Elements of the Items collection are instances of the Item class, or a subclass thereof
-	 */
-	get object(): Item;
-
-	/* -------------------------------------------- */
-	/*  Collection Management Methods               */
-	/* -------------------------------------------- */
-
-	insert(entity: Item): void;
-
-	get(id: string, { strict }?: { strict?: boolean }): Item;
-
-	/**
-	 * Register an Item sheet class as a candidate which can be used to display Items of a given type
-	 * See EntitySheetConfig.registerSheet for details
-	 */
-	static registerSheet(...args: any): void;
-
-	/**
-	 * Unregister an Item sheet class, removing it from the list of avaliable sheet Applications to use
-	 * See EntitySheetConfig.unregisterSheet for details
-	 */
-	static unregisterSheet(...args: any): void;
-
-	/**
-	 * Return an Array of currently registered sheet classes for this Entity type
-	 */
-	static get registeredSheets(): any[];
+  /**
+   * Return an Array of currently registered sheet classes for this Entity type
+   */
+  static get registeredSheets (): Array<() => ItemSheet>
 }
 
-declare class Item<DataType = any> extends Entity<DataType> {
-	data: ItemData<DataType>;
+declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
+  /** @override */
+  static get config (): Entity.Config
 
-	/**
-	 * Configure the attributes of the ChatMessage Entity
-	 *
-	 * @returns baseEntity			The parent class which directly inherits from the Entity interface.
-	 * @returns collection			The Collection class to which Entities of this type belong.
-	 * @returns embeddedEntities	The names of any Embedded Entities within the Entity data structure.
-	 */
-	static get config(): {
-		baseEntity: Item;
-		collection: Items;
-		embeddedEntities: {};
-	};
+  /** @override */
+  get uuid (): string
 
-	/** @override */
-	prepareData(): void;
+  /**
+   * @remarks
+   * Returns void
+   * @override
+   */
+  prepareData (): any
 
-	/* -------------------------------------------- */
-	/*  Properties                                  */
-	/* -------------------------------------------- */
+  /** @override */
+  prepareEmbeddedEntities (): void
 
-	/**
-	 * A convenience reference to the Actor entity which owns this item, if any
-	 */
-	get actor(): Actor | null;
+  /**
+   * Prepare a Collection of ActiveEffect instances which belong to this Item.
+   * @param effects - The raw array of active effect objects
+   * @returns The prepared active effects collection
+   */
+  _prepareActiveEffects (effects: ActiveEffect[]): Collection<ActiveEffect>
 
-	/**
-	 * A convenience reference to the image path (data.img) used to represent this Item
-	 */
-	get img(): string;
+  /**
+   * Prepare a data object which defines the data schema used by dice roll commands against this Item
+   */
+  getRollData (): Item.DataData<D>
 
-	/**
-	 * A convenience reference to the item type (data.type) of this Item
-	 */
-	get type(): string;
+  /* -------------------------------------------- */
+  /*  Properties                                  */
+  /* -------------------------------------------- */
 
-	/**
-	 * A boolean indicator for whether the current game user has ONLY limited visibility for this Entity.
-	 */
-	get limited(): boolean;
+  /**
+   * A convenience reference to the Actor entity which owns this item, if any
+   */
+  get actor (): Actor | null
 
-	/**
-	 * A flag for whether the item is owned by an Actor entity
-	 */
-	get isOwned(): boolean;
+  /**
+   * A convenience reference to the image path (data.img) used to represent this Item
+   */
+  get img (): string
 
-	/* -------------------------------------------- */
-	/*  Methods                                     */
-	/* -------------------------------------------- */
+  /**
+   * Return an array of the Active Effect instances which originated from this Item.
+   * If the Item is owned, the returned instances are the ActiveEffect instances which exist on the owning Actor.
+   * If the Item is unowned, the returned instances are the ActiveEffect instances which exist on the Item itself.
+   */
+  get transferredEffects (): ActiveEffect[]
 
-	/**
-	 * Override the standard permission test for Item entities as we need to apply a special check for owned items
-	 * OwnedItems have permission that the player has for the parent Actor.
-	 * @return	Whether or not the user has the permission for this item
-	 */
-	hasPerm(...args: any[]): boolean;
+  /**
+   * A convenience reference to the item type (data.type) of this Item
+   */
+  get type (): string
 
-	/* -------------------------------------------- */
-	/*  Socket Listeners and Handlers               */
-	/* -------------------------------------------- */
+  /**
+   * A boolean indicator for whether the current game user has ONLY limited visibility for this Entity.
+   * @returns
+   */
+  get limited (): boolean
 
-	/**
-	 * Extend the base Entity update logic to update owned items as well.
-	 * See Entity.update for more complete API documentation
-	 *
-	 * @param data		The data with which to update the entity
-	 * @param options	Additional options which customize the update workflow
-	 * @return			A Promise which resolves to the updated Entity
-	 */
-	update(data: any, options: any): Promise<this>;
+  /**
+   * A flag for whether the item is owned by an Actor entity
+   * @returns
+   */
+  get isOwned (): boolean
 
-	/**
-	 * A convenience constructor method to create an Item instance which is owned by an Actor
-	 */
-	static createOwned(itemData: any, actor: Actor): Item;
+  /* -------------------------------------------- */
+  /*  Methods                                     */
+  /* -------------------------------------------- */
+
+  /**
+   * Override the standard permission test for Item entities as we need to apply a special check for owned items
+   * OwnedItems have permission that the player has for the parent Actor.
+   * @returns Whether or not the user has the permission for this item
+   */
+  hasPerm (user: User, permission: string | number, exact?: boolean): boolean
+
+  /* -------------------------------------------- */
+  /*  Socket Listeners and Handlers               */
+  /* -------------------------------------------- */
+
+  /** @override */
+  update (data: Optional<D>, options: Entity.UpdateOptions): Promise<this>
+
+  /** @override */
+  delete (options?: Entity.DeleteOptions): Promise<Item>
+
+  /**
+   * A convenience constructor method to create an Item instance which is owned by an Actor
+   * @param itemData -
+   * @param actor -
+   */
+  static createOwned (itemData: Item.Data, actor: Actor): Item
+}
+
+declare namespace Item {
+  /**
+   * Typing for the data.data field
+   */
+  type DataData<T> = T extends Data<infer D> ? D : never
+
+  interface Data<D = any> extends Entity.Data {
+    data: D
+    img: string
+    type: string
+  }
 }

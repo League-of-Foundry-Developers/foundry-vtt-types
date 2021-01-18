@@ -1,24 +1,25 @@
 /**
  * The Collection of Macro entities
- * @extends {Collection}
  */
-declare class Macros extends Collection<Macro> {
-	entities: Macro[];
+declare class Macros extends EntityCollection<Macro> {
+  /** @override */
+  get entity (): string
 
-	values(): IterableIterator<Macro>;
+  /** @override */
+  static get instance (): Macros
 
-	/* -------------------------------------------- */
-	/*  Properties                                  */
-	/* -------------------------------------------- */
+  /** @override */
+  get directory (): any // MacroDirectory, type mismatch
 
-	/**
-	 * Determine whether a given User is allowed to use JavaScript macros
-	 * @param user	The User entity to test
-	 * @return		Can the User use scripts?
-	 */
-	static canUseScripts(user: User): boolean;
+  /**
+   * Determine whether a given User is allowed to use JavaScript macros
+   * @param user - The User entity to test
+   * @returns Can the User use scripts?
+   */
+  static canUseScripts (user: User): boolean
 
-	static registerSettings(): void;
+  /** @override */
+  fromCompendium (data: Macro.Data): Macro.Data
 }
 
 /**
@@ -30,16 +31,31 @@ declare class Macros extends Collection<Macro> {
  * @see {@link MacroConfig}   The Macro Configuration sheet
  * @see {@link Hotbar}        The Hotbar interface application
  */
-declare class Macro extends Entity {
-	/** @override */
-	static get config(): {
-		baseEntity: Macro;
-		collection: Macros;
-		embeddedEntities: [];
-	};
+declare class Macro<D extends Macro.Data = Macro.Data> extends Entity<D> {
+  /** @override */
+  static get config (): Entity.Config;
 
-	/**
-	 * Execute the Macro command
-	 */
-	execute(): Promise<any>;
+  /**
+   * Is the current User the author of this macro?
+   */
+  get isAuthor (): boolean;
+
+  /** @override */
+  static can (user: User, action: string, target: Macro): boolean;
+
+  /**
+   * Execute the Macro command
+   */
+  execute (): void;
+}
+
+declare namespace Macro {
+  interface Data extends Entity.Data {
+    actorIds: string[]
+    author: string
+    command: string
+    img: string
+    scope: string
+    type: 'script' | 'chat'
+  }
 }

@@ -61,6 +61,6 @@ declare namespace ItemSheet {
    */
   interface Data<O extends Item = Item> extends BaseEntitySheet.Data<O> {
     data: any
-    item: Item<O extends Item<infer D> ? D : never>
+    item: O extends Item<infer D> ? D : never
   }
 }
