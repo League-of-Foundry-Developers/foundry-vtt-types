@@ -113,7 +113,7 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
   /**
    * Preprocess the data object used to create a new Chat Message to automatically convert some Objects to the
    * data format expected by the database handler.
-   * @param data - Single ChatMessage creation data
+   * @param data     - Single ChatMessage creation data
    * @param rollMode - The visibility mode applied to all dice rolls
    * @returns Processed message creation data
    */

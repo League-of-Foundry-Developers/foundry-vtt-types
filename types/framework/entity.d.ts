@@ -26,9 +26,13 @@
  * @param options - Additional options which modify the created Entity behavior
  * @param compendium - A reference to the Compendium pack from which this Entity was drawn.
  *
+ * @typeParam D - The data type for the entity. Should extend Entity.Data
+ *
  * @example
+ * ```typescript
  * let actorData = {name: "John Doe", type: "character", img: "icons/svg/mystery- man.svg"}
  * let actor = new Actor(actorData)
+ * ```
  */
 declare class Entity<D extends Entity.Data = Entity.Data> {
   /**
@@ -133,8 +137,10 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * to the class name. This property is available as both a static and instance method.
    *
    * @example
-   * class Actor2ndGen extends Actor {...}
+   * ```typescript
+   * class Actor2ndGen extends Actor<Actor2ndGenData, Item2ndGen> {...}
    * Actor2ndGen.entity // "Actor"
+   * ```
    */
   static get entity(): string;
 
@@ -157,8 +163,12 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * particular entity type.
    *
    * @example <caption>A subclass of the Actor entity</caption>
-   * let actor = game.entities.actors[0]
+   * ```typescript
+   * if (game.actors === undefined) throw "Too early to use entity collections";
+   * let actor = game.actors.get(actorId);
+   * if (actor === undefined) return;
    * actor.sheet // ActorSheet
+   * ```
    */
   get sheet(): BaseEntitySheet;
 
@@ -172,10 +182,13 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Return a reference to the Folder which this Entity belongs to, if any.
    *
    * @example <caption>Entities may belong to Folders</caption>
+   * ```typescript
+   * if (game.folders === undefined) throw "Too early to use entity collections";
    * let folder = game.folders.entities[0]
    * let actor = await Actor.create({name: "New Actor", folder: folder.id})
-   * console.log(actor.data.folder) // folder.id;
-   * console.log(actor.folder) // folder;
+   * console.log(actor?.data.folder) // folder.id;
+   * console.log(actor?.folder) // folder;
+   * ```
    */
   get folder(): Folder | null | undefined;
 
@@ -184,9 +197,12 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * See the CONST.ENTITY_PERMISSIONS object for an enumeration of these levels.
    *
    * @example
+   * ```typescript
+   * if (game.user === null) throw "Too early to use game.user";
    * game.user.id // "dkasjkkj23kjf"
    * entity.data.permission // {default: 1, "dkasjkkj23kjf": 2};
    * entity.permission // 2
+   * ```
    */
   get permission(): number;
 
@@ -228,12 +244,14 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    *                                      an equal or greater permission level.
    *
    * @example <caption>Test whether a specific user has a certain permission</caption>
+   * ```typescript
    * // These two are equivalent
    * entity.hasPerm(game.user, "OWNER")
    * entity.owner
    * // These two are also equivalent
    * entity.hasPerm(game.user, "LIMITED", true)
    * entity.limited
+   * ```
    */
   hasPerm(user: User, permission: string | number, exact?: boolean): boolean;
 
@@ -277,14 +295,18 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param options - Additional options which customize the creation workflow
    *
    * @example
-   * const data = {name: "New Entity", type: "character", img: "path/to/profile.jpg"}
-   * const created = await Entity.create(data) // Returns one Entity, saved to the database
-   * const temp = await Entity.create(data, {temporary: true}) // Not saved to the database
+   * ```typescript
+   * const data = {name: "New Entity", type: "character", img: "path/to/profile.jpg"};
+   * const created: Actor | null = await Actor.create(data); // Returns one Entity, saved to the database
+   * const temp: Actor | null = await Entity.create(data, {temporary: true}); // Not saved to the database
+   * ```
    *
    * @example
-   * const data = [{name: "Tim", type: "npc"], [{name: "Tom", type: "npc"}]
-   * const created = await Entity.create(data) // Returns an Array of Entities, saved to the database
-   * const created = await Entity.create(data, {temporary: true}) // Not saved to the database
+   * ```typescript
+   * const data = [{name: "Tim", type: "npc"}, {name: "Tom", type: "npc"}];
+   * const created: Actor[] | null = await Actor.create(data); // Returns an Array of Entities, saved to the database
+   * const created: Actor[] | null = await Actor.create(data, {temporary: true}); // Not saved to the database
+   * ```
    */
   static create(data: Entity.Data | Entity.Data[], options?: Entity.CreateOptions): Promise<Entity | Entity[]>;
 
@@ -309,12 +331,16 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param options - Additional options which customize the update workflow
    *
    * @example
+   * ```typescript
    * const data = {_id: "12ekjf43kj2312ds", name: "New Name"}}
-   * const updated = await Entity.update(data) // Updated entity saved to the database
+   * const updated = await Entity.update<Actor>(data) // Updated entity saved to the database
+   * ```
    *
    * @example
+   * ```typescript
    * const data = [{_id: "12ekjf43kj2312ds", name: "New Name 1"}, {_id: "kj549dk48k34jk34", name: "New Name 2"}]}
-   * const updated = await Entity.update(data) // Returns an Array of Entities, updated in the database
+   * const updated = await Entity.update<Actor>(data); // Returns an Array of Entities, updated in the database
+   * ```
    */
   static update(data: Optional<Entity.Data>, options?: Entity.UpdateOptions): Promise<Entity | Entity[]>;
 
@@ -350,12 +376,16 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    *
    *
    * @example
+   * ```typescript
    * const id = "12ekjf43kj2312ds"
    * const deleted = await Entity.delete(id) // A single deleted entity from the database
+   * ```
    *
    * @example
+   * ```typescript
    * const ids = ["12ekjf43kj2312ds", "kj549dk48k34jk34"]
    * const deleted = await Entity.delete(ids) // Returns an Array of deleted Entities
+   * ```
    */
   static delete(data: string | string[], options?: Entity.DeleteOptions): Promise<Entity | Entity[]>;
 
@@ -405,16 +435,24 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    *          creation request is successful
    *
    * @example
-   * const actor = game.actors.get("dfv934kj23lk6h9k")
-   * const data = {name: "Magic Sword", type: "weapon", img: "path/to/icon.png"}
-   * const created = await actor.createEmbeddedEntity("OwnedItem", data) // Returns one EmbeddedEntity, saved to the Actor
-   * const temp = await actor.createEmbeddedEntity("OwnedItem", data, {temporary: true}) // Not saved to the Actor
+   * ```typescript
+   * if (game.actors === undefined) throw "Too early to use an enitity collection";
+   * const actor = game.actors.get("dfv934kj23lk6h9k");
+   * if (actor === null) return;
+   * const data = {name: "Magic Sword", type: "weapon", img: "path/to/icon.png"};
+   * const created = await actor.createEmbeddedEntity("OwnedItem", data); // Returns one EmbeddedEntity, saved to the Actor
+   * const temp = await actor.createEmbeddedEntity("OwnedItem", data, {temporary: true}); // Not saved to the Actor
+   * ```
    *
    * @example
-   * const actor = game.actors.get("dfv934kj23lk6h9k")
-   * const data = [{name: "Mace of Crushing", type: "weapon"}, {name: "Shield of Defense", type: "armor"}]
-   * const created = await actor.createEmbeddedEntity("OwnedItem", data) // Returns an Array of EmbeddedEntities, saved to the Actor
-   * const temp = await actor.createEmbeddedEntity("OwnedItem", data, {temporary: true}) // Not saved to the Actor
+   * ```typescript
+   * if (game.actors === undefined) throw "Too early to use an enitity collection";
+   * const actor = game.actors.get("dfv934kj23lk6h9k");
+   * if (actor === null) return;
+   * const data = [{name: "Mace of Crushing", type: "weapon"}, {name: "Shield of Defense", type: "armor"}];
+   * const created = await actor.createEmbeddedEntity("OwnedItem", data); // Returns an Array of EmbeddedEntities, saved to the Actor
+   * const temp = await actor.createEmbeddedEntity("OwnedItem", data, {temporary: true}); // Not saved to the Actor
+   * ```
    */
   createEmbeddedEntity(embeddedName: string, data: any, options?: Entity.CreateOptions): Promise<any>;
 
@@ -450,18 +488,27 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param options - Additional options which customize the update workflow
    *
    * @example
-   * const actor = game.actors.get("dfv934kj23lk6h9k")
-   * const item = actor.data.items.find(i => i.name === "Magic Sword")
-   * const update = {_id: item._id, name: "Magic Sword +1"}
-   * const updated = await actor.updateEmbeddedEntity("OwnedItem", update) // Updates one EmbeddedEntity
+   * ```typescript
+   * if (game.actors === undefined) throw "too early to use an enitity collection";
+   * const actor = game.actors.get("dfv934kj23lk6h9k");
+   * if (actor === undefined) return;
+   * const item = actor.data.items.find(i => i.name === "magic sword");
+   * if (item === undefined) return;
+   * const update = {_id: item._id, name: "magic sword +1"};
+   * const updated = await actor.updateEmbeddedEntity("owneditem", update); // updates one embeddedentity
+   * ```
    *
    * @example
-   * const actor = game.actors.get("dfv934kj23lk6h9k")
-   * const weapons = actor.data.items.filter(i => i.type === "weapon")
+   * ```typescript
+   * if (game.actors === undefined) throw "Too early to use an enitity collection";
+   * const actor = game.actors.get("dfv934kj23lk6h9k");
+   * if (actor === undefined) return;
+   * const weapons = actor.data.items.filter(i => i.type === "weapon");
    * const updates = weapons.map(i => {
-   *   return {_id: i._id, name: i.name + "+1"}
-   * }
-   * const updated = await actor.createEmbeddedEntity("OwnedItem", updates) // Updates multiple EmbeddedEntity objects
+   *   return {_id: i._id, name: i.name + "+1"};
+   * });
+   * const updated = await actor.updateEmbeddedEntity("OwnedItem", updates); // Updates multiple EmbeddedEntity objects
+   * ```
    */
   updateEmbeddedEntity(embeddedName: string, data: any, options?: Entity.UpdateOptions): Promise<any | any[]>;
 
@@ -491,15 +538,24 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param options - Additional options which customize the update workflow
    *
    * @example
-   * const actor = game.actors.get("dfv934kj23lk6h9k")
-   * const item = actor.data.items.find(i => i.name === "Magic Sword")
-   * const deleted = await actor.deleteEmbeddedEntity("OwnedItem", item._id) // Deletes one EmbeddedEntity
+   * ```typescript
+   * if (game.actors === undefined) throw "Too early to use an enitity collection";
+   * const actor = game.actors.get("dfv934kj23lk6h9k");
+   * if (actor === undefined) return;
+   * const item = actor.data.items.find(i => i.name === "Magic Sword");
+   * if (item === undefined) return;
+   * const deleted = await actor.deleteEmbeddedEntity("OwnedItem", item._id); // Deletes one EmbeddedEntity
+   * ```
    *
    * @example
-   * const actor = game.actors.get("dfv934kj23lk6h9k")
-   * const weapons = actor.data.items.filter(i => i.type === "weapon")
-   * const deletions = weapons.map(i => i._id)
-   * const deleted = await actor.deleteEmbeddedEntity("OwnedItem", deletions) // Deletes multiple EmbeddedEntity objects
+   * ```typescript
+   * if (game.actors === undefined) throw "Too early to use an enitity collection";
+   * const actor = game.actors.get("dfv934kj23lk6h9k");
+   * if (actor === undefined) return;
+   * const weapons = actor.data.items.filter(i => i.type === "weapon");
+   * const deletions = weapons.map(i => i._id);
+   * const deleted = await actor.deleteEmbeddedEntity("OwnedItem", deletions); // Deletes multiple EmbeddedEntity objects
+   * ```
    */
   deleteEmbeddedEntity(embeddedName: string, data: any, options?: Entity.DeleteOptions): Promise<any | any[]>;
 

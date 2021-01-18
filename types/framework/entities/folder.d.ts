@@ -65,7 +65,7 @@ declare class Folder<D extends Folder.Data = Folder.Data> extends Entity<D> {
 
   /**
    * Create a new Folder by rendering a dialog window to provide basic creation details
-   * @param data - Initial data with which to populate the creation form
+   * @param data    - Initial data with which to populate the creation form
    * @param options - Initial positioning and sizing options for the dialog form
    * @returns An active FolderConfig instance for creating the new Folder entity
    */
@@ -78,7 +78,7 @@ declare class Folder<D extends Folder.Data = Folder.Data> extends Entity<D> {
   /**
    * Export all Entities contained in this Folder to a given Compendium pack.
    * Optionally update existing Entities within the Pack by name, otherwise append all new entries.
-   * @param pack - A Compendium pack to which the entities will be exported
+   * @param pack         - A Compendium pack to which the entities will be exported
    * @param updateByName - Update existing entries in the Compendium pack, matching by name
    * @returns The updated Compendium Pack
    */
@@ -93,7 +93,7 @@ declare class Folder<D extends Folder.Data = Folder.Data> extends Entity<D> {
 
   /**
    * Provide a dialog form that allows for exporting the contents of a Folder into an eligible Compendium pack.
-   * @param pack - A pack ID to set as the default choice in the select input
+   * @param pack    - A pack ID to set as the default choice in the select input
    * @param options - Additional options passed to the Dialog.prompt method
    * @returns A Promise which resolves or rejects once the dialog has been submitted or closed
    */

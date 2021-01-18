@@ -12,8 +12,8 @@ declare class Playlists extends EntityCollection<Playlist> {
 
   /**
    * Handle changes to a Scene to determine whether to trigger changes to Playlist entities.
-   * @param scene - The Scene entity being updated
-   * @param data - Incremental update data
+   * @param scene   - The Scene entity being updated
+   * @param data    - Incremental update data
    * @param options - Update options
    */
   _onUpdateScene(scene: Scene, data: Scene.Data, options: Entity.UpdateOptions): void;

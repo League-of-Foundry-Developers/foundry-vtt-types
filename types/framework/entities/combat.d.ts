@@ -36,8 +36,6 @@ declare class CombatEncounters extends EntityCollection<Combat> {
 
   /**
    * When a Token is deleted, remove it as a combatant from any combat encounters which included the Token
-   * @param sceneId -
-   * @param tokenId -
    */
   _onDeleteToken(sceneId: string, tokenId: string): Promise<void>;
 }
@@ -199,17 +197,17 @@ declare class Combat<D extends Combat.Data = Combat.Data> extends Entity<D> {
 
   /**
    * Set initiative for a single Combatant within the Combat encounter. Turns will be updated to keep the same combatant as current in the turn order
-   * @param id - The combatant ID for which to set initiative
+   * @param id    - The combatant ID for which to set initiative
    * @param value - A specific initiative value to set
    */
   setInitiative(id: string, value: number): Promise<void>;
 
   /**
    * Roll initiative for one or multiple Combatants within the Combat entity
-   * @param ids - A Combatant id or Array of ids for which to roll
-   * @param formula - A non-default initiative formula to roll. Otherwise the system default is used.
-   * @param updateTurn - Update the Combat turn after adding new initiative scores to keep the turn on
-   *                     the same Combatant.
+   * @param ids            - A Combatant id or Array of ids for which to roll
+   * @param formula        - A non-default initiative formula to roll. Otherwise the system default is used.
+   * @param updateTurn     - Update the Combat turn after adding new initiative scores to keep the turn on
+   *                         the same Combatant.
    * @param messageOptions - Additional options with which to customize created Chat Messages
    * @returns A promise which resolves to the updated Combat entity once updates are complete.
    */

@@ -32,13 +32,12 @@ declare class Scenes extends EntityCollection<Scene> {
   /**
    * Handle pre-loading the art assets for a Scene
    * @param sceneId - The Scene id to begin loading
-   * @param push - Trigger other connected clients to also pre-load Scene resources
+   * @param push    - Trigger other connected clients to also pre-load Scene resources
    */
   preload(sceneId: string, push?: boolean): Promise<void>;
 
   /**
    * Handle requests pulling the current User to a specific Scene
-   * @param sceneId -
    */
   static _pullToScene(sceneId: string): void;
 
@@ -177,9 +176,9 @@ declare class Scene<D extends Scene.Data = Scene.Data> extends Entity<D> {
 
   /**
    * Create a 300px by 100px thumbnail image for this scene background
-   * @param img - A background image to use for thumbnail creation, otherwise the current scene
-   *              background is used.
-   * @param width - The desired thumbnail width. Default is 300px
+   * @param img    - A background image to use for thumbnail creation, otherwise the current scene
+   *                 background is used.
+   * @param width  - The desired thumbnail width. Default is 300px
    * @param height - The desired thumbnail height. Default is 100px;
    * @returns The created thumbnail data.
    */

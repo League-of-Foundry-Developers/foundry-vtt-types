@@ -17,8 +17,8 @@ declare class Journal extends EntityCollection<JournalEntry> {
   /**
    * Handle a received request to show a JournalEntry to the current client
    * @param entryId - The ID of the journal entry to display for other players
-   * @param mode - The JournalEntry mode to display
-   * @param force - Display the entry to all players regardless of normal permissions
+   * @param mode    - The JournalEntry mode to display
+   * @param force   - Display the entry to all players regardless of normal permissions
    */
   static _showEntry(entryId: string, mode?: 'text' | 'image', force?: boolean): void;
 }
@@ -58,8 +58,8 @@ declare class JournalEntry<D extends JournalEntry.Data = JournalEntry.Data> exte
    * By default the entry will only be shown to players who have permission to observe it.
    * If the parameter force is passed, the entry will be shown to all players regardless of normal permission.
    *
-   * @param mode -   Which JournalEntry mode to display? Default is text.
-   * @param force -  Display the entry to all players regardless of normal permissions
+   * @param mode  - Which JournalEntry mode to display? Default is text.
+   * @param force - Display the entry to all players regardless of normal permissions
    */
   show(mode?: string, force?: boolean): Promise<void>;
 

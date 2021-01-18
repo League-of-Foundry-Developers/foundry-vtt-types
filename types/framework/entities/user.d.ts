@@ -63,19 +63,24 @@ declare class User<D extends User.Data = User.Data> extends Entity<D> {
    */
   viewedScene: string | null;
 
-  // These are set outside the class in PlayerList#getData
   /**
    * The first name of the User's default character
+   * @remarks
+   * set outside the class in PlayerList#getData
    */
   charname: string;
 
   /**
    * The preferred color for the user.
+   * @remarks
+   * set outside the class in PlayerList#getData
    */
   color: string;
 
   /**
    * Border color
+   * @remarks
+   * set outside the class in PlayerList#getData
    */
   border: string;
 

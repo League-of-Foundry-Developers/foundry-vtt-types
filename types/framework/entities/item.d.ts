@@ -48,6 +48,12 @@ declare class Items extends EntityCollection<Item> {
   static get registeredSheets(): Array<() => ItemSheet>;
 }
 
+/**
+ * The Item entity.
+ * This base Item refers primarily to items which are not currently owned.
+
+ * @typeParam D - Item.data field. Type should extend Item.Data
+ */
 declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
   /**
    * ActiveEffects are prepared by the Item.prepareEmbeddedEntities() method
@@ -88,6 +94,8 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
 
   /**
    * A convenience reference to the Actor entity which owns this item, if any
+   * @remarks
+   * This should be cast to the appropriate Actor class for your system if needed
    */
   get actor(): Actor<this, Actor.Data<any, D>> | null;
 
@@ -105,6 +113,8 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
 
   /**
    * A convenience reference to the item type (data.type) of this Item
+   * @remarks
+   * This can't be used to typeguard this.data; use this.data.type directly instead
    */
   get type(): string;
 
@@ -143,18 +153,20 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
 
   /**
    * A convenience constructor method to create an Item instance which is owned by an Actor
-   * @param itemData -
-   * @param actor -
    */
-  static createOwned(itemData: Item.Data, actor: Actor): Item;
+  static createOwned(itemData: Partial<Item.Data>, actor: Actor): Item;
 }
 
 declare namespace Item {
   /**
    * Typing for the data.data field
+   * @typeParam T - Entity.Data to extract data type from
    */
   type DataData<T> = T extends Data<infer D> ? D : never;
 
+  /**
+   * @typeParam D - Type for Item.data.data
+   */
   interface Data<D = any> extends Entity.Data {
     data: D;
     img: string;
