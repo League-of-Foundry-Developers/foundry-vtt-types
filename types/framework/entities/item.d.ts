@@ -117,7 +117,7 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
   /* -------------------------------------------- */
 
   /** @override */
-  update (data: Optional<D>, options: Entity.UpdateOptions): Promise<this>
+  update (data: Optional<D>, options?: Entity.UpdateOptions): Promise<this>
 
   /** @override */
   delete (options?: Entity.DeleteOptions): Promise<Item>
