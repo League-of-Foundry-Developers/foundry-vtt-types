@@ -1,7 +1,6 @@
 import 'jquery'
 import 'socket.io-client'
 import 'tinymce'
-import 'utility-types'
 
 // Apps
 
@@ -60,6 +59,7 @@ import './types/augments/PIXI'
 import './types/augments/handlebars'
 import './types/augments/howler'
 import './types/augments/tinyMCE'
+import './types/augments/utility-types'
 
 // Core
 
@@ -153,7 +153,6 @@ import './types/ui/tabs'
 
 // --
 
-import './types/augment.utility-types'
 import './types/constants'
 import './types/game'
 import './types/handlebars'
