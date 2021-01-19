@@ -129,6 +129,7 @@ import './types/pixi/mouseInteractionManager'
 import './types/pixi/normalizedRectangle'
 import './types/pixi/placeablesLayer'
 import './types/pixi/pointSource'
+import './types/pixi/quadtree'
 import './types/pixi/sightLayer'
 
 import './types/pixi/helpers/controlIcon'

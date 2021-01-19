@@ -401,6 +401,8 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param embeddedName - The name of the Embedded Entity class to create
    * @param data - A Data object or an Array of Data objects to create
    * @param options - Additional creation options which modify the request
+   * @returns A Promise which resolves to the created embedded Data once the
+   *          creation request is successful
    *
    * @example
    * const actor = game.actors.get("dfv934kj23lk6h9k")
@@ -642,6 +644,9 @@ declare namespace Entity {
    */
   interface CreateOptions {
     [propName: string]: any
+
+    isUndo?: boolean
+
     /**
      * Block the dispatch of preCreate hooks for this operation.
      * @defaultValue `false`
@@ -668,6 +673,8 @@ declare namespace Entity {
   interface DeleteOptions {
     [propName: string]: any
 
+    isUndo?: boolean
+
     /**
      * Block the dispatch of preDelete hooks for this operation.
      * @defaultValue `false`
@@ -687,6 +694,8 @@ declare namespace Entity {
      * @defaultValue `true`
      */
     diff?: boolean
+
+    isUndo?: boolean
 
     /**
      * Block the dispatch of preUpdate hooks for this operation.

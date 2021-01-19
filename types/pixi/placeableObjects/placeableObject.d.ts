@@ -378,7 +378,7 @@ declare abstract class PlaceableObject<D = object> extends PIXI.Container {
    * @param releaseOthers - Release any other controlled objects first
    * @returns A flag denoting whether or not control was successful
    */
-  control (options?: { releaseOthers: boolean }): boolean
+  control (options?: PlaceableObject.ControlOptions): boolean
 
   delete (options: any): Promise<this> // TODO: type this when Entity is typed
 
@@ -397,7 +397,7 @@ declare abstract class PlaceableObject<D = object> extends PIXI.Container {
    *                  (default: `{}`)
    * @returns A Boolean flag confirming the object was released.
    */
-  release (options?: { trigger: boolean }): boolean
+  release (options?: PlaceableObject.ReleaseOptions): boolean
 
   /**
    * Rotate the PlaceableObject to a certain angle of facing
@@ -453,6 +453,14 @@ declare abstract class PlaceableObject<D = object> extends PIXI.Container {
 }
 
 declare namespace PlaceableObject {
+  interface ControlOptions {
+    releaseOthers: boolean
+  }
+
+  interface ReleaseOptions {
+    trigger: boolean
+  }
+
   interface Vision {
     fos: PIXI.Polygon | null
 

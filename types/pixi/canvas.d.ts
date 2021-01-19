@@ -77,7 +77,7 @@ declare class Canvas {
    */
   ready: boolean
 
-  scene: null
+  scene: Scene | null
 
   stage: PIXI.Container
 
