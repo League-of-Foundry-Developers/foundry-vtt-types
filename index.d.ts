@@ -116,6 +116,11 @@ import './types/pixi/pointSource'
 import './types/pixi/sightLayer'
 import './types/pixi/wall'
 
+import './types/pixi/grids/baseGrid'
+import './types/pixi/grids/GridHighlight'
+import './types/pixi/grids/GridLayer'
+import './types/pixi/grids/hexagonalGrid'
+
 import './types/pixi/helpers/controlIcon'
 import './types/pixi/helpers/ray'
 import './types/pixi/helpers/ruler'
