@@ -66,7 +66,7 @@ declare class BaseEntitySheet <
   /**
    * @override
    */
-  render (force: boolean, options: Application.RenderOptions): this
+  render (force?: boolean, options?: Application.RenderOptions): this
 }
 
 declare namespace BaseEntitySheet {
