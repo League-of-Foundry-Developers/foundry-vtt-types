@@ -13,12 +13,43 @@ declare class SocketInterface {
    * are handled
    * @param eventName - The socket event name being handled
    * @param request - Data provided to the Socket event
-   *                  (originally documented as type `SocketRequest`)
    * @returns A Promise which resolves to the SocketResponse
-   *          (originally documented as type `SocketResponse`)
    */
   static dispatch (
     eventName: string,
-    request: any
-  ): Promise<any>
+    request: SocketInterface.Request
+  ): Promise<SocketInterface.Response>
+}
+
+declare namespace SocketInterface {
+  namespace Requests {
+    interface ModifyEmbeddedDocument {
+      action: Action.Create | Action.Update | Action.Delete
+      data: any // TODO: add generics to this
+      options: Entity.CreateOptions
+      parentId: string
+      parentType: string
+      type: string
+    }
+
+    // TODO: add remaining actions
+    enum Action {
+      Create = 'create',
+      Update = 'update',
+      Delete = 'delete'
+    }
+  }
+
+  namespace Responses {
+    interface ModifyEmbeddedDocument {
+      request: Requests.ModifyEmbeddedDocument
+      result: any[] // TODO
+      userId: string
+    }
+  }
+
+  // TODO: go through all SocketInterface.dispatch calls and collect requests
+  type Request = Requests.ModifyEmbeddedDocument
+
+  type Response = Responses.ModifyEmbeddedDocument
 }

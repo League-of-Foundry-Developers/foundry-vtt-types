@@ -423,8 +423,12 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param request - The initial request
    * @param result - An Array of created Entity data
    * @param userId - The id of the requesting User
+   * @returns An Array of constructed EmbeddedDocument data
+   * @internal
    */
-  static _handleCreateEmbeddedEntity ({ request, result, userId }: any): any[]
+  static _handleCreateEmbeddedEntity (
+    { request, result, userId }: SocketInterface.Responses.ModifyEmbeddedDocument
+  ): any[]
 
   /**
    * Handle Embedded Entity creation within this Entity with specific callback steps.
