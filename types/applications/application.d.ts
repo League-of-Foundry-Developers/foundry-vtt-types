@@ -514,11 +514,11 @@ declare namespace Application {
   }
 
   interface Position {
-    height?: number | string
+    height?: number | 'auto'
     left?: number
     scale?: number
     top?: number
-    width?: number | string
+    width?: number | 'auto'
   }
 
   interface RenderOptions {
