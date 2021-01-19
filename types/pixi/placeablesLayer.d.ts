@@ -27,7 +27,7 @@ declare class PlaceablesLayer
   /**
    * Keep track of history so that CTRL+Z can undo changes
    */
-  history: PlaceablesLayer.HistoryEvent<P>[]
+  history: Array<PlaceablesLayer.HistoryEvent<P>>
 
   /**
    * Placeable Layer Objects
