@@ -7,6 +7,9 @@ assignees: kmoschcau
 
 ---
 
+**In which branch or foundry version does the problem occur?**
+Please provide either a branch name or a foundry API version number.
+
 **Describe the wrong type**
 A clear and concise description of what and where the wrong type is.
 

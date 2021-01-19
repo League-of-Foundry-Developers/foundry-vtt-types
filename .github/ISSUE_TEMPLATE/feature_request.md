@@ -7,6 +7,9 @@ assignees: kmoschcau
 
 ---
 
+**In which branch or foundry version should this feature be added?**
+Please provide either a branch name or a foundry API version number.
+
 **Is your feature request related to a problem? Please describe.**
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
