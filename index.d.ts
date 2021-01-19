@@ -97,6 +97,7 @@ import './foundry/applications/formApplications/tileConfig';
 import './foundry/applications/formApplications/tokenConfig';
 import './foundry/applications/formApplications/userManagement';
 import './foundry/applications/formApplications/wallConfig';
+import './foundry/applications/formApplications/sceneConfig';
 
 import './foundry/applications/formApplications/baseEntitySheets/actorSheet';
 import './foundry/applications/formApplications/baseEntitySheets/itemSheet';
@@ -158,6 +159,7 @@ import './foundry/pixi/containers/controlIcon';
 import './foundry/pixi/containers/doorControl';
 import './foundry/pixi/containers/placeableObject';
 import './foundry/pixi/containers/ruler';
+import './foundry/pixi/containers/wallsLayer';
 
 import './foundry/pixi/containers/baseGrids/hexagonalGrid';
 import './foundry/pixi/containers/baseGrids/squareGrid';
