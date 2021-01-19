@@ -30,11 +30,15 @@ declare class Actors extends EntityCollection<Actor> {
    * @example <caption>Register a new ActorSheet subclass for use with certain Actor types.</caption>
    * Actors.registerSheet("dnd5e", ActorSheet5eCharacter, { types: ["character"], makeDefault: true });
    */
-  static registerSheet (scope: string, sheetClass: () => Application, { label, types, makeDefault }?: {
-    label?: string
-    types?: Array<() => Application>
-    makeDefault?: boolean
-  }): void
+  static registerSheet (
+    scope: string,
+    sheetClass: new (...args: any[]) => Application,
+    { label, types, makeDefault }?: {
+      label?: string
+      makeDefault?: boolean
+      types?: string[]
+    }
+  ): void
 
   /**
    * Unregister an Actor sheet class, removing it from the list of avaliable sheet Applications to use
@@ -43,9 +47,13 @@ declare class Actors extends EntityCollection<Actor> {
    * @example <caption>Deregister the default ActorSheet subclass to replace it with others.</caption>
    * Actors.unregisterSheet("core", ActorSheet);
    */
-  static unregisterSheet (scope: string, sheetClass: () => Application, { types }?: {
-    types?: Array<() => Application>
-  }): void
+  static unregisterSheet (
+    scope: string,
+    sheetClass: new (...args: any[]) => Application,
+    { types }?: {
+      types?: string[]
+    }
+  ): void
 
   /**
    * Return an Array of currently registered sheet classes for this Entity type
