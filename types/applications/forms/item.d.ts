@@ -35,7 +35,7 @@ declare class ItemSheet<T = object, O extends Item = Item, F = object> extends B
    * The Actor instance which owns this item. This may be null if the item is
    * unowned.
    */
-  get actor(): Actor<O, Actor.Data<any, Actor.OwnedItem<O>>> | null;
+  get actor(): Actor<Actor.Data<any, O['data']>, O> | null;
 
   /**
    * Activate listeners which provide interactivity for item sheet events
