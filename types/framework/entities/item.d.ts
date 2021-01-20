@@ -86,7 +86,7 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
   /**
    * Prepare a data object which defines the data schema used by dice roll commands against this Item
    */
-  getRollData (): Item.DataData<D>
+  getRollData (): D['data']
 
   /* -------------------------------------------- */
   /*  Properties                                  */
@@ -158,12 +158,6 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
 }
 
 declare namespace Item {
-  /**
-   * Typing for the data.data field
-   * @typeParam T - Entity.Data to extract data type from
-   */
-  type DataData<T> = T extends Data<infer D> ? D : never
-
   /**
    * @typeParam D - Type for Item.data.data
    */
