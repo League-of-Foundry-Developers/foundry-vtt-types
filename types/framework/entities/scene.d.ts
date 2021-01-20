@@ -68,7 +68,7 @@ declare class Scene extends Entity<Scene.Data> {
     scale: number
   }
 
-  static get config (): Entity.Config
+  static get config (): Entity.Config<Scene>
 
   /** @override */
   prepareData (): Scene.Data
@@ -199,6 +199,7 @@ declare namespace Scene {
     backgroundColor: string
     darkness: number
     description: string
+    drawings: any[] // TODO Drawing class (PlaceableObject)
     fogExploration: boolean
     globalLight: boolean
     globalLightThreshold: number
@@ -210,33 +211,28 @@ declare namespace Scene {
     gridUnits: string
     height: number
     img: string
-    initial: {
-      x: number
-      y: number
-      scale: number
-    }
+    initial: { x: number, y: number, scale: number } | null
     journal: string
+    lights: any[] // TODO AmbientLight class (PlaceableObject)
+    name: string
     navName: string
     navOrder: number
     navigation: boolean
+    notes: any[] // TODO Note class (PlaceableObject)
     padding: number
+    permission: Entity.Permission
     playlist: string
     shiftX: number
     shiftY: number
     size: number
     sort: number
-    tokenVision: boolean
-    weather: string
-    width: number
-
-    // EmbeddedEntities, arrays of the type of the data param of these
-    drawings: any[] // TODO Drawing class (PlaceableObject)
-    lights: any[] // TODO AmbientLight class (PlaceableObject)
-    notes: any[] // TODO Note class (PlaceableObject)
     sounds: any[] // TODO AmbientSound class (PlaceableObject)
     templates: any[] // TODO MeasuredTemplate class (PlaceableObject)
     tiles: any[] // TODO Tile class (PlaceableObject)
+    tokenVision: boolean
     tokens: any[] // Token.data
     walls: any[] // Wall.data
+    weather: string
+    width: number
   }
 }

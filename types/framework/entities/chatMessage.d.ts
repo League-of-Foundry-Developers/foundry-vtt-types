@@ -46,7 +46,7 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
   /**
    * Configure the attributes of the ChatMessage Entity
    */
-  static get config (): Entity.Config
+  static get config (): Entity.Config<ChatMessage>
 
   /* -------------------------------------------- */
   /*  Properties and Attributes                   */

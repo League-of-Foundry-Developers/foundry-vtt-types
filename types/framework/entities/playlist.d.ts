@@ -38,7 +38,7 @@ declare class Playlist extends Entity<Playlist.Data> {
   playbackOrder: string[]
 
   /** @override */
-  static get config (): Entity.Config
+  static get config (): Entity.Config<Playlist>
 
   /** @override */
   prepareEmbeddedEntities (): void
@@ -160,9 +160,11 @@ declare namespace Playlist {
   }
 
   interface Data extends Entity.Data {
-    sounds: Sound[]
     mode: number
+    name: string
+    permission: Entity.Permission
     playing: boolean
     sort: number
+    sounds: Sound[]
   }
 }

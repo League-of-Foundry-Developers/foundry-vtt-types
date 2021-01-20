@@ -61,7 +61,7 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
   effects: Collection<ActiveEffect>;
 
   /** @override */
-  static get config (): Entity.Config
+  static get config (): Entity.Config<Item>
 
   /** @override */
   get uuid (): string
@@ -97,7 +97,7 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
    * @remarks
    * This should be cast to the appropriate Actor class for your system if needed
    */
-  get actor(): Actor<this, Actor.Data<any, D>> | null;
+  get actor(): Actor<Actor.Data<any, D>, this> | null;
 
   /**
    * A convenience reference to the image path (data.img) used to represent this Item
@@ -168,9 +168,12 @@ declare namespace Item {
    * @typeParam D - Type for Item.data.data
    */
   interface Data<D = any> extends Entity.Data {
-    data: D;
-    img: string;
-    type: string;
+    data: D
     effects: ActiveEffect.Data[];
+    img: string
+    name: string
+    permission: Entity.Permission
+    sort: number
+    type: string
   }
 }

@@ -137,7 +137,7 @@ declare class Actor<D extends Actor.Data = Actor.Data, I extends Item<Actor.Owne
   _tokenImages: string[]
 
   /** @override */
-  static get config (): Entity.Config
+  static get config (): Entity.Config<Actor>
 
   /* -------------------------------------------- */
   /*  Properties                                  */
@@ -234,7 +234,6 @@ declare class Actor<D extends Actor.Data = Actor.Data, I extends Item<Actor.Owne
    *
    * @param linked - Only return tokens which are linked to the Actor. Default (false) is to return all
    *                 tokens even those which are not linked.
-   *
    * @returns An array of tokens in the current Scene which reference this Actor.
    */
   getActiveTokens (linked?: boolean): Token[]
@@ -242,8 +241,9 @@ declare class Actor<D extends Actor.Data = Actor.Data, I extends Item<Actor.Owne
   /**
    * Prepare a data object which defines the data schema used by dice roll commands against this Actor
    * @returns A copy of data.data
+   * @remarks Testing actor.data.type does not narrow the type for this method
    */
-  getRollData (): Actor.DataData<D>
+  getRollData (): D['data']
 
   /**
    * Get an Array of Token images which could represent this Actor
@@ -422,13 +422,6 @@ declare class Actor<D extends Actor.Data = Actor.Data, I extends Item<Actor.Owne
 
 declare namespace Actor {
   /**
-   * Typing for the data.data field
-   * @typeParam T - The Actor.Data type to extract the type from
-   * @internal
-   */
-  type DataData<T> = T extends Data<infer D, any> ? D : never
-
-  /**
    * Full item type for owned items
    * @typeParam D - Actor.Data to extract Item type from
    * @internal
@@ -440,11 +433,15 @@ declare namespace Actor {
    * @typeParam I - Type for system's Item
    */
   interface Data<D = any, I extends Item.Data = Item.Data> extends Entity.Data {
-   data: D;
+    data: D
     effects: ActiveEffect.Data[];
-    img: string;
-    items: I[];
-    token: any; // TODO: Token.data
-    type: string;
+    folder: string
+    img: string
+    items: I[]
+    name: string
+    permission: Entity.Permission
+    sort: number
+    token: any // TODO: Token.data
+    type: string
   }
 }

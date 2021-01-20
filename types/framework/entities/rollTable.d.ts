@@ -23,7 +23,7 @@ declare class RollTables extends EntityCollection<RollTable> {
 
 declare class RollTable extends Entity<RollTable.Data> {
   /** @override */
-  static get config (): Entity.Config
+  static get config (): Entity.Config<RollTable>
 
   /** @override */
   prepareEmbeddedEntities (): void
@@ -184,10 +184,8 @@ declare namespace RollTable {
     displayRoll: boolean
     formula: string
     img: string
-    permission: {
-      default: number
-      [user: string]: number
-    }
+    name: string
+    permission: Entity.Permission
     replacement: boolean
     results: Result[]
     sort: number

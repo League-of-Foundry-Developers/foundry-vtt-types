@@ -89,7 +89,7 @@ declare class User extends Entity<User.Data> {
   /* ---------------------------------------- */
 
   /** @override */
-  static get config (): Entity.Config;
+  static get config (): Entity.Config<User>
 
   /**
    * Return the User avatar icon or the controlled actor's image
@@ -231,8 +231,18 @@ declare namespace User {
     /**
      * A color string which represents the visual color associated with this particular User.
      */
+<<<<<<< HEAD
     color: string
     hotbar: any // TODO?
+    name: string
+=======
+    color: string;
+    /**
+     * User hotbar. An object with keys of the slot number and values of the Macro id
+     */
+    hotbar: Record<number, string>;
+    name: string;
+>>>>>>> 7ad4adf... hotbar
     /**
      * An access key for the Entity.
      */
@@ -259,7 +269,7 @@ declare namespace User {
     ruler: string
     /** The id of the Scene currently being viewed by the User */
     sceneId: string
-    /** An id of Token ids which are targeted by the User */
+    /** An array of Token ids which are targeted by the User */
     targets: any[]
   }
 }

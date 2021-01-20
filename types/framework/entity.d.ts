@@ -267,6 +267,9 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Test whether a given User has permission to perform some action on this Entity
    * @param user - The User to test
    * @param action - The name of the action
+   * @remarks
+   * args is untyped because of a mismatch between most entites and User that is likely to be fixed in Foundry 0.8.x
+   *
    */
   can (...args: any): boolean
   // TODO: This is intentionally untyped. This is a known issue that will likely be fixed in 0.8.x
@@ -767,6 +770,11 @@ declare namespace Entity {
     }
   }
 
+  interface Permission {
+    [userId: string]: number
+    default: number
+  }
+
   /**
    * Data structure common to all entities
    */
@@ -777,17 +785,8 @@ declare namespace Entity {
     _id: string
 
     /**
-     * The entity's name
-     */
-    name: string
-
-    /**
-     * The Entity type of the entity
-     */
-
-    /**
      * Flags for arbitrary data from modules &c.
      */
-    flags: any
+    flags: Record<string, any>
   }
 }

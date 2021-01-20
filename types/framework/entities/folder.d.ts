@@ -29,7 +29,7 @@ declare class Folders extends EntityCollection<Folder> {
 
 declare class Folder extends Entity<Folder.Data> {
   /** @override */
-  static get config (): Entity.Config;
+  static get config (): Entity.Config<Folder>
 
   /**
    * Return whether the folder is displayed in the sidebar to the current user
@@ -108,7 +108,9 @@ declare class Folder extends Entity<Folder.Data> {
 
 declare namespace Folder {
   interface Data extends Entity.Data {
-    parent: Folder | null
+    color: string
+    name: string
+    parent: null | Folder
     sort: number
     sorting: string
     type: string

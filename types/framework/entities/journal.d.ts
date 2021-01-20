@@ -28,7 +28,7 @@ declare class Journal extends EntityCollection<JournalEntry> {
  */
 declare class JournalEntry extends Entity<JournalEntry.Data> {
   /** @override */
-  static get config (): Entity.Config
+  static get config (): Entity.Config<JournalEntry>
 
   /**
    * A boolean indicator for whether or not the JournalEntry is visible to the current user in the directory sidebar
@@ -78,6 +78,8 @@ declare namespace JournalEntry {
     content: string
     folder: string
     img: string
+    name: string
+    permission: Entity.Permission
     sort: number
   }
 }

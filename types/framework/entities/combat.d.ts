@@ -71,7 +71,7 @@ declare class Combat extends Entity<Combat.Data> {
   static CONFIG_SETTING: string
 
   /** @override */
-  static get config (): Entity.Config
+  static get config (): Entity.Config<Combat>
 
   /**
    * Prepare Embedded Entities which exist within the parent Combat.
@@ -215,8 +215,8 @@ declare class Combat extends Entity<Combat.Data> {
     ids: string[] | string,
     { formula, updateTurn, messageOptions }?: {
       formula?: string|null
-      updateTurn?: boolean
       messageOptions?: any
+      updateTurn?: boolean
     }
   ): Promise<Combat>
 
@@ -246,8 +246,8 @@ declare class Combat extends Entity<Combat.Data> {
    */
   rollNPC (args?: {
     formula?: string|null
-    updateTurn?: boolean
     messageOptions?: any
+    updateTurn?: boolean
   }): Promise<Combat>
 
   /**
@@ -257,8 +257,8 @@ declare class Combat extends Entity<Combat.Data> {
    */
   rollAll (args?: {
     formula?: string|null
-    updateTurn?: boolean
     messageOptions?: any
+    updateTurn?: boolean
   }): Promise<Combat>
 
   /**
@@ -305,28 +305,43 @@ declare class Combat extends Entity<Combat.Data> {
 }
 
 declare namespace Combat {
-/**
- * Data extension for Combat
- */
+  /**
+   * Data extension for Combat
+   */
   interface Data extends Entity.Data {
     active: boolean
-    combatants: any[]
+    combatants: Array<Partial<Combatant>>
+    permission: Entity.Permission
     round: number
-    turn: number
     scene: string
+    sort: number
+    turn: number
   }
 
   /**
- * Stores the round, turn and tokenId for the current turn. Also used for the
- * previous turn.
- */
+   * Stores the round, turn and tokenId for the current turn. Also used for the
+   * previous turn.
+   */
   interface CurrentTurn {
     round: number
-    turn: number
     tokenId: string|null
+    turn: number
   }
 
   interface Combatant {
-    [propName: string]: any
+    _id: string
+    actor: Actor | null
+    flags: Record<string, any>
+    hidden: boolean
+    img: string
+    initiative: number | null
+    name: string
+    owner: boolean
+    permission: number
+    players: User[]
+    resource: number
+    token: any | null // TODO Token.data
+    tokenId?: string
+    visible: boolean
   }
 }
