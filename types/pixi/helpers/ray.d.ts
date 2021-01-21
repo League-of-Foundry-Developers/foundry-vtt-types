@@ -1,8 +1,3 @@
-declare interface Point {
-  x: number
-  y: number
-}
-
 declare interface Vector2 {
   t0: number
   t1: number
