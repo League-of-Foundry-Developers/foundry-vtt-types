@@ -131,6 +131,7 @@ import './types/pixi/placeablesLayer'
 import './types/pixi/pointSource'
 import './types/pixi/quadtree'
 import './types/pixi/sightLayer'
+import './types/pixi/textureLoader'
 
 import './types/pixi/helpers/controlIcon'
 import './types/pixi/helpers/ray'
