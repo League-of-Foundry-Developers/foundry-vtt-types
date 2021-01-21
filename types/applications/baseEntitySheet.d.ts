@@ -107,8 +107,8 @@ declare namespace BaseEntitySheet {
     template: string
 
     /**
-     * @defaultValue {@link ConstTypes.EntityPermissions.Limited}
+     * @defaultValue {@link Const.EntityPermissions.Limited}
      */
-    viewPermission: ConstTypes.EntityPermissions
+    viewPermission: Const.EntityPermissions
   }
 }

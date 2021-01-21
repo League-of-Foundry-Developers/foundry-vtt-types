@@ -464,7 +464,7 @@ declare class Game {
 
 declare namespace Game {
   interface Permissions {
-    [permissionName: string]: ConstTypes.UserRoles[]
+    [permissionName: string]: Const.UserRoles[]
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
