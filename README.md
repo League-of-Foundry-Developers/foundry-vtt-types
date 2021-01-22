@@ -3,6 +3,9 @@
 <div align=center>
 
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![League Discord Server](https://img.shields.io/discord/732325252788387980?label=League%20of%20Extraordinary%20Foundry%20VTT%20Developers)](https://discord.gg/52DNPzqm2Z)  
+![GitHub issues by-label](https://img.shields.io/github/issues-raw/kmoschcau/foundry-vtt-types/foundry%200.7.9?color=%23fe631d)
+![GitHub closed issues by-label](https://img.shields.io/github/issues-closed-raw/kmoschcau/foundry-vtt-types/foundry%200.7.9?color=%23fe631d)
 
 </div>
 
