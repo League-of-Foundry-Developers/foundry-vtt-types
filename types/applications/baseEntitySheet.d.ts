@@ -4,7 +4,6 @@
  * See the FormApplication documentation for more complete description of this
  * interface.
  * @typeParam T - the type of the data used to render the inner template
- * @typeParam D - the type of the data in the Entity
  * @typeParam O - the type of the Entity which should be managed by this form
  *                sheet
  * @typeParam F - the type of the of validated form data with which to update
@@ -12,8 +11,7 @@
  */
 declare class BaseEntitySheet <
   T = object,
-  D = object,
-  O extends Entity<D> = Entity<D>,
+  O extends Entity = Entity,
   F = object
 > extends FormApplication<T, O> {
   /**
@@ -54,7 +52,7 @@ declare class BaseEntitySheet <
    * @override
    */
   _updateObject (
-    event: Event,
+    event: any,
     formData: object
   ): Promise<O>
 
@@ -63,12 +61,12 @@ declare class BaseEntitySheet <
    * @param options - (unused)
    * @override
    */
-  getData (options?: any): BaseEntitySheet.Data<D, O>
+  getData (options?: any): BaseEntitySheet.Data<O>
 
   /**
    * @override
    */
-  render (force: boolean, options: Application.RenderOptions): this
+  render (force?: boolean, options?: Application.RenderOptions): this
 }
 
 declare namespace BaseEntitySheet {
@@ -77,10 +75,10 @@ declare namespace BaseEntitySheet {
    * @typeParam O - the type of the Entity which should be managed by this form
    *                sheet
    */
-  interface Data<D, O> extends FormApplication.Data<O> {
+  interface Data<O extends Entity = Entity> extends FormApplication.Data<O> {
     cssClass: string
     editable: boolean
-    entity: EntityData<D>
+    entity: O extends Entity<infer D> ? D : never
     limited: boolean
 
     /**
@@ -109,8 +107,8 @@ declare namespace BaseEntitySheet {
     template: string
 
     /**
-     * @defaultValue {@link ConstTypes.EntityPermissions.Limited}
+     * @defaultValue {@link Const.EntityPermissions.Limited}
      */
-    viewPermission: ConstTypes.EntityPermissions
+    viewPermission: Const.EntityPermissions
   }
 }

@@ -158,7 +158,7 @@ declare class Application<T = object> {
    * @returns Can the current user drop on this selector?
    * @internal
    */
-  _canDragDrop (selector: string): boolean
+  _canDragDrop (selector?: any): boolean
 
   /**
    * Define whether a user is able to begin a dragstart workflow for a given
@@ -168,7 +168,7 @@ declare class Application<T = object> {
    * @returns Can the current user drag this selector?
    * @internal
    */
-  _canDragStart (selector: string): boolean
+  _canDragStart (selector?: any): boolean
 
   /**
    * Create drag-and-drop workflow handlers for this Application
@@ -218,7 +218,7 @@ declare class Application<T = object> {
    *                 (unused)
    * @internal
    */
-  _onChangeTab (event: MouseEvent, tabs: Tabs, active: string): void
+  _onChangeTab (event?: any, tabs?: any, active?: any): void
 
   /**
    * Callback actions which occur when a dragged element is over a drop target.
@@ -226,7 +226,7 @@ declare class Application<T = object> {
    *                (unused)
    * @internal
    */
-  _onDragOver (event: DragEvent): void
+  _onDragOver (event?: any): void
 
   /**
    * Callback actions which occur at the beginning of a drag start workflow.
@@ -234,7 +234,7 @@ declare class Application<T = object> {
    *                (unused)
    * @internal
    */
-  _onDragStart (event: DragEvent): void
+  _onDragStart (event?: any): void
 
   /**
    * Callback actions which occur when a dragged element is dropped on a target.
@@ -242,7 +242,7 @@ declare class Application<T = object> {
    *                (unused)
    * @internal
    */
-  _onDrop (event: DragEvent): void
+  _onDrop (event?: any): void
 
   /**
    * Additional actions to take when the application window is resized
@@ -261,7 +261,7 @@ declare class Application<T = object> {
    *               (unused)
    * @internal
    */
-  _onSearchFilter (event: KeyboardEvent, query: RegExp, html: HTMLElement): void
+  _onSearchFilter (event?: any, query?: any, html?: any): void
 
   /**
    * Handle application minimization behavior - collapsing content and reducing
@@ -514,11 +514,11 @@ declare namespace Application {
   }
 
   interface Position {
-    height?: number | string
+    height?: number | 'auto'
     left?: number
     scale?: number
     top?: number
-    width?: number | string
+    width?: number | 'auto'
   }
 
   interface RenderOptions {

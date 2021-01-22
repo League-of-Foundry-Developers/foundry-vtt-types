@@ -1,25 +1,3 @@
-interface DialogData {
-  buttons?: Record<string, DialogButton>
-  close?: (html: HTMLElement | JQuery) => void
-  content?: string | HTMLElement
-  default?: string
-  title?: string
-}
-
-interface DialogButton {
-  callback?: (html: HTMLElement | JQuery) => void
-  icon?: string
-  label?: string
-}
-
-interface ConfirmDialog {
-  content: string
-  defaultYes?: boolean
-  no: Function
-  title: string
-  yes: Function
-}
-
 /**
  * Create a modal dialog window displaying a title, a message, and a set of buttons which trigger callback functions.
  *
@@ -62,7 +40,7 @@ interface ConfirmDialog {
  * ```
  */
 declare class Dialog extends Application {
-  constructor (dialogData: DialogData, options?: Application.Options);
+  constructor (dialogData: Dialog.Data, options?: Application.Options);
 
   /**
    * A helper function to reduce code duplication when creating confirmation dialog windows.
@@ -75,7 +53,31 @@ declare class Dialog extends Application {
    * @param defaultYes -
    */
   static confirm (
-    kwargs?: ConfirmDialog,
+    kwargs?: Dialog.ConfirmKwArgs,
     options?: Application.Options
   ): Promise<void>;
+}
+
+declare namespace Dialog {
+  interface Button {
+    callback?: (html: HTMLElement | JQuery) => void
+    icon?: string
+    label?: string
+  }
+
+  interface ConfirmKwArgs {
+    content: string
+    defaultYes?: boolean
+    no: Function
+    title: string
+    yes: Function
+  }
+
+  interface Data {
+    buttons?: Record<string, Button>
+    close?: (html: HTMLElement | JQuery) => void
+    content?: string | HTMLElement
+    default?: string
+    title?: string
+  }
 }

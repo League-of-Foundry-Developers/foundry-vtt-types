@@ -5,14 +5,12 @@
       "ES6",
       "ES2017"
     ],
+    "moduleResolution": "Node",
     "noEmit": true,
     "strict": true,
     "target": "ES2017"
   },
   "include": [
-    "./node_modules/handlebars/types/index.d.ts",
-    "./node_modules/pixi.js/pixi.js.d.ts",
-    "types",
     "index.d.ts"
   ]
 }

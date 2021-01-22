@@ -1,9 +1,4 @@
 /**
- * A PIXI.Rectangle where the width and height are always positive and the x and y are always the top-left
- */
-declare class NormalizedRectangle extends PIXI.Rectangle {}
-
-/**
  * A MeasuredTemplate is an implementation of PlaceableObject which represents an area of the canvas grid which is
  * covered by some effect.
  * @example
@@ -23,7 +18,9 @@ declare class NormalizedRectangle extends PIXI.Rectangle {}
  * ```
  */
 declare class MeasuredTemplate extends PlaceableObject {
-  constructor (any: any);
+  constructor (any: any)
+
+  get bounds (): NormalizedRectangle
 
   /**
    * Draw the rotation control handle and assign event listeners
@@ -77,8 +74,12 @@ declare class MeasuredTemplate extends PlaceableObject {
    */
   _refreshRulerText (): void;
 
+  draw (): Promise<PlaceableObject>
+
   /**
    * Highlight the grid squares which should be shown under the area of effect
    */
   highlightGrid (): void;
+
+  refresh (): PlaceableObject
 }

@@ -6,7 +6,6 @@
  * System modifications may elect to override this class to better suit their own game system by re-defining the value
  * `CONFIG.Actor.sheetClass`.
  * @typeParam T - the type of the data used to render the inner template
- * @typeParam D - the type of the data in the Entity
  * @typeParam O - the type of the Entity which should be managed by this form
  *                sheet
  * @typeParam F - the type of the of validated form data with which to update
@@ -14,10 +13,9 @@
  */
 declare class ActorSheet<
   T = object,
-  D = object,
-  O extends Actor<D> = Actor<D>,
+  O extends Actor = Actor,
   F = object
-> extends BaseEntitySheet<T, D, O, F> {
+> extends BaseEntitySheet<T, O, F> {
   /**
    * If this Actor Sheet represents a synthetic Token actor, reference the active Token
    */
@@ -51,18 +49,6 @@ declare class ActorSheet<
    * The displayed window title for the sheet - the entity name by default
    */
   get title (): string
-
-  /**
-   * Remove references to an active Token when the sheet is closed
-   * See Application.close for more detail
-   */
-  close (): Promise<void>
-
-  /**
-   * @param options - (unused)
-   * @override
-   */
-  getData (options?: any): ActorSheet.Data<D, O>
 
   /**
    * Extend the Header Button configuration for the ActorSheet to add Token configuration buttons
@@ -117,17 +103,28 @@ declare class ActorSheet<
    * @param html - The rendered template ready to have listeners attached
    */
   activateListeners (html: JQuery | HTMLElement): void
+
+  /**
+   * Remove references to an active Token when the sheet is closed
+   * See Application.close for more detail
+   */
+  close (): Promise<void>
+
+  /**
+   * @param options - (unused)
+   * @override
+   */
+  getData (options?: any): ActorSheet.Data<O>
 }
 
 declare namespace ActorSheet {
   /**
-   * @typeParam D - the type of the data in the Entity
    * @typeParam O - the type of the Entity which should be managed by this form
    *                sheet
    */
-  interface Data<D, O> extends BaseEntitySheet.Data<D, O> {
+  interface Data<O extends Actor = Actor> extends BaseEntitySheet.Data<O> {
     actor: Actor
-    data: ActorData<D>
+    data: O extends Actor<infer D> ? D : never
     items: Collection<Item>
   }
 }

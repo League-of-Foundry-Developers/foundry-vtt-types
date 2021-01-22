@@ -122,7 +122,7 @@ declare class KeyboardManager {
   _onAlt (
     event: KeyboardEvent,
     up: boolean,
-    modifiers: KeyboardManager.MetaModifiers
+    modifiers?: any
   ): void
 
   /**
@@ -154,7 +154,7 @@ declare class KeyboardManager {
    * @internal
    */
   _onDigit (
-    event: Event,
+    event: any,
     up: boolean,
     modifiers: KeyboardManager.MetaModifiers
   ): void
@@ -181,7 +181,7 @@ declare class KeyboardManager {
    * @internal
    */
   _onKeyA (
-    event: KeyboardEvent,
+    event: any,
     up: boolean,
     modifiers: KeyboardManager.MetaModifiers
   ): void

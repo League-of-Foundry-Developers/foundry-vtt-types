@@ -53,35 +53,51 @@ import './types/applications/sidebar/sidebarTab'
 
 import './types/applications/widgets/searchFilter'
 
+// Augments
+
+import './types/augments/PIXI'
+import './types/augments/handlebars'
+import './types/augments/howler'
+import './types/augments/tinyMCE'
+import './types/augments/utility-types'
+
 // Core
 
-import './types/core/audio'
+import './types/core/audioHelper'
 import './types/core/config'
-import './types/core/dicePool'
-import './types/core/diceTerm'
-import './types/core/die'
 import './types/core/fonts'
 import './types/core/gameTime'
 import './types/core/handlebarsHelpers'
 import './types/core/hooks'
 import './types/core/imageHelper'
-import './types/core/keyboard'
-import './types/core/roll'
+import './types/core/keyboardManager'
 import './types/core/setupConfiguration'
 import './types/core/socketInterface'
 import './types/core/sortingHelpers'
 import './types/core/textEditor'
 import './types/core/videoHelper'
 
-// webRTC
+// rolls
 
-import './types/core/webRtc/avMaster'
-import './types/core/webRtc/avSettings'
+import './types/core/rolls/dicePool'
+import './types/core/rolls/roll'
+
+// dice terms
+
+import './types/core/rolls/diceTerms/coin'
+import './types/core/rolls/diceTerms/diceTerm'
+import './types/core/rolls/diceTerms/die'
+import './types/core/rolls/diceTerms/fateDie'
 
 // settings
 
 import './types/core/settings/clientSettings'
 import './types/core/settings/worldSettingsStorage'
+
+// webRTC
+
+import './types/core/webRtc/avMaster'
+import './types/core/webRtc/avSettings'
 
 // Framework
 
@@ -110,11 +126,12 @@ import './types/pixi/canvasLayer'
 import './types/pixi/lightingLayer'
 import './types/pixi/measuredTemplate'
 import './types/pixi/mouseInteractionManager'
-import './types/pixi/placeableObject'
+import './types/pixi/normalizedRectangle'
 import './types/pixi/placeablesLayer'
 import './types/pixi/pointSource'
+import './types/pixi/quadtree'
 import './types/pixi/sightLayer'
-import './types/pixi/wall'
+import './types/pixi/textureLoader'
 
 import './types/pixi/grids/baseGrid'
 import './types/pixi/grids/GridHighlight'
@@ -125,9 +142,11 @@ import './types/pixi/helpers/controlIcon'
 import './types/pixi/helpers/ray'
 import './types/pixi/helpers/ruler'
 
-import './types/pixi/placeables/note'
-import './types/pixi/placeables/tile'
-import './types/pixi/placeables/token'
+import './types/pixi/placeableObjects/note'
+import './types/pixi/placeableObjects/placeableObject'
+import './types/pixi/placeableObjects/tile'
+import './types/pixi/placeableObjects/token'
+import './types/pixi/placeableObjects/wall'
 
 // UI
 
@@ -141,11 +160,11 @@ import './types/ui/tabs'
 
 // --
 
-import './types/augment.howler'
-import './types/augment.tinyMCE'
 import './types/constants'
 import './types/game'
 import './types/handlebars'
+import './types/mersenneTwister'
 import './types/prototypes'
 import './types/templateUtils'
+import './types/types'
 import './types/utils'

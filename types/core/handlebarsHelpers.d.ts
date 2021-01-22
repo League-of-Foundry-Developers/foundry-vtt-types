@@ -1,6 +1,7 @@
 /**
  * A collection of Handlebars template helpers which can be used within HTML templates.
  */
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 declare class HandlebarsHelpers {
   /**
    * For checkboxes, if the value of the checkbox is true, add the "checked"
@@ -10,7 +11,6 @@ declare class HandlebarsHelpers {
 
   /**
    * Construct an editor element for rich text editing with TinyMCE
-   * @returns (type: `Handlebars.SafeString`)
    */
   static editor (
     options: HandlebarsHelpers.EditorOptions
@@ -18,7 +18,6 @@ declare class HandlebarsHelpers {
 
   /**
    * Render a file-picker button linked to an <input> field
-   * @returns (type: `Handlebars.SafeString | string`)
    */
   static filePicker (options: object): Handlebars.SafeString | string
 
@@ -51,7 +50,6 @@ declare class HandlebarsHelpers {
    *                  labels
    * @param checked - Which key is currently checked?
    * @param localize - Pass each label through string localization?
-   * @returns (type: `Handlebars.SafeString`)
    * @example <caption>The provided input data</caption>
    * ```javascript
    * let groupName = "importantChoice";
@@ -79,8 +77,6 @@ declare class HandlebarsHelpers {
   * its value
   * Escape the string as handlebars would, then escape any regexp characters in
   * it
-  * @param fn - (type: `Handlebars.TemplateDelegate`)
-  * @returns (type: `Handlebars.SafeString`)
   */
   static select (
     selected: string,
@@ -97,7 +93,6 @@ declare class HandlebarsHelpers {
    * @param choices - A mapping of radio checkbox values to human readable labels
    * @param selected - Which key or array of keys that are currently selected?
    * @param localize - Pass each label through string localization?
-   * @returns (type: `Handlebars.SafeString`)
    * @example <caption>The provided input data</caption>
    * ```javascript
    * let choices = {a: "Choice A", b: "Choice B"};

@@ -50,6 +50,8 @@
  * ```
  */
 declare class Compendium extends Application {
+  _searchTime: number
+
   /**
    * The most recently retrieved index of the Compendium content
    * This index is not guaranteed to be current - call getIndex() to reload the index
@@ -74,8 +76,6 @@ declare class Compendium extends Application {
   // Internal flags
   searchString: string | null
 
-  _searchTime: number
-
   constructor (metadata: object, options: object);
 
   /**
@@ -94,6 +94,47 @@ declare class Compendium extends Application {
    * @param metadata - The compendium metadata used to create the new pack
    */
   static create (metadata: object): Promise<Compendium>;
+
+  /**
+   * Render the ContextMenu which applies to each compendium entry
+   */
+  _contextMenu (html: JQuery | HTMLElement): void;
+
+  /**
+   * Allow data transfer events to be dragged over this as a drop zone
+   */
+  _onDragOver (event: Event | JQuery.Event): boolean;
+
+  /**
+   * Handle a new drag event from the compendium, create a placeholder token for dropping the item
+   */
+  _onDragStart (event: Event | JQuery.Event): boolean;
+
+  /**
+   * Handle data being dropped into a Compendium pack
+   */
+  _onDrop (event: Event | JQuery.Event): Promise<boolean>;
+
+  /**
+   * Handle opening a single compendium entry by invoking the configured entity class and its sheet
+   */
+  _onEntry (entryId: string): Promise<void>;
+
+  /**
+   * Handle compendium filtering through search field
+   * Toggle the visibility of indexed compendium entries by name (for now) match
+   */
+  _onSearch (searchString: string): void;
+
+  /**
+   * Cast entry data to an Entity class
+   */
+  _toEntity (entryData?: object): Entity;
+
+  /**
+   * Register event listeners for Compendium directories
+   */
+  activateListeners (html: JQuery | HTMLElement): void;
 
   /**
    * Customize Compendium closing behavior to toggle the sidebar folder status icon
@@ -168,45 +209,4 @@ declare class Compendium extends Application {
    * @returns A Promise which resolves with the updated Entity once the operation is complete
    */
   updateEntity (data: any, options?: any): Promise<Entity>;
-
-  /**
-   * Render the ContextMenu which applies to each compendium entry
-   */
-  _contextMenu (html: JQuery | HTMLElement): void;
-
-  /**
-   * Allow data transfer events to be dragged over this as a drop zone
-   */
-  _onDragOver (event: Event | JQuery.Event): boolean;
-
-  /**
-   * Handle a new drag event from the compendium, create a placeholder token for dropping the item
-   */
-  _onDragStart (event: Event | JQuery.Event): boolean;
-
-  /**
-   * Handle data being dropped into a Compendium pack
-   */
-  _onDrop (event: Event | JQuery.Event): Promise<boolean>;
-
-  /**
-   * Handle opening a single compendium entry by invoking the configured entity class and its sheet
-   */
-  _onEntry (entryId: string): Promise<void>;
-
-  /**
-   * Handle compendium filtering through search field
-   * Toggle the visibility of indexed compendium entries by name (for now) match
-   */
-  _onSearch (searchString: string): void;
-
-  /**
-   * Cast entry data to an Entity class
-   */
-  _toEntity (entryData?: object): Entity;
-
-  /**
-   * Register event listeners for Compendium directories
-   */
-  activateListeners (html: JQuery | HTMLElement): void;
 }

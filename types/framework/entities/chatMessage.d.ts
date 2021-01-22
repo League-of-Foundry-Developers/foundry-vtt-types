@@ -1,215 +1,245 @@
-declare interface ChatData {
-  speaker: object
-  user: number
-}
+/**
+ * A :class:`EntityCollection` of class:`ChatMessage` entities
+ * The Messages collection is accessible within the game as `game.messages`.
+ *
+ */
+declare class Messages extends EntityCollection<ChatMessage> {
+  /** @override */
+  get entity (): string
 
-declare interface MessageData {
-  alias: string
-  author: User
-  borderColor: string
-  cssClass: string
-  isWhisper: boolean
-  message: object
-  user: User
-  whisperTo: string
-}
+  /** @override */
+  render (force?: boolean, options?: any): any // Mismatched types
 
-declare class Messages extends Collection<ChatMessage> {
-	entities: ChatMessage[];
+  /**
+   * If requested, dispatch a Chat Bubble UI for the newly created message
+   * @param message - The ChatMessage entity to say
+   */
+  sayBubble (message: ChatMessage): void
 
-	/**
-	 * Elements of the Messages collection are instances of the ChatMessage class
-	 */
-	get object(): ChatMessage;
+  /**
+   * Handle export of the chat log to a text file
+   */
+  export (): void
 
-	values(): IterableIterator<ChatMessage>;
-
-	/* -------------------------------------------- */
-	/*  Socket Listeners and Handlers
-	/* -------------------------------------------- */
-
-	/**
-	 * If requested, dispatch a Chat Bubble UI for the newly created message
-	 * @param response	The created ChatMessage response
-	 */
-	protected _sayBubble(response: object): void;
-
-	/**
-	 * Handle export of the chat log to a text file
-	 */
-	protected export(): void;
-
-	/**
-	 * Allow for bulk deletion of all chat messages, confirm first with a yes/no dialog.
-	 * @see {@link Dialog.confirm}
-	 */
-	flush(): Promise<any>;
+  /**
+   * Allow for bulk deletion of all chat messages, confirm first with a yes/no dialog.
+   * @see {@link Dialog.confirm}
+   */
+  flush (): Promise<void>
 }
 
 /**
  * The Chat Message class is a type of :class:`Entity` which represents individual messages in the chat log.
  *
- * @type {Entity}
  */
-declare class ChatMessage extends Entity {
-	/**
-	 * Get a reference to the user who sent the chat message
-	 */
-	user: User;
+declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends Entity<D> {
+  /**
+   * Get a reference to the user who sent the chat message
+   */
+  user: User
 
-	/**
-	 * If the Message contains a dice roll, store it here
-	 */
-	protected _roll: any;
+  /**
+   * If the Message contains a dice roll, store it here
+   */
+  _roll: Roll | null
 
-	/**
-	 * Configure the attributes of the ChatMessage Entity
-	 */
-	static get config(): {
-		baseEntity: ChatMessage;
-		collection: Messages;
-		embeddedEntities: any;
-	};
+  /**
+   * Configure the attributes of the ChatMessage Entity
+   */
+  static get config (): Entity.Config
 
-	/* -------------------------------------------- */
-	/*  Properties and Attributes
-	/* -------------------------------------------- */
+  /* -------------------------------------------- */
+  /*  Properties and Attributes                   */
+  /* -------------------------------------------- */
 
-	/**
-	 * Return the recommended String alias for this message.
-	 * The alias could be a Token name in the case of in-character messages or dice rolls.
-	 * Alternatively it could be a User name in the case of OOC chat or whispers.
-	 */
-	get alias(): string;
-	/**
-	 * Return whether the ChatMessage is visible to the current user Messages may not be visible if they are private whispers
-	 */
-	get visible(): boolean;
+  /**
+   * Return the recommended String alias for this message.
+   * The alias could be a Token name in the case of in-character messages or dice rolls.
+   * Alternatively it could be a User name in the case of OOC chat or whispers.
+   */
+  get alias (): string
 
-	/**
-	 * Is the current User the author of this message?
-	 */
-	get isAuthor(): boolean;
+  /** @override */
+  static can (user: User, action: string, target: ChatMessage): boolean
 
-	/**
-	 * Test whether the chat message contains a dice roll
-	 */
-	get isRoll(): boolean;
+  /**
+   * Return whether the ChatMessage is visible to the current user
+   * Messages may not be visible if they are private whispers
+   */
+  get visible (): boolean
 
-	/**
-	 * Return whether the message contains a visible dice roll.
-	 */
-	get isRollVisible(): boolean | null;
+  /**
+   * Is the current User the author of this message?
+   */
+  get isAuthor (): boolean
 
-	/**
-	 * Return the Roll instance contained in this chat message, if one is present
-	 */
-	get roll(): Roll;
+  /**
+   * Test whether the chat message contains a dice roll
+   */
+  get isRoll (): boolean
 
-	/**
-	 * Return whether the content of the message is visible to the current user
-	 */
-	get isContentVisible(): boolean;
+  /**
+   * Return whether the content of the message is visible to the current user
+   */
+  get isContentVisible (): boolean
 
-	/* -------------------------------------------- */
-	/*  Socket Listeners and Handlers
-	/* -------------------------------------------- */
+  /** @override */
+  get permission (): number
 
-	/**
-	 * Preprocess the data object used to create a new Chat Message to automatically convert some Objects to the
-	 * data format expected by the database handler.
-	 */
-	protected static _preprocessCreateData(data: object): any;
+  /**
+   * Return the Roll instance contained in this chat message, if one is present
+   */
+  get roll (): Roll
 
-	/* -------------------------------------------- */
-	/*  Saving and Loading
-	/* -------------------------------------------- */
+  /* -------------------------------------------- */
+  /*  HTML Rendering                              */
+  /* -------------------------------------------- */
 
-	/**
-	 * Export the content of the chat message into a standardized log format
-	 */
-	export(): string;
+  /**
+   * Render the HTML for the ChatMessage which should be added to the log
+   */
+  render (force?: boolean, options?: any): Promise<HTMLElement>
 
-	/**
-	 * Given a string whisper target, return an Array of the user IDs which should be targeted for the whisper
-	 *
-	 * @param name	The target name of the whisper target
-	 * @return		An array of User instances
-	 */
-	static getWhisperRecipients(name: string): User[];
+  /* -------------------------------------------- */
+  /*  Socket Listeners and Handlers               */
+  /* -------------------------------------------- */
 
-	/**
-	 * Given a string whisper target, return an Array of the user IDs which should be targeted for the whisper
-	 * @param name  The target name of the whisper target
-	 * @returns     An array of user IDs (or possibly none)
-	 */
-	static getWhisperIDs(name: string): string[];
+  /** @override */
+  static create (data: ChatMessage.Data|ChatMessage.Data[], options: Entity.CreateOptions): Promise<ChatMessage<ChatMessage.Data>|Array<ChatMessage<ChatMessage.Data>>>
 
-	/**
-	 * Attempt to determine who is the speaking character (and token) for a certain Chat Message First assume that the currently controlled Token is the speaker
-	 * @returns     The identified speaker data
-	 */
-	static getSpeaker({
-		scene,
-		actor,
-		token,
-		alias,
-	}?: {
-		scene?: Scene;
-		actor?: Actor;
-		token?: Token;
-		alias?: string;
-	}): any;
+  /**
+   * Preprocess the data object used to create a new Chat Message to automatically convert some Objects to the
+   * data format expected by the database handler.
+   * @param data - Single ChatMessage creation data
+   * @param rollMode - The visibility mode applied to all dice rolls
+   * @returns Processed message creation data
+   */
+  static _preprocessCreateData (data: ChatMessage.Data, { rollMode }?: {
+    rollMode?: string | null
+  }): ChatMessage.Data
 
-	/**
-	 * A helper to prepare the speaker object based on a target Token
-	 */
-	protected static _getSpeakerFromToken({
-		token,
-		alias,
-	}?: {
-		token?: Token;
-		alias?: string;
-	}): { scene: Scene; token: Token; actor: Actor; alias: string };
+  /** @override */
+  _onCreate (data: Optional<D>, options: Entity.CreateOptions, userId: string): void
 
-	/**
-	 * A helper to prepare the speaker object based on a target Actor
-	 */
-	protected static _getSpeakerFromActor({
-		scene,
-		actor,
-		alias,
-	}?: {
-		scene?: Scene;
-		actor?: Token;
-		alias?: string;
-	}): { scene: Scene; token: Token; actor: Actor; alias: string };
+  /** @override */
+  _onUpdate (data: Optional<D>, options: Entity.UpdateOptions, userId: string): void
 
-	/**
-	 * A helper to prepare the speaker object based on a target User
-	 */
-	protected static _getSpeakerFromUser({
-		scene,
-		user,
-		alias,
-	}?: {
-		scene?: Scene;
-		user?: User;
-		alias?: string;
-	}): { scene: Scene; token: Token; actor: Actor; alias: string };
+  /** @override */
+  _onDelete (options: Entity.DeleteOptions, userId: string): void
 
-	/* -------------------------------------------- */
-	/*  Roll Data Preparation                       */
-	/* -------------------------------------------- */
+  /* -------------------------------------------- */
+  /*  Saving and Loading                          */
+  /* -------------------------------------------- */
 
-	/**
-	 * Obtain a data object used to evaluate any dice rolls associated with this particular chat message
-	 */
-	getRollData(): any;
+  /**
+   * Export the content of the chat message into a standardized log format
+   */
+  export (): string
 
-	/**
-	 * Obtain an Actor instance which represents the speaker of this message (if any)
-	 * @param speaker	The speaker data object
-	 */
-	static getSpeakerActor(speaker: object): Actor | null;
+  /**
+   * Transform a provided object of ChatMessage data by applying a certain rollMode to the data object.
+   * @param chatData - The object of ChatMessage data prior to applying a rollMode preference
+   * @param rollMode - The rollMode preference to apply to this message data
+   * @returns The modified ChatMessage data with rollMode preferences applied
+   */
+  static applyRollMode (chatData: ChatMessage.Data, rollMode: string): ChatMessage.Data
+
+  /**
+   * Given a string whisper target, return an Array of the user IDs which should be targeted for the whisper
+   *
+   * @param name - The target name of the whisper target
+   * @returns An array of User instances
+   */
+  static getWhisperRecipients (name: string): User[]
+
+  /**
+   * Attempt to determine who is the speaking character (and token) for a certain Chat Message
+   * First assume that the currently controlled Token is the speaker
+   *
+   * @param scene - The Scene in which the speaker resides
+   * @param actor - The Actor whom is speaking
+   * @param token - The Token whom is speaking
+   * @param alias - The name of the speaker to display
+   *
+   * @returns The identified speaker data
+   */
+  static getSpeaker (speaker: Optional<ChatMessage.SpeakerData>): ChatMessage.SpeakerData
+
+  /**
+   * A helper to prepare the speaker object based on a target Token
+   */
+  static _getSpeakerFromToken ({ token, alias }: {
+    token: Token
+    alias?: string
+  }): ChatMessage.SpeakerData
+
+  /**
+   * A helper to prepare the speaker object based on a target Actor
+   */
+  static _getSpeakerFromActor ({ scene, actor, alias }: {
+    scene?: Scene
+    actor: Actor
+    alias?: string
+  }): ChatMessage.SpeakerData
+
+  /**
+   * A helper to prepare the speaker object based on a target User
+   */
+  static _getSpeakerFromUser ({ scene, user, alias }: {
+    scene?: Scene
+    user: User
+    alias?: string
+  }): ChatMessage.SpeakerData
+
+  /* -------------------------------------------- */
+  /*  Roll Data Preparation                       */
+  /* -------------------------------------------- */
+
+  /**
+   * Obtain a data object used to evaluate any dice rolls associated with this particular chat message
+   * @remarks
+   * Returns Actor.data.data
+   */
+  getRollData (): any // Actor.data.data
+
+  /**
+   * Obtain an Actor instance which represents the speaker of this message (if any)
+   * @param speaker - The speaker data object
+   */
+  static getSpeakerActor (speaker: ChatMessage.SpeakerData): Actor | null
+}
+
+declare namespace ChatMessage {
+  interface Data extends Entity.Data {
+    content: string
+    speaker: SpeakerData
+    timestamp: number
+    type: number
+    user: string
+    whisper: string[]
+  }
+
+  interface ChatData {
+    user: string
+    speaker: SpeakerData
+  }
+
+  interface MessageData {
+    alias: string
+    author: User
+    borderColor: string
+    cssClass: string
+    isWhisper: boolean
+    message: object
+    user: User
+    whisperTo: string
+  }
+
+  interface SpeakerData {
+    scene: string | null
+    token: string | null
+    actor: string | null
+    alias: string
+  }
+
 }
