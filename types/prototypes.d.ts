@@ -48,16 +48,30 @@ interface String {
    */
   stripScripts: () => string
 
+  /* -------------------------------------------- */
+
   /**
    * Transform any string into a url-viable slug string
-   * @param options - (default: `{}`)
+   * @param options     - (default: `{}`)
    * @param replacement - The replacement character to separate terms
    *                      (default: `'-'`)
-   * @param strict - Replace all non-alphanumeric characters, or allow them?
-   *                 (default: `false`)
+   * @param strict      - Replace all non-alphanumeric characters, or allow them?
+   *                      (default: `false`)
    * @returns The cleaned slug string
    */
-  slugify: (options?: { replacement?: string, strict?: boolean }) => string
+  slugify: (options?: {
+    /**
+     * The replacement character to separate terms
+     * @defaultValue `'-'`
+     */
+    replacement?: string
+
+    /**
+     * Replace all non-alphanumeric characters, or allow them?
+     * @defaultValue `false`
+     */
+    strict?: boolean
+  }) => string
 }
 
 /* -------------------------------------------- */
@@ -77,14 +91,14 @@ interface Number {
   between: (a: number, b: number, inclusive?: boolean) => boolean
 
   /**
-   * Round a number to the nearest number which is a multiple of a given
-   * interval
+   * Round a number to the nearest number which is a multiple of a given interval
    * @param interval - The interval to round the number to the nearest
    *                   multiple of
    *                   (default: `1`)
    * @returns The rounded number
+   *
    * @example
-   * ```javascript
+   * ```typescript
    * let n = 17.18;
    * n.toNearest(5); // 15
    * n.toNearest(10); // 20
@@ -96,10 +110,8 @@ interface Number {
 
 interface NumberConstructor {
   /**
-   * A faster numeric between check which avoids type coercion to the Number
-   * object
-   * Since this avoids coercion, if non-numbers are passed in unpredictable
-   * results will occur. Use with caution.
+   * A faster numeric between check which avoids type coercion to the Number object
+   * Since this avoids coercion, if non-numbers are passed in unpredictable results will occur. Use with caution.
    * @param inclusive - (default: `true`)
    */
   between: (num: number, a: number, b: number, inclusive?: boolean) => boolean
@@ -126,24 +138,19 @@ interface Array<T> {
   deepFlatten: () => T[]
 
   /**
-   * Test equality of the values of this array against the values of some
-   * other Array
+   * Test equality of the values of this array against the values of some other Array
    */
   equals: (other: T[]) => boolean
 
   /**
-   * Partition an original array into two children array based on a logical
-   * test
-   * Elements which test as false go into the first result while elements
-   * testing as true appear in the second
-   * @returns An Array of length two whose elements are the partitioned pieces
-   *          of the original
+   * Partition an original array into two children array based on a logical test
+   * Elements which test as false go into the first result while elements testing as true appear in the second
+   * @returns An Array of length two whose elements are the partitioned pieces of the original
    */
   partition: (rule: (val: T) => boolean) => [T[], T[]]
 
   /**
-   * Join an Array using a string separator, first filtering out any parts
-   * which return a false-y value
+   * Join an Array using a string separator, first filtering out any parts which return a false-y value
    * @param sep - The separator string
    * @returns The joined string, filtered of any false values
    */
@@ -152,12 +159,10 @@ interface Array<T> {
   /**
    * Find an element within the Array and remove it from the array
    * @param find - A function to use as input to findIndex
+   * @param replace - A replacement for the spliced element
    * @returns The removed item or null if none was found
    */
-  findSplice: (
-    find: (value: any, index: number, obj: any[]) => boolean,
-    replace?: T
-  ) => T | null
+  findSplice: (find: (value: any, index: number, obj: any[]) => boolean, replace?: T) => T | null
 }
 
 /* -------------------------------------------- */

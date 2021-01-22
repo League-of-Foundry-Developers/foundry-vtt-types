@@ -9,6 +9,8 @@ declare const ASCII = `_________________________________________________________
 |_|   \\___/ \\___/|_| \\_|____/|_| \\_\\|_|      \\_/    |_|   |_|  
 ===============================================================`
 
+/* -------------------------------------------- */
+
 /**
  * Define the allowed ActiveEffect application modes
  */
@@ -20,6 +22,8 @@ declare const ACTIVE_EFFECT_MODES: {
   UPGRADE: Const.ActiveEffectModes.Upgrade
   OVERRIDE: Const.ActiveEffectModes.Override
 }
+
+/* -------------------------------------------- */
 
 /**
  * Define the string name used for the base entity type when specific sub-types are not defined by the system
@@ -79,6 +83,8 @@ declare const DICE_ROLL_MODES: {
   SELF: Const.DiceRollModes.Self
 }
 
+/* -------------------------------------------- */
+
 /**
  * The allowed Drawing types which may be saved
  */
@@ -121,6 +127,8 @@ declare const DRAWING_DEFAULT_VALUES: {
   textAlpha: 1.0
   textColor: '#FFFFFF'
 }
+
+/* -------------------------------------------- */
 
 /**
  * Define the allowed Entity class types
@@ -555,7 +563,12 @@ declare const IMAGE_FILE_EXTENSIONS: [
 /**
  * The supported file extensions for video-type files
  */
-declare const VIDEO_FILE_EXTENSIONS: ['mp4', 'ogg', 'webm', 'm4v']
+declare const VIDEO_FILE_EXTENSIONS: [
+  'mp4',
+  'ogg',
+  'webm',
+  'm4v'
+]
 
 /**
  * The supported file extensions for audio-type files

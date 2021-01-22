@@ -3,22 +3,26 @@
  */
 declare let _templateCache: Record<string, Handlebars.TemplateDelegate>
 
+/* -------------------------------------------- */
+/*  HTML Template Loading                       */
+/* -------------------------------------------- */
+
 /**
  * Get a template from the server by fetch request and caching the retrieved result
  * @param path - The web-accessible HTML template URL
  * @returns A Promise which resolves to the compiled Handlebars template
  */
-declare function getTemplate (
-  path: string
-): Promise<Handlebars.TemplateDelegate>
+declare function getTemplate (path: string): Promise<Handlebars.TemplateDelegate>
+
+/* -------------------------------------------- */
 
 /**
  * Load and cache a set of templates by providing an Array of paths
  * @param paths - An array of template file paths to load
  */
-declare function loadTemplates (
-  paths: string[]
-): Promise<Handlebars.TemplateDelegate[]>
+declare function loadTemplates (paths: string[]): Promise<Handlebars.TemplateDelegate[]>
+
+/* -------------------------------------------- */
 
 /**
  * Get and render a template using provided data and handle the returned HTML
