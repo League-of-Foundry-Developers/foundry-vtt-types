@@ -12,7 +12,7 @@ declare class Hooks {
    * @param fn   - The callback function which should be triggered when the hook event occurs
    * @returns An ID number of the hooked function which can be used to turn off the hook later
    */
-  static on (hook: string, fn: HooksCallbacks.General): number
+  static on (hook: string, fn: Hooks.General): number
 
   /* -------------------------------------------- */
 
@@ -24,7 +24,7 @@ declare class Hooks {
    * @param fn   - The callback function which should be triggered when the hook event occurs
    * @returns An ID number of the hooked function which can be used to turn off the hook later
    */
-  static once (hook: string, fn: HooksCallbacks.General): number
+  static once (hook: string, fn: Hooks.General): number
 
   /* -------------------------------------------- */
 
@@ -34,7 +34,7 @@ declare class Hooks {
    * @param hook - The unique name of the hooked event
    * @param fn   - The function, or ID number for the function, that should be turned off
    */
-  static off (hook: string, fn: number | HooksCallbacks.General): void
+  static off (hook: string, fn: number | Hooks.General): void
 
   /* -------------------------------------------- */
 
@@ -67,22 +67,22 @@ declare class Hooks {
    * Call a hooked function using provided arguments and perhaps unregister it.
    * @internal
    */
-  static _call (hook: string, fn: HooksCallbacks.General, ...args: any[]): boolean
+  static _call (hook: string, fn: Hooks.General, ...args: any[]): boolean
 
   /**
    * @defaultValue `{}`
    */
-  static _hooks: Record<string, HooksCallbacks.General[]>
+  static _hooks: Record<string, Hooks.General[]>
 
   /**
    * @defaultValue `[]`
    */
-  static _once: HooksCallbacks.General[]
+  static _once: Hooks.General[]
 
   /**
    * @defaultValue `{}`
    */
-  static _ids: Record<number, HooksCallbacks.General[]>
+  static _ids: Record<number, Hooks.General[]>
 
   /**
    * @defaultValue `1`
@@ -92,7 +92,7 @@ declare class Hooks {
 
 /**
  * This namespace contains typescript specific type definitions for the {@link Hooks} callback functions. It contains a
- * general type ({@link HooksCallbacks.Generic}) for callback functions and additionally constants (where applicable)
+ * general type ({@link Hooks.Generic}) for callback functions and additionally constants (where applicable)
  * and types for other Hooks callbacks. Some hooks do not have constants for their names, because the names are
  * dynamically generated at runtime. Callback types returning `void` are called by {@link Hooks.callAll} and do not care
  * about the return value of the callback. Callback types returning `boolean` are called with {@link Hooks.call} and do
@@ -100,7 +100,7 @@ declare class Hooks {
  *
  * @example Using a callback type as type specifier
  * ```typescript
- * let foo: HooksCallbacks.UpdateWorldTime = (worldTime: number, dt: number) => {
+ * let foo: Hooks.UpdateWorldTime = (worldTime: number, dt: number) => {
  *   // [...]
  * }
  * Hooks.on('updateWorldTime', foo)
@@ -112,11 +112,11 @@ declare class Hooks {
  *   'updateWorldTime',
  *   ((worldTime: number, dt: number) => {
  *     // [...]
- *   }) as HooksCallbacks.UpdateWorldTime
+ *   }) as Hooks.UpdateWorldTime
  * )
  * ```
  */
-declare namespace HooksCallbacks {
+declare namespace Hooks {
   /**
    * This is called when applying an {@link ActiveEffect}, that uses the CUSTOM application mode.
    * @param actor  - the Actor to whom this effect should be applied
