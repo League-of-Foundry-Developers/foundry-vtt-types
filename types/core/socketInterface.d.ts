@@ -1,27 +1,25 @@
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 declare class SocketInterface {
   /**
-   * Handle an error returned from the database, displaying it on screen and in
-   * the console
+   * Standardize the way that socket messages are dispatched and their results are handled
+   * @param eventName - The socket event name being handled
+   * @param request   - Data provided to the Socket event
+   * @returns A Promise which resolves to the SocketResponse
+   */
+  static dispatch (eventName: string, request: SocketInterface.Request): Promise<SocketInterface.Response>
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle an error returned from the database, displaying it on screen and in the console
    * @param err - The provided Error message
    * @internal
    */
   static _handleError (err: Error): Error
-
-  /**
-   * Standardize the way that socket messages are dispatched and their results
-   * are handled
-   * @param eventName - The socket event name being handled
-   * @param request - Data provided to the Socket event
-   * @returns A Promise which resolves to the SocketResponse
-   */
-  static dispatch (
-    eventName: string,
-    request: SocketInterface.Request
-  ): Promise<SocketInterface.Response>
 }
 
 declare namespace SocketInterface {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   namespace Requests {
     interface ModifyEmbeddedDocument {
       action: Action.Create | Action.Update | Action.Delete
@@ -33,6 +31,7 @@ declare namespace SocketInterface {
     }
 
     // TODO: add remaining actions
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     enum Action {
       Create = 'create',
       Update = 'update',
@@ -40,6 +39,7 @@ declare namespace SocketInterface {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   namespace Responses {
     interface ModifyEmbeddedDocument {
       request: Requests.ModifyEmbeddedDocument
