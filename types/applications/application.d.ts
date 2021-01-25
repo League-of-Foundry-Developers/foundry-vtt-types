@@ -424,7 +424,7 @@ declare class Application<T = object> {
    * @param scale  - The application scale as a numeric factor where 1.0 is default
    * @returns The updated position object for the application containing the new values
    */
-  setPosition (appPos?: Partial<Application.Position>): Application.Position
+  setPosition (appPos?: Application.PositionParameter): Application.Position
 
   /* -------------------------------------------- */
 
@@ -566,11 +566,19 @@ declare namespace Application {
   }
 
   interface Position {
-    width: number | 'auto'
-    height: number | 'auto'
+    width: number
+    height: number
     left: number
     top: number
     scale: number
+  }
+
+  interface PositionParameter {
+    width?: number
+    height?: number | 'auto'
+    left?: number
+    top?: number
+    scale?: number
   }
 
   interface RenderOptions {
