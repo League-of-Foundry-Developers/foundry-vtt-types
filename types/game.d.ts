@@ -1,14 +1,16 @@
 /**
+ * Initialized in
+ * - `/game`: after "setup", before "ready" hook
+ * - `/stream`: as `{ ready: false }`
  * @defaultValue `null`
  */
-declare let canvas: Canvas | null
+declare let canvas: Canvas | { ready: boolean } | null
+
+declare let game: Game
 
 /**
- * @defaultValue `null`
- */
-declare let game: Game | null
-
-/**
+ * Initialized in
+ * - `/game`: after "setup", before "ready" hook
  * @defaultValue `null`
  */
 declare let keyboard: KeyboardManager | null
@@ -18,26 +20,145 @@ declare let keyboard: KeyboardManager | null
  */
 declare let socket: SocketIOClient.Socket | null
 
+/**
+ * Each of thses are initialized depending on the current view. The views are the following:
+ * - `/license`
+ * - `/game`
+ * - `/setup`
+ * - `/stream`
+ * - `/players`
+ * - `/join`
+ */
 declare let ui: {
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   */
   actors?: ActorDirectory
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
   chat?: ChatLog
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   */
   combat?: CombatTracker
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   */
   compendium?: CompendiumDirectory
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   */
   controls?: SceneControls
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   */
   hotbar?: Hotbar
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   */
   items?: ItemDirectory
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   */
   journal?: JournalDirectory
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   */
   macros?: MacroDirectory
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   */
   menu?: MainMenu
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   */
   nav?: SceneNavigation
+
+  /**
+   * Initialized in
+   * - `/license`
+   * - `/game`: after "setup", before "ready" hook
+   * - `/setup`
+   * - `/players`
+   * - `/join`
+   */
   notifications?: Notifications
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   */
   pause?: Pause
-  players?: PlayerList
+
+  /**
+   * Initialized in
+   * - `/players`: as `UserManagement`
+   */
+  players?: UserManagement
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   */
   playlists?: PlaylistDirectory
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   */
   scenes?: SceneDirectory
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   */
   settings?: Settings
+
+  /**
+   * Initialized in
+   * - `/setup`
+   */
+  setup?: SetupConfigurationForm
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   */
   sidebar?: Sidebar
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   */
   tables?: RollTableDirectory
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   */
   webrtc?: CameraViews
 
   /**
@@ -88,6 +209,7 @@ declare class Game {
 
   /**
    * The user role permissions setting
+   * @remarks This is not yet initialized in the "setup" hook, but is initialized in the "ready" hook.
    * @defaultValue `null`
    */
   permissions?: Game.Permissions
@@ -511,30 +633,96 @@ declare class Game {
 
   /* -------------------------------------------- */
 
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   * - `/players`
+   */
   users?: Users
 
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
   messages?: Messages
 
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
   scenes?: Scenes
 
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
   actors?: Actors
 
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
   items?: Items
 
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
   journal?: Journal
 
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
   macros?: Macros
 
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
   playlists?: Playlists
 
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
   combats?: CombatEncounters
 
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
   tables?: RollTables
 
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
   folders?: Folders
 
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
   packs?: Collection<Compendium>
 
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
   webrtc?: AVMaster
 }
 

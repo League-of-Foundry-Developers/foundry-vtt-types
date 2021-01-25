@@ -17,6 +17,8 @@ import './types/applications/forms/item'
 import './types/applications/forms/permission'
 import './types/applications/forms/rollTableConfig'
 import './types/applications/forms/scene'
+import './types/applications/forms/setupConfigurationForm'
+import './types/applications/forms/userManagement'
 
 import './types/applications/hud/chatBubbles'
 import './types/applications/hud/container'
