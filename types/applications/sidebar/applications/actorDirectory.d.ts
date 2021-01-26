@@ -4,5 +4,5 @@
  */
 declare class ActorDirectory extends SidebarDirectory {
   // @TODO Declare Classes
-  [key: string]: any
+  [key: string]: any;
 }

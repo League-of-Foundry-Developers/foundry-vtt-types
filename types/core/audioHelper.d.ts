@@ -7,13 +7,13 @@
  * and example usage of the Howl API.
  */
 declare class AudioHelper {
-  constructor ()
+  constructor();
 
   /**
    * The set of Howl instances which have been created for different audio paths
    * @defaultValue `{}`
    */
-  sounds: Record<string, AudioHelper.Sound>
+  sounds: Record<string, AudioHelper.Sound>;
 
   /**
    * A user gesture must be registered before audio can be played.
@@ -21,20 +21,20 @@ declare class AudioHelper {
    * Once a gesture is observed, we begin playing all elements of this Array.
    * @defaultValue `[]`
    */
-  pending: Howl[]
+  pending: Howl[];
 
   /**
    * A flag for whether video playback is currently locked by awaiting a user gesture
    * @defaultValue `false`
    */
-  locked: boolean
+  locked: boolean;
 
   /**
    * Audio Context singleton used for analysing audio levels of each stream
    * Only created if necessary to listen to audio streams.
    * @defaultValue `null`
    */
-  _audioContext: AudioContext | null
+  _audioContext: AudioContext | null;
 
   /**
    * Map of all streams that we listen to for determining the decibel levels.
@@ -42,7 +42,7 @@ declare class AudioHelper {
    *
    * @internal
    */
-  _analyserStreams: Record<string, AudioHelper.AnalyserStream>
+  _analyserStreams: Record<string, AudioHelper.AnalyserStream>;
 
   /**
    * Interval ID as returned by setInterval for analysing the volume of streams
@@ -50,7 +50,7 @@ declare class AudioHelper {
    * @internal
    * @defaultValue `0`
    */
-  _analyserInterval: number
+  _analyserInterval: number;
 
   /**
    * Fast Fourrier Transform Array.
@@ -60,7 +60,7 @@ declare class AudioHelper {
    * @internal
    * @defaultValue `null`
    */
-  _fftArray: Float32Array[] | null
+  _fftArray: Float32Array[] | null;
 
   /**
    * The Native interval for the AudioHelper to analyse audio levels from streams
@@ -68,14 +68,14 @@ declare class AudioHelper {
    * Defaults to 50ms.
    * @defaultValue `50`
    */
-  levelAnalyserNativeInterval: number
+  levelAnalyserNativeInterval: number;
 
   /* -------------------------------------------- */
 
   /**
    * Register client-level settings for global volume overrides
    */
-  static registerSettings (): void
+  static registerSettings(): void;
 
   /* -------------------------------------------- */
 
@@ -87,14 +87,21 @@ declare class AudioHelper {
    * @param volume   - (default: `0.0`)
    * @param loop     - (default: `false`)
    */
-  create ({ src, preload, autoplay, html5, volume, loop }?: {
-    src: string
-    preload?: boolean
-    autoplay?: boolean
-    html5?: boolean
-    volume?: number
-    loop?: boolean
-  }): Howl
+  create({
+    src,
+    preload,
+    autoplay,
+    html5,
+    volume,
+    loop
+  }?: {
+    src: string;
+    preload?: boolean;
+    autoplay?: boolean;
+    html5?: boolean;
+    volume?: number;
+    loop?: boolean;
+  }): Howl;
 
   /* -------------------------------------------- */
 
@@ -103,14 +110,14 @@ declare class AudioHelper {
    * @param src - A requested audio source path
    * @returns Does the filename end with a valid audio extension?
    */
-  static hasAudioExtension (src: string): boolean
+  static hasAudioExtension(src: string): boolean;
 
   /* -------------------------------------------- */
 
   /**
    * Play a single audio effect by it's source path and Howl ID
    */
-  play (src: string, id: number): void
+  play(src: string, id: number): void;
 
   /* -------------------------------------------- */
 
@@ -118,7 +125,7 @@ declare class AudioHelper {
    * Register an event listener to await the first mousemove gesture and begin
    * playback once observed
    */
-  awaitFirstGesture (): void
+  awaitFirstGesture(): void;
 
   /* -------------------------------------------- */
 
@@ -126,11 +133,11 @@ declare class AudioHelper {
    * Handle the first observed user gesture
    * @param event - The mouse-move event which enables playback
    */
-  _onFirstGesture (event: Event): void
+  _onFirstGesture(event: Event): void;
 
   /* -------------------------------------------- */
 
-  preload (data: any): void
+  preload(data: any): void;
 
   /* -------------------------------------------- */
   /*  Socket Listeners and Handlers               */
@@ -140,7 +147,7 @@ declare class AudioHelper {
    * Open socket listeners which transact ChatMessage data
    * @internal
    */
-  static socketListeners (socket: any): void
+  static socketListeners(socket: any): void;
 
   /* -------------------------------------------- */
 
@@ -167,34 +174,34 @@ declare class AudioHelper {
    * AudioHelper.play({src: "sounds/lock.wav", volume: 0.8, autoplay: true, loop: false}, true);
    * ```
    */
-  static play (
+  static play(
     data: {
       /**
        * The audio source file path, either a public URL or a local path relative to the public directory
        * @defaultValue `null`
        */
-      src: string
+      src: string;
 
       /**
        * The volume level at which to play the audio, between 0 and 1
        * @defaultValue `1.0`
        */
-      volume: number
+      volume: number;
 
       /**
        * Begin playback of the audio effect immediately once it is loaded.
        * @defaultValue `true`
        */
-      autoplay: boolean
+      autoplay: boolean;
 
       /**
        * Push the audio sound effect to other connected clients?
        * @defaultValue `false`
        */
-      loop: boolean
+      loop: boolean;
     },
     push: boolean
-  ): Howl
+  ): Howl;
 
   /* -------------------------------------------- */
 
@@ -202,7 +209,7 @@ declare class AudioHelper {
    * Create a Howl object and load it to be ready for later playback
    * @param data - The audio data to preload
    */
-  static preload (data: object): void
+  static preload(data: object): void;
 
   /* -------------------------------------------- */
 
@@ -213,7 +220,7 @@ declare class AudioHelper {
    * @param order - the exponent of the curve
    *                (default: `1.5`)
    */
-  static inputToVolume (control: number | string, order?: number): number
+  static inputToVolume(control: number | string, order?: number): number;
 
   /* -------------------------------------------- */
 
@@ -224,7 +231,7 @@ declare class AudioHelper {
    * @param order - the exponent of the curve
    *                (default: `1.5`)
    */
-  static volumeToInput (volume: number, order?: number): number
+  static volumeToInput(volume: number, order?: number): number;
 
   /* -------------------------------------------- */
   /*  Audio Stream Analysis                       */
@@ -237,7 +244,7 @@ declare class AudioHelper {
    *
    * @returns A singleton AudioContext or null if one is not available
    */
-  getAudioContext (): AudioContext | null
+  getAudioContext(): AudioContext | null;
 
   /* -------------------------------------------- */
 
@@ -257,13 +264,13 @@ declare class AudioHelper {
    *                    (default: `0.1`)
    * @returns Returns whether or not listening to the stream was successful
    */
-  startLevelReports (
+  startLevelReports(
     id: string,
     stream: MediaStream,
     callback: (maxDecibel: number, fftArray: Float32Array) => void,
     interval?: number,
     smoothing?: number
-  ): boolean
+  ): boolean;
 
   /* -------------------------------------------- */
 
@@ -273,7 +280,7 @@ declare class AudioHelper {
    * If we aren't listening to any more streams, cancel the global analyser timer.
    * @param id - The id of the reports that passed to startLevelReports.
    */
-  stopLevelReports (id: string): void
+  stopLevelReports(id: string): void;
 
   /* -------------------------------------------- */
 
@@ -287,7 +294,7 @@ declare class AudioHelper {
    * phenomenon if too many are created.
    * @internal
    */
-  _ensureAnalyserTimer (): void
+  _ensureAnalyserTimer(): void;
 
   /* -------------------------------------------- */
 
@@ -296,7 +303,7 @@ declare class AudioHelper {
    * If the timer is running and has become unnecessary, stops it.
    * @internal
    */
-  _cancelAnalyserTimer (): void
+  _cancelAnalyserTimer(): void;
 
   /* -------------------------------------------- */
 
@@ -306,26 +313,26 @@ declare class AudioHelper {
    * The event's detail is in the form of `{userId: decibelLevel}`
    * @internal
    */
-  _emitVolumes (): void
+  _emitVolumes(): void;
 }
 
 declare namespace AudioHelper {
   interface AnalyserStream {
-    stream: MediaStream
-    analyser: AnalyserNode
-    interval: number
-    callback: (maxDecibel: number) => void
+    stream: MediaStream;
+    analyser: AnalyserNode;
+    interval: number;
+    callback: (maxDecibel: number) => void;
 
     /**
      * Used as a counter of 50ms increments in case the interval is more than 50
      * @defaultValue `0`
      */
-    _lastEmit: number
+    _lastEmit: number;
   }
 
   interface Sound {
-    howl: Howl
-    loaded: boolean
-    ids: []
+    howl: Howl;
+    loaded: boolean;
+    ids: [];
   }
 }

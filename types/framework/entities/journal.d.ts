@@ -3,7 +3,7 @@
  */
 declare class Journal extends EntityCollection<JournalEntry> {
   /** @override */
-  get entity (): string
+  get entity(): string;
 
   /* -------------------------------------------- */
   /*  Socket Listeners and Handlers               */
@@ -12,7 +12,7 @@ declare class Journal extends EntityCollection<JournalEntry> {
   /**
    * Open Socket listeners which transact JournalEntry data
    */
-  static socketListeners (socket: SocketIOClient.Socket): void
+  static socketListeners(socket: SocketIOClient.Socket): void;
 
   /**
    * Handle a received request to show a JournalEntry to the current client
@@ -20,7 +20,7 @@ declare class Journal extends EntityCollection<JournalEntry> {
    * @param mode - The JournalEntry mode to display
    * @param force - Display the entry to all players regardless of normal permissions
    */
-  static _showEntry (entryId: string, mode?: 'text' | 'image', force?: boolean): void
+  static _showEntry(entryId: string, mode?: 'text' | 'image', force?: boolean): void;
 }
 
 /**
@@ -28,26 +28,26 @@ declare class Journal extends EntityCollection<JournalEntry> {
  */
 declare class JournalEntry<D extends JournalEntry.Data = JournalEntry.Data> extends Entity<D> {
   /** @override */
-  static get config (): Entity.Config
+  static get config(): Entity.Config;
 
   /**
    * A boolean indicator for whether or not the JournalEntry is visible to the current user in the directory sidebar
    */
-  get visible (): boolean
+  get visible(): boolean;
 
   /**
    * Return a reference to the Note instance for this JournalEntry in the current Scene, if any
    */
-  get sceneNote (): Note;
+  get sceneNote(): Note;
 
   /** @override */
-  _onCreate (data: D, options: Entity.CreateOptions, userId: string): void
+  _onCreate(data: D, options: Entity.CreateOptions, userId: string): void;
 
   /** @override */
-  _onUpdate (data: Optional<D>, options: Entity.UpdateOptions, userId: string): void
+  _onUpdate(data: Optional<D>, options: Entity.UpdateOptions, userId: string): void;
 
   /** @override */
-  _onDelete (options: Entity.DeleteOptions, userId: string): void
+  _onDelete(options: Entity.DeleteOptions, userId: string): void;
 
   /* -------------------------------------------- */
   /*  Methods
@@ -61,23 +61,20 @@ declare class JournalEntry<D extends JournalEntry.Data = JournalEntry.Data> exte
    * @param mode -   Which JournalEntry mode to display? Default is text.
    * @param force -  Display the entry to all players regardless of normal permissions
    */
-  show (mode?: string, force?: boolean): Promise<void>
+  show(mode?: string, force?: boolean): Promise<void>;
 
   /**
    * If the JournalEntry has a pinned note on the canvas, this method will animate to that note
    * The note will also be highlighted as if hovered upon by the mouse
    */
-  panToNote ({ scale, duration }: {
-    scale?: number
-    duration?: number
-  }): void
+  panToNote({ scale, duration }: { scale?: number; duration?: number }): void;
 }
 
 declare namespace JournalEntry {
   interface Data extends Entity.Data {
-    content: string
-    folder: string
-    img: string
-    sort: number
+    content: string;
+    folder: string;
+    img: string;
+    sort: number;
   }
 }

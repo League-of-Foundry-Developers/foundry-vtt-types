@@ -3,5 +3,5 @@
  */
 declare class RollTableDirectory extends SidebarDirectory {
   // @TODO Declare Classes
-  [key: string]: any
+  [key: string]: any;
 }

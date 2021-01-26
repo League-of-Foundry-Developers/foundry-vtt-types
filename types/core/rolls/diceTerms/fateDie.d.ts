@@ -4,17 +4,17 @@
  * Mathematically behaves like 1d3-2
  */
 declare class FateDie extends DiceTerm {
-  static DENOMINATION: 'f'
+  static DENOMINATION: 'f';
 
-  constructor (termData?: DiceTerm.TermData)
-
-  /**
-   * @override
-   */
-  static getResultLabel (result: string): string
+  constructor(termData?: DiceTerm.TermData);
 
   /**
    * @override
    */
-  roll (options?: { maximize: boolean, minimize: boolean }): DiceTerm.Result
+  static getResultLabel(result: string): string;
+
+  /**
+   * @override
+   */
+  roll(options?: { maximize: boolean; minimize: boolean }): DiceTerm.Result;
 }

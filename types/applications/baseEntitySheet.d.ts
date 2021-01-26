@@ -5,51 +5,47 @@
  * @typeParam O - the type of the Entity which should be managed by this form sheet
  * @typeParam F - the type of the of validated form data with which to update the Entity
  */
-declare class BaseEntitySheet <
-  T = object,
-  O extends Entity = Entity,
-  F = object
-> extends FormApplication<T, O> {
+declare class BaseEntitySheet<T = object, O extends Entity = Entity, F = object> extends FormApplication<T, O> {
   /**
    * @param object  - An Entity which should be managed by this form sheet.
    * @param options - Optional configuration parameters for how the form behaves.
    */
-  constructor (object: O, options: BaseEntitySheet.Options)
+  constructor(object: O, options: BaseEntitySheet.Options);
 
   /* -------------------------------------------- */
 
   /**
    * @override
    */
-  static get defaultOptions (): BaseEntitySheet.Options
+  static get defaultOptions(): BaseEntitySheet.Options;
 
   /* -------------------------------------------- */
 
   /**
    * A convenience accessor for the object property, which in the case of a BaseEntitySheet is an Entity instance.
    */
-  get entity (): O
+  get entity(): O;
 
   /* -------------------------------------------- */
 
   /**
    * @override
    */
-  get isEditable (): boolean
+  get isEditable(): boolean;
 
   /* -------------------------------------------- */
 
   /**
    * @override
    */
-  get title (): string
+  get title(): string;
 
   /* -------------------------------------------- */
 
   /**
    * @override
    */
-  render (force?: boolean, options?: Application.RenderOptions): this
+  render(force?: boolean, options?: Application.RenderOptions): this;
 
   /* -------------------------------------------- */
 
@@ -58,14 +54,14 @@ declare class BaseEntitySheet <
    * @param options - (unused)
    * @override
    */
-  getData (options?: any): BaseEntitySheet.Data<O>
+  getData(options?: any): BaseEntitySheet.Data<O>;
 
   /* -------------------------------------------- */
 
   /**
    * @override
    */
-  _getHeaderButtons (): Application.HeaderButton[]
+  _getHeaderButtons(): Application.HeaderButton[];
 
   /* -------------------------------------------- */
 
@@ -73,7 +69,7 @@ declare class BaseEntitySheet <
    * @param event - (unused)
    * @override
    */
-  _updateObject (event: any, formData: object): Promise<O>
+  _updateObject(event: any, formData: object): Promise<O>;
 }
 
 declare namespace BaseEntitySheet {
@@ -82,26 +78,26 @@ declare namespace BaseEntitySheet {
    * @typeParam O - the type of the Entity which should be managed by this form sheet
    */
   interface Data<O extends Entity = Entity> extends FormApplication.Data<O> {
-    cssClass: string
-    editable: boolean
-    entity: O extends Entity<infer D> ? D : never
-    limited: boolean
+    cssClass: string;
+    editable: boolean;
+    entity: O extends Entity<infer D> ? D : never;
+    limited: boolean;
 
     /**
      * @remarks This property is not populated and only exists to make the typescript compile.
      */
-    object: O
+    object: O;
 
-    options: any
-    owner: boolean
-    title: string
+    options: any;
+    owner: boolean;
+    title: string;
   }
 
   interface Options extends FormApplication.Options {
     /**
      * @defaultValue `['sheet']`
      */
-    classes: string[]
+    classes: string[];
 
     /**
      * @defaultValue
@@ -109,11 +105,11 @@ declare namespace BaseEntitySheet {
      * `templates/sheets/${this.name.toLowerCase()}.html`
      * ```
      */
-    template: string
+    template: string;
 
     /**
      * @defaultValue {@link Const.EntityPermissions.Limited}
      */
-    viewPermission: Const.EntityPermissions
+    viewPermission: Const.EntityPermissions;
   }
 }

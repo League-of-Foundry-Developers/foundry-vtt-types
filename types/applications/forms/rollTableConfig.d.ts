@@ -10,16 +10,16 @@ declare class RollTableConfig extends BaseEntitySheet {
   /**
    * Return a dynamic application title for the configuration sheet
    */
-  get title (): string
+  get title(): string;
 
   /**
    * Activate event listeners for the RollTable Configuration Sheet
    */
-  activateListeners (html: JQuery): void
+  activateListeners(html: JQuery): void;
 
   /**
    * @param options - (unused)
    * @override
    */
-  getData (options?: any): BaseEntitySheet.Data<Entity>
+  getData(options?: any): BaseEntitySheet.Data<Entity>;
 }

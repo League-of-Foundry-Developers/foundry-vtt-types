@@ -16,31 +16,31 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * @param options - Additional options which modify the rendering of the sheet.
    *                  (default: `{}`)
    */
-  constructor (object?: O, options?: Partial<FormApplication.Options>)
+  constructor(object?: O, options?: Partial<FormApplication.Options>);
 
-  options: FormApplication.Options
+  options: FormApplication.Options;
 
   /**
    * The object target which we are using this form to modify
    */
-  object: O
+  object: O;
 
   /**
    * A convenience reference to the form HTLMElement
    */
-  form: HTMLElement
+  form: HTMLElement;
 
   /**
    * Keep track of any FilePicker instances which are associated with this form
    * The values of this Array are inner-objects with references to the FilePicker instances and other metadata
    */
-  filepickers: FilePicker[]
+  filepickers: FilePicker[];
 
   /**
    * Keep track of any mce editors which may be active as part of this form
    * The values of this Array are inner-objects with references to the MCE editor and other metadata
    */
-  editors: Array<Record<string, FormApplication.Editor>>
+  editors: Array<Record<string, FormApplication.Editor>>;
 
   /* -------------------------------------------- */
 
@@ -50,14 +50,14 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * @override
    * @see {@link Application.defaultOptions}
    */
-  static get defaultOptions (): FormApplication.Options
+  static get defaultOptions(): FormApplication.Options;
 
   /* -------------------------------------------- */
 
   /**
    * Is the Form Application currently editable?
    */
-  get isEditable (): boolean
+  get isEditable(): boolean;
 
   /* -------------------------------------------- */
   /*  Rendering                                   */
@@ -67,14 +67,14 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * @param options - (unused) (default: `{}`)
    * @override
    */
-  getData (options?: any): FormApplication.Data<O>
+  getData(options?: any): FormApplication.Data<O>;
 
   /* -------------------------------------------- */
 
   /**
    * @override
    */
-  _render (force?: boolean, options?: Application.RenderOptions): Promise<void>
+  _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
 
   /* -------------------------------------------- */
 
@@ -82,7 +82,7 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * @param options - (unused)
    * @override
    */
-  _renderInner (data: T, options?: any): Promise<JQuery>
+  _renderInner(data: T, options?: any): Promise<JQuery>;
 
   /* -------------------------------------------- */
   /*  Event Listeners and Handlers                */
@@ -95,7 +95,7 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * @param html - The rendered template ready to have listeners attached
    * @override
    */
-  activateListeners (html: JQuery): void
+  activateListeners(html: JQuery): void;
 
   /* -------------------------------------------- */
 
@@ -103,7 +103,7 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * If the form is not editable, disable its input fields
    * @internal
    */
-  _disableFields (form: HTMLElement): void
+  _disableFields(form: HTMLElement): void;
 
   /* -------------------------------------------- */
 
@@ -115,7 +115,7 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * @internal
    */
   // TODO: update the types here once FormDataExtended is updated
-  _onSubmit (event: Event, options?: FormApplication.OnSubmitOptions): Promise<object>
+  _onSubmit(event: Event, options?: FormApplication.OnSubmitOptions): Promise<object>;
 
   /* -------------------------------------------- */
 
@@ -127,7 +127,7 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * @internal
    */
   // TODO: update the types here once FormDataExtended is updated
-  _getSubmitData<T> (updateData: Partial<T>): T
+  _getSubmitData<T>(updateData: Partial<T>): T;
 
   /* -------------------------------------------- */
 
@@ -137,7 +137,7 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * @param event - The initial change event
    * @internal
    */
-  _onChangeInput (event: Event): object
+  _onChangeInput(event: Event): object;
 
   /* -------------------------------------------- */
 
@@ -145,7 +145,7 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * Handle the change of a color picker input which enters it's chosen value into a related input field
    * @internal
    */
-  _onChangeColorPicker (event: Event): void
+  _onChangeColorPicker(event: Event): void;
 
   /* -------------------------------------------- */
 
@@ -154,7 +154,7 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * @param event - The initial change event
    * @internal
    */
-  _onChangeRange (event: Event): void
+  _onChangeRange(event: Event): void;
 
   /* -------------------------------------------- */
 
@@ -166,7 +166,7 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    *                   (unused)
    * @returns A Promise which resolves once the update operation has completed
    */
-  abstract _updateObject (event?: any, formData?: object): void
+  abstract _updateObject(event?: any, formData?: object): void;
 
   /* -------------------------------------------- */
   /*  TinyMCE Editor                              */
@@ -180,7 +180,7 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * @param initialContent - Initial text content for the editor area.
    *                         (default: `''`)
    */
-  activateEditor (name: string, options?: TextEditor.Options, initialContent?: string): void
+  activateEditor(name: string, options?: TextEditor.Options, initialContent?: string): void;
 
   /* -------------------------------------------- */
 
@@ -190,7 +190,7 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * @param remove - Remove the editor after saving its content
    *                 (default: `true`)
    */
-  saveEditor (name: string, { remove }?: { remove?: boolean }): Promise<void>
+  saveEditor(name: string, { remove }?: { remove?: boolean }): Promise<void>;
 
   /* -------------------------------------------- */
 
@@ -198,7 +198,7 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * Activate a TinyMCE editor instance present within the form
    * @internal
    */
-  _activateEditor (div: HTMLElement): void
+  _activateEditor(div: HTMLElement): void;
 
   /* -------------------------------------------- */
   /*  FilePicker UI
@@ -208,7 +208,7 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * Activate a FilePicker instance present within the form
    * @internal
    */
-  _activateFilePicker (button: HTMLElement): void
+  _activateFilePicker(button: HTMLElement): void;
 
   /* -------------------------------------------- */
   /*  Methods                                     */
@@ -218,7 +218,7 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * @param options - (default: `{}`)
    * @override
    */
-  close (options?: FormApplication.CloseOptions): Promise<void>
+  close(options?: FormApplication.CloseOptions): Promise<void>;
 
   /* -------------------------------------------- */
 
@@ -228,7 +228,7 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    *                  (default: `{}`)
    * @returns Return a self-reference for convenient method chaining
    */
-  submit (options?: FormApplication.OnSubmitOptions): Promise<this>
+  submit(options?: FormApplication.OnSubmitOptions): Promise<this>;
 
   /* -------------------------------------------- */
   /*  Deprecated Methods                          */
@@ -238,35 +238,35 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * @deprecated since 0.7.2
    * @see {@link FormDataExtended}
    */
-  static processForm (formElement: HTMLFormElement): FormDataExtended
+  static processForm(formElement: HTMLFormElement): FormDataExtended;
 
   /**
    * @deprecated since 0.7.3
    * @see {@link FormApplication#activateEditor}
    */
-  _createEditor (name: string, options?: TextEditor.Options, initialContent?: string): void
+  _createEditor(name: string, options?: TextEditor.Options, initialContent?: string): void;
 }
 
 declare namespace FormApplication {
   interface CloseOptions extends Application.CloseOptions {
-    submit?: boolean
+    submit?: boolean;
   }
 
   interface Data<O> {
-    object: O
-    options: FormApplication.Options
-    title: string
+    object: O;
+    options: FormApplication.Options;
+    title: string;
   }
 
   interface Editor {
-    activate: boolean
-    button: HTMLElement
-    changed: boolean
-    hasButton: boolean
-    initial: string
-    mce: Editor
-    options: TextEditor.Options
-    target: string
+    activate: boolean;
+    button: HTMLElement;
+    changed: boolean;
+    hasButton: boolean;
+    initial: string;
+    mce: Editor;
+    options: TextEditor.Options;
+    target: string;
   }
 
   interface OnSubmitOptions {
@@ -275,14 +275,14 @@ declare namespace FormApplication {
      * the form on submit
      * @defaultValue `false`
      */
-    preventClose?: boolean
+    preventClose?: boolean;
 
     /**
      * Prevent the application from re-rendering as a
      * result of form submission
      * @defaultValue `false`
      */
-    preventRender?: boolean
+    preventRender?: boolean;
 
     /**
      * Additional specific data keys/values which override or extend the contents
@@ -291,38 +291,38 @@ declare namespace FormApplication {
      * operations.
      * @defaultValue `null`
      */
-    updateData?: object
+    updateData?: object;
   }
 
   interface Options extends Application.Options {
     /**
      * @defaultValue `['form']`
      */
-    classes: string[]
+    classes: string[];
 
     /**
      * Whether to automatically close the application when it's contained
      * form is submitted. Default is true.
      */
-    closeOnSubmit: boolean
+    closeOnSubmit: boolean;
 
     /**
      * Whether to automatically submit the contained HTML form when an input
      * or select element is changed. Default is false.
      */
-    submitOnChange: boolean
+    submitOnChange: boolean;
 
     /**
      * Whether to automatically submit the contained HTML form when the
      * application window is manually closed. Default is false.
      */
-    submitOnClose: boolean
+    submitOnClose: boolean;
 
     /**
      * Whether the application form is editable - if true, it's fields will
      * be unlocked and the form can be submitted. If false, all form fields
      * will be disabled and the form cannot be submitted. Default is true.
      */
-    editable: boolean
+    editable: boolean;
   }
 }

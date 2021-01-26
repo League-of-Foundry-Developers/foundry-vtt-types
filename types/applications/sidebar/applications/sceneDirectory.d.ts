@@ -1,2 +1,1 @@
-declare class SceneDirectory {
-}
+declare class SceneDirectory {}

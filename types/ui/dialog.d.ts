@@ -40,7 +40,7 @@
  * ```
  */
 declare class Dialog extends Application {
-  constructor (dialogData: Dialog.Data, options?: Application.Options);
+  constructor(dialogData: Dialog.Data, options?: Application.Options);
 
   /**
    * A helper function to reduce code duplication when creating confirmation dialog windows.
@@ -52,32 +52,29 @@ declare class Dialog extends Application {
    * @param no - Callback function upon no
    * @param defaultYes -
    */
-  static confirm (
-    kwargs?: Dialog.ConfirmKwArgs,
-    options?: Application.Options
-  ): Promise<void>;
+  static confirm(kwargs?: Dialog.ConfirmKwArgs, options?: Application.Options): Promise<void>;
 }
 
 declare namespace Dialog {
   interface Button {
-    callback?: (html: HTMLElement | JQuery) => void
-    icon?: string
-    label?: string
+    callback?: (html: HTMLElement | JQuery) => void;
+    icon?: string;
+    label?: string;
   }
 
   interface ConfirmKwArgs {
-    content: string
-    defaultYes?: boolean
-    no: Function
-    title: string
-    yes: Function
+    content: string;
+    defaultYes?: boolean;
+    no: Function;
+    title: string;
+    yes: Function;
   }
 
   interface Data {
-    buttons?: Record<string, Button>
-    close?: (html: HTMLElement | JQuery) => void
-    content?: string | HTMLElement
-    default?: string
-    title?: string
+    buttons?: Record<string, Button>;
+    close?: (html: HTMLElement | JQuery) => void;
+    content?: string | HTMLElement;
+    default?: string;
+    title?: string;
   }
 }

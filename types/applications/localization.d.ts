@@ -2,31 +2,31 @@
  * A helper class which assists with localization and string translation
  */
 declare class Localization {
-  constructor (language: string)
+  constructor(language: string);
 
   /**
    * The target language for localization
    * @defaultValue `'en'`
    */
-  lang: string
+  lang: string;
 
   /**
    * The package authorized to provide default language configurations
    * @defaultValue `'core'`
    */
-  defaultModule: string
+  defaultModule: string;
 
   /**
    * The translation dictionary for the target language
    * @defaultValue `{}`
    */
-  translations: Record<string, string>
+  translations: Record<string, string>;
 
   /**
    * Fallback translations if the target keys are not found
    * @defaultValue `{}`
    */
-  _fallback: Record<string, string>
+  _fallback: Record<string, string>;
 
   /* -------------------------------------------- */
 
@@ -35,7 +35,7 @@ declare class Localization {
    * Discover available language translations and apply the current language setting
    * @returns A Promise which resolves once languages are initialized
    */
-  initialize (): Promise<void>
+  initialize(): Promise<void>;
 
   /* -------------------------------------------- */
 
@@ -44,7 +44,7 @@ declare class Localization {
    * @param lang - A language string in CONFIG.supportedLanguages
    * @returns A Promise which resolves once the translations for the requested language are ready
    */
-  setLanguage (lang: string): Promise<void>
+  setLanguage(lang: string): Promise<void>;
 
   /* -------------------------------------------- */
 
@@ -52,7 +52,7 @@ declare class Localization {
    * Discover the available supported languages from the set of packages which are provided
    * @internal
    */
-  _discoverSupportedLanguages (): void
+  _discoverSupportedLanguages(): void;
 
   /* -------------------------------------------- */
 
@@ -62,7 +62,7 @@ declare class Localization {
    * @returns The retrieved translations object
    * @internal
    */
-  _getTranslations (lang: string): Promise<Record<string, string>>
+  _getTranslations(lang: string): Promise<Record<string, string>>;
 
   /* -------------------------------------------- */
 
@@ -71,7 +71,7 @@ declare class Localization {
    * @param src - The translation file path to load
    * @internal
    */
-  _loadTranslationFile (src: string): Promise<object>
+  _loadTranslationFile(src: string): Promise<object>;
 
   /* -------------------------------------------- */
   /*  Localization API                            */
@@ -83,7 +83,7 @@ declare class Localization {
    * @param fallback - Allow fallback translations to count?
    *                   (unused)
    */
-  has (stringId: string, fallback?: any): boolean
+  has(stringId: string, fallback?: any): boolean;
 
   /* -------------------------------------------- */
 
@@ -101,7 +101,7 @@ declare class Localization {
    * game.i18n.localize("MYMODULE.MYSTRING"); // Hello, this is my module!
    * ```
    */
-  localize (stringId: string): string
+  localize(stringId: string): string;
 
   /* -------------------------------------------- */
 
@@ -122,5 +122,5 @@ declare class Localization {
    * game.i18n.format("MYMODULE.GREETING", {name: "Andrew"}); // Hello Andrew, this is my module!
    * ```
    */
-  format (stringId: string, data: Record<string, any>): string
+  format(stringId: string, data: Record<string, any>): string;
 }

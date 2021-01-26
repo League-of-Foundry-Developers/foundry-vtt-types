@@ -1,2 +1,1 @@
-declare class Quadtree {
-}
+declare class Quadtree {}

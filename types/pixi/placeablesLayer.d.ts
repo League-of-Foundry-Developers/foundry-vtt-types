@@ -2,99 +2,98 @@
  * The base PlaceablesLayer subclass of CanvasLayer
  * @typeParam P - the type of the PlaceableObject in the layer
  */
-declare class PlaceablesLayer
-<P extends PlaceableObject = PlaceableObject> extends CanvasLayer {
+declare class PlaceablesLayer<P extends PlaceableObject = PlaceableObject> extends CanvasLayer {
   /**
    * Track the set of PlaceableObjects on this layer which are currently
    * controlled by their id
    * @defaultValue `{}`
    */
-  _controlled: Record<string, P>
+  _controlled: Record<string, P>;
 
   /**
    * Keep track of an object copied with CTRL+C which can be pasted later
    * @defaultValue `[]`
    */
-  _copy: P[]
+  _copy: P[];
 
   /**
    * Track the PlaceableObject on this layer which is currently being hovered
    * upon
    * @defaultValue `null`
    */
-  _hover: P | null
+  _hover: P | null;
 
   /**
    * Keep track of history so that CTRL+Z can undo changes
    */
-  history: Array<PlaceablesLayer.HistoryEvent<P>>
+  history: Array<PlaceablesLayer.HistoryEvent<P>>;
 
   /**
    * Placeable Layer Objects
    * @defaultValue `null`
    */
-  objects: PIXI.Container | null
+  objects: PIXI.Container | null;
 
   /**
    * PlaceableObject layer options
    * @defaultValue is set from {@link PlaceablesLayer.layerOptions}
    */
-  options: PlaceablesLayer.LayerOptions
+  options: PlaceablesLayer.LayerOptions;
 
   /**
    * Preview Object Placement
    * @defaultValue `null`
    */
-  preview: PIXI.Container
+  preview: PIXI.Container;
 
   /**
    * A Quadtree which partitions and organizes Walls into quadrants for
    * efficient target identification.
    */
-  quadtree: Quadtree | null
+  quadtree: Quadtree | null;
 
-  constructor ()
+  constructor();
 
   /**
    * Define the named Array within Scene.data containing the placeable objects
    * displayed in this layer
    */
-  static get dataArray (): string
+  static get dataArray(): string;
 
   /**
    * {@inheritDoc CanvasLayer.layerOptions}
    */
-  static get layerOptions (): PlaceablesLayer.LayerOptions
+  static get layerOptions(): PlaceablesLayer.LayerOptions;
 
   /**
    * Define a Container implementation used to render placeable objects
    * contained in this layer
    */
-  static get placeableClass (): (...args: any[]) => PlaceableObject
+  static get placeableClass(): (...args: any[]) => PlaceableObject;
 
   /**
    * An Array of placeable objects in this layer which have the _controlled
    * attribute
    */
-  get controlled (): P[]
+  get controlled(): P[];
 
   /**
    * Return the precision relative to the Scene grid with which Placeable
    * objects should be snapped
    */
-  get gridPrecision (): number
+  get gridPrecision(): number;
 
   /**
    * If objects on this PlaceableLayer have a HUD UI, provide a reference to its
    * instance
    */
-  get hud (): BasePlaceableHUD | null
+  get hud(): BasePlaceableHUD | null;
 
   /**
    * A convenience method for accessing the placeable object instances contained
    * in this layer
    */
-  get placeables (): P[]
+  get placeables(): P[];
 
   /**
    * Handle left mouse-click events which originate from the Canvas stage and
@@ -102,7 +101,7 @@ declare class PlaceablesLayer
    * @param event - (unused)
    * @see {@link Canvas#_onClickLeft}
    */
-  _onClickLeft (event?: any): void
+  _onClickLeft(event?: any): void;
 
   /**
    * Handle double left-click events which originate from the Canvas stage and
@@ -110,7 +109,7 @@ declare class PlaceablesLayer
    * @param event - (unused)
    * @see {@link Canvas#_onClickLeft2}
    */
-  _onClickLeft2 (event?: any): void
+  _onClickLeft2(event?: any): void;
 
   /**
    * Handle right mouse-click events which originate from the Canvas stage and
@@ -118,7 +117,7 @@ declare class PlaceablesLayer
    * @param event - (unused)
    * @see {@link Canvas#_onClickRight}
    */
-  _onClickRight (event?: any): void
+  _onClickRight(event?: any): void;
 
   /**
    * Handle a DELETE keypress while a placeable object is hovered
@@ -126,32 +125,32 @@ declare class PlaceablesLayer
    *                (unused)
    * @internal
    */
-  _onDeleteKey (event?: any): Promise<string[]>
+  _onDeleteKey(event?: any): Promise<string[]>;
 
   /**
    * Cancel a left-click drag workflow originating from the Canvas stage.
    * @param event - (unused)
    * @see {@link Canvas#_onDragLeftDrop}
    */
-  _onDragLeftCancel (event?: any): void
+  _onDragLeftCancel(event?: any): void;
 
   /**
    * Conclude a left-click drag workflow originating from the Canvas stage.
    * @see {@link Canvas#_onDragLeftDrop}
    */
-  _onDragLeftDrop (event: PIXI.InteractionEvent): void
+  _onDragLeftDrop(event: PIXI.InteractionEvent): void;
 
   /**
    * Continue a left-click drag workflow originating from the Canvas stage.
    * @see {@link Canvas#_onDragLeftMove}
    */
-  _onDragLeftMove (event?: PIXI.InteractionEvent): void
+  _onDragLeftMove(event?: PIXI.InteractionEvent): void;
 
   /**
    * Start a left-click drag workflow originating from the Canvas stage.
    * @see {@link Canvas#_onDragLeftStart}
    */
-  _onDragLeftStart (event: PIXI.InteractionEvent): void
+  _onDragLeftStart(event: PIXI.InteractionEvent): void;
 
   /**
    * Handle mouse-wheel events at the PlaceableObjects layer level to rotate
@@ -159,14 +158,12 @@ declare class PlaceablesLayer
    * This handler will rotate all controlled objects by some incremental angle.
    * @param event - The mousewheel event which originated the request
    */
-  _onMouseWheel (
-    event: MouseWheelEvent
-  ): Promise<Array<Partial<P>> | Partial<P>> | null
+  _onMouseWheel(event: MouseWheelEvent): Promise<Array<Partial<P>> | Partial<P>> | null;
 
   /**
    * @override
    */
-  activate (): this
+  activate(): this;
 
   /**
    * Acquire control over all PlaceableObject instances which are visible and
@@ -175,14 +172,14 @@ declare class PlaceablesLayer
    *                  (default: `{}`)
    * @returns An array of objects that were controlled
    */
-  controlAll (options?: PlaceableObject.ControlOptions): P[]
+  controlAll(options?: PlaceableObject.ControlOptions): P[];
 
   /**
    * Copy currently controlled PlaceableObjects to a temporary Array, ready to
    * paste back into the scene later
    * @returns The Array of copied PlaceableObject instances
    */
-  copyObjects (): P[]
+  copyObjects(): P[];
 
   /**
    * Create multiple embedded entities in a parent Entity collection using an
@@ -194,20 +191,17 @@ declare class PlaceablesLayer
    * @returns A Promise which resolves to the returned socket response (if
    *          successful)
    */
-  createMany (
-    data: Array<PlaceablesLayer.DataType<P>>,
-    options?: Entity.CreateOptions
-  ): Promise<P[]>
+  createMany(data: Array<PlaceablesLayer.DataType<P>>, options?: Entity.CreateOptions): Promise<P[]>;
 
   /**
    * Draw a single placeable object
    */
-  createObject (data: PlaceablesLayer.DataType<P>): P
+  createObject(data: PlaceablesLayer.DataType<P>): P;
 
   /**
    * @override
    */
-  deactivate (): this
+  deactivate(): this;
 
   /**
    * A helper method to prompt for deletion of all PlaceableObject instances
@@ -215,7 +209,7 @@ declare class PlaceablesLayer
    * Renders a confirmation dialogue to confirm with the requester that all
    * objects will be deleted
    */
-  deleteAll (): Promise<void>
+  deleteAll(): Promise<void>;
 
   /**
    * Simultaneously delete multiple PlaceableObjects.
@@ -228,22 +222,19 @@ declare class PlaceablesLayer
    * @returns A Promise which resolves to the returned socket response (if
    *          successful)
    */
-  deleteMany (
-    ids: string[],
-    options?: Entity.DeleteOptions
-  ): Promise<Array<Partial<P>> | Partial<P>>
+  deleteMany(ids: string[], options?: Entity.DeleteOptions): Promise<Array<Partial<P>> | Partial<P>>;
 
   /**
    * @override
    */
-  draw (): Promise<P[]>
+  draw(): Promise<P[]>;
 
   /**
    * Get a PlaceableObject contained in this layer by it's ID
    * @param objectId - The ID of the contained object to retrieve
    * @returns The object instance, or undefined
    */
-  get (objectId: string): P
+  get(objectId: string): P;
 
   /**
    * Simultaneously move multiple PlaceableObjects via keyboard movement
@@ -264,12 +255,12 @@ declare class PlaceablesLayer
    *              (default: `null`)
    * @returns The resulting Promise from the Scene.update operation
    */
-  moveMany (kwargs?: {
-    dx: number
-    dy: number
-    ids: string[] | Set<string>
-    rotate: boolean
-  }): Promise<Array<Partial<P>> | Partial<P>>
+  moveMany(kwargs?: {
+    dx: number;
+    dy: number;
+    ids: string[] | Set<string>;
+    rotate: boolean;
+  }): Promise<Array<Partial<P>> | Partial<P>>;
 
   /**
    * Paste currently copied PlaceableObjects back to the layer by creating new
@@ -280,10 +271,7 @@ declare class PlaceablesLayer
    * @param snap - Snap the resulting objects to the grid. Default is true.
    * @returns An Array of created PlaceableObject instances
    */
-  pasteObjects (
-    position: Point,
-    { hidden, snap }?: { hidden: boolean, snap: boolean }
-  ): Promise<P[]>
+  pasteObjects(position: Point, { hidden, snap }?: { hidden: boolean; snap: boolean }): Promise<P[]>;
 
   /**
    * Release all controlled PlaceableObject instance from this layer.
@@ -291,7 +279,7 @@ declare class PlaceablesLayer
    *                  (default: `{}`)
    * @returns The number of PlaceableObject instances which were released
    */
-  releaseAll (options?: PlaceableObject.ReleaseOptions): number
+  releaseAll(options?: PlaceableObject.ReleaseOptions): number;
 
   /**
    * Simultaneously rotate multiple PlaceableObjects using a provided angle or
@@ -312,12 +300,12 @@ declare class PlaceablesLayer
    *              (default: `null`)
    * @returns The resulting Promise from the Scene.update operation
    */
-  rotateMany (kwargs?: {
-    angle?: number
-    delta?: number
-    ids?: string[] | Set<string>
-    snap?: number
-  }): Promise<Array<Partial<P>> | Partial<P>>
+  rotateMany(kwargs?: {
+    angle?: number;
+    delta?: number;
+    ids?: string[] | Set<string>;
+    snap?: number;
+  }): Promise<Array<Partial<P>> | Partial<P>>;
 
   /**
    * Select all PlaceableObject instances which fall within a coordinate
@@ -335,54 +323,56 @@ declare class PlaceablesLayer
    * @returns A boolean for whether the controlled set was changed in the
    *          operation
    */
-  selectObjects (
-    { x, y, width, height, releaseOptions, controlOptions }?: {
-      /**
-       * Optional arguments provided to any called control() method
-       * @defaultValue `{ releaseOthers: false }`
-       */
-      controlOptions?: PlaceableObject.ControlOptions
+  selectObjects({
+    x,
+    y,
+    width,
+    height,
+    releaseOptions,
+    controlOptions
+  }?: {
+    /**
+     * Optional arguments provided to any called control() method
+     * @defaultValue `{ releaseOthers: false }`
+     */
+    controlOptions?: PlaceableObject.ControlOptions;
 
-      /** The height of the selection rectangle */
-      height: number
+    /** The height of the selection rectangle */
+    height: number;
 
-      /**
-       * Optional arguments provided to any called release() method
-       * @defaultValue `{}`
-       */
-      releaseOptions?: PlaceableObject.ReleaseOptions
+    /**
+     * Optional arguments provided to any called release() method
+     * @defaultValue `{}`
+     */
+    releaseOptions?: PlaceableObject.ReleaseOptions;
 
-      /** The width of the selection rectangle */
-      width: number
+    /** The width of the selection rectangle */
+    width: number;
 
-      /** The top-left x-coordinate of the selection rectangle */
-      x: number
+    /** The top-left x-coordinate of the selection rectangle */
+    x: number;
 
-      /** The top-left y-coordinate of the selection rectangle */
-      y: number
-    }
-  ): boolean
+    /** The top-left y-coordinate of the selection rectangle */
+    y: number;
+  }): boolean;
 
   /**
    * Record a new CRUD event in the history log so that it can be undone later
    * @param type - The event type (create, update, delete)
    * @param data - The object data
    */
-  storeHistory (
-    type: PlaceablesLayer.HistoryEventType,
-    data: Array<Partial<P>> | Partial<P>
-  ): void
+  storeHistory(type: PlaceablesLayer.HistoryEventType, data: Array<Partial<P>> | Partial<P>): void;
 
   /**
    * @override
    */
-  tearDown (): Promise<void>
+  tearDown(): Promise<void>;
 
   /**
    * Undo a change to the objects in this layer
    * This method is typically activated using CTRL+Z while the layer is active
    */
-  undoHistory (): Promise<Partial<P>>
+  undoHistory(): Promise<Partial<P>>;
 
   /**
    * Update all objects in this layer with a provided transformation.
@@ -396,11 +386,11 @@ declare class PlaceablesLayer
    *                  (default: `{}`)
    * @returns An array of updated data once the operation is complete
    */
-  updateAll (
+  updateAll(
     transformation: ((placeable: P) => P) | P,
     condition?: (placeable: P) => boolean,
     options?: Entity.UpdateOptions
-  ): Promise<Array<Partial<P>> | Partial<P>>
+  ): Promise<Array<Partial<P>> | Partial<P>>;
 
   /**
    * Update multiple embedded entities in a parent Entity collection using an
@@ -412,77 +402,73 @@ declare class PlaceablesLayer
    * @returns A Promise which resolves to the returned socket response (if
    *          successful)
    */
-  updateMany (
-    data: object[],
-    options?: Entity.UpdateOptions
-  ): Promise<Partial<P>>
+  updateMany(data: object[], options?: Entity.UpdateOptions): Promise<Partial<P>>;
 }
 
 declare namespace PlaceablesLayer {
   // TODO: maybe move this somewhere else
-  type DataType<P extends PlaceableObject> =
-    P extends PlaceableObject<infer D> ? D : never
+  type DataType<P extends PlaceableObject> = P extends PlaceableObject<infer D> ? D : never;
 
   interface HistoryEvent<P extends PlaceableObject> {
-    data: Partial<P>
-    type: HistoryEventType
+    data: Partial<P>;
+    type: HistoryEventType;
   }
 
-  type HistoryEventType = 'create' | 'update' | 'delete'
+  type HistoryEventType = 'create' | 'update' | 'delete';
 
   interface LayerOptions extends CanvasLayer.LayerOptions {
     /**
      * Can objects be deleted from this layer?
      * @defaultValue whether the user is GM
      */
-    canDelete: boolean
+    canDelete: boolean;
 
     /**
      * Does this layer support a mouse-drag workflow to create new objects?
      * @defaultValue whether the user is GM
      */
-    canDragCreate: boolean
+    canDragCreate: boolean;
 
     /**
      * Can placeable objects in this layer be controlled?
      * @defaultValue `false`
      */
-    controllableObjects: boolean
+    controllableObjects: boolean;
 
     /**
      * At what numeric grid precision do objects snap?
      * @defaultValue `2`
      */
-    gridPrecision: number
+    gridPrecision: number;
 
     /**
      * The class used to represent an object on this layer.
      * @defaultValue `null`
      */
-    objectClass: PlaceableObject | null
+    objectClass: PlaceableObject | null;
 
     /**
      * Does this layer use a quadtree to track object positions?
      * @defaultValue `false`
      */
-    quadtree: boolean
+    quadtree: boolean;
 
     /**
      * Can placeable objects in this layer be rotated?
      * @defaultValue `false`
      */
-    rotatableObjects: boolean
+    rotatableObjects: boolean;
 
     /**
      * The FormApplication class used to configure objects on this layer.
      * @defaultValue `null`
      */
-    sheetClass: FormApplication | null
+    sheetClass: FormApplication | null;
 
     /**
      * Do objects in this layer snap to the grid
      * @defaultValue `true`
      */
-    snapToGrid: boolean
+    snapToGrid: boolean;
   }
 }
