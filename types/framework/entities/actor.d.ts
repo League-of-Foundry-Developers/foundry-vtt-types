@@ -186,7 +186,7 @@ declare class Actor<I extends Item = Item, D extends Actor.Data = Actor.Data<any
    * @param effects - The raw array of active effect objects
    * @returns The prepared active effects collection
    */
-  _prepareActiveEffects (effects: ActiveEffect[]): Collection<ActiveEffect>
+  _prepareActiveEffects (effects: ActiveEffect.Data[]): Collection<ActiveEffect>
 
   /**
    * Apply any transformations to the Actor data which are caused by ActiveEffects.
@@ -279,7 +279,7 @@ declare class Actor<I extends Item = Item, D extends Actor.Data = Actor.Data<any
   _onUpdate (data: Optional<D>, options: Entity.UpdateOptions, userId: string, context?: any): void
 
   /** @override */
-  createEmbeddedEntity (embeddedName: string, data: Optional<ActiveEffect | Actor.OwnedItem<I>>, options?: any): Promise<ActiveEffect | Actor.OwnedItem<I>>
+  createEmbeddedEntity (embeddedName: string, data: Optional<ActiveEffect.Data | Actor.OwnedItem<I>>, options?: any): Promise<ActiveEffect.Data | Actor.OwnedItem<I>>
 
   /**
    * When Owned Items are created process each item and extract Active Effects to transfer to the Actor.
@@ -287,25 +287,25 @@ declare class Actor<I extends Item = Item, D extends Actor.Data = Actor.Data<any
    * @param temporary - Is this a temporary item creation?
    * @returns An array of effects to transfer to the Actor
    */
-  _createItemActiveEffects (created: ActiveEffect, { temporary }?: { temporary?: boolean}): ActiveEffect
+  _createItemActiveEffects (created: Actor.OwnedItem<I> | Array<Actor.OwnedItem<I>>, { temporary }?: { temporary?: boolean}): ActiveEffect.Data[] | ActiveEffect.Data
 
   /** @override */
-  _onCreateEmbeddedEntity (embeddedName: string, child: Actor.OwnedItem<I>|ActiveEffect, options: any, userId: string): void
+  _onCreateEmbeddedEntity (embeddedName: string, child: Actor.OwnedItem<I> | ActiveEffect.Data, options: any, userId: string): void
 
   /** @override */
-  deleteEmbeddedEntity (embeddedName: string, data: string, options?: any): Promise<Actor.OwnedItem<I>|ActiveEffect>
+  deleteEmbeddedEntity (embeddedName: string, data: string, options?: any): Promise<Actor.OwnedItem<I> | ActiveEffect.Data>
 
   /**
    * When Owned Items are created process each item and extract Active Effects to transfer to the Actor.
    * @param deleted - The array of deleted owned Item data
    */
-  _deleteItemActiveEffects (deleted: Actor.OwnedItem<I>|Array<Actor.OwnedItem<I>>): ActiveEffect|ActiveEffect[]
+  _deleteItemActiveEffects (deleted: Actor.OwnedItem<I>|Array<Actor.OwnedItem<I>>): ActiveEffect.Data | ActiveEffect.Data[]
 
   /** @override */
-  _onDeleteEmbeddedEntity (embeddedName: string, child: Actor.OwnedItem<I>|ActiveEffect, options: any, userId: string): void
+  _onDeleteEmbeddedEntity (embeddedName: string, child: Actor.OwnedItem<I> | ActiveEffect.Data, options: any, userId: string): void
 
   /** @override */
-  _onModifyEmbeddedEntity (embeddedName: string, changes: Array<Actor.OwnedItem<I>>|ActiveEffect[], options: any, userId: string, context?: any): void
+  _onModifyEmbeddedEntity (embeddedName: string, changes: Array<Actor.OwnedItem<I>> | ActiveEffect.Data[], options: any, userId: string, context?: any): void
 
   /* -------------------------------------------- */
   /*  Owned Item Management                       */
@@ -380,7 +380,7 @@ declare namespace Actor {
 
   interface Data<D = any, OI extends Item.Data = Item.Data> extends Entity.Data {
     data: D
-    effects: ActiveEffect[]
+    effects: ActiveEffect.Data[]
     img: string
     items: OI[]
     token: any // TODO: Token.data

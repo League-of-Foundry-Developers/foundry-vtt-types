@@ -43,6 +43,11 @@ declare class Items extends EntityCollection<Item> {
 }
 
 declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
+  /**
+   * ActiveEffects are prepared by the Item.prepareEmbeddedEntities() method
+   */
+  effects: Collection<ActiveEffect>
+
   /** @override */
   static get config (): Entity.Config
 
@@ -64,7 +69,7 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
    * @param effects - The raw array of active effect objects
    * @returns The prepared active effects collection
    */
-  _prepareActiveEffects (effects: ActiveEffect[]): Collection<ActiveEffect>
+  _prepareActiveEffects (effects: ActiveEffect.Data[]): Collection<ActiveEffect>
 
   /**
    * Prepare a data object which defines the data schema used by dice roll commands against this Item
@@ -148,5 +153,6 @@ declare namespace Item {
     data: D
     img: string
     type: string
+    effects: ActiveEffect.Data[]
   }
 }
