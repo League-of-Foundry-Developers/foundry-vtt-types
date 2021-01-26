@@ -108,6 +108,7 @@ import './types/framework/compendium';
 import './types/framework/entity';
 import './types/framework/entityCollection';
 
+import './types/framework/entities/activeEffect';
 import './types/framework/entities/actor';
 import './types/framework/entities/chatMessage';
 import './types/framework/entities/combat';
