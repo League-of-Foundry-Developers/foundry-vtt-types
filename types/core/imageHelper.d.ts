@@ -10,10 +10,10 @@ declare class ImageHelper {
    *                  (default: `{}`)
    * @returns The parsed and converted thumbnail data
    */
-  static createThumbnail (
+  static createThumbnail(
     src: string | PIXI.DisplayObject,
     options?: ImageHelper.CompositeOptions
-  ): Promise<ImageHelper.ThumbnailReturn>
+  ): Promise<ImageHelper.ThumbnailReturn>;
 
   /* -------------------------------------------- */
 
@@ -24,10 +24,7 @@ declare class ImageHelper {
    *                  (default: `{}`)
    * @returns The composite Texture object
    */
-  static compositeCanvasTexture (
-    object: PIXI.DisplayObject,
-    options?: ImageHelper.CompositeOptions
-  ): PIXI.Texture
+  static compositeCanvasTexture(object: PIXI.DisplayObject, options?: ImageHelper.CompositeOptions): PIXI.Texture;
 
   /* -------------------------------------------- */
 
@@ -36,7 +33,7 @@ declare class ImageHelper {
    * @param texture - The Texture object to extract
    * @returns A base64 png string of the texture
    */
-  static textureToImage (texture: PIXI.Texture): string
+  static textureToImage(texture: PIXI.Texture): string;
 }
 
 declare namespace ImageHelper {
@@ -49,31 +46,31 @@ declare namespace ImageHelper {
      * Center the texture in the rendered frame?
      * @defaultValue `true`
      */
-    center?: boolean
+    center?: boolean;
 
     /**
      * The desired height of the output texture
      * @defaultValue The height of the object passed to {@link ImageHelper.compositeCanvasTexture}
      */
-    height?: number
+    height?: number;
 
     /**
      * A horizontal translation to apply to the object
      * @defaultValue `0`
      */
-    tx?: number
+    tx?: number;
 
     /**
      * A vertical translation to apply to the object
      * @defaultValue `0`
      */
-    ty?: number
+    ty?: number;
 
     /**
      * The desired width of the output texture
      * @defaultValue The width of the object passed to {@link ImageHelper.compositeCanvasTexture}
      */
-    width?: number
+    width?: number;
   }
 
   /**
@@ -83,26 +80,26 @@ declare namespace ImageHelper {
     /**
      * The height of the {@link PIXI.Sprite}, created by {@link ImageHelper.createThumbnail}
      */
-    height: number
+    height: number;
 
     /**
      * The originally passed `string` URL or DisplayObject
      */
-    src: string | PIXI.DisplayObject
+    src: string | PIXI.DisplayObject;
 
     /**
      * The Texture, returned from {@link ImageHelper.compositeCanvasTexture}, with `destroy(true)` already called on it.
      */
-    texture: PIXI.Texture
+    texture: PIXI.Texture;
 
     /**
      * The base64 encoded image data, returned from {@link ImageHelper.textureToImage}
      */
-    thumb: string
+    thumb: string;
 
     /**
      * The width of the {@link PIXI.Sprite}, created by {@link ImageHelper.createThumbnail}
      */
-    width: number
+    width: number;
   }
 }

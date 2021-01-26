@@ -50,129 +50,129 @@
  * ```
  */
 declare class Compendium extends Application {
-  _searchTime: number
+  _searchTime: number;
 
   /**
    * The most recently retrieved index of the Compendium content
    * This index is not guaranteed to be current - call getIndex() to reload the index
    */
-  index: string[]
+  index: string[];
 
   /**
    * Track whether the compendium pack is locked for editing
    */
-  locked: boolean
+  locked: boolean;
 
   /**
    * The compendium metadata which defines the compendium content and location
    */
-  metadata: any
+  metadata: any;
 
   /**
    * Track whether the compendium pack is publicly visible
    */
-  public: boolean
+  public: boolean;
 
   // Internal flags
-  searchString: string | null
+  searchString: string | null;
 
-  constructor (metadata: object, options: object);
+  constructor(metadata: object, options: object);
 
   /**
    * The canonical Compendium name - comprised of the originating package and the pack name
    * @returns The canonical collection name
    */
-  get collection (): string;
+  get collection(): string;
 
   /**
    * The Entity type which is allowed to be stored in this collection
    */
-  get entity (): string;
+  get entity(): string;
 
   /**
    * Create a new Compendium pack using provided
    * @param metadata - The compendium metadata used to create the new pack
    */
-  static create (metadata: object): Promise<Compendium>;
+  static create(metadata: object): Promise<Compendium>;
 
   /**
    * Render the ContextMenu which applies to each compendium entry
    */
-  _contextMenu (html: JQuery | HTMLElement): void;
+  _contextMenu(html: JQuery | HTMLElement): void;
 
   /**
    * Allow data transfer events to be dragged over this as a drop zone
    */
-  _onDragOver (event: Event | JQuery.Event): boolean;
+  _onDragOver(event: Event | JQuery.Event): boolean;
 
   /**
    * Handle a new drag event from the compendium, create a placeholder token for dropping the item
    */
-  _onDragStart (event: Event | JQuery.Event): boolean;
+  _onDragStart(event: Event | JQuery.Event): boolean;
 
   /**
    * Handle data being dropped into a Compendium pack
    */
-  _onDrop (event: Event | JQuery.Event): Promise<boolean>;
+  _onDrop(event: Event | JQuery.Event): Promise<boolean>;
 
   /**
    * Handle opening a single compendium entry by invoking the configured entity class and its sheet
    */
-  _onEntry (entryId: string): Promise<void>;
+  _onEntry(entryId: string): Promise<void>;
 
   /**
    * Handle compendium filtering through search field
    * Toggle the visibility of indexed compendium entries by name (for now) match
    */
-  _onSearch (searchString: string): void;
+  _onSearch(searchString: string): void;
 
   /**
    * Cast entry data to an Entity class
    */
-  _toEntity (entryData?: object): Entity;
+  _toEntity(entryData?: object): Entity;
 
   /**
    * Register event listeners for Compendium directories
    */
-  activateListeners (html: JQuery | HTMLElement): void;
+  activateListeners(html: JQuery | HTMLElement): void;
 
   /**
    * Customize Compendium closing behavior to toggle the sidebar folder status icon
    */
-  close (): any;
+  close(): any;
 
   /**
    * Create a new Entity within this Compendium Pack using provided data
    * @param data - Data with which to create the entry
    * @returns A Promise which resolves to the created Entity once the operation is complete
    */
-  createEntity (data: any): Promise<Entity>;
+  createEntity(data: any): Promise<Entity>;
 
   /**
    * Delete a world Compendium pack
    * This is only allowed for world-level packs by a GM user
    */
-  delete (): Promise<Compendium>;
+  delete(): Promise<Compendium>;
 
   /**
    * Delete a single Compendium entry by its provided _id
    * @param id - The entry ID to delete
    * @returns A Promise which resolves to the deleted entry ID once the operation is complete
    */
-  deleteEntity (id: string): Promise<string>;
+  deleteEntity(id: string): Promise<string>;
 
   /**
    * Get the complete set of content for this compendium, loading all entries in full
    * Returns a Promise that resolves to an Array of entries
    */
-  getContent (): Promise<Entity[]>;
+  getContent(): Promise<Entity[]>;
 
   /**
    * Get a single Compendium entry as an Entity instance
    * @param entryId - The compendium entry ID to load and instantiate
    * @returns A Promise containing the returned Entity, if it exists, otherwise null
    */
-  getEntity (entryId: string): Promise<Entity>;
+  getEntity(entryId: string): Promise<Entity>;
 
   /**
    * Get a single Compendium entry as an Object
@@ -180,7 +180,7 @@ declare class Compendium extends Application {
    *
    * @returns A Promise containing the return entry data, or null
    */
-  getEntry (entryId: string): Promise<any>;
+  getEntry(entryId: string): Promise<any>;
 
   /**
    * Get the Compendium index
@@ -188,19 +188,19 @@ declare class Compendium extends Application {
    *
    * @returns A Promise containing an index of all compendium entries
    */
-  getIndex (): Promise<any[]>;
+  getIndex(): Promise<any[]>;
 
   /**
    * Import a new Entity into a Compendium pack
    * @param entity - The Entity instance you wish to import
    * @returns A Promise which resolves to the created Entity once the operation is complete
    */
-  importEntity (entity: Entity): Promise<Entity>;
+  importEntity(entity: Entity): Promise<Entity>;
 
   /**
    * Request that a Compendium pack be migrated to the latest System data template
    */
-  migrate (options: any): Promise<Compendium>;
+  migrate(options: any): Promise<Compendium>;
 
   /**
    * Update a single Compendium entry programmatically by providing new data with which to update
@@ -208,5 +208,5 @@ declare class Compendium extends Application {
    * @param options - Additional options which modify the update request
    * @returns A Promise which resolves with the updated Entity once the operation is complete
    */
-  updateEntity (data: any, options?: any): Promise<Entity>;
+  updateEntity(data: any, options?: any): Promise<Entity>;
 }

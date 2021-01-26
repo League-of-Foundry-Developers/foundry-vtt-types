@@ -1,2 +1,1 @@
-declare class ChatLog extends SidebarTab {
-}
+declare class ChatLog extends SidebarTab {}

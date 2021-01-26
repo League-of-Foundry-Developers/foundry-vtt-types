@@ -19,20 +19,20 @@
  * ```
  */
 declare class Canvas {
-  _dragDrop: DragDrop
+  _dragDrop: DragDrop;
 
   /**
    * Track the last automatic pan time to throttle
    * @defaultValue `0`
    * @internal
    */
-  _panTime: number
+  _panTime: number;
 
   /**
    * A Set of unique pending operation names to ensure operations are only
    * performed once
    */
-  _pendingOperationNames: Set<string>
+  _pendingOperationNames: Set<string>;
 
   /**
    * An object of data which is temporarily cached to be reloaded after the
@@ -40,54 +40,54 @@ declare class Canvas {
    * @internal
    */
   _reload: {
-    layer: string
-  }
+    layer: string;
+  };
 
   /**
    * Track the timestamp of the last stage zoom operation
    * @defaultValue `0`
    * @internal
    */
-  _zoomTime: number
+  _zoomTime: number;
 
-  app: PIXI.Application
+  app: PIXI.Application;
 
-  dimensions: null
+  dimensions: null;
 
-  hud: HeadsUpDisplay
+  hud: HeadsUpDisplay;
 
-  id: null
+  id: null;
 
   /**
    * The singleton interaction manager instance which handles mouse workflows on
    * the Canvas
    */
-  mouseInteractionManager: MouseInteractionManager | null
+  mouseInteractionManager: MouseInteractionManager | null;
 
   /**
    * An Array of pending canvas operations which should trigger on the next
    * re-paint
    */
-  pendingOperations: Array<[(args: any[]) => void, any, any[]]>
+  pendingOperations: Array<[(args: any[]) => void, any, any[]]>;
 
   /**
    * A flag for whether the game Canvas is ready to be used. False if the canvas
    * is not yet drawn, true otherwise.
    * @defaultValue `false`
    */
-  ready: boolean
+  ready: boolean;
 
-  scene: Scene | null
+  scene: Scene | null;
 
-  stage: PIXI.Container
+  stage: PIXI.Container;
 
-  constructor ()
+  constructor();
 
   /**
    * A mapping of named CanvasLayers.
    * This mapping is defined in the order that layers must be drawn.
    */
-  static get layers (): Record<string, CanvasLayer>
+  static get layers(): Record<string, CanvasLayer>;
 
   /**
    * Get the canvas active dimensions based on the size of the scene's map.
@@ -97,24 +97,24 @@ declare class Canvas {
    * contains whole grid spaces.
    * @param data - The scene dimensions data being established
    */
-  static getDimensions (data: Canvas.DimensionsData): Canvas.Dimensions
+  static getDimensions(data: Canvas.DimensionsData): Canvas.Dimensions;
 
   /**
    * Return a reference to the active Canvas Layer
    */
-  get activeLayer (): CanvasLayer
+  get activeLayer(): CanvasLayer;
 
   /**
    * An Array of all CanvasLayer instances which are active on the Canvas board
    */
-  get layers (): CanvasLayer[]
+  get layers(): CanvasLayer[];
 
   /**
    * Attach event listeners to the game canvas to handle click and interaction
    * events
    * @internal
    */
-  _addListeners (): void
+  _addListeners(): void;
 
   /**
    * Get the constrained zoom scale parameter which is allowed by the maxZoom
@@ -125,25 +125,25 @@ declare class Canvas {
    * @returns The allowed scale
    * @internal
    */
-  _constrainView (view: Canvas.View): Canvas.View
+  _constrainView(view: Canvas.View): Canvas.View;
 
   /**
    * Create the layers of the game Canvas.
    * @param stage - The primary canvas stage
    * @internal
    */
-  _createLayers (stage: PIXI.Container): void
+  _createLayers(stage: PIXI.Container): void;
 
   /**
    * Once the canvas is drawn, initialize control, visibility, and audio states
    */
-  _initialize (): Promise<void>
+  _initialize(): Promise<void>;
 
   /**
    * Initialize a CanvasLayer in the activation state
    * @internal
    */
-  _initializeCanvasLayer (): void
+  _initializeCanvasLayer(): void;
 
   /**
    * Initialize the starting view of the canvas stage
@@ -153,14 +153,14 @@ declare class Canvas {
    * scale
    * @internal
    */
-  _initializeCanvasPosition (): void
+  _initializeCanvasPosition(): void;
 
   /**
    * Initialize a token or set of tokens which should be controlled.
    * Restore controlled and targeted tokens from before the re-draw.
    * @internal
    */
-  _initializeTokenControl (): void
+  _initializeTokenControl(): void;
 
   /**
    * Handle left mouse-click events occurring on the Canvas stage or its active
@@ -168,13 +168,13 @@ declare class Canvas {
    * @see {@link MouseInteractionManager#_handleClickLeft}
    * @internal
    */
-  _onClickLeft (event: PIXI.InteractionEvent): void
+  _onClickLeft(event: PIXI.InteractionEvent): void;
 
   /**
    * Handle double left-click events occurring on the Canvas stage.
    * @see {@link MouseInteractionManager#_handleClickLeft2}
    */
-  _onClickLeft2 (event: PIXI.InteractionEvent): void
+  _onClickLeft2(event: PIXI.InteractionEvent): void;
 
   /**
    * Handle right mouse-click events occurring on the Canvas stage or it's
@@ -182,7 +182,7 @@ declare class Canvas {
    * @see {@link MouseInteractionManager#_handleClickRight}
    * @internal
    */
-  _onClickRight (event: PIXI.InteractionEvent): void
+  _onClickRight(event: PIXI.InteractionEvent): void;
 
   /**
    * Pan the canvas view when the cursor position gets close to the edge of the
@@ -190,14 +190,14 @@ declare class Canvas {
    * @param event - The originating mouse movement event
    * @internal
    */
-  _onDragCanvasPan (event: MouseEvent): Promise<void> | void
+  _onDragCanvasPan(event: MouseEvent): Promise<void> | void;
 
   /**
    * Handle the cancellation of a left-mouse drag workflow
    * @see {@link MouseInteractionManager#_handleDragCancel}
    * @internal
    */
-  _onDragLeftCancel (event: PointerEvent): void
+  _onDragLeftCancel(event: PointerEvent): void;
 
   /**
    * Handle the conclusion of a left-mouse drag workflow when the mouse button
@@ -205,7 +205,7 @@ declare class Canvas {
    * @see {@link MouseInteractionManager#_handleDragDrop}
    * @internal
    */
-  _onDragLeftDrop (event: PIXI.InteractionEvent): void
+  _onDragLeftDrop(event: PIXI.InteractionEvent): void;
 
   /**
    * Handle mouse movement events occurring on the Canvas stage or it's active
@@ -213,7 +213,7 @@ declare class Canvas {
    * @see {@link MouseInteractionManager#_handleDragMove}
    * @internal
    */
-  _onDragLeftMove (event: PIXI.InteractionEvent): void
+  _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
   /**
    * Handle the beginning of a left-mouse drag workflow on the Canvas stage or
@@ -221,7 +221,7 @@ declare class Canvas {
    * @see {@link MouseInteractionManager#_handleDragStart}
    * @internal
    */
-  _onDragLeftStart (event: PIXI.InteractionEvent): void
+  _onDragLeftStart(event: PIXI.InteractionEvent): void;
 
   /**
    * Handle the conclusion of a right-mouse drag workflow the Canvas stage.
@@ -229,7 +229,7 @@ declare class Canvas {
    * @param event - (unused)
    * @internal
    */
-  _onDragRightDrop (event?: any): void
+  _onDragRightDrop(event?: any): void;
 
   /**
    * Handle right-mouse drag events occuring on the Canvas stage or an active
@@ -237,26 +237,26 @@ declare class Canvas {
    * @see {@link MouseInteractionManager#_handleDragMove}
    * @internal
    */
-  _onDragRightMove (event: PIXI.InteractionEvent): void
+  _onDragRightMove(event: PIXI.InteractionEvent): void;
 
   /**
    * Determine selection coordinate rectangle during a mouse-drag workflow
    * @internal
    */
-  _onDragSelect (event: PIXI.InteractionEvent): void
+  _onDragSelect(event: PIXI.InteractionEvent): void;
 
   /**
    * Event handler for the drop portion of a drag-and-drop event.
    * @internal
    */
-  _onDrop (event: Event): boolean
+  _onDrop(event: Event): boolean;
 
   /**
    * Handle mousewheel events which adjust the scale of the canvas
    * @param event - The mousewheel event that zooms the canvas
    * @internal
    */
-  _onMouseWheel (event: WheelEvent): void
+  _onMouseWheel(event: WheelEvent): void;
 
   /**
    * Handle window resizing with the dimensions of the window viewport change
@@ -264,13 +264,13 @@ declare class Canvas {
    *                (default: `null`)
    * @internal
    */
-  _onResize (event: Event): void
+  _onResize(event: Event): void;
 
   /**
    * Update the blur strength depending on the scale of the canvas stage
    * @internal
    */
-  _updateBlur (scale: number): void
+  _updateBlur(scale: number): void;
 
   /**
    * Add a pending canvas operation that should fire once the socket handling
@@ -284,12 +284,7 @@ declare class Canvas {
    * @param scope - The scope to which the method should be bound when called
    * @param args - Arbitrary arguments to pass to the method when called
    */
-  addPendingOperation<S = any, A = any[]> (
-    name: string,
-    fn: (this: S, args: A) => void,
-    scope: S,
-    args: A
-  ): void
+  addPendingOperation<S = any, A = any[]>(name: string, fn: (this: S, args: A) => void, scope: S, args: A): void;
 
   /**
    * Animate panning the canvas to a certain destination coordinate and zoom
@@ -305,32 +300,30 @@ declare class Canvas {
    *                duration if set
    * @returns A Promise which resolves once the animation has been completed
    */
-  animatePan (
-    view: Canvas.View & { duration: number, speed: number}
-  ): Promise<void>
+  animatePan(view: Canvas.View & { duration: number; speed: number }): Promise<void>;
 
   /**
    * Draw the game canvas.
    * @returns A Promise which resolves once the Canvas is fully drawn
    */
-  draw (scene: Scene): Promise<this>
+  draw(scene: Scene): Promise<this>;
 
   /**
    * Get a reference to the a specific CanvasLayer by it's name
    * @param layerName - The name of the canvas layer to get
    */
-  getLayer (layerName: string): CanvasLayer
+  getLayer(layerName: string): CanvasLayer;
 
   /**
    * Given an embedded object name, get the canvas layer for that object
    * @internal
    */
-  getLayerByEmbeddedName (embeddedName: string): PlaceablesLayer | null
+  getLayerByEmbeddedName(embeddedName: string): PlaceablesLayer | null;
 
   /**
    * Initialize all lighting, vision, and sound sources for the Scene.
    */
-  initializeSources (): void
+  initializeSources(): void;
 
   /**
    * Pan the canvas to a certain \{x,y\} coordinate and a certain zoom level
@@ -339,78 +332,78 @@ declare class Canvas {
    * @param y - The y-coordinate of the pan destination
    * @param scale - The zoom level (max of CONFIG.Canvas.maxZoom) of the action
    */
-  pan (view: Partial<Canvas.View>): void
+  pan(view: Partial<Canvas.View>): void;
 
   /**
    * Recenter the canvas
    * Otherwise, pan the stage to put the top-left corner of the map in the
    * top-left corner of the window
    */
-  recenter (coordinates: Canvas.View): void
+  recenter(coordinates: Canvas.View): void;
 
   /**
    * When re-drawing the canvas, first tear down or discontinue some existing
    * processes
    */
-  tearDown (): Promise<void>
+  tearDown(): Promise<void>;
 
   /**
    * Fire all pending functions that are registered in the pending operations
    * queue and empty it.
    */
-  triggerPendingOperations (): void
+  triggerPendingOperations(): void;
 }
 
 declare namespace Canvas {
   interface Dimensions {
-    distance: number
+    distance: number;
 
-    height: number
+    height: number;
 
-    paddingX: number
+    paddingX: number;
 
-    paddingY: number
+    paddingY: number;
 
-    ratio: number
+    ratio: number;
 
-    rect: PIXI.Rectangle
+    rect: PIXI.Rectangle;
 
-    sceneHeight: number
+    sceneHeight: number;
 
-    sceneRect: PIXI.Rectangle
+    sceneRect: PIXI.Rectangle;
 
-    sceneWidth: number
+    sceneWidth: number;
 
-    shiftX: number
+    shiftX: number;
 
-    shiftY: number
+    shiftY: number;
 
-    size: number
+    size: number;
 
-    width: number
+    width: number;
   }
 
   interface DimensionsData {
-    grid: number
+    grid: number;
 
-    gridDistance: number
+    gridDistance: number;
 
-    height: number
+    height: number;
 
-    padding: number
+    padding: number;
 
-    shiftX: number
+    shiftX: number;
 
-    shiftY: number
+    shiftY: number;
 
-    width: number
+    width: number;
   }
 
   interface View {
-    scale: number
+    scale: number;
 
-    x: number
+    x: number;
 
-    y: number
+    y: number;
   }
 }

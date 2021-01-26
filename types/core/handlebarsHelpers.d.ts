@@ -10,21 +10,21 @@ declare class HandlebarsHelpers {
   /**
    * For checkboxes, if the value of the checkbox is true, add the "checked" property, otherwise add nothing.
    */
-  static checked (value: any): string
+  static checked(value: any): string;
 
   /* -------------------------------------------- */
 
   /**
    * Construct an editor element for rich text editing with TinyMCE
    */
-  static editor (options: HandlebarsHelpers.EditorOptions): Handlebars.SafeString
+  static editor(options: HandlebarsHelpers.EditorOptions): Handlebars.SafeString;
 
   /* -------------------------------------------- */
 
   /**
    * Render a file-picker button linked to an <input> field
    */
-  static filePicker (options: object): Handlebars.SafeString | string
+  static filePicker(options: object): Handlebars.SafeString | string;
 
   /* -------------------------------------------- */
 
@@ -37,14 +37,14 @@ declare class HandlebarsHelpers {
    * <label>{{localize "CHAT.InvalidCommand", command=foo}}</label> <!-- "foo is not a valid chat message command." -->
    * ```
    */
-  static localize (value: string, options: Record<string, any>): string
+  static localize(value: string, options: Record<string, any>): string;
 
   /* -------------------------------------------- */
 
   /**
    * A string formatting helper to display a number with a certain fixed number of decimals and an explicit sign.
    */
-  static numberFormat (value: any, options: HandlebarsHelpers.NumberFormatOptions): string
+  static numberFormat(value: any, options: HandlebarsHelpers.NumberFormatOptions): string;
 
   /* -------------------------------------------- */
 
@@ -74,19 +74,19 @@ declare class HandlebarsHelpers {
    * </div>
    * ```
    */
-  static radioBoxes (
+  static radioBoxes(
     name: string,
     choices: Record<string, string>,
     options: HandlebarsHelpers.RadioBoxesOptions
-  ): Handlebars.SafeString
+  ): Handlebars.SafeString;
 
   /* -------------------------------------------- */
 
   /**
-  * A helper to assign an <option> within a <select> block as selected based on its value
-  * Escape the string as handlebars would, then escape any regexp characters in it
-  */
-  static select (selected: string, { fn }: { fn: Handlebars.TemplateDelegate }): Handlebars.SafeString
+   * A helper to assign an <option> within a <select> block as selected based on its value
+   * Escape the string as handlebars would, then escape any regexp characters in it
+   */
+  static select(selected: string, { fn }: { fn: Handlebars.TemplateDelegate }): Handlebars.SafeString;
 
   /* -------------------------------------------- */
 
@@ -112,28 +112,28 @@ declare class HandlebarsHelpers {
    * </select>
    * ```
    */
-  static selectOptions (
+  static selectOptions(
     choices: Record<string, string>,
     options: HandlebarsHelpers.SelectOptionsOptions
-  ): Handlebars.SafeString
+  ): Handlebars.SafeString;
 }
 
 declare namespace HandlebarsHelpers {
   interface EditorOptions {
     hash: {
-      button?: boolean
+      button?: boolean;
 
       /**
        * @defaultValue `''`
        */
-      content?: string
+      content?: string;
 
-      editable?: boolean
+      editable?: boolean;
 
-      owner?: boolean
+      owner?: boolean;
 
-      target: string
-    }
+      target: string;
+    };
   }
 
   interface NumberFormatOptions {
@@ -141,13 +141,13 @@ declare namespace HandlebarsHelpers {
       /**
        * @defaultValue `0`
        */
-      decimals?: number
+      decimals?: number;
 
       /**
        * @defaultValue `false`
        */
-      sign?: boolean
-    }
+      sign?: boolean;
+    };
   }
 
   interface RadioBoxesOptions {
@@ -155,13 +155,13 @@ declare namespace HandlebarsHelpers {
       /**
        * @defaultValue `null`
        */
-      checked?: string
+      checked?: string;
 
       /**
        * @defaultValue `false`
        */
-      localize?: boolean
-    }
+      localize?: boolean;
+    };
   }
 
   interface SelectOptionsOptions {
@@ -169,17 +169,17 @@ declare namespace HandlebarsHelpers {
       /**
        * @defaultValue `null`
        */
-      blank?: string
+      blank?: string;
 
       /**
        * @defaultValue `false`
        */
-      localize?: boolean
+      localize?: boolean;
 
       /**
        * @defaultValue `null`
        */
-      selected?: string | string[]
-    }
+      selected?: string | string[];
+    };
   }
 }

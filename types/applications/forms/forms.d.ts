@@ -4,14 +4,14 @@
  * Configure the Combat tracker to display additional information as appropriate
  */
 declare class CombatTrackerConfig extends FormApplication {
-  _updateObject (event?: Event, formData?: object): void;
+  _updateObject(event?: Event, formData?: object): void;
 }
 
 /**
  * Edit a folder, configuring its name and appearance
  */
 declare class FolderConfig extends FormApplication {
-  _updateObject (event?: Event, formData?: object): void;
+  _updateObject(event?: Event, formData?: object): void;
 }
 
 /**
@@ -22,7 +22,7 @@ declare class FolderConfig extends FormApplication {
  * @param onUpdate - An optional callback function which should be triggered if the Image path is edited
  */
 declare class ImagePopout extends FormApplication {
-  _updateObject (event?: Event, formData?: object): void;
+  _updateObject(event?: Event, formData?: object): void;
 }
 
 /**
@@ -33,7 +33,7 @@ declare class ImagePopout extends FormApplication {
  * @param preview - Configure a preview version of a sound which is not yet saved
  */
 declare class MeasuredTemplateConfig extends FormApplication {
-  _updateObject (event?: Event, formData?: object): void;
+  _updateObject(event?: Event, formData?: object): void;
 }
 
 /**
@@ -41,7 +41,7 @@ declare class MeasuredTemplateConfig extends FormApplication {
  * This form is used to allow the client to edit some preferences about their own User entity
  */
 declare class PlayerConfig extends FormApplication {
-  _updateObject (event?: Event, formData?: object): void;
+  _updateObject(event?: Event, formData?: object): void;
 }
 /**
  * Playlist Configuration Sheet
@@ -50,7 +50,7 @@ declare class PlayerConfig extends FormApplication {
  * @param options - Additional application rendering options
  */
 declare class PlaylistConfig extends FormApplication {
-  _updateObject (event?: Event, formData?: object): void;
+  _updateObject(event?: Event, formData?: object): void;
 }
 
 /**
@@ -60,7 +60,7 @@ declare class PlaylistConfig extends FormApplication {
  * @param options - Additional application rendering options
  */
 declare class PlaylistSoundConfig extends FormApplication {
-  _updateObject (event?: Event, formData?: object): void;
+  _updateObject(event?: Event, formData?: object): void;
 }
 
 /**
@@ -70,5 +70,5 @@ declare class PlaylistSoundConfig extends FormApplication {
  * @param options - Additional Application options
  */
 declare class EntitySheetConfig extends FormApplication {
-  _updateObject (event?: Event, formData?: object): void;
+  _updateObject(event?: Event, formData?: object): void;
 }

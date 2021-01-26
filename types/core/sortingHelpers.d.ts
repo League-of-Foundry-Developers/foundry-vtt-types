@@ -25,39 +25,44 @@ declare class SortingHelpers {
    *
    * @returns An Array of updates for the caller of the helper function to perform
    */
-  static performIntegerSort<T> (
+  static performIntegerSort<T>(
     source: T,
-    { target, siblings, sortKey, sortBefore }?: {
+    {
+      target,
+      siblings,
+      sortKey,
+      sortBefore
+    }?: {
       /**
        * The target object relative which to sort
        * @defaultValue `null`
        */
-      target?: any
+      target?: any;
 
       /**
        * The sorted Array of siblings which share the same sorted container
        * @defaultValue `[]`
        */
-      siblings?: object[]
+      siblings?: object[];
 
       /**
        * The name of the data property within the source object which defines the sort key
        * @defaultValue `'sort'`
        */
-      sortKey?: string
+      sortKey?: string;
 
       /**
        * Whether to sort before the target (if true) or after (if false)
        * @defaultValue `true`
        */
-      sortBefore?: boolean
+      sortBefore?: boolean;
     }
   ): Array<{
-    target: T
+    target: T;
     update: {
-      sortKey: any
-    }
-  }>
+      sortKey: any;
+    };
+  }>;
 
   /* -------------------------------------------- */
 
@@ -65,7 +70,7 @@ declare class SortingHelpers {
    * Given an ordered Array of siblings and a target position, return the [min,max] indices to sort before the target
    * @internal
    */
-  static _sortBefore<T> (siblings: T[], idx: number, sortKey: any): [T, T]
+  static _sortBefore<T>(siblings: T[], idx: number, sortKey: any): [T, T];
 
   /* -------------------------------------------- */
 
@@ -73,5 +78,5 @@ declare class SortingHelpers {
    * Given an ordered Array of siblings and a target position, return the [min,max] indices to sort after the target
    * @internal
    */
-  static _sortAfter<T> (siblings: T[], idx: number, sortKey: any): [T, T]
+  static _sortAfter<T>(siblings: T[], idx: number, sortKey: any): [T, T];
 }

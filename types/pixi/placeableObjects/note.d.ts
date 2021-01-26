@@ -1,7 +1,7 @@
 declare class Note extends PlaceableObject {
-  get bounds (): NormalizedRectangle
+  get bounds(): NormalizedRectangle;
 
-  draw (): Promise<PlaceableObject>
+  draw(): Promise<PlaceableObject>;
 
-  refresh (): PlaceableObject
+  refresh(): PlaceableObject;
 }

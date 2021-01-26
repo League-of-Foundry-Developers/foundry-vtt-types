@@ -6,7 +6,7 @@ declare class SocketInterface {
    * @param request   - Data provided to the Socket event
    * @returns A Promise which resolves to the SocketResponse
    */
-  static dispatch (eventName: string, request: SocketInterface.Request): Promise<SocketInterface.Response>
+  static dispatch(eventName: string, request: SocketInterface.Request): Promise<SocketInterface.Response>;
 
   /* -------------------------------------------- */
 
@@ -15,19 +15,19 @@ declare class SocketInterface {
    * @param err - The provided Error message
    * @internal
    */
-  static _handleError (err: Error): Error
+  static _handleError(err: Error): Error;
 }
 
 declare namespace SocketInterface {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   namespace Requests {
     interface ModifyEmbeddedDocument {
-      action: Action.Create | Action.Update | Action.Delete
-      data: any // TODO: add generics to this
-      options: Entity.CreateOptions
-      parentId: string
-      parentType: string
-      type: string
+      action: Action.Create | Action.Update | Action.Delete;
+      data: any; // TODO: add generics to this
+      options: Entity.CreateOptions;
+      parentId: string;
+      parentType: string;
+      type: string;
     }
 
     // TODO: add remaining actions
@@ -42,14 +42,14 @@ declare namespace SocketInterface {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   namespace Responses {
     interface ModifyEmbeddedDocument {
-      request: Requests.ModifyEmbeddedDocument
-      result: any[] // TODO
-      userId: string
+      request: Requests.ModifyEmbeddedDocument;
+      result: any[]; // TODO
+      userId: string;
     }
   }
 
   // TODO: go through all SocketInterface.dispatch calls and collect requests
-  type Request = Requests.ModifyEmbeddedDocument
+  type Request = Requests.ModifyEmbeddedDocument;
 
-  type Response = Responses.ModifyEmbeddedDocument
+  type Response = Responses.ModifyEmbeddedDocument;
 }

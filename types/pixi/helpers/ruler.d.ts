@@ -1,9 +1,9 @@
 declare interface RulerData {
-  _state: number
-  class: string
-  destination: PIXI.Point
-  name: string
-  waypoints: [PIXI.Point]
+  _state: number;
+  class: string;
+  destination: PIXI.Point;
+  name: string;
+  waypoints: [PIXI.Point];
 }
 
 /**
@@ -14,56 +14,56 @@ declare class Ruler extends PIXI.Container {
   /**
    * Track the current measurement state
    */
-  public _state: number
+  public _state: number;
 
   /**
    * Is the Ruler being actively used to measure distance?
    */
-  public readonly active: boolean
+  public readonly active: boolean;
 
   /**
    * The ruler color - by default the color of the active user
    */
-  public color: number | null
+  public color: number | null;
 
   /**
    * The current destination point at the end of the measurement
    */
-  public destination: PIXI.Point
+  public destination: PIXI.Point;
 
   /**
    * The Labels element is a Container of Text elements which label the measured path
    */
-  public labels: PIXI.Container
+  public labels: PIXI.Container;
 
   /**
    * The ruler name - used to differentiate between players
    */
-  public name: string
+  public name: string;
 
   /**
    * The Ruler element is a Graphics instance which draws the line and points of the measured path
    */
-  public ruler: PIXI.Graphics
+  public ruler: PIXI.Graphics;
 
   /**
    * Record the User which this Ruler references
    */
-  public user: User
+  public user: User;
 
   /**
    * This Array tracks individual waypoints along the ruler's measured path.
    * The first waypoint is always the origin of the route.
    */
-  public waypoints: PIXI.Point[]
+  public waypoints: PIXI.Point[];
 
-  constructor (user: User, color?: number);
+  constructor(user: User, color?: number);
 
   /**
    * Acquire a Token, if any, which is eligible to perform a movement based on the starting point of the Ruler
    * @internal
    */
-  public _getMovementToken (): Token;
+  public _getMovementToken(): Token;
 
   /**
    * A helper method to return an Array of Ray objects constructed from the waypoints of the measurement
@@ -72,7 +72,7 @@ declare class Ruler extends PIXI.Container {
    * @returns An Array of Ray objects which represent the segemnts of the waypoint path
    * @internal
    */
-  public _getRaysFromWaypoints (waypoints: PIXI.Point[], destination: PIXI.Point): Ray[];
+  public _getRaysFromWaypoints(waypoints: PIXI.Point[], destination: PIXI.Point): Ray[];
 
   /**
    * Get the text label for a segment of the measured path
@@ -82,35 +82,35 @@ declare class Ruler extends PIXI.Container {
    * @param isTotal -
    * @internal
    */
-  public _getSegmentLabel (ray: Ray, segmentDistance: number, totalDistance: number, isTotal: boolean): string;
+  public _getSegmentLabel(ray: Ray, segmentDistance: number, totalDistance: number, isTotal: boolean): string;
 
   /**
    * Highlight the measurement required to complete the move in the minimum number of discrete spaces
    * @param ray -
    * @internal
    */
-  public _highlightMeasurement (ray: Ray): void;
+  public _highlightMeasurement(ray: Ray): void;
 
   /**
    * Handle the addition of a new waypoint in the Ruler measurement path
    * @param event -
    * @internal
    */
-  public _onAddWaypoint (event: PIXI.InteractionEvent): void;
+  public _onAddWaypoint(event: PIXI.InteractionEvent): void;
 
   /**
    * Handle the removal of a waypoint in the Ruler measurement path
    * @param event -
    * @internal
    */
-  public _onCancelWaypoint (event: PIXI.InteractionEvent): void;
+  public _onCancelWaypoint(event: PIXI.InteractionEvent): void;
 
   /**
    * Handle the conclusion of a Ruler measurement workflow
    * @param event -
    * @internal
    */
-  public _onEndMeasurement (event: PIXI.InteractionEvent): void;
+  public _onEndMeasurement(event: PIXI.InteractionEvent): void;
 
   /**
    * General handler for mouse-down events which should affect the Ruler in some way
@@ -118,7 +118,7 @@ declare class Ruler extends PIXI.Container {
    * @param event -
    * @internal
    */
-  public _onMouseDown (event: Event): void;
+  public _onMouseDown(event: Event): void;
 
   /**
    * General handler for mouse-move events which affect Ruler measurement
@@ -126,25 +126,25 @@ declare class Ruler extends PIXI.Container {
    * @param event -
    * @internal
    */
-  public _onMouseMove (event: Event): void;
+  public _onMouseMove(event: Event): void;
 
   /**
    * Handle the beginning of a new Ruler measurement event
    * @param event -
    * @internal
    */
-  public _onStartMeasurement (event: PIXI.InteractionEvent): void;
+  public _onStartMeasurement(event: PIXI.InteractionEvent): void;
 
   /**
    * Clear display of the current Ruler
    */
-  public clear (): void;
+  public clear(): void;
 
   /**
    * Measure the distance between two points and render the ruler UI to illustrate it
    * @param destination - The destination point to which to measure
    */
-  public measure (destination: PIXI.Point, gridSpaces?: boolean): void;
+  public measure(destination: PIXI.Point, gridSpaces?: boolean): void;
 
   /**
    * Determine whether a SPACE keypress event entails a legal token movement along a measured ruler
@@ -155,13 +155,13 @@ declare class Ruler extends PIXI.Container {
    * @remarks confirm with Atropos whether this should return void or not. The JSDoc says it returns a boolean,
    * but the code doesn't return anything.
    */
-  public moveToken (): void;
+  public moveToken(): void;
 
-  public toJSON (): RulerData;
+  public toJSON(): RulerData;
 
   /**
    * Update a Ruler instance using data provided through the cursor activity socket
    * @param data - Ruler data with which to update the display
    */
-  public update (data: RulerData): void;
+  public update(data: RulerData): void;
 }

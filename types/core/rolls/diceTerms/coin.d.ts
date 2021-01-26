@@ -5,19 +5,19 @@ declare class Coin extends DiceTerm {
   /**
    * @defaultValue `'c'`
    */
-  static DENOMINATION: string
+  static DENOMINATION: string;
 
   /**
    * @defaultValue `{ c: 'call' }`
    */
-  static MODIFIER: Record<string, string>
+  static MODIFIER: Record<string, string>;
 
-  constructor (termData?: DiceTerm.TermData)
+  constructor(termData?: DiceTerm.TermData);
 
   /**
    * @override
    */
-  static getResultLabel (result: string): string
+  static getResultLabel(result: string): string;
 
   /**
    * Call the result of the coin flip, marking any coins that matched the called
@@ -26,10 +26,10 @@ declare class Coin extends DiceTerm {
    * 2dcc0 - Flip 2 coins and treat "tails" as successes
    * @param modifier - The matched modifier query
    */
-  call (modifier: string): string
+  call(modifier: string): string;
 
   /**
    * @override
    */
-  roll (options?: { maximize: boolean, minimize: boolean }): DiceTerm.Result
+  roll(options?: { maximize: boolean; minimize: boolean }): DiceTerm.Result;
 }

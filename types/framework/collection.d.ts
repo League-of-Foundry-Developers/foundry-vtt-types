@@ -4,7 +4,7 @@
  * @typeParam T - The type of the objects contained in the Collection
  */
 declare class Collection<T> extends Map<string, T> {
-  constructor (entries: T)
+  constructor(entries: T);
 
   /* -------------------------------------------- */
 
@@ -13,7 +13,7 @@ declare class Collection<T> extends Map<string, T> {
    * @returns Typescript doesn't allow this
    *          (type: `IterableIterator<T>`)
    */
-  [Symbol.iterator] (): any
+  [Symbol.iterator](): any;
 
   /* -------------------------------------------- */
 
@@ -24,7 +24,7 @@ declare class Collection<T> extends Map<string, T> {
    * @returns Typescript doesn't allow this
    *          (type: `Array<T>`)
    */
-  entries (): any
+  entries(): any;
 
   /* -------------------------------------------- */
 
@@ -41,7 +41,7 @@ declare class Collection<T> extends Map<string, T> {
    * let a = c.find(entry => entry === "A");
    * ```
    */
-  find (condition: (entity: T) => boolean): T | null
+  find(condition: (entity: T) => boolean): T | null;
 
   /* -------------------------------------------- */
 
@@ -58,7 +58,7 @@ declare class Collection<T> extends Map<string, T> {
    * let hasA = c.filters(entry => entry.slice(0) === "A");
    * ```
    */
-  filter (condition: (entity: T) => boolean): T[]
+  filter(condition: (entity: T) => boolean): T[];
 
   /* -------------------------------------------- */
 
@@ -76,7 +76,7 @@ declare class Collection<T> extends Map<string, T> {
    * c.get("d", {strict: true}); // throws Error
    * ```
    */
-  get (key: string, { strict }?: { strict?: boolean }): T | undefined
+  get(key: string, { strict }?: { strict?: boolean }): T | undefined;
 
   /* -------------------------------------------- */
 
@@ -89,7 +89,7 @@ declare class Collection<T> extends Map<string, T> {
    *                  (default: `false`)
    * @returns The retrieved Entity, if one was found, otherwise null
    */
-  getName (name: string, { strict }?: { strict?: boolean }): T | null
+  getName(name: string, { strict }?: { strict?: boolean }): T | null;
 
   /* -------------------------------------------- */
 
@@ -99,7 +99,7 @@ declare class Collection<T> extends Map<string, T> {
    * @typeParam M       - The type of the mapped values
    * @returns An Array of transformed values
    */
-  map<M> (transformer: (entity: T) => M): M[]
+  map<M>(transformer: (entity: T) => M): M[];
 
   /* -------------------------------------------- */
 
@@ -119,5 +119,5 @@ declare class Collection<T> extends Map<string, T> {
    * }, ""); // "ABC"
    * ```
    */
-  reduce<A> (evaluator: (accumulator: A, entity: T) => A, initial: A): A
+  reduce<A>(evaluator: (accumulator: A, entity: T) => A, initial: A): A;
 }

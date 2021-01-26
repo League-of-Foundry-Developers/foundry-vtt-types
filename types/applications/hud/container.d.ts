@@ -5,18 +5,18 @@
  */
 declare class HeadsUpDisplay extends Application {
   /** Chat Bubbles */
-  bubbles: ChatBubbles
+  bubbles: ChatBubbles;
 
   /** Drawing HUD */
-  drawing: DrawingHUD
+  drawing: DrawingHUD;
 
   /** Tile HUD */
-  tile: TileHUD
+  tile: TileHUD;
 
   /** Token HUD */
-  token: TokenHUD
+  token: TokenHUD;
 
-  constructor (...args: any[])
+  constructor(...args: any[]);
 
-  align (): void
+  align(): void;
 }

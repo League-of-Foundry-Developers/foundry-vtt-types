@@ -6,7 +6,7 @@ declare class SetupConfiguration {
   /**
    * A reference to the setup URL used under the current route prefix, if any
    */
-  static get setupURL (): string
+  static get setupURL(): string;
 
   /* -------------------------------------------- */
   /*  Package Management                          */
@@ -22,7 +22,7 @@ declare class SetupConfiguration {
    *                   (default: `null`)
    * @returns The return manifest
    */
-  static checkPackage (selector?: SetupConfiguration.PackageSelector): Promise<SetupConfiguration.Package>
+  static checkPackage(selector?: SetupConfiguration.PackageSelector): Promise<SetupConfiguration.Package>;
 
   /* -------------------------------------------- */
 
@@ -30,7 +30,7 @@ declare class SetupConfiguration {
    * Get an Array of available packages of a given type which may be installed
    * @param type - (default: `'system'`)
    */
-  static getPackages ({ type }?: { type: SetupConfiguration.PackageType }): Promise<SetupConfiguration.Package[]>
+  static getPackages({ type }?: { type: SetupConfiguration.PackageType }): Promise<SetupConfiguration.Package[]>;
 
   /* -------------------------------------------- */
 
@@ -44,7 +44,7 @@ declare class SetupConfiguration {
    *                   (default: `null`)
    * @returns A Promise which resolves to the installed package manifest
    */
-  static installPackage (selector?: SetupConfiguration.PackageSelector): Promise<object>
+  static installPackage(selector?: SetupConfiguration.PackageSelector): Promise<object>;
 
   /* -------------------------------------------- */
 
@@ -52,7 +52,7 @@ declare class SetupConfiguration {
    * Install a set of dependency modules which are required by an installed package
    * @param pkg - The package which was installed that requested dependencies
    */
-  static installDependencies (pkg: object): Promise<void>
+  static installDependencies(pkg: object): Promise<void>;
 
   /* -------------------------------------------- */
 
@@ -64,7 +64,7 @@ declare class SetupConfiguration {
    *               (default: `null`)
    * @returns A Promise which resolves to the uninstalled package manifest
    */
-  static uninstallPackage ({ type, name }?: { type: SetupConfiguration.PackageType, name: string }): Promise<object>
+  static uninstallPackage({ type, name }?: { type: SetupConfiguration.PackageType; name: string }): Promise<object>;
 
   /* -------------------------------------------- */
 
@@ -73,7 +73,7 @@ declare class SetupConfiguration {
    * Scopes are returned in the prioritization order that their content is loaded.
    * @returns An array of string package scopes
    */
-  static getPackageScopes (): string[]
+  static getPackageScopes(): string[];
 
   /* -------------------------------------------- */
   /*  Helper Functions                            */
@@ -85,17 +85,17 @@ declare class SetupConfiguration {
    * @returns The response body
    * @internal
    */
-  static post (body: object): Promise<object>
+  static post(body: object): Promise<object>;
 }
 
 declare namespace SetupConfiguration {
   interface Package {
-    error: any
-    isSupported: boolean
-    isUpgrade: boolean
-    manifest: any
-    minimumCoreVersion: string
-    name: string
+    error: any;
+    isSupported: boolean;
+    isUpgrade: boolean;
+    manifest: any;
+    minimumCoreVersion: string;
+    name: string;
   }
 
   interface PackageSelector {
@@ -103,18 +103,18 @@ declare namespace SetupConfiguration {
      * The package type, one in ['module', 'system', 'world']
      * @defaultValue `'module'`
      */
-    type?: PackageType
+    type?: PackageType;
 
     /**
      * The canonical package name
      */
-    name?: string
+    name?: string;
 
     /**
      * The package manifest URL
      */
-    manifest?: string
+    manifest?: string;
   }
 
-  type PackageType = 'module' | 'system' | 'world'
+  type PackageType = 'module' | 'system' | 'world';
 }

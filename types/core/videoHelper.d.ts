@@ -3,38 +3,38 @@
  * A singleton instance of this class is available as `game.video`
  */
 declare class VideoHelper {
-  constructor ()
+  constructor();
 
   /**
    * A collectinon of HTML5 video objects which are currently active within the FVTT page
    * @defaultValue `[]`
    */
-  videos: HTMLVideoElement[]
+  videos: HTMLVideoElement[];
 
   /**
    * A user gesture must be registered before video playback can begin.
    * This Set records the video elements which await such a gesture.
    * @defaultValue an empty Set
    */
-  pending: Set<HTMLVideoElement>
+  pending: Set<HTMLVideoElement>;
 
   /**
    * A mapping of base64 video thumbnail images
    * @defaultValue an empty Map
    */
-  thumbs: Map<string, string>
+  thumbs: Map<string, string>;
 
   /**
    * A flag for whether video playback is currently locked by awaiting a user gesture
    * @defaultValue `true`
    */
-  locked: boolean
+  locked: boolean;
 
   /* -------------------------------------------- */
   /*  Methods                                     */
   /* -------------------------------------------- */
 
-  static hasVideoExtension (src: string): boolean;
+  static hasVideoExtension(src: string): boolean;
 
   /* -------------------------------------------- */
 
@@ -43,7 +43,7 @@ declare class VideoHelper {
    * If playback is not yet enabled, add the video to the pending queue
    * @param video - The VIDEO element to play
    */
-  play (video: HTMLElement): void;
+  play(video: HTMLElement): void;
 
   /* -------------------------------------------- */
 
@@ -52,7 +52,7 @@ declare class VideoHelper {
    * A user interaction must involve a mouse click or keypress.
    * Listen for any of these events, and handle the first observed gesture.
    */
-  awaitFirstGesture (): void;
+  awaitFirstGesture(): void;
 
   /* -------------------------------------------- */
 
@@ -61,7 +61,7 @@ declare class VideoHelper {
    * We need a slight delay because unfortunately Chrome is stupid and doesn't always acknowledge the gesture fast enough.
    * @param event - The mouse-move event which enables playback
    */
-  _onFirstGesture (event: Event): void
+  _onFirstGesture(event: Event): void;
 
   /* -------------------------------------------- */
 
@@ -72,5 +72,5 @@ declare class VideoHelper {
    * @param options - Thumbnail creation options, including width and height
    * @returns The created and cached base64 thumbnail image
    */
-  createThumbnail (src: string, options: ImageHelper.CompositeOptions): Promise<string>
+  createThumbnail(src: string, options: ImageHelper.CompositeOptions): Promise<string>;
 }

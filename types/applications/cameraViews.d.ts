@@ -1,2 +1,1 @@
-declare class CameraViews {
-}
+declare class CameraViews {}

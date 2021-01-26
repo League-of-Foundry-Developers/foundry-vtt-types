@@ -5,14 +5,14 @@
  * @param src - The source URL or path to test
  * @returns Does the file exist at the provided url?
  */
-declare function srcExists (src: string): boolean
+declare function srcExists(src: string): boolean;
 
 /* -------------------------------------------- */
 
 /**
  * Get a single texture from the cache
  */
-declare function getTexture (src: string): PIXI.Texture
+declare function getTexture(src: string): PIXI.Texture;
 
 /**
  * Load a single texture and return a Promise which resolves once the texture is ready to use
@@ -20,13 +20,15 @@ declare function getTexture (src: string): PIXI.Texture
  * @param fallback - A fallback texture to use if the requested source is unavailable or invalid
  *                   (default: `null`)
  */
-declare function loadTexture (
+declare function loadTexture(
   src: string,
-  { fallback }?: {
+  {
+    fallback
+  }?: {
     /**
      * A fallback texture to use if the requested source is unavailable or invalid
      * @defaultValue `null`
      */
-    fallback?: string
+    fallback?: string;
   }
-): Promise<PIXI.Texture>
+): Promise<PIXI.Texture>;

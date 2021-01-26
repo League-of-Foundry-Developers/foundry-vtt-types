@@ -28,62 +28,62 @@ declare class DicePool {
    * Define the modifiers that can be used for this particular DiceTerm type.
    */
   static MODIFIERS: {
-    cf: 'countFailures'
-    cs: 'countSuccess'
-    d: 'drop'
-    dh: 'drop'
-    dl: 'drop'
-    k: 'keep'
-    kh: 'keep'
-    kl: 'keep'
-  }
+    cf: 'countFailures';
+    cs: 'countSuccess';
+    d: 'drop';
+    dh: 'drop';
+    dl: 'drop';
+    k: 'keep';
+    kh: 'keep';
+    kl: 'keep';
+  };
 
   /**
    * A regular expression pattern which identifies a potential DicePool modifier
    * @defaultValue `/([A-z]+)([^A-z\s()+\-*\/]+)?/g`
    */
-  static MODIFIER_REGEX: RegExp
+  static MODIFIER_REGEX: RegExp;
 
   /**
    * A regular expression used to identify a valid Dice Pool
    * @defaultValue `/^{([^}]+)}([A-z][A-z0-9<=>]+)?$/`
    */
-  static POOL_REGEX: RegExp
+  static POOL_REGEX: RegExp;
 
   /**
    * An internal flag for whether the dice term has been evaluated
    * @defaultValue `false`
    * @internal
    */
-  _evaluated: boolean
+  _evaluated: boolean;
 
   /**
    * Cache the evaluated total to avoid re-evaluating it
    * @defaultValue `null`
    * @internal
    */
-  _total: number | null
+  _total: number | null;
 
   /**
    * The string modifiers applied to resolve the pool
    */
-  modifiers: string[]
+  modifiers: string[];
 
   /**
    * An object of additional options which modify the pool
    */
-  options: object
+  options: object;
 
   /**
    * The array of dice pool results which have been rolled
    * @defaultValue `[]`
    */
-  results: DiceTerm.Result
+  results: DiceTerm.Result;
 
   /**
    * The elements of a Dice Pool must be Roll objects or numbers
    */
-  rolls: Array<Roll | number>
+  rolls: Array<Roll | number>;
 
   /**
    * @param kwargs - (default: `{}`)
@@ -91,42 +91,36 @@ declare class DicePool {
    * @param options - (default: `{}`)
    * @param rolls - (default: `[]`)
    */
-  constructor (
-    kwargs?: {
-      modifiers?: string[]
-      options?: object
-      rolls?: Array<Roll | number>
-    }
-  )
+  constructor(kwargs?: { modifiers?: string[]; options?: object; rolls?: Array<Roll | number> });
 
   /**
    * Return an Array of each individual DiceTerm instances contained within the
    * DicePool.
    */
-  get dice (): DiceTerm[]
+  get dice(): DiceTerm[];
 
   /**
    * Return a standardized representation for the displayed formula associated
    * with this DicePool.
    */
-  get formula (): string
+  get formula(): string;
 
   /**
    * Return the total result of the DicePool if it has been evaluated
    */
-  get total (): number | null
+  get total(): number | null;
 
   /**
    * Return an array of rolled values which are still active within the DicePool
    */
-  get values (): number[]
+  get values(): number[];
 
   /**
    * Reconstruct a DicePool instance from a provided data Object
    * @param data - The provided data
    * @returns The constructed Dice Pool
    */
-  static fromData (data: object): DicePool
+  static fromData(data: object): DicePool;
 
   /**
    * Given a string formula, create and return an evaluated DicePool object
@@ -138,25 +132,21 @@ declare class DicePool {
    *               (default: `{}`)
    * @returns The evaluated DicePool object or null if the formula is invalid
    */
-  static fromExpression (
-    formula: string,
-    options: object,
-    data: object
-  ): DicePool | null
+  static fromExpression(formula: string, options: object, data: object): DicePool | null;
 
   /**
    * Reconstruct a DicePool instance from a provided data Object
    * @param json - The serialized JSON string
    * @returns The constructed Dice Pool
    */
-  static fromJSON (json: string): DicePool
+  static fromJSON(json: string): DicePool;
 
   /**
    * Sequentially evaluate each dice roll modifier by passing the term to its
    * evaluation function Augment or modify the results array.
    * @internal
    */
-  _evaluateModifiers (): void
+  _evaluateModifiers(): void;
 
   /**
    * Alter the DiceTerm by adding or multiplying the number of dice which are
@@ -164,13 +154,13 @@ declare class DicePool {
    * @param args - Arguments passed to each contained Roll#alter method.
    * @returns The altered pool
    */
-  alter (
+  alter(
     multiply: number,
     add: number,
     options?: {
-      multiplyNumeric?: boolean
+      multiplyNumeric?: boolean;
     }
-  ): this
+  ): this;
 
   /**
    * Count the number of failed results which occurred in a given result set.
@@ -183,7 +173,7 @@ declare class DicePool {
    * 6d6cf\>4    Count the number of dice which rolled greater than 4 as failures
    * @param modifier - The matched modifier query
    */
-  countFailures (modifier: string): this | null
+  countFailures(modifier: string): this | null;
 
   /**
    * Count the number of successful results which occurred in the pool.
@@ -196,7 +186,7 @@ declare class DicePool {
    * 20d20cs\<10   Count the number of dice which rolled less than 10
    * @param modifier - The matched modifier query
    */
-  countSuccess (modifier: string): this | null
+  countSuccess(modifier: string): this | null;
 
   /**
    * Keep a certain number of highest or lowest dice rolls from the result set.
@@ -204,7 +194,7 @@ declare class DicePool {
    * \{1d12,6\}dh                   Drop the highest result in the pool
    * @param modifier - The matched modifier query
    */
-  drop (modifier: string): this | null
+  drop(modifier: string): this | null;
 
   /**
    * Evaluate the DicePool, populating the results Array.
@@ -215,7 +205,7 @@ declare class DicePool {
    *                   (default: `false`)
    * @returns The evaluated dice term
    */
-  evaluate (options?: { maximize: boolean, minimize: boolean }): this
+  evaluate(options?: { maximize: boolean; minimize: boolean }): this;
 
   /**
    * Keep a certain number of highest or lowest dice rolls from the result set.
@@ -223,12 +213,12 @@ declare class DicePool {
    * \{1d12,6\}kl                   Keep the lowest result in the pool
    * @param modifier - The matched modifier query
    */
-  keep (modifier: string): this | null
+  keep(modifier: string): this | null;
 
   /**
    * Convert the DicePool instance into an Object which can be serialized to
    * JSON
    * @returns The converted data
    */
-  toJSON (): object
+  toJSON(): object;
 }
