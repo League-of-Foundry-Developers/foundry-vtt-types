@@ -293,10 +293,17 @@ declare class Actor<
 
   /** @override */
   createEmbeddedEntity(
-    embeddedName: string,
-    data: Optional<ActiveEffect.Data | Actor.OwnedItem<I>>,
+    embeddedName: 'OwnedItem',
+    data: Optional<Actor.OwnedItem<I>>,
     options?: any
-  ): Promise<ActiveEffect.Data | Actor.OwnedItem<I>>;
+  ): Promise<Actor.OwnedItem<I>>;
+
+  /** @override */
+  createEmbeddedEntity(
+    embeddedName: 'ActiveEffect',
+    data: Optional<ActiveEffect.Data>,
+    options?: any
+  ): Promise<ActiveEffect.Data>;
 
   /**
    * When Owned Items are created process each item and extract Active Effects to transfer to the Actor.
@@ -307,7 +314,7 @@ declare class Actor<
   _createItemActiveEffects(
     created: Actor.OwnedItem<I> | Array<Actor.OwnedItem<I>>,
     { temporary }?: { temporary?: boolean }
-  ): ActiveEffect.Data[] | ActiveEffect.Data;
+  ): Promise<ActiveEffect.Data[] | ActiveEffect.Data | undefined>;
 
   /** @override */
   _onCreateEmbeddedEntity(
@@ -318,11 +325,10 @@ declare class Actor<
   ): void;
 
   /** @override */
-  deleteEmbeddedEntity(
-    embeddedName: string,
-    data: string,
-    options?: any
-  ): Promise<Actor.OwnedItem<I> | ActiveEffect.Data>;
+  deleteEmbeddedEntity(embeddedName: 'OwnedItem', data: string, options?: any): Promise<Actor.OwnedItem<I>>;
+
+  /** @override */
+  deleteEmbeddedEntity(embeddedName: 'ActiveEffect', data: string, options?: any): Promise<ActiveEffect.Data>;
 
   /**
    * When Owned Items are created process each item and extract Active Effects to transfer to the Actor.
@@ -330,7 +336,7 @@ declare class Actor<
    */
   _deleteItemActiveEffects(
     deleted: Actor.OwnedItem<I> | Array<Actor.OwnedItem<I>>
-  ): ActiveEffect.Data | ActiveEffect.Data[];
+  ): Promise<ActiveEffect.Data | ActiveEffect.Data[] | undefined>;
 
   /** @override */
   _onDeleteEmbeddedEntity(
