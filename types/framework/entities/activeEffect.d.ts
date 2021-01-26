@@ -12,7 +12,6 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
 
   /**
    * A cached reference to the source name to avoid recurring database lookups
-   * @internal
    */
   _sourceName: string | null;
 
@@ -41,7 +40,6 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
 
   /**
    * Get the name of the source of the Active Effect
-   * @internal
    */
   _getSourceName(): Promise<string>;
 
@@ -82,12 +80,6 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
    * @internal
    */
   _applyAdd<I extends Item, D extends Actor.Data>(actor: Actor<I, D>, change: ActiveEffect.Change): unknown;
-  /**
-   * A convenience method for creating an ActiveEffect instance within a parent Actor or Item.
-   * @see {@link Entity#createEmbeddedEntity}
-   * @param options - Configuration options which modify the request.
-   * @returns The created ActiveEffect data.
-   */
 
   /* -------------------------------------------- */
 
