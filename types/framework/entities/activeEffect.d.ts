@@ -1,29 +1,51 @@
 /**
  * An Active Effect instance within a parent Actor or Item.
  * @see {@link Actor#effects}
- * @see {@link Item#effects} *
+ * @see {@link Item#effects}
  */
 declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
   /**
-   * @param data - Data for the Active Effect
+   * @param data   - Data for the Active Effect
    * @param parent - The parent Entity which owns the effect
    */
   constructor(data: ActiveEffect.Data, parent: Actor | Item);
+
+  /**
+   * A cached reference to the source name to avoid recurring database lookups
+   * @internal
+   */
+  _sourceName: string | null;
+
+  /* -------------------------------------------- */
 
   /**
    * Report the active effect duration
    */
   get duration(): ActiveEffect.ReturnedDuration;
 
+  /* -------------------------------------------- */
+
   /**
    * Describe whether the ActiveEffect has a temporary duration based on combat turns or rounds.
    */
   get isTemporary(): boolean;
 
+  /* -------------------------------------------- */
+
   /**
    * A cached property for obtaining the source name
    */
   get sourceName(): string;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Get the name of the source of the Active Effect
+   * @internal
+   */
+  _getSourceName(): Promise<string>;
+
+  /* -------------------------------------------- */
 
   /**
    * An instance of the ActiveEffectConfig sheet to use for this ActiveEffect instance.
@@ -31,13 +53,78 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
    */
   get sheet(): ActiveEffectConfig;
 
+  /* -------------------------------------------- */
+  /*  Effect Application                          */
+  /* -------------------------------------------- */
+
   /**
    * Apply this ActiveEffect to a provided Actor.
-   * @param actor - The Actor to whom this effect should be applied
+   * @param actor  - The Actor to whom this effect should be applied
    * @param change - The change data being applied
    * @returns The resulting applied value
    */
   apply<I extends Item, D extends Actor.Data>(actor: Actor<I, D>, change: ActiveEffect.Change): unknown;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Apply an ActiveEffect that uses an ADD application mode.
+   * The way that effects are added depends on the data type of the current value.
+   *
+   * If the current value is null, the change value is assigned directly.
+   * If the current type is a string, the change value is concatenated.
+   * If the current type is a number, the change value is cast to numeric and added.
+   * If the current type is an array, the change value is appended to the existing array if it matches in type.
+   *
+   * @param actor  - The Actor to whom this effect should be applied
+   * @param change - The change data being applied
+   * @returns The resulting applied value
+   * @internal
+   */
+  _applyAdd<I extends Item, D extends Actor.Data>(actor: Actor<I, D>, change: ActiveEffect.Change): unknown;
+  /**
+   * A convenience method for creating an ActiveEffect instance within a parent Actor or Item.
+   * @see {@link Entity#createEmbeddedEntity}
+   * @param options - Configuration options which modify the request.
+   * @returns The created ActiveEffect data.
+   */
+
+  /* -------------------------------------------- */
+
+  /**
+   * Apply an ActiveEffect that uses a MULTIPLY application mode.
+   * @param actor  - The Actor to whom this effect should be applied
+   * @param change - The change data being applied
+   * @returns The resulting applied value
+   * @internal
+   */
+  _applyMultiply<I extends Item, D extends Actor.Data>(actor: Actor<I, D>, change: ActiveEffect.Change): unknown;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Apply an ActiveEffect that uses an OVERRIDE, UPGRADE, or DOWNGRADE application mode.
+   * @param actor  - The Actor to whom this effect should be applied
+   * @param change - The change data being applied
+   * @returns The resulting applied value
+   * @internal
+   */
+  _applyOverride<I extends Item, D extends Actor.Data>(actor: Actor<I, D>, change: ActiveEffect.Change): unknown;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Apply an ActiveEffect that uses a CUSTOM application mode.
+   * @param actor  - The Actor to whom this effect should be applied
+   * @param change - The change data being applied
+   * @returns The resulting applied value
+   * @internal
+   */
+  _applyCustom<I extends Item, D extends Actor.Data>(actor: Actor<I, D>, change: ActiveEffect.Change): unknown;
+
+  /* -------------------------------------------- */
+  /*  Database Operations                         */
+  /* -------------------------------------------- */
 
   /**
    * A convenience method for creating an ActiveEffect instance within a parent Actor or Item.
@@ -47,14 +134,18 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
    */
   create(options?: Entity.CreateOptions): Promise<ActiveEffect.Data>;
 
+  /* -------------------------------------------- */
+
   /**
    * A convenience method for updating an ActiveEffect instance in an parent Actor or Item.
    * @see {@link Entity#updateEmbeddedEntity}
-   * @param data - Differential data with which to update the ActiveEffect.
+   * @param data    - Differential data with which to update the ActiveEffect.
    * @param options - Configuration options which modify the request.
    * @returns The updated ActiveEffect data.
    */
   update(data: Partial<ActiveEffect.Data>, options?: Entity.UpdateOptions): Promise<ActiveEffect.Data>;
+
+  /* -------------------------------------------- */
 
   /**
    * A convenience method for deleting an ActiveEffect instance in an parent Actor or Item.
@@ -64,12 +155,18 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
    */
   delete(options?: Entity.DeleteOptions): Promise<string>;
 
+  /* -------------------------------------------- */
+  /*  Factory Methods                             */
+  /* -------------------------------------------- */
+
   /**
    * A factory method which creates an ActiveEffect instance using the configured class.
    * @param args - Initialization arguments passed to the ActiveEffect constructor.
    * @returns The constructed ActiveEffect instance.
    */
   static create(...args: [ActiveEffect.Data, Actor | Item]): ActiveEffect;
+
+  /* -------------------------------------------- */
 
   /**
    * A helper function to handle obtaining dropped ActiveEffect data from a dropped data transfer event.

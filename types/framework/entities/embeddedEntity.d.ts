@@ -1,3 +1,6 @@
+/**
+ * An abstract class implementation for an EmbeddedEntity object within a parent Entity
+ */
 declare abstract class EmbeddedEntity<D extends EmbeddedEntity.Data = EmbeddedEntity.Data> {
   constructor(data: D, parent: Entity);
 
@@ -10,6 +13,34 @@ declare abstract class EmbeddedEntity<D extends EmbeddedEntity.Data = EmbeddedEn
    * The parent Entity to which this belongs
    */
   parent: Entity;
+
+  /* -------------------------------------------- */
+
+  /**
+   * A reference to the _id attribute of the EmbeddedEntity data
+   */
+  get id(): string;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Data preparation steps taken by the EmbeddedEntity instance when it's underlying data changes
+   */
+  prepareData(): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Get the value of a "flag" for this EmbeddedEntity
+   * See the setFlag method for more details on flags
+   *
+   * @param scope - The flag scope which namespaces the key
+   * @param key   - The flag key
+   * @returns The flag value
+   */
+  getFlag(scope: string, key: string): unknown;
+
+  /* -------------------------------------------- */
 
   /**
    * Assign a "flag" to this EmbeddedEntity.
@@ -25,27 +56,19 @@ declare abstract class EmbeddedEntity<D extends EmbeddedEntity.Data = EmbeddedEn
    * Flag values can assume almost any data type. Setting a flag value to null will delete that flag.
    *
    * @param scope - The flag scope which namespaces the key
-   * @param key - The flag key
+   * @param key   - The flag key
    * @param value - The flag value
    *
    * @returns A Promise resolving to the updated EmbeddedEntity
    */
   setFlag(scope: string, key: string, value: any): Promise<this>;
 
-  /**
-   * Get the value of a "flag" for this EmbeddedEntity
-   * See the setFlag method for more details on flags
-   *
-   * @param scope - The flag scope which namespaces the key
-   * @param key - The flag key
-   * @returns The flag value
-   */
-  getFlag(scope: string, key: string): unknown;
+  /* -------------------------------------------- */
 
   /**
-   * Remove a flag assigned to the EmbeddedEntity
+   * Remove a flag assigned to the Entity
    * @param scope - The flag scope which namespaces the key
-   * @param key - The flag key
+   * @param key   - The flag key
    * @returns A Promise resolving to the updated Entity
    */
   unsetFlag(scope: string, key: string): Promise<this>;
