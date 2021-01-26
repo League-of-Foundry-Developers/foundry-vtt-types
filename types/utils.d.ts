@@ -4,11 +4,7 @@
  * @param type		The type of
  * @param filename	The filename of the resulting download
  */
-declare function saveDataToFile(
-	data: string,
-	type: string,
-	filename: string
-): void;
+declare function saveDataToFile(data: string, type: string, filename: string): void;
 
 /**
  * Read text data from a user provided File object
@@ -48,22 +44,22 @@ declare function getType(token: any): string;
  * @returns				The original source object including updated, inserted, or overwritten records
  */
 declare function mergeObject<T>(
-	original: T,
-	other?: T,
-	{
-		insertKeys,
-		insertValues,
-		overwrite,
-		inplace,
-		enforceTypes,
-	}?: {
-		insertKeys?: boolean;
-		insertValues?: boolean;
-		overwrite?: boolean;
-		inplace?: boolean;
-		enforceTypes?: boolean;
-	},
-	_d?: number
+  original: T,
+  other?: T,
+  {
+    insertKeys,
+    insertValues,
+    overwrite,
+    inplace,
+    enforceTypes
+  }?: {
+    insertKeys?: boolean;
+    insertValues?: boolean;
+    overwrite?: boolean;
+    inplace?: boolean;
+    enforceTypes?: boolean;
+  },
+  _d?: number
 ): T;
 
 /**
@@ -88,12 +84,7 @@ declare function invertObject(obj: object): any;
  * filterObject(source, template); // {foo: {number: 1, name: "Tim"}};
  * filterObject(source, template, {templateValues: true}); // {foo: {number: 0, name: "Mit"}};
  */
-declare function filterObject(
-	source: object,
-	template: object,
-	keepSpecial?: boolean,
-	templateValues?: boolean
-): any;
+declare function filterObject(source: object, template: object, keepSpecial?: boolean, templateValues?: boolean): any;
 
 /**
  * Flatten a possibly multi-dimensional object to a one-dimensional one by converting all nested keys to dot notation
@@ -243,10 +234,7 @@ declare function colorStringToHex(color: string): number;
  * @param v1
  * @return
  */
-declare function isNewerVersion(
-	v1: number | string,
-	v0: number | string
-): boolean;
+declare function isNewerVersion(v1: number | string, v0: number | string): boolean;
 
 /**
  * Generate a random ID
@@ -264,7 +252,4 @@ declare function randomID(length?: number): string;
  * @param src 		The requested texture source
  * @param fallback 	A fallback texture to use if the requested source is unavailable or invalid
  */
-declare function loadTexture(
-	src: string,
-	fallback?: string
-): Promise<PIXI.Texture>;
+declare function loadTexture(src: string, fallback?: string): Promise<PIXI.Texture>;

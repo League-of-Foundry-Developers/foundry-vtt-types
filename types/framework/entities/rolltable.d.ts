@@ -1,24 +1,24 @@
 declare class RollTables extends Collection<RollTable> {
-	entities: RollTable[];
+  entities: RollTable[];
 
-	values(): IterableIterator<RollTable>;
+  values(): IterableIterator<RollTable>;
 }
 
 declare class RollTable extends Entity {
-	/** @override */
-	static get config(): {
-		baseEntity: RollTable;
-		collection: RollTables;
-		embeddedEntities: { TableResult: string };
-	};
+  /** @override */
+  static get config(): {
+    baseEntity: RollTable;
+    collection: RollTables;
+    embeddedEntities: { TableResult: string };
+  };
 
-	/**
-	 * A convenience accessor for the array of TableResult embedded documents
-	 */
-	get results(): any[];
+  /**
+   * A convenience accessor for the array of TableResult embedded documents
+   */
+  get results(): any[];
 
-	/* -------------------------------------------- */
-	/*  Methods
+  /* -------------------------------------------- */
+  /*  Methods
 	/* -------------------------------------------- */
 
   /**
@@ -32,10 +32,17 @@ declare class RollTable extends Entity {
    * @return {Promise<{roll: Roll, results: any[]}>}   A Promise which resolves to an object containing the
    *                                                      	executed roll and the produced results
    */
-	draw(
-		{ roll, results, displayChat, rollMode }?: { roll?: Roll, results?: any[], displayChat?: boolean, rollMode?: string }
-	): Promise<{roll: Roll, results: any[]}>;
-
+  draw({
+    roll,
+    results,
+    displayChat,
+    rollMode
+  }?: {
+    roll?: Roll;
+    results?: any[];
+    displayChat?: boolean;
+    rollMode?: string;
+  }): Promise<{ roll: Roll; results: any[] }>;
 
   /**
    * Draw multiple results from a RollTable, constructing a final synthetic Roll as a dice pool of inner rolls.
@@ -45,42 +52,39 @@ declare class RollTable extends Entity {
    * @param {string} rollMode       Customize the roll mode used to display the drawn results
    * @return {Promise<{roll: Roll, results: any[]}>}
    */
-	drawMany(
-		number?: number, { roll, displayChat, rollMode }?: { roll?: Roll, displayChat?: boolean, rollMode?: string }
-	): Promise<{roll: Roll, results: any[]}>;
+  drawMany(
+    number?: number,
+    { roll, displayChat, rollMode }?: { roll?: Roll; displayChat?: boolean; rollMode?: string }
+  ): Promise<{ roll: Roll; results: any[] }>;
 
-	/**
-	 * Display the result drawn from the table as a chat message
-	 * @param result
-	 * @param speaker
-	 * @param rollMode
-	 */
-	protected _displayChatResult(
-		result: object,
-		speaker: object,
-		rollMode: string
-	): ChatMessage;
+  /**
+   * Display the result drawn from the table as a chat message
+   * @param result
+   * @param speaker
+   * @param rollMode
+   */
+  protected _displayChatResult(result: object, speaker: object, rollMode: string): ChatMessage;
 
-	/**
-	 * Normalize the probabilities of rolling each item in the RollTable based on their assigned weights
-	 */
-	normalize(): Promise<RollTable>;
+  /**
+   * Normalize the probabilities of rolling each item in the RollTable based on their assigned weights
+   */
+  normalize(): Promise<RollTable>;
 
-	/**
-	 * Reset the state of the RollTable to return any drawn items to the table
-	 */
-	reset(): Promise<RollTable>;
+  /**
+   * Reset the state of the RollTable to return any drawn items to the table
+   */
+  reset(): Promise<RollTable>;
 
-	/**
-	 * Evaluate a RollTable, returning a the drawn result
-	 * @returns	An Array, containing the Roll and the result
-	 */
-	roll(): [Roll, any];
+  /**
+   * Evaluate a RollTable, returning a the drawn result
+   * @returns	An Array, containing the Roll and the result
+   */
+  roll(): [Roll, any];
 
-	/* -------------------------------------------- */
-	/*  Table Result Management Methods             */
-	/* -------------------------------------------- */
+  /* -------------------------------------------- */
+  /*  Table Result Management Methods             */
+  /* -------------------------------------------- */
 
-	/** @extends Entity.getEmbeddedEntity */
-	getTableResult(id: string): any;
+  /** @extends Entity.getEmbeddedEntity */
+  getTableResult(id: string): any;
 }

@@ -1,7 +1,6 @@
-declare interface ItemSheetData<DataType = any>
-	extends BaseEntitySheetData<DataType> {
-	item?: Item<DataType>;
-	data?: any;
+declare interface ItemSheetData<DataType = any> extends BaseEntitySheetData<DataType> {
+  item?: Item<DataType>;
+  data?: any;
 }
 
 /**
@@ -16,38 +15,35 @@ declare interface ItemSheetData<DataType = any>
  * @param options			Additional options which modify the rendering of the item.
  * @param options.editable	Is the item editable? Default is true.
  */
-declare class ItemSheet<
-	DataType = any,
-	ItemType extends Item<DataType> = any
-> extends BaseEntitySheet {
-	/**
-	 * Assign the default options which are supported by this Application
-	 */
-	static get defaultOptions(): FormApplicationOptions;
+declare class ItemSheet<DataType = any, ItemType extends Item<DataType> = any> extends BaseEntitySheet {
+  /**
+   * Assign the default options which are supported by this Application
+   */
+  static get defaultOptions(): FormApplicationOptions;
 
-	/**
-	 * Provide a unique CSS ID for owned Item sheets
-	 */
-	get id(): string;
+  /**
+   * Provide a unique CSS ID for owned Item sheets
+   */
+  get id(): string;
 
-	/**
-	 * A convenience reference to the Item entity
-	 */
-	get item(): ItemType;
+  /**
+   * A convenience reference to the Item entity
+   */
+  get item(): ItemType;
 
-	/**
-	 * The Actor instance which owns this item. This may be null if the item is unowned.
-	 */
-	get actor(): Actor<DataType>;
+  /**
+   * The Actor instance which owns this item. This may be null if the item is unowned.
+   */
+  get actor(): Actor<DataType>;
 
-	/**
-	 * Customize the data provided to the item sheet for rendering. By default we just duplicate the item data.
-	 */
-	getData(): ItemSheetData<DataType>;
+  /**
+   * Customize the data provided to the item sheet for rendering. By default we just duplicate the item data.
+   */
+  getData(): ItemSheetData<DataType>;
 
-	/**
-	 * Activate listeners which provide interactivity for item sheet events
-	 * @param html	The HTML object returned by template rendering
-	 */
-	protected activateListeners(html: JQuery): void;
+  /**
+   * Activate listeners which provide interactivity for item sheet events
+   * @param html	The HTML object returned by template rendering
+   */
+  protected activateListeners(html: JQuery): void;
 }

@@ -37,11 +37,7 @@ declare class MeasuredTemplate extends PlaceableObject {
    * Get a Conical area of effect given a direction, angle, and distance
    * @private
    */
-  _getConeShape(
-    direction: number,
-    angle: number,
-    distance: number
-  ): PIXI.Polygon;
+  _getConeShape(direction: number, angle: number, distance: number): PIXI.Polygon;
 
   /**
    * Get a Rectangular area of effect given a width and height
@@ -53,11 +49,7 @@ declare class MeasuredTemplate extends PlaceableObject {
    * Get a rotated Rectangular area of effect given a width, height, and direction
    * @private
    */
-  _getRayShape(
-    direction: number,
-    distance: number,
-    width: number
-  ): PIXI.Polygon;
+  _getRayShape(direction: number, distance: number, width: number): PIXI.Polygon;
 
   /**
    * Draw the Text label used for the MeasuredTemplate
