@@ -1,3 +1,3 @@
 declare class PointSource {
-  active: boolean
+  active: boolean;
 }

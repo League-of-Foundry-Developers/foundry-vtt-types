@@ -1,8 +1,8 @@
 declare interface TabV2Options {
-  callback?: Function
-  contentSelector?: string
-  initial?: string
-  navSelector?: string
+  callback?: Function;
+  contentSelector?: string;
+  initial?: string;
+  navSelector?: string;
 }
 
 /**
@@ -34,23 +34,23 @@ declare interface TabV2Options {
  */
 declare class Tabs {
   /** The currently active tab */
-  active: JQuery
+  active: JQuery;
 
   /** The callback function to trigger when a Tab is activated */
-  callback: Function
+  callback: Function;
 
   /** The container element within which both the tab navigation and the tab content exists */
-  container: JQuery | HTMLElement
+  container: JQuery | HTMLElement;
 
   /** The collection of tabs */
-  tabs: JQuery
+  tabs: JQuery;
 
-  constructor (
+  constructor(
     tabs: JQuery | HTMLElement,
     options: {
-      callback: (tab: JQuery) => void
-      container?: JQuery | HTMLElement
-      initial: string
+      callback: (tab: JQuery) => void;
+      container?: JQuery | HTMLElement;
+      initial: string;
     }
   );
 
@@ -58,13 +58,13 @@ declare class Tabs {
    * The named tab group
    * Retrieved as a property since the composition of the DOM may change over time
    */
-  get group (): JQuery;
+  get group(): JQuery;
 
   /**
    * Activate a tab by it's name. This gets called automatically when a tab in the navigation is clicked,
    * however you may also call this function directly.
    */
-  activateTab (tab: JQuery): any;
+  activateTab(tab: JQuery): any;
 }
 
 /**
@@ -100,51 +100,51 @@ declare class TabsV2 {
   /**
    * The value of the active tab
    */
-  active: string
+  active: string;
 
   /**
    * A callback function to trigger when the tab is changed
    */
-  callback: Function
+  callback: Function;
 
   /**
    * A reference to the HTML container element of the tab content
    */
-  protected _content: HTMLElement
+  protected _content: HTMLElement;
 
   /**
    * The CSS selector used to target the tab content element
    */
-  protected _contentSelector: string
+  protected _contentSelector: string;
 
   /**
    * A reference to the HTML navigation element the tab controller is bound to
    */
-  protected _nav: HTMLElement
+  protected _nav: HTMLElement;
 
   /**
    * The CSS selector used to target the tab navigation element
    */
-  protected _navSelector: string
+  protected _navSelector: string;
 
-  constructor (options: TabV2Options);
+  constructor(options: TabV2Options);
 
   /**
    * Activate a new tab by name
    * @param tabName -
    * @param triggerCallback -
    */
-  activate (tabName: string, options?: { triggerCallback?: boolean }): void;
+  activate(tabName: string, options?: { triggerCallback?: boolean }): void;
 
   /**
    * Bind the Tabs controller to an HTML application
    * @param html -
    */
-  bind (html: HTMLElement): void;
+  bind(html: HTMLElement): void;
 
   /**
    * Handle click events on the tab navigation entries
    * @param event - A left click event
    */
-  protected _onClickNav (event: MouseEvent): void;
+  protected _onClickNav(event: MouseEvent): void;
 }

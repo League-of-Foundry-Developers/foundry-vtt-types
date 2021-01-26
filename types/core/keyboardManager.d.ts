@@ -3,39 +3,39 @@
  * {@link https://keycode.info/}
  */
 declare class KeyboardManager {
-  constructor ()
+  constructor();
 
   /**
    * The set of key codes which are currently depressed (down)
    */
-  _downKeys: Set<string>
+  _downKeys: Set<string>;
 
   /**
    * The set of key codes which have been already handled per workflow
    */
-  _handled: Set<string>
+  _handled: Set<string>;
 
   /**
    * A mapping of movement keys which are pending
    * @defaultValue `null`
    * @internal
    */
-  _moveKeys: Set<string>
+  _moveKeys: Set<string>;
 
   /**
    * @defaultValue `null`
    */
-  _moveTime: number | null
+  _moveTime: number | null;
 
   /**
    * @defaultValue `0`
    */
-  _tabState: 0 | 1
+  _tabState: 0 | 1;
 
   /**
    * @defaultValue `0`
    */
-  _wheelTime: number
+  _wheelTime: number;
 
   /* -------------------------------------------- */
 
@@ -43,7 +43,7 @@ declare class KeyboardManager {
    * Reset tracking for which keys are in the down and released states
    * @internal
    */
-  _reset (): void
+  _reset(): void;
 
   /* -------------------------------------------- */
   /*  Properties                                  */
@@ -53,14 +53,14 @@ declare class KeyboardManager {
    * Return whether the key code is currently in the DOWN state
    * @param code - key code to test
    */
-  isDown (code: string): boolean
+  isDown(code: string): boolean;
 
   /* -------------------------------------------- */
 
   /**
    * A helper method to test whether, given an Event, the CTRL (or CMD) keys are pressed
    */
-  isCtrl (event: Event): boolean
+  isCtrl(event: Event): boolean;
 
   /* -------------------------------------------- */
 
@@ -69,35 +69,35 @@ declare class KeyboardManager {
    * @param event - The originating keypress event
    * @returns The standardized string code to use
    */
-  getKey (event: KeyboardEvent): string
+  getKey(event: KeyboardEvent): string;
 
   /* -------------------------------------------- */
 
   /**
    * The key codes which represent a possible movement key
    */
-  get moveKeys (): Record<string, string[]>
+  get moveKeys(): Record<string, string[]>;
 
   /* -------------------------------------------- */
 
   /**
    * The key codes which represent a digit key
    */
-  get digitKeys (): string[]
+  get digitKeys(): string[];
 
   /* -------------------------------------------- */
 
   /**
    * Return the key codes used for zooming the canvas
    */
-  get zoomKeys (): Record<string, string>
+  get zoomKeys(): Record<string, string>;
 
   /* -------------------------------------------- */
 
   /**
    * Test whether an input currently has focus
    */
-  get hasFocus (): boolean
+  get hasFocus(): boolean;
 
   /* -------------------------------------------- */
   /*  Event Listeners and Handlers                */
@@ -108,7 +108,7 @@ declare class KeyboardManager {
    * @param event - The originating keyboard event
    * @internal
    */
-  _onKeyDown (event: KeyboardEvent): void
+  _onKeyDown(event: KeyboardEvent): void;
 
   /* -------------------------------------------- */
 
@@ -117,7 +117,7 @@ declare class KeyboardManager {
    * @param event - The originating keyboard event
    * @internal
    */
-  _onKeyUp (event: KeyboardEvent): void
+  _onKeyUp(event: KeyboardEvent): void;
 
   /* -------------------------------------------- */
 
@@ -128,7 +128,7 @@ declare class KeyboardManager {
    * @param up    - A flag for whether the key is down or up
    * @internal
    */
-  _handleKeys (event: KeyboardEvent, key: string, up: boolean): void
+  _handleKeys(event: KeyboardEvent, key: string, up: boolean): void;
 
   /* -------------------------------------------- */
 
@@ -136,7 +136,7 @@ declare class KeyboardManager {
    * Input events do not fire with isComposing = false at the end of a composition event in Chrome
    * See: https://github.com/w3c/uievents/issues/202
    */
-  _onCompositionEnd (event: CompositionEvent): void
+  _onCompositionEnd(event: CompositionEvent): void;
 
   /* -------------------------------------------- */
 
@@ -144,7 +144,7 @@ declare class KeyboardManager {
    * Master mouse-wheel event keyboard handler
    * @internal
    */
-  _onWheel (event: Event): void
+  _onWheel(event: Event): void;
 
   /* -------------------------------------------- */
 
@@ -155,7 +155,7 @@ declare class KeyboardManager {
    * @param modifiers - The identified modifiers attached to this keypress
    * @internal
    */
-  _onTab (event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void
+  _onTab(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /* -------------------------------------------- */
 
@@ -166,7 +166,7 @@ declare class KeyboardManager {
    * @param modifiers - The identified modifiers attached to this keypress
    * @internal
    */
-  _onEscape (event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void
+  _onEscape(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /* -------------------------------------------- */
 
@@ -177,7 +177,7 @@ declare class KeyboardManager {
    * @param modifiers - The identified modifiers attached to this keypress
    * @internal
    */
-  _onSpace (event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void
+  _onSpace(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /* -------------------------------------------- */
 
@@ -189,7 +189,7 @@ declare class KeyboardManager {
    *                    (unused)
    * @internal
    */
-  _onAlt (event: KeyboardEvent, up: boolean, modifiers?: any): void
+  _onAlt(event: KeyboardEvent, up: boolean, modifiers?: any): void;
 
   /* -------------------------------------------- */
 
@@ -200,7 +200,7 @@ declare class KeyboardManager {
    * @param modifiers - The identified modifiers attached to this keypress
    * @internal
    */
-  _onMovement (event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void
+  _onMovement(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /* -------------------------------------------- */
 
@@ -208,14 +208,14 @@ declare class KeyboardManager {
    * Handle keyboard movement once a small delay has elapsed to allow for multiple simultaneous key-presses.
    * @internal
    */
-  _handleMovement (event: KeyboardEvent, layer: PlaceablesLayer): void
+  _handleMovement(event: KeyboardEvent, layer: PlaceablesLayer): void;
 
   /* -------------------------------------------- */
 
   /**
    * Handle panning the canvas using CTRL + directional keys
    */
-  _handleCanvasPan (): Promise<void>
+  _handleCanvasPan(): Promise<void>;
 
   /* -------------------------------------------- */
 
@@ -227,7 +227,7 @@ declare class KeyboardManager {
    * @param modifiers - What modifiers affect the keypress?
    * @internal
    */
-  _onDigit (event: any, up: boolean, modifiers: KeyboardManager.MetaModifiers): void
+  _onDigit(event: any, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /* -------------------------------------------- */
 
@@ -239,7 +239,7 @@ declare class KeyboardManager {
    * @param modifiers - The identified modifiers attached to this keypress
    * @internal
    */
-  _onKeyA (event: any, up: boolean, modifiers: KeyboardManager.MetaModifiers): void
+  _onKeyA(event: any, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /* -------------------------------------------- */
 
@@ -250,7 +250,7 @@ declare class KeyboardManager {
    * @param modifiers - The identified modifiers attached to this keypress
    * @internal
    */
-  _onKeyC (event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void
+  _onKeyC(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /* -------------------------------------------- */
 
@@ -261,7 +261,7 @@ declare class KeyboardManager {
    * @param modifiers - The identified modifiers attached to this keypress
    * @internal
    */
-  _onKeyV (event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void
+  _onKeyV(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /* -------------------------------------------- */
 
@@ -272,7 +272,7 @@ declare class KeyboardManager {
    * @param modifiers - The identified modifiers attached to this keypress
    * @internal
    */
-  _onKeyZ (event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void
+  _onKeyZ(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /* -------------------------------------------- */
 
@@ -283,7 +283,7 @@ declare class KeyboardManager {
    * @param modifiers - The identified modifiers attached to this keypress
    * @internal
    */
-  _onKeyZoom (event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void
+  _onKeyZoom(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /* -------------------------------------------- */
 
@@ -294,63 +294,63 @@ declare class KeyboardManager {
    * @param modifiers - The identified modifiers attached to this keypress
    * @internal
    */
-  _onDelete (event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void
+  _onDelete(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /**
    * Specify a rate limit for mouse wheel to gate repeated scrolling.
    * This is especially important for continuous scrolling mice which emit hundreds of events per second.
    * This designates a minimum number of milliseconds which must pass before another wheel event is handled
    */
-  static MOUSE_WHEEL_RATE_LIMIT: 50
+  static MOUSE_WHEEL_RATE_LIMIT: 50;
 
   /**
    * Enumerate the "digit keys"
    */
-  static DIGIT_KEYS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+  static DIGIT_KEYS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
 
   /**
    * Map keys used for movement
    */
   static MOVEMENT_KEYS: {
-    w: ['up']
-    a: ['left']
-    s: ['down']
-    d: ['right']
-    W: ['up']
-    A: ['left']
-    S: ['down']
-    D: ['right']
-    ArrowUp: ['up']
-    ArrowRight: ['right']
-    ArrowDown: ['down']
-    ArrowLeft: ['left']
-    Numpad1: ['down', 'left']
-    Numpad2: ['down']
-    Numpad3: ['down', 'right']
-    Numpad4: ['left']
-    Numpad6: ['right']
-    Numpad7: ['up', 'left']
-    Numpad8: ['up']
-    Numpad9: ['up', 'right']
-  }
+    w: ['up'];
+    a: ['left'];
+    s: ['down'];
+    d: ['right'];
+    W: ['up'];
+    A: ['left'];
+    S: ['down'];
+    D: ['right'];
+    ArrowUp: ['up'];
+    ArrowRight: ['right'];
+    ArrowDown: ['down'];
+    ArrowLeft: ['left'];
+    Numpad1: ['down', 'left'];
+    Numpad2: ['down'];
+    Numpad3: ['down', 'right'];
+    Numpad4: ['left'];
+    Numpad6: ['right'];
+    Numpad7: ['up', 'left'];
+    Numpad8: ['up'];
+    Numpad9: ['up', 'right'];
+  };
 
   /**
    * Map keys used for canvas zooming
    */
   static ZOOM_KEYS: {
-    NumpadAdd: 'in'
-    NumpadSubtract: 'out'
-    PageDown: 'out'
-    PageUp: 'in'
-  }
+    NumpadAdd: 'in';
+    NumpadSubtract: 'out';
+    PageDown: 'out';
+    PageUp: 'in';
+  };
 }
 
 declare namespace KeyboardManager {
   interface MetaModifiers {
-    hasFocus: boolean
-    isAlt: boolean
-    isCtrl: boolean
-    isShift: boolean
-    key: string
+    hasFocus: boolean;
+    isAlt: boolean;
+    isCtrl: boolean;
+    isShift: boolean;
+    key: string;
   }
 }

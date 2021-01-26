@@ -18,21 +18,21 @@
  * ```
  */
 declare class MeasuredTemplate extends PlaceableObject {
-  constructor (any: any)
+  constructor(any: any);
 
-  get bounds (): NormalizedRectangle
+  get bounds(): NormalizedRectangle;
 
   /**
    * Draw the rotation control handle and assign event listeners
    * @internal
    */
-  _drawRotationHandle (radius: any): void;
+  _drawRotationHandle(radius: any): void;
 
   /**
    * Draw the Text label used for the MeasuredTemplate
    * @internal
    */
-  _drawRulerText (): PIXI.Text;
+  _drawRulerText(): PIXI.Text;
 
   // TODO properly declare the creation data object
 
@@ -40,46 +40,38 @@ declare class MeasuredTemplate extends PlaceableObject {
    * Get a Circular area of effect given a radius of effect
    * @internal
    */
-  _getCircleShape (distance: number): PIXI.Circle;
+  _getCircleShape(distance: number): PIXI.Circle;
 
   /**
    * Get a Conical area of effect given a direction, angle, and distance
    * @internal
    */
-  _getConeShape (
-    direction: number,
-    angle: number,
-    distance: number
-  ): PIXI.Polygon;
+  _getConeShape(direction: number, angle: number, distance: number): PIXI.Polygon;
 
   /**
    * Get a rotated Rectangular area of effect given a width, height, and direction
    * @internal
    */
-  _getRayShape (
-    direction: number,
-    distance: number,
-    width: number
-  ): PIXI.Polygon;
+  _getRayShape(direction: number, distance: number, width: number): PIXI.Polygon;
 
   /**
    * Get a Rectangular area of effect given a width and height
    * @internal
    */
-  _getRectShape (direction: number, distance: number): NormalizedRectangle;
+  _getRectShape(direction: number, distance: number): NormalizedRectangle;
 
   /**
    * Update the displayed ruler tooltip text
    * @internal
    */
-  _refreshRulerText (): void;
+  _refreshRulerText(): void;
 
-  draw (): Promise<PlaceableObject>
+  draw(): Promise<PlaceableObject>;
 
   /**
    * Highlight the grid squares which should be shown under the area of effect
    */
-  highlightGrid (): void;
+  highlightGrid(): void;
 
-  refresh (): PlaceableObject
+  refresh(): PlaceableObject;
 }

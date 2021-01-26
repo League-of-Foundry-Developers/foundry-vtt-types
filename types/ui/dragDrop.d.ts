@@ -1,2 +1,1 @@
-declare class DragDrop {
-}
+declare class DragDrop {}

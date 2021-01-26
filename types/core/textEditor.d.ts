@@ -2,7 +2,7 @@
  * A collection of helper functions and utility methods related to the rich text editor
  */
 declare class TextEditor {
-  static activateListeners (): void;
+  static activateListeners(): void;
 
   /**
    * Create a Rich Text Editor. The current implementation uses TinyMCE
@@ -10,7 +10,7 @@ declare class TextEditor {
    * @param content - Initial HTML or text content to populate the editor with
    * @returns The editor instance.
    */
-  static create (options: TextEditor.Options, content: string): Promise<Editor>
+  static create(options: TextEditor.Options, content: string): Promise<Editor>;
 
   /**
    * Enrich HTML content by replacing or augmenting components of it
@@ -22,10 +22,7 @@ declare class TextEditor {
    * @param rollData - The data object providing context for inline rolls
    * @returns The enriched HTML content
    */
-  static enrichHTML (
-    content: string,
-    { secrets, entities, links, rolls, rollData }?: { [x: string]: boolean }
-  ): string;
+  static enrichHTML(content: string, { secrets, entities, links, rolls, rollData }?: { [x: string]: boolean }): string;
 
   /**
    * Preview an HTML fragment by constructing a substring of a given length from its inner text.
@@ -33,40 +30,37 @@ declare class TextEditor {
    * @param length - The desired length
    * @returns The previewed HTML
    */
-  static previewHTML (content: string, length: number): string;
+  static previewHTML(content: string, length: number): string;
 
   /**
    * Handle click events on Entity Links
    */
-  protected static _onClickEntityLink (event: Event): Promise<any>;
+  protected static _onClickEntityLink(event: Event): Promise<any>;
 
   /**
    * Handle left-mouse clicks on an inline roll, dispatching the formula or displaying the tooltip
    * @param event - The initiating click event
    */
-  protected static _onClickInlineRoll (event: Event): Promise<ChatMessage | any | null>;
+  protected static _onClickInlineRoll(event: Event): Promise<ChatMessage | any | null>;
 
   /**
    * Begin a Drag+Drop workflow for a dynamic content link
    * @param event - The originating drag event
    */
-  protected static _onDragEntityLink (event: Event): boolean;
+  protected static _onDragEntityLink(event: Event): boolean;
 
   /**
    * Handle dropping of transferred data onto the active rich text editor
    * @param event - The originating drop event which triggered the data transfer
    * @param editor - The TinyMCE editor instance being dropped on
    */
-  protected static _onDropEditorData (
-    event: Event,
-    editor: import('tinymce').Editor
-  ): Promise<boolean>;
+  protected static _onDropEditorData(event: Event, editor: import('tinymce').Editor): Promise<boolean>;
 
   /**
    * If dynamic content links are used from a certain compendium, we will go ahead and preload the index for that
    * Compendium pack in the background so the links can function better.
    */
-  protected static _preloadCompendiumIndices (matches: string[]): Promise<void>;
+  protected static _preloadCompendiumIndices(matches: string[]): Promise<void>;
 
   /**
    * Replace a matched Entity Link with an actual HTML link to that entity
@@ -76,21 +70,12 @@ declare class TextEditor {
    * @param name - A custom text name to display
    * @returns The replacement string
    */
-  protected static _replaceCompendiumLink (
-    match: string,
-    id: string,
-    name: string
-  ): string;
+  protected static _replaceCompendiumLink(match: string, id: string, name: string): string;
 
   /**
    * Handle replacement of content links within HTML by delegating to different helper methods based on entity type
    */
-  protected static _replaceContentLinks (
-    match: string,
-    entityType: string,
-    id: string,
-    name: string
-  ): string;
+  protected static _replaceContentLinks(match: string, entityType: string, id: string, name: string): string;
 
   /**
    * Replace a matched Entity Link with an actual HTML link to that entity
@@ -101,18 +86,13 @@ declare class TextEditor {
    * @param name - A custom text name to display
    * @returns The replacement string
    */
-  protected static _replaceEntityLink (
-    match: string,
-    entityType: string,
-    id: string,
-    name: string
-  ): string;
+  protected static _replaceEntityLink(match: string, entityType: string, id: string, name: string): string;
 
   /**
    * Replace a hyperlink-like string with an actual HTML <a> tag
    * @returns The replacement string
    */
-  protected static _replaceHyperlinks (match: string, url: string): string;
+  protected static _replaceHyperlinks(match: string, url: string): string;
 
   /**
    * Replace an inline roll formula with a rollable button or an eagerly evaluated roll result
@@ -122,17 +102,12 @@ declare class TextEditor {
    * @param rollData - The data object providing context for inline rolls
    * @returns The replaced match
    */
-  protected static _replaceInlineRolls (
-    match: string,
-    command: string,
-    formula: string,
-    ...args: any[]
-  ): string;
+  protected static _replaceInlineRolls(match: string, command: string, formula: string, ...args: any[]): string;
 
   /**
    * Begin a a data transfer drag event with default handling
    */
-  protected _onDragStart (event: Event): void;
+  protected _onDragStart(event: Event): void;
 }
 
 declare namespace TextEditor {
@@ -140,32 +115,32 @@ declare namespace TextEditor {
     /**
      * @defaultValue `false`
      */
-    branding?: boolean
+    branding?: boolean;
 
     /**
      * @defaultValue `['/css/mce.css']`
      */
-    content_css?: string[]
+    content_css?: string[];
 
     /**
      * @defaultValue `false`
      */
-    menubar?: boolean
+    menubar?: boolean;
 
     /**
      * @defaultValue `'lists image table hr code save link'`
      */
-    plugins?: string
+    plugins?: string;
 
     /**
      * @defaultValue `true`
      */
-    save_enablewhendirty?: boolean
+    save_enablewhendirty?: boolean;
 
     /**
      * @defaultValue `false`
      */
-    statusbar?: boolean
+    statusbar?: boolean;
 
     style_formats?: [
       {
@@ -174,47 +149,47 @@ declare namespace TextEditor {
             /**
              * @defaultValue `'section'`
              */
-            block?: string
+            block?: string;
 
             /**
              * @defaultValue `'secrect'`
              */
-            classes?: string
+            classes?: string;
 
             /**
              * @defaultValue `'Secret'`
              */
-            title?: string
+            title?: string;
 
             /**
              * @defaultValue `true`
              */
-            wrapper?: boolean
+            wrapper?: boolean;
           }
-        ]
+        ];
 
         /**
          * @defaultValue `'Custom'`
          */
-        title?: string
+        title?: string;
       }
-    ]
+    ];
 
     /**
      * @defaultValue `true`
      */
-    style_formats_merge?: boolean
+    style_formats_merge?: boolean;
 
     /**
      * @defaultValue `{}`
      */
-    table_default_styles?: object
+    table_default_styles?: object;
 
-    target: HTMLElement
+    target: HTMLElement;
 
     /**
      * @defaultValue `'styleselect bullist numlist image table hr link removeformat code save'`
      */
-    toolbar?: string
+    toolbar?: string;
   }
 }

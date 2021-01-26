@@ -12,7 +12,7 @@ declare class Hooks {
    * @param fn   - The callback function which should be triggered when the hook event occurs
    * @returns An ID number of the hooked function which can be used to turn off the hook later
    */
-  static on (hook: string, fn: Hooks.General): number
+  static on(hook: string, fn: Hooks.General): number;
 
   /* -------------------------------------------- */
 
@@ -24,7 +24,7 @@ declare class Hooks {
    * @param fn   - The callback function which should be triggered when the hook event occurs
    * @returns An ID number of the hooked function which can be used to turn off the hook later
    */
-  static once (hook: string, fn: Hooks.General): number
+  static once(hook: string, fn: Hooks.General): number;
 
   /* -------------------------------------------- */
 
@@ -34,7 +34,7 @@ declare class Hooks {
    * @param hook - The unique name of the hooked event
    * @param fn   - The function, or ID number for the function, that should be turned off
    */
-  static off (hook: string, fn: number | Hooks.General): void
+  static off(hook: string, fn: number | Hooks.General): void;
 
   /* -------------------------------------------- */
 
@@ -45,7 +45,7 @@ declare class Hooks {
    * @param hook - The hook being triggered
    * @param args - Arguments passed to the hook callback functions
    */
-  static callAll (hook: string, ...args: any[]): boolean | null
+  static callAll(hook: string, ...args: any[]): boolean | null;
 
   /* -------------------------------------------- */
 
@@ -59,7 +59,7 @@ declare class Hooks {
    * @param hook - The hook being triggered
    * @param args - Arguments passed to the hook callback functions
    */
-  static call (hook: string, ...args: any[]): boolean
+  static call(hook: string, ...args: any[]): boolean;
 
   /* -------------------------------------------- */
 
@@ -67,27 +67,27 @@ declare class Hooks {
    * Call a hooked function using provided arguments and perhaps unregister it.
    * @internal
    */
-  static _call (hook: string, fn: Hooks.General, ...args: any[]): boolean
+  static _call(hook: string, fn: Hooks.General, ...args: any[]): boolean;
 
   /**
    * @defaultValue `{}`
    */
-  static _hooks: Record<string, Hooks.General[]>
+  static _hooks: Record<string, Hooks.General[]>;
 
   /**
    * @defaultValue `[]`
    */
-  static _once: Hooks.General[]
+  static _once: Hooks.General[];
 
   /**
    * @defaultValue `{}`
    */
-  static _ids: Record<number, Hooks.General[]>
+  static _ids: Record<number, Hooks.General[]>;
 
   /**
    * @defaultValue `1`
    */
-  static _id: number
+  static _id: number;
 }
 
 /**
@@ -124,7 +124,7 @@ declare namespace Hooks {
    * @remarks The name is 'applyActiveEffect'.
    * @see {@link ActiveEffect#_applyCustom}
    */
-  type ApplyActiveEffect = (actor: Actor, change: ActiveEffectChange) => void
+  type ApplyActiveEffect = (actor: Actor, change: ActiveEffect.Change) => void;
 
   /**
    * This is called before a {@link Canvas} is drawn.
@@ -132,7 +132,7 @@ declare namespace Hooks {
    * @remarks The name is 'canvasInit'.
    * @see {@link Canvas#draw}
    */
-  type CanvasInit = (canvas: Canvas) => void
+  type CanvasInit = (canvas: Canvas) => void;
 
   /**
    * This is called when a {@link Canvas} is panned. When called during animated panning, the callback is called on
@@ -143,7 +143,7 @@ declare namespace Hooks {
    * @see {@link Canvas#pan}
    * @see {@link Canvas#animatePan}
    */
-  type CanvasPan = (canvas: Canvas, view: Canvas.View) => void
+  type CanvasPan = (canvas: Canvas, view: Canvas.View) => void;
 
   /**
    * This is called after a {@link Canvas} is done initializing.
@@ -151,7 +151,7 @@ declare namespace Hooks {
    * @remarks The name is 'canvasReady'
    * @see {@link Canvas#draw}
    */
-  type CanvasReady = (canvas: Canvas) => void
+  type CanvasReady = (canvas: Canvas) => void;
 
   /**
    * This is called when creating a {@link ChatBubble}, but before displaying it.
@@ -169,9 +169,9 @@ declare namespace Hooks {
     jq: JQuery,
     message: string,
     options: {
-      emote: boolean
+      emote: boolean;
     }
-  ) => boolean
+  ) => boolean;
 
   /**
    * This is called first when processing a chat message.
@@ -182,7 +182,7 @@ declare namespace Hooks {
    * @remarks The name is 'chatMessage'.
    * @see {@link ChatLog#processMessage}
    */
-  type ChatMessage = (chatLog: ChatLog, message: string, chatData: ChatMessage.ChatData) => boolean
+  type ChatMessage = (chatLog: ChatLog, message: string, chatData: ChatMessage.ChatData) => boolean;
 
   /**
    * This is called when closing an {@link Application}. This is called once for each Application class in the
@@ -193,7 +193,7 @@ declare namespace Hooks {
    * @remarks The name for this hook is dynamically created by joining 'close' with the type name of the Application.
    * @see {@link Application#close}
    */
-  type CloseApplication<A extends Application = Application> = (app: A, jq: JQuery) => void
+  type CloseApplication<A extends Application = Application> = (app: A, jq: JQuery) => void;
 
   /**
    * This is called after the {@link SceneNavigation} is expanded or collapsed.
@@ -203,7 +203,7 @@ declare namespace Hooks {
    * @see {@link SceneNavigation#expand}
    * @see {@link SceneNavigation#collapse}
    */
-  type CollapseSceneNavigation = (nav: SceneNavigation, collapsed: boolean) => void
+  type CollapseSceneNavigation = (nav: SceneNavigation, collapsed: boolean) => void;
 
   /**
    * This is called after assuming or releasing control over a {@link PlaceableObject}.
@@ -215,7 +215,7 @@ declare namespace Hooks {
    * @see {@link PlaceableObject#control}
    * @see {@link PlaceableObject#release}
    */
-  type ControlPlaceableObject<P extends PlaceableObject = PlaceableObject> = (object: P, controlled: boolean) => void
+  type ControlPlaceableObject<P extends PlaceableObject = PlaceableObject> = (object: P, controlled: boolean) => void;
 
   /**
    * This is called after creating an embedded {@link Entity}.
@@ -233,7 +233,7 @@ declare namespace Hooks {
     data: D,
     options: Entity.CreateOptions,
     userId: number
-  ) => void
+  ) => void;
 
   /**
    * This is called after creating an {@link Entity}.
@@ -244,7 +244,7 @@ declare namespace Hooks {
    * @remarks The name for this hook is dynamically created by joining 'create' with the type name of the Entity.
    * @see {@link Entity#_handleCreate}
    */
-  type CreateEntity<E extends Entity = Entity> = (entity: E, options: Entity.CreateOptions, userId: number) => void
+  type CreateEntity<E extends Entity = Entity> = (entity: E, options: Entity.CreateOptions, userId: number) => void;
 
   /**
    * This is called after deleting an embedded {@link Entity}.
@@ -255,12 +255,12 @@ declare namespace Hooks {
    * @remarks The name for this hook is dynamically created by joining 'delete' with the type name of the Entity.
    * @see {@link Entity#_handleDeleteEmbeddedEntity}
    */
-  type DeleteEmbeddedEntity <E extends Entity = Entity, P extends Entity = Entity> = (
+  type DeleteEmbeddedEntity<E extends Entity = Entity, P extends Entity = Entity> = (
     parent: P,
     entity: E,
     options: Entity.DeleteOptions,
     userId: number
-  ) => void
+  ) => void;
 
   /**
    * This is called after deleting an {@link Entity}.
@@ -271,7 +271,7 @@ declare namespace Hooks {
    * @remarks The name for this hook is dynamically created by joining 'delete' with the type name of the Entity.
    * @see {@link Entity#_handleDelete}
    */
-  type DeleteEntity<E extends Entity = Entity> = (entity: E, options: Entity.DeleteOptions, userId: number) => void
+  type DeleteEntity<E extends Entity = Entity> = (entity: E, options: Entity.DeleteOptions, userId: number) => void;
 
   /**
    * This is called during the drop portion of a drag-and-drop event on an actor sheet.
@@ -282,7 +282,7 @@ declare namespace Hooks {
    * @remarks The name is 'dropActorSheetData'.
    * @see {@link ActorSheet#_onDrop}
    */
-  type DropActorSheetData = (actor: Actor, sheet: ActorSheet, data: object) => boolean
+  type DropActorSheetData = (actor: Actor, sheet: ActorSheet, data: object) => boolean;
 
   /**
    * This is called during the drop portion of a drag-and-drop event on a canvas.
@@ -292,7 +292,7 @@ declare namespace Hooks {
    * @remarks The name is 'dropCanvasData'.
    * @see {@link Canvas#_onDrop}
    */
-  type DropCanvasData = (canvas: Canvas, data: object) => boolean
+  type DropCanvasData = (canvas: Canvas, data: object) => boolean;
 
   /**
    * This is called during the drop portion of a drag-and-drop event on a roll table.
@@ -303,7 +303,7 @@ declare namespace Hooks {
    * @remarks The name is 'dropRollTableSheetData'.
    * @see {@link RollTableConfig#_onDrop}
    */
-  type DropRollTableSheetData = (entity: Entity, config: RollTableConfig, data: object) => boolean
+  type DropRollTableSheetData = (entity: Entity, config: RollTableConfig, data: object) => boolean;
 
   /**
    * A general type for the Hooks callback functions. The parameters differ, depending on the hook. Have a look at the
@@ -311,7 +311,7 @@ declare namespace Hooks {
    * @param args - The arguments passed to the callback
    * @returns Whether additional callbacks should be called after this
    */
-  type General = (...args: any[]) => any
+  type General = (...args: any[]) => any;
 
   /**
    * This is called when creating {@link Application.HeaderButton}s for an {@link Application}. This is called once for
@@ -323,8 +323,10 @@ declare namespace Hooks {
    * 'HeaderButtons'.
    * @see {@link Application#_getHeaderButtons}
    */
-  type GetApplicationHeaderButtons<A extends Application = Application> =
-    (app: A, buttons: Application.HeaderButton[]) => void
+  type GetApplicationHeaderButtons<A extends Application = Application> = (
+    app: A,
+    buttons: Application.HeaderButton[]
+  ) => void;
 
   /**
    * This is called after getting the {@link ContextMenu} options for a {@link ChatLog}, but before creating the
@@ -335,7 +337,7 @@ declare namespace Hooks {
    * 'EntryContext'.
    * @see {@link ChatLog#_contextMenu}
    */
-  type GetChatLogEntryContext = (jq: JQuery, entryOptions: ContextMenu.Option[]) => void
+  type GetChatLogEntryContext = (jq: JQuery, entryOptions: ContextMenu.Option[]) => void;
 
   /**
    * This is called after getting the {@link ContextMenu} options for a {@link CombatTracker} entry, but before creating
@@ -346,7 +348,7 @@ declare namespace Hooks {
    * 'EntryContext'.
    * @see {@link CombatTracker#_contextMenu}
    */
-  type GetCombatTrackerEntryContext = (jq: JQuery, entryOptions: ContextMenu.Option[]) => void
+  type GetCombatTrackerEntryContext = (jq: JQuery, entryOptions: ContextMenu.Option[]) => void;
 
   /**
    * This is called after getting the {@link ContextMenu} options for a {@link CompendiumDirectory} entry, but before
@@ -357,7 +359,7 @@ declare namespace Hooks {
    * CompendiumDirectory and 'EntryContext'.
    * @see {@link CompendiumDirectory#_contextMenu}
    */
-  type GetCompendiumDirectoryEntryContext = (jq: JQuery, entryOptions: ContextMenu.Option[]) => void
+  type GetCompendiumDirectoryEntryContext = (jq: JQuery, entryOptions: ContextMenu.Option[]) => void;
 
   /**
    * This is called after getting the {@link ContextMenu} options for a {@link PlaylistDirectory} sound, but before
@@ -368,7 +370,7 @@ declare namespace Hooks {
    * and 'EntryContext'.
    * @see {@link PlaylistDirectory#_contextMenu}
    */
-  type GetPlaylistDirectorySoundContext = (jq: JQuery, entryOptions: ContextMenu.Option[]) => void
+  type GetPlaylistDirectorySoundContext = (jq: JQuery, entryOptions: ContextMenu.Option[]) => void;
 
   /**
    * This is called after the initial {@link SceneControls} have been set up.
@@ -376,7 +378,7 @@ declare namespace Hooks {
    * @remarks The name is 'getSceneControlButtons'.
    * @see {@link SceneControls#_getControlButtons}
    */
-  type GetSceneControlButtons = (controls: SceneControl[]) => void
+  type GetSceneControlButtons = (controls: SceneControl[]) => void;
 
   /**
    * This is called after getting the {@link ContextMenu} options for the {@link SceneNavigation}, but before creating
@@ -386,7 +388,7 @@ declare namespace Hooks {
    * @remarks The name is 'getSceneNavigationContext'.
    * @see {@link SceneNavigation#activateListeners}
    */
-  type GetSceneNavigationContext = (jq: JQuery, contextOptions: ContextMenu.Option[]) => void
+  type GetSceneNavigationContext = (jq: JQuery, contextOptions: ContextMenu.Option[]) => void;
 
   /**
    * This is called after getting the {@link ContextMenu} options for a {@link SidebarDirectory} entry, but before
@@ -397,7 +399,7 @@ declare namespace Hooks {
    * and 'EntryContext'.
    * @see {@link SidebarDirectory#_contextMenu}
    */
-  type GetSiderbarDirectoryEntryContext = (jq: JQuery, entryOptions: ContextMenu.Option[]) => void
+  type GetSiderbarDirectoryEntryContext = (jq: JQuery, entryOptions: ContextMenu.Option[]) => void;
 
   /**
    * This is called after getting the {@link ContextMenu} options for a {@link SidebarDirectory} folder, but before
@@ -408,7 +410,7 @@ declare namespace Hooks {
    * and 'FolderContext'.
    * @see {@link SidebarDirectory#_contextMenu}
    */
-  type GetSiderbarDirectoryFolderContext = (jq: JQuery, folderOptions: ContextMenu.Option[]) => void
+  type GetSiderbarDirectoryFolderContext = (jq: JQuery, folderOptions: ContextMenu.Option[]) => void;
 
   /**
    * This is called after getting the {@link ContextMenu} options for a {@link PlayerList} user, but before creating the
@@ -418,7 +420,7 @@ declare namespace Hooks {
    * @remarks The name is 'getUserContextOptions'.
    * @see {@link PlayerList#activateListeners}
    */
-  type GetUserContextOptions = (jq: JQuery, contextOptions: ContextMenu.Option[]) => void
+  type GetUserContextOptions = (jq: JQuery, contextOptions: ContextMenu.Option[]) => void;
 
   /**
    * This is called during the drop portion of a drag-and-drop event on the hotbar.
@@ -429,7 +431,7 @@ declare namespace Hooks {
    * @remarks The name is 'hotbarDrop'.
    * @see {@link Hotbar#_onDrop}
    */
-  type HotbarDrop = (hotbar: Hotbar, data: object, slot: string) => boolean
+  type HotbarDrop = (hotbar: Hotbar, data: object, slot: string) => boolean;
 
   /**
    * This is called when the user mouse is entering or leaving a hover state over a {@link PlaceableObject}.
@@ -440,14 +442,14 @@ declare namespace Hooks {
    * @see {@link PlaceableObject#_onHoverIn}
    * @see {@link PlaceableObject#_onHoverOut}
    */
-  type HoverPlaceableObject<P extends PlaceableObject = PlaceableObject> = (object: P, hover: boolean) => void
+  type HoverPlaceableObject<P extends PlaceableObject = PlaceableObject> = (object: P, hover: boolean) => void;
 
   /**
    * This is called before the {@link Game} is initialized for the current window location.
    * @remarks The name is 'init'.
    * @see {@link Game#initialize}
    */
-  type Init = () => void
+  type Init = () => void;
 
   /**
    * This is called when initializing shaders for a {@link PointSource}.
@@ -456,14 +458,14 @@ declare namespace Hooks {
    * @remarks The name is 'initializePointSourceShaders'.
    * @see {@link PointSource#_initializeShaders}
    */
-  type InitializePointSourceShaders = (pointSource: PointSource, animationType: string) => void
+  type InitializePointSourceShaders = (pointSource: PointSource, animationType: string) => void;
 
   /**
    * This is called after refreshing the {@link LightingLayer}.
    * @param layer - the LightingLayer
    * @see {@link LightingLayer#refresh}
    */
-  type LightingRefresh = (lighting: LightingLayer) => void
+  type LightingRefresh = (lighting: LightingLayer) => void;
 
   /**
    * This is called when the values of a {@link Token} are updated and before updating the values of the associated
@@ -481,13 +483,13 @@ declare namespace Hooks {
    */
   type ModifyTokenAttribute = (
     updateInfo: {
-      attribute: string
-      isBar: boolean
-      isDelta: boolean
-      value: number
+      attribute: string;
+      isBar: boolean;
+      isDelta: boolean;
+      value: number;
     },
     update: Record<string, number>
-  ) => boolean
+  ) => boolean;
 
   /**
    * This is called after copying {@link PlaceableObject}s in a copy-paste action, but before embedding them into the
@@ -499,7 +501,7 @@ declare namespace Hooks {
    * PlaceableObject.
    * @see {@link PlaceablesLayer#pasteObjects}
    */
-  type PastePlaceableObject<P extends PlaceableObject = PlaceableObject> = (copied: P[], pasted: P[]) => void
+  type PastePlaceableObject<P extends PlaceableObject = PlaceableObject> = (copied: P[], pasted: P[]) => void;
 
   /**
    * This is called after copying {@link Wall}s in a copy-paste action, but before embedding them into the {@link
@@ -510,7 +512,7 @@ declare namespace Hooks {
    * @remarks The name for this hook is dynamically created by joining 'paste' with the type name of the Wall.
    * @see {@link WallsLayer#pasteObjects}
    */
-  type PasteWall<W extends Wall = Wall> = (copied: W[], pasted: W[]) => void
+  type PasteWall<W extends Wall = Wall> = (copied: W[], pasted: W[]) => void;
 
   /**
    * This is called after the {@link Game} pause is toggled
@@ -518,7 +520,7 @@ declare namespace Hooks {
    * @remarks The name is 'pauseGame'.
    * @see {@link Game#togglePause}
    */
-  type PauseGame = (paused: boolean) => void
+  type PauseGame = (paused: boolean) => void;
 
   /**
    * This is called before creating an embedded {@link Entity}. This is called once for every Entity in a create
@@ -539,7 +541,7 @@ declare namespace Hooks {
     data: D,
     options: Entity.CreateOptions,
     userId: number
-  ) => boolean
+  ) => boolean;
 
   /**
    * This is called before creating an {@link Entity}. This is called once for every Entity in a create request. If this
@@ -552,7 +554,7 @@ declare namespace Hooks {
    * @remarks The name for this hook is dynamically created by joining 'preCreate' with the type name of the Entity.
    * @see {@link Entity.create}
    */
-  type PreCreateEntity<D> = (data: D, options: Entity.CreateOptions, userId: number) => boolean
+  type PreCreateEntity<D> = (data: D, options: Entity.CreateOptions, userId: number) => boolean;
 
   /**
    * This is called before deleting an embedded {@link Entity}.
@@ -566,12 +568,12 @@ declare namespace Hooks {
    * @remarks The name for this hook is dynamically created by joining 'preDelete' with the type name of the Entity.
    * @see {@link Entity#deleteEmbeddedEntity}
    */
-  type PreDeleteEmbeddedEntity <E extends Entity = Entity, P extends Entity = Entity> = (
+  type PreDeleteEmbeddedEntity<E extends Entity = Entity, P extends Entity = Entity> = (
     parent: P,
     entity: E,
     options: Entity.DeleteOptions,
     userId: number
-  ) => boolean
+  ) => boolean;
 
   /**
    * This is called before deleting an {@link Entity}. This is called once for every Entity in a delete request. If this
@@ -584,8 +586,11 @@ declare namespace Hooks {
    * @remarks The name for this hook is dynamically created by joining 'preDelete' with the type name of the Entity.
    * @see {@link Entity.delete}
    */
-  type PreDeleteEntity<E extends Entity = Entity> =
-    (entity: E, options: Entity.DeleteOptions, userId: number) => boolean
+  type PreDeleteEntity<E extends Entity = Entity> = (
+    entity: E,
+    options: Entity.DeleteOptions,
+    userId: number
+  ) => boolean;
 
   /**
    * This is called before updating an embedded {@link Entity}.
@@ -601,13 +606,13 @@ declare namespace Hooks {
    * Entity.
    * @see {@link Entity#updateEmbeddedEntity}
    */
-  type PreUpdateEmbeddedEntity <E extends Entity = Entity, P extends Entity = Entity> = (
+  type PreUpdateEmbeddedEntity<E extends Entity = Entity, P extends Entity = Entity> = (
     parent: P,
     entity: E,
     update: object,
     options: Entity.UpdateOptions,
     userId: number
-  ) => boolean
+  ) => boolean;
 
   /**
    * This is called before an Entity is updated.
@@ -625,14 +630,14 @@ declare namespace Hooks {
     data: object,
     options: Entity.UpdateOptions,
     userId: number
-  ) => boolean
+  ) => boolean;
 
   /**
    * This is called after the {@link Game} is fully set up.
    * @remarks The name is 'ready'.
    * @see {@link Game#setupGame}
    */
-  type Ready = () => void
+  type Ready = () => void;
 
   /**
    * This is called as last step when rendering an {@link Application}. This is called once for each Application class
@@ -645,7 +650,7 @@ declare namespace Hooks {
    * @remarks The name for this hook is dynamically created by joining 'render' with the type name of the Application.
    * @see {@link Application#_render}
    */
-  type RenderApplication<D, A extends Application = Application> = (app: A, jq: JQuery, data: D) => void
+  type RenderApplication<D, A extends Application = Application> = (app: A, jq: JQuery, data: D) => void;
 
   /**
    * This is called as last step when rendering a {@link ChatMessage}.
@@ -655,7 +660,7 @@ declare namespace Hooks {
    * @remarks The name is 'renderChatMessage'.
    * @see {@link ChatMessage#render}
    */
-  type RenderChatMessage = (message: ChatMessage, jq: JQuery, messageData: ChatMessage.MessageData) => void
+  type RenderChatMessage = (message: ChatMessage, jq: JQuery, messageData: ChatMessage.MessageData) => void;
 
   /**
    * This is called after {@link AVSettings} are changed.
@@ -663,14 +668,14 @@ declare namespace Hooks {
    * @param changed  - an object reflecting the changed settings
    * @see {@link AVSettings#_onSettingsChanged}
    */
-  type RtcSettingsChanged = (settings: AVSettings, changed: object) => void
+  type RtcSettingsChanged = (settings: AVSettings, changed: object) => void;
 
   /**
    * This is called before the {@link Game} is fully set up.
    * @remarks The name is 'setup'.
    * @see {@link Game#setupGame}
    */
-  type Setup = () => void
+  type Setup = () => void;
 
   /**
    * This is called when expanding or collapsing a {@link Sidebar}.
@@ -680,14 +685,14 @@ declare namespace Hooks {
    * @see {@link Sidebar#expand}
    * @see {@link Sidebar#collapse}
    */
-  type SidebarCollapse = (sidebar: Sidebar, collapsed: boolean) => void
+  type SidebarCollapse = (sidebar: Sidebar, collapsed: boolean) => void;
 
   /**
    * This is called after refreshing the {@link SightLayer}.
    * @param layer - the SightLayer
    * @see {@link SightLayer#restrictVisibility}
    */
-  type SightRefresh = (layer: SightLayer) => void
+  type SightRefresh = (layer: SightLayer) => void;
 
   /**
    * This is called after the targeted state for a {@link Token} changed.
@@ -697,7 +702,7 @@ declare namespace Hooks {
    * @remarks The name is 'targetToken'.
    * @see {@link UserTargets#_hook}
    */
-  type TargetToken = (user: User, token: Token, targeted: boolean) => void
+  type TargetToken = (user: User, token: Token, targeted: boolean) => void;
 
   /**
    * This is called after updating an embedded {@link Entity}.
@@ -711,13 +716,13 @@ declare namespace Hooks {
    * @remarks The name for this hook is dynamically created by joining 'update' with the type name of the Entity.
    * @see {@link Entity#_handleUpdateEmbeddedEntity}
    */
-  type UpdateEmbeddedEntity <E extends Entity = Entity, P extends Entity = Entity> = (
+  type UpdateEmbeddedEntity<E extends Entity = Entity, P extends Entity = Entity> = (
     parent: P,
     entity: E,
     data: object,
     options: Entity.UpdateOptions,
     userId: number
-  ) => void
+  ) => void;
 
   /**
    * This is called after updating an {@link Entity}.
@@ -734,7 +739,7 @@ declare namespace Hooks {
     data: object,
     options: Entity.UpdateOptions,
     userId: number
-  ) => void
+  ) => void;
 
   /**
    * This is called when the official world time changes.
@@ -743,5 +748,5 @@ declare namespace Hooks {
    * @remarks The name is 'updateWorldTime'.
    * @see {@link GameTime#onUpdateWorldTime}
    */
-  type UpdateWorldTime = (worldTime: number, dt: number) => void
+  type UpdateWorldTime = (worldTime: number, dt: number) => void;
 }

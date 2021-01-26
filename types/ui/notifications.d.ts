@@ -11,26 +11,26 @@
  */
 declare class Notifications extends Application {
   /** Notifications which are currently displayed */
-  active: any[]
+  active: any[];
 
   /** Submitted notifications which are queued for display */
-  queue: any[]
+  queue: any[];
 
-  constructor (options: Application.Options);
+  constructor(options: Application.Options);
 
   /**
    * Display a notification with the "error" type
    * @param message - The content of the notification message
    * @param options - Notification options passed to the notify function
    */
-  error (message: string, options?: { permanent?: boolean }): void;
+  error(message: string, options?: { permanent?: boolean }): void;
 
   /**
    * Display a notification with the "info" type
    * @param message - The content of the notification message
    * @param options - Notification options passed to the notify function
    */
-  info (message: string, options?: { permanent?: boolean }): void;
+  info(message: string, options?: { permanent?: boolean }): void;
 
   /**
    * Push a new notification into the queue
@@ -38,21 +38,17 @@ declare class Notifications extends Application {
    * @param type - The type of notification, currently "info", "warning", and "error" are supported
    * @param permanent - Whether the notification should be permanently displayed unless otherwise dismissed
    */
-  notify (
-    message: string,
-    type: 'info' | 'warning' | 'error',
-    options?: { permanent?: boolean }
-  ): void;
+  notify(message: string, type: 'info' | 'warning' | 'error', options?: { permanent?: boolean }): void;
 
   /**
    * Display a notification with the "warning" type
    * @param message - The content of the notification message
    * @param options - Notification options passed to the notify function
    */
-  warn (message: string, options?: { permanent?: boolean }): void;
+  warn(message: string, options?: { permanent?: boolean }): void;
 
   /**
    * Retrieve a pending notification from the queue and display it
    */
-  protected fetch (): Promise<any>;
+  protected fetch(): Promise<any>;
 }

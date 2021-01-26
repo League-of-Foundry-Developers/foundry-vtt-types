@@ -1,2 +1,1 @@
-declare class SightLayer extends CanvasLayer {
-}
+declare class SightLayer extends CanvasLayer {}

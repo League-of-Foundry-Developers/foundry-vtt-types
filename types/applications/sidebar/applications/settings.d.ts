@@ -1,2 +1,1 @@
-declare class Settings {
-}
+declare class Settings {}

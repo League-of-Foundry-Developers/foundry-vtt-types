@@ -1,2 +1,1 @@
-declare class AVSettings {
-}
+declare class AVSettings {}

@@ -1,2 +1,1 @@
-declare class SearchFilter {
-}
+declare class SearchFilter {}

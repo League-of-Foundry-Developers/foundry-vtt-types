@@ -3,5 +3,5 @@
  */
 declare class CombatTracker extends SidebarTab {
   // @TODO Declare Classes
-  [key: string]: any
+  [key: string]: any;
 }

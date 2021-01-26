@@ -1,2 +1,1 @@
-declare class LightingLayer extends PlaceablesLayer {
-}
+declare class LightingLayer extends PlaceablesLayer {}

@@ -1,4 +1,4 @@
-declare const twist: MersenneTwister
+declare const twist: MersenneTwister;
 
 /**
  * A standalone, pure JavaScript implementation of the Mersenne Twister pseudo
@@ -43,38 +43,38 @@ declare class MersenneTwister {
    * @param seed - The initial seed value, if not provided the current timestamp
    *               will be used.
    */
-  constructor (seed?: number)
+  constructor(seed?: number);
 
   /**
    * A factory method for generating random normal rolls
    * @see {@link MersenneTwister#normal}
    */
-  static normal (mu: number, sigma: number): number
+  static normal(mu: number, sigma: number): number;
 
   /**
    * A factory method for generating random uniform rolls
    * @see {@link MersenneTwister#random}
    */
-  static random (): number
+  static random(): number;
 
   /**
    * Generates a random unsigned 32-bit integer.
    * since: 0.1.0
    */
-  int (): number
+  int(): number;
 
   /**
    * Generates a random unsigned 31-bit integer.
    * since: 0.1.0
    */
-  int31 (): number
+  int31(): number;
 
   /**
    * A pseudo-normal distribution using the Box-Muller transform.
    * @param mu - The normal distribution mean
    * @param sigma - The normal distribution standard deviation
    */
-  normal (mu: number, sigma: number): number
+  normal(mu: number, sigma: number): number;
 
   /**
    * Generates a random real in the interval [0;1[ with 32-bit resolution.
@@ -82,31 +82,31 @@ declare class MersenneTwister {
    * since: 0.2.0
    * @see {@link MersenneTwister#rnd}
    */
-  random (): number
+  random(): number;
 
   /**
    * Generates a random real in the interval [0;1] with 32-bit resolution.
    * since: 0.1.0
    */
-  real (): number
+  real(): number;
 
   /**
    * Generates a random real in the interval ]0;1[ with 32-bit resolution.
    * since: 0.1.0
    */
-  realx (): number
+  realx(): number;
 
   /**
    * Generates a random real in the interval [0;1[ with 32-bit resolution.
    * since: 0.1.0
    */
-  rnd (): number
+  rnd(): number;
 
   /**
    * Generates a random real in the interval [0;1[ with 53-bit resolution.
    * since: 0.1.0
    */
-  rndHiRes (): number
+  rndHiRes(): number;
 
   /**
    * Initializes the state vector by using one unsigned 32-bit integer "seed",
@@ -114,7 +114,7 @@ declare class MersenneTwister {
    * since: 0.1.0
    * @param seed - The seed value.
    */
-  seed (seed: number): number
+  seed(seed: number): number;
 
   /**
    * Initializes the state vector by using an array key[] of unsigned 32-bit
@@ -124,5 +124,5 @@ declare class MersenneTwister {
    * since: 0.1.0
    * @param vector - The seed vector.
    */
-  seedArray (vector: number[]): void
+  seedArray(vector: number[]): void;
 }

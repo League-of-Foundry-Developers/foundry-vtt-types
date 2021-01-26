@@ -1,2 +1,1 @@
-declare class CompendiumDirectory {
-}
+declare class CompendiumDirectory {}

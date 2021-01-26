@@ -10,30 +10,30 @@
  * @see {@link SettingsConfig}
  */
 declare class ClientSettings {
-  constructor (worldSettings: WorldSettingsStorage.Setting[])
+  constructor(worldSettings: WorldSettingsStorage.Setting[]);
 
   /**
    * A object of registered game settings for this scope
    */
-  settings: Map<string, ClientSettings.CompleteData<any>>
+  settings: Map<string, ClientSettings.CompleteData<any>>;
 
   /**
    * Registered settings menus which trigger secondary applications
    */
-  menus: Map<string, ClientSettings.CompleteMenuSettings>
+  menus: Map<string, ClientSettings.CompleteMenuSettings>;
 
   /**
    * The storage interfaces used for persisting settings
    * Each storage interface shares the same API as window.localStorage
    */
-  storage: Map<string, Storage>
+  storage: Map<string, Storage>;
 
   /* -------------------------------------------- */
 
   /**
    * Return a singleton instance of the Game Settings Configuration app
    */
-  get sheet (): SettingsConfig
+  get sheet(): SettingsConfig;
 
   /* -------------------------------------------- */
 
@@ -85,7 +85,7 @@ declare class ClientSettings {
    * });
    * ```
    */
-  register<T> (module: string, key: string, data: ClientSettings.PartialData<T>): void
+  register<T>(module: string, key: string, data: ClientSettings.PartialData<T>): void;
 
   /* -------------------------------------------- */
 
@@ -109,7 +109,7 @@ declare class ClientSettings {
    * });
    * ```
    */
-  registerMenu (module: string, key: string, data: ClientSettings.PartialMenuSettings): void
+  registerMenu(module: string, key: string, data: ClientSettings.PartialMenuSettings): void;
 
   /* -------------------------------------------- */
 
@@ -125,7 +125,7 @@ declare class ClientSettings {
    * game.settings.get("myModule", "myClientSetting");
    * ```
    */
-  get (module: string, key: string): any
+  get(module: string, key: string): any;
 
   /* -------------------------------------------- */
 
@@ -142,14 +142,14 @@ declare class ClientSettings {
    * game.settings.set("myModule", "myClientSetting", "b");
    * ```
    */
-  set<T> (module: string, key: string, value: T): Promise<T>
+  set<T>(module: string, key: string, value: T): Promise<T>;
 
   /* -------------------------------------------- */
 
   /**
    * Locally update a setting given a provided key and value
    */
-  _update<T> (setting: ClientSettings.PartialData<T>, key: string, value: T): T
+  _update<T>(setting: ClientSettings.PartialData<T>, key: string, value: T): T;
 
   /* -------------------------------------------- */
 
@@ -157,43 +157,42 @@ declare class ClientSettings {
    * Handle changes to a Setting document to apply them to the world setting
    * storage
    */
-  static socketListeners (socket: WebSocket): void
+  static socketListeners(socket: WebSocket): void;
 }
 
 declare namespace ClientSettings {
   interface CompleteData<T> extends PartialData<T> {
-    key: string
-    module: string
+    key: string;
+    module: string;
   }
 
-  interface CompleteMenuSettings
-  <F extends FormApplication = FormApplication> extends PartialMenuSettings<F> {
-    key: string
-    module: string
+  interface CompleteMenuSettings<F extends FormApplication = FormApplication> extends PartialMenuSettings<F> {
+    key: string;
+    module: string;
   }
 
   interface PartialData<T> {
-    choices?: Record<string, string>
-    config?: boolean
-    default?: T
-    hint?: string
-    name?: string
-    onChange?: (value: T) => void
+    choices?: Record<string, string>;
+    config?: boolean;
+    default?: T;
+    hint?: string;
+    name?: string;
+    onChange?: (value: T) => void;
     range?: {
-      max: number
-      min: number
-      step: number
-    }
-    scope: string
-    type?: new (...args: any) => T
+      max: number;
+      min: number;
+      step: number;
+    };
+    scope: string;
+    type?: new (...args: any) => T;
   }
 
   interface PartialMenuSettings<F extends FormApplication = FormApplication> {
-    hint?: string
-    icon?: string
-    label?: string
-    name?: string
-    restricted: boolean
-    type: new (...args: any) => F
+    hint?: string;
+    icon?: string;
+    label?: string;
+    name?: string;
+    restricted: boolean;
+    type: new (...args: any) => F;
   }
 }

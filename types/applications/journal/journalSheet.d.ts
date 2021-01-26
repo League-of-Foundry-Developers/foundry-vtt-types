@@ -8,16 +8,16 @@ declare class JournalSheet extends BaseEntitySheet {
   /**
    * Provide a unique CSS ID for Entity Sheets
    */
-  get id (): string
+  get id(): string;
 
   /**
    * Suppress the JournalEntry title when an image is shown to players whom do not have at least limited permission
    */
-  get title (): string
+  get title(): string;
 
   /**
    * @param options - (unused)
    * @override
    */
-  getData (options?: any): BaseEntitySheet.Data<Entity>
+  getData(options?: any): BaseEntitySheet.Data<Entity>;
 }
