@@ -107,7 +107,7 @@ declare interface NumberConstructor {
    * @param n - A value to test
    * @returns Is it a number?
    */
-  isNumeric(n: unknown): boolean;
+  isNumeric(n: unknown): n is number;
 }
 
 /* -------------------------------------------- */
