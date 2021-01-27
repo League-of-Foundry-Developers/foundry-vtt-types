@@ -47,7 +47,7 @@ declare class Users extends EntityCollection<User> {
  * @param options - Initialization options which modify the construction of a User entity. See the Entity
                     class for more detail.
  */
-declare class User<D extends User.Data = User.Data> extends Entity<D> {
+declare class User extends Entity<User.Data> {
   /**
    * Track whether the user is currently active in the game
    */
@@ -201,7 +201,7 @@ declare class User<D extends User.Data = User.Data> extends Entity<D> {
   /* -------------------------------------------- */
 
   /** @override */
-  _onCreate (data: D, options: any, userId: string): void;
+  _onCreate (data: User.Data, options: any, userId: string): void;
 
   /**
    * Additional updating steps for the User entity when new data is saved which trigger some related updates.
@@ -211,7 +211,7 @@ declare class User<D extends User.Data = User.Data> extends Entity<D> {
    * Render the players UI if activity status or other player features have changed
    * Update the canvas if the player's impersonated character has changed
    */
-  _onUpdate (data: Partial<D>, options: Entity.UpdateOptions, userId: string): void;
+  _onUpdate (data: Partial<User.Data>, options: Entity.UpdateOptions, userId: string): void;
 
   /** @override */
   _onDelete (options: Entity.DeleteOptions, userId: string): void;

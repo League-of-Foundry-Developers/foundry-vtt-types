@@ -68,8 +68,6 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    */
   compendium: Compendium | null
 
-  constructor (data?: D, options?: Entity.CreateOptions)
-
   /**
    * Safely Initialize data structure for the Entity.
    * Errors that occur here should be captured and logged, but should not break construction of the Entity instance.
@@ -310,7 +308,8 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const created: Actor[] | null = await Actor.create(data, {temporary: true}); // Not saved to the database
    * ```
    */
-  static create (data: Entity.Data|Entity.Data[], options?: Entity.CreateOptions): Promise<Entity|Entity[]>
+  static create<T extends Entity>(data: Partial<T['data']>, options?: Entity.CreateOptions): Promise<T | null>;
+  static create<T extends Entity>(data: Partial<T['data']>[], options?: Entity.CreateOptions): Promise<T[] | null>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Entities are created
@@ -318,7 +317,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param result  - An Array of created Entity data
    * @param userId  - The id of the requesting User
    */
-  static _handleCreate ({ request, result, userId }: any): Entity[]
+  protected static _handleCreate({ request, result, userId }: any): Entity[];
 
   /**
    * Entity- specific actions that should occur when the Entity is first created
@@ -344,7 +343,8 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const updated = await Entity.update<Actor>(data); // Returns an Array of Entities, updated in the database
    * ```
    */
-  static update (data: Partial<Entity.Data>, options?: Entity.UpdateOptions): Promise<Entity|Entity[]>
+  static update<T extends Entity>(data: Partial<T['data']>, options?: Entity.UpdateOptions): Promise<T>;
+  static update<T extends Entity>(data: Partial<T['data']>[], options?: Entity.UpdateOptions): Promise<T[]>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Entities are updated
@@ -352,7 +352,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param result  - An Array of updated Entity data
    * @param userId  - The id of the requesting User
    */
-  static _handleUpdate ({ request, result, userId }: any): Entity[]
+  protected static _handleUpdate({ request, result, userId }: any): Entity[];
 
   /**
    * Entity- specific actions that should occur when the Entity is updated
@@ -389,7 +389,8 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const deleted = await Entity.delete(ids) // Returns an Array of deleted Entities
    * ```
    */
-  static delete (data: string|string[], options?: Entity.DeleteOptions): Promise<Entity|Entity[]>
+  static delete<T extends Entity = Entity>(data: string, options?: Entity.DeleteOptions): Promise<T>;
+  static delete<T extends Entity = Entity>(data: string[], options?: Entity.DeleteOptions): Promise<T[]>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Entities are deleted
@@ -504,7 +505,8 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const updated = await actor.updateEmbeddedEntity("OwnedItem", updates); // Updates multiple EmbeddedEntity objects
    * ```
    */
-  updateEmbeddedEntity (embeddedName: string, data: any, options?: Entity.UpdateOptions): Promise<any|any[]>
+  updateEmbeddedEntity(embeddedName: string, data: any, options?: Entity.UpdateOptions): Promise<any>;
+  updateEmbeddedEntity(embeddedName: string, data: any[], options?: Entity.UpdateOptions): Promise<any[]>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Embedded Entities are updated

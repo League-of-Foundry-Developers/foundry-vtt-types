@@ -26,7 +26,7 @@ declare class Journal extends EntityCollection<JournalEntry> {
 /**
  * The JournalEntry class
  */
-declare class JournalEntry<D extends JournalEntry.Data = JournalEntry.Data> extends Entity<D> {
+declare class JournalEntry extends Entity<JournalEntry.Data> {
   /** @override */
   static get config (): Entity.Config
 
@@ -41,10 +41,10 @@ declare class JournalEntry<D extends JournalEntry.Data = JournalEntry.Data> exte
   get sceneNote (): Note;
 
   /** @override */
-  _onCreate (data: D, options: Entity.CreateOptions, userId: string): void
+  _onCreate (data: JournalEntry.Data, options: Entity.CreateOptions, userId: string): void
 
   /** @override */
-  _onUpdate (data: Partial<D>, options: Entity.UpdateOptions, userId: string): void
+  _onUpdate (data: Partial<JournalEntry.Data>, options: Entity.UpdateOptions, userId: string): void
 
   /** @override */
   _onDelete (options: Entity.DeleteOptions, userId: string): void

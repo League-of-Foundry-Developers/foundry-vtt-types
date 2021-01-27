@@ -19,7 +19,7 @@ declare class Playlists extends EntityCollection<Playlist> {
   _onUpdateScene (scene: Scene, data: Scene.Data, options: Entity.UpdateOptions): void
 }
 
-declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D> {
+declare class Playlist extends Entity<Playlist.Data> {
   /**
    * Each sound which is played within the Playlist has a created Howl instance.
    * The keys of this object are the sound IDs and the values are the Howl instances.
@@ -125,7 +125,7 @@ declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D
   /* -------------------------------------------- */
 
   /** @override */
-  _onUpdate (data: Partial<D>, options: Entity.UpdateOptions, userId: string): void
+  _onUpdate (data: Partial<Playlist.Data>, options: Entity.UpdateOptions, userId: string): void
 
   /** @override */
   _onCreateEmbeddedEntity (embeddedName: string, child: Playlist.Sound, options: Entity.UpdateOptions, userId: string): void
@@ -144,7 +144,7 @@ declare class Playlist<D extends Playlist.Data = Playlist.Data> extends Entity<D
   /* -------------------------------------------- */
 
   /** @override */
-  toCompendium (): Promise<D>
+  toCompendium (): Promise<Playlist.Data>
 }
 
 declare namespace Playlist {

@@ -31,7 +31,7 @@ declare class Macros extends EntityCollection<Macro> {
  * @see {@link MacroConfig}   The Macro Configuration sheet
  * @see {@link Hotbar}        The Hotbar interface application
  */
-declare class Macro<D extends Macro.Data = Macro.Data> extends Entity<D> {
+declare class Macro extends Entity<Macro.Data> {
   /** @override */
   static get config(): Entity.Config;
 

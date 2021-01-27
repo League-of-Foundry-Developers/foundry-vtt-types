@@ -32,7 +32,7 @@ declare class Messages extends EntityCollection<ChatMessage> {
  * The Chat Message class is a type of :class:`Entity` which represents individual messages in the chat log.
  *
  */
-declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends Entity<D> {
+declare class ChatMessage extends Entity<ChatMessage.Data> {
   /**
    * Get a reference to the user who sent the chat message
    */
@@ -105,7 +105,8 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
   /* -------------------------------------------- */
 
   /** @override */
-  static create (data: ChatMessage.Data|ChatMessage.Data[], options: Entity.CreateOptions): Promise<ChatMessage<ChatMessage.Data>|Array<ChatMessage<ChatMessage.Data>>>
+  static create(data: Partial<ChatMessage.Data>, options?: Entity.CreateOptions): Promise<ChatMessage | null>;
+  static create(data: Partial<ChatMessage.Data>[], options?: Entity.CreateOptions): Promise<ChatMessage[] | null>;
 
   /**
    * Preprocess the data object used to create a new Chat Message to automatically convert some Objects to the
@@ -119,10 +120,10 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
   }): ChatMessage.Data
 
   /** @override */
-  _onCreate (data: Partial<D>, options: Entity.CreateOptions, userId: string): void
+  _onCreate (data: Partial<ChatMessage.Data>, options: Entity.CreateOptions, userId: string): void
 
   /** @override */
-  _onUpdate (data: Partial<D>, options: Entity.UpdateOptions, userId: string): void
+  _onUpdate (data: Partial<ChatMessage.Data>, options: Entity.UpdateOptions, userId: string): void
 
   /** @override */
   _onDelete (options: Entity.DeleteOptions, userId: string): void

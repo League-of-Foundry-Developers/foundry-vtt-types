@@ -35,11 +35,19 @@ declare class Actors extends EntityCollection<Actor> {
    * Actors.registerSheet("dnd5e", ActorSheet5eCharacter, { types: ["character"], makeDefault: true });
    * ```
    */
-  static registerSheet (scope: string, sheetClass: () => Application, { label, types, makeDefault }?: {
-    label?: string
-    types?: Array<() => Application>
-    makeDefault?: boolean
-  }): void
+  static registerSheet(
+    scope: string,
+    sheetClass: new (...args: any) => Application,
+    {
+      label,
+      types,
+      makeDefault
+    }?: {
+      label?: string;
+      types?: string[];
+      makeDefault?: boolean;
+    }
+  ): void;
 
   /**
    * Unregister an Actor sheet class, removing it from the list of avaliable sheet Applications to use
@@ -48,16 +56,22 @@ declare class Actors extends EntityCollection<Actor> {
    * @example <caption>Deregister the default ActorSheet subclass to replace it with others.</caption>
    * ```typescript
    * Actors.unregisterSheet("core", ActorSheet);
-   * ````
+   * ```
    */
-  static unregisterSheet (scope: string, sheetClass: () => Application, { types }?: {
-    types?: Array<() => Application>
-  }): void
+  static unregisterSheet(
+    scope: string,
+    sheetClass: new (...args: any) => Application,
+    {
+      types
+    }?: {
+      types?: string[];
+    }
+  ): void;
 
   /**
    * Return an Array of currently registered sheet classes for this Entity type
    */
-  static get registeredSheets (): Array<() => ActorSheet>
+  static get registeredSheets(): Array<new (...args: any) => ActorSheet>;
 }
 
 /**
@@ -360,7 +374,8 @@ declare class Actor<I extends Item = Item, D extends Actor.Data = Actor.Data<any
    * @param renderSheet - Render the Item sheet for the newly created item data
    * @returns A Promise resolving to the created Owned Item data
    */
-  createOwnedItem (itemData: Actor.OwnedItem<I>, options?: any): Promise<Actor.OwnedItem<I>>
+  createOwnedItem(itemData: Optional<Actor.OwnedItemData<D>>, options?: any): Promise<Actor.OwnedItemData<D>>;
+  createOwnedItem(itemData: Optional<Actor.OwnedItemData<D>>[], options?: any): Promise<Actor.OwnedItemData<D>[]>;
 
   /**
    * Update an owned item using provided new data. This redirects its arguments to the updateEmbeddedEntity method.
@@ -370,7 +385,11 @@ declare class Actor<I extends Item = Item, D extends Actor.Data = Actor.Data<any
    * @param options  - Item update options
    * @returns A Promise resolving to the updated Owned Item data
    */
-  updateOwnedItem (itemData: Actor.OwnedItem<I>, options?: any): Promise<ActiveEffect|Actor.OwnedItem<I>>
+  updateOwnedItem(itemData: Optional<Actor.OwnedItem<I>>, options?: any): Promise<ActiveEffect | Actor.OwnedItemData<D>>;
+  updateOwnedItem(
+    itemData: Optional<Actor.OwnedItem<I>>[],
+    options?: any
+  ): Promise<Array<ActiveEffect | Actor.OwnedItemData<D>>>;
 
   /* -------------------------------------------- */
 
@@ -382,7 +401,8 @@ declare class Actor<I extends Item = Item, D extends Actor.Data = Actor.Data<any
    * @param options - Item deletion options
    * @returns A Promise resolving to the deleted Owned Item data
    */
-  deleteOwnedItem (itemId: string, options?: any): Promise<ActiveEffect|Actor.OwnedItem<I>>
+  deleteOwnedItem(itemId: string, options?: any): Promise<ActiveEffect | Actor.OwnedItemData<D>>;
+  deleteOwnedItem(itemId: string[], options?: any): Promise<Array<ActiveEffect | Actor.OwnedItemData<D>>>;
 
   /* -------------------------------------------- */
   /*  DEPRECATED                                  */

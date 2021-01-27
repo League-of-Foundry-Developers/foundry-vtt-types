@@ -44,7 +44,7 @@ declare class CombatEncounters extends EntityCollection<Combat> {
  * The Combat Entity defines a particular combat encounter which can occur within the game session
  * Combat instances belong to the CombatEncounters collection
  */
-declare class Combat<D extends Combat.Data = Combat.Data> extends Entity<D> {
+declare class Combat extends Entity<Combat.Data> {
   /**
    * Track the sorted turn order of this combat encounter
    */
@@ -278,10 +278,10 @@ declare class Combat<D extends Combat.Data = Combat.Data> extends Entity<D> {
   /* -------------------------------------------- */
 
   /** @override */
-  _onCreate (data: D, options: any, userId: string): void
+  _onCreate (data: Combat.Data, options: any, userId: string): void
 
   /** @override */
-  _onUpdate (data: Partial<D>, options: Entity.UpdateOptions, userId: string): void
+  _onUpdate (data: Partial<Combat.Data>, options: Entity.UpdateOptions, userId: string): void
 
   /** @override */
   _onDelete (options: Entity.DeleteOptions, userId: string): void

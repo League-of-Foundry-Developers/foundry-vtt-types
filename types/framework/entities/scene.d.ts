@@ -51,7 +51,7 @@ declare class Scenes extends EntityCollection<Scene> {
 /**
  * The Scene entity
  */
-declare class Scene<D extends Scene.Data = Scene.Data> extends Entity<D> {
+declare class Scene extends Entity<Scene.Data> {
   /**
    * Track whether the scene is the active view
    */
@@ -71,7 +71,7 @@ declare class Scene<D extends Scene.Data = Scene.Data> extends Entity<D> {
   static get config (): Entity.Config
 
   /** @override */
-  prepareData (): D
+  prepareData (): Scene.Data
 
   /** @override */
   prepareEmbeddedEntities (): void
@@ -123,19 +123,20 @@ declare class Scene<D extends Scene.Data = Scene.Data> extends Entity<D> {
   /* -------------------------------------------- */
 
   /** @override */
-  clone (createData?: D, options?: Entity.CreateOptions): Promise<Scene<D>>
+  clone (createData?: Scene.Data, options?: Entity.CreateOptions): Promise<Scene>
 
   /** @override */
-  static create (data: Scene.Data, options?: Entity.CreateOptions): Promise<Scene<Scene.Data>>
+  static create(data: Partial<Scene.Data>, options?: Entity.CreateOptions): Promise<Scene | null>;
+  static create(data: Partial<Scene.Data>[], options?: Entity.CreateOptions): Promise<Scene[] | null>;
 
   /** @override */
-  update (data: Partial<D>, options: Entity.UpdateOptions): Promise<this>
+  update (data: Partial<Scene.Data>, options: Entity.UpdateOptions): Promise<this>
 
   /** @override */
-  _onCreate (data: D, options: any, userId: string): void
+  _onCreate (data: Scene.Data, options: any, userId: string): void
 
   /** @override */
-  _onUpdate (data: Partial<D>, options: Entity.UpdateOptions, userId: string): void
+  _onUpdate (data: Partial<Scene.Data>, options: Entity.UpdateOptions, userId: string): void
 
   /** @override */
   _onDelete (options: Entity.DeleteOptions, userId: string): void

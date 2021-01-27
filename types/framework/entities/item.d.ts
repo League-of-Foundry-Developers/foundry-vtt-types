@@ -14,24 +14,38 @@ declare class Items extends EntityCollection<Item> {
    * Register an Actor sheet class as a candidate which can be used to display Actors of a given type
    * See EntitySheetConfig.registerSheet for details
    */
-  static registerSheet (scope: string, sheetClass: () => Application, { label, types, makeDefault }?: {
-    label?: string
-    types?: Array<() => Application>
-    makeDefault?: boolean
-  }): void
+  static registerSheet(
+    scope: string,
+    sheetClass: new (...args: any) => Application,
+    {
+      label,
+      types,
+      makeDefault
+    }?: {
+      label?: string;
+      types?: string[];
+      makeDefault?: boolean;
+    }
+  ): void;
 
   /**
    * Unregister an Actor sheet class, removing it from the list of avaliable sheet Applications to use
    * See EntitySheetConfig.unregisterSheet for details
    */
-  static unregisterSheet (scope: string, sheetClass: () => Application, { types }?: {
-    types?: Array<() => Application>
-  }): void
+  static unregisterSheet(
+    scope: string,
+    sheetClass: new (...args: any) => Application,
+    {
+      types
+    }?: {
+      types?: string[];
+    }
+  ): void;
 
   /**
    * Return an Array of currently registered sheet classes for this Entity type
    */
-  static get registeredSheets (): Array<() => ItemSheet>
+  static get registeredSheets(): Array<new (...args: any) => ItemSheet>;
 }
 
 /**
