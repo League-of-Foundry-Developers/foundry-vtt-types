@@ -1,6 +1,10 @@
-import 'jquery';
-import 'socket.io-client';
-import 'tinymce';
+/// <reference types="jquery"/>
+/// <reference types="socket.io-client"/>
+/// <reference types="tinymce"/>
+/// <reference types="handlebars"/>
+/// <reference types="howler"/>
+/// <reference types="pixi.js"/>
+/// <reference types="utility-types"/>
 
 // Apps
 
@@ -57,8 +61,6 @@ import './types/applications/widgets/searchFilter';
 
 // Augments
 
-import './types/augments/PIXI';
-import './types/augments/handlebars';
 import './types/augments/howler';
 import './types/augments/tinyMCE';
 import './types/augments/utility-types';
