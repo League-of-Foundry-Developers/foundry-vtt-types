@@ -4,7 +4,7 @@
  */
 declare class Items extends EntityCollection<Item> {
   /** @override */
-  get entity (): string
+  get entity(): string;
 
   /* -------------------------------------------- */
   /*  Methods
@@ -61,20 +61,20 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
   effects: Collection<ActiveEffect>;
 
   /** @override */
-  static get config (): Entity.Config<Item>
+  static get config(): Entity.Config<Item>;
 
   /** @override */
-  get uuid (): string
+  get uuid(): string;
 
   /**
    * @remarks
    * Returns void
    * @override
    */
-  prepareData (): any
+  prepareData(): any;
 
   /** @override */
-  prepareEmbeddedEntities (): void
+  prepareEmbeddedEntities(): void;
 
   /**
    * Prepare a Collection of ActiveEffect instances which belong to this Item.
@@ -86,7 +86,7 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
   /**
    * Prepare a data object which defines the data schema used by dice roll commands against this Item
    */
-  getRollData (): D['data']
+  getRollData(): D['data'];
 
   /* -------------------------------------------- */
   /*  Properties                                  */
@@ -102,33 +102,33 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
   /**
    * A convenience reference to the image path (data.img) used to represent this Item
    */
-  get img (): string
+  get img(): string;
 
   /**
    * Return an array of the Active Effect instances which originated from this Item.
    * If the Item is owned, the returned instances are the ActiveEffect instances which exist on the owning Actor.
    * If the Item is unowned, the returned instances are the ActiveEffect instances which exist on the Item itself.
    */
-  get transferredEffects (): ActiveEffect[]
+  get transferredEffects(): ActiveEffect[];
 
   /**
    * A convenience reference to the item type (data.type) of this Item
    * @remarks
    * This can't be used to typeguard this.data; use this.data.type directly instead
    */
-  get type (): string
+  get type(): string;
 
   /**
    * A boolean indicator for whether the current game user has ONLY limited visibility for this Entity.
    * @returns
    */
-  get limited (): boolean
+  get limited(): boolean;
 
   /**
    * A flag for whether the item is owned by an Actor entity
    * @returns
    */
-  get isOwned (): boolean
+  get isOwned(): boolean;
 
   /* -------------------------------------------- */
   /*  Methods                                     */
@@ -139,22 +139,22 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
    * OwnedItems have permission that the player has for the parent Actor.
    * @returns Whether or not the user has the permission for this item
    */
-  hasPerm (user: User, permission: string | number, exact?: boolean): boolean
+  hasPerm(user: User, permission: string | number, exact?: boolean): boolean;
 
   /* -------------------------------------------- */
   /*  Socket Listeners and Handlers               */
   /* -------------------------------------------- */
 
   /** @override */
-  update (data: Partial<D>, options?: Entity.UpdateOptions): Promise<this>
+  update(data: Partial<D>, options?: Entity.UpdateOptions): Promise<this>;
 
   /** @override */
-  delete (options?: Entity.DeleteOptions): Promise<Item>
+  delete(options?: Entity.DeleteOptions): Promise<Item>;
 
   /**
    * A convenience constructor method to create an Item instance which is owned by an Actor
    */
-  static createOwned(itemData: Partial<Item.Data>, actor: Actor): Item
+  static createOwned(itemData: Partial<Item.Data>, actor: Actor): Item;
 }
 
 declare namespace Item {
@@ -162,12 +162,12 @@ declare namespace Item {
    * @typeParam D - Type for Item.data.data
    */
   interface Data<D = any> extends Entity.Data {
-    data: D
+    data: D;
     effects: ActiveEffect.Data[];
-    img: string
-    name: string
-    permission: Entity.Permission
-    sort: number
-    type: string
+    img: string;
+    name: string;
+    permission: Entity.Permission;
+    sort: number;
+    type: string;
   }
 }

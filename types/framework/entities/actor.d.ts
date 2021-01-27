@@ -16,11 +16,11 @@ declare class Actors extends EntityCollection<Actor> {
    * Each Actor is referenced by the Token.id.
    */
   tokens: {
-    [id: string]: Actor
-  }
+    [id: string]: Actor;
+  };
 
   /** @override */
-  get entity (): string
+  get entity(): string;
 
   /* -------------------------------------------- */
   /*  Sheet Registration Methods                  */
@@ -107,37 +107,40 @@ declare class Actors extends EntityCollection<Actor> {
  * let actor = game.actors.get(actorId);
  * ```
  */
-declare class Actor<D extends Actor.Data = Actor.Data, I extends Item<Actor.OwnedItemData<D>> = Item<Actor.OwnedItemData<D>>> extends Entity<D> {
-  constructor (data?: Partial<D>, options?: Entity.CreateOptions)
+declare class Actor<
+  D extends Actor.Data = Actor.Data,
+  I extends Item<Actor.OwnedItemData<D>> = Item<Actor.OwnedItemData<D>>
+> extends Entity<D> {
+  constructor(data?: Partial<D>, options?: Entity.CreateOptions);
 
   /**
    * A reference to a placed Token which creates a synthetic Actor
    */
-  token: Token | null
+  token: Token | null;
 
   /**
    * Construct the Array of Item instances for the Actor
    * Items are prepared by the Actor.prepareEmbeddedEntities() method
    */
-  items: Collection<I>
+  items: Collection<I>;
 
   /**
    * ActiveEffects are prepared by the Actor.prepareEmbeddedEntities() method
    */
-  effects: Collection<ActiveEffect>
+  effects: Collection<ActiveEffect>;
 
   /**
    * A set that tracks which keys in the data model were modified by active effects
    */
-  overrides: Partial<D>
+  overrides: Partial<D>;
 
   /**
    * Cache an Array of allowed Token images if using a wildcard path
    */
-  _tokenImages: string[]
+  _tokenImages: string[];
 
   /** @override */
-  static get config (): Entity.Config<Actor>
+  static get config(): Entity.Config<Actor>;
 
   /* -------------------------------------------- */
   /*  Properties                                  */
@@ -146,25 +149,25 @@ declare class Actor<D extends Actor.Data = Actor.Data, I extends Item<Actor.Owne
   /**
    * A convenient reference to the file path of the Actor's profile image
    */
-  get img (): string
+  get img(): string;
 
   /**
    * Classify Owned Items by their type
    */
-  get itemTypes (): {
-    [itemType: string]: I[]
-  }
+  get itemTypes(): {
+    [itemType: string]: I[];
+  };
 
   /**
    * Test whether an Actor entity is a synthetic representation of a Token (if true) or a full Entity (if false)
    */
-  get isToken (): boolean
+  get isToken(): boolean;
 
   /**
    * An array of ActiveEffect instances which are present on the Actor which have a limited duration.
    * @returns
    */
-  get temporaryEffects (): ActiveEffect[]
+  get temporaryEffects(): ActiveEffect[];
 
   /* -------------------------------------------- */
   /*  Data Preparation                            */
@@ -175,27 +178,27 @@ declare class Actor<D extends Actor.Data = Actor.Data, I extends Item<Actor.Owne
    * Returns void
    * @override
    */
-  prepareData (): any
+  prepareData(): any;
 
   /**
    * First prepare any derived data which is actor-specific and does not depend on Items or Active Effects
    */
-  prepareBaseData (): void
+  prepareBaseData(): void;
 
   /**
    * Apply final transformations to the Actor data after all effects have been applied
    */
-  prepareDerivedData (): void
+  prepareDerivedData(): void;
 
   /** @override */
-  prepareEmbeddedEntities (): void
+  prepareEmbeddedEntities(): void;
 
   /**
    * Prepare a Collection of OwnedItem instances which belong to this Actor.
    * @param items - The raw array of item objects
    * @returns The prepared owned items collection
    */
-  _prepareOwnedItems (items: Array<Actor.OwnedItemData<D>>): Collection<I>
+  _prepareOwnedItems(items: Array<Actor.OwnedItemData<D>>): Collection<I>;
 
   /**
    * Prepare a Collection of ActiveEffect instances which belong to this Actor.
@@ -207,7 +210,7 @@ declare class Actor<D extends Actor.Data = Actor.Data, I extends Item<Actor.Owne
   /**
    * Apply any transformations to the Actor data which are caused by ActiveEffects.
    */
-  applyActiveEffects (): void
+  applyActiveEffects(): void;
 
   /* -------------------------------------------- */
   /*  Methods                                     */
@@ -218,7 +221,7 @@ declare class Actor<D extends Actor.Data = Actor.Data, I extends Item<Actor.Owne
    * If the Token data is linked, return the true Actor entity
    * If the Token data is not linked, create a synthetic Actor using the Token's actorData override
    */
-  static fromToken (token: Token): Actor
+  static fromToken(token: Token): Actor;
 
   /**
    * Create a synthetic Token Actor instance which is used in place of an actual Actor.
@@ -226,7 +229,7 @@ declare class Actor<D extends Actor.Data = Actor.Data, I extends Item<Actor.Owne
    * @param baseActor - The real actor to clone
    * @param token     - The Token containing the actor
    */
-  static createTokenActor (baseActor: Actor, token: Token): Actor
+  static createTokenActor(baseActor: Actor, token: Token): Actor;
 
   /**
    * Retrieve an Array of active tokens which represent this Actor in the current canvas Scene.
@@ -236,19 +239,19 @@ declare class Actor<D extends Actor.Data = Actor.Data, I extends Item<Actor.Owne
    *                 tokens even those which are not linked.
    * @returns An array of tokens in the current Scene which reference this Actor.
    */
-  getActiveTokens (linked?: boolean): Token[]
+  getActiveTokens(linked?: boolean): Token[];
 
   /**
    * Prepare a data object which defines the data schema used by dice roll commands against this Actor
    * @returns A copy of data.data
    * @remarks Testing actor.data.type does not narrow the type for this method
    */
-  getRollData (): D['data']
+  getRollData(): D['data'];
 
   /**
    * Get an Array of Token images which could represent this Actor
    */
-  getTokenImages (): Promise<string[]>
+  getTokenImages(): Promise<string[]>;
 
   /**
    * Handle how changes to a Token attribute bar are applied to the Actor.
@@ -259,7 +262,7 @@ declare class Actor<D extends Actor.Data = Actor.Data, I extends Item<Actor.Owne
    * @param isBar     - Whether the new value is part of an attribute bar, or just a direct value
    * @returns The updated Actor entity
    */
-  modifyTokenAttribute (attribute: string, value: number, isDelta?: boolean, isBar?: boolean): Promise<this>
+  modifyTokenAttribute(attribute: string, value: number, isDelta?: boolean, isBar?: boolean): Promise<this>;
 
   /**
    * Roll initiative for all Combatants in the currently active Combat encounter which are associated with this Actor.
@@ -271,24 +274,28 @@ declare class Actor<D extends Actor.Data = Actor.Data, I extends Item<Actor.Owne
    * @param initiativeOptions - Additional options passed to the Combat#rollInitiative method.
    * @returns A promise which resolves to the Combat entity once rolls are complete.
    */
-  rollInitiative ({ createCombatants, rerollInitiative, initiativeOptions }?: {
-    createCombatants?: boolean
-    rerollInitiative?: boolean
-    initiativeOptions?: any
-  }): Promise<Combat|null>
+  rollInitiative({
+    createCombatants,
+    rerollInitiative,
+    initiativeOptions
+  }?: {
+    createCombatants?: boolean;
+    rerollInitiative?: boolean;
+    initiativeOptions?: any;
+  }): Promise<Combat | null>;
 
   /* -------------------------------------------- */
   /*  Socket Listeners and Handlers
   /* -------------------------------------------- */
 
   /** @override */
-  update (data: Partial<D>, options?: Entity.UpdateOptions): Promise<this>
+  update(data: Partial<D>, options?: Entity.UpdateOptions): Promise<this>;
 
   /** @override */
-  delete (options?: Entity.DeleteOptions): Promise<Actor>
+  delete(options?: Entity.DeleteOptions): Promise<Actor>;
 
   /** @override */
-  _onUpdate (data: Partial<D>, options: Entity.UpdateOptions, userId: string, context?: any): void
+  _onUpdate(data: Partial<D>, options: Entity.UpdateOptions, userId: string, context?: any): void;
 
   /** @override */
   createEmbeddedEntity(
@@ -363,7 +370,7 @@ declare class Actor<D extends Actor.Data = Actor.Data, I extends Item<Actor.Owne
    * @param itemId - The owned Item id to retrieve
    * @returns An Item instance representing the Owned Item within the Actor entity
    */
-  getOwnedItem (itemId: string): I
+  getOwnedItem(itemId: string): I;
 
   /**
    * Create a new item owned by this Actor. This redirects its arguments to the createEmbeddedEntity method.
@@ -411,13 +418,13 @@ declare class Actor<D extends Actor.Data = Actor.Data, I extends Item<Actor.Owne
   /**
    * @deprecated since 0.7.0
    */
-  importItemFromCollection (collection: string, entryId: String): Promise<any>
+  importItemFromCollection(collection: string, entryId: String): Promise<any>;
 
   /**
    * @deprecated since 0.7.2
    * @see {@link Entity#hasPlayerOwner}
    */
-  get isPC (): boolean
+  get isPC(): boolean;
 }
 
 declare namespace Actor {
@@ -426,22 +433,22 @@ declare namespace Actor {
    * @typeParam D - Actor.Data to extract Item type from
    * @internal
    */
-  type OwnedItemData<D> = D extends Data<any, infer I> ? I : never
+  type OwnedItemData<D> = D extends Data<any, infer I> ? I : never;
 
   /**
    * @typeParam D - Type for `data.data`
    * @typeParam I - Type for system's Item
    */
   interface Data<D = any, I extends Item.Data = Item.Data> extends Entity.Data {
-    data: D
+    data: D;
     effects: ActiveEffect.Data[];
-    folder: string
-    img: string
-    items: I[]
-    name: string
-    permission: Entity.Permission
-    sort: number
-    token: any // TODO: Token.data
-    type: string
+    folder: string;
+    img: string;
+    items: I[];
+    name: string;
+    permission: Entity.Permission;
+    sort: number;
+    token: any; // TODO: Token.data
+    type: string;
   }
 }

@@ -3,23 +3,23 @@
  */
 declare class Macros extends EntityCollection<Macro> {
   /** @override */
-  get entity (): string
+  get entity(): string;
 
   /** @override */
-  static get instance (): Macros
+  static get instance(): Macros;
 
   /** @override */
-  get directory (): any // MacroDirectory, type mismatch
+  get directory(): any; // MacroDirectory, type mismatch
 
   /**
    * Determine whether a given User is allowed to use JavaScript macros
    * @param user - The User entity to test
    * @returns Can the User use scripts?
    */
-  static canUseScripts (user: User): boolean
+  static canUseScripts(user: User): boolean;
 
   /** @override */
-  fromCompendium (data: Macro.Data): Macro.Data
+  fromCompendium(data: Macro.Data): Macro.Data;
 }
 
 /**
@@ -33,31 +33,31 @@ declare class Macros extends EntityCollection<Macro> {
  */
 declare class Macro extends Entity<Macro.Data> {
   /** @override */
-  static get config (): Entity.Config<Macro>
+  static get config(): Entity.Config<Macro>;
 
   /**
    * Is the current User the author of this macro?
    */
-  get isAuthor (): boolean;
+  get isAuthor(): boolean;
 
   /** @override */
-  static can (user: User, action: string, target: Macro): boolean;
+  static can(user: User, action: string, target: Macro): boolean;
 
   /**
    * Execute the Macro command
    */
-  execute (): void;
+  execute(): void;
 }
 
 declare namespace Macro {
   interface Data extends Entity.Data {
-    actorIds: string[]
-    author: string
-    command: string
-    img: string
-    name: string
-    permission: Entity.Permission
-    scope: string
-    type: 'script' | 'chat'
+    actorIds: string[];
+    author: string;
+    command: string;
+    img: string;
+    name: string;
+    permission: Entity.Permission;
+    scope: string;
+    type: 'script' | 'chat';
   }
 }
