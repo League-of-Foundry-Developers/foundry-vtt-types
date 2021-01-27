@@ -165,3 +165,6 @@ import './types/prototypes';
 import './types/templateUtils';
 import './types/types';
 import './types/utils';
+
+// utility types
+import './types/utilityTypes';

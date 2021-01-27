@@ -117,10 +117,8 @@ declare interface ArrayConstructor {
   fromRange(n: number): number[];
 }
 
-type Flattened<T> = T extends Array<infer U> ? Flattened<U> : T;
-
 declare interface Array<T> {
-  deepFlatten(): Array<Flattened<T>>;
+  deepFlatten(): Array<UtilityTypes.Flattened<T>>;
 
   /**
    * Test equality of the values of this array against the values of some other Array
