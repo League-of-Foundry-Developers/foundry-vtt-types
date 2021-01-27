@@ -8,7 +8,7 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
    * @param data   - Data for the Active Effect
    * @param parent - The parent Entity which owns the effect
    */
-  constructor(data: ActiveEffect.Data, parent: Actor | Item);
+  constructor(data: ActiveEffect.Data, parent: Actor<Item<Item.Data<any>>> | Item<Item.Data<any>>);
 
   /**
    * A cached reference to the source name to avoid recurring database lookups
