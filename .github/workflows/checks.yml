@@ -16,7 +16,7 @@ jobs:
       - name: npm install
         run: npm install
       - name: run typescript error reporter
-        uses: andoshin11/typescript-error-reporter-action@v1.0.2
+        uses:  probablyup/typescript-error-reporter-action@ts-4
   lint:
     name: lint code base
     runs-on: ubuntu-latest
