@@ -52,14 +52,13 @@ declare interface String {
 
   /**
    * Transform any string into a url-viable slug string
-   * @param options     - (default: `{}`)
    * @param replacement - The replacement character to separate terms
    *                      (default: `'-'`)
    * @param strict      - Replace all non-alphanumeric characters, or allow them?
    *                      (default: `false`)
    * @returns The cleaned slug string
    */
-  slugify(options?: { replacement?: string; strict?: boolean }): string;
+  slugify({ replacement, strict }?: { replacement?: string; strict?: boolean }): string;
 }
 
 /* -------------------------------------------- */
