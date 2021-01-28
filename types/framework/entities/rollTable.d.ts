@@ -162,14 +162,14 @@ declare class RollTable extends Entity<RollTable.Data> {
    * @param value - The rolled value
    * @returns An Array of results
    */
-  _getResultsForRoll(value: number): any[];
+  protected _getResultsForRoll(value: number): any[];
 
   /**
    * Get a string representation for the result which (if possible) will be a dynamic link or otherwise plain text
    * @param result - The result object
    * @returns The text to display
    */
-  _getResultChatText(result: any): string;
+  protected _getResultChatText(result: any): string;
 
   /* -------------------------------------------- */
   /*  Table Result Management Methods             */
@@ -178,10 +178,10 @@ declare class RollTable extends Entity<RollTable.Data> {
   getTableResult(id: string): any; // TODO EmbeddedTableResult
 
   /** @override */
-  _onCreateEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
+  protected _onCreateEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
 
   /** @override */
-  _onDeleteEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
+  protected _onDeleteEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
 
   /* -------------------------------------------- */
   /*  Importing and Exporting                     */

@@ -5,7 +5,7 @@ declare class Folders extends EntityCollection<Folder> {
   /**
    * This tracks which folders are currently expanded in the UI
    */
-  _expanded: {
+  protected _expanded: {
     [id: string]: boolean;
   };
 
@@ -24,7 +24,7 @@ declare class Folders extends EntityCollection<Folder> {
   /**
    * Refresh the display of any active JournalSheet instances where the folder list will change.
    */
-  _refreshJournalEntrySheets(): void;
+  protected _refreshJournalEntrySheets(): void;
 }
 
 declare class Folder extends Entity<Folder.Data> {
@@ -104,7 +104,7 @@ declare class Folder extends Entity<Folder.Data> {
   /* -------------------------------------------- */
 
   /** @override */
-  static _handleDelete({ request, result, userId }: { request: any; result: any; userId: any }): any; // Folder, mismatched
+  protected static _handleDelete({ request, result, userId }: { request: any; result: any; userId: any }): any; // Folder, mismatched
 }
 
 declare namespace Folder {

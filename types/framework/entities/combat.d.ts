@@ -37,7 +37,7 @@ declare class CombatEncounters extends EntityCollection<Combat> {
   /**
    * When a Token is deleted, remove it as a combatant from any combat encounters which included the Token
    */
-  _onDeleteToken(sceneId: string, tokenId: string): Promise<void>;
+  protected _onDeleteToken(sceneId: string, tokenId: string): Promise<void>;
 }
 
 /**
@@ -63,7 +63,7 @@ declare class Combat extends Entity<Combat.Data> {
   /**
    * Track whether a sound notification is currently being played to avoid double-dipping
    */
-  _soundPlaying: boolean;
+  protected _soundPlaying: boolean;
 
   /**
    * The configuration setting used to record Combat preferences
@@ -87,14 +87,14 @@ declare class Combat extends Entity<Combat.Data> {
   /**
    * Prepare turn data for one specific combatant.
    */
-  _prepareCombatant(c: Combat.Combatant, scene: Scene, players: User[], settings?: any): Combat.Combatant;
+  protected _prepareCombatant(c: Combat.Combatant, scene: Scene, players: User[], settings?: any): Combat.Combatant;
 
   /**
    * Define how the array of Combatants is sorted in the displayed list of the tracker.
    * This method can be overridden by a system or module which needs to display combatants in an alternative order.
    * By default sort by initiative, falling back to name
    */
-  _sortCombatants(a: Combat.Combatant, b: Combat.Combatant): number;
+  protected _sortCombatants(a: Combat.Combatant, b: Combat.Combatant): number;
 
   /* -------------------------------------------- */
   /*  Properties                                  */
@@ -232,7 +232,7 @@ declare class Combat extends Entity<Combat.Data> {
    *                                is not used by default, but provided to give flexibility for modules and systems.
    * @returns The initiative formula to use for this combatant.
    */
-  _getInitiativeFormula(combatant: Combat.Combatant): string | null;
+  protected _getInitiativeFormula(combatant: Combat.Combatant): string | null;
 
   /**
    * Get a Roll object which represents the initiative roll for a given combatant.
@@ -241,7 +241,7 @@ declare class Combat extends Entity<Combat.Data> {
    * @param formula - An explicit Roll formula to use for the combatant.
    * @returns The Roll instance to use for the combatant.
    */
-  _getInitiativeRoll(combatant: Combat.Combatant, formula: string): Roll;
+  protected _getInitiativeRoll(combatant: Combat.Combatant, formula: string): Roll;
 
   /**
    * Roll initiative for all non-player actors who have not already rolled
@@ -274,16 +274,16 @@ declare class Combat extends Entity<Combat.Data> {
   /* -------------------------------------------- */
 
   /** @override */
-  _onCreate(data: Combat.Data, options: any, userId: string): void;
+  protected _onCreate(data: Combat.Data, options: any, userId: string): void;
 
   /** @override */
-  _onUpdate(data: Partial<Combat.Data>, options: Entity.UpdateOptions, userId: string): void;
+  protected _onUpdate(data: Partial<Combat.Data>, options: Entity.UpdateOptions, userId: string): void;
 
   /** @override */
-  _onDelete(options: Entity.DeleteOptions, userId: string): void;
+  protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
 
   /** @override */
-  _onDeleteEmbeddedEntity(
+  protected _onDeleteEmbeddedEntity(
     embeddedName: string,
     child: Combat.Combatant,
     options: Entity.UpdateOptions,
@@ -291,7 +291,13 @@ declare class Combat extends Entity<Combat.Data> {
   ): void;
 
   /** @override */
-  _onModifyEmbeddedEntity(embeddedName: string, changes: any[], options: any, userId: string, context?: any): void;
+  protected _onModifyEmbeddedEntity(
+    embeddedName: string,
+    changes: any[],
+    options: any,
+    userId: string,
+    context?: any
+  ): void;
 }
 
 declare namespace Combat {
@@ -313,9 +319,9 @@ declare namespace Combat {
    * previous turn.
    */
   interface CurrentTurn {
-    round: number;
+    round: number | null;
     tokenId: string | null;
-    turn: number;
+    turn: number | null;
   }
 
   type Combatant = {

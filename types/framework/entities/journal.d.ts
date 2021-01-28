@@ -20,7 +20,7 @@ declare class Journal extends EntityCollection<JournalEntry> {
    * @param mode    - The JournalEntry mode to display
    * @param force   - Display the entry to all players regardless of normal permissions
    */
-  static _showEntry(entryId: string, mode?: 'text' | 'image', force?: boolean): void;
+  protected static _showEntry(entryId: string, mode?: 'text' | 'image', force?: boolean): void;
 }
 
 /**
@@ -41,13 +41,13 @@ declare class JournalEntry extends Entity<JournalEntry.Data> {
   get sceneNote(): Note;
 
   /** @override */
-  _onCreate(data: JournalEntry.Data, options: Entity.CreateOptions, userId: string): void;
+  protected _onCreate(data: JournalEntry.Data, options: Entity.CreateOptions, userId: string): void;
 
   /** @override */
-  _onUpdate(data: Partial<JournalEntry.Data>, options: Entity.UpdateOptions, userId: string): void;
+  protected _onUpdate(data: Partial<JournalEntry.Data>, options: Entity.UpdateOptions, userId: string): void;
 
   /** @override */
-  _onDelete(options: Entity.DeleteOptions, userId: string): void;
+  protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
 
   /* -------------------------------------------- */
   /*  Methods

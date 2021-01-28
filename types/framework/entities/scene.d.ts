@@ -27,7 +27,7 @@ declare class Scenes extends EntityCollection<Scene> {
   /**
    * Augment the standard modifyDocument listener to flush fog exploration
    */
-  static _resetFog(response: { scene: Scene; reset: boolean }): Promise<Canvas>;
+  protected static _resetFog(response: { scene: Scene; reset: boolean }): Promise<Canvas>;
 
   /**
    * Handle pre-loading the art assets for a Scene
@@ -39,7 +39,7 @@ declare class Scenes extends EntityCollection<Scene> {
   /**
    * Handle requests pulling the current User to a specific Scene
    */
-  static _pullToScene(sceneId: string): void;
+  protected static _pullToScene(sceneId: string): void;
 
   /** @override */
   fromCompendium(data: Scene.Data): Scene.Data;
@@ -59,7 +59,7 @@ declare class Scene extends Entity<Scene.Data> {
    * When switching back to a previously viewed scene, we can automatically pan to the previous position.
    * Object with keys: x, y, scale
    */
-  viewPosition: {
+  _viewPosition: {
     x: number;
     y: number;
     scale: number;
@@ -130,43 +130,55 @@ declare class Scene extends Entity<Scene.Data> {
   update(data: Partial<Scene.Data>, options: Entity.UpdateOptions): Promise<this>;
 
   /** @override */
-  _onCreate(data: Scene.Data, options: any, userId: string): void;
+  protected _onCreate(data: Scene.Data, options: any, userId: string): void;
 
   /** @override */
-  _onUpdate(data: Partial<Scene.Data>, options: Entity.UpdateOptions, userId: string): void;
+  protected _onUpdate(data: Partial<Scene.Data>, options: Entity.UpdateOptions, userId: string): void;
 
   /** @override */
-  _onDelete(options: Entity.DeleteOptions, userId: string): void;
+  protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
 
   /**
    * Handle Scene activation workflow if the active state is changed to true
    */
-  _onActivate(active: boolean): void;
+  protected _onActivate(active: boolean): void;
 
   /** @override */
-  _onCreateEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
+  protected _onCreateEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
 
   /** @override */
-  _onUpdateEmbeddedEntity(embeddedName: string, child: any, updateData: any, options: any, userId: string): void;
+  protected _onUpdateEmbeddedEntity(
+    embeddedName: string,
+    child: any,
+    updateData: any,
+    options: any,
+    userId: string
+  ): void;
 
   /** @override */
-  _onDeleteEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
+  protected _onDeleteEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
 
   /** @override */
-  _onModifyEmbeddedEntity(embeddedName: string, changes: any[], options: any, userId: string, context?: any): void;
+  protected _onModifyEmbeddedEntity(
+    embeddedName: string,
+    changes: any[],
+    options: any,
+    userId: string,
+    context?: any
+  ): void;
 
   /* -------------------------------------------- */
   /*  History Storage Handlers                    */
   /* -------------------------------------------- */
 
   /** @override */
-  static _handleCreateEmbeddedEntity({ request, result, userId }: any): any[];
+  protected static _handleCreateEmbeddedEntity({ request, result, userId }: any): any[];
 
   /** @override */
-  static _handleUpdateEmbeddedEntity({ request, result, userId }: any): any[];
+  protected static _handleUpdateEmbeddedEntity({ request, result, userId }: any): any[];
 
   /** @override */
-  static _handleDeleteEmbeddedEntity({ request, result, userId }: any): any[];
+  protected static _handleDeleteEmbeddedEntity({ request, result, userId }: any): any[];
 
   /* -------------------------------------------- */
   /*  Importing and Exporting                     */

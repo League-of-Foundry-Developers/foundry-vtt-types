@@ -198,7 +198,7 @@ declare class Actor<
    * @param items - The raw array of item objects
    * @returns The prepared owned items collection
    */
-  _prepareOwnedItems(items: Array<Actor.OwnedItemData<D>>): Collection<I>;
+  protected _prepareOwnedItems(items: Array<Actor.OwnedItemData<D>>): Collection<I>;
 
   /**
    * Prepare a Collection of ActiveEffect instances which belong to this Actor.
@@ -295,7 +295,7 @@ declare class Actor<
   delete(options?: Entity.DeleteOptions): Promise<Actor>;
 
   /** @override */
-  _onUpdate(data: Partial<D>, options: Entity.UpdateOptions, userId: string, context?: any): void;
+  protected _onUpdate(data: Partial<D>, options: Entity.UpdateOptions, userId: string, context?: any): void;
 
   /** @override */
   createEmbeddedEntity(
@@ -323,7 +323,7 @@ declare class Actor<
   ): Promise<ActiveEffect.Data[] | ActiveEffect.Data | undefined>;
 
   /** @override */
-  _onCreateEmbeddedEntity(
+  protected _onCreateEmbeddedEntity(
     embeddedName: string,
     child: Actor.OwnedItemData<D> | ActiveEffect.Data,
     options: any,
@@ -345,7 +345,7 @@ declare class Actor<
   ): Promise<ActiveEffect.Data | ActiveEffect.Data[] | undefined>;
 
   /** @override */
-  _onDeleteEmbeddedEntity(
+  protected _onDeleteEmbeddedEntity(
     embeddedName: string,
     child: Actor.OwnedItemData<D> | ActiveEffect.Data,
     options: any,
@@ -353,7 +353,7 @@ declare class Actor<
   ): void;
 
   /** @override */
-  _onModifyEmbeddedEntity(
+  protected _onModifyEmbeddedEntity(
     embeddedName: string,
     changes: Array<Actor.OwnedItemData<D>> | ActiveEffect.Data[],
     options: any,

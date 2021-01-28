@@ -14,12 +14,12 @@ declare class Messages extends EntityCollection<ChatMessage> {
    * If requested, dispatch a Chat Bubble UI for the newly created message
    * @param message - The ChatMessage entity to say
    */
-  sayBubble(message: ChatMessage): void;
+  protected sayBubble(message: ChatMessage): void;
 
   /**
    * Handle export of the chat log to a text file
    */
-  export(): void;
+  protected export(): void;
 
   /**
    * Allow for bulk deletion of all chat messages, confirm first with a yes/no dialog.
@@ -115,8 +115,8 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
    * @param rollMode - The visibility mode applied to all dice rolls
    * @returns Processed message creation data
    */
-  static _preprocessCreateData(
-    data: ChatMessage.Data,
+  protected static _preprocessCreateData(
+    data: Partial<ChatMessage.Data>,
     {
       rollMode
     }?: {
@@ -125,13 +125,13 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
   ): ChatMessage.Data;
 
   /** @override */
-  _onCreate(data: Partial<ChatMessage.Data>, options: Entity.CreateOptions, userId: string): void;
+  protected _onCreate(data: Partial<ChatMessage.Data>, options: Entity.CreateOptions, userId: string): void;
 
   /** @override */
-  _onUpdate(data: Partial<ChatMessage.Data>, options: Entity.UpdateOptions, userId: string): void;
+  protected _onUpdate(data: Partial<ChatMessage.Data>, options: Entity.UpdateOptions, userId: string): void;
 
   /** @override */
-  _onDelete(options: Entity.DeleteOptions, userId: string): void;
+  protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
 
   /* -------------------------------------------- */
   /*  Saving and Loading                          */
@@ -174,12 +174,12 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
   /**
    * A helper to prepare the speaker object based on a target Token
    */
-  static _getSpeakerFromToken({ token, alias }: { token: Token; alias?: string }): ChatMessage.SpeakerData;
+  protected static _getSpeakerFromToken({ token, alias }: { token: Token; alias?: string }): ChatMessage.SpeakerData;
 
   /**
    * A helper to prepare the speaker object based on a target Actor
    */
-  static _getSpeakerFromActor({
+  protected static _getSpeakerFromActor({
     scene,
     actor,
     alias
@@ -192,7 +192,7 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
   /**
    * A helper to prepare the speaker object based on a target User
    */
-  static _getSpeakerFromUser({
+  protected static _getSpeakerFromUser({
     scene,
     user,
     alias

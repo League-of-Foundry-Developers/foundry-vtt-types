@@ -11,7 +11,7 @@ declare class Users extends EntityCollection<User> {
   /**
    * Initialize the Map object and all its contained entities
    */
-  _initialize(data: User.Data[]): void;
+  protected _initialize(data: User.Data[]): void;
 
   /** @override */
   get entity(): string;
@@ -34,7 +34,7 @@ declare class Users extends EntityCollection<User> {
    * @param userId - The User id who generated the activity data
    * @param activityData - The object of activity data
    */
-  static _handleUserActivity(userId: string, activityData: User.ActivityData): void;
+  protected static _handleUserActivity(userId: string, activityData: User.ActivityData): void;
 }
 
 /**
@@ -200,7 +200,7 @@ declare class User extends Entity<User.Data> {
   /* -------------------------------------------- */
 
   /** @override */
-  _onCreate(data: User.Data, options: any, userId: string): void;
+  protected _onCreate(data: User.Data, options: any, userId: string): void;
 
   /**
    * Additional updating steps for the User entity when new data is saved which trigger some related updates.
@@ -210,10 +210,10 @@ declare class User extends Entity<User.Data> {
    * Render the players UI if activity status or other player features have changed
    * Update the canvas if the player's impersonated character has changed
    */
-  _onUpdate(data: Partial<User.Data>, options: Entity.UpdateOptions, userId: string): void;
+  protected _onUpdate(data: Partial<User.Data>, options: Entity.UpdateOptions, userId: string): void;
 
   /** @override */
-  _onDelete(options: Entity.DeleteOptions, userId: string): void;
+  protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
 }
 
 declare namespace User {

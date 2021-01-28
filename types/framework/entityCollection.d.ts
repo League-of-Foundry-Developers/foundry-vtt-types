@@ -64,7 +64,7 @@ declare abstract class EntityCollection<T extends Entity = Entity> extends Colle
    * Initialize the Map object and all its contained entities
    * @internal
    */
-  _initialize(data: T['data'][]): void;
+  protected _initialize(data: T['data'][]): void;
 
   /**
    * Apply data transformations when importing an Entity from a Compendium pack

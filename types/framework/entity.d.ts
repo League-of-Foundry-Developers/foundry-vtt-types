@@ -72,7 +72,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Safely Initialize data structure for the Entity.
    * Errors that occur here should be captured and logged, but should not break construction of the Entity instance.
    */
-  _initialize(): void;
+  protected _initialize(): void;
 
   /**
    * Configure the attributes of this Entity class
@@ -176,7 +176,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Obtain a reference to the BaseEntitySheet implementation which should be used to render the Entity instance
    * configuration sheet.
    */
-  get _sheetClass(): BaseEntitySheet;
+  protected get _sheetClass(): BaseEntitySheet;
 
   /**
    * Return a reference to the Folder which this Entity belongs to, if any.
@@ -325,7 +325,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
   /**
    * Entity- specific actions that should occur when the Entity is first created
    */
-  _onCreate(data: D, options: any, userId: string): void;
+  protected _onCreate(data: D, options: any, userId: string): void;
 
   /**
    * Update one or multiple existing entities using provided input data.
@@ -360,7 +360,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
   /**
    * Entity- specific actions that should occur when the Entity is updated
    */
-  _onUpdate(data: Partial<D>, options: Entity.UpdateOptions, userId: string): void;
+  protected _onUpdate(data: Partial<D>, options: Entity.UpdateOptions, userId: string): void;
 
   /**
    * Update the current Entity using provided input data.
@@ -401,12 +401,12 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param result - An Array of deleted Entity ids
    * @param userId - The id of the requesting User
    */
-  static _handleDelete({ request, result, userId }: any): Entity[];
+  protected static _handleDelete({ request, result, userId }: any): Entity[];
 
   /**
    * Entity- specific actions that should occur when the Entity is deleted
    */
-  _onDelete(options: Entity.DeleteOptions, userId: string): void;
+  protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
 
   /**
    * Delete the current Entity.
@@ -466,7 +466,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param result - An Array of created Entity data
    * @param userId - The id of the requesting User
    */
-  static _handleCreateEmbeddedEntity({ request, result, userId }: any): any[];
+  protected static _handleCreateEmbeddedEntity({ request, result, userId }: any): any[];
 
   /**
    * Handle Embedded Entity creation within this Entity with specific callback steps.
@@ -475,7 +475,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Any steps defined here should run on a per- EmbeddedEntity basis.
    * Steps that should run once for the whole batch should go in _onModifyEmbeddedEntity()
    */
-  _onCreateEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
+  protected _onCreateEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
 
   /**
    * Update one or multiple existing entities using provided input data.
@@ -517,7 +517,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param result - An Array of updated Entity data
    * @param userId - The id of the requesting User
    */
-  static _handleUpdateEmbeddedEntity({ request, result, userId }: any): any[];
+  protected static _handleUpdateEmbeddedEntity({ request, result, userId }: any): any[];
 
   /**
    * Handle Embedded Entity updates within this Entity with specific callback steps.
@@ -526,7 +526,13 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Any steps defined here should run on a per- EmbeddedEntity basis.
    * Steps that should run once for the whole batch should go in _onModifyEmbeddedEntity()
    */
-  _onUpdateEmbeddedEntity(embeddedName: string, child: any, updateData: any, options: any, userId: string): void;
+  protected _onUpdateEmbeddedEntity(
+    embeddedName: string,
+    child: any,
+    updateData: any,
+    options: any,
+    userId: string
+  ): void;
 
   /**
    * Delete one or multiple existing EmbeddedEntity objects using provided input data.
@@ -564,7 +570,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param result - An Array of deleted EmbeddedEntity ids
    * @param userId - The id of the requesting User
    */
-  static _handleDeleteEmbeddedEntity({ request, result, userId }: any): any[];
+  protected static _handleDeleteEmbeddedEntity({ request, result, userId }: any): any[];
 
   /**
    * Handle Embedded Entity deletion within this Entity with specific callback steps.
@@ -573,13 +579,19 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Any steps defined here should run on a per- EmbeddedEntity basis.
    * Steps that should run once for the whole batch should go in _onModifyEmbeddedEntity()
    */
-  _onDeleteEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
+  protected _onDeleteEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
 
   /**
    * A generic helper since we take the same actions for every type of Embedded Entity update
    * Unlike the specific _onCreate, _onUpdate, and _onDelete methods this only runs once per updated batch
    */
-  _onModifyEmbeddedEntity(embeddedName: string, changes: any[], options: any, userId: string, context?: any): void;
+  protected _onModifyEmbeddedEntity(
+    embeddedName: string,
+    changes: any[],
+    options: any,
+    userId: string,
+    context?: any
+  ): void;
 
   /* -------------------------------------------- */
   /*  Data Flags                                  */
