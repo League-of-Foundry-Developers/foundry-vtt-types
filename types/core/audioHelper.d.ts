@@ -34,33 +34,29 @@ declare class AudioHelper {
    * Only created if necessary to listen to audio streams.
    * @defaultValue `null`
    */
-  _audioContext: AudioContext | null;
+  protected _audioContext: AudioContext | null;
 
   /**
    * Map of all streams that we listen to for determining the decibel levels.
    * Used for analyzing audio levels of each stream.
-   *
-   * @internal
    */
-  _analyserStreams: Record<string, AudioHelper.AnalyserStream>;
+  protected _analyserStreams: Record<string, AudioHelper.AnalyserStream>;
 
   /**
    * Interval ID as returned by setInterval for analysing the volume of streams
    * When set to 0, means no timer is set.
-   * @internal
    * @defaultValue `0`
    */
-  _analyserInterval: number;
+  protected _analyserInterval: number;
 
   /**
    * Fast Fourrier Transform Array.
    * Used for analysing the decibel level of streams. The array is allocated only once
    * then filled by the analyser repeatedly. We only generate it when we need to listen to
    * a stream's level, so we initialize it to null.
-   * @internal
    * @defaultValue `null`
    */
-  _fftArray: Float32Array[] | null;
+  protected _fftArray: Float32Array[] | null;
 
   /**
    * The Native interval for the AudioHelper to analyse audio levels from streams
@@ -133,7 +129,7 @@ declare class AudioHelper {
    * Handle the first observed user gesture
    * @param event - The mouse-move event which enables playback
    */
-  _onFirstGesture(event: Event): void;
+  protected _onFirstGesture(event: Event): void;
 
   /* -------------------------------------------- */
 
@@ -145,9 +141,8 @@ declare class AudioHelper {
 
   /**
    * Open socket listeners which transact ChatMessage data
-   * @internal
    */
-  static socketListeners(socket: any): void;
+  protected static socketListeners(socket: any): void;
 
   /* -------------------------------------------- */
 
@@ -292,18 +287,16 @@ declare class AudioHelper {
    * I don't know if it actually helps much with performance but it's expected that limiting the number of timers
    * running at the same time is good practice and with JS itself, there's a potential for a timer congestion
    * phenomenon if too many are created.
-   * @internal
    */
-  _ensureAnalyserTimer(): void;
+  protected _ensureAnalyserTimer(): void;
 
   /* -------------------------------------------- */
 
   /**
    * Cancel the global analyser timer
    * If the timer is running and has become unnecessary, stops it.
-   * @internal
    */
-  _cancelAnalyserTimer(): void;
+  protected _cancelAnalyserTimer(): void;
 
   /* -------------------------------------------- */
 
@@ -311,9 +304,8 @@ declare class AudioHelper {
    * Capture audio level for all speakers and emit a webrtcVolumes custom event with all the volume levels
    * detected since the last emit.
    * The event's detail is in the form of `{userId: decibelLevel}`
-   * @internal
    */
-  _emitVolumes(): void;
+  protected _emitVolumes(): void;
 }
 
 declare namespace AudioHelper {

@@ -83,9 +83,8 @@ declare class SetupConfiguration {
    * A helper method to submit a POST request to setup configuration with a certain body, returning the JSON response
    * @param body - The request body to submit
    * @returns The response body
-   * @internal
    */
-  static post(body: object): Promise<object>;
+  protected static post(body: object): Promise<object>;
 }
 
 declare namespace SetupConfiguration {
