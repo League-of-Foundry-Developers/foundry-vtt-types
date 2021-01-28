@@ -35,7 +35,7 @@
  * ```
  */
 declare class Entity<D extends Entity.Data = Entity.Data> {
-  constructor(data?: Partial<D>, options?: Entity.CreateOptions);
+  constructor(data?: DeepPartial<D>, options?: Entity.CreateOptions);
 
   /**
    * The original source data for the Entity provided upon initialization.
@@ -311,8 +311,8 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const created: Actor[] | null = await Actor.create(data, {temporary: true}); // Not saved to the database
    * ```
    */
-  static create<T extends Entity>(data: Partial<T['data']>, options?: Entity.CreateOptions): Promise<T | null>;
-  static create<T extends Entity>(data: Partial<T['data']>[], options?: Entity.CreateOptions): Promise<T[] | null>;
+  static create<T extends Entity>(data: DeepPartial<T['data']>, options?: Entity.CreateOptions): Promise<T | null>;
+  static create<T extends Entity>(data: DeepPartial<T['data']>[], options?: Entity.CreateOptions): Promise<T[] | null>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Entities are created
@@ -346,8 +346,8 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const updated = await Entity.update<Actor>(data); // Returns an Array of Entities, updated in the database
    * ```
    */
-  static update<T extends Entity>(data: Partial<T['data']>, options?: Entity.UpdateOptions): Promise<T>;
-  static update<T extends Entity>(data: Partial<T['data']>[], options?: Entity.UpdateOptions): Promise<T[]>;
+  static update<T extends Entity>(data: DeepPartial<T['data']>, options?: Entity.UpdateOptions): Promise<T>;
+  static update<T extends Entity>(data: DeepPartial<T['data']>[], options?: Entity.UpdateOptions): Promise<T[]>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Entities are updated
@@ -360,7 +360,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
   /**
    * Entity- specific actions that should occur when the Entity is updated
    */
-  protected _onUpdate(data: Partial<D>, options: Entity.UpdateOptions, userId: string): void;
+  protected _onUpdate(data: DeepPartial<D>, options: Entity.UpdateOptions, userId: string): void;
 
   /**
    * Update the current Entity using provided input data.
@@ -370,7 +370,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param data - A Data object which updates the Entity
    * @param options - Additional options which customize the update workflow
    */
-  update(data: Partial<D>, options?: Entity.UpdateOptions): Promise<this>;
+  update(data: DeepPartial<D>, options?: Entity.UpdateOptions): Promise<this>;
 
   /**
    * Delete one or multiple existing entities using provided ids.

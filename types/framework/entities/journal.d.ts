@@ -44,7 +44,7 @@ declare class JournalEntry extends Entity<JournalEntry.Data> {
   protected _onCreate(data: JournalEntry.Data, options: Entity.CreateOptions, userId: string): void;
 
   /** @override */
-  protected _onUpdate(data: Partial<JournalEntry.Data>, options: Entity.UpdateOptions, userId: string): void;
+  protected _onUpdate(data: DeepPartial<JournalEntry.Data>, options: Entity.UpdateOptions, userId: string): void;
 
   /** @override */
   protected _onDelete(options: Entity.DeleteOptions, userId: string): void;

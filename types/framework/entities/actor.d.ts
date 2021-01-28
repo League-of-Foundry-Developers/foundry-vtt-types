@@ -111,7 +111,7 @@ declare class Actor<
   D extends Actor.Data = Actor.Data,
   I extends Item<Actor.OwnedItemData<D>> = Item<Actor.OwnedItemData<D>>
 > extends Entity<D> {
-  constructor(data?: Partial<D>, options?: Entity.CreateOptions);
+  constructor(data?: DeepPartial<D>, options?: Entity.CreateOptions);
 
   /**
    * A reference to a placed Token which creates a synthetic Actor
@@ -132,7 +132,7 @@ declare class Actor<
   /**
    * A set that tracks which keys in the data model were modified by active effects
    */
-  overrides: Partial<D>;
+  overrides: DeepPartial<D>;
 
   /**
    * Cache an Array of allowed Token images if using a wildcard path
@@ -289,25 +289,25 @@ declare class Actor<
   /* -------------------------------------------- */
 
   /** @override */
-  update(data: Partial<D>, options?: Entity.UpdateOptions): Promise<this>;
+  update(data: DeepPartial<D>, options?: Entity.UpdateOptions): Promise<this>;
 
   /** @override */
   delete(options?: Entity.DeleteOptions): Promise<Actor>;
 
   /** @override */
-  protected _onUpdate(data: Partial<D>, options: Entity.UpdateOptions, userId: string, context?: any): void;
+  protected _onUpdate(data: DeepPartial<D>, options: Entity.UpdateOptions, userId: string, context?: any): void;
 
   /** @override */
   createEmbeddedEntity(
     embeddedName: 'OwnedItem',
-    data: Partial<Actor.OwnedItemData<D>>,
+    data: DeepPartial<Actor.OwnedItemData<D>>,
     options?: any
   ): Promise<Actor.OwnedItemData<D>>;
 
   /** @override */
   createEmbeddedEntity(
     embeddedName: 'ActiveEffect',
-    data: Partial<ActiveEffect.Data>,
+    data: DeepPartial<ActiveEffect.Data>,
     options?: any
   ): Promise<ActiveEffect.Data>;
 
@@ -381,8 +381,8 @@ declare class Actor<
    * @param renderSheet - Render the Item sheet for the newly created item data
    * @returns A Promise resolving to the created Owned Item data
    */
-  createOwnedItem(itemData: Partial<Actor.OwnedItemData<D>>, options?: any): Promise<Actor.OwnedItemData<D>>;
-  createOwnedItem(itemData: Partial<Actor.OwnedItemData<D>>[], options?: any): Promise<Actor.OwnedItemData<D>[]>;
+  createOwnedItem(itemData: DeepPartial<Actor.OwnedItemData<D>>, options?: any): Promise<Actor.OwnedItemData<D>>;
+  createOwnedItem(itemData: DeepPartial<Actor.OwnedItemData<D>>[], options?: any): Promise<Actor.OwnedItemData<D>[]>;
 
   /**
    * Update an owned item using provided new data. This redirects its arguments to the updateEmbeddedEntity method.
@@ -392,9 +392,9 @@ declare class Actor<
    * @param options  - Item update options
    * @returns A Promise resolving to the updated Owned Item data
    */
-  updateOwnedItem(itemData: Partial<Actor.OwnedItemData<D>>, options?: any): Promise<ActiveEffect | Actor.OwnedItemData<D>>;
+  updateOwnedItem(itemData: DeepPartial<Actor.OwnedItemData<D>>, options?: any): Promise<ActiveEffect | Actor.OwnedItemData<D>>;
   updateOwnedItem(
-    itemData: Partial<Actor.OwnedItemData<D>>[],
+    itemData: DeepPartial<Actor.OwnedItemData<D>>[],
     options?: any
   ): Promise<Array<ActiveEffect | Actor.OwnedItemData<D>>>;
 

@@ -125,7 +125,7 @@ declare class Playlist extends Entity<Playlist.Data> {
   /* -------------------------------------------- */
 
   /** @override */
-  protected _onUpdate(data: Partial<Playlist.Data>, options: Entity.UpdateOptions, userId: string): void;
+  protected _onUpdate(data: DeepPartial<Playlist.Data>, options: Entity.UpdateOptions, userId: string): void;
 
   /** @override */
   protected _onCreateEmbeddedEntity(

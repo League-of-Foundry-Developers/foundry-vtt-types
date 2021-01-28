@@ -277,7 +277,7 @@ declare class Combat extends Entity<Combat.Data> {
   protected _onCreate(data: Combat.Data, options: any, userId: string): void;
 
   /** @override */
-  protected _onUpdate(data: Partial<Combat.Data>, options: Entity.UpdateOptions, userId: string): void;
+  protected _onUpdate(data: DeepPartial<Combat.Data>, options: Entity.UpdateOptions, userId: string): void;
 
   /** @override */
   protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
@@ -306,7 +306,7 @@ declare namespace Combat {
    */
   interface Data extends Entity.Data {
     active: boolean;
-    combatants: Array<Partial<Combatant>>;
+    combatants: Array<DeepPartial<Combatant>>;
     permission: Entity.Permission;
     round: number;
     scene: string;

@@ -105,8 +105,8 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
   /* -------------------------------------------- */
 
   /** @override */
-  static create(data: Partial<ChatMessage.Data>, options?: Entity.CreateOptions): Promise<ChatMessage | null>;
-  static create(data: Partial<ChatMessage.Data>[], options?: Entity.CreateOptions): Promise<ChatMessage[] | null>;
+  static create(data: DeepPartial<ChatMessage.Data>, options?: Entity.CreateOptions): Promise<ChatMessage | null>;
+  static create(data: DeepPartial<ChatMessage.Data>[], options?: Entity.CreateOptions): Promise<ChatMessage[] | null>;
 
   /**
    * Preprocess the data object used to create a new Chat Message to automatically convert some Objects to the
@@ -116,7 +116,7 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
    * @returns Processed message creation data
    */
   protected static _preprocessCreateData(
-    data: Partial<ChatMessage.Data>,
+    data: DeepPartial<ChatMessage.Data>,
     {
       rollMode
     }?: {
@@ -125,10 +125,10 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
   ): ChatMessage.Data;
 
   /** @override */
-  protected _onCreate(data: Partial<ChatMessage.Data>, options: Entity.CreateOptions, userId: string): void;
+  protected _onCreate(data: DeepPartial<ChatMessage.Data>, options: Entity.CreateOptions, userId: string): void;
 
   /** @override */
-  protected _onUpdate(data: Partial<ChatMessage.Data>, options: Entity.UpdateOptions, userId: string): void;
+  protected _onUpdate(data: DeepPartial<ChatMessage.Data>, options: Entity.UpdateOptions, userId: string): void;
 
   /** @override */
   protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
@@ -169,7 +169,7 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
    *
    * @returns The identified speaker data
    */
-  static getSpeaker(speaker: Partial<ChatMessage.SpeakerData>): ChatMessage.SpeakerData;
+  static getSpeaker(speaker: DeepPartial<ChatMessage.SpeakerData>): ChatMessage.SpeakerData;
 
   /**
    * A helper to prepare the speaker object based on a target Token

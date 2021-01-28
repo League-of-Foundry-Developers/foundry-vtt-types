@@ -175,7 +175,7 @@ declare class User extends Entity<User.Data> {
    *
    * @param activityData - An object of User activity data to submit to the server for broadcast.
    */
-  broadcastActivity(activityData: Partial<User.ActivityData>): void;
+  broadcastActivity(activityData: DeepPartial<User.ActivityData>): void;
 
   /**
    * Assign a Macro to a numbered hotbar slot between 1 and 50
@@ -210,7 +210,7 @@ declare class User extends Entity<User.Data> {
    * Render the players UI if activity status or other player features have changed
    * Update the canvas if the player's impersonated character has changed
    */
-  protected _onUpdate(data: Partial<User.Data>, options: Entity.UpdateOptions, userId: string): void;
+  protected _onUpdate(data: DeepPartial<User.Data>, options: Entity.UpdateOptions, userId: string): void;
 
   /** @override */
   protected _onDelete(options: Entity.DeleteOptions, userId: string): void;

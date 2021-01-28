@@ -123,17 +123,17 @@ declare class Scene extends Entity<Scene.Data> {
   clone(createData?: Scene.Data, options?: Entity.CreateOptions): Promise<Scene>;
 
   /** @override */
-  static create(data: Partial<Scene.Data>, options?: Entity.CreateOptions): Promise<Scene | null>;
-  static create(data: Partial<Scene.Data>[], options?: Entity.CreateOptions): Promise<Scene[] | null>;
+  static create(data: DeepPartial<Scene.Data>, options?: Entity.CreateOptions): Promise<Scene | null>;
+  static create(data: DeepPartial<Scene.Data>[], options?: Entity.CreateOptions): Promise<Scene[] | null>;
 
   /** @override */
-  update(data: Partial<Scene.Data>, options: Entity.UpdateOptions): Promise<this>;
+  update(data: DeepPartial<Scene.Data>, options: Entity.UpdateOptions): Promise<this>;
 
   /** @override */
   protected _onCreate(data: Scene.Data, options: any, userId: string): void;
 
   /** @override */
-  protected _onUpdate(data: Partial<Scene.Data>, options: Entity.UpdateOptions, userId: string): void;
+  protected _onUpdate(data: DeepPartial<Scene.Data>, options: Entity.UpdateOptions, userId: string): void;
 
   /** @override */
   protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
