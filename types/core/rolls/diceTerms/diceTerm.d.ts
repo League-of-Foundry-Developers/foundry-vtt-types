@@ -3,40 +3,23 @@
  */
 declare abstract class DiceTerm {
   /**
-   * Define the denomination string used to register this Dice type in
-   * CONFIG.Dice.terms
-   * @defaultValue `''`
+   * @param termData  - Data used to create the Dice Term, including the following:
+   *                    (default: `{}`)
+   * @param number    - The number of dice of this term to roll, before modifiers are applied
+   *                    (default: `1`)
+   * @param faces     - The number of faces on each die of this type
+   *                    (default: `6`)
+   * @param modifiers - An array of modifiers applied to the results
+   *                    (default: `[]`)
+   * @param options   - Additional options that modify the term
+   *                    (default: `{}`)
    */
-  static DENOMINATION: string;
+  constructor(termData?: DiceTerm.TermData);
 
   /**
-   * A regular expression pattern which identifies part-specific flavor text
-   * @defaultValue `'(?:\\[(.*)\\])?'`
+   * The number of dice of this term to roll, before modifiers are applied
    */
-  static FLAVOR_TEXT_REGEX: string;
-
-  /**
-   * Define the modifiers that can be used for this particular DiceTerm type.
-   */
-  static MODIFIERS: Record<string, string | ((diceTerm: DiceTerm, m: string) => void)>;
-
-  /**
-   * A regular expression pattern which indicates the end of a DiceTerm
-   * @defaultValue `'([^ ()+\\-/*\\[]+)?'`
-   */
-  static MODIFIERS_REGEX: string;
-
-  /**
-   * A regular expression pattern which identifies a potential DiceTerm modifier
-   * @defaultValue `/([A-z]+)([^A-z\s()+\-*\/]+)?/g`
-   */
-  static MODIFIER_REGEX: RegExp;
-
-  /**
-   * An internal flag for whether the dice term has been evaluated
-   * @internal
-   */
-  _evaluated: boolean;
+  number: number;
 
   /**
    * The number of faces on the die
@@ -49,11 +32,6 @@ declare abstract class DiceTerm {
   modifiers: string[];
 
   /**
-   * The number of dice of this term to roll, before modifiers are applied
-   */
-  number: number;
-
-  /**
    * An object of additional options which modify the dice term
    */
   options: DiceTerm.Options;
@@ -64,120 +42,175 @@ declare abstract class DiceTerm {
   results: DiceTerm.Result[];
 
   /**
-   * @param termData - Data used to create the Dice Term, including the
-   *                   following:
-   *                   (default: `{}`)
-   * @param number - The number of dice of this term to roll, before modifiers
-   *                 are applied
-   *                 (default: `1`)
-   * @param faces - The number of faces on each die of this type
-   *                (default: `6`)
-   * @param modifiers - An array of modifiers applied to the results
-   *                    (default: `[]`)
-   * @param options - Additional options that modify the term
-   *                  (default: `{}`)
+   * An internal flag for whether the dice term has been evaluated
    */
-  constructor(termData?: DiceTerm.TermData);
+  protected _evaluated: boolean;
+
+  /* -------------------------------------------- */
 
   /**
-   * Return the dice expression portion of the full term formula, excluding any
-   * flavor text.
+   * Return the dice expression portion of the full term formula, excluding any flavor text.
    */
   get expression(): string;
 
+  /* -------------------------------------------- */
+
   /**
-   * Return the flavor text associated with a particular DiceTerm, possibly an
-   * empty string if the term is flavorless.
+   * Return a standardized representation for the displayed formula associated with this DiceTerm
+   */
+  get formula(): string;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Return the flavor text associated with a particular DiceTerm, possibly an empty string if the term is flavorless.
    */
   get flavor(): string;
 
-  /**
-   * Return a standardized representation for the displayed formula associated
-   * with this DiceTerm
-   */
-  get formula(): string;
+  /* -------------------------------------------- */
 
   /**
    * Return the total result of the DiceTerm if it has been evaluated
    */
   get total(): number | null;
 
+  /* -------------------------------------------- */
+
   /**
    * Return an array of rolled values which are still active within this term
    */
   get values(): number[];
 
+  /* -------------------------------------------- */
+
   /**
-   * A reusable helper function to handle the identification and deduction of
-   * failures
+   * Alter the DiceTerm by adding or multiplying the number of dice which are rolled
+   * @param multiply - A factor to multiply. Dice are multiplied before any additions.
+   * @param add      - A number of dice to add. Dice are added after multiplication.
+   * @returns The altered term
+   */
+  alter(multiply: number, add: number): this;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Evaluate the roll term, populating the results Array.
    * @param options - (default: `{}`)
+   * @param minimize - Apply the minimum possible result for each roll.
+   *                   (default: `false`)
+   * @param maximize - Apply the maximum possible result for each roll.
+   *                   (default: `false`)
+   * @returns The evaluated dice term
+   */
+  evaluate({ minimize, maximize }?: { minimize: boolean; maximize: boolean }): this;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Roll the DiceTerm by mapping a random uniform draw against the faces of the dice term.
+   * @param minimize - Apply the minimum possible result instead of a random result.
+   * @param maximize - Apply the maximum possible result instead of a random result.
+   */
+  roll({ minimize, maximize }?: { minimize: boolean; maximize: boolean }): DiceTerm.Result;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Return a string used as the label for each rolled result
+   * @param result - The numeric result
+   * @returns The result label
+   */
+  static getResultLabel(result: string): string;
+
+  /* -------------------------------------------- */
+  /*  Modifier Helpers                            */
+  /* -------------------------------------------- */
+
+  /**
+   * Sequentially evaluate each dice roll modifier by passing the term to its evaluation function
+   * Augment or modify the results array.
+   */
+  protected _evaluateModifiers(): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * A helper comparison function.
+   * Returns a boolean depending on whether the result compares favorably against the target.
+   * @param result     - The result being compared
+   * @param comparison - The comparison operator in [=,\<,\<=,\>,\>=]
+   * @param target     - The target value
+   * @returns Is the comparison true?
+   */
+  static compareResult(result: number, comparison: string, target: number): boolean;
+
+  /* -------------------------------------------- */
+
+  /**
+   * A helper method to modify the results array of a dice term by flagging certain results are kept or dropped.
+   * @param results - The results array
+   * @param number  - The number to keep or drop
+   * @param keep    - Keep results?
+   *                  (default: `true`)
+   * @param highest - Keep the highest?
+   *                  (default: `true`)
+   * @returns The modified results array
+   */
+  protected static _keepOrDrop(
+    results: DiceTerm.Result,
+    number: number,
+    {
+      keep,
+      highest
+    }?: {
+      keep: boolean;
+      highest: boolean;
+    }
+  ): DiceTerm.Result;
+
+  /* -------------------------------------------- */
+
+  /**
+   * A reusable helper function to handle the identification and deduction of failures
    * @param flagFailure - (default: `false`)
    * @param flagSuccess - (default: `false`)
    */
-  static _applyCount(
+  protected static _applyCount(
     results: DiceTerm.Result[],
     comparison: string,
     target: number,
-    options?: {
-      flagFailure: boolean;
+    {
+      flagSuccess,
+      flagFailure
+    }?: {
       flagSuccess: boolean;
+      flagFailure: boolean;
     }
   ): void;
 
+  /* -------------------------------------------- */
+
   /**
-   * A reusable helper function to handle the identification and deduction of
-   * failures
-   * @param options - (default: `{}`)
+   * A reusable helper function to handle the identification and deduction of failures
    * @param deductFailure - (default: `false`)
    * @param invertFailure - (default: `false`)
    */
-  static _applyDeduct(
+  protected static _applyDeduct(
     results: DiceTerm.Result[],
     comparison: string,
     target: number,
-    options?: {
+    {
+      deductFailure,
+      invertFailure
+    }?: {
       deductFailure: boolean;
       invertFailure: boolean;
     }
   ): void;
 
-  /**
-   * Provide backwards compatibility for Die syntax prior to 0.7.0
-   * @internal
-   */
-  static _backwardsCompatibleTerm(data: DiceTerm.OldTerm): DiceTerm.Result;
-
-  /**
-   * A helper method to modify the results array of a dice term by flagging
-   * certain results are kept or dropped.
-   * @param results - The results array
-   * @param number - The number to keep or drop
-   * @param options - (default: `{}`)
-   * @param keep - Keep results?
-   *               (default: `true`)
-   * @param highest - Keep the highest?
-   *                  (default: `true`)
-   * @returns The modified results array
-   */
-  static _keepOrDrop(
-    results: DiceTerm.Result,
-    number: number,
-    options?: {
-      highest: boolean;
-      keep: boolean;
-    }
-  ): DiceTerm.Result;
-
-  /**
-   * A helper comparison function.
-   * Returns a boolean depending on whether the result compares favorably
-   * against the target.
-   * @param result - The result being compared
-   * @param comparison - The comparison operator in [=,\<,\<=,\>,\>=]
-   * @param target - The target value
-   * @returns Is the comparison true?
-   */
-  static compareResult(result: number, comparison: string, target: number): boolean;
+  /* -------------------------------------------- */
+  /*  Factory Methods                             */
+  /* -------------------------------------------- */
 
   /**
    * Construct a DiceTerm from a provided data object
@@ -186,20 +219,26 @@ declare abstract class DiceTerm {
    */
   static fromData(data: object): DiceTerm;
 
+  /* -------------------------------------------- */
+
   /**
-   * Parse a provided roll term expression, identifying whether it matches this
-   * type of term.
+   * Parse a provided roll term expression, identifying whether it matches this type of term.
    * @param options - Additional term options
    * @returns The constructed DiceTerm instance
    */
   static fromExpression(expression: string, options: DiceTerm.Options): DiceTerm | null;
 
+  /* -------------------------------------------- */
+
   /**
-   * Reconstruct a DiceTerm instance from a provided JSON string
-   * @param json - A serialized JSON representation of a DiceTerm
-   * @returns A reconstructed DiceTerm from the provided JSON
+   * Check if the expression matches this type of term
+   * @param expression - The expression to parse
+   * @param imputeNumber - Allow the number of dice to be optional, i.e. "d6"
+   *                       (default: `true`)
    */
-  static fromJSON(json: string): DiceTerm;
+  static matchTerm(expression: string, { imputeNumber }?: { imputeNumber: boolean }): RegExpMatchArray | null;
+
+  /* -------------------------------------------- */
 
   /**
    * Create a "fake" dice term from a pre-defined array of results
@@ -214,72 +253,61 @@ declare abstract class DiceTerm {
    */
   static fromResults(options: DiceTerm.TermData, results: DiceTerm.Result[]): DiceTerm;
 
-  /**
-   * Return a string used as the label for each rolled result
-   * @param result - The numeric result
-   * @returns The result label
-   */
-  static getResultLabel(result: string): string;
+  /* -------------------------------------------- */
 
   /**
-   * Check if the expression matches this type of term
-   * @param expression - The expression to parse
-   * @param options - (default: `{}`)
-   * @param imputeNumber - Allow the number of dice to be optional, i.e. "d6"
-   *                       (default: `true`)
-   */
-  static matchTerm(
-    expression: string,
-    options?: {
-      imputeNumber: boolean;
-    }
-  ): RegExpMatchArray | null;
-
-  /**
-   * Sequentially evaluate each dice roll modifier by passing the term to its
-   * evaluation function Augment or modify the results array.
-   * @internal
-   */
-  _evaluateModifiers(): void;
-
-  /**
-   * Alter the DiceTerm by adding or multiplying the number of dice which are
-   * rolled
-   * @param multiply - A factor to multiply. Dice are multiplied before any
-   *                   additions.
-   * @param add - A number of dice to add. Dice are added after multiplication.
-   * @returns The altered term
-   */
-  alter(multiply: number, add: number): this;
-
-  /**
-   * Evaluate the roll term, populating the results Array.
-   * @param options - (default: `{}`)
-   * @param minimize - Apply the minimum possible result for each roll.
-   *                   (default: `false`)
-   * @param maximize - Apply the maximum possible result for each roll.
-   *                   (default: `false`)
-   * @returns The evaluated dice term
-   */
-  evaluate(options?: { maximize: boolean; minimize: boolean }): this;
-
-  /**
-   * Roll the DiceTerm by mapping a random uniform draw against the faces of the
-   * dice term.
-   * @param minimize - Apply the minimum possible result instead of a random
-   *                   result.
-   * @param maximize - Apply the maximum possible result instead of a random
-   *                   result.
-   */
-  roll(options?: { maximize: boolean; minimize: boolean }): DiceTerm.Result;
-
-  /**
-   * Serialize the DiceTerm to a JSON string which allows it to be saved in the
-   * database or embedded in text.
-   * This method should return an object suitable for passing to the
-   * JSON.stringify function.
+   * Serialize the DiceTerm to a JSON string which allows it to be saved in the database or embedded in text.
+   * This method should return an object suitable for passing to the JSON.stringify function.
    */
   toJSON(): object;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Reconstruct a DiceTerm instance from a provided JSON string
+   * @param json - A serialized JSON representation of a DiceTerm
+   * @returns A reconstructed DiceTerm from the provided JSON
+   */
+  static fromJSON(json: string): DiceTerm;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Provide backwards compatibility for Die syntax prior to 0.7.0
+   */
+  protected static _backwardsCompatibleTerm(data: DiceTerm.OldTerm): DiceTerm.Result;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Define the denomination string used to register this Dice type in
+   * CONFIG.Dice.terms
+   * @defaultValue `''`
+   */
+  static DENOMINATION: string;
+
+  /**
+   * Define the modifiers that can be used for this particular DiceTerm type.
+   */
+  static MODIFIERS: Record<string, string | ((diceTerm: DiceTerm, m: string) => void)>;
+
+  /**
+   * A regular expression pattern which identifies a potential DiceTerm modifier
+   * @defaultValue `/([A-z]+)([^A-z\s()+\-*\/]+)?/g`
+   */
+  static MODIFIER_REGEX: RegExp;
+
+  /**
+   * A regular expression pattern which indicates the end of a DiceTerm
+   * @defaultValue `'([^ ()+\\-/*\\[]+)?'`
+   */
+  static MODIFIERS_REGEX: string;
+
+  /**
+   * A regular expression pattern which identifies part-specific flavor text
+   * @defaultValue `'(?:\\[(.*)\\])?'`
+   */
+  static FLAVOR_TEXT_REGEX: string;
 }
 
 declare namespace DiceTerm {
