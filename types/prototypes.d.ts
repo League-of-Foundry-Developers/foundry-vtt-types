@@ -118,7 +118,7 @@ declare interface ArrayConstructor {
 }
 
 declare interface Array<T> {
-  deepFlatten(): Array<UtilityTypes.Flattened<T>>;
+  deepFlatten(): Array<Array.Flattened<T>>;
 
   /**
    * Test equality of the values of this array against the values of some other Array
@@ -147,6 +147,10 @@ declare interface Array<T> {
    * @returns The replacement element, the removed element, or null if no element was found.
    */
   findSplice(find: (value: T, index: number, obj: T[]) => boolean, replace?: T): T | null;
+}
+
+declare namespace Array {
+  type Flattened<T> = T extends Array<infer U> ? Flattened<U> : T;
 }
 
 /* -------------------------------------------- */
