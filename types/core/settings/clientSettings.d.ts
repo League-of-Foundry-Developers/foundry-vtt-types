@@ -149,7 +149,7 @@ declare class ClientSettings {
   /**
    * Locally update a setting given a provided key and value
    */
-  _update<T>(setting: ClientSettings.PartialData<T>, key: string, value: T): T;
+  protected _update<T>(setting: ClientSettings.PartialData<T>, key: string, value: T): T;
 
   /* -------------------------------------------- */
 

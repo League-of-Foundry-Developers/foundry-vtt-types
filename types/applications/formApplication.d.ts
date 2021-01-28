@@ -74,7 +74,7 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
   /**
    * @override
    */
-  _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
 
   /* -------------------------------------------- */
 
@@ -82,7 +82,7 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * @param options - (unused)
    * @override
    */
-  _renderInner(data: T, options?: any): Promise<JQuery>;
+  protected _renderInner(data: T, options?: any): Promise<JQuery>;
 
   /* -------------------------------------------- */
   /*  Event Listeners and Handlers                */
@@ -101,9 +101,8 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
 
   /**
    * If the form is not editable, disable its input fields
-   * @internal
    */
-  _disableFields(form: HTMLElement): void;
+  protected _disableFields(form: HTMLElement): void;
 
   /* -------------------------------------------- */
 
@@ -112,10 +111,9 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * @param event   - The submit event which triggered this handler
    * @param options - (default: `{}`)
    * @returns A promise which resolves to the validated update data
-   * @internal
    */
   // TODO: update the types here once FormDataExtended is updated
-  _onSubmit(event: Event, options?: FormApplication.OnSubmitOptions): Promise<object>;
+  protected _onSubmit(event: Event, options?: FormApplication.OnSubmitOptions): Promise<object>;
 
   /* -------------------------------------------- */
 
@@ -124,10 +122,9 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * @param updateData - Additional data that should be merged with the form data
    *                     (default: `{}`)
    * @returns The prepared update data
-   * @internal
    */
   // TODO: update the types here once FormDataExtended is updated
-  _getSubmitData<T>(updateData: Partial<T>): T;
+  protected _getSubmitData<T>(updateData: Partial<T>): T;
 
   /* -------------------------------------------- */
 
@@ -135,26 +132,23 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * Handle changes to an input element, submitting the form if options.submitOnChange is true.
    * Do not preventDefault in this handler as other interactions on the form may also be occurring.
    * @param event - The initial change event
-   * @internal
    */
-  _onChangeInput(event: Event): object;
+  protected _onChangeInput(event: Event): object;
 
   /* -------------------------------------------- */
 
   /**
    * Handle the change of a color picker input which enters it's chosen value into a related input field
-   * @internal
    */
-  _onChangeColorPicker(event: Event): void;
+  protected _onChangeColorPicker(event: Event): void;
 
   /* -------------------------------------------- */
 
   /**
    * Handle changes to a range type input by propagating those changes to the sibling range-value element
    * @param event - The initial change event
-   * @internal
    */
-  _onChangeRange(event: Event): void;
+  protected _onChangeRange(event: Event): void;
 
   /* -------------------------------------------- */
 
@@ -166,7 +160,7 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    *                   (unused)
    * @returns A Promise which resolves once the update operation has completed
    */
-  abstract _updateObject(event?: any, formData?: object): void;
+  protected abstract _updateObject(event?: any, formData?: object): void;
 
   /* -------------------------------------------- */
   /*  TinyMCE Editor                              */
@@ -196,9 +190,8 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
 
   /**
    * Activate a TinyMCE editor instance present within the form
-   * @internal
    */
-  _activateEditor(div: HTMLElement): void;
+  protected _activateEditor(div: HTMLElement): void;
 
   /* -------------------------------------------- */
   /*  FilePicker UI
@@ -206,9 +199,8 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
 
   /**
    * Activate a FilePicker instance present within the form
-   * @internal
    */
-  _activateFilePicker(button: HTMLElement): void;
+  protected _activateFilePicker(button: HTMLElement): void;
 
   /* -------------------------------------------- */
   /*  Methods                                     */
@@ -244,7 +236,7 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * @deprecated since 0.7.3
    * @see {@link FormApplication#activateEditor}
    */
-  _createEditor(name: string, options?: TextEditor.Options, initialContent?: string): void;
+  protected _createEditor(name: string, options?: TextEditor.Options, initialContent?: string): void;
 }
 
 declare namespace FormApplication {

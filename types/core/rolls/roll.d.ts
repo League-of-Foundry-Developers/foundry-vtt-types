@@ -41,7 +41,7 @@ declare class Roll<D = object> {
   /**
    * An array of inner terms which were rolled parenthetically
    */
-  _dice: DiceTerm[];
+  protected _dice: DiceTerm[];
 
   /**
    * The evaluated results of the Roll
@@ -56,21 +56,19 @@ declare class Roll<D = object> {
   /**
    * The original formula before evaluation
    */
-  _formula: string;
+  protected _formula: string;
 
   /**
    * An internal flag for whether the Roll object has been rolled
    * @defaultValue `false`
-   * @internal
    */
-  _rolled: boolean;
+  protected _rolled: boolean;
 
   /**
    * Cache the evaluated total to avoid re-evaluating it
    * @defaultValue `null`
-   * @internal
    */
-  _total: number | null;
+  protected _total: number | null;
 
   /* -------------------------------------------- */
 
@@ -248,14 +246,13 @@ declare class Roll<D = object> {
    * Other terms are very coarse like an entire inner Roll from a parenthetical expression.
    * As a general rule, this function should return an Array of terms which are ready to be evaluated immediately.
    * Some terms may require recursive evaluation.
-   * @internal
    *
    * @param formula - The formula to parse
    * @param step    - The numbered step in the Roll evaluation process.
    *                  (default: `0`)
    * @returns An array of identified terms
    */
-  _identifyTerms(formula: string, { step }?: { step: number }): Roll.Terms;
+  protected _identifyTerms(formula: string, { step }?: { step: number }): Roll.Terms;
 
   /* -------------------------------------------- */
 
@@ -263,33 +260,29 @@ declare class Roll<D = object> {
    * Prepare the data structure used for the Roll.
    * This is factored out to allow for custom Roll classes to do special data preparation using provided input.
    * @param data - Provided roll data
-   * @internal
    */
-  _prepareData(data: D): D;
+  protected _prepareData(data: D): D;
 
   /* -------------------------------------------- */
 
   /**
    * Identify and split a formula into separate terms by arithmetic terms
-   * @internal
    */
-  _splitDiceTerms(terms: Roll.Terms, step: number): Roll.Terms;
+  protected _splitDiceTerms(terms: Roll.Terms, step: number): Roll.Terms;
 
   /* -------------------------------------------- */
 
   /**
    * Identify and split a formula into separate terms by parenthetical expressions
-   * @internal
    */
-  _splitParentheticalTerms(formula: string): Roll.Terms;
+  protected _splitParentheticalTerms(formula: string): Roll.Terms;
 
   /* -------------------------------------------- */
 
   /**
    * Identify and split a formula into separate terms by curly braces which represent pooled expressions
-   * @internal
    */
-  _splitPooledTerms(terms: Roll.Terms): Roll.Terms;
+  protected _splitPooledTerms(terms: Roll.Terms): Roll.Terms;
 
   /* -------------------------------------------- */
 
@@ -297,9 +290,8 @@ declare class Roll<D = object> {
    * Safely evaluate a formulaic expression using a Proxy environment which is allowed access to Math commands
    * @param expression - The formula expression to evaluate
    * @returns The returned numeric result, or null if the outcome is not numeric
-   * @internal
    */
-  _safeEval(expression: string): number | null;
+  protected _safeEval(expression: string): number | null;
 
   /* -------------------------------------------- */
   /*  Chat Messages                               */
@@ -394,18 +386,16 @@ declare class Roll<D = object> {
   /**
    * Expand an inline roll element to display it's contained dice result as a tooltip
    * @param a - The inline-roll button
-   * @internal
    */
-  static _expandInlineResult(a: HTMLAnchorElement): Promise<void>;
+  protected static _expandInlineResult(a: HTMLAnchorElement): Promise<void>;
 
   /* -------------------------------------------- */
 
   /**
    * Collapse an expanded inline roll to conceal it's tooltip
    * @param a - The inline-roll button
-   * @internal
    */
-  static _collapseInlineResult(a: HTMLAnchorElement): void;
+  protected static _collapseInlineResult(a: HTMLAnchorElement): void;
 
   /* -------------------------------------------- */
   /*  Deprecations                                */
@@ -414,9 +404,8 @@ declare class Roll<D = object> {
   /**
    * Provide backwards compatibility for Roll data prior to 0.7.0
    * @deprecated since 0.7.0
-   * @internal
    */
-  static _backwardsCompatibleRoll(data: object): object;
+  protected static _backwardsCompatibleRoll(data: object): object;
 
   /* -------------------------------------------- */
 

@@ -8,42 +8,40 @@ declare class KeyboardManager {
   /**
    * The set of key codes which are currently depressed (down)
    */
-  _downKeys: Set<string>;
+  protected _downKeys: Set<string>;
 
   /**
    * The set of key codes which have been already handled per workflow
    */
-  _handled: Set<string>;
+  protected _handled: Set<string>;
 
   /**
    * A mapping of movement keys which are pending
    * @defaultValue `null`
-   * @internal
    */
-  _moveKeys: Set<string>;
+  protected _moveKeys: Set<string>;
 
   /**
    * @defaultValue `null`
    */
-  _moveTime: number | null;
+  protected _moveTime: number | null;
 
   /**
    * @defaultValue `0`
    */
-  _tabState: 0 | 1;
+  protected _tabState: 0 | 1;
 
   /**
    * @defaultValue `0`
    */
-  _wheelTime: number;
+  protected _wheelTime: number;
 
   /* -------------------------------------------- */
 
   /**
    * Reset tracking for which keys are in the down and released states
-   * @internal
    */
-  _reset(): void;
+  protected _reset(): void;
 
   /* -------------------------------------------- */
   /*  Properties                                  */
@@ -106,18 +104,16 @@ declare class KeyboardManager {
   /**
    * Handle a key press into the down position
    * @param event - The originating keyboard event
-   * @internal
    */
-  _onKeyDown(event: KeyboardEvent): void;
+  protected _onKeyDown(event: KeyboardEvent): void;
 
   /* -------------------------------------------- */
 
   /**
    * Handle a key release into the up position
    * @param event - The originating keyboard event
-   * @internal
    */
-  _onKeyUp(event: KeyboardEvent): void;
+  protected _onKeyUp(event: KeyboardEvent): void;
 
   /* -------------------------------------------- */
 
@@ -126,9 +122,8 @@ declare class KeyboardManager {
    * @param event - The keydown or keyup event
    * @param key   - The key being depressed
    * @param up    - A flag for whether the key is down or up
-   * @internal
    */
-  _handleKeys(event: KeyboardEvent, key: string, up: boolean): void;
+  protected _handleKeys(event: KeyboardEvent, key: string, up: boolean): void;
 
   /* -------------------------------------------- */
 
@@ -136,15 +131,14 @@ declare class KeyboardManager {
    * Input events do not fire with isComposing = false at the end of a composition event in Chrome
    * See: https://github.com/w3c/uievents/issues/202
    */
-  _onCompositionEnd(event: CompositionEvent): void;
+  protected _onCompositionEnd(event: CompositionEvent): void;
 
   /* -------------------------------------------- */
 
   /**
    * Master mouse-wheel event keyboard handler
-   * @internal
    */
-  _onWheel(event: Event): void;
+  protected _onWheel(event: Event): void;
 
   /* -------------------------------------------- */
 
@@ -153,9 +147,8 @@ declare class KeyboardManager {
    * @param event     - The originating keyboard event
    * @param up        - Is the key being released?
    * @param modifiers - The identified modifiers attached to this keypress
-   * @internal
    */
-  _onTab(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+  protected _onTab(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /* -------------------------------------------- */
 
@@ -164,9 +157,8 @@ declare class KeyboardManager {
    * @param event     - The originating keyboard event
    * @param up        - Is the key being released?
    * @param modifiers - The identified modifiers attached to this keypress
-   * @internal
    */
-  _onEscape(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+  protected _onEscape(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /* -------------------------------------------- */
 
@@ -175,9 +167,8 @@ declare class KeyboardManager {
    * @param event     - The originating keyboard event
    * @param up        - Is the key being released?
    * @param modifiers - The identified modifiers attached to this keypress
-   * @internal
    */
-  _onSpace(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+  protected _onSpace(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /* -------------------------------------------- */
 
@@ -187,9 +178,8 @@ declare class KeyboardManager {
    * @param up        - Is the key being released?
    * @param modifiers - The identified modifiers attached to this keypress
    *                    (unused)
-   * @internal
    */
-  _onAlt(event: KeyboardEvent, up: boolean, modifiers?: any): void;
+  protected _onAlt(event: KeyboardEvent, up: boolean, modifiers?: any): void;
 
   /* -------------------------------------------- */
 
@@ -198,24 +188,22 @@ declare class KeyboardManager {
    * @param event     - The originating keyboard event
    * @param up        - Is the key being released?
    * @param modifiers - The identified modifiers attached to this keypress
-   * @internal
    */
-  _onMovement(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+  protected _onMovement(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /* -------------------------------------------- */
 
   /**
    * Handle keyboard movement once a small delay has elapsed to allow for multiple simultaneous key-presses.
-   * @internal
    */
-  _handleMovement(event: KeyboardEvent, layer: PlaceablesLayer): void;
+  protected _handleMovement(event: KeyboardEvent, layer: PlaceablesLayer): void;
 
   /* -------------------------------------------- */
 
   /**
    * Handle panning the canvas using CTRL + directional keys
    */
-  _handleCanvasPan(): Promise<void>;
+  protected _handleCanvasPan(): Promise<void>;
 
   /* -------------------------------------------- */
 
@@ -225,9 +213,8 @@ declare class KeyboardManager {
    *                    (unused)
    * @param up        - Is it a keyup?
    * @param modifiers - What modifiers affect the keypress?
-   * @internal
    */
-  _onDigit(event: any, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+  protected _onDigit(event: any, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /* -------------------------------------------- */
 
@@ -237,9 +224,8 @@ declare class KeyboardManager {
    *                    (unused)
    * @param up        - Is the key being released?
    * @param modifiers - The identified modifiers attached to this keypress
-   * @internal
    */
-  _onKeyA(event: any, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+  protected _onKeyA(event: any, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /* -------------------------------------------- */
 
@@ -248,9 +234,8 @@ declare class KeyboardManager {
    * @param event     - The originating keyboard event
    * @param up        - Is the key being released?
    * @param modifiers - The identified modifiers attached to this keypress
-   * @internal
    */
-  _onKeyC(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+  protected _onKeyC(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /* -------------------------------------------- */
 
@@ -259,9 +244,8 @@ declare class KeyboardManager {
    * @param event     - The originating keyboard event
    * @param up        - Is the key being released?
    * @param modifiers - The identified modifiers attached to this keypress
-   * @internal
    */
-  _onKeyV(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+  protected _onKeyV(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /* -------------------------------------------- */
 
@@ -270,9 +254,8 @@ declare class KeyboardManager {
    * @param event     - The originating keyboard event
    * @param up        - Is the key being released?
    * @param modifiers - The identified modifiers attached to this keypress
-   * @internal
    */
-  _onKeyZ(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+  protected _onKeyZ(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /* -------------------------------------------- */
 
@@ -281,9 +264,8 @@ declare class KeyboardManager {
    * @param event     - The originating keyboard event
    * @param up        - Is the key being released?
    * @param modifiers - The identified modifiers attached to this keypress
-   * @internal
    */
-  _onKeyZoom(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+  protected _onKeyZoom(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /* -------------------------------------------- */
 
@@ -292,9 +274,8 @@ declare class KeyboardManager {
    * @param event     - The originating keyboard event
    * @param up        - Is the key being released?
    * @param modifiers - The identified modifiers attached to this keypress
-   * @internal
    */
-  _onDelete(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+  protected _onDelete(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /**
    * Specify a rate limit for mouse wheel to gate repeated scrolling.

@@ -45,7 +45,7 @@ declare class Application<T = object> {
   /**
    * An internal reference to the HTML element this application renders
    */
-  _element: JQuery;
+  protected _element: JQuery;
 
   /**
    * Track the current position and dimensions of the Application UI
@@ -55,64 +55,59 @@ declare class Application<T = object> {
   /**
    * DragDrop workflow handlers which are active for this Application
    */
-  _dragDrop: DragDrop[];
+  protected _dragDrop: DragDrop[];
 
   /**
    * Tab navigation handlers which are active for this Application
    */
-  _tabs: Tabs[];
+  protected _tabs: Tabs[];
 
   /**
    * SearchFilter handlers which are active for this Application
    */
-  _searchFilters: SearchFilter[];
+  protected _searchFilters: SearchFilter[];
 
   /**
    * Track whether the Application is currently minimized
    * @defaultValue `false`
-   * @internal
    */
-  _minimized: boolean;
+  protected _minimized: boolean;
 
   /**
    * Track the render state of the Application
    * @defaultValue {@link ApplicationRenderState.None}
    * @see {@link Application.RENDER_STATES}
-   * @internal
    */
-  _state: Application.RenderState;
+  protected _state: Application.RenderState;
 
   /**
    * Track the most recent scroll positions for any vertically scrolling containers
    */
-  _scrollPositions: Record<string, number>;
+  protected _scrollPositions: Record<string, number>;
 
   /* -------------------------------------------- */
 
   /**
    * Create drag-and-drop workflow handlers for this Application
    * @returns An array of DragDrop handlers
-   * @internal
    */
-  _createDragDropHandlers(): DragDrop[];
+  protected _createDragDropHandlers(): DragDrop[];
 
   /* -------------------------------------------- */
 
   /**
    * Create tabbed navigation handlers for this Application
    * @returns An array of Tabs handlers
-   * @internal
    */
-  _createTabHandlers(): Tabs[];
+  protected _createTabHandlers(): Tabs[];
 
   /* -------------------------------------------- */
 
   /**
    * Create search filter handlers for this Application
    * @returns An array of SearchFilter handlers
-   * @internal
    */
-  _createSearchFilters(): SearchFilter[];
+  protected _createSearchFilters(): SearchFilter[];
 
   /* -------------------------------------------- */
 
@@ -204,17 +199,15 @@ declare class Application<T = object> {
    * @param options - Provided rendering options, see the render function for details
    *                  (default: `{}`)
    * @returns A Promise that resolves to the Application once rendering is complete
-   * @internal
    */
-  _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
 
   /* -------------------------------------------- */
 
   /**
    * Return the inheritance chain for this Application class up to (and including) it's base Application class.
-   * @internal
    */
-  static _getInheritanceChain(): Application[];
+  protected static _getInheritanceChain(): Application[];
 
   /* -------------------------------------------- */
 
@@ -222,9 +215,8 @@ declare class Application<T = object> {
    * Persist the scroll positions of containers within the app before re-rendering the content
    * @param html      - The HTML object being traversed
    * @param selectors - CSS selectors which designate elements to save
-   * @internal
    */
-  _saveScrollPositions(html: JQuery, selectors: string[]): void;
+  protected _saveScrollPositions(html: JQuery, selectors: string[]): void;
 
   /* -------------------------------------------- */
 
@@ -232,18 +224,16 @@ declare class Application<T = object> {
    * Restore the scroll positions of containers within the app after re-rendering the content
    * @param html      - The HTML object being traversed
    * @param selectors - CSS selectors which designate elements to restore
-   * @internal
    */
-  _restoreScrollPositions(html: JQuery, selectors: string[]): void;
+  protected _restoreScrollPositions(html: JQuery, selectors: string[]): void;
 
   /* -------------------------------------------- */
 
   /**
    * Render the outer application wrapper
    * @returns A promise resolving to the constructed jQuery object
-   * @internal
    */
-  _renderOuter(options: Application.RenderOptions): Promise<JQuery>;
+  protected _renderOuter(options: Application.RenderOptions): Promise<JQuery>;
 
   /* -------------------------------------------- */
 
@@ -252,9 +242,8 @@ declare class Application<T = object> {
    * @param data    - The data used to render the inner template
    * @param options - (unused)
    * @returns A promise resolving to the constructed jQuery object
-   * @internal
    */
-  _renderInner(data: T, options?: any): Promise<JQuery>;
+  protected _renderInner(data: T, options?: any): Promise<JQuery>;
 
   /* -------------------------------------------- */
 
@@ -263,18 +252,16 @@ declare class Application<T = object> {
    * @param element - The original HTML element
    * @param html    - New updated HTML
    * @param options - (unused)
-   * @internal
    */
-  _replaceHTML(element: JQuery, html: JQuery, options?: any): void;
+  protected _replaceHTML(element: JQuery, html: JQuery, options?: any): void;
 
   /* -------------------------------------------- */
 
   /**
    * Customize how a new HTML Application is added and first appears in the DOC
    * @param options - (unused)
-   * @internal
    */
-  _injectHTML(html: JQuery, options?: any): void;
+  protected _injectHTML(html: JQuery, options?: any): void;
 
   /* -------------------------------------------- */
 
@@ -282,9 +269,8 @@ declare class Application<T = object> {
    * Specify the set of config buttons which should appear in the Application header.
    * Buttons should be returned as an Array of objects.
    * The header buttons which are added to the application can be modified by the getApplicationHeaderButtons hook.
-   * @internal
    */
-  _getHeaderButtons(): Application.HeaderButton[];
+  protected _getHeaderButtons(): Application.HeaderButton[];
 
   /* -------------------------------------------- */
   /* Event Listeners and Handlers
@@ -306,9 +292,8 @@ declare class Application<T = object> {
    *                 (unused)
    * @param active - The new active tab name
    *                 (unused)
-   * @internal
    */
-  _onChangeTab(event?: any, tabs?: any, active?: any): void;
+  protected _onChangeTab(event?: any, tabs?: any, active?: any): void;
 
   /* -------------------------------------------- */
 
@@ -320,9 +305,8 @@ declare class Application<T = object> {
    *                (unused)
    * @param html  - The HTML element which should be filtered
    *                (unused)
-   * @internal
    */
-  _onSearchFilter(event?: any, query?: any, html?: any): void;
+  protected _onSearchFilter(event?: any, query?: any, html?: any): void;
 
   /* -------------------------------------------- */
 
@@ -331,9 +315,8 @@ declare class Application<T = object> {
    * @param selector - The candidate HTML selector for dragging
    *                   (unused)
    * @returns Can the current user drag this selector?
-   * @internal
    */
-  _canDragStart(selector?: any): boolean;
+  protected _canDragStart(selector?: any): boolean;
 
   /* -------------------------------------------- */
 
@@ -342,9 +325,8 @@ declare class Application<T = object> {
    * @param selector - The candidate HTML selector for the drop target
    *                   (unused)
    * @returns Can the current user drop on this selector?
-   * @internal
    */
-  _canDragDrop(selector?: any): boolean;
+  protected _canDragDrop(selector?: any): boolean;
 
   /* -------------------------------------------- */
 
@@ -352,9 +334,8 @@ declare class Application<T = object> {
    * Callback actions which occur at the beginning of a drag start workflow.
    * @param event - The originating DragEvent
    *                (unused)
-   * @internal
    */
-  _onDragStart(event?: any): void;
+  protected _onDragStart(event?: any): void;
 
   /* -------------------------------------------- */
 
@@ -362,9 +343,8 @@ declare class Application<T = object> {
    * Callback actions which occur when a dragged element is over a drop target.
    * @param event - originating DragEvent
    *                (unused)
-   * @internal
    */
-  _onDragOver(event?: any): void;
+  protected _onDragOver(event?: any): void;
 
   /* -------------------------------------------- */
 
@@ -372,9 +352,8 @@ declare class Application<T = object> {
    * Callback actions which occur when a dragged element is dropped on a target.
    * @param event - The originating DragEvent
    *                (unused)
-   * @internal
    */
-  _onDrop(event?: any): void;
+  protected _onDrop(event?: any): void;
 
   /* -------------------------------------------- */
   /*  Methods                                     */
@@ -431,17 +410,15 @@ declare class Application<T = object> {
   /**
    * Handle application minimization behavior - collapsing content and reducing
    * the size of the header
-   * @internal
    */
-  _onToggleMinimize(ev: Event): void;
+  protected _onToggleMinimize(ev: Event): void;
 
   /* -------------------------------------------- */
 
   /**
    * Additional actions to take when the application window is resized
-   * @internal
    */
-  _onResize(event: Event): void;
+  protected _onResize(event: Event): void;
 
   /**
    * @see {@link Application.RenderState}

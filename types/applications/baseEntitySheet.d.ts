@@ -61,7 +61,7 @@ declare class BaseEntitySheet<T = object, O extends Entity = Entity, F = object>
   /**
    * @override
    */
-  _getHeaderButtons(): Application.HeaderButton[];
+  protected _getHeaderButtons(): Application.HeaderButton[];
 
   /* -------------------------------------------- */
 
@@ -69,7 +69,7 @@ declare class BaseEntitySheet<T = object, O extends Entity = Entity, F = object>
    * @param event - (unused)
    * @override
    */
-  _updateObject(event: any, formData: object): Promise<O>;
+  protected _updateObject(event: any, formData: object): Promise<O>;
 }
 
 declare namespace BaseEntitySheet {

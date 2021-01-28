@@ -61,7 +61,7 @@ declare class VideoHelper {
    * We need a slight delay because unfortunately Chrome is stupid and doesn't always acknowledge the gesture fast enough.
    * @param event - The mouse-move event which enables playback
    */
-  _onFirstGesture(event: Event): void;
+  protected _onFirstGesture(event: Event): void;
 
   /* -------------------------------------------- */
 

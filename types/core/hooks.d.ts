@@ -65,29 +65,28 @@ declare class Hooks {
 
   /**
    * Call a hooked function using provided arguments and perhaps unregister it.
-   * @internal
    */
-  static _call(hook: string, fn: Hooks.General, ...args: any[]): boolean;
+  protected static _call(hook: string, fn: Hooks.General, ...args: any[]): boolean;
 
   /**
    * @defaultValue `{}`
    */
-  static _hooks: Record<string, Hooks.General[]>;
+  protected static _hooks: Record<string, Hooks.General[]>;
 
   /**
    * @defaultValue `[]`
    */
-  static _once: Hooks.General[];
+  protected static _once: Hooks.General[];
 
   /**
    * @defaultValue `{}`
    */
-  static _ids: Record<number, Hooks.General[]>;
+  protected static _ids: Record<number, Hooks.General[]>;
 
   /**
    * @defaultValue `1`
    */
-  static _id: number;
+  protected static _id: number;
 }
 
 /**
