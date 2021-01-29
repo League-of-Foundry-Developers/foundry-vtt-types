@@ -124,7 +124,7 @@ declare namespace Hooks {
    * @remarks The name is 'applyActiveEffect'.
    * @see {@link ActiveEffect#_applyCustom}
    */
-  type ApplyActiveEffect = (actor: Actor, change: ActiveEffectChange) => void;
+  type ApplyActiveEffect = (actor: Actor, change: ActiveEffect.Change) => void;
 
   /**
    * This is called before a {@link Canvas} is drawn.
