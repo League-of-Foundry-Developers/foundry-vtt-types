@@ -75,7 +75,7 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
    * @param effects - The raw array of active effect objects
    * @returns The prepared active effects collection
    */
-  _prepareActiveEffects(effects: ActiveEffect.Data[]): Collection<ActiveEffect>;
+  protected _prepareActiveEffects(effects: ActiveEffect.Data[]): Collection<ActiveEffect>;
 
   /**
    * Prepare a data object which defines the data schema used by dice roll commands against this Item

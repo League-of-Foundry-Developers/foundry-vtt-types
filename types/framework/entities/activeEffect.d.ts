@@ -13,7 +13,7 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
   /**
    * A cached reference to the source name to avoid recurring database lookups
    */
-  _sourceName: string | null;
+  protected _sourceName: string | null;
 
   /* -------------------------------------------- */
 
@@ -41,7 +41,7 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
   /**
    * Get the name of the source of the Active Effect
    */
-  _getSourceName(): Promise<string>;
+  protected _getSourceName(): Promise<string>;
 
   /* -------------------------------------------- */
 
@@ -77,9 +77,8 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
    * @param actor  - The Actor to whom this effect should be applied
    * @param change - The change data being applied
    * @returns The resulting applied value
-   * @internal
    */
-  _applyAdd<I extends Item, D extends Actor.Data>(actor: Actor<I, D>, change: ActiveEffect.Change): unknown;
+  protected _applyAdd<I extends Item, D extends Actor.Data>(actor: Actor<I, D>, change: ActiveEffect.Change): unknown;
 
   /* -------------------------------------------- */
 
@@ -88,9 +87,11 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
    * @param actor  - The Actor to whom this effect should be applied
    * @param change - The change data being applied
    * @returns The resulting applied value
-   * @internal
    */
-  _applyMultiply<I extends Item, D extends Actor.Data>(actor: Actor<I, D>, change: ActiveEffect.Change): unknown;
+  protected _applyMultiply<I extends Item, D extends Actor.Data>(
+    actor: Actor<I, D>,
+    change: ActiveEffect.Change
+  ): unknown;
 
   /* -------------------------------------------- */
 
@@ -99,9 +100,11 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
    * @param actor  - The Actor to whom this effect should be applied
    * @param change - The change data being applied
    * @returns The resulting applied value
-   * @internal
    */
-  _applyOverride<I extends Item, D extends Actor.Data>(actor: Actor<I, D>, change: ActiveEffect.Change): unknown;
+  protected _applyOverride<I extends Item, D extends Actor.Data>(
+    actor: Actor<I, D>,
+    change: ActiveEffect.Change
+  ): unknown;
 
   /* -------------------------------------------- */
 
@@ -110,9 +113,11 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
    * @param actor  - The Actor to whom this effect should be applied
    * @param change - The change data being applied
    * @returns The resulting applied value
-   * @internal
    */
-  _applyCustom<I extends Item, D extends Actor.Data>(actor: Actor<I, D>, change: ActiveEffect.Change): unknown;
+  protected _applyCustom<I extends Item, D extends Actor.Data>(
+    actor: Actor<I, D>,
+    change: ActiveEffect.Change
+  ): unknown;
 
   /* -------------------------------------------- */
   /*  Database Operations                         */

@@ -195,7 +195,7 @@ declare class Actor<
    * @param effects - The raw array of active effect objects
    * @returns The prepared active effects collection
    */
-  _prepareActiveEffects(effects: ActiveEffect.Data[]): Collection<ActiveEffect>;
+  protected _prepareActiveEffects(effects: ActiveEffect.Data[]): Collection<ActiveEffect>;
 
   /**
    * Apply any transformations to the Actor data which are caused by ActiveEffects.
@@ -311,7 +311,7 @@ declare class Actor<
    * @param temporary - Is this a temporary item creation?
    * @returns An array of effects to transfer to the Actor
    */
-  _createItemActiveEffects(
+  protected _createItemActiveEffects(
     created: Actor.OwnedItem<I> | Array<Actor.OwnedItem<I>>,
     { temporary }?: { temporary?: boolean }
   ): Promise<ActiveEffect.Data[] | ActiveEffect.Data | undefined>;
@@ -334,7 +334,7 @@ declare class Actor<
    * When Owned Items are created process each item and extract Active Effects to transfer to the Actor.
    * @param deleted - The array of deleted owned Item data
    */
-  _deleteItemActiveEffects(
+  protected _deleteItemActiveEffects(
     deleted: Actor.OwnedItem<I> | Array<Actor.OwnedItem<I>>
   ): Promise<ActiveEffect.Data | ActiveEffect.Data[] | undefined>;
 
