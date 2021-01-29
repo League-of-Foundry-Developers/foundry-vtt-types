@@ -297,8 +297,6 @@ declare class Actor<
     data: Optional<Actor.OwnedItem<I>>,
     options?: any
   ): Promise<Actor.OwnedItem<I>>;
-
-  /** @override */
   createEmbeddedEntity(
     embeddedName: 'ActiveEffect',
     data: Optional<ActiveEffect.Data>,
@@ -326,8 +324,6 @@ declare class Actor<
 
   /** @override */
   deleteEmbeddedEntity(embeddedName: 'OwnedItem', data: string, options?: any): Promise<Actor.OwnedItem<I>>;
-
-  /** @override */
   deleteEmbeddedEntity(embeddedName: 'ActiveEffect', data: string, options?: any): Promise<ActiveEffect.Data>;
 
   /**
