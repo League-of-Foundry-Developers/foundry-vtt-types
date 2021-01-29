@@ -89,7 +89,7 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
   /**
    * A convenience reference to the Actor entity which owns this item, if any
    */
-  get actor(): Actor | null;
+  get actor(): Actor<this, Actor.Data<any, Actor.OwnedItem<this>>> | null;
 
   /**
    * A convenience reference to the image path (data.img) used to represent this Item
