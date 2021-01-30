@@ -30,9 +30,15 @@ declare class Canvas {
 
   id: null;
 
+  /**
+   * @defaultValue `null`
+   */
   scene: Scene | null;
 
-  dimensions: null;
+  /**
+   * @defaultValue `null`
+   */
+  dimensions: Canvas.Dimensions | null;
 
   /**
    * Track the timestamp of the last stage zoom operation
