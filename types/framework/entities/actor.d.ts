@@ -392,7 +392,10 @@ declare class Actor<
    * @param options  - Item update options
    * @returns A Promise resolving to the updated Owned Item data
    */
-  updateOwnedItem(itemData: DeepPartial<Actor.OwnedItemData<D>>, options?: any): Promise<ActiveEffect | Actor.OwnedItemData<D>>;
+  updateOwnedItem(
+    itemData: DeepPartial<Actor.OwnedItemData<D>>,
+    options?: any
+  ): Promise<ActiveEffect | Actor.OwnedItemData<D>>;
   updateOwnedItem(
     itemData: DeepPartial<Actor.OwnedItemData<D>>[],
     options?: any
