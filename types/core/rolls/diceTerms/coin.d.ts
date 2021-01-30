@@ -2,7 +2,7 @@
  * Define a two-sided coin term that can be used as part of a Roll formula
  */
 declare class Coin extends DiceTerm {
-  constructor(termData?: DiceTerm.TermData);
+  constructor(termData?: Coin.TermData);
 
   /* -------------------------------------------- */
 
@@ -34,13 +34,26 @@ declare class Coin extends DiceTerm {
 
   /* -------------------------------------------- */
 
-  /**
-   * @defaultValue `'c'`
-   */
-  static DENOMINATION: string;
+  static DENOMINATION: 'c';
 
-  /**
-   * @defaultValue `{ c: 'call' }`
-   */
-  static MODIFIER: Record<string, string>;
+  static MODIFIERS: {
+    c: 'call';
+  };
+
+  static fromResults(options: Partial<Coin.TermData>, results: DiceTerm.Result[]): Coin;
+}
+
+declare namespace Coin {
+  interface Data extends Partial<TermData> {
+    class: 'Coin';
+    results: DiceTerm.Result[];
+  }
+
+  interface OldData extends DiceTerm.OldData {
+    class: 'Coin';
+  }
+
+  interface TermData extends DiceTerm.TermData {
+    modifiers: Array<keyof typeof Coin['MODIFIERS']>;
+  }
 }

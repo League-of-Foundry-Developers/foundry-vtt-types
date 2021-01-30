@@ -358,7 +358,7 @@ declare class Roll<D = object> {
    * @param data - Unpacked data representing the Roll
    * @returns A reconstructed Roll instance
    */
-  static fromData(data: object): Roll;
+  static fromData(data: Roll.Data | Roll.OldData): Roll;
 
   /* -------------------------------------------- */
 
@@ -405,7 +405,7 @@ declare class Roll<D = object> {
    * Provide backwards compatibility for Roll data prior to 0.7.0
    * @deprecated since 0.7.0
    */
-  protected static _backwardsCompatibleRoll(data: object): object;
+  protected static _backwardsCompatibleRoll(data: Roll.OldData): Roll.BackwardCompatData;
 
   /* -------------------------------------------- */
 
@@ -462,8 +462,13 @@ declare class Roll<D = object> {
 }
 
 declare namespace Roll {
+  interface BackwardCompatData extends Data {
+    dice: [];
+    results: number[];
+  }
+
+  // TODO: maybe move this to chat
   interface ChatOptions {
-    // TODO: maybe move this to chat
     /**
      * @defaultValue `false`
      */
@@ -481,8 +486,23 @@ declare namespace Roll {
     user?: string;
   }
 
+  interface Data {
+    formula: string;
+    results: Array<number | string>;
+    terms: Array<(DicePool.Data & { class: 'DicePool' }) | DiceTerm.Data | DiceTerm.OldData>;
+    total: number | null;
+  }
+
   interface MathProxy extends Math {
     safeEval: (expression: string) => any;
+  }
+
+  interface OldData {
+    dice: Array<DiceTerm.Data | DiceTerm.OldData>;
+    formula: Data['formula'];
+    parts: string[];
+    result: string;
+    total: Data['total'];
   }
 
   type Terms = Array<Roll | DicePool | DiceTerm | number | string>;
