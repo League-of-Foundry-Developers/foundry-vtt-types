@@ -4,6 +4,8 @@
 declare class Coin extends DiceTerm {
   constructor(termData?: Coin.TermData);
 
+  faces: 2;
+
   /* -------------------------------------------- */
 
   /**

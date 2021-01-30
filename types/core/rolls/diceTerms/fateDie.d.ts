@@ -5,6 +5,8 @@
 declare class FateDie extends DiceTerm {
   constructor(termData?: DiceTerm.TermData);
 
+  faces: 3;
+
   /* -------------------------------------------- */
 
   /**
