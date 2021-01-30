@@ -13,6 +13,14 @@ declare const CONFIG: {
     typeLabels: any;
   };
 
+  Dice: {
+    terms: {
+      c: typeof Coin;
+      d: typeof Die;
+      f: typeof FateDie;
+    };
+  };
+
   /**
    * Configuration for the default Item entity class
    */

@@ -8,7 +8,7 @@
  * ```
  */
 declare class Die extends DiceTerm {
-  constructor(termData?: DiceTerm.TermData);
+  constructor(termData?: Die.TermData);
 
   /* -------------------------------------------- */
 
@@ -168,7 +168,6 @@ declare class Die extends DiceTerm {
   static DENOMINATION: 'd';
 
   /**
-   * @defaultValue
    * @override
    */
   static MODIFIERS: {
@@ -187,4 +186,21 @@ declare class Die extends DiceTerm {
     sf: 'subtractFailures';
     ms: 'marginSuccess';
   };
+
+  static fromResults(options: Partial<Die.TermData>, results: DiceTerm.Result[]): Die;
+}
+
+declare namespace Die {
+  interface Data extends Partial<TermData> {
+    class: 'Die';
+    results: DiceTerm.Result[];
+  }
+
+  interface OldData extends DiceTerm.OldData {
+    class: 'Die';
+  }
+
+  interface TermData extends DiceTerm.TermData {
+    modifiers: Array<keyof typeof Die['MODIFIERS']>;
+  }
 }

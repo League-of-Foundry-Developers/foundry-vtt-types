@@ -2,6 +2,8 @@
  * A dice pool represents a set of Roll expressions which are collectively modified to compute an effective total
  * across all Rolls in the pool. The final total for the pool is defined as the sum over kept rolls, relative to any
  * success count or margin.
+ * @typeParam O - the type of the options
+ * @remarks The options in DicePool are not used in any way.
  *
  * @example
  * ```typescript
@@ -24,34 +26,29 @@
  * let pool = DicePool.fromExpression("{4d6,3d8,2d10}kh");
  * ```
  */
-declare class DicePool {
-  /**
-   * @param modifiers - (default: `[]`)
-   * @param options   - (default: `{}`)
-   * @param rolls     - (default: `[]`)
-   */
-  constructor({ rolls, modifiers, options }?: { rolls?: Array<Roll | number>; modifiers?: string[]; options?: object });
+declare class DicePool<O = any> {
+  constructor({ rolls, modifiers, options }?: DicePool.ConstructorKwArgs<O>);
 
   /**
    * The elements of a Dice Pool must be Roll objects or numbers
    */
-  rolls: Array<Roll | number>;
+  rolls: DicePool.ConstructorKwArgs['rolls'];
 
   /**
    * The string modifiers applied to resolve the pool
    */
-  modifiers: string[];
+  modifiers: DicePool.ConstructorKwArgs['modifiers'];
 
   /**
    * An object of additional options which modify the pool
    */
-  options: object;
+  options: DicePool.ConstructorKwArgs<O>['options'];
 
   /**
    * The array of dice pool results which have been rolled
    * @defaultValue `[]`
    */
-  results: DiceTerm.Result;
+  results: DiceTerm.Result[];
 
   /**
    * An internal flag for whether the dice term has been evaluated
@@ -160,10 +157,11 @@ declare class DicePool {
 
   /**
    * Reconstruct a DicePool instance from a provided data Object
-   * @param data - The provided data
+   * @param data  - The provided data
+   * @typeParam O - the type of the options
    * @returns The constructed Dice Pool
    */
-  static fromData(data: object): DicePool;
+  static fromData<O = any>(data: DicePool.Data<O>): DicePool<O>;
 
   /* -------------------------------------------- */
 
@@ -250,4 +248,33 @@ declare class DicePool {
    * @param modifier - The matched modifier query
    */
   countFailures(modifier: string): this | null;
+}
+
+declare namespace DicePool {
+  /**
+   * @typeParam O - the type of the options
+   */
+  interface ConstructorKwArgs<O = any> {
+    /**
+     * @defaultValue `[]`
+     */
+    rolls?: Array<Roll | number>;
+
+    /**
+     * @defaultValue `[]`
+     */
+    modifiers?: Array<keyof typeof DicePool['MODIFIERS']>;
+
+    /**
+     * @defaultValue `{}`
+     */
+    options?: O;
+  }
+
+  interface Data<O = any> {
+    modifiers: ConstructorKwArgs['modifiers'];
+    options: ConstructorKwArgs<O>['options'];
+    results: DiceTerm.Result[];
+    rolls: Array<Roll.Data | Roll.OldData>;
+  }
 }

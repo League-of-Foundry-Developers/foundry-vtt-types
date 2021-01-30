@@ -14,27 +14,27 @@ declare abstract class DiceTerm {
    * @param options   - Additional options that modify the term
    *                    (default: `{}`)
    */
-  constructor(termData?: DiceTerm.TermData);
+  constructor(termData?: Partial<DiceTerm.TermData>);
 
   /**
    * The number of dice of this term to roll, before modifiers are applied
    */
-  number: number;
+  number: DiceTerm.TermData['number'];
 
   /**
    * The number of faces on the die
    */
-  faces: number;
+  faces: DiceTerm.TermData['faces'];
 
   /**
    * An Array of dice term modifiers which are applied
    */
-  modifiers: string[];
+  modifiers: DiceTerm.TermData['modifiers'];
 
   /**
    * An object of additional options which modify the dice term
    */
-  options: DiceTerm.Options;
+  options: DiceTerm.TermData['options'];
 
   /**
    * The array of dice term results which have been rolled
@@ -217,7 +217,10 @@ declare abstract class DiceTerm {
    * @param data - Provided data from an un-serialized term
    * @returns The constructed DiceTerm
    */
-  static fromData(data: object): DiceTerm;
+  static fromData(data: Coin.Data | Coin.OldData): Coin;
+  static fromData(data: FateDie.Data | FateDie.OldData): FateDie;
+  static fromData(data: Die.Data | Die.OldData): Die;
+  static fromData(data: DiceTerm.Data | DiceTerm.OldData): Die;
 
   /* -------------------------------------------- */
 
@@ -251,7 +254,7 @@ declare abstract class DiceTerm {
    * let d2 = Die.fromResults({faces: 6, number: 4, modifiers: ["r<3"]}, d.results);
    * ```
    */
-  static fromResults(options: DiceTerm.TermData, results: DiceTerm.Result[]): DiceTerm;
+  static fromResults(options: Partial<DiceTerm.TermData>, results: DiceTerm.Result[]): DiceTerm;
 
   /* -------------------------------------------- */
 
@@ -275,7 +278,7 @@ declare abstract class DiceTerm {
   /**
    * Provide backwards compatibility for Die syntax prior to 0.7.0
    */
-  protected static _backwardsCompatibleTerm(data: DiceTerm.OldTerm): DiceTerm.Result;
+  protected static _backwardsCompatibleTerm(data: DiceTerm.OldData): DiceTerm.Data;
 
   /* -------------------------------------------- */
 
@@ -311,6 +314,11 @@ declare abstract class DiceTerm {
 }
 
 declare namespace DiceTerm {
+  interface Data extends Partial<TermData> {
+    class?: string;
+    results: DiceTerm.Result[];
+  }
+
   interface TermData {
     faces: number;
     modifiers: string[];
@@ -318,7 +326,8 @@ declare namespace DiceTerm {
     options: DiceTerm.Options;
   }
 
-  interface OldTerm {
+  interface OldData {
+    class: Data['class'];
     formula: string;
     rolls: Array<{
       active: boolean;
