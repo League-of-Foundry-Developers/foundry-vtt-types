@@ -80,7 +80,7 @@ declare abstract class PlaceableObject<D extends PlaceableObject.Data = Placeabl
    * Identify the official EmbeddedEntity name for this PlaceableObject class
    * @remarks This getter is abstract in {@link PlaceableObject}.
    */
-  static get embeddedName(): never;
+  static get embeddedName(): string;
 
   /**
    * Provide a reference to the canvas layer which contains placeable objects of this type
@@ -190,7 +190,7 @@ declare abstract class PlaceableObject<D extends PlaceableObject.Data = Placeabl
    * Draw the placeable object into its parent container
    * @returns The drawn object
    */
-  abstract draw(): Promise<PlaceableObject<D>>;
+  abstract draw(): Promise<this>;
 
   /**
    * Draw the primary Sprite for the PlaceableObject
@@ -201,7 +201,7 @@ declare abstract class PlaceableObject<D extends PlaceableObject.Data = Placeabl
    * Refresh the current display state of the Placeable Object
    * @returns The refreshed object
    */
-  abstract refresh(): PlaceableObject<D>;
+  abstract refresh(): unknown;
 
   static create<T extends PlaceableObject>(
     data: DeepPartial<T['data']>,

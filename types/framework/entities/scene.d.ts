@@ -212,7 +212,7 @@ declare namespace Scene {
     backgroundColor: string;
     darkness: number;
     description: string;
-    drawings: any[]; // TODO Drawing class (PlaceableObject)
+    drawings: Drawing['data'][];
     fogExploration: boolean;
     globalLight: boolean;
     globalLightThreshold: number;
