@@ -436,7 +436,7 @@ declare namespace Actor {
    * @typeParam D - Actor.Data to extract Item type from
    * @internal
    */
-  type OwnedItemData<D> = D extends Data<any, infer I> ? I : never;
+  type OwnedItemData<D extends Data> = D['items'][0];
 
   /**
    * @typeParam D - Type for `data.data`
