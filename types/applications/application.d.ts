@@ -162,8 +162,6 @@ declare class Application<T = object> {
   get title(): string;
 
   /* -------------------------------------------- */
-
-  /* -------------------------------------------- */
   /* Application rendering
   /* -------------------------------------------- */
 
@@ -450,31 +448,31 @@ declare namespace Application {
      * A named "base application" which generates an additional hook
      * @defaultValue `null`
      */
-    baseApplication: string;
+    baseApplication: string | null;
 
     /**
      * The default pixel width for the rendered HTML
      * @defaultValue `null`
      */
-    width: number;
+    width: number | null;
 
     /**
      * The default pixel height for the rendered HTML
      * @defaultValue `null`
      */
-    height: number;
+    height: number | null;
 
     /**
      * The default offset-top position for the rendered HTML
      * @defaultValue `null`
      */
-    top: number;
+    top: number | null;
 
     /**
      * The default offset-left position for the rendered HTML
      * @defaultValue `null`
      */
-    left: number;
+    left: number | null;
 
     /**
      * Whether to display the application as a pop-out container
@@ -532,7 +530,7 @@ declare namespace Application {
      * The default HTML template path to render for this Application
      * @defaultValue `null`
      */
-    template: string;
+    template: string | null;
 
     /**
      * A list of unique CSS selectors which target containers that should
