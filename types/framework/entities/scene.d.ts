@@ -226,7 +226,7 @@ declare namespace Scene {
     img: string;
     initial: { x: number; y: number; scale: number } | null;
     journal: string;
-    lights: any[]; // TODO AmbientLight class (PlaceableObject)
+    lights: AmbientLight['data'][];
     name: string;
     navName: string;
     navOrder: number;

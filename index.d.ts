@@ -146,6 +146,7 @@ import './types/pixi/placeableObjects/tile';
 import './types/pixi/placeableObjects/token';
 import './types/pixi/placeableObjects/wall';
 import './types/pixi/placeableObjects/drawing';
+import './types/pixi/placeableObjects/ambientLight';
 
 // UI
 
