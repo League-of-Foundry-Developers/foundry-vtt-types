@@ -231,7 +231,7 @@ declare namespace Scene {
     navName: string;
     navOrder: number;
     navigation: boolean;
-    notes: any[]; // TODO Note class (PlaceableObject)
+    notes: Note['data'][];
     padding: number;
     permission: Entity.Permission;
     playlist: string;

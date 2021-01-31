@@ -140,13 +140,13 @@ import './types/pixi/helpers/controlIcon';
 import './types/pixi/helpers/ray';
 import './types/pixi/helpers/ruler';
 
-import './types/pixi/placeableObjects/note';
 import './types/pixi/placeableObjects/placeableObject';
 import './types/pixi/placeableObjects/tile';
 import './types/pixi/placeableObjects/token';
 import './types/pixi/placeableObjects/wall';
 import './types/pixi/placeableObjects/drawing';
 import './types/pixi/placeableObjects/ambientLight';
+import './types/pixi/placeableObjects/note';
 
 // UI
 
