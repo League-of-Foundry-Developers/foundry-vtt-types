@@ -1,12 +1,12 @@
 /**
  * An Abstract Base Class which defines a Placeable Object which represents an Entity placed on the Canvas
  */
-declare abstract class PlaceableObject<D = object> extends PIXI.Container {
+declare abstract class PlaceableObject<D extends PlaceableObject.Data = PlaceableObject.Data> extends PIXI.Container {
   /**
    * @param data  - The underlying embedded document data for the placeable type
    * @param scene - The parent scene that this object belongs to (if any)
    */
-  constructor(data: D, scene: PlaceableObject['scene']);
+  constructor(data?: DeepPartial<D>, scene?: PlaceableObject['scene']);
 
   /**
    * The underlying data object which provides the basis for this placeable object
@@ -21,7 +21,7 @@ declare abstract class PlaceableObject<D = object> extends PIXI.Container {
   /**
    * Track the field of vision for the placeable object.
    * This is necessary to determine whether a player has line-of-sight towards a placeable object or vice-versa
-   * @defaultValue `{ fos: null, los: null }`
+   * @defaultValue `{ fov: null, los: null }`
    */
   vision: PlaceableObject.Vision;
 
@@ -55,46 +55,32 @@ declare abstract class PlaceableObject<D = object> extends PIXI.Container {
    */
   protected _sheet: FormApplication | null;
 
-  /* -------------------------------------------- */
-  /*  Properties                                  */
-  /* -------------------------------------------- */
-
   /**
    * The bounding box for this PlaceableObject.
    * This is required if the layer uses a Quadtree, otherwise it is optional
    */
   abstract get bounds(): NormalizedRectangle;
 
-  /* -------------------------------------------- */
-
   /**
    * The central coordinate pair of the placeable object based on it's own width and height
    */
   get center(): PIXI.Point;
-
-  /* -------------------------------------------- */
 
   /**
    * The _id of the underlying EmbeddedEntity
    */
   get id(): string;
 
-  /* -------------------------------------------- */
-
   /**
    * The field-of-vision polygon for the object, if it has been computed
    */
   get fov(): PIXI.Polygon | null;
-
-  /* -------------------------------------------- */
 
   /**
    * Identify the official EmbeddedEntity name for this PlaceableObject class
    * @remarks This getter is abstract in {@link PlaceableObject}.
    */
   static get embeddedName(): never;
-
-  /* -------------------------------------------- */
 
   /**
    * Provide a reference to the canvas layer which contains placeable objects of this type
@@ -106,14 +92,10 @@ declare abstract class PlaceableObject<D = object> extends PIXI.Container {
    */
   get layer(): PlaceablesLayer;
 
-  /* -------------------------------------------- */
-
   /**
    * The line-of-sight polygon for the object, if it has been computed
    */
   get los(): PIXI.Polygon | null;
-
-  /* -------------------------------------------- */
 
   /**
    * A Form Application which is used to configure the properties of this Placeable Object or the EmbeddedEntity
@@ -121,16 +103,10 @@ declare abstract class PlaceableObject<D = object> extends PIXI.Container {
    */
   get sheet(): FormApplication;
 
-  /* -------------------------------------------- */
-
   /**
    * A Universally Unique Identifier (uuid) for this EmbeddedEntity
    */
   get uuid(): string;
-
-  /* -------------------------------------------- */
-  /*  Permission Controls                         */
-  /* -------------------------------------------- */
 
   /**
    * Test whether a user can perform a certain interaction with regards to a Placeable Object
@@ -195,17 +171,11 @@ declare abstract class PlaceableObject<D = object> extends PIXI.Container {
    */
   protected _canDelete(user: User, event?: any): boolean;
 
-  /* -------------------------------------------- */
-  /*  Rendering                                   */
-  /* -------------------------------------------- */
-
   /**
    * Clear the display of the existing object
    * @returns The cleared object
    */
   clear(): this;
-
-  /* -------------------------------------------- */
 
   /**
    * Clone the placeable object, returning a new object with identical attributes
@@ -216,22 +186,16 @@ declare abstract class PlaceableObject<D = object> extends PIXI.Container {
    */
   clone(): PlaceableObject<D>;
 
-  /* -------------------------------------------- */
-
   /**
    * Draw the placeable object into its parent container
    * @returns The drawn object
    */
   abstract draw(): Promise<PlaceableObject<D>>;
 
-  /* -------------------------------------------- */
-
   /**
    * Draw the primary Sprite for the PlaceableObject
    */
   protected _drawPrimarySprite(texture: PIXI.Texture): PIXI.Sprite | null;
-
-  /* -------------------------------------------- */
 
   /**
    * Refresh the current display state of the Placeable Object
@@ -239,25 +203,18 @@ declare abstract class PlaceableObject<D = object> extends PIXI.Container {
    */
   abstract refresh(): PlaceableObject<D>;
 
-  /* -------------------------------------------- */
-  /*  Database Management                         */
-  /* -------------------------------------------- */
+  static create<T extends PlaceableObject>(
+    data: DeepPartial<T['data']>,
+    options?: Entity.CreateOptions
+  ): Promise<T | void>;
+  static create<T extends PlaceableObject>(
+    data: DeepPartial<T['data']>[],
+    options?: Entity.CreateOptions
+  ): Promise<T[] | void>;
 
-  static create<O>(
-    data: O,
-    options: any // TODO: type this when Entity is typed
-  ): Promise<(O extends Array<infer D> ? Array<PlaceableObject<D>> : PlaceableObject<O>) | null>;
+  update(data: DeepPartial<D>, options?: Entity.UpdateOptions): Promise<this>;
 
-  /* -------------------------------------------- */
-
-  // TODO: type this when Entity is typed
-  update(data: D, options: any): Promise<this>;
-
-  /* -------------------------------------------- */
-
-  delete(options: any): Promise<this>; // TODO: type this when Entity is typed
-
-  /* -------------------------------------------- */
+  delete(options?: Entity.DeleteOptions): Promise<this>;
 
   /**
    * Get the value of a "flag" for this PlaceableObject
@@ -268,8 +225,6 @@ declare abstract class PlaceableObject<D = object> extends PIXI.Container {
    * @returns The flag value
    */
   getFlag(scope: string, key: string): unknown;
-
-  /* -------------------------------------------- */
 
   /**
    * Assign a "flag" to this Entity.
@@ -292,8 +247,6 @@ declare abstract class PlaceableObject<D = object> extends PIXI.Container {
    */
   setFlag(scope: string, key: string, value: any): Promise<this>;
 
-  /* -------------------------------------------- */
-
   /**
    * Remove a flag assigned to the Entity
    * @param scope - The flag scope which namespaces the key
@@ -302,30 +255,20 @@ declare abstract class PlaceableObject<D = object> extends PIXI.Container {
    */
   unsetFlag(scope: string, key: string): Promise<this>;
 
-  /* -------------------------------------------- */
-
   /**
    * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
    */
-  protected _onCreate(): Promise<PlaceableObject<D>>;
-
-  /* -------------------------------------------- */
+  protected _onCreate(): void;
 
   /**
    * Define additional steps taken when an existing placeable object of this type is updated with new data
    */
   protected _onUpdate(data: D): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Define additional steps taken when an existing placeable object of this type is deleted
    */
   protected _onDelete(): void;
-
-  /* -------------------------------------------- */
-  /*  Methods                                     */
-  /* -------------------------------------------- */
 
   /**
    * Assume control over a PlaceableObject, flagging it as controlled and enabling downstream behaviors
@@ -336,16 +279,12 @@ declare abstract class PlaceableObject<D = object> extends PIXI.Container {
    */
   control(options?: PlaceableObject.ControlOptions): boolean;
 
-  /* -------------------------------------------- */
-
   /**
    * Additional events which trigger once control of the object is established
    * @param options - Optional parameters which apply for specific implementations
    *                  (unused)
    */
   protected _onControl(options?: any): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Release control over a PlaceableObject, removing it from the controlled set
@@ -355,16 +294,12 @@ declare abstract class PlaceableObject<D = object> extends PIXI.Container {
    */
   release(options?: PlaceableObject.ReleaseOptions): boolean;
 
-  /* -------------------------------------------- */
-
   /**
    * Additional events which trigger once control of the object is released
    * @param options - Options which modify the releasing workflow
    *                  (unused)
    */
   protected _onRelease(options?: any): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Rotate the PlaceableObject to a certain angle of facing
@@ -373,8 +308,6 @@ declare abstract class PlaceableObject<D = object> extends PIXI.Container {
    * @returns A Promise which resolves once the rotation has completed
    */
   rotate(angle: number, snap: number): Promise<this>;
-
-  /* -------------------------------------------- */
 
   /**
    * Determine a new angle of rotation for a PlaceableObject either from an explicit angle or from a delta offset.
@@ -388,8 +321,6 @@ declare abstract class PlaceableObject<D = object> extends PIXI.Container {
    */
   protected _updateRotation({ angle, delta, snap }?: { angle: number; delta: number; snap: number }): number;
 
-  /* -------------------------------------------- */
-
   /**
    * Obtain a shifted position for the Placeable Object
    * @param dx - The number of grid units to shift along the X-axis
@@ -398,88 +329,62 @@ declare abstract class PlaceableObject<D = object> extends PIXI.Container {
    */
   protected _getShiftedPosition(dx: number, dy: number): { x: number; y: number };
 
-  /* -------------------------------------------- */
-  /*  Interactivity                               */
-  /* -------------------------------------------- */
-
   /**
    * Activate interactivity for the Placeable Object
    */
   activateListeners(): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Create a standard MouseInteractionManager for the PlaceableObject
    */
   protected _createInteractionManager(): MouseInteractionManager;
 
-  /* -------------------------------------------- */
-
   /**
    * Actions that should be taken for this Placeable Object when a mouseover event occurs
    * @param options - (default: `{}`)
    * @param hoverOutOthers - (default: `true`)
    */
-  protected _onHoverIn(event: PIXI.InteractionEvent, options?: { hoverOutOthers: boolean }): boolean | null;
-
-  /* -------------------------------------------- */
+  protected _onHoverIn(event: PIXI.InteractionEvent, options?: { hoverOutOthers: boolean }): boolean | void;
 
   /**
    * Actions that should be taken for this Placeable Object when a mouseout event occurs
    */
-  protected _onHoverOut(event: PIXI.InteractionEvent): boolean | null;
-
-  /* -------------------------------------------- */
+  protected _onHoverOut(event: PIXI.InteractionEvent): boolean | void;
 
   /**
    * Callback actions which occur on a single left-click event to assume control of the object
    */
   protected _onClickLeft(event: PIXI.InteractionEvent): boolean | null;
 
-  /* -------------------------------------------- */
-
   /**
    * Callback actions which occur on a double left-click event to activate
    */
   protected _onClickLeft2(event: PIXI.InteractionEvent): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Callback actions which occur on a single right-click event to configure properties of the object
    */
   protected _onClickRight(event: PIXI.InteractionEvent): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Callback actions which occur on a double right-click event to configure properties of the object
    */
   protected _onClickRight2(event: PIXI.InteractionEvent): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Callback actions which occur when a mouse-drag action is first begun.
    */
   protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Callback actions which occur on a mouse-move operation.
    */
   protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Callback actions which occur on a mouse-move operation.
    */
   protected _onDragLeftDrop(event: PIXI.InteractionEvent): boolean | Promise<PlaceableObject<D>>;
-
-  /* -------------------------------------------- */
 
   /**
    * Callback actions which occur on a mouse-move operation.
@@ -497,8 +402,21 @@ declare namespace PlaceableObject {
   }
 
   interface Vision {
-    fos: PIXI.Polygon | null;
+    /**
+     * @remarks
+     * This is required but has ben set to optional because of pointsource
+     */
+    fov?: PIXI.Polygon | null;
 
-    los: PIXI.Polygon | null;
+    /**
+     * @remarks
+     * This is required but has ben set to optional because of pointsource
+     */
+    los?: PIXI.Polygon | null;
+  }
+
+  interface Data {
+    _id: string;
+    flags: Record<string, unknown>;
   }
 }
