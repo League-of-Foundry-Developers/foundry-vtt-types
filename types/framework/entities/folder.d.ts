@@ -5,7 +5,7 @@ declare class Folders extends EntityCollection<Folder> {
   /**
    * This tracks which folders are currently expanded in the UI
    */
-  _expanded: {
+  protected _expanded: {
     [id: string]: boolean;
   };
 
@@ -24,12 +24,12 @@ declare class Folders extends EntityCollection<Folder> {
   /**
    * Refresh the display of any active JournalSheet instances where the folder list will change.
    */
-  _refreshJournalEntrySheets(): void;
+  protected _refreshJournalEntrySheets(): void;
 }
 
-declare class Folder<D extends Folder.Data = Folder.Data> extends Entity<D> {
+declare class Folder extends Entity<Folder.Data> {
   /** @override */
-  static get config(): Entity.Config;
+  static get config(): Entity.Config<Folder>;
 
   /**
    * Return whether the folder is displayed in the sidebar to the current user
@@ -44,7 +44,7 @@ declare class Folder<D extends Folder.Data = Folder.Data> extends Entity<D> {
   /**
    * A reference to the parent Folder if one is set, otherwise null
    */
-  get parent(): Folder<D>;
+  get parent(): Folder;
 
   /**
    * Return the named Entity type for elements in this folder.
@@ -65,7 +65,7 @@ declare class Folder<D extends Folder.Data = Folder.Data> extends Entity<D> {
 
   /**
    * Create a new Folder by rendering a dialog window to provide basic creation details
-   * @param data - Initial data with which to populate the creation form
+   * @param data    - Initial data with which to populate the creation form
    * @param options - Initial positioning and sizing options for the dialog form
    * @returns An active FolderConfig instance for creating the new Folder entity
    */
@@ -78,7 +78,7 @@ declare class Folder<D extends Folder.Data = Folder.Data> extends Entity<D> {
   /**
    * Export all Entities contained in this Folder to a given Compendium pack.
    * Optionally update existing Entities within the Pack by name, otherwise append all new entries.
-   * @param pack - A Compendium pack to which the entities will be exported
+   * @param pack         - A Compendium pack to which the entities will be exported
    * @param updateByName - Update existing entries in the Compendium pack, matching by name
    * @returns The updated Compendium Pack
    */
@@ -93,7 +93,7 @@ declare class Folder<D extends Folder.Data = Folder.Data> extends Entity<D> {
 
   /**
    * Provide a dialog form that allows for exporting the contents of a Folder into an eligible Compendium pack.
-   * @param pack - A pack ID to set as the default choice in the select input
+   * @param pack    - A pack ID to set as the default choice in the select input
    * @param options - Additional options passed to the Dialog.prompt method
    * @returns A Promise which resolves or rejects once the dialog has been submitted or closed
    */
@@ -104,12 +104,14 @@ declare class Folder<D extends Folder.Data = Folder.Data> extends Entity<D> {
   /* -------------------------------------------- */
 
   /** @override */
-  static _handleDelete({ request, result, userId }: { request: any; result: any; userId: any }): any; // Folder, mismatched
+  protected static _handleDelete({ request, result, userId }: { request: any; result: any; userId: any }): any; // Folder, mismatched
 }
 
 declare namespace Folder {
   interface Data extends Entity.Data {
-    parent: Folder | null;
+    color: string;
+    name: string;
+    parent: null | Folder;
     sort: number;
     sorting: string;
     type: string;

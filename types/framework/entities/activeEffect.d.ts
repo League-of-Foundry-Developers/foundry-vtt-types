@@ -8,7 +8,7 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
    * @param data   - Data for the Active Effect
    * @param parent - The parent Entity which owns the effect
    */
-  constructor(data: ActiveEffect.Data, parent: Actor<Item<Item.Data<any>>> | Item<Item.Data<any>>);
+  constructor(data: ActiveEffect.Data, parent: Actor | Item);
 
   /**
    * A cached reference to the source name to avoid recurring database lookups
@@ -61,7 +61,7 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
    * @param change - The change data being applied
    * @returns The resulting applied value
    */
-  apply<I extends Item, D extends Actor.Data>(actor: Actor<I, D>, change: ActiveEffect.Change): unknown;
+  apply(actor: Actor, change: ActiveEffect.Change): unknown;
 
   /* -------------------------------------------- */
 
@@ -78,7 +78,7 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
    * @param change - The change data being applied
    * @returns The resulting applied value
    */
-  protected _applyAdd<I extends Item, D extends Actor.Data>(actor: Actor<I, D>, change: ActiveEffect.Change): unknown;
+  protected _applyAdd(actor: Actor, change: ActiveEffect.Change): unknown;
 
   /* -------------------------------------------- */
 
@@ -88,10 +88,7 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
    * @param change - The change data being applied
    * @returns The resulting applied value
    */
-  protected _applyMultiply<I extends Item, D extends Actor.Data>(
-    actor: Actor<I, D>,
-    change: ActiveEffect.Change
-  ): unknown;
+  protected _applyMultiply(actor: Actor, change: ActiveEffect.Change): unknown;
 
   /* -------------------------------------------- */
 
@@ -101,10 +98,7 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
    * @param change - The change data being applied
    * @returns The resulting applied value
    */
-  protected _applyOverride<I extends Item, D extends Actor.Data>(
-    actor: Actor<I, D>,
-    change: ActiveEffect.Change
-  ): unknown;
+  protected _applyOverride(actor: Actor, change: ActiveEffect.Change): unknown;
 
   /* -------------------------------------------- */
 
@@ -114,10 +108,7 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
    * @param change - The change data being applied
    * @returns The resulting applied value
    */
-  protected _applyCustom<I extends Item, D extends Actor.Data>(
-    actor: Actor<I, D>,
-    change: ActiveEffect.Change
-  ): unknown;
+  protected _applyCustom(actor: Actor, change: ActiveEffect.Change): unknown;
 
   /* -------------------------------------------- */
   /*  Database Operations                         */

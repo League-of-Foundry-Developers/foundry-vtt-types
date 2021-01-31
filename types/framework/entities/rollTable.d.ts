@@ -21,9 +21,9 @@ declare class RollTables extends EntityCollection<RollTable> {
   static registerSettings(): void;
 }
 
-declare class RollTable<D extends RollTable.Data = RollTable.Data> extends Entity<D> {
+declare class RollTable extends Entity<RollTable.Data> {
   /** @override */
-  static get config(): Entity.Config;
+  static get config(): Entity.Config<RollTable>;
 
   /** @override */
   prepareEmbeddedEntities(): void;
@@ -41,9 +41,9 @@ declare class RollTable<D extends RollTable.Data = RollTable.Data> extends Entit
    * Display a result drawn from a RollTable in the Chat Log along.
    * Optionally also display the Roll which produced the result and configure aspects of the displayed messages.
    *
-   * @param results - An Array of one or more table results which were drawn and should be displayed
-   * @param roll - An optional Roll instance which produced the drawn results
-   * @param messageData - Additional data which customizes the created messages
+   * @param results        - An Array of one or more table results which were drawn and should be displayed
+   * @param roll           - An optional Roll instance which produced the drawn results
+   * @param messageData    - Additional data which customizes the created messages
    * @param messageOptions - Additional options which customize the created messages
    */
   toMessage(
@@ -61,12 +61,11 @@ declare class RollTable<D extends RollTable.Data = RollTable.Data> extends Entit
 
   /**
    * Draw a result from the RollTable based on the table formula or a provided Roll instance
-   * @param roll - An existing Roll instance to use for drawing from the table
-   * @param recursive - Allow drawing recursively from inner RollTable results
-   * @param results - One or more table results which have been drawn
-   *
+   * @param roll        - An existing Roll instance to use for drawing from the table
+   * @param recursive   - Allow drawing recursively from inner RollTable results
+   * @param results     - One or more table results which have been drawn
    * @param displayChat - Whether to automatically display the results in chat
-   * @param rollMode - The chat roll mode to use when displaying the result
+   * @param rollMode    - The chat roll mode to use when displaying the result
    *
    * @returns A Promise which resolves to an object containing the executed roll and the produced results
    */
@@ -89,11 +88,11 @@ declare class RollTable<D extends RollTable.Data = RollTable.Data> extends Entit
 
   /**
    * Draw multiple results from a RollTable, constructing a final synthetic Roll as a dice pool of inner rolls.
-   * @param number - The number of results to draw
-   * @param roll - An optional pre-configured Roll instance which defines the dice roll to use
-   * @param recursive - Allow drawing recursively from inner RollTable results
+   * @param number      - The number of results to draw
+   * @param roll        - An optional pre-configured Roll instance which defines the dice roll to use
+   * @param recursive   - Allow drawing recursively from inner RollTable results
    * @param displayChat - Automatically display the drawn results in chat? Default is true
-   * @param rollMode - Customize the roll mode used to display the drawn results
+   * @param rollMode    - Customize the roll mode used to display the drawn results
    */
   drawMany(
     number: number,
@@ -116,13 +115,13 @@ declare class RollTable<D extends RollTable.Data = RollTable.Data> extends Entit
   /**
    * Normalize the probabilities of rolling each item in the RollTable based on their assigned weights
    */
-  normalize(): Promise<RollTable<D>>;
+  normalize(): Promise<RollTable>;
 
   /**
    * Reset the state of the RollTable to return any drawn items to the table
    * @returns
    */
-  reset(): Promise<RollTable<D>>;
+  reset(): Promise<RollTable>;
 
   /**
    * Evaluate a RollTable by rolling its formula and retrieving a drawn result.
@@ -130,25 +129,27 @@ declare class RollTable<D extends RollTable.Data = RollTable.Data> extends Entit
    * Note that this function only performs the roll and identifies the result, the RollTable#draw function should be
    * called to formalize the draw from the table.
    *
-   * @param roll - An alternative dice Roll to use instead of the default formula for the table
+   * @param roll      - An alternative dice Roll to use instead of the default formula for the table
    * @param recursive - If a RollTable entity is drawn as a result, recursively roll it
-   * @param _depth - An internal flag used to track recursion depth
+   * @param _depth    - An internal flag used to track recursion depth
    * @returns An object containing the executed roll and the produced results
    *
    * @example
+   * ```typescript
    * // Draw results using the default table formula
    * const defaultResults = table.roll();
    *
    * // Draw results using a custom roll formula
    * const roll = new Roll("1d20 + @abilities.wis.mod", actor.getRollData());
    * const customResults = table.roll({roll});
+   * ```
    */
   roll({
     roll,
     recursive,
     _depth
   }?: {
-    roll: Roll;
+    roll?: Roll;
     recursive?: boolean;
     _depth?: number;
   }): {
@@ -161,14 +162,14 @@ declare class RollTable<D extends RollTable.Data = RollTable.Data> extends Entit
    * @param value - The rolled value
    * @returns An Array of results
    */
-  _getResultsForRoll(value: number): any[];
+  protected _getResultsForRoll(value: number): any[];
 
   /**
    * Get a string representation for the result which (if possible) will be a dynamic link or otherwise plain text
    * @param result - The result object
    * @returns The text to display
    */
-  _getResultChatText(result: any): string;
+  protected _getResultChatText(result: any): string;
 
   /* -------------------------------------------- */
   /*  Table Result Management Methods             */
@@ -177,10 +178,10 @@ declare class RollTable<D extends RollTable.Data = RollTable.Data> extends Entit
   getTableResult(id: string): any; // TODO EmbeddedTableResult
 
   /** @override */
-  _onCreateEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
+  protected _onCreateEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
 
   /** @override */
-  _onDeleteEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
+  protected _onDeleteEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
 
   /* -------------------------------------------- */
   /*  Importing and Exporting                     */
@@ -191,7 +192,7 @@ declare class RollTable<D extends RollTable.Data = RollTable.Data> extends Entit
 
   /**
    * Create a new RollTable entity using all of the Entities from a specific Folder as new results.
-   * @param folder - The Folder entity from which to create a roll table
+   * @param folder  - The Folder entity from which to create a roll table
    * @param options - Additional options passed to the RollTable.create method
    * @returns
    */
@@ -204,10 +205,8 @@ declare namespace RollTable {
     displayRoll: boolean;
     formula: string;
     img: string;
-    permission: {
-      default: number;
-      [user: string]: number;
-    };
+    name: string;
+    permission: Entity.Permission;
     replacement: boolean;
     results: Result[];
     sort: number;

@@ -27,20 +27,19 @@ declare class Scenes extends EntityCollection<Scene> {
   /**
    * Augment the standard modifyDocument listener to flush fog exploration
    */
-  static _resetFog(response: { scene: Scene; reset: boolean }): Promise<Canvas>;
+  protected static _resetFog(response: { scene: Scene; reset: boolean }): Promise<Canvas>;
 
   /**
    * Handle pre-loading the art assets for a Scene
    * @param sceneId - The Scene id to begin loading
-   * @param push - Trigger other connected clients to also pre-load Scene resources
+   * @param push    - Trigger other connected clients to also pre-load Scene resources
    */
   preload(sceneId: string, push?: boolean): Promise<void>;
 
   /**
    * Handle requests pulling the current User to a specific Scene
-   * @param sceneId -
    */
-  static _pullToScene(sceneId: string): void;
+  protected static _pullToScene(sceneId: string): void;
 
   /** @override */
   fromCompendium(data: Scene.Data): Scene.Data;
@@ -49,7 +48,7 @@ declare class Scenes extends EntityCollection<Scene> {
 /**
  * The Scene entity
  */
-declare class Scene<D extends Scene.Data = Scene.Data> extends Entity<D> {
+declare class Scene extends Entity<Scene.Data> {
   /**
    * Track whether the scene is the active view
    */
@@ -60,16 +59,16 @@ declare class Scene<D extends Scene.Data = Scene.Data> extends Entity<D> {
    * When switching back to a previously viewed scene, we can automatically pan to the previous position.
    * Object with keys: x, y, scale
    */
-  viewPosition: {
+  _viewPosition: {
     x: number;
     y: number;
     scale: number;
   };
 
-  static get config(): Entity.Config;
+  static get config(): Entity.Config<Scene>;
 
   /** @override */
-  prepareData(): D;
+  prepareData(): Scene.Data;
 
   /** @override */
   prepareEmbeddedEntities(): void;
@@ -121,52 +120,65 @@ declare class Scene<D extends Scene.Data = Scene.Data> extends Entity<D> {
   /* -------------------------------------------- */
 
   /** @override */
-  clone(createData?: D, options?: Entity.CreateOptions): Promise<Scene<D>>;
+  clone(createData?: Scene.Data, options?: Entity.CreateOptions): Promise<Scene>;
 
   /** @override */
-  static create(data: Scene.Data, options?: Entity.CreateOptions): Promise<Scene<Scene.Data>>;
+  static create(data: DeepPartial<Scene.Data>, options?: Entity.CreateOptions): Promise<Scene | null>;
+  static create(data: DeepPartial<Scene.Data>[], options?: Entity.CreateOptions): Promise<Scene[] | null>;
 
   /** @override */
-  update(data: Optional<D>, options: Entity.UpdateOptions): Promise<this>;
+  update(data: DeepPartial<Scene.Data>, options: Entity.UpdateOptions): Promise<this>;
 
   /** @override */
-  _onCreate(data: D, options: any, userId: string): void;
+  protected _onCreate(data: Scene.Data, options: any, userId: string): void;
 
   /** @override */
-  _onUpdate(data: Optional<D>, options: Entity.UpdateOptions, userId: string): void;
+  protected _onUpdate(data: DeepPartial<Scene.Data>, options: Entity.UpdateOptions, userId: string): void;
 
   /** @override */
-  _onDelete(options: Entity.DeleteOptions, userId: string): void;
+  protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
 
   /**
    * Handle Scene activation workflow if the active state is changed to true
    */
-  _onActivate(active: boolean): void;
+  protected _onActivate(active: boolean): void;
 
   /** @override */
-  _onCreateEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
+  protected _onCreateEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
 
   /** @override */
-  _onUpdateEmbeddedEntity(embeddedName: string, child: any, updateData: any, options: any, userId: string): void;
+  protected _onUpdateEmbeddedEntity(
+    embeddedName: string,
+    child: any,
+    updateData: any,
+    options: any,
+    userId: string
+  ): void;
 
   /** @override */
-  _onDeleteEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
+  protected _onDeleteEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
 
   /** @override */
-  _onModifyEmbeddedEntity(embeddedName: string, changes: any[], options: any, userId: string, context?: any): void;
+  protected _onModifyEmbeddedEntity(
+    embeddedName: string,
+    changes: any[],
+    options: any,
+    userId: string,
+    context?: any
+  ): void;
 
   /* -------------------------------------------- */
   /*  History Storage Handlers                    */
   /* -------------------------------------------- */
 
   /** @override */
-  static _handleCreateEmbeddedEntity({ request, result, userId }: any): any[];
+  protected static _handleCreateEmbeddedEntity({ request, result, userId }: any): any[];
 
   /** @override */
-  static _handleUpdateEmbeddedEntity({ request, result, userId }: any): any[];
+  protected static _handleUpdateEmbeddedEntity({ request, result, userId }: any): any[];
 
   /** @override */
-  static _handleDeleteEmbeddedEntity({ request, result, userId }: any): any[];
+  protected static _handleDeleteEmbeddedEntity({ request, result, userId }: any): any[];
 
   /* -------------------------------------------- */
   /*  Importing and Exporting                     */
@@ -177,9 +189,9 @@ declare class Scene<D extends Scene.Data = Scene.Data> extends Entity<D> {
 
   /**
    * Create a 300px by 100px thumbnail image for this scene background
-   * @param img - A background image to use for thumbnail creation, otherwise the current scene
-   *              background is used.
-   * @param width - The desired thumbnail width. Default is 300px
+   * @param img    - A background image to use for thumbnail creation, otherwise the current scene
+   *                 background is used.
+   * @param width  - The desired thumbnail width. Default is 300px
    * @param height - The desired thumbnail height. Default is 100px;
    * @returns The created thumbnail data.
    */
@@ -200,6 +212,7 @@ declare namespace Scene {
     backgroundColor: string;
     darkness: number;
     description: string;
+    drawings: any[]; // TODO Drawing class (PlaceableObject)
     fogExploration: boolean;
     globalLight: boolean;
     globalLightThreshold: number;
@@ -211,33 +224,28 @@ declare namespace Scene {
     gridUnits: string;
     height: number;
     img: string;
-    initial: {
-      x: number;
-      y: number;
-      scale: number;
-    };
+    initial: { x: number; y: number; scale: number } | null;
     journal: string;
+    lights: any[]; // TODO AmbientLight class (PlaceableObject)
+    name: string;
     navName: string;
     navOrder: number;
     navigation: boolean;
+    notes: any[]; // TODO Note class (PlaceableObject)
     padding: number;
+    permission: Entity.Permission;
     playlist: string;
     shiftX: number;
     shiftY: number;
     size: number;
     sort: number;
-    tokenVision: boolean;
-    weather: string;
-    width: number;
-
-    // EmbeddedEntities, arrays of the type of the data param of these
-    drawings: any[]; // TODO Drawing class (PlaceableObject)
-    lights: any[]; // TODO AmbientLight class (PlaceableObject)
-    notes: any[]; // TODO Note class (PlaceableObject)
     sounds: any[]; // TODO AmbientSound class (PlaceableObject)
     templates: any[]; // TODO MeasuredTemplate class (PlaceableObject)
     tiles: any[]; // TODO Tile class (PlaceableObject)
+    tokenVision: boolean;
     tokens: any[]; // Token.data
     walls: any[]; // Wall.data
+    weather: string;
+    width: number;
   }
 }
