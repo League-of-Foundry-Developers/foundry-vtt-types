@@ -127,7 +127,6 @@ import './types/framework/entities/user';
 import './types/pixi/canvas';
 import './types/pixi/canvasLayer';
 import './types/pixi/lightingLayer';
-import './types/pixi/measuredTemplate';
 import './types/pixi/mouseInteractionManager';
 import './types/pixi/normalizedRectangle';
 import './types/pixi/placeablesLayer';
@@ -148,6 +147,7 @@ import './types/pixi/placeableObjects/drawing';
 import './types/pixi/placeableObjects/ambientLight';
 import './types/pixi/placeableObjects/note';
 import './types/pixi/placeableObjects/ambientSound';
+import './types/pixi/placeableObjects/measuredTemplate';
 
 // UI
 
