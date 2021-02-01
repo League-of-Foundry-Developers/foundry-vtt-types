@@ -239,9 +239,9 @@ declare namespace Scene {
     shiftY: number;
     size: number;
     sort: number;
-    sounds: any[]; // TODO AmbientSound class (PlaceableObject)
-    templates: any[]; // TODO MeasuredTemplate class (PlaceableObject)
-    tiles: any[]; // TODO Tile class (PlaceableObject)
+    sounds: AmbientSound['data'][];
+    templates: MeasuredTemplate['data'][];
+    tiles: Tile['data'][];
     tokenVision: boolean;
     tokens: any[]; // Token.data
     walls: any[]; // Wall.data

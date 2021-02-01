@@ -147,6 +147,7 @@ import './types/pixi/placeableObjects/wall';
 import './types/pixi/placeableObjects/drawing';
 import './types/pixi/placeableObjects/ambientLight';
 import './types/pixi/placeableObjects/note';
+import './types/pixi/placeableObjects/ambientSound';
 
 // UI
 
