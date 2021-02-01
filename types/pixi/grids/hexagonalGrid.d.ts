@@ -1,6 +1,6 @@
 /**
  * Construct a hexagonal grid
- * @extends {BaseGrid}
+ * @extends BaseGrid
  */
 declare class HexagonalGrid extends BaseGrid {
   columns: boolean
