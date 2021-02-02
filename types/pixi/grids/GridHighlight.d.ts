@@ -3,16 +3,16 @@
  */
 declare class GridHighlight extends PIXI.Graphics {
   /**
-     * Track the Grid Highlight name
-     */
-  name: string
+   * Track the Grid Highlight name
+   */
+  name: string;
 
   /**
-     * Track distinct positions which have already been highlighted
-     */
-  positions: Set<any>
+   * Track distinct positions which have already been highlighted
+   */
+  positions: Set<any>;
 
-  constructor (name: any, ...args: any[])
+  constructor(name: any, ...args: any[]);
   /* -------------------------------------------- */
 
   /**
@@ -24,10 +24,7 @@ declare class GridHighlight extends PIXI.Graphics {
    * @returns  - Whether or not to draw the highlight for this location
    *            (type: `boolean`)
    */
-  highlight (
-    x: number,
-    y: number
-  ): boolean
+  highlight(x: number, y: number): boolean;
 
   /* -------------------------------------------- */
 
@@ -35,9 +32,7 @@ declare class GridHighlight extends PIXI.Graphics {
    * Extend the Graphics clear logic to also reset the highlighted positions
    * @param args - (type: `any[]`)
    */
-  clear (
-    ...args: any[]
-  ): any
+  clear(...args: any[]): any;
 
   /* -------------------------------------------- */
 
@@ -45,7 +40,5 @@ declare class GridHighlight extends PIXI.Graphics {
    * Extend how this Graphics container is destroyed to also remove parent layer references
    * @param args - (type: `any[]`)
    */
-  destroy (
-    ...args: any[]
-  ): any
+  destroy(...args: any[]): any;
 }

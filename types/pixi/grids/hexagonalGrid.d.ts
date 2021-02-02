@@ -1,39 +1,38 @@
 /**
  * Construct a hexagonal grid
- * @extends BaseGrid
  */
 declare class HexagonalGrid extends BaseGrid {
-  columns: boolean
+  columns: boolean;
 
-  even: boolean
+  even: boolean;
 
-  h: number
+  h: number;
 
-  w: number
-  constructor (options: object)
+  w: number;
+  constructor(options: object);
   /**
    * A matrix of x and y offsets which is multiplied by the width/height vector to get pointy-top polygon coordinates
    */
-  pointyHexPoints (): number[][]
+  pointyHexPoints(): number[][];
 
   /* -------------------------------------------- */
 
   /**
    * A matrix of x and y offsets which is multiplied by the width/height vector to get flat-top polygon coordinates
    */
-  flatHexPoints (): number[][]
+  flatHexPoints(): number[][];
 
   /**
    * An array of the points which define a hexagon for this grid shape
    */
-  hexPoints (): PointArray[]
+  hexPoints(): PointArray[];
 
   /* -------------------------------------------- */
   /*  Grid Rendering
   /* -------------------------------------------- */
 
   /** @override */
-  draw (): this
+  draw(): this;
 
   /* -------------------------------------------- */
 
@@ -49,54 +48,32 @@ declare class HexagonalGrid extends BaseGrid {
    *            (type: `number`)
    * @returns - (type: `PointArray[]`)
    */
-  getPolygon (
-    x: number,
-    y: number,
-    w: number,
-    h: number
-  ): PointArray[]
+  getPolygon(x: number, y: number, w: number, h: number): PointArray[];
 
   /* -------------------------------------------- */
 
-  _drawGrid (): PIXI.Graphics
+  _drawGrid(): PIXI.Graphics;
 
-  _drawRows (
-    grid: any,
-    nrows: any,
-    ncols: any
-  ): void
+  _drawRows(grid: any, nrows: any, ncols: any): void;
 
-  _drawColumns (
-    grid: any,
-    nrows: any,
-    ncols: any
-  ): void
+  _drawColumns(grid: any, nrows: any, ncols: any): void;
 
   /* -------------------------------------------- */
   /*  Grid Measurement Methods
   /* -------------------------------------------- */
 
   /** @override */
-  getGridPositionFromPixels (
-    x: any,
-    y: any
-  ): number[]
+  getGridPositionFromPixels(x: any, y: any): number[];
 
   /* -------------------------------------------- */
 
   /** @override */
-  getPixelsFromGridPosition (
-    row: any,
-    col: any
-  ): number[]
+  getPixelsFromGridPosition(row: any, col: any): number[];
 
   /* -------------------------------------------- */
 
   /** @override */
-  getTopLeft (
-    x: any,
-    y: any
-  ): number[]
+  getTopLeft(x: any, y: any): number[];
 
   /* -------------------------------------------- */
 
@@ -106,10 +83,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @param x - (type: `any`)
    * @param y - (type: `any`)
    */
-  getCenter (
-    x: any,
-    y: any
-  ): number[]
+  getCenter(x: any, y: any): number[];
 
   /* -------------------------------------------- */
 
@@ -120,47 +94,29 @@ declare class HexagonalGrid extends BaseGrid {
    * @param interval - (type: `number`)
    *                   (default: `1`)
    */
-  getSnappedPosition (
-    x: any,
-    y: any,
-    interval: number
-  ): {x: number, y: number}
+  getSnappedPosition(x: any, y: any, interval: number): { x: number; y: number };
 
   /* -------------------------------------------- */
 
   /** @override */
-  shiftPosition (
-    x: any,
-    y: any,
-    dx: any,
-    dy: any
-  ): any
+  shiftPosition(x: any, y: any, dx: any, dy: any): any;
 
   /* -------------------------------------------- */
   /*  Grid Highlighting
   /* -------------------------------------------- */
 
   /** @override */
-  highlightGridPosition (
-    layer: any,
-    options: any
-  ): any
+  highlightGridPosition(layer: any, options: any): any;
 
   /* -------------------------------------------- */
 
   /** @override */
-  getNeighbors (
-    row: any,
-    col: any
-  ): number[]
+  getNeighbors(row: any, col: any): number[];
 
   /* -------------------------------------------- */
 
   /** @override */
-  measureDistances (
-    segments: any,
-    options: any
-  ): number[]
+  measureDistances(segments: any, options: any): number[];
 
   /* -------------------------------------------- */
   /*  Helper Functions
@@ -176,10 +132,7 @@ declare class HexagonalGrid extends BaseGrid {
    *              (type: `number`)
    * @returns   - (type: `{number, number, number}`)
    */
-  offsetToCube (
-    row: number,
-    col: number
-  ): {q: number, r: number, s: number}
+  offsetToCube(row: number, col: number): { q: number; r: number; s: number };
 
   /* -------------------------------------------- */
 
@@ -195,11 +148,7 @@ declare class HexagonalGrid extends BaseGrid {
    *            (type: `number`)
    * @returns - (type: `{row: number, col: number}`)
    */
-  cubeToOffset (
-    q: number,
-    r: number,
-    s: number
-  ): {row: number, col: number}
+  cubeToOffset(q: number, r: number, s: number): { row: number; col: number };
 
   /* -------------------------------------------- */
 
@@ -211,20 +160,14 @@ declare class HexagonalGrid extends BaseGrid {
    * @param y - The y-coordinate in pixels
    *            (type: `number`)
    */
-  static pixelToCube (
-    x: number,
-    y: number
-  ): number[]
+  static pixelToCube(x: number, y: number): number[];
 
   /* -------------------------------------------- */
 
   /**
    * Measure the distance in hexagons between two cube coordinates
    */
-  static cubeDistance (
-    a: number,
-    b: number
-  ): number
+  static cubeDistance(a: number, b: number): number;
 
   /* -------------------------------------------- */
   /*  Deprecated Functions                        */
@@ -234,12 +177,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @deprecated since 0.7.4
    * @see HexagonalGrid#getPolygon
    */
-  getFlatHexPolygon (
-    x: number,
-    y: number,
-    w: number,
-    h: number
-  ): number[]
+  getFlatHexPolygon(x: number, y: number, w: number, h: number): number[];
 
   /* -------------------------------------------- */
 
@@ -247,10 +185,5 @@ declare class HexagonalGrid extends BaseGrid {
    * @deprecated since 0.7.4
    * @see HexagonalGrid#getPolygon
    */
-  getPointyHexPolygon (
-    x: number,
-    y: number,
-    w: number,
-    h: number
-  ): number[]
+  getPointyHexPolygon(x: number, y: number, w: number, h: number): number[];
 }
