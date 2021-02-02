@@ -32,6 +32,8 @@ declare class Dialog extends Application {
    */
   constructor(data: Dialog.Data, options: Partial<Dialog.Options>);
 
+  data: Dialog.Data;
+
   /* -------------------------------------------- */
 
   /**
@@ -75,7 +77,7 @@ declare class Dialog extends Application {
    * @param event - The keydown event
    */
   protected _onKeyDown(event: KeyboardEvent & { key: 'Escape' }): Promise<void>;
-  protected _onKeyDown(event: KeyboardEvent): void;
+  protected _onKeyDown(event: KeyboardEvent): Promise<void> | void;
 
   /* -------------------------------------------- */
 
