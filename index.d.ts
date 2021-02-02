@@ -54,8 +54,6 @@ import './types/applications/sidebar/sidebar';
 import './types/applications/sidebar/sidebarDirectory';
 import './types/applications/sidebar/sidebarTab';
 
-import './types/applications/widgets/searchFilter';
-
 // Augments
 
 import './types/augments/PIXI';
@@ -155,6 +153,7 @@ import './types/ui/dialogButton';
 import './types/ui/dragDrop';
 import './types/ui/filePicker';
 import './types/ui/notifications';
+import './types/ui/searchFilter';
 import './types/ui/tabs';
 
 // --

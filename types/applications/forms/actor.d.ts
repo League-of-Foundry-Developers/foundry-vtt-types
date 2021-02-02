@@ -8,10 +8,8 @@
  * @typeParam T - the type of the data used to render the inner template
  * @typeParam O - the type of the Entity which should be managed by this form
  *                sheet
- * @typeParam F - the type of the of validated form data with which to update
- *                the Entity
  */
-declare class ActorSheet<T = object, O extends Actor = Actor, F = object> extends BaseEntitySheet<T, O, F> {
+declare class ActorSheet<T = object, O extends Actor = Actor> extends BaseEntitySheet<T, O> {
   /**
    * If this Actor Sheet represents a synthetic Token actor, reference the active Token
    */
