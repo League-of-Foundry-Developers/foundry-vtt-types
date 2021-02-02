@@ -1,22 +1,22 @@
 declare interface SceneControl {
-  activeTool: string
-  icon: string
-  layer: string
-  name: string
-  title: string
-  tools: ControlTool[]
-  visible?: boolean
+  activeTool: string;
+  icon: string;
+  layer: string;
+  name: string;
+  title: string;
+  tools: ControlTool[];
+  visible?: boolean;
 }
 
 declare interface ControlTool {
-  active?: boolean
-  button?: boolean
-  icon: string
-  name: string
-  onClick?: () => void
-  title: string
-  toggle?: boolean
-  visible?: boolean
+  active?: boolean;
+  button?: boolean;
+  icon: string;
+  name: string;
+  onClick?: () => void;
+  title: string;
+  toggle?: boolean;
+  visible?: boolean;
 }
 
 /**
@@ -24,37 +24,37 @@ declare interface ControlTool {
  */
 declare class SceneControls extends Application {
   /** The name of the active Scene Control toolset */
-  activeControl: string
+  activeControl: string;
 
   /** The Array of Scene Control buttons which are currently rendered */
-  controls: object[]
+  controls: object[];
 
-  constructor (options: Application.Options)
+  constructor(options: Application.Options);
 
   /**
    * Return the active control set
    */
-  get control (): object | null
+  get control(): object | null;
 
   /**
    * Return the name of the active tool within the active control set
    */
-  get activeTool (): string | null
+  get activeTool(): string | null;
 
   /**
    * Return the actively controled tool
    */
-  get tool (): object | null
+  get tool(): object | null;
 
   /**
    * A convenience reference for whether the currently active tool is a Ruler
    */
-  get isRuler (): boolean
+  get isRuler(): boolean;
 
   /**
    * Initialize the Scene Controls by obtaining the set of control buttons and rendering the HTML
    * @param control - An optional control set to set as active
    * @param layer - An optional layer name to target as the active control
    */
-  initialize ({ control, layer }: { control: string, layer: string }): void
+  initialize({ control, layer }: { control: string; layer: string }): void;
 }

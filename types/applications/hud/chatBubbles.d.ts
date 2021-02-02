@@ -9,14 +9,14 @@ declare class ChatBubbles {
   /**
    * Track active Chat Bubbles
    */
-  bubbles: object
+  bubbles: object;
 
-  constructor ()
+  constructor();
 
   /**
    * A reference to the chat bubbles HTML container in which rendered bubbles should live
    */
-  get container (): JQuery
+  get container(): JQuery;
 
   /**
    * Speak a message as a particular Token, displaying it as a chat bubble
@@ -25,5 +25,5 @@ declare class ChatBubbles {
    * @param emote - Whether to style the speech bubble as an emote
    * @returns A Promise which resolves once the chat bubble has been created
    */
-  say (token: Token, message: string, { emote }: { emote: boolean }): Promise<void>
+  say(token: Token, message: string, { emote }: { emote: boolean }): Promise<void>;
 }

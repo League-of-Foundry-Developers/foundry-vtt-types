@@ -12,46 +12,40 @@
  * @typeParam T - the type of the data used to render the inner template
  * @typeParam O - the type of the Entity which should be managed by this form
  *                sheet
- * @typeParam F - the type of the of validated form data with which to update
- *                the Entity
  */
-declare class ItemSheet<
-  T = object,
-  O extends Item = Item,
-  F = object
-> extends BaseEntitySheet<T, O, F> {
+declare class ItemSheet<T = object, O extends Item = Item> extends BaseEntitySheet<T, O> {
   /**
    * Assign the default options which are supported by this Application
    */
-  static get defaultOptions (): BaseEntitySheet.Options
+  static get defaultOptions(): BaseEntitySheet.Options;
 
   /**
    * Provide a unique CSS ID for owned Item sheets
    */
-  get id (): string
+  get id(): string;
 
   /**
    * A convenience reference to the Item entity
    */
-  get item (): O
+  get item(): O;
 
   /**
    * The Actor instance which owns this item. This may be null if the item is
    * unowned.
    */
-  get actor (): Actor
+  get actor(): Actor<Actor.Data<any, O['data']>, O> | null;
 
   /**
    * Activate listeners which provide interactivity for item sheet events
    * @param html - The HTML object returned by template rendering
    */
-  activateListeners (html: JQuery): void
+  activateListeners(html: JQuery): void;
 
   /**
    * @param options - (unused)
    * @override
    */
-  getData (options?: any): ItemSheet.Data<O>
+  getData(options?: any): ItemSheet.Data<O>;
 }
 
 declare namespace ItemSheet {
@@ -60,7 +54,7 @@ declare namespace ItemSheet {
    *                sheet
    */
   interface Data<O extends Item = Item> extends BaseEntitySheet.Data<O> {
-    data: any
-    item: O extends Item<infer D> ? D : never
+    data: any;
+    item: O extends Item<infer D> ? D : never;
   }
 }

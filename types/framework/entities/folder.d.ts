@@ -3,73 +3,73 @@
  */
 declare class Folders extends EntityCollection<Folder> {
   /**
-     * This tracks which folders are currently expanded in the UI
-     */
-  _expanded: {
-    [id: string]: boolean
-  }
+   * This tracks which folders are currently expanded in the UI
+   */
+  protected _expanded: {
+    [id: string]: boolean;
+  };
 
   /* -------------------------------------------- */
 
   /** @override */
-  get entity (): string
+  get entity(): string;
 
   /* -------------------------------------------- */
 
   /** @override */
-  render (force?: boolean, context?: any): any // Mismatched return type
+  render(force?: boolean, context?: any): any; // Mismatched return type
 
   /* -------------------------------------------- */
 
   /**
    * Refresh the display of any active JournalSheet instances where the folder list will change.
    */
-  _refreshJournalEntrySheets (): void
+  protected _refreshJournalEntrySheets(): void;
 }
 
-declare class Folder<D extends Folder.Data = Folder.Data> extends Entity<D> {
+declare class Folder extends Entity<Folder.Data> {
   /** @override */
-  static get config (): Entity.Config;
+  static get config(): Entity.Config<Folder>;
 
   /**
    * Return whether the folder is displayed in the sidebar to the current user
    */
-  get displayed (): boolean
+  get displayed(): boolean;
 
   /**
    * Return whether the folder is currently expanded within the sidebar interface
    */
-  get expanded (): boolean
+  get expanded(): boolean;
 
   /**
    * A reference to the parent Folder if one is set, otherwise null
    */
-  get parent (): Folder<D>
+  get parent(): Folder;
 
   /**
    * Return the named Entity type for elements in this folder.
    * @returns
    */
-  get type (): string
+  get type(): string;
 
   /**
    * A reference to the EntityCollection of Entities for this folder type.
    * @returns
    */
-  get collection (): EntityCollection
+  get collection(): EntityCollection;
 
   /**
    * Return an Array of the Entities which are contained within this Folder
    */
-  get entities (): Entity[]
+  get entities(): Entity[];
 
   /**
    * Create a new Folder by rendering a dialog window to provide basic creation details
-   * @param data - Initial data with which to populate the creation form
+   * @param data    - Initial data with which to populate the creation form
    * @param options - Initial positioning and sizing options for the dialog form
    * @returns An active FolderConfig instance for creating the new Folder entity
    */
-  static createDialog (data?: any, options?: any): any // TODO FolderConfig I think, shoud be Promise<Entity>
+  static createDialog(data?: any, options?: any): any; // TODO FolderConfig I think, shoud be Promise<Entity>
 
   /* -------------------------------------------- */
   /*  Methods                                     */
@@ -78,39 +78,42 @@ declare class Folder<D extends Folder.Data = Folder.Data> extends Entity<D> {
   /**
    * Export all Entities contained in this Folder to a given Compendium pack.
    * Optionally update existing Entities within the Pack by name, otherwise append all new entries.
-   * @param pack - A Compendium pack to which the entities will be exported
+   * @param pack         - A Compendium pack to which the entities will be exported
    * @param updateByName - Update existing entries in the Compendium pack, matching by name
    * @returns The updated Compendium Pack
    */
-  exportToCompendium (pack: Compendium, { updateByName }?: {
-    updateByName?: boolean
-  }): Promise<Compendium>
+  exportToCompendium(
+    pack: Compendium,
+    {
+      updateByName
+    }?: {
+      updateByName?: boolean;
+    }
+  ): Promise<Compendium>;
 
   /**
    * Provide a dialog form that allows for exporting the contents of a Folder into an eligible Compendium pack.
-   * @param pack - A pack ID to set as the default choice in the select input
+   * @param pack    - A pack ID to set as the default choice in the select input
    * @param options - Additional options passed to the Dialog.prompt method
    * @returns A Promise which resolves or rejects once the dialog has been submitted or closed
    */
-  exportDialog (pack: string, options?: any): Promise<void>
+  exportDialog(pack: string, options?: any): Promise<void>;
 
   /* -------------------------------------------- */
   /*  Socket Workflows                            */
   /* -------------------------------------------- */
 
   /** @override */
-  static _handleDelete ({ request, result, userId }: {
-    request: any
-    result: any
-    userId: any
-  }): any // Folder, mismatched
+  protected static _handleDelete({ request, result, userId }: { request: any; result: any; userId: any }): any; // Folder, mismatched
 }
 
 declare namespace Folder {
   interface Data extends Entity.Data {
-    parent: Folder | null
-    sort: number
-    sorting: string
-    type: string
+    color: string;
+    name: string;
+    parent: null | Folder;
+    sort: number;
+    sorting: string;
+    type: string;
   }
 }

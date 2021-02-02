@@ -12,102 +12,102 @@ declare class Token extends PlaceableObject {
    * If actorLink is true, then the entity is the true Actor entity
    * Otherwise, the Actor entity is a synthetic, constructed using the Token actorData
    */
-  actor: Actor
+  actor: Actor;
 
   /**
    * Convenience access to the token's nameplate string
    */
-  name: string
+  name: string;
 
   /**
    * Track the set of User entities which are currently targeting this Token
    */
-  targeted: Set<User>
+  targeted: Set<User>;
 
   /**
    * A Ray which represents the Token's current movement path
    */
-  protected _movement: any
+  protected _movement: any;
 
   /**
    * Provide a temporary flag through which this Token can be overridden to bypass any movement animation
    */
-  protected _noAnimate: boolean
+  protected _noAnimate: boolean;
 
   /**
    * The Token's most recent valid position
    */
-  protected _validPosition: { x: number, y: number }
+  protected _validPosition: { x: number; y: number };
 
   /**
    * An Object which records the Token's prior velocity dx and dy
    * This can be used to determine which direction a Token was previously moving
    */
-  protected _velocity: any
+  protected _velocity: any;
 
-  constructor (...args: any[]);
+  constructor(...args: any[]);
 
   /**
    * Provide a reference to the canvas layer which contains placeable objects of this type
    */
-  static get layer (): PlaceablesLayer;
+  static get layer(): PlaceablesLayer;
 
-  get bounds (): NormalizedRectangle
+  get bounds(): NormalizedRectangle;
 
   /**
    * A Boolean flag for whether the current game User has permission to control this token
    */
-  get owner (): boolean;
+  get owner(): boolean;
 
   /**
    * Does the current user have at least LIMITED permission to the Token
    */
-  get canViewSheet (): boolean;
+  get canViewSheet(): boolean;
 
   /**
    * Is the HUD display active for this token?
    */
-  get hasActiveHUD (): boolean;
+  get hasActiveHUD(): boolean;
 
   /**
    * Provide a singleton reference to the TileConfig sheet for this Tile instance
    */
-  get sheet (): any;
+  get sheet(): any;
 
   /**
    * The Token's most recently computed line-of-sight polygon
    */
-  get los (): PIXI.Polygon;
+  get los(): PIXI.Polygon;
 
   /**
    * The Token's most recently computed field-of-vision polygon
    */
-  get fov (): PIXI.Polygon;
+  get fov(): PIXI.Polygon;
 
   /**
    * Translate the token's grid width into a pixel width based on the canvas size
    */
-  get w (): number;
+  get w(): number;
 
   /**
    * Translate the token's grid height into a pixel height based on the canvas size
    */
-  get h (): number;
+  get h(): number;
 
   /**
    * The Token's current central position
    */
-  get center (): any;
+  get center(): any;
 
   /**
    * An indicator for whether or not this token is currently involved in the active combat encounter.
    */
-  get inCombat (): boolean;
+  get inCombat(): boolean;
 
   /**
    * An indicator for whether the Token is currently targeted by the active game User
    */
-  get isTargeted (): boolean;
+  get isTargeted(): boolean;
 
   /**
    * Determine whether the Token is visible to the calling user's perspective.
@@ -115,76 +115,76 @@ declare class Token extends PlaceableObject {
    * If the user is a player, owned tokens which are not hidden are visible
    * Otherwise only tokens whose corner or center are within the vision polygon are visible.
    */
-  get isVisible (): boolean;
+  get isVisible(): boolean;
 
   /**
    * Test whether the Token has sight (or blindness) at any radius
    */
-  get hasSight (): boolean;
+  get hasSight(): boolean;
 
   /**
    * Test whether the Token emits light (or darkness) at any radius
    */
-  get emitsLight (): boolean;
+  get emitsLight(): boolean;
 
   /**
    * Test whether the Token has a limited angle of vision or light emission which would require sight to update on Token rotation
    */
-  get hasLimitedVisionAngle (): boolean;
+  get hasLimitedVisionAngle(): boolean;
 
   /**
    * Translate the token's sight distance in units into a radius in pixels.
    * @returns The sight radius in pixels
    */
-  get dimRadius (): number;
+  get dimRadius(): number;
 
   /**
    * The radius of dim light that the Token emits
    */
-  get dimLightRadius (): number;
+  get dimLightRadius(): number;
 
   /**
    * Translate the token's bright light distance in units into a radius in pixels.
    * @returns The bright radius in pixels
    */
-  get brightRadius (): number;
+  get brightRadius(): number;
 
   /**
    * The radius of bright light that the Token emits
    */
-  get brightLightRadius (): number;
+  get brightLightRadius(): number;
 
-  draw (): Promise<any>;
+  draw(): Promise<any>;
 
-  drawEffects (): void;
+  drawEffects(): void;
 
-  drawTooltip (): void;
+  drawTooltip(): void;
 
-  getBarAttribute (barName: any): any;
+  getBarAttribute(barName: any): any;
 
-  refresh (): PlaceableObject;
+  refresh(): PlaceableObject;
 
   /**
    * Toggle an active effect by it's texture path. Copy the existing Array in order to ensure the update method detects the data as changed.
    * @param texture - The texture file-path of the effect icon to toggle on the Token.
    */
-  toggleEffect (texture: string): Promise<void>;
+  toggleEffect(texture: string): Promise<void>;
 
-  protected _drawBar (number: number, bar: PIXI.Graphics, data: any): void;
+  protected _drawBar(number: number, bar: PIXI.Graphics, data: any): void;
 
-  protected _drawBars (): PIXI.Container;
+  protected _drawBars(): PIXI.Container;
 
-  protected _drawIcon (): Promise<any>;
+  protected _drawIcon(): Promise<any>;
 
-  protected _drawNameplate (): PIXI.Text;
+  protected _drawNameplate(): PIXI.Text;
 
-  protected _getBorderColor (): any;
+  protected _getBorderColor(): any;
 
-  protected _getTooltipText (): string;
+  protected _getTooltipText(): string;
 
-  protected _refreshBorder (): void;
+  protected _refreshBorder(): void;
 
-  protected _refreshTarget (): void;
+  protected _refreshTarget(): void;
 
-  protected drawBars (): void;
+  protected drawBars(): void;
 }

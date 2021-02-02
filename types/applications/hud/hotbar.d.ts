@@ -1,2 +1,1 @@
-declare class Hotbar extends Application {
-}
+declare class Hotbar extends Application {}

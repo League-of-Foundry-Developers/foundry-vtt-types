@@ -1,2 +1,1 @@
-declare class MacroDirectory {
-}
+declare class MacroDirectory {}

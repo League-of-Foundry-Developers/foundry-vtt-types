@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as tinyMCE from 'tinymce'
+import * as tinyMCE from 'tinymce';
 
 declare global {
-  type Editor = tinyMCE.Editor
+  type Editor = tinyMCE.Editor;
 }

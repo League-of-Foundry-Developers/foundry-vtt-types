@@ -26,27 +26,33 @@
  * @param options - Additional options which modify the created Entity behavior
  * @param compendium - A reference to the Compendium pack from which this Entity was drawn.
  *
+ * @typeParam D - The data type for the entity. Should extend Entity.Data
+ *
  * @example
+ * ```typescript
  * let actorData = {name: "John Doe", type: "character", img: "icons/svg/mystery- man.svg"}
  * let actor = new Actor(actorData)
+ * ```
  */
 declare class Entity<D extends Entity.Data = Entity.Data> {
+  constructor(data?: DeepPartial<D>, options?: Entity.CreateOptions);
+
   /**
    * The original source data for the Entity provided upon initialization.
    * This reflects the database state of the Entity before any transformations are applied.
    */
-  _data: D
+  _data: D;
 
   /**
    * The effective data for the Entity.
    * This data object may have transformations applied to it.
    */
-  data: D
+  data: D;
 
   /**
    * The options object that was used to configure the Entity upon initialization.
    */
-  options: Entity.CreateOptions
+  options: Entity.CreateOptions;
 
   /**
    * A collection of Application instances which should be re- rendered whenever this Entity experiences an update to
@@ -54,21 +60,19 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Application in this object will have its render method called by {@link Entity#render}.
    * @see Entity#render
    */
-  apps: Application[]
+  apps: Application[];
 
   /**
    * The Entity may optionally belong to a parent Compendium pack. If so this attribute will contain a reference
    * to that Compendium object. Otherwise null.
    */
-  compendium: Compendium | null
-
-  constructor (data?: D, options?: Entity.CreateOptions)
+  compendium: Compendium | null;
 
   /**
    * Safely Initialize data structure for the Entity.
    * Errors that occur here should be captured and logged, but should not break construction of the Entity instance.
    */
-  _initialize (): void
+  protected _initialize(): void;
 
   /**
    * Configure the attributes of this Entity class
@@ -76,36 +80,36 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param collection - The Collection instance to which Entities of this type belong.
    * @param embeddedEntities - The names of any Embedded Entities within the Entity data structure.
    */
-  static get config (): Entity.Config
+  static get config(): Entity.Config;
 
   /**
    * A Universally Unique Identifier (uuid) for this Entity instance
    */
-  get uuid (): string
+  get uuid(): string;
 
   /**
    * Return a string which represents a dynamic link to this Entity.
    */
-  get link (): string
+  get link(): string;
 
   /**
    * Prepare data for the Entity whenever the instance is first created or later updated.
    * This method can be used to derive any internal attributes which are computed in a formulaic manner.
    * For example, in a d20 system - computing an ability modifier based on the value of that ability score.
    */
-  prepareData (): Entity.Data
+  prepareData(): Entity.Data;
 
   /**
    * Prepare Embedded Entities which exist within this parent Entity.
    * For example, in the case of an Actor, this method is responsible for preparing the Owned Items the Actor contains.
    */
-  prepareEmbeddedEntities (): void
+  prepareEmbeddedEntities(): void;
 
   /**
    * Obtain a reference to the Array of source data within the data object for a certain Embedded Entity name
    * @param embeddedName - The name of the Embedded Entity type
    */
-  getEmbeddedCollection (embeddedName: string): any[] // TODO
+  getEmbeddedCollection(embeddedName: string): any[]; // TODO
 
   /**
    * Render all of the Application instances which are connected to this Entity by calling their respective
@@ -113,7 +117,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param force - Force rendering
    * @param context - Optional context
    */
-  render (force: boolean, context: any): void
+  render(force: boolean, context: any): void;
 
   /* -------------------------------------------- */
   /*  Properties                                  */
@@ -123,9 +127,9 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Return a reference to the EntityCollection instance which stores Entity instances of this type. This property is
    * available as both a static and instance method and should be overridden by subclass Entity implementations.
    */
-  static get collection (): EntityCollection
+  static get collection(): EntityCollection;
 
-  get collection (): EntityCollection
+  get collection(): EntityCollection;
 
   /**
    * The class name of the base Entity type, for example "Actor". This is useful in cases where there is an inheritance
@@ -133,79 +137,91 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * to the class name. This property is available as both a static and instance method.
    *
    * @example
-   * class Actor2ndGen extends Actor {...}
+   * ```typescript
+   * class Actor2ndGen extends Actor<Actor2ndGenData, Item2ndGen> {...}
    * Actor2ndGen.entity // "Actor"
+   * ```
    */
-  static get entity (): string
+  static get entity(): string;
 
-  get entity (): string
+  get entity(): string;
 
   /**
    * A convenience accessor for the _id attribute of the Entity data object.
    */
-  get id (): string
+  get id(): string;
 
-  get _id (): string
+  get _id(): string;
 
   /**
    * A convenience accessor for the name attribute of the Entity data object
    */
-  get name (): string
+  get name(): string;
 
   /**
    * A property which gets or creates a singleton instance of the sheet class used to render and edit data for this
    * particular entity type.
    *
    * @example <caption>A subclass of the Actor entity</caption>
-   * let actor = game.entities.actors[0]
+   * ```typescript
+   * if (game.actors === undefined) throw "Too early to use entity collections";
+   * let actor = game.actors.get(actorId);
+   * if (actor === undefined) return;
    * actor.sheet // ActorSheet
+   * ```
    */
-  get sheet (): BaseEntitySheet
+  get sheet(): BaseEntitySheet;
 
   /**
    * Obtain a reference to the BaseEntitySheet implementation which should be used to render the Entity instance
    * configuration sheet.
    */
-  get _sheetClass (): BaseEntitySheet
+  protected get _sheetClass(): BaseEntitySheet;
 
   /**
    * Return a reference to the Folder which this Entity belongs to, if any.
    *
    * @example <caption>Entities may belong to Folders</caption>
+   * ```typescript
+   * if (game.folders === undefined) throw "Too early to use entity collections";
    * let folder = game.folders.entities[0]
    * let actor = await Actor.create({name: "New Actor", folder: folder.id})
-   * console.log(actor.data.folder) // folder.id;
-   * console.log(actor.folder) // folder;
+   * console.log(actor?.data.folder) // folder.id;
+   * console.log(actor?.folder) // folder;
+   * ```
    */
-  get folder (): Folder|null|undefined
+  get folder(): Folder | null | undefined;
 
   /**
    * Return the permission level that the current game User has over this Entity.
    * See the CONST.ENTITY_PERMISSIONS object for an enumeration of these levels.
    *
    * @example
+   * ```typescript
+   * if (game.user === null) throw "Too early to use game.user";
    * game.user.id // "dkasjkkj23kjf"
    * entity.data.permission // {default: 1, "dkasjkkj23kjf": 2};
    * entity.permission // 2
+   * ```
    */
-  get permission (): number
+  get permission(): number;
 
   /**
    * A boolean indicator for whether or not the current game User has ownership rights for this Entity.
    * This property has a setter which allows for ownership rights to be temporarily overridden on a per- instance basis.
    */
-  get owner (): boolean
+  get owner(): boolean;
 
   /**
    * A boolean indicator for whether or not the current game User has at least limited visibility for this Entity.
    */
-  get visible (): boolean
+  get visible(): boolean;
 
   /**
    * A boolean indicator for whether the current game user has ONLY limited visibility for this Entity.
    * Note that a GM user's perspective of an Entity is never limited.
    */
-  get limited (): boolean
+  get limited(): boolean;
 
   /* -------------------------------------------- */
   /*  Permission Controls                         */
@@ -218,7 +234,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    *        an equal or greater permission level
    * @returns An array of User entities who match the permission level
    */
-  getUsers (permission: string|number, exact?: boolean): User[]
+  getUsers(permission: string | number, exact?: boolean): User[];
 
   /**
    * Test whether a provided User a specific permission level (or greater) over the Entity instance
@@ -228,14 +244,16 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    *                                      an equal or greater permission level.
    *
    * @example <caption>Test whether a specific user has a certain permission</caption>
+   * ```typescript
    * // These two are equivalent
    * entity.hasPerm(game.user, "OWNER")
    * entity.owner
    * // These two are also equivalent
    * entity.hasPerm(game.user, "LIMITED", true)
    * entity.limited
+   * ```
    */
-  hasPerm (user: User, permission: string|number, exact?: boolean): boolean
+  hasPerm(user: User, permission: string | number, exact?: boolean): boolean;
 
   /**
    * Test whether a given User has permission to perform some action on this Entity
@@ -243,20 +261,23 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param action - The attempted action
    * @param target - The targeted Entity
    */
-  static can (user: User, action: string, target: Entity): boolean
+  static can(user: User, action: string, target: Entity): boolean;
 
   /**
    * Test whether a given User has permission to perform some action on this Entity
    * @param user - The User to test
    * @param action - The name of the action
+   * @remarks
+   * args is untyped because of a mismatch between most entites and User that is likely to be fixed in Foundry 0.8.x
+   *
    */
-  can (...args: any): boolean
+  can(...args: any): boolean;
   // TODO: This is intentionally untyped. This is a known issue that will likely be fixed in 0.8.x
 
   /**
    * Test for whether this Entity can be owned by any non- gamemaster player.
    */
-  get hasPlayerOwner (): boolean
+  get hasPlayerOwner(): boolean;
 
   /* -------------------------------------------- */
   /*  Entity Management Methods                   */
@@ -266,7 +287,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Activate the Socket event listeners used to receive responses from events which modify database documents
    * @param socket - The active game socket
    */
-  static activateSocketListeners (socket: SocketIOClient.Socket): void
+  static activateSocketListeners(socket: SocketIOClient.Socket): void;
 
   /**
    * Create one or multiple new entities using provided input data.
@@ -277,16 +298,21 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param options - Additional options which customize the creation workflow
    *
    * @example
-   * const data = {name: "New Entity", type: "character", img: "path/to/profile.jpg"}
-   * const created = await Entity.create(data) // Returns one Entity, saved to the database
-   * const temp = await Entity.create(data, {temporary: true}) // Not saved to the database
+   * ```typescript
+   * const data = {name: "New Entity", type: "character", img: "path/to/profile.jpg"};
+   * const created: Actor | null = await Actor.create(data); // Returns one Entity, saved to the database
+   * const temp: Actor | null = await Entity.create(data, {temporary: true}); // Not saved to the database
+   * ```
    *
    * @example
-   * const data = [{name: "Tim", type: "npc"], [{name: "Tom", type: "npc"}]
-   * const created = await Entity.create(data) // Returns an Array of Entities, saved to the database
-   * const created = await Entity.create(data, {temporary: true}) // Not saved to the database
+   * ```typescript
+   * const data = [{name: "Tim", type: "npc"}, {name: "Tom", type: "npc"}];
+   * const created: Actor[] | null = await Actor.create(data); // Returns an Array of Entities, saved to the database
+   * const created: Actor[] | null = await Actor.create(data, {temporary: true}); // Not saved to the database
+   * ```
    */
-  static create (data: Entity.Data|Entity.Data[], options?: Entity.CreateOptions): Promise<Entity|Entity[]>
+  static create<T extends Entity>(data: DeepPartial<T['data']>, options?: Entity.CreateOptions): Promise<T | null>;
+  static create<T extends Entity>(data: DeepPartial<T['data']>[], options?: Entity.CreateOptions): Promise<T[] | null>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Entities are created
@@ -294,12 +320,12 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param result  - An Array of created Entity data
    * @param userId  - The id of the requesting User
    */
-  static _handleCreate ({ request, result, userId }: any): Entity[]
+  protected static _handleCreate({ request, result, userId }: any): Entity[];
 
   /**
    * Entity- specific actions that should occur when the Entity is first created
    */
-  _onCreate (data: D, options: any, userId: string): void
+  protected _onCreate(data: D, options: any, userId: string): void;
 
   /**
    * Update one or multiple existing entities using provided input data.
@@ -309,14 +335,19 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param options - Additional options which customize the update workflow
    *
    * @example
+   * ```typescript
    * const data = {_id: "12ekjf43kj2312ds", name: "New Name"}}
-   * const updated = await Entity.update(data) // Updated entity saved to the database
+   * const updated = await Entity.update<Actor>(data) // Updated entity saved to the database
+   * ```
    *
    * @example
+   * ```typescript
    * const data = [{_id: "12ekjf43kj2312ds", name: "New Name 1"}, {_id: "kj549dk48k34jk34", name: "New Name 2"}]}
-   * const updated = await Entity.update(data) // Returns an Array of Entities, updated in the database
+   * const updated = await Entity.update<Actor>(data); // Returns an Array of Entities, updated in the database
+   * ```
    */
-  static update (data: Optional<Entity.Data>, options?: Entity.UpdateOptions): Promise<Entity|Entity[]>
+  static update<T extends Entity>(data: DeepPartial<T['data']>, options?: Entity.UpdateOptions): Promise<T>;
+  static update<T extends Entity>(data: DeepPartial<T['data']>[], options?: Entity.UpdateOptions): Promise<T[]>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Entities are updated
@@ -324,12 +355,12 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param result  - An Array of updated Entity data
    * @param userId  - The id of the requesting User
    */
-  static _handleUpdate ({ request, result, userId }: any): Entity[]
+  protected static _handleUpdate({ request, result, userId }: any): Entity[];
 
   /**
    * Entity- specific actions that should occur when the Entity is updated
    */
-  _onUpdate (data: Optional<D>, options: Entity.UpdateOptions, userId: string): void
+  protected _onUpdate(data: DeepPartial<D>, options: Entity.UpdateOptions, userId: string): void;
 
   /**
    * Update the current Entity using provided input data.
@@ -339,7 +370,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param data - A Data object which updates the Entity
    * @param options - Additional options which customize the update workflow
    */
-  update (data: Optional<D>, options?: Entity.UpdateOptions): Promise<this>
+  update(data: DeepPartial<D>, options?: Entity.UpdateOptions): Promise<this>;
 
   /**
    * Delete one or multiple existing entities using provided ids.
@@ -350,14 +381,19 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    *
    *
    * @example
+   * ```typescript
    * const id = "12ekjf43kj2312ds"
    * const deleted = await Entity.delete(id) // A single deleted entity from the database
+   * ```
    *
    * @example
+   * ```typescript
    * const ids = ["12ekjf43kj2312ds", "kj549dk48k34jk34"]
    * const deleted = await Entity.delete(ids) // Returns an Array of deleted Entities
+   * ```
    */
-  static delete (data: string|string[], options?: Entity.DeleteOptions): Promise<Entity|Entity[]>
+  static delete<T extends Entity = Entity>(data: string, options?: Entity.DeleteOptions): Promise<T>;
+  static delete<T extends Entity = Entity>(data: string[], options?: Entity.DeleteOptions): Promise<T[]>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Entities are deleted
@@ -365,12 +401,12 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param result - An Array of deleted Entity ids
    * @param userId - The id of the requesting User
    */
-  static _handleDelete ({ request, result, userId }: any): Entity[]
+  protected static _handleDelete({ request, result, userId }: any): Entity[];
 
   /**
    * Entity- specific actions that should occur when the Entity is deleted
    */
-  _onDelete (options: Entity.DeleteOptions, userId: string): void
+  protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
 
   /**
    * Delete the current Entity.
@@ -378,7 +414,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    *
    * @param options - Options which customize the deletion workflow
    */
-  delete (options?: Entity.DeleteOptions): Promise<Entity>
+  delete(options?: Entity.DeleteOptions): Promise<Entity>;
 
   /* -------------------------------------------- */
   /*  Embedded Entity Management                  */
@@ -391,7 +427,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param id - The numeric ID of the child to retrieve
    * @param strict - Throw an Error if the requested id does not exist, otherwise return null. Default false.
    */
-  getEmbeddedEntity (embeddedName: string, id: string, { strict }?: {strict?: boolean}): any
+  getEmbeddedEntity(embeddedName: string, id: string, { strict }?: { strict?: boolean }): any;
 
   /**
    * Create one or multiple EmbeddedEntities within this parent Entity.
@@ -401,34 +437,36 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param embeddedName - The name of the Embedded Entity class to create
    * @param data - A Data object or an Array of Data objects to create
    * @param options - Additional creation options which modify the request
-   * @returns A Promise which resolves to the created embedded Data once the
-   *          creation request is successful
    *
    * @example
-   * const actor = game.actors.get("dfv934kj23lk6h9k")
-   * const data = {name: "Magic Sword", type: "weapon", img: "path/to/icon.png"}
-   * const created = await actor.createEmbeddedEntity("OwnedItem", data) // Returns one EmbeddedEntity, saved to the Actor
-   * const temp = await actor.createEmbeddedEntity("OwnedItem", data, {temporary: true}) // Not saved to the Actor
+   * ```typescript
+   * if (game.actors === undefined) throw "Too early to use an enitity collection";
+   * const actor = game.actors.get("dfv934kj23lk6h9k");
+   * if (actor === null) return;
+   * const data = {name: "Magic Sword", type: "weapon", img: "path/to/icon.png"};
+   * const created = await actor.createEmbeddedEntity("OwnedItem", data); // Returns one EmbeddedEntity, saved to the Actor
+   * const temp = await actor.createEmbeddedEntity("OwnedItem", data, {temporary: true}); // Not saved to the Actor
+   * ```
    *
    * @example
-   * const actor = game.actors.get("dfv934kj23lk6h9k")
-   * const data = [{name: "Mace of Crushing", type: "weapon"}, {name: "Shield of Defense", type: "armor"}]
-   * const created = await actor.createEmbeddedEntity("OwnedItem", data) // Returns an Array of EmbeddedEntities, saved to the Actor
-   * const temp = await actor.createEmbeddedEntity("OwnedItem", data, {temporary: true}) // Not saved to the Actor
+   * ```typescript
+   * if (game.actors === undefined) throw "Too early to use an enitity collection";
+   * const actor = game.actors.get("dfv934kj23lk6h9k");
+   * if (actor === null) return;
+   * const data = [{name: "Mace of Crushing", type: "weapon"}, {name: "Shield of Defense", type: "armor"}];
+   * const created = await actor.createEmbeddedEntity("OwnedItem", data); // Returns an Array of EmbeddedEntities, saved to the Actor
+   * const temp = await actor.createEmbeddedEntity("OwnedItem", data, {temporary: true}); // Not saved to the Actor
+   * ```
    */
-  createEmbeddedEntity (embeddedName: string, data: any, options?: Entity.CreateOptions): Promise<any>
+  createEmbeddedEntity(embeddedName: string, data: any, options?: Entity.CreateOptions): Promise<any>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Embedded Entities are created
    * @param request - The initial request
    * @param result - An Array of created Entity data
    * @param userId - The id of the requesting User
-   * @returns An Array of constructed EmbeddedDocument data
-   * @internal
    */
-  static _handleCreateEmbeddedEntity (
-    { request, result, userId }: SocketInterface.Responses.ModifyEmbeddedDocument
-  ): any[]
+  protected static _handleCreateEmbeddedEntity({ request, result, userId }: any): any[];
 
   /**
    * Handle Embedded Entity creation within this Entity with specific callback steps.
@@ -437,7 +475,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Any steps defined here should run on a per- EmbeddedEntity basis.
    * Steps that should run once for the whole batch should go in _onModifyEmbeddedEntity()
    */
-  _onCreateEmbeddedEntity (embeddedName: string, child: any, options: any, userId: string): void
+  protected _onCreateEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
 
   /**
    * Update one or multiple existing entities using provided input data.
@@ -448,20 +486,30 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param options - Additional options which customize the update workflow
    *
    * @example
-   * const actor = game.actors.get("dfv934kj23lk6h9k")
-   * const item = actor.data.items.find(i => i.name === "Magic Sword")
-   * const update = {_id: item._id, name: "Magic Sword +1"}
-   * const updated = await actor.updateEmbeddedEntity("OwnedItem", update) // Updates one EmbeddedEntity
+   * ```typescript
+   * if (game.actors === undefined) throw "too early to use an enitity collection";
+   * const actor = game.actors.get("dfv934kj23lk6h9k");
+   * if (actor === undefined) return;
+   * const item = actor.data.items.find(i => i.name === "magic sword");
+   * if (item === undefined) return;
+   * const update = {_id: item._id, name: "magic sword +1"};
+   * const updated = await actor.updateEmbeddedEntity("owneditem", update); // updates one embeddedentity
+   * ```
    *
    * @example
-   * const actor = game.actors.get("dfv934kj23lk6h9k")
-   * const weapons = actor.data.items.filter(i => i.type === "weapon")
+   * ```typescript
+   * if (game.actors === undefined) throw "Too early to use an enitity collection";
+   * const actor = game.actors.get("dfv934kj23lk6h9k");
+   * if (actor === undefined) return;
+   * const weapons = actor.data.items.filter(i => i.type === "weapon");
    * const updates = weapons.map(i => {
-   *   return {_id: i._id, name: i.name + "+1"}
-   * }
-   * const updated = await actor.createEmbeddedEntity("OwnedItem", updates) // Updates multiple EmbeddedEntity objects
+   *   return {_id: i._id, name: i.name + "+1"};
+   * });
+   * const updated = await actor.updateEmbeddedEntity("OwnedItem", updates); // Updates multiple EmbeddedEntity objects
+   * ```
    */
-  updateEmbeddedEntity (embeddedName: string, data: any, options?: Entity.UpdateOptions): Promise<any|any[]>
+  updateEmbeddedEntity(embeddedName: string, data: any, options?: Entity.UpdateOptions): Promise<any>;
+  updateEmbeddedEntity(embeddedName: string, data: any[], options?: Entity.UpdateOptions): Promise<any[]>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Embedded Entities are updated
@@ -469,7 +517,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param result - An Array of updated Entity data
    * @param userId - The id of the requesting User
    */
-  static _handleUpdateEmbeddedEntity ({ request, result, userId }: any): any[]
+  protected static _handleUpdateEmbeddedEntity({ request, result, userId }: any): any[];
 
   /**
    * Handle Embedded Entity updates within this Entity with specific callback steps.
@@ -478,7 +526,13 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Any steps defined here should run on a per- EmbeddedEntity basis.
    * Steps that should run once for the whole batch should go in _onModifyEmbeddedEntity()
    */
-  _onUpdateEmbeddedEntity (embeddedName: string, child: any, updateData: any, options: any, userId: string): void
+  protected _onUpdateEmbeddedEntity(
+    embeddedName: string,
+    child: any,
+    updateData: any,
+    options: any,
+    userId: string
+  ): void;
 
   /**
    * Delete one or multiple existing EmbeddedEntity objects using provided input data.
@@ -489,17 +543,26 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param options - Additional options which customize the update workflow
    *
    * @example
-   * const actor = game.actors.get("dfv934kj23lk6h9k")
-   * const item = actor.data.items.find(i => i.name === "Magic Sword")
-   * const deleted = await actor.deleteEmbeddedEntity("OwnedItem", item._id) // Deletes one EmbeddedEntity
+   * ```typescript
+   * if (game.actors === undefined) throw "Too early to use an enitity collection";
+   * const actor = game.actors.get("dfv934kj23lk6h9k");
+   * if (actor === undefined) return;
+   * const item = actor.data.items.find(i => i.name === "Magic Sword");
+   * if (item === undefined) return;
+   * const deleted = await actor.deleteEmbeddedEntity("OwnedItem", item._id); // Deletes one EmbeddedEntity
+   * ```
    *
    * @example
-   * const actor = game.actors.get("dfv934kj23lk6h9k")
-   * const weapons = actor.data.items.filter(i => i.type === "weapon")
-   * const deletions = weapons.map(i => i._id)
-   * const deleted = await actor.deleteEmbeddedEntity("OwnedItem", deletions) // Deletes multiple EmbeddedEntity objects
+   * ```typescript
+   * if (game.actors === undefined) throw "Too early to use an enitity collection";
+   * const actor = game.actors.get("dfv934kj23lk6h9k");
+   * if (actor === undefined) return;
+   * const weapons = actor.data.items.filter(i => i.type === "weapon");
+   * const deletions = weapons.map(i => i._id);
+   * const deleted = await actor.deleteEmbeddedEntity("OwnedItem", deletions); // Deletes multiple EmbeddedEntity objects
+   * ```
    */
-  deleteEmbeddedEntity (embeddedName: string, data: any, options?: Entity.DeleteOptions): Promise<any|any[]>
+  deleteEmbeddedEntity(embeddedName: string, data: any, options?: Entity.DeleteOptions): Promise<any | any[]>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Embedded Entities are deleted
@@ -507,7 +570,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param result - An Array of deleted EmbeddedEntity ids
    * @param userId - The id of the requesting User
    */
-  static _handleDeleteEmbeddedEntity ({ request, result, userId }: any): any[]
+  protected static _handleDeleteEmbeddedEntity({ request, result, userId }: any): any[];
 
   /**
    * Handle Embedded Entity deletion within this Entity with specific callback steps.
@@ -516,13 +579,19 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Any steps defined here should run on a per- EmbeddedEntity basis.
    * Steps that should run once for the whole batch should go in _onModifyEmbeddedEntity()
    */
-  _onDeleteEmbeddedEntity (embeddedName: string, child: any, options: any, userId: string): void
+  protected _onDeleteEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
 
   /**
    * A generic helper since we take the same actions for every type of Embedded Entity update
    * Unlike the specific _onCreate, _onUpdate, and _onDelete methods this only runs once per updated batch
    */
-  _onModifyEmbeddedEntity (embeddedName: string, changes: any[], options: any, userId: string, context?: any): void
+  protected _onModifyEmbeddedEntity(
+    embeddedName: string,
+    changes: any[],
+    options: any,
+    userId: string,
+    context?: any
+  ): void;
 
   /* -------------------------------------------- */
   /*  Data Flags                                  */
@@ -535,7 +604,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param scope - The flag scope which namespaces the key
    * @param key - The flag key
    */
-  getFlag (scope: string, key: string): any
+  getFlag(scope: string, key: string): any;
 
   /**
    * Assign a "flag" to this Entity.
@@ -555,14 +624,14 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param value - The flag value
    *
    */
-  setFlag (scope: string, key: string, value: any): Promise<Entity>
+  setFlag(scope: string, key: string, value: any): Promise<Entity>;
 
   /**
    * Remove a flag assigned to the Entity
    * @param scope - The flag scope which namespaces the key
    * @param key - The flag key
    */
-  unsetFlag (scope: string, key: string): Promise<Entity>
+  unsetFlag(scope: string, key: string): Promise<Entity>;
 
   /* -------------------------------------------- */
   /*  Sorting                                     */
@@ -573,13 +642,19 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * If the Entity has an rendered sheet, record the sort change as part of a form submission
    * See SortingHelper.performIntegerSort for more details
    */
-  sortRelative ({ target, siblings, sortKey, sortBefore, updateData }: {
-    target?: Entity|null
-    siblings?: Entity[]
-    sortKey?: string
-    sortBefore?: boolean
-    updateData?: any
-  }): Promise<void>
+  sortRelative({
+    target,
+    siblings,
+    sortKey,
+    sortBefore,
+    updateData
+  }: {
+    target?: Entity | null;
+    siblings?: Entity[];
+    sortKey?: string;
+    sortBefore?: boolean;
+    updateData?: any;
+  }): Promise<void>;
 
   /* -------------------------------------------- */
   /*  Saving and Loading                          */
@@ -592,17 +667,17 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param options - Additional creation options passed to the Entity.create method
    * @returns A Promise which resolves to the created clone Entity
    */
-  clone (createData?: D, options?: Entity.CreateOptions): Promise<Entity>
+  clone(createData?: D, options?: Entity.CreateOptions): Promise<Entity>;
 
   /**
    * Serializing an Entity should simply serialize it's inner data, not the entire instance
    */
-  toJSON (): D
+  toJSON(): D;
 
   /**
    * Export entity data to a JSON file which can be saved by the client and later imported into a different session
    */
-  exportToJSON (): void
+  exportToJSON(): void;
 
   /**
    * A helper function to handle obtaining the dropped Entity data from a dropped event. Entity drop data could have:
@@ -612,18 +687,18 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    *
    * @param data - The data object extracted from a DataTransfer event
    */
-  static fromDropData (data: any): Entity
+  static fromDropData(data: any): Entity;
 
   /**
    * Import data and update this entity
    * @param json - JSON data string
    */
-  importFromJSON (json: string): Promise<Entity>
+  importFromJSON(json: string): Promise<Entity>;
 
   /**
    * Render an import dialog for updating the data related to this Entity through an exported JSON file
    */
-  importFromJSONDialog (): Promise<void>
+  importFromJSONDialog(): Promise<void>;
 
   /**
    * Transform the Entity data to be stored in a Compendium pack.
@@ -631,7 +706,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * This function is asynchronous in case any complex operations are required prior to exporting.
    *
    */
-  toCompendium (): Promise<D>
+  toCompendium(): Promise<D>;
 
   /**
    * Provide a Dialog form to create a new Entity of this type.
@@ -639,7 +714,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param data - Initial data with which to populate the creation form
    * @param options - Initial positioning and sizing options for the dialog form
    */
-  static createDialog (data: any, options: any): Promise<Entity>
+  static createDialog(data: any, options: any): Promise<Entity>;
 }
 
 declare namespace Entity {
@@ -647,77 +722,74 @@ declare namespace Entity {
    * Common {@link Entity} create options
    */
   interface CreateOptions {
-    [propName: string]: any
-
-    isUndo?: boolean
-
+    [propName: string]: any;
     /**
      * Block the dispatch of preCreate hooks for this operation.
      * @defaultValue `false`
      */
-    noHook?: boolean
+    noHook?: boolean;
 
     /**
      * Display the sheet for the created entity once it is created.
      * @defaultValue `false`
      */
-    renderSheet?: boolean
+    renderSheet?: boolean;
 
     /**
      * Create a temporary entity which is not saved to the world database.
      * @defaultValue `false`
      */
-    temporary?: boolean
-
+    temporary?: boolean;
   }
 
   /**
    * Common {@link Entity} delete options
    */
   interface DeleteOptions {
-    [propName: string]: any
-
-    isUndo?: boolean
+    [propName: string]: any;
 
     /**
      * Block the dispatch of preDelete hooks for this operation.
      * @defaultValue `false`
      */
-    noHook?: boolean
+    noHook?: boolean;
   }
 
   /**
    * Common {@link Entity} update options
    */
   interface UpdateOptions {
-    [propName: string]: any
+    [propName: string]: any;
 
     /**
      * Difference the provided data against the current to eliminate unnecessary
      * changes.
      * @defaultValue `true`
      */
-    diff?: boolean
-
-    isUndo?: boolean
+    diff?: boolean;
 
     /**
      * Block the dispatch of preUpdate hooks for this operation.
      * @defaultValue `false`
      */
-    noHook?: boolean
+    noHook?: boolean;
   }
 
   interface Config<E extends Entity = Entity> {
-    baseEntity: new (...args: any) => E
-    collection: EntityCollection<E>
+    baseEntity: new (...args: any) => E;
+    collection: EntityCollection<E>;
     embeddedEntities?: {
-      [embedType: string]: string
-    }
-    label?: string
+      [embedType: string]: string;
+    };
+    label?: string;
     permissions?: {
-      [propName: string]: string
-    }
+      [propName: string]: string;
+    };
+  }
+
+  interface Permission {
+    [userId: string]: number;
+    default: number;
   }
 
   /**
@@ -727,20 +799,11 @@ declare namespace Entity {
     /**
      * The id assigned by the database
      */
-    _id: string
-
-    /**
-     * The entity's name
-     */
-    name: string
-
-    /**
-     * The Entity type of the entity
-     */
+    _id: string;
 
     /**
      * Flags for arbitrary data from modules &c.
      */
-    flags: any
+    flags: Record<string, any>;
   }
 }

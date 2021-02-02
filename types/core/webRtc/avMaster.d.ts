@@ -1,2 +1,1 @@
-declare class AVMaster {
-}
+declare class AVMaster {}

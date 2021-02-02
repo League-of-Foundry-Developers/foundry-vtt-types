@@ -1,2 +1,1 @@
-declare class PlaylistDirectory {
-}
+declare class PlaylistDirectory {}
