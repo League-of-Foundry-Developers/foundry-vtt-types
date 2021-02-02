@@ -12,7 +12,7 @@
 declare class ContextMenu {
   constructor(
     element: JQuery,
-    selector: string | null,
+    selector: string | null | undefined,
     menuItems: ContextMenu.Item[],
     { eventName }?: { eventName?: string }
   );
