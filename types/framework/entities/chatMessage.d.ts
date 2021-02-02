@@ -14,12 +14,12 @@ declare class Messages extends EntityCollection<ChatMessage> {
    * If requested, dispatch a Chat Bubble UI for the newly created message
    * @param message - The ChatMessage entity to say
    */
-  sayBubble(message: ChatMessage): void;
+  protected sayBubble(message: ChatMessage): void;
 
   /**
    * Handle export of the chat log to a text file
    */
-  export(): void;
+  protected export(): void;
 
   /**
    * Allow for bulk deletion of all chat messages, confirm first with a yes/no dialog.
@@ -32,7 +32,7 @@ declare class Messages extends EntityCollection<ChatMessage> {
  * The Chat Message class is a type of :class:`Entity` which represents individual messages in the chat log.
  *
  */
-declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends Entity<D> {
+declare class ChatMessage extends Entity<ChatMessage.Data> {
   /**
    * Get a reference to the user who sent the chat message
    */
@@ -46,7 +46,7 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
   /**
    * Configure the attributes of the ChatMessage Entity
    */
-  static get config(): Entity.Config;
+  static get config(): Entity.Config<ChatMessage>;
 
   /* -------------------------------------------- */
   /*  Properties and Attributes                   */
@@ -105,20 +105,18 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
   /* -------------------------------------------- */
 
   /** @override */
-  static create(
-    data: ChatMessage.Data | ChatMessage.Data[],
-    options: Entity.CreateOptions
-  ): Promise<ChatMessage<ChatMessage.Data> | Array<ChatMessage<ChatMessage.Data>>>;
+  static create(data: DeepPartial<ChatMessage.Data>, options?: Entity.CreateOptions): Promise<ChatMessage | null>;
+  static create(data: DeepPartial<ChatMessage.Data>[], options?: Entity.CreateOptions): Promise<ChatMessage[] | null>;
 
   /**
    * Preprocess the data object used to create a new Chat Message to automatically convert some Objects to the
    * data format expected by the database handler.
-   * @param data - Single ChatMessage creation data
+   * @param data     - Single ChatMessage creation data
    * @param rollMode - The visibility mode applied to all dice rolls
    * @returns Processed message creation data
    */
-  static _preprocessCreateData(
-    data: ChatMessage.Data,
+  protected static _preprocessCreateData(
+    data: DeepPartial<ChatMessage.Data>,
     {
       rollMode
     }?: {
@@ -127,13 +125,13 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
   ): ChatMessage.Data;
 
   /** @override */
-  _onCreate(data: Optional<D>, options: Entity.CreateOptions, userId: string): void;
+  protected _onCreate(data: DeepPartial<ChatMessage.Data>, options: Entity.CreateOptions, userId: string): void;
 
   /** @override */
-  _onUpdate(data: Optional<D>, options: Entity.UpdateOptions, userId: string): void;
+  protected _onUpdate(data: DeepPartial<ChatMessage.Data>, options: Entity.UpdateOptions, userId: string): void;
 
   /** @override */
-  _onDelete(options: Entity.DeleteOptions, userId: string): void;
+  protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
 
   /* -------------------------------------------- */
   /*  Saving and Loading                          */
@@ -171,17 +169,17 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
    *
    * @returns The identified speaker data
    */
-  static getSpeaker(speaker: Optional<ChatMessage.SpeakerData>): ChatMessage.SpeakerData;
+  static getSpeaker(speaker: DeepPartial<ChatMessage.SpeakerData>): ChatMessage.SpeakerData;
 
   /**
    * A helper to prepare the speaker object based on a target Token
    */
-  static _getSpeakerFromToken({ token, alias }: { token: Token; alias?: string }): ChatMessage.SpeakerData;
+  protected static _getSpeakerFromToken({ token, alias }: { token: Token; alias?: string }): ChatMessage.SpeakerData;
 
   /**
    * A helper to prepare the speaker object based on a target Actor
    */
-  static _getSpeakerFromActor({
+  protected static _getSpeakerFromActor({
     scene,
     actor,
     alias
@@ -194,7 +192,7 @@ declare class ChatMessage<D extends ChatMessage.Data = ChatMessage.Data> extends
   /**
    * A helper to prepare the speaker object based on a target User
    */
-  static _getSpeakerFromUser({
+  protected static _getSpeakerFromUser({
     scene,
     user,
     alias

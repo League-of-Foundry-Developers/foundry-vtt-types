@@ -76,7 +76,7 @@ declare class Collection<T> extends Map<string, T> {
    * c.get("d", {strict: true}); // throws Error
    * ```
    */
-  get(key: string, { strict }?: { strict?: boolean }): T | undefined;
+  get<V extends T = T>(key: string, { strict }?: { strict?: boolean }): V | undefined;
 
   /* -------------------------------------------- */
 
