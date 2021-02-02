@@ -12,10 +12,8 @@
  * @typeParam T - the type of the data used to render the inner template
  * @typeParam O - the type of the Entity which should be managed by this form
  *                sheet
- * @typeParam F - the type of the of validated form data with which to update
- *                the Entity
  */
-declare class ItemSheet<T = object, O extends Item = Item, F = object> extends BaseEntitySheet<T, O, F> {
+declare class ItemSheet<T = object, O extends Item = Item> extends BaseEntitySheet<T, O> {
   /**
    * Assign the default options which are supported by this Application
    */

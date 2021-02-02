@@ -392,7 +392,10 @@ declare class Actor<
    * @param options  - Item update options
    * @returns A Promise resolving to the updated Owned Item data
    */
-  updateOwnedItem(itemData: DeepPartial<Actor.OwnedItemData<D>>, options?: any): Promise<ActiveEffect | Actor.OwnedItemData<D>>;
+  updateOwnedItem(
+    itemData: DeepPartial<Actor.OwnedItemData<D>>,
+    options?: any
+  ): Promise<ActiveEffect | Actor.OwnedItemData<D>>;
   updateOwnedItem(
     itemData: DeepPartial<Actor.OwnedItemData<D>>[],
     options?: any
@@ -433,7 +436,7 @@ declare namespace Actor {
    * @typeParam D - Actor.Data to extract Item type from
    * @internal
    */
-  type OwnedItemData<D> = D extends Data<any, infer I> ? I : never;
+  type OwnedItemData<D extends Data> = D['items'][0];
 
   /**
    * @typeParam D - Type for `data.data`
