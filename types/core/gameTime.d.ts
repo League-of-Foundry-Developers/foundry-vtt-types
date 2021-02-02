@@ -9,19 +9,19 @@ declare class GameTime {
    * The most recently synchronized timestamps retrieved from the server.
    * @defaultValue `{}`
    */
-  _time: GameTime.Timestamps;
+  protected _time: GameTime.Timestamps;
 
   /**
    * The average one-way latency across the most recent 5 trips
    * @defaultValue `0`
    */
-  _dt: number;
+  protected _dt: number;
 
   /**
    * The most recent five synchronization durations
    * @defaultValue `[]`
    */
-  _dts: number[];
+  protected _dts: number[];
 
   /* -------------------------------------------- */
   /*  Properties                                  */

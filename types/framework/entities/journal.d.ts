@@ -17,18 +17,18 @@ declare class Journal extends EntityCollection<JournalEntry> {
   /**
    * Handle a received request to show a JournalEntry to the current client
    * @param entryId - The ID of the journal entry to display for other players
-   * @param mode - The JournalEntry mode to display
-   * @param force - Display the entry to all players regardless of normal permissions
+   * @param mode    - The JournalEntry mode to display
+   * @param force   - Display the entry to all players regardless of normal permissions
    */
-  static _showEntry(entryId: string, mode?: 'text' | 'image', force?: boolean): void;
+  protected static _showEntry(entryId: string, mode?: 'text' | 'image', force?: boolean): void;
 }
 
 /**
  * The JournalEntry class
  */
-declare class JournalEntry<D extends JournalEntry.Data = JournalEntry.Data> extends Entity<D> {
+declare class JournalEntry extends Entity<JournalEntry.Data> {
   /** @override */
-  static get config(): Entity.Config;
+  static get config(): Entity.Config<JournalEntry>;
 
   /**
    * A boolean indicator for whether or not the JournalEntry is visible to the current user in the directory sidebar
@@ -41,13 +41,13 @@ declare class JournalEntry<D extends JournalEntry.Data = JournalEntry.Data> exte
   get sceneNote(): Note;
 
   /** @override */
-  _onCreate(data: D, options: Entity.CreateOptions, userId: string): void;
+  protected _onCreate(data: JournalEntry.Data, options: Entity.CreateOptions, userId: string): void;
 
   /** @override */
-  _onUpdate(data: Optional<D>, options: Entity.UpdateOptions, userId: string): void;
+  protected _onUpdate(data: DeepPartial<JournalEntry.Data>, options: Entity.UpdateOptions, userId: string): void;
 
   /** @override */
-  _onDelete(options: Entity.DeleteOptions, userId: string): void;
+  protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
 
   /* -------------------------------------------- */
   /*  Methods
@@ -58,8 +58,8 @@ declare class JournalEntry<D extends JournalEntry.Data = JournalEntry.Data> exte
    * By default the entry will only be shown to players who have permission to observe it.
    * If the parameter force is passed, the entry will be shown to all players regardless of normal permission.
    *
-   * @param mode -   Which JournalEntry mode to display? Default is text.
-   * @param force -  Display the entry to all players regardless of normal permissions
+   * @param mode  - Which JournalEntry mode to display? Default is text.
+   * @param force - Display the entry to all players regardless of normal permissions
    */
   show(mode?: string, force?: boolean): Promise<void>;
 
@@ -75,6 +75,8 @@ declare namespace JournalEntry {
     content: string;
     folder: string;
     img: string;
+    name: string;
+    permission: Entity.Permission;
     sort: number;
   }
 }

@@ -321,9 +321,8 @@ declare class Game {
 
   /**
    * Display certain usability error messages which are likely to result in the player having a bad experience.
-   * @internal
    */
-  _displayUsabilityErrors(): void;
+  protected _displayUsabilityErrors(): void;
 
   /* -------------------------------------------- */
 
@@ -385,9 +384,8 @@ declare class Game {
    * Enforce a maximum timeout in milliseconds.
    * Proceed with rendering after that point even if fonts are not yet available.
    * @param ms - The timeout to delay
-   * @internal
    */
-  _checkFontsReady(ms: number): Promise<void>;
+  protected _checkFontsReady(ms: number): Promise<void>;
 
   /* -------------------------------------------- */
 
@@ -503,9 +501,8 @@ declare class Game {
 
   /**
    * On left mouse clicks, check if the element is contained in a valid hyperlink and open it in a new tab.
-   * @internal
    */
-  _onClickHyperlink(event: MouseEvent): void;
+  protected _onClickHyperlink(event: MouseEvent): void;
 
   /* -------------------------------------------- */
 
@@ -513,36 +510,32 @@ declare class Game {
    * Prevent starting a drag and drop workflow on elements within the document unless the element has the draggable
    * attribute explicitly defined or overrides the dragstart handler.
    * @param event - The initiating drag start event
-   * @internal
    */
-  _onPreventDragstart(event: DragEvent): boolean;
+  protected _onPreventDragstart(event: DragEvent): boolean;
 
   /* -------------------------------------------- */
 
   /**
    * Disallow dragging of external content onto anything but a file input element
    * @param event - The requested drag event
-   * @internal
    */
-  _onPreventDragover(event: DragEvent): void;
+  protected _onPreventDragover(event: DragEvent): void;
 
   /* -------------------------------------------- */
 
   /**
    * Disallow dropping of external content onto anything but a file input element
    * @param event - The requested drag event
-   * @internal
    */
-  _onPreventDrop(event: DragEvent): void;
+  protected _onPreventDrop(event: DragEvent): void;
 
   /* -------------------------------------------- */
 
   /**
    * On a left-click event, remove any currently displayed inline roll tooltip
    * @param event - The originating left-click event
-   * @internal
    */
-  _onLeftClick(event: MouseEvent): void;
+  protected _onLeftClick(event: MouseEvent): void;
 
   /* -------------------------------------------- */
 
@@ -550,9 +543,8 @@ declare class Game {
    * Handle resizing of the game window
    * Reposition any active UI windows
    * @param event - (unused)
-   * @internal
    */
-  _onWindowResize(event?: any): void;
+  protected _onWindowResize(event?: any): void;
 
   /* -------------------------------------------- */
 
@@ -560,25 +552,23 @@ declare class Game {
    * Handle window unload operations to clean up any data which may be pending a final save
    * @param event - The window unload event which is about to occur
    *                (unused)
-   * @internal
    */
-  _onWindowBeforeUnload(event?: any): void;
+  protected _onWindowBeforeUnload(event?: any): void;
 
   /* -------------------------------------------- */
 
   /**
    * Handle cases where the browser window loses focus to reset detection of currently pressed keys
    * @param event - The originating window.blur event
-   * @internal
    */
-  _onWindowBlur(event: Event): void;
+  protected _onWindowBlur(event: Event): void;
 
   /* -------------------------------------------- */
 
   /**
    * @param event - (unused)
    */
-  _onWindowPopState(event?: any): void;
+  protected _onWindowPopState(event?: any): void;
 
   /* -------------------------------------------- */
   /*  View Initialization Functions
@@ -586,50 +576,44 @@ declare class Game {
 
   /**
    * Initialization steps for the primary Game view
-   * @internal
    */
-  _initializeGameView(): Promise<void>;
+  protected _initializeGameView(): Promise<void>;
 
   /* -------------------------------------------- */
 
   /**
    * Initialization steps for the game setup view
-   * @internal
    */
-  _initializeLicenseView(): Promise<void>;
+  protected _initializeLicenseView(): Promise<void>;
 
   /* -------------------------------------------- */
 
   /**
    * Initialization steps for the game setup view
-   * @internal
    */
-  _initializeSetupView(): Promise<void>;
+  protected _initializeSetupView(): Promise<void>;
 
   /* -------------------------------------------- */
 
   /**
    * Initialization steps for the Stream helper view
-   * @internal
    */
-  _initializeStreamView(): Promise<void>;
+  protected _initializeStreamView(): Promise<void>;
 
   /* -------------------------------------------- */
 
   /**
    * Initialize the Player Management View
-   * @internal
    */
-  _initializePlayersView(): Promise<void>;
+  protected _initializePlayersView(): Promise<void>;
 
   /* -------------------------------------------- */
 
   /**
    * Initialization steps specifically for the game setup view
    * This view is unique because a Game object does not exist for a non-authenticated player
-   * @internal
    */
-  _initializeJoinView(): Promise<void>;
+  protected _initializeJoinView(): Promise<void>;
 
   /* -------------------------------------------- */
 

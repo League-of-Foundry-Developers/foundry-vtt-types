@@ -13,9 +13,8 @@ declare class SocketInterface {
   /**
    * Handle an error returned from the database, displaying it on screen and in the console
    * @param err - The provided Error message
-   * @internal
    */
-  static _handleError(err: Error): Error;
+  protected static _handleError(err: Error): Error;
 }
 
 declare namespace SocketInterface {

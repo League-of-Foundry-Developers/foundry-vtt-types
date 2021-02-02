@@ -12,10 +12,8 @@
  * @typeParam T - the type of the data used to render the inner template
  * @typeParam O - the type of the Entity which should be managed by this form
  *                sheet
- * @typeParam F - the type of the of validated form data with which to update
- *                the Entity
  */
-declare class ItemSheet<T = object, O extends Item = Item, F = object> extends BaseEntitySheet<T, O, F> {
+declare class ItemSheet<T = object, O extends Item = Item> extends BaseEntitySheet<T, O> {
   /**
    * Assign the default options which are supported by this Application
    */
@@ -35,7 +33,7 @@ declare class ItemSheet<T = object, O extends Item = Item, F = object> extends B
    * The Actor instance which owns this item. This may be null if the item is
    * unowned.
    */
-  get actor(): Actor<O, Actor.Data<any, Actor.OwnedItem<O>>> | null;
+  get actor(): Actor<Actor.Data<any, O['data']>, O> | null;
 
   /**
    * Activate listeners which provide interactivity for item sheet events

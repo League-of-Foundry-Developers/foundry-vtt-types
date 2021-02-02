@@ -3,9 +3,8 @@
  * See the FormApplication documentation for more complete description of this interface.
  * @typeParam T - the type of the data used to render the inner template
  * @typeParam O - the type of the Entity which should be managed by this form sheet
- * @typeParam F - the type of the of validated form data with which to update the Entity
  */
-declare class BaseEntitySheet<T = object, O extends Entity = Entity, F = object> extends FormApplication<T, O> {
+declare class BaseEntitySheet<T = object, O extends Entity = Entity> extends FormApplication<T, O> {
   /**
    * @param object  - An Entity which should be managed by this form sheet.
    * @param options - Optional configuration parameters for how the form behaves.
@@ -61,7 +60,7 @@ declare class BaseEntitySheet<T = object, O extends Entity = Entity, F = object>
   /**
    * @override
    */
-  _getHeaderButtons(): Application.HeaderButton[];
+  protected _getHeaderButtons(): Application.HeaderButton[];
 
   /* -------------------------------------------- */
 
@@ -69,7 +68,7 @@ declare class BaseEntitySheet<T = object, O extends Entity = Entity, F = object>
    * @param event - (unused)
    * @override
    */
-  _updateObject(event: any, formData: object): Promise<O>;
+  protected _updateObject(event: any, formData: object): Promise<O>;
 }
 
 declare namespace BaseEntitySheet {

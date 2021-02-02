@@ -31,9 +31,9 @@ declare class Macros extends EntityCollection<Macro> {
  * @see {@link MacroConfig}   The Macro Configuration sheet
  * @see {@link Hotbar}        The Hotbar interface application
  */
-declare class Macro<D extends Macro.Data = Macro.Data> extends Entity<D> {
+declare class Macro extends Entity<Macro.Data> {
   /** @override */
-  static get config(): Entity.Config;
+  static get config(): Entity.Config<Macro>;
 
   /**
    * Is the current User the author of this macro?
@@ -55,6 +55,8 @@ declare namespace Macro {
     author: string;
     command: string;
     img: string;
+    name: string;
+    permission: Entity.Permission;
     scope: string;
     type: 'script' | 'chat';
   }

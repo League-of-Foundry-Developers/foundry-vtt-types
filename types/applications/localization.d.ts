@@ -26,7 +26,7 @@ declare class Localization {
    * Fallback translations if the target keys are not found
    * @defaultValue `{}`
    */
-  _fallback: Record<string, string>;
+  protected _fallback: Record<string, string>;
 
   /* -------------------------------------------- */
 
@@ -50,9 +50,8 @@ declare class Localization {
 
   /**
    * Discover the available supported languages from the set of packages which are provided
-   * @internal
    */
-  _discoverSupportedLanguages(): void;
+  protected _discoverSupportedLanguages(): void;
 
   /* -------------------------------------------- */
 
@@ -60,18 +59,16 @@ declare class Localization {
    * Prepare the dictionary of translation strings for the requested language
    * @param lang - The language for which to load translations
    * @returns The retrieved translations object
-   * @internal
    */
-  _getTranslations(lang: string): Promise<Record<string, string>>;
+  protected _getTranslations(lang: string): Promise<Record<string, string>>;
 
   /* -------------------------------------------- */
 
   /**
    * Load a single translation file and return its contents as processed JSON
    * @param src - The translation file path to load
-   * @internal
    */
-  _loadTranslationFile(src: string): Promise<object>;
+  protected _loadTranslationFile(src: string): Promise<object>;
 
   /* -------------------------------------------- */
   /*  Localization API                            */

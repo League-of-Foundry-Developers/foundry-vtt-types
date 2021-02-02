@@ -53,8 +53,6 @@ import './types/applications/sidebar/sidebar';
 import './types/applications/sidebar/sidebarDirectory';
 import './types/applications/sidebar/sidebarTab';
 
-import './types/applications/widgets/searchFilter';
-
 // Augments
 
 import './types/augments/PIXI';
@@ -108,6 +106,7 @@ import './types/framework/compendium';
 import './types/framework/entity';
 import './types/framework/entityCollection';
 
+import './types/framework/entities/activeEffect';
 import './types/framework/entities/actor';
 import './types/framework/entities/chatMessage';
 import './types/framework/entities/combat';
@@ -153,6 +152,7 @@ import './types/ui/dialog';
 import './types/ui/dragDrop';
 import './types/ui/filePicker';
 import './types/ui/notifications';
+import './types/ui/searchFilter';
 import './types/ui/tabs';
 
 // --
@@ -165,3 +165,7 @@ import './types/prototypes';
 import './types/templateUtils';
 import './types/types';
 import './types/utils';
+
+// Utility types
+
+import './types/typesUtils';

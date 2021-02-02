@@ -71,9 +71,8 @@ declare class Hooks {
 
   /**
    * Call a hooked function using provided arguments and perhaps unregister it.
-   * @internal
    */
-  static _call<K extends string & keyof Hooks.Callbacks>(
+  protected static _call<K extends string & keyof Hooks.Callbacks>(
     hook: K,
     fn: Hooks.Callbacks[K],
     ...args: Parameters<Hooks.Callbacks[K]>
@@ -82,22 +81,22 @@ declare class Hooks {
   /**
    * @defaultValue `{}`
    */
-  static _hooks: Record<string, (...args: any) => any>;
+  protected static _hooks: Record<string, (...args: any) => any>;
 
   /**
    * @defaultValue `[]`
    */
-  static _once: Array<(...args: any) => any>;
+  protected static _once: Array<(...args: any) => any>;
 
   /**
    * @defaultValue `{}`
    */
-  static _ids: Record<number, Array<(...args: any) => any>>;
+  protected static _ids: Record<number, Array<(...args: any) => any>>;
 
   /**
    * @defaultValue `1`
    */
-  static _id: number;
+  protected static _id: number;
 }
 
 /**
@@ -134,7 +133,7 @@ declare namespace Hooks {
      * @param change - the change data being applied
      * @see {@link ActiveEffect#_applyCustom}
      */
-    applyActiveEffect: (actor: Actor, change: ActiveEffectChange) => void;
+    applyActiveEffect: (actor: Actor, change: ActiveEffect.Change) => void;
 
     /**
      * This is called before a {@link Canvas} is drawn.
