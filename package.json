@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "description": "TypeScript type definitions for Foundry VTT",
   "scripts": {
-    "lint": "tsc && eslint --ext .d.ts .",
-    "lint:fix": "eslint --fix --ext .d.ts .",
-    "eslint:report": "eslint --output-file eslint_report.json --format json --ext .d.ts ."
+    "lint": "tsc && eslint --ext .d.ts,.test-d.ts .",
+    "lint:fix": "eslint --fix --ext .d.ts,.test-d.ts .",
+    "eslint:report": "eslint --output-file eslint_report.json --format json --ext .d.ts,.test-d.ts .",
+    "test": "tsd"
   },
   "repository": {
     "type": "git",
@@ -37,7 +38,8 @@
     "eslint-plugin-tsdoc": "^0.2.11",
     "husky": "^4.3.8",
     "lint-staged": "^10.5.3",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "tsd": "^0.14.0"
   },
   "husky": {
     "hooks": {
@@ -45,7 +47,7 @@
     }
   },
   "lint-staged": {
-    "*.d.ts": "eslint --fix",
+    "*.(d.ts|test-d.ts)": "eslint --fix",
     "*.(js|json)": "prettier --write"
   }
 }
