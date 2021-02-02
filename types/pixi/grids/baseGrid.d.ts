@@ -4,25 +4,25 @@
  */
 declare class BaseGrid extends PIXI.Container {
   /**
-     * Grid Unit Width
-     */
-  w: any
+   * Grid Unit Width
+   */
+  w: any;
 
   /**
-     * Grid Unit Height
-     */
-  h: any
+   * Grid Unit Height
+   */
+  h: any;
 
   /**
-     * Highlight active grid spaces
-     */
-  highlight: object
+   * Highlight active grid spaces
+   */
+  highlight: object;
 
-  constructor (options: PIXI.Container)
+  constructor(options: PIXI.Container);
   /**
-     * TODO: comment what this does
-     */
-  draw (): this
+   * TODO: comment what this does
+   */
+  draw(): this;
 
   /**
    * Highlight a grid position for a certain coordinates
@@ -45,17 +45,17 @@ declare class BaseGrid extends PIXI.Container {
    *                 (type: `PIXI.Polygon`)
    *                 (default: `null`)
    */
-  highlightGridPosition (
+  highlightGridPosition(
     layer: GridHighlight,
     options: {
-      x: number
-      y: number
-      color: number
-      border: number
-      alpha: number
-      shape: PIXI.Polygon
+      x: number;
+      y: number;
+      color: number;
+      border: number;
+      alpha: number;
+      shape: PIXI.Polygon;
     }
-  ): void
+  ): void;
 
   /* -------------------------------------------- */
   /*  Grid Measurement Methods
@@ -70,10 +70,7 @@ declare class BaseGrid extends PIXI.Container {
    * @returns - An Array [x, y] of the top-left coordinate of the square which contains (x, y)
    *            (type: `number[]`)
    */
-  getTopLeft (
-    x: number,
-    y: number
-  ): number[]
+  getTopLeft(x: number, y: number): number[];
 
   /* -------------------------------------------- */
 
@@ -86,10 +83,7 @@ declare class BaseGrid extends PIXI.Container {
    * @returns - An array [cx, cy] of the central point of the grid space which contains (x, y)
    *            (type: `number[]`)
    */
-  getCenter (
-    x: number,
-    y: number
-  ): number[]
+  getCenter(x: number, y: number): number[];
 
   /* -------------------------------------------- */
 
@@ -110,11 +104,7 @@ declare class BaseGrid extends PIXI.Container {
    * @returns        - An object containing the coordinates of the snapped location
    *                   (type: `{number, number}`)
    */
-  getSnappedPosition (
-    x: number,
-    y: number,
-    interval: number|null
-  ): {x: number, y: number}
+  getSnappedPosition(x: number, y: number, interval: number | null): { x: number; y: number };
   /* -------------------------------------------- */
 
   /**
@@ -127,10 +117,7 @@ declare class BaseGrid extends PIXI.Container {
    * @returns - An array [x, y] representing the position in grid units
    *            (type: `number[]`)
    */
-  getGridPositionFromPixels (
-    x: number,
-    y: number
-  ): number[]
+  getGridPositionFromPixels(x: number, y: number): number[];
 
   /* -------------------------------------------- */
 
@@ -144,10 +131,7 @@ declare class BaseGrid extends PIXI.Container {
    * @returns - An array [x, y] representing the position in pixels
    *            (type: `number[]`)
    */
-  getPixelsFromGridPosition (
-    x: number,
-    y: number
-  ): number[]
+  getPixelsFromGridPosition(x: number, y: number): number[];
 
   /* -------------------------------------------- */
 
@@ -164,12 +148,7 @@ declare class BaseGrid extends PIXI.Container {
    * @returns  - An array [x, y] representing the new position in pixels
    *             (type: `number[]`)
    */
-  shiftPosition (
-    x: number,
-    y: number,
-    dx: number,
-    dy: number
-  ): number[]
+  shiftPosition(x: number, y: number, dx: number, dy: number): number[];
 
   /* -------------------------------------------- */
 
@@ -183,10 +162,7 @@ declare class BaseGrid extends PIXI.Container {
    * @returns        - An Array of distance measurements for each segment
    *                   (type: `number[]`)
    */
-  measureDistances (
-    segments: object[],
-    options: Options
-  ): number[]
+  measureDistances(segments: object[], options: Options): number[];
 
   /* -------------------------------------------- */
 
@@ -199,8 +175,5 @@ declare class BaseGrid extends PIXI.Container {
    * @returns   - An array of grid positions which are neighbors of the row and column
    *              (type: `number[]`)
    */
-  getNeighbors (
-    row: number,
-    col: number
-  ): number[]
+  getNeighbors(row: number, col: number): number[];
 }
