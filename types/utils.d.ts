@@ -101,29 +101,27 @@ type MapToInnerDuplicated<T extends object, S extends 'strict' | 'lenient' = 'st
  *                (default: `'strict'`)
  * @internal
  */
+// prettier-ignore
 type InnerDuplicated<T, S extends 'strict' | 'lenient' = 'strict'> = T extends { toJSON(): infer U }
   ? U extends Array<unknown>
     ? InnerDuplicated<U, S>
     : U extends object
-    ? InnerDuplicated<Omit<U, 'toJSON'>, S>
-    : InnerDuplicated<U, S>
+      ? InnerDuplicated<Omit<U, 'toJSON'>, S>
+      : InnerDuplicated<U, S>
   : T extends NonStringifiable
-  ? undefined
-  : T extends number
-  ? S extends 'strict'
-    ? number | null
-    : number
-  : T extends Array<unknown>
-  ? MapToInnerDuplicated<MapTypeToType<T, NonStringifiable, null>, S>
-  : T extends object
-  ? MapToInnerDuplicated<
-      OmitAssignableFromType<MapTypeToType<T, NonStringifiable, undefined>, undefined> &
-        Partial<
-          OmitOfType<OmitNotAssignableFromType<MapTypeToType<T, NonStringifiable, undefined>, undefined>, undefined>
-        >,
-      S
-    >
-  : T;
+    ? undefined
+    : T extends number
+      ? S extends 'strict'
+        ? number | null
+        : number
+      : T extends Array<unknown>
+        ? MapToInnerDuplicated<MapTypeToType<T, NonStringifiable, null>, S>
+        : T extends object
+          ? MapToInnerDuplicated<
+            OmitAssignableFromType<MapTypeToType<T, NonStringifiable, undefined>, undefined> &
+              Partial<OmitOfType<OmitNotAssignableFromType<MapTypeToType<T, NonStringifiable, undefined>, undefined>, undefined>>,
+            S>
+          : T;
 
 /**
  * The resulting type when using {@link duplicate} on some data of type `T`.
