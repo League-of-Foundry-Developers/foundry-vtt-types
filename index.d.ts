@@ -150,6 +150,7 @@ import './types/ui/activeEffectConfig';
 import './types/ui/context';
 import './types/ui/dialog';
 import './types/ui/dragDrop';
+import './types/ui/draggable';
 import './types/ui/filePicker';
 import './types/ui/notifications';
 import './types/ui/searchFilter';
