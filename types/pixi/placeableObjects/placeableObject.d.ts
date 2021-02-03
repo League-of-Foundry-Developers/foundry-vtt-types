@@ -64,7 +64,7 @@ declare abstract class PlaceableObject<D extends PlaceableObject.Data = Placeabl
   /**
    * The central coordinate pair of the placeable object based on it's own width and height
    */
-  get center(): PIXI.Point;
+  get center(): Point;
 
   /**
    * The _id of the underlying EmbeddedEntity

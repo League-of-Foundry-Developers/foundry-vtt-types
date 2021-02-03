@@ -344,7 +344,7 @@ declare namespace Combat {
       }
     | {
         actor: Actor;
-        token: Record<string, any>; // TODO: Token.data
+        token: Token['data'];
         tokenId: string;
       }
   );

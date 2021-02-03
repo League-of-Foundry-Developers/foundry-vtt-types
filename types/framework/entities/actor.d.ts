@@ -451,7 +451,9 @@ declare namespace Actor {
     name: string;
     permission: Entity.Permission;
     sort: number;
-    token: any; // TODO: Token.data
+    token: Omit<Token['data'], 'actorData' | 'effects' | 'elevation' | 'hidden' | 'x' | 'y' | '_id'> & {
+      randomImg: boolean;
+    };
     type: string;
   }
 }
