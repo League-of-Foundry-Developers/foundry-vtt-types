@@ -126,6 +126,7 @@ import './types/framework/entities/user';
 
 import './types/pixi/canvas';
 import './types/pixi/canvasLayer';
+import './types/pixi/doorControl';
 import './types/pixi/lightingLayer';
 import './types/pixi/mouseInteractionManager';
 import './types/pixi/normalizedRectangle';

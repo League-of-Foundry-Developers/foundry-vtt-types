@@ -22,7 +22,7 @@ declare class Wall extends PlaceableObject<Wall.Data> {
   /**
    * An reference the Door Control icon associated with this Wall, if any
    */
-  protected doorControl: unknown | null; // TODO: DoorControl
+  protected doorControl: DoorControl | null;
 
   /** @override */
   static get embeddedName(): 'Wall';
