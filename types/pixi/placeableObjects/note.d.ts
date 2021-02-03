@@ -55,7 +55,7 @@ declare class Note extends PlaceableObject<Note.Data> {
   /**
    * Draw the map note Tooltip as a Text object
    */
-  protected _drawTooltip(): PIXI.Text; // TODO: PreciseText
+  protected _drawTooltip(): PreciseText;
 
   /**
    * Define a PIXI TextStyle object which is used for the tooltip displayed for this Note

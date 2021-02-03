@@ -22,7 +22,7 @@ declare class MeasuredTemplate extends PlaceableObject<MeasuredTemplate.Data> {
   // Draw portions of the content
   controlIcon: ControlIcon | null;
   template: PIXI.Graphics | null;
-  ruler: PIXI.Text | null; // TODO: PreciseText
+  ruler: PreciseText | null;
 
   /**
    * The tiling texture used for this template, if any
@@ -72,7 +72,7 @@ declare class MeasuredTemplate extends PlaceableObject<MeasuredTemplate.Data> {
   /**
    * Draw the Text label used for the MeasuredTemplate
    */
-  _drawRulerText(): PIXI.Text; // TODO: PreciseText
+  _drawRulerText(): PreciseText;
 
   /** @override */
   refresh(): this;

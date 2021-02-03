@@ -98,7 +98,7 @@ declare class Drawing extends PlaceableObject<Drawing.Data> {
   /**
    * Create elements for the foreground text
    */
-  protected _createText(): unknown; // TODO: PreciseText
+  protected _createText(): PreciseText;
 
   /**
    * Create elements for the Drawing border and handles

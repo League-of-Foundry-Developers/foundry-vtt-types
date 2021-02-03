@@ -280,7 +280,7 @@ declare class Token extends PlaceableObject<Token.Data> {
    * Draw the token's nameplate as a text object
    * @returns The Text object for the Token nameplate
    */
-  protected _drawNameplate(): PIXI.Text; // TODO: PreciseText
+  protected _drawNameplate(): PreciseText;
 
   /**
    * Draw a text tooltip for the token which can be used to display Elevation or a resource value
