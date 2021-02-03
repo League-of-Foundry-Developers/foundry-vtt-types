@@ -178,7 +178,7 @@ declare class Game {
    * @param sessionId - The ID of the currently active client session retrieved from the browser cookie
    * @param socket    - The open web-socket which should be used to transact game-state data
    */
-  constructor(view: Game.View, data: Game.WorldData, sessionId: string, socket: SocketIOClient.Socket);
+  constructor(view: Game['view'], data: Game['data'], sessionId: Game['sessionId'], socket: Game['socket']);
 
   /**
    * The named view which is currently active.
