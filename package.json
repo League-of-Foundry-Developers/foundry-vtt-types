@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/kmoschcau/foundry-vtt-types"
+    "url": "https://github.com/League-of-Foundry-Developers/foundry-vtt-types"
   },
   "author": "Kai Moschcau",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kmoschcau/foundry-vtt-types/issues"
+    "url": "https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues"
   },
-  "homepage": "https://github.com/kmoschcau/foundry-vtt-types",
+  "homepage": "https://github.com/League-of-Foundry-Developers/foundry-vtt-types",
   "dependencies": {
     "@types/howler": "2.2.1",
     "@types/jquery": "3.5.1",
