@@ -173,3 +173,15 @@ expectType<
       }
   >
 >(duplicate<typeof complexObject, 'lenient'>(complexObject));
+
+type SomeItemData = Item.Data<{}>;
+class SomeItem extends Item<SomeItemData> {}
+const someItem = new SomeItem();
+const someItemData = duplicate<SomeItem, 'lenient'>(someItem);
+SomeItem.create<SomeItem>(someItemData);
+
+type SomeActorData = Actor.Data<{}, SomeItemData>;
+class SomeActor extends Actor<SomeActorData, SomeItem> {}
+const someActor = new SomeActor();
+const someActorData = duplicate<SomeActor, 'lenient'>(someActor);
+SomeActor.create<SomeActor>(someActorData);
