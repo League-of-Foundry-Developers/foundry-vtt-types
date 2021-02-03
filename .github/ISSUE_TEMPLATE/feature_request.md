@@ -3,7 +3,7 @@ name: Feature request
 about: Suggest an idea for this project beyond plain Foundry types
 title: ''
 labels: enhancement
-assignees: kmoschcau
+assignees:
 
 ---
 
