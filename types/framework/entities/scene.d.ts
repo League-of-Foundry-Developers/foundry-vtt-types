@@ -243,8 +243,8 @@ declare namespace Scene {
     templates: MeasuredTemplate['data'][];
     tiles: Tile['data'][];
     tokenVision: boolean;
-    tokens: any[]; // Token.data
-    walls: any[]; // Wall.data
+    tokens: Token['data'][];
+    walls: Wall['data'][];
     weather: string;
     width: number;
   }
