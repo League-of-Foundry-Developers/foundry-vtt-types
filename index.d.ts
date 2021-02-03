@@ -147,7 +147,7 @@ import './types/pixi/placeableObjects/wall';
 // UI
 
 import './types/ui/activeEffectConfig';
-import './types/ui/context';
+import './types/ui/contextMenu';
 import './types/ui/dialog';
 import './types/ui/dragDrop';
 import './types/ui/filePicker';

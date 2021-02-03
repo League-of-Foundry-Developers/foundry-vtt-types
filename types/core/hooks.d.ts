@@ -336,7 +336,7 @@ declare namespace Hooks {
    * 'EntryContext'.
    * @see {@link ChatLog#_contextMenu}
    */
-  type GetChatLogEntryContext = (jq: JQuery, entryOptions: ContextMenu.Option[]) => void;
+  type GetChatLogEntryContext = (jq: JQuery, entryOptions: ContextMenu.Item[]) => void;
 
   /**
    * This is called after getting the {@link ContextMenu} options for a {@link CombatTracker} entry, but before creating
@@ -347,7 +347,7 @@ declare namespace Hooks {
    * 'EntryContext'.
    * @see {@link CombatTracker#_contextMenu}
    */
-  type GetCombatTrackerEntryContext = (jq: JQuery, entryOptions: ContextMenu.Option[]) => void;
+  type GetCombatTrackerEntryContext = (jq: JQuery, entryOptions: ContextMenu.Item[]) => void;
 
   /**
    * This is called after getting the {@link ContextMenu} options for a {@link CompendiumDirectory} entry, but before
@@ -358,7 +358,7 @@ declare namespace Hooks {
    * CompendiumDirectory and 'EntryContext'.
    * @see {@link CompendiumDirectory#_contextMenu}
    */
-  type GetCompendiumDirectoryEntryContext = (jq: JQuery, entryOptions: ContextMenu.Option[]) => void;
+  type GetCompendiumDirectoryEntryContext = (jq: JQuery, entryOptions: ContextMenu.Item[]) => void;
 
   /**
    * This is called after getting the {@link ContextMenu} options for a {@link PlaylistDirectory} sound, but before
@@ -369,7 +369,7 @@ declare namespace Hooks {
    * and 'EntryContext'.
    * @see {@link PlaylistDirectory#_contextMenu}
    */
-  type GetPlaylistDirectorySoundContext = (jq: JQuery, entryOptions: ContextMenu.Option[]) => void;
+  type GetPlaylistDirectorySoundContext = (jq: JQuery, entryOptions: ContextMenu.Item[]) => void;
 
   /**
    * This is called after the initial {@link SceneControls} have been set up.
@@ -387,7 +387,7 @@ declare namespace Hooks {
    * @remarks The name is 'getSceneNavigationContext'.
    * @see {@link SceneNavigation#activateListeners}
    */
-  type GetSceneNavigationContext = (jq: JQuery, contextOptions: ContextMenu.Option[]) => void;
+  type GetSceneNavigationContext = (jq: JQuery, contextOptions: ContextMenu.Item[]) => void;
 
   /**
    * This is called after getting the {@link ContextMenu} options for a {@link SidebarDirectory} entry, but before
@@ -398,7 +398,7 @@ declare namespace Hooks {
    * and 'EntryContext'.
    * @see {@link SidebarDirectory#_contextMenu}
    */
-  type GetSiderbarDirectoryEntryContext = (jq: JQuery, entryOptions: ContextMenu.Option[]) => void;
+  type GetSiderbarDirectoryEntryContext = (jq: JQuery, entryOptions: ContextMenu.Item[]) => void;
 
   /**
    * This is called after getting the {@link ContextMenu} options for a {@link SidebarDirectory} folder, but before
@@ -409,7 +409,7 @@ declare namespace Hooks {
    * and 'FolderContext'.
    * @see {@link SidebarDirectory#_contextMenu}
    */
-  type GetSiderbarDirectoryFolderContext = (jq: JQuery, folderOptions: ContextMenu.Option[]) => void;
+  type GetSiderbarDirectoryFolderContext = (jq: JQuery, folderOptions: ContextMenu.Item[]) => void;
 
   /**
    * This is called after getting the {@link ContextMenu} options for a {@link PlayerList} user, but before creating the
@@ -419,7 +419,7 @@ declare namespace Hooks {
    * @remarks The name is 'getUserContextOptions'.
    * @see {@link PlayerList#activateListeners}
    */
-  type GetUserContextOptions = (jq: JQuery, contextOptions: ContextMenu.Option[]) => void;
+  type GetUserContextOptions = (jq: JQuery, contextOptions: ContextMenu.Item[]) => void;
 
   /**
    * This is called during the drop portion of a drag-and-drop event on the hotbar.
