@@ -7,6 +7,7 @@ import 'tinymce';
 import './types/applications/application';
 import './types/applications/baseEntitySheet';
 import './types/applications/cameraViews';
+import './types/applications/dialog';
 import './types/applications/formApplication';
 import './types/applications/formDataExtended';
 import './types/applications/localization';
@@ -148,7 +149,6 @@ import './types/pixi/placeableObjects/wall';
 
 import './types/ui/activeEffectConfig';
 import './types/ui/contextMenu';
-import './types/ui/dialog';
 import './types/ui/dragDrop';
 import './types/ui/filePicker';
 import './types/ui/notifications';
