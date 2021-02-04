@@ -169,7 +169,17 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
    *
    * @returns The identified speaker data
    */
-  static getSpeaker(speaker: DeepPartial<ChatMessage.SpeakerData>): ChatMessage.SpeakerData;
+  static getSpeaker({
+    scene,
+    actor,
+    token,
+    alias
+  }?: {
+    scene?: Scene;
+    actor?: Actor;
+    token?: Token;
+    alias?: string;
+  }): ChatMessage.SpeakerData;
 
   /**
    * A helper to prepare the speaker object based on a target Token
