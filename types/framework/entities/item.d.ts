@@ -71,7 +71,7 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
    * Returns void
    * @override
    */
-  prepareData(): any;
+  prepareData(): void;
 
   /** @override */
   prepareEmbeddedEntities(): void;

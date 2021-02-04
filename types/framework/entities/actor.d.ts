@@ -178,7 +178,7 @@ declare class Actor<
    * Returns void
    * @override
    */
-  prepareData(): any;
+  prepareData(): void;
 
   /**
    * First prepare any derived data which is actor-specific and does not depend on Items or Active Effects
