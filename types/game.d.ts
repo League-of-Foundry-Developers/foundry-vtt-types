@@ -171,7 +171,7 @@ declare let ui: {
  * The core Game instance which encapsulates the data, settings, and states relevant for managing the game experience.
  * The singleton instance of the Game class is available as the global variable `game`.
  */
-declare class Game {
+declare class Game implements Record<string, unknown> {
   /**
    * @param view      - The named view which is active for this game instance.
    * @param data      - An object of all the World data vended by the server when the client first connects
