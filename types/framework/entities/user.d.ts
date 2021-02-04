@@ -55,7 +55,7 @@ declare class User extends Entity<User.Data> {
   /**
    * Track references to the current set of Tokens which are targeted by the User
    */
-  targets: Set<Token>; // TODO UserTargets class
+  targets: UserTargets;
 
   /**
    * Track the ID of the Scene that is currently being viewed by the User
