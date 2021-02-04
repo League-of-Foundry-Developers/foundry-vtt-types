@@ -105,8 +105,11 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
   /* -------------------------------------------- */
 
   /** @override */
-  static create(data: DeepPartial<ChatMessage.Data>, options?: Entity.CreateOptions): Promise<ChatMessage | null>;
-  static create(data: DeepPartial<ChatMessage.Data>[], options?: Entity.CreateOptions): Promise<ChatMessage[] | null>;
+  static create(data: DeepPartial<ChatMessage.CreateData>, options?: Entity.CreateOptions): Promise<ChatMessage | null>;
+  static create(
+    data: DeepPartial<ChatMessage.CreateData>[],
+    options?: Entity.CreateOptions
+  ): Promise<ChatMessage[] | null>;
 
   /**
    * Preprocess the data object used to create a new Chat Message to automatically convert some Objects to the
@@ -116,7 +119,7 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
    * @returns Processed message creation data
    */
   protected static _preprocessCreateData(
-    data: DeepPartial<ChatMessage.Data>,
+    data: DeepPartial<ChatMessage.CreateData>,
     {
       rollMode
     }?: {
@@ -169,7 +172,7 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
    *
    * @returns The identified speaker data
    */
-  static getSpeaker(speaker: DeepPartial<ChatMessage.SpeakerData>): ChatMessage.SpeakerData;
+  static getSpeaker(speaker?: ChatMessage.SpeakerCreateData): ChatMessage.SpeakerData;
 
   /**
    * A helper to prepare the speaker object based on a target Token
@@ -223,11 +226,25 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
 declare namespace ChatMessage {
   interface Data extends Entity.Data {
     content: string;
+    roll?: string;
     speaker: SpeakerData;
     timestamp: number;
     type: number;
     user: string;
     whisper: string[];
+  }
+
+  /**
+   * Variant of ChatMessage.Data for use in the `create` method
+   */
+  interface CreateData extends Entity.Data {
+    content: string;
+    roll?: string | Roll;
+    speaker: SpeakerData | SpeakerCreateData;
+    timestamp: number;
+    type: number;
+    user: string | User;
+    whisper: Array<string | User>;
   }
 
   interface ChatData {
@@ -251,5 +268,12 @@ declare namespace ChatMessage {
     token: string | null;
     actor: string | null;
     alias: string;
+  }
+
+  interface SpeakerCreateData {
+    scene?: Scene | null;
+    token?: Token | null;
+    actor?: Actor | null;
+    alias?: string;
   }
 }
