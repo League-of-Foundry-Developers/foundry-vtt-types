@@ -105,6 +105,7 @@ import './types/framework/collection';
 import './types/framework/compendium';
 import './types/framework/entity';
 import './types/framework/entityCollection';
+import './types/framework/userTargets';
 
 import './types/framework/entities/activeEffect';
 import './types/framework/entities/actor';
