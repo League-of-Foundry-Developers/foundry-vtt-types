@@ -13,7 +13,7 @@ declare class Draggable<R extends boolean | undefined = undefined> {
   /**
    * @defaultValue `false`
    */
-  resizable: R;
+  resizable: R extends boolean ? R : false;
 
   /**
    * Duplicate the application's starting position to track differences
@@ -24,7 +24,7 @@ declare class Draggable<R extends boolean | undefined = undefined> {
   /**
    * Remember event handlers associated with this Draggable class so they may be later unregistered
    */
-  handlers: Draggable.Handlers<R>;
+  handlers: this['resizable'] extends true ? Draggable.ResizableHandlers : Draggable.Handlers;
 
   /**
    * Throttle mousemove event handling to 60fps
@@ -84,15 +84,17 @@ declare class Draggable<R extends boolean | undefined = undefined> {
 }
 
 declare namespace Draggable {
-  interface Handlers<R extends boolean | undefined> {
+  interface Handlers {
     click: ['click', (e: Event) => void, { capture: boolean; passive: boolean }];
 
     dragDown: ['mousedown', (e: Event) => void, false];
     dragMove: ['mousemove', (e: Event) => void, false];
     dragUp: ['mouseup', (e: Event) => void, false];
+  }
 
-    resizeDown: R extends false | undefined ? undefined : ['mousedown', (e: Event) => void, false];
-    resizeMove: R extends false | undefined ? undefined : ['mousemove', (e: Event) => void, false];
-    resizeUp: R extends false | undefined ? undefined : ['mouseup', (e: Event) => void, false];
+  interface ResizableHandlers extends Handlers {
+    resizeDown: ['mousedown', (e: Event) => void, false];
+    resizeMove: ['mousemove', (e: Event) => void, false];
+    resizeUp: ['mouseup', (e: Event) => void, false];
   }
 }
