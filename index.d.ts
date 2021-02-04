@@ -149,7 +149,6 @@ import './types/pixi/placeableObjects/wall';
 
 import './types/ui/activeEffectConfig';
 import './types/ui/contextMenu';
-import './types/ui/dialogButton';
 import './types/ui/dragDrop';
 import './types/ui/filePicker';
 import './types/ui/notifications';

@@ -1,3 +1,5 @@
+type DialogButton<T = unknown> = Dialog.Button<T>;
+
 /**
  * Create a modal dialog window displaying a title, a message, and a set of buttons which trigger callback functions.
  *
@@ -53,7 +55,7 @@ declare class Dialog extends Application {
   /**
    * @override
    */
-  getData(): { content: string; buttons: Record<string, DialogButton> };
+  getData(): { content: string; buttons: Record<string, Dialog.Button> };
 
   /* -------------------------------------------- */
 
@@ -85,7 +87,7 @@ declare class Dialog extends Application {
    * Submit the Dialog by selecting one of its buttons
    * @param button - The configuration of the chosen button
    */
-  protected submit(button: DialogButton): void;
+  protected submit(button: Dialog.Button): void;
 
   /* -------------------------------------------- */
 
@@ -141,9 +143,9 @@ declare class Dialog extends Application {
     content: string;
     yes?: (html: JQuery) => Y;
     no?: (html: JQuery) => N;
-    render: Function;
+    render: (html: JQuery) => void;
     defaultYes?: boolean;
-    rejectClose: R;
+    rejectClose?: R;
     options?: Partial<Dialog.Options> & { jQuery: true };
   }): Promise<R extends true ? Y | N : Y | N | null>;
   static confirm<Y = true, N = false, R extends boolean = false>({
@@ -160,12 +162,12 @@ declare class Dialog extends Application {
     content: string;
     yes?: (html: HTMLElement) => Y;
     no?: (html: HTMLElement) => N;
-    render: Function;
+    render: (html: HTMLElement) => void;
     defaultYes?: boolean;
-    rejectClose: R;
+    rejectClose?: R;
     options?: Partial<Dialog.Options> & { jQuery: false };
   }): Promise<R extends true ? Y | N : Y | N | null>;
-  static confirm({
+  static confirm<Y = true, N = false, R extends boolean = false>({
     title,
     content,
     yes,
@@ -177,18 +179,18 @@ declare class Dialog extends Application {
   }?: {
     title: string;
     content: string;
-    yes?: Function;
-    no?: Function;
-    render: Function;
+    yes?: (html: JQuery | HTMLElement) => Y;
+    no?: (html: JQuery | HTMLElement) => N;
+    render: (html: JQuery | HTMLElement) => void;
     defaultYes?: boolean;
-    rejectClose?: boolean;
+    rejectClose?: R;
     options?: Partial<Dialog.Options>;
-  }): Promise<any>;
+  }): Promise<R extends true ? Y | N : Y | N | null>;
   /**
    * @deprecated You are passing an options object as a second parameter to Dialog.confirm. This should now be passed in
    *             as the options key of the first parameter.
    */
-  static confirm(
+  static confirm<Y = true, N = false, R extends boolean = false>(
     {
       title,
       content,
@@ -201,15 +203,15 @@ declare class Dialog extends Application {
     }?: {
       title: string;
       content: string;
-      yes?: Function;
-      no?: Function;
-      render: Function;
+      yes?: (html: JQuery | HTMLElement) => Y;
+      no?: (html: JQuery | HTMLElement) => N;
+      render: (html: JQuery | HTMLElement) => void;
       defaultYes?: boolean;
-      rejectClose?: boolean;
+      rejectClose?: R;
       options?: Partial<Dialog.Options>;
     },
     old?: Partial<Dialog.Options>
-  ): Promise<any>;
+  ): Promise<R extends true ? Y | N : Y | N | null>;
 
   /* -------------------------------------------- */
 
@@ -235,8 +237,8 @@ declare class Dialog extends Application {
     content: string;
     label: string;
     callback: (html: JQuery) => T;
-    render: Function;
-    options: Partial<Dialog.Options> & { jQuery: true };
+    render: (html: JQuery) => void;
+    options?: Partial<Dialog.Options> & { jQuery: true };
   }): Promise<T>;
   static prompt<T>({
     title,
@@ -250,8 +252,8 @@ declare class Dialog extends Application {
     content: string;
     label: string;
     callback: (html: HTMLElement) => T;
-    render: Function;
-    options: Partial<Dialog.Options> & { jQuery: false };
+    render: (html: HTMLElement) => void;
+    options?: Partial<Dialog.Options> & { jQuery: false };
   }): Promise<T>;
   static prompt<T>({
     title,
@@ -265,12 +267,29 @@ declare class Dialog extends Application {
     content: string;
     label: string;
     callback: (html: JQuery | HTMLElement) => T;
-    render: Function;
-    options: Partial<Dialog.Options>;
+    render: (html: JQuery | HTMLElement) => void;
+    options?: Partial<Dialog.Options>;
   }): Promise<T>;
 }
 
 declare namespace Dialog {
+  interface Button<T = unknown> {
+    /**
+     * A Font Awesome icon for the button
+     */
+    icon: string;
+
+    /**
+     * The label for the button
+     */
+    label: string;
+
+    /**
+     * A callback function that fires when the button is clicked
+     */
+    callback?: (html: JQuery | HTMLElement) => T;
+  }
+
   interface Data {
     /**
      * The window title
@@ -295,7 +314,7 @@ declare namespace Dialog {
     /**
      * The buttons which are displayed as action choices for the dialog
      */
-    buttons: Record<string, DialogButton>;
+    buttons: Record<string, Button>;
 
     /**
      * The name of the default button which should be triggered on Enter
