@@ -127,7 +127,7 @@ declare class Actor<
   /**
    * ActiveEffects are prepared by the Actor.prepareEmbeddedEntities() method
    */
-  effects: Collection<ActiveEffect>;
+  effects: Collection<ActiveEffect<this>>;
 
   /**
    * A set that tracks which keys in the data model were modified by active effects
@@ -167,7 +167,7 @@ declare class Actor<
    * An array of ActiveEffect instances which are present on the Actor which have a limited duration.
    * @returns
    */
-  get temporaryEffects(): ActiveEffect[];
+  get temporaryEffects(): ActiveEffect<this>[];
 
   /* -------------------------------------------- */
   /*  Data Preparation                            */
@@ -205,7 +205,7 @@ declare class Actor<
    * @param effects - The raw array of active effect objects
    * @returns The prepared active effects collection
    */
-  protected _prepareActiveEffects(effects: ActiveEffect.Data[]): Collection<ActiveEffect>;
+  protected _prepareActiveEffects(effects: ActiveEffect.Data[]): Collection<ActiveEffect<this>>;
 
   /**
    * Apply any transformations to the Actor data which are caused by ActiveEffects.
@@ -392,14 +392,11 @@ declare class Actor<
    * @param options  - Item update options
    * @returns A Promise resolving to the updated Owned Item data
    */
-  updateOwnedItem(
-    itemData: DeepPartial<Actor.OwnedItemData<D>>,
-    options?: any
-  ): Promise<ActiveEffect | Actor.OwnedItemData<D>>;
+  updateOwnedItem(itemData: DeepPartial<Actor.OwnedItemData<D>>, options?: any): Promise<Actor.OwnedItemData<D>>;
   updateOwnedItem(
     itemData: DeepPartial<Actor.OwnedItemData<D>>[],
     options?: any
-  ): Promise<Array<ActiveEffect | Actor.OwnedItemData<D>>>;
+  ): Promise<Array<Actor.OwnedItemData<D>>>;
 
   /* -------------------------------------------- */
 
@@ -411,8 +408,8 @@ declare class Actor<
    * @param options - Item deletion options
    * @returns A Promise resolving to the deleted Owned Item data
    */
-  deleteOwnedItem(itemId: string, options?: any): Promise<ActiveEffect | Actor.OwnedItemData<D>>;
-  deleteOwnedItem(itemId: string[], options?: any): Promise<Array<ActiveEffect | Actor.OwnedItemData<D>>>;
+  deleteOwnedItem(itemId: string, options?: any): Promise<Actor.OwnedItemData<D>>;
+  deleteOwnedItem(itemId: string[], options?: any): Promise<Array<Actor.OwnedItemData<D>>>;
 
   /* -------------------------------------------- */
   /*  DEPRECATED                                  */

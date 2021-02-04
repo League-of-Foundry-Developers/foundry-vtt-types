@@ -58,7 +58,7 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
   /**
    * ActiveEffects are prepared by the Item.prepareEmbeddedEntities() method
    */
-  effects: Collection<ActiveEffect>;
+  effects: Collection<ActiveEffect<this>>;
 
   /** @override */
   static get config(): Entity.Config<Item>;
@@ -81,7 +81,7 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
    * @param effects - The raw array of active effect objects
    * @returns The prepared active effects collection
    */
-  protected _prepareActiveEffects(effects: ActiveEffect.Data[]): Collection<ActiveEffect>;
+  protected _prepareActiveEffects(effects: ActiveEffect.Data[]): Collection<ActiveEffect<this>>;
 
   /**
    * Prepare a data object which defines the data schema used by dice roll commands against this Item
@@ -109,7 +109,7 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
    * If the Item is owned, the returned instances are the ActiveEffect instances which exist on the owning Actor.
    * If the Item is unowned, the returned instances are the ActiveEffect instances which exist on the Item itself.
    */
-  get transferredEffects(): ActiveEffect[];
+  get transferredEffects(): ActiveEffect<Actor<Actor.Data<any, D>, this> | this>[];
 
   /**
    * A convenience reference to the item type (data.type) of this Item
