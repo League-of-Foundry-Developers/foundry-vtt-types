@@ -1,6 +1,9 @@
 declare interface ActorData<DataType = any> extends EntityData<DataType> {
   img: string;
   token: any;
+  items: ItemData[];
+  folder: string;
+  permission: Record<string, typeof CONST.ENTITY_PERMISSIONS[keyof typeof CONST.ENTITY_PERMISSIONS]>;
 }
 
 /**

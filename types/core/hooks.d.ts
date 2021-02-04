@@ -52,7 +52,14 @@ declare class Hooks {
    * @param hook	The unique name of the hooked event
    * @param fn	The function that should be removed from the set of hooked callbacks
    */
-  static off(hook: string, fn: Function): void;
+  static off(hook: string, fn: Function | number): void;
+  /**
+   * Unregister a callback handler for a particular hook event
+   *
+   * @param hook	The unique name of the hooked event
+   * @param hookId	The ID of the hook returned from a previous hook setup call.
+   */
+  static off(hook: string, hookId: number): void;
 
   /**
    * Call all hook listeners in the order in which they were registered

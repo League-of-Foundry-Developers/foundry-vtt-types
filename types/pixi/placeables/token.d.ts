@@ -1,4 +1,8 @@
-// @TODO: Types
+declare interface TokenData<DataType = any> extends EntityData<DataType> {
+  img: string;
+  permission: Record<string, typeof CONST.ENTITY_PERMISSIONS[keyof typeof CONST.ENTITY_PERMISSIONS]>;
+  actorData: ActorData;
+}
 
 /**
  * An instance of the Token class represents an Actor within a viewed Scene on the game canvas.
@@ -174,9 +178,9 @@ declare class Token extends PlaceableObject {
   /* Rendering
 	/* -------------------------------------------- */
 
-  draw(): Promise<any>;
+  draw(): Promise<this>;
 
-  refresh(): PlaceableObject;
+  refresh(): this;
 
   protected _refreshBorder(): void;
 
@@ -207,4 +211,21 @@ declare class Token extends PlaceableObject {
    * @param texture The texture file-path of the effect icon to toggle on the Token.
    */
   toggleEffect(texture: string): Promise<void>;
+
+  /* -------------------------------------------- */
+  /*  Factory Functions
+	/* -------------------------------------------- */
+
+  /**
+   * A factory method to create a Token instance from an Actor entity.
+   * The Token is not automatically saved to the database, it is up to the caller whether or not they wish to do that.
+   *
+   * @param {Actor} actor         The input actor entity
+   * @param {object} [tokenData]  Additional data, such as x, y, rotation, etc. for the created token
+   * @return {Promise<Token>}     The created Token instance
+   */
+  static fromActor(actor: Actor, tokenData?: any): Promise<Token>;
+
+  /** @extends {Entity.createEmbeddedEntity} */
+  static create(data: object, options?: object): Promise<Token>;
 }

@@ -163,7 +163,7 @@ declare class PlaceableObject extends PIXI.Container {
    * Clear the display of the existing object
    * @return	The cleared object
    */
-  clear(): PlaceableObject;
+  clear(): this;
 
   /**
    * Clone the placeable object, returning a new object with identical attributes
@@ -172,12 +172,12 @@ declare class PlaceableObject extends PIXI.Container {
    *
    * @return	A new object with identical data
    */
-  clone(): PlaceableObject;
+  clone(): this;
 
   /**
    * Draw the placeable object into its parent container
    */
-  draw(): Promise<PlaceableObject>;
+  draw(): Promise<this>;
 
   /**
    * Draw the primary Sprite for the PlaceableObject
@@ -188,16 +188,16 @@ declare class PlaceableObject extends PIXI.Container {
    * Refresh the current display state of the Placeable Object
    * @return	The refreshed object
    */
-  refresh(): PlaceableObject;
+  refresh(): this;
 
   /** @extends {Entity.createEmbeddedEntity} */
   static create(data: object, options?: object): Promise<PlaceableObject>;
 
   /** @extends {Entity.updateEmbeddedEntity} */
-  update(updateData: object, options?: object): Promise<PlaceableObject>;
+  update(updateData: object, options?: object): Promise<this>;
 
   /** @extends {Entity.deleteEmbeddedEntity} */
-  delete(createData: object, options?: object): Promise<PlaceableObject>;
+  delete(options?: object): Promise<this>;
 
   /**
    * Get the value of a "flag" for this PlaceableObject
@@ -228,7 +228,7 @@ declare class PlaceableObject extends PIXI.Container {
    *
    * @return		A Promise resolving to the updated PlaceableObject
    */
-  setFlag(scope: string, key: string, value: any): Promise<PlaceableObject>;
+  setFlag(scope: string, key: string, value: any): Promise<this>;
 
   /**
    * Remove a flag assigned to the Entity
@@ -236,7 +236,7 @@ declare class PlaceableObject extends PIXI.Container {
    * @param key	The flag key
    * @return		A Promise resolving to the updated Entity
    */
-  unsetFlag(scope: string, key: string): Promise<Entity>;
+  unsetFlag(scope: string, key: string): Promise<this>;
 
   /**
    * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
@@ -289,7 +289,7 @@ declare class PlaceableObject extends PIXI.Container {
    * @param snap	Snap the angle of rotation to a certain target degree increment
    * @return		A Promise which resolves once the rotation has completed
    */
-  rotate(angle: number, snap: number): Promise<PlaceableObject>;
+  rotate(angle: number, snap: number): Promise<this>;
 
   /**
    * Determine a new angle of rotation for a PlaceableObject either from an explicit angle or from a delta offset.

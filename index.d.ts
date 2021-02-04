@@ -107,6 +107,7 @@ import './types/ui/activeeffectconfig';
 
 //-- --//
 
+import './types/formdataextended';
 import './types/game';
 import './types/handlebars';
 import './types/pixi';
