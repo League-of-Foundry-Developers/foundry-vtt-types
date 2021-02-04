@@ -7,6 +7,12 @@ declare type DeepPartial<T> = {
 };
 
 /**
+ * References the constructor of type `T`
+ * @internal
+ */
+type ConstructorOf<T> = new (...args: any) => T;
+
+/**
  * Omit properties of `T` which are of type `U`.
  *
  * @typeParam T - Object type from which properties will be omitted.
