@@ -55,7 +55,7 @@ declare function normalizeRadians(radians: number): number;
  * @param cls - An ES6 Class definition
  * @returns An array of parent Classes which the provided class extends
  */
-declare function getParentClasses(cls: new (...args: any[]) => any): Array<new (...args: any[]) => any>;
+declare function getParentClasses(cls: ConstructorOf<any>): Array<ConstructorOf<any>>;
 
 /* -------------------------------------------- */
 

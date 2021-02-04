@@ -776,7 +776,7 @@ declare namespace Entity {
   }
 
   interface Config<E extends Entity = Entity> {
-    baseEntity: new (...args: any) => E;
+    baseEntity: ConstructorOf<E>;
     collection: EntityCollection<E>;
     embeddedEntities?: {
       [embedType: string]: string;

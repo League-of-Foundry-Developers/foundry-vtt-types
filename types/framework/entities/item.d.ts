@@ -16,7 +16,7 @@ declare class Items extends EntityCollection<Item> {
    */
   static registerSheet(
     scope: string,
-    sheetClass: new (...args: any) => Application,
+    sheetClass: ConstructorOf<Application>,
     {
       label,
       types,
@@ -34,7 +34,7 @@ declare class Items extends EntityCollection<Item> {
    */
   static unregisterSheet(
     scope: string,
-    sheetClass: new (...args: any) => Application,
+    sheetClass: ConstructorOf<Application>,
     {
       types
     }?: {
@@ -45,7 +45,7 @@ declare class Items extends EntityCollection<Item> {
   /**
    * Return an Array of currently registered sheet classes for this Entity type
    */
-  static get registeredSheets(): Array<new (...args: any) => ItemSheet>;
+  static get registeredSheets(): Array<ConstructorOf<ItemSheet>>;
 }
 
 /**

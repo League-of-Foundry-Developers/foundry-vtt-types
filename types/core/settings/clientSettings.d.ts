@@ -184,7 +184,7 @@ declare namespace ClientSettings {
       step: number;
     };
     scope: string;
-    type?: new (...args: any) => T;
+    type?: ConstructorOf<T>;
   }
 
   interface PartialMenuSettings<F extends FormApplication = FormApplication> {
@@ -193,6 +193,6 @@ declare namespace ClientSettings {
     label?: string;
     name?: string;
     restricted: boolean;
-    type: new (...args: any) => F;
+    type: ConstructorOf<F>;
   }
 }
