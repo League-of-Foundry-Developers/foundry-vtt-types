@@ -392,10 +392,13 @@ declare class Actor<
    * @param options  - Item update options
    * @returns A Promise resolving to the updated Owned Item data
    */
-  updateOwnedItem(itemData: DeepPartial<Actor.OwnedItemData<D>>, options?: any): Promise<Actor.OwnedItemData<D>>;
+  updateOwnedItem(
+    itemData: DeepPartial<Actor.OwnedItemData<D>>,
+    options?: Entity.UpdateOptions
+  ): Promise<Actor.OwnedItemData<D>>;
   updateOwnedItem(
     itemData: DeepPartial<Actor.OwnedItemData<D>>[],
-    options?: any
+    options?: Entity.UpdateOptions
   ): Promise<Array<Actor.OwnedItemData<D>>>;
 
   /* -------------------------------------------- */
@@ -408,8 +411,8 @@ declare class Actor<
    * @param options - Item deletion options
    * @returns A Promise resolving to the deleted Owned Item data
    */
-  deleteOwnedItem(itemId: string, options?: any): Promise<Actor.OwnedItemData<D>>;
-  deleteOwnedItem(itemId: string[], options?: any): Promise<Array<Actor.OwnedItemData<D>>>;
+  deleteOwnedItem(itemId: string, options?: Entity.DeleteOptions): Promise<Actor.OwnedItemData<D>>;
+  deleteOwnedItem(itemId: string[], options?: Entity.DeleteOptions): Promise<Array<Actor.OwnedItemData<D>>>;
 
   /* -------------------------------------------- */
   /*  DEPRECATED                                  */

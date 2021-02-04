@@ -279,3 +279,7 @@ declare namespace ActiveEffect {
     transfer?: boolean;
   }
 }
+
+type ActiveEffectChange = ActiveEffect.Change;
+type ActiveEffectDuration = ActiveEffect.Duration;
+type ActiveEffectData = ActiveEffect.Data;
