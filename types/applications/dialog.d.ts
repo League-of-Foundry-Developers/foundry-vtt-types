@@ -32,7 +32,7 @@ declare class Dialog extends Application {
    * @param data    - An object of dialog data which configures how the modal window is rendered
    * @param options - Dialog rendering options, see {@link Application}
    */
-  constructor(data: Dialog.Data, options: Partial<Dialog.Options>);
+  constructor(data: Dialog.Data, options?: Partial<Dialog.Options>);
 
   data: Dialog.Data;
 
