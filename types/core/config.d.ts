@@ -194,18 +194,260 @@ declare const CONFIG: {
      */
     objectBorderThickness: number;
 
-    lightAnimations: Partial<
+    lightAnimations: {
+      torch: {
+        /**
+         * @defaultValue `'LIGHT.AnimationTorch'`
+         */
+        label: string;
+
+        /**
+         * @defaultValue PointSource.prototype.animateTorch
+         */
+        animation: PointSource.AnimationFunction;
+
+        /**
+         * @defaultValue `TorchIlluminationShader`
+         */
+        illuminationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+
+        /**
+         * @defaultValue `TorchColorationShader`
+         */
+        colorationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+      };
+
+      pulse: {
+        /**
+         * @defaultValue `'LIGHT.AnimationPulse'`
+         */
+        label: string;
+
+        /**
+         * @defaultValue `PointSource.prototype.animatePulse`
+         */
+        animation: PointSource.AnimationFunction;
+
+        /**
+         * @defaultValue `PulseIlluminationShader`
+         */
+        illuminationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+
+        /**
+         * @defaultValue `PulseColorationShader`
+         */
+        colorationShader: any; //  TODO: ConstructorOf<AbstractBaseShader>
+      };
+
+      chroma: {
+        /**
+         * @defaultValue `'LIGHT.AnimationChroma'`
+         */
+        label: string;
+
+        /**
+         * @defaultValue `PointSource.prototype.animateTime`
+         */
+        animation: PointSource.AnimationFunction;
+
+        /**
+         * @defaultValue `ChromaColorationShader`
+         */
+        colorationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+      };
+
+      wave: {
+        /**
+         * @defaultValue `'LIGHT.AnimationWave'`
+         */
+        label: string;
+
+        /**
+         * @defaultValue `PointSource.prototype.animateTime`
+         */
+        animation: PointSource.AnimationFunction;
+
+        /**
+         * @defaultValue `WaveIlluminationShader`
+         */
+        illuminationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+
+        /**
+         * @defaultValue `WaveColorationShader`
+         */
+        colorationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+      };
+
+      fog: {
+        /**
+         * @defaultValue `'LIGHT.AnimationFog'`
+         */
+        label: string;
+
+        /**
+         * @defaultValue `PointSource.prototype.animateTime`
+         */
+        animation: PointSource.AnimationFunction;
+
+        /**
+         * @defaultValue `FogColorationShader`
+         */
+        colorationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+      };
+
+      sunburst: {
+        /**
+         * @defaultValue `'LIGHT.AnimationSunburst'`
+         */
+        label: string;
+
+        /**
+         * @defaultValue `PointSource.prototype.animateTime`
+         */
+        animation: PointSource.AnimationFunction;
+
+        /**
+         * @defaultValue `SunburstIlluminationShader`
+         */
+        illuminationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+
+        /**
+         * @defaultValue `SunburstColorationShader`
+         */
+        colorationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+      };
+
+      dome: {
+        /**
+         * @defaultValue `'LIGHT.AnimationLightDome'`
+         */
+        label: string;
+
+        /**
+         * @defaultValue `PointSource.prototype.animateTime`
+         */
+        animation: PointSource.AnimationFunction;
+
+        /**
+         * @defaultValue `LightDomeColorationShader`
+         */
+        colorationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+      };
+
+      emanation: {
+        /**
+         * @defaultValue `'LIGHT.AnimationEmanation'`
+         */
+        label: string;
+
+        /**
+         * @defaultValue `PointSource.prototype.animateTime`
+         */
+        animation: PointSource.AnimationFunction;
+
+        /**
+         * @defaultValue `EmanationColorationShader`
+         */
+        colorationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+      };
+
+      hexa: {
+        /**
+         * @defaultValue `'LIGHT.AnimationHexaDome';`
+         */
+        label: string;
+
+        /**
+         * @defaultValue `PointSource.prototype.animateTime`
+         */
+        animation: PointSource.AnimationFunction;
+
+        /**
+         * @defaultValue `HexaDomeColorationShader`
+         */
+        colorationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+      };
+
+      ghost: {
+        /**
+         * @defaultValue `'LIGHT.AnimationGhostLight'`
+         */
+        label: string;
+
+        /**
+         * @defaultValue `PointSource.prototype.animateTime`
+         */
+        animation: PointSource.AnimationFunction;
+
+        /**
+         * @defaultValue `GhostLightIlluminationShader`
+         */
+        illuminationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+
+        /**
+         * @defaultValue `GhostLightColorationShader`
+         */
+        colorationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+      };
+
+      energy: {
+        /**
+         * @defaultValue `'LIGHT.AnimationEnergyField'`
+         */
+        label: string;
+
+        /**
+         * @defaultValue `PointSource.prototype.animateTime`
+         */
+        animation: PointSource.AnimationFunction;
+
+        /**
+         * @defaultValue `EnergyFieldColorationShader`
+         */
+        colorationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+      };
+
+      roiling: {
+        /**
+         * @defaultValue `'LIGHT.AnimationRoilingMass'`
+         */
+        label: string;
+
+        /**
+         * @defaultValue `PointSource.prototype.animateTime`
+         */
+        animation: PointSource.AnimationFunction;
+
+        /**
+         * @defaultValue `RoilingIlluminationShader`
+         */
+        illuminationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+      };
+
+      hole: {
+        /**
+         * @defaultValue `'LIGHT.AnimationBlackHole'`
+         */
+        label: string;
+
+        /**
+         * @defaultValue `PointSource.prototype.animateTime`
+         */
+        animation: PointSource.AnimationFunction;
+
+        /**
+         * @defaultValue `BlackHoleIlluminationShader`
+         */
+        illuminationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+      };
+    } & Partial<
       Record<
         string,
         {
           label: string;
-          animation: (
-            this: PointSource,
-            dt: number,
-            { speed, intensity }?: { speed?: number; intensity?: number }
-          ) => void;
-          illuminationShader?: any; // TODO: ConstructorOf<StandardIlluminationShader>
-          colorationShader?: any; // TODO: ConstructorOf<StandardColorationShader>
+          animation: PointSource.AnimationFunction;
+          illuminationShader?: any; // TODO: ConstructorOf<AbstractBaseShader>
+          colorationShader?: any; // TODO: ConstructorOf<AbstractBaseShader>
         }
       >
     >;
