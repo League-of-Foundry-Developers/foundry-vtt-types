@@ -1,5 +1,5 @@
 import { expectType } from 'tsd';
-import '../../../index';
+import '../../../../index';
 
 expectType<ChatMessage.SpeakerData>(ChatMessage.getSpeaker());
 expectType<ChatMessage.SpeakerData>(ChatMessage.getSpeaker({}));

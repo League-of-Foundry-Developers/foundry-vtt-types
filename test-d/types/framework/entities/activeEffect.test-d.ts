@@ -1,4 +1,4 @@
-import '../../../index';
+import '../../../../index';
 import { expectType } from 'tsd';
 
 type SomeItemData = Item.Data<{}>;
