@@ -103,7 +103,7 @@ declare class Drawing extends PlaceableObject<Drawing.Data> {
   /**
    * Create elements for the Drawing border and handles
    */
-  _createFrame(): void;
+  protected _createFrame(): void;
 
   /** @override */
   refresh(): void;
@@ -171,10 +171,10 @@ declare class Drawing extends PlaceableObject<Drawing.Data> {
   protected _onControl(options: { isNew?: boolean }): void;
 
   /** @override */
-  _onRelease(options: any): void;
+  protected _onRelease(options: any): void;
 
   /** @override */
-  _onDelete(): void;
+  protected _onDelete(): void;
 
   /**
    * Handle text entry in an active text tool
@@ -229,7 +229,7 @@ declare class Drawing extends PlaceableObject<Drawing.Data> {
    * When we start a drag event - create a preview copy of the Tile for re-positioning
    * @param event - The mousedown event
    */
-  _onHandleMouseDown(event: PIXI.InteractionEvent): void;
+  protected _onHandleMouseDown(event: PIXI.InteractionEvent): void;
 
   /**
    * Handle the beginning of a drag event on a resize handle

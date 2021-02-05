@@ -72,7 +72,7 @@ declare class MeasuredTemplate extends PlaceableObject<MeasuredTemplate.Data> {
   /**
    * Draw the Text label used for the MeasuredTemplate
    */
-  _drawRulerText(): PreciseText;
+  protected _drawRulerText(): PreciseText;
 
   /** @override */
   refresh(): this;
