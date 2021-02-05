@@ -212,7 +212,7 @@ declare namespace Scene {
     backgroundColor: string;
     darkness: number;
     description: string;
-    drawings: any[]; // TODO Drawing class (PlaceableObject)
+    drawings: Drawing['data'][];
     fogExploration: boolean;
     globalLight: boolean;
     globalLightThreshold: number;
@@ -226,12 +226,12 @@ declare namespace Scene {
     img: string;
     initial: { x: number; y: number; scale: number } | null;
     journal: string;
-    lights: any[]; // TODO AmbientLight class (PlaceableObject)
+    lights: AmbientLight['data'][];
     name: string;
     navName: string;
     navOrder: number;
     navigation: boolean;
-    notes: any[]; // TODO Note class (PlaceableObject)
+    notes: Note['data'][];
     padding: number;
     permission: Entity.Permission;
     playlist: string;
@@ -239,12 +239,12 @@ declare namespace Scene {
     shiftY: number;
     size: number;
     sort: number;
-    sounds: any[]; // TODO AmbientSound class (PlaceableObject)
-    templates: any[]; // TODO MeasuredTemplate class (PlaceableObject)
-    tiles: any[]; // TODO Tile class (PlaceableObject)
+    sounds: AmbientSound['data'][];
+    templates: MeasuredTemplate['data'][];
+    tiles: Tile['data'][];
     tokenVision: boolean;
-    tokens: any[]; // Token.data
-    walls: any[]; // Wall.data
+    tokens: Token['data'][];
+    walls: Wall['data'][];
     weather: string;
     width: number;
   }

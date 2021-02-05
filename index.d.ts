@@ -126,12 +126,13 @@ import './types/framework/entities/user';
 
 import './types/pixi/canvas';
 import './types/pixi/canvasLayer';
+import './types/pixi/doorControl';
 import './types/pixi/lightingLayer';
-import './types/pixi/measuredTemplate';
 import './types/pixi/mouseInteractionManager';
 import './types/pixi/normalizedRectangle';
 import './types/pixi/placeablesLayer';
 import './types/pixi/pointSource';
+import './types/pixi/preciseText';
 import './types/pixi/quadtree';
 import './types/pixi/sightLayer';
 import './types/pixi/textureLoader';
@@ -140,6 +141,10 @@ import './types/pixi/helpers/controlIcon';
 import './types/pixi/helpers/ray';
 import './types/pixi/helpers/ruler';
 
+import './types/pixi/placeableObjects/ambientLight';
+import './types/pixi/placeableObjects/ambientSound';
+import './types/pixi/placeableObjects/drawing';
+import './types/pixi/placeableObjects/measuredTemplate';
 import './types/pixi/placeableObjects/note';
 import './types/pixi/placeableObjects/placeableObject';
 import './types/pixi/placeableObjects/tile';
