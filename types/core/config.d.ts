@@ -613,9 +613,9 @@ declare const CONFIG: {
     collection: ConstructorOf<Playlists>;
 
     /**
-     * @defaultValue `PlaylistConfig`
+     * @defaultValue null
      */
-    sheetClass: ConstructorOf<PlaylistConfig>;
+    sheetClass: ConstructorOf<PlaylistConfig> | null;
 
     /**
      * @defaultValue `'fas fa-music'`
@@ -702,25 +702,28 @@ declare const CONFIG: {
      */
     sheetClass: ConstructorOf<PlayerConfig>;
 
+    /**
+     * @defaultValue `CONST.USER_PERMISSIONS`
+     */
     permissions: {
-      BROADCAST_AUDIO: CONFIG.Permission;
-      BROADCAST_VIDEO: CONFIG.Permission;
-      ACTOR_CREATE: CONFIG.Permission;
-      DRAWING_CREATE: CONFIG.Permission;
-      ITEM_CREATE: CONFIG.Permission;
-      FILES_BROWSE: CONFIG.Permission;
-      FILES_UPLOAD: CONFIG.Permission;
-      JOURNAL_CREATE: CONFIG.Permission;
-      MACRO_SCRIPT: CONFIG.Permission;
-      MESSAGE_WHISPER: CONFIG.Permission;
-      SETTINGS_MODIFY: CONFIG.Permission;
-      SHOW_CURSOR: CONFIG.Permission;
-      SHOW_RULER: CONFIG.Permission;
-      TEMPLATE_CREATE: CONFIG.Permission;
-      TOKEN_CREATE: CONFIG.Permission;
-      TOKEN_CONFIGURE: CONFIG.Permission;
-      WALL_DOORS: CONFIG.Permission;
-    } & Partial<Record<string, CONFIG.Permission>>;
+      BROADCAST_AUDIO: Config.Permission;
+      BROADCAST_VIDEO: Config.Permission;
+      ACTOR_CREATE: Config.Permission;
+      DRAWING_CREATE: Config.Permission;
+      ITEM_CREATE: Config.Permission;
+      FILES_BROWSE: Config.Permission;
+      FILES_UPLOAD: Config.Permission;
+      JOURNAL_CREATE: Config.Permission;
+      MACRO_SCRIPT: Config.Permission;
+      MESSAGE_WHISPER: Config.Permission;
+      SETTINGS_MODIFY: Config.Permission;
+      SHOW_CURSOR: Config.Permission;
+      SHOW_RULER: Config.Permission;
+      TEMPLATE_CREATE: Config.Permission;
+      TOKEN_CREATE: Config.Permission;
+      TOKEN_CONFIGURE: Config.Permission;
+      WALL_DOORS: Config.Permission;
+    } & Partial<Record<string, Config.Permission>>;
   };
 
   /**
@@ -1035,8 +1038,7 @@ declare const CONFIG: {
   };
 } & Record<string, unknown>;
 
-declare namespace CONFIG {
-  // TODO: Where to put this?
+declare namespace Config {
   interface Permission {
     label: string;
     hint: string;
