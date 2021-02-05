@@ -584,6 +584,7 @@ declare const CONFIG: {
        */
       ray: string;
     } & Partial<Record<string, string>>;
+
     defaults: {
       /**
        * @defaultValue `53.13`
