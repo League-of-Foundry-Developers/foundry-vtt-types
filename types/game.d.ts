@@ -29,7 +29,7 @@ declare let socket: SocketIOClient.Socket | null;
  * - `/players`
  * - `/join`
  */
-declare let ui: {
+declare const ui: {
   /**
    * Initialized in
    * - `/game`: after "setup", before "ready" hook

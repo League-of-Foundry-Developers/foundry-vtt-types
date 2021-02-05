@@ -160,6 +160,7 @@ import './types/ui/tabs';
 // --
 
 import './types/constants';
+import './types/features';
 import './types/game';
 import './types/handlebars';
 import './types/mersenneTwister';
