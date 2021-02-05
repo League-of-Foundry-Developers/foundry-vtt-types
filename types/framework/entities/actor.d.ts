@@ -37,7 +37,7 @@ declare class Actors extends EntityCollection<Actor> {
    */
   static registerSheet(
     scope: string,
-    sheetClass: new (...args: any) => Application,
+    sheetClass: ConstructorOf<Application>,
     {
       label,
       types,
@@ -60,7 +60,7 @@ declare class Actors extends EntityCollection<Actor> {
    */
   static unregisterSheet(
     scope: string,
-    sheetClass: new (...args: any) => Application,
+    sheetClass: ConstructorOf<Application>,
     {
       types
     }?: {
@@ -71,7 +71,7 @@ declare class Actors extends EntityCollection<Actor> {
   /**
    * Return an Array of currently registered sheet classes for this Entity type
    */
-  static get registeredSheets(): Array<new (...args: any) => ActorSheet>;
+  static get registeredSheets(): Array<ConstructorOf<ActorSheet>>;
 }
 
 /**
@@ -127,7 +127,7 @@ declare class Actor<
   /**
    * ActiveEffects are prepared by the Actor.prepareEmbeddedEntities() method
    */
-  effects: Collection<ActiveEffect>;
+  effects: Collection<ActiveEffect<this>>;
 
   /**
    * A set that tracks which keys in the data model were modified by active effects
@@ -167,7 +167,7 @@ declare class Actor<
    * An array of ActiveEffect instances which are present on the Actor which have a limited duration.
    * @returns
    */
-  get temporaryEffects(): ActiveEffect[];
+  get temporaryEffects(): ActiveEffect<this>[];
 
   /* -------------------------------------------- */
   /*  Data Preparation                            */
@@ -178,7 +178,7 @@ declare class Actor<
    * Returns void
    * @override
    */
-  prepareData(): any;
+  prepareData(): void;
 
   /**
    * First prepare any derived data which is actor-specific and does not depend on Items or Active Effects
@@ -205,7 +205,7 @@ declare class Actor<
    * @param effects - The raw array of active effect objects
    * @returns The prepared active effects collection
    */
-  protected _prepareActiveEffects(effects: ActiveEffect.Data[]): Collection<ActiveEffect>;
+  protected _prepareActiveEffects(effects: ActiveEffect.Data[]): Collection<ActiveEffect<this>>;
 
   /**
    * Apply any transformations to the Actor data which are caused by ActiveEffects.
@@ -394,12 +394,12 @@ declare class Actor<
    */
   updateOwnedItem(
     itemData: DeepPartial<Actor.OwnedItemData<D>>,
-    options?: any
-  ): Promise<ActiveEffect | Actor.OwnedItemData<D>>;
+    options?: Entity.UpdateOptions
+  ): Promise<Actor.OwnedItemData<D>>;
   updateOwnedItem(
     itemData: DeepPartial<Actor.OwnedItemData<D>>[],
-    options?: any
-  ): Promise<Array<ActiveEffect | Actor.OwnedItemData<D>>>;
+    options?: Entity.UpdateOptions
+  ): Promise<Array<Actor.OwnedItemData<D>>>;
 
   /* -------------------------------------------- */
 
@@ -411,8 +411,8 @@ declare class Actor<
    * @param options - Item deletion options
    * @returns A Promise resolving to the deleted Owned Item data
    */
-  deleteOwnedItem(itemId: string, options?: any): Promise<ActiveEffect | Actor.OwnedItemData<D>>;
-  deleteOwnedItem(itemId: string[], options?: any): Promise<Array<ActiveEffect | Actor.OwnedItemData<D>>>;
+  deleteOwnedItem(itemId: string, options?: Entity.DeleteOptions): Promise<Actor.OwnedItemData<D>>;
+  deleteOwnedItem(itemId: string[], options?: Entity.DeleteOptions): Promise<Array<Actor.OwnedItemData<D>>>;
 
   /* -------------------------------------------- */
   /*  DEPRECATED                                  */

@@ -97,7 +97,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * This method can be used to derive any internal attributes which are computed in a formulaic manner.
    * For example, in a d20 system - computing an ability modifier based on the value of that ability score.
    */
-  prepareData(): Entity.Data;
+  prepareData(): D | void;
 
   /**
    * Prepare Embedded Entities which exist within this parent Entity.
@@ -776,7 +776,7 @@ declare namespace Entity {
   }
 
   interface Config<E extends Entity = Entity> {
-    baseEntity: new (...args: any) => E;
+    baseEntity: ConstructorOf<E>;
     collection: EntityCollection<E>;
     embeddedEntities?: {
       [embedType: string]: string;

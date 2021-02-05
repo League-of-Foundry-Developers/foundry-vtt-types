@@ -1,8 +1,10 @@
 /**
  * An abstract class implementation for an EmbeddedEntity object within a parent Entity
+ *
+ * @typeParam P - Type of the parent of the `EmbeddedEntity`.
  */
-declare abstract class EmbeddedEntity<D extends EmbeddedEntity.Data = EmbeddedEntity.Data> {
-  constructor(data: D, parent: Entity);
+declare abstract class EmbeddedEntity<D extends EmbeddedEntity.Data = EmbeddedEntity.Data, P extends Entity = Entity> {
+  constructor(data: D, parent: P);
 
   /**
    * The embedded entity data object
@@ -12,7 +14,7 @@ declare abstract class EmbeddedEntity<D extends EmbeddedEntity.Data = EmbeddedEn
   /**
    * The parent Entity to which this belongs
    */
-  parent: Entity;
+  parent: P;
 
   /* -------------------------------------------- */
 

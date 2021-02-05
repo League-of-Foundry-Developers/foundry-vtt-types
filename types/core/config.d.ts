@@ -8,9 +8,9 @@ declare const CONFIG: {
    */
   Actor: {
     collection: Actors;
-    entityClass: typeof Actor;
-    sheetClasses: typeof ActorSheet;
-    typeLabels: any;
+    entityClass: ConstructorOf<Actor>;
+    sheetClasses: Record<string, unknown>; // TODO: Fill in the full typing here.
+    typeLabels: Record<string, string>;
   };
 
   Dice: {
@@ -26,8 +26,9 @@ declare const CONFIG: {
    */
   Item: {
     collection: Items;
-    entityClass: typeof Item;
-    sheetClasses: typeof ItemSheet;
+    entityClass: ConstructorOf<Item>;
+    sheetClass: ConstructorOf<ItemSheet>;
+    sheetClasses: Record<string, unknown>; // TODO: Fill in the full typing here.
     typeLabels: any;
   };
 
@@ -35,12 +36,12 @@ declare const CONFIG: {
    * Configuration for the JournalEntry entity
    */
   JournalEntry: {
-    entityClass: typeof JournalEntry;
+    entityClass: ConstructorOf<JournalEntry>;
     noteIcons: {
       [key: string]: string;
       Anchor: string;
     };
-    sheetClass: typeof JournalSheet;
+    sheetClass: ConstructorOf<JournalSheet>;
     sidebarIcon: string;
   };
 
@@ -48,7 +49,7 @@ declare const CONFIG: {
    * Configuration for the default Playlist entity class
    */
   Playlist: {
-    entityClass: any;
+    entityClass: ConstructorOf<Playlist>;
     sheetClass: any;
     sidebarIcon: string;
   };
@@ -57,9 +58,9 @@ declare const CONFIG: {
    * Configuration for RollTable random draws
    */
   RollTable: {
-    entityClass: any;
+    entityClass: ConstructorOf<RollTable>;
     resultIcon: string;
-    sheetClass: any;
+    sheetClass: ConstructorOf<RollTableConfig>;
     sidebarIcon: string;
   };
 
@@ -68,9 +69,8 @@ declare const CONFIG: {
    */
   Scene: {
     collection: Scenes;
-    entityClass: typeof Scene;
-    notesClass: any;
-    sheetClass: any;
+    entityClass: ConstructorOf<Scene>;
+    sheetClass: any; // TODO: ConstructorOf<SceneConfig>;
     sidebarIcon: string;
   };
 

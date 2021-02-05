@@ -7,6 +7,7 @@ import 'tinymce';
 import './types/applications/application';
 import './types/applications/baseEntitySheet';
 import './types/applications/cameraViews';
+import './types/applications/dialog';
 import './types/applications/formApplication';
 import './types/applications/formDataExtended';
 import './types/applications/localization';
@@ -105,6 +106,7 @@ import './types/framework/collection';
 import './types/framework/compendium';
 import './types/framework/entity';
 import './types/framework/entityCollection';
+import './types/framework/userTargets';
 
 import './types/framework/entities/activeEffect';
 import './types/framework/entities/actor';
@@ -147,8 +149,7 @@ import './types/pixi/placeableObjects/wall';
 // UI
 
 import './types/ui/activeEffectConfig';
-import './types/ui/context';
-import './types/ui/dialog';
+import './types/ui/contextMenu';
 import './types/ui/dragDrop';
 import './types/ui/draggable';
 import './types/ui/filePicker';

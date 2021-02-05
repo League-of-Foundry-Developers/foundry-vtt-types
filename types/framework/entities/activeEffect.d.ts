@@ -1,14 +1,16 @@
 /**
  * An Active Effect instance within a parent Actor or Item.
- * @see {@link Actor#effects}
- * @see {@link Item#effects}
+ * @see {@link Actor.effects}
+ * @see {@link Item.effects}
+ *
+ * @typeParam P - Type of the parent of the `ActiveEffect`.
  */
-declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
+declare class ActiveEffect<P extends Actor | Item = Actor | Item> extends EmbeddedEntity<ActiveEffect.Data, P> {
   /**
    * @param data   - Data for the Active Effect
    * @param parent - The parent Entity which owns the effect
    */
-  constructor(data: ActiveEffect.Data, parent: Actor | Item);
+  constructor(data: DeepPartial<ActiveEffect.Data>, parent: P);
 
   /**
    * A cached reference to the source name to avoid recurring database lookups
@@ -131,7 +133,7 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
    * @param options - Configuration options which modify the request.
    * @returns The updated ActiveEffect data.
    */
-  update(data: Partial<ActiveEffect.Data>, options?: Entity.UpdateOptions): Promise<ActiveEffect.Data>;
+  update(data: DeepPartial<ActiveEffect.Data>, options?: Entity.UpdateOptions): Promise<ActiveEffect.Data>;
 
   /* -------------------------------------------- */
 
@@ -152,15 +154,19 @@ declare class ActiveEffect extends EmbeddedEntity<ActiveEffect.Data> {
    * @param args - Initialization arguments passed to the ActiveEffect constructor.
    * @returns The constructed ActiveEffect instance.
    */
-  static create(...args: [ActiveEffect.Data, Actor | Item]): ActiveEffect;
+  static create<P extends Actor | Item = Actor | Item>(...args: [DeepPartial<ActiveEffect.Data>, P]): ActiveEffect<P>;
 
   /* -------------------------------------------- */
 
   /**
    * A helper function to handle obtaining dropped ActiveEffect data from a dropped data transfer event.
+   *
+   * Warning: This is currently buggy and will create an `ActiveEffect` with `parent` set to `undefined`.
+   *
    * @param data - The data object extracted from a DataTransfer event
    * @returns The ActiveEffect instance which contains the dropped effect data or null, if other data was dropped.
    */
+  static fromDropData<T extends { data: DeepPartial<ActiveEffect.Data> }>(data: T): Promise<ActiveEffect>;
   static fromDropData(data: Record<string, unknown>): Promise<ActiveEffect | null>;
 }
 
@@ -273,3 +279,7 @@ declare namespace ActiveEffect {
     transfer?: boolean;
   }
 }
+
+type ActiveEffectChange = ActiveEffect.Change;
+type ActiveEffectDuration = ActiveEffect.Duration;
+type ActiveEffectData = ActiveEffect.Data;

@@ -6,7 +6,7 @@ declare abstract class PlaceableObject<D = object> extends PIXI.Container {
    * @param data  - The underlying embedded document data for the placeable type
    * @param scene - The parent scene that this object belongs to (if any)
    */
-  constructor(data: D, scene: Scene);
+  constructor(data: D, scene: PlaceableObject['scene']);
 
   /**
    * The underlying data object which provides the basis for this placeable object
