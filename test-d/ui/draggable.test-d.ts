@@ -7,7 +7,7 @@ expectType<Draggable.Handlers>(resizableUndefined.handlers);
 
 const maybeResizable = new Draggable(new Application(), $(), new HTMLElement(), ((): boolean => false)());
 expectType<boolean>(maybeResizable.resizable);
-expectType<Draggable.Handlers>(maybeResizable.handlers);
+expectType<Draggable.Handlers | Draggable.ResizableHandlers>(maybeResizable.handlers);
 
 const nonResizable = new Draggable(new Application(), $(), new HTMLElement(), false);
 expectType<false>(nonResizable.resizable);

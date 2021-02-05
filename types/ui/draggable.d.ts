@@ -24,7 +24,12 @@ declare class Draggable<R extends boolean | undefined = undefined> {
   /**
    * Remember event handlers associated with this Draggable class so they may be later unregistered
    */
-  handlers: this['resizable'] extends true ? Draggable.ResizableHandlers : Draggable.Handlers;
+  // prettier-ignore
+  handlers: this['resizable'] extends true
+    ? Draggable.ResizableHandlers
+    : this['resizable'] extends false
+      ? Draggable.Handlers
+      : Draggable.Handlers | Draggable.ResizableHandlers;
 
   /**
    * Throttle mousemove event handling to 60fps
