@@ -151,6 +151,7 @@ import './types/pixi/placeableObjects/wall';
 import './types/ui/activeEffectConfig';
 import './types/ui/contextMenu';
 import './types/ui/dragDrop';
+import './types/ui/draggable';
 import './types/ui/filePicker';
 import './types/ui/notifications';
 import './types/ui/searchFilter';
