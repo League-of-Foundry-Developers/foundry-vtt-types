@@ -14,12 +14,16 @@
  * dragDrop.bind(html);
  * ```
  */
-declare class DragDrop<S extends string | null = null, T extends string | null = null> {
+declare class DragDrop {
   /**
    * @param dragSelector - The CSS selector used to target draggable elements.
+   *                       (default: `null`)
    * @param dropSelector - The CSS selector used to target viable drop targets.
+   *                       (default: `null`)
    * @param permissions  - An object of permission test functions for each action
+   *                       (default: `{}`)
    * @param callbacks    - An object of callback functions for each action
+   *                       (default: `{}`)
    */
   constructor({
     dragSelector,
@@ -27,35 +31,35 @@ declare class DragDrop<S extends string | null = null, T extends string | null =
     permissions,
     callbacks
   }?: {
-    dragSelector?: S;
-    dropSelector?: T;
-    permissions?: DragDrop<S, T>['permissions'];
-    callbacks?: DragDrop<S, T>['callbacks'];
+    dragSelector?: DragDrop['dragSelector'];
+    dropSelector?: DragDrop['dropSelector'];
+    permissions?: DragDrop['permissions'];
+    callbacks?: DragDrop['callbacks'];
   });
 
   /**
    * The HTML selector which identifies draggable elements
    * @defaultValue `null`
    */
-  dragSelector: S;
+  dragSelector: string | null;
 
   /**
    * The HTML selector which identifies drop targets
    * @defaultValue `null`
    */
-  dropSelector: T;
+  dropSelector: string | null;
 
   /**
    * A set of permission checking functions for each action of the Drag and Drop workflow
    * @defaultValue `{}`
    */
-  permissions: Record<string, (selector: S | T) => boolean>;
+  permissions: Partial<Record<string, (selector: string | null) => boolean>>;
 
   /**
    * A set of callback functions for each action of the Drag and Drop workflow
    * @defaultValue `{}`
    */
-  callbacks: Record<string, (event: DragEvent) => unknown>;
+  callbacks: Partial<Record<string, (event: DragEvent) => unknown>>;
 
   /**
    * Bind the DragDrop controller to an HTML application
@@ -76,7 +80,7 @@ declare class DragDrop<S extends string | null = null, T extends string | null =
    * @param selector - The selector being targeted
    * @returns Can the action be performed?
    */
-  can(action: string, selector: S | T): boolean;
+  can(action: string, selector: string | null): boolean;
 
   /**
    * Handle the start of a drag workflow
