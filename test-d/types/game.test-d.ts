@@ -1,4 +1,4 @@
-import '../index';
+import '../../index';
 
 game.someCustomProperty = 'some string';
 game.someMoreComplexProperty = {
