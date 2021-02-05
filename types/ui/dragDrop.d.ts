@@ -14,7 +14,7 @@
  * dragDrop.bind(html);
  * ```
  */
-declare class DragDrop<S extends string | null = null, T extends string | null = null, C = any> {
+declare class DragDrop<S extends string | null = null, T extends string | null = null> {
   /**
    * @param dragSelector - The CSS selector used to target draggable elements.
    * @param dropSelector - The CSS selector used to target viable drop targets.
@@ -29,8 +29,8 @@ declare class DragDrop<S extends string | null = null, T extends string | null =
   }?: {
     dragSelector?: S;
     dropSelector?: T;
-    permissions?: Record<string, (selector: S | T) => boolean>;
-    callbacks?: Record<string, (event: DragEvent) => C>;
+    permissions?: DragDrop<S, T>['permissions'];
+    callbacks?: DragDrop<S, T>['callbacks'];
   });
 
   /**
@@ -55,7 +55,7 @@ declare class DragDrop<S extends string | null = null, T extends string | null =
    * A set of callback functions for each action of the Drag and Drop workflow
    * @defaultValue `{}`
    */
-  callbacks: Record<string, (event: DragEvent) => any>;
+  callbacks: Record<string, (event: DragEvent) => unknown>;
 
   /**
    * Bind the DragDrop controller to an HTML application
@@ -68,10 +68,7 @@ declare class DragDrop<S extends string | null = null, T extends string | null =
    * @param event  - The drag event being handled
    * @param action - The action being attempted
    */
-  callback<A extends string>(
-    event: DragEvent,
-    action: A
-  ): A extends keyof this['callbacks'] ? ReturnType<this['callbacks'][A]> : void;
+  callback(event: DragEvent, action: string): unknown;
 
   /**
    * Test whether the current user has permission to perform a step of the workflow
@@ -79,10 +76,7 @@ declare class DragDrop<S extends string | null = null, T extends string | null =
    * @param selector - The selector being targeted
    * @returns Can the action be performed?
    */
-  can<A extends string>(
-    action: A,
-    selector: S | T
-  ): A extends keyof this['permissions'] ? ReturnType<this['permissions'][A]> : true;
+  can(action: string, selector: S | T): boolean;
 
   /**
    * Handle the start of a drag workflow
@@ -100,9 +94,7 @@ declare class DragDrop<S extends string | null = null, T extends string | null =
    * Handle a dragged element dropped on a droppable target
    * @param event - The drag event being handled
    */
-  protected _handleDrop(
-    event: DragEvent
-  ): this['callbacks']['drop'] extends Function ? ReturnType<this['callbacks']['drop']> : void;
+  protected _handleDrop(event: DragEvent): unknown;
 
   static createDragImage(img: HTMLImageElement, width: number, height: number): HTMLDivElement | HTMLElement;
 }
