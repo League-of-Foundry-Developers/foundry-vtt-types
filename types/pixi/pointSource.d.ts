@@ -108,7 +108,7 @@ declare class PointSource {
    * A tint color for the emitted light, if any
    * @defaultValue `undefined`
    */
-  color?: number;
+  color?: number | null;
 
   /**
    * An opacity for the emitted light, if any
@@ -168,9 +168,65 @@ declare class PointSource {
 
   /**
    * Initialize the source with provided object data.
-   * @param data - Input data which configures the source.
+   *
+   * @param x                 - The x-coordinate of the source location
+   *                            (default: `0`)
+   * @param y                 - The y-coordinate of the source location
+   *                            (default: `0`)
+   * @param z                 - An optional z-index sorting for the source
+   *                            (default: `null`)
+   * @param dim               - The allowed radius of dim vision or illumination
+   *                            (default: `0`)
+   * @param bright            - The allowed radius of bright vision or illumination
+   *                            (default: `0`)
+   * @param angle             - The angle of emission for this point source
+   *                            (default: `360`)
+   * @param rotation          - The angle of rotation for this point source
+   *                            (default: `0`)
+   * @param color             - A tint color for the emitted light, if any
+   *                            (default: `null`)
+   * @param alpha             - An opacity for the emitted light, if any
+   *                            (default: `0.5`)
+   * @param darknessThreshold - A level of darkness beyond which this light is active
+   *                            (default: `0`)
+   * @param type              - The source type from SOURCE_TYPES
+   *                            (default: `SOURCE_TYPES.LOCAL`)
+   * @param animation         - An animation configuration for the source
+   *                            (default: `{type: null}`)
+   * @param seed              - An integer seed to synchronize (or de-synchronize) animations
+   *                            (default: `undefined`)
+   *
+   * @returns A reference to the initialized source
    */
-  initialize(data?: PointSource.InitializationData): this;
+  initialize({
+    x,
+    y,
+    z,
+    dim,
+    bright,
+    angle,
+    rotation,
+    color,
+    alpha,
+    darknessThreshold,
+    type,
+    animation,
+    seed
+  }?: {
+    x?: number;
+    y?: number;
+    z?: number | null;
+    dim?: number;
+    bright?: number;
+    angle?: number;
+    rotation?: number;
+    color?: number | string | null;
+    alpha?: number;
+    darknessThreshold?: number;
+    type?: string;
+    animation?: PointSource.Animation;
+    seed?: number;
+  }): this;
 
   /**
    * Initialize the shaders used for this animation.
@@ -264,86 +320,6 @@ declare namespace PointSource {
   }
   interface Animation extends AnimationProperties {
     type: null | keyof typeof CONFIG.Canvas.lightAnimations;
-  }
-
-  interface InitializationData {
-    /**
-     * The x-coordinate of the source location
-     * @defaultValue `undefined`
-     */
-    x?: number;
-
-    /**
-     * The y-coordinate of the source location
-     * @defaultValue `undefined`
-     */
-    y?: number;
-
-    /**
-     * An optional z-index sorting for the source
-     * @defaultValue `undefined`
-     */
-    z?: number | null;
-
-    /**
-     * The allowed radius of dim vision or illumination
-     * @defaultValue `undefined`
-     */
-    dim?: number;
-
-    /**
-     * The allowed radius of bright vision or illumination
-     * @defaultValue `undefined`
-     */
-    bright?: number;
-
-    /**
-     * The angle of emission for this point source
-     * @defaultValue `undefined`
-     */
-    angle?: number;
-
-    /**
-     * The angle of rotation for this point source
-     * @defaultValue `undefined`
-     */
-    rotation?: number;
-
-    /**
-     * A tint color for the emitted light, if any
-     * @defaultValue `undefined`
-     */
-    color?: number;
-
-    /**
-     * An opacity for the emitted light, if any
-     * @defaultValue `undefined`
-     */
-    alpha?: number;
-
-    /**
-     * A level of darkness beyond which this light is active
-     * @defaultValue `undefined`
-     */
-    darknessThreshold?: number;
-
-    /**
-     * The source type from {@link SOURCE_TYPES}
-     * @defaultValue `undefined`
-     */
-    type?: Const.SourceTypes;
-
-    /**
-     * An animation configuration for the source
-     * @defaultValue `undefined`
-     */
-    animation?: Animation;
-
-    /**
-     * An integer seed to synchronize (or de-synchronize) animations
-     * @defaultValue `undefined`
-     */
-    seed?: number;
   }
 
   type AnimationFunction = (this: PointSource, dt: number, { speed, intensity }?: AnimationProperties) => void;
