@@ -277,12 +277,12 @@ declare namespace Dialog {
     /**
      * A Font Awesome icon for the button
      */
-    icon: string;
+    icon?: string;
 
     /**
      * The label for the button
      */
-    label: string;
+    label?: string;
 
     /**
      * A callback function that fires when the button is clicked
