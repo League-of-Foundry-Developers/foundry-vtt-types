@@ -18,10 +18,8 @@ declare let _maxZ: number;
  *   renderApplication
  *   closeApplication
  *   getApplicationHeaderButtons
- *
- * @typeParam T - the type of the data used to render the inner template
  */
-declare class Application<T = object> {
+declare class Application {
   /**
    * @param options - Configuration options which control how the application is rendered.
    *                  Application subclasses may add additional supported options, but the
@@ -44,8 +42,9 @@ declare class Application<T = object> {
 
   /**
    * An internal reference to the HTML element this application renders
+   * @defaultValue `null`
    */
-  protected _element: JQuery;
+  protected _element: JQuery | null;
 
   /**
    * Track the current position and dimensions of the Application UI
@@ -83,9 +82,7 @@ declare class Application<T = object> {
   /**
    * Track the most recent scroll positions for any vertically scrolling containers
    */
-  protected _scrollPositions: Record<string, number>;
-
-  /* -------------------------------------------- */
+  protected _scrollPositions: Partial<Record<string, number>>;
 
   /**
    * Create drag-and-drop workflow handlers for this Application
@@ -93,23 +90,17 @@ declare class Application<T = object> {
    */
   protected _createDragDropHandlers(): DragDrop[];
 
-  /* -------------------------------------------- */
-
   /**
    * Create tabbed navigation handlers for this Application
    * @returns An array of Tabs handlers
    */
   protected _createTabHandlers(): Tabs[];
 
-  /* -------------------------------------------- */
-
   /**
    * Create search filter handlers for this Application
    * @returns An array of SearchFilter handlers
    */
   protected _createSearchFilters(): SearchFilter[];
-
-  /* -------------------------------------------- */
 
   /**
    * Assign the default options configuration which is used by this Application class. The options and values defined
@@ -118,28 +109,20 @@ declare class Application<T = object> {
    */
   static get defaultOptions(): Application.Options;
 
-  /* -------------------------------------------- */
-
   /**
    * Return the CSS application ID which uniquely references this UI element
    */
   get id(): string;
-
-  /* -------------------------------------------- */
 
   /**
    * Return the active application element, if it currently exists in the DOM
    */
   get element(): JQuery;
 
-  /* -------------------------------------------- */
-
   /**
    * The path to the HTML template file which should be used to render the inner content of the app
    */
   get template(): string;
-
-  /* -------------------------------------------- */
 
   /**
    * Control the rendering style of the application. If popOut is true, the application is rendered in its own
@@ -147,23 +130,15 @@ declare class Application<T = object> {
    */
   get popOut(): boolean;
 
-  /* -------------------------------------------- */
-
   /**
    * Return a flag for whether the Application instance is currently rendered
    */
   get rendered(): boolean;
 
-  /* -------------------------------------------- */
-
   /**
    * An Application window should define its own title definition logic which may be dynamic depending on its data
    */
   get title(): string;
-
-  /* -------------------------------------------- */
-  /* Application rendering
-  /* -------------------------------------------- */
 
   /**
    * An application should define the data object used to render its template.
@@ -171,24 +146,20 @@ declare class Application<T = object> {
    * If undefined, the default implementation will return an empty object allowing only for rendering of static HTML
    * @param options - (unused)
    */
-  getData(options?: any): {};
-
-  /* -------------------------------------------- */
+  getData(options?: Application.RenderOptions): object | Promise<object>;
 
   /**
    * Render the Application by evaluating it's HTML template against the object of data provided by the getData method
    * If the Application is rendered as a pop-out window, wrap the contained HTML in an outer frame with window controls
    *
-   * @param force - Add the rendered application to the DOM if it is not already present. If false, the
-   *                Application will only be re-rendered if it is already present.
-   *                (default: `false`)
+   * @param force   - Add the rendered application to the DOM if it is not already present. If false, the
+   *                  Application will only be re-rendered if it is already present.
+   *                  (default: `false`)
    * @param options - Additional rendering options which are applied to customize the way that the Application
    *                  is rendered in the DOM.
    *                  (default: `{}`)
    */
   render(force?: boolean, options?: Application.RenderOptions): this;
-
-  /* -------------------------------------------- */
 
   /**
    * An asynchronous inner function which handles the rendering of the Application
@@ -200,14 +171,10 @@ declare class Application<T = object> {
    */
   protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
 
-  /* -------------------------------------------- */
-
   /**
    * Return the inheritance chain for this Application class up to (and including) it's base Application class.
    */
   protected static _getInheritanceChain(): Application[];
-
-  /* -------------------------------------------- */
 
   /**
    * Persist the scroll positions of containers within the app before re-rendering the content
@@ -216,8 +183,6 @@ declare class Application<T = object> {
    */
   protected _saveScrollPositions(html: JQuery, selectors: string[]): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Restore the scroll positions of containers within the app after re-rendering the content
    * @param html      - The HTML object being traversed
@@ -225,15 +190,11 @@ declare class Application<T = object> {
    */
   protected _restoreScrollPositions(html: JQuery, selectors: string[]): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Render the outer application wrapper
    * @returns A promise resolving to the constructed jQuery object
    */
-  protected _renderOuter(options: Application.RenderOptions): Promise<JQuery>;
-
-  /* -------------------------------------------- */
+  protected _renderOuter(options: Application.RenderOptions): Promise<HTMLElement>;
 
   /**
    * Render the inner application content
@@ -241,9 +202,7 @@ declare class Application<T = object> {
    * @param options - (unused)
    * @returns A promise resolving to the constructed jQuery object
    */
-  protected _renderInner(data: T, options?: any): Promise<JQuery>;
-
-  /* -------------------------------------------- */
+  protected _renderInner(data: object, options?: Application.RenderOptions): Promise<JQuery>;
 
   /**
    * Customize how inner HTML is replaced when the application is refreshed
@@ -251,17 +210,13 @@ declare class Application<T = object> {
    * @param html    - New updated HTML
    * @param options - (unused)
    */
-  protected _replaceHTML(element: JQuery, html: JQuery, options?: any): void;
-
-  /* -------------------------------------------- */
+  protected _replaceHTML(element: JQuery, html: JQuery, options?: Application.RenderOptions): void;
 
   /**
    * Customize how a new HTML Application is added and first appears in the DOC
    * @param options - (unused)
    */
-  protected _injectHTML(html: JQuery, options?: any): void;
-
-  /* -------------------------------------------- */
+  protected _injectHTML(html: JQuery, options?: Application.RenderOptions): void;
 
   /**
    * Specify the set of config buttons which should appear in the Application header.
@@ -270,17 +225,11 @@ declare class Application<T = object> {
    */
   protected _getHeaderButtons(): Application.HeaderButton[];
 
-  /* -------------------------------------------- */
-  /* Event Listeners and Handlers
-  /* -------------------------------------------- */
-
   /**
    * Once the HTML for an Application has been rendered, activate event
    * listeners which provide interactivity for the application
    */
   activateListeners(html: JQuery): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Handle changes to the active tab in a configured Tabs controller
@@ -291,9 +240,7 @@ declare class Application<T = object> {
    * @param active - The new active tab name
    *                 (unused)
    */
-  protected _onChangeTab(event?: any, tabs?: any, active?: any): void;
-
-  /* -------------------------------------------- */
+  protected _onChangeTab(event: MouseEvent, tabs: Tabs, active: string): void;
 
   /**
    * Handle changes to search filtering controllers which are bound to the Application
@@ -304,9 +251,7 @@ declare class Application<T = object> {
    * @param html  - The HTML element which should be filtered
    *                (unused)
    */
-  protected _onSearchFilter(event?: any, query?: any, html?: any): void;
-
-  /* -------------------------------------------- */
+  protected _onSearchFilter(event: KeyboardEvent, query: RegExp, html: HTMLElement): void;
 
   /**
    * Define whether a user is able to begin a dragstart workflow for a given drag selector
@@ -314,9 +259,7 @@ declare class Application<T = object> {
    *                   (unused)
    * @returns Can the current user drag this selector?
    */
-  protected _canDragStart(selector?: any): boolean;
-
-  /* -------------------------------------------- */
+  protected _canDragStart(selector: string | null): boolean;
 
   /**
    * Define whether a user is able to conclude a drag-and-drop workflow for a given drop selector
@@ -324,45 +267,33 @@ declare class Application<T = object> {
    *                   (unused)
    * @returns Can the current user drop on this selector?
    */
-  protected _canDragDrop(selector?: any): boolean;
-
-  /* -------------------------------------------- */
+  protected _canDragDrop(selector: string | null): boolean;
 
   /**
    * Callback actions which occur at the beginning of a drag start workflow.
    * @param event - The originating DragEvent
    *                (unused)
    */
-  protected _onDragStart(event?: any): void;
-
-  /* -------------------------------------------- */
+  protected _onDragStart(event: DragEvent): void;
 
   /**
    * Callback actions which occur when a dragged element is over a drop target.
    * @param event - originating DragEvent
    *                (unused)
    */
-  protected _onDragOver(event?: any): void;
-
-  /* -------------------------------------------- */
+  protected _onDragOver(event: DragEvent): void;
 
   /**
    * Callback actions which occur when a dragged element is dropped on a target.
    * @param event - The originating DragEvent
    *                (unused)
    */
-  protected _onDrop(event?: any): void;
-
-  /* -------------------------------------------- */
-  /*  Methods                                     */
-  /* -------------------------------------------- */
+  protected _onDrop(event: DragEvent): void;
 
   /**
    * Bring the application to the top of the rendering stack
    */
   bringToTop(): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Close the application and un-register references to it within UI mappings
@@ -372,8 +303,6 @@ declare class Application<T = object> {
    */
   close(options?: Application.CloseOptions): Promise<void>;
 
-  /* -------------------------------------------- */
-
   /**
    * Minimize the pop-out window, collapsing it to a small tab
    * Take no action for applications which are not of the pop-out variety or apps which are already minimized
@@ -381,16 +310,12 @@ declare class Application<T = object> {
    */
   minimize(): Promise<void>;
 
-  /* -------------------------------------------- */
-
   /**
    * Maximize the pop-out window, expanding it to its original size
    * Take no action for applications which are not of the pop-out variety or are already maximized
    * @returns A Promise which resolves once the maximization action has completed
    */
   maximize(): Promise<void>;
-
-  /* -------------------------------------------- */
 
   /**
    * Set the application position and store it's new location.
@@ -403,15 +328,11 @@ declare class Application<T = object> {
    */
   setPosition(appPos?: Application.PositionParameter): Application.Position;
 
-  /* -------------------------------------------- */
-
   /**
    * Handle application minimization behavior - collapsing content and reducing
    * the size of the header
    */
   protected _onToggleMinimize(ev: Event): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Additional actions to take when the application window is resized
@@ -440,7 +361,7 @@ declare namespace Application {
     class: string;
     icon: string;
     label: string;
-    onclick?: () => void;
+    onclick: ((ev: JQuery.ClickEvent) => void) | null;
   }
 
   interface Options {
@@ -601,7 +522,6 @@ declare namespace Application {
   /**
    * @see {@link Application.RENDER_STATES}
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   enum RenderState {
     Closing = -2,
     Closed = -1,

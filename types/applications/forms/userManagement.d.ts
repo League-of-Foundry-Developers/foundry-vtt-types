@@ -1,3 +1,3 @@
 declare class UserManagement extends FormApplication {
-  _updateObject(event?: any, formData?: object): void;
+  _updateObject(event?: Event, formData?: object): Promise<any>;
 }

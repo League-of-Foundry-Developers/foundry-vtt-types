@@ -8,7 +8,7 @@
  * @param preview - Configure a preview version of the Drawing which is not yet saved
  */
 declare class DrawingConfig extends FormApplication {
-  _updateObject(event?: Event, formData?: object): void;
+  _updateObject(event?: Event, formData?: object): Promise<any>;
   /**
    * Extend the application close method to clear any preview sound aura if one exists
    */
@@ -22,7 +22,7 @@ declare class DrawingConfig extends FormApplication {
  * @param options - LightConfig ui options (see Application)
  */
 declare class LightConfig extends FormApplication {
-  _updateObject(event?: Event, formData?: object): void;
+  _updateObject(event?: Event, formData?: object): Promise<any>;
 }
 
 /**
@@ -33,7 +33,7 @@ declare class LightConfig extends FormApplication {
  * @param preview - Configure a preview version of a sound which is not yet saved
  */
 declare class AmbientSoundConfig extends FormApplication {
-  _updateObject(event?: Event, formData?: object): void;
+  _updateObject(event?: Event, formData?: object): Promise<any>;
 }
 /**
  * Tile Config Sheet
@@ -43,7 +43,7 @@ declare class AmbientSoundConfig extends FormApplication {
  * @param preview - Configure a preview version of a tile which is not yet saved
  */
 declare class TileConfig extends FormApplication {
-  _updateObject(event?: Event, formData?: object): void;
+  _updateObject(event?: Event, formData?: object): Promise<any>;
 }
 
 /**
@@ -55,7 +55,7 @@ declare class TileConfig extends FormApplication {
  * @param configureDefault - Configure the default actor token on submit
  */
 declare class TokenConfig extends FormApplication {
-  _updateObject(event?: Event, formData?: object): void;
+  _updateObject(event?: Event, formData?: object): Promise<any>;
 }
 
 /**
@@ -65,5 +65,5 @@ declare class TokenConfig extends FormApplication {
  * @param options - Additional options which configure the rendering of the configuration sheet.
  */
 declare class WallConfig extends FormApplication {
-  _updateObject(event?: Event, formData?: object): void;
+  _updateObject(event?: Event, formData?: object): Promise<any>;
 }
