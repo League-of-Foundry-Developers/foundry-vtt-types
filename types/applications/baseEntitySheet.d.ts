@@ -62,7 +62,7 @@ declare namespace BaseEntitySheet {
   interface Data<O extends Entity = Entity> extends FormApplication.Data<O> {
     cssClass: string;
     editable: boolean;
-    entity: O extends Entity<infer D> ? Duplicated<D> : never;
+    entity: Duplicated<O['data']>;
     limited: boolean;
     options: Options;
     owner: boolean;
