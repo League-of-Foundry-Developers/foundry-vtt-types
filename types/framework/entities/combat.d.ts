@@ -261,13 +261,19 @@ declare class Combat extends Entity<Combat.Data> {
    * Create a new Combatant embedded entity
    * @see {@link Combat#createEmbeddedEntity}
    */
-  createCombatant(data: Combat.Combatant | Combat.Combatant[], options?: any): Promise<any>;
+  createCombatant(data: DeepPartial<Combat.Combatant>, options?: any): Promise<Combat.Combatant>;
+  createCombatant(data: DeepPartial<Combat.Combatant>[], options?: any): Promise<Combat.Combatant[]>;
 
   /** @override */
-  updateCombatant(data: Combat.Combatant | Combat.Combatant[], options?: any): Promise<any>;
+  updateCombatant(data: DeepPartial<Combat.Combatant> & { _id: string }, options?: any): Promise<Combat.Combatant>;
+  updateCombatant(
+    data: (DeepPartial<Combat.Combatant> & { _id: string })[],
+    options?: any
+  ): Promise<Combat.Combatant[]>;
 
   /** @override */
-  deleteCombatant(id: string | string[], options?: any): Promise<any>;
+  deleteCombatant(id: string, options?: any): Promise<Combat.Combatant>;
+  deleteCombatant(id: string[], options?: any): Promise<Combat.Combatant[]>;
 
   /* -------------------------------------------- */
   /*  Socket Events and Handlers                  */
@@ -326,7 +332,8 @@ declare namespace Combat {
 
   type Combatant = {
     _id: string;
-    flags: Record<string, any>;
+    defeated?: boolean;
+    flags: Record<string, unknown>;
     hidden?: boolean;
     img: string;
     initiative: number | null;
