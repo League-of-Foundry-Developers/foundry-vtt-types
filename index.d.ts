@@ -151,6 +151,9 @@ import './types/pixi/placeableObjects/tile';
 import './types/pixi/placeableObjects/token';
 import './types/pixi/placeableObjects/wall';
 
+import './types/pixi/shaders/uniform';
+import './types/pixi/shaders/abstractBaseShader';
+
 // UI
 
 import './types/ui/activeEffectConfig';
