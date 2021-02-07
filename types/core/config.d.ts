@@ -209,12 +209,12 @@ declare const CONFIG: {
         /**
          * @defaultValue `TorchIlluminationShader`
          */
-        illuminationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+        illuminationShader: ConstructorOf<AbstractBaseShader>;
 
         /**
          * @defaultValue `TorchColorationShader`
          */
-        colorationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+        colorationShader: ConstructorOf<AbstractBaseShader>;
       };
 
       pulse: {
@@ -231,12 +231,12 @@ declare const CONFIG: {
         /**
          * @defaultValue `PulseIlluminationShader`
          */
-        illuminationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+        illuminationShader: ConstructorOf<AbstractBaseShader>;
 
         /**
          * @defaultValue `PulseColorationShader`
          */
-        colorationShader: any; //  TODO: ConstructorOf<AbstractBaseShader>
+        colorationShader: ConstructorOf<AbstractBaseShader>;
       };
 
       chroma: {
@@ -253,7 +253,7 @@ declare const CONFIG: {
         /**
          * @defaultValue `ChromaColorationShader`
          */
-        colorationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+        colorationShader: ConstructorOf<AbstractBaseShader>;
       };
 
       wave: {
@@ -270,12 +270,12 @@ declare const CONFIG: {
         /**
          * @defaultValue `WaveIlluminationShader`
          */
-        illuminationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+        illuminationShader: ConstructorOf<AbstractBaseShader>;
 
         /**
          * @defaultValue `WaveColorationShader`
          */
-        colorationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+        colorationShader: ConstructorOf<AbstractBaseShader>;
       };
 
       fog: {
@@ -292,7 +292,7 @@ declare const CONFIG: {
         /**
          * @defaultValue `FogColorationShader`
          */
-        colorationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+        colorationShader: ConstructorOf<AbstractBaseShader>;
       };
 
       sunburst: {
@@ -309,12 +309,12 @@ declare const CONFIG: {
         /**
          * @defaultValue `SunburstIlluminationShader`
          */
-        illuminationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+        illuminationShader: ConstructorOf<AbstractBaseShader>;
 
         /**
          * @defaultValue `SunburstColorationShader`
          */
-        colorationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+        colorationShader: ConstructorOf<AbstractBaseShader>;
       };
 
       dome: {
@@ -331,7 +331,7 @@ declare const CONFIG: {
         /**
          * @defaultValue `LightDomeColorationShader`
          */
-        colorationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+        colorationShader: ConstructorOf<AbstractBaseShader>;
       };
 
       emanation: {
@@ -348,7 +348,7 @@ declare const CONFIG: {
         /**
          * @defaultValue `EmanationColorationShader`
          */
-        colorationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+        colorationShader: ConstructorOf<AbstractBaseShader>;
       };
 
       hexa: {
@@ -365,7 +365,7 @@ declare const CONFIG: {
         /**
          * @defaultValue `HexaDomeColorationShader`
          */
-        colorationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+        colorationShader: ConstructorOf<AbstractBaseShader>;
       };
 
       ghost: {
@@ -382,12 +382,12 @@ declare const CONFIG: {
         /**
          * @defaultValue `GhostLightIlluminationShader`
          */
-        illuminationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+        illuminationShader: ConstructorOf<AbstractBaseShader>;
 
         /**
          * @defaultValue `GhostLightColorationShader`
          */
-        colorationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+        colorationShader: ConstructorOf<AbstractBaseShader>;
       };
 
       energy: {
@@ -404,7 +404,7 @@ declare const CONFIG: {
         /**
          * @defaultValue `EnergyFieldColorationShader`
          */
-        colorationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+        colorationShader: ConstructorOf<AbstractBaseShader>;
       };
 
       roiling: {
@@ -421,7 +421,7 @@ declare const CONFIG: {
         /**
          * @defaultValue `RoilingIlluminationShader`
          */
-        illuminationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+        illuminationShader: ConstructorOf<AbstractBaseShader>;
       };
 
       hole: {
@@ -438,7 +438,7 @@ declare const CONFIG: {
         /**
          * @defaultValue `BlackHoleIlluminationShader`
          */
-        illuminationShader: any; // TODO: ConstructorOf<AbstractBaseShader>
+        illuminationShader: ConstructorOf<AbstractBaseShader>;
       };
     } & Partial<
       Record<
@@ -446,8 +446,8 @@ declare const CONFIG: {
         {
           label: string;
           animation: PointSource.AnimationFunction;
-          illuminationShader?: any; // TODO: ConstructorOf<AbstractBaseShader>
-          colorationShader?: any; // TODO: ConstructorOf<AbstractBaseShader>
+          illuminationShader?: ConstructorOf<AbstractBaseShader>;
+          colorationShader?: ConstructorOf<AbstractBaseShader>;
         }
       >
     >;
