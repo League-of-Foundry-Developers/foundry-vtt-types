@@ -164,7 +164,7 @@ declare class PointSource {
    * Create the structure of a source Container which can be rendered to the sight layer shadow-map
    * @returns The constructed light source container
    */
-  protected _createContainer(shaderCls: any /* TODO: ConstructorOf<AbstractBaseShader> */): PIXI.Container;
+  protected _createContainer(shaderCls: ConstructorOf<AbstractBaseShader>): PIXI.Container;
 
   /**
    * Initialize the source with provided object data.

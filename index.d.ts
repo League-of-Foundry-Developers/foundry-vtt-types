@@ -151,6 +151,28 @@ import './types/pixi/placeableObjects/tile';
 import './types/pixi/placeableObjects/token';
 import './types/pixi/placeableObjects/wall';
 
+import './types/pixi/shaders/abstractBaseShader';
+import './types/pixi/shaders/standardIlluminationShader';
+import './types/pixi/shaders/standardColorationShader';
+import './types/pixi/shaders/torchIlluminationShader';
+import './types/pixi/shaders/torchColorationShader';
+import './types/pixi/shaders/pulseIlluminationShader';
+import './types/pixi/shaders/pulseColorationShader';
+import './types/pixi/shaders/energyFieldColorationShader';
+import './types/pixi/shaders/chromaColorationShader';
+import './types/pixi/shaders/waveIlluminationShader';
+import './types/pixi/shaders/waveColorationShader';
+import './types/pixi/shaders/fogColorationShader';
+import './types/pixi/shaders/sunburstIlluminationShader';
+import './types/pixi/shaders/sunburstColorationShader';
+import './types/pixi/shaders/lightDomeColorationShader';
+import './types/pixi/shaders/emanationColorationShader';
+import './types/pixi/shaders/ghostLightIlluminationShader';
+import './types/pixi/shaders/ghostLightColorationShader';
+import './types/pixi/shaders/hexaDomeColorationShader';
+import './types/pixi/shaders/roilingIlluminationShader';
+import './types/pixi/shaders/blackHoleIlluminationShader';
+
 // UI
 
 import './types/ui/activeEffectConfig';
