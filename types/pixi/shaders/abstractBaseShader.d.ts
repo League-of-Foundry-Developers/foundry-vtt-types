@@ -7,7 +7,7 @@ declare abstract class AbstractBaseShader extends PIXI.Shader {
   /**
    * The initial default values of shader uniforms
    */
-  _defaults: AbstractBaseShader.Uniforms;
+  protected _defaults: AbstractBaseShader.Uniforms;
 
   /**
    * The default vertex shader used by all instances of AbstractBaseShader
