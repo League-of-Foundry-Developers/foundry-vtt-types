@@ -6,8 +6,7 @@
  * System modifications may elect to override this class to better suit their own game system by re-defining the value
  * `CONFIG.Actor.sheetClass`.
  *
- * @typeParam O - the type of the Entity which should be managed by this form
- *                sheet
+ * @typeParam O - the type of the Entity which should be managed by this form sheet
  */
 declare class ActorSheet<O extends Actor = Actor> extends BaseEntitySheet<O> {
   /**
