@@ -292,7 +292,7 @@ declare abstract class DiceTerm {
   /**
    * Define the modifiers that can be used for this particular DiceTerm type.
    */
-  static MODIFIERS: Partial<Record<string, string | ((this: DiceTerm, modifier: string) => void | DiceTerm)>>;
+  static MODIFIERS: DiceTerm.Modifiers;
 
   /**
    * A regular expression pattern which identifies a potential DiceTerm modifier
@@ -343,5 +343,9 @@ declare namespace DiceTerm {
     active: boolean;
     discarded?: boolean;
     result: number;
+  }
+
+  interface Modifiers {
+    [key: string]: string | ((modifier: string) => void | unknown);
   }
 }

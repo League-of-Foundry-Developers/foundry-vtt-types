@@ -170,22 +170,7 @@ declare class Die extends DiceTerm {
   /**
    * @override
    */
-  static MODIFIERS: typeof DiceTerm.MODIFIERS & {
-    r: 'reroll';
-    x: 'explode';
-    xo: 'explodeOnce';
-    k: 'keep';
-    kh: 'keep';
-    kl: 'keep';
-    d: 'drop';
-    dh: 'drop';
-    dl: 'drop';
-    cs: 'countSuccess';
-    cf: 'countFailures';
-    df: 'deductFailures';
-    sf: 'subtractFailures';
-    ms: 'marginSuccess';
-  };
+  static MODIFIERS: Die.Modifiers;
 
   static fromResults(options: Partial<Die.TermData>, results: DiceTerm.Result[]): Die;
 }
@@ -201,6 +186,24 @@ declare namespace Die {
   }
 
   interface TermData extends DiceTerm.TermData {
-    modifiers: Array<keyof typeof Die['MODIFIERS']>;
+    modifiers: Array<Extract<keyof Modifiers, string>>;
+  }
+
+  interface Modifiers extends DiceTerm.Modifiers {
+    [key: string]: string | ((this: Die, modifier: string) => void | Die);
+    r: 'reroll';
+    x: 'explode';
+    xo: 'explodeOnce';
+    k: 'keep';
+    kh: 'keep';
+    kl: 'keep';
+    d: 'drop';
+    dh: 'drop';
+    dl: 'drop';
+    cs: 'countSuccess';
+    cf: 'countFailures';
+    df: 'deductFailures';
+    sf: 'subtractFailures';
+    ms: 'marginSuccess';
   }
 }

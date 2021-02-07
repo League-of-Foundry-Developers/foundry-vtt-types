@@ -38,9 +38,7 @@ declare class Coin extends DiceTerm {
 
   static DENOMINATION: 'c';
 
-  static MODIFIERS: typeof DiceTerm.MODIFIERS & {
-    c: 'call';
-  };
+  static MODIFIERS: Coin.Modifiers;
 
   static fromResults(options: Partial<Coin.TermData>, results: DiceTerm.Result[]): Coin;
 }
@@ -56,6 +54,11 @@ declare namespace Coin {
   }
 
   interface TermData extends DiceTerm.TermData {
-    modifiers: Array<keyof typeof Coin['MODIFIERS']>;
+    modifiers: Array<Extract<keyof Modifiers, string>>;
+  }
+
+  interface Modifiers extends DiceTerm.Modifiers {
+    [key: string]: string | ((this: Coin, modifier: string) => void | Coin);
+    c: 'call';
   }
 }
