@@ -170,7 +170,7 @@ declare class Die extends DiceTerm {
   /**
    * @override
    */
-  static MODIFIERS: {
+  static MODIFIERS: typeof DiceTerm.MODIFIERS & {
     r: 'reroll';
     x: 'explode';
     xo: 'explodeOnce';
