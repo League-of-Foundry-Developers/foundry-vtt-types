@@ -6,14 +6,16 @@
  * System modifications may elect to override this class to better suit their own game system by re-defining the value
  * `CONFIG.Item.sheetClass`.
  *
- * @param item - The Item instance being displayed within the sheet.
- * @param options - Additional options which modify the rendering of the item.
- * @param editable - Is the item editable? Default is true.
- * @typeParam T - the type of the data used to render the inner template
  * @typeParam O - the type of the Entity which should be managed by this form
  *                sheet
  */
-declare class ItemSheet<T = object, O extends Item = Item> extends BaseEntitySheet<T, O> {
+declare class ItemSheet<O extends Item = Item> extends BaseEntitySheet<O> {
+  /**
+   * @param item    - The Item instance being displayed within the sheet.
+   * @param options - Additional options which modify the rendering of the item.
+   */
+  constructor(item: O, options?: BaseEntitySheet.Options);
+
   /**
    * Assign the default options which are supported by this Application
    */
@@ -36,16 +38,29 @@ declare class ItemSheet<T = object, O extends Item = Item> extends BaseEntityShe
   get actor(): Actor<Actor.Data<any, O['data']>, O> | null;
 
   /**
+   * @param options - (unused)
+   * @override
+   */
+  getData(options?: any): ItemSheet.Data<O> | Promise<ItemSheet.Data<O>>;
+
+  /** @override */
+  protected _getHeaderButtons(): Application.HeaderButton[];
+
+  /**
    * Activate listeners which provide interactivity for item sheet events
    * @param html - The HTML object returned by template rendering
    */
   activateListeners(html: JQuery): void;
 
   /**
-   * @param options - (unused)
-   * @override
+   * Handle requests to configure the default sheet used by this Item
    */
-  getData(options?: any): ItemSheet.Data<O>;
+  protected _onConfigureSheet(event: JQuery.ClickEvent): void;
+
+  /**
+   * Handle changing the item image
+   */
+  protected _onEditImage(event: JQuery.ClickEvent): Promise<any>; // TODO: Adjust once FilePicker is updated
 }
 
 declare namespace ItemSheet {
@@ -54,7 +69,7 @@ declare namespace ItemSheet {
    *                sheet
    */
   interface Data<O extends Item = Item> extends BaseEntitySheet.Data<O> {
-    data: any;
-    item: O extends Item<infer D> ? D : never;
+    data: BaseEntitySheet.Data<O>['entity']['data'];
+    item: BaseEntitySheet.Data<O>['entity'];
   }
 }

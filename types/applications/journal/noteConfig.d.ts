@@ -4,7 +4,7 @@
  * @param options - Additional Application options
  */
 declare class NoteConfig extends FormApplication {
-  _updateObject(event?: Event, formData?: object): void;
+  _updateObject(event?: Event, formData?: object): Promise<any>; // TODO: Add correct return type
   /**
    * Extend the logic applied when the application is closed to clear any preview notes
    */

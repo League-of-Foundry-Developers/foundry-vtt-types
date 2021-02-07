@@ -12,9 +12,9 @@ import './types/applications/formApplication';
 import './types/applications/formDataExtended';
 import './types/applications/localization';
 
-import './types/applications/forms/actor';
+import './types/applications/forms/actorSheet';
 import './types/applications/forms/forms';
-import './types/applications/forms/item';
+import './types/applications/forms/itemSheet';
 import './types/applications/forms/permission';
 import './types/applications/forms/rollTableConfig';
 import './types/applications/forms/scene';

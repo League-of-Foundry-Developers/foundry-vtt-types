@@ -6,12 +6,11 @@
  * 2) The template used contains one (and only one) HTML form as it's outer-most element
  * 3) This abstract layer has no knowledge of what is being updated, so the implementation must define _updateObject
  *
- * @typeParam T - the type of the data used to render the inner template
- * @typeParam O - the type of the object target which we are using this form to modify
+ * @typeParam O - the type of the object or entity target which we are using this form to modify
  */
-declare abstract class FormApplication<T = object, O = object> extends Application<T> {
+declare abstract class FormApplication<O = {}> extends Application {
   /**
-   * @param object - Some object or entity which is the target to be updated.
+   * @param object  - Some object or entity which is the target to be updated.
    *                 (default: `{}`)
    * @param options - Additional options which modify the rendering of the sheet.
    *                  (default: `{}`)
@@ -27,8 +26,9 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
 
   /**
    * A convenience reference to the form HTLMElement
+   * @defaultValue `null`
    */
-  form: HTMLElement;
+  form: HTMLElement | null;
 
   /**
    * Keep track of any FilePicker instances which are associated with this form
@@ -39,10 +39,9 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
   /**
    * Keep track of any mce editors which may be active as part of this form
    * The values of this Array are inner-objects with references to the MCE editor and other metadata
+   * @defaultValue `{}`
    */
-  editors: Array<Record<string, FormApplication.Editor>>;
-
-  /* -------------------------------------------- */
+  editors: Partial<Record<string, FormApplication.Editor>>;
 
   /**
    * Assign the default options which are supported by the entity edit sheet.
@@ -52,41 +51,27 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    */
   static get defaultOptions(): FormApplication.Options;
 
-  /* -------------------------------------------- */
-
   /**
    * Is the Form Application currently editable?
    */
   get isEditable(): boolean;
 
-  /* -------------------------------------------- */
-  /*  Rendering                                   */
-  /* -------------------------------------------- */
-
   /**
    * @param options - (unused) (default: `{}`)
    * @override
    */
-  getData(options?: any): FormApplication.Data<O>;
-
-  /* -------------------------------------------- */
+  getData(options?: Application.RenderOptions): FormApplication.Data<O> | Promise<FormApplication.Data<O>>;
 
   /**
    * @override
    */
   protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
 
-  /* -------------------------------------------- */
-
   /**
    * @param options - (unused)
    * @override
    */
-  protected _renderInner(data: T, options?: any): Promise<JQuery>;
-
-  /* -------------------------------------------- */
-  /*  Event Listeners and Handlers                */
-  /* -------------------------------------------- */
+  protected _renderInner(data: object, options?: Application.RenderOptions): Promise<JQuery>;
 
   /**
    * Activate the default set of listeners for the Entity sheet
@@ -97,14 +82,10 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    */
   activateListeners(html: JQuery): void;
 
-  /* -------------------------------------------- */
-
   /**
    * If the form is not editable, disable its input fields
    */
   protected _disableFields(form: HTMLElement): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Handle standard form submission steps
@@ -112,10 +93,10 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * @param options - (default: `{}`)
    * @returns A promise which resolves to the validated update data
    */
-  // TODO: update the types here once FormDataExtended is updated
-  protected _onSubmit(event: Event, options?: FormApplication.OnSubmitOptions): Promise<object>;
-
-  /* -------------------------------------------- */
+  protected _onSubmit(
+    event: Event,
+    options?: FormApplication.OnSubmitOptions
+  ): Promise<Partial<Record<string, unknown>>>;
 
   /**
    * Get an object of update data used to update the form's target object
@@ -123,34 +104,26 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    *                     (default: `{}`)
    * @returns The prepared update data
    */
-  // TODO: update the types here once FormDataExtended is updated
-  protected _getSubmitData<T>(updateData: Partial<T>): T;
-
-  /* -------------------------------------------- */
+  // TODO: Maybe we can calculate how the flattened `updateData` looks like, then it would be Partial<Record<string, unknown>> & Flattened<T>
+  protected _getSubmitData(updateData?: object): Partial<Record<string, unknown>>;
 
   /**
    * Handle changes to an input element, submitting the form if options.submitOnChange is true.
    * Do not preventDefault in this handler as other interactions on the form may also be occurring.
    * @param event - The initial change event
    */
-  protected _onChangeInput(event: Event): object;
-
-  /* -------------------------------------------- */
+  protected _onChangeInput(event: Event): void | Promise<Partial<Record<string, unknown>>>;
 
   /**
    * Handle the change of a color picker input which enters it's chosen value into a related input field
    */
   protected _onChangeColorPicker(event: Event): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Handle changes to a range type input by propagating those changes to the sibling range-value element
    * @param event - The initial change event
    */
   protected _onChangeRange(event: Event): void;
-
-  /* -------------------------------------------- */
 
   /**
    * This method is called upon form submission after form data is validated
@@ -160,11 +133,7 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    *                   (unused)
    * @returns A Promise which resolves once the update operation has completed
    */
-  protected abstract _updateObject(event?: any, formData?: object): void;
-
-  /* -------------------------------------------- */
-  /*  TinyMCE Editor                              */
-  /* -------------------------------------------- */
+  protected abstract _updateObject(event: Event, formData?: object): Promise<unknown>;
 
   /**
    * Activate a named TinyMCE text editor
@@ -176,8 +145,6 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    */
   activateEditor(name: string, options?: TextEditor.Options, initialContent?: string): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Handle saving the content of a specific editor by name
    * @param name   - The named editor to save
@@ -186,33 +153,21 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    */
   saveEditor(name: string, { remove }?: { remove?: boolean }): Promise<void>;
 
-  /* -------------------------------------------- */
-
   /**
    * Activate a TinyMCE editor instance present within the form
    */
   protected _activateEditor(div: HTMLElement): void;
-
-  /* -------------------------------------------- */
-  /*  FilePicker UI
-  /* -------------------------------------------- */
 
   /**
    * Activate a FilePicker instance present within the form
    */
   protected _activateFilePicker(button: HTMLElement): void;
 
-  /* -------------------------------------------- */
-  /*  Methods                                     */
-  /* -------------------------------------------- */
-
   /**
    * @param options - (default: `{}`)
    * @override
    */
   close(options?: FormApplication.CloseOptions): Promise<void>;
-
-  /* -------------------------------------------- */
 
   /**
    * Submit the contents of a Form Application, processing its content as defined by the Application
@@ -221,10 +176,6 @@ declare abstract class FormApplication<T = object, O = object> extends Applicati
    * @returns Return a self-reference for convenient method chaining
    */
   submit(options?: FormApplication.OnSubmitOptions): Promise<this>;
-
-  /* -------------------------------------------- */
-  /*  Deprecated Methods                          */
-  /* -------------------------------------------- */
 
   /**
    * @deprecated since 0.7.2
@@ -245,7 +196,7 @@ declare namespace FormApplication {
   }
 
   interface Data<O> {
-    object: O;
+    object?: Duplicated<O>;
     options: FormApplication.Options;
     title: string;
   }
