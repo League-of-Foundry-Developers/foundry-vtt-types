@@ -1,13 +1,13 @@
 /**
  * This class defines an interface which all shaders utilize
  */
-declare class AbstractBaseShader extends PIXI.Shader {
-  constructor(program: PIXI.Program, uniforms: Partial<Record<string, Uniform>>);
+declare abstract class AbstractBaseShader extends PIXI.Shader {
+  constructor(program: PIXI.Program, uniforms: AbstractBaseShader.Uniforms);
 
   /**
    * The initial default values of shader uniforms
    */
-  _defaults: Partial<Record<string, Uniform>>;
+  _defaults: AbstractBaseShader.Uniforms;
 
   /**
    * The default vertex shader used by all instances of AbstractBaseShader
@@ -17,7 +17,6 @@ declare class AbstractBaseShader extends PIXI.Shader {
   /**
    * The fragment shader which renders this source.
    * A subclass of AbstractBaseShader must implement the fragmentShader static field.
-   * @defaultValue `''`
    */
   static fragmentShader: string;
 
@@ -26,15 +25,12 @@ declare class AbstractBaseShader extends PIXI.Shader {
    * A subclass of AbstractBaseShader must implement the defaultUniforms static field.
    * @defaultValue `{}`
    */
-  static defaultUniforms: Partial<Record<string, Uniform>>;
+  static defaultUniforms: AbstractBaseShader.Uniforms;
 
   /**
    * A factory method for creating the shader using its defined default values
    */
-  static create<T extends AbstractBaseShader>(
-    this: ConstructorOf<T>,
-    defaultUniforms?: Partial<Record<string, Uniform>>
-  ): T;
+  static create<T extends AbstractBaseShader>(this: ConstructorOf<T>, defaultUniforms?: AbstractBaseShader.Uniforms): T;
 
   /**
    * Reset the shader uniforms back to their provided default values
@@ -84,4 +80,21 @@ declare class AbstractBaseShader extends PIXI.Shader {
    * Convert a Hue-Saturation-Brightness color to RGB - useful to convert polar coordinates to RGB
    */
   static HSB2RGB: string;
+}
+
+declare namespace AbstractBaseShader {
+  type UniformValue =
+    | boolean
+    | number
+    | Int32List
+    | Float32List
+    | { x: number; y: number }
+    | { x: number; y: number; z: number }
+    | { x: number; y: number; z: number; w: number }
+    | { x: number; y: number }[]
+    | { x: number; y: number; z: number }[]
+    | { x: number; y: number; z: number; w: number }[]
+    | PIXI.Texture;
+
+  type Uniforms = Partial<Record<string, AbstractBaseShader.UniformValue>>;
 }

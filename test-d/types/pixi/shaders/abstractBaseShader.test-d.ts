@@ -1,8 +1,8 @@
 import '../../../../index';
-import { expectType } from 'tsd';
+import { expectError, expectType } from 'tsd';
 
 class TestShader extends AbstractBaseShader {
-  constructor(program: PIXI.Program, uniforms: Partial<Record<string, Uniform>>) {
+  constructor(program: PIXI.Program, uniforms: AbstractBaseShader.Uniforms) {
     super(program, uniforms);
     this.defaults = this._defaults;
   }
@@ -11,11 +11,17 @@ class TestShader extends AbstractBaseShader {
 }
 
 const testShader = TestShader.create();
-expectType<Uniform | undefined>(testShader.defaults.foo);
-expectType<Uniform | undefined>(testShader.defaults.bar);
+expectType<AbstractBaseShader.UniformValue | undefined>(testShader.defaults.foo);
+expectType<AbstractBaseShader.UniformValue | undefined>(testShader.defaults.bar);
 
 const testShader2 = TestShader.create({
-  someUniform: { type: '1i', value: 42 },
-  anotherUniform: { type: 'Matrix2fv', value: [1.1, 2.2, 3.3, 4.4] }
+  alpha: 1.0,
+  ratio: 0.5,
+  colorDim: [0.5, 0.5, 0.5],
+  colorBright: [1.0, 1.0, 1.0],
+  time: 0,
+  intensity: 5
 });
-testShader2.defaults.yetAnotherUniform = { type: 'c', value: [0, 0, 0] };
+testShader2.defaults.darkness = false;
+
+expectError(TestShader.create({ foo: 'bar' }));
