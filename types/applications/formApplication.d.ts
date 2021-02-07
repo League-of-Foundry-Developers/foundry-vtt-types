@@ -6,9 +6,13 @@
  * 2) The template used contains one (and only one) HTML form as it's outer-most element
  * 3) This abstract layer has no knowledge of what is being updated, so the implementation must define _updateObject
  *
+ * @typeParam D - The data structure used to render the handlebars template.
  * @typeParam O - the type of the object or entity target which we are using this form to modify
  */
-declare abstract class FormApplication<O = {}> extends Application {
+declare abstract class FormApplication<
+  D extends object = FormApplication.Data<{}>,
+  O extends object = D extends FormApplication.Data<infer T> ? T : {}
+> extends Application {
   /**
    * @param object  - Some object or entity which is the target to be updated.
    *                 (default: `{}`)
@@ -60,7 +64,7 @@ declare abstract class FormApplication<O = {}> extends Application {
    * @param options - (unused) (default: `{}`)
    * @override
    */
-  getData(options?: Application.RenderOptions): FormApplication.Data<O> | Promise<FormApplication.Data<O>>;
+  getData(options?: Application.RenderOptions): D | Promise<D>;
 
   /**
    * @override
@@ -71,7 +75,7 @@ declare abstract class FormApplication<O = {}> extends Application {
    * @param options - (unused)
    * @override
    */
-  protected _renderInner(data: object, options?: Application.RenderOptions): Promise<JQuery>;
+  protected _renderInner(data: D, options?: Application.RenderOptions): Promise<JQuery>;
 
   /**
    * Activate the default set of listeners for the Entity sheet
@@ -196,7 +200,7 @@ declare namespace FormApplication {
   }
 
   interface Data<O> {
-    object?: Duplicated<O>;
+    object: Duplicated<O>;
     options: FormApplication.Options;
     title: string;
   }

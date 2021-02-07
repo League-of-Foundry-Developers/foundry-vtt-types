@@ -3,7 +3,7 @@
  * See the FormApplication documentation for more complete description of this interface.
  * @typeParam O - the type of the Entity which should be managed by this form sheet
  */
-declare class BaseEntitySheet<O extends Entity = Entity> extends FormApplication<O> {
+declare class BaseEntitySheet<O extends Entity = Entity> extends FormApplication<BaseEntitySheet.Data<O>, O> {
   /**
    * @param object  - An Entity which should be managed by this form sheet.
    * @param options - Optional configuration parameters for how the form behaves.
@@ -59,7 +59,7 @@ declare namespace BaseEntitySheet {
    * @typeParam D - the type of the data in the Entity
    * @typeParam O - the type of the Entity which should be managed by this form sheet
    */
-  interface Data<O extends Entity = Entity> extends FormApplication.Data<O> {
+  interface Data<O extends Entity = Entity> {
     cssClass: string;
     editable: boolean;
     entity: Duplicated<O['data']>;
