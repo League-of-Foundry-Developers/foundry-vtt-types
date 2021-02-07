@@ -17,6 +17,9 @@ declare abstract class AbstractBaseShader extends PIXI.Shader {
   /**
    * The fragment shader which renders this source.
    * A subclass of AbstractBaseShader must implement the fragmentShader static field.
+   *
+   * @remarks
+   * This is abstract, subclasses must implement it.
    */
   static fragmentShader: string;
 
@@ -24,6 +27,9 @@ declare abstract class AbstractBaseShader extends PIXI.Shader {
    * The default uniform values for the shader.
    * A subclass of AbstractBaseShader must implement the defaultUniforms static field.
    * @defaultValue `{}`
+   *
+   * @remarks
+   * This is abstract, subclasses must implement it.
    */
   static defaultUniforms: AbstractBaseShader.Uniforms;
 
