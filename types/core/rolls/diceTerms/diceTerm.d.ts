@@ -292,7 +292,7 @@ declare abstract class DiceTerm {
   /**
    * Define the modifiers that can be used for this particular DiceTerm type.
    */
-  static MODIFIERS: Record<string, string | ((diceTerm: DiceTerm, m: string) => void)>;
+  static MODIFIERS: Partial<Record<string, string | ((this: DiceTerm, modifier: string) => void | DiceTerm)>>;
 
   /**
    * A regular expression pattern which identifies a potential DiceTerm modifier
