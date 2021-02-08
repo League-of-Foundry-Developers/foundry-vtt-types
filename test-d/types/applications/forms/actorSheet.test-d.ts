@@ -8,7 +8,7 @@ type TestActorData = Actor.Data<{ bar: number }, TestItemData>;
 class TestActor extends Actor<TestActorData, TestItem> {}
 const testActor = new TestActor();
 
-class TestActorSheet extends ActorSheet<TestActor> {}
+class TestActorSheet extends ActorSheet<ActorSheet.Data<TestActor>> {}
 const testActorSheet = new TestActorSheet(testActor);
 
 const sheetData = await testActorSheet.getData();
