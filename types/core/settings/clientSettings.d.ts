@@ -166,7 +166,7 @@ declare namespace ClientSettings {
     module: string;
   }
 
-  interface CompleteMenuSettings<F extends FormApplication = FormApplication> extends PartialMenuSettings<F> {
+  interface CompleteMenuSettings extends PartialMenuSettings {
     key: string;
     module: string;
   }
@@ -187,12 +187,12 @@ declare namespace ClientSettings {
     type?: ConstructorOf<T>;
   }
 
-  interface PartialMenuSettings<F extends FormApplication = FormApplication> {
+  interface PartialMenuSettings {
     hint?: string;
     icon?: string;
     label?: string;
     name?: string;
     restricted: boolean;
-    type: ConstructorOf<F>;
+    type: ConstructorOf<FormApplication<object>>;
   }
 }

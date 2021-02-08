@@ -1,9 +1,13 @@
 /**
  * Extend the FormApplication pattern to incorporate specific logic for viewing or editing Entity instances.
  * See the FormApplication documentation for more complete description of this interface.
+ * @typeParam D - The data structure used to render the handlebars template.
  * @typeParam O - the type of the Entity which should be managed by this form sheet
  */
-declare class BaseEntitySheet<O extends Entity = Entity> extends FormApplication<O> {
+declare class BaseEntitySheet<
+  D extends object = BaseEntitySheet.Data<Entity>,
+  O extends Entity = D extends BaseEntitySheet.Data<infer T> ? T : Entity
+> extends FormApplication<D, O> {
   /**
    * @param object  - An Entity which should be managed by this form sheet.
    * @param options - Optional configuration parameters for how the form behaves.
@@ -40,7 +44,7 @@ declare class BaseEntitySheet<O extends Entity = Entity> extends FormApplication
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): BaseEntitySheet.Data<O> | Promise<BaseEntitySheet.Data<O>>;
+  getData(options?: Application.RenderOptions): D | Promise<D>;
 
   /**
    * @override
@@ -59,7 +63,7 @@ declare namespace BaseEntitySheet {
    * @typeParam D - the type of the data in the Entity
    * @typeParam O - the type of the Entity which should be managed by this form sheet
    */
-  interface Data<O extends Entity = Entity> extends FormApplication.Data<O> {
+  interface Data<O extends Entity = Entity> {
     cssClass: string;
     editable: boolean;
     entity: Duplicated<O['data']>;

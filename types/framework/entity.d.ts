@@ -170,13 +170,13 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * actor.sheet // ActorSheet
    * ```
    */
-  get sheet(): BaseEntitySheet;
+  get sheet(): BaseEntitySheet<BaseEntitySheet.Data<this>, this> | null;
 
   /**
    * Obtain a reference to the BaseEntitySheet implementation which should be used to render the Entity instance
    * configuration sheet.
    */
-  protected get _sheetClass(): BaseEntitySheet;
+  protected get _sheetClass(): BaseEntitySheet<BaseEntitySheet.Data<this>, this> | null;
 
   /**
    * Return a reference to the Folder which this Entity belongs to, if any.
