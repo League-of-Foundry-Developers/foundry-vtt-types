@@ -2,11 +2,16 @@ import '../../../../index';
 import { expectType } from 'tsd';
 
 type TestItemData = Item.Data<{ foo: string }>;
-class TestItem extends Item<TestItemData> {}
+class TestItem extends Item<TestItemData> {
+  foo = 'bar';
+}
 const testItem = new TestItem();
 
 class TestItemSheet extends ItemSheet<ItemSheet.Data<TestItem>> {}
 const testItemSheet = new TestItemSheet(testItem);
+
+expectType<TestItem>(testItemSheet.item);
+expectType<string>(testItemSheet.item.foo);
 
 const sheetData = await testItemSheet.getData();
 
