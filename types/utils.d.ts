@@ -210,7 +210,7 @@ declare function flattenObject(obj: object, _d?: number): any;
  *              (default: `0`)
  * @returns An expanded object
  */
-declare function expandObject(obj: object, _d?: number): any;
+declare function expandObject<T extends object>(obj: T, _d?: number): Expanded<T>;
 
 /* -------------------------------------------- */
 
@@ -289,61 +289,56 @@ declare function invertObject(obj: object): object;
  * mergeObject({k1: "v1", k2: "v2"}, {"-=k1": null});   // {k2: "v2"}
  * ```
  */
-declare function mergeObject<T>(
+declare function mergeObject<T, U, S extends 'strict' | 'lenient' = 'strict'>(
   original: T,
-  other?: T,
-  {
-    insertKeys,
-    insertValues,
-    overwrite,
-    recursive,
-    inplace,
-    enforceTypes
-  }?: {
-    /**
-     * Control whether to insert new top-level objects into the resulting structure
-     * which do not previously exist in the original object.
-     * @defaultValue `true`
-     */
-    insertKeys?: boolean;
-
-    /**
-     * Control whether to insert new nested values into child objects in the resulting
-     * structure which did not previously exist in the original object.
-     * @defaultValue `true`
-     */
-    insertValues?: boolean;
-
-    /**
-     * Control whether to replace existing values in the source, or only merge values
-     * which do not already exist in the original object.
-     * @defaultValue `true`
-     */
-    overwrite?: boolean;
-
-    /**
-     * Control whether to merge inner-objects recursively (if true), or whether to
-     * simply replace inner objects with a provided new value.
-     * @defaultValue `true`
-     */
-    recursive?: boolean;
-
-    /**
-     * Control whether to apply updates to the original object in-place (if true),
-     * otherwise the original object is duplicated and the copy is merged.
-     * @defaultValue `true`
-     */
-    inplace?: boolean;
-
-    /**
-     * Control whether strict type checking requires that the value of a key in the
-     * other object must match the data type in the original data to be merged.
-     * @defaultValue `false`
-     */
-    enforceTypes?: boolean;
-  },
+  other?: U,
+  { insertKeys, insertValues, overwrite, recursive, inplace, enforceTypes }?: MergeObjectOptions,
   _d?: number
-): T;
+): S extends 'strict' ? DeepMerge<Expanded<T>, Expanded<U>> : unknown;
+
+declare interface MergeObjectOptions {
+  /**
+   * Control whether to insert new top-level objects into the resulting structure
+   * which do not previously exist in the original object.
+   * @defaultValue `true`
+   */
+  insertKeys?: boolean;
+
+  /**
+   * Control whether to insert new nested values into child objects in the resulting
+   * structure which did not previously exist in the original object.
+   * @defaultValue `true`
+   */
+  insertValues?: boolean;
+
+  /**
+   * Control whether to replace existing values in the source, or only merge values
+   * which do not already exist in the original object.
+   * @defaultValue `true`
+   */
+  overwrite?: boolean;
+
+  /**
+   * Control whether to merge inner-objects recursively (if true), or whether to
+   * simply replace inner objects with a provided new value.
+   * @defaultValue `true`
+   */
+  recursive?: boolean;
+
+  /**
+   * Control whether to apply updates to the original object in-place (if true),
+   * otherwise the original object is duplicated and the copy is merged.
+   * @defaultValue `true`
+   */
+  inplace?: boolean;
+
+  /**
+   * Control whether strict type checking requires that the value of a key in the
+   * other object must match the data type in the original data to be merged.
+   * @defaultValue `false`
+   */
+  enforceTypes?: boolean;
+}
 
 /* -------------------------------------------- */
 
