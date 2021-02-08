@@ -5,11 +5,13 @@
  *
  * System modifications may elect to override this class to better suit their own game system by re-defining the value
  * `CONFIG.Item.sheetClass`.
- *
- * @typeParam O - the type of the Entity which should be managed by this form
- *                sheet
+ * @typeParam D - The data structure used to render the handlebars template.
+ * @typeParam O - the type of the Entity which should be managed by this form sheet
  */
-declare class ItemSheet<O extends Item = Item> extends BaseEntitySheet<O> {
+declare class ItemSheet<
+  D extends object = ActorSheet.Data<Actor>,
+  O extends Item = D extends ItemSheet.Data<infer T> ? T : Item
+> extends BaseEntitySheet<D, O> {
   /**
    * @param item    - The Item instance being displayed within the sheet.
    * @param options - Additional options which modify the rendering of the item.
@@ -41,7 +43,7 @@ declare class ItemSheet<O extends Item = Item> extends BaseEntitySheet<O> {
    * @param options - (unused)
    * @override
    */
-  getData(options?: any): ItemSheet.Data<O> | Promise<ItemSheet.Data<O>>;
+  getData(options?: any): D | Promise<D>;
 
   /** @override */
   protected _getHeaderButtons(): Application.HeaderButton[];

@@ -5,10 +5,13 @@
  *
  * System modifications may elect to override this class to better suit their own game system by re-defining the value
  * `CONFIG.Actor.sheetClass`.
- *
+ * @typeParam D - The data structure used to render the handlebars template.
  * @typeParam O - the type of the Entity which should be managed by this form sheet
  */
-declare class ActorSheet<O extends Actor = Actor> extends BaseEntitySheet<O> {
+declare class ActorSheet<
+  D extends object = ActorSheet.Data<Actor>,
+  O extends Actor = D extends ActorSheet.Data<infer T> ? T : Actor
+> extends BaseEntitySheet<D, O> {
   /**
    * @param actor   - The Actor instance being displayed within the sheet.
    * @param options - Additional options which modify the rendering of the
@@ -39,7 +42,7 @@ declare class ActorSheet<O extends Actor = Actor> extends BaseEntitySheet<O> {
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): ActorSheet.Data<O> | Promise<ActorSheet.Data<O>>;
+  getData(options?: Application.RenderOptions): D | Promise<D>;
 
   /**
    * @override
