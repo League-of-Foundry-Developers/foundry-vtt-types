@@ -202,7 +202,7 @@ declare class Application {
    * @param options - (unused)
    * @returns A promise resolving to the constructed jQuery object
    */
-  protected _renderInner(data: object, options?: Application.RenderOptions): Promise<JQuery>;
+  protected _renderInner(data: object, options?: Application.RenderOptions): JQuery | Promise<JQuery>;
 
   /**
    * Customize how inner HTML is replaced when the application is refreshed
