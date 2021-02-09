@@ -3,6 +3,8 @@
  *
  * @param object  - The target active effect being configured
  * @param options - Additional options which modify this application instance
+ * @typeParam D - The data structure used to render the handlebars template.
+ * @typeParam O - the type of the ActiveEffect which should be managed by this form sheet
  */
 declare class ActiveEffectConfig<
   D extends object = ActiveEffectConfig.Data,
@@ -38,8 +40,8 @@ declare class ActiveEffectConfig<
 }
 
 declare namespace ActiveEffectConfig {
-  interface Data<A extends ActiveEffect = ActiveEffect> {
-    effect: Duplicated<A['data']>;
+  interface Data<O extends ActiveEffect = ActiveEffect> {
+    effect: Duplicated<O['data']>;
     isActorEffect: boolean;
     isItemEffect: boolean;
     submitText: string;
