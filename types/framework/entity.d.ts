@@ -346,8 +346,14 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const updated = await Entity.update<Actor>(data); // Returns an Array of Entities, updated in the database
    * ```
    */
-  static update<T extends Entity>(data: DeepPartial<T['data']>, options?: Entity.UpdateOptions): Promise<T>;
-  static update<T extends Entity>(data: DeepPartial<T['data']>[], options?: Entity.UpdateOptions): Promise<T[]>;
+  static update<T extends Entity>(
+    data: DeepPartial<T['data']> & Partial<Record<string, any>>,
+    options?: Entity.UpdateOptions
+  ): Promise<T>;
+  static update<T extends Entity>(
+    data: (DeepPartial<T['data']> & Partial<Record<string, any>>)[],
+    options?: Entity.UpdateOptions
+  ): Promise<T[]>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Entities are updated
@@ -370,7 +376,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param data - A Data object which updates the Entity
    * @param options - Additional options which customize the update workflow
    */
-  update(data: DeepPartial<D>, options?: Entity.UpdateOptions): Promise<this>;
+  update(data: DeepPartial<D> & Partial<Record<string, any>>, options?: Entity.UpdateOptions): Promise<this>;
 
   /**
    * Delete one or multiple existing entities using provided ids.

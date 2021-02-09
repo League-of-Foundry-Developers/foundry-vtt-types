@@ -127,7 +127,7 @@ declare class Scene extends Entity<Scene.Data> {
   static create(data: DeepPartial<Scene.Data>[], options?: Entity.CreateOptions): Promise<Scene[] | null>;
 
   /** @override */
-  update(data: DeepPartial<Scene.Data>, options: Entity.UpdateOptions): Promise<this>;
+  update(data: DeepPartial<Scene.Data> & Partial<Record<string, any>>, options: Entity.UpdateOptions): Promise<this>;
 
   /** @override */
   protected _onCreate(data: Scene.Data, options: any, userId: string): void;

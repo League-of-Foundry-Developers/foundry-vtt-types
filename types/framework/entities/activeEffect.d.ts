@@ -133,7 +133,10 @@ declare class ActiveEffect<P extends Actor | Item = Actor | Item> extends Embedd
    * @param options - Configuration options which modify the request.
    * @returns The updated ActiveEffect data.
    */
-  update(data: DeepPartial<ActiveEffect.Data>, options?: Entity.UpdateOptions): Promise<ActiveEffect.Data>;
+  update(
+    data: DeepPartial<ActiveEffect.Data> & Partial<Record<string, any>>,
+    options?: Entity.UpdateOptions
+  ): Promise<ActiveEffect.Data>;
 
   /* -------------------------------------------- */
 

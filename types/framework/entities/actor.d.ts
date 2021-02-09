@@ -289,7 +289,7 @@ declare class Actor<
   /* -------------------------------------------- */
 
   /** @override */
-  update(data: DeepPartial<D>, options?: Entity.UpdateOptions): Promise<this>;
+  update(data: DeepPartial<D> & Partial<Record<string, any>>, options?: Entity.UpdateOptions): Promise<this>;
 
   /** @override */
   delete(options?: Entity.DeleteOptions): Promise<Actor>;
