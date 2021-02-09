@@ -157,7 +157,9 @@ declare class ActiveEffect<P extends Actor | Item = Actor | Item> extends Embedd
    * @param args - Initialization arguments passed to the ActiveEffect constructor.
    * @returns The constructed ActiveEffect instance.
    */
-  static create<P extends Actor | Item = Actor | Item>(...args: [DeepPartial<ActiveEffect.Data>, P]): ActiveEffect<P>;
+  static create<P extends Actor | Item = Actor | Item>(
+    ...args: [DeepPartial<ActiveEffect.Data> & Partial<Record<string, any>>, P]
+  ): ActiveEffect<P>;
 
   /* -------------------------------------------- */
 

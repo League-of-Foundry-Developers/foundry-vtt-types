@@ -105,9 +105,12 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
   /* -------------------------------------------- */
 
   /** @override */
-  static create(data: DeepPartial<ChatMessage.CreateData>, options?: Entity.CreateOptions): Promise<ChatMessage | null>;
   static create(
-    data: DeepPartial<ChatMessage.CreateData>[],
+    data: DeepPartial<ChatMessage.CreateData> & Partial<Record<string, any>>,
+    options?: Entity.CreateOptions
+  ): Promise<ChatMessage | null>;
+  static create(
+    data: (DeepPartial<ChatMessage.CreateData> & Partial<Record<string, any>>)[],
     options?: Entity.CreateOptions
   ): Promise<ChatMessage[] | null>;
 
