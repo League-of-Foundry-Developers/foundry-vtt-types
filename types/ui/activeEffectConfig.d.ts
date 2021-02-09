@@ -14,6 +14,7 @@ declare class ActiveEffectConfig<
   /** @override */
   get title(): string;
 
+  /** @override */
   getData(options?: Application.RenderOptions): D | Promise<D>;
 
   /** @override */
