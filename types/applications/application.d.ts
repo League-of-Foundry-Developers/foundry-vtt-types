@@ -240,7 +240,7 @@ declare class Application {
    * @param active - The new active tab name
    *                 (unused)
    */
-  protected _onChangeTab(event: MouseEvent, tabs: Tabs, active: string): void;
+  protected _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: string): void;
 
   /**
    * Handle changes to search filtering controllers which are bound to the Application
@@ -434,7 +434,7 @@ declare namespace Application {
      * Track Tab navigation handlers which are active for this Application
      * @defaultValue `[]`
      */
-    tabs: TabV2Options[];
+    tabs: Omit<Tabs.Options, 'callback'>[];
 
     /**
      * @defaultValue `[]`
