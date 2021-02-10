@@ -28,8 +28,6 @@ declare class Tabs {
    * @param contentSelector - The CSS selector used to target the content container for these tabs
    * @param initial         - The tab name of the initially active tab
    * @param callback        - An optional callback function that executes when the active tab is changed
-   * @remarks
-   *
    */
   constructor({ navSelector, contentSelector, initial, callback }: Tabs.Options);
 
