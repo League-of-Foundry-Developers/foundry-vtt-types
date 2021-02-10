@@ -1293,7 +1293,7 @@ declare const CONFIG: {
   /**
    * Default configuration options for TinyMCE editors
    */
-  TinyMCE: import('tinymce').Settings;
+  TinyMCE: RawEditorSettings;
 
   /**
    * Configure the Application classes used to render various core UI elements in the application

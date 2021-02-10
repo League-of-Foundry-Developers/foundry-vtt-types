@@ -1,6 +1,8 @@
 import 'jquery';
 import 'socket.io-client';
 import 'tinymce';
+import 'handlebars';
+import 'pixi.js';
 
 // Apps
 
@@ -56,11 +58,8 @@ import './types/applications/sidebar/sidebarTab';
 
 // Augments
 
-import './types/augments/PIXI';
-import './types/augments/handlebars';
 import './types/augments/howler';
 import './types/augments/tinyMCE';
-import './types/augments/utility-types';
 
 // Core
 
