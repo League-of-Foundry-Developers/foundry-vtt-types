@@ -14,7 +14,7 @@
  *   <div class="tab" data-tab="tab1" data-group="primary-tabs">Content 1</div>
  *   <div class="tab" data-tab="tab2" data-group="primary-tabs">Content 2</div>
  * </section>
- *```
+ * ```
  * @example
  * ```typescript
  * // TypeScript
