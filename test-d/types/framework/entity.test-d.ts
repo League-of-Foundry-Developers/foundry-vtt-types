@@ -24,3 +24,12 @@ expectType<Promise<CustomEntity | null>>(CustomEntity.create([customData] as con
 expectType<Promise<CustomEntity[] | null>>(CustomEntity.create([customData, customData] as const));
 expectType<Promise<CustomEntity[] | null>>(CustomEntity.create([customData, customData, customData] as const));
 expectType<Promise<CustomEntity | CustomEntity[] | null>>(CustomEntity.create(customDataProducer()));
+
+declare const actualCustomData: CustomEntityData;
+
+expectType<Promise<CustomEntity | null>>(CustomEntity.create(actualCustomData));
+expectType<Promise<CustomEntity | null>>(CustomEntity.create([actualCustomData] as const));
+expectType<Promise<CustomEntity[] | null>>(CustomEntity.create([actualCustomData, actualCustomData] as const));
+expectType<Promise<CustomEntity[] | null>>(
+  CustomEntity.create([actualCustomData, actualCustomData, actualCustomData] as const)
+);
