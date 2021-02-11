@@ -311,8 +311,22 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const created: Actor[] | null = await Actor.create(data, {temporary: true}); // Not saved to the database
    * ```
    */
-  static create<T extends Entity>(data: DeepPartial<T['data']>, options?: Entity.CreateOptions): Promise<T | null>;
-  static create<T extends Entity>(data: DeepPartial<T['data']>[], options?: Entity.CreateOptions): Promise<T[] | null>;
+  static create<T extends Entity>(
+    this: ConstructorOf<T>,
+    data: DeepPartial<T['data']>,
+    options?: Entity.CreateOptions
+  ): Promise<T | null>;
+  static create<T extends Entity, D extends ReadonlyArray<DeepPartial<T['data']>>>(
+    this: ConstructorOf<T>,
+    data: D,
+    options?: Entity.CreateOptions
+  ): D extends never[]
+    ? Promise<[]>
+    : IsReadonlyArrayWithKey<D, 0> extends true
+    ? IsReadonlyArrayWithKey<D, 1> extends true
+      ? Promise<T[] | null>
+      : Promise<T | null>
+    : Promise<T | T[] | null>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Entities are created
