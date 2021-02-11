@@ -146,6 +146,7 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
   /* -------------------------------------------- */
 
   /** @override */
+  update<U>(data: Expanded<U> extends DeepPartial<D> ? U : never, options?: Entity.UpdateOptions): Promise<this>;
   update(data: DeepPartial<D>, options?: Entity.UpdateOptions): Promise<this>;
 
   /** @override */

@@ -289,7 +289,11 @@ declare class Actor<
   /* -------------------------------------------- */
 
   /** @override */
-  update(data: DeepPartial<D>, options?: Entity.UpdateOptions): Promise<this>;
+  update<U>(
+    data: Expanded<U> extends DeepPartial<this['data']> ? U : never,
+    options?: Entity.UpdateOptions
+  ): Promise<this>;
+  update(data: DeepPartial<this['data']>, options?: Entity.UpdateOptions): Promise<this>;
 
   /** @override */
   delete(options?: Entity.DeleteOptions): Promise<this>;
@@ -298,16 +302,16 @@ declare class Actor<
   protected _onUpdate(data: DeepPartial<D>, options: Entity.UpdateOptions, userId: string, context?: any): void;
 
   /** @override */
-  createEmbeddedEntity(
+  createEmbeddedEntity<U>(
     embeddedName: 'OwnedItem',
-    data: DeepPartial<Actor.OwnedItemData<D>>,
+    data: Expanded<U> extends DeepPartial<Actor.OwnedItemData<D>> ? U : DeepPartial<Actor.OwnedItemData<D>>,
     options?: any
   ): Promise<Actor.OwnedItemData<D>>;
 
   /** @override */
-  createEmbeddedEntity(
+  createEmbeddedEntity<U>(
     embeddedName: 'ActiveEffect',
-    data: DeepPartial<ActiveEffect.Data>,
+    data: Expanded<U> extends DeepPartial<ActiveEffect.Data> ? U : DeepPartial<ActiveEffect.Data>,
     options?: any
   ): Promise<ActiveEffect.Data>;
 
