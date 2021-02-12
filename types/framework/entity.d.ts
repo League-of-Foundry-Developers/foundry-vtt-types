@@ -829,11 +829,14 @@ declare namespace Entity {
 
   type UpdateSingleFunction<E extends Entity> = <T extends E>(
     this: ConstructorOf<T>,
-    data: DeepPartial<T['data']>,
+    data: DeepPartial<T['data']> & { _id: string },
     options?: UpdateOptions
   ) => Promise<T | null>;
 
-  type UpdateArrayFunction<E extends Entity> = <T extends E, D extends ReadonlyArray<DeepPartial<T['data']>>>(
+  type UpdateArrayFunction<E extends Entity> = <
+    T extends E,
+    D extends ReadonlyArray<DeepPartial<T['data']> & { _id: string }>
+  >(
     this: ConstructorOf<T>,
     data: D,
     options?: UpdateOptions
