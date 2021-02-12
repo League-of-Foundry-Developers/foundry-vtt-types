@@ -301,7 +301,16 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const created: Actor[] | null = await Actor.create(data, {temporary: true}); // Not saved to the database
    * ```
    */
-  static create: Entity.CreateFunction<Entity>;
+  static create<T extends Entity>(
+    this: ConstructorOf<T>,
+    data: DeepPartial<T['data']>,
+    options?: Entity.CreateOptions
+  ): Promise<T | null>;
+  static create<T extends Entity>(
+    this: ConstructorOf<T>,
+    data: ReadonlyArray<DeepPartial<T['data']>>,
+    options?: Entity.CreateOptions
+  ): Promise<T | T[] | null>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Entities are created
@@ -335,7 +344,16 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const updated = await Entity.update<Actor>(data); // Returns an Array of Entities, updated in the database
    * ```
    */
-  static update: Entity.UpdateFunction<Entity>;
+  static update<T extends Entity>(
+    this: ConstructorOf<T>,
+    data: DeepPartial<T['data']> & { _id: string },
+    options?: Entity.UpdateOptions
+  ): Promise<T | []>;
+  static update<T extends Entity>(
+    this: ConstructorOf<T>,
+    data: ReadonlyArray<DeepPartial<T['data']> & { _id: string }>,
+    options?: Entity.UpdateOptions
+  ): Promise<T | T[]>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Entities are updated
@@ -380,7 +398,16 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const deleted = await Entity.delete(ids) // Returns an Array of deleted Entities
    * ```
    */
-  static delete: Entity.DeleteFunction<Entity>;
+  static delete<T extends Entity>(
+    this: ConstructorOf<T>,
+    data: string,
+    options?: Entity.DeleteOptions
+  ): Promise<T | null>;
+  static delete<T extends Entity>(
+    this: ConstructorOf<T>,
+    data: ReadonlyArray<string>,
+    options?: Entity.DeleteOptions
+  ): Promise<T | T[] | null>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Entities are deleted
@@ -778,46 +805,4 @@ declare namespace Entity {
      */
     flags: Record<string, any>;
   }
-
-  type CreateSingleFunction<E extends Entity> = <T extends E>(
-    this: ConstructorOf<T>,
-    data: DeepPartial<T['data']>,
-    options?: CreateOptions
-  ) => Promise<T | null>;
-
-  type CreateArrayFunction<E extends Entity> = <T extends E>(
-    this: ConstructorOf<T>,
-    data: ReadonlyArray<DeepPartial<T['data']>>,
-    options?: CreateOptions
-  ) => Promise<T | T[] | null>;
-
-  type CreateFunction<E extends Entity> = CreateSingleFunction<E> & CreateArrayFunction<E>;
-
-  type UpdateSingleFunction<E extends Entity> = <T extends E>(
-    this: ConstructorOf<T>,
-    data: DeepPartial<T['data']> & { _id: string },
-    options?: UpdateOptions
-  ) => Promise<T | []>;
-
-  type UpdateArrayFunction<E extends Entity> = <T extends E>(
-    this: ConstructorOf<T>,
-    data: ReadonlyArray<DeepPartial<T['data']> & { _id: string }>,
-    options?: UpdateOptions
-  ) => Promise<T | T[]>;
-
-  type UpdateFunction<E extends Entity> = UpdateSingleFunction<E> & UpdateArrayFunction<E>;
-
-  type DeleteSingleFunction<E extends Entity> = <T extends E>(
-    this: ConstructorOf<T>,
-    data: string,
-    options?: DeleteOptions
-  ) => Promise<T | null>;
-
-  type DeleteArrayFunction<E extends Entity> = <T extends E>(
-    this: ConstructorOf<T>,
-    data: ReadonlyArray<string>,
-    options?: DeleteOptions
-  ) => Promise<T | T[] | null>;
-
-  type DeleteFunction<E extends Entity> = DeleteSingleFunction<E> & DeleteArrayFunction<E>;
 }

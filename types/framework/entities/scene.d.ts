@@ -123,7 +123,16 @@ declare class Scene extends Entity<Scene.Data> {
   clone(createData?: DeepPartial<Scene.Data>, options?: Entity.CreateOptions): Promise<this>;
 
   /** @override */
-  static create: Entity.CreateFunction<Scene>;
+  static create<T extends Scene>(
+    this: ConstructorOf<T>,
+    data: DeepPartial<T['data']>,
+    options?: Entity.CreateOptions
+  ): Promise<T | null>;
+  static create<T extends Scene>(
+    this: ConstructorOf<T>,
+    data: ReadonlyArray<DeepPartial<T['data']>>,
+    options?: Entity.CreateOptions
+  ): Promise<T | T[] | null>;
 
   /** @override */
   update(data: DeepPartial<Scene.Data>, options: Entity.UpdateOptions): Promise<this>;
