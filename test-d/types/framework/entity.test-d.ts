@@ -8,7 +8,6 @@ declare class CustomEntity extends Entity<CustomEntityData> {}
 declare const actualCustomData: CustomEntityData;
 
 // create
-
 declare const createData: DeepPartial<Entity.Data>;
 declare function createDataProducer(): DeepPartial<Entity.Data>[];
 declare const customCreateData: DeepPartial<CustomEntityData>;
@@ -38,7 +37,6 @@ expectType<Promise<CustomEntity[] | null>>(
 );
 
 // update
-
 declare const updateData: DeepPartial<Entity.Data> & { _id: string };
 declare function updateDataProducer(): (DeepPartial<Entity.Data> & { _id: string })[];
 declare const customUpdateData: DeepPartial<CustomEntityData> & { _id: string };
