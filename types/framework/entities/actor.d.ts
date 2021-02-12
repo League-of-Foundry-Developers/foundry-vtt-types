@@ -292,7 +292,7 @@ declare class Actor<
   update(data: DeepPartial<D>, options?: Entity.UpdateOptions): Promise<this>;
 
   /** @override */
-  delete(options?: Entity.DeleteOptions): Promise<Actor>;
+  delete(options?: Entity.DeleteOptions): Promise<this>;
 
   /** @override */
   protected _onUpdate(data: DeepPartial<D>, options: Entity.UpdateOptions, userId: string, context?: any): void;

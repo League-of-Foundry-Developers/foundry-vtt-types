@@ -58,10 +58,3 @@ type OmitAssignableFromType<T extends object, U> = { [k in keyof T as U extends 
  * @internal
  */
 type OmitNotAssignableFromType<T extends object, U> = { [k in keyof T as U extends T[k] ? k : never]: T[k] };
-
-/**
- * `true` if `T` is a `ReadonlyArray` with compile time known length of at least `N + 1`, `false` otherwise.
- * @typeParam T - The `ReadonlyArray` to check.
- * @typeParam N - The key to check for existence in `T`.
- */
-type IsReadonlyArrayWithKey<T extends ReadonlyArray<any>, N extends number> = `${N}` extends keyof T ? true : false;

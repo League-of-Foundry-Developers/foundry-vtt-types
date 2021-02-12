@@ -149,12 +149,12 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
   update(data: DeepPartial<D>, options?: Entity.UpdateOptions): Promise<this>;
 
   /** @override */
-  delete(options?: Entity.DeleteOptions): Promise<Item>;
+  delete(options?: Entity.DeleteOptions): Promise<this>;
 
   /**
    * A convenience constructor method to create an Item instance which is owned by an Actor
    */
-  static createOwned(itemData: DeepPartial<Item.Data>, actor: Actor): Item;
+  static createOwned<T extends Item>(this: ConstructorOf<T>, itemData: DeepPartial<Item.Data>, actor: Actor): T;
 }
 
 declare namespace Item {
