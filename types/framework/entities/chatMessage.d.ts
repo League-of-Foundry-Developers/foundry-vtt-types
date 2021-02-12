@@ -105,7 +105,16 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
   /* -------------------------------------------- */
 
   /** @override */
-  static create: Entity.CreateFunction<ChatMessage>;
+  static create<T extends ChatMessage>(
+    this: ConstructorOf<T>,
+    data: DeepPartial<ChatMessage.CreateData>,
+    options?: Entity.CreateOptions
+  ): Promise<T | null>;
+  static create<T extends ChatMessage>(
+    this: ConstructorOf<T>,
+    data: ReadonlyArray<DeepPartial<ChatMessage.CreateData>>,
+    options?: Entity.CreateOptions
+  ): Promise<T | T[] | null>;
 
   /**
    * Preprocess the data object used to create a new Chat Message to automatically convert some Objects to the
