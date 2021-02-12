@@ -117,14 +117,10 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
   /**
    * Render all of the Application instances which are connected to this Entity by calling their respective
    * {@link Application#render} methods.
-   * @param force - Force rendering
+   * @param force   - Force rendering
    * @param context - Optional context
    */
   render(force: boolean, context: any): void;
-
-  /* -------------------------------------------- */
-  /*  Properties                                  */
-  /* -------------------------------------------- */
 
   /**
    * Return a reference to the EntityCollection instance which stores Entity instances of this type. This property is
@@ -226,14 +222,10 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    */
   get limited(): boolean;
 
-  /* -------------------------------------------- */
-  /*  Permission Controls                         */
-  /* -------------------------------------------- */
-
   /**
    * Return an array of User entities who have a certain permission level or greater to the Entity.
    * @param permission - The permission level or level name to test
-   * @param exact - Tests for an exact permission level match, by default this method tests for
+   * @param exact      - Tests for an exact permission level match, by default this method tests for
    *        an equal or greater permission level
    * @returns An array of User entities who match the permission level
    */
@@ -241,10 +233,9 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
 
   /**
    * Test whether a provided User a specific permission level (or greater) over the Entity instance
-   * @param user - The user to test for permission
+   * @param user       - The user to test for permission
    * @param permission - The permission level or level name to test
-   * @param exact - Tests for an exact permission level match, by default this method tests for
-   *                                      an equal or greater permission level.
+   * @param exact      - Tests for an exact permission level match, by default this method tests for an equal or greater permission level.
    *
    * @example <caption>Test whether a specific user has a certain permission</caption>
    * ```typescript
@@ -260,7 +251,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
 
   /**
    * Test whether a given User has permission to perform some action on this Entity
-   * @param user - The User requesting creation
+   * @param user   - The User requesting creation
    * @param action - The attempted action
    * @param target - The targeted Entity
    */
@@ -268,7 +259,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
 
   /**
    * Test whether a given User has permission to perform some action on this Entity
-   * @param user - The User to test
+   * @param user   - The User to test
    * @param action - The name of the action
    * @remarks
    * args is untyped because of a mismatch between most entities and User that is likely to be fixed in Foundry 0.8.x
@@ -282,10 +273,6 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    */
   get hasPlayerOwner(): boolean;
 
-  /* -------------------------------------------- */
-  /*  Entity Management Methods                   */
-  /* -------------------------------------------- */
-
   /**
    * Activate the Socket event listeners used to receive responses from events which modify database documents
    * @param socket - The active game socket
@@ -297,7 +284,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Data may be provided as a single object to create one Entity, or as an Array of Objects.
    * Entities may be temporary (unsaved to the database) by passing the temporary option as true.
    *
-   * @param data - A Data object or array of Data
+   * @param data    - A Data object or array of Data
    * @param options - Additional options which customize the creation workflow
    *
    * @example
@@ -333,7 +320,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Update one or multiple existing entities using provided input data.
    * Data may be provided as a single object to update one Entity, or as an Array of Objects.
    *
-   * @param data - A Data object or array of Data. Each element must contain the _id of an existing Entity.
+   * @param data    - A Data object or array of Data. Each element must contain the _id of an existing Entity.
    * @param options - Additional options which customize the update workflow
    *
    * @example
@@ -359,7 +346,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
   protected static _handleUpdate<T extends Entity>(this: ConstructorOf<T>, { request, result, userId }: any): T[];
 
   /**
-   * Entity- specific actions that should occur when the Entity is updated
+   * Entity-specific actions that should occur when the Entity is updated
    */
   protected _onUpdate(data: DeepPartial<D>, options: Entity.UpdateOptions, userId: string): void;
 
@@ -368,7 +355,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Data must be provided as a single object which updates the Entity data.
    * @see Entity.update
    *
-   * @param data - A Data object which updates the Entity
+   * @param data    - A Data object which updates the Entity
    * @param options - Additional options which customize the update workflow
    */
   update(data: DeepPartial<D>, options?: Entity.UpdateOptions): Promise<this>;
@@ -377,7 +364,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Delete one or multiple existing entities using provided ids.
    * The target ids may be a single string or an Array of strings.
    *
-   * @param data - A single id or Array of ids
+   * @param data    - A single id or Array of ids
    * @param options - Additional options which customize the deletion workflow
    *
    *
@@ -398,8 +385,8 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
   /**
    * Handle a SocketResponse from the server when one or multiple Entities are deleted
    * @param request - The initial request
-   * @param result - An Array of deleted Entity ids
-   * @param userId - The id of the requesting User
+   * @param result  - An Array of deleted Entity ids
+   * @param userId  - The id of the requesting User
    */
   protected static _handleDelete<T extends Entity>(this: ConstructorOf<T>, { request, result, userId }: any): T[];
 
@@ -416,16 +403,12 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    */
   delete(options?: Entity.DeleteOptions): Promise<this>;
 
-  /* -------------------------------------------- */
-  /*  Embedded Entity Management                  */
-  /* -------------------------------------------- */
-
   /**
    * Get an Embedded Entity by it's id from a named collection in the parent Entity.
    *
    * @param embeddedName - The name of the Embedded Entity type to retrieve
-   * @param id - The numeric ID of the child to retrieve
-   * @param strict - Throw an Error if the requested id does not exist, otherwise return null. Default false.
+   * @param id           - The numeric ID of the child to retrieve
+   * @param strict       - Throw an Error if the requested id does not exist, otherwise return null. Default false.
    */
   getEmbeddedEntity(embeddedName: string, id: string, { strict }?: { strict?: boolean }): any;
 
@@ -435,8 +418,8 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Entities may be temporary (unsaved to the database) by passing the temporary option as true.
    *
    * @param embeddedName - The name of the Embedded Entity class to create
-   * @param data - A Data object or an Array of Data objects to create
-   * @param options - Additional creation options which modify the request
+   * @param data         - A Data object or an Array of Data objects to create
+   * @param options      - Additional creation options which modify the request
    *
    * @example
    * ```typescript
@@ -463,8 +446,8 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
   /**
    * Handle a SocketResponse from the server when one or multiple Embedded Entities are created
    * @param request - The initial request
-   * @param result - An Array of created Entity data
-   * @param userId - The id of the requesting User
+   * @param result  - An Array of created Entity data
+   * @param userId  - The id of the requesting User
    */
   protected static _handleCreateEmbeddedEntity({ request, result, userId }: any): any[];
 
@@ -482,8 +465,8 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Data may be provided as a single object to update one Entity, or as an Array of Objects.
    *
    * @param embeddedName - The name of the Embedded Entity class to create
-   * @param data - A Data object or array of Data. Each element must contain the _id of an existing Entity.
-   * @param options - Additional options which customize the update workflow
+   * @param data         - A Data object or array of Data. Each element must contain the _id of an existing Entity.
+   * @param options      - Additional options which customize the update workflow
    *
    * @example
    * ```typescript
@@ -514,8 +497,8 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
   /**
    * Handle a SocketResponse from the server when one or multiple Embedded Entities are updated
    * @param request - The initial request
-   * @param result - An Array of updated Entity data
-   * @param userId - The id of the requesting User
+   * @param result  - An Array of updated Entity data
+   * @param userId  - The id of the requesting User
    */
   protected static _handleUpdateEmbeddedEntity({ request, result, userId }: any): any[];
 
@@ -539,8 +522,8 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Data may be provided as a single id to delete one object or as an Array of string ids.
    *
    * @param embeddedName - The name of the Embedded Entity class to create
-   * @param data - A Data object or array of Data. Each element must contain the _id of an existing Entity.
-   * @param options - Additional options which customize the update workflow
+   * @param data         - A Data object or array of Data. Each element must contain the _id of an existing Entity.
+   * @param options      - Additional options which customize the update workflow
    *
    * @example
    * ```typescript
@@ -567,8 +550,8 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
   /**
    * Handle a SocketResponse from the server when one or multiple Embedded Entities are deleted
    * @param request - The initial request
-   * @param result - An Array of deleted EmbeddedEntity ids
-   * @param userId - The id of the requesting User
+   * @param result  - An Array of deleted EmbeddedEntity ids
+   * @param userId  - The id of the requesting User
    */
   protected static _handleDeleteEmbeddedEntity({ request, result, userId }: any): any[];
 
@@ -593,18 +576,14 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
     context?: any
   ): void;
 
-  /* -------------------------------------------- */
-  /*  Data Flags                                  */
-  /* -------------------------------------------- */
-
   /**
    * Get the value of a "flag" for this Entity
    * See the setFlag method for more details on flags
    *
    * @param scope - The flag scope which namespaces the key
-   * @param key - The flag key
+   * @param key   - The flag key
    */
-  getFlag(scope: string, key: string): any;
+  getFlag(scope: string, key: string): unknown;
 
   /**
    * Assign a "flag" to this Entity.
@@ -620,22 +599,18 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Flag values can assume almost any data type. Setting a flag value to null will delete that flag.
    *
    * @param scope - The flag scope which namespaces the key
-   * @param key - The flag key
+   * @param key   - The flag key
    * @param value - The flag value
    *
    */
-  setFlag(scope: string, key: string, value: any): Promise<Entity>;
+  setFlag(scope: string, key: string, value: unknown): Promise<this>;
 
   /**
    * Remove a flag assigned to the Entity
    * @param scope - The flag scope which namespaces the key
-   * @param key - The flag key
+   * @param key   - The flag key
    */
-  unsetFlag(scope: string, key: string): Promise<Entity>;
-
-  /* -------------------------------------------- */
-  /*  Sorting                                     */
-  /* -------------------------------------------- */
+  unsetFlag(scope: string, key: string): Promise<this>;
 
   /**
    * Sort this Entity relative a target by providing the target, an Array of siblings and other options.
@@ -656,10 +631,6 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
     updateData?: any;
   }): Promise<void>;
 
-  /* -------------------------------------------- */
-  /*  Saving and Loading                          */
-  /* -------------------------------------------- */
-
   /**
    * Clone an Entity, creating a new Entity using the current data as well as provided creation overrides.
    *
@@ -667,7 +638,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param options - Additional creation options passed to the Entity.create method
    * @returns A Promise which resolves to the created clone Entity
    */
-  clone(createData?: D, options?: Entity.CreateOptions): Promise<Entity>;
+  clone(createData?: DeepPartial<D>, options?: Entity.CreateOptions): Promise<this>;
 
   /**
    * Serializing an Entity should simply serialize it's inner data, not the entire instance
@@ -687,13 +658,15 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    *
    * @param data - The data object extracted from a DataTransfer event
    */
-  static fromDropData(data: any): Entity;
+  static fromDropData<T extends Entity>(this: ConstructorOf<T>, data: { data: DeepPartial<T['data']> }): Promise<T>;
+  static fromDropData<T extends Entity>(this: ConstructorOf<T>, data: { pack: string }): Promise<T | undefined | null>;
+  static fromDropData<T extends Entity>(this: ConstructorOf<T>, data: { id: string }): Promise<T | null>;
 
   /**
    * Import data and update this entity
    * @param json - JSON data string
    */
-  importFromJSON(json: string): Promise<Entity>;
+  importFromJSON(json: string): Promise<this>;
 
   /**
    * Render an import dialog for updating the data related to this Entity through an exported JSON file
@@ -704,9 +677,8 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Transform the Entity data to be stored in a Compendium pack.
    * Remove any features of the data which are world- specific.
    * This function is asynchronous in case any complex operations are required prior to exporting.
-   *
    */
-  toCompendium(): Promise<D>;
+  toCompendium(): Promise<Duplicated<D>>;
 
   /**
    * Provide a Dialog form to create a new Entity of this type.
@@ -813,17 +785,11 @@ declare namespace Entity {
     options?: CreateOptions
   ) => Promise<T | null>;
 
-  type CreateArrayFunction<E extends Entity> = <T extends E, D extends ReadonlyArray<DeepPartial<T['data']>>>(
+  type CreateArrayFunction<E extends Entity> = <T extends E>(
     this: ConstructorOf<T>,
-    data: D,
+    data: ReadonlyArray<DeepPartial<T['data']>>,
     options?: CreateOptions
-  ) => D extends never[]
-    ? Promise<[]>
-    : IsReadonlyArrayWithKey<D, 0> extends true
-    ? IsReadonlyArrayWithKey<D, 1> extends true
-      ? Promise<T[] | null>
-      : Promise<T | null>
-    : Promise<T | T[] | null>;
+  ) => Promise<T | T[] | null>;
 
   type CreateFunction<E extends Entity> = CreateSingleFunction<E> & CreateArrayFunction<E>;
 
@@ -831,22 +797,13 @@ declare namespace Entity {
     this: ConstructorOf<T>,
     data: DeepPartial<T['data']> & { _id: string },
     options?: UpdateOptions
-  ) => Promise<T | null>;
+  ) => Promise<T | []>;
 
-  type UpdateArrayFunction<E extends Entity> = <
-    T extends E,
-    D extends ReadonlyArray<DeepPartial<T['data']> & { _id: string }>
-  >(
+  type UpdateArrayFunction<E extends Entity> = <T extends E>(
     this: ConstructorOf<T>,
-    data: D,
+    data: ReadonlyArray<DeepPartial<T['data']> & { _id: string }>,
     options?: UpdateOptions
-  ) => D extends never[]
-    ? Promise<[]>
-    : IsReadonlyArrayWithKey<D, 0> extends true
-    ? IsReadonlyArrayWithKey<D, 1> extends true
-      ? Promise<T[] | null>
-      : Promise<T | null>
-    : Promise<T | T[] | null>;
+  ) => Promise<T | T[]>;
 
   type UpdateFunction<E extends Entity> = UpdateSingleFunction<E> & UpdateArrayFunction<E>;
 
@@ -856,17 +813,11 @@ declare namespace Entity {
     options?: DeleteOptions
   ) => Promise<T | null>;
 
-  type DeleteArrayFunction<E extends Entity> = <T extends E, D extends ReadonlyArray<string>>(
+  type DeleteArrayFunction<E extends Entity> = <T extends E>(
     this: ConstructorOf<T>,
-    data: D,
+    data: ReadonlyArray<string>,
     options?: DeleteOptions
-  ) => D extends never[]
-    ? Promise<[]>
-    : IsReadonlyArrayWithKey<D, 0> extends true
-    ? IsReadonlyArrayWithKey<D, 1> extends true
-      ? Promise<T[] | null>
-      : Promise<T | null>
-    : Promise<T | T[] | null>;
+  ) => Promise<T | T[] | null>;
 
   type DeleteFunction<E extends Entity> = DeleteSingleFunction<E> & DeleteArrayFunction<E>;
 }

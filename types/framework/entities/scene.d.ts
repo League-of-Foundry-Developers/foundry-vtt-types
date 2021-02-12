@@ -120,7 +120,7 @@ declare class Scene extends Entity<Scene.Data> {
   /* -------------------------------------------- */
 
   /** @override */
-  clone(createData?: Scene.Data, options?: Entity.CreateOptions): Promise<Scene>;
+  clone(createData?: DeepPartial<Scene.Data>, options?: Entity.CreateOptions): Promise<this>;
 
   /** @override */
   static create: Entity.CreateFunction<Scene>;
