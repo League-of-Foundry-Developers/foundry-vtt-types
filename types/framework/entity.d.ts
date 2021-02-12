@@ -79,6 +79,9 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param baseEntity - The parent class which directly inherits from the Entity interface.
    * @param collection - The Collection instance to which Entities of this type belong.
    * @param embeddedEntities - The names of any Embedded Entities within the Entity data structure.
+   *
+   * @remarks
+   * This method is abstract, deriving classes need to implement it.
    */
   static get config(): Entity.Config;
 
@@ -311,22 +314,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const created: Actor[] | null = await Actor.create(data, {temporary: true}); // Not saved to the database
    * ```
    */
-  static create<T extends Entity>(
-    this: ConstructorOf<T>,
-    data: DeepPartial<T['data']>,
-    options?: Entity.CreateOptions
-  ): Promise<T | null>;
-  static create<T extends Entity, D extends ReadonlyArray<DeepPartial<T['data']>>>(
-    this: ConstructorOf<T>,
-    data: D,
-    options?: Entity.CreateOptions
-  ): D extends never[]
-    ? Promise<[]>
-    : IsReadonlyArrayWithKey<D, 0> extends true
-    ? IsReadonlyArrayWithKey<D, 1> extends true
-      ? Promise<T[] | null>
-      : Promise<T | null>
-    : Promise<T | T[] | null>;
+  static create: Entity.CreateFunction<Entity>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Entities are created
@@ -360,8 +348,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const updated = await Entity.update<Actor>(data); // Returns an Array of Entities, updated in the database
    * ```
    */
-  static update<T extends Entity>(data: DeepPartial<T['data']>, options?: Entity.UpdateOptions): Promise<T>;
-  static update<T extends Entity>(data: DeepPartial<T['data']>[], options?: Entity.UpdateOptions): Promise<T[]>;
+  static update: Entity.UpdateFunction<Entity>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Entities are updated
@@ -406,8 +393,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const deleted = await Entity.delete(ids) // Returns an Array of deleted Entities
    * ```
    */
-  static delete<T extends Entity = Entity>(data: string, options?: Entity.DeleteOptions): Promise<T>;
-  static delete<T extends Entity = Entity>(data: string[], options?: Entity.DeleteOptions): Promise<T[]>;
+  static delete: Entity.DeleteFunction<Entity>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Entities are deleted
@@ -820,4 +806,64 @@ declare namespace Entity {
      */
     flags: Record<string, any>;
   }
+
+  type CreateSingleFunction<E extends Entity> = <T extends E>(
+    this: ConstructorOf<T>,
+    data: DeepPartial<T['data']>,
+    options?: CreateOptions
+  ) => Promise<T | null>;
+
+  type CreateArrayFunction<E extends Entity> = <T extends E, D extends ReadonlyArray<DeepPartial<T['data']>>>(
+    this: ConstructorOf<T>,
+    data: D,
+    options?: CreateOptions
+  ) => D extends never[]
+    ? Promise<[]>
+    : IsReadonlyArrayWithKey<D, 0> extends true
+    ? IsReadonlyArrayWithKey<D, 1> extends true
+      ? Promise<T[] | null>
+      : Promise<T | null>
+    : Promise<T | T[] | null>;
+
+  type CreateFunction<E extends Entity> = CreateSingleFunction<E> & CreateArrayFunction<E>;
+
+  type UpdateSingleFunction<E extends Entity> = <T extends E>(
+    this: ConstructorOf<T>,
+    data: DeepPartial<T['data']>,
+    options?: UpdateOptions
+  ) => Promise<T | null>;
+
+  type UpdateArrayFunction<E extends Entity> = <T extends E, D extends ReadonlyArray<DeepPartial<T['data']>>>(
+    this: ConstructorOf<T>,
+    data: D,
+    options?: UpdateOptions
+  ) => D extends never[]
+    ? Promise<[]>
+    : IsReadonlyArrayWithKey<D, 0> extends true
+    ? IsReadonlyArrayWithKey<D, 1> extends true
+      ? Promise<T[] | null>
+      : Promise<T | null>
+    : Promise<T | T[] | null>;
+
+  type UpdateFunction<E extends Entity> = UpdateSingleFunction<E> & UpdateArrayFunction<E>;
+
+  type DeleteSingleFunction<E extends Entity> = <T extends E>(
+    this: ConstructorOf<T>,
+    data: string,
+    options?: DeleteOptions
+  ) => Promise<T | null>;
+
+  type DeleteArrayFunction<E extends Entity> = <T extends E, D extends ReadonlyArray<string>>(
+    this: ConstructorOf<T>,
+    data: D,
+    options?: DeleteOptions
+  ) => D extends never[]
+    ? Promise<[]>
+    : IsReadonlyArrayWithKey<D, 0> extends true
+    ? IsReadonlyArrayWithKey<D, 1> extends true
+      ? Promise<T[] | null>
+      : Promise<T | null>
+    : Promise<T | T[] | null>;
+
+  type DeleteFunction<E extends Entity> = DeleteSingleFunction<E> & DeleteArrayFunction<E>;
 }
