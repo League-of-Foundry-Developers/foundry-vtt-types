@@ -271,14 +271,14 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param user - The User to test
    * @param action - The name of the action
    * @remarks
-   * args is untyped because of a mismatch between most entites and User that is likely to be fixed in Foundry 0.8.x
+   * args is untyped because of a mismatch between most entities and User that is likely to be fixed in Foundry 0.8.x
    *
    */
   can(...args: any): boolean;
   // TODO: This is intentionally untyped. This is a known issue that will likely be fixed in 0.8.x
 
   /**
-   * Test for whether this Entity can be owned by any non- gamemaster player.
+   * Test for whether this Entity can be owned by any non-gamemaster player.
    */
   get hasPlayerOwner(): boolean;
 
@@ -322,7 +322,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param result  - An Array of created Entity data
    * @param userId  - The id of the requesting User
    */
-  protected static _handleCreate({ request, result, userId }: any): Entity[];
+  protected static _handleCreate<T extends Entity>(this: ConstructorOf<T>, { request, result, userId }: any): T[];
 
   /**
    * Entity- specific actions that should occur when the Entity is first created
@@ -356,7 +356,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param result  - An Array of updated Entity data
    * @param userId  - The id of the requesting User
    */
-  protected static _handleUpdate({ request, result, userId }: any): Entity[];
+  protected static _handleUpdate<T extends Entity>(this: ConstructorOf<T>, { request, result, userId }: any): T[];
 
   /**
    * Entity- specific actions that should occur when the Entity is updated
@@ -401,7 +401,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param result - An Array of deleted Entity ids
    * @param userId - The id of the requesting User
    */
-  protected static _handleDelete({ request, result, userId }: any): Entity[];
+  protected static _handleDelete<T extends Entity>(this: ConstructorOf<T>, { request, result, userId }: any): T[];
 
   /**
    * Entity- specific actions that should occur when the Entity is deleted
@@ -414,7 +414,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    *
    * @param options - Options which customize the deletion workflow
    */
-  delete(options?: Entity.DeleteOptions): Promise<Entity>;
+  delete(options?: Entity.DeleteOptions): Promise<this>;
 
   /* -------------------------------------------- */
   /*  Embedded Entity Management                  */
