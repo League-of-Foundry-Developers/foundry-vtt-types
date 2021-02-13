@@ -291,14 +291,14 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * ```typescript
    * const data = {name: "New Entity", type: "character", img: "path/to/profile.jpg"};
    * const created: Actor | null = await Actor.create(data); // Returns one Entity, saved to the database
-   * const temp: Actor | null = await Entity.create(data, {temporary: true}); // Not saved to the database
+   * const temp: Actor | null = await Actor.create(data, {temporary: true}); // Not saved to the database
    * ```
    *
    * @example
    * ```typescript
    * const data = [{name: "Tim", type: "npc"}, {name: "Tom", type: "npc"}];
-   * const created: Actor[] | null = await Actor.create(data); // Returns an Array of Entities, saved to the database
-   * const created: Actor[] | null = await Actor.create(data, {temporary: true}); // Not saved to the database
+   * const created: Actor[] | Actor | null = await Actor.create(data); // Returns an Array of Entities, saved to the database
+   * const created: Actor[] | Actor | null = await Actor.create(data, {temporary: true}); // Not saved to the database
    * ```
    */
   static create<T extends Entity, U>(
@@ -335,13 +335,13 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @example
    * ```typescript
    * const data = {_id: "12ekjf43kj2312ds", name: "New Name"}}
-   * const updated = await Entity.update<Actor>(data) // Updated entity saved to the database
+   * const updated = await Actor.update(data) // Updated entity saved to the database
    * ```
    *
    * @example
    * ```typescript
    * const data = [{_id: "12ekjf43kj2312ds", name: "New Name 1"}, {_id: "kj549dk48k34jk34", name: "New Name 2"}]}
-   * const updated = await Entity.update<Actor>(data); // Returns an Array of Entities, updated in the database
+   * const updated = await Actor.update(data); // Returns an Array of Entities, updated in the database
    * ```
    */
   static update<T extends Entity, U>(
