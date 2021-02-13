@@ -159,7 +159,7 @@ declare class Application {
    *                  is rendered in the DOM.
    *                  (default: `{}`)
    */
-  render(force?: boolean, options?: Application.RenderOptions): this;
+  render(force?: boolean, options?: Application.RenderOptions): unknown;
 
   /**
    * An asynchronous inner function which handles the rendering of the Application
@@ -251,7 +251,7 @@ declare class Application {
    * @param html  - The HTML element which should be filtered
    *                (unused)
    */
-  protected _onSearchFilter(event: KeyboardEvent, query: RegExp, html: HTMLElement): void;
+  protected _onSearchFilter(event: any, query: any, html: HTMLElement): void;
 
   /**
    * Define whether a user is able to begin a dragstart workflow for a given drag selector
@@ -428,7 +428,7 @@ declare namespace Application {
     /**
      * @defaultValue `[]`
      */
-    dragDrop: DragDrop[];
+    dragDrop: Partial<DragDrop>[];
 
     /**
      * Track Tab navigation handlers which are active for this Application
