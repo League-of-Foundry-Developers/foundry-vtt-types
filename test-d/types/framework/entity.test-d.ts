@@ -3,6 +3,11 @@ import '../../../index';
 
 interface CustomEntityData extends Entity.Data {
   customField: boolean;
+  attributes: {
+    speed: number;
+    lift: number;
+    books: number;
+  };
 }
 declare class CustomEntity extends Entity<CustomEntityData> {}
 declare const actualCustomData: CustomEntityData;
@@ -68,23 +73,8 @@ expectType<Promise<CustomEntity | CustomEntity[] | null>>(CustomEntity.delete([i
 expectType<Promise<CustomEntity | CustomEntity[] | null>>(CustomEntity.delete([id] as const));
 expectType<Promise<CustomEntity | CustomEntity[] | null>>(CustomEntity.delete([id, id] as const));
 
-type SomeItemData = Item.Data<{}>;
-class SomeItem extends Item<SomeItemData> {}
-type SomeActorData = Actor.Data<
-  {
-    param: number;
-    attributes: {
-      speed: number;
-      lift: number;
-      books: number;
-    };
-  },
-  SomeItemData
->;
-class SomeActor extends Actor<SomeActorData, SomeItem> {}
-
-const someActor = new SomeActor();
-someActor.update({ 'data.attributes.speed': 4 });
-someActor.update({ 'token.flags.barbrawl.resourceBars.bar1.mincolor': '#700000' });
-someActor.update({ data: { attributes: { speed: 32 } }, 'flags.lancer.misc': 'test' });
-someActor.update({ data: { attributes: { speed: 32 } } });
+const someEntity = new CustomEntity();
+someEntity.update({ 'attributes.speed': 4 });
+someEntity.update({ 'attributes.speed': 4, 'flags.lancer.misc': 'test' });
+someEntity.update({ attributes: { speed: 32 }, 'flags.lancer.misc': 'test' });
+someEntity.update({ attributes: { speed: 32 } });
