@@ -261,13 +261,22 @@ declare class Combat extends Entity<Combat.Data> {
    * Create a new Combatant embedded entity
    * @see {@link Combat#createEmbeddedEntity}
    */
-  createCombatant(data: DeepPartial<Combat.Combatant>, options?: any): Promise<Combat.Combatant>;
-  createCombatant(data: DeepPartial<Combat.Combatant>[], options?: any): Promise<Combat.Combatant[]>;
+  createCombatant<U>(
+    data: Expanded<U> extends DeepPartial<Combat.Combatant> ? U : DeepPartial<Combat.Combatant>,
+    options?: any
+  ): Promise<Combat.Combatant>;
+  createCombatant<U>(
+    data: Expanded<U> extends DeepPartial<Combat.Combatant> ? U[] : DeepPartial<Combat.Combatant>[],
+    options?: any
+  ): Promise<Combat.Combatant[]>;
 
   /** @override */
-  updateCombatant(data: DeepPartial<Combat.Combatant> & { _id: string }, options?: any): Promise<Combat.Combatant>;
-  updateCombatant(
-    data: (DeepPartial<Combat.Combatant> & { _id: string })[],
+  updateCombatant<U>(
+    data: (Expanded<U> extends DeepPartial<Combat.Combatant> ? U : DeepPartial<Combat.Combatant>) & { _id: string },
+    options?: any
+  ): Promise<Combat.Combatant>;
+  updateCombatant<U>(
+    data: ((Expanded<U> extends DeepPartial<Combat.Combatant> ? U : DeepPartial<Combat.Combatant>) & { _id: string })[],
     options?: any
   ): Promise<Combat.Combatant[]>;
 
