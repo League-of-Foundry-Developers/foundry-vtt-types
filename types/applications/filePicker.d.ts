@@ -438,17 +438,19 @@ declare namespace FilePicker {
      */
     tileSize: boolean;
 
-    filters: {
-      /**
-       * @defaultValue `'input[name="filter"]'`
-       */
-      inputSelector: string;
+    filters: Array<
+      SearchFilter.Options & {
+        /**
+         * @defaultValue `'input[name="filter"]'`
+         */
+        inputSelector: string;
 
-      /**
-       * @defaultValue `'.filepicker-body'`
-       */
-      contentSelector: string;
-    }[];
+        /**
+         * @defaultValue `'.filepicker-body'`
+         */
+        contentSelector: string;
+      }
+    >;
   }
 
   interface Result {
