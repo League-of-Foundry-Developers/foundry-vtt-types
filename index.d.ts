@@ -14,6 +14,7 @@ import './types/applications/filePicker';
 import './types/applications/formApplication';
 import './types/applications/formDataExtended';
 import './types/applications/localization';
+import './types/applications/sidebar';
 
 import './types/applications/forms/actorSheet';
 import './types/applications/forms/forms';
@@ -40,23 +41,22 @@ import './types/applications/journal/noteConfig';
 import './types/applications/placeables/placeablesConfig';
 import './types/applications/placeables/placeablesHud';
 
-import './types/applications/sidebar/applications/actorDirectory';
-import './types/applications/sidebar/applications/chatLog';
-import './types/applications/sidebar/applications/clientSettings';
-import './types/applications/sidebar/applications/combatTracker';
-import './types/applications/sidebar/applications/compendiumDirectory';
-import './types/applications/sidebar/applications/itemDirectory';
-import './types/applications/sidebar/applications/journalDirectory';
-import './types/applications/sidebar/applications/macroDirectory';
-import './types/applications/sidebar/applications/playlistDirectory';
-import './types/applications/sidebar/applications/rollTableDirectory';
-import './types/applications/sidebar/applications/sceneDirectory';
-import './types/applications/sidebar/applications/settings';
+import './types/applications/sidebarTab';
+import './types/applications/sidebarTabs/chatLog';
+import './types/applications/sidebarTabs/combatTracker';
+import './types/applications/sidebarTabs/compendiumDirectory';
+import './types/applications/sidebarTabs/settings';
 
-import './types/applications/sidebar/sidebar';
-import './types/applications/sidebar/sidebarTab';
+import './types/applications/sidebarTabs/sidebarDirectory';
+import './types/applications/sidebarTabs/sidebarDirectories/actorDirectory';
+import './types/applications/sidebarTabs/sidebarDirectories/clientSettings';
+import './types/applications/sidebarTabs/sidebarDirectories/itemDirectory';
+import './types/applications/sidebarTabs/sidebarDirectories/journalDirectory';
+import './types/applications/sidebarTabs/sidebarDirectories/macroDirectory';
+import './types/applications/sidebarTabs/sidebarDirectories/playlistDirectory';
+import './types/applications/sidebarTabs/sidebarDirectories/rollTableDirectory';
+import './types/applications/sidebarTabs/sidebarDirectories/sceneDirectory';
 
-import './types/applications/sidebar/sidebarDirectories/sidebarDirectory';
 // Augments
 
 import './types/augments/howler';
