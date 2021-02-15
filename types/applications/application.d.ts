@@ -381,7 +381,7 @@ declare namespace Application {
      * The default pixel height for the rendered HTML
      * @defaultValue `null`
      */
-    height: number | null;
+    height: string | number | null;
 
     /**
      * The default offset-top position for the rendered HTML
