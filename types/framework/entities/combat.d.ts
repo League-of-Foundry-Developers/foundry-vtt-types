@@ -44,7 +44,7 @@ declare class CombatEncounters extends EntityCollection<Combat> {
  * The Combat Entity defines a particular combat encounter which can occur within the game session
  * Combat instances belong to the CombatEncounters collection
  */
-declare class Combat extends Entity<Combat.Data> {
+declare class Combat extends Entity<Combat.Data, Combat.EmbeddedEntityConfig> {
   /**
    * Track the sorted turn order of this combat encounter
    */
@@ -263,55 +263,70 @@ declare class Combat extends Entity<Combat.Data> {
    */
   createCombatant<U>(
     data: Expanded<U> extends DeepPartial<Combat.Combatant> ? U : DeepPartial<Combat.Combatant>,
-    options?: any
-  ): Promise<Combat.Combatant>;
+    options?: Entity.CreateOptions
+  ): Promise<Combat.Combatant | null>;
   createCombatant<U>(
     data: Expanded<U> extends DeepPartial<Combat.Combatant> ? U[] : DeepPartial<Combat.Combatant>[],
-    options?: any
-  ): Promise<Combat.Combatant[]>;
+    options?: Entity.CreateOptions
+  ): Promise<Combat.Combatant | Combat.Combatant[] | null>;
 
   /** @override */
   updateCombatant<U>(
-    data: (Expanded<U> extends DeepPartial<Combat.Combatant> ? U : DeepPartial<Combat.Combatant>) & { _id: string },
-    options?: any
-  ): Promise<Combat.Combatant>;
+    data: (Expanded<U> extends DeepPartial<Combat.Combatant> ? U & { _id: string } : DeepPartial<Combat.Combatant>) & {
+      _id: string;
+    },
+    options?: Entity.UpdateOptions
+  ): Promise<Combat.Combatant | []>;
   updateCombatant<U>(
-    data: ((Expanded<U> extends DeepPartial<Combat.Combatant> ? U : DeepPartial<Combat.Combatant>) & { _id: string })[],
-    options?: any
-  ): Promise<Combat.Combatant[]>;
+    data: ((Expanded<U> extends DeepPartial<Combat.Combatant> ? U & { _id: string } : DeepPartial<Combat.Combatant>) & {
+      _id: string;
+    })[],
+    options?: Entity.UpdateOptions
+  ): Promise<Combat.Combatant | Combat.Combatant[]>;
 
   /** @override */
-  deleteCombatant(id: string, options?: any): Promise<Combat.Combatant>;
-  deleteCombatant(id: string[], options?: any): Promise<Combat.Combatant[]>;
+  deleteCombatant(id: string, options?: Entity.DeleteOptions): Promise<Combat.Combatant | []>;
+  deleteCombatant(id: string[], options?: Entity.DeleteOptions): Promise<Combat.Combatant | Combat.Combatant[]>;
 
   /* -------------------------------------------- */
   /*  Socket Events and Handlers                  */
   /* -------------------------------------------- */
 
   /** @override */
-  protected _onCreate(data: Combat.Data, options: any, userId: string): void;
+  protected _onCreate(data: Combat.Data, options: Entity.CreateOptions, userId: string): void;
 
   /** @override */
-  protected _onUpdate(data: DeepPartial<Combat.Data>, options: Entity.UpdateOptions, userId: string): void;
+  protected _onUpdate(
+    data: DeepPartial<Combat.Data> & { _id: string },
+    options: Entity.UpdateOptions,
+    userId: string
+  ): void;
 
   /** @override */
   protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
 
   /** @override */
   protected _onDeleteEmbeddedEntity(
-    embeddedName: string,
+    embeddedName: 'Combatant',
     child: Combat.Combatant,
-    options: Entity.UpdateOptions,
+    options: Entity.DeleteOptions,
     userId: string
   ): void;
 
   /** @override */
   protected _onModifyEmbeddedEntity(
-    embeddedName: string,
-    changes: any[],
-    options: any,
+    embeddedName: 'Combatant',
+    changes: Combat.Combatant[],
+    options: Entity.CreateOptions & { temporary: boolean; renderSheet: boolean },
     userId: string,
-    context?: any
+    context: { action: 'create' }
+  ): void;
+  protected _onModifyEmbeddedEntity(
+    embeddedName: 'Combatant',
+    changes: (DeepPartial<Combat.Combatant> & { _id: string })[] | string[],
+    options: (Entity.UpdateOptions & { diff: boolean }) | Entity.DeleteOptions,
+    userId: string,
+    context: { action: 'update' }
   ): void;
 }
 
@@ -364,4 +379,8 @@ declare namespace Combat {
         tokenId: string;
       }
   );
+
+  type EmbeddedEntityConfig = {
+    Combatant: Combatant;
+  };
 }

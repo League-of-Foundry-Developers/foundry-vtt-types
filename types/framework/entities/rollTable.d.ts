@@ -21,7 +21,7 @@ declare class RollTables extends EntityCollection<RollTable> {
   static registerSettings(): void;
 }
 
-declare class RollTable extends Entity<RollTable.Data> {
+declare class RollTable extends Entity<RollTable.Data, RollTable.EmbeddedEntityConfig> {
   /** @override */
   static get config(): Entity.Config<RollTable>;
 
@@ -162,7 +162,7 @@ declare class RollTable extends Entity<RollTable.Data> {
    * @param value - The rolled value
    * @returns An Array of results
    */
-  protected _getResultsForRoll(value: number): any[];
+  protected _getResultsForRoll(value: number): RollTable.Result[];
 
   /**
    * Get a string representation for the result which (if possible) will be a dynamic link or otherwise plain text
@@ -175,13 +175,23 @@ declare class RollTable extends Entity<RollTable.Data> {
   /*  Table Result Management Methods             */
   /* -------------------------------------------- */
 
-  getTableResult(id: string): any; // TODO EmbeddedTableResult
+  getTableResult(id: string): RollTable.Result | null;
 
   /** @override */
-  protected _onCreateEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
+  protected _onCreateEmbeddedEntity(
+    embeddedName: 'TableResult',
+    child: RollTable.Result,
+    options: Entity.CreateOptions & { temporary: boolean; renderSheet: boolean },
+    userId: string
+  ): void;
 
   /** @override */
-  protected _onDeleteEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
+  protected _onDeleteEmbeddedEntity(
+    embeddedName: 'TableResult',
+    child: RollTable.Result,
+    options: Entity.DeleteOptions,
+    userId: string
+  ): void;
 
   /* -------------------------------------------- */
   /*  Importing and Exporting                     */
@@ -223,4 +233,8 @@ declare namespace RollTable {
     weight: number;
     _id: string;
   }
+
+  type EmbeddedEntityConfig = {
+    TableResult: Result;
+  };
 }

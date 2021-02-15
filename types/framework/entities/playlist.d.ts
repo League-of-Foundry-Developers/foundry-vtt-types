@@ -19,7 +19,7 @@ declare class Playlists extends EntityCollection<Playlist> {
   protected _onUpdateScene(scene: Scene, data: Scene.Data, options: Entity.UpdateOptions): void;
 }
 
-declare class Playlist extends Entity<Playlist.Data> {
+declare class Playlist extends Entity<Playlist.Data, Playlist.EmbeddedEntityConfig> {
   /**
    * Each sound which is played within the Playlist has a created Howl instance.
    * The keys of this object are the sound IDs and the values are the Howl instances.
@@ -125,40 +125,51 @@ declare class Playlist extends Entity<Playlist.Data> {
   /* -------------------------------------------- */
 
   /** @override */
-  protected _onUpdate(data: DeepPartial<Playlist.Data>, options: Entity.UpdateOptions, userId: string): void;
+  protected _onUpdate(
+    data: DeepPartial<Playlist.Data> & { _id: string },
+    options: Entity.UpdateOptions,
+    userId: string
+  ): void;
 
   /** @override */
   protected _onCreateEmbeddedEntity(
-    embeddedName: string,
+    embeddedName: 'PlaylistSound',
     child: Playlist.Sound,
-    options: Entity.UpdateOptions,
+    options: Entity.UpdateOptions & { temporary: boolean; renderSheet: boolean },
     userId: string
   ): void;
 
   /** @override */
   protected _onUpdateEmbeddedEntity(
-    embeddedName: string,
+    embeddedName: 'PlaylistSound',
     child: Playlist.Sound,
-    updateData: any,
-    options: Entity.UpdateOptions,
+    updateData: DeepPartial<Playlist.Sound> & { _id: string },
+    options: Entity.UpdateOptions & { diff: boolean },
     userId: string
   ): void;
 
   /** @override */
   protected _onDeleteEmbeddedEntity(
-    embeddedName: string,
+    embeddedName: 'PlaylistSound',
     child: Playlist.Sound,
-    options: Entity.UpdateOptions,
+    options: Entity.DeleteOptions,
     userId: string
   ): void;
 
   /** @override */
   protected _onModifyEmbeddedEntity(
-    embeddedName: string,
-    changes: any[],
-    options: any,
+    embeddedName: 'PlaylistSound',
+    changes: Playlist.Sound[],
+    options: Entity.CreateOptions & { temporary: boolean; renderSheet: boolean },
     userId: string,
-    context?: any
+    context: { action: 'create' }
+  ): void;
+  protected _onModifyEmbeddedEntity(
+    embeddedName: 'PlaylistSound',
+    changes: (DeepPartial<Playlist.Sound> & { _id: string })[] | string[],
+    options: (Entity.UpdateOptions & { diff: boolean }) | Entity.DeleteOptions,
+    userId: string,
+    context: { action: 'update' }
   ): void;
 
   /* -------------------------------------------- */
@@ -189,4 +200,8 @@ declare namespace Playlist {
     sort: number;
     sounds: Sound[];
   }
+
+  type EmbeddedEntityConfig = {
+    PlaylistSound: Sound;
+  };
 }
