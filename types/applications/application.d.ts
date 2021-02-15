@@ -27,7 +27,7 @@ declare class Application {
    *                  passed to the constructor are combined with the defaultOptions defined
    *                  at the class level.
    */
-  constructor(options?: DeepPartial<Application.Options>);
+  constructor(options?: Partial<Application.Options>);
 
   /**
    * The options provided to this application upon initialization
