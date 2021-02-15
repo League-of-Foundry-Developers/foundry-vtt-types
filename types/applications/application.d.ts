@@ -27,7 +27,7 @@ declare class Application {
    *                  passed to the constructor are combined with the defaultOptions defined
    *                  at the class level.
    */
-  constructor(options?: Partial<Application.Options>);
+  constructor(options?: DeepPartial<Application.Options>);
 
   /**
    * The options provided to this application upon initialization
@@ -428,13 +428,13 @@ declare namespace Application {
     /**
      * @defaultValue `[]`
      */
-    dragDrop: Partial<DragDrop>[];
+    dragDrop: DragDrop.Options[];
 
     /**
      * Track Tab navigation handlers which are active for this Application
      * @defaultValue `[]`
      */
-    tabs: Omit<Tabs.Options, 'callback'>[];
+    tabs: Tabs.Options[];
 
     /**
      * @defaultValue `[]`

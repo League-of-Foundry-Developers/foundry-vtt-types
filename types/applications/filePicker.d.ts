@@ -3,12 +3,12 @@
  * This app allows for navigating and uploading files to the public path
  */
 declare class FilePicker extends Application {
-  constructor(options?: Partial<FilePicker.ConstructorOptions & FilePicker.Options>);
+  constructor(options?: DeepPartial<FilePicker.Options>);
 
   /**
    * @override
    */
-  options: Partial<FilePicker.ConstructorOptions> & FilePicker.Options;
+  options: FilePicker.Options;
 
   /**
    * The full requested path given by the user
@@ -334,14 +334,6 @@ declare namespace FilePicker {
     wildcard: string;
   }
 
-  interface ConstructorOptions {
-    current: FilePicker['request'];
-    activeSource: FilePicker['activeSource'];
-    type: FilePicker['type'];
-    field: FilePicker['field'];
-    button: FilePicker['button'];
-  }
-
   interface Data {
     bucket: string | null;
     canGoBack: boolean;
@@ -381,6 +373,16 @@ declare namespace FilePicker {
   }
 
   interface Options extends Application.Options {
+    current?: FilePicker['request'];
+
+    activeSource?: FilePicker['activeSource'];
+
+    type?: FilePicker['type'];
+
+    field?: FilePicker['field'];
+
+    button?: FilePicker['button'];
+
     /**
      * @defaultValue `'templates/apps/filepicker.html'`
      */
@@ -396,24 +398,28 @@ declare namespace FilePicker {
      */
     width: number;
 
-    tabs: {
-      /**
-       * @defaultValue `'.tabs'`
-       */
-      navSelector: string;
-    }[];
+    tabs: Array<
+      Tabs.Options & {
+        /**
+         * @defaultValue `'.tabs'`
+         */
+        navSelector: string;
+      }
+    >;
 
-    dragDrop: {
-      /**
-       * @defaultValue `'.file'`
-       */
-      dragSelector: string;
+    dragDrop: Array<
+      DragDrop.Options & {
+        /**
+         * @defaultValue `'.file'`
+         */
+        dragSelector: string;
 
-      /**
-       * @defaultValue `'.filepicker-body'`
-       */
-      dropSelector: string;
-    }[];
+        /**
+         * @defaultValue `'.filepicker-body'`
+         */
+        dropSelector: string;
+      }
+    >;
 
     /**
      * @defaultValue `false`
