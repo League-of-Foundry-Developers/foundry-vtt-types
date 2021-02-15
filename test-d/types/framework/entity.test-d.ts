@@ -3,6 +3,11 @@ import '../../../index';
 
 interface CustomEntityData extends Entity.Data {
   customField: boolean;
+  attributes: {
+    speed: number;
+    lift: number;
+    books: number;
+  };
 }
 declare class CustomEntity extends Entity<CustomEntityData> {}
 declare const actualCustomData: CustomEntityData;
@@ -67,3 +72,9 @@ expectType<Promise<CustomEntity | null>>(CustomEntity.delete(id));
 expectType<Promise<CustomEntity | CustomEntity[] | null>>(CustomEntity.delete([id, id]));
 expectType<Promise<CustomEntity | CustomEntity[] | null>>(CustomEntity.delete([id] as const));
 expectType<Promise<CustomEntity | CustomEntity[] | null>>(CustomEntity.delete([id, id] as const));
+
+const someEntity = new CustomEntity();
+someEntity.update({ 'attributes.speed': 4 });
+someEntity.update({ 'attributes.speed': 4, 'flags.lancer.misc': 'test' });
+someEntity.update({ attributes: { speed: 32 }, 'flags.lancer.misc': 'test' });
+someEntity.update({ attributes: { speed: 32 } });

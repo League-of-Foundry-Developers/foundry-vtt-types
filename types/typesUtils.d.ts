@@ -58,3 +58,15 @@ type OmitAssignableFromType<T extends object, U> = { [k in keyof T as U extends 
  * @internal
  */
 type OmitNotAssignableFromType<T extends object, U> = { [k in keyof T as U extends T[k] ? k : never]: T[k] };
+
+/**
+ * Expand an object that contains keys in dotted notation
+ * @internal
+ */
+type Expanded<O> = O extends Record<string, unknown>
+  ? {
+      [KO in keyof O as KO extends `${infer A}.${string}` ? A : KO]: KO extends `${string}.${infer B}`
+        ? Expanded<{ [EB in B]: O[KO] }>
+        : Expanded<O[KO]>;
+    }
+  : O;
