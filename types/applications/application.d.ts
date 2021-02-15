@@ -439,7 +439,7 @@ declare namespace Application {
     /**
      * @defaultValue `[]`
      */
-    filters: SearchFilter[];
+    filters: SearchFilter.Options[];
 
     /**
      * A default window title string (popOut only)

@@ -13,19 +13,7 @@ declare class SearchFilter {
    * @param delay           - The number of milliseconds to wait for text input before processing.
    *                          (default: `100`)
    */
-  constructor({
-    inputSelector,
-    contentSelector,
-    initial,
-    callback,
-    delay
-  }: {
-    inputSelector: string;
-    contentSelector: string;
-    initial?: SearchFilter['query'];
-    callback: SearchFilter['callback'];
-    delay?: number;
-  });
+  constructor({ inputSelector, contentSelector, initial, callback, delay }: SearchFilter.Options);
 
   /**
    * The value of the current query string
@@ -72,4 +60,35 @@ declare class SearchFilter {
    * @param event - The key-up event
    */
   protected _onKeyUp(event: KeyboardEvent): void;
+}
+
+declare namespace SearchFilter {
+  interface Options {
+    /**
+     * The CSS selector used to target the text input element.
+     */
+    inputSelector: string;
+
+    /**
+     * The CSS selector used to target the content container for these tabs.
+     */
+    contentSelector: string;
+
+    /**
+     * The initial value of the search query.
+     * @defaultValue `''`
+     */
+    initial?: SearchFilter['query'];
+
+    /**
+     * A callback function which executes when the filter changes.
+     */
+    callback: SearchFilter['callback'];
+
+    /**
+     * The number of milliseconds to wait for text input before processing.
+     * @defaultValue `100`
+     */
+    delay?: number;
+  }
 }
