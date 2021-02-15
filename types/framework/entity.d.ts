@@ -688,9 +688,14 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    *
    * @param data - The data object extracted from a DataTransfer event
    */
-  static fromDropData<T extends Entity>(this: ConstructorOf<T>, data: { data: DeepPartial<T['data']> }): Promise<T>;
-  static fromDropData<T extends Entity>(this: ConstructorOf<T>, data: { pack: string }): Promise<T | undefined | null>;
-  static fromDropData<T extends Entity>(this: ConstructorOf<T>, data: { id: string }): Promise<T | null>;
+  static fromDropData<T extends Entity, U extends { data: DeepPartial<T['data']> } | { pack: string } | { id: string }>(
+    this: ConstructorOf<T>,
+    data: U
+  ): U extends { data: DeepPartial<T['data']> }
+    ? Promise<T>
+    : U extends { id: string }
+    ? Promise<T | null>
+    : Promise<T | undefined | null>;
 
   /**
    * Import data and update this entity
