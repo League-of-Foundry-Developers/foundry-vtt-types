@@ -3,7 +3,7 @@
  * This app allows for navigating and uploading files to the public path
  */
 declare class FilePicker extends Application {
-  constructor(options?: DeepPartial<FilePicker.Options>);
+  constructor(options?: Partial<FilePicker.Options>);
 
   /**
    * @override
