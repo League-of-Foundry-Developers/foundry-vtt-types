@@ -263,7 +263,7 @@ declare class FilePicker extends Application {
    * @param event - (unused)
    * @override
    */
-  protected _onSearchFilter(event: any, query: string, html: HTMLElement): void;
+  protected _onSearchFilter(event: KeyboardEvent, query: string, html: HTMLElement): void;
 
   /**
    * Handle file picker form submission

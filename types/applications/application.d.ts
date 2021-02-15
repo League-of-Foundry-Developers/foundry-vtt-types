@@ -251,7 +251,7 @@ declare class Application {
    * @param html  - The HTML element which should be filtered
    *                (unused)
    */
-  protected _onSearchFilter(event: any, query: any, html: HTMLElement): void;
+  protected _onSearchFilter(event: KeyboardEvent, query: string, html: HTMLElement): void;
 
   /**
    * Define whether a user is able to begin a dragstart workflow for a given drag selector
