@@ -50,7 +50,7 @@ declare class FilePicker extends Application {
   /**
    * The display mode of the FilePicker UI
    */
-  displayMode: string;
+  displayMode: FilePicker.DisplayModes;
 
   /**
    * The current set of file extensions which are being filtered upon
@@ -118,7 +118,7 @@ declare class FilePicker extends Application {
    * @param options - (unused)
    * @override
    */
-  getData(options?: any): Promise<FilePicker.Data>;
+  getData(options?: Application.RenderOptions): Promise<FilePicker.Data>;
 
   /**
    * Browse to a specific location for this FilePicker instance
@@ -139,7 +139,7 @@ declare class FilePicker extends Application {
     source: string,
     target: string,
     options?: Partial<FilePicker.BrowsingOptions>
-  ): Promise<FilePicker.Result>;
+  ): Promise<FilePicker.Result & { dirs?: string[] }>;
 
   /**
    * Configure metadata settings regarding a certain file system path
@@ -191,26 +191,26 @@ declare class FilePicker extends Application {
    * Handle a click event to change the display mode of the File Picker
    * @param event - The triggering click event
    */
-  protected _onChangeDisplayMode(event: MouseEvent): void;
+  protected _onChangeDisplayMode(event: JQuery.ClickEvent): void;
 
   /**
    * @param event - (unused)
    * @param event - (unused)
    * @override
    */
-  protected _onChangeTab(event: any, tabs: any, active: this['activeSource']): void;
+  protected _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: this['activeSource']): void;
 
   /**
    * @param selector - (unused)
    * @override
    */
-  protected _canDragStart(selector?: any): boolean;
+  protected _canDragStart(selector: string | null): boolean;
 
   /**
    * @param selector - (unused)
    * @override
    */
-  protected _canDragDrop(selector?: any): this['canUpload'];
+  protected _canDragDrop(selector: string | null): this['canUpload'];
 
   /**
    * @override
@@ -237,13 +237,13 @@ declare class FilePicker extends Application {
    * Handle file or folder selection within the file picker
    * @param event - The originating click event
    */
-  protected _onPick(event: Event): Promise<FilePicker.Result> | void;
+  protected _onPick(event: JQuery.ClickEvent): Promise<FilePicker.Result> | undefined;
 
   /**
    * Handle backwards navigation of the fol6der structure
    */
   protected _onClickDirectoryControl(
-    event: Event
+    event: JQuery.ClickEvent
   ):
     | ReturnType<this['browse']>
     | Promise<ReturnType<this['browse']> | void | null>
@@ -257,7 +257,7 @@ declare class FilePicker extends Application {
   /**
    * Handle changes to the bucket selector
    */
-  protected _onChangeBucket(event: Event): ReturnType<this['browse']>;
+  protected _onChangeBucket(event: JQuery.ChangeEvent): ReturnType<this['browse']>;
 
   /**
    * @param event - (unused)
@@ -290,30 +290,35 @@ declare class FilePicker extends Application {
    * Record the last-browsed directory path so that re-opening a different FilePicker instance uses the same target
    * @defaultValue `''`
    */
-  LAST_BROWSED_DIRECTORY: string;
+  static LAST_BROWSED_DIRECTORY: string;
 
   /**
    * Record the last-configured tile size which can automatically be applied to new FilePicker instances
    * @defaultValue `null`
    */
-  LAST_TILE_SIZE: number;
+  static LAST_TILE_SIZE: number | null;
 
   /**
    * Record the last-configured display mode so that re-opening a different FilePicker instance uses the same mode.
-   * @defaultValue `'list'`
+   * @defaultValue `FilePicker.DisplayModes.List`
    */
-  LAST_DISPLAY_MODE: string;
+  static LAST_DISPLAY_MODE: string;
 
   /**
    * Enumerate the allowed FilePicker display modes
    */
-  DISPLAY_MODES: ['list', 'thumbs', 'tiles', 'images'];
+  static DISPLAY_MODES: [
+    FilePicker.DisplayModes.List,
+    FilePicker.DisplayModes.Thumbs,
+    FilePicker.DisplayModes.Tiles,
+    FilePicker.DisplayModes.Images
+  ];
 
   /**
    * Cache the names of S3 buckets which can be used
    * @defaultValue `null`
    */
-  S3_BUCKETS: string[] | null;
+  static S3_BUCKETS: string[] | null;
 }
 
 declare namespace FilePicker {
@@ -358,6 +363,13 @@ declare namespace FilePicker {
     name: string;
     path: string;
     private: boolean;
+  }
+
+  enum DisplayModes {
+    List = 'list',
+    Thumbs = 'thumbs',
+    Tiles = 'tiles',
+    Images = 'images'
   }
 
   interface File {
@@ -454,7 +466,7 @@ declare namespace FilePicker {
     data: Source;
     public: Source;
     s3: Source & {
-      buckets: string[] | null;
+      buckets: string[];
       bucket: string;
     };
   }
