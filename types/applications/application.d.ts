@@ -301,7 +301,7 @@ declare class Application {
    * @param options - (default: `{}`)
    * @returns A Promise which resolves once the application is closed
    */
-  close(options?: Application.CloseOptions): Promise<void>;
+  close(options?: Application.CloseOptions): Promise<unknown>;
 
   /**
    * Minimize the pop-out window, collapsing it to a small tab
