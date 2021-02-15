@@ -35,7 +35,7 @@ declare class SearchFilter {
   /**
    * A callback function to trigger when the tab is changed
    */
-  callback: (event: KeyboardEvent, query: string, content: string) => void | null;
+  callback: (event: KeyboardEvent, query: string, content: string) => void;
 
   /**
    * The CSS selector used to target the tab navigation element
