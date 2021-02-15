@@ -48,7 +48,7 @@ declare class Scenes extends EntityCollection<Scene> {
 /**
  * The Scene entity
  */
-declare class Scene extends Entity<Scene.Data> {
+declare class Scene extends Entity<Scene.Data, Scene.EmbeddedEntityConfig> {
   /**
    * Track whether the scene is the active view
    */
@@ -136,16 +136,20 @@ declare class Scene extends Entity<Scene.Data> {
 
   /** @override */
   update<U>(
-    data: Expanded<U> extends DeepPartial<Scene.Data> ? U : never,
+    data: Expanded<U> extends DeepPartial<Scene.Data> ? U & { _id: string } : never,
     options: Entity.UpdateOptions
   ): Promise<this>;
-  update(data: DeepPartial<Scene.Data>, options: Entity.UpdateOptions): Promise<this>;
+  update(data: DeepPartial<Scene.Data> & { _id: string }, options: Entity.UpdateOptions): Promise<this>;
 
   /** @override */
-  protected _onCreate(data: Scene.Data, options: any, userId: string): void;
+  protected _onCreate(data: Scene.Data, options: Entity.CreateOptions, userId: string): void;
 
   /** @override */
-  protected _onUpdate(data: DeepPartial<Scene.Data>, options: Entity.UpdateOptions, userId: string): void;
+  protected _onUpdate(
+    data: DeepPartial<Scene.Data> & { _id: string },
+    options: Entity.UpdateOptions,
+    userId: string
+  ): void;
 
   /** @override */
   protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
@@ -156,27 +160,44 @@ declare class Scene extends Entity<Scene.Data> {
   protected _onActivate(active: boolean): void;
 
   /** @override */
-  protected _onCreateEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
-
-  /** @override */
-  protected _onUpdateEmbeddedEntity(
-    embeddedName: string,
-    child: any,
-    updateData: any,
-    options: any,
+  protected _onCreateEmbeddedEntity<T extends keyof Scene.EmbeddedEntityConfig>(
+    embeddedName: T,
+    child: Scene.EmbeddedEntityConfig[T],
+    options: Entity.CreateOptions & { temporary: boolean; renderSheet: boolean },
     userId: string
   ): void;
 
   /** @override */
-  protected _onDeleteEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
+  protected _onUpdateEmbeddedEntity<T extends keyof Scene.EmbeddedEntityConfig>(
+    embeddedName: T,
+    child: Scene.EmbeddedEntityConfig[T],
+    updateData: DeepPartial<Scene.EmbeddedEntityConfig[T]> & { _id: string },
+    options: Entity.UpdateOptions & { diff: boolean },
+    userId: string
+  ): void;
 
   /** @override */
-  protected _onModifyEmbeddedEntity(
-    embeddedName: string,
-    changes: any[],
-    options: any,
+  protected _onDeleteEmbeddedEntity<T extends keyof Scene.EmbeddedEntityConfig>(
+    embeddedName: T,
+    child: Scene.EmbeddedEntityConfig[T],
+    options: Entity.DeleteOptions,
+    userId: string
+  ): void;
+
+  /** @override */
+  protected _onModifyEmbeddedEntity<T extends keyof Scene.EmbeddedEntityConfig>(
+    embeddedName: T,
+    changes: Scene.EmbeddedEntityConfig[T][],
+    options: Entity.CreateOptions & { temporary: boolean; renderSheet: boolean },
     userId: string,
-    context?: any
+    context: { action: 'create' }
+  ): void;
+  protected _onModifyEmbeddedEntity<T extends keyof Scene.EmbeddedEntityConfig>(
+    embeddedName: T,
+    changes: (DeepPartial<Scene.EmbeddedEntityConfig[T]> & { _id: string })[] | string[],
+    options: (Entity.UpdateOptions & { diff: boolean }) | Entity.DeleteOptions,
+    userId: string,
+    context: { action: 'update' }
   ): void;
 
   /* -------------------------------------------- */
@@ -260,4 +281,15 @@ declare namespace Scene {
     weather: string;
     width: number;
   }
+
+  type EmbeddedEntityConfig = {
+    AmbientLight: Data['lights'];
+    AmbientSound: Data['sounds'];
+    Drawing: Data['drawings'];
+    Note: Data['notes'];
+    MeasuredTemplate: Data['templates'];
+    Tile: Data['tiles'];
+    Token: Data['tokens'];
+    Wall: Data['walls'];
+  };
 }
