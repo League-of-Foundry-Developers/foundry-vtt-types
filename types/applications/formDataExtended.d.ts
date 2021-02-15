@@ -42,7 +42,7 @@ declare class FormDataExtended extends FormData {
   /**
    * Export the FormData as an object
    */
-  toObject(): Record<string, any>;
+  toObject(): Record<string, unknown>;
 }
 
 declare namespace FormDataExtended {
