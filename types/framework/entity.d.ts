@@ -291,24 +291,24 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * ```typescript
    * const data = {name: "New Entity", type: "character", img: "path/to/profile.jpg"};
    * const created: Actor | null = await Actor.create(data); // Returns one Entity, saved to the database
-   * const temp: Actor | null = await Entity.create(data, {temporary: true}); // Not saved to the database
+   * const temp: Actor | null = await Actor.create(data, {temporary: true}); // Not saved to the database
    * ```
    *
    * @example
    * ```typescript
    * const data = [{name: "Tim", type: "npc"}, {name: "Tom", type: "npc"}];
-   * const created: Actor[] | null = await Actor.create(data); // Returns an Array of Entities, saved to the database
-   * const created: Actor[] | null = await Actor.create(data, {temporary: true}); // Not saved to the database
+   * const created: Actor[] | Actor | null = await Actor.create(data); // Returns an Array of Entities, saved to the database
+   * const created: Actor[] | Actor | null = await Actor.create(data, {temporary: true}); // Not saved to the database
    * ```
    */
-  static create<T extends Entity>(
+  static create<T extends Entity, U>(
     this: ConstructorOf<T>,
-    data: DeepPartial<T['data']>,
+    data: Expanded<U> extends DeepPartial<T['data']> ? U : DeepPartial<T['data']>,
     options?: Entity.CreateOptions
   ): Promise<T | null>;
-  static create<T extends Entity>(
+  static create<T extends Entity, U>(
     this: ConstructorOf<T>,
-    data: ReadonlyArray<DeepPartial<T['data']>>,
+    data: Expanded<U> extends DeepPartial<T['data']> ? ReadonlyArray<U> : ReadonlyArray<DeepPartial<T['data']>>,
     options?: Entity.CreateOptions
   ): Promise<T | T[] | null>;
 
@@ -335,23 +335,25 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @example
    * ```typescript
    * const data = {_id: "12ekjf43kj2312ds", name: "New Name"}}
-   * const updated = await Entity.update<Actor>(data) // Updated entity saved to the database
+   * const updated = await Actor.update(data) // Updated entity saved to the database
    * ```
    *
    * @example
    * ```typescript
    * const data = [{_id: "12ekjf43kj2312ds", name: "New Name 1"}, {_id: "kj549dk48k34jk34", name: "New Name 2"}]}
-   * const updated = await Entity.update<Actor>(data); // Returns an Array of Entities, updated in the database
+   * const updated = await Actor.update(data); // Returns an Array of Entities, updated in the database
    * ```
    */
-  static update<T extends Entity>(
+  static update<T extends Entity, U>(
     this: ConstructorOf<T>,
-    data: DeepPartial<T['data']> & { _id: string },
+    data: Expanded<U> extends DeepPartial<T['data']> ? U & { _id: string } : DeepPartial<T['data']> & { _id: string },
     options?: Entity.UpdateOptions
   ): Promise<T | []>;
-  static update<T extends Entity>(
+  static update<T extends Entity, U>(
     this: ConstructorOf<T>,
-    data: ReadonlyArray<DeepPartial<T['data']> & { _id: string }>,
+    data: Expanded<U> extends DeepPartial<T['data']>
+      ? ReadonlyArray<U & { _id: string }>
+      : ReadonlyArray<DeepPartial<T['data']> & { _id: string }>,
     options?: Entity.UpdateOptions
   ): Promise<T | T[]>;
 
@@ -376,6 +378,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param data    - A Data object which updates the Entity
    * @param options - Additional options which customize the update workflow
    */
+  update<U>(data: Expanded<U> extends DeepPartial<D> ? U : never, options?: Entity.UpdateOptions): Promise<this>;
   update(data: DeepPartial<D>, options?: Entity.UpdateOptions): Promise<this>;
 
   /**
@@ -803,6 +806,6 @@ declare namespace Entity {
     /**
      * Flags for arbitrary data from modules &c.
      */
-    flags: Record<string, any>;
+    flags: Record<string, unknown>;
   }
 }

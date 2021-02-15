@@ -30,7 +30,7 @@ declare class Wall extends PlaceableObject<Wall.Data> {
   /**
    * A convenience reference to the coordinates Array for the Wall endpoints, [x0,y0,x1,y1].
    */
-  get coords(): this['data']['c'];
+  get coords(): Wall.Data['c'];
 
   /** @override */
   get bounds(): NormalizedRectangle;
