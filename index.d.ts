@@ -22,6 +22,7 @@ import './types/applications/forms/itemSheet';
 import './types/applications/forms/permission';
 import './types/applications/forms/rollTableConfig';
 import './types/applications/forms/scene';
+import './types/applications/forms/settingsConfig';
 import './types/applications/forms/setupConfigurationForm';
 import './types/applications/forms/userManagement';
 
@@ -49,7 +50,6 @@ import './types/applications/sidebarTabs/settings';
 
 import './types/applications/sidebarTabs/sidebarDirectory';
 import './types/applications/sidebarTabs/sidebarDirectories/actorDirectory';
-import './types/applications/sidebarTabs/sidebarDirectories/clientSettings';
 import './types/applications/sidebarTabs/sidebarDirectories/itemDirectory';
 import './types/applications/sidebarTabs/sidebarDirectories/journalDirectory';
 import './types/applications/sidebarTabs/sidebarDirectories/macroDirectory';
