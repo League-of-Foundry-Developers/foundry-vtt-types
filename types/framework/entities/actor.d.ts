@@ -289,11 +289,8 @@ declare class Actor<
   /* -------------------------------------------- */
 
   /** @override */
-  update<U>(
-    data: Expanded<U> extends DeepPartial<this['data']> ? U : never,
-    options?: Entity.UpdateOptions
-  ): Promise<this>;
-  update(data: DeepPartial<this['data']>, options?: Entity.UpdateOptions): Promise<this>;
+  update<U>(data: Expanded<U> extends DeepPartial<D> ? U : never, options?: Entity.UpdateOptions): Promise<this>;
+  update(data: DeepPartial<D>, options?: Entity.UpdateOptions): Promise<this>;
 
   /** @override */
   delete(options?: Entity.DeleteOptions): Promise<this>;
