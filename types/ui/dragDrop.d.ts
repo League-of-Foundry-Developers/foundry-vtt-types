@@ -25,17 +25,7 @@ declare class DragDrop {
    * @param callbacks    - An object of callback functions for each action
    *                       (default: `{}`)
    */
-  constructor({
-    dragSelector,
-    dropSelector,
-    permissions,
-    callbacks
-  }?: {
-    dragSelector?: DragDrop['dragSelector'];
-    dropSelector?: DragDrop['dropSelector'];
-    permissions?: DragDrop['permissions'];
-    callbacks?: DragDrop['callbacks'];
-  });
+  constructor({ dragSelector, dropSelector, permissions, callbacks }?: DragDrop.Options);
 
   /**
    * The HTML selector which identifies draggable elements
@@ -101,4 +91,32 @@ declare class DragDrop {
   protected _handleDrop(event: DragEvent): unknown;
 
   static createDragImage(img: HTMLImageElement, width: number, height: number): HTMLDivElement | HTMLElement;
+}
+
+declare namespace DragDrop {
+  interface Options {
+    /**
+     * The CSS selector used to target draggable elements.
+     * @defaultValue `null`
+     */
+    dragSelector?: DragDrop['dragSelector'];
+
+    /**
+     * The CSS selector used to target viable drop targets.
+     * @defaultValue `null`
+     */
+    dropSelector?: DragDrop['dropSelector'];
+
+    /**
+     * An object of permission test functions for each action
+     * @defaultValue `{}`
+     */
+    permissions?: DragDrop['permissions'];
+
+    /**
+     * An object of callback functions for each action
+     * @defaultValue `{}`
+     */
+    callbacks?: DragDrop['callbacks'];
+  }
 }

@@ -27,7 +27,7 @@ declare class Application {
    *                  passed to the constructor are combined with the defaultOptions defined
    *                  at the class level.
    */
-  constructor(options?: Partial<Application.Options>);
+  constructor(options?: DeepPartial<Application.Options>);
 
   /**
    * The options provided to this application upon initialization
@@ -159,7 +159,7 @@ declare class Application {
    *                  is rendered in the DOM.
    *                  (default: `{}`)
    */
-  render(force?: boolean, options?: Application.RenderOptions): this;
+  render(force?: boolean, options?: Application.RenderOptions): unknown;
 
   /**
    * An asynchronous inner function which handles the rendering of the Application
@@ -251,7 +251,7 @@ declare class Application {
    * @param html  - The HTML element which should be filtered
    *                (unused)
    */
-  protected _onSearchFilter(event: KeyboardEvent, query: RegExp, html: HTMLElement): void;
+  protected _onSearchFilter(event: KeyboardEvent, query: string, html: HTMLElement): void;
 
   /**
    * Define whether a user is able to begin a dragstart workflow for a given drag selector
@@ -428,13 +428,13 @@ declare namespace Application {
     /**
      * @defaultValue `[]`
      */
-    dragDrop: DragDrop[];
+    dragDrop: DragDrop.Options[];
 
     /**
      * Track Tab navigation handlers which are active for this Application
      * @defaultValue `[]`
      */
-    tabs: Omit<Tabs.Options, 'callback'>[];
+    tabs: Tabs.Options[];
 
     /**
      * @defaultValue `[]`
