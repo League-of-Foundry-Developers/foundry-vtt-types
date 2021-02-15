@@ -378,11 +378,8 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param data    - A Data object which updates the Entity
    * @param options - Additional options which customize the update workflow
    */
-  update<U>(
-    data: Expanded<U> extends DeepPartial<this['data']> ? U : never,
-    options?: Entity.UpdateOptions
-  ): Promise<this>;
-  update(data: DeepPartial<this['data']>, options?: Entity.UpdateOptions): Promise<this>;
+  update<U>(data: Expanded<U> extends DeepPartial<D> ? U : never, options?: Entity.UpdateOptions): Promise<this>;
+  update(data: DeepPartial<D>, options?: Entity.UpdateOptions): Promise<this>;
 
   /**
    * Delete one or multiple existing entities using provided ids.
