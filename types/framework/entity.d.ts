@@ -34,7 +34,7 @@
  * let actor = new Actor(actorData)
  * ```
  */
-declare class Entity<D extends Entity.Data = Entity.Data> {
+declare abstract class Entity<D extends Entity.Data = Entity.Data, E extends Record<string, unknown> = {}> {
   constructor(data?: DeepPartial<D>, options?: Entity.CreateOptions);
 
   /**
@@ -112,7 +112,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Obtain a reference to the Array of source data within the data object for a certain Embedded Entity name
    * @param embeddedName - The name of the Embedded Entity type
    */
-  getEmbeddedCollection(embeddedName: string): any[]; // TODO
+  getEmbeddedCollection<T extends keyof E>(embeddedName: T): E[T][];
 
   /**
    * Render all of the Application instances which are connected to this Entity by calling their respective
@@ -378,8 +378,11 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param data    - A Data object which updates the Entity
    * @param options - Additional options which customize the update workflow
    */
-  update<U>(data: Expanded<U> extends DeepPartial<D> ? U : never, options?: Entity.UpdateOptions): Promise<this>;
-  update(data: DeepPartial<D>, options?: Entity.UpdateOptions): Promise<this>;
+  update<U>(
+    data: Expanded<U> extends DeepPartial<this['data']> ? U : never,
+    options?: Entity.UpdateOptions
+  ): Promise<this>;
+  update(data: DeepPartial<this['data']>, options?: Entity.UpdateOptions): Promise<this>;
 
   /**
    * Delete one or multiple existing entities using provided ids.
@@ -440,7 +443,8 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param id           - The numeric ID of the child to retrieve
    * @param strict       - Throw an Error if the requested id does not exist, otherwise return null. Default false.
    */
-  getEmbeddedEntity(embeddedName: string, id: string, { strict }?: { strict?: boolean }): any;
+  getEmbeddedEntity<T extends keyof E>(embeddedName: T, id: string, { strict }: { strict: true }): E[T];
+  getEmbeddedEntity<T extends keyof E>(embeddedName: T, id: string, { strict }?: { strict?: boolean }): E[T] | null;
 
   /**
    * Create one or multiple EmbeddedEntities within this parent Entity.
@@ -471,7 +475,16 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const temp = await actor.createEmbeddedEntity("OwnedItem", data, {temporary: true}); // Not saved to the Actor
    * ```
    */
-  createEmbeddedEntity(embeddedName: string, data: any, options?: Entity.CreateOptions): Promise<any>;
+  createEmbeddedEntity<T extends keyof E, U>(
+    embeddedName: T,
+    data: Expanded<U> extends DeepPartial<E[T]> ? U : DeepPartial<E[T]>,
+    options?: Entity.CreateOptions
+  ): Promise<E[T] | null>;
+  createEmbeddedEntity<T extends keyof E, U>(
+    embeddedName: T,
+    data: Expanded<U> extends DeepPartial<E[T]> ? ReadonlyArray<U> : ReadonlyArray<DeepPartial<E[T]>>,
+    options?: Entity.CreateOptions
+  ): Promise<E[T] | E[T][] | null>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Embedded Entities are created
@@ -488,7 +501,12 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Any steps defined here should run on a per- EmbeddedEntity basis.
    * Steps that should run once for the whole batch should go in _onModifyEmbeddedEntity()
    */
-  protected _onCreateEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
+  protected _onCreateEmbeddedEntity<T extends keyof E>(
+    embeddedName: T,
+    child: E[T],
+    options: Entity.CreateOptions & { temporary: boolean; renderSheet: boolean },
+    userId: string
+  ): void;
 
   /**
    * Update one or multiple existing entities using provided input data.
@@ -521,8 +539,18 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const updated = await actor.updateEmbeddedEntity("OwnedItem", updates); // Updates multiple EmbeddedEntity objects
    * ```
    */
-  updateEmbeddedEntity(embeddedName: string, data: any, options?: Entity.UpdateOptions): Promise<any>;
-  updateEmbeddedEntity(embeddedName: string, data: any[], options?: Entity.UpdateOptions): Promise<any[]>;
+  updateEmbeddedEntity<T extends keyof E, U>(
+    embeddedName: T,
+    data: Expanded<U> extends DeepPartial<E[T]> ? U & { _id: string } : DeepPartial<E[T]> & { _id: string },
+    options?: Entity.UpdateOptions & { diff: boolean }
+  ): Promise<E[T] | []>;
+  updateEmbeddedEntity<T extends keyof E, U>(
+    embeddedName: T,
+    data: Expanded<U> extends DeepPartial<E[T]>
+      ? ReadonlyArray<U & { _id: string }>
+      : ReadonlyArray<DeepPartial<E[T]> & { _id: string }>,
+    options?: Entity.UpdateOptions & { diff: boolean }
+  ): Promise<E[T] | E[T][]>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Embedded Entities are updated
@@ -539,11 +567,11 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Any steps defined here should run on a per- EmbeddedEntity basis.
    * Steps that should run once for the whole batch should go in _onModifyEmbeddedEntity()
    */
-  protected _onUpdateEmbeddedEntity(
-    embeddedName: string,
-    child: any,
-    updateData: any,
-    options: any,
+  protected _onUpdateEmbeddedEntity<T extends keyof E>(
+    embeddedName: T,
+    child: E[T],
+    updateData: DeepPartial<E[T]> & { _id: string },
+    options: Entity.UpdateOptions & { diff: boolean },
     userId: string
   ): void;
 
@@ -575,7 +603,16 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const deleted = await actor.deleteEmbeddedEntity("OwnedItem", deletions); // Deletes multiple EmbeddedEntity objects
    * ```
    */
-  deleteEmbeddedEntity(embeddedName: string, data: any, options?: Entity.DeleteOptions): Promise<any | any[]>;
+  deleteEmbeddedEntity<T extends keyof E>(
+    embeddedName: T,
+    data: string,
+    options?: Entity.DeleteOptions
+  ): Promise<E[T] | []>;
+  deleteEmbeddedEntity<T extends keyof E>(
+    embeddedName: T,
+    data: ReadonlyArray<string>,
+    options?: Entity.DeleteOptions
+  ): Promise<E[T] | E[T][]>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Embedded Entities are deleted
@@ -592,18 +629,34 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Any steps defined here should run on a per- EmbeddedEntity basis.
    * Steps that should run once for the whole batch should go in _onModifyEmbeddedEntity()
    */
-  protected _onDeleteEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
+  protected _onDeleteEmbeddedEntity<T extends keyof E>(
+    embeddedName: T,
+    child: E[T],
+    options: Entity.DeleteOptions,
+    userId: string
+  ): void;
 
   /**
    * A generic helper since we take the same actions for every type of Embedded Entity update
    * Unlike the specific _onCreate, _onUpdate, and _onDelete methods this only runs once per updated batch
+   *
+   * @remarks
+   * `context` is also `'update'` when one or more embedded entities were deleted.
    */
-  protected _onModifyEmbeddedEntity(
-    embeddedName: string,
-    changes: any[],
-    options: any,
+  // TODO(0.8.0): Check if this is still the case
+  protected _onModifyEmbeddedEntity<T extends keyof E>(
+    embeddedName: T,
+    changes: E[T][],
+    options: Entity.CreateOptions & { temporary: boolean; renderSheet: boolean },
     userId: string,
-    context?: any
+    context: { action: 'create' }
+  ): void;
+  protected _onModifyEmbeddedEntity<T extends keyof E>(
+    embeddedName: T,
+    changes: (DeepPartial<E[T]> & { _id: string })[] | string[],
+    options: (Entity.UpdateOptions & { diff: boolean }) | Entity.DeleteOptions,
+    userId: string,
+    context: { action: 'update' }
   ): void;
 
   /**

@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectError, expectType } from 'tsd';
 import '../../../index';
 
 interface CustomEntityData extends Entity.Data {
@@ -9,18 +9,15 @@ interface CustomEntityData extends Entity.Data {
     books: number;
   };
 }
-declare class CustomEntity extends Entity<CustomEntityData> {}
+type CustomEmbeddedEntityConfig = {
+  ActiveEffect: ActiveEffect.Data;
+  OwnedItem: Item.Data<{}>;
+};
+declare class CustomEntity extends Entity<CustomEntityData, CustomEmbeddedEntityConfig> {}
 declare const actualCustomData: CustomEntityData;
 
-// create
-declare const createData: DeepPartial<Entity.Data>;
+// static create
 declare const customCreateData: DeepPartial<CustomEntityData>;
-
-expectType<Promise<Entity | Entity[] | null>>(Entity.create([]));
-expectType<Promise<Entity | null>>(Entity.create(createData));
-expectType<Promise<Entity | Entity[] | null>>(Entity.create([createData, createData]));
-expectType<Promise<Entity | Entity[] | null>>(Entity.create([createData] as const));
-expectType<Promise<Entity | Entity[] | null>>(Entity.create([createData, createData] as const));
 
 expectType<Promise<CustomEntity | CustomEntity[] | null>>(CustomEntity.create([]));
 expectType<Promise<CustomEntity | null>>(CustomEntity.create(customCreateData));
@@ -37,15 +34,8 @@ expectType<Promise<CustomEntity | CustomEntity[] | null>>(
   CustomEntity.create([actualCustomData, actualCustomData] as const)
 );
 
-// update
-declare const updateData: DeepPartial<Entity.Data> & { _id: string };
+// static update
 declare const customUpdateData: DeepPartial<CustomEntityData> & { _id: string };
-
-expectType<Promise<Entity | Entity[]>>(Entity.update([]));
-expectType<Promise<Entity | []>>(Entity.update(updateData));
-expectType<Promise<Entity | Entity[]>>(Entity.update([updateData, updateData]));
-expectType<Promise<Entity | Entity[]>>(Entity.update([updateData] as const));
-expectType<Promise<Entity | Entity[]>>(Entity.update([updateData, updateData] as const));
 
 expectType<Promise<CustomEntity | CustomEntity[]>>(CustomEntity.update([]));
 expectType<Promise<CustomEntity | []>>(CustomEntity.update(customUpdateData));
@@ -58,14 +48,8 @@ expectType<Promise<CustomEntity | CustomEntity[]>>(CustomEntity.update([actualCu
 expectType<Promise<CustomEntity | CustomEntity[]>>(CustomEntity.update([actualCustomData] as const));
 expectType<Promise<CustomEntity | CustomEntity[]>>(CustomEntity.update([actualCustomData, actualCustomData] as const));
 
-// delete
+// static delete
 declare const id: string;
-
-expectType<Promise<Entity | Entity[] | null>>(Entity.delete([]));
-expectType<Promise<Entity | null>>(Entity.delete(id));
-expectType<Promise<Entity | Entity[] | null>>(Entity.delete([id, id]));
-expectType<Promise<Entity | Entity[] | null>>(Entity.delete([id] as const));
-expectType<Promise<Entity | Entity[] | null>>(Entity.delete([id, id] as const));
 
 expectType<Promise<CustomEntity | CustomEntity[] | null>>(CustomEntity.delete([]));
 expectType<Promise<CustomEntity | null>>(CustomEntity.delete(id));
@@ -73,8 +57,40 @@ expectType<Promise<CustomEntity | CustomEntity[] | null>>(CustomEntity.delete([i
 expectType<Promise<CustomEntity | CustomEntity[] | null>>(CustomEntity.delete([id] as const));
 expectType<Promise<CustomEntity | CustomEntity[] | null>>(CustomEntity.delete([id, id] as const));
 
+// update
 const someEntity = new CustomEntity();
 someEntity.update({ 'attributes.speed': 4 });
 someEntity.update({ 'attributes.speed': 4, 'flags.lancer.misc': 'test' });
 someEntity.update({ attributes: { speed: 32 }, 'flags.lancer.misc': 'test' });
 someEntity.update({ attributes: { speed: 32 } });
+
+// create embedded entity
+expectType<Promise<ActiveEffect.Data | null>>(someEntity.createEmbeddedEntity('ActiveEffect', {}));
+expectType<Promise<Item.Data<{}> | null>>(someEntity.createEmbeddedEntity('OwnedItem', {}));
+expectType<Promise<ActiveEffect.Data | ActiveEffect.Data[] | null>>(
+  someEntity.createEmbeddedEntity('ActiveEffect', [{ label: 'foo' }, { label: 'bar' }])
+);
+expectType<Promise<Item.Data<{}> | Item.Data<{}>[] | null>>(
+  someEntity.createEmbeddedEntity('OwnedItem', [{ name: 'foo' }, { name: 'bar' }])
+);
+expectError(someEntity.createEmbeddedEntity('NonExistentEmbeddedEntity', {}));
+
+// update embedded entity
+expectType<Promise<ActiveEffect.Data | []>>(someEntity.updateEmbeddedEntity('ActiveEffect', { _id: 'foo' }));
+expectType<Promise<Item.Data<{}> | []>>(someEntity.updateEmbeddedEntity('OwnedItem', { _id: 'foo' }));
+expectType<Promise<ActiveEffect.Data | ActiveEffect.Data[]>>(
+  someEntity.updateEmbeddedEntity('ActiveEffect', [{ _id: 'foo' }, { _id: 'bar' }])
+);
+expectType<Promise<Item.Data<{}> | Item.Data<{}>[]>>(
+  someEntity.updateEmbeddedEntity('OwnedItem', [{ _id: 'foo' }, { _id: 'bar' }])
+);
+expectError(someEntity.updateEmbeddedEntity('NonExistentEmbeddedEntity', {}));
+
+// delete embedded entity
+expectType<Promise<ActiveEffect.Data | []>>(someEntity.deleteEmbeddedEntity('ActiveEffect', 'foo'));
+expectType<Promise<Item.Data<{}> | []>>(someEntity.deleteEmbeddedEntity('OwnedItem', 'foo'));
+expectType<Promise<ActiveEffect.Data | ActiveEffect.Data[]>>(
+  someEntity.deleteEmbeddedEntity('ActiveEffect', ['foo', 'bar'])
+);
+expectType<Promise<Item.Data<{}> | Item.Data<{}>[]>>(someEntity.deleteEmbeddedEntity('OwnedItem', ['foo, bar']));
+expectError(someEntity.deleteEmbeddedEntity('NonExistentEmbeddedEntity', {}));

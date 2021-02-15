@@ -54,7 +54,7 @@ declare class Items extends EntityCollection<Item> {
 
  * @typeParam D - Item.data field. Type should extend Item.Data
  */
-declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
+declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D, Item.EmbeddedEntityConfig> {
   /**
    * ActiveEffects are prepared by the Item.prepareEmbeddedEntities() method
    */
@@ -171,4 +171,8 @@ declare namespace Item {
     sort: number;
     type: string;
   }
+
+  type EmbeddedEntityConfig = {
+    ActiveEffect: ActiveEffect.Data;
+  };
 }
