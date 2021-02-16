@@ -194,6 +194,7 @@ import './types/prototypes';
 import './types/templateUtils';
 import './types/types';
 import './types/utils';
+import './types/actorTokenHelpers';
 
 // Utility types
 
