@@ -602,6 +602,7 @@ declare namespace Token {
     mirrorX: boolean;
     mirrorY: boolean;
     name: string;
+    overlayEffect: string;
     rotation: number;
     scale: number;
     sightAngle: number;
