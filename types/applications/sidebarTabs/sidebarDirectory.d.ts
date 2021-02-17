@@ -208,7 +208,7 @@ declare namespace SidebarDirectory {
     /**
      * @defaultValue `'auto'`
      */
-    height: string;
+    height: string | number;
 
     /**
      * @defaultValue `['ol.directory-list']`
