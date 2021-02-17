@@ -9,7 +9,7 @@ declare class AVSettings {
 
   world: AVSettings.WorldSettings;
 
-  protected _original: { client: AVSettings.ClientSettings; world: AVSettings.ClientSettings };
+  protected _original: AVSettings.Settings;
 
   initialize(): void;
 
@@ -236,4 +236,5 @@ declare namespace AVSettings {
   type WorldSettings = typeof AVSettings.DEFAULT_WORLD_SETTINGS;
   type StoredUserSettings = typeof AVSettings.DEFAULT_USER_SETTINGS;
   type UserSettings = StoredUserSettings & { canBroadCastAudio: boolean; canBroadcastVideo: boolean };
+  type Settings = { client: ClientSettings; world: WorldSettings };
 }
