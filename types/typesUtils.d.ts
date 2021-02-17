@@ -58,3 +58,9 @@ type OmitAssignableFromType<T extends object, U> = { [k in keyof T as U extends 
  * @internal
  */
 type OmitNotAssignableFromType<T extends object, U> = { [k in keyof T as U extends T[k] ? k : never]: T[k] };
+
+/**
+ * Union type of the types of the values in `T`
+ * @internal
+ */
+type ValueOf<T> = T[keyof T];

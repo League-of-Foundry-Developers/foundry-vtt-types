@@ -41,8 +41,8 @@ declare class AVSettings {
   static AV_MODES: {
     DISABLED: 0;
     AUDIO: 1;
-    video: 2;
-    audio_VIDEO: 3;
+    VIDEO: 2;
+    AUDIO_VIDEO: 3;
   };
 
   static VOICE_MODES: {

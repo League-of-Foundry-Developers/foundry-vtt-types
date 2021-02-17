@@ -98,6 +98,7 @@ import './types/core/settings/worldSettingsStorage';
 
 import './types/core/webRtc/avMaster';
 import './types/core/webRtc/avSettings';
+import './types/core/webRtc/avConfig';
 
 // Framework
 
