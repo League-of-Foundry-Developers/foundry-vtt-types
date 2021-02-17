@@ -136,6 +136,7 @@ import './types/pixi/preciseText';
 import './types/pixi/quadtree';
 import './types/pixi/sightLayer';
 import './types/pixi/textureLoader';
+import './types/pixi/tokenLayer';
 
 import './types/pixi/helpers/controlIcon';
 import './types/pixi/helpers/ray';
