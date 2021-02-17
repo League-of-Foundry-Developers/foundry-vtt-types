@@ -4,7 +4,7 @@
  * - `/stream`: as `{ ready: false }`
  * @defaultValue `null`
  */
-declare let canvas: Canvas | null;
+declare let canvas: Canvas | { ready: false } | null;
 
 declare let game: Game;
 
