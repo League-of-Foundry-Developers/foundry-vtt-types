@@ -79,6 +79,6 @@ declare namespace PlaylistDirectory {
     /**
      * @defaultValue `['name', 'playing', 'mode']`
      */
-    renderUpdateKeys: SidebarDirectory.Options['renderUpdateKeys'];
+    renderUpdateKeys: string[];
   }
 }
