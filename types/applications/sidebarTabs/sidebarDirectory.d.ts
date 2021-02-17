@@ -35,7 +35,7 @@ declare abstract class SidebarDirectory extends SidebarTab {
   /**
    * A reference to the Entity class which is displayed within this EntityCollection
    */
-  static get cls(): new (...args: any[]) => Entity;
+  static get cls(): ConstructorOf<Entity>;
 
   /**
    * Initialize the content of the directory by categorizing folders and entities into a hierarchical tree structure.
