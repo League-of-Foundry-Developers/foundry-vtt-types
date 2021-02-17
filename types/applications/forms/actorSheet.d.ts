@@ -109,7 +109,7 @@ declare class ActorSheet<
    */
   protected _onDropItem(
     event: DragEvent,
-    data: { type: 'Item' } & (DeepPartial<ActorSheet.OwnedItemData<O>> | { pack: string } | { id: string })
+    data: { type: 'Item' } & ({ data: DeepPartial<ActorSheet.OwnedItemData<O>> } | { pack: string } | { id: string })
   ): Promise<boolean | undefined | ActorSheet.OwnedItemData<O>>;
 
   /**
