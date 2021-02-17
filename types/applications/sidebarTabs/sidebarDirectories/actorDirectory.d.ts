@@ -3,6 +3,62 @@
  * @see {@link Actor}
  */
 declare class ActorDirectory extends SidebarDirectory {
-  // @TODO Declare Classes
-  [key: string]: any;
+  constructor(options?: Partial<Application.Options>);
+
+  /**
+   * @override
+   */
+  static get entity(): string;
+
+  /**
+   * @override
+   */
+  static get collection(): Actors;
+
+  /**
+   * @param options - (unused)
+   * @override
+   */
+  getData(options?: Application.RenderOptions): ActorDirectory.Data;
+
+  /**
+   * @param selector - (unused)
+   * @override
+   */
+  protected _canDragStart(selector: string | null): boolean;
+
+  /**
+   * @override
+   */
+  protected _onDragStart(event: DragEvent): false | void;
+
+  /**
+   * @param selector - (unused)
+   * @override
+   */
+  protected _canDragDrop(selector: string | null): boolean;
+
+  /**
+   * @override
+   */
+  protected _onClickEntityName(event: JQuery.ClickEvent): Promise<void>;
+
+  /**
+   * @override
+   */
+  protected _getEntryContextOptions(): ContextMenu.Item[];
+}
+
+declare namespace ActorDirectory {
+  interface Data extends SidebarDirectory.Data {
+    /**
+     * @defaultValue `'templates/sidebar/folder-partial.html'`
+     */
+    folderPartial: string;
+
+    /**
+     * @defaultValue `'templates/sidebar/actor-partial.html'`
+     */
+    entityPartial: string;
+  }
 }
