@@ -79,7 +79,7 @@ declare abstract class SidebarDirectory extends SidebarTab {
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): SidebarDirectory.Data;
+  getData(options?: Application.RenderOptions): SidebarDirectory.Data | PlaylistDirectory.Data;
 
   /**
    * @param event - (unused)
