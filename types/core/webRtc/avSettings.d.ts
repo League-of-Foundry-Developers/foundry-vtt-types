@@ -131,7 +131,7 @@ declare class AVSettings {
     /**
      * @defaultValue `AVSettings.AV_MODES.DISABLED`
      */
-    mode: typeof AVSettings.VOICE_MODES[keyof typeof AVSettings.VOICE_MODES];
+    mode: AVSettings.VoiceMode;
 
     server: {
       /**
@@ -237,4 +237,5 @@ declare namespace AVSettings {
   type StoredUserSettings = typeof AVSettings.DEFAULT_USER_SETTINGS;
   type UserSettings = StoredUserSettings & { canBroadCastAudio: boolean; canBroadcastVideo: boolean };
   type Settings = { client: ClientSettings; world: WorldSettings };
+  type VoiceMode = typeof AVSettings.VOICE_MODES[keyof typeof AVSettings.VOICE_MODES];
 }
