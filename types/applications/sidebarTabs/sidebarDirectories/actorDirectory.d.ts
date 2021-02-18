@@ -8,12 +8,13 @@ declare class ActorDirectory extends SidebarDirectory {
   /**
    * @override
    */
-  static get entity(): string;
+  static get entity(): 'Actor';
 
   /**
    * @override
+   * @see {@link Game.actors}
    */
-  static get collection(): Actors;
+  static get collection(): Game['actors'];
 
   /**
    * @param options - (unused)

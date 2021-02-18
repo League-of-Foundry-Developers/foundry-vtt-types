@@ -34,7 +34,7 @@ declare class CombatTracker extends SidebarTab {
    * @param render - Whether to re-render the sidebar after initialization
    *                 (default: `true`)
    */
-  initialize({ combat, render }?: { combat?: Combat; render?: boolean }): void;
+  initialize({ combat, render }?: { combat?: Combat | null; render?: boolean }): void;
 
   /**
    * Scroll the combat log container to ensure the current Combatant turn is centered vertically
@@ -44,7 +44,7 @@ declare class CombatTracker extends SidebarTab {
   /**
    * @override
    */
-  getData(options?: Application.RenderOptions): CombatTracker.Data;
+  getData(options?: Application.RenderOptions): Promise<CombatTracker.Data>;
 
   /**
    * @override
@@ -122,7 +122,7 @@ declare class CombatTracker extends SidebarTab {
 declare namespace CombatTracker {
   type Data = {
     user: User;
-    started: undefined;
+    started: boolean;
     settings: any; // TODO type when Settings is typed
   } & (
     | {

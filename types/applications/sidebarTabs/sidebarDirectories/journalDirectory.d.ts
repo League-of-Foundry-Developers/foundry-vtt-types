@@ -15,12 +15,13 @@ declare class JournalDirectory extends SidebarDirectory {
   /**
    * @override
    */
-  static get entity(): string;
+  static get entity(): 'JournalEntry';
 
   /**
    * @override
+   * @see {@link Game.journal}
    */
-  static get collection(): Journal;
+  static get collection(): Game['journal'];
 
   /**
    * @override

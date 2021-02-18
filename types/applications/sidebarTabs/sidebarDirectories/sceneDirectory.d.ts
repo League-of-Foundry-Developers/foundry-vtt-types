@@ -5,18 +5,19 @@ declare class SceneDirectory extends SidebarDirectory {
   /**
    * @override
    */
-  static get entity(): string;
+  static get entity(): 'Scene';
 
   /**
    * @override
+   * @see {@link Game.scenes}
    */
-  static get collection(): Scenes;
+  static get collection(): Game['scenes'];
 
   /**
    * @override
    * @remarks This is never called.
    */
-  protected _onCreate(event: MouseEvent): Promise<Scene>;
+  protected _onCreate(event: Event): Promise<Scene>;
 
   /**
    * @override

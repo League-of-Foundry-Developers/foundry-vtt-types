@@ -21,7 +21,13 @@ declare class CompendiumDirectory extends SidebarTab {
   /**
    * Compendium sidebar Context Menu creation
    */
-  protected _contextMenu(html: JQuery): ContextMenu.Item[];
+  protected _contextMenu(html: JQuery): void;
+
+  /**
+   * Get the sidebar directory entry context options
+   * @returns The sidebar entry context options
+   */
+  protected _getEntryContextOptions(): ContextMenu.Item[];
 
   /**
    * Handle a Compendium Pack creation request

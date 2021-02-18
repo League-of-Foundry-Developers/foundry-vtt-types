@@ -5,12 +5,13 @@ declare class ItemDirectory extends SidebarDirectory {
   /**
    * @override
    */
-  static get entity(): string;
+  static get entity(): 'Item';
 
   /**
    * @override
+   * @see {@link Game.items}
    */
-  static get collection(): Items;
+  static get collection(): Game['items'];
 
   /**
    * @param selector - (unused)

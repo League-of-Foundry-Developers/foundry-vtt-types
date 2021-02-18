@@ -30,7 +30,7 @@ declare abstract class SidebarDirectory extends SidebarTab {
    * The Entity collection which this Sidebar Directory contains
    * @remarks This method is abstract in SidebarTab.
    */
-  static get collection(): EntityCollection;
+  static get collection(): EntityCollection | undefined;
 
   /**
    * A reference to the Entity class which is displayed within this EntityCollection
@@ -55,6 +55,7 @@ declare abstract class SidebarDirectory extends SidebarTab {
   /**
    * Populate a single folder with child folders and content
    * This method is called recursively when building the folder tree
+   * @param allowChildren - (default: `true`)
    */
   protected static _populate(
     folder: Folder,
@@ -63,9 +64,6 @@ declare abstract class SidebarDirectory extends SidebarTab {
     {
       allowChildren
     }: {
-      /**
-       * @defaultValue `true`
-       */
       allowChildren: boolean;
     }
   ): [Folder[], Entity[]];
@@ -107,7 +105,7 @@ declare abstract class SidebarDirectory extends SidebarTab {
    * Handle new creation request
    * @param event - The originating button click event
    */
-  protected _onCreateEntity(event: JQuery.ClickEvent): Promise<Entity>; // TODO
+  protected _onCreateEntity(event: JQuery.ClickEvent): Promise<Entity>;
 
   /**
    * Create a new Folder in this SidebarDirectory

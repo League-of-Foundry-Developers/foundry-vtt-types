@@ -7,12 +7,13 @@ declare class RollTableDirectory extends SidebarDirectory {
   /**
    * Reference named Entity class which this directory lists
    */
-  static get entity(): string;
+  static get entity(): 'RollTable';
 
   /**
    * Reference the EntityCollection of Entity instances which this directory lists
+   * @see {@link Game.tables}
    */
-  static get collection(): RollTables;
+  static get collection(): Game['tables'];
 }
 
 declare namespace RollTableDirectory {
@@ -20,6 +21,16 @@ declare namespace RollTableDirectory {
     /**
      * @defaultValue `'tables'`
      */
-    id: SidebarDirectory.Options['id'];
+    id: string;
+
+    /**
+     * @defaultValue `'templates/sidebar/roll-table-directory.html'`
+     */
+    template: string;
+
+    /**
+     * @defaultValue `'Rollable Tables Directory'`
+     */
+    title: string;
   }
 }

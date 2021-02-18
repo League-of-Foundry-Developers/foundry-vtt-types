@@ -11,12 +11,13 @@ declare class MacroDirectory extends SidebarDirectory {
   /**
    * @override
    */
-  static get entity(): string;
+  static get entity(): 'Macro';
 
   /**
    * @override
+   * @see {@link Game.macros}
    */
-  static get collection(): Macros;
+  static get collection(): Game['macros'];
 
   /**
    * @override
@@ -27,7 +28,7 @@ declare class MacroDirectory extends SidebarDirectory {
    * @override
    * @remarks This is never called.
    */
-  protected _onCreate(event: Event): void;
+  protected _onCreate(event: Event): Promise<void>;
 
   /**
    * @param selector - (unused)

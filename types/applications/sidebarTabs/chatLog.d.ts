@@ -14,7 +14,7 @@ declare class ChatLog extends SidebarTab {
    * Track the history of the past 5 sent messages which can be accessed using the arrow keys
    * @defaultValue `[]`
    */
-  protected _sentMessages: object[];
+  protected _sentMessages: string[];
 
   /**
    * Track which remembered message is being currently displayed to cycle properly
@@ -136,7 +136,7 @@ declare class ChatLog extends SidebarTab {
    * @param message - The original string of the message content
    * @returns A Promise resolving to the prepared chat data object
    */
-  protected processMessage(message: string): Promise<ChatMessage | ChatMessage[] | null | void>;
+  protected processMessage(message: string): Promise<ChatMessage | null | void>;
 
   /**
    * Process messages which are posted using a dice-roll command
@@ -207,9 +207,40 @@ declare class ChatLog extends SidebarTab {
   protected _getEntryContextOptions(): ContextMenu.Item[];
 
   /**
-   * Display a dialog which prompts the user to enter a new initiative value for a Combatant
+   * Handle keydown events in the chat entry textarea
    */
-  protected _onConfigureCombatant(li: JQuery): void;
+  protected _onChatKeyDown(event: JQuery.KeyDownEvent): void;
+
+  /**
+   * Handle setting the preferred roll mode
+   */
+  protected _onChangeRollMode(event: JQuery.ChangeEvent): void;
+
+  /**
+   * Handle single message deletion workflow
+   */
+  protected _onDeleteMessage(event: JQuery.ClickEvent): Promise<ChatMessage | null>;
+
+  /**
+   * Handle clicking of dice tooltip buttons
+   */
+  protected _onDiceRollClick(event: JQuery.ClickEvent): void;
+
+  /**
+   * Handle click events to export the chat log
+   */
+  protected _onExportLog(event: JQuery.ClickEvent): void;
+
+  /**
+   * Handle click events to flush the chat log
+   */
+  protected _onFlushLog(event: JQuery.ClickEvent): void;
+
+  /**
+   * Handle scroll events within the chat log container
+   * @param event - The initial scroll event
+   */
+  protected _onScrollLog(event: JQuery.ScrollEvent): void;
 }
 
 declare namespace ChatLog {
@@ -231,7 +262,7 @@ declare namespace ChatLog {
   interface Data {
     user: User;
 
-    rollMode: any; // TODO type when Settings has been typed
+    rollMode: keyof typeof CONFIG['Dice']['rollModes'];
 
     rollModes: typeof CONFIG['Dice']['rollModes'];
 
@@ -251,7 +282,7 @@ declare namespace ChatLog {
 
     title: string;
 
-    scrollContainer: null; // TODO
+    scrollContainer: null;
 
     /**
      * @defaultValue `false`
