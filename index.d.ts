@@ -9,6 +9,8 @@ import './types/application';
 import './types/audioHelper';
 import './types/augment.howler';
 import './types/augment.tinyMCE';
+import './types/avClient';
+import './types/avConfig';
 import './types/avMaster';
 import './types/avSettings';
 import './types/canvas';
@@ -22,6 +24,7 @@ import './types/dicePool';
 import './types/diceTerm';
 import './types/dragDrop';
 import './types/draggable';
+import './types/easyRTCClient';
 import './types/embeddedEntity';
 import './types/entity';
 import './types/features';
@@ -160,6 +163,7 @@ import './types/pixi/containers/canvasLayers/placeablesLayer';
 import './types/pixi/containers/canvasLayers/sightLayer';
 
 import './types/pixi/containers/canvasLayers/placeablesLayers/lightingLayer';
+import './types/pixi/containers/canvasLayers/placeablesLayers/tokenLayer';
 
 import './types/pixi/containers/placeableObjects/ambientLight';
 import './types/pixi/containers/placeableObjects/ambientSound';

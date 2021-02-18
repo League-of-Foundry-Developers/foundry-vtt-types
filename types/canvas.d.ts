@@ -26,6 +26,8 @@ declare class Canvas {
 
   stage: PIXI.Container;
 
+  tokens: TokenLayer;
+
   hud: HeadsUpDisplay;
 
   id: null;
