@@ -4,51 +4,112 @@ import 'tinymce';
 import 'handlebars';
 import 'pixi.js';
 
-// Apps
+import './types/actorTokenHelpers';
+import './types/application';
+import './types/audioHelper';
+import './types/augment.howler';
+import './types/augment.tinyMCE';
+import './types/avMaster';
+import './types/avSettings';
+import './types/canvas';
+import './types/chatBubbles';
+import './types/clientSettings';
+import './types/collection';
+import './types/config';
+import './types/constants';
+import './types/contextMenu';
+import './types/dicePool';
+import './types/diceTerm';
+import './types/dragDrop';
+import './types/draggable';
+import './types/embeddedEntity';
+import './types/entity';
+import './types/features';
+import './types/fonts';
+import './types/formDataExtended';
+import './types/game';
+import './types/gameTime';
+import './types/handlebarsHelpers';
+import './types/hooks';
+import './types/imageHelper';
+import './types/keyboardManager';
+import './types/localization';
+import './types/mersenneTwister';
+import './types/mouseInteractionManager';
+import './types/pointSource';
+import './types/prototypes';
+import './types/quadtree';
+import './types/ray';
+import './types/roll';
+import './types/searchFilter';
+import './types/setupConfiguration';
+import './types/socketInterface';
+import './types/sortingHelpers';
+import './types/tabs';
+import './types/templateUtils';
+import './types/textEditor';
+import './types/textureUtils';
+import './types/types';
+import './types/typesUtils';
+import './types/userTargets';
+import './types/utils';
+import './types/videoHelper';
+import './types/worldSettingsStorage';
 
-import './types/applications/application';
-import './types/applications/baseEntitySheet';
+import './types/applications/basePlaceableHUD';
 import './types/applications/cameraViews';
+import './types/applications/compendium';
 import './types/applications/dialog';
 import './types/applications/filePicker';
 import './types/applications/formApplication';
-import './types/applications/formDataExtended';
-import './types/applications/localization';
+import './types/applications/headsUpDisplay';
+import './types/applications/hotbar';
+import './types/applications/mainMenu';
+import './types/applications/notifications';
+import './types/applications/pause';
+import './types/applications/playerList';
+import './types/applications/sceneControls';
+import './types/applications/sceneNavigation';
 import './types/applications/sidebar';
-
-import './types/applications/forms/actorSheet';
-import './types/applications/forms/forms';
-import './types/applications/forms/itemSheet';
-import './types/applications/forms/permission';
-import './types/applications/forms/rollTableConfig';
-import './types/applications/forms/scene';
-import './types/applications/forms/settingsConfig';
-import './types/applications/forms/setupConfigurationForm';
-import './types/applications/forms/userManagement';
-
-import './types/applications/hud/chatBubbles';
-import './types/applications/hud/container';
-import './types/applications/hud/controls';
-import './types/applications/hud/hotbar';
-import './types/applications/hud/hud';
-import './types/applications/hud/menu';
-import './types/applications/hud/navigation';
-import './types/applications/hud/pause';
-import './types/applications/hud/players';
-
-import './types/applications/journal/journalSheet';
-import './types/applications/journal/noteConfig';
-
-import './types/applications/placeables/placeablesConfig';
-import './types/applications/placeables/placeablesHud';
-
 import './types/applications/sidebarTab';
+
+import './types/applications/basePlaceableHUDs/drawingHUD';
+import './types/applications/basePlaceableHUDs/tileHUD';
+import './types/applications/basePlaceableHUDs/tokenHUD';
+
+import './types/applications/formApplications/activeEffectConfig';
+import './types/applications/formApplications/ambientSoundConfig';
+import './types/applications/formApplications/baseEntitySheet';
+import './types/applications/formApplications/combatTrackerConfig';
+import './types/applications/formApplications/drawingConfig';
+import './types/applications/formApplications/entitySheetConfig';
+import './types/applications/formApplications/folderConfig';
+import './types/applications/formApplications/imagePopout';
+import './types/applications/formApplications/lightConfig';
+import './types/applications/formApplications/measuredTemplateConfig';
+import './types/applications/formApplications/noteConfig';
+import './types/applications/formApplications/playerConfig';
+import './types/applications/formApplications/playlistConfig';
+import './types/applications/formApplications/playlistSoundConfig';
+import './types/applications/formApplications/settingsConfig';
+import './types/applications/formApplications/setupConfigurationForm';
+import './types/applications/formApplications/tileConfig';
+import './types/applications/formApplications/tokenConfig';
+import './types/applications/formApplications/userManagement';
+import './types/applications/formApplications/wallConfig';
+
+import './types/applications/formApplications/baseEntitySheets/actorSheet';
+import './types/applications/formApplications/baseEntitySheets/itemSheet';
+import './types/applications/formApplications/baseEntitySheets/journalSheet';
+import './types/applications/formApplications/baseEntitySheets/permissionControl';
+import './types/applications/formApplications/baseEntitySheets/rollTableConfig';
+
 import './types/applications/sidebarTabs/chatLog';
 import './types/applications/sidebarTabs/combatTracker';
 import './types/applications/sidebarTabs/compendiumDirectory';
 import './types/applications/sidebarTabs/settings';
-
 import './types/applications/sidebarTabs/sidebarDirectory';
+
 import './types/applications/sidebarTabs/sidebarDirectories/actorDirectory';
 import './types/applications/sidebarTabs/sidebarDirectories/itemDirectory';
 import './types/applications/sidebarTabs/sidebarDirectories/journalDirectory';
@@ -57,145 +118,83 @@ import './types/applications/sidebarTabs/sidebarDirectories/playlistDirectory';
 import './types/applications/sidebarTabs/sidebarDirectories/rollTableDirectory';
 import './types/applications/sidebarTabs/sidebarDirectories/sceneDirectory';
 
-// Augments
+import './types/collections/entityCollection';
 
-import './types/augments/howler';
-import './types/augments/tinyMCE';
+import './types/collections/entityCollections/actors';
+import './types/collections/entityCollections/combatEncounters';
+import './types/collections/entityCollections/folders';
+import './types/collections/entityCollections/items';
+import './types/collections/entityCollections/journal';
+import './types/collections/entityCollections/macros';
+import './types/collections/entityCollections/messages';
+import './types/collections/entityCollections/playlists';
+import './types/collections/entityCollections/rollTables';
+import './types/collections/entityCollections/scenes';
+import './types/collections/entityCollections/users';
 
-// Core
+import './types/diceTerms/coin';
+import './types/diceTerms/die';
+import './types/diceTerms/fateDie';
 
-import './types/core/audioHelper';
-import './types/core/config';
-import './types/core/fonts';
-import './types/core/gameTime';
-import './types/core/handlebarsHelpers';
-import './types/core/hooks';
-import './types/core/imageHelper';
-import './types/core/keyboardManager';
-import './types/core/setupConfiguration';
-import './types/core/socketInterface';
-import './types/core/sortingHelpers';
-import './types/core/textEditor';
-import './types/core/videoHelper';
+import './types/embeddedEntities/activeEffect';
 
-// rolls
+import './types/entities/actor';
+import './types/entities/chatMessage';
+import './types/entities/combat';
+import './types/entities/folder';
+import './types/entities/item';
+import './types/entities/journalEntry';
+import './types/entities/macro';
+import './types/entities/playlist';
+import './types/entities/rollTable';
+import './types/entities/scene';
+import './types/entities/user';
 
-import './types/core/rolls/dicePool';
-import './types/core/rolls/roll';
+import './types/pixi/containers/canvasLayer';
+import './types/pixi/containers/controlIcon';
+import './types/pixi/containers/doorControl';
+import './types/pixi/containers/placeableObject';
+import './types/pixi/containers/ruler';
 
-// dice terms
+import './types/pixi/containers/canvasLayers/placeablesLayer';
+import './types/pixi/containers/canvasLayers/sightLayer';
 
-import './types/core/rolls/diceTerms/coin';
-import './types/core/rolls/diceTerms/diceTerm';
-import './types/core/rolls/diceTerms/die';
-import './types/core/rolls/diceTerms/fateDie';
+import './types/pixi/containers/canvasLayers/placeablesLayers/lightingLayer';
 
-// settings
+import './types/pixi/containers/placeableObjects/ambientLight';
+import './types/pixi/containers/placeableObjects/ambientSound';
+import './types/pixi/containers/placeableObjects/drawing';
+import './types/pixi/containers/placeableObjects/measuredTemplate';
+import './types/pixi/containers/placeableObjects/note';
+import './types/pixi/containers/placeableObjects/tile';
+import './types/pixi/containers/placeableObjects/token';
+import './types/pixi/containers/placeableObjects/wall';
 
-import './types/core/settings/clientSettings';
-import './types/core/settings/worldSettingsStorage';
-
-// webRTC
-
-import './types/core/webRtc/avMaster';
-import './types/core/webRtc/avSettings';
-
-// Framework
-
-import './types/framework/collection';
-import './types/framework/compendium';
-import './types/framework/entity';
-import './types/framework/entityCollection';
-import './types/framework/userTargets';
-
-import './types/framework/entities/activeEffect';
-import './types/framework/entities/actor';
-import './types/framework/entities/chatMessage';
-import './types/framework/entities/combat';
-import './types/framework/entities/embeddedEntity';
-import './types/framework/entities/folder';
-import './types/framework/entities/item';
-import './types/framework/entities/journal';
-import './types/framework/entities/macro';
-import './types/framework/entities/playlist';
-import './types/framework/entities/rollTable';
-import './types/framework/entities/scene';
-import './types/framework/entities/user';
-
-// PIXI
-
-import './types/pixi/canvas';
-import './types/pixi/canvasLayer';
-import './types/pixi/doorControl';
-import './types/pixi/lightingLayer';
-import './types/pixi/mouseInteractionManager';
-import './types/pixi/normalizedRectangle';
-import './types/pixi/placeablesLayer';
-import './types/pixi/pointSource';
-import './types/pixi/preciseText';
-import './types/pixi/quadtree';
-import './types/pixi/sightLayer';
-import './types/pixi/textureLoader';
-
-import './types/pixi/helpers/controlIcon';
-import './types/pixi/helpers/ray';
-import './types/pixi/helpers/ruler';
-
-import './types/pixi/placeableObjects/ambientLight';
-import './types/pixi/placeableObjects/ambientSound';
-import './types/pixi/placeableObjects/drawing';
-import './types/pixi/placeableObjects/measuredTemplate';
-import './types/pixi/placeableObjects/note';
-import './types/pixi/placeableObjects/placeableObject';
-import './types/pixi/placeableObjects/tile';
-import './types/pixi/placeableObjects/token';
-import './types/pixi/placeableObjects/wall';
+import './types/pixi/rectangles/normalizedRectangle';
 
 import './types/pixi/shaders/abstractBaseShader';
-import './types/pixi/shaders/standardIlluminationShader';
-import './types/pixi/shaders/standardColorationShader';
-import './types/pixi/shaders/torchIlluminationShader';
-import './types/pixi/shaders/torchColorationShader';
-import './types/pixi/shaders/pulseIlluminationShader';
-import './types/pixi/shaders/pulseColorationShader';
-import './types/pixi/shaders/energyFieldColorationShader';
-import './types/pixi/shaders/chromaColorationShader';
-import './types/pixi/shaders/waveIlluminationShader';
-import './types/pixi/shaders/waveColorationShader';
-import './types/pixi/shaders/fogColorationShader';
-import './types/pixi/shaders/sunburstIlluminationShader';
-import './types/pixi/shaders/sunburstColorationShader';
-import './types/pixi/shaders/lightDomeColorationShader';
-import './types/pixi/shaders/emanationColorationShader';
-import './types/pixi/shaders/ghostLightIlluminationShader';
-import './types/pixi/shaders/ghostLightColorationShader';
-import './types/pixi/shaders/hexaDomeColorationShader';
-import './types/pixi/shaders/roilingIlluminationShader';
-import './types/pixi/shaders/blackHoleIlluminationShader';
 
-// UI
+import './types/pixi/shaders/abstractBaseShaders/standardColorationShader';
+import './types/pixi/shaders/abstractBaseShaders/standardIlluminationShader';
 
-import './types/ui/activeEffectConfig';
-import './types/ui/contextMenu';
-import './types/ui/dragDrop';
-import './types/ui/draggable';
-import './types/ui/notifications';
-import './types/ui/searchFilter';
-import './types/ui/tabs';
+import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/chromaColorationShader';
+import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/emanationColorationShader';
+import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/energyFieldColorationShader';
+import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/fogColorationShader';
+import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/ghostLightColorationShader';
+import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/hexaDomeColorationShader';
+import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/lightDomeColorationShader';
+import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/pulseColorationShader';
+import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/sunburstColorationShader';
+import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/torchColorationShader';
+import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/waveColorationShader';
 
-// --
+import './types/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/blackHoleIlluminationShader';
+import './types/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/ghostLightIlluminationShader';
+import './types/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/pulseIlluminationShader';
+import './types/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/roilingIlluminationShader';
+import './types/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/sunburstIlluminationShader';
+import './types/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/torchIlluminationShader';
+import './types/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/waveIlluminationShader';
 
-import './types/constants';
-import './types/features';
-import './types/game';
-import './types/handlebars';
-import './types/mersenneTwister';
-import './types/prototypes';
-import './types/templateUtils';
-import './types/types';
-import './types/utils';
-import './types/actorTokenHelpers';
-
-// Utility types
-
-import './types/typesUtils';
+import './types/pixi/texts/preciseText';

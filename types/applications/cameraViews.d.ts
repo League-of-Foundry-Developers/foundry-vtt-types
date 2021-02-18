@@ -1,1 +1,1 @@
-declare class CameraViews {}
+declare class CameraViews extends Application {}

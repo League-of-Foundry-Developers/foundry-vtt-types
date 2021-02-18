@@ -1,5 +1,5 @@
-import '../../types/typesUtils';
 import { expectType } from 'tsd';
+import '../../index';
 
 const membersBecomeOptional: DeepPartial<{ a: string }> = {};
 expectType<{ a?: string }>(membersBecomeOptional);

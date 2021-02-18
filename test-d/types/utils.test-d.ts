@@ -1,5 +1,5 @@
-import '../../index';
 import { expectType } from 'tsd';
+import '../../index';
 
 expectType<string>(duplicate(''));
 

@@ -1,5 +1,5 @@
-import '../../../index';
 import { expectType } from 'tsd';
+import '../../../index';
 
 const title = 'title';
 const content = 'content';

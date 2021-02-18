@@ -1,5 +1,5 @@
-import '../../../../index';
 import { expectError, expectType } from 'tsd';
+import '../../../../index';
 
 class TestShader extends AbstractBaseShader {
   constructor(program: PIXI.Program, uniforms: AbstractBaseShader.Uniforms) {
