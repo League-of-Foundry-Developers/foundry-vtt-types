@@ -667,7 +667,7 @@ declare namespace Hooks {
    * @param changed  - an object reflecting the changed settings
    * @see {@link AVSettings#_onSettingsChanged}
    */
-  type RtcSettingsChanged = (settings: AVSettings, changed: object) => void;
+  type RtcSettingsChanged = (settings: DeepPartial<AVSettings.Settings>, changed: object) => void;
 
   /**
    * This is called before the {@link Game} is fully set up.

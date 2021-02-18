@@ -1416,7 +1416,7 @@ declare const CONFIG: {
     /**
      * @defaultValue `EasyRTCClient`
      */
-    clientClass: any; // TODO: ConstructorOf<EasyRTCClient>
+    clientClass: ConstructorOf<AVClient>;
 
     /**
      * @defaultValue `50`

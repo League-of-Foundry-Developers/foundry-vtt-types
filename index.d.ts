@@ -97,8 +97,11 @@ import './types/core/settings/worldSettingsStorage';
 
 // webRTC
 
+import './types/core/webRtc/avClient';
+import './types/core/webRtc/avConfig';
 import './types/core/webRtc/avMaster';
 import './types/core/webRtc/avSettings';
+import './types/core/webRtc/easyRTCClient';
 
 // Framework
 
