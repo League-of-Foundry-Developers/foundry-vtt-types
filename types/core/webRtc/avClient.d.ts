@@ -8,6 +8,10 @@ declare abstract class AVClient {
    */
   constructor(master: AVMaster, settings: AVSettings);
 
+  master: AVMaster;
+
+  settings: AVSettings;
+
   /**
    * One-time initialization actions that should be performed for this client implementation.
    * This will be called only once when the Game object is first set-up.
