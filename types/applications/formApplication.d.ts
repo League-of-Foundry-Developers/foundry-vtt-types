@@ -194,6 +194,12 @@ declare abstract class FormApplication<
   protected _createEditor(name: string, options?: TextEditor.Options, initialContent?: string): void;
 }
 
+/**
+ * @deprecated since 0.7.0
+ * @see {@link FormApplication.processForm}
+ */
+declare function validateForm(formElement: HTMLFormElement): FormDataExtended;
+
 declare namespace FormApplication {
   interface CloseOptions extends Application.CloseOptions {
     submit?: boolean;

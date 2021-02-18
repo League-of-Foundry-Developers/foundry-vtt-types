@@ -10,6 +10,7 @@ import './types/applications/application';
 import './types/applications/baseEntitySheet';
 import './types/applications/cameraViews';
 import './types/applications/dialog';
+import './types/applications/filePicker';
 import './types/applications/formApplication';
 import './types/applications/formDataExtended';
 import './types/applications/localization';
@@ -138,6 +139,7 @@ import './types/pixi/preciseText';
 import './types/pixi/quadtree';
 import './types/pixi/sightLayer';
 import './types/pixi/textureLoader';
+import './types/pixi/tokenLayer';
 
 import './types/pixi/helpers/controlIcon';
 import './types/pixi/helpers/ray';
@@ -181,7 +183,6 @@ import './types/ui/activeEffectConfig';
 import './types/ui/contextMenu';
 import './types/ui/dragDrop';
 import './types/ui/draggable';
-import './types/ui/filePicker';
 import './types/ui/notifications';
 import './types/ui/searchFilter';
 import './types/ui/tabs';
@@ -197,6 +198,7 @@ import './types/prototypes';
 import './types/templateUtils';
 import './types/types';
 import './types/utils';
+import './types/actorTokenHelpers';
 
 // Utility types
 
