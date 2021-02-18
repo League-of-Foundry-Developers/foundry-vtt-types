@@ -70,3 +70,9 @@ type Expanded<O> = O extends Record<string, unknown>
         : Expanded<O[KO]>;
     }
   : O;
+
+/**
+ * Union type of the types of the values in `T`
+ * @internal
+ */
+type ValueOf<T> = T[keyof T];
