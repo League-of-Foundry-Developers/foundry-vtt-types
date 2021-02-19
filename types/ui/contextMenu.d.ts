@@ -109,7 +109,7 @@ declare namespace ContextMenu {
     /**
      * A function which returns a Boolean for whether or not to display the item
      */
-    condition: (target: JQuery) => boolean;
+    condition?: boolean | ((target: JQuery) => boolean);
 
     /**
      * A callback function to trigger when the entry of the menu is clicked

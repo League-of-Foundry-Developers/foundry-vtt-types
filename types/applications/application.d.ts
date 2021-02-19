@@ -301,7 +301,7 @@ declare class Application {
    * @param options - (default: `{}`)
    * @returns A Promise which resolves once the application is closed
    */
-  close(options?: Application.CloseOptions): Promise<void>;
+  close(options?: Application.CloseOptions): Promise<unknown>;
 
   /**
    * Minimize the pop-out window, collapsing it to a small tab
@@ -326,7 +326,7 @@ declare class Application {
    * @param scale  - The application scale as a numeric factor where 1.0 is default
    * @returns The updated position object for the application containing the new values
    */
-  setPosition(appPos?: Application.PositionParameter): Application.Position;
+  setPosition(appPos?: Partial<Application.Position>): Application.Position & { height: number };
 
   /**
    * Handle application minimization behavior - collapsing content and reducing
@@ -463,18 +463,10 @@ declare namespace Application {
 
   interface Position {
     width: number;
-    height: number;
+    height: number | 'auto';
     left: number;
     top: number;
     scale: number;
-  }
-
-  interface PositionParameter {
-    width?: number;
-    height?: number | 'auto';
-    left?: number;
-    top?: number;
-    scale?: number;
   }
 
   interface RenderOptions {

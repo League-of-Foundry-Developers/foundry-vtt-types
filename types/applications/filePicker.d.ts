@@ -231,7 +231,7 @@ declare class FilePicker extends Application {
   /**
    * Handle requests from the IntersectionObserver to lazily load an image file
    */
-  protected _onLazyLoadImages(...args: any): any; // TODO: type this when SidebarTab is typed
+  protected _onLazyLoadImages(...args: any): void;
 
   /**
    * Handle file or folder selection within the file picker

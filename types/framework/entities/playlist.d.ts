@@ -182,7 +182,7 @@ declare namespace Playlist {
   }
 
   interface Data extends Entity.Data {
-    mode: number;
+    mode: Const.PlaylistModes;
     name: string;
     permission: Entity.Permission;
     playing: boolean;
