@@ -172,8 +172,9 @@ import './foundry/pixi/containers/placeableObjects/tile';
 import './foundry/pixi/containers/placeableObjects/token';
 import './foundry/pixi/containers/placeableObjects/wall';
 
-import './foundry/pixi/grids/GridHighlight';
-import './foundry/pixi/grids/GridLayer';
+import './foundry/pixi/grids/gridHighlight';
+import './foundry/pixi/grids/squareGrid';
+import './foundry/pixi/grids/gridLayer';
 import './foundry/pixi/grids/baseGrid';
 import './foundry/pixi/grids/hexagonalGrid';
 
