@@ -284,15 +284,15 @@ declare class Roll<D extends Record<string, unknown> = {}> {
    */
   toMessage<T extends Record<string, unknown> = {}>(
     messageData?: T,
-    { rollMode, create }?: { rollMode?: keyof typeof CONST.DICE_ROLL_MODES | null; create: true }
+    { rollMode, create }?: { rollMode?: Const.DiceRollModes | null; create: true }
   ): Promise<ChatMessage>;
   toMessage<T extends Record<string, unknown> = {}>(
     messageData?: T,
-    { rollMode, create }?: { rollMode?: keyof typeof CONST.DICE_ROLL_MODES | null; create: false }
+    { rollMode, create }?: { rollMode?: Const.DiceRollModes | null; create: false }
   ): Roll.MessageData<T>;
   toMessage<T extends Record<string, unknown> = {}>(
     messageData?: T,
-    { rollMode, create }?: { rollMode?: keyof typeof CONST.DICE_ROLL_MODES | null; create: boolean }
+    { rollMode, create }?: { rollMode?: Const.DiceRollModes | null; create: boolean }
   ): Promise<ChatMessage> | Roll.MessageData<T>;
 
   /**
