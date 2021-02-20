@@ -172,6 +172,11 @@ import './foundry/pixi/containers/placeableObjects/tile';
 import './foundry/pixi/containers/placeableObjects/token';
 import './foundry/pixi/containers/placeableObjects/wall';
 
+import './foundry/pixi/grids/GridHighlight';
+import './foundry/pixi/grids/GridLayer';
+import './foundry/pixi/grids/baseGrid';
+import './foundry/pixi/grids/hexagonalGrid';
+
 import './foundry/pixi/rectangles/normalizedRectangle';
 
 import './foundry/pixi/shaders/abstractBaseShader';
