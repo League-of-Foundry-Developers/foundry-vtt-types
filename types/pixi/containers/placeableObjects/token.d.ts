@@ -613,6 +613,6 @@ declare namespace Token {
     y: number;
   }
   interface Bar {
-    atrribute: string;
+    attribute: string;
   }
 }
