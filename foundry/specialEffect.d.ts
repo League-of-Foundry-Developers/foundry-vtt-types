@@ -34,44 +34,23 @@ declare class SpecialEffect {
     SELECT: 4;
   };
 
-  static DEFAULT_CONFIG: {
-    /**
-     * @defaultValue `0`
-     */
-    maxSpeed: number;
-
-    /**
-     * @defaultValue `false`
-     */
-    noRotation: boolean;
-
-    /**
-     * @defaultValue `'normal'`
-     */
-    blendMode: SpecialEffect.BlendMode;
-
-    /**
-     * @defaultValue `-1`
-     */
-    emitterLifetime: number;
-
-    pos: {
-      /**
-       * @defaultValue `0`
-       */
-      x: number;
-
-      /**
-       * @defaultValue `0`
-       */
-      y: number;
-    };
-
-    /**
-     * @defaultValue `'rect'`
-     */
-    spawnType: SpecialEffect.SpawnType;
-  };
+  /**
+   * @defaultValue
+   * ```typescript
+   * {
+   *   'maxSpeed': 0,
+   *   'noRotation': false,
+   *   'blendMode': 'normal',
+   *   'emitterLifetime': -1,
+   *   'pos': {
+   *     'x': 0,
+   *     'y': 0
+   *   },
+   *   'spawnType': 'rect'
+   * }
+   * ```
+   */
+  static DEFAULT_CONFIG: PIXI.particles.EmitterConfig | PIXI.particles.OldEmitterConfig;
 }
 
 declare namespace SpecialEffect {

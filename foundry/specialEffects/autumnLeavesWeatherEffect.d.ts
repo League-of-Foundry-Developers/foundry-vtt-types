@@ -11,92 +11,48 @@ declare class AutumnLeavesWeatherEffect extends SpecialEffect {
 
   protected _getLeafEmitter(parent: PIXI.Container): PIXI.particles.Emitter;
 
-  static LEAF_CONFIG: typeof SpecialEffect['DEFAULT_CONFIG'] & {
-    alpha: {
-      /**
-       * @defaultValue `0.9`
-       */
-      start: number;
-
-      /**
-       * @defaultValue `0.5`
-       */
-      end: number;
-    };
-
-    scale: {
-      /**
-       * @defaultValue `0.2`
-       */
-      start: number;
-
-      /**
-       * @defaultValue `0.4`
-       */
-      end: number;
-
-      /**
-       * @defaultValue `0.5`
-       */
-      minimumScaleMultiplier: number;
-    };
-
-    speed: {
-      /**
-       * @defaultValue `20`
-       */
-      start: number;
-
-      /**
-       * @defaultValue `60`
-       */
-      end: number;
-
-      /**
-       * @defaultValue `0.6`
-       */
-      minimumSpeedMultiplier: number;
-    };
-
-    startRotation: {
-      /**
-       * @defaultValue `0`
-       */
-      min: number;
-
-      /**
-       * @defaultValue `365`
-       */
-      max: number;
-    };
-
-    /**
-     * @defaultValue `180`
-     */
-    rotation: number;
-
-    rotationSpeed: {
-      /**
-       * @defaultValue `100`
-       */
-      min: number;
-
-      /**
-       * @defaultValue `200`
-       */
-      max: number;
-    };
-
-    lifetime: {
-      /**
-       * @defaultValue `10`
-       */
-      min: number;
-
-      /**
-       * @defaultValue `10`
-       */
-      max: number;
-    };
-  };
+  /**
+   * @defaultValue
+   * ```typescript
+   * {
+   *   'maxSpeed': 0,
+   *   'noRotation': false,
+   *   'blendMode': 'normal',
+   *   'emitterLifetime': -1,
+   *   'pos': {
+   *     'x': 0,
+   *     'y': 0
+   *   },
+   *   'spawnType': 'rect',
+   *   'alpha': {
+   *     'start': 0.9,
+   *     'end': 0.5
+   *   },
+   *   'scale': {
+   *     'start': 0.2,
+   *     'end': 0.4,
+   *     'minimumScaleMultiplier': 0.5
+   *   },
+   *   'speed': {
+   *     'start': 20,
+   *     'end': 60,
+   *     'minimumSpeedMultiplier': 0.6
+   *   },
+   *   'startRotation': {
+   *     'min': 0,
+   *     'max': 365
+   *   },
+   *   'rotation': 180,
+   *   'rotationSpeed': {
+   *     'min': 100,
+   *     'max': 200
+   *   },
+   *   'lifetime': {
+   *     'min': 10,
+   *     'max': 10
+   *   }
+   * }
+   * ```
+   */
+  static LEAF_CONFIG: PIXI.particles.EmitterConfig | PIXI.particles.OldEmitterConfig;
 }

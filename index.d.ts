@@ -203,6 +203,7 @@ import './foundry/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/w
 import './foundry/pixi/texts/preciseText';
 
 import './foundry/specialEffects/autumnLeavesWeatherEffect';
+import './foundry/specialEffects/rainWeatherEffect';
 
 import './types/utils';
 
