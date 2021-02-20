@@ -11,6 +11,8 @@ declare class JournalSheet<
    */
   constructor(entity: O, options?: JournalSheet.Options);
 
+  protected _sheetMode: JournalSheet.SheetMode | null;
+
   /** @override */
   static get defaultOptions(): JournalSheet.Options;
 
@@ -22,8 +24,6 @@ declare class JournalSheet<
 
   /** @override */
   get title(): string;
-
-  protected _sheetMode: JournalSheet.SheetMode | null;
 
   /** @override */
   getData(options?: Application.RenderOptions): Promise<D> | D;
