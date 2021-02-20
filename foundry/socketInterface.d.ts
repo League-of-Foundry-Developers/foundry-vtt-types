@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 declare class SocketInterface {
   /**
    * Standardize the way that socket messages are dispatched and their results are handled
@@ -18,7 +17,6 @@ declare class SocketInterface {
 }
 
 declare namespace SocketInterface {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   namespace Requests {
     interface ModifyEmbeddedDocument {
       action: Action;
@@ -30,11 +28,9 @@ declare namespace SocketInterface {
     }
 
     // TODO: add remaining actions
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     type Action = 'create' | 'update' | 'delete';
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   namespace Responses {
     interface ModifyEmbeddedDocument {
       request: Requests.ModifyEmbeddedDocument;
@@ -43,7 +39,6 @@ declare namespace SocketInterface {
     }
   }
 
-  // TODO: go through all SocketInterface.dispatch calls and collect requests
   type Request = Requests.ModifyEmbeddedDocument;
 
   type Response = Responses.ModifyEmbeddedDocument;
