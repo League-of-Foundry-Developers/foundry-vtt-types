@@ -5,7 +5,11 @@ declare class JournalSheet<
   D extends object = BaseEntitySheet.Data<JournalEntry>,
   O extends JournalEntry = D extends BaseEntitySheet.Data<infer T> ? T : JournalEntry
 > extends BaseEntitySheet<D, O> {
-  constructor(object: O, options?: JournalSheet.Options);
+  /**
+   * @param entity - The JournalEntry instance which is being edited
+   * @param options - JournalSheet options
+   */
+  constructor(entity: O, options?: JournalSheet.Options);
 
   /** @override */
   static get defaultOptions(): JournalSheet.Options;
@@ -19,13 +23,15 @@ declare class JournalSheet<
   /** @override */
   get title(): string;
 
+  protected _sheetMode: JournalSheet.SheetMode | null;
+
   /** @override */
   getData(options?: Application.RenderOptions): Promise<D> | D;
 
   /**
    * Guess the default view mode for the sheet based on the player's permissions to the Entry
    */
-  protected _inferDefaultMode(): JournalSheet.SheetMode;
+  protected _inferDefaultMode(): JournalSheet.SheetMode | null;
 
   /** @override */
   protected _render(force?: boolean, options?: JournalSheet.RenderOptions): Promise<void>;
@@ -51,11 +57,11 @@ declare class JournalSheet<
 
 declare namespace JournalSheet {
   interface RenderOptions extends Application.RenderOptions {
-    sheetMode: SheetMode;
+    sheetMode?: SheetMode | null;
   }
 
   interface Options extends BaseEntitySheet.Options {
-    sheetMode: SheetMode;
+    sheetMode?: SheetMode | null;
   }
 
   interface Data<O extends JournalEntry = JournalEntry> extends BaseEntitySheet.Data<O> {
