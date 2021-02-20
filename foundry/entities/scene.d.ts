@@ -185,7 +185,7 @@ declare namespace Scene {
     gridAlpha: number;
     gridColor: string;
     gridDistance: number;
-    gridType: number; // There's probably an enum TODO
+    gridType: Const.GridType;
     gridUnits: string;
     height: number;
     img: string;

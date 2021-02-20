@@ -39,12 +39,12 @@ declare class PlaylistDirectory extends SidebarDirectory {
   /**
    * Given a constant playback mode, provide the FontAwesome icon used to display it
    */
-  protected _getModeIcon(mode: Const.PlaylistModes): string;
+  protected _getModeIcon(mode: Const.PlaylistMode): string;
 
   /**
    * Given a constant playback mode, provide the string tooltip used to describe it
    */
-  protected _getModeTooltip(mode: Const.PlaylistModes): string;
+  protected _getModeTooltip(mode: Const.PlaylistMode): string;
 
   /**
    * @override

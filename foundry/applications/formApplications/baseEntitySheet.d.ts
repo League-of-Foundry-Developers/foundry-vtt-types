@@ -90,6 +90,6 @@ declare namespace BaseEntitySheet {
     /**
      * @defaultValue {@link Const.EntityPermissions.Limited}
      */
-    viewPermission: Const.EntityPermissions;
+    viewPermission: Const.EntityPermission;
   }
 }

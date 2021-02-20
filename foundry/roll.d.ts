@@ -25,7 +25,7 @@
  * console.log(r.total);    // 22
  * ```
  */
-declare class Roll<D extends Record<string, unknown> = {}> {
+declare class Roll<D extends object = {}> {
   /**
    * @param formula - The string formula to parse
    * @param data    - The data object against which to parse attributes within the formula
@@ -282,17 +282,17 @@ declare class Roll<D extends Record<string, unknown> = {}> {
    * @returns A promise which resolves to the created ChatMessage entity, if create is true
    *          or the Object of prepared chatData otherwise.
    */
-  toMessage<T extends Record<string, unknown> = {}>(
+  toMessage<T extends object = {}>(
     messageData?: T,
-    { rollMode, create }?: { rollMode?: Const.DiceRollModes | null; create: true }
+    { rollMode, create }?: { rollMode?: Const.DiceRollMode | null; create: true }
   ): Promise<ChatMessage>;
-  toMessage<T extends Record<string, unknown> = {}>(
+  toMessage<T extends object = {}>(
     messageData?: T,
-    { rollMode, create }?: { rollMode?: Const.DiceRollModes | null; create: false }
+    { rollMode, create }?: { rollMode?: Const.DiceRollMode | null; create: false }
   ): Roll.MessageData<T>;
-  toMessage<T extends Record<string, unknown> = {}>(
+  toMessage<T extends object = {}>(
     messageData?: T,
-    { rollMode, create }?: { rollMode?: Const.DiceRollModes | null; create: boolean }
+    { rollMode, create }?: { rollMode?: Const.DiceRollMode | null; create: boolean }
   ): Promise<ChatMessage> | Roll.MessageData<T>;
 
   /**
@@ -440,9 +440,9 @@ declare namespace Roll {
 
   type Terms = Array<Roll | DicePool | DiceTerm | number | string>;
 
-  type MessageData<T extends Record<string, unknown>> = {
+  type MessageData<T extends object> = {
     user: string;
-    type: Const.ChatMessageTypes.Roll;
+    type: typeof CONST.CHAT_MESSAGE_TYPES['ROLL'];
     content: number;
     sound: typeof CONFIG.sounds.dice;
   } & T;

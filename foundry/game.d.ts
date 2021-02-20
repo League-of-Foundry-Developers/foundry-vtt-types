@@ -717,18 +717,10 @@ declare class Game {
 
 declare namespace Game {
   interface Permissions {
-    [permissionName: string]: Const.UserRoles[];
+    [permissionName: string]: Const.UserRole[];
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum View {
-    Game = 'game',
-    Join = 'join',
-    License = 'license',
-    Players = 'players',
-    Setup = 'setup',
-    Stream = 'stream'
-  }
+  type View = 'game' | 'join' | 'license' | 'players' | 'setup' | 'stream';
 
   interface WorldData {
     actors?: Actor[];
