@@ -39,6 +39,7 @@ declare namespace SocketInterface {
     }
   }
 
+  // TODO: go through all SocketInterface.dispatch calls and collect requests
   type Request = Requests.ModifyEmbeddedDocument;
 
   type Response = Responses.ModifyEmbeddedDocument;
