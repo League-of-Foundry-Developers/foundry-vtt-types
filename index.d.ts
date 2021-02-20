@@ -42,6 +42,7 @@ import './foundry/ray';
 import './foundry/roll';
 import './foundry/searchFilter';
 import './foundry/setupConfiguration';
+import './foundry/specialEffect';
 import './foundry/socketInterface';
 import './foundry/sortingHelpers';
 import './foundry/tabs';
@@ -201,7 +202,10 @@ import './foundry/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/w
 
 import './foundry/pixi/texts/preciseText';
 
+import './foundry/specialEffects/autumnLeavesWeatherEffect';
+
 import './types/utils';
 
 import './types/augments/howler';
 import './types/augments/tinyMCE';
+import './types/augments/pixiParticles';
