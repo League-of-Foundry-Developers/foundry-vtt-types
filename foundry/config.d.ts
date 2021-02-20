@@ -1450,6 +1450,6 @@ declare namespace Config {
     label: string;
     hint: string;
     disableGM: boolean;
-    defaultRole: Const.UserRoles;
+    defaultRole: Const.UserRole;
   }
 }

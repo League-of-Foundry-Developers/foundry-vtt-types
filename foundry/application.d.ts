@@ -343,12 +343,12 @@ declare class Application {
    * @see {@link Application.RenderState}
    */
   static RENDER_STATES: Readonly<{
-    CLOSING: Application.RenderState.Closing;
-    CLOSED: Application.RenderState.Closed;
-    NONE: Application.RenderState.None;
-    RENDERING: Application.RenderState.Rendering;
-    RENDERED: Application.RenderState.Rendered;
-    ERROR: Application.RenderState.Error;
+    CLOSING: -2;
+    CLOSED: -1;
+    NONE: 0;
+    RENDERING: 1;
+    RENDERED: 2;
+    ERROR: 3;
   }>;
 }
 
@@ -514,12 +514,5 @@ declare namespace Application {
   /**
    * @see {@link Application.RENDER_STATES}
    */
-  enum RenderState {
-    Closing = -2,
-    Closed = -1,
-    None = 0,
-    Rendering = 1,
-    Rendered = 2,
-    Error = 3
-  }
+  type RenderState = ValueOf<typeof Application['RENDER_STATES']>;
 }
