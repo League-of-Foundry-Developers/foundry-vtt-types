@@ -1,15 +1,12 @@
 /**
- * A special full-screen weather effect which uses one Emitters to render gently falling autumn leaves
+ * A special full-screen weather effect which uses one Emitters to render snowflakes
  */
-
-declare class AutumnLeavesWeatherEffect extends SpecialEffect {
+declare class SnowWeatherEffect extends SpecialEffect {
   static get label(): string;
-
-  static get effectOptions(): SpecialEffect.Options;
 
   getParticleEmitters(): PIXI.particles.Emitter[];
 
-  protected _getLeafEmitter(parent: PIXI.Container): PIXI.particles.Emitter;
+  _getSnowEmitter(parent: PIXI.Container): PIXI.particles.Emitter;
 
   /**
    * @defaultValue
@@ -34,25 +31,25 @@ declare class AutumnLeavesWeatherEffect extends SpecialEffect {
    *     minimumScaleMultiplier: 0.5
    *   },
    *   speed: {
-   *     start: 20,
-   *     end: 60,
+   *     start: 190,
+   *     end: 210,
    *     minimumSpeedMultiplier: 0.6
    *   },
    *   startRotation: {
-   *     min: 0,
-   *     max: 365
+   *     min: 50,
+   *     max: 75
    *   },
-   *   rotation: 180,
+   *   rotation: 90,
    *   rotationSpeed: {
-   *     min: 100,
+   *     min: 0,
    *     max: 200
    *   },
    *   lifetime: {
-   *     min: 10,
-   *     max: 10
+   *     min: 4,
+   *     max: 4
    *   }
    * }
    * ```
    */
-  static LEAF_CONFIG: PIXI.particles.EmitterConfig | PIXI.particles.OldEmitterConfig;
+  static SNOW_CONFIG: PIXI.particles.EmitterConfig | PIXI.particles.OldEmitterConfig;
 }

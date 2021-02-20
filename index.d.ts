@@ -204,6 +204,7 @@ import './foundry/pixi/texts/preciseText';
 
 import './foundry/specialEffects/autumnLeavesWeatherEffect';
 import './foundry/specialEffects/rainWeatherEffect';
+import './foundry/specialEffects/snowWeatherEffect';
 
 import './types/utils';
 

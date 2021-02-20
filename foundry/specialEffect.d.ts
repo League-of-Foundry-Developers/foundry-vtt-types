@@ -38,15 +38,15 @@ declare class SpecialEffect {
    * @defaultValue
    * ```typescript
    * {
-   *   'maxSpeed': 0,
-   *   'noRotation': false,
-   *   'blendMode': 'normal',
-   *   'emitterLifetime': -1,
-   *   'pos': {
-   *     'x': 0,
-   *     'y': 0
+   *   maxSpeed: 0,
+   *   noRotation: false,
+   *   blendMode: 'normal',
+   *   emitterLifetime: -1,
+   *   pos: {
+   *     x: 0,
+   *     y: 0
    *   },
-   *   'spawnType': 'rect'
+   *   spawnType: 'rect'
    * }
    * ```
    */
