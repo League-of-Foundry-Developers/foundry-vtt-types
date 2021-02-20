@@ -63,8 +63,5 @@ declare namespace JournalSheet {
     folders: Folder[];
   }
 
-  enum SheetMode {
-    text = 'text',
-    image = 'image'
-  }
+  type SheetMode = 'text' | 'image';
 }
