@@ -6,7 +6,7 @@ declare class JournalSheet<
   O extends JournalEntry = D extends BaseEntitySheet.Data<infer T> ? T : JournalEntry
 > extends BaseEntitySheet<D, O> {
   /**
-   * @param entity - The JournalEntry instance which is being edited
+   * @param entity  - The JournalEntry instance which is being edited
    * @param options - JournalSheet options
    */
   constructor(entity: O, options?: JournalSheet.Options);
