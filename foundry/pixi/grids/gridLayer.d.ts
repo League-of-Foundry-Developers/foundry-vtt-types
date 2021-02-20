@@ -2,6 +2,8 @@
  * A CanvasLayer responsible for drawing a square grid
  */
 declare class GridLayer extends CanvasLayer {
+  constructor();
+
   /**
    * The Grid container
    * (default: `null`)
@@ -17,14 +19,10 @@ declare class GridLayer extends CanvasLayer {
   /**
    * Map named highlight layers
    */
-  highlightLayers: GridHighlight;
-  constructor();
-  /* -------------------------------------------- */
+  highlightLayers: Record<string, GridHighlight>;
 
   /** @override */
-  static get layerOptions(): any;
-
-  /* -------------------------------------------- */
+  static get layerOptions(): CanvasLayer.LayerOptions;
 
   /**
    * The grid type rendered in this Scene
@@ -51,51 +49,53 @@ declare class GridLayer extends CanvasLayer {
    */
   get isHex(): boolean;
 
-  /* -------------------------------------------- */
-
   /**
    * Draw the grid
    * @param preview - Override settings used in place of those saved to the Scene data
    *                  (type: `object`)
    */
-  draw(): Promise<this>;
+  draw({
+    type,
+    dimensions,
+    gridColor,
+    gridAlpha
+  }?: {
+    type?: string | null;
+    dimensions?: Canvas['dimensions'];
+    gridColor?: number | null;
+    gridAlpha?: number | null;
+  }): Promise<this>;
 
   /**
    * Given a pair of coordinates (x1,y1), return the grid coordinates (x2,y2) which represent the snapped position
    * @param x        - The exact target location x
-   *                   (type: `number`)
    * @param y        - The exact target location y
-   *                   (type: `number`)
    * @param interval - An interval of grid spaces at which to snap, default is 1.
-   *                   (type: `number`)
    */
-  getSnappedPosition(x: number, y: number, interval: number): PIXI.Container;
+  getSnappedPosition(x: number, y: number, interval: number): { x: number; y: number };
 
   /**
    * Given a pair of coordinates (x, y) - return the top-left of the grid square which contains that point
    * @returns - An Array [x, y] of the top-left coordinate of the square which contains (x, y)
-   *            (type: `number[]`)
    */
-  getTopLeft(x: number, y: number): number[];
+  getTopLeft(x: number, y: number): PointArray;
 
   /**
    * Given a pair of coordinates (x, y), return the center of the grid square which contains that point
    * @returns - An Array [x, y] of the central point of the square which contains (x, y)
-   *            (type: `number[]`)
    */
-  getCenter(x: number, y: number): number[];
+  getCenter(x: number, y: number): PointArray;
 
   /**
    * Measure the grid-wise distance between two point coordinates.
    * @param origin - The origin point
-   *                 (type: `{x: number, y: number}`)
    * @param target - The target point
-   *                 (type: `{x: number, y: number}`)
-   * @returns      - The measured distance between these points
-   *                 (type: `number`)
+   * @returns        The measured distance between these points
    *
    * @example
+   * ```typescript
    * let distance = canvas.grid.measureDistance((x: 1000, y: 1000), (x: 2000, y: 2000));
+   * ```
    */
   measureDistance(
     origin: {
@@ -111,40 +111,44 @@ declare class GridLayer extends CanvasLayer {
   /**
    * Measure the distance traveled over an array of distance segments.
    * @param segments - An array of measured segments
-   *                   (type: `object[]`)
    * @param options  - Additional options which modify the measurement
-   *                   (type: `Options`)
    */
-  measureDistances(segments: object[], options: Options): PIXI.Container;
-
-  /* -------------------------------------------- */
-  /*  Grid Highlighting Methods
-  /* -------------------------------------------- */
+  measureDistances(
+    segments: { ray: Ray; label?: Ruler['labels']['children'][number] }[],
+    options?: { gridSpaces?: boolean }
+  ): PIXI.Container;
 
   /**
    * Define a new Highlight graphic
-   * @param name - (type: `any`)
    */
-  addHighlightLayer(name: any): any;
+  addHighlightLayer(name: string): GridHighlight;
 
   /**
    * Clear a specific Highlight graphic
-   * @param name - (type: `any`)
    */
-  clearHighlightLayer(name: any): void;
+  clearHighlightLayer(name: string): void;
 
   /**
    * Destroy a specific Highlight graphic
-   * @param name - (type: `any`)
    */
-  destroyHighlightLayer(name: any): void;
+  destroyHighlightLayer(name: string): void;
 
-  getHighlightLayer(name: any): any;
+  getHighlightLayer(name: string): GridHighlight;
 
-  highlightPosition(name: any, options: any): boolean;
+  highlightPosition(
+    name: string,
+    options: {
+      x: number;
+      y: number;
+      color: number;
+      border: number;
+      alpha: number;
+      shape: PIXI.Polygon;
+    }
+  ): false | void;
 
   /**
    * Test if a specific row and column position is a neighboring location to another row and column coordinate
    */
-  isNeighbor(r0: any, c0: any, r1: any, c1: any): any;
+  isNeighbor(r0: number, c0: number, r1: number, c1: number): boolean;
 }

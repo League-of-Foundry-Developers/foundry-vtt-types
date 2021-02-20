@@ -10,35 +10,27 @@ declare class GridHighlight extends PIXI.Graphics {
   /**
    * Track distinct positions which have already been highlighted
    */
-  positions: Set<any>;
+  positions: Set<string>;
 
-  constructor(name: any, ...args: any[]);
-  /* -------------------------------------------- */
+  constructor(name: string, geometry?: PIXI.GraphicsGeometry);
 
   /**
    * Record a position that is highlighted and return whether or not it should be rendered
    * @param x - The x-coordinate to highlight
-   *            (type: `number`)
    * @param y - The y-coordinate to highlight
-   *            (type: `number`)
-   * @returns  - Whether or not to draw the highlight for this location
-   *            (type: `boolean`)
+   * @returns   Whether or not to draw the highlight for this location
    */
   highlight(x: number, y: number): boolean;
 
-  /* -------------------------------------------- */
-
   /**
    * Extend the Graphics clear logic to also reset the highlighted positions
-   * @param args - (type: `any[]`)
+   * @remarks Returns `void`
    */
-  clear(...args: any[]): any;
-
-  /* -------------------------------------------- */
+  clear(): any;
 
   /**
    * Extend how this Graphics container is destroyed to also remove parent layer references
    * @param args - (type: `any[]`)
    */
-  destroy(...args: any[]): any;
+  destroy(options?: { children?: boolean; texture?: boolean; baseTexture?: boolean }): void;
 }
