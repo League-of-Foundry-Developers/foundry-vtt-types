@@ -4,201 +4,204 @@ import 'tinymce';
 import 'handlebars';
 import 'pixi.js';
 
-import './types/actorTokenHelpers';
-import './types/application';
-import './types/audioHelper';
-import './types/augment.howler';
-import './types/augment.tinyMCE';
-import './types/avClient';
-import './types/avConfig';
-import './types/avMaster';
-import './types/avSettings';
-import './types/canvas';
-import './types/chatBubbles';
-import './types/clientSettings';
-import './types/collection';
-import './types/config';
-import './types/constants';
-import './types/contextMenu';
-import './types/dicePool';
-import './types/diceTerm';
-import './types/dragDrop';
-import './types/draggable';
-import './types/easyRTCClient';
-import './types/embeddedEntity';
-import './types/entity';
-import './types/features';
-import './types/fonts';
-import './types/formDataExtended';
-import './types/game';
-import './types/gameTime';
-import './types/handlebarsHelpers';
-import './types/hooks';
-import './types/imageHelper';
-import './types/keyboardManager';
-import './types/localization';
-import './types/mersenneTwister';
-import './types/mouseInteractionManager';
-import './types/pointSource';
-import './types/prototypes';
-import './types/quadtree';
-import './types/ray';
-import './types/roll';
-import './types/searchFilter';
-import './types/setupConfiguration';
-import './types/socketInterface';
-import './types/sortingHelpers';
-import './types/tabs';
-import './types/templateUtils';
-import './types/textEditor';
-import './types/textureUtils';
-import './types/types';
-import './types/typesUtils';
-import './types/userTargets';
+import './foundry/actorTokenHelpers';
+import './foundry/application';
+import './foundry/audioHelper';
+import './foundry/avClient';
+import './foundry/avMaster';
+import './foundry/avSettings';
+import './foundry/canvas';
+import './foundry/chatBubbles';
+import './foundry/clientSettings';
+import './foundry/collection';
+import './foundry/config';
+import './foundry/constants';
+import './foundry/contextMenu';
+import './foundry/dicePool';
+import './foundry/diceTerm';
+import './foundry/dragDrop';
+import './foundry/draggable';
+import './foundry/embeddedEntity';
+import './foundry/entity';
+import './foundry/features';
+import './foundry/fonts';
+import './foundry/formDataExtended';
+import './foundry/game';
+import './foundry/gameTime';
+import './foundry/handlebarsHelpers';
+import './foundry/hooks';
+import './foundry/imageHelper';
+import './foundry/keyboardManager';
+import './foundry/localization';
+import './foundry/mersenneTwister';
+import './foundry/mouseInteractionManager';
+import './foundry/pointSource';
+import './foundry/prototypes';
+import './foundry/quadtree';
+import './foundry/ray';
+import './foundry/roll';
+import './foundry/searchFilter';
+import './foundry/setupConfiguration';
+import './foundry/socketInterface';
+import './foundry/sortingHelpers';
+import './foundry/tabs';
+import './foundry/templateUtils';
+import './foundry/textEditor';
+import './foundry/textureUtils';
+import './foundry/types';
+import './foundry/userTargets';
+import './foundry/utils';
+import './foundry/videoHelper';
+import './foundry/worldSettingsStorage';
+
+import './foundry/applications/basePlaceableHUD';
+import './foundry/applications/cameraViews';
+import './foundry/applications/compendium';
+import './foundry/applications/dialog';
+import './foundry/applications/filePicker';
+import './foundry/applications/formApplication';
+import './foundry/applications/headsUpDisplay';
+import './foundry/applications/hotbar';
+import './foundry/applications/mainMenu';
+import './foundry/applications/notifications';
+import './foundry/applications/pause';
+import './foundry/applications/playerList';
+import './foundry/applications/sceneControls';
+import './foundry/applications/sceneNavigation';
+import './foundry/applications/sidebar';
+import './foundry/applications/sidebarTab';
+
+import './foundry/applications/basePlaceableHUDs/drawingHUD';
+import './foundry/applications/basePlaceableHUDs/tileHUD';
+import './foundry/applications/basePlaceableHUDs/tokenHUD';
+
+import './foundry/applications/formApplications/activeEffectConfig';
+import './foundry/applications/formApplications/ambientSoundConfig';
+import './foundry/applications/formApplications/avConfig';
+import './foundry/applications/formApplications/baseEntitySheet';
+import './foundry/applications/formApplications/combatTrackerConfig';
+import './foundry/applications/formApplications/drawingConfig';
+import './foundry/applications/formApplications/entitySheetConfig';
+import './foundry/applications/formApplications/folderConfig';
+import './foundry/applications/formApplications/imagePopout';
+import './foundry/applications/formApplications/lightConfig';
+import './foundry/applications/formApplications/measuredTemplateConfig';
+import './foundry/applications/formApplications/noteConfig';
+import './foundry/applications/formApplications/playerConfig';
+import './foundry/applications/formApplications/playlistConfig';
+import './foundry/applications/formApplications/playlistSoundConfig';
+import './foundry/applications/formApplications/settingsConfig';
+import './foundry/applications/formApplications/setupConfigurationForm';
+import './foundry/applications/formApplications/tileConfig';
+import './foundry/applications/formApplications/tokenConfig';
+import './foundry/applications/formApplications/userManagement';
+import './foundry/applications/formApplications/wallConfig';
+
+import './foundry/applications/formApplications/baseEntitySheets/actorSheet';
+import './foundry/applications/formApplications/baseEntitySheets/itemSheet';
+import './foundry/applications/formApplications/baseEntitySheets/journalSheet';
+import './foundry/applications/formApplications/baseEntitySheets/permissionControl';
+import './foundry/applications/formApplications/baseEntitySheets/rollTableConfig';
+
+import './foundry/applications/sidebarTabs/chatLog';
+import './foundry/applications/sidebarTabs/combatTracker';
+import './foundry/applications/sidebarTabs/compendiumDirectory';
+import './foundry/applications/sidebarTabs/settings';
+import './foundry/applications/sidebarTabs/sidebarDirectory';
+
+import './foundry/applications/sidebarTabs/sidebarDirectories/actorDirectory';
+import './foundry/applications/sidebarTabs/sidebarDirectories/itemDirectory';
+import './foundry/applications/sidebarTabs/sidebarDirectories/journalDirectory';
+import './foundry/applications/sidebarTabs/sidebarDirectories/macroDirectory';
+import './foundry/applications/sidebarTabs/sidebarDirectories/playlistDirectory';
+import './foundry/applications/sidebarTabs/sidebarDirectories/rollTableDirectory';
+import './foundry/applications/sidebarTabs/sidebarDirectories/sceneDirectory';
+
+import './foundry/avClients/easyRTCClient';
+
+import './foundry/collections/entityCollection';
+
+import './foundry/collections/entityCollections/actors';
+import './foundry/collections/entityCollections/combatEncounters';
+import './foundry/collections/entityCollections/folders';
+import './foundry/collections/entityCollections/items';
+import './foundry/collections/entityCollections/journal';
+import './foundry/collections/entityCollections/macros';
+import './foundry/collections/entityCollections/messages';
+import './foundry/collections/entityCollections/playlists';
+import './foundry/collections/entityCollections/rollTables';
+import './foundry/collections/entityCollections/scenes';
+import './foundry/collections/entityCollections/users';
+
+import './foundry/diceTerms/coin';
+import './foundry/diceTerms/die';
+import './foundry/diceTerms/fateDie';
+
+import './foundry/embeddedEntities/activeEffect';
+
+import './foundry/entities/actor';
+import './foundry/entities/chatMessage';
+import './foundry/entities/combat';
+import './foundry/entities/folder';
+import './foundry/entities/item';
+import './foundry/entities/journalEntry';
+import './foundry/entities/macro';
+import './foundry/entities/playlist';
+import './foundry/entities/rollTable';
+import './foundry/entities/scene';
+import './foundry/entities/user';
+
+import './foundry/pixi/containers/canvasLayer';
+import './foundry/pixi/containers/controlIcon';
+import './foundry/pixi/containers/doorControl';
+import './foundry/pixi/containers/placeableObject';
+import './foundry/pixi/containers/ruler';
+
+import './foundry/pixi/containers/canvasLayers/placeablesLayer';
+import './foundry/pixi/containers/canvasLayers/sightLayer';
+
+import './foundry/pixi/containers/canvasLayers/placeablesLayers/lightingLayer';
+import './foundry/pixi/containers/canvasLayers/placeablesLayers/tokenLayer';
+
+import './foundry/pixi/containers/placeableObjects/ambientLight';
+import './foundry/pixi/containers/placeableObjects/ambientSound';
+import './foundry/pixi/containers/placeableObjects/drawing';
+import './foundry/pixi/containers/placeableObjects/measuredTemplate';
+import './foundry/pixi/containers/placeableObjects/note';
+import './foundry/pixi/containers/placeableObjects/tile';
+import './foundry/pixi/containers/placeableObjects/token';
+import './foundry/pixi/containers/placeableObjects/wall';
+
+import './foundry/pixi/rectangles/normalizedRectangle';
+
+import './foundry/pixi/shaders/abstractBaseShader';
+
+import './foundry/pixi/shaders/abstractBaseShaders/standardColorationShader';
+import './foundry/pixi/shaders/abstractBaseShaders/standardIlluminationShader';
+
+import './foundry/pixi/shaders/abstractBaseShaders/standardColorationShaders/chromaColorationShader';
+import './foundry/pixi/shaders/abstractBaseShaders/standardColorationShaders/emanationColorationShader';
+import './foundry/pixi/shaders/abstractBaseShaders/standardColorationShaders/energyFieldColorationShader';
+import './foundry/pixi/shaders/abstractBaseShaders/standardColorationShaders/fogColorationShader';
+import './foundry/pixi/shaders/abstractBaseShaders/standardColorationShaders/ghostLightColorationShader';
+import './foundry/pixi/shaders/abstractBaseShaders/standardColorationShaders/hexaDomeColorationShader';
+import './foundry/pixi/shaders/abstractBaseShaders/standardColorationShaders/lightDomeColorationShader';
+import './foundry/pixi/shaders/abstractBaseShaders/standardColorationShaders/pulseColorationShader';
+import './foundry/pixi/shaders/abstractBaseShaders/standardColorationShaders/sunburstColorationShader';
+import './foundry/pixi/shaders/abstractBaseShaders/standardColorationShaders/torchColorationShader';
+import './foundry/pixi/shaders/abstractBaseShaders/standardColorationShaders/waveColorationShader';
+
+import './foundry/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/blackHoleIlluminationShader';
+import './foundry/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/ghostLightIlluminationShader';
+import './foundry/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/pulseIlluminationShader';
+import './foundry/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/roilingIlluminationShader';
+import './foundry/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/sunburstIlluminationShader';
+import './foundry/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/torchIlluminationShader';
+import './foundry/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/waveIlluminationShader';
+
+import './foundry/pixi/texts/preciseText';
+
 import './types/utils';
-import './types/videoHelper';
-import './types/worldSettingsStorage';
 
-import './types/applications/basePlaceableHUD';
-import './types/applications/cameraViews';
-import './types/applications/compendium';
-import './types/applications/dialog';
-import './types/applications/filePicker';
-import './types/applications/formApplication';
-import './types/applications/headsUpDisplay';
-import './types/applications/hotbar';
-import './types/applications/mainMenu';
-import './types/applications/notifications';
-import './types/applications/pause';
-import './types/applications/playerList';
-import './types/applications/sceneControls';
-import './types/applications/sceneNavigation';
-import './types/applications/sidebar';
-import './types/applications/sidebarTab';
-
-import './types/applications/basePlaceableHUDs/drawingHUD';
-import './types/applications/basePlaceableHUDs/tileHUD';
-import './types/applications/basePlaceableHUDs/tokenHUD';
-
-import './types/applications/formApplications/activeEffectConfig';
-import './types/applications/formApplications/ambientSoundConfig';
-import './types/applications/formApplications/baseEntitySheet';
-import './types/applications/formApplications/combatTrackerConfig';
-import './types/applications/formApplications/drawingConfig';
-import './types/applications/formApplications/entitySheetConfig';
-import './types/applications/formApplications/folderConfig';
-import './types/applications/formApplications/imagePopout';
-import './types/applications/formApplications/lightConfig';
-import './types/applications/formApplications/measuredTemplateConfig';
-import './types/applications/formApplications/noteConfig';
-import './types/applications/formApplications/playerConfig';
-import './types/applications/formApplications/playlistConfig';
-import './types/applications/formApplications/playlistSoundConfig';
-import './types/applications/formApplications/settingsConfig';
-import './types/applications/formApplications/setupConfigurationForm';
-import './types/applications/formApplications/tileConfig';
-import './types/applications/formApplications/tokenConfig';
-import './types/applications/formApplications/userManagement';
-import './types/applications/formApplications/wallConfig';
-
-import './types/applications/formApplications/baseEntitySheets/actorSheet';
-import './types/applications/formApplications/baseEntitySheets/itemSheet';
-import './types/applications/formApplications/baseEntitySheets/journalSheet';
-import './types/applications/formApplications/baseEntitySheets/permissionControl';
-import './types/applications/formApplications/baseEntitySheets/rollTableConfig';
-
-import './types/applications/sidebarTabs/chatLog';
-import './types/applications/sidebarTabs/combatTracker';
-import './types/applications/sidebarTabs/compendiumDirectory';
-import './types/applications/sidebarTabs/settings';
-import './types/applications/sidebarTabs/sidebarDirectory';
-
-import './types/applications/sidebarTabs/sidebarDirectories/actorDirectory';
-import './types/applications/sidebarTabs/sidebarDirectories/itemDirectory';
-import './types/applications/sidebarTabs/sidebarDirectories/journalDirectory';
-import './types/applications/sidebarTabs/sidebarDirectories/macroDirectory';
-import './types/applications/sidebarTabs/sidebarDirectories/playlistDirectory';
-import './types/applications/sidebarTabs/sidebarDirectories/rollTableDirectory';
-import './types/applications/sidebarTabs/sidebarDirectories/sceneDirectory';
-
-import './types/collections/entityCollection';
-
-import './types/collections/entityCollections/actors';
-import './types/collections/entityCollections/combatEncounters';
-import './types/collections/entityCollections/folders';
-import './types/collections/entityCollections/items';
-import './types/collections/entityCollections/journal';
-import './types/collections/entityCollections/macros';
-import './types/collections/entityCollections/messages';
-import './types/collections/entityCollections/playlists';
-import './types/collections/entityCollections/rollTables';
-import './types/collections/entityCollections/scenes';
-import './types/collections/entityCollections/users';
-
-import './types/diceTerms/coin';
-import './types/diceTerms/die';
-import './types/diceTerms/fateDie';
-
-import './types/embeddedEntities/activeEffect';
-
-import './types/entities/actor';
-import './types/entities/chatMessage';
-import './types/entities/combat';
-import './types/entities/folder';
-import './types/entities/item';
-import './types/entities/journalEntry';
-import './types/entities/macro';
-import './types/entities/playlist';
-import './types/entities/rollTable';
-import './types/entities/scene';
-import './types/entities/user';
-
-import './types/pixi/containers/canvasLayer';
-import './types/pixi/containers/controlIcon';
-import './types/pixi/containers/doorControl';
-import './types/pixi/containers/placeableObject';
-import './types/pixi/containers/ruler';
-
-import './types/pixi/containers/canvasLayers/placeablesLayer';
-import './types/pixi/containers/canvasLayers/sightLayer';
-
-import './types/pixi/containers/canvasLayers/placeablesLayers/lightingLayer';
-import './types/pixi/containers/canvasLayers/placeablesLayers/tokenLayer';
-
-import './types/pixi/containers/placeableObjects/ambientLight';
-import './types/pixi/containers/placeableObjects/ambientSound';
-import './types/pixi/containers/placeableObjects/drawing';
-import './types/pixi/containers/placeableObjects/measuredTemplate';
-import './types/pixi/containers/placeableObjects/note';
-import './types/pixi/containers/placeableObjects/tile';
-import './types/pixi/containers/placeableObjects/token';
-import './types/pixi/containers/placeableObjects/wall';
-
-import './types/pixi/rectangles/normalizedRectangle';
-
-import './types/pixi/shaders/abstractBaseShader';
-
-import './types/pixi/shaders/abstractBaseShaders/standardColorationShader';
-import './types/pixi/shaders/abstractBaseShaders/standardIlluminationShader';
-
-import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/chromaColorationShader';
-import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/emanationColorationShader';
-import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/energyFieldColorationShader';
-import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/fogColorationShader';
-import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/ghostLightColorationShader';
-import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/hexaDomeColorationShader';
-import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/lightDomeColorationShader';
-import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/pulseColorationShader';
-import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/sunburstColorationShader';
-import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/torchColorationShader';
-import './types/pixi/shaders/abstractBaseShaders/standardColorationShaders/waveColorationShader';
-
-import './types/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/blackHoleIlluminationShader';
-import './types/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/ghostLightIlluminationShader';
-import './types/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/pulseIlluminationShader';
-import './types/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/roilingIlluminationShader';
-import './types/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/sunburstIlluminationShader';
-import './types/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/torchIlluminationShader';
-import './types/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/waveIlluminationShader';
-
-import './types/pixi/texts/preciseText';
+import './types/augments/howler';
+import './types/augments/tinyMCE';
