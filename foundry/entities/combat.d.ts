@@ -25,6 +25,7 @@ declare class Combat extends Entity<Combat.Data> {
 
   /**
    * The configuration setting used to record Combat preferences
+   * @defaultValue `'combatTrackerConfig'`
    */
   static CONFIG_SETTING: string;
 
