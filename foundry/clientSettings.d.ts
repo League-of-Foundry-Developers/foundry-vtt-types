@@ -15,7 +15,7 @@ declare class ClientSettings {
   /**
    * A object of registered game settings for this scope
    */
-  settings: Map<string, ClientSettings.CompleteSetting<any>>;
+  settings: Map<string, ClientSettings.CompleteSetting>;
 
   /**
    * Registered settings menus which trigger secondary applications
@@ -28,14 +28,10 @@ declare class ClientSettings {
    */
   storage: Map<string, Storage>;
 
-  /* -------------------------------------------- */
-
   /**
    * Return a singleton instance of the Game Settings Configuration app
    */
   get sheet(): SettingsConfig;
-
-  /* -------------------------------------------- */
 
   /**
    * Register a new game setting under this setting scope
@@ -43,6 +39,8 @@ declare class ClientSettings {
    * @param module - The namespace under which the setting is registered
    * @param key    - The key name for the setting under the namespace module
    * @param data   - Configuration for setting data
+   * @typeParam M  - The module name to register the setting for
+   * @typeParam K  - The key to register the setting for
    *
    * @example
    * ```typescript
@@ -85,9 +83,11 @@ declare class ClientSettings {
    * });
    * ```
    */
-  register<T>(module: string, key: string, data: ClientSettings.PartialSetting<T>): void;
-
-  /* -------------------------------------------- */
+  register<M extends string, K extends string>(
+    module: M,
+    key: K,
+    data: ClientSettings.RegisteredSettings[`${M}.${K}`]
+  ): void;
 
   /**
    * Register a new sub-settings menu
@@ -95,6 +95,8 @@ declare class ClientSettings {
    * @param module - The namespace under which the menu is registered
    * @param key    - The key name for the setting under the namespace module
    * @param data   - Configuration for setting data
+   * @typeParam M  - The module name to register the menu setting for
+   * @typeParam K  - The key to register the menu setting for
    *
    * @example
    * ```typescript
@@ -109,15 +111,19 @@ declare class ClientSettings {
    * });
    * ```
    */
-  registerMenu(module: string, key: string, data: ClientSettings.PartialMenuSetting): void;
-
-  /* -------------------------------------------- */
+  registerMenu<M extends string, K extends string>(
+    module: M,
+    key: K,
+    data: ClientSettings.RegisteredMenuSettings[`${M}.${K}`]
+  ): void;
 
   /**
    * Get the value of a game setting for a certain module and setting key
    *
    * @param module - The module namespace under which the setting is registered
    * @param key    - The setting key to retrieve
+   * @typeParam M  - The module name to register the get for
+   * @typeParam K  - The key to get the setting for
    *
    * @example
    * ```typescript
@@ -125,9 +131,7 @@ declare class ClientSettings {
    * game.settings.get("myModule", "myClientSetting");
    * ```
    */
-  get(module: string, key: string): any;
-
-  /* -------------------------------------------- */
+  get<M extends string, K extends string>(module: M, key: K): ClientSettings.Values[`${M}.${K}`];
 
   /**
    * Set the value of a game setting for a certain module and setting key
@@ -135,6 +139,9 @@ declare class ClientSettings {
    * @param module - The module namespace under which the setting is registered
    * @param key    - The setting key to retrieve
    * @param value  - The data to assign to the setting key
+   * @typeParam M  - The module name to register the get for
+   * @typeParam K  - The key to get the setting for
+   * @typeParam V  - The value type to get the value for
    *
    * @example
    * ```typescript
@@ -142,16 +149,20 @@ declare class ClientSettings {
    * game.settings.set("myModule", "myClientSetting", "b");
    * ```
    */
-  set<T>(module: string, key: string, value: T): Promise<T>;
-
-  /* -------------------------------------------- */
+  set<M extends string, K extends string, V extends ClientSettings.Values[`${M}.${K}`]>(
+    module: M,
+    key: K,
+    value: V
+  ): Promise<V>;
 
   /**
    * Locally update a setting given a provided key and value
    */
-  protected _update<T>(setting: ClientSettings.PartialSetting<T>, key: string, value: T): T;
-
-  /* -------------------------------------------- */
+  protected _update<M extends string, K extends string, V extends ClientSettings.Values[`${M}.${K}`]>(
+    setting: ClientSettings.RegisteredSettings[`${M}.${K}`] | ClientSettings.RegisteredMenuSettings[`${M}.${K}`],
+    key: `${M}.${K}`,
+    value: V
+  ): V;
 
   /**
    * Handle changes to a Setting document to apply them to the world setting
@@ -161,7 +172,7 @@ declare class ClientSettings {
 }
 
 declare namespace ClientSettings {
-  interface CompleteSetting<T> extends PartialSetting<T> {
+  interface CompleteSetting<T = unknown> extends PartialSetting<T> {
     key: string;
     module: string;
   }
@@ -171,7 +182,7 @@ declare namespace ClientSettings {
     module: string;
   }
 
-  interface PartialSetting<T> {
+  interface PartialSetting<T = unknown> {
     choices?: Record<string, string>;
     config?: boolean;
     default?: T;
@@ -194,5 +205,17 @@ declare namespace ClientSettings {
     name?: string;
     restricted: boolean;
     type: ConstructorOf<FormApplication<object>>;
+  }
+
+  interface RegisteredMenuSettings {
+    [key: string]: PartialMenuSetting;
+  }
+
+  interface RegisteredSettings {
+    [key: string]: PartialSetting;
+  }
+
+  interface Values {
+    [key: string]: unknown;
   }
 }
