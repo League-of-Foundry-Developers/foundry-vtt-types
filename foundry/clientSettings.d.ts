@@ -212,10 +212,12 @@ declare namespace ClientSettings {
   }
 
   interface RegisteredSettings {
+    'core.combatTrackerConfig': Combat.PartialConfigSetting;
     [key: string]: PartialSetting;
   }
 
   interface Values {
+    'core.combatTrackerConfig': Combat.ConfigValue;
     [key: string]: unknown;
   }
 }

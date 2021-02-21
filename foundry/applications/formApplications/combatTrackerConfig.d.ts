@@ -14,7 +14,7 @@ declare class CombatTrackerConfig extends FormApplication<CombatTrackerConfig.Da
    * @param event - (unused)
    * @override
    */
-  protected _updateObject(event?: Event, formData?: CombatTrackerConfig.Setting): Promise<CombatTrackerConfig.Setting>;
+  protected _updateObject<F extends Combat.ConfigValue>(event?: Event, formData?: F): Promise<F>;
 
   /**
    * Get an Array of attribute choices which could be tracked for Actors in the Combat Tracker
@@ -24,7 +24,7 @@ declare class CombatTrackerConfig extends FormApplication<CombatTrackerConfig.Da
 
 declare namespace CombatTrackerConfig {
   interface Data {
-    settings: Setting;
+    settings: Combat.ConfigValue;
     attributeChoices: ReturnType<CombatTrackerConfig['getAttributeChoices']>;
   }
 
@@ -53,10 +53,5 @@ declare namespace CombatTrackerConfig {
      * @defaultValue `420`
      */
     width: number;
-  }
-
-  interface Setting {
-    resource: string;
-    skipDefeated: boolean;
   }
 }

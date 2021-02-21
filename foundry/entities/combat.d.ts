@@ -25,9 +25,8 @@ declare class Combat extends Entity<Combat.Data> {
 
   /**
    * The configuration setting used to record Combat preferences
-   * @defaultValue `'combatTrackerConfig'`
    */
-  static CONFIG_SETTING: string;
+  static CONFIG_SETTING: 'combatTrackerConfig';
 
   /** @override */
   static get config(): Entity.Config<Combat>;
@@ -275,6 +274,25 @@ declare class Combat extends Entity<Combat.Data> {
 }
 
 declare namespace Combat {
+  interface CompleteConfigSetting extends PartialConfigSetting {
+    key: typeof Combat['CONFIG_SETTING'];
+    module: 'core';
+  }
+
+  interface PartialConfigSetting extends ClientSettings.PartialSetting<ConfigValue> {
+    name: 'Combat Tracker Configuration';
+    scope: 'world';
+    config: false;
+    default: {};
+    type: ConstructorOf<Object>;
+    onChange: () => void;
+  }
+
+  interface ConfigValue {
+    resource?: string;
+    skipDefeated?: boolean;
+  }
+
   /**
    * Data extension for Combat
    */
