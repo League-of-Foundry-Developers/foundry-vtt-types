@@ -15,12 +15,12 @@ declare class ClientSettings {
   /**
    * A object of registered game settings for this scope
    */
-  settings: Map<string, ClientSettings.CompleteData<any>>;
+  settings: Map<string, ClientSettings.CompleteSetting<any>>;
 
   /**
    * Registered settings menus which trigger secondary applications
    */
-  menus: Map<string, ClientSettings.CompleteMenuSettings>;
+  menus: Map<string, ClientSettings.CompleteMenuSetting>;
 
   /**
    * The storage interfaces used for persisting settings
@@ -85,7 +85,7 @@ declare class ClientSettings {
    * });
    * ```
    */
-  register<T>(module: string, key: string, data: ClientSettings.PartialData<T>): void;
+  register<T>(module: string, key: string, data: ClientSettings.PartialSetting<T>): void;
 
   /* -------------------------------------------- */
 
@@ -109,7 +109,7 @@ declare class ClientSettings {
    * });
    * ```
    */
-  registerMenu(module: string, key: string, data: ClientSettings.PartialMenuSettings): void;
+  registerMenu(module: string, key: string, data: ClientSettings.PartialMenuSetting): void;
 
   /* -------------------------------------------- */
 
@@ -149,7 +149,7 @@ declare class ClientSettings {
   /**
    * Locally update a setting given a provided key and value
    */
-  protected _update<T>(setting: ClientSettings.PartialData<T>, key: string, value: T): T;
+  protected _update<T>(setting: ClientSettings.PartialSetting<T>, key: string, value: T): T;
 
   /* -------------------------------------------- */
 
@@ -161,17 +161,17 @@ declare class ClientSettings {
 }
 
 declare namespace ClientSettings {
-  interface CompleteData<T> extends PartialData<T> {
+  interface CompleteSetting<T> extends PartialSetting<T> {
     key: string;
     module: string;
   }
 
-  interface CompleteMenuSettings extends PartialMenuSettings {
+  interface CompleteMenuSetting extends PartialMenuSetting {
     key: string;
     module: string;
   }
 
-  interface PartialData<T> {
+  interface PartialSetting<T> {
     choices?: Record<string, string>;
     config?: boolean;
     default?: T;
@@ -187,7 +187,7 @@ declare namespace ClientSettings {
     type?: ConstructorOf<T>;
   }
 
-  interface PartialMenuSettings {
+  interface PartialMenuSetting {
     hint?: string;
     icon?: string;
     label?: string;
