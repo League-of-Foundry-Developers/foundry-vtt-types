@@ -1415,7 +1415,7 @@ declare const CONFIG: {
     rain: ConstructorOf<SpecialEffect>;
 
     /**
-     * @defaultValue `SnowEatherEffect`
+     * @defaultValue `SnowWeatherEffect`
      */
     snow: ConstructorOf<SpecialEffect>;
   } & Partial<Record<string, ConstructorOf<SpecialEffect>>>;
