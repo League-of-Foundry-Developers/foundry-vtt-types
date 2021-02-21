@@ -107,5 +107,5 @@ declare namespace SpecialEffect {
     | 'color'
     | 'luminosity';
 
-  type SpawnType = 'point ' | 'rect  ' | 'circle' | 'ring  ' | 'burst ';
+  type SpawnType = 'point' | 'rect' | 'circle' | 'ring' | 'burst';
 }

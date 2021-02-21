@@ -1,61 +1,65 @@
-declare namespace PIXI {
-  namespace particles {
-    type BasicPoint = import('pixi-particles').BasicPoint;
+import * as pixiParticles from 'pixi-particles';
 
-    type Segment = import('pixi-particles').Segment;
+declare global {
+  namespace PIXI {
+    namespace particles {
+      type BasicPoint = pixiParticles.BasicPoint;
 
-    type PolygonalChain = import('pixi-particles').PolygonalChain;
-    const PolygonalChain: typeof import('pixi-particles').PolygonalChain;
+      type Segment = pixiParticles.Segment;
 
-    type EmitterConfig = import('pixi-particles').EmitterConfig;
+      type PolygonalChain = pixiParticles.PolygonalChain;
+      const PolygonalChain: typeof pixiParticles.PolygonalChain;
 
-    type RandNumber = import('pixi-particles').RandNumber;
+      type EmitterConfig = pixiParticles.EmitterConfig;
 
-    type BasicTweenable<T> = import('pixi-particles').BasicTweenable<T>;
+      type RandNumber = pixiParticles.RandNumber;
 
-    type OldEmitterConfig = import('pixi-particles').OldEmitterConfig;
+      type BasicTweenable<T> = pixiParticles.BasicTweenable<T>;
 
-    type ValueStep<T> = import('pixi-particles').ValueStep<T>;
+      type OldEmitterConfig = pixiParticles.OldEmitterConfig;
 
-    type ValueList<T> = import('pixi-particles').ValueList<T>;
+      type ValueStep<T> = pixiParticles.ValueStep<T>;
 
-    type PropertyNode<V> = import('pixi-particles').PropertyNode<V>;
-    const PropertyNode: typeof import('pixi-particles').PropertyNode;
+      type ValueList<T> = pixiParticles.ValueList<T>;
 
-    const GetTextureFromString: typeof import('pixi-particles').GetTextureFromString;
+      type PropertyNode<V> = pixiParticles.PropertyNode<V>;
+      const PropertyNode: typeof pixiParticles.PropertyNode;
 
-    type Color = import('pixi-particles').Color;
+      const GetTextureFromString: typeof pixiParticles.GetTextureFromString;
 
-    type EaseSegment = import('pixi-particles').EaseSegment;
+      type Color = pixiParticles.Color;
 
-    type SimpleEase = import('pixi-particles').SimpleEase;
+      type EaseSegment = pixiParticles.EaseSegment;
 
-    const ParticleUtils: typeof import('pixi-particles').ParticleUtils;
+      type SimpleEase = pixiParticles.SimpleEase;
 
-    type ParticleConstructor = import('pixi-particles').ParticleConstructor;
+      const ParticleUtils: typeof pixiParticles.ParticleUtils;
 
-    type Emitter = import('pixi-particles').Emitter;
-    const Emitter: typeof import('pixi-particles').Emitter;
+      type ParticleConstructor = pixiParticles.ParticleConstructor;
 
-    type PropertyList<V> = import('pixi-particles').PropertyList<V>;
-    const PropertyList: typeof import('pixi-particles').PropertyList;
+      type Emitter = pixiParticles.Emitter;
+      const Emitter: typeof pixiParticles.Emitter;
 
-    type LinkedListChild = import('pixi-particles').LinkedListChild;
+      type PropertyList<V> = pixiParticles.PropertyList<V>;
+      const PropertyList: typeof pixiParticles.PropertyList;
 
-    type LinkedListContainer = import('pixi-particles').LinkedListContainer;
-    const LinkedListContainer: typeof import('pixi-particles').LinkedListContainer;
+      type LinkedListChild = pixiParticles.LinkedListChild;
 
-    type Particle = import('pixi-particles').Particle;
-    const Particle: typeof import('pixi-particles').Particle;
+      type LinkedListContainer = pixiParticles.LinkedListContainer;
+      const LinkedListContainer: typeof pixiParticles.LinkedListContainer;
 
-    type PathParticle = import('pixi-particles').PathParticle;
-    const PathParticle: typeof import('pixi-particles').PathParticle;
+      type Particle = pixiParticles.Particle;
+      const Particle: typeof pixiParticles.Particle;
 
-    type ParsedAnimatedParticleArt = import('pixi-particles').ParsedAnimatedParticleArt;
+      type PathParticle = pixiParticles.PathParticle;
+      const PathParticle: typeof pixiParticles.PathParticle;
 
-    type AnimatedParticleArt = import('pixi-particles').AnimatedParticleArt;
+      type ParsedAnimatedParticleArt = pixiParticles.ParsedAnimatedParticleArt;
 
-    type AnimatedParticle = import('pixi-particles').AnimatedParticle;
-    const AnimatedParticle: typeof import('pixi-particles').AnimatedParticle;
+      type AnimatedParticleArt = pixiParticles.AnimatedParticleArt;
+
+      type AnimatedParticle = pixiParticles.AnimatedParticle;
+      const AnimatedParticle: typeof pixiParticles.AnimatedParticle;
+    }
   }
 }
