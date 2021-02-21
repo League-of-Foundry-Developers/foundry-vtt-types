@@ -288,16 +288,6 @@ declare namespace Combat {
     turn: number;
   }
 
-  /**
-   * Stores the round, turn and tokenId for the current turn. Also used for the
-   * previous turn.
-   */
-  interface CurrentTurn {
-    round: number | null;
-    tokenId: string | null;
-    turn: number | null;
-  }
-
   type Combatant = {
     _id: string;
     defeated?: boolean;
@@ -323,4 +313,14 @@ declare namespace Combat {
         tokenId: string;
       }
   );
+
+  /**
+   * Stores the round, turn and tokenId for the current turn. Also used for the
+   * previous turn.
+   */
+  interface CurrentTurn {
+    round: number | null;
+    tokenId: string | null;
+    turn: number | null;
+  }
 }
