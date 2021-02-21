@@ -19,13 +19,10 @@
  * ip.share();
  * ```
  */
-declare class ImagePopout<D extends object = ImagePopout.Data, O extends string = string> extends FormApplication<
-  D,
-  O
-> {
-  constructor(src: O, options?: ImagePopout.Options);
+declare class ImagePopout extends FormApplication<ImagePopout.Data, string> {
+  constructor(src: string, options?: ImagePopout.Options);
 
-  protected _related: null;
+  protected _related: Entity | object | null;
 
   /** @override */
   static get defaultOptions(): ImagePopout.Options;
@@ -34,7 +31,7 @@ declare class ImagePopout<D extends object = ImagePopout.Data, O extends string 
   get title(): string;
 
   /** @override */
-  getData(options?: Application.RenderOptions): D | Promise<D>;
+  getData(options?: Application.RenderOptions): ImagePopout.Data | Promise<ImagePopout.Data>;
 
   /**
    * Test whether the title of the image popout should be visible to the user
@@ -72,7 +69,10 @@ declare class ImagePopout<D extends object = ImagePopout.Data, O extends string 
    */
   protected static _handleShareImage(params: { image: string; title: string; uuid: string }): ImagePopout;
 
-  /** @override */
+  /**
+   * @override
+   * @remarks Not implemented for ImagePopout
+   * */
   protected _updateObject(event: Event, formData?: object): never;
 }
 
