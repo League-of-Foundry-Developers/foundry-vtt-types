@@ -27,10 +27,13 @@ Add the project to your types section in your `tsconfig.json`:
 ```json
 {
   "compilerOptions": {
-    "types": ["foundry-vtt-types"]
+    "types": ["foundry-vtt-types"],
+    "moduleResolution": "node"
   }
 }
 ```
+
+Ensure you are using `"moduleResolution": "node"` as well.
 
 ## Acknowledgments
 
