@@ -58,7 +58,7 @@ declare class BaseGrid extends PIXI.Container {
    * Given a pair of coordinates (x, y) - return the top-left of the grid square which contains that point
    * @param x - The x-coordinate
    * @param y - The y-coordinate
-   * @returns   An Array [x, y] of the top-left coordinate of the square which contains (x, y)
+   * @returns An Array [x, y] of the top-left coordinate of the square which contains (x, y)
    */
   getTopLeft(x: number, y: number): PointArray;
 
@@ -66,7 +66,7 @@ declare class BaseGrid extends PIXI.Container {
    * Given a pair of coordinates (x, y), return the center of the grid square which contains that point
    * @param x - The x-coordinate
    * @param y - The y-coordinate
-   * @returns   An array [cx, cy] of the central point of the grid space which contains (x, y)
+   * @returns An array [cx, cy] of the central point of the grid space which contains (x, y)
    */
   getCenter(x: number, y: number): PointArray;
 
@@ -81,7 +81,7 @@ declare class BaseGrid extends PIXI.Container {
    *                   At interval=2, snapping would occur at the center-points of each grid size
    *                   At interval=null, no snapping occurs
    *                   (default: `null`)
-   * @returns          An object containing the coordinates of the snapped location
+   * @returns An object containing the coordinates of the snapped location
    */
   getSnappedPosition(x: number, y: number, interval: number | null): { x: number; y: number };
 
@@ -90,7 +90,7 @@ declare class BaseGrid extends PIXI.Container {
    * Always round down to the nearest grid position so the pixels are within the grid space (from top-left).
    * @param x - The x-coordinate pixel position
    * @param y - The y-coordinate pixel position
-   * @returns   An array [x, y] representing the position in grid units
+   * @returns An array [x, y] representing the position in grid units
    */
   getGridPositionFromPixels(x: number, y: number): PointArray;
 
@@ -99,7 +99,7 @@ declare class BaseGrid extends PIXI.Container {
    * Always round up to a whole pixel so the pixel is within the grid space (from top-left).
    * @param x - The x-coordinate grid position
    * @param y - The y-coordinate grid position
-   * @returns   An array [x, y] representing the position in pixels
+   * @returns An array [x, y] representing the position in pixels
    */
   getPixelsFromGridPosition(x: number, y: number): PointArray;
 
@@ -109,7 +109,7 @@ declare class BaseGrid extends PIXI.Container {
    * @param y  - The starting y-coordinate in pixels
    * @param dx - The number of grid positions to shift horizontally
    * @param dy - The number of grid positions to shift vertically
-   * @returns    An array [x, y] representing the new position in pixels
+   * @returns An array [x, y] representing the new position in pixels
    */
   shiftPosition(x: number, y: number, dx: number, dy: number): PointArray;
 
@@ -120,7 +120,7 @@ declare class BaseGrid extends PIXI.Container {
    * @param segments - An Array of measured movement segments
    * @param options  - Additional options which modify the measurement
    *                   (default: `{}`)
-   * @returns          An Array of distance measurements for each segment
+   * @returns An Array of distance measurements for each segment
    */
   measureDistances(
     segments: { ray: Ray; label?: Ruler['labels']['children'][number] }[],
@@ -133,7 +133,7 @@ declare class BaseGrid extends PIXI.Container {
    * Get the grid row and column positions which are neighbors of a certain position
    * @param row - The grid row coordinate against which to test for neighbors
    * @param col - The grid column coordinate against which to test for neighbors
-   * @returns     An array of grid positions which are neighbors of the row and column
+   * @returns An array of grid positions which are neighbors of the row and column
    */
   getNeighbors(row: number, col: number): [number, number][];
 }

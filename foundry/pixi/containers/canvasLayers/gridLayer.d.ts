@@ -52,7 +52,6 @@ declare class GridLayer extends CanvasLayer {
   /**
    * Draw the grid
    * @param preview - Override settings used in place of those saved to the Scene data
-   *                  (type: `object`)
    */
   draw({
     type,
@@ -76,13 +75,13 @@ declare class GridLayer extends CanvasLayer {
 
   /**
    * Given a pair of coordinates (x, y) - return the top-left of the grid square which contains that point
-   * @returns - An Array [x, y] of the top-left coordinate of the square which contains (x, y)
+   * @returns An Array [x, y] of the top-left coordinate of the square which contains (x, y)
    */
   getTopLeft(x: number, y: number): PointArray;
 
   /**
    * Given a pair of coordinates (x, y), return the center of the grid square which contains that point
-   * @returns - An Array [x, y] of the central point of the square which contains (x, y)
+   * @returns An Array [x, y] of the central point of the square which contains (x, y)
    */
   getCenter(x: number, y: number): PointArray;
 
@@ -90,7 +89,7 @@ declare class GridLayer extends CanvasLayer {
    * Measure the grid-wise distance between two point coordinates.
    * @param origin - The origin point
    * @param target - The target point
-   * @returns        The measured distance between these points
+   * @returns The measured distance between these points
    *
    * @example
    * ```typescript

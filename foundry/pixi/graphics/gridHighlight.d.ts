@@ -18,7 +18,7 @@ declare class GridHighlight extends PIXI.Graphics {
    * Record a position that is highlighted and return whether or not it should be rendered
    * @param x - The x-coordinate to highlight
    * @param y - The y-coordinate to highlight
-   * @returns   Whether or not to draw the highlight for this location
+   * @returns Whether or not to draw the highlight for this location
    */
   highlight(x: number, y: number): boolean;
 
@@ -30,7 +30,6 @@ declare class GridHighlight extends PIXI.Graphics {
 
   /**
    * Extend how this Graphics container is destroyed to also remove parent layer references
-   * @param args - (type: `any[]`)
    */
   destroy(options?: { children?: boolean; texture?: boolean; baseTexture?: boolean }): void;
 }

@@ -9,6 +9,7 @@ declare class HexagonalGrid extends BaseGrid {
   h: number;
 
   w: number;
+  
   constructor(options: {
     dimensions: Canvas['dimensions'];
     color: string;
@@ -106,7 +107,6 @@ declare class HexagonalGrid extends BaseGrid {
    * @param q - Cube coordinate 1
    * @param r - Cube coordinate 2
    * @param s - Cube coordinate 3
-   * @returns - (type: `{row: number, col: number}`)
    */
   cubeToOffset(q: number, r: number, s: number): { row: number; col: number };
 
