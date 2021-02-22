@@ -4,7 +4,7 @@
  * Furthermore, this application allows for sharing the display of an image with other connected players.
  *
  * @example
- * ```javascript
+ * ```typescript
  * // Construct the Application instance
  * const ip = new ImagePopout("path/to/image.jpg", {
  *   title: "My Featured Image",
@@ -72,7 +72,7 @@ declare class ImagePopout extends FormApplication<ImagePopout.Data, string> {
   /**
    * @override
    * @remarks Not implemented for ImagePopout
-   * */
+   */
   protected _updateObject(event: Event, formData?: object): never;
 }
 
