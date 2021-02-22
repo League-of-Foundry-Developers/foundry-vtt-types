@@ -72,8 +72,9 @@ declare class Ruler extends PIXI.Container {
 
   /**
    * Get the text label for a segment of the measured path
+   * @param isTotal - (unused)
    */
-  protected _getSegmentLabel(segmentDistance: number, totalDistance: number, isTotal: boolean): string;
+  protected _getSegmentLabel(segmentDistance: number, totalDistance: number, isTotal?: boolean): string;
 
   /**
    * Highlight the measurement required to complete the move in the minimum number of discrete spaces
