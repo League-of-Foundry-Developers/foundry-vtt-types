@@ -9,7 +9,6 @@ declare class HexagonalGrid extends BaseGrid {
   h: number;
 
   w: number;
-  
   constructor(options: {
     dimensions: Canvas['dimensions'];
     color: string;
