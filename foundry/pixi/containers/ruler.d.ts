@@ -60,7 +60,7 @@ declare class Ruler extends PIXI.Container {
    * Measure the distance between two points and render the ruler UI to illustrate it
    * @param destination - The destination point to which to measure
    * @param gridSpaces  - Restrict measurement only to grid spaces
-   *                      (Default value: `true`)
+   *                      (default: `true`)
    */
   measure(
     destination: Point,
@@ -98,7 +98,7 @@ declare class Ruler extends PIXI.Container {
    * A helper method to return an Array of Ray objects constructed from the waypoints of the measurement
    * @param waypoints   - An Array of waypoint `{x, y}` Objects
    * @param destination - An optional destination point to append to the existing waypoints
-   * @returns             An Array of Ray objects which represent the segemnts of the waypoint path
+   * @returns An Array of Ray objects which represent the segemnts of the waypoint path
    */
   protected _getRaysFromWaypoints(waypoints: Point[], destination?: Point): Ray[];
 
@@ -146,7 +146,7 @@ declare class Ruler extends PIXI.Container {
    * Handle the removal of a waypoint in the Ruler measurement path
    * @param point - The current cursor position to snap to
    * @param snap  - Snap exactly to grid spaces?
-   *                (Default value: `true`)
+   *                (default: `true`)
    */
   protected _removeWaypoint(point: Point, { snap }?: { snap?: boolean }): void;
 
