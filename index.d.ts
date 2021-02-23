@@ -152,12 +152,17 @@ import './foundry/entities/rollTable';
 import './foundry/entities/scene';
 import './foundry/entities/user';
 
+import './foundry/pixi/containers/baseGrid';
 import './foundry/pixi/containers/canvasLayer';
 import './foundry/pixi/containers/controlIcon';
 import './foundry/pixi/containers/doorControl';
 import './foundry/pixi/containers/placeableObject';
 import './foundry/pixi/containers/ruler';
 
+import './foundry/pixi/containers/baseGrids/hexagonalGrid';
+import './foundry/pixi/containers/baseGrids/squareGrid';
+
+import './foundry/pixi/containers/canvasLayers/gridLayer';
 import './foundry/pixi/containers/canvasLayers/placeablesLayer';
 import './foundry/pixi/containers/canvasLayers/sightLayer';
 
@@ -172,6 +177,8 @@ import './foundry/pixi/containers/placeableObjects/note';
 import './foundry/pixi/containers/placeableObjects/tile';
 import './foundry/pixi/containers/placeableObjects/token';
 import './foundry/pixi/containers/placeableObjects/wall';
+
+import './foundry/pixi/graphics/gridHighlight';
 
 import './foundry/pixi/rectangles/normalizedRectangle';
 
