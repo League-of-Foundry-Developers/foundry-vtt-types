@@ -1404,10 +1404,21 @@ declare const CONFIG: {
    * Available Weather Effects implementations
    */
   weatherEffects: {
-    leaves: any; // TODO: ConstructorOf<AutumnLeavesWeatherEffect>
-    rain: any; // TODO: ConstructorOf<RainWeatherEffect>
-    snow: any; // TODO: ConstructorOf<SnowWeatherEffect>
-  } & Partial<Record<string, any>>; // TODO: ConstructorOf<SpecialEffect>
+    /**
+     * @defaultValue `AutumnLeavesWeatherEffect`
+     */
+    leaves: ConstructorOf<SpecialEffect>;
+
+    /**
+     * @defaultValue `RainWeatherEffect`
+     */
+    rain: ConstructorOf<SpecialEffect>;
+
+    /**
+     * @defaultValue `SnowWeatherEffect`
+     */
+    snow: ConstructorOf<SpecialEffect>;
+  } & Partial<Record<string, ConstructorOf<SpecialEffect>>>;
 
   /**
    * Configuration for the WebRTC implementation class
