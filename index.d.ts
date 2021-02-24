@@ -79,6 +79,7 @@ import './foundry/applications/formApplications/activeEffectConfig';
 import './foundry/applications/formApplications/ambientSoundConfig';
 import './foundry/applications/formApplications/avConfig';
 import './foundry/applications/formApplications/baseEntitySheet';
+import './foundry/applications/formApplications/combatantConfig';
 import './foundry/applications/formApplications/combatTrackerConfig';
 import './foundry/applications/formApplications/drawingConfig';
 import './foundry/applications/formApplications/entitySheetConfig';
