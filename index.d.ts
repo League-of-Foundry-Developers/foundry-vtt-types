@@ -85,6 +85,7 @@ import './foundry/applications/formApplications/combatTrackerConfig';
 import './foundry/applications/formApplications/drawingConfig';
 import './foundry/applications/formApplications/entitySheetConfig';
 import './foundry/applications/formApplications/folderConfig';
+import './foundry/applications/formApplications/gridConfig';
 import './foundry/applications/formApplications/imagePopout';
 import './foundry/applications/formApplications/lightConfig';
 import './foundry/applications/formApplications/measuredTemplateConfig';
@@ -104,6 +105,7 @@ import './foundry/applications/formApplications/baseEntitySheets/itemSheet';
 import './foundry/applications/formApplications/baseEntitySheets/journalSheet';
 import './foundry/applications/formApplications/baseEntitySheets/permissionControl';
 import './foundry/applications/formApplications/baseEntitySheets/rollTableConfig';
+import './foundry/applications/formApplications/baseEntitySheets/sceneConfig';
 
 import './foundry/applications/sidebarTabs/chatLog';
 import './foundry/applications/sidebarTabs/combatTracker';
