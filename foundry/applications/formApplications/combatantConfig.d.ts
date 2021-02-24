@@ -17,10 +17,6 @@ declare class CombatantConfig extends FormApplication {
     event: Event,
     formData: Expanded<U> extends DeepPartial<Combat.Combatant> ? U : DeepPartial<Combat.Combatant>
   ): Promise<U>;
-  protected _updateObject<U>(
-    event: Event,
-    formData: Expanded<U> extends DeepPartial<Combat.Combatant> ? U[] : DeepPartial<Combat.Combatant>[]
-  ): Promise<U[]>;
 }
 
 declare namespace CombatantConfig {
