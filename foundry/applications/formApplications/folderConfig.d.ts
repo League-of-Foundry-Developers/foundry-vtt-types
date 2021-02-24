@@ -1,7 +1,7 @@
 /**
  * Edit a folder, configuring its name and appearance
  */
-declare class FolderConfig extends FormApplication<FolderConfig.Data, Folder.Data> {
+declare class FolderConfig extends FormApplication<FolderConfig.Data, Folder> {
   /**
    * @override
    */
@@ -18,6 +18,7 @@ declare class FolderConfig extends FormApplication<FolderConfig.Data, Folder.Dat
   get title(): string;
 
   /**
+   * @param options - (unused)
    * @override
    */
   getData(options?: Application.RenderOptions): Promise<FolderConfig.Data>;
