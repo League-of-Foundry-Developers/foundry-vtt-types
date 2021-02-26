@@ -27,7 +27,7 @@ declare class FolderConfig extends FormApplication<FolderConfig.Data, Folder> {
    * @param event - (unused)
    * @override
    */
-  protected _updateObject(event: Event, formData: Folder.Data): Promise<Folder | Folder | null>;
+  protected _updateObject(event: Event, formData: Folder.Data): Promise<Folder | null>;
 }
 
 declare namespace FolderConfig {
