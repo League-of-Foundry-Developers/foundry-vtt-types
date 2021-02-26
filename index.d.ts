@@ -155,6 +155,7 @@ import './foundry/entities/user';
 import './foundry/pixi/containers/baseGrid';
 import './foundry/pixi/containers/canvasLayer';
 import './foundry/pixi/containers/controlIcon';
+import './foundry/pixi/containers/cursor';
 import './foundry/pixi/containers/doorControl';
 import './foundry/pixi/containers/placeableObject';
 import './foundry/pixi/containers/ruler';
@@ -162,6 +163,7 @@ import './foundry/pixi/containers/ruler';
 import './foundry/pixi/containers/baseGrids/hexagonalGrid';
 import './foundry/pixi/containers/baseGrids/squareGrid';
 
+import './foundry/pixi/containers/canvasLayers/controlsLayer';
 import './foundry/pixi/containers/canvasLayers/gridLayer';
 import './foundry/pixi/containers/canvasLayers/placeablesLayer';
 import './foundry/pixi/containers/canvasLayers/sightLayer';
