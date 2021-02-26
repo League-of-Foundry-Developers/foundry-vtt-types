@@ -170,6 +170,7 @@ import './foundry/pixi/containers/canvasLayers/sightLayer';
 
 import './foundry/pixi/containers/canvasLayers/placeablesLayers/lightingLayer';
 import './foundry/pixi/containers/canvasLayers/placeablesLayers/tokenLayer';
+import './foundry/pixi/containers/canvasLayers/placeablesLayers/wallsLayer';
 
 import './foundry/pixi/containers/placeableObjects/ambientLight';
 import './foundry/pixi/containers/placeableObjects/ambientSound';

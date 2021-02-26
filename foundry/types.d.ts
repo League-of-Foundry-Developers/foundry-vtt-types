@@ -10,7 +10,7 @@ declare type Point = PIXI.Point | { x: number; y: number };
 /**
  * A single point, expressed as an array \[x,y\]
  */
-declare type PointArray = [number, number];
+declare type PointArray = [x: number, y: number];
 
 /**
  * A Ray intersection point
