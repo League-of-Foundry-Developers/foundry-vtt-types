@@ -3,7 +3,7 @@
  *
  * @see {@link Macro} The Macro Entity which is being configured
  */
-declare class MacroConfig extends BaseEntitySheet {
+declare class MacroConfig extends BaseEntitySheet<MacroConfig.Data, Macro> {
   /**
    * @override
    */
