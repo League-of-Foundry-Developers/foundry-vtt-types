@@ -103,6 +103,7 @@ import './foundry/applications/formApplications/wallConfig';
 import './foundry/applications/formApplications/baseEntitySheets/actorSheet';
 import './foundry/applications/formApplications/baseEntitySheets/itemSheet';
 import './foundry/applications/formApplications/baseEntitySheets/journalSheet';
+import './foundry/applications/formApplications/baseEntitySheets/macroConfig';
 import './foundry/applications/formApplications/baseEntitySheets/permissionControl';
 import './foundry/applications/formApplications/baseEntitySheets/rollTableConfig';
 import './foundry/applications/formApplications/baseEntitySheets/sceneConfig';
