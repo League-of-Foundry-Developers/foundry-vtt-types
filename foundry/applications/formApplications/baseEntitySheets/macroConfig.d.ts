@@ -27,7 +27,7 @@ declare class MacroConfig extends BaseEntitySheet<MacroConfig.Data, Macro> {
   /**
    * Handle changing the actor profile image by opening a FilePicker
    */
-  protected _onEditImage(event: Event): Promise<FilePicker.Result>;
+  protected _onEditImage(event: Event): ReturnType<FilePicker['browse']>;
 
   /**
    * Save and execute the macro using the button on the configuration sheet

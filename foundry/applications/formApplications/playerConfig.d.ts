@@ -35,14 +35,14 @@ declare class PlayerConfig extends FormApplication<PlayerConfig.Data, User> {
   /**
    * Handle changing the user avatar image by opening a FilePicker
    */
-  protected _onEditAvatar(event: Event): Promise<FilePicker.Result>;
+  protected _onEditAvatar(event: Event): ReturnType<FilePicker['browse']>;
 
   /**
    * This method is called upon form submission after form data is validated
    * @param event    - The initial triggering submission event
    * @param formData - The object of validated form data with which to update the object
    */
-  protected _updateObject(event: Event, formData: User.Data): Promise<User>;
+  protected _updateObject(event: Event, formData: User.Data): ReturnType<User['update']>;
 }
 
 declare namespace PlayerConfig {

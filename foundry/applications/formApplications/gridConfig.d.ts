@@ -40,7 +40,7 @@ declare class GridConfig extends FormApplication<GridConfig.Data, Scene> {
   /**
    * @override
    */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<ReturnType<GridConfig['_refresh']>>;
 
   /**
    * @override
@@ -50,7 +50,7 @@ declare class GridConfig extends FormApplication<GridConfig.Data, Scene> {
   /**
    * @override
    */
-  close(options?: FormApplication.CloseOptions): Promise<void>;
+  close(options?: FormApplication.CloseOptions): ReturnType<FormApplication['close']>;
 
   /**
    * Handle resetting the form and re-drawing back to the original dimensions
@@ -90,7 +90,13 @@ declare class GridConfig extends FormApplication<GridConfig.Data, Scene> {
    * @param deltaY - The number of pixels to shift in the y-direction
    *                 (default: `0`)
    */
-  protected _shiftBackground({ deltaX, deltaY }?: { deltaX?: number; deltaY?: number }): void;
+  protected _shiftBackground({
+    deltaX,
+    deltaY
+  }?: {
+    deltaX?: number;
+    deltaY?: number;
+  }): ReturnType<GridConfig['_refresh']>;
 
   /**
    * Temporarily refresh the display of the BackgroundLayer and GridLayer for the new pending dimensions
@@ -104,13 +110,13 @@ declare class GridConfig extends FormApplication<GridConfig.Data, Scene> {
   /**
    * @override
    */
-  protected _onChangeInput(event: Event): void;
+  protected _onChangeInput(event: Event): ReturnType<GridConfig['_refresh']>;
 
   /**
    * @param event - (unused)
    * @override
    */
-  protected _updateObject(event: Event, formData: Scene.Data): Promise<void>;
+  protected _updateObject(event: Event, formData: Scene.Data): ReturnType<Scene['update']>;
 }
 
 declare namespace GridConfig {
