@@ -169,6 +169,7 @@ import './foundry/pixi/containers/canvasLayers/placeablesLayer';
 import './foundry/pixi/containers/canvasLayers/sightLayer';
 
 import './foundry/pixi/containers/canvasLayers/placeablesLayers/lightingLayer';
+import './foundry/pixi/containers/canvasLayers/placeablesLayers/soundsLayer';
 import './foundry/pixi/containers/canvasLayers/placeablesLayers/templateLayer';
 import './foundry/pixi/containers/canvasLayers/placeablesLayers/tilesLayer';
 import './foundry/pixi/containers/canvasLayers/placeablesLayers/tokenLayer';
