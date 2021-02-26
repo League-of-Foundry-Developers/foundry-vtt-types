@@ -66,7 +66,7 @@ declare namespace MacroConfig {
     /**
      * @defaultValue `480`
      */
-    height: number;
+    height: 'auto' | number;
 
     /**
      * @defaultValue `true`
