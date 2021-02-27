@@ -716,6 +716,18 @@ declare class Game {
 }
 
 declare namespace Game {
+  interface Module {
+    active: boolean;
+    data: {};
+    esmodules: string[];
+    id: string;
+    languages: any[]; // TODO: update later
+    packs: any[]; // TODO: update later
+    path: string;
+    scripts: string[];
+    styles: string[];
+  }
+
   interface Permissions {
     [permissionName: string]: Const.UserRole[];
   }
@@ -757,17 +769,5 @@ declare namespace Game {
     users?: User[];
     version?: string;
     world?: any; // TODO: update when World is typed
-  }
-
-  interface Module {
-    active: boolean;
-    data: {};
-    esmodules: string[];
-    id: string;
-    languages: any[]; // TODO: update later
-    packs: any[]; // TODO: update later
-    path: string;
-    scripts: string[];
-    styles: string[];
   }
 }
