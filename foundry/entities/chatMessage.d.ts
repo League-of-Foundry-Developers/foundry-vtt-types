@@ -201,14 +201,9 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
 }
 
 declare namespace ChatMessage {
-  interface Data extends Entity.Data {
-    content: string;
-    roll?: string;
-    speaker: SpeakerData;
-    timestamp: number;
-    type: number;
+  interface ChatData {
     user: string;
-    whisper: string[];
+    speaker: SpeakerData;
   }
 
   /**
@@ -224,9 +219,14 @@ declare namespace ChatMessage {
     whisper: Array<string | User>;
   }
 
-  interface ChatData {
-    user: string;
+  interface Data extends Entity.Data {
+    content: string;
+    roll?: string;
     speaker: SpeakerData;
+    timestamp: number;
+    type: number;
+    user: string;
+    whisper: string[];
   }
 
   interface MessageData {
