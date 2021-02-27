@@ -34,7 +34,7 @@
  * let actor = new Actor(actorData)
  * ```
  */
-declare class Entity<D extends Entity.Data = Entity.Data> {
+declare abstract class Entity<D extends Entity.Data = Entity.Data> {
   constructor(data?: DeepPartial<D>, options?: Entity.CreateOptions);
 
   /**
@@ -126,7 +126,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param force   - Force rendering
    * @param context - Optional context
    */
-  render(force: boolean, context: any): void;
+  render(force?: boolean, context?: Application.RenderOptions & { data?: { permission?: any } }): void;
 
   /**
    * Return a reference to the EntityCollection instance which stores Entity instances of this type. This property is
@@ -176,13 +176,13 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * actor.sheet // ActorSheet
    * ```
    */
-  get sheet(): BaseEntitySheet<BaseEntitySheet.Data<this>, this> | null;
+  get sheet(): FormApplication<FormApplication.Data<this>, this> | null;
 
   /**
    * Obtain a reference to the BaseEntitySheet implementation which should be used to render the Entity instance
    * configuration sheet.
    */
-  protected get _sheetClass(): BaseEntitySheet<BaseEntitySheet.Data<this>, this> | null;
+  protected get _sheetClass(): ConstructorOf<FormApplication> | null;
 
   /**
    * Return a reference to the Folder which this Entity belongs to, if any.
@@ -210,7 +210,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * entity.permission // 2
    * ```
    */
-  get permission(): number;
+  get permission(): Const.EntityPermission;
 
   /**
    * A boolean indicator for whether or not the current game User has ownership rights for this Entity.
@@ -330,7 +330,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
   /**
    * Entity- specific actions that should occur when the Entity is first created
    */
-  protected _onCreate(data: D, options: any, userId: string): void;
+  protected _onCreate(data: DeepPartial<D>, options: any, userId: string): void;
 
   /**
    * Update one or multiple existing entities using provided input data.
@@ -447,7 +447,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param id           - The numeric ID of the child to retrieve
    * @param strict       - Throw an Error if the requested id does not exist, otherwise return null. Default false.
    */
-  getEmbeddedEntity(embeddedName: string, id: string, { strict }?: { strict?: boolean }): any;
+  getEmbeddedEntity(embeddedName: string, id: string, { strict }?: { strict?: boolean }): EmbeddedEntity.Data;
 
   /**
    * Create one or multiple EmbeddedEntities within this parent Entity.
@@ -478,7 +478,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const temp = await actor.createEmbeddedEntity("OwnedItem", data, {temporary: true}); // Not saved to the Actor
    * ```
    */
-  createEmbeddedEntity(embeddedName: string, data: any, options?: Entity.CreateOptions): Promise<any>;
+  createEmbeddedEntity(embeddedName: string, data: any, options?: Entity.CreateOptions): Promise<EmbeddedEntity.Data>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Embedded Entities are created
@@ -528,8 +528,12 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const updated = await actor.updateEmbeddedEntity("OwnedItem", updates); // Updates multiple EmbeddedEntity objects
    * ```
    */
-  updateEmbeddedEntity(embeddedName: string, data: any, options?: Entity.UpdateOptions): Promise<any>;
-  updateEmbeddedEntity(embeddedName: string, data: any[], options?: Entity.UpdateOptions): Promise<any[]>;
+  updateEmbeddedEntity(embeddedName: string, data: any, options?: Entity.UpdateOptions): Promise<EmbeddedEntity.Data>;
+  updateEmbeddedEntity(
+    embeddedName: string,
+    data: any[],
+    options?: Entity.UpdateOptions
+  ): Promise<EmbeddedEntity.Data[]>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Embedded Entities are updated
@@ -582,7 +586,11 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * const deleted = await actor.deleteEmbeddedEntity("OwnedItem", deletions); // Deletes multiple EmbeddedEntity objects
    * ```
    */
-  deleteEmbeddedEntity(embeddedName: string, data: any, options?: Entity.DeleteOptions): Promise<any | any[]>;
+  deleteEmbeddedEntity(
+    embeddedName: string,
+    data: any,
+    options?: Entity.DeleteOptions
+  ): Promise<EmbeddedEntity.Data | EmbeddedEntity.Data[]>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Embedded Entities are deleted
@@ -737,6 +745,9 @@ declare namespace Entity {
    */
   interface CreateOptions {
     [propName: string]: any;
+
+    compendium?: Compendium;
+
     /**
      * Block the dispatch of preCreate hooks for this operation.
      * @defaultValue `false`
@@ -791,7 +802,7 @@ declare namespace Entity {
 
   interface Config<E extends Entity = Entity> {
     baseEntity: ConstructorOf<E>;
-    collection: EntityCollection<E>;
+    collection?: EntityCollection<E>;
     embeddedEntities?: {
       [embedType: string]: string;
     };
@@ -819,5 +830,13 @@ declare namespace Entity {
      * Flags for arbitrary data from modules &c.
      */
     flags: Record<string, unknown>;
+
+    folder?: string;
+
+    name?: string;
+
+    permission?: Permission;
+
+    type?: number | string;
   }
 }

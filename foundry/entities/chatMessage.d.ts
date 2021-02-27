@@ -54,7 +54,7 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
   get isContentVisible(): boolean;
 
   /** @override */
-  get permission(): number;
+  get permission(): Const.EntityPermission;
 
   /**
    * Return the Roll instance contained in this chat message, if one is present
