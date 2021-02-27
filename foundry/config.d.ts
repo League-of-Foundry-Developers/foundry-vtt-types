@@ -83,7 +83,7 @@ declare const CONFIG: {
     /**
      * @defaultValue `{}`
      */
-    sheetClasses: Record<string, unknown>; // TODO: Fill in the full typing here.
+    sheetClasses: EntitySheetConfig.SheetClasses;
 
     /**
      * @defaultValue `'fas fa-user'`
@@ -602,7 +602,7 @@ declare const CONFIG: {
     /**
      * @defaultValue `{}`
      */
-    sheetClasses: Record<string, unknown>; // TODO: Fill in the full typing here.
+    sheetClasses: EntitySheetConfig.SheetClasses;
 
     /**
      * @defaultValue `'fas fa-suitcase'`
