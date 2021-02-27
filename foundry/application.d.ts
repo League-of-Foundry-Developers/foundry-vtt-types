@@ -470,6 +470,8 @@ declare namespace Application {
   }
 
   interface RenderOptions {
+    classes?: string[];
+
     /**
      * The left positioning attribute
      */
