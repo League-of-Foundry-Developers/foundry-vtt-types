@@ -95,7 +95,7 @@ declare class TokenLayer extends PlaceablesLayer<Token> {
    * @param width         - The width of the selection rectangle
    * @param height        - The height of the selection rectangle
    * @param releaseOthers - Whether or not to release other targeted tokens
-   *                         (Default value: `true`)
+   *                        (default: `true`)
    * @returns The number of Token instances which were targeted.
    */
   targetObjects(
@@ -116,11 +116,11 @@ declare class TokenLayer extends PlaceablesLayer<Token> {
   /**
    * Add or remove the set of currently controlled Tokens from the active combat encounter
    * @param  state  - The desired combat state which determines if each Token is added (true) or removed (false)
-   *                  (Default value: `true`)
+   *                  (default: `true`)
    * @param  combat - A Combat encounter from which to add or remove the Token
-   *                  (Default value: `null`)
+   *                  (default: `null`)
    * @param  token  - A specific Token which is the origin of the group toggle request
-   *                  (Default value: `null`)
+   *                  (default: `null`)
    * @returns The updated Combat encounter
    */
   toggleCombat(state?: boolean, combat?: Combat | null, { token }?: { token: Token | null }): Promise<Combat>;

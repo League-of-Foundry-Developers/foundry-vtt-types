@@ -113,9 +113,9 @@ declare class WallsLayer extends PlaceablesLayer<Wall> {
    * @param walls         - An array of Wall instances
    * @param bounds        - An optional bounding rectangle within which the endpoint must lie.
    * @param blockMovement - Filter for walls that block movement, default is true.
-   *                        (Default value: `true`)
+   *                        (default: `true`)
    * @param blockSenses   - Filter for walls that block perception, default is true.
-   *                        (Default value: `true`)
+   *                        (default: `true`)
    * @returns An array of endpoints
    */
   static getUniqueEndpoints(
@@ -165,7 +165,7 @@ declare class WallsLayer extends PlaceablesLayer<Wall> {
    * Require snap-to-grid until a redesign of the wall chaining system can occur.
    * @param  point - The initial candidate point
    * @param  snap  - Whether to snap to grid
-   *                 (Default value: `true`)
+   *                 (default: `true`)
    * @returns The endpoint coordinates [x,y]
    */
   protected _getWallEndpointCoordinates(point: Point, { snap }?: { snap?: boolean }): PointArray;
