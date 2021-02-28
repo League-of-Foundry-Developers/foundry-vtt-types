@@ -464,9 +464,9 @@ declare namespace Application {
   interface Position {
     width: number;
     height: number | 'auto';
-    left: number;
-    top: number;
-    scale: number;
+    left?: number;
+    top?: number;
+    scale?: number;
   }
 
   interface RenderOptions {

@@ -31,7 +31,7 @@ declare class ImagePopout extends FormApplication<ImagePopout.Data, string> {
   get title(): string;
 
   /** @override */
-  getData(options?: Application.RenderOptions): ImagePopout.Data | Promise<ImagePopout.Data>;
+  getData(options?: Application.RenderOptions): Promise<ImagePopout.Data>;
 
   /**
    * Test whether the title of the image popout should be visible to the user
@@ -52,7 +52,7 @@ declare class ImagePopout extends FormApplication<ImagePopout.Data, string> {
   /**
    * Determine the correct position and dimensions for the displayed image
    */
-  protected static getPosition(img: string): ImagePopout.Position;
+  protected static getPosition(img: string): Application.Position;
 
   /**
    * Determine the Image dimensions given a certain path
@@ -67,7 +67,15 @@ declare class ImagePopout extends FormApplication<ImagePopout.Data, string> {
   /**
    * Handle a received request to display an image.
    */
-  protected static _handleShareImage(params: { image: string; title: string; uuid: string }): ImagePopout;
+  protected static _handleShareImage({
+    image,
+    title,
+    uuid
+  }: {
+    image: string;
+    title: string;
+    uuid: string;
+  }): ImagePopout;
 
   /**
    * @override
@@ -78,19 +86,34 @@ declare class ImagePopout extends FormApplication<ImagePopout.Data, string> {
 
 declare namespace ImagePopout {
   interface Options extends FormApplication.Options {
+    /**
+     * @defaultValue `'templates/apps/image-popout.html'`
+     */
+    template: string;
+    /**
+     * @defaultValue `['image-popout', 'dark']`
+     */
+    classes: string[];
+    /**
+     * @defaultValue `false`
+     */
+    editable: boolean;
+    /**
+     * @defaultValue `true`
+     */
+    resizable: boolean;
+    /**
+     * @defaultValue `false`
+     */
     shareable: boolean;
+    /**
+     * @defaultValue `null`
+     */
     uuid: string | null;
   }
 
   interface Data<T extends string = string> extends FormApplication.Data<T> {
     image: string;
     showTitle: boolean;
-  }
-
-  interface Position {
-    width: number;
-    height: number;
-    top: number;
-    left: number;
   }
 }
