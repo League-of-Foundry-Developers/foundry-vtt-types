@@ -8,12 +8,6 @@
 declare type Point = PIXI.Point | { x: number; y: number };
 
 /**
- * An extension of the default PIXI.Text object which forces double resolution.
- * At default resolution Text often looks blurry or fuzzy.
- */
-declare class PreciseText extends PIXI.Text {}
-
-/**
  * A single point, expressed as an array \[x,y\]
  */
 declare type PointArray = [number, number];
