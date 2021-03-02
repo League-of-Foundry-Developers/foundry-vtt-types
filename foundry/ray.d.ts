@@ -1,29 +1,4 @@
 /**
- * A representation of a the computed collision between a Ray and a segment
- */
-declare interface CollisionPoint {
-  /**
-   * Distance of collision along the Ray
-   */
-  t0: number;
-
-  /**
-   * Distance of collision along the Segment
-   */
-  t1: number;
-
-  /**
-   * Point of collision x
-   */
-  x: number;
-
-  /**
-   * Point of collision y
-   */
-  y: number;
-}
-
-/**
  * A ray for the purposes of computing sight and collision
  * Given points A[x,y] and B[x,y]
  *
@@ -36,87 +11,58 @@ declare interface CollisionPoint {
  */
 declare class Ray {
   /**
-   * Point A
+   * @param A - The origin of the Ray
+   * @param B - The destination of the Ray
    */
-  public A: Point;
+  constructor(A: Point, B: Point);
+
+  // Points
+  A: Point;
+  B: Point;
+
+  // Origins
+  x0: number;
+  y0: number;
+
+  // Slopes
+  dx: number;
+  dy: number;
 
   /**
-   * Point B
+   * The slope of the ray, dy over dx
    */
-  public B: Point;
+  slope: number;
 
   /**
    * The normalized angle of the ray in radians on the range (-PI, PI)
    */
-  public angle: number;
+  angle: number;
 
   /**
    * The distance of the ray
    */
-  public distance: number;
+  distance: number;
 
   /**
-   * Slope x
+   * A bounding rectangle that encompasses the Ray
    */
-  public dx: number;
-
-  /**
-   * Slope y
-   */
-  public dy: number;
+  get bounds(): NormalizedRectangle;
 
   /**
    * Return the value of the angle normalized to the range (0, 2*PI)
    * This is useful for testing whether an angle falls between two others
    */
-  public readonly normAngle: number;
-
-  /**
-   * A bounding rectangle that encompasses the Ray
-   */
-  public readonly bounds: NormalizedRectangle;
-
-  /**
-   * The slope of the ray, dy over dx
-   */
-  public slope: number;
-
-  /**
-   * Origin x
-   */
-  public x0: number;
-
-  /**
-   * Origin y
-   */
-  public y0: number;
-
-  constructor(A: Point, B: Point);
-
-  /**
-   * An internal helper method for computing the intersection between two lines.
-   * @internal
-   */
-  public static _getIntersection(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    x3: number,
-    y3: number,
-    x4: number,
-    y4: number
-  ): CollisionPoint | false;
+  get normAngle(): number;
 
   /**
    * A factory method to construct a Ray from an origin point, an angle, and a distance
-   * @param x - The origin x-coordinate
-   * @param y - The origin y-coordinate
-   * @param radians - The ray angle in radians
+   * @param x        - The origin x-coordinate
+   * @param y        - The origin y-coordinate
+   * @param radians  - The ray angle in radians
    * @param distance - The distance of the ray in pixels
    * @returns The constructed Ray instance
    */
-  public static fromAngle(x: number, y: number, radians: number, distance: number): Ray;
+  static fromAngle(x: number, y: number, radians: number, distance: number): Ray;
 
   /**
    * A factory method to construct a Ray from points in array format.
@@ -124,7 +70,23 @@ declare class Ray {
    * @param B - The destination point [x,y]
    * @returns The constructed Ray instance
    */
-  public static fromArrays(A: [], B: []): Ray;
+  static fromArrays(A: [number, number], B: [number, number]): Ray;
+
+  /**
+   * Project the Array by some proportion of it's initial distance.
+   * Return the coordinates of that point along the path.
+   * @param t - The distance along the Ray
+   * @returns The coordinates of the projected point
+   */
+  project(t: number): Point;
+
+  /**
+   * Create a new ray which uses the same origin point, but a slightly offset angle and distance
+   * @param offset   - An offset in radians which modifies the angle of the original Ray
+   * @param distance - A distance the new ray should project, otherwise uses the same distance.
+   * @returns A new Ray with an offset angle
+   */
+  shiftAngle(angleOffset: number, distance?: number): Ray;
 
   /**
    * Find the point I[x,y] and distance t* on ray R(t) which intersects another ray
@@ -136,21 +98,47 @@ declare class Ray {
    *    The point of collision [x,y] the position of that collision point along the Ray (t0) an the tested
    *    segment (t1). Returns false if no collision occurs.
    */
-  public intersectSegment(coords: [number, number, number, number]): CollisionPoint | false;
+  intersectSegment(coords: [number, number, number, number]): Ray.CollisionPoint | false;
 
   /**
-   * Project the Array by some proportion of it's initial distance.
-   * Return the coordinates of that point along the path.
-   * @param t - The distance along the Ray
-   * @returns The coordinates of the projected point
+   * An internal helper method for computing the intersection between two lines.
+   * @internal
    */
-  public project(t: number): Point;
+  static _getIntersection(
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    x3: number,
+    y3: number,
+    x4: number,
+    y4: number
+  ): Ray.CollisionPoint | false;
+}
 
+declare namespace Ray {
   /**
-   * Create a new ray which uses the same origin point, but a slightly offset angle and distance
-   * @param offset - An offset in radians which modifies the angle of the original Ray
-   * @param distance - A distance the new ray should project, otherwise uses the same distance.
-   * @returns A new Ray with an offset angle
+   * A representation of a the computed collision between a Ray and a segment
    */
-  public shiftAngle(angleOffset: number, distance?: number): Ray;
+  interface CollisionPoint {
+    /**
+     * Distance of collision along the Ray
+     */
+    t0: number;
+
+    /**
+     * Distance of collision along the Segment
+     */
+    t1: number;
+
+    /**
+     * Point of collision x
+     */
+    x: number;
+
+    /**
+     * Point of collision y
+     */
+    y: number;
+  }
 }

@@ -1,22 +1,3 @@
-/**
- * Additional options which configure the Quadtree
- */
-declare interface QuadTreeOptions {
-  /**
-   * The maximum number of objects per node
-   */
-  maxObjects?: number;
-  /**
-   * The maximum number of levels within the root Quadtree
-   */
-  maxDepth?: number;
-  /**
-   * The depth level of the sub-tree. For internal use only
-   * @internal
-   */
-  _depth?: number;
-}
-
 declare interface QuadTreeObject<T> {
   /**
    * Rectangle of this object
@@ -32,88 +13,110 @@ declare interface QuadTreeObject<T> {
   n: Set<Quadtree<T>>;
 }
 
+declare namespace Quadtree {
+  /**
+   * Additional options which configure the Quadtree
+   */
+  interface Options {
+    /**
+     * The maximum number of objects per node
+     */
+    maxObjects?: number;
+    /**
+     * The maximum number of levels within the root Quadtree
+     */
+    maxDepth?: number;
+    /**
+     * The depth level of the sub-tree. For internal use only
+     * @internal
+     */
+    _depth?: number;
+  }
+}
+
 /**
  * A Quadtree implementation that supports collision detection for rectangles.
  */
 declare class Quadtree<T> {
   /**
-   * A constant that enumerates the index order of the quadtree nodes from top-left to bottom-right.
+   * @param bounds  - The outer bounds of the region
+   * @param options - Additional options which configure the Quadtree
    */
-  static readonly INDICES: Record<'tl' | 'tr' | 'bl' | 'br', number>;
-
-  constructor(bounds: Rectangle, options?: QuadTreeOptions);
+  constructor(bounds: Rectangle, { maxObjects, maxDepth, _depth }?: Quadtree.Options);
 
   /**
    * The bounding rectangle of the region
    */
-  public bounds: Rectangle;
+  bounds: Rectangle;
 
   /**
    * The maximum number of objects allowed within this node before it must split
    * @defaultValue 20
    */
-  public maxObjects: number;
+  maxObjects: number;
 
   /**
    * The maximum number of levels that the base quadtree is allowed
    * @defaultValue 4
    */
-  public maxDepth: number;
+  maxDepth: number;
 
   /**
    * The depth of this node within the root Quadtree
    * @defaultValue 0
    */
-  public depth: number;
+  depth: number;
 
   /**
    * The objects contained at this level of the tree
+   * @defaultValue []
    */
-  public objects: QuadTreeObject<T>[];
+  objects: QuadTreeObject<T>[];
 
   /**
    * Children of this node
+   * @defaultValue []
    */
-  public nodes: Quadtree<T>[];
+  nodes: Quadtree<T>[];
 
   /**
    * Return an array of all the objects in the Quadtree (recursive)
    */
-  readonly all: QuadTreeObject<T>[];
+  get all(): QuadTreeObject<T>[];
 
   /**
    * Clear the quadtree of all existing contents
    * @returns The cleared Quadtree
    */
-  public clear(): Quadtree<T>;
+  clear(): this;
 
   /**
    * Add a rectangle object to the tree
    * @param obj - The object being inserted
    * @returns The Quadtree nodes the object was added to.
    */
-  public insert(obj: QuadTreeObject<T>): Quadtree<T>[];
+  insert(obj: QuadTreeObject<T>): Quadtree<T>[];
 
   /**
    * Remove an object from the quadtree
    * @param target - The quadtree target being removed
    * @returns The Quadtree for method chaining
    */
-  public remove(target: T): Quadtree<T>;
+  remove(target: T): this;
 
   /**
    * Split this node into 4 sub-nodes.
    * @returns The split Quadtree
    */
-  public split(): Quadtree<T>;
+  split(): this;
 
   /**
    * Get all the objects which could collide with the provided rectangle
    * @param rect - The target rectangle
-   * @param _s - The existing result set, for internal use.
+   * @param _s   - The existing result set, for internal use.
    * @returns The objects in the Quadtree which represent potential collisions
    */
-  public getObjects(rect: Rectangle, _s: Set<T>): Set<T>;
+  getObjects(rect: Rectangle, _s: Set<T>): Set<T>;
 
   /**
    * Obtain the leaf nodes to which a target rectangle belongs.
@@ -136,4 +139,14 @@ declare class Quadtree<T> {
    * @param objects - Visualize the rectangular bounds of objects in the Quadtree. Default is false.
    */
   visualize({ objects }?: { objects?: boolean }): void;
+
+  /**
+   * A constant that enumerates the index order of the quadtree nodes from top-left to bottom-right.
+   */
+  static readonly INDICES: {
+    tl: 0;
+    tr: 1;
+    bl: 2;
+    br: 3;
+  };
 }
