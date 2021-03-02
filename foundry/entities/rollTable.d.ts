@@ -193,7 +193,7 @@ declare namespace RollTable {
     drawn: boolean;
     flags: any;
     img: string;
-    range: [number, number];
+    range: [min: number, max: number];
     resultId: string;
     text: string;
     type: number;

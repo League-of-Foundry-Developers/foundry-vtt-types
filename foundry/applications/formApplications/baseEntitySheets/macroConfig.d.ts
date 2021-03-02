@@ -38,7 +38,7 @@ declare class MacroConfig extends BaseEntitySheet<MacroConfig.Data, Macro> {
   /**
    * @override
    */
-  protected _updateObject(event: Event, formData: Macro.Data): Promise<Macro>;
+  protected _updateObject(event: Event, formData: MacroConfig.FormData): Promise<Macro>;
 }
 
 declare namespace MacroConfig {
@@ -46,6 +46,8 @@ declare namespace MacroConfig {
     macroTypes: Duplicated<any>; // TODO: type when System is typed
     macroScopes: typeof CONST['MACRO_SCOPES'];
   }
+
+  type FormData = Pick<Macro.Data, 'command' | 'img' | 'name' | 'type'>;
 
   interface Options extends BaseEntitySheet.Options {
     /**

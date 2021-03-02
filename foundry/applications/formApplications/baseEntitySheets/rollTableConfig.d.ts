@@ -25,17 +25,17 @@ declare class RollTableConfig extends BaseEntitySheet<RollTableConfig.Data, Roll
    * @param event      - The originating mouse event
    * @param resultData - An optional object of result data to use
    */
-  protected _onCreateResult(event: MouseEvent, resultData?: object): Promise<any>; // TODO: type when TableResult is typed
+  protected _onCreateResult(event: JQuery.ClickEvent | DragEvent, resultData?: object): Promise<RollTable.Result>;
 
   /**
    * Submit the entire form when a table result type is changed, in case there are other active changes
    */
-  protected _onChangeResultType(event: Event): ReturnType<RollTableConfig['_onSubmit']>;
+  protected _onChangeResultType(event: JQuery.ClickEvent): ReturnType<RollTableConfig['_onSubmit']>;
 
   /**
    * Handle deleting a TableResult from the RollTable entity
    */
-  protected _onDeleteResult(event: Event): Promise<any>; // TODO: type when TableResult is typed
+  protected _onDeleteResult(event: JQuery.ClickEvent): Promise<RollTable.Result>;
 
   /**
    * @override
@@ -45,27 +45,27 @@ declare class RollTableConfig extends BaseEntitySheet<RollTableConfig.Data, Roll
   /**
    * Handle changing the actor profile image by opening a FilePicker
    */
-  protected _onEditImage(event: Event): ReturnType<FilePicker['browse']>;
+  protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
 
   /**
    * Handle a button click to re-normalize dice result ranges across all RollTable results
    */
-  protected _onNormalizeResults(event: Event): Promise<any>; // TODO: type when TableResult is typed
+  protected _onNormalizeResults(event: JQuery.ClickEvent): Promise<RollTable>;
 
   /**
    * Handle toggling the drawn status of the result in the table
    */
-  protected _onLockResult(event: Event): Promise<any>; // TODO: type when TableResult is typed
+  protected _onLockResult(event: JQuery.ClickEvent): Promise<RollTable.Result>;
 
   /**
    * Reset the Table to it's original composition with all options unlocked
    */
-  protected _onResetTable(event: Event): Promise<any>; // TODO: type when TableResult is typed
+  protected _onResetTable(event: JQuery.ClickEvent): Promise<RollTable.Result>;
 
   /**
    * Handle drawing a result from the RollTable
    */
-  protected _onRollTable(event: Event): Promise<void>;
+  protected _onRollTable(event: JQuery.ClickEvent): Promise<void>;
 
   /**
    * Configure the update object workflow for the Roll Table configuration sheet
@@ -73,13 +73,13 @@ declare class RollTableConfig extends BaseEntitySheet<RollTableConfig.Data, Roll
    * @param event    - The form submission event
    * @param formData - The validated FormData translated into an Object for submission
    */
-  protected _updateObject(event: Event, formData: RollTableConfig.Data): Promise<any>; // TODO: type when TableResult is typed
+  protected _updateObject(event: Event, formData: RollTableConfig.FormData): Promise<RollTable>;
 
   /**
    * Display a roulette style animation when a Roll Table result is drawn from the sheet
    * @param results - An Array of drawn table results to highlight
    */
-  protected _animateRoll(results: object): Promise<void>; // TODO: type when TableResult is typed
+  protected _animateRoll(results: RollTable.Result[]): Promise<void>;
 
   /**
    * Animate a "roulette" through the table until arriving at the final loop and a drawn result
@@ -100,11 +100,22 @@ declare class RollTableConfig extends BaseEntitySheet<RollTableConfig.Data, Roll
 }
 
 declare namespace RollTableConfig {
-  interface Data extends BaseEntitySheet.Data {
-    results: any; // TODO: type when TableResult is typed
-    resultTypes: Record<ValueOf<typeof CONST['TABLE_RESULT_TYPES']>, keyof typeof CONST['TABLE_RESULT_TYPES']>;
+  interface Data extends BaseEntitySheet.Data<RollTable> {
+    results: RollTable.Result;
+    resultTypes: { [Key in keyof typeof CONST['TABLE_RESULT_TYPES'] as typeof CONST['TABLE_RESULT_TYPES'][Key]]: Key };
     entityTypes: typeof CONST['COMPENDIUM_ENTITY_TYPES'];
     compendiumPacks: string[];
+  }
+
+  interface FormData
+    extends Pick<RollTable.Data, 'description' | 'displayRoll' | 'formula' | 'img' | 'name' | 'replacement'> {
+    [index: number]: FormDataResult;
+  }
+
+  interface FormDataResult
+    extends Pick<RollTable.Result, '_id' | 'drawn' | 'img' | 'resultId' | 'text' | 'type' | 'weight'> {
+    rangeH: RollTable.Result['range'][1];
+    rangeL: RollTable.Result['range'][0];
   }
 
   interface Options extends BaseEntitySheet.Options {
