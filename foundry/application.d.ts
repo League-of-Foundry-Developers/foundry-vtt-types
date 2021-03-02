@@ -202,7 +202,7 @@ declare class Application {
    * @param options - (unused)
    * @returns A promise resolving to the constructed jQuery object
    */
-  protected _renderInner(data: object, options?: Application.RenderOptions): Promise<JQuery>;
+  protected _renderInner(data: object, options?: Application.RenderOptions): JQuery | Promise<JQuery>;
 
   /**
    * Customize how inner HTML is replaced when the application is refreshed
@@ -369,96 +369,96 @@ declare namespace Application {
      * A named "base application" which generates an additional hook
      * @defaultValue `null`
      */
-    baseApplication?: string | null;
+    baseApplication: string | null;
 
     /**
      * The default pixel width for the rendered HTML
      * @defaultValue `null`
      */
-    width?: number | null;
+    width: number | null;
 
     /**
      * The default pixel height for the rendered HTML
      * @defaultValue `null`
      */
-    height?: number | 'auto' | null;
+    height: number | 'auto' | null;
 
     /**
      * The default offset-top position for the rendered HTML
      * @defaultValue `null`
      */
-    top?: number | null;
+    top: number | null;
 
     /**
      * The default offset-left position for the rendered HTML
      * @defaultValue `null`
      */
-    left?: number | null;
+    left: number | null;
 
     /**
      * Whether to display the application as a pop-out container
      * @defaultValue `true`
      */
-    popOut?: boolean;
+    popOut: boolean;
 
     /**
      * Whether the rendered application can be minimized (popOut only)
      * @defaultValue `true`
      */
-    minimizable?: boolean;
+    minimizable: boolean;
 
     /**
      * Whether the rendered application can be drag-resized (popOut only)
      * @defaultValue `false`
      */
-    resizable?: boolean;
+    resizable: boolean;
 
     /**
      * The default CSS id to assign to the rendered HTML
      * @defaultValue `''`
      */
-    id?: string;
+    id: string;
 
     /**
      * An array of CSS string classes to apply to the rendered HTML
      * @defaultValue `[]`
      */
-    classes?: string[];
+    classes: string[];
 
     /**
      * @defaultValue `[]`
      */
-    dragDrop?: Omit<DragDrop.Options, 'permissions' | 'callbacks'>[];
+    dragDrop: Omit<DragDrop.Options, 'permissions' | 'callbacks'>[];
 
     /**
      * Track Tab navigation handlers which are active for this Application
      * @defaultValue `[]`
      */
-    tabs?: Omit<Tabs.Options, 'callback'>[];
+    tabs: Omit<Tabs.Options, 'callback'>[];
 
     /**
      * @defaultValue `[]`
      */
-    filters?: Omit<SearchFilter.Options, 'callback'>[];
+    filters: Omit<SearchFilter.Options, 'callback'>[];
 
     /**
      * A default window title string (popOut only)
      * @defaultValue `''`
      */
-    title?: string;
+    title: string;
 
     /**
      * The default HTML template path to render for this Application
      * @defaultValue `null`
      */
-    template?: string | null;
+    template: string | null;
 
     /**
      * A list of unique CSS selectors which target containers that should
      * have their vertical scroll positions preserved during a re-render.
      * @defaultValue `[]`
      */
-    scrollY?: string[];
+    scrollY: string[];
   }
 
   interface Position {

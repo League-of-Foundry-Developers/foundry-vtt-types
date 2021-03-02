@@ -251,31 +251,31 @@ declare namespace FormApplication {
     /**
      * @defaultValue `['form']`
      */
-    classes?: string[];
+    classes: string[];
 
     /**
      * Whether to automatically close the application when it's contained
      * form is submitted. Default is true.
      */
-    closeOnSubmit?: boolean;
+    closeOnSubmit: boolean;
 
     /**
      * Whether to automatically submit the contained HTML form when an input
      * or select element is changed. Default is false.
      */
-    submitOnChange?: boolean;
+    submitOnChange: boolean;
 
     /**
      * Whether to automatically submit the contained HTML form when the
      * application window is manually closed. Default is false.
      */
-    submitOnClose?: boolean;
+    submitOnClose: boolean;
 
     /**
      * Whether the application form is editable - if true, it's fields will
      * be unlocked and the form can be submitted. If false, all form fields
      * will be disabled and the form cannot be submitted. Default is true.
      */
-    editable?: boolean;
+    editable: boolean;
   }
 }

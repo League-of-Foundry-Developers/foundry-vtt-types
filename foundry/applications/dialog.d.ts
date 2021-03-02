@@ -210,7 +210,7 @@ declare class Dialog extends Application {
       rejectClose?: R;
       options?: Partial<Dialog.Options>;
     },
-    old?: Partial<Dialog.Options>
+    old: Partial<Dialog.Options>
   ): Promise<R extends true ? Y | N : Y | N | null>;
 
   /* -------------------------------------------- */
@@ -236,7 +236,7 @@ declare class Dialog extends Application {
     title: string;
     content: string;
     label?: string;
-    callback?: (html: JQuery) => T;
+    callback: (html: JQuery) => T;
     render?: (html: JQuery) => void;
     options?: Partial<Dialog.Options> & { jQuery: true };
   }): Promise<T>;
@@ -251,7 +251,7 @@ declare class Dialog extends Application {
     title: string;
     content: string;
     label?: string;
-    callback?: (html: HTMLElement) => T;
+    callback: (html: HTMLElement) => T;
     render?: (html: HTMLElement) => void;
     options?: Partial<Dialog.Options> & { jQuery?: false };
   }): Promise<T>;
@@ -266,7 +266,7 @@ declare class Dialog extends Application {
     title: string;
     content: string;
     label?: string;
-    callback?: (html: JQuery | HTMLElement) => T;
+    callback: (html: JQuery | HTMLElement) => T;
     render?: (html: JQuery | HTMLElement) => void;
     options?: Partial<Dialog.Options>;
   }): Promise<T>;
