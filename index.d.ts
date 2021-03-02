@@ -164,6 +164,7 @@ import './foundry/pixi/containers/baseGrids/hexagonalGrid';
 import './foundry/pixi/containers/baseGrids/squareGrid';
 
 import './foundry/pixi/containers/canvasLayers/controlsLayer';
+import './foundry/pixi/containers/canvasLayers/effectsLayer';
 import './foundry/pixi/containers/canvasLayers/gridLayer';
 import './foundry/pixi/containers/canvasLayers/placeablesLayer';
 import './foundry/pixi/containers/canvasLayers/sightLayer';
