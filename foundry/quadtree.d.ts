@@ -13,27 +13,6 @@ declare interface QuadTreeObject<T> {
   n: Set<Quadtree<T>>;
 }
 
-declare namespace Quadtree {
-  /**
-   * Additional options which configure the Quadtree
-   */
-  interface Options {
-    /**
-     * The maximum number of objects per node
-     */
-    maxObjects?: number;
-    /**
-     * The maximum number of levels within the root Quadtree
-     */
-    maxDepth?: number;
-    /**
-     * The depth level of the sub-tree. For internal use only
-     * @internal
-     */
-    _depth?: number;
-  }
-}
-
 /**
  * A Quadtree implementation that supports collision detection for rectangles.
  */
@@ -149,4 +128,25 @@ declare class Quadtree<T> {
     bl: 2;
     br: 3;
   };
+}
+
+declare namespace Quadtree {
+  /**
+   * Additional options which configure the Quadtree
+   */
+  interface Options {
+    /**
+     * The maximum number of objects per node
+     */
+    maxObjects?: number;
+    /**
+     * The maximum number of levels within the root Quadtree
+     */
+    maxDepth?: number;
+    /**
+     * The depth level of the sub-tree. For internal use only
+     * @internal
+     */
+    _depth?: number;
+  }
 }

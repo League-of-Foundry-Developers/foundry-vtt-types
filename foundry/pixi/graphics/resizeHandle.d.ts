@@ -2,9 +2,9 @@
  * A handle to resize a placeable object
  */
 declare class ResizeHandle extends PIXI.Graphics {
-  constructor(offset: [number, number], ...args: ConstructorParameters<typeof PIXI.Graphics>);
+  constructor(offset: ResizeHandle['offset'], ...args: ConstructorParameters<typeof PIXI.Graphics>);
 
-  offset: [number, number];
+  offset: [widthOffset: number, heightOffset: number];
 
   /**
    * Refresh the position of this handle based on the given bounds

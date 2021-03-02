@@ -70,7 +70,7 @@ declare class Ray {
    * @param B - The destination point [x,y]
    * @returns The constructed Ray instance
    */
-  static fromArrays(A: [number, number], B: [number, number]): Ray;
+  static fromArrays(A: [x: number, y: number], B: [x: number, y: number]): Ray;
 
   /**
    * Project the Array by some proportion of it's initial distance.
@@ -98,7 +98,7 @@ declare class Ray {
    *    The point of collision [x,y] the position of that collision point along the Ray (t0) an the tested
    *    segment (t1). Returns false if no collision occurs.
    */
-  intersectSegment(coords: [number, number, number, number]): Ray.CollisionPoint | false;
+  intersectSegment(coords: [x0: number, y0: number, x1: number, y1: number]): Ray.CollisionPoint | false;
 
   /**
    * An internal helper method for computing the intersection between two lines.
