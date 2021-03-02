@@ -1,7 +1,25 @@
-declare interface Vector2 {
+/**
+ * A representation of a the computed collision between a Ray and a segment
+ */
+declare interface CollisionPoint {
+  /**
+   * Distance of collision along the Ray
+   */
   t0: number;
+
+  /**
+   * Distance of collision along the Segment
+   */
   t1: number;
+
+  /**
+   * Point of collision x
+   */
   x: number;
+
+  /**
+   * Point of collision y
+   */
   y: number;
 }
 
@@ -17,8 +35,14 @@ declare interface Vector2 {
  * R(t) = (1-t)A + tB
  */
 declare class Ray {
-  // Store points
+  /**
+   * Point A
+   */
   public A: Point;
+
+  /**
+   * Point B
+   */
   public B: Point;
 
   /**
@@ -31,8 +55,14 @@ declare class Ray {
    */
   public distance: number;
 
-  // Slopes
+  /**
+   * Slope x
+   */
   public dx: number;
+
+  /**
+   * Slope y
+   */
   public dy: number;
 
   /**
@@ -42,16 +72,31 @@ declare class Ray {
   public readonly normAngle: number;
 
   /**
+   * A bounding rectangle that encompasses the Ray
+   */
+  public readonly bounds: NormalizedRectangle;
+
+  /**
    * The slope of the ray, dy over dx
    */
   public slope: number;
 
-  // Origins
+  /**
+   * Origin x
+   */
   public x0: number;
+
+  /**
+   * Origin y
+   */
   public y0: number;
 
   constructor(A: Point, B: Point);
 
+  /**
+   * An internal helper method for computing the intersection between two lines.
+   * @internal
+   */
   public static _getIntersection(
     x1: number,
     y1: number,
@@ -61,17 +106,37 @@ declare class Ray {
     y3: number,
     x4: number,
     y4: number
-  ): Vector2;
+  ): CollisionPoint | false;
 
+  /**
+   * A factory method to construct a Ray from an origin point, an angle, and a distance
+   * @param x - The origin x-coordinate
+   * @param y - The origin y-coordinate
+   * @param radians - The ray angle in radians
+   * @param distance - The distance of the ray in pixels
+   * @returns The constructed Ray instance
+   */
   public static fromAngle(x: number, y: number, radians: number, distance: number): Ray;
 
+  /**
+   * A factory method to construct a Ray from points in array format.
+   * @param A - The origin point [x,y]
+   * @param B - The destination point [x,y]
+   * @returns The constructed Ray instance
+   */
   public static fromArrays(A: [], B: []): Ray;
 
   /**
    * Find the point I[x,y] and distance t* on ray R(t) which intersects another ray
    * http://paulbourke.net/geometry/pointlineplane/
+   *
+   * @param coords - An array of coordinates [x0, y0, x1, y1] which defines a line segment to test
+   *
+   * @returns
+   *    The point of collision [x,y] the position of that collision point along the Ray (t0) an the tested
+   *    segment (t1). Returns false if no collision occurs.
    */
-  public intersectSegment(coords: [number]): Vector2;
+  public intersectSegment(coords: [number, number, number, number]): CollisionPoint | false;
 
   /**
    * Project the Array by some proportion of it's initial distance.
@@ -81,5 +146,11 @@ declare class Ray {
    */
   public project(t: number): Point;
 
-  public shiftAngle(angleOffset: number, distance: number): Ray;
+  /**
+   * Create a new ray which uses the same origin point, but a slightly offset angle and distance
+   * @param offset - An offset in radians which modifies the angle of the original Ray
+   * @param distance - A distance the new ray should project, otherwise uses the same distance.
+   * @returns A new Ray with an offset angle
+   */
+  public shiftAngle(angleOffset: number, distance?: number): Ray;
 }
