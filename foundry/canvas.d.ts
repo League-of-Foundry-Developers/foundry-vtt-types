@@ -120,20 +120,20 @@ declare class Canvas {
    * This mapping is defined in the order that layers must be drawn.
    */
   static get layers(): {
-    background: any; // TODO: BackgroundLayer
-    tiles: any; // TODO: TilesLayer
-    drawings: any; // TODO: DrawingsLayer
-    grid: GridLayer;
-    walls: any; // TODO: WallsLayer
-    templates: any; // TODO: TemplateLayer
-    notes: any; // TODO: NotesLayer
-    tokens: TokenLayer;
-    lighting: LightingLayer;
-    sounds: any; // TODO: SoundsLayer
-    sight: SightLayer;
-    effects: any; // TODO: EffectsLayer
-    controls: any; // TODO: ControlsLayer
-  } & Partial<Record<string, CanvasLayer>>;
+    background: any; // TODO: ConstructorOf<BackgroundLayer>
+    tiles: any; // TODO: ConstructorOf<TilesLayer>
+    drawings: any; // TODO: ConstructorOf<DrawingsLayer>
+    grid: ConstructorOf<GridLayer>;
+    walls: any; // TODO: ConstructorOf<WallsLayer>
+    templates: any; // TODO: ConstructorOf<TemplateLayer>
+    notes: any; // TODO: ConstructorOf<NotesLayer>
+    tokens: ConstructorOf<TokenLayer>;
+    lighting: ConstructorOf<LightingLayer>;
+    sounds: any; // TODO: ConstructorOf<SoundsLayer>
+    sight: ConstructorOf<SightLayer>;
+    effects: any; // TODO: ConstructorOf<EffectsLayer>
+    controls: any; // TODO: ConstructorOf<ControlsLayer>
+  } & Partial<Record<string, ConstructorOf<CanvasLayer>>>;
 
   /**
    * An Array of all CanvasLayer instances which are active on the Canvas board
