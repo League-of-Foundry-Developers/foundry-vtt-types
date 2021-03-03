@@ -43,7 +43,7 @@ Add foundry-vtt-types to your types section in your `tsconfig.json`:
 ```json
 {
   "compilerOptions": {
-    "types": ["foundry-vtt-types"],
+    "types": ["@league-of-foundry-developers/foundry-vtt-types"],
     "moduleResolution": "node"
   }
 }
