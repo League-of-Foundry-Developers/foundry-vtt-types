@@ -32,25 +32,7 @@ jobs:
       - name: npm install
         run: npm install
       - name: run eslint
-        if: github.event.pull_request.head.repo.fork == true
-        run: npm run lint
-        continue-on-error: false
-      - name: run eslint
-        if: github.event.pull_request.head.repo.fork == false
-        run: npm run eslint:report
-        continue-on-error: true
-      - name: annotate code linting results
-        if: github.event.pull_request.head.repo.fork == false
-        uses: ataylorme/eslint-annotate-action@1.1.2
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          report-json: eslint_report.json
-      - name: upload eslint report
-        if: github.event.pull_request.head.repo.fork == false
-        uses: actions/upload-artifact@v1
-        with:
-          name: eslint_report.json
-          path: eslint_report.json
+        run: npm run lint:ci
   test:
     name: test code base
     runs-on: ubuntu-latest
