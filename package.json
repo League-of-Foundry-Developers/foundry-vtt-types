@@ -5,6 +5,7 @@
   "scripts": {
     "lint": "tsc && eslint --ext .d.ts,.test-d.ts .",
     "lint:fix": "eslint --fix --ext .d.ts,.test-d.ts .",
+    "lint:ci": "eslint --ext .d.ts,.test-d.ts .",
     "eslint:report": "eslint --output-file eslint_report.json --format json --ext .d.ts,.test-d.ts .",
     "test": "tsd",
     "postinstall": "husky install",
