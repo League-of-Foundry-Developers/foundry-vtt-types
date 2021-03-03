@@ -21,7 +21,7 @@ This section guides you through submitting a bug report for foundry-vtt-types. F
 
 #### Before submitting a bug report
 
-- Make sure you are using the latest version of foundry-vtt-types for the corresponding FOundry VTT Version.
+- Make sure you are using the latest version of foundry-vtt-types for the corresponding Foundry VTT Version.
 - Check if the problem has already been reported in our [issue tracker](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues)
 
 #### How to submit a (good) bug report
@@ -73,7 +73,7 @@ In very rare occasions, it is acceptable to disable prettier for a specific part
 1. Try to match the source code of `foundry.js` (and other modules from 0.8.0 onwards) as closely as possible in your type definitions. In particular, the order of declaration should be exactly the same. This allows for easy side by side viewing of `foundry.js` and the type definitions, making the life of code reviewers much easier :)
 2. Try not to pollute the global namespace with custom types that are not declared by foundry itself (typedefs are ok and should be declared). Instead use a namespace named like the related class and put your custom type in there.
 3. Every class has its own file. The files are structured by class hierarchy. Declarations for code that is not a class belongs directly in `foundry` folder. For 0.8.0 we are still figuring out how to structure things with respect to the namespaces / modules that are introduced.
-4. Utility types belong in `types/utils.d.ts`
+4. Utility types not defined in foundry belong in `types/utils.d.ts`
 5. Augments for libraries bundled with Foundry VTT belong in their corresponding file in `types/augments`.
 6. Write tests were applicable. Not everything needs to be tested, these are just type definitions after all. But in particular for complicated type definitions it makes a lot of sense to add tests. That way you can also verify for yourself that your type definitions are actually working as intended.
 
@@ -89,7 +89,7 @@ In both cases, provide the default value for `getDefaultOptions` in TSDoc.
 
 Example:
 
-````ts
+```typescript
 declare class ActorSheet<
   D extends object = ActorSheet.Data<Actor>,
   O extends Actor = D extends ActorSheet.Data<infer T> ? T : Actor
@@ -99,7 +99,7 @@ declare class ActorSheet<
   /**
    * @override
    * @defaultValue
-   * ```ts
+   * ```typescript
    * mergeObject(super.defaultOptions, {
    *   height: 720,
    *   width: 800,
@@ -117,14 +117,14 @@ declare class ActorSheet<
 
   /* ... */
 }
-````
+```
 
 #### Type for a class being used as a value (e.g. assigned to a variable)
 
 The type should most likely be `ConstructorOf<NameOfTheClass>`. This will also allow deriving classes to be used as value. In rare occasions (i.e. when really only instances of this specific class may be assigned, no deriving classes), `typeof NameOfTheClass` can be used.
 
 Example:
-```ts
+```typescript
   /**
    * Configuration for the ActiveEffect embedded Entity
    */
@@ -148,7 +148,7 @@ This is just a static property of the class. Add it to the class at the very bot
 Example:
 
 In `foundry.js`
-```js
+```javascript
 class AVSettings {
   /* ... */
 }
@@ -162,7 +162,7 @@ AVSettings.AV_MODES = {
 ```
 
 Type definition
-```ts
+```typescript
 class AVSettings {
   /* ... */
 
