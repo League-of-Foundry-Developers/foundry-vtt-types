@@ -120,8 +120,13 @@ declare class TokenLayer extends PlaceablesLayer<Token> {
    * @param  token  - A specific Token which is the origin of the group toggle request
    *                  (default: `null`)
    * @returns The updated Combat encounter
+   * @remarks Returns the created Combatants or undefiend if there is no combat and one can't be created.
    */
-  toggleCombat(state?: boolean, combat?: Combat | null, { token }?: { token: Token | null }): Promise<Combat>;
+  toggleCombat(
+    state?: boolean,
+    combat?: Combat | null,
+    { token }?: { token: Token | null }
+  ): Promise<Combat.Combatant | Combat.Combatant[] | undefined>;
 
   /**
    * Get the tab cycle order for tokens by sorting observable tokens based on their distance from top-left.
