@@ -19,6 +19,14 @@ declare interface Vector2 {
 declare class Ray {
   // Store points
   public A: Point;
+
+
+
+
+
+
+
+     
   public B: Point;
 
   /**
