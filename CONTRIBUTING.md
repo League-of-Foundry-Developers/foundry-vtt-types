@@ -174,3 +174,7 @@ class AVSettings {
   };
 }
 ```
+
+## Final Words
+
+If you've made it this far: Thanks for reading and for trying contribute. It is much appreciated. We're hoping to see you soon on the League Discord!

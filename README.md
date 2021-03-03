@@ -86,7 +86,6 @@ You can run the tests with
 npm run test
 ```
 
-
 ## License
 
 This project is licensed under the MIT license. You can find a copy at [LICENSE](LICENSE).
