@@ -169,6 +169,7 @@ import './foundry/pixi/containers/canvasLayers/gridLayer';
 import './foundry/pixi/containers/canvasLayers/placeablesLayer';
 import './foundry/pixi/containers/canvasLayers/sightLayer';
 
+import './foundry/pixi/containers/canvasLayers/placeablesLayers/drawingsLayer';
 import './foundry/pixi/containers/canvasLayers/placeablesLayers/lightingLayer';
 import './foundry/pixi/containers/canvasLayers/placeablesLayers/notesLayer';
 import './foundry/pixi/containers/canvasLayers/placeablesLayers/soundsLayer';

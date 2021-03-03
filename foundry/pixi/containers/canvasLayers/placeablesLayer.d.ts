@@ -434,7 +434,7 @@ declare abstract class PlaceablesLayer<P extends PlaceableObject = PlaceableObje
    * @param event - (unused)
    * @see {@link Canvas#_onDragLeftDrop}
    */
-  protected _onDragLeftCancel(event?: any): void;
+  protected _onDragLeftCancel(event?: PointerEvent): void;
 
   /* -------------------------------------------- */
 
@@ -443,7 +443,7 @@ declare abstract class PlaceablesLayer<P extends PlaceableObject = PlaceableObje
    * @param event - (unused)
    * @see {@link Canvas#_onClickRight}
    */
-  protected _onClickRight(event?: any): void;
+  protected _onClickRight(event?: PIXI.InteractionEvent): void;
 
   /* -------------------------------------------- */
 
