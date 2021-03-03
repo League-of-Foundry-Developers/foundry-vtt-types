@@ -32,18 +32,7 @@ jobs:
       - name: npm install
         run: npm install
       - name: run eslint
-        run: npm run eslint:report
-        continue-on-error: true
-      - name: annotate code linting results
-        uses: ataylorme/eslint-annotate-action@1.1.2
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          report-json: eslint_report.json
-      - name: upload eslint report
-        uses: actions/upload-artifact@v1
-        with:
-          name: eslint_report.json
-          path: eslint_report.json
+        run: npm run lint:ci
   test:
     name: test code base
     runs-on: ubuntu-latest
