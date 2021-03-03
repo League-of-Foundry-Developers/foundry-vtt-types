@@ -13,6 +13,14 @@ declare class SightLayer extends CanvasLayer {
 
   /**
    * Fog of War data object
+   * @defaultValue
+   * ```
+   * {
+   *   _id: null,
+   *   explored: null,
+   *   positions: {}
+   * }
+   * ```
    */
   fogData: {
     _id: string | null;

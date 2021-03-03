@@ -136,5 +136,8 @@ declare class TokenLayer extends PlaceablesLayer<Token> {
   /**
    * Handle dropping of Actor data onto the Scene canvas
    */
-  protected _onDropActorData(event: PIXI.InteractionEvent, data: Actor['data']): Promise<void | false | Token>;
+  protected _onDropActorData(
+    event: DragEvent,
+    data: { id: string; type: 'Actor'; x: number; y: number; pack?: string }
+  ): Promise<void | false | Token>;
 }

@@ -34,7 +34,10 @@ declare class NotesLayer extends PlaceablesLayer<Note> {
   /**
    * Handle JournalEntry entity drop data
    */
-  protected _onDropData(event: PIXI.InteractionEvent, data: JournalEntry): Promise<false | undefined>;
+  protected _onDropData(
+    event: DragEvent,
+    data: { id: string; type: 'JournalEntry'; x: number; y: number; pack?: string }
+  ): Promise<false | undefined>;
 
   /**
    * @defaultValue `"notesDisplayToggle"`
