@@ -48,7 +48,37 @@ declare class DrawingsLayer extends PlaceablesLayer<Drawing> {
    * @param origin - The initial coordinate
    * @returns The new drawing data
    */
-  protected _getNewDrawingData(origin: Point): typeof CONST['DRAWING_DEFAULT_VALUES'];
+  protected _getNewDrawingData(
+    origin: Point
+  ): typeof CONST['DRAWING_DEFAULT_VALUES'] &
+    (
+      | {
+          type: typeof CONST['DRAWING_TYPES']['RECTANGLE'] | typeof CONST['DRAWING_TYPES']['ELLIPSE'];
+        }
+      | {
+          type: typeof CONST['DRAWING_TYPES']['POLYGON'];
+          points: PointArray[];
+        }
+      | {
+          type: typeof CONST['DRAWING_TYPES']['FREEHAND'];
+          points: PointArray[];
+          bezierFactor: number;
+        }
+      | {
+          type: typeof CONST['DRAWING_TYPES']['TEXT'];
+          fillColor: string;
+          fillAlpha: number;
+          strokeColor: string;
+          text: string;
+        }
+    ) & {
+      author: string;
+      fillColor: string;
+      fillAlpha: number;
+      fontFamily: typeof CONFIG['defaultFontFamily'];
+      x: number;
+      y: number;
+    };
 
   /** @override */
   protected _onClickLeft(event: PIXI.InteractionEvent): void;
