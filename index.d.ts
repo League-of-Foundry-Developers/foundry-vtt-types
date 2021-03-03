@@ -163,6 +163,7 @@ import './foundry/pixi/containers/ruler';
 import './foundry/pixi/containers/baseGrids/hexagonalGrid';
 import './foundry/pixi/containers/baseGrids/squareGrid';
 
+import './foundry/pixi/containers/canvasLayers/backgroundLayer';
 import './foundry/pixi/containers/canvasLayers/controlsLayer';
 import './foundry/pixi/containers/canvasLayers/effectsLayer';
 import './foundry/pixi/containers/canvasLayers/gridLayer';
