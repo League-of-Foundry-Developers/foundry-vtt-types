@@ -23,9 +23,8 @@ declare class BackgroundLayer extends CanvasLayer {
 
   /**
    * @override
-   * @remarks Returns `false`
    */
-  activate(): any;
+  activate(): false;
 
   /** @override */
   tearDown(): Promise<void>;
@@ -36,7 +35,7 @@ declare class BackgroundLayer extends CanvasLayer {
    * Once the requested image has been fully loaded we draw it as a PIXI.Sprite
    * @returns Returns the instance of the Background Layer for convenient chaining
    */
-  draw(): Promise<this>;
+  draw(): Promise<this | undefined>;
 
   /**
    * @deprecated since 0.7.2

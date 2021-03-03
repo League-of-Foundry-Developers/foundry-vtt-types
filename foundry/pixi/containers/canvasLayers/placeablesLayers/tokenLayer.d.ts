@@ -46,15 +46,13 @@ declare class TokenLayer extends PlaceablesLayer<Token> {
 
   /**
    * @override
-   * @remarks Returns void
    */
-  activate(): any;
+  activate(): void;
 
   /**
    * @override
-   * @remarks Returns void
    */
-  deactivate(): any;
+  deactivate(): void;
 
   /**
    * Initialize the TokenLayer by preparing all Token sources which appear in the Scene.
@@ -64,7 +62,7 @@ declare class TokenLayer extends PlaceablesLayer<Token> {
   /**
    * @override
    * @remarks Returns void
-   * */
+   */
   controlAll(options?: PlaceableObject.ControlOptions): any;
 
   /** @override */

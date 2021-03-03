@@ -30,8 +30,9 @@ declare class DrawingsLayer extends PlaceablesLayer<Drawing> {
 
   /**
    * Use an adaptive precision depending on the size of the grid
+   * @remarks Returns `2 | 4 | 8 | 16`
    */
-  get gridPrecision(): 2 | 4 | 8 | 16;
+  get gridPrecision(): number;
 
   /** @override */
   get hud(): Canvas['hud']['drawing'];
@@ -44,9 +45,8 @@ declare class DrawingsLayer extends PlaceablesLayer<Drawing> {
   /**
    * Override the deactivation behavior of this layer.
    * Placeables on this layer remain visible even when the layer is inactive.
-   * @remarks Returns `void`
    */
-  deactivate(): any;
+  deactivate(): void;
 
   /**
    * Get initial data for a new drawing.

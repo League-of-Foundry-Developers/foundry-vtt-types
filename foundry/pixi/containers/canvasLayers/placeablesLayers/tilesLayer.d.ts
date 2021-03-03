@@ -28,9 +28,8 @@ declare class TilesLayer extends PlaceablesLayer<Tile> {
 
   /**
    * @override
-   * @remarks Returns void
    */
-  deactivate(): any;
+  deactivate(): void;
 
   /** @override */
   protected _onDragLeftStart(event: PIXI.InteractionEvent): void;

@@ -86,14 +86,14 @@ declare class WallsLayer extends PlaceablesLayer<Wall> {
 
   /**
    * Gate the precision of wall snapping to become less precise for small scale maps.
+   * @remarks Returns `1 | 4 | 8 | 16`
    */
-  get gridPrecision(): 1 | 4 | 8 | 16;
+  get gridPrecision(): number;
 
   /**
    * @override
-   * @remarks Returns `Promise<this>`
    */
-  draw(): Promise<any>;
+  draw(): Promise<this>;
 
   /** @override */
   deactivate(): this;

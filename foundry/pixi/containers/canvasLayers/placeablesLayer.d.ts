@@ -108,8 +108,9 @@ declare abstract class PlaceablesLayer<P extends PlaceableObject = PlaceableObje
 
   /**
    * @override
+   * @remarks Returns `Promise<P[]>`
    */
-  draw(): Promise<P[]>;
+  draw(): unknown;
 
   /* -------------------------------------------- */
 
@@ -131,15 +132,17 @@ declare abstract class PlaceablesLayer<P extends PlaceableObject = PlaceableObje
 
   /**
    * @override
+   * @remarks Returns `this`
    */
-  activate(): this;
+  activate(): unknown;
 
   /* -------------------------------------------- */
 
   /**
    * @override
+   * @remarks Returns `this`
    */
-  deactivate(): this;
+  deactivate(): unknown;
 
   /* -------------------------------------------- */
 
@@ -452,7 +455,7 @@ declare abstract class PlaceablesLayer<P extends PlaceableObject = PlaceableObje
    * This handler will rotate all controlled objects by some incremental angle.
    * @param event - The mousewheel event which originated the request
    */
-  protected _onMouseWheel(event: MouseWheelEvent): Promise<Array<Partial<P>> | Partial<P>> | null;
+  protected _onMouseWheel(event: WheelEvent): Promise<Array<Partial<P>> | Partial<P>> | null;
 
   /* -------------------------------------------- */
 

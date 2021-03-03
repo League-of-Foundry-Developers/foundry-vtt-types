@@ -58,8 +58,9 @@ declare abstract class CanvasLayer extends PIXI.Container {
   /**
    * Draw the canvas layer, rendering its internal components and returning a Promise
    * The Promise resolves to the drawn layer once its contents are successfully rendered.
+   * @remarks Base implementation returns `Promise<this>`
    */
-  draw(): Promise<this | PlaceableObject[]> | this;
+  draw(): unknown;
 
   /* -------------------------------------------- */
   /*  Methods
@@ -68,8 +69,9 @@ declare abstract class CanvasLayer extends PIXI.Container {
   /**
    * Activate the CanvasLayer, deactivating other layers and marking this layer's children as interactive.
    * @returns The layer instance, now activated
+   * @remarks The base implementation returns `this`
    */
-  activate(): this;
+  activate(): unknown;
 
   /* -------------------------------------------- */
 

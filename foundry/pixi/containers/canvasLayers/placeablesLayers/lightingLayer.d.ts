@@ -87,9 +87,8 @@ declare class LightingLayer extends PlaceablesLayer<AmbientLight> {
 
   /**
    * @override
-   * @remarks Returns `Promise<this>`
    */
-  draw(): any;
+  draw(): Promise<this>;
 
   /**
    * Draw the coloration container which is responsible for rendering the visible hue of a light source.
@@ -156,7 +155,7 @@ declare class LightingLayer extends PlaceablesLayer<AmbientLight> {
    * @override
    * @remarks Returns `Promise<AmbientLight> | undefined`
    */
-  protected _onMouseWheel(event: MouseWheelEvent): any;
+  protected _onMouseWheel(event: WheelEvent): any;
 
   /**
    * @deprecated since 0.7.3

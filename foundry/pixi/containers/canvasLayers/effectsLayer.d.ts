@@ -32,9 +32,8 @@ declare class EffectsLayer extends CanvasLayer {
 
   /**
    * @override
-   * @remarks Returns `Promise<void>`
    */
-  draw(): Promise<any>;
+  draw(): Promise<void>;
 
   drawWeather(): void;
 }
