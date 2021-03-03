@@ -32,6 +32,11 @@ jobs:
       - name: npm install
         run: npm install
       - name: run eslint
+        if: github.event.pull_request.head.repo.fork == true
+        run: npm run eslint
+        continue-on-error: false
+      - name: run eslint
+        if: github.event.pull_request.head.repo.fork == false
         run: npm run eslint:report
         continue-on-error: true
       - name: annotate code linting results
@@ -41,6 +46,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           report-json: eslint_report.json
       - name: upload eslint report
+        if: github.event.pull_request.head.repo.fork == false
         uses: actions/upload-artifact@v1
         with:
           name: eslint_report.json
