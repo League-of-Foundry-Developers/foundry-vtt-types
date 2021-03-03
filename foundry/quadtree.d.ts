@@ -30,31 +30,31 @@ declare class Quadtree<T> {
 
   /**
    * The maximum number of objects allowed within this node before it must split
-   * @defaultValue 20
+   * @defaultValue `20`
    */
   maxObjects: number;
 
   /**
    * The maximum number of levels that the base quadtree is allowed
-   * @defaultValue 4
+   * @defaultValue `4`
    */
   maxDepth: number;
 
   /**
    * The depth of this node within the root Quadtree
-   * @defaultValue 0
+   * @defaultValue `0`
    */
   depth: number;
 
   /**
    * The objects contained at this level of the tree
-   * @defaultValue []
+   * @defaultValue `[]`
    */
   objects: QuadTreeObject<T>[];
 
   /**
    * Children of this node
-   * @defaultValue []
+   * @defaultValue `[]`
    */
   nodes: Quadtree<T>[];
 
