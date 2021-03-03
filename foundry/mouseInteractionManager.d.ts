@@ -1,129 +1,141 @@
 /**
  * Handle mouse interaction events for a Canvas object.
- *
  * There are three phases of events: hover, click, and drag
  *
  * Hover Events:
- *
- *      _handleMouseOver
- *              action: hoverIn
- *      _handleMouseOut
- *              action: hoverOut
+ * _handleMouseOver
+ *  action: hoverIn
+ * _handleMouseOut
+ *  action: hoverOut
  *
  * Left Click and Double-Click
- *
- *      _handleMouseDown
- *              action: clickLeft
- *              action: clickLeft2
+ * _handleMouseDown
+ *  action: clickLeft
+ *  action: clickLeft2
  *
  * Right Click and Double-Click
- *
- *      _handleRightDown
- *              action: clickRight
- *              action: clickRight2
+ * _handleRightDown
+ *  action: clickRight
+ *  action: clickRight2
  *
  * Drag and Drop
- *
- *      _handleMouseMove
- *              action: dragLeftStart
- *              action: dragLeftMove
- *              action: dragRightStart
- *              action: dragLeftMove
- *      _handleMouseUp
- *              action: dragLeftDrop
- *              action: dragRightDrop
- *      _handleDragCancel
- *              action: dragLeftCancel
- *              action: dragRightCancel
+ * _handleMouseMove
+ *  action: dragLeftStart
+ *  action: dragLeftMove
+ *  action: dragRightStart
+ *  action: dragLeftMove
+ * _handleMouseUp
+ *  action: dragLeftDrop
+ *  action: dragRightDrop
+ * _handleDragCancel
+ *  action: dragLeftCancel
+ *  action: dragRightCancel
  */
 declare class MouseInteractionManager {
-  callbacks: object;
+  constructor(
+    object: MouseInteractionManager['object'],
+    layer: MouseInteractionManager['layer'],
+    permissions?: MouseInteractionManager['permissions'],
+    callbacks?: MouseInteractionManager['callbacks'],
+    options?: MouseInteractionManager['options']
+  );
+  object: unknown;
+  layer: PIXI.Container;
+  permissions: Record<
+    | 'clickLeft'
+    | 'clickLeft2'
+    | 'clickRight'
+    | 'clickRight2'
+    | 'dragLeftCancel'
+    | 'dragLeftDrop'
+    | 'dragLeftMove'
+    | 'dragLeftStart'
+    | 'dragRightCancel'
+    | 'dragRightDrop'
+    | 'dragRightMove'
+    | 'dragRightStart'
+    | 'hoverIn'
+    | 'hoverOut',
+    ((user: User, event: PIXI.InteractionEvent) => boolean) | boolean
+  >;
+  callbacks: Record<keyof this['permissions'], ((event: Event | PIXI.InteractionEvent) => any) | null>;
+  options: unknown;
+
+  /**
+   * The current interaction state
+   * @defaultValue `0`
+   */
+  state: ValueOf<typeof MouseInteractionManager['INTERACTION_STATES']>;
+
+  /**
+   * Bound handlers which can be added and removed
+   * @defaultValue `{}`
+   */
+  handlers: Record<
+    'contextmenu' | 'mousedown' | 'mousemove' | 'mouseout' | 'mouseover' | 'mouseup' | 'rightdown',
+    Function
+  >;
 
   /**
    * The drag handling time
+   * @defaultValue `0`
    */
   dragTime: number;
 
   /**
-   * Bound handlers which can be added and removed
+   * The throttling time below which a mouse move event will not be handled
+   * @defaultValue `Math.ceil(1000 / canvas.app.ticker.maxFPS)`
    */
-  handlers: { [x: string]: Function };
-
-  layer: PlaceablesLayer;
+  protected _dragThrottleMS: number;
 
   /**
    * The time of the last left-click event
+   * @defaultValue `0`
    */
   lcTime: number;
 
-  object: PlaceableObject;
-
-  options: object;
-
-  permissions: object;
-
   /**
    * The time of the last right-click event
+   * @defaultValue `0`
    */
   rcTime: number;
 
   /**
-   * The current interaction state
-   */
-  state: number;
-
-  /**
    * A flag for whether we are right-click dragging
+   * @defaultValue `false`
    */
   protected _dragRight: boolean;
 
-  constructor(
-    object: PlaceableObject,
-    layer: PlaceablesLayer,
-    permissions?: object,
-    callbacks?: object,
-    options?: object
-  );
-
-  /**
-   * A reference to the possible interaction states which can be observed
-   */
-  get states(): { [x: string]: number };
-
   /**
    * Get the target
+   * @returns `this.object` or `this.object[this.options.target]`
    */
-  get target(): any;
+  get target(): unknown;
 
   /**
    * Activate interactivity for the handled object
    */
-  activate(): MouseInteractionManager;
-
-  /**
-   * Execute a callback function associated with a certain action in the workflow
-   * @param action - The action being attempted
-   * @param event - The event being handled
-   */
-  callback(action: string, event: Event): any;
+  activate(): this;
 
   /**
    * Test whether the current user has permission to perform a step of the workflow
    * @param action - The action being attempted
-   * @param event - The event being handled
+   * @param event  - The event being handled
    * @returns Can the action be performed?
    */
-  can(action: string, event: Event): boolean;
+  can(action: keyof this['permissions'], event: Event | PIXI.InteractionEvent): boolean;
 
   /**
-   * Activate a new set of listeners for click events on the target object
+   * Execute a callback function associated with a certain action in the workflow
+   * @param action - The action being attempted
+   * @param event  - The event being handled
    */
-  protected _activateClickEvents(): void;
+  callback(action: keyof this['callbacks'], event: Event | PIXI.InteractionEvent): unknown;
 
   /**
-   * Activate events required for handling a drag-and-drop workflow
+   * A reference to the possible interaction states which can be observed
    */
-  protected _activateDragEvents(): void;
+  get states(): typeof MouseInteractionManager['INTERACTION_STATES'];
 
   /**
    * Activate a set of listeners which handle hover events on the target object
@@ -131,83 +143,110 @@ declare class MouseInteractionManager {
   protected _activateHoverEvents(): void;
 
   /**
+   * Activate a new set of listeners for click events on the target object
+   */
+  protected _activateClickEvents(): void;
+
+  /**
    * Deactivate event listeners for click events on the target object
    */
   protected _deactivateClickEvents(): void;
 
   /**
+   * Activate events required for handling a drag-and-drop workflow
+   */
+  protected _activateDragEvents(): void;
+
+  /**
    * Deactivate events required for handling drag-and-drop workflow.
    */
   protected _deactivateDragEvents(): void;
-  /**
-   * Handle mouse-down which trigger a single left-click workflow.
-   */
-  protected _handleClickLeft(event: Event): void;
 
   /**
-   * Handle mouse-down which trigger a single left-click workflow.
+   * Handle mouse-over events which activate downstream listeners and do not stop propagation.
    */
-  protected _handleClickLeft2(event: Event): any;
+  protected _handleMouseOver(event: PIXI.InteractionEvent): unknown;
 
   /**
-   * Handle single right-click actions.
+   * Handle mouse-out events which terminate hover workflows and do not stop propagation.
    */
-  protected _handleClickRight(event: Event): void;
-
-  /**
-   * Handle double right-click actions.
-   */
-  protected _handleClickRight2(event: Event): any;
-
-  /**
-   * Handle the cancellation of a drag workflow, resetting back to the original state
-   */
-  protected _handleDragCancel(event: Event): void;
-
-  /**
-   * Handle the conclusion of a drag workflow, placing all dragged objects back on the layer
-   */
-  protected _handleDragDrop(event: Event): void;
-
-  /**
-   * Handle the continuation of a drag workflow, moving all controlled objects on the layer
-   */
-  protected _handleDragMove(event: Event): any;
-
-  /**
-   * Handle the beginning of a new drag start workflow, moving all controlled objects on the layer
-   */
-  protected _handleDragStart(event: Event): any;
+  protected _handleMouseOut(event: PIXI.InteractionEvent): unknown;
 
   /**
    * Handle mouse-down events which activate downstream listeners.
    * Stop further propagation only if the event is allowed by either single or double-click.
    */
-  protected _handleMouseDown(event: Event): any;
+  protected _handleMouseDown(event: PIXI.InteractionEvent): unknown;
 
   /**
-   * Handle mouse movement during a drag workflow
+   * Handle mouse-down which trigger a single left-click workflow.
    */
-  protected _handleMouseMove(event: Event): any;
+  protected _handleClickLeft(event: PIXI.InteractionEvent): unknown;
 
   /**
-   * Handle mouse-out events which terminate hover workflows and do not stop propagation.
+   * Handle mouse-down which trigger a single left-click workflow.
    */
-  protected _handleMouseOut(event: Event): any;
-
-  /**
-   * Handle mouse-over events which activate downstream listeners and do not stop propagation.
-   */
-  protected _handleMouseOver(event: Event): any;
-
-  /**
-   * Handle mouse up events which may optionally conclude a drag workflow
-   */
-  protected _handleMouseUp(event: Event): void;
+  protected _handleClickLeft2(event: PIXI.InteractionEvent): unknown;
 
   /**
    * Handle right-click mouse-down events.
    * Stop further propagation only if the event is allowed by either single or double-click.
    */
-  protected _handleRightDown(event: Event): any;
+  protected _handleRightDown(event: PIXI.InteractionEvent): unknown;
+
+  /**
+   * Handle single right-click actions.
+   */
+  protected _handleClickRight(event: PIXI.InteractionEvent): unknown;
+
+  /**
+   * Handle double right-click actions.
+   */
+  protected _handleClickRight2(event: PIXI.InteractionEvent): unknown;
+
+  /**
+   * Handle mouse movement during a drag workflow
+   */
+  protected _handleMouseMove(event: PIXI.InteractionEvent): unknown;
+
+  /**
+   * Handle the beginning of a new drag start workflow, moving all controlled objects on the layer
+   */
+  protected _handleDragStart(event: PIXI.InteractionEvent): unknown;
+
+  /**
+   * Handle the continuation of a drag workflow, moving all controlled objects on the layer
+   */
+  protected _handleDragMove(event: PIXI.InteractionEvent): unknown;
+
+  /**
+   * Handle mouse up events which may optionally conclude a drag workflow
+   */
+  protected _handleMouseUp(event: PIXI.InteractionEvent): unknown;
+
+  /**
+   * Handle the conclusion of a drag workflow, placing all dragged objects back on the layer
+   */
+  protected _handleDragDrop(event: PIXI.InteractionEvent): unknown;
+
+  /**
+   * Handle the cancellation of a drag workflow, resetting back to the original state
+   */
+  protected _handleDragCancel(event: PointerEvent): unknown;
+
+  /**
+   * Enumerate the states of a mouse interaction workflow.
+   * 0: NONE - the object is inactive
+   * 1: HOVER - the mouse is hovered over the object
+   * 2: CLICKED - the object is clicked
+   * 3: DRAG - the object is being dragged
+   * 4: DROP - the object is being dropped
+   */
+  static INTERACTION_STATES: {
+    NONE: 0;
+    HOVER: 1;
+    CLICKED: 2;
+    DRAG: 3;
+    DROP: 4;
+  };
 }
