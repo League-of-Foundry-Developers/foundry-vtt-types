@@ -20,7 +20,6 @@ declare type RayIntersection = {
   y: number;
   t0: number;
   t1: number;
-  wall?: Wall;
 } | null;
 
 /**

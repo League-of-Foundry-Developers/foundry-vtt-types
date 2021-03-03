@@ -22,12 +22,6 @@ declare class DrawingsLayer extends PlaceablesLayer<Drawing> {
    */
   static get layerOptions(): PlaceablesLayer.LayerOptions;
 
-  // Configuration Setting
-  /**
-   * @defaultValue `"defaultDrawingConfig"`
-   */
-  static DEFAULT_CONFIG_SETTING: string;
-
   /**
    * Use an adaptive precision depending on the size of the grid
    * @remarks Returns `2 | 4 | 8 | 16`
@@ -78,4 +72,9 @@ declare class DrawingsLayer extends PlaceablesLayer<Drawing> {
 
   /** @override */
   protected _onClickRight(event: PIXI.InteractionEvent): void;
+
+  /**
+   * @defaultValue `"defaultDrawingConfig"`
+   */
+  static DEFAULT_CONFIG_SETTING: string;
 }

@@ -177,7 +177,7 @@ declare class SightLayer extends CanvasLayer {
    * Save Fog of War exploration data to a base64 string to the FogExploration document in the database.
    * Assumes that the fog exploration has already been rendered as fog.rendered.texture.
    */
-  protected saveFog(): Promise<SocketInterface.Responses.ModifyEmbeddedDocument | undefined>;
+  protected saveFog(): Promise<any>; // TODO: Type when SocketInterface is done
 
   /**
    * Update the fog layer when a player token reaches a board position which was not previously explored
@@ -195,9 +195,7 @@ declare class SightLayer extends CanvasLayer {
   /**
    * Trigger a server-side update (or creation) of fog exploration status for a certain Scene
    */
-  protected _createOrUpdateFogExploration(
-    fogData: this['fogData']
-  ): Promise<SocketInterface.Responses.ModifyEmbeddedDocument>;
+  protected _createOrUpdateFogExploration(fogData: this['fogData']): Promise<any>; // TODO: Type when SocketInterface is done
 
   /**
    * If fog of war data is reset from the server, re-draw the canvas

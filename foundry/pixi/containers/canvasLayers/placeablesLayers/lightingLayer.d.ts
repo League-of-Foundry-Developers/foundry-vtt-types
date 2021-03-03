@@ -25,7 +25,7 @@ declare class LightingLayer extends PlaceablesLayer<AmbientLight> {
   /**
    * A mapping of different light level channels
    */
-  channels: Record<'background' | 'black' | 'bright' | 'canvas' | 'dark' | 'dim', LightingLayer.LightChannel>;
+  channels: Record<'background' | 'black' | 'bright' | 'canvas' | 'dark' | 'dim', LightChannel>;
   /**
    * The currently displayed darkness level, which may override the saved Scene value
    */
@@ -83,7 +83,7 @@ declare class LightingLayer extends PlaceablesLayer<AmbientLight> {
    */
   protected _configureChannels(
     darkness?: number | null
-  ): Record<'background' | 'black' | 'bright' | 'canvas' | 'dark' | 'dim', LightingLayer.LightChannel>;
+  ): Record<'background' | 'black' | 'bright' | 'canvas' | 'dark' | 'dim', LightChannel>;
 
   /**
    * @override
@@ -110,7 +110,7 @@ declare class LightingLayer extends PlaceablesLayer<AmbientLight> {
    * Refresh the active display of the LightingLayer.
    * Update the scene background color, light sources, and darkness sources
    */
-  refresh(darkness: number): void;
+  refresh(darkness?: number | null): void;
 
   /** @override */
   tearDown(): Promise<void>;
@@ -161,11 +161,10 @@ declare class LightingLayer extends PlaceablesLayer<AmbientLight> {
    * @deprecated since 0.7.3
    * @see {@link LightingLayer#refresh}
    */
-  update(darkness: number): void;
+  update(...args: Parameters<LightingLayer['refresh']>): void;
 }
-declare namespace LightingLayer {
-  interface LightChannel {
-    hex: number;
-    rgb: [number, number, number];
-  }
+
+declare interface LightChannel {
+  hex: number;
+  rgb: [number, number, number];
 }

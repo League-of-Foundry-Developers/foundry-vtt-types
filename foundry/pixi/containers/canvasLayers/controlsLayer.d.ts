@@ -17,7 +17,7 @@ declare class ControlsLayer extends CanvasLayer {
   /**
    * A mapping of user IDs to Cursor instances for quick access
    */
-  protected _cursors: Record<string, Cursor>;
+  protected _cursors: Partial<Record<string, Cursor>>;
 
   /**
    * Door control icons
@@ -26,8 +26,9 @@ declare class ControlsLayer extends CanvasLayer {
 
   /**
    * Status effect icons
+   * @remarks Always `null`
    */
-  effects: unknown | null;
+  effects: null; // This seems to be unused. - Bolts
 
   /**
    * Ruler tools, one per connected user
@@ -37,7 +38,7 @@ declare class ControlsLayer extends CanvasLayer {
   /**
    * A convenience mapping of user IDs to Ruler instances for quick access
    */
-  protected _rulers: Record<string, Ruler>;
+  protected _rulers: Partial<Record<string, Ruler>>;
 
   /**
    * Canvas selection rectangle

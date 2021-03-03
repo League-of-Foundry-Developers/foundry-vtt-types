@@ -149,7 +149,10 @@ declare class WallsLayer extends PlaceablesLayer<Wall> {
   /** @override */
   releaseAll(): number;
 
-  /** @override */
+  /**
+   * @override
+   * @remarks `options` is unused
+   */
   pasteObjects(position: Point, options?: {}): Promise<Wall[]>;
 
   /**
@@ -181,7 +184,7 @@ declare class WallsLayer extends PlaceablesLayer<Wall> {
     | {
         move: ValueOf<typeof CONST['WALL_MOVEMENT_TYPES']>;
         sense: ValueOf<typeof CONST['WALL_SENSE_TYPES']>;
-        door: ValueOf<typeof CONST['WALL_DOOR_TYPES']>;
+        door?: ValueOf<typeof CONST['WALL_DOOR_TYPES']>;
       }
     | Wall['data'];
 
@@ -209,14 +212,14 @@ declare class WallsLayer extends PlaceablesLayer<Wall> {
    * @param wall - The Wall against which to test
    * @returns An intersection, if one occurred
    */
-  static testWall(ray: Ray, wall: Wall): Vector2 | null;
+  static testWall(ray: Ray, wall: Wall): RayIntersection;
 
   /**
    * Identify the closest collision point from an array of collisions
    * @param collisions - An array of intersection points
    * @returns The closest blocking intersection
    */
-  static getClosestCollision(collisions: RayIntersection[]): RayIntersection | null;
+  static getClosestCollision(collisions: NonNullable<RayIntersection>[]): RayIntersection;
 
   /**
    * Get the set of wall collisions for a given Ray
@@ -234,8 +237,5 @@ declare class WallsLayer extends PlaceablesLayer<Wall> {
       blockSenses,
       mode
     }?: { blockMovement: boolean; blockSenses: boolean; mode: 'all' | 'closest' | 'any'; _performance: unknown }
-  ):
-    | Record<`${string},${string}`, { x: number; y: number; t0: number; t1: number }>[]
-    | Record<`${string},${string}`, { x: number; y: number; t0: number; t1: number }>
-    | boolean;
+  ): Record<`${string},${string}`, RayIntersection>[] | Record<`${string},${string}`, RayIntersection> | boolean;
 }
