@@ -2,7 +2,22 @@
  * The RollTable configuration sheet
  */
 declare class RollTableConfig extends BaseEntitySheet<RollTableConfig.Data, RollTable> {
-  static get defaultOptions(): RollTableConfig.Options;
+  /**
+   * @defaultValue
+   * ```typescript
+   * mergeObject(super.defaultOptions, {
+   *   classes: ["sheet", "roll-table-config"],
+   *   template: "templates/sheets/roll-table-config.html",
+   *   width: 720,
+   *   height: "auto",
+   *   closeOnSubmit: false,
+   *   viewPermission: ENTITY_PERMISSIONS.OBSERVER,
+   *   scrollY: ["ol.table-results"],
+   *   dragDrop: [{dragSelector: null, dropSelector: null}]
+   * })
+   * ```
+   */
+  static get defaultOptions(): BaseEntitySheet.Options;
 
   /**
    * @override
@@ -116,47 +131,5 @@ declare namespace RollTableConfig {
     extends Pick<RollTable.Result, '_id' | 'drawn' | 'img' | 'resultId' | 'text' | 'type' | 'weight'> {
     rangeH: RollTable.Result['range'][1];
     rangeL: RollTable.Result['range'][0];
-  }
-
-  interface Options extends BaseEntitySheet.Options {
-    /**
-     * @defaultValue `['sheet', 'roll-table-config']`
-     */
-    classes: string[];
-
-    /**
-     * @defaultValue `'templates/sheets/roll-table-config.html'`
-     */
-    template: string;
-
-    /**
-     * @defaultValue `720`
-     */
-    width: number;
-
-    /**
-     * @defaultValue `'auto'`
-     */
-    height: 'auto' | number;
-
-    /**
-     * @defaultValue `false`
-     */
-    closeOnSubmit: boolean;
-
-    /**
-     * @defaultValue `ENTITY_PERMISSIONS.OBSERVER`
-     */
-    viewPermission: Const.EntityPermission;
-
-    /**
-     * @defaultValue `['ol.table-results']`
-     */
-    scrollY: string[];
-
-    /**
-     * @defaultValue `[{ dragSelector: null, dropSelector: null }]`
-     */
-    dragDrop: DragDrop.Options[];
   }
 }
