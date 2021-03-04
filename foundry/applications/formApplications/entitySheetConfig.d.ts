@@ -3,7 +3,16 @@
  * @typeParam E - the type of the Entity, this sheet is used to configure
  */
 declare class EntitySheetConfig<E extends Entity = Entity> extends FormApplication<EntitySheetConfig.Data, E> {
-  static get defaultOptions(): EntitySheetConfig.Options;
+  /**
+   * @defaultValue
+   * ```typescript
+   * const options = super.defaultOptions;
+   * options.id = "sheet-config";
+   * options.template = "templates/sheets/sheet-config.html";
+   * options.width = 400;
+   * ```
+   */
+  static get defaultOptions(): FormApplication.Options;
 
   /**
    * Add the Entity name into the window title
@@ -21,7 +30,7 @@ declare class EntitySheetConfig<E extends Entity = Entity> extends FormApplicati
    * @param event    - The initial triggering submission event
    * @param formData - The object of validated form data with which to update the object
    */
-  protected _updateObject(event: Event, formData: EntitySheetConfig.Data<E>): Promise<void>;
+  protected _updateObject(event: Event, formData: EntitySheetConfig.FormData): Promise<void>;
 
   /**
    * Initialize the configured Sheet preferences for Entities which support dynamic Sheet assignment
@@ -114,22 +123,7 @@ declare namespace EntitySheetConfig {
     blankLabel: ReturnType<Localization['localize']>;
   }
 
-  interface Options extends FormApplication.Options {
-    /**
-     * @defaultValue `'sheet-config'`
-     */
-    id: string;
-
-    /**
-     * @defaultValue `'templates/sheets/sheet-config.html'`
-     */
-    template: string;
-
-    /**
-     * @defaultValue `400`
-     */
-    width: number;
-  }
+  type FormData = Pick<Data, 'defaultClass' | 'sheetClass'>;
 
   interface SheetClass {
     id: string | number;
