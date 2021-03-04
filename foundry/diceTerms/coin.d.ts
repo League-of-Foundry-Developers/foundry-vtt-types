@@ -2,7 +2,7 @@
  * Define a two-sided coin term that can be used as part of a Roll formula
  */
 declare class Coin extends DiceTerm {
-  constructor(termData?: Coin.TermData);
+  constructor(termData?: Partial<Coin.TermData>);
 
   faces: 2;
 
