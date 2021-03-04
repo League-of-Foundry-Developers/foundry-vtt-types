@@ -20,7 +20,7 @@ expectType<Promise<true | false | null>>(
     render: (html) => {
       expectType<JQuery>(html);
     },
-    options: { jQuery: true }
+    options: {}
   })
 );
 
@@ -409,11 +409,11 @@ expectType<Promise<number>>(
     content: content,
     label: label,
     callback: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
       return 0;
     },
     render: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
     },
     options: {}
   })
@@ -425,11 +425,11 @@ expectType<Promise<string>>(
     content: content,
     label: label,
     callback: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
       return 'string';
     },
     render: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
     },
     options: {}
   })
