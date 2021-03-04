@@ -6,8 +6,18 @@
 declare class MacroConfig extends BaseEntitySheet<MacroConfig.Data, Macro> {
   /**
    * @override
+   * @defaultValue
+   * ```typescript
+   * return mergeObject(super.defaultOptions, {
+   *   classes: ["sheet", "macro-sheet"],
+   *   template: "templates/sheets/macro-config.html",
+   *   width: 560,
+   *   height: 480,
+   *   resizable: true
+   * });
+   * ```
    */
-  static get defaultOptions(): MacroConfig.Options;
+  static get defaultOptions(): BaseEntitySheet.Options;
 
   /**
    * @override
@@ -48,31 +58,4 @@ declare namespace MacroConfig {
   }
 
   type FormData = Pick<Macro.Data, 'command' | 'img' | 'name' | 'type'>;
-
-  interface Options extends BaseEntitySheet.Options {
-    /**
-     * @defaultValue `['sheet', 'macro-sheet']`
-     */
-    classes: string[];
-
-    /**
-     * @defaultValue `'templates/sheets/macro-config.html'`
-     */
-    template: string;
-
-    /**
-     * @defaultValue `560`
-     */
-    width: number;
-
-    /**
-     * @defaultValue `480`
-     */
-    height: 'auto' | number;
-
-    /**
-     * @defaultValue `true`
-     */
-    resizable: boolean;
-  }
 }
