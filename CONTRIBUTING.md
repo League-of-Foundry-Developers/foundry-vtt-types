@@ -22,7 +22,7 @@ This section guides you through submitting a bug report for foundry-vtt-types. F
 #### Before submitting a bug report
 
 - Make sure you are using the latest version of foundry-vtt-types for the corresponding Foundry VTT Version.
-- Check if the problem has already been reported in our [issue tracker](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues)
+- Check if the problem has already been reported in our [issue tracker](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues).
 
 #### How to submit a (good) bug report
 
@@ -58,21 +58,21 @@ When creating a pull request, please provide the following information:
 - What does this pull request implement?
 - What changes are made in this pull request?
 
-## Styleguides, General Guideline, and Common Patterns
+## Styleguides, General Guidelines, and Common Patterns
 
 ### Style
 
-We use [prettier](https://prettier.io/) to automatically format the code and have ESlint check for the correct formatting. This even runs automatically as a pre-commit hook so usually you don't have to care for much here. However, there is one Additional style guideline that prettier doesn't enforce for us:
+We use [prettier](https://prettier.io/) to automatically format the code and have ESlint check for the correct formatting. This even runs automatically as a pre-commit hook so usually you don't have to care for much here. However, there is one additional style guideline that prettier doesn't enforce for us:
 
 In TSDoc comments, always make sure to align the `-` for all `@param`s.
 
-In very rare occasions, it is acceptable to disable prettier for a specific part of the code to improve the formatting manually, e.g. for deeply nested conditional type, which are just unreadable if we let prettier format them. See  [Prettier – Ignoring Code](https://prettier.io/docs/en/ignore.html#javascript) to find out how to do this.
+In very rare occasions, it is acceptable to disable prettier for a specific part of the code to improve the formatting manually, e.g. for deeply nested conditional types, which are simply unreadable if we let prettier format them. See  [Prettier – Ignoring Code](https://prettier.io/docs/en/ignore.html#javascript) to find out how to do this.
 
 ### General Guidelines
 
-1. Try to match the source code of `foundry.js` (and other modules from 0.8.0 onwards) as closely as possible in your type definitions. In particular, the order of declaration should be exactly the same. This allows for easy side by side viewing of `foundry.js` and the type definitions, making the life of code reviewers much easier :)
-2. Try not to pollute the global namespace with custom types that are not declared by foundry itself (typedefs are ok and should be declared). Instead use a namespace named like the related class and put your custom type in there.
-3. Every class has its own file. The files are structured by class hierarchy. Declarations for code that is not a class belongs directly in `foundry` folder. For 0.8.0 we are still figuring out how to structure things with respect to the namespaces / modules that are introduced.
+1. Try to match the source code of `foundry.js` (and other modules from 0.8.0 onwards) as closely as possible in your type definitions. In particular, the order of declarations should be exactly the same. This allows for easy side by side viewing of `foundry.js` and the type definitions, making the life of code reviewers much easier :)
+2. Try not to pollute the global namespace with custom types that are not declared by foundry itself (typedefs from `foundry.js` should be declared). Instead use a namespace named like the related class and put your custom type in there.
+3. Every class has its own file. The files are structured by class hierarchy. Declarations for code that is not a class belongs directly in the `foundry` folder. For 0.8.0 we are still figuring out how to structure things with respect to the namespaces / modules that are introduced.
 4. Utility types not defined in foundry belong in `types/utils.d.ts`
 5. Augments for libraries bundled with Foundry VTT belong in their corresponding file in `types/augments`.
 6. Write tests were applicable. Not everything needs to be tested, these are just type definitions after all. But in particular for complicated type definitions it makes a lot of sense to add tests. That way you can also verify for yourself that your type definitions are actually working as intended.
@@ -110,7 +110,7 @@ declare class ActorSheet<
    *   resizable: true,
    *   baseApplication: "ActorSheet",
    *   dragDrop: [{dragSelector: ".item-list .item", dropSelector: null}]
-   * }
+   * })
    * ```
    */
   static get defaultOptions(): BaseEntitySheet.Options;
@@ -163,7 +163,7 @@ AVSettings.AV_MODES = {
 
 Type definition
 ```typescript
-class AVSettings {
+declare class AVSettings {
   /* ... */
 
   static AV_MODES: {
@@ -177,4 +177,4 @@ class AVSettings {
 
 ## Final Words
 
-If you've made it this far: Thanks for reading and for trying contribute. It is much appreciated. We're hoping to see you soon on the League Discord!
+If you've made it this far: Thanks for reading and for trying to contribute. It is much appreciated. We're hoping to see you soon on the League Discord!
