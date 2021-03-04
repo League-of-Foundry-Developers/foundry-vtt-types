@@ -49,7 +49,7 @@ declare class Application {
   /**
    * Track the current position and dimensions of the Application UI
    */
-  position: Application.Position;
+  position: Application.Position | Pick<Application.Position, 'width' | 'height'>;
 
   /**
    * DragDrop workflow handlers which are active for this Application
@@ -464,9 +464,9 @@ declare namespace Application {
   interface Position {
     width: number;
     height: number | 'auto';
-    left?: number;
-    top?: number;
-    scale?: number;
+    left: number;
+    top: number;
+    scale: number;
   }
 
   interface RenderOptions {
