@@ -4,8 +4,16 @@
 declare class FolderConfig extends FormApplication<FolderConfig.Data, Folder> {
   /**
    * @override
+   * @defaultValue
+   * ```typescript
+   * mergeObject(super.defaultOptions, {
+   *   classes: ["sheet", "folder-edit"],
+   *   template: "templates/sidebar/folder-edit.html",
+   *   width: 360
+   * });
+   * ```
    */
-  static get defaultOptions(): FolderConfig.Options;
+  static get defaultOptions(): FormApplication.Options;
 
   /**
    * @override
@@ -27,7 +35,7 @@ declare class FolderConfig extends FormApplication<FolderConfig.Data, Folder> {
    * @param event - (unused)
    * @override
    */
-  protected _updateObject(event: Event, formData: Folder.Data): ReturnType<Folder['update']>;
+  protected _updateObject(event: Event, formData: FolderConfig.FormData): ReturnType<Folder['update']>;
 }
 
 declare namespace FolderConfig {
@@ -40,20 +48,11 @@ declare namespace FolderConfig {
     submitText: string;
   }
 
-  interface Options extends FormApplication.Options {
-    /**
-     * @defaultValue `['sheet', 'folder-edit']`
-     */
-    classes: string[];
-
-    /**
-     * @defaultValue `'templates/sidebar/folder-edit.html'`
-     */
-    template: string;
-
-    /**
-     * @defaultValue `360`
-     */
-    width: number;
+  interface FormData {
+    color: string;
+    name: string;
+    parent: string;
+    sorting: 'a' | 'm';
+    type: string;
   }
 }
