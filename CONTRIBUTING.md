@@ -75,7 +75,7 @@ In very rare occasions, it is acceptable to disable prettier for a specific part
 3. Every class has its own file. The files are structured by class hierarchy. Declarations for code that is not a class belongs directly in the `foundry` folder. For 0.8.0 we are still figuring out how to structure things with respect to the namespaces / modules that are introduced.
 4. Utility types not defined in foundry belong in `types/utils.d.ts`
 5. Augments for libraries bundled with Foundry VTT belong in their corresponding file in `types/augments`.
-6. Write tests were applicable. Not everything needs to be tested, these are just type definitions after all. But in particular for complicated type definitions it makes a lot of sense to add tests. That way you can also verify for yourself that your type definitions are actually working as intended.
+6. Write tests where applicable. Not everything needs to be tested, these are just type definitions after all. But in particular for complicated type definitions it makes a lot of sense to add tests. That way you can also verify for yourself that your type definitions are actually working as intended.
 
 ### Common Patterns
 
