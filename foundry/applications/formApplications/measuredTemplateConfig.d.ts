@@ -7,7 +7,7 @@ declare class MeasuredTemplateConfig extends FormApplication<MeasuredTemplateCon
    * @override
    * @defaultValue
    * ```typescript
-   * return mergeObject(super.defaultOptions, {
+   * mergeObject(super.defaultOptions, {
    *   id: "template-config",
    *   classes: ["sheet", "template-sheet"],
    *   title: "Measurement Template Configuration",

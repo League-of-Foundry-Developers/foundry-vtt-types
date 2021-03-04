@@ -31,7 +31,7 @@ declare class GridConfig extends FormApplication<GridConfig.Data, Scene> {
    * @override
    * @defaultValue
    * ```typescript
-   * return mergeObject(super.defaultOptions, {
+   * mergeObject(super.defaultOptions, {
    *   id: "grid-config",
    *   template: "templates/scene/grid-config.html",
    *   title: game.i18n.localize("SCENES.GridConfigTool"),

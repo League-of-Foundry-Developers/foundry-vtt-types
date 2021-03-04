@@ -8,7 +8,7 @@ declare class MacroConfig extends BaseEntitySheet<MacroConfig.Data, Macro> {
    * @override
    * @defaultValue
    * ```typescript
-   * return mergeObject(super.defaultOptions, {
+   * mergeObject(super.defaultOptions, {
    *   classes: ["sheet", "macro-sheet"],
    *   template: "templates/sheets/macro-config.html",
    *   width: 560,
