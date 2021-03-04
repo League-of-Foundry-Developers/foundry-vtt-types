@@ -5,8 +5,18 @@
 declare class MeasuredTemplateConfig extends FormApplication<MeasuredTemplateConfig.Data, MeasuredTemplate> {
   /**
    * @override
+   * @defaultValue
+   * ```typescript
+   * return mergeObject(super.defaultOptions, {
+   *   id: "template-config",
+   *   classes: ["sheet", "template-sheet"],
+   *   title: "Measurement Template Configuration",
+   *   template: "templates/scene/template-config.html",
+   *   width: 400
+   * });
+   * ```
    */
-  static get defaultOptions(): MeasuredTemplateConfig.Options;
+  static get defaultOptions(): FormApplication.Options;
 
   /**
    * @override
@@ -16,7 +26,7 @@ declare class MeasuredTemplateConfig extends FormApplication<MeasuredTemplateCon
   /**
    * @override
    */
-  protected _updateObject(event: Event, formData: MeasuredTemplate.Data): Promise<MeasuredTemplate | null>;
+  protected _updateObject(event: Event, formData: MeasuredTemplateConfig.FormData): Promise<MeasuredTemplate | null>;
 }
 
 declare namespace MeasuredTemplateConfig {
@@ -28,30 +38,16 @@ declare namespace MeasuredTemplateConfig {
     submitText: string;
   }
 
-  interface Options extends FormApplication.Options {
-    /**
-     * @defaultValue `'template-config'`
-     */
-    id: string;
-
-    /**
-     * @defaultValue `['sheet', 'template-sheet']`
-     */
-    classes: string[];
-
-    /**
-     * @defaultValue `'Measurement Template Configuration'`
-     */
-    title: string;
-
-    /**
-     * @defaultValue `'templates/scene/template-config.html'`
-     */
-    template: string;
-
-    /**
-     * @defaultValue `400`
-     */
-    width: number;
-  }
+  type FormData = {
+    angle: MeasuredTemplate.Data['angle'];
+    borderColor: MeasuredTemplate.Data['borderColor'];
+    direction: MeasuredTemplate.Data['direction'] | null;
+    distance: MeasuredTemplate.Data['distance'] | null;
+    fillColor: MeasuredTemplate.Data['fillColor'];
+    t: MeasuredTemplate.Data['t'];
+    texture: MeasuredTemplate.Data['texture'];
+    width: MeasuredTemplate.Data['width'];
+    x: MeasuredTemplate.Data['x'] | null;
+    y: MeasuredTemplate.Data['y'] | null;
+  };
 }
