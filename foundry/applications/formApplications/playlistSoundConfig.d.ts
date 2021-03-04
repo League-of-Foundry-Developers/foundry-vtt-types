@@ -7,14 +7,22 @@ declare class PlaylistSoundConfig extends FormApplication<PlaylistSoundConfig.Da
    * @param sound    - An Object for the Playlist Sound data
    * @param options  - Additional application rendering options
    */
-  constructor(playlist: PlaylistSoundConfig['playlist'], sound: Playlist.Sound, options: PlaylistSoundConfig.Options);
+  constructor(playlist: PlaylistSoundConfig['playlist'], sound: Playlist.Sound, options: FormApplication.Options);
 
   playlist: Playlist;
 
   /**
    * @override
+   * @defaultValue
+   * ```typescript
+   * mergeObject(super.defaultOptions, {
+   *   id: "track-config",
+   *   template: "templates/playlist/edit-track.html",
+   *   width: 360
+   * });
+   * ```
    */
-  static get defaultOptions(): PlaylistSoundConfig.Options;
+  static get defaultOptions(): FormApplication.Options;
 
   /**
    * @override
@@ -31,7 +39,7 @@ declare class PlaylistSoundConfig extends FormApplication<PlaylistSoundConfig.Da
    * @param event - (unused)
    * @override
    */
-  protected _updateObject(event: Event, formData: PlaylistSoundConfig.Data): Promise<Playlist>;
+  protected _updateObject(event: Event, formData: PlaylistSoundConfig.FormData): Promise<Playlist>;
 
   /**
    * @override
@@ -49,20 +57,5 @@ declare namespace PlaylistSoundConfig {
     lvolume: number;
   }
 
-  interface Options extends FormApplication.Options {
-    /**
-     * @defaultValue `'track-config'`
-     */
-    id: string;
-
-    /**
-     * @defaultValue `'templates/playlist/edit-track.html'`
-     */
-    template: string;
-
-    /**
-     * @defaultValue `360`
-     */
-    width: number;
-  }
+  type FormData = Pick<Data, 'lvolume'> & Pick<Playlist.Sound, 'name' | 'path' | 'repeat' | 'streaming'>;
 }
