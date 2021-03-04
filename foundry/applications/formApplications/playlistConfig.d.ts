@@ -2,7 +2,16 @@
  * Playlist Configuration Sheet
  */
 declare class PlaylistConfig extends BaseEntitySheet<PlaylistConfig.Data, Playlist> {
-  static get defaultOptions(): PlaylistConfig.Options;
+  /**
+   * @defaultValue
+   * ```typescript
+   * const options = super.defaultOptions;
+   * options.id = "playlist-config";
+   * options.template = "templates/playlist/edit-playlist.html";
+   * options.width = 360;
+   * ```
+   */
+  static get defaultOptions(): BaseEntitySheet.Options;
 
   /**
    * @override
@@ -19,22 +28,5 @@ declare class PlaylistConfig extends BaseEntitySheet<PlaylistConfig.Data, Playli
 declare namespace PlaylistConfig {
   interface Data extends Duplicated<PlaylistConfig['object']['data']> {
     modes: Record<string, ValueOf<typeof CONST['PLAYLIST_MODES']>>;
-  }
-
-  interface Options extends BaseEntitySheet.Options {
-    /**
-     * @defaultValue `'playlist-config'`
-     */
-    id: string;
-
-    /**
-     * @defaultValue `'templates/playlist/edit-playlist.html'`
-     */
-    template: string;
-
-    /**
-     * @defaultValue `360`
-     */
-    width: number;
   }
 }
