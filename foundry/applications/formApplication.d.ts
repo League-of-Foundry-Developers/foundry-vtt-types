@@ -11,7 +11,7 @@
  */
 declare abstract class FormApplication<
   D extends object = FormApplication.Data<{}>,
-  O extends object = D extends FormApplication.Data<infer T> ? T : {}
+  O = D extends FormApplication.Data<infer T> ? T : {}
 > extends Application {
   /**
    * @param object  - Some object or entity which is the target to be updated.
