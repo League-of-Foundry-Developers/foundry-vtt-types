@@ -7,14 +7,23 @@ declare class PlayerConfig extends FormApplication<PlayerConfig.Data, User> {
    * @param user    - The User entity being configured.
    * @param options - Additional rendering options which modify the behavior of the form.
    */
-  constructor(user: User, options: PlayerConfig.Options);
+  constructor(user: User, options: FormApplication.Options);
 
   user: User;
 
   /**
    * Assign the default options which are supported by the entity edit sheet
+   * @defaultValue
+   * ```typescript
+   * mergeObject(super.defaultOptions, {
+   *   id: "player-config",
+   *   template: "templates/user/player-config.html",
+   *   width: 400,
+   *   height: "auto"
+   * })
+   * ```
    */
-  static get defaultOptions(): PlayerConfig.Options;
+  static get defaultOptions(): FormApplication.Options;
 
   get title(): string;
 
@@ -42,7 +51,7 @@ declare class PlayerConfig extends FormApplication<PlayerConfig.Data, User> {
    * @param event    - The initial triggering submission event
    * @param formData - The object of validated form data with which to update the object
    */
-  protected _updateObject(event: Event, formData: User.Data): ReturnType<User['update']>;
+  protected _updateObject(event: Event, formData: PlayerConfig.FormData): ReturnType<User['update']>;
 }
 
 declare namespace PlayerConfig {
@@ -52,25 +61,5 @@ declare namespace PlayerConfig {
     options: PlayerConfig['options'];
   }
 
-  interface Options extends FormApplication.Options {
-    /**
-     * @defaultValue `'player-config'`
-     */
-    id: string;
-
-    /**
-     * @defaultValue `'templates/user/player-config.html'`
-     */
-    template: string;
-
-    /**
-     * @defaultValue `400`
-     */
-    width: number;
-
-    /**
-     * @defaultValue `'auto'`
-     */
-    height: 'auto' | number;
-  }
+  type FormData = Pick<User.Data, 'avatar' | 'character' | 'color'>;
 }
