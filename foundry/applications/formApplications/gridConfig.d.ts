@@ -29,8 +29,20 @@ declare class GridConfig extends FormApplication<GridConfig.Data, Scene> {
 
   /**
    * @override
+   * @defaultValue
+   * ```typescript
+   * return mergeObject(super.defaultOptions, {
+   *   id: "grid-config",
+   *   template: "templates/scene/grid-config.html",
+   *   title: game.i18n.localize("SCENES.GridConfigTool"),
+   *   width: 480,
+   *   height: "auto",
+   *   closeOnSubmit: true,
+   *   submitOnChange: true
+   * });
+   * ```
    */
-  static get defaultOptions(): GridConfig.Options;
+  static get defaultOptions(): FormApplication.Options;
 
   /**
    * @override
@@ -116,7 +128,7 @@ declare class GridConfig extends FormApplication<GridConfig.Data, Scene> {
    * @param event - (unused)
    * @override
    */
-  protected _updateObject(event: Event, formData: Scene.Data): ReturnType<Scene['update']>;
+  protected _updateObject(event: Event, formData: GridConfig.FormData): ReturnType<Scene['update']>;
 }
 
 declare namespace GridConfig {
@@ -126,40 +138,11 @@ declare namespace GridConfig {
     scene: Scene.Data;
   }
 
-  interface Options extends FormApplication.Options {
-    /**
-     * @defaultValue `'grid-config'`
-     */
-    id: string;
-
-    /**
-     * @defaultValue `'templates/scene/grid-config.html'`
-     */
-    template: string;
-
-    /**
-     * @defaultValue `game.i18n.localize('SCENES.GridConfigTool')`
-     */
-    title: string;
-
-    /**
-     * @defaultValue `480`
-     */
-    width: number;
-
-    /**
-     * @defaultValue `'auto'`
-     */
-    height: 'auto' | number;
-
-    /**
-     * @defaultValue `true`
-     */
-    closeOnSubmit: boolean;
-
-    /**
-     * @defaultValue `true`
-     */
-    submitOnChange: boolean;
+  interface FormData {
+    grid: number | null;
+    gridType: Const.GridType;
+    scale: number | null;
+    shiftX: number | null;
+    shiftY: number | null;
   }
 }
