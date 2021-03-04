@@ -138,11 +138,10 @@ declare namespace GridConfig {
     scene: Scene.Data;
   }
 
-  interface FormData {
-    grid: number | null;
-    gridType: Const.GridType;
+  type FormData = Pick<Scene.Data, 'gridType'> & {
+    grid: Scene.Data['grid'] | null;
     scale: number | null;
-    shiftX: number | null;
-    shiftY: number | null;
-  }
+    shiftX: Scene.Data['shiftX'] | null;
+    shiftY: Scene.Data['shiftY'] | null;
+  };
 }

@@ -48,11 +48,5 @@ declare namespace FolderConfig {
     submitText: string;
   }
 
-  interface FormData {
-    color: string;
-    name: string;
-    parent: string;
-    sorting: 'a' | 'm';
-    type: string;
-  }
+  type FormData = Pick<Folder.Data, 'color' | 'name' | 'sorting' | 'type'> & { parent: string };
 }

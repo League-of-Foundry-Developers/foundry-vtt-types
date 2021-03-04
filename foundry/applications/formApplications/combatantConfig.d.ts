@@ -29,11 +29,5 @@ declare class CombatantConfig extends FormApplication {
 }
 
 declare namespace CombatantConfig {
-  interface FormData {
-    defeated: boolean;
-    hidden: boolean;
-    img: string;
-    initiative: number | null;
-    name: string;
-  }
+  type FormData = Required<Pick<Combat.Combatant, 'defeated' | 'hidden' | 'img' | 'initiative' | 'name'>>;
 }
