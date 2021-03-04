@@ -2,7 +2,19 @@
  * Configure the Combat tracker to display additional information as appropriate
  */
 declare class CombatTrackerConfig extends FormApplication<CombatTrackerConfig.Data> {
-  static get defaultOptions(): CombatTrackerConfig.Options;
+  /**
+   * @defaultValue
+   * ```typescript
+   * mergeObject(super.defaultOptions, {
+   *   id: "combat-config",
+   *   title: game.i18n.localize("COMBAT.Settings"),
+   *   classes: ["sheet", "combat-sheet"],
+   *   template: "templates/sheets/combat-config.html",
+   *   width: 420
+   * });
+   * ```
+   */
+  static get defaultOptions(): FormApplication.Options;
 
   /**
    * @param options - (unused)
@@ -14,7 +26,7 @@ declare class CombatTrackerConfig extends FormApplication<CombatTrackerConfig.Da
    * @param event - (unused)
    * @override
    */
-  protected _updateObject<F extends Combat.ConfigValue>(event?: Event, formData?: F): Promise<F>;
+  protected _updateObject<F extends Required<Combat.ConfigValue>>(event?: Event, formData?: F): Promise<F>;
 
   /**
    * Get an Array of attribute choices which could be tracked for Actors in the Combat Tracker
@@ -26,32 +38,5 @@ declare namespace CombatTrackerConfig {
   interface Data {
     settings: Combat.ConfigValue;
     attributeChoices: ReturnType<CombatTrackerConfig['getAttributeChoices']>;
-  }
-
-  interface Options extends FormApplication.Options {
-    /**
-     * @defaultValue `'combat-config'`
-     */
-    id: string;
-
-    /**
-     * @defaultValue `game.i18n.localize('COMBAT.Settings')`
-     */
-    title: string;
-
-    /**
-     * @defaultValue `['sheet', 'combat-sheet']`
-     */
-    classes: string[];
-
-    /**
-     * @defaultValue `'templates/sheets/combat-config.html'`
-     */
-    template: string;
-
-    /**
-     * @defaultValue `420`
-     */
-    width: number;
   }
 }
