@@ -146,7 +146,7 @@ declare class Dialog extends Application {
     render?: (html: JQuery) => void;
     defaultYes?: boolean;
     rejectClose?: R;
-    options?: Partial<Dialog.Options> & { jQuery: true };
+    options?: Partial<Dialog.Options> & { jQuery?: true };
   }): Promise<R extends true ? Y | N : Y | N | null>;
   static confirm<Y = true, N = false, R extends boolean = false>({
     title,
@@ -165,7 +165,7 @@ declare class Dialog extends Application {
     render?: (html: HTMLElement) => void;
     defaultYes?: boolean;
     rejectClose?: R;
-    options?: Partial<Dialog.Options> & { jQuery?: false };
+    options?: Partial<Dialog.Options> & { jQuery: false };
   }): Promise<R extends true ? Y | N : Y | N | null>;
   static confirm<Y = true, N = false, R extends boolean = false>({
     title,
