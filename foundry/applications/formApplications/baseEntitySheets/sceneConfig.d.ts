@@ -5,8 +5,17 @@
 declare class SceneConfig extends BaseEntitySheet<SceneConfig.Data, Scene> {
   /**
    * @override
+   * @defaultValue
+   * ```typescript
+   * mergeObject(super.defaultOptions, {
+   *   classes: ["sheet", "scene-sheet"],
+   *   template: "templates/scene/config.html",
+   *   width: 680,
+   *   height: "auto"
+   * });
+   * ```
    */
-  static get defaultOptions(): SceneConfig.Options;
+  static get defaultOptions(): BaseEntitySheet.Options;
 
   /**
    * @override
@@ -64,7 +73,7 @@ declare class SceneConfig extends BaseEntitySheet<SceneConfig.Data, Scene> {
   /**
    * @override
    */
-  protected _updateObject(event: Event, formData: Scene.Data): Promise<Scene>;
+  protected _updateObject(event: Event, formData: SceneConfig.FormData): Promise<Scene>;
 }
 
 declare namespace SceneConfig {
@@ -82,25 +91,35 @@ declare namespace SceneConfig {
     };
   }
 
-  interface Options extends BaseEntitySheet.Options {
-    /**
-     * @defaultValue `['sheet', 'scene-sheet']`
-     */
-    classes: string[];
-
-    /**
-     * @defaultValue `'templates/scene/config.html'`
-     */
-    template: string;
-
-    /**
-     * @defaultValue `680`
-     */
-    width: number;
-
-    /**
-     * @defaultValue `'auto'`
-     */
-    height: 'auto' | number;
-  }
+  type FormData = {
+    backgroundColor: Scene.Data['backgroundColor'];
+    darkness: Scene.Data['darkness'];
+    fogExploration: Scene.Data['fogExploration'];
+    globalLight: Scene.Data['globalLight'];
+    globalLightThreshold: Scene.Data['globalLightThreshold'];
+    grid: GridConfig.FormData['grid'];
+    gridAlpha: Scene.Data['gridAlpha'];
+    gridColor: Scene.Data['gridColor'];
+    gridDistance: Scene.Data['gridDistance'] | null;
+    gridType: Const.GridType;
+    gridUnits: Scene.Data['gridUnits'];
+    hasGlobalThreshold: boolean;
+    height: Scene.Data['height'] | null;
+    img: Scene.Data['img'];
+    'initial.scale': number | null;
+    'initial.x': number | null;
+    'initial.y': number | null;
+    journal: Scene.Data['journal'];
+    name: string;
+    navName: Scene.Data['navName'];
+    navigation: Scene.Data['navigation'];
+    padding: Scene.Data['padding'];
+    'permission.default': Scene.Data['permission'];
+    playlist: Scene.Data['playlist'];
+    shiftX: GridConfig.FormData['shiftX'];
+    shiftY: GridConfig.FormData['shiftY'];
+    tokenVision: Scene.Data['tokenVision'];
+    weather: Scene.Data['weather'];
+    width: Scene.Data['width'] | null;
+  };
 }
