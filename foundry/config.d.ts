@@ -917,7 +917,7 @@ declare const CONFIG: {
     /**
      * @defaultValue `SceneConfig`
      */
-    sheetClass: SceneConfig;
+    sheetClass: any; // TODO: ConstructorOf<SceneConfig>;
 
     /**
      * @defaultValue `'fas fa-map'`
