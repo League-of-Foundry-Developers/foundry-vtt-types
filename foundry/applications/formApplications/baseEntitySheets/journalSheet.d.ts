@@ -26,7 +26,7 @@ declare class JournalSheet<
   get title(): string;
 
   /** @override */
-  getData(options?: Application.RenderOptions): D;
+  getData(options?: Application.RenderOptions): Promise<D> | D;
 
   /**
    * Guess the default view mode for the sheet based on the player's permissions to the Entry
@@ -86,7 +86,7 @@ declare namespace JournalSheet {
      */
     submitOnClose: boolean;
     /**
-     * @defaultValue {@link Const.EntityPermission.None}
+     * @defaultValue {@link ENTITY_PERMISSIONS.NONE}
      */
     viewPermission: Const.EntityPermission;
     sheetMode?: SheetMode | null;
