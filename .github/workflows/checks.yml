@@ -1,7 +1,12 @@
 name: checks
+
 on:
   - push
   - pull_request
+
+env:
+  node_version: 14
+
 jobs:
   typecheck:
     name: type check code base
@@ -12,40 +17,55 @@ jobs:
       - name: install node
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
-      - name: npm install
-        run: npm install
+          node-version: ${{ env.node_version }}
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: .npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+      - run: npm ci --cache .npm --prefer-offline
       - name: compile typescript
         run: tsc
   lint:
     name: lint code base
     runs-on: ubuntu-latest
     steps:
-      - name: checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v2
       - name: install node
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
-      - name: npm install
-        run: npm install
+          node-version: ${{ env.node_version }}
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: .npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+      - run: npm ci --cache .npm --prefer-offline
       - name: run eslint
         run: npm run lint:ci
   test:
     name: test code base
     runs-on: ubuntu-latest
     steps:
-      - name: checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v2
       - name: install node
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
-      - name: npm install
-        run: npm install
+          node-version: ${{ env.node_version }}
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: .npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+      - run: npm ci --cache .npm --prefer-offline
       - name: execute tests
         run: npm test
