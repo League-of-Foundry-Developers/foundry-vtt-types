@@ -22,7 +22,8 @@ declare class EffectsLayer extends CanvasLayer {
    */
   emitters: unknown[]; // I don't believe that this is ever populated right now - Bolts
 
-  /** @override
+  /**
+   * @override
    * @defaultValue `mergeObject(super.layerOptions, { zIndex: 300 })`
    */
   static get layerOptions(): CanvasLayer.LayerOptions;

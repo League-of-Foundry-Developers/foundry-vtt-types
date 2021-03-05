@@ -4,7 +4,7 @@
  * @see PointSource
  *
  * @example <caption>The sightRefresh hook</caption>
- * ```javascript
+ * ```typescript
  * Hooks.on("sightRefresh", layer => {});
  * ```
  */
