@@ -284,15 +284,15 @@ declare class Roll<D extends object = {}> {
    */
   toMessage<T extends object = {}>(
     messageData?: T,
-    { rollMode, create }?: { rollMode?: Const.DiceRollMode | null; create: true }
+    { rollMode, create }?: { rollMode?: Const.DiceRollMode | null; create?: true }
   ): Promise<ChatMessage>;
   toMessage<T extends object = {}>(
-    messageData?: T,
-    { rollMode, create }?: { rollMode?: Const.DiceRollMode | null; create: false }
+    messageData: T,
+    { rollMode, create }: { rollMode?: Const.DiceRollMode | null; create: false }
   ): Roll.MessageData<T>;
   toMessage<T extends object = {}>(
-    messageData?: T,
-    { rollMode, create }?: { rollMode?: Const.DiceRollMode | null; create: boolean }
+    messageData: T,
+    { rollMode, create }: { rollMode?: Const.DiceRollMode | null; create: boolean }
   ): Promise<ChatMessage> | Roll.MessageData<T>;
 
   /**

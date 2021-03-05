@@ -2,6 +2,8 @@
  * A special Graphics class which handles Grid layer highlighting
  */
 declare class GridHighlight extends PIXI.Graphics {
+  constructor(name: string, ...args: ConstructorParameters<typeof PIXI.Graphics>);
+
   /**
    * Track the Grid Highlight name
    */
@@ -11,8 +13,6 @@ declare class GridHighlight extends PIXI.Graphics {
    * Track distinct positions which have already been highlighted
    */
   positions: Set<string>;
-
-  constructor(name: string, geometry?: PIXI.GraphicsGeometry);
 
   /**
    * Record a position that is highlighted and return whether or not it should be rendered
@@ -24,7 +24,7 @@ declare class GridHighlight extends PIXI.Graphics {
 
   /**
    * Extend the Graphics clear logic to also reset the highlighted positions
-   * @remarks Returns `void`
+   * @remarks Returns `void`, see https://gitlab.com/foundrynet/foundryvtt/-/issues/4732
    */
   clear(): any;
 

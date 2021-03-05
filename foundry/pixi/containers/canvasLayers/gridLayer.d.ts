@@ -6,28 +6,37 @@ declare class GridLayer extends CanvasLayer {
 
   /**
    * The Grid container
-   * (default: `null`)
+   * @defaultValue `null`
    */
-  grid: PIXI.Container;
+  grid: BaseGrid | null;
 
   /**
    * The Grid Highlight container
-   * (default: `null`)
+   * @defaultValue `null`
    */
-  highlight: PIXI.Container;
+  highlight: PIXI.Container | null;
 
   /**
    * Map named highlight layers
+   * @defaultValue `{}`
    */
   highlightLayers: Record<string, GridHighlight>;
 
-  /** @override */
+  /**
+   * @override
+   * @defaultValue
+   * ```typescript
+   * mergeObject(super.layerOptions, {
+   *   zIndex: 30
+   * }
+   * ```
+   */
   static get layerOptions(): CanvasLayer.LayerOptions;
 
   /**
    * The grid type rendered in this Scene
    */
-  get type(): string;
+  get type(): Const.GridType;
 
   /**
    * A convenient reference to the pixel grid size used throughout this layer
@@ -37,12 +46,12 @@ declare class GridLayer extends CanvasLayer {
   /**
    * Get grid unit width
    */
-  get w(): any;
+  get w(): BaseGrid['w'];
 
   /**
    * Get grid unit height
    */
-  get h(): any;
+  get h(): BaseGrid['h'];
 
   /**
    * A boolean flag for whether the current grid is hexagonal
@@ -59,9 +68,9 @@ declare class GridLayer extends CanvasLayer {
     gridColor,
     gridAlpha
   }?: {
-    type?: string | null;
-    dimensions?: Canvas['dimensions'];
-    gridColor?: number | null;
+    type?: Const.GridType | null;
+    dimensions?: Canvas['dimensions'] | null;
+    gridColor?: number | string | null;
     gridAlpha?: number | null;
   }): Promise<this>;
 
@@ -115,7 +124,7 @@ declare class GridLayer extends CanvasLayer {
   measureDistances(
     segments: { ray: Ray; label?: Ruler['labels']['children'][number] }[],
     options?: { gridSpaces?: boolean }
-  ): PIXI.Container;
+  ): number[];
 
   /**
    * Define a new Highlight graphic
@@ -132,19 +141,9 @@ declare class GridLayer extends CanvasLayer {
    */
   destroyHighlightLayer(name: string): void;
 
-  getHighlightLayer(name: string): GridHighlight;
+  getHighlightLayer(name: string): GridHighlight | undefined;
 
-  highlightPosition(
-    name: string,
-    options: {
-      x: number;
-      y: number;
-      color: number;
-      border: number;
-      alpha: number;
-      shape: PIXI.Polygon;
-    }
-  ): false | void;
+  highlightPosition(name: string, options?: Parameters<BaseGrid['highlightGridPosition']>[1]): false | void;
 
   /**
    * Test if a specific row and column position is a neighboring location to another row and column coordinate
