@@ -4,6 +4,8 @@
  * The message is displayed on the HUD layer just above the Token.
  */
 declare class ChatBubbles {
+  constructor();
+
   /**
    * @defaultValue `'templates/hud/chat-bubble.html'`
    */
@@ -12,16 +14,16 @@ declare class ChatBubbles {
   /**
    * Track active Chat Bubbles
    * @defaultValue `{}`
+   * @remarks This is never used
    */
   bubbles: object;
 
   /**
    * Track which Token was most recently panned to highlight
    * Use this to avoid repeat panning
+   * @defaultValue `null`
    */
   protected _panned: Token | null;
-
-  constructor();
 
   /**
    * A reference to the chat bubbles HTML container in which rendered bubbles should live
@@ -35,7 +37,7 @@ declare class ChatBubbles {
    * @param emote   - Whether to style the speech bubble as an emote
    * @returns A Promise which resolves once the chat bubble has been created
    */
-  say(token: Token, message: string, { emote }: { emote: boolean }): Promise<void>;
+  say(token: Token, message: string, { emote }?: { emote?: boolean }): Promise<void>;
 
   /**
    * Clear any existing chat bubble for a certain Token
@@ -47,7 +49,7 @@ declare class ChatBubbles {
    * @param data - Template data
    * @returns The rendered HTML
    */
-  protected _renderHTML({ token, message, emote }: { token: Token; message: string; emote: boolean }): Promise<string>;
+  protected _renderHTML(data: { token: Token; message: string; emote: boolean }): Promise<string>;
 
   /**
    * Before displaying the chat message, determine it's constrained and unconstrained dimensions
