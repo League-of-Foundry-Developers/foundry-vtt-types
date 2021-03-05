@@ -1,7 +1,8 @@
 name: publish
 
 on:
-  - push
+  release:
+    types: [created]
 
 env:
   node_version: 14
@@ -51,9 +52,9 @@ jobs:
           name: package.json
       - name: Publish
         run: |
-          echo npm publish --ignore-scripts
+          npm publish --ignore-scripts
           export PUBLISHED_VERSION=$(jq -r '.version' package.json)
-          echo npm dist-tag add @league-of-foundry-developers/foundry-vtt-types@${PUBLISHED_VERSION} fvtt-${PUBLISHED_VERSION//-[0-9]*/}
+          npm dist-tag add @league-of-foundry-developers/foundry-vtt-types@${PUBLISHED_VERSION} fvtt-${PUBLISHED_VERSION//-[0-9]*/}
         shell: bash
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
