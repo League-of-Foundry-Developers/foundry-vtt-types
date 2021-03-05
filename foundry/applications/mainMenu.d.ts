@@ -2,8 +2,19 @@
  * A simple main menu application
  */
 declare class MainMenu extends Application {
-  /** @override */
-  static get defaultOptions(): MainMenu.Options;
+  /**
+   * @override
+   * @defaultValue
+   * ```typescript
+   * {
+   *   ...super.defaultOptions,
+   *   id: 'menu',
+   *   template: 'templates/hud/menu.html',
+   *   popOut: false
+   * }
+   * ```
+   * */
+  static get defaultOptions(): Application.Options;
 
   /**
    * The structure of menu items
@@ -60,19 +71,4 @@ declare namespace MainMenu {
   }
 
   type MenuStructure = { [name: string]: MenuItem };
-
-  interface Options extends Application.Options {
-    /**
-     * @defaultValue `'menu'`
-     */
-    id: string;
-    /**
-     * @defaultValue `'templates/hud/menu.html'`
-     */
-    template: string;
-    /**
-     * @defaultValue `false`
-     */
-    popOut: boolean;
-  }
 }
