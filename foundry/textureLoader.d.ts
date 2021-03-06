@@ -9,7 +9,6 @@ declare class TextureLoader {
   /**
    * Load all the textures which are required for a particular Scene
    * @param scene - The Scene to load
-   * @returns Promise<void>
    */
   static loadSceneTextures(scene: Scene): Promise<void>;
 
@@ -24,26 +23,22 @@ declare class TextureLoader {
   /**
    * Load a single texture on-demand from a given source URL path
    * @param src -
-   * @returns Promise\<PIXI.Texture\>
    */
   loadTexture(src: string): Promise<PIXI.Texture>;
 
   /**
    * Log texture loading progress in the console and in the Scene loading bar
-   * @internal
    */
   protected _onProgress(src: string, progress: TextureLoader.Progress, message: string): void;
 
   /**
    * Log failed texture loading
-   * @internal
    */
   protected _onError(src: string, progress: TextureLoader.Progress, error: Error): void;
 
   /**
    * Load an image texture from a provided source url
    * @param src -
-   * @returns Promise\<PIXI.Texture\>
    */
   loadImageTexture(src: string): Promise<PIXI.Texture>;
 
@@ -53,7 +48,6 @@ declare class TextureLoader {
    * @param src     - The source URL being attempted
    * @param resolve - Resolve the promise
    * @param reject  - Reject the promise
-   * @internal
    */
   protected _attemptCORSReload<T>(
     src: string,
@@ -64,7 +58,6 @@ declare class TextureLoader {
   /**
    * Load a video texture from a provided source url
    * @param src -
-   * @returns Promise\<PIXI.Texture\>
    */
   loadVideoTexture(src: string): Promise<PIXI.Texture>;
 
