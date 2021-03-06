@@ -106,10 +106,10 @@ declare namespace AmbientLight {
     darknessThreshold: number;
     dim: number;
     hidden: boolean;
-    lightAnimation: { speed: number; intensity: number; type?: string };
+    lightAnimation: { speed: number; intensity: number; type?: keyof typeof CONFIG['Canvas']['lightAnimations'] };
     locked: boolean;
     rotation: number;
-    t: 'l' | 'g' | 'u';
+    t: Const.SourceType;
     tintAlpha: number;
     x: number;
     y: number;
