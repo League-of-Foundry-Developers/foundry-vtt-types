@@ -1,7 +1,7 @@
 /**
  * An implementation of the PlaceableHUD base class which renders a heads-up-display interface for Tile objects.
  */
-declare class TileHUD extends BasePlaceableHUD<Tile> {
+declare class TileHUD extends BasePlaceableHUD<Tile, TilesLayer> {
   /**
    * @override
    * @defaultValue
@@ -15,7 +15,7 @@ declare class TileHUD extends BasePlaceableHUD<Tile> {
   static get defaultOptions(): Application.Options;
 
   /** @override */
-  getData(): ReturnType<BasePlaceableHUD<Tile>['getData']> & {
+  getData(): ReturnType<BasePlaceableHUD<Tile, TilesLayer>['getData']> & {
     lockedClass: string;
     visibilityClass: string;
   };

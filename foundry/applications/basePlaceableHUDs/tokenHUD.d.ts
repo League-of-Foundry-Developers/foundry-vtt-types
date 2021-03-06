@@ -2,7 +2,7 @@
  * An implementation of the PlaceableHUD base class which renders a heads-up-display interface for Token objects.
  * This interface provides controls for visibility, attribute bars, elevation, status effects, and more.
  */
-declare class TokenHUD extends BasePlaceableHUD<Token> {
+declare class TokenHUD extends BasePlaceableHUD<Token, TokenLayer> {
   /**
    * Track whether the status effects control palette is currently expanded or hidden
    * @defaultValue `false`
@@ -53,7 +53,7 @@ declare class TokenHUD extends BasePlaceableHUD<Token> {
    */
   getData(
     options?: Application.RenderOptions
-  ): ReturnType<BasePlaceableHUD<Token>['getData']> & {
+  ): ReturnType<BasePlaceableHUD<Token, TokenLayer>['getData']> & {
     canConfigure: boolean;
     canToggleCombat: boolean;
     displayBar1: boolean;

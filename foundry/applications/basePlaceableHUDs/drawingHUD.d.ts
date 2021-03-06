@@ -1,7 +1,7 @@
 /**
  * An implementation of the PlaceableHUD base class which renders a heads-up-display interface for Drawing objects.
  */
-declare class DrawingHUD extends BasePlaceableHUD<Drawing> {
+declare class DrawingHUD extends BasePlaceableHUD<Drawing, DrawingsLayer> {
   /**
    * @override
    * @defaultValue
@@ -24,7 +24,7 @@ declare class DrawingHUD extends BasePlaceableHUD<Drawing> {
    * })
    * ```
    */
-  getData(): ReturnType<BasePlaceableHUD<Drawing>['getData']> & {
+  getData(): ReturnType<BasePlaceableHUD<Drawing, DrawingsLayer>['getData']> & {
     lockedClass: string;
     visibilityClass: string;
   };

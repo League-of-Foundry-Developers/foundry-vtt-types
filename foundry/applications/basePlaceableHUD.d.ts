@@ -1,7 +1,10 @@
 /**
  * An abstract base class for displaying a heads-up-display interface bound to a Placeable Object on the canvas
  */
-declare abstract class BasePlaceableHUD<P extends PlaceableObject<PlaceableObject.Data>> extends Application {
+declare abstract class BasePlaceableHUD<
+  P extends PlaceableObject<PlaceableObject.Data>,
+  L extends PlaceablesLayer<P>
+> extends Application {
   constructor(...args: ConstructorParameters<typeof Application>);
 
   /**
@@ -24,7 +27,7 @@ declare abstract class BasePlaceableHUD<P extends PlaceableObject<PlaceableObjec
   /**
    * Convenience access for the canvas layer which this HUD modifies
    */
-  get layer(): PlaceablesLayer<P>;
+  get layer(): L;
 
   /**
    * Bind the HUD to a new PlaceableObject and display it
