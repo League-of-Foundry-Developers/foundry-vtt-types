@@ -62,6 +62,7 @@ import './foundry/applications/dialog';
 import './foundry/applications/eula';
 import './foundry/applications/filePicker';
 import './foundry/applications/formApplication';
+import './foundry/applications/frameViewer';
 import './foundry/applications/headsUpDisplay';
 import './foundry/applications/hotbar';
 import './foundry/applications/mainMenu';
