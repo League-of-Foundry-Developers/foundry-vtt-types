@@ -275,7 +275,7 @@ declare namespace Drawing {
     bezierFactor: number;
     fillAlpha: number;
     fillColor: string;
-    fillType: number;
+    fillType: Const.DrawingFillType;
     fontFamily: string;
     fontSize: number;
     height: number;
