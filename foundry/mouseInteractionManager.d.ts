@@ -1,6 +1,9 @@
 /**
  * Handle mouse interaction events for a Canvas object.
  * There are three phases of events: hover, click, and drag
+ * @typeParam O - Canvas object this instance handles events for
+ * @typeParam T - Target object for mouseinteraction events. Generally a `ControlIcon` or `O`.
+ *                (default: `O`)
  *
  * Hover Events:
  * _handleMouseOver
@@ -30,9 +33,6 @@
  * _handleDragCancel
  *  action: dragLeftCancel
  *  action: dragRightCancel
- * @typeParam O - Canvas object this instance handles events for
- * @typeParam T - Target object for mouseinteraction events. Generally a `ControlIcon` or `O`.
- *                (default: `O`)
  */
 declare class MouseInteractionManager<O extends PIXI.Container = PIXI.Container, T extends PIXI.Container = O> {
   constructor(
@@ -186,7 +186,7 @@ declare class MouseInteractionManager<O extends PIXI.Container = PIXI.Container,
   /**
    * Handle mouse-down which trigger a single left-click workflow.
    */
-  protected _handleClickLeft(event: PIXI.InteractionEvent): unknown;
+  protected _handleClickLeft(event: PIXI.InteractionEvent): void;
 
   /**
    * Handle mouse-down which trigger a single left-click workflow.
@@ -202,7 +202,7 @@ declare class MouseInteractionManager<O extends PIXI.Container = PIXI.Container,
   /**
    * Handle single right-click actions.
    */
-  protected _handleClickRight(event: PIXI.InteractionEvent): unknown;
+  protected _handleClickRight(event: PIXI.InteractionEvent): void;
 
   /**
    * Handle double right-click actions.
@@ -227,17 +227,17 @@ declare class MouseInteractionManager<O extends PIXI.Container = PIXI.Container,
   /**
    * Handle mouse up events which may optionally conclude a drag workflow
    */
-  protected _handleMouseUp(event: PIXI.InteractionEvent): unknown;
+  protected _handleMouseUp(event: PIXI.InteractionEvent): void;
 
   /**
    * Handle the conclusion of a drag workflow, placing all dragged objects back on the layer
    */
-  protected _handleDragDrop(event: PIXI.InteractionEvent): unknown;
+  protected _handleDragDrop(event: PIXI.InteractionEvent): void;
 
   /**
    * Handle the cancellation of a drag workflow, resetting back to the original state
    */
-  protected _handleDragCancel(event: PointerEvent): unknown;
+  protected _handleDragCancel(event: PointerEvent): void;
 
   /**
    * Enumerate the states of a mouse interaction workflow.
