@@ -86,7 +86,7 @@ declare abstract class PlaceablesLayer<P extends PlaceableObject = PlaceableObje
   /**
    * If objects on this PlaceableLayer have a HUD UI, provide a reference to its instance
    */
-  get hud(): BasePlaceableHUD | null;
+  get hud(): BasePlaceableHUD<P> | null;
 
   /* -------------------------------------------- */
 
