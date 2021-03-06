@@ -30,36 +30,41 @@
  * _handleDragCancel
  *  action: dragLeftCancel
  *  action: dragRightCancel
+ * @typeParam O - Canvas object this instance handles events for
+ * @typeParam T - Target object for mouseinteraction events. Generally a `ControlIcon` or `O`.
+ *                (default: `O`)
  */
-declare class MouseInteractionManager {
+declare class MouseInteractionManager<O extends PIXI.Container = PIXI.Container, T extends PIXI.Container = O> {
   constructor(
-    object: MouseInteractionManager['object'],
+    object: O,
     layer: MouseInteractionManager['layer'],
     permissions?: MouseInteractionManager['permissions'],
     callbacks?: MouseInteractionManager['callbacks'],
     options?: MouseInteractionManager['options']
   );
-  object: unknown;
+  object: O;
   layer: PIXI.Container;
-  permissions: Record<
-    | 'clickLeft'
-    | 'clickLeft2'
-    | 'clickRight'
-    | 'clickRight2'
-    | 'dragLeftCancel'
-    | 'dragLeftDrop'
-    | 'dragLeftMove'
-    | 'dragLeftStart'
-    | 'dragRightCancel'
-    | 'dragRightDrop'
-    | 'dragRightMove'
-    | 'dragRightStart'
-    | 'hoverIn'
-    | 'hoverOut',
-    ((user: User, event: PIXI.InteractionEvent) => boolean) | boolean
+  permissions: Partial<
+    Record<
+      | 'clickLeft'
+      | 'clickLeft2'
+      | 'clickRight'
+      | 'clickRight2'
+      | 'dragLeftCancel'
+      | 'dragLeftDrop'
+      | 'dragLeftMove'
+      | 'dragLeftStart'
+      | 'dragRightCancel'
+      | 'dragRightDrop'
+      | 'dragRightMove'
+      | 'dragRightStart'
+      | 'hoverIn'
+      | 'hoverOut',
+      ((user: User, event: PIXI.InteractionEvent) => boolean) | boolean
+    >
   >;
   callbacks: Record<keyof this['permissions'], ((event: Event | PIXI.InteractionEvent) => any) | null>;
-  options: unknown;
+  options: { target?: string[] | string | null };
 
   /**
    * The current interaction state
@@ -110,7 +115,7 @@ declare class MouseInteractionManager {
    * Get the target
    * @returns `this.object` or `this.object[this.options.target]`
    */
-  get target(): unknown;
+  get target(): T;
 
   /**
    * Activate interactivity for the handled object
