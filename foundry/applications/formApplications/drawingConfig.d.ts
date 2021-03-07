@@ -108,6 +108,6 @@ declare namespace DrawingConfig {
     /**
      * Configure a preview version of the Drawing which is not yet saved
      */
-    preview: boolean;
+    preview?: boolean;
   }
 }
