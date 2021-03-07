@@ -6,7 +6,20 @@ declare class FrameViewer extends Application {
 
   url: string;
 
-  /** @override */
+  /**
+   * @override
+   * @defaultValue
+   * ```
+   * mergeObject(super.defaultOptions, {
+   *   height: window.innerHeight * 0.9,
+   *   width: Math.min(window.innerWidth * 0.9, 1200),
+   *   top: (window.innerHeight - height) / 2,
+   *   left: (window.innerWidth - width) / 2,
+   *   id: "documentation",
+   *   template: "templates/apps/documentation.html",
+   * })
+   * ```
+   */
   static get defaultOptions(): Application.Options;
 
   /** @override */

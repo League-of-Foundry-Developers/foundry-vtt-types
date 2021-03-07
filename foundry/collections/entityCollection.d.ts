@@ -7,12 +7,12 @@ declare abstract class EntityCollection<T extends Entity = Entity> extends Colle
   /**
    * @param data - An Array of Entity data from which to create instances
    */
-  constructor(data: T[]);
+  constructor(data: T['data'][]);
 
   /**
    * The source data is, itself, a mapping of IDs to data objects
    */
-  _source: T[];
+  _source: T['data'][];
 
   /**
    * An Array of application references which will be automatically updated when
@@ -23,7 +23,6 @@ declare abstract class EntityCollection<T extends Entity = Entity> extends Colle
   /**
    * Initialize the Map object and all its contained entities
    * @param data -
-   * @internal
    */
   protected _initialize(data: T['data'][]): void;
 
@@ -71,7 +70,7 @@ declare abstract class EntityCollection<T extends Entity = Entity> extends Colle
    * this game to represent the entity, and not the base implementation of that
    * entity type.
    */
-  get object(): () => T;
+  get object(): ConstructorOf<T>;
 
   /**
    * Add a new Entity to the EntityCollection, asserting that they are of the
@@ -98,14 +97,19 @@ declare abstract class EntityCollection<T extends Entity = Entity> extends Colle
    *                     (default: `{}`)
    * @returns A Promise containing the imported Entity
    */
-  importFromCollection(collection: string, entryId: string, updateData?: object, options?: object): Promise<Entity>;
+  importFromCollection(
+    collection: string,
+    entryId: string,
+    updateData?: DeepPartial<T['data']>,
+    options?: Entity.CreateOptions
+  ): Promise<T>;
 
   /**
    * Apply data transformations when importing an Entity from a Compendium pack
    * @param data - The original Compendium entry data
    * @returns The processed data ready for Entity creation
    */
-  fromCompendium(data: object): object;
+  fromCompendium(data: DeepPartial<T['data']>): DeepPartial<T['data']>;
 
   /**
    * Update all objects in this EntityCollection with a provided transformation.
@@ -118,5 +122,9 @@ declare abstract class EntityCollection<T extends Entity = Entity> extends Colle
    * @param options        - Additional options passed to Entity.update
    * @returns An array of updated data once the operation is complete
    */
-  updateAll(transformation: (obj: T) => T | T, condition?: (obj: T) => boolean, options?: object): Promise<T[]>;
+  updateAll(
+    transformation: DeepPartial<T['data']> | ((obj: T) => DeepPartial<T['data']>),
+    condition?: (obj: T) => boolean,
+    options?: Entity.UpdateOptions
+  ): Promise<T[]>;
 }
