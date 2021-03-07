@@ -177,29 +177,29 @@ declare namespace Wall {
      * 1 - left
      * 2 - right
      */
-    dir?: 0 | 1 | 2;
+    dir?: Const.WallDirection;
     /**
      * 0 - wall
      * 1 - door
      * 2 - secret
      */
-    door: 0 | 1 | 2;
+    door: Const.WallDoorType;
     /**
      * 0 - closed
      * 1 - open
      * 2 - locked
      */
-    ds: 0 | 1 | 2;
+    ds: Const.WallDoorState;
     /**
      * 0 - blocked
      * 1 - allowed
      */
-    move: 0 | 1;
+    move: Const.WallMovementType;
     /**
      * 0 - opaque
      * 1 - transparent
      * 2 - terrain
      */
-    sense: 0 | 1 | 2;
+    sense: Const.WallSenseType;
   }
 }
