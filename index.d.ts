@@ -64,6 +64,7 @@ import './foundry/applications/filePicker';
 import './foundry/applications/formApplication';
 import './foundry/applications/headsUpDisplay';
 import './foundry/applications/hotbar';
+import './foundry/applications/invitationLinks';
 import './foundry/applications/mainMenu';
 import './foundry/applications/notifications';
 import './foundry/applications/pause';
