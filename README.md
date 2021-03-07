@@ -1,7 +1,5 @@
 # foundry-vtt-types
 
-
-
 <div align=center>
 
 TypeScript type definitions for [Foundry Virtual Tabletop](https://foundryvtt.com/) (unofficial)
@@ -36,6 +34,8 @@ npm install --save-dev @league-of-foundry-developers/foundry-vtt-types@fvtt-0.7.
 
 You can then update foundry-vtt-types using the regular update mechanism for npm (see [npm update](https://docs.npmjs.com/cli/v7/commands/npm-update)).
 
+Due to the development dependencies installing the branch directly via `npm install` is no longer possible and will result in an error.
+
 ## Usage
 
 Add foundry-vtt-types to your types section in your `tsconfig.json`:
@@ -54,7 +54,6 @@ This will make the type definitions available globally in your project.
 Make sure you are using `"moduleResolution": "node"`, too. It is required for some dependencies to be resolved correctly.
 
 You can find some information about how to actually work with the type definitions in the [Wiki](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/wiki). For example, [[0.7.9] Actors and Items](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/wiki/%5B0.7.9%5D-Actors-and-Items) describes how to set up custom `Actor` and `Item` classes for 0.7.9 using the types.
-
 
 ## Acknowledgments
 
