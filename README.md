@@ -34,7 +34,7 @@ npm install --save-dev @league-of-foundry-developers/foundry-vtt-types@fvtt-0.7.
 
 You can then update foundry-vtt-types using the regular update mechanism for npm (see [npm update](https://docs.npmjs.com/cli/v7/commands/npm-update)).
 
-Due to the development dependencies installing the branch directly via `npm install` is no longer possible and will result in an error.
+Due to the development dependencies, installing the branch directly via `npm install` is no longer possible and will result in an error.
 
 ## Usage
 
