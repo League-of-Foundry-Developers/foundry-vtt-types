@@ -90,6 +90,7 @@ import './foundry/applications/formApplications/imagePopout';
 import './foundry/applications/formApplications/lightConfig';
 import './foundry/applications/formApplications/measuredTemplateConfig';
 import './foundry/applications/formApplications/noteConfig';
+import './foundry/applications/formApplications/permissionConfig';
 import './foundry/applications/formApplications/playerConfig';
 import './foundry/applications/formApplications/playlistConfig';
 import './foundry/applications/formApplications/playlistSoundConfig';
