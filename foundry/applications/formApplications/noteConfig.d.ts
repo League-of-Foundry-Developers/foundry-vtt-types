@@ -37,7 +37,7 @@ declare class NoteConfig extends FormApplication<NoteConfig.Data, Note> {
   /**
    * @override
    */
-  protected close(options?: Application.CloseOptions): Promise<void>;
+  close(options?: Application.CloseOptions): Promise<void>;
 }
 
 declare namespace NoteConfig {
