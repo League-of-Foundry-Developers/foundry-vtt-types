@@ -4,11 +4,11 @@ declare interface SceneControl {
   layer: string;
   name: string;
   title: string;
-  tools: ControlTool[];
-  visible?: boolean;
+  tools: SceneControlTool[];
+  visible: boolean;
 }
 
-declare interface ControlTool {
+declare interface SceneControlTool {
   active?: boolean;
   button?: boolean;
   icon: string;
@@ -23,18 +23,37 @@ declare interface ControlTool {
  * Scene controls navigation menu
  */
 declare class SceneControls extends Application {
-  /** The name of the active Scene Control toolset */
+  constructor(options: Application.Options);
+
+  /**
+   * The name of the active Scene Control toolset
+   * @defaultValue `"token"`
+   */
   activeControl: string;
 
-  /** The Array of Scene Control buttons which are currently rendered */
-  controls: object[];
+  /**
+   * The Array of Scene Control buttons which are currently rendered
+   */
+  controls: SceneControl[];
 
-  constructor(options: Application.Options);
+  /**
+   * @override
+   * @defaultValue
+   * ```
+   * mergeObject(super.defaultOptions, {
+   *   width: 100,
+   *   id: "controls",
+   *   template: "templates/hud/controls.html",
+   *   popOut: false,
+   * })
+   * ```
+   */
+  static get defaultOptions(): Application.Options;
 
   /**
    * Return the active control set
    */
-  get control(): object | null;
+  get control(): SceneControl | null;
 
   /**
    * Return the name of the active tool within the active control set
@@ -42,9 +61,9 @@ declare class SceneControls extends Application {
   get activeTool(): string | null;
 
   /**
-   * Return the actively controled tool
+   * Return the actively controlled tool
    */
-  get tool(): object | null;
+  get tool(): SceneControlTool | null;
 
   /**
    * A convenience reference for whether the currently active tool is a Ruler
@@ -54,7 +73,34 @@ declare class SceneControls extends Application {
   /**
    * Initialize the Scene Controls by obtaining the set of control buttons and rendering the HTML
    * @param control - An optional control set to set as active
-   * @param layer - An optional layer name to target as the active control
+   * @param layer   - An optional layer name to target as the active control
+   * @param tool    - A specific named tool to set as active for the palette
    */
-  initialize({ control, layer }: { control: string; layer: string }): void;
+  initialize({ control, layer, tool }?: { control?: string; layer?: string; tool?: string }): void;
+
+  /** @override */
+  getData(
+    options?: Application.RenderOptions
+  ): { active: boolean; cssClass: '' | 'disabled'; controls: SceneControl[] };
+
+  /** @override */
+  activateListeners(html: JQuery): void;
+
+  /**
+   * Handle click events on a Control set
+   * @param event - A click event on a tool control
+   */
+  protected _onClickLayer(event: JQuery.Event): void;
+
+  /**
+   * Handle click events on Tool controls
+   * @param event - A click event on a tool control
+   */
+  protected _onClickTool(event: JQuery.Event): void;
+
+  /**
+   * Get the set of Control sets and tools that are rendered as the Scene Controls.
+   * These controls may be extended using the "getSceneControlButtons" Hook.
+   */
+  protected _getControlButtons(): SceneControl[];
 }
