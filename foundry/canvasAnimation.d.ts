@@ -59,9 +59,8 @@ declare class CanvasAnimation {
    * @param name    - Provide a unique animation name which may be referenced later
    * @param args    - Variable argument passed to the transition function each frame
    * @returns A Promise which resolves once the animation has completed
-   * @internal
    */
-  static _animatePromise(
+  protected static _animatePromise(
     fn: (dt: number, resolve: () => void, reject: (reason?: any) => void, ...args: any[]) => void,
     context: PIXI.Container,
     name: string,
@@ -73,7 +72,6 @@ declare class CanvasAnimation {
    * This animation wrapper executes once per frame for the duration of the animation event.
    * Once the animated attributes have converged to their targets, it resolves the original Promise.
    * The user-provided ontick function runs each frame update to apply additional behaviors.
-   * @internal
    */
   protected static _animateFrame(
     deltaTime: number,
