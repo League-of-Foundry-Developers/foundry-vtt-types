@@ -76,7 +76,7 @@ declare class CanvasAnimation {
   protected static _animateFrame(
     deltaTime: number,
     resolve: () => void,
-    reject: (err: Error) => void,
+    reject: (reason?: any) => void,
     attributes: CanvasAnimation.Attribute[],
     duration: number,
     ontick: (dt: number, attributes: CanvasAnimation.Attribute[]) => void
