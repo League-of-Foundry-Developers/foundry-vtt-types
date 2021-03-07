@@ -135,7 +135,7 @@ declare const ui: {
    * Initialized in
    * - `/game`: after "setup", before "ready" hook
    */
-  settings?: Settings;
+  settings?: ClientSettings;
 
   /**
    * Initialized in
