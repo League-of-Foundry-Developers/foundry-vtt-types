@@ -18,7 +18,7 @@ declare class InvitationLinks extends Application {
   static get defaultOptions(): Application.Options;
 
   /** @override */
-  getData(): { local?: string; remote?: string } | Promise<{ local?: string; remote?: string }>;
+  getData(): { local?: string; remote?: string };
 
   /** @override */
   activateListeners(html: JQuery): void;
