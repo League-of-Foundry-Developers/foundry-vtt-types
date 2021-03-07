@@ -722,6 +722,7 @@ declare namespace Game {
       local?: string;
       remote?: string;
     };
+    adminKey?: string;
     combat?: Combat[];
     coreUpdate?: any; // TODO: update later
     files?: {
@@ -731,6 +732,7 @@ declare namespace Game {
     folders?: Folder[];
     items?: Item[];
     journal?: Journal[];
+    languages?: Language[];
     macros?: Macro[];
     messages?: ChatMessage[];
     modules?: Module[];
@@ -763,7 +765,7 @@ declare namespace Game {
 
   interface Module {
     active: boolean;
-    data: {}; // TODO: type later
+    data: Module.Data;
     esmodules: string[];
     id: string;
     languages: Language[];
@@ -771,6 +773,13 @@ declare namespace Game {
     path: string;
     scripts: string[];
     styles: string[];
+  }
+
+  namespace Module {
+    interface Data {
+      // TODO: complete later
+      availability: Const.PackageAvailabilityCode;
+    }
   }
 
   interface Pack {
@@ -860,7 +869,7 @@ declare namespace Game {
   namespace World {
     interface Data {
       authors: string[];
-      availability: number;
+      availability: Const.PackageAvailabilityCode;
       background: string;
       bugs: string;
       changelog: string;
