@@ -99,6 +99,7 @@ import './foundry/applications/formApplications/tileConfig';
 import './foundry/applications/formApplications/tokenConfig';
 import './foundry/applications/formApplications/userManagement';
 import './foundry/applications/formApplications/wallConfig';
+import './foundry/applications/formApplications/worldConfig';
 
 import './foundry/applications/formApplications/baseEntitySheets/actorSheet';
 import './foundry/applications/formApplications/baseEntitySheets/itemSheet';
