@@ -5,14 +5,14 @@
  * @param src - The source URL or path to test
  * @returns Does the file exist at the provided url?
  */
-declare function srcExists(src: string): boolean;
+declare function srcExists(src: string): Promise<boolean>;
 
 /* -------------------------------------------- */
 
 /**
  * Get a single texture from the cache
  */
-declare function getTexture(src: string): PIXI.Texture;
+declare function getTexture(src: string): PIXI.Texture | null;
 
 /**
  * Load a single texture and return a Promise which resolves once the texture is ready to use
@@ -31,4 +31,4 @@ declare function loadTexture(
      */
     fallback?: string;
   }
-): Promise<PIXI.Texture>;
+): Promise<PIXI.Texture | null>;

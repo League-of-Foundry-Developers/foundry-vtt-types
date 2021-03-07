@@ -48,6 +48,7 @@ import './foundry/sortingHelpers';
 import './foundry/tabs';
 import './foundry/templateUtils';
 import './foundry/textEditor';
+import './foundry/textureLoader';
 import './foundry/textureUtils';
 import './foundry/types';
 import './foundry/userTargets';
