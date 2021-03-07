@@ -158,6 +158,7 @@ import './foundry/entities/user';
 import './foundry/pixi/containers/baseGrid';
 import './foundry/pixi/containers/canvasLayer';
 import './foundry/pixi/containers/controlIcon';
+import './foundry/pixi/containers/cursor';
 import './foundry/pixi/containers/doorControl';
 import './foundry/pixi/containers/placeableObject';
 import './foundry/pixi/containers/ruler';
@@ -165,12 +166,21 @@ import './foundry/pixi/containers/ruler';
 import './foundry/pixi/containers/baseGrids/hexagonalGrid';
 import './foundry/pixi/containers/baseGrids/squareGrid';
 
+import './foundry/pixi/containers/canvasLayers/backgroundLayer';
+import './foundry/pixi/containers/canvasLayers/controlsLayer';
+import './foundry/pixi/containers/canvasLayers/effectsLayer';
 import './foundry/pixi/containers/canvasLayers/gridLayer';
 import './foundry/pixi/containers/canvasLayers/placeablesLayer';
 import './foundry/pixi/containers/canvasLayers/sightLayer';
 
+import './foundry/pixi/containers/canvasLayers/placeablesLayers/drawingsLayer';
 import './foundry/pixi/containers/canvasLayers/placeablesLayers/lightingLayer';
+import './foundry/pixi/containers/canvasLayers/placeablesLayers/notesLayer';
+import './foundry/pixi/containers/canvasLayers/placeablesLayers/soundsLayer';
+import './foundry/pixi/containers/canvasLayers/placeablesLayers/templateLayer';
+import './foundry/pixi/containers/canvasLayers/placeablesLayers/tilesLayer';
 import './foundry/pixi/containers/canvasLayers/placeablesLayers/tokenLayer';
+import './foundry/pixi/containers/canvasLayers/placeablesLayers/wallsLayer';
 
 import './foundry/pixi/containers/placeableObjects/ambientLight';
 import './foundry/pixi/containers/placeableObjects/ambientSound';
