@@ -23,7 +23,7 @@ declare class CombatEncounters extends EntityCollection<Combat> {
    * The currently active Combat instance
    * @returns
    */
-  get active(): Combat;
+  get active(): Combat | undefined;
 
   /**
    * The currently viewed Combat encounter
