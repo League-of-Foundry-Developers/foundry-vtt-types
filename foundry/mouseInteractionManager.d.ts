@@ -35,6 +35,11 @@
  *  action: dragRightCancel
  */
 declare class MouseInteractionManager<O extends PIXI.Container = PIXI.Container, T extends PIXI.Container = O> {
+  /**
+   * @param permissions - (default: `{}`)
+   * @param callbacks   - (default: `{}`)
+   * @param options     - (default: `{}`)
+   */
   constructor(
     object: O,
     layer: MouseInteractionManager['layer'],
@@ -42,28 +47,28 @@ declare class MouseInteractionManager<O extends PIXI.Container = PIXI.Container,
     callbacks?: MouseInteractionManager['callbacks'],
     options?: MouseInteractionManager['options']
   );
+
   object: O;
+
   layer: PIXI.Container;
+
+  /**
+   * @defaultValue `{}`
+   */
   permissions: Partial<
-    Record<
-      | 'clickLeft'
-      | 'clickLeft2'
-      | 'clickRight'
-      | 'clickRight2'
-      | 'dragLeftCancel'
-      | 'dragLeftDrop'
-      | 'dragLeftMove'
-      | 'dragLeftStart'
-      | 'dragRightCancel'
-      | 'dragRightDrop'
-      | 'dragRightMove'
-      | 'dragRightStart'
-      | 'hoverIn'
-      | 'hoverOut',
-      ((user: User, event: PIXI.InteractionEvent) => boolean) | boolean
-    >
+    Record<MouseInteractionManager.EventNames, ((user: User, event: PIXI.InteractionEvent) => boolean) | boolean>
   >;
-  callbacks: Record<keyof this['permissions'], ((event: Event | PIXI.InteractionEvent) => any) | null>;
+
+  /**
+   * @defaultValue `{}`
+   */
+  callbacks: Partial<
+    Record<MouseInteractionManager.EventNames, ((event: Event | PIXI.InteractionEvent) => unknown) | null>
+  >;
+
+  /**
+   * @defaultValue `{}`
+   */
   options: { target?: string[] | string | null };
 
   /**
@@ -76,9 +81,8 @@ declare class MouseInteractionManager<O extends PIXI.Container = PIXI.Container,
    * Bound handlers which can be added and removed
    * @defaultValue `{}`
    */
-  handlers: Record<
-    'contextmenu' | 'mousedown' | 'mousemove' | 'mouseout' | 'mouseover' | 'mouseup' | 'rightdown',
-    Function
+  handlers: Partial<
+    Record<'contextmenu' | 'mousedown' | 'mousemove' | 'mouseout' | 'mouseover' | 'mouseup' | 'rightdown', Function>
   >;
 
   /**
@@ -128,14 +132,14 @@ declare class MouseInteractionManager<O extends PIXI.Container = PIXI.Container,
    * @param event  - The event being handled
    * @returns Can the action be performed?
    */
-  can(action: keyof this['permissions'], event: Event | PIXI.InteractionEvent): boolean;
+  can(action: MouseInteractionManager.EventNames, event: Event | PIXI.InteractionEvent): boolean;
 
   /**
    * Execute a callback function associated with a certain action in the workflow
    * @param action - The action being attempted
    * @param event  - The event being handled
    */
-  callback(action: keyof this['callbacks'], event: Event | PIXI.InteractionEvent): unknown;
+  callback(action: MouseInteractionManager.EventNames, event: Event | PIXI.InteractionEvent): unknown;
 
   /**
    * A reference to the possible interaction states which can be observed
@@ -254,4 +258,22 @@ declare class MouseInteractionManager<O extends PIXI.Container = PIXI.Container,
     DRAG: 3;
     DROP: 4;
   };
+}
+
+declare namespace MouseInteractionManager {
+  type EventNames =
+    | 'clickLeft'
+    | 'clickLeft2'
+    | 'clickRight'
+    | 'clickRight2'
+    | 'dragLeftCancel'
+    | 'dragLeftDrop'
+    | 'dragLeftMove'
+    | 'dragLeftStart'
+    | 'dragRightCancel'
+    | 'dragRightDrop'
+    | 'dragRightMove'
+    | 'dragRightStart'
+    | 'hoverIn'
+    | 'hoverOut';
 }
