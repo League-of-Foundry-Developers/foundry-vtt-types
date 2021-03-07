@@ -181,6 +181,7 @@ import './foundry/pixi/containers/placeableObjects/token';
 import './foundry/pixi/containers/placeableObjects/wall';
 
 import './foundry/pixi/graphics/gridHighlight';
+import './foundry/pixi/graphics/resizeHandle';
 
 import './foundry/pixi/rectangles/normalizedRectangle';
 

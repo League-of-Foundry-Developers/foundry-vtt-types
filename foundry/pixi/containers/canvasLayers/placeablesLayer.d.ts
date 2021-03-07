@@ -49,7 +49,7 @@ declare abstract class PlaceablesLayer<P extends PlaceableObject = PlaceableObje
   /**
    * A Quadtree which partitions and organizes Walls into quadrants for efficient target identification.
    */
-  quadtree: Quadtree | null;
+  quadtree: Quadtree<P> | null;
 
   /* -------------------------------------------- */
   /*  Properties                                  */
