@@ -13,7 +13,7 @@ class NoIcon extends PlaceableObject {
     return this;
   }
 }
-expectType<MouseInteractionManager<NoIcon> | null>(new NoIcon().mouseInteractionManager);
+expectType<MouseInteractionManager<NoIcon, NoIcon | ControlIcon> | null>(new NoIcon().mouseInteractionManager);
 
 class HasIcon extends PlaceableObject {
   get bounds(): NormalizedRectangle {
@@ -26,4 +26,4 @@ class HasIcon extends PlaceableObject {
     return this;
   }
 }
-expectType<MouseInteractionManager<HasIcon, ControlIcon> | null>(new HasIcon().mouseInteractionManager);
+expectType<MouseInteractionManager<HasIcon, HasIcon | ControlIcon> | null>(new HasIcon().mouseInteractionManager);
