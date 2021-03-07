@@ -72,12 +72,10 @@ declare namespace DrawingConfig {
     submitText: string;
   }
 
-  // I am not sure this works completely. If anything, it will only work as long as the keys in `DRAWING_FILL_TYPES` do
-  // not have multiple space delimited words in them. As soon as they do, the values in this type will definitely be
-  // incorrect. This is because the `titleCase` string function used in foundry.js capitalizes each space delimited word
-  // on its own. Typescript's `Capitalize` only capitalizes the first letter, so there is no direct equivalent.
   type FillTypes = {
-    [Key in keyof typeof CONST['DRAWING_FILL_TYPES'] as typeof CONST['DRAWING_FILL_TYPES'][Key]]: `DRAWING.FillType${Capitalize<Key>}`;
+    [Key in keyof typeof CONST['DRAWING_FILL_TYPES'] as typeof CONST['DRAWING_FILL_TYPES'][Key]]: `DRAWING.FillType${Capitalize<
+      Lowercase<Key>
+    >}`;
   };
 
   interface FormData {
