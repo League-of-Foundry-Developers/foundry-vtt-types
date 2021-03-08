@@ -16,7 +16,7 @@ declare class ItemSheet<
    * @param item    - The Item instance being displayed within the sheet.
    * @param options - Additional options which modify the rendering of the item.
    */
-  constructor(item: O, options?: BaseEntitySheet.Options);
+  constructor(item: O, options?: Partial<BaseEntitySheet.Options>);
 
   /**
    * Assign the default options which are supported by this Application

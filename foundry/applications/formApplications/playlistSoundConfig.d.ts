@@ -7,7 +7,11 @@ declare class PlaylistSoundConfig extends FormApplication<PlaylistSoundConfig.Da
    * @param sound    - An Object for the Playlist Sound data
    * @param options  - Additional application rendering options
    */
-  constructor(playlist: PlaylistSoundConfig['playlist'], sound: Playlist.Sound, options: FormApplication.Options);
+  constructor(
+    playlist: PlaylistSoundConfig['playlist'],
+    sound: Playlist.Sound,
+    options: Partial<FormApplication.Options>
+  );
 
   playlist: Playlist;
 

@@ -6,7 +6,7 @@ declare class WallConfig extends FormApplication<WallConfig.Data, Wall> {
    * @param object - The Wall object for which settings are being configured
    * @param options - Additional options which configure the rendering of the configuration sheet.
    */
-  constructor(object: Wall, options?: WallConfig.Options);
+  constructor(object: Wall, options?: Partial<WallConfig.Options>);
 
   options: WallConfig.Options;
 

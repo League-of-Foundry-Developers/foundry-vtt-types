@@ -5,7 +5,7 @@
  * @param options - Application options.
  */
 declare class PermissionControl<E extends Entity> extends BaseEntitySheet<PermissionControl.Data<E>, E> {
-  constructor(entity: E, options?: BaseEntitySheet.Options);
+  constructor(entity: E, options?: Partial<BaseEntitySheet.Options>);
 
   /**
    * @override

@@ -2,7 +2,7 @@
  * The World Management setup application
  */
 declare class WorldConfig extends FormApplication<WorldConfig.Data, Game.World> {
-  constructor(object: Game.World, options?: WorldConfig.Options);
+  constructor(object: Game.World, options?: Partial<WorldConfig.Options>);
 
   options: WorldConfig.Options;
 

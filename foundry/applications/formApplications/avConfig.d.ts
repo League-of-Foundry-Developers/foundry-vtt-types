@@ -2,7 +2,7 @@
  * Audio/Video Conferencing Configuration Sheet
  */
 declare class AVConfig extends FormApplication<AVConfig.Data, AVMaster> {
-  constructor(object: AVMaster, options?: FormApplication.Options);
+  constructor(object: AVMaster, options?: Partial<FormApplication.Options>);
 
   /** @override */
   static get defaultOptions(): AVConfig.Options;

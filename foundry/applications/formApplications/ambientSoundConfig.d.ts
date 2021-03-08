@@ -6,7 +6,7 @@ declare class AmbientSoundConfig extends FormApplication<AmbientSoundConfig.Data
    * @param sound - The sound object being configured
    * @param options - Additional application rendering options
    */
-  constructor(sound: AmbientSound, options?: AmbientSoundConfig.Options);
+  constructor(sound: AmbientSound, options?: Partial<AmbientSoundConfig.Options>);
 
   options: AmbientSoundConfig.Options;
 

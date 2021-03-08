@@ -17,7 +17,7 @@ declare class ActorSheet<
    * @param options - Additional options which modify the rendering of the
    *                  Actor's sheet.
    */
-  constructor(actor: O, options?: BaseEntitySheet.Options);
+  constructor(actor: O, options?: Partial<BaseEntitySheet.Options>);
 
   /**
    * If this Actor Sheet represents a synthetic Token actor, reference the active Token

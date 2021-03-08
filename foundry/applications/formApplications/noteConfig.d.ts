@@ -6,7 +6,7 @@ declare class NoteConfig extends FormApplication<NoteConfig.Data, Note> {
    * @param note - The Note object for which settings are being configured
    * @param options - Additional Application options
    */
-  constructor(note: Note, options?: FormApplication.Options);
+  constructor(note: Note, options?: Partial<FormApplication.Options>);
 
   /**
    * @override

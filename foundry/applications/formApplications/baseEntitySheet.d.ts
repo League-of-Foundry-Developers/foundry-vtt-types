@@ -12,7 +12,7 @@ declare class BaseEntitySheet<
    * @param object  - An Entity which should be managed by this form sheet.
    * @param options - Optional configuration parameters for how the form behaves.
    */
-  constructor(object: O, options?: BaseEntitySheet.Options);
+  constructor(object: O, options?: Partial<BaseEntitySheet.Options>);
 
   /**
    * @override

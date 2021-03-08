@@ -7,7 +7,7 @@ declare class PlayerConfig extends FormApplication<PlayerConfig.Data, User> {
    * @param user    - The User entity being configured.
    * @param options - Additional rendering options which modify the behavior of the form.
    */
-  constructor(user: User, options: FormApplication.Options);
+  constructor(user: User, options: Partial<FormApplication.Options>);
 
   user: User;
 
