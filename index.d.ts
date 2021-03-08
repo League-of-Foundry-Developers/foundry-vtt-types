@@ -10,6 +10,7 @@ import './foundry/audioHelper';
 import './foundry/avClient';
 import './foundry/avMaster';
 import './foundry/avSettings';
+import './foundry/cameraPopoutAppWrapper';
 import './foundry/canvas';
 import './foundry/chatBubbles';
 import './foundry/clientSettings';
