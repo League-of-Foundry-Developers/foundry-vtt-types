@@ -16,7 +16,7 @@ declare class PlayerList extends Application {
   static get defaultOptions(): Application.Options;
 
   /** @override */
-  render(force?: boolean, options?: Application.RenderOptions): unknown;
+  render(force?: boolean, options?: Application.RenderOptions): this;
 
   /** @override */
   getData(options?: Application.RenderOptions): PlayerList.Data | Promise<PlayerList.Data>;
@@ -27,7 +27,7 @@ declare class PlayerList extends Application {
   /**
    * Return the default context options available for the Players application
    */
-  private _getUserContextOptions(): PlayerList.UserContextOptions[];
+  private _getUserContextOptions(): ContextMenu.Item[];
 
   /**
    * Toggle display of the Players hud setting for whether or not to display offline players
@@ -46,19 +46,5 @@ declare namespace PlayerList {
     showOffline: boolean;
     /** If to hide the player list */
     hide: boolean;
-  }
-
-  /**
-   * User content options when right clicking on a user in the user list
-   */
-  interface UserContextOptions {
-    /** Name of the context item */
-    name: string;
-    /** Icon to show beside the name */
-    icon: string;
-    /** Used to determine if to show the content option to the current user */
-    condition: (li: JQuery) => boolean;
-    /** Call back when the option is clicked */
-    callback: (li: JQuery) => void;
   }
 }
