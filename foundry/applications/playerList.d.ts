@@ -1,27 +1,64 @@
-// @TODO:
-
 /**
  * The active Player List application
  */
 declare class PlayerList extends Application {
   /**
-   * Assign the default options which are supported by the PlayerList UI
+   * @defaultValue
+   * ```typescript
+   * {
+   *   ...super.defaultOptions,
+   *   id: 'players',
+   *   template: 'templates/user/players.html',
+   *   popOut: false
+   * }
+   * ```
    */
   static get defaultOptions(): Application.Options;
 
-  /**
-   * Add a context menu to the players UI which allows players to control or release Actors that they own
-   */
-  activateListeners(html: JQuery): any;
+  /** @override */
+  render(force?: boolean, options?: Application.RenderOptions): unknown;
+
+  /** @override */
+  getData(options?: Application.RenderOptions): PlayerList.Data | Promise<PlayerList.Data>;
+
+  /** @override */
+  activateListeners(html: JQuery): void;
 
   /**
-   * Prepare the default data which is required to render the PlayerList ui
+   * Return the default context options available for the Players application
    */
-  getData(): object;
+  private _getUserContextOptions(): PlayerList.UserContextOptions[];
 
   /**
-   * Extend the render logic to first check whether a render is necessary based on the context
-   * If a specific context was provided, make sure an update to the navigation is necessary before rendering
+   * Toggle display of the Players hud setting for whether or not to display offline players
    */
-  render(force?: boolean, context?: Application.RenderOptions): any;
+  private _onToggleOfflinePlayers(event: Event): void;
+}
+
+declare namespace PlayerList {
+  /**
+   * Data object returned from the PlayerList getData function
+   */
+  interface Data {
+    /** List of users connected to Foundry */
+    users: User[];
+    /** If to show offline users */
+    showOffline: boolean;
+    /** If to hide the player list */
+    hide: boolean;
+  }
+
+  /**
+   * User content options when right clicking on a user in the user list
+   */
+  interface UserContextOptions {
+    /** Name of the context item */
+    name: string;
+    /** Icon to show beside the name */
+    icon: string;
+    /** Used to determine if to show the content option to the current user */
+    condition: (li: JQuery) => boolean;
+    /** Call back when the option is clicked */
+    callback: (li: JQuery) => void;
+  }
 }
