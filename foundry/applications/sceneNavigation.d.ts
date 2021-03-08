@@ -1,11 +1,19 @@
-// @TODO:
-
 /**
  * Top menu scene navigation
  */
 declare class SceneNavigation extends Application {
   /**
    * Assign the default options which are supported by the SceneNavigation UI
+   * @defaultValue
+   * ```typescript
+   * {
+   *   ...super.defaultOptions,
+   *   id: 'navigation',
+   *   template: 'templates/hud/navigation.html',
+   *   popOut: false,
+   *   dragDrop: [{dragSelector: ".scene"}]
+   * }
+   * ```
    */
   static get defaultOptions(): Application.Options;
 
@@ -14,10 +22,14 @@ declare class SceneNavigation extends Application {
    */
   get scenes(): Scene[];
 
-  /**
-   * Collapse the SceneNavigation menu, sliding it up if it is currently expanded
-   */
-  collapse(): Promise<boolean>;
+  /** @override */
+  render(force?: boolean, options?: Application.RenderOptions): Application;
+
+  /** @override */
+  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+
+  /** @override */
+  getData(options?: Application.RenderOptions): SceneNavigation.Data | Promise<SceneNavigation.Data>;
 
   /**
    * Expand the SceneNavigation menu, sliding it down if it is currently collapsed
@@ -25,13 +37,24 @@ declare class SceneNavigation extends Application {
   expand(): Promise<boolean>;
 
   /**
-   * Prepare the default data which is required to render the SceneNavigation menu
+   * Collapse the SceneNavigation menu, sliding it up if it is currently expanded
    */
-  getData(): object;
+  collapse(): Promise<boolean>;
 
   /**
-   * Extend the Application.render logic to first check the rendering context to see what was changed
-   * If a specific context was provided, make sure an update to the navigation is necessary before rendering
+   * Activate Scene Navigation event listeners
    */
-  render(force?: boolean, options?: Application.RenderOptions): this;
+  activateListeners(html: JQuery): void;
+
+  /**
+   * Get the set of ContextMenu options which should be applied for Scenes in the menu
+   */
+  private _getContextMenuOptions(): ContextMenu.Item[];
+}
+
+declare namespace SceneNavigation {
+  interface Data {
+    collapsed: boolean;
+    scenes: Scene[];
+  }
 }
