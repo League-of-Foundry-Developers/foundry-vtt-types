@@ -9,10 +9,7 @@ declare class CombatEncounters extends EntityCollection<Combat> {
    * Provide the settings object which configures the Combat entity
    * @returns
    */
-  get settings(): {
-    resource: string;
-    skipDefeated: boolean;
-  };
+  get settings(): Combat.Settings;
 
   /**
    * Get an Array of Combat instances which apply to the current canvas scene
