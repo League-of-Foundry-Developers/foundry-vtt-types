@@ -53,7 +53,7 @@ declare class MacroConfig extends BaseEntitySheet<MacroConfig.Data, Macro> {
 
 declare namespace MacroConfig {
   interface Data extends BaseEntitySheet.Data {
-    macroTypes: Duplicated<any>; // TODO: type when System is typed
+    macroTypes: Duplicated<Game['system']['entityTypes']['Macro']>;
     macroScopes: typeof CONST['MACRO_SCOPES'];
   }
 

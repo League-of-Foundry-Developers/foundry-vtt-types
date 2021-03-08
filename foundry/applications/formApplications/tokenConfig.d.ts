@@ -110,7 +110,7 @@ declare namespace TokenConfig {
     alternateImages: TokenConfig['_getAlternateTokenImages'] | [];
     object: Duplicated<TokenConfig['token']['data']>;
     options: TokenConfig['options'];
-    gridUnits: Scene['data']['gridUnits']; // TODO: enhance when System is typed
+    gridUnits: Scene['data']['gridUnits'] | Game['system']['gridUnits'];
     barAttributes: typeof TokenConfig['getTrackedAttributeChoices'];
     bar1: TokenConfig['object']['getBarAttribute'];
     bar2: TokenConfig['object']['getBarAttribute'];

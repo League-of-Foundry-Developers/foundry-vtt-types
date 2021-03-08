@@ -62,7 +62,7 @@ declare class ItemSheet<
   /**
    * Handle changing the item image
    */
-  protected _onEditImage(event: JQuery.ClickEvent): Promise<any>; // TODO: Adjust once FilePicker is updated
+  protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
 }
 
 declare namespace ItemSheet {

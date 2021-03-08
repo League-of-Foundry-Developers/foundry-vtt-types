@@ -28,7 +28,7 @@ declare class Settings extends SidebarTab {
 declare namespace Settings {
   interface Data {
     user: User;
-    system: any; // TODO: update when System is typed
+    system: Game['system'];
     coreVersion: string;
     canConfigure: boolean;
     canSetup: boolean;

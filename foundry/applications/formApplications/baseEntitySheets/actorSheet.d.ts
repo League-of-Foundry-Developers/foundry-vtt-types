@@ -63,7 +63,7 @@ declare class ActorSheet<
   /**
    * Handle changing the actor profile image by opening a FilePicker
    */
-  protected _onEditImage(event: JQuery.ClickEvent): Promise<any>; // TODO: Adjust once FilePicker is updated
+  protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
 
   /** @override */
   protected _updateObject(event: Event, formData: object): Promise<O>;

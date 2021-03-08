@@ -800,6 +800,7 @@ declare namespace Game {
     data: System.Data;
     entityTypes: Record<string, string[]>; // TODO: make this more precise
     esmodules: string[];
+    gridUnits: string;
     id: string;
     languages: Language[];
     model: {

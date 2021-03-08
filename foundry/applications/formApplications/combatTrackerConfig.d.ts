@@ -31,7 +31,7 @@ declare class CombatTrackerConfig extends FormApplication<CombatTrackerConfig.Da
   /**
    * Get an Array of attribute choices which could be tracked for Actors in the Combat Tracker
    */
-  getAttributeChoices(): Promise<Array<unknown>>; // TODO: type when TokenConfig is typed
+  getAttributeChoices(): ReturnType<typeof TokenConfig['getTrackedAttributeChoices']>;
 }
 
 declare namespace CombatTrackerConfig {
