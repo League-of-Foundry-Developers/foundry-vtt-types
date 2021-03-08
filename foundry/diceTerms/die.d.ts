@@ -8,7 +8,7 @@
  * ```
  */
 declare class Die extends DiceTerm {
-  constructor(termData?: Die.TermData);
+  constructor(termData?: Partial<Die.TermData>);
 
   /* -------------------------------------------- */
 

@@ -194,7 +194,7 @@ declare class Application {
    * Render the outer application wrapper
    * @returns A promise resolving to the constructed jQuery object
    */
-  protected _renderOuter(options: Application.RenderOptions): Promise<HTMLElement>;
+  protected _renderOuter(options: Application.RenderOptions): Promise<HTMLElement> | Promise<JQuery<JQuery.Node>>;
 
   /**
    * Render the inner application content

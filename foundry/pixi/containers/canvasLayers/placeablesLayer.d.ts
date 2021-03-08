@@ -49,7 +49,7 @@ declare abstract class PlaceablesLayer<P extends PlaceableObject = PlaceableObje
   /**
    * A Quadtree which partitions and organizes Walls into quadrants for efficient target identification.
    */
-  quadtree: Quadtree | null;
+  quadtree: Quadtree<P> | null;
 
   /* -------------------------------------------- */
   /*  Properties                                  */
@@ -108,8 +108,9 @@ declare abstract class PlaceablesLayer<P extends PlaceableObject = PlaceableObje
 
   /**
    * @override
+   * @remarks Returns `Promise<P[]>`
    */
-  draw(): Promise<P[]>;
+  draw(): unknown;
 
   /* -------------------------------------------- */
 
@@ -131,15 +132,17 @@ declare abstract class PlaceablesLayer<P extends PlaceableObject = PlaceableObje
 
   /**
    * @override
+   * @remarks Returns `this`
    */
-  activate(): this;
+  activate(): unknown;
 
   /* -------------------------------------------- */
 
   /**
    * @override
+   * @remarks Returns `this`
    */
-  deactivate(): this;
+  deactivate(): unknown;
 
   /* -------------------------------------------- */
 
@@ -434,7 +437,7 @@ declare abstract class PlaceablesLayer<P extends PlaceableObject = PlaceableObje
    * @param event - (unused)
    * @see {@link Canvas#_onDragLeftDrop}
    */
-  protected _onDragLeftCancel(event?: any): void;
+  protected _onDragLeftCancel(event?: PointerEvent): void;
 
   /* -------------------------------------------- */
 
@@ -443,7 +446,7 @@ declare abstract class PlaceablesLayer<P extends PlaceableObject = PlaceableObje
    * @param event - (unused)
    * @see {@link Canvas#_onClickRight}
    */
-  protected _onClickRight(event?: any): void;
+  protected _onClickRight(event?: PIXI.InteractionEvent): void;
 
   /* -------------------------------------------- */
 
@@ -452,7 +455,7 @@ declare abstract class PlaceablesLayer<P extends PlaceableObject = PlaceableObje
    * This handler will rotate all controlled objects by some incremental angle.
    * @param event - The mousewheel event which originated the request
    */
-  protected _onMouseWheel(event: MouseWheelEvent): Promise<Array<Partial<P>> | Partial<P>> | null;
+  protected _onMouseWheel(event: WheelEvent): Promise<Array<Partial<P>> | Partial<P>> | null;
 
   /* -------------------------------------------- */
 

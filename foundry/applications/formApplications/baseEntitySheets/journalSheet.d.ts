@@ -9,7 +9,7 @@ declare class JournalSheet<
    * @param entity  - The JournalEntry instance which is being edited
    * @param options - JournalSheet options
    */
-  constructor(entity: O, options?: JournalSheet.Options);
+  constructor(entity: O, options?: Partial<JournalSheet.Options>);
 
   protected _sheetMode: JournalSheet.SheetMode | null;
 
@@ -61,6 +61,34 @@ declare namespace JournalSheet {
   }
 
   interface Options extends BaseEntitySheet.Options {
+    /**
+     * @defaultValue `['sheet', 'journal-sheet']`
+     */
+    classes: string[];
+    /**
+     * @defaultValue `720`
+     */
+    width: number;
+    /**
+     * @defaultValue `800`
+     */
+    height: number;
+    /**
+     * @defaultValue `true`
+     */
+    resizable: boolean;
+    /**
+     * @defaultValue `false`
+     */
+    closeOnSubmit: boolean;
+    /**
+     * @defaultValue `true`
+     */
+    submitOnClose: boolean;
+    /**
+     * @defaultValue {@link ENTITY_PERMISSIONS.NONE}
+     */
+    viewPermission: Const.EntityPermission;
     sheetMode?: SheetMode | null;
   }
 

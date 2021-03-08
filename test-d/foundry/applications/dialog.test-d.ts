@@ -20,7 +20,7 @@ expectType<Promise<true | false | null>>(
     render: (html) => {
       expectType<JQuery>(html);
     },
-    options: { jQuery: true }
+    options: {}
   })
 );
 
@@ -48,15 +48,15 @@ expectType<Promise<true | false | null>>(
     title: title,
     content: content,
     yes: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
       return true;
     },
     no: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
       return false;
     },
     render: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
     }
   })
 );
@@ -66,15 +66,15 @@ expectType<Promise<string | number | null>>(
     title: title,
     content: content,
     yes: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
       return 'foo';
     },
     no: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
       return 0;
     },
     render: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
     }
   })
 );
@@ -84,15 +84,15 @@ expectType<Promise<string | number | null>>(
     title: title,
     content: content,
     yes: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
       return 0;
     },
     no: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
       return 'foo';
     },
     render: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
     }
   })
 );
@@ -102,15 +102,15 @@ expectType<Promise<string | null>>(
     title: title,
     content: content,
     yes: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
       return 'foo';
     },
     no: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
       return 'bar';
     },
     render: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
     }
   })
 );
@@ -120,7 +120,7 @@ expectType<Promise<true | false>>(
     title: title,
     content: content,
     render: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
     },
     rejectClose: true
   })
@@ -131,7 +131,7 @@ expectType<Promise<true | false | null>>(
     title: title,
     content: content,
     render: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
     },
     rejectClose: false
   })
@@ -142,7 +142,7 @@ expectType<Promise<true | false | null>>(
     title: title,
     content: content,
     render: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
     }
   })
 );
@@ -152,15 +152,15 @@ expectType<Promise<true | false | null>>(
     title: title,
     content: content,
     yes: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
       return true;
     },
     no: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
       return false;
     },
     render: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
     },
     options: {}
   })
@@ -171,15 +171,15 @@ expectType<Promise<string | number | null>>(
     title: title,
     content: content,
     yes: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
       return 'foo';
     },
     no: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
       return 0;
     },
     render: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
     },
     options: {}
   })
@@ -190,15 +190,15 @@ expectType<Promise<string | number | null>>(
     title: title,
     content: content,
     yes: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
       return 0;
     },
     no: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
       return 'foo';
     },
     render: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
     },
     options: {}
   })
@@ -209,15 +209,15 @@ expectType<Promise<string | null>>(
     title: title,
     content: content,
     yes: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
       return 'foo';
     },
     no: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
       return 'bar';
     },
     render: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
     },
     options: {}
   })
@@ -228,7 +228,7 @@ expectType<Promise<true | false>>(
     title: title,
     content: content,
     render: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
     },
     rejectClose: true,
     options: {}
@@ -240,7 +240,7 @@ expectType<Promise<true | false | null>>(
     title: title,
     content: content,
     render: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
     },
     rejectClose: false,
     options: {}
@@ -252,7 +252,7 @@ expectType<Promise<true | false | null>>(
     title: title,
     content: content,
     render: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
     },
     options: {}
   })
@@ -409,11 +409,11 @@ expectType<Promise<number>>(
     content: content,
     label: label,
     callback: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
       return 0;
     },
     render: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
     },
     options: {}
   })
@@ -425,11 +425,11 @@ expectType<Promise<string>>(
     content: content,
     label: label,
     callback: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
       return 'string';
     },
     render: (html) => {
-      expectType<HTMLElement>(html);
+      expectType<JQuery>(html);
     },
     options: {}
   })

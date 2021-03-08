@@ -3,6 +3,14 @@
  * This double-dips to implement the "gridless" option
  */
 declare class BaseGrid extends PIXI.Container {
+  constructor(options: {
+    dimensions: Canvas['dimensions'];
+    color: string;
+    alpha: Scene['data']['gridAlpha'];
+    columns?: boolean;
+    even?: boolean;
+  });
+
   /**
    * Grid Unit Width
    */
@@ -17,14 +25,6 @@ declare class BaseGrid extends PIXI.Container {
    * Highlight active grid spaces
    */
   highlight: PIXI.Container;
-
-  constructor(options: {
-    dimensions: Canvas['dimensions'];
-    color: string;
-    alpha: Scene['data']['gridAlpha'];
-    columns?: boolean;
-    even?: boolean;
-  });
 
   draw(): this;
 
@@ -44,13 +44,13 @@ declare class BaseGrid extends PIXI.Container {
    */
   highlightGridPosition(
     layer: GridHighlight,
-    options: {
-      x: number;
-      y: number;
-      color: number;
-      border: number;
-      alpha: number;
-      shape: PIXI.Polygon;
+    options?: {
+      x?: number;
+      y?: number;
+      color?: number;
+      border?: number | null;
+      alpha?: number;
+      shape?: PIXI.Polygon | null;
     }
   ): void;
 

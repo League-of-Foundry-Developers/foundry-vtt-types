@@ -56,7 +56,7 @@ declare class AmbientSound extends PlaceableObject<AmbientSound.Data> {
    * @param volume    - The target playback volume
    * @param fade      - Whether to fade the volume from its previous level
    */
-  play(isAudible: boolean, volume: number, { fade }?: { fade?: boolean }): void | number;
+  play(isAudible: boolean, volume?: number, { fade }?: { fade?: boolean }): void | number;
 
   /**
    * @override

@@ -45,7 +45,7 @@ declare abstract class FormApplication<
    * The values of this Array are inner-objects with references to the MCE editor and other metadata
    * @defaultValue `{}`
    */
-  editors: Partial<Record<string, FormApplication.Editor>>;
+  editors: Partial<Record<string, FormApplication.FormApplicationEditor>>;
 
   /**
    * Assign the default options which are supported by the entity edit sheet.
@@ -211,13 +211,14 @@ declare namespace FormApplication {
     title: string;
   }
 
-  interface Editor {
+  interface FormApplicationEditor {
+    active: boolean;
     activate: boolean;
     button: HTMLElement;
     changed: boolean;
     hasButton: boolean;
     initial: string;
-    mce: Editor;
+    mce: Editor | null;
     options: TextEditor.Options;
     target: string;
   }

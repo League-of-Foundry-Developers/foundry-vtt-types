@@ -204,13 +204,15 @@ declare abstract class PlaceableObject<D extends PlaceableObject.Data = Placeabl
   abstract refresh(): unknown;
 
   static create<T extends PlaceableObject, U>(
+    this: ConstructorOf<T>,
     data: Expanded<U> extends DeepPartial<T['data']> ? U : DeepPartial<T['data']>,
     options?: Entity.CreateOptions
   ): Promise<T | void>;
   static create<T extends PlaceableObject, U>(
+    this: ConstructorOf<T>,
     data: Expanded<U> extends DeepPartial<T['data']> ? U[] : DeepPartial<T['data']>[],
     options?: Entity.CreateOptions
-  ): Promise<T[] | void>;
+  ): Promise<T | T[] | void>;
 
   update<U>(data: Expanded<U> extends DeepPartial<D> ? U : never, options?: Entity.UpdateOptions): Promise<this>;
   update(data: DeepPartial<D>, options?: Entity.UpdateOptions): Promise<this>;
