@@ -90,13 +90,13 @@ declare class SceneControls extends Application {
    * Handle click events on a Control set
    * @param event - A click event on a tool control
    */
-  protected _onClickLayer(event: JQuery.Event): void;
+  protected _onClickLayer(event: JQuery.ClickEvent): void;
 
   /**
    * Handle click events on Tool controls
    * @param event - A click event on a tool control
    */
-  protected _onClickTool(event: JQuery.Event): void;
+  protected _onClickTool(event: JQuery.ClickEvent): void;
 
   /**
    * Get the set of Control sets and tools that are rendered as the Scene Controls.
