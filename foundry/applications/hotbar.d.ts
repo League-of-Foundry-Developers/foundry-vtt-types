@@ -13,7 +13,7 @@
  */
 
 declare class Hotbar extends Application {
-  constructor(options: Application.Options);
+  constructor(options?: Partial<Application.Options>);
 
   /**
    * The currently viewed macro page
