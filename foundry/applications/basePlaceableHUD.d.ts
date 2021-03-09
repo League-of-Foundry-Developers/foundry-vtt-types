@@ -1,14 +1,12 @@
 /**
  * An abstract base class for displaying a heads-up-display interface bound to a Placeable Object on the canvas
  */
-declare abstract class BasePlaceableHUD<
-  P extends PlaceableObject<PlaceableObject.Data>,
-  L extends PlaceablesLayer<P>
-> extends Application {
+declare abstract class BasePlaceableHUD<P extends PlaceableObject<PlaceableObject.Data>> extends Application {
   constructor(...args: ConstructorParameters<typeof Application>);
 
   /**
    * Reference a PlaceableObject this HUD is currently bound to
+   * @defaultValue `null`
    */
   object: P | null;
 
@@ -27,7 +25,7 @@ declare abstract class BasePlaceableHUD<
   /**
    * Convenience access for the canvas layer which this HUD modifies
    */
-  get layer(): L;
+  get layer(): P['layer'];
 
   /**
    * Bind the HUD to a new PlaceableObject and display it
@@ -58,7 +56,7 @@ declare abstract class BasePlaceableHUD<
    */
   getData(
     options?: Application.RenderOptions
-  ): P['data'] & {
+  ): Duplicated<P['data']> & {
     id: Application['id'];
     classes: string;
     appId: Application['appId'];
@@ -66,7 +64,10 @@ declare abstract class BasePlaceableHUD<
     icons: typeof CONFIG['controlIcons'];
   };
 
-  /** @override */
+  /**
+   * @override
+   * @remarks Returns `void`
+   */
   setPosition({ left, top, width, height, scale }?: Partial<Application.Position>): any;
 
   /** @override */
