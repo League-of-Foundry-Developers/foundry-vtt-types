@@ -42,7 +42,7 @@ declare class Hotbar extends Application {
   /**
    * @override
    * @defaultValue
-   * ```
+   * ```typescript
    * mergeObject(super.defaultOptions, {
    *   id: "hotbar",
    *   template: "templates/hud/hotbar.html",
@@ -54,7 +54,7 @@ declare class Hotbar extends Application {
   static get defaultOptions(): Application.Options;
 
   /** @override */
-  getData(options?: Application.RenderOptions): { page: number; macros: Macro[]; barClass: 'collapsed' | '' };
+  getData(options?: Application.RenderOptions): Hotbar.Data | Promise<Hotbar.Data>;
 
   /**
    * Get the Array of Macro (or null) values that should be displayed on a numbered page of the bar
@@ -135,4 +135,12 @@ declare class Hotbar extends Application {
    * @param event -
    */
   protected _onToggleBar(event: JQuery.ClickEvent): void;
+}
+
+declare namespace Hotbar {
+  interface Data {
+    page: number;
+    macros: Macro[];
+    barClass: 'collapsed' | '';
+  }
 }
