@@ -31,18 +31,11 @@ declare class CameraPopoutAppWrapper {
    */
   get position(): Application.Position;
 
-  /**
-   * Sets the position of this popout window
-   */
-  setPosition(position?: { left?: number; top?: number; width?: number; height?: number; scale?: number }): void;
+  /** @override */
+  setPosition({ left, top, width, height, scale }: Partial<Application.Position>): void;
 
-  /**
-   * The resize event
-   */
   private _onResize(event: Event): void;
 
-  /**
-   * Brings this popout window to the top of all popout windows
-   */
+  /** @override */
   bringToTop(): void;
 }
