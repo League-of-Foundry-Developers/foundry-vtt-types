@@ -23,7 +23,7 @@ declare class SceneNavigation extends Application {
   get scenes(): Scene[];
 
   /** @override */
-  render(force?: boolean, options?: Application.RenderOptions): this;
+  render(force?: boolean, options?: Application.RenderOptions): this | undefined;
 
   /** @override */
   protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
@@ -54,7 +54,7 @@ declare class SceneNavigation extends Application {
   /**
    * Handle left-click events on the scenes in the navigation menu
    */
-  private _onClickScene(event: Event): void;
+  private _onClickScene(event: JQuery.ClickEvent): void;
 
   /** @override */
   protected _onDragStart(event: DragEvent): void;
@@ -63,12 +63,12 @@ declare class SceneNavigation extends Application {
   protected _onDrop(event: DragEvent): Promise<boolean | undefined | void>;
 
   /** @override */
-  private _onToggleNav(event: Event): void;
+  private _onToggleNav(event: JQuery.ClickEvent): void;
 
   /**
    * Updated the loading progress bar
-   * @param context- The message to display in the progress back
-   * @param pct- The percentage the progress bar has completed
+   * @param context - The message to display in the progress back
+   * @param pct     - The percentage the progress bar has completed
    */
   static _onLoadProgress(context: string, pct: number): void;
 }
@@ -76,6 +76,10 @@ declare class SceneNavigation extends Application {
 declare namespace SceneNavigation {
   interface Data {
     collapsed: boolean;
-    scenes: Scene[];
+    scenes: (Duplicated<Scene['data']> & {
+      users: { letter: string; color: User['data']['color'] };
+      visible: boolean;
+      css: [string | null];
+    })[];
   }
 }
