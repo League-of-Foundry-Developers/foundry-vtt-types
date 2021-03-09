@@ -81,7 +81,7 @@ declare class Combat extends Entity<Combat.Data> {
   /**
    * Get the Scene entity for this Combat encounter
    */
-  get scene(): Scene | undefined;
+  get scene(): ReturnType<Scenes['get']>;
 
   /**
    * Return the object of settings which modify the Combat Tracker behavior
@@ -177,7 +177,7 @@ declare class Combat extends Entity<Combat.Data> {
       messageOptions
     }?: {
       formula?: string | null;
-      messageOptions?: DeepPartial<ChatMessage.Data & { rollMode: ValueOf<typeof DICE_ROLL_MODES> }>;
+      messageOptions?: DeepPartial<ChatMessage.Data & { rollMode: Const.DiceRollMode }>;
       updateTurn?: boolean;
     }
   ): Promise<Combat>;
@@ -208,7 +208,7 @@ declare class Combat extends Entity<Combat.Data> {
    */
   rollNPC(args?: {
     formula?: string | null;
-    messageOptions?: DeepPartial<ChatMessage.Data & { rollMode: ValueOf<typeof DICE_ROLL_MODES> }>;
+    messageOptions?: DeepPartial<ChatMessage.Data & { rollMode: Const.DiceRollMode }>;
     updateTurn?: boolean;
   }): Promise<Combat>;
 
@@ -219,7 +219,7 @@ declare class Combat extends Entity<Combat.Data> {
    */
   rollAll(args?: {
     formula?: string | null;
-    messageOptions?: DeepPartial<ChatMessage.Data & { rollMode: ValueOf<typeof DICE_ROLL_MODES> }>;
+    messageOptions?: DeepPartial<ChatMessage.Data & { rollMode: Const.DiceRollMode }>;
     updateTurn?: boolean;
   }): Promise<Combat>;
 
