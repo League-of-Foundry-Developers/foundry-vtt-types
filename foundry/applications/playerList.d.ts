@@ -32,7 +32,7 @@ declare class PlayerList extends Application {
   /**
    * Toggle display of the Players hud setting for whether or not to display offline players
    */
-  private _onToggleOfflinePlayers(event: Event): void;
+  private _onToggleOfflinePlayers(event: JQuery.ClickEvent): void;
 }
 
 declare namespace PlayerList {
