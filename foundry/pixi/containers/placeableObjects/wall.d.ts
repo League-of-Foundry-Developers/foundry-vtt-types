@@ -20,6 +20,15 @@
  */
 declare class Wall extends PlaceableObject<Wall.Data> {
   /**
+   * @remarks Not used for `Wall`
+   */
+  controlIcon: null;
+  /**
+   * @remarks Type is `MouseInteractionManager<this, this['endpoints']>`
+   */
+  mouseInteractionManager: MouseInteractionManager<this, any> | null;
+
+  /**
    * An reference the Door Control icon associated with this Wall, if any
    */
   protected doorControl: DoorControl | null;
@@ -58,8 +67,10 @@ declare class Wall extends PlaceableObject<Wall.Data> {
   /** @override */
   draw(): Promise<this>;
 
+  endpoints: PIXI.Graphics;
+
   /** @override */
-  protected _createInteractionManager(): MouseInteractionManager;
+  protected _createInteractionManager(): NonNullable<this['mouseInteractionManager']>;
 
   /** @override */
   activateListeners(): void;

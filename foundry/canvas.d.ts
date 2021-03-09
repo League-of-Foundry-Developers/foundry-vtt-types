@@ -91,7 +91,7 @@ declare class Canvas {
    * The singleton interaction manager instance which handles mouse workflows on the Canvas
    * @defaultValue `null`
    */
-  mouseInteractionManager: MouseInteractionManager | null;
+  mouseInteractionManager: MouseInteractionManager<this['stage']> | null;
 
   /**
    * A flag for whether the game Canvas is ready to be used. False if the canvas is not yet drawn, true otherwise.
