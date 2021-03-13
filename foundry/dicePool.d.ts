@@ -76,7 +76,7 @@ declare class DicePool<O = any> {
     k: 'keep';
     kh: 'keep';
     kl: 'keep';
-  };
+  } & Partial<Record<string, string | ((this: DicePool, modifier: string) => unknown)>>;
 
   /* -------------------------------------------- */
 
