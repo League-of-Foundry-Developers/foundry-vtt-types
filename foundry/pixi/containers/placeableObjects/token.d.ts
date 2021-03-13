@@ -36,6 +36,11 @@
  */
 declare class Token extends PlaceableObject<Token.Data> {
   /**
+   * @remarks Not used for `Token`
+   */
+  controlIcon: null;
+
+  /**
    * A Ray which represents the Token's current movement path
    */
   protected _movement: Ray | null;

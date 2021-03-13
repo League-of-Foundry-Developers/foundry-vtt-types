@@ -28,6 +28,11 @@
  */
 declare class Drawing extends PlaceableObject<Drawing.Data> {
   /**
+   * @remarks Not used for `Drawing`
+   */
+  controlIcon: null;
+
+  /**
    * The inner drawing container
    */
   drawing: PIXI.Container | null;

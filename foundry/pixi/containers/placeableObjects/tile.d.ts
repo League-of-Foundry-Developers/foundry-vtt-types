@@ -24,6 +24,11 @@
  */
 declare class Tile extends PlaceableObject<Tile.Data> {
   /**
+   * @remarks Not used for `Tile`
+   */
+  controlIcon: null;
+
+  /**
    * The Tile border frame
    */
   frame: PIXI.Container | null;

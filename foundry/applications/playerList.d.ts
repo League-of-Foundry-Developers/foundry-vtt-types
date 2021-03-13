@@ -1,27 +1,50 @@
-// @TODO:
-
 /**
  * The active Player List application
  */
 declare class PlayerList extends Application {
   /**
-   * Assign the default options which are supported by the PlayerList UI
+   * @defaultValue
+   * ```typescript
+   * {
+   *   ...super.defaultOptions,
+   *   id: 'players',
+   *   template: 'templates/user/players.html',
+   *   popOut: false
+   * }
+   * ```
    */
   static get defaultOptions(): Application.Options;
 
-  /**
-   * Add a context menu to the players UI which allows players to control or release Actors that they own
-   */
-  activateListeners(html: JQuery): any;
+  /** @override */
+  render(force?: boolean, options?: Application.RenderOptions): this;
+
+  /** @override */
+  getData(options?: Application.RenderOptions): PlayerList.Data | Promise<PlayerList.Data>;
+
+  /** @override */
+  activateListeners(html: JQuery): void;
 
   /**
-   * Prepare the default data which is required to render the PlayerList ui
+   * Return the default context options available for the Players application
    */
-  getData(): object;
+  private _getUserContextOptions(): ContextMenu.Item[];
 
   /**
-   * Extend the render logic to first check whether a render is necessary based on the context
-   * If a specific context was provided, make sure an update to the navigation is necessary before rendering
+   * Toggle display of the Players hud setting for whether or not to display offline players
    */
-  render(force?: boolean, context?: Application.RenderOptions): any;
+  private _onToggleOfflinePlayers(event: JQuery.ClickEvent): void;
+}
+
+declare namespace PlayerList {
+  /**
+   * Data object returned from the PlayerList getData function
+   */
+  interface Data {
+    /** List of users connected to Foundry */
+    users: User[];
+    /** If to show offline users */
+    showOffline: boolean;
+    /** If to hide the player list */
+    hide: boolean;
+  }
 }
