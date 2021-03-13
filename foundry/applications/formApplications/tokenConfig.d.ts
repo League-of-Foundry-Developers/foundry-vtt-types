@@ -1,12 +1,11 @@
 /**
  * A Token Configuration Application
- *
- * @param token - The Token object for which settings are being configured
- * @param options - TokenConfig ui options (see Application)
- *
- * @param configureDefault - Configure the default actor token on submit
  */
 declare class TokenConfig extends FormApplication<TokenConfig.Data, Token> {
+  /**
+   * @param token   - The Token object for which settings are being configured
+   * @param options - TokenConfig ui options (see Application)
+   */
   constructor(token: Token, options?: Partial<TokenConfig.Options>);
 
   options: TileConfig.Options;
@@ -159,6 +158,9 @@ declare namespace TokenConfig {
   }
 
   interface Options extends FormApplication.Options {
+    /**
+     * Configure the default actor token on submit
+     */
     configureDefault?: boolean;
   }
 }

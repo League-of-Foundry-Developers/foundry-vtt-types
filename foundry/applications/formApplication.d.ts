@@ -15,7 +15,7 @@ declare abstract class FormApplication<
 > extends Application {
   /**
    * @param object  - Some object or entity which is the target to be updated.
-   *                 (default: `{}`)
+   *                  (default: `{}`)
    * @param options - Additional options which modify the rendering of the sheet.
    *                  (default: `{}`)
    */

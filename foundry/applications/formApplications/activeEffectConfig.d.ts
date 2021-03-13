@@ -1,8 +1,6 @@
 /**
  * A form designed for creating and editing an Active Effect on an Actor or Item entity.
  *
- * @param object  - The target active effect being configured
- * @param options - Additional options which modify this application instance
  * @typeParam D - The data structure used to render the handlebars template.
  * @typeParam O - the type of the ActiveEffect which should be managed by this form sheet
  */
@@ -10,6 +8,12 @@ declare class ActiveEffectConfig<
   D extends object = ActiveEffectConfig.Data,
   O extends ActiveEffect = D extends ActiveEffectConfig.Data<infer T> ? T : ActiveEffect
 > extends FormApplication<D, O> {
+  /**
+   * @param object  - The target active effect being configured
+   * @param options - Additional options which modify this application instance
+   */
+  constructor(object: O, options?: Partial<FormApplication.Options>);
+
   /** @override */
   static get defaultOptions(): FormApplication.Options;
 

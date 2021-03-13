@@ -3,6 +3,12 @@
  */
 declare class RollTableConfig extends BaseEntitySheet<RollTableConfig.Data, RollTable> {
   /**
+   * @param table   - The rollable table entity being configured
+   * @param options - Additional application rendering options
+   */
+  constructor(table: RollTable, options?: Partial<BaseEntitySheet.Options>);
+
+  /**
    * @defaultValue
    * ```typescript
    * mergeObject(super.defaultOptions, {

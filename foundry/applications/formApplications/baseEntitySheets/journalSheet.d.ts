@@ -1,5 +1,7 @@
 /**
  * The JournalEntry Configuration Sheet
+ * @typeParam D - The data structure used to render the handlebars template.
+ * @typeParam O - the type of the Entity which should be managed by this form sheet
  */
 declare class JournalSheet<
   D extends object = BaseEntitySheet.Data<JournalEntry>,

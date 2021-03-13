@@ -1,10 +1,11 @@
 /**
  * A generic application for configuring permissions for various Entity types
- *
- * @param entity - The Entity instance for which permissions are being configured.
- * @param options - Application options.
  */
 declare class PermissionControl<E extends Entity> extends BaseEntitySheet<PermissionControl.Data<E>, E> {
+  /**
+   * @param entity  - The Entity instance for which permissions are being configured.
+   * @param options - Application options.
+   */
   constructor(entity: E, options?: Partial<BaseEntitySheet.Options>);
 
   /**

@@ -1,11 +1,11 @@
 /**
  * Tile Config Sheet
- *
- * @param tile - The Tile object being configured
- * @param options - Additional application rendering options
- * @param preview - Configure a preview version of a tile which is not yet saved
  */
 declare class TileConfig extends FormApplication<TileConfig.Data, Tile> {
+  /**
+   * @param tile    - The Tile object being configured
+   * @param options - Additional application rendering options
+   */
   constructor(tile: Tile, options?: Partial<TileConfig.Options>);
 
   options: TileConfig.Options;
@@ -62,6 +62,9 @@ declare namespace TileConfig {
   }
 
   interface Options extends FormApplication.Options {
+    /**
+     * Configure a preview version of a tile which is not yet saved
+     */
     preview?: boolean;
   }
 }

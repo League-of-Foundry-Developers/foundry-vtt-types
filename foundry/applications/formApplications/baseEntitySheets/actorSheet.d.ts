@@ -14,8 +14,7 @@ declare class ActorSheet<
 > extends BaseEntitySheet<D, O> {
   /**
    * @param actor   - The Actor instance being displayed within the sheet.
-   * @param options - Additional options which modify the rendering of the
-   *                  Actor's sheet.
+   * @param options - Additional options which modify the rendering of the Actor's sheet.
    */
   constructor(actor: O, options?: Partial<BaseEntitySheet.Options>);
 
