@@ -60,6 +60,7 @@ import './foundry/worldSettingsStorage';
 
 import './foundry/applications/basePlaceableHUD';
 import './foundry/applications/cameraViews';
+import './foundry/applications/chatPopout';
 import './foundry/applications/compendium';
 import './foundry/applications/dialog';
 import './foundry/applications/eula';
