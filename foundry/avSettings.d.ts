@@ -24,9 +24,7 @@ declare class AVSettings {
   /**
    * Return a mapping of AV settings for each game User.
    */
-  get users(): {
-    string: AVSettings.UserSettings;
-  };
+  get users(): Record<string, AVSettings.UserSettings>;
 
   /**
    * Prepare a standardized object of user settings data for a single User
