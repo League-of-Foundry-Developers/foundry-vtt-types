@@ -44,7 +44,7 @@ declare class PlayerConfig extends FormApplication<PlayerConfig.Data, User> {
   /**
    * Handle changing the user avatar image by opening a FilePicker
    */
-  protected _onEditAvatar(event: Event): ReturnType<FilePicker['browse']>;
+  protected _onEditAvatar(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
 
   /**
    * This method is called upon form submission after form data is validated

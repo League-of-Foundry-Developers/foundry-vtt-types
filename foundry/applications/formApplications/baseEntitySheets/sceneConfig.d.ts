@@ -57,18 +57,18 @@ declare class SceneConfig extends BaseEntitySheet<SceneConfig.Data, Scene> {
    * Capture the current Scene position and zoom level as the initial view in the Scene config
    * @param event - The originating click event
    */
-  protected _onCapturePosition(event: Event): void;
+  protected _onCapturePosition(event: JQuery.ClickEvent): void;
 
   /**
    * @override
    */
-  protected _onChangeRange(event: Event): void;
+  protected _onChangeRange(event: JQuery.ChangeEvent): void;
 
   /**
    * Handle click events to open the grid configuration application
    * @param event - The originating click event
    */
-  protected _onGridConfig(event: Event): SceneConfig['minimize'];
+  protected _onGridConfig(event: JQuery.ClickEvent): SceneConfig['minimize'];
 
   /**
    * @override

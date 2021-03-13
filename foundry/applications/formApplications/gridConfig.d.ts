@@ -122,7 +122,7 @@ declare class GridConfig extends FormApplication<GridConfig.Data, Scene> {
   /**
    * @override
    */
-  protected _onChangeInput(event: Event): ReturnType<GridConfig['_refresh']>;
+  protected _onChangeInput(event: JQuery.ChangeEvent): ReturnType<GridConfig['_refresh']>;
 
   /**
    * @param event - (unused)

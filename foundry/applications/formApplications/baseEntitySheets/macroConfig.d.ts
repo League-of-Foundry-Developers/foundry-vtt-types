@@ -37,13 +37,13 @@ declare class MacroConfig extends BaseEntitySheet<MacroConfig.Data, Macro> {
   /**
    * Handle changing the actor profile image by opening a FilePicker
    */
-  protected _onEditImage(event: Event): ReturnType<FilePicker['browse']>;
+  protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
 
   /**
    * Save and execute the macro using the button on the configuration sheet
    * @param event - The originating click event
    */
-  protected _onExecute(event: MouseEvent): Promise<void>;
+  protected _onExecute(event: JQuery.ClickEvent): Promise<void>;
 
   /**
    * @override

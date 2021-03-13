@@ -53,7 +53,7 @@ declare class PlaylistSoundConfig extends FormApplication<PlaylistSoundConfig.Da
   /**
    * Auto-populate the track name using the provided filename, if a name is not already set
    */
-  protected _onSourceChange(event: Event): void;
+  protected _onSourceChange(event: JQuery.ChangeEvent): void;
 }
 
 declare namespace PlaylistSoundConfig {

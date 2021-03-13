@@ -33,7 +33,7 @@ declare class TileConfig extends FormApplication<TileConfig.Data, Tile> {
   getData(options?: Application.RenderOptions): TileConfig.Data;
 
   /** @override */
-  protected _onChangeInput(event: Event): void;
+  protected _onChangeInput(event: JQuery.ChangeEvent): void;
 
   /**
    * @param event - (unused)

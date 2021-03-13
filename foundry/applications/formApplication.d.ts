@@ -116,18 +116,18 @@ declare abstract class FormApplication<
    * Do not preventDefault in this handler as other interactions on the form may also be occurring.
    * @param event - The initial change event
    */
-  protected _onChangeInput(event: Event): void | Promise<Partial<Record<string, unknown>>>;
+  protected _onChangeInput(event: JQuery.ChangeEvent): void | Promise<Partial<Record<string, unknown>>>;
 
   /**
    * Handle the change of a color picker input which enters it's chosen value into a related input field
    */
-  protected _onChangeColorPicker(event: Event): void;
+  protected _onChangeColorPicker(event: JQuery.ChangeEvent): void;
 
   /**
    * Handle changes to a range type input by propagating those changes to the sibling range-value element
    * @param event - The initial change event
    */
-  protected _onChangeRange(event: Event): void;
+  protected _onChangeRange(event: JQuery.ChangeEvent): void;
 
   /**
    * This method is called upon form submission after form data is validated
