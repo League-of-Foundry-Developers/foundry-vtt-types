@@ -837,6 +837,6 @@ declare namespace Entity {
 
     permission?: Permission;
 
-    type?: number | string;
+    type?: any;
   }
 }
