@@ -4,6 +4,12 @@
  */
 declare class EntitySheetConfig<E extends Entity = Entity> extends FormApplication<EntitySheetConfig.Data, E> {
   /**
+   * @param entity  - The Entity object for which the sheet is being configured
+   * @param options - Additional Application options
+   */
+  constructor(entity: E, options?: Partial<FormApplication.Options>);
+
+  /**
    * @defaultValue
    * ```typescript
    * const options = super.defaultOptions;
