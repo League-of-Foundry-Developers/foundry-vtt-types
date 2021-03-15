@@ -118,9 +118,11 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Render all of the Application instances which are connected to this Entity by calling their respective
    * {@link Application#render} methods.
    * @param force   - Force rendering
+   *                  (default: `false`)
    * @param context - Optional context
+   *                  (default: `{}`)
    */
-  render(force: boolean, context: any): void;
+  render(force?: boolean, context?: Entity.RenderOptions): void;
 
   /**
    * Return a reference to the EntityCollection instance which stores Entity instances of this type. This property is
@@ -812,5 +814,11 @@ declare namespace Entity {
      * Flags for arbitrary data from modules &c.
      */
     flags: Record<string, unknown>;
+  }
+
+  interface RenderOptions extends Application.RenderOptions {
+    data: {
+      permission: unknown;
+    };
   }
 }
