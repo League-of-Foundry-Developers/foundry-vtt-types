@@ -115,11 +115,7 @@ declare class CameraViews extends Application {
    * @param state  - The CURRENT action state.
    * @returns The icon that represents the NEXT action state.
    */
-  protected _getToggleIcon<A extends keyof CameraViews.ToggleIcons, S extends boolean>(
-    action: A,
-    state: S
-  ): CameraViews.ToggleIcons[A][S extends true ? 1 : 0];
-  protected _getToggleIcon(action: string, state?: any): null;
+  protected _getToggleIcon(action: string, state?: boolean): null;
 
   /**
    * Get the text title that should be used for various action buttons with different toggled states.
@@ -167,14 +163,5 @@ declare namespace CameraViews {
       volume: ReturnType<typeof AudioHelper['volumeToInput']>;
       cameraViewClass: ReturnType<Array<string>['filterJoin']>;
     }
-  }
-
-  interface ToggleIcons {
-    'block-video': ['fa-video', 'fa-video-slash'];
-    'block-audio': ['fa-microphone', 'fa-microphone-slash'];
-    'toggle-video': ['fa-video', 'fa-video-slash'];
-    'toggle-audio': ['fa-microphone', 'fa-microphone-slash'];
-    'mute-peers': ['fa-volume-up', 'fa-volume-mute'];
-    'toggle-players': ['fa-caret-square-right', 'fa-caret-square-left'];
   }
 }
