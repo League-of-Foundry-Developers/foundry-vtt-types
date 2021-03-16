@@ -35,7 +35,7 @@ declare class UpdateNotes extends Application {
 
 declare namespace UpdateNotes {
   interface Target {
-    notes: any;
-    version: any;
+    notes: string;
+    version: string;
   }
 }
