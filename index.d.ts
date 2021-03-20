@@ -102,7 +102,6 @@ import './foundry/applications/formApplications/moduleManagement';
 import './foundry/applications/formApplications/noteConfig';
 import './foundry/applications/formApplications/permissionConfig';
 import './foundry/applications/formApplications/playerConfig';
-import './foundry/applications/formApplications/playlistConfig';
 import './foundry/applications/formApplications/playlistSoundConfig';
 import './foundry/applications/formApplications/settingsConfig';
 import './foundry/applications/formApplications/setupConfigurationForm';
@@ -117,6 +116,7 @@ import './foundry/applications/formApplications/baseEntitySheets/itemSheet';
 import './foundry/applications/formApplications/baseEntitySheets/journalSheet';
 import './foundry/applications/formApplications/baseEntitySheets/macroConfig';
 import './foundry/applications/formApplications/baseEntitySheets/permissionControl';
+import './foundry/applications/formApplications/baseEntitySheets/playlistConfig';
 import './foundry/applications/formApplications/baseEntitySheets/rollTableConfig';
 import './foundry/applications/formApplications/baseEntitySheets/sceneConfig';
 
