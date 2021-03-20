@@ -1,7 +1,7 @@
 /**
  * Edit a folder, configuring its name and appearance
  */
-declare class FolderConfig extends FormApplication<FolderConfig.Data, Folder> {
+declare class FolderConfig extends FormApplication<FormApplication.Options, FolderConfig.Data, Folder> {
   /**
    * @override
    * @defaultValue
@@ -13,7 +13,7 @@ declare class FolderConfig extends FormApplication<FolderConfig.Data, Folder> {
    * });
    * ```
    */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /**
    * @override

@@ -15,7 +15,7 @@ declare class SceneNavigation extends Application {
    * }
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): typeof Application['defaultOptions'];
 
   /**
    * Return an Array of Scenes which are displayed in the Navigation bar

@@ -1,12 +1,17 @@
 /**
  * The RollTable configuration sheet
+ * @typeParam P - the type of the options object
  */
-declare class RollTableConfig extends BaseEntitySheet<RollTableConfig.Data, RollTable> {
+declare class RollTableConfig<P extends BaseEntitySheet.Options = BaseEntitySheet.Options> extends BaseEntitySheet<
+  P,
+  RollTableConfig.Data,
+  RollTable
+> {
   /**
    * @param table   - The rollable table entity being configured
    * @param options - Additional application rendering options
    */
-  constructor(table: RollTable, options?: Partial<BaseEntitySheet.Options>);
+  constructor(table: RollTable, options?: Partial<P>);
 
   /**
    * @defaultValue
@@ -23,7 +28,7 @@ declare class RollTableConfig extends BaseEntitySheet<RollTableConfig.Data, Roll
    * })
    * ```
    */
-  static get defaultOptions(): BaseEntitySheet.Options;
+  static get defaultOptions(): typeof BaseEntitySheet['defaultOptions'];
 
   /**
    * @override

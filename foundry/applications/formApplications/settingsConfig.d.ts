@@ -2,7 +2,7 @@
  * A game settings configuration application
  * This form renders the settings defined via the game.settings.register API which have config = true
  */
-declare class SettingsConfig extends FormApplication<SettingsConfig.Data> {
+declare class SettingsConfig extends FormApplication<FormApplication.Options, SettingsConfig.Data> {
   /**
    * @override
    * @defaultValue
@@ -19,7 +19,7 @@ declare class SettingsConfig extends FormApplication<SettingsConfig.Data> {
    * })
    * ```
    */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /**
    * @param options - (unused)

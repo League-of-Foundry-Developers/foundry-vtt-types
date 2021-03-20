@@ -12,8 +12,6 @@
  * ```
  */
 declare class Notifications extends Application {
-  constructor(options: Application.Options);
-
   /** Notifications which are currently displayed */
   active: JQuery[];
 
@@ -21,7 +19,7 @@ declare class Notifications extends Application {
   queue: Notifications.Notification[];
 
   /** @override */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): typeof Application['defaultOptions'];
 
   /**
    * Initialize the Notifications system by displaying any system-generated messages which were passed from the server.

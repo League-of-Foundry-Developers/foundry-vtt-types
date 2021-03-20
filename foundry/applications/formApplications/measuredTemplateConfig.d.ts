@@ -2,7 +2,11 @@
  * A configuration Form Application for modifying the properties of a MeasuredTemplate object.
  * @see {@link MeasuredTemplate}
  */
-declare class MeasuredTemplateConfig extends FormApplication<MeasuredTemplateConfig.Data, MeasuredTemplate> {
+declare class MeasuredTemplateConfig extends FormApplication<
+  FormApplication.Options,
+  MeasuredTemplateConfig.Data,
+  MeasuredTemplate
+> {
   /**
    * @override
    * @defaultValue
@@ -16,7 +20,7 @@ declare class MeasuredTemplateConfig extends FormApplication<MeasuredTemplateCon
    * });
    * ```
    */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /**
    * @override
@@ -32,7 +36,7 @@ declare class MeasuredTemplateConfig extends FormApplication<MeasuredTemplateCon
 declare namespace MeasuredTemplateConfig {
   interface Data {
     object: Duplicated<MeasuredTemplateConfig['object']['data']>;
-    options: Options;
+    options: MeasuredTemplateConfig['options'];
     templateTypes: typeof CONFIG['MeasuredTemplate']['types'];
     gridUnits: Scene.Data;
     submitText: string;

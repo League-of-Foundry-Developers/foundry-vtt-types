@@ -1,13 +1,18 @@
 /**
  * The Player Configuration application provides a form used to allow the current client to
  * edit preferences and configurations about their own User entity.
+ * @typeParam P - the type of the options object
  */
-declare class PlayerConfig extends FormApplication<PlayerConfig.Data, User> {
+declare class PlayerConfig<P extends FormApplication.Options = FormApplication.Options> extends FormApplication<
+  P,
+  PlayerConfig.Data,
+  User
+> {
   /**
    * @param user    - The User entity being configured.
    * @param options - Additional rendering options which modify the behavior of the form.
    */
-  constructor(user: User, options: Partial<FormApplication.Options>);
+  constructor(user: User, options: Partial<P>);
 
   user: User;
 
@@ -23,7 +28,7 @@ declare class PlayerConfig extends FormApplication<PlayerConfig.Data, User> {
    * })
    * ```
    */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   get title(): string;
 

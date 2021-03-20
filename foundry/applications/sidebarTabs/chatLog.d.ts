@@ -2,9 +2,7 @@
  * The Chat Log application displayed in the Sidebar
  * @see {@link Sidebar}
  */
-declare class ChatLog extends SidebarTab {
-  constructor(options?: Partial<Application.Options>);
-
+declare class ChatLog extends SidebarTab<ChatLog.Options> {
   /**
    * Track whether the user currently has pending text in the chat box
    */

@@ -13,8 +13,6 @@
  */
 
 declare class Hotbar extends Application {
-  constructor(options?: Partial<Application.Options>);
-
   /**
    * The currently viewed macro page
    * @defaultValue `1`
@@ -51,7 +49,7 @@ declare class Hotbar extends Application {
    * })
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): typeof Application['defaultOptions'];
 
   /** @override */
   getData(options?: Application.RenderOptions): Hotbar.Data | Promise<Hotbar.Data>;

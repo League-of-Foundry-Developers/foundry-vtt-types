@@ -1,14 +1,16 @@
 /**
  * Wall Configuration Sheet
  */
-declare class WallConfig extends FormApplication<WallConfig.Data, Wall> {
+declare class WallConfig<P extends WallConfig.Options = WallConfig.Options> extends FormApplication<
+  P,
+  WallConfig.Data,
+  Wall
+> {
   /**
    * @param object  - The Wall object for which settings are being configured
    * @param options - Additional options which configure the rendering of the configuration sheet.
    */
-  constructor(object: Wall, options?: Partial<WallConfig.Options>);
-
-  options: WallConfig.Options;
+  constructor(object: Wall, options?: Partial<P>);
 
   /**
    * @defaultValue

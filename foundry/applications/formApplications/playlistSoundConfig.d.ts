@@ -1,17 +1,18 @@
 /**
  * Playlist Sound Configuration Sheet
+ * @typeParam P - the type of the options object
  */
-declare class PlaylistSoundConfig extends FormApplication<PlaylistSoundConfig.Data, Playlist.Sound> {
+declare class PlaylistSoundConfig<P extends FormApplication.Options = FormApplication.Options> extends FormApplication<
+  P,
+  PlaylistSoundConfig.Data,
+  Playlist.Sound
+> {
   /**
    * @param playlist - The Playlist entity within which the Sound is configured
    * @param sound    - An Object for the Playlist Sound data
    * @param options  - Additional application rendering options
    */
-  constructor(
-    playlist: PlaylistSoundConfig['playlist'],
-    sound: Playlist.Sound,
-    options: Partial<FormApplication.Options>
-  );
+  constructor(playlist: PlaylistSoundConfig['playlist'], sound: Playlist.Sound, options: Partial<P>);
 
   playlist: Playlist;
 
@@ -26,7 +27,7 @@ declare class PlaylistSoundConfig extends FormApplication<PlaylistSoundConfig.Da
    * });
    * ```
    */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /**
    * @override

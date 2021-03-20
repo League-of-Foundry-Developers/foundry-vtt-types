@@ -1,12 +1,17 @@
 /**
  * A generic application for configuring permissions for various Entity types
+ * @typeParam P - the type of the options object
+ * @typeParam E - the type of the entity
  */
-declare class PermissionControl<E extends Entity> extends BaseEntitySheet<PermissionControl.Data<E>, E> {
+declare class PermissionControl<
+  P extends BaseEntitySheet.Options = BaseEntitySheet.Options,
+  E extends Entity = Entity
+> extends BaseEntitySheet<P, PermissionControl.Data<E>, E> {
   /**
    * @param entity  - The Entity instance for which permissions are being configured.
    * @param options - Application options.
    */
-  constructor(entity: E, options?: Partial<BaseEntitySheet.Options>);
+  constructor(entity: E, options?: Partial<P>);
 
   /**
    * @override
@@ -19,7 +24,7 @@ declare class PermissionControl<E extends Entity> extends BaseEntitySheet<Permis
    * });
    * ```
    */
-  static get defaultOptions(): BaseEntitySheet.Options;
+  static get defaultOptions(): typeof BaseEntitySheet['defaultOptions'];
 
   /** @override */
   get title(): string;

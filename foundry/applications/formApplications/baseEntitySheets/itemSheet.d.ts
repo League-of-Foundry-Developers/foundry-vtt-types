@@ -5,23 +5,25 @@
  *
  * System modifications may elect to override this class to better suit their own game system by re-defining the value
  * `CONFIG.Item.sheetClass`.
+ * @typeParam P - the type of the options object
  * @typeParam D - The data structure used to render the handlebars template.
  * @typeParam O - the type of the Entity which should be managed by this form sheet
  */
 declare class ItemSheet<
+  P extends BaseEntitySheet.Options = BaseEntitySheet.Options,
   D extends object = ActorSheet.Data<Actor>,
   O extends Item = D extends ItemSheet.Data<infer T> ? T : Item
-> extends BaseEntitySheet<D, O> {
+> extends BaseEntitySheet<P, D, O> {
   /**
    * @param item    - The Item instance being displayed within the sheet.
    * @param options - Additional options which modify the rendering of the item.
    */
-  constructor(item: O, options?: Partial<BaseEntitySheet.Options>);
+  constructor(item: O, options?: Partial<P>);
 
   /**
    * Assign the default options which are supported by this Application
    */
-  static get defaultOptions(): BaseEntitySheet.Options;
+  static get defaultOptions(): typeof BaseEntitySheet['defaultOptions'];
 
   /**
    * Provide a unique CSS ID for owned Item sheets

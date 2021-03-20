@@ -1,8 +1,13 @@
 /**
  * A tool for fine tuning the grid in a Scene
+ * @typeParam P - the type of the options object
  */
-declare class GridConfig extends FormApplication<GridConfig.Data, Scene> {
-  constructor(scene: Scene, sheet: GridConfig['sheet'], options?: Partial<FormApplication.Options>);
+declare class GridConfig<P extends FormApplication.Options = FormApplication.Options> extends FormApplication<
+  P,
+  GridConfig.Data,
+  Scene
+> {
+  constructor(scene: Scene, sheet: GridConfig['sheet'], options?: Partial<P>);
 
   /**
    * Track the Scene Configuration sheet reference
@@ -42,7 +47,7 @@ declare class GridConfig extends FormApplication<GridConfig.Data, Scene> {
    * });
    * ```
    */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /**
    * @override

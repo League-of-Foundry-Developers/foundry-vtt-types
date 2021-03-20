@@ -1,12 +1,17 @@
 /**
  * Placeable Note configuration sheet
+ * @typeParam P - the type of the options object
  */
-declare class NoteConfig extends FormApplication<NoteConfig.Data, Note> {
+declare class NoteConfig<P extends FormApplication.Options = FormApplication.Options> extends FormApplication<
+  P,
+  NoteConfig.Data,
+  Note
+> {
   /**
    * @param note    - The Note object for which settings are being configured
    * @param options - Additional Application options
    */
-  constructor(note: Note, options?: Partial<FormApplication.Options>);
+  constructor(note: Note, options?: Partial<P>);
 
   /**
    * @override
@@ -20,7 +25,7 @@ declare class NoteConfig extends FormApplication<NoteConfig.Data, Note> {
    * });
    * ```
    */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /**
    * @param options - (unused)

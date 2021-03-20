@@ -1,14 +1,17 @@
 /**
  * An abstract base class for displaying a heads-up-display interface bound to a Placeable Object on the canvas
+ * @typeParam O - the type of the PlaceableObject
+ * @typeParam P - the type of the options object
  */
-declare abstract class BasePlaceableHUD<P extends PlaceableObject<PlaceableObject.Data>> extends Application {
-  constructor(...args: ConstructorParameters<typeof Application>);
-
+declare abstract class BasePlaceableHUD<
+  O extends PlaceableObject<PlaceableObject.Data>,
+  P extends Application.Options = Application.Options
+> extends Application<P> {
   /**
    * Reference a PlaceableObject this HUD is currently bound to
    * @defaultValue `null`
    */
-  object: P | null;
+  object: O | null;
 
   /**
    * @override
@@ -20,18 +23,18 @@ declare abstract class BasePlaceableHUD<P extends PlaceableObject<PlaceableObjec
    * })
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): typeof Application['defaultOptions'];
 
   /**
    * Convenience access for the canvas layer which this HUD modifies
    */
-  get layer(): P['layer'];
+  get layer(): O['layer'];
 
   /**
    * Bind the HUD to a new PlaceableObject and display it
    * @param object - A PlaceableObject instance to which the HUD should be bound
    */
-  bind(object: P): void;
+  bind(object: O): void;
 
   /**
    * Clear the HUD by fading out it's active HTML and recording the new display state
@@ -56,7 +59,7 @@ declare abstract class BasePlaceableHUD<P extends PlaceableObject<PlaceableObjec
    */
   getData(
     options?: Application.RenderOptions
-  ): Duplicated<P['data']> & {
+  ): Duplicated<O['data']> & {
     id: Application['id'];
     classes: string;
     appId: Application['appId'];

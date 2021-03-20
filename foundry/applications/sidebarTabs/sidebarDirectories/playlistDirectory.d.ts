@@ -1,9 +1,7 @@
 /**
  * A directory listing of audio playlists
  */
-declare class PlaylistDirectory extends SidebarDirectory {
-  constructor(options?: Partial<Application.Options>);
-
+declare class PlaylistDirectory extends SidebarDirectory<PlaylistDirectory.Options> {
   /**
    * Track the playlist IDs which are currently expanded in their display
    */

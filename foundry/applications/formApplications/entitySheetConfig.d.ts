@@ -1,13 +1,17 @@
 /**
  * Entity Sheet Configuration Application
+ * @typeParam P - the type of the options object
  * @typeParam E - the type of the Entity, this sheet is used to configure
  */
-declare class EntitySheetConfig<E extends Entity = Entity> extends FormApplication<EntitySheetConfig.Data, E> {
+declare class EntitySheetConfig<
+  P extends FormApplication.Options = FormApplication.Options,
+  E extends Entity = Entity
+> extends FormApplication<P, EntitySheetConfig.Data, E> {
   /**
    * @param entity  - The Entity object for which the sheet is being configured
    * @param options - Additional Application options
    */
-  constructor(entity: E, options?: Partial<FormApplication.Options>);
+  constructor(entity: E, options?: Partial<P>);
 
   /**
    * @defaultValue
@@ -18,7 +22,7 @@ declare class EntitySheetConfig<E extends Entity = Entity> extends FormApplicati
    * options.width = 400;
    * ```
    */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /**
    * Add the Entity name into the window title
@@ -118,11 +122,15 @@ declare namespace EntitySheetConfig {
     makeDefault: boolean;
   }
 
-  interface Data<E extends Entity = Entity> {
-    entityName: EntitySheetConfig<E>['object']['entity'];
+  /**
+   * @typeParam P - the type of the options object
+   * @typeParam E - the type of the entity
+   */
+  interface Data<E extends Entity = Entity, P extends FormApplication.Options = FormApplication.Options> {
+    entityName: EntitySheetConfig<P, E>['object']['entity'];
     isGM: User['isGM'];
-    object: Duplicated<EntitySheetConfig<E>['object']['data']>;
-    options: EntitySheetConfig<E>['options'];
+    object: Duplicated<EntitySheetConfig<P, E>['object']['data']>;
+    options: EntitySheetConfig<P, E>['options'];
     sheetClass: ReturnType<E['getFlag']> | '';
     sheetClasses: Record<SheetClass['id'], SheetClass['label']>;
     defaultClass: SheetClass['id'] | null;

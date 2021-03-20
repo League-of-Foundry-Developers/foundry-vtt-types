@@ -2,7 +2,7 @@
  * A Scene configuration sheet
  * @see {@link Scene} The Scene Entity which is being configured
  */
-declare class SceneConfig extends BaseEntitySheet<SceneConfig.Data, Scene> {
+declare class SceneConfig extends BaseEntitySheet<BaseEntitySheet.Options, SceneConfig.Data, Scene> {
   /**
    * @override
    * @defaultValue
@@ -15,7 +15,7 @@ declare class SceneConfig extends BaseEntitySheet<SceneConfig.Data, Scene> {
    * });
    * ```
    */
-  static get defaultOptions(): BaseEntitySheet.Options;
+  static get defaultOptions(): typeof BaseEntitySheet['defaultOptions'];
 
   /**
    * @override

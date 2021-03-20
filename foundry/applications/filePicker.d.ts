@@ -1,15 +1,9 @@
 /**
  * The FilePicker application renders contents of the server-side public directory
  * This app allows for navigating and uploading files to the public path
+ * @typeParam P - the type of the options object
  */
-declare class FilePicker extends Application {
-  constructor(options?: Partial<FilePicker.Options>);
-
-  /**
-   * @override
-   */
-  options: FilePicker.Options;
-
+declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> extends Application<P> {
   /**
    * The full requested path given by the user
    */

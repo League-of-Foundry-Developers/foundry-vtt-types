@@ -3,7 +3,7 @@
  *
  * @see {@link Macro} The Macro Entity which is being configured
  */
-declare class MacroConfig extends BaseEntitySheet<MacroConfig.Data, Macro> {
+declare class MacroConfig extends BaseEntitySheet<BaseEntitySheet.Options, MacroConfig.Data, Macro> {
   /**
    * @override
    * @defaultValue
@@ -17,7 +17,7 @@ declare class MacroConfig extends BaseEntitySheet<MacroConfig.Data, Macro> {
    * });
    * ```
    */
-  static get defaultOptions(): BaseEntitySheet.Options;
+  static get defaultOptions(): typeof BaseEntitySheet['defaultOptions'];
 
   /**
    * @override

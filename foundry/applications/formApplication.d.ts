@@ -6,22 +6,22 @@
  * 2) The template used contains one (and only one) HTML form as it's outer-most element
  * 3) This abstract layer has no knowledge of what is being updated, so the implementation must define _updateObject
  *
+ * @typeParam P - the type of the options object
  * @typeParam D - The data structure used to render the handlebars template.
  * @typeParam O - the type of the object or entity target which we are using this form to modify
  */
 declare abstract class FormApplication<
-  D extends object = FormApplication.Data<{}>,
-  O = D extends FormApplication.Data<infer T> ? T : {}
-> extends Application {
+  P extends FormApplication.Options = FormApplication.Options,
+  D extends object = FormApplication.Data<{}, P>,
+  O = D extends FormApplication.Data<infer T, P> ? T : {}
+> extends Application<P> {
   /**
    * @param object  - Some object or entity which is the target to be updated.
    *                  (default: `{}`)
    * @param options - Additional options which modify the rendering of the sheet.
    *                  (default: `{}`)
    */
-  constructor(object?: O, options?: Partial<FormApplication.Options>);
-
-  options: FormApplication.Options;
+  constructor(object?: O, options?: Partial<P>);
 
   /**
    * The object target which we are using this form to modify
@@ -205,9 +205,13 @@ declare namespace FormApplication {
     submit?: boolean;
   }
 
-  interface Data<O> {
+  /**
+   * @typeParam O - the type of the object
+   * @typeParam P - the type of the options object
+   */
+  interface Data<O, P extends FormApplication.Options = FormApplication.Options> {
     object: Duplicated<O>;
-    options: FormApplication.Options;
+    options: P;
     title: string;
   }
 

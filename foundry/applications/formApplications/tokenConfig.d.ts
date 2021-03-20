@@ -1,14 +1,17 @@
 /**
  * A Token Configuration Application
+ * @typeParam P - the type of the options object
  */
-declare class TokenConfig extends FormApplication<TokenConfig.Data, Token> {
+declare class TokenConfig<P extends TokenConfig.Options = TokenConfig.Options> extends FormApplication<
+  P,
+  TokenConfig.Data,
+  Token
+> {
   /**
    * @param token   - The Token object for which settings are being configured
    * @param options - TokenConfig ui options (see Application)
    */
-  constructor(token: Token, options?: Partial<TokenConfig.Options>);
-
-  options: TileConfig.Options;
+  constructor(token: Token, options?: Partial<P>);
 
   /**
    * @override

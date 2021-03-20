@@ -1,14 +1,17 @@
 /**
  * Tile Config Sheet
+ * @typeParam P - the type of the options object
  */
-declare class TileConfig extends FormApplication<TileConfig.Data, Tile> {
+declare class TileConfig<P extends TileConfig.Options = TileConfig.Options> extends FormApplication<
+  P,
+  TileConfig.Data,
+  Tile
+> {
   /**
    * @param tile    - The Tile object being configured
    * @param options - Additional application rendering options
    */
-  constructor(tile: Tile, options?: Partial<TileConfig.Options>);
-
-  options: TileConfig.Options;
+  constructor(tile: Tile, options?: Partial<P>);
 
   /**
    * @override

@@ -2,8 +2,6 @@
  * Render the HUD container
  */
 declare class HeadsUpDisplay extends Application {
-  constructor(...args: ConstructorParameters<typeof Application>);
-
   /**
    * Token HUD
    */
@@ -35,7 +33,7 @@ declare class HeadsUpDisplay extends Application {
    * })
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): typeof Application['defaultOptions'];
 
   getData(): {} | { width: number; height: number };
 

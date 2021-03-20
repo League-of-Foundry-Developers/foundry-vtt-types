@@ -51,7 +51,7 @@ declare class ActiveEffect<P extends Actor | Item = Actor | Item> extends Embedd
    * An instance of the ActiveEffectConfig sheet to use for this ActiveEffect instance.
    * The reference to the sheet is cached so the same sheet instance is reused.
    */
-  get sheet(): ActiveEffectConfig<ActiveEffectConfig.Data<this>, this>;
+  get sheet(): ActiveEffectConfig<FormApplication.Options, ActiveEffectConfig.Data<this>, this>;
 
   /* -------------------------------------------- */
   /*  Effect Application                          */

@@ -1,12 +1,17 @@
 /**
  * Light Source Configuration Sheet
+ * @typeParam P - the type of the options object
  */
-declare class LightConfig extends FormApplication<LightConfig.Data, AmbientLight> {
+declare class LightConfig<P extends FormApplication.Options = FormApplication.Options> extends FormApplication<
+  P,
+  LightConfig.Data,
+  AmbientLight
+> {
   /**
    * @param light   - The AmbientLight object for which settings are being configured
    * @param options - LightConfig ui options (see Application)
    */
-  constructor(light: AmbientLight, options?: Partial<FormApplication.Options>);
+  constructor(light: AmbientLight, options?: Partial<P>);
 
   /**
    * @override
@@ -20,7 +25,7 @@ declare class LightConfig extends FormApplication<LightConfig.Data, AmbientLight
    * });
    * ```
    */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /**
    * @param options - (unused)

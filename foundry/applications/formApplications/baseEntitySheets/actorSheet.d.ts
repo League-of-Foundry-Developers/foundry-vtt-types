@@ -5,18 +5,20 @@
  *
  * System modifications may elect to override this class to better suit their own game system by re-defining the value
  * `CONFIG.Actor.sheetClass`.
+ * @typeParam P - the type of the options object
  * @typeParam D - The data structure used to render the handlebars template.
  * @typeParam O - the type of the Entity which should be managed by this form sheet
  */
 declare class ActorSheet<
+  P extends BaseEntitySheet.Options = BaseEntitySheet.Options,
   D extends object = ActorSheet.Data<Actor>,
   O extends Actor = D extends ActorSheet.Data<infer T> ? T : Actor
-> extends BaseEntitySheet<D, O> {
+> extends BaseEntitySheet<P, D, O> {
   /**
    * @param actor   - The Actor instance being displayed within the sheet.
    * @param options - Additional options which modify the rendering of the Actor's sheet.
    */
-  constructor(actor: O, options?: Partial<BaseEntitySheet.Options>);
+  constructor(actor: O, options?: Partial<P>);
 
   /**
    * If this Actor Sheet represents a synthetic Token actor, reference the active Token
@@ -24,7 +26,7 @@ declare class ActorSheet<
   token: O['token'];
 
   /** @override */
-  static get defaultOptions(): BaseEntitySheet.Options;
+  static get defaultOptions(): typeof BaseEntitySheet['defaultOptions'];
 
   /** @override */
   get id(): string;

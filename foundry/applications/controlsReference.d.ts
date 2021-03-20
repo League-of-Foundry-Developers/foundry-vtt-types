@@ -12,5 +12,5 @@ declare class ControlsReference extends Application {
    * options.width = 600;
    * ```
    */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): typeof Application['defaultOptions'];
 }

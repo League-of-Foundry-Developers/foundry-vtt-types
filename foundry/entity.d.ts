@@ -178,7 +178,7 @@ declare abstract class Entity<D extends Entity.Data = Entity.Data> {
    * actor.sheet // ActorSheet
    * ```
    */
-  get sheet(): FormApplication<FormApplication.Data<this>, this> | null;
+  get sheet(): FormApplication<FormApplication.Options, FormApplication.Data<this>, this> | null;
 
   /**
    * Obtain a reference to the BaseEntitySheet implementation which should be used to render the Entity instance

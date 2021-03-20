@@ -18,7 +18,7 @@ declare class UpdateNotes extends Application {
    * });
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): typeof Application['defaultOptions'];
 
   /** @override */
   get title(): string;

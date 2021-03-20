@@ -1,7 +1,7 @@
 /**
  * The User Management setup application
  */
-declare class UserManagement extends FormApplication<UserManagement.Data, Users> {
+declare class UserManagement extends FormApplication<FormApplication.Options, UserManagement.Data, Users> {
   /**
    * @override
    * @defaultValue
@@ -16,7 +16,7 @@ declare class UserManagement extends FormApplication<UserManagement.Data, Users>
    * });
    * ```
    */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /** @override */
   protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;

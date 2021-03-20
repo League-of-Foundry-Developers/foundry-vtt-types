@@ -1,7 +1,7 @@
 /**
  * The Package Configuration setup application
  */
-declare class SetupConfigurationForm extends FormApplication<SetupConfigurationForm.Data> {
+declare class SetupConfigurationForm extends FormApplication<FormApplication.Options, SetupConfigurationForm.Data> {
   constructor({
     systems,
     modules,
@@ -60,7 +60,7 @@ declare class SetupConfigurationForm extends FormApplication<SetupConfigurationF
    * });
    * ```
    */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /**
    * @param options - (unused)

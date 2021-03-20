@@ -1,7 +1,7 @@
 /**
  * An application for configuring the permissions which are available to each User role.
  */
-declare class PermissionConfig extends FormApplication<PermissionConfig.Data> {
+declare class PermissionConfig extends FormApplication<FormApplication.Options, PermissionConfig.Data> {
   /**
    * @override
    * @defaultValue
@@ -17,7 +17,7 @@ declare class PermissionConfig extends FormApplication<PermissionConfig.Data> {
    * })
    * ```
    */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /**
    * @param options - (unused)

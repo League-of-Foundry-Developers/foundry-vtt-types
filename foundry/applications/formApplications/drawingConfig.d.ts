@@ -1,14 +1,17 @@
 /**
  * Configuration sheet for the Drawing object
+ * @typeParam P - the type of the options object
  */
-declare class DrawingConfig extends FormApplication<DrawingConfig.Data, Drawing> {
+declare class DrawingConfig<P extends DrawingConfig.Options = DrawingConfig.Options> extends FormApplication<
+  P,
+  DrawingConfig.Data,
+  Drawing
+> {
   /**
    * @param drawing - The Drawing object being configured
    * @param options - Additional application rendering options
    */
-  constructor(drawing: Drawing, options?: Partial<DrawingConfig.Options>);
-
-  options: DrawingConfig.Options;
+  constructor(drawing: Drawing, options?: Partial<P>);
 
   /**
    * @defaultValue

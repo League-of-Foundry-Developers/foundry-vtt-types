@@ -1,7 +1,7 @@
 /**
  * Configure the Combat tracker to display additional information as appropriate
  */
-declare class CombatTrackerConfig extends FormApplication<CombatTrackerConfig.Data> {
+declare class CombatTrackerConfig extends FormApplication<FormApplication.Options, CombatTrackerConfig.Data> {
   /**
    * @defaultValue
    * ```typescript
@@ -14,7 +14,7 @@ declare class CombatTrackerConfig extends FormApplication<CombatTrackerConfig.Da
    * });
    * ```
    */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /**
    * @param options - (unused)

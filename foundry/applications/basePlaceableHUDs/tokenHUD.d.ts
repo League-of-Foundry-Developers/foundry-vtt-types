@@ -19,7 +19,7 @@ declare class TokenHUD extends BasePlaceableHUD<Token> {
    * })
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): typeof Application['defaultOptions'];
 
   /** @override */
   bind(object: Token): void;

@@ -1,9 +1,7 @@
 /**
  * The combat and turn order tracker tab
  */
-declare class CombatTracker extends SidebarTab {
-  constructor(options?: Partial<Application.Options>);
-
+declare class CombatTracker extends SidebarTab<CombatTracker.Options> {
   /**
    * Record a reference to the currently highlighted Token
    * @defaultValue `null`

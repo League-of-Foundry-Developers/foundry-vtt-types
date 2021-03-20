@@ -3,9 +3,7 @@
  * This application provides a view of which modules are available to be used and allows for configuration of the
  * set of modules which are active within the World.
  */
-declare class ModuleManagement extends FormApplication<ModuleManagement.Data> {
-  constructor(object?: any, options?: Partial<FormApplication.Options>);
-
+declare class ModuleManagement extends FormApplication<FormApplication.Options, ModuleManagement.Data, any> {
   /**
    * @defaultValue `'all'`
    */
@@ -38,7 +36,7 @@ declare class ModuleManagement extends FormApplication<ModuleManagement.Data> {
    * });
    * ```
    */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /** @override */
   get isEditable(): ReturnType<User['can']>;

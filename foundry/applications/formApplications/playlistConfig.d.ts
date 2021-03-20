@@ -1,7 +1,7 @@
 /**
  * Playlist Configuration Sheet
  */
-declare class PlaylistConfig extends BaseEntitySheet<PlaylistConfig.Data, Playlist> {
+declare class PlaylistConfig extends BaseEntitySheet<BaseEntitySheet.Options, PlaylistConfig.Data, Playlist> {
   /**
    * @defaultValue
    * ```typescript
@@ -11,7 +11,7 @@ declare class PlaylistConfig extends BaseEntitySheet<PlaylistConfig.Data, Playli
    * options.width = 360;
    * ```
    */
-  static get defaultOptions(): BaseEntitySheet.Options;
+  static get defaultOptions(): typeof BaseEntitySheet['defaultOptions'];
 
   /**
    * @override

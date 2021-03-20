@@ -14,7 +14,7 @@ declare class CombatantConfig extends FormApplication {
    * });
    * ```
    */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /**
    * @override

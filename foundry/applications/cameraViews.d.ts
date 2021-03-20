@@ -1,12 +1,13 @@
 /**
  * The Camera UI View that displays all the camera feeds as individual video elements.
+ * @typeParam P - the type of the options object
  */
-declare class CameraViews extends Application {
+declare class CameraViews<P extends Application.Options = Application.Options> extends Application<P> {
   /**
    * @param webrtc - The WebRTC Implementation to display
    *                 (unused)
    */
-  constructor(webrtc?: any, options?: Partial<Application.Options>);
+  constructor(webrtc?: any, options?: Partial<P>);
 
   /**
    * @override
@@ -19,7 +20,7 @@ declare class CameraViews extends Application {
    * });
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): typeof Application['defaultOptions'];
 
   /**
    * A reference to the master AV orchestrator instance
