@@ -26,7 +26,7 @@ declare class CombatTrackerConfig extends FormApplication<CombatTrackerConfig.Da
    * @param event - (unused)
    * @override
    */
-  protected _updateObject<F extends Required<Combat.ConfigValue>>(event?: Event, formData?: F): Promise<F>;
+  protected _updateObject(event?: Event, formData?: Combat.ConfigValue): Promise<Combat.ConfigValue>;
 
   /**
    * Get an Array of attribute choices which could be tracked for Actors in the Combat Tracker
