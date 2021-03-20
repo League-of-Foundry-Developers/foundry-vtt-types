@@ -252,7 +252,7 @@ declare class Roll<D extends object = {}> {
   /**
    * Render the tooltip HTML for a Roll instance
    */
-  getTooltip(): Promise<HTMLElement>;
+  getTooltip(): Promise<string>;
 
   /* -------------------------------------------- */
 
@@ -262,7 +262,7 @@ declare class Roll<D extends object = {}> {
    *                      (default: `{}`)
    * @returns A Promise which resolves to the rendered HTML
    */
-  render(chatOptions?: Roll.ChatOptions): Promise<HTMLElement>;
+  render(chatOptions?: Roll.ChatOptions): Promise<string>;
 
   /* -------------------------------------------- */
 

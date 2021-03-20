@@ -68,7 +68,7 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
   /**
    * Render the HTML for the ChatMessage which should be added to the log
    */
-  render(force?: boolean, options?: any): Promise<HTMLElement>;
+  render(force?: boolean, options?: any): Promise<JQuery>;
 
   /* -------------------------------------------- */
   /*  Socket Listeners and Handlers               */

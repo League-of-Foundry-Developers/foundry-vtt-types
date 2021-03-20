@@ -60,6 +60,7 @@ import './foundry/worldSettingsStorage';
 
 import './foundry/applications/basePlaceableHUD';
 import './foundry/applications/cameraViews';
+import './foundry/applications/chatPopout';
 import './foundry/applications/compendium';
 import './foundry/applications/controlsReference';
 import './foundry/applications/dialog';
@@ -78,6 +79,7 @@ import './foundry/applications/sceneControls';
 import './foundry/applications/sceneNavigation';
 import './foundry/applications/sidebar';
 import './foundry/applications/sidebarTab';
+import './foundry/applications/updateNotes';
 
 import './foundry/applications/basePlaceableHUDs/drawingHUD';
 import './foundry/applications/basePlaceableHUDs/tileHUD';
