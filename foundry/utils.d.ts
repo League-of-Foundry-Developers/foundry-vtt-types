@@ -112,10 +112,6 @@ type InnerDuplicated<T> = T extends { toJSON(): infer U }
  * The resulting type when using {@link duplicate} on some data of type `T`.
  *
  * @typeParam T - Original type.
- * @typeParam S - A flag to indicate whether or not to handle conversion of `NaN`, `Infinity`, and `-Infinity` to `null`
- *                strictly. If set to `'strict'`, `number` will be converted to `number | null`, if set to `'lenient'`,
- *                `number` will simply stay `number`.
- *                (default: `'strict'`)
  * @internal
  */
 type Duplicated<T> = T extends NonStringifiable ? never : InnerDuplicated<T>;
