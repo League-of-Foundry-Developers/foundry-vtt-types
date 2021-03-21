@@ -12,7 +12,12 @@ declare class Hooks {
    * @param fn   - The callback function which should be triggered when the hook event occurs
    * @returns An ID number of the hooked function which can be used to turn off the hook later
    */
-  static on<K extends string & keyof Hooks.Callbacks>(hook: K, fn: Hooks.Callbacks[K]): ReturnType<Hooks.Callbacks[K]>;
+  static on<K extends keyof Hooks.StaticCallbacks>(
+    hook: K,
+    fn: Hooks.StaticCallbacks[K]
+  ): ReturnType<Hooks.StaticCallbacks[K]>;
+  static on<H extends Hooks.DynamicCallbacks>(hook: string, fn: H): ReturnType<H>;
+  static on<H extends (...args: any) => any>(hook: string, fn: H): ReturnType<H>;
 
   /* -------------------------------------------- */
 
@@ -24,10 +29,12 @@ declare class Hooks {
    * @param fn   - The callback function which should be triggered when the hook event occurs
    * @returns An ID number of the hooked function which can be used to turn off the hook later
    */
-  static once<K extends string & keyof Hooks.Callbacks>(
+  static once<K extends keyof Hooks.StaticCallbacks>(
     hook: K,
-    fn: Hooks.Callbacks[K]
-  ): ReturnType<Hooks.Callbacks[K]>;
+    fn: Hooks.StaticCallbacks[K]
+  ): ReturnType<Hooks.StaticCallbacks[K]>;
+  static once<H extends Hooks.DynamicCallbacks>(hook: string, fn: H): ReturnType<H>;
+  static once<H extends (...args: any) => any>(hook: string, fn: H): ReturnType<H>;
 
   /* -------------------------------------------- */
 
@@ -37,7 +44,9 @@ declare class Hooks {
    * @param hook - The unique name of the hooked event
    * @param fn   - The function, or ID number for the function, that should be turned off
    */
-  static off<K extends string & keyof Hooks.Callbacks>(hook: K, fn: number | Hooks.Callbacks[K]): void;
+  static off<K extends keyof Hooks.StaticCallbacks>(hook: K, fn: number | Hooks.StaticCallbacks[K]): void;
+  static off<H extends Hooks.DynamicCallbacks>(hook: string, fn: number | H): void;
+  static off<H extends (...args: any) => any>(hook: string, fn: number | H): void;
 
   /* -------------------------------------------- */
 
@@ -48,10 +57,12 @@ declare class Hooks {
    * @param hook - The hook being triggered
    * @param args - Arguments passed to the hook callback functions
    */
-  static callAll<K extends string & keyof Hooks.Callbacks>(
+  static callAll<K extends keyof Hooks.StaticCallbacks>(
     hook: K,
-    ...args: Parameters<Hooks.Callbacks[K]>
+    ...args: Parameters<Hooks.StaticCallbacks[K]>
   ): boolean | null;
+  static callAll<H extends Hooks.DynamicCallbacks>(hook: string, ...args: Parameters<H>): boolean | null;
+  static callAll<H extends (...args: any) => any>(hook: string, ...args: Parameters<H>): boolean | null;
 
   /* -------------------------------------------- */
 
@@ -65,18 +76,22 @@ declare class Hooks {
    * @param hook - The hook being triggered
    * @param args - Arguments passed to the hook callback functions
    */
-  static call<K extends string & keyof Hooks.Callbacks>(hook: K, ...args: Parameters<Hooks.Callbacks[K]>): boolean;
+  static call<K extends keyof Hooks.StaticCallbacks>(hook: K, ...args: Parameters<Hooks.StaticCallbacks[K]>): boolean;
+  static call<H extends Hooks.DynamicCallbacks>(hook: string, ...args: Parameters<H>): boolean;
+  static call<H extends (...args: any) => any>(hook: string, ...args: Parameters<H>): boolean;
 
   /* -------------------------------------------- */
 
   /**
    * Call a hooked function using provided arguments and perhaps unregister it.
    */
-  protected static _call<K extends string & keyof Hooks.Callbacks>(
+  protected static _call<K extends keyof Hooks.StaticCallbacks>(
     hook: K,
-    fn: Hooks.Callbacks[K],
-    ...args: Parameters<Hooks.Callbacks[K]>
+    fn: Hooks.StaticCallbacks[K],
+    ...args: Parameters<Hooks.StaticCallbacks[K]>
   ): boolean;
+  protected static _call<H extends Hooks.DynamicCallbacks>(hook: string, fn: H, ...args: Parameters<H>): boolean;
+  protected static _call<H extends (...args: any) => any>(hook: string, fn: H, ...args: Parameters<H>): boolean;
 
   /**
    * @defaultValue `{}`
@@ -126,7 +141,7 @@ declare class Hooks {
  * ```
  */
 declare namespace Hooks {
-  interface Callbacks {
+  interface StaticCallbacks {
     /**
      * Inside Hooks.Callbacks
      * @param actor  - the Actor to whom this effect should be applied
@@ -410,7 +425,7 @@ declare namespace Hooks {
    * @remarks The name for this hook is dynamically created by joining 'create' with the type name of the Entity.
    * @see {@link Entity#_handleCreateEmbeddedEntity}
    */
-  type CreateEmbeddedEntity<D, P extends Entity = Entity> = (
+  type CreateEmbeddedEntity<D = any, P extends Entity = Entity> = (
     parent: P,
     data: D,
     options: Entity.CreateOptions,
@@ -523,7 +538,7 @@ declare namespace Hooks {
    * and 'EntryContext'.
    * @see {@link SidebarDirectory#_contextMenu}
    */
-  type GetSiderbarDirectoryEntryContext = (jq: JQuery, entryOptions: ContextMenu.Item[]) => void;
+  type GetSidebarDirectoryEntryContext = (jq: JQuery, entryOptions: ContextMenu.Item[]) => void;
 
   /**
    * This is called after getting the {@link ContextMenu} options for a {@link SidebarDirectory} folder, but before
@@ -534,7 +549,7 @@ declare namespace Hooks {
    * and 'FolderContext'.
    * @see {@link SidebarDirectory#_contextMenu}
    */
-  type GetSiderbarDirectoryFolderContext = (jq: JQuery, folderOptions: ContextMenu.Item[]) => void;
+  type GetSidebarDirectoryFolderContext = (jq: JQuery, folderOptions: ContextMenu.Item[]) => void;
 
   /**
    * This is called when the user mouse is entering or leaving a hover state over a {@link PlaceableObject}.
@@ -584,7 +599,7 @@ declare namespace Hooks {
    * Entity.
    * @see {@link Entity#createEmbeddedEntity}
    */
-  type PreCreateEmbeddedEntity<D, P extends Entity = Entity> = (
+  type PreCreateEmbeddedEntity<D = any, P extends Entity = Entity> = (
     parent: P,
     data: D,
     options: Entity.CreateOptions,
@@ -602,7 +617,11 @@ declare namespace Hooks {
    * @remarks The name for this hook is dynamically created by joining 'preCreate' with the type name of the Entity.
    * @see {@link Entity.create}
    */
-  type PreCreateEntity<D> = (data: D, options: Entity.CreateOptions, userId: number) => boolean;
+  type PreCreateEntity<D extends Entity.Data = Entity.Data> = (
+    data: D,
+    options: Entity.CreateOptions,
+    userId: number
+  ) => boolean;
 
   /**
    * This is called before deleting an embedded {@link Entity}.
@@ -691,7 +710,7 @@ declare namespace Hooks {
    * @remarks The name for this hook is dynamically created by joining 'render' with the type name of the Application.
    * @see {@link Application#_render}
    */
-  type RenderApplication<D, A extends Application = Application> = (app: A, jq: JQuery, data: D) => void;
+  type RenderApplication<D = object, A extends Application = Application> = (app: A, jq: JQuery, data: D) => void;
 
   /**
    * This is called after updating an embedded {@link Entity}.
@@ -729,4 +748,31 @@ declare namespace Hooks {
     options: Entity.UpdateOptions,
     userId: number
   ) => void;
+
+  type DynamicCallbacks =
+    | CloseApplication
+    | ControlPlaceableObject
+    | CreateEmbeddedEntity
+    | CreateEntity
+    | DeleteEmbeddedEntity
+    | DeleteEntity
+    | GetApplicationHeaderButtons
+    | GetChatLogEntryContext
+    | GetCombatTrackerEntryContext
+    | GetCompendiumDirectoryEntryContext
+    | GetPlaylistDirectorySoundContext
+    | GetSidebarDirectoryEntryContext
+    | GetSidebarDirectoryFolderContext
+    | HoverPlaceableObject
+    | PastePlaceableObject
+    | PasteWall
+    | PreCreateEmbeddedEntity
+    | PreCreateEntity
+    | PreDeleteEmbeddedEntity
+    | PreDeleteEntity
+    | PreUpdateEmbeddedEntity
+    | PreUpdateEntity
+    | RenderApplication
+    | UpdateEmbeddedEntity
+    | UpdateEntity;
 }
