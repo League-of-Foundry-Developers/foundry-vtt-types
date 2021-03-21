@@ -19,4 +19,4 @@ expectType<string>(testActorSheet.actor.foo);
 const sheetData = await testActorSheet.getData();
 
 expectType<string>(sheetData.items[0].data.foo);
-expectType<number | null>(sheetData.actor.data.bar);
+expectType<number>(sheetData.actor.data.bar);
