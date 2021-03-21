@@ -3,7 +3,6 @@
  * This class will represent one popout feed window and handle its positioning and draggability
  */
 declare class CameraPopoutAppWrapper {
-
   /**
    * @param view- The CameraViews application that this popout belongs to
    * @param userId- ID of the user this popout belongs to
