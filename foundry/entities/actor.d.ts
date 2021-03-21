@@ -34,7 +34,7 @@
  */
 declare class Actor<
   D extends Actor.Data = Actor.Data,
-  I extends Item<Actor.OwnedItemData<D>, any> = Item<Actor.OwnedItemData<D>, Actor.OwnedItemData<D>>,
+  I extends Item<Actor.OwnedItemData<D>, any> = Item<Actor.OwnedItemData<D>>,
   PD extends D = D
 > extends Entity<D, PD> {
   constructor(data?: DeepPartial<D>, options?: Entity.CreateOptions);
