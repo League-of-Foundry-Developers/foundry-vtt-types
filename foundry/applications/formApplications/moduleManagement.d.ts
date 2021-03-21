@@ -17,7 +17,7 @@ declare class ModuleManagement extends FormApplication<FormApplication.Options, 
   /**
    * @defaultValue `{}`
    */
-  protected _checked: object;
+  protected _checked: Partial<Record<string, boolean>>;
 
   /**
    * @override

@@ -76,7 +76,10 @@ declare class SetupConfigurationForm extends FormApplication<FormApplication.Opt
   /**
    * Post the setup configuration form
    */
-  protected _post(data: { action: string; world?: string }): Promise<string | { error?: string; stack?: string }>;
+  protected _post(data: {
+    action: string;
+    world?: string;
+  }): Promise<Record<string, unknown> & { error?: string; stack?: string }>;
 
   /**
    * Reload the setup view by re-acquiring setup data and re-rendering the form
@@ -87,7 +90,7 @@ declare class SetupConfigurationForm extends FormApplication<FormApplication.Opt
    * Generic button handler for the setup form which submits a POST request including any dataset on the button itself
    * @param event - The originating mouse click event
    */
-  protected _onSubmitButton(event: JQuery.ClickEvent): Promise<void>;
+  protected _onSubmitButton(event: JQuery.ClickEvent): ReturnType<SetupConfigurationForm['_post']>;
 
   /**
    * Confirm user intent when saving admin changes to the application configuration

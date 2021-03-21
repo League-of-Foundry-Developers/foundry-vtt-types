@@ -75,7 +75,7 @@ declare class EntitySheetConfig<
     sheetClass,
     types,
     makeDefault
-  }?: Exclude<EntitySheetConfig.Config, 'action'>): void;
+  }: Exclude<EntitySheetConfig.Config, 'action'>): void;
 
   /**
    * Unregister a sheet class, removing it from the list of available Applications to use for an Entity type
@@ -95,7 +95,7 @@ declare class EntitySheetConfig<
     entityClass,
     id,
     types
-  }?: Pick<EntitySheetConfig.Config, 'entityClass' | 'id' | 'types'>): void;
+  }: Pick<EntitySheetConfig.Config, 'entityClass' | 'id' | 'types'>): void;
 
   /**
    * @typeParam T - the string array, passed as the types parameter

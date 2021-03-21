@@ -54,6 +54,7 @@ declare namespace SettingsConfig {
     user: User;
     canConfigure: boolean;
     systemTitle: Game['system']['data']['title'];
+    data: Data.Data;
   }
 
   namespace Data {

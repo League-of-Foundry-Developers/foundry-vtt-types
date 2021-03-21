@@ -47,11 +47,11 @@ declare class NoteConfig<P extends FormApplication.Options = FormApplication.Opt
 
 declare namespace NoteConfig {
   interface Data {
-    entryIcons: Record<string, string>;
+    entryIcons: typeof CONFIG.JournalEntry['noteIcons'];
     entryId: JournalEntry['_id'] | undefined;
     entryName: JournalEntry['name'] | undefined;
     entries: Journal['entities'];
-    fontFamilies: Record<typeof CONFIG['fontFamilies'][number], typeof CONFIG['fontFamilies'][number]>;
+    fontFamilies: Partial<Record<string, string>>;
     object: Duplicated<NoteConfig['object']['data']>;
     options: NoteConfig['options'];
     textAnchors: Record<Const.TextAnchorPoint, string>;

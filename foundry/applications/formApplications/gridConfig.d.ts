@@ -30,7 +30,7 @@ declare class GridConfig<P extends FormApplication.Options = FormApplication.Opt
    * A reference to the bound mousewheel handler function so it can be removed
    * @defaultValue `null`
    */
-  protected _wheelHandler: Function | null;
+  protected _wheelHandler: ((event: WheelEvent) => void) | null;
 
   /**
    * @override
@@ -57,7 +57,7 @@ declare class GridConfig<P extends FormApplication.Options = FormApplication.Opt
   /**
    * @override
    */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<ReturnType<GridConfig['_refresh']>>;
+  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
 
   /**
    * @override
@@ -85,7 +85,7 @@ declare class GridConfig<P extends FormApplication.Options = FormApplication.Opt
    * Handle resetting the form and re-drawing back to the original dimensions
    * @param event - The original click event
    */
-  protected _onReset(event: MouseEvent): void;
+  protected _onReset(event: JQuery.ClickEvent): void;
 
   /**
    * Scale the background size relative to the grid size
@@ -122,12 +122,12 @@ declare class GridConfig<P extends FormApplication.Options = FormApplication.Opt
    * @param grid       - Refresh the grid display?
    *                     (default: `false`)
    */
-  protected _refresh({ background, grid }?: { background: boolean; grid: boolean }): void;
+  protected _refresh({ background, grid }?: { background?: boolean; grid?: boolean }): void;
 
   /**
    * @override
    */
-  protected _onChangeInput(event: JQuery.ChangeEvent): ReturnType<GridConfig['_refresh']>;
+  protected _onChangeInput(event: JQuery.ChangeEvent): void;
 
   /**
    * @param event - (unused)

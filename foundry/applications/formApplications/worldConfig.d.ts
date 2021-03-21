@@ -34,7 +34,7 @@ declare class WorldConfig extends FormApplication<WorldConfig.Options, WorldConf
   /**
    * @remarks This method does not exist on WorldConfig and only exists to make the typescript compile!
    */
-  protected _updateObject(...args: unknown[]): never;
+  protected _updateObject(...args: unknown[]): Promise<unknown>;
 }
 
 declare namespace WorldConfig {

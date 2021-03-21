@@ -49,7 +49,7 @@ declare class PermissionConfig extends FormApplication<FormApplication.Options, 
    * @param event - (unused)
    * @override
    */
-  protected _updateObject(event: Event, formData: Record<string, boolean>): Promise<void>;
+  protected _updateObject(event: Event, formData: PermissionConfig.FormData): Promise<void>;
 }
 
 declare namespace PermissionConfig {
@@ -57,6 +57,8 @@ declare namespace PermissionConfig {
     roles: { [Key in Exclude<keyof typeof CONST['USER_ROLES'], 'NONE'>]: `USER.Role${Titlecase<Key>}` };
     permissions: ReturnType<PermissionConfig['_getPermissions']>;
   }
+
+  type FormData = Record<string, boolean>;
 
   interface Permission extends Config.Permission {
     id: string;

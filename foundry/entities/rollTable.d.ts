@@ -8,7 +8,7 @@ declare class RollTable extends Entity<RollTable.Data> {
   /**
    * A convenience accessor for the array of TableResult embedded documents
    */
-  get results(): any[]; // TODO: type when TableResult is typed
+  get results(): RollTable.Data['results'];
 
   /* -------------------------------------------- */
   /*  Methods                                     */

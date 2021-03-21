@@ -16,4 +16,4 @@ const combatSetting: Combat.PartialConfigSetting = {
 clientSettings.register('core', Combat.CONFIG_SETTING, combatSetting);
 clientSettings.set('core', Combat.CONFIG_SETTING, {});
 clientSettings.set('core', Combat.CONFIG_SETTING, { resource: 'foo', skipDefeated: false });
-expectType<Combat.ConfigValue>(clientSettings.get('core', Combat.CONFIG_SETTING));
+expectType<Combat.ConfigValue>(clientSettings.get('core', 'combatTrackerConfig'));

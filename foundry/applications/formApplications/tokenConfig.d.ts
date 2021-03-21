@@ -56,7 +56,7 @@ declare class TokenConfig<P extends TokenConfig.Options = TokenConfig.Options> e
   /**
    * Inspect the Actor data model and identify the set of attributes which could be used for a Token Bar
    */
-  static getTrackedAttributeChoices(attributes: TokenConfig.Attributes): Record<string, string[]>;
+  static getTrackedAttributeChoices(attributes: TokenConfig.Attributes): Partial<Record<string, string[]>>;
 
   /**
    * Test whether an individual data object is a valid attribute - containing both a "value" and "max" field
@@ -70,16 +70,18 @@ declare class TokenConfig<P extends TokenConfig.Options = TokenConfig.Options> e
   /**
    * Get an Object of image paths and filenames to display in the Token sheet
    */
-  protected _getAlternateTokenImages(): Promise<Record<string, string>>;
+  protected _getAlternateTokenImages(): Promise<Partial<Record<string, string>>>;
 
   /** @override */
   activateListeners(html: JQuery): void;
 
   /** @override */
-  protected _getSubmitData(updateData?: object): ReturnType<FormApplication['_getSubmitData']> & { lightAlpha: number };
+  protected _getSubmitData(
+    updateData?: TokenConfig.FormData
+  ): ReturnType<FormApplication['_getSubmitData']> & { lightAlpha: number };
 
   /** @override */
-  protected _updateObject(event: Event, formData: TokenConfig.FormData): Promise<Token>;
+  protected _updateObject(event: Event, formData: TokenConfig.FormData): Promise<void>;
 
   /**
    * Update certain fields of a linked actor token when token configuration is changed
@@ -113,13 +115,13 @@ declare namespace TokenConfig {
     object: Duplicated<TokenConfig['token']['data']>;
     options: TokenConfig['options'];
     gridUnits: Scene['data']['gridUnits'] | Game['system']['gridUnits'];
-    barAttributes: typeof TokenConfig['getTrackedAttributeChoices'];
-    bar1: TokenConfig['object']['getBarAttribute'];
-    bar2: TokenConfig['object']['getBarAttribute'];
+    barAttributes: ReturnType<typeof TokenConfig['getTrackedAttributeChoices']>;
+    bar1: ReturnType<TokenConfig['object']['getBarAttribute']>;
+    bar2: ReturnType<TokenConfig['object']['getBarAttribute']>;
     displayModes: Record<Const.TokenDisplayMode, string>;
     actors: Array<Pick<Actor, '_id' | 'name'>>;
     dispositions: Record<Const.TokenDisposition, string>;
-    lightAnimations: { [Key in keyof typeof CONFIG['Canvas']['lightAnimations']]: string };
+    lightAnimations: { [Key in keyof typeof CONFIG['Canvas']['lightAnimations']]: string } & { '': 'None' };
     lightAlpha: number;
     isGM: User['isGM'];
   }

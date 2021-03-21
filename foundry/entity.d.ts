@@ -178,7 +178,7 @@ declare abstract class Entity<D extends Entity.Data = Entity.Data> {
    * actor.sheet // ActorSheet
    * ```
    */
-  get sheet(): FormApplication<FormApplication.Options, FormApplication.Data<this>, this> | null;
+  get sheet(): BaseEntitySheet<BaseEntitySheet.Options, BaseEntitySheet.Data<this>, this> | null;
 
   /**
    * Obtain a reference to the BaseEntitySheet implementation which should be used to render the Entity instance
@@ -332,7 +332,7 @@ declare abstract class Entity<D extends Entity.Data = Entity.Data> {
   /**
    * Entity- specific actions that should occur when the Entity is first created
    */
-  protected _onCreate(data: DeepPartial<D>, options: any, userId: string): void;
+  protected _onCreate(data: D, options: any, userId: string): void;
 
   /**
    * Update one or multiple existing entities using provided input data.
@@ -449,7 +449,7 @@ declare abstract class Entity<D extends Entity.Data = Entity.Data> {
    * @param id           - The numeric ID of the child to retrieve
    * @param strict       - Throw an Error if the requested id does not exist, otherwise return null. Default false.
    */
-  getEmbeddedEntity(embeddedName: string, id: string, { strict }?: { strict?: boolean }): EmbeddedEntity.Data;
+  getEmbeddedEntity(embeddedName: string, id: string, { strict }?: { strict?: boolean }): any;
 
   /**
    * Create one or multiple EmbeddedEntities within this parent Entity.
@@ -480,7 +480,7 @@ declare abstract class Entity<D extends Entity.Data = Entity.Data> {
    * const temp = await actor.createEmbeddedEntity("OwnedItem", data, {temporary: true}); // Not saved to the Actor
    * ```
    */
-  createEmbeddedEntity(embeddedName: string, data: any, options?: Entity.CreateOptions): Promise<EmbeddedEntity.Data>;
+  createEmbeddedEntity(embeddedName: string, data: any, options?: Entity.CreateOptions): Promise<any>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Embedded Entities are created
@@ -530,12 +530,8 @@ declare abstract class Entity<D extends Entity.Data = Entity.Data> {
    * const updated = await actor.updateEmbeddedEntity("OwnedItem", updates); // Updates multiple EmbeddedEntity objects
    * ```
    */
-  updateEmbeddedEntity(embeddedName: string, data: any, options?: Entity.UpdateOptions): Promise<EmbeddedEntity.Data>;
-  updateEmbeddedEntity(
-    embeddedName: string,
-    data: any[],
-    options?: Entity.UpdateOptions
-  ): Promise<EmbeddedEntity.Data[]>;
+  updateEmbeddedEntity(embeddedName: string, data: any, options?: Entity.UpdateOptions): Promise<any>;
+  updateEmbeddedEntity(embeddedName: string, data: any[], options?: Entity.UpdateOptions): Promise<any[]>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Embedded Entities are updated
@@ -588,11 +584,7 @@ declare abstract class Entity<D extends Entity.Data = Entity.Data> {
    * const deleted = await actor.deleteEmbeddedEntity("OwnedItem", deletions); // Deletes multiple EmbeddedEntity objects
    * ```
    */
-  deleteEmbeddedEntity(
-    embeddedName: string,
-    data: any,
-    options?: Entity.DeleteOptions
-  ): Promise<EmbeddedEntity.Data | EmbeddedEntity.Data[]>;
+  deleteEmbeddedEntity(embeddedName: string, data: any, options?: Entity.DeleteOptions): Promise<any | any[]>;
 
   /**
    * Handle a SocketResponse from the server when one or multiple Embedded Entities are deleted

@@ -45,7 +45,9 @@ declare class LightConfig<P extends FormApplication.Options = FormApplication.Op
   protected _onPreviewChange(event: JQuery.ChangeEvent): void;
 
   /** @override */
-  protected _getSubmitData(updateData?: object): ReturnType<FormApplication['_getSubmitData']> & { tintAlpha: number };
+  protected _getSubmitData(
+    updateData?: LightConfig.FormData
+  ): ReturnType<FormApplication['_getSubmitData']> & { tintAlpha: number };
 
   /**
    * @param event - (unused)
@@ -57,7 +59,7 @@ declare class LightConfig<P extends FormApplication.Options = FormApplication.Op
    * Reset the state of the previewed light source object to its original data
    * @param refresh - (default: `true`)
    */
-  protected _resetObject(refresh: boolean): void;
+  protected _resetObject(refresh?: boolean): void;
 }
 
 declare namespace LightConfig {

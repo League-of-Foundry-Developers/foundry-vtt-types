@@ -38,7 +38,7 @@ declare namespace MeasuredTemplateConfig {
     object: Duplicated<MeasuredTemplateConfig['object']['data']>;
     options: MeasuredTemplateConfig['options'];
     templateTypes: typeof CONFIG['MeasuredTemplate']['types'];
-    gridUnits: Scene.Data;
+    gridUnits: Scene['data']['gridUnits'];
     submitText: string;
   }
 

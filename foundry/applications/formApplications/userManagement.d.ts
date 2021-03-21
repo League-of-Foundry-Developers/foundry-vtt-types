@@ -34,7 +34,7 @@ declare class UserManagement extends FormApplication<FormApplication.Options, Us
    * @param event - (unused)
    * @override
    */
-  protected _updateObject(event: Event, formData: Record<string, string | number>): Promise<unknown>;
+  protected _updateObject(event: Event, formData: UserManagement.FormData): Promise<unknown>;
 
   /**
    * Reveal the access key for each player so that it can be learned without being changed
@@ -56,7 +56,10 @@ declare class UserManagement extends FormApplication<FormApplication.Options, Us
    */
   protected _onUserDelete(event: JQuery.ClickEvent): void;
 
-  static readonly USER_TEMPLATE: 'templates/setup/player-create.html';
+  /**
+   * @defaultValue `'templates/setup/player-create.html'`
+   */
+  static USER_TEMPLATE: string;
 }
 
 declare namespace UserManagement {
@@ -67,4 +70,6 @@ declare namespace UserManagement {
     options: UserManagement['options'];
     userTemplate: typeof UserManagement['USER_TEMPLATE'];
   }
+
+  type FormData = Record<string, string | number>;
 }
