@@ -185,3 +185,7 @@ declare interface Date {
 declare interface RegExpConstructor {
   escape(string: string): string;
 }
+
+declare interface JQuery {
+  shake(shakes: number, distance: number, duration: number): JQuery;
+}
