@@ -22,11 +22,8 @@
  * @see {@link User} The User Entity.
  * @see {@link Compendium} The Compendium which may contain Entities in a compendium pack.
  *
- * @param data - The data Object with which to create the Entity
- * @param options - Additional options which modify the created Entity behavior
- * @param compendium - A reference to the Compendium pack from which this Entity was drawn.
- *
- * @typeParam D - The data type for the entity. Should extend Entity.Data
+ * @typeParam D  - The type of the `Entity`s `_data` field. It should extend Entity.Data
+ * @typeParam PD - The type of `Entity`s `data` field after `prepareData` has been called. It should extend `D`.
  *
  * @example
  * ```typescript
@@ -34,7 +31,12 @@
  * let actor = new Actor(actorData)
  * ```
  */
-declare abstract class Entity<D extends Entity.Data = Entity.Data> {
+declare abstract class Entity<D extends Entity.Data = Entity.Data, PD extends D = D> {
+  /**
+   * @param data       - The data Object with which to create the Entity
+   * @param options    - Additional options which modify the created Entity behavior
+   * @param compendium - A reference to the Compendium pack from which this Entity was drawn.
+   */
   constructor(data?: DeepPartial<D>, options?: Entity.CreateOptions);
 
   /**
@@ -49,7 +51,7 @@ declare abstract class Entity<D extends Entity.Data = Entity.Data> {
    * This data object may have transformations applied to it.
    * @defaultValue `this._data`
    */
-  data: D;
+  data: PD;
 
   /**
    * The options object that was used to configure the Entity upon initialization.
@@ -104,7 +106,7 @@ declare abstract class Entity<D extends Entity.Data = Entity.Data> {
    * This method can be used to derive any internal attributes which are computed in a formulaic manner.
    * For example, in a d20 system - computing an ability modifier based on the value of that ability score.
    */
-  prepareData(): D | void;
+  prepareData(): PD | void;
 
   /**
    * Prepare Embedded Entities which exist within this parent Entity.
@@ -312,12 +314,12 @@ declare abstract class Entity<D extends Entity.Data = Entity.Data> {
    */
   static create<T extends Entity, U>(
     this: ConstructorOf<T>,
-    data: Expanded<U> extends DeepPartial<T['data']> ? U : DeepPartial<T['data']>,
+    data: Expanded<U> extends DeepPartial<T['_data']> ? U : DeepPartial<T['_data']>,
     options?: Entity.CreateOptions
   ): Promise<T | null>;
   static create<T extends Entity, U>(
     this: ConstructorOf<T>,
-    data: Expanded<U> extends DeepPartial<T['data']> ? ReadonlyArray<U> : ReadonlyArray<DeepPartial<T['data']>>,
+    data: Expanded<U> extends DeepPartial<T['_data']> ? ReadonlyArray<U> : ReadonlyArray<DeepPartial<T['_data']>>,
     options?: Entity.CreateOptions
   ): Promise<T | T[] | null>;
 
@@ -332,7 +334,7 @@ declare abstract class Entity<D extends Entity.Data = Entity.Data> {
   /**
    * Entity- specific actions that should occur when the Entity is first created
    */
-  protected _onCreate(data: D, options: any, userId: string): void;
+  protected _onCreate(data: PD, options: any, userId: string): void;
 
   /**
    * Update one or multiple existing entities using provided input data.
@@ -355,14 +357,14 @@ declare abstract class Entity<D extends Entity.Data = Entity.Data> {
    */
   static update<T extends Entity, U>(
     this: ConstructorOf<T>,
-    data: Expanded<U> extends DeepPartial<T['data']> ? U & { _id: string } : DeepPartial<T['data']> & { _id: string },
+    data: Expanded<U> extends DeepPartial<T['_data']> ? U & { _id: string } : DeepPartial<T['_data']> & { _id: string },
     options?: Entity.UpdateOptions
   ): Promise<T | []>;
   static update<T extends Entity, U>(
     this: ConstructorOf<T>,
-    data: Expanded<U> extends DeepPartial<T['data']>
+    data: Expanded<U> extends DeepPartial<T['_data']>
       ? ReadonlyArray<U & { _id: string }>
-      : ReadonlyArray<DeepPartial<T['data']> & { _id: string }>,
+      : ReadonlyArray<DeepPartial<T['_data']> & { _id: string }>,
     options?: Entity.UpdateOptions
   ): Promise<T | T[]>;
 
@@ -697,10 +699,13 @@ declare abstract class Entity<D extends Entity.Data = Entity.Data> {
    *
    * @param data - The data object extracted from a DataTransfer event
    */
-  static fromDropData<T extends Entity, U extends { data: DeepPartial<T['data']> } | { pack: string } | { id: string }>(
+  static fromDropData<
+    T extends Entity,
+    U extends { data: DeepPartial<T['_data']> } | { pack: string } | { id: string }
+  >(
     this: ConstructorOf<T>,
     data: U
-  ): U extends { data: DeepPartial<T['data']> }
+  ): U extends { data: DeepPartial<T['_data']> }
     ? Promise<T>
     : U extends { id: string }
     ? Promise<T | null>
@@ -722,7 +727,7 @@ declare abstract class Entity<D extends Entity.Data = Entity.Data> {
    * Remove any features of the data which are world- specific.
    * This function is asynchronous in case any complex operations are required prior to exporting.
    */
-  toCompendium(): Promise<Duplicated<D>>;
+  toCompendium(): Promise<Omit<Duplicated<D>, '_id' | 'permission' | 'folder' | 'sort' | 'active'>>;
 
   /**
    * Provide a Dialog form to create a new Entity of this type.
@@ -730,7 +735,10 @@ declare abstract class Entity<D extends Entity.Data = Entity.Data> {
    * @param data - Initial data with which to populate the creation form
    * @param options - Initial positioning and sizing options for the dialog form
    */
-  static createDialog(data: any, options: any): Promise<Entity>;
+  static createDialog(
+    data?: { name?: string; folder?: string; type?: string },
+    options?: Partial<Dialog.Options>
+  ): Promise<Entity>;
 }
 
 declare namespace Entity {

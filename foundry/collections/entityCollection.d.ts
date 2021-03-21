@@ -7,12 +7,12 @@ declare abstract class EntityCollection<T extends Entity = Entity> extends Colle
   /**
    * @param data - An Array of Entity data from which to create instances
    */
-  constructor(data: T['data'][]);
+  constructor(data: T['_data'][]);
 
   /**
    * The source data is, itself, a mapping of IDs to data objects
    */
-  _source: T['data'][];
+  _source: T['_data'][];
 
   /**
    * An Array of application references which will be automatically updated when
@@ -24,7 +24,7 @@ declare abstract class EntityCollection<T extends Entity = Entity> extends Colle
    * Initialize the Map object and all its contained entities
    * @param data -
    */
-  protected _initialize(data: T['data'][]): void;
+  protected _initialize(data: T['_data'][]): void;
 
   /**
    * An array of all the Entities in the EntityCollection.
@@ -100,7 +100,7 @@ declare abstract class EntityCollection<T extends Entity = Entity> extends Colle
   importFromCollection(
     collection: string,
     entryId: string,
-    updateData?: DeepPartial<T['data']>,
+    updateData?: DeepPartial<T['_data']>,
     options?: Entity.CreateOptions
   ): Promise<T>;
 
@@ -109,7 +109,7 @@ declare abstract class EntityCollection<T extends Entity = Entity> extends Colle
    * @param data - The original Compendium entry data
    * @returns The processed data ready for Entity creation
    */
-  fromCompendium(data: DeepPartial<T['data']>): DeepPartial<T['data']>;
+  fromCompendium(data: DeepPartial<T['_data']>): DeepPartial<T['_data']>;
 
   /**
    * Update all objects in this EntityCollection with a provided transformation.
@@ -123,7 +123,7 @@ declare abstract class EntityCollection<T extends Entity = Entity> extends Colle
    * @returns An array of updated data once the operation is complete
    */
   updateAll(
-    transformation: DeepPartial<T['data']> | ((obj: T) => DeepPartial<T['data']>),
+    transformation: DeepPartial<T['_data']> | ((obj: T) => DeepPartial<T['_data']>),
     condition?: (obj: T) => boolean,
     options?: Entity.UpdateOptions
   ): Promise<T[]>;

@@ -8,7 +8,7 @@
 declare class BaseEntitySheet<
   P extends BaseEntitySheet.Options = BaseEntitySheet.Options,
   D extends object = BaseEntitySheet.Data<Entity>,
-  O extends Entity = D extends BaseEntitySheet.Data<infer T> ? T : Entity
+  O extends Entity<any, any> = D extends BaseEntitySheet.Data<infer T> ? T : Entity
 > extends FormApplication<P, D, O> {
   /**
    * @param object  - An Entity which should be managed by this form sheet.
@@ -65,7 +65,7 @@ declare namespace BaseEntitySheet {
    * @typeParam D - the type of the data in the Entity
    * @typeParam O - the type of the Entity which should be managed by this form sheet
    */
-  interface Data<O extends Entity = Entity> {
+  interface Data<O extends Entity<any, any> = Entity<any, any>> {
     cssClass: string;
     editable: boolean;
     entity: Duplicated<O['data']>;

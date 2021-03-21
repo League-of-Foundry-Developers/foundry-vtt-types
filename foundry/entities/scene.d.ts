@@ -78,27 +78,27 @@ declare class Scene extends Entity<Scene.Data> {
   /** @override */
   static create<T extends Scene, U>(
     this: ConstructorOf<T>,
-    data: Expanded<U> extends DeepPartial<T['data']> ? U : DeepPartial<T['data']>,
+    data: Expanded<U> extends DeepPartial<T['_data']> ? U : DeepPartial<T['_data']>,
     options?: Entity.CreateOptions
   ): Promise<T | null>;
   static create<T extends Scene, U>(
     this: ConstructorOf<T>,
-    data: Expanded<U> extends DeepPartial<T['data']> ? ReadonlyArray<U> : ReadonlyArray<DeepPartial<T['data']>>,
+    data: Expanded<U> extends DeepPartial<T['_data']> ? Array<U> : Array<DeepPartial<T['_data']>>,
     options?: Entity.CreateOptions
   ): Promise<T | T[] | null>;
 
   /** @override */
   update<U>(
-    data: Expanded<U> extends DeepPartial<Scene.Data> ? U : never,
+    data: Expanded<U> extends DeepPartial<this['_data']> ? U : never,
     options: Entity.UpdateOptions
   ): Promise<this>;
-  update(data: DeepPartial<Scene.Data>, options: Entity.UpdateOptions): Promise<this>;
+  update(data: DeepPartial<this['_data']>, options: Entity.UpdateOptions): Promise<this>;
 
   /** @override */
-  protected _onCreate(data: Scene.Data, options: any, userId: string): void;
+  protected _onCreate(data: this['_data'], options: any, userId: string): void;
 
   /** @override */
-  protected _onUpdate(data: DeepPartial<Scene.Data>, options: Entity.UpdateOptions, userId: string): void;
+  protected _onUpdate(data: DeepPartial<this['_data']>, options: Entity.UpdateOptions, userId: string): void;
 
   /** @override */
   protected _onDelete(options: Entity.DeleteOptions, userId: string): void;

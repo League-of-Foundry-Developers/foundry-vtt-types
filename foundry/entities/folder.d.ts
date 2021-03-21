@@ -39,8 +39,12 @@ declare class Folder extends Entity<Folder.Data> {
    * @param data    - Initial data with which to populate the creation form
    * @param options - Initial positioning and sizing options for the dialog form
    * @returns An active FolderConfig instance for creating the new Folder entity
+   *
+   * @remarks
+   * This actually returns a {@link FolderConfig} but this is incompatible with the return type in `Entity`, which is
+   * `Promise<Entity>`.
    */
-  static createDialog(data?: any, options?: any): any; // TODO FolderConfig I think, shoud be Promise<Entity>
+  static createDialog(data?: any, options?: any): any;
 
   /* -------------------------------------------- */
   /*  Methods                                     */
