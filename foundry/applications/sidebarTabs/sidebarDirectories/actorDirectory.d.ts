@@ -3,8 +3,6 @@
  * @see {@link Actor}
  */
 declare class ActorDirectory extends SidebarDirectory {
-  constructor(options?: Partial<Application.Options>);
-
   /**
    * @override
    */

@@ -83,7 +83,7 @@ declare const CONFIG: {
     /**
      * @defaultValue `{}`
      */
-    sheetClasses: Record<string, unknown>; // TODO: Fill in the full typing here.
+    sheetClasses: EntitySheetConfig.SheetClasses;
 
     /**
      * @defaultValue `'fas fa-user'`
@@ -602,7 +602,7 @@ declare const CONFIG: {
     /**
      * @defaultValue `{}`
      */
-    sheetClasses: Record<string, unknown>; // TODO: Fill in the full typing here.
+    sheetClasses: EntitySheetConfig.SheetClasses;
 
     /**
      * @defaultValue `'fas fa-suitcase'`
@@ -793,7 +793,7 @@ declare const CONFIG: {
     /**
      * @defaultValue `MacroConfig`
      */
-    sheetClass: any; // TODO: ConstructorOf<MacroConfig>
+    sheetClass: ConstructorOf<MacroConfig>;
 
     /**
      * @defaultValue `'fas fa-terminal'`
@@ -917,7 +917,7 @@ declare const CONFIG: {
     /**
      * @defaultValue `SceneConfig`
      */
-    sheetClass: any; // TODO: ConstructorOf<SceneConfig>;
+    sheetClass: ConstructorOf<SceneConfig>;
 
     /**
      * @defaultValue `'fas fa-map'`

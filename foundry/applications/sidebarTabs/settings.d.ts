@@ -2,7 +2,7 @@
  * A SidebarTab for providing help messages and settings configurations.
  * The Settings sidebar is the furthest-to-right using a triple-cogs icon.
  */
-declare class Settings extends SidebarTab {
+declare class Settings extends SidebarTab<Settings.Options> {
   /**
    * @override
    */
@@ -28,7 +28,7 @@ declare class Settings extends SidebarTab {
 declare namespace Settings {
   interface Data {
     user: User;
-    system: any; // TODO: update when System is typed
+    system: Game['system'];
     coreVersion: string;
     canConfigure: boolean;
     canSetup: boolean;

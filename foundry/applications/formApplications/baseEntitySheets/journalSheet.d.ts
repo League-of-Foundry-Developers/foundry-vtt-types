@@ -1,15 +1,19 @@
 /**
  * The JournalEntry Configuration Sheet
+ * @typeParam P - the type of the options object
+ * @typeParam D - The data structure used to render the handlebars template.
+ * @typeParam O - the type of the Entity which should be managed by this form sheet
  */
 declare class JournalSheet<
+  P extends JournalSheet.Options = JournalSheet.Options,
   D extends object = BaseEntitySheet.Data<JournalEntry>,
   O extends JournalEntry = D extends BaseEntitySheet.Data<infer T> ? T : JournalEntry
-> extends BaseEntitySheet<D, O> {
+> extends BaseEntitySheet<P, D, O> {
   /**
    * @param entity  - The JournalEntry instance which is being edited
    * @param options - JournalSheet options
    */
-  constructor(entity: O, options?: Partial<JournalSheet.Options>);
+  constructor(entity: O, options?: Partial<P>);
 
   protected _sheetMode: JournalSheet.SheetMode | null;
 

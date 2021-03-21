@@ -1,7 +1,7 @@
 /**
  * A directory list of JournalEntry entities in the Sidebar
  */
-declare class JournalDirectory extends SidebarDirectory {
+declare class JournalDirectory extends SidebarDirectory<JournalDirectory.Options> {
   /**
    * @override
    */

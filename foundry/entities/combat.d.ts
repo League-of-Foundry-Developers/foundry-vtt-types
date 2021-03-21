@@ -25,6 +25,7 @@ declare class Combat extends Entity<Combat.Data> {
 
   /**
    * The configuration setting used to record Combat preferences
+   * @defaultValue `'combatTrackerConfig'`
    */
   static CONFIG_SETTING: string;
 
@@ -282,6 +283,25 @@ declare class Combat extends Entity<Combat.Data> {
 }
 
 declare namespace Combat {
+  interface CompleteConfigSetting extends PartialConfigSetting {
+    key: typeof Combat['CONFIG_SETTING'];
+    module: 'core';
+  }
+
+  interface PartialConfigSetting extends ClientSettings.PartialSetting<ConfigValue> {
+    name: 'Combat Tracker Configuration';
+    scope: 'world';
+    config: false;
+    default: {};
+    type: ConstructorOf<Object>;
+    onChange: () => void;
+  }
+
+  interface ConfigValue {
+    resource?: string;
+    skipDefeated?: boolean;
+  }
+
   /**
    * Data extension for Combat
    */
@@ -293,16 +313,6 @@ declare namespace Combat {
     scene: string;
     sort: number;
     turn: number;
-  }
-
-  /**
-   * Stores the round, turn and tokenId for the current turn. Also used for the
-   * previous turn.
-   */
-  interface CurrentTurn {
-    round: number | null;
-    tokenId: string | null;
-    turn: number | null;
   }
 
   type Combatant = {
@@ -330,6 +340,16 @@ declare namespace Combat {
         tokenId: string;
       }
   );
+
+  /**
+   * Stores the round, turn and tokenId for the current turn. Also used for the
+   * previous turn.
+   */
+  interface CurrentTurn {
+    round: number | null;
+    tokenId: string | null;
+    turn: number | null;
+  }
 
   interface Settings {
     resource: string;

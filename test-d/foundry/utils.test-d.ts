@@ -5,6 +5,12 @@ expectType<string>(duplicate(''));
 
 expectType<number | null>(duplicate(0));
 
+expectType<0 | 1 | null>(duplicate<0 | 1>(0));
+
+expectType<0 | 1>(duplicate<0 | 1, 'lenient'>(0));
+
+expectType<'foo' | 'bar'>(duplicate<'foo' | 'bar'>('foo'));
+
 expectType<number>(duplicate<number, 'lenient'>(0));
 
 /* by explicitly specifying `'lenient'`, we tell the compiler to use number. It will accept it, even if at runtime there

@@ -7,21 +7,23 @@
  * `CONFIG.Item.sheetClass`.
  * @typeParam D - The data structure used to render the handlebars template.
  * @typeParam O - the type of the Entity which should be managed by this form sheet
+ * @typeParam P - the type of the options object
  */
 declare class ItemSheet<
   D extends object = ActorSheet.Data<Actor>,
-  O extends Item = D extends ItemSheet.Data<infer T> ? T : Item
-> extends BaseEntitySheet<D, O> {
+  O extends Item = D extends ItemSheet.Data<infer T> ? T : Item,
+  P extends BaseEntitySheet.Options = BaseEntitySheet.Options
+> extends BaseEntitySheet<P, D, O> {
   /**
    * @param item    - The Item instance being displayed within the sheet.
    * @param options - Additional options which modify the rendering of the item.
    */
-  constructor(item: O, options?: BaseEntitySheet.Options);
+  constructor(item: O, options?: Partial<P>);
 
   /**
    * Assign the default options which are supported by this Application
    */
-  static get defaultOptions(): BaseEntitySheet.Options;
+  static get defaultOptions(): typeof BaseEntitySheet['defaultOptions'];
 
   /**
    * Provide a unique CSS ID for owned Item sheets
@@ -62,7 +64,7 @@ declare class ItemSheet<
   /**
    * Handle changing the item image
    */
-  protected _onEditImage(event: JQuery.ClickEvent): Promise<any>; // TODO: Adjust once FilePicker is updated
+  protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
 }
 
 declare namespace ItemSheet {

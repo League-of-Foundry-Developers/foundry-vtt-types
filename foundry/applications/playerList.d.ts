@@ -13,7 +13,7 @@ declare class PlayerList extends Application {
    * }
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): typeof Application['defaultOptions'];
 
   /** @override */
   render(force?: boolean, options?: Application.RenderOptions): this;

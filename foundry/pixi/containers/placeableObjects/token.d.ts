@@ -591,9 +591,9 @@ declare namespace Token {
     brightSight: number;
     dimLight: number;
     dimSight: number;
-    displayBars: number;
-    displayName: number;
-    disposition: number;
+    displayBars: Const.TokenDisplayMode;
+    displayName: Const.TokenDisplayMode;
+    disposition: Const.TokenDisposition;
     effects: Array<unknown>;
     elevation: number;
     height: number;
@@ -608,6 +608,7 @@ declare namespace Token {
     mirrorY: boolean;
     name: string;
     overlayEffect: string;
+    randomImg?: boolean;
     rotation: number;
     scale: number;
     sightAngle: number;

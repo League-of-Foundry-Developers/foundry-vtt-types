@@ -5,7 +5,7 @@
  * @see {@link Macro}         The Macro Entity
  * @see {@link MacroConfig}   The Macro Configuration Sheet
  */
-declare class MacroDirectory extends SidebarDirectory {
+declare class MacroDirectory extends SidebarDirectory<MacroDirectory.Options> {
   static get defaultOptions(): MacroDirectory.Options;
 
   /**

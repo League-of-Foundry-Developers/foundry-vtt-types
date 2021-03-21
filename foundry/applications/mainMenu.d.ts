@@ -14,7 +14,7 @@ declare class MainMenu extends Application {
    * }
    * ```
    * */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): typeof Application['defaultOptions'];
 
   /**
    * The structure of menu items

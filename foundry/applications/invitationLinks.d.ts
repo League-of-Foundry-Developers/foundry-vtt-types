@@ -15,7 +15,7 @@ declare class InvitationLinks extends Application {
    * }
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): typeof Application['defaultOptions'];
 
   /** @override */
   getData(): { local?: string; remote?: string };

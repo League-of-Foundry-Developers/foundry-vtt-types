@@ -12,7 +12,7 @@ declare class DrawingHUD extends BasePlaceableHUD<Drawing> {
    * })
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): typeof Application['defaultOptions'];
 
   /**
    * @override

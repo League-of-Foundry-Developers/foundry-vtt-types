@@ -19,9 +19,7 @@
  * ip.share();
  * ```
  */
-declare class ImagePopout extends FormApplication<ImagePopout.Data, string> {
-  constructor(src: string, options?: Partial<ImagePopout.Options>);
-
+declare class ImagePopout extends FormApplication<ImagePopout.Options, ImagePopout.Data, string> {
   protected _related: Entity | object | null;
 
   /** @override */

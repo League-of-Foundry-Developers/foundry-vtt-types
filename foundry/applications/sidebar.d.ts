@@ -1,9 +1,8 @@
 /**
  * Render the Sidebar container, and after rendering insert Sidebar tabs
+ * @typeParam P - the type of the options object
  */
-declare class Sidebar extends Application {
-  constructor(options?: Partial<Application.Options>);
-
+declare class Sidebar<P extends Sidebar.Options = Sidebar.Options> extends Application<P> {
   /**
    * Sidebar application instances
    * @defaultValue `[]`

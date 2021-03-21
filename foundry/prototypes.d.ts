@@ -39,9 +39,9 @@ declare interface Math {
 /* -------------------------------------------- */
 
 declare interface String {
-  capitalize(): string;
+  capitalize<S extends string>(this: S): Capitalize<S>;
 
-  titleCase(): string;
+  titleCase<S extends string>(this: S): Titlecase<S>;
 
   /**
    * Strip any <script> tags which were included within a provided string

@@ -2,8 +2,6 @@
  * A simple window application which shows the built documentation pages within an iframe
  */
 declare class FrameViewer extends Application {
-  constructor(url: string, options: Application.Options);
-
   url: string;
 
   /**
@@ -20,7 +18,7 @@ declare class FrameViewer extends Application {
    * })
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): typeof Application['defaultOptions'];
 
   /** @override */
   getData(options?: Application.RenderOptions): Promise<{ src: string }>;

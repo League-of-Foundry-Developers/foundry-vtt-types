@@ -93,7 +93,7 @@ declare namespace Note {
     iconSize: number;
     iconTint: string;
     text: string;
-    textAnchor: number;
+    textAnchor: Const.TextAnchorPoint;
     textColor: string;
     x: number;
     y: number;

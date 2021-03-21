@@ -135,7 +135,7 @@ declare const ui: {
    * Initialized in
    * - `/game`: after "setup", before "ready" hook
    */
-  settings?: Settings;
+  settings?: ClientSettings;
 
   /**
    * Initialized in
@@ -189,7 +189,7 @@ declare class Game {
   /**
    * The object of world data passed from the server
    */
-  data: Game.WorldData;
+  data: Game.Data;
 
   /**
    * Localization support
@@ -306,14 +306,14 @@ declare class Game {
   /**
    * Request World data from server and return it
    */
-  static getWorldData(socket: SocketIOClient.Socket): Promise<Game.WorldData>;
+  static getWorldData(socket: SocketIOClient.Socket): Promise<Game.Data>;
 
   /* -------------------------------------------- */
 
   /**
    * Request setup data from server and return it
    */
-  static getSetupData(socket: SocketIOClient.Socket): Promise<Game.WorldData>;
+  static getSetupData(socket: SocketIOClient.Socket): Promise<Game.Data>;
 
   /* -------------------------------------------- */
 
@@ -427,14 +427,14 @@ declare class Game {
   /**
    * Metadata regarding the current game World
    */
-  get world(): any; // TODO: update when World is typed
+  get world(): Game.World;
 
   /* -------------------------------------------- */
 
   /**
    * Metadata regarding the game System which powers this World
    */
-  get system(): any; // TODO: update when System is typed
+  get system(): Game.System;
 
   /* -------------------------------------------- */
 
@@ -716,18 +716,13 @@ declare class Game {
 }
 
 declare namespace Game {
-  interface Permissions {
-    [permissionName: string]: Const.UserRole[];
-  }
-
-  type View = 'game' | 'join' | 'license' | 'players' | 'setup' | 'stream';
-
-  interface WorldData {
+  interface Data {
     actors?: Actor[];
     addresses?: {
       local?: string;
       remote?: string;
     };
+    adminKey?: string;
     combat?: Combat[];
     coreUpdate?: any; // TODO: update later
     files?: {
@@ -737,8 +732,9 @@ declare namespace Game {
     folders?: Folder[];
     items?: Item[];
     journal?: Journal[];
+    languages?: Language[];
     macros?: Macro[];
-    messages?: any; // TODO: update when Message is typed
+    messages?: ChatMessage[];
     modules?: Module[];
     options?: {
       language?: string;
@@ -746,28 +742,161 @@ declare namespace Game {
       routePrefix?: string;
       updateChannel?: string;
     };
-    packs?: any; // TODO: update when Pack is typed
+    packs?: Pack[];
     paused?: boolean;
     playlists?: Playlist[];
     scenes?: Scene[];
     settings?: WorldSettingsStorage.Setting[];
-    system?: any; // TODO: update when System is typed
-    tables?: any; // TODO: update when Table is typed
+    system?: string;
+    systems?: System[];
+    tables?: RollTable[];
     userId?: string;
     users?: User[];
     version?: string;
-    world?: any; // TODO: update when World is typed
+    world?: string;
+    worlds?: World[];
+  }
+
+  interface Language {
+    lang: string;
+    name: string;
+    path: string;
   }
 
   interface Module {
     active: boolean;
-    data: {};
+    data: Module.Data;
     esmodules: string[];
     id: string;
-    languages: any[]; // TODO: update later
-    packs: any[]; // TODO: update later
+    languages: Language[];
+    packs: Pack[];
     path: string;
     scripts: string[];
     styles: string[];
+  }
+
+  namespace Module {
+    interface Data {
+      // TODO: complete later
+      availability: Const.PackageAvailabilityCode;
+    }
+  }
+
+  interface Pack {
+    absPath?: string;
+    entity: string;
+    label: string;
+    name: string;
+    package?: string;
+    path: string;
+    system: string;
+  }
+
+  interface Permissions {
+    [permissionName: string]: Const.UserRole[];
+  }
+
+  interface System {
+    data: System.Data;
+    entityTypes: Record<string, string[]>; // TODO: make this more precise
+    esmodules: string[];
+    gridUnits: string;
+    id: string;
+    languages: Language[];
+    model: {
+      Actor: Record<string, unknown>;
+      Item: Record<string, unknown>;
+    };
+    packs: Pack[];
+    path: string;
+    scripts: string[];
+    styles: string[];
+    template: {
+      Actor: Record<string, unknown>;
+      Item: Record<string, unknown>;
+    };
+  }
+
+  namespace System {
+    interface Data {
+      author: string;
+      authors: string[];
+      availability: Const.PackageAvailabilityCode;
+      bugs: string;
+      changelog: string;
+      compatibleCoreVersion: string;
+      description: string;
+      download: string;
+      esmodules: string[];
+      gridDistance: number;
+      gridUnits: string;
+      keywords: any[]; // TODO: type later
+      languages: Language[];
+      license: string;
+      manifest: string;
+      minimumCoreVersion: string;
+      name: string;
+      packs: Pack[];
+      primaryTokenAttribute: string;
+      readme: string;
+      scripts: string[];
+      secondaryTokenAttribute: string | null;
+      socket: boolean;
+      styles: string[];
+      title: string;
+      unavailable: boolean;
+      url: string;
+      version: string;
+    }
+  }
+
+  type View = 'game' | 'join' | 'license' | 'players' | 'setup' | 'stream';
+
+  interface World {
+    active: boolean;
+    data: World.Data;
+    esmodules: string[];
+    id: string;
+    languages: Language[];
+    modules: Module[];
+    packs: Pack[];
+    path: string;
+    scritps: string[];
+    shortDesc: string;
+    styles: string[];
+    system: System;
+  }
+
+  namespace World {
+    interface Data {
+      authors: string[];
+      availability: Const.PackageAvailabilityCode;
+      background: string;
+      bugs: string;
+      changelog: string;
+      compatibleCoreVersion: string;
+      coreVersion: string;
+      description: string;
+      download: string;
+      esmodules: string[];
+      keywords: any[]; // TODO: type later
+      languages: Language[];
+      license: string;
+      manifest: string;
+      minimumCoreVersion: string;
+      name: string;
+      nextSession: string | null;
+      packs: Pack[];
+      readme: string;
+      scripts: string[];
+      socket: boolean;
+      styles: string[];
+      system: string;
+      systemVersion: string;
+      title: string;
+      unavailable: boolean;
+      url: string;
+      version: string;
+    }
   }
 }

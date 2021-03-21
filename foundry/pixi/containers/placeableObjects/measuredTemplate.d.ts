@@ -133,7 +133,7 @@ declare class MeasuredTemplate extends PlaceableObject<MeasuredTemplate.Data> {
 
 declare namespace MeasuredTemplate {
   interface Data extends PlaceableObject.Data {
-    angle: null | number;
+    angle: number | null;
     borderColor: string;
     direction: number;
     distance: number;

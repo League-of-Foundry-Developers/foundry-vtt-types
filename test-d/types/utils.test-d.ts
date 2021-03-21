@@ -25,3 +25,20 @@ const expanded8: Expanded<{ foo: { bar: string } | { baz: number } }> = { foo: {
 expectType<{ foo: { bar: string } | { baz: number } }>(expanded8);
 const expanded9: Expanded<{ 'foo.bar'?: string }> = {};
 expectType<{ foo?: { bar: string | undefined } | undefined }>(expanded9);
+
+declare const titlecaseEmpty: Titlecase<''>;
+expectType<''>(titlecaseEmpty);
+declare const titlecaseBlank: Titlecase<' '>;
+expectType<' '>(titlecaseBlank);
+declare const titlecaseNumber: Titlecase<'42'>;
+expectType<'42'>(titlecaseNumber);
+declare const titlecaseFromLower: Titlecase<'foobar'>;
+expectType<'Foobar'>(titlecaseFromLower);
+declare const titlecaseFromUpper: Titlecase<'FOOBAR'>;
+expectType<'Foobar'>(titlecaseFromUpper);
+declare const titlecaseWithSpace: Titlecase<'foo bar'>;
+expectType<'Foo Bar'>(titlecaseWithSpace);
+declare const titlecaseWithSpaces: Titlecase<'foo  bar'>;
+expectType<'Foo  Bar'>(titlecaseWithSpaces);
+declare const titlecaseWithThreeWords: Titlecase<'foo bar baz'>;
+expectType<'Foo Bar Baz'>(titlecaseWithThreeWords);

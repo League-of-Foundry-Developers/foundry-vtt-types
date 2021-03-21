@@ -47,13 +47,14 @@
  * // If we decide to remove an entry from the compendium we can do that by the entry ID
  * pack.removeEntry(entry.id);
  * ```
+ * @typeParam P - the type of the options object
  */
-declare class Compendium extends Application {
+declare class Compendium<P extends Application.Options = Application.Options> extends Application<P> {
   /**
    * @param metadata - The compendium metadata, an object provided by game.data
    * @param options  - Application rendering options
    */
-  constructor(metadata: Compendium['metadata'], options?: Application.Options);
+  constructor(metadata: Compendium['metadata'], options?: Partial<P>);
 
   /**
    * The compendium metadata which defines the compendium content and location
@@ -78,7 +79,7 @@ declare class Compendium extends Application {
   index: Compendium.IndexEntry[];
 
   /** @override */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): typeof Application['defaultOptions'];
 
   /** @override */
   getTitle(): string;

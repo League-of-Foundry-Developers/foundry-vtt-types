@@ -34,23 +34,26 @@
  * let actor = new Actor(actorData)
  * ```
  */
-declare class Entity<D extends Entity.Data = Entity.Data> {
+declare abstract class Entity<D extends Entity.Data = Entity.Data> {
   constructor(data?: DeepPartial<D>, options?: Entity.CreateOptions);
 
   /**
    * The original source data for the Entity provided upon initialization.
    * This reflects the database state of the Entity before any transformations are applied.
+   * @defaultValue `{}`
    */
   _data: D;
 
   /**
    * The effective data for the Entity.
    * This data object may have transformations applied to it.
+   * @defaultValue `this._data`
    */
   data: D;
 
   /**
    * The options object that was used to configure the Entity upon initialization.
+   * @defaultValue `{}`
    */
   options: Entity.CreateOptions;
 
@@ -59,12 +62,14 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * its data. The keys of this object are the application ids and the values are Application instances. Each
    * Application in this object will have its render method called by {@link Entity#render}.
    * @see Entity#render
+   * @defaultValue `{}`
    */
   apps: Application[];
 
   /**
    * The Entity may optionally belong to a parent Compendium pack. If so this attribute will contain a reference
    * to that Compendium object. Otherwise null.
+   * @defaultValue `null`
    */
   compendium: Compendium | null;
 
@@ -80,8 +85,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * @param collection - The Collection instance to which Entities of this type belong.
    * @param embeddedEntities - The names of any Embedded Entities within the Entity data structure.
    *
-   * @remarks
-   * This method is abstract, deriving classes need to implement it.
+   * @remarks This method is abstract on Entity.
    */
   static get config(): Entity.Config;
 
@@ -105,6 +109,8 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
   /**
    * Prepare Embedded Entities which exist within this parent Entity.
    * For example, in the case of an Actor, this method is responsible for preparing the Owned Items the Actor contains.
+   * @remarks
+   * This is abstract on Entity and needs to be implemented, when the Entity subclass includes embedded Entities.
    */
   prepareEmbeddedEntities(): void;
 
@@ -112,7 +118,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * Obtain a reference to the Array of source data within the data object for a certain Embedded Entity name
    * @param embeddedName - The name of the Embedded Entity type
    */
-  getEmbeddedCollection(embeddedName: string): any[]; // TODO
+  getEmbeddedCollection(embeddedName: string): any[]; // TODO maybe add general Entity data and return this here
 
   /**
    * Render all of the Application instances which are connected to this Entity by calling their respective
@@ -127,6 +133,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
   /**
    * Return a reference to the EntityCollection instance which stores Entity instances of this type. This property is
    * available as both a static and instance method and should be overridden by subclass Entity implementations.
+   * @remarks This method is abstract on Entity.
    */
   static get collection(): EntityCollection;
 
@@ -171,13 +178,13 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * actor.sheet // ActorSheet
    * ```
    */
-  get sheet(): BaseEntitySheet<BaseEntitySheet.Data<this>, this> | null;
+  get sheet(): BaseEntitySheet<BaseEntitySheet.Options, BaseEntitySheet.Data<this>, this> | null;
 
   /**
    * Obtain a reference to the BaseEntitySheet implementation which should be used to render the Entity instance
    * configuration sheet.
    */
-  protected get _sheetClass(): BaseEntitySheet<BaseEntitySheet.Data<this>, this> | null;
+  protected get _sheetClass(): ConstructorOf<FormApplication> | null;
 
   /**
    * Return a reference to the Folder which this Entity belongs to, if any.
@@ -205,7 +212,7 @@ declare class Entity<D extends Entity.Data = Entity.Data> {
    * entity.permission // 2
    * ```
    */
-  get permission(): number;
+  get permission(): Const.EntityPermission;
 
   /**
    * A boolean indicator for whether or not the current game User has ownership rights for this Entity.
@@ -732,6 +739,9 @@ declare namespace Entity {
    */
   interface CreateOptions {
     [propName: string]: any;
+
+    compendium?: Compendium;
+
     /**
      * Block the dispatch of preCreate hooks for this operation.
      * @defaultValue `false`
@@ -786,7 +796,7 @@ declare namespace Entity {
 
   interface Config<E extends Entity = Entity> {
     baseEntity: ConstructorOf<E>;
-    collection: EntityCollection<E>;
+    collection?: EntityCollection<E>;
     embeddedEntities?: {
       [embedType: string]: string;
     };
@@ -814,6 +824,14 @@ declare namespace Entity {
      * Flags for arbitrary data from modules &c.
      */
     flags: Record<string, unknown>;
+
+    folder?: string;
+
+    name?: string;
+
+    permission?: Permission;
+
+    type?: any;
   }
 
   interface RenderOptions extends Application.RenderOptions {

@@ -112,8 +112,8 @@ type InnerDuplicated<T, S extends 'strict' | 'lenient' = 'strict'> = T extends {
     ? undefined
     : T extends number
       ? S extends 'strict'
-        ? number | null
-        : number
+        ? T | null
+        : T
       : T extends Array<unknown>
         ? MapToInnerDuplicated<MapTypeToType<T, NonStringifiable, null>, S>
         : T extends object

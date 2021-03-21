@@ -12,7 +12,7 @@ declare class TileHUD extends BasePlaceableHUD<Tile> {
    * })
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): typeof Application['defaultOptions'];
 
   /** @override */
   getData(): ReturnType<BasePlaceableHUD<Tile>['getData']> & {

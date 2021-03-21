@@ -16,7 +16,7 @@ declare class EULA extends Application {
    * }
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): typeof Application['defaultOptions'];
 
   /**
    * A reference to the setup URL used under the current route prefix, if any

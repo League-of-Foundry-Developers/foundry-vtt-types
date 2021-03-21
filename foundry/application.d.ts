@@ -18,8 +18,9 @@ declare let _maxZ: number;
  *   renderApplication
  *   closeApplication
  *   getApplicationHeaderButtons
+ * @typeParam P - the type of the options object
  */
-declare class Application {
+declare class Application<P extends Application.Options = Application.Options> {
   /**
    * @param options - Configuration options which control how the application is rendered.
    *                  Application subclasses may add additional supported options, but the
@@ -27,12 +28,12 @@ declare class Application {
    *                  passed to the constructor are combined with the defaultOptions defined
    *                  at the class level.
    */
-  constructor(options?: Partial<Application.Options>);
+  constructor(options?: Partial<P>);
 
   /**
    * The options provided to this application upon initialization
    */
-  options: Application.Options;
+  options: P;
 
   /**
    * The application ID is a unique incrementing integer which is used to identify every application window
@@ -470,6 +471,8 @@ declare namespace Application {
   }
 
   interface RenderOptions {
+    classes?: string[];
+
     /**
      * The left positioning attribute
      */

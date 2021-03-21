@@ -23,8 +23,6 @@ declare interface SceneControlTool {
  * Scene controls navigation menu
  */
 declare class SceneControls extends Application {
-  constructor(options: Application.Options);
-
   /**
    * The name of the active Scene Control toolset
    * @defaultValue `"token"`
@@ -48,7 +46,7 @@ declare class SceneControls extends Application {
    * })
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): typeof Application['defaultOptions'];
 
   /**
    * Return the active control set
