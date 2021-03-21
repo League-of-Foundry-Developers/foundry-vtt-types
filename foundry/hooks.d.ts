@@ -3,7 +3,6 @@
  * When key actions or events occur, a "hook" is defined where user-defined callback functions can execute.
  * This class manages the registration and execution of hooked callback functions.
  */
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 declare class Hooks {
   /**
    * Register a callback handler which should be triggered when a hook is triggered.
