@@ -12,14 +12,9 @@ declare class Hooks {
    * @param fn   - The callback function which should be triggered when the hook event occurs
    * @returns An ID number of the hooked function which can be used to turn off the hook later
    */
-  static on<K extends keyof Hooks.StaticCallbacks>(
-    hook: K,
-    fn: Hooks.StaticCallbacks[K]
-  ): ReturnType<Hooks.StaticCallbacks[K]>;
-  static on<H extends Hooks.DynamicCallbacks>(hook: string, fn: H): ReturnType<H>;
-  static on<H extends (...args: any) => any>(hook: string, fn: H): ReturnType<H>;
-
-  /* -------------------------------------------- */
+  static on<K extends keyof Hooks.StaticCallbacks>(hook: K, fn: Hooks.StaticCallbacks[K]): number;
+  static on<H extends Hooks.DynamicCallbacks>(hook: string, fn: H): number;
+  static on<H extends (...args: any) => any>(hook: string, fn: H): number;
 
   /**
    * Register a callback handler for an event which is only triggered once the first time the event occurs.
@@ -32,11 +27,9 @@ declare class Hooks {
   static once<K extends keyof Hooks.StaticCallbacks>(
     hook: K,
     fn: Hooks.StaticCallbacks[K]
-  ): ReturnType<Hooks.StaticCallbacks[K]>;
-  static once<H extends Hooks.DynamicCallbacks>(hook: string, fn: H): ReturnType<H>;
-  static once<H extends (...args: any) => any>(hook: string, fn: H): ReturnType<H>;
-
-  /* -------------------------------------------- */
+  ): ReturnType<typeof Hooks['on']>;
+  static once<H extends Hooks.DynamicCallbacks>(hook: string, fn: H): ReturnType<typeof Hooks['on']>;
+  static once<H extends (...args: any) => any>(hook: string, fn: H): ReturnType<typeof Hooks['on']>;
 
   /**
    * Unregister a callback handler for a particular hook event
@@ -48,8 +41,6 @@ declare class Hooks {
   static off<H extends Hooks.DynamicCallbacks>(hook: string, fn: number | H): void;
   static off<H extends (...args: any) => any>(hook: string, fn: number | H): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Call all hook listeners in the order in which they were registered
    * Hooks called this way can not be handled by returning false and will always trigger every hook callback.
@@ -60,11 +51,9 @@ declare class Hooks {
   static callAll<K extends keyof Hooks.StaticCallbacks>(
     hook: K,
     ...args: Parameters<Hooks.StaticCallbacks[K]>
-  ): boolean | null;
-  static callAll<H extends Hooks.DynamicCallbacks>(hook: string, ...args: Parameters<H>): boolean | null;
-  static callAll<H extends (...args: any) => any>(hook: string, ...args: Parameters<H>): boolean | null;
-
-  /* -------------------------------------------- */
+  ): true | undefined;
+  static callAll<H extends Hooks.DynamicCallbacks>(hook: string, ...args: Parameters<H>): true | undefined;
+  static callAll<H extends (...args: any) => any>(hook: string, ...args: Parameters<H>): true | undefined;
 
   /**
    * Call hook listeners in the order in which they were registered.
@@ -76,11 +65,12 @@ declare class Hooks {
    * @param hook - The hook being triggered
    * @param args - Arguments passed to the hook callback functions
    */
-  static call<K extends keyof Hooks.StaticCallbacks>(hook: K, ...args: Parameters<Hooks.StaticCallbacks[K]>): boolean;
-  static call<H extends Hooks.DynamicCallbacks>(hook: string, ...args: Parameters<H>): boolean;
-  static call<H extends (...args: any) => any>(hook: string, ...args: Parameters<H>): boolean;
-
-  /* -------------------------------------------- */
+  static call<K extends keyof Hooks.StaticCallbacks>(
+    hook: K,
+    ...args: Parameters<Hooks.StaticCallbacks[K]>
+  ): boolean | undefined;
+  static call<H extends Hooks.DynamicCallbacks>(hook: string, ...args: Parameters<H>): boolean | undefined;
+  static call<H extends (...args: any) => any>(hook: string, ...args: Parameters<H>): boolean | undefined;
 
   /**
    * Call a hooked function using provided arguments and perhaps unregister it.
@@ -89,9 +79,17 @@ declare class Hooks {
     hook: K,
     fn: Hooks.StaticCallbacks[K],
     ...args: Parameters<Hooks.StaticCallbacks[K]>
-  ): boolean;
-  protected static _call<H extends Hooks.DynamicCallbacks>(hook: string, fn: H, ...args: Parameters<H>): boolean;
-  protected static _call<H extends (...args: any) => any>(hook: string, fn: H, ...args: Parameters<H>): boolean;
+  ): ReturnType<Hooks.StaticCallbacks[K]> | undefined;
+  protected static _call<H extends Hooks.DynamicCallbacks>(
+    hook: string,
+    fn: H,
+    ...args: Parameters<H>
+  ): ReturnType<H> | undefined;
+  protected static _call<H extends (...args: any) => any>(
+    hook: string,
+    fn: H,
+    ...args: Parameters<H>
+  ): ReturnType<H> | undefined;
 
   /**
    * @defaultValue `{}`
