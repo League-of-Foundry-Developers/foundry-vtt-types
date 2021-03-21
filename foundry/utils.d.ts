@@ -63,12 +63,11 @@ declare function getParentClasses(cls: ConstructorOf<any>): Array<ConstructorOf<
  * A cheap data duplication trick, surprisingly relatively performant
  * @param original - Some sort of data
  * @typeParam T - Type of the original data.
- * @typeParam S - A flag to indicate whether or not to handle conversion of `NaN`, `Infinity`, and `-Infinity` to `null`
- *                strictly. If set to `'strict'`, `number` will be converted to `number | null`, if set to `'lenient'`,
- *                `number` will simply stay `number`.
- *                (default: `'strict'`)
+ *
+ * @remarks This function will actually convert any occurrences of `NaN` and `Infinity` to `null`. For ease of use, this
+ * is _not_ reflected in the type. Be careful if your types might contain `NaN` or `Infinity`!
  */
-declare function duplicate<T, S extends 'strict' | 'lenient' = 'strict'>(original: T): Duplicated<T, S>;
+declare function duplicate<T>(original: T): Duplicated<T>;
 
 /**
  * Internal Helper for {@link Duplicated}. A union type of all primitive types that do not have a JSON representation.
@@ -81,61 +80,41 @@ type NonStringifiable = undefined | Function | symbol;
  * Internal helper for {@link InnerDuplicated}. Maps the properties of `T` to their duplicated types.
  *
  * @typeParam T - The object type that should have its properties mapped.
- * @typeParam S - A flag to indicate whether or not to handle conversion of `NaN`, `Infinity`, and `-Infinity` to `null`
- *                strictly. If set to `'strict'`, `number` will be converted to `number | null`, if set to `'lenient'`,
- *                `number` will simply stay `number`.
- *                (default: `'strict'`)
  * @internal
  */
-type MapToInnerDuplicated<T extends object, S extends 'strict' | 'lenient' = 'strict'> = {
-  [k in keyof T]: InnerDuplicated<T[k], S>;
-};
+type MapToInnerDuplicated<T extends object> = { [k in keyof T]: InnerDuplicated<T[k]> };
 
 /**
  * Internal helper type for {@link Duplicated}. It is the main part of the implementation, which does the recursion.
  *
  * @typeParam T - Type currently being converted.
- * @typeParam S - A flag to indicate whether or not to handle conversion of `NaN`, `Infinity`, and `-Infinity` to `null`
- *                strictly. If set to `'strict'`, `number` will be converted to `number | null`, if set to `'lenient'`,
- *                `number` will simply stay `number`.
- *                (default: `'strict'`)
  * @internal
  */
 // prettier-ignore
-type InnerDuplicated<T, S extends 'strict' | 'lenient' = 'strict'> = T extends { toJSON(): infer U }
+type InnerDuplicated<T> = T extends { toJSON(): infer U }
   ? U extends Array<unknown>
-    ? InnerDuplicated<U, S>
+    ? InnerDuplicated<U>
     : U extends object
-      ? InnerDuplicated<Omit<U, 'toJSON'>, S>
-      : InnerDuplicated<U, S>
+      ? InnerDuplicated<Omit<U, 'toJSON'>>
+      : InnerDuplicated<U>
   : T extends NonStringifiable
     ? undefined
-    : T extends number
-      ? S extends 'strict'
-        ? T | null
-        : T
-      : T extends Array<unknown>
-        ? MapToInnerDuplicated<MapTypeToType<T, NonStringifiable, null>, S>
-        : T extends object
-          ? MapToInnerDuplicated<
-            OmitAssignableFromType<MapTypeToType<T, NonStringifiable, undefined>, undefined> &
-              Partial<OmitOfType<OmitNotAssignableFromType<MapTypeToType<T, NonStringifiable, undefined>, undefined>, undefined>>,
-            S>
-          : T;
+    : T extends Array<unknown>
+      ? MapToInnerDuplicated<MapTypeToType<T, NonStringifiable, null>>
+      : T extends object
+        ? MapToInnerDuplicated<
+          OmitAssignableFromType<MapTypeToType<T, NonStringifiable, undefined>, undefined> &
+            Partial<OmitOfType<OmitNotAssignableFromType<MapTypeToType<T, NonStringifiable, undefined>, undefined>, undefined>>
+          >
+        : T;
 
 /**
  * The resulting type when using {@link duplicate} on some data of type `T`.
  *
  * @typeParam T - Original type.
- * @typeParam S - A flag to indicate whether or not to handle conversion of `NaN`, `Infinity`, and `-Infinity` to `null`
- *                strictly. If set to `'strict'`, `number` will be converted to `number | null`, if set to `'lenient'`,
- *                `number` will simply stay `number`.
- *                (default: `'strict'`)
  * @internal
  */
-type Duplicated<T, S extends 'strict' | 'lenient' = 'strict'> = T extends NonStringifiable
-  ? never
-  : InnerDuplicated<T, S>;
+type Duplicated<T> = T extends NonStringifiable ? never : InnerDuplicated<T>;
 
 /* -------------------------------------------- */
 

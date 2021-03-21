@@ -3,19 +3,16 @@ import '../../index';
 
 expectType<string>(duplicate(''));
 
-expectType<number | null>(duplicate(0));
+expectType<number>(duplicate(0));
 
-expectType<0 | 1 | null>(duplicate<0 | 1>(0));
-
-expectType<0 | 1>(duplicate<0 | 1, 'lenient'>(0));
+expectType<0 | 1>(duplicate<0 | 1>(0));
 
 expectType<'foo' | 'bar'>(duplicate<'foo' | 'bar'>('foo'));
 
-expectType<number>(duplicate<number, 'lenient'>(0));
+expectType<number>(duplicate<number>(0));
 
-/* by explicitly specifying `'lenient'`, we tell the compiler to use number. It will accept it, even if at runtime there
-   are numbers which are converted to `null` */
-expectType<number>(duplicate<number, 'lenient'>(NaN));
+/* `NaN` will actually be converted to `null` but for ease of use, this is ignored. */
+expectType<number>(duplicate<number>(NaN));
 
 expectType<boolean>(duplicate(((): boolean => false)()));
 
@@ -31,9 +28,7 @@ expectType<false>(duplicate(false));
 
 expectType<string | boolean>(duplicate(((): string | boolean => '')()));
 
-expectType<string | number | null>(duplicate(((): string | number => '')()));
-
-expectType<string | number>(duplicate<string | number, 'lenient'>(((): string | number => '')()));
+expectType<string | number>(duplicate(((): string | number => '')()));
 
 expectType<string | null>(duplicate(((): string | null => '')()));
 
@@ -45,11 +40,7 @@ expectType<string>(duplicate(((): string | symbol => '')()));
 
 expectType<Array<string>>(duplicate(['']));
 
-expectType<Array<number | null>>(duplicate([0]));
-
-expectType<Array<number>>(
-  duplicate<Array<number>, 'lenient'>([0])
-);
+expectType<Array<number>>(duplicate([0]));
 
 expectType<Array<boolean>>(duplicate([false, true]));
 
@@ -65,11 +56,7 @@ expectType<Array<false>>(duplicate([false]));
 
 expectType<Array<string | boolean>>(duplicate(['', false, true]));
 
-expectType<Array<string | number | null>>(duplicate(['', 0]));
-
-expectType<Array<string | number>>(
-  duplicate<Array<string | number>, 'lenient'>(['', 0])
-);
+expectType<Array<string | number>>(duplicate(['', 0]));
 
 expectType<Array<string | null>>(duplicate(['', null]));
 
@@ -87,11 +74,7 @@ expectType<Array<{ a: string }>>(duplicate([{ a: '' }]));
 
 expectType<{ a: string }>(duplicate({ a: '' }));
 
-expectType<{ a: number | null }>(duplicate({ a: 0 }));
-
-expectType<{ a: number }>(
-  duplicate<{ a: number }, 'lenient'>({ a: 0 })
-);
+expectType<{ a: number }>(duplicate({ a: 0 }));
 
 expectType<{ a: boolean }>(duplicate({ a: ((): boolean => false)() }));
 
@@ -105,11 +88,7 @@ expectType<{}>(duplicate({ a: Symbol('') }));
 
 expectType<{ a: string | boolean }>(duplicate({ a: ((): string | boolean => '')() }));
 
-expectType<{ a: string | number | null }>(duplicate({ a: ((): string | number => '')() }));
-
-expectType<{ a: string | number }>(
-  duplicate<{ a: string | number }, 'lenient'>({ a: ((): string | number => '')() })
-);
+expectType<{ a: string | number }>(duplicate({ a: ((): string | number => '')() }));
 
 expectType<{ a: string | null }>(duplicate({ a: ((): string | null => '')() }));
 
@@ -163,31 +142,19 @@ expectType<
     | {
         d?: boolean;
         e: Array<boolean>;
-        f: { g: number | null; h?: number | null };
+        f: { g: number; h?: number };
       }
   >
 >(duplicate(complexObject));
 
-expectType<
-  Array<
-    | boolean
-    | null
-    | {
-        d?: boolean;
-        e: Array<boolean>;
-        f: { g: number; h?: number };
-      }
-  >
->(duplicate<typeof complexObject, 'lenient'>(complexObject));
-
 type SomeItemData = Item.Data<{}>;
 class SomeItem extends Item<SomeItemData> {}
 const someItem = new SomeItem();
-const someItemData = duplicate<SomeItem, 'lenient'>(someItem);
+const someItemData = duplicate<SomeItem>(someItem);
 SomeItem.create(someItemData);
 
 type SomeActorData = Actor.Data<{}, SomeItemData>;
 class SomeActor extends Actor<SomeActorData, SomeItem> {}
 const someActor = new SomeActor();
-const someActorData = duplicate<SomeActor, 'lenient'>(someActor);
+const someActorData = duplicate<SomeActor>(someActor);
 SomeActor.create(someActorData);
