@@ -2,9 +2,10 @@
  * The Item entity.
  * This base Item refers primarily to items which are not currently owned.
 
- * @typeParam D - Item.data field. Type should extend Item.Data
+ * @typeParam D  - The type of the `Item`'s `_data` field. It should extend `Item.Data`.
+ * @typeParam PD - The type of the `Item`'s `data` field after `prepareData` has been called. It should extend `D`.
  */
-declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
+declare class Item<D extends Item.Data = Item.Data<any>, PD extends D = D> extends Entity<D, PD> {
   /**
    * ActiveEffects are prepared by the Item.prepareEmbeddedEntities() method
    */
@@ -36,7 +37,7 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
   /**
    * Prepare a data object which defines the data schema used by dice roll commands against this Item
    */
-  getRollData(): D['data'];
+  getRollData(): Duplicated<PD['data']>;
 
   /* -------------------------------------------- */
   /*  Properties                                  */
@@ -64,7 +65,7 @@ declare class Item<D extends Item.Data = Item.Data<any>> extends Entity<D> {
   /**
    * A convenience reference to the item type (data.type) of this Item
    * @remarks
-   * This can't be used to typeguard this.data; use this.data.type directly instead
+   * This can't be used to type guard this._data and this.data; use this._data.type and this.data.type directly instead.
    */
   get type(): string;
 

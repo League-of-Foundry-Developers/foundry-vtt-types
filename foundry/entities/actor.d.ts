@@ -2,8 +2,9 @@
  * The Actor Entity which represents the protagonists, characters, enemies, and more that inhabit and take actions
  * within the World.
  *
- * @typeParam D - Actor.data field. Type should extend Actor.Data
- * @typeParam I - Item type for the system. Data type should match item data type of D
+ * @typeParam D  - The type the `Actor`'s `_data` field. It should extend Actor.Data
+ * @typeParam I  - The type of the `Item` class used by the system. Its `_data` field should match item data type of `D`.
+ * @typeParam PD - The type of the `Actor`'s `data` field after `prepareData` has been called. It should extend `D`.
  *
  * @see {@link Actors} Each Actor belongs to the Actors collection.
  * @see {@link ActorSheet} Each Actor is edited using the ActorSheet application or a subclass thereof.
@@ -27,14 +28,15 @@
  *
  * @example <caption>Retrieve an existing Actor</caption>
  * ```typescript
- * if (game.actors === undefined) throw "Too early to use an enitiy collection";
+ * if (!game.actors) throw new Error("Too early to use an entity collection");
  * let actor = game.actors.get(actorId);
  * ```
  */
 declare class Actor<
   D extends Actor.Data = Actor.Data,
-  I extends Item<Actor.OwnedItemData<D>> = Item<Actor.OwnedItemData<D>>
-> extends Entity<D> {
+  I extends Item<Actor.OwnedItemData<D>, any> = Item<Actor.OwnedItemData<D>>,
+  PD extends D = D
+> extends Entity<D, PD> {
   constructor(data?: DeepPartial<D>, options?: Entity.CreateOptions);
 
   /**
@@ -170,7 +172,7 @@ declare class Actor<
    * @returns A copy of data.data
    * @remarks Testing actor.data.type does not narrow the type for this method
    */
-  getRollData(): D['data'];
+  getRollData(): Duplicated<PD['data']>;
 
   /**
    * Get an Array of Token images which could represent this Actor
@@ -357,8 +359,8 @@ declare class Actor<
 
 declare namespace Actor {
   /**
-   * @typeParam D - Type for `data.data`
-   * @typeParam I - Type for system's Item
+   * @typeParam D - Type for `_data.data`
+   * @typeParam I - Type for system's Item's _data
    */
   interface Data<D = any, I extends Item.Data = Item.Data> extends Entity.Data {
     data: D;

@@ -14,11 +14,11 @@ declare class ActorTokenHelpers {
   createEmbeddedEntity<T extends Actor, U>(
     this: T,
     embeddedName: 'OwnedItem',
-    data: Expanded<U> extends DeepPartial<Actor.OwnedItemData<T['data']>>
+    data: Expanded<U> extends DeepPartial<Actor.OwnedItemData<T['_data']>>
       ? U | U[]
-      : DeepPartial<Actor.OwnedItemData<T['data']>> | DeepPartial<Actor.OwnedItemData<T['data']>>[],
+      : DeepPartial<Actor.OwnedItemData<T['_data']>> | DeepPartial<Actor.OwnedItemData<T['_data']>>[],
     options?: Entity.CreateOptions
-  ): Promise<Actor.OwnedItemData<T['data']> | Actor.OwnedItemData<T['data']>[] | null>;
+  ): Promise<Actor.OwnedItemData<T['_data']> | Actor.OwnedItemData<T['_data']>[] | null>;
   createEmbeddedEntity<T extends Actor, U>(
     this: T,
     embeddedName: 'ActiveEffect',
@@ -32,13 +32,13 @@ declare class ActorTokenHelpers {
   updateEmbeddedEntity<T extends Actor, U>(
     this: T,
     embeddedName: 'OwnedItem',
-    data: Expanded<U> extends DeepPartial<Actor.OwnedItemData<T['data']>> & { _id: string }
+    data: Expanded<U> extends DeepPartial<Actor.OwnedItemData<T['_data']>> & { _id: string }
       ? U | U[]
       :
-          | (DeepPartial<Actor.OwnedItemData<T['data']>> & { _id: string })
-          | (DeepPartial<Actor.OwnedItemData<T['data']>> & { _id: string })[],
+          | (DeepPartial<Actor.OwnedItemData<T['_data']>> & { _id: string })
+          | (DeepPartial<Actor.OwnedItemData<T['_data']>> & { _id: string })[],
     options?: Entity.UpdateOptions
-  ): Promise<Actor.OwnedItemData<T['data']> | Actor.OwnedItemData<T['data']>[]>;
+  ): Promise<Actor.OwnedItemData<T['_data']> | Actor.OwnedItemData<T['_data']>[]>;
   updateEmbeddedEntity<T extends Actor, U>(
     this: T,
     embeddedName: 'ActiveEffect',
@@ -54,7 +54,7 @@ declare class ActorTokenHelpers {
     embeddedName: 'OwnedItem',
     data: string | string[],
     options?: Entity.DeleteOptions
-  ): Promise<Actor.OwnedItemData<T['data']> | Actor.OwnedItemData<T['data']>[]>;
+  ): Promise<Actor.OwnedItemData<T['_data']> | Actor.OwnedItemData<T['_data']>[]>;
   deleteEmbeddedEntity<T extends Actor>(
     this: T,
     embeddedName: 'ActiveEffect',
