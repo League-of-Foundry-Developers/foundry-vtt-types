@@ -27,15 +27,14 @@
  *
  * @example
  * ```typescript
- * let actorData = {name: "John Doe", type: "character", img: "icons/svg/mystery- man.svg"}
+ * let actorData = {name: "John Doe", type: "character", img: "icons/svg/mystery-man.svg"}
  * let actor = new Actor(actorData)
  * ```
  */
 declare abstract class Entity<D extends Entity.Data = Entity.Data, PD extends D = D> {
   /**
-   * @param data       - The data Object with which to create the Entity
-   * @param options    - Additional options which modify the created Entity behavior
-   * @param compendium - A reference to the Compendium pack from which this Entity was drawn.
+   * @param data    - The data Object with which to create the Entity
+   * @param options - Additional options which modify the created Entity behavior
    */
   constructor(data?: DeepPartial<D>, options?: Entity.CreateOptions);
 
@@ -748,6 +747,9 @@ declare namespace Entity {
   interface CreateOptions {
     [propName: string]: any;
 
+    /**
+     * A reference to the Compendium pack from which this Entity was drawn.
+     */
     compendium?: Compendium;
 
     /**
