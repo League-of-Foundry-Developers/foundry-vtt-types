@@ -214,9 +214,12 @@ declare namespace ChatMessage {
     roll?: string | Roll;
     speaker: SpeakerData | SpeakerCreateData;
     timestamp: number;
-    type: number;
+    type: Const.ChatMessageType;
     user: string | User;
     whisper: Array<string | User>;
+    sound?: string;
+    flavor?: string;
+    blind?: boolean;
   }
 
   interface Data extends Entity.Data {
@@ -224,9 +227,12 @@ declare namespace ChatMessage {
     roll?: string;
     speaker: SpeakerData;
     timestamp: number;
-    type: number;
+    type: Const.ChatMessageType;
     user: string;
     whisper: string[];
+    sound?: string;
+    flavor?: string;
+    blind?: boolean;
   }
 
   interface MessageData {

@@ -282,15 +282,15 @@ declare class Roll<D extends object = {}> {
    * @returns A promise which resolves to the created ChatMessage entity, if create is true
    *          or the Object of prepared chatData otherwise.
    */
-  toMessage<T extends object = {}>(
+  toMessage<T extends DeepPartial<ChatMessage.CreateData> = {}>(
     messageData?: T,
     { rollMode, create }?: { rollMode?: Const.DiceRollMode | null; create?: true }
   ): Promise<ChatMessage>;
-  toMessage<T extends object = {}>(
+  toMessage<T extends DeepPartial<ChatMessage.CreateData> = {}>(
     messageData: T,
     { rollMode, create }: { rollMode?: Const.DiceRollMode | null; create: false }
   ): Roll.MessageData<T>;
-  toMessage<T extends object = {}>(
+  toMessage<T extends DeepPartial<ChatMessage.CreateData> = {}>(
     messageData: T,
     { rollMode, create }: { rollMode?: Const.DiceRollMode | null; create: boolean }
   ): Promise<ChatMessage> | Roll.MessageData<T>;
@@ -440,7 +440,7 @@ declare namespace Roll {
 
   type Terms = Array<Roll | DicePool | DiceTerm | number | string>;
 
-  type MessageData<T extends object> = {
+  type MessageData<T extends DeepPartial<ChatMessage.CreateData>> = {
     user: string;
     type: typeof CONST.CHAT_MESSAGE_TYPES['ROLL'];
     content: number;
