@@ -76,9 +76,7 @@ declare namespace DrawingConfig {
   }
 
   type FillTypes = {
-    [Key in keyof typeof CONST['DRAWING_FILL_TYPES'] as typeof CONST['DRAWING_FILL_TYPES'][Key]]: `DRAWING.FillType${Capitalize<
-      Lowercase<Key>
-    >}`;
+    [Key in keyof typeof CONST['DRAWING_FILL_TYPES'] as typeof CONST['DRAWING_FILL_TYPES'][Key]]: `DRAWING.FillType${Titlecase<Key>}`;
   };
 
   interface FormData {

@@ -48,29 +48,19 @@ declare namespace WallConfig {
     object: Duplicated<WallConfig['object']['data']>;
     options: WallConfig['options'];
     moveTypes: {
-      [Key in keyof typeof CONST['WALL_MOVEMENT_TYPES'] as typeof CONST['WALL_MOVEMENT_TYPES'][Key]]: Capitalize<
-        Lowercase<Key>
-      >;
+      [Key in keyof typeof CONST['WALL_MOVEMENT_TYPES'] as typeof CONST['WALL_MOVEMENT_TYPES'][Key]]: Titlecase<Key>;
     };
     senseTypes: {
-      [Key in keyof typeof CONST['WALL_SENSE_TYPES'] as typeof CONST['WALL_SENSE_TYPES'][Key]]: Capitalize<
-        Lowercase<Key>
-      >;
+      [Key in keyof typeof CONST['WALL_SENSE_TYPES'] as typeof CONST['WALL_SENSE_TYPES'][Key]]: Titlecase<Key>;
     };
     dirTypes: {
-      [Key in keyof typeof CONST['WALL_DIRECTIONS'] as typeof CONST['WALL_DIRECTIONS'][Key]]: Capitalize<
-        Lowercase<Key>
-      >;
+      [Key in keyof typeof CONST['WALL_DIRECTIONS'] as typeof CONST['WALL_DIRECTIONS'][Key]]: Titlecase<Key>;
     };
     doorTypes: {
-      [Key in keyof typeof CONST['WALL_DOOR_TYPES'] as typeof CONST['WALL_DOOR_TYPES'][Key]]: Capitalize<
-        Lowercase<Key>
-      >;
+      [Key in keyof typeof CONST['WALL_DOOR_TYPES'] as typeof CONST['WALL_DOOR_TYPES'][Key]]: Titlecase<Key>;
     };
     doorStates: {
-      [Key in keyof typeof CONST['WALL_DOOR_STATES'] as typeof CONST['WALL_DOOR_STATES'][Key]]: Capitalize<
-        Lowercase<Key>
-      >;
+      [Key in keyof typeof CONST['WALL_DOOR_STATES'] as typeof CONST['WALL_DOOR_STATES'][Key]]: Titlecase<Key>;
     };
     isDoor: boolean;
   }

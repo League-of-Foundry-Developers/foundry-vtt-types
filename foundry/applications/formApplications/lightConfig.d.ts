@@ -91,8 +91,6 @@ declare namespace LightConfig {
   } & { '': 'None' };
 
   type LightTypes = {
-    [Key in keyof typeof CONST['SOURCE_TYPES'] as typeof CONST['SOURCE_TYPES'][Key]]: `LIGHT.Type${Capitalize<
-      Lowercase<Key>
-    >}`;
+    [Key in keyof typeof CONST['SOURCE_TYPES'] as typeof CONST['SOURCE_TYPES'][Key]]: `LIGHT.Type${Titlecase<Key>}`;
   };
 }

@@ -54,7 +54,7 @@ declare class PermissionConfig extends FormApplication<FormApplication.Options, 
 
 declare namespace PermissionConfig {
   interface Data {
-    roles: { [Key in Exclude<keyof typeof CONST['USER_ROLES'], 'NONE'>]: `USER.Role${Capitalize<Lowercase<Key>>}` };
+    roles: { [Key in Exclude<keyof typeof CONST['USER_ROLES'], 'NONE'>]: `USER.Role${Titlecase<Key>}` };
     permissions: ReturnType<PermissionConfig['_getPermissions']>;
   }
 
