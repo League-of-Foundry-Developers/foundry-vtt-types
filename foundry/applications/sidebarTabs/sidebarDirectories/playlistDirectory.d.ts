@@ -1,9 +1,7 @@
 /**
  * A directory listing of audio playlists
  */
-declare class PlaylistDirectory extends SidebarDirectory {
-  constructor(options?: Partial<Application.Options>);
-
+declare class PlaylistDirectory extends SidebarDirectory<PlaylistDirectory.Options> {
   /**
    * Track the playlist IDs which are currently expanded in their display
    */
@@ -39,12 +37,12 @@ declare class PlaylistDirectory extends SidebarDirectory {
   /**
    * Given a constant playback mode, provide the FontAwesome icon used to display it
    */
-  protected _getModeIcon(mode: Const.PlaylistModes): string;
+  protected _getModeIcon(mode: Const.PlaylistMode): string;
 
   /**
    * Given a constant playback mode, provide the string tooltip used to describe it
    */
-  protected _getModeTooltip(mode: Const.PlaylistModes): string;
+  protected _getModeTooltip(mode: Const.PlaylistMode): string;
 
   /**
    * @override

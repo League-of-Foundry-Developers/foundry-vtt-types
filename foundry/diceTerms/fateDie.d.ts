@@ -3,7 +3,7 @@
  * Mathematically behaves like 1d3-2
  */
 declare class FateDie extends DiceTerm {
-  constructor(termData?: DiceTerm.TermData);
+  constructor(termData?: Partial<DiceTerm.TermData>);
 
   faces: 3;
 

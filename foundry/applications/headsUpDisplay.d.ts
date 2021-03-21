@@ -1,22 +1,43 @@
-// @TODO:
-
 /**
  * Render the HUD container
  */
 declare class HeadsUpDisplay extends Application {
-  /** Chat Bubbles */
-  bubbles: ChatBubbles;
-
-  /** Drawing HUD */
-  drawing: DrawingHUD;
-
-  /** Tile HUD */
-  tile: TileHUD;
-
-  /** Token HUD */
+  /**
+   * Token HUD
+   */
   token: TokenHUD;
 
-  constructor(...args: any[]);
+  /**
+   * Tile HUD
+   */
+  tile: TileHUD;
+
+  /**
+   * Drawing HUD
+   */
+  drawing: DrawingHUD;
+
+  /**
+   * Chat Bubbles
+   */
+  bubbles: ChatBubbles;
+
+  /**
+   * Define default options which configure the HUD
+   * @defaultValue
+   * ```
+   * mergeObject(super.defaultOptions, {
+   *   id: "hud",
+   *   template: "templates/hud/hud.html",
+   *   popOut: false,
+   * })
+   * ```
+   */
+  static get defaultOptions(): typeof Application['defaultOptions'];
+
+  getData(): {} | { width: number; height: number };
+
+  _render(...args: Parameters<Application['_render']>): Promise<void>;
 
   align(): void;
 }

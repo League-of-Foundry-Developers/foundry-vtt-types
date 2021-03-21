@@ -54,7 +54,7 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
   get isContentVisible(): boolean;
 
   /** @override */
-  get permission(): number;
+  get permission(): Const.EntityPermission;
 
   /**
    * Return the Roll instance contained in this chat message, if one is present
@@ -68,7 +68,7 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
   /**
    * Render the HTML for the ChatMessage which should be added to the log
    */
-  render(force?: boolean, options?: any): Promise<HTMLElement>;
+  render(force?: boolean, options?: any): Promise<JQuery>;
 
   /* -------------------------------------------- */
   /*  Socket Listeners and Handlers               */
@@ -201,14 +201,9 @@ declare class ChatMessage extends Entity<ChatMessage.Data> {
 }
 
 declare namespace ChatMessage {
-  interface Data extends Entity.Data {
-    content: string;
-    roll?: string;
-    speaker: SpeakerData;
-    timestamp: number;
-    type: number;
+  interface ChatData {
     user: string;
-    whisper: string[];
+    speaker: SpeakerData;
   }
 
   /**
@@ -219,14 +214,25 @@ declare namespace ChatMessage {
     roll?: string | Roll;
     speaker: SpeakerData | SpeakerCreateData;
     timestamp: number;
-    type: number;
+    type: Const.ChatMessageType;
     user: string | User;
     whisper: Array<string | User>;
+    sound?: string;
+    flavor?: string;
+    blind?: boolean;
   }
 
-  interface ChatData {
-    user: string;
+  interface Data extends Entity.Data {
+    content: string;
+    roll?: string;
     speaker: SpeakerData;
+    timestamp: number;
+    type: Const.ChatMessageType;
+    user: string;
+    whisper: string[];
+    sound?: string;
+    flavor?: string;
+    blind?: boolean;
   }
 
   interface MessageData {

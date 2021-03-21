@@ -10,7 +10,9 @@ import './foundry/audioHelper';
 import './foundry/avClient';
 import './foundry/avMaster';
 import './foundry/avSettings';
+import './foundry/cameraPopoutAppWrapper';
 import './foundry/canvas';
+import './foundry/canvasAnimation';
 import './foundry/chatBubbles';
 import './foundry/clientSettings';
 import './foundry/collection';
@@ -42,11 +44,13 @@ import './foundry/ray';
 import './foundry/roll';
 import './foundry/searchFilter';
 import './foundry/setupConfiguration';
+import './foundry/specialEffect';
 import './foundry/socketInterface';
 import './foundry/sortingHelpers';
 import './foundry/tabs';
 import './foundry/templateUtils';
 import './foundry/textEditor';
+import './foundry/textureLoader';
 import './foundry/textureUtils';
 import './foundry/types';
 import './foundry/userTargets';
@@ -56,12 +60,17 @@ import './foundry/worldSettingsStorage';
 
 import './foundry/applications/basePlaceableHUD';
 import './foundry/applications/cameraViews';
+import './foundry/applications/chatPopout';
 import './foundry/applications/compendium';
+import './foundry/applications/controlsReference';
 import './foundry/applications/dialog';
+import './foundry/applications/eula';
 import './foundry/applications/filePicker';
 import './foundry/applications/formApplication';
+import './foundry/applications/frameViewer';
 import './foundry/applications/headsUpDisplay';
 import './foundry/applications/hotbar';
+import './foundry/applications/invitationLinks';
 import './foundry/applications/mainMenu';
 import './foundry/applications/notifications';
 import './foundry/applications/pause';
@@ -70,6 +79,7 @@ import './foundry/applications/sceneControls';
 import './foundry/applications/sceneNavigation';
 import './foundry/applications/sidebar';
 import './foundry/applications/sidebarTab';
+import './foundry/applications/updateNotes';
 
 import './foundry/applications/basePlaceableHUDs/drawingHUD';
 import './foundry/applications/basePlaceableHUDs/tileHUD';
@@ -79,16 +89,19 @@ import './foundry/applications/formApplications/activeEffectConfig';
 import './foundry/applications/formApplications/ambientSoundConfig';
 import './foundry/applications/formApplications/avConfig';
 import './foundry/applications/formApplications/baseEntitySheet';
+import './foundry/applications/formApplications/combatantConfig';
 import './foundry/applications/formApplications/combatTrackerConfig';
 import './foundry/applications/formApplications/drawingConfig';
 import './foundry/applications/formApplications/entitySheetConfig';
 import './foundry/applications/formApplications/folderConfig';
+import './foundry/applications/formApplications/gridConfig';
 import './foundry/applications/formApplications/imagePopout';
 import './foundry/applications/formApplications/lightConfig';
 import './foundry/applications/formApplications/measuredTemplateConfig';
+import './foundry/applications/formApplications/moduleManagement';
 import './foundry/applications/formApplications/noteConfig';
+import './foundry/applications/formApplications/permissionConfig';
 import './foundry/applications/formApplications/playerConfig';
-import './foundry/applications/formApplications/playlistConfig';
 import './foundry/applications/formApplications/playlistSoundConfig';
 import './foundry/applications/formApplications/settingsConfig';
 import './foundry/applications/formApplications/setupConfigurationForm';
@@ -96,12 +109,16 @@ import './foundry/applications/formApplications/tileConfig';
 import './foundry/applications/formApplications/tokenConfig';
 import './foundry/applications/formApplications/userManagement';
 import './foundry/applications/formApplications/wallConfig';
+import './foundry/applications/formApplications/worldConfig';
 
 import './foundry/applications/formApplications/baseEntitySheets/actorSheet';
 import './foundry/applications/formApplications/baseEntitySheets/itemSheet';
 import './foundry/applications/formApplications/baseEntitySheets/journalSheet';
+import './foundry/applications/formApplications/baseEntitySheets/macroConfig';
 import './foundry/applications/formApplications/baseEntitySheets/permissionControl';
+import './foundry/applications/formApplications/baseEntitySheets/playlistConfig';
 import './foundry/applications/formApplications/baseEntitySheets/rollTableConfig';
+import './foundry/applications/formApplications/baseEntitySheets/sceneConfig';
 
 import './foundry/applications/sidebarTabs/chatLog';
 import './foundry/applications/sidebarTabs/combatTracker';
@@ -151,17 +168,32 @@ import './foundry/entities/rollTable';
 import './foundry/entities/scene';
 import './foundry/entities/user';
 
+import './foundry/pixi/containers/baseGrid';
 import './foundry/pixi/containers/canvasLayer';
 import './foundry/pixi/containers/controlIcon';
+import './foundry/pixi/containers/cursor';
 import './foundry/pixi/containers/doorControl';
 import './foundry/pixi/containers/placeableObject';
 import './foundry/pixi/containers/ruler';
 
+import './foundry/pixi/containers/baseGrids/hexagonalGrid';
+import './foundry/pixi/containers/baseGrids/squareGrid';
+
+import './foundry/pixi/containers/canvasLayers/backgroundLayer';
+import './foundry/pixi/containers/canvasLayers/controlsLayer';
+import './foundry/pixi/containers/canvasLayers/effectsLayer';
+import './foundry/pixi/containers/canvasLayers/gridLayer';
 import './foundry/pixi/containers/canvasLayers/placeablesLayer';
 import './foundry/pixi/containers/canvasLayers/sightLayer';
 
+import './foundry/pixi/containers/canvasLayers/placeablesLayers/drawingsLayer';
 import './foundry/pixi/containers/canvasLayers/placeablesLayers/lightingLayer';
+import './foundry/pixi/containers/canvasLayers/placeablesLayers/notesLayer';
+import './foundry/pixi/containers/canvasLayers/placeablesLayers/soundsLayer';
+import './foundry/pixi/containers/canvasLayers/placeablesLayers/templateLayer';
+import './foundry/pixi/containers/canvasLayers/placeablesLayers/tilesLayer';
 import './foundry/pixi/containers/canvasLayers/placeablesLayers/tokenLayer';
+import './foundry/pixi/containers/canvasLayers/placeablesLayers/wallsLayer';
 
 import './foundry/pixi/containers/placeableObjects/ambientLight';
 import './foundry/pixi/containers/placeableObjects/ambientSound';
@@ -171,6 +203,9 @@ import './foundry/pixi/containers/placeableObjects/note';
 import './foundry/pixi/containers/placeableObjects/tile';
 import './foundry/pixi/containers/placeableObjects/token';
 import './foundry/pixi/containers/placeableObjects/wall';
+
+import './foundry/pixi/graphics/gridHighlight';
+import './foundry/pixi/graphics/resizeHandle';
 
 import './foundry/pixi/rectangles/normalizedRectangle';
 
@@ -201,7 +236,12 @@ import './foundry/pixi/shaders/abstractBaseShaders/standardIlluminationShaders/w
 
 import './foundry/pixi/texts/preciseText';
 
+import './foundry/specialEffects/autumnLeavesWeatherEffect';
+import './foundry/specialEffects/rainWeatherEffect';
+import './foundry/specialEffects/snowWeatherEffect';
+
 import './types/utils';
 
 import './types/augments/howler';
 import './types/augments/tinyMCE';
+import './types/augments/pixiParticles';

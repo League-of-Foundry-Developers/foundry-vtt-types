@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 declare class SocketInterface {
   /**
    * Standardize the way that socket messages are dispatched and their results are handled
@@ -18,10 +17,9 @@ declare class SocketInterface {
 }
 
 declare namespace SocketInterface {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   namespace Requests {
     interface ModifyEmbeddedDocument {
-      action: Action.Create | Action.Update | Action.Delete;
+      action: Action;
       data: any; // TODO: add generics to this
       options: Entity.CreateOptions;
       parentId: string;
@@ -30,15 +28,9 @@ declare namespace SocketInterface {
     }
 
     // TODO: add remaining actions
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    enum Action {
-      Create = 'create',
-      Update = 'update',
-      Delete = 'delete'
-    }
+    type Action = 'create' | 'update' | 'delete';
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   namespace Responses {
     interface ModifyEmbeddedDocument {
       request: Requests.ModifyEmbeddedDocument;

@@ -26,13 +26,14 @@ type DialogButton<T = unknown> = Dialog.Button<T>;
  * });
  * d.render(true);
  * ```
+ * @typeParam P - the type of the options object
  */
-declare class Dialog extends Application {
+declare class Dialog<P extends Dialog.Options = Dialog.Options> extends Application<P> {
   /**
    * @param data    - An object of dialog data which configures how the modal window is rendered
    * @param options - Dialog rendering options, see {@link Application}
    */
-  constructor(data: Dialog.Data, options?: Partial<Dialog.Options>);
+  constructor(data: Dialog.Data, options?: Partial<P>);
 
   data: Dialog.Data;
 
@@ -94,7 +95,7 @@ declare class Dialog extends Application {
   /**
    * @override
    */
-  close(options: Application.CloseOptions): Promise<void>;
+  close(options?: Application.CloseOptions): Promise<void>;
 
   /* -------------------------------------------- */
   /*  Factory Methods                             */
@@ -143,10 +144,10 @@ declare class Dialog extends Application {
     content: string;
     yes?: (html: JQuery) => Y;
     no?: (html: JQuery) => N;
-    render: (html: JQuery) => void;
+    render?: (html: JQuery) => void;
     defaultYes?: boolean;
     rejectClose?: R;
-    options: Partial<Dialog.Options> & { jQuery: true };
+    options?: Partial<Dialog.Options> & { jQuery?: true };
   }): Promise<R extends true ? Y | N : Y | N | null>;
   static confirm<Y = true, N = false, R extends boolean = false>({
     title,
@@ -162,10 +163,10 @@ declare class Dialog extends Application {
     content: string;
     yes?: (html: HTMLElement) => Y;
     no?: (html: HTMLElement) => N;
-    render: (html: HTMLElement) => void;
+    render?: (html: HTMLElement) => void;
     defaultYes?: boolean;
     rejectClose?: R;
-    options?: Partial<Dialog.Options> & { jQuery?: false };
+    options: Partial<Dialog.Options> & { jQuery: false };
   }): Promise<R extends true ? Y | N : Y | N | null>;
   static confirm<Y = true, N = false, R extends boolean = false>({
     title,
@@ -181,7 +182,7 @@ declare class Dialog extends Application {
     content: string;
     yes?: (html: JQuery | HTMLElement) => Y;
     no?: (html: JQuery | HTMLElement) => N;
-    render: (html: JQuery | HTMLElement) => void;
+    render?: (html: JQuery | HTMLElement) => void;
     defaultYes?: boolean;
     rejectClose?: R;
     options: Partial<Dialog.Options>;
@@ -205,7 +206,7 @@ declare class Dialog extends Application {
       content: string;
       yes?: (html: JQuery | HTMLElement) => Y;
       no?: (html: JQuery | HTMLElement) => N;
-      render: (html: JQuery | HTMLElement) => void;
+      render?: (html: JQuery | HTMLElement) => void;
       defaultYes?: boolean;
       rejectClose?: R;
       options?: Partial<Dialog.Options>;
@@ -235,10 +236,10 @@ declare class Dialog extends Application {
   }?: {
     title: string;
     content: string;
-    label: string;
+    label?: string;
     callback: (html: JQuery) => T;
-    render: (html: JQuery) => void;
-    options: Partial<Dialog.Options> & { jQuery: true };
+    render?: (html: JQuery) => void;
+    options?: Partial<Dialog.Options> & { jQuery?: true };
   }): Promise<T>;
   static prompt<T>({
     title,
@@ -250,10 +251,10 @@ declare class Dialog extends Application {
   }?: {
     title: string;
     content: string;
-    label: string;
+    label?: string;
     callback: (html: HTMLElement) => T;
-    render: (html: HTMLElement) => void;
-    options?: Partial<Dialog.Options> & { jQuery?: false };
+    render?: (html: HTMLElement) => void;
+    options: Partial<Dialog.Options> & { jQuery: false };
   }): Promise<T>;
   static prompt<T>({
     title,
@@ -265,9 +266,9 @@ declare class Dialog extends Application {
   }?: {
     title: string;
     content: string;
-    label: string;
+    label?: string;
     callback: (html: JQuery | HTMLElement) => T;
-    render: (html: JQuery | HTMLElement) => void;
+    render?: (html: JQuery | HTMLElement) => void;
     options: Partial<Dialog.Options>;
   }): Promise<T>;
 }

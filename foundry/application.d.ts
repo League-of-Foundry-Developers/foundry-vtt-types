@@ -18,8 +18,9 @@ declare let _maxZ: number;
  *   renderApplication
  *   closeApplication
  *   getApplicationHeaderButtons
+ * @typeParam P - the type of the options object
  */
-declare class Application {
+declare class Application<P extends Application.Options = Application.Options> {
   /**
    * @param options - Configuration options which control how the application is rendered.
    *                  Application subclasses may add additional supported options, but the
@@ -27,12 +28,12 @@ declare class Application {
    *                  passed to the constructor are combined with the defaultOptions defined
    *                  at the class level.
    */
-  constructor(options?: Partial<Application.Options>);
+  constructor(options?: Partial<P>);
 
   /**
    * The options provided to this application upon initialization
    */
-  options: Application.Options;
+  options: P;
 
   /**
    * The application ID is a unique incrementing integer which is used to identify every application window
@@ -49,7 +50,7 @@ declare class Application {
   /**
    * Track the current position and dimensions of the Application UI
    */
-  position: Application.Position;
+  position: Application.Position | Pick<Application.Position, 'width' | 'height'>;
 
   /**
    * DragDrop workflow handlers which are active for this Application
@@ -194,7 +195,7 @@ declare class Application {
    * Render the outer application wrapper
    * @returns A promise resolving to the constructed jQuery object
    */
-  protected _renderOuter(options: Application.RenderOptions): Promise<HTMLElement>;
+  protected _renderOuter(options: Application.RenderOptions): Promise<HTMLElement> | Promise<JQuery<JQuery.Node>>;
 
   /**
    * Render the inner application content
@@ -343,12 +344,12 @@ declare class Application {
    * @see {@link Application.RenderState}
    */
   static RENDER_STATES: Readonly<{
-    CLOSING: Application.RenderState.Closing;
-    CLOSED: Application.RenderState.Closed;
-    NONE: Application.RenderState.None;
-    RENDERING: Application.RenderState.Rendering;
-    RENDERED: Application.RenderState.Rendered;
-    ERROR: Application.RenderState.Error;
+    CLOSING: -2;
+    CLOSED: -1;
+    NONE: 0;
+    RENDERING: 1;
+    RENDERED: 2;
+    ERROR: 3;
   }>;
 }
 
@@ -470,6 +471,8 @@ declare namespace Application {
   }
 
   interface RenderOptions {
+    classes?: string[];
+
     /**
      * The left positioning attribute
      */
@@ -514,12 +517,5 @@ declare namespace Application {
   /**
    * @see {@link Application.RENDER_STATES}
    */
-  enum RenderState {
-    Closing = -2,
-    Closed = -1,
-    None = 0,
-    Rendering = 1,
-    Rendered = 2,
-    Error = 3
-  }
+  type RenderState = ValueOf<typeof Application['RENDER_STATES']>;
 }

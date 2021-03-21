@@ -25,7 +25,7 @@
  * console.log(r.total);    // 22
  * ```
  */
-declare class Roll<D = object> {
+declare class Roll<D extends object = {}> {
   /**
    * @param formula - The string formula to parse
    * @param data    - The data object against which to parse attributes within the formula
@@ -70,17 +70,13 @@ declare class Roll<D = object> {
    */
   protected _total: number | null;
 
-  /* -------------------------------------------- */
-
   /**
    * A factory method which constructs a Roll instance using the default configured Roll class.
    * @param args - Arguments passed to the Roll instance constructor
    * @typeParam D - the type of data object against which to parse attributes within the formula
    * @returns The constructed Roll instance
    */
-  static create<D = object>(formula: string, data?: D): Roll<D>;
-
-  /* -------------------------------------------- */
+  static create<D extends Record<string, unknown> = {}>(formula: string, data?: D): Roll<D>;
 
   /**
    * Replace referenced data attributes in the roll formula with values from the provided data.
@@ -105,35 +101,25 @@ declare class Roll<D = object> {
     }
   ): string;
 
-  /* -------------------------------------------- */
-
   /**
    * Return an Array of the individual DiceTerm instances contained within this Roll.
    */
   get dice(): DiceTerm[];
-
-  /* -------------------------------------------- */
 
   /**
    * Return a standardized representation for the displayed formula associated with this Roll.
    */
   get formula(): string;
 
-  /* -------------------------------------------- */
-
   /**
    * The resulting arithmetic expression after rolls have been evaluated
    */
   get result(): string | null;
 
-  /* -------------------------------------------- */
-
   /**
    * Return the total result of the Roll expression if it has been evaluated, otherwise null
    */
   get total(): number | null;
-
-  /* -------------------------------------------- */
 
   /**
    * Alter the Roll expression by adding or multiplying the number of dice which are rolled
@@ -152,8 +138,6 @@ declare class Roll<D = object> {
       multiplyNumeric?: boolean;
     }
   ): this;
-
-  /* -------------------------------------------- */
 
   /**
    * Execute the Roll, replacing dice and evaluating the total result
@@ -175,14 +159,10 @@ declare class Roll<D = object> {
    */
   evaluate({ minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): this;
 
-  /* -------------------------------------------- */
-
   /**
    * Clone the Roll instance, returning a new Roll instance that has not yet been evaluated
    */
-  clone(): Roll<D>;
-
-  /* -------------------------------------------- */
+  clone(): this;
 
   /**
    * Evaluate and return the Roll expression.
@@ -191,16 +171,12 @@ declare class Roll<D = object> {
    */
   roll(): this;
 
-  /* -------------------------------------------- */
-
   /**
    * Create a new Roll object using the original provided formula and data
    * Each roll is immutable, so this method returns a new Roll instance using the same data.
    * @returns A new Roll object, rolled using the same formula and data
    */
-  reroll(): Roll<D>;
-
-  /* -------------------------------------------- */
+  reroll(): this;
 
   /**
    * Simulate a roll and evaluate the distribution of returned results
@@ -209,9 +185,7 @@ declare class Roll<D = object> {
    *                  (default: `10000`)
    * @returns The rolled totals
    */
-  static simulate(formula: string, n: number): number[];
-
-  /* -------------------------------------------- */
+  static simulate(formula: string, n?: number): number[];
 
   /**
    * Validate that a provided roll formula can represent a valid
@@ -220,16 +194,10 @@ declare class Roll<D = object> {
    */
   static validate(formula: string): boolean;
 
-  /* -------------------------------------------- */
-  /*  Internal Helper Functions                   */
-  /* -------------------------------------------- */
-
   /**
    * Create a formula string from an array of Dice terms.
    */
   static cleanFormula(terms: Roll.Terms): string;
-
-  /* -------------------------------------------- */
 
   /**
    * Clean the terms of a Roll equation, removing empty space and de-duping arithmetic operators
@@ -237,8 +205,6 @@ declare class Roll<D = object> {
    * @returns The cleaned array of terms
    */
   static cleanTerms(terms: Roll.Terms): Roll.Terms;
-
-  /* -------------------------------------------- */
 
   /**
    * Split a provided Roll formula to identify it's component terms.
@@ -254,8 +220,6 @@ declare class Roll<D = object> {
    */
   protected _identifyTerms(formula: string, { step }?: { step: number }): Roll.Terms;
 
-  /* -------------------------------------------- */
-
   /**
    * Prepare the data structure used for the Roll.
    * This is factored out to allow for custom Roll classes to do special data preparation using provided input.
@@ -263,28 +227,20 @@ declare class Roll<D = object> {
    */
   protected _prepareData(data: D): D;
 
-  /* -------------------------------------------- */
-
   /**
    * Identify and split a formula into separate terms by arithmetic terms
    */
   protected _splitDiceTerms(terms: Roll.Terms, step: number): Roll.Terms;
-
-  /* -------------------------------------------- */
 
   /**
    * Identify and split a formula into separate terms by parenthetical expressions
    */
   protected _splitParentheticalTerms(formula: string): Roll.Terms;
 
-  /* -------------------------------------------- */
-
   /**
    * Identify and split a formula into separate terms by curly braces which represent pooled expressions
    */
   protected _splitPooledTerms(terms: Roll.Terms): Roll.Terms;
-
-  /* -------------------------------------------- */
 
   /**
    * Safely evaluate a formulaic expression using a Proxy environment which is allowed access to Math commands
@@ -292,10 +248,6 @@ declare class Roll<D = object> {
    * @returns The returned numeric result, or null if the outcome is not numeric
    */
   protected _safeEval(expression: string): number | null;
-
-  /* -------------------------------------------- */
-  /*  Chat Messages                               */
-  /* -------------------------------------------- */
 
   /**
    * Render the tooltip HTML for a Roll instance
@@ -310,7 +262,7 @@ declare class Roll<D = object> {
    *                      (default: `{}`)
    * @returns A Promise which resolves to the rendered HTML
    */
-  render(chatOptions: Roll.ChatOptions): Promise<string>;
+  render(chatOptions?: Roll.ChatOptions): Promise<string>;
 
   /* -------------------------------------------- */
 
@@ -330,37 +282,38 @@ declare class Roll<D = object> {
    * @returns A promise which resolves to the created ChatMessage entity, if create is true
    *          or the Object of prepared chatData otherwise.
    */
-  toMessage(
-    messageData?: object,
-    {
-      rollMode,
-      create
-    }?: {
-      rollMode?: string; // TODO: update when roll modes are typed
-      create?: boolean;
-    }
-  ): Promise<ChatMessage> | object;
-
-  /* -------------------------------------------- */
-  /*  Saving and Loading                          */
-  /* -------------------------------------------- */
+  toMessage<T extends DeepPartial<ChatMessage.CreateData> = {}>(
+    messageData?: T,
+    { rollMode, create }?: { rollMode?: Const.DiceRollMode | null; create?: true }
+  ): Promise<ChatMessage>;
+  toMessage<T extends DeepPartial<ChatMessage.CreateData> = {}>(
+    messageData: T,
+    { rollMode, create }: { rollMode?: Const.DiceRollMode | null; create: false }
+  ): Roll.MessageData<T>;
+  toMessage<T extends DeepPartial<ChatMessage.CreateData> = {}>(
+    messageData: T,
+    { rollMode, create }: { rollMode?: Const.DiceRollMode | null; create: boolean }
+  ): Promise<ChatMessage> | Roll.MessageData<T>;
 
   /**
    * Represent the data of the Roll as an object suitable for JSON serialization.
    * @returns Structured data which can be serialized into JSON
    */
-  toJSON(): object;
-
-  /* -------------------------------------------- */
+  toJSON(): {
+    class: string;
+    dice: DiceTerm[];
+    formula: string;
+    terms: Roll.Terms;
+    results: Array<number | string>;
+    total: number | null;
+  };
 
   /**
    * Recreate a Roll instance using a provided data object
    * @param data - Unpacked data representing the Roll
    * @returns A reconstructed Roll instance
    */
-  static fromData(data: Roll.Data | Roll.OldData): Roll;
-
-  /* -------------------------------------------- */
+  static fromData<T extends Roll>(this: ConstructorOf<T>, data: Roll.Data | Roll.OldData): T;
 
   /**
    * Recreate a Roll instance using a provided JSON string
@@ -369,19 +322,13 @@ declare class Roll<D = object> {
    */
   static fromJSON(json: string): Roll;
 
-  /* -------------------------------------------- */
-
   /**
    * Construct a new Roll object from a parenthetical term of an outer Roll.
    * @param term - The isolated parenthetical term, for example (4d6)
    * @param data - The Roll data object, provided by the outer Roll
    * @returns An inner Roll object constructed from the term
    */
-  static fromTerm<D>(term: string, data: D): Roll<D>;
-
-  /* -------------------------------------------- */
-  /*  Interface Helpers                           */
-  /* -------------------------------------------- */
+  static fromTerm<D extends Record<string, unknown>>(term: string, data: D): Roll<D>;
 
   /**
    * Expand an inline roll element to display it's contained dice result as a tooltip
@@ -389,17 +336,11 @@ declare class Roll<D = object> {
    */
   protected static _expandInlineResult(a: HTMLAnchorElement): Promise<void>;
 
-  /* -------------------------------------------- */
-
   /**
    * Collapse an expanded inline roll to conceal it's tooltip
    * @param a - The inline-roll button
    */
   protected static _collapseInlineResult(a: HTMLAnchorElement): void;
-
-  /* -------------------------------------------- */
-  /*  Deprecations                                */
-  /* -------------------------------------------- */
 
   /**
    * Provide backwards compatibility for Roll data prior to 0.7.0
@@ -407,15 +348,11 @@ declare class Roll<D = object> {
    */
   protected static _backwardsCompatibleRoll(data: Roll.OldData): Roll.BackwardCompatData;
 
-  /* -------------------------------------------- */
-
   /**
    * @deprecated since 0.7.0
    * @see {@link Roll#terms}
    */
   get parts(): Roll.Terms;
-
-  /* -------------------------------------------- */
 
   /**
    * @deprecated since 0.7.0
@@ -423,15 +360,11 @@ declare class Roll<D = object> {
    */
   static minimize(formula: string): Roll;
 
-  /* -------------------------------------------- */
-
   /**
    * @deprecated since 0.7.0
    * @see {@link Roll#evaluate}
    */
   static maximize(formula: string): Roll;
-
-  /* -------------------------------------------- */
 
   /**
    * Allowed arithmetic operators which can join together terms in a Roll expression
@@ -506,4 +439,11 @@ declare namespace Roll {
   }
 
   type Terms = Array<Roll | DicePool | DiceTerm | number | string>;
+
+  type MessageData<T extends DeepPartial<ChatMessage.CreateData>> = {
+    user: string;
+    type: typeof CONST.CHAT_MESSAGE_TYPES['ROLL'];
+    content: number;
+    sound: typeof CONFIG.sounds.dice;
+  } & T;
 }

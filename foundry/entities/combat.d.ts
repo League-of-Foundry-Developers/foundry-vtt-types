@@ -25,6 +25,7 @@ declare class Combat extends Entity<Combat.Data> {
 
   /**
    * The configuration setting used to record Combat preferences
+   * @defaultValue `'combatTrackerConfig'`
    */
   static CONFIG_SETTING: string;
 
@@ -61,12 +62,12 @@ declare class Combat extends Entity<Combat.Data> {
   /**
    * Get the data object for the Combatant who has the current turn
    */
-  get combatant(): Combat.Combatant;
+  get combatant(): this['turns'][number];
 
   /**
    * A convenience reference to the Array of combatant data within the Combat entity
    */
-  get combatants(): Combat.Combatant[];
+  get combatants(): this['data']['combatants'];
 
   /**
    * The numeric round of the Combat encounte
@@ -81,12 +82,12 @@ declare class Combat extends Entity<Combat.Data> {
   /**
    * Get the Scene entity for this Combat encounter
    */
-  get scene(): Scene;
+  get scene(): ReturnType<Scenes['get']>;
 
   /**
    * Return the object of settings which modify the Combat Tracker behavior
    */
-  get settings(): any;
+  get settings(): Combat.Settings;
 
   /**
    * Has this combat encounter been started?
@@ -177,7 +178,7 @@ declare class Combat extends Entity<Combat.Data> {
       messageOptions
     }?: {
       formula?: string | null;
-      messageOptions?: any;
+      messageOptions?: DeepPartial<ChatMessage.Data & { rollMode: Const.DiceRollMode }>;
       updateTurn?: boolean;
     }
   ): Promise<Combat>;
@@ -206,14 +207,22 @@ declare class Combat extends Entity<Combat.Data> {
    * @param args - Additional arguments forwarded to the Combat.rollInitiative method
    * @returns A promise which resolves to the updated Combat entity once updates are complete.
    */
-  rollNPC(args?: { formula?: string | null; messageOptions?: any; updateTurn?: boolean }): Promise<Combat>;
+  rollNPC(args?: {
+    formula?: string | null;
+    messageOptions?: DeepPartial<ChatMessage.Data & { rollMode: Const.DiceRollMode }>;
+    updateTurn?: boolean;
+  }): Promise<Combat>;
 
   /**
    * Roll initiative for all combatants which have not already rolled
    * @param args - Additional arguments forwarded to the Combat.rollInitiative method
    * @returns A promise which resolves to the updated Combat entity once updates are complete.
    */
-  rollAll(args?: { formula?: string | null; messageOptions?: any; updateTurn?: boolean }): Promise<Combat>;
+  rollAll(args?: {
+    formula?: string | null;
+    messageOptions?: DeepPartial<ChatMessage.Data & { rollMode: Const.DiceRollMode }>;
+    updateTurn?: boolean;
+  }): Promise<Combat>;
 
   /**
    * Create a new Combatant embedded entity
@@ -221,33 +230,33 @@ declare class Combat extends Entity<Combat.Data> {
    */
   createCombatant<U>(
     data: Expanded<U> extends DeepPartial<Combat.Combatant> ? U : DeepPartial<Combat.Combatant>,
-    options?: any
+    options?: Entity.CreateOptions
   ): Promise<Combat.Combatant>;
   createCombatant<U>(
     data: Expanded<U> extends DeepPartial<Combat.Combatant> ? U[] : DeepPartial<Combat.Combatant>[],
-    options?: any
+    options?: Entity.CreateOptions
   ): Promise<Combat.Combatant[]>;
 
   /** @override */
   updateCombatant<U>(
     data: (Expanded<U> extends DeepPartial<Combat.Combatant> ? U : DeepPartial<Combat.Combatant>) & { _id: string },
-    options?: any
+    options?: Entity.UpdateOptions
   ): Promise<Combat.Combatant>;
   updateCombatant<U>(
     data: ((Expanded<U> extends DeepPartial<Combat.Combatant> ? U : DeepPartial<Combat.Combatant>) & { _id: string })[],
-    options?: any
+    options?: Entity.UpdateOptions
   ): Promise<Combat.Combatant[]>;
 
   /** @override */
-  deleteCombatant(id: string, options?: any): Promise<Combat.Combatant>;
-  deleteCombatant(id: string[], options?: any): Promise<Combat.Combatant[]>;
+  deleteCombatant(id: string, options?: Entity.DeleteOptions): Promise<Combat.Combatant>;
+  deleteCombatant(id: string[], options?: Entity.DeleteOptions): Promise<Combat.Combatant[]>;
 
   /* -------------------------------------------- */
   /*  Socket Events and Handlers                  */
   /* -------------------------------------------- */
 
   /** @override */
-  protected _onCreate(data: Combat.Data, options: any, userId: string): void;
+  protected _onCreate(data: Combat.Data, options: Entity.CreateOptions, userId: string): void;
 
   /** @override */
   protected _onUpdate(data: DeepPartial<Combat.Data>, options: Entity.UpdateOptions, userId: string): void;
@@ -266,7 +275,7 @@ declare class Combat extends Entity<Combat.Data> {
   /** @override */
   protected _onModifyEmbeddedEntity(
     embeddedName: string,
-    changes: any[],
+    changes: DeepPartial<Combat.Combatant>[],
     options: any,
     userId: string,
     context?: any
@@ -274,6 +283,25 @@ declare class Combat extends Entity<Combat.Data> {
 }
 
 declare namespace Combat {
+  interface CompleteConfigSetting extends PartialConfigSetting {
+    key: typeof Combat['CONFIG_SETTING'];
+    module: 'core';
+  }
+
+  interface PartialConfigSetting extends ClientSettings.PartialSetting<ConfigValue> {
+    name: 'Combat Tracker Configuration';
+    scope: 'world';
+    config: false;
+    default: {};
+    type: ConstructorOf<Object>;
+    onChange: () => void;
+  }
+
+  interface ConfigValue {
+    resource?: string;
+    skipDefeated?: boolean;
+  }
+
   /**
    * Data extension for Combat
    */
@@ -285,16 +313,6 @@ declare namespace Combat {
     scene: string;
     sort: number;
     turn: number;
-  }
-
-  /**
-   * Stores the round, turn and tokenId for the current turn. Also used for the
-   * previous turn.
-   */
-  interface CurrentTurn {
-    round: number | null;
-    tokenId: string | null;
-    turn: number | null;
   }
 
   type Combatant = {
@@ -322,4 +340,19 @@ declare namespace Combat {
         tokenId: string;
       }
   );
+
+  /**
+   * Stores the round, turn and tokenId for the current turn. Also used for the
+   * previous turn.
+   */
+  interface CurrentTurn {
+    round: number | null;
+    tokenId: string | null;
+    turn: number | null;
+  }
+
+  interface Settings {
+    resource: string;
+    skipDefeated: boolean;
+  }
 }

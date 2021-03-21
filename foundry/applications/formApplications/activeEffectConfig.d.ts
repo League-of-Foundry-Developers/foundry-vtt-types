@@ -1,17 +1,23 @@
 /**
  * A form designed for creating and editing an Active Effect on an Actor or Item entity.
  *
- * @param object  - The target active effect being configured
- * @param options - Additional options which modify this application instance
+ * @typeParam P - the type of the options object
  * @typeParam D - The data structure used to render the handlebars template.
  * @typeParam O - the type of the ActiveEffect which should be managed by this form sheet
  */
 declare class ActiveEffectConfig<
+  P extends FormApplication.Options = FormApplication.Options,
   D extends object = ActiveEffectConfig.Data,
   O extends ActiveEffect = D extends ActiveEffectConfig.Data<infer T> ? T : ActiveEffect
-> extends FormApplication<D, O> {
+> extends FormApplication<P, D, O> {
+  /**
+   * @param object  - The target active effect being configured
+   * @param options - Additional options which modify this application instance
+   */
+  constructor(object: O, options?: Partial<P>);
+
   /** @override */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /** @override */
   get title(): string;
@@ -40,8 +46,11 @@ declare class ActiveEffectConfig<
 }
 
 declare namespace ActiveEffectConfig {
-  interface Data<O extends ActiveEffect = ActiveEffect> {
-    effect: Duplicated<O['data']>;
+  /**
+   * @typeParam A - the type of the ActiveEffect
+   */
+  interface Data<A extends ActiveEffect = ActiveEffect> {
+    effect: Duplicated<A['data']>;
     isActorEffect: boolean;
     isItemEffect: boolean;
     submitText: string;

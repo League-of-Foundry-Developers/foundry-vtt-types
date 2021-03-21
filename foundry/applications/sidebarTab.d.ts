@@ -1,9 +1,7 @@
 /**
  * An abstract pattern followed by the different tabs of the sidebar
  */
-declare abstract class SidebarTab extends Application {
-  constructor(options?: Partial<Application.Options>);
-
+declare abstract class SidebarTab<P extends SidebarTab.Options = SidebarTab.Options> extends Application<P> {
   /**
    * The base name of this sidebar tab
    */

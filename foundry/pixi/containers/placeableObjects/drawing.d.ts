@@ -28,6 +28,11 @@
  */
 declare class Drawing extends PlaceableObject<Drawing.Data> {
   /**
+   * @remarks Not used for `Drawing`
+   */
+  controlIcon: null;
+
+  /**
    * The inner drawing container
    */
   drawing: PIXI.Container | null;
@@ -275,7 +280,7 @@ declare namespace Drawing {
     bezierFactor: number;
     fillAlpha: number;
     fillColor: string;
-    fillType: number;
+    fillType: Const.DrawingFillType;
     fontFamily: string;
     fontSize: number;
     height: number;

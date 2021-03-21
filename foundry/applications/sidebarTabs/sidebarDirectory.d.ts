@@ -1,9 +1,10 @@
 /**
  * A shared pattern for the sidebar directory which Actors, Items, and Scenes all use
+ * @typeParam P - the type of the options object
  */
-declare abstract class SidebarDirectory extends SidebarTab {
-  constructor(options?: Partial<Application.Options>);
-
+declare abstract class SidebarDirectory<
+  P extends SidebarDirectory.Options = SidebarDirectory.Options
+> extends SidebarTab<P> {
   /**
    * References to the set of Entities which are displayed in the Sidebar
    */

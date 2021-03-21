@@ -7,17 +7,18 @@
  * `CONFIG.Actor.sheetClass`.
  * @typeParam D - The data structure used to render the handlebars template.
  * @typeParam O - the type of the Entity which should be managed by this form sheet
+ * @typeParam P - the type of the options object
  */
 declare class ActorSheet<
   D extends object = ActorSheet.Data<Actor>,
-  O extends Actor = D extends ActorSheet.Data<infer T> ? T : Actor
-> extends BaseEntitySheet<D, O> {
+  O extends Actor = D extends ActorSheet.Data<infer T> ? T : Actor,
+  P extends BaseEntitySheet.Options = BaseEntitySheet.Options
+> extends BaseEntitySheet<P, D, O> {
   /**
    * @param actor   - The Actor instance being displayed within the sheet.
-   * @param options - Additional options which modify the rendering of the
-   *                  Actor's sheet.
+   * @param options - Additional options which modify the rendering of the Actor's sheet.
    */
-  constructor(actor: O, options?: BaseEntitySheet.Options);
+  constructor(actor: O, options?: Partial<P>);
 
   /**
    * If this Actor Sheet represents a synthetic Token actor, reference the active Token
@@ -25,7 +26,7 @@ declare class ActorSheet<
   token: O['token'];
 
   /** @override */
-  static get defaultOptions(): BaseEntitySheet.Options;
+  static get defaultOptions(): typeof BaseEntitySheet['defaultOptions'];
 
   /** @override */
   get id(): string;
@@ -63,7 +64,7 @@ declare class ActorSheet<
   /**
    * Handle changing the actor profile image by opening a FilePicker
    */
-  protected _onEditImage(event: JQuery.ClickEvent): Promise<any>; // TODO: Adjust once FilePicker is updated
+  protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
 
   /** @override */
   protected _updateObject(event: Event, formData: object): Promise<O>;

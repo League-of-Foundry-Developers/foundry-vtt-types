@@ -1,7 +1,7 @@
 /**
  * A directory list of RollTable entities in the Sidebar
  */
-declare class RollTableDirectory extends SidebarDirectory {
+declare class RollTableDirectory extends SidebarDirectory<RollTableDirectory.Options> {
   static get defaultOptions(): RollTableDirectory.Options;
 
   /**

@@ -6,22 +6,22 @@
  * 2) The template used contains one (and only one) HTML form as it's outer-most element
  * 3) This abstract layer has no knowledge of what is being updated, so the implementation must define _updateObject
  *
+ * @typeParam P - the type of the options object
  * @typeParam D - The data structure used to render the handlebars template.
  * @typeParam O - the type of the object or entity target which we are using this form to modify
  */
 declare abstract class FormApplication<
-  D extends object = FormApplication.Data<{}>,
-  O extends object = D extends FormApplication.Data<infer T> ? T : {}
-> extends Application {
+  P extends FormApplication.Options = FormApplication.Options,
+  D extends object = FormApplication.Data<{}, P>,
+  O = D extends FormApplication.Data<infer T, P> ? T : {}
+> extends Application<P> {
   /**
    * @param object  - Some object or entity which is the target to be updated.
-   *                 (default: `{}`)
+   *                  (default: `{}`)
    * @param options - Additional options which modify the rendering of the sheet.
    *                  (default: `{}`)
    */
-  constructor(object?: O, options?: Partial<FormApplication.Options>);
-
-  options: FormApplication.Options;
+  constructor(object?: O, options?: Partial<P>);
 
   /**
    * The object target which we are using this form to modify
@@ -45,7 +45,7 @@ declare abstract class FormApplication<
    * The values of this Array are inner-objects with references to the MCE editor and other metadata
    * @defaultValue `{}`
    */
-  editors: Partial<Record<string, FormApplication.Editor>>;
+  editors: Partial<Record<string, FormApplication.FormApplicationEditor>>;
 
   /**
    * Assign the default options which are supported by the entity edit sheet.
@@ -116,18 +116,18 @@ declare abstract class FormApplication<
    * Do not preventDefault in this handler as other interactions on the form may also be occurring.
    * @param event - The initial change event
    */
-  protected _onChangeInput(event: Event): void | Promise<Partial<Record<string, unknown>>>;
+  protected _onChangeInput(event: JQuery.ChangeEvent): void | Promise<Partial<Record<string, unknown>>>;
 
   /**
    * Handle the change of a color picker input which enters it's chosen value into a related input field
    */
-  protected _onChangeColorPicker(event: Event): void;
+  protected _onChangeColorPicker(event: JQuery.ChangeEvent): void;
 
   /**
    * Handle changes to a range type input by propagating those changes to the sibling range-value element
    * @param event - The initial change event
    */
-  protected _onChangeRange(event: Event): void;
+  protected _onChangeRange(event: JQuery.ChangeEvent): void;
 
   /**
    * This method is called upon form submission after form data is validated
@@ -205,19 +205,24 @@ declare namespace FormApplication {
     submit?: boolean;
   }
 
-  interface Data<O> {
+  /**
+   * @typeParam O - the type of the object
+   * @typeParam P - the type of the options object
+   */
+  interface Data<O, P extends FormApplication.Options = FormApplication.Options> {
     object: Duplicated<O>;
-    options: FormApplication.Options;
+    options: P;
     title: string;
   }
 
-  interface Editor {
+  interface FormApplicationEditor {
+    active: boolean;
     activate: boolean;
     button: HTMLElement;
     changed: boolean;
     hasButton: boolean;
     initial: string;
-    mce: Editor;
+    mce: Editor | null;
     options: TextEditor.Options;
     target: string;
   }

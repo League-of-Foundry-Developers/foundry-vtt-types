@@ -61,7 +61,7 @@ declare class Actor<
   /**
    * Cache an Array of allowed Token images if using a wildcard path
    */
-  _tokenImages: string[];
+  protected _tokenImages: string[];
 
   /** @override */
   static get config(): Entity.Config<Actor>;
@@ -357,13 +357,6 @@ declare class Actor<
 
 declare namespace Actor {
   /**
-   * Full item type for owned items
-   * @typeParam D - Actor.Data to extract Item type from
-   * @internal
-   */
-  type OwnedItemData<D extends Data> = D['items'][number];
-
-  /**
    * @typeParam D - Type for `data.data`
    * @typeParam I - Type for system's Item
    */
@@ -381,4 +374,11 @@ declare namespace Actor {
     };
     type: string;
   }
+
+  /**
+   * Full item type for owned items
+   * @typeParam D - Actor.Data to extract Item type from
+   * @internal
+   */
+  type OwnedItemData<D extends Data> = D['items'][number];
 }

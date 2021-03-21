@@ -1,18 +1,20 @@
 /**
  * Extend the FormApplication pattern to incorporate specific logic for viewing or editing Entity instances.
  * See the FormApplication documentation for more complete description of this interface.
+ * @typeParam P - the type of the options object
  * @typeParam D - The data structure used to render the handlebars template.
  * @typeParam O - the type of the Entity which should be managed by this form sheet
  */
 declare class BaseEntitySheet<
+  P extends BaseEntitySheet.Options = BaseEntitySheet.Options,
   D extends object = BaseEntitySheet.Data<Entity>,
   O extends Entity = D extends BaseEntitySheet.Data<infer T> ? T : Entity
-> extends FormApplication<D, O> {
+> extends FormApplication<P, D, O> {
   /**
    * @param object  - An Entity which should be managed by this form sheet.
    * @param options - Optional configuration parameters for how the form behaves.
    */
-  constructor(object: O, options?: BaseEntitySheet.Options);
+  constructor(object: O, options?: Partial<P>);
 
   /**
    * @override
@@ -88,8 +90,8 @@ declare namespace BaseEntitySheet {
     template: string;
 
     /**
-     * @defaultValue {@link Const.EntityPermissions.Limited}
+     * @defaultValue {@link ENTITY_PERMISSIONS.LIMITED}
      */
-    viewPermission: Const.EntityPermissions;
+    viewPermission: Const.EntityPermission;
   }
 }

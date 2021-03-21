@@ -35,7 +35,7 @@ declare abstract class PlaceableObject<D extends PlaceableObject.Data = Placeabl
    * A mouse interaction manager instance which handles mouse workflows related to this object.
    * @defaultValue `null`
    */
-  mouseInteractionManager: MouseInteractionManager | null;
+  mouseInteractionManager: MouseInteractionManager<this, ControlIcon | this> | null;
 
   /**
    * An indicator for whether the object is currently controlled
@@ -204,13 +204,15 @@ declare abstract class PlaceableObject<D extends PlaceableObject.Data = Placeabl
   abstract refresh(): unknown;
 
   static create<T extends PlaceableObject, U>(
+    this: ConstructorOf<T>,
     data: Expanded<U> extends DeepPartial<T['data']> ? U : DeepPartial<T['data']>,
     options?: Entity.CreateOptions
   ): Promise<T | void>;
   static create<T extends PlaceableObject, U>(
+    this: ConstructorOf<T>,
     data: Expanded<U> extends DeepPartial<T['data']> ? U[] : DeepPartial<T['data']>[],
     options?: Entity.CreateOptions
-  ): Promise<T[] | void>;
+  ): Promise<T | T[] | void>;
 
   update<U>(data: Expanded<U> extends DeepPartial<D> ? U : never, options?: Entity.UpdateOptions): Promise<this>;
   update(data: DeepPartial<D>, options?: Entity.UpdateOptions): Promise<this>;
@@ -338,7 +340,7 @@ declare abstract class PlaceableObject<D extends PlaceableObject.Data = Placeabl
   /**
    * Create a standard MouseInteractionManager for the PlaceableObject
    */
-  protected _createInteractionManager(): MouseInteractionManager;
+  protected _createInteractionManager(): NonNullable<this['mouseInteractionManager']>;
 
   /**
    * Actions that should be taken for this Placeable Object when a mouseover event occurs

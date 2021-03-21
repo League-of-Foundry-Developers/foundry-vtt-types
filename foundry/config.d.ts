@@ -83,7 +83,7 @@ declare const CONFIG: {
     /**
      * @defaultValue `{}`
      */
-    sheetClasses: Record<string, unknown>; // TODO: Fill in the full typing here.
+    sheetClasses: EntitySheetConfig.SheetClasses;
 
     /**
      * @defaultValue `'fas fa-user'`
@@ -602,7 +602,7 @@ declare const CONFIG: {
     /**
      * @defaultValue `{}`
      */
-    sheetClasses: Record<string, unknown>; // TODO: Fill in the full typing here.
+    sheetClasses: EntitySheetConfig.SheetClasses;
 
     /**
      * @defaultValue `'fas fa-suitcase'`
@@ -793,7 +793,7 @@ declare const CONFIG: {
     /**
      * @defaultValue `MacroConfig`
      */
-    sheetClass: any; // TODO: ConstructorOf<MacroConfig>
+    sheetClass: ConstructorOf<MacroConfig>;
 
     /**
      * @defaultValue `'fas fa-terminal'`
@@ -917,7 +917,7 @@ declare const CONFIG: {
     /**
      * @defaultValue `SceneConfig`
      */
-    sheetClass: any; // TODO: ConstructorOf<SceneConfig>;
+    sheetClass: ConstructorOf<SceneConfig>;
 
     /**
      * @defaultValue `'fas fa-map'`
@@ -1404,10 +1404,21 @@ declare const CONFIG: {
    * Available Weather Effects implementations
    */
   weatherEffects: {
-    leaves: any; // TODO: ConstructorOf<AutumnLeavesWeatherEffect>
-    rain: any; // TODO: ConstructorOf<RainWeatherEffect>
-    snow: any; // TODO: ConstructorOf<SnowWeatherEffect>
-  } & Partial<Record<string, any>>; // TODO: ConstructorOf<SpecialEffect>
+    /**
+     * @defaultValue `AutumnLeavesWeatherEffect`
+     */
+    leaves: ConstructorOf<SpecialEffect>;
+
+    /**
+     * @defaultValue `RainWeatherEffect`
+     */
+    rain: ConstructorOf<SpecialEffect>;
+
+    /**
+     * @defaultValue `SnowWeatherEffect`
+     */
+    snow: ConstructorOf<SpecialEffect>;
+  } & Partial<Record<string, ConstructorOf<SpecialEffect>>>;
 
   /**
    * Configuration for the WebRTC implementation class
@@ -1450,6 +1461,6 @@ declare namespace Config {
     label: string;
     hint: string;
     disableGM: boolean;
-    defaultRole: Const.UserRoles;
+    defaultRole: Const.UserRole;
   }
 }

@@ -1,15 +1,9 @@
 /**
  * The FilePicker application renders contents of the server-side public directory
  * This app allows for navigating and uploading files to the public path
+ * @typeParam P - the type of the options object
  */
-declare class FilePicker extends Application {
-  constructor(options?: Partial<FilePicker.Options>);
-
-  /**
-   * @override
-   */
-  options: FilePicker.Options;
-
+declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> extends Application<P> {
   /**
    * The full requested path given by the user
    */
@@ -50,7 +44,7 @@ declare class FilePicker extends Application {
   /**
    * The display mode of the FilePicker UI
    */
-  displayMode: FilePicker.DisplayModes;
+  displayMode: FilePicker.DisplayMode;
 
   /**
    * The current set of file extensions which are being filtered upon
@@ -307,12 +301,7 @@ declare class FilePicker extends Application {
   /**
    * Enumerate the allowed FilePicker display modes
    */
-  static DISPLAY_MODES: [
-    FilePicker.DisplayModes.List,
-    FilePicker.DisplayModes.Thumbs,
-    FilePicker.DisplayModes.Tiles,
-    FilePicker.DisplayModes.Images
-  ];
+  static DISPLAY_MODES: ['list', 'thumbs', 'tiles', 'images'];
 
   /**
    * Cache the names of S3 buckets which can be used
@@ -365,12 +354,7 @@ declare namespace FilePicker {
     private: boolean;
   }
 
-  enum DisplayModes {
-    List = 'list',
-    Thumbs = 'thumbs',
-    Tiles = 'tiles',
-    Images = 'images'
-  }
+  type DisplayMode = ValueOf<typeof FilePicker['DISPLAY_MODES']>;
 
   interface File {
     name: string;

@@ -26,11 +26,38 @@ declare class Canvas {
 
   stage: PIXI.Container;
 
-  tokens: TokenLayer;
-
   hud: HeadsUpDisplay;
 
-  id: null;
+  background: any; // TODO: BackgroundLayer
+
+  tiles: any; //TODO: TilesLayer
+
+  drawings: any; //TODO: DrawingsLayer
+
+  grid: GridLayer;
+
+  walls: any; //TODO: WallsLayer
+
+  templates: any; //TODO: TemplateLayer
+
+  notes: any; //TODO: NotesLayer
+
+  tokens: TokenLayer;
+
+  lighting: LightingLayer;
+
+  sounds: any; //TODO: SoundsLayer
+
+  sight: SightLayer;
+
+  effects: any; //TODO: EffectsLayer
+
+  controls: any; //TODO: ControlsLayer
+
+  /**
+   * @defaultValue `null`
+   */
+  id: string | null;
 
   /**
    * @defaultValue `null`
@@ -62,8 +89,9 @@ declare class Canvas {
 
   /**
    * The singleton interaction manager instance which handles mouse workflows on the Canvas
+   * @defaultValue `null`
    */
-  mouseInteractionManager: MouseInteractionManager | null;
+  mouseInteractionManager: MouseInteractionManager<this['stage']> | null;
 
   /**
    * A flag for whether the game Canvas is ready to be used. False if the canvas is not yet drawn, true otherwise.
@@ -81,56 +109,52 @@ declare class Canvas {
    */
   protected _pendingOperationNames: Set<string>;
 
-  /* -------------------------------------------- */
-
   /**
    * Create the layers of the game Canvas.
    * @param stage - The primary canvas stage
    */
   protected _createLayers(stage: PIXI.Container): void;
 
-  /* -------------------------------------------- */
-  /*  Properties and Attributes
-  /* -------------------------------------------- */
-
   /**
    * A mapping of named CanvasLayers.
    * This mapping is defined in the order that layers must be drawn.
    */
-  static get layers(): Record<string, CanvasLayer>;
-
-  /* -------------------------------------------- */
+  static get layers(): {
+    background: any; // TODO: ConstructorOf<BackgroundLayer>
+    tiles: any; // TODO: ConstructorOf<TilesLayer>
+    drawings: any; // TODO: ConstructorOf<DrawingsLayer>
+    grid: ConstructorOf<GridLayer>;
+    walls: any; // TODO: ConstructorOf<WallsLayer>
+    templates: any; // TODO: ConstructorOf<TemplateLayer>
+    notes: any; // TODO: ConstructorOf<NotesLayer>
+    tokens: ConstructorOf<TokenLayer>;
+    lighting: ConstructorOf<LightingLayer>;
+    sounds: any; // TODO: ConstructorOf<SoundsLayer>
+    sight: ConstructorOf<SightLayer>;
+    effects: any; // TODO: ConstructorOf<EffectsLayer>
+    controls: any; // TODO: ConstructorOf<ControlsLayer>
+  } & Partial<Record<string, ConstructorOf<CanvasLayer>>>;
 
   /**
    * An Array of all CanvasLayer instances which are active on the Canvas board
    */
   get layers(): CanvasLayer[];
 
-  /* -------------------------------------------- */
-
   /**
    * Return a reference to the active Canvas Layer
    */
-  get activeLayer(): CanvasLayer;
-
-  /* -------------------------------------------- */
-  /*  Rendering
-  /* -------------------------------------------- */
+  get activeLayer(): CanvasLayer | null;
 
   /**
    * When re-drawing the canvas, first tear down or discontinue some existing processes
    */
   tearDown(): Promise<void>;
 
-  /* -------------------------------------------- */
-
   /**
    * Draw the game canvas.
    * @returns A Promise which resolves once the Canvas is fully drawn
    */
-  draw(scene: Scene): Promise<this>;
-
-  /* -------------------------------------------- */
+  draw(scene?: Scene): Promise<this>;
 
   /**
    * Get the canvas active dimensions based on the size of the scene's map.
@@ -140,21 +164,15 @@ declare class Canvas {
    */
   static getDimensions(data: Canvas.DimensionsData): Canvas.Dimensions;
 
-  /* -------------------------------------------- */
-
   /**
    * Once the canvas is drawn, initialize control, visibility, and audio states
    */
   protected _initialize(): Promise<void>;
 
-  /* -------------------------------------------- */
-
   /**
    * Initialize all lighting, vision, and sound sources for the Scene.
    */
   initializeSources(): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Initialize the starting view of the canvas stage
@@ -163,14 +181,10 @@ declare class Canvas {
    */
   protected _initializeCanvasPosition(): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Initialize a CanvasLayer in the activation state
    */
   protected _initializeCanvasLayer(): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Initialize a token or set of tokens which should be controlled.
@@ -178,24 +192,18 @@ declare class Canvas {
    */
   protected _initializeTokenControl(): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Get a reference to the a specific CanvasLayer by it's name
    * @param layerName - The name of the canvas layer to get
    */
-  getLayer(layerName: string): CanvasLayer;
-
-  /* -------------------------------------------- */
+  getLayer(layerName: string): CanvasLayer | null;
 
   /**
    * Given an embedded object name, get the canvas layer for that object
    */
-  protected getLayerByEmbeddedName(embeddedName: string): PlaceablesLayer | null;
-
-  /* -------------------------------------------- */
-  /*  Methods
-  /* -------------------------------------------- */
+  protected getLayerByEmbeddedName<T extends string>(
+    embeddedName: T
+  ): T extends keyof Canvas.EmbeddedEntityNameToLayerMap ? Canvas.EmbeddedEntityNameToLayerMap[T] : null;
 
   /**
    * Pan the canvas to a certain \{x,y\} coordinate and a certain zoom level
@@ -203,9 +211,7 @@ declare class Canvas {
    * @param y     - The y-coordinate of the pan destination
    * @param scale - The zoom level (max of CONFIG.Canvas.maxZoom) of the action
    */
-  pan(view?: Partial<Canvas.View>): void;
-
-  /* -------------------------------------------- */
+  pan({ x, y, scale }?: Canvas.ViewPan): void;
 
   /**
    * Animate panning the canvas to a certain destination coordinate and zoom scale
@@ -219,44 +225,32 @@ declare class Canvas {
    * @param speed    - The speed of animation in pixels per second; overrides duration if set
    * @returns A Promise which resolves once the animation has been completed
    */
-  animatePan(view: Canvas.View & { duration: number; speed: number }): Promise<void>;
-
-  /* -------------------------------------------- */
+  animatePan({ x, y, scale, duration, speed }?: Canvas.AnimatedViewPan): Promise<void>;
 
   /**
    * Get the constrained zoom scale parameter which is allowed by the maxZoom parameter
-   * @param x - The requested x-coordinate
-   * @param y - The requested y-coordinate
+   * @param x     - The requested x-coordinate
+   * @param y     - The requested y-coordinate
    * @param scale - The requested scale
    * @returns The allowed scale
    */
-  protected _constrainView(view: Canvas.View): Canvas.View;
-
-  /* -------------------------------------------- */
+  protected _constrainView({ x, y, scale }: Canvas.ViewPan): Canvas.View;
 
   /**
    * Update the blur strength depending on the scale of the canvas stage
    */
   protected _updateBlur(scale: number): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Recenter the canvas
    * Otherwise, pan the stage to put the top-left corner of the map in the top-left corner of the window
    */
-  recenter(coordinates: Canvas.View): void;
-
-  /* -------------------------------------------- */
-  /* Event Handlers
-  /* -------------------------------------------- */
+  recenter(coordinates?: Canvas.ViewPan | null): void;
 
   /**
    * Attach event listeners to the game canvas to handle click and interaction events
    */
   protected _addListeners(): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Handle left mouse-click events occurring on the Canvas stage or its active Layer.
@@ -264,15 +258,11 @@ declare class Canvas {
    */
   protected _onClickLeft(event: PIXI.InteractionEvent): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Handle double left-click events occurring on the Canvas stage.
    * @see {@link MouseInteractionManager#_handleClickLeft2}
    */
   protected _onClickLeft2(event: PIXI.InteractionEvent): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Handle the beginning of a left-mouse drag workflow on the Canvas stage or its active Layer.
@@ -280,15 +270,11 @@ declare class Canvas {
    */
   protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Handle mouse movement events occurring on the Canvas stage or it's active layer
    * @see {@link MouseInteractionManager#_handleDragMove}
    */
   protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Handle the conclusion of a left-mouse drag workflow when the mouse button is released.
@@ -296,15 +282,11 @@ declare class Canvas {
    */
   protected _onDragLeftDrop(event: PIXI.InteractionEvent): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Handle the cancellation of a left-mouse drag workflow
    * @see {@link MouseInteractionManager#_handleDragCancel}
    */
   protected _onDragLeftCancel(event: PointerEvent): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Handle right mouse-click events occurring on the Canvas stage or it's active layer
@@ -312,31 +294,23 @@ declare class Canvas {
    */
   protected _onClickRight(event: PIXI.InteractionEvent): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Handle right-mouse drag events occuring on the Canvas stage or an active Layer
    * @see {@link MouseInteractionManager#_handleDragMove}
    */
   protected _onDragRightMove(event: PIXI.InteractionEvent): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Handle the conclusion of a right-mouse drag workflow the Canvas stage.
    * @see {@link MouseInteractionManager#_handleDragDrop}
    * @param event - (unused)
    */
-  protected _onDragRightDrop(event?: any): void;
-
-  /* -------------------------------------------- */
+  protected _onDragRightDrop(event: PIXI.InteractionEvent): void;
 
   /**
    * Determine selection coordinate rectangle during a mouse-drag workflow
    */
   protected _onDragSelect(event: PIXI.InteractionEvent): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Pan the canvas view when the cursor position gets close to the edge of the frame
@@ -344,18 +318,12 @@ declare class Canvas {
    */
   protected _onDragCanvasPan(event: MouseEvent): Promise<void> | void;
 
-  /* -------------------------------------------- */
-  /*  Other Event Handlers                        */
-  /* -------------------------------------------- */
-
   /**
    * Handle window resizing with the dimensions of the window viewport change
    * @param event - The Window resize event
    *                (default: `null`)
    */
-  protected _onResize(event: Event): void;
-
-  /* -------------------------------------------- */
+  protected _onResize(event?: Event | null): void;
 
   /**
    * Handle mousewheel events which adjust the scale of the canvas
@@ -363,16 +331,10 @@ declare class Canvas {
    */
   protected _onMouseWheel(event: WheelEvent): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Event handler for the drop portion of a drag-and-drop event.
    */
-  protected _onDrop(event: Event): boolean;
-
-  /* -------------------------------------------- */
-  /*  Pending Operations                          */
-  /* -------------------------------------------- */
+  protected _onDrop(event: DragEvent): boolean;
 
   /**
    * Add a pending canvas operation that should fire once the socket handling workflow concludes.
@@ -395,54 +357,56 @@ declare class Canvas {
 
 declare namespace Canvas {
   interface Dimensions {
-    distance: number;
-
-    height: number;
-
-    paddingX: number;
-
-    paddingY: number;
-
-    ratio: number;
-
-    rect: PIXI.Rectangle;
-
-    sceneHeight: number;
-
-    sceneRect: PIXI.Rectangle;
-
     sceneWidth: number;
-
-    shiftX: number;
-
-    shiftY: number;
-
+    sceneHeight: number;
     size: number;
-
+    distance: number;
+    shiftX: number;
+    shiftY: number;
+    ratio: number;
+    paddingX: number;
     width: number;
+    paddingY: number;
+    height: number;
+    rect: PIXI.Rectangle;
+    sceneRect: PIXI.Rectangle;
   }
 
   interface DimensionsData {
+    width?: number | null;
+    height?: number | null;
     grid: number;
-
     gridDistance: number;
-
-    height: number;
-
     padding: number;
-
     shiftX: number;
-
     shiftY: number;
+  }
 
-    width: number;
+  interface ViewPan {
+    x?: number | null;
+    y?: number | null;
+    scale?: number | null;
+  }
+
+  interface AnimatedViewPan extends ViewPan {
+    duration?: number | null;
+    speed?: number | null;
   }
 
   interface View {
-    scale: number;
-
     x: number;
-
     y: number;
+    scale: number;
+  }
+
+  interface EmbeddedEntityNameToLayerMap {
+    AmbientLight: Canvas['lighting'];
+    AmbientSound: Canvas['sounds'];
+    Drawing: Canvas['drawings'];
+    Note: Canvas['notes'];
+    MeasuredTemplate: Canvas['templates'];
+    Tile: Canvas['tiles'];
+    Token: Canvas['tokens'];
+    Wall: Canvas['walls'];
   }
 }

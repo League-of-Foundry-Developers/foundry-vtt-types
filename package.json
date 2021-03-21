@@ -1,12 +1,16 @@
 {
-  "name": "foundry-vtt-types",
-  "version": "0.1.0",
+  "name": "@league-of-foundry-developers/foundry-vtt-types",
+  "version": "0.7.9-3",
   "description": "TypeScript type definitions for Foundry VTT",
   "scripts": {
     "lint": "tsc && eslint --ext .d.ts,.test-d.ts .",
     "lint:fix": "eslint --fix --ext .d.ts,.test-d.ts .",
+    "lint:ci": "eslint --ext .d.ts,.test-d.ts .",
     "eslint:report": "eslint --output-file eslint_report.json --format json --ext .d.ts,.test-d.ts .",
-    "test": "tsd"
+    "test": "tsd",
+    "postinstall": "husky install",
+    "prepublishOnly": "pinst --disable",
+    "postpublish": "pinst --enable"
   },
   "repository": {
     "type": "git",
@@ -18,11 +22,18 @@
     "url": "https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues"
   },
   "homepage": "https://github.com/League-of-Foundry-Developers/foundry-vtt-types",
+  "keywords": [
+    "foundry",
+    "foundry-vtt",
+    "types",
+    "typscript"
+  ],
   "dependencies": {
     "@types/howler": "2.2.1",
     "@types/jquery": "3.5.1",
     "@types/socket.io-client": "^1.4.33",
     "handlebars": "4.7.6",
+    "pixi-particles": "^4.3.0",
     "pixi.js": "5.3.4",
     "tinymce": "5.6.2",
     "typescript": "^4.1.4"
@@ -34,8 +45,9 @@
     "eslint-config-prettier": "^7.1.0",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-tsdoc": "^0.2.11",
-    "husky": "^4.3.8",
+    "husky": "^5.1.1",
     "lint-staged": "^10.5.4",
+    "pinst": "^2.1.6",
     "prettier": "^2.2.1",
     "tsd": "^0.14.0"
   },
@@ -47,5 +59,13 @@
   "lint-staged": {
     "*.(d.ts|test-d.ts)": "eslint --fix",
     "*.(js|json)": "prettier --write"
+  },
+  "files": [
+    "index.d.ts",
+    "foundry",
+    "types"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }

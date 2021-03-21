@@ -15,12 +15,12 @@ declare const ASCII = `_________________________________________________________
  * Define the allowed ActiveEffect application modes
  */
 declare const ACTIVE_EFFECT_MODES: {
-  CUSTOM: Const.ActiveEffectModes.Custom;
-  MULTIPLY: Const.ActiveEffectModes.Multiply;
-  ADD: Const.ActiveEffectModes.Add;
-  DOWNGRADE: Const.ActiveEffectModes.Downgrade;
-  UPGRADE: Const.ActiveEffectModes.Upgrade;
-  OVERRIDE: Const.ActiveEffectModes.Override;
+  CUSTOM: 0;
+  MULTIPLY: 1;
+  ADD: 2;
+  DOWNGRADE: 3;
+  UPGRADE: 4;
+  OVERRIDE: 5;
 };
 
 /* -------------------------------------------- */
@@ -34,12 +34,12 @@ declare const BASE_ENTITY_TYPE: 'base';
  * Valid Chat Message types
  */
 declare const CHAT_MESSAGE_TYPES: {
-  OTHER: Const.ChatMessageTypes.Other;
-  OOC: Const.ChatMessageTypes.OOC;
-  IC: Const.ChatMessageTypes.IC;
-  EMOTE: Const.ChatMessageTypes.Emote;
-  WHISPER: Const.ChatMessageTypes.Whisper;
-  ROLL: Const.ChatMessageTypes.Roll;
+  OTHER: 0;
+  OOC: 1;
+  IC: 2;
+  EMOTE: 3;
+  WHISPER: 4;
+  ROLL: 5;
 };
 
 /**
@@ -55,35 +55,35 @@ declare const CORE_SUPPORTED_LANGUAGES: ['en'];
 
 /**
  * The default artwork used for Token images if none is provided
+ * @defaultValue `'icons/svg/mystery-man.svg'`
  */
-declare const DEFAULT_TOKEN: 'icons/svg/mystery-man.svg';
+declare const DEFAULT_TOKEN: string;
 
 /**
  * The default artwork used for Note placeables if none is provided
+ * @defaultValue `'icons/svg/book.svg'`
  */
-declare const DEFAULT_NOTE_ICON: 'icons/svg/book.svg';
+declare const DEFAULT_NOTE_ICON: string;
 
 /**
  * The supported dice roll visibility modes
  */
 declare const DICE_ROLL_MODES: {
-  PUBLIC: Const.DiceRollModes.Public;
-  PRIVATE: Const.DiceRollModes.Private;
-  BLIND: Const.DiceRollModes.Blind;
-  SELF: Const.DiceRollModes.Self;
+  PUBLIC: 'roll';
+  PRIVATE: 'gmroll';
+  BLIND: 'blindroll';
+  SELF: 'selfroll';
 };
-
-/* -------------------------------------------- */
 
 /**
  * The allowed Drawing types which may be saved
  */
 declare const DRAWING_TYPES: {
-  RECTANGLE: Const.DrawingTypes.Rectangle;
-  ELLIPSE: Const.DrawingTypes.Ellipse;
-  TEXT: Const.DrawingTypes.Text;
-  POLYGON: Const.DrawingTypes.Polygon;
-  FREEHAND: Const.DrawingTypes.Freehand;
+  RECTANGLE: 'r';
+  ELLIPSE: 'e';
+  TEXT: 't';
+  POLYGON: 'p';
+  FREEHAND: 'f';
 };
 
 /**
@@ -93,32 +93,85 @@ declare const DRAWING_TYPES: {
  * PATTERN: The drawing is filled with a tiled image pattern
  */
 declare const DRAWING_FILL_TYPES: {
-  NONE: Const.DrawingFillTypes.None;
-  SOLID: Const.DrawingFillTypes.Solid;
-  PATTERN: Const.DrawingFillTypes.Pattern;
+  NONE: 0;
+  SOLID: 1;
+  PATTERN: 2;
 };
 
 /**
  * The default configuration values used for Drawing objects
  */
 declare const DRAWING_DEFAULT_VALUES: {
-  width: 0;
-  height: 0;
-  rotation: 0;
-  z: 0;
-  hidden: false;
-  locked: false;
-  fillType: 0;
-  fillAlpha: 0.5;
-  bezierFactor: 0.0;
-  strokeAlpha: 1.0;
-  strokeWidth: 8;
-  fontSize: 48;
-  textAlpha: 1.0;
-  textColor: '#FFFFFF';
-};
+  /**
+   * @defaultValue `0`
+   */
+  width: number;
 
-/* -------------------------------------------- */
+  /**
+   * @defaultValue `0`
+   */
+  height: number;
+
+  /**
+   * @defaultValue `0`
+   */
+  rotation: number;
+
+  /**
+   * @defaultValue `0`
+   */
+  z: number;
+
+  /**
+   * @defaultValue `false`
+   */
+  hidden: boolean;
+
+  /**
+   * @defaultValue `false`
+   */
+  locked: boolean;
+
+  /**
+   * @defaultValue `0`
+   */
+  fillType: number;
+
+  /**
+   * @defaultValue `0.5`
+   */
+  fillAlpha: number;
+
+  /**
+   * @defaultValue `0.0`
+   */
+  bezierFactor: number;
+
+  /**
+   * @defaultValue `1.0`
+   */
+  strokeAlpha: number;
+
+  /**
+   * @defaultValue `8`
+   */
+  strokeWidth: number;
+
+  /**
+   * @defaultValue `48`
+   */
+  fontSize: number;
+
+  /**
+   * @defaultValue `1.0`
+   */
+  textAlpha: number;
+
+  /**
+   * @defaultValue `'#FFFFFF'`
+   */
+  textColor: string;
+};
 
 /**
  * Define the allowed Entity class types
@@ -147,10 +200,10 @@ declare const ENTITY_LINK_TYPES: ['Actor', 'Item', 'Scene', 'JournalEntry', 'Mac
  * Each level is assigned a value in ascending order. Higher levels grant more permissions.
  */
 declare const ENTITY_PERMISSIONS: {
-  NONE: Const.EntityPermissions.None;
-  LIMITED: Const.EntityPermissions.Limited;
-  OBSERVER: Const.EntityPermissions.Observer;
-  OWNER: Const.EntityPermissions.Owner;
+  NONE: 0;
+  LIMITED: 1;
+  OBSERVER: 2;
+  OWNER: 3;
 };
 
 /**
@@ -177,21 +230,21 @@ declare const GRID_MIN_SIZE: 50;
  * The allowed Grid types which are supported by the software
  */
 declare const GRID_TYPES: {
-  GRIDLESS: Const.GridTypes.Gridless;
-  SQUARE: Const.GridTypes.Square;
-  HEXODDR: Const.GridTypes.HexOddR;
-  HEXEVENR: Const.GridTypes.HexEvenR;
-  HEXODDQ: Const.GridTypes.HexOddQ;
-  HEXEVENQ: Const.GridTypes.HexEvenQ;
+  GRIDLESS: 0;
+  SQUARE: 1;
+  HEXODDR: 2;
+  HEXEVENR: 3;
+  HEXODDQ: 4;
+  HEXEVENQ: 5;
 };
 
 /**
  * Enumerate the source types which can be used for an AmbientLight placeable object
  */
 declare const SOURCE_TYPES: {
-  LOCAL: Const.SourceTypes.Local;
-  GLOBAL: Const.SourceTypes.Global;
-  UNIVERSAL: Const.SourceTypes.Universal;
+  LOCAL: 'l';
+  GLOBAL: 'g';
+  UNIVERSAL: 'u';
 };
 
 /**
@@ -207,62 +260,74 @@ declare const MACRO_SCOPES: ['global', 'actors', 'actor'];
  * SIMULTANEOUS: The playlist plays all contained sounds at the same time
  */
 declare const PLAYLIST_MODES: {
-  DISABLED: Const.PlaylistModes.Disabled;
-  SEQUENTIAL: Const.PlaylistModes.Sequential;
-  SHUFFLE: Const.PlaylistModes.Shuffle;
-  SIMULTANEOUS: Const.PlaylistModes.Simultaneous;
+  DISABLED: -1;
+  SEQUENTIAL: 0;
+  SHUFFLE: 1;
+  SIMULTANEOUS: 2;
 };
 
 /**
  * Encode the reasons why a package may be available or unavailable for use
  */
 declare const PACKAGE_AVAILABILITY_CODES: {
-  UNKNOWN: Const.PackageAvailabilityCodes.Unknown;
-  REQUIRES_UPDATE: Const.PackageAvailabilityCodes.RequiresUpdate;
-  AVAILABLE: Const.PackageAvailabilityCodes.Available;
-  REQUIRES_SYSTEM: Const.PackageAvailabilityCodes.RequiresSystem;
-  REQUIRES_DEPENDENCY: Const.PackageAvailabilityCodes.RequiresDependency;
-  REQUIRES_CORE: Const.PackageAvailabilityCodes.RequiresCore;
+  UNKNOWN: -1;
+  REQUIRES_UPDATE: 0;
+  AVAILABLE: 1;
+  REQUIRES_SYSTEM: 2;
+  REQUIRES_DEPENDENCY: 3;
+  REQUIRES_CORE: 4;
 };
 
 /**
  * A safe password string which can be displayed
+ * @defaultValue `'••••••••••••••••'`
  */
-declare const PASSWORD_SAFE_STRING: '••••••••••••••••';
+declare const PASSWORD_SAFE_STRING: string;
 
 /**
  * The allowed software update channels
  */
 declare const SOFTWARE_UPDATE_CHANNELS: {
-  alpha: Const.SoftwareUpdateChannels.Alpha;
-  beta: Const.SoftwareUpdateChannels.Beta;
-  release: Const.SoftwareUpdateChannels.Release;
+  /**
+   * @defaultValue `'SETUP.UpdateAlpha'`
+   */
+  alpha: string;
+
+  /**
+   * @defaultValue `'SETUP.UpdateBeta'`
+   */
+  beta: string;
+
+  /**
+   * @defaultValue `'SETUP.UpdateBeta'`
+   */
+  release: string;
 };
 
 /**
- * The default sorting density for manually ordering child objects within a
- * parent
+ * The default sorting density for manually ordering child objects within a parent
+ * @defaultValue `100000`
  */
-declare const SORT_INTEGER_DENSITY: 100000;
+declare const SORT_INTEGER_DENSITY: number;
 
 /**
  * The allowed types of a TableResult document
  */
 declare const TABLE_RESULT_TYPES: {
-  TEXT: Const.TableResultTypes.Text;
-  ENTITY: Const.TableResultTypes.Entity;
-  COMPENDIUM: Const.TableResultTypes.Compendium;
+  TEXT: 0;
+  ENTITY: 1;
+  COMPENDIUM: 2;
 };
 
 /**
  * Define the valid anchor locations for a Tooltip displayed on a Placeable Object
  */
 declare const TEXT_ANCHOR_POINTS: {
-  BOTTOM: Const.TextAnchorPoints.Bottom;
-  CENTER: Const.TextAnchorPoints.Center;
-  LEFT: Const.TextAnchorPoints.Left;
-  RIGHT: Const.TextAnchorPoints.Right;
-  TOP: Const.TextAnchorPoints.Top;
+  BOTTOM: 0;
+  CENTER: 1;
+  LEFT: 2;
+  RIGHT: 3;
+  TOP: 4;
 };
 
 /**
@@ -275,12 +340,12 @@ declare const TEXT_ANCHOR_POINTS: {
  * ALWAYS - always displayed for everyone
  */
 declare const TOKEN_DISPLAY_MODES: {
-  NONE: Const.TokenDisplayModes.None;
-  CONTROL: Const.TokenDisplayModes.Control;
-  OWNER_HOVER: Const.TokenDisplayModes.OwnerHover;
-  HOVER: Const.TokenDisplayModes.Hover;
-  OWNER: Const.TokenDisplayModes.Owner;
-  ALWAYS: Const.TokenDisplayModes.Always;
+  NONE: 0;
+  CONTROL: 10;
+  OWNER_HOVER: 20;
+  HOVER: 30;
+  OWNER: 40;
+  ALWAYS: 50;
 };
 
 /**
@@ -290,9 +355,9 @@ declare const TOKEN_DISPLAY_MODES: {
  * FRIENDLY - Displayed as an ally with a cyan border
  */
 declare const TOKEN_DISPOSITIONS: {
-  HOSTILE: Const.TokenDispositions.Hostile;
-  NEUTRAL: Const.TokenDispositions.Neutral;
-  FRIENDLY: Const.TokenDispositions.Friendly;
+  HOSTILE: -1;
+  NEUTRAL: 0;
+  FRIENDLY: 1;
 };
 
 /**
@@ -300,52 +365,50 @@ declare const TOKEN_DISPOSITIONS: {
  * Each level is assigned a value in ascending order. Higher levels grant more permissions.
  */
 declare const USER_ROLES: {
-  NONE: Const.UserRoles.None;
-  PLAYER: Const.UserRoles.Player;
-  TRUSTED: Const.UserRoles.Trusted;
-  ASSISTANT: Const.UserRoles.Assistant;
-  GAMEMASTER: Const.UserRoles.GameMaster;
+  NONE: 0;
+  PLAYER: 1;
+  TRUSTED: 2;
+  ASSISTANT: 3;
+  GAMEMASTER: 4;
 };
 
 /**
  * Invert the User Role mapping to recover role names from a role integer
  */
-declare const USER_ROLE_NAMES: {
-  0: 'NONE';
-  1: 'PLAYER';
-  2: 'TRUSTED';
-  3: 'ASSISTANT';
-  4: 'GAMEMASTER';
-};
+declare const USER_ROLE_NAMES: { [Key in keyof typeof USER_ROLES as typeof USER_ROLES[Key]]: Key };
 
 /**
  * A list of MIME types which are treated as uploaded "media", which are allowed to overwrite existing files.
  * Any non-media MIME type is not allowed to replace an existing file.
+ * @defaultValue
+ * ```typescript
+ * [
+ *   'image/apng',
+ *   'image/bmp',
+ *   'image/gif',
+ *   'image/jpeg',
+ *   'image/png',
+ *   'image/svg+xml',
+ *   'image/tiff',
+ *   'image/webp',
+ *   'audio/wave',
+ *   'audio/wav',
+ *   'audio/webm',
+ *   'audio/ogg',
+ *   'audio/midi',
+ *   'audio/mpeg',
+ *   'audio/opus',
+ *   'audio/aac',
+ *   'video/mpeg',
+ *   'video/mp4',
+ *   'video/ogg',
+ *   'application/json',
+ *   'application/ogg',
+ *   'application/pdf'
+ * ]
+ * ```
  */
-declare const MEDIA_MIME_TYPES: [
-  'image/apng',
-  'image/bmp',
-  'image/gif',
-  'image/jpeg',
-  'image/png',
-  'image/svg+xml',
-  'image/tiff',
-  'image/webp',
-  'audio/wave',
-  'audio/wav',
-  'audio/webm',
-  'audio/ogg',
-  'audio/midi',
-  'audio/mpeg',
-  'audio/opus',
-  'audio/aac',
-  'video/mpeg',
-  'video/mp4',
-  'video/ogg',
-  'application/json',
-  'application/ogg',
-  'application/pdf'
-];
+declare const MEDIA_MIME_TYPES: string[];
 
 /**
  * Define the named actions which users or user roles can be permitted to do.
@@ -353,106 +416,377 @@ declare const MEDIA_MIME_TYPES: [
  */
 declare const USER_PERMISSIONS: {
   BROADCAST_AUDIO: {
-    label: 'PERMISSION.BroadcastAudio';
-    hint: 'PERMISSION.BroadcastAudioHint';
-    disableGM: true;
-    defaultRole: Const.UserRoles.Trusted;
+    /**
+     * @defaultValue `'PERMISSION.BroadcastAudio'`
+     */
+    label: string;
+
+    /**
+     * @defaultValue `'PERMISSION.BroadcastAudioHint'`
+     */
+    hint: string;
+
+    /**
+     * @defaultValue `true`
+     */
+    disableGM: boolean;
+
+    /**
+     * @defaultValue `USER_ROLES.TRUSTED`
+     */
+    defaultRole: Const.UserRole;
   };
+
   BROADCAST_VIDEO: {
-    label: 'PERMISSION.BroadcastVideo';
-    hint: 'PERMISSION.BroadcastVideoHint';
-    disableGM: true;
-    defaultRole: Const.UserRoles.Trusted;
+    /**
+     * @defaultValue `'PERMISSION.BroadcastVideo'`
+     */
+    label: string;
+
+    /**
+     * @defaultValue `'PERMISSION.BroadcastVideoHint'`
+     */
+    hint: string;
+
+    /**
+     * @defaultValue `true`
+     */
+    disableGM: boolean;
+
+    /**
+     * @defaultValue `USER_ROLES.TRUSTED`
+     */
+    defaultRole: Const.UserRole;
   };
+
   ACTOR_CREATE: {
-    label: 'PERMISSION.ActorCreate';
-    hint: 'PERMISSION.ActorCreateHint';
-    disableGM: false;
-    defaultRole: Const.UserRoles.Assistant;
+    /**
+     * @defaultValue `'PERMISSION.ActorCreate'`
+     */
+    label: string;
+
+    /**
+     * @defaultValue `'PERMISSION.ActorCreateHint'`
+     */
+    hint: string;
+
+    /**
+     * @defaultValue `false`
+     */
+    disableGM: boolean;
+
+    /**
+     * @defaultValue `USER_ROLES.ASSISTANT`
+     */
+    defaultRole: Const.UserRole;
   };
+
   DRAWING_CREATE: {
-    label: 'PERMISSION.DrawingCreate';
-    hint: 'PERMISSION.DrawingCreateHint';
-    disableGM: false;
-    defaultRole: Const.UserRoles.Trusted;
+    /**
+     * @defaultValue `'PERMISSION.DrawingCreate'`
+     */
+    label: string;
+
+    /**
+     * @defaultValue `'PERMISSION.DrawingCreateHint'`
+     */
+    hint: string;
+
+    /**
+     * @defaultValue `false`
+     */
+    disableGM: boolean;
+
+    /**
+     * @defaultValue `USER_ROLES.TRUSTED`
+     */
+    defaultRole: Const.UserRole;
   };
+
   ITEM_CREATE: {
-    label: 'PERMISSION.ItemCreate';
-    hint: 'PERMISSION.ItemCreateHint';
-    disableGM: false;
-    defaultRole: Const.UserRoles.Assistant;
+    /**
+     * @defaultValue `'PERMISSION.ItemCreate'`
+     */
+    label: string;
+
+    /**
+     * @defaultValue `'PERMISSION.ItemCreateHint'`
+     */
+    hint: string;
+
+    /**
+     * @defaultValue `false`
+     */
+    disableGM: boolean;
+
+    /**
+     * @defaultValue `USER_ROLES.ASSISTANT`
+     */
+    defaultRole: Const.UserRole;
   };
+
   FILES_BROWSE: {
-    label: 'PERMISSION.FilesBrowse';
-    hint: 'PERMISSION.FilesBrowseHint';
-    disableGM: false;
-    defaultRole: Const.UserRoles.Trusted;
+    /**
+     * @defaultValue `'PERMISSION.FilesBrowse'`
+     */
+    label: string;
+
+    /**
+     * @defaultValue `'PERMISSION.FilesBrowseHint'`
+     */
+    hint: string;
+
+    /**
+     * @defaultValue `false`
+     */
+    disableGM: boolean;
+
+    /**
+     * @defaultValue `USER_ROLES.TRUSTED`
+     */
+    defaultRole: Const.UserRole;
   };
+
   FILES_UPLOAD: {
-    label: 'PERMISSION.FilesUpload';
-    hint: 'PERMISSION.FilesUploadHint';
-    disableGM: false;
-    defaultRole: Const.UserRoles.Assistant;
+    /**
+     * @defaultValue `'PERMISSION.FilesUpload'`
+     */
+    label: string;
+
+    /**
+     * @defaultValue `'PERMISSION.FilesUploadHint'`
+     */
+    hint: string;
+
+    /**
+     * @defaultValue `false`
+     */
+    disableGM: boolean;
+
+    /**
+     * @defaultValue `USER_ROLES.ASSISTANT`
+     */
+    defaultRole: Const.UserRole;
   };
+
   JOURNAL_CREATE: {
-    label: 'PERMISSION.JournalCreate';
-    hint: 'PERMISSION.JournalCreateHint';
-    disableGM: false;
-    defaultRole: Const.UserRoles.Trusted;
+    /**
+     * @defaultValue `'PERMISSION.JournalCreate'`
+     */
+    label: string;
+
+    /**
+     * @defaultValue `'PERMISSION.JournalCreateHint'`
+     */
+    hint: string;
+
+    /**
+     * @defaultValue `false`
+     */
+    disableGM: boolean;
+
+    /**
+     * @defaultValue `USER_ROLES.TRUSTED`
+     */
+    defaultRole: Const.UserRole;
   };
+
   MACRO_SCRIPT: {
-    label: 'PERMISSION.MacroScript';
-    hint: 'PERMISSION.MacroScriptHint';
-    disableGM: false;
-    defaultRole: Const.UserRoles.Player;
+    /**
+     * @defaultValue `'PERMISSION.MacroScript'`
+     */
+    label: string;
+
+    /**
+     * @defaultValue `'PERMISSION.MacroScriptHint'`
+     */
+    hint: string;
+
+    /**
+     * @defaultValue `false`
+     */
+    disableGM: boolean;
+
+    /**
+     * @defaultValue `USER_ROLES.PLAYER`
+     */
+    defaultRole: Const.UserRole;
   };
+
   MESSAGE_WHISPER: {
-    label: 'PERMISSION.MessageWhisper';
-    hint: 'PERMISSION.MessageWhisperHint';
-    disableGM: false;
-    defaultRole: Const.UserRoles.Player;
+    /**
+     * @defaultValue `'PERMISSION.MessageWhisper'`
+     */
+    label: string;
+
+    /**
+     * @defaultValue `'PERMISSION.MessageWhisperHint'`
+     */
+    hint: string;
+
+    /**
+     * @defaultValue `false`
+     */
+    disableGM: boolean;
+
+    /**
+     * @defaultValue `USER_ROLES.PLAYER`
+     */
+    defaultRole: Const.UserRole;
   };
+
   SETTINGS_MODIFY: {
-    label: 'PERMISSION.SettingsModify';
-    hint: 'PERMISSION.SettingsModifyHint';
-    disableGM: false;
-    defaultRole: Const.UserRoles.Assistant;
+    /**
+     * @defaultValue `'PERMISSION.SettingsModify'`
+     */
+    label: string;
+
+    /**
+     * @defaultValue `'PERMISSION.SettingsModifyHint'`
+     */
+    hint: string;
+
+    /**
+     * @defaultValue `false`
+     */
+    disableGM: boolean;
+
+    /**
+     * @defaultValue `USER_ROLES.ASSISTANT`
+     */
+    defaultRole: Const.UserRole;
   };
+
   SHOW_CURSOR: {
-    label: 'PERMISSION.ShowCursor';
-    hint: 'PERMISSION.ShowCursorHint';
-    disableGM: true;
-    defaultRole: Const.UserRoles.Player;
+    /**
+     * @defaultValue `'PERMISSION.ShowCursor'`
+     */
+    label: string;
+
+    /**
+     * @defaultValue `'PERMISSION.ShowCursorHint'`
+     */
+    hint: string;
+
+    /**
+     * @defaultValue `true`
+     */
+    disableGM: boolean;
+
+    /**
+     * @defaultValue `USER_ROLES.PLAYER`
+     */
+    defaultRole: Const.UserRole;
   };
+
   SHOW_RULER: {
-    label: 'PERMISSION.ShowRuler';
-    hint: 'PERMISSION.ShowRulerHint';
-    disableGM: true;
-    defaultRole: Const.UserRoles.Player;
+    /**
+     * @defaultValue `'PERMISSION.ShowRuler'`
+     */
+    label: string;
+
+    /**
+     * @defaultValue `'PERMISSION.ShowRulerHint'`
+     */
+    hint: string;
+
+    /**
+     * @defaultValue `true`
+     */
+    disableGM: boolean;
+
+    /**
+     * @defaultValue `USER_ROLES.PLAYER`
+     */
+    defaultRole: Const.UserRole;
   };
+
   TEMPLATE_CREATE: {
-    label: 'PERMISSION.TemplateCreate';
-    hint: 'PERMISSION.TemplateCreateHint';
-    disableGM: false;
-    defaultRole: Const.UserRoles.Player;
+    /**
+     * @defaultValue `'PERMISSION.TemplateCreate'`
+     */
+    label: string;
+
+    /**
+     * @defaultValue `'PERMISSION.TemplateCreateHint'`
+     */
+    hint: string;
+
+    /**
+     * @defaultValue `false`
+     */
+    disableGM: boolean;
+
+    /**
+     * @defaultValue `USER_ROLES.PLAYER`
+     */
+    defaultRole: Const.UserRole;
   };
+
   TOKEN_CREATE: {
-    label: 'PERMISSION.TokenCreate';
-    hint: 'PERMISSION.TokenCreateHint';
-    disableGM: false;
-    defaultRole: Const.UserRoles.Assistant;
+    /**
+     * @defaultValue `'PERMISSION.TokenCreate'`
+     */
+    label: string;
+
+    /**
+     * @defaultValue `'PERMISSION.TokenCreateHint'`
+     */
+    hint: string;
+
+    /**
+     * @defaultValue `false`
+     */
+    disableGM: boolean;
+
+    /**
+     * @defaultValue `USER_ROLES.ASSISTANT`
+     */
+    defaultRole: Const.UserRole;
   };
+
   TOKEN_CONFIGURE: {
-    label: 'PERMISSION.TokenConfigure';
-    hint: 'PERMISSION.TokenConfigureHint';
-    disableGM: false;
-    defaultRole: Const.UserRoles.Trusted;
+    /**
+     * @defaultValue `'PERMISSION.TokenConfigure'`
+     */
+    label: string;
+
+    /**
+     * @defaultValue `'PERMISSION.TokenConfigureHint'`
+     */
+    hint: string;
+
+    /**
+     * @defaultValue `false`
+     */
+    disableGM: string;
+
+    /**
+     * @defaultValue `USER_ROLES.TRUSTED`
+     */
+    defaultRole: Const.UserRole;
   };
+
   WALL_DOORS: {
-    label: 'PERMISSION.WallDoors';
-    hint: 'PERMISSION.WallDoorsHint';
-    disableGM: false;
-    defaultRole: Const.UserRoles.Player;
+    /**
+     * @defaultValue `'PERMISSION.WallDoors'`
+     */
+    label: string;
+
+    /**
+     * @defaultValue `'PERMISSION.WallDoorsHint'`
+     */
+    hint: string;
+
+    /**
+     * @defaultValue `false`
+     */
+    disableGM: string;
+
+    /**
+     * @defaultValue `USER_ROLES.PLAYER`
+     */
+    defaultRole: Const.UserRole;
   };
 };
 
@@ -463,9 +797,9 @@ declare const USER_PERMISSIONS: {
  * RIGHT: The wall collides only when a ray strikes its right side
  */
 declare const WALL_DIRECTIONS: {
-  BOTH: Const.WallDirections.Both;
-  LEFT: Const.WallDirections.Left;
-  RIGHT: Const.WallDirections.Right;
+  BOTH: 0;
+  LEFT: 1;
+  RIGHT: 2;
 };
 
 /**
@@ -475,9 +809,9 @@ declare const WALL_DIRECTIONS: {
  * SECRET: The wall contains a secret door
  */
 declare const WALL_DOOR_TYPES: {
-  NONE: Const.WallDoorTypes.None;
-  DOOR: Const.WallDoorTypes.Door;
-  SECRET: Const.WallDoorTypes.Secret;
+  NONE: 0;
+  DOOR: 1;
+  SECRET: 2;
 };
 
 /**
@@ -487,9 +821,9 @@ declare const WALL_DOOR_TYPES: {
  * LOCKED: The door is closed and locked
  */
 declare const WALL_DOOR_STATES: {
-  CLOSED: Const.WallDoorStates.Closed;
-  OPEN: Const.WallDoorStates.Open;
-  LOCKED: Const.WallDoorStates.Locked;
+  CLOSED: 0;
+  OPEN: 1;
+  LOCKED: 2;
 };
 
 /**
@@ -498,8 +832,8 @@ declare const WALL_DOOR_STATES: {
  * NORMAL: Movement collides with this wall
  */
 declare const WALL_MOVEMENT_TYPES: {
-  NONE: Const.WallMovementTypes.None;
-  NORMAL: Const.WallMovementTypes.Normal;
+  NONE: 0;
+  NORMAL: 1;
 };
 
 /**
@@ -509,30 +843,34 @@ declare const WALL_MOVEMENT_TYPES: {
  * LIMITED: Senses collide with the second intersection, bypassing the first
  */
 declare const WALL_SENSE_TYPES: {
-  NONE: Const.WallSenseTypes.None;
-  NORMAL: Const.WallSenseTypes.Normal;
-  LIMITED: Const.WallSenseTypes.Limited;
+  NONE: 0;
+  NORMAL: 1;
+  LIMITED: 2;
 };
 
 /**
  * The allowed set of HTML template extensions
+ * @defaultValue `['html', 'hbs']`
  */
-declare const HTML_FILE_EXTENSIONS: ['html', 'hbs'];
+declare const HTML_FILE_EXTENSIONS: string[];
 
 /**
  * The supported file extensions for image-type files
+ * @defaultValue `['jpg', 'jpeg', 'png', 'svg', 'webp']`
  */
-declare const IMAGE_FILE_EXTENSIONS: ['jpg', 'jpeg', 'png', 'svg', 'webp'];
+declare const IMAGE_FILE_EXTENSIONS: string[];
 
 /**
  * The supported file extensions for video-type files
+ * @defaultValue `['mp4', 'ogg', 'webm', 'm4v']`
  */
-declare const VIDEO_FILE_EXTENSIONS: ['mp4', 'ogg', 'webm', 'm4v'];
+declare const VIDEO_FILE_EXTENSIONS: string[];
 
 /**
  * The supported file extensions for audio-type files
+ * @defaultValue `['flac', 'mp3', 'ogg', 'wav', 'webm']`
  */
-declare const AUDIO_FILE_EXTENSIONS: ['flac', 'mp3', 'ogg', 'wav', 'webm'];
+declare const AUDIO_FILE_EXTENSIONS: string[];
 
 /**
  * The global CONSTANTS object
@@ -587,175 +925,27 @@ declare const CONST: {
   AUDIO_FILE_EXTENSIONS: typeof AUDIO_FILE_EXTENSIONS;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare namespace Const {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum ActiveEffectModes {
-    Custom = 0,
-    Multiply = 1,
-    Add = 2,
-    Downgrade = 3,
-    Upgrade = 4,
-    Override = 5
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum ChatMessageTypes {
-    Other = 0,
-    OOC = 1,
-    IC = 2,
-    Emote = 3,
-    Whisper = 4,
-    Roll = 5
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum DiceRollModes {
-    Public = 'roll',
-    Private = 'gmroll',
-    Blind = 'blindroll',
-    Self = 'selfroll'
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum DrawingFillTypes {
-    None = 0,
-    Solid = 1,
-    Pattern = 2
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum DrawingTypes {
-    Rectangle = 'r',
-    Ellipse = 'e',
-    Text = 't',
-    Polygon = 'p',
-    Freehand = 'f'
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum EntityPermissions {
-    None = 0,
-    Limited = 1,
-    Observer = 2,
-    Owner = 3
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum GridTypes {
-    Gridless = 0,
-    Square = 1,
-    HexOddR = 2,
-    HexEvenR = 3,
-    HexOddQ = 4,
-    HexEvenQ = 5
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum PackageAvailabilityCodes {
-    Unknown = -1,
-    Available = 0,
-    RequiresUpdate = 1,
-    RequiresSystem = 2,
-    RequiresDependency = 3,
-    RequiresCore = 4
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum PlaylistModes {
-    Disabled = -1,
-    Sequential = 0,
-    Shuffle = 1,
-    Simultaneous = 2
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum SoftwareUpdateChannels {
-    Alpha = 'SETUP.UpdateAlpha',
-    Beta = 'SETUP.UpdateBeta',
-    Release = 'SETUP.UpdateRelease'
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum SourceTypes {
-    Local = 'l',
-    Global = 'g',
-    Universal = 'u'
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum TableResultTypes {
-    Text = 0,
-    Entity = 1,
-    Compendium = 2
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum TextAnchorPoints {
-    Center = 0,
-    Bottom = 1,
-    Top = 2,
-    Left = 3,
-    Right = 4
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum TokenDisplayModes {
-    None = 0,
-    Control = 10,
-    OwnerHover = 20,
-    Hover = 30,
-    Owner = 40,
-    Always = 50
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum TokenDispositions {
-    Hostile = -1,
-    Neutral = 0,
-    Friendly = 1
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum UserRoles {
-    None = 0,
-    Player = 1,
-    Trusted = 2,
-    Assistant = 3,
-    GameMaster = 4
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum WallDirections {
-    Both = 0,
-    Left = 1,
-    Right = 2
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum WallDoorStates {
-    Closed = 0,
-    Open = 1,
-    Locked = 2
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum WallDoorTypes {
-    None = 0,
-    Door = 1,
-    Secret = 2
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum WallMovementTypes {
-    None = 0,
-    Normal = 1
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enum WallSenseTypes {
-    None = 0,
-    Normal = 1,
-    Limited = 2
-  }
+  type ActiveEffectMode = ValueOf<typeof ACTIVE_EFFECT_MODES>;
+  type ChatMessageType = ValueOf<typeof CHAT_MESSAGE_TYPES>;
+  type DiceRollMode = ValueOf<typeof DICE_ROLL_MODES>;
+  type DrawingFillType = ValueOf<typeof DRAWING_FILL_TYPES>;
+  type DrawingType = ValueOf<typeof DRAWING_TYPES>;
+  type EntityPermission = ValueOf<typeof ENTITY_PERMISSIONS>;
+  type GridType = ValueOf<typeof GRID_TYPES>;
+  type PackageAvailabilityCode = ValueOf<typeof PACKAGE_AVAILABILITY_CODES>;
+  type PlaylistMode = ValueOf<typeof PLAYLIST_MODES>;
+  type SoftwareUpdateChannel = ValueOf<typeof SOFTWARE_UPDATE_CHANNELS>;
+  type SourceType = ValueOf<typeof SOURCE_TYPES>;
+  type TableResultType = ValueOf<typeof TABLE_RESULT_TYPES>;
+  type TextAnchorPoint = ValueOf<typeof TEXT_ANCHOR_POINTS>;
+  type TokenDisplayMode = ValueOf<typeof TOKEN_DISPLAY_MODES>;
+  type TokenDisposition = ValueOf<typeof TOKEN_DISPOSITIONS>;
+  type UserRole = ValueOf<typeof USER_ROLES>;
+  type UserRoleName = ValueOf<typeof USER_ROLE_NAMES>;
+  type WallDirection = ValueOf<typeof WALL_DIRECTIONS>;
+  type WallDoorState = ValueOf<typeof WALL_DOOR_STATES>;
+  type WallDoorType = ValueOf<typeof WALL_DOOR_TYPES>;
+  type WallMovementType = ValueOf<typeof WALL_MOVEMENT_TYPES>;
+  type WallSenseType = ValueOf<typeof WALL_SENSE_TYPES>;
 }

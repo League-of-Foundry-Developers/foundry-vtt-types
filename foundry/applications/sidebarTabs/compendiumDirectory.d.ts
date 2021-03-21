@@ -1,7 +1,7 @@
 /**
  * A compendium of knowledge arcane and mystical!
  */
-declare class CompendiumDirectory extends SidebarTab {
+declare class CompendiumDirectory extends SidebarTab<CompendiumDirectory.Options> {
   /**
    * @override
    */

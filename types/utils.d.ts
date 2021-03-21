@@ -75,4 +75,12 @@ type Expanded<O> = O extends Record<string, unknown>
  * Union type of the types of the values in `T`
  * @internal
  */
-type ValueOf<T> = T[keyof T];
+type ValueOf<T> = T extends Array<unknown> ? T[number] : T[keyof T];
+
+/**
+ * Transforms a string to lowercase and the first character to uppercase.
+ * @internal
+ */
+type Titlecase<S extends string> = S extends `${infer A} ${infer B}`
+  ? `${Titlecase<A>} ${Titlecase<B>}`
+  : Capitalize<Lowercase<S>>;

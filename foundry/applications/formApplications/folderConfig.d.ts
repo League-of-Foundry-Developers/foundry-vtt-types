@@ -1,6 +1,52 @@
 /**
  * Edit a folder, configuring its name and appearance
  */
-declare class FolderConfig extends FormApplication {
-  _updateObject(event?: Event, formData?: object): Promise<any>; // TODO: Add correct return type
+declare class FolderConfig extends FormApplication<FormApplication.Options, FolderConfig.Data, Folder> {
+  /**
+   * @override
+   * @defaultValue
+   * ```typescript
+   * mergeObject(super.defaultOptions, {
+   *   classes: ["sheet", "folder-edit"],
+   *   template: "templates/sidebar/folder-edit.html",
+   *   width: 360
+   * });
+   * ```
+   */
+  static get defaultOptions(): typeof FormApplication['defaultOptions'];
+
+  /**
+   * @override
+   */
+  get id(): string;
+
+  /**
+   * @override
+   */
+  get title(): string;
+
+  /**
+   * @param options - (unused)
+   * @override
+   */
+  getData(options?: Application.RenderOptions): Promise<FolderConfig.Data>;
+
+  /**
+   * @param event - (unused)
+   * @override
+   */
+  protected _updateObject(event: Event, formData: FolderConfig.FormData): ReturnType<Folder['update']>;
+}
+
+declare namespace FolderConfig {
+  interface Data {
+    folder: Folder.Data;
+    sortingModes: {
+      a: 'FOLDER.SortAlphabetical';
+      m: 'FOLDER.SortManual';
+    };
+    submitText: string;
+  }
+
+  type FormData = Pick<Folder.Data, 'color' | 'name' | 'sorting' | 'type'> & { parent: string };
 }

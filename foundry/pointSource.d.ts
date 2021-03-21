@@ -126,7 +126,7 @@ declare class PointSource {
    * The source type from {@link SOURCE_TYPES}
    * @defaultValue `undefined`
    */
-  type?: Const.SourceTypes;
+  type?: Const.SourceType;
 
   /**
    * An animation configuration for the source
