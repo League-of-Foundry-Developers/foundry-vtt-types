@@ -91,7 +91,7 @@ declare class ActorSheet<
    */
   protected _onDropActiveEffect(
     event: DragEvent,
-    data: { type: 'ActiveEffect'; tokenId?: string; actorId?: string } & DeepPartial<ActiveEffect.Data>
+    data: ActorSheet.DropData.ActiveEffect
   ): Promise<ActiveEffect.Data | undefined>;
 
   /**
@@ -100,7 +100,7 @@ declare class ActorSheet<
    * @param data  - The data transfer extracted from the event
    * @returns A data object which describes the result of the drop
    */
-  protected _onDropActor(event: DragEvent, data: { type: 'Actor' }): Promise<boolean | undefined>;
+  protected _onDropActor(event: DragEvent, data: ActorSheet.DropData.Actor): Promise<boolean | undefined>;
 
   /**
    * Handle dropping of an item reference or item data onto an Actor Sheet
@@ -110,7 +110,7 @@ declare class ActorSheet<
    */
   protected _onDropItem(
     event: DragEvent,
-    data: { type: 'Item' } & ({ data: DeepPartial<ActorSheet.OwnedItemData<O>> } | { pack: string } | { id: string })
+    data: ActorSheet.DropData.Item<ActorSheet.OwnedItemData<O>>
   ): Promise<boolean | undefined | ActorSheet.OwnedItemData<O>>;
 
   /**
@@ -152,5 +152,35 @@ declare namespace ActorSheet {
     actor: BaseEntitySheet.Data<O>['entity'];
     data: BaseEntitySheet.Data<O>['entity']['data'];
     items: BaseEntitySheet.Data<O>['entity']['items'];
+  }
+
+  namespace DropData {
+    type Combined = ActiveEffect | Actor | Item | Folder;
+
+    interface ActiveEffect {
+      type?: 'ActiveEffect';
+      tokenId?: string;
+      actorId?: string;
+      data?: ActiveEffect.Data;
+    }
+
+    interface Actor {
+      type?: 'Actor';
+    }
+
+    /**
+     * @typeParam I - the item data
+     */
+    type Item<I extends Item.Data = Item.Data> = {
+      type?: 'Item';
+      actorId?: string;
+      tokenId?: string;
+    } & (DeepPartial<I> | { pack?: string } | { id?: string });
+
+    interface Folder {
+      type?: 'Folder';
+      entity?: string;
+      id?: string;
+    }
   }
 }

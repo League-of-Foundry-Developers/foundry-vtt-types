@@ -141,8 +141,13 @@ declare class TokenLayer extends PlaceablesLayer<Token> {
   /**
    * Handle dropping of Actor data onto the Scene canvas
    */
-  protected _onDropActorData(
-    event: DragEvent,
-    data: { id: string; type: 'Actor'; x: number; y: number; pack?: string }
-  ): Promise<void | false | Token>;
+  protected _onDropActorData(event: DragEvent, data: TokenLayer.DropData): Promise<void | false | Token>;
+}
+
+declare namespace TokenLayer {
+  type DropData = {
+    id?: string;
+    type?: 'Actor';
+    pack?: string;
+  } & Canvas.DropPosition;
 }

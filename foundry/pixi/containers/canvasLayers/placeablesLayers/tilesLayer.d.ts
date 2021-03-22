@@ -50,3 +50,14 @@ declare class TilesLayer extends PlaceablesLayer<Tile> {
    */
   protected _onDropTileData(event: DragEvent, data: Tile['data']): Promise<Tile>;
 }
+
+declare namespace TilesLayer {
+  type DropData = {
+    type?: 'Tile';
+    img?: string;
+    tileSize?: number;
+    width?: number;
+    height?: number;
+  } & Canvas.DropPosition &
+    DeepPartial<Tile.Data>;
+}

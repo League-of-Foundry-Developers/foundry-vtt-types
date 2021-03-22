@@ -145,7 +145,11 @@ declare class User extends Entity<User.Data> {
    * @param fromSlot - An optional origin slot from which the Macro is being shifted
    * @returns A Promise which resolves once the User update is complete
    */
-  assignHotbarMacro(macro: Macro | null, slot?: number | string, { fromSlot }?: { fromSlot?: number }): Promise<User>;
+  assignHotbarMacro(
+    macro: Macro | null,
+    slot?: User.DropData['slot'],
+    { fromSlot }?: { fromSlot?: number }
+  ): Promise<User>;
 
   /**
    * Get an Array of Macro Entities on this User's Hotbar by page
@@ -211,6 +215,11 @@ declare namespace User {
     role: number;
     viewedScene: string | null;
   }
+
+  type DropData = {
+    type?: 'Macro';
+    slot?: number;
+  } & Canvas.DropPosition;
 
   interface ActivityData {
     /** The coordinates of the user's cursor */
