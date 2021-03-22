@@ -30,6 +30,7 @@ import './foundry/fonts';
 import './foundry/formDataExtended';
 import './foundry/game';
 import './foundry/gameTime';
+import './foundry/globals';
 import './foundry/handlebarsHelpers';
 import './foundry/hooks';
 import './foundry/imageHelper';
