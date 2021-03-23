@@ -5,7 +5,7 @@
  * Unlike the CONST analog which is frozen and immutable, the CONFIG object may be updated during the course of a
  * session or modified by system and module developers to adjust how the application behaves.
  */
-declare const CONFIG: {
+interface CONFIG extends Record<string, unknown> {
   /**
    * Configure debugging flags to display additional information
    */
@@ -1454,7 +1454,9 @@ declare const CONFIG: {
      */
     speakingHistoryLength: number;
   };
-} & Record<string, unknown>;
+}
+
+declare const CONFIG: CONFIG;
 
 declare namespace Config {
   interface Permission {
