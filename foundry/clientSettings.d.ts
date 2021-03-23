@@ -83,10 +83,12 @@ declare class ClientSettings {
    * });
    * ```
    */
-  register<M extends string, K extends string>(
+  register<M extends string, K extends string, T>(
     module: M,
     key: K,
-    data: ClientSettings.RegisteredSettings[`${M}.${K}`]
+    data: ClientSettings.Values[`${M}.${K}`] extends boolean | number | string | object
+      ? ClientSettings.PartialSetting<ClientSettings.Values[`${M}.${K}`]>
+      : ClientSettings.PartialSetting<T>
   ): void;
 
   /**
@@ -159,7 +161,9 @@ declare class ClientSettings {
    * Locally update a setting given a provided key and value
    */
   protected _update<M extends string, K extends string, V extends ClientSettings.Values[`${M}.${K}`]>(
-    setting: ClientSettings.RegisteredSettings[`${M}.${K}`] | ClientSettings.RegisteredMenuSettings[`${M}.${K}`],
+    setting:
+      | ClientSettings.PartialSetting<ClientSettings.Values[`${M}.${K}`]>
+      | ClientSettings.RegisteredMenuSettings[`${M}.${K}`],
     key: `${M}.${K}`,
     value: V
   ): V;
@@ -195,7 +199,15 @@ declare namespace ClientSettings {
       step: number;
     };
     scope: string;
-    type?: ConstructorOf<T>;
+    type?: T extends boolean
+      ? ConstructorOf<Boolean>
+      : T extends number
+      ? ConstructorOf<Number>
+      : T extends string
+      ? ConstructorOf<String>
+      : T extends object
+      ? ConstructorOf<Object>
+      : ConstructorOf<T>;
   }
 
   interface PartialMenuSetting {
@@ -209,11 +221,6 @@ declare namespace ClientSettings {
 
   interface RegisteredMenuSettings {
     [key: string]: PartialMenuSetting;
-  }
-
-  interface RegisteredSettings {
-    'core.combatTrackerConfig': Combat.PartialConfigSetting;
-    [key: string]: PartialSetting;
   }
 
   interface Values {
