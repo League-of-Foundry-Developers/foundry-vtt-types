@@ -182,13 +182,13 @@ declare namespace ClientSettings {
     module: string;
   }
 
-  interface PartialSetting<T = unknown> {
+  interface PartialSetting<T = any> {
     choices?: Record<string, string>;
     config?: boolean;
     default?: T;
     hint?: string;
     name?: string;
-    onChange?: (value: T) => void;
+    onChange?: (value: T) => unknown;
     range?: {
       max: number;
       min: number;
