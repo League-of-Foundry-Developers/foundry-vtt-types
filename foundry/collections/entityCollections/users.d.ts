@@ -22,11 +22,6 @@ declare class Users extends EntityCollection<User> {
    */
   get players(): User[];
 
-  /**
-   * An object of key-value permissions for the Users.
-   */
-  static permissions: any;
-
   /* -------------------------------------------- */
   /*  Socket Listeners and Handlers               */
   /* -------------------------------------------- */
@@ -40,4 +35,10 @@ declare class Users extends EntityCollection<User> {
    * @param activityData - The object of activity data
    */
   protected static _handleUserActivity(userId: string, activityData: User.ActivityData): void;
+
+  /* -------------------------------------------- */
+  /*  Constants              */
+  /* -------------------------------------------- */
+
+  static permissions: typeof CONST.USER_PERMISSIONS;
 }
