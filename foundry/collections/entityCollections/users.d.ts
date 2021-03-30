@@ -35,4 +35,6 @@ declare class Users extends EntityCollection<User> {
    * @param activityData - The object of activity data
    */
   protected static _handleUserActivity(userId: string, activityData: User.ActivityData): void;
+
+  static permissions: typeof CONST.USER_PERMISSIONS;
 }
