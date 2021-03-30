@@ -22,6 +22,11 @@ declare class Users extends EntityCollection<User> {
    */
   get players(): User[];
 
+  /**
+   * An object of key-value permissions for the Users.
+   */
+  static permissions: any;
+
   /* -------------------------------------------- */
   /*  Socket Listeners and Handlers               */
   /* -------------------------------------------- */
