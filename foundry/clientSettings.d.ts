@@ -41,6 +41,7 @@ declare class ClientSettings {
    * @param data   - Configuration for setting data
    * @typeParam M  - The module name to register the setting for
    * @typeParam K  - The key to register the setting for
+   * @typeParam T  - The type of the setting value
    *
    * @example
    * ```typescript
@@ -86,7 +87,7 @@ declare class ClientSettings {
   register<M extends string, K extends string, T>(
     module: M,
     key: K,
-    data: ClientSettings.Values[`${M}.${K}`] extends boolean | number | string | object
+    data: ClientSettings.Values[`${M}.${K}`] extends boolean | number | bigint | string | symbol | object
       ? ClientSettings.PartialSetting<ClientSettings.Values[`${M}.${K}`]>
       : ClientSettings.PartialSetting<T>
   ): void;
@@ -200,13 +201,15 @@ declare namespace ClientSettings {
     };
     scope: string;
     type?: T extends boolean
-      ? ConstructorOf<Boolean>
+      ? typeof Boolean
       : T extends number
-      ? ConstructorOf<Number>
+      ? typeof Number
+      : T extends bigint
+      ? typeof BigInt
       : T extends string
-      ? ConstructorOf<String>
-      : T extends object
-      ? ConstructorOf<Object>
+      ? typeof String
+      : T extends symbol
+      ? typeof Symbol
       : ConstructorOf<T>;
   }
 
