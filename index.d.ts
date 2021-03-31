@@ -71,6 +71,7 @@ import './foundry/applications/formApplication';
 import './foundry/applications/frameViewer';
 import './foundry/applications/headsUpDisplay';
 import './foundry/applications/hotbar';
+import './foundry/applications/installPackage';
 import './foundry/applications/invitationLinks';
 import './foundry/applications/mainMenu';
 import './foundry/applications/notifications';
