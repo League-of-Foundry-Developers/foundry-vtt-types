@@ -382,6 +382,11 @@ declare namespace Canvas {
     shiftY: number;
   }
 
+  interface DropPosition {
+    x: number;
+    y: number;
+  }
+
   interface ViewPan {
     x?: number | null;
     y?: number | null;
