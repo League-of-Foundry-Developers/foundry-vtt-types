@@ -126,7 +126,7 @@ declare class Hotbar extends Application {
    * @param data - The data transfer attached to the DragEvent
    * @returns A Promise which returns the dropped Macro, or null
    */
-  protected _getDropMacro(data: { type: string; id: string; slot: number }): Promise<Macro | null>;
+  protected _getDropMacro(data: Hotbar.DropData): Promise<Macro | null>;
 
   /**
    * Handle click events to toggle display of the macro bar
@@ -140,5 +140,13 @@ declare namespace Hotbar {
     page: number;
     macros: Macro[];
     barClass: 'collapsed' | '';
+  }
+
+  interface DropData {
+    type?: string;
+    data?: DeepPartial<Macro.Data>;
+    id?: string;
+    pack?: string;
+    slot?: number;
   }
 }

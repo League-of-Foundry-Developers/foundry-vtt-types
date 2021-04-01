@@ -44,3 +44,10 @@ declare class NotesLayer extends PlaceablesLayer<Note> {
    */
   static TOGGLE_SETTING: string;
 }
+
+declare namespace NotesLayer {
+  type DropData = {
+    type?: 'JournalEntry';
+  } & Canvas.DropPosition &
+    DeepPartial<JournalEntry.Data>;
+}
