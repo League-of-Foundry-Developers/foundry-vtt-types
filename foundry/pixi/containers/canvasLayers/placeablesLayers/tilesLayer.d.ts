@@ -52,12 +52,11 @@ declare class TilesLayer extends PlaceablesLayer<Tile> {
 }
 
 declare namespace TilesLayer {
-  type DropData = {
+  interface DropData extends DeepPartial<Tile.Data> {
     type?: 'Tile';
     img?: string;
     tileSize?: number;
     width?: number;
     height?: number;
-  } & Canvas.DropPosition &
-    DeepPartial<Tile.Data>;
+  }
 }

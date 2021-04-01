@@ -145,9 +145,9 @@ declare class TokenLayer extends PlaceablesLayer<Token> {
 }
 
 declare namespace TokenLayer {
-  type DropData = {
+  interface DropData extends Canvas.DropPosition {
     id?: string;
     type?: 'Actor';
     pack?: string;
-  } & Canvas.DropPosition;
+  }
 }
