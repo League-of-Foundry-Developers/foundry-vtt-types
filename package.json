@@ -62,8 +62,7 @@
   },
   "files": [
     "index.d.ts",
-    "foundry",
-    "types"
+    "src"
   ],
   "publishConfig": {
     "access": "public"

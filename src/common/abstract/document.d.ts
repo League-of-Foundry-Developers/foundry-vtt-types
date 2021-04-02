@@ -1,8 +1,6 @@
-declare namespace foundry {
-  namespace abstract {
-    /**
-     * The abstract base interface for all Document types.
-     */
-    abstract class Document {}
-  }
-}
+/**
+ * The abstract base interface for all Document types.
+ */
+declare abstract class Document {}
+
+export default Document;

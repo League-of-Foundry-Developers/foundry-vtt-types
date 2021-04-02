@@ -1,57 +1,57 @@
-declare namespace foundry {
-  namespace abstract {
-    /**
-     * A schema entry which describes a field of DocumentData
-     */
-    interface DocumentField<T> {
-      /**
-       * An object which defines the data type of this field
-       */
-      type: ConstructorOf<T>;
+import EmbeddedCollection from './embeddedCollection';
 
-      /**
-       * Is this field required to have an assigned value? Default is false.
-       */
-      required?: boolean;
+/**
+ * A schema entry which describes a field of DocumentData
+ */
+export interface DocumentField<T> {
+  /**
+   * An object which defines the data type of this field
+   */
+  type: ConstructorOf<T>;
 
-      /**
-       * Can the field be populated by a null value? Default is true.
-       */
-      nullable?: boolean;
+  /**
+   * Is this field required to have an assigned value? Default is false.
+   */
+  required?: boolean;
 
-      /**
-       * A static default value or a function which assigns a default value
-       */
-      default?: T | (() => T);
+  /**
+   * Can the field be populated by a null value? Default is true.
+   */
+  nullable?: boolean;
 
-      collection?: boolean;
+  /**
+   * A static default value or a function which assigns a default value
+   */
+  default?: T | (() => T);
 
-      /**
-       * An optional cleaning function which sanitizes input data to this field
-       */
-      clean?: (input: unknown) => T;
+  collection?: boolean;
 
-      /**
-       * A function which asserts that the value of this field is valid
-       */
-      validate?: (value: T) => boolean;
+  /**
+   * An optional cleaning function which sanitizes input data to this field
+   */
+  clean?: (input: unknown) => T;
 
-      /**
-       * An error message which is displayed if validation fails
-       */
-      validationError?: string;
+  /**
+   * A function which asserts that the value of this field is valid
+   */
+  validate?: (value: T) => boolean;
 
-      /**
-       * Is the field an embedded Document collection?
-       */
-      isCollection?: boolean;
-    }
+  /**
+   * An error message which is displayed if validation fails
+   */
+  validationError?: string;
 
-    type DocumentSchema = Partial<Record<string, DocumentField<any>>>;
-
-    /**
-     * An abstract pattern for a data object which is contained within every type of Document.
-     */
-    abstract class DocumentData {}
-  }
+  /**
+   * Is the field an embedded Document collection?
+   */
+  isCollection?: boolean;
 }
+
+export type DocumentSchema = Partial<Record<string, DocumentField<any>>>;
+
+/**
+ * An abstract pattern for a data object which is contained within every type of Document.
+ */
+declare abstract class DocumentData {}
+
+export default DocumentData;
