@@ -3,7 +3,7 @@ import '../../index';
 
 const clientSettings = new ClientSettings([]);
 
-const combatSetting: Combat.PartialConfigSetting = {
+const combatSetting = {
   name: 'Combat Tracker Configuration',
   scope: 'world',
   config: false,
