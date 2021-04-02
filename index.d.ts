@@ -4,7 +4,7 @@ import 'tinymce';
 import 'handlebars';
 import 'pixi.js';
 
-import './src/common/';
+import './src/common/module';
 
 import './src/foundry/actorTokenHelpers';
 import './src/foundry/application';

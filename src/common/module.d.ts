@@ -1,9 +1,9 @@
-import './abstract';
+import './abstract/module';
 import './constants';
-import './data';
+import './data/module';
 import './documents';
 import './types';
-import './utils';
+import './utils/module';
 
 declare const CONST: typeof foundry.CONST;
 
