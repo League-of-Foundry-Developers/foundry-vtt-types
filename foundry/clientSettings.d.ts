@@ -41,6 +41,7 @@ declare class ClientSettings {
    * @param data   - Configuration for setting data
    * @typeParam M  - The module name to register the setting for
    * @typeParam K  - The key to register the setting for
+   * @typeParam T  - The type of the setting value
    *
    * @example
    * ```typescript
@@ -83,10 +84,12 @@ declare class ClientSettings {
    * });
    * ```
    */
-  register<M extends string, K extends string>(
+  register<M extends string, K extends string, T>(
     module: M,
     key: K,
-    data: ClientSettings.RegisteredSettings[`${M}.${K}`]
+    data: ClientSettings.Values[`${M}.${K}`] extends boolean | number | bigint | string | symbol | object
+      ? ClientSettings.PartialSetting<ClientSettings.Values[`${M}.${K}`]>
+      : ClientSettings.PartialSetting<T>
   ): void;
 
   /**
@@ -159,7 +162,9 @@ declare class ClientSettings {
    * Locally update a setting given a provided key and value
    */
   protected _update<M extends string, K extends string, V extends ClientSettings.Values[`${M}.${K}`]>(
-    setting: ClientSettings.RegisteredSettings[`${M}.${K}`] | ClientSettings.RegisteredMenuSettings[`${M}.${K}`],
+    setting:
+      | ClientSettings.PartialSetting<ClientSettings.Values[`${M}.${K}`]>
+      | ClientSettings.RegisteredMenuSettings[`${M}.${K}`],
     key: `${M}.${K}`,
     value: V
   ): V;
@@ -195,7 +200,17 @@ declare namespace ClientSettings {
       step: number;
     };
     scope: string;
-    type?: ConstructorOf<T>;
+    type?: T extends boolean
+      ? typeof Boolean
+      : T extends number
+      ? typeof Number
+      : T extends bigint
+      ? typeof BigInt
+      : T extends string
+      ? typeof String
+      : T extends symbol
+      ? typeof Symbol
+      : ConstructorOf<T>;
   }
 
   interface PartialMenuSetting {
@@ -209,11 +224,6 @@ declare namespace ClientSettings {
 
   interface RegisteredMenuSettings {
     [key: string]: PartialMenuSetting;
-  }
-
-  interface RegisteredSettings {
-    'core.combatTrackerConfig': Combat.PartialConfigSetting;
-    [key: string]: PartialSetting;
   }
 
   interface Values {
