@@ -121,7 +121,7 @@ declare namespace CombatTracker {
   type Data = {
     user: User;
     started: boolean;
-    settings: Combat.CompleteConfigSetting;
+    settings: Combat.ConfigValue;
   } & (
     | {
         combats: [];

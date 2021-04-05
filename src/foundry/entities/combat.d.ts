@@ -283,20 +283,6 @@ declare class Combat extends Entity<Combat.Data> {
 }
 
 declare namespace Combat {
-  interface CompleteConfigSetting extends PartialConfigSetting {
-    key: typeof Combat['CONFIG_SETTING'];
-    module: 'core';
-  }
-
-  interface PartialConfigSetting extends ClientSettings.PartialSetting<ConfigValue> {
-    name: 'Combat Tracker Configuration';
-    scope: 'world';
-    config: false;
-    default: {};
-    type: ConstructorOf<Object>;
-    onChange: () => void;
-  }
-
   interface ConfigValue {
     resource?: string;
     skipDefeated?: boolean;
