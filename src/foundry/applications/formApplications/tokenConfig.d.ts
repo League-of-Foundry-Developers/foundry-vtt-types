@@ -112,7 +112,7 @@ declare namespace TokenConfig {
     isPrototype: Options['configureDefault'];
     hasAlternates: boolean;
     alternateImages: TokenConfig['_getAlternateTokenImages'] | [];
-    object: Duplicated<TokenConfig['token']['data']>;
+    object: foundry.utils.Duplicated<TokenConfig['token']['data']>;
     options: TokenConfig['options'];
     gridUnits: Scene['data']['gridUnits'] | Game['system']['gridUnits'];
     barAttributes: ReturnType<typeof TokenConfig['getTrackedAttributeChoices']>;

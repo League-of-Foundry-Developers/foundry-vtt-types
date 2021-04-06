@@ -74,7 +74,7 @@ declare namespace SettingsConfig {
       modules: Record<string, { title: string; menus: ClientSettings.CompleteMenuSetting[]; settings: Setting[] }>;
     }
 
-    interface Setting extends Duplicated<ClientSettings.CompleteSetting> {
+    interface Setting extends foundry.utils.Duplicated<ClientSettings.CompleteSetting> {
       name: string;
       hint: string;
       value: ReturnType<ClientSettings['get']>;

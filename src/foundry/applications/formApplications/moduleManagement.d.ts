@@ -97,7 +97,7 @@ declare namespace ModuleManagement {
       count: number;
     }
 
-    interface Module extends Duplicated<Game.Module> {
+    interface Module extends foundry.utils.Duplicated<Game.Module> {
       active: boolean;
       css: ' active' | '';
       hasPacks: boolean;

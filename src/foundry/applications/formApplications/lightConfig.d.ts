@@ -64,7 +64,7 @@ declare class LightConfig<P extends FormApplication.Options = FormApplication.Op
 
 declare namespace LightConfig {
   interface Data {
-    object: Duplicated<LightConfig['object']['data']>;
+    object: foundry.utils.Duplicated<LightConfig['object']['data']>;
     options: LightConfig['options'];
     submitText: string;
     lightTypes: LightTypes;

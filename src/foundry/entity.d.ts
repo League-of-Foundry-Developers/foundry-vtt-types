@@ -726,7 +726,7 @@ declare abstract class Entity<D extends Entity.Data = Entity.Data, PD extends D 
    * Remove any features of the data which are world- specific.
    * This function is asynchronous in case any complex operations are required prior to exporting.
    */
-  toCompendium(): Promise<Omit<Duplicated<D>, '_id' | 'permission' | 'folder' | 'sort' | 'active'>>;
+  toCompendium(): Promise<Omit<foundry.utils.Duplicated<D>, '_id' | 'permission' | 'folder' | 'sort' | 'active'>>;
 
   /**
    * Provide a Dialog form to create a new Entity of this type.

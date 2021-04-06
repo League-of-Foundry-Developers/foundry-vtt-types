@@ -45,7 +45,7 @@ declare class WallConfig<P extends WallConfig.Options = WallConfig.Options> exte
 
 declare namespace WallConfig {
   interface Data {
-    object: Duplicated<WallConfig['object']['data']>;
+    object: foundry.utils.Duplicated<WallConfig['object']['data']>;
     options: WallConfig['options'];
     moveTypes: {
       [Key in keyof typeof foundry.CONST['WALL_MOVEMENT_TYPES'] as typeof foundry.CONST['WALL_MOVEMENT_TYPES'][Key]]: Titlecase<Key>;

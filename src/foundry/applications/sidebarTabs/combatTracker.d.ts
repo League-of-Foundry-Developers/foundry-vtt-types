@@ -171,7 +171,7 @@ declare namespace CombatTracker {
     scrollY: string[];
   }
 
-  type Turn = Duplicated<Combat.Combatant> & {
+  type Turn = foundry.utils.Duplicated<Combat.Combatant> & {
     effects: Set<unknown>;
     active: boolean;
     css: string;

@@ -58,7 +58,7 @@ declare class PlaylistSoundConfig<P extends FormApplication.Options = FormApplic
 }
 
 declare namespace PlaylistSoundConfig {
-  interface Data extends Duplicated<PlaylistSoundConfig['object']> {
+  interface Data extends foundry.utils.Duplicated<PlaylistSoundConfig['object']> {
     lvolume: number;
   }
 

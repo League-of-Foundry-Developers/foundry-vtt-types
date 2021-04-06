@@ -50,7 +50,7 @@ declare class TileConfig<P extends TileConfig.Options = TileConfig.Options> exte
 
 declare namespace TileConfig {
   interface Data {
-    object: Duplicated<TileConfig['object']['data']>;
+    object: foundry.utils.Duplicated<TileConfig['object']['data']>;
     options: TileConfig['options'];
     submitText: 'Create' | 'Update';
   }

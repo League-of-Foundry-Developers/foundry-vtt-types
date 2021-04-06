@@ -53,7 +53,7 @@ declare class MacroConfig extends BaseEntitySheet<BaseEntitySheet.Options, Macro
 
 declare namespace MacroConfig {
   interface Data extends BaseEntitySheet.Data {
-    macroTypes: Duplicated<Game['system']['entityTypes']['Macro']>;
+    macroTypes: foundry.utils.Duplicated<Game['system']['entityTypes']['Macro']>;
     macroScopes: typeof foundry.CONST['MACRO_SCOPES'];
   }
 

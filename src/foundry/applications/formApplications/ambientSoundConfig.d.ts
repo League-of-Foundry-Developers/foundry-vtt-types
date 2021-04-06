@@ -44,7 +44,7 @@ declare class AmbientSoundConfig<
 
 declare namespace AmbientSoundConfig {
   interface Data {
-    object: Duplicated<AmbientSoundConfig['object']['data']>;
+    object: foundry.utils.Duplicated<AmbientSoundConfig['object']['data']>;
     options: AmbientSoundConfig['options'];
     submitText: string;
   }

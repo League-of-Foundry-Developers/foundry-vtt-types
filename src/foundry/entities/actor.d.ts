@@ -172,7 +172,7 @@ declare class Actor<
    * @returns A copy of data.data
    * @remarks Testing actor.data.type does not narrow the type for this method
    */
-  getRollData(): Duplicated<PD['data']>;
+  getRollData(): foundry.utils.Duplicated<PD['data']>;
 
   /**
    * Get an Array of Token images which could represent this Actor

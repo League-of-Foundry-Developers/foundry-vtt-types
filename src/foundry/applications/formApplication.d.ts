@@ -210,7 +210,7 @@ declare namespace FormApplication {
    * @typeParam P - the type of the options object
    */
   interface Data<O, P extends FormApplication.Options = FormApplication.Options> {
-    object: Duplicated<O>;
+    object: foundry.utils.Duplicated<O>;
     options: P;
     title: string;
   }

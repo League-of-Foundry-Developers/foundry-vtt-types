@@ -68,7 +68,7 @@ declare namespace BaseEntitySheet {
   interface Data<O extends Entity<any, any> = Entity<any, any>> {
     cssClass: string;
     editable: boolean;
-    entity: Duplicated<O['data']>;
+    entity: foundry.utils.Duplicated<O['data']>;
     limited: boolean;
     options: Options;
     owner: boolean;
