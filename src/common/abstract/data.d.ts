@@ -59,13 +59,16 @@ declare global {
  * A convenience type to get the data type based on a {@link DocumentSchema}.
  */
 type DocumentSchemaToData<ConcreteDocumentSchema extends DocumentSchema> = {
-  [Key in keyof ConcreteDocumentSchema]: InstanceOf<ConcreteDocumentSchema[Key]['type']>;
+  [Key in keyof ConcreteDocumentSchema]: InstanceType<ConcreteDocumentSchema[Key]['type']>;
 };
 
 /**
  * An abstract pattern for a data object which is contained within every type of Document.
  */
-declare abstract class DocumentData<ConcreteDocumentSchema extends DocumentSchema, ConcreteDocument extends Document> {
+declare abstract class DocumentData<
+  ConcreteDocumentSchema extends DocumentSchema,
+  ConcreteDocument extends Document<any, any>
+> {
   /**
    *
    * @param data     - Initial data used to construct the data object
@@ -151,14 +154,14 @@ declare abstract class DocumentData<ConcreteDocumentSchema extends DocumentSchem
     value: Value
   ): Value extends Array<any> ? Value : Array<any>;
   protected _initializeType<Value extends number | string>(type: typeof Date, value: Value): number;
-  protected _initializeType<Type extends ConstructorOf<Document>>(
+  protected _initializeType<Type extends ConstructorOf<Document<any, any>>>(
     type: Type,
     value: ConstructorParameters<Type>[0]
-  ): InstanceOf<Type>; // TODO: Actually this returns an instance of the subclass configured in CONFIG
+  ): InstanceType<Type>; // TODO: Actually this returns an instance of the subclass configured in CONFIG
   protected _initializeType<Type extends ConstructorOf<DocumentData<any, any>>>(
     type: Type,
     value: ConstructorParameters<Type>[0]
-  ): InstanceOf<Type>;
+  ): InstanceType<Type>;
 
   /**
    * Validate the data contained in the document to check for type and content

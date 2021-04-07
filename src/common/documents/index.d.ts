@@ -1,1 +1,1 @@
-export {};
+export { BaseUser } from './baseUser';
