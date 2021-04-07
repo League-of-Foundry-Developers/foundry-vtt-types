@@ -13,6 +13,11 @@ declare type DeepPartial<T> = {
 type ConstructorOf<T> = new (...args: any) => T;
 
 /**
+ * The instance type for the constructor type `T`.
+ */
+type InstanceOf<T extends new (...args: any) => any> = T extends new (...args: any) => infer U ? U : never;
+
+/**
  * Omit properties of `T` which are of type `U`.
  *
  * @typeParam T - Object type from which properties will be omitted.
