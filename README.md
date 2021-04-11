@@ -9,8 +9,8 @@ TypeScript type definitions for [Foundry Virtual Tabletop](https://foundryvtt.co
 [![League Discord Server](https://img.shields.io/discord/732325252788387980?label=League%20of%20Extraordinary%20Foundry%20VTT%20Developers)](https://discord.gg/52DNPzqm2Z)
 ![GitHub 0.7.9 issues by-label](https://img.shields.io/github/issues-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.7.9?color=%23fe631d)
 ![GitHub closed 0.7.9 issues by-label](https://img.shields.io/github/issues-closed-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.7.9?color=%23fe631d)
-![GitHub 0.8.0 issues by-label](https://img.shields.io/github/issues-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.8.0?color=%23fe631d)
-![GitHub closed 0.8.0 issues by-label](https://img.shields.io/github/issues-closed-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.8.0?color=%23fe631d)
+![GitHub 0.8.1 issues by-label](https://img.shields.io/github/issues-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.8.1?color=%23fe631d)
+![GitHub closed 0.8.1 issues by-label](https://img.shields.io/github/issues-closed-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.8.1?color=%23fe631d)
 
 </div>
 
