@@ -33,7 +33,7 @@ export declare function deepClone<T>(original: T): T;
  *                   (default: `false`)
  * @returns An object of the data in other which differs from that in original.
  */
-declare function diffObject(
+export declare function diffObject(
   original: object,
   other: object,
   {
