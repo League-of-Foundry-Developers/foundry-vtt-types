@@ -1,1 +1,1 @@
-export {};
+export { EffectDurationData } from './effectDurationData';

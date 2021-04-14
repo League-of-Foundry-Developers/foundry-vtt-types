@@ -9,7 +9,7 @@ declare global {
     /**
      * An object which defines the data type of this field
      */
-    type: ConstructorOf<T>;
+    type: object;
 
     /**
      * Is this field required to have an assigned value? Default is false.
@@ -52,14 +52,18 @@ declare global {
   /**
    * The schema of a Document
    */
-  type DocumentSchema = Record<string, DocumentField<any>>;
+  type DocumentSchema = Partial<Record<string, DocumentField<any>>>;
 }
 
+/* TODO: Find out how to properly handle non required fields. Are they optional or are they always there but
+  potentially `undefined`? Default values also play a role here. */
 /**
  * A convenience type to get the data type based on a {@link DocumentSchema}.
  */
-type DocumentSchemaToData<ConcreteDocumentSchema extends DocumentSchema> = {
-  [Key in keyof ConcreteDocumentSchema]: InstanceType<ConcreteDocumentSchema[Key]['type']>;
+export type DocumentSchemaToData<ConcreteDocumentSchema extends DocumentSchema> = {
+  [Key in keyof ConcreteDocumentSchema as ConcreteDocumentSchema[Key] extends DocumentField<any>
+    ? Key
+    : never]: ConcreteDocumentSchema[Key] extends DocumentField<infer U> ? U : never;
 };
 
 /**
@@ -67,7 +71,7 @@ type DocumentSchemaToData<ConcreteDocumentSchema extends DocumentSchema> = {
  */
 declare abstract class DocumentData<
   ConcreteDocumentSchema extends DocumentSchema,
-  ConcreteDocument extends Document<any, any>
+  ConcreteDocument extends Document<any, any> | null
 > {
   /**
    *
@@ -238,7 +242,7 @@ declare abstract class DocumentData<
    * @returns The document source data expressed as a plain object
    */
   toJSON(): {
-    [Key in keyof ConcreteDocumentSchema]: DocumentSchemaToData<ConcreteDocumentSchema>[Key] extends {
+    [Key in keyof DocumentSchemaToData<ConcreteDocumentSchema>]: DocumentSchemaToData<ConcreteDocumentSchema>[Key] extends {
       toJSON(): infer U;
     }
       ? U
