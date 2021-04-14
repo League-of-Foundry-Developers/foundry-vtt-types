@@ -76,7 +76,7 @@ declare class SceneNavigation extends Application {
 declare namespace SceneNavigation {
   interface Data {
     collapsed: boolean;
-    scenes: (Duplicated<Scene['data']> & {
+    scenes: (foundry.utils.Duplicated<Scene['data']> & {
       users: { letter: string; color: User['data']['color'] };
       visible: boolean;
       css: [string | null];

@@ -35,7 +35,7 @@ declare class MeasuredTemplateConfig extends FormApplication<
 
 declare namespace MeasuredTemplateConfig {
   interface Data {
-    object: Duplicated<MeasuredTemplateConfig['object']['data']>;
+    object: foundry.utils.Duplicated<MeasuredTemplateConfig['object']['data']>;
     options: MeasuredTemplateConfig['options'];
     templateTypes: typeof CONFIG['MeasuredTemplate']['types'];
     gridUnits: Scene['data']['gridUnits'];

@@ -52,7 +52,7 @@ declare namespace NoteConfig {
     entryName: JournalEntry['name'] | undefined;
     entries: Journal['entities'];
     fontFamilies: Partial<Record<string, string>>;
-    object: Duplicated<NoteConfig['object']['data']>;
+    object: foundry.utils.Duplicated<NoteConfig['object']['data']>;
     options: NoteConfig['options'];
     textAnchors: Record<foundry.CONST.TextAnchorPoint, string>;
   }

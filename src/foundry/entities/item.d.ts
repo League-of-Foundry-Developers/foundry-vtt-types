@@ -37,7 +37,7 @@ declare class Item<D extends Item.Data = Item.Data<any>, PD extends D = D> exten
   /**
    * Prepare a data object which defines the data schema used by dice roll commands against this Item
    */
-  getRollData(): Duplicated<PD['data']>;
+  getRollData(): foundry.utils.Duplicated<PD['data']>;
 
   /* -------------------------------------------- */
   /*  Properties                                  */

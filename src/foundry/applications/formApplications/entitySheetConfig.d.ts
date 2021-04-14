@@ -129,7 +129,7 @@ declare namespace EntitySheetConfig {
   interface Data<E extends Entity = Entity, P extends FormApplication.Options = FormApplication.Options> {
     entityName: EntitySheetConfig<P, E>['object']['entity'];
     isGM: User['isGM'];
-    object: Duplicated<EntitySheetConfig<P, E>['object']['data']>;
+    object: foundry.utils.Duplicated<EntitySheetConfig<P, E>['object']['data']>;
     options: EntitySheetConfig<P, E>['options'];
     sheetClass: ReturnType<E['getFlag']> | '';
     sheetClasses: Record<SheetClass['id'], SheetClass['label']>;

@@ -157,7 +157,7 @@ declare namespace CameraViews {
       local: globalThis.User['isSelf'];
       name: globalThis.User['name'];
       color: globalThis.User['data']['color'];
-      colorAlpha: ReturnType<typeof hexToRGBAString>;
+      colorAlpha: ReturnType<typeof foundry.utils.hexToRGBAString>;
       charname: string;
       avatar: globalThis.User['avatar'];
       settings: AVSettings.UserSettings;

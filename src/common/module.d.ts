@@ -23,5 +23,31 @@ declare global {
   type Semaphore = _utils.Semaphore;
   var Semaphore: typeof _utils.Semaphore; // eslint-disable-line no-var
 
-  // TODO: Add all helpers to global scope
+  var benchmark: typeof _utils.benchmark; // eslint-disable-line no-var
+  var debounce: typeof _utils.debounce; // eslint-disable-line no-var
+  var deepClone: typeof _utils.deepClone; // eslint-disable-line no-var
+  var diffObject: typeof _utils.diffObject; // eslint-disable-line no-var
+  var duplicate: typeof _utils.duplicate; // eslint-disable-line no-var
+  var encodeURL: typeof _utils.encodeURL; // eslint-disable-line no-var
+  var expandObject: typeof _utils.expandObject; // eslint-disable-line no-var
+  var filterObject: typeof _utils.filterObject; // eslint-disable-line no-var
+  var flattenObject: typeof _utils.flattenObject; // eslint-disable-line no-var
+  var getParentClasses: typeof _utils.getParentClasses; // eslint-disable-line no-var
+  var getProperty: typeof _utils.getProperty; // eslint-disable-line no-var
+  var getRoute: typeof _utils.getRoute; // eslint-disable-line no-var
+  var getType: typeof _utils.getType; // eslint-disable-line no-var
+  var hasProperty: typeof _utils.hasProperty; // eslint-disable-line no-var
+  var invertObject: typeof _utils.invertObject; // eslint-disable-line no-var
+  var isNewerVersion: typeof _utils.isNewerVersion; // eslint-disable-line no-var
+  var isObjectEmpty: typeof _utils.isObjectEmpty; // eslint-disable-line no-var
+  var mergeObject: typeof _utils.mergeObject; // eslint-disable-line no-var
+  var randomID: typeof _utils.randomID; // eslint-disable-line no-var
+  var setProperty: typeof _utils.setProperty; // eslint-disable-line no-var
+  var timeSince: typeof _utils.timeSince; // eslint-disable-line no-var
+  var rgbToHsv: typeof _utils.rgbToHsv; // eslint-disable-line no-var
+  var hsvToRgb: typeof _utils.hsvToRgb; // eslint-disable-line no-var
+  var rgbToHex: typeof _utils.rgbToHex; // eslint-disable-line no-var
+  var hexToRGB: typeof _utils.hexToRGB; // eslint-disable-line no-var
+  var hexToRGBAString: typeof _utils.hexToRGBAString; // eslint-disable-line no-var
+  var colorStringToHex: typeof _utils.colorStringToHex; // eslint-disable-line no-var
 }

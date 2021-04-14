@@ -50,7 +50,7 @@ declare namespace ActiveEffectConfig {
    * @typeParam A - the type of the ActiveEffect
    */
   interface Data<A extends ActiveEffect = ActiveEffect> {
-    effect: Duplicated<A['data']>;
+    effect: foundry.utils.Duplicated<A['data']>;
     isActorEffect: boolean;
     isItemEffect: boolean;
     submitText: string;

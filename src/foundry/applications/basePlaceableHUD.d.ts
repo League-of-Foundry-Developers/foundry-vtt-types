@@ -59,7 +59,7 @@ declare abstract class BasePlaceableHUD<
    */
   getData(
     options?: Application.RenderOptions
-  ): Duplicated<O['data']> & {
+  ): foundry.utils.Duplicated<O['data']> & {
     id: Application['id'];
     classes: string;
     appId: Application['appId'];

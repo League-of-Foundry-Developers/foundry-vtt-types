@@ -26,7 +26,7 @@ declare class PlaylistConfig extends BaseEntitySheet<BaseEntitySheet.Options, Pl
 }
 
 declare namespace PlaylistConfig {
-  interface Data extends Duplicated<PlaylistConfig['object']['data']> {
+  interface Data extends foundry.utils.Duplicated<PlaylistConfig['object']['data']> {
     modes: Record<string, ValueOf<typeof foundry.CONST['PLAYLIST_MODES']>>;
   }
 }

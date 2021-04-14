@@ -143,7 +143,7 @@ declare namespace PlaylistDirectory {
     interfaceModifier: ReturnType<typeof AudioHelper['volumeToInput']>;
   }
 
-  interface PlaylistEntity extends Duplicated<Playlist.Data> {
+  interface PlaylistEntity extends foundry.utils.Duplicated<Playlist.Data> {
     modeIcon: string;
     modeTooltip: string;
     disabled: boolean;
@@ -152,7 +152,7 @@ declare namespace PlaylistDirectory {
     sounds: Sound[];
   }
 
-  interface Sound extends Duplicated<Playlist.Sound> {
+  interface Sound extends foundry.utils.Duplicated<Playlist.Sound> {
     lvolume: ReturnType<typeof AudioHelper['volumeToInput']>;
     controlCSS: string;
   }
