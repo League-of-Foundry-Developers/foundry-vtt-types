@@ -1,15 +1,8 @@
 import { BaseUser } from '../documents';
 import DatabaseBackend from './backend';
-import DocumentData from './data';
+import DocumentData, { DocumentSchemaToData } from './data';
 
 type SchemaFromDocumentData<T extends DocumentData<any, any>> = T extends DocumentData<infer U, any> ? U : never;
-
-/**
- * A convenience type to get the data type based on a {@link DocumentSchema}.
- */
-type DocumentSchemaToData<ConcreteDocumentSchema extends DocumentSchema> = {
-  [Key in keyof ConcreteDocumentSchema]: InstanceType<ConcreteDocumentSchema[Key]['type']>;
-};
 
 type DocumentDataToData<T extends DocumentData<any, any>> = DocumentSchemaToData<SchemaFromDocumentData<T>>;
 
