@@ -4,10 +4,18 @@
 declare class DoorControl extends PIXI.Container {
   constructor(wall: Wall);
 
+  wall: Wall;
+
   /**
    * Draw the DoorControl icon, displaying it's icon texture and border
    */
   draw(): Promise<this>;
+
+  icon?: PIXI.Sprite;
+
+  bg?: PIXI.Graphics;
+
+  border?: PIXI.Graphics;
 
   /**
    * Get the icon texture to use for the Door Control icon based on the door state
@@ -22,10 +30,6 @@ declare class DoorControl extends PIXI.Container {
    * @see {@link SightLayer#testVisibility}
    */
   get isVisible(): boolean;
-
-  /* -------------------------------------------- */
-  /*  Event Handlers                              */
-  /* -------------------------------------------- */
 
   protected _onMouseOver(ev: PIXI.InteractionEvent): void;
 
