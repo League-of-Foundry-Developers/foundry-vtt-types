@@ -1,6 +1,7 @@
 import { ENTITY_PERMISSIONS } from '../constants';
 import { hasImageExtension, isColorString, isJSON } from './validators';
 import { Document } from '../abstract/module';
+import { FieldReturnType } from '../abstract/helperTypes';
 
 interface BooleanField extends DocumentField<boolean> {
   type: typeof Boolean;
@@ -138,7 +139,7 @@ interface StringField extends DocumentField<string> {
  */
 export declare const STRING_FIELD: StringField;
 
-interface NumericField extends DocumentField<number | null> {
+interface NumericField extends DocumentField<number> {
   type: typeof Number;
   required: false;
   nullable: true;
@@ -260,10 +261,10 @@ export declare const TIMESTAMP_FIELD: TimestampField;
  */
 declare function _validateId(id: string | null): boolean;
 
-interface DocumentId extends DocumentField<string> {
+interface DocumentId extends DocumentField<string | null> {
   type: typeof String;
   required: true;
-  default: any; // TODO: the default is null, but it is not nullable? oO
+  default: null;
   nullable: false;
   validate: typeof _validateId;
   validationError: 'Invalid value provided for {name} id';
@@ -368,4 +369,4 @@ export declare function embeddedCollectionField<
 export declare function field<T extends DocumentField<any>, U extends Partial<DocumentField<any>>>(
   field: T,
   options?: U
-): Omit<T, keyof U> & Exclude<U, 'undefined'>;
+): FieldReturnType<T, U>;

@@ -1,5 +1,6 @@
 import Document from './document';
 import EmbeddedCollection from './embeddedCollection';
+import { DocumentSchemaToData } from './helperTypes';
 
 declare global {
   /**
@@ -55,17 +56,6 @@ declare global {
   type DocumentSchema = Partial<Record<string, DocumentField<any>>>;
 }
 
-/* TODO: Find out how to properly handle non required fields. Are they optional or are they always there but
-  potentially `undefined`? Default values also play a role here. */
-/**
- * A convenience type to get the data type based on a {@link DocumentSchema}.
- */
-export type DocumentSchemaToData<ConcreteDocumentSchema extends DocumentSchema> = {
-  [Key in keyof ConcreteDocumentSchema as ConcreteDocumentSchema[Key] extends DocumentField<any>
-    ? Key
-    : never]: ConcreteDocumentSchema[Key] extends DocumentField<infer U> ? U : never;
-};
-
 /**
  * An abstract pattern for a data object which is contained within every type of Document.
  */
@@ -80,6 +70,7 @@ declare abstract class DocumentData<
    * @param document - The document to which this data object belongs
    *                   (default: `null`)
    */
+  // TODO: Properly handle nested DocumentData and Documents
   constructor(data?: DeepPartial<DocumentSchemaToData<ConcreteDocumentSchema>>, document?: ConcreteDocument | null);
 
   /**
@@ -90,6 +81,7 @@ declare abstract class DocumentData<
   /**
    * The source data object. The contents of this object can be updated, but the object itself may not be replaced.
    */
+  // TODO: Properly handle nested DocumentData and Documents
   readonly _source: DocumentSchemaToData<ConcreteDocumentSchema>;
 
   /**

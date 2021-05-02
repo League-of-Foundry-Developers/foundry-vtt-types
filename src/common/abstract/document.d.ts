@@ -1,6 +1,7 @@
 import { BaseUser } from '../documents';
 import DatabaseBackend from './backend';
-import DocumentData, { DocumentSchemaToData } from './data';
+import DocumentData from './data';
+import { DocumentSchemaToData } from './helperTypes';
 
 type SchemaFromDocumentData<T extends DocumentData<any, any>> = T extends DocumentData<infer U, any> ? U : never;
 

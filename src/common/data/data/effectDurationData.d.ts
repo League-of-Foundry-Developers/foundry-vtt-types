@@ -1,4 +1,4 @@
-import { DocumentSchemaToData } from '../../abstract/data';
+import { DocumentSchemaToData } from '../../abstract/helperTypes';
 import { DocumentData } from '../../abstract/module';
 import { BaseActiveEffect } from '../../documents';
 import * as fields from '../fields';
@@ -43,11 +43,10 @@ interface EffectDurationDataSchema extends DocumentSchema {
 /**
  * An embedded data structure which tracks the duration of an ActiveEffect.
  * @see ActiveEffectData
- *
  */
-declare class EffectDurationData extends DocumentData<EffectDurationDataSchema, BaseActiveEffect> {
+export declare class EffectDurationData extends DocumentData<EffectDurationDataSchema, BaseActiveEffect> {
   static defineSchema(): EffectDurationDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-declare interface EffectDurationData extends DocumentSchemaToData<EffectDurationDataSchema> {}
+export declare interface EffectDurationData extends DocumentSchemaToData<EffectDurationDataSchema> {}
