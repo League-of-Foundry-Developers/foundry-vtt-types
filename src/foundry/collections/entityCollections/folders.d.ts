@@ -1,7 +1,7 @@
 /**
  * The Folders EntityCollection
  */
-declare class Folders extends EntityCollection<Folder> {
+declare class Folders extends WorldCollection<Folder> {
   /**
    * This tracks which folders are currently expanded in the UI
    */

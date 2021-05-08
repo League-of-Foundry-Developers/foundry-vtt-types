@@ -2,7 +2,7 @@
  * The Collection of Item entities
  * The items collection is accessible within the game as game.items
  */
-declare class Items extends EntityCollection<Item> {
+declare class Items extends WorldCollection<Item> {
   /** @override */
   get entity(): string;
 

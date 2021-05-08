@@ -27,7 +27,7 @@ declare class Folder extends Entity<Folder.Data> {
    * A reference to the EntityCollection of Entities for this folder type.
    * @returns
    */
-  get collection(): EntityCollection;
+  get collection(): DocumentCollection;
 
   /**
    * Return an Array of the Entities which are contained within this Folder

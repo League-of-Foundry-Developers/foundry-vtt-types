@@ -1,7 +1,7 @@
 /**
  * The collection of Scene entities
  */
-declare class Scenes extends EntityCollection<Scene> {
+declare class Scenes extends WorldCollection<Scene> {
   /** @override */
   get entity(): string;
 

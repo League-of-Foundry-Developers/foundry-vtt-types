@@ -1,7 +1,7 @@
 /**
  * A directory list of JournalEntry entities in the Sidebar
  */
-declare class Journal extends EntityCollection<JournalEntry> {
+declare class Journal extends WorldCollection<JournalEntry> {
   /** @override */
   get entity(): string;
 

@@ -1,7 +1,7 @@
 /**
  * The EntityCollection of Playlist entities.
  */
-declare class Playlists extends EntityCollection<Playlist> {
+declare class Playlists extends WorldCollection<Playlist> {
   /** @override */
   get entity(): string;
 

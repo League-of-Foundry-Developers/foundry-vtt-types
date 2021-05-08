@@ -2,7 +2,7 @@
  * The collection of User entities which is accessible through `game.users`.
  * The array of User entities within this collection is accessible through `game.users.entities`.
  */
-declare class Users extends EntityCollection<User> {
+declare class Users extends WorldCollection<User> {
   /**
    * The User entity of the currently connected user
    */

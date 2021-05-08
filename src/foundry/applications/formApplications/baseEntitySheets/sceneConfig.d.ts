@@ -46,7 +46,7 @@ declare class SceneConfig extends BaseEntitySheet<BaseEntitySheet.Options, Scene
   /**
    * Get the alphabetized entities which can be chosen as a configuration for the scene
    */
-  protected _getEntities(collection: EntityCollection): { _id: string; name: string }[];
+  protected _getEntities(collection: DocumentCollection): { _id: string; name: string }[];
 
   /**
    * @override

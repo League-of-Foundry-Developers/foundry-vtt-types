@@ -1,7 +1,7 @@
 /**
  * The EntityCollection of RollTable entities
  */
-declare class RollTables extends EntityCollection<RollTable> {
+declare class RollTables extends WorldCollection<RollTable> {
   /* -------------------------------------------- */
   /*  Properties                                  */
   /* -------------------------------------------- */

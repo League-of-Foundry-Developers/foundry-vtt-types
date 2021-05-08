@@ -136,9 +136,9 @@ declare abstract class Entity<D extends Entity.Data = Entity.Data, PD extends D 
    * available as both a static and instance method and should be overridden by subclass Entity implementations.
    * @remarks This method is abstract on Entity.
    */
-  static get collection(): EntityCollection;
+  static get collection(): DocumentCollection;
 
-  get collection(): EntityCollection;
+  get collection(): DocumentCollection;
 
   /**
    * The class name of the base Entity type, for example "Actor". This is useful in cases where there is an inheritance
@@ -806,7 +806,7 @@ declare namespace Entity {
 
   interface Config<E extends Entity = Entity> {
     baseEntity: ConstructorOf<E>;
-    collection?: EntityCollection<E>;
+    collection?: DocumentCollection<E>;
     embeddedEntities?: {
       [embedType: string]: string;
     };

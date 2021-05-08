@@ -1,7 +1,7 @@
 /**
  * The Collection of Combat entities
  */
-declare class CombatEncounters extends EntityCollection<Combat> {
+declare class CombatEncounters extends WorldCollection<Combat> {
   /** @override */
   get entity(): string;
 

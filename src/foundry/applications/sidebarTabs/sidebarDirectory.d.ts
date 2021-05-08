@@ -31,7 +31,7 @@ declare abstract class SidebarDirectory<
    * The Entity collection which this Sidebar Directory contains
    * @remarks This method is abstract in SidebarTab.
    */
-  static get collection(): EntityCollection | undefined;
+  static get collection(): DocumentCollection | undefined;
 
   /**
    * A reference to the Entity class which is displayed within this EntityCollection

@@ -10,7 +10,7 @@
  * let actor = game.actors.get(actorId);
  * ```
  */
-declare class Actors extends EntityCollection<Actor> {
+declare class Actors extends WorldCollection<Actor> {
   /**
    * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
    * Each Actor is referenced by the Token.id.

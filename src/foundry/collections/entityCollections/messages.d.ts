@@ -3,7 +3,7 @@
  * The Messages collection is accessible within the game as `game.messages`.
  *
  */
-declare class Messages extends EntityCollection<ChatMessage> {
+declare class Messages extends WorldCollection<ChatMessage> {
   /** @override */
   get entity(): string;
 

@@ -1,7 +1,7 @@
 /**
  * The Collection of Macro entities
  */
-declare class Macros extends EntityCollection<Macro> {
+declare class Macros extends WorldCollection<Macro> {
   /** @override */
   get entity(): string;
 
