@@ -244,13 +244,13 @@ declare namespace Hooks {
 
     /**
      * This is called during the drop portion of a drag-and-drop event on a roll table.
-     * @param entity - the Entity the table belongs to
+     * @param document - the Entity the table belongs to
      * @param config - the RollTableConfig
      * @param data   - the dropped data, already parsed as an object via JSON
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link RollTableConfig#_onDrop}
      */
-    dropRollTableSheetData: (entity: Entity, config: RollTableConfig, data: object) => unknown;
+    dropRollTableSheetData: (document: Entity, config: RollTableConfig, data: object) => unknown;
 
     /**
      * This is called after the initial {@link SceneControls} have been set up.
@@ -281,12 +281,13 @@ declare namespace Hooks {
     getUserContextOptions: (jq: JQuery, contextOptions: ContextMenu.Item[]) => unknown;
 
     /**
-     * This is called during the drop portion of a drag-and-drop event on the hotbar.
-     * @param hotbar - the Hotbar
-     * @param data   - the dropped data, already parsed as an object via JSON
-     * @param slot   - the slot of the macro target
-     * @remarks This is called by {@link Hooks.call}.
-     * @see {@link Hotbar#_onDrop}
+     * A hook event that fires whenever data is dropped into a Hotbar slot.
+     * The hook provides a reference to the Hotbar application, the dropped data, and the target slot.
+     * Default handling of the drop event can be prevented by returning false within the hooked function.
+     *
+     * @param hotbar -       The Hotbar application instance
+     * @param data -         The dropped data object
+     * @param slot -         The target hotbar slot
      */
     hotbarDrop: (hotbar: Hotbar, data: Hotbar.DropData, slot: string) => unknown;
 
@@ -387,7 +388,7 @@ declare namespace Hooks {
      * @see {@link Sidebar#expand}
      * @see {@link Sidebar#collapse}
      */
-    sidebarCollapse: (sidebar: Sidebar, collapsed: boolean) => unknown;
+    collapseSidebar: (sidebar: Sidebar, collapsed: boolean) => unknown;
 
     /**
      * This is called after refreshing the {@link SightLayer}.
@@ -418,14 +419,10 @@ declare namespace Hooks {
   }
 
   /**
-   * This is called when closing an {@link Application}. This is called once for each Application class in the
-   * inheritance chain.
-   * @param app   - the Application
-   * @param jq    - the JQuery of the Application
-   * @typeParam A - the type of the Application
-   * @remarks The name for this hook is dynamically created by joining 'close' with the type name of the Application.
-   * @remarks This is called by {@link Hooks.callAll}.
-   * @see {@link Application#close}
+   * A hook event that fires whenever this Application is closed.
+   *
+   * @param app -                    The Application instance being closed
+   * @param html -                      The application HTML when it is closed
    */
   type CloseApplication<A extends Application = Application> = (app: A, jq: JQuery) => unknown;
 
@@ -446,64 +443,34 @@ declare namespace Hooks {
   ) => unknown;
 
   /**
-   * This is called after creating an embedded {@link Entity}.
-   * @param parent  - the parent of the created Entity
-   * @param data    - the data for the created entity
-   * @param options - additional options passed in the create request
-   * @param userId  - the ID of the requesting user
-   * @typeParam D   - the type of the created Entity data
-   * @typeParam P   - the type of the parent Entity
-   * @remarks The name for this hook is dynamically created by joining 'create' with the type name of the Entity.
-   * @remarks This is called by {@link Hooks.callAll}.
-   * @see {@link Entity#_handleCreateEmbeddedEntity}
+   * A hook event that fires for every embedded Document type after conclusion of a creation workflow.
+   * Substitute the Document name in the hook event to target a specific type, for example "createToken".
+   * This hook fires for all connected clients after the creation has been processed.
+   *
+   * @param document -    The new Document instance which has been created
+   * @param options -       Additional options which modified the creation request
+   * @param userId -        The ID of the User who triggered the creation workflow
    */
-  type CreateEmbeddedEntity<D = any, P extends Entity = Entity> = (
-    parent: P,
-    data: D,
+  type CreateDocument<D extends Entity = Entity> = (
+    document: D,
     options: Entity.CreateOptions,
     userId: number
   ) => unknown;
 
   /**
-   * This is called after creating an {@link Entity}.
-   * @param entity  - the created Entity
-   * @param options - additional options passed in the create request
-   * @param userId  - the ID of the requesting user
-   * @typeParam E   - the type of the created Entity
-   * @remarks The name for this hook is dynamically created by joining 'create' with the type name of the Entity.
-   * @remarks This is called by {@link Hooks.callAll}.
-   * @see {@link Entity#_handleCreate}
+   * A hook event that fires for every Document type after conclusion of an deletion workflow.
+   * Substitute the Document name in the hook event to target a specific Document type, for example "deleteActor".
+   * This hook fires for all connected clients after the deletion has been processed.
+   *
+   * @param document -     The existing Document which was deleted
+   * @param options -        Additional options which modified the deletion request
+   * @param userId -         The ID of the User who triggered the deletion workflow
    */
-  type CreateEntity<E extends Entity = Entity> = (entity: E, options: Entity.CreateOptions, userId: number) => unknown;
-
-  /**
-   * This is called after deleting an embedded {@link Entity}.
-   * @param parent  - the parent of the deleted Entity
-   * @param entity  - the deleted Entity
-   * @param options - additional options passed in the delete request
-   * @param userId  - the ID of the requesting user
-   * @remarks The name for this hook is dynamically created by joining 'delete' with the type name of the Entity.
-   * @remarks This is called by {@link Hooks.callAll}.
-   * @see {@link Entity#_handleDeleteEmbeddedEntity}
-   */
-  type DeleteEmbeddedEntity<E extends Entity.Data = Entity.Data, P extends Entity = Entity> = (
-    parent: P,
-    entity: E,
+  type DeleteDocument<D extends Entity = Entity> = (
+    document: D,
     options: Entity.DeleteOptions,
     userId: number
   ) => unknown;
-
-  /**
-   * This is called after deleting an {@link Entity}.
-   * @param entity  - the deleted Entity
-   * @param options - additional options passed in the delete request
-   * @param userId  - the ID of the requesting user
-   * @param E       - the type of the deleted Entity
-   * @remarks The name for this hook is dynamically created by joining 'delete' with the type name of the Entity.
-   * @remarks This is called by {@link Hooks.callAll}.
-   * @see {@link Entity#_handleDelete}
-   */
-  type DeleteEntity<E extends Entity = Entity> = (entity: E, options: Entity.DeleteOptions, userId: number) => unknown;
 
   /**
    * This is called when creating {@link Application.HeaderButton}s for an {@link Application}. This is called once for
@@ -594,6 +561,15 @@ declare namespace Hooks {
   type GetSidebarDirectoryFolderContext = (jq: JQuery, folderOptions: ContextMenu.Item[]) => unknown;
 
   /**
+   * A hook event that fires when the user modifies a global volume slider.
+   * The hook name needs to be customized to include the type of global volume being changed, one of:
+   * `globalPlaylistVolumeChanged`, `globalAmbientVolumeChanged`, or `globalInterfaceVolumeChanged`.
+   *
+   * @param volume -    The new volume level
+   */
+  type GlobalVolumeChanged = (volume: number) => unknown;
+
+  /**
    * This is called when the user mouse is entering or leaving a hover state over a {@link PlaceableObject}.
    * @param object - the PlaceableObject
    * @param hover  - whether the mouse is hovering over the PlaceableObject
@@ -631,115 +607,62 @@ declare namespace Hooks {
   type PasteWall<W extends Wall = Wall> = (copied: W[], pasted: W[]) => unknown;
 
   /**
-   * This is called before creating an embedded {@link Entity}. This is called once for every Entity in a create
-   * request. If this callback returns `false` for any of them, none are created.
-   * @param parent  - the parent Entity of the embedded Entity
-   * @param data    - the Entity data to create the Entity with
-   * @param options - additional options passed in the create request
-   * @param userId  - the ID of the requesting user
-   * @typeParam D   - the type of the Entity data
-   * @typeParam P   - the type of the parent Entity
-   * @returns whether the Entities are allowed to be created
-   * @remarks The name for this hook is dynamically created by joining 'preCreate' with the type name of the embedded
-   * Entity.
-   * @see {@link Entity#createEmbeddedEntity}
+   * A hook event that fires for every Document type before execution of a creation workflow. Substitute the
+   * Document name in the hook event to target a specific Document type, for example "preCreateActor". This hook
+   * only fires for the client who is initiating the creation request.
+   *
+   * The hook provides the pending document instance which will be used for the Document creation. Hooked functions
+   * may modify that data or prevent the workflow entirely by explicitly returning false.
+   *
+   * @param document -    The pending document which is requested for creation
+   * @param data -          The data object which will be used for document creation
+   * @param options -       Additional options which modify the creation request
+   * @param userId -        The ID of the requesting user, always game.user.id
+   * @returns         Explicitly return false to prevent creation of this Document
    */
-  type PreCreateEmbeddedEntity<D = any, P extends Entity = Entity> = (
-    parent: P,
-    data: D,
+  type PreCreateDocument<D extends Entity = Entity> = (
+    document: D,
+    data: D['_data'],
     options: Entity.CreateOptions,
     userId: number
   ) => boolean;
 
   /**
-   * This is called before creating an {@link Entity}. This is called once for every Entity in a create request. If this
-   * callback returns `false` for any of them, none are created.
-   * @param data    - the data to create the Entity with
-   * @param options - additional options passed in the create request
-   * @param userId  - the ID of the requesting user
-   * @typeParam D   - the type of the Entity data
-   * @returns whether the Entities are allowed to be created
-   * @remarks The name for this hook is dynamically created by joining 'preCreate' with the type name of the Entity.
-   * @see {@link Entity.create}
+   * A hook event that fires for every Document type before execution of a deletion workflow. Substitute the
+   * Document name in the hook event to target a specific Document type, for example "preDeleteActor". This hook
+   * only fires for the client who is initiating the update request.
+   *
+   * The hook provides the Document instance which is requested for deletion. Hooked functions may prevent the
+   * workflow entirely by explicitly returning false.
+   *
+   * @param document -     The Document instance being deleted
+   * @param options -        Additional options which modify the deletion request
+   * @param userId -         The ID of the requesting user, always game.user.id
+   * @returns         Explicitly return false to prevent deletion of this Document
    */
-  type PreCreateEntity<D extends Entity.Data = Entity.Data> = (
-    data: D,
-    options: Entity.CreateOptions,
-    userId: number
-  ) => boolean;
-
-  /**
-   * This is called before deleting an embedded {@link Entity}.
-   * @param parent  - the parent Entity of the Entity to be deleted
-   * @param entity  - the Entity to be deleted
-   * @param options - additional options passed in the delete request
-   * @param userId  - the ID of the requesting user
-   * @typeParam E   - the type of the Entity
-   * @typeParam P   - the type of the parent Entity
-   * @returns whether the Entity is allowed to be deleted
-   * @remarks The name for this hook is dynamically created by joining 'preDelete' with the type name of the Entity.
-   * @see {@link Entity#deleteEmbeddedEntity}
-   */
-  type PreDeleteEmbeddedEntity<E extends Entity.Data = Entity.Data, P extends Entity = Entity> = (
-    parent: P,
-    entity: E,
+  type PreDeleteDocument<D extends Entity = Entity> = (
+    document: D,
     options: Entity.DeleteOptions,
     userId: number
   ) => boolean;
 
   /**
-   * This is called before deleting an {@link Entity}. This is called once for every Entity in a delete request. If this
-   * callback returns `false` for any of them, none are deleted.
-   * @param entity  - the Entity to delete
-   * @param options - additional options passed in the delete request
-   * @param userId  - the ID of the requesting user
-   * @typeParam E   - the type of the Entity
-   * @returns whether the Entities are allowed to be deleted
-   * @remarks The name for this hook is dynamically created by joining 'preDelete' with the type name of the Entity.
-   * @see {@link Entity.delete}
+   * A hook event that fires for every Document type before execution of an update workflow. Substitute the Document
+   * name in the hook event to target a specific Document type, for example "preUpdateActor". This hook only fires
+   * for the client who is initiating the update request.
+   *
+   * The hook provides the differential data which will be used to update the Document. Hooked functions may modify
+   * that data or prevent the workflow entirely by explicitly returning false.
+   *
+   * @param document -   The Document instance being updated
+   * @param change -       Differential data that will be used to update the document
+   * @param options -      Additional options which modify the update request
+   * @param userId -       The ID of the requesting user, always game.user.id
+   * @returns         Explicitly return false to prevent update of this Document
    */
-  type PreDeleteEntity<E extends Entity = Entity> = (
-    entity: E,
-    options: Entity.DeleteOptions,
-    userId: number
-  ) => boolean;
-
-  /**
-   * This is called before updating an embedded {@link Entity}.
-   * @param parent  - the parent of the Entity to update
-   * @param entity  - the Entity to update
-   * @param data    - the data to update the Entity with, only containing changed data
-   * @param options - additional options passed in the update request
-   * @param userId  - the ID of the requesting user
-   * @typeParam E   - the type of the Entity
-   * @typeParam P   - the type of the parent Entity
-   * @returns whether the Entity is allowed to be updated
-   * @remarks The name for this hook is dynamically created by joining 'preUpdate' with the type name of the embedded
-   * Entity.
-   * @see {@link Entity#updateEmbeddedEntity}
-   */
-  type PreUpdateEmbeddedEntity<E extends Entity.Data = Entity.Data, P extends Entity = Entity> = (
-    parent: P,
-    entity: E,
-    update: object,
-    options: Entity.UpdateOptions,
-    userId: number
-  ) => boolean;
-
-  /**
-   * This is called before an Entity is updated.
-   * @param entity  - the Entity to update
-   * @param data    - the data to update the Entity with, only containing changed data
-   * @param options - additional options passed in the update request
-   * @param userId  - the ID of the requesting user
-   * @typeParam E   - the type of the Entity
-   * @returns whether the Entity is allowed to be updated
-   * @remarks The name for this hook is dynamically created by joining 'preUpdate' with the type name of the Entity.
-   * @see {@link Entity.update}
-   */
-  type PreUpdateEntity<E extends Entity = Entity> = (
-    entity: E,
-    data: object,
+  type PreUpdateDocument<D extends Entity = Entity> = (
+    document: D,
+    data: DeepPartial<D['_data']>,
     options: Entity.UpdateOptions,
     userId: number
   ) => boolean;
@@ -759,40 +682,18 @@ declare namespace Hooks {
   type RenderApplication<D = object, A extends Application = Application> = (app: A, jq: JQuery, data: D) => unknown;
 
   /**
-   * This is called after updating an embedded {@link Entity}.
-   * @param parent  - the parent of the updated Entity
-   * @param entity  - the updated Entity
-   * @param data    - the data to update the Entity with, only containing changed data
-   * @param options - additional options passed in the update request
-   * @param userId  - the ID of the requesting user
-   * @typeParam E   - the type of the Entity
-   * @typeParam P   - the type of the parent Entity
-   * @remarks The name for this hook is dynamically created by joining 'update' with the type name of the Entity.
-   * @remarks This is called by {@link Hooks.callAll}.
-   * @see {@link Entity#_handleUpdateEmbeddedEntity}
+   * A hook event that fires for every Document type after conclusion of an update workflow.
+   * Substitute the Document name in the hook event to target a specific Document type, for example "updateActor".
+   * This hook fires for all connected clients after the update has been processed.
+   *
+   * @param document -    The existing Document which was updated
+   * @param change -        Differential data that was used used to update the document
+   * @param options -       Additional options which modified the update request
+   * @param userId -        The ID of the User who triggered the update workflow
    */
-  type UpdateEmbeddedEntity<E extends Entity = Entity, P extends Entity = Entity> = (
-    parent: P,
-    entity: E,
-    data: object,
-    options: Entity.UpdateOptions,
-    userId: number
-  ) => unknown;
-
-  /**
-   * This is called after updating an {@link Entity}.
-   * @param entity  - the updated Entity
-   * @param data    - the data to update the Entity with, only containing changed data
-   * @param options - additional options passed in the update request
-   * @param userId  - the ID of the requesting user
-   * @typeParam E   - the type of the Entity
-   * @remarks The name for this hook is dynamically created by joining 'update' with the type name of the Entity.
-   * @remarks This is called by {@link Hooks.callAll}.
-   * @see {@link Entity#_handleUpdate}
-   */
-  type UpdateEntity<E extends Entity.Data = Entity.Data> = (
-    entity: E,
-    data: object,
+  type UpdateDocument<D extends Entity = Entity> = (
+    document: D,
+    change: DeepPartial<D['_data']>,
     options: Entity.UpdateOptions,
     userId: number
   ) => unknown;
@@ -800,10 +701,8 @@ declare namespace Hooks {
   type DynamicCallbacks =
     | CloseApplication
     | ControlPlaceableObject
-    | CreateEmbeddedEntity
-    | CreateEntity
-    | DeleteEmbeddedEntity
-    | DeleteEntity
+    | CreateDocument
+    | DeleteDocument
     | GetApplicationHeaderButtons
     | GetChatLogEntryContext
     | GetCombatTrackerEntryContext
@@ -811,16 +710,13 @@ declare namespace Hooks {
     | GetPlaylistDirectorySoundContext
     | GetSidebarDirectoryEntryContext
     | GetSidebarDirectoryFolderContext
+    | GlobalVolumeChanged
     | HoverPlaceableObject
     | PastePlaceableObject
     | PasteWall
-    | PreCreateEmbeddedEntity
-    | PreCreateEntity
-    | PreDeleteEmbeddedEntity
-    | PreDeleteEntity
-    | PreUpdateEmbeddedEntity
-    | PreUpdateEntity
+    | PreCreateDocument
+    | PreDeleteDocument
+    | PreUpdateDocument
     | RenderApplication
-    | UpdateEmbeddedEntity
-    | UpdateEntity;
+    | UpdateDocument;
 }
