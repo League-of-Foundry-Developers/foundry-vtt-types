@@ -83,7 +83,7 @@ declare namespace SceneConfig {
     playlists: ReturnType<SceneConfig['_getEntities']>;
     journals: ReturnType<SceneConfig['_getEntities']>;
     hasGlobalThreshold: boolean;
-    entity: DocumentSheet.Data['entity'] & {
+    document: DocumentSheet.Data['document'] & {
       /**
        * @defaultValue `0`
        */

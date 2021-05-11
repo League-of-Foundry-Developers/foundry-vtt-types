@@ -73,7 +73,7 @@ declare namespace ItemSheet {
    *                sheet
    */
   interface Data<O extends Item = Item> extends DocumentSheet.Data<O> {
-    data: DocumentSheet.Data<O>['entity']['data'];
-    item: DocumentSheet.Data<O>['entity'];
+    data: DocumentSheet.Data<O>['document']['data'];
+    item: DocumentSheet.Data<O>['document'];
   }
 }

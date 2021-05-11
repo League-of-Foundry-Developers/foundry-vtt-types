@@ -68,7 +68,7 @@ declare namespace DocumentSheet {
   interface Data<O extends Entity<any, any> = Entity<any, any>> {
     cssClass: string;
     editable: boolean;
-    entity: foundry.utils.Duplicated<O['data']>;
+    document: foundry.utils.Duplicated<O['data']>;
     limited: boolean;
     options: Options;
     owner: boolean;
