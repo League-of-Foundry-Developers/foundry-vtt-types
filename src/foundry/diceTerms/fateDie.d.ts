@@ -9,31 +9,11 @@ declare class FateDie extends DiceTerm {
 
   /* -------------------------------------------- */
 
-  /**
-   * @override
-   */
-  roll(options?: { maximize: boolean; minimize: boolean }): DiceTerm.Result;
-
-  /* -------------------------------------------- */
-
-  /**
-   * @override
-   */
-  static getResultLabel(result: string): string;
-
-  /* -------------------------------------------- */
-
   static DENOMINATION: 'f';
-
-  static fromResults(options: Partial<DiceTerm.TermData>, results: DiceTerm.Result[]): FateDie;
 }
 
 declare namespace FateDie {
   interface Data extends DiceTerm.Data {
-    class: 'FateDie';
-  }
-
-  interface OldData extends DiceTerm.OldData {
     class: 'FateDie';
   }
 }

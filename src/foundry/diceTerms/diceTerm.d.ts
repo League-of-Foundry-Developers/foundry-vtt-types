@@ -216,9 +216,9 @@ declare abstract class DiceTerm extends RollTerm {
    * @param data - Provided data from an un-serialized term
    * @returns The constructed DiceTerm
    */
-  static fromData(data: Coin.Data | Coin.OldData): Coin;
-  static fromData(data: FateDie.Data | FateDie.OldData): FateDie;
-  static fromData(data: Die.Data | Die.OldData): Die;
+  static fromData(data: Coin.Data): Coin;
+  static fromData(data: FateDie.Data): FateDie;
+  static fromData(data: Die.Data): Die;
   static fromData(data: DiceTerm.Data): Die;
 
   /* -------------------------------------------- */
