@@ -4,9 +4,9 @@
  * @typeParam E - the type of the entity
  */
 declare class PermissionControl<
-  P extends BaseEntitySheet.Options = BaseEntitySheet.Options,
+  P extends DocumentSheet.Options = DocumentSheet.Options,
   E extends Entity = Entity
-> extends BaseEntitySheet<P, PermissionControl.Data<E>, E> {
+> extends DocumentSheet<P, PermissionControl.Data<E>, E> {
   /**
    * @param entity  - The Entity instance for which permissions are being configured.
    * @param options - Application options.
@@ -24,7 +24,7 @@ declare class PermissionControl<
    * });
    * ```
    */
-  static get defaultOptions(): typeof BaseEntitySheet['defaultOptions'];
+  static get defaultOptions(): typeof DocumentSheet['defaultOptions'];
 
   /** @override */
   get title(): string;

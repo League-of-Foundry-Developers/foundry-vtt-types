@@ -12,8 +12,8 @@
 declare class ItemSheet<
   D extends object = ActorSheet.Data<Actor>,
   O extends Item = D extends ItemSheet.Data<infer T> ? T : Item,
-  P extends BaseEntitySheet.Options = BaseEntitySheet.Options
-> extends BaseEntitySheet<P, D, O> {
+  P extends DocumentSheet.Options = DocumentSheet.Options
+> extends DocumentSheet<P, D, O> {
   /**
    * @param item    - The Item instance being displayed within the sheet.
    * @param options - Additional options which modify the rendering of the item.
@@ -23,7 +23,7 @@ declare class ItemSheet<
   /**
    * Assign the default options which are supported by this Application
    */
-  static get defaultOptions(): typeof BaseEntitySheet['defaultOptions'];
+  static get defaultOptions(): typeof DocumentSheet['defaultOptions'];
 
   /**
    * Provide a unique CSS ID for owned Item sheets
@@ -72,8 +72,8 @@ declare namespace ItemSheet {
    * @typeParam O - the type of the Entity which should be managed by this form
    *                sheet
    */
-  interface Data<O extends Item = Item> extends BaseEntitySheet.Data<O> {
-    data: BaseEntitySheet.Data<O>['entity']['data'];
-    item: BaseEntitySheet.Data<O>['entity'];
+  interface Data<O extends Item = Item> extends DocumentSheet.Data<O> {
+    data: DocumentSheet.Data<O>['entity']['data'];
+    item: DocumentSheet.Data<O>['entity'];
   }
 }

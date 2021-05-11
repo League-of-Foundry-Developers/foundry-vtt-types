@@ -12,8 +12,8 @@
 declare class ActorSheet<
   D extends object = ActorSheet.Data<Actor>,
   O extends Actor = D extends ActorSheet.Data<infer T> ? T : Actor,
-  P extends BaseEntitySheet.Options = BaseEntitySheet.Options
-> extends BaseEntitySheet<P, D, O> {
+  P extends DocumentSheet.Options = DocumentSheet.Options
+> extends DocumentSheet<P, D, O> {
   /**
    * @param actor   - The Actor instance being displayed within the sheet.
    * @param options - Additional options which modify the rendering of the Actor's sheet.
@@ -26,7 +26,7 @@ declare class ActorSheet<
   token: O['token'];
 
   /** @override */
-  static get defaultOptions(): typeof BaseEntitySheet['defaultOptions'];
+  static get defaultOptions(): typeof DocumentSheet['defaultOptions'];
 
   /** @override */
   get id(): string;
@@ -148,10 +148,10 @@ declare namespace ActorSheet {
    * @typeParam O - the type of the Entity which should be managed by this form
    *                sheet
    */
-  interface Data<O extends Actor = Actor> extends BaseEntitySheet.Data<O> {
-    actor: BaseEntitySheet.Data<O>['entity'];
-    data: BaseEntitySheet.Data<O>['entity']['data'];
-    items: BaseEntitySheet.Data<O>['entity']['items'];
+  interface Data<O extends Actor = Actor> extends DocumentSheet.Data<O> {
+    actor: DocumentSheet.Data<O>['entity'];
+    data: DocumentSheet.Data<O>['entity']['data'];
+    items: DocumentSheet.Data<O>['entity']['items'];
   }
 
   namespace DropData {

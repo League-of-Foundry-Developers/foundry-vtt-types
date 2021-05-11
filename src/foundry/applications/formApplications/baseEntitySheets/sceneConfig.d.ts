@@ -2,7 +2,7 @@
  * A Scene configuration sheet
  * @see {@link Scene} The Scene Entity which is being configured
  */
-declare class SceneConfig extends BaseEntitySheet<BaseEntitySheet.Options, SceneConfig.Data, Scene> {
+declare class SceneConfig extends DocumentSheet<DocumentSheet.Options, SceneConfig.Data, Scene> {
   /**
    * @override
    * @defaultValue
@@ -15,7 +15,7 @@ declare class SceneConfig extends BaseEntitySheet<BaseEntitySheet.Options, Scene
    * });
    * ```
    */
-  static get defaultOptions(): typeof BaseEntitySheet['defaultOptions'];
+  static get defaultOptions(): typeof DocumentSheet['defaultOptions'];
 
   /**
    * @override
@@ -77,13 +77,13 @@ declare class SceneConfig extends BaseEntitySheet<BaseEntitySheet.Options, Scene
 }
 
 declare namespace SceneConfig {
-  interface Data extends BaseEntitySheet.Data {
+  interface Data extends DocumentSheet.Data {
     gridTypes: ReturnType<typeof SceneConfig['_getGridTypes']>;
     weatherTypes: ReturnType<SceneConfig['_getWeatherTypes']>;
     playlists: ReturnType<SceneConfig['_getEntities']>;
     journals: ReturnType<SceneConfig['_getEntities']>;
     hasGlobalThreshold: boolean;
-    entity: BaseEntitySheet.Data['entity'] & {
+    entity: DocumentSheet.Data['entity'] & {
       /**
        * @defaultValue `0`
        */
