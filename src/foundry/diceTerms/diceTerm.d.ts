@@ -49,7 +49,7 @@ declare abstract class DiceTerm extends RollTerm {
   static DENOMINATION: string;
 
   /** Define the named modifiers that can be applied for this particular DiceTerm type. */
-  static MODIFIERS: { string: string | Function };
+  static MODIFIERS: Record<string, string | Function>;
 
   /** A regular expression used to separate individual modifiers */
   static MODIFIERS_REGEXP_STRING: string;
