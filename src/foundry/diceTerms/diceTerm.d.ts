@@ -245,7 +245,7 @@ declare abstract class DiceTerm extends RollTerm {
 
   /**
    * Construct a term of this type given a matched regular expression array.
-   * @param match The matched regular expression array
+   * @param match - The matched regular expression array
    */
   static fromMatch(match: RegExpMatchArray): DiceTerm;
 
