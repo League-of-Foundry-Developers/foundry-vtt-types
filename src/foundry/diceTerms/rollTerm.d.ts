@@ -60,19 +60,19 @@ declare abstract class RollTerm {
 
   /**
    * Construct a RollTerm from a provided data object
-   * @param data Provided data from an un-serialized term
+   * @param data - Provided data from an un-serialized term
    */
   static fromData(data: object): RollTerm;
 
   /**
    * * Define term-specific logic for how a de-serialized data object is restored as a functional RollTerm
-   * @param data The de-serialized term data
+   * @param data - The de-serialized term data
    */
   protected static _fromData(data: object): RollTerm;
 
   /**
    * Reconstruct a RollTerm instance from a provided JSON string
-   * @param json A serialized JSON representation of a DiceTerm
+   * @param json - A serialized JSON representation of a DiceTerm
    */
   static fromJSON(json: string): RollTerm;
 
