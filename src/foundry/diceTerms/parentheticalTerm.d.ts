@@ -5,7 +5,7 @@ declare class ParentheticalTerm extends RollTerm {
    * @param term - The original provided string term used to construct the parenthetical
    * @param roll - Alternatively, an already-evaluated Roll instance may be passed directly
    */
-  constructor(termdata: ParentheticalTerm.TermData);
+  constructor({ term, roll, options }: ParentheticalTerm.TermData);
 
   /** The original provided string term used to construct the parenthetical */
   term: ParentheticalTerm.TermData['term'];
