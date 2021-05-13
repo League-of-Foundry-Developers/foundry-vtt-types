@@ -23,7 +23,7 @@ declare class PoolTerm extends RollTerm {
    * @param rolls - The elements of a Dice Pool must be Roll objects or numbers
    * @param results - The array of dice pool results which have been rolled
    */
-  constructor(termData?: Partial<PoolTerm.TermData>);
+  constructor({ terms, modifiers, rolls, results, options }?: Partial<PoolTerm.TermData>);
 
   /** The original provided terms to the Dice Pool */
   terms: PoolTerm.TermData['terms'];
