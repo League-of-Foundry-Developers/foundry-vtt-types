@@ -2,7 +2,7 @@
  * A type of RollTerm used to capture static numbers.
  */
 declare class NumericTerm extends RollTerm {
-  constructor(termData?: Partial<NumericTerm.TermData>);
+  constructor({ number, options }?: Partial<NumericTerm.TermData>);
 
   number: NumericTerm.TermData['number'];
 
