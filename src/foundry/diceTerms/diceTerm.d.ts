@@ -1,5 +1,5 @@
 /**
- * An abstract base class for any term which appears in a dice roll formula
+ * An abstract base class for any type of RollTerm which involves randomized input from dice, coins, or other devices.
  */
 declare abstract class DiceTerm extends RollTerm {
   /**
@@ -240,7 +240,7 @@ declare abstract class DiceTerm extends RollTerm {
   /* -------------------------------------------- */
 
   /**
-   * @deprecated since 0.8.1`
+   * @deprecated since 0.8.1
    */
   static fromResults(options: Partial<DiceTerm.TermData>, results: DiceTerm.Result[]): DiceTerm;
 

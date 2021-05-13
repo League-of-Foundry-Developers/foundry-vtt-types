@@ -8,7 +8,7 @@ declare class MathTerm extends RollTerm {
    * @param fn - The named function in the Math environment which should be applied to the term
    * @param terms - An array of string argument terms for the function
    */
-  constructor(termData?: Partial<MathTerm.TermData>);
+  constructor({ fn, terms, options }?: Partial<MathTerm.TermData>);
 
   /** The named function in the Math environment which should be applied to the term */
   fn: MathTerm.TermData['fn'];
@@ -20,7 +20,7 @@ declare class MathTerm extends RollTerm {
   rolls: Roll[];
 
   /** The cached result of evaluating the method arguments */
-  result: number;
+  result?: number;
 
   /* -------------------------------------------- */
   /*  Math Term Attributes                        */

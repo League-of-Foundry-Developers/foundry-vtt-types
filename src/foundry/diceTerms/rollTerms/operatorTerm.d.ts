@@ -2,7 +2,7 @@
  * A type of RollTerm used to denote and perform an arithmetic operation.
  */
 declare class OperatorTerm extends RollTerm {
-  constructor(termData?: Partial<OperatorTerm.TermData>);
+  constructor({ operator, options }?: Partial<OperatorTerm.TermData>);
 
   operator: OperatorTerm.TermData['operator'];
 

@@ -2,7 +2,7 @@
  * A type of RollTerm used to capture residual strings which have not yet been matched
  */
 declare class StringTerm extends RollTerm {
-  constructor(termData?: StringTerm.TermData);
+  constructor({ term, options }?: StringTerm.TermData);
 }
 
 declare namespace StringTerm {

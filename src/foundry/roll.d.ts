@@ -291,6 +291,15 @@ declare class Roll<D extends object = {}> {
   protected _evaluateTotal(): number;
 
   /**
+   * Alter the Roll expression by adding or multiplying the number of dice which are rolled
+   * @param multiply - A factor to multiply. Dice are multiplied before any additions.
+   * @param add - A number of dice to add. Dice are added after multiplication.
+   * @param multiplyNumeric - Apply multiplication factor to numeric scalar terms
+   * @returns The altered Roll expression
+   */
+  alter(multiply: number, add: number, { multiplyNumeric }?: { multiplyNumeric: boolean }): Roll;
+
+  /**
    * Clone the Roll instance, returning a new Roll instance that has not yet been evaluated.
    */
   clone(): this;
