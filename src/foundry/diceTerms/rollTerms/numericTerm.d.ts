@@ -12,7 +12,7 @@ declare class NumericTerm extends RollTerm {
 
   /**
    * Determine whether a string expression matches a NumericTerm
-   * @param expression The expression to parse
+   * @param expression - The expression to parse
    */
   static matchTerm(expression: string): RegExpMatchArray | null;
 
@@ -20,7 +20,8 @@ declare class NumericTerm extends RollTerm {
 
   /**
    * Construct a term of this type given a matched regular expression array.
-   * @param match The matched regular expression array
+   * @param match -  The matched regular expression array
+   * @returns The constructed term
    */
   static fromMatch(match: RegExpMatchArray): NumericTerm;
 }

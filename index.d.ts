@@ -153,15 +153,16 @@ import './src/foundry/collections/entityCollections/rollTables';
 import './src/foundry/collections/entityCollections/scenes';
 import './src/foundry/collections/entityCollections/users';
 
-import './src/foundry/diceTerms/rollTerm';
-import './src/foundry/diceTerms/diceTerm';
-import './src/foundry/diceTerms/mathTerm';
-import './src/foundry/diceTerms/numericTerm';
-import './src/foundry/diceTerms/operatorTerm';
-import './src/foundry/diceTerms/parentheticalTerm';
-import './src/foundry/diceTerms/poolTerm';
-import './src/foundry/diceTerms/stringTerm';
+import './src/foundry/diceTerms/rollTerms/mathTerm';
+import './src/foundry/diceTerms/rollTerms/numericTerm';
+import './src/foundry/diceTerms/rollTerms/operatorTerm';
+import './src/foundry/diceTerms/rollTerms/parentheticalTerm';
+import './src/foundry/diceTerms/rollTerms/poolTerm';
+import './src/foundry/diceTerms/rollTerms/rollTerm';
+import './src/foundry/diceTerms/rollTerms/stringTerm';
+
 import './src/foundry/diceTerms/coin';
+import './src/foundry/diceTerms/diceTerm';
 import './src/foundry/diceTerms/die';
 import './src/foundry/diceTerms/fateDie';
 

@@ -10,7 +10,10 @@ declare abstract class RollTerm {
   /** An internal flag for whether the term has been evaluated */
   protected _evaluated: boolean;
 
-  /** Is this term intermediate, and should be evaluated first as part of the simplification process? */
+  /**
+   * Is this term intermediate, and should be evaluated first as part of the simplification process?
+   * @defaultValue false
+   */
   isIntermediate: boolean;
 
   /** A regular expression pattern which identifies optional term-level flavor text */
@@ -37,10 +40,6 @@ declare abstract class RollTerm {
   /** Optional flavor text which modifies and describes this term. */
   get flavor(): string;
 
-  /* -------------------------------------------- */
-  /*  RollTerm Methods                            */
-  /* -------------------------------------------- */
-
   /**
    * Evaluate the roll term, populating the results Array.
    * @param options - (default: `{}`)
@@ -52,7 +51,11 @@ declare abstract class RollTerm {
    *                   (default: `false`)
    * @returns The evaluated dice term
    */
-  evaluate({ minimize, maximize, async }?: { minimize?: boolean; maximize?: boolean; async?: boolean }): RollTerm;
+  evaluate({ minimize, maximize, async }?: { minimize?: boolean; maximize?: boolean; async?: boolean }): this;
+
+  _evaluate({ minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): this;
+
+  _evaluateSync({ minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): this;
 
   /* -------------------------------------------- */
   /*  Serialization and Loading                   */
@@ -61,18 +64,21 @@ declare abstract class RollTerm {
   /**
    * Construct a RollTerm from a provided data object
    * @param data - Provided data from an un-serialized term
+   * @returns The constructed RollTerm
    */
   static fromData(data: object): RollTerm;
 
   /**
    * * Define term-specific logic for how a de-serialized data object is restored as a functional RollTerm
    * @param data - The de-serialized term data
+   * @returns The re-constructed RollTerm object
    */
   protected static _fromData(data: object): RollTerm;
 
   /**
    * Reconstruct a RollTerm instance from a provided JSON string
    * @param json - A serialized JSON representation of a DiceTerm
+   * @returns A reconstructed RollTerm from the provided JSON
    */
   static fromJSON(json: string): RollTerm;
 

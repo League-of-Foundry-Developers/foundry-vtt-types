@@ -1,10 +1,7 @@
+/**
+ * A type of RollTerm used to enclose a parenthetical expression to be recursively evaluated.
+ */
 declare class ParentheticalTerm extends RollTerm {
-  /**
-   * @param termData - Data used to create the ParentheticalTerm, including the following:
-   *                    (default: `{}`)
-   * @param term - The original provided string term used to construct the parenthetical
-   * @param roll - Alternatively, an already-evaluated Roll instance may be passed directly
-   */
   constructor({ term, roll, options }: ParentheticalTerm.TermData);
 
   /** The original provided string term used to construct the parenthetical */

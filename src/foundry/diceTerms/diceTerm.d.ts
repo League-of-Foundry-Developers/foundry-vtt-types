@@ -34,18 +34,16 @@ declare abstract class DiceTerm extends RollTerm {
   modifiers: DiceTerm.TermData['modifiers'];
 
   /**
-   * An object of additional options which modify the dice term
-   */
-  options: DiceTerm.TermData['options'];
-
-  /**
    * The array of dice term results which have been rolled
    */
   results: DiceTerm.Result[];
 
   /* -------------------------------------------- */
 
-  /** Define the denomination string used to register this DiceTerm type in CONFIG.Dice.terms */
+  /**
+   * Define the denomination string used to register this DiceTerm type in CONFIG.Dice.terms
+   * @defaultValue ""
+   */
   static DENOMINATION: string;
 
   /** Define the named modifiers that can be applied for this particular DiceTerm type. */
@@ -110,6 +108,10 @@ declare abstract class DiceTerm extends RollTerm {
 
   /* -------------------------------------------- */
 
+  /**
+   * Render the tooltip HTML for a Roll instance
+   * The data object used to render the default tooltip template for this DiceTerm
+   */
   getTooltipData(): DiceTerm.ToolTipData;
 
   /* -------------------------------------------- */
@@ -211,31 +213,16 @@ declare abstract class DiceTerm extends RollTerm {
   /* -------------------------------------------- */
 
   /**
-   * TODO
-   * Construct a DiceTerm from a provided data object
-   * @param data - Provided data from an un-serialized term
-   * @returns The constructed DiceTerm
-   */
-  static fromData(data: Coin.Data): Coin;
-  static fromData(data: FateDie.Data): FateDie;
-  static fromData(data: Die.Data): Die;
-  static fromData(data: DiceTerm.Data): Die;
-
-  /* -------------------------------------------- */
-
-  /**
    * @deprecated since 0.8.1
-   * Parse a provided roll term expression, identifying whether it matches this type of term.
-   * @param options - Additional term options
-   * @returns The constructed DiceTerm instance
    */
   static fromExpression(expression: string, options: DiceTerm.Options): DiceTerm | null;
 
   /* -------------------------------------------- */
 
   /**
-   * Check if the expression matches this type of term
+   * Determine whether a string expression matches this type of term
    * @param expression - The expression to parse
+   * @param options - Additional options which customize the match
    * @param imputeNumber - Allow the number of dice to be optional, i.e. "d6"
    *                       (default: `true`)
    */
@@ -246,22 +233,14 @@ declare abstract class DiceTerm extends RollTerm {
   /**
    * Construct a term of this type given a matched regular expression array.
    * @param match - The matched regular expression array
+   * @returns The constructed term
    */
   static fromMatch(match: RegExpMatchArray): DiceTerm;
 
   /* -------------------------------------------- */
 
   /**
-   * @deprecated since 0.8.1
-   * Create a "fake" dice term from a pre-defined array of results
-   * @param options - Arguments used to initialize the term
-   * @param results - An array of pre-defined results
-   * @example
-   * ```javascript
-   * let d = new Die({faces: 6, number: 4, modifiers: ["r<3"]});
-   * d.evaluate();
-   * let d2 = Die.fromResults({faces: 6, number: 4, modifiers: ["r<3"]}, d.results);
-   * ```
+   * @deprecated since 0.8.1`
    */
   static fromResults(options: Partial<DiceTerm.TermData>, results: DiceTerm.Result[]): DiceTerm;
 

@@ -19,9 +19,13 @@ declare class PoolTerm extends RollTerm {
    * @param termData -  Data used to create the Dice Term, including the following:
    *                    (default: `{}`)
    * @param terms - The original provided terms to the Dice Pool
+   *                (default: `[]`)
    * @param modifiers - The string modifiers applied to resolve the pool
+   *                    (default: `[]`)
    * @param rolls - The elements of a Dice Pool must be Roll objects or numbers
+   *                (default: `[]`)
    * @param results - The array of dice pool results which have been rolled
+   *                  (default: `[]`)
    */
   constructor({ terms, modifiers, rolls, results, options }?: Partial<PoolTerm.TermData>);
 
@@ -38,6 +42,18 @@ declare class PoolTerm extends RollTerm {
   results: PoolTerm.TermData['results'];
 
   /* -------------------------------------------- */
+
+  /** Define the modifiers that can be used for this particular DiceTerm type. */
+  static MODIFIERS: {
+    k: 'keep';
+    kh: 'keep';
+    kl: 'keep';
+    d: 'drop';
+    dh: 'drop';
+    dl: 'drop';
+    cs: 'countSuccess';
+    cf: 'countFailures';
+  };
 
   /** The regular expression pattern used to identify the opening of a dice pool expression. */
   static OPEN_REGEXP: RegExp;
@@ -64,6 +80,7 @@ declare class PoolTerm extends RollTerm {
   /**
    * Alter the DiceTerm by adding or multiplying the number of dice which are rolled
    * @param args - Arguments passed to each contained Roll#alter method.
+   * @returns The altered pool
    */
   alter(...args: any[]): PoolTerm;
 
