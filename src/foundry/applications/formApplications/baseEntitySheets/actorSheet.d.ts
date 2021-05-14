@@ -25,7 +25,25 @@ declare class ActorSheet<
    */
   get token(): O['token'];
 
-  /** {@inheritdoc} */
+  /**
+   * {@inheritdoc}
+   *
+   * @defaultValue
+   * ```typescript
+   * foundry.utils.mergeObject(super.defaultOptions, {
+   *   height: 720,
+   *   width: 800,
+   *   template: 'templates/sheets/actor-sheet.html',
+   *   closeOnSubmit: false,
+   *   submitOnClose: true,
+   *   submitOnChange: true,
+   *   resizable: true,
+   *   baseApplication: 'ActorSheet',
+   *   dragDrop: [{ dragSelector: '.item-list .item', dropSelector: null }],
+   *   token: null,
+   * });
+   * ```
+   */
   static get defaultOptions(): typeof DocumentSheet['defaultOptions'];
 
   /** {@inheritdoc} */

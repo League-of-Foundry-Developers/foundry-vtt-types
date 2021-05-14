@@ -5,7 +5,7 @@
  * @typeParam D - The data structure used to render the handlebars template.
  * @typeParam O - the type of the Document which should be managed by this form sheet
  */
-declare class DocumentSheet<
+declare abstract class DocumentSheet<
   P extends DocumentSheet.Options = DocumentSheet.Options,
   D extends object = DocumentSheet.Data<Entity>,
   O extends Entity<any, any> = D extends DocumentSheet.Data<infer T> ? T : Entity
@@ -17,7 +17,16 @@ declare class DocumentSheet<
   constructor(object: O, options?: Partial<P>);
 
   /**
-   * @override
+   * {@inheritdoc}
+   *
+   * @defaultValue
+   * ```typescript
+   * foundry.utils.mergeObject(super.defaultOptions, {
+   *   classes: ['sheet'],
+   *   template: `templates/sheets/${this.name.toLowerCase()}.html`,
+   *   viewPermission: CONST.ENTITY_PERMISSIONS.LIMITED
+   * });
+   * ```
    */
   static get defaultOptions(): DocumentSheet.Options;
 

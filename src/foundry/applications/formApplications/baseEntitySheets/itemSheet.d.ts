@@ -22,6 +22,19 @@ declare class ItemSheet<
 
   /**
    * Assign the default options which are supported by this Application
+   *
+   * @defaultValue
+   * ```typescript
+   * foundry.utils.mergeObject(super.defaultOptions, {
+   *   template: 'templates/sheets/item-sheet.html',
+   *   width: 500,
+   *   closeOnSubmit: false,
+   *   submitOnClose: true,
+   *   submitOnChange: true,
+   *   resizable: true,
+   *   baseApplication: 'ItemSheet',
+   * });
+   * ```
    */
   static get defaultOptions(): typeof DocumentSheet['defaultOptions'];
 
