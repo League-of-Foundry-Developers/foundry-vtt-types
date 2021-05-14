@@ -271,7 +271,7 @@ declare class Roll<D extends object = {}> {
    * console.log(r.total);  // 11
    * ```
    */
-  evaluate(options?: Partial<Roll.Options>): this | Promise<this>;
+  evaluate({ minimize, maximize, async }?: Partial<RollTerm.Options>): this | Promise<this>;
 
   /**
    * Evaluate the roll asynchronously.
@@ -458,17 +458,7 @@ declare namespace Roll {
     user?: string;
   }
 
-  interface Options {
-    /** Produce the minimum possible result from the Roll instead of a random result. */
-    maximize: boolean;
-    /** Minimize the result, obtaining the smallest possible value */
-    minimize: boolean;
-    /**
-     * Evaluate the roll asynchronously, receiving a Promise as the returned value.
-     * This will become the default behavior in version 10.x
-     */
-    async: boolean;
-  }
+  type Options = RollTerm.EvaluationOptions;
 
   interface SplitGroupOptions {
     openRegexp: RegExp | string;

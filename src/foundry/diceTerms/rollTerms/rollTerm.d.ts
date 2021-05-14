@@ -47,11 +47,11 @@ declare abstract class RollTerm {
    *                   (default: `false`)
    * @param maximize - Apply the maximum possible result for each roll.
    *                   (default: `false`)
-   * @param asycn    - Evaluate the term asynchronously, receiving a Promise as the returned value. This will become the default behavior in version 10.x
+   * @param async    - Evaluate the term asynchronously, receiving a Promise as the returned value. This will become the default behavior in version 10.x
    *                   (default: `false`)
    * @returns The evaluated dice term
    */
-  evaluate({ minimize, maximize, async }?: { minimize?: boolean; maximize?: boolean; async?: boolean }): this;
+  evaluate({ minimize, maximize, async }?: Partial<RollTerm.EvaluationOptions>): this;
 
   _evaluate({ minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): this;
 
@@ -92,6 +92,18 @@ declare abstract class RollTerm {
 declare namespace RollTerm {
   interface Options {
     flavor?: string;
+  }
+
+  interface EvaluationOptions {
+    /** Produce the minimum possible result from the Roll instead of a random result. */
+    maximize: boolean;
+    /** Minimize the result, obtaining the smallest possible value */
+    minimize: boolean;
+    /**
+     * Evaluate the roll asynchronously, receiving a Promise as the returned value.
+     * This will become the default behavior in version 10.x
+     */
+    async: boolean;
   }
 
   interface Data {
