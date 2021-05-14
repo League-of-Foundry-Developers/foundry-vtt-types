@@ -271,7 +271,7 @@ declare class Roll<D extends object = {}> {
    * console.log(r.total);  // 11
    * ```
    */
-  evaluate({ minimize, maximize, async }?: Partial<RollTerm.Options>): this | Promise<this>;
+  evaluate({ minimize, maximize, async }?: Partial<Roll.Options>): this | Promise<this>;
 
   /**
    * Evaluate the roll asynchronously.
