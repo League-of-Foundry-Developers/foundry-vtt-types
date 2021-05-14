@@ -167,11 +167,6 @@ import './src/foundry/rollTerms/diceTerms/coin';
 import './src/foundry/rollTerms/diceTerms/die';
 import './src/foundry/rollTerms/diceTerms/fateDie';
 
-import './src/foundry/diceTerms/coin';
-import './src/foundry/diceTerms/diceTerm';
-import './src/foundry/diceTerms/die';
-import './src/foundry/diceTerms/fateDie';
-
 import './src/foundry/embeddedEntities/activeEffect';
 
 import './src/foundry/entities/actor';

@@ -12,7 +12,7 @@ declare abstract class RollTerm {
 
   /**
    * Is this term intermediate, and should be evaluated first as part of the simplification process?
-   * @defaultValue false
+   * @defaultValue `false`
    */
   isIntermediate: boolean;
 
@@ -53,7 +53,7 @@ declare abstract class RollTerm {
    */
   evaluate({ minimize, maximize, async }?: Partial<RollTerm.EvaluationOptions>): this;
 
-  _evaluate({ minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): this;
+  _evaluate({ minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): Promise<this>;
 
   _evaluateSync({ minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): this;
 

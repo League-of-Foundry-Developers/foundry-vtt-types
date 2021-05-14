@@ -15,17 +15,11 @@
  */
 declare class PoolTerm extends RollTerm {
   /**
-   *
-   * @param termData -  Data used to create the Dice Term, including the following:
-   *                    (default: `{}`)
-   * @param terms - The original provided terms to the Dice Pool
-   *                (default: `[]`)
-   * @param modifiers - The string modifiers applied to resolve the pool
-   *                    (default: `[]`)
-   * @param rolls - The elements of a Dice Pool must be Roll objects or numbers
-   *                (default: `[]`)
-   * @param results - The array of dice pool results which have been rolled
-   *                  (default: `[]`)
+   * @param termData -  (default: `{}`)
+   * @param terms - (default: `[]`)
+   * @param modifiers - (default: `[]`)
+   * @param rolls - (default: `[]`)
+   * @param results - (default: `[]`)
    */
   constructor({ terms, modifiers, rolls, results, options }?: Partial<PoolTerm.TermData>);
 

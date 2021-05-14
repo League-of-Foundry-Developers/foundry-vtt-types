@@ -32,7 +32,7 @@ declare class Die extends DiceTerm {
    *
    * @param modifier - The matched modifier query
    * @param recursive - Reroll recursively, continuing to reroll until the condition is no longer met
-  
+   * @returns False if the modifier was unmatched
    */
   reroll(modifier: string, { recursive }?: { recursive?: boolean }): boolean | void;
 

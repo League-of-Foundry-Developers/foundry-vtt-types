@@ -110,7 +110,7 @@ declare abstract class DiceTerm extends RollTerm {
 
   /**
    * Render the tooltip HTML for a Roll instance
-   * The data object used to render the default tooltip template for this DiceTerm
+   * @returns The data object used to render the default tooltip template for this DiceTerm
    */
   getTooltipData(): DiceTerm.ToolTipData;
 
