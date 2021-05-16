@@ -92,3 +92,5 @@ type IsKeyOptional<O extends object, K extends keyof O> = {
 } extends O
   ? true
   : false;
+
+type Merge<T extends object, U extends object> = Omit<T, keyof U> & U;

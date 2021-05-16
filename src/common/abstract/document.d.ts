@@ -49,6 +49,23 @@ declare class Document<
 
   /**
    * Default metadata which applies to each instance of this Document type.
+   * @defaultValue
+   * ```typescript
+   * {
+   *   name: "Document",
+   *   collection: "documents",
+   *   label: "DOCUMENT.Document",
+   *   types: [],
+   *   embedded: {},
+   *   hasSystemData: false,
+   *   permissions: {
+   *     create: "ASSISTANT",
+   *     update: "ASSISTANT",
+   *     delete: "ASSISTANT"
+   *   },
+   *   pack: null
+   * }
+   * ```
    */
   static get metadata(): Metadata;
 
@@ -556,7 +573,7 @@ declare class Document<
   toJSON(): ReturnType<ConcreteDocumentData['toJSON']>;
 }
 
-interface DocumentModificationOptions {
+export interface DocumentModificationOptions {
   /**
    * Block the dispatch of preCreate hooks for this operation
    * @defaultValue `false`
@@ -642,7 +659,7 @@ interface Context<Parent extends Document<any, any> | null> {
   pack?: string;
 }
 
-interface Metadata {
+export interface Metadata {
   name: string;
   collection: string;
   label: string;
@@ -655,6 +672,21 @@ interface Metadata {
     delete: string; // TODO: functions are also possible, should we type it here or only in child classes?
   };
   pack: any;
+}
+
+export interface DocumentMetadata {
+  name: 'Document';
+  collection: 'documents';
+  label: 'DOCUMENT.Document';
+  types: [];
+  embedded: {};
+  hasSystemData: false;
+  permissions: {
+    create: 'ASSISTANT';
+    update: 'ASSISTANT';
+    delete: 'ASSISTANT';
+  };
+  pack: null;
 }
 
 export default Document;
