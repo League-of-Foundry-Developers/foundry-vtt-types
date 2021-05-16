@@ -1,6 +1,6 @@
 import { FieldReturnType, PropertiesToSource } from '../../abstract/helperTypes';
 import { DocumentData } from '../../abstract/module';
-import { BaseActor, BaseItem } from '../../documents';
+import * as documents from '../../documents';
 import * as fields from '../fields';
 import { EffectChangeData } from './effectChangeData';
 import { EffectDurationData } from './effectDurationData';
@@ -95,7 +95,7 @@ type ActiveEffectDataSource = PropertiesToSource<ActiveEffectDataProperties>;
 export declare class ActiveEffectData extends DocumentData<
   ActiveEffectDataSchema,
   ActiveEffectDataSource,
-  BaseActor | BaseItem
+  documents.BaseActiveEffect
 > {
   static defineSchema(): ActiveEffectDataSchema;
 }

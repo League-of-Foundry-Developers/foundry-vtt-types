@@ -1,4 +1,4 @@
-import { ENTITY_PERMISSIONS } from '../constants';
+import * as CONST from '../constants';
 import { hasImageExtension, isColorString, isJSON } from './validators';
 import { Document } from '../abstract/module';
 import { FieldReturnType } from '../abstract/helperTypes';
@@ -275,11 +275,11 @@ interface DocumentId extends DocumentField<string | null> {
  */
 export declare const DOCUMENT_ID: DocumentId;
 
-interface DocumentPermissions extends DocumentField<Partial<Record<string, ValueOf<typeof ENTITY_PERMISSIONS>>>> {
+interface DocumentPermissions extends DocumentField<Partial<Record<string, ValueOf<typeof CONST.ENTITY_PERMISSIONS>>>> {
   type: typeof Object;
   required: true;
   nullable: false;
-  default: { default: typeof ENTITY_PERMISSIONS['NONE'] };
+  default: { default: typeof CONST.ENTITY_PERMISSIONS.NONE };
   validate: typeof _validatePermissions;
   validationError: 'Invalid data structure encountered for {name} permissions';
 }

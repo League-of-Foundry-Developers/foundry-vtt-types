@@ -1,3 +1,3 @@
 import { Document } from '../abstract/module';
 
-declare class BaseActor extends Document<any, any> {}
+export declare class BaseActor extends Document<any, any> {}

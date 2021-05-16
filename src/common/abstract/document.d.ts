@@ -15,7 +15,7 @@ type DocumentToSourceData<T extends Document<any, any>> = T extends Document<inf
  */
 declare class Document<
   ConcreteDocumentData extends DocumentData<any, any, any>,
-  Parent extends Document<any, any> | null
+  Parent extends Document<any, any> | null = null
 > {
   /**
    * Create a new Document by providing an initial data object.
@@ -67,7 +67,7 @@ declare class Document<
    * }
    * ```
    */
-  static get metadata(): Metadata;
+  static get metadata(): Metadata<any>;
 
   /**
    * The database backend used to execute operations and handle results
@@ -659,7 +659,7 @@ interface Context<Parent extends Document<any, any> | null> {
   pack?: string;
 }
 
-export interface Metadata {
+export interface Metadata<ConcreteDocument extends Document<any, any>> {
   name: string;
   collection: string;
   label: string;
@@ -667,9 +667,9 @@ export interface Metadata {
   embedded: Record<string, ConstructorOf<Document<any, any>>>;
   hasSystemData: boolean;
   permissions: {
-    create: string; // TODO: functions are also possible, should we type it here or only in child classes?
-    update: string; // TODO: functions are also possible, should we type it here or only in child classes?
-    delete: string; // TODO: functions are also possible, should we type it here or only in child classes?
+    create: string | ((user: BaseUser, doc: ConcreteDocument, data?: any) => boolean);
+    update: string | ((user: BaseUser, doc: ConcreteDocument, data?: any) => boolean);
+    delete: string | ((user: BaseUser, doc: ConcreteDocument, data?: any) => boolean);
   };
   pack: any;
 }

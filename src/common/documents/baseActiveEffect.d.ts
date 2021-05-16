@@ -8,7 +8,7 @@ import { BaseUser } from './baseUser';
 /**
  * The ActiveEffect document model.
  */
-declare class BaseActiveEffect extends Document<data.ActiveEffectData, BaseActor | BaseItem> {
+export declare class BaseActiveEffect extends Document<data.ActiveEffectData, BaseActor | BaseItem> {
   static get schema(): ConstructorOf<data.ActiveEffectData>;
 
   static get metadata(): Merge<
