@@ -9,10 +9,8 @@ import { BaseUser } from './baseUser';
  * The ActiveEffect document model.
  */
 declare class BaseActiveEffect extends Document<data.ActiveEffectData, BaseActor | BaseItem> {
-  /** {@inheritdoc} */
   static get schema(): ConstructorOf<data.ActiveEffectData>;
 
-  /** {@inheritdoc} */
   static get metadata(): Merge<
     DocumentMetadata,
     {
@@ -23,14 +21,12 @@ declare class BaseActiveEffect extends Document<data.ActiveEffectData, BaseActor
     }
   >;
 
-  /** {@inheritdoc} */
   protected _preCreate(
     data: data.ActiveEffectData,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
 
-  /** {@inheritdoc} */
   testUserPermission(
     user: BaseUser,
     permission: keyof typeof foundry.CONST.ENTITY_PERMISSIONS | foundry.CONST.EntityPermission,
