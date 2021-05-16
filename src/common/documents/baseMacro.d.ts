@@ -3,6 +3,9 @@ import { Document } from '../abstract/module';
 import { DocumentMetadata, DocumentModificationOptions } from '../abstract/document';
 import * as documents from '../documents';
 
+/**
+ * The Macro document model.
+ */
 export declare class BaseMacro extends Document<data.MacroData> {
   static get schema(): typeof data.MacroData;
 
