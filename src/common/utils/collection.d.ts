@@ -83,10 +83,8 @@ interface Collection<T> extends Omit<Map<string, T>, 'forEach' | 'Symbol.iterato
    *                  otherwise return null.
    *                  (default: `false`)
    * @returns The retrieved Entity, if one was found, otherwise undefined
-   *
-   * @remarks The documented return type is incorrect, it actually returns `null` if no entity was found.
    */
-  getName(name: string, { strict }?: { strict?: boolean }): T | null;
+  getName(name: string, { strict }?: { strict?: boolean }): T | undefined;
 
   /* -------------------------------------------- */
 
