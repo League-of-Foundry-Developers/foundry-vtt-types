@@ -6,9 +6,9 @@
  */
 declare class JournalSheet<
   P extends JournalSheet.Options = JournalSheet.Options,
-  D extends object = BaseEntitySheet.Data<JournalEntry>,
-  O extends JournalEntry = D extends BaseEntitySheet.Data<infer T> ? T : JournalEntry
-> extends BaseEntitySheet<P, D, O> {
+  D extends object = DocumentSheet.Data<JournalEntry>,
+  O extends JournalEntry = D extends DocumentSheet.Data<infer T> ? T : JournalEntry
+> extends DocumentSheet<P, D, O> {
   /**
    * @param entity  - The JournalEntry instance which is being edited
    * @param options - JournalSheet options
@@ -64,7 +64,7 @@ declare namespace JournalSheet {
     sheetMode?: SheetMode | null;
   }
 
-  interface Options extends BaseEntitySheet.Options {
+  interface Options extends DocumentSheet.Options {
     /**
      * @defaultValue `['sheet', 'journal-sheet']`
      */
@@ -96,7 +96,7 @@ declare namespace JournalSheet {
     sheetMode?: SheetMode | null;
   }
 
-  interface Data<O extends JournalEntry = JournalEntry> extends BaseEntitySheet.Data<O> {
+  interface Data<O extends JournalEntry = JournalEntry> extends DocumentSheet.Data<O> {
     image: string;
     folders: Folder[];
   }

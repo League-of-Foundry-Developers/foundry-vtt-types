@@ -93,7 +93,7 @@ Example:
 declare class ActorSheet<
   D extends object = ActorSheet.Data<Actor>,
   O extends Actor = D extends ActorSheet.Data<infer T> ? T : Actor
-> extends BaseEntitySheet<D, O> {
+> extends DocumentSheet<D, O> {
   /* ... */
 
   /**
@@ -113,7 +113,7 @@ declare class ActorSheet<
    * })
    * ```
    */
-  static get defaultOptions(): BaseEntitySheet.Options;
+  static get defaultOptions(): DocumentSheet.Options;
 
   /* ... */
 }

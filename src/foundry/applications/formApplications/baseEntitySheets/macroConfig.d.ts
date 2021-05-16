@@ -3,7 +3,7 @@
  *
  * @see {@link Macro} The Macro Entity which is being configured
  */
-declare class MacroConfig extends BaseEntitySheet<BaseEntitySheet.Options, MacroConfig.Data, Macro> {
+declare class MacroConfig extends DocumentSheet<DocumentSheet.Options, MacroConfig.Data, Macro> {
   /**
    * @override
    * @defaultValue
@@ -17,7 +17,7 @@ declare class MacroConfig extends BaseEntitySheet<BaseEntitySheet.Options, Macro
    * });
    * ```
    */
-  static get defaultOptions(): typeof BaseEntitySheet['defaultOptions'];
+  static get defaultOptions(): typeof DocumentSheet['defaultOptions'];
 
   /**
    * @override
@@ -52,7 +52,7 @@ declare class MacroConfig extends BaseEntitySheet<BaseEntitySheet.Options, Macro
 }
 
 declare namespace MacroConfig {
-  interface Data extends BaseEntitySheet.Data {
+  interface Data extends DocumentSheet.Data {
     macroTypes: foundry.utils.Duplicated<Game['system']['entityTypes']['Macro']>;
     macroScopes: typeof foundry.CONST['MACRO_SCOPES'];
   }
