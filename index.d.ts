@@ -94,6 +94,7 @@ import './src/foundry/applications/formApplications/avConfig';
 import './src/foundry/applications/formApplications/baseEntitySheet';
 import './src/foundry/applications/formApplications/combatantConfig';
 import './src/foundry/applications/formApplications/combatTrackerConfig';
+import './src/foundry/applications/formApplications/documentSheet';
 import './src/foundry/applications/formApplications/drawingConfig';
 import './src/foundry/applications/formApplications/entitySheetConfig';
 import './src/foundry/applications/formApplications/folderConfig';

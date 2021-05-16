@@ -119,5 +119,5 @@ declare class Localization {
    * game.i18n.format("MYMODULE.GREETING", {name: "Andrew"}); // Hello Andrew, this is my module!
    * ```
    */
-  format(stringId: string, data: Record<string, any>): string;
+  format(stringId: string, data?: Record<string, any>): string;
 }

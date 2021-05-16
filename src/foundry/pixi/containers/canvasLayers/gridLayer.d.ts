@@ -78,7 +78,7 @@ declare class GridLayer extends CanvasLayer {
    * Given a pair of coordinates (x1,y1), return the grid coordinates (x2,y2) which represent the snapped position
    * @param x        - The exact target location x
    * @param y        - The exact target location y
-   * @param interval - An interval of grid spaces at which to snap, default is 1.
+   * @param interval - An interval of grid spaces at which to snap, default is 1. If the interval is zero, no snapping occurs.
    */
   getSnappedPosition(x: number, y: number, interval: number): { x: number; y: number };
 
@@ -128,25 +128,41 @@ declare class GridLayer extends CanvasLayer {
 
   /**
    * Define a new Highlight graphic
+   * @param name - The name for the referenced highlight layer
    */
   addHighlightLayer(name: string): GridHighlight;
 
   /**
    * Clear a specific Highlight graphic
+   * @param name - The name for the referenced highlight layer
    */
   clearHighlightLayer(name: string): void;
 
   /**
    * Destroy a specific Highlight graphic
+   * @param name - The name for the referenced highlight layer
    */
   destroyHighlightLayer(name: string): void;
 
+  /**
+   * Obtain the highlight layer graphic by name
+   * @param name - The name for the referenced highlight layer
+   */
   getHighlightLayer(name: string): GridHighlight | undefined;
 
+  /**
+   * Add highlighting for a specific grid position to a named highlight graphic
+   * @param name    - The name for the referenced highlight layer
+   * @param options - Options for the grid position that should be highlighted
+   */
   highlightPosition(name: string, options?: Parameters<BaseGrid['highlightGridPosition']>[1]): false | void;
 
   /**
    * Test if a specific row and column position is a neighboring location to another row and column coordinate
+   * @param r0 - The original row position
+   * @param c0 - The original column position
+   * @param r1 - The candidate row position
+   * @param c1 - The candidate column position
    */
   isNeighbor(r0: number, c0: number, r1: number, c1: number): boolean;
 }

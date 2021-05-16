@@ -2,7 +2,7 @@
  * The RollTable configuration sheet
  * @typeParam P - the type of the options object
  */
-declare class RollTableConfig<P extends BaseEntitySheet.Options = BaseEntitySheet.Options> extends BaseEntitySheet<
+declare class RollTableConfig<P extends DocumentSheet.Options = DocumentSheet.Options> extends DocumentSheet<
   P,
   RollTableConfig.Data,
   RollTable
@@ -28,7 +28,7 @@ declare class RollTableConfig<P extends BaseEntitySheet.Options = BaseEntityShee
    * })
    * ```
    */
-  static get defaultOptions(): typeof BaseEntitySheet['defaultOptions'];
+  static get defaultOptions(): typeof DocumentSheet['defaultOptions'];
 
   /**
    * @override
@@ -126,7 +126,7 @@ declare class RollTableConfig<P extends BaseEntitySheet.Options = BaseEntityShee
 }
 
 declare namespace RollTableConfig {
-  interface Data extends BaseEntitySheet.Data<RollTable> {
+  interface Data extends DocumentSheet.Data<RollTable> {
     results: RollTable.Result;
     resultTypes: {
       [Key in keyof typeof foundry.CONST['TABLE_RESULT_TYPES'] as typeof foundry.CONST['TABLE_RESULT_TYPES'][Key]]: Key;

@@ -138,7 +138,7 @@ declare class Hooks {
  *
  * @example Using a callback with a dynamic name and generic parameter
  * ```typescript
- * Hooks.on<Hooks.CloseApplication<FormApplication>('closeFormApplication', (app, jq) => {
+ * Hooks.on<Hooks.CloseApplication<FormApplication>>('closeFormApplication', (app, jq) => {
  *   // [...]
  * })
  * ```

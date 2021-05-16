@@ -1,10 +1,10 @@
 /**
- * The default Actor Sheet
+ * The Actor configuration sheet.
  *
  * This Application is responsible for rendering an actor's attributes and allowing the actor to be edited.
  *
  * System modifications may elect to override this class to better suit their own game system by re-defining the value
- * `CONFIG.Actor.sheetClass`.
+ * CONFIG.Actor.sheetClass.
  * @typeParam D - The data structure used to render the handlebars template.
  * @typeParam O - the type of the Entity which should be managed by this form sheet
  * @typeParam P - the type of the options object
@@ -12,8 +12,8 @@
 declare class ActorSheet<
   D extends object = ActorSheet.Data<Actor>,
   O extends Actor = D extends ActorSheet.Data<infer T> ? T : Actor,
-  P extends BaseEntitySheet.Options = BaseEntitySheet.Options
-> extends BaseEntitySheet<P, D, O> {
+  P extends DocumentSheet.Options = DocumentSheet.Options
+> extends DocumentSheet<P, D, O> {
   /**
    * @param actor   - The Actor instance being displayed within the sheet.
    * @param options - Additional options which modify the rendering of the Actor's sheet.
@@ -23,15 +23,33 @@ declare class ActorSheet<
   /**
    * If this Actor Sheet represents a synthetic Token actor, reference the active Token
    */
-  token: O['token'];
+  get token(): O['token'];
 
-  /** @override */
-  static get defaultOptions(): typeof BaseEntitySheet['defaultOptions'];
+  /**
+   * {@inheritdoc}
+   *
+   * @defaultValue
+   * ```typescript
+   * foundry.utils.mergeObject(super.defaultOptions, {
+   *   height: 720,
+   *   width: 800,
+   *   template: 'templates/sheets/actor-sheet.html',
+   *   closeOnSubmit: false,
+   *   submitOnClose: true,
+   *   submitOnChange: true,
+   *   resizable: true,
+   *   baseApplication: 'ActorSheet',
+   *   dragDrop: [{ dragSelector: '.item-list .item', dropSelector: null }],
+   *   token: null,
+   * });
+   * ```
+   */
+  static get defaultOptions(): typeof DocumentSheet['defaultOptions'];
 
-  /** @override */
+  /** {@inheritdoc} */
   get id(): string;
 
-  /** @override */
+  /** {@inheritdoc} */
   get title(): string;
 
   /**
@@ -41,7 +59,7 @@ declare class ActorSheet<
 
   /**
    * @param options - (unused)
-   * @override
+   * {@inheritdoc}
    */
   getData(options?: Application.RenderOptions): D | Promise<D>;
 
@@ -50,10 +68,10 @@ declare class ActorSheet<
    */
   render(force?: boolean, options?: Application.RenderOptions): this;
 
-  /** @override */
+  /** {@inheritdoc} */
   protected _getHeaderButtons(): Application.HeaderButton[];
 
-  /** @override */
+  /** {@inheritdoc} */
   activateListeners(html: JQuery): void;
 
   /**
@@ -62,23 +80,25 @@ declare class ActorSheet<
   protected _onConfigureToken(event: JQuery.ClickEvent): void;
 
   /**
+   * Handle requests to configure the default sheet used by this Actor
+   */
+  protected _onConfigureSheet(event: JQuery.ClickEvent): void;
+
+  /**
    * Handle changing the actor profile image by opening a FilePicker
    */
   protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
 
-  /** @override */
-  protected _updateObject(event: Event, formData: object): Promise<O>;
-
-  /** @override */
+  /** {@inheritdoc} */
   protected _canDragStart(selector: string | null): boolean;
 
-  /** @override */
+  /** {@inheritdoc} */
   protected _canDragDrop(selector: string | null): boolean;
 
-  /** @override */
+  /** {@inheritdoc} */
   protected _onDragStart(event: DragEvent): void;
 
-  /** @override */
+  /** {@inheritdoc} */
   _onDrop(
     event: DragEvent
   ): Promise<boolean | undefined | ActiveEffect.Data | ActorSheet.OwnedItemData<O> | ActorSheet.OwnedItemData<O>[]>;
@@ -148,10 +168,10 @@ declare namespace ActorSheet {
    * @typeParam O - the type of the Entity which should be managed by this form
    *                sheet
    */
-  interface Data<O extends Actor = Actor> extends BaseEntitySheet.Data<O> {
-    actor: BaseEntitySheet.Data<O>['entity'];
-    data: BaseEntitySheet.Data<O>['entity']['data'];
-    items: BaseEntitySheet.Data<O>['entity']['items'];
+  interface Data<O extends Actor = Actor> extends DocumentSheet.Data<O> {
+    actor: DocumentSheet.Data<O>['document'];
+    data: DocumentSheet.Data<O>['document']['data'];
+    items: DocumentSheet.Data<O>['document']['items'];
   }
 
   namespace DropData {
