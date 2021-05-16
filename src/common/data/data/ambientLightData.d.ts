@@ -1,4 +1,4 @@
-import { DocumentSchemaToData, FieldReturnType } from '../../abstract/helperTypes';
+import { FieldReturnType, PropertiesToSource } from '../../abstract/helperTypes';
 import { DocumentData } from '../../abstract/module';
 import * as CONST from '../../constants';
 import { BaseAmbientLight } from '../../documents';
@@ -17,96 +17,135 @@ interface SourceTypeField extends DocumentField<CONST.SourceType> {
 interface DarknessActivationField extends DocumentField<DarknessActivation> {
   type: typeof DarknessActivation;
   required: true;
-  // default: {}; // TODO: This is actually `{}` which is not a valid `DarknessActivation`, bug?
+  // default: {}; // TODO: This is actually `{}`
 }
 
 interface LightAnimationField extends DocumentField<AnimationData> {
   type: typeof AnimationData;
   required: true;
-  // default: {}; // TODO: This is actually `{}` which is not a valid `AnimationData`, bug?
+  // default: {}; // TODO: This is actually `{}`
 }
 
 interface AmbientLightDataSchema extends DocumentSchema {
+  _id: typeof fields.DOCUMENT_ID;
+  t: SourceTypeField;
+  x: typeof fields.REQUIRED_NUMBER;
+  y: typeof fields.REQUIRED_NUMBER;
+  rotation: FieldReturnType<typeof fields.ANGLE_FIELD, { default: 0 }>;
+  dim: typeof fields.REQUIRED_NUMBER;
+  bright: typeof fields.REQUIRED_NUMBER;
+  angle: typeof fields.ANGLE_FIELD;
+  tintColor: typeof fields.COLOR_FIELD;
+  tintAlpha: FieldReturnType<typeof fields.ALPHA_FIELD, { default: 0.25 }>;
+  lightAnimation: LightAnimationField;
+  darknessThreshold: FieldReturnType<typeof fields.ALPHA_FIELD, { default: 0 }>;
+  darkness: DarknessActivationField;
+  hidden: typeof fields.BOOLEAN_FIELD;
+  flags: typeof fields.OBJECT_FIELD;
+}
+
+interface AmbientLightDataProperties {
   /**
    * The _id which uniquely identifies this BaseAmbientLight embedded document
    */
-  _id: typeof fields.DOCUMENT_ID;
+  _id: string | null;
 
   /**
    * The source type in CONST.SOURCE_TYPES which defines the behavior of this light
+   * @defaultValue `'l'`
    */
-  t: SourceTypeField;
+  t: CONST.SourceType;
 
   /**
    * The x-coordinate position of the origin of the light
+   * @defaultValue `0`
    */
-  x: typeof fields.REQUIRED_NUMBER;
+  x: number;
 
   /**
    * The y-coordinate position of the origin of the light
+   * @defaultValue `0`
    */
-  y: typeof fields.REQUIRED_NUMBER;
+  y: number;
 
   /**
    * The angle of rotation for the tile between 0 and 360
+   * @defaultValue `0`
    */
-  rotation: FieldReturnType<typeof fields.ANGLE_FIELD, { default: 0 }>;
+  rotation: number;
 
   /**
    * The radius of dim light emitted in distance units, negative values produce darkness
+   * @defaultValue `0`
    */
-  dim: typeof fields.REQUIRED_NUMBER;
+  dim: number;
 
   /**
    * The radius of bright light emitted in distance units, negative values produce blackness
+   * @defaultValue `0`
    */
-  bright: typeof fields.REQUIRED_NUMBER;
+  bright: number;
 
   /**
    * The angle of emission of the light source in degrees
+   * @defaultValue `360`
    */
-  angle: typeof fields.ANGLE_FIELD;
+  angle: number;
 
   /**
    * An optional color string which applies coloration to the resulting light source
    */
-  tintColor: typeof fields.COLOR_FIELD;
+  tintColor?: string;
 
   /**
    * The intensity of coloration applied to this light source, a number between 0 and 1
+   * @defaultValue `0.25`
    */
-  tintAlpha: FieldReturnType<typeof fields.ALPHA_FIELD, { default: 0.25 }>;
+  tintAlpha: number;
 
   /**
    * A data object which configures token light animation settings, if one is applied
+   * @defaultValue `new AnimationData({})`
    */
-  lightAnimation: LightAnimationField;
+  lightAnimation: AnimationData;
 
   /**
    * A value of the Scene darkness level, above which this light source will be active
+   * @defaultValue `0`
    */
-  darknessThreshold: FieldReturnType<typeof fields.ALPHA_FIELD, { default: 0 }>;
+  darknessThreshold: number;
 
-  darkness: DarknessActivationField;
+  /**
+   * @defaultValue `new DarknessActivation({})`
+   */
+  darkness: DarknessActivation;
 
   /**
    * Is the light source currently hidden?
+   * @defaultValue `false`
    */
-  hidden: typeof fields.BOOLEAN_FIELD;
+  hidden: boolean;
 
   /**
    * An object of optional key/value flags
+   * @defaultValue `{}`
    */
-  flags: typeof fields.OBJECT_FIELD;
+  flags: Record<string, unknown>;
 }
+
+type AmbientLightDataSource = PropertiesToSource<AmbientLightDataProperties>;
 
 /**
  * The data schema for a AmbientLight embedded document.
  * @see BaseAmbientLight
  */
-export declare class AmbientLightData extends DocumentData<AmbientLightDataSchema, BaseAmbientLight> {
+export declare class AmbientLightData extends DocumentData<
+  AmbientLightDataSchema,
+  AmbientLightDataSource,
+  BaseAmbientLight
+> {
   static defineSchema(): AmbientLightDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface AmbientLightData extends DocumentSchemaToData<AmbientLightDataSchema> {}
+export declare interface AmbientLightData extends AmbientLightDataProperties {}

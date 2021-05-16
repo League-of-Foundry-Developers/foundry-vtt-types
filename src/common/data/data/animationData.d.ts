@@ -1,4 +1,4 @@
-import { DocumentSchemaToData } from '../../abstract/helperTypes';
+import { PropertiesToSource } from '../../abstract/helperTypes';
 import { DocumentData } from '../../abstract/module';
 import { BaseAmbientLight } from '../../documents';
 import * as fields from '../fields';
@@ -20,28 +20,38 @@ interface IntensityField extends DocumentField<number> {
 }
 
 interface AnimationDataSchema extends DocumentSchema {
+  type: typeof fields.STRING_FIELD;
+  speed: SpeedField;
+  intensity: IntensityField;
+}
+
+interface AnimationDataProperties {
   /**
    * The animation type which is applied
    */
-  type: typeof fields.STRING_FIELD;
+  type?: string;
 
   /**
    * The speed of the animation, a number between 1 and 10
+   * @defaultValue `5`
    */
-  speed: SpeedField;
+  speed: number;
 
   /**
    * The intensity of the animation, a number between 1 and 10
+   * @defaultValue `5`
    */
-  intensity: IntensityField;
+  intensity: number;
 }
+
+type AnimationDataSource = PropertiesToSource<AnimationDataProperties>;
 
 /**
  * An embedded data object which defines the properties of a light source animation
  */
-export declare class AnimationData extends DocumentData<AnimationDataSchema, BaseAmbientLight> {
+export declare class AnimationData extends DocumentData<AnimationDataSchema, AnimationDataSource, BaseAmbientLight> {
   static defineSchema(): AnimationDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface AnimationData extends DocumentSchemaToData<AnimationDataSchema> {}
+export declare interface AnimationData extends AnimationDataProperties {}

@@ -1,24 +1,28 @@
 import { BaseUser } from '../documents';
 import DatabaseBackend from './backend';
 import DocumentData from './data';
-import { DocumentSchemaToData } from './helperTypes';
 
-type SchemaFromDocumentData<T extends DocumentData<any, any>> = T extends DocumentData<infer U, any> ? U : never;
+type DocumentDataToSourceData<T extends DocumentData<any, any, any>> = T extends DocumentData<any, infer U, any>
+  ? U
+  : never;
 
-type DocumentDataToData<T extends DocumentData<any, any>> = DocumentSchemaToData<SchemaFromDocumentData<T>>;
-
-type DocumentToData<T extends Document<any, any>> = T extends Document<infer U, any> ? DocumentDataToData<U> : never;
+type DocumentToSourceData<T extends Document<any, any>> = T extends Document<infer U, any>
+  ? DocumentDataToSourceData<U>
+  : never;
 
 /**
  * The abstract base interface for all Document types.
  */
-declare class Document<ConcreteDocumentData extends DocumentData<any, any>, Parent extends Document<any, any> | null> {
+declare class Document<
+  ConcreteDocumentData extends DocumentData<any, any, any>,
+  Parent extends Document<any, any> | null
+> {
   /**
    * Create a new Document by providing an initial data object.
    * @param data    - Initial data provided to construct the Document
    * @param context - Additional parameters which define Document context
    */
-  constructor(data?: DeepPartial<DocumentDataToData<ConcreteDocumentData>>, context?: Context<Parent>);
+  constructor(data?: DeepPartial<DocumentDataToSourceData<ConcreteDocumentData>>, context?: Context<Parent>);
 
   /**
    * An immutable reverse-reference to the parent Document to which this embedded Document belongs.
@@ -41,7 +45,7 @@ declare class Document<ConcreteDocumentData extends DocumentData<any, any>, Pare
    * Every document must define an object which represents its data schema.
    * This must be a subclass of the DocumentData interface.
    */
-  static get schema(): ConstructorOf<DocumentData<any, any>>;
+  static get schema(): ConstructorOf<DocumentData<any, any, any>>;
 
   /**
    * Default metadata which applies to each instance of this Document type.
@@ -56,7 +60,7 @@ declare class Document<ConcreteDocumentData extends DocumentData<any, any>, Pare
   /**
    * Return a reference to the implemented subclass of this base document type.
    */
-  static get implementation(): ConstructorOf<Document<any, any>>;
+  static get implementation(): ConstructorOf<Document<any, any>>; // TODO: Reference what is defined in CONFIG?
 
   /**
    * The named collection to which this Document belongs.
@@ -103,15 +107,20 @@ declare class Document<ConcreteDocumentData extends DocumentData<any, any>, Pare
   /**
    * Clone a document, creating a new document by combining current data with provided overrides.
    * The cloned document is ephemeral and not yet saved to the database.
-   * @param data - Additional data which overrides current document data at the time of creation
-   *               (default: `{}`)
-   * @param save - Save the clone to the World database?
-   *               (default: `false`)
+   * @param data   - Additional data which overrides current document data at the time of creation
+   *                 (default: `{}`)
+   * @param save   - Save the clone to the World database?
+   *                 (default: `false`)
+   * @param keepId - Keep the original Document ID? Otherwise the ID will become undefined
+   *                 (default: `false`)
    * @returns The cloned Document instance
    */
-  clone(data?: DeepPartial<DocumentDataToData<ConcreteDocumentData>>, { save }?: { save: false }): this;
-  clone(data: DeepPartial<DocumentDataToData<ConcreteDocumentData>>, { save }: { save: true }): Promise<this>;
-  clone(data: DeepPartial<DocumentDataToData<ConcreteDocumentData>>, { save }: { save: boolean }): this | Promise<this>;
+  clone(data?: DeepPartial<DocumentDataToSourceData<ConcreteDocumentData>>, { save }?: { save: false }): this;
+  clone(data: DeepPartial<DocumentDataToSourceData<ConcreteDocumentData>>, { save }: { save: true }): Promise<this>;
+  clone(
+    data: DeepPartial<DocumentDataToSourceData<ConcreteDocumentData>>,
+    { save }: { save: boolean }
+  ): this | Promise<this>;
 
   /**
    * Get the permission level that a specific User has over this Document, a value in CONST.ENTITY_PERMISSIONS.
@@ -170,7 +179,7 @@ declare class Document<ConcreteDocumentData extends DocumentData<any, any>, Pare
    * ```typescript
    * const actor = game.actors.getName("Tim");
    * const data = [{name: "Sword", type: "weapon"}, {name: "Breastplate", type: "equipment"}];
-   * const created = await Item.createDocuments(data, {parent: actor});
+   * const created = await Item.createDocuments(data, {parent: actor});this
    * ```
    *
    * @example <caption>Create a Document within a Compendium pack</caption>
@@ -181,7 +190,7 @@ declare class Document<ConcreteDocumentData extends DocumentData<any, any>, Pare
    */
   static createDocuments<T extends Document<any, any>>(
     this: ConstructorOf<T>,
-    data?: Array<DeepPartial<DocumentToData<T>> & Record<string, unknown>>,
+    data?: Array<DeepPartial<DocumentToSourceData<T>> & Record<string, unknown>>,
     context?: DocumentModificationContext
   ): Promise<Array<T>>;
 
@@ -222,7 +231,7 @@ declare class Document<ConcreteDocumentData extends DocumentData<any, any>, Pare
    */
   updateDocuments<T extends Document<any, any>>(
     this: ConstructorOf<T>,
-    updates?: Array<DeepPartial<DocumentToData<T>> & { _id: string | null } & Record<string, unknown>>,
+    updates?: Array<DeepPartial<DocumentToSourceData<T>> & { _id: string } & Record<string, unknown>>,
     context?: DocumentModificationContext
   ): Promise<Array<T>>;
 
@@ -298,7 +307,7 @@ declare class Document<ConcreteDocumentData extends DocumentData<any, any>, Pare
    */
   static create<T extends Document<any, any>>(
     this: ConstructorOf<T>,
-    data?: DeepPartial<DocumentToData<T>> & Record<string, unknown>,
+    data?: DeepPartial<DocumentToSourceData<T>> & Record<string, unknown>,
     context?: DocumentModificationContext
   ): Promise<T>;
 
@@ -312,7 +321,7 @@ declare class Document<ConcreteDocumentData extends DocumentData<any, any>, Pare
    * @returns The updated Document instance
    */
   update(
-    data?: DeepPartial<DocumentDataToData<ConcreteDocumentData>> & Record<string, unknown>,
+    data?: DeepPartial<DocumentDataToSourceData<ConcreteDocumentData>> & Record<string, unknown>,
     context?: DocumentModificationContext
   ): Promise<this>;
 
@@ -330,19 +339,15 @@ declare class Document<ConcreteDocumentData extends DocumentData<any, any>, Pare
    * @param embeddedName - The name of the embedded Document type
    * @returns The Collection instance of embedded Documents of the requested type
    */
-  getEmbeddedCollection(embeddedName: string): Collection<Document<any, this>>;
+  getEmbeddedCollection(embeddedName: string): Collection<Document<any, this>>; // TODO: Improve
 
   /**
    * Get an embedded document by it's id from a named collection in the parent document.
    * @param embeddedName - The name of the embedded Document type
    * @param id           - The id of the child document to retrieve
-   * @param strict       - Throw an Error if the requested id does not exist, otherwise return null
-   *                       (default: `false`)
-   * @returns The retrieved embedded Document instance
-   *
-   * @remarks
-   * If the entity does not exist, this will return `undefined` if `strict` is `false`, unlike documented above
-   * (see https://gitlab.com/foundrynet/foundryvtt/-/issues/4849)
+   * @param options      - Additional options which modify how embedded documents are retrieved
+   * @param strict       - Throw an Error if the requested id does not exist. See Collection#get
+   * @returns The retrieved embedded Document instance, or undefined
    */
   getEmbeddedDocument(
     embeddedName: string,
@@ -452,7 +457,7 @@ declare class Document<ConcreteDocumentData extends DocumentData<any, any>, Pare
    * @param user    - The User requesting the document update
    */
   protected _preUpdate(
-    changed: DeepPartial<DocumentDataToData<ConcreteDocumentData>> & Record<string, unknown>,
+    changed: DeepPartial<DocumentDataToSourceData<ConcreteDocumentData>> & Record<string, unknown>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
@@ -482,7 +487,7 @@ declare class Document<ConcreteDocumentData extends DocumentData<any, any>, Pare
    * @param user    - The User requesting the document update
    */
   protected _onUpdate(
-    changed: DeepPartial<DocumentDataToData<ConcreteDocumentData>> & Record<string, unknown>,
+    changed: DeepPartial<DocumentDataToSourceData<ConcreteDocumentData>> & Record<string, unknown>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): void;
@@ -535,7 +540,17 @@ declare class Document<ConcreteDocumentData extends DocumentData<any, any>, Pare
   ): Promise<void>;
 
   /**
+   * Transform the Document instance into a plain object.
+   * The created object is an independent copy of the original data.
+   * See DocumentData#toObject
+   * @param source - Draw values from the underlying data source rather than transformed values
+   * @returns The extracted primitive object
+   */
+  toObject(source?: boolean): ReturnType<ConcreteDocumentData['toObject']>;
+
+  /**
    * Convert the Document instance to a primitive object which can be serialized.
+   * See DocumentData#toJSON
    * @returns The document data expressed as a plain object
    */
   toJSON(): ReturnType<ConcreteDocumentData['toJSON']>;
@@ -553,6 +568,12 @@ interface DocumentModificationOptions {
    * @defaultValue `false`
    */
   index?: boolean;
+
+  /**
+   * When performing a creation operation, keep the provided _id instead of clearing it.
+   * @defaultValue `false`
+   */
+  keepId?: boolean;
 
   /**
    * Create a temporary document which is not saved to the database. Only used during creation.
@@ -610,6 +631,9 @@ declare global {
 }
 
 interface Context<Parent extends Document<any, any> | null> {
+  /**
+   * A parent document within which this Document is embedded
+   */
   parent?: Parent;
 
   /**
