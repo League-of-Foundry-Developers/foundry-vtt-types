@@ -178,6 +178,11 @@ declare class PoolTerm extends RollTerm {
   countFailures(modifier: string): void;
 }
 
+/**
+ * @deprecated since 0.8.1
+ */
+declare const DicePool: PoolTerm;
+
 declare namespace PoolTerm {
   interface TermData {
     terms: string[];

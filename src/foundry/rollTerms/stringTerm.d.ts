@@ -3,6 +3,8 @@
  */
 declare class StringTerm extends RollTerm {
   constructor({ term, options }?: StringTerm.TermData);
+
+  term: string;
 }
 
 declare namespace StringTerm {

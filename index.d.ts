@@ -20,8 +20,6 @@ import './src/foundry/clientSettings';
 import './src/foundry/config';
 import './src/foundry/constants';
 import './src/foundry/contextMenu';
-import './src/foundry/dicePool';
-import './src/foundry/diceTerm';
 import './src/foundry/dragDrop';
 import './src/foundry/draggable';
 import './src/foundry/embeddedEntity';
