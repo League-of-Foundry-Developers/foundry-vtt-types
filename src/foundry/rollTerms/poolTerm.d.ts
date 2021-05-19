@@ -30,7 +30,7 @@ declare class PoolTerm extends RollTerm {
   modifiers: PoolTerm.TermData['modifiers'];
 
   /** The elements of a Dice Pool must be Roll objects or numbers */
-  rolls: (PoolTerm.TermData['rolls'] | number)[];
+  rolls: PoolTerm.TermData['rolls'];
 
   /** The array of dice pool results which have been rolled */
   results: PoolTerm.TermData['results'];
