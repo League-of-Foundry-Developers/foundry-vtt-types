@@ -139,8 +139,8 @@ import './src/foundry/applications/sidebarTabs/sidebarDirectories/sceneDirectory
 
 import './src/foundry/avClients/easyRTCClient';
 
-import './src/foundry/collections/documentCollection';
 import './src/foundry/collections/compendiumCollection';
+import './src/foundry/collections/documentCollection';
 import './src/foundry/collections/worldCollection';
 
 import './src/foundry/collections/entityCollections/actors';

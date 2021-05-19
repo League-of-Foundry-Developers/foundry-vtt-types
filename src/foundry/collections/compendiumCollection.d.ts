@@ -1,18 +1,18 @@
 /**
  * A singleton Collection of Compendium-level Document objects within the Foundry Virtual Tabletop.
  * Each Compendium pack has its own associated instance of the CompendiumCollection class which contains its contents.
- *
- * @param metadata -  The compendium metadata, an object provided by game.data
  */
 declare class CompendiumCollection<T extends Entity = Entity> extends DocumentCollection<T> {
   /**
    * The amount of time that Document instances within this CompendiumCollection are held in memory.
    * Accessing the contents of the Compendium pack extends the duration of this lifetime.
+   * @defaultValue `300`
    */
   static CACHE_LIFETIME_SECONDS: number;
 
   /**
    * The named game setting which contains Compendium configurations.
+   * @defaultValue `'compendiumConfiguration'`
    */
   static CONFIG_SETTING: string;
 
@@ -21,8 +21,14 @@ declare class CompendiumCollection<T extends Entity = Entity> extends DocumentCo
    * @param metadata -  The compendium metadata used to create the new pack
    * @param options -  Additional options which modify the Compendium creation request
    */
-  static createCompendium(metadata: Compendium.Metadata, options?: Compendium.Settings): Promise<CompendiumCollection>;
+  static createCompendium(
+    metadata: Compendium.Metadata,
+    options?: Compendium.Settings
+  ): Promise<CompendiumCollection> | void;
 
+  /**
+   * @param metadata -  The compendium metadata, an object provided by game.data
+   */
   constructor(metadata: Compendium.Metadata);
 
   /**
@@ -38,7 +44,7 @@ declare class CompendiumCollection<T extends Entity = Entity> extends DocumentCo
   /**
    * A debounced function which will clear the contents of the Compendium pack if it is not accessed frequently.
    */
-  private _flush;
+  private _flush(): void;
 
   /**
    * The canonical Compendium name - comprised of the originating package and the pack name
@@ -83,7 +89,7 @@ declare class CompendiumCollection<T extends Entity = Entity> extends DocumentCo
    * @param query -           A database query used to retrieve documents from the underlying database
    * @returns   The retrieved Document instances
    */
-  getDocuments(query?: object): Promise<T[]>;
+  getDocuments(query?: object): Promise<T[]>; // TODO: Type the query object
 
   /**
    * Import a Document into this Compendium Collection.
@@ -109,33 +115,33 @@ declare class CompendiumCollection<T extends Entity = Entity> extends DocumentCo
    * @param settings -  The object of compendium settings to define
    * @returns          A Promise which resolves once the setting is updated
    */
-  configure(settings?: Compendium.Settings): Promise<any>;
+  configure(settings?: Compendium.Settings): Promise<unknown>; // TODO: Returns a setting
 
   /**
    * Delete an existing world-level Compendium Collection.
    * This action may only be performed for world-level packs by a Gamemaster User.
    */
-  deleteCompendium(): Promise<CompendiumCollection<T>>;
+  deleteCompendium(): Promise<this>;
 
   /**
    * Duplicate a compendium pack to the current World.
    */
-  duplicateCompendium({ label }?: { label?: string }): Promise<CompendiumCollection<T>>;
+  duplicateCompendium({ label }?: { label?: string }): Promise<this>;
 
   /**
    * Validate that the current user is able to modify content of this Compendium pack
    */
-  private _assertUserCanModify;
+  private _assertUserCanModify: boolean;
 
   /**
    * Request that a Compendium pack be migrated to the latest System data template
    */
-  migrate(options: Compendium.Settings): Promise<CompendiumCollection<T>>;
+  migrate(options: Compendium.Settings): Promise<this>;
 
   /**
    * Follow-up actions taken when Documents within this Compendium pack are modified
    */
-  private _onModifyContents;
+  private _onModifyContents(documents: T[], options: Entity.UpdateOptions, userId: string): void;
 
   /**
    * @deprecated since 0.9.0

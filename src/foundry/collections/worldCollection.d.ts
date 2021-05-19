@@ -1,28 +1,45 @@
 /**
  * A singleton Collection of world-level Document objects within the Foundry Virtual Tabletop.
  * Each primary Document type has an associated subclass of WorldCollection which contains them.
- *
- * @param data -     An array of data objects from which to create Document instances
  */
 declare abstract class WorldCollection<T extends Entity = Entity> extends DocumentCollection<T> {
-  /**
-   * Return a reference to the singleton instance of this EntityCollection, or
-   * null if it has not yet been created.
-   */
-  static get instance(): DocumentCollection<Entity> | null;
-
-  constructor(data?: T['_data'][]);
-
   /**
    * The source data is, itself, a mapping of IDs to data objects
    */
   _source: T['_data'][];
 
   /**
+   *
+   * @param data -     An array of data objects from which to create Document instances
+   */
+  constructor(data?: T['_data'][]);
+
+  /**
+   * Initialize the WorldCollection object by constructing its contained Document instances
+   */
+  private _initialize(): void;
+
+  /**
+   * {@inheritdoc}
+   */
+  get documentName(): string;
+
+  /**
+   * The base Document type which is contained within this WorldCollection
+   */
+  static documentName: string | null;
+
+  /**
    * Return a reference to the SidebarDirectory application for this
    * EntityCollection, or null if it has not yet been created.
    */
   get directory(): SidebarDirectory | null;
+
+  /**
+   * Return a reference to the singleton instance of this EntityCollection, or
+   * null if it has not yet been created.
+   */
+  static get instance(): DocumentCollection<Entity> | null;
 
   /**
    * Import a Document from a Compendium collection, adding it to the current World.

@@ -1,14 +1,8 @@
 /**
- * An iterable container of Entity objects within the Foundry Virtual Tabletop framework.
- * Each Entity type has it's own subclass of EntityCollection, which defines the abstract interface.
- * @typeParam T - The type of Entities in the EntityCollection
+ * A Collection of Document objects within the Foundry Virtual Tabletop framework.
+ * @typeParam T - The type of Documents in the DocumentCollection
  */
 declare abstract class DocumentCollection<T extends Entity = Entity> extends foundry.utils.Collection<T> {
-  /**
-   * @param data - An Array of Entity data from which to create instances
-   */
-  constructor(data: T['_data'][]);
-
   /**
    * An Array of application references which will be automatically updated when
    * the collection content changes
@@ -16,42 +10,41 @@ declare abstract class DocumentCollection<T extends Entity = Entity> extends fou
   apps: Application[];
 
   /**
-   * Render any Applications associated with this EntityCollection
-   * @param args -
-   * @returns A reference to the rendered EntityCollection
-   * @see {@link Application.render}
-   */
-  render(...args: Parameters<Application['render']>): this;
-
-  /**
-   * The EntityCollection name
+   * The DocumentCollection name
    */
   get name(): string;
 
   /**
-   * Return a reference to the Entity subclass which should be used when
-   * creating elements of this EntityCollection.
-   * This should always be an explicit reference to the class which is used in
-   * this game to represent the entity, and not the base implementation of that
-   * entity type.
+   * A reference to the named Document class which is contained within this DocumentCollection.
    */
   get documentClass(): ConstructorOf<T>;
 
   /**
    * A reference to the named Document class which is contained within this DocumentCollection.
    */
-  get documentName(): string;
+  abstract get documentName(): string;
 
   /**
-   * Update all objects in this EntityCollection with a provided transformation.
-   * Conditionally filter to only apply to Entities which match a certain
-   * condition.
-   * @param transformation - An object of data or function to apply to all
-   *                         matched objects
-   * @param condition      - A function which tests whether to target each object
-   *                         (default: `null`)
-   * @param options        - Additional options passed to Entity.update
-   * @returns An array of updated data once the operation is complete
+   * {@inheritdoc}
+   *
+   * @param id - Unused
+   */
+  set: (id: string, document: T) => Map<string, T>;
+
+  /**
+   * Render any Applications associated with this DocumentCollection.
+   * @param args -
+   * @see {@link Application.render}
+   */
+  render(...args: Parameters<Application['render']>): void;
+
+  /**
+   * Update all objects in this DocumentCollection with a provided transformation.
+   * Conditionally filter to only apply to Entities which match a certain condition.
+   * @param transformation -   An object of data or function to apply to all matched objects
+   * @param condition -         A function which tests whether to target each object
+   * @param options -                  Additional options passed to Entity.update
+   * @returns              An array of updated data once the operation is complete
    */
   updateAll(
     transformation: DeepPartial<T['_data']> | ((obj: T) => DeepPartial<T['_data']>),
