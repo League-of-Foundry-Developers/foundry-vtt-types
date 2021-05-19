@@ -1,5 +1,6 @@
 /**
- * TODO
+ * An abstract class which represents a single token that can be used as part of a Roll formula.
+ * Every portion of a Roll formula is parsed into a subclass of RollTerm in order for the Roll to be fully evaluated.
  */
 declare abstract class RollTerm {
   constructor({ options }?: { options?: RollTerm.Options });
