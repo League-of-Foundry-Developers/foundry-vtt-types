@@ -271,7 +271,8 @@ declare class Roll<D extends object = {}> {
    * console.log(r.total);  // 11
    * ```
    */
-  evaluate({ minimize, maximize, async }?: Partial<Roll.Options>): this | Promise<this>;
+  evaluate({ minimize, maximize, async }?: Partial<Roll.Options & { async: false }>): this;
+  evaluate({ minimize, maximize, async }?: Partial<Roll.Options & { async: true }>): Promise<this>;
 
   /**
    * Evaluate the roll asynchronously.
@@ -316,7 +317,9 @@ declare class Roll<D extends object = {}> {
    * @param options - Evaluation options passed to Roll#evaluate
    * @returns A new Roll object, rolled using the same formula and data
    */
-  reroll(options?: Partial<Roll.Options>): ReturnType<Roll['evaluate']>;
+
+  reroll(options?: Partial<Roll.Options & { async: false }>): this;
+  reroll(options?: Partial<Roll.Options & { async: true }>): Promise<this>;
 
   /**
    * Simulate a roll and evaluate the distribution of returned results
