@@ -14,8 +14,8 @@ declare type PointArray = [x: number, y: number];
 declare type RayIntersection = {
   x: number;
   y: number;
-  t1: number;
   t0: number;
+  t1: number;
 } | null;
 
 /**
