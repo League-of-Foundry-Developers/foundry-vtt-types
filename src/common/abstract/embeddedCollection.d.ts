@@ -2,10 +2,10 @@ import Collection from '../utils/collection';
 
 interface EmbeddedCollection<T> extends Omit<Collection<T>, 'set' | 'delete'> {
   /** {@inheritdoc} */
-  set(key: string, value: T, { modifySource }: { modifySource?: boolean }): this;
+  delete(key: string, { modifySource }: { modifySource?: boolean }): boolean;
 
   /** {@inheritdoc} */
-  delete(key: string, { modifySource }: { modifySource?: boolean }): boolean;
+  set(key: string, value: T, { modifySource }: { modifySource?: boolean }): this;
 }
 
 interface EmbeddedCollectionConstructor {

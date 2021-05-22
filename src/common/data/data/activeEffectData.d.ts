@@ -6,15 +6,15 @@ import { EffectChangeData } from './effectChangeData';
 import { EffectDurationData } from './effectDurationData';
 
 interface ChangesField extends DocumentField<EffectChangeData[]> {
-  type: [typeof EffectChangeData];
-  required: true;
   default: [];
+  required: true;
+  type: [typeof EffectChangeData];
 }
 
 interface DurationField extends DocumentField<EffectDurationData> {
-  type: typeof EffectDurationData;
+  default: {};
   required: true;
-  // default: {}; // TODO: This is actually `{}`, make it work so that the default values are default values for source
+  type: typeof EffectDurationData;
 }
 
 interface ActiveEffectDataSchema extends DocumentSchema {
@@ -22,12 +22,12 @@ interface ActiveEffectDataSchema extends DocumentSchema {
   changes: ChangesField;
   disabled: typeof fields.BOOLEAN_FIELD;
   duration: DurationField;
+  flags: typeof fields.OBJECT_FIELD; // TODO: add more concrete object type
   icon: typeof fields.IMAGE_FIELD;
   label: typeof fields.BLANK_STRING;
   origin: typeof fields.STRING_FIELD;
   tint: typeof fields.COLOR_FIELD;
   transfer: FieldReturnType<typeof fields.BOOLEAN_FIELD, { default: true }>;
-  flags: typeof fields.OBJECT_FIELD; // TODO: add more concrete object type
 }
 
 interface ActiveEffectDataProperties {
@@ -51,6 +51,12 @@ interface ActiveEffectDataProperties {
    * An EffectDurationData object which describes the duration of the ActiveEffect
    */
   duration?: EffectDurationData;
+
+  /**
+   * An object of optional key/value flags
+   * @defaultValue `{}`
+   */
+  flags: Record<string, unknown>;
 
   /**
    * An icon image path used to depict the ActiveEffect
@@ -78,12 +84,6 @@ interface ActiveEffectDataProperties {
    * @defaultValue `true`
    */
   transfer: boolean;
-
-  /**
-   * An object of optional key/value flags
-   * @defaultValue `{}`
-   */
-  flags: Record<string, unknown>;
 }
 
 type ActiveEffectDataSource = PropertiesToSource<ActiveEffectDataProperties>;

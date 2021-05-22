@@ -7,55 +7,6 @@ import Document from './document';
  */
 declare abstract class DatabaseBackend {
   /**
-   * Retrieve Documents based on provided query parameters
-   * @param documentClass - The Document definition
-   * @param request       - The requested operation
-   * @param user          - The requesting User
-   * @returns The created Document instances
-   */
-  get<T extends Document<any, any>>(documentClass: ConstructorOf<T>, request: Request, user: BaseUser): T[];
-
-  /**
-   * Validate the arguments passed to the get operation
-   * @param query   - A document search query to execute
-   *                  (default: `{}`)
-   * @param options - Operation options
-   *                  (default: `{}`)
-   * @param pack    - A Compendium pack identifier
-   */
-  private _getArgs({ query, options, pack }?: Request): { query: object; options: RequestOptions; pack?: string };
-
-  /**
-   * Get primary Document instances
-   */
-  protected abstract _getDocuments<T extends Document<any, any>>(
-    documentClass: ConstructorOf<T>,
-    query: Request,
-    options: RequestOptions,
-    user: BaseUser
-  ): Promise<T[]>;
-
-  /**
-   * Get embedded Document instances
-   */
-  protected abstract _getEmbeddedDocuments<T extends Document<any, any>>(
-    documentClass: ConstructorOf<T>,
-    parent: T extends Document<any, infer U> ? U : never,
-    query: Request,
-    options: RequestOptions,
-    user: BaseUser
-  ): Promise<T[]>;
-
-  /**
-   * Get the parent Document (if any) associated with a request
-   * @param request - The requested operation
-   * @returns The parent Document, or null
-   *
-   * @remarks Actually, this returns `undefined` if  there is no parent, the JSDoc is incorrect.
-   */
-  private _getParent(request: Request): Promise<Document<any, any> | undefined>;
-
-  /**
    * Perform document creation operations
    * @param documentClass - The Document definition
    * @param request       - The requested operation
@@ -65,6 +16,33 @@ declare abstract class DatabaseBackend {
   create<T extends Document<any, any>>(documentClass: ConstructorOf<T>, request: Request, user: BaseUser): Promise<T[]>;
 
   /**
+   * Perform document deletion operations
+   * @param documentClass - The Document definition
+   * @param request       - The requested operation
+   * @param user          - The requesting User
+   * @returns The deleted Document instances
+   */
+  delete<T extends Document<any, any>>(documentClass: ConstructorOf<T>, request: Request, user: BaseUser): Promise<T[]>;
+
+  /**
+   * Retrieve Documents based on provided query parameters
+   * @param documentClass - The Document definition
+   * @param request       - The requested operation
+   * @param user          - The requesting User
+   * @returns The created Document instances
+   */
+  get<T extends Document<any, any>>(documentClass: ConstructorOf<T>, request: Request, user: BaseUser): T[];
+
+  /**
+   * Perform document update operations
+   * @param documentClass - The Document definition
+   * @param request       - The requested operation
+   * @param user          - The requesting User
+   * @returns The updated Document instances
+   */
+  update<T extends Document<any, any>>(documentClass: ConstructorOf<T>, request: Request, user: BaseUser): Promise<T[]>;
+
+  /**
    * Validate the arguments passed to the create operation
    * @param data    - An array of document data
    *                  (default: `[]`)
@@ -72,7 +50,7 @@ declare abstract class DatabaseBackend {
    *                  (default: `{}`)
    * @param pack    - A Compendium pack identifier
    */
-  private _createArgs({
+  protected _createArgs({
     data,
     options,
     pack
@@ -98,57 +76,6 @@ declare abstract class DatabaseBackend {
   ): Promise<T[]>;
 
   /**
-   * Perform document update operations
-   * @param documentClass - The Document definition
-   * @param request       - The requested operation
-   * @param user          - The requesting User
-   * @returns The updated Document instances
-   */
-  update<T extends Document<any, any>>(documentClass: ConstructorOf<T>, request: Request, user: BaseUser): Promise<T[]>;
-
-  /**
-   * Validate the arguments passed to the update operation
-   * @param updates - An array of document data
-   *                  (default: `[]`)
-   * @param options - Operation options
-   *                  (default: `{}`)
-   * @param pack    - A Compendium pack identifier
-   */
-  private _updateArgs({
-    updates,
-    options,
-    pack
-  }?: Request): { updates: DocumentData<any, any, any>[]; options: RequestOptions; pack?: string };
-
-  /**
-   * Update primary Document instances
-   */
-  protected _updateDocuments<T extends Document<any, any>>(
-    documentClass: ConstructorOf<T>,
-    request: Request,
-    user: BaseUser
-  ): Promise<T[]>;
-
-  /**
-   * Update embedded Document instances
-   */
-  protected _updateEmbeddedDocuments<T extends Document<any, any>>(
-    documentClass: ConstructorOf<T>,
-    parent: T extends Document<any, infer U> ? U : never,
-    request: Request,
-    user: BaseUser
-  ): Promise<T[]>;
-
-  /**
-   * Perform document deletion operations
-   * @param documentClass - The Document definition
-   * @param request       - The requested operation
-   * @param user          - The requesting User
-   * @returns The deleted Document instances
-   */
-  delete<T extends Document<any, any>>(documentClass: ConstructorOf<T>, request: Request, user: BaseUser): Promise<T[]>;
-
-  /**
    * Validate the arguments passed to the delete operation
    * @param request - The requested operation
    * @param ids     - An array of document ids
@@ -157,7 +84,7 @@ declare abstract class DatabaseBackend {
    *                  (default: `{}`)
    * @param pack    - A Compendium pack identifier
    */
-  private _deleteArgs({ ids, options, pack }?: Request): { ids: string[]; options: RequestOptions; pack?: string };
+  protected _deleteArgs({ ids, options, pack }?: Request): { ids: string[]; options: RequestOptions; pack?: string };
 
   /**
    * Delete primary Document instances
@@ -179,19 +106,43 @@ declare abstract class DatabaseBackend {
   ): Promise<T[]>;
 
   /**
-   * Describe the scopes which are suitable as the namespace for a flag key
+   * Validate the arguments passed to the get operation
+   * @param query   - A document search query to execute
+   *                  (default: `{}`)
+   * @param options - Operation options
+   *                  (default: `{}`)
+   * @param pack    - A Compendium pack identifier
    */
-  protected getFlagScopes(): string[];
-
-  /**
-   * Describe the scopes which are suitable as the namespace for a flag key
-   */
-  protected getCompendiumScopes(): string[];
+  protected _getArgs({ query, options, pack }?: Request): { options: RequestOptions; pack?: string; query: object };
 
   /**
    * Provide the Logger implementation that should be used for database operations
    */
   protected _getLogger(): Logger | Console;
+
+  /**
+   * Get the parent Document (if any) associated with a request
+   * @param request - The requested operation
+   * @returns The parent Document, or null
+   *
+   * @remarks Actually, this returns `undefined` if  there is no parent, the JSDoc is incorrect.
+   */
+  protected _getParent(request: Request): Promise<Document<any, any> | undefined>;
+
+  /**
+   * Determine a string suffix for a log message based on the parent and/or compendium context.
+   */
+  protected _logContext({ parent, pack }?: { pack?: string; parent?: Document<any, any> }): string;
+
+  /**
+   * Construct a standardized error message given the context of an attempted operation
+   */
+  protected _logError(
+    user: BaseUser,
+    action: string,
+    subject: Document<any, any> | string,
+    { parent, pack }?: { pack?: string; parent?: Document<any, any> }
+  ): string;
 
   /**
    * Log a database operation for an embedded document, capturing the action taken and relevant IDs
@@ -206,41 +157,90 @@ declare abstract class DatabaseBackend {
     action: string,
     type: string,
     documents: Document<any, any>[],
-    { parent, pack, level }?: { parent?: Document<any, any>; pack?: string; level?: string }
+    { parent, pack, level }?: { level?: string; pack?: string; parent?: Document<any, any> }
   ): void;
 
   /**
-   * Construct a standardized error message given the context of an attempted operation
+   * Validate the arguments passed to the update operation
+   * @param updates - An array of document data
+   *                  (default: `[]`)
+   * @param options - Operation options
+   *                  (default: `{}`)
+   * @param pack    - A Compendium pack identifier
    */
-  protected _logError(
-    user: BaseUser,
-    action: string,
-    subject: Document<any, any> | string,
-    { parent, pack }?: { parent?: Document<any, any>; pack?: string }
-  ): string;
+  protected _updateArgs({
+    updates,
+    options,
+    pack
+  }?: Request): { options: RequestOptions; pack?: string; updates: DocumentData<any, any, any>[] };
 
   /**
-   * Determine a string suffix for a log message based on the parent and/or compendium context.
+   * Update primary Document instances
    */
-  private _logContext({ parent, pack }?: { parent?: Document<any, any>; pack?: string }): string;
+  protected _updateDocuments<T extends Document<any, any>>(
+    documentClass: ConstructorOf<T>,
+    request: Request,
+    user: BaseUser
+  ): Promise<T[]>;
+
+  /**
+   * Update embedded Document instances
+   */
+  protected _updateEmbeddedDocuments<T extends Document<any, any>>(
+    documentClass: ConstructorOf<T>,
+    parent: T extends Document<any, infer U> ? U : never,
+    request: Request,
+    user: BaseUser
+  ): Promise<T[]>;
+
+  /**
+   * Describe the scopes which are suitable as the namespace for a flag key
+   */
+  protected getCompendiumScopes(): string[];
+
+  /**
+   * Describe the scopes which are suitable as the namespace for a flag key
+   */
+  protected getFlagScopes(): string[];
+
+  /**
+   * Get primary Document instances
+   */
+  protected abstract _getDocuments<T extends Document<any, any>>(
+    documentClass: ConstructorOf<T>,
+    query: Request,
+    options: RequestOptions,
+    user: BaseUser
+  ): Promise<T[]>;
+
+  /**
+   * Get embedded Document instances
+   */
+  protected abstract _getEmbeddedDocuments<T extends Document<any, any>>(
+    documentClass: ConstructorOf<T>,
+    parent: T extends Document<any, infer U> ? U : never,
+    query: Request,
+    options: RequestOptions,
+    user: BaseUser
+  ): Promise<T[]>;
 }
 
 interface Request {
   data?: DocumentData<any, any, any>[];
-  updates?: DocumentData<any, any, any>[];
   ids?: string[];
-  parent?: Document<any, any>;
-  query?: object;
   options?: RequestOptions;
   pack?: string;
+  parent?: Document<any, any>;
+  query?: object;
+  updates?: DocumentData<any, any, any>[];
 }
 
 interface RequestOptions {
-  index?: boolean;
-  broadcast?: boolean;
-  temporary?: boolean;
-  nohook?: boolean;
   [key: string]: unknown;
+  broadcast?: boolean;
+  index?: boolean;
+  nohook?: boolean;
+  temporary?: boolean;
 }
 
 export default DatabaseBackend;

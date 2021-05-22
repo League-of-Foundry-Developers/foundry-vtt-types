@@ -4,6 +4,10 @@ export type PropertiesToSource<T extends object> = {
   [Key in keyof T]: PropertyTypeToSourceType<T[Key]>;
 };
 
+export type PropertyTypeToSourceParameterType<T> = ObjectToDeepPartial<PropertyTypeToSourceType<T>>;
+
+type ObjectToDeepPartial<T> = T extends object ? DeepPartial<T> : T;
+
 type PropertyTypeToSourceType<T> = T extends Array<infer U>
   ? Array<PropertyTypeToSourceType<U>>
   : T extends DocumentData<any, infer U, any>

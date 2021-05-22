@@ -4,22 +4,22 @@ import { BaseAmbientLight } from '../../documents';
 import * as fields from '../fields';
 
 interface DarknessActivationSchema extends DocumentSchema {
-  min: FieldReturnType<typeof fields.ALPHA_FIELD, { default: 0 }>;
   max: typeof fields.ALPHA_FIELD;
+  min: FieldReturnType<typeof fields.ALPHA_FIELD, { default: 0 }>;
 }
 
 interface DarknessActivationProperties {
-  /**
-   * The minimum darkness level for which activation occurs
-   * @defaultValue `0`
-   */
-  min: number;
-
   /**
    * The maximum darkness level for which activation occurs
    * @defaultValue `1`
    */
   max: number;
+
+  /**
+   * The minimum darkness level for which activation occurs
+   * @defaultValue `0`
+   */
+  min: number;
 }
 
 type DarknessActivationSource = PropertiesToSource<DarknessActivationProperties>;

@@ -12,10 +12,10 @@ declare type PointArray = [x: number, y: number];
  * A Ray intersection point
  */
 declare type RayIntersection = {
-  x: number;
-  y: number;
   t0: number;
   t1: number;
+  x: number;
+  y: number;
 } | null;
 
 /**
@@ -24,10 +24,10 @@ declare type RayIntersection = {
 declare type Rectangle =
   | PIXI.Rectangle
   | {
+      height: number;
+      width: number;
       x: number;
       y: number;
-      width: number;
-      height: number;
     };
 
 type RequestData = object | object[] | string | string[];
@@ -39,14 +39,14 @@ interface SocketRequest {
   action?: string;
 
   /**
-   * The type of object being modified
-   */
-  type?: string;
-
-  /**
    * Data applied to the operation
    */
   data?: RequestData;
+
+  /**
+   * Additional options applied to the request
+   */
+  options?: object;
 
   /**
    * A Compendium pack name
@@ -54,31 +54,36 @@ interface SocketRequest {
   pack?: string;
 
   /**
-   * The type of parent document
-   */
-  parentType?: string;
-
-  /**
    * The ID of a parent document
    */
   parentId?: string;
 
   /**
-   * Additional options applied to the request
+   * The type of parent document
    */
-  options?: object;
+  parentType?: string;
+
+  /**
+   * The type of object being modified
+   */
+  type?: string;
 }
 
 interface SocketResponse {
   /**
-   * The initial request
+   * Data returned as a result of the request
    */
-  request: SocketRequest;
+  data?: RequestData;
 
   /**
    * An error, if one occurred
    */
   error?: Error;
+
+  /**
+   * The initial request
+   */
+  request: SocketRequest;
 
   /**
    * The status of the request
@@ -89,9 +94,4 @@ interface SocketResponse {
    * The ID of the requesting User
    */
   userId?: string;
-
-  /**
-   * Data returned as a result of the request
-   */
-  data?: RequestData;
 }

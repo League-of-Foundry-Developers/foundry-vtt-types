@@ -7,28 +7,28 @@ import * as CONST from '../../constants';
 
 interface MacroDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
+  author: fields.ForeignDocumentField<{ default: () => string; type: typeof documents.BaseUser }>;
+  command: typeof fields.BLANK_STRING;
+  flags: typeof fields.OBJECT_FIELD;
+  folder: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
+  img: FieldReturnType<typeof fields.IMAGE_FIELD, { default: typeof CONST.DEFAULT_MACRO_ICON; required: true }>;
   name: typeof fields.REQUIRED_STRING;
-  type: DocumentField<string> & {
-    type: String;
-    required: true;
-    default: typeof CONST.MACRO_TYPES.CHAT;
-    validate: (t: unknown) => boolean;
-    validationError: 'The provided Macro type must be in CONST.MACRO_TYPES';
-  };
-  author: fields.ForeignDocumentField<{ type: typeof documents.BaseUser; default: () => string }>;
-  img: FieldReturnType<typeof fields.IMAGE_FIELD, { required: true; default: typeof CONST.DEFAULT_MACRO_ICON }>;
+  permission: typeof fields.DOCUMENT_PERMISSIONS;
   scope: DocumentField<string> & {
-    type: String;
-    required: true;
     default: typeof CONST.MACRO_SCOPES[0];
+    required: true;
+    type: String;
     validate: (t: unknown) => boolean;
     validationError: 'The provided Macro scope must be in CONST.MACRO_SCOPES';
   };
-  command: typeof fields.BLANK_STRING;
-  folder: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
   sort: typeof fields.INTEGER_SORT_FIELD;
-  permission: typeof fields.DOCUMENT_PERMISSIONS;
-  flags: typeof fields.OBJECT_FIELD;
+  type: DocumentField<string> & {
+    default: typeof CONST.MACRO_TYPES.CHAT;
+    required: true;
+    type: String;
+    validate: (t: unknown) => boolean;
+    validationError: 'The provided Macro type must be in CONST.MACRO_TYPES';
+  };
 }
 
 interface MacroDataProperties {
@@ -38,30 +38,9 @@ interface MacroDataProperties {
   _id: string | null;
 
   /**
-   * The name of this Macro
-   */
-  name: string;
-
-  /**
-   * A Macro subtype from CONST.MACRO_TYPES
-   */
-  type: ValueOf<typeof CONST.MACRO_TYPES>;
-
-  /**
    * The _id of a User document which created this Macro *
    */
   author: string;
-
-  /**
-   * An image file path which provides the thumbnail artwork for this Macro
-   */
-  img?: string;
-
-  /**
-   * The scope of this Macro application from CONST.MACRO_SCOPES
-   * @defaultValue `'global'`
-   */
-  scope: ValueOf<typeof CONST.MACRO_SCOPES>;
 
   /**
    * The string content of the macro command
@@ -70,10 +49,36 @@ interface MacroDataProperties {
   command: string;
 
   /**
+   * An object of optional key/value flags
+   */
+  flags: Record<string, unknown>;
+
+  /**
    * The _id of a Folder which contains this Macro
    * @defaultValue `null`
    */
   folder: string | null;
+
+  /**
+   * An image file path which provides the thumbnail artwork for this Macro
+   */
+  img?: string;
+
+  /**
+   * The name of this Macro
+   */
+  name: string;
+
+  /**
+   * An object which configures user permissions to this Macro
+   */
+  permission: Partial<Record<string, ValueOf<typeof CONST.ENTITY_PERMISSIONS>>>;
+
+  /**
+   * The scope of this Macro application from CONST.MACRO_SCOPES
+   * @defaultValue `'global'`
+   */
+  scope: ValueOf<typeof CONST.MACRO_SCOPES>;
 
   /**
    * The numeric sort value which orders this Macro relative to its siblings
@@ -82,14 +87,9 @@ interface MacroDataProperties {
   sort: number;
 
   /**
-   * An object which configures user permissions to this Macro
+   * A Macro subtype from CONST.MACRO_TYPES
    */
-  permission: Partial<Record<string, ValueOf<typeof CONST.ENTITY_PERMISSIONS>>>;
-
-  /**
-   * An object of optional key/value flags
-   */
-  flags: Record<string, unknown>;
+  type: ValueOf<typeof CONST.MACRO_TYPES>;
 }
 
 type MacroDataSource = PropertiesToSource<MacroDataProperties>;

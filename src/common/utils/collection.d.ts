@@ -5,29 +5,14 @@
  */
 interface Collection<T> extends Omit<Map<string, T>, 'forEach' | 'Symbol.iterator'> {
   /**
-   * When iterating over a Collection, we should iterate over its values instead of over its entries
-   */
-  [Symbol.iterator](): IterableIterator<T>;
-
-  /**
    * Return an Array of all the entry values in the Collection
    */
   readonly contents: T[];
 
   /**
-   * Find an entry in the Map using an functional condition.
-   * @see {@link Array#find}
-   *
-   * @param condition - The functional condition to test
-   * @returns The value, if found, otherwise undefined
-   *
-   * @example
-   * ```typescript
-   * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
-   * let a = c.find(entry => entry === "A");
-   * ```
+   * When iterating over a Collection, we should iterate over its values instead of over its entries
    */
-  find(condition: (e: T) => boolean): T | undefined;
+  [Symbol.iterator](): IterableIterator<T>;
 
   /**
    * Filter the Collection, returning an Array of entries which match a functional condition.
@@ -43,6 +28,21 @@ interface Collection<T> extends Omit<Map<string, T>, 'forEach' | 'Symbol.iterato
    * ```
    */
   filter(condition: (e: T) => boolean): T[];
+
+  /**
+   * Find an entry in the Map using an functional condition.
+   * @see {@link Array#find}
+   *
+   * @param condition - The functional condition to test
+   * @returns The value, if found, otherwise undefined
+   *
+   * @example
+   * ```typescript
+   * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
+   * let a = c.find(entry => entry === "A");
+   * ```
+   */
+  find(condition: (e: T) => boolean): T | undefined;
 
   /**
    * Apply a function to each element of the collection
