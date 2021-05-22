@@ -7,14 +7,16 @@
 TypeScript type definitions for [Foundry Virtual Tabletop](https://foundryvtt.com/) (unofficial)
 
 [![League Discord Server](https://img.shields.io/discord/732325252788387980?label=League%20of%20Extraordinary%20Foundry%20VTT%20Developers)](https://discord.gg/52DNPzqm2Z)
-![GitHub 0.7.9 issues by-label](https://img.shields.io/github/issues-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.7.9?color=%23fe631d)
-![GitHub closed 0.7.9 issues by-label](https://img.shields.io/github/issues-closed-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.7.9?color=%23fe631d)
-![GitHub 0.8.3 issues by-label](https://img.shields.io/github/issues-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.8.3?color=%23fe631d)
-![GitHub closed 0.8.3 issues by-label](https://img.shields.io/github/issues-closed-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.8.3?color=%23fe631d)
+![GitHub 0.7.x issues by-label](https://img.shields.io/github/issues-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.7.x?color=%23fe631d)
+![GitHub closed 0.7.x issues by-label](https://img.shields.io/github/issues-closed-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.7.x?color=%23fe631d)
+![GitHub 0.8.x issues by-label](https://img.shields.io/github/issues-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.8.x?color=%23fe631d)
+![GitHub closed 0.8.x issues by-label](https://img.shields.io/github/issues-closed-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.8.x?color=%23fe631d)
 
 </div>
 
 ## Supported Foundry VTT versions
+
+We aim to support the latest patch release of minor versions of Foundry VTT, starting with 0.7.
 
 At the moment, only 0.7.9 is supported. Work on 0.8.x is in progress but there is still a lot to be done.
 
@@ -53,7 +55,7 @@ This will make the type definitions available globally in your project.
 
 Make sure you are using `"moduleResolution": "node"`, too. It is required for some dependencies to be resolved correctly.
 
-You can find some information about how to actually work with the type definitions in the [Wiki](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/wiki). For example, [[0.7.9] Actors and Items](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/wiki/%5B0.7.9%5D-Actors-and-Items) describes how to set up custom `Actor` and `Item` classes for 0.7.9 using the types.
+You can find some information about how to actually work with the type definitions in the [Wiki](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/wiki). For example, [[0.7.x] Actors and Items](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/wiki/%5B0.7.x%5D-Actors-and-Items) describes how to set up custom `Actor` and `Item` classes for 0.7.x using the types.
 
 
 ## Acknowledgments
@@ -64,7 +66,7 @@ Originally forked from [Foundry Project Creator Types](https://gitlab.com/foundr
 
 Contributions are very welcome in order to decrease the individual workload. Filing issues for wrong / missing types is also a great way to help us improve the type definitions.
 
-There are individual branches for the different supported Foundry VTT versions that are being worked on. They are named according to the Foundry VTT version, e.g. the branch for Foundry VTT 0.7.9 is called `foundry-0.7.9`. All work to improve the type definitions for a specific version needs to be done through Pull Requests to the corresponding branch.
+There are individual branches for the different supported Foundry VTT versions that are being worked on. They are named according to the minor version of the Foundry VTT version, e.g. the branch for Foundry VTT 0.7 is called `foundry-0.7.x`. All work to improve the type definitions for a specific version needs to be done through Pull Requests to the corresponding branch.
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for more details on how to contribute.
 
