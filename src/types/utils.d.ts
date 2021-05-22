@@ -85,12 +85,4 @@ type Titlecase<S extends string> = S extends `${infer A} ${infer B}`
   ? `${Titlecase<A>} ${Titlecase<B>}`
   : Capitalize<Lowercase<S>>;
 
-type IsKeyOptional<O extends object, K extends keyof O> = {
-  [Key in keyof O as Key extends K ? never : Key]: O[Key];
-} & {
-  K?: O[K];
-} extends O
-  ? true
-  : false;
-
 type Merge<T extends object, U extends object> = Omit<T, keyof U> & U;

@@ -144,11 +144,11 @@ expectType<{ a: 'a' | 'b' }>(foundry.utils.duplicate({ a: ((): 'a' | 'b' => 'a')
 
 expectType<string>(foundry.utils.duplicate({ a: 0, b: '', c: false, toJSON: (): string => '' }));
 
-expectType<{ bar: boolean; foo: string }>(
+expectType<{ foo: string; bar: boolean }>(
   foundry.utils.duplicate({ a: 0, b: '', c: false, toJSON: () => ({ foo: '', bar: ((): boolean => false)() }) })
 );
 
-expectType<{ bar: boolean; foo: string }>(
+expectType<{ foo: string; bar: boolean }>(
   foundry.utils.duplicate({
     a: 0,
     b: '',
@@ -157,7 +157,7 @@ expectType<{ bar: boolean; foo: string }>(
   })
 );
 
-expectType<{ bar: false; foo: string }>(
+expectType<{ foo: string; bar: false }>(
   foundry.utils.duplicate({ a: 0, b: '', c: false, toJSON: () => ({ foo: '', bar: { baz: '', toJSON: () => false } }) })
 );
 

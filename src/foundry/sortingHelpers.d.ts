@@ -66,17 +66,13 @@ declare class SortingHelpers {
     };
   }>;
 
-  /* -------------------------------------------- */
+  /**
+   * Given an ordered Array of siblings and a target position, return the [min,max] indices to sort after the target
+   */
+  protected static _sortAfter<T>(siblings: T[], idx: number, sortKey: string): [T, T];
 
   /**
    * Given an ordered Array of siblings and a target position, return the [min,max] indices to sort before the target
    */
   protected static _sortBefore<T>(siblings: T[], idx: number, sortKey: string): [T, T];
-
-  /* -------------------------------------------- */
-
-  /**
-   * Given an ordered Array of siblings and a target position, return the [min,max] indices to sort after the target
-   */
-  protected static _sortAfter<T>(siblings: T[], idx: number, sortKey: string): [T, T];
 }
