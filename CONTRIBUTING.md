@@ -48,7 +48,7 @@ We also recommend to take a look at the corresponding project board to make sure
 
 #### Branching model
 
-We use a very simple branching model. We have a branch for every supported Foundry VTT version called `foundry-<major.minor>.x` (e.g. `foundry-0.7.x`). All changes for the type definitions for a given Foundry VTT version need to be made through Pull Requests towards the corresponding branch.
+We use a very simple branching model. We have a branch for every supported Foundry VTT version called `foundry-<major>.<minor>.x` (e.g. `foundry-0.7.x`). All changes for the type definitions for a given Foundry VTT version need to be made through Pull Requests towards the corresponding branch.
 
 #### Submitting pull requests
 
