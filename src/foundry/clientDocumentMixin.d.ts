@@ -1,9 +1,6 @@
-import {
-  ContextType,
-  DocumentDataType,
-  DocumentModificationOptions,
-  SourceDataType
-} from '../common/abstract/document';
+import { ContextType, DocumentDataType, DocumentModificationOptions } from '../common/abstract/document';
+
+import { SourceDataType } from '../common/abstract/helperTypes';
 
 declare global {
   /**

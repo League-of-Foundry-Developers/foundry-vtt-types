@@ -103,7 +103,6 @@ declare abstract class DocumentData<
     : ConcreteDocumentField['default'];
 
   /**
-   *
    * @param data     - Initial data used to construct the data object
    *                   (default: `{}`)
    * @param document - The document to which this data object belongs
@@ -193,9 +192,9 @@ declare abstract class DocumentData<
    * @param options      - Additional options which modify how the collection is updated
    *                       (default: `{}`)
    */
-  updateCollection(
-    collection: EmbeddedCollection<any>, // TODO: Improve
-    documentData: DocumentData<any, any, any>[], // TODO: Improve
+  updateCollection<T extends DocumentData<any, any, any>>(
+    collection: EmbeddedCollection<T, this>,
+    documentData: T extends DocumentData<any, infer U, any> ? DeepPartial<PropertiesToSource<U>>[] : never,
     options?: UpdateOptions
   ): void;
 

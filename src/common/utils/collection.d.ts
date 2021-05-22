@@ -1,13 +1,27 @@
+type MapWithoutForEachAndIteratorAndGet<K, V> = Omit<Map<K, V>, 'forEach' | 'Symbol.iterator' | 'get'>;
+
+interface MapWithoutForEachAndIteratorAndGetConstructor {
+  new (): MapWithoutForEachAndIteratorAndGet<any, any>;
+  new <K, V>(entries?: readonly (readonly [K, V])[] | null): MapWithoutForEachAndIteratorAndGet<K, V>;
+  new <K, V>(iterable: Iterable<readonly [K, V]>): MapWithoutForEachAndIteratorAndGet<K, V>;
+  readonly [Symbol.species]: MapWithoutForEachAndIteratorAndGetConstructor;
+  readonly prototype: MapWithoutForEachAndIteratorAndGet<any, any>;
+}
+
+declare const Map: MapWithoutForEachAndIteratorAndGetConstructor;
+
 /**
  * A reusable storage concept which blends the functionality of an Array with the efficient key-based lookup of a Map.
  * This concept is reused throughout Foundry VTT where a collection of uniquely identified elements is required.
  * @typeParam T - The type of the objects contained in the Collection
  */
-interface Collection<T> extends Omit<Map<string, T>, 'forEach' | 'Symbol.iterator'> {
+declare class Collection<T> extends Map<string, T> {
+  constructor(entries?: readonly (readonly [string, T])[] | null);
+
   /**
    * Return an Array of all the entry values in the Collection
    */
-  readonly contents: T[];
+  get contents(): T[];
 
   /**
    * When iterating over a Collection, we should iterate over its values instead of over its entries
@@ -71,7 +85,8 @@ interface Collection<T> extends Omit<Map<string, T>, 'forEach' | 'Symbol.iterato
    * c.get("d", {strict: true}); // throws Error
    * ```
    */
-  get(key: string, { strict }?: { strict?: boolean }): T | undefined;
+  get(key: string, { strict }: { strict: true }): T;
+  get(key: string, { strict }?: { strict?: false }): T | undefined;
 
   /* -------------------------------------------- */
 
@@ -84,7 +99,8 @@ interface Collection<T> extends Omit<Map<string, T>, 'forEach' | 'Symbol.iterato
    *                  (default: `false`)
    * @returns The retrieved Entity, if one was found, otherwise undefined
    */
-  getName(name: string, { strict }?: { strict?: boolean }): T | undefined;
+  getName(name: string, { strict }: { strict: true }): T;
+  getName(name: string, { strict }?: { strict?: false }): T | undefined;
 
   /* -------------------------------------------- */
 
@@ -130,15 +146,5 @@ interface Collection<T> extends Omit<Map<string, T>, 'forEach' | 'Symbol.iterato
    */
   toJSON(): Array<T extends { toJSON: (...args: any[]) => any } ? ReturnType<T['toJSON']> : T>;
 }
-
-interface CollectionConstructor {
-  new (): Collection<any>;
-  new <T>(entries?: readonly (readonly [string, T])[] | null): Collection<T>;
-  new <T>(iterable: Iterable<readonly [string, T]>): Collection<T>;
-  readonly [Symbol.species]: CollectionConstructor;
-  readonly prototype: Collection<any>;
-}
-
-declare var Collection: CollectionConstructor; // eslint-disable-line no-var
 
 export default Collection;

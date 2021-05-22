@@ -12,10 +12,10 @@ declare type PointArray = [x: number, y: number];
  * A Ray intersection point
  */
 declare type RayIntersection = {
-  t0: number;
-  t1: number;
   x: number;
   y: number;
+  t1: number;
+  t0: number;
 } | null;
 
 /**
@@ -24,10 +24,10 @@ declare type RayIntersection = {
 declare type Rectangle =
   | PIXI.Rectangle
   | {
-      height: number;
-      width: number;
       x: number;
       y: number;
+      width: number;
+      height: number;
     };
 
 type RequestData = object | object[] | string | string[];

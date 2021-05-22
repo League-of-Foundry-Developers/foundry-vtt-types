@@ -1,4 +1,4 @@
-import { SourceDataType } from '../../../common/abstract/document';
+import { SourceDataType } from '../../../common/abstract/helperTypes';
 
 declare global {
   /**

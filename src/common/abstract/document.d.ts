@@ -1,16 +1,7 @@
 import { BaseUser } from '../documents';
 import DatabaseBackend from './backend';
 import DocumentData from './data';
-
-export type SourceDataType<T extends Document<any, any> | DocumentData<any, any, any>> = T extends DocumentData<
-  any,
-  infer U,
-  any
->
-  ? U
-  : T extends Document<infer U, any>
-  ? SourceDataType<U>
-  : never;
+import { SourceDataType } from './helperTypes';
 
 type ParentType<T extends Document<any, any>> = T extends Document<any, infer U> ? U : never;
 export type ContextType<T extends Document<any, any>> = Context<ParentType<T>>;
