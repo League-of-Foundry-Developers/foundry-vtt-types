@@ -1,23 +1,23 @@
-/**
- * The Collection of Macro entities
- */
-declare class Macros extends EntityCollection<Macro> {
-  /** @override */
-  get entity(): string;
+import { SourceDataType } from '../../../common/abstract/document';
 
-  /** @override */
-  static get instance(): Macros;
-
-  /** @override */
-  get directory(): any; // MacroDirectory, type mismatch
-
+declare global {
   /**
-   * Determine whether a given User is allowed to use JavaScript macros
-   * @param user - The User entity to test
-   * @returns Can the User use scripts?
+   * The Collection of Macro entities
    */
-  static canUseScripts(user: User): boolean;
+  class Macros /* TODO: Extends WorldCollection<Macro>*/ {
+    /** @override */
+    static documentName: 'Macro';
 
-  /** @override */
-  fromCompendium(data: Macro.Data): Macro.Data;
+    /** @override */
+    get directory(): MacroDirectory;
+
+    fromCompendium(
+      document: foundry.documents.BaseMacro | SourceDataType<foundry.documents.BaseMacro>
+    ): SourceDataType<foundry.documents.BaseMacro> | ReturnType<foundry.documents.BaseMacro['toObject']>; // TODO: Improve
+
+    /**
+     * @deprecated since 0.8.1
+     */
+    static canUseScripts(user: User): boolean;
+  }
 }

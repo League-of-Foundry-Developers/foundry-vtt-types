@@ -1,4 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
+/**
+ * A collection of functions related to sorting objects within a parent container.
+ */
 declare class SortingHelpers {
   /**
    * Given a source object to sort, a target to sort relative to, and an Array of siblings in the container:
@@ -25,7 +27,7 @@ declare class SortingHelpers {
    *
    * @returns An Array of updates for the caller of the helper function to perform
    */
-  static performIntegerSort<T>(
+  static performIntegerSort<T, SortKey extends string = 'sort'>(
     source: T,
     {
       target,
@@ -37,19 +39,19 @@ declare class SortingHelpers {
        * The target object relative which to sort
        * @defaultValue `null`
        */
-      target?: any;
+      target?: T | null;
 
       /**
        * The sorted Array of siblings which share the same sorted container
        * @defaultValue `[]`
        */
-      siblings?: object[];
+      siblings?: T[];
 
       /**
        * The name of the data property within the source object which defines the sort key
        * @defaultValue `'sort'`
        */
-      sortKey?: string;
+      sortKey?: SortKey;
 
       /**
        * Whether to sort before the target (if true) or after (if false)
@@ -60,7 +62,7 @@ declare class SortingHelpers {
   ): Array<{
     target: T;
     update: {
-      sortKey: any;
+      [Key in SortKey]: number;
     };
   }>;
 
@@ -69,12 +71,12 @@ declare class SortingHelpers {
   /**
    * Given an ordered Array of siblings and a target position, return the [min,max] indices to sort before the target
    */
-  protected static _sortBefore<T>(siblings: T[], idx: number, sortKey: any): [T, T];
+  protected static _sortBefore<T>(siblings: T[], idx: number, sortKey: string): [T, T];
 
   /* -------------------------------------------- */
 
   /**
    * Given an ordered Array of siblings and a target position, return the [min,max] indices to sort after the target
    */
-  protected static _sortAfter<T>(siblings: T[], idx: number, sortKey: any): [T, T];
+  protected static _sortAfter<T>(siblings: T[], idx: number, sortKey: string): [T, T];
 }

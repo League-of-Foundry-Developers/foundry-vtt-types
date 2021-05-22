@@ -3,6 +3,9 @@
  *
  * @see {@link Macro} The Macro Entity which is being configured
  */
+// TODO: Remove this when `DocumentSheet` has been updated to use `foundry.abstract.Document`s instead of entities!!!
+// eslint-disable-next-line
+// @ts-ignore
 declare class MacroConfig extends DocumentSheet<DocumentSheet.Options, MacroConfig.Data, Macro> {
   /**
    * @override
@@ -57,5 +60,10 @@ declare namespace MacroConfig {
     macroScopes: typeof foundry.CONST['MACRO_SCOPES'];
   }
 
-  type FormData = Pick<Macro.Data, 'command' | 'img' | 'name' | 'type'>;
+  type FormData = {
+    command: string;
+    img: string;
+    name: string;
+    type: ValueOf<typeof CONST.MACRO_TYPES>;
+  };
 }

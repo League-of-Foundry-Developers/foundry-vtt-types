@@ -2,13 +2,19 @@ import { BaseUser } from '../documents';
 import DatabaseBackend from './backend';
 import DocumentData from './data';
 
-type DocumentDataToSourceData<T extends DocumentData<any, any, any>> = T extends DocumentData<any, infer U, any>
+export type SourceDataType<T extends Document<any, any> | DocumentData<any, any, any>> = T extends DocumentData<
+  any,
+  infer U,
+  any
+>
   ? U
+  : T extends Document<infer U, any>
+  ? SourceDataType<U>
   : never;
 
-type DocumentToSourceData<T extends Document<any, any>> = T extends Document<infer U, any>
-  ? DocumentDataToSourceData<U>
-  : never;
+type ParentType<T extends Document<any, any>> = T extends Document<any, infer U> ? U : never;
+export type ContextType<T extends Document<any, any>> = Context<ParentType<T>>;
+export type DocumentDataType<T extends Document<any, any>> = T extends Document<infer U, any> ? U : never;
 
 /**
  * The abstract base interface for all Document types.
@@ -22,7 +28,7 @@ declare class Document<
    * @param data    - Initial data provided to construct the Document
    * @param context - Additional parameters which define Document context
    */
-  constructor(data?: DeepPartial<DocumentDataToSourceData<ConcreteDocumentData>>, context?: Context<Parent>);
+  constructor(data?: DeepPartial<SourceDataType<ConcreteDocumentData>>, context?: Context<Parent>);
 
   /**
    * An immutable reverse-reference to the parent Document to which this embedded Document belongs.
@@ -132,12 +138,9 @@ declare class Document<
    *                 (default: `false`)
    * @returns The cloned Document instance
    */
-  clone(data?: DeepPartial<DocumentDataToSourceData<ConcreteDocumentData>>, { save }?: { save: false }): this;
-  clone(data: DeepPartial<DocumentDataToSourceData<ConcreteDocumentData>>, { save }: { save: true }): Promise<this>;
-  clone(
-    data: DeepPartial<DocumentDataToSourceData<ConcreteDocumentData>>,
-    { save }: { save: boolean }
-  ): this | Promise<this>;
+  clone(data?: DeepPartial<SourceDataType<ConcreteDocumentData>>, { save }?: { save: false }): this;
+  clone(data: DeepPartial<SourceDataType<ConcreteDocumentData>>, { save }: { save: true }): Promise<this>;
+  clone(data: DeepPartial<SourceDataType<ConcreteDocumentData>>, { save }: { save: boolean }): this | Promise<this>;
 
   /**
    * Get the permission level that a specific User has over this Document, a value in CONST.ENTITY_PERMISSIONS.
@@ -207,9 +210,9 @@ declare class Document<
    */
   static createDocuments<T extends Document<any, any>>(
     this: ConstructorOf<T>,
-    data?: Array<DeepPartial<DocumentToSourceData<T>> & Record<string, unknown>>,
+    data?: Array<DeepPartial<SourceDataType<T>> & Record<string, unknown>>,
     context?: DocumentModificationContext
-  ): Promise<Array<T>>;
+  ): Promise<T[]>;
 
   /**
    * Update multiple Document instances using provided differential data.
@@ -246,11 +249,11 @@ declare class Document<
    * const updated = await Actor.updateDocuments([{_id: actor.id, name: "New Name"}], {pack: "mymodule.mypack"});
    * ```
    */
-  updateDocuments<T extends Document<any, any>>(
+  static updateDocuments<T extends Document<any, any>>(
     this: ConstructorOf<T>,
-    updates?: Array<DeepPartial<DocumentToSourceData<T>> & { _id: string } & Record<string, unknown>>,
+    updates?: Array<DeepPartial<SourceDataType<T>> & { _id: string } & Record<string, unknown>>,
     context?: DocumentModificationContext
-  ): Promise<Array<T>>;
+  ): Promise<T[]>;
 
   /**
    * Delete one or multiple existing Documents using an array of provided ids.
@@ -291,9 +294,9 @@ declare class Document<
    */
   static deleteDocuments<T extends Document<any, any>>(
     this: ConstructorOf<T>,
-    ids?: Array<string>,
+    ids?: string[],
     context?: DocumentModificationContext
-  ): Promise<Array<T>>;
+  ): Promise<T[]>;
 
   /**
    * Create a new Document using provided input data, saving it to the database.
@@ -324,7 +327,7 @@ declare class Document<
    */
   static create<T extends Document<any, any>>(
     this: ConstructorOf<T>,
-    data?: DeepPartial<DocumentToSourceData<T>> & Record<string, unknown>,
+    data?: DeepPartial<SourceDataType<T>> & Record<string, unknown>,
     context?: DocumentModificationContext
   ): Promise<T>;
 
@@ -338,7 +341,7 @@ declare class Document<
    * @returns The updated Document instance
    */
   update(
-    data?: DeepPartial<DocumentDataToSourceData<ConcreteDocumentData>> & Record<string, unknown>,
+    data?: DeepPartial<SourceDataType<ConcreteDocumentData>> & Record<string, unknown>,
     context?: DocumentModificationContext
   ): Promise<this>;
 
@@ -474,7 +477,7 @@ declare class Document<
    * @param user    - The User requesting the document update
    */
   protected _preUpdate(
-    changed: DeepPartial<DocumentDataToSourceData<ConcreteDocumentData>> & Record<string, unknown>,
+    changed: DeepPartial<SourceDataType<ConcreteDocumentData>> & Record<string, unknown>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
@@ -492,30 +495,34 @@ declare class Document<
    * Post-creation operations occur for all clients after the creation is broadcast.
    * @param data   - The data from which the document was created
    * @param options- Additional options which modify the creation request
-   * @param user   - The User requesting the document creation
+   * @param user   - The id of the User requesting the document update
    */
-  protected _onCreate(data: ConcreteDocumentData, options: DocumentModificationOptions, user: BaseUser): void;
+  protected _onCreate(
+    data: DeepPartial<SourceDataType<ConcreteDocumentData>>,
+    options: DocumentModificationOptions,
+    userId: string
+  ): void;
 
   /**
    * Perform follow-up operations after a Document of this type is updated.
    * Post-update operations occur for all clients after the update is broadcast.
    * @param changed - The differential data that was changed relative to the documents prior values
    * @param options - Additional options which modify the update request
-   * @param user    - The User requesting the document update
+   * @param user    - The id of the User requesting the document update
    */
   protected _onUpdate(
-    changed: DeepPartial<DocumentDataToSourceData<ConcreteDocumentData>> & Record<string, unknown>,
+    changed: DeepPartial<SourceDataType<ConcreteDocumentData>> & Record<string, unknown>,
     options: DocumentModificationOptions,
-    user: BaseUser
+    userId: string
   ): void;
 
   /**
    * Perform follow-up operations after a Document of this type is deleted.
    * Post-deletion operations occur for all clients after the deletion is broadcast.
    * @param options- Additional options which modify the deletion request
-   * @param user   - The User requesting the document deletion
+   * @param user   - The id of the User requesting the document update
    */
-  protected _onDelete(options: DocumentModificationOptions, user: BaseUser): void;
+  protected _onDelete(options: DocumentModificationOptions, userId: string): void;
 
   /**
    * Perform follow-up operations when a set of Documents of this type are created.

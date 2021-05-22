@@ -144,7 +144,7 @@ declare namespace Hotbar {
 
   interface DropData {
     type?: string;
-    data?: DeepPartial<Macro.Data>;
+    data?: DeepPartial<foundry.data.MacroData>; // TODO: Might be incorrect, revisit this!!
     id?: string;
     pack?: string;
     slot?: number;
