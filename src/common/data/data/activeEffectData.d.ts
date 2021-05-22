@@ -1,4 +1,4 @@
-import { FieldReturnType, PropertiesToSource } from '../../abstract/helperTypes';
+import { FieldReturnType } from '../../abstract/helperTypes';
 import { DocumentData } from '../../abstract/module';
 import * as documents from '../../documents';
 import * as fields from '../fields';
@@ -86,15 +86,13 @@ interface ActiveEffectDataProperties {
   transfer: boolean;
 }
 
-type ActiveEffectDataSource = PropertiesToSource<ActiveEffectDataProperties>;
-
 /**
  * The data schema for a ActiveEffect document.
  * @see BaseActiveEffect
  */
 export declare class ActiveEffectData extends DocumentData<
   ActiveEffectDataSchema,
-  ActiveEffectDataSource,
+  ActiveEffectDataProperties,
   documents.BaseActiveEffect
 > {
   static defineSchema(): ActiveEffectDataSchema;

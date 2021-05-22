@@ -1,4 +1,3 @@
-import { PropertiesToSource } from '../../abstract/helperTypes';
 import { DocumentData } from '../../abstract/module';
 import { BaseActiveEffect } from '../../documents';
 import * as fields from '../fields';
@@ -50,15 +49,13 @@ interface EffectDurationDataProperties {
   turns?: number;
 }
 
-type EffectDurationDataSource = PropertiesToSource<EffectDurationDataProperties>;
-
 /**
  * An embedded data structure which tracks the duration of an ActiveEffect.
  * @see ActiveEffectData
  */
 export declare class EffectDurationData extends DocumentData<
   EffectDurationDataSchema,
-  EffectDurationDataSource,
+  EffectDurationDataProperties,
   BaseActiveEffect
 > {
   static defineSchema(): EffectDurationDataSchema;

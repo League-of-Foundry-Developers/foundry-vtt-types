@@ -1,4 +1,4 @@
-import { FieldReturnType, PropertiesToSource } from '../../abstract/helperTypes';
+import { FieldReturnType } from '../../abstract/helperTypes';
 import { DocumentData } from '../../abstract/module';
 import * as fields from '../fields';
 import * as documents from '../../documents';
@@ -92,13 +92,11 @@ interface MacroDataProperties {
   type: ValueOf<typeof CONST.MACRO_TYPES>;
 }
 
-type MacroDataSource = PropertiesToSource<MacroDataProperties>;
-
 /**
  * The data schema for a Macro document.
  * @see BaseMacro
  */
-export declare class MacroData extends DocumentData<MacroDataSchema, MacroDataSource, documents.BaseMacro> {
+export declare class MacroData extends DocumentData<MacroDataSchema, MacroDataProperties, documents.BaseMacro> {
   static defineSchema(): MacroDataSchema;
 }
 

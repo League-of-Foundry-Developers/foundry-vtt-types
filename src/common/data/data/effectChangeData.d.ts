@@ -2,7 +2,6 @@ import { DocumentData } from '../../abstract/module';
 import { BaseActiveEffect } from '../../documents';
 import * as fields from '../fields';
 import * as CONST from '../../constants';
-import { PropertiesToSource } from '../../abstract/helperTypes';
 
 interface ModeField extends DocumentField<number> {
   default: typeof CONST.ACTIVE_EFFECT_MODES.ADD;
@@ -41,15 +40,13 @@ interface EffectChangeDataProperties {
   value: string;
 }
 
-type EffectChangeDataSource = PropertiesToSource<EffectChangeDataProperties>;
-
 /**
  * An embedded data structure which defines the structure of a change applied by an ActiveEffect.
  * @see ActiveEffectData
  */
 export declare class EffectChangeData extends DocumentData<
   EffectChangeDataSchema,
-  EffectChangeDataSource,
+  EffectChangeDataProperties,
   BaseActiveEffect
 > {
   static defineSchema(): EffectChangeDataSchema;

@@ -1,4 +1,4 @@
-import { FieldReturnType, PropertiesToSource } from '../../abstract/helperTypes';
+import { FieldReturnType } from '../../abstract/helperTypes';
 import { DocumentData } from '../../abstract/module';
 import * as CONST from '../../constants';
 import { BaseAmbientLight } from '../../documents';
@@ -133,15 +133,13 @@ interface AmbientLightDataProperties {
   y: number;
 }
 
-type AmbientLightDataSource = PropertiesToSource<AmbientLightDataProperties>;
-
 /**
  * The data schema for a AmbientLight embedded document.
  * @see BaseAmbientLight
  */
 export declare class AmbientLightData extends DocumentData<
   AmbientLightDataSchema,
-  AmbientLightDataSource,
+  AmbientLightDataProperties,
   BaseAmbientLight
 > {
   static defineSchema(): AmbientLightDataSchema;

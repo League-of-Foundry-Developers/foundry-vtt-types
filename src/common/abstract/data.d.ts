@@ -1,6 +1,6 @@
 import Document from './document';
 import EmbeddedCollection from './embeddedCollection';
-import { PropertyTypeToSourceParameterType } from './helperTypes';
+import { PropertiesToSource, PropertyTypeToSourceParameterType } from './helperTypes';
 
 declare global {
   /**
@@ -61,7 +61,7 @@ declare global {
  */
 declare abstract class DocumentData<
   ConcreteDocumentSchema extends DocumentSchema,
-  SourceData extends object,
+  PropertiesData extends object,
   ConcreteDocument extends Document<any, any> | null
 > {
   /**
@@ -109,7 +109,7 @@ declare abstract class DocumentData<
    * @param document - The document to which this data object belongs
    *                   (default: `null`)
    */
-  constructor(data?: DeepPartial<SourceData>, document?: ConcreteDocument | null);
+  constructor(data?: DeepPartial<PropertiesToSource<PropertiesData>>, document?: ConcreteDocument | null);
 
   /**
    * The primary identifier for the Document to which this data object applies.
@@ -121,7 +121,7 @@ declare abstract class DocumentData<
   /**
    * The source data object. The contents of this object can be updated, but the object itself may not be replaced.
    */
-  readonly _source: SourceData;
+  readonly _source: PropertiesToSource<PropertiesData>;
 
   /**
    * An immutable reverse-reference to the Document to which this data belongs, possibly null.
@@ -142,7 +142,13 @@ declare abstract class DocumentData<
    * Extract the source data for the DocumentData into a simple object format that can be serialized.
    * @returns The document source data expressed as a plain object
    */
-  toJSON(): ReturnType<this['toObject']>;
+  toJSON(): {
+    [Key in keyof PropertiesToSource<PropertiesData>]: PropertiesToSource<PropertiesData>[Key] extends {
+      toObject: (source?: true) => infer U;
+    }
+      ? U
+      : PropertiesToSource<PropertiesData>[Key];
+  };
 
   /**
    * Copy and transform the DocumentData into a plain object.
@@ -151,13 +157,15 @@ declare abstract class DocumentData<
    *                 (default: `true`)
    * @returns The extracted primitive object
    */
-  // TODO: Do we need to address the case `source === false` explicitly?
+  toObject(source?: true): ReturnType<this['toJSON']>;
   toObject(
-    source?: boolean
+    source: false
   ): {
-    [Key in keyof SourceData]: SourceData[Key] extends { toObject: (source?: boolean) => infer U }
+    [Key in keyof PropertiesToSource<PropertiesData>]: PropertiesToSource<PropertiesData>[Key] extends {
+      toObject: (source: false) => infer U;
+    }
       ? U
-      : SourceData[Key];
+      : PropertiesData[Key];
   };
 
   /**
@@ -172,7 +180,9 @@ declare abstract class DocumentData<
    * @returns The changed keys and values which are different than the previous data
    */
   update<U>(
-    data?: Expanded<U> extends DeepPartial<SourceData> ? U : DeepPartial<SourceData>,
+    data?: Expanded<U> extends DeepPartial<PropertiesToSource<PropertiesData>>
+      ? U
+      : DeepPartial<PropertiesToSource<PropertiesData>>,
     options?: UpdateOptions
   ): DeepPartial<U>;
 
@@ -207,7 +217,7 @@ declare abstract class DocumentData<
     replace,
     strict
   }: {
-    changes: DeepPartial<SourceData>;
+    changes: DeepPartial<PropertiesToSource<PropertiesData>>;
     children?: boolean;
     clean?: boolean;
     replace?: boolean;
@@ -238,7 +248,9 @@ declare abstract class DocumentData<
   /**
    * Initialize the source data object in-place
    */
-  protected _initializeSource(data: DeepPartial<SourceData>): SourceData;
+  protected _initializeSource(
+    data: DeepPartial<PropertiesToSource<PropertiesData>>
+  ): PropertiesToSource<PropertiesData>;
 
   /**
    * Initialize the value for a given data type

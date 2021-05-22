@@ -470,7 +470,8 @@ declare class Document<
    * @param source - Draw values from the underlying data source rather than transformed values
    * @returns The extracted primitive object
    */
-  toObject(source?: boolean): ReturnType<ConcreteDocumentData['toObject']>;
+  toObject(source?: true): ReturnType<this['toJSON']>;
+  toObject(source: false): ReturnType<ConcreteDocumentData['toObject']>;
 
   /**
    * Remove a flag assigned to the document

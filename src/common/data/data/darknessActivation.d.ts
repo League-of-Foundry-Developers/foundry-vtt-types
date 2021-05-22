@@ -1,4 +1,4 @@
-import { FieldReturnType, PropertiesToSource } from '../../abstract/helperTypes';
+import { FieldReturnType } from '../../abstract/helperTypes';
 import { DocumentData } from '../../abstract/module';
 import { BaseAmbientLight } from '../../documents';
 import * as fields from '../fields';
@@ -22,14 +22,12 @@ interface DarknessActivationProperties {
   min: number;
 }
 
-type DarknessActivationSource = PropertiesToSource<DarknessActivationProperties>;
-
 /**
  * An embedded data object which defines the darkness range during which some attribute is active
  */
 export declare class DarknessActivation extends DocumentData<
   DarknessActivationSchema,
-  DarknessActivationSource,
+  DarknessActivationProperties,
   BaseAmbientLight
 > {
   static defineSchema(): DarknessActivationSchema;

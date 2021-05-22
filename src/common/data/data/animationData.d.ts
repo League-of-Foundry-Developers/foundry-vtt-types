@@ -1,4 +1,3 @@
-import { PropertiesToSource } from '../../abstract/helperTypes';
 import { DocumentData } from '../../abstract/module';
 import { BaseAmbientLight } from '../../documents';
 import * as fields from '../fields';
@@ -44,12 +43,14 @@ interface AnimationDataProperties {
   type?: string;
 }
 
-type AnimationDataSource = PropertiesToSource<AnimationDataProperties>;
-
 /**
  * An embedded data object which defines the properties of a light source animation
  */
-export declare class AnimationData extends DocumentData<AnimationDataSchema, AnimationDataSource, BaseAmbientLight> {
+export declare class AnimationData extends DocumentData<
+  AnimationDataSchema,
+  AnimationDataProperties,
+  BaseAmbientLight
+> {
   static defineSchema(): AnimationDataSchema;
 }
 
