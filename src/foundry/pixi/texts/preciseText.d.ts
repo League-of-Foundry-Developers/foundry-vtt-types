@@ -4,5 +4,6 @@
  */
 declare class PreciseText extends PIXI.Text {
   _autoResolution: false;
+
   _resolution: 2;
 }
