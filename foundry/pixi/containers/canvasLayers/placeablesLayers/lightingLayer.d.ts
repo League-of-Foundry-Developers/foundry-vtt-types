@@ -26,6 +26,7 @@ declare class LightingLayer extends PlaceablesLayer<AmbientLight> {
    * A mapping of different light level channels
    */
   channels: Record<'background' | 'black' | 'bright' | 'canvas' | 'dark' | 'dim', LightChannel>;
+
   /**
    * The currently displayed darkness level, which may override the saved Scene value
    */
