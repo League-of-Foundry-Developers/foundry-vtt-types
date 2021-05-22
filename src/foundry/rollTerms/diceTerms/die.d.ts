@@ -31,10 +31,17 @@ declare class Die extends DiceTerm {
    * 20d20r1=1      reroll a single 1
    *
    * @param modifier - The matched modifier query
+   * @param recursive - Reroll recursively, continuing to reroll until the condition is no longer met
+   * @returns False if the modifier was unmatched
    */
-  reroll(modifier: string): this | null;
+  reroll(modifier: string, { recursive }?: { recursive?: boolean }): boolean | void;
 
   /* -------------------------------------------- */
+
+  /**
+   * @see {@link Die#reroll}
+   */
+  rerollRecursive(modifier: string): boolean | void;
 
   /**
    * Explode the Die, rolling additional results for any values which match the target set.
@@ -45,14 +52,14 @@ declare class Die extends DiceTerm {
    * @param recursive - Explode recursively, such that new rolls can also explode?
    *                    (default: `true`)
    */
-  explode(modifier: string, { recursive }?: { recursive: boolean }): this | null;
+  explode(modifier: string, { recursive }?: { recursive: boolean }): boolean | void;
 
   /* -------------------------------------------- */
 
   /**
    * @see {@link Die#explode}
    */
-  explodeOnce(modifier: string): this | null;
+  explodeOnce(modifier: string): boolean | void;
 
   /* -------------------------------------------- */
 
@@ -67,7 +74,7 @@ declare class Die extends DiceTerm {
    *
    * @param modifier - The matched modifier query
    */
-  keep(modifier: string): this | null;
+  keep(modifier: string): boolean | void;
 
   /* -------------------------------------------- */
 
@@ -82,7 +89,7 @@ declare class Die extends DiceTerm {
    *
    * @param modifier - The matched modifier query
    */
-  drop(modifier: string): this | null;
+  drop(modifier: string): boolean | void;
 
   /* -------------------------------------------- */
 
@@ -97,7 +104,7 @@ declare class Die extends DiceTerm {
    *
    * @param modifier - The matched modifier query
    */
-  countSuccess(modifier: string): this | null;
+  countSuccess(modifier: string): boolean | void;
 
   /* -------------------------------------------- */
 
@@ -112,7 +119,33 @@ declare class Die extends DiceTerm {
    *
    * @param modifier - The matched modifier query
    */
-  countFailures(modifier: string): this | null;
+  countFailures(modifier: string): boolean | void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Count the number of even results which occurred in a given result set.
+   * Even numbers are marked as a success and counted as 1
+   * Odd numbers are marked as a non-success and counted as 0.
+   *
+   * 6d6even    Count the number of even numbers rolled
+   *
+   * @param modifier - The matched modifier query
+   */
+  countEven(modifier: string): boolean | void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Count the number of odd results which occurred in a given result set.
+   * Odd numbers are marked as a success and counted as 1
+   * Even numbers are marked as a non-success and counted as 0.
+   *
+   * 6d6odd    Count the number of odd numbers rolled
+   *
+   * @param modifier - The matched modifier query
+   */
+  countOdd(modifier: string): boolean | void;
 
   /* -------------------------------------------- */
 
@@ -127,7 +160,7 @@ declare class Die extends DiceTerm {
    *
    * @param modifier - The matched modifier query
    */
-  deductFailures(modifier: string): this | null;
+  deductFailures(modifier: string): boolean | void;
 
   /* -------------------------------------------- */
 
@@ -140,7 +173,7 @@ declare class Die extends DiceTerm {
    *
    * @param modifier - The matched modifier query
    */
-  subtractFailures(modifier: string): this | null;
+  subtractFailures(modifier: string): boolean | void;
 
   /* -------------------------------------------- */
 
@@ -149,16 +182,25 @@ declare class Die extends DiceTerm {
    * Example: 6d6ms\>12    Roll 6d6 and subtract 12 from the resulting total.
    * @param modifier - The matched modifier query
    */
-  marginSuccess(modifier: string): this | null;
+  marginSuccess(modifier: string): boolean | void;
 
   /* -------------------------------------------- */
 
   /**
-   * @deprecated since 0.7.0
-   * TODO: Remove in 0.8.x
-   * @see {@link Die#results}
+   * Constrain each rolled result to be at least some minimum value.
+   * Example: 6d6min2    Roll 6d6, each result must be at least 2
+   * @param modifier - The matched modifier query
    */
-  get rolls(): DiceTerm.Result[];
+  minimum(modifier: string): boolean | void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Constrain each rolled result to be at most some maximum value.
+   * Example: 6d6max5    Roll 6d6, each result must be at most 5
+   * @param modifier - The matched modifier query
+   */
+  maximum(modifier: string): boolean | void;
 
   /* -------------------------------------------- */
 
@@ -172,6 +214,7 @@ declare class Die extends DiceTerm {
    */
   static MODIFIERS: typeof DiceTerm.MODIFIERS & {
     r: 'reroll';
+    rr: 'rerollRecursive';
     x: 'explode';
     xo: 'explodeOnce';
     k: 'keep';
@@ -180,24 +223,22 @@ declare class Die extends DiceTerm {
     d: 'drop';
     dh: 'drop';
     dl: 'drop';
+    min: 'minimum';
+    max: 'maximum';
+    even: 'countEven';
+    odd: 'countOdd';
     cs: 'countSuccess';
     cf: 'countFailures';
     df: 'deductFailures';
     sf: 'subtractFailures';
     ms: 'marginSuccess';
   };
-
-  static fromResults(options: Partial<Die.TermData>, results: DiceTerm.Result[]): Die;
 }
 
 declare namespace Die {
   interface Data extends Partial<TermData> {
     class: 'Die';
     results: DiceTerm.Result[];
-  }
-
-  interface OldData extends DiceTerm.OldData {
-    class: 'Die';
   }
 
   interface TermData extends DiceTerm.TermData {

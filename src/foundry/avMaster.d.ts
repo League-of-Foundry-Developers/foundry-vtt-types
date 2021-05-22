@@ -38,10 +38,12 @@ declare class AVMaster {
    * @defaultValue `{}`
    */
   protected _speakingData: AVMaster.SpeakingData;
+
   /**
    * @defaultValue `{}`
    */
   protected _pttHandlers: AVMaster.PTTHandlers;
+
   /**
    * @defaultValue `0`
    */

@@ -14,13 +14,6 @@ declare class Coin extends DiceTerm {
   roll(options?: { maximize: boolean; minimize: boolean }): DiceTerm.Result;
 
   /* -------------------------------------------- */
-
-  /**
-   * @override
-   */
-  static getResultLabel(result: string): string;
-
-  /* -------------------------------------------- */
   /*  Term Modifiers                              */
   /* -------------------------------------------- */
 
@@ -49,10 +42,6 @@ declare namespace Coin {
   interface Data extends Partial<TermData> {
     class: 'Coin';
     results: DiceTerm.Result[];
-  }
-
-  interface OldData extends DiceTerm.OldData {
-    class: 'Coin';
   }
 
   interface TermData extends DiceTerm.TermData {

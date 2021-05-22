@@ -21,8 +21,6 @@ import './src/foundry/clientSettings';
 import './src/foundry/config';
 import './src/foundry/constants';
 import './src/foundry/contextMenu';
-import './src/foundry/dicePool';
-import './src/foundry/diceTerm';
 import './src/foundry/dragDrop';
 import './src/foundry/draggable';
 import './src/foundry/embeddedEntity';
@@ -157,9 +155,19 @@ import './src/foundry/collections/entityCollections/rollTables';
 import './src/foundry/collections/entityCollections/scenes';
 import './src/foundry/collections/entityCollections/users';
 
-import './src/foundry/diceTerms/coin';
-import './src/foundry/diceTerms/die';
-import './src/foundry/diceTerms/fateDie';
+import './src/foundry/rollTerm';
+
+import './src/foundry/rollTerms/diceTerm';
+import './src/foundry/rollTerms/mathTerm';
+import './src/foundry/rollTerms/numericTerm';
+import './src/foundry/rollTerms/operatorTerm';
+import './src/foundry/rollTerms/parentheticalTerm';
+import './src/foundry/rollTerms/poolTerm';
+import './src/foundry/rollTerms/stringTerm';
+
+import './src/foundry/rollTerms/diceTerms/coin';
+import './src/foundry/rollTerms/diceTerms/die';
+import './src/foundry/rollTerms/diceTerms/fateDie';
 
 import './src/foundry/embeddedEntities/activeEffect';
 

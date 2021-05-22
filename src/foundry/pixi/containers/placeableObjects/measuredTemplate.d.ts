@@ -21,7 +21,9 @@
 declare class MeasuredTemplate extends PlaceableObject<MeasuredTemplate.Data> {
   // Draw portions of the content
   controlIcon: ControlIcon | null;
+
   template: PIXI.Graphics | null;
+
   ruler: PreciseText | null;
 
   /**
