@@ -4,6 +4,7 @@ import * as _CONST from './constants';
 import * as _abstract from './abstract/module';
 import * as _data from './data/module';
 import * as _documents from './documents';
+import * as _packages from './packages';
 import * as _utils from './utils/module';
 
 /**
@@ -25,6 +26,11 @@ export * as data from './data/module';
  * Document definitions used throughout the Foundry Virtual Tabletop framework.
  */
 export * as documents from './documents';
+
+/**
+ * Package data definitions, validations, and schema
+ */
+export * as packages from './packages';
 
 /**
  * Utility functions providing helpful functionality.
@@ -49,14 +55,19 @@ declare global {
     export import data = _data; // eslint-disable-line @typescript-eslint/no-unused-vars
 
     /**
+     * Utility functions providing helpful functionality.
+     */
+    export import utils = _utils; // eslint-disable-line @typescript-eslint/no-unused-vars
+
+    /**
      * Document definitions used throughout the Foundry Virtual Tabletop framework.
      */
     export import documents = _documents; // eslint-disable-line @typescript-eslint/no-unused-vars
 
     /**
-     * Utility functions providing helpful functionality.
+     * Package data definitions, validations, and schema
      */
-    export import utils = _utils; // eslint-disable-line @typescript-eslint/no-unused-vars
+    export import packages = _packages; // eslint-disable-line @typescript-eslint/no-unused-vars
   }
 
   /**
