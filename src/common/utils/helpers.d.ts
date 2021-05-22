@@ -7,8 +7,8 @@ export declare function benchmark(func: () => unknown, iterations: number): void
 
 /**
  * Wrap a callback in a debounced timeout.
- * Delay execution of the callback export function until the export function has not been called for delay milliseconds
- * @param callback - A export function to execute once the debounced threshold has been passed
+ * Delay execution of the callback function until the function has not been called for delay milliseconds
+ * @param callback - A function to execute once the debounced threshold has been passed
  * @param delay    - An amount of time in milliseconds to delay
  * @returns A wrapped function which can be called to debounce execution
  */
@@ -19,7 +19,8 @@ export declare function debounce<T extends (...args: any[]) => unknown>(
 
 /**
  * Quickly clone a simple piece of data, returning a copy which can be mutated safely.
- * Does not support Set, Map, or other advanced data types.
+ * This method DOES support recursive data structures containing inner objects or arrays.
+ * This method DOES NOT support advanced object types like Set, Map, or other specialized classes.
  * @param original - Some sort of data
  * @returns The clone of that data
  */
@@ -29,23 +30,18 @@ export declare function deepClone<T>(original: T): T;
  * Deeply difference an object against some other, returning the update keys and values
  * @param original - An object comparing data against which to compare.
  * @param other    - An object containing potentially different data.
- * @param inner    - Only recognize differences in other for keys which also exist in original.
- *                   (default: `false`)
+ * @param options  - Additional options which configure the diff operation
  * @returns An object of the data in other which differs from that in original.
  */
-export declare function diffObject(
-  original: object,
-  other: object,
-  {
-    inner
-  }?: {
-    /**
-     * Only recognize differences in other for keys which also exist in original.
-     * @defaultValue `false`
-     */
-    inner: boolean;
-  }
-): object;
+export declare function diffObject(original: object, other: object, { inner }?: DiffObjectOptions): object;
+
+interface DiffObjectOptions {
+  /**
+   * Only recognize differences in other for keys which also exist in original
+   * @defaultValue `false`
+   */
+  inner?: boolean;
+}
 
 /**
  * A cheap data duplication trick which is relatively robust.
@@ -117,7 +113,7 @@ export declare function encodeURL(path: string): string;
  * inner objects.
  *
  * @param obj - The object to expand
- * @param _d  - Recursion depth, to prevent overflow
+ * @param _d  - Track the recursion depth to prevent overflow
  *              (default: `0`)
  * @returns An expanded object
  */
@@ -127,12 +123,10 @@ export declare function expandObject(obj: object, _d?: number): any;
  * Filter the contents of some source object using the structure of a template object.
  * Only keys which exist in the template are preserved in the source object.
  *
- * @param source         - An object which contains the data you wish to filter
- * @param template       - An object which contains the structure you wish to preserve
- * @param keepSpecial    - Whether to keep special tokens like deletion keys
- *                         (default: `false`)
- * @param templateValues - Instead of keeping values from the source, instead draw values from the template
- *                         (default: `false`)
+ * @param source   - An object which contains the data you wish to filter
+ * @param template - An object which contains the structure you wish to preserve
+ * @param options  - Additional options which customize the filtration
+ *                   (default: `{}`)
  *
  * @example
  * ```typescript
@@ -142,32 +136,26 @@ export declare function expandObject(obj: object, _d?: number): any;
  * filterObject(source, template, {templateValues: true}); // {foo: {number: 0, name: "Mit"}};
  * ```
  */
-export declare function filterObject(
-  source: object,
-  template: object,
-  {
-    keepSpecial,
-    templateValues
-  }?: {
-    /**
-     * Whether to keep special tokens like deletion keys
-     * @defaultValue `false`
-     */
-    keepSpecial?: boolean;
+export declare function filterObject(source: object, template: object, options?: FilterObjectOptions): any;
 
-    /**
-     * Instead of keeping values from the source, instead draw values from the template
-     * @defaultValue `false`
-     */
-    templateValues?: boolean;
-  }
-): any;
+interface FilterObjectOptions {
+  /**
+   * Whether to keep special tokens like deletion keys
+   * @defaultValue `false`
+   */
+  keepSpecial?: boolean;
+
+  /**
+   * Instead of keeping values from the source, instead draw values from the template
+   * @defaultValue `false`
+   */
+  templateValues?: boolean;
+}
 
 /**
  * Flatten a possibly multi-dimensional object to a one-dimensional one by converting all nested keys to dot notation
  * @param obj - The object to flatten
- * @param _d  - Recursion depth, to prevent overflow
- *              (default: `0`)
+ * @param d   - Track the recursion depth to prevent overflow
  * @returns A flattened object
  */
 export declare function flattenObject(obj: object, _d?: number): any;
@@ -184,14 +172,13 @@ export declare function getParentClasses(cls: ConstructorOf<any>): Array<Constru
  * The string key supports the notation a.b.c which would return object[a][b][c]
  * @param object - The object to traverse
  * @param key    - An object property with notation a.b.c
- *
  * @returns The value of the found property
  */
 export declare function getProperty(object: object, key: string): any;
 
 /**
  * Get the URL route for a certain path which includes a path prefix, if one is set
- * @param path   - The Foundry VTT URL path
+ * @param path   - The Foundry URL path
  * @param prefix - A path prefix to apply
  *                 (default: `null`)
  * @returns The absolute URL path
@@ -201,10 +188,6 @@ export declare function getRoute(
   {
     prefix
   }?: {
-    /**
-     * A path prefix to apply
-     * @defaultValue `null`
-     */
     prefix?: string | null;
   }
 ): string;
@@ -221,7 +204,6 @@ export declare function getType(token: unknown): string;
  * The string key supports the notation a.b.c which would return true if object[a][b][c] exists
  * @param object - The object to traverse
  * @param key    - An object property with notation a.b.c
- *
  * @returns An indicator for whether the property exists
  */
 export declare function hasProperty(object: object, key: string): boolean;
@@ -254,34 +236,14 @@ export declare function isObjectEmpty(obj: object): boolean;
 /**
  * Update a source object by replacing its keys and values with those from a target object.
  *
- * @param original - The initial object which should be updated with values from
- *                   the target
+ * @param original - The initial object which should be updated with values from the target
  * @param other    - A new object whose values should replace those in the source
  *                   (default: `{}`)
- *
- * @param insertKeys   - Control whether to insert new top-level objects into the resulting structure
- *                       which do not previously exist in the original object.
- *                       (default: `true`)
- * @param insertValues - Control whether to insert new nested values into child objects in the resulting
- *                       structure which did not previously exist in the original object.
- *                       (default: `true`)
- * @param overwrite    - Control whether to replace existing values in the source, or only merge values
- *                       which do not already exist in the original object.
- *                       (default: `true`)
- * @param recursive    - Control whether to merge inner-objects recursively (if true), or whether to
- *                       simply replace inner objects with a provided new value.
- *                       (default: `true`)
- * @param inplace      - Control whether to apply updates to the original object in-place (if true),
- *                       otherwise the original object is duplicated and the copy is merged.
- *                       (default: `true`)
- * @param enforceTypes - Control whether strict type checking requires that the value of a key in the
- *                       other object must match the data type in the original data to be merged.
- *                       (default: `false`)
- * @param _d           - A privately used parameter to track recursion depth.
- *                       (default: `0`)
- *
- * @returns The original source object including updated, inserted, or
- *          overwritten records.
+ * @param options  - Additional options which configure the merge
+ *                   (default: `{}`)
+ * @param _d       - A privately used parameter to track recursion depth.
+ *                   (default: `0`)
+ * @returns The original source object including updated, inserted, or overwritten records.
  *
  * @example <caption>Control how new keys and values are added</caption>
  * ```typescript
@@ -308,61 +270,45 @@ export declare function isObjectEmpty(obj: object): boolean;
  * mergeObject({k1: "v1", k2: "v2"}, {"-=k1": null});   // {k2: "v2"}
  * ```
  */
-export declare function mergeObject<T>(
-  original: T,
-  other?: T,
-  {
-    insertKeys,
-    insertValues,
-    overwrite,
-    recursive,
-    inplace,
-    enforceTypes
-  }?: {
-    /**
-     * Control whether strict type checking requires that the value of a key in the
-     * other object must match the data type in the original data to be merged.
-     * @defaultValue `false`
-     */
-    enforceTypes?: boolean;
+export declare function mergeObject<T>(original: T, other?: T, options?: MergeObjectOptions, _d?: number): T;
 
-    /**
-     * Control whether to apply updates to the original object in-place (if true),
-     * otherwise the original object is duplicated and the copy is merged.
-     * @defaultValue `true`
-     */
-    inplace?: boolean;
+interface MergeObjectOptions {
+  /**
+   * Control whether strict type checking requires that the value of a key in the other object must match the data type in the original data to be merged.
+   * @defaultValue `false`
+   */
+  enforceTypes?: boolean;
 
-    /**
-     * Control whether to insert new top-level objects into the resulting structure
-     * which do not previously exist in the original object.
-     * @defaultValue `true`
-     */
-    insertKeys?: boolean;
+  /**
+   * Control whether to apply updates to the original object in-place (if true), otherwise the original object is duplicated and the copy is merged.
+   * @defaultValue `true`
+   */
+  inplace?: boolean;
 
-    /**
-     * Control whether to insert new nested values into child objects in the resulting
-     * structure which did not previously exist in the original object.
-     * @defaultValue `true`
-     */
-    insertValues?: boolean;
+  /**
+   * Control whether to insert new top-level objects into the resulting structure which do not previously exist in the original object.
+   * @defaultValue `true`
+   */
+  insertKeys?: boolean;
 
-    /**
-     * Control whether to replace existing values in the source, or only merge values
-     * which do not already exist in the original object.
-     * @defaultValue `true`
-     */
-    overwrite?: boolean;
+  /**
+   * Control whether to insert new nested values into child objects in the resulting structure which did not previously exist in the original object.
+   * @defaultValue `true`
+   */
+  insertValues?: boolean;
 
-    /**
-     * Control whether to merge inner-objects recursively (if true), or whether to
-     * simply replace inner objects with a provided new value.
-     * @defaultValue `true`
-     */
-    recursive?: boolean;
-  },
-  _d?: number
-): T;
+  /**
+   * Control whether to replace existing values in the source, or only merge values which do not already exist in the original object.
+   * @defaultValue `true`
+   */
+  overwrite?: boolean;
+
+  /**
+   * Control whether to merge inner-objects recursively (if true), or whether to simply replace inner objects with a provided new value.
+   * @defaultValue `true`
+   */
+  recursive?: boolean;
+}
 
 /**
  * A helper function for merging objects when the target key does not exist in the original
@@ -403,12 +349,10 @@ export declare function randomID(length?: number): string;
 /**
  * A helper function which searches through an object to assign a value using a string key
  * This string key supports the notation a.b.c which would target object[a][b][c]
- *
  * @param object - The object to update
  * @param key    - The string key
  * @param value  - The value to be assigned
- *
- * @returns A flag for whether or not the object was updated
+ * @returns Whether the value was changed from its previous value
  */
 export declare function setProperty(object: object, key: string, value: any): boolean;
 
