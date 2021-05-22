@@ -330,8 +330,8 @@ export const USER_ROLE_NAMES: { [Key in keyof typeof USER_ROLES as typeof USER_R
 export interface MeasuredTemplateTypes {
   CIRCLE: 'circle';
   CONE: 'cone';
-  RECTANGLE: 'rect';
   RAY: 'ray';
+  RECTANGLE: 'rect';
 }
 
 /**
@@ -375,10 +375,10 @@ export const MEASURED_TEMPLATE_TYPES: MeasuredTemplateTypes;
 export const MEDIA_MIME_TYPES: string[];
 
 export interface UserCapability {
-  label: string;
-  hint: string;
-  disableGM: boolean;
   defaultRole: UserRole;
+  disableGM: boolean;
+  hint: string;
+  label: string;
 }
 
 /**
