@@ -71,6 +71,9 @@ module.exports = {
             'method'
           ],
           order: 'alphabetically'
+        },
+        typeLiterals: {
+          order: 'as-written'
         }
       }
     ],
