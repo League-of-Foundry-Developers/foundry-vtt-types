@@ -57,25 +57,6 @@ declare abstract class DatabaseBackend {
   }?: Request): { data: DocumentData<any, any, any>[]; options: RequestOptions; pack?: string };
 
   /**
-   * Create primary Document instances
-   */
-  protected _createDocuments<T extends Document<any, any>>(
-    documentClass: ConstructorOf<T>,
-    request: Request,
-    user: BaseUser
-  ): Promise<T[]>;
-
-  /**
-   * Create embedded Document instances
-   */
-  protected _createEmbeddedDocuments<T extends Document<any, any>>(
-    documentClass: ConstructorOf<T>,
-    parent: T extends Document<any, infer U> ? U : never,
-    request: Request,
-    user: BaseUser
-  ): Promise<T[]>;
-
-  /**
    * Validate the arguments passed to the delete operation
    * @param request - The requested operation
    * @param ids     - An array of document ids
@@ -85,25 +66,6 @@ declare abstract class DatabaseBackend {
    * @param pack    - A Compendium pack identifier
    */
   protected _deleteArgs({ ids, options, pack }?: Request): { ids: string[]; options: RequestOptions; pack?: string };
-
-  /**
-   * Delete primary Document instances
-   */
-  protected _deleteDocuments<T extends Document<any, any>>(
-    documentClass: ConstructorOf<T>,
-    request: Request,
-    user: BaseUser
-  ): Promise<T[]>;
-
-  /**
-   * Delete embedded Document instances
-   */
-  protected _deleteEmbeddedDocuments<T extends Document<any, any>>(
-    documentClass: ConstructorOf<T>,
-    parent: T extends Document<any, infer U> ? U : never,
-    request: Request,
-    user: BaseUser
-  ): Promise<T[]>;
 
   /**
    * Validate the arguments passed to the get operation
@@ -175,25 +137,6 @@ declare abstract class DatabaseBackend {
   }?: Request): { options: RequestOptions; pack?: string; updates: DocumentData<any, any, any>[] };
 
   /**
-   * Update primary Document instances
-   */
-  protected _updateDocuments<T extends Document<any, any>>(
-    documentClass: ConstructorOf<T>,
-    request: Request,
-    user: BaseUser
-  ): Promise<T[]>;
-
-  /**
-   * Update embedded Document instances
-   */
-  protected _updateEmbeddedDocuments<T extends Document<any, any>>(
-    documentClass: ConstructorOf<T>,
-    parent: T extends Document<any, infer U> ? U : never,
-    request: Request,
-    user: BaseUser
-  ): Promise<T[]>;
-
-  /**
    * Describe the scopes which are suitable as the namespace for a flag key
    */
   protected getCompendiumScopes(): string[];
@@ -202,6 +145,44 @@ declare abstract class DatabaseBackend {
    * Describe the scopes which are suitable as the namespace for a flag key
    */
   protected getFlagScopes(): string[];
+
+  /**
+   * Create primary Document instances
+   */
+  protected abstract _createDocuments<T extends Document<any, any>>(
+    documentClass: ConstructorOf<T>,
+    request: Request,
+    user: BaseUser
+  ): Promise<T[]>;
+
+  /**
+   * Create embedded Document instances
+   */
+  protected abstract _createEmbeddedDocuments<T extends Document<any, any>>(
+    documentClass: ConstructorOf<T>,
+    parent: T extends Document<any, infer U> ? U : never,
+    request: Request,
+    user: BaseUser
+  ): Promise<T[]>;
+
+  /**
+   * Delete primary Document instances
+   */
+  protected abstract _deleteDocuments<T extends Document<any, any>>(
+    documentClass: ConstructorOf<T>,
+    request: Request,
+    user: BaseUser
+  ): Promise<T[]>;
+
+  /**
+   * Delete embedded Document instances
+   */
+  protected abstract _deleteEmbeddedDocuments<T extends Document<any, any>>(
+    documentClass: ConstructorOf<T>,
+    parent: T extends Document<any, infer U> ? U : never,
+    request: Request,
+    user: BaseUser
+  ): Promise<T[]>;
 
   /**
    * Get primary Document instances
@@ -221,6 +202,25 @@ declare abstract class DatabaseBackend {
     parent: T extends Document<any, infer U> ? U : never,
     query: Request,
     options: RequestOptions,
+    user: BaseUser
+  ): Promise<T[]>;
+
+  /**
+   * Update primary Document instances
+   */
+  protected abstract _updateDocuments<T extends Document<any, any>>(
+    documentClass: ConstructorOf<T>,
+    request: Request,
+    user: BaseUser
+  ): Promise<T[]>;
+
+  /**
+   * Update embedded Document instances
+   */
+  protected abstract _updateEmbeddedDocuments<T extends Document<any, any>>(
+    documentClass: ConstructorOf<T>,
+    parent: T extends Document<any, infer U> ? U : never,
+    request: Request,
     user: BaseUser
   ): Promise<T[]>;
 }
