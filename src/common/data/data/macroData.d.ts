@@ -2,7 +2,6 @@ import { FieldReturnType } from '../../abstract/helperTypes';
 import { DocumentData } from '../../abstract/module';
 import * as fields from '../fields';
 import * as documents from '../../documents';
-
 import * as CONST from '../../constants';
 
 interface MacroDataSchema extends DocumentSchema {
@@ -50,6 +49,7 @@ interface MacroDataProperties {
 
   /**
    * An object of optional key/value flags
+   * @defaultValue `{}`
    */
   flags: Record<string, unknown>;
 
@@ -71,6 +71,7 @@ interface MacroDataProperties {
 
   /**
    * An object which configures user permissions to this Macro
+   * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
   permission: Partial<Record<string, ValueOf<typeof CONST.ENTITY_PERMISSIONS>>>;
 
