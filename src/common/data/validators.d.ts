@@ -3,7 +3,7 @@
  */
 export declare function isValidId(id: string | null): boolean;
 
-/**r
+/**
  * Test whether a file path has an extension in a list of provided extensions
  */
 export declare function _hasFileExtension(path: string | null, extensions: string[]): boolean;
