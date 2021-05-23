@@ -4,27 +4,20 @@
  */
 declare class ChatLog extends SidebarTab<ChatLog.Options> {
   /**
-   * Track whether the user currently has pending text in the chat box
+   * @override
    */
-  protected _pendingText: string;
+  static get defaultOptions(): ChatLog.Options;
 
   /**
-   * Track the history of the past 5 sent messages which can be accessed using the arrow keys
-   * @defaultValue `[]`
+   * Parse a chat string to identify the chat command (if any) which was used
+   * @param message - The message to match
+   * @returns The identified command and regex match
+   * @remarks The returned RegExpMatchArray or string Array has the entire match as its first value, then the match for
+   *          the slash command (or an empty string) and as last element the flavor or message text. The whisper match
+   *          is an exception: Its third value is the target user name (optionally in brackets) and the fourth value is
+   *          the message text.
    */
-  protected _sentMessages: string[];
-
-  /**
-   * Track which remembered message is being currently displayed to cycle properly
-   * @defaultValue `-1`
-   */
-  protected _sentMessageIndex: number;
-
-  /**
-   * Track the time when the last message was sent to avoid flooding notifications
-   * @defaultValue `0`
-   */
-  protected _lastMessageTime: number;
+  static parse<S extends string>(message: S): [ChatLog.Command, RegExpMatchArray] | ['none', [S, '', S]];
 
   /**
    * Track the id of the last message displayed in the log
@@ -33,15 +26,33 @@ declare class ChatLog extends SidebarTab<ChatLog.Options> {
   protected _lastId: string | null;
 
   /**
+   * Track the time when the last message was sent to avoid flooding notifications
+   * @defaultValue `0`
+   */
+  protected _lastMessageTime: number;
+
+  /**
    * Track the last received message which included the user as a whisper recipient.
    * @defaultValue `null`
    */
   protected _lastWhisper: ChatMessage | null;
 
   /**
-   * @override
+   * Track whether the user currently has pending text in the chat box
    */
-  static get defaultOptions(): ChatLog.Options;
+  protected _pendingText: string;
+
+  /**
+   * Track which remembered message is being currently displayed to cycle properly
+   * @defaultValue `-1`
+   */
+  protected _sentMessageIndex: number;
+
+  /**
+   * Track the history of the past 5 sent messages which can be accessed using the arrow keys
+   * @defaultValue `[]`
+   */
+  protected _sentMessages: string[];
 
   /**
    * A reference to the Messages collection that the chat log displays
@@ -49,27 +60,9 @@ declare class ChatLog extends SidebarTab<ChatLog.Options> {
   get collection(): Messages;
 
   /**
-   * @override
+   * Activate event listeners triggered within the ChatLog application
    */
-  getData(options?: Application.RenderOptions): ChatLog.Data;
-
-  /**
-   * @override
-   */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
-
-  /**
-   * Render a batch of additional messages, prepending them to the top of the log
-   * @param size - The batch size to include
-   */
-  protected _renderBatch(size: number): Promise<void>;
-
-  /**
-   * @param original - (unused)
-   * @override
-   * @throws This always throws.
-   */
-  renderPopout(original?: any): never;
+  activateListeners(html: JQuery): void;
 
   /**
    * Delete all message HTML from the log
@@ -85,20 +78,14 @@ declare class ChatLog extends SidebarTab<ChatLog.Options> {
   deleteMessage(messageId: string, { deleteAll }?: { deleteAll?: boolean }): void;
 
   /**
+   * @override
+   */
+  getData(options?: Application.RenderOptions): ChatLog.Data;
+
+  /**
    * Trigger a notification that alerts the user visually and audibly that a new chat log message has been posted
    */
   notify(message: ChatMessage): void;
-
-  /**
-   * Parse a chat string to identify the chat command (if any) which was used
-   * @param message - The message to match
-   * @returns The identified command and regex match
-   * @remarks The returned RegExpMatchArray or string Array has the entire match as its first value, then the match for
-   *          the slash command (or an empty string) and as last element the flavor or message text. The whisper match
-   *          is an exception: Its third value is the target user name (optionally in brackets) and the fourth value is
-   *          the message text.
-   */
-  static parse<S extends string>(message: S): [ChatLog.Command, RegExpMatchArray] | ['none', [S, '', S]];
 
   /**
    * Post a single chat message to the log
@@ -110,9 +97,11 @@ declare class ChatLog extends SidebarTab<ChatLog.Options> {
   postOne(message: ChatMessage, notify?: boolean): Promise<void>;
 
   /**
-   * Scroll the chat log to the bottom
+   * @param original - (unused)
+   * @override
+   * @throws This always throws.
    */
-  protected scrollBottom(): void;
+  renderPopout(original?: any): never;
 
   /**
    * Update the content of a previously posted message after its data has been replaced
@@ -125,16 +114,65 @@ declare class ChatLog extends SidebarTab<ChatLog.Options> {
   updateTimestamps(): void;
 
   /**
-   * Activate event listeners triggered within the ChatLog application
+   * Compendium sidebar Context Menu creation
    */
-  activateListeners(html: JQuery): void;
+  protected _contextMenu(html: JQuery): void;
 
   /**
-   * Prepare the data object of chat message data depending on the type of message being posted
-   * @param message - The original string of the message content
-   * @returns A Promise resolving to the prepared chat data object
+   * Get the sidebar directory entry context options
+   * @returns The sidebar entry context options
    */
-  protected processMessage(message: string): Promise<ChatMessage | null | void>;
+  protected _getEntryContextOptions(): ContextMenu.Item[];
+
+  /**
+   * Handle setting the preferred roll mode
+   */
+  protected _onChangeRollMode(event: JQuery.ChangeEvent): void;
+
+  /**
+   * Handle keydown events in the chat entry textarea
+   */
+  protected _onChatKeyDown(event: JQuery.KeyDownEvent): void;
+
+  /**
+   * Handle single message deletion workflow
+   */
+  protected _onDeleteMessage(event: JQuery.ClickEvent): Promise<ChatMessage | null>;
+
+  /**
+   * Handle clicking of dice tooltip buttons
+   */
+  protected _onDiceRollClick(event: JQuery.ClickEvent): void;
+
+  /**
+   * Handle click events to export the chat log
+   */
+  protected _onExportLog(event: JQuery.ClickEvent): void;
+
+  /**
+   * Handle click events to flush the chat log
+   */
+  protected _onFlushLog(event: JQuery.ClickEvent): void;
+
+  /**
+   * Handle scroll events within the chat log container
+   * @param event - The initial scroll event
+   */
+  protected _onScrollLog(event: JQuery.ScrollEvent): void;
+
+  /**
+   * Process messages which are posted using a chat whisper command
+   * @param command       - The chat command type
+   * @param match         - The matched RegExp expressions
+   * @param chatData      - The initial chat data
+   * @param createOptions - Options used to create the message
+   */
+  protected _processChatCommand(
+    command: string,
+    match: RegExpMatchArray,
+    chatData: ChatMessage.Data,
+    createOptions: Entity.CreateOptions
+  ): void;
 
   /**
    * Process messages which are posted using a dice-roll command
@@ -167,18 +205,11 @@ declare class ChatLog extends SidebarTab<ChatLog.Options> {
   ): void;
 
   /**
-   * Process messages which are posted using a chat whisper command
-   * @param command       - The chat command type
-   * @param match         - The matched RegExp expressions
-   * @param chatData      - The initial chat data
-   * @param createOptions - Options used to create the message
+   * Recall a previously sent message by incrementing up (1) or down (-1) through the sent messages array
+   * @param direction - The direction to recall, positive for older, negative for more recent
+   * @returns The recalled message, or an empty string
    */
-  protected _processChatCommand(
-    command: string,
-    match: RegExpMatchArray,
-    chatData: ChatMessage.Data,
-    createOptions: Entity.CreateOptions
-  ): void;
+  protected _recall(direction: number): string;
 
   /**
    * Add a sent message to an array of remembered messages to be re-sent if the user pages up with the up arrow key
@@ -187,58 +218,27 @@ declare class ChatLog extends SidebarTab<ChatLog.Options> {
   protected _remember(message: string): void;
 
   /**
-   * Recall a previously sent message by incrementing up (1) or down (-1) through the sent messages array
-   * @param direction - The direction to recall, positive for older, negative for more recent
-   * @returns The recalled message, or an empty string
+   * @override
    */
-  protected _recall(direction: number): string;
+  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
 
   /**
-   * Compendium sidebar Context Menu creation
+   * Render a batch of additional messages, prepending them to the top of the log
+   * @param size - The batch size to include
    */
-  protected _contextMenu(html: JQuery): void;
+  protected _renderBatch(size: number): Promise<void>;
 
   /**
-   * Get the sidebar directory entry context options
-   * @returns The sidebar entry context options
+   * Prepare the data object of chat message data depending on the type of message being posted
+   * @param message - The original string of the message content
+   * @returns A Promise resolving to the prepared chat data object
    */
-  protected _getEntryContextOptions(): ContextMenu.Item[];
+  protected processMessage(message: string): Promise<ChatMessage | null | void>;
 
   /**
-   * Handle keydown events in the chat entry textarea
+   * Scroll the chat log to the bottom
    */
-  protected _onChatKeyDown(event: JQuery.KeyDownEvent): void;
-
-  /**
-   * Handle setting the preferred roll mode
-   */
-  protected _onChangeRollMode(event: JQuery.ChangeEvent): void;
-
-  /**
-   * Handle single message deletion workflow
-   */
-  protected _onDeleteMessage(event: JQuery.ClickEvent): Promise<ChatMessage | null>;
-
-  /**
-   * Handle clicking of dice tooltip buttons
-   */
-  protected _onDiceRollClick(event: JQuery.ClickEvent): void;
-
-  /**
-   * Handle click events to export the chat log
-   */
-  protected _onExportLog(event: JQuery.ClickEvent): void;
-
-  /**
-   * Handle click events to flush the chat log
-   */
-  protected _onFlushLog(event: JQuery.ClickEvent): void;
-
-  /**
-   * Handle scroll events within the chat log container
-   * @param event - The initial scroll event
-   */
-  protected _onScrollLog(event: JQuery.ScrollEvent): void;
+  protected scrollBottom(): void;
 }
 
 declare namespace ChatLog {
@@ -257,13 +257,10 @@ declare namespace ChatLog {
     | 'invalid';
 
   interface Data {
-    user: User;
-
-    rollMode: keyof typeof CONFIG['Dice']['rollModes'];
-
-    rollModes: typeof CONFIG['Dice']['rollModes'];
-
     isStream: boolean;
+    rollMode: keyof typeof CONFIG['Dice']['rollModes'];
+    rollModes: typeof CONFIG['Dice']['rollModes'];
+    user: User;
   }
 
   interface Options extends SidebarTab.Options {
@@ -272,18 +269,18 @@ declare namespace ChatLog {
      */
     id: string;
 
-    /**
-     * @defaultValue `'templates/sidebar/chat-log.html'`
-     */
-    template: string;
-
-    title: string;
-
     scrollContainer: null;
 
     /**
      * @defaultValue `false`
      */
     stream: boolean;
+
+    /**
+     * @defaultValue `'templates/sidebar/chat-log.html'`
+     */
+    template: string;
+
+    title: string;
   }
 }

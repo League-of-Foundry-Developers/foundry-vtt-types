@@ -5,14 +5,15 @@
  */
 declare abstract class EntityCollection<T extends Entity = Entity> extends Collection<T> {
   /**
+   * Return a reference to the singleton instance of this EntityCollection, or
+   * null if it has not yet been created.
+   */
+  static get instance(): EntityCollection<Entity> | null;
+
+  /**
    * @param data - An Array of Entity data from which to create instances
    */
   constructor(data: T['_data'][]);
-
-  /**
-   * The source data is, itself, a mapping of IDs to data objects
-   */
-  _source: T['_data'][];
 
   /**
    * An Array of application references which will be automatically updated when
@@ -21,29 +22,9 @@ declare abstract class EntityCollection<T extends Entity = Entity> extends Colle
   apps: Application[];
 
   /**
-   * Initialize the Map object and all its contained entities
-   * @param data -
+   * The source data is, itself, a mapping of IDs to data objects
    */
-  protected _initialize(data: T['_data'][]): void;
-
-  /**
-   * An array of all the Entities in the EntityCollection.
-   * This is an alias for {@link Collection#entries}.
-   */
-  get entities(): T[];
-
-  /**
-   * Render any Applications associated with this EntityCollection
-   * @param args -
-   * @returns A reference to the rendered EntityCollection
-   * @see {@link Application.render}
-   */
-  render(...args: Parameters<Application['render']>): this;
-
-  /**
-   * The EntityCollection name
-   */
-  get name(): string;
+  protected _source: T['_data'][];
 
   /**
    * Return a reference to the SidebarDirectory application for this
@@ -52,16 +33,15 @@ declare abstract class EntityCollection<T extends Entity = Entity> extends Colle
   get directory(): SidebarDirectory | null;
 
   /**
-   * Return a reference to the base Entity name which is contained within this
-   * EntityCollection.
+   * An array of all the Entities in the EntityCollection.
+   * This is an alias for {@link Collection#entries}.
    */
-  abstract get entity(): string;
+  get entities(): T[];
 
   /**
-   * Return a reference to the singleton instance of this EntityCollection, or
-   * null if it has not yet been created.
+   * The EntityCollection name
    */
-  static get instance(): EntityCollection<Entity> | null;
+  get name(): string;
 
   /**
    * Return a reference to the Entity subclass which should be used when
@@ -73,17 +53,11 @@ declare abstract class EntityCollection<T extends Entity = Entity> extends Colle
   get object(): ConstructorOf<T>;
 
   /**
-   * Add a new Entity to the EntityCollection, asserting that they are of the
-   * correct type.
-   * @param entity - The entity instance to add to the collection
+   * Apply data transformations when importing an Entity from a Compendium pack
+   * @param data - The original Compendium entry data
+   * @returns The processed data ready for Entity creation
    */
-  insert(entity: T): void;
-
-  /**
-   * Remove an Entity from the EntityCollection by its ID.
-   * @param id - The entity ID which should be removed
-   */
-  remove(id: string): void;
+  fromCompendium(data: DeepPartial<T['_data']>): DeepPartial<T['_data']>;
 
   /**
    * Import an Entity from a compendium collection, adding it to the current
@@ -105,11 +79,25 @@ declare abstract class EntityCollection<T extends Entity = Entity> extends Colle
   ): Promise<T>;
 
   /**
-   * Apply data transformations when importing an Entity from a Compendium pack
-   * @param data - The original Compendium entry data
-   * @returns The processed data ready for Entity creation
+   * Add a new Entity to the EntityCollection, asserting that they are of the
+   * correct type.
+   * @param entity - The entity instance to add to the collection
    */
-  fromCompendium(data: DeepPartial<T['_data']>): DeepPartial<T['_data']>;
+  insert(entity: T): void;
+
+  /**
+   * Remove an Entity from the EntityCollection by its ID.
+   * @param id - The entity ID which should be removed
+   */
+  remove(id: string): void;
+
+  /**
+   * Render any Applications associated with this EntityCollection
+   * @param args -
+   * @returns A reference to the rendered EntityCollection
+   * @see {@link Application.render}
+   */
+  render(...args: Parameters<Application['render']>): this;
 
   /**
    * Update all objects in this EntityCollection with a provided transformation.
@@ -127,4 +115,16 @@ declare abstract class EntityCollection<T extends Entity = Entity> extends Colle
     condition?: (obj: T) => boolean,
     options?: Entity.UpdateOptions
   ): Promise<T[]>;
+
+  /**
+   * Initialize the Map object and all its contained entities
+   * @param data -
+   */
+  protected _initialize(data: T['_data'][]): void;
+
+  /**
+   * Return a reference to the base Entity name which is contained within this
+   * EntityCollection.
+   */
+  abstract get entity(): string;
 }

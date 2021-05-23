@@ -11,13 +11,13 @@ declare class Macro extends Entity<Macro.Data> {
   /** @override */
   static get config(): Entity.Config<Macro>;
 
+  /** @override */
+  static can(user: User, action: string, target: Macro): boolean;
+
   /**
    * Is the current User the author of this macro?
    */
   get isAuthor(): boolean;
-
-  /** @override */
-  static can(user: User, action: string, target: Macro): boolean;
 
   /**
    * Execute the Macro command

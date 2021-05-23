@@ -7,17 +7,18 @@
  * 3) Map pings
  */
 declare class ControlsLayer extends CanvasLayer {
+  /**
+   * @override
+   * @defaultValue `mergeObject(super.layerOptions, { zIndex: 400 })`
+   */
+  static get layerOptions(): CanvasLayer.LayerOptions;
+
   constructor();
 
   /**
    * Cursor position indicators
    */
   cursors: PIXI.Container | null;
-
-  /**
-   * A mapping of user IDs to Cursor instances for quick access
-   */
-  protected _cursors: Partial<Record<string, Cursor>>;
 
   /**
    * Door control icons
@@ -30,10 +31,23 @@ declare class ControlsLayer extends CanvasLayer {
    */
   effects: null; // This seems to be unused. - Bolts
 
+  // The controls layer is always interactive
+  interactiveChildren: true;
+
   /**
    * Ruler tools, one per connected user
    */
   rulers: PIXI.Container | null;
+
+  /**
+   * Canvas selection rectangle
+   */
+  select: PIXI.Graphics | null;
+
+  /**
+   * A mapping of user IDs to Cursor instances for quick access
+   */
+  protected _cursors: Partial<Record<string, Cursor>>;
 
   /**
    * A convenience mapping of user IDs to Ruler instances for quick access
@@ -41,31 +55,28 @@ declare class ControlsLayer extends CanvasLayer {
   protected _rulers: Partial<Record<string, Ruler>>;
 
   /**
-   * Canvas selection rectangle
-   */
-  select: PIXI.Graphics | null;
-
-  // The controls layer is always interactive
-  interactiveChildren: true;
-
-  /**
-   * @override
-   * @defaultValue `mergeObject(super.layerOptions, { zIndex: 400 })`
-   */
-  static get layerOptions(): CanvasLayer.LayerOptions;
-
-  /**
    * A convenience accessor to the Ruler for the active game user
    */
   get ruler(): ReturnType<ControlsLayer['getRulerForUser']>;
 
   /**
-   * Get the Ruler display for a specific User ID
+   * Create a Door Control icon for a given Wall object
+   * @param wall - The Wall for which to create a DoorControl
+   * @returns The created DoorControl
    */
-  getRulerForUser(userId: string): Ruler | null;
+  createDoorControl(wall: Wall): Promise<DoorControl> | null;
+
+  /** @override */
+  deactivate(): void;
 
   /** @override */
   draw(): this;
+
+  /**
+   * Create and draw the Cursor object for a given User
+   * @param user - The User entity for whom to draw the cursor Container
+   */
+  drawCursor(user: User): Cursor;
 
   /**
    * Draw the cursors container
@@ -78,13 +89,6 @@ declare class ControlsLayer extends CanvasLayer {
   drawDoors(): void;
 
   /**
-   * Create a Door Control icon for a given Wall object
-   * @param wall - The Wall for which to create a DoorControl
-   * @returns The created DoorControl
-   */
-  createDoorControl(wall: Wall): Promise<DoorControl> | null;
-
-  /**
    * Draw Ruler tools
    */
   drawRulers(): void;
@@ -95,19 +99,10 @@ declare class ControlsLayer extends CanvasLayer {
    */
   drawSelect({ x, y, width, height }: { x: number; y: number; width: number; height: number }): void;
 
-  /** @override */
-  deactivate(): void;
-
   /**
-   * Handle mousemove events on the game canvas to broadcast activity of the user's cursor position
+   * Get the Ruler display for a specific User ID
    */
-  protected _onMoveCursor(event: PIXI.InteractionEvent): void;
-
-  /**
-   * Create and draw the Cursor object for a given User
-   * @param user - The User entity for whom to draw the cursor Container
-   */
-  drawCursor(user: User): Cursor;
+  getRulerForUser(userId: string): Ruler | null;
 
   /**
    * Update the cursor when the user moves to a new position
@@ -126,4 +121,9 @@ declare class ControlsLayer extends CanvasLayer {
       _state: Ruler['_state'];
     }
   ): void;
+
+  /**
+   * Handle mousemove events on the game canvas to broadcast activity of the user's cursor position
+   */
+  protected _onMoveCursor(event: PIXI.InteractionEvent): void;
 }

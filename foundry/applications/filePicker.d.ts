@@ -5,53 +5,33 @@
  */
 declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> extends Application<P> {
   /**
-   * The full requested path given by the user
+   * Enumerate the allowed FilePicker display modes
    */
-  request: string | null;
+  static DISPLAY_MODES: ['list', 'thumbs', 'tiles', 'images'];
 
   /**
-   * The file sources which are available for browsing
+   * Record the last-browsed directory path so that re-opening a different FilePicker instance uses the same target
+   * @defaultValue `''`
    */
-  sources: Partial<FilePicker.Sources>;
+  static LAST_BROWSED_DIRECTORY: string;
 
   /**
-   * Track the active source tab which is being browsed
-   * @defaultValue `'data'`
+   * Record the last-configured display mode so that re-opening a different FilePicker instance uses the same mode.
+   * @defaultValue `FilePicker.DisplayModes.List`
    */
-  activeSource: string;
+  static LAST_DISPLAY_MODE: string;
 
   /**
-   * The latest set of results browsed from the server
-   * @remarks This is never set.
+   * Record the last-configured tile size which can automatically be applied to new FilePicker instances
+   * @defaultValue `null`
    */
-  results: {};
+  static LAST_TILE_SIZE: number | null;
 
   /**
-   * The general file type which controls the set of extensions which will be accepted
+   * Cache the names of S3 buckets which can be used
+   * @defaultValue `null`
    */
-  type: string;
-
-  /**
-   * The target HTML element this file picker is bound to
-   */
-  field: HTMLElement | null;
-
-  /**
-   * A button which controls the display of the picker UI
-   */
-  button: HTMLElement | null;
-
-  /**
-   * The display mode of the FilePicker UI
-   */
-  displayMode: FilePicker.DisplayMode;
-
-  /**
-   * The current set of file extensions which are being filtered upon
-   */
-  extensions: string[];
-
-  protected _loaded: boolean;
+  static S3_BUCKETS: string[] | null;
 
   /**
    * @override
@@ -59,67 +39,9 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   static get defaultOptions(): FilePicker.Options;
 
   /**
-   * Given a current file path, determine the directory it belongs to
-   * @param target - The currently requested target path
-   * @returns An array of the inferred source and target directory path
-   */
-  protected _inferCurrentDirectory(target: string): [string, string];
-
-  /**
-   * Get the valid file extensions for a given named file picker type
-   */
-  protected _getExtensions(type: string): string[] | undefined;
-
-  /**
-   * Test a URL to see if it matches a well known s3 key pattern
-   * @param url - An input URL to test
-   * @returns A regular expression match
-   */
-  static matchS3URL(url: string): RegExpMatchArray | null;
-
-  /**
-   * Parse a s3 key to learn the bucket and the key prefix used for the request
-   * @param key - A fully qualified key name or prefix path
-   */
-  protected static parseS3URL(key: string): { bucket: string; keyPrefix: string };
-
-  /**
-   * @override
-   */
-  get title(): string;
-
-  /**
-   * Return the source object for the currently active source
-   */
-  get source(): FilePicker.Source;
-
-  /**
-   * Return the target directory for the currently active source
-   */
-  get target(): string;
-
-  /**
-   * Return a flag for whether the current user is able to upload file content
-   */
-  get canUpload(): boolean;
-
-  /**
    * Return the upload URL to which the FilePicker should post uploaded files
    */
   static get uploadURL(): string;
-
-  /**
-   * @param options - (unused)
-   * @override
-   */
-  getData(options?: Application.RenderOptions): Promise<FilePicker.Data>;
-
-  /**
-   * Browse to a specific location for this FilePicker instance
-   * @param target - The target within the currently active source location.
-   * @param options - Browsing options
-   */
-  browse(target?: string, options?: Partial<FilePicker.BrowsingOptions>): Promise<FilePicker.Result>;
 
   /**
    * Browse files for a certain directory location
@@ -152,9 +74,22 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   static createDirectory(source: string, target: string, options?: Record<string, unknown>): Promise<unknown>;
 
   /**
-   * General dispatcher method to submit file management commands to the server
+   * Bind the file picker to a new target field.
+   * Assumes the user will provide a <button> HTMLElement which has the data-target and data-type attributes
+   * The data-target attribute should provide the name of the input field which should receive the selected file
+   * The data-type attribute is a string in ["image", "audio"] which sets the file extensions which will be accepted
+   *
+   * @param button  - The button element
+   * @param options - (unused)
    */
-  protected static _manageFiles(data: FilePicker.ManageData, options?: Record<string, unknown>): Promise<unknown>;
+  static fromButton(button: HTMLButtonElement, options?: any): FilePicker;
+
+  /**
+   * Test a URL to see if it matches a well known s3 key pattern
+   * @param url - An input URL to test
+   * @returns A regular expression match
+   */
+  static matchS3URL(url: string): RegExpMatchArray | null;
 
   /**
    * Dispatch a POST request to the server containing a directory path and a file to upload
@@ -172,14 +107,141 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   ): Promise<(Response & { path: string; message?: string }) | false | void>;
 
   /**
-   * Additional actions performed when the file-picker UI is rendered
+   * General dispatcher method to submit file management commands to the server
    */
-  render(force?: boolean, options?: Application.RenderOptions): this | void | Promise<FilePicker.Result>;
+  protected static _manageFiles(data: FilePicker.ManageData, options?: Record<string, unknown>): Promise<unknown>;
+
+  /**
+   * Parse a s3 key to learn the bucket and the key prefix used for the request
+   * @param key - A fully qualified key name or prefix path
+   */
+  protected static parseS3URL(key: string): { bucket: string; keyPrefix: string };
+
+  /**
+   * Track the active source tab which is being browsed
+   * @defaultValue `'data'`
+   */
+  activeSource: string;
+
+  /**
+   * A button which controls the display of the picker UI
+   */
+  button: HTMLElement | null;
+
+  /**
+   * The display mode of the FilePicker UI
+   */
+  displayMode: FilePicker.DisplayMode;
+
+  /**
+   * The current set of file extensions which are being filtered upon
+   */
+  extensions: string[];
+
+  /**
+   * The target HTML element this file picker is bound to
+   */
+  field: HTMLElement | null;
+
+  /**
+   * The full requested path given by the user
+   */
+  request: string | null;
+
+  /**
+   * The latest set of results browsed from the server
+   * @remarks This is never set.
+   */
+  results: {};
+
+  /**
+   * The file sources which are available for browsing
+   */
+  sources: Partial<FilePicker.Sources>;
+
+  /**
+   * The general file type which controls the set of extensions which will be accepted
+   */
+  type: string;
+
+  protected _loaded: boolean;
+
+  /**
+   * Return a flag for whether the current user is able to upload file content
+   */
+  get canUpload(): boolean;
+
+  /**
+   * Return the source object for the currently active source
+   */
+  get source(): FilePicker.Source;
+
+  /**
+   * Return the target directory for the currently active source
+   */
+  get target(): string;
+
+  /**
+   * @override
+   */
+  get title(): string;
 
   /**
    * Activate listeners to handle user interactivity for the FilePicker UI
    */
   activateListeners(html: JQuery): void;
+
+  /**
+   * Browse to a specific location for this FilePicker instance
+   * @param target - The target within the currently active source location.
+   * @param options - Browsing options
+   */
+  browse(target?: string, options?: Partial<FilePicker.BrowsingOptions>): Promise<FilePicker.Result>;
+
+  /**
+   * @param options - (unused)
+   * @override
+   */
+  getData(options?: Application.RenderOptions): Promise<FilePicker.Data>;
+
+  /**
+   * Additional actions performed when the file-picker UI is rendered
+   */
+  render(force?: boolean, options?: Application.RenderOptions): this | void | Promise<FilePicker.Result>;
+
+  /**
+   * @param selector - (unused)
+   * @override
+   */
+  protected _canDragDrop(selector: string | null): this['canUpload'];
+
+  /**
+   * @param selector - (unused)
+   * @override
+   */
+  protected _canDragStart(selector: string | null): boolean;
+
+  /**
+   * Present the user with a dialog to create a subdirectory within their currently browsed file storate location.
+   */
+  protected _createDirectoryDialog(source: FilePicker.Source): Promise<ReturnType<this['browse']> | void | null>;
+
+  /**
+   * Get the valid file extensions for a given named file picker type
+   */
+  protected _getExtensions(type: string): string[] | undefined;
+
+  /**
+   * Given a current file path, determine the directory it belongs to
+   * @param target - The currently requested target path
+   * @returns An array of the inferred source and target directory path
+   */
+  protected _inferCurrentDirectory(target: string): [string, string];
+
+  /**
+   * Handle changes to the bucket selector
+   */
+  protected _onChangeBucket(event: JQuery.ChangeEvent): ReturnType<this['browse']>;
 
   /**
    * Handle a click event to change the display mode of the File Picker
@@ -195,16 +257,14 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   protected _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: this['activeSource']): void;
 
   /**
-   * @param selector - (unused)
-   * @override
+   * Handle backwards navigation of the fol6der structure
    */
-  protected _canDragStart(selector: string | null): boolean;
-
-  /**
-   * @param selector - (unused)
-   * @override
-   */
-  protected _canDragDrop(selector: string | null): this['canUpload'];
+  protected _onClickDirectoryControl(
+    event: JQuery.ClickEvent
+  ):
+    | ReturnType<this['browse']>
+    | Promise<ReturnType<this['browse']> | void | null>
+    | ReturnType<typeof FilePicker['configurePath']>;
 
   /**
    * @override
@@ -215,12 +275,6 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * @override
    */
   protected _onDrop(event: DragEvent): Promise<FilePicker.Result | void>;
-
-  /**
-   * Handle user submission of the address bar to request an explicit target
-   * @param event - The originating keydown event
-   */
-  protected _onRequestTarget(event: KeyboardEvent): void;
 
   /**
    * Handle requests from the IntersectionObserver to lazily load an image file
@@ -234,24 +288,10 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   protected _onPick(event: JQuery.ClickEvent): Promise<FilePicker.Result> | undefined;
 
   /**
-   * Handle backwards navigation of the fol6der structure
+   * Handle user submission of the address bar to request an explicit target
+   * @param event - The originating keydown event
    */
-  protected _onClickDirectoryControl(
-    event: JQuery.ClickEvent
-  ):
-    | ReturnType<this['browse']>
-    | Promise<ReturnType<this['browse']> | void | null>
-    | ReturnType<typeof FilePicker['configurePath']>;
-
-  /**
-   * Present the user with a dialog to create a subdirectory within their currently browsed file storate location.
-   */
-  protected _createDirectoryDialog(source: FilePicker.Source): Promise<ReturnType<this['browse']> | void | null>;
-
-  /**
-   * Handle changes to the bucket selector
-   */
-  protected _onChangeBucket(event: JQuery.ChangeEvent): ReturnType<this['browse']>;
+  protected _onRequestTarget(event: KeyboardEvent): void;
 
   /**
    * @param event - (unused)
@@ -268,46 +308,6 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * Handle file upload
    */
   protected _onUpload(ev: Event): Promise<void>;
-
-  /**
-   * Bind the file picker to a new target field.
-   * Assumes the user will provide a <button> HTMLElement which has the data-target and data-type attributes
-   * The data-target attribute should provide the name of the input field which should receive the selected file
-   * The data-type attribute is a string in ["image", "audio"] which sets the file extensions which will be accepted
-   *
-   * @param button  - The button element
-   * @param options - (unused)
-   */
-  static fromButton(button: HTMLButtonElement, options?: any): FilePicker;
-
-  /**
-   * Record the last-browsed directory path so that re-opening a different FilePicker instance uses the same target
-   * @defaultValue `''`
-   */
-  static LAST_BROWSED_DIRECTORY: string;
-
-  /**
-   * Record the last-configured tile size which can automatically be applied to new FilePicker instances
-   * @defaultValue `null`
-   */
-  static LAST_TILE_SIZE: number | null;
-
-  /**
-   * Record the last-configured display mode so that re-opening a different FilePicker instance uses the same mode.
-   * @defaultValue `FilePicker.DisplayModes.List`
-   */
-  static LAST_DISPLAY_MODE: string;
-
-  /**
-   * Enumerate the allowed FilePicker display modes
-   */
-  static DISPLAY_MODES: ['list', 'thumbs', 'tiles', 'images'];
-
-  /**
-   * Cache the names of S3 buckets which can be used
-   * @defaultValue `null`
-   */
-  static S3_BUCKETS: string[] | null;
 }
 
 declare namespace FilePicker {
@@ -331,8 +331,8 @@ declare namespace FilePicker {
   interface Data {
     bucket: string | null;
     canGoBack: boolean;
-    canUpload: boolean;
     canSelect: boolean;
+    canUpload: boolean;
     cssClass: string;
     dirs: Dir[];
     displayMode: string;
@@ -357,9 +357,9 @@ declare namespace FilePicker {
   type DisplayMode = ValueOf<typeof FilePicker['DISPLAY_MODES']>;
 
   interface File {
+    img: string;
     name: string;
     url: string;
-    img: string;
   }
 
   interface ManageData {
@@ -369,39 +369,16 @@ declare namespace FilePicker {
   }
 
   interface Options extends Application.Options {
-    current?: FilePicker['request'];
-
     activeSource?: FilePicker['activeSource'];
 
-    type?: FilePicker['type'];
-
-    field?: FilePicker['field'];
-
     button?: FilePicker['button'];
-
-    /**
-     * @defaultValue `'templates/apps/filepicker.html'`
-     */
-    template: string;
 
     /**
      * @defaultValue `['filepicker']`
      */
     classes: string[];
 
-    /**
-     * @defaultValue `520`
-     */
-    width: number;
-
-    tabs: Array<
-      Tabs.Options & {
-        /**
-         * @defaultValue `'.tabs'`
-         */
-        navSelector: string;
-      }
-    >;
+    current?: FilePicker['request'];
 
     dragDrop: Array<
       DragDrop.Options & {
@@ -417,10 +394,7 @@ declare namespace FilePicker {
       }
     >;
 
-    /**
-     * @defaultValue `false`
-     */
-    tileSize: boolean;
+    field?: FilePicker['field'];
 
     filters: Array<
       SearchFilter.Options & {
@@ -435,6 +409,32 @@ declare namespace FilePicker {
         contentSelector: string;
       }
     >;
+
+    tabs: Array<
+      Tabs.Options & {
+        /**
+         * @defaultValue `'.tabs'`
+         */
+        navSelector: string;
+      }
+    >;
+
+    /**
+     * @defaultValue `'templates/apps/filepicker.html'`
+     */
+    template: string;
+
+    /**
+     * @defaultValue `false`
+     */
+    tileSize: boolean;
+
+    type?: FilePicker['type'];
+
+    /**
+     * @defaultValue `520`
+     */
+    width: number;
   }
 
   interface Result {
@@ -443,9 +443,9 @@ declare namespace FilePicker {
   }
 
   interface Source {
-    target: string;
-    label: string;
     icon: string;
+    label: string;
+    target: string;
   }
 
   interface Sources {

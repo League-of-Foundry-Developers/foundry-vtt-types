@@ -1,7 +1,3 @@
-/* ----------------------------------------- */
-/*  Reusable Type Definitions                */
-/* ----------------------------------------- */
-
 /**
  * A single point, expressed as an object \{x, y\}
  */
@@ -33,10 +29,6 @@ declare type Rectangle =
       width: number;
       height: number;
     };
-
-/* ----------------------------------------- */
-/*  Database Workflows                       */
-/* ----------------------------------------- */
 
 /**
  * The expected structure for a Data record

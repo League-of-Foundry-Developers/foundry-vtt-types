@@ -8,12 +8,6 @@ declare abstract class BasePlaceableHUD<
   P extends Application.Options = Application.Options
 > extends Application<P> {
   /**
-   * Reference a PlaceableObject this HUD is currently bound to
-   * @defaultValue `null`
-   */
-  object: O | null;
-
-  /**
    * @override
    * @defaultValue
    * ```
@@ -26,9 +20,18 @@ declare abstract class BasePlaceableHUD<
   static get defaultOptions(): typeof Application['defaultOptions'];
 
   /**
+   * Reference a PlaceableObject this HUD is currently bound to
+   * @defaultValue `null`
+   */
+  object: O | null;
+
+  /**
    * Convenience access for the canvas layer which this HUD modifies
    */
   get layer(): O['layer'];
+
+  /** @override */
+  activateListeners(html: JQuery<HTMLElement>): void;
 
   /**
    * Bind the HUD to a new PlaceableObject and display it
@@ -40,9 +43,6 @@ declare abstract class BasePlaceableHUD<
    * Clear the HUD by fading out it's active HTML and recording the new display state
    */
   clear(): void;
-
-  /** @override */
-  _render(...args: Parameters<Application['_render']>): Promise<void>;
 
   /**
    * @override
@@ -73,14 +73,10 @@ declare abstract class BasePlaceableHUD<
    */
   setPosition({ left, top, width, height, scale }?: Partial<Application.Position>): any;
 
-  /** @override */
-  activateListeners(html: JQuery<HTMLElement>): void;
-
   /**
-   * Toggle the visible state of all controlled objects in the Layer
-   * @param event - The originating click event
+   * Handle sorting the z-order of the object
    */
-  protected _onToggleVisibility(event: JQuery.ClickEvent): Promise<void>;
+  protected _onSort(up: boolean, event: JQuery.ClickEvent): Promise<void>;
 
   /**
    * Toggle locked state of all controlled objects in the Layer
@@ -89,7 +85,11 @@ declare abstract class BasePlaceableHUD<
   protected _onToggleLocked(event: JQuery.ClickEvent): Promise<void>;
 
   /**
-   * Handle sorting the z-order of the object
+   * Toggle the visible state of all controlled objects in the Layer
+   * @param event - The originating click event
    */
-  protected _onSort(up: boolean, event: JQuery.ClickEvent): Promise<void>;
+  protected _onToggleVisibility(event: JQuery.ClickEvent): Promise<void>;
+
+  /** @override */
+  protected _render(...args: Parameters<Application['_render']>): Promise<void>;
 }

@@ -2,8 +2,6 @@
  * Torch animation coloration shader
  */
 declare class TorchColorationShader extends StandardColorationShader {
-  static fragmentShader: string;
-
   /**
    * @defaultValue
    * ```typescript
@@ -18,4 +16,6 @@ declare class TorchColorationShader extends StandardColorationShader {
    * ```
    */
   static defaultUniforms: AbstractBaseShader.Uniforms;
+
+  static fragmentShader: string;
 }

@@ -4,25 +4,13 @@
 declare class DoorControl extends PIXI.Container {
   constructor(wall: Wall);
 
-  wall: Wall;
-
-  /**
-   * Draw the DoorControl icon, displaying it's icon texture and border
-   */
-  draw(): Promise<this>;
-
-  icon?: PIXI.Sprite;
-
   bg?: PIXI.Graphics;
 
   border?: PIXI.Graphics;
 
-  /**
-   * Get the icon texture to use for the Door Control icon based on the door state
-   */
-  protected _getTexture(): Promise<ReturnType<typeof getTexture>>;
+  icon?: PIXI.Sprite;
 
-  reposition(): void;
+  wall: Wall;
 
   /**
    * Determine whether the DoorControl is visible to the calling user's perspective.
@@ -31,15 +19,27 @@ declare class DoorControl extends PIXI.Container {
    */
   get isVisible(): boolean;
 
-  protected _onMouseOver(ev: PIXI.InteractionEvent): void;
+  /**
+   * Draw the DoorControl icon, displaying it's icon texture and border
+   */
+  draw(): Promise<this>;
 
-  protected _onMouseOut(ev: JQuery.Event | PIXI.InteractionEvent): void;
+  reposition(): void;
+
+  /**
+   * Get the icon texture to use for the Door Control icon based on the door state
+   */
+  protected _getTexture(): Promise<ReturnType<typeof getTexture>>;
 
   /**
    * Handle left mouse down events on the door control icon.
    * This should only toggle between the OPEN and CLOSED states.
    */
   protected _onMouseDown(event: PIXI.InteractionEvent): false | void;
+
+  protected _onMouseOut(ev: JQuery.Event | PIXI.InteractionEvent): void;
+
+  protected _onMouseOver(ev: PIXI.InteractionEvent): void;
 
   /**
    * Handle right mouse down events on the door control icon

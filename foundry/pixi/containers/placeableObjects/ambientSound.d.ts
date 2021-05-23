@@ -16,6 +16,9 @@
  * ```
  */
 declare class AmbientSound extends PlaceableObject<AmbientSound.Data> {
+  /** @override */
+  static get embeddedName(): 'AmbientSound';
+
   /**
    * The Howl instance used to play this AmbientSound effect
    */
@@ -27,18 +30,14 @@ declare class AmbientSound extends PlaceableObject<AmbientSound.Data> {
   howlId?: number;
 
   /**
-   * Create an audio helper instance to use for the Ambient Sound
-   */
-  protected _createHowl(): Howl;
-
-  /** @override */
-  static get embeddedName(): 'AmbientSound';
-
-  /**
    * @remarks
    * Not implemented for AmbientSound
    */
   get bounds(): never;
+  /**
+   * A convenience accessor for the sound radius in pixels
+   */
+  get radius(): number;
 
   /**
    * A convenience accessor for the sound type
@@ -46,40 +45,11 @@ declare class AmbientSound extends PlaceableObject<AmbientSound.Data> {
   get type(): 'l' | 'g';
 
   /**
-   * A convenience accessor for the sound radius in pixels
-   */
-  get radius(): number;
-
-  /**
-   * Toggle playback of the sound depending on whether or not it is audible
-   * @param isAudible - Is the sound audible?
-   * @param volume    - The target playback volume
-   * @param fade      - Whether to fade the volume from its previous level
-   */
-  play(isAudible: boolean, volume?: number, { fade }?: { fade?: boolean }): void | number;
-
-  /**
    * @override
    * @remarks
    * Returns void
    */
   clear(): any;
-
-  /** @override */
-  draw(): Promise<this>;
-
-  /**
-   * Draw the graphical preview of the audio source area of effect
-   */
-  protected drawField(): PIXI.Container;
-
-  /**
-   * Draw the ControlIcon for the AmbientLight
-   */
-  protected _drawControlIcon(): ControlIcon;
-
-  /** @override */
-  refresh(): this;
 
   /**
    * Compute the field-of-vision for an object, determining its effective line-of-sight and field-of-vision polygons
@@ -92,13 +62,42 @@ declare class AmbientSound extends PlaceableObject<AmbientSound.Data> {
   };
 
   /** @override */
+  draw(): Promise<this>;
+
+  /**
+   * Toggle playback of the sound depending on whether or not it is audible
+   * @param isAudible - Is the sound audible?
+   * @param volume    - The target playback volume
+   * @param fade      - Whether to fade the volume from its previous level
+   */
+  play(isAudible: boolean, volume?: number, { fade }?: { fade?: boolean }): void | number;
+
+  /** @override */
+  refresh(): this;
+
+  /**
+   * Create an audio helper instance to use for the Ambient Sound
+   */
+  protected _createHowl(): Howl;
+
+  /**
+   * Draw the ControlIcon for the AmbientLight
+   */
+  protected _drawControlIcon(): ControlIcon;
+
+  /** @override */
   protected _onCreate(): void;
+
+  /** @override */
+  protected _onDelete(): void;
 
   /** @override */
   protected _onUpdate(data: AmbientSound.Data): void;
 
-  /** @override */
-  protected _onDelete(): void;
+  /**
+   * Draw the graphical preview of the audio source area of effect
+   */
+  protected drawField(): PIXI.Container;
 }
 
 declare namespace AmbientSound {

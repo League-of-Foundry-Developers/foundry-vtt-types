@@ -3,9 +3,35 @@ declare class Folder extends Entity<Folder.Data> {
   static get config(): Entity.Config<Folder>;
 
   /**
+   * Create a new Folder by rendering a dialog window to provide basic creation details
+   * @param data    - Initial data with which to populate the creation form
+   * @param options - Initial positioning and sizing options for the dialog form
+   * @returns An active FolderConfig instance for creating the new Folder entity
+   *
+   * @remarks
+   * This actually returns a {@link FolderConfig} but this is incompatible with the return type in `Entity`, which is
+   * `Promise<Entity>`.
+   */
+  static createDialog(data?: any, options?: any): any;
+
+  /** @override */
+  protected static _handleDelete({ request, result, userId }: { request: any; result: any; userId: any }): any; // Folder, mismatched
+
+  /**
+   * A reference to the EntityCollection of Entities for this folder type.
+   * @returns
+   */
+  get collection(): EntityCollection;
+
+  /**
    * Return whether the folder is displayed in the sidebar to the current user
    */
   get displayed(): boolean;
+
+  /**
+   * Return an Array of the Entities which are contained within this Folder
+   */
+  get entities(): Entity[];
 
   /**
    * Return whether the folder is currently expanded within the sidebar interface
@@ -24,31 +50,12 @@ declare class Folder extends Entity<Folder.Data> {
   get type(): string;
 
   /**
-   * A reference to the EntityCollection of Entities for this folder type.
-   * @returns
+   * Provide a dialog form that allows for exporting the contents of a Folder into an eligible Compendium pack.
+   * @param pack    - A pack ID to set as the default choice in the select input
+   * @param options - Additional options passed to the Dialog.prompt method
+   * @returns A Promise which resolves or rejects once the dialog has been submitted or closed
    */
-  get collection(): EntityCollection;
-
-  /**
-   * Return an Array of the Entities which are contained within this Folder
-   */
-  get entities(): Entity[];
-
-  /**
-   * Create a new Folder by rendering a dialog window to provide basic creation details
-   * @param data    - Initial data with which to populate the creation form
-   * @param options - Initial positioning and sizing options for the dialog form
-   * @returns An active FolderConfig instance for creating the new Folder entity
-   *
-   * @remarks
-   * This actually returns a {@link FolderConfig} but this is incompatible with the return type in `Entity`, which is
-   * `Promise<Entity>`.
-   */
-  static createDialog(data?: any, options?: any): any;
-
-  /* -------------------------------------------- */
-  /*  Methods                                     */
-  /* -------------------------------------------- */
+  exportDialog(pack: string, options?: any): Promise<void>;
 
   /**
    * Export all Entities contained in this Folder to a given Compendium pack.
@@ -65,21 +72,6 @@ declare class Folder extends Entity<Folder.Data> {
       updateByName?: boolean;
     }
   ): Promise<Compendium>;
-
-  /**
-   * Provide a dialog form that allows for exporting the contents of a Folder into an eligible Compendium pack.
-   * @param pack    - A pack ID to set as the default choice in the select input
-   * @param options - Additional options passed to the Dialog.prompt method
-   * @returns A Promise which resolves or rejects once the dialog has been submitted or closed
-   */
-  exportDialog(pack: string, options?: any): Promise<void>;
-
-  /* -------------------------------------------- */
-  /*  Socket Workflows                            */
-  /* -------------------------------------------- */
-
-  /** @override */
-  protected static _handleDelete({ request, result, userId }: { request: any; result: any; userId: any }): any; // Folder, mismatched
 }
 
 declare namespace Folder {

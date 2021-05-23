@@ -6,15 +6,15 @@ declare abstract class SidebarDirectory<
   P extends SidebarDirectory.Options = SidebarDirectory.Options
 > extends SidebarTab<P> {
   /**
-   * References to the set of Entities which are displayed in the Sidebar
+   * A reference to the Entity class which is displayed within this EntityCollection
    */
-  entities: Entity[];
+  static get cls(): ConstructorOf<Entity>;
 
   /**
-   * Reference the set of Folders which exist in this Sidebar
-   * @defaultValue `null`
+   * The Entity collection which this Sidebar Directory contains
+   * @remarks This method is abstract in SidebarTab.
    */
-  folders: Folder[];
+  static get collection(): EntityCollection | undefined;
 
   /**
    * @override
@@ -26,24 +26,6 @@ declare abstract class SidebarDirectory<
    * @remarks This method is abstract in SidebarTab.
    */
   static get entity(): string;
-
-  /**
-   * The Entity collection which this Sidebar Directory contains
-   * @remarks This method is abstract in SidebarTab.
-   */
-  static get collection(): EntityCollection | undefined;
-
-  /**
-   * A reference to the Entity class which is displayed within this EntityCollection
-   */
-  static get cls(): ConstructorOf<Entity>;
-
-  /**
-   * Initialize the content of the directory by categorizing folders and entities into a hierarchical tree structure.
-   */
-  initialize(): void;
-
-  tree: SidebarDirectory.Tree;
 
   /**
    * Given an entity type and a list of entities, set up the folder tree for that entity
@@ -70,9 +52,29 @@ declare abstract class SidebarDirectory<
   ): [Folder[], Entity[]];
 
   /**
-   * @override
+   * References to the set of Entities which are displayed in the Sidebar
    */
-  render(force?: boolean, context?: Partial<SidebarDirectory.RenderContext>): this | void;
+  entities: Entity[];
+
+  /**
+   * Reference the set of Folders which exist in this Sidebar
+   * @defaultValue `null`
+   */
+  folders: Folder[];
+
+  tree: SidebarDirectory.Tree;
+
+  protected _dragType: string;
+
+  /**
+   * Activate event listeners triggered within the Actor Directory HTML
+   */
+  activateListeners(html: JQuery): void;
+
+  /**
+   * Collapse all subfolders in this directory
+   */
+  collapseAll(): void;
 
   /**
    * @param options - (unused)
@@ -81,20 +83,38 @@ declare abstract class SidebarDirectory<
   getData(options?: Application.RenderOptions): SidebarDirectory.Data | PlaylistDirectory.Data;
 
   /**
-   * @param event - (unused)
+   * Initialize the content of the directory by categorizing folders and entities into a hierarchical tree structure.
+   */
+  initialize(): void;
+
+  /**
    * @override
    */
-  protected _onSearchFilter(event: KeyboardEvent, query: string, html: HTMLElement): void;
+  render(force?: boolean, context?: Partial<SidebarDirectory.RenderContext>): this | void;
 
   /**
-   * Collapse all subfolders in this directory
+   * Default folder context actions
    */
-  collapseAll(): void;
+  protected _contextMenu(html: JQuery): void;
 
   /**
-   * Activate event listeners triggered within the Actor Directory HTML
+   * Get the set of ContextMenu options which should be used for Entities in a SidebarDirectory
+   * @returns The Array of context options passed to the ContextMenu instance
    */
-  activateListeners(html: JQuery): void;
+  protected _getEntryContextOptions(): ContextMenu.Item[];
+
+  /**
+   * Get the set of ContextMenu options which should be used for Folders in a SidebarDirectory
+   * @returns The Array of context options passed to the ContextMenu instance
+   */
+  protected _getFolderContextOptions(): ContextMenu.Item[];
+
+  /**
+   * Define the behavior of the sidebar tab when it received a dropped data object
+   * @param event - The original drop event
+   * @param data  - The data being dropped
+   */
+  protected _handleDropData(event: DragEvent, data: unknown): unknown;
 
   /**
    * Handle clicking on an Entity name in the Sidebar directory
@@ -115,19 +135,6 @@ declare abstract class SidebarDirectory<
   protected _onCreateFolder(event: JQuery.ClickEvent): void;
 
   /**
-   * Handle toggling the collapsed or expanded state of a folder within the directory tab
-   * @param event - The originating click event
-   */
-  protected _toggleFolder(event: JQuery.ClickEvent): void;
-
-  /**
-   * @override
-   */
-  protected _onDragStart(event: DragEvent): void;
-
-  protected _dragType: string;
-
-  /**
    * Highlight folders as drop targets when a drag event enters or exits their area
    * @param event - The DragEvent which is in progress
    */
@@ -136,84 +143,35 @@ declare abstract class SidebarDirectory<
   /**
    * @override
    */
+  protected _onDragStart(event: DragEvent): void;
+
+  /**
+   * @override
+   */
   protected _onDrop(event: DragEvent): void;
 
   /**
-   * Define the behavior of the sidebar tab when it received a dropped data object
-   * @param event - The original drop event
-   * @param data  - The data being dropped
+   * @param event - (unused)
+   * @override
    */
-  protected _handleDropData(event: DragEvent, data: unknown): unknown;
+  protected _onSearchFilter(event: KeyboardEvent, query: string, html: HTMLElement): void;
 
   /**
-   * Default folder context actions
+   * Handle toggling the collapsed or expanded state of a folder within the directory tab
+   * @param event - The originating click event
    */
-  protected _contextMenu(html: JQuery): void;
-
-  /**
-   * Get the set of ContextMenu options which should be used for Folders in a SidebarDirectory
-   * @returns The Array of context options passed to the ContextMenu instance
-   */
-  protected _getFolderContextOptions(): ContextMenu.Item[];
-
-  /**
-   * Get the set of ContextMenu options which should be used for Entities in a SidebarDirectory
-   * @returns The Array of context options passed to the ContextMenu instance
-   */
-  protected _getEntryContextOptions(): ContextMenu.Item[];
+  protected _toggleFolder(event: JQuery.ClickEvent): void;
 }
 
 declare namespace SidebarDirectory {
   interface Data {
-    user: User;
-
-    tree: SidebarDirectory['tree'];
-
     canCreate: boolean;
-
     sidebarIcon: string;
+    tree: SidebarDirectory['tree'];
+    user: User;
   }
 
   interface Options extends SidebarTab.Options {
-    /**
-     * @defaultValue
-     * ```typescript
-     * `${this.entity.toLowerCase()}s`
-     * ```
-     */
-    id: string;
-
-    /**
-     * @defaultValue
-     * ```typescript
-     * `templates/sidebar/${this.entity.toLowerCase()}-directory.html`
-     * ```
-     */
-    template: string;
-
-    /**
-     * @defaultValue
-     * ```typescript
-     * `${this.entity}s Directory`
-     * ```
-     */
-    title: string;
-
-    /**
-     * @defaultValue `['name', 'img', 'thumb', 'permission', 'sort', 'folder']`
-     */
-    renderUpdateKeys: string[];
-
-    /**
-     * @defaultValue `'auto'`
-     */
-    height: number | 'auto';
-
-    /**
-     * @defaultValue `['ol.directory-list']`
-     */
-    scrollY: string[];
-
     dragDrop: Array<
       DragDrop.Options & {
         /**
@@ -241,21 +199,56 @@ declare namespace SidebarDirectory {
         contentSelector: string;
       }
     >;
+
+    /**
+     * @defaultValue `'auto'`
+     */
+    height: number | 'auto';
+
+    /**
+     * @defaultValue
+     * ```typescript
+     * `${this.entity.toLowerCase()}s`
+     * ```
+     */
+    id: string;
+
+    /**
+     * @defaultValue `['name', 'img', 'thumb', 'permission', 'sort', 'folder']`
+     */
+    renderUpdateKeys: string[];
+
+    /**
+     * @defaultValue `['ol.directory-list']`
+     */
+    scrollY: string[];
+
+    /**
+     * @defaultValue
+     * ```typescript
+     * `templates/sidebar/${this.entity.toLowerCase()}-directory.html`
+     * ```
+     */
+    template: string;
+
+    /**
+     * @defaultValue
+     * ```typescript
+     * `${this.entity}s Directory`
+     * ```
+     */
+    title: string;
   }
 
   interface RenderContext extends Application.RenderOptions {
     action: string;
-
     data: string;
-
     entityType: string;
   }
 
   interface Tree {
-    root: boolean;
-
-    content: Entity[];
-
     children: Folder[];
+    content: Entity[];
+    root: boolean;
   }
 }

@@ -8,20 +8,20 @@
                     class for more detail.
  */
 declare class User extends Entity<User.Data> {
+  /** @override */
+  static get config(): Entity.Config<User>;
+
   /**
    * Track whether the user is currently active in the game
    */
   active: boolean;
 
   /**
-   * Track references to the current set of Tokens which are targeted by the User
+   * Border color
+   * @remarks
+   * set outside the class in PlayerList#getData
    */
-  targets: UserTargets;
-
-  /**
-   * Track the ID of the Scene that is currently being viewed by the User
-   */
-  viewedScene: string | null;
+  border: string;
 
   /**
    * The first name of the User's default character
@@ -38,18 +38,14 @@ declare class User extends Entity<User.Data> {
   color: string;
 
   /**
-   * Border color
-   * @remarks
-   * set outside the class in PlayerList#getData
+   * Track references to the current set of Tokens which are targeted by the User
    */
-  border: string;
+  targets: UserTargets;
 
-  /* ---------------------------------------- */
-  /*  Properties                              */
-  /* ---------------------------------------- */
-
-  /** @override */
-  static get config(): Entity.Config<User>;
+  /**
+   * Track the ID of the Scene that is currently being viewed by the User
+   */
+  viewedScene: string | null;
 
   /**
    * Return the User avatar icon or the controlled actor's image
@@ -60,17 +56,6 @@ declare class User extends Entity<User.Data> {
    * Return the Actor instance of the user's impersonated character (or undefined)
    */
   get character(): Actor;
-
-  /**
-   * A convenience shortcut for the permissions object of the current User
-   */
-  get permissions(): any;
-
-  /**
-   * A flag for whether the current User is a Trusted Player
-   * @returns
-   */
-  get isTrusted(): boolean;
 
   /**
    * A flag for whether the current User has Assistant GameMaster or full GameMaster role
@@ -84,9 +69,33 @@ declare class User extends Entity<User.Data> {
    */
   get isSelf(): boolean;
 
-  /* ---------------------------------------- */
-  /*  User Methods                            */
-  /* ---------------------------------------- */
+  /**
+   * A flag for whether the current User is a Trusted Player
+   * @returns
+   */
+  get isTrusted(): boolean;
+
+  /**
+   * A convenience shortcut for the permissions object of the current User
+   */
+  get permissions(): any;
+
+  /**
+   * Assign a Macro to a numbered hotbar slot between 1 and 50
+   * @param macro - The Macro entity to assign
+   * @param slot - The integer Hotbar slot to fill
+   * @param fromSlot - An optional origin slot from which the Macro is being shifted
+   * @returns A Promise which resolves once the User update is complete
+   */
+  assignHotbarMacro(macro: Macro | null, slot?: string | number, { fromSlot }?: { fromSlot?: number }): Promise<User>;
+
+  /**
+   * Submit User activity data to the server for broadcast to other players.
+   * This type of data is transient, persisting only for the duration of the session and not saved to any database.
+   *
+   * @param activityData - An object of User activity data to submit to the server for broadcast.
+   */
+  broadcastActivity(activityData: DeepPartial<User.ActivityData>): void;
 
   /**
    * Test whether the User is able to perform a certain permission action. Game Master users are always allowed to
@@ -96,6 +105,13 @@ declare class User extends Entity<User.Data> {
    * @returns Does the user have the ability to perform this action?
    */
   can(permission: string): boolean;
+
+  /**
+   * Get an Array of Macro Entities on this User's Hotbar by page
+   * @param page - The hotbar page number
+   * @returns
+   */
+  getHotbarMacros(page?: number): Macro[];
 
   /**
    * Test whether the User has a specific permission entitled .This differs from user#can because it does not always
@@ -130,38 +146,13 @@ declare class User extends Entity<User.Data> {
    */
   setPermission(permission: string, allowed: boolean): void;
 
-  /**
-   * Submit User activity data to the server for broadcast to other players.
-   * This type of data is transient, persisting only for the duration of the session and not saved to any database.
-   *
-   * @param activityData - An object of User activity data to submit to the server for broadcast.
-   */
-  broadcastActivity(activityData: DeepPartial<User.ActivityData>): void;
-
-  /**
-   * Assign a Macro to a numbered hotbar slot between 1 and 50
-   * @param macro - The Macro entity to assign
-   * @param slot - The integer Hotbar slot to fill
-   * @param fromSlot - An optional origin slot from which the Macro is being shifted
-   * @returns A Promise which resolves once the User update is complete
-   */
-  assignHotbarMacro(macro: Macro | null, slot?: string | number, { fromSlot }?: { fromSlot?: number }): Promise<User>;
-
-  /**
-   * Get an Array of Macro Entities on this User's Hotbar by page
-   * @param page - The hotbar page number
-   * @returns
-   */
-  getHotbarMacros(page?: number): Macro[];
-
   updateTokenTargets(targetIds?: string[]): void;
-
-  /* -------------------------------------------- */
-  /*  Socket Listeners and Handlers               */
-  /* -------------------------------------------- */
 
   /** @override */
   protected _onCreate(data: User.Data, options: any, userId: string): void;
+
+  /** @override */
+  protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
 
   /**
    * Additional updating steps for the User entity when new data is saved which trigger some related updates.
@@ -172,9 +163,6 @@ declare class User extends Entity<User.Data> {
    * Update the canvas if the player's impersonated character has changed
    */
   protected _onUpdate(data: DeepPartial<User.Data>, options: Entity.UpdateOptions, userId: string): void;
-
-  /** @override */
-  protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
 }
 
 declare namespace User {
@@ -213,8 +201,8 @@ declare namespace User {
   }
 
   interface DropData extends Canvas.DropPosition {
-    type?: 'Macro';
     slot?: number;
+    type?: 'Macro';
   }
 
   interface ActivityData {

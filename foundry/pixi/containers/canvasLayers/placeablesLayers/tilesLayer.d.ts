@@ -32,16 +32,16 @@ declare class TilesLayer extends PlaceablesLayer<Tile> {
   deactivate(): void;
 
   /** @override */
-  protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
-
-  /** @override */
-  protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+  protected _onDragLeftCancel(event: PointerEvent): void;
 
   /** @override */
   protected _onDragLeftDrop(event: PIXI.InteractionEvent): void;
 
   /** @override */
-  protected _onDragLeftCancel(event: PointerEvent): void;
+  protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+
+  /** @override */
+  protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
 
   /**
    * Handle drop events for Tile data on the Tiles Layer
@@ -53,10 +53,10 @@ declare class TilesLayer extends PlaceablesLayer<Tile> {
 
 declare namespace TilesLayer {
   interface DropData extends DeepPartial<Tile.Data> {
-    type?: 'Tile';
+    height?: number;
     img?: string;
     tileSize?: number;
+    type?: 'Tile';
     width?: number;
-    height?: number;
   }
 }

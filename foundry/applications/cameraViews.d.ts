@@ -4,12 +4,6 @@
  */
 declare class CameraViews<P extends Application.Options = Application.Options> extends Application<P> {
   /**
-   * @param webrtc - The WebRTC Implementation to display
-   *                 (unused)
-   */
-  constructor(webrtc?: any, options?: Partial<P>);
-
-  /**
    * @override
    * @defaultValue
    * ```typescript
@@ -23,9 +17,31 @@ declare class CameraViews<P extends Application.Options = Application.Options> e
   static get defaultOptions(): typeof Application['defaultOptions'];
 
   /**
+   * A custom sorting function that orders/arranges the user display frames
+   */
+  protected static _sortUsers(a: CameraViews.Data.User, b: CameraViews.Data.User): number;
+
+  /**
+   * @param webrtc - The WebRTC Implementation to display
+   *                 (unused)
+   */
+  constructor(webrtc?: any, options?: Partial<P>);
+
+  maxZ: number;
+
+  /**
    * A reference to the master AV orchestrator instance
    */
   get webrtc(): Game['webrtc'];
+
+  /** @override */
+  activateListeners(html: JQuery): void;
+
+  /**
+   * @param options - (unused)
+   * @override
+   */
+  getData(options?: Application.RenderOptions): CameraViews.Data;
 
   /**
    * Obtain a reference to the div.camera-view which is used to portray a given Foundry User.
@@ -41,6 +57,12 @@ declare class CameraViews<P extends Application.Options = Application.Options> e
   getUserVideoElement(userId: string): HTMLVideoElement | null;
 
   /**
+   * Extend the render logic to first check whether a render is necessary based on the context
+   * If a specific context was provided, make sure an update to the navigation is necessary before rendering
+   */
+  render(force?: boolean, context?: Application.RenderOptions): Application['render'];
+
+  /**
    * Sets whether a user is currently speaking or not
    *
    * @param userId   - The ID of the user
@@ -49,34 +71,29 @@ declare class CameraViews<P extends Application.Options = Application.Options> e
   setUserIsSpeaking(userId: string, speaking: boolean): void;
 
   /**
-   * Extend the render logic to first check whether a render is necessary based on the context
-   * If a specific context was provided, make sure an update to the navigation is necessary before rendering
-   */
-  render(force?: boolean, context?: Application.RenderOptions): Application['render'];
-
-  /** @override */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
-
-  /**
-   * @param options - (unused)
-   * @override
-   */
-  getData(options?: Application.RenderOptions): CameraViews.Data;
-
-  maxZ: number;
-
-  /**
    * Prepare rendering data for a single user
    */
   protected _getDataForUser(userId: string, settings: AVSettings.UserSettings): CameraViews.Data.User | null;
 
   /**
-   * A custom sorting function that orders/arranges the user display frames
+   * Get the icon class that should be used for various action buttons with different toggled states.
+   * The returned icon should represent the visual status of the NEXT state (not the CURRENT state).
+   *
+   * @param action - The named av-control button action
+   * @param state  - The CURRENT action state.
+   * @returns The icon that represents the NEXT action state.
    */
-  protected static _sortUsers(a: CameraViews.Data.User, b: CameraViews.Data.User): number;
+  protected _getToggleIcon(action: string, state?: boolean): null;
 
-  /** @override */
-  activateListeners(html: JQuery): void;
+  /**
+   * Get the text title that should be used for various action buttons with different toggled states.
+   * The returned title should represent the tooltip of the NEXT state (not the CURRENT state).
+   *
+   * @param action - The named av-control button action
+   * @param state - The CURRENT action state.
+   * @returns The icon that represents the NEXT action state.
+   */
+  protected _getToggleTooltip(action: string, state: boolean): string;
 
   /**
    * On hover in a camera container, show/hide the controls.
@@ -102,31 +119,14 @@ declare class CameraViews<P extends Application.Options = Application.Options> e
    */
   protected _refreshView(view: HTMLElement): void;
 
+  /** @override */
+  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+
   /**
    * Render changes needed to the PlayerList ui.
    * Show/Hide players depending on option.
    */
   protected _setPlayerListVisibility(): void;
-
-  /**
-   * Get the icon class that should be used for various action buttons with different toggled states.
-   * The returned icon should represent the visual status of the NEXT state (not the CURRENT state).
-   *
-   * @param action - The named av-control button action
-   * @param state  - The CURRENT action state.
-   * @returns The icon that represents the NEXT action state.
-   */
-  protected _getToggleIcon(action: string, state?: boolean): null;
-
-  /**
-   * Get the text title that should be used for various action buttons with different toggled states.
-   * The returned title should represent the tooltip of the NEXT state (not the CURRENT state).
-   *
-   * @param action - The named av-control button action
-   * @param state - The CURRENT action state.
-   * @returns The icon that represents the NEXT action state.
-   */
-  protected _getToggleTooltip(action: string, state: boolean): string;
 
   /**
    * Show or hide UI control elements
@@ -144,25 +144,25 @@ declare class CameraViews<P extends Application.Options = Application.Options> e
 
 declare namespace CameraViews {
   interface Data {
-    self: Game['user'];
-    users: CameraViews.Data.User[];
     dockClass: string;
     muteAll: boolean;
+    self: Game['user'];
+    users: CameraViews.Data.User[];
   }
 
   namespace Data {
     interface User {
-      user: globalThis.User;
+      avatar: globalThis.User['avatar'];
+      cameraViewClass: ReturnType<Array<string>['filterJoin']>;
+      charname: string;
+      color: globalThis.User['data']['color'];
+      colorAlpha: ReturnType<typeof hexToRGBAString>;
       id: globalThis.User['id'];
       local: globalThis.User['isSelf'];
       name: globalThis.User['name'];
-      color: globalThis.User['data']['color'];
-      colorAlpha: ReturnType<typeof hexToRGBAString>;
-      charname: string;
-      avatar: globalThis.User['avatar'];
       settings: AVSettings.UserSettings;
+      user: globalThis.User;
       volume: ReturnType<typeof AudioHelper['volumeToInput']>;
-      cameraViewClass: ReturnType<Array<string>['filterJoin']>;
     }
   }
 }

@@ -35,11 +35,11 @@ declare class MeasuredTemplateConfig extends FormApplication<
 
 declare namespace MeasuredTemplateConfig {
   interface Data {
+    gridUnits: Scene['data']['gridUnits'];
     object: Duplicated<MeasuredTemplateConfig['object']['data']>;
     options: MeasuredTemplateConfig['options'];
-    templateTypes: typeof CONFIG['MeasuredTemplate']['types'];
-    gridUnits: Scene['data']['gridUnits'];
     submitText: string;
+    templateTypes: typeof CONFIG['MeasuredTemplate']['types'];
   }
 
   type FormData = {

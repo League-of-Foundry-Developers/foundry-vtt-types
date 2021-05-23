@@ -16,13 +16,13 @@ declare class PlayerList extends Application {
   static get defaultOptions(): typeof Application['defaultOptions'];
 
   /** @override */
-  render(force?: boolean, options?: Application.RenderOptions): this;
+  activateListeners(html: JQuery): void;
 
   /** @override */
   getData(options?: Application.RenderOptions): PlayerList.Data | Promise<PlayerList.Data>;
 
   /** @override */
-  activateListeners(html: JQuery): void;
+  render(force?: boolean, options?: Application.RenderOptions): this;
 
   /**
    * Return the default context options available for the Players application
@@ -40,11 +40,11 @@ declare namespace PlayerList {
    * Data object returned from the PlayerList getData function
    */
   interface Data {
-    /** List of users connected to Foundry */
-    users: User[];
-    /** If to show offline users */
-    showOffline: boolean;
     /** If to hide the player list */
     hide: boolean;
+    /** If to show offline users */
+    showOffline: boolean;
+    /** List of users connected to Foundry */
+    users: User[];
   }
 }

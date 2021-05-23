@@ -6,18 +6,20 @@ declare class AVConfig extends FormApplication<AVConfig.Options, AVConfig.Data, 
   static get defaultOptions(): AVConfig.Options;
 
   /** @override */
-  getData(options: Application.RenderOptions): Promise<AVConfig.Data>;
-
-  /** @override */
   activateListeners(html: JQuery): void;
 
+  /** @override */
+  getData(options: Application.RenderOptions): Promise<AVConfig.Data>;
+
   /**
-   * Set a section's input to enabled or disabled
-   * @param selector - Selector for the section to enable or disable
-   * @param enabled  - Whether to enable or disable this section
-   *                   (default: true)
+   * Handle the assignment of a push-to-talk/push-to-mute key
    */
-  protected _setConfigSectionEnabled(selector: string, enabled?: boolean): void;
+  protected _onPTTKeyDown(event: JQuery.KeyDownEvent): void;
+
+  /**
+   * Handle the assignment of a push-to-talk/push-to-mute mouse key
+   */
+  protected _onPTTMouseDown(event: JQuery.MouseDownEvent): void;
 
   /**
    * Callback when the server type changes
@@ -34,14 +36,12 @@ declare class AVConfig extends FormApplication<AVConfig.Options, AVConfig.Data, 
   protected _onTurnTypeChanged(event: JQuery.ChangeEvent): void;
 
   /**
-   * Handle the assignment of a push-to-talk/push-to-mute key
+   * Set a section's input to enabled or disabled
+   * @param selector - Selector for the section to enable or disable
+   * @param enabled  - Whether to enable or disable this section
+   *                   (default: true)
    */
-  protected _onPTTKeyDown(event: JQuery.KeyDownEvent): void;
-
-  /**
-   * Handle the assignment of a push-to-talk/push-to-mute mouse key
-   */
-  protected _onPTTMouseDown(event: JQuery.MouseDownEvent): void;
+  protected _setConfigSectionEnabled(selector: string, enabled?: boolean): void;
 
   /** @override */
   protected _updateObject(event: Event, formData?: object): Promise<void>;
@@ -50,9 +50,9 @@ declare class AVConfig extends FormApplication<AVConfig.Options, AVConfig.Data, 
 declare namespace AVConfig {
   interface Options extends FormApplication.Options {
     /**
-     * @defaultValue `game.i18n.localize('WEBRTC.Title')`
+     * @defaultValue `'auto'`
      */
-    title: string;
+    height: number | 'auto';
 
     /**
      * @defaultValue `'av-config'`
@@ -60,55 +60,55 @@ declare namespace AVConfig {
     id: string;
 
     /**
-     * @defaultValue `'templates/sidebar/apps/av-config.html'`
-     */
-    template: string;
-
-    /**
      * @defaultValue `true`
      */
     popOut: boolean;
 
     /**
-     * @defaultValue `480`
-     */
-    width: number;
-
-    /**
-     * @defaultValue `'auto'`
-     */
-    height: number | 'auto';
-
-    /**
      * @defaultValue `[{navSelector: '.tabs', contentSelector: 'form', initial: 'general'}]`
      */
     tabs: (Tabs.Options & { contentSelector: string; initial: string })[];
+
+    /**
+     * @defaultValue `'templates/sidebar/apps/av-config.html'`
+     */
+    template: string;
+
+    /**
+     * @defaultValue `game.i18n.localize('WEBRTC.Title')`
+     */
+    title: string;
+
+    /**
+     * @defaultValue `480`
+     */
+    width: number;
   }
 
   interface Data {
-    user: User | null;
+    audioSinkUnavailable: boolean;
+    audioSinks: Record<string, string> | false;
+    audioSources: Record<string, string>;
+    audioSrcUnavailable: boolean;
+    canSelectMode: boolean;
     modes: {
       [Key in ValueOf<typeof AVSettings.AV_MODES>]: string;
     };
-    voiceModes: {
-      [Key in ValueOf<typeof AVSettings.VOICE_MODES>]: string;
-    };
+    noSSL: boolean;
     serverTypes: {
       FVTT: string;
       custom: string;
     };
+    settings: AVSettings;
     turnTypes: {
       FVTT: string;
       custom: string;
     };
-    settings: AVSettings;
-    canSelectMode: boolean;
-    noSSL: boolean;
+    user: User | null;
     videoSources: Record<string, string>;
-    audioSources: Record<string, string>;
-    audioSinks: Record<string, string> | false;
     videoSrcUnavailable: boolean;
-    audioSrcUnavailable: boolean;
-    audioSinkUnavailable: boolean;
+    voiceModes: {
+      [Key in ValueOf<typeof AVSettings.VOICE_MODES>]: string;
+    };
   }
 }

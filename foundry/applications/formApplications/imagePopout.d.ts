@@ -20,47 +20,13 @@
  * ```
  */
 declare class ImagePopout extends FormApplication<ImagePopout.Options, ImagePopout.Data, string> {
-  protected _related: Entity | object | null;
-
   /** @override */
   static get defaultOptions(): ImagePopout.Options;
-
-  /** @override */
-  get title(): string;
-
-  /** @override */
-  getData(options?: Application.RenderOptions): Promise<ImagePopout.Data>;
-
-  /**
-   * Test whether the title of the image popout should be visible to the user
-   */
-  isTitleVisible(): boolean;
-
-  /**
-   * Provide a reference to the Entity referenced by this popout, if one exists
-   */
-  getRelatedObject(): Promise<Entity | object | null>;
-
-  /** @override */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
-
-  /** @override */
-  protected _getHeaderButtons(): Application.HeaderButton[];
-
-  /**
-   * Determine the correct position and dimensions for the displayed image
-   */
-  protected static getPosition(img: string): Application.Position;
 
   /**
    * Determine the Image dimensions given a certain path
    */
   static getImageSize(path: string): Promise<[width: number, height: number]>;
-
-  /**
-   * Share the displayed image with other connected Users
-   */
-  shareImage(): void;
 
   /**
    * Handle a received request to display an image.
@@ -76,6 +42,40 @@ declare class ImagePopout extends FormApplication<ImagePopout.Options, ImagePopo
   }): ImagePopout;
 
   /**
+   * Determine the correct position and dimensions for the displayed image
+   */
+  protected static getPosition(img: string): Application.Position;
+
+  protected _related: Entity | object | null;
+
+  /** @override */
+  get title(): string;
+
+  /** @override */
+  getData(options?: Application.RenderOptions): Promise<ImagePopout.Data>;
+
+  /**
+   * Provide a reference to the Entity referenced by this popout, if one exists
+   */
+  getRelatedObject(): Promise<Entity | object | null>;
+
+  /**
+   * Test whether the title of the image popout should be visible to the user
+   */
+  isTitleVisible(): boolean;
+
+  /**
+   * Share the displayed image with other connected Users
+   */
+  shareImage(): void;
+
+  /** @override */
+  protected _getHeaderButtons(): Application.HeaderButton[];
+
+  /** @override */
+  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+
+  /**
    * @override
    * @remarks Not implemented for ImagePopout
    */
@@ -85,25 +85,30 @@ declare class ImagePopout extends FormApplication<ImagePopout.Options, ImagePopo
 declare namespace ImagePopout {
   interface Options extends FormApplication.Options {
     /**
-     * @defaultValue `'templates/apps/image-popout.html'`
-     */
-    template: string;
-    /**
      * @defaultValue `['image-popout', 'dark']`
      */
     classes: string[];
+
     /**
      * @defaultValue `false`
      */
     editable: boolean;
+
     /**
      * @defaultValue `true`
      */
     resizable: boolean;
+
     /**
      * @defaultValue `false`
      */
     shareable: boolean;
+
+    /**
+     * @defaultValue `'templates/apps/image-popout.html'`
+     */
+    template: string;
+
     /**
      * @defaultValue `null`
      */

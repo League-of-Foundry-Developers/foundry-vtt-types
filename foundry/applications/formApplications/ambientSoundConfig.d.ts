@@ -6,12 +6,6 @@ declare class AmbientSoundConfig<
   P extends AmbientSoundConfig.Options = AmbientSoundConfig.Options
 > extends FormApplication<AmbientSoundConfig.Options, AmbientSoundConfig.Data, AmbientSound> {
   /**
-   * @param sound   - The sound object being configured
-   * @param options - Additional application rendering options
-   */
-  constructor(sound: AmbientSound, options?: Partial<P>);
-
-  /**
    * @override
    * @defaultValue
    * ```typescript
@@ -27,6 +21,15 @@ declare class AmbientSoundConfig<
   static get defaultOptions(): AmbientSoundConfig.Options;
 
   /**
+   * @param sound   - The sound object being configured
+   * @param options - Additional application rendering options
+   */
+  constructor(sound: AmbientSound, options?: Partial<P>);
+
+  /** @override */
+  close(options?: Application.CloseOptions): Promise<void>;
+
+  /**
    * @param options - (unused)
    * @override
    */
@@ -37,9 +40,6 @@ declare class AmbientSoundConfig<
    * @override
    */
   protected _updateObject(event: Event, formData: AmbientSoundConfig.FormData): Promise<AmbientSound>;
-
-  /** @override */
-  close(options?: Application.CloseOptions): Promise<void>;
 }
 
 declare namespace AmbientSoundConfig {

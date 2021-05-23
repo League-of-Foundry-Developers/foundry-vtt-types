@@ -2,38 +2,6 @@
  * I don't know what this will do yet
  */
 declare class SpecialEffect {
-  constructor(parent: PIXI.Container, options?: DeepPartial<SpecialEffect.Options>);
-
-  parent: PIXI.Container;
-
-  options: SpecialEffect.Options;
-
-  emitters: PIXI.particles.Emitter[];
-
-  /**
-   * Use this flag as a way to pass a stop signal into the animation frame
-   */
-  protected _stop: boolean | null;
-
-  static get label(): string;
-
-  static get effectOptions(): SpecialEffect.Options;
-
-  getParticleEmitters(): PIXI.particles.Emitter[];
-
-  play(duration: number): void;
-
-  stop(): void;
-
-  protected _startEmitter(emitter: PIXI.particles.Emitter): void;
-
-  static OPTION_TYPES: {
-    VALUE: 1;
-    CHECKBOX: 2;
-    RANGE: 3;
-    SELECT: 4;
-  };
-
   /**
    * @defaultValue
    * ```typescript
@@ -51,6 +19,38 @@ declare class SpecialEffect {
    * ```
    */
   static DEFAULT_CONFIG: PIXI.particles.EmitterConfig | PIXI.particles.OldEmitterConfig;
+
+  static OPTION_TYPES: {
+    VALUE: 1;
+    CHECKBOX: 2;
+    RANGE: 3;
+    SELECT: 4;
+  };
+
+  static get label(): string;
+
+  static get effectOptions(): SpecialEffect.Options;
+
+  constructor(parent: PIXI.Container, options?: DeepPartial<SpecialEffect.Options>);
+
+  emitters: PIXI.particles.Emitter[];
+
+  options: SpecialEffect.Options;
+
+  parent: PIXI.Container;
+
+  /**
+   * Use this flag as a way to pass a stop signal into the animation frame
+   */
+  protected _stop: boolean | null;
+
+  getParticleEmitters(): PIXI.particles.Emitter[];
+
+  play(duration: number): void;
+
+  stop(): void;
+
+  protected _startEmitter(emitter: PIXI.particles.Emitter): void;
 }
 
 declare namespace SpecialEffect {

@@ -8,12 +8,6 @@ declare class NoteConfig<P extends FormApplication.Options = FormApplication.Opt
   Note
 > {
   /**
-   * @param note    - The Note object for which settings are being configured
-   * @param options - Additional Application options
-   */
-  constructor(note: Note, options?: Partial<P>);
-
-  /**
    * @override
    * @defaultValue
    * ```typescript
@@ -28,6 +22,17 @@ declare class NoteConfig<P extends FormApplication.Options = FormApplication.Opt
   static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /**
+   * @param note    - The Note object for which settings are being configured
+   * @param options - Additional Application options
+   */
+  constructor(note: Note, options?: Partial<P>);
+
+  /**
+   * @override
+   */
+  close(options?: Application.CloseOptions): Promise<void>;
+
+  /**
    * @param options - (unused)
    * @override
    */
@@ -38,19 +43,14 @@ declare class NoteConfig<P extends FormApplication.Options = FormApplication.Opt
    * @override
    */
   protected _updateObject(event: Event, formData: NoteConfig.FormData): Promise<Note>;
-
-  /**
-   * @override
-   */
-  close(options?: Application.CloseOptions): Promise<void>;
 }
 
 declare namespace NoteConfig {
   interface Data {
+    entries: Journal['entities'];
     entryIcons: typeof CONFIG.JournalEntry['noteIcons'];
     entryId: JournalEntry['_id'] | undefined;
     entryName: JournalEntry['name'] | undefined;
-    entries: Journal['entities'];
     fontFamilies: Partial<Record<string, string>>;
     object: Duplicated<NoteConfig['object']['data']>;
     options: NoteConfig['options'];

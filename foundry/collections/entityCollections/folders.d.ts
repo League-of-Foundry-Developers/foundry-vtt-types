@@ -9,17 +9,11 @@ declare class Folders extends EntityCollection<Folder> {
     [id: string]: boolean;
   };
 
-  /* -------------------------------------------- */
-
   /** @override */
   get entity(): string;
 
-  /* -------------------------------------------- */
-
   /** @override */
   render(force?: boolean, context?: any): any; // Mismatched return type
-
-  /* -------------------------------------------- */
 
   /**
    * Refresh the display of any active JournalSheet instances where the folder list will change.

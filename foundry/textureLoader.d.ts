@@ -2,15 +2,26 @@
  * A Loader class which helps with loading video and image textures
  */
 declare class TextureLoader {
-  constructor();
-
-  cache: Map<string, PIXI.Texture>;
+  /**
+   * A global reference to the singleton texture loader
+   */
+  static loader: TextureLoader;
 
   /**
    * Load all the textures which are required for a particular Scene
    * @param scene - The Scene to load
    */
   static loadSceneTextures(scene: Scene): Promise<void>;
+
+  constructor();
+
+  cache: Map<string, PIXI.Texture>;
+
+  /**
+   * Retrieve a texture from the texture cache
+   * @param src - The source URL
+   */
+  getCache(src: string): PIXI.Texture | undefined;
 
   /**
    * Load an Array of provided source URL paths
@@ -21,39 +32,16 @@ declare class TextureLoader {
   load(sources: string[], { message }?: { message?: string }): Promise<void>;
 
   /**
-   * Load a single texture on-demand from a given source URL path
-   * @param src -
-   */
-  loadTexture(src: string): Promise<PIXI.Texture>;
-
-  /**
-   * Log texture loading progress in the console and in the Scene loading bar
-   */
-  protected _onProgress(src: string, progress: TextureLoader.Progress, message: string): void;
-
-  /**
-   * Log failed texture loading
-   */
-  protected _onError(src: string, progress: TextureLoader.Progress, error: Error): void;
-
-  /**
    * Load an image texture from a provided source url
    * @param src -
    */
   loadImageTexture(src: string): Promise<PIXI.Texture>;
 
   /**
-   * If an attempted image load failed, we may attempt a re-load in case the issue was CORS + caching
-   * Cross-origin requests which failed might be CORS, or might be 404, no way to know - so try a 2nd time
-   * @param src     - The source URL being attempted
-   * @param resolve - Resolve the promise
-   * @param reject  - Reject the promise
+   * Load a single texture on-demand from a given source URL path
+   * @param src -
    */
-  protected _attemptCORSReload<T>(
-    src: string,
-    resolve: (texture: PIXI.Texture) => void,
-    reject: () => T
-  ): Promise<PIXI.Texture> | T;
+  loadTexture(src: string): Promise<PIXI.Texture>;
 
   /**
    * Load a video texture from a provided source url
@@ -69,23 +57,35 @@ declare class TextureLoader {
   setCache(src: string, tex: PIXI.Texture): void;
 
   /**
-   * Retrieve a texture from the texture cache
-   * @param src - The source URL
+   * If an attempted image load failed, we may attempt a re-load in case the issue was CORS + caching
+   * Cross-origin requests which failed might be CORS, or might be 404, no way to know - so try a 2nd time
+   * @param src     - The source URL being attempted
+   * @param resolve - Resolve the promise
+   * @param reject  - Reject the promise
    */
-  getCache(src: string): PIXI.Texture | undefined;
+  protected _attemptCORSReload<T>(
+    src: string,
+    resolve: (texture: PIXI.Texture) => void,
+    reject: () => T
+  ): Promise<PIXI.Texture> | T;
 
   /**
-   * A global reference to the singleton texture loader
+   * Log failed texture loading
    */
-  static loader: TextureLoader;
+  protected _onError(src: string, progress: TextureLoader.Progress, error: Error): void;
+
+  /**
+   * Log texture loading progress in the console and in the Scene loading bar
+   */
+  protected _onProgress(src: string, progress: TextureLoader.Progress, message: string): void;
 }
 
 declare namespace TextureLoader {
   interface Progress {
-    message: string;
-    loaded: number;
     failed: number;
-    total: number;
+    loaded: number;
+    message: string;
     pct: number;
+    total: number;
   }
 }

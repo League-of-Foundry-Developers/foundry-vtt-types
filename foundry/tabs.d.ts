@@ -42,9 +42,15 @@ declare class Tabs {
   callback: ((event: null, tabs: Tabs, tabName: string) => unknown) | null | undefined;
 
   /**
-   * The CSS selector used to target the tab navigation element
+   * A reference to the HTML container element of the tab content
+   * @defaultValue `null`
    */
-  protected _navSelector: string;
+  protected _content: HTMLElement | null;
+
+  /**
+   * The CSS selector used to target the tab content element
+   */
+  protected _contentSelector: string | undefined;
 
   /**
    * A reference to the HTML navigation element the tab controller is bound to
@@ -53,20 +59,9 @@ declare class Tabs {
   protected _nav: HTMLElement | null;
 
   /**
-   * The CSS selector used to target the tab content element
+   * The CSS selector used to target the tab navigation element
    */
-  protected _contentSelector: string | undefined;
-
-  /**
-   * A reference to the HTML container element of the tab content
-   * @defaultValue `null`
-   */
-  protected _content: HTMLElement | null;
-
-  /**
-   * Bind the Tabs controller to an HTML application
-   */
-  bind(html: HTMLElement): void;
+  protected _navSelector: string;
 
   /**
    * Activate a new tab by name
@@ -77,6 +72,11 @@ declare class Tabs {
   activate(tabName: string, { triggerCallback }?: { triggerCallback?: boolean }): void;
 
   /**
+   * Bind the Tabs controller to an HTML application
+   */
+  bind(html: HTMLElement): void;
+
+  /**
    * Handle click events on the tab navigation entries
    * @param event - A left click event
    */
@@ -85,10 +85,10 @@ declare class Tabs {
 
 declare namespace Tabs {
   interface Options {
-    navSelector: string;
+    callback?: ((event: null, tabs: Tabs, tabName: string) => unknown) | null;
     contentSelector?: string;
     initial?: string;
-    callback?: ((event: null, tabs: Tabs, tabName: string) => unknown) | null;
+    navSelector: string;
   }
 }
 

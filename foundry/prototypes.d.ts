@@ -1,7 +1,3 @@
-/* -------------------------------------------- */
-/*  Math Functions                              */
-/* -------------------------------------------- */
-
 declare interface Math {
   /**
    * {@inheritDoc clampNumber}
@@ -14,41 +10,28 @@ declare interface Math {
   decimals: typeof roundDecimals;
 
   /**
-   * {@inheritDoc toDegrees}
-   */
-  toDegrees: typeof toDegrees;
-
-  /**
    * {@inheritDoc normalizeDegrees}
    */
   normalizeDegrees: typeof normalizeDegrees;
 
   /**
-   * {@inheritDoc toRadians}
-   */
-  toRadians: typeof toRadians;
-
-  /**
    * {@inheritDoc normalizeRadians}
    */
   normalizeRadians: typeof normalizeRadians;
-}
 
-/* -------------------------------------------- */
-/* String Methods                               */
-/* -------------------------------------------- */
+  /**
+   * {@inheritDoc toDegrees}
+   */
+  toDegrees: typeof toDegrees;
+
+  /**
+   * {@inheritDoc toRadians}
+   */
+  toRadians: typeof toRadians;
+}
 
 declare interface String {
   capitalize<S extends string>(this: S): Capitalize<S>;
-
-  titleCase<S extends string>(this: S): Titlecase<S>;
-
-  /**
-   * Strip any <script> tags which were included within a provided string
-   */
-  stripScripts(): string;
-
-  /* -------------------------------------------- */
 
   /**
    * Transform any string into a url-viable slug string
@@ -59,20 +42,23 @@ declare interface String {
    * @returns The cleaned slug string
    */
   slugify({ replacement, strict }?: { replacement?: string; strict?: boolean }): string;
+
+  /**
+   * Strip any <script> tags which were included within a provided string
+   */
+  stripScripts(): string;
+
+  titleCase<S extends string>(this: S): Titlecase<S>;
 }
 
-/* -------------------------------------------- */
-/* Number Methods                               */
-/* -------------------------------------------- */
-
 declare interface Number {
+  between(a: number, b: number, inclusive?: boolean): boolean;
+
   ordinalString(): string;
 
   paddedString(digits: number): string;
 
   signedString(): string;
-
-  between(a: number, b: number, inclusive?: boolean): boolean;
 
   /**
    * Round a number to the nearest number which is a multiple of a given interval
@@ -109,10 +95,6 @@ declare interface NumberConstructor {
   isNumeric(n: unknown): n is number;
 }
 
-/* -------------------------------------------- */
-/* Array Methods                                */
-/* -------------------------------------------- */
-
 declare interface ArrayConstructor {
   fromRange(n: number): number[];
 }
@@ -124,14 +106,6 @@ declare interface Array<T> {
    * Test equality of the values of this array against the values of some other Array
    */
   equals(other: T[]): boolean;
-
-  /**
-   * Partition an original array into two children array based on a logical test
-   * Elements which test as false go into the first result while elements testing as true appear in the second
-   * @param rule - The rule to partition by
-   * @returns An Array of length two whose elements are the partitioned pieces of the original
-   */
-  partition(rule: (val: T) => boolean): [T[], T[]];
 
   /**
    * Join an Array using a string separator, first filtering out any parts which return a false-y value
@@ -147,15 +121,19 @@ declare interface Array<T> {
    * @returns The replacement element, the removed element, or null if no element was found.
    */
   findSplice(find: (value: T, index: number, obj: T[]) => boolean, replace?: T): T | null;
+
+  /**
+   * Partition an original array into two children array based on a logical test
+   * Elements which test as false go into the first result while elements testing as true appear in the second
+   * @param rule - The rule to partition by
+   * @returns An Array of length two whose elements are the partitioned pieces of the original
+   */
+  partition(rule: (val: T) => boolean): [T[], T[]];
 }
 
 declare namespace Array {
   type Flattened<T> = T extends Array<infer U> ? Flattened<U> : T;
 }
-
-/* -------------------------------------------- */
-/* Date Methods                                 */
-/* -------------------------------------------- */
 
 declare interface Date {
   /**
@@ -177,10 +155,6 @@ declare interface Date {
    */
   toTimeInputString(): string;
 }
-
-/* -------------------------------------------- */
-/*  RegExp Helpers                              */
-/* -------------------------------------------- */
 
 declare interface RegExpConstructor {
   escape(string: string): string;

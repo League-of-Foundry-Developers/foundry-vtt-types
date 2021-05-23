@@ -2,7 +2,19 @@
  * A CanvasLayer for displaying visual effects like weather, transitions, flashes, or more
  */
 declare class EffectsLayer extends CanvasLayer {
+  /**
+   * @override
+   * @defaultValue `mergeObject(super.layerOptions, { zIndex: 300 })`
+   */
+  static get layerOptions(): CanvasLayer.LayerOptions;
+
   constructor();
+
+  /**
+   * Track any active emitters within this Scene
+   * @defaultValue `[]`
+   */
+  emitters: unknown[]; // I don't believe that this is ever populated right now - Bolts
 
   /**
    * The weather overlay container
@@ -17,24 +29,12 @@ declare class EffectsLayer extends CanvasLayer {
   weatherEffect: SpecialEffect | null;
 
   /**
-   * Track any active emitters within this Scene
-   * @defaultValue `[]`
-   */
-  emitters: unknown[]; // I don't believe that this is ever populated right now - Bolts
-
-  /**
-   * @override
-   * @defaultValue `mergeObject(super.layerOptions, { zIndex: 300 })`
-   */
-  static get layerOptions(): CanvasLayer.LayerOptions;
-
-  /** @override */
-  tearDown(): void;
-
-  /**
    * @override
    */
   draw(): Promise<void>;
 
   drawWeather(): void;
+
+  /** @override */
+  tearDown(): void;
 }

@@ -16,29 +16,26 @@ declare abstract class FormApplication<
   O = D extends FormApplication.Data<infer T, P> ? T : {}
 > extends Application<P> {
   /**
+   * Assign the default options which are supported by the entity edit sheet.
+   * @returns The default options for this FormApplication class
+   * @override
+   * @see {@link Application.defaultOptions}
+   */
+  static get defaultOptions(): FormApplication.Options;
+
+  /**
+   * @deprecated since 0.7.2
+   * @see {@link FormDataExtended}
+   */
+  static processForm(formElement: HTMLFormElement): FormDataExtended;
+
+  /**
    * @param object  - Some object or entity which is the target to be updated.
    *                  (default: `{}`)
    * @param options - Additional options which modify the rendering of the sheet.
    *                  (default: `{}`)
    */
   constructor(object?: O, options?: Partial<P>);
-
-  /**
-   * The object target which we are using this form to modify
-   */
-  object: O;
-
-  /**
-   * A convenience reference to the form HTLMElement
-   * @defaultValue `null`
-   */
-  form: HTMLElement | null;
-
-  /**
-   * Keep track of any FilePicker instances which are associated with this form
-   * The values of this Array are inner-objects with references to the FilePicker instances and other metadata
-   */
-  filepickers: FilePicker[];
 
   /**
    * Keep track of any mce editors which may be active as part of this form
@@ -48,12 +45,21 @@ declare abstract class FormApplication<
   editors: Partial<Record<string, FormApplication.FormApplicationEditor>>;
 
   /**
-   * Assign the default options which are supported by the entity edit sheet.
-   * @returns The default options for this FormApplication class
-   * @override
-   * @see {@link Application.defaultOptions}
+   * Keep track of any FilePicker instances which are associated with this form
+   * The values of this Array are inner-objects with references to the FilePicker instances and other metadata
    */
-  static get defaultOptions(): FormApplication.Options;
+  filepickers: FilePicker[];
+
+  /**
+   * A convenience reference to the form HTLMElement
+   * @defaultValue `null`
+   */
+  form: HTMLElement | null;
+
+  /**
+   * The object target which we are using this form to modify
+   */
+  object: O;
 
   /**
    * Is the Form Application currently editable?
@@ -61,21 +67,14 @@ declare abstract class FormApplication<
   get isEditable(): boolean;
 
   /**
-   * @param options - (unused) (default: `{}`)
-   * @override
+   * Activate a named TinyMCE text editor
+   * @param name           - The named data field which the editor modifies.
+   * @param options        - TinyMCE initialization options passed to TextEditor.create
+   *                         (default: `{}`)
+   * @param initialContent - Initial text content for the editor area.
+   *                         (default: `''`)
    */
-  getData(options?: Application.RenderOptions): D | Promise<D>;
-
-  /**
-   * @override
-   */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
-
-  /**
-   * @param options - (unused)
-   * @override
-   */
-  protected _renderInner(data: D, options?: Application.RenderOptions): Promise<JQuery>;
+  activateEditor(name: string, options?: TextEditor.Options, initialContent?: string): void;
 
   /**
    * Activate the default set of listeners for the Entity sheet
@@ -87,9 +86,80 @@ declare abstract class FormApplication<
   activateListeners(html: JQuery): void;
 
   /**
+   * @param options - (default: `{}`)
+   * @override
+   */
+  close(options?: FormApplication.CloseOptions): Promise<void>;
+
+  /**
+   * @param options - (unused) (default: `{}`)
+   * @override
+   */
+  getData(options?: Application.RenderOptions): D | Promise<D>;
+
+  /**
+   * Handle saving the content of a specific editor by name
+   * @param name   - The named editor to save
+   * @param remove - Remove the editor after saving its content
+   *                 (default: `true`)
+   */
+  saveEditor(name: string, { remove }?: { remove?: boolean }): Promise<void>;
+
+  /**
+   * Submit the contents of a Form Application, processing its content as defined by the Application
+   * @param options - Options passed to the _onSubmit event handler
+   *                  (default: `{}`)
+   * @returns Return a self-reference for convenient method chaining
+   */
+  submit(options?: FormApplication.OnSubmitOptions): Promise<this>;
+
+  /**
+   * Activate a TinyMCE editor instance present within the form
+   */
+  protected _activateEditor(div: HTMLElement): void;
+
+  /**
+   * Activate a FilePicker instance present within the form
+   */
+  protected _activateFilePicker(button: HTMLElement): void;
+
+  /**
+   * @deprecated since 0.7.3
+   * @see {@link FormApplication#activateEditor}
+   */
+  protected _createEditor(name: string, options?: TextEditor.Options, initialContent?: string): void;
+
+  /**
    * If the form is not editable, disable its input fields
    */
   protected _disableFields(form: HTMLElement): void;
+
+  /**
+   * Get an object of update data used to update the form's target object
+   * @param updateData - Additional data that should be merged with the form data
+   *                     (default: `{}`)
+   * @returns The prepared update data
+   */
+  // TODO: Maybe we can calculate how the flattened `updateData` looks like, then it would be Partial<Record<string, unknown>> & Flattened<T>
+  protected _getSubmitData(updateData?: object): Partial<Record<string, unknown>>;
+
+  /**
+   * Handle the change of a color picker input which enters it's chosen value into a related input field
+   */
+  protected _onChangeColorPicker(event: JQuery.ChangeEvent): void;
+
+  /**
+   * Handle changes to an input element, submitting the form if options.submitOnChange is true.
+   * Do not preventDefault in this handler as other interactions on the form may also be occurring.
+   * @param event - The initial change event
+   */
+  protected _onChangeInput(event: JQuery.ChangeEvent): void | Promise<Partial<Record<string, unknown>>>;
+
+  /**
+   * Handle changes to a range type input by propagating those changes to the sibling range-value element
+   * @param event - The initial change event
+   */
+  protected _onChangeRange(event: JQuery.ChangeEvent): void;
 
   /**
    * Handle standard form submission steps
@@ -103,31 +173,15 @@ declare abstract class FormApplication<
   ): Promise<Partial<Record<string, unknown>>>;
 
   /**
-   * Get an object of update data used to update the form's target object
-   * @param updateData - Additional data that should be merged with the form data
-   *                     (default: `{}`)
-   * @returns The prepared update data
+   * @override
    */
-  // TODO: Maybe we can calculate how the flattened `updateData` looks like, then it would be Partial<Record<string, unknown>> & Flattened<T>
-  protected _getSubmitData(updateData?: object): Partial<Record<string, unknown>>;
+  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
 
   /**
-   * Handle changes to an input element, submitting the form if options.submitOnChange is true.
-   * Do not preventDefault in this handler as other interactions on the form may also be occurring.
-   * @param event - The initial change event
+   * @param options - (unused)
+   * @override
    */
-  protected _onChangeInput(event: JQuery.ChangeEvent): void | Promise<Partial<Record<string, unknown>>>;
-
-  /**
-   * Handle the change of a color picker input which enters it's chosen value into a related input field
-   */
-  protected _onChangeColorPicker(event: JQuery.ChangeEvent): void;
-
-  /**
-   * Handle changes to a range type input by propagating those changes to the sibling range-value element
-   * @param event - The initial change event
-   */
-  protected _onChangeRange(event: JQuery.ChangeEvent): void;
+  protected _renderInner(data: D, options?: Application.RenderOptions): Promise<JQuery>;
 
   /**
    * This method is called upon form submission after form data is validated
@@ -138,60 +192,6 @@ declare abstract class FormApplication<
    * @returns A Promise which resolves once the update operation has completed
    */
   protected abstract _updateObject(event: Event, formData?: object): Promise<unknown>;
-
-  /**
-   * Activate a named TinyMCE text editor
-   * @param name           - The named data field which the editor modifies.
-   * @param options        - TinyMCE initialization options passed to TextEditor.create
-   *                         (default: `{}`)
-   * @param initialContent - Initial text content for the editor area.
-   *                         (default: `''`)
-   */
-  activateEditor(name: string, options?: TextEditor.Options, initialContent?: string): void;
-
-  /**
-   * Handle saving the content of a specific editor by name
-   * @param name   - The named editor to save
-   * @param remove - Remove the editor after saving its content
-   *                 (default: `true`)
-   */
-  saveEditor(name: string, { remove }?: { remove?: boolean }): Promise<void>;
-
-  /**
-   * Activate a TinyMCE editor instance present within the form
-   */
-  protected _activateEditor(div: HTMLElement): void;
-
-  /**
-   * Activate a FilePicker instance present within the form
-   */
-  protected _activateFilePicker(button: HTMLElement): void;
-
-  /**
-   * @param options - (default: `{}`)
-   * @override
-   */
-  close(options?: FormApplication.CloseOptions): Promise<void>;
-
-  /**
-   * Submit the contents of a Form Application, processing its content as defined by the Application
-   * @param options - Options passed to the _onSubmit event handler
-   *                  (default: `{}`)
-   * @returns Return a self-reference for convenient method chaining
-   */
-  submit(options?: FormApplication.OnSubmitOptions): Promise<this>;
-
-  /**
-   * @deprecated since 0.7.2
-   * @see {@link FormDataExtended}
-   */
-  static processForm(formElement: HTMLFormElement): FormDataExtended;
-
-  /**
-   * @deprecated since 0.7.3
-   * @see {@link FormApplication#activateEditor}
-   */
-  protected _createEditor(name: string, options?: TextEditor.Options, initialContent?: string): void;
 }
 
 /**
@@ -216,8 +216,8 @@ declare namespace FormApplication {
   }
 
   interface FormApplicationEditor {
-    active: boolean;
     activate: boolean;
+    active: boolean;
     button: HTMLElement;
     changed: boolean;
     hasButton: boolean;
@@ -265,6 +265,13 @@ declare namespace FormApplication {
     closeOnSubmit: boolean;
 
     /**
+     * Whether the application form is editable - if true, it's fields will
+     * be unlocked and the form can be submitted. If false, all form fields
+     * will be disabled and the form cannot be submitted. Default is true.
+     */
+    editable: boolean;
+
+    /**
      * Whether to automatically submit the contained HTML form when an input
      * or select element is changed. Default is false.
      */
@@ -275,12 +282,5 @@ declare namespace FormApplication {
      * application window is manually closed. Default is false.
      */
     submitOnClose: boolean;
-
-    /**
-     * Whether the application form is editable - if true, it's fields will
-     * be unlocked and the form can be submitted. If false, all form fields
-     * will be disabled and the form cannot be submitted. Default is true.
-     */
-    editable: boolean;
   }
 }

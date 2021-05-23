@@ -39,12 +39,12 @@ declare class WorldConfig extends FormApplication<WorldConfig.Options, WorldConf
 
 declare namespace WorldConfig {
   interface Data {
-    world: WorldConfig['object'];
-    systems: Game.System[];
     isCreate: WorldConfig['options']['create'];
-    submitText: string;
     nextDate: string;
     nextTime: string;
+    submitText: string;
+    systems: Game.System[];
+    world: WorldConfig['object'];
   }
 
   interface Options extends FormApplication.Options {

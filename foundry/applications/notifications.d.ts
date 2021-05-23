@@ -12,25 +12,33 @@
  * ```
  */
 declare class Notifications extends Application {
+  /** @override */
+  static get defaultOptions(): typeof Application['defaultOptions'];
+
   /** Notifications which are currently displayed */
   active: JQuery[];
 
   /** Submitted notifications which are queued for display */
   queue: Notifications.Notification[];
 
-  /** @override */
-  static get defaultOptions(): typeof Application['defaultOptions'];
+  /**
+   * Display a notification with the "error" type
+   * @param message - The content of the notification message
+   * @param options - Notification options passed to the notify function
+   */
+  error(message: string, options?: { permanent?: boolean }): void;
+
+  /**
+   * Display a notification with the "info" type
+   * @param message - The content of the notification message
+   * @param options - Notification options passed to the notify function
+   */
+  info(message: string, options?: { permanent?: boolean }): void;
 
   /**
    * Initialize the Notifications system by displaying any system-generated messages which were passed from the server.
    */
   initialize(): void;
-
-  /** @override */
-  protected _renderInner(data: object, options?: Application.RenderOptions): JQuery;
-
-  /** @override */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
 
   /**
    * Push a new notification into the queue
@@ -43,25 +51,17 @@ declare class Notifications extends Application {
   notify(message: string, type?: 'info' | 'warning' | 'error', { permanent }?: { permanent?: boolean }): void;
 
   /**
-   * Display a notification with the "info" type
-   * @param message - The content of the notification message
-   * @param options - Notification options passed to the notify function
-   */
-  info(message: string, options?: { permanent?: boolean }): void;
-
-  /**
    * Display a notification with the "warning" type
    * @param message - The content of the notification message
    * @param options - Notification options passed to the notify function
    */
   warn(message: string, options?: { permanent?: boolean }): void;
 
-  /**
-   * Display a notification with the "error" type
-   * @param message - The content of the notification message
-   * @param options - Notification options passed to the notify function
-   */
-  error(message: string, options?: { permanent?: boolean }): void;
+  /** @override */
+  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+
+  /** @override */
+  protected _renderInner(data: object, options?: Application.RenderOptions): JQuery;
 
   /**
    * Retrieve a pending notification from the queue and display it
@@ -72,8 +72,8 @@ declare class Notifications extends Application {
 declare namespace Notifications {
   interface Notification {
     message: string;
-    type: 'info' | 'warning' | 'error';
-    timestamp: number;
     permanent: boolean;
+    timestamp: number;
+    type: 'info' | 'warning' | 'error';
   }
 }

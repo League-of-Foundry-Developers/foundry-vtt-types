@@ -2,39 +2,18 @@ declare class RollTable extends Entity<RollTable.Data> {
   /** @override */
   static get config(): Entity.Config<RollTable>;
 
-  /** @override */
-  prepareEmbeddedEntities(): void;
+  /**
+   * Create a new RollTable entity using all of the Entities from a specific Folder as new results.
+   * @param folder  - The Folder entity from which to create a roll table
+   * @param options - Additional options passed to the RollTable.create method
+   * @returns
+   */
+  static fromFolder(folder: Folder, options: Entity.CreateOptions): Promise<RollTable>;
 
   /**
    * A convenience accessor for the array of TableResult embedded documents
    */
   get results(): RollTable.Data['results'];
-
-  /* -------------------------------------------- */
-  /*  Methods                                     */
-  /* -------------------------------------------- */
-
-  /**
-   * Display a result drawn from a RollTable in the Chat Log along.
-   * Optionally also display the Roll which produced the result and configure aspects of the displayed messages.
-   *
-   * @param results        - An Array of one or more table results which were drawn and should be displayed
-   * @param roll           - An optional Roll instance which produced the drawn results
-   * @param messageData    - Additional data which customizes the created messages
-   * @param messageOptions - Additional options which customize the created messages
-   */
-  toMessage(
-    results: any[],
-    {
-      roll,
-      messageData,
-      messageOptions
-    }?: {
-      roll?: Roll | null;
-      messageData?: any;
-      messageOptions?: any;
-    }
-  ): ChatMessage;
 
   /**
    * Draw a result from the RollTable based on the table formula or a provided Roll instance
@@ -89,10 +68,15 @@ declare class RollTable extends Entity<RollTable.Data> {
     results: any[];
   }>;
 
+  getTableResult(id: string): any; // TODO EmbeddedTableResult
+
   /**
    * Normalize the probabilities of rolling each item in the RollTable based on their assigned weights
    */
   normalize(): Promise<RollTable>;
+
+  /** @override */
+  prepareEmbeddedEntities(): void;
 
   /**
    * Reset the state of the RollTable to return any drawn items to the table
@@ -134,12 +118,30 @@ declare class RollTable extends Entity<RollTable.Data> {
     results: any[];
   };
 
+  /** @override */
+  toCompendium(): Promise<any>;
+
   /**
-   * Get an Array of valid results for a given rolled total
-   * @param value - The rolled value
-   * @returns An Array of results
+   * Display a result drawn from a RollTable in the Chat Log along.
+   * Optionally also display the Roll which produced the result and configure aspects of the displayed messages.
+   *
+   * @param results        - An Array of one or more table results which were drawn and should be displayed
+   * @param roll           - An optional Roll instance which produced the drawn results
+   * @param messageData    - Additional data which customizes the created messages
+   * @param messageOptions - Additional options which customize the created messages
    */
-  protected _getResultsForRoll(value: number): any[];
+  toMessage(
+    results: any[],
+    {
+      roll,
+      messageData,
+      messageOptions
+    }?: {
+      roll?: Roll | null;
+      messageData?: any;
+      messageOptions?: any;
+    }
+  ): ChatMessage;
 
   /**
    * Get a string representation for the result which (if possible) will be a dynamic link or otherwise plain text
@@ -148,32 +150,18 @@ declare class RollTable extends Entity<RollTable.Data> {
    */
   protected _getResultChatText(result: any): string;
 
-  /* -------------------------------------------- */
-  /*  Table Result Management Methods             */
-  /* -------------------------------------------- */
-
-  getTableResult(id: string): any; // TODO EmbeddedTableResult
+  /**
+   * Get an Array of valid results for a given rolled total
+   * @param value - The rolled value
+   * @returns An Array of results
+   */
+  protected _getResultsForRoll(value: number): any[];
 
   /** @override */
   protected _onCreateEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
 
   /** @override */
   protected _onDeleteEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
-
-  /* -------------------------------------------- */
-  /*  Importing and Exporting                     */
-  /* -------------------------------------------- */
-
-  /** @override */
-  toCompendium(): Promise<any>;
-
-  /**
-   * Create a new RollTable entity using all of the Entities from a specific Folder as new results.
-   * @param folder  - The Folder entity from which to create a roll table
-   * @param options - Additional options passed to the RollTable.create method
-   * @returns
-   */
-  static fromFolder(folder: Folder, options: Entity.CreateOptions): Promise<RollTable>;
 }
 
 declare namespace RollTable {
@@ -190,6 +178,7 @@ declare namespace RollTable {
   }
 
   interface Result {
+    _id: string;
     drawn: boolean;
     flags: any;
     img: string;
@@ -198,6 +187,5 @@ declare namespace RollTable {
     text: string;
     type: number;
     weight: number;
-    _id: string;
   }
 }

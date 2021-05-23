@@ -21,8 +21,8 @@ declare class FrameViewer extends Application {
   static get defaultOptions(): typeof Application['defaultOptions'];
 
   /** @override */
-  getData(options?: Application.RenderOptions): Promise<{ src: string }>;
+  close(options?: Application.CloseOptions): ReturnType<Application['close']>;
 
   /** @override */
-  close(options?: Application.CloseOptions): ReturnType<Application['close']>;
+  getData(options?: Application.RenderOptions): Promise<{ src: string }>;
 }

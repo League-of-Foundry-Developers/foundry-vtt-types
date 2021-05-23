@@ -2,12 +2,12 @@ import { expectType } from 'tsd';
 import '../../index';
 
 interface CustomEntityData extends Entity.Data {
-  customField: boolean;
   attributes: {
     speed: number;
     lift: number;
     books: number;
   };
+  customField: boolean;
 }
 declare class CustomEntity extends Entity<CustomEntityData> {}
 declare const actualCustomData: CustomEntityData;

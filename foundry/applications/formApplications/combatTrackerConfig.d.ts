@@ -17,6 +17,11 @@ declare class CombatTrackerConfig extends FormApplication<FormApplication.Option
   static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /**
+   * Get an Array of attribute choices which could be tracked for Actors in the Combat Tracker
+   */
+  getAttributeChoices(): ReturnType<typeof TokenConfig['getTrackedAttributeChoices']>;
+
+  /**
    * @param options - (unused)
    * @override
    */
@@ -27,16 +32,11 @@ declare class CombatTrackerConfig extends FormApplication<FormApplication.Option
    * @override
    */
   protected _updateObject(event?: Event, formData?: Combat.ConfigValue): Promise<Combat.ConfigValue>;
-
-  /**
-   * Get an Array of attribute choices which could be tracked for Actors in the Combat Tracker
-   */
-  getAttributeChoices(): ReturnType<typeof TokenConfig['getTrackedAttributeChoices']>;
 }
 
 declare namespace CombatTrackerConfig {
   interface Data {
-    settings: Combat.ConfigValue;
     attributeChoices: ReturnType<CombatTrackerConfig['getAttributeChoices']>;
+    settings: Combat.ConfigValue;
   }
 }

@@ -14,30 +14,6 @@
 
 declare class Hotbar extends Application {
   /**
-   * The currently viewed macro page
-   * @defaultValue `1`
-   */
-  page: number;
-
-  /**
-   * The currently displayed set of macros
-   * @defaultValue `[]`
-   */
-  macros: Macro[];
-
-  /**
-   * Track collapsed state
-   * @defaultValue `false`
-   */
-  protected _collapsed: boolean;
-
-  /**
-   * Track which hotbar slot is the current hover target, if any
-   * @defaultValue `null`
-   */
-  protected _hover: number | null;
-
-  /**
    * @override
    * @defaultValue
    * ```typescript
@@ -51,26 +27,32 @@ declare class Hotbar extends Application {
    */
   static get defaultOptions(): typeof Application['defaultOptions'];
 
+  /**
+   * The currently displayed set of macros
+   * @defaultValue `[]`
+   */
+  macros: Macro[];
+
+  /**
+   * The currently viewed macro page
+   * @defaultValue `1`
+   */
+  page: number;
+
+  /**
+   * Track collapsed state
+   * @defaultValue `false`
+   */
+  protected _collapsed: boolean;
+
+  /**
+   * Track which hotbar slot is the current hover target, if any
+   * @defaultValue `null`
+   */
+  protected _hover: number | null;
+
   /** @override */
-  getData(options?: Application.RenderOptions): Hotbar.Data | Promise<Hotbar.Data>;
-
-  /**
-   * Get the Array of Macro (or null) values that should be displayed on a numbered page of the bar
-   * @param page -
-   */
-  protected _getMacrosByPage(page: number): Macro[];
-
-  /**
-   * Collapse the Hotbar, minimizing its display.
-   * @returns A promise which resolves once the collapse animation completes
-   */
-  collapse(): Promise<boolean>;
-
-  /**
-   * Expand the Hotbar, displaying it normally.
-   * @returns A promise which resolves once the expand animation completes
-   */
-  expand(): Promise<boolean> | boolean;
+  activateListeners(html: JQuery): void;
 
   /**
    * Change to a specific numbered page from 1 to 5
@@ -80,13 +62,31 @@ declare class Hotbar extends Application {
   changePage(page?: number): void;
 
   /**
+   * Collapse the Hotbar, minimizing its display.
+   * @returns A promise which resolves once the collapse animation completes
+   */
+  collapse(): Promise<boolean>;
+
+  /**
    * Change the page of the hotbar by cycling up (positive) or down (negative)
    * @param direction - The direction to cycle
    */
   cyclePage(direction: number): void;
 
+  /**
+   * Expand the Hotbar, displaying it normally.
+   * @returns A promise which resolves once the expand animation completes
+   */
+  expand(): Promise<boolean> | boolean;
+
   /** @override */
-  activateListeners(html: JQuery): void;
+  getData(options?: Application.RenderOptions): Hotbar.Data | Promise<Hotbar.Data>;
+
+  /** @override */
+  protected _canDragDrop(selector: string | null): boolean;
+
+  /** @override */
+  protected _canDragStart(selector: string | null): boolean;
 
   /**
    * Create a Context Menu attached to each Macro button
@@ -95,16 +95,23 @@ declare class Hotbar extends Application {
   protected _contextMenu(html: JQuery): void;
 
   /**
+   * Get the Macro entity being dropped in the Hotbar. If the data comes from a non-World source, create the Macro
+   * @param data - The data transfer attached to the DragEvent
+   * @returns A Promise which returns the dropped Macro, or null
+   */
+  protected _getDropMacro(data: Hotbar.DropData): Promise<Macro | null>;
+
+  /**
+   * Get the Array of Macro (or null) values that should be displayed on a numbered page of the bar
+   * @param page -
+   */
+  protected _getMacrosByPage(page: number): Macro[];
+
+  /**
    * Handle left-click events to
    * @param event -
    */
   protected _onClickMacro(event: JQuery.ClickEvent): Promise<void>;
-
-  /**
-   * Handle hover events on a macro button to track which slot is the hover target
-   * @param event - The originating mouseover or mouseleave event
-   */
-  protected _onHoverMacro(event: JQuery.MouseEnterEvent | JQuery.MouseLeaveEvent): void;
 
   /**
    * Handle pagination controls
@@ -113,20 +120,13 @@ declare class Hotbar extends Application {
   protected _onClickPageControl(event: JQuery.ClickEvent): void;
 
   /** @override */
-  protected _canDragStart(selector: string | null): boolean;
-
-  /** @override */
-  protected _canDragDrop(selector: string | null): boolean;
-
-  /** @override */
   protected _onDrop(event: DragEvent): void;
 
   /**
-   * Get the Macro entity being dropped in the Hotbar. If the data comes from a non-World source, create the Macro
-   * @param data - The data transfer attached to the DragEvent
-   * @returns A Promise which returns the dropped Macro, or null
+   * Handle hover events on a macro button to track which slot is the hover target
+   * @param event - The originating mouseover or mouseleave event
    */
-  protected _getDropMacro(data: Hotbar.DropData): Promise<Macro | null>;
+  protected _onHoverMacro(event: JQuery.MouseEnterEvent | JQuery.MouseLeaveEvent): void;
 
   /**
    * Handle click events to toggle display of the macro bar
@@ -137,16 +137,16 @@ declare class Hotbar extends Application {
 
 declare namespace Hotbar {
   interface Data {
-    page: number;
-    macros: Macro[];
     barClass: 'collapsed' | '';
+    macros: Macro[];
+    page: number;
   }
 
   interface DropData {
-    type?: string;
     data?: DeepPartial<Macro.Data>;
     id?: string;
     pack?: string;
     slot?: number;
+    type?: string;
   }
 }

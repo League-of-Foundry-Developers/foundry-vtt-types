@@ -2,13 +2,17 @@
  * An abstract pattern for primary layers of the game canvas to implement
  */
 declare abstract class CanvasLayer extends PIXI.Container {
-  constructor();
+  /**
+   * Customize behaviors of this CanvasLayer by modifying some behaviors at a class level.
+   */
+  static get layerOptions(): CanvasLayer.LayerOptions;
 
   /**
-   * Track whether the canvas layer is currently active for interaction
-   * @defaultValue `false`
+   * Return a reference to the active instance of this canvas layer
    */
-  protected _active: boolean;
+  static get instance(): CanvasLayer;
+
+  constructor();
 
   /**
    * @defaultValue `false`
@@ -20,51 +24,17 @@ declare abstract class CanvasLayer extends PIXI.Container {
    */
   interactiveChildren: boolean;
 
-  /* -------------------------------------------- */
-  /*  Properties and Attributes
-  /* -------------------------------------------- */
-
-  /**
-   * Customize behaviors of this CanvasLayer by modifying some behaviors at a class level.
-   */
-  static get layerOptions(): CanvasLayer.LayerOptions;
-
-  /* -------------------------------------------- */
-
-  /**
-   * Return a reference to the active instance of this canvas layer
-   */
-  static get instance(): CanvasLayer;
-
-  /* -------------------------------------------- */
-
   /**
    * The canonical name of the CanvasLayer
    * @remarks Foundry defines this as a getter, but since CanvasLayer extends PIXI.Container, it has to be a property.
    */
   name: string;
 
-  /* -------------------------------------------- */
-  /*  Rendering
-  /* -------------------------------------------- */
-
   /**
-   * Deconstruct data used in the current layer in preparation to re-draw the canvas
+   * Track whether the canvas layer is currently active for interaction
+   * @defaultValue `false`
    */
-  tearDown(): void;
-
-  /* -------------------------------------------- */
-
-  /**
-   * Draw the canvas layer, rendering its internal components and returning a Promise
-   * The Promise resolves to the drawn layer once its contents are successfully rendered.
-   * @remarks Base implementation returns `Promise<this>`
-   */
-  draw(): unknown;
-
-  /* -------------------------------------------- */
-  /*  Methods
-  /* -------------------------------------------- */
+  protected _active: boolean;
 
   /**
    * Activate the CanvasLayer, deactivating other layers and marking this layer's children as interactive.
@@ -73,13 +43,23 @@ declare abstract class CanvasLayer extends PIXI.Container {
    */
   activate(): unknown;
 
-  /* -------------------------------------------- */
-
   /**
    * Deactivate the CanvasLayer, removing interactivity from its children.
    * @returns The layer instance, now inactive
    */
   deactivate(): void;
+
+  /**
+   * Draw the canvas layer, rendering its internal components and returning a Promise
+   * The Promise resolves to the drawn layer once its contents are successfully rendered.
+   * @remarks Base implementation returns `Promise<this>`
+   */
+  draw(): unknown;
+
+  /**
+   * Deconstruct data used in the current layer in preparation to re-draw the canvas
+   */
+  tearDown(): void;
 }
 
 declare namespace CanvasLayer {

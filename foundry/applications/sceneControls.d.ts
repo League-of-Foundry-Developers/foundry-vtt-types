@@ -24,17 +24,6 @@ declare interface SceneControlTool {
  */
 declare class SceneControls extends Application {
   /**
-   * The name of the active Scene Control toolset
-   * @defaultValue `"token"`
-   */
-  activeControl: string;
-
-  /**
-   * The Array of Scene Control buttons which are currently rendered
-   */
-  controls: SceneControl[];
-
-  /**
    * @override
    * @defaultValue
    * ```
@@ -49,9 +38,15 @@ declare class SceneControls extends Application {
   static get defaultOptions(): typeof Application['defaultOptions'];
 
   /**
-   * Return the active control set
+   * The name of the active Scene Control toolset
+   * @defaultValue `"token"`
    */
-  get control(): SceneControl | null;
+  activeControl: string;
+
+  /**
+   * The Array of Scene Control buttons which are currently rendered
+   */
+  controls: SceneControl[];
 
   /**
    * Return the name of the active tool within the active control set
@@ -59,14 +54,27 @@ declare class SceneControls extends Application {
   get activeTool(): string | null;
 
   /**
-   * Return the actively controlled tool
+   * Return the active control set
    */
-  get tool(): SceneControlTool | null;
+  get control(): SceneControl | null;
 
   /**
    * A convenience reference for whether the currently active tool is a Ruler
    */
   get isRuler(): boolean;
+
+  /**
+   * Return the actively controlled tool
+   */
+  get tool(): SceneControlTool | null;
+
+  /** @override */
+  activateListeners(html: JQuery): void;
+
+  /** @override */
+  getData(
+    options?: Application.RenderOptions
+  ): { active: boolean; cssClass: '' | 'disabled'; controls: SceneControl[] };
 
   /**
    * Initialize the Scene Controls by obtaining the set of control buttons and rendering the HTML
@@ -76,13 +84,11 @@ declare class SceneControls extends Application {
    */
   initialize({ control, layer, tool }?: { control?: string; layer?: string; tool?: string }): void;
 
-  /** @override */
-  getData(
-    options?: Application.RenderOptions
-  ): { active: boolean; cssClass: '' | 'disabled'; controls: SceneControl[] };
-
-  /** @override */
-  activateListeners(html: JQuery): void;
+  /**
+   * Get the set of Control sets and tools that are rendered as the Scene Controls.
+   * These controls may be extended using the "getSceneControlButtons" Hook.
+   */
+  protected _getControlButtons(): SceneControl[];
 
   /**
    * Handle click events on a Control set
@@ -95,10 +101,4 @@ declare class SceneControls extends Application {
    * @param event - A click event on a tool control
    */
   protected _onClickTool(event: JQuery.ClickEvent): void;
-
-  /**
-   * Get the set of Control sets and tools that are rendered as the Scene Controls.
-   * These controls may be extended using the "getSceneControlButtons" Hook.
-   */
-  protected _getControlButtons(): SceneControl[];
 }

@@ -8,12 +8,6 @@ declare class DrawingConfig<P extends DrawingConfig.Options = DrawingConfig.Opti
   Drawing
 > {
   /**
-   * @param drawing - The Drawing object being configured
-   * @param options - Additional application rendering options
-   */
-  constructor(drawing: Drawing, options?: Partial<P>);
-
-  /**
    * @defaultValue
    * ```typescript
    * mergeObject(super.defaultOptions, {
@@ -29,8 +23,25 @@ declare class DrawingConfig<P extends DrawingConfig.Options = DrawingConfig.Opti
    */
   static get defaultOptions(): DrawingConfig.Options;
 
+  /**
+   * Get the names and labels of fill type choices which can be applied
+   */
+  protected static _getFillTypes(): DrawingConfig.FillTypes;
+
+  /**
+   * @param drawing - The Drawing object being configured
+   * @param options - Additional application rendering options
+   */
+  constructor(drawing: Drawing, options?: Partial<P>);
+
   /** @override */
   get title(): string;
+
+  /** @override */
+  activateListeners(html: JQuery): void;
+
+  /** @override */
+  close(options?: FormApplication.CloseOptions): Promise<void>;
 
   /**
    * @param options - (unused)
@@ -39,9 +50,9 @@ declare class DrawingConfig<P extends DrawingConfig.Options = DrawingConfig.Opti
   getData(options?: Application.RenderOptions): DrawingConfig.Data;
 
   /**
-   * Get the names and labels of fill type choices which can be applied
+   * Reset the user Drawing configuration settings to their default values
    */
-  protected static _getFillTypes(): DrawingConfig.FillTypes;
+  protected _onResetDefaults(event: JQuery.ClickEvent): void;
 
   /**
    * @param event - (unused)
@@ -51,25 +62,14 @@ declare class DrawingConfig<P extends DrawingConfig.Options = DrawingConfig.Opti
     event: Event,
     formData: F
   ): Promise<this['options']['configureDefault'] extends true ? F : Drawing>;
-
-  /** @override */
-  close(options?: FormApplication.CloseOptions): Promise<void>;
-
-  /** @override */
-  activateListeners(html: JQuery): void;
-
-  /**
-   * Reset the user Drawing configuration settings to their default values
-   */
-  protected _onResetDefaults(event: JQuery.ClickEvent): void;
 }
 
 declare namespace DrawingConfig {
   interface Data {
     author: string;
-    isDefault: Options['configureDefault'];
     fillTypes: ReturnType<typeof DrawingConfig['_getFillTypes']>;
     fontFamilies: Record<typeof CONFIG['fontFamilies'][number], typeof CONFIG['fontFamilies'][number]>;
+    isDefault: Options['configureDefault'];
     object: DrawingConfig['object']['data'];
     options: DrawingConfig['options'];
     submitText: string;

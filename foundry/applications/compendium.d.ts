@@ -50,6 +50,18 @@
  * @typeParam P - the type of the options object
  */
 declare class Compendium<P extends Application.Options = Application.Options> extends Application<P> {
+  static CONFIG_SETTING: 'compendiumConfiguration';
+
+  /** @override */
+  static get defaultOptions(): typeof Application['defaultOptions'];
+
+  /**
+   * Create a new Compendium pack using provided
+   * @param metadata - The compendium metadata used to create the new pack
+   * @param options  - Additional options which modify the Compendium creation request
+   */
+  static create(metadata: Compendium.Metadata, options?: Record<string, any>): Promise<Compendium>;
+
   /**
    * @param metadata - The compendium metadata, an object provided by game.data
    * @param options  - Application rendering options
@@ -57,14 +69,20 @@ declare class Compendium<P extends Application.Options = Application.Options> ex
   constructor(metadata: Compendium['metadata'], options?: Partial<P>);
 
   /**
-   * The compendium metadata which defines the compendium content and location
+   * The most recently retrieved index of the Compendium content
+   * This index is not guaranteed to be current - call getIndex() to reload the index
    */
-  metadata: Compendium.Metadata;
+  index: Compendium.IndexEntry[];
 
   /**
    * Track whether the compendium pack is locked for editing
    */
   locked: boolean;
+
+  /**
+   * The compendium metadata which defines the compendium content and location
+   */
+  metadata: Compendium.Metadata;
 
   /**
    * Track whether the compendium pack is private
@@ -73,16 +91,9 @@ declare class Compendium<P extends Application.Options = Application.Options> ex
   private: boolean;
 
   /**
-   * The most recently retrieved index of the Compendium content
-   * This index is not guaranteed to be current - call getIndex() to reload the index
+   * A reference to the Entity class object contained within this Compendium pack
    */
-  index: Compendium.IndexEntry[];
-
-  /** @override */
-  static get defaultOptions(): typeof Application['defaultOptions'];
-
-  /** @override */
-  getTitle(): string;
+  get cls(): ConstructorOf<Entity>;
 
   /**
    * The canonical Compendium name - comprised of the originating package and the pack name
@@ -96,22 +107,12 @@ declare class Compendium<P extends Application.Options = Application.Options> ex
   get entity(): string;
 
   /**
-   * A reference to the Entity class object contained within this Compendium pack
+   * Register event listeners for Compendium directories
    */
-  get cls(): ConstructorOf<Entity>;
-
-  /** @override */
-  getData(options: Application.RenderOptions): Promise<Data>;
+  activateListeners(html: JQuery): void;
 
   /** @override */
   close(): Promise<void>;
-
-  /**
-   * Create a new Compendium pack using provided
-   * @param metadata - The compendium metadata used to create the new pack
-   * @param options  - Additional options which modify the Compendium creation request
-   */
-  static create(metadata: Compendium.Metadata, options?: Record<string, any>): Promise<Compendium>;
 
   /**
    * Assign configuration metadata settings to the compendium pack
@@ -121,10 +122,27 @@ declare class Compendium<P extends Application.Options = Application.Options> ex
   configure(settings?: Partial<Compendium.Settings>): Promise<Compendium.Settings>;
 
   /**
+   * Create a new Entity within this Compendium Pack using provided data
+   * @param data - Data with which to create the entry
+   * @returns A Promise which resolves to the created Entity once the operation is complete
+   */
+  createEntity(
+    data: Record<string, any> | Record<string, any>[],
+    options?: Record<string, any>
+  ): Promise<Entity | Entity[]>;
+
+  /**
    * Delete a world Compendium pack
    * This is only allowed for world-level packs by a GM user
    */
   delete(): Promise<this>;
+
+  /**
+   * Delete a single Compendium entry by its provided _id
+   * @param id - The entry ID to delete
+   * @returns A Promise which resolves to the deleted entry ID once the operation is complete
+   */
+  deleteEntity(id: string | string[]): Promise<string[]>;
 
   /**
    * Duplicate a compendium pack to the current World
@@ -132,18 +150,20 @@ declare class Compendium<P extends Application.Options = Application.Options> ex
   duplicate({ label }?: { label?: string }): Promise<Compendium>;
 
   /**
-   * Get the Compendium index
-   * Contains names, images and IDs of all data in the compendium
-   *
-   * @returns A Promise containing an index of all compendium entries
-   */
-  getIndex(): Promise<Compendium.IndexEntry[]>;
-
-  /**
    * Get the complete set of content for this compendium, loading all entries in full
    * Returns a Promise that resolves to an Array of entries
    */
   getContent(): Promise<Entity[]>;
+
+  /** @override */
+  getData(options: Application.RenderOptions): Promise<Data>;
+
+  /**
+   * Get a single Compendium entry as an Entity instance
+   * @param entryId - The compendium entry ID to load and instantiate
+   * @returns A Promise containing the returned Entity, if it exists, otherwise null
+   */
+  getEntity(entryId: string): Promise<Entity | null>;
 
   /**
    * Get a single Compendium entry as an Object
@@ -154,11 +174,15 @@ declare class Compendium<P extends Application.Options = Application.Options> ex
   getEntry(entryId: string): Promise<Data | null>;
 
   /**
-   * Get a single Compendium entry as an Entity instance
-   * @param entryId - The compendium entry ID to load and instantiate
-   * @returns A Promise containing the returned Entity, if it exists, otherwise null
+   * Get the Compendium index
+   * Contains names, images and IDs of all data in the compendium
+   *
+   * @returns A Promise containing an index of all compendium entries
    */
-  getEntity(entryId: string): Promise<Entity | null>;
+  getIndex(): Promise<Compendium.IndexEntry[]>;
+
+  /** @override */
+  getTitle(): string;
 
   /**
    * Fully import the contents of a Compendium pack into a World folder.
@@ -176,11 +200,6 @@ declare class Compendium<P extends Application.Options = Application.Options> ex
   }): Promise<Entity | Entity[] | null>;
 
   /**
-   * Cast entry data to an Entity class
-   */
-  protected _toEntity(entryData?: Data): Entity;
-
-  /**
    * Import a new Entity into a Compendium pack
    * @param entity - The Entity instance you wish to import
    * @returns A Promise which resolves to the created Entity once the operation is complete
@@ -188,14 +207,9 @@ declare class Compendium<P extends Application.Options = Application.Options> ex
   importEntity(entity: Entity): Promise<Entity>;
 
   /**
-   * Create a new Entity within this Compendium Pack using provided data
-   * @param data - Data with which to create the entry
-   * @returns A Promise which resolves to the created Entity once the operation is complete
+   * Request that a Compendium pack be migrated to the latest System data template
    */
-  createEntity(
-    data: Record<string, any> | Record<string, any>[],
-    options?: Record<string, any>
-  ): Promise<Entity | Entity[]>;
+  migrate(options: Record<string, unknown>): Promise<Compendium>;
 
   /**
    * Update a single Compendium entry programmatically by providing new data with which to update
@@ -204,18 +218,6 @@ declare class Compendium<P extends Application.Options = Application.Options> ex
    * @returns A Promise which resolves with the updated Entity once the operation is complete
    */
   updateEntity(data: Data | Data[], options?: Record<string, any> & { entity: Entity }): Promise<Data[]>;
-
-  /**
-   * Delete a single Compendium entry by its provided _id
-   * @param id - The entry ID to delete
-   * @returns A Promise which resolves to the deleted entry ID once the operation is complete
-   */
-  deleteEntity(id: string | string[]): Promise<string[]>;
-
-  /**
-   * Request that a Compendium pack be migrated to the latest System data template
-   */
-  migrate(options: Record<string, unknown>): Promise<Compendium>;
 
   /**
    * Validate that the current user is able to modify content of this Compendium pack
@@ -230,25 +232,16 @@ declare class Compendium<P extends Application.Options = Application.Options> ex
     requireUnlocked?: boolean;
   }): boolean;
 
-  /**
-   * Register event listeners for Compendium directories
-   */
-  activateListeners(html: JQuery): void;
-
   /** @override */
-  protected _onSearchFilter(event: KeyboardEvent, query: string, html: HTMLElement): void;
-
-  /**
-   * Handle opening a single compendium entry by invoking the configured entity class and its sheet
-   * @param entryId - The compendium ID of the entry to display
-   */
-  protected _onEntry(entryId: string): Promise<void>;
+  protected _canDragDrop(selector: string | null): boolean;
 
   /** @override */
   protected _canDragStart(selector: string | null): boolean;
 
-  /** @override */
-  protected _canDragDrop(selector: string | null): boolean;
+  /**
+   * Render the ContextMenu which applies to each compendium entry
+   */
+  protected _contextMenu(html: JQuery): void;
 
   /** @override */
   protected _onDragStart(event: DragEvent): void;
@@ -259,29 +252,36 @@ declare class Compendium<P extends Application.Options = Application.Options> ex
   protected _onDrop(event: DragEvent): Promise<false | Entity>;
 
   /**
-   * Render the ContextMenu which applies to each compendium entry
+   * Handle opening a single compendium entry by invoking the configured entity class and its sheet
+   * @param entryId - The compendium ID of the entry to display
    */
-  _contextMenu(html: JQuery): void;
+  protected _onEntry(entryId: string): Promise<void>;
 
-  static CONFIG_SETTING: 'compendiumConfiguration';
+  /** @override */
+  protected _onSearchFilter(event: KeyboardEvent, query: string, html: HTMLElement): void;
+
+  /**
+   * Cast entry data to an Entity class
+   */
+  protected _toEntity(entryData?: Data): Entity;
 }
 
 declare namespace Compendium {
   interface IndexEntry {
     _id: string;
-    name: string;
     img?: string;
+    name: string;
   }
 
   interface Metadata {
-    name: string;
-    label: string;
-    system?: string | string[];
-    module?: string;
-    path: string;
-    entity: 'Actor' | 'Item' | 'JournalEntry' | 'Macro' | 'Playlist' | 'RollTable' | 'Scene';
-    package: string;
     absPath: string;
+    entity: 'Actor' | 'Item' | 'JournalEntry' | 'Macro' | 'Playlist' | 'RollTable' | 'Scene';
+    label: string;
+    module?: string;
+    name: string;
+    package: string;
+    path: string;
+    system?: string | string[];
   }
 
   interface Data {
@@ -291,7 +291,7 @@ declare namespace Compendium {
   }
 
   interface Settings {
-    private: boolean;
     locked: boolean;
+    private: boolean;
   }
 }

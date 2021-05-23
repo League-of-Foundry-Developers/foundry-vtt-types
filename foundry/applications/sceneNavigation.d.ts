@@ -18,28 +18,16 @@ declare class SceneNavigation extends Application {
   static get defaultOptions(): typeof Application['defaultOptions'];
 
   /**
+   * Updated the loading progress bar
+   * @param context - The message to display in the progress back
+   * @param pct     - The percentage the progress bar has completed
+   */
+  protected static _onLoadProgress(context: string, pct: number): void;
+
+  /**
    * Return an Array of Scenes which are displayed in the Navigation bar
    */
   get scenes(): Scene[];
-
-  /** @override */
-  render(force?: boolean, options?: Application.RenderOptions): this | undefined;
-
-  /** @override */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
-
-  /** @override */
-  getData(options?: Application.RenderOptions): SceneNavigation.Data | Promise<SceneNavigation.Data>;
-
-  /**
-   * Expand the SceneNavigation menu, sliding it down if it is currently collapsed
-   */
-  expand(): Promise<boolean>;
-
-  /**
-   * Collapse the SceneNavigation menu, sliding it up if it is currently expanded
-   */
-  collapse(): Promise<boolean>;
 
   /**
    * Activate Scene Navigation event listeners
@@ -47,14 +35,30 @@ declare class SceneNavigation extends Application {
   activateListeners(html: JQuery): void;
 
   /**
+   * Collapse the SceneNavigation menu, sliding it up if it is currently expanded
+   */
+  collapse(): Promise<boolean>;
+
+  /**
+   * Expand the SceneNavigation menu, sliding it down if it is currently collapsed
+   */
+  expand(): Promise<boolean>;
+
+  /** @override */
+  getData(options?: Application.RenderOptions): SceneNavigation.Data | Promise<SceneNavigation.Data>;
+
+  /** @override */
+  render(force?: boolean, options?: Application.RenderOptions): this | undefined;
+
+  /**
    * Get the set of ContextMenu options which should be applied for Scenes in the menu
    */
-  private _getContextMenuOptions(): ContextMenu.Item[];
+  protected _getContextMenuOptions(): ContextMenu.Item[];
 
   /**
    * Handle left-click events on the scenes in the navigation menu
    */
-  private _onClickScene(event: JQuery.ClickEvent): void;
+  protected _onClickScene(event: JQuery.ClickEvent): void;
 
   /** @override */
   protected _onDragStart(event: DragEvent): void;
@@ -63,14 +67,10 @@ declare class SceneNavigation extends Application {
   protected _onDrop(event: DragEvent): Promise<boolean | undefined | void>;
 
   /** @override */
-  private _onToggleNav(event: JQuery.ClickEvent): void;
+  protected _onToggleNav(event: JQuery.ClickEvent): void;
 
-  /**
-   * Updated the loading progress bar
-   * @param context - The message to display in the progress back
-   * @param pct     - The percentage the progress bar has completed
-   */
-  static _onLoadProgress(context: string, pct: number): void;
+  /** @override */
+  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
 }
 
 declare namespace SceneNavigation {

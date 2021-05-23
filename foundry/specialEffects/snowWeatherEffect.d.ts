@@ -2,12 +2,6 @@
  * A special full-screen weather effect which uses one Emitters to render snowflakes
  */
 declare class SnowWeatherEffect extends SpecialEffect {
-  static get label(): string;
-
-  getParticleEmitters(): PIXI.particles.Emitter[];
-
-  _getSnowEmitter(parent: PIXI.Container): PIXI.particles.Emitter;
-
   /**
    * @defaultValue
    * ```typescript
@@ -52,4 +46,10 @@ declare class SnowWeatherEffect extends SpecialEffect {
    * ```
    */
   static SNOW_CONFIG: PIXI.particles.EmitterConfig | PIXI.particles.OldEmitterConfig;
+
+  static get label(): string;
+
+  getParticleEmitters(): PIXI.particles.Emitter[];
+
+  protected _getSnowEmitter(parent: PIXI.Container): PIXI.particles.Emitter;
 }

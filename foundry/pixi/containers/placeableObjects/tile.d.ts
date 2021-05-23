@@ -23,6 +23,14 @@
  * @see {@link TileHUD}
  */
 declare class Tile extends PlaceableObject<Tile.Data> {
+  /** @override */
+  static get embeddedName(): 'Tile';
+
+  /**
+   * Create a preview tile with a background texture instead of an image
+   */
+  static createPreview(data: Tile.Data): Tile;
+
   /**
    * @remarks Not used for `Tile`
    */
@@ -34,22 +42,14 @@ declare class Tile extends PlaceableObject<Tile.Data> {
   frame: PIXI.Container | null;
 
   /**
-   * The Tile image container
-   */
-  tile: PIXI.Container | null;
-
-  /**
    * The primary tile image texture
    */
   texture: PIXI.Texture | null;
 
-  /** @override */
-  static get embeddedName(): 'Tile';
-
   /**
-   * Apply initial sanitizations to the provided input data to ensure that a Tile has valid required attributes.
+   * The Tile image container
    */
-  protected _cleanData(): void;
+  tile: PIXI.Container | null;
 
   /**
    * @remarks
@@ -63,44 +63,57 @@ declare class Tile extends PlaceableObject<Tile.Data> {
   get aspectRatio(): number;
 
   /** @override */
+  activateListeners(): void;
+
+  /** @override */
   draw(): Promise<this>;
 
   /** @override */
   refresh(): this;
 
-  /**
-   * Refresh the display of the Tile border
-   */
-  protected _refreshBorder(b: Rectangle): void;
-
-  /**
-   * Refresh the display of the Tile resizing handle
-   */
-  protected _refreshHandle(b: Rectangle): void;
-
-  /** @override */
-  activateListeners(): void;
-
-  /** @override */
-  protected _onUpdate(data: Tile.Data): void;
-
-  /** @override */
-  protected _canHUD(user?: User, event?: any): boolean;
-
   /** @override */
   protected _canConfigure(user: User, event?: any): boolean;
 
   /** @override */
-  protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
+  protected _canHUD(user?: User, event?: any): boolean;
+
+  /**
+   * Apply initial sanitizations to the provided input data to ensure that a Tile has valid required attributes.
+   */
+  protected _cleanData(): void;
 
   /** @override */
-  protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+  protected _onDragLeftCancel(event: PIXI.InteractionEvent): void;
 
   /** @override */
   protected _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<this> | boolean;
 
   /** @override */
-  protected _onDragLeftCancel(event: PIXI.InteractionEvent): void;
+  protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+
+  /** @override */
+  protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
+
+  /**
+   * Handle cancellation of a drag event for one of the resizing handles
+   */
+  protected _onHandleDragCancel(event: PIXI.InteractionEvent): void;
+
+  /**
+   * Handle mouseup after dragging a tile scale handler
+   * @param event - The mouseup event
+   */
+  protected _onHandleDragDrop(event: PIXI.InteractionEvent): Promise<this>;
+
+  /**
+   * Handle mousemove while dragging a tile scale handler
+   * @param event - The mousemove event
+   */
+  protected _onHandleDragMove(event: PIXI.InteractionEvent): void;
+  /**
+   * Handle the beginning of a drag event on a resize handle
+   */
+  protected _onHandleDragStart(event: PIXI.InteractionEvent): void;
 
   /**
    * Handle mouse-over event on a control handle
@@ -120,32 +133,18 @@ declare class Tile extends PlaceableObject<Tile.Data> {
    */
   protected _onHandleMouseDown(event: PIXI.InteractionEvent): void;
 
-  /**
-   * Handle the beginning of a drag event on a resize handle
-   */
-  protected _onHandleDragStart(event: PIXI.InteractionEvent): void;
+  /** @override */
+  protected _onUpdate(data: Tile.Data): void;
 
   /**
-   * Handle mousemove while dragging a tile scale handler
-   * @param event - The mousemove event
+   * Refresh the display of the Tile border
    */
-  protected _onHandleDragMove(event: PIXI.InteractionEvent): void;
+  protected _refreshBorder(b: Rectangle): void;
 
   /**
-   * Handle mouseup after dragging a tile scale handler
-   * @param event - The mouseup event
+   * Refresh the display of the Tile resizing handle
    */
-  protected _onHandleDragDrop(event: PIXI.InteractionEvent): Promise<this>;
-
-  /**
-   * Handle cancellation of a drag event for one of the resizing handles
-   */
-  protected _onHandleDragCancel(event: PIXI.InteractionEvent): void;
-
-  /**
-   * Create a preview tile with a background texture instead of an image
-   */
-  static createPreview(data: Tile.Data): Tile;
+  protected _refreshHandle(b: Rectangle): void;
 }
 
 declare namespace Tile {

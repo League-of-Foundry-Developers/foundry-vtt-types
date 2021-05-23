@@ -2,43 +2,54 @@
  * The Scene entity
  */
 declare class Scene extends Entity<Scene.Data> {
+  static get config(): Entity.Config<Scene>;
+
+  /** @override */
+  static create<T extends Scene, U>(
+    this: ConstructorOf<T>,
+    data: Expanded<U> extends DeepPartial<T['_data']> ? U : DeepPartial<T['_data']>,
+    options?: Entity.CreateOptions
+  ): Promise<T | null>;
+  static create<T extends Scene, U>(
+    this: ConstructorOf<T>,
+    data: Expanded<U> extends DeepPartial<T['_data']> ? Array<U> : Array<DeepPartial<T['_data']>>,
+    options?: Entity.CreateOptions
+  ): Promise<T | T[] | null>;
+
+  /** @override */
+  protected static _handleCreateEmbeddedEntity({ request, result, userId }: any): any[];
+
+  /** @override */
+  protected static _handleDeleteEmbeddedEntity({ request, result, userId }: any): any[];
+
+  /** @override */
+  protected static _handleUpdateEmbeddedEntity({ request, result, userId }: any): any[];
+
   /**
    * Track whether the scene is the active view
    */
-  _view: boolean;
+  protected _view: boolean;
 
   /**
    * Track the viewed position of each scene (while in memory only, not persisted)
    * When switching back to a previously viewed scene, we can automatically pan to the previous position.
    * Object with keys: x, y, scale
    */
-  _viewPosition: {
+  protected _viewPosition: {
     x: number;
     y: number;
     scale: number;
   };
 
-  static get config(): Entity.Config<Scene>;
-
-  /** @override */
-  prepareData(): Scene.Data;
-
-  /** @override */
-  prepareEmbeddedEntities(): void;
-
-  /* -------------------------------------------- */
-  /*  Properties                                  */
-  /* -------------------------------------------- */
+  /**
+   * A convenience accessor for whether the Scene is currently active
+   */
+  get active(): boolean;
 
   /**
    * A convenience accessor for the background image of the Scene
    */
   get img(): string;
-
-  /**
-   * A convenience accessor for whether the Scene is currently active
-   */
-  get active(): boolean;
 
   /**
    * A convenience accessor for whether the Scene is currently viewed
@@ -57,100 +68,13 @@ declare class Scene extends Entity<Scene.Data> {
   get playlist(): Playlist | null;
 
   /**
-   * Set this scene as the current view
-   * @returns
-   */
-  view(): Promise<void>;
-
-  /**
    * Set this scene as currently active
    * @returns A Promise which resolves to the current scene once it has been successfully activated
    */
   activate(): Promise<this>;
 
-  /* -------------------------------------------- */
-  /*  Socket Listeners and Handlers               */
-  /* -------------------------------------------- */
-
   /** @override */
   clone(createData?: DeepPartial<Scene.Data>, options?: Entity.CreateOptions): Promise<this>;
-
-  /** @override */
-  static create<T extends Scene, U>(
-    this: ConstructorOf<T>,
-    data: Expanded<U> extends DeepPartial<T['_data']> ? U : DeepPartial<T['_data']>,
-    options?: Entity.CreateOptions
-  ): Promise<T | null>;
-  static create<T extends Scene, U>(
-    this: ConstructorOf<T>,
-    data: Expanded<U> extends DeepPartial<T['_data']> ? Array<U> : Array<DeepPartial<T['_data']>>,
-    options?: Entity.CreateOptions
-  ): Promise<T | T[] | null>;
-
-  /** @override */
-  update<U>(
-    data: Expanded<U> extends DeepPartial<this['_data']> ? U : never,
-    options: Entity.UpdateOptions
-  ): Promise<this>;
-  update(data: DeepPartial<this['_data']>, options: Entity.UpdateOptions): Promise<this>;
-
-  /** @override */
-  protected _onCreate(data: this['_data'], options: any, userId: string): void;
-
-  /** @override */
-  protected _onUpdate(data: DeepPartial<this['_data']>, options: Entity.UpdateOptions, userId: string): void;
-
-  /** @override */
-  protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
-
-  /**
-   * Handle Scene activation workflow if the active state is changed to true
-   */
-  protected _onActivate(active: boolean): void;
-
-  /** @override */
-  protected _onCreateEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
-
-  /** @override */
-  protected _onUpdateEmbeddedEntity(
-    embeddedName: string,
-    child: any,
-    updateData: any,
-    options: any,
-    userId: string
-  ): void;
-
-  /** @override */
-  protected _onDeleteEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
-
-  /** @override */
-  protected _onModifyEmbeddedEntity(
-    embeddedName: string,
-    changes: any[],
-    options: any,
-    userId: string,
-    context?: any
-  ): void;
-
-  /* -------------------------------------------- */
-  /*  History Storage Handlers                    */
-  /* -------------------------------------------- */
-
-  /** @override */
-  protected static _handleCreateEmbeddedEntity({ request, result, userId }: any): any[];
-
-  /** @override */
-  protected static _handleUpdateEmbeddedEntity({ request, result, userId }: any): any[];
-
-  /** @override */
-  protected static _handleDeleteEmbeddedEntity({ request, result, userId }: any): any[];
-
-  /* -------------------------------------------- */
-  /*  Importing and Exporting                     */
-  /* -------------------------------------------- */
-
-  /** @override */
-  toCompendium(): Promise<any>;
 
   /**
    * Create a 300px by 100px thumbnail image for this scene background
@@ -169,6 +93,66 @@ declare class Scene extends Entity<Scene.Data> {
     width?: number;
     height?: number;
   }): Promise<ImageHelper.ThumbnailReturn>;
+
+  /** @override */
+  prepareData(): Scene.Data;
+
+  /** @override */
+  prepareEmbeddedEntities(): void;
+
+  /** @override */
+  toCompendium(): Promise<any>;
+
+  /** @override */
+  update<U>(
+    data: Expanded<U> extends DeepPartial<this['_data']> ? U : never,
+    options: Entity.UpdateOptions
+  ): Promise<this>;
+  update(data: DeepPartial<this['_data']>, options: Entity.UpdateOptions): Promise<this>;
+
+  /**
+   * Set this scene as the current view
+   * @returns
+   */
+  view(): Promise<void>;
+
+  /**
+   * Handle Scene activation workflow if the active state is changed to true
+   */
+  protected _onActivate(active: boolean): void;
+
+  /** @override */
+  protected _onCreate(data: this['_data'], options: any, userId: string): void;
+
+  /** @override */
+  protected _onCreateEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
+
+  /** @override */
+  protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
+
+  /** @override */
+  protected _onDeleteEmbeddedEntity(embeddedName: string, child: any, options: any, userId: string): void;
+
+  /** @override */
+  protected _onModifyEmbeddedEntity(
+    embeddedName: string,
+    changes: any[],
+    options: any,
+    userId: string,
+    context?: any
+  ): void;
+
+  /** @override */
+  protected _onUpdate(data: DeepPartial<this['_data']>, options: Entity.UpdateOptions, userId: string): void;
+
+  /** @override */
+  protected _onUpdateEmbeddedEntity(
+    embeddedName: string,
+    child: any,
+    updateData: any,
+    options: any,
+    userId: string
+  ): void;
 }
 
 declare namespace Scene {

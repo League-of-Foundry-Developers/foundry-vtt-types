@@ -6,27 +6,20 @@ declare class JournalEntry extends Entity<JournalEntry.Data> {
   static get config(): Entity.Config<JournalEntry>;
 
   /**
+   * Return a reference to the Note instance for this JournalEntry in the current Scene, if any
+   */
+  get sceneNote(): Note;
+
+  /**
    * A boolean indicator for whether or not the JournalEntry is visible to the current user in the directory sidebar
    */
   get visible(): boolean;
 
   /**
-   * Return a reference to the Note instance for this JournalEntry in the current Scene, if any
+   * If the JournalEntry has a pinned note on the canvas, this method will animate to that note
+   * The note will also be highlighted as if hovered upon by the mouse
    */
-  get sceneNote(): Note;
-
-  /** @override */
-  protected _onCreate(data: JournalEntry.Data, options: Entity.CreateOptions, userId: string): void;
-
-  /** @override */
-  protected _onUpdate(data: DeepPartial<JournalEntry.Data>, options: Entity.UpdateOptions, userId: string): void;
-
-  /** @override */
-  protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
-
-  /* -------------------------------------------- */
-  /*  Methods
-  /* -------------------------------------------- */
+  panToNote({ scale, duration }: { scale?: number; duration?: number }): void;
 
   /**
    * Show the JournalEntry to connected players.
@@ -38,11 +31,14 @@ declare class JournalEntry extends Entity<JournalEntry.Data> {
    */
   show(mode?: string, force?: boolean): Promise<void>;
 
-  /**
-   * If the JournalEntry has a pinned note on the canvas, this method will animate to that note
-   * The note will also be highlighted as if hovered upon by the mouse
-   */
-  panToNote({ scale, duration }: { scale?: number; duration?: number }): void;
+  /** @override */
+  protected _onCreate(data: JournalEntry.Data, options: Entity.CreateOptions, userId: string): void;
+
+  /** @override */
+  protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
+
+  /** @override */
+  protected _onUpdate(data: DeepPartial<JournalEntry.Data>, options: Entity.UpdateOptions, userId: string): void;
 }
 
 declare namespace JournalEntry {

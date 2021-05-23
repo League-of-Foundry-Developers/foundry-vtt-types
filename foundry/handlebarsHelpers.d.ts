@@ -1,7 +1,3 @@
-/* -------------------------------------------- */
-/*  Handlebars Template Helpers                 */
-/* -------------------------------------------- */
-
 /**
  * A collection of Handlebars template helpers which can be used within HTML templates.
  */
@@ -12,21 +8,15 @@ declare class HandlebarsHelpers {
    */
   static checked(value: any): string;
 
-  /* -------------------------------------------- */
-
   /**
    * Construct an editor element for rich text editing with TinyMCE
    */
   static editor(options: HandlebarsHelpers.EditorOptions): Handlebars.SafeString;
 
-  /* -------------------------------------------- */
-
   /**
    * Render a file-picker button linked to an <input> field
    */
   static filePicker(options: object): Handlebars.SafeString | string;
-
-  /* -------------------------------------------- */
 
   /**
    * Translate a provided string key by using the loaded dictionary of localization strings.
@@ -39,14 +29,10 @@ declare class HandlebarsHelpers {
    */
   static localize(value: string, options: Record<string, any>): string;
 
-  /* -------------------------------------------- */
-
   /**
    * A string formatting helper to display a number with a certain fixed number of decimals and an explicit sign.
    */
   static numberFormat(value: any, options: HandlebarsHelpers.NumberFormatOptions): string;
-
-  /* -------------------------------------------- */
 
   /**
    * A helper to create a set of radio checkbox input elements in a named set.
@@ -80,15 +66,11 @@ declare class HandlebarsHelpers {
     options: HandlebarsHelpers.RadioBoxesOptions
   ): Handlebars.SafeString;
 
-  /* -------------------------------------------- */
-
   /**
    * A helper to assign an <option> within a <select> block as selected based on its value
    * Escape the string as handlebars would, then escape any regexp characters in it
    */
   static select(selected: string, { fn }: { fn: Handlebars.TemplateDelegate }): Handlebars.SafeString;
-
-  /* -------------------------------------------- */
 
   /**
    * A helper to create a set of <option> elements in a <select> block based on a provided dictionary.

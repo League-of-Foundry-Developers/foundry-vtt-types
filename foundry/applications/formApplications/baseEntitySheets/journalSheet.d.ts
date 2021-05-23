@@ -9,6 +9,9 @@ declare class JournalSheet<
   D extends object = BaseEntitySheet.Data<JournalEntry>,
   O extends JournalEntry = D extends BaseEntitySheet.Data<infer T> ? T : JournalEntry
 > extends BaseEntitySheet<P, D, O> {
+  /** @override */
+  static get defaultOptions(): JournalSheet.Options;
+
   /**
    * @param entity  - The JournalEntry instance which is being edited
    * @param options - JournalSheet options
@@ -16,9 +19,6 @@ declare class JournalSheet<
   constructor(entity: O, options?: Partial<P>);
 
   protected _sheetMode: JournalSheet.SheetMode | null;
-
-  /** @override */
-  static get defaultOptions(): JournalSheet.Options;
 
   /** @override */
   get id(): string;
@@ -32,19 +32,19 @@ declare class JournalSheet<
   /** @override */
   getData(options?: Application.RenderOptions): Promise<D> | D;
 
+  /** @override */
+  protected _getHeaderButtons(): Application.HeaderButton[];
+
   /**
    * Guess the default view mode for the sheet based on the player's permissions to the Entry
    */
   protected _inferDefaultMode(): JournalSheet.SheetMode | null;
 
-  /** @override */
-  protected _render(force?: boolean, options?: JournalSheet.RenderOptions): Promise<void>;
-
-  /** @override */
-  protected _getHeaderButtons(): Application.HeaderButton[];
-
-  /** @override */
-  protected _updateObject(event: Event, formData: object): Promise<O>;
+  /**
+   * Handle requests to show the referenced Journal Entry to other Users
+   * Save the form before triggering the show request, in case content has changed
+   */
+  protected _onShowPlayers(event: Event): Promise<void>;
 
   /**
    * Handle requests to switch the rendered mode of the Journal Entry sheet
@@ -52,11 +52,11 @@ declare class JournalSheet<
    */
   protected _onSwapMode(event: Event, mode: JournalSheet.SheetMode): Promise<void>;
 
-  /**
-   * Handle requests to show the referenced Journal Entry to other Users
-   * Save the form before triggering the show request, in case content has changed
-   */
-  protected _onShowPlayers(event: Event): Promise<void>;
+  /** @override */
+  protected _render(force?: boolean, options?: JournalSheet.RenderOptions): Promise<void>;
+
+  /** @override */
+  protected _updateObject(event: Event, formData: object): Promise<O>;
 }
 
 declare namespace JournalSheet {
@@ -69,36 +69,43 @@ declare namespace JournalSheet {
      * @defaultValue `['sheet', 'journal-sheet']`
      */
     classes: string[];
-    /**
-     * @defaultValue `720`
-     */
-    width: number;
-    /**
-     * @defaultValue `800`
-     */
-    height: number;
-    /**
-     * @defaultValue `true`
-     */
-    resizable: boolean;
+
     /**
      * @defaultValue `false`
      */
     closeOnSubmit: boolean;
+
+    /**
+     * @defaultValue `800`
+     */
+    height: number;
+
+    /**
+     * @defaultValue `true`
+     */
+    resizable: boolean;
+
+    sheetMode?: SheetMode | null;
+
     /**
      * @defaultValue `true`
      */
     submitOnClose: boolean;
+
     /**
      * @defaultValue {@link ENTITY_PERMISSIONS.NONE}
      */
     viewPermission: Const.EntityPermission;
-    sheetMode?: SheetMode | null;
+
+    /**
+     * @defaultValue `720`
+     */
+    width: number;
   }
 
   interface Data<O extends JournalEntry = JournalEntry> extends BaseEntitySheet.Data<O> {
-    image: string;
     folders: Folder[];
+    image: string;
   }
 
   type SheetMode = 'text' | 'image';

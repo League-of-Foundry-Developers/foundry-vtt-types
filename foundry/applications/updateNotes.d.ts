@@ -3,10 +3,6 @@
  * This displays the progress of patching/update progress for the VTT
  */
 declare class UpdateNotes extends Application {
-  constructor(target: UpdateNotes['target'], options?: Partial<Application.Options>);
-
-  target: UpdateNotes.Target;
-
   /**
    * @override
    * @defaultValue
@@ -20,17 +16,21 @@ declare class UpdateNotes extends Application {
    */
   static get defaultOptions(): typeof Application['defaultOptions'];
 
+  constructor(target: UpdateNotes['target'], options?: Partial<Application.Options>);
+
+  target: UpdateNotes.Target;
+
   /** @override */
   get title(): string;
+
+  /** @override */
+  activateListeners(html: JQuery): void;
 
   /**
    * @param options - (unused)
    * @override
    */
   getData(options?: Application.RenderOptions): Promise<{ notes: UpdateNotes['target']['notes'] }>;
-
-  /** @override */
-  activateListeners(html: JQuery): void;
 }
 
 declare namespace UpdateNotes {

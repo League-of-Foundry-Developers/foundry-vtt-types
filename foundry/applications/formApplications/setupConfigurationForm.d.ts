@@ -2,50 +2,6 @@
  * The Package Configuration setup application
  */
 declare class SetupConfigurationForm extends FormApplication<FormApplication.Options, SetupConfigurationForm.Data> {
-  constructor({
-    systems,
-    modules,
-    worlds,
-    currentWorld
-  }: {
-    systems: SetupConfigurationForm['systems'];
-    modules: SetupConfigurationForm['modules'];
-    worlds: SetupConfigurationForm['worlds'];
-    currentWorld?: SetupConfigurationForm['currentWorld'];
-  });
-
-  /**
-   * Valid Game Systems to choose from
-   */
-  systems: Game.System[];
-
-  /**
-   * Install Modules to configure
-   */
-  modules: Game.Module[];
-
-  /**
-   * The Array of available Worlds to load
-   */
-  worlds: Game.World[];
-
-  /**
-   * The currently inspected World
-   * @defaultValue `null`
-   */
-  currentWorld: string | null;
-
-  /**
-   * The currently viewed tab
-   */
-  protected _tab: 'worlds';
-
-  /**
-   * Track the button elements which represent updates for different named packages
-   * @defaultValue `null`
-   */
-  protected _progressButton: HTMLElement | null;
-
   /**
    * @override
    * @defaultValue
@@ -62,35 +18,75 @@ declare class SetupConfigurationForm extends FormApplication<FormApplication.Opt
    */
   static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
+  static tagPackageAvailability(pkg: Game.Module | Game.System | Game.World): void;
+
+  constructor({
+    systems,
+    modules,
+    worlds,
+    currentWorld
+  }: {
+    systems: SetupConfigurationForm['systems'];
+    modules: SetupConfigurationForm['modules'];
+    worlds: SetupConfigurationForm['worlds'];
+    currentWorld?: SetupConfigurationForm['currentWorld'];
+  });
+
+  /**
+   * The currently inspected World
+   * @defaultValue `null`
+   */
+  currentWorld: string | null;
+
+  /**
+   * Install Modules to configure
+   */
+  modules: Game.Module[];
+
+  /**
+   * Valid Game Systems to choose from
+   */
+  systems: Game.System[];
+
+  /**
+   * The Array of available Worlds to load
+   */
+  worlds: Game.World[];
+
+  /**
+   * Track the button elements which represent updates for different named packages
+   * @defaultValue `null`
+   */
+  protected _progressButton: HTMLElement | null;
+
+  /**
+   * The currently viewed tab
+   */
+  protected _tab: 'worlds';
+
+  /** @override */
+  activateListeners(html: JQuery): void;
+
+  /**
+   * Activate socket listeners related to the Setup Configuration form
+   */
+  activateSocketListeners(): void;
+
   /**
    * @param options - (unused)
    * @override
    */
   getData(options?: Application.RenderOptions): SetupConfigurationForm.Data;
 
-  static tagPackageAvailability(pkg: Game.Module | Game.System | Game.World): void;
-
-  /** @override */
-  activateListeners(html: JQuery): void;
+  /**
+   * Handle button clicks to update the core VTT software
+   */
+  protected _onCoreUpdate(event: JQuery.ClickEvent): Promise<void>;
 
   /**
-   * Post the setup configuration form
+   * Handle install button clicks to add new packages
    */
-  protected _post(data: {
-    action: string;
-    world?: string;
-  }): Promise<Record<string, unknown> & { error?: string; stack?: string }>;
-
-  /**
-   * Reload the setup view by re-acquiring setup data and re-rendering the form
-   */
-  protected reload(): Promise<void>;
-
-  /**
-   * Generic button handler for the setup form which submits a POST request including any dataset on the button itself
-   * @param event - The originating mouse click event
-   */
-  protected _onSubmitButton(event: JQuery.ClickEvent): ReturnType<SetupConfigurationForm['_post']>;
+  protected _onInstallPackageDialog(event: JQuery.ClickEvent): Promise<void>;
 
   /**
    * Confirm user intent when saving admin changes to the application configuration
@@ -99,15 +95,15 @@ declare class SetupConfigurationForm extends FormApplication<FormApplication.Opt
   protected _onSaveAdmin(event: JQuery.ClickEvent): Promise<void>;
 
   /**
-   * Begin creation of a new World using the config form
+   * Generic button handler for the setup form which submits a POST request including any dataset on the button itself
    * @param event - The originating mouse click event
    */
-  protected _onWorldConfig(event: JQuery.ClickEvent): void;
+  protected _onSubmitButton(event: JQuery.ClickEvent): ReturnType<SetupConfigurationForm['_post']>;
 
   /**
-   * Handle install button clicks to add new packages
+   * Handle uninstall button clicks to remove existing packages
    */
-  protected _onInstallPackageDialog(event: JQuery.ClickEvent): Promise<void>;
+  protected _onUninstallPackage(event: JQuery.ClickEvent): void;
 
   /**
    * Handle update button press for a single Package
@@ -118,6 +114,25 @@ declare class SetupConfigurationForm extends FormApplication<FormApplication.Opt
     | Promise<void>
     | ReturnType<SetupConfigurationForm['_updateCheckOne']>
     | ReturnType<SetupConfigurationForm['_updateDownloadOne']>;
+
+  /**
+   * Execute upon an update-all workflow to update all packages of a certain type
+   */
+  protected _onUpdatePackages(event: JQuery.ClickEvent): Promise<void>;
+
+  /**
+   * Begin creation of a new World using the config form
+   * @param event - The originating mouse click event
+   */
+  protected _onWorldConfig(event: JQuery.ClickEvent): void;
+
+  /**
+   * Post the setup configuration form
+   */
+  protected _post(data: {
+    action: string;
+    world?: string;
+  }): Promise<Record<string, unknown> & { error?: string; stack?: string }>;
 
   /**
    * Execute upon an update check for a single Package
@@ -141,24 +156,9 @@ declare class SetupConfigurationForm extends FormApplication<FormApplication.Opt
   ): Promise<ReturnType<typeof SetupConfiguration['installPackage']>>;
 
   /**
-   * Handle uninstall button clicks to remove existing packages
+   * @remarks This method does not exist on SetupConfigurationForm and only exists to make the typescript compile!
    */
-  protected _onUninstallPackage(event: JQuery.ClickEvent): void;
-
-  /**
-   * Execute upon an update-all workflow to update all packages of a certain type
-   */
-  protected _onUpdatePackages(event: JQuery.ClickEvent): Promise<void>;
-
-  /**
-   * Handle button clicks to update the core VTT software
-   */
-  protected _onCoreUpdate(event: JQuery.ClickEvent): Promise<void>;
-
-  /**
-   * Activate socket listeners related to the Setup Configuration form
-   */
-  activateSocketListeners(): void;
+  protected _updateObject(...args: unknown[]): never;
 
   /**
    * Update the display of an installation progress bar for a particular progress packet
@@ -173,25 +173,25 @@ declare class SetupConfigurationForm extends FormApplication<FormApplication.Opt
   protected _updateProgressButton(data: SetupConfigurationForm.ProgressData): void;
 
   /**
-   * @remarks This method does not exist on SetupConfigurationForm and only exists to make the typescript compile!
+   * Reload the setup view by re-acquiring setup data and re-rendering the form
    */
-  protected _updateObject(...args: unknown[]): never;
+  protected reload(): Promise<void>;
 }
 
 declare namespace SetupConfigurationForm {
   interface Data {
+    adminKey: Game['data']['adminKey'];
+    coreUpdate: string | false;
     coreVersion: Game['data']['version'];
     coreVersionHint: string;
-    systems: Data.AvailTagged<Game.System>[];
-    modules: Data.AvailTagged<Game.Module>[];
-    worlds: Data.AvailTagged<Game.World>[];
-    languages: Game['data']['languages'];
-    options: Game['data']['options'] & { upnp: boolean };
-    adminKey: Game['data']['adminKey'];
-    world: ReturnType<SetupConfigurationForm['worlds']['find']>;
     current: undefined; // TODO: this seems to have a value that is never assigned (`this.current`)
+    languages: Game['data']['languages'];
+    modules: Data.AvailTagged<Game.Module>[];
+    options: Game['data']['options'] & { upnp: boolean };
+    systems: Data.AvailTagged<Game.System>[];
     updateChannels: Record<keyof typeof CONST['SOFTWARE_UPDATE_CHANNELS'], string>;
-    coreUpdate: string | false;
+    world: ReturnType<SetupConfigurationForm['worlds']['find']>;
+    worlds: Data.AvailTagged<Game.World>[];
   }
 
   namespace Data {
@@ -202,8 +202,8 @@ declare namespace SetupConfigurationForm {
   }
 
   interface ProgressData {
-    type: string;
     pct: number;
     step: string | number;
+    type: string;
   }
 }

@@ -8,15 +8,6 @@ declare class PlaylistSoundConfig<P extends FormApplication.Options = FormApplic
   Playlist.Sound
 > {
   /**
-   * @param playlist - The Playlist entity within which the Sound is configured
-   * @param sound    - An Object for the Playlist Sound data
-   * @param options  - Additional application rendering options
-   */
-  constructor(playlist: PlaylistSoundConfig['playlist'], sound: Playlist.Sound, options: Partial<P>);
-
-  playlist: Playlist;
-
-  /**
    * @override
    * @defaultValue
    * ```typescript
@@ -30,9 +21,23 @@ declare class PlaylistSoundConfig<P extends FormApplication.Options = FormApplic
   static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /**
+   * @param playlist - The Playlist entity within which the Sound is configured
+   * @param sound    - An Object for the Playlist Sound data
+   * @param options  - Additional application rendering options
+   */
+  constructor(playlist: PlaylistSoundConfig['playlist'], sound: Playlist.Sound, options: Partial<P>);
+
+  playlist: Playlist;
+
+  /**
    * @override
    */
   get title(): string;
+
+  /**
+   * @override
+   */
+  activateListeners(html: JQuery): void;
 
   /**
    * @param options - (unused)
@@ -41,20 +46,15 @@ declare class PlaylistSoundConfig<P extends FormApplication.Options = FormApplic
   getData(options?: Application.RenderOptions): PlaylistSoundConfig.Data;
 
   /**
+   * Auto-populate the track name using the provided filename, if a name is not already set
+   */
+  protected _onSourceChange(event: JQuery.ChangeEvent): void;
+
+  /**
    * @param event - (unused)
    * @override
    */
   protected _updateObject(event: Event, formData: PlaylistSoundConfig.FormData): Promise<Playlist>;
-
-  /**
-   * @override
-   */
-  activateListeners(html: JQuery): void;
-
-  /**
-   * Auto-populate the track name using the provided filename, if a name is not already set
-   */
-  protected _onSourceChange(event: JQuery.ChangeEvent): void;
 }
 
 declare namespace PlaylistSoundConfig {

@@ -3,6 +3,37 @@
  * @typeParam T - The type of the packages that can be installed with this instance of `InstallPackage`.
  */
 declare class InstallPackage<T extends InstallPackage.PackageType> extends Application {
+  /**
+   * A cached object of retrieved packages from the web server
+   */
+  static cache: {
+    [Key in InstallPackage.PackageType]: InstallPackage.Cache<Key>;
+  };
+
+  /**
+   * @override
+   * @defaultValue
+   * ```typescript
+   * mergeObject(super.defaultOptions, {
+   *   id: 'install-package',
+   *   template: 'templates/setup/install-package.html',
+   *   classes: ['dialog'],
+   *   width: 720,
+   *   height: 620,
+   *   scrollY: ['.categories', '.package-list'],
+   *   filters: [{ inputSelector: 'input[name="filter"]', contentSelector: '.package-list' }]
+   * })
+   * ```
+   */
+  static get defaultOptions(): Application.Options;
+
+  /**
+   * Organize package data and cache it to the application
+   * @param type - The type of packages being retrieved
+   * @returns The retrieved or cached packages
+   */
+  static getPackages<T extends InstallPackage.PackageType>(type: T): Promise<InstallPackage.Data.Package<T>[]>;
+
   constructor(data: InstallPackage<T>['data'], options?: Application.Options);
 
   data: {
@@ -27,34 +58,17 @@ declare class InstallPackage<T extends InstallPackage.PackageType> extends Appli
    */
   protected _visibility: InstallPackage.Visibility;
 
-  /**
-   * @override
-   * @defaultValue
-   * ```typescript
-   * mergeObject(super.defaultOptions, {
-   *   id: 'install-package',
-   *   template: 'templates/setup/install-package.html',
-   *   classes: ['dialog'],
-   *   width: 720,
-   *   height: 620,
-   *   scrollY: ['.categories', '.package-list'],
-   *   filters: [{ inputSelector: 'input[name="filter"]', contentSelector: '.package-list' }]
-   * })
-   * ```
-   */
-  static get defaultOptions(): Application.Options;
-
   /** @override */
   get title(): string;
 
   /** @override */
-  render(...args: Parameters<Application['render']>): this;
+  activateListeners(html: JQuery): void;
 
   /** @override */
   getData(options: Application.RenderOptions): InstallPackage.Data<T>;
 
   /** @override */
-  activateListeners(html: JQuery): void;
+  render(...args: Parameters<Application['render']>): this;
 
   /**
    * Handle left-click events to filter to a certain module category
@@ -62,9 +76,9 @@ declare class InstallPackage<T extends InstallPackage.PackageType> extends Appli
   protected _onClickCategoryFilter(event: JQuery.ClickEvent): void;
 
   /**
-   * Handle left-click events to filter to a certain visibility state
+   * Handle a left-click event on the package "Install" button
    */
-  protected _onClickVisibilityFilter(event: JQuery.ClickEvent): void;
+  protected _onClickPackageInstall(event: JQuery.ClickEvent): void;
 
   /**
    * Handle a left-click event on the package title
@@ -72,26 +86,12 @@ declare class InstallPackage<T extends InstallPackage.PackageType> extends Appli
   protected _onClickPackageTitle(event: JQuery.ClickEvent): void;
 
   /**
-   * Handle a left-click event on the package "Install" button
+   * Handle left-click events to filter to a certain visibility state
    */
-  protected _onClickPackageInstall(event: JQuery.ClickEvent): void;
+  protected _onClickVisibilityFilter(event: JQuery.ClickEvent): void;
 
   /** @override */
   protected _onSearchFilter(event: KeyboardEvent, query: string, html: HTMLElement): void;
-
-  /**
-   * Organize package data and cache it to the application
-   * @param type - The type of packages being retrieved
-   * @returns The retrieved or cached packages
-   */
-  static getPackages<T extends InstallPackage.PackageType>(type: T): Promise<InstallPackage.Data.Package<T>[]>;
-
-  /**
-   * A cached object of retrieved packages from the web server
-   */
-  static cache: {
-    [Key in InstallPackage.PackageType]: InstallPackage.Cache<Key>;
-  };
 }
 
 declare namespace InstallPackage {
@@ -100,9 +100,9 @@ declare namespace InstallPackage {
   interface Data<T extends PackageType> {
     loading: boolean;
     packageType: string;
+    packages: Data.Package<T>[];
     tags: Partial<Record<string, Data.Tag<T>>>;
     visibility: [Data.Visibility<'inst'>, Data.Visibility<'unin'>, Data.Visibility<'all'>];
-    packages: Data.Package<T>[];
   }
 
   namespace Data {
@@ -114,8 +114,8 @@ declare namespace InstallPackage {
     } & Record<T, true>;
 
     interface Visibility<T extends InstallPackage.Visibility> {
-      id: T;
       css: string;
+      id: T;
       label: string;
     }
 

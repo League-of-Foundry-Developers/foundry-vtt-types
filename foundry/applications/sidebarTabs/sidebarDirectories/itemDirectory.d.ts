@@ -4,26 +4,26 @@
 declare class ItemDirectory extends SidebarDirectory {
   /**
    * @override
-   */
-  static get entity(): 'Item';
-
-  /**
-   * @override
    * @see {@link Game.items}
    */
   static get collection(): Game['items'];
 
   /**
-   * @param selector - (unused)
    * @override
    */
-  protected _canDragStart(selector: string | null): boolean;
+  static get entity(): 'Item';
 
   /**
    * @param selector - (unused)
    * @override
    */
   protected _canDragDrop(selector: string | null): boolean;
+
+  /**
+   * @param selector - (unused)
+   * @override
+   */
+  protected _canDragStart(selector: string | null): boolean;
 
   /**
    * @override

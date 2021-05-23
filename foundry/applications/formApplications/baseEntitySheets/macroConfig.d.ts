@@ -27,12 +27,12 @@ declare class MacroConfig extends BaseEntitySheet<BaseEntitySheet.Options, Macro
   /**
    * @override
    */
-  getData(): MacroConfig.Data;
+  activateListeners(html: JQuery): void;
 
   /**
    * @override
    */
-  activateListeners(html: JQuery): void;
+  getData(): MacroConfig.Data;
 
   /**
    * Handle changing the actor profile image by opening a FilePicker
@@ -53,8 +53,8 @@ declare class MacroConfig extends BaseEntitySheet<BaseEntitySheet.Options, Macro
 
 declare namespace MacroConfig {
   interface Data extends BaseEntitySheet.Data {
-    macroTypes: Duplicated<Game['system']['entityTypes']['Macro']>;
     macroScopes: typeof CONST['MACRO_SCOPES'];
+    macroTypes: Duplicated<Game['system']['entityTypes']['Macro']>;
   }
 
   type FormData = Pick<Macro.Data, 'command' | 'img' | 'name' | 'type'>;

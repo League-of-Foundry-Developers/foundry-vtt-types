@@ -18,8 +18,8 @@ declare class InvitationLinks extends Application {
   static get defaultOptions(): typeof Application['defaultOptions'];
 
   /** @override */
-  getData(): { local?: string; remote?: string };
+  activateListeners(html: JQuery): void;
 
   /** @override */
-  activateListeners(html: JQuery): void;
+  getData(): { local?: string; remote?: string };
 }

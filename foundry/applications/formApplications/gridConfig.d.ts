@@ -7,6 +7,23 @@ declare class GridConfig<P extends FormApplication.Options = FormApplication.Opt
   GridConfig.Data,
   Scene
 > {
+  /**
+   * @override
+   * @defaultValue
+   * ```typescript
+   * mergeObject(super.defaultOptions, {
+   *   id: "grid-config",
+   *   template: "templates/scene/grid-config.html",
+   *   title: game.i18n.localize("SCENES.GridConfigTool"),
+   *   width: 480,
+   *   height: "auto",
+   *   closeOnSubmit: true,
+   *   submitOnChange: true
+   * });
+   * ```
+   */
+  static get defaultOptions(): typeof FormApplication['defaultOptions'];
+
   constructor(scene: Scene, sheet: GridConfig['sheet'], options?: Partial<P>);
 
   /**
@@ -34,33 +51,6 @@ declare class GridConfig<P extends FormApplication.Options = FormApplication.Opt
 
   /**
    * @override
-   * @defaultValue
-   * ```typescript
-   * mergeObject(super.defaultOptions, {
-   *   id: "grid-config",
-   *   template: "templates/scene/grid-config.html",
-   *   title: game.i18n.localize("SCENES.GridConfigTool"),
-   *   width: 480,
-   *   height: "auto",
-   *   closeOnSubmit: true,
-   *   submitOnChange: true
-   * });
-   * ```
-   */
-  static get defaultOptions(): typeof FormApplication['defaultOptions'];
-
-  /**
-   * @override
-   */
-  getData(options?: Application.RenderOptions): GridConfig.Data;
-
-  /**
-   * @override
-   */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
-
-  /**
-   * @override
    */
   activateListeners(html: JQuery): void;
 
@@ -70,10 +60,26 @@ declare class GridConfig<P extends FormApplication.Options = FormApplication.Opt
   close(options?: FormApplication.CloseOptions): ReturnType<FormApplication['close']>;
 
   /**
+   * @override
+   */
+  getData(options?: Application.RenderOptions): GridConfig.Data;
+
+  /**
+   * @override
+   */
+  protected _onChangeInput(event: JQuery.ChangeEvent): void;
+
+  /**
    * Handle resetting the form and re-drawing back to the original dimensions
    * @param event - The original keydown event
    */
   protected _onKeyDown(event: KeyboardEvent): void;
+
+  /**
+   * Handle resetting the form and re-drawing back to the original dimensions
+   * @param event - The original click event
+   */
+  protected _onReset(event: JQuery.ClickEvent): void;
 
   /**
    * Handle resetting the form and re-drawing back to the original dimensions
@@ -82,10 +88,18 @@ declare class GridConfig<P extends FormApplication.Options = FormApplication.Opt
   protected _onWheel(event: WheelEvent): void;
 
   /**
-   * Handle resetting the form and re-drawing back to the original dimensions
-   * @param event - The original click event
+   * Temporarily refresh the display of the BackgroundLayer and GridLayer for the new pending dimensions
+   * @param background - Refresh the background display?
+   *                     (default: `false`)
+   * @param grid       - Refresh the grid display?
+   *                     (default: `false`)
    */
-  protected _onReset(event: JQuery.ClickEvent): void;
+  protected _refresh({ background, grid }?: { background?: boolean; grid?: boolean }): void;
+
+  /**
+   * @override
+   */
+  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
 
   /**
    * Scale the background size relative to the grid size
@@ -114,20 +128,6 @@ declare class GridConfig<P extends FormApplication.Options = FormApplication.Opt
     deltaX?: number;
     deltaY?: number;
   }): ReturnType<GridConfig['_refresh']>;
-
-  /**
-   * Temporarily refresh the display of the BackgroundLayer and GridLayer for the new pending dimensions
-   * @param background - Refresh the background display?
-   *                     (default: `false`)
-   * @param grid       - Refresh the grid display?
-   *                     (default: `false`)
-   */
-  protected _refresh({ background, grid }?: { background?: boolean; grid?: boolean }): void;
-
-  /**
-   * @override
-   */
-  protected _onChangeInput(event: JQuery.ChangeEvent): void;
 
   /**
    * @param event - (unused)

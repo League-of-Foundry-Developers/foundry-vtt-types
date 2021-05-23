@@ -19,6 +19,9 @@ declare class PermissionConfig extends FormApplication<FormApplication.Options, 
    */
   static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
+  /** @override */
+  activateListeners(html: JQuery): void;
+
   /**
    * @param options - (unused)
    * @override
@@ -29,9 +32,6 @@ declare class PermissionConfig extends FormApplication<FormApplication.Options, 
    * Prepare the permissions object used to render the configuration template
    */
   protected _getPermissions(current: typeof CONFIG['User']['permissions']): PermissionConfig.Permission[];
-
-  /** @override */
-  activateListeners(html: JQuery): void;
 
   /**
    * Handle button click to reset default settings
@@ -54,8 +54,8 @@ declare class PermissionConfig extends FormApplication<FormApplication.Options, 
 
 declare namespace PermissionConfig {
   interface Data {
-    roles: { [Key in Exclude<keyof typeof CONST['USER_ROLES'], 'NONE'>]: `USER.Role${Titlecase<Key>}` };
     permissions: ReturnType<PermissionConfig['_getPermissions']>;
+    roles: { [Key in Exclude<keyof typeof CONST['USER_ROLES'], 'NONE'>]: `USER.Role${Titlecase<Key>}` };
   }
 
   type FormData = Record<string, boolean>;
@@ -67,9 +67,9 @@ declare namespace PermissionConfig {
 
   namespace Permission {
     interface Role {
+      disabled: boolean;
       name: string;
       value: boolean;
-      disabled: boolean;
     }
   }
 }

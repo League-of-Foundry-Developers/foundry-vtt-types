@@ -10,17 +10,23 @@
  * @see {@link SettingsConfig}
  */
 declare class ClientSettings {
-  constructor(worldSettings: WorldSettingsStorage.Setting[]);
-
   /**
-   * A object of registered game settings for this scope
+   * Handle changes to a Setting document to apply them to the world setting
+   * storage
    */
-  settings: Map<string, ClientSettings.CompleteSetting>;
+  static socketListeners(socket: WebSocket): void;
+
+  constructor(worldSettings: WorldSettingsStorage.Setting[]);
 
   /**
    * Registered settings menus which trigger secondary applications
    */
   menus: Map<string, ClientSettings.CompleteMenuSetting>;
+
+  /**
+   * A object of registered game settings for this scope
+   */
+  settings: Map<string, ClientSettings.CompleteSetting>;
 
   /**
    * The storage interfaces used for persisting settings
@@ -32,6 +38,22 @@ declare class ClientSettings {
    * Return a singleton instance of the Game Settings Configuration app
    */
   get sheet(): SettingsConfig;
+
+  /**
+   * Get the value of a game setting for a certain module and setting key
+   *
+   * @param module - The module namespace under which the setting is registered
+   * @param key    - The setting key to retrieve
+   * @typeParam M  - The module name to register the get for
+   * @typeParam K  - The key to get the setting for
+   *
+   * @example
+   * ```typescript
+   * // Retrieve the current setting value
+   * game.settings.get("myModule", "myClientSetting");
+   * ```
+   */
+  get<M extends string, K extends string>(module: M, key: K): ClientSettings.Values[`${M}.${K}`];
 
   /**
    * Register a new game setting under this setting scope
@@ -121,22 +143,6 @@ declare class ClientSettings {
   ): void;
 
   /**
-   * Get the value of a game setting for a certain module and setting key
-   *
-   * @param module - The module namespace under which the setting is registered
-   * @param key    - The setting key to retrieve
-   * @typeParam M  - The module name to register the get for
-   * @typeParam K  - The key to get the setting for
-   *
-   * @example
-   * ```typescript
-   * // Retrieve the current setting value
-   * game.settings.get("myModule", "myClientSetting");
-   * ```
-   */
-  get<M extends string, K extends string>(module: M, key: K): ClientSettings.Values[`${M}.${K}`];
-
-  /**
    * Set the value of a game setting for a certain module and setting key
    *
    * @param module - The module namespace under which the setting is registered
@@ -168,12 +174,6 @@ declare class ClientSettings {
     key: `${M}.${K}`,
     value: V
   ): V;
-
-  /**
-   * Handle changes to a Setting document to apply them to the world setting
-   * storage
-   */
-  static socketListeners(socket: WebSocket): void;
 }
 
 declare namespace ClientSettings {
@@ -227,7 +227,7 @@ declare namespace ClientSettings {
   }
 
   interface Values {
-    'core.combatTrackerConfig': Combat.ConfigValue;
     [key: string]: unknown;
+    'core.combatTrackerConfig': Combat.ConfigValue;
   }
 }

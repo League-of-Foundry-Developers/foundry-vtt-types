@@ -10,6 +10,8 @@
  *                    (default: `'contextmenu'`)
  */
 declare class ContextMenu {
+  static eventListeners(): void;
+
   constructor(
     element: JQuery,
     selector: string | null | undefined,
@@ -23,12 +25,6 @@ declare class ContextMenu {
   element: JQuery;
 
   /**
-   * The target CSS selector which activates the menu
-   * @defaultValue `element.attr("id")`
-   */
-  selector: string;
-
-  /**
    * An interaction event name which activates the menu
    */
   eventName: string;
@@ -39,41 +35,31 @@ declare class ContextMenu {
   menuItems: ContextMenu.Item[];
 
   /**
+   * The target CSS selector which activates the menu
+   * @defaultValue `element.attr("id")`
+   */
+  selector: string;
+
+  /**
    * Track which direction the menu is expanded in
    * @defaultValue `false`
    */
   protected _expandUp: boolean;
-
-  /* -------------------------------------------- */
 
   /**
    * A convenience accessor to the context menu HTML object
    */
   get menu(): JQuery;
 
-  /* -------------------------------------------- */
-
   /**
    * Attach a ContextMenu instance to an HTML selector
    */
   bind(): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Animate closing the menu by sliding up and removing from the DOM
    */
   close(): Promise<void>;
-
-  /* -------------------------------------------- */
-
-  protected _animateOpen(menu: JQuery): Promise<void>;
-
-  /* -------------------------------------------- */
-
-  protected _animateClose(menu: JQuery): Promise<void>;
-
-  /* -------------------------------------------- */
 
   /**
    * Render the Context Menu by iterating over the menuItems it contains
@@ -82,29 +68,22 @@ declare class ContextMenu {
    */
   render(target: JQuery): Promise<void>;
 
-  /* -------------------------------------------- */
+  protected _animateClose(menu: JQuery): Promise<void>;
+
+  protected _animateOpen(menu: JQuery): Promise<void>;
 
   /**
    * Set the position of the context menu, taking into consideration whether the menu should expand upward or downward
    */
   protected _setPosition(html: JQuery, target: JQuery): void;
-
-  /* -------------------------------------------- */
-
-  static eventListeners(): void;
 }
 
 declare namespace ContextMenu {
   interface Item {
     /**
-     * The displayed item name
+     * A callback function to trigger when the entry of the menu is clicked
      */
-    name: string;
-
-    /**
-     * An icon glyph HTML string
-     */
-    icon: string;
+    callback: (target: JQuery) => void;
 
     /**
      * A function which returns a Boolean for whether or not to display the item
@@ -112,8 +91,13 @@ declare namespace ContextMenu {
     condition?: boolean | ((target: JQuery) => boolean);
 
     /**
-     * A callback function to trigger when the entry of the menu is clicked
+     * An icon glyph HTML string
      */
-    callback: (target: JQuery) => void;
+    icon: string;
+
+    /**
+     * The displayed item name
+     */
+    name: string;
   }
 }

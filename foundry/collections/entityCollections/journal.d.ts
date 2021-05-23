@@ -2,13 +2,6 @@
  * A directory list of JournalEntry entities in the Sidebar
  */
 declare class Journal extends EntityCollection<JournalEntry> {
-  /** @override */
-  get entity(): string;
-
-  /* -------------------------------------------- */
-  /*  Socket Listeners and Handlers               */
-  /* -------------------------------------------- */
-
   /**
    * Open Socket listeners which transact JournalEntry data
    */
@@ -21,4 +14,7 @@ declare class Journal extends EntityCollection<JournalEntry> {
    * @param force   - Display the entry to all players regardless of normal permissions
    */
   protected static _showEntry(entryId: string, mode?: 'text' | 'image', force?: boolean): void;
+
+  /** @override */
+  get entity(): string;
 }

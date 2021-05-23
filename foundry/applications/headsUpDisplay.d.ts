@@ -3,26 +3,6 @@
  */
 declare class HeadsUpDisplay extends Application {
   /**
-   * Token HUD
-   */
-  token: TokenHUD;
-
-  /**
-   * Tile HUD
-   */
-  tile: TileHUD;
-
-  /**
-   * Drawing HUD
-   */
-  drawing: DrawingHUD;
-
-  /**
-   * Chat Bubbles
-   */
-  bubbles: ChatBubbles;
-
-  /**
    * Define default options which configure the HUD
    * @defaultValue
    * ```
@@ -35,9 +15,29 @@ declare class HeadsUpDisplay extends Application {
    */
   static get defaultOptions(): typeof Application['defaultOptions'];
 
-  getData(): {} | { width: number; height: number };
+  /**
+   * Chat Bubbles
+   */
+  bubbles: ChatBubbles;
 
-  _render(...args: Parameters<Application['_render']>): Promise<void>;
+  /**
+   * Drawing HUD
+   */
+  drawing: DrawingHUD;
+
+  /**
+   * Tile HUD
+   */
+  tile: TileHUD;
+
+  /**
+   * Token HUD
+   */
+  token: TokenHUD;
 
   align(): void;
+
+  getData(): {} | { width: number; height: number };
+
+  protected _render(...args: Parameters<Application['_render']>): Promise<void>;
 }

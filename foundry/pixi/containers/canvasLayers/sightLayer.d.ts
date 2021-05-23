@@ -9,79 +9,6 @@
  * ```
  */
 declare class SightLayer extends CanvasLayer {
-  constructor();
-
-  /**
-   * Fog of War data object
-   * @defaultValue
-   * ```
-   * {
-   *   _id: null,
-   *   explored: null,
-   *   positions: {}
-   * }
-   * ```
-   */
-  fogData: {
-    _id: string | null;
-    explored: boolean | string | null;
-    positions: Record<`${number}_${number}`, { radius: number; limit: number }>;
-    scene?: string;
-    timestamp?: number;
-    user?: string;
-  };
-
-  /**
-   * A Collection of vision sources which are currently active within the rendered Scene.
-   */
-  sources: Collection<PointSource>;
-
-  /**
-   * The canonical line-of-sight polygon which defines current Token visibility.
-   */
-  los: PIXI.Graphics;
-
-  /**
-   * The blur distance for soft shadows
-   * @defaultValue `0`
-   */
-  protected _blurDistance: number;
-
-  /**
-   * A status flag for whether the layer initialization workflow has succeeded
-   * @defaultValue `false`
-   */
-  protected _initialized: boolean;
-
-  /**
-   * The downscaling resolution used for the saved fog texture
-   * @defaultValue `1`
-   */
-  protected _fogResolution: number;
-
-  /**
-   * A pool of fog of war exploration containers that can be recycled
-   * @defaultValue `[]`
-   */
-  protected _visionPool: PIXI.Container[];
-
-  /**
-   * Track whether fog of war exploration has been updated and required saving
-   * @defaultValue `false`
-   */
-  protected _fogUpdated: boolean;
-
-  /**
-   * Track the number of moves which have updated fog of war
-   * @defaultValue `0`
-   */
-  protected _fogUpdates: number;
-
-  /**
-   * A debounced function to save fog of war exploration once a stream of updates have stopped
-   */
-  debounceSaveFog: (...args: Parameters<this['update']>) => void;
-
   /**
    * @override
    * @defaultValue `mergeObject(super.layerOptions, { zIndex: 210 })`
@@ -89,127 +16,18 @@ declare class SightLayer extends CanvasLayer {
   static get layerOptions(): CanvasLayer.LayerOptions;
 
   /**
-   * Does the currently viewed Scene support Token field of vision?
+   * Define the threshold value for the number of distinct Wall endpoints.
+   * Below this threshold, exact vision computation is used by casting a Ray at every endpoint.
+   * Above this threshold, approximate vision computation is used by culling to only nearby endpoints.
+   * @defaultValue `500`
    */
-  get tokenVision(): boolean;
+  static EXACT_VISION_THRESHOLD: number;
 
   /**
-   * Does the currently viewed Scene support fog of war exploration?
+   * Define the number of positions that are explored before a set of fog updates are pushed to the server.
+   * @defaultValue `10`
    */
-  get fogExploration(): boolean;
-
-  /** @override */
-  tearDown(): Promise<void>;
-
-  /**
-   * Initialize the Sight Layer. Initialization has the following hierarchical workflow:
-   *
-   * Initialize Layer (reset entire layer)
-   *  InitializeLights (used to reset all lights)
-   *    UpdateLight (update a single light)
-   *  InitializeTokens (reset all tokens)
-   *    UpdateToken (update a single token)
-   *  Initialize Fog (reset FOW state)
-   */
-  initialize(): Promise<void>;
-
-  /**
-   * Initialize fog of war - resetting it when switching scenes or re-drawing the canvas
-   */
-  initializeFog(): Promise<void>;
-
-  /** @override */
-  draw(): Promise<this>;
-
-  /**
-   * Draw the fog of war exploration container
-   */
-  protected _drawFogContainer(): PIXI.Container;
-
-  /**
-   * Construct a vision container that is used to render a single view position.
-   * These containers are placed into the _visionPool and recycled as needed.
-   */
-  protected _createVisionContainer(): PIXI.Container;
-
-  /**
-   * Obtain a vision container from the recycling pool, or create one if no container exists.
-   * Assign the container as the current fog exploration and the current LOS polygon.
-   */
-  protected _getVisionContainer(): PIXI.Container;
-
-  /**
-   * Return a vision container back to the pool, recycling it for future use.
-   * @param c - The container to recycle
-   */
-  protected _recycleVisionContainer(c: PIXI.Container): void;
-
-  /**
-   * Update the display of the sight layer.
-   * Organize sources into rendering queues and draw lighting containers for each source
-   *
-   * @param forceUpdateFog - Always update the Fog exploration progress for this update
-   *                         (default: `false`)
-   * @param noUpdateFog    - Never update the Fog exploration progress for this update
-   *                         (default: `false`)
-   */
-  refresh({ forceUpdateFog, noUpdateFog }?: { forceUpdateFog?: boolean; noUpdateFog?: boolean }): void;
-
-  /* -------------------------------------------- */
-
-  /**
-   * Restrict the visibility of certain canvas assets (like Tokens or DoorControls) based on the visibility polygon
-   * These assets should only be displayed if they are visible given the current player's field of view
-   */
-  restrictVisibility(): void;
-
-  /**
-   * Once a new Fog of War location is explored, composite the explored container with the current staging sprite
-   * Save that staging Sprite as the rendered fog exploration and swap it out for a fresh staging texture
-   * Do all this asynchronously, so it doesn't block token movement animation since this takes some extra time
-   */
-  protected commitFog(): Promise<void>;
-
-  /**
-   * Load existing fog of war data from local storage and populate the initial exploration sprite
-   */
-  loadFog(): Promise<PIXI.Texture>;
-
-  /**
-   * Dispatch a request to reset the fog of war exploration status for all users within this Scene.
-   * Once the server has deleted existing FogExploration documents, the _onResetFog handler will re-draw the canvas.
-   */
-  resetFog(): Promise<Canvas | undefined>;
-
-  /**
-   * Save Fog of War exploration data to a base64 string to the FogExploration document in the database.
-   * Assumes that the fog exploration has already been rendered as fog.rendered.texture.
-   */
-  protected saveFog(): Promise<any>; // TODO: Type when SocketInterface is done
-
-  /**
-   * Update the fog layer when a player token reaches a board position which was not previously explored
-   * @param source - The vision source for which the fog layer should update
-   * @param force  - Force fog to be updated even if the location is already explored
-   *                 (default: `false`)
-   */
-  updateFog(source: PointSource, force?: boolean): void;
-
-  /**
-   * Choose an adaptive fog rendering resolution which downscales the saved fog textures for larger dimension Scenes
-   */
-  protected _configureFogResolution(): number;
-
-  /**
-   * Trigger a server-side update (or creation) of fog exploration status for a certain Scene
-   */
-  protected _createOrUpdateFogExploration(fogData: this['fogData']): Promise<any>; // TODO: Type when SocketInterface is done
-
-  /**
-   * If fog of war data is reset from the server, re-draw the canvas
-   * @param resetData - Fog reset data sent by the server
-   */
-  protected _onResetFog(resetData: { reset: boolean; scene: string }): Promise<Canvas | undefined>;
+  static FOG_COMMIT_THRESHOLD: number;
 
   /**
    * Compute line-of-sight and field-of-vision polygons for a given origin position and visibility radius.
@@ -237,7 +55,13 @@ declare class SightLayer extends CanvasLayer {
     }?: { angle?: number; density?: number; rotation?: number; unrestricted?: boolean }
   ): { rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon };
 
-  /* -------------------------------------------- */
+  /**
+   * Normalize an angle to ensure it is baselined to be the smallest angle that is greater than a minimum.
+   * @param aMin  - The lower-bound minimum angle
+   * @param angle - The angle to adjust
+   * @returns The adjusted angle which is greater than or equal to aMin.
+   */
+  protected static _adjustRayAngle(aMin: number, angle: number): number;
 
   /**
    * A helper method responsible for casting rays at wall endpoints.
@@ -270,6 +94,162 @@ declare class SightLayer extends CanvasLayer {
   ): Ray[];
 
   /**
+   * Visualize the sight layer to understand algorithm performance.
+   * @param bounds    - The initial rectangular bounds of the vision check
+   * @param endpoints - The wall endpoints being tested
+   * @param rays      - The array of cast vision Rays
+   * @param los       - The resulting line-of-sight polygon
+   * @param fov       - The resulting field-of-vision polygon
+   */
+  protected static _visualizeSight(
+    bounds: Rectangle,
+    endpoints: PointArray[],
+    rays: Ray[],
+    los: PIXI.Polygon,
+    fov: PIXI.Polygon
+  ): void;
+
+  constructor();
+
+  /**
+   * A debounced function to save fog of war exploration once a stream of updates have stopped
+   */
+  debounceSaveFog: (...args: Parameters<this['update']>) => void;
+
+  /**
+   * Fog of War data object
+   * @defaultValue
+   * ```
+   * {
+   *   _id: null,
+   *   explored: null,
+   *   positions: {}
+   * }
+   * ```
+   */
+  fogData: {
+    _id: string | null;
+    explored: boolean | string | null;
+    positions: Record<`${number}_${number}`, { radius: number; limit: number }>;
+    scene?: string;
+    timestamp?: number;
+    user?: string;
+  };
+
+  /**
+   * The canonical line-of-sight polygon which defines current Token visibility.
+   */
+  los: PIXI.Graphics;
+
+  /**
+   * A Collection of vision sources which are currently active within the rendered Scene.
+   */
+  sources: Collection<PointSource>;
+
+  /**
+   * The blur distance for soft shadows
+   * @defaultValue `0`
+   */
+  protected _blurDistance: number;
+
+  /**
+   * The downscaling resolution used for the saved fog texture
+   * @defaultValue `1`
+   */
+  protected _fogResolution: number;
+
+  /**
+   * Track whether fog of war exploration has been updated and required saving
+   * @defaultValue `false`
+   */
+  protected _fogUpdated: boolean;
+
+  /**
+   * Track the number of moves which have updated fog of war
+   * @defaultValue `0`
+   */
+  protected _fogUpdates: number;
+
+  /**
+   * A status flag for whether the layer initialization workflow has succeeded
+   * @defaultValue `false`
+   */
+  protected _initialized: boolean;
+
+  /**
+   * A pool of fog of war exploration containers that can be recycled
+   * @defaultValue `[]`
+   */
+  protected _visionPool: PIXI.Container[];
+
+  /**
+   * Does the currently viewed Scene support Token field of vision?
+   */
+  get tokenVision(): boolean;
+
+  /**
+   * Does the currently viewed Scene support fog of war exploration?
+   */
+  get fogExploration(): boolean;
+
+  /** @override */
+  draw(): Promise<this>;
+
+  /**
+   * Initialize the Sight Layer. Initialization has the following hierarchical workflow:
+   *
+   * Initialize Layer (reset entire layer)
+   *  InitializeLights (used to reset all lights)
+   *    UpdateLight (update a single light)
+   *  InitializeTokens (reset all tokens)
+   *    UpdateToken (update a single token)
+   *  Initialize Fog (reset FOW state)
+   */
+  initialize(): Promise<void>;
+
+  /**
+   * Initialize fog of war - resetting it when switching scenes or re-drawing the canvas
+   */
+  initializeFog(): Promise<void>;
+
+  /**
+   * @deprecated since 0.7.3
+   * @see {@link Canvas#initializeSources}
+   */
+  initializeTokens({ defer }?: { defer?: boolean }): void;
+
+  /**
+   * Load existing fog of war data from local storage and populate the initial exploration sprite
+   */
+  loadFog(): Promise<PIXI.Texture>;
+
+  /**
+   * Update the display of the sight layer.
+   * Organize sources into rendering queues and draw lighting containers for each source
+   *
+   * @param forceUpdateFog - Always update the Fog exploration progress for this update
+   *                         (default: `false`)
+   * @param noUpdateFog    - Never update the Fog exploration progress for this update
+   *                         (default: `false`)
+   */
+  refresh({ forceUpdateFog, noUpdateFog }?: { forceUpdateFog?: boolean; noUpdateFog?: boolean }): void;
+
+  /**
+   * Dispatch a request to reset the fog of war exploration status for all users within this Scene.
+   * Once the server has deleted existing FogExploration documents, the _onResetFog handler will re-draw the canvas.
+   */
+  resetFog(): Promise<Canvas | undefined>;
+
+  /**
+   * Restrict the visibility of certain canvas assets (like Tokens or DoorControls) based on the visibility polygon
+   * These assets should only be displayed if they are visible given the current player's field of view
+   */
+  restrictVisibility(): void;
+
+  /** @override */
+  tearDown(): Promise<void>;
+
+  /**
    * Test whether a point on the Canvas is visible based on the current vision and LOS polygons
    * @param point     - The point in space to test, an object with coordiantes x and y.
    * @param tolerance - A numeric radial offset which allows for a non-exact match. For example, if
@@ -286,46 +266,18 @@ declare class SightLayer extends CanvasLayer {
   ): boolean;
 
   /**
-   * Normalize an angle to ensure it is baselined to be the smallest angle that is greater than a minimum.
-   * @param aMin  - The lower-bound minimum angle
-   * @param angle - The angle to adjust
-   * @returns The adjusted angle which is greater than or equal to aMin.
-   */
-  protected static _adjustRayAngle(aMin: number, angle: number): number;
-
-  /**
-   * Visualize the sight layer to understand algorithm performance.
-   * @param bounds    - The initial rectangular bounds of the vision check
-   * @param endpoints - The wall endpoints being tested
-   * @param rays      - The array of cast vision Rays
-   * @param los       - The resulting line-of-sight polygon
-   * @param fov       - The resulting field-of-vision polygon
-   */
-  protected static _visualizeSight(
-    bounds: Rectangle,
-    endpoints: PointArray[],
-    rays: Ray[],
-    los: PIXI.Polygon,
-    fov: PIXI.Polygon
-  ): void;
-
-  /**
-   * @deprecated since 0.7.3
-   * @see {@link Canvas#initializeSources}
-   */
-  initializeTokens({ defer }?: { defer?: boolean }): void;
-
-  /**
    * @deprecated since 0.7.3
    * @see {@link SightLayer#refresh}
    */
   update(options?: { forceUpdateFog?: boolean; noUpdateFog?: boolean }): void;
 
   /**
-   * @deprecated since 0.7.3
-   * @see {@link Token#updateSource}
+   * Update the fog layer when a player token reaches a board position which was not previously explored
+   * @param source - The vision source for which the fog layer should update
+   * @param force  - Force fog to be updated even if the location is already explored
+   *                 (default: `false`)
    */
-  updateToken(token: Token, options: { defer?: boolean; deleted?: boolean; noUpdateFog?: boolean }): void;
+  updateFog(source: PointSource, force?: boolean): void;
 
   /**
    * @deprecated since 0.7.3
@@ -334,16 +286,60 @@ declare class SightLayer extends CanvasLayer {
   updateLight(light: AmbientLight, options: { defer: boolean; deleted: boolean }): boolean | void | null;
 
   /**
-   * Define the threshold value for the number of distinct Wall endpoints.
-   * Below this threshold, exact vision computation is used by casting a Ray at every endpoint.
-   * Above this threshold, approximate vision computation is used by culling to only nearby endpoints.
-   * @defaultValue `500`
+   * @deprecated since 0.7.3
+   * @see {@link Token#updateSource}
    */
-  static EXACT_VISION_THRESHOLD: number;
+  updateToken(token: Token, options: { defer?: boolean; deleted?: boolean; noUpdateFog?: boolean }): void;
 
   /**
-   * Define the number of positions that are explored before a set of fog updates are pushed to the server.
-   * @defaultValue `10`
+   * Choose an adaptive fog rendering resolution which downscales the saved fog textures for larger dimension Scenes
    */
-  static FOG_COMMIT_THRESHOLD: number;
+  protected _configureFogResolution(): number;
+
+  /**
+   * Trigger a server-side update (or creation) of fog exploration status for a certain Scene
+   */
+  protected _createOrUpdateFogExploration(fogData: this['fogData']): Promise<any>; // TODO: Type when SocketInterface is done
+
+  /**
+   * Construct a vision container that is used to render a single view position.
+   * These containers are placed into the _visionPool and recycled as needed.
+   */
+  protected _createVisionContainer(): PIXI.Container;
+
+  /**
+   * Draw the fog of war exploration container
+   */
+  protected _drawFogContainer(): PIXI.Container;
+
+  /**
+   * Obtain a vision container from the recycling pool, or create one if no container exists.
+   * Assign the container as the current fog exploration and the current LOS polygon.
+   */
+  protected _getVisionContainer(): PIXI.Container;
+
+  /**
+   * If fog of war data is reset from the server, re-draw the canvas
+   * @param resetData - Fog reset data sent by the server
+   */
+  protected _onResetFog(resetData: { reset: boolean; scene: string }): Promise<Canvas | undefined>;
+
+  /**
+   * Return a vision container back to the pool, recycling it for future use.
+   * @param c - The container to recycle
+   */
+  protected _recycleVisionContainer(c: PIXI.Container): void;
+
+  /**
+   * Once a new Fog of War location is explored, composite the explored container with the current staging sprite
+   * Save that staging Sprite as the rendered fog exploration and swap it out for a fresh staging texture
+   * Do all this asynchronously, so it doesn't block token movement animation since this takes some extra time
+   */
+  protected commitFog(): Promise<void>;
+
+  /**
+   * Save Fog of War exploration data to a base64 string to the FogExploration document in the database.
+   * Assumes that the fog exploration has already been rendered as fog.rendered.texture.
+   */
+  protected saveFog(): Promise<any>; // TODO: Type when SocketInterface is done
 }

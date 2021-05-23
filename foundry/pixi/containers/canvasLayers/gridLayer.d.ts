@@ -2,6 +2,17 @@
  * A CanvasLayer responsible for drawing a square grid
  */
 declare class GridLayer extends CanvasLayer {
+  /**
+   * @override
+   * @defaultValue
+   * ```typescript
+   * mergeObject(super.layerOptions, {
+   *   zIndex: 30
+   * }
+   * ```
+   */
+  static get layerOptions(): CanvasLayer.LayerOptions;
+
   constructor();
 
   /**
@@ -23,32 +34,6 @@ declare class GridLayer extends CanvasLayer {
   highlightLayers: Record<string, GridHighlight>;
 
   /**
-   * @override
-   * @defaultValue
-   * ```typescript
-   * mergeObject(super.layerOptions, {
-   *   zIndex: 30
-   * }
-   * ```
-   */
-  static get layerOptions(): CanvasLayer.LayerOptions;
-
-  /**
-   * The grid type rendered in this Scene
-   */
-  get type(): Const.GridType;
-
-  /**
-   * A convenient reference to the pixel grid size used throughout this layer
-   */
-  get size(): number;
-
-  /**
-   * Get grid unit width
-   */
-  get w(): BaseGrid['w'];
-
-  /**
    * Get grid unit height
    */
   get h(): BaseGrid['h'];
@@ -57,6 +42,36 @@ declare class GridLayer extends CanvasLayer {
    * A boolean flag for whether the current grid is hexagonal
    */
   get isHex(): boolean;
+
+  /**
+   * A convenient reference to the pixel grid size used throughout this layer
+   */
+  get size(): number;
+
+  /**
+   * The grid type rendered in this Scene
+   */
+  get type(): Const.GridType;
+
+  /**
+   * Get grid unit width
+   */
+  get w(): BaseGrid['w'];
+
+  /**
+   * Define a new Highlight graphic
+   */
+  addHighlightLayer(name: string): GridHighlight;
+
+  /**
+   * Clear a specific Highlight graphic
+   */
+  clearHighlightLayer(name: string): void;
+
+  /**
+   * Destroy a specific Highlight graphic
+   */
+  destroyHighlightLayer(name: string): void;
 
   /**
    * Draw the grid
@@ -75,6 +90,14 @@ declare class GridLayer extends CanvasLayer {
   }): Promise<this>;
 
   /**
+   * Given a pair of coordinates (x, y), return the center of the grid square which contains that point
+   * @returns An Array [x, y] of the central point of the square which contains (x, y)
+   */
+  getCenter(x: number, y: number): PointArray;
+
+  getHighlightLayer(name: string): GridHighlight | undefined;
+
+  /**
    * Given a pair of coordinates (x1,y1), return the grid coordinates (x2,y2) which represent the snapped position
    * @param x        - The exact target location x
    * @param y        - The exact target location y
@@ -88,11 +111,12 @@ declare class GridLayer extends CanvasLayer {
    */
   getTopLeft(x: number, y: number): PointArray;
 
+  highlightPosition(name: string, options?: Parameters<BaseGrid['highlightGridPosition']>[1]): false | void;
+
   /**
-   * Given a pair of coordinates (x, y), return the center of the grid square which contains that point
-   * @returns An Array [x, y] of the central point of the square which contains (x, y)
+   * Test if a specific row and column position is a neighboring location to another row and column coordinate
    */
-  getCenter(x: number, y: number): PointArray;
+  isNeighbor(r0: number, c0: number, r1: number, c1: number): boolean;
 
   /**
    * Measure the grid-wise distance between two point coordinates.
@@ -125,28 +149,4 @@ declare class GridLayer extends CanvasLayer {
     segments: { ray: Ray; label?: Ruler['labels']['children'][number] }[],
     options?: { gridSpaces?: boolean }
   ): number[];
-
-  /**
-   * Define a new Highlight graphic
-   */
-  addHighlightLayer(name: string): GridHighlight;
-
-  /**
-   * Clear a specific Highlight graphic
-   */
-  clearHighlightLayer(name: string): void;
-
-  /**
-   * Destroy a specific Highlight graphic
-   */
-  destroyHighlightLayer(name: string): void;
-
-  getHighlightLayer(name: string): GridHighlight | undefined;
-
-  highlightPosition(name: string, options?: Parameters<BaseGrid['highlightGridPosition']>[1]): false | void;
-
-  /**
-   * Test if a specific row and column position is a neighboring location to another row and column coordinate
-   */
-  isNeighbor(r0: number, c0: number, r1: number, c1: number): boolean;
 }

@@ -21,14 +21,14 @@ declare class SettingsConfig extends FormApplication<FormApplication.Options, Se
    */
   static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
+  /** @override */
+  activateListeners(html: JQuery): void;
+
   /**
    * @param options - (unused)
    * @override
    */
   getData(options?: Application.RenderOptions): SettingsConfig.Data;
-
-  /** @override */
-  activateListeners(html: JQuery): void;
 
   /**
    * Handle activating the button to configure User Role permissions
@@ -51,10 +51,10 @@ declare class SettingsConfig extends FormApplication<FormApplication.Options, Se
 
 declare namespace SettingsConfig {
   interface Data {
-    user: User;
     canConfigure: boolean;
-    systemTitle: Game['system']['data']['title'];
     data: Data.Data;
+    systemTitle: Game['system']['data']['title'];
+    user: User;
   }
 
   namespace Data {
@@ -65,27 +65,28 @@ declare namespace SettingsConfig {
         settings: Setting[];
         none: boolean;
       };
+      modules: Record<string, { title: string; menus: ClientSettings.CompleteMenuSetting[]; settings: Setting[] }>;
       system: {
         title: Game['system']['data']['title'];
         menus: ClientSettings.CompleteMenuSetting[];
         settings: Setting[];
         none: boolean;
       };
-      modules: Record<string, { title: string; menus: ClientSettings.CompleteMenuSetting[]; settings: Setting[] }>;
     }
 
     interface Setting extends Duplicated<ClientSettings.CompleteSetting> {
-      name: string;
       hint: string;
-      value: ReturnType<ClientSettings['get']>;
-      type: string;
       isCheckbox: boolean;
-      isSelect: boolean;
       isRange: boolean;
+      isSelect: boolean;
+      name: string;
+      type: string;
+      value: ReturnType<ClientSettings['get']>;
     }
   }
 
   interface FormData {
+    [key: string]: unknown;
     'core.animateRollTable': boolean;
     'core.chatBubbles': boolean;
     'core.chatBubblesPan': boolean;
@@ -98,6 +99,5 @@ declare namespace SettingsConfig {
     'core.softShadows': boolean;
     'core.tokenDragPreview': boolean;
     'core.visionAnimation': boolean;
-    [key: string]: unknown;
   }
 }

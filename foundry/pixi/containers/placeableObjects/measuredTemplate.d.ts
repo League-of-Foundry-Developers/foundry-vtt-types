@@ -19,12 +19,19 @@
  * ```
  */
 declare class MeasuredTemplate extends PlaceableObject<MeasuredTemplate.Data> {
-  // Draw portions of the content
+  /** @override */
+  static get embeddedName(): 'MeasuredTemplate';
+
   controlIcon: ControlIcon | null;
 
-  template: PIXI.Graphics | null;
-
   ruler: PreciseText | null;
+
+  /**
+   * The template shape used for testing point intersection
+   */
+  shape: PIXI.Circle | PIXI.Ellipse | PIXI.Polygon | PIXI.Rectangle | PIXI.RoundedRectangle;
+
+  template: PIXI.Graphics | null;
 
   /**
    * The tiling texture used for this template, if any
@@ -32,28 +39,20 @@ declare class MeasuredTemplate extends PlaceableObject<MeasuredTemplate.Data> {
   texture: PIXI.Texture;
 
   /**
-   * The template shape used for testing point intersection
-   */
-  shape: PIXI.Circle | PIXI.Ellipse | PIXI.Polygon | PIXI.Rectangle | PIXI.RoundedRectangle;
-
-  /**
    * Internal property used to configure the control border thickness
    */
   protected _borderThickness: number;
 
-  /** @override */
-  static get embeddedName(): 'MeasuredTemplate';
+  /**
+   * A convenience accessor for the border color as a numeric hex code
+   */
+  get borderColor(): number;
 
   /**
    * @remarks
    * Not implemented by MeasuredTemplate
    */
   get bounds(): never;
-
-  /**
-   * A convenience accessor for the border color as a numeric hex code
-   */
-  get borderColor(): number;
 
   /**
    * A convenience accessor for the fill color as a numeric hex code
@@ -67,17 +66,39 @@ declare class MeasuredTemplate extends PlaceableObject<MeasuredTemplate.Data> {
   draw(): Promise<this>;
 
   /**
+   * Highlight the grid squares which should be shown under the area of effect
+   */
+  highlightGrid(): void;
+
+  /** @override */
+  refresh(): this;
+
+  /** @override */
+  rotate(angle: number, snap: number): Promise<this>;
+
+  /** @override */
+  protected _canConfigure(user: User, event?: any): boolean;
+
+  /** @override */
+  protected _canControl(user: User, event?: any): boolean;
+
+  /** @override */
+  protected _canView(user: User, event?: any): boolean;
+
+  /**
    * Draw the ControlIcon for the MeasuredTemplate
    */
   protected _drawControlIcon(): ControlIcon;
 
   /**
+   * Draw the rotation control handle and assign event listeners
+   */
+  protected _drawRotationHandle(radius: number): void;
+
+  /**
    * Draw the Text label used for the MeasuredTemplate
    */
   protected _drawRulerText(): PreciseText;
-
-  /** @override */
-  refresh(): this;
 
   /**
    * Get a Circular area of effect given a radius of effect
@@ -90,47 +111,25 @@ declare class MeasuredTemplate extends PlaceableObject<MeasuredTemplate.Data> {
   protected _getConeShape(direction: number, angle: number, distance: number): PIXI.Polygon;
 
   /**
-   * Get a Rectangular area of effect given a width and height
-   */
-  protected _getRectShape(direction: number, distance: number): NormalizedRectangle;
-
-  /**
    * Get a rotated Rectangular area of effect given a width, height, and direction
    */
   protected _getRayShape(direction: number, distance: number, width: number): PIXI.Polygon;
 
   /**
-   * Draw the rotation control handle and assign event listeners
+   * Get a Rectangular area of effect given a width and height
    */
-  protected _drawRotationHandle(radius: number): void;
+  protected _getRectShape(direction: number, distance: number): NormalizedRectangle;
+
+  /** @override */
+  protected _onDelete(): void;
+
+  /** @override */
+  protected _onUpdate(data: MeasuredTemplate.Data): void;
 
   /**
    * Update the displayed ruler tooltip text
    */
   protected _refreshRulerText(): void;
-
-  /**
-   * Highlight the grid squares which should be shown under the area of effect
-   */
-  highlightGrid(): void;
-
-  /** @override */
-  rotate(angle: number, snap: number): Promise<this>;
-
-  /** @override */
-  protected _canControl(user: User, event?: any): boolean;
-
-  /** @override */
-  protected _canConfigure(user: User, event?: any): boolean;
-
-  /** @override */
-  protected _canView(user: User, event?: any): boolean;
-
-  /** @override */
-  protected _onUpdate(data: MeasuredTemplate.Data): void;
-
-  /** @override */
-  protected _onDelete(): void;
 }
 
 declare namespace MeasuredTemplate {

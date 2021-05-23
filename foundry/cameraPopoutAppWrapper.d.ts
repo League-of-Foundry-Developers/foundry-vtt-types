@@ -11,11 +11,6 @@ declare class CameraPopoutAppWrapper {
   constructor(view: CameraViews, userId: string, element: JQuery);
 
   /**
-   * The CameraViews application that this popout belongs to
-   */
-  view: CameraViews;
-
-  /**
    * The div element of this specific popout window
    */
   element: JQuery;
@@ -26,15 +21,20 @@ declare class CameraPopoutAppWrapper {
   userId: string;
 
   /**
+   * The CameraViews application that this popout belongs to
+   */
+  view: CameraViews;
+
+  /**
    * Get the current position of this popout window
    */
   get position(): Application.Position;
 
   /** @override */
+  bringToTop(): void;
+
+  /** @override */
   setPosition({ left, top, width, height, scale }?: Partial<Application.Position>): void;
 
   private _onResize(event: Event): void;
-
-  /** @override */
-  bringToTop(): void;
 }

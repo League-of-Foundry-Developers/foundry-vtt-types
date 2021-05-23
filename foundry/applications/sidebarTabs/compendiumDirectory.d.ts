@@ -8,15 +8,15 @@ declare class CompendiumDirectory extends SidebarTab<CompendiumDirectory.Options
   static get defaultOptions(): CompendiumDirectory.Options;
 
   /**
+   * @override
+   */
+  activateListeners(html: JQuery): void;
+
+  /**
    * @param options - (unused)
    * @override
    */
   getData(options?: Application.RenderOptions): CompendiumDirectory.Data;
-
-  /**
-   * @override
-   */
-  activateListeners(html: JQuery): void;
 
   /**
    * Compendium sidebar Context Menu creation
@@ -43,8 +43,8 @@ declare class CompendiumDirectory extends SidebarTab<CompendiumDirectory.Options
 
 declare namespace CompendiumDirectory {
   interface Data {
-    user: User;
     packs: Record<string, PackData>;
+    user: User;
   }
 
   interface Options extends SidebarTab.Options {

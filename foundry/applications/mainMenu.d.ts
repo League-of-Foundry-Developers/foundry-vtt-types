@@ -51,10 +51,10 @@ declare class MainMenu extends Application {
   get items(): MainMenu.MenuStructure;
 
   /** @override */
-  getData(): { items: MainMenu.MenuStructure };
+  activateListeners(html: JQuery): void;
 
   /** @override */
-  activateListeners(html: JQuery): void;
+  getData(): { items: MainMenu.MenuStructure };
 
   /**
    * Toggle display of the menu (or render it in the first place)
@@ -64,9 +64,9 @@ declare class MainMenu extends Application {
 
 declare namespace MainMenu {
   interface MenuItem {
-    label: string;
-    icon: string;
     enabled: boolean;
+    icon: string;
+    label: string;
     onClick: () => void;
   }
 
