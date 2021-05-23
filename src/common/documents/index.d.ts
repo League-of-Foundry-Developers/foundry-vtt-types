@@ -5,3 +5,4 @@ export { BaseItem } from './baseItem';
 export { BaseUser } from './baseUser';
 export { BaseMacro } from './baseMacro';
 export { BaseFolder } from './baseFolder';
+export { BaseJournalEntry } from './baseJournalEntry';

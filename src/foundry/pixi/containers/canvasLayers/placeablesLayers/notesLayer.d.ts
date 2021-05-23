@@ -49,5 +49,5 @@ declare namespace NotesLayer {
   type DropData = {
     type?: 'JournalEntry';
   } & Canvas.DropPosition &
-    DeepPartial<JournalEntry.Data>;
+    DeepPartial<any>; // TODO: Update this
 }

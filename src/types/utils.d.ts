@@ -85,4 +85,28 @@ type Titlecase<S extends string> = S extends `${infer A} ${infer B}`
   ? `${Titlecase<A>} ${Titlecase<B>}`
   : Capitalize<Lowercase<S>>;
 
-type Merge<T extends object, U extends object> = Omit<T, keyof U> & U;
+/**
+ * Deeply merge two types. If either of the given types is not an `object`, `U`
+ * simply overwrites `T`.
+ *
+ * Nested properties of type `object` are merged recursively unless the property
+ * in `U` is an `Array`.
+ *
+ * @typeParam T - The base type that `U` will be merged into.
+ * @typeParam U - The type that will be merged into `T`.
+ */
+type Merge<T, U> = T extends object
+  ? U extends Array<any>
+    ? U
+    : U extends object
+    ? {
+        [Key in keyof T | keyof U]: Key extends keyof T
+          ? Key extends keyof U
+            ? Merge<T[Key], U[Key]>
+            : T[Key]
+          : Key extends keyof U
+          ? U[Key]
+          : never;
+      }
+    : U
+  : U;
