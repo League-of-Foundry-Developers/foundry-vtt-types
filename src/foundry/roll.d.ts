@@ -427,7 +427,7 @@ declare class Roll<D extends object = {}> {
    * roll.formula; // 4d8 + 8
    * ```
    */
-  static fromTerms<D extends Record<string, unknown>>(terms: RollTerm[], options: Roll.Options): Roll<D>;
+  static fromTerms<D extends Record<string, unknown>>(terms: RollTerm[], options?: Partial<Roll.Options>): Roll<D>;
 
   /**
    * Expand an inline roll element to display it's contained dice result as a tooltip
