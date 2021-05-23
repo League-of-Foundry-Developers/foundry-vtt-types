@@ -2,29 +2,14 @@
  * A type of RollTerm used to enclose a parenthetical expression to be recursively evaluated.
  */
 declare class ParentheticalTerm extends RollTerm {
-  constructor({ term, roll, options }: ParentheticalTerm.TermData);
-
-  /** The original provided string term used to construct the parenthetical */
-  term: ParentheticalTerm.TermData['term'];
-
-  /** Alternatively, an already-evaluated Roll instance may be passed directly */
-  roll: ParentheticalTerm.TermData['roll'];
+  /** A regular expression pattern used to identify the closing of a parenthetical expression. */
+  static CLOSE_REGEXP: RegExp;
 
   /**
    * The regular expression pattern used to identify the opening of a parenthetical expression.
    * This could also identify the opening of a math function.
    */
   static OPEN_REGEXP: RegExp;
-
-  /**
-   * A regular expression pattern used to identify the closing of a parenthetical expression.
-   */
-  static CLOSE_REGEXP: RegExp;
-
-  /**
-   * An array of evaluated DiceTerm instances that should be bubbled up to the parent Roll
-   */
-  get dice(): DiceTerm[];
 
   /**
    * Construct a ParentheticalTerm from an Array of component terms which should be wrapped inside the parentheses.
@@ -42,12 +27,22 @@ declare class ParentheticalTerm extends RollTerm {
    * ```
    */
   static fromTerms(terms: RollTerm[], options?: Partial<RollTerm.Options>): ParentheticalTerm;
+
+  constructor({ term, roll, options }: ParentheticalTerm.TermData);
+  /** Alternatively, an already-evaluated Roll instance may be passed directly */
+  roll: ParentheticalTerm.TermData['roll'];
+
+  /** The original provided string term used to construct the parenthetical */
+  term: ParentheticalTerm.TermData['term'];
+
+  /** An array of evaluated DiceTerm instances that should be bubbled up to the parent Roll */
+  get dice(): DiceTerm[];
 }
 
 declare namespace ParentheticalTerm {
   interface TermData {
-    term: string;
-    roll: Roll;
     options: RollTerm.Options;
+    roll: Roll;
+    term: string;
   }
 }
