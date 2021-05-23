@@ -31,12 +31,16 @@ declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>>
    * @param options - Positioning and sizing options for the resulting dialog
    *                  (default: `{}`)
    * @returns A Promise which resolves to the created Document
+   *
+   * @remarks
+   * Actually this returns a `Promise<T>` but some subclasses return
+   * incompatible things, e.g. Folder.createDialog returns a `FolderConfig`.
    */
   static createDialog<T extends foundry.abstract.Document<any, any>>(
     this: ConstructorOf<T>,
-    data?: { name?: string; folder?: string; type?: string },
+    data?: DeepPartial<SourceDataType<T>>,
     options?: Dialog.Options
-  ): Promise<T>;
+  ): unknown;
 
   /**
    * @deprecated since 0.8.0

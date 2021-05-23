@@ -58,7 +58,7 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `ActiveEffect`
      */
-    entityClass: ConstructorOf<ActiveEffect>;
+    documentClass: ConstructorOf<ActiveEffect>;
 
     /**
      * @defaultValue `ActiveEffectConfig`
@@ -67,13 +67,13 @@ interface CONFIG extends Record<string, unknown> {
   };
 
   /**
-   * Configuration for the default Actor entity class
+   * Configuration for the Actor document
    */
   Actor: {
     /**
      * @defaultValue `Actor`
      */
-    entityClass: ConstructorOf<Actor>;
+    documentClass: ConstructorOf<Actor>;
 
     /**
      * @defaultValue `Actors`
@@ -460,7 +460,7 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `ChatMessage`
      */
-    entityClass: ConstructorOf<ChatMessage>;
+    documentClass: ConstructorOf<ChatMessage>;
 
     /**
      * @defaultValue `Messages`
@@ -490,7 +490,7 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `Combat`
      */
-    entityClass: ConstructorOf<Combat>;
+    documentClass: ConstructorOf<Combat>;
 
     /**
      * @defaultValue `CombatEncounters`
@@ -572,7 +572,7 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `Folder`
      */
-    entityClass: ConstructorOf<Folder>;
+    documentClass: ConstructorOf<Folder>;
 
     /**
      * @defaultValue `FolderConfig`
@@ -587,7 +587,7 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `Item`
      */
-    entityClass: ConstructorOf<Item>;
+    documentClass: ConstructorOf<Item>;
 
     /**
      * @defaultValue `Items`
@@ -622,7 +622,7 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `JournalEntry`
      */
-    entityClass: ConstructorOf<JournalEntry>;
+    documentClass: ConstructorOf<JournalEntry>;
 
     /**
      * @defaultValue `Journal`
@@ -783,7 +783,7 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `Macro`
      */
-    entityClass: ConstructorOf<Macro>;
+    documentClass: ConstructorOf<Macro>;
 
     /**
      * @defaultValue `Macros`
@@ -847,7 +847,7 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `Playlist`
      */
-    entityClass: ConstructorOf<Playlist>;
+    documentClass: ConstructorOf<Playlist>;
 
     /**
      * @defaultValue `Playlists`
@@ -872,7 +872,7 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `RollTable`
      */
-    entityClass: ConstructorOf<RollTable>;
+    documentClass: ConstructorOf<RollTable>;
 
     /**
      * @defaultValue `RollTables`
@@ -907,7 +907,7 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `Scene`
      */
-    entityClass: ConstructorOf<Scene>;
+    documentClass: ConstructorOf<Scene>;
 
     /**
      * @defaultValue `Scenes`
@@ -932,7 +932,7 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `User`
      */
-    entityClass: ConstructorOf<User>;
+    documentClass: ConstructorOf<User>;
 
     /**
      * @defaultValue `Users`
