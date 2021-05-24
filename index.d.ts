@@ -139,6 +139,7 @@ import './src/foundry/applications/sidebarTabs/sidebarDirectories/sceneDirectory
 
 import './src/foundry/avClients/easyRTCClient';
 
+import './src/foundry/clientDocuments/folder';
 import './src/foundry/clientDocuments/macro';
 
 import './src/foundry/collections/entityCollection';
@@ -174,7 +175,6 @@ import './src/foundry/embeddedEntities/activeEffect';
 import './src/foundry/entities/actor';
 import './src/foundry/entities/chatMessage';
 import './src/foundry/entities/combat';
-import './src/foundry/entities/folder';
 import './src/foundry/entities/item';
 import './src/foundry/entities/journalEntry';
 import './src/foundry/entities/playlist';

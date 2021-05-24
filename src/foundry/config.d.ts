@@ -97,7 +97,7 @@ interface CONFIG {
   };
 
   /**
-   * Configuration for the default Actor entity class
+   * Configuration for the Actor document
    */
   Actor: {
     /**
