@@ -140,8 +140,8 @@ import './src/foundry/applications/sidebarTabs/sidebarDirectories/sceneDirectory
 import './src/foundry/avClients/easyRTCClient';
 
 import './src/foundry/clientDocuments/folder';
-import './src/foundry/clientDocuments/macro';
 import './src/foundry/clientDocuments/journalEntry';
+import './src/foundry/clientDocuments/macro';
 
 import './src/foundry/collections/entityCollection';
 

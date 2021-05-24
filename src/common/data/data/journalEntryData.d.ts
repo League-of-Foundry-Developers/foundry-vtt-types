@@ -4,13 +4,13 @@ import * as documents from '../../documents';
 
 interface JournalEntryDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
-  content: typeof fields.BLANK_STRING;
-  flags: typeof fields.OBJECT_FIELD;
-  folder: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
-  img: typeof fields.IMAGE_FIELD;
   name: typeof fields.REQUIRED_STRING;
-  permission: typeof fields.DOCUMENT_PERMISSIONS;
+  content: typeof fields.BLANK_STRING;
+  img: typeof fields.IMAGE_FIELD;
+  folder: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
   sort: typeof fields.INTEGER_SORT_FIELD;
+  permission: typeof fields.DOCUMENT_PERMISSIONS;
+  flags: typeof fields.OBJECT_FIELD;
 }
 
 interface JournalEntryDataProperties {
@@ -21,16 +21,20 @@ interface JournalEntryDataProperties {
   _id: string | null;
 
   /**
+   * The name of this JournalEntry
+   */
+  name: string;
+
+  /**
    * The HTML content of the JournalEntry
    * @defaultValue `''`
    */
   content: string;
 
   /**
-   * An object of optional key/value flags
-   * @defaultValue `{}`
+   * An image file path which provides the artwork for this JournalEntry
    */
-  flags: Record<string, unknown>;
+  img?: string;
 
   /**
    * The _id of a Folder which contains this JournalEntry
@@ -39,14 +43,10 @@ interface JournalEntryDataProperties {
   folder: string | null;
 
   /**
-   * An image file path which provides the artwork for this JournalEntry
+   * The numeric sort value which orders this JournalEntry relative to its siblings
+   * @defaultValue `0`
    */
-  img?: string;
-
-  /**
-   * The name of this JournalEntry
-   */
-  name: string;
+  sort: number;
 
   /**
    * An object which configures user permissions to this JournalEntry
@@ -55,10 +55,10 @@ interface JournalEntryDataProperties {
   permission: Partial<Record<string, ValueOf<typeof CONST.ENTITY_PERMISSIONS>>>;
 
   /**
-   * The numeric sort value which orders this JournalEntry relative to its siblings
-   * @defaultValue `0`
+   * An object of optional key/value flags
+   * @defaultValue `{}`
    */
-  sort: number;
+  flags: Record<string, unknown>;
 }
 
 export declare class JournalEntryData extends DocumentData<

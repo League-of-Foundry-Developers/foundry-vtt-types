@@ -13,23 +13,15 @@ declare global {
    */
   class JournalEntry extends ClientDocumentMixin(foundry.documents.BaseJournalEntry) {
     /**
-     * Return a reference to the Note instance for this Journal Entry in the current Scene, if any.
-     * If multiple notes are placed for this Journal Entry, only the first will be returned.
-     */
-    get sceneNote(): Note | null;
-
-    /**
      * A boolean indicator for whether or not the JournalEntry is visible to the current user in the directory sidebar
      */
     get visible(): boolean;
 
     /**
-     * If the JournalEntry has a pinned note on the canvas, this method will animate to that note
-     * The note will also be highlighted as if hovered upon by the mouse
-     * @param options - Options which modify the pan operation
-     * @returns A Promise which resolves once the pan animation has concluded
+     * Return a reference to the Note instance for this Journal Entry in the current Scene, if any.
+     * If multiple notes are placed for this Journal Entry, only the first will be returned.
      */
-    panToNote(options?: PanToNoteOptions): Promise<void>;
+    get sceneNote(): Note | null;
 
     /**
      * Show the JournalEntry to connected players.
@@ -43,6 +35,14 @@ declare global {
      * @returns A Promise that resolves back to the shown entry once the request is processed
      */
     show(mode?: 'text' | 'image', force?: boolean): Promise<this>;
+
+    /**
+     * If the JournalEntry has a pinned note on the canvas, this method will animate to that note
+     * The note will also be highlighted as if hovered upon by the mouse
+     * @param options - Options which modify the pan operation
+     * @returns A Promise which resolves once the pan animation has concluded
+     */
+    panToNote(options?: PanToNoteOptions): Promise<void>;
 
     /** @override */
     protected _onDelete(options: DocumentModificationOptions, userId: string): void;
