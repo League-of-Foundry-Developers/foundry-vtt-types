@@ -18,17 +18,14 @@ declare class Ray {
 
   // Points
   A: Point;
-
   B: Point;
 
   // Origins
   x0: number;
-
   y0: number;
 
   // Slopes
   dx: number;
-
   dy: number;
 
   /**
