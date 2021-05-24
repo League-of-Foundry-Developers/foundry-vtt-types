@@ -2,17 +2,17 @@ import { DocumentData } from '../abstract/module';
 import * as fields from '../data/fields';
 
 interface PackageAuthorDataSchema extends DocumentSchema {
-  discord: typeof fields.STRING_FIELD;
-  email: typeof fields.STRING_FIELD;
   name: typeof fields.REQUIRED_STRING;
+  email: typeof fields.STRING_FIELD;
   url: typeof fields.STRING_FIELD;
+  discord: typeof fields.STRING_FIELD;
 }
 
 interface PackageAuthorDataProperties {
   /**
-   *  A Discord username for the author
+   * The author name
    */
-  discord?: string;
+  name: string;
 
   /**
    * The author email address
@@ -20,14 +20,14 @@ interface PackageAuthorDataProperties {
   email?: string;
 
   /**
-   * The author name
-   */
-  name: string;
-
-  /**
    *  A website url for the author
    */
   url?: string;
+
+  /**
+   *  A Discord username for the author
+   */
+  discord?: string;
 }
 
 /**

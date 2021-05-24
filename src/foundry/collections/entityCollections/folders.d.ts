@@ -1,3 +1,7 @@
+// TODO: Remove this when updating this to 0.8.x!!!
+// eslint-disable-next-line
+// @ts-nocheck
+
 /**
  * The Folders EntityCollection
  */

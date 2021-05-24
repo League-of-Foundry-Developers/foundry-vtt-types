@@ -12,32 +12,32 @@ export declare class BaseMacro extends Document<data.MacroData> {
   static get metadata(): Merge<
     DocumentMetadata,
     {
-      collection: 'macros';
-      isPrimary: true;
-      label: 'DOCUMENT.Macro';
       name: 'Macro';
+      collection: 'macros';
+      label: 'DOCUMENT.Macro';
+      isPrimary: true;
+      types: ['script', 'chat']; // TODO: Automatically infer from CONST.MACRO_TYPES
       permissions: {
         create: 'PLAYER';
-        delete: (user: documents.BaseUser, doc: BaseMacro) => boolean;
         update: (user: documents.BaseUser, doc: BaseMacro, data: any) => boolean;
+        delete: (user: documents.BaseUser, doc: BaseMacro) => boolean;
       };
-      types: ['script', 'chat']; // TODO: Automatically infer from CONST.MACRO_TYPES
     }
   >;
-
-  /**
-   * Is a user able to delete an existing Macro document?
-   */
-  protected static _canDelete(user: documents.BaseUser, doc: BaseMacro): boolean;
-
-  /**
-   * Is a user able to update an existing Macro document?
-   */
-  protected static _canUpdate(user: documents.BaseUser, doc: BaseMacro, data: unknown): boolean;
 
   protected _preCreate(
     data: data.MacroData,
     options: DocumentModificationOptions,
     user: documents.BaseUser
   ): Promise<void>;
+
+  /**
+   * Is a user able to update an existing Macro document?
+   */
+  protected static _canUpdate(user: documents.BaseUser, doc: BaseMacro, data: unknown): boolean;
+
+  /**
+   * Is a user able to delete an existing Macro document?
+   */
+  protected static _canDelete(user: documents.BaseUser, doc: BaseMacro): boolean;
 }

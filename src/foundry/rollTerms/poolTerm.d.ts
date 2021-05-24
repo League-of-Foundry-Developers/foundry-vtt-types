@@ -14,8 +14,28 @@
  * ```
  */
 declare class PoolTerm extends RollTerm {
-  /** A regular expression pattern used to identify the closing of a dice pool expression. */
-  static CLOSE_REGEXP: RegExp;
+  /**
+   * @param termData -  (default: `{}`)
+   * @param terms - (default: `[]`)
+   * @param modifiers - (default: `[]`)
+   * @param rolls - (default: `[]`)
+   * @param results - (default: `[]`)
+   */
+  constructor({ terms, modifiers, rolls, results, options }?: Partial<PoolTerm.TermData>);
+
+  /** The original provided terms to the Dice Pool */
+  terms: PoolTerm.TermData['terms'];
+
+  /** The string modifiers applied to resolve the pool */
+  modifiers: PoolTerm.TermData['modifiers'];
+
+  /** The elements of a Dice Pool must be Roll objects or numbers */
+  rolls: PoolTerm.TermData['rolls'];
+
+  /** The array of dice pool results which have been rolled */
+  results: PoolTerm.TermData['results'];
+
+  /* -------------------------------------------- */
 
   /** Define the modifiers that can be used for this particular DiceTerm type. */
   static MODIFIERS: {
@@ -33,6 +53,48 @@ declare class PoolTerm extends RollTerm {
   static OPEN_REGEXP: RegExp;
 
   /* -------------------------------------------- */
+
+  /** A regular expression pattern used to identify the closing of a dice pool expression */
+  static CLOSE_REGEXP: RegExp;
+
+  /* -------------------------------------------- */
+  /*  Dice Pool Attributes                        */
+  /* -------------------------------------------- *
+
+  /** Return an Array of each individual DiceTerm instances contained within the PoolTerm. */
+  get dice(): DiceTerm[];
+
+  /* -------------------------------------------- */
+
+  /** Return an array of rolled values which are still active within the PoolTerm */
+  get values(): number[];
+
+  /* -------------------------------------------- */
+
+  /**
+   * Alter the DiceTerm by adding or multiplying the number of dice which are rolled
+   * @param args - Arguments passed to each contained Roll#alter method.
+   * @returns The altered pool
+   */
+  alter(...args: any[]): PoolTerm;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Use the same logic as for the DiceTerm to avoid duplication
+   * @see DiceTerm#_evaluateModifiers
+   */
+  protected _evaluateModifiers(): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Use the same logic as for the DiceTerm to avoid duplication
+   * @see DiceTerm#_evaluateModifier
+   */
+  protected _evaluateModifier(command: string, modifier: string): void;
+
+  /* -------------------------------------------- */
   /*  Saving and Loading                          */
   /* -------------------------------------------- */
 
@@ -44,6 +106,8 @@ declare class PoolTerm extends RollTerm {
    */
   static fromExpression(formula: string, options: Partial<RollTerm.Options>): PoolTerm | null;
 
+  /* -------------------------------------------- */
+
   /**
    * Create a PoolTerm by providing an array of existing Roll objects
    * @param rolls - An array of Roll objects from which to create the pool
@@ -51,62 +115,35 @@ declare class PoolTerm extends RollTerm {
    */
   static fromRolls(rolls?: Roll[]): PoolTerm;
 
-  /**
-   * @param termData -  (default: `{}`)
-   * @param terms - (default: `[]`)
-   * @param modifiers - (default: `[]`)
-   * @param rolls - (default: `[]`)
-   * @param results - (default: `[]`)
-   */
-  constructor({ terms, modifiers, rolls, results, options }?: Partial<PoolTerm.TermData>);
-
-  /** The string modifiers applied to resolve the pool */
-  modifiers: PoolTerm.TermData['modifiers'];
-
-  /** The array of dice pool results which have been rolled */
-  results: PoolTerm.TermData['results'];
-
-  /** The elements of a Dice Pool must be Roll objects or numbers */
-  rolls: PoolTerm.TermData['rolls'];
-
-  /** The original provided terms to the Dice Pool */
-  terms: PoolTerm.TermData['terms'];
-
-  /* -------------------------------------------- */
-  /*  Dice Pool Attributes                        */
-  /* -------------------------------------------- *
-
-  /** Return an Array of each individual DiceTerm instances contained within the PoolTerm. */
-  get dice(): DiceTerm[];
-
-  /** Return an array of rolled values which are still active within the PoolTerm */
-  get values(): number[];
-
   /* -------------------------------------------- */
   /*  Modifiers                                   */
   /* -------------------------------------------- */
 
   /**
-   * Alter the DiceTerm by adding or multiplying the number of dice which are rolled
-   * @param args - Arguments passed to each contained Roll#alter method.
-   * @returns The altered pool
-   */
-  alter(...args: any[]): PoolTerm;
-
-  /**
-   * Count the number of failed results which occurred in a given result set.
-   * Failures are counted relative to some target, or relative to the lowest possible value if no target is given.
-   * Applying a count-failures modifier to the results re-casts all results to 1 (failure) or 0 (non-failure)
+   * Keep a certain number of highest or lowest dice rolls from the result set.
    * @example
-   * `6d6cf` Count the number of dice which rolled a 1 as failures
+   * `{1d6,1d8,1d10,1d12}kh2` Keep the 2 best rolls from the pool
    * @example
-   * `6d6cf<=3` Count the number of dice which rolled less than 3 as failures
-   * @example
-   * `6d6cf>4` Count the number of dice which rolled greater than 4 as failures
+   * `{1d12,6}kl` Keep the lowest result in the pool
    *
    * @param modifier - The matched modifier query
    */
-  countFailures(modifier: string): void;
+  keep(modifier: string): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Keep a certain number of highest or lowest dice rolls from the result set.
+   * @example
+   * `{1d6,1d8,1d10,1d12}dl3` Drop the 3 worst results in the pool
+   * @example
+   * `{1d12,6}dh` Drop the highest result in the pool
+   *
+   * @param modifier - The matched modifier query
+   */
+  drop(modifier: string): void;
+
+  /* -------------------------------------------- */
 
   /**
    * Count the number of successful results which occurred in the pool.
@@ -123,39 +160,22 @@ declare class PoolTerm extends RollTerm {
    */
   countSuccess(modifier: string): void;
 
+  /* -------------------------------------------- */
+
   /**
-   * Keep a certain number of highest or lowest dice rolls from the result set.
+   * Count the number of failed results which occurred in a given result set.
+   * Failures are counted relative to some target, or relative to the lowest possible value if no target is given.
+   * Applying a count-failures modifier to the results re-casts all results to 1 (failure) or 0 (non-failure)
    * @example
-   * `{1d6,1d8,1d10,1d12}dl3` Drop the 3 worst results in the pool
+   * `6d6cf` Count the number of dice which rolled a 1 as failures
    * @example
-   * `{1d12,6}dh` Drop the highest result in the pool
+   * `6d6cf<=3` Count the number of dice which rolled less than 3 as failures
+   * @example
+   * `6d6cf>4` Count the number of dice which rolled greater than 4 as failures
    *
    * @param modifier - The matched modifier query
    */
-  drop(modifier: string): void;
-
-  /**
-   * Keep a certain number of highest or lowest dice rolls from the result set.
-   * @example
-   * `{1d6,1d8,1d10,1d12}kh2` Keep the 2 best rolls from the pool
-   * @example
-   * `{1d12,6}kl` Keep the lowest result in the pool
-   *
-   * @param modifier - The matched modifier query
-   */
-  keep(modifier: string): void;
-
-  /**
-   * Use the same logic as for the DiceTerm to avoid duplication
-   * @see DiceTerm#_evaluateModifier
-   */
-  protected _evaluateModifier(command: string, modifier: string): void;
-
-  /**
-   * Use the same logic as for the DiceTerm to avoid duplication
-   * @see DiceTerm#_evaluateModifiers
-   */
-  protected _evaluateModifiers(): void;
+  countFailures(modifier: string): void;
 }
 
 /**
@@ -165,10 +185,10 @@ declare const DicePool: PoolTerm;
 
 declare namespace PoolTerm {
   interface TermData {
-    modifiers: string[];
-    options: RollTerm.Options;
-    results: DiceTerm.Result[];
-    rolls: Roll[];
     terms: string[];
+    modifiers: string[];
+    rolls: Roll[];
+    results: DiceTerm.Result[];
+    options: RollTerm.Options;
   }
 }

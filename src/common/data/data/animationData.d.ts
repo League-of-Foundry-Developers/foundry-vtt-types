@@ -3,33 +3,32 @@ import { BaseAmbientLight } from '../../documents';
 import * as fields from '../fields';
 
 interface SpeedField extends DocumentField<number> {
-  default: 5;
-  required: false;
   type: typeof Number;
+  required: false;
+  default: 5;
   validate: (a: number) => boolean;
   validationError: 'Light animation speed must be an integer between 1 and 10';
 }
 
 interface IntensityField extends DocumentField<number> {
-  default: 5;
-  required: false;
   type: typeof Number;
+  required: false;
+  default: 5;
   validate: (a: number) => boolean;
   validationError: 'Light animation intensity must be an integer between 1 and 10';
 }
 
 interface AnimationDataSchema extends DocumentSchema {
-  intensity: IntensityField;
-  speed: SpeedField;
   type: typeof fields.STRING_FIELD;
+  speed: SpeedField;
+  intensity: IntensityField;
 }
 
 interface AnimationDataProperties {
   /**
-   * The intensity of the animation, a number between 1 and 10
-   * @defaultValue `5`
+   * The animation type which is applied
    */
-  intensity: number;
+  type?: string;
 
   /**
    * The speed of the animation, a number between 1 and 10
@@ -38,9 +37,10 @@ interface AnimationDataProperties {
   speed: number;
 
   /**
-   * The animation type which is applied
+   * The intensity of the animation, a number between 1 and 10
+   * @defaultValue `5`
    */
-  type?: string;
+  intensity: number;
 }
 
 /**

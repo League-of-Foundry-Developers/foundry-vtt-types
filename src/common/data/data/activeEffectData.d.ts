@@ -22,12 +22,12 @@ interface ActiveEffectDataSchema extends DocumentSchema {
   changes: ChangesField;
   disabled: typeof fields.BOOLEAN_FIELD;
   duration: DurationField;
-  flags: typeof fields.OBJECT_FIELD; // TODO: add more concrete object type
   icon: typeof fields.IMAGE_FIELD;
   label: typeof fields.BLANK_STRING;
   origin: typeof fields.STRING_FIELD;
   tint: typeof fields.COLOR_FIELD;
   transfer: FieldReturnType<typeof fields.BOOLEAN_FIELD, { default: true }>;
+  flags: typeof fields.OBJECT_FIELD; // TODO: add more concrete object type
 }
 
 interface ActiveEffectDataProperties {
@@ -51,12 +51,6 @@ interface ActiveEffectDataProperties {
    * An EffectDurationData object which describes the duration of the ActiveEffect
    */
   duration?: EffectDurationData;
-
-  /**
-   * An object of optional key/value flags
-   * @defaultValue `{}`
-   */
-  flags: Record<string, unknown>;
 
   /**
    * An icon image path used to depict the ActiveEffect
@@ -84,6 +78,12 @@ interface ActiveEffectDataProperties {
    * @defaultValue `true`
    */
   transfer: boolean;
+
+  /**
+   * An object of optional key/value flags
+   * @defaultValue `{}`
+   */
+  flags: Record<string, unknown>;
 }
 
 /**
