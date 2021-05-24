@@ -54,9 +54,9 @@ declare abstract class RollTerm {
    */
   evaluate({ minimize, maximize, async }?: Partial<RollTerm.EvaluationOptions>): this;
 
-  _evaluate({ minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): Promise<this>;
+  protected _evaluate({ minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): Promise<this>;
 
-  _evaluateSync({ minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): this;
+  protected _evaluateSync({ minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): this;
 
   /* -------------------------------------------- */
   /*  Serialization and Loading                   */

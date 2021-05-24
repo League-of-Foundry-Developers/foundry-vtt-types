@@ -49,7 +49,10 @@ declare abstract class DiceTerm extends RollTerm {
   /** Define the named modifiers that can be applied for this particular DiceTerm type. */
   static MODIFIERS: Record<string, string | Function>;
 
-  /** A regular expression used to separate individual modifiers */
+  /**
+   * A regular expression pattern which captures the full set of term modifiers
+   * Anything until a space, group symbol, or arithmetic operator
+   */
   static MODIFIERS_REGEXP_STRING: string;
 
   /** A regular expression used to separate individual modifiers */
@@ -76,7 +79,7 @@ declare abstract class DiceTerm extends RollTerm {
 
   /* -------------------------------------------- */
 
-  _evaluateSync({ minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): this;
+  protected _evaluateSync({ minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): this;
 
   /* -------------------------------------------- */
 
