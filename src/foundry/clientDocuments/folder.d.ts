@@ -20,8 +20,13 @@ declare global {
      * @param options - Initial positioning and sizing options for the dialog form
      *                  (default: `{}`)
      * @returns An active FolderConfig instance for creating the new Folder entity
+     *
+     * @remarks
+     * This actually returns a FolderConfig but that is incorrectly overriding
+     * ClientDocumentMixin.createDialog, for which a Promise of the created
+     * Document is returned.
      */
-    static createDialog(data?: DeepPartial<SourceDataType<Folder>>, options?: Dialog.Options): FolderConfig;
+    static createDialog(data?: DeepPartial<SourceDataType<Folder>>, options?: Dialog.Options): any;
 
     /**
      * The depth of this folder in its sidebar tree
