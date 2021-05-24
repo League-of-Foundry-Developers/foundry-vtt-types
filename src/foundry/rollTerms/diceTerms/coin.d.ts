@@ -29,7 +29,11 @@ declare class Coin extends DiceTerm {
 
   /* -------------------------------------------- */
 
-  static DENOMINATION: 'c';
+  /**
+   * @override
+   * @defaultValue `c`
+   */
+  static DENOMINATION: string;
 
   static MODIFIERS: typeof DiceTerm.MODIFIERS & {
     c: 'call';
