@@ -3,82 +3,6 @@
  * @see {@link Wall}
  */
 declare class WallsLayer extends PlaceablesLayer<Wall> {
-  /**
-   * @override
-   * @defaultValue
-   * ```
-   * mergeObject(super.layerOptions, {
-   *   controllableObjects: true,
-   *   objectClass: Wall,
-   *   quadtree: true,
-   *   sheetClass: WallConfig,
-   *   sortActiveTop: true,
-   *   zIndex: 40
-   * })
-   * ```
-   */
-  static get layerOptions(): PlaceablesLayer.LayerOptions;
-
-  /**
-   * Identify the closest collision point from an array of collisions
-   * @param collisions - An array of intersection points
-   * @returns The closest blocking intersection
-   */
-  static getClosestCollision(collisions: NonNullable<RayIntersection>[]): RayIntersection;
-
-  /**
-   * Given a point and the coordinates of a wall, determine which endpoint is closer to the point
-   * @param point - The origin point of the new Wall placement
-   * @param wall  - The existing Wall object being chained to
-   * @returns The [x,y] coordinates of the starting endpoint
-   */
-  static getClosestEndpoint(point: Point, wall: Wall): PointArray;
-
-  /**
-   * Get the set of wall collisions for a given Ray
-   * @param ray           - The Ray being tested
-   * @param blockMovement - Test against walls which block movement?
-   * @param blockSenses   - Test against walls which block senses?
-   * @param mode          - The return mode of the test, one of "all", "closest", or "any"
-   * @param _performance  - An internal performance object used for debugging
-   * @returns An array of collisions, if mode is "all"; The closest collision, if mode is "closest"; Whether any collision occurred if mode is "any"
-   */
-  static getRayCollisions(
-    ray: Ray,
-    {
-      blockMovement,
-      blockSenses,
-      mode
-    }?: { blockMovement: boolean; blockSenses: boolean; mode: 'all' | 'closest' | 'any'; _performance: unknown }
-  ): Record<`${string},${string}`, RayIntersection>[] | Record<`${string},${string}`, RayIntersection> | boolean;
-
-  /**
-   * Given an array of Wall instances, identify the unique endpoints across all walls.
-   * @param walls         - An array of Wall instances
-   * @param bounds        - An optional bounding rectangle within which the endpoint must lie.
-   * @param blockMovement - Filter for walls that block movement, default is true.
-   *                        (default: `true`)
-   * @param blockSenses   - Filter for walls that block perception, default is true.
-   *                        (default: `true`)
-   * @returns An array of endpoints
-   */
-  static getUniqueEndpoints(
-    walls: Wall[],
-    {
-      bounds,
-      blockMovement,
-      blockSenses
-    }?: { bounds?: Rectangle | null; blockMovement?: boolean; blockSenses?: boolean }
-  ): PointArray[];
-
-  /**
-   * Test a single Ray against a single Wall
-   * @param ray  - The Ray being cast
-   * @param wall - The Wall against which to test
-   * @returns An intersection, if one occurred
-   */
-  static testWall(ray: Ray, wall: Wall): RayIntersection;
-
   constructor();
 
   /**
@@ -101,16 +25,16 @@ declare class WallsLayer extends PlaceablesLayer<Wall> {
   protected _chain: boolean;
 
   /**
-   * Track the most recently created or updated wall data for use with the clone tool
-   * @defaultValue `null`
-   */
-  protected _cloneType: Wall['data'] | null;
-
-  /**
    * Track whether the layer is currently toggled to snap at exact grid precision
    * @defaultValue `false`
    */
   protected _forceSnap: boolean;
+
+  /**
+   * Track the most recently created or updated wall data for use with the clone tool
+   * @defaultValue `null`
+   */
+  protected _cloneType: Wall['data'] | null;
 
   /**
    * Reference the last interacted wall endpoint for the purposes of chaining
@@ -126,6 +50,22 @@ declare class WallsLayer extends PlaceablesLayer<Wall> {
     id: string | null;
     point: PointArray | null;
   };
+
+  /**
+   * @override
+   * @defaultValue
+   * ```
+   * mergeObject(super.layerOptions, {
+   *   controllableObjects: true,
+   *   objectClass: Wall,
+   *   quadtree: true,
+   *   sheetClass: WallConfig,
+   *   sortActiveTop: true,
+   *   zIndex: 40
+   * })
+   * ```
+   */
+  static get layerOptions(): PlaceablesLayer.LayerOptions;
 
   /**
    * An Array of Wall instances in the current Scene which currently block Token vision.
@@ -151,6 +91,43 @@ declare class WallsLayer extends PlaceablesLayer<Wall> {
   get gridPrecision(): number;
 
   /**
+   * @override
+   */
+  draw(): Promise<this>;
+
+  /** @override */
+  deactivate(): this;
+
+  initialize(): void;
+
+  /**
+   * Given a point and the coordinates of a wall, determine which endpoint is closer to the point
+   * @param point - The origin point of the new Wall placement
+   * @param wall  - The existing Wall object being chained to
+   * @returns The [x,y] coordinates of the starting endpoint
+   */
+  static getClosestEndpoint(point: Point, wall: Wall): PointArray;
+
+  /**
+   * Given an array of Wall instances, identify the unique endpoints across all walls.
+   * @param walls         - An array of Wall instances
+   * @param bounds        - An optional bounding rectangle within which the endpoint must lie.
+   * @param blockMovement - Filter for walls that block movement, default is true.
+   *                        (default: `true`)
+   * @param blockSenses   - Filter for walls that block perception, default is true.
+   *                        (default: `true`)
+   * @returns An array of endpoints
+   */
+  static getUniqueEndpoints(
+    walls: Wall[],
+    {
+      bounds,
+      blockMovement,
+      blockSenses
+    }?: { bounds?: Rectangle | null; blockMovement?: boolean; blockSenses?: boolean }
+  ): PointArray[];
+
+  /**
    * Test whether movement along a given Ray collides with a Wall.
    * @param ray - The attempted movement
    * @returns Does a collision occur?
@@ -164,20 +141,13 @@ declare class WallsLayer extends PlaceablesLayer<Wall> {
     }?: { blockMovement?: boolean; blockSenses?: boolean; mode?: 'all' | 'closest' | 'any' }
   ): boolean;
 
-  /** @override */
-  deactivate(): this;
-
-  /**
-   * @override
-   */
-  draw(): Promise<this>;
-
   /**
    * Highlight the endpoints of Wall segments which are currently group-controlled on the Walls layer
    */
   highlightControlledSegments(): void;
 
-  initialize(): void;
+  /** @override */
+  releaseAll(): number;
 
   /**
    * @override
@@ -185,8 +155,23 @@ declare class WallsLayer extends PlaceablesLayer<Wall> {
    */
   pasteObjects(position: Point, options?: {}): Promise<Wall[]>;
 
-  /** @override */
-  releaseAll(): number;
+  /**
+   * Pan the canvas view when the cursor position gets close to the edge of the frame
+   * @param event - The originating mouse movement event
+   * @param x     - The x-coordinate
+   * @param y     - The y-coordinate
+   */
+  protected _panCanvasEdge(event: MouseEvent, x: number, y: number): void | Promise<void>;
+
+  /**
+   * Get the endpoint coordinates for a wall placement, snapping to grid at a specified precision
+   * Require snap-to-grid until a redesign of the wall chaining system can occur.
+   * @param  point - The initial candidate point
+   * @param  snap  - Whether to snap to grid
+   *                 (default: `true`)
+   * @returns The endpoint coordinates [x,y]
+   */
+  protected _getWallEndpointCoordinates(point: Point, { snap }?: { snap?: boolean }): PointArray;
 
   /**
    * The Scene Controls tools provide several different types of prototypical Walls to choose from
@@ -203,39 +188,54 @@ declare class WallsLayer extends PlaceablesLayer<Wall> {
       }
     | Wall['data'];
 
-  /**
-   * Get the endpoint coordinates for a wall placement, snapping to grid at a specified precision
-   * Require snap-to-grid until a redesign of the wall chaining system can occur.
-   * @param  point - The initial candidate point
-   * @param  snap  - Whether to snap to grid
-   *                 (default: `true`)
-   * @returns The endpoint coordinates [x,y]
-   */
-  protected _getWallEndpointCoordinates(point: Point, { snap }?: { snap?: boolean }): PointArray;
-
   /** @override */
   protected _onClickLeft(event: PIXI.InteractionEvent): void;
 
   /** @override */
-  protected _onClickRight(event: PIXI.InteractionEvent): void;
-
-  /** @override */
-  protected _onDragLeftCancel(event: PointerEvent): void;
-
-  /** @override */
-  protected _onDragLeftDrop(event: PIXI.InteractionEvent): void;
+  protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
 
   /** @override */
   protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
   /** @override */
-  protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
+  protected _onDragLeftDrop(event: PIXI.InteractionEvent): void;
+
+  /** @override */
+  protected _onDragLeftCancel(event: PointerEvent): void;
+
+  /** @override */
+  protected _onClickRight(event: PIXI.InteractionEvent): void;
 
   /**
-   * Pan the canvas view when the cursor position gets close to the edge of the frame
-   * @param event - The originating mouse movement event
-   * @param x     - The x-coordinate
-   * @param y     - The y-coordinate
+   * Test a single Ray against a single Wall
+   * @param ray  - The Ray being cast
+   * @param wall - The Wall against which to test
+   * @returns An intersection, if one occurred
    */
-  protected _panCanvasEdge(event: MouseEvent, x: number, y: number): void | Promise<void>;
+  static testWall(ray: Ray, wall: Wall): RayIntersection;
+
+  /**
+   * Identify the closest collision point from an array of collisions
+   * @param collisions - An array of intersection points
+   * @returns The closest blocking intersection
+   */
+  static getClosestCollision(collisions: NonNullable<RayIntersection>[]): RayIntersection;
+
+  /**
+   * Get the set of wall collisions for a given Ray
+   * @param ray           - The Ray being tested
+   * @param blockMovement - Test against walls which block movement?
+   * @param blockSenses   - Test against walls which block senses?
+   * @param mode          - The return mode of the test, one of "all", "closest", or "any"
+   * @param _performance  - An internal performance object used for debugging
+   * @returns An array of collisions, if mode is "all"; The closest collision, if mode is "closest"; Whether any collision occurred if mode is "any"
+   */
+  static getRayCollisions(
+    ray: Ray,
+    {
+      blockMovement,
+      blockSenses,
+      mode
+    }?: { blockMovement: boolean; blockSenses: boolean; mode: 'all' | 'closest' | 'any'; _performance: unknown }
+  ): Record<`${string},${string}`, RayIntersection>[] | Record<`${string},${string}`, RayIntersection> | boolean;
 }

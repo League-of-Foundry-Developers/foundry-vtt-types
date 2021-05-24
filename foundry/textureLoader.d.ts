@@ -2,26 +2,15 @@
  * A Loader class which helps with loading video and image textures
  */
 declare class TextureLoader {
-  /**
-   * A global reference to the singleton texture loader
-   */
-  static loader: TextureLoader;
+  constructor();
+
+  cache: Map<string, PIXI.Texture>;
 
   /**
    * Load all the textures which are required for a particular Scene
    * @param scene - The Scene to load
    */
   static loadSceneTextures(scene: Scene): Promise<void>;
-
-  constructor();
-
-  cache: Map<string, PIXI.Texture>;
-
-  /**
-   * Retrieve a texture from the texture cache
-   * @param src - The source URL
-   */
-  getCache(src: string): PIXI.Texture | undefined;
 
   /**
    * Load an Array of provided source URL paths
@@ -32,29 +21,26 @@ declare class TextureLoader {
   load(sources: string[], { message }?: { message?: string }): Promise<void>;
 
   /**
-   * Load an image texture from a provided source url
-   * @param src -
-   */
-  loadImageTexture(src: string): Promise<PIXI.Texture>;
-
-  /**
    * Load a single texture on-demand from a given source URL path
    * @param src -
    */
   loadTexture(src: string): Promise<PIXI.Texture>;
 
   /**
-   * Load a video texture from a provided source url
-   * @param src -
+   * Log texture loading progress in the console and in the Scene loading bar
    */
-  loadVideoTexture(src: string): Promise<PIXI.Texture>;
+  protected _onProgress(src: string, progress: TextureLoader.Progress, message: string): void;
 
   /**
-   * Add an image url to the texture cache
-   * @param src - The source URL
-   * @param tex - The readied texture
+   * Log failed texture loading
    */
-  setCache(src: string, tex: PIXI.Texture): void;
+  protected _onError(src: string, progress: TextureLoader.Progress, error: Error): void;
+
+  /**
+   * Load an image texture from a provided source url
+   * @param src -
+   */
+  loadImageTexture(src: string): Promise<PIXI.Texture>;
 
   /**
    * If an attempted image load failed, we may attempt a re-load in case the issue was CORS + caching
@@ -70,22 +56,36 @@ declare class TextureLoader {
   ): Promise<PIXI.Texture> | T;
 
   /**
-   * Log failed texture loading
+   * Load a video texture from a provided source url
+   * @param src -
    */
-  protected _onError(src: string, progress: TextureLoader.Progress, error: Error): void;
+  loadVideoTexture(src: string): Promise<PIXI.Texture>;
 
   /**
-   * Log texture loading progress in the console and in the Scene loading bar
+   * Add an image url to the texture cache
+   * @param src - The source URL
+   * @param tex - The readied texture
    */
-  protected _onProgress(src: string, progress: TextureLoader.Progress, message: string): void;
+  setCache(src: string, tex: PIXI.Texture): void;
+
+  /**
+   * Retrieve a texture from the texture cache
+   * @param src - The source URL
+   */
+  getCache(src: string): PIXI.Texture | undefined;
+
+  /**
+   * A global reference to the singleton texture loader
+   */
+  static loader: TextureLoader;
 }
 
 declare namespace TextureLoader {
   interface Progress {
-    failed: number;
-    loaded: number;
     message: string;
-    pct: number;
+    loaded: number;
+    failed: number;
     total: number;
+    pct: number;
   }
 }

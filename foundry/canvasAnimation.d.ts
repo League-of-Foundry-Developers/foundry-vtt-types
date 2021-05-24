@@ -2,12 +2,6 @@
  * A helper class providing utility methods for PIXI Canvas animation
  */
 declare class CanvasAnimation {
-  /**
-   * Track an object of active animations by name, context, and function
-   * This allows a currently playing animation to be referenced and terminated
-   */
-  static animations: Record<string, [(dt: number) => unknown, PIXI.Container]>;
-
   static get ticker(): PIXI.Ticker;
 
   /**
@@ -59,6 +53,21 @@ declare class CanvasAnimation {
   static terminateAnimation(name: string): void;
 
   /**
+   * Asynchronously animate a transition function and resolve a Promise once the animation has completed
+   * @param fn      - A suitable transition function. See PIXI.Ticker for details
+   * @param context - The Canvas container providing scope for the transition
+   * @param name    - Provide a unique animation name which may be referenced later
+   * @param args    - Variable argument passed to the transition function each frame
+   * @returns A Promise which resolves once the animation has completed
+   */
+  protected static _animatePromise(
+    fn: (dt: number, resolve: () => void, reject: (reason?: any) => void, ...args: any[]) => void,
+    context: PIXI.Container,
+    name: string,
+    ...args: any[]
+  ): Promise<void>;
+
+  /**
    * Generic ticker function to implement the animation.
    * This animation wrapper executes once per frame for the duration of the animation event.
    * Once the animated attributes have converged to their targets, it resolves the original Promise.
@@ -74,25 +83,16 @@ declare class CanvasAnimation {
   ): void;
 
   /**
-   * Asynchronously animate a transition function and resolve a Promise once the animation has completed
-   * @param fn      - A suitable transition function. See PIXI.Ticker for details
-   * @param context - The Canvas container providing scope for the transition
-   * @param name    - Provide a unique animation name which may be referenced later
-   * @param args    - Variable argument passed to the transition function each frame
-   * @returns A Promise which resolves once the animation has completed
+   * Track an object of active animations by name, context, and function
+   * This allows a currently playing animation to be referenced and terminated
    */
-  protected static _animatePromise(
-    fn: (dt: number, resolve: () => void, reject: (reason?: any) => void, ...args: any[]) => void,
-    context: PIXI.Container,
-    name: string,
-    ...args: any[]
-  ): Promise<void>;
+  static animations: Record<string, [(dt: number) => unknown, PIXI.Container]>;
 }
 
 declare namespace CanvasAnimation {
   interface Attribute {
-    attribute: string;
     parent: any;
+    attribute: string;
     to: number;
   }
 }

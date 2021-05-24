@@ -3,11 +3,6 @@
  */
 declare class UserManagement extends FormApplication<FormApplication.Options, UserManagement.Data, Users> {
   /**
-   * @defaultValue `'templates/setup/player-create.html'`
-   */
-  static USER_TEMPLATE: string;
-
-  /**
    * @override
    * @defaultValue
    * ```typescript
@@ -24,7 +19,7 @@ declare class UserManagement extends FormApplication<FormApplication.Options, Us
   static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /** @override */
-  activateListeners(html: JQuery): void;
+  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
 
   /**
    * @param options - (unused)
@@ -32,15 +27,24 @@ declare class UserManagement extends FormApplication<FormApplication.Options, Us
    */
   getData(options?: Application.RenderOptions): UserManagement.Data;
 
+  /** @override */
+  activateListeners(html: JQuery): void;
+
   /**
-   * Handle new user creation event
+   * @param event - (unused)
+   * @override
    */
-  protected _onAction(event: JQuery.ClickEvent): void;
+  protected _updateObject(event: Event, formData: UserManagement.FormData): Promise<unknown>;
 
   /**
    * Reveal the access key for each player so that it can be learned without being changed
    */
   protected _onKeyShow(event: JQuery.ChangeEvent): void;
+
+  /**
+   * Handle new user creation event
+   */
+  protected _onAction(event: JQuery.ClickEvent): void;
 
   /**
    * Handle creating a new User record in the form
@@ -52,23 +56,19 @@ declare class UserManagement extends FormApplication<FormApplication.Options, Us
    */
   protected _onUserDelete(event: JQuery.ClickEvent): void;
 
-  /** @override */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
-
   /**
-   * @param event - (unused)
-   * @override
+   * @defaultValue `'templates/setup/player-create.html'`
    */
-  protected _updateObject(event: Event, formData: UserManagement.FormData): Promise<unknown>;
+  static USER_TEMPLATE: string;
 }
 
 declare namespace UserManagement {
   interface Data {
-    options: UserManagement['options'];
-    roles: typeof CONST['USER_ROLES'];
     user: Game['user'];
-    userTemplate: typeof UserManagement['USER_TEMPLATE'];
     users: User['data'][];
+    roles: typeof CONST['USER_ROLES'];
+    options: UserManagement['options'];
+    userTemplate: typeof UserManagement['USER_TEMPLATE'];
   }
 
   type FormData = Record<string, string | number>;

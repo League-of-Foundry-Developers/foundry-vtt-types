@@ -2,9 +2,17 @@
  * A helper class used by the Sight Layer to represent a source of vision or illumination.
  */
 declare class PointSource {
-  static GEOMETRY: PIXI.Geometry;
-
   constructor();
+
+  /**
+   * The light or darkness container for this source
+   */
+  illumination: PIXI.Container;
+
+  /**
+   * This visible color container for this source
+   */
+  coloration: PIXI.Container;
 
   /**
    * A flag for whether this source is currently active (rendered) or not
@@ -13,96 +21,10 @@ declare class PointSource {
   active: boolean;
 
   /**
-   * An opacity for the emitted light, if any
-   * @defaultValue `undefined`
-   */
-  alpha?: number;
-
-  /**
-   * The angle of emission for this point source
-   * @defaultValue `undefined`
-   */
-  angle?: number;
-
-  /**
-   * A basic "pulse" animation which expands and contracts.
-   * @param dt        - Delta time
-   * @param speed     - The animation speed, from 1 to 10
-   * @param intensity - The animation intensity, from 1 to 10
-   */
-  animatePulse: PointSource.AnimationFunction;
-
-  /**
-   * Emanate waves of light from the source origin point
-   * @param dt        - Delta time
-   * @param speed     - The animation speed, from 1 to 10
-   * @param intensity - The animation intensity, from 1 to 10
-   */
-  animateTime: PointSource.AnimationFunction;
-
-  /**
-   * A torch animation where the luminosity and coloration decays each frame and is revitalized by flashes
-   * @param dt        - Delta time
-   * @param speed     - The animation speed, from 1 to 10
-   * @param intensity - The animation intensity, from 1 to 10
-   */
-  animateTorch: PointSource.AnimationFunction;
-
-  /**
-   * An animation configuration for the source
-   * @defaultValue `undefined`
-   */
-  animation?: PointSource.Animation;
-
-  /**
-   * The allowed radius of bright vision or illumination
-   * @defaultValue `undefined`
-   */
-  bright?: number;
-
-  /**
-   * A tint color for the emitted light, if any
-   * @defaultValue `undefined`
-   */
-  color?: number | null;
-
-  /**
-   * @defaultValue `undefined`
-   */
-  colorRGB?: [number, number, number];
-
-  /**
-   * This visible color container for this source
-   */
-  coloration: PIXI.Container;
-
-  /**
    * Internal flag for whether this is a darkness source
    * @defaultValue `false`
    */
   darkness: boolean;
-
-  /**
-   * A level of darkness beyond which this light is active
-   * @defaultValue `undefined`
-   */
-  darknessThreshold?: number;
-
-  /**
-   * The allowed radius of dim vision or illumination
-   * @defaultValue `undefined`
-   */
-  dim?: number;
-
-  /**
-   * @defaultValue `undefined`
-   */
-  fov?: PIXI.Polygon;
-
-  /**
-   * The light or darkness container for this source
-   */
-  illumination: PIXI.Container;
 
   /**
    * Is the light source limited by an angle of emission?
@@ -111,38 +33,34 @@ declare class PointSource {
   limited: boolean;
 
   /**
-   * @defaultValue `undefined`
-   */
-  los?: PIXI.Polygon;
-
-  /**
    * The maximum radius of emission for this source
    * @defaultValue `0`
    */
   radius: number;
 
   /**
-   * @defaultValue `undefined`
+   * Internal flag for animation throttling time
+   * @defaultValue `0`
    */
-  ratio?: number;
+  protected _animateTime: number;
 
   /**
-   * The angle of rotation for this point source
-   * @defaultValue `undefined`
+   * An integer seed which de-synchronizes otherwise similar animations
+   * @defaultValue `null`
    */
-  rotation?: number;
+  protected _animateSeed: number | null;
 
   /**
-   * An integer seed to synchronize (or de-synchronize) animations
-   * @defaultValue `undefined`
+   * A flag for whether to re-initialize illumination shader uniforms the next time the light is rendered.
+   * @defaultValue `true`
    */
-  seed?: number;
+  protected _resetIlluminationUniforms: boolean;
 
   /**
-   * The source type from {@link SOURCE_TYPES}
-   * @defaultValue `undefined`
+   * A flag for whether to re-initialize coloration shader uniforms the next time the light is rendered.
+   * @defaultValue `true`
    */
-  type?: Const.SourceType;
+  protected _resetColorationUniforms: boolean;
 
   /**
    * The x-coordinate of the source location
@@ -163,47 +81,90 @@ declare class PointSource {
   z?: number | null;
 
   /**
-   * An integer seed which de-synchronizes otherwise similar animations
-   * @defaultValue `null`
+   * The allowed radius of dim vision or illumination
+   * @defaultValue `undefined`
    */
-  protected _animateSeed: number | null;
+  dim?: number;
 
   /**
-   * Internal flag for animation throttling time
-   * @defaultValue `0`
+   * The allowed radius of bright vision or illumination
+   * @defaultValue `undefined`
    */
-  protected _animateTime: number;
+  bright?: number;
 
   /**
-   * A flag for whether to re-initialize coloration shader uniforms the next time the light is rendered.
-   * @defaultValue `true`
+   * The angle of emission for this point source
+   * @defaultValue `undefined`
    */
-  protected _resetColorationUniforms: boolean;
+  angle?: number;
 
   /**
-   * A flag for whether to re-initialize illumination shader uniforms the next time the light is rendered.
-   * @defaultValue `true`
+   * The angle of rotation for this point source
+   * @defaultValue `undefined`
    */
-  protected _resetIlluminationUniforms: boolean;
+  rotation?: number;
 
   /**
-   * Animate the PointSource, if an animation is enabled and if it currently has rendered containers.
-   * @param dt - Delta time
+   * A tint color for the emitted light, if any
+   * @defaultValue `undefined`
    */
-  animate(dt: number): void;
+  color?: number | null;
 
   /**
-   * Draw and return a container used to depict the visible color tint of the light source on the LightingLayer
-   * @returns An updated color container for the source
+   * An opacity for the emitted light, if any
+   * @defaultValue `undefined`
    */
-  drawColor(): PIXI.Container;
+  alpha?: number;
 
   /**
-   * Draw the display of this source for the darkness/light container of the SightLayer.
-   * @param updateChannels - Is this drawing initiated because lighting channels have changed?
-   * @returns The rendered light container
+   * A level of darkness beyond which this light is active
+   * @defaultValue `undefined`
    */
-  drawLight({ updateChannels }?: { updateChannels?: boolean }): PIXI.Container;
+  darknessThreshold?: number;
+
+  /**
+   * The source type from {@link SOURCE_TYPES}
+   * @defaultValue `undefined`
+   */
+  type?: Const.SourceType;
+
+  /**
+   * An animation configuration for the source
+   * @defaultValue `undefined`
+   */
+  animation?: PointSource.Animation;
+
+  /**
+   * An integer seed to synchronize (or de-synchronize) animations
+   * @defaultValue `undefined`
+   */
+  seed?: number;
+
+  /**
+   * @defaultValue `undefined`
+   */
+  colorRGB?: [number, number, number];
+
+  /**
+   * @defaultValue `undefined`
+   */
+  ratio?: number;
+
+  /**
+   * @defaultValue `undefined`
+   */
+  fov?: PIXI.Polygon;
+
+  /**
+   * @defaultValue `undefined`
+   */
+  los?: PIXI.Polygon;
+
+  /**
+   * Create the structure of a source Container which can be rendered to the sight layer shadow-map
+   * @returns The constructed light source container
+   */
+  protected _createContainer(shaderCls: ConstructorOf<AbstractBaseShader>): PIXI.Container;
 
   /**
    * Initialize the source with provided object data.
@@ -268,6 +229,67 @@ declare class PointSource {
   }): this;
 
   /**
+   * Initialize the shaders used for this animation.
+   * Reset the current shader values back to defaults.
+   * Swap to a different Shader instance if necessary.
+   */
+  protected _initializeShaders(): void;
+
+  /**
+   * Initialize the blend mode and vertical sorting of this source relative to others in the container.
+   */
+  protected _initializeBlending(): void;
+
+  /**
+   * Draw the display of this source for the darkness/light container of the SightLayer.
+   * @param updateChannels - Is this drawing initiated because lighting channels have changed?
+   * @returns The rendered light container
+   */
+  drawLight({ updateChannels }?: { updateChannels?: boolean }): PIXI.Container;
+
+  /**
+   * Draw and return a container used to depict the visible color tint of the light source on the LightingLayer
+   * @returns An updated color container for the source
+   */
+  drawColor(): PIXI.Container;
+
+  /**
+   * A common helper function for updating the display of a source container.
+   * Assign the container position, dimensions, and polygons.
+   */
+  protected _drawContainer(c: PIXI.Container): PIXI.Container;
+
+  /**
+   * Animate the PointSource, if an animation is enabled and if it currently has rendered containers.
+   * @param dt - Delta time
+   */
+  animate(dt: number): void;
+
+  /**
+   * A torch animation where the luminosity and coloration decays each frame and is revitalized by flashes
+   * @param dt        - Delta time
+   * @param speed     - The animation speed, from 1 to 10
+   * @param intensity - The animation intensity, from 1 to 10
+   */
+  animateTorch: PointSource.AnimationFunction;
+
+  /**
+   * A basic "pulse" animation which expands and contracts.
+   * @param dt        - Delta time
+   * @param speed     - The animation speed, from 1 to 10
+   * @param intensity - The animation intensity, from 1 to 10
+   */
+  animatePulse: PointSource.AnimationFunction;
+
+  /**
+   * Emanate waves of light from the source origin point
+   * @param dt        - Delta time
+   * @param speed     - The animation speed, from 1 to 10
+   * @param intensity - The animation intensity, from 1 to 10
+   */
+  animateTime: PointSource.AnimationFunction;
+
+  /**
    * Evolve a value using a stochastic AR(1) process
    * @param y      - The current value
    * @param phi    - The decay rate of prior values
@@ -288,35 +310,13 @@ declare class PointSource {
     }: { phi?: number; center?: number; sigma?: number; max?: number | null; min?: number | null }
   ): number;
 
-  /**
-   * Create the structure of a source Container which can be rendered to the sight layer shadow-map
-   * @returns The constructed light source container
-   */
-  protected _createContainer(shaderCls: ConstructorOf<AbstractBaseShader>): PIXI.Container;
-
-  /**
-   * A common helper function for updating the display of a source container.
-   * Assign the container position, dimensions, and polygons.
-   */
-  protected _drawContainer(c: PIXI.Container): PIXI.Container;
-
-  /**
-   * Initialize the blend mode and vertical sorting of this source relative to others in the container.
-   */
-  protected _initializeBlending(): void;
-
-  /**
-   * Initialize the shaders used for this animation.
-   * Reset the current shader values back to defaults.
-   * Swap to a different Shader instance if necessary.
-   */
-  protected _initializeShaders(): void;
+  static GEOMETRY: PIXI.Geometry;
 }
 
 declare namespace PointSource {
   interface AnimationProperties {
-    intensity?: number;
     speed?: number;
+    intensity?: number;
   }
   interface Animation extends AnimationProperties {
     type: null | keyof typeof CONFIG.Canvas.lightAnimations;

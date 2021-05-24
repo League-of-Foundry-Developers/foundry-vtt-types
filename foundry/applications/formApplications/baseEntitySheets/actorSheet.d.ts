@@ -39,9 +39,6 @@ declare class ActorSheet<
    */
   get actor(): O;
 
-  /** @override */
-  activateListeners(html: JQuery): void;
-
   /**
    * @param options - (unused)
    * @override
@@ -54,24 +51,35 @@ declare class ActorSheet<
   render(force?: boolean, options?: Application.RenderOptions): this;
 
   /** @override */
-  protected _canDragDrop(selector: string | null): boolean;
-
-  /** @override */
-  protected _canDragStart(selector: string | null): boolean;
-
-  /** @override */
   protected _getHeaderButtons(): Application.HeaderButton[];
+
+  /** @override */
+  activateListeners(html: JQuery): void;
 
   /**
    * Handle requests to configure the prototype Token for the Actor
    */
   protected _onConfigureToken(event: JQuery.ClickEvent): void;
 
+  /**
+   * Handle changing the actor profile image by opening a FilePicker
+   */
+  protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
+
+  /** @override */
+  protected _updateObject(event: Event, formData: object): Promise<O>;
+
+  /** @override */
+  protected _canDragStart(selector: string | null): boolean;
+
+  /** @override */
+  protected _canDragDrop(selector: string | null): boolean;
+
   /** @override */
   protected _onDragStart(event: DragEvent): void;
 
   /** @override */
-  protected _onDrop(
+  _onDrop(
     event: DragEvent
   ): Promise<boolean | undefined | ActiveEffect.Data | ActorSheet.OwnedItemData<O> | ActorSheet.OwnedItemData<O>[]>;
 
@@ -95,6 +103,17 @@ declare class ActorSheet<
   protected _onDropActor(event: DragEvent, data: ActorSheet.DropData.Actor): Promise<boolean | undefined>;
 
   /**
+   * Handle dropping of an item reference or item data onto an Actor Sheet
+   * @param event - The concluding DragEvent which contains drop data
+   * @param data  - The data transfer extracted from the event
+   * @returns A data object which describes the result of the drop
+   */
+  protected _onDropItem(
+    event: DragEvent,
+    data: ActorSheet.DropData.Item<ActorSheet.OwnedItemData<O>>
+  ): Promise<boolean | undefined | ActorSheet.OwnedItemData<O>>;
+
+  /**
    * Handle dropping of a Folder on an Actor Sheet.
    * Currently supports dropping a Folder of Items to create all items as owned items.
    * @param event - The concluding DragEvent which contains drop data
@@ -107,27 +126,11 @@ declare class ActorSheet<
   ): Promise<boolean | undefined | ActorSheet.OwnedItemData<O>[] | ActorSheet.OwnedItemData<O>>;
 
   /**
-   * Handle dropping of an item reference or item data onto an Actor Sheet
-   * @param event - The concluding DragEvent which contains drop data
-   * @param data  - The data transfer extracted from the event
-   * @returns A data object which describes the result of the drop
-   */
-  protected _onDropItem(
-    event: DragEvent,
-    data: ActorSheet.DropData.Item<ActorSheet.OwnedItemData<O>>
-  ): Promise<boolean | undefined | ActorSheet.OwnedItemData<O>>;
-
-  /**
    * Handle the final creation of dropped Item data on the Actor.
    * This method is factored out to allow downstream classes the opportunity to override item creation behavior.
    * @param itemData - The item data requested for creation
    */
   protected _onDropItemCreate(itemData: ActorSheet.OwnedItemData<O>): Promise<ActorSheet.OwnedItemData<O>>;
-
-  /**
-   * Handle changing the actor profile image by opening a FilePicker
-   */
-  protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
 
   /**
    * Handle a drop event for an existing Owned Item to sort that item
@@ -136,9 +139,6 @@ declare class ActorSheet<
     event: DragEvent,
     itemData: ActorSheet.OwnedItemData<O>
   ): Promise<ActorSheet.OwnedItemData<O>> | undefined;
-
-  /** @override */
-  protected _updateObject(event: Event, formData: object): Promise<O>;
 }
 
 declare namespace ActorSheet {
@@ -158,10 +158,10 @@ declare namespace ActorSheet {
     type Combined = ActiveEffect | Actor | Item | Folder;
 
     interface ActiveEffect {
+      type?: 'ActiveEffect';
+      tokenId?: string;
       actorId?: string;
       data?: ActiveEffect.Data;
-      tokenId?: string;
-      type?: 'ActiveEffect';
     }
 
     interface Actor {
@@ -178,9 +178,9 @@ declare namespace ActorSheet {
     } & (DeepPartial<I> | { pack?: string } | { id?: string });
 
     interface Folder {
+      type?: 'Folder';
       entity?: string;
       id?: string;
-      type?: 'Folder';
     }
   }
 }

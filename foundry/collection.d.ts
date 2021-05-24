@@ -6,12 +6,16 @@
 declare class Collection<T> extends Map<string, T> {
   constructor(entries: T);
 
+  /* -------------------------------------------- */
+
   /**
    * When iterating over a Collection, we should iterate over its values instead of over its entries
    * @returns Typescript doesn't allow this
    *          (type: `IterableIterator<T>`)
    */
   [Symbol.iterator](): any;
+
+  /* -------------------------------------------- */
 
   /**
    * Return an Array of all the entry values in the Collection
@@ -21,6 +25,25 @@ declare class Collection<T> extends Map<string, T> {
    *          (type: `Array<T>`)
    */
   entries(): any;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Find an entry in the Map using an functional condition.
+   * @see {@link Array#find}
+   *
+   * @param condition - The functional condition to test
+   * @returns The value, if found, otherwise null
+   *
+   * @example
+   * ```typescript
+   * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
+   * let a = c.find(entry => entry === "A");
+   * ```
+   */
+  find(condition: (entity: T) => boolean): T | null;
+
+  /* -------------------------------------------- */
 
   /**
    * Filter the Collection, returning an Array of entries which match a functional condition.
@@ -37,20 +60,7 @@ declare class Collection<T> extends Map<string, T> {
    */
   filter(condition: (entity: T) => boolean): T[];
 
-  /**
-   * Find an entry in the Map using an functional condition.
-   * @see {@link Array#find}
-   *
-   * @param condition - The functional condition to test
-   * @returns The value, if found, otherwise null
-   *
-   * @example
-   * ```typescript
-   * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
-   * let a = c.find(entry => entry === "A");
-   * ```
-   */
-  find(condition: (entity: T) => boolean): T | null;
+  /* -------------------------------------------- */
 
   /**
    * Get an element from the Collection by its key.
@@ -68,6 +78,8 @@ declare class Collection<T> extends Map<string, T> {
    */
   get<V extends T = T>(key: string, { strict }?: { strict?: boolean }): V | undefined;
 
+  /* -------------------------------------------- */
+
   /**
    * Get an entry from the Collection by name.
    * Use of this method assumes that the objects stored in the collection have a "name" attribute.
@@ -79,6 +91,8 @@ declare class Collection<T> extends Map<string, T> {
    */
   getName(name: string, { strict }?: { strict?: boolean }): T | null;
 
+  /* -------------------------------------------- */
+
   /**
    * Transform each element of the Collection into a new form, returning an Array of transformed values
    * @param transformer - The transformation function to apply to each entry value
@@ -86,6 +100,8 @@ declare class Collection<T> extends Map<string, T> {
    * @returns An Array of transformed values
    */
   map<M>(transformer: (entity: T) => M): M[];
+
+  /* -------------------------------------------- */
 
   /**
    * Reduce the Collection by applying an evaluator function and accumulating entries

@@ -3,6 +3,14 @@
  */
 
 declare class AutumnLeavesWeatherEffect extends SpecialEffect {
+  static get label(): string;
+
+  static get effectOptions(): SpecialEffect.Options;
+
+  getParticleEmitters(): PIXI.particles.Emitter[];
+
+  protected _getLeafEmitter(parent: PIXI.Container): PIXI.particles.Emitter;
+
   /**
    * @defaultValue
    * ```typescript
@@ -47,12 +55,4 @@ declare class AutumnLeavesWeatherEffect extends SpecialEffect {
    * ```
    */
   static LEAF_CONFIG: PIXI.particles.EmitterConfig | PIXI.particles.OldEmitterConfig;
-
-  static get effectOptions(): SpecialEffect.Options;
-
-  static get label(): string;
-
-  getParticleEmitters(): PIXI.particles.Emitter[];
-
-  protected _getLeafEmitter(parent: PIXI.Container): PIXI.particles.Emitter;
 }

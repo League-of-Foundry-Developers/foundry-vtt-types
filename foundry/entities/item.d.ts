@@ -6,18 +6,42 @@
  * @typeParam PD - The type of the `Item`'s `data` field after `prepareData` has been called. It should extend `D`.
  */
 declare class Item<D extends Item.Data = Item.Data<any>, PD extends D = D> extends Entity<D, PD> {
-  /** @override */
-  static get config(): Entity.Config<Item>;
-
-  /**
-   * A convenience constructor method to create an Item instance which is owned by an Actor
-   */
-  static createOwned<T extends Item>(this: ConstructorOf<T>, itemData: DeepPartial<Item.Data>, actor: Actor): T;
-
   /**
    * ActiveEffects are prepared by the Item.prepareEmbeddedEntities() method
    */
   effects: Collection<ActiveEffect<this>>;
+
+  /** @override */
+  static get config(): Entity.Config<Item>;
+
+  /** @override */
+  get uuid(): string;
+
+  /**
+   * @remarks
+   * Returns void
+   * @override
+   */
+  prepareData(): void;
+
+  /** @override */
+  prepareEmbeddedEntities(): void;
+
+  /**
+   * Prepare a Collection of ActiveEffect instances which belong to this Item.
+   * @param effects - The raw array of active effect objects
+   * @returns The prepared active effects collection
+   */
+  protected _prepareActiveEffects(effects: ActiveEffect.Data[]): Collection<ActiveEffect<this>>;
+
+  /**
+   * Prepare a data object which defines the data schema used by dice roll commands against this Item
+   */
+  getRollData(): Duplicated<PD['data']>;
+
+  /* -------------------------------------------- */
+  /*  Properties                                  */
+  /* -------------------------------------------- */
 
   /**
    * A convenience reference to the Actor entity which owns this item, if any
@@ -30,18 +54,6 @@ declare class Item<D extends Item.Data = Item.Data<any>, PD extends D = D> exten
    * A convenience reference to the image path (data.img) used to represent this Item
    */
   get img(): string;
-
-  /**
-   * A flag for whether the item is owned by an Actor entity
-   * @returns
-   */
-  get isOwned(): boolean;
-
-  /**
-   * A boolean indicator for whether the current game user has ONLY limited visibility for this Entity.
-   * @returns
-   */
-  get limited(): boolean;
 
   /**
    * Return an array of the Active Effect instances which originated from this Item.
@@ -57,16 +69,21 @@ declare class Item<D extends Item.Data = Item.Data<any>, PD extends D = D> exten
    */
   get type(): string;
 
-  /** @override */
-  get uuid(): string;
-
-  /** @override */
-  delete(options?: Entity.DeleteOptions): Promise<this>;
+  /**
+   * A boolean indicator for whether the current game user has ONLY limited visibility for this Entity.
+   * @returns
+   */
+  get limited(): boolean;
 
   /**
-   * Prepare a data object which defines the data schema used by dice roll commands against this Item
+   * A flag for whether the item is owned by an Actor entity
+   * @returns
    */
-  getRollData(): Duplicated<PD['data']>;
+  get isOwned(): boolean;
+
+  /* -------------------------------------------- */
+  /*  Methods                                     */
+  /* -------------------------------------------- */
 
   /**
    * Override the standard permission test for Item entities as we need to apply a special check for owned items
@@ -75,26 +92,21 @@ declare class Item<D extends Item.Data = Item.Data<any>, PD extends D = D> exten
    */
   hasPerm(user: User, permission: string | number, exact?: boolean): boolean;
 
-  /**
-   * @remarks
-   * Returns void
-   * @override
-   */
-  prepareData(): void;
-
-  /** @override */
-  prepareEmbeddedEntities(): void;
+  /* -------------------------------------------- */
+  /*  Socket Listeners and Handlers               */
+  /* -------------------------------------------- */
 
   /** @override */
   update<U>(data: Expanded<U> extends DeepPartial<D> ? U : never, options?: Entity.UpdateOptions): Promise<this>;
   update(data: DeepPartial<D>, options?: Entity.UpdateOptions): Promise<this>;
 
+  /** @override */
+  delete(options?: Entity.DeleteOptions): Promise<this>;
+
   /**
-   * Prepare a Collection of ActiveEffect instances which belong to this Item.
-   * @param effects - The raw array of active effect objects
-   * @returns The prepared active effects collection
+   * A convenience constructor method to create an Item instance which is owned by an Actor
    */
-  protected _prepareActiveEffects(effects: ActiveEffect.Data[]): Collection<ActiveEffect<this>>;
+  static createOwned<T extends Item>(this: ConstructorOf<T>, itemData: DeepPartial<Item.Data>, actor: Actor): T;
 }
 
 declare namespace Item {

@@ -173,45 +173,6 @@ declare const ui: {
  */
 declare class Game {
   /**
-   * Establish a live connection to the game server through the socket.io URL
-   * @param sessionId - The client session ID with which to establish the connection
-   * @returns A promise which resolves to the connected socket, if successful
-   */
-  static connect(sessionId: string): Promise<SocketIOClient.Socket>;
-
-  /**
-   * Fetch World data and return a Game instance
-   * @returns A Promise which resolves to the created Game instance
-   */
-  static create(): Promise<Game>;
-
-  /**
-   * Retrieve the cookies which are attached to the client session
-   * @returns The session cookies
-   */
-  static getCookies(): Record<string, string>;
-
-  /**
-   * Request setup data from server and return it
-   */
-  static getSetupData(socket: SocketIOClient.Socket): Promise<Game.Data>;
-
-  /**
-   * Request World data from server and return it
-   */
-  static getWorldData(socket: SocketIOClient.Socket): Promise<Game.Data>;
-
-  /**
-   * Get the current World status upon initial connection.
-   */
-  static getWorldStatus(socket: SocketIOClient.Socket): Promise<boolean>;
-
-  /**
-   * General game-state socket listeners and event handlers
-   */
-  static socketListeners(socket: SocketIOClient.Socket): void;
-
-  /**
    * @param view      - The named view which is active for this game instance.
    * @param data      - An object of all the World data vended by the server when the client first connects
    * @param sessionId - The ID of the currently active client session retrieved from the browser cookie
@@ -220,28 +181,10 @@ declare class Game {
   constructor(view: Game['view'], data: Game['data'], sessionId: Game['sessionId'], socket: Game['socket']);
 
   /**
-   * Allow properties to be added dynamically
+   * The named view which is currently active.
+   * Game views include: join, setup, players, license, game, stream
    */
-  [key: string]: unknown;
-
-  /**
-   * Initialized in
-   * - `/game`: after "setup", before "ready" hook
-   * - `/stream`
-   */
-  actors?: Actors;
-
-  /**
-   * A singleton instance of the Audio Helper class
-   */
-  audio: AudioHelper;
-
-  /**
-   * Initialized in
-   * - `/game`: after "setup", before "ready" hook
-   * - `/stream`
-   */
-  combats?: CombatEncounters;
+  view: Game.View;
 
   /**
    * The object of world data passed from the server
@@ -249,35 +192,9 @@ declare class Game {
   data: Game.Data;
 
   /**
-   * Whether the Game is running in debug mode
-   */
-  debug: boolean;
-
-  /**
-   * Initialized in
-   * - `/game`: after "setup", before "ready" hook
-   * - `/stream`
-   */
-  folders?: Folders;
-
-  /**
    * Localization support
    */
   i18n: Localization;
-
-  /**
-   * Initialized in
-   * - `/game`: after "setup", before "ready" hook
-   * - `/stream`
-   */
-  items?: Items;
-
-  /**
-   * Initialized in
-   * - `/game`: after "setup", before "ready" hook
-   * - `/stream`
-   */
-  journal?: Journal;
 
   /**
    * The Keyboard Manager
@@ -286,35 +203,9 @@ declare class Game {
   keyboard?: KeyboardManager;
 
   /**
-   * A flag for whether texture assets for the game canvas are currently loading
-   */
-  loading: boolean;
-
-  /**
-   * Initialized in
-   * - `/game`: after "setup", before "ready" hook
-   * - `/stream`
-   */
-  macros?: Macros;
-
-  /**
-   * Initialized in
-   * - `/game`: after "setup", before "ready" hook
-   * - `/stream`
-   */
-  messages?: Messages;
-
-  /**
    * A mapping of installed modules
    */
   modules: Map<string, Game.Module>;
-
-  /**
-   * Initialized in
-   * - `/game`: after "setup", before "ready" hook
-   * - `/stream`
-   */
-  packs?: Collection<Compendium>;
 
   /**
    * The user role permissions setting
@@ -322,25 +213,6 @@ declare class Game {
    * @defaultValue `null`
    */
   permissions?: Game.Permissions;
-
-  /**
-   * Initialized in
-   * - `/game`: after "setup", before "ready" hook
-   * - `/stream`
-   */
-  playlists?: Playlists;
-
-  /**
-   * A flag for whether the Game has successfully reached the "ready" hook
-   */
-  ready: boolean;
-
-  /**
-   * Initialized in
-   * - `/game`: after "setup", before "ready" hook
-   * - `/stream`
-   */
-  scenes?: Scenes;
 
   /**
    * The client session id which is currently active
@@ -358,13 +230,6 @@ declare class Game {
   socket: SocketIOClient.Socket;
 
   /**
-   * Initialized in
-   * - `/game`: after "setup", before "ready" hook
-   * - `/stream`
-   */
-  tables?: RollTables;
-
-  /**
    * A singleton GameTime instance which manages the progression of time within the game world.
    */
   time: GameTime;
@@ -375,12 +240,9 @@ declare class Game {
   userId: string | null;
 
   /**
-   * Initialized in
-   * - `/game`: after "setup", before "ready" hook
-   * - `/stream`
-   * - `/players`
+   * A singleton instance of the Audio Helper class
    */
-  users?: Users;
+  audio: AudioHelper;
 
   /**
    * A singleton instance of the Video Helper class
@@ -388,77 +250,110 @@ declare class Game {
   video: VideoHelper;
 
   /**
-   * The named view which is currently active.
-   * Game views include: join, setup, players, license, game, stream
+   * Whether the Game is running in debug mode
    */
-  view: Game.View;
+  debug: boolean;
 
   /**
-   * Initialized in
-   * - `/game`: after "setup", before "ready" hook
-   * - `/stream`
+   * A flag for whether texture assets for the game canvas are currently loading
    */
-  webrtc?: AVMaster;
+  loading: boolean;
 
   /**
-   * A convenient reference to the currently active canvas tool
+   * A flag for whether the Game has successfully reached the "ready" hook
    */
-  get activeTool(): string;
+  ready: boolean;
 
   /**
-   * A convenience accessor for the currently viewed Combat encounter
+   * Allow properties to be added dynamically
    */
-  get combat(): Combat;
+  [key: string]: unknown;
+
+  /* -------------------------------------------- */
 
   /**
-   * Is the current session user authenticated as an application administrator?
+   * Fetch World data and return a Game instance
+   * @returns A Promise which resolves to the created Game instance
    */
-  get isAdmin(): boolean;
+  static create(): Promise<Game>;
+
+  /* -------------------------------------------- */
 
   /**
-   * A state variable which tracks whether or not the game session is currently paused
+   * Establish a live connection to the game server through the socket.io URL
+   * @param sessionId - The client session ID with which to establish the connection
+   * @returns A promise which resolves to the connected socket, if successful
    */
-  get paused(): boolean;
+  static connect(sessionId: string): Promise<SocketIOClient.Socket>;
+
+  /* -------------------------------------------- */
 
   /**
-   * Metadata regarding the game System which powers this World
+   * Retrieve the cookies which are attached to the client session
+   * @returns The session cookies
    */
-  get system(): Game.System;
+  static getCookies(): Record<string, string>;
+
+  /* -------------------------------------------- */
 
   /**
-   * The currently connected User entity, or null if Users is not yet initialized
+   * Get the current World status upon initial connection.
    */
-  get user(): User | null;
+  static getWorldStatus(socket: SocketIOClient.Socket): Promise<boolean>;
+
+  /* -------------------------------------------- */
 
   /**
-   * Metadata regarding the current game World
+   * Request World data from server and return it
    */
-  get world(): Game.World;
+  static getWorldData(socket: SocketIOClient.Socket): Promise<Game.Data>;
+
+  /* -------------------------------------------- */
 
   /**
-   * Activate Event Listeners which apply to every Game View
+   * Request setup data from server and return it
    */
-  activateListeners(): void;
+  static getSetupData(socket: SocketIOClient.Socket): Promise<Game.Data>;
+
+  /* -------------------------------------------- */
 
   /**
    * Initialize the Game for the current window location
    */
   initialize(): void;
 
+  /* -------------------------------------------- */
+
   /**
-   * Initialize the game Canvas
+   * Display certain usability error messages which are likely to result in the player having a bad experience.
    */
-  initializeCanvas(): Promise<void>;
+  protected _displayUsabilityErrors(): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Shut down the currently active Game. Requires GameMaster user permission.
+   * @returns A Promise which resolves to the response object from the server
+   */
+  shutDown(): Promise<void>;
+
+  /* -------------------------------------------- */
+  /*  Primary Game Initialization
+  /* -------------------------------------------- */
+
+  /**
+   * Fully set up the game state, initializing Entities, UI applications, and the Canvas
+   */
+  setupGame(): Promise<void>;
+
+  /* -------------------------------------------- */
 
   /**
    * Initialize game state data by creating EntityCollection instances for every Entity types
    */
   initializeEntities(): void;
 
-  /**
-   * Initialize Keyboard and Mouse controls
-   */
-  initializeKeyboard(): void;
+  /* -------------------------------------------- */
 
   /**
    * Initialize the Compendium packs which are present within this Game
@@ -466,41 +361,105 @@ declare class Game {
    */
   initializePacks(config?: Record<string, { locked?: boolean; private?: boolean }>): Promise<Collection<Compendium>>;
 
+  /* -------------------------------------------- */
+
   /**
    * Initialize the WebRTC implementation
    */
   initializeRTC(): Promise<boolean>;
+
+  /* -------------------------------------------- */
 
   /**
    * Initialize core UI elements
    */
   initializeUI(): void;
 
-  /**
-   * Log out of the game session by returning to the Join screen
-   */
-  logOut(): void;
+  /* -------------------------------------------- */
 
   /**
-   * Open socket listeners which transact game state data
+   * Initialize the game Canvas
    */
-  openSockets(): void;
+  initializeCanvas(): Promise<void>;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Ensure that necessary fonts have loaded and are ready for use
+   * Enforce a maximum timeout in milliseconds.
+   * Proceed with rendering after that point even if fonts are not yet available.
+   * @param ms - The timeout to delay
+   */
+  protected _checkFontsReady(ms: number): Promise<void>;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Initialize Keyboard and Mouse controls
+   */
+  initializeKeyboard(): void;
+
+  /* -------------------------------------------- */
 
   /**
    * Register core game settings
    */
   registerSettings(): void;
 
-  /**
-   * Fully set up the game state, initializing Entities, UI applications, and the Canvas
-   */
-  setupGame(): Promise<void>;
+  /* -------------------------------------------- */
+  /*  Properties                                  */
+  /* -------------------------------------------- */
 
   /**
-   * Shut down the currently active Game. Requires GameMaster user permission.
-   * @returns A Promise which resolves to the response object from the server
+   * Is the current session user authenticated as an application administrator?
    */
-  shutDown(): Promise<void>;
+  get isAdmin(): boolean;
+
+  /* -------------------------------------------- */
+
+  /**
+   * The currently connected User entity, or null if Users is not yet initialized
+   */
+  get user(): User | null;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Metadata regarding the current game World
+   */
+  get world(): Game.World;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Metadata regarding the game System which powers this World
+   */
+  get system(): Game.System;
+
+  /* -------------------------------------------- */
+
+  /**
+   * A convenience accessor for the currently viewed Combat encounter
+   */
+  get combat(): Combat;
+
+  /* -------------------------------------------- */
+
+  /**
+   * A state variable which tracks whether or not the game session is currently paused
+   */
+  get paused(): boolean;
+
+  /* -------------------------------------------- */
+
+  /**
+   * A convenient reference to the currently active canvas tool
+   */
+  get activeTool(): string;
+
+  /* -------------------------------------------- */
+  /*  Methods                                     */
+  /* -------------------------------------------- */
 
   /**
    * Toggle the pause state of the game
@@ -511,66 +470,46 @@ declare class Game {
    */
   togglePause(pause: boolean, push?: boolean): void;
 
-  /**
-   * Ensure that necessary fonts have loaded and are ready for use
-   * Enforce a maximum timeout in milliseconds.
-   * Proceed with rendering after that point even if fonts are not yet available.
-   * @param ms - The timeout to delay
-   */
-  protected _checkFontsReady(ms: number): Promise<void>;
+  /* -------------------------------------------- */
 
   /**
-   * Display certain usability error messages which are likely to result in the player having a bad experience.
+   * Log out of the game session by returning to the Join screen
    */
-  protected _displayUsabilityErrors(): void;
+  logOut(): void;
+
+  /* -------------------------------------------- */
+  /*  Socket Listeners and Handlers               */
+  /* -------------------------------------------- */
 
   /**
-   * Initialization steps for the primary Game view
+   * Open socket listeners which transact game state data
    */
-  protected _initializeGameView(): Promise<void>;
+  openSockets(): void;
+
+  /* -------------------------------------------- */
 
   /**
-   * Initialization steps specifically for the game setup view
-   * This view is unique because a Game object does not exist for a non-authenticated player
+   * General game-state socket listeners and event handlers
    */
-  protected _initializeJoinView(): Promise<void>;
+  static socketListeners(socket: SocketIOClient.Socket): void;
+
+  /* -------------------------------------------- */
+  /*  Event Listeners and Handlers                */
+  /* -------------------------------------------- */
 
   /**
-   * Initialization steps for the game setup view
+   * Activate Event Listeners which apply to every Game View
    */
-  protected _initializeLicenseView(): Promise<void>;
+  activateListeners(): void;
 
-  /**
-   * Initialize the Player Management View
-   */
-  protected _initializePlayersView(): Promise<void>;
-
-  /**
-   * Initialization steps for the game setup view
-   */
-  protected _initializeSetupView(): Promise<void>;
-
-  /**
-   * Initialization steps for the Stream helper view
-   */
-  protected _initializeStreamView(): Promise<void>;
+  /* -------------------------------------------- */
 
   /**
    * On left mouse clicks, check if the element is contained in a valid hyperlink and open it in a new tab.
    */
   protected _onClickHyperlink(event: MouseEvent): void;
 
-  /**
-   * On a left-click event, remove any currently displayed inline roll tooltip
-   * @param event - The originating left-click event
-   */
-  protected _onLeftClick(event: MouseEvent): void;
-
-  /**
-   * Disallow dragging of external content onto anything but a file input element
-   * @param event - The requested drag event
-   */
-  protected _onPreventDragover(event: DragEvent): void;
+  /* -------------------------------------------- */
 
   /**
    * Prevent starting a drag and drop workflow on elements within the document unless the element has the draggable
@@ -579,11 +518,40 @@ declare class Game {
    */
   protected _onPreventDragstart(event: DragEvent): boolean;
 
+  /* -------------------------------------------- */
+
+  /**
+   * Disallow dragging of external content onto anything but a file input element
+   * @param event - The requested drag event
+   */
+  protected _onPreventDragover(event: DragEvent): void;
+
+  /* -------------------------------------------- */
+
   /**
    * Disallow dropping of external content onto anything but a file input element
    * @param event - The requested drag event
    */
   protected _onPreventDrop(event: DragEvent): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * On a left-click event, remove any currently displayed inline roll tooltip
+   * @param event - The originating left-click event
+   */
+  protected _onLeftClick(event: MouseEvent): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle resizing of the game window
+   * Reposition any active UI windows
+   * @param event - (unused)
+   */
+  protected _onWindowResize(event?: any): void;
+
+  /* -------------------------------------------- */
 
   /**
    * Handle window unload operations to clean up any data which may be pending a final save
@@ -592,23 +560,159 @@ declare class Game {
    */
   protected _onWindowBeforeUnload(event?: any): void;
 
+  /* -------------------------------------------- */
+
   /**
    * Handle cases where the browser window loses focus to reset detection of currently pressed keys
    * @param event - The originating window.blur event
    */
   protected _onWindowBlur(event: Event): void;
 
+  /* -------------------------------------------- */
+
   /**
    * @param event - (unused)
    */
   protected _onWindowPopState(event?: any): void;
 
+  /* -------------------------------------------- */
+  /*  View Initialization Functions
+  /* -------------------------------------------- */
+
   /**
-   * Handle resizing of the game window
-   * Reposition any active UI windows
-   * @param event - (unused)
+   * Initialization steps for the primary Game view
    */
-  protected _onWindowResize(event?: any): void;
+  protected _initializeGameView(): Promise<void>;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Initialization steps for the game setup view
+   */
+  protected _initializeLicenseView(): Promise<void>;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Initialization steps for the game setup view
+   */
+  protected _initializeSetupView(): Promise<void>;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Initialization steps for the Stream helper view
+   */
+  protected _initializeStreamView(): Promise<void>;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Initialize the Player Management View
+   */
+  protected _initializePlayersView(): Promise<void>;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Initialization steps specifically for the game setup view
+   * This view is unique because a Game object does not exist for a non-authenticated player
+   */
+  protected _initializeJoinView(): Promise<void>;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   * - `/players`
+   */
+  users?: Users;
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
+  messages?: Messages;
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
+  scenes?: Scenes;
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
+  actors?: Actors;
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
+  items?: Items;
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
+  journal?: Journal;
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
+  macros?: Macros;
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
+  playlists?: Playlists;
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
+  combats?: CombatEncounters;
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
+  tables?: RollTables;
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
+  folders?: Folders;
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
+  packs?: Collection<Compendium>;
+
+  /**
+   * Initialized in
+   * - `/game`: after "setup", before "ready" hook
+   * - `/stream`
+   */
+  webrtc?: AVMaster;
 }
 
 declare namespace Game {

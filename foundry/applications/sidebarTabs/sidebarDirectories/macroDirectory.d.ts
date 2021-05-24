@@ -6,12 +6,6 @@
  * @see {@link MacroConfig}   The Macro Configuration Sheet
  */
 declare class MacroDirectory extends SidebarDirectory<MacroDirectory.Options> {
-  /**
-   * @override
-   * @see {@link Game.macros}
-   */
-  static get collection(): Game['macros'];
-
   static get defaultOptions(): MacroDirectory.Options;
 
   /**
@@ -20,10 +14,15 @@ declare class MacroDirectory extends SidebarDirectory<MacroDirectory.Options> {
   static get entity(): 'Macro';
 
   /**
-   * @param selector - (unused)
+   * @override
+   * @see {@link Game.macros}
+   */
+  static get collection(): Game['macros'];
+
+  /**
    * @override
    */
-  protected _canDragStart(selector: string | null): true;
+  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
 
   /**
    * @override
@@ -32,23 +31,14 @@ declare class MacroDirectory extends SidebarDirectory<MacroDirectory.Options> {
   protected _onCreate(event: Event): Promise<void>;
 
   /**
+   * @param selector - (unused)
    * @override
    */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+  protected _canDragStart(selector: string | null): true;
 }
 
 declare namespace MacroDirectory {
   interface Options extends SidebarDirectory.Options {
-    /**
-     * @defaultValue `true`
-     */
-    canDrag: boolean;
-
-    /**
-     * @defaultValue `680`
-     */
-    height: number;
-
     /**
      * @defaultValue `'macros'`
      */
@@ -58,5 +48,15 @@ declare namespace MacroDirectory {
      * @defaultValue `'templates/sidebar/macro-directory.html'`
      */
     template: string;
+
+    /**
+     * @defaultValue `true`
+     */
+    canDrag: boolean;
+
+    /**
+     * @defaultValue `680`
+     */
+    height: number;
   }
 }

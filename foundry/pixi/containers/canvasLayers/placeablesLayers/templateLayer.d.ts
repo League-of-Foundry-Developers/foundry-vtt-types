@@ -20,22 +20,22 @@ declare class TemplateLayer extends PlaceablesLayer<MeasuredTemplate> {
    */
   static get layerOptions(): PlaceablesLayer.LayerOptions;
 
-  /**
-   * Register game settings used by the TemplatesLayer
-   */
-  static registerSettings(): void;
-
   /** @override */
   activate(): this;
 
   /** @override */
   deactivate(): this;
 
-  /** @override */
-  protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+  /**
+   * Register game settings used by the TemplatesLayer
+   */
+  static registerSettings(): void;
 
   /** @override */
   protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
+
+  /** @override */
+  protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
   /**
    * @override

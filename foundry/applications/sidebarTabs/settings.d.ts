@@ -9,15 +9,15 @@ declare class Settings extends SidebarTab<Settings.Options> {
   static get defaultOptions(): Settings.Options;
 
   /**
-   * @override
-   */
-  activateListeners(html: JQuery): void;
-
-  /**
    * @param options - (unused)
    * @override
    */
   getData(options?: Application.RenderOptions): Settings.Data;
+
+  /**
+   * @override
+   */
+  activateListeners(html: JQuery): void;
 
   /**
    * Delegate different actions for different settings buttons
@@ -27,13 +27,13 @@ declare class Settings extends SidebarTab<Settings.Options> {
 
 declare namespace Settings {
   interface Data {
+    user: User;
+    system: Game['system'];
+    coreVersion: string;
     canConfigure: boolean;
     canSetup: boolean;
     coreUpdate: string | false;
-    coreVersion: string;
     modules: number;
-    system: Game['system'];
-    user: User;
   }
 
   interface Options extends SidebarTab.Options {

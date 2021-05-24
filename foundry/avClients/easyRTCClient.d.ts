@@ -9,12 +9,6 @@ declare class EasyRTCClient extends AVClient {
   constructor(master: AVMaster, settings: AVSettings);
 
   /**
-   * An array of easyRtcId peers that rejected our call. Avoid continually trying to call the same peer.
-   * @defaultValue `[]`
-   */
-  protected _callRejections: string[];
-
-  /**
    * Store the name of the joined EasyRTC room
    * @defaultValue `null`
    */
@@ -26,11 +20,178 @@ declare class EasyRTCClient extends AVClient {
    */
   protected _usernameCache: Record<string, string>;
 
+  /**
+   * An array of easyRtcId peers that rejected our call. Avoid continually trying to call the same peer.
+   * @defaultValue `[]`
+   */
+  protected _callRejections: string[];
+
+  /** @override */
+  initialize(): Promise<void>;
+
   /** @override */
   connect(): Promise<true>;
 
   /** @override */
   disconnect(): Promise<true>;
+
+  /**
+   * Connect to the WebRTC server and configure ICE/TURN servers
+   * @returns Was the server connected?
+   */
+  protected _connectServer({
+    type,
+    room,
+    url,
+    username,
+    password
+  }: {
+    type?: 'FVTT' | 'custom';
+    room?: string;
+    url: string;
+    username: string;
+    password: string;
+  }): Promise<boolean>;
+
+  /**
+   * Setup the custom TURN relay to be used in subsequent calls if there is one configured
+   * If configured, setup custom TURN configuration for future calls. Turn credentials are mandatory in WebRTC.
+   */
+  protected _setupCustomTURN(): void;
+
+  /**
+   * Initialize a local media stream
+   * Capture the local audio and video and returns the stream associated with them.
+   *
+   * If `temporary` is false (default), then this will initialize the master stream, not the actual
+   * streams being sent to individual users. However, if a master stream was already created, it
+   * will automatically get closed and every individual streams derived from it that are being sent
+   * to connected users will be removed from the calls.
+   * Each established or subsequent calls will receive a copy of the created stream (A/V depending on user permissions)
+   *
+   * If `temporary` is true then this only applies to a temporary stream and does not affect
+   * the master stream or any streams in existing calls.
+   * Note that this assumes only one temporary stream can be created at a time.
+   *
+   * @param audioSrc  - ID of the audio source to capture from or null to disable Audio
+   *                    (default: `undefined`)
+   * @param videoSrc  - ID of the video source to capture from or null to disable Video
+   *                    (default: `undefined`)
+   * @param temporary - Whether to create a temporary stream or the master stream
+   *                    (default: `false`)
+   * @returns Returns the local stream or `null` if none could be created
+   */
+  protected _initializeLocal({
+    audioSrc,
+    videoSrc,
+    temporary
+  }?: {
+    audioSrc?: string | null;
+    videoSrc?: string | null;
+    temporary?: boolean;
+  }): Promise<MediaStream>;
+
+  /**
+   * Create an open a local stream when initially connecting to the server.
+   * This local stream becomes the "master" stream which tracks your own device inputs.
+   * The master stream is cloned to provide a stream to every connected peer.
+   */
+  protected _openLocalStream(
+    audioSrc: string | undefined | null,
+    videoSrc: string | undefined | null,
+    temporary?: boolean
+  ): Promise<MediaStream | null>;
+
+  /**
+   * Close the local stream
+   */
+  protected _closeLocalStream(temporary?: boolean): void;
+
+  /**
+   * Define media constraints to control the resolution and devices used.
+   * We need to set our own constraints so we can specify a min/max range of resolutions.
+   */
+  protected _getStreamMediaConstraints(
+    videoSrc: string | undefined | null,
+    audioSrc: string | undefined | null
+  ): EasyRTCClient.StreamMediaConstraints;
+
+  /**
+   * Call a peer and establish a connection with them
+   * @param easyRtcId - The peer ID to call
+   * @returns Returns false if no call was made or true if the call is successful.
+   * @throws raises an Exception in case of failure to establish the call.
+   */
+  protected _performCall(easyRtcId: string): Promise<boolean>;
+
+  /**
+   * Create a MediaStream to be sent to a specific peer.
+   * This stream should control whether outbound video and audio is transmitted.
+   * Create the stream as a clone of the current master stream for configuration on a peer-to-peer basis.
+   */
+  protected _createStreamForPeer(peer: string): MediaStream | null;
+
+  /** @override */
+  getAudioSinks(): Promise<Record<string, string>>;
+
+  /** @override */
+  getAudioSources(): Promise<Record<string, string>>;
+
+  /** @override */
+  getVideoSources(): Promise<Record<string, string>>;
+
+  /**
+   * Transform the device info array from easyrtc into an object with `{id: label}` keys
+   * @param list - The list of devices
+   */
+  protected _deviceInfoToObject(list: EasyRTCClient.DeviceSource[]): Record<string, string>;
+
+  /**
+   * Obtain the EasyRTC user ID of a user based on their Foundry VTT user ID
+   * @param userId - The ID of the user
+   * @returns The EasyRtcId of the peer
+   */
+  protected _userIdToEasyRtcId(userId: string): string | null;
+
+  /** @override */
+  getConnectedUsers(): string[];
+
+  /**
+   * Get MediaStream instances for every connected peer in the room.
+   * @returns - An array of stream information for each peer
+   */
+  getConnectedStreams(): EasyRTCClient.StreamInfo;
+
+  /** @override */
+  getMediaStreamForUser(userId: string): MediaStream;
+
+  /** @override */
+  isAudioEnabled(): boolean;
+
+  /** @override */
+  isVideoEnabled(): boolean;
+
+  /**
+   * Handle a request to enable or disable the outbound audio feed for the current game user.
+   * @param enable - Whether the outbound audio track should be enabled (true) or disabled (false)
+   */
+  toggleAudio(enable: boolean): void;
+
+  /**
+   * Set whether the outbound audio feed for the current game user is actively broadcasting.
+   * This can only be true if audio is enabled, but may be false if using push-to-talk or voice activation modes.
+   * @param broadcast - Whether outbound audio should be sent to connected peers or not?
+   */
+  toggleBroadcast(broadcast: boolean): void;
+
+  /**
+   * Handle a request to enable or disable the outbound video feed for the current game user.
+   * @param enable - Whether the outbound video track should be enabled (true) or disabled (false)
+   */
+  toggleVideo(enable: boolean): void;
+
+  /** @override */
+  setUserVideo(userId: string, videoElement: HTMLVideoElement): Promise<void>;
 
   /**
    * Enable or disable the audio tracks in a stream
@@ -67,62 +228,13 @@ declare class EasyRTCClient extends AVClient {
    */
   enableStreamVideo(stream: MediaStream, enable?: boolean): void;
 
-  /** @override */
-  getAudioSinks(): Promise<Record<string, string>>;
-
-  /** @override */
-  getAudioSources(): Promise<Record<string, string>>;
-
   /**
-   * Get MediaStream instances for every connected peer in the room.
-   * @returns - An array of stream information for each peer
+   * Enables or disables media tracks
+   * See https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/enabled
+   * @param tracks - The tracks to enable/disable
+   * @param enable - Whether to enable or disable the tracks
    */
-  getConnectedStreams(): EasyRTCClient.StreamInfo;
-
-  /** @override */
-  getConnectedUsers(): string[];
-
-  /** @override */
-  getMediaStreamForUser(userId: string): MediaStream;
-
-  /**
-   * @deprecated Use `getMediaStreamForUser` instead
-   */
-  getStreamForUser(userId: string): MediaStream;
-
-  /** @override */
-  getVideoSources(): Promise<Record<string, string>>;
-
-  /** @override */
-  initialize(): Promise<void>;
-
-  /** @override */
-  isAudioEnabled(): boolean;
-
-  /** @override */
-  isVideoEnabled(): boolean;
-
-  /** @override */
-  setUserVideo(userId: string, videoElement: HTMLVideoElement): Promise<void>;
-
-  /**
-   * Handle a request to enable or disable the outbound audio feed for the current game user.
-   * @param enable - Whether the outbound audio track should be enabled (true) or disabled (false)
-   */
-  toggleAudio(enable: boolean): void;
-
-  /**
-   * Set whether the outbound audio feed for the current game user is actively broadcasting.
-   * This can only be true if audio is enabled, but may be false if using push-to-talk or voice activation modes.
-   * @param broadcast - Whether outbound audio should be sent to connected peers or not?
-   */
-  toggleBroadcast(broadcast: boolean): void;
-
-  /**
-   * Handle a request to enable or disable the outbound video feed for the current game user.
-   * @param enable - Whether the outbound video track should be enabled (true) or disabled (false)
-   */
-  toggleVideo(enable: boolean): void;
+  protected _enableMediaTracks(tracks: MediaStreamTrack[], enable: boolean): void;
 
   /**
    * Callback used to check if an incoming call should be accepted or not
@@ -135,91 +247,6 @@ declare class EasyRTCClient extends AVClient {
   ): void;
 
   /**
-   * Close the local stream
-   */
-  protected _closeLocalStream(temporary?: boolean): void;
-
-  /**
-   * Connect to the WebRTC server and configure ICE/TURN servers
-   * @returns Was the server connected?
-   */
-  protected _connectServer({
-    type,
-    room,
-    url,
-    username,
-    password
-  }: {
-    type?: 'FVTT' | 'custom';
-    room?: string;
-    url: string;
-    username: string;
-    password: string;
-  }): Promise<boolean>;
-
-  /**
-   * Create a MediaStream to be sent to a specific peer.
-   * This stream should control whether outbound video and audio is transmitted.
-   * Create the stream as a clone of the current master stream for configuration on a peer-to-peer basis.
-   */
-  protected _createStreamForPeer(peer: string): MediaStream | null;
-
-  /**
-   * Transform the device info array from easyrtc into an object with `{id: label}` keys
-   * @param list - The list of devices
-   */
-  protected _deviceInfoToObject(list: EasyRTCClient.DeviceSource[]): Record<string, string>;
-
-  /**
-   * Enables or disables media tracks
-   * See https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/enabled
-   * @param tracks - The tracks to enable/disable
-   * @param enable - Whether to enable or disable the tracks
-   */
-  protected _enableMediaTracks(tracks: MediaStreamTrack[], enable: boolean): void;
-
-  /**
-   * Define media constraints to control the resolution and devices used.
-   * We need to set our own constraints so we can specify a min/max range of resolutions.
-   */
-  protected _getStreamMediaConstraints(
-    videoSrc: string | undefined | null,
-    audioSrc: string | undefined | null
-  ): EasyRTCClient.StreamMediaConstraints;
-
-  /**
-   * Initialize a local media stream
-   * Capture the local audio and video and returns the stream associated with them.
-   *
-   * If `temporary` is false (default), then this will initialize the master stream, not the actual
-   * streams being sent to individual users. However, if a master stream was already created, it
-   * will automatically get closed and every individual streams derived from it that are being sent
-   * to connected users will be removed from the calls.
-   * Each established or subsequent calls will receive a copy of the created stream (A/V depending on user permissions)
-   *
-   * If `temporary` is true then this only applies to a temporary stream and does not affect
-   * the master stream or any streams in existing calls.
-   * Note that this assumes only one temporary stream can be created at a time.
-   *
-   * @param audioSrc  - ID of the audio source to capture from or null to disable Audio
-   *                    (default: `undefined`)
-   * @param videoSrc  - ID of the video source to capture from or null to disable Video
-   *                    (default: `undefined`)
-   * @param temporary - Whether to create a temporary stream or the master stream
-   *                    (default: `false`)
-   * @returns Returns the local stream or `null` if none could be created
-   */
-  protected _initializeLocal({
-    audioSrc,
-    videoSrc,
-    temporary
-  }?: {
-    audioSrc?: string | null;
-    videoSrc?: string | null;
-    temporary?: boolean;
-  }): Promise<MediaStream>;
-
-  /**
    * Called when the connection to the signaling server is lost (unintentionally).
    * This handles the case of when connectivity is interrupted non-deliberately.
    */
@@ -229,24 +256,6 @@ declare class EasyRTCClient extends AVClient {
    * Called when an error occurs
    */
   protected _onError({ errorCode, errorText }: { errorCode: string; errorText: string }): void;
-
-  /**
-   * Called when the connection with a peer has been lost and the ICE machine was unable to re-establish it.
-   * In case of irrecoverable connection loss with the peer, hanging up the call will cause a roomOccupantListener
-   * signal to be sent and we will automatically try to reconnect to the user.
-   * First make sure that they are still in the room so we don't try to hangup with an easyRtcId that is invalid.
-   */
-  protected _onPeerClosed(easyRtcId: string): void;
-
-  /**
-   * Called when a remote stream is added to an existing call
-   */
-  protected _onPeerConnect(easyRtcId: string, stream: MediaStream): void;
-
-  /**
-   * Called when a remote stream is removed from an existing call
-   */
-  protected _onPeerDisconnect(easyRtcId: string, stream: MediaStream, streamName: string): void;
 
   /**
    * Called whenever there is a change in the list of occupants in a room.
@@ -268,50 +277,36 @@ declare class EasyRTCClient extends AVClient {
   ): Promise<void>;
 
   /**
-   * Create an open a local stream when initially connecting to the server.
-   * This local stream becomes the "master" stream which tracks your own device inputs.
-   * The master stream is cloned to provide a stream to every connected peer.
-   */
-  protected _openLocalStream(
-    audioSrc: string | undefined | null,
-    videoSrc: string | undefined | null,
-    temporary?: boolean
-  ): Promise<MediaStream | null>;
-
-  /**
-   * Call a peer and establish a connection with them
-   * @param easyRtcId - The peer ID to call
-   * @returns Returns false if no call was made or true if the call is successful.
-   * @throws raises an Exception in case of failure to establish the call.
-   */
-  protected _performCall(easyRtcId: string): Promise<boolean>;
-
-  /**
-   * Setup the custom TURN relay to be used in subsequent calls if there is one configured
-   * If configured, setup custom TURN configuration for future calls. Turn credentials are mandatory in WebRTC.
-   */
-  protected _setupCustomTURN(): void;
-
-  /**
-   * Obtain the EasyRTC user ID of a user based on their Foundry VTT user ID
-   * @param userId - The ID of the user
-   * @returns The EasyRtcId of the peer
-   */
-  protected _userIdToEasyRtcId(userId: string): string | null;
-
-  /**
    * Called when the connection with a peer has been established
    */
   protected onPeerOpen(easyRtcId: string): void;
+
+  /**
+   * Called when the connection with a peer has been lost and the ICE machine was unable to re-establish it.
+   * In case of irrecoverable connection loss with the peer, hanging up the call will cause a roomOccupantListener
+   * signal to be sent and we will automatically try to reconnect to the user.
+   * First make sure that they are still in the room so we don't try to hangup with an easyRtcId that is invalid.
+   */
+  protected _onPeerClosed(easyRtcId: string): void;
+
+  /**
+   * Called when a remote stream is added to an existing call
+   */
+  protected _onPeerConnect(easyRtcId: string, stream: MediaStream): void;
+
+  /**
+   * Called when a remote stream is removed from an existing call
+   */
+  protected _onPeerDisconnect(easyRtcId: string, stream: MediaStream, streamName: string): void;
+
+  /**
+   * @deprecated Use `getMediaStreamForUser` instead
+   */
+  getStreamForUser(userId: string): MediaStream;
 }
 
 declare namespace EasyRTCClient {
   interface StreamMediaConstraints {
-    audio:
-      | {
-          deviceId: string | undefined | null;
-        }
-      | false;
     video:
       | {
           /**
@@ -368,18 +363,23 @@ declare namespace EasyRTCClient {
           deviceId: string | undefined | null;
         }
       | false;
+    audio:
+      | {
+          deviceId: string | undefined | null;
+        }
+      | false;
   }
 
   interface DeviceSource {
     deviceId: string;
     groupId: string;
-    kind: 'audio' | 'video';
     label: string;
+    kind: 'audio' | 'video';
   }
 
   interface StreamInfo {
-    connection: RTCPeerConnection;
     id: string;
+    connection: RTCPeerConnection;
     local: MediaStream | null;
     remote: MediaStream | null;
   }

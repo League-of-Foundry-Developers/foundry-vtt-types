@@ -10,9 +10,6 @@ declare class ActiveEffectConfig<
   D extends object = ActiveEffectConfig.Data,
   O extends ActiveEffect = D extends ActiveEffectConfig.Data<infer T> ? T : ActiveEffect
 > extends FormApplication<P, D, O> {
-  /** @override */
-  static get defaultOptions(): typeof FormApplication['defaultOptions'];
-
   /**
    * @param object  - The target active effect being configured
    * @param options - Additional options which modify this application instance
@@ -20,19 +17,16 @@ declare class ActiveEffectConfig<
   constructor(object: O, options?: Partial<P>);
 
   /** @override */
-  get title(): string;
+  static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /** @override */
-  activateListeners(html: JQuery): void;
+  get title(): string;
 
   /** @override */
   getData(options?: Application.RenderOptions): D | Promise<D>;
 
-  /**
-   * Handle adding a new change to the changes array.
-   * @param button - The clicked action button
-   */
-  protected _addEffectChange(button: HTMLElement): void;
+  /** @override */
+  activateListeners(html: JQuery): void;
 
   /**
    * Provide centralized handling of mouse clicks on control buttons.
@@ -40,6 +34,12 @@ declare class ActiveEffectConfig<
    * @param event - The originating click event
    */
   protected _onEffectControl(event: JQuery.ClickEvent): this | void;
+
+  /**
+   * Handle adding a new change to the changes array.
+   * @param button - The clicked action button
+   */
+  protected _addEffectChange(button: HTMLElement): void;
 
   /** @override */
   protected _updateObject(event: Event, formData?: object): ReturnType<O['update']>;
@@ -53,7 +53,7 @@ declare namespace ActiveEffectConfig {
     effect: Duplicated<A['data']>;
     isActorEffect: boolean;
     isItemEffect: boolean;
-    modes: Record<keyof typeof ACTIVE_EFFECT_MODES, string>;
     submitText: string;
+    modes: Record<keyof typeof ACTIVE_EFFECT_MODES, string>;
   }
 }

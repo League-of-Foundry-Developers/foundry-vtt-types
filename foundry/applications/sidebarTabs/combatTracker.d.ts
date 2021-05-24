@@ -3,9 +3,10 @@
  */
 declare class CombatTracker extends SidebarTab<CombatTracker.Options> {
   /**
-   * @override
+   * Record a reference to the currently highlighted Token
+   * @defaultValue `null`
    */
-  static get defaultOptions(): CombatTracker.Options;
+  protected _highlighted: Token | null;
 
   /**
    * Record the currently tracked Combat encounter
@@ -14,25 +15,14 @@ declare class CombatTracker extends SidebarTab<CombatTracker.Options> {
   combat: Combat | null;
 
   /**
-   * Record a reference to the currently highlighted Token
-   * @defaultValue `null`
-   */
-  protected _highlighted: Token | null;
-
-  /**
    * @override
    */
-  activateListeners(html: JQuery): void;
+  static get defaultOptions(): CombatTracker.Options;
 
   /**
    * @override
    */
   createPopout(): CombatTracker;
-
-  /**
-   * @override
-   */
-  getData(options?: Application.RenderOptions): Promise<CombatTracker.Data>;
 
   /**
    * Initialize the combat tracker to display a specific combat encounter.
@@ -50,31 +40,19 @@ declare class CombatTracker extends SidebarTab<CombatTracker.Options> {
   scrollToTurn(): void;
 
   /**
-   * Default folder context actions
+   * @override
    */
-  protected _contextMenu(html: JQuery): void;
+  getData(options?: Application.RenderOptions): Promise<CombatTracker.Data>;
 
   /**
-   * Get the sidebar directory entry context options
-   * @returns The sidebar entry context options
+   * @override
    */
-  protected _getEntryContextOptions(): ContextMenu.Item[];
-
-  /**
-   * Handle click events on Combat control buttons
-   * @param event - The originating mousedown event
-   */
-  protected _onCombatControl(event: JQuery.ClickEvent): Promise<void>;
+  activateListeners(html: JQuery): void;
 
   /**
    * Handle new Combat creation request
    */
   protected _onCombatCreate(event: JQuery.ClickEvent): Promise<void>;
-
-  /**
-   * Handle a Combat cycle request
-   */
-  protected _onCombatCycle(event: JQuery.ClickEvent): Promise<void>;
 
   /**
    * Handle a Combat deletion request
@@ -83,10 +61,34 @@ declare class CombatTracker extends SidebarTab<CombatTracker.Options> {
   protected _onCombatDelete(event: Event): Promise<void>;
 
   /**
+   * Handle a Combat cycle request
+   */
+  protected _onCombatCycle(event: JQuery.ClickEvent): Promise<void>;
+
+  /**
+   * Handle click events on Combat control buttons
+   * @param event - The originating mousedown event
+   */
+  protected _onCombatControl(event: JQuery.ClickEvent): Promise<void>;
+
+  /**
    * Handle a Combatant control toggle
    * @param event - The originating mousedown event
    */
   protected _onCombatantControl(event: JQuery.ClickEvent): Promise<void>;
+
+  /**
+   * Handle toggling the defeated status effect on a combatant Token
+   * @param c - The combatant data being modified
+   */
+  protected _onToggleDefeatedStatus(c: Combat.Combatant): Promise<void>;
+
+  /**
+   * Handle mouse-down event on a combatant name in the tracker
+   * @param event - The originating mousedown event
+   * @returns A Promise that resolves once the pan is complete
+   */
+  protected _onCombatantMouseDown(event: JQuery.ClickEvent): Promise<void> | void;
 
   /**
    * Handle mouse-hover events on a combatant in the tracker
@@ -99,22 +101,20 @@ declare class CombatTracker extends SidebarTab<CombatTracker.Options> {
   protected _onCombatantHoverOut(event: JQuery.MouseLeaveEvent): void;
 
   /**
-   * Handle mouse-down event on a combatant name in the tracker
-   * @param event - The originating mousedown event
-   * @returns A Promise that resolves once the pan is complete
+   * Default folder context actions
    */
-  protected _onCombatantMouseDown(event: JQuery.ClickEvent): Promise<void> | void;
+  protected _contextMenu(html: JQuery): void;
+
+  /**
+   * Get the sidebar directory entry context options
+   * @returns The sidebar entry context options
+   */
+  protected _getEntryContextOptions(): ContextMenu.Item[];
 
   /**
    * Display a dialog which prompts the user to enter a new initiative value for a Combatant
    */
   protected _onConfigureCombatant(li: JQuery): void;
-
-  /**
-   * Handle toggling the defeated status effect on a combatant Token
-   * @param c - The combatant data being modified
-   */
-  protected _onToggleDefeatedStatus(c: Combat.Combatant): Promise<void>;
 }
 
 declare namespace CombatTracker {
@@ -156,11 +156,6 @@ declare namespace CombatTracker {
     id: string;
 
     /**
-     * @defaultValue `['.directory-list']`
-     */
-    scrollY: string[];
-
-    /**
      * @defaultValue `'templates/sidebar/combat-tracker.html'`
      */
     template: string;
@@ -169,6 +164,11 @@ declare namespace CombatTracker {
      * @defaultValue `'Combat Tracker'`
      */
     title: string;
+
+    /**
+     * @defaultValue `['.directory-list']`
+     */
+    scrollY: string[];
   }
 
   type Turn = Duplicated<Combat.Combatant> & {

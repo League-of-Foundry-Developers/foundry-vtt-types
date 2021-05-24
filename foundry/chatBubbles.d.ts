@@ -7,16 +7,16 @@ declare class ChatBubbles {
   constructor();
 
   /**
+   * @defaultValue `'templates/hud/chat-bubble.html'`
+   */
+  template: string;
+
+  /**
    * Track active Chat Bubbles
    * @defaultValue `{}`
    * @remarks This is never used
    */
   bubbles: object;
-
-  /**
-   * @defaultValue `'templates/hud/chat-bubble.html'`
-   */
-  template: string;
 
   /**
    * Track which Token was most recently panned to highlight
@@ -45,15 +45,11 @@ declare class ChatBubbles {
   protected _clearBubble(token: Token): Promise<void>;
 
   /**
-   * Determine the length of time for which to display a chat bubble.
-   * Research suggests that average reading speed is 200 words per minute.
-   * Since these are short-form messages, we multiply reading speed by 1.5.
-   * Clamp the result between 1 second (minimum) and 20 seconds (maximum)
-   *
-   * @param html - The HTML message
-   * @returns The number of milliseconds for which to display the message
+   * Render the HTML template for the chat bubble
+   * @param data - Template data
+   * @returns The rendered HTML
    */
-  protected _getDuration(html: JQuery): number;
+  protected _renderHTML(data: { token: Token; message: string; emote: boolean }): Promise<string>;
 
   /**
    * Before displaying the chat message, determine it's constrained and unconstrained dimensions
@@ -63,22 +59,26 @@ declare class ChatBubbles {
   protected _getMessageDimensions(message: string): ChatBubbles.Dimensions;
 
   /**
-   * Render the HTML template for the chat bubble
-   * @param data - Template data
-   * @returns The rendered HTML
-   */
-  protected _renderHTML(data: { token: Token; message: string; emote: boolean }): Promise<string>;
-
-  /**
    * Assign styling parameters to the chat bubble, toggling either a left or right display (randomly)
    */
   protected _setPosition(token: Token, html: JQuery, dimensions: ChatBubbles.Dimensions): void;
+
+  /**
+   * Determine the length of time for which to display a chat bubble.
+   * Research suggests that average reading speed is 200 words per minute.
+   * Since these are short-form messages, we multiply reading speed by 1.5.
+   * Clamp the result between 1 second (minimum) and 20 seconds (maximum)
+   *
+   * @param html - The HTML message
+   * @returns The number of milliseconds for which to display the message
+   */
+  protected _getDuration(html: JQuery): number;
 }
 
 declare namespace ChatBubbles {
   interface Dimensions {
+    width: number;
     height: number;
     unconstrained: number;
-    width: number;
   }
 }

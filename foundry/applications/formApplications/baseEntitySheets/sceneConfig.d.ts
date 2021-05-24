@@ -18,11 +18,6 @@ declare class SceneConfig extends BaseEntitySheet<BaseEntitySheet.Options, Scene
   static get defaultOptions(): typeof BaseEntitySheet['defaultOptions'];
 
   /**
-   * Get an enumeration of the available grid types which can be applied to this Scene
-   */
-  protected static _getGridTypes(): Record<Const.GridType, string>;
-
-  /**
    * @override
    */
   get id(): string;
@@ -33,15 +28,20 @@ declare class SceneConfig extends BaseEntitySheet<BaseEntitySheet.Options, Scene
   get title(): string;
 
   /**
-   * @override
-   */
-  activateListeners(html: JQuery): void;
-
-  /**
    * @param options - (unused)
    * @override
    */
   getData(options?: Application.RenderOptions): SceneConfig.Data;
+
+  /**
+   * Get an enumeration of the available grid types which can be applied to this Scene
+   */
+  protected static _getGridTypes(): Record<Const.GridType, string>;
+
+  /**
+   * Get the available weather effect types which can be applied to this Scene
+   */
+  protected _getWeatherTypes(): Record<string, string>;
 
   /**
    * Get the alphabetized entities which can be chosen as a configuration for the scene
@@ -49,9 +49,9 @@ declare class SceneConfig extends BaseEntitySheet<BaseEntitySheet.Options, Scene
   protected _getEntities(collection: EntityCollection): { _id: string; name: string }[];
 
   /**
-   * Get the available weather effect types which can be applied to this Scene
+   * @override
    */
-  protected _getWeatherTypes(): Record<string, string>;
+  activateListeners(html: JQuery): void;
 
   /**
    * Capture the current Scene position and zoom level as the initial view in the Scene config
@@ -78,17 +78,17 @@ declare class SceneConfig extends BaseEntitySheet<BaseEntitySheet.Options, Scene
 
 declare namespace SceneConfig {
   interface Data extends BaseEntitySheet.Data {
+    gridTypes: ReturnType<typeof SceneConfig['_getGridTypes']>;
+    weatherTypes: ReturnType<SceneConfig['_getWeatherTypes']>;
+    playlists: ReturnType<SceneConfig['_getEntities']>;
+    journals: ReturnType<SceneConfig['_getEntities']>;
+    hasGlobalThreshold: boolean;
     entity: BaseEntitySheet.Data['entity'] & {
       /**
        * @defaultValue `0`
        */
       globalLightThreshold: number;
     };
-    gridTypes: ReturnType<typeof SceneConfig['_getGridTypes']>;
-    hasGlobalThreshold: boolean;
-    journals: ReturnType<SceneConfig['_getEntities']>;
-    playlists: ReturnType<SceneConfig['_getEntities']>;
-    weatherTypes: ReturnType<SceneConfig['_getWeatherTypes']>;
   }
 
   type FormData = {

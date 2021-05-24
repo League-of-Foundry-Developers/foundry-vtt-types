@@ -13,10 +13,10 @@ declare abstract class AVClient {
   settings: AVSettings;
 
   /**
-   * Handle changes to A/V configuration settings.
-   * @param changed - The settings which have changed
+   * One-time initialization actions that should be performed for this client implementation.
+   * This will be called only once when the Game object is first set-up.
    */
-  onSettingsChanged(changed: DeepPartial<AVSettings.Settings>): void;
+  abstract initialize(): Promise<void>;
 
   /**
    * Connect to any servers or services needed in order to provide audio/video functionality.
@@ -46,6 +46,12 @@ declare abstract class AVClient {
   abstract getAudioSources(): Promise<Record<string, string>>;
 
   /**
+   * Provide an Object of available video sources which can be used by this implementation.
+   * Each object key should be a device id and the key should be a human-readable label.
+   */
+  abstract getVideoSources(): Promise<Record<string, string>>;
+
+  /**
    * Return an array of Foundry User IDs which are currently connected to A/V.
    * The current user should also be included as a connected user in addition to all peers.
    * @returns The connected User IDs
@@ -60,18 +66,6 @@ declare abstract class AVClient {
   abstract getMediaStreamForUser(userId: string): MediaStream | null;
 
   /**
-   * Provide an Object of available video sources which can be used by this implementation.
-   * Each object key should be a device id and the key should be a human-readable label.
-   */
-  abstract getVideoSources(): Promise<Record<string, string>>;
-
-  /**
-   * One-time initialization actions that should be performed for this client implementation.
-   * This will be called only once when the Game object is first set-up.
-   */
-  abstract initialize(): Promise<void>;
-
-  /**
    * Is outbound audio enabled for the current user?
    */
   abstract isAudioEnabled(): boolean;
@@ -80,13 +74,6 @@ declare abstract class AVClient {
    * Is outbound video enabled for the current user?
    */
   abstract isVideoEnabled(): boolean;
-
-  /**
-   * Set the Video Track for a given User ID to a provided VideoElement
-   * @param userId       - The User ID to set to the element
-   * @param videoElement - The HTMLVideoElement to which the video should be set
-   */
-  abstract setUserVideo(userId: string, videoElement: HTMLVideoElement): Promise<void>;
 
   /**
    * Set whether the outbound audio feed for the current game user is enabled.
@@ -108,4 +95,17 @@ declare abstract class AVClient {
    * @param enable - Whether the outbound audio track should be enabled (true) or disabled (false)
    */
   abstract toggleVideo(enable: boolean): void;
+
+  /**
+   * Set the Video Track for a given User ID to a provided VideoElement
+   * @param userId       - The User ID to set to the element
+   * @param videoElement - The HTMLVideoElement to which the video should be set
+   */
+  abstract setUserVideo(userId: string, videoElement: HTMLVideoElement): Promise<void>;
+
+  /**
+   * Handle changes to A/V configuration settings.
+   * @param changed - The settings which have changed
+   */
+  onSettingsChanged(changed: DeepPartial<AVSettings.Settings>): void;
 }

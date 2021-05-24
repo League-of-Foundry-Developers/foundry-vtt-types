@@ -19,13 +19,13 @@
  * ```
  */
 declare class Note extends PlaceableObject<Note.Data> {
-  /** @override */
-  static get embeddedName(): 'Note';
-
   /**
    * The associated JournalEntry which is described by this note
    */
   entry: JournalEntry;
+
+  /** @override */
+  static get embeddedName(): 'Note';
 
   /**
    * @remarks
@@ -34,27 +34,18 @@ declare class Note extends PlaceableObject<Note.Data> {
   get bounds(): never;
 
   /**
-   * The Map Note icon size
-   */
-  get size(): number;
-
-  /**
    * Return the text label which describes the Note
    * Use a manually specified label with a fallback to the JournalEntry name
    */
   get text(): string;
 
+  /**
+   * The Map Note icon size
+   */
+  get size(): number;
+
   /** @override */
   draw(): Promise<this>;
-
-  /** @override */
-  refresh(): this;
-
-  /** @override */
-  protected _canHover(user: User): true;
-
-  /** @override */
-  protected _canView(user: User): boolean;
 
   /**
    * Draw the ControlIcon for the Map Note
@@ -72,7 +63,16 @@ declare class Note extends PlaceableObject<Note.Data> {
   protected _getTextStyle(): PIXI.TextStyle;
 
   /** @override */
-  protected _onClickLeft2(event: PIXI.InteractionEvent): void;
+  refresh(): this;
+
+  /** @override */
+  protected _onUpdate(data: Note.Data): Promise<this>;
+
+  /** @override */
+  protected _canHover(user: User): true;
+
+  /** @override */
+  protected _canView(user: User): boolean;
 
   /** @override */
   protected _onHoverIn(event: PIXI.InteractionEvent, options?: { hoverOutOthers: boolean }): boolean | void;
@@ -81,7 +81,7 @@ declare class Note extends PlaceableObject<Note.Data> {
   protected _onHoverOut(event: PIXI.InteractionEvent): boolean | void;
 
   /** @override */
-  protected _onUpdate(data: Note.Data): Promise<this>;
+  protected _onClickLeft2(event: PIXI.InteractionEvent): void;
 }
 
 declare namespace Note {

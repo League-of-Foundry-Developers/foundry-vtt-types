@@ -8,6 +8,12 @@ declare class PermissionControl<
   E extends Entity = Entity
 > extends BaseEntitySheet<P, PermissionControl.Data<E>, E> {
   /**
+   * @param entity  - The Entity instance for which permissions are being configured.
+   * @param options - Application options.
+   */
+  constructor(entity: E, options?: Partial<P>);
+
+  /**
    * @override
    * @defaultValue
    * ```typescript
@@ -19,12 +25,6 @@ declare class PermissionControl<
    * ```
    */
   static get defaultOptions(): typeof BaseEntitySheet['defaultOptions'];
-
-  /**
-   * @param entity  - The Entity instance for which permissions are being configured.
-   * @param options - Application options.
-   */
-  constructor(entity: E, options?: Partial<P>);
 
   /** @override */
   get title(): string;
@@ -41,12 +41,12 @@ declare class PermissionControl<
 
 declare namespace PermissionControl {
   interface Data<E extends Entity> {
-    currentDefault: number | '-1';
-    defaultLevels: E extends Folder ? Data.FolderDefaultLevels : Data.EntityDefaultLevels;
     entity: E;
+    currentDefault: number | '-1';
     instructions: string;
-    isFolder: E extends Folder ? true : false;
+    defaultLevels: E extends Folder ? Data.FolderDefaultLevels : Data.EntityDefaultLevels;
     playerLevels: E extends Folder ? Data.FolderPlayerLevels : Data.EntityPlayerLevels;
+    isFolder: E extends Folder ? true : false;
     users: { user: User; level: number | '-1' }[];
   }
 

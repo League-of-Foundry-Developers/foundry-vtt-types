@@ -8,6 +8,12 @@ declare class TileConfig<P extends TileConfig.Options = TileConfig.Options> exte
   Tile
 > {
   /**
+   * @param tile    - The Tile object being configured
+   * @param options - Additional application rendering options
+   */
+  constructor(tile: Tile, options?: Partial<P>);
+
+  /**
    * @override
    * @defaultValue
    * ```typescript
@@ -24,15 +30,6 @@ declare class TileConfig<P extends TileConfig.Options = TileConfig.Options> exte
   static get defaultOptions(): TileConfig.Options;
 
   /**
-   * @param tile    - The Tile object being configured
-   * @param options - Additional application rendering options
-   */
-  constructor(tile: Tile, options?: Partial<P>);
-
-  /** @override */
-  close(options: Application.CloseOptions): Promise<void>;
-
-  /**
    * @param options - (unused)
    * @override
    */
@@ -46,6 +43,9 @@ declare class TileConfig<P extends TileConfig.Options = TileConfig.Options> exte
    * @override
    */
   protected _updateObject(event: Event, formData: TileConfig.FormData): Promise<Tile>;
+
+  /** @override */
+  close(options: Application.CloseOptions): Promise<void>;
 }
 
 declare namespace TileConfig {

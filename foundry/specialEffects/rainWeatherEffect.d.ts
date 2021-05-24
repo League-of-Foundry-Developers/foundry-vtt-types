@@ -2,6 +2,14 @@
  * A special full-screen weather effect which uses two Emitters to render drops and splashes
  */
 declare class RainWeatherEffect extends SpecialEffect {
+  static get label(): string;
+
+  getParticleEmitters(): PIXI.particles.Emitter[];
+
+  _getRainEmitter(parent: PIXI.Container): PIXI.particles.Emitter;
+
+  _getSplashEmitter(parent: PIXI.Container): PIXI.particles.Emitter;
+
   /**
    * @defaultValue
    * ```typescript
@@ -86,12 +94,4 @@ declare class RainWeatherEffect extends SpecialEffect {
    * ```
    */
   static SPLASH_CONFIG: PIXI.particles.EmitterConfig | PIXI.particles.OldEmitterConfig;
-
-  static get label(): string;
-
-  getParticleEmitters(): PIXI.particles.Emitter[];
-
-  protected _getRainEmitter(parent: PIXI.Container): PIXI.particles.Emitter;
-
-  protected _getSplashEmitter(parent: PIXI.Container): PIXI.particles.Emitter;
 }

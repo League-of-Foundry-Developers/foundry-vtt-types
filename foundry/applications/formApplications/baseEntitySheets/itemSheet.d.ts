@@ -15,21 +15,15 @@ declare class ItemSheet<
   P extends BaseEntitySheet.Options = BaseEntitySheet.Options
 > extends BaseEntitySheet<P, D, O> {
   /**
-   * Assign the default options which are supported by this Application
-   */
-  static get defaultOptions(): typeof BaseEntitySheet['defaultOptions'];
-
-  /**
    * @param item    - The Item instance being displayed within the sheet.
    * @param options - Additional options which modify the rendering of the item.
    */
   constructor(item: O, options?: Partial<P>);
 
   /**
-   * The Actor instance which owns this item. This may be null if the item is
-   * unowned.
+   * Assign the default options which are supported by this Application
    */
-  get actor(): Actor<Actor.Data<any, O['data']>, O> | null;
+  static get defaultOptions(): typeof BaseEntitySheet['defaultOptions'];
 
   /**
    * Provide a unique CSS ID for owned Item sheets
@@ -42,10 +36,10 @@ declare class ItemSheet<
   get item(): O;
 
   /**
-   * Activate listeners which provide interactivity for item sheet events
-   * @param html - The HTML object returned by template rendering
+   * The Actor instance which owns this item. This may be null if the item is
+   * unowned.
    */
-  activateListeners(html: JQuery): void;
+  get actor(): Actor<Actor.Data<any, O['data']>, O> | null;
 
   /**
    * @param options - (unused)
@@ -55,6 +49,12 @@ declare class ItemSheet<
 
   /** @override */
   protected _getHeaderButtons(): Application.HeaderButton[];
+
+  /**
+   * Activate listeners which provide interactivity for item sheet events
+   * @param html - The HTML object returned by template rendering
+   */
+  activateListeners(html: JQuery): void;
 
   /**
    * Handle requests to configure the default sheet used by this Item

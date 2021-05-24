@@ -3,20 +3,6 @@
  */
 declare class CombatEncounters extends EntityCollection<Combat> {
   /** @override */
-  static get instance(): CombatEncounters;
-
-  /**
-   * The currently active Combat instance
-   * @returns
-   */
-  get active(): Combat | undefined;
-
-  /**
-   * Get an Array of Combat instances which apply to the current canvas scene
-   */
-  get combats(): Combat[];
-
-  /** @override */
   get entity(): string;
 
   /**
@@ -26,10 +12,24 @@ declare class CombatEncounters extends EntityCollection<Combat> {
   get settings(): Combat.Settings;
 
   /**
+   * Get an Array of Combat instances which apply to the current canvas scene
+   */
+  get combats(): Combat[];
+
+  /**
+   * The currently active Combat instance
+   * @returns
+   */
+  get active(): Combat | undefined;
+
+  /**
    * The currently viewed Combat encounter
    * @returns
    */
   get viewed(): Combat | null;
+
+  /** @override */
+  static get instance(): CombatEncounters;
 
   /**
    * When a Token is deleted, remove it as a combatant from any combat encounters which included the Token

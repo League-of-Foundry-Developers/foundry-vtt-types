@@ -12,9 +12,19 @@
  */
 declare class Actors extends EntityCollection<Actor> {
   /**
-   * Return an Array of currently registered sheet classes for this Entity type
+   * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
+   * Each Actor is referenced by the Token.id.
    */
-  static get registeredSheets(): Array<ConstructorOf<ActorSheet>>;
+  tokens: {
+    [id: string]: Actor;
+  };
+
+  /** @override */
+  get entity(): string;
+
+  /* -------------------------------------------- */
+  /*  Sheet Registration Methods                  */
+  /* -------------------------------------------- */
 
   /**
    * Register an Actor sheet class as a candidate which can be used to display Actors of a given type
@@ -59,13 +69,7 @@ declare class Actors extends EntityCollection<Actor> {
   ): void;
 
   /**
-   * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
-   * Each Actor is referenced by the Token.id.
+   * Return an Array of currently registered sheet classes for this Entity type
    */
-  tokens: {
-    [id: string]: Actor;
-  };
-
-  /** @override */
-  get entity(): string;
+  static get registeredSheets(): Array<ConstructorOf<ActorSheet>>;
 }

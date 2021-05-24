@@ -2,6 +2,13 @@
  * @typeParam P - the type of the options object
  */
 declare class ChatPopout<P extends Application.Options = Application.Options> extends Application<P> {
+  constructor(message: ChatPopout['message'], options?: Partial<P>);
+
+  /**
+   * The displayed Chat Message entity
+   */
+  message: ChatMessage;
+
   /**
    * @override
    * @defaultValue
@@ -14,13 +21,6 @@ declare class ChatPopout<P extends Application.Options = Application.Options> ex
    * ```
    */
   static get defaultOptions(): typeof Application['defaultOptions'];
-
-  constructor(message: ChatPopout['message'], options?: Partial<P>);
-
-  /**
-   * The displayed Chat Message entity
-   */
-  message: ChatMessage;
 
   /** @override */
   get id(): string;

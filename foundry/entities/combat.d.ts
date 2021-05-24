@@ -4,13 +4,9 @@
  */
 declare class Combat extends Entity<Combat.Data> {
   /**
-   * The configuration setting used to record Combat preferences
-   * @defaultValue `'combatTrackerConfig'`
+   * Track the sorted turn order of this combat encounter
    */
-  static CONFIG_SETTING: string;
-
-  /** @override */
-  static get config(): Entity.Config<Combat>;
+  turns: Combat.Combatant[];
 
   /**
    * Record the current round, turn, and tokenId to understand changes in the encounter state
@@ -23,14 +19,45 @@ declare class Combat extends Entity<Combat.Data> {
   previous: Combat.CurrentTurn;
 
   /**
-   * Track the sorted turn order of this combat encounter
-   */
-  turns: Combat.Combatant[];
-
-  /**
    * Track whether a sound notification is currently being played to avoid double-dipping
    */
   protected _soundPlaying: boolean;
+
+  /**
+   * The configuration setting used to record Combat preferences
+   * @defaultValue `'combatTrackerConfig'`
+   */
+  static CONFIG_SETTING: string;
+
+  /** @override */
+  static get config(): Entity.Config<Combat>;
+
+  /**
+   * Prepare Embedded Entities which exist within the parent Combat.
+   * For example, in the case of an Actor, this method is responsible for preparing the Owned Items the Actor contains.
+   */
+  prepareEmbeddedEntities(): void;
+
+  /**
+   * Return the Array of combatants sorted into initiative order, breaking ties alphabetically by name
+   */
+  setupTurns(): Combat.Combatant[];
+
+  /**
+   * Prepare turn data for one specific combatant.
+   */
+  protected _prepareCombatant(c: Combat.Combatant, scene: Scene, players: User[], settings?: any): Combat.Combatant;
+
+  /**
+   * Define how the array of Combatants is sorted in the displayed list of the tracker.
+   * This method can be overridden by a system or module which needs to display combatants in an alternative order.
+   * By default sort by initiative, falling back to name
+   */
+  protected _sortCombatants(a: Combat.Combatant, b: Combat.Combatant): number;
+
+  /* -------------------------------------------- */
+  /*  Properties                                  */
+  /* -------------------------------------------- */
 
   /**
    * Get the data object for the Combatant who has the current turn
@@ -48,6 +75,11 @@ declare class Combat extends Entity<Combat.Data> {
   get round(): number;
 
   /**
+   * The numeric turn of the combat round in the Combat encounter
+   */
+  get turn(): number;
+
+  /**
    * Get the Scene entity for this Combat encounter
    */
   get scene(): ReturnType<Scenes['get']>;
@@ -62,10 +94,9 @@ declare class Combat extends Entity<Combat.Data> {
    */
   get started(): boolean;
 
-  /**
-   * The numeric turn of the combat round in the Combat encounter
-   */
-  get turn(): number;
+  /* -------------------------------------------- */
+  /*  Combat Control Methods                      */
+  /* -------------------------------------------- */
 
   /**
    * Set the current Combat encounter as active within the Scene.
@@ -74,26 +105,44 @@ declare class Combat extends Entity<Combat.Data> {
   activate(): Promise<this>;
 
   /**
-   * Create a new Combatant embedded entity
-   * @see {@link Combat#createEmbeddedEntity}
+   * Begin the combat encounter, advancing to round 1 and turn 1
    */
-  createCombatant<U>(
-    data: Expanded<U> extends DeepPartial<Combat.Combatant> ? U : DeepPartial<Combat.Combatant>,
-    options?: Entity.CreateOptions
-  ): Promise<Combat.Combatant>;
-  createCombatant<U>(
-    data: Expanded<U> extends DeepPartial<Combat.Combatant> ? U[] : DeepPartial<Combat.Combatant>[],
-    options?: Entity.CreateOptions
-  ): Promise<Combat.Combatant[]>;
+  startCombat(): Promise<this>;
 
-  /** @override */
-  deleteCombatant(id: string, options?: Entity.DeleteOptions): Promise<Combat.Combatant>;
-  deleteCombatant(id: string[], options?: Entity.DeleteOptions): Promise<Combat.Combatant[]>;
+  /**
+   * Advance the combat to the next turn
+   */
+  nextTurn(): Promise<void>;
+
+  /**
+   * Rewind the combat to the previous turn
+   */
+  previousTurn(): Promise<void>;
+
+  /**
+   * Advance the combat to the next round
+   */
+  nextRound(): Promise<void>;
+
+  /**
+   * Rewind the combat to the previous round
+   */
+  previousRound(): Promise<this>;
+
+  /**
+   * Reset all combatant initiative scores, setting the turn back to zero
+   * @returns
+   */
+  resetAll(): Promise<this>;
 
   /**
    * Display a dialog querying the GM whether they wish to end the combat encounter and empty the tracker
    */
   endCombat(): Promise<void>;
+
+  /* -------------------------------------------- */
+  /*  Combatant Management Methods                */
+  /* -------------------------------------------- */
 
   /**
    */
@@ -106,47 +155,11 @@ declare class Combat extends Entity<Combat.Data> {
   getCombatantByToken(tokenId: string): Combat.Combatant;
 
   /**
-   * Advance the combat to the next round
+   * Set initiative for a single Combatant within the Combat encounter. Turns will be updated to keep the same combatant as current in the turn order
+   * @param id    - The combatant ID for which to set initiative
+   * @param value - A specific initiative value to set
    */
-  nextRound(): Promise<void>;
-
-  /**
-   * Advance the combat to the next turn
-   */
-  nextTurn(): Promise<void>;
-
-  /**
-   * Prepare Embedded Entities which exist within the parent Combat.
-   * For example, in the case of an Actor, this method is responsible for preparing the Owned Items the Actor contains.
-   */
-  prepareEmbeddedEntities(): void;
-
-  /**
-   * Rewind the combat to the previous round
-   */
-  previousRound(): Promise<this>;
-
-  /**
-   * Rewind the combat to the previous turn
-   */
-  previousTurn(): Promise<void>;
-
-  /**
-   * Reset all combatant initiative scores, setting the turn back to zero
-   * @returns
-   */
-  resetAll(): Promise<this>;
-
-  /**
-   * Roll initiative for all combatants which have not already rolled
-   * @param args - Additional arguments forwarded to the Combat.rollInitiative method
-   * @returns A promise which resolves to the updated Combat entity once updates are complete.
-   */
-  rollAll(args?: {
-    formula?: string | null;
-    messageOptions?: DeepPartial<ChatMessage.Data & { rollMode: Const.DiceRollMode }>;
-    updateTurn?: boolean;
-  }): Promise<Combat>;
+  setInitiative(id: string, value: number): Promise<void>;
 
   /**
    * Roll initiative for one or multiple Combatants within the Combat entity
@@ -171,44 +184,6 @@ declare class Combat extends Entity<Combat.Data> {
   ): Promise<Combat>;
 
   /**
-   * Roll initiative for all non-player actors who have not already rolled
-   * @param args - Additional arguments forwarded to the Combat.rollInitiative method
-   * @returns A promise which resolves to the updated Combat entity once updates are complete.
-   */
-  rollNPC(args?: {
-    formula?: string | null;
-    messageOptions?: DeepPartial<ChatMessage.Data & { rollMode: Const.DiceRollMode }>;
-    updateTurn?: boolean;
-  }): Promise<Combat>;
-
-  /**
-   * Set initiative for a single Combatant within the Combat encounter. Turns will be updated to keep the same combatant as current in the turn order
-   * @param id    - The combatant ID for which to set initiative
-   * @param value - A specific initiative value to set
-   */
-  setInitiative(id: string, value: number): Promise<void>;
-
-  /**
-   * Return the Array of combatants sorted into initiative order, breaking ties alphabetically by name
-   */
-  setupTurns(): Combat.Combatant[];
-
-  /**
-   * Begin the combat encounter, advancing to round 1 and turn 1
-   */
-  startCombat(): Promise<this>;
-
-  /** @override */
-  updateCombatant<U>(
-    data: (Expanded<U> extends DeepPartial<Combat.Combatant> ? U : DeepPartial<Combat.Combatant>) & { _id: string },
-    options?: Entity.UpdateOptions
-  ): Promise<Combat.Combatant>;
-  updateCombatant<U>(
-    data: ((Expanded<U> extends DeepPartial<Combat.Combatant> ? U : DeepPartial<Combat.Combatant>) & { _id: string })[],
-    options?: Entity.UpdateOptions
-  ): Promise<Combat.Combatant[]>;
-
-  /**
    * Acquire the default dice formula which should be used to roll initiative for a particular combatant.
    * Modules or systems could choose to override or extend this to accommodate special situations.
    *
@@ -227,8 +202,64 @@ declare class Combat extends Entity<Combat.Data> {
    */
   protected _getInitiativeRoll(combatant: Combat.Combatant, formula: string): Roll;
 
+  /**
+   * Roll initiative for all non-player actors who have not already rolled
+   * @param args - Additional arguments forwarded to the Combat.rollInitiative method
+   * @returns A promise which resolves to the updated Combat entity once updates are complete.
+   */
+  rollNPC(args?: {
+    formula?: string | null;
+    messageOptions?: DeepPartial<ChatMessage.Data & { rollMode: Const.DiceRollMode }>;
+    updateTurn?: boolean;
+  }): Promise<Combat>;
+
+  /**
+   * Roll initiative for all combatants which have not already rolled
+   * @param args - Additional arguments forwarded to the Combat.rollInitiative method
+   * @returns A promise which resolves to the updated Combat entity once updates are complete.
+   */
+  rollAll(args?: {
+    formula?: string | null;
+    messageOptions?: DeepPartial<ChatMessage.Data & { rollMode: Const.DiceRollMode }>;
+    updateTurn?: boolean;
+  }): Promise<Combat>;
+
+  /**
+   * Create a new Combatant embedded entity
+   * @see {@link Combat#createEmbeddedEntity}
+   */
+  createCombatant<U>(
+    data: Expanded<U> extends DeepPartial<Combat.Combatant> ? U : DeepPartial<Combat.Combatant>,
+    options?: Entity.CreateOptions
+  ): Promise<Combat.Combatant>;
+  createCombatant<U>(
+    data: Expanded<U> extends DeepPartial<Combat.Combatant> ? U[] : DeepPartial<Combat.Combatant>[],
+    options?: Entity.CreateOptions
+  ): Promise<Combat.Combatant[]>;
+
+  /** @override */
+  updateCombatant<U>(
+    data: (Expanded<U> extends DeepPartial<Combat.Combatant> ? U : DeepPartial<Combat.Combatant>) & { _id: string },
+    options?: Entity.UpdateOptions
+  ): Promise<Combat.Combatant>;
+  updateCombatant<U>(
+    data: ((Expanded<U> extends DeepPartial<Combat.Combatant> ? U : DeepPartial<Combat.Combatant>) & { _id: string })[],
+    options?: Entity.UpdateOptions
+  ): Promise<Combat.Combatant[]>;
+
+  /** @override */
+  deleteCombatant(id: string, options?: Entity.DeleteOptions): Promise<Combat.Combatant>;
+  deleteCombatant(id: string[], options?: Entity.DeleteOptions): Promise<Combat.Combatant[]>;
+
+  /* -------------------------------------------- */
+  /*  Socket Events and Handlers                  */
+  /* -------------------------------------------- */
+
   /** @override */
   protected _onCreate(data: Combat.Data, options: Entity.CreateOptions, userId: string): void;
+
+  /** @override */
+  protected _onUpdate(data: DeepPartial<Combat.Data>, options: Entity.UpdateOptions, userId: string): void;
 
   /** @override */
   protected _onDelete(options: Entity.DeleteOptions, userId: string): void;
@@ -249,21 +280,6 @@ declare class Combat extends Entity<Combat.Data> {
     userId: string,
     context?: any
   ): void;
-
-  /** @override */
-  protected _onUpdate(data: DeepPartial<Combat.Data>, options: Entity.UpdateOptions, userId: string): void;
-
-  /**
-   * Prepare turn data for one specific combatant.
-   */
-  protected _prepareCombatant(c: Combat.Combatant, scene: Scene, players: User[], settings?: any): Combat.Combatant;
-
-  /**
-   * Define how the array of Combatants is sorted in the displayed list of the tracker.
-   * This method can be overridden by a system or module which needs to display combatants in an alternative order.
-   * By default sort by initiative, falling back to name
-   */
-  protected _sortCombatants(a: Combat.Combatant, b: Combat.Combatant): number;
 }
 
 declare namespace Combat {

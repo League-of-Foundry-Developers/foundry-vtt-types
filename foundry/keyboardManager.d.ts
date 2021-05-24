@@ -3,10 +3,279 @@
  * {@link https://keycode.info/}
  */
 declare class KeyboardManager {
+  constructor();
+
   /**
-   * Enumerate the "digit keys"
+   * The set of key codes which are currently depressed (down)
    */
-  static DIGIT_KEYS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
+  protected _downKeys: Set<string>;
+
+  /**
+   * The set of key codes which have been already handled per workflow
+   */
+  protected _handled: Set<string>;
+
+  /**
+   * A mapping of movement keys which are pending
+   * @defaultValue `null`
+   */
+  protected _moveKeys: Set<string>;
+
+  /**
+   * @defaultValue `null`
+   */
+  protected _moveTime: number | null;
+
+  /**
+   * @defaultValue `0`
+   */
+  protected _tabState: 0 | 1;
+
+  /**
+   * @defaultValue `0`
+   */
+  protected _wheelTime: number;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Reset tracking for which keys are in the down and released states
+   */
+  protected _reset(): void;
+
+  /* -------------------------------------------- */
+  /*  Properties                                  */
+  /* -------------------------------------------- */
+
+  /**
+   * Return whether the key code is currently in the DOWN state
+   * @param code - key code to test
+   */
+  isDown(code: string): boolean;
+
+  /* -------------------------------------------- */
+
+  /**
+   * A helper method to test whether, given an Event, the CTRL (or CMD) keys are pressed
+   */
+  isCtrl(event: Event): boolean;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Get a standardized keyboard code for a given event
+   * @param event - The originating keypress event
+   * @returns The standardized string code to use
+   */
+  getKey(event: KeyboardEvent): string;
+
+  /* -------------------------------------------- */
+
+  /**
+   * The key codes which represent a possible movement key
+   */
+  get moveKeys(): Record<string, string[]>;
+
+  /* -------------------------------------------- */
+
+  /**
+   * The key codes which represent a digit key
+   */
+  get digitKeys(): string[];
+
+  /* -------------------------------------------- */
+
+  /**
+   * Return the key codes used for zooming the canvas
+   */
+  get zoomKeys(): Record<string, string>;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Test whether an input currently has focus
+   */
+  get hasFocus(): boolean;
+
+  /* -------------------------------------------- */
+  /*  Event Listeners and Handlers                */
+  /* -------------------------------------------- */
+
+  /**
+   * Handle a key press into the down position
+   * @param event - The originating keyboard event
+   */
+  protected _onKeyDown(event: KeyboardEvent): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle a key release into the up position
+   * @param event - The originating keyboard event
+   */
+  protected _onKeyUp(event: KeyboardEvent): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Delegate tracked key codes by dispatching to their various handlers
+   * @param event - The keydown or keyup event
+   * @param key   - The key being depressed
+   * @param up    - A flag for whether the key is down or up
+   */
+  protected _handleKeys(event: KeyboardEvent, key: string, up: boolean): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Input events do not fire with isComposing = false at the end of a composition event in Chrome
+   * See: https://github.com/w3c/uievents/issues/202
+   */
+  protected _onCompositionEnd(event: CompositionEvent): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Master mouse-wheel event keyboard handler
+   */
+  protected _onWheel(event: Event): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle TAB keypress events
+   * @param event     - The originating keyboard event
+   * @param up        - Is the key being released?
+   * @param modifiers - The identified modifiers attached to this keypress
+   */
+  protected _onTab(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle ESC keypress events
+   * @param event     - The originating keyboard event
+   * @param up        - Is the key being released?
+   * @param modifiers - The identified modifiers attached to this keypress
+   */
+  protected _onEscape(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle SPACE keypress events
+   * @param event     - The originating keyboard event
+   * @param up        - Is the key being released?
+   * @param modifiers - The identified modifiers attached to this keypress
+   */
+  protected _onSpace(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle ALT keypress events
+   * @param event     - The originating keyboard event
+   * @param up        - Is the key being released?
+   * @param modifiers - The identified modifiers attached to this keypress
+   *                    (unused)
+   */
+  protected _onAlt(event: KeyboardEvent, up: boolean, modifiers?: any): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle movement keypress events
+   * @param event     - The originating keyboard event
+   * @param up        - Is the key being released?
+   * @param modifiers - The identified modifiers attached to this keypress
+   */
+  protected _onMovement(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle keyboard movement once a small delay has elapsed to allow for multiple simultaneous key-presses.
+   */
+  protected _handleMovement(event: KeyboardEvent, layer: PlaceablesLayer): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle panning the canvas using CTRL + directional keys
+   */
+  protected _handleCanvasPan(): Promise<void>;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle number key presses
+   * @param event     - The original digit key press
+   *                    (unused)
+   * @param up        - Is it a keyup?
+   * @param modifiers - What modifiers affect the keypress?
+   */
+  protected _onDigit(event: any, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle "A" keypress events (CTRL only) to select all objects
+   * @param event     - The originating keyboard event
+   *                    (unused)
+   * @param up        - Is the key being released?
+   * @param modifiers - The identified modifiers attached to this keypress
+   */
+  protected _onKeyA(event: any, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle "C" keypress events to copy data to clipboard
+   * @param event     - The originating keyboard event
+   * @param up        - Is the key being released?
+   * @param modifiers - The identified modifiers attached to this keypress
+   */
+  protected _onKeyC(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle "V" keypress events to paste data from clipboard
+   * @param event     - The originating keyboard event
+   * @param up        - Is the key being released?
+   * @param modifiers - The identified modifiers attached to this keypress
+   */
+  protected _onKeyV(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle Z Keypress Events to generally undo previous actions
+   * @param event     - The originating keyboard event
+   * @param up        - Is the key being released?
+   * @param modifiers - The identified modifiers attached to this keypress
+   */
+  protected _onKeyZ(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle presses to keyboard zoom keys
+   * @param event     - The originating keyboard event
+   * @param up        - Is the key being released?
+   * @param modifiers - The identified modifiers attached to this keypress
+   */
+  protected _onKeyZoom(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle DELETE Keypress Events
+   * @param event     - The originating keyboard event
+   * @param up        - Is the key being released?
+   * @param modifiers - The identified modifiers attached to this keypress
+   */
+  protected _onDelete(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /**
    * Specify a rate limit for mouse wheel to gate repeated scrolling.
@@ -14,6 +283,11 @@ declare class KeyboardManager {
    * This designates a minimum number of milliseconds which must pass before another wheel event is handled
    */
   static MOUSE_WHEEL_RATE_LIMIT: 50;
+
+  /**
+   * Enumerate the "digit keys"
+   */
+  static DIGIT_KEYS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
 
   /**
    * Map keys used for movement
@@ -50,222 +324,6 @@ declare class KeyboardManager {
     PageDown: 'out';
     PageUp: 'in';
   };
-
-  constructor();
-
-  /**
-   * The set of key codes which are currently depressed (down)
-   */
-  protected _downKeys: Set<string>;
-
-  /**
-   * The set of key codes which have been already handled per workflow
-   */
-  protected _handled: Set<string>;
-
-  /**
-   * A mapping of movement keys which are pending
-   * @defaultValue `null`
-   */
-  protected _moveKeys: Set<string>;
-
-  /**
-   * @defaultValue `null`
-   */
-  protected _moveTime: number | null;
-
-  /**
-   * @defaultValue `0`
-   */
-  protected _tabState: 0 | 1;
-
-  /**
-   * @defaultValue `0`
-   */
-  protected _wheelTime: number;
-
-  /**
-   * The key codes which represent a digit key
-   */
-  get digitKeys(): string[];
-
-  /**
-   * Test whether an input currently has focus
-   */
-  get hasFocus(): boolean;
-
-  /**
-   * The key codes which represent a possible movement key
-   */
-  get moveKeys(): Record<string, string[]>;
-
-  /**
-   * Return the key codes used for zooming the canvas
-   */
-  get zoomKeys(): Record<string, string>;
-
-  /**
-   * Get a standardized keyboard code for a given event
-   * @param event - The originating keypress event
-   * @returns The standardized string code to use
-   */
-  getKey(event: KeyboardEvent): string;
-
-  /**
-   * A helper method to test whether, given an Event, the CTRL (or CMD) keys are pressed
-   */
-  isCtrl(event: Event): boolean;
-
-  /**
-   * Return whether the key code is currently in the DOWN state
-   * @param code - key code to test
-   */
-  isDown(code: string): boolean;
-
-  /**
-   * Handle panning the canvas using CTRL + directional keys
-   */
-  protected _handleCanvasPan(): Promise<void>;
-
-  /**
-   * Delegate tracked key codes by dispatching to their various handlers
-   * @param event - The keydown or keyup event
-   * @param key   - The key being depressed
-   * @param up    - A flag for whether the key is down or up
-   */
-  protected _handleKeys(event: KeyboardEvent, key: string, up: boolean): void;
-
-  /**
-   * Handle keyboard movement once a small delay has elapsed to allow for multiple simultaneous key-presses.
-   */
-  protected _handleMovement(event: KeyboardEvent, layer: PlaceablesLayer): void;
-
-  /**
-   * Handle ALT keypress events
-   * @param event     - The originating keyboard event
-   * @param up        - Is the key being released?
-   * @param modifiers - The identified modifiers attached to this keypress
-   *                    (unused)
-   */
-  protected _onAlt(event: KeyboardEvent, up: boolean, modifiers?: any): void;
-
-  /**
-   * Input events do not fire with isComposing = false at the end of a composition event in Chrome
-   * See: https://github.com/w3c/uievents/issues/202
-   */
-  protected _onCompositionEnd(event: CompositionEvent): void;
-
-  /**
-   * Handle DELETE Keypress Events
-   * @param event     - The originating keyboard event
-   * @param up        - Is the key being released?
-   * @param modifiers - The identified modifiers attached to this keypress
-   */
-  protected _onDelete(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
-
-  /**
-   * Handle number key presses
-   * @param event     - The original digit key press
-   *                    (unused)
-   * @param up        - Is it a keyup?
-   * @param modifiers - What modifiers affect the keypress?
-   */
-  protected _onDigit(event: any, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
-
-  /**
-   * Handle ESC keypress events
-   * @param event     - The originating keyboard event
-   * @param up        - Is the key being released?
-   * @param modifiers - The identified modifiers attached to this keypress
-   */
-  protected _onEscape(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
-
-  /**
-   * Handle "A" keypress events (CTRL only) to select all objects
-   * @param event     - The originating keyboard event
-   *                    (unused)
-   * @param up        - Is the key being released?
-   * @param modifiers - The identified modifiers attached to this keypress
-   */
-  protected _onKeyA(event: any, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
-
-  /**
-   * Handle "C" keypress events to copy data to clipboard
-   * @param event     - The originating keyboard event
-   * @param up        - Is the key being released?
-   * @param modifiers - The identified modifiers attached to this keypress
-   */
-  protected _onKeyC(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
-
-  /**
-   * Handle a key press into the down position
-   * @param event - The originating keyboard event
-   */
-  protected _onKeyDown(event: KeyboardEvent): void;
-
-  /**
-   * Handle a key release into the up position
-   * @param event - The originating keyboard event
-   */
-  protected _onKeyUp(event: KeyboardEvent): void;
-
-  /**
-   * Handle "V" keypress events to paste data from clipboard
-   * @param event     - The originating keyboard event
-   * @param up        - Is the key being released?
-   * @param modifiers - The identified modifiers attached to this keypress
-   */
-  protected _onKeyV(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
-
-  /**
-   * Handle Z Keypress Events to generally undo previous actions
-   * @param event     - The originating keyboard event
-   * @param up        - Is the key being released?
-   * @param modifiers - The identified modifiers attached to this keypress
-   */
-  protected _onKeyZ(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
-
-  /**
-   * Handle presses to keyboard zoom keys
-   * @param event     - The originating keyboard event
-   * @param up        - Is the key being released?
-   * @param modifiers - The identified modifiers attached to this keypress
-   */
-  protected _onKeyZoom(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
-
-  /**
-   * Handle movement keypress events
-   * @param event     - The originating keyboard event
-   * @param up        - Is the key being released?
-   * @param modifiers - The identified modifiers attached to this keypress
-   */
-  protected _onMovement(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
-
-  /**
-   * Handle SPACE keypress events
-   * @param event     - The originating keyboard event
-   * @param up        - Is the key being released?
-   * @param modifiers - The identified modifiers attached to this keypress
-   */
-  protected _onSpace(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
-
-  /**
-   * Handle TAB keypress events
-   * @param event     - The originating keyboard event
-   * @param up        - Is the key being released?
-   * @param modifiers - The identified modifiers attached to this keypress
-   */
-  protected _onTab(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
-
-  /**
-   * Master mouse-wheel event keyboard handler
-   */
-  protected _onWheel(event: Event): void;
-
-  /**
-   * Reset tracking for which keys are in the down and released states
-   */
-  protected _reset(): void;
 }
 
 declare namespace KeyboardManager {

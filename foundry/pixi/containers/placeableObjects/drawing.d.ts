@@ -27,16 +27,6 @@
  * ```
  */
 declare class Drawing extends PlaceableObject<Drawing.Data> {
-  /** @override */
-  static get embeddedName(): 'Drawing';
-
-  /**
-   * Adjust the location, dimensions, and points of the Drawing before committing the change
-   * @param data - The Drawing data pending update
-   * @returns The adjusted data
-   */
-  protected static normalizeShape(data: Drawing.Data): Drawing.Data;
-
   /**
    * @remarks Not used for `Drawing`
    */
@@ -46,11 +36,6 @@ declare class Drawing extends PlaceableObject<Drawing.Data> {
    * The inner drawing container
    */
   drawing: PIXI.Container | null;
-
-  /**
-   * The Graphics outer frame and handles
-   */
-  frame: PIXI.Container | null;
 
   /**
    * The primary drawing shape
@@ -63,16 +48,23 @@ declare class Drawing extends PlaceableObject<Drawing.Data> {
   text: PIXI.Text | null;
 
   /**
+   * The Graphics outer frame and handles
+   */
+  frame: PIXI.Container | null;
+
+  /**
    * Internal timestamp for the previous freehand draw time, to limit sampling
    */
   protected _drawTime: number;
+  protected _sampleTime: number;
 
   /**
    * Internal flag for the permanent points of the polygon
    */
   protected _fixedPoints: Array<[number, number]>;
 
-  protected _sampleTime: number;
+  /** @override */
+  static get embeddedName(): 'Drawing';
 
   /**
    * @remarks
@@ -101,27 +93,7 @@ declare class Drawing extends PlaceableObject<Drawing.Data> {
   get isPolygon(): boolean;
 
   /** @override */
-  activateListeners(): void;
-
-  /** @override */
   draw(): Promise<this>;
-
-  /** @override */
-  refresh(): void;
-
-  /**
-   * Add a new polygon point to the drawing, ensuring it differs from the last one
-   */
-  protected _addPoint(position: Point, temporary?: boolean): void;
-
-  /** @override */
-  protected _canConfigure(user: User, event?: any): boolean;
-
-  /** @override */
-  protected _canControl(user: User, event?: any): boolean;
-
-  /** @override */
-  protected _canHUD(user: User, event?: any): boolean;
 
   /**
    * Create the components of the drawing element, the drawing container, the drawn shape, and the overlay text
@@ -129,14 +101,22 @@ declare class Drawing extends PlaceableObject<Drawing.Data> {
   protected _createDrawing(): void;
 
   /**
+   * Create elements for the foreground text
+   */
+  protected _createText(): PreciseText;
+
+  /**
    * Create elements for the Drawing border and handles
    */
   protected _createFrame(): void;
 
+  /** @override */
+  refresh(): void;
+
   /**
-   * Create elements for the foreground text
+   * Draw rectangular shapes
    */
-  protected _createText(): PreciseText;
+  protected _drawRectangle(): void;
 
   /**
    * Draw ellipsoid shapes
@@ -144,19 +124,14 @@ declare class Drawing extends PlaceableObject<Drawing.Data> {
   protected _drawEllipse(): void;
 
   /**
-   * Draw freehand shapes with bezier spline smoothing
-   */
-  protected _drawFreehand(): void;
-
-  /**
    * Draw polygonal shapes
    */
   protected _drawPolygon(): void;
 
   /**
-   * Draw rectangular shapes
+   * Draw freehand shapes with bezier spline smoothing
    */
-  protected _drawRectangle(): void;
+  protected _drawFreehand(): void;
 
   /**
    * Attribution: The equations for how to calculate the bezier control points are derived from Rob Spencer's article:
@@ -182,50 +157,66 @@ declare class Drawing extends PlaceableObject<Drawing.Data> {
     };
   };
 
+  /**
+   * Refresh the boundary frame which outlines the Drawing shape
+   */
+  protected _refreshFrame({ x, y, width, height }: Rectangle): void;
+
+  /**
+   * Add a new polygon point to the drawing, ensuring it differs from the last one
+   */
+  protected _addPoint(position: Point, temporary?: boolean): void;
+
+  /**
+   * Remove the last fixed point from the polygon
+   */
+  protected _removePoint(): void;
+
   /** @override */
   protected _onControl(options: { isNew?: boolean }): void;
 
   /** @override */
+  protected _onRelease(options: any): void;
+
+  /** @override */
   protected _onDelete(): void;
-
-  /** @override */
-  protected _onDragLeftCancel(event: PIXI.InteractionEvent): void;
-
-  /** @override */
-  protected _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<this | Drawing>;
-
-  /** @override */
-  protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
-
-  /** @override */
-  protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
 
   /**
    * Handle text entry in an active text tool
    */
   protected _onDrawingTextKeydown(event: KeyboardEvent): void;
 
-  /**
-   * Handle cancellation of a drag event for one of the resizing handles
-   */
-  protected _onHandleDragCancel(event: PIXI.InteractionEvent): void;
+  /** @override */
+  protected _onUpdate(data: Drawing.Data): void;
+
+  /** @override */
+  protected _canControl(user: User, event?: any): boolean;
+
+  /** @override */
+  protected _canHUD(user: User, event?: any): boolean;
+
+  /** @override */
+  protected _canConfigure(user: User, event?: any): boolean;
+
+  /** @override */
+  activateListeners(): void;
 
   /**
-   * Handle mouseup after dragging a tile scale handler
-   * @param event - The mouseup event
+   * Handle mouse movement which modifies the dimensions of the drawn shape
    */
-  protected _onHandleDragDrop(event: PIXI.InteractionEvent): Promise<this>;
+  protected _onMouseDraw(event: PIXI.InteractionEvent): void;
 
-  /**
-   * Handle mousemove while dragging a tile scale handler
-   * @param event - The mousemove event
-   */
-  protected _onHandleDragMove(event: PIXI.InteractionEvent): void;
+  /** @override */
+  protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
 
-  /**
-   * Handle the beginning of a drag event on a resize handle
-   */
-  protected _onHandleDragStart(event: PIXI.InteractionEvent): void;
+  /** @override */
+  protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+
+  /** @override */
+  protected _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<this | Drawing>;
+
+  /** @override */
+  protected _onDragLeftCancel(event: PIXI.InteractionEvent): void;
 
   /**
    * Handle mouse-over event on a control handle
@@ -246,25 +237,26 @@ declare class Drawing extends PlaceableObject<Drawing.Data> {
   protected _onHandleMouseDown(event: PIXI.InteractionEvent): void;
 
   /**
-   * Handle mouse movement which modifies the dimensions of the drawn shape
+   * Handle the beginning of a drag event on a resize handle
    */
-  protected _onMouseDraw(event: PIXI.InteractionEvent): void;
-
-  /** @override */
-  protected _onRelease(options: any): void;
-
-  /** @override */
-  protected _onUpdate(data: Drawing.Data): void;
+  protected _onHandleDragStart(event: PIXI.InteractionEvent): void;
 
   /**
-   * Refresh the boundary frame which outlines the Drawing shape
+   * Handle mousemove while dragging a tile scale handler
+   * @param event - The mousemove event
    */
-  protected _refreshFrame({ x, y, width, height }: Rectangle): void;
+  protected _onHandleDragMove(event: PIXI.InteractionEvent): void;
 
   /**
-   * Remove the last fixed point from the polygon
+   * Handle mouseup after dragging a tile scale handler
+   * @param event - The mouseup event
    */
-  protected _removePoint(): void;
+  protected _onHandleDragDrop(event: PIXI.InteractionEvent): Promise<this>;
+
+  /**
+   * Handle cancellation of a drag event for one of the resizing handles
+   */
+  protected _onHandleDragCancel(event: PIXI.InteractionEvent): void;
 
   /**
    * Apply a vectorized rescaling transformation for the drawing data
@@ -273,6 +265,13 @@ declare class Drawing extends PlaceableObject<Drawing.Data> {
    * @param dy       - The pixel distance dragged in the vertical direction
    */
   protected _rescaleDimensions(original: Drawing.Data, dx: number, dy: number): Drawing.Data;
+
+  /**
+   * Adjust the location, dimensions, and points of the Drawing before committing the change
+   * @param data - The Drawing data pending update
+   * @returns The adjusted data
+   */
+  protected static normalizeShape(data: Drawing.Data): Drawing.Data;
 }
 
 declare namespace Drawing {

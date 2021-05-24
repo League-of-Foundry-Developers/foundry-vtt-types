@@ -6,11 +6,6 @@
  */
 declare class DrawingsLayer extends PlaceablesLayer<Drawing> {
   /**
-   * @defaultValue `"defaultDrawingConfig"`
-   */
-  static DEFAULT_CONFIG_SETTING: string;
-
-  /**
    * @override
    * @defaultValue
    * ```
@@ -92,10 +87,10 @@ declare class DrawingsLayer extends PlaceablesLayer<Drawing> {
   protected _onClickLeft2(event: PIXI.InteractionEvent): void;
 
   /** @override */
-  protected _onClickRight(event: PIXI.InteractionEvent): void;
+  protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
 
   /** @override */
-  protected _onDragLeftCancel(event: PointerEvent): void;
+  protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
   /**
    * Handling of mouse-up events which conclude a new object creation after dragging
@@ -103,8 +98,13 @@ declare class DrawingsLayer extends PlaceablesLayer<Drawing> {
   protected _onDragLeftDrop(event: PIXI.InteractionEvent): void;
 
   /** @override */
-  protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+  protected _onDragLeftCancel(event: PointerEvent): void;
 
   /** @override */
-  protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
+  protected _onClickRight(event: PIXI.InteractionEvent): void;
+
+  /**
+   * @defaultValue `"defaultDrawingConfig"`
+   */
+  static DEFAULT_CONFIG_SETTING: string;
 }

@@ -9,6 +9,14 @@ declare class PlayerConfig<P extends FormApplication.Options = FormApplication.O
   User
 > {
   /**
+   * @param user    - The User entity being configured.
+   * @param options - Additional rendering options which modify the behavior of the form.
+   */
+  constructor(user: User, options: Partial<P>);
+
+  user: User;
+
+  /**
    * Assign the default options which are supported by the entity edit sheet
    * @defaultValue
    * ```typescript
@@ -22,15 +30,13 @@ declare class PlayerConfig<P extends FormApplication.Options = FormApplication.O
    */
   static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
-  /**
-   * @param user    - The User entity being configured.
-   * @param options - Additional rendering options which modify the behavior of the form.
-   */
-  constructor(user: User, options: Partial<P>);
-
-  user: User;
-
   get title(): string;
+
+  /**
+   * Provide data to the form
+   * @returns The data provided to the template when rendering the form
+   */
+  getData(): PlayerConfig.Data;
 
   /**
    * Activate the default set of listeners for the Entity sheet
@@ -39,12 +45,6 @@ declare class PlayerConfig<P extends FormApplication.Options = FormApplication.O
    * @param html - The rendered template ready to have listeners attached
    */
   activateListeners(html: JQuery): void;
-
-  /**
-   * Provide data to the form
-   * @returns The data provided to the template when rendering the form
-   */
-  getData(): PlayerConfig.Data;
 
   /**
    * Handle changing the user avatar image by opening a FilePicker
@@ -61,9 +61,9 @@ declare class PlayerConfig<P extends FormApplication.Options = FormApplication.O
 
 declare namespace PlayerConfig {
   interface Data {
+    user: PlayerConfig['user'];
     actors: Actor[];
     options: PlayerConfig['options'];
-    user: PlayerConfig['user'];
   }
 
   type FormData = Pick<User.Data, 'avatar' | 'character' | 'color'>;

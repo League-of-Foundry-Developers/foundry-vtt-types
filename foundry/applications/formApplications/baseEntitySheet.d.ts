@@ -11,15 +11,15 @@ declare class BaseEntitySheet<
   O extends Entity<any, any> = D extends BaseEntitySheet.Data<infer T> ? T : Entity
 > extends FormApplication<P, D, O> {
   /**
-   * @override
-   */
-  static get defaultOptions(): BaseEntitySheet.Options;
-
-  /**
    * @param object  - An Entity which should be managed by this form sheet.
    * @param options - Optional configuration parameters for how the form behaves.
    */
   constructor(object: O, options?: Partial<P>);
+
+  /**
+   * @override
+   */
+  static get defaultOptions(): BaseEntitySheet.Options;
 
   /**
    * A convenience accessor for the object property, which in the case of a BaseEntitySheet is an Entity instance.
@@ -37,16 +37,16 @@ declare class BaseEntitySheet<
   get title(): string;
 
   /**
+   * @override
+   */
+  render(force?: boolean, options?: Application.RenderOptions): this;
+
+  /**
    * Default data preparation logic for the entity sheet
    * @param options - (unused)
    * @override
    */
   getData(options?: Application.RenderOptions): D | Promise<D>;
-
-  /**
-   * @override
-   */
-  render(force?: boolean, options?: Application.RenderOptions): this;
 
   /**
    * @override

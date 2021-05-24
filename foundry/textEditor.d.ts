@@ -2,10 +2,6 @@
  * A collection of helper functions and utility methods related to the rich text editor
  */
 declare class TextEditor {
-  protected static _decoder: HTMLTextAreaElement;
-
-  static activateListeners(): void;
-
   /**
    * Create a Rich Text Editor. The current implementation uses TinyMCE
    * @param options - Configuration options provided to the Editor init
@@ -68,6 +64,27 @@ declare class TextEditor {
   ): string;
 
   /**
+   * Recursively identify the text nodes within a parent HTML node for potential content replacement.
+   * @param parent - The parent HTML Element
+   * @returns An array of contained Text nodes
+   */
+  protected static _getTextNodes(parent: HTMLElement): Text[];
+
+  /**
+   * Facilitate the replacement of text node content using a matching regex rule and a provided replacement function.
+   */
+  protected static _replaceTextContent(
+    text: Text[],
+    rgx: RegExp,
+    func: (...match: RegExpMatchArray[]) => Node
+  ): boolean;
+
+  /**
+   * Replace a matched portion of a Text node with a replacement Node
+   */
+  protected static _replaceTextNode(text: Text, match: RegExpMatchArray, replacement: Node): void;
+
+  /**
    * Create a dynamic entity link from a regular expression match
    * @param match  - The full matched string
    * @param type   - The matched entity type or "Compendium"
@@ -100,12 +117,7 @@ declare class TextEditor {
     ...args: object[]
   ): string;
 
-  /**
-   * Recursively identify the text nodes within a parent HTML node for potential content replacement.
-   * @param parent - The parent HTML Element
-   * @returns An array of contained Text nodes
-   */
-  protected static _getTextNodes(parent: HTMLElement): Text[];
+  static activateListeners(): void;
 
   /**
    * Handle click events on Entity Links
@@ -125,30 +137,18 @@ declare class TextEditor {
   protected static _onDragEntityLink(event: Event): void;
 
   /**
+   * Begin a a data transfer drag event with default handling
+   */
+  protected _onDragStart(event: Event): void;
+
+  /**
    * Handle dropping of transferred data onto the active rich text editor
    * @param event  - The originating drop event which triggered the data transfer
    * @param editor - The TinyMCE editor instance being dropped on
    */
   protected static _onDropEditorData(event: Event, editor: Editor): Promise<void>;
 
-  /**
-   * Facilitate the replacement of text node content using a matching regex rule and a provided replacement function.
-   */
-  protected static _replaceTextContent(
-    text: Text[],
-    rgx: RegExp,
-    func: (...match: RegExpMatchArray[]) => Node
-  ): boolean;
-
-  /**
-   * Replace a matched portion of a Text node with a replacement Node
-   */
-  protected static _replaceTextNode(text: Text, match: RegExpMatchArray, replacement: Node): void;
-
-  /**
-   * Begin a a data transfer drag event with default handling
-   */
-  protected _onDragStart(event: Event): void;
+  protected static _decoder: HTMLTextAreaElement;
 }
 
 declare namespace TextEditor {

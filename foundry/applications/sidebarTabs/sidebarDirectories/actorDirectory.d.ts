@@ -5,14 +5,14 @@
 declare class ActorDirectory extends SidebarDirectory {
   /**
    * @override
-   * @see {@link Game.actors}
    */
-  static get collection(): Game['actors'];
+  static get entity(): 'Actor';
 
   /**
    * @override
+   * @see {@link Game.actors}
    */
-  static get entity(): 'Actor';
+  static get collection(): Game['actors'];
 
   /**
    * @param options - (unused)
@@ -24,18 +24,18 @@ declare class ActorDirectory extends SidebarDirectory {
    * @param selector - (unused)
    * @override
    */
-  protected _canDragDrop(selector: string | null): boolean;
-
-  /**
-   * @param selector - (unused)
-   * @override
-   */
   protected _canDragStart(selector: string | null): boolean;
 
   /**
    * @override
    */
-  protected _getEntryContextOptions(): ContextMenu.Item[];
+  protected _onDragStart(event: DragEvent): false | void;
+
+  /**
+   * @param selector - (unused)
+   * @override
+   */
+  protected _canDragDrop(selector: string | null): boolean;
 
   /**
    * @override
@@ -45,19 +45,19 @@ declare class ActorDirectory extends SidebarDirectory {
   /**
    * @override
    */
-  protected _onDragStart(event: DragEvent): false | void;
+  protected _getEntryContextOptions(): ContextMenu.Item[];
 }
 
 declare namespace ActorDirectory {
   interface Data extends SidebarDirectory.Data {
     /**
-     * @defaultValue `'templates/sidebar/actor-partial.html'`
-     */
-    entityPartial: string;
-
-    /**
      * @defaultValue `'templates/sidebar/folder-partial.html'`
      */
     folderPartial: string;
+
+    /**
+     * @defaultValue `'templates/sidebar/actor-partial.html'`
+     */
+    entityPartial: string;
   }
 }

@@ -7,24 +7,6 @@
  */
 declare class ActiveEffect<P extends Actor | Item = Actor | Item> extends EmbeddedEntity<ActiveEffect.Data, P> {
   /**
-   * A factory method which creates an ActiveEffect instance using the configured class.
-   * @param args - Initialization arguments passed to the ActiveEffect constructor.
-   * @returns The constructed ActiveEffect instance.
-   */
-  static create<P extends Actor | Item = Actor | Item>(...args: [DeepPartial<ActiveEffect.Data>, P]): ActiveEffect<P>;
-
-  /**
-   * A helper function to handle obtaining dropped ActiveEffect data from a dropped data transfer event.
-   *
-   * Warning: This is currently buggy and will create an `ActiveEffect` with `parent` set to `undefined`.
-   *
-   * @param data - The data object extracted from a DataTransfer event
-   * @returns The ActiveEffect instance which contains the dropped effect data or null, if other data was dropped.
-   */
-  static fromDropData<T extends { data: DeepPartial<ActiveEffect.Data> }>(data: T): Promise<ActiveEffect>;
-  static fromDropData(data: Record<string, unknown>): Promise<ActiveEffect | null>;
-
-  /**
    * @param data   - Data for the Active Effect
    * @param parent - The parent Entity which owns the effect
    */
@@ -35,26 +17,45 @@ declare class ActiveEffect<P extends Actor | Item = Actor | Item> extends Embedd
    */
   protected _sourceName: string | null;
 
+  /* -------------------------------------------- */
+
   /**
    * Report the active effect duration
    */
   get duration(): ActiveEffect.ReturnedDuration;
+
+  /* -------------------------------------------- */
 
   /**
    * Describe whether the ActiveEffect has a temporary duration based on combat turns or rounds.
    */
   get isTemporary(): boolean;
 
+  /* -------------------------------------------- */
+
   /**
    * A cached property for obtaining the source name
    */
   get sourceName(): string;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Get the name of the source of the Active Effect
+   */
+  protected _getSourceName(): Promise<string>;
+
+  /* -------------------------------------------- */
 
   /**
    * An instance of the ActiveEffectConfig sheet to use for this ActiveEffect instance.
    * The reference to the sheet is cached so the same sheet instance is reused.
    */
   get sheet(): ActiveEffectConfig<FormApplication.Options, ActiveEffectConfig.Data<this>, this>;
+
+  /* -------------------------------------------- */
+  /*  Effect Application                          */
+  /* -------------------------------------------- */
 
   /**
    * Apply this ActiveEffect to a provided Actor.
@@ -64,34 +65,7 @@ declare class ActiveEffect<P extends Actor | Item = Actor | Item> extends Embedd
    */
   apply(actor: Actor, change: ActiveEffect.Change): unknown;
 
-  /**
-   * A convenience method for creating an ActiveEffect instance within a parent Actor or Item.
-   * @see {@link Entity#createEmbeddedEntity}
-   * @param options - Configuration options which modify the request.
-   * @returns The created ActiveEffect data.
-   */
-  create(options?: Entity.CreateOptions): Promise<ActiveEffect.Data>;
-
-  /**
-   * A convenience method for deleting an ActiveEffect instance in an parent Actor or Item.
-   * @see {@link Entity#deleteEmbeddedEntity}
-   * @param options - Configuration options which modify the request.
-   * @returns The deleted ActiveEffect _id.
-   */
-  delete(options?: Entity.DeleteOptions): Promise<string>;
-
-  /**
-   * A convenience method for updating an ActiveEffect instance in an parent Actor or Item.
-   * @see {@link Entity#updateEmbeddedEntity}
-   * @param data    - Differential data with which to update the ActiveEffect.
-   * @param options - Configuration options which modify the request.
-   * @returns The updated ActiveEffect data.
-   */
-  update<U>(
-    data: Expanded<U> extends DeepPartial<ActiveEffect.Data> ? U : never,
-    options?: Entity.UpdateOptions
-  ): Promise<ActiveEffect.Data>;
-  update(data: DeepPartial<ActiveEffect.Data>, options?: Entity.UpdateOptions): Promise<ActiveEffect.Data>;
+  /* -------------------------------------------- */
 
   /**
    * Apply an ActiveEffect that uses an ADD application mode.
@@ -108,13 +82,7 @@ declare class ActiveEffect<P extends Actor | Item = Actor | Item> extends Embedd
    */
   protected _applyAdd(actor: Actor, change: ActiveEffect.Change): unknown;
 
-  /**
-   * Apply an ActiveEffect that uses a CUSTOM application mode.
-   * @param actor  - The Actor to whom this effect should be applied
-   * @param change - The change data being applied
-   * @returns The resulting applied value
-   */
-  protected _applyCustom(actor: Actor, change: ActiveEffect.Change): unknown;
+  /* -------------------------------------------- */
 
   /**
    * Apply an ActiveEffect that uses a MULTIPLY application mode.
@@ -124,6 +92,8 @@ declare class ActiveEffect<P extends Actor | Item = Actor | Item> extends Embedd
    */
   protected _applyMultiply(actor: Actor, change: ActiveEffect.Change): unknown;
 
+  /* -------------------------------------------- */
+
   /**
    * Apply an ActiveEffect that uses an OVERRIDE, UPGRADE, or DOWNGRADE application mode.
    * @param actor  - The Actor to whom this effect should be applied
@@ -132,10 +102,76 @@ declare class ActiveEffect<P extends Actor | Item = Actor | Item> extends Embedd
    */
   protected _applyOverride(actor: Actor, change: ActiveEffect.Change): unknown;
 
+  /* -------------------------------------------- */
+
   /**
-   * Get the name of the source of the Active Effect
+   * Apply an ActiveEffect that uses a CUSTOM application mode.
+   * @param actor  - The Actor to whom this effect should be applied
+   * @param change - The change data being applied
+   * @returns The resulting applied value
    */
-  protected _getSourceName(): Promise<string>;
+  protected _applyCustom(actor: Actor, change: ActiveEffect.Change): unknown;
+
+  /* -------------------------------------------- */
+  /*  Database Operations                         */
+  /* -------------------------------------------- */
+
+  /**
+   * A convenience method for creating an ActiveEffect instance within a parent Actor or Item.
+   * @see {@link Entity#createEmbeddedEntity}
+   * @param options - Configuration options which modify the request.
+   * @returns The created ActiveEffect data.
+   */
+  create(options?: Entity.CreateOptions): Promise<ActiveEffect.Data>;
+
+  /* -------------------------------------------- */
+
+  /**
+   * A convenience method for updating an ActiveEffect instance in an parent Actor or Item.
+   * @see {@link Entity#updateEmbeddedEntity}
+   * @param data    - Differential data with which to update the ActiveEffect.
+   * @param options - Configuration options which modify the request.
+   * @returns The updated ActiveEffect data.
+   */
+  update<U>(
+    data: Expanded<U> extends DeepPartial<ActiveEffect.Data> ? U : never,
+    options?: Entity.UpdateOptions
+  ): Promise<ActiveEffect.Data>;
+  update(data: DeepPartial<ActiveEffect.Data>, options?: Entity.UpdateOptions): Promise<ActiveEffect.Data>;
+
+  /* -------------------------------------------- */
+
+  /**
+   * A convenience method for deleting an ActiveEffect instance in an parent Actor or Item.
+   * @see {@link Entity#deleteEmbeddedEntity}
+   * @param options - Configuration options which modify the request.
+   * @returns The deleted ActiveEffect _id.
+   */
+  delete(options?: Entity.DeleteOptions): Promise<string>;
+
+  /* -------------------------------------------- */
+  /*  Factory Methods                             */
+  /* -------------------------------------------- */
+
+  /**
+   * A factory method which creates an ActiveEffect instance using the configured class.
+   * @param args - Initialization arguments passed to the ActiveEffect constructor.
+   * @returns The constructed ActiveEffect instance.
+   */
+  static create<P extends Actor | Item = Actor | Item>(...args: [DeepPartial<ActiveEffect.Data>, P]): ActiveEffect<P>;
+
+  /* -------------------------------------------- */
+
+  /**
+   * A helper function to handle obtaining dropped ActiveEffect data from a dropped data transfer event.
+   *
+   * Warning: This is currently buggy and will create an `ActiveEffect` with `parent` set to `undefined`.
+   *
+   * @param data - The data object extracted from a DataTransfer event
+   * @returns The ActiveEffect instance which contains the dropped effect data or null, if other data was dropped.
+   */
+  static fromDropData<T extends { data: DeepPartial<ActiveEffect.Data> }>(data: T): Promise<ActiveEffect>;
+  static fromDropData(data: Record<string, unknown>): Promise<ActiveEffect | null>;
 }
 
 declare namespace ActiveEffect {
@@ -146,6 +182,11 @@ declare namespace ActiveEffect {
     key: string;
 
     /**
+     * The value of the change
+     */
+    value: unknown;
+
+    /**
      * The mode of the change application
      */
     mode: number;
@@ -154,14 +195,19 @@ declare namespace ActiveEffect {
      * The priority with which this change is applied
      */
     priority: number;
-
-    /**
-     * The value of the change
-     */
-    value: unknown;
   }
 
   interface Duration {
+    /**
+     * The game time in seconds when the effect started
+     */
+    startTime?: number;
+
+    /**
+     * The duration of the effect, in seconds
+     */
+    seconds?: number;
+
     /**
      * The _id of the Combat entity where the effect began
      */
@@ -173,9 +219,9 @@ declare namespace ActiveEffect {
     rounds?: number;
 
     /**
-     * The duration of the effect, in seconds
+     * The number of combat turns that the effect lasts
      */
-    seconds?: number;
+    turns?: number;
 
     /**
      * The round of combat in which the effect started
@@ -183,29 +229,29 @@ declare namespace ActiveEffect {
     startRound?: number;
 
     /**
-     * The game time in seconds when the effect started
-     */
-    startTime?: number;
-
-    /**
      * The turn of combat in which the effect started
      */
     startTurn?: number;
-
-    /**
-     * The number of combat turns that the effect lasts
-     */
-    turns?: number;
   }
 
   interface ReturnedDuration {
-    duration: number | null;
-    label: string;
-    remaining: number | null;
     type: string;
+    duration: number | null;
+    remaining: number | null;
+    label: string;
   }
 
   interface Data extends EmbeddedEntity.Data {
+    /**
+     * The label which describes this effect
+     */
+    label: string;
+
+    /**
+     * The duration of the effect
+     */
+    duration: Duration;
+
     /**
      * The changes applied by this effect
      */
@@ -217,29 +263,19 @@ declare namespace ActiveEffect {
     disabled?: boolean;
 
     /**
-     * The duration of the effect
-     */
-    duration: Duration;
-
-    /**
      * An image icon path for this effect
      */
     icon?: string;
 
     /**
-     * The label which describes this effect
+     * A hex color string to tint the effect icon
      */
-    label: string;
+    tint?: string;
 
     /**
      * The UUID of an Entity or EmbeddedEntity which was the source of this effect
      */
     origin?: string;
-
-    /**
-     * A hex color string to tint the effect icon
-     */
-    tint?: string;
 
     /**
      * Should this effect transfer automatically to an Actor when its Item becomes owned?

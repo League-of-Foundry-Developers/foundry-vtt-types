@@ -30,14 +30,76 @@ type DialogButton<T = unknown> = Dialog.Button<T>;
  */
 declare class Dialog<P extends Dialog.Options = Dialog.Options> extends Application<P> {
   /**
+   * @param data    - An object of dialog data which configures how the modal window is rendered
+   * @param options - Dialog rendering options, see {@link Application}
+   */
+  constructor(data: Dialog.Data, options?: Partial<P>);
+
+  data: Dialog.Data;
+
+  /* -------------------------------------------- */
+
+  /**
    * @override
    */
   static get defaultOptions(): Dialog.Options;
+
+  /* -------------------------------------------- */
 
   /**
    * @override
    */
   static get title(): string;
+
+  /* -------------------------------------------- */
+
+  /**
+   * @override
+   */
+  getData(): { content: string; buttons: Record<string, Dialog.Button> };
+
+  /* -------------------------------------------- */
+
+  /**
+   * @override
+   */
+  activateListeners(html: JQuery): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle a left-mouse click on one of the dialog choice buttons
+   * @param event - The left-mouse click event
+   */
+  protected _onClickButton(event: MouseEvent): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle a keydown event while the dialog is active
+   * @param event - The keydown event
+   */
+  protected _onKeyDown(event: KeyboardEvent & { key: 'Escape' }): Promise<void>;
+  protected _onKeyDown(event: KeyboardEvent): Promise<void> | void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Submit the Dialog by selecting one of its buttons
+   * @param button - The configuration of the chosen button
+   */
+  protected submit(button: Dialog.Button): void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * @override
+   */
+  close(options?: Application.CloseOptions): Promise<void>;
+
+  /* -------------------------------------------- */
+  /*  Factory Methods                             */
+  /* -------------------------------------------- */
 
   /**
    * A helper factory method to create simple confirmation dialog windows which consist of simple yes/no prompts.
@@ -152,6 +214,8 @@ declare class Dialog<P extends Dialog.Options = Dialog.Options> extends Applicat
     old: Partial<Dialog.Options>
   ): Promise<R extends true ? Y | N : Y | N | null>;
 
+  /* -------------------------------------------- */
+
   /**
    * A helper factory method to display a basic "prompt" style Dialog with a single button
    * @param title    - The confirmation window title
@@ -207,57 +271,10 @@ declare class Dialog<P extends Dialog.Options = Dialog.Options> extends Applicat
     render?: (html: JQuery | HTMLElement) => void;
     options: Partial<Dialog.Options>;
   }): Promise<T>;
-
-  /**
-   * @param data    - An object of dialog data which configures how the modal window is rendered
-   * @param options - Dialog rendering options, see {@link Application}
-   */
-  constructor(data: Dialog.Data, options?: Partial<P>);
-
-  data: Dialog.Data;
-
-  /**
-   * @override
-   */
-  activateListeners(html: JQuery): void;
-
-  /**
-   * @override
-   */
-  close(options?: Application.CloseOptions): Promise<void>;
-
-  /**
-   * @override
-   */
-  getData(): { content: string; buttons: Record<string, Dialog.Button> };
-
-  /**
-   * Handle a left-mouse click on one of the dialog choice buttons
-   * @param event - The left-mouse click event
-   */
-  protected _onClickButton(event: MouseEvent): void;
-
-  /**
-   * Handle a keydown event while the dialog is active
-   * @param event - The keydown event
-   */
-  protected _onKeyDown(event: KeyboardEvent & { key: 'Escape' }): Promise<void>;
-  protected _onKeyDown(event: KeyboardEvent): Promise<void> | void;
-
-  /**
-   * Submit the Dialog by selecting one of its buttons
-   * @param button - The configuration of the chosen button
-   */
-  protected submit(button: Dialog.Button): void;
 }
 
 declare namespace Dialog {
   interface Button<T = unknown> {
-    /**
-     * A callback function that fires when the button is clicked
-     */
-    callback?: (html: JQuery | HTMLElement) => T;
-
     /**
      * A Font Awesome icon for the button
      */
@@ -267,18 +284,18 @@ declare namespace Dialog {
      * The label for the button
      */
     label?: string;
+
+    /**
+     * A callback function that fires when the button is clicked
+     */
+    callback?: (html: JQuery | HTMLElement) => T;
   }
 
   interface Data {
     /**
-     * The buttons which are displayed as action choices for the dialog
+     * The window title
      */
-    buttons: Record<string, Button>;
-
-    /**
-     * Common callback operations to perform when the dialog is closed
-     */
-    close?: Function;
+    title: string;
 
     /**
      * HTML content
@@ -286,26 +303,41 @@ declare namespace Dialog {
     content: string;
 
     /**
-     * The name of the default button which should be triggered on Enter
-     */
-    default: string;
-
-    /**
      * A callback function invoked when the dialog is rendered
      */
     render?: Function;
 
     /**
-     * The window title
+     * Common callback operations to perform when the dialog is closed
      */
-    title: string;
+    close?: Function;
+
+    /**
+     * The buttons which are displayed as action choices for the dialog
+     */
+    buttons: Record<string, Button>;
+
+    /**
+     * The name of the default button which should be triggered on Enter
+     */
+    default: string;
   }
 
   interface Options extends Application.Options {
     /**
+     * @defaultValue `400`
+     */
+    width: number;
+
+    /**
      * @defaultValue `['dialog']`
      */
     classes: string[];
+
+    /**
+     * @defaultValue `'templates/hud/dialog.html'`
+     */
+    template: string;
 
     /**
      * Whether to provide jQuery objects to callback functions (if true) or plain
@@ -314,15 +346,5 @@ declare namespace Dialog {
      * @defaultValue `true`
      */
     jQuery: boolean;
-
-    /**
-     * @defaultValue `'templates/hud/dialog.html'`
-     */
-    template: string;
-
-    /**
-     * @defaultValue `400`
-     */
-    width: number;
   }
 }

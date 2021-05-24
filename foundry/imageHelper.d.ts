@@ -4,15 +4,6 @@
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 declare class ImageHelper {
   /**
-   * Composite a canvas object by rendering it to a single texture
-   * @param object  - The DisplayObject to render to a texture
-   * @param options - Additional named options
-   *                  (default: `{}`)
-   * @returns The composite Texture object
-   */
-  static compositeCanvasTexture(object: PIXI.DisplayObject, options?: ImageHelper.CompositeOptions): PIXI.Texture;
-
-  /**
    * Create thumbnail preview for a provided image path.
    * @param src     - The string URL or DisplayObject of the texture to render to a thumbnail
    * @param options - Additional named options passed to the {@link ImageHelper.compositeCanvasTexture} method
@@ -23,6 +14,19 @@ declare class ImageHelper {
     src: string | PIXI.DisplayObject,
     options?: ImageHelper.CompositeOptions
   ): Promise<ImageHelper.ThumbnailReturn>;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Composite a canvas object by rendering it to a single texture
+   * @param object  - The DisplayObject to render to a texture
+   * @param options - Additional named options
+   *                  (default: `{}`)
+   * @returns The composite Texture object
+   */
+  static compositeCanvasTexture(object: PIXI.DisplayObject, options?: ImageHelper.CompositeOptions): PIXI.Texture;
+
+  /* -------------------------------------------- */
 
   /**
    * Extract a texture to a base64 PNG string

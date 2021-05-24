@@ -4,6 +4,12 @@
  */
 declare class TokenHUD extends BasePlaceableHUD<Token> {
   /**
+   * Track whether the status effects control palette is currently expanded or hidden
+   * @defaultValue `false`
+   */
+  protected _statusEffects: boolean;
+
+  /**
    * @override
    * @defaultValue
    * ```
@@ -15,17 +21,16 @@ declare class TokenHUD extends BasePlaceableHUD<Token> {
    */
   static get defaultOptions(): typeof Application['defaultOptions'];
 
-  /**
-   * Track whether the status effects control palette is currently expanded or hidden
-   * @defaultValue `false`
-   */
-  protected _statusEffects: boolean;
-
-  /** @override */
-  activateListeners(html: JQuery): void;
-
   /** @override */
   bind(object: Token): void;
+
+  /**
+   * Refresh the currently active state of all status effect icons in the Token HUD selector.
+   */
+  refreshStatusIcons(): void;
+
+  /** @override */
+  setPosition(_position?: Partial<Application.Position>): void;
 
   /**
    * @override
@@ -63,14 +68,6 @@ declare class TokenHUD extends BasePlaceableHUD<Token> {
   };
 
   /**
-   * Refresh the currently active state of all status effect icons in the Token HUD selector.
-   */
-  refreshStatusIcons(): void;
-
-  /** @override */
-  setPosition(_position?: Partial<Application.Position>): void;
-
-  /**
    * Get an array of icon paths which represent valid status effect choices
    */
   protected _getStatusEffectChoices(): Partial<
@@ -85,6 +82,9 @@ declare class TokenHUD extends BasePlaceableHUD<Token> {
       }
     >
   >;
+
+  /** @override */
+  activateListeners(html: JQuery): void;
 
   /**
    * Handle initial click to focus an attribute update field
@@ -104,14 +104,24 @@ declare class TokenHUD extends BasePlaceableHUD<Token> {
   protected _onAttributeUpdate(event: JQuery.ChangeEvent): void;
 
   /**
+   * Toggle Token combat state
+   */
+  protected _onToggleCombat(event: JQuery.ClickEvent): Promise<void>;
+
+  /**
+   * Handle Token configuration button click
+   */
+  protected _onTokenConfig(event: JQuery.ClickEvent): void;
+
+  /**
    * Handle left-click events to toggle the displayed state of the status effect selection palette
    */
   protected _onClickStatusEffects(event: JQuery.ClickEvent): void;
 
   /**
-   * Toggle Token combat state
+   * Assign css selectors for the active state of the status effects selection palette
    */
-  protected _onToggleCombat(event: JQuery.ClickEvent): Promise<void>;
+  protected _toggleStatusEffects(active: boolean): void;
 
   /**
    * Handle toggling a token status effect icon
@@ -126,14 +136,4 @@ declare class TokenHUD extends BasePlaceableHUD<Token> {
    * Handle toggling the target state for this Token
    */
   protected _onToggleTarget(event: JQuery.ClickEvent): void;
-
-  /**
-   * Handle Token configuration button click
-   */
-  protected _onTokenConfig(event: JQuery.ClickEvent): void;
-
-  /**
-   * Assign css selectors for the active state of the status effects selection palette
-   */
-  protected _toggleStatusEffects(active: boolean): void;
 }

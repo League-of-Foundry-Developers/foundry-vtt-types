@@ -4,11 +4,6 @@
  */
 declare class Sidebar<P extends Sidebar.Options = Sidebar.Options> extends Application<P> {
   /**
-   * @override
-   */
-  static get defaultOptions(): Sidebar.Options;
-
-  /**
    * Sidebar application instances
    * @defaultValue `[]`
    */
@@ -21,6 +16,11 @@ declare class Sidebar<P extends Sidebar.Options = Sidebar.Options> extends Appli
   protected _collapsed: boolean;
 
   /**
+   * @override
+   */
+  static get defaultOptions(): Sidebar.Options;
+
+  /**
    * Return the name of the active Sidebar tab
    */
   get activeTab(): string;
@@ -31,9 +31,15 @@ declare class Sidebar<P extends Sidebar.Options = Sidebar.Options> extends Appli
   get popouts(): Application[];
 
   /**
+   * @param options - (unused)
    * @override
    */
-  activateListeners(html: JQuery): void;
+  getData(options?: Application.RenderOptions): Sidebar.Data;
+
+  /**
+   * @override
+   */
+  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
 
   /**
    * Activate a Sidebar tab by it's name
@@ -42,22 +48,21 @@ declare class Sidebar<P extends Sidebar.Options = Sidebar.Options> extends Appli
   activateTab(tabName: string): void;
 
   /**
-   * Collapse the sidebar to a minimized state.
-   * Take no action if the sidebar is already collapsed.
-   */
-  collapse(): void;
-
-  /**
    * Expand the Sidebar container from a collapsed state.
    * Take no action if the sidebar is already expanded.
    */
   expand(): void;
 
   /**
-   * @param options - (unused)
+   * Collapse the sidebar to a minimized state.
+   * Take no action if the sidebar is already collapsed.
+   */
+  collapse(): void;
+
+  /**
    * @override
    */
-  getData(options?: Application.RenderOptions): Sidebar.Data;
+  activateListeners(html: JQuery): void;
 
   /**
    * @param event - (unused)
@@ -76,11 +81,6 @@ declare class Sidebar<P extends Sidebar.Options = Sidebar.Options> extends Appli
    * Handle toggling of the Sidebar container's collapsed or expanded state
    */
   protected _onToggleCollapse(event: MouseEvent): void;
-
-  /**
-   * @override
-   */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
 }
 
 declare namespace Sidebar {
@@ -96,9 +96,19 @@ declare namespace Sidebar {
     id: string;
 
     /**
+     * @defaultValue `'templates/sidebar/sidebar.html'`
+     */
+    template: string;
+
+    /**
      * @defaultValue `false`
      */
     popOut: boolean;
+
+    /**
+     * @defaultValue `300`
+     */
+    width: number;
 
     tabs: Array<
       Tabs.Options & {
@@ -118,15 +128,5 @@ declare namespace Sidebar {
         initial: string;
       }
     >;
-
-    /**
-     * @defaultValue `'templates/sidebar/sidebar.html'`
-     */
-    template: string;
-
-    /**
-     * @defaultValue `300`
-     */
-    width: number;
   }
 }

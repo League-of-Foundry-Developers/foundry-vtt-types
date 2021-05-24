@@ -25,10 +25,13 @@ declare class EULA extends Application {
   get licenseURL(): string;
 
   /** @override */
-  activateListeners(html: JQuery): void;
+  getData(): EULA.Data | Promise<EULA.Data>;
 
   /** @override */
-  getData(): EULA.Data | Promise<EULA.Data>;
+  protected _renderOuter(options: Application.RenderOptions): Promise<JQuery<JQuery.Node>>;
+
+  /** @override */
+  activateListeners(html: JQuery): void;
 
   /**
    * Handle refusal of the EULA by checking the decline button
@@ -40,9 +43,6 @@ declare class EULA extends Application {
    * Validate form submission before sending it onwards to the server
    */
   protected _onSubmit(event: Event): number | void;
-
-  /** @override */
-  protected _renderOuter(options: Application.RenderOptions): Promise<JQuery<JQuery.Node>>;
 }
 
 declare namespace EULA {

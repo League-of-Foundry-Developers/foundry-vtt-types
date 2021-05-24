@@ -3,11 +3,6 @@
  */
 declare class NotesLayer extends PlaceablesLayer<Note> {
   /**
-   * @defaultValue `"notesDisplayToggle"`
-   */
-  static TOGGLE_SETTING: string;
-
-  /**
    * @override
    * @defaultValue
    * ```
@@ -22,16 +17,19 @@ declare class NotesLayer extends PlaceablesLayer<Note> {
    */
   static get layerOptions(): PlaceablesLayer.LayerOptions;
 
+  /** @override */
+  activate(): this;
+
+  /** @override */
+  deactivate(): this;
+
   /**
    * Register game settings used by the NotesLayer
    */
   static registerSettings(): void;
 
   /** @override */
-  activate(): this;
-
-  /** @override */
-  deactivate(): this;
+  protected _onMouseDown(event: PIXI.InteractionEvent): void;
 
   /**
    * Handle JournalEntry entity drop data
@@ -41,8 +39,10 @@ declare class NotesLayer extends PlaceablesLayer<Note> {
     data: { id: string; type: 'JournalEntry'; x: number; y: number; pack?: string }
   ): Promise<false | undefined>;
 
-  /** @override */
-  protected _onMouseDown(event: PIXI.InteractionEvent): void;
+  /**
+   * @defaultValue `"notesDisplayToggle"`
+   */
+  static TOGGLE_SETTING: string;
 }
 
 declare namespace NotesLayer {

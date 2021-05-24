@@ -2,22 +2,27 @@
  * Define a two-sided coin term that can be used as part of a Roll formula
  */
 declare class Coin extends DiceTerm {
-  static DENOMINATION: 'c';
+  constructor(termData?: Partial<Coin.TermData>);
 
-  static MODIFIERS: typeof DiceTerm.MODIFIERS & {
-    c: 'call';
-  };
+  faces: 2;
 
-  static fromResults(options: Partial<Coin.TermData>, results: DiceTerm.Result[]): Coin;
+  /* -------------------------------------------- */
+
+  /**
+   * @override
+   */
+  roll(options?: { maximize: boolean; minimize: boolean }): DiceTerm.Result;
+
+  /* -------------------------------------------- */
 
   /**
    * @override
    */
   static getResultLabel(result: string): string;
 
-  constructor(termData?: Partial<Coin.TermData>);
-
-  faces: 2;
+  /* -------------------------------------------- */
+  /*  Term Modifiers                              */
+  /* -------------------------------------------- */
 
   /**
    * Call the result of the coin flip, marking any coins that matched the called target as a success
@@ -29,10 +34,15 @@ declare class Coin extends DiceTerm {
    */
   call(modifier: string): string;
 
-  /**
-   * @override
-   */
-  roll(options?: { maximize: boolean; minimize: boolean }): DiceTerm.Result;
+  /* -------------------------------------------- */
+
+  static DENOMINATION: 'c';
+
+  static MODIFIERS: typeof DiceTerm.MODIFIERS & {
+    c: 'call';
+  };
+
+  static fromResults(options: Partial<Coin.TermData>, results: DiceTerm.Result[]): Coin;
 }
 
 declare namespace Coin {

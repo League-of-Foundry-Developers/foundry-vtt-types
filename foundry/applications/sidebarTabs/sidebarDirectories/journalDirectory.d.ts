@@ -4,14 +4,13 @@
 declare class JournalDirectory extends SidebarDirectory<JournalDirectory.Options> {
   /**
    * @override
-   * @see {@link Game.journal}
    */
-  static get collection(): Game['journal'];
+  static get defaultOptions(): JournalDirectory.Options;
 
   /**
    * @override
    */
-  static get defaultOptions(): JournalDirectory.Options;
+  get title(): string;
 
   /**
    * @override
@@ -20,8 +19,9 @@ declare class JournalDirectory extends SidebarDirectory<JournalDirectory.Options
 
   /**
    * @override
+   * @see {@link Game.journal}
    */
-  get title(): string;
+  static get collection(): Game['journal'];
 
   /**
    * @override

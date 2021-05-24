@@ -1,4 +1,38 @@
 declare class AVSettings {
+  constructor();
+
+  protected _set<T>(key: string, value: T): void;
+
+  protected _change(): void;
+
+  client: AVSettings.ClientSettings;
+
+  world: AVSettings.WorldSettings;
+
+  protected _original: AVSettings.Settings;
+
+  initialize(): void;
+
+  changed(): void;
+
+  get<S extends 'client' | 'world'>(scope: S, setting: string): unknown; // TODO: Improve once we have proper typing for dot notation
+
+  getUser(userId: string): AVSettings.UserSettings | null;
+
+  set<S extends 'client' | 'world'>(scope: S, setting: string, value: unknown): void; // TODO: Improve once we have proper typing for dot notation
+
+  /**
+   * Return a mapping of AV settings for each game User.
+   */
+  get users(): Record<string, AVSettings.UserSettings>;
+
+  /**
+   * Prepare a standardized object of user settings data for a single User
+   */
+  protected _getUserSettings(user: User): AVSettings.UserSettings;
+
+  protected _onSettingsChanged(): void;
+
   /**
    * WebRTC Mode, Disabled, Audio only, Video only, Audio & Video
    */
@@ -7,6 +41,12 @@ declare class AVSettings {
     AUDIO: 1;
     VIDEO: 2;
     AUDIO_VIDEO: 3;
+  };
+
+  static VOICE_MODES: {
+    ALWAYS: 'always';
+    ACTIVITY: 'activity';
+    PTT: 'ptt';
   };
 
   static DEFAULT_CLIENT_SETTINGS: {
@@ -85,53 +125,6 @@ declare class AVSettings {
     users: Partial<Record<string, AVSettings.StoredUserSettings>>;
   };
 
-  static DEFAULT_USER_SETTINGS: {
-    /**
-     * @defaultValue `false`
-     */
-    popout: boolean;
-
-    /**
-     * @defaultValue `100`
-     */
-    x: number;
-
-    /**
-     * @defaultValue `100`
-     */
-    y: number;
-
-    /**
-     * @defaultValue `0`
-     */
-    z: number;
-
-    /**
-     * @defaultValue `320`
-     */
-    width: number;
-
-    /**
-     * @defaultValue `1.0`
-     */
-    volume: number;
-
-    /**
-     * @defaultValue `false`
-     */
-    muted: boolean;
-
-    /**
-     * @defaultValue `false`
-     */
-    hidden: boolean;
-
-    /**
-     * @defaultValue `false`
-     */
-    blocked: boolean;
-  };
-
   static DEFAULT_WORLD_SETTINGS: {
     /**
      * @defaultValue `AVSettings.AV_MODES.DISABLED`
@@ -188,45 +181,52 @@ declare class AVSettings {
     };
   };
 
-  static VOICE_MODES: {
-    ALWAYS: 'always';
-    ACTIVITY: 'activity';
-    PTT: 'ptt';
+  static DEFAULT_USER_SETTINGS: {
+    /**
+     * @defaultValue `false`
+     */
+    popout: boolean;
+
+    /**
+     * @defaultValue `100`
+     */
+    x: number;
+
+    /**
+     * @defaultValue `100`
+     */
+    y: number;
+
+    /**
+     * @defaultValue `0`
+     */
+    z: number;
+
+    /**
+     * @defaultValue `320`
+     */
+    width: number;
+
+    /**
+     * @defaultValue `1.0`
+     */
+    volume: number;
+
+    /**
+     * @defaultValue `false`
+     */
+    muted: boolean;
+
+    /**
+     * @defaultValue `false`
+     */
+    hidden: boolean;
+
+    /**
+     * @defaultValue `false`
+     */
+    blocked: boolean;
   };
-
-  constructor();
-
-  client: AVSettings.ClientSettings;
-
-  world: AVSettings.WorldSettings;
-
-  protected _original: AVSettings.Settings;
-
-  /**
-   * Return a mapping of AV settings for each game User.
-   */
-  get users(): Record<string, AVSettings.UserSettings>;
-
-  changed(): void;
-
-  get<S extends 'client' | 'world'>(scope: S, setting: string): unknown; // TODO: Improve once we have proper typing for dot notation
-
-  getUser(userId: string): AVSettings.UserSettings | null;
-
-  initialize(): void;
-
-  set<S extends 'client' | 'world'>(scope: S, setting: string, value: unknown): void; // TODO: Improve once we have proper typing for dot notation
-
-  protected _change(): void;
-
-  /**
-   * Prepare a standardized object of user settings data for a single User
-   */
-  protected _getUserSettings(user: User): AVSettings.UserSettings;
-
-  protected _onSettingsChanged(): void;
-
-  protected _set<T>(key: string, value: T): void;
 }
 
 declare namespace AVSettings {

@@ -8,6 +8,12 @@ declare class LightConfig<P extends FormApplication.Options = FormApplication.Op
   AmbientLight
 > {
   /**
+   * @param light   - The AmbientLight object for which settings are being configured
+   * @param options - LightConfig ui options (see Application)
+   */
+  constructor(light: AmbientLight, options?: Partial<P>);
+
+  /**
    * @override
    * @defaultValue
    * ```typescript
@@ -22,10 +28,10 @@ declare class LightConfig<P extends FormApplication.Options = FormApplication.Op
   static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /**
-   * @param light   - The AmbientLight object for which settings are being configured
-   * @param options - LightConfig ui options (see Application)
+   * @param options - (unused)
+   * @override
    */
-  constructor(light: AmbientLight, options?: Partial<P>);
+  getData(options?: Application.RenderOptions): LightConfig.Data;
 
   /** @override */
   activateListeners(html: JQuery): void;
@@ -34,10 +40,9 @@ declare class LightConfig<P extends FormApplication.Options = FormApplication.Op
   close(options?: Application.CloseOptions): Promise<void>;
 
   /**
-   * @param options - (unused)
-   * @override
+   * Preview the change caused by a change on the form by refreshing the display of the light source
    */
-  getData(options?: Application.RenderOptions): LightConfig.Data;
+  protected _onPreviewChange(event: JQuery.ChangeEvent): void;
 
   /** @override */
   protected _getSubmitData(
@@ -45,31 +50,26 @@ declare class LightConfig<P extends FormApplication.Options = FormApplication.Op
   ): ReturnType<FormApplication['_getSubmitData']> & { tintAlpha: number };
 
   /**
-   * Preview the change caused by a change on the form by refreshing the display of the light source
+   * @param event - (unused)
+   * @override
    */
-  protected _onPreviewChange(event: JQuery.ChangeEvent): void;
+  protected _updateObject(event: Event, formData: LightConfig.FormData): Promise<AmbientLight>;
 
   /**
    * Reset the state of the previewed light source object to its original data
    * @param refresh - (default: `true`)
    */
   protected _resetObject(refresh?: boolean): void;
-
-  /**
-   * @param event - (unused)
-   * @override
-   */
-  protected _updateObject(event: Event, formData: LightConfig.FormData): Promise<AmbientLight>;
 }
 
 declare namespace LightConfig {
   interface Data {
-    colorIntensity: number;
-    lightAnimations: LightAnimations;
-    lightTypes: LightTypes;
     object: Duplicated<LightConfig['object']['data']>;
     options: LightConfig['options'];
     submitText: string;
+    lightTypes: LightTypes;
+    lightAnimations: LightAnimations;
+    colorIntensity: number;
   }
 
   interface FormData {

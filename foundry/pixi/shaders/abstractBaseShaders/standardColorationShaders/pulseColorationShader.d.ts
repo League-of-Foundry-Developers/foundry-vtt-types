@@ -2,6 +2,8 @@
  * Pulse animation coloration shader
  */
 declare class PulseColorationShader extends StandardColorationShader {
+  static fragmentShader: string;
+
   /**
    * @defaultValue
    * ```typescript
@@ -16,6 +18,4 @@ declare class PulseColorationShader extends StandardColorationShader {
    * ```
    */
   static defaultUniforms: AbstractBaseShader.Uniforms;
-
-  static fragmentShader: string;
 }

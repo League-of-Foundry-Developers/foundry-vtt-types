@@ -16,10 +16,21 @@ declare abstract class EmbeddedEntity<D extends EmbeddedEntity.Data = EmbeddedEn
    */
   parent: P;
 
+  /* -------------------------------------------- */
+
   /**
    * A reference to the _id attribute of the EmbeddedEntity data
    */
   get id(): string;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Data preparation steps taken by the EmbeddedEntity instance when it's underlying data changes
+   */
+  prepareData(): void;
+
+  /* -------------------------------------------- */
 
   /**
    * Get the value of a "flag" for this EmbeddedEntity
@@ -31,10 +42,7 @@ declare abstract class EmbeddedEntity<D extends EmbeddedEntity.Data = EmbeddedEn
    */
   getFlag(scope: string, key: string): unknown;
 
-  /**
-   * Data preparation steps taken by the EmbeddedEntity instance when it's underlying data changes
-   */
-  prepareData(): void;
+  /* -------------------------------------------- */
 
   /**
    * Assign a "flag" to this EmbeddedEntity.
@@ -56,6 +64,8 @@ declare abstract class EmbeddedEntity<D extends EmbeddedEntity.Data = EmbeddedEn
    * @returns A Promise resolving to the updated EmbeddedEntity
    */
   setFlag(scope: string, key: string, value: any): Promise<this>;
+
+  /* -------------------------------------------- */
 
   /**
    * Remove a flag assigned to the Entity

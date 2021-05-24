@@ -3,6 +3,19 @@
  * @see {@link AmbientSound}
  */
 declare class SoundsLayer extends PlaceablesLayer<AmbientSound> {
+  constructor();
+
+  /**
+   * A status flag for whether the layer initialization workflow has succeeded
+   * @defaultValue `false`
+   */
+  protected _initialized: boolean;
+
+  /**
+   * A debounced refresh function for the sounds layer
+   */
+  refresh: (...args: Parameters<this['update']>) => void;
+
   /**
    * @override
    * @defaultValue
@@ -16,18 +29,8 @@ declare class SoundsLayer extends PlaceablesLayer<AmbientSound> {
    * */
   static get layerOptions(): PlaceablesLayer.LayerOptions;
 
-  constructor();
-
-  /**
-   * A debounced refresh function for the sounds layer
-   */
-  refresh: (...args: Parameters<this['update']>) => void;
-
-  /**
-   * A status flag for whether the layer initialization workflow has succeeded
-   * @defaultValue `false`
-   */
-  protected _initialized: boolean;
+  /** @override */
+  tearDown(): Promise<void>;
 
   /**
    * Initialize the field of "view" for all AmbientSound effects in the layer
@@ -35,27 +38,24 @@ declare class SoundsLayer extends PlaceablesLayer<AmbientSound> {
   initialize(): void;
 
   /**
+   * Update all AmbientSound effects in the layer by toggling their playback status
+   */
+  update(playOptions?: { fade?: boolean }): void;
+
+  /**
    * Terminate playback of all ambient audio sources
    */
   stopAll(): void;
 
   /** @override */
-  tearDown(): Promise<void>;
-
-  /**
-   * Update all AmbientSound effects in the layer by toggling their playback status
-   */
-  update(playOptions?: { fade?: boolean }): void;
-
-  /** @override */
-  protected _onDragLeftCancel(event: PointerEvent): void;
-
-  /** @override */
-  protected _onDragLeftDrop(event: PIXI.InteractionEvent): void;
+  protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
 
   /** @override */
   protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
   /** @override */
-  protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
+  protected _onDragLeftDrop(event: PIXI.InteractionEvent): void;
+
+  /** @override */
+  protected _onDragLeftCancel(event: PointerEvent): void;
 }

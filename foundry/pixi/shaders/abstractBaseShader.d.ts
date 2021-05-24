@@ -2,25 +2,26 @@
  * This class defines an interface which all shaders utilize
  */
 declare abstract class AbstractBaseShader extends PIXI.Shader {
-  /**
-   * Convert a Hue-Saturation-Brightness color to RGB - useful to convert polar coordinates to RGB
-   */
-  static HSB2RGB: string;
+  constructor(program: PIXI.Program, uniforms: AbstractBaseShader.Uniforms);
 
   /**
-   * A conventional noise generator
+   * The initial default values of shader uniforms
    */
-  static NOISE: string;
+  protected _defaults: AbstractBaseShader.Uniforms;
 
   /**
-   * A conventional pseudo-random number generator with the "golden" numbers, based on uv position
+   * The default vertex shader used by all instances of AbstractBaseShader
    */
-  static PRNG: string;
+  static vertexShader: string;
 
   /**
-   * A Vec3 pseudo-random generator, based on uv position
+   * The fragment shader which renders this source.
+   * A subclass of AbstractBaseShader must implement the fragmentShader static field.
+   *
+   * @remarks
+   * This is abstract, subclasses must implement it.
    */
-  static PRNG3D: string;
+  static fragmentShader: string;
 
   /**
    * The default uniform values for the shader.
@@ -33,18 +34,36 @@ declare abstract class AbstractBaseShader extends PIXI.Shader {
   static defaultUniforms: AbstractBaseShader.Uniforms;
 
   /**
-   * The fragment shader which renders this source.
-   * A subclass of AbstractBaseShader must implement the fragmentShader static field.
-   *
-   * @remarks
-   * This is abstract, subclasses must implement it.
+   * A factory method for creating the shader using its defined default values
    */
-  static fragmentShader: string;
+  static create<T extends AbstractBaseShader>(this: ConstructorOf<T>, defaultUniforms?: AbstractBaseShader.Uniforms): T;
 
   /**
-   * The default vertex shader used by all instances of AbstractBaseShader
+   * Reset the shader uniforms back to their provided default values
    */
-  static vertexShader: string;
+  protected reset(): void;
+
+  /**
+   * A Vec3 pseudo-random generator, based on uv position
+   */
+  static PRNG3D: string;
+
+  /**
+   * A conventional pseudo-random number generator with the "golden" numbers, based on uv position
+   */
+  static PRNG: string;
+
+  /**
+   * A conventional noise generator
+   */
+  static NOISE: string;
+
+  /**
+   * Fractional Brownian Motion for a given number of octaves
+   * @param octaves - (default: `4`)
+   * @param amp     - (default: `1.0`)
+   */
+  static FBM(octaves?: number, amp?: number): string;
 
   /**
    * Fade easing to use with distance in interval [0,1]
@@ -64,28 +83,9 @@ declare abstract class AbstractBaseShader extends PIXI.Shader {
   static FADE2(slope?: number, order?: number): string;
 
   /**
-   * Fractional Brownian Motion for a given number of octaves
-   * @param octaves - (default: `4`)
-   * @param amp     - (default: `1.0`)
+   * Convert a Hue-Saturation-Brightness color to RGB - useful to convert polar coordinates to RGB
    */
-  static FBM(octaves?: number, amp?: number): string;
-
-  /**
-   * A factory method for creating the shader using its defined default values
-   */
-  static create<T extends AbstractBaseShader>(this: ConstructorOf<T>, defaultUniforms?: AbstractBaseShader.Uniforms): T;
-
-  constructor(program: PIXI.Program, uniforms: AbstractBaseShader.Uniforms);
-
-  /**
-   * The initial default values of shader uniforms
-   */
-  protected _defaults: AbstractBaseShader.Uniforms;
-
-  /**
-   * Reset the shader uniforms back to their provided default values
-   */
-  protected reset(): void;
+  static HSB2RGB: string;
 }
 
 declare namespace AbstractBaseShader {

@@ -15,8 +15,6 @@
  * ```
  */
 declare class DragDrop {
-  static createDragImage(img: HTMLImageElement, width: number, height: number): HTMLDivElement | HTMLElement;
-
   /**
    * @param dragSelector - The CSS selector used to target draggable elements.
    *                       (default: `null`)
@@ -28,12 +26,6 @@ declare class DragDrop {
    *                       (default: `{}`)
    */
   constructor({ dragSelector, dropSelector, permissions, callbacks }?: DragDrop.Options);
-
-  /**
-   * A set of callback functions for each action of the Drag and Drop workflow
-   * @defaultValue `{}`
-   */
-  callbacks: Partial<Record<string, (event: DragEvent) => unknown>>;
 
   /**
    * The HTML selector which identifies draggable elements
@@ -52,6 +44,12 @@ declare class DragDrop {
    * @defaultValue `{}`
    */
   permissions: Partial<Record<string, (selector: string | null) => boolean>>;
+
+  /**
+   * A set of callback functions for each action of the Drag and Drop workflow
+   * @defaultValue `{}`
+   */
+  callbacks: Partial<Record<string, (event: DragEvent) => unknown>>;
 
   /**
    * Bind the DragDrop controller to an HTML application
@@ -75,32 +73,28 @@ declare class DragDrop {
   can(action: string, selector: string | null): boolean;
 
   /**
-   * Handle a dragged element over a droppable target
-   * @param event - The drag event being handled
-   */
-  protected _handleDragOver(event: DragEvent): false;
-
-  /**
    * Handle the start of a drag workflow
    * @param event - The drag event being handled
    */
   protected _handleDragStart(event: DragEvent): void;
 
   /**
+   * Handle a dragged element over a droppable target
+   * @param event - The drag event being handled
+   */
+  protected _handleDragOver(event: DragEvent): false;
+
+  /**
    * Handle a dragged element dropped on a droppable target
    * @param event - The drag event being handled
    */
   protected _handleDrop(event: DragEvent): unknown;
+
+  static createDragImage(img: HTMLImageElement, width: number, height: number): HTMLDivElement | HTMLElement;
 }
 
 declare namespace DragDrop {
   interface Options {
-    /**
-     * An object of callback functions for each action
-     * @defaultValue `{}`
-     */
-    callbacks?: DragDrop['callbacks'];
-
     /**
      * The CSS selector used to target draggable elements.
      * @defaultValue `null`
@@ -118,5 +112,11 @@ declare namespace DragDrop {
      * @defaultValue `{}`
      */
     permissions?: DragDrop['permissions'];
+
+    /**
+     * An object of callback functions for each action
+     * @defaultValue `{}`
+     */
+    callbacks?: DragDrop['callbacks'];
   }
 }

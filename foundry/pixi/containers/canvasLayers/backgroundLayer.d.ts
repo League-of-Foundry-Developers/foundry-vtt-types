@@ -3,15 +3,6 @@
  * The singleton instance of this class is accessed through `canvas.background`.
  */
 declare class BackgroundLayer extends CanvasLayer {
-  /**
-   * @deprecated since 0.7.2
-   * @see {@link createThumbnail}
-   */
-  static createThumbnail(
-    src: string | PIXI.DisplayObject,
-    options?: ImageHelper.CompositeOptions
-  ): Promise<ImageHelper.ThumbnailReturn>;
-
   constructor();
 
   /**
@@ -21,19 +12,22 @@ declare class BackgroundLayer extends CanvasLayer {
   img: PIXI.Sprite | null;
 
   /**
-   * Return a Boolean flag for whether the Scene background texture is a Video element
-   */
-  get isVideo(): boolean;
-
-  /**
    * Return the base HTML element which is used to generate the Scene background
    */
   get source(): HTMLElement | null;
 
   /**
+   * Return a Boolean flag for whether the Scene background texture is a Video element
+   */
+  get isVideo(): boolean;
+
+  /**
    * @override
    */
   activate(): false;
+
+  /** @override */
+  tearDown(): Promise<void>;
 
   /**
    * Draw the background image.
@@ -43,6 +37,12 @@ declare class BackgroundLayer extends CanvasLayer {
    */
   draw(): Promise<this | undefined>;
 
-  /** @override */
-  tearDown(): Promise<void>;
+  /**
+   * @deprecated since 0.7.2
+   * @see {@link createThumbnail}
+   */
+  static createThumbnail(
+    src: string | PIXI.DisplayObject,
+    options?: ImageHelper.CompositeOptions
+  ): Promise<ImageHelper.ThumbnailReturn>;
 }

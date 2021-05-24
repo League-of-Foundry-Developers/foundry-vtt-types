@@ -11,6 +11,50 @@
  */
 declare class Ray {
   /**
+   * @param A - The origin of the Ray
+   * @param B - The destination of the Ray
+   */
+  constructor(A: Point, B: Point);
+
+  // Points
+  A: Point;
+  B: Point;
+
+  // Origins
+  x0: number;
+  y0: number;
+
+  // Slopes
+  dx: number;
+  dy: number;
+
+  /**
+   * The slope of the ray, dy over dx
+   */
+  slope: number;
+
+  /**
+   * The normalized angle of the ray in radians on the range (-PI, PI)
+   */
+  angle: number;
+
+  /**
+   * The distance of the ray
+   */
+  distance: number;
+
+  /**
+   * A bounding rectangle that encompasses the Ray
+   */
+  get bounds(): NormalizedRectangle;
+
+  /**
+   * Return the value of the angle normalized to the range (0, 2*PI)
+   * This is useful for testing whether an angle falls between two others
+   */
+  get normAngle(): number;
+
+  /**
    * A factory method to construct a Ray from an origin point, an angle, and a distance
    * @param x        - The origin x-coordinate
    * @param y        - The origin y-coordinate
@@ -29,77 +73,6 @@ declare class Ray {
   static fromArrays(A: [x: number, y: number], B: [x: number, y: number]): Ray;
 
   /**
-   * An internal helper method for computing the intersection between two lines.
-   * @internal
-   */
-  protected static _getIntersection(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    x3: number,
-    y3: number,
-    x4: number,
-    y4: number
-  ): Ray.CollisionPoint | false;
-
-  /**
-   * @param A - The origin of the Ray
-   * @param B - The destination of the Ray
-   */
-  constructor(A: Point, B: Point);
-
-  A: Point;
-
-  B: Point;
-
-  /**
-   * The normalized angle of the ray in radians on the range (-PI, PI)
-   */
-  angle: number;
-
-  /**
-   * The distance of the ray
-   */
-  distance: number;
-
-  dx: number;
-
-  dy: number;
-
-  /**
-   * The slope of the ray, dy over dx
-   */
-  slope: number;
-
-  x0: number;
-
-  y0: number;
-
-  /**
-   * A bounding rectangle that encompasses the Ray
-   */
-  get bounds(): NormalizedRectangle;
-
-  /**
-   * Return the value of the angle normalized to the range (0, 2*PI)
-   * This is useful for testing whether an angle falls between two others
-   */
-  get normAngle(): number;
-
-  /**
-   * Find the point I[x,y] and distance t* on ray R(t) which intersects another ray
-   * http://paulbourke.net/geometry/pointlineplane/
-   *
-   * @param coords - An array of coordinates [x0, y0, x1, y1] which defines a line segment to test
-   *
-   * @returns
-   *    The point of collision [x,y] the position of that collision point along the Ray (t0) an the tested
-   *    segment (t1). Returns false if no collision occurs.
-   */
-  intersectSegment(coords: [x0: number, y0: number, x1: number, y1: number]): Ray.CollisionPoint | false;
-
-  /**
    * Project the Array by some proportion of it's initial distance.
    * Return the coordinates of that point along the path.
    * @param t - The distance along the Ray
@@ -114,6 +87,33 @@ declare class Ray {
    * @returns A new Ray with an offset angle
    */
   shiftAngle(angleOffset: number, distance?: number): Ray;
+
+  /**
+   * Find the point I[x,y] and distance t* on ray R(t) which intersects another ray
+   * http://paulbourke.net/geometry/pointlineplane/
+   *
+   * @param coords - An array of coordinates [x0, y0, x1, y1] which defines a line segment to test
+   *
+   * @returns
+   *    The point of collision [x,y] the position of that collision point along the Ray (t0) an the tested
+   *    segment (t1). Returns false if no collision occurs.
+   */
+  intersectSegment(coords: [x0: number, y0: number, x1: number, y1: number]): Ray.CollisionPoint | false;
+
+  /**
+   * An internal helper method for computing the intersection between two lines.
+   * @internal
+   */
+  static _getIntersection(
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    x3: number,
+    y3: number,
+    x4: number,
+    y4: number
+  ): Ray.CollisionPoint | false;
 }
 
 declare namespace Ray {

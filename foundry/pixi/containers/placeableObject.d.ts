@@ -3,49 +3,15 @@
  */
 declare abstract class PlaceableObject<D extends PlaceableObject.Data = PlaceableObject.Data> extends PIXI.Container {
   /**
-   * Identify the official EmbeddedEntity name for this PlaceableObject class
-   * @remarks This getter is abstract in {@link PlaceableObject}.
-   */
-  static get embeddedName(): string;
-
-  /**
-   * Provide a reference to the canvas layer which contains placeable objects of this type
-   */
-  static get layer(): PlaceablesLayer;
-
-  static create<T extends PlaceableObject, U>(
-    this: ConstructorOf<T>,
-    data: Expanded<U> extends DeepPartial<T['data']> ? U : DeepPartial<T['data']>,
-    options?: Entity.CreateOptions
-  ): Promise<T | void>;
-  static create<T extends PlaceableObject, U>(
-    this: ConstructorOf<T>,
-    data: Expanded<U> extends DeepPartial<T['data']> ? U[] : DeepPartial<T['data']>[],
-    options?: Entity.CreateOptions
-  ): Promise<T | T[] | void>;
-
-  /**
    * @param data  - The underlying embedded document data for the placeable type
    * @param scene - The parent scene that this object belongs to (if any)
    */
   constructor(data?: DeepPartial<D>, scene?: PlaceableObject['scene']);
 
   /**
-   * A control icon for interacting with the object
-   * @defaultValue `null`
-   */
-  controlIcon: ControlIcon | null;
-
-  /**
    * The underlying data object which provides the basis for this placeable object
    */
   data: D;
-
-  /**
-   * A mouse interaction manager instance which handles mouse workflows related to this object.
-   * @defaultValue `null`
-   */
-  mouseInteractionManager: MouseInteractionManager<this, ControlIcon | this> | null;
 
   /**
    * Retain a reference to the Scene within which this Placeable Object resides
@@ -58,6 +24,18 @@ declare abstract class PlaceableObject<D extends PlaceableObject.Data = Placeabl
    * @defaultValue `{ fov: null, los: null }`
    */
   vision: PlaceableObject.Vision;
+
+  /**
+   * A control icon for interacting with the object
+   * @defaultValue `null`
+   */
+  controlIcon: ControlIcon | null;
+
+  /**
+   * A mouse interaction manager instance which handles mouse workflows related to this object.
+   * @defaultValue `null`
+   */
+  mouseInteractionManager: MouseInteractionManager<this, ControlIcon | this> | null;
 
   /**
    * An indicator for whether the object is currently controlled
@@ -78,9 +56,20 @@ declare abstract class PlaceableObject<D extends PlaceableObject.Data = Placeabl
   protected _sheet: FormApplication | null;
 
   /**
+   * The bounding box for this PlaceableObject.
+   * This is required if the layer uses a Quadtree, otherwise it is optional
+   */
+  abstract get bounds(): NormalizedRectangle;
+
+  /**
    * The central coordinate pair of the placeable object based on it's own width and height
    */
   get center(): Point;
+
+  /**
+   * The _id of the underlying EmbeddedEntity
+   */
+  get id(): string;
 
   /**
    * The field-of-vision polygon for the object, if it has been computed
@@ -88,9 +77,15 @@ declare abstract class PlaceableObject<D extends PlaceableObject.Data = Placeabl
   get fov(): PIXI.Polygon | null;
 
   /**
-   * The _id of the underlying EmbeddedEntity
+   * Identify the official EmbeddedEntity name for this PlaceableObject class
+   * @remarks This getter is abstract in {@link PlaceableObject}.
    */
-  get id(): string;
+  static get embeddedName(): string;
+
+  /**
+   * Provide a reference to the canvas layer which contains placeable objects of this type
+   */
+  static get layer(): PlaceablesLayer;
 
   /**
    * @see {@link PlaceableObject.layer}
@@ -114,23 +109,67 @@ declare abstract class PlaceableObject<D extends PlaceableObject.Data = Placeabl
   get uuid(): string;
 
   /**
-   * The bounding box for this PlaceableObject.
-   * This is required if the layer uses a Quadtree, otherwise it is optional
-   */
-  abstract get bounds(): NormalizedRectangle;
-
-  /**
-   * Activate interactivity for the Placeable Object
-   */
-  activateListeners(): void;
-
-  /**
    * Test whether a user can perform a certain interaction with regards to a Placeable Object
    * @param user   - The User performing the action
    * @param action - The named action being attempted
    * @returns Does the User have rights to perform the action?
    */
   can(user: User, action: string): boolean;
+
+  /**
+   * Can the User access the HUD for this Placeable Object?
+   * @param user  - (unused)
+   * @param event - (unused)
+   */
+  protected _canHUD(user?: any, event?: any): boolean;
+
+  /**
+   * Does the User have permission to configure the Placeable Object?
+   * @param event - (unused)
+   */
+  protected _canConfigure(user: User, event?: any): boolean;
+
+  /**
+   * Does the User have permission to control the Placeable Object?
+   * @param event - (unused)
+   */
+  protected _canControl(user: User, event?: any): boolean;
+
+  /**
+   * Does the User have permission to view details of the Placeable Object?
+   * @param event - (unused)
+   */
+  protected _canView(user: User, event?: any): boolean;
+
+  /**
+   * Does the User have permission to create the underlying Embedded Entity?
+   * @param event - (unused)
+   */
+  protected _canCreate(user: User, event?: any): boolean;
+
+  /**
+   * Does the User have permission to drag this Placeable Object?
+   * @param event - (unused)
+   */
+  protected _canDrag(user: User, event?: any): boolean;
+
+  /**
+   * Does the User have permission to hover on this Placeable Object?
+   * @param event - (unused)
+   */
+  protected _canHover(user: User, event?: any): boolean;
+
+  /**
+   * Does the User have permission to update the underlying Embedded Entity?
+   * @param event - (unused)
+   */
+  protected _canUpdate(user: User, event?: any): boolean;
+
+  /**
+   * Does the User have permission to delete the underlying Embedded Entity?
+   * @param event - (unused)
+   */
+  protected _canDelete(user: User, event?: any): boolean;
 
   /**
    * Clear the display of the existing object
@@ -148,13 +187,35 @@ declare abstract class PlaceableObject<D extends PlaceableObject.Data = Placeabl
   clone(): PlaceableObject<D>;
 
   /**
-   * Assume control over a PlaceableObject, flagging it as controlled and enabling downstream behaviors
-   * @param options       - Additional options which modify the control request
-   *                        (default: `{}`)
-   * @param releaseOthers - Release any other controlled objects first
-   * @returns A flag denoting whether or not control was successful
+   * Draw the placeable object into its parent container
+   * @returns The drawn object
    */
-  control(options?: PlaceableObject.ControlOptions): boolean;
+  abstract draw(): Promise<this>;
+
+  /**
+   * Draw the primary Sprite for the PlaceableObject
+   */
+  protected _drawPrimarySprite(texture: PIXI.Texture): PIXI.Sprite | null;
+
+  /**
+   * Refresh the current display state of the Placeable Object
+   * @returns The refreshed object
+   */
+  abstract refresh(): unknown;
+
+  static create<T extends PlaceableObject, U>(
+    this: ConstructorOf<T>,
+    data: Expanded<U> extends DeepPartial<T['data']> ? U : DeepPartial<T['data']>,
+    options?: Entity.CreateOptions
+  ): Promise<T | void>;
+  static create<T extends PlaceableObject, U>(
+    this: ConstructorOf<T>,
+    data: Expanded<U> extends DeepPartial<T['data']> ? U[] : DeepPartial<T['data']>[],
+    options?: Entity.CreateOptions
+  ): Promise<T | T[] | void>;
+
+  update<U>(data: Expanded<U> extends DeepPartial<D> ? U : never, options?: Entity.UpdateOptions): Promise<this>;
+  update(data: DeepPartial<D>, options?: Entity.UpdateOptions): Promise<this>;
 
   delete(options?: Entity.DeleteOptions): Promise<this>;
 
@@ -167,22 +228,6 @@ declare abstract class PlaceableObject<D extends PlaceableObject.Data = Placeabl
    * @returns The flag value
    */
   getFlag(scope: string, key: string): unknown;
-
-  /**
-   * Release control over a PlaceableObject, removing it from the controlled set
-   * @param options - Options which modify the releasing workflow
-   *                  (default: `{}`)
-   * @returns A Boolean flag confirming the object was released.
-   */
-  release(options?: PlaceableObject.ReleaseOptions): boolean;
-
-  /**
-   * Rotate the PlaceableObject to a certain angle of facing
-   * @param angle - The desired angle of rotation
-   * @param snap  - Snap the angle of rotation to a certain target degree increment
-   * @returns A Promise which resolves once the rotation has completed
-   */
-  rotate(angle: number, snap: number): Promise<this>;
 
   /**
    * Assign a "flag" to this Entity.
@@ -213,73 +258,71 @@ declare abstract class PlaceableObject<D extends PlaceableObject.Data = Placeabl
    */
   unsetFlag(scope: string, key: string): Promise<this>;
 
-  update<U>(data: Expanded<U> extends DeepPartial<D> ? U : never, options?: Entity.UpdateOptions): Promise<this>;
-  update(data: DeepPartial<D>, options?: Entity.UpdateOptions): Promise<this>;
+  /**
+   * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
+   */
+  protected _onCreate(): void;
 
   /**
-   * Does the User have permission to configure the Placeable Object?
-   * @param event - (unused)
+   * Define additional steps taken when an existing placeable object of this type is updated with new data
    */
-  protected _canConfigure(user: User, event?: any): boolean;
+  protected _onUpdate(data: D): void;
 
   /**
-   * Does the User have permission to control the Placeable Object?
-   * @param event - (unused)
+   * Define additional steps taken when an existing placeable object of this type is deleted
    */
-  protected _canControl(user: User, event?: any): boolean;
+  protected _onDelete(): void;
 
   /**
-   * Does the User have permission to create the underlying Embedded Entity?
-   * @param event - (unused)
+   * Assume control over a PlaceableObject, flagging it as controlled and enabling downstream behaviors
+   * @param options       - Additional options which modify the control request
+   *                        (default: `{}`)
+   * @param releaseOthers - Release any other controlled objects first
+   * @returns A flag denoting whether or not control was successful
    */
-  protected _canCreate(user: User, event?: any): boolean;
+  control(options?: PlaceableObject.ControlOptions): boolean;
 
   /**
-   * Does the User have permission to delete the underlying Embedded Entity?
-   * @param event - (unused)
+   * Additional events which trigger once control of the object is established
+   * @param options - Optional parameters which apply for specific implementations
+   *                  (unused)
    */
-  protected _canDelete(user: User, event?: any): boolean;
+  protected _onControl(options?: any): void;
 
   /**
-   * Does the User have permission to drag this Placeable Object?
-   * @param event - (unused)
+   * Release control over a PlaceableObject, removing it from the controlled set
+   * @param options - Options which modify the releasing workflow
+   *                  (default: `{}`)
+   * @returns A Boolean flag confirming the object was released.
    */
-  protected _canDrag(user: User, event?: any): boolean;
+  release(options?: PlaceableObject.ReleaseOptions): boolean;
 
   /**
-   * Can the User access the HUD for this Placeable Object?
-   * @param user  - (unused)
-   * @param event - (unused)
+   * Additional events which trigger once control of the object is released
+   * @param options - Options which modify the releasing workflow
+   *                  (unused)
    */
-  protected _canHUD(user?: any, event?: any): boolean;
+  protected _onRelease(options?: any): void;
 
   /**
-   * Does the User have permission to hover on this Placeable Object?
-   * @param event - (unused)
+   * Rotate the PlaceableObject to a certain angle of facing
+   * @param angle - The desired angle of rotation
+   * @param snap  - Snap the angle of rotation to a certain target degree increment
+   * @returns A Promise which resolves once the rotation has completed
    */
-  protected _canHover(user: User, event?: any): boolean;
+  rotate(angle: number, snap: number): Promise<this>;
 
   /**
-   * Does the User have permission to update the underlying Embedded Entity?
-   * @param event - (unused)
+   * Determine a new angle of rotation for a PlaceableObject either from an explicit angle or from a delta offset.
+   * @param angle - An explicit angle, either this or delta must be provided
+   *                (default: `null`)
+   * @param delta - A relative angle delta, either this or the angle must be provided
+   *                (default: `0`)
+   * @param snap  - A precision (in degrees) to which the resulting angle should snap.
+   *                (default: `0`)
+   * @returns The new rotation angle for the object
    */
-  protected _canUpdate(user: User, event?: any): boolean;
-
-  /**
-   * Does the User have permission to view details of the Placeable Object?
-   * @param event - (unused)
-   */
-  protected _canView(user: User, event?: any): boolean;
-
-  /**
-   * Create a standard MouseInteractionManager for the PlaceableObject
-   */
-  protected _createInteractionManager(): NonNullable<this['mouseInteractionManager']>;
-
-  /**
-   * Draw the primary Sprite for the PlaceableObject
-   */
-  protected _drawPrimarySprite(texture: PIXI.Texture): PIXI.Sprite | null;
+  protected _updateRotation({ angle, delta, snap }?: { angle: number; delta: number; snap: number }): number;
 
   /**
    * Obtain a shifted position for the Placeable Object
@@ -288,6 +331,28 @@ declare abstract class PlaceableObject<D extends PlaceableObject.Data = Placeabl
    * @returns The shifted target coordinates
    */
   protected _getShiftedPosition(dx: number, dy: number): { x: number; y: number };
+
+  /**
+   * Activate interactivity for the Placeable Object
+   */
+  activateListeners(): void;
+
+  /**
+   * Create a standard MouseInteractionManager for the PlaceableObject
+   */
+  protected _createInteractionManager(): NonNullable<this['mouseInteractionManager']>;
+
+  /**
+   * Actions that should be taken for this Placeable Object when a mouseover event occurs
+   * @param options - (default: `{}`)
+   * @param hoverOutOthers - (default: `true`)
+   */
+  protected _onHoverIn(event: PIXI.InteractionEvent, options?: { hoverOutOthers: boolean }): boolean | void;
+
+  /**
+   * Actions that should be taken for this Placeable Object when a mouseout event occurs
+   */
+  protected _onHoverOut(event: PIXI.InteractionEvent): boolean | void;
 
   /**
    * Callback actions which occur on a single left-click event to assume control of the object
@@ -310,26 +375,14 @@ declare abstract class PlaceableObject<D extends PlaceableObject.Data = Placeabl
   protected _onClickRight2(event: PIXI.InteractionEvent): void;
 
   /**
-   * Additional events which trigger once control of the object is established
-   * @param options - Optional parameters which apply for specific implementations
-   *                  (unused)
+   * Callback actions which occur when a mouse-drag action is first begun.
    */
-  protected _onControl(options?: any): void;
-
-  /**
-   * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
-   */
-  protected _onCreate(): void;
-
-  /**
-   * Define additional steps taken when an existing placeable object of this type is deleted
-   */
-  protected _onDelete(): void;
+  protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
 
   /**
    * Callback actions which occur on a mouse-move operation.
    */
-  protected _onDragLeftCancel(event: PIXI.InteractionEvent): void;
+  protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
   /**
    * Callback actions which occur on a mouse-move operation.
@@ -339,60 +392,7 @@ declare abstract class PlaceableObject<D extends PlaceableObject.Data = Placeabl
   /**
    * Callback actions which occur on a mouse-move operation.
    */
-  protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
-
-  /**
-   * Callback actions which occur when a mouse-drag action is first begun.
-   */
-  protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
-
-  /**
-   * Actions that should be taken for this Placeable Object when a mouseover event occurs
-   * @param options - (default: `{}`)
-   * @param hoverOutOthers - (default: `true`)
-   */
-  protected _onHoverIn(event: PIXI.InteractionEvent, options?: { hoverOutOthers: boolean }): boolean | void;
-
-  /**
-   * Actions that should be taken for this Placeable Object when a mouseout event occurs
-   */
-  protected _onHoverOut(event: PIXI.InteractionEvent): boolean | void;
-
-  /**
-   * Additional events which trigger once control of the object is released
-   * @param options - Options which modify the releasing workflow
-   *                  (unused)
-   */
-  protected _onRelease(options?: any): void;
-
-  /**
-   * Define additional steps taken when an existing placeable object of this type is updated with new data
-   */
-  protected _onUpdate(data: D): void;
-
-  /**
-   * Determine a new angle of rotation for a PlaceableObject either from an explicit angle or from a delta offset.
-   * @param angle - An explicit angle, either this or delta must be provided
-   *                (default: `null`)
-   * @param delta - A relative angle delta, either this or the angle must be provided
-   *                (default: `0`)
-   * @param snap  - A precision (in degrees) to which the resulting angle should snap.
-   *                (default: `0`)
-   * @returns The new rotation angle for the object
-   */
-  protected _updateRotation({ angle, delta, snap }?: { angle: number; delta: number; snap: number }): number;
-
-  /**
-   * Draw the placeable object into its parent container
-   * @returns The drawn object
-   */
-  abstract draw(): Promise<this>;
-
-  /**
-   * Refresh the current display state of the Placeable Object
-   * @returns The refreshed object
-   */
-  abstract refresh(): unknown;
+  protected _onDragLeftCancel(event: PIXI.InteractionEvent): void;
 }
 
 declare namespace PlaceableObject {

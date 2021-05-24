@@ -5,6 +5,15 @@
 declare class AVMaster {
   constructor();
 
+  settings: AVSettings;
+
+  config: AVConfig;
+
+  /**
+   * The Audio/Video client class
+   */
+  client: AVClient;
+
   /**
    * A flag to track whether the current user is actively broadcasting their microphone.
    * @defaultValue `false`
@@ -12,30 +21,11 @@ declare class AVMaster {
   broadcasting: boolean;
 
   /**
-   * The Audio/Video client class
-   */
-  client: AVClient;
-
-  config: AVConfig;
-
-  settings: AVSettings;
-
-  /**
    * Flag to determine if we are connected to the signalling server or not.
    * This is required for synchronization between connection and reconnection attempts.
    * @defaultValue `false`
    */
   protected _connected: boolean;
-
-  /**
-   * @defaultValue `{}`
-   */
-  protected _pttHandlers: AVMaster.PTTHandlers;
-
-  /**
-   * @defaultValue `0`
-   */
-  protected _pttMuteTimeout: number;
 
   /**
    * A flag to track whether the A/V system is currently in the process of reconnecting.
@@ -48,8 +38,71 @@ declare class AVMaster {
    * @defaultValue `{}`
    */
   protected _speakingData: AVMaster.SpeakingData;
+  /**
+   * @defaultValue `{}`
+   */
+  protected _pttHandlers: AVMaster.PTTHandlers;
+  /**
+   * @defaultValue `0`
+   */
+  protected _pttMuteTimeout: number;
 
   get mode(): AVSettings.VoiceMode;
+
+  /**
+   * Connect to the Audio/Video client.
+   * @returns Was the connection attempt successful?
+   */
+  connect(): Promise<boolean>;
+
+  /**
+   * Disconnect from the Audio/Video client.
+   * @returns Whether an existing connection was terminated?
+   */
+  disconnect(): Promise<boolean>;
+
+  /**
+   * Callback actions to take when the user becomes disconnected from the server.
+   */
+  reestablish(): Promise<void>;
+
+  /**
+   * Initialize the local broadcast state.
+   */
+  protected _initialize(): void;
+
+  /**
+   * A user can broadcast audio if the AV mode is compatible and if they are allowed to broadcast.
+   */
+  canUserBroadcastAudio(userId: string): boolean;
+
+  /**
+   * A user can share audio if they are allowed to broadcast and if they have not muted themselves or been blocked.
+   */
+  canUserShareAudio(userId: string): boolean;
+
+  /**
+   * A user can broadcast video if the AV mode is compatible and if they are allowed to broadcast.
+   */
+  canUserBroadcastVideo(userId: string): boolean;
+
+  /**
+   * A user can share video if they are allowed to broadcast and if they have not hidden themselves or been blocked.
+   */
+  canUserShareVideo(userId: string): boolean;
+
+  /**
+   * Trigger a change in the audio broadcasting state when using a push-to-talk workflow.
+   * @param intent - The user's intent to broadcast. Whether an actual broadcast occurs will depend
+   *                 on whether or not the user has muted their audio feed.
+   */
+  broadcast(intent: boolean): void;
+
+  /**
+   * Set up audio level listeners to handle voice activation detection workflow.
+   * @param mode - The currently selected voice broadcasting mode
+   */
+  protected _initializeUserVoiceDetection(mode: AVSettings.VoiceMode): void;
 
   /**
    * Activate voice detection tracking for a userId on a provided MediaStream.
@@ -62,87 +115,10 @@ declare class AVMaster {
   activateVoiceDetection(userId: string, stream: MediaStream, ms?: number): void;
 
   /**
-   * Trigger a change in the audio broadcasting state when using a push-to-talk workflow.
-   * @param intent - The user's intent to broadcast. Whether an actual broadcast occurs will depend
-   *                 on whether or not the user has muted their audio feed.
-   */
-  broadcast(intent: boolean): void;
-
-  /**
-   * A user can broadcast audio if the AV mode is compatible and if they are allowed to broadcast.
-   */
-  canUserBroadcastAudio(userId: string): boolean;
-
-  /**
-   * A user can broadcast video if the AV mode is compatible and if they are allowed to broadcast.
-   */
-  canUserBroadcastVideo(userId: string): boolean;
-
-  /**
-   * A user can share audio if they are allowed to broadcast and if they have not muted themselves or been blocked.
-   */
-  canUserShareAudio(userId: string): boolean;
-
-  /**
-   * A user can share video if they are allowed to broadcast and if they have not hidden themselves or been blocked.
-   */
-  canUserShareVideo(userId: string): boolean;
-
-  /**
-   * Connect to the Audio/Video client.
-   * @returns Was the connection attempt successful?
-   */
-  connect(): Promise<boolean>;
-
-  /**
    * Actions which the orchestration layer should take when a peer user disconnects from the audio/video service.
    * @param userId - The id of the disconnecting User
    */
   deactivateVoiceDetection(userId: string): void;
-
-  debug(message: string): void;
-
-  /**
-   * Disconnect from the Audio/Video client.
-   * @returns Whether an existing connection was terminated?
-   */
-  disconnect(): Promise<boolean>;
-
-  /**
-   * Render the audio/video streams to the CameraViews UI.
-   * Assign each connected user to the correct video frame element.
-   */
-  onRender(): void;
-
-  /**
-   * Respond to changes which occur to AV Settings.
-   * Changes are handled in descending order of impact.
-   * @param changed - The object of changed AV settings
-   */
-  onSettingsChanged(changed: DeepPartial<AVSettings.Settings>): void;
-
-  /**
-   * Callback actions to take when the user becomes disconnected from the server.
-   */
-  reestablish(): Promise<void>;
-
-  render(): void;
-
-  /**
-   * Initialize the local broadcast state.
-   */
-  protected _initialize(): void;
-
-  /**
-   * Set up interactivity and handling of push-to-talk broadcasting workflow.
-   */
-  protected _initializePushToTalk(): void;
-
-  /**
-   * Set up audio level listeners to handle voice activation detection workflow.
-   * @param mode - The currently selected voice broadcasting mode
-   */
-  protected _initializeUserVoiceDetection(mode: AVSettings.VoiceMode): void;
 
   /**
    * Periodic notification of user audio level
@@ -163,23 +139,45 @@ declare class AVMaster {
   protected _onAudioLevel(userId: string, dbLevel: number): void;
 
   /**
-   * Handle deactivation of a push-to-talk key or button.
-   * @param event - The original keyup event
+   * Set up interactivity and handling of push-to-talk broadcasting workflow.
    */
-  protected _onPTTEnd(event: KeyboardEvent | MouseEvent): void;
-
-  /**
-   * Handle activation of a push-to-talk key or button.
-   * @param event - The original keydown event
-   */
-  protected _onPTTStart(event: KeyboardEvent | MouseEvent): void;
+  _initializePushToTalk(): void;
 
   /**
    * Resets the speaking history of a user
    * If the user was considered speaking, then mark them as not speaking
    * @param userId - The ID of the user
    */
-  protected _resetSpeakingHistory(userId: string): void;
+  _resetSpeakingHistory(userId: string): void;
+
+  /**
+   * Handle activation of a push-to-talk key or button.
+   * @param event - The original keydown event
+   */
+  _onPTTStart(event: KeyboardEvent | MouseEvent): void;
+
+  /**
+   * Handle deactivation of a push-to-talk key or button.
+   * @param event - The original keyup event
+   */
+  _onPTTEnd(event: KeyboardEvent | MouseEvent): void;
+
+  render(): void;
+
+  /**
+   * Render the audio/video streams to the CameraViews UI.
+   * Assign each connected user to the correct video frame element.
+   */
+  onRender(): void;
+
+  /**
+   * Respond to changes which occur to AV Settings.
+   * Changes are handled in descending order of impact.
+   * @param changed - The object of changed AV settings
+   */
+  onSettingsChanged(changed: DeepPartial<AVSettings.Settings>): void;
+
+  debug(message: string): void;
 }
 
 declare namespace AVMaster {

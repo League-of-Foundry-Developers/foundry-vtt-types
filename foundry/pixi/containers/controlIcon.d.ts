@@ -19,17 +19,15 @@ declare class ControlIcon extends PIXI.Container {
     tint?: number | null;
   });
 
-  bg: PIXI.Graphics;
+  iconSrc: string;
 
-  border: PIXI.Graphics;
+  size: number;
+
+  rect: [number, number, number, number];
 
   borderColor: number;
 
-  hitArea: PIXI.Rectangle;
-
-  icon: PIXI.Sprite;
-
-  iconSrc: string;
+  tintColor: number | null;
 
   /**
    * @defaultValue `true`
@@ -41,11 +39,13 @@ declare class ControlIcon extends PIXI.Container {
    */
   interactiveChildren: boolean;
 
-  rect: [number, number, number, number];
+  hitArea: PIXI.Rectangle;
 
-  size: number;
+  bg: PIXI.Graphics;
 
-  tintColor: number | null;
+  icon: PIXI.Sprite;
+
+  border: PIXI.Graphics;
 
   draw(): Promise<this>;
 

@@ -35,69 +35,15 @@
  * ```
  */
 declare class Token extends PlaceableObject<Token.Data> {
-  /** @override */
-  static get embeddedName(): 'Token';
-
-  /**
-   * A factory method to create a Token instance from an Actor entity.
-   * The Token is not automatically saved to the database, it is up to the caller whether or not they wish to do that.
-   *
-   * @param actor     - The input actor entity
-   * @param tokenData - Additional data, such as x, y, rotation, etc. for the created token
-   * @returns The created Token instance
-   */
-  static fromActor(actor: Actor, tokenData?: DeepPartial<Token.Data>): Promise<Token>;
-
-  /**
-   * An Actor entity constructed using this Token's data
-   * If actorLink is true, then the entity is the true Actor entity
-   * Otherwise, the Actor entity is a synthetic, constructed using the Token actorData
-   * @remarks
-   * This should be typecast to your systems actor if needed.
-   */
-  actor: Actor;
-
   /**
    * @remarks Not used for `Token`
    */
   controlIcon: null;
 
   /**
-   * A reference to the PointSource object which defines this light source area of effect
-   */
-  light: PointSource;
-
-  /**
-   * Convenience access to the token's nameplate string
-   * @remarks
-   * This is actually a getter that returns data.name
-   */
-  name: string;
-
-  /**
-   * Track the set of User entities which are currently targeting this Token
-   */
-  targeted: Set<User>;
-
-  /**
-   * A reference to the PointSource object which defines this vision source area of effect
-   */
-  vision: PointSource;
-
-  /**
    * A Ray which represents the Token's current movement path
    */
   protected _movement: Ray | null;
-
-  /**
-   * Provide a temporary flag through which this Token can be overridden to bypass any movement animation
-   */
-  protected _noAnimate: boolean;
-
-  /**
-   * The Token's most recent valid position
-   */
-  protected _validPosition: { x: number; y: number };
 
   /**
    * An Object which records the Token's prior velocity dx and dy
@@ -111,16 +57,84 @@ declare class Token extends PlaceableObject<Token.Data> {
   };
 
   /**
+   * The Token's most recent valid position
+   */
+  protected _validPosition: { x: number; y: number };
+
+  /**
+   * Provide a temporary flag through which this Token can be overridden to bypass any movement animation
+   */
+  protected _noAnimate: boolean;
+
+  /**
+   * Track the set of User entities which are currently targeting this Token
+   */
+  targeted: Set<User>;
+
+  /**
+   * An Actor entity constructed using this Token's data
+   * If actorLink is true, then the entity is the true Actor entity
+   * Otherwise, the Actor entity is a synthetic, constructed using the Token actorData
+   * @remarks
+   * This should be typecast to your systems actor if needed.
+   */
+  actor: Actor;
+
+  /**
+   * A reference to the PointSource object which defines this vision source area of effect
+   */
+  vision: PointSource;
+
+  /**
+   * A reference to the PointSource object which defines this light source area of effect
+   */
+  light: PointSource;
+
+  /** @override */
+  static get embeddedName(): 'Token';
+
+  /**
+   * Apply initial sanitizations to the provided input data to ensure that a Token has valid required attributes.
+   */
+  protected _cleanData(): void;
+
+  /**
    * @remarks
    * Not implemented by Token
    */
   get bounds(): never;
 
   /**
-   * Translate the token's bright light distance in units into a radius in pixels.
-   * @returns The bright radius in pixels
+   * A Boolean flag for whether the current game User has permission to control this token
    */
-  get brightRadius(): number;
+  get owner(): boolean;
+
+  /**
+   * A boolean flag for whether the current game User has observer permission for the Token
+   */
+  get observer(): boolean;
+
+  /**
+   * Is the HUD display active for this token?
+   */
+  get hasActiveHUD(): boolean;
+
+  /**
+   * Convenience access to the token's nameplate string
+   * @remarks
+   * This is actually a getter that returns data.name
+   */
+  name: string;
+
+  /**
+   * Translate the token's grid width into a pixel width based on the canvas size
+   */
+  get w(): number;
+
+  /**
+   * Translate the token's grid height into a pixel height based on the canvas size
+   */
+  get h(): number;
 
   /**
    * The Token's current central position
@@ -135,37 +149,6 @@ declare class Token extends PlaceableObject<Token.Data> {
      */
     y: number;
   };
-
-  /**
-   * Translate the token's sight distance in units into a radius in pixels.
-   * @returns The sight radius in pixels
-   */
-  get dimRadius(): number;
-
-  /**
-   * Test whether the Token emits light (or darkness) at any radius
-   */
-  get emitsLight(): boolean;
-
-  /**
-   * Translate the token's grid height into a pixel height based on the canvas size
-   */
-  get h(): number;
-
-  /**
-   * Is the HUD display active for this token?
-   */
-  get hasActiveHUD(): boolean;
-
-  /**
-   * Test whether the Token has a limited angle of vision or light emission which would require sight to update on Token rotation
-   */
-  get hasLimitedVisionAngle(): boolean;
-
-  /**
-   * Test whether the Token has sight (or blindness) at any radius
-   */
-  get hasSight(): boolean;
 
   /**
    * An indicator for whether or not this token is currently involved in the active combat encounter.
@@ -189,14 +172,31 @@ declare class Token extends PlaceableObject<Token.Data> {
   get isVisible(): boolean;
 
   /**
-   * A boolean flag for whether the current game User has observer permission for the Token
+   * Test whether the Token has sight (or blindness) at any radius
    */
-  get observer(): boolean;
+  get hasSight(): boolean;
 
   /**
-   * A Boolean flag for whether the current game User has permission to control this token
+   * Test whether the Token emits light (or darkness) at any radius
    */
-  get owner(): boolean;
+  get emitsLight(): boolean;
+
+  /**
+   * Test whether the Token has a limited angle of vision or light emission which would require sight to update on Token rotation
+   */
+  get hasLimitedVisionAngle(): boolean;
+
+  /**
+   * Translate the token's sight distance in units into a radius in pixels.
+   * @returns The sight radius in pixels
+   */
+  get dimRadius(): number;
+
+  /**
+   * Translate the token's bright light distance in units into a radius in pixels.
+   * @returns The bright radius in pixels
+   */
+  get brightRadius(): number;
 
   /**
    * The named identified for the source object associated with this Token
@@ -204,44 +204,52 @@ declare class Token extends PlaceableObject<Token.Data> {
   get sourceId(): string;
 
   /**
-   * Translate the token's grid width into a pixel width based on the canvas size
+   * Update the light and vision source objects associated with this Token
+   * @param defer       - Defer refreshing the SightLayer to manually call that refresh later.
+   * @param deleted     - Indicate that this light source has been deleted.
+   * @param noUpdateFog - Never update the Fog exploration progress for this update.
    */
-  get w(): number;
+  updateSource({ defer, deleted, noUpdateFog }?: { defer?: boolean; deleted?: boolean; noUpdateFog?: boolean }): void;
 
   /**
-   * Animate Token movement along a certain path which is defined by a Ray object
-   * @param ray - The path along which to animate Token movement
+   * Test whether this Token is a viable vision source for the current User
    */
-  animateMovement(ray: Ray): Promise<void>;
-
-  /**
-   * Check for collision when attempting a move to a new position
-   * @param destination - The destination point of the attempted movement
-   * @returns A true/false indicator for whether the attempted movement caused a collision
-   */
-  checkCollision(destination: Point): boolean;
-
-  /** @override */
-  clone(): Token;
+  protected _isVisionSource(): boolean;
 
   /** @override */
   draw(): Promise<this>;
 
   /**
-   * Refresh the display of Token attribute bars, rendering latest resource data
-   * If the bar attribute is valid (has a value and max), draw the bar. Otherwise hide it.
+   * Draw resource bars for the Token
    */
-  drawBars(): void;
+  protected _drawAttributeBars(): PIXI.Container;
 
   /**
-   * Draw the active effects and overlay effect icons which are present upon the Token
+   * Draw the Sprite icon for the Token
    */
-  drawEffects(): Promise<void>;
+  protected _drawIcon(): Promise<PIXI.Sprite>;
 
   /**
-   * Draw a text tooltip for the token which can be used to display Elevation or a resource value
+   * Update display of the Token, pulling latest data and re-rendering the display of Token components
    */
-  drawTooltip(): void;
+  refresh(): void;
+
+  /**
+   * Draw the Token border, taking into consideration the grid type and border color
+   */
+  protected _refreshBorder(): void;
+
+  /**
+   * Get the hex color that should be used to render the Token border
+   * @returns The hex color used to depict the border color
+   */
+  protected _getBorderColor(): number | null;
+
+  /**
+   * Refresh the target indicators for the Token.
+   * Draw both target arrows for the primary User as well as indicator pips for other Users targeting the same Token.
+   */
+  protected _refreshTarget(): void;
 
   /**
    * A helper method to retrieve the underlying data behind one of the Token's attribute bars
@@ -260,6 +268,117 @@ declare class Token extends PlaceableObject<Token.Data> {
   } | null;
 
   /**
+   * Refresh the display of Token attribute bars, rendering latest resource data
+   * If the bar attribute is valid (has a value and max), draw the bar. Otherwise hide it.
+   */
+  drawBars(): void;
+
+  /**
+   * Draw a single resource bar, given provided data
+   * @param number - The Bar number
+   * @param bar    - The Bar container
+   * @param data   - Resource data for this bar
+   */
+  protected _drawBar(number: number, bar: PIXI.Graphics, data: ReturnType<Token['getBarAttribute']>): void;
+
+  /**
+   * Draw the token's nameplate as a text object
+   * @returns The Text object for the Token nameplate
+   */
+  protected _drawNameplate(): PreciseText;
+
+  /**
+   * Draw a text tooltip for the token which can be used to display Elevation or a resource value
+   */
+  drawTooltip(): void;
+
+  /**
+   * Return the text which should be displayed in a token's tooltip field
+   */
+  protected _getTooltipText(): string;
+
+  protected _getTextStyle(): PIXI.TextStyle;
+
+  /**
+   * Draw the active effects and overlay effect icons which are present upon the Token
+   */
+  drawEffects(): Promise<void>;
+
+  /**
+   * Draw the overlay effect icon
+   */
+  protected _drawOverlay({ src, tint }?: { src: string; tint: number }): void;
+
+  /**
+   * Draw a status effect icon
+   */
+  protected _drawEffect(src: string, i: number, bg: PIXI.Graphics, w: number, tint: number): void;
+
+  /**
+   * Helper method to determine whether a token attribute is viewable under a certain mode
+   * @param mode - The mode from CONST.TOKEN_DISPLAY_MODES
+   * @returns Is the attribute viewable?
+   */
+  protected _canViewMode(mode: number): boolean;
+
+  /**
+   * Animate Token movement along a certain path which is defined by a Ray object
+   * @param ray - The path along which to animate Token movement
+   */
+  animateMovement(ray: Ray): Promise<void>;
+
+  /**
+   * Animate the continual revealing of Token vision during a movement animation
+   */
+  protected _onMovementFrame(
+    dt: unknown,
+    anim: Array<{ context: unknown; name: string | null; duration: number; ontick: unknown }>,
+    config: { fog?: boolean; source?: boolean }
+  ): void;
+
+  /**
+   * Update perception each frame depending on the animation configuration
+   */
+  protected _animatePerceptionFrame({
+    source,
+    sound,
+    fog
+  }?: {
+    source?: boolean;
+    sound?: boolean;
+    fog?: boolean;
+  }): void;
+
+  /**
+   * Terminate animation of this particular Token
+   */
+  stopAnimation(): void;
+
+  /**
+   * Check for collision when attempting a move to a new position
+   * @param destination - The destination point of the attempted movement
+   * @returns A true/false indicator for whether the attempted movement caused a collision
+   */
+  checkCollision(destination: Point): boolean;
+
+  /** @override */
+  clone(): Token;
+
+  /** @override */
+  protected _onControl({
+    releaseOthers,
+    updateSight,
+    pan
+  }?: {
+    releaseOthers?: boolean;
+    updateSight?: boolean;
+    pan?: boolean;
+  }): void;
+
+  /** @override */
+  protected _onRelease({ updateSight }?: { updateSight?: boolean }): void;
+
+  /**
    * Get the center-point coordinate for a given grid position
    * @param x - The grid x-coordinate that represents the top-left of the Token
    * @param y - The grid y-coordinate that represents the top-left of the Token
@@ -274,33 +393,6 @@ declare class Token extends PlaceableObject<Token.Data> {
   };
 
   /**
-   * A generic transformation to turn a certain number of grid units into a radius in canvas pixels.
-   * This function adds additional padding to the light radius equal to half the token width.
-   * This causes light to be measured from the outer token edge, rather than from the center-point.
-   * @param units - The radius in grid units
-   * @returns The radius in canvas units
-   */
-  getLightRadius(units: number): number;
-
-  /**
-   * Return the token's sight origin, tailored for the direction of their movement velocity to break ties with walls
-   */
-  getSightOrigin(): {
-    x: number;
-    y: number;
-  };
-
-  /**
-   * Update display of the Token, pulling latest data and re-rendering the display of Token components
-   */
-  refresh(): void;
-
-  /**
-   * Extend the PlaceableObject.rotate method to prevent rotation if the Token is in the midst of a movement animation
-   */
-  rotate(angle: number, snap: number): Promise<this>;
-
-  /**
    * Set the token's position by comparing its center position vs the nearest grid vertex
    * Return a Promise that resolves to the Token once the animation for the movement has been completed
    * @param x       - The x-coordinate of the token center
@@ -309,6 +401,21 @@ declare class Token extends PlaceableObject<Token.Data> {
    * @returns The Token after animation has completed
    */
   setPosition(x: number, y: number, { animate }?: { animate?: boolean }): Promise<this>;
+
+  /**
+   * Update the Token velocity auto-regressively, shifting increasing weight towards more recent movement
+   * Employ a magic constant chosen to minimize (effectively zero) the likelihood of trigonometric edge cases
+   * @param ray - The proposed movement ray
+   * @returns An updated velocity with directional memory
+   */
+  protected _updateVelocity(
+    ray: Ray
+  ): {
+    dx: number;
+    sx: number;
+    dy: number;
+    sy: number;
+  };
 
   /**
    * Set this Token as an active target for the current game User
@@ -321,16 +428,6 @@ declare class Token extends PlaceableObject<Token.Data> {
     targeted?: boolean,
     { user, releaseOthers, groupSelection }?: { user?: User | null; releaseOthers?: boolean; groupSelection?: boolean }
   ): void;
-
-  /**
-   * @deprecated since 0.7.4
-   */
-  shiftPosition(dx: number, dy: number): Promise<this>;
-
-  /**
-   * Terminate animation of this particular Token
-   */
-  stopAnimation(): void;
 
   /**
    * Add or remove the currently controlled Tokens from the active combat encounter
@@ -354,10 +451,14 @@ declare class Token extends PlaceableObject<Token.Data> {
   ): Promise<boolean>;
 
   /**
-   * @deprecated since 0.7.4
-   * @see {@link Token#toggleEffect}
+   * A helper function to toggle a status effect which includes an Active Effect template
    */
-  toggleOverlay(texture: string | ActiveEffect.Data): Promise<boolean>;
+  protected _toggleActiveEffect(effectData: ActiveEffect.Data, { overlay }?: { overlay?: boolean }): Promise<boolean>;
+
+  /**
+   * A helper function to toggle the overlay status icon on the Token
+   */
+  protected _toggleOverlayEffect(texture: string, { active }?: { active: boolean }): Promise<this>;
 
   /**
    * Toggle the visibility state of any Tokens in the currently selected set
@@ -366,37 +467,66 @@ declare class Token extends PlaceableObject<Token.Data> {
   toggleVisibility(): Promise<Scene>;
 
   /**
-   * Update the light and vision source objects associated with this Token
-   * @param defer       - Defer refreshing the SightLayer to manually call that refresh later.
-   * @param deleted     - Indicate that this light source has been deleted.
-   * @param noUpdateFog - Never update the Fog exploration progress for this update.
+   * Return the token's sight origin, tailored for the direction of their movement velocity to break ties with walls
    */
-  updateSource({ defer, deleted, noUpdateFog }?: { defer?: boolean; deleted?: boolean; noUpdateFog?: boolean }): void;
+  getSightOrigin(): {
+    x: number;
+    y: number;
+  };
 
   /**
-   * Update perception each frame depending on the animation configuration
+   * A generic transformation to turn a certain number of grid units into a radius in canvas pixels.
+   * This function adds additional padding to the light radius equal to half the token width.
+   * This causes light to be measured from the outer token edge, rather than from the center-point.
+   * @param units - The radius in grid units
+   * @returns The radius in canvas units
    */
-  protected _animatePerceptionFrame({
-    source,
-    sound,
-    fog
-  }?: {
-    source?: boolean;
-    sound?: boolean;
-    fog?: boolean;
-  }): void;
+  getLightRadius(units: number): number;
 
   /** @override */
-  protected _canConfigure(user?: User, event?: PIXI.InteractionEvent): true;
+  protected _getShiftedPosition(dx: number, dy: number): { x: number; y: number };
+
+  /**
+   * Extend the PlaceableObject.rotate method to prevent rotation if the Token is in the midst of a movement animation
+   */
+  rotate(angle: number, snap: number): Promise<this>;
+
+  /** @override */
+  protected _onCreate(options?: unknown, userId?: string): void;
+
+  /** @override */
+  protected _onUpdate(data?: DeepPartial<Token.Data>, options?: { animate?: boolean }, userId?: string): void;
+
+  /** @override */
+  protected _onDelete(options?: unknown, userId?: string): void;
+
+  /**
+   * Handle updates to the Token's referenced Actor (either Entity or synthetic)
+   * @param updateData - The changes to Token actorData overrides which are incremental
+   */
+  protected _onUpdateTokenActor(updateData: DeepPartial<Actor.Data>): void;
+
+  /**
+   * Handle updates to this Token which originate from changes to the base Actor entity
+   * @param actorData  - Updated data for the base Actor
+   * @param updateData - Changes to the base Actor which were incremental
+   */
+  protected _onUpdateBaseActor(actorData: Actor.Data, updateData: DeepPartial<Actor.Data>): void;
+
+  /**
+   * Handle the possible re-drawing of Token attribute bars depending on whether the tracked attribute changed
+   * @param updateData - An object of changed data
+   */
+  protected _onUpdateBarAttributes(updateData: DeepPartial<Actor.Data>): void;
 
   /** @override */
   protected _canControl(user?: User, event?: PIXI.InteractionEvent): boolean;
 
   /** @override */
-  protected _canDrag(user: User, event: PIXI.InteractionEvent): boolean;
+  protected _canHUD(user: User, event?: PIXI.InteractionEvent): boolean;
 
   /** @override */
-  protected _canHUD(user: User, event?: PIXI.InteractionEvent): boolean;
+  protected _canConfigure(user?: User, event?: PIXI.InteractionEvent): true;
 
   /** @override */
   protected _canHover(user?: User, event?: PIXI.InteractionEvent): true;
@@ -404,72 +534,14 @@ declare class Token extends PlaceableObject<Token.Data> {
   /** @override */
   protected _canView(user?: User, event?: PIXI.InteractionEvent): boolean;
 
-  /**
-   * Helper method to determine whether a token attribute is viewable under a certain mode
-   * @param mode - The mode from CONST.TOKEN_DISPLAY_MODES
-   * @returns Is the attribute viewable?
-   */
-  protected _canViewMode(mode: number): boolean;
-
-  /**
-   * Apply initial sanitizations to the provided input data to ensure that a Token has valid required attributes.
-   */
-  protected _cleanData(): void;
-
-  /**
-   * Draw resource bars for the Token
-   */
-  protected _drawAttributeBars(): PIXI.Container;
-
-  /**
-   * Draw a single resource bar, given provided data
-   * @param number - The Bar number
-   * @param bar    - The Bar container
-   * @param data   - Resource data for this bar
-   */
-  protected _drawBar(number: number, bar: PIXI.Graphics, data: ReturnType<Token['getBarAttribute']>): void;
-
-  /**
-   * Draw a status effect icon
-   */
-  protected _drawEffect(src: string, i: number, bg: PIXI.Graphics, w: number, tint: number): void;
-
-  /**
-   * Draw the Sprite icon for the Token
-   */
-  protected _drawIcon(): Promise<PIXI.Sprite>;
-
-  /**
-   * Draw the token's nameplate as a text object
-   * @returns The Text object for the Token nameplate
-   */
-  protected _drawNameplate(): PreciseText;
-
-  /**
-   * Draw the overlay effect icon
-   */
-  protected _drawOverlay({ src, tint }?: { src: string; tint: number }): void;
-
-  /**
-   * Get the hex color that should be used to render the Token border
-   * @returns The hex color used to depict the border color
-   */
-  protected _getBorderColor(): number | null;
+  /** @override */
+  protected _canDrag(user: User, event: PIXI.InteractionEvent): boolean;
 
   /** @override */
-  protected _getShiftedPosition(dx: number, dy: number): { x: number; y: number };
+  protected _onHoverIn(event: PIXI.InteractionEvent, options?: { hoverOutOthers?: boolean }): void;
 
-  protected _getTextStyle(): PIXI.TextStyle;
-
-  /**
-   * Return the text which should be displayed in a token's tooltip field
-   */
-  protected _getTooltipText(): string;
-
-  /**
-   * Test whether this Token is a viable vision source for the current User
-   */
-  protected _isVisionSource(): boolean;
+  /** @override */
+  protected _onHoverOut(event: PIXI.InteractionEvent): boolean | void;
 
   /** @override */
   protected _onClickLeft(event: PIXI.InteractionEvent): boolean | null;
@@ -481,103 +553,31 @@ declare class Token extends PlaceableObject<Token.Data> {
   protected _onClickRight2(event: PIXI.InteractionEvent): void;
 
   /** @override */
-  protected _onControl({
-    releaseOthers,
-    updateSight,
-    pan
-  }?: {
-    releaseOthers?: boolean;
-    updateSight?: boolean;
-    pan?: boolean;
-  }): void;
-
-  /** @override */
-  protected _onCreate(options?: unknown, userId?: string): void;
-
-  /** @override */
-  protected _onDelete(options?: unknown, userId?: string): void;
-
-  /** @override */
   protected _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<any>;
 
   /** @override */
   protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
-  /** @override */
-  protected _onHoverIn(event: PIXI.InteractionEvent, options?: { hoverOutOthers?: boolean }): void;
-
-  /** @override */
-  protected _onHoverOut(event: PIXI.InteractionEvent): boolean | void;
+  /**
+   * A factory method to create a Token instance from an Actor entity.
+   * The Token is not automatically saved to the database, it is up to the caller whether or not they wish to do that.
+   *
+   * @param actor     - The input actor entity
+   * @param tokenData - Additional data, such as x, y, rotation, etc. for the created token
+   * @returns The created Token instance
+   */
+  static fromActor(actor: Actor, tokenData?: DeepPartial<Token.Data>): Promise<Token>;
 
   /**
-   * Animate the continual revealing of Token vision during a movement animation
+   * @deprecated since 0.7.4
    */
-  protected _onMovementFrame(
-    dt: unknown,
-    anim: Array<{ context: unknown; name: string | null; duration: number; ontick: unknown }>,
-    config: { fog?: boolean; source?: boolean }
-  ): void;
-
-  /** @override */
-  protected _onRelease({ updateSight }?: { updateSight?: boolean }): void;
-
-  /** @override */
-  protected _onUpdate(data?: DeepPartial<Token.Data>, options?: { animate?: boolean }, userId?: string): void;
+  shiftPosition(dx: number, dy: number): Promise<this>;
 
   /**
-   * Handle the possible re-drawing of Token attribute bars depending on whether the tracked attribute changed
-   * @param updateData - An object of changed data
+   * @deprecated since 0.7.4
+   * @see {@link Token#toggleEffect}
    */
-  protected _onUpdateBarAttributes(updateData: DeepPartial<Actor.Data>): void;
-
-  /**
-   * Handle updates to this Token which originate from changes to the base Actor entity
-   * @param actorData  - Updated data for the base Actor
-   * @param updateData - Changes to the base Actor which were incremental
-   */
-  protected _onUpdateBaseActor(actorData: Actor.Data, updateData: DeepPartial<Actor.Data>): void;
-
-  /**
-   * Handle updates to the Token's referenced Actor (either Entity or synthetic)
-   * @param updateData - The changes to Token actorData overrides which are incremental
-   */
-  protected _onUpdateTokenActor(updateData: DeepPartial<Actor.Data>): void;
-
-  /**
-   * Draw the Token border, taking into consideration the grid type and border color
-   */
-  protected _refreshBorder(): void;
-
-  /**
-   * Refresh the target indicators for the Token.
-   * Draw both target arrows for the primary User as well as indicator pips for other Users targeting the same Token.
-   */
-  protected _refreshTarget(): void;
-
-  /**
-   * A helper function to toggle a status effect which includes an Active Effect template
-   */
-  protected _toggleActiveEffect(effectData: ActiveEffect.Data, { overlay }?: { overlay?: boolean }): Promise<boolean>;
-
-  /**
-   * A helper function to toggle the overlay status icon on the Token
-   */
-  protected _toggleOverlayEffect(texture: string, { active }?: { active: boolean }): Promise<this>;
-
-  /**
-   * Update the Token velocity auto-regressively, shifting increasing weight towards more recent movement
-   * Employ a magic constant chosen to minimize (effectively zero) the likelihood of trigonometric edge cases
-   * @param ray - The proposed movement ray
-   * @returns An updated velocity with directional memory
-   */
-  protected _updateVelocity(
-    ray: Ray
-  ): {
-    dx: number;
-    sx: number;
-    dy: number;
-    sy: number;
-  };
+  toggleOverlay(texture: string | ActiveEffect.Data): Promise<boolean>;
 }
 
 declare namespace Token {

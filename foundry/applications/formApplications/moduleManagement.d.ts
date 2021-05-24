@@ -4,7 +4,20 @@
  * set of modules which are active within the World.
  */
 declare class ModuleManagement extends FormApplication<FormApplication.Options, ModuleManagement.Data, any> {
-  static readonly CONFIG_SETTING: 'moduleConfiguration';
+  /**
+   * @defaultValue `'all'`
+   */
+  protected _filter: ModuleManagement.FilterName;
+
+  /**
+   * @defaultValue `false`
+   */
+  protected _expanded: boolean;
+
+  /**
+   * @defaultValue `{}`
+   */
+  protected _checked: Partial<Record<string, boolean>>;
 
   /**
    * @override
@@ -25,29 +38,21 @@ declare class ModuleManagement extends FormApplication<FormApplication.Options, 
    */
   static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
-  /**
-   * @defaultValue `{}`
-   */
-  protected _checked: Partial<Record<string, boolean>>;
-
-  /**
-   * @defaultValue `false`
-   */
-  protected _expanded: boolean;
-
-  /**
-   * @defaultValue `'all'`
-   */
-  protected _filter: ModuleManagement.FilterName;
-
   /** @override */
   get isEditable(): ReturnType<User['can']>;
 
   /** @override */
-  activateListeners(html: JQuery): void;
+  getData(options?: Application.RenderOptions): ModuleManagement.Data;
 
   /** @override */
-  getData(options?: Application.RenderOptions): ModuleManagement.Data;
+  activateListeners(html: JQuery): void;
+
+  /**
+   * @param event - (unused)
+   * @override
+   */
+  // TODO: type return value when the class' config setting is typed
+  protected _updateObject(event: Event, formData: ModuleManagement.FormData): Promise<unknown>;
 
   /**
    * Handle changes to a module checkbox to prompt for whether or not to enable dependencies
@@ -72,42 +77,37 @@ declare class ModuleManagement extends FormApplication<FormApplication.Options, 
   /** @override */
   protected _onSearchFilter(event: KeyboardEvent, query: string, html: HTMLElement): void;
 
-  /**
-   * @param event - (unused)
-   * @override
-   */
-  // TODO: type return value when the class' config setting is typed
-  protected _updateObject(event: Event, formData: ModuleManagement.FormData): Promise<unknown>;
+  static readonly CONFIG_SETTING: 'moduleConfiguration';
 }
 
 declare namespace ModuleManagement {
   interface Data {
     editable: ModuleManagement['isEditable'];
-    expanded: ModuleManagement['_expanded'];
     filters: [Data.Filter<'all'>, Data.Filter<'active'>, Data.Filter<'inactive'>];
     modules: Data.Module[];
     query: undefined; // TODO: this seems to reference an undefined value (`this._query`)
+    expanded: ModuleManagement['_expanded'];
   }
 
   namespace Data {
     interface Filter<F extends FilterName> {
-      count: number;
-      css: ' active' | '';
       id: F;
       label: string;
+      css: ' active' | '';
+      count: number;
     }
 
     interface Module extends Duplicated<Game.Module> {
       active: boolean;
       css: ' active' | '';
-      dependencies: string[] | null;
       hasPacks: boolean;
       hasScripts: boolean;
       hasStyles: boolean;
-      incompatible: SetupConfigurationForm.Data.AvailTagged<Game.Module>['incompatible'];
       systemOnly: boolean;
       systemTag: Game['system']['id'];
+      incompatible: SetupConfigurationForm.Data.AvailTagged<Game.Module>['incompatible'];
       unavailable: SetupConfigurationForm.Data.AvailTagged<Game.Module>['unavailable'];
+      dependencies: string[] | null;
     }
   }
 

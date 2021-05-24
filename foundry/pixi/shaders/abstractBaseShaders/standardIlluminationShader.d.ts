@@ -3,6 +3,8 @@
  * A fragment shader which creates a solid light source.
  */
 declare class StandardIlluminationShader extends AbstractBaseShader {
+  static fragmentShader: string;
+
   /**
    * @defaultValue
    * ```typescript
@@ -17,6 +19,4 @@ declare class StandardIlluminationShader extends AbstractBaseShader {
    * ```
    */
   static defaultUniforms: AbstractBaseShader.Uniforms;
-
-  static fragmentShader: string;
 }

@@ -8,6 +8,10 @@ declare class SetupConfiguration {
    */
   static get setupURL(): string;
 
+  /* -------------------------------------------- */
+  /*  Package Management                          */
+  /* -------------------------------------------- */
+
   /**
    * Check with the server whether a package of a certain type is able to be installed or updated.
    * @param type     - The package type to check
@@ -20,12 +24,7 @@ declare class SetupConfiguration {
    */
   static checkPackage(selector?: SetupConfiguration.PackageSelector): Promise<SetupConfiguration.Package>;
 
-  /**
-   * Return the named scopes which can exist for packages.
-   * Scopes are returned in the prioritization order that their content is loaded.
-   * @returns An array of string package scopes
-   */
-  static getPackageScopes(): string[];
+  /* -------------------------------------------- */
 
   /**
    * Get an Array of available packages of a given type which may be installed
@@ -33,11 +32,7 @@ declare class SetupConfiguration {
    */
   static getPackages({ type }?: { type: SetupConfiguration.PackageType }): Promise<SetupConfiguration.Package[]>;
 
-  /**
-   * Install a set of dependency modules which are required by an installed package
-   * @param pkg - The package which was installed that requested dependencies
-   */
-  static installDependencies(pkg: object): Promise<void>;
+  /* -------------------------------------------- */
 
   /**
    * Install a Package
@@ -51,6 +46,16 @@ declare class SetupConfiguration {
    */
   static installPackage(selector?: SetupConfiguration.PackageSelector): Promise<object>;
 
+  /* -------------------------------------------- */
+
+  /**
+   * Install a set of dependency modules which are required by an installed package
+   * @param pkg - The package which was installed that requested dependencies
+   */
+  static installDependencies(pkg: object): Promise<void>;
+
+  /* -------------------------------------------- */
+
   /**
    * Uninstall a single Package by name and type.
    * @param type - The type of package being installed, in ["module", "system", "world"]
@@ -60,6 +65,19 @@ declare class SetupConfiguration {
    * @returns A Promise which resolves to the uninstalled package manifest
    */
   static uninstallPackage({ type, name }?: { type: SetupConfiguration.PackageType; name: string }): Promise<object>;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Return the named scopes which can exist for packages.
+   * Scopes are returned in the prioritization order that their content is loaded.
+   * @returns An array of string package scopes
+   */
+  static getPackageScopes(): string[];
+
+  /* -------------------------------------------- */
+  /*  Helper Functions                            */
+  /* -------------------------------------------- */
 
   /**
    * A helper method to submit a POST request to setup configuration with a certain body, returning the JSON response
@@ -81,9 +99,10 @@ declare namespace SetupConfiguration {
 
   interface PackageSelector {
     /**
-     * The package manifest URL
+     * The package type, one in ['module', 'system', 'world']
+     * @defaultValue `'module'`
      */
-    manifest?: string;
+    type?: PackageType;
 
     /**
      * The canonical package name
@@ -91,10 +110,9 @@ declare namespace SetupConfiguration {
     name?: string;
 
     /**
-     * The package type, one in ['module', 'system', 'world']
-     * @defaultValue `'module'`
+     * The package manifest URL
      */
-    type?: PackageType;
+    manifest?: string;
   }
 
   type PackageType = 'module' | 'system' | 'world';

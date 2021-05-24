@@ -7,6 +7,51 @@
  */
 interface CONFIG extends Record<string, unknown> {
   /**
+   * Configure debugging flags to display additional information
+   */
+  debug: {
+    /**
+     * @defaultValue `false`
+     */
+    fog: boolean;
+
+    /**
+     * @defaultValue `false`
+     */
+    hooks: boolean;
+
+    /**
+     * @defaultValue `false`
+     */
+    sight: boolean;
+
+    /**
+     * @defaultValue `false`
+     */
+    sightRays: boolean;
+
+    /**
+     * @defaultValue `false`
+     */
+    av: boolean;
+
+    /**
+     * @defaultValue `false`
+     */
+    avclient: boolean;
+
+    /**
+     * @defaultValue `false`
+     */
+    mouseInteraction: boolean;
+
+    /**
+     * @defaultValue `false`
+     */
+    time: boolean;
+  };
+
+  /**
    * Configuration for the ActiveEffect embedded Entity
    */
   ActiveEffect: {
@@ -881,11 +926,6 @@ interface CONFIG extends Record<string, unknown> {
   };
 
   /**
-   * Default configuration options for TinyMCE editors
-   */
-  TinyMCE: RawEditorSettings;
-
-  /**
    * Configuration for the User entity, it's roles, and permissions
    */
   User: {
@@ -926,41 +966,6 @@ interface CONFIG extends Record<string, unknown> {
       TOKEN_CONFIGURE: Config.Permission;
       WALL_DOORS: Config.Permission;
     } & Partial<Record<string, Config.Permission>>;
-  };
-
-  /**
-   * Configuration for the WebRTC implementation class
-   */
-  WebRTC: {
-    /**
-     * @defaultValue `EasyRTCClient`
-     */
-    clientClass: ConstructorOf<AVClient>;
-
-    /**
-     * @defaultValue `50`
-     */
-    detectPeerVolumeInterval: number;
-
-    /**
-     * @defaultValue `20`
-     */
-    detectSelfVolumeInterval: number;
-
-    /**
-     * @defaultValue `25`
-     */
-    emitVolumeInterval: number;
-
-    /**
-     * @defaultValue `2`
-     */
-    speakingThresholdEvents: number;
-
-    /**
-     * @defaultValue `10`
-     */
-    speakingHistoryLength: number;
   };
 
   /**
@@ -1057,86 +1062,16 @@ interface CONFIG extends Record<string, unknown> {
   } & Partial<Record<string, string>>;
 
   /**
-   * Configure debugging flags to display additional information
-   */
-  debug: {
-    /**
-     * @defaultValue `false`
-     */
-    fog: boolean;
-
-    /**
-     * @defaultValue `false`
-     */
-    hooks: boolean;
-
-    /**
-     * @defaultValue `false`
-     */
-    sight: boolean;
-
-    /**
-     * @defaultValue `false`
-     */
-    sightRays: boolean;
-
-    /**
-     * @defaultValue `false`
-     */
-    av: boolean;
-
-    /**
-     * @defaultValue `false`
-     */
-    avclient: boolean;
-
-    /**
-     * @defaultValue `false`
-     */
-    mouseInteraction: boolean;
-
-    /**
-     * @defaultValue `false`
-     */
-    time: boolean;
-  };
-
-  /**
-   * The default font family used for text labels on the PIXI Canvas
-   * @defaultValue `'Signika'`
-   */
-  defaultFontFamily: string;
-
-  /**
    * Suggested font families that are displayed wherever a choice is presented
    * @defaultValue `['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Times New Roman', 'Signika', 'Modesto Condensed']`
    */
   fontFamilies: string[];
 
   /**
-   * A mapping of core audio effects used which can be replaced by systems or mods
+   * The default font family used for text labels on the PIXI Canvas
+   * @defaultValue `'Signika'`
    */
-  sounds: {
-    /**
-     * @defaultValue `'sounds/dice.wav'`
-     */
-    dice: string;
-
-    /**
-     * @defaultValue `'sounds/lock.wav'`
-     */
-    lock: string;
-
-    /**
-     * @defaultValue `'sounds/notify.wav'`
-     */
-    notification: string;
-
-    /**
-     * @defaultValue `'sounds/drums.wav'`
-     */
-    combat: string;
-  };
+  defaultFontFamily: string;
 
   /**
    * An array of status effect icons which can be applied to Tokens
@@ -1309,6 +1244,31 @@ interface CONFIG extends Record<string, unknown> {
   statusEffects: { id: string; label: string; icon: string }[];
 
   /**
+   * A mapping of core audio effects used which can be replaced by systems or mods
+   */
+  sounds: {
+    /**
+     * @defaultValue `'sounds/dice.wav'`
+     */
+    dice: string;
+
+    /**
+     * @defaultValue `'sounds/lock.wav'`
+     */
+    lock: string;
+
+    /**
+     * @defaultValue `'sounds/notify.wav'`
+     */
+    notification: string;
+
+    /**
+     * @defaultValue `'sounds/drums.wav'`
+     */
+    combat: string;
+  };
+
+  /**
    * Define the set of supported languages for localization
    */
   supportedLanguages: {
@@ -1329,6 +1289,11 @@ interface CONFIG extends Record<string, unknown> {
      */
     roundTime: number;
   };
+
+  /**
+   * Default configuration options for TinyMCE editors
+   */
+  TinyMCE: RawEditorSettings;
 
   /**
    * Configure the Application classes used to render various core UI elements in the application
@@ -1454,15 +1419,50 @@ interface CONFIG extends Record<string, unknown> {
      */
     snow: ConstructorOf<SpecialEffect>;
   } & Partial<Record<string, ConstructorOf<SpecialEffect>>>;
+
+  /**
+   * Configuration for the WebRTC implementation class
+   */
+  WebRTC: {
+    /**
+     * @defaultValue `EasyRTCClient`
+     */
+    clientClass: ConstructorOf<AVClient>;
+
+    /**
+     * @defaultValue `50`
+     */
+    detectPeerVolumeInterval: number;
+
+    /**
+     * @defaultValue `20`
+     */
+    detectSelfVolumeInterval: number;
+
+    /**
+     * @defaultValue `25`
+     */
+    emitVolumeInterval: number;
+
+    /**
+     * @defaultValue `2`
+     */
+    speakingThresholdEvents: number;
+
+    /**
+     * @defaultValue `10`
+     */
+    speakingHistoryLength: number;
+  };
 }
 
 declare const CONFIG: CONFIG;
 
 declare namespace Config {
   interface Permission {
-    defaultRole: Const.UserRole;
-    disableGM: boolean;
-    hint: string;
     label: string;
+    hint: string;
+    disableGM: boolean;
+    defaultRole: Const.UserRole;
   }
 }

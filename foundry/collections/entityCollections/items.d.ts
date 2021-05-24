@@ -3,10 +3,12 @@
  * The items collection is accessible within the game as game.items
  */
 declare class Items extends EntityCollection<Item> {
-  /**
-   * Return an Array of currently registered sheet classes for this Entity type
-   */
-  static get registeredSheets(): Array<ConstructorOf<ItemSheet>>;
+  /** @override */
+  get entity(): string;
+
+  /* -------------------------------------------- */
+  /*  Methods
+  /* -------------------------------------------- */
 
   /**
    * Register an Actor sheet class as a candidate which can be used to display Actors of a given type
@@ -40,6 +42,8 @@ declare class Items extends EntityCollection<Item> {
     }
   ): void;
 
-  /** @override */
-  get entity(): string;
+  /**
+   * Return an Array of currently registered sheet classes for this Entity type
+   */
+  static get registeredSheets(): Array<ConstructorOf<ItemSheet>>;
 }

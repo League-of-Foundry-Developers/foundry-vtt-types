@@ -11,6 +11,17 @@ declare class Draggable<R extends boolean | undefined = undefined> {
   handle: HTMLElement;
 
   /**
+   * @defaultValue `false`
+   */
+  resizable: R extends boolean ? R : false;
+
+  /**
+   * Duplicate the application's starting position to track differences
+   * @defaultValue `null`
+   */
+  position: Duplicated<Application.Position> | null;
+
+  /**
    * Remember event handlers associated with this Draggable class so they may be later unregistered
    */
   // prettier-ignore
@@ -21,21 +32,12 @@ declare class Draggable<R extends boolean | undefined = undefined> {
       : Draggable.Handlers | Draggable.ResizableHandlers;
 
   /**
-   * Duplicate the application's starting position to track differences
-   * @defaultValue `null`
-   */
-  position: Duplicated<Application.Position> | null;
-
-  /**
-   * @defaultValue `false`
-   */
-  resizable: R extends boolean ? R : false;
-
-  /**
    * Throttle mousemove event handling to 60fps
    * @defaultValue `0`
    */
   protected _moveTime: number;
+
+  /* -------------------------------------------- */
 
   /**
    * Activate event handling for a Draggable application
@@ -43,30 +45,42 @@ declare class Draggable<R extends boolean | undefined = undefined> {
    */
   activateListeners(): void;
 
+  /* -------------------------------------------- */
+
   /**
    * Handle the initial mouse click which activates dragging behavior for the application
    */
   protected _onDragMouseDown(event: Event): void;
+
+  /* -------------------------------------------- */
 
   /**
    * Move the window with the mouse, bounding the movement to ensure the window stays within bounds of the viewport
    */
   protected _onDragMouseMove(event: Event): void;
 
+  /* -------------------------------------------- */
+
   /**
    * Conclude the dragging behavior when the mouse is release, setting the final position and removing listeners
    */
   protected _onDragMouseUp(event: Event): void;
+
+  /* -------------------------------------------- */
 
   /**
    * Handle the initial mouse click which activates dragging behavior for the application
    */
   protected _onResizeMouseDown(event: Event): void;
 
+  /* -------------------------------------------- */
+
   /**
    * Move the window with the mouse, bounding the movement to ensure the window stays within bounds of the viewport
    */
   protected _onResizeMouseMove(event: Event): void;
+
+  /* -------------------------------------------- */
 
   /**
    * Conclude the dragging behavior when the mouse is release, setting the final position and removing listeners

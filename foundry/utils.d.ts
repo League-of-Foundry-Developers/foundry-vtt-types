@@ -1,3 +1,7 @@
+/* -------------------------------------------- */
+/*  Math Functions                              */
+/* -------------------------------------------- */
+
 /**
  * Bound a number between some minimum and maximum value, inclusively
  * @param num - The current value
@@ -42,12 +46,18 @@ declare function toRadians(angle: number): number;
  */
 declare function normalizeRadians(radians: number): number;
 
+/* -------------------------------------------- */
+/* Object Methods                               */
+/* -------------------------------------------- */
+
 /**
  * Obtain references to the parent classes of a certain class.
  * @param cls - An ES6 Class definition
  * @returns An array of parent Classes which the provided class extends
  */
 declare function getParentClasses(cls: ConstructorOf<any>): Array<ConstructorOf<any>>;
+
+/* -------------------------------------------- */
 
 /**
  * A cheap data duplication trick, surprisingly relatively performant
@@ -106,12 +116,16 @@ type InnerDuplicated<T> = T extends { toJSON(): infer U }
  */
 type Duplicated<T> = T extends NonStringifiable ? never : InnerDuplicated<T>;
 
+/* -------------------------------------------- */
+
 /**
  * Learn the named type of a token - extending the functionality of typeof to recognize some core Object types
  * @param token - Some passed token
  * @returns The named type of the token
  */
 declare function getType(token: any): string;
+
+/* -------------------------------------------- */
 
 /**
  * Filter the contents of some source object using the structure of a template object.
@@ -153,6 +167,8 @@ declare function filterObject(
   }
 ): any;
 
+/* -------------------------------------------- */
+
 /**
  * Flatten a possibly multi-dimensional object to a one-dimensional one by converting all nested keys to dot notation
  * @param obj - The object to flatten
@@ -161,6 +177,8 @@ declare function filterObject(
  * @returns A flattened object
  */
 declare function flattenObject(obj: object, _d?: number): any;
+
+/* -------------------------------------------- */
 
 /**
  * Expand a flattened object to be a standard multi-dimensional nested Object by converting all dot-notation keys to
@@ -173,6 +191,8 @@ declare function flattenObject(obj: object, _d?: number): any;
  */
 declare function expandObject(obj: object, _d?: number): any;
 
+/* -------------------------------------------- */
+
 /**
  * A simple function to test whether or not an Object is empty
  * @param obj - The object to test
@@ -180,12 +200,16 @@ declare function expandObject(obj: object, _d?: number): any;
  */
 declare function isObjectEmpty(obj: object): boolean;
 
+/* -------------------------------------------- */
+
 /**
  * Invert an object by assigning its values as keys and its keys as values.
  * @param obj - The original object to invert
  * @returns The inverted object with keys and values swapped
  */
 declare function invertObject(obj: object): object;
+
+/* -------------------------------------------- */
 
 /**
  * Update a source object by replacing its keys and values with those from a target object.
@@ -300,6 +324,8 @@ declare function mergeObject<T>(
   _d?: number
 ): T;
 
+/* -------------------------------------------- */
+
 /**
  * Deeply difference an object against some other, returning the update keys and values
  * @param original - An object comparing data against which to compare.
@@ -322,6 +348,8 @@ declare function diffObject(
   }
 ): object;
 
+/* -------------------------------------------- */
+
 /**
  * A helper function which tests whether an object has a property or nested property given a string key.
  * The string key supports the notation a.b.c which would return true if object[a][b][c] exists
@@ -332,6 +360,8 @@ declare function diffObject(
  */
 declare function hasProperty(object: object, key: string): boolean;
 
+/* -------------------------------------------- */
+
 /**
  * A helper function which searches through an object to retrieve a value by a string key.
  * The string key supports the notation a.b.c which would return object[a][b][c]
@@ -341,6 +371,8 @@ declare function hasProperty(object: object, key: string): boolean;
  * @returns The value of the found property
  */
 declare function getProperty(object: object, key: string): any;
+
+/* -------------------------------------------- */
 
 /**
  * A helper function which searches through an object to assign a value using a string key
@@ -354,12 +386,20 @@ declare function getProperty(object: object, key: string): any;
  */
 declare function setProperty(object: object, key: string, value: any): boolean;
 
+/* -------------------------------------------- */
+/*  URL Manipulation                            */
+/* -------------------------------------------- */
+
 /**
  * Encode a url-like string by replacing any characters which need encoding
  * @param path - A fully-qualified URL or url component (like a relative path)
  * @returns An encoded URL string
  */
 declare function encodeURL(path: string): string;
+
+/* -------------------------------------------- */
+/*  Datetime Manipulation
+/* -------------------------------------------- */
 
 /**
  * Express a timestamp as a relative string
@@ -374,6 +414,10 @@ declare function timeSince(timeStamp: Date): string;
  */
 declare function debounce(callback: (this: Function, ...args: any[]) => void, delay: number): (...args: any[]) => void;
 
+/* -------------------------------------------- */
+/*  Colors
+/* -------------------------------------------- */
+
 /**
  * Converts an RGB color value to HSV. Conversion formula adapted from http://en.wikipedia.org/wiki/HSV_color_space.
  * Assumes r, g, and b are contained in the set [0, 1] and returns h, s, and v in the set [0, 1].
@@ -383,6 +427,8 @@ declare function debounce(callback: (this: Function, ...args: any[]) => void, de
  * @returns The HSV representation
  */
 declare function rgbToHsv(r: number, g: number, b: number): number[];
+
+/* -------------------------------------------- */
 
 /**
  * Converts an HSV color value to RGB. Conversion formula adapted from http://en.wikipedia.org/wiki/HSV_color_space.
@@ -401,12 +447,16 @@ declare function hsvToRgb(h: number, s: number, v: number): number[];
  */
 declare function rgbToHex(rgb: number[]): number;
 
+/* -------------------------------------------- */
+
 /**
  * Convert a hex color code to an RGB array
  * @param hex - A hex color number
  * @returns An array of [r,g,b] colors normalized on the range of [0,1]
  */
 declare function hexToRGB(hex: number): number[];
+
+/* -------------------------------------------- */
 
 /**
  * Convert a hex color code to an RGBA color string which can be used for CSS styling
@@ -417,12 +467,18 @@ declare function hexToRGB(hex: number): number[];
  */
 declare function hexToRGBAString(hex: number, alpha?: number): string;
 
+/* -------------------------------------------- */
+
 /**
  * Convert a string color to a hex integer
  * @param color - The string color
  * @returns The hexidecimal color code
  */
 declare function colorStringToHex(color: string): number;
+
+/* -------------------------------------------- */
+/*  Version Checking
+/* -------------------------------------------- */
 
 /**
  * Return whether or not a target version (v1) is more advanced than some other reference version (v0).
@@ -432,6 +488,8 @@ declare function colorStringToHex(color: string): number;
  * @returns Is v1 a more advanced version than v0?
  */
 declare function isNewerVersion(v1: number | string, v0: number | string): boolean;
+
+/* -------------------------------------------- */
 
 /**
  * Generate a random ID
@@ -445,7 +503,13 @@ declare function isNewerVersion(v1: number | string, v0: number | string): boole
  */
 declare function randomID(length?: number): string;
 
+/* -------------------------------------------- */
+
 declare function benchmark(func: Function, iterations: number): void;
+
+/* -------------------------------------------- */
+/*  URL Routing                                 */
+/* -------------------------------------------- */
 
 /**
  * Get the URL route for a certain path which includes a path prefix, if one is set
@@ -467,6 +531,8 @@ declare function getRoute(
   }
 ): string;
 
+/* -------------------------------------------- */
+
 /**
  * Export data content to be saved to a local file
  * @param data     - Data content converted to a string
@@ -475,12 +541,16 @@ declare function getRoute(
  */
 declare function saveDataToFile(data: string, type: string, filename: string): void;
 
+/* -------------------------------------------- */
+
 /**
  * Read text data from a user provided File object
  * @param file - A File object
  * @returns A Promise which resolves to the loaded text data
  */
 declare function readTextFromFile(file: File): Promise<string>;
+
+/* -------------------------------------------- */
 
 /**
  * Retrieve an Entity or Embedded Entity by its Universally Unique Identifier (uuid).

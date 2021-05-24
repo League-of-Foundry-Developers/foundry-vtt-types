@@ -3,23 +3,29 @@
  * Mathematically behaves like 1d3-2
  */
 declare class FateDie extends DiceTerm {
-  static DENOMINATION: 'f';
+  constructor(termData?: Partial<DiceTerm.TermData>);
 
-  static fromResults(options: Partial<DiceTerm.TermData>, results: DiceTerm.Result[]): FateDie;
+  faces: 3;
+
+  /* -------------------------------------------- */
+
+  /**
+   * @override
+   */
+  roll(options?: { maximize: boolean; minimize: boolean }): DiceTerm.Result;
+
+  /* -------------------------------------------- */
 
   /**
    * @override
    */
   static getResultLabel(result: string): string;
 
-  constructor(termData?: Partial<DiceTerm.TermData>);
+  /* -------------------------------------------- */
 
-  faces: 3;
+  static DENOMINATION: 'f';
 
-  /**
-   * @override
-   */
-  roll(options?: { maximize: boolean; minimize: boolean }): DiceTerm.Result;
+  static fromResults(options: Partial<DiceTerm.TermData>, results: DiceTerm.Result[]): FateDie;
 }
 
 declare namespace FateDie {

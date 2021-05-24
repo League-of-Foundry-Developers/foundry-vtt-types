@@ -7,6 +7,12 @@ declare class WallConfig<P extends WallConfig.Options = WallConfig.Options> exte
   Wall
 > {
   /**
+   * @param object  - The Wall object for which settings are being configured
+   * @param options - Additional options which configure the rendering of the configuration sheet.
+   */
+  constructor(object: Wall, options?: Partial<P>);
+
+  /**
    * @defaultValue
    * ```typescript
    * const options = super.defaultOptions;
@@ -18,12 +24,6 @@ declare class WallConfig<P extends WallConfig.Options = WallConfig.Options> exte
    * ```
    */
   static get defaultOptions(): WallConfig.Options;
-
-  /**
-   * @param object  - The Wall object for which settings are being configured
-   * @param options - Additional options which configure the rendering of the configuration sheet.
-   */
-  constructor(object: Wall, options?: Partial<P>);
 
   /**
    * Provide a dynamically rendered title for the Wall Configuration sheet
@@ -45,24 +45,24 @@ declare class WallConfig<P extends WallConfig.Options = WallConfig.Options> exte
 
 declare namespace WallConfig {
   interface Data {
+    object: Duplicated<WallConfig['object']['data']>;
+    options: WallConfig['options'];
+    moveTypes: {
+      [Key in keyof typeof CONST['WALL_MOVEMENT_TYPES'] as typeof CONST['WALL_MOVEMENT_TYPES'][Key]]: Titlecase<Key>;
+    };
+    senseTypes: {
+      [Key in keyof typeof CONST['WALL_SENSE_TYPES'] as typeof CONST['WALL_SENSE_TYPES'][Key]]: Titlecase<Key>;
+    };
     dirTypes: {
       [Key in keyof typeof CONST['WALL_DIRECTIONS'] as typeof CONST['WALL_DIRECTIONS'][Key]]: Titlecase<Key>;
-    };
-    doorStates: {
-      [Key in keyof typeof CONST['WALL_DOOR_STATES'] as typeof CONST['WALL_DOOR_STATES'][Key]]: Titlecase<Key>;
     };
     doorTypes: {
       [Key in keyof typeof CONST['WALL_DOOR_TYPES'] as typeof CONST['WALL_DOOR_TYPES'][Key]]: Titlecase<Key>;
     };
+    doorStates: {
+      [Key in keyof typeof CONST['WALL_DOOR_STATES'] as typeof CONST['WALL_DOOR_STATES'][Key]]: Titlecase<Key>;
+    };
     isDoor: boolean;
-    moveTypes: {
-      [Key in keyof typeof CONST['WALL_MOVEMENT_TYPES'] as typeof CONST['WALL_MOVEMENT_TYPES'][Key]]: Titlecase<Key>;
-    };
-    object: Duplicated<WallConfig['object']['data']>;
-    options: WallConfig['options'];
-    senseTypes: {
-      [Key in keyof typeof CONST['WALL_SENSE_TYPES'] as typeof CONST['WALL_SENSE_TYPES'][Key]]: Titlecase<Key>;
-    };
   }
 
   interface FormData {

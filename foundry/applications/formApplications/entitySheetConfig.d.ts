@@ -8,6 +8,12 @@ declare class EntitySheetConfig<
   E extends Entity = Entity
 > extends FormApplication<P, EntitySheetConfig.Data, E> {
   /**
+   * @param entity  - The Entity object for which the sheet is being configured
+   * @param options - Additional Application options
+   */
+  constructor(entity: E, options?: Partial<P>);
+
+  /**
    * @defaultValue
    * ```typescript
    * const options = super.defaultOptions;
@@ -17,6 +23,24 @@ declare class EntitySheetConfig<
    * ```
    */
   static get defaultOptions(): typeof FormApplication['defaultOptions'];
+
+  /**
+   * Add the Entity name into the window title
+   */
+  get title(): string;
+
+  /**
+   * Construct and return the data object used to render the HTML template for this form application.
+   * @param options - (unused)
+   */
+  getData(options?: Application.RenderOptions): EntitySheetConfig.Data<E>;
+
+  /**
+   * This method is called upon form submission after form data is validated
+   * @param event    - The initial triggering submission event
+   * @param formData - The object of validated form data with which to update the object
+   */
+  protected _updateObject(event: Event, formData: EntitySheetConfig.FormData): Promise<void>;
 
   /**
    * Initialize the configured Sheet preferences for Entities which support dynamic Sheet assignment
@@ -44,6 +68,15 @@ declare class EntitySheetConfig<
     { label, types, makeDefault }?: { label?: string; types?: string[]; makeDefault?: boolean }
   ): void;
 
+  protected static _registerSheet({
+    entityClass,
+    id,
+    label,
+    sheetClass,
+    types,
+    makeDefault
+  }: Exclude<EntitySheetConfig.Config, 'action'>): void;
+
   /**
    * Unregister a sheet class, removing it from the list of available Applications to use for an Entity type
    * @param entityClass - The Entity for which to register a new Sheet option
@@ -58,21 +91,6 @@ declare class EntitySheetConfig<
     { types }?: { types?: string[] }
   ): void;
 
-  /**
-   * @typeParam T - the string array, passed as the types parameter
-   */
-  protected static _getEntityTypes<T extends string[]>(entityClass: any, types: T): T;
-  protected static _getEntityTypes(entityClass: ConstructorOf<Entity>): string[];
-
-  protected static _registerSheet({
-    entityClass,
-    id,
-    label,
-    sheetClass,
-    types,
-    makeDefault
-  }: Exclude<EntitySheetConfig.Config, 'action'>): void;
-
   protected static _unregisterSheet({
     entityClass,
     id,
@@ -80,35 +98,17 @@ declare class EntitySheetConfig<
   }: Pick<EntitySheetConfig.Config, 'entityClass' | 'id' | 'types'>): void;
 
   /**
+   * @typeParam T - the string array, passed as the types parameter
+   */
+  protected static _getEntityTypes<T extends string[]>(entityClass: any, types: T): T;
+  protected static _getEntityTypes(entityClass: ConstructorOf<Entity>): string[];
+
+  /**
    * Update the currently default Sheets using a new core world setting
    */
   protected static _updateDefaultSheets(setting?: Record<'Actor' | 'Item', Record<string, string>>): void;
 
-  /**
-   * @param entity  - The Entity object for which the sheet is being configured
-   * @param options - Additional Application options
-   */
-  constructor(entity: E, options?: Partial<P>);
-
   protected _pending: EntitySheetConfig.Config[];
-
-  /**
-   * Add the Entity name into the window title
-   */
-  get title(): string;
-
-  /**
-   * Construct and return the data object used to render the HTML template for this form application.
-   * @param options - (unused)
-   */
-  getData(options?: Application.RenderOptions): EntitySheetConfig.Data<E>;
-
-  /**
-   * This method is called upon form submission after form data is validated
-   * @param event    - The initial triggering submission event
-   * @param formData - The object of validated form data with which to update the object
-   */
-  protected _updateObject(event: Event, formData: EntitySheetConfig.FormData): Promise<void>;
 }
 
 declare namespace EntitySheetConfig {
@@ -117,9 +117,9 @@ declare namespace EntitySheetConfig {
     entityClass: ConstructorOf<Entity>;
     id: string;
     label: string;
-    makeDefault: boolean;
     sheetClass: ConstructorOf<FormApplication>;
     types: string[];
+    makeDefault: boolean;
   }
 
   /**
@@ -127,23 +127,23 @@ declare namespace EntitySheetConfig {
    * @typeParam E - the type of the entity
    */
   interface Data<E extends Entity = Entity, P extends FormApplication.Options = FormApplication.Options> {
-    blankLabel: ReturnType<Localization['localize']>;
-    defaultClass: SheetClass['id'] | null;
     entityName: EntitySheetConfig<P, E>['object']['entity'];
     isGM: User['isGM'];
     object: Duplicated<EntitySheetConfig<P, E>['object']['data']>;
     options: EntitySheetConfig<P, E>['options'];
     sheetClass: ReturnType<E['getFlag']> | '';
     sheetClasses: Record<SheetClass['id'], SheetClass['label']>;
+    defaultClass: SheetClass['id'] | null;
+    blankLabel: ReturnType<Localization['localize']>;
   }
 
   type FormData = Pick<Data, 'defaultClass' | 'sheetClass'>;
 
   interface SheetClass {
-    cls?: ConstructorOf<FormApplication>;
-    default: boolean;
     id: string | number;
+    cls?: ConstructorOf<FormApplication>;
     label: string;
+    default: boolean;
   }
 
   type SheetClasses = Record<string, Record<string, SheetClass>>;

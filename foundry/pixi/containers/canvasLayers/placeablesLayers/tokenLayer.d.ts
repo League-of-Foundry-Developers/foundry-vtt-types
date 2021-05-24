@@ -2,6 +2,18 @@
  * The Tokens Container
  */
 declare class TokenLayer extends PlaceablesLayer<Token> {
+  constructor();
+
+  /**
+   * The current index position in the tab cycle
+   */
+  protected _tabIndex: number | null;
+
+  /**
+   * Remember the last drawn wildcard token image to avoid repetitions
+   */
+  protected _lastWildcard: string | null;
+
   /**
    * @override
    * @defaultValue
@@ -19,18 +31,6 @@ declare class TokenLayer extends PlaceablesLayer<Token> {
    */
   static get layerOptions(): PlaceablesLayer.LayerOptions;
 
-  constructor();
-
-  /**
-   * Remember the last drawn wildcard token image to avoid repetitions
-   */
-  protected _lastWildcard: string | null;
-
-  /**
-   * The current index position in the tab cycle
-   */
-  protected _tabIndex: number | null;
-
   /**
    * Token objects on this layer utilize the TokenHUD
    */
@@ -41,31 +41,13 @@ declare class TokenLayer extends PlaceablesLayer<Token> {
    */
   get ownedTokens(): Token[];
 
+  /** @override */
+  tearDown(): Promise<void>;
+
   /**
    * @override
    */
   activate(): void;
-
-  /**
-   * Immediately conclude the animation of any/all tokens
-   */
-  concludeAnimation(): void;
-
-  /**
-   * @override
-   * @remarks Returns void
-   */
-  controlAll(options?: PlaceableObject.ControlOptions): any;
-
-  /**
-   * Cycle the controlled token by rotating through the list of Owned Tokens that are available within the Scene
-   * Tokens are currently sorted in order of their TokenID
-   *
-   * @param forwards - Which direction to cycle. A truthy value cycles forward, while a false value cycles backwards.
-   * @param reset    - Restart the cycle order back at the beginning?
-   * @returns The Token object which was cycled to, or null
-   */
-  cycleTokens(forwards: boolean, reset: boolean): Token | null;
 
   /**
    * @override
@@ -76,6 +58,12 @@ declare class TokenLayer extends PlaceablesLayer<Token> {
    * Initialize the TokenLayer by preparing all Token sources which appear in the Scene.
    */
   initialize(): void;
+
+  /**
+   * @override
+   * @remarks Returns void
+   */
+  controlAll(options?: PlaceableObject.ControlOptions): any;
 
   /** @override */
   releaseAll(options?: PlaceableObject.ReleaseOptions): number;
@@ -113,8 +101,15 @@ declare class TokenLayer extends PlaceablesLayer<Token> {
     { releaseOthers }?: { releaseOthers?: boolean }
   ): number;
 
-  /** @override */
-  tearDown(): Promise<void>;
+  /**
+   * Cycle the controlled token by rotating through the list of Owned Tokens that are available within the Scene
+   * Tokens are currently sorted in order of their TokenID
+   *
+   * @param forwards - Which direction to cycle. A truthy value cycles forward, while a false value cycles backwards.
+   * @param reset    - Restart the cycle order back at the beginning?
+   * @returns The Token object which was cycled to, or null
+   */
+  cycleTokens(forwards: boolean, reset: boolean): Token | null;
 
   /**
    * Add or remove the set of currently controlled Tokens from the active combat encounter
@@ -139,6 +134,11 @@ declare class TokenLayer extends PlaceablesLayer<Token> {
   protected _getCycleOrder(): Token[];
 
   /**
+   * Immediately conclude the animation of any/all tokens
+   */
+  concludeAnimation(): void;
+
+  /**
    * Handle dropping of Actor data onto the Scene canvas
    */
   protected _onDropActorData(event: DragEvent, data: TokenLayer.DropData): Promise<void | false | Token>;
@@ -147,7 +147,7 @@ declare class TokenLayer extends PlaceablesLayer<Token> {
 declare namespace TokenLayer {
   interface DropData extends Canvas.DropPosition {
     id?: string;
-    pack?: string;
     type?: 'Actor';
+    pack?: string;
   }
 }

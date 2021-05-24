@@ -19,16 +19,10 @@
  * ```
  */
 declare class Wall extends PlaceableObject<Wall.Data> {
-  /** @override */
-  static get embeddedName(): 'Wall';
-
   /**
    * @remarks Not used for `Wall`
    */
   controlIcon: null;
-
-  endpoints: PIXI.Graphics;
-
   /**
    * @remarks Type is `MouseInteractionManager<this, this['endpoints']>`
    */
@@ -40,15 +34,23 @@ declare class Wall extends PlaceableObject<Wall.Data> {
   protected doorControl: DoorControl | null;
 
   /** @override */
-  get bounds(): NormalizedRectangle;
-
-  /** @override */
-  get center(): PIXI.Point;
+  static get embeddedName(): 'Wall';
 
   /**
    * A convenience reference to the coordinates Array for the Wall endpoints, [x0,y0,x1,y1].
    */
   get coords(): Wall.Data['c'];
+
+  /** @override */
+  get bounds(): NormalizedRectangle;
+
+  /**
+   * Return the coordinates [x,y] at the midpoint of the wall segment
+   */
+  get midpoint(): [number, number];
+
+  /** @override */
+  get center(): PIXI.Point;
 
   /**
    * Get the direction of effect for a directional Wall
@@ -57,12 +59,58 @@ declare class Wall extends PlaceableObject<Wall.Data> {
   get direction(): number | null;
 
   /**
-   * Return the coordinates [x,y] at the midpoint of the wall segment
+   * This helper converts the wall segment to a Ray
+   * @returns The wall in Ray representation
    */
-  get midpoint(): [number, number];
+  toRay(): Ray;
+
+  /** @override */
+  draw(): Promise<this>;
+
+  endpoints: PIXI.Graphics;
+
+  /** @override */
+  protected _createInteractionManager(): NonNullable<this['mouseInteractionManager']>;
 
   /** @override */
   activateListeners(): void;
+
+  /**
+   * Draw a directional prompt icon for one-way walls to illustrate their direction of effect.
+   * @returns The drawn icon
+   */
+  protected _drawDirection(): PIXI.Sprite | void; // TODO: returning void may be unreachable
+
+  /** @override */
+  refresh(): this;
+
+  /**
+   * Compute an approximate Polygon which encloses the line segment providing a specific hitArea for the line
+   * @param coords - The original wall coordinates
+   * @param pad    - The amount of padding to apply
+   * @returns A constructed Polygon for the line
+   */
+  protected _getWallHitPolygon(coords: [number, number, number, number], pad: number): PIXI.Polygon;
+
+  /**
+   * Given the properties of the wall - decide upon a color to render the wall for display on the WallsLayer
+   */
+  protected _getWallColor(): number;
+
+  /** @override */
+  protected _onControl({ chain }?: { chain?: boolean }): void;
+
+  /** @override */
+  protected _onRelease(): void;
+
+  /** @override */
+  destroy(options?: { children?: boolean; texture?: boolean; baseTexture?: boolean }): void;
+
+  /**
+   * Test whether the Wall direction lies between two provided angles
+   * This test is used for collision and vision checks against one-directional walls
+   */
+  isDirectionBetweenAngles(lower: number, upper: number): boolean;
 
   /**
    * A simple test for whether a Ray can intersect a directional wall
@@ -70,12 +118,6 @@ declare class Wall extends PlaceableObject<Wall.Data> {
    * @returns Can an intersection occur?
    */
   canRayIntersect(ray: Ray): boolean;
-
-  /** @override */
-  destroy(options?: { children?: boolean; texture?: boolean; baseTexture?: boolean }): void;
-
-  /** @override */
-  draw(): Promise<this>;
 
   /**
    * Get an Array of Wall objects which are linked by a common coordinate
@@ -87,45 +129,34 @@ declare class Wall extends PlaceableObject<Wall.Data> {
     endpoints: Array<[number, number]>;
   };
 
-  /**
-   * Test whether the Wall direction lies between two provided angles
-   * This test is used for collision and vision checks against one-directional walls
-   */
-  isDirectionBetweenAngles(lower: number, upper: number): boolean;
+  /** @override */
+  protected _onCreate(): void;
 
   /** @override */
-  refresh(): this;
+  protected _onUpdate(data: Wall.Data): void;
+
+  /** @override */
+  protected _onDelete(): void;
 
   /**
-   * This helper converts the wall segment to a Ray
-   * @returns The wall in Ray representation
+   * Callback actions when a wall that contains a door is moved or its state is changed
+   * @param doorChange - Update vision and sound restrictions
    */
-  toRay(): Ray;
+  protected _onModifyWall(doorChange?: boolean): Promise<void>;
 
   /** @override */
   protected _canControl(user?: User, event?: PIXI.InteractionEvent): boolean;
 
   /** @override */
-  protected _createInteractionManager(): NonNullable<this['mouseInteractionManager']>;
+  protected _onHoverIn(event: PIXI.InteractionEvent, options?: { hoverOutOthers: boolean }): void;
+
+  /** @override */
+  protected _onHoverOut(event: PIXI.InteractionEvent): void;
 
   /**
-   * Draw a directional prompt icon for one-way walls to illustrate their direction of effect.
-   * @returns The drawn icon
+   * Handle mouse-hover events on the line segment itself, pulling the Wall to the front of the container stack
    */
-  protected _drawDirection(): PIXI.Sprite | void; // TODO: returning void may be unreachable
-
-  /**
-   * Given the properties of the wall - decide upon a color to render the wall for display on the WallsLayer
-   */
-  protected _getWallColor(): number;
-
-  /**
-   * Compute an approximate Polygon which encloses the line segment providing a specific hitArea for the line
-   * @param coords - The original wall coordinates
-   * @param pad    - The amount of padding to apply
-   * @returns A constructed Polygon for the line
-   */
-  protected _getWallHitPolygon(coords: [number, number, number, number], pad: number): PIXI.Polygon;
+  protected _onMouseOverLine(event: PIXI.InteractionEvent): void;
 
   /** @override */
   protected _onClickLeft(event: PIXI.InteractionEvent): boolean;
@@ -137,45 +168,13 @@ declare class Wall extends PlaceableObject<Wall.Data> {
   protected _onClickRight2(event: PIXI.InteractionEvent): void;
 
   /** @override */
-  protected _onControl({ chain }?: { chain?: boolean }): void;
-
-  /** @override */
-  protected _onCreate(): void;
-
-  /** @override */
-  protected _onDelete(): void;
-
-  /** @override */
-  protected _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<any>;
+  protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
 
   /** @override */
   protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
   /** @override */
-  protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
-
-  /** @override */
-  protected _onHoverIn(event: PIXI.InteractionEvent, options?: { hoverOutOthers: boolean }): void;
-
-  /** @override */
-  protected _onHoverOut(event: PIXI.InteractionEvent): void;
-
-  /**
-   * Callback actions when a wall that contains a door is moved or its state is changed
-   * @param doorChange - Update vision and sound restrictions
-   */
-  protected _onModifyWall(doorChange?: boolean): Promise<void>;
-
-  /**
-   * Handle mouse-hover events on the line segment itself, pulling the Wall to the front of the container stack
-   */
-  protected _onMouseOverLine(event: PIXI.InteractionEvent): void;
-
-  /** @override */
-  protected _onRelease(): void;
-
-  /** @override */
-  protected _onUpdate(data: Wall.Data): void;
+  protected _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<any>;
 }
 
 declare namespace Wall {

@@ -16,29 +16,19 @@ declare class SearchFilter {
   constructor({ inputSelector, contentSelector, initial, callback, delay }: SearchFilter.Options);
 
   /**
-   * A callback function to trigger when the tab is changed
-   */
-  callback: (event: KeyboardEvent, query: string, content: string) => void;
-
-  /**
    * The value of the current query string
    */
   query: string;
 
   /**
-   * A reference to the HTML container element of the tab content
+   * A callback function to trigger when the tab is changed
    */
-  protected _content: HTMLElement | null;
+  callback: (event: KeyboardEvent, query: string, content: string) => void;
 
   /**
-   * The CSS selector used to target the tab content element
+   * The CSS selector used to target the tab navigation element
    */
-  protected _contentSelector: string;
-
-  /**
-   * A debounced function which applies the search filtering
-   */
-  protected _filter: this['callback'];
+  protected _inputSelector: string;
 
   /**
    * A reference to the HTML navigation element the tab controller is bound to
@@ -46,9 +36,19 @@ declare class SearchFilter {
   protected _input: HTMLElement | null;
 
   /**
-   * The CSS selector used to target the tab navigation element
+   * The CSS selector used to target the tab content element
    */
-  protected _inputSelector: string;
+  protected _contentSelector: string;
+
+  /**
+   * A reference to the HTML container element of the tab content
+   */
+  protected _content: HTMLElement | null;
+
+  /**
+   * A debounced function which applies the search filtering
+   */
+  protected _filter: this['callback'];
 
   /**
    * Bind the SearchFilter controller to an HTML application
@@ -65,20 +65,14 @@ declare class SearchFilter {
 declare namespace SearchFilter {
   interface Options {
     /**
-     * A callback function which executes when the filter changes.
+     * The CSS selector used to target the text input element.
      */
-    callback: SearchFilter['callback'];
+    inputSelector: string;
 
     /**
      * The CSS selector used to target the content container for these tabs.
      */
     contentSelector: string;
-
-    /**
-     * The number of milliseconds to wait for text input before processing.
-     * @defaultValue `100`
-     */
-    delay?: number;
 
     /**
      * The initial value of the search query.
@@ -87,8 +81,14 @@ declare namespace SearchFilter {
     initial?: SearchFilter['query'];
 
     /**
-     * The CSS selector used to target the text input element.
+     * A callback function which executes when the filter changes.
      */
-    inputSelector: string;
+    callback: SearchFilter['callback'];
+
+    /**
+     * The number of milliseconds to wait for text input before processing.
+     * @defaultValue `100`
+     */
+    delay?: number;
   }
 }
