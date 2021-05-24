@@ -16,14 +16,10 @@ declare class ParentheticalTerm extends RollTerm {
    */
   static OPEN_REGEXP: RegExp;
 
-  /**
-   * A regular expression pattern used to identify the closing of a parenthetical expression.
-   */
+  /** A regular expression pattern used to identify the closing of a parenthetical expression. */
   static CLOSE_REGEXP: RegExp;
 
-  /**
-   * An array of evaluated DiceTerm instances that should be bubbled up to the parent Roll
-   */
+  /** An array of evaluated DiceTerm instances that should be bubbled up to the parent Roll */
   get dice(): DiceTerm[];
 
   /**

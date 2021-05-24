@@ -206,8 +206,9 @@ declare class Die extends DiceTerm {
 
   /**
    * @override
+   * @defaultValue `d`
    */
-  static DENOMINATION: 'd';
+  static DENOMINATION: string;
 
   /**
    * @override
