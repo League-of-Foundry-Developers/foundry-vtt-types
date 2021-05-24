@@ -3,15 +3,12 @@ import '../../../../index';
 
 class NoIcon extends PlaceableObject {
   controlIcon!: null;
-
   get bounds(): NormalizedRectangle {
     throw new Error('Not implemented');
   }
-
   async draw() {
     return this;
   }
-
   refresh() {
     return this;
   }
@@ -22,11 +19,9 @@ class HasIcon extends PlaceableObject {
   get bounds(): NormalizedRectangle {
     throw new Error('Not implemented');
   }
-
   async draw() {
     return this;
   }
-
   refresh() {
     return this;
   }

@@ -56,7 +56,6 @@ declare class Drawing extends PlaceableObject<Drawing.Data> {
    * Internal timestamp for the previous freehand draw time, to limit sampling
    */
   protected _drawTime: number;
-
   protected _sampleTime: number;
 
   /**
