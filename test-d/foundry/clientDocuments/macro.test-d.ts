@@ -26,4 +26,6 @@ expectType<string | null>(macro.pack);
 
 // static properties of `Document`
 expectType<Promise<Macro>>(Macro.create());
-expectType<Promise<Macro[]>>(Macro.deleteDocuments(['a', 'b', 'c']));
+expectType<Promise<Macro[]>>(Macro.createDocuments([]));
+expectType<Promise<Macro[]>>(Macro.updateDocuments([]));
+expectType<Promise<Macro[]>>(Macro.deleteDocuments([]));

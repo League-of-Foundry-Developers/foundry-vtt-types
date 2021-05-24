@@ -4,9 +4,9 @@ import { Document } from '../abstract/module';
 import { FieldReturnType } from '../abstract/helperTypes';
 
 interface BooleanField extends DocumentField<boolean> {
-  default: false;
-  required: true;
   type: typeof Boolean;
+  required: true;
+  default: false;
 }
 
 /**
@@ -15,9 +15,9 @@ interface BooleanField extends DocumentField<boolean> {
 export declare const BOOLEAN_FIELD: BooleanField;
 
 interface ColorField extends DocumentField<string> {
-  nullable: true;
-  required: false;
   type: typeof String;
+  required: false;
+  nullable: true;
   validate: typeof isColorString;
   validationError: '{name} {field} field must be a valid CSS color string';
 }
@@ -28,9 +28,9 @@ interface ColorField extends DocumentField<string> {
 export declare const COLOR_FIELD: ColorField;
 
 interface ImageField extends DocumentField<string> {
-  nullable: true;
-  required: false;
   type: typeof String;
+  required: false;
+  nullable: true;
   validate: typeof hasImageExtension;
   validationError: 'The provided {name} {field} field does not have a valid image file extension';
 }
@@ -41,9 +41,9 @@ interface ImageField extends DocumentField<string> {
 export declare const IMAGE_FIELD: ImageField;
 
 interface VideoField extends DocumentField<string> {
-  nullable: true;
-  required: false;
   type: typeof String;
+  required: false;
+  nullable: true;
   validate: (src: string | null) => boolean;
   validationError: 'The provided {name} {field} field does not have a valid image or video file extension';
 }
@@ -54,9 +54,9 @@ interface VideoField extends DocumentField<string> {
 export declare const VIDEO_FIELD: VideoField;
 
 interface AudiField extends DocumentField<string> {
-  nullable: true;
-  required: false;
   type: typeof String;
+  required: false;
+  nullable: true;
   validate: (src: string | null) => boolean;
   validationError: 'The provided {name} {field} field does not have a valid audio file extension';
 }
@@ -67,8 +67,8 @@ interface AudiField extends DocumentField<string> {
 export declare const AUDIO_FIELD: AudiField;
 
 interface IntegerField extends DocumentField<number> {
-  required: false;
   type: typeof Number;
+  required: false;
   validate: typeof Number.isInteger;
   validationError: 'The provided {name} {field} field does not have an integer value';
 }
@@ -79,9 +79,9 @@ interface IntegerField extends DocumentField<number> {
 export declare const INTEGER_FIELD: IntegerField;
 
 interface JSONField extends DocumentField<string> {
-  clean: (s: unknown) => string;
-  required: false;
   type: typeof String;
+  required: false;
+  clean: (s: unknown) => string;
   validate: typeof isJSON;
   validationError: 'The provided {name} {field} field is not a valid JSON string';
 }
@@ -92,8 +92,8 @@ interface JSONField extends DocumentField<string> {
 export declare const JSON_FIELD: JSONField;
 
 interface NonnegativeIntegerField extends DocumentField<number> {
-  required: false;
   type: typeof Number;
+  required: false;
   validate: (n: unknown) => boolean;
   validationError: 'The provided {name} {field} field does not have an non-negative integer value';
 }
@@ -104,8 +104,8 @@ interface NonnegativeIntegerField extends DocumentField<number> {
 export declare const NONNEGATIVE_INTEGER_FIELD: NonnegativeIntegerField;
 
 interface PositiveIntegerField extends DocumentField<number> {
-  required: false;
   type: typeof Number;
+  required: false;
   validate: (n: unknown) => boolean;
   validationError: 'The provided {name} {field} field does not have an non-negative integer value';
 }
@@ -118,9 +118,9 @@ interface PositiveIntegerField extends DocumentField<number> {
 export declare const POSITIVE_INTEGER_FIELD: PositiveIntegerField;
 
 interface ObjectField extends DocumentField<object> {
+  type: typeof Object;
   default: {};
   required: true;
-  type: typeof Object;
 }
 
 /**
@@ -129,9 +129,9 @@ interface ObjectField extends DocumentField<object> {
 export declare const OBJECT_FIELD: ObjectField;
 
 interface StringField extends DocumentField<string> {
-  nullable: false;
-  required: false;
   type: typeof String;
+  required: false;
+  nullable: false;
 }
 
 /**
@@ -140,9 +140,9 @@ interface StringField extends DocumentField<string> {
 export declare const STRING_FIELD: StringField;
 
 interface NumericField extends DocumentField<number> {
-  nullable: true;
-  required: false;
   type: typeof Number;
+  required: false;
+  nullable: true;
 }
 
 /**
@@ -151,10 +151,10 @@ interface NumericField extends DocumentField<number> {
 export declare const NUMERIC_FIELD: NumericField;
 
 interface RequiredNumber extends DocumentField<number> {
-  default: 0;
-  nullable: false;
-  required: true;
   type: typeof Number;
+  required: true;
+  nullable: false;
+  default: 0;
 }
 
 /**
@@ -163,9 +163,9 @@ interface RequiredNumber extends DocumentField<number> {
 export declare const REQUIRED_NUMBER: RequiredNumber;
 
 interface RequiredPositiveNumber extends DocumentField<number> {
-  nullable: false;
-  required: true;
   type: typeof Number;
+  required: true;
+  nullable: false;
   validate: (n: unknown) => boolean;
   validationError: 'Invalid {name} {field} which must be a positive number';
 }
@@ -176,11 +176,11 @@ interface RequiredPositiveNumber extends DocumentField<number> {
 export declare const REQUIRED_POSITIVE_NUMBER: RequiredPositiveNumber;
 
 interface AngleField extends DocumentField<number> {
-  clean: (n: unknown) => number;
-  default: 360;
-  nullable: false;
-  required: true;
   type: typeof Number;
+  required: true;
+  nullable: false;
+  default: 360;
+  clean: (n: unknown) => number;
   validate: (n: number) => boolean;
   validationError: 'Invalid {name} {field} which must be a number between 0 and 360';
 }
@@ -191,10 +191,10 @@ interface AngleField extends DocumentField<number> {
 export declare const ANGLE_FIELD: AngleField;
 
 interface AlphaField extends DocumentField<number> {
-  default: 1;
-  nullable: false;
-  required: true;
   type: typeof Number;
+  required: true;
+  nullable: false;
+  default: 1;
   validate: (n: number) => boolean;
   validationError: 'Invalid {name} {field} which must be a number between 0 and 1';
 }
@@ -205,10 +205,10 @@ interface AlphaField extends DocumentField<number> {
 export declare const ALPHA_FIELD: AlphaField;
 
 interface RequiredString extends DocumentField<string> {
-  clean: (v: unknown) => string; // TODO: may also return undefined?
-  nullable: false;
-  required: true;
   type: typeof String;
+  required: true;
+  nullable: false;
+  clean: (v: unknown) => string; // TODO: may also return undefined?
 }
 
 /**
@@ -217,11 +217,11 @@ interface RequiredString extends DocumentField<string> {
 export declare const REQUIRED_STRING: RequiredString;
 
 interface BlankString extends DocumentField<string> {
+  type: typeof String;
+  required: true;
+  nullable: false;
   clean: (v: unknown) => string;
   default: '';
-  nullable: false;
-  required: true;
-  type: typeof String;
 }
 
 /**
@@ -230,9 +230,9 @@ interface BlankString extends DocumentField<string> {
 export declare const BLANK_STRING: BlankString;
 
 interface IntegerSortField extends DocumentField<number> {
-  default: 0;
-  required: true;
   type: typeof Number;
+  required: true;
+  default: 0;
   validate: typeof Number.isInteger;
   validationError: 'The provided {name} {field} field does not have an integer value';
 }
@@ -243,10 +243,10 @@ interface IntegerSortField extends DocumentField<number> {
 export declare const INTEGER_SORT_FIELD: IntegerSortField;
 
 interface TimestampField extends DocumentField<number> {
+  type: typeof Number;
+  required: false;
   default: typeof Date.now;
   nullable: false;
-  required: false;
-  type: typeof Number;
 }
 
 /**
@@ -262,10 +262,10 @@ export declare const TIMESTAMP_FIELD: TimestampField;
 declare function _validateId(id: string | null): boolean;
 
 interface DocumentId extends DocumentField<string | null> {
+  type: typeof String;
+  required: true;
   default: null;
   nullable: false;
-  required: true;
-  type: typeof String;
   validate: typeof _validateId;
   validationError: 'Invalid value provided for {name} id';
 }
@@ -276,10 +276,10 @@ interface DocumentId extends DocumentField<string | null> {
 export declare const DOCUMENT_ID: DocumentId;
 
 interface DocumentPermissions extends DocumentField<Partial<Record<string, ValueOf<typeof CONST.ENTITY_PERMISSIONS>>>> {
-  default: { default: typeof CONST.ENTITY_PERMISSIONS.NONE };
-  nullable: false;
-  required: true;
   type: typeof Object;
+  required: true;
+  nullable: false;
+  default: { default: typeof CONST.ENTITY_PERMISSIONS.NONE };
   validate: typeof _validatePermissions;
   validationError: 'Invalid data structure encountered for {name} permissions';
 }
@@ -298,20 +298,20 @@ declare function _validatePermissions(perms: object): boolean;
 
 interface ForeignDocumentField<
   T extends {
-    default?: any;
-    nullable?: boolean;
-    required?: boolean;
     type: {
       readonly documentName: string;
     };
+    required?: boolean;
+    nullable?: boolean;
+    default?: any;
   }
 > extends DocumentField<string | null> {
-  clean: (d: unknown) => string | null;
-  default: T extends {
-    default: infer U;
+  type: typeof String;
+  required: T extends {
+    required: true;
   }
-    ? U
-    : null;
+    ? true
+    : false;
   nullable: T extends {
     nullable?: true;
   }
@@ -321,12 +321,12 @@ interface ForeignDocumentField<
       }
     ? false
     : boolean;
-  required: T extends {
-    required: true;
+  default: T extends {
+    default: infer U;
   }
-    ? true
-    : false;
-  type: typeof String;
+    ? U
+    : null;
+  clean: (d: unknown) => string | null;
   validate: typeof _validateId;
   validationError: `Invalid {name} {field} which must be a ${T['type']['documentName']} document id`;
 }
@@ -335,23 +335,18 @@ interface ForeignDocumentField<
  * Create a foreign key field which references a primary Document id
  */
 export declare function foreignDocumentField<
-  T extends {
-    default?: any;
-    nullable?: boolean;
-    required?: boolean;
-    type: { readonly documentName: string };
-  }
+  T extends { type: { readonly documentName: string }; required?: boolean; nullable?: boolean; default?: any }
 >(options: T): ForeignDocumentField<T>;
 
 // TODO: Improve
 interface EmbeddedCollectionField<
   ConcreteDocumentConstructor extends ConstructorOf<Document<any, any>>,
-  Options extends { default?: any[]; required?: boolean }
+  Options extends { required?: boolean; default?: any[] }
 > extends DocumentField<any> {
+  type: Partial<Record<string, ConcreteDocumentConstructor>>;
+  required: Options extends { required?: true } ? true : Options extends { required: false } ? false : boolean;
   default: Options extends { default?: Array<infer U> } ? Array<U> : never;
   isCollection: true;
-  required: Options extends { required?: true } ? true : Options extends { required: false } ? false : boolean;
-  type: Partial<Record<string, ConcreteDocumentConstructor>>;
 }
 
 /**
@@ -362,7 +357,7 @@ interface EmbeddedCollectionField<
  */
 export declare function embeddedCollectionField<
   ConcreteDocumentConstructor extends { readonly documentName: string } & ConstructorOf<Document<any, any>>,
-  Options extends { default?: any[]; required?: boolean }
+  Options extends { required?: boolean; default?: any[] }
 >(
   document: ConcreteDocumentConstructor,
   options?: Options

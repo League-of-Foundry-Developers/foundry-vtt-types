@@ -34,9 +34,9 @@ declare class EmbeddedCollection<
   );
 
   /**
-   * The source data array from which the embedded collection is created
+   * The parent DocumentData to which this EmbeddedCollection instance belongs.
    */
-  _source: DeepPartial<SourceDataType<ContainedDocumentData>>[];
+  parent: ParentDocumentData;
 
   /**
    * The parent DocumentData to which this EmbeddedCollection instance belongs.
@@ -49,13 +49,18 @@ declare class EmbeddedCollection<
   documentClass: ConstructorOf<ContainedDocumentData>;
 
   /**
-   * The parent DocumentData to which this EmbeddedCollection instance belongs.
+   * The source data array from which the embedded collection is created
    */
-  parent: ParentDocumentData;
+  _source: DeepPartial<SourceDataType<ContainedDocumentData>>[];
 
-  delete(key: string, { modifySource }: { modifySource?: boolean }): boolean;
+  /**
+   * Initialize the EmbeddedCollection object by constructing its contained Document instances
+   */
+  protected _initialize(): void;
 
   set(key: string, value: ContainedDocumentData, { modifySource }: { modifySource?: boolean }): this;
+
+  delete(key: string, { modifySource }: { modifySource?: boolean }): boolean;
 
   /**
    * Convert the EmbeddedCollection to an array of simple objects.
@@ -65,11 +70,6 @@ declare class EmbeddedCollection<
    */
   toObject(source?: true): ReturnType<ContainedDocumentData['toJSON']>[];
   toObject(source: false): ReturnType<ContainedDocumentData['toObject']>[];
-
-  /**
-   * Initialize the EmbeddedCollection object by constructing its contained Document instances
-   */
-  protected _initialize(): void;
 }
 
 export default EmbeddedCollection;

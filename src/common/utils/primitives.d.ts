@@ -65,6 +65,13 @@ declare interface Set<T> {
 declare interface String {
   capitalize<S extends string>(this: S): Capitalize<S>;
 
+  titleCase<S extends string>(this: S): Titlecase<S>;
+
+  /**
+   * Strip any <script> tags which were included within a provided string
+   */
+  stripScripts(): string;
+
   /**
    * Transform any string into a url-viable slug string
    * @param replacement - The replacement character to separate terms
@@ -74,18 +81,9 @@ declare interface String {
    * @returns The cleaned slug string
    */
   slugify({ replacement, strict }?: { replacement?: string; strict?: boolean }): string;
-
-  /**
-   * Strip any <script> tags which were included within a provided string
-   */
-  stripScripts(): string;
-
-  titleCase<S extends string>(this: S): Titlecase<S>;
 }
 
 declare interface Number {
-  between(a: number, b: number, inclusive?: boolean): boolean;
-
   ordinalString(): string;
 
   paddedString(digits: number): string;
@@ -107,6 +105,8 @@ declare interface Number {
    * ```
    */
   toNearest(interval?: number): number;
+
+  between(a: number, b: number, inclusive?: boolean): boolean;
 }
 
 declare interface NumberConstructor {
@@ -140,6 +140,14 @@ declare interface Array<T> {
   equals(other: T[]): boolean;
 
   /**
+   * Partition an original array into two children array based on a logical test
+   * Elements which test as false go into the first result while elements testing as true appear in the second
+   * @param rule - The rule to partition by
+   * @returns An Array of length two whose elements are the partitioned pieces of the original
+   */
+  partition(rule: (val: T) => boolean): [T[], T[]];
+
+  /**
    * Join an Array using a string separator, first filtering out any parts which return a false-y value
    * @param sep - The separator string
    * @returns The joined string, filtered of any false values
@@ -153,14 +161,6 @@ declare interface Array<T> {
    * @returns The replacement element, the removed element, or null if no element was found.
    */
   findSplice(find: (value: T, index: number, obj: T[]) => boolean, replace?: T): T | null;
-
-  /**
-   * Partition an original array into two children array based on a logical test
-   * Elements which test as false go into the first result while elements testing as true appear in the second
-   * @param rule - The rule to partition by
-   * @returns An Array of length two whose elements are the partitioned pieces of the original
-   */
-  partition(rule: (val: T) => boolean): [T[], T[]];
 }
 
 declare namespace Array {

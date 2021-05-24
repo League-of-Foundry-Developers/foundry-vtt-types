@@ -274,18 +274,6 @@ export declare function mergeObject<T>(original: T, other?: T, options?: MergeOb
 
 interface MergeObjectOptions {
   /**
-   * Control whether strict type checking requires that the value of a key in the other object must match the data type in the original data to be merged.
-   * @defaultValue `false`
-   */
-  enforceTypes?: boolean;
-
-  /**
-   * Control whether to apply updates to the original object in-place (if true), otherwise the original object is duplicated and the copy is merged.
-   * @defaultValue `true`
-   */
-  inplace?: boolean;
-
-  /**
    * Control whether to insert new top-level objects into the resulting structure which do not previously exist in the original object.
    * @defaultValue `true`
    */
@@ -308,6 +296,18 @@ interface MergeObjectOptions {
    * @defaultValue `true`
    */
   recursive?: boolean;
+
+  /**
+   * Control whether to apply updates to the original object in-place (if true), otherwise the original object is duplicated and the copy is merged.
+   * @defaultValue `true`
+   */
+  inplace?: boolean;
+
+  /**
+   * Control whether strict type checking requires that the value of a key in the other object must match the data type in the original data to be merged.
+   * @defaultValue `false`
+   */
+  enforceTypes?: boolean;
 }
 
 /**
@@ -334,7 +334,7 @@ declare function _mergeUpdate(
     enforceTypes,
     overwrite,
     recursive
-  }: { enforceTypes?: boolean; insertKeys?: boolean; insertValues?: boolean; overwrite?: boolean; recursive?: boolean },
+  }: { insertKeys?: boolean; insertValues?: boolean; enforceTypes?: boolean; overwrite?: boolean; recursive?: boolean },
   _d: number
 ): void;
 

@@ -1,11 +1,39 @@
 /**
+ * This interface is used to configure the used document classes at a type level.
+ * Module and system authors should use declaration merging to provide the types
+ * of their configured document classes. It is extremely important that this is
+ * kept in sync with the configuration that actually happens at runtime.
+ *
+ * @example
+ * ```typescript
+ * // myActor.ts
+ * class MyActor extends Actor {}
+ *
+ * // entryPoint.ts
+ * import { MyActor } from './myActor'
+ *
+ * hooks.once('init', () => {
+ *   CONFIG.Actor.documentClass = typeof MyActor;
+ * });
+ *
+ * declare global {
+ *   interface DocumentClassConfig {
+ *     Actor: typeof MyActor
+ *   }
+ * }
+ * ```
+ */
+//eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface DocumentClassConfig {}
+
+/**
  * Runtime configuration settings for Foundry VTT which exposes a large number of variables which determine how
  * aspects of the software behaves.
  *
  * Unlike the CONST analog which is frozen and immutable, the CONFIG object may be updated during the course of a
  * session or modified by system and module developers to adjust how the application behaves.
  */
-interface CONFIG extends Record<string, unknown> {
+interface CONFIG {
   /**
    * Configure debugging flags to display additional information
    */
@@ -58,7 +86,9 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `ActiveEffect`
      */
-    documentClass: ConstructorOf<ActiveEffect>;
+    documentClass: 'ActiveEffect' extends keyof DocumentClassConfig
+      ? DocumentClassConfig['ActiveEffect']
+      : typeof ActiveEffect;
 
     /**
      * @defaultValue `ActiveEffectConfig`
@@ -73,7 +103,7 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `Actor`
      */
-    documentClass: ConstructorOf<Actor>;
+    documentClass: 'Actor' extends keyof DocumentClassConfig ? DocumentClassConfig['Actor'] : typeof Actor;
 
     /**
      * @defaultValue `Actors`
@@ -460,7 +490,9 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `ChatMessage`
      */
-    documentClass: ConstructorOf<ChatMessage>;
+    documentClass: 'ChatMessage' extends keyof DocumentClassConfig
+      ? DocumentClassConfig['ChatMessage']
+      : typeof ChatMessage;
 
     /**
      * @defaultValue `Messages`
@@ -490,7 +522,7 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `Combat`
      */
-    documentClass: ConstructorOf<Combat>;
+    documentClass: 'Combat' extends keyof DocumentClassConfig ? DocumentClassConfig['Combat'] : typeof Combat;
 
     /**
      * @defaultValue `CombatEncounters`
@@ -572,7 +604,7 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `Folder`
      */
-    documentClass: ConstructorOf<Folder>;
+    documentClass: 'Folder' extends keyof DocumentClassConfig ? DocumentClassConfig['Folder'] : typeof Folder;
 
     /**
      * @defaultValue `FolderConfig`
@@ -587,7 +619,7 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `Item`
      */
-    documentClass: ConstructorOf<Item>;
+    documentClass: 'Item' extends keyof DocumentClassConfig ? DocumentClassConfig['Item'] : typeof Item;
 
     /**
      * @defaultValue `Items`
@@ -622,7 +654,9 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `JournalEntry`
      */
-    documentClass: ConstructorOf<JournalEntry>;
+    documentClass: 'JournalEntry' extends keyof DocumentClassConfig
+      ? DocumentClassConfig['JournalEntry']
+      : typeof JournalEntry;
 
     /**
      * @defaultValue `Journal`
@@ -783,7 +817,7 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `Macro`
      */
-    documentClass: ConstructorOf<Macro>;
+    documentClass: 'Macro' extends keyof DocumentClassConfig ? DocumentClassConfig['Macro'] : typeof Macro;
 
     /**
      * @defaultValue `Macros`
@@ -847,7 +881,7 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `Playlist`
      */
-    documentClass: ConstructorOf<Playlist>;
+    documentClass: 'Playlist' extends keyof DocumentClassConfig ? DocumentClassConfig['Playlist'] : typeof Playlist;
 
     /**
      * @defaultValue `Playlists`
@@ -872,7 +906,7 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `RollTable`
      */
-    documentClass: ConstructorOf<RollTable>;
+    documentClass: 'RollTable' extends keyof DocumentClassConfig ? DocumentClassConfig['RollTable'] : typeof RollTable;
 
     /**
      * @defaultValue `RollTables`
@@ -907,7 +941,7 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `Scene`
      */
-    documentClass: ConstructorOf<Scene>;
+    documentClass: 'Scene' extends keyof DocumentClassConfig ? DocumentClassConfig['Scene'] : typeof Scene;
 
     /**
      * @defaultValue `Scenes`
@@ -932,7 +966,7 @@ interface CONFIG extends Record<string, unknown> {
     /**
      * @defaultValue `User`
      */
-    documentClass: ConstructorOf<User>;
+    documentClass: 'User' extends keyof DocumentClassConfig ? DocumentClassConfig['User'] : typeof User;
 
     /**
      * @defaultValue `Users`

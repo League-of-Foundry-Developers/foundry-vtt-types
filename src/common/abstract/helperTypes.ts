@@ -28,3 +28,17 @@ export type SourceDataType<T extends Document<any, any> | DocumentData<any, any,
   : T extends Document<infer U, any>
   ? SourceDataType<U>
   : never;
+
+export type DocumentConstructor = Pick<typeof Document, keyof typeof Document> &
+  (new (...args: any[]) => Document<any, any>);
+
+export type ConfiguredDocumentClass<T extends DocumentConstructor> = OnlyIfExtends<
+  T['metadata']['name'] extends keyof CONFIG
+    ? 'documentClass' extends keyof CONFIG[T['metadata']['name']]
+      ? CONFIG[T['metadata']['name']]['documentClass']
+      : never
+    : T,
+  DocumentConstructor
+>;
+
+type OnlyIfExtends<T, U> = T extends U ? T : never;

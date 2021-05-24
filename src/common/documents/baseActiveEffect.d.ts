@@ -14,22 +14,22 @@ export declare class BaseActiveEffect extends Document<data.ActiveEffectData, Ba
   static get metadata(): Merge<
     DocumentMetadata,
     {
-      collection: 'effects';
-      isEmbedded: true;
-      label: 'DOCUMENT.ActiveEffect';
       name: 'ActiveEffect';
+      collection: 'effects';
+      label: 'DOCUMENT.ActiveEffect';
+      isEmbedded: true;
     }
   >;
-
-  testUserPermission(
-    user: BaseUser,
-    permission: keyof typeof foundry.CONST.ENTITY_PERMISSIONS | foundry.CONST.EntityPermission,
-    { exact }: { exact?: boolean }
-  ): boolean;
 
   protected _preCreate(
     data: data.ActiveEffectData,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
+
+  testUserPermission(
+    user: BaseUser,
+    permission: keyof typeof foundry.CONST.ENTITY_PERMISSIONS | foundry.CONST.EntityPermission,
+    { exact }: { exact?: boolean }
+  ): boolean;
 }

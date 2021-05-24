@@ -1,6 +1,6 @@
 import { ContextType, DocumentDataType, DocumentModificationOptions } from '../common/abstract/document';
 
-import { SourceDataType } from '../common/abstract/helperTypes';
+import { ConfiguredDocumentClass, DocumentConstructor, SourceDataType } from '../common/abstract/helperTypes';
 
 declare global {
   /**
@@ -18,66 +18,6 @@ type ClientDocumentConstructor<T extends ConstructorOf<foundry.abstract.Document
   };
 
 declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>> {
-  /**
-   * @deprecated since 0.8.0
-   */
-  static get config(): any;
-
-  /**
-   * Present a Dialog form to create a new Document of this type.
-   * Choose a name and a type from a select menu of types.
-   * @param data    - Initial data with which to populate the creation form
-   *                  (default: `{}`)
-   * @param options - Positioning and sizing options for the resulting dialog
-   *                  (default: `{}`)
-   * @returns A Promise which resolves to the created Document
-   *
-   * @remarks
-   * Actually this returns a `Promise<T>` but some subclasses return
-   * incompatible things, e.g. Folder.createDialog returns a `FolderConfig`.
-   */
-  static createDialog<T extends foundry.abstract.Document<any, any>>(
-    this: ConstructorOf<T>,
-    data?: DeepPartial<SourceDataType<T>>,
-    options?: Dialog.Options
-  ): unknown;
-
-  /**
-   * @deprecated since 0.8.0
-   */
-  static delete<T extends foundry.abstract.Document<any, any>>(
-    this: ConstructorOf<T>,
-    ids?: string[],
-    options?: DocumentModificationContext
-  ): Promise<T[]>;
-
-  /**
-   * A helper function to handle obtaining the relevant Document from dropped data provided via a DataTransfer event.
-   * The dropped data could have:
-   * 1. A compendium pack and entry id
-   * 2. A World Entity _id
-   * 3. A data object explicitly provided
-   *
-   * @param data    - The data object extracted from a DataTransfer event
-   * @param options - Additional options which configure data retrieval
-   * @returns The Document data that should be handled by the drop handler
-   */
-  static fromDropData<T extends foundry.abstract.Document<any, any>>(
-    data: DropData<T>,
-    options?: FromDropDataOptions
-  ): T;
-
-  /**
-   * @deprecated since 0.8.0
-   */
-  static update<T extends foundry.abstract.Document<any, any>>(
-    this: ConstructorOf<T>,
-    updates?:
-      | Array<DeepPartial<SourceDataType<T>> & { _id: string } & Record<string, unknown>>
-      | (DeepPartial<SourceDataType<T>> & { _id: string } & Record<string, unknown>),
-    options?: DocumentModificationContext
-  ): Promise<Array<T>>;
-
   constructor(data?: DeepPartial<SourceDataType<T>>, context?: ContextType<T>);
 
   /**
@@ -95,9 +35,9 @@ declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>>
   protected _sheet: FormApplication | null; // TODO: FormApplication<this> | null
 
   /**
-   * @deprecated since 0.8.0
+   * @see abstract.Document#_initialize
    */
-  get _id(): T['id'];
+  protected _initialize(): void;
 
   /**
    * Return a reference to the parent Collection instance which contains this Document.
@@ -108,11 +48,6 @@ declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>>
    * A reference to the Compendium Collection which contains this Document, if any, otherwise undefined.
    */
   get compendium(): any; // TODO: CompendiumCollection<this>
-
-  /**
-   * @deprecated since 0.8.0
-   */
-  get entity(): T['documentName'];
 
   /**
    * Return a reference to the Folder to which this Document belongs, if any.
@@ -128,20 +63,15 @@ declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>>
   get folder(): Folder | null;
 
   /**
-   * Test whether this Document is owned by any non-Gamemaster User.
-   */
-  get hasPlayerOwner(): boolean;
-
-  /**
    * A boolean indicator for whether or not the current game User has ownership rights for this Document.
    * Different Document types may have more specialized rules for what constitutes ownership.
    */
   get isOwner(): boolean;
 
   /**
-   * @deprecated since 0.8.0
+   * Test whether this Document is owned by any non-Gamemaster User.
    */
-  get owner(): this['isOwner'];
+  get hasPlayerOwner(): boolean;
 
   /**
    * A boolean indicator for whether the current game User has exactly LIMITED visibility (and no greater).
@@ -183,69 +113,9 @@ declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>>
   get visible(): boolean;
 
   /**
-   * @deprecated since 0.8.0
+   * Obtain the FormApplication class constructor which should be used to configure this Document.
    */
-  createEmbeddedEntity(
-    documentName: string,
-    data?: Record<string, unknown> | Array<Record<string, unknown>>,
-    options?: DocumentModificationContext
-  ): ReturnType<T['createEmbeddedDocuments']>;
-
-  /**
-   * Present a Dialog form to confirm deletion of this Document.
-   * @param options - Positioning and sizing options for the resulting dialog
-   *                  (default: `{}`)
-   * @returns A Promise which resolves to the deleted Document
-   */
-  deleteDialog<T extends foundry.abstract.Document<any, any>>(
-    this: ConstructorOf<T>,
-    options?: Dialog.Options
-  ): Promise<T>;
-
-  /**
-   * @deprecated since 0.8.0
-   */
-  deleteEmbeddedEntity(
-    documentName: string,
-    ids: string[] | string,
-    options: DocumentModificationContext
-  ): ReturnType<T['deleteEmbeddedDocuments']>;
-
-  /**
-   * Export entity data to a JSON file which can be saved by the client and later imported into a different session.
-   */
-  exportToJSON(): void;
-
-  /**
-   * @deprecated since 0.8.0
-   */
-  getEmbeddedEntity(...args: Parameters<T['getEmbeddedDocument']>): ReturnType<T['getEmbeddedDocument']>;
-
-  /**
-   * @deprecated since 0.8.0
-   */
-  hasPerm(
-    user: foundry.documents.BaseUser,
-    permission: keyof typeof foundry.CONST.ENTITY_PERMISSIONS | foundry.CONST.EntityPermission,
-    exact?: boolean
-  ): ReturnType<T['testUserPermission']>;
-
-  /**
-   * Update this Document using a provided JSON string.
-   * @param json - JSON data string
-   * @returns The updated Document
-   */
-  importFromJSON(json: string): Promise<this>;
-
-  /**
-   * Render an import dialog for updating the data related to this Document through an exported JSON file
-   */
-  importFromJSONDialog(): Promise<void>;
-
-  /**
-   * Prepare data related to this Document itself, before any embedded Documents or derived data is computed.
-   */
-  prepareBaseData(): void;
+  protected _getSheetClass(): ConstructorOf<FormApplication> | null; // TODO: ConstructorOf<FormApplication<this>> | null
 
   /**
    * Prepare data for the Document.
@@ -255,15 +125,20 @@ declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>>
   prepareData(): void;
 
   /**
-   * Apply transformations or derivations to the values of the source data object.
-   * Compute data fields whose values are not stored to the database.
+   * Prepare data related to this Document itself, before any embedded Documents or derived data is computed.
    */
-  prepareDerivedData(): void;
+  prepareBaseData(): void;
 
   /**
    * Prepare all embedded Document instances which exist within this primary Document.
    */
   prepareEmbeddedEntities(): void;
+
+  /**
+   * Apply transformations or derivations to the values of the source data object.
+   * Compute data fields whose values are not stored to the database.
+   */
+  prepareDerivedData(): void;
 
   /**
    * Render all of the Application instances which are connected to this document by calling their respective
@@ -284,42 +159,38 @@ declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>>
   sortRelative(options: SortOptions<this>): Promise<this>;
 
   /**
-   * Transform the Document data to be stored in a Compendium pack.
-   * Remove any features of the data which are world-specific.
-   * This function is asynchronous in case any complex operations are required prior to exporting.
-   * @param pack - A specific pack being exported to
-   * @returns A data object of cleaned data suitable for compendium import
-   */
-  toCompendium(
-    pack?: any /* TODO: CompendiumCollection */
-  ): Omit<ReturnType<T['toObject']>, '_id' | 'folder' | 'permission'> & {
-    permission?: ReturnType<T['toObject']>['permission']; // TODO: Whether or not this property exists depends on `pack`, improve when `pack` is typed
-  };
-
-  /**
-   * @deprecated since 0.8.0
-   */
-  updateEmbeddedEntity(
-    documentName: string,
-    data?: Array<Record<string, unknown>> | Record<string, unknown>,
-    options?: DocumentModificationContext
-  ): ReturnType<T['updateEmbeddedDocuments']>;
-
-  /**
-   * Obtain the FormApplication class constructor which should be used to configure this Document.
-   */
-  protected _getSheetClass(): ConstructorOf<FormApplication> | null; // TODO: ConstructorOf<FormApplication<this>> | null
-
-  /**
-   * @see abstract.Document#_initialize
-   */
-  protected _initialize(): void;
-
-  /**
    * @see abstract.Document#_onCreate
    */
   protected _onCreate(
     data: DeepPartial<DocumentDataType<T>>,
+    options: DocumentModificationOptions,
+    userId: string
+  ): void;
+
+  /**
+   * @see abstract.Document#_onUpdate
+   */
+  protected _onUpdate(
+    data: DeepPartial<DocumentDataType<T>>,
+    options: DocumentModificationOptions,
+    userId: string
+  ): void;
+
+  /**
+   * @see abstract.Document#_onDelete
+   */
+  protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+
+  /**
+   * Preliminary actions taken before a set of embedded Documents in this parent Document are created.
+   * @param embeddedName - The name of the embedded Document type
+   * @param result       - An Array of created data objects
+   * @param options      - Options which modified the creation operation
+   * @param userId       - The ID of the User who triggered the operation
+   */
+  protected _preCreateEmbeddedDocuments(
+    embeddedName: string,
+    result: Record<string, unknown>[],
     options: DocumentModificationOptions,
     userId: string
   ): void;
@@ -341,31 +212,15 @@ declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>>
   ): void;
 
   /**
-   * @see abstract.Document#_onDelete
-   */
-  protected _onDelete(options: DocumentModificationOptions, userId: string): void;
-
-  /**
-   * Follow-up actions taken after a set of embedded Documents in this parent Document are deleted.
+   * Preliminary actions taken before a set of embedded Documents in this parent Document are updated.
    * @param embeddedName - The name of the embedded Document type
-   * @param documents    - An Array of deleted Documents
-   * @param result       - An Array of document IDs being deleted
-   * @param options      - Options which modified the deletion operation
+   * @param result       - An Array of incremental data objects
+   * @param options      - Options which modified the update operation
    * @param userId       - The ID of the User who triggered the operation
    */
-  protected _onDeleteEmbeddedDocuments(
+  protected _preUpdateEmbeddedDocuments(
     embeddedName: string,
-    documents: foundry.abstract.Document<any, any>[],
-    result: string[],
-    options: DocumentModificationContext,
-    userId: string
-  ): void;
-
-  /**
-   * @see abstract.Document#_onUpdate
-   */
-  protected _onUpdate(
-    data: DeepPartial<DocumentDataType<T>>,
+    result: Array<Record<string, unknown>>[],
     options: DocumentModificationOptions,
     userId: string
   ): void;
@@ -387,20 +242,6 @@ declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>>
   ): void;
 
   /**
-   * Preliminary actions taken before a set of embedded Documents in this parent Document are created.
-   * @param embeddedName - The name of the embedded Document type
-   * @param result       - An Array of created data objects
-   * @param options      - Options which modified the creation operation
-   * @param userId       - The ID of the User who triggered the operation
-   */
-  protected _preCreateEmbeddedDocuments(
-    embeddedName: string,
-    result: Record<string, unknown>[],
-    options: DocumentModificationOptions,
-    userId: string
-  ): void;
-
-  /**
    * Preliminary actions taken before a set of embedded Documents in this parent Document are deleted.
    * @param embeddedName - The name of the embedded Document type
    * @param result       - An Array of document IDs being deleted
@@ -415,18 +256,170 @@ declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>>
   ): void;
 
   /**
-   * Preliminary actions taken before a set of embedded Documents in this parent Document are updated.
+   * Follow-up actions taken after a set of embedded Documents in this parent Document are deleted.
    * @param embeddedName - The name of the embedded Document type
-   * @param result       - An Array of incremental data objects
-   * @param options      - Options which modified the update operation
+   * @param documents    - An Array of deleted Documents
+   * @param result       - An Array of document IDs being deleted
+   * @param options      - Options which modified the deletion operation
    * @param userId       - The ID of the User who triggered the operation
    */
-  protected _preUpdateEmbeddedDocuments(
+  protected _onDeleteEmbeddedDocuments(
     embeddedName: string,
-    result: Array<Record<string, unknown>>[],
-    options: DocumentModificationOptions,
+    documents: foundry.abstract.Document<any, any>[],
+    result: string[],
+    options: DocumentModificationContext,
     userId: string
   ): void;
+
+  /**
+   * Present a Dialog form to create a new Document of this type.
+   * Choose a name and a type from a select menu of types.
+   * @param data    - Initial data with which to populate the creation form
+   *                  (default: `{}`)
+   * @param options - Positioning and sizing options for the resulting dialog
+   *                  (default: `{}`)
+   * @returns A Promise which resolves to the created Document
+   */
+  static createDialog<T extends DocumentConstructor>(
+    this: T,
+    data?: DeepPartial<SourceDataType<InstanceType<T>>> & Record<string, unknown>,
+    options?: Dialog.Options
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>>>;
+
+  /**
+   * Present a Dialog form to confirm deletion of this Document.
+   * @param options - Positioning and sizing options for the resulting dialog
+   *                  (default: `{}`)
+   * @returns A Promise which resolves to the deleted Document
+   */
+  deleteDialog(options?: Dialog.Options): Promise<this>;
+
+  /**
+   * Export entity data to a JSON file which can be saved by the client and later imported into a different session.
+   */
+  exportToJSON(): void;
+
+  /**
+   * A helper function to handle obtaining the relevant Document from dropped data provided via a DataTransfer event.
+   * The dropped data could have:
+   * 1. A compendium pack and entry id
+   * 2. A World Entity _id
+   * 3. A data object explicitly provided
+   *
+   * @param data    - The data object extracted from a DataTransfer event
+   * @param options - Additional options which configure data retrieval
+   * @returns The Document data that should be handled by the drop handler
+   */
+  static fromDropData<T extends DocumentConstructor>(
+    data: DropData<InstanceType<T>>,
+    options?: FromDropDataOptions
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>>>;
+
+  /**
+   * Update this Document using a provided JSON string.
+   * @param json - JSON data string
+   * @returns The updated Document
+   */
+  importFromJSON(json: string): Promise<this>;
+
+  /**
+   * Render an import dialog for updating the data related to this Document through an exported JSON file
+   */
+  importFromJSONDialog(): Promise<void>;
+
+  /**
+   * Transform the Document data to be stored in a Compendium pack.
+   * Remove any features of the data which are world-specific.
+   * This function is asynchronous in case any complex operations are required prior to exporting.
+   * @param pack - A specific pack being exported to
+   * @returns A data object of cleaned data suitable for compendium import
+   */
+  toCompendium(
+    pack?: any /* TODO: CompendiumCollection */
+  ): Omit<ReturnType<T['toObject']>, '_id' | 'folder' | 'permission'> & {
+    permission?: ReturnType<T['toObject']>['permission']; // TODO: Whether or not this property exists depends on `pack`, improve when `pack` is typed
+  };
+
+  /**
+   * @deprecated since 0.8.0
+   */
+  get _id(): T['id'];
+
+  /**
+   * @deprecated since 0.8.0
+   */
+  static get config(): any;
+
+  /**
+   * @deprecated since 0.8.0
+   */
+  get entity(): T['documentName'];
+
+  /**
+   * @deprecated since 0.8.0
+   */
+  get owner(): this['isOwner'];
+
+  /**
+   * @deprecated since 0.8.0
+   */
+  hasPerm(
+    user: foundry.documents.BaseUser,
+    permission: keyof typeof foundry.CONST.ENTITY_PERMISSIONS | foundry.CONST.EntityPermission,
+    exact?: boolean
+  ): ReturnType<T['testUserPermission']>;
+
+  /**
+   * @deprecated since 0.8.0
+   */
+  static update<T extends DocumentConstructor>(
+    this: T,
+    updates?:
+      | Array<DeepPartial<SourceDataType<InstanceType<T>>> & { _id: string } & Record<string, unknown>>
+      | (DeepPartial<SourceDataType<InstanceType<T>>> & { _id: string } & Record<string, unknown>),
+    options?: DocumentModificationContext
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
+
+  /**
+   * @deprecated since 0.8.0
+   */
+  static delete<T extends DocumentConstructor>(
+    this: T,
+    ids?: string[],
+    options?: DocumentModificationContext
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
+
+  /**
+   * @deprecated since 0.8.0
+   */
+  getEmbeddedEntity(...args: Parameters<T['getEmbeddedDocument']>): ReturnType<T['getEmbeddedDocument']>;
+
+  /**
+   * @deprecated since 0.8.0
+   */
+  createEmbeddedEntity(
+    documentName: string,
+    data?: Record<string, unknown> | Array<Record<string, unknown>>,
+    options?: DocumentModificationContext
+  ): ReturnType<T['createEmbeddedDocuments']>;
+
+  /**
+   * @deprecated since 0.8.0
+   */
+  updateEmbeddedEntity(
+    documentName: string,
+    data?: Array<Record<string, unknown>> | Record<string, unknown>,
+    options?: DocumentModificationContext
+  ): ReturnType<T['updateEmbeddedDocuments']>;
+
+  /**
+   * @deprecated since 0.8.0
+   */
+  deleteEmbeddedEntity(
+    documentName: string,
+    ids: string[] | string,
+    options: DocumentModificationContext
+  ): ReturnType<T['deleteEmbeddedDocuments']>;
 }
 
 interface SortOptions<T> {

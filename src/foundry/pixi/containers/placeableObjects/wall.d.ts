@@ -23,7 +23,6 @@ declare class Wall extends PlaceableObject<Wall.Data> {
    * @remarks Not used for `Wall`
    */
   controlIcon: null;
-
   /**
    * @remarks Type is `MouseInteractionManager<this, this['endpoints']>`
    */
