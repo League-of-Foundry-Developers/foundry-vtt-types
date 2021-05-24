@@ -3,14 +3,13 @@
  * Mathematically behaves like 1d3-2
  */
 declare class FateDie extends DiceTerm {
-  /**
-   * @defaultValue `f`
-   */
-  static DENOMINATION: string;
-
   constructor(termData?: Partial<DiceTerm.TermData>);
 
   faces: 3;
+
+  /* -------------------------------------------- */
+
+  static DENOMINATION: 'f';
 }
 
 declare namespace FateDie {
