@@ -8,3 +8,8 @@ expectType<EffectChangeDataProperties[]>(baseActiveEffect.toJSON().changes);
 expectType<EffectChangeDataProperties[]>(baseActiveEffect.toObject().changes);
 expectType<EffectChangeDataProperties[]>(baseActiveEffect.toObject(true).changes);
 expectType<EffectChangeData[]>(baseActiveEffect.toObject(false).changes);
+
+expectType<Promise<Macro>>(foundry.documents.BaseMacro.create());
+expectType<Promise<Macro[]>>(foundry.documents.BaseMacro.createDocuments([]));
+expectType<Promise<Macro[]>>(foundry.documents.BaseMacro.updateDocuments([]));
+expectType<Promise<Macro[]>>(foundry.documents.BaseMacro.deleteDocuments([]));

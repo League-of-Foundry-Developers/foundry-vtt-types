@@ -1,8 +1,7 @@
 import { BaseUser } from '../documents';
-import { CONST } from '../module';
 import DatabaseBackend from './backend';
 import DocumentData from './data';
-import { SourceDataType } from './helperTypes';
+import { ConfiguredDocumentClass, DocumentConstructor, SourceDataType } from './helperTypes';
 
 type ParentType<T extends Document<any, any>> = T extends Document<any, infer U> ? U : never;
 export type ContextType<T extends Document<any, any>> = Context<ParentType<T>>;
@@ -203,11 +202,11 @@ declare class Document<
    * const created = await Actor.createDocuments(data, {pack: "mymodule.mypack"});
    * ```
    */
-  static createDocuments<T extends Document<any, any>>(
-    this: ConstructorOf<T>,
-    data?: Array<DeepPartial<SourceDataType<T>> & Record<string, unknown>>,
+  static createDocuments<T extends DocumentConstructor>(
+    this: T,
+    data?: Array<DeepPartial<SourceDataType<InstanceType<T>>> & Record<string, unknown>>,
     context?: DocumentModificationContext
-  ): Promise<T[]>;
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
    * Update multiple Document instances using provided differential data.
@@ -244,11 +243,11 @@ declare class Document<
    * const updated = await Actor.updateDocuments([{_id: actor.id, name: "New Name"}], {pack: "mymodule.mypack"});
    * ```
    */
-  static updateDocuments<T extends Document<any, any>>(
-    this: ConstructorOf<T>,
-    updates?: Array<DeepPartial<SourceDataType<T>> & { _id: string } & Record<string, unknown>>,
+  static updateDocuments<T extends DocumentConstructor>(
+    this: T,
+    updates?: Array<DeepPartial<SourceDataType<InstanceType<T>>> & { _id: string } & Record<string, unknown>>,
     context?: DocumentModificationContext
-  ): Promise<T[]>;
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
    * Delete one or multiple existing Documents using an array of provided ids.
@@ -287,11 +286,11 @@ declare class Document<
    * const deleted = await Actor.deleteDocuments([actor.id], {pack: "mymodule.mypack"});
    * ```
    */
-  static deleteDocuments<T extends Document<any, any>>(
-    this: ConstructorOf<T>,
+  static deleteDocuments<T extends DocumentConstructor>(
+    this: T,
     ids?: string[],
     context?: DocumentModificationContext
-  ): Promise<T[]>;
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
    * Create a new Document using provided input data, saving it to the database.
@@ -320,11 +319,11 @@ declare class Document<
    * const created = await Item.create(data, {pack: "mymodule.mypack"});
    * ```
    */
-  static create<T extends Document<any, any>>(
-    this: ConstructorOf<T>,
-    data?: DeepPartial<SourceDataType<T>> & Record<string, unknown>,
+  static create<T extends DocumentConstructor>(
+    this: T,
+    data?: DeepPartial<SourceDataType<InstanceType<T>>> & Record<string, unknown>,
     context?: DocumentModificationContext
-  ): Promise<T>;
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>>>;
 
   /**
    * Update this Document using incremental data, saving it to the database.

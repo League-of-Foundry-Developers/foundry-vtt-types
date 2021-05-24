@@ -1,6 +1,6 @@
 import { ContextType, DocumentDataType, DocumentModificationOptions } from '../common/abstract/document';
 
-import { SourceDataType } from '../common/abstract/helperTypes';
+import { ConfiguredDocumentClass, DocumentConstructor, SourceDataType } from '../common/abstract/helperTypes';
 
 declare global {
   /**
@@ -18,42 +18,6 @@ type ClientDocumentConstructor<T extends ConstructorOf<foundry.abstract.Document
   };
 
 declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>> {
-  /**
-   * @deprecated since 0.8.0
-   */
-  static get config(): any;
-
-  /**
-   * Present a Dialog form to create a new Document of this type.
-   * Choose a name and a type from a select menu of types.
-   * @param data    - Initial data with which to populate the creation form
-   *                  (default: `{}`)
-   * @param options - Positioning and sizing options for the resulting dialog
-   *                  (default: `{}`)
-   * @returns A Promise which resolves to the created Document
-   */
-  static createDialog<T extends foundry.abstract.Document<any, any>>(
-    this: ConstructorOf<T>,
-    data?: { name?: string; folder?: string; type?: string },
-    options?: Dialog.Options
-  ): Promise<T>;
-
-  /**
-   * A helper function to handle obtaining the relevant Document from dropped data provided via a DataTransfer event.
-   * The dropped data could have:
-   * 1. A compendium pack and entry id
-   * 2. A World Entity _id
-   * 3. A data object explicitly provided
-   *
-   * @param data    - The data object extracted from a DataTransfer event
-   * @param options - Additional options which configure data retrieval
-   * @returns The Document data that should be handled by the drop handler
-   */
-  static fromDropData<T extends foundry.abstract.Document<any, any>>(
-    data: DropData<T>,
-    options?: FromDropDataOptions
-  ): T;
-
   constructor(data?: DeepPartial<SourceDataType<T>>, context?: ContextType<T>);
 
   /**
@@ -308,20 +272,48 @@ declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>>
   ): void;
 
   /**
+   * Present a Dialog form to create a new Document of this type.
+   * Choose a name and a type from a select menu of types.
+   * @param data    - Initial data with which to populate the creation form
+   *                  (default: `{}`)
+   * @param options - Positioning and sizing options for the resulting dialog
+   *                  (default: `{}`)
+   * @returns A Promise which resolves to the created Document
+   */
+  static createDialog<T extends DocumentConstructor>(
+    this: T,
+    data?: DeepPartial<SourceDataType<InstanceType<T>>> & Record<string, unknown>,
+    options?: Dialog.Options
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>>>;
+
+  /**
    * Present a Dialog form to confirm deletion of this Document.
    * @param options - Positioning and sizing options for the resulting dialog
    *                  (default: `{}`)
    * @returns A Promise which resolves to the deleted Document
    */
-  deleteDialog<T extends foundry.abstract.Document<any, any>>(
-    this: ConstructorOf<T>,
-    options?: Dialog.Options
-  ): Promise<T>;
+  deleteDialog(options?: Dialog.Options): Promise<this>;
 
   /**
    * Export entity data to a JSON file which can be saved by the client and later imported into a different session.
    */
   exportToJSON(): void;
+
+  /**
+   * A helper function to handle obtaining the relevant Document from dropped data provided via a DataTransfer event.
+   * The dropped data could have:
+   * 1. A compendium pack and entry id
+   * 2. A World Entity _id
+   * 3. A data object explicitly provided
+   *
+   * @param data    - The data object extracted from a DataTransfer event
+   * @param options - Additional options which configure data retrieval
+   * @returns The Document data that should be handled by the drop handler
+   */
+  static fromDropData<T extends DocumentConstructor>(
+    data: DropData<InstanceType<T>>,
+    options?: FromDropDataOptions
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>>>;
 
   /**
    * Update this Document using a provided JSON string.
@@ -356,6 +348,11 @@ declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>>
   /**
    * @deprecated since 0.8.0
    */
+  static get config(): any;
+
+  /**
+   * @deprecated since 0.8.0
+   */
   get entity(): T['documentName'];
 
   /**
@@ -375,22 +372,22 @@ declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>>
   /**
    * @deprecated since 0.8.0
    */
-  static update<T extends foundry.abstract.Document<any, any>>(
-    this: ConstructorOf<T>,
+  static update<T extends DocumentConstructor>(
+    this: T,
     updates?:
-      | Array<DeepPartial<SourceDataType<T>> & { _id: string } & Record<string, unknown>>
-      | (DeepPartial<SourceDataType<T>> & { _id: string } & Record<string, unknown>),
+      | Array<DeepPartial<SourceDataType<InstanceType<T>>> & { _id: string } & Record<string, unknown>>
+      | (DeepPartial<SourceDataType<InstanceType<T>>> & { _id: string } & Record<string, unknown>),
     options?: DocumentModificationContext
-  ): Promise<Array<T>>;
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
    * @deprecated since 0.8.0
    */
-  static delete<T extends foundry.abstract.Document<any, any>>(
-    this: ConstructorOf<T>,
+  static delete<T extends DocumentConstructor>(
+    this: T,
     ids?: string[],
     options?: DocumentModificationContext
-  ): Promise<T[]>;
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
    * @deprecated since 0.8.0

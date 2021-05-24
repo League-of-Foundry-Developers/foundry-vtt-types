@@ -33,7 +33,7 @@ interface DocumentClassConfig {}
  * Unlike the CONST analog which is frozen and immutable, the CONFIG object may be updated during the course of a
  * session or modified by system and module developers to adjust how the application behaves.
  */
-interface CONFIG extends Record<string, unknown> {
+interface CONFIG {
   /**
    * Configure debugging flags to display additional information
    */
