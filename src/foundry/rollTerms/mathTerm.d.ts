@@ -13,14 +13,14 @@ declare class MathTerm extends RollTerm {
   /** The named function in the Math environment which should be applied to the term */
   fn: MathTerm.TermData['fn'];
 
-  /** The cached result of evaluating the method arguments */
-  result?: number;
+  /** An array of string argument terms for the function */
+  terms: MathTerm.TermData['terms'];
 
   /** The cached Roll instances for each function argument */
   rolls: Roll[];
 
-  /** An array of string argument terms for the function */
-  terms: MathTerm.TermData['terms'];
+  /** The cached result of evaluating the method arguments */
+  result?: number;
 
   /* -------------------------------------------- */
   /*  Math Term Attributes                        */
@@ -33,7 +33,7 @@ declare class MathTerm extends RollTerm {
 declare namespace MathTerm {
   interface TermData {
     fn: string;
-    options: RollTerm.Options;
     terms: string[];
+    options: RollTerm.Options;
   }
 }
