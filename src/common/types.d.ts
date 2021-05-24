@@ -39,14 +39,14 @@ interface SocketRequest {
   action?: string;
 
   /**
+   * The type of object being modified
+   */
+  type?: string;
+
+  /**
    * Data applied to the operation
    */
   data?: RequestData;
-
-  /**
-   * Additional options applied to the request
-   */
-  options?: object;
 
   /**
    * A Compendium pack name
@@ -54,36 +54,31 @@ interface SocketRequest {
   pack?: string;
 
   /**
-   * The ID of a parent document
-   */
-  parentId?: string;
-
-  /**
    * The type of parent document
    */
   parentType?: string;
 
   /**
-   * The type of object being modified
+   * The ID of a parent document
    */
-  type?: string;
+  parentId?: string;
+
+  /**
+   * Additional options applied to the request
+   */
+  options?: object;
 }
 
 interface SocketResponse {
   /**
-   * Data returned as a result of the request
+   * The initial request
    */
-  data?: RequestData;
+  request: SocketRequest;
 
   /**
    * An error, if one occurred
    */
   error?: Error;
-
-  /**
-   * The initial request
-   */
-  request: SocketRequest;
 
   /**
    * The status of the request
@@ -94,4 +89,9 @@ interface SocketResponse {
    * The ID of the requesting User
    */
   userId?: string;
+
+  /**
+   * Data returned as a result of the request
+   */
+  data?: RequestData;
 }

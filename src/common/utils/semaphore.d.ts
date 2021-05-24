@@ -28,17 +28,17 @@ declare class Semaphore {
   constructor(max?: number);
 
   /**
+   * The maximum number of tasks which can be simultaneously attempted.
+   */
+  max: number;
+
+  /**
    * A queue of pending function signatures
    * @defaultValue `[]`
    * @remarks The first element of an element of `_queue` is always a function and the rest of the elements are
    * parameters to be passed to that function.
    */
   _queue: Array<Array<unknown>>;
-
-  /**
-   * The maximum number of tasks which can be simultaneously attempted.
-   */
-  max: number;
 
   /**
    * The number of tasks which are currently underway

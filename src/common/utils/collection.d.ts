@@ -19,29 +19,14 @@ declare class Collection<T> extends Map<string, T> {
   constructor(entries?: readonly (readonly [string, T])[] | null);
 
   /**
-   * Return an Array of all the entry values in the Collection
-   */
-  get contents(): T[];
-
-  /**
    * When iterating over a Collection, we should iterate over its values instead of over its entries
    */
   [Symbol.iterator](): IterableIterator<T>;
 
   /**
-   * Filter the Collection, returning an Array of entries which match a functional condition.
-   * @see {@link Array#filter}
-   *
-   * @param condition - The functional condition to test
-   * @returns An Array of matched values
-   *
-   * @example
-   * ```typescript
-   * let c = new Collection([["a", "AA"], ["b", "AB"], ["c", "CC"]]);
-   * let hasA = c.filters(entry => entry.slice(0) === "A");
-   * ```
+   * Return an Array of all the entry values in the Collection
    */
-  filter(condition: (e: T) => boolean): T[];
+  get contents(): T[];
 
   /**
    * Find an entry in the Map using an functional condition.
@@ -57,6 +42,21 @@ declare class Collection<T> extends Map<string, T> {
    * ```
    */
   find(condition: (e: T) => boolean): T | undefined;
+
+  /**
+   * Filter the Collection, returning an Array of entries which match a functional condition.
+   * @see {@link Array#filter}
+   *
+   * @param condition - The functional condition to test
+   * @returns An Array of matched values
+   *
+   * @example
+   * ```typescript
+   * let c = new Collection([["a", "AA"], ["b", "AB"], ["c", "CC"]]);
+   * let hasA = c.filters(entry => entry.slice(0) === "A");
+   * ```
+   */
+  filter(condition: (e: T) => boolean): T[];
 
   /**
    * Apply a function to each element of the collection
