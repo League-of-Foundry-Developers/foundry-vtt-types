@@ -341,7 +341,7 @@ export declare function foreignDocumentField<
 // TODO: Improve
 interface EmbeddedCollectionField<
   ConcreteDocumentConstructor extends ConstructorOf<Document<any, any>>,
-  Options extends { required?: boolean; default?: any[] }
+  Options extends { required?: boolean; default?: any[] } = {}
 > extends DocumentField<any> {
   type: Partial<Record<string, ConcreteDocumentConstructor>>;
   required: Options extends { required?: true } ? true : Options extends { required: false } ? false : boolean;

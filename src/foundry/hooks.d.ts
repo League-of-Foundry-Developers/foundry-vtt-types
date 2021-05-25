@@ -152,7 +152,7 @@ declare namespace Hooks {
      * @remarks This is called by {@link Hooks.callAll}.
      * @see {@link ActiveEffect#_applyCustom}
      */
-    applyActiveEffect: (actor: Actor, change: ActiveEffect.Change) => unknown;
+    applyActiveEffect: (actor: Actor, change: any /* TODO: EffectChangeData */) => unknown;
 
     /**
      * This is called before a {@link Canvas} is drawn.

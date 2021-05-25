@@ -1,6 +1,11 @@
 import Document from './document';
 import EmbeddedCollection from './embeddedCollection';
-import { PropertiesToSource, PropertyTypeToSourceParameterType } from './helperTypes';
+import {
+  DocumentConstructor,
+  PropertiesToSource,
+  PropertyTypeToSourceParameterType,
+  SourceDataType
+} from './helperTypes';
 
 declare global {
   /**
@@ -258,9 +263,9 @@ declare abstract class DocumentData<
    * @param options      - Additional options which modify how the collection is updated
    *                       (default: `{}`)
    */
-  updateCollection<T extends DocumentData<any, any, any>>(
+  updateCollection<T extends DocumentConstructor>(
     collection: EmbeddedCollection<T, this>,
-    documentData: T extends DocumentData<any, infer U, any> ? DeepPartial<PropertiesToSource<U>>[] : never,
+    documentData: DeepPartial<SourceDataType<InstanceType<T>>>[],
     options?: UpdateOptions
   ): void;
 

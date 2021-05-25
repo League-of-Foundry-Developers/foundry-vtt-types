@@ -461,7 +461,11 @@ declare class Document<
    * @param options - Additional options which modify the creation request
    * @param user    - The User requesting the document creation
    */
-  protected _preCreate(data: ConcreteDocumentData, options: DocumentModificationOptions, user: BaseUser): Promise<void>;
+  protected _preCreate(
+    data: DeepPartial<SourceDataType<ConcreteDocumentData>>,
+    options: DocumentModificationOptions,
+    user: BaseUser
+  ): Promise<void>;
 
   /**
    * Perform preliminary operations before a Document of this type is updated.

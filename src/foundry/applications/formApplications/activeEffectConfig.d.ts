@@ -1,3 +1,7 @@
+// TODO: Remove when updating this class!!!
+// eslint-disable-next-line
+// @ts-nocheck
+
 /**
  * A form designed for creating and editing an Active Effect on an Actor or Item entity.
  *

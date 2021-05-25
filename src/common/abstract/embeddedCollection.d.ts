@@ -1,6 +1,6 @@
 import _Collection from '../utils/collection';
 import DocumentData from './data';
-import { SourceDataType } from './helperTypes';
+import { DocumentConstructor, SourceDataType } from './helperTypes';
 
 type Collection<T> = Omit<_Collection<T>, 'set' | 'delete'>;
 
@@ -19,9 +19,9 @@ declare const Collection: CollectionConstructor;
  * Used for the specific task of containing embedded Document instances within a parent Document.
  */
 declare class EmbeddedCollection<
-  ContainedDocumentData extends DocumentData<any, any, any>,
+  ContainedDocumentConstructor extends DocumentConstructor,
   ParentDocumentData extends DocumentData<any, any, any>
-> extends Collection {
+> extends Collection<InstanceType<ContainedDocumentConstructor>> {
   /**
    * @param documentData  - The parent DocumentData instance to which this collection belongs
    * @param sourceArray   - The source data array for the collection in the parent Document data
@@ -29,8 +29,8 @@ declare class EmbeddedCollection<
    */
   constructor(
     documentData: ParentDocumentData,
-    sourceArray: DeepPartial<SourceDataType<ContainedDocumentData>>[],
-    documentClass: ConstructorOf<ContainedDocumentData>
+    sourceArray: DeepPartial<SourceDataType<InstanceType<ContainedDocumentConstructor>>>[],
+    documentClass: ContainedDocumentConstructor
   );
 
   /**
@@ -46,19 +46,23 @@ declare class EmbeddedCollection<
   /**
    * The Document implementation used to construct instances within this collection
    */
-  documentClass: ConstructorOf<ContainedDocumentData>;
+  documentClass: ContainedDocumentConstructor;
 
   /**
    * The source data array from which the embedded collection is created
    */
-  _source: DeepPartial<SourceDataType<ContainedDocumentData>>[];
+  _source: DeepPartial<SourceDataType<InstanceType<ContainedDocumentConstructor>>>[];
 
   /**
    * Initialize the EmbeddedCollection object by constructing its contained Document instances
    */
   protected _initialize(): void;
 
-  set(key: string, value: ContainedDocumentData, { modifySource }: { modifySource?: boolean }): this;
+  set(
+    key: string,
+    value: InstanceType<ContainedDocumentConstructor>,
+    { modifySource }: { modifySource?: boolean }
+  ): this;
 
   delete(key: string, { modifySource }: { modifySource?: boolean }): boolean;
 
@@ -68,8 +72,8 @@ declare class EmbeddedCollection<
    *                 (default: `true`)
    * @returns The extracted array of primitive objects
    */
-  toObject(source?: true): ReturnType<ContainedDocumentData['toJSON']>[];
-  toObject(source: false): ReturnType<ContainedDocumentData['toObject']>[];
+  toObject(source?: true): ReturnType<InstanceType<ContainedDocumentConstructor>['data']['toJSON']>[];
+  toObject(source: false): ReturnType<InstanceType<ContainedDocumentConstructor>['data']['toObject']>[];
 }
 
 export default EmbeddedCollection;

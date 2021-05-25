@@ -1,4 +1,5 @@
 import { DocumentMetadata, DocumentModificationOptions } from '../abstract/document';
+import { SourceDataType } from '../abstract/helperTypes';
 import { Document } from '../abstract/module';
 import * as data from '../data/data';
 import { BaseActor } from './baseActor';
@@ -8,6 +9,7 @@ import { BaseUser } from './baseUser';
 /**
  * The ActiveEffect document model.
  */
+// TODO: reference configured Actor and Item classes and add tests for that!!!
 export declare class BaseActiveEffect extends Document<data.ActiveEffectData, BaseActor | BaseItem> {
   static get schema(): ConstructorOf<data.ActiveEffectData>;
 
@@ -22,7 +24,7 @@ export declare class BaseActiveEffect extends Document<data.ActiveEffectData, Ba
   >;
 
   protected _preCreate(
-    data: data.ActiveEffectData,
+    data: DeepPartial<SourceDataType<data.ActiveEffectData>>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;

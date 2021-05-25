@@ -2,6 +2,9 @@ import * as data from '../data/data';
 import { Document } from '../abstract/module';
 import { DocumentMetadata } from '../abstract/document';
 
+/**
+ * The Folder Document model.
+ */
 export declare class BaseFolder extends Document<data.FolderData, BaseFolder> {
   static get schema(): typeof data.FolderData;
 

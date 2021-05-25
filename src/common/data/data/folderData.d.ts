@@ -76,6 +76,9 @@ interface FolderDataProperties {
   flags: Record<string, unknown>;
 }
 
+/**
+ * The data schema for a Folder document.
+ */
 export declare class FolderData extends DocumentData<FolderDataSchema, FolderDataProperties, documents.BaseFolder> {
   static SORTING_MODES: ['a', 'm'];
 }

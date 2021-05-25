@@ -1,9 +1,8 @@
 import { expectType } from 'tsd';
 import '../../../../index';
 
-Hooks.on('applyActiveEffect', (actor, change) => {
-  expectType<Actor>(actor);
-  expectType<ActiveEffect.Change>(change);
+Hooks.on('canvasInit', (canvas) => {
+  expectType<Canvas>(canvas);
 });
 Hooks.on('fooBar', (baz, bar) => {
   expectType<string>(baz);
