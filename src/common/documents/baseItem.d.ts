@@ -4,12 +4,15 @@ import { DocumentMetadata } from '../abstract/document';
 import { BaseActor } from './baseActor';
 import { BaseActiveEffect } from './baseActiveEffect';
 import { BaseUser } from './baseUser';
-import { ConfiguredDocumentClass } from '../abstract/helperTypes';
+import { ConfiguredData, ConfiguredDocumentClass } from '../abstract/helperTypes';
 
 /**
  * The Item document model.
  */
-export declare class BaseItem extends Document<data.ItemData, InstanceType<ConfiguredDocumentClass<typeof BaseActor>>> {
+export declare class BaseItem extends Document<
+  ConfiguredData<'Item', data.ItemData>,
+  InstanceType<ConfiguredDocumentClass<typeof BaseActor>>
+> {
   static get schema(): typeof data.ItemData;
 
   static get metadata(): Merge<

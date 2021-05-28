@@ -44,3 +44,7 @@ export type ConfiguredDocumentClass<T extends DocumentConstructor> = T['metadata
     ? CONFIG[T['metadata']['name']]['documentClass']
     : never
   : T;
+
+export type ConfiguredData<Name extends string, T extends DocumentData<any, any, any>> = Name extends keyof DataConfig
+  ? DataConfig[Name]
+  : T;

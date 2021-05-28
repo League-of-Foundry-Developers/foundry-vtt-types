@@ -8,10 +8,11 @@ type ConfiguredDocumentClassOrDefault<
 
 declare global {
   /**
-   * This interface is used to configure the used document classes at a type level.
-   * Module and system authors should use declaration merging to provide the types
-   * of their configured document classes. It is extremely important that this is
-   * kept in sync with the configuration that actually happens at runtime.
+   * This interface is used to configure the used document classes at a type
+   * level. Module and system authors should use declaration merging to provide
+   * the types of their configured document classes. It is extremely important
+   * that this is kept in sync with the configuration that actually happens at
+   * runtime.
    *
    * @example
    * ```typescript
@@ -35,6 +36,54 @@ declare global {
 
   //eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DocumentClassConfig {}
+
+  /**
+   * This interface is used to configure the types of the `data` properties of
+   * the {@link foundry.documents.BaseActor} and
+   * {@link foundry.documents.BaseItem} classes. System authors should use
+   * declaration merging to provide the types that match their `template.json`
+   * file. These types are required to extend the {@link foundry.data.ActorData}
+   * and {@link foundry.data.ItemData} classes correspondingly. It is also very
+   * important for these types to stay in sync with the `template.json` file,
+   * otherwise unexpected runtime errors might appear.
+   *
+   * @example
+   * ```typescript
+   * interface WeaponData extends foundry.data.ItemData {
+   *   type: 'weapon';
+   *   data: {
+   *     attackSpeed: number;
+   *     damage: number;
+   *   };
+   * }
+   *
+   * interface ArmorData extends foundry.data.ItemData {
+   *   type: 'armor';
+   *   data: {
+   *     armorValue: number;
+   *   };
+   * }
+   *
+   * declare global {
+   *   interface DataConfig {
+   *     Item: WeaponData | ArmorData;
+   *   }
+   * }
+   *
+   * const item = await Item.create({
+   *   name: 'Axe',
+   *   type: 'weapon',
+   *   attackSpeed: 1,
+   *   damage: 5
+   * });
+   *
+   * if(item.data.type === 'weapon') {
+   *   const damage: number = item.data.data.damage;
+   * }
+   * ```
+   */
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DataConfig {}
 
   /**
    * Runtime configuration settings for Foundry VTT which exposes a large number of variables which determine how
