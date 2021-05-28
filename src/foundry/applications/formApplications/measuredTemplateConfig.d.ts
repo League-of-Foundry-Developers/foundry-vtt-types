@@ -1,3 +1,7 @@
+// TODO: Remove when updating this class!!!
+// eslint-disable-next-line
+// @ts-nocheck
+
 /**
  * A configuration Form Application for modifying the properties of a MeasuredTemplate object.
  * @see {@link MeasuredTemplate}

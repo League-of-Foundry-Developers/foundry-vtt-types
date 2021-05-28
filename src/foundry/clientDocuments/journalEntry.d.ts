@@ -16,13 +16,11 @@ declare global {
      * A boolean indicator for whether or not the JournalEntry is visible to the current user in the directory sidebar
      */
     get visible(): boolean;
-
     /**
      * Return a reference to the Note instance for this Journal Entry in the current Scene, if any.
      * If multiple notes are placed for this Journal Entry, only the first will be returned.
      */
     get sceneNote(): Note | null;
-
     /**
      * Show the JournalEntry to connected players.
      * By default the entry will only be shown to players who have permission to observe it.
@@ -35,7 +33,6 @@ declare global {
      * @returns A Promise that resolves back to the shown entry once the request is processed
      */
     show(mode?: 'text' | 'image', force?: boolean): Promise<this>;
-
     /**
      * If the JournalEntry has a pinned note on the canvas, this method will animate to that note
      * The note will also be highlighted as if hovered upon by the mouse
@@ -43,10 +40,8 @@ declare global {
      * @returns A Promise which resolves once the pan animation has concluded
      */
     panToNote(options?: PanToNoteOptions): Promise<void>;
-
     /** @override */
     protected _onDelete(options: DocumentModificationOptions, userId: string): void;
-
     /** @override */
     protected _onUpdate(
       data: DeepPartial<DocumentDataType<foundry.documents.BaseJournalEntry>>,

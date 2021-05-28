@@ -1,3 +1,7 @@
+// TODO: Remove when updating this class!!!
+// eslint-disable-next-line
+// @ts-nocheck
+
 /**
  * A directory of Item entities in the Sidebar
  */

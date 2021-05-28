@@ -1,3 +1,7 @@
+// TODO: Remove when updating this class!!!
+// eslint-disable-next-line
+// @ts-nocheck
+
 /**
  * A simple event framework used throughout Foundry Virtual Tabletop.
  * When key actions or events occur, a "hook" is defined where user-defined callback functions can execute.

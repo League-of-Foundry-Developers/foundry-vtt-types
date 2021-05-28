@@ -9,4 +9,4 @@ expectType<Promise<ActiveEffect[]>>(foundry.documents.BaseActiveEffect.deleteDoc
 const activeEffect = await foundry.documents.BaseActiveEffect.create();
 expectType<foundry.data.ActiveEffectData>(activeEffect.data);
 
-expectType<unknown>(activeEffect.parent);
+expectType<Actor | Item | null>(activeEffect.parent);

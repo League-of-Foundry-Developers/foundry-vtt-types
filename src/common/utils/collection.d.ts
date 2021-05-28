@@ -1,4 +1,4 @@
-type MapWithoutForEachAndIteratorAndGet<K, V> = Omit<Map<K, V>, 'forEach' | 'Symbol.iterator' | 'get'>;
+type MapWithoutForEachAndIteratorAndGet<K, V> = Omit<Map<K, V>, 'forEach' | typeof Symbol.iterator | 'get'>;
 
 interface MapWithoutForEachAndIteratorAndGetConstructor {
   new (): MapWithoutForEachAndIteratorAndGet<any, any>;

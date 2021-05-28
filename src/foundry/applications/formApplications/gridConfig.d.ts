@@ -1,3 +1,7 @@
+// TODO: Remove when updating this class!!!
+// eslint-disable-next-line
+// @ts-nocheck
+
 /**
  * A tool for fine tuning the grid in a Scene
  * @typeParam P - the type of the options object

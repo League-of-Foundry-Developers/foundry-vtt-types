@@ -1,3 +1,7 @@
+// TODO: Remove when updating this class!!!
+// eslint-disable-next-line
+// @ts-nocheck
+
 /**
  * The Chat Log application displayed in the Sidebar
  * @see {@link Sidebar}

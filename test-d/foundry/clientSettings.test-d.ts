@@ -3,23 +3,9 @@ import '../../index';
 
 const clientSettings = new ClientSettings([]);
 
-const combatSetting = {
-  name: 'Combat Tracker Configuration',
-  scope: 'world',
-  config: false,
-  default: {},
-  type: Object,
-  onChange: () => {
-    return;
-  }
-};
-clientSettings.register('core', Combat.CONFIG_SETTING, combatSetting);
-clientSettings.set('core', Combat.CONFIG_SETTING, {});
-clientSettings.set('core', Combat.CONFIG_SETTING, { resource: 'foo', skipDefeated: false });
-expectType<Combat.ConfigValue>(clientSettings.get('core', 'combatTrackerConfig'));
-
 declare global {
-  namespace ClientSettings { // eslint-disable-line
+  // eslint-disable-next-line
+  namespace ClientSettings {
     interface Values {
       'foo.bar': boolean;
     }

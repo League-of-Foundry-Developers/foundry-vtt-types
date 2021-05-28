@@ -2,7 +2,7 @@ import DocumentData from './data';
 import Document from './document';
 import EmbeddedCollection from './embeddedCollection';
 
-type PropertiesDataType<T extends Document<any, any> | DocumentData<any, any, any>> = T extends DocumentData<
+export type PropertiesDataType<T extends Document<any, any> | DocumentData<any, any, any>> = T extends DocumentData<
   any,
   infer U,
   any
@@ -17,7 +17,7 @@ type PropertyTypeToSourceType<T> = T extends EmbeddedCollection<infer U, any>
   : T extends Array<infer U>
   ? Array<PropertyTypeToSourceType<U>>
   : T extends DocumentData<any, infer U, any>
-  ? U
+  ? PropertyTypeToSourceType<U>
   : T;
 
 export type PropertiesToSource<T extends object> = {
@@ -39,13 +39,8 @@ export type FieldReturnType<T extends DocumentField<any>, U extends Partial<Docu
 export type DocumentConstructor = Pick<typeof Document, keyof typeof Document> &
   (new (...args: any[]) => Document<any, any>);
 
-export type ConfiguredDocumentClass<T extends DocumentConstructor> = OnlyIfExtends<
-  T['metadata']['name'] extends keyof CONFIG
-    ? 'documentClass' extends keyof CONFIG[T['metadata']['name']]
-      ? CONFIG[T['metadata']['name']]['documentClass']
-      : never
-    : T,
-  DocumentConstructor
->;
-
-type OnlyIfExtends<T, U> = T extends U ? T : never;
+export type ConfiguredDocumentClass<T extends DocumentConstructor> = T['metadata']['name'] extends keyof CONFIG
+  ? 'documentClass' extends keyof CONFIG[T['metadata']['name']]
+    ? CONFIG[T['metadata']['name']]['documentClass']
+    : never
+  : T;

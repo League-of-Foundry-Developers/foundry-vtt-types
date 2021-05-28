@@ -1,3 +1,7 @@
+// TODO: Remove when updating this class!!!
+// eslint-disable-next-line
+// @ts-nocheck
+
 /**
  * This class provides an interface and API for conducting dice rolls.
  * The basic structure for a dice roll is a string formula and an object of data against which to parse it.

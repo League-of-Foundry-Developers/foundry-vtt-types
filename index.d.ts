@@ -140,9 +140,18 @@ import './src/foundry/applications/sidebarTabs/sidebarDirectories/sceneDirectory
 import './src/foundry/avClients/easyRTCClient';
 
 import './src/foundry/clientDocuments/activeEffect';
+import './src/foundry/clientDocuments/actor';
+import './src/foundry/clientDocuments/chatMessage';
+import './src/foundry/clientDocuments/combat';
 import './src/foundry/clientDocuments/folder';
+import './src/foundry/clientDocuments/item';
 import './src/foundry/clientDocuments/journalEntry';
 import './src/foundry/clientDocuments/macro';
+import './src/foundry/clientDocuments/playlist';
+import './src/foundry/clientDocuments/rollTable';
+import './src/foundry/clientDocuments/scene';
+import './src/foundry/clientDocuments/setting';
+import './src/foundry/clientDocuments/user';
 
 import './src/foundry/collections/entityCollection';
 

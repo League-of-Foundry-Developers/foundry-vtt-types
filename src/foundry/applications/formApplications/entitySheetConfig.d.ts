@@ -1,3 +1,7 @@
+// TODO: Remove when updating this class!!!
+// eslint-disable-next-line
+// @ts-nocheck
+
 /**
  * Entity Sheet Configuration Application
  * @typeParam P - the type of the options object

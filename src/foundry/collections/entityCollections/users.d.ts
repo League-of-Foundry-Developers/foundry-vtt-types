@@ -1,3 +1,7 @@
+// TODO: Remove when updating this class!!!
+// eslint-disable-next-line
+// @ts-nocheck
+
 /**
  * The collection of User entities which is accessible through `game.users`.
  * The array of User entities within this collection is accessible through `game.users.entities`.

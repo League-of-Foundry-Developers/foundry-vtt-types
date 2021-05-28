@@ -1,7 +1,7 @@
 import { BaseUser } from '../documents';
 import DatabaseBackend from './backend';
 import DocumentData from './data';
-import { ConfiguredDocumentClass, DocumentConstructor, SourceDataType } from './helperTypes';
+import { ConfiguredDocumentClass, DocumentConstructor, PropertiesDataType, SourceDataType } from './helperTypes';
 
 type ParentType<T extends Document<any, any>> = T extends Document<any, infer U> ? U : never;
 export type ContextType<T extends Document<any, any>> = Context<ParentType<T>>;
@@ -569,7 +569,16 @@ declare class Document<
    * @returns The extracted primitive object
    */
   toObject(source?: true): ReturnType<this['toJSON']>;
-  toObject(source: false): ReturnType<ConcreteDocumentData['toObject']>;
+  toObject(
+    source: false
+  ): {
+    [Key in keyof SourceDataType<ConcreteDocumentData>]: SourceDataType<ConcreteDocumentData>[Key] extends {
+      toObject: (source: false) => infer U;
+    }
+      ? U
+      : PropertiesDataType<ConcreteDocumentData>[Key];
+  };
+  // toObject(source: false): ReturnType<ConcreteDocumentData['toObject']>;
 
   /**
    * Convert the Document instance to a primitive object which can be serialized.
@@ -669,7 +678,7 @@ export interface Metadata<ConcreteDocument extends Document<any, any>> {
   name: string;
   collection: string;
   label: string;
-  types: string[];
+  types: string[] | Record<string, unknown>; // TODO: Record<string, unknown> is only there because In BaseTableResult this is set to CONST.TABLE_RESULT_TYPES, check if this is a bug in foundry
   embedded: Record<string, ConstructorOf<Document<any, any>>>;
   hasSystemData: boolean;
   permissions: {
