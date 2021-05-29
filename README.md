@@ -18,11 +18,11 @@ TypeScript type definitions for [Foundry Virtual Tabletop](https://foundryvtt.co
 
 We aim to support the latest patch release of minor versions of Foundry VTT, starting with 0.7.
 
-At the moment, only 0.7.9 is supported. Work on 0.8.x is in progress but there is still a lot to be done.
+At the moment, only 0.7.10 is supported. Work on 0.8.x is in progress but there is still a lot to be done.
 
 ## Installation
 
-You can install foundry-vtt-types from the [npm registry](https://npmjs.org/). We provide distribution tags for the different supported Foundry VTT versions that have the form `fvtt-<foundry-version>`. For example, the distribution tag for Foundry VTT 0.7.9 is `fvtt-0.7.9`.
+You can install foundry-vtt-types from the [npm registry](https://npmjs.org/). We provide distribution tags for the different supported Foundry VTT versions that have the form `fvtt-<foundry-version>`. For example, the distribution tag for Foundry VTT 0.7.10 is `fvtt-0.7.10`.
 
 In order to install the desired version, run
 
@@ -30,10 +30,10 @@ In order to install the desired version, run
 npm install --save-dev @league-of-foundry-developers/foundry-vtt-types@fvtt-<foundry-version>
 ```
 
-For example, to install the type definitions for Foundry VTT 0.7.9, run
+For example, to install the type definitions for Foundry VTT 0.7.10 run
 
 ```sh
-npm install --save-dev @league-of-foundry-developers/foundry-vtt-types@fvtt-0.7.9
+npm install --save-dev @league-of-foundry-developers/foundry-vtt-types@fvtt-0.7.10
 ```
 
 You can then update foundry-vtt-types using the regular update mechanism for npm (see [npm update](https://docs.npmjs.com/cli/v7/commands/npm-update)).
