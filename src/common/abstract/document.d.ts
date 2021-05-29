@@ -10,7 +10,7 @@ export type DocumentDataType<T extends Document<any, any>> = T extends Document<
 /**
  * The abstract base interface for all Document types.
  */
-declare class Document<
+declare abstract class Document<
   ConcreteDocumentData extends DocumentData<any, any, any>,
   Parent extends Document<any, any> | null = null
 > {
@@ -44,6 +44,9 @@ declare class Document<
   /**
    * Every document must define an object which represents its data schema.
    * This must be a subclass of the DocumentData interface.
+   *
+   * @remarks
+   * This method is abstract and needs to be implemented by inheriting classes.
    */
   static get schema(): ConstructorOf<DocumentData<any, any, any>>;
 
@@ -132,9 +135,18 @@ declare class Document<
    *                 (default: `false`)
    * @returns The cloned Document instance
    */
-  clone(data?: DeepPartial<SourceDataType<ConcreteDocumentData>>, { save }?: { save: false }): this;
-  clone(data: DeepPartial<SourceDataType<ConcreteDocumentData>>, { save }: { save: true }): Promise<this>;
-  clone(data: DeepPartial<SourceDataType<ConcreteDocumentData>>, { save }: { save: boolean }): this | Promise<this>;
+  clone(
+    data?: DeepPartial<SourceDataType<ConcreteDocumentData>>,
+    { save, keepId }?: { save: false; keepId?: boolean }
+  ): this;
+  clone(
+    data: DeepPartial<SourceDataType<ConcreteDocumentData>>,
+    { save, keepId }: { save: true; keepId?: boolean }
+  ): Promise<this>;
+  clone(
+    data: DeepPartial<SourceDataType<ConcreteDocumentData>>,
+    { save, keepId }: { save: boolean; keepId?: boolean }
+  ): this | Promise<this>;
 
   /**
    * Get the permission level that a specific User has over this Document, a value in CONST.ENTITY_PERMISSIONS.
