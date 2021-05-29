@@ -23,6 +23,12 @@ declare class Macro extends Entity<Macro.Data> {
    * Execute the Macro command
    */
   execute(): void;
+
+  /**
+   * Execute the command as a script macro.
+   * Script Macros are wrapped in an async IIFE to allow the use of asynchronous commands and await statements.
+   */
+  protected _executeScript(): void;
 }
 
 declare namespace Macro {
