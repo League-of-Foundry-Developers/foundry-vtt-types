@@ -80,6 +80,8 @@ interface FolderDataProperties {
  * The data schema for a Folder document.
  */
 export declare class FolderData extends DocumentData<FolderDataSchema, FolderDataProperties, documents.BaseFolder> {
+  static defineSchema(): FolderDataSchema;
+
   static SORTING_MODES: ['a', 'm'];
 }
 

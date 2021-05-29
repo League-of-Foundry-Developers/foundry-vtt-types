@@ -1,5 +1,5 @@
 import EmbeddedCollection from '../../abstract/embeddedCollection';
-import { ConfiguredDocumentClass, FieldReturnType } from '../../abstract/helperTypes';
+import { ConfiguredDocumentClass, FieldReturnType, PropertiesToSource } from '../../abstract/helperTypes';
 import { DocumentData } from '../../abstract/module';
 import * as documents from '../../documents';
 import * as fields from '../fields';
@@ -82,7 +82,19 @@ interface ItemDataProperties {
  * The data schema for a Item document.
  * @see BaseItem
  */
-export declare class ItemData extends DocumentData<ItemDataSchema, ItemDataProperties, documents.BaseItem> {}
+export declare class ItemData extends DocumentData<ItemDataSchema, ItemDataProperties, documents.BaseItem> {
+  static defineSchema(): ItemDataSchema;
+
+  /**
+   * The default icon used for newly created Item documents
+   * @defaultValue `"icons/svg/item-bag.svg"`
+   */
+  static DEFAULT_ICON: string;
+
+  protected _initializeSource(
+    data: DeepPartial<PropertiesToSource<ItemDataProperties>>
+  ): PropertiesToSource<ItemDataProperties>;
+}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export declare interface ItemData extends ItemDataProperties {}
