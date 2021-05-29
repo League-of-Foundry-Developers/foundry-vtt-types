@@ -14,7 +14,10 @@ interface MacroDataSchema extends DocumentSchema {
     validate: (t: unknown) => boolean;
     validationError: 'The provided Macro type must be in CONST.MACRO_TYPES';
   };
-  author: fields.ForeignDocumentField<{ type: typeof documents.BaseUser; default: () => string }>;
+  author: fields.ForeignDocumentField<{
+    type: typeof documents.BaseUser;
+    default: () => typeof game['user'];
+  }>;
   img: FieldReturnType<typeof fields.IMAGE_FIELD, { required: true; default: typeof CONST.DEFAULT_MACRO_ICON }>;
   scope: DocumentField<string> & {
     type: String;

@@ -10,7 +10,7 @@ declare global {
    *
    * @param data - Initial data provided to construct the User document
    */
-  class User extends ClientDocumentMixin(foundry.documents.BaseItem) {}
+  class User extends ClientDocumentMixin(foundry.documents.BaseUser) {}
 }
 
 export {};
