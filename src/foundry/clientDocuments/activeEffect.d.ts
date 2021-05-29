@@ -11,22 +11,30 @@ declare global {
    * @see {@link data.ActiveEffectData}               The ActiveEffect data schema
    * @see {@link documents.Actor}                     The Actor document which contains ActiveEffect embedded documents
    * @see {@link documents.Item}                      The Item document which contains ActiveEffect embedded documents
-   *
-   * @param data   - Initial data provided to construct the ActiveEffect document
-   * @param parent - The parent document to which this ActiveEffect belongs
    */
   class ActiveEffect extends ClientDocumentMixin(foundry.documents.BaseActiveEffect) {
+    /**
+     * @param data   - Initial data provided to construct the ActiveEffect document
+     * @param parent - The parent document to which this ActiveEffect belongs
+     */
     constructor(...args: ConstructorParameters<typeof foundry.documents.BaseActiveEffect>);
+
     /**
      * A cached reference to the source name to avoid recurring database lookups
      * @defaultValue `null`
      */
     protected _sourceName: string | null;
+
+    /**
+     * A cached reference to the ActiveEffectConfig instance which configures this effect
+     */
     protected _sheet: FormApplication | null; // TODO: Actually an ActiveEffectConfig according to foundry but this is a problem with ClientDocumentMixins _sheet, this should actually be inferred from the CONFIG
+
     /**
      * Summarize the active effect duration
      */
     get duration(): DurationSummary;
+
     /**
      * Format a round+turn combination as a decimal
      * @param round  - The round number
@@ -35,23 +43,31 @@ declare global {
      * @returns The decimal representation
      */
     protected _getCombatTime(round: number, turn: number, nTurns: number): number;
+
     /**
      * Format a number of rounds and turns into a human-readable duration label
-     * @param rounds - The number of roundsfoundry.data.
+     * @param rounds - The number of rounds
+     * @param turns  - The number of turns
+     * @returns The formatted label
+     */
     protected _getDurationLabel(rounds: number, turns: number): string;
+
     /**
      * Describe whether the ActiveEffect has a temporary duration based on combat turns or rounds.
      */
     get isTemporary(): boolean;
+
     /**
      * A cached property for obtaining the source name
      */
     get sourceName(): string;
+
     /**
      * An instance of the ActiveEffectConfig sheet to use for this ActiveEffect instance.
      * The reference to the sheet is cached so the same sheet instance is reused.
      */
-    get sheet(): FormApplication; // TODO: Actually an ActiveEffectConfig according to foundry but this is a problem with ClientDocumentMixins sheet, this should actually be inferred from the CONFIG
+    get sheet(): FormApplication; // TODO: Actually an ActiveEffectConfig according to foundry but this is a problem with ClientDocumentMixin's sheet, this should actually be inferred from the CONFIG
+
     /**
      * Apply this ActiveEffect to a provided Actor.
      * @param actor  - The Actor to whom this effect should be applied
@@ -59,6 +75,7 @@ declare global {
      * @returns The resulting applied value
      */
     apply(actor: ConfiguredActor, change: EffectChangeData): unknown;
+
     /**
      * Apply an ActiveEffect that uses an ADD application mode.
      * The way that effects are added depends on the data type of the current value.
@@ -73,6 +90,7 @@ declare global {
      * @returns The resulting applied value
      */
     protected _applyAdd(actor: ConfiguredActor, change: EffectChangeData): unknown;
+
     /**
      * Apply an ActiveEffect that uses a MULTIPLY application mode.
      * Changes which MULTIPLY must be numeric to allow for multiplication.
@@ -81,6 +99,7 @@ declare global {
      * @returns The resulting applied value
      */
     protected _applyMultiply(actor: ConfiguredActor, change: EffectChangeData): unknown;
+
     /**
      * Apply an ActiveEffect that uses an OVERRIDE application mode.
      * Numeric data is overridden by numbers, while other data types are overridden by any value
@@ -88,7 +107,8 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    _applyOverride(actor: ConfiguredActor, change: EffectChangeData): unknown;
+    protected _applyOverride(actor: ConfiguredActor, change: EffectChangeData): unknown;
+
     /**
      * Apply an ActiveEffect that uses an UPGRADE, or DOWNGRADE application mode.
      * Changes which UPGRADE or DOWNGRADE must be numeric to allow for comparison.
@@ -96,7 +116,8 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    _applyUpgrade(actor: ConfiguredActor, change: EffectChangeData): unknown;
+    protected _applyUpgrade(actor: ConfiguredActor, change: EffectChangeData): unknown;
+
     /**
      * Apply an ActiveEffect that uses a CUSTOM application mode.
      * Changes which UPGRADE or DOWNGRADE must be numeric to allow for comparison.
@@ -104,11 +125,13 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    _applyCustom(actor: ConfiguredActor, change: EffectChangeData): unknown;
+    protected _applyCustom(actor: ConfiguredActor, change: EffectChangeData): unknown;
+
     /**
      * Get the name of the source of the Active Effect
      */
     protected _getSourceName(): Promise<string>;
+
     protected _preCreate(
       data: DeepPartial<SourceDataType<foundry.data.ActiveEffectData>>,
       options: DocumentModificationOptions,

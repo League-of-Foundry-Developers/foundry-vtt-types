@@ -1,3 +1,4 @@
+import { PropertiesToSource } from '../abstract/helperTypes';
 import { DocumentData } from '../abstract/module';
 import * as fields from '../data/fields';
 
@@ -38,9 +39,9 @@ export declare class PackageAuthorData extends DocumentData<
   PackageAuthorDataProperties,
   null
 > {
-  static defineSchema(): PackageAuthorDataSchema;
+  constructor(data?: DeepPartial<PropertiesToSource<PackageAuthorDataProperties>>, document?: null);
 
-  constructor();
+  static defineSchema(): PackageAuthorDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
