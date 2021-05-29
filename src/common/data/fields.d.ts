@@ -53,7 +53,7 @@ interface VideoField extends DocumentField<string> {
  */
 export declare const VIDEO_FIELD: VideoField;
 
-interface AudiField extends DocumentField<string> {
+interface AudioField extends DocumentField<string> {
   type: typeof String;
   required: false;
   nullable: true;
@@ -64,7 +64,7 @@ interface AudiField extends DocumentField<string> {
 /**
  * A standard string field for an audio file path which may be used in a Document.
  */
-export declare const AUDIO_FIELD: AudiField;
+export declare const AUDIO_FIELD: AudioField;
 
 interface IntegerField extends DocumentField<number> {
   type: typeof Number;
