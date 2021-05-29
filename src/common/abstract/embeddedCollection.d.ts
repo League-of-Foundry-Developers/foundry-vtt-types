@@ -36,22 +36,22 @@ declare class EmbeddedCollection<
   /**
    * The parent DocumentData to which this EmbeddedCollection instance belongs.
    */
-  parent: ParentDocumentData;
+  readonly parent: ParentDocumentData;
 
   /**
    * The parent DocumentData to which this EmbeddedCollection instance belongs.
    */
-  document: ParentDocumentData['document'];
+  readonly document: ParentDocumentData['document'];
 
   /**
    * The Document implementation used to construct instances within this collection
    */
-  documentClass: ContainedDocumentConstructor;
+  readonly documentClass: ContainedDocumentConstructor;
 
   /**
    * The source data array from which the embedded collection is created
    */
-  _source: DeepPartial<SourceDataType<InstanceType<ContainedDocumentConstructor>>>[];
+  readonly _source: DeepPartial<SourceDataType<InstanceType<ContainedDocumentConstructor>>>[];
 
   /**
    * Initialize the EmbeddedCollection object by constructing its contained Document instances

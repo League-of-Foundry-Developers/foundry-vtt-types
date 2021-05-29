@@ -191,7 +191,7 @@ declare abstract class DatabaseBackend {
   /**
    * Provide the Logger implementation that should be used for database operations
    */
-  protected _getLogger(): Logger | Console;
+  protected _getLogger(): Console;
 
   /**
    * Log a database operation for an embedded document, capturing the action taken and relevant IDs

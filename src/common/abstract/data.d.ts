@@ -214,12 +214,13 @@ declare abstract class DocumentData<
    * @param field    - The configured DocumentField from the Schema
    * @param value    - The current field value
    * @param children - Validate the data of child embedded documents? Default is true.
+   *                   (default: `true`)
    */
   protected _validateField<Name extends keyof ConcreteDocumentSchema>(
     name: Name,
     field: ConcreteDocumentSchema[Name],
     value: unknown,
-    { children }: { children?: true }
+    { children }: { children?: boolean }
   ): void;
 
   /**
