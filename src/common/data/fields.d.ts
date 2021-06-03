@@ -296,16 +296,16 @@ export declare const DOCUMENT_PERMISSIONS: DocumentPermissions;
  */
 declare function _validatePermissions(perms: object): boolean;
 
-interface ForeignDocumentField<
-  T extends {
-    type: {
-      readonly documentName: string;
-    };
-    required?: boolean;
-    nullable?: boolean;
-    default?: any;
-  }
-> extends DocumentField<string | null> {
+interface ForeignDocumentFieldOptions {
+  type: {
+    readonly documentName: string;
+  };
+  required?: boolean;
+  nullable?: boolean;
+  default?: any;
+}
+
+interface ForeignDocumentField<T extends ForeignDocumentFieldOptions> extends DocumentField<string | null> {
   type: typeof String;
   required: T extends {
     required: true;
@@ -334,9 +334,9 @@ interface ForeignDocumentField<
 /**
  * Create a foreign key field which references a primary Document id
  */
-export declare function foreignDocumentField<
-  T extends { type: { readonly documentName: string }; required?: boolean; nullable?: boolean; default?: any }
->(options: T): ForeignDocumentField<T>;
+export declare function foreignDocumentField<T extends ForeignDocumentFieldOptions>(
+  options: T
+): ForeignDocumentField<T>;
 
 // TODO: Improve
 interface EmbeddedCollectionField<
