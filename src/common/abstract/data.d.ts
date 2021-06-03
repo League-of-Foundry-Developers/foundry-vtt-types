@@ -10,6 +10,7 @@ import {
 declare global {
   /**
    * A schema entry which describes a field of DocumentData
+   * @typeparam T - the inner type of the document field
    */
   interface DocumentField<T> {
     /**
