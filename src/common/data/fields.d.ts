@@ -345,7 +345,7 @@ interface EmbeddedCollectionField<
 > extends DocumentField<any> {
   type: Partial<Record<string, ConcreteDocumentConstructor>>;
   required: Options extends { required?: true } ? true : Options extends { required: false } ? false : boolean;
-  default: Options extends { default?: Array<infer U> } ? Array<U> : never;
+  default: Options extends { default?: Array<infer U> } ? Array<U> : unknown[];
   isCollection: true;
 }
 
