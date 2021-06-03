@@ -1,3 +1,7 @@
+// TODO: Remove when updating this class!!!
+// eslint-disable-next-line
+// @ts-nocheck
+
 /**
  * A Token is an implementation of PlaceableObject which represents an Actor within a viewed Scene on the game canvas.
  *

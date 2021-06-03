@@ -1,19 +1,79 @@
-import Collection from '../utils/collection';
+import _Collection from '../utils/collection';
+import DocumentData from './data';
+import { DocumentConstructor, SourceDataType } from './helperTypes';
 
-interface EmbeddedCollection<T> extends Omit<Collection<T>, 'set' | 'delete'> {
-  /** {@inheritdoc} */
-  set(key: string, value: T, { modifySource }: { modifySource?: boolean }): this;
+type Collection<T> = Omit<_Collection<T>, 'set' | 'delete'>;
 
-  /** {@inheritdoc} */
+interface CollectionConstructor {
+  new (): Collection<any>;
+  new <T>(entries?: readonly (readonly [string, T])[] | null): Collection<T>;
+  new <T>(iterable: Iterable<readonly [string, T]>): Collection<T>;
+  readonly [Symbol.species]: CollectionConstructor;
+  readonly prototype: Collection<any>;
+}
+
+declare const Collection: CollectionConstructor;
+
+/**
+ * An extension of the Collection.
+ * Used for the specific task of containing embedded Document instances within a parent Document.
+ */
+declare class EmbeddedCollection<
+  ContainedDocumentConstructor extends DocumentConstructor,
+  ParentDocumentData extends DocumentData<any, any, any>
+> extends Collection<InstanceType<ContainedDocumentConstructor>> {
+  /**
+   * @param documentData  - The parent DocumentData instance to which this collection belongs
+   * @param sourceArray   - The source data array for the collection in the parent Document data
+   * @param documentClass - The Document class implementation contained by the collection
+   */
+  constructor(
+    documentData: ParentDocumentData,
+    sourceArray: DeepPartial<SourceDataType<InstanceType<ContainedDocumentConstructor>>>[],
+    documentClass: ContainedDocumentConstructor
+  );
+
+  /**
+   * The parent DocumentData to which this EmbeddedCollection instance belongs.
+   */
+  readonly parent: ParentDocumentData;
+
+  /**
+   * The parent DocumentData to which this EmbeddedCollection instance belongs.
+   */
+  readonly document: ParentDocumentData['document'];
+
+  /**
+   * The Document implementation used to construct instances within this collection
+   */
+  readonly documentClass: ContainedDocumentConstructor;
+
+  /**
+   * The source data array from which the embedded collection is created
+   */
+  readonly _source: DeepPartial<SourceDataType<InstanceType<ContainedDocumentConstructor>>>[];
+
+  /**
+   * Initialize the EmbeddedCollection object by constructing its contained Document instances
+   */
+  protected _initialize(): void;
+
+  set(
+    key: string,
+    value: InstanceType<ContainedDocumentConstructor>,
+    { modifySource }: { modifySource?: boolean }
+  ): this;
+
   delete(key: string, { modifySource }: { modifySource?: boolean }): boolean;
-}
 
-interface EmbeddedCollectionConstructor {
-  new (sourceArray: Array<{ _id: string | null } & Record<string, unknown>>): EmbeddedCollection<any>;
-  readonly [Symbol.species]: EmbeddedCollectionConstructor;
-  readonly prototype: EmbeddedCollection<any>;
+  /**
+   * Convert the EmbeddedCollection to an array of simple objects.
+   * @param source - Draw data for contained Documents from the underlying data source?
+   *                 (default: `true`)
+   * @returns The extracted array of primitive objects
+   */
+  toObject(source?: true): ReturnType<InstanceType<ContainedDocumentConstructor>['data']['toJSON']>[];
+  toObject(source: false): ReturnType<InstanceType<ContainedDocumentConstructor>['data']['toObject']>[];
 }
-
-declare var EmbeddedCollection: EmbeddedCollectionConstructor; // eslint-disable-line no-var
 
 export default EmbeddedCollection;

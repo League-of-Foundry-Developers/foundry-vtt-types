@@ -1,3 +1,7 @@
+// TODO: Remove when updating this class!!!
+// eslint-disable-next-line
+// @ts-nocheck
+
 /**
  * A :class:`EntityCollection` of class:`ChatMessage` entities
  * The Messages collection is accessible within the game as `game.messages`.

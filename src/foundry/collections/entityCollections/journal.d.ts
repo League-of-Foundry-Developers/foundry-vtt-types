@@ -1,3 +1,7 @@
+// TODO: Update this class once the `WorldCollection` is available and typed correctly!!!
+// eslint-disable-next-line
+// @ts-nocheck
+
 /**
  * A directory list of JournalEntry entities in the Sidebar
  */

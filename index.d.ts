@@ -16,6 +16,7 @@ import './src/foundry/cameraPopoutAppWrapper';
 import './src/foundry/canvas';
 import './src/foundry/canvasAnimation';
 import './src/foundry/chatBubbles';
+import './src/foundry/clientDocumentMixin';
 import './src/foundry/clientSettings';
 import './src/foundry/config';
 import './src/foundry/constants';
@@ -138,6 +139,20 @@ import './src/foundry/applications/sidebarTabs/sidebarDirectories/sceneDirectory
 
 import './src/foundry/avClients/easyRTCClient';
 
+import './src/foundry/clientDocuments/activeEffect';
+import './src/foundry/clientDocuments/actor';
+import './src/foundry/clientDocuments/chatMessage';
+import './src/foundry/clientDocuments/combat';
+import './src/foundry/clientDocuments/folder';
+import './src/foundry/clientDocuments/item';
+import './src/foundry/clientDocuments/journalEntry';
+import './src/foundry/clientDocuments/macro';
+import './src/foundry/clientDocuments/playlist';
+import './src/foundry/clientDocuments/rollTable';
+import './src/foundry/clientDocuments/scene';
+import './src/foundry/clientDocuments/setting';
+import './src/foundry/clientDocuments/user';
+
 import './src/foundry/collections/entityCollection';
 
 import './src/foundry/collections/entityCollections/actors';
@@ -171,10 +186,7 @@ import './src/foundry/embeddedEntities/activeEffect';
 import './src/foundry/entities/actor';
 import './src/foundry/entities/chatMessage';
 import './src/foundry/entities/combat';
-import './src/foundry/entities/folder';
 import './src/foundry/entities/item';
-import './src/foundry/entities/journalEntry';
-import './src/foundry/entities/macro';
 import './src/foundry/entities/playlist';
 import './src/foundry/entities/rollTable';
 import './src/foundry/entities/scene';

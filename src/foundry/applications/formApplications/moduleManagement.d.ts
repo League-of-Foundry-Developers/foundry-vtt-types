@@ -39,7 +39,7 @@ declare class ModuleManagement extends FormApplication<FormApplication.Options, 
   static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /** @override */
-  get isEditable(): ReturnType<User['can']>;
+  get isEditable(): boolean;
 
   /** @override */
   getData(options?: Application.RenderOptions): ModuleManagement.Data;

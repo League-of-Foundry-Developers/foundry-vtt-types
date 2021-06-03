@@ -173,17 +173,5 @@ expectType<
   >
 >(foundry.utils.duplicate(complexObject));
 
-type SomeItemData = Item.Data<{}>;
-class SomeItem extends Item<SomeItemData> {}
-const someItem = new SomeItem();
-const someItemData = foundry.utils.duplicate<SomeItem>(someItem);
-SomeItem.create(someItemData);
-
-type SomeActorData = Actor.Data<{}, SomeItemData>;
-class SomeActor extends Actor<SomeActorData, SomeItem> {}
-const someActor = new SomeActor();
-const someActorData = foundry.utils.duplicate<SomeActor>(someActor);
-SomeActor.create(someActorData);
-
 // invertObject
 expectType<{ readonly 1: 'a'; readonly foo: 'b' }>(foundry.utils.invertObject({ a: 1, b: 'foo' } as const));

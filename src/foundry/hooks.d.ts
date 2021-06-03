@@ -1,3 +1,7 @@
+// TODO: Remove when updating this class!!!
+// eslint-disable-next-line
+// @ts-nocheck
+
 /**
  * A simple event framework used throughout Foundry Virtual Tabletop.
  * When key actions or events occur, a "hook" is defined where user-defined callback functions can execute.
@@ -152,7 +156,7 @@ declare namespace Hooks {
      * @remarks This is called by {@link Hooks.callAll}.
      * @see {@link ActiveEffect#_applyCustom}
      */
-    applyActiveEffect: (actor: Actor, change: ActiveEffect.Change) => unknown;
+    applyActiveEffect: (actor: Actor, change: any /* TODO: EffectChangeData */) => unknown;
 
     /**
      * This is called before a {@link Canvas} is drawn.

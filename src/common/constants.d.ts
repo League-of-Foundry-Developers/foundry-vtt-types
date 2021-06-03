@@ -375,9 +375,9 @@ export const MEASURED_TEMPLATE_TYPES: MeasuredTemplateTypes;
 export const MEDIA_MIME_TYPES: string[];
 
 export interface UserCapability {
-  label: string;
-  hint: string;
   disableGM: boolean;
+  hint: string;
+  label: string;
   defaultRole: UserRole;
 }
 

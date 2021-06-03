@@ -227,7 +227,7 @@ declare namespace ClientSettings {
   }
 
   interface Values {
-    'core.combatTrackerConfig': Combat.ConfigValue;
+    'core.combatTrackerConfig': any; // TODO
     [key: string]: unknown;
   }
 }

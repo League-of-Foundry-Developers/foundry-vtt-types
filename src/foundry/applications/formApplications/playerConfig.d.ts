@@ -1,3 +1,7 @@
+// TODO: Remove when updating this class!!!
+// eslint-disable-next-line
+// @ts-nocheck
+
 /**
  * The Player Configuration application provides a form used to allow the current client to
  * edit preferences and configurations about their own User entity.

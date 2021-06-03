@@ -1,3 +1,7 @@
+// TODO: Remove when updating this class!!!
+// eslint-disable-next-line
+// @ts-nocheck
+
 /**
  * The Camera UI View that displays all the camera feeds as individual video elements.
  * @typeParam P - the type of the options object

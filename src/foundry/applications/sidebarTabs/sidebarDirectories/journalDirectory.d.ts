@@ -1,6 +1,9 @@
 /**
  * A directory list of JournalEntry entities in the Sidebar
  */
+// TODO: Remove when this class is updated!!!
+// eslint-disable-next-line
+// @ts-ignore
 declare class JournalDirectory extends SidebarDirectory<JournalDirectory.Options> {
   /**
    * @override

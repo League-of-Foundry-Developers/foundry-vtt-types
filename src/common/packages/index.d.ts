@@ -1,0 +1,1 @@
+export { PackageAuthorData } from './packageAuthorData';

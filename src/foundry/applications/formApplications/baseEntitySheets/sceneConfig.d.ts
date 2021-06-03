@@ -1,3 +1,7 @@
+// TODO: Remove when updating this class!!!
+// eslint-disable-next-line
+// @ts-nocheck
+
 /**
  * A Scene configuration sheet
  * @see {@link Scene} The Scene Entity which is being configured

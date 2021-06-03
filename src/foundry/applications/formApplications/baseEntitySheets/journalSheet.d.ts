@@ -1,3 +1,7 @@
+// TODO: Update this class once the `DocumentSheet` class has been updated to use `foundry.abstract.Document`s!!!
+// eslint-disable-next-line
+// @ts-nocheck
+
 /**
  * The JournalEntry Configuration Sheet
  * @typeParam P - the type of the options object
