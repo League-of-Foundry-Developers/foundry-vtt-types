@@ -2,26 +2,22 @@ import { DocumentData } from '../../abstract/module';
 import { BaseAmbientLight } from '../../documents';
 import * as fields from '../fields';
 
-interface SpeedField extends DocumentField<number> {
-  type: typeof Number;
-  required: false;
-  default: 5;
-  validate: (a: number) => boolean;
-  validationError: 'Light animation speed must be an integer between 1 and 10';
-}
-
-interface IntensityField extends DocumentField<number> {
-  type: typeof Number;
-  required: false;
-  default: 5;
-  validate: (a: number) => boolean;
-  validationError: 'Light animation intensity must be an integer between 1 and 10';
-}
-
 interface AnimationDataSchema extends DocumentSchema {
   type: typeof fields.STRING_FIELD;
-  speed: SpeedField;
-  intensity: IntensityField;
+  speed: DocumentField<number> & {
+    type: typeof Number;
+    required: false;
+    default: 5;
+    validate: (a: number) => boolean;
+    validationError: 'Light animation speed must be an integer between 1 and 10';
+  };
+  intensity: DocumentField<number> & {
+    type: typeof Number;
+    required: false;
+    default: 5;
+    validate: (a: number) => boolean;
+    validationError: 'Light animation intensity must be an integer between 1 and 10';
+  };
 }
 
 interface AnimationDataProperties {

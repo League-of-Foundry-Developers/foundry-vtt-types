@@ -5,23 +5,19 @@ import * as fields from '../fields';
 import { EffectChangeData } from './effectChangeData';
 import { EffectDurationData } from './effectDurationData';
 
-interface ChangesField extends DocumentField<EffectChangeData[]> {
-  default: [];
-  required: true;
-  type: [typeof EffectChangeData];
-}
-
-interface DurationField extends DocumentField<EffectDurationData> {
-  default: {};
-  required: true;
-  type: typeof EffectDurationData;
-}
-
 interface ActiveEffectDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
-  changes: ChangesField;
+  changes: DocumentField<EffectChangeData[]> & {
+    default: [];
+    required: true;
+    type: [typeof EffectChangeData];
+  };
   disabled: typeof fields.BOOLEAN_FIELD;
-  duration: DurationField;
+  duration: DocumentField<EffectDurationData> & {
+    default: {};
+    required: true;
+    type: typeof EffectDurationData;
+  };
   icon: typeof fields.IMAGE_FIELD;
   label: typeof fields.BLANK_STRING;
   origin: typeof fields.STRING_FIELD;

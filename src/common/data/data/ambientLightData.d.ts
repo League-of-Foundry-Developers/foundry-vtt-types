@@ -6,29 +6,15 @@ import * as fields from '../fields';
 import { AnimationData } from './animationData';
 import { DarknessActivation } from './darknessActivation';
 
-interface SourceTypeField extends DocumentField<CONST.SourceType> {
-  type: String;
-  required: true;
-  default: 'l';
-  validate: (t: unknown) => boolean;
-  validationError: 'Invalid {name} {field} which must be a value in CONST.SOURCE_TYPES';
-}
-
-interface DarknessActivationField extends DocumentField<DarknessActivation> {
-  type: typeof DarknessActivation;
-  required: true;
-  default: {};
-}
-
-interface LightAnimationField extends DocumentField<AnimationData> {
-  type: typeof AnimationData;
-  required: true;
-  default: {};
-}
-
 interface AmbientLightDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
-  t: SourceTypeField;
+  t: DocumentField<CONST.SourceType> & {
+    type: String;
+    required: true;
+    default: 'l';
+    validate: (t: unknown) => boolean;
+    validationError: 'Invalid {name} {field} which must be a value in CONST.SOURCE_TYPES';
+  };
   x: typeof fields.REQUIRED_NUMBER;
   y: typeof fields.REQUIRED_NUMBER;
   rotation: FieldReturnType<typeof fields.ANGLE_FIELD, { default: 0 }>;
@@ -37,9 +23,17 @@ interface AmbientLightDataSchema extends DocumentSchema {
   angle: typeof fields.ANGLE_FIELD;
   tintColor: typeof fields.COLOR_FIELD;
   tintAlpha: FieldReturnType<typeof fields.ALPHA_FIELD, { default: 0.25 }>;
-  lightAnimation: LightAnimationField;
+  lightAnimation: DocumentField<AnimationData> & {
+    type: typeof AnimationData;
+    required: true;
+    default: {};
+  };
   darknessThreshold: FieldReturnType<typeof fields.ALPHA_FIELD, { default: 0 }>;
-  darkness: DarknessActivationField;
+  darkness: DocumentField<DarknessActivation> & {
+    type: typeof DarknessActivation;
+    required: true;
+    default: {};
+  };
   hidden: typeof fields.BOOLEAN_FIELD;
   flags: typeof fields.OBJECT_FIELD;
 }
