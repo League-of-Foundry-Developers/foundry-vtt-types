@@ -338,10 +338,15 @@ export declare function foreignDocumentField<T extends ForeignDocumentFieldOptio
   options: T
 ): ForeignDocumentField<T>;
 
+interface EmbeddedCollectionFieldOptions {
+  required?: boolean;
+  default?: any[];
+}
+
 // TODO: Improve
 interface EmbeddedCollectionField<
   ConcreteDocumentConstructor extends ConstructorOf<Document<any, any>>,
-  Options extends { required?: boolean; default?: any[] } = {}
+  Options extends EmbeddedCollectionFieldOptions = {}
 > extends DocumentField<any> {
   type: Partial<Record<string, ConcreteDocumentConstructor>>;
   required: Options extends { required?: true } ? true : Options extends { required: false } ? false : boolean;
@@ -357,7 +362,7 @@ interface EmbeddedCollectionField<
  */
 export declare function embeddedCollectionField<
   ConcreteDocumentConstructor extends { readonly documentName: string } & ConstructorOf<Document<any, any>>,
-  Options extends { required?: boolean; default?: any[] }
+  Options extends EmbeddedCollectionFieldOptions
 >(
   document: ConcreteDocumentConstructor,
   options?: Options
