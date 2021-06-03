@@ -285,6 +285,22 @@ declare global {
        */
       rolls: Array<ConstructorOf<Roll>>;
 
+      /**
+       * @defaultValue
+       * ```typescript
+       * {
+       *   DiceTerm: typeof DiceTerm,
+       *   MathTerm: typeof MathTerm,
+       *   NumericTerm: typeof NumericTerm,
+       *   OperatorTerm: typeof OperatorTerm,
+       *   ParentheticalTerm: typeof ParentheticalTerm,
+       *   PoolTerm: typeof PoolTerm,
+       *   StringTerm: typeof StringTerm
+       * }
+       * ```
+       */
+      termTypes: Record<string, ConstructorOf<RollTerm>>;
+
       terms: {
         c: typeof Coin;
         d: typeof Die;
@@ -320,6 +336,11 @@ declare global {
        * @defaultValue `Folder`
        */
       documentClass: ConfiguredDocumentClassOrDefault<typeof Folder>;
+
+      /**
+       * @defaultValue `Folders`
+       */
+      collection: ConstructorOf<Folders>;
 
       /**
        * @defaultValue `FolderConfig`
@@ -1105,9 +1126,14 @@ declare global {
       defeated: string;
 
       /**
-       * @defaultValue `'icons/svg/fire.svg'`
+       * @defaultValue `'icons/svg/light.svg'`
        */
       light: string;
+
+      /**
+       * @defaultValue `'icons/svg/light-off.svg'`
+       */
+      lightOff: string;
 
       /**
        * @defaultValue `'icons/svg/explosion.svg'`
@@ -1120,17 +1146,27 @@ declare global {
       sound: string;
 
       /**
-       * @defaultValue `'icons/svg/door-steel.svg'`
+       * @defaultValue `'icons/svg/sound-off.svg'`
+       */
+      soundOff: string;
+
+      /**
+       * @defaultValue `'icons/svg/door-closed-outline.svg'`
        */
       doorClosed: string;
 
       /**
-       * @defaultValue `'icons/svg/door-exit.svg'`
+       * @defaultValue `'icons/svg/door-open-outline.svg'`
        */
       doorOpen: string;
 
       /**
-       * @defaultValue `'icons/svg/padlock.svg'`
+       * @defaultValue `'icons/svg/door-secret-outline.svg'`
+       */
+      doorSecret: string;
+
+      /**
+       * @defaultValue `'icons/svg/door-locked-outline.svg'`
        */
       doorLocked: string;
     } & Partial<Record<string, string>>;
