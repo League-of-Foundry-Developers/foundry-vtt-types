@@ -55,15 +55,9 @@ declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>>
    * @example <caption>A Document may belong to a Folder</caption>
    * ```typescript
    * let folder = game.folders.entities[0];
-   *
    * let actor = await Actor.create({name: "New Actor", folder: folder.id});
-   *
-   * console.log(actor.data.folder);
-   *  // folder.id;
-   *
-   * console.log(actor.folder);
-   *  // folder;
-   *
+   * console.log(actor.data.folder); // folder.id;
+   * console.log(actor.folder); // folder;
    * ```
    */
   get folder(): Folder | null;
@@ -95,13 +89,9 @@ declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>>
    *
    * @example
    * ```typescript
-   * game.user.id;
-   *  // "dkasjkkj23kjf"
-   * actor.data.permission;
-   *  // {default: 1, "dkasjkkj23kjf": 2};
-   *
-   * actor.permission;
-   *  // 2
+   * game.user.id; // "dkasjkkj23kjf"
+   * actor.data.permission; // {default: 1, "dkasjkkj23kjf": 2};
+   * actor.permission; // 2
    * ```
    */
   get permission(): ValueOf<typeof CONST.ENTITY_PERMISSIONS>;
