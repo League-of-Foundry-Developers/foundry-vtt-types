@@ -19,7 +19,7 @@ interface ColorField extends DocumentField<string> {
   required: false;
   nullable: true;
   validate: typeof isColorString;
-  validationError: '{name} {field} field must be a valid CSS color string';
+  validationError: '{name} {field} "{value}" is not a valid hexadecimal color string';
 }
 
 /**
@@ -32,7 +32,7 @@ interface ImageField extends DocumentField<string> {
   required: false;
   nullable: true;
   validate: typeof hasImageExtension;
-  validationError: 'The provided {name} {field} field does not have a valid image file extension';
+  validationError: '{name} {field} "{value}" does not have a valid image file extension';
 }
 
 /**
@@ -45,7 +45,7 @@ interface VideoField extends DocumentField<string> {
   required: false;
   nullable: true;
   validate: (src: string | null) => boolean;
-  validationError: 'The provided {name} {field} field does not have a valid image or video file extension';
+  validationError: '{name} {field} "{value}" does not have a valid image or video file extension';
 }
 
 /**
@@ -58,7 +58,7 @@ interface AudioField extends DocumentField<string> {
   required: false;
   nullable: true;
   validate: (src: string | null) => boolean;
-  validationError: 'The provided {name} {field} field does not have a valid audio file extension';
+  validationError: '{name} {field} "{value}" does not have a valid audio file extension';
 }
 
 /**
@@ -70,7 +70,7 @@ interface IntegerField extends DocumentField<number> {
   type: typeof Number;
   required: false;
   validate: typeof Number.isInteger;
-  validationError: 'The provided {name} {field} field does not have an integer value';
+  validationError: '{name} {field} "{value}" does not have an integer value';
 }
 
 /**
@@ -83,7 +83,7 @@ interface JSONField extends DocumentField<string> {
   required: false;
   clean: (s: unknown) => string;
   validate: typeof isJSON;
-  validationError: 'The provided {name} {field} field is not a valid JSON string';
+  validationError: '{name} {field} "{value}" is not a valid JSON string';
 }
 
 /**
@@ -95,7 +95,7 @@ interface NonnegativeIntegerField extends DocumentField<number> {
   type: typeof Number;
   required: false;
   validate: (n: unknown) => boolean;
-  validationError: 'The provided {name} {field} field does not have an non-negative integer value';
+  validationError: '{name} {field} "{value}" does not have an non-negative integer value';
 }
 
 /**
@@ -107,7 +107,7 @@ interface PositiveIntegerField extends DocumentField<number> {
   type: typeof Number;
   required: false;
   validate: (n: unknown) => boolean;
-  validationError: 'The provided {name} {field} field does not have an non-negative integer value';
+  validationError: '{name} {field} "{value}" does not have an non-negative integer value';
 }
 
 /**
@@ -167,7 +167,7 @@ interface RequiredPositiveNumber extends DocumentField<number> {
   required: true;
   nullable: false;
   validate: (n: unknown) => boolean;
-  validationError: 'Invalid {name} {field} which must be a positive number';
+  validationError: '{name} {field} "{value}" is not a positive number';
 }
 
 /**
@@ -182,7 +182,7 @@ interface AngleField extends DocumentField<number> {
   default: 360;
   clean: (n: unknown) => number;
   validate: (n: number) => boolean;
-  validationError: 'Invalid {name} {field} which must be a number between 0 and 360';
+  validationError: '{name} {field} "{value}" is not a number between 0 and 360';
 }
 
 /**
@@ -196,7 +196,7 @@ interface AlphaField extends DocumentField<number> {
   nullable: false;
   default: 1;
   validate: (n: number) => boolean;
-  validationError: 'Invalid {name} {field} which must be a number between 0 and 1';
+  validationError: '{name} {field} "{value}" is not a number between 0 and 1';
 }
 
 /**
@@ -234,7 +234,7 @@ interface IntegerSortField extends DocumentField<number> {
   required: true;
   default: 0;
   validate: typeof Number.isInteger;
-  validationError: 'The provided {name} {field} field does not have an integer value';
+  validationError: '{name} {field} "{value}" is not an integer';
 }
 
 /**
@@ -267,7 +267,7 @@ interface DocumentId extends DocumentField<string | null> {
   default: null;
   nullable: false;
   validate: typeof _validateId;
-  validationError: 'Invalid value provided for {name} id';
+  validationError: '{name} {field} "{value}" is not a valid document ID string';
 }
 
 /**
@@ -281,7 +281,7 @@ interface DocumentPermissions extends DocumentField<Partial<Record<string, Value
   nullable: false;
   default: { default: typeof CONST.ENTITY_PERMISSIONS.NONE };
   validate: typeof _validatePermissions;
-  validationError: 'Invalid data structure encountered for {name} permissions';
+  validationError: '{name} {field} "{value}" is not a mapping of user IDs and document permission levels';
 }
 
 /**
@@ -328,7 +328,7 @@ interface ForeignDocumentField<
     : null;
   clean: (d: unknown) => string | null;
   validate: typeof _validateId;
-  validationError: `Invalid {name} {field} which must be a ${T['type']['documentName']} document id`;
+  validationError: `{name} {field} "{value}" is not a valid ${T['type']['documentName']} id`;
 }
 
 /**
