@@ -2,6 +2,16 @@ import DocumentData from '../foundry/common/abstract/data.mjs';
 import Document from '../foundry/common/abstract/document.mjs';
 import EmbeddedCollection from '../foundry/common/abstract/embedded-collection.mjs';
 
+export type ConstructorArgFromDocumentField<D extends DocumentField<any>> = D extends DocumentField<infer T>
+  ? D['default'] extends undefined
+    ? D['required'] extends true
+      ? D['nullable'] extends true
+        ? T | null
+        : T
+      : T | null | undefined
+    : T | null | undefined
+  : never;
+
 export type PropertiesDataType<T extends Document<any, any> | DocumentData<any, any, any>> = T extends DocumentData<
   any,
   infer U,
