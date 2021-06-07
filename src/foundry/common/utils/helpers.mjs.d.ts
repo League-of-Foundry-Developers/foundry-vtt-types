@@ -270,7 +270,44 @@ export declare function isObjectEmpty(obj: object): boolean;
  * mergeObject({k1: "v1", k2: "v2"}, {"-=k1": null});   // {k2: "v2"}
  * ```
  */
-export declare function mergeObject<T>(original: T, other?: T, options?: MergeObjectOptions, _d?: number): T;
+type OmitByValue<T, ValueType> = Pick<T, { [Key in keyof T]-?: T[Key] extends ValueType ? never : Key }[keyof T]>;
+type RemoveNever<T> = OmitByValue<T, never>;
+type PropWithMinus<K> = K extends string ? `-=${K}` : never;
+type DeleteByObjectKeys<T, U> = RemoveNever<
+  {
+    [K in keyof T]: PropWithMinus<K> extends keyof U ? (U[PropWithMinus<K>] extends null ? never : T[K]) : T[K];
+  }
+>;
+type RemoveDeletingObjectKeys<T> = RemoveNever<
+  {
+    [K in keyof T]: K extends string ? (Capitalize<K> extends K ? (T[K] extends null ? never : T[K]) : T[K]) : T[K];
+  }
+>;
+
+type MergeObjectProperty<T, U, M extends MergeObjectOptions> = T extends Record<string, any>
+  ? U extends Record<string, any>
+    ? Result<T, U, Omit<M, 'insertKeys'> & { insertKeys: M['insertValues'] }>
+    : U
+  : U;
+type UpdateKeys<T, U, M extends MergeObjectOptions> = M extends { enforceTypes: true } | { overwrite: false }
+  ? T
+  : { [K in keyof T]: K extends keyof U ? MergeObjectProperty<T[K], U[K], M> : T[K] };
+type InsertKeys<T, U> = T & Omit<U, keyof T>;
+type UpdateInsert<T, U, M extends MergeObjectOptions> = M extends { insertKeys: false }
+  ? UpdateKeys<T, U, M>
+  : InsertKeys<UpdateKeys<T, U, M>, U>;
+type Result<T, U, M extends MergeObjectOptions> = UpdateInsert<
+  DeleteByObjectKeys<T, U>,
+  RemoveDeletingObjectKeys<U>,
+  M
+>;
+
+export declare function mergeObject<T, U, M extends MergeObjectOptions>(
+  original: T,
+  other?: U,
+  options?: M,
+  _d?: number
+): Result<T, U, M>;
 
 interface MergeObjectOptions {
   /**
