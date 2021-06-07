@@ -96,7 +96,7 @@ declare namespace RollTerm {
   }
 
   interface EvaluationOptions {
-    /** Produce the minimum possible result from the Roll instead of a random result. */
+    /** Maximize the result, obtaining the largest possible value. */
     maximize: boolean;
     /** Minimize the result, obtaining the smallest possible value */
     minimize: boolean;
