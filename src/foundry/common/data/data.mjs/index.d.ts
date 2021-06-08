@@ -4,3 +4,4 @@ export { FolderData } from './folderData';
 export { JournalEntryData } from './journalEntryData';
 export { ItemData } from './itemData';
 export { MacroData } from './macroData';
+export { UserData } from './userData';
