@@ -22,6 +22,8 @@
  * console.log(r.total);    // 22
  * ```
  */
+import { ConfiguredDocumentClass } from '../../types/helperTypes';
+
 declare class Roll<D extends object = {}> {
   /**
    * @param formula - The string formula to parse
@@ -65,7 +67,7 @@ declare class Roll<D extends object = {}> {
    * Cache the numeric total generated through evaluation of the Roll.
    * @defaultValue `undefined`
    */
-  private _total: number | undefined;
+  protected _total: number | undefined;
 
   /**
    * A Proxy environment for safely evaluating a string using only available Math functions
@@ -200,19 +202,19 @@ declare class Roll<D extends object = {}> {
    * @param _formula - The raw formula to split
    * @returns An array of terms, split on parenthetical terms
    */
-  private static _splitParentheses(_formula: string): string[];
+  protected static _splitParentheses(_formula: string): string[];
 
   /**
    * Handle closing of a parenthetical term to create a MathTerm expression with a function and arguments
    */
-  private static _splitMathArgs(expression: string): MathTerm[];
+  protected static _splitMathArgs(expression: string): MathTerm[];
 
   /**
    * Split a formula by identifying its outer-most dice pool terms
    * @param _formula - The raw formula to split
    * @returns An array of terms, split on parenthetical terms
    */
-  private _splitPools(_formula: string): string[];
+  protected _splitPools(_formula: string): string[];
 
   /**
    * Split a formula by identifying its outer-most groups using a certain group symbol like parentheses or brackets.
@@ -220,21 +222,21 @@ declare class Roll<D extends object = {}> {
    * @param options  - Options that configure how groups are split
    * @returns An array of terms, split on dice pool terms
    */
-  private _splitGroup(_formula: string, options: Partial<Roll.SplitGroupOptions>): string[];
+  protected _splitGroup(_formula: string, options: Partial<Roll.SplitGroupOptions>): string[];
 
   /**
    * Split a formula by identifying arithmetic terms
    * @param _formula - The raw formula to split
    * @returns An array of terms, split on arithmetic operators
    */
-  private _splitOperators(_formula: string): (string | OperatorTerm)[];
+  protected _splitOperators(_formula: string): (string | OperatorTerm)[];
 
   /**
    * Temporarily remove flavor text from a string formula allowing it to be accurately parsed.
    * @param formula - The formula to extract
    * @returns The cleaned formula and extracted flavor mapping
    */
-  private static _extractFlavors(formula: string): { formula: string; flavors: Roll.Flavor };
+  protected static _extractFlavors(formula: string): { formula: string; flavors: Roll.Flavor };
 
   /**
    * Restore flavor text to a string term
@@ -242,7 +244,7 @@ declare class Roll<D extends object = {}> {
    * @param flavors - The extracted flavors object
    * @returns The restored term containing flavor text
    */
-  private static _restoreFlavor(term: string, flavors: Roll.Flavor): string;
+  protected static _restoreFlavor(term: string, flavors: Roll.Flavor): string;
 
   /**
    * Classify a remaining string term into a recognized RollTerm class
@@ -255,7 +257,7 @@ declare class Roll<D extends object = {}> {
    * @param next         - The next term to classify
    * @returns A classified RollTerm instance
    */
-  private static _classifyStringTerm(
+  protected static _classifyStringTerm(
     term: string,
     { intermediate, prior, next }?: { intermediate?: boolean; prior?: RollTerm | string; next?: RollTerm | string }
   ): RollTerm;
@@ -282,19 +284,19 @@ declare class Roll<D extends object = {}> {
    * Evaluate the roll asynchronously.
    * A temporary helper method used to migrate behavior from 0.7.x (sync by default) to 0.9.x (async by default).
    */
-  private _evaluate(options?: Partial<Exclude<Roll.Options, 'async'>>): Promise<this>;
+  protected _evaluate(options?: Partial<Exclude<Roll.Options, 'async'>>): Promise<this>;
 
   /**
    * Evaluate the roll synchronously.
    * A temporary helper method used to migrate behavior from 0.7.x (sync by default) to 0.9.x (async by default).
    */
-  private _evaluateSync(options?: Partial<Exclude<Roll.Options, 'async'>>): this;
+  protected _evaluateSync(options?: Partial<Exclude<Roll.Options, 'async'>>): this;
 
   /**
    * Safely evaluate the final total result for the Roll using its component terms.
    * @returns The evaluated total
    */
-  private _evaluateTotal(): number;
+  protected _evaluateTotal(): number;
 
   /**
    * Alter the Roll expression by adding or multiplying the number of dice which are rolled
@@ -378,18 +380,18 @@ declare class Roll<D extends object = {}> {
    * @returns A promise which resolves to the created ChatMessage entity, if create is true
    *          or the Object of prepared chatData otherwise.
    */
-  toMessage<T extends DeepPartial<ConstructorParameters<typeof ChatMessage>[0]> = {}>(
+  toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
     messageData?: T,
     { rollMode, create }?: { rollMode?: foundry.CONST.DiceRollMode; create?: true }
-  ): Promise<ChatMessage>;
-  toMessage<T extends DeepPartial<ConstructorParameters<typeof ChatMessage>[0]> = {}>(
+  ): Promise<ConfiguredDocumentClass<typeof ChatMessage>>;
+  toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
     messageData: T,
     { rollMode, create }: { rollMode?: foundry.CONST.DiceRollMode; create: false }
   ): Roll.MessageData<T>;
-  toMessage<T extends DeepPartial<ConstructorParameters<typeof ChatMessage>[0]> = {}>(
+  toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
     messageData: T,
     { rollMode, create }: { rollMode?: foundry.CONST.DiceRollMode; create: boolean }
-  ): Promise<ChatMessage> | Roll.MessageData<T>;
+  ): Promise<ConfiguredDocumentClass<typeof ChatMessage>> | Roll.MessageData<T>;
 
   /**
    * Represent the data of the Roll as an object suitable for JSON serialization.
