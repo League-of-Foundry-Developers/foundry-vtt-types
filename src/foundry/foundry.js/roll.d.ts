@@ -1,3 +1,5 @@
+import { ConfiguredDocumentClass } from '../../types/helperTypes';
+
 /**
  * This class provides an interface and API for conducting dice rolls.
  * The basic structure for a dice roll is a string formula and an object of data against which to parse it.
@@ -22,8 +24,6 @@
  * console.log(r.total);    // 22
  * ```
  */
-import { ConfiguredDocumentClass } from '../../types/helperTypes';
-
 declare class Roll<D extends object = {}> {
   /**
    * @param formula - The string formula to parse
