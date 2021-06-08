@@ -171,7 +171,7 @@ declare abstract class Document<
   testUserPermission(
     user: BaseUser,
     permission: keyof typeof foundry.CONST.ENTITY_PERMISSIONS | foundry.CONST.EntityPermission,
-    { exact }: { exact?: boolean }
+    { exact }?: { exact?: boolean }
   ): boolean;
 
   /**
