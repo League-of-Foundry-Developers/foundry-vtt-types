@@ -41,11 +41,11 @@ declare function _validateHotbar(bar: unknown): asserts bar is Record<number | s
 interface UserDataProperties {
   _id: string | null;
   avatar: string | null;
-  character: string | null;
+  character?: string;
   color: string;
   hotbar: Record<number | string, string>;
   name: string;
-  password: string;
+  password: '';
   permissions: Partial<Record<string, ValueOf<typeof CONST.ENTITY_PERMISSIONS>>>;
   role: ValueOf<typeof CONST.USER_ROLES>;
   flags: Record<string, unknown>;

@@ -29,7 +29,7 @@ export declare class BaseUser extends Document<data.UserData, null> {
   /**
    * Test whether the User has a GAMEMASTER or ASSISTANT role in this World?
    */
-  get isGm(): boolean;
+  get isGM(): boolean;
 
   /**
    * Test whether the User is able to perform a certain permission action.
