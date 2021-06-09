@@ -1,11 +1,14 @@
 import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
+import * as data from '../data/data.mjs';
 import { BaseUser } from './baseUser';
 
 /**
  * The base Token model definition which defines common behavior of an Token document between both client and server.
  */
-export declare class BaseToken extends Document<any, any> {
+export declare class BaseToken extends Document<TokenData, null> {
+  static get schema(): typeof data.TokenData;
+
   static get metadata(): Merge<
     DocumentMetadata,
     {
@@ -15,8 +18,18 @@ export declare class BaseToken extends Document<any, any> {
       isEmbedded: true;
       permissions: {
         create: 'TOKEN_CREATE';
-        update: (user: BaseUser, doc: any, data: any) => boolean;
+        update: typeof BaseToken['_canUpdate'];
       };
     }
   >;
+
+  /**
+   * A convenience reference to the name which should be displayed for the Token
+   */
+  get name(): string;
+
+  /**
+   * Is a user able to update an existing Token?
+   */
+  protected static _canUpdate(user: BaseUser, doc: BaseToken, data: unknown): boolean;
 }
