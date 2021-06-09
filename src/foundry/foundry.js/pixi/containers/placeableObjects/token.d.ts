@@ -51,7 +51,7 @@ declare global {
     /**
      * A convenient reference to the Actor object associated with the Token embedded document.
      */
-    get actor(): ConfiguredDocumentClass<typeof Actor> | null;
+    get actor(): InstanceType<ConfiguredDocumentClass<typeof Actor>> | null;
 
     /**
      * A convenient reference for whether the current User has full control over the Token document.
