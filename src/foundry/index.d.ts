@@ -57,6 +57,8 @@ import './foundry.js/applications';
 
 import './foundry.js/avClients/easyRTCClient';
 
+import './foundry.js/clientDocuments/canvasDocuments/tokenDocument';
+
 import './foundry.js/clientDocuments/activeEffect';
 import './foundry.js/clientDocuments/actor';
 import './foundry.js/clientDocuments/canvasDocuments/ambientLightDocument';
