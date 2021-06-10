@@ -15,6 +15,7 @@ interface EffectDurationDataSchema extends DocumentSchema {
 interface EffectDurationDataProperties {
   /**
    * The world time when the active effect first started
+   * @defaultValue `Date.now`
    */
   startTime: number;
 
@@ -49,6 +50,16 @@ interface EffectDurationDataProperties {
   startTurn?: number;
 }
 
+interface EffectDurationDataUpdateArgs {
+  startTime?: number | null;
+  seconds?: number | null;
+  combat?: string | null;
+  rounds?: number | null;
+  turns?: number | null;
+  startRound?: number | null;
+  startTurn?: number | null;
+}
+
 /**
  * An embedded data structure which tracks the duration of an ActiveEffect.
  * @see ActiveEffectData
@@ -56,7 +67,8 @@ interface EffectDurationDataProperties {
 export declare class EffectDurationData extends DocumentData<
   EffectDurationDataSchema,
   EffectDurationDataProperties,
-  BaseActiveEffect
+  BaseActiveEffect,
+  EffectDurationDataUpdateArgs
 > {
   static defineSchema(): EffectDurationDataSchema;
 }

@@ -39,13 +39,20 @@ interface AnimationDataProperties {
   intensity: number;
 }
 
+interface AnimationDataUpdateArgs {
+  type?: string | null;
+  speed?: number | null;
+  intensity?: number | null;
+}
+
 /**
  * An embedded data object which defines the properties of a light source animation
  */
 export declare class AnimationData extends DocumentData<
   AnimationDataSchema,
   AnimationDataProperties,
-  BaseAmbientLight
+  BaseAmbientLight,
+  AnimationDataUpdateArgs
 > {
   static defineSchema(): AnimationDataSchema;
 }

@@ -4,6 +4,10 @@ import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
 import * as CONST from '../../constants.mjs';
 
+type MacroTypes = ValueOf<typeof CONST.MACRO_TYPES>;
+type MacroScopes = ValueOf<typeof CONST.MACRO_SCOPES>;
+type EntityPermissions = ValueOf<typeof CONST.ENTITY_PERMISSIONS>;
+
 interface MacroDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
   name: typeof fields.REQUIRED_STRING;
@@ -47,7 +51,7 @@ interface MacroDataProperties {
   /**
    * A Macro subtype from CONST.MACRO_TYPES
    */
-  type: ValueOf<typeof CONST.MACRO_TYPES>;
+  type: MacroTypes;
 
   /**
    * The _id of a User document which created this Macro *
@@ -56,14 +60,15 @@ interface MacroDataProperties {
 
   /**
    * An image file path which provides the thumbnail artwork for this Macro
+   * @defaultValue `CONST.DEFAULT_MACRO_ICON`
    */
-  img?: string;
+  img: string | null;
 
   /**
    * The scope of this Macro application from CONST.MACRO_SCOPES
    * @defaultValue `'global'`
    */
-  scope: ValueOf<typeof CONST.MACRO_SCOPES>;
+  scope: MacroScopes;
 
   /**
    * The string content of the macro command
@@ -87,7 +92,7 @@ interface MacroDataProperties {
    * An object which configures user permissions to this Macro
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission: Partial<Record<string, ValueOf<typeof CONST.ENTITY_PERMISSIONS>>>;
+  permission: Partial<Record<string, EntityPermissions>>;
 
   /**
    * An object of optional key/value flags
@@ -96,11 +101,30 @@ interface MacroDataProperties {
   flags: Record<string, unknown>;
 }
 
+interface MacroDataUpdateArgs {
+  _id?: string | null;
+  name: string;
+  type?: MacroTypes | null;
+  author?: string | null;
+  img?: string | null;
+  scope?: MacroScopes | null;
+  command?: string | null;
+  folder?: string | null;
+  sort?: number | null;
+  permission?: Record<string, EntityPermissions> | null;
+  flags?: Record<string, unknown> | null;
+}
+
 /**
  * The data schema for a Macro document.
  * @see BaseMacro
  */
-export declare class MacroData extends DocumentData<MacroDataSchema, MacroDataProperties, documents.BaseMacro> {
+export declare class MacroData extends DocumentData<
+  MacroDataSchema,
+  MacroDataProperties,
+  documents.BaseMacro,
+  MacroDataUpdateArgs
+> {
   static defineSchema(): MacroDataSchema;
 }
 

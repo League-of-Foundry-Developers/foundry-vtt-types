@@ -66,13 +66,13 @@ declare global {
  * An abstract pattern for a data object which is contained within every type of Document.
  * @typeParam ConcreteDocumentSchema - the schema of the document data
  * @typeParam PropertiesData - the runtime document properties of the the DocumentData
- * @typeParam ConstructorData - the data to construct a new instance of this DocumentData
  * @typeParam ConcreteDocument - the document, the document data belongs to
+ * @typeParam ConstructorData - the data to construct a new instance of this DocumentData
  */
 declare abstract class DocumentData<
   ConcreteDocumentSchema extends DocumentSchema,
   PropertiesData extends object,
-  ConcreteDocument extends Document<any, any> | null = null,
+  ConcreteDocument extends Document<any, any> | null,
   ConstructorData extends object = DeepPartial<PropertiesToSource<PropertiesData>>
 > {
   /**

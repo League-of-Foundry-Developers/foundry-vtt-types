@@ -22,13 +22,19 @@ interface DarknessActivationProperties {
   max: number;
 }
 
+interface DarknessActivationUpdateArgs {
+  min?: number | null;
+  max?: number | null;
+}
+
 /**
  * An embedded data object which defines the darkness range during which some attribute is active
  */
 export declare class DarknessActivation extends DocumentData<
   DarknessActivationSchema,
   DarknessActivationProperties,
-  BaseAmbientLight
+  BaseAmbientLight,
+  DarknessActivationUpdateArgs
 > {
   static defineSchema(): DarknessActivationSchema;
 }

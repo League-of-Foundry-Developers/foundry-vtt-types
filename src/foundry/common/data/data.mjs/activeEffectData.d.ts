@@ -46,15 +46,16 @@ interface ActiveEffectDataProperties {
   /**
    * An EffectDurationData object which describes the duration of the ActiveEffect
    */
-  duration?: EffectDurationData;
+  duration: EffectDurationData;
 
   /**
    * An icon image path used to depict the ActiveEffect
    */
-  icon?: string;
+  icon?: string | null;
 
   /**
    * A text label which describes the name of the ActiveEffect
+   * @defaultValue `''`
    */
   label: string;
 
@@ -65,9 +66,8 @@ interface ActiveEffectDataProperties {
 
   /**
    * A color string which applies a tint to the ActiveEffect icon
-   * @defaultValue `null`
    */
-  tint: string | null;
+  tint?: string | null;
 
   /**
    * Does this ActiveEffect automatically transfer from an Item to an Actor?
@@ -82,6 +82,19 @@ interface ActiveEffectDataProperties {
   flags: Record<string, unknown>;
 }
 
+interface ActiveEffectDataUpdateArgs {
+  _id?: string | null;
+  changes?: EffectChangeData[] | null;
+  disabled?: boolean | null;
+  duration?: EffectDurationData[] | null;
+  icon?: string | null;
+  label?: string | null;
+  origin?: string | null;
+  tint?: string | null;
+  transfer?: boolean | null;
+  flags?: Record<string, unknown> | null;
+}
+
 /**
  * The data schema for a ActiveEffect document.
  * @see BaseActiveEffect
@@ -89,7 +102,8 @@ interface ActiveEffectDataProperties {
 export declare class ActiveEffectData extends DocumentData<
   ActiveEffectDataSchema,
   ActiveEffectDataProperties,
-  documents.BaseActiveEffect
+  documents.BaseActiveEffect,
+  ActiveEffectDataUpdateArgs
 > {
   static defineSchema(): ActiveEffectDataSchema;
 }

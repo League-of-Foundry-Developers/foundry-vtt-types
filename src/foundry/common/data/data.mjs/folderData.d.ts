@@ -2,22 +2,25 @@ import DocumentData from '../../abstract/data.mjs';
 import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
 
+type FolderEntityTypes = ValueOf<typeof CONST.FOLDER_ENTITY_TYPES>;
+type SortingModes = ValueOf<typeof FolderData.SORTING_MODES>;
+
 interface FolderDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
   name: typeof fields.REQUIRED_STRING;
-  type: DocumentField<ValueOf<typeof CONST.FOLDER_ENTITY_TYPES>> & {
+  type: DocumentField<FolderEntityTypes> & {
     type: String;
     required: true;
-    validate: (t: unknown) => t is ValueOf<typeof CONST.FOLDER_ENTITY_TYPES>;
+    validate: (t: unknown) => t is FolderEntityTypes;
     validationError: 'Invalid Folder type provided';
   };
   description: typeof fields.STRING_FIELD;
   parent: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
-  sorting: DocumentField<ValueOf<typeof FolderData.SORTING_MODES>> & {
+  sorting: DocumentField<SortingModes> & {
     type: String;
     required: true;
     default: 'a';
-    validate: (mode: unknown) => mode is ValueOf<typeof FolderData.SORTING_MODES>;
+    validate: (mode: unknown) => mode is SortingModes;
     validationError: 'Invalid Folder sorting mode';
   };
   sort: typeof fields.INTEGER_SORT_FIELD;
@@ -39,7 +42,7 @@ interface FolderDataProperties {
   /**
    * The document type which this Folder contains, from CONST.FOLDER_ENTITY_TYPES
    */
-  type: ValueOf<typeof CONST.FOLDER_ENTITY_TYPES>;
+  type: FolderEntityTypes;
 
   /**
    * An HTML description of the contents of this folder
@@ -56,7 +59,7 @@ interface FolderDataProperties {
    * The sorting mode used to organize documents within this Folder, in ["a", "m"]
    * @defaultValue `'a'`
    */
-  sorting: ValueOf<typeof FolderData.SORTING_MODES>;
+  sorting: SortingModes;
 
   /**
    * The numeric sort value which orders this Folder relative to its siblings
@@ -76,10 +79,27 @@ interface FolderDataProperties {
   flags: Record<string, unknown>;
 }
 
+interface FolderDataUpdateArgs {
+  _id?: string | null;
+  name: string;
+  type: FolderEntityTypes;
+  description?: string | null;
+  parent?: string | null;
+  sorting?: SortingModes | null;
+  sort?: number | null;
+  color?: string | null;
+  flags?: Record<string, unknown> | null;
+}
+
 /**
  * The data schema for a Folder document.
  */
-export declare class FolderData extends DocumentData<FolderDataSchema, FolderDataProperties, documents.BaseFolder> {
+export declare class FolderData extends DocumentData<
+  FolderDataSchema,
+  FolderDataProperties,
+  documents.BaseFolder,
+  FolderDataUpdateArgs
+> {
   static defineSchema(): FolderDataSchema;
 
   static SORTING_MODES: ['a', 'm'];

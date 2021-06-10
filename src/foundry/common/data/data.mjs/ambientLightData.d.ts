@@ -89,7 +89,7 @@ interface AmbientLightDataProperties {
   /**
    * An optional color string which applies coloration to the resulting light source
    */
-  tintColor?: string;
+  tintColor?: string | null;
 
   /**
    * The intensity of coloration applied to this light source, a number between 0 and 1
@@ -127,6 +127,24 @@ interface AmbientLightDataProperties {
   flags: Record<string, unknown>;
 }
 
+interface AmbientLightDataUpdateArgs {
+  _id?: string | null;
+  t?: CONST.SourceType | null;
+  x?: number | null;
+  y?: number | null;
+  rotation?: number | null;
+  dim?: number | null;
+  bright?: number | null;
+  angle?: number | null;
+  tintColor?: string | null;
+  tintAlpha?: number | null;
+  lightAnimation?: AnimationData | null;
+  darknessThreshold?: number | null;
+  darkness?: DarknessActivation | null;
+  hidden?: boolean | null;
+  flags?: Record<string, unknown> | null;
+}
+
 /**
  * The data schema for a AmbientLight embedded document.
  * @see BaseAmbientLight
@@ -134,7 +152,8 @@ interface AmbientLightDataProperties {
 export declare class AmbientLightData extends DocumentData<
   AmbientLightDataSchema,
   AmbientLightDataProperties,
-  BaseAmbientLight
+  BaseAmbientLight,
+  AmbientLightDataUpdateArgs
 > {
   static defineSchema(): AmbientLightDataSchema;
 }

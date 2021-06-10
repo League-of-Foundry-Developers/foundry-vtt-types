@@ -19,11 +19,13 @@ interface EffectChangeDataSchema extends DocumentSchema {
 interface EffectChangeDataProperties {
   /**
    * The attribute path in the Actor or Item data which the change modifies
+   * @defaultValue `''`
    */
   key: string;
 
   /**
    * The value of the change effect
+   * @defaultValue `''`
    */
   value: string;
 
@@ -35,7 +37,14 @@ interface EffectChangeDataProperties {
   /**
    * The priority level with which this change is applied
    */
-  priority: number;
+  priority?: number | null;
+}
+
+interface EffectChangeDataUpdateArgs {
+  key?: string | null;
+  value?: string | null;
+  mode?: CONST.ActiveEffectMode | null;
+  priority?: number | null;
 }
 
 /**
@@ -45,7 +54,8 @@ interface EffectChangeDataProperties {
 export declare class EffectChangeData extends DocumentData<
   EffectChangeDataSchema,
   EffectChangeDataProperties,
-  BaseActiveEffect
+  BaseActiveEffect,
+  EffectChangeDataUpdateArgs
 > {
   static defineSchema(): EffectChangeDataSchema;
 }
