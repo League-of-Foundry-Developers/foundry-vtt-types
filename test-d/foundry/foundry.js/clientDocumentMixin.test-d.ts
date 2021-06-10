@@ -13,3 +13,6 @@ expectType<ActiveEffect[]>(doc.transferredEffects); // class itself
 expectType<string>(Item.documentName); // Document
 expectType<typeof data.ItemData>(Item.schema); // Base-Document
 expectType<Promise<Item>>(Item.createDialog()); // ClientDocumentMixin
+
+// Properties
+expectType<ItemSheet | null>(doc.sheet);
