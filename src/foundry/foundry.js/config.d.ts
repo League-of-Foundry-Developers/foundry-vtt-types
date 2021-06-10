@@ -1446,7 +1446,7 @@ declare global {
       /**
        * @defaultValue `AmbientLightDocument`
        */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseAmbientLight>; // TODO: AmbientLightDocument
+      documentClass: ConfiguredDocumentClassOrDefault<typeof AmbientLightDocument>;
 
       /**
        * @defaultValue `AmbientLightDocument`

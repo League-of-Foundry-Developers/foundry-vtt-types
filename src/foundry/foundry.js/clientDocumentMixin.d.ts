@@ -17,7 +17,7 @@ type ClientDocumentConstructor<T extends ConstructorOf<foundry.abstract.Document
     new (...args: ConstructorParameters<T>): InstanceType<T> & ClientDocumentMixin<InstanceType<T>>;
   };
 
-declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>> {
+export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>> {
   constructor(data?: DeepPartial<SourceDataType<T>>, context?: ContextType<T>);
 
   /**
@@ -335,7 +335,8 @@ declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>>
    * @returns A data object of cleaned data suitable for compendium import
    */
   toCompendium(
-    pack?: any /* TODO: CompendiumCollection */
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    pack?: any /* TODO: CompendiumCollection and remove comment above */
   ): Omit<ReturnType<T['toObject']>, '_id' | 'folder' | 'permission'> & {
     permission?: ReturnType<T['toObject']>['permission']; // TODO: Whether or not this property exists depends on `pack`, improve when `pack` is typed
   };
