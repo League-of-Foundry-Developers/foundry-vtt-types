@@ -48,3 +48,21 @@ export type ConfiguredDocumentClass<T extends DocumentConstructor> = T['metadata
 export type ConfiguredData<Name extends string, T extends DocumentData<any, any, any>> = Name extends keyof DataConfig
   ? DataConfig[Name]
   : T;
+
+export type ConfiguredSheetClass<T extends DocumentConstructor> = T['metadata']['name'] extends keyof CONFIG
+  ? 'sheetClass' extends keyof CONFIG[T['metadata']['name']]
+    ? CONFIG[T['metadata']['name']]['sheetClass']
+    : never
+  : T;
+
+export type ObjectClass<T extends DocumentConstructor> = T['metadata']['name'] extends keyof CONFIG
+  ? 'objectClass' extends keyof CONFIG[T['metadata']['name']]
+    ? CONFIG[T['metadata']['name']]['objectClass']
+    : never
+  : T;
+
+export type LayerClass<T extends DocumentConstructor> = T['metadata']['name'] extends keyof CONFIG
+  ? 'layerClass' extends keyof CONFIG[T['metadata']['name']]
+    ? CONFIG[T['metadata']['name']]['layerClass']
+    : never
+  : T;

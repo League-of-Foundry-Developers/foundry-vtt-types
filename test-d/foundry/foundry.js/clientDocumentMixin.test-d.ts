@@ -15,4 +15,5 @@ expectType<typeof data.ItemData>(Item.schema); // Base-Document
 expectType<Promise<Item>>(Item.createDialog()); // ClientDocumentMixin
 
 // Properties
-expectType<ItemSheet | null>(doc.sheet);
+// TODO: change to <InstanceType<ConfiguredSheetClass<Item>> | null> once the circular reference problem has been solved
+expectType<FormApplication | null>(doc.sheet);

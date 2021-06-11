@@ -3,6 +3,7 @@ import { ContextType, DocumentDataType, DocumentModificationOptions } from '../c
 import { ConfiguredDocumentClass, DocumentConstructor, SourceDataType } from '../../types/helperTypes';
 
 declare global {
+  // TODO: Replace ConstructorOf<…> with DocumentConstructor once the problem with circular reference has been solved
   /**
    * The client-side document mixin which is used to extend the common BaseDocument.
    * This mixin provides the client-side interface for database operations and common document behaviors.
@@ -32,7 +33,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * A cached reference to the FormApplication instance used to configure this Document.
    * @defaultValue `null`
    */
-  protected _sheet: FormApplication | null; // TODO: FormApplication<this> | null
+  protected _sheet: FormApplication | null; // TODO: Replace mit InstanceType<ConfiguredSheetClass<T>> once the circular reference problem has been solved
 
   /**
    * @see abstract.Document#_initialize
@@ -99,7 +100,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
   /**
    * Lazily obtain a FormApplication instance used to configure this Document, or null if no sheet is available.
    */
-  get sheet(): FormApplication | null; // TODO: FormApplication<this> | null;
+  get sheet(): FormApplication | null; // TODO: Replace mit InstanceType<ConfiguredSheetClass<T>> once the circular reference problem has been solved
 
   /**
    * A Universally Unique Identifier (uuid) for this Document instance.
@@ -115,7 +116,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
   /**
    * Obtain the FormApplication class constructor which should be used to configure this Document.
    */
-  protected _getSheetClass(): ConstructorOf<FormApplication> | null; // TODO: ConstructorOf<FormApplication<this>> | null
+  protected _getSheetClass(): ConstructorOf<FormApplication> | null; // TODO: Replace mit ConfiguredSheetClass<T> once the circular reference problem has been solved
 
   /**
    * Prepare data for the Document.

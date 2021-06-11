@@ -6,7 +6,8 @@ const doc = new AmbientLightDocument();
 // Test the inheritance
 expectType<string>(doc.documentName); // Document
 expectType<string>(doc.uuid); // clientDocumentMixin
-expectType<AmbientLight | null>(doc.object); // canvasDocumentMixin
+// TODO: change to <InstanceType<ObjectClass<AmbientLightDocument>> | null>  once the circular reference problem has been solved
+expectType<PlaceableObject | null>(doc.object); // canvasDocumentMixin
 expectType<boolean>(doc.isGlobal); // class itself
 
 // Test the inheritance of static members
@@ -15,6 +16,8 @@ expectType<typeof data.AmbientLightData>(AmbientLightDocument.schema); // Base-D
 expectType<Promise<AmbientLightDocument>>(AmbientLightDocument.createDialog()); // ClientDocumentMixin
 
 // Test the props
-expectAssignable<AmbientLight | null>(doc.object);
-expectAssignable<LightingLayer | null>(doc.layer);
+// TODO: change to <InstanceType<ObjectClass<AmbientLightDocument>> | null>  once the circular reference problem has been solved
+expectAssignable<PlaceableObject | null>(doc.object);
+// TODO: change to <InstanceType<LayerClass<AmbientLightDocument>> | null>  once the circular reference problem has been solved
+expectAssignable<CanvasLayer | null>(doc.layer);
 expectType<boolean>(doc.rendered);

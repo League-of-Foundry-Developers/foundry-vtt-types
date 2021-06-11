@@ -3,6 +3,7 @@ import { ContextType, DocumentDataType, DocumentModificationOptions } from '../c
 import { ClientDocumentMixin } from './clientDocumentMixin';
 
 declare global {
+  // TODO: Replace ConstructorOf<…> with DocumentConstructor once the problem with circular reference has been solved
   /**
    * A specialized sub-class of the ClientDocumentMixin which is used for document types that are intended to be represented upon the game Canvas.
    */
@@ -23,17 +24,17 @@ declare class CanvasDocumentMixin<T extends foundry.abstract.Document<any, any>>
   /**
    * A reference to the PlaceableObject instance which represents this Embedded Document.
    */
-  protected _object: PlaceableObject | null;
+  protected _object: PlaceableObject | null; // TODO: Replace mit InstanceType<ObjectClass<T>> | null once the circular reference problem has been solved
 
   /**
    * A lazily constructed PlaceableObject instance which can represent this Document on the game canvas.
    */
-  get object(): PlaceableObject | null;
+  get object(): PlaceableObject | null; // TODO: Replace mit InstanceType<ObjectClass<T>> | null once the circular reference problem has been solved
 
   /**
    * A reference to the CanvasLayer which contains Document objects of this type.
    */
-  get layer(): PlaceablesLayer | null;
+  get layer(): PlaceablesLayer | null; // TODO: Replace mit InstanceType<LayerClass<T>> | null once the circular reference problem has been solved
 
   /**
    * An indicator for whether this document is currently rendered on the game canvas.
