@@ -9,6 +9,7 @@ expectType<string | null>(user.id);
 expectType<string | null>(user.viewedScene);
 expectType<string>(user.avatar);
 expectType<ConfiguredDocumentClass<typeof Actor> | undefined>(user.character);
+expectAssignable<Record<string, boolean>>(user.permissions);
 
 expectType<string | null>(user.data._id);
 expectType<string | null>(user.data.character);
