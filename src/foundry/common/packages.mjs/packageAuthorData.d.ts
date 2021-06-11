@@ -34,7 +34,11 @@ interface PackageAuthorDataProperties {
 /**
  * An inner data object which represents a single package author in the authors array.
  */
-export declare class PackageAuthorData extends DocumentData<PackageAuthorDataSchema, PackageAuthorDataProperties> {
+export declare class PackageAuthorData extends DocumentData<
+  PackageAuthorDataSchema,
+  PackageAuthorDataProperties,
+  null
+> {
   constructor(data?: DeepPartial<PropertiesToSource<PackageAuthorDataProperties>>, document?: null);
 
   static defineSchema(): PackageAuthorDataSchema;

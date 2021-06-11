@@ -16,7 +16,7 @@ export type DocumentDataType<T extends Document<any, any>> = T extends Document<
  * The abstract base interface for all Document types.
  */
 declare abstract class Document<
-  ConcreteDocumentData extends DocumentData<any, any, any>,
+  ConcreteDocumentData extends DocumentData<any, any, any, any>,
   Parent extends Document<any, any> | null = null
 > {
   /**
@@ -53,7 +53,7 @@ declare abstract class Document<
    * @remarks
    * This method is abstract and needs to be implemented by inheriting classes.
    */
-  static get schema(): ConstructorOf<DocumentData<any, any, any>>;
+  static get schema(): ConstructorOf<DocumentData<any, any, any, any>>;
 
   /**
    * Default metadata which applies to each instance of this Document type.

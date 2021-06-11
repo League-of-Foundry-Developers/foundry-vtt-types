@@ -20,7 +20,7 @@ declare const Collection: CollectionConstructor;
  */
 declare class EmbeddedCollection<
   ContainedDocumentConstructor extends DocumentConstructor,
-  ParentDocumentData extends DocumentData<any, any, any>
+  ParentDocumentData extends DocumentData<any, any, any, any>
 > extends Collection<InstanceType<ContainedDocumentConstructor>> {
   /**
    * @param documentData  - The parent DocumentData instance to which this collection belongs

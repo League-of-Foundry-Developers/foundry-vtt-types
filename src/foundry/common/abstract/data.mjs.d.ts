@@ -73,7 +73,7 @@ declare abstract class DocumentData<
   ConcreteDocumentSchema extends DocumentSchema,
   PropertiesData extends object,
   ConcreteDocument extends Document<any, any> | null,
-  ConstructorData extends object = DeepPartial<PropertiesToSource<PropertiesData>>
+  UpdateData extends object = DeepPartial<PropertiesToSource<PropertiesData>>
 > {
   /**
    * @param data     - Initial data used to construct the data object
@@ -81,7 +81,7 @@ declare abstract class DocumentData<
    * @param document - The document to which this data object belongs
    *                   (default: `null`)
    */
-  constructor(data?: ConstructorData, document?: ConcreteDocument | null);
+  constructor(data?: UpdateData, document?: ConcreteDocument | null);
 
   /**
    * An immutable reverse-reference to the Document to which this data belongs, possibly null.
@@ -121,7 +121,7 @@ declare abstract class DocumentData<
   /**
    * Initialize the source data object in-place
    */
-  protected _initializeSource(data: ConstructorData): PropertiesToSource<PropertiesData>;
+  protected _initializeSource(data: UpdateData): PropertiesToSource<PropertiesData>;
 
   /**
    * Get the default value for a schema field, conditional on the provided data
@@ -164,7 +164,7 @@ declare abstract class DocumentData<
     type: Type,
     value: ConstructorParameters<Type>[0]
   ): InstanceType<Type>; // TODO: Actually this returns an instance of the subclass configured in CONFIG
-  protected _initializeType<Type extends ConstructorOf<DocumentData<any, any, any>>>(
+  protected _initializeType<Type extends ConstructorOf<DocumentData<any, any, any, any>>>(
     type: Type,
     value: ConstructorParameters<Type>[0]
   ): InstanceType<Type>;
@@ -187,7 +187,7 @@ declare abstract class DocumentData<
     replace,
     strict
   }: {
-    changes?: DeepPartial<ConstructorData>;
+    changes?: DeepPartial<UpdateData>;
     children?: boolean;
     clean?: boolean;
     replace?: boolean;
@@ -253,9 +253,9 @@ declare abstract class DocumentData<
    * @returns The changed keys and values which are different than the previous data
    */
   update<U>(
-    data?: Expanded<U> extends DeepPartial<ConstructorData> ? U : DeepPartial<ConstructorData>,
+    data?: Expanded<U> extends DeepPartial<UpdateData> ? U : DeepPartial<UpdateData>,
     options?: UpdateOptions
-  ): Expanded<U> extends DeepPartial<ConstructorData> ? DeepPartial<U> : DeepPartial<ConstructorData>;
+  ): Expanded<U> extends DeepPartial<UpdateData> ? DeepPartial<U> : DeepPartial<UpdateData>;
 
   /**
    * Update an EmbeddedCollection using an array of provided document data
@@ -305,7 +305,7 @@ declare abstract class DocumentData<
    * @param json - Serialized document data in string format
    * @returns constructed data instance
    */
-  static fromJSON<ConcreteDocumentData extends DocumentData<any, any, any>>(
+  static fromJSON<ConcreteDocumentData extends DocumentData<any, any, any, any>>(
     this: ConcreteDocumentData,
     json: string
   ): ConcreteDocumentData;

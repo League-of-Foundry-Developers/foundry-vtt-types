@@ -76,7 +76,7 @@ declare abstract class DatabaseBackend {
     data,
     options,
     pack
-  }?: Request): { data: DocumentData<any, any, any>[]; options: RequestOptions; pack?: string };
+  }?: Request): { data: DocumentData<any, any, any, any>[]; options: RequestOptions; pack?: string };
 
   /**
    * Create primary Document instances
@@ -118,7 +118,7 @@ declare abstract class DatabaseBackend {
     updates,
     options,
     pack
-  }?: Request): { updates: DocumentData<any, any, any>[]; options: RequestOptions; pack?: string };
+  }?: Request): { updates: DocumentData<any, any, any, any>[]; options: RequestOptions; pack?: string };
 
   /**
    * Update primary Document instances
@@ -226,8 +226,8 @@ declare abstract class DatabaseBackend {
 }
 
 interface Request {
-  data?: DocumentData<any, any, any>[];
-  updates?: DocumentData<any, any, any>[];
+  data?: DocumentData<any, any, any, any>[];
+  updates?: DocumentData<any, any, any, any>[];
   ids?: string[];
   parent?: Document<any, any>;
   query?: object;
