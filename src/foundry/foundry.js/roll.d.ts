@@ -97,11 +97,6 @@ declare global {
      */
     protected _prepareData(data: D): D;
 
-    /* -------------------------------------------- */
-    /*  Roll Attributes                             */
-
-    /* -------------------------------------------- */
-
     /**
      * Return an Array of the individual DiceTerm instances contained within this Roll.
      */
@@ -352,8 +347,6 @@ declare global {
      */
     getTooltip(): Promise<string>;
 
-    /* -------------------------------------------- */
-
     /**
      * Render a Roll instance to HTML
      * @param chatOptions - An object configuring the behavior of the resulting chat message.
@@ -361,8 +354,6 @@ declare global {
      * @returns The rendered HTML template as a string
      */
     render(chatOptions?: ChatOptions): Promise<string>;
-
-    /* -------------------------------------------- */
 
     /**
      * Transform a Roll instance into a ChatMessage, displaying the roll result.
