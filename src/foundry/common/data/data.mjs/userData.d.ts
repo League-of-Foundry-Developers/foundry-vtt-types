@@ -46,7 +46,7 @@ interface UserDataProperties {
   hotbar: Record<number | string, string>;
   name: string;
   password: '';
-  permissions: Partial<Record<string, ValueOf<typeof CONST.ENTITY_PERMISSIONS>>>;
+  permissions: Partial<Record<keyof typeof CONST.USER_PERMISSIONS, boolean>>;
   role: ValueOf<typeof CONST.USER_ROLES>;
   flags: Record<string, unknown>;
 }
