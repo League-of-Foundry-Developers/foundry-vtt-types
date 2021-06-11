@@ -46,7 +46,7 @@ declare global {
     /**
      * Return the Actor instance of the user's impersonated character (or undefined)
      */
-    get character(): ConfiguredDocumentClass<typeof Actor> | undefined;
+    get character(): InstanceType<ConfiguredDocumentClass<typeof Actor>> | undefined;
 
     /**
      * A convenience shortcut for the permissions object of the current User

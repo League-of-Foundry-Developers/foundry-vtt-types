@@ -57,8 +57,8 @@ interface Options extends DocumentSheet.Options {
 }
 
 interface Data {
-  user: ConfiguredDocumentClass<typeof User>;
-  actors: ConfiguredDocumentClass<typeof Actor>[];
+  user: InstanceType<ConfiguredDocumentClass<typeof User>>;
+  actors: InstanceType<ConfiguredDocumentClass<typeof Actor>>[];
   options: UserConfig['options'];
 }
 
