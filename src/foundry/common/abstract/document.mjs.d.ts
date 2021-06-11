@@ -5,7 +5,8 @@ import {
   ConfiguredDocumentClass,
   DocumentConstructor,
   PropertiesDataType,
-  SourceDataType
+  SourceDataType,
+  UpdateData
 } from '../../../types/helperTypes';
 
 type ParentType<T extends Document<any, any>> = T extends Document<any, infer U> ? U : never;
@@ -24,7 +25,7 @@ declare abstract class Document<
    * @param data    - Initial data provided to construct the Document
    * @param context - Additional parameters which define Document context
    */
-  constructor(data?: DeepPartial<SourceDataType<ConcreteDocumentData>>, context?: Context<Parent>);
+  constructor(data?: Parameters<ConcreteDocumentData['_initializeSource']>[0], context?: Context<Parent>);
 
   /**
    * An immutable reverse-reference to the parent Document to which this embedded Document belongs.

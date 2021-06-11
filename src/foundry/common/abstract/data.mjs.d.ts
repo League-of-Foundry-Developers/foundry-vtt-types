@@ -121,7 +121,7 @@ declare abstract class DocumentData<
   /**
    * Initialize the source data object in-place
    */
-  protected _initializeSource(data: UpdateData): PropertiesToSource<PropertiesData>;
+  _initializeSource(data: UpdateData): PropertiesToSource<PropertiesData>;
 
   /**
    * Get the default value for a schema field, conditional on the provided data

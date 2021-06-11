@@ -112,7 +112,7 @@ export declare class ItemData extends DocumentData<
    */
   static DEFAULT_ICON: string;
 
-  protected _initializeSource(data: ItemDataUpdateArgs): PropertiesToSource<ItemDataProperties>;
+  _initializeSource(data: ItemDataUpdateArgs): PropertiesToSource<ItemDataProperties>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
