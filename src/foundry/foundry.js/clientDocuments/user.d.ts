@@ -1,6 +1,5 @@
 import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentDataType, DocumentModificationOptions } from '../../common/abstract/document.mjs';
-import { UserData } from '../../common/data/data.mjs';
 
 declare global {
   /**
@@ -10,12 +9,20 @@ declare global {
    * @see {@link data.UserData}               The User data schema
    * @see {@link documents.Users}             The world-level collection of User documents
    * @see {@link applications.UserConfig}     The User configuration application
-   *
-   * @param data - Initial data provided to construct the User document
    */
   class User extends ClientDocumentMixin(foundry.documents.BaseUser) {
     /**
+     * @param data - Initial data provided to construct the User document
+     *               (default: `{}`)
+     */
+    constructor(
+      data?: ConstructorParameters<ConstructorOf<foundry.documents.BaseUser>>[0],
+      context?: ConstructorParameters<ConstructorOf<foundry.documents.BaseUser>>[1]
+    );
+
+    /**
      * Track whether the user is currently active in the game
+     * @defaultValue `false`
      */
     active: boolean;
 
@@ -26,6 +33,7 @@ declare global {
 
     /**
      * Track the ID of the Scene that is currently being viewed by the User
+     * @defaultValue `null`
      */
     viewedScene: string | null;
 
@@ -34,6 +42,7 @@ declare global {
      */
     get avatar(): string;
 
+    // TODO: Replace return type with ReturnType<Game['actors']['get']> once this is possible
     /**
      * Return the Actor instance of the user's impersonated character (or undefined)
      */
@@ -42,7 +51,7 @@ declare global {
     /**
      * A convenience shortcut for the permissions object of the current User
      */
-    get permissions(): UserData['permissions'];
+    get permissions(): foundry.data.UserData['permissions'];
 
     /**
      * A flag for whether the current User is a Trusted Player
@@ -61,7 +70,11 @@ declare global {
      * @param fromSlot - An optional origin slot from which the Macro is being shifted
      * @returns A Promise which resolves once the User update is complete
      */
-    assignHotbarMacro(macro: Macro | null, slot: string | number, { fromSlot }?: { fromSlot: number }): Promise<this>;
+    assignHotbarMacro(
+      macro: InstanceType<ConfiguredDocumentClass<typeof Macro>> | null,
+      slot: string | number,
+      { fromSlot }?: { fromSlot: number }
+    ): Promise<this>;
 
     /**
      * Assign a specific boolean permission to this user.
@@ -72,53 +85,30 @@ declare global {
      */
     assignPermission(permission: keyof typeof CONST.USER_PERMISSIONS, allowed: boolean): Promise<this>;
 
-    /* -------------------------------------------- */
-
     /**
      * Submit User activity data to the server for broadcast to other players.
      * This type of data is transient, persisting only for the duration of the session and not saved to any database.
      *
-     * @param cursor  - The coordinates of the user's cursor
-     * @param focus   - Is the user pulling focus to the cursor coordinates?
-     * @param ping    - Is the user emitting a ping at the cursor coordinates?
-     * @param ruler   - Serialized Ruler coordinate data in JSON format
-     * @param sceneId - The id of the Scene currently being viewed by the User
-     * @param targets - An id of Token ids which are targeted by the User
+     * @param activityData - An object of User activity data to submit to the server for broadcast.
+     *                       (default: `{}`)
      */
-    broadcastActivity({
-      cursor,
-      focus,
-      ping,
-      ruler,
-      sceneId,
-      targets
-    }: {
-      cursor?: boolean;
-      focus?: boolean;
-      ping?: boolean;
-      ruler?: string;
-      sceneId?: string;
-      targets?: string[];
-    }): void;
+    broadcastActivity(activityData?: BroadcastActivityData): void;
 
     /**
      * Get an Array of Macro Entities on this User's Hotbar by page
      * @param page - The hotbar page number
      *               (default: `1`)
      */
-    getHotbarMacros(page?: number): Array<{ slot: number; macro: Macro | null }>;
-
-    /* -------------------------------------------- */
+    getHotbarMacros(
+      page?: number
+    ): Array<{ slot: number; macro: InstanceType<ConfiguredDocumentClass<typeof Macro>> | null }>;
 
     /**
      * Update the set of Token targets for the user given an array of provided Token ids.
      * @param targetIds - An array of Token ids which represents the new target set
+     *                    (default: `[]`)
      */
     updateTokenTargets(targetIds?: string[]): void;
-
-    /* -------------------------------------------- */
-    /*  Event Handlers                              */
-    /* -------------------------------------------- */
 
     /** @override  */
     _onUpdate(
@@ -126,8 +116,6 @@ declare global {
       options: DocumentModificationOptions,
       userId: string
     ): void;
-
-    /* -------------------------------------------- */
 
     /** @override  */
     _onDelete(options: DocumentModificationOptions, userId: string): void;
@@ -142,6 +130,38 @@ declare global {
      */
     setPermission(permission: keyof typeof CONST.USER_PERMISSIONS, allowed: boolean): Promise<this>;
   }
+}
+
+interface BroadcastActivityData {
+  /**
+   * The coordinates of the user's cursor
+   */
+  cursor?: boolean;
+
+  /**
+   * Is the user pulling focus to the cursor coordinates?
+   */
+  focus?: boolean;
+
+  /**
+   * Is the user emitting a ping at the cursor coordinates?
+   */
+  ping?: boolean;
+
+  /**
+   * Serialized Ruler coordinate data in JSON format
+   */
+  ruler?: string;
+
+  /**
+   * The id of the Scene currently being viewed by the User
+   */
+  sceneId?: string;
+
+  /**
+   * An id of Token ids which are targeted by the User
+   */
+  targets?: string[];
 }
 
 export {};
