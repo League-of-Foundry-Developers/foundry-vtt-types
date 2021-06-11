@@ -40,8 +40,8 @@ declare function _validateHotbar(bar: unknown): asserts bar is Record<number | s
 
 interface UserDataProperties {
   _id: string | null;
-  avatar: string | null;
-  character?: string;
+  avatar?: string;
+  character: string | null;
   color: string;
   hotbar: Record<number | string, string>;
   name: string;
