@@ -23,6 +23,7 @@ declare class CanvasDocumentMixin<T extends foundry.abstract.Document<any, any>>
 
   /**
    * A reference to the PlaceableObject instance which represents this Embedded Document.
+   * @defaultValue `null`
    */
   protected _object: PlaceableObject | null; // TODO: Replace mit InstanceType<ObjectClass<T>> | null once the circular reference problem has been solved
 
