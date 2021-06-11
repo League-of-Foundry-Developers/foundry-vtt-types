@@ -176,6 +176,7 @@ expectType<
 // invertObject
 expectType<{ readonly 1: 'a'; readonly foo: 'b' }>(foundry.utils.invertObject({ a: 1, b: 'foo' } as const));
 
+// mergeObject: expectAssignable is used here because of https://github.com/SamVerschueren/tsd/issues/67
 // mergeObject (1): tests from the docs
 expectAssignable<{ k1: string }>(foundry.utils.mergeObject({ k1: 'v1' }, { k2: 'v2' }, { insertKeys: false }));
 expectAssignable<{ k1: string; k2: string }>(
