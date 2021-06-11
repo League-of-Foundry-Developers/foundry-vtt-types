@@ -1,5 +1,4 @@
 import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
-import { UserData } from '../../../common/data/data.mjs';
 
 declare global {
   // TODO: Do Not extend FormApplication but DocumentSheet
@@ -63,4 +62,4 @@ interface Data {
   options: UserConfig['options'];
 }
 
-type FormData = Pick<UserData, 'avatar' | 'character' | 'color'>;
+type FormData = Pick<foundry.data.UserData, 'avatar' | 'character' | 'color'>;
