@@ -1,5 +1,5 @@
 import { BaseUser } from '../documents.mjs';
-import DocumentData from './data.mjs';
+import { AnyDocumentData } from './data.mjs';
 import Document from './document.mjs';
 
 /**
@@ -76,7 +76,7 @@ declare abstract class DatabaseBackend {
     data,
     options,
     pack
-  }?: Request): { data: DocumentData<any, any, any, any>[]; options: RequestOptions; pack?: string };
+  }?: Request): { data: AnyDocumentData[]; options: RequestOptions; pack?: string };
 
   /**
    * Create primary Document instances
@@ -118,7 +118,7 @@ declare abstract class DatabaseBackend {
     updates,
     options,
     pack
-  }?: Request): { updates: DocumentData<any, any, any, any>[]; options: RequestOptions; pack?: string };
+  }?: Request): { updates: AnyDocumentData[]; options: RequestOptions; pack?: string };
 
   /**
    * Update primary Document instances
@@ -226,8 +226,8 @@ declare abstract class DatabaseBackend {
 }
 
 interface Request {
-  data?: DocumentData<any, any, any, any>[];
-  updates?: DocumentData<any, any, any, any>[];
+  data?: AnyDocumentData[];
+  updates?: AnyDocumentData[];
   ids?: string[];
   parent?: Document<any, any>;
   query?: object;

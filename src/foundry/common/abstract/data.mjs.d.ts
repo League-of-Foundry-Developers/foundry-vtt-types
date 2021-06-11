@@ -164,7 +164,7 @@ declare abstract class DocumentData<
     type: Type,
     value: ConstructorParameters<Type>[0]
   ): InstanceType<Type>; // TODO: Actually this returns an instance of the subclass configured in CONFIG
-  protected _initializeType<Type extends ConstructorOf<DocumentData<any, any, any, any>>>(
+  protected _initializeType<Type extends ConstructorOf<AnyDocumentData>>(
     type: Type,
     value: ConstructorParameters<Type>[0]
   ): InstanceType<Type>;
@@ -305,7 +305,7 @@ declare abstract class DocumentData<
    * @param json - Serialized document data in string format
    * @returns constructed data instance
    */
-  static fromJSON<ConcreteDocumentData extends DocumentData<any, any, any, any>>(
+  static fromJSON<ConcreteDocumentData extends AnyDocumentData>(
     this: ConcreteDocumentData,
     json: string
   ): ConcreteDocumentData;
@@ -320,3 +320,4 @@ interface UpdateOptions {
 }
 
 export default DocumentData;
+export type AnyDocumentData = DocumentData<any, any, any, any>;

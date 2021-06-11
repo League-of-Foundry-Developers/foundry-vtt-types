@@ -1,5 +1,5 @@
 import _Collection from '../utils/collection.mjs';
-import DocumentData from './data.mjs';
+import { AnyDocumentData } from './data.mjs';
 import { DocumentConstructor, SourceDataType } from '../../../types/helperTypes';
 
 type Collection<T> = Omit<_Collection<T>, 'set' | 'delete'>;
@@ -20,7 +20,7 @@ declare const Collection: CollectionConstructor;
  */
 declare class EmbeddedCollection<
   ContainedDocumentConstructor extends DocumentConstructor,
-  ParentDocumentData extends DocumentData<any, any, any, any>
+  ParentDocumentData extends AnyDocumentData
 > extends Collection<InstanceType<ContainedDocumentConstructor>> {
   /**
    * @param documentData  - The parent DocumentData instance to which this collection belongs

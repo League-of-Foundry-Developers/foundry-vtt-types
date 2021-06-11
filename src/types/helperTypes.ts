@@ -1,10 +1,13 @@
-import DocumentData from '../foundry/common/abstract/data.mjs';
+import DocumentData, { AnyDocumentData } from '../foundry/common/abstract/data.mjs';
 import Document from '../foundry/common/abstract/document.mjs';
 import EmbeddedCollection from '../foundry/common/abstract/embedded-collection.mjs';
 
-export type PropertiesDataType<
-  T extends Document<any, any> | DocumentData<any, any, any, any>
-> = T extends DocumentData<any, infer U, any, any>
+export type PropertiesDataType<T extends Document<any, any> | AnyDocumentData> = T extends DocumentData<
+  any,
+  infer U,
+  any,
+  any
+>
   ? U
   : T extends Document<infer U, any>
   ? PropertiesDataType<U>
@@ -22,9 +25,7 @@ export type PropertiesToSource<T extends object> = {
   [Key in keyof T]: PropertyTypeToSourceType<T[Key]>;
 };
 
-export type SourceDataType<T extends Document<any, any> | DocumentData<any, any, any, any>> = PropertiesToSource<
-  PropertiesDataType<T>
->;
+export type SourceDataType<T extends Document<any, any> | AnyDocumentData> = PropertiesToSource<PropertiesDataType<T>>;
 
 type ObjectToDeepPartial<T> = T extends object ? DeepPartial<T> : T;
 
@@ -43,7 +44,6 @@ export type ConfiguredDocumentClass<T extends DocumentConstructor> = T['metadata
     : never
   : T;
 
-export type ConfiguredData<
-  Name extends string,
-  T extends DocumentData<any, any, any, any>
-> = Name extends keyof DataConfig ? DataConfig[Name] : T;
+export type ConfiguredData<Name extends string, T extends AnyDocumentData> = Name extends keyof DataConfig
+  ? DataConfig[Name]
+  : T;
