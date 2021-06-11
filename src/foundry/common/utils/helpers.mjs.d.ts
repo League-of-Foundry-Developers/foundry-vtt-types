@@ -270,7 +270,7 @@ export declare function isObjectEmpty(obj: object): boolean;
  * mergeObject({k1: "v1", k2: "v2"}, {"-=k1": null});   // {k2: "v2"}
  * ```
  */
-type OmitByValue<T, ValueType> = Pick<T, { [Key in keyof T]-?: T[Key] extends ValueType ? never : Key }[keyof T]>;
+type OmitByValue<T, ValueType> = { [Key in keyof T as T[Key] extends ValueType ? never : Key]: T[Key] };
 type RemoveNever<T> = OmitByValue<T, never>;
 type PropWithMinus<K> = K extends string ? `-=${K}` : never;
 type DeleteByObjectKeys<T, U> = RemoveNever<
