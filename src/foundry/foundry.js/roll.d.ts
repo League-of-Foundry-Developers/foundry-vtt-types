@@ -30,18 +30,19 @@ declare global {
      * @param formula - The string formula to parse
      * @param data    - The data object against which to parse attributes within the formula
      *                  (default: `{}`)
+     * @param options - (default: `{}`)
      */
     constructor(formula: string, data?: D, options?: Roll['options']);
 
     /**
-     * The original provided data
+     * The original provided data object which substitutes into attributes of the roll formula
      */
     data: D;
 
     /**
      * Options which modify or describe the Roll
      */
-    options: Partial<Roll.Options>;
+    options: Partial<Options>;
 
     /**
      * The identified terms of the Roll
@@ -50,6 +51,7 @@ declare global {
 
     /**
      * An array of inner DiceTerms which were evaluated as part of the Roll evaluation
+     * @defaultValue `[]`
      */
     protected _dice: DiceTerm[];
 
@@ -73,7 +75,7 @@ declare global {
     /**
      * A Proxy environment for safely evaluating a string using only available Math functions
      */
-    static MATH_PROXY: Roll.MathProxy;
+    static MATH_PROXY: MathProxy;
 
     /**
      * The HTML template path used to render a complete Roll object to the chat log
@@ -121,9 +123,73 @@ declare global {
     get total(): number | undefined;
 
     /**
-     * @deprecated since 0.8.1
+     * Alter the Roll expression by adding or multiplying the number of dice which are rolled
+     * @param multiply        - A factor to multiply. Dice are multiplied before any additions.
+     * @param add             - A number of dice to add. Dice are added after multiplication.
+     * @param multiplyNumeric - Apply multiplication factor to numeric scalar terms
+     *                          (default: `false`)
+     * @returns The altered Roll expression
      */
-    get _rolled(): boolean;
+    alter(multiply: number, add: number, { multiplyNumeric }?: { multiplyNumeric: boolean }): Roll;
+
+    /**
+     * Clone the Roll instance, returning a new Roll instance that has not yet been evaluated.
+     */
+    clone(): this;
+
+    /**
+     * Execute the Roll, replacing dice and evaluating the total result
+     * @param options - Options which inform how the Roll is evaluated
+     *                  (default: all properties `false`)
+     * @returns The evaluated Roll instance
+     *
+     * @example
+     * ```typescript
+     * let r = new Roll("2d6 + 4 + 1d4");
+     * r.evaluate();
+     * console.log(r.result); // 5 + 4 + 2
+     * console.log(r.total);  // 11
+     * ```
+     */
+    evaluate({ minimize, maximize, async }?: Partial<Options & { async: false }>): this;
+    evaluate({ minimize, maximize, async }?: Partial<Options & { async: true }>): Promise<this>;
+    evaluate({ minimize, maximize, async }?: Partial<Options>): this | Promise<this>;
+
+    /**
+     * Evaluate the roll asynchronously.
+     * A temporary helper method used to migrate behavior from 0.7.x (sync by default) to 0.9.x (async by default).
+     */
+    protected _evaluate(options?: Partial<Exclude<Options, 'async'>>): Promise<this>;
+
+    /**
+     * Evaluate the roll synchronously.
+     * A temporary helper method used to migrate behavior from 0.7.x (sync by default) to 0.9.x (async by default).
+     */
+    protected _evaluateSync(options?: Partial<Exclude<Options, 'async'>>): this;
+
+    /**
+     * Safely evaluate the final total result for the Roll using its component terms.
+     * @returns The evaluated total
+     */
+    protected _evaluateTotal(): number;
+
+    /**
+     * Alias for evaluate.
+     * @see Roll#evaluate
+     */
+    roll({ minimize, maximize, async }?: Partial<Options & { async: false }>): this;
+    roll({ minimize, maximize, async }?: Partial<Options & { async: true }>): Promise<this>;
+    roll({ minimize, maximize, async }?: Partial<Options>): this | Promise<this>;
+
+    /**
+     * Create a new Roll object using the original provided formula and data.
+     * Each roll is immutable, so this method returns a new Roll instance using the same data.
+     * @param options - Evaluation options passed to Roll#evaluate
+     * @returns A new Roll object, rolled using the same formula and data
+     */
+    reroll(options?: Partial<Options & { async: false }>): this;
+    reroll(options?: Partial<Options & { async: true }>): Promise<this>;
+    reroll(options?: Partial<Options>): this | Promise<this>;
 
     /**
      * A factory method which constructs a Roll instance using the default configured Roll class.
@@ -136,7 +202,7 @@ declare global {
     static create<D extends Record<string, unknown> = {}>(
       formula: string,
       data?: D,
-      options?: Partial<Roll.Options>
+      options?: Partial<Options>
     ): Roll<D>;
 
     /**
@@ -160,6 +226,15 @@ declare global {
      * @returns An array of simplified terms
      */
     static simplifyTerms(terms: RollTerm[]): RollTerm[];
+
+    /**
+     * Simulate a roll and evaluate the distribution of returned results
+     * @param formula - The Roll expression to simulate
+     * @param n       - The number of simulations
+     *                  (default: `10000`)
+     * @returns The rolled totals
+     */
+    static simulate(formula: string, n?: number): number[];
 
     /**
      * Parse a formula by following an order of operations:
@@ -200,6 +275,13 @@ declare global {
     ): string;
 
     /**
+     * Validate that a provided roll formula can represent a valid
+     * @param formula - A candidate formula to validate
+     * @returns Is the provided input a valid dice formula?
+     */
+    static validate(formula: string): boolean;
+
+    /**
      * Split a formula by identifying its outer-most parenthetical and math terms
      * @param _formula - The raw formula to split
      * @returns An array of terms, split on parenthetical terms
@@ -224,7 +306,7 @@ declare global {
      * @param options  - Options that configure how groups are split
      * @returns An array of terms, split on dice pool terms
      */
-    protected _splitGroup(_formula: string, options: Partial<Roll.SplitGroupOptions>): string[];
+    protected _splitGroup(_formula: string, options: Partial<SplitGroupOptions>): string[];
 
     /**
      * Split a formula by identifying arithmetic terms
@@ -238,7 +320,7 @@ declare global {
      * @param formula - The formula to extract
      * @returns The cleaned formula and extracted flavor mapping
      */
-    protected static _extractFlavors(formula: string): { formula: string; flavors: Roll.Flavor };
+    protected static _extractFlavors(formula: string): { formula: string; flavors: Flavor };
 
     /**
      * Restore flavor text to a string term
@@ -246,7 +328,7 @@ declare global {
      * @param flavors - The extracted flavors object
      * @returns The restored term containing flavor text
      */
-    protected static _restoreFlavor(term: string, flavors: Roll.Flavor): string;
+    protected static _restoreFlavor(term: string, flavors: Flavor): string;
 
     /**
      * Classify a remaining string term into a recognized RollTerm class
@@ -265,91 +347,6 @@ declare global {
     ): RollTerm;
 
     /**
-     * Execute the Roll, replacing dice and evaluating the total result
-     * @param options - Options which inform how the Roll is evaluated
-     *                  (default: all properties `false`)
-     * @returns The evaluated Roll instance
-     *
-     * @example
-     * ```typescript
-     * let r = new Roll("2d6 + 4 + 1d4");
-     * r.evaluate();
-     * console.log(r.result); // 5 + 4 + 2
-     * console.log(r.total);  // 11
-     * ```
-     */
-    evaluate({ minimize, maximize, async }?: Partial<Roll.Options & { async: false }>): this;
-    evaluate({ minimize, maximize, async }?: Partial<Roll.Options & { async: true }>): Promise<this>;
-    evaluate({ minimize, maximize, async }?: Partial<Roll.Options>): this | Promise<this>;
-
-    /**
-     * Evaluate the roll asynchronously.
-     * A temporary helper method used to migrate behavior from 0.7.x (sync by default) to 0.9.x (async by default).
-     */
-    protected _evaluate(options?: Partial<Exclude<Roll.Options, 'async'>>): Promise<this>;
-
-    /**
-     * Evaluate the roll synchronously.
-     * A temporary helper method used to migrate behavior from 0.7.x (sync by default) to 0.9.x (async by default).
-     */
-    protected _evaluateSync(options?: Partial<Exclude<Roll.Options, 'async'>>): this;
-
-    /**
-     * Safely evaluate the final total result for the Roll using its component terms.
-     * @returns The evaluated total
-     */
-    protected _evaluateTotal(): number;
-
-    /**
-     * Alter the Roll expression by adding or multiplying the number of dice which are rolled
-     * @param multiply        - A factor to multiply. Dice are multiplied before any additions.
-     * @param add             - A number of dice to add. Dice are added after multiplication.
-     * @param multiplyNumeric - Apply multiplication factor to numeric scalar terms
-     *                          (default: `false`)
-     * @returns The altered Roll expression
-     */
-    alter(multiply: number, add: number, { multiplyNumeric }?: { multiplyNumeric: boolean }): Roll;
-
-    /**
-     * Clone the Roll instance, returning a new Roll instance that has not yet been evaluated.
-     */
-    clone(): this;
-
-    /**
-     * Alias for evaluate.
-     * @see Roll#evaluate
-     */
-    roll({ minimize, maximize, async }?: Partial<Roll.Options & { async: false }>): this;
-    roll({ minimize, maximize, async }?: Partial<Roll.Options & { async: true }>): Promise<this>;
-    roll({ minimize, maximize, async }?: Partial<Roll.Options>): this | Promise<this>;
-
-    /**
-     * Create a new Roll object using the original provided formula and data.
-     * Each roll is immutable, so this method returns a new Roll instance using the same data.
-     * @param options - Evaluation options passed to Roll#evaluate
-     * @returns A new Roll object, rolled using the same formula and data
-     */
-    reroll(options?: Partial<Roll.Options & { async: false }>): this;
-    reroll(options?: Partial<Roll.Options & { async: true }>): Promise<this>;
-    reroll(options?: Partial<Roll.Options>): this | Promise<this>;
-
-    /**
-     * Simulate a roll and evaluate the distribution of returned results
-     * @param formula - The Roll expression to simulate
-     * @param n       - The number of simulations
-     *                  (default: `10000`)
-     * @returns The rolled totals
-     */
-    static simulate(formula: string, n?: number): number[];
-
-    /**
-     * Validate that a provided roll formula can represent a valid
-     * @param formula - A candidate formula to validate
-     * @returns Is the provided input a valid dice formula?
-     */
-    static validate(formula: string): boolean;
-
-    /**
      * Render the tooltip HTML for a Roll instance
      * @returns The rendered HTML tooltip as a string
      */
@@ -363,7 +360,7 @@ declare global {
      *                      (default: `{}`)
      * @returns The rendered HTML template as a string
      */
-    render(chatOptions?: Roll.ChatOptions): Promise<string>;
+    render(chatOptions?: ChatOptions): Promise<string>;
 
     /* -------------------------------------------- */
 
@@ -389,11 +386,23 @@ declare global {
     toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
       messageData: T,
       { rollMode, create }: { rollMode?: foundry.CONST.DiceRollMode; create: false }
-    ): Roll.MessageData<T>;
+    ): MessageData<T>;
     toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
       messageData: T,
       { rollMode, create }: { rollMode?: foundry.CONST.DiceRollMode; create: boolean }
-    ): Promise<ConfiguredDocumentClass<typeof ChatMessage>> | Roll.MessageData<T>;
+    ): Promise<ConfiguredDocumentClass<typeof ChatMessage>> | MessageData<T>;
+
+    /**
+     * Expand an inline roll element to display it's contained dice result as a tooltip
+     * @param a - The inline-roll button
+     */
+    static expandInlineResult(a: HTMLAnchorElement): Promise<void>;
+
+    /**
+     * Collapse an expanded inline roll to conceal it's tooltip
+     * @param a - The inline-roll button
+     */
+    static collapseInlineResult(a: HTMLAnchorElement): void;
 
     /**
      * Represent the data of the Roll as an object suitable for JSON serialization.
@@ -401,7 +410,7 @@ declare global {
      */
     toJSON(): {
       class: string;
-      options: Roll.Options;
+      options: Options;
       dice: DiceTerm[];
       formula: string;
       terms: RollTerm[];
@@ -414,7 +423,7 @@ declare global {
      * @param data - Unpacked data representing the Roll
      * @returns A reconstructed Roll instance
      */
-    static fromData<T extends Roll>(this: ConstructorOf<T>, data: Roll.Data): T;
+    static fromData<T extends Roll>(this: ConstructorOf<T>, data: Data): T;
 
     /**
      * Recreate a Roll instance using a provided JSON string
@@ -438,78 +447,68 @@ declare global {
      * roll.formula; // 4d8 + 8
      * ```
      */
-    static fromTerms<D extends Record<string, unknown>>(terms: RollTerm[], options?: Partial<Roll.Options>): Roll<D>;
-
-    /**
-     * Expand an inline roll element to display it's contained dice result as a tooltip
-     * @param a - The inline-roll button
-     */
-    static expandInlineResult(a: HTMLAnchorElement): Promise<void>;
-
-    /**
-     * Collapse an expanded inline roll to conceal it's tooltip
-     * @param a - The inline-roll button
-     */
-    static collapseInlineResult(a: HTMLAnchorElement): void;
-  }
-
-  namespace Roll {
-    // TODO: maybe move this to chat
-    interface ChatOptions {
-      /**
-       * @defaultValue `false`
-       */
-      blind?: boolean;
-
-      /**
-       * @defaultValue `null`
-       */
-      flavor?: any;
-
-      /**
-       * @defaultValue `false`
-       */
-      isPrivate?: boolean;
-
-      template?: string;
-
-      /**
-       * @defaultValue The id of the current user
-       */
-      user?: string;
-    }
-
-    type Options = RollTerm.EvaluationOptions;
-
-    interface SplitGroupOptions {
-      openRegexp: RegExp | string;
-      closeRegexp: RegExp | string;
-      openSymbol: string;
-      closeSymbol: string;
-      onClose: (group: { open: string; terms: string[]; close: string }) => string[];
-    }
-
-    interface Data {
-      formula: string;
-      results: Array<number | string>;
-      terms: Array<(PoolTerm.TermData & { class: 'DicePool' }) | DiceTerm.Data>;
-      total: number | null;
-    }
-
-    type Flavor = Record<`%F${number}%`, string>;
+    static fromTerms<D extends Record<string, unknown>>(terms: RollTerm[], options?: Partial<Options>): Roll<D>;
 
     /**
      * @deprecated since 0.8.1
      */
-    interface MathProxy extends Math {
-      safeEval: (arg: Parameters<typeof Roll['safeEval']>) => ReturnType<typeof Roll['safeEval']>;
-    }
-
-    type MessageData<T extends DeepPartial<ConstructorParameters<typeof ChatMessage>[0]>> = {
-      user: string;
-      type: typeof foundry.CONST.CHAT_MESSAGE_TYPES['ROLL'];
-      content: number;
-      sound: typeof CONFIG.sounds.dice;
-    } & T;
+    get _rolled(): boolean;
   }
 }
+
+interface ChatOptions {
+  /**
+   * @defaultValue `false`
+   */
+  blind?: boolean;
+
+  /**
+   * @defaultValue `null`
+   */
+  flavor?: any;
+
+  /**
+   * @defaultValue `false`
+   */
+  isPrivate?: boolean;
+
+  template?: string;
+
+  /**
+   * @defaultValue The id of the current user
+   */
+  user?: string;
+}
+
+type Options = RollTerm.EvaluationOptions;
+
+interface SplitGroupOptions {
+  openRegexp: RegExp | string;
+  closeRegexp: RegExp | string;
+  openSymbol: string;
+  closeSymbol: string;
+  onClose: (group: { open: string; terms: string[]; close: string }) => string[];
+}
+
+interface Data {
+  formula: string;
+  results: Array<number | string>;
+  terms: Array<(PoolTerm.TermData & { class: 'DicePool' }) | DiceTerm.Data>;
+  total: number | null;
+}
+
+type Flavor = Record<`%F${number}%`, string>;
+
+/**
+ * @deprecated since 0.8.1
+ */
+interface MathProxy extends Math {
+  safeEval: (arg: Parameters<typeof Roll['safeEval']>) => ReturnType<typeof Roll['safeEval']>;
+}
+
+type MessageData<T extends DeepPartial<ConstructorParameters<typeof ChatMessage>[0]>> = {
+  user: string;
+  type: typeof foundry.CONST.CHAT_MESSAGE_TYPES['ROLL'];
+  content: number;
+  sound: typeof CONFIG.sounds.dice;
+} & T;
