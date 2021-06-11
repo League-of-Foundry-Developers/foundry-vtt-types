@@ -1,4 +1,4 @@
-import { FieldReturnType } from '../../../../types/helperTypes';
+import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
@@ -89,6 +89,7 @@ interface ActiveEffectDataProperties {
 export declare class ActiveEffectData extends DocumentData<
   ActiveEffectDataSchema,
   ActiveEffectDataProperties,
+  PropertiesToSource<ActiveEffectDataProperties>,
   documents.BaseActiveEffect
 > {
   static defineSchema(): ActiveEffectDataSchema;

@@ -1,5 +1,5 @@
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
-import { ConfiguredDocumentClass, SourceDataType } from '../../../types/helperTypes';
+import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 
 declare global {
   /**
@@ -68,7 +68,7 @@ declare global {
      * ClientDocumentMixin.createDialog, for which a Promise of the created
      * Document is returned.
      */
-    static createDialog(data?: DeepPartial<SourceDataType<Folder>>, options?: Dialog.Options): any;
+    static createDialog(data?: DeepPartial<foundry.data.FolderData['_source']>, options?: Dialog.Options): any;
 
     /**
      * Export all Documents contained in this Folder to a given Compendium pack.

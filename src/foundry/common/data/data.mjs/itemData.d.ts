@@ -1,5 +1,11 @@
 import EmbeddedCollection from '../../abstract/embedded-collection.mjs';
-import { ConfiguredDocumentClass, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import {
+  ConfiguredData,
+  ConfiguredDocumentClass,
+  ConfiguredSource,
+  FieldReturnType,
+  PropertiesToSource
+} from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
@@ -22,7 +28,7 @@ interface ItemDataSchema extends DocumentSchema {
   flags: typeof fields.OBJECT_FIELD;
 }
 
-interface ItemDataProperties {
+interface ItemDataBaseProperties {
   /**
    * The _id which uniquely identifies this Item document
    */
@@ -78,23 +84,30 @@ interface ItemDataProperties {
   flags: Record<string, unknown>;
 }
 
-/**
- * The data schema for a Item document.
- * @see BaseItem
- */
-export declare class ItemData extends DocumentData<ItemDataSchema, ItemDataProperties, documents.BaseItem> {
-  static defineSchema(): ItemDataSchema;
+type ItemDataBaseSource = PropertiesToSource<ItemDataBaseProperties>;
+type ItemDataProperties = ItemDataBaseProperties & ConfiguredData<'Item'>;
+type ItemDataSource = ItemDataBaseSource & ConfiguredSource<'Item'>;
+
+type DocumentDataConstructor = typeof DocumentData;
+
+interface ItemDataConstructor extends DocumentDataConstructor {
+  new (data?: DeepPartial<ItemDataSource>, document?: documents.BaseItem | null): ItemData;
+
+  defineSchema(): ItemDataSchema;
 
   /**
    * The default icon used for newly created Item documents
    * @defaultValue `"icons/svg/item-bag.svg"`
    */
-  static DEFAULT_ICON: string;
-
-  protected _initializeSource(
-    data: DeepPartial<PropertiesToSource<ItemDataProperties>>
-  ): PropertiesToSource<ItemDataProperties>;
+  DEFAULT_ICON: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface ItemData extends ItemDataProperties {}
+/**
+ * The data schema for a Item document.
+ * @see BaseItem
+ */
+export type ItemData = DocumentData<ItemDataSchema, ItemDataProperties, ItemDataSource, documents.BaseItem> &
+  ItemDataProperties & {
+    _initializeSource(data: DeepPartial<ItemDataSource>): ItemDataSource;
+  };
+export declare const ItemData: ItemDataConstructor;

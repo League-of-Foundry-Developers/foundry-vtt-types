@@ -2,6 +2,7 @@ import { DocumentData } from '../../abstract/module.mjs';
 import { BaseActiveEffect } from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 import * as CONST from '../../constants.mjs';
+import { PropertiesToSource } from '../../../../types/helperTypes';
 
 interface EffectChangeDataSchema extends DocumentSchema {
   key: typeof fields.BLANK_STRING;
@@ -45,6 +46,7 @@ interface EffectChangeDataProperties {
 export declare class EffectChangeData extends DocumentData<
   EffectChangeDataSchema,
   EffectChangeDataProperties,
+  PropertiesToSource<EffectChangeDataProperties>,
   BaseActiveEffect
 > {
   static defineSchema(): EffectChangeDataSchema;

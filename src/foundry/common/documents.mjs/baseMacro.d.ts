@@ -1,7 +1,6 @@
 import * as data from '../data/data.mjs';
 import { Document } from '../abstract/module.mjs';
 import { DocumentMetadata, DocumentModificationOptions } from '../abstract/document.mjs';
-import { SourceDataType } from '../../../types/helperTypes';
 import { BaseUser } from './baseUser';
 
 /**
@@ -27,7 +26,7 @@ export declare class BaseMacro extends Document<data.MacroData> {
   >;
 
   protected _preCreate(
-    data: DeepPartial<SourceDataType<data.MacroData>>,
+    data: DeepPartial<data.MacroData['_source']>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;

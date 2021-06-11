@@ -1,5 +1,5 @@
 import { DocumentMetadata, DocumentModificationOptions } from '../abstract/document.mjs';
-import { ConfiguredDocumentClass, SourceDataType } from '../../../types/helperTypes';
+import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { Document } from '../abstract/module.mjs';
 import * as data from '../data/data.mjs';
 import { BaseActor } from './baseActor';
@@ -26,7 +26,7 @@ export declare class BaseActiveEffect extends Document<
   >;
 
   protected _preCreate(
-    data: DeepPartial<SourceDataType<data.ActiveEffectData>>,
+    data: DeepPartial<data.ActiveEffectData['_source']>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;

@@ -1,3 +1,4 @@
+import { PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import { BaseActiveEffect } from '../../documents.mjs';
 import * as fields from '../fields.mjs';
@@ -56,6 +57,7 @@ interface EffectDurationDataProperties {
 export declare class EffectDurationData extends DocumentData<
   EffectDurationDataSchema,
   EffectDurationDataProperties,
+  PropertiesToSource<EffectDurationDataProperties>,
   BaseActiveEffect
 > {
   static defineSchema(): EffectDurationDataSchema;
