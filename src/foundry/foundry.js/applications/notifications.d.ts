@@ -27,7 +27,7 @@ declare class Notifications extends Application {
   initialize(): void;
 
   /** @override */
-  protected _renderInner(data: object, options?: Application.RenderOptions): JQuery;
+  protected _renderInner(data: object): JQuery;
 
   /** @override */
   protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;

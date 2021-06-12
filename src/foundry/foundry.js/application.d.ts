@@ -1,6 +1,3 @@
-declare const MIN_WINDOW_HEIGHT: 50;
-declare const MIN_WINDOW_WIDTH: 200;
-
 /**
  * @defaultValue `0`
  */
@@ -10,6 +7,9 @@ declare let _appId: number;
  * @defaultValue `100`
  */
 declare let _maxZ: number;
+
+declare const MIN_WINDOW_WIDTH: 200;
+declare const MIN_WINDOW_HEIGHT: 50;
 
 /**
  * The standard application window that is rendered for a large variety of UI elements in Foundry VTT.
@@ -75,15 +75,37 @@ declare class Application<P extends Application.Options = Application.Options> {
 
   /**
    * Track the render state of the Application
-   * @defaultValue {@link ApplicationRenderState.None}
+   * @defaultValue {@link Application.RENDER_STATES.NONE}
    * @see {@link Application.RENDER_STATES}
    */
   protected _state: Application.RenderState;
 
   /**
-   * Track the most recent scroll positions for any vertically scrolling containers
+   * The prior render state of this Application.
+   * This allows for rendering logic to understand if the application is being rendered for the first time.
+   * @defaultValue {@link Application.RENDER_STATES.NONE}
+   * @see {@link Application.RENDER_STATES}
    */
-  protected _scrollPositions: Partial<Record<string, number>>;
+  protected _priorState: Application.RenderState;
+
+  /**
+   * Track the most recent scroll positions for any vertically scrolling containers
+   * @defaultValue `null`
+   */
+  protected _scrollPositions: Partial<Record<string, number>> | null;
+
+  /**
+   * The sequence of rendering states that track the Application life-cycle.
+   * @see {@link Application.RenderState}
+   */
+  static RENDER_STATES: Readonly<{
+    CLOSING: -2;
+    CLOSED: -1;
+    NONE: 0;
+    RENDERING: 1;
+    RENDERED: 2;
+    ERROR: 3;
+  }>;
 
   /**
    * Create drag-and-drop workflow handlers for this Application
@@ -145,7 +167,7 @@ declare class Application<P extends Application.Options = Application.Options> {
    * An application should define the data object used to render its template.
    * This function may either return an Object directly, or a Promise which resolves to an Object
    * If undefined, the default implementation will return an empty object allowing only for rendering of static HTML
-   * @param options - (unused)
+   * @param options - (unused, default: `{}`)
    */
   getData(options?: Application.RenderOptions): object | Promise<object>;
 
@@ -159,8 +181,10 @@ declare class Application<P extends Application.Options = Application.Options> {
    * @param options - Additional rendering options which are applied to customize the way that the Application
    *                  is rendered in the DOM.
    *                  (default: `{}`)
+   * @returns The rendered Application instance
+   *          Some subclasses return other results.
    */
-  render(force?: boolean, options?: Application.RenderOptions): unknown;
+  render(force?: boolean, options?: Application.RenderOptions): this | unknown;
 
   /**
    * An asynchronous inner function which handles the rendering of the Application
@@ -175,49 +199,46 @@ declare class Application<P extends Application.Options = Application.Options> {
   /**
    * Return the inheritance chain for this Application class up to (and including) it's base Application class.
    */
-  protected static _getInheritanceChain(): Application[];
+  protected static _getInheritanceChain(): typeof Application[];
 
   /**
    * Persist the scroll positions of containers within the app before re-rendering the content
-   * @param html      - The HTML object being traversed
-   * @param selectors - CSS selectors which designate elements to save
+   * @param html - The HTML object being traversed
    */
-  protected _saveScrollPositions(html: JQuery, selectors: string[]): void;
+  protected _saveScrollPositions(html: JQuery): void;
 
   /**
    * Restore the scroll positions of containers within the app after re-rendering the content
-   * @param html      - The HTML object being traversed
-   * @param selectors - CSS selectors which designate elements to restore
+   * @param html - The HTML object being traversed
    */
-  protected _restoreScrollPositions(html: JQuery, selectors: string[]): void;
+  protected _restoreScrollPositions(html: JQuery): void;
 
   /**
    * Render the outer application wrapper
    * @returns A promise resolving to the constructed jQuery object
    */
-  protected _renderOuter(options: Application.RenderOptions): Promise<HTMLElement> | Promise<JQuery<JQuery.Node>>;
+  protected _renderOuter(): Promise<HTMLElement> | Promise<JQuery<JQuery.Node>>;
 
   /**
    * Render the inner application content
-   * @param data    - The data used to render the inner template
-   * @param options - (unused)
+   * @param data - The data used to render the inner template
    * @returns A promise resolving to the constructed jQuery object
+   *          Some subclasses do not return a promise but the jQuery object directly.
    */
-  protected _renderInner(data: object, options?: Application.RenderOptions): JQuery | Promise<JQuery>;
+  protected _renderInner(data: object): Promise<JQuery> | JQuery;
 
   /**
    * Customize how inner HTML is replaced when the application is refreshed
    * @param element - The original HTML element
    * @param html    - New updated HTML
-   * @param options - (unused)
    */
-  protected _replaceHTML(element: JQuery, html: JQuery, options?: Application.RenderOptions): void;
+  protected _replaceHTML(element: JQuery, html: JQuery): void;
 
   /**
    * Customize how a new HTML Application is added and first appears in the DOC
-   * @param options - (unused)
+   * @param html - The HTML element which is ready to be added to the DOM
    */
-  protected _injectHTML(html: JQuery, options?: Application.RenderOptions): void;
+  protected _injectHTML(html: JQuery): void;
 
   /**
    * Specify the set of config buttons which should appear in the Application header.
@@ -241,7 +262,7 @@ declare class Application<P extends Application.Options = Application.Options> {
    * @param active - The new active tab name
    *                 (unused)
    */
-  protected _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: string): void;
+  protected _onChangeTab(event: MouseEvent, tabs: Tabs, active: string): void;
 
   /**
    * Handle changes to search filtering controllers which are bound to the Application
@@ -249,10 +270,12 @@ declare class Application<P extends Application.Options = Application.Options> {
    *                (unused)
    * @param query - The regular expression to test against
    *                (unused)
+   * @param rgx   - The regular expression to test against
+   *                (unused)
    * @param html  - The HTML element which should be filtered
    *                (unused)
    */
-  protected _onSearchFilter(event: KeyboardEvent, query: string, html: HTMLElement): void;
+  protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
   /**
    * Define whether a user is able to begin a dragstart workflow for a given drag selector
@@ -260,7 +283,7 @@ declare class Application<P extends Application.Options = Application.Options> {
    *                   (unused)
    * @returns Can the current user drag this selector?
    */
-  protected _canDragStart(selector: string | null): boolean;
+  protected _canDragStart(selector: string): boolean;
 
   /**
    * Define whether a user is able to conclude a drag-and-drop workflow for a given drop selector
@@ -268,7 +291,7 @@ declare class Application<P extends Application.Options = Application.Options> {
    *                   (unused)
    * @returns Can the current user drop on this selector?
    */
-  protected _canDragDrop(selector: string | null): boolean;
+  protected _canDragDrop(selector: string): boolean;
 
   /**
    * Callback actions which occur at the beginning of a drag start workflow.
@@ -302,7 +325,7 @@ declare class Application<P extends Application.Options = Application.Options> {
    * @param options - (default: `{}`)
    * @returns A Promise which resolves once the application is closed
    */
-  close(options?: Application.CloseOptions): Promise<unknown>;
+  close(options?: Application.CloseOptions): Promise<void>;
 
   /**
    * Minimize the pop-out window, collapsing it to a small tab
@@ -327,30 +350,24 @@ declare class Application<P extends Application.Options = Application.Options> {
    * @param scale  - The application scale as a numeric factor where 1.0 is default
    * @returns The updated position object for the application containing the new values
    */
-  setPosition(appPos?: Partial<Application.Position>): Application.Position & { height: number };
+  setPosition({
+    left,
+    top,
+    width,
+    height,
+    scale
+  }?: Partial<Application.Position>): Application.Position & { height: number };
 
   /**
-   * Handle application minimization behavior - collapsing content and reducing
-   * the size of the header
+   * Handle application minimization behavior - collapsing content and reducing the size of the header
    */
   protected _onToggleMinimize(ev: Event): void;
 
   /**
    * Additional actions to take when the application window is resized
+   * @param event - (unused)
    */
   protected _onResize(event: Event): void;
-
-  /**
-   * @see {@link Application.RenderState}
-   */
-  static RENDER_STATES: Readonly<{
-    CLOSING: -2;
-    CLOSED: -1;
-    NONE: 0;
-    RENDERING: 1;
-    RENDERED: 2;
-    ERROR: 3;
-  }>;
 }
 
 declare namespace Application {
@@ -359,9 +376,9 @@ declare namespace Application {
   }
 
   interface HeaderButton {
+    label: string;
     class: string;
     icon: string;
-    label: string;
     onclick: ((ev: JQuery.ClickEvent) => void) | null;
   }
 
@@ -427,22 +444,6 @@ declare namespace Application {
     classes: string[];
 
     /**
-     * @defaultValue `[]`
-     */
-    dragDrop: Omit<DragDrop.Options, 'permissions' | 'callbacks'>[];
-
-    /**
-     * Track Tab navigation handlers which are active for this Application
-     * @defaultValue `[]`
-     */
-    tabs: Omit<Tabs.Options, 'callback'>[];
-
-    /**
-     * @defaultValue `[]`
-     */
-    filters: Omit<SearchFilter.Options, 'callback'>[];
-
-    /**
      * A default window title string (popOut only)
      * @defaultValue `''`
      */
@@ -460,6 +461,22 @@ declare namespace Application {
      * @defaultValue `[]`
      */
     scrollY: string[];
+
+    /**
+     * Track Tab navigation handlers which are active for this Application
+     * @defaultValue `[]`
+     */
+    tabs: Omit<Tabs.Options, 'callback'>[];
+
+    /**
+     * @defaultValue `[]`
+     */
+    dragDrop: Omit<DragDrop.Options, 'permissions' | 'callbacks'>[];
+
+    /**
+     * @defaultValue `[]`
+     */
+    filters: Omit<SearchFilter.Options, 'callback'>[];
   }
 
   interface Position {
@@ -471,8 +488,6 @@ declare namespace Application {
   }
 
   interface RenderOptions {
-    classes?: string[];
-
     /**
      * The left positioning attribute
      */
@@ -499,9 +514,10 @@ declare namespace Application {
     scale?: number;
 
     /**
-     * Whether to display a log message that the Application was rendered
+     * Apply focus to the application, maximizing it and bringing it to the top of the vertical stack.
+     * @defaultValue `false`
      */
-    log?: boolean;
+    focus?: boolean;
 
     /**
      * A context-providing string which suggests what event triggered the render

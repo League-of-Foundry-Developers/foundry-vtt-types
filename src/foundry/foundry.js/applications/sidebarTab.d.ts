@@ -40,7 +40,7 @@ declare abstract class SidebarTab<P extends SidebarTab.Options = SidebarTab.Opti
   /**
    * @override
    */
-  close(options?: Application.CloseOptions): Promise<void | false>;
+  close(options?: Application.CloseOptions): Promise<void>;
 
   /**
    * Create a second instance of this SidebarTab class which represents a singleton popped-out container
