@@ -136,15 +136,15 @@ declare abstract class Document<
    * @returns The cloned Document instance
    */
   clone(
-    data?: DeepPartial<ConcreteDocumentData['_source']>,
+    data?: DeepPartial<Parameters<ConcreteDocumentData['_initializeSource']>[0]>,
     { save, keepId }?: { save: false; keepId?: boolean }
   ): this;
   clone(
-    data: DeepPartial<ConcreteDocumentData['_source']>,
+    data: DeepPartial<Parameters<ConcreteDocumentData['_initializeSource']>[0]>,
     { save, keepId }: { save: true; keepId?: boolean }
   ): Promise<this>;
   clone(
-    data: DeepPartial<ConcreteDocumentData['_source']>,
+    data: DeepPartial<Parameters<ConcreteDocumentData['_initializeSource']>[0]>,
     { save, keepId }: { save: boolean; keepId?: boolean }
   ): this | Promise<this>;
 
@@ -216,7 +216,7 @@ declare abstract class Document<
    */
   static createDocuments<T extends DocumentConstructor>(
     this: T,
-    data?: Array<DeepPartial<InstanceType<T>['data']['_source']> & Record<string, unknown>>,
+    data?: Array<Parameters<InstanceType<T>['data']['_initializeSource']>[0] & Record<string, unknown>>,
     context?: DocumentModificationContext
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
@@ -257,7 +257,12 @@ declare abstract class Document<
    */
   static updateDocuments<T extends DocumentConstructor>(
     this: T,
-    updates?: Array<DeepPartial<InstanceType<T>['data']['_source']> & { _id: string } & Record<string, unknown>>,
+    updates?: Array<
+      DeepPartial<Parameters<InstanceType<T>['data']['_initializeSource']>[0]> & { _id: string } & Record<
+          string,
+          unknown
+        >
+    >,
     context?: DocumentModificationContext
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
@@ -333,7 +338,7 @@ declare abstract class Document<
    */
   static create<T extends DocumentConstructor>(
     this: T,
-    data?: DeepPartial<InstanceType<T>['data']['_source']> & Record<string, unknown>,
+    data?: Parameters<InstanceType<T>['data']['_initializeSource']>[0] & Record<string, unknown>,
     context?: DocumentModificationContext
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>>;
 
@@ -347,7 +352,7 @@ declare abstract class Document<
    * @returns The updated Document instance
    */
   update(
-    data?: DeepPartial<ConcreteDocumentData['_source']> & Record<string, unknown>,
+    data?: DeepPartial<Parameters<ConcreteDocumentData['_initializeSource']>[0]> & Record<string, unknown>,
     context?: DocumentModificationContext
   ): Promise<this>;
 
@@ -474,7 +479,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document creation
    */
   protected _preCreate(
-    data: DeepPartial<ConcreteDocumentData['_source']>,
+    data: Parameters<ConcreteDocumentData['_initializeSource']>[0],
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
@@ -487,7 +492,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document update
    */
   protected _preUpdate(
-    changed: DeepPartial<ConcreteDocumentData['_source']> & Record<string, unknown>,
+    changed: DeepPartial<Parameters<ConcreteDocumentData['_initializeSource']>[0]> & Record<string, unknown>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
@@ -508,7 +513,7 @@ declare abstract class Document<
    * @param user   - The id of the User requesting the document update
    */
   protected _onCreate(
-    data: DeepPartial<ConcreteDocumentData['_source']>,
+    data: ConcreteDocumentData['_source'],
     options: DocumentModificationOptions,
     userId: string
   ): void;

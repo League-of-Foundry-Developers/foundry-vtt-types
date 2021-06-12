@@ -133,7 +133,7 @@ declare global {
     protected _getSourceName(): Promise<string>;
 
     protected _preCreate(
-      data: DeepPartial<foundry.data.ActiveEffectData['_source']>,
+      data: DeepPartial<Parameters<foundry.data.ActiveEffectData['_initializeSource']>[0]>,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;
