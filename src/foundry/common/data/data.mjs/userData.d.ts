@@ -1,4 +1,4 @@
-import { FieldReturnType } from '../../../../types/helperTypes';
+import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import DocumentData from '../../abstract/data.mjs';
 import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
@@ -23,7 +23,7 @@ interface UserDataSchema extends DocumentSchema {
       validate: typeof _validatePermissions;
     }
   >;
-  role: DocumentField<Number> & {
+  role: DocumentField<number> & {
     required: true;
     nullable: false;
     default: typeof CONST.USER_ROLES.PLAYER;
@@ -47,7 +47,12 @@ interface UserDataProperties {
 /**
  * The data schema for a Folder document.
  */
-export declare class UserData extends DocumentData<UserDataSchema, UserDataProperties, documents.BaseUser> {
+export declare class UserData extends DocumentData<
+  UserDataSchema,
+  UserDataProperties,
+  PropertiesToSource<UserDataProperties>,
+  documents.BaseUser
+> {
   static defineSchema(): UserDataSchema;
 }
 
