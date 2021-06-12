@@ -136,7 +136,7 @@ declare global {
     protected _onCreate(): void;
 
     /** @override */
-    protected _onUpdate(data: Wall.Data): void;
+    protected _onUpdate(changed: DeepPartial<BaseWall['data']>, options?: any, userId?: string): void;
 
     /** @override */
     protected _onDelete(): void;
