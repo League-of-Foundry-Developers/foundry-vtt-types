@@ -1,6 +1,7 @@
 import { DocumentData } from '../../abstract/module.mjs';
 import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
+import { PropertiesToSource } from '../../../../types/helperTypes';
 
 type EntityPermissions = ValueOf<typeof CONST.ENTITY_PERMISSIONS>;
 
@@ -63,7 +64,7 @@ interface JournalEntryDataProperties {
   flags: Record<string, unknown>;
 }
 
-interface JournalEntryUpdateArgs {
+interface JournalEntryConstructorData {
   _id?: string | null;
   name: string;
   content?: string | null;
@@ -77,8 +78,9 @@ interface JournalEntryUpdateArgs {
 export declare class JournalEntryData extends DocumentData<
   JournalEntryDataSchema,
   JournalEntryDataProperties,
-  documents.BaseJournalEntry,
-  JournalEntryUpdateArgs
+  PropertiesToSource<JournalEntryDataProperties>,
+  JournalEntryConstructorData,
+  documents.BaseJournalEntry
 > {
   static defineSchema(): JournalEntryDataSchema;
 }

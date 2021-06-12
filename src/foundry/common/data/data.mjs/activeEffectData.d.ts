@@ -1,4 +1,4 @@
-import { FieldReturnType } from '../../../../types/helperTypes';
+import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
@@ -82,7 +82,7 @@ interface ActiveEffectDataProperties {
   flags: Record<string, unknown>;
 }
 
-interface ActiveEffectDataUpdateArgs {
+interface ActiveEffectDataConstructorData {
   _id?: string | null;
   changes?: EffectChangeData[] | null;
   disabled?: boolean | null;
@@ -102,8 +102,9 @@ interface ActiveEffectDataUpdateArgs {
 export declare class ActiveEffectData extends DocumentData<
   ActiveEffectDataSchema,
   ActiveEffectDataProperties,
-  documents.BaseActiveEffect,
-  ActiveEffectDataUpdateArgs
+  PropertiesToSource<ActiveEffectDataProperties>,
+  ActiveEffectDataConstructorData,
+  documents.BaseActiveEffect
 > {
   static defineSchema(): ActiveEffectDataSchema;
 }

@@ -31,12 +31,21 @@ interface PackageAuthorDataProperties {
   discord?: string;
 }
 
+interface PackageAuthorDataConstructorData {
+  name: string;
+  email?: string | null;
+  url?: string | null;
+  discord?: string | null;
+}
+
 /**
  * An inner data object which represents a single package author in the authors array.
  */
 export declare class PackageAuthorData extends DocumentData<
   PackageAuthorDataSchema,
   PackageAuthorDataProperties,
+  PropertiesToSource<PackageAuthorDataProperties>,
+  PackageAuthorDataConstructorData,
   null
 > {
   constructor(data?: DeepPartial<PropertiesToSource<PackageAuthorDataProperties>>, document?: null);

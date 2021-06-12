@@ -1,4 +1,4 @@
-import { FieldReturnType } from '../../../../types/helperTypes';
+import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as CONST from '../../constants.mjs';
 import { BaseAmbientLight } from '../../documents.mjs';
@@ -127,7 +127,7 @@ interface AmbientLightDataProperties {
   flags: Record<string, unknown>;
 }
 
-interface AmbientLightDataUpdateArgs {
+interface AmbientLightDataConstructorData {
   _id?: string | null;
   t?: CONST.SourceType | null;
   x?: number | null;
@@ -152,8 +152,9 @@ interface AmbientLightDataUpdateArgs {
 export declare class AmbientLightData extends DocumentData<
   AmbientLightDataSchema,
   AmbientLightDataProperties,
-  BaseAmbientLight,
-  AmbientLightDataUpdateArgs
+  PropertiesToSource<AmbientLightDataProperties>,
+  AmbientLightDataConstructorData,
+  BaseAmbientLight
 > {
   static defineSchema(): AmbientLightDataSchema;
 }

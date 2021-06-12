@@ -1,5 +1,11 @@
 import EmbeddedCollection from '../../abstract/embedded-collection.mjs';
-import { ConfiguredDocumentClass, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import {
+  ConfiguredData,
+  ConfiguredDocumentClass,
+  ConfiguredSource,
+  FieldReturnType,
+  PropertiesToSource
+} from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
@@ -24,7 +30,7 @@ interface ItemDataSchema extends DocumentSchema {
   flags: typeof fields.OBJECT_FIELD;
 }
 
-interface ItemDataProperties {
+interface ItemDataBaseProperties {
   /**
    * The _id which uniquely identifies this Item document
    */
@@ -81,12 +87,12 @@ interface ItemDataProperties {
   flags: Record<string, unknown>;
 }
 
-interface ItemDataUpdateArgs {
+interface ItemDataConstructorData {
   _id?: string | null;
   name: string;
-  type: string;
+  type: ItemDataSource['type'];
   img?: string | null;
-  data?: object | null;
+  data?: DeepPartial<ItemDataSource['data']> | null;
   effects?: ConfiguredDocumentClass<typeof documents.BaseActiveEffect>[] | null;
   folder?: string | null;
   sort?: number | null;
@@ -94,26 +100,36 @@ interface ItemDataUpdateArgs {
   flags?: Record<string, unknown> | null;
 }
 
-/**
- * The data schema for a Item document.
- * @see BaseItem
- */
-export declare class ItemData extends DocumentData<
-  ItemDataSchema,
-  ItemDataProperties,
-  documents.BaseItem,
-  ItemDataUpdateArgs
-> {
-  static defineSchema(): ItemDataSchema;
+type ItemDataBaseSource = PropertiesToSource<ItemDataBaseProperties>;
+type ItemDataProperties = ItemDataBaseProperties & ConfiguredData<'Item'>;
+type ItemDataSource = ItemDataBaseSource & ConfiguredSource<'Item'>;
+
+type DocumentDataConstructor = typeof DocumentData;
+
+interface ItemDataConstructor extends DocumentDataConstructor {
+  new (data?: ItemDataConstructorData, document?: documents.BaseItem | null): ItemData;
+
+  defineSchema(): ItemDataSchema;
 
   /**
    * The default icon used for newly created Item documents
    * @defaultValue `"icons/svg/item-bag.svg"`
    */
-  static DEFAULT_ICON: string;
-
-  _initializeSource(data: ItemDataUpdateArgs): PropertiesToSource<ItemDataProperties>;
+  DEFAULT_ICON: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface ItemData extends ItemDataProperties {}
+/**
+ * The data schema for a Item document.
+ * @see BaseItem
+ */
+export type ItemData = DocumentData<
+  ItemDataSchema,
+  ItemDataProperties,
+  ItemDataSource,
+  ItemDataConstructorData,
+  documents.BaseItem
+> &
+  ItemDataProperties & {
+    _initializeSource(data: ItemDataConstructorData): ItemDataSource;
+  };
+export declare const ItemData: ItemDataConstructor;

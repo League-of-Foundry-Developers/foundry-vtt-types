@@ -1,5 +1,3 @@
-import { SourceDataType } from '../../../../types/helperTypes';
-
 declare global {
   /**
    * The Collection of Macro entities
@@ -14,8 +12,8 @@ declare global {
     get directory(): MacroDirectory;
 
     fromCompendium(
-      document: foundry.documents.BaseMacro | SourceDataType<foundry.documents.BaseMacro>
-    ): SourceDataType<foundry.documents.BaseMacro> | ReturnType<foundry.documents.BaseMacro['toObject']>; // TODO: Improve
+      document: foundry.documents.BaseMacro | foundry.data.MacroData['_source']
+    ): Omit<foundry.data.MacroData['_source'], '_id' | 'folder'>; // TODO: Improve
 
     /**
      * @deprecated since 0.8.1
@@ -23,3 +21,5 @@ declare global {
     static canUseScripts(user: User): boolean;
   }
 }
+
+export {};

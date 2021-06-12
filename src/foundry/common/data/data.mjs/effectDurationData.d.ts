@@ -1,3 +1,4 @@
+import { PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import { BaseActiveEffect } from '../../documents.mjs';
 import * as fields from '../fields.mjs';
@@ -50,7 +51,7 @@ interface EffectDurationDataProperties {
   startTurn?: number;
 }
 
-interface EffectDurationDataUpdateArgs {
+interface EffectDurationDataConstructorData {
   startTime?: number | null;
   seconds?: number | null;
   combat?: string | null;
@@ -67,8 +68,9 @@ interface EffectDurationDataUpdateArgs {
 export declare class EffectDurationData extends DocumentData<
   EffectDurationDataSchema,
   EffectDurationDataProperties,
-  BaseActiveEffect,
-  EffectDurationDataUpdateArgs
+  PropertiesToSource<EffectDurationDataProperties>,
+  EffectDurationDataConstructorData,
+  BaseActiveEffect
 > {
   static defineSchema(): EffectDurationDataSchema;
 }

@@ -1,6 +1,7 @@
 import DocumentData from '../../abstract/data.mjs';
 import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
+import { PropertiesToSource } from '../../../../types/helperTypes';
 
 type FolderEntityTypes = ValueOf<typeof CONST.FOLDER_ENTITY_TYPES>;
 type SortingModes = ValueOf<typeof FolderData.SORTING_MODES>;
@@ -79,7 +80,7 @@ interface FolderDataProperties {
   flags: Record<string, unknown>;
 }
 
-interface FolderDataUpdateArgs {
+interface FolderDataConstructorData {
   _id?: string | null;
   name: string;
   type: FolderEntityTypes;
@@ -97,8 +98,9 @@ interface FolderDataUpdateArgs {
 export declare class FolderData extends DocumentData<
   FolderDataSchema,
   FolderDataProperties,
-  documents.BaseFolder,
-  FolderDataUpdateArgs
+  PropertiesToSource<FolderDataProperties>,
+  FolderDataConstructorData,
+  documents.BaseFolder
 > {
   static defineSchema(): FolderDataSchema;
 

@@ -1,4 +1,4 @@
-import { FieldReturnType } from '../../../../types/helperTypes';
+import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import { BaseAmbientLight } from '../../documents.mjs';
 import * as fields from '../fields.mjs';
@@ -22,7 +22,7 @@ interface DarknessActivationProperties {
   max: number;
 }
 
-interface DarknessActivationUpdateArgs {
+interface DarknessActivationConstructorData {
   min?: number | null;
   max?: number | null;
 }
@@ -33,8 +33,9 @@ interface DarknessActivationUpdateArgs {
 export declare class DarknessActivation extends DocumentData<
   DarknessActivationSchema,
   DarknessActivationProperties,
-  BaseAmbientLight,
-  DarknessActivationUpdateArgs
+  PropertiesToSource<DarknessActivationProperties>,
+  DarknessActivationConstructorData,
+  BaseAmbientLight
 > {
   static defineSchema(): DarknessActivationSchema;
 }

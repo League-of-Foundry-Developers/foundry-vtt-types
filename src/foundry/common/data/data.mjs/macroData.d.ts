@@ -1,4 +1,4 @@
-import { FieldReturnType } from '../../../../types/helperTypes';
+import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
@@ -101,7 +101,7 @@ interface MacroDataProperties {
   flags: Record<string, unknown>;
 }
 
-interface MacroDataUpdateArgs {
+interface MacroDataConstructorData {
   _id?: string | null;
   name: string;
   type?: MacroTypes | null;
@@ -122,8 +122,9 @@ interface MacroDataUpdateArgs {
 export declare class MacroData extends DocumentData<
   MacroDataSchema,
   MacroDataProperties,
-  documents.BaseMacro,
-  MacroDataUpdateArgs
+  PropertiesToSource<MacroDataProperties>,
+  MacroDataConstructorData,
+  documents.BaseMacro
 > {
   static defineSchema(): MacroDataSchema;
 }

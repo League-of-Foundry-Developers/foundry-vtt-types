@@ -1,6 +1,6 @@
 import _Collection from '../utils/collection.mjs';
 import { AnyDocumentData } from './data.mjs';
-import { DocumentConstructor, SourceDataType } from '../../../types/helperTypes';
+import { DocumentConstructor, ToObjectFalseType } from '../../../types/helperTypes';
 
 type Collection<T> = Omit<_Collection<T>, 'set' | 'delete'>;
 
@@ -29,7 +29,7 @@ declare class EmbeddedCollection<
    */
   constructor(
     documentData: ParentDocumentData,
-    sourceArray: DeepPartial<SourceDataType<InstanceType<ContainedDocumentConstructor>>>[],
+    sourceArray: ConstructorParameters<ContainedDocumentConstructor>[0][],
     documentClass: ContainedDocumentConstructor
   );
 
@@ -51,7 +51,7 @@ declare class EmbeddedCollection<
   /**
    * The source data array from which the embedded collection is created
    */
-  readonly _source: DeepPartial<SourceDataType<InstanceType<ContainedDocumentConstructor>>>[];
+  readonly _source: DeepPartial<InstanceType<ContainedDocumentConstructor>['data']['_source']>[];
 
   /**
    * Initialize the EmbeddedCollection object by constructing its contained Document instances
@@ -73,7 +73,7 @@ declare class EmbeddedCollection<
    * @returns The extracted array of primitive objects
    */
   toObject(source?: true): ReturnType<InstanceType<ContainedDocumentConstructor>['data']['toJSON']>[];
-  toObject(source: false): ReturnType<InstanceType<ContainedDocumentConstructor>['data']['toObject']>[];
+  toObject(source: false): ToObjectFalseType<InstanceType<ContainedDocumentConstructor>['data']>;
 }
 
 export default EmbeddedCollection;

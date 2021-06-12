@@ -1,3 +1,4 @@
+import { PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import { BaseAmbientLight } from '../../documents.mjs';
 import * as fields from '../fields.mjs';
@@ -39,7 +40,7 @@ interface AnimationDataProperties {
   intensity: number;
 }
 
-interface AnimationDataUpdateArgs {
+interface AnimationDataConstructorData {
   type?: string | null;
   speed?: number | null;
   intensity?: number | null;
@@ -51,8 +52,9 @@ interface AnimationDataUpdateArgs {
 export declare class AnimationData extends DocumentData<
   AnimationDataSchema,
   AnimationDataProperties,
-  BaseAmbientLight,
-  AnimationDataUpdateArgs
+  PropertiesToSource<AnimationDataProperties>,
+  AnimationDataConstructorData,
+  BaseAmbientLight
 > {
   static defineSchema(): AnimationDataSchema;
 }
