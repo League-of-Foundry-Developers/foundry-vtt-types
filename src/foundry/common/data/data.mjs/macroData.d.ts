@@ -1,4 +1,4 @@
-import { FieldReturnType } from '../../../../types/helperTypes';
+import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
@@ -100,7 +100,12 @@ interface MacroDataProperties {
  * The data schema for a Macro document.
  * @see BaseMacro
  */
-export declare class MacroData extends DocumentData<MacroDataSchema, MacroDataProperties, documents.BaseMacro> {
+export declare class MacroData extends DocumentData<
+  MacroDataSchema,
+  MacroDataProperties,
+  PropertiesToSource<MacroDataProperties>,
+  documents.BaseMacro
+> {
   static defineSchema(): MacroDataSchema;
 }
 

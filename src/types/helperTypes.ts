@@ -1,10 +1,11 @@
-import DocumentData from '../foundry/common/abstract/data.mjs';
+import DocumentData, { AnyDocumentData } from '../foundry/common/abstract/data.mjs';
 import Document from '../foundry/common/abstract/document.mjs';
 import EmbeddedCollection from '../foundry/common/abstract/embedded-collection.mjs';
 
-export type PropertiesDataType<T extends Document<any, any> | DocumentData<any, any, any>> = T extends DocumentData<
+export type PropertiesDataType<T extends Document<any, any> | AnyDocumentData> = T extends DocumentData<
   any,
   infer U,
+  any,
   any
 >
   ? U
@@ -16,17 +17,19 @@ type PropertyTypeToSourceType<T> = T extends EmbeddedCollection<infer U, any>
   ? SourceDataType<InstanceType<U>>[]
   : T extends Array<infer U>
   ? Array<PropertyTypeToSourceType<U>>
-  : T extends DocumentData<any, infer U, any>
-  ? PropertyTypeToSourceType<U>
+  : T extends AnyDocumentData
+  ? SourceDataType<T>
   : T;
 
 export type PropertiesToSource<T extends object> = {
   [Key in keyof T]: PropertyTypeToSourceType<T[Key]>;
 };
 
-export type SourceDataType<T extends Document<any, any> | DocumentData<any, any, any>> = PropertiesToSource<
-  PropertiesDataType<T>
->;
+type SourceDataType<T extends Document<any, any> | AnyDocumentData> = T extends DocumentData<any, any, infer U, any>
+  ? U
+  : T extends Document<infer U, any>
+  ? SourceDataType<U>
+  : never;
 
 type ObjectToDeepPartial<T> = T extends object ? DeepPartial<T> : T;
 
@@ -45,8 +48,14 @@ export type ConfiguredDocumentClass<T extends DocumentConstructor> = T['metadata
     : never
   : T;
 
-export type ConfiguredData<Name extends string, T extends DocumentData<any, any, any>> = Name extends keyof DataConfig
-  ? DataConfig[Name]
+export type ConfiguredData<Name extends string> = Name extends keyof DataConfig ? DataConfig[Name] : {};
+
+export type ConfiguredSource<Name extends string> = Name extends keyof SourceConfig ? SourceConfig[Name] : {};
+
+export type ToObjectFalseType<T> = T extends {
+  toObject: (source: false) => infer U;
+}
+  ? U
   : T;
 
 export type ConfiguredSheetClass<T extends DocumentConstructor> = T['metadata']['name'] extends keyof CONFIG

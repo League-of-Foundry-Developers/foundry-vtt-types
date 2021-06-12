@@ -1,6 +1,6 @@
 import { ContextType, DocumentDataType, DocumentModificationOptions } from '../common/abstract/document.mjs';
 
-import { ConfiguredDocumentClass, DocumentConstructor, SourceDataType } from '../../types/helperTypes';
+import { ConfiguredDocumentClass, DocumentConstructor } from '../../types/helperTypes';
 
 declare global {
   // TODO: Replace ConstructorOf<…> with DocumentConstructor once the problem with circular reference has been solved
@@ -19,7 +19,7 @@ type ClientDocumentConstructor<T extends ConstructorOf<foundry.abstract.Document
   };
 
 export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>> {
-  constructor(data?: DeepPartial<SourceDataType<T>>, context?: ContextType<T>);
+  constructor(data?: DeepPartial<T['data']['_source']>, context?: ContextType<T>);
 
   /**
    * A collection of Application instances which should be re-rendered whenever this document is updated.
@@ -283,7 +283,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    */
   static createDialog<T extends DocumentConstructor>(
     this: T,
-    data?: DeepPartial<SourceDataType<InstanceType<T>>> & Record<string, unknown>,
+    data?: DeepPartial<InstanceType<T>['data']['_source']> & Record<string, unknown>,
     options?: Dialog.Options
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>>;
 
@@ -339,7 +339,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     pack?: any /* TODO: CompendiumCollection and remove comment above */
   ): Omit<ReturnType<T['toObject']>, '_id' | 'folder' | 'permission'> & {
-    permission?: ReturnType<T['toObject']>['permission']; // TODO: Whether or not this property exists depends on `pack`, improve when `pack` is typed
+    permission?: T extends { toObject(): infer U } ? U : never; // TODO: Whether or not this property exists depends on `pack`, improve when `pack` is typed
   };
 
   /**
@@ -377,8 +377,8 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
   static update<T extends DocumentConstructor>(
     this: T,
     updates?:
-      | Array<DeepPartial<SourceDataType<InstanceType<T>>> & { _id: string } & Record<string, unknown>>
-      | (DeepPartial<SourceDataType<InstanceType<T>>> & { _id: string } & Record<string, unknown>),
+      | Array<DeepPartial<InstanceType<T>['data']['_source']> & { _id: string } & Record<string, unknown>>
+      | (DeepPartial<InstanceType<T>['data']['_source']> & { _id: string } & Record<string, unknown>),
     options?: DocumentModificationContext
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
@@ -455,7 +455,7 @@ type DropData<T extends foundry.abstract.Document<any, any>> = DropData.Data<T> 
 
 declare namespace DropData {
   interface Data<T extends foundry.abstract.Document<any, any>> {
-    data: DeepPartial<SourceDataType<T>>;
+    data: DeepPartial<T['data']['_source']>;
   }
 
   interface Pack {

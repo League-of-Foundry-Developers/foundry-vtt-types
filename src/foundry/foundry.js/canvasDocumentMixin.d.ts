@@ -1,4 +1,3 @@
-import { SourceDataType } from '../../types/helperTypes';
 import { ContextType, DocumentDataType, DocumentModificationOptions } from '../common/abstract/document.mjs';
 import { ClientDocumentMixin } from './clientDocumentMixin';
 
@@ -19,7 +18,7 @@ type CanvasDocumentConstructor<T extends ConstructorOf<foundry.abstract.Document
   };
 
 declare class CanvasDocumentMixin<T extends foundry.abstract.Document<any, any>> extends ClientDocumentMixin<T> {
-  constructor(data?: DeepPartial<SourceDataType<T>>, context?: ContextType<T>);
+  constructor(data?: DeepPartial<T['data']['_source']>, context?: ContextType<T>);
 
   /**
    * A reference to the PlaceableObject instance which represents this Embedded Document.

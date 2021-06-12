@@ -1,5 +1,5 @@
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
-import { ConfiguredDocumentClass, SourceDataType } from '../../../types/helperTypes';
+import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { EffectChangeData } from '../../common/data/data.mjs/effectChangeData';
 
 declare global {
@@ -133,7 +133,7 @@ declare global {
     protected _getSourceName(): Promise<string>;
 
     protected _preCreate(
-      data: DeepPartial<SourceDataType<foundry.data.ActiveEffectData>>,
+      data: DeepPartial<foundry.data.ActiveEffectData['_source']>,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;
