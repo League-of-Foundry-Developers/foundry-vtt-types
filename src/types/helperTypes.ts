@@ -13,8 +13,6 @@ export type PropertiesDataType<T extends Document<any, any> | AnyDocumentData> =
   ? PropertiesDataType<U>
   : never;
 
-export type UpdateData<T extends AnyDocumentData> = T extends DocumentData<any, any, any, infer U, any> ? U : never;
-
 type PropertyTypeToSourceType<T> = T extends EmbeddedCollection<infer U, any>
   ? SourceDataType<InstanceType<U>>[]
   : T extends Array<infer U>
