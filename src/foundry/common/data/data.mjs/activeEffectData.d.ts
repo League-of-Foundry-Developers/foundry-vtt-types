@@ -83,15 +83,58 @@ interface ActiveEffectDataProperties {
 }
 
 interface ActiveEffectDataConstructorData {
+  /**
+   * The _id which uniquely identifies the ActiveEffect within a parent Actor or Item
+   */
   _id?: string | null;
+
+  /**
+   * The array of EffectChangeData objects which the ActiveEffect applies
+   */
   changes?: EffectChangeData[] | null;
+
+  /**
+   * Is this ActiveEffect currently disabled?
+   * @defaultValue `false`
+   */
   disabled?: boolean | null;
+
+  /**
+   * An EffectDurationData object which describes the duration of the ActiveEffect
+   */
   duration?: EffectDurationData[] | null;
+
+  /**
+   * An icon image path used to depict the ActiveEffect
+   */
   icon?: string | null;
+
+  /**
+   * A text label which describes the name of the ActiveEffect
+   * @defaultValue `''`
+   */
   label?: string | null;
+
+  /**
+   * A UUID reference to the document from which this ActiveEffect originated
+   */
   origin?: string | null;
+
+  /**
+   * A color string which applies a tint to the ActiveEffect icon
+   */
   tint?: string | null;
+
+  /**
+   * Does this ActiveEffect automatically transfer from an Item to an Actor?
+   * @defaultValue `true`
+   */
   transfer?: boolean | null;
+
+  /**
+   * An object of optional key/value flags
+   * @defaultValue `{}`
+   */
   flags?: Record<string, unknown> | null;
 }
 

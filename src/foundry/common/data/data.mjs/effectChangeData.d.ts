@@ -42,9 +42,26 @@ interface EffectChangeDataProperties {
 }
 
 interface EffectChangeDataConstructorData {
+  /**
+   * The attribute path in the Actor or Item data which the change modifies
+   * @defaultValue `''`
+   */
   key?: string | null;
+
+  /**
+   * The value of the change effect
+   * @defaultValue `''`
+   */
   value?: string | null;
+
+  /**
+   * The modification mode with which the change is applied
+   */
   mode?: CONST.ActiveEffectMode | null;
+
+  /**
+   * The priority level with which this change is applied
+   */
   priority?: number | null;
 }
 

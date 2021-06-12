@@ -88,15 +88,59 @@ interface ItemDataBaseProperties {
 }
 
 interface ItemDataConstructorData {
+  /**
+   * The _id which uniquely identifies this Item document
+   */
   _id?: string | null;
+
+  /**
+   * The name of this Item
+   */
   name: string;
+
+  /**
+   * An Item subtype which configures the system data model applied
+   */
   type: ItemDataSource['type'];
+
+  /**
+   * An image file path which provides the artwork for this Item
+   * @defaultValue `ItemData.DEFAULT_ICON`
+   */
   img?: string | null;
+
+  /**
+   * The system data object which is defined by the system template.json model
+   */
   data?: DeepPartial<ItemDataSource['data']> | null;
+
+  /**
+   * A collection of ActiveEffect embedded Documents
+   */
   effects?: ConfiguredDocumentClass<typeof documents.BaseActiveEffect>[] | null;
+
+  /**
+   * The _id of a Folder which contains this Item
+   * @defaultValue `null`
+   */
   folder?: string | null;
+
+  /**
+   * The numeric sort value which orders this Item relative to its siblings
+   * @defaultValue `0`
+   */
   sort?: number | null;
+
+  /**
+   * An object which configures user permissions to this Item
+   * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
+   */
   permission?: Record<string, EntityPermissions> | null;
+
+  /**
+   * An object of optional key/value flags
+   * @defaultValue `{}`
+   */
   flags?: Record<string, unknown> | null;
 }
 

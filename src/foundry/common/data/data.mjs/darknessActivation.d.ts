@@ -23,7 +23,16 @@ interface DarknessActivationProperties {
 }
 
 interface DarknessActivationConstructorData {
+  /**
+   * The minimum darkness level for which activation occurs
+   * @defaultValue `0`
+   */
   min?: number | null;
+
+  /**
+   * The maximum darkness level for which activation occurs
+   * @defaultValue `1`
+   */
   max?: number | null;
 }
 

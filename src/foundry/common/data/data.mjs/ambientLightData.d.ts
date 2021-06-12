@@ -128,20 +128,91 @@ interface AmbientLightDataProperties {
 }
 
 interface AmbientLightDataConstructorData {
+  /**
+   * The _id which uniquely identifies this BaseAmbientLight embedded document
+   */
   _id?: string | null;
+
+  /**
+   * The source type in CONST.SOURCE_TYPES which defines the behavior of this light
+   * @defaultValue `'l'`
+   */
   t?: CONST.SourceType | null;
+
+  /**
+   * The x-coordinate position of the origin of the light
+   * @defaultValue `0`
+   */
   x?: number | null;
+
+  /**
+   * The y-coordinate position of the origin of the light
+   * @defaultValue `0`
+   */
   y?: number | null;
+
+  /**
+   * The angle of rotation for the tile between 0 and 360
+   * @defaultValue `0`
+   */
   rotation?: number | null;
+
+  /**
+   * The radius of dim light emitted in distance units, negative values produce darkness
+   * @defaultValue `0`
+   */
   dim?: number | null;
+
+  /**
+   * The radius of bright light emitted in distance units, negative values produce blackness
+   * @defaultValue `0`
+   */
   bright?: number | null;
+
+  /**
+   * The angle of emission of the light source in degrees
+   * @defaultValue `360`
+   */
   angle?: number | null;
+
+  /**
+   * An optional color string which applies coloration to the resulting light source
+   */
   tintColor?: string | null;
+
+  /**
+   * The intensity of coloration applied to this light source, a number between 0 and 1
+   * @defaultValue `0.25`
+   */
   tintAlpha?: number | null;
+
+  /**
+   * A data object which configures token light animation settings, if one is applied
+   * @defaultValue `new AnimationData({})`
+   */
   lightAnimation?: AnimationData | null;
+
+  /**
+   * A value of the Scene darkness level, above which this light source will be active
+   * @defaultValue `0`
+   */
   darknessThreshold?: number | null;
+
+  /**
+   * @defaultValue `new DarknessActivation({})`
+   */
   darkness?: DarknessActivation | null;
+
+  /**
+   * Is the light source currently hidden?
+   * @defaultValue `false`
+   */
   hidden?: boolean | null;
+
+  /**
+   * An object of optional key/value flags
+   * @defaultValue `{}`
+   */
   flags?: Record<string, unknown> | null;
 }
 

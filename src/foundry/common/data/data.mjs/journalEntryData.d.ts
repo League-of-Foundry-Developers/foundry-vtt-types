@@ -65,13 +65,50 @@ interface JournalEntryDataProperties {
 }
 
 interface JournalEntryConstructorData {
+  /**
+   * The _id which uniquely identifies this JournalEntry document
+   * @defaultValue `null`
+   */
   _id?: string | null;
+
+  /**
+   * The name of this JournalEntry
+   */
   name: string;
+
+  /**
+   * The HTML content of the JournalEntry
+   * @defaultValue `''`
+   */
   content?: string | null;
+
+  /**
+   * An image file path which provides the artwork for this JournalEntry
+   */
   img?: string | null;
+
+  /**
+   * The _id of a Folder which contains this JournalEntry
+   * @defaultValue `null`
+   */
   folder?: string | null;
+
+  /**
+   * The numeric sort value which orders this JournalEntry relative to its siblings
+   * @defaultValue `0`
+   */
   sort?: number | null;
+
+  /**
+   * An object which configures user permissions to this JournalEntry
+   * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
+   */
   permission?: Record<string, EntityPermissions> | null;
+
+  /**
+   * An object of optional key/value flags
+   * @defaultValue `{}`
+   */
   flags?: Record<string, unknown> | null;
 }
 

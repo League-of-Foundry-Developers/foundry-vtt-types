@@ -81,14 +81,53 @@ interface FolderDataProperties {
 }
 
 interface FolderDataConstructorData {
+  /**
+   * The _id which uniquely identifies this Folder document
+   */
   _id?: string | null;
+
+  /**
+   * The name of this Folder
+   */
   name: string;
+
+  /**
+   * The document type which this Folder contains, from CONST.FOLDER_ENTITY_TYPES
+   */
   type: FolderEntityTypes;
+
+  /**
+   * An HTML description of the contents of this folder
+   */
   description?: string | null;
+
+  /**
+   * The _id of a parent Folder which contains this Folder
+   * @defaultValue `null`
+   */
   parent?: string | null;
+
+  /**
+   * The sorting mode used to organize documents within this Folder, in ["a", "m"]
+   * @defaultValue `'a'`
+   */
   sorting?: SortingModes | null;
+
+  /**
+   * The numeric sort value which orders this Folder relative to its siblings
+   * @defaultValue `0`
+   */
   sort?: number | null;
+
+  /**
+   * A color string used for the background color of this Folder
+   */
   color?: string | null;
+
+  /**
+   * An object of optional key/value flags
+   * @defaultValue `{}`
+   */
   flags?: Record<string, unknown> | null;
 }
 
