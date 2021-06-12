@@ -248,6 +248,12 @@ declare class Application<P extends Application.Options = Application.Options> {
   protected _getHeaderButtons(): Application.HeaderButton[];
 
   /**
+   * Activate required listeners which must be enabled on every Application.
+   * These are internal interactions which should not be overridden by downstream subclasses.
+   */
+  protected _activateCoreListeners(html: JQuery): void;
+
+  /**
    * Once the HTML for an Application has been rendered, activate event
    * listeners which provide interactivity for the application
    */
