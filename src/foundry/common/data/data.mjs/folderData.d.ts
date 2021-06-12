@@ -3,16 +3,13 @@ import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
 import { PropertiesToSource } from '../../../../types/helperTypes';
 
-type FolderEntityTypes = ValueOf<typeof CONST.FOLDER_ENTITY_TYPES>;
-type SortingModes = ValueOf<typeof FolderData.SORTING_MODES>;
-
 interface FolderDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
   name: typeof fields.REQUIRED_STRING;
-  type: DocumentField<FolderEntityTypes> & {
+  type: DocumentField<foundry.CONST.FolderEntityTypes> & {
     type: String;
     required: true;
-    validate: (t: unknown) => t is FolderEntityTypes;
+    validate: (t: unknown) => t is foundry.CONST.FolderEntityTypes;
     validationError: 'Invalid Folder type provided';
   };
   description: typeof fields.STRING_FIELD;
@@ -43,7 +40,7 @@ interface FolderDataProperties {
   /**
    * The document type which this Folder contains, from CONST.FOLDER_ENTITY_TYPES
    */
-  type: FolderEntityTypes;
+  type: foundry.CONST.FolderEntityTypes;
 
   /**
    * An HTML description of the contents of this folder
@@ -94,7 +91,7 @@ interface FolderDataConstructorData {
   /**
    * The document type which this Folder contains, from CONST.FOLDER_ENTITY_TYPES
    */
-  type: FolderEntityTypes;
+  type: foundry.CONST.FolderEntityTypes;
 
   /**
    * An HTML description of the contents of this folder
@@ -145,6 +142,8 @@ export declare class FolderData extends DocumentData<
 
   static SORTING_MODES: ['a', 'm'];
 }
+
+export type SortingModes = ValueOf<typeof FolderData.SORTING_MODES>;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export declare interface FolderData extends FolderDataProperties {}

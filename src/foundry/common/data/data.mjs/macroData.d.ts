@@ -4,10 +4,6 @@ import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
 import * as CONST from '../../constants.mjs';
 
-type MacroTypes = ValueOf<typeof CONST.MACRO_TYPES>;
-type MacroScopes = ValueOf<typeof CONST.MACRO_SCOPES>;
-type EntityPermissions = ValueOf<typeof CONST.ENTITY_PERMISSIONS>;
-
 interface MacroDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
   name: typeof fields.REQUIRED_STRING;
@@ -51,7 +47,7 @@ interface MacroDataProperties {
   /**
    * A Macro subtype from CONST.MACRO_TYPES
    */
-  type: MacroTypes;
+  type: foundry.CONST.MacroTypes;
 
   /**
    * The _id of a User document which created this Macro *
@@ -68,7 +64,7 @@ interface MacroDataProperties {
    * The scope of this Macro application from CONST.MACRO_SCOPES
    * @defaultValue `'global'`
    */
-  scope: MacroScopes;
+  scope: foundry.CONST.MacroScopes;
 
   /**
    * The string content of the macro command
@@ -92,7 +88,7 @@ interface MacroDataProperties {
    * An object which configures user permissions to this Macro
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission: Partial<Record<string, EntityPermissions>>;
+  permission: Partial<Record<string, foundry.CONST.EntityPermission>>;
 
   /**
    * An object of optional key/value flags
@@ -115,7 +111,7 @@ interface MacroDataConstructorData {
   /**
    * A Macro subtype from CONST.MACRO_TYPES
    */
-  type?: MacroTypes | null;
+  type?: foundry.CONST.MacroTypes | null;
 
   /**
    * The _id of a User document which created this Macro *
@@ -132,7 +128,7 @@ interface MacroDataConstructorData {
    * The scope of this Macro application from CONST.MACRO_SCOPES
    * @defaultValue `'global'`
    */
-  scope?: MacroScopes | null;
+  scope?: foundry.CONST.MacroScopes | null;
 
   /**
    * The string content of the macro command
@@ -156,7 +152,7 @@ interface MacroDataConstructorData {
    * An object which configures user permissions to this Macro
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission?: Record<string, EntityPermissions> | null;
+  permission?: Record<string, foundry.CONST.EntityPermission> | null;
 
   /**
    * An object of optional key/value flags

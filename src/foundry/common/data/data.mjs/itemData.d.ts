@@ -10,8 +10,6 @@ import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 
-type EntityPermissions = ValueOf<typeof CONST.ENTITY_PERMISSIONS>;
-
 interface ItemDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
   name: typeof fields.REQUIRED_STRING;
@@ -78,7 +76,7 @@ interface ItemDataBaseProperties {
    * An object which configures user permissions to this Item
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission: Partial<Record<string, EntityPermissions>>;
+  permission: Partial<Record<string, foundry.CONST.EntityPermission>>;
 
   /**
    * An object of optional key/value flags
@@ -135,7 +133,7 @@ interface ItemDataConstructorData {
    * An object which configures user permissions to this Item
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission?: Record<string, EntityPermissions> | null;
+  permission?: Record<string, foundry.CONST.EntityPermission> | null;
 
   /**
    * An object of optional key/value flags
