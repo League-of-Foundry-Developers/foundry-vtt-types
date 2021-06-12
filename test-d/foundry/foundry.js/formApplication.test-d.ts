@@ -1,7 +1,7 @@
 import { expectAssignable, expectType } from 'tsd';
 
 const app = new (class extends FormApplication<FormApplication.Options, FormApplication.Data<{ foo: string }>> {
-  protected _updateObject(event: Event, formData: object | undefined): Promise<unknown> {
+  protected _updateObject(): Promise<unknown> {
     return Promise.resolve(undefined);
   }
 })({ foo: 'bar' });
