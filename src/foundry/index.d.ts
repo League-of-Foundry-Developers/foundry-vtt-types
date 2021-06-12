@@ -17,7 +17,6 @@ import './foundry.js/constants';
 import './foundry.js/contextMenu';
 import './foundry.js/dragDrop';
 import './foundry.js/draggable';
-import './foundry.js/embeddedEntity';
 import './foundry.js/entity';
 import './foundry.js/features';
 import './foundry.js/fonts';
