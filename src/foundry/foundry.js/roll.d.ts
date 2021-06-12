@@ -125,7 +125,7 @@ declare global {
      *                          (default: `false`)
      * @returns The altered Roll expression
      */
-    alter(multiply: number, add: number, { multiplyNumeric }?: { multiplyNumeric: boolean }): Roll;
+    alter(multiply: number, add: number, { multiplyNumeric }?: { multiplyNumeric: boolean }): this;
 
     /**
      * Clone the Roll instance, returning a new Roll instance that has not yet been evaluated.
@@ -135,7 +135,7 @@ declare global {
     /**
      * Execute the Roll, replacing dice and evaluating the total result
      * @param options - Options which inform how the Roll is evaluated
-     *                  (default: all properties `false`)
+     *                  (default: `{}`)
      * @returns The evaluated Roll instance
      *
      * @example
@@ -146,21 +146,21 @@ declare global {
      * console.log(r.total);  // 11
      * ```
      */
-    evaluate({ minimize, maximize, async }?: Partial<Options & { async: false }>): this;
-    evaluate({ minimize, maximize, async }?: Partial<Options & { async: true }>): Promise<this>;
-    evaluate({ minimize, maximize, async }?: Partial<Options>): this | Promise<this>;
+    evaluate(options?: Partial<Options & { async: false }>): this;
+    evaluate(options?: Partial<Options & { async: true }>): Promise<this>;
+    evaluate(options?: Partial<Options>): this;
 
     /**
      * Evaluate the roll asynchronously.
      * A temporary helper method used to migrate behavior from 0.7.x (sync by default) to 0.9.x (async by default).
      */
-    protected _evaluate(options?: Partial<Exclude<Options, 'async'>>): Promise<this>;
+    protected _evaluate(options?: Partial<Omit<Options, 'async'>>): Promise<this>;
 
     /**
      * Evaluate the roll synchronously.
      * A temporary helper method used to migrate behavior from 0.7.x (sync by default) to 0.9.x (async by default).
      */
-    protected _evaluateSync(options?: Partial<Exclude<Options, 'async'>>): this;
+    protected _evaluateSync(options?: Partial<Omit<Options, 'async'>>): this;
 
     /**
      * Safely evaluate the final total result for the Roll using its component terms.
@@ -172,9 +172,9 @@ declare global {
      * Alias for evaluate.
      * @see Roll#evaluate
      */
-    roll({ minimize, maximize, async }?: Partial<Options & { async: false }>): this;
-    roll({ minimize, maximize, async }?: Partial<Options & { async: true }>): Promise<this>;
-    roll({ minimize, maximize, async }?: Partial<Options>): this | Promise<this>;
+    roll(options?: Partial<Options & { async: false }>): this;
+    roll(options?: Partial<Options & { async: true }>): Promise<this>;
+    roll(options?: Partial<Options>): this;
 
     /**
      * Create a new Roll object using the original provided formula and data.
@@ -184,7 +184,7 @@ declare global {
      */
     reroll(options?: Partial<Options & { async: false }>): this;
     reroll(options?: Partial<Options & { async: true }>): Promise<this>;
-    reroll(options?: Partial<Options>): this | Promise<this>;
+    reroll(options?: Partial<Options>): this;
 
     /**
      * A factory method which constructs a Roll instance using the default configured Roll class.
@@ -198,7 +198,7 @@ declare global {
       formula: string,
       data?: D,
       options?: Partial<Options>
-    ): Roll<D>;
+    ): typeof CONFIG.Dice.rolls extends [infer T] ? T : Roll<D>;
 
     /**
      * Transform an array of RollTerm objects into a cleaned string formula representation.
@@ -212,7 +212,7 @@ declare global {
      * @param expression - The input string expression
      * @returns The numeric evaluated result
      */
-    static safeEval(expression: string): number | unknown;
+    static safeEval(expression: string): number;
 
     /**
      * After parenthetical and arithmetic terms have been resolved, we need to simplify the remaining expression.
@@ -299,9 +299,10 @@ declare global {
      * Split a formula by identifying its outer-most groups using a certain group symbol like parentheses or brackets.
      * @param _formula - The raw formula to split
      * @param options  - Options that configure how groups are split
+     *                   (default: `{}`)
      * @returns An array of terms, split on dice pool terms
      */
-    protected _splitGroup(_formula: string, options: Partial<SplitGroupOptions>): string[];
+    protected _splitGroup(_formula: string, options?: Partial<SplitGroupOptions>): string[];
 
     /**
      * Split a formula by identifying arithmetic terms
@@ -438,7 +439,10 @@ declare global {
      * roll.formula; // 4d8 + 8
      * ```
      */
-    static fromTerms<D extends Record<string, unknown>>(terms: RollTerm[], options?: Partial<Options>): Roll<D>;
+    static fromTerms(
+      terms: RollTerm[],
+      options?: Partial<Options>
+    ): typeof CONFIG.Dice.rolls extends [infer T] ? T : Roll<{}>;
 
     /**
      * @deprecated since 0.8.1
