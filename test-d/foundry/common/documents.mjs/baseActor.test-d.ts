@@ -6,8 +6,8 @@ import { ActiveEffectDataProperties } from '../../../../src/foundry/common/data/
 import { EffectDurationDataProperties } from '../../../../src/foundry/common/data/data.mjs/effectDurationData';
 
 const baseActor = new foundry.documents.BaseActor();
-expectType<EmbeddedCollection<typeof ActiveEffect, foundry.data.ActiveEffectData>>(baseActor.effects);
-expectType<EmbeddedCollection<typeof Item, foundry.data.ItemData>>(baseActor.effects);
+expectType<EmbeddedCollection<typeof ActiveEffect, foundry.data.ActorData>>(baseActor.effects);
+expectType<EmbeddedCollection<typeof Item, foundry.data.ActorData>>(baseActor.items);
 expectType<PropertiesToSource<ActiveEffectDataProperties>>(baseActor.data._source.effects[0]);
 expectType<EffectDurationDataProperties | undefined>(baseActor.data._source.effects[0].duration);
 
