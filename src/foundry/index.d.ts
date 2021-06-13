@@ -136,6 +136,7 @@ import './foundry.js/avClients/easyRTCClient';
 import './foundry.js/clientDocuments/activeEffect';
 import './foundry.js/clientDocuments/actor';
 import './foundry.js/clientDocuments/canvasDocuments/ambientLightDocument';
+import './foundry.js/clientDocuments/canvasDocuments/measuredTemplateDocument';
 import './foundry.js/clientDocuments/chatMessage';
 import './foundry.js/clientDocuments/combat';
 import './foundry.js/clientDocuments/folder';
