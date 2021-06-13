@@ -1,3 +1,5 @@
+import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
+import { DocumentModificationOptions } from '../../../../common/abstract/document.mjs';
 import { MeasuredTemplateData } from '../../../../common/data/data.mjs';
 
 declare global {
@@ -5,7 +7,9 @@ declare global {
    * A MeasuredTemplate is an implementation of PlaceableObject which represents an area of the canvas grid which is
    * covered by some effect.
    */
-  class MeasuredTemplate extends PlaceableObject<MeasuredTemplateData> {
+  class MeasuredTemplate extends PlaceableObject<
+    InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>
+  > {
     controlIcon: ControlIcon | null;
     template: PIXI.Graphics | null;
     ruler: PreciseText | null;
@@ -26,7 +30,7 @@ declare global {
     protected _borderThickness: number;
 
     /** @override */
-    static get embeddedName(): 'MeasuredTemplate';
+    static embeddedName: 'MeasuredTemplate';
 
     /**
      * @remarks
@@ -101,21 +105,25 @@ declare global {
     highlightGrid(): void;
 
     /** @override */
-    rotate(angle: number, snap: number): Promise<MeasuredTemplateDocument>;
+    rotate(angle: number, snap: number): Promise<this>;
 
     /** @override */
-    protected _canControl(user: User, event?: unknown): boolean;
+    protected _canControl(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
     /** @override */
-    protected _canConfigure(user: User, event?: unknown): boolean;
+    protected _canConfigure(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
     /** @override */
-    protected _canView(user: User, event?: unknown): boolean;
+    protected _canView(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
     /** @override */
-    protected _onUpdate(data: MeasuredTemplateData, userId: string): void;
+    protected _onUpdate(
+      data: DeepPartial<MeasuredTemplateData>,
+      options?: DocumentModificationOptions,
+      userId?: string
+    ): void;
 
     /** @override */
-    protected _onDelete(options, userId): void;
+    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
   }
 }
