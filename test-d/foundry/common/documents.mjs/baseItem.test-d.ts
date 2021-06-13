@@ -61,6 +61,7 @@ declare global {
 }
 
 expectType<'weapon' | 'armor'>(baseItem.data.type);
+expectType<Item | undefined>(baseItem.parent?.items.get('', { strict: true }));
 
 if (baseItem.data._source.type === 'armor') {
   expectType<number>(baseItem.data._source.data.armorValue);

@@ -62,6 +62,7 @@ declare global {
 }
 
 expectType<'character' | 'npc'>(baseActor.data.type);
+expectType<Actor | null>(baseActor.items.get('', { strict: true }).parent);
 
 if (baseActor.data._source.type === 'character') {
   expectType<number>(baseActor.data._source.data.health);
