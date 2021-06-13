@@ -6,3 +6,4 @@ export { JournalEntryData } from './journalEntryData';
 export { ItemData } from './itemData';
 export { MacroData } from './macroData';
 export { PrototypeTokenData } from './prototypeTokenData';
+export { UserData } from './userData';

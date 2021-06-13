@@ -711,9 +711,9 @@ declare global {
       collection: ConstructorOf<Users>;
 
       /**
-       * @defaultValue `PlayerConfig`
+       * @defaultValue `UserConfig`
        */
-      sheetClass: ConstructorOf<PlayerConfig>;
+      sheetClass: ConstructorOf<UserConfig>;
 
       /**
        * @defaultValue `Users.permissions`
