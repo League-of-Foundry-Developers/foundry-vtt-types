@@ -20,7 +20,7 @@ interface CharacterDataSource {
   data: CharacterDataSourceData;
 }
 
-interface CharacterDataPropertiesData extends CharacterDataSource {
+interface CharacterDataPropertiesData extends CharacterDataSourceData {
   movement: number;
 }
 
