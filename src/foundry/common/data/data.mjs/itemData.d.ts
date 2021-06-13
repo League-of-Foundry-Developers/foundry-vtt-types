@@ -47,7 +47,7 @@ interface ItemDataBaseProperties {
   /**
    * An image file path which provides the artwork for this Item
    */
-  img?: string | null;
+  img: string | null;
 
   /**
    * The system data object which is defined by the system template.json model

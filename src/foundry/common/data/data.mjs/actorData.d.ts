@@ -54,7 +54,7 @@ interface ActorDataBaseProperties {
   /**
    * An image file path which provides the artwork for this Actor
    */
-  img?: string | null;
+  img: string | null;
 
   /**
    * The system data object which is defined by the system template.json model
@@ -114,7 +114,7 @@ interface ActorDataConstructor extends DocumentDataConstructor {
 
   /**
    * The default icon used for newly created Actor documents
-   * @defaultValue `"icons/svg/mystery-man.svg"`
+   * @defaultValue `CONST.DEFAULT_TOKEN`
    */
   DEFAULT_ICON: string;
 }
