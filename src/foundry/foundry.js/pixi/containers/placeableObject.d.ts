@@ -436,13 +436,13 @@ declare global {
 interface Vision {
   /**
    * @remarks
-   * This is required but has ben set to optional because of pointsource
+   * This is required but has been set to optional because of pointsource
    */
   fov?: PIXI.Polygon | null;
 
   /**
    * @remarks
-   * This is required but has ben set to optional because of pointsource
+   * This is required but has been set to optional because of pointsource
    */
   los?: PIXI.Polygon | null;
 }
