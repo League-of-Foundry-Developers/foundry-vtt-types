@@ -126,5 +126,8 @@ interface ActorDataConstructor extends DocumentDataConstructor {
 export type ActorData = DocumentData<ActorDataSchema, ActorDataProperties, ActorDataSource, documents.BaseActor> &
   ActorDataProperties & {
     _initializeSource(data: DeepPartial<ActorDataSource>): ActorDataSource;
+
+    _initialize(): void;
   };
+
 export declare const ActorData: ActorDataConstructor;

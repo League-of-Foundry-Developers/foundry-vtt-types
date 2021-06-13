@@ -1,10 +1,12 @@
-import { DocumentMetadata } from '../abstract/document.mjs';
+import { DocumentMetadata, DocumentModificationOptions } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
 import { BaseActiveEffect } from './baseActiveEffect';
 import { BaseItem } from './baseItem';
 import * as data from '../data/data.mjs';
+import { BaseUser } from './baseUser';
 
-export declare class BaseActor extends Document<data.ActorData, null> {
+//TODO Add Token as parent class once it is available
+export declare class BaseActor extends Document<data.ActorData, Document<any, any>> {
   static get schema(): typeof data.ActorData;
 
   static get metadata(): Merge<
@@ -42,6 +44,32 @@ export declare class BaseActor extends Document<data.ActorData, null> {
    * @returns The migrated system data object, not yet saved to the database
    */
   migrateSystemData(options?: MigrateSystemDataOptions): object;
+
+  /**
+   * Perform preliminary operations before a Document of this type is created.
+   * Pre-creation operations only occur for the client which requested the operation.
+   * @param data    - The initial data used to create the document
+   * @param options - Additional options which modify the creation request
+   * @param user    - The User requesting the document creation
+   */
+  protected _preCreate(
+    data: DeepPartial<data.ActorData['_source']>,
+    options: DocumentModificationOptions,
+    user: BaseUser
+  ): Promise<void>;
+
+  /**
+   * Perform preliminary operations before a Document of this type is updated.
+   * Pre-update operations only occur for the client which requested the operation.
+   * @param changed - The differential data that is changed relative to the documents prior values
+   * @param options - Additional options which modify the update request
+   * @param user    - The User requesting the document update
+   */
+  protected _preUpdate(
+    changed: DeepPartial<data.ActorData['_source']> & Record<string, unknown>,
+    options: DocumentModificationOptions,
+    user: BaseUser
+  ): Promise<void>;
 }
 
 interface MigrateSystemDataOptions {
