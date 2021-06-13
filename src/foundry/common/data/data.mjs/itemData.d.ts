@@ -14,7 +14,7 @@ interface ItemDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
   name: typeof fields.REQUIRED_STRING;
   type: DocumentField<string> & {
-    type: String;
+    type: typeof String;
     required: true;
     validate: (t: unknown) => boolean;
     validationError: 'The provided Item type must be in the array of types defined by the game system';
@@ -47,7 +47,7 @@ interface ItemDataBaseProperties {
   /**
    * An image file path which provides the artwork for this Item
    */
-  img?: string | null;
+  img: string | null;
 
   /**
    * The system data object which is defined by the system template.json model
