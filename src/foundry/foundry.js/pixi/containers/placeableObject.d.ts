@@ -1,12 +1,17 @@
 import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 import { Document } from '../../../common/abstract/module.mjs';
-import { BaseScene } from '../../../common/documents.mjs';
 
 declare global {
   /**
    * An Abstract Base Class which defines a Placeable Object which represents an Entity placed on the Canvas
    */
-  abstract class PlaceableObject<D extends Document<any, BaseScene> = Document<any, BaseScene>> extends PIXI.Container {
+  abstract class PlaceableObject<
+    D extends Document<any, InstanceType<ConfiguredDocumentClass<typeof Scene>>> = Document<
+      any,
+      InstanceType<ConfiguredDocumentClass<typeof Scene>>
+    >
+  > extends PIXI.Container {
     /**
      * @param document - The Document instance which is represented by this object
      */
@@ -62,7 +67,7 @@ declare global {
      * Identify the official EmbeddedEntity name for this PlaceableObject class
      * @remarks This getter is abstract in {@link PlaceableObject}.
      */
-    static get embeddedName(): string;
+    static embeddedName: string;
 
     /**
      * The bounding box for this PlaceableObject.
@@ -72,6 +77,7 @@ declare global {
 
     /**
      * The central coordinate pair of the placeable object based on it's own width and height
+     * @remarks `{ x: number, y: number }` has been added because of `Token.center`
      */
     get center(): PIXI.Point | { x: number; y: number };
 
@@ -109,7 +115,7 @@ declare global {
      */
     can(
       user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      action: 'hud' | 'configure' | 'control' | 'view' | 'create' | 'drag' | 'hover' | 'update' | 'delete' | string
+      action: 'HUD' | 'configure' | 'control' | 'view' | 'create' | 'drag' | 'hover' | 'update' | 'delete' | string
     ): boolean;
 
     /**
@@ -197,27 +203,36 @@ declare global {
     /**
      * Refresh the current display state of the Placeable Object
      * @returns The refreshed object
+     * @remarks `void` has been added because of `Drawing.refresh`
      */
     abstract refresh(): this | void;
 
     /**
      * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
+     * @param data    - (unused)
+     * @param options - (unused)
+     * @param userId  - (unused)
+     * @remarks Second variant has been added because of `Token._onCreate()`
      */
-    protected _onCreate(): void;
+    protected _onCreate(
+      data: DeepPartial<DeepPartial<D>>,
+      options?: DocumentModificationOptions,
+      userId?: string
+    ): void;
 
     /**
      * Define additional steps taken when an existing placeable object of this type is updated with new data
      * @param options - (unused)
      * @param userId  - (unused)
      */
-    protected _onUpdate(changed: DeepPartial<D['data']>, options?: any, userId?: string): void;
+    protected _onUpdate(changed: DeepPartial<D['data']>, options?: DocumentModificationOptions, userId?: string): void;
 
     /**
      * Define additional steps taken when an existing placeable object of this type is deleted
      * @param options - (unused)
      * @param userId  - (unused)
      */
-    protected _onDelete(options: any, userId: string): void;
+    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
 
     /**
      * Assume control over a PlaceableObject, flagging it as controlled and enabling downstream behaviors
@@ -358,6 +373,50 @@ declare global {
      * @param event - The triggering mouse click event
      */
     protected _onDragLeftCancel(event: MouseEvent): void;
+
+    /**
+     * @deprecated since 0.8.0
+     * @param options - (default: `{}`)
+     */
+    static create(
+      data: Parameters<InstanceType<ConfiguredDocumentClass<typeof Scene>>['createEmbeddedDocuments']>[0],
+      options?: Parameters<InstanceType<ConfiguredDocumentClass<typeof Scene>>['createEmbeddedDocuments']>[1]
+    ): ReturnType<InstanceType<ConfiguredDocumentClass<typeof Scene>>['createEmbeddedDocuments']>;
+
+    /**
+     * @deprecated since 0.8.0
+     */
+    update(data: Parameters<D['update']>[0], options: Parameters<D['update']>[1]): ReturnType<D['update']>;
+
+    /**
+     * @deprecated since 0.8.0
+     */
+    delete(options: Parameters<D['delete']>[0]): ReturnType<D['delete']>;
+
+    /**
+     * @deprecated since 0.8.0
+     */
+    getFlag(scope: string, key: string): ReturnType<D['getFlag']>;
+
+    /**
+     * @deprecated since 0.8.0
+     */
+    setFlag(scope: string, key: string, value: unknown): ReturnType<D['setFlag']>;
+
+    /**
+     * @deprecated since 0.8.0
+     */
+    unsetFlag(scope: string, key: string): ReturnType<D['unsetFlag']>;
+
+    /**
+     * @deprecated since 0.8.0
+     */
+    get uuid(): string;
+
+    /**
+     * @deprecated since 0.8.2
+     */
+    static get layer(): PlaceablesLayer;
   }
 
   namespace PlaceableObject {

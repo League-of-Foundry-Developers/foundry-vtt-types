@@ -2,6 +2,7 @@
 // eslint-disable-next-line
 // @ts-nocheck
 
+import { DocumentModificationOptions } from '../../../../common/abstract/document.mjs';
 import { BaseToken } from '../../../../common/documents.mjs';
 
 declare global {
@@ -503,10 +504,16 @@ declare global {
     rotate(angle: number, snap: number): Promise<this>;
 
     /** @override */
-    protected _onCreate(options?: unknown, userId?: string): void;
+    // TODO: Replace any with TokenDocument
+    protected _onCreate(options?: DeepPartial<any>, userId?: DocumentModificationOptions): void;
 
     /** @override */
-    protected _onUpdate(data?: DeepPartial<Token.Data>, options?: { animate?: boolean }, userId?: string): void;
+    // TODO: Replace any with TokenDocument
+    protected _onUpdate(
+      data?: DeepPartial<any>,
+      options?: DocumentModificationOptions & { animate?: boolean },
+      userId?: string
+    ): void;
 
     /** @override */
     protected _onDelete(options?: unknown, userId?: string): void;

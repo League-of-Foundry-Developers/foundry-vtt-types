@@ -26,7 +26,7 @@ declare global {
     source: PointSource;
 
     /** @override */
-    static get embeddedName(): 'AmbientLight';
+    static embeddedName: 'AmbientLight';
 
     /** @override */
     get bounds(): NormalizedRectangle;
