@@ -1,6 +1,5 @@
 import './actors';
 import './combatEncounters';
-import './journal';
 import './macros';
 import './messages';
 import './playlists';
