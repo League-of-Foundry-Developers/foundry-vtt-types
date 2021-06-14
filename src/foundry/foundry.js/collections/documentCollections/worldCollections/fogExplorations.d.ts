@@ -4,6 +4,6 @@
  *
  * @see {@link FogExploration} The FogExploration document
  */
-declare class FogExplorations extends WorldCollection<typeof foundry.documents.BaseFogExploration> {
+declare class FogExplorations extends WorldCollection<typeof foundry.documents.BaseFogExploration, 'FogExplorations'> {
   static documentName: 'FogExploration';
 }

@@ -7,7 +7,7 @@ declare global {
    *
    * @see {@link FogExploration} The FogExploration document
    */
-  class Folders extends WorldCollection<typeof foundry.documents.BaseFolder> {
+  class Folders extends WorldCollection<typeof foundry.documents.BaseFolder, 'Folders'> {
     constructor(data?: InstanceType<ConfiguredDocumentClass<typeof Folder>>['data']['_source'][]);
 
     /**

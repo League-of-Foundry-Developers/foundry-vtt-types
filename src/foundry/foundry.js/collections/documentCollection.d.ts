@@ -5,9 +5,8 @@ declare global {
   /**
    * A Collection of Document objects within the Foundry Virtual Tabletop framework.
    */
-  abstract class DocumentCollection<T extends DocumentConstructor> extends foundry.utils.Collection<
-    InstanceType<ConfiguredDocumentClass<T>>
-  > {
+  abstract class DocumentCollection<T extends DocumentConstructor, Name extends string> extends foundry.utils
+    .Collection<InstanceType<ConfiguredDocumentClass<T>>> {
     constructor();
 
     /**
@@ -19,7 +18,7 @@ declare global {
     /**
      * The Collection class name
      */
-    get name(): string;
+    get name(): Name;
 
     /**
      * A reference to the Document class definition which is contained within this DocumentCollection.

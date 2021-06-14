@@ -5,7 +5,7 @@
  * @see {@link JournalEntry} The JournalEntry entity
  * @see {@link JournalDirectory} The JournalDirectory sidebar directory
  */
-declare class Journal extends WorldCollection<typeof foundry.documents.BaseJournalEntry> {
+declare class Journal extends WorldCollection<typeof foundry.documents.BaseJournalEntry, 'Journal'> {
   /** @override */
   static documentName: 'JournalEntry';
 

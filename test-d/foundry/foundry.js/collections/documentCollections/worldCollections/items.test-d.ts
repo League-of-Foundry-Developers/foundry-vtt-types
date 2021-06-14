@@ -4,3 +4,4 @@ import { ItemDataSource } from '../../../../../../src/foundry/common/data/data.m
 const items = new Items();
 expectType<Item>(items.get('', { strict: true }));
 expectType<ItemDataSource[]>(items.toJSON());
+expectType<ItemDirectory | undefined>(items.directory);

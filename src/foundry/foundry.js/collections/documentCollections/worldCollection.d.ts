@@ -5,7 +5,10 @@ declare global {
    * A singleton Collection of world-level Document objects within the Foundry Virtual Tabletop.
    * Each primary Document type has an associated subclass of WorldCollection which contains them.
    */
-  abstract class WorldCollection<T extends DocumentConstructor> extends DocumentCollection<T> {
+  abstract class WorldCollection<T extends DocumentConstructor, Name extends string> extends DocumentCollection<
+    T,
+    Name
+  > {
     /**
      *
      * @param data - An array of data objects from which to create Document instances
@@ -37,12 +40,12 @@ declare global {
     /**
      * Return a reference to the SidebarDirectory application for this WorldCollection, or null if it has not yet been created.
      */
-    get directory(): Lowercase<this['name']> extends keyof typeof ui ? typeof ui[Lowercase<this['name']>] : null;
+    get directory(): Lowercase<Name> extends keyof typeof ui ? typeof ui[Lowercase<Name>] : null;
 
     /**
      * Return a reference to the singleton instance of this WorldCollection, or null if it has not yet been created.
      */
-    static get instance(): WorldCollection<DocumentConstructor>; // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class, which allows accessing the the static this type to use the `documentName`.
+    static get instance(): WorldCollection<DocumentConstructor, any>; // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class, which allows accessing the the static this type to use the `documentName`.
 
     /** @override */
     set(id: string, document: InstanceType<ConfiguredDocumentClass<T>>): this;
