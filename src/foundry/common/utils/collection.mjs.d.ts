@@ -1,11 +1,19 @@
-type MapWithoutForEachAndIteratorAndGet<K, V> = Omit<Map<K, V>, 'forEach' | typeof Symbol.iterator | 'get'>;
+interface MapSet<K, V> {
+  set(key: K, value: V): this;
+}
+
+type MapWithoutForEachAndIteratorAndGetAndAdjustedSet<K, V> = Omit<
+  Map<K, V>,
+  'forEach' | typeof Symbol.iterator | 'get' | 'set'
+> &
+  MapSet<K, V>;
 
 interface MapWithoutForEachAndIteratorAndGetConstructor {
-  new (): MapWithoutForEachAndIteratorAndGet<any, any>;
-  new <K, V>(entries?: readonly (readonly [K, V])[] | null): MapWithoutForEachAndIteratorAndGet<K, V>;
-  new <K, V>(iterable: Iterable<readonly [K, V]>): MapWithoutForEachAndIteratorAndGet<K, V>;
+  new (): MapWithoutForEachAndIteratorAndGetAndAdjustedSet<any, any>;
+  new <K, V>(entries?: readonly (readonly [K, V])[] | null): MapWithoutForEachAndIteratorAndGetAndAdjustedSet<K, V>;
+  new <K, V>(iterable: Iterable<readonly [K, V]>): MapWithoutForEachAndIteratorAndGetAndAdjustedSet<K, V>;
   readonly [Symbol.species]: MapWithoutForEachAndIteratorAndGetConstructor;
-  readonly prototype: MapWithoutForEachAndIteratorAndGet<any, any>;
+  readonly prototype: MapWithoutForEachAndIteratorAndGetAndAdjustedSet<any, any>;
 }
 
 declare const Map: MapWithoutForEachAndIteratorAndGetConstructor;
@@ -88,8 +96,6 @@ declare class Collection<T> extends Map<string, T> {
   get(key: string, { strict }: { strict: true }): T;
   get(key: string, { strict }?: { strict?: false }): T | undefined;
 
-  /* -------------------------------------------- */
-
   /**
    * Get an entry from the Collection by name.
    * Use of this method assumes that the objects stored in the collection have a "name" attribute.
@@ -102,8 +108,6 @@ declare class Collection<T> extends Map<string, T> {
   getName(name: string, { strict }: { strict: true }): T;
   getName(name: string, { strict }?: { strict?: false }): T | undefined;
 
-  /* -------------------------------------------- */
-
   /**
    * Transform each element of the Collection into a new form, returning an Array of transformed values
    * @param transformer - The transformation function to apply to each entry value
@@ -111,8 +115,6 @@ declare class Collection<T> extends Map<string, T> {
    * @returns An Array of transformed values
    */
   map<M>(transformer: (entity: T) => M): M[];
-
-  /* -------------------------------------------- */
 
   /**
    * Reduce the Collection by applying an evaluator function and accumulating entries
