@@ -146,7 +146,7 @@ declare class Collection<T> extends Map<string, T> {
    * Convert the Collection to a primitive array of its contents.
    * @returns An array of contained values
    */
-  toJSON(): Array<T extends { toJSON: (...args: any[]) => any } ? ReturnType<T['toJSON']> : T>;
+  toJSON(): Array<T extends { toJSON: (...args: any[]) => infer U } ? U : T>;
 }
 
 export default Collection;
