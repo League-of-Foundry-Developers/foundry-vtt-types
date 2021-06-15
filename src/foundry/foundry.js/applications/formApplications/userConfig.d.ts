@@ -7,7 +7,7 @@ declare global {
    * configurations about a User entity (typically their own).
    * @typeParam P - the type of the options object
    */
-  class UserConfig<P extends DocumentSheet.Options = DocumentSheet.Options> extends FormApplication<
+  class UserConfig<P extends DocumentSheet.Options = DocumentSheet.Options> extends DocumentSheet<
     P,
     Data,
     InstanceType<ConfiguredDocumentClass<typeof User>>

@@ -13,7 +13,7 @@ declare global {
    */
   abstract class DocumentSheet<
     P extends DocumentSheet.Options = DocumentSheet.Options,
-    D extends DocumentSheet.Data = DocumentSheet.Data,
+    D extends object = DocumentSheet.Data,
     O extends foundry.abstract.Document<any, any> = D extends DocumentSheet.Data<infer T>
       ? T
       : foundry.abstract.Document<any, any>
