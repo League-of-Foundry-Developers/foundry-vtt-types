@@ -1,7 +1,6 @@
 import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 
 declare global {
-  // TODO: Do Not extend FormApplication but DocumentSheet
   /**
    * The User Configuration application provides a form used to allow the current client to edit preferences and
    * configurations about a User entity (typically their own).
