@@ -1,14 +1,11 @@
-import { Document } from '../../../../common/abstract/module.mjs';
-
 /**
  * A generic application for configuring permissions for various Entity types
  * @typeParam P - the type of the options object
  * @typeParam E - the type of the entity
  */
-
 declare class PermissionControl<
   P extends DocumentSheet.Options = DocumentSheet.Options,
-  E extends Document<any, any> = Document<any, any>
+  E extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>
 > extends DocumentSheet<P, PermissionControl.Data<E>, E> {
   /**
    * @param entity  - The Entity instance for which permissions are being configured.
@@ -43,7 +40,7 @@ declare class PermissionControl<
 }
 
 declare namespace PermissionControl {
-  interface Data<E extends Document<any, any>> extends DocumentSheet.Data {
+  interface Data<E extends foundry.abstract.Document<any, any>> extends DocumentSheet.Data {
     entity: E;
     currentDefault: number | '-1';
     instructions: string;

@@ -13,14 +13,9 @@ declare const MIN_WINDOW_HEIGHT: 50;
 
 /**
  * The standard application window that is rendered for a large variety of UI elements in Foundry VTT.
- *
- * Hooks:
- *   renderApplication
- *   closeApplication
- *   getApplicationHeaderButtons
  * @typeParam P - the type of the options object
  */
-declare class Application<P extends Application.Options = Application.Options> {
+declare abstract class Application<P extends Application.Options = Application.Options> {
   /**
    * @param options - Configuration options which control how the application is rendered.
    *                  Application subclasses may add additional supported options, but the
@@ -50,7 +45,7 @@ declare class Application<P extends Application.Options = Application.Options> {
   /**
    * Track the current position and dimensions of the Application UI
    */
-  position: Application.Position | Pick<Application.Position, 'width' | 'height'>;
+  position: Application.Position;
 
   /**
    * DragDrop workflow handlers which are active for this Application
@@ -184,7 +179,7 @@ declare class Application<P extends Application.Options = Application.Options> {
    * @returns The rendered Application instance
    *          Some subclasses return other results.
    */
-  render(force?: boolean, options?: Application.RenderOptions): this | unknown;
+  render(force?: boolean, options?: Application.RenderOptions): unknown;
 
   /**
    * An asynchronous inner function which handles the rendering of the Application
@@ -268,7 +263,7 @@ declare class Application<P extends Application.Options = Application.Options> {
    * @param active - The new active tab name
    *                 (unused)
    */
-  protected _onChangeTab(event: MouseEvent, tabs: Tabs, active: string): void;
+  protected _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: string): void;
 
   /**
    * Handle changes to search filtering controllers which are bound to the Application
@@ -362,7 +357,7 @@ declare class Application<P extends Application.Options = Application.Options> {
     width,
     height,
     scale
-  }?: Partial<Application.Position>): Application.Position & { height: number };
+  }?: Partial<Application.Position>): (Application.Position & { height: number }) | undefined;
 
   /**
    * Handle application minimization behavior - collapsing content and reducing the size of the header
@@ -418,6 +413,8 @@ declare namespace Application {
      * @defaultValue `null`
      */
     left: number | null;
+
+    scale?: number | null;
 
     /**
      * Whether to display the application as a pop-out container
@@ -486,11 +483,11 @@ declare namespace Application {
   }
 
   interface Position {
-    width: number;
-    height: number | 'auto';
-    left: number;
-    top: number;
-    scale: number;
+    width: number | null;
+    height: number | null | 'auto';
+    left: number | null;
+    top: number | null;
+    scale: number | null | undefined;
   }
 
   interface RenderOptions {

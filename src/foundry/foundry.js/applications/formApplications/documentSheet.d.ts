@@ -1,9 +1,12 @@
-import { Document } from '../../../common/abstract/module.mjs';
+import { ToObjectFalseType } from '../../../../types/helperTypes';
 
 declare global {
   /**
    * Extend the FormApplication pattern to incorporate specific logic for viewing or editing Document instances.
    * See the FormApplication documentation for more complete description of this interface.
+   * @param object  - A Document instance which should be managed by this form.
+   * @param options - Optional configuration parameters for how the form behaves.
+   *                  (default: `{}`)
    * @typeParam P - the type of the options object
    * @typeParam D - The data structure used to render the handlebars template.
    * @typeParam O - the type of the Document which should be managed by this form sheet
@@ -11,15 +14,10 @@ declare global {
   abstract class DocumentSheet<
     P extends DocumentSheet.Options = DocumentSheet.Options,
     D extends DocumentSheet.Data = DocumentSheet.Data,
-    O extends Document<any, any> = D extends DocumentSheet.Data<infer T> ? T : Document<any, any>
+    O extends foundry.abstract.Document<any, any> = D extends DocumentSheet.Data<infer T>
+      ? T
+      : foundry.abstract.Document<any, any>
   > extends FormApplication<P, D, O> {
-    /**
-     * @param object  - A Document instance which should be managed by this form.
-     * @param options - Optional configuration parameters for how the form behaves.
-     *                  (default: `{}`)
-     */
-    constructor(object: O, options?: Partial<P>);
-
     /**
      * @defaultValue
      * ```typescript
@@ -86,18 +84,22 @@ declare global {
 
   namespace DocumentSheet {
     /**
-     * @typeParam D - the type of the data in the Entity
-     * @typeParam O - the type of the Entity which should be managed by this form sheet
+     * @typeParam O - the type of the Document which should be managed by this form sheet
+     * @typeParam P - the type of the options object
      */
-    interface Data<O extends Document<any, any> = Document<any, any>> {
+    interface Data<
+      O extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>,
+      P extends DocumentSheet.Options = DocumentSheet.Options
+    > extends FormApplication.Data<O, P> {
       cssClass: string;
       editable: boolean;
       document: O;
-      data: ReturnType<O['toObject']>;
+      data: ToObjectFalseType<O>;
       limited: boolean;
-      options: Options;
+      options: P;
       owner: boolean;
       title: string;
+      readonly entity: this['data'];
     }
 
     interface Options extends FormApplication.Options {

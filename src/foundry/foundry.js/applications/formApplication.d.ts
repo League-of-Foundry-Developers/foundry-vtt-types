@@ -53,6 +53,16 @@ declare abstract class FormApplication<
    * @returns The default options for this FormApplication class
    * @override
    * @see {@link Application.defaultOptions}
+   * @defaultValue
+   * ```typescript
+   * foundry.utils.mergeObject(super.defaultOptions, {
+   *   classes: ['form'],
+   *   closeOnSubmit: true,
+   *   submitOnChange: false,
+   *   submitOnClose: false,
+   *   editable: true
+   * });
+   * ```
    */
   static get defaultOptions(): FormApplication.Options;
 
@@ -83,10 +93,6 @@ declare abstract class FormApplication<
   protected _activateCoreListeners(html: JQuery): void;
 
   /**
-   * Activate the default set of listeners for the Entity sheet
-   * These listeners handle basic stuff like form submission or updating images
-   *
-   * @param html - The rendered template ready to have listeners attached
    * @override
    */
   activateListeners(html: JQuery): void;
@@ -221,7 +227,7 @@ declare namespace FormApplication {
    * @typeParam P - the type of the options object
    */
   interface Data<O, P extends FormApplication.Options = FormApplication.Options> {
-    object: foundry.utils.Duplicated<O>;
+    object: O;
     options: P;
     title: string;
   }

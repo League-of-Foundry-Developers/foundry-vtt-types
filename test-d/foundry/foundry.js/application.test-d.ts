@@ -2,7 +2,7 @@ import { expectType } from 'tsd';
 
 expectType<Application.Options>(Application.defaultOptions);
 
-const app = new Application();
+const app = new (class extends Application {})();
 expectType<string>(app.id);
 expectType<JQuery>(app.element);
 expectType<number>(app.appId);
