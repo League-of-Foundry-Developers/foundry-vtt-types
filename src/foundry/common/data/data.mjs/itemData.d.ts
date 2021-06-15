@@ -14,7 +14,7 @@ interface ItemDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
   name: typeof fields.REQUIRED_STRING;
   type: DocumentField<string> & {
-    type: String;
+    type: typeof String;
     required: true;
     validate: (t: unknown) => boolean;
     validationError: 'The provided Item type must be in the array of types defined by the game system';
