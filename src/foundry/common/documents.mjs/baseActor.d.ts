@@ -53,7 +53,7 @@ export declare class BaseActor extends Document<data.ActorData, Document<any, an
    * @param user    - The User requesting the document creation
    */
   protected _preCreate(
-    data: DeepPartial<data.ActorData['_source']>,
+    data: Parameters<data.ActorData['_initializeSource']>[0],
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
@@ -66,7 +66,7 @@ export declare class BaseActor extends Document<data.ActorData, Document<any, an
    * @param user    - The User requesting the document update
    */
   protected _preUpdate(
-    changed: DeepPartial<data.ActorData['_source']> & Record<string, unknown>,
+    changed: DeepPartial<Parameters<data.ActorData['_initializeSource']>[0]> & Record<string, unknown>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
