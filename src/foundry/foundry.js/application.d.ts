@@ -414,6 +414,9 @@ declare namespace Application {
      */
     left: number | null;
 
+    /**
+     * A transformation scale for the rendered HTML
+     */
     scale?: number | null;
 
     /**
