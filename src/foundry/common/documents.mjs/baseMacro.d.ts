@@ -26,7 +26,7 @@ export declare class BaseMacro extends Document<data.MacroData> {
   >;
 
   protected _preCreate(
-    data: DeepPartial<Parameters<data.MacroData['_initializeSource']>[0]>,
+    data: Parameters<data.MacroData['_initializeSource']>[0],
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;

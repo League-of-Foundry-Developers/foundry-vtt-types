@@ -26,7 +26,7 @@ export declare class BaseActiveEffect extends Document<
   >;
 
   protected _preCreate(
-    data: DeepPartial<Parameters<data.ActiveEffectData['_initializeSource']>[0]>,
+    data: Parameters<data.ActiveEffectData['_initializeSource']>[0],
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
