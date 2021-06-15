@@ -178,7 +178,7 @@ type ActorDataSource = ActorDataBaseSource & ConfiguredSource<'Actor'>;
 type DocumentDataConstructor = typeof DocumentData;
 
 interface ActorDataConstructor extends DocumentDataConstructor {
-  new (data?: ActorDataConstructorData, document?: documents.BaseActor | null): ActorData;
+  new (data: ActorDataConstructorData, document?: documents.BaseActor | null): ActorData;
 
   defineSchema(): ActorDataSchema;
 

@@ -172,6 +172,8 @@ export declare class MacroData extends DocumentData<
   MacroDataConstructorData,
   documents.BaseMacro
 > {
+  constructor(data: MacroDataConstructorData, document?: documents.BaseMacro | null);
+
   static defineSchema(): MacroDataSchema;
 }
 

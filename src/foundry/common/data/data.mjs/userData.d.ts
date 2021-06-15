@@ -67,6 +67,8 @@ export declare class UserData extends DocumentData<
   UserDataConstructorData,
   documents.BaseUser
 > {
+  constructor(data: UserDataConstructorData, document?: documents.BaseUser | null);
+
   static defineSchema(): UserDataSchema;
 }
 

@@ -117,6 +117,8 @@ export declare class JournalEntryData extends DocumentData<
   JournalEntryConstructorData,
   documents.BaseJournalEntry
 > {
+  constructor(data: JournalEntryConstructorData, document?: documents.BaseJournalEntry | null);
+
   static defineSchema(): JournalEntryDataSchema;
 }
 
