@@ -148,7 +148,7 @@ export const ENTITY_PERMISSIONS: {
 /**
  * Define the allowed Entity types which Folders may contain
  */
-export const FOLDER_ENTITY_TYPES: ['Actor', 'Item', 'Scene', 'JournalEntry', 'RollTable'];
+export const FOLDER_ENTITY_TYPES: ['Actor', 'Item', 'Scene', 'JournalEntry', 'Playlist', 'RollTable'];
 
 /**
  * The maximum allowed level of depth for Folder nesting
@@ -219,6 +219,11 @@ export const PLAYLIST_MODES: {
 };
 
 /**
+ * The allowed package types
+ */
+export const PACKAGE_TYPES: ['world', 'system', 'module'];
+
+/**
  * Encode the reasons why a package may be available or unavailable for use
  */
 export const PACKAGE_AVAILABILITY_CODES: {
@@ -278,6 +283,16 @@ export const TEXT_ANCHOR_POINTS: {
   LEFT: 2;
   RIGHT: 3;
   TOP: 4;
+};
+
+/**
+ * Define the valid occlusion modes which an overhead tile can use
+ */
+export const TILE_OCCLUSION_MODES: {
+  NONE: 0;
+  FADE: 1;
+  ROOF: 2;
+  RADIAL: 3;
 };
 
 /**
@@ -775,11 +790,13 @@ export type GridType = ValueOf<typeof GRID_TYPES>;
 export type MacroTypes = ValueOf<typeof CONST.MACRO_TYPES>;
 export type MacroScopes = ValueOf<typeof CONST.MACRO_SCOPES>;
 export type PackageAvailabilityCode = ValueOf<typeof PACKAGE_AVAILABILITY_CODES>;
+export type PackageTypes = ValueOf<typeof PACKAGE_TYPES>;
 export type PlaylistMode = ValueOf<typeof PLAYLIST_MODES>;
 export type SoftwareUpdateChannel = ValueOf<typeof SOFTWARE_UPDATE_CHANNELS>;
 export type SourceType = ValueOf<typeof SOURCE_TYPES>;
 export type TableResultType = ValueOf<typeof TABLE_RESULT_TYPES>;
 export type TextAnchorPoint = ValueOf<typeof TEXT_ANCHOR_POINTS>;
+export type TileOcclusionModes = ValueOf<typeof TILE_OCCLUSION_MODES>;
 export type TokenDisplayMode = ValueOf<typeof TOKEN_DISPLAY_MODES>;
 export type TokenDisposition = ValueOf<typeof TOKEN_DISPOSITIONS>;
 export type UserRole = ValueOf<typeof USER_ROLES>;
