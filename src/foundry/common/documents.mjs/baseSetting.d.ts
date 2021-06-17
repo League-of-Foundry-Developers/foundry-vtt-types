@@ -2,7 +2,7 @@ import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
 
 /**
- * The Setting Document model.
+ * The base Setting model definition which defines common behavior of an Setting document between both client and server.
  */
 export declare class BaseSetting extends Document<any, any> {
   static get metadata(): Merge<

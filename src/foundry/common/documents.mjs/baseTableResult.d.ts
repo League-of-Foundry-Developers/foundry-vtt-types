@@ -3,7 +3,7 @@ import { Document } from '../abstract/module.mjs';
 import { BaseUser } from './baseUser';
 
 /**
- * The TableResult document model.
+ * The base TableResult model definition which defines common behavior of an TableResult document between both client and server.
  */
 export declare class BaseTableResult extends Document<any, any> {
   static get metadata(): Merge<

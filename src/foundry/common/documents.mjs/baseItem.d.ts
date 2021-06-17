@@ -7,7 +7,7 @@ import { BaseUser } from './baseUser';
 import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 
 /**
- * The Item document model.
+ * The base Item model definition which defines common behavior of an Item document between both client and server.
  */
 export declare class BaseItem extends Document<data.ItemData, InstanceType<ConfiguredDocumentClass<typeof BaseActor>>> {
   static get schema(): typeof data.ItemData;

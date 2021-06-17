@@ -4,7 +4,7 @@ import { BaseUser } from './baseUser';
 import { BaseCombatant } from './baseCombatant';
 
 /**
- * The Combat document model.
+ * The base Combat model definition which defines common behavior of an Combat document between both client and server.
  */
 export declare class BaseCombat extends Document<any, any> {
   static get metadata(): Merge<
