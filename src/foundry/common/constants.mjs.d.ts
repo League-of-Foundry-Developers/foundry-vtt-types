@@ -148,7 +148,7 @@ export const ENTITY_PERMISSIONS: {
 /**
  * Define the allowed Entity types which Folders may contain
  */
-export const FOLDER_ENTITY_TYPES: ['Actor', 'Item', 'Scene', 'JournalEntry', 'RollTable'];
+export const FOLDER_ENTITY_TYPES: ['Actor', 'Item', 'Scene', 'JournalEntry', 'Playlist', 'RollTable'];
 
 /**
  * The maximum allowed level of depth for Folder nesting
