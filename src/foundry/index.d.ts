@@ -148,19 +148,7 @@ import './foundry.js/clientDocuments/scene';
 import './foundry.js/clientDocuments/setting';
 import './foundry.js/clientDocuments/user';
 
-import './foundry.js/collections/entityCollection';
-
-import './foundry.js/collections/entityCollections/actors';
-import './foundry.js/collections/entityCollections/combatEncounters';
-import './foundry.js/collections/entityCollections/folders';
-import './foundry.js/collections/entityCollections/items';
-import './foundry.js/collections/entityCollections/journal';
-import './foundry.js/collections/entityCollections/macros';
-import './foundry.js/collections/entityCollections/messages';
-import './foundry.js/collections/entityCollections/playlists';
-import './foundry.js/collections/entityCollections/rollTables';
-import './foundry.js/collections/entityCollections/scenes';
-import './foundry.js/collections/entityCollections/users';
+import './foundry.js/collections';
 
 import './foundry.js/rollTerm';
 

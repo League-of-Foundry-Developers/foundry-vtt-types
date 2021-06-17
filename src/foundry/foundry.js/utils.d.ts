@@ -24,4 +24,10 @@ declare function fromUuid(uuid: string): Promise<foundry.abstract.Document<any, 
  * @param documentName - The canonical Document name, for example "Actor"
  * @returns configured Document class implementation
  */
-declare function getDocumentClass(documentName: string): new () => ConstructorOf<foundry.abstract.Document<any, any>>;
+declare function getDocumentClass<DocumentName extends string>(
+  documentName: DocumentName
+): DocumentName extends keyof CONFIG
+  ? 'documentClass' extends keyof CONFIG[DocumentName]
+    ? CONFIG[DocumentName]['documentClass']
+    : undefined
+  : undefined;
