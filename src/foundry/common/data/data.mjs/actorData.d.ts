@@ -120,7 +120,7 @@ interface ActorDataConstructor extends DocumentDataConstructor {
 }
 
 /**
- * The data schema for a Actor document.
+ * The data schema for an Actor document.
  * @see BaseActor
  */
 export type ActorData = DocumentData<ActorDataSchema, ActorDataProperties, ActorDataSource, documents.BaseActor> &
