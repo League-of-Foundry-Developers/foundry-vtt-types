@@ -219,6 +219,11 @@ export const PLAYLIST_MODES: {
 };
 
 /**
+ * The allowed package types
+ */
+export const PACKAGE_TYPES: ['world', 'system', 'module'];
+
+/**
  * Encode the reasons why a package may be available or unavailable for use
  */
 export const PACKAGE_AVAILABILITY_CODES: {
@@ -781,6 +786,7 @@ export type DrawingFillType = ValueOf<typeof DRAWING_FILL_TYPES>;
 export type DrawingType = ValueOf<typeof DRAWING_TYPES>;
 export type EntityPermission = ValueOf<typeof ENTITY_PERMISSIONS>;
 export type GridType = ValueOf<typeof GRID_TYPES>;
+export type PackageTypes = ValueOf<typeof PACKAGE_TYPES>;
 export type PackageAvailabilityCode = ValueOf<typeof PACKAGE_AVAILABILITY_CODES>;
 export type PlaylistMode = ValueOf<typeof PLAYLIST_MODES>;
 export type SoftwareUpdateChannel = ValueOf<typeof SOFTWARE_UPDATE_CHANNELS>;
