@@ -36,7 +36,7 @@ declare abstract class RollTerm {
   get formula(): string;
 
   /** A string or numeric representation of the final output for this term, after evaluation. */
-  get total(): number | string | null;
+  get total(): number | string | null | undefined;
 
   /** Optional flavor text which modifies and describes this term. */
   get flavor(): string;
