@@ -1,5 +1,6 @@
-export { ActiveEffectData } from './activeEffectData';
 export { AmbientLightData } from './ambientLightData';
+export { ActiveEffectData } from './activeEffectData';
+export { ActorData } from './actorData';
 export { FolderData } from './folderData';
 export { ItemData } from './itemData';
 export { JournalEntryData } from './journalEntryData';
@@ -7,3 +8,4 @@ export { MacroData } from './macroData';
 export { PrototypeTokenData } from './prototypeTokenData';
 export { TokenBarData } from './tokenBarData';
 export { TokenData } from './tokenData';
+export { UserData } from './userData';

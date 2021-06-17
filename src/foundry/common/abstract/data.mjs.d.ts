@@ -4,7 +4,7 @@ import {
   DocumentConstructor,
   PropertiesToSource,
   PropertyTypeToSourceParameterType,
-  SourceDataType
+  ToObjectFalseType
 } from '../../../types/helperTypes';
 
 declare global {
@@ -68,7 +68,8 @@ declare global {
 declare abstract class DocumentData<
   ConcreteDocumentSchema extends DocumentSchema,
   PropertiesData extends object,
-  ConcreteDocument extends Document<any, any> | null
+  SourceData extends object = PropertiesToSource<PropertiesData>,
+  ConcreteDocument extends Document<any, any> | null = null
 > {
   /**
    * @param data     - Initial data used to construct the data object
@@ -76,7 +77,7 @@ declare abstract class DocumentData<
    * @param document - The document to which this data object belongs
    *                   (default: `null`)
    */
-  constructor(data?: DeepPartial<PropertiesToSource<PropertiesData>>, document?: ConcreteDocument | null);
+  constructor(data?: DeepPartial<SourceData>, document?: ConcreteDocument | null);
 
   /**
    * An immutable reverse-reference to the Document to which this data belongs, possibly null.
@@ -86,7 +87,7 @@ declare abstract class DocumentData<
   /**
    * The source data object. The contents of this object can be updated, but the object itself may not be replaced.
    */
-  readonly _source: PropertiesToSource<PropertiesData>;
+  readonly _source: SourceData;
 
   /**
    * The primary identifier for the Document to which this data object applies.
@@ -116,9 +117,7 @@ declare abstract class DocumentData<
   /**
    * Initialize the source data object in-place
    */
-  protected _initializeSource(
-    data: DeepPartial<PropertiesToSource<PropertiesData>>
-  ): PropertiesToSource<PropertiesData>;
+  protected _initializeSource(data: DeepPartial<SourceData>): SourceData;
 
   /**
    * Get the default value for a schema field, conditional on the provided data
@@ -161,7 +160,7 @@ declare abstract class DocumentData<
     type: Type,
     value: ConstructorParameters<Type>[0]
   ): InstanceType<Type>; // TODO: Actually this returns an instance of the subclass configured in CONFIG
-  protected _initializeType<Type extends ConstructorOf<DocumentData<any, any, any>>>(
+  protected _initializeType<Type extends ConstructorOf<AnyDocumentData>>(
     type: Type,
     value: ConstructorParameters<Type>[0]
   ): InstanceType<Type>;
@@ -184,7 +183,7 @@ declare abstract class DocumentData<
     replace,
     strict
   }: {
-    changes: DeepPartial<PropertiesToSource<PropertiesData>>;
+    changes: DeepPartial<SourceData>;
     children?: boolean;
     clean?: boolean;
     replace?: boolean;
@@ -250,13 +249,9 @@ declare abstract class DocumentData<
    * @returns The changed keys and values which are different than the previous data
    */
   update<U>(
-    data?: Expanded<U> extends DeepPartial<PropertiesToSource<PropertiesData>>
-      ? U
-      : DeepPartial<PropertiesToSource<PropertiesData>>,
+    data?: Expanded<U> extends DeepPartial<SourceData> ? U : DeepPartial<SourceData>,
     options?: UpdateOptions
-  ): Expanded<U> extends DeepPartial<PropertiesToSource<PropertiesData>>
-    ? DeepPartial<U>
-    : DeepPartial<PropertiesToSource<PropertiesData>>;
+  ): Expanded<U> extends DeepPartial<SourceData> ? DeepPartial<U> : DeepPartial<SourceData>;
 
   /**
    * Update an EmbeddedCollection using an array of provided document data
@@ -267,7 +262,7 @@ declare abstract class DocumentData<
    */
   updateCollection<T extends DocumentConstructor>(
     collection: EmbeddedCollection<T, this>,
-    documentData: DeepPartial<SourceDataType<InstanceType<T>>>[],
+    documentData: DeepPartial<InstanceType<T>['data']['_source']>[],
     options?: UpdateOptions
   ): void;
 
@@ -282,31 +277,23 @@ declare abstract class DocumentData<
   toObject(
     source: false
   ): {
-    [Key in keyof PropertiesToSource<PropertiesData>]: PropertiesToSource<PropertiesData>[Key] extends {
-      toObject: (source: false) => infer U;
-    }
-      ? U
-      : PropertiesData[Key];
+    [Key in keyof ConcreteDocumentSchema as string extends Key ? never : Key]: Key extends keyof this
+      ? ToObjectFalseType<this[Key]>
+      : undefined;
   };
 
   /**
    * Extract the source data for the DocumentData into a simple object format that can be serialized.
    * @returns The document source data expressed as a plain object
    */
-  toJSON(): {
-    [Key in keyof PropertiesToSource<PropertiesData>]: PropertiesToSource<PropertiesData>[Key] extends {
-      toObject: (source?: true) => infer U;
-    }
-      ? U
-      : PropertiesToSource<PropertiesData>[Key];
-  };
+  toJSON(): SourceData;
 
   /**
    * Create a DocumentData instance using a provided serialized JSON string.
    * @param json - Serialized document data in string format
    * @returns constructed data instance
    */
-  static fromJSON<ConcreteDocumentData extends DocumentData<any, any, any>>(
+  static fromJSON<ConcreteDocumentData extends AnyDocumentData>(
     this: ConcreteDocumentData,
     json: string
   ): ConcreteDocumentData;
@@ -321,3 +308,5 @@ interface UpdateOptions {
 }
 
 export default DocumentData;
+
+export type AnyDocumentData = DocumentData<any, any, any, any>;

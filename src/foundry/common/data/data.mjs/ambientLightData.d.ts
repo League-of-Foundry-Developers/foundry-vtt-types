@@ -1,4 +1,4 @@
-import { FieldReturnType } from '../../../../types/helperTypes';
+import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as CONST from '../../constants.mjs';
 import { BaseAmbientLight } from '../../documents.mjs';
@@ -134,6 +134,7 @@ interface AmbientLightDataProperties {
 export declare class AmbientLightData extends DocumentData<
   AmbientLightDataSchema,
   AmbientLightDataProperties,
+  PropertiesToSource<AmbientLightDataProperties>,
   BaseAmbientLight
 > {
   static defineSchema(): AmbientLightDataSchema;

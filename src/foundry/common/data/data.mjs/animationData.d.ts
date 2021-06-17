@@ -1,3 +1,4 @@
+import { PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import { BaseAmbientLight } from '../../documents.mjs';
 import * as fields from '../fields.mjs';
@@ -45,6 +46,7 @@ interface AnimationDataProperties {
 export declare class AnimationData extends DocumentData<
   AnimationDataSchema,
   AnimationDataProperties,
+  PropertiesToSource<AnimationDataProperties>,
   BaseAmbientLight
 > {
   static defineSchema(): AnimationDataSchema;

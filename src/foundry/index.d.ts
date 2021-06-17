@@ -9,6 +9,7 @@ import './foundry.js/avSettings';
 import './foundry.js/cameraPopoutAppWrapper';
 import './foundry.js/canvas';
 import './foundry.js/canvasAnimation';
+import './foundry.js/canvasDocumentMixin';
 import './foundry.js/chatBubbles';
 import './foundry.js/clientDocumentMixin';
 import './foundry.js/clientSettings';
@@ -17,7 +18,6 @@ import './foundry.js/constants';
 import './foundry.js/contextMenu';
 import './foundry.js/dragDrop';
 import './foundry.js/draggable';
-import './foundry.js/embeddedEntity';
 import './foundry.js/entity';
 import './foundry.js/features';
 import './foundry.js/fonts';
@@ -98,12 +98,12 @@ import './foundry.js/applications/formApplications/measuredTemplateConfig';
 import './foundry.js/applications/formApplications/moduleManagement';
 import './foundry.js/applications/formApplications/noteConfig';
 import './foundry.js/applications/formApplications/permissionConfig';
-import './foundry.js/applications/formApplications/playerConfig';
 import './foundry.js/applications/formApplications/playlistSoundConfig';
 import './foundry.js/applications/formApplications/settingsConfig';
 import './foundry.js/applications/formApplications/setupConfigurationForm';
 import './foundry.js/applications/formApplications/tileConfig';
 import './foundry.js/applications/formApplications/tokenConfig';
+import './foundry.js/applications/formApplications/userConfig';
 import './foundry.js/applications/formApplications/userManagement';
 import './foundry.js/applications/formApplications/wallConfig';
 import './foundry.js/applications/formApplications/worldConfig';
@@ -135,6 +135,7 @@ import './foundry.js/avClients/easyRTCClient';
 
 import './foundry.js/clientDocuments/activeEffect';
 import './foundry.js/clientDocuments/actor';
+import './foundry.js/clientDocuments/canvasDocuments/ambientLightDocument';
 import './foundry.js/clientDocuments/chatMessage';
 import './foundry.js/clientDocuments/combat';
 import './foundry.js/clientDocuments/folder';
@@ -147,19 +148,7 @@ import './foundry.js/clientDocuments/scene';
 import './foundry.js/clientDocuments/setting';
 import './foundry.js/clientDocuments/user';
 
-import './foundry.js/collections/entityCollection';
-
-import './foundry.js/collections/entityCollections/actors';
-import './foundry.js/collections/entityCollections/combatEncounters';
-import './foundry.js/collections/entityCollections/folders';
-import './foundry.js/collections/entityCollections/items';
-import './foundry.js/collections/entityCollections/journal';
-import './foundry.js/collections/entityCollections/macros';
-import './foundry.js/collections/entityCollections/messages';
-import './foundry.js/collections/entityCollections/playlists';
-import './foundry.js/collections/entityCollections/rollTables';
-import './foundry.js/collections/entityCollections/scenes';
-import './foundry.js/collections/entityCollections/users';
+import './foundry.js/collections';
 
 import './foundry.js/rollTerm';
 
