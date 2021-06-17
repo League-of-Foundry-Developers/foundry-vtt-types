@@ -33,7 +33,7 @@ declare global {
      * @defaultValue `null`
      * @remarks
      * All deriving classes must set this to the string matching the name of the document type they contain because it
-     * is used as value for {@link WorldsCollection#documentName}.
+     * is used as value for {@link WorldCollection#documentName}.
      */
     static documentName: string | null;
 
