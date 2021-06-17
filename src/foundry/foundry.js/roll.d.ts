@@ -2,7 +2,7 @@ import { ConfiguredDocumentClass } from '../../types/helperTypes';
 
 declare global {
   /**
-   * This class provides an interface and API for conducting dice rolls.
+   * An interface and API for constructing and evaluating dice rolls.
    * The basic structure for a dice roll is a string formula and an object of data against which to parse it.
    *
    * @typeParam D - the type of data object against which to parse attributes within the formula
