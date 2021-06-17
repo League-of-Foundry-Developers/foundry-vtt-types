@@ -38,38 +38,65 @@ declare global {
   interface DocumentClassConfig {}
 
   /**
-   * This interface is used to configure the types of the `data` properties of
-   * the {@link foundry.documents.BaseActor} and
-   * {@link foundry.documents.BaseItem} classes. System authors should use
-   * declaration merging to provide the types that match their `template.json`
-   * file. These types are required to extend the {@link foundry.data.ActorData}
-   * and {@link foundry.data.ItemData} classes correspondingly. It is also very
-   * important for these types to stay in sync with the `template.json` file,
-   * otherwise unexpected runtime errors might appear.
+   * This interface together with {@link SourceConfig} is used to configure the
+   * types of the `data`  and `data._source` properties of the
+   * {@link foundry.documents.BaseActor} and {@link foundry.documents.BaseItem}
+   * classes. System authors should use declaration merging to provide the types
+   * that match their `template.json` file. It is also very important for these
+   * types to stay in sync with the `template.json` file, otherwise unexpected
+   * runtime errors might appear.
    *
    * @example
    * ```typescript
-   * interface WeaponData extends foundry.data.ItemData {
-   *   type: 'weapon';
-   *   data: {
-   *     attackSpeed: number;
-   *     damage: number;
-   *   };
+   * interface ArmorDataSourceData {
+   *   armorValue: number;
    * }
    *
-   * interface ArmorData extends foundry.data.ItemData {
+   * interface ArmorDataSource {
    *   type: 'armor';
-   *   data: {
-   *     armorValue: number;
-   *   };
+   *   data: ArmorDataSourceData;
    * }
+   *
+   * interface WeaponDataSourceData {
+   *   damagePerHit: number;
+   *   attackSpeed: number;
+   * }
+   *
+   * interface WeaponDataSource {
+   *   type: 'weapon';
+   *   data: WeaponDataSourceData;
+   * }
+   *
+   * interface ArmorDataPropertiesData extends ArmorDataSourceData {
+   *   weight: number;
+   * }
+   *
+   * interface ArmorDataProperties {
+   *   type: 'armor';
+   *   data: ArmorDataPropertiesData;
+   * }
+   *
+   * interface WeaponDataPropertiesData extends WeaponDataSourceData {
+   *   damage: number;
+   * }
+   *
+   * interface WeaponDataProperties {
+   *   type: 'weapon';
+   *   data: WeaponDataPropertiesData;
+   * }
+   *
+   * type MyItemDataSource = ArmorDataSource | WeaponDataSource;
+   * type MyItemDataProperties = ArmorDataProperties | WeaponDataProperties;
    *
    * declare global {
    *   interface DataConfig {
-   *     Item: WeaponData | ArmorData;
+   *     Item: MyItemDataProperties;
+   *   }
+   *
+   *   interface SourceConfig {
+   *     Item: MyItemDataSource;
    *   }
    * }
-   *
    * const item = await Item.create({
    *   name: 'Axe',
    *   type: 'weapon',
@@ -80,10 +107,20 @@ declare global {
    * if(item.data.type === 'weapon') {
    *   const damage: number = item.data.data.damage;
    * }
+   *
+   * if(item.data._source.type === 'armor') {
+   *   const armorValue = item.data._source.data.armorValue;
+   * }
    * ```
    */
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DataConfig {}
+
+  /**
+   * @see {@link DataConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface SourceConfig {}
 
   /**
    * Runtime configuration settings for Foundry VTT which exposes a large number of variables which determine how
@@ -674,9 +711,9 @@ declare global {
       collection: ConstructorOf<Users>;
 
       /**
-       * @defaultValue `PlayerConfig`
+       * @defaultValue `UserConfig`
        */
-      sheetClass: ConstructorOf<PlayerConfig>;
+      sheetClass: ConstructorOf<UserConfig>;
 
       /**
        * @defaultValue `Users.permissions`
@@ -1446,7 +1483,7 @@ declare global {
       /**
        * @defaultValue `AmbientLightDocument`
        */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseAmbientLight>; // TODO: AmbientLightDocument
+      documentClass: ConfiguredDocumentClassOrDefault<typeof AmbientLightDocument>;
 
       /**
        * @defaultValue `AmbientLightDocument`

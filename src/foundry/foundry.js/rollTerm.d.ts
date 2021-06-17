@@ -96,13 +96,22 @@ declare namespace RollTerm {
   }
 
   interface EvaluationOptions {
-    /** Produce the minimum possible result from the Roll instead of a random result. */
+    /**
+     * Maximize the result, obtaining the largest possible value.
+     * @defaultValue `false`
+     * */
     maximize: boolean;
-    /** Minimize the result, obtaining the smallest possible value */
+
+    /**
+     * Minimize the result, obtaining the smallest possible value
+     * @defaultValue `false`
+     */
     minimize: boolean;
+
     /**
      * Evaluate the roll asynchronously, receiving a Promise as the returned value.
      * This will become the default behavior in version 10.x
+     * @defaultValue `false`
      */
     async: boolean;
   }

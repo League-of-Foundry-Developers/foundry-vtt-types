@@ -1,6 +1,7 @@
 import { DocumentData } from '../../abstract/module.mjs';
 import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
+import { PropertiesToSource } from '../../../../types/helperTypes';
 
 interface JournalEntryDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
@@ -64,6 +65,7 @@ interface JournalEntryDataProperties {
 export declare class JournalEntryData extends DocumentData<
   JournalEntryDataSchema,
   JournalEntryDataProperties,
+  PropertiesToSource<JournalEntryDataProperties>,
   documents.BaseJournalEntry
 > {
   static defineSchema(): JournalEntryDataSchema;

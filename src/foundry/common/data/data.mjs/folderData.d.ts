@@ -1,6 +1,7 @@
 import DocumentData from '../../abstract/data.mjs';
 import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
+import { PropertiesToSource } from '../../../../types/helperTypes';
 
 interface FolderDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
@@ -79,7 +80,12 @@ interface FolderDataProperties {
 /**
  * The data schema for a Folder document.
  */
-export declare class FolderData extends DocumentData<FolderDataSchema, FolderDataProperties, documents.BaseFolder> {
+export declare class FolderData extends DocumentData<
+  FolderDataSchema,
+  FolderDataProperties,
+  PropertiesToSource<FolderDataProperties>,
+  documents.BaseFolder
+> {
   static defineSchema(): FolderDataSchema;
 
   static SORTING_MODES: ['a', 'm'];

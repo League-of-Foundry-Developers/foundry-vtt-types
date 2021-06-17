@@ -1,12 +1,7 @@
 import { BaseUser } from '../documents.mjs';
 import DatabaseBackend from './backend.mjs';
-import DocumentData from './data.mjs';
-import {
-  ConfiguredDocumentClass,
-  DocumentConstructor,
-  PropertiesDataType,
-  SourceDataType
-} from '../../../types/helperTypes';
+import { AnyDocumentData } from './data.mjs';
+import { ConfiguredDocumentClass, DocumentConstructor, ToObjectFalseType } from '../../../types/helperTypes';
 
 type ParentType<T extends Document<any, any>> = T extends Document<any, infer U> ? U : never;
 export type ContextType<T extends Document<any, any>> = Context<ParentType<T>>;
@@ -16,7 +11,7 @@ export type DocumentDataType<T extends Document<any, any>> = T extends Document<
  * The abstract base interface for all Document types.
  */
 declare abstract class Document<
-  ConcreteDocumentData extends DocumentData<any, any, any>,
+  ConcreteDocumentData extends AnyDocumentData,
   Parent extends Document<any, any> | null = null
 > {
   /**
@@ -24,7 +19,7 @@ declare abstract class Document<
    * @param data    - Initial data provided to construct the Document
    * @param context - Additional parameters which define Document context
    */
-  constructor(data?: DeepPartial<SourceDataType<ConcreteDocumentData>>, context?: Context<Parent>);
+  constructor(data?: DeepPartial<ConcreteDocumentData['_source']>, context?: Context<Parent>);
 
   /**
    * An immutable reverse-reference to the parent Document to which this embedded Document belongs.
@@ -53,7 +48,7 @@ declare abstract class Document<
    * @remarks
    * This method is abstract and needs to be implemented by inheriting classes.
    */
-  static get schema(): ConstructorOf<DocumentData<any, any, any>>;
+  static get schema(): ConstructorOf<AnyDocumentData>;
 
   /**
    * Default metadata which applies to each instance of this Document type.
@@ -141,15 +136,15 @@ declare abstract class Document<
    * @returns The cloned Document instance
    */
   clone(
-    data?: DeepPartial<SourceDataType<ConcreteDocumentData>>,
+    data?: DeepPartial<ConcreteDocumentData['_source']>,
     { save, keepId }?: { save: false; keepId?: boolean }
   ): this;
   clone(
-    data: DeepPartial<SourceDataType<ConcreteDocumentData>>,
+    data: DeepPartial<ConcreteDocumentData['_source']>,
     { save, keepId }: { save: true; keepId?: boolean }
   ): Promise<this>;
   clone(
-    data: DeepPartial<SourceDataType<ConcreteDocumentData>>,
+    data: DeepPartial<ConcreteDocumentData['_source']>,
     { save, keepId }: { save: boolean; keepId?: boolean }
   ): this | Promise<this>;
 
@@ -171,7 +166,7 @@ declare abstract class Document<
   testUserPermission(
     user: BaseUser,
     permission: keyof typeof foundry.CONST.ENTITY_PERMISSIONS | foundry.CONST.EntityPermission,
-    { exact }: { exact?: boolean }
+    { exact }?: { exact?: boolean }
   ): boolean;
 
   /**
@@ -221,7 +216,7 @@ declare abstract class Document<
    */
   static createDocuments<T extends DocumentConstructor>(
     this: T,
-    data?: Array<DeepPartial<SourceDataType<InstanceType<T>>> & Record<string, unknown>>,
+    data?: Array<DeepPartial<InstanceType<T>['data']['_source']> & Record<string, unknown>>,
     context?: DocumentModificationContext
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
@@ -262,7 +257,7 @@ declare abstract class Document<
    */
   static updateDocuments<T extends DocumentConstructor>(
     this: T,
-    updates?: Array<DeepPartial<SourceDataType<InstanceType<T>>> & { _id: string } & Record<string, unknown>>,
+    updates?: Array<DeepPartial<InstanceType<T>['data']['_source']> & { _id: string } & Record<string, unknown>>,
     context?: DocumentModificationContext
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
@@ -338,7 +333,7 @@ declare abstract class Document<
    */
   static create<T extends DocumentConstructor>(
     this: T,
-    data?: DeepPartial<SourceDataType<InstanceType<T>>> & Record<string, unknown>,
+    data?: DeepPartial<InstanceType<T>['data']['_source']> & Record<string, unknown>,
     context?: DocumentModificationContext
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>>;
 
@@ -352,7 +347,7 @@ declare abstract class Document<
    * @returns The updated Document instance
    */
   update(
-    data?: DeepPartial<SourceDataType<ConcreteDocumentData>> & Record<string, unknown>,
+    data?: DeepPartial<ConcreteDocumentData['_source']> & Record<string, unknown>,
     context?: DocumentModificationContext
   ): Promise<this>;
 
@@ -479,7 +474,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document creation
    */
   protected _preCreate(
-    data: DeepPartial<SourceDataType<ConcreteDocumentData>>,
+    data: DeepPartial<ConcreteDocumentData['_source']>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
@@ -492,7 +487,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document update
    */
   protected _preUpdate(
-    changed: DeepPartial<SourceDataType<ConcreteDocumentData>> & Record<string, unknown>,
+    changed: DeepPartial<ConcreteDocumentData['_source']> & Record<string, unknown>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
@@ -513,7 +508,7 @@ declare abstract class Document<
    * @param user   - The id of the User requesting the document update
    */
   protected _onCreate(
-    data: DeepPartial<SourceDataType<ConcreteDocumentData>>,
+    data: DeepPartial<ConcreteDocumentData['_source']>,
     options: DocumentModificationOptions,
     userId: string
   ): void;
@@ -526,7 +521,7 @@ declare abstract class Document<
    * @param user    - The id of the User requesting the document update
    */
   protected _onUpdate(
-    changed: DeepPartial<SourceDataType<ConcreteDocumentData>> & Record<string, unknown>,
+    changed: DeepPartial<ConcreteDocumentData['_source']> & Record<string, unknown>,
     options: DocumentModificationOptions,
     userId: string
   ): void;
@@ -586,16 +581,7 @@ declare abstract class Document<
    * @returns The extracted primitive object
    */
   toObject(source?: true): ReturnType<this['toJSON']>;
-  toObject(
-    source: false
-  ): {
-    [Key in keyof SourceDataType<ConcreteDocumentData>]: SourceDataType<ConcreteDocumentData>[Key] extends {
-      toObject: (source: false) => infer U;
-    }
-      ? U
-      : PropertiesDataType<ConcreteDocumentData>[Key];
-  };
-  // toObject(source: false): ReturnType<ConcreteDocumentData['toObject']>;
+  toObject(source: false): ToObjectFalseType<ConcreteDocumentData>;
 
   /**
    * Convert the Document instance to a primitive object which can be serialized.

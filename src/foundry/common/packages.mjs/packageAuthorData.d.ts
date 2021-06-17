@@ -37,6 +37,7 @@ interface PackageAuthorDataProperties {
 export declare class PackageAuthorData extends DocumentData<
   PackageAuthorDataSchema,
   PackageAuthorDataProperties,
+  PropertiesToSource<PackageAuthorDataProperties>,
   null
 > {
   constructor(data?: DeepPartial<PropertiesToSource<PackageAuthorDataProperties>>, document?: null);
