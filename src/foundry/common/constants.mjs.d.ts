@@ -281,6 +281,16 @@ export const TEXT_ANCHOR_POINTS: {
 };
 
 /**
+ * Define the valid occlusion modes which an overhead tile can use
+ */
+export const TILE_OCCLUSION_MODES: {
+  NONE: 0;
+  FADE: 1;
+  ROOF: 2;
+  RADIAL: 3;
+};
+
+/**
  * Describe the various thresholds of token control upon which to show certain pieces of information
  * NONE - no information is displayed
  * CONTROL - displayed when the token is controlled
@@ -777,6 +787,7 @@ export type SoftwareUpdateChannel = ValueOf<typeof SOFTWARE_UPDATE_CHANNELS>;
 export type SourceType = ValueOf<typeof SOURCE_TYPES>;
 export type TableResultType = ValueOf<typeof TABLE_RESULT_TYPES>;
 export type TextAnchorPoint = ValueOf<typeof TEXT_ANCHOR_POINTS>;
+export type TileOcclusionModes = ValueOf<typeof TILE_OCCLUSION_MODES>;
 export type TokenDisplayMode = ValueOf<typeof TOKEN_DISPLAY_MODES>;
 export type TokenDisposition = ValueOf<typeof TOKEN_DISPOSITIONS>;
 export type UserRole = ValueOf<typeof USER_ROLES>;
