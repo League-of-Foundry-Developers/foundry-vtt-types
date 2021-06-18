@@ -152,7 +152,7 @@ interface MacroDataConstructorData {
    * An object which configures user permissions to this Macro
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission?: Record<string, foundry.CONST.EntityPermission> | null;
+  permission?: Partial<Record<string, foundry.CONST.EntityPermission>> | null;
 
   /**
    * An object of optional key/value flags

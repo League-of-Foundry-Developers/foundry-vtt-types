@@ -18,7 +18,7 @@ interface EffectDurationDataProperties {
    * The world time when the active effect first started
    * @defaultValue `null`
    */
-  startTime?: number | null;
+  startTime: number | null;
 
   /**
    * The maximum duration of the effect, in seconds
@@ -54,7 +54,7 @@ interface EffectDurationDataProperties {
 interface EffectDurationDataConstructorData {
   /**
    * The world time when the active effect first started
-   * @defaultValue `Date.now`
+   * @defaultValue `null`
    */
   startTime?: number | null;
 
