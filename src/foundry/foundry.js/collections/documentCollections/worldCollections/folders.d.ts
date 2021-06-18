@@ -2,7 +2,7 @@ import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
 
 declare global {
   /**
-   * The Collection of FogExploration documents which exist within the active World.
+   * The singleton collection of Folder documents which exist within the active World.
    * This Collection is accessible within the Game object as game.fog.
    *
    * @see {@link FogExploration} The FogExploration document

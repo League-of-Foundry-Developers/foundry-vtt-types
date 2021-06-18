@@ -3,7 +3,7 @@ import { Document } from '../abstract/module.mjs';
 import { BaseUser } from './baseUser';
 
 /**
- * The ChatMessage document model.
+ * The base ChatMessage model definition which defines common behavior of an ChatMessage document between both client and server.
  */
 export declare class BaseChatMessage extends Document<any, any> {
   static get metadata(): Merge<

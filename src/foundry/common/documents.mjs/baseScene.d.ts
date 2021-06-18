@@ -10,7 +10,7 @@ import { BaseToken } from './baseToken';
 import { BaseWall } from './baseWall';
 
 /**
- * The Scene document model.
+ * The base Scene model definition which defines common behavior of an Scene document between both client and server.
  */
 export declare class BaseScene extends Document<any, any> {
   static get metadata(): Merge<

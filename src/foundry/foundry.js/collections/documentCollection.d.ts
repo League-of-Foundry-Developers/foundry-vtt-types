@@ -3,7 +3,7 @@ import { DocumentModificationOptions } from '../../common/abstract/document.mjs'
 
 declare global {
   /**
-   * A Collection of Document objects within the Foundry Virtual Tabletop framework.
+   * An abstract subclass of the Collection container which defines a collection of Document instances.
    */
   abstract class DocumentCollection<T extends DocumentConstructor, Name extends string> extends foundry.utils
     .Collection<InstanceType<ConfiguredDocumentClass<T>>> {

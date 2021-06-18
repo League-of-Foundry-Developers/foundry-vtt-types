@@ -3,7 +3,7 @@ import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 
 declare global {
   /**
-   * The client-side Folder document which extends the common BaseFolder abstraction.
+   * The client-side Folder document which extends the common BaseFolder model.
    * Each Folder document contains FolderData which defines its data schema.
    *
    * @see {@link data.FolderData}              The Folder data schema

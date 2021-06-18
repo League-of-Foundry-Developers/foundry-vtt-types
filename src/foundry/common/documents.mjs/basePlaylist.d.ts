@@ -3,7 +3,7 @@ import { Document } from '../abstract/module.mjs';
 import { BasePlaylistSound } from './basePlaylistSound';
 
 /**
- * The Playlist document model.
+ * The base PlaylistSound model definition which defines common behavior of an PlaylistSound document between both client and server.
  */
 export declare class BasePlaylist extends Document<any, any> {
   static get metadata(): Merge<

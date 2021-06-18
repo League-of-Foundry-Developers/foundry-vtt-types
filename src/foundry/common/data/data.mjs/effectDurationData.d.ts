@@ -1,10 +1,10 @@
-import { PropertiesToSource } from '../../../../types/helperTypes';
+import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import { BaseActiveEffect } from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 
 interface EffectDurationDataSchema extends DocumentSchema {
-  startTime: typeof fields.TIMESTAMP_FIELD;
+  startTime: FieldReturnType<typeof fields.NUMERIC_FIELD, { default: null }>;
   seconds: typeof fields.NONNEGATIVE_INTEGER_FIELD;
   combat: typeof fields.STRING_FIELD;
   rounds: typeof fields.NONNEGATIVE_INTEGER_FIELD;
@@ -16,9 +16,9 @@ interface EffectDurationDataSchema extends DocumentSchema {
 interface EffectDurationDataProperties {
   /**
    * The world time when the active effect first started
-   * @defaultValue `Date.now`
+   * @defaultValue `null`
    */
-  startTime: number;
+  startTime?: number | null;
 
   /**
    * The maximum duration of the effect, in seconds

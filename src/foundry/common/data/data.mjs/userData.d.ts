@@ -16,6 +16,7 @@ interface UserDataSchema extends DocumentSchema {
   };
   name: typeof fields.REQUIRED_STRING;
   password: typeof fields.BLANK_STRING;
+  passwordSalt: typeof fields.STRING_FIELD;
   permissions: FieldReturnType<
     typeof fields.DOCUMENT_PERMISSIONS,
     {
@@ -39,6 +40,7 @@ interface UserDataProperties {
   hotbar: Record<number | string, string>;
   name: string;
   password: string;
+  passwordSalt?: string;
   permissions: Partial<Record<keyof typeof CONST.USER_PERMISSIONS, boolean>>;
   role: foundry.CONST.UserRole;
   flags: Record<string, unknown>;
@@ -58,7 +60,7 @@ interface UserDataConstructorData {
 }
 
 /**
- * The data schema for a Folder document.
+ * The data schema for a User document
  */
 export declare class UserData extends DocumentData<
   UserDataSchema,

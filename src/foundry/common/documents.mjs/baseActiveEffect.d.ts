@@ -7,7 +7,7 @@ import { BaseItem } from './baseItem';
 import { BaseUser } from './baseUser';
 
 /**
- * The ActiveEffect document model.
+ * The base ActiveEffect model definition which defines common behavior of an ActiveEffect document between both client and server.
  */
 export declare class BaseActiveEffect extends Document<
   data.ActiveEffectData,

@@ -1,39 +1,67 @@
-/**
- * A type of RollTerm used to apply a function from the Math library.
- */
-declare class MathTerm extends RollTerm {
+declare global {
   /**
-   * @param termData - Data used to create the MathTerm, including the following:
-   *                   (default: `{}`)
-   * @param fn - The named function in the Math environment which should be applied to the term
-   * @param terms - An array of string argument terms for the function
+   * A type of RollTerm used to apply a function from the Math library.
    */
-  constructor({ fn, terms, options }?: Partial<MathTerm.TermData>);
+  class MathTerm extends RollTerm {
+    constructor({ fn, terms, options }: MathTermData);
 
-  /** The named function in the Math environment which should be applied to the term */
-  fn: MathTerm.TermData['fn'];
+    /**
+     * The named function in the Math environment which should be applied to the term
+     */
+    fn: MathTermData['fn'];
 
-  /** An array of string argument terms for the function */
-  terms: MathTerm.TermData['terms'];
+    /** An array of string argument terms for the function */
+    terms: NonNullable<MathTermData['terms']>;
 
-  /** The cached Roll instances for each function argument */
-  rolls: Roll[];
+    /**
+     * The cached Roll instances for each function argument
+     * @defaultValue `[]`
+     */
+    rolls: Roll[];
 
-  /** The cached result of evaluating the method arguments */
-  result?: number;
+    /**
+     * The cached result of evaluating the method arguments
+     * @defaultValue `undefined`
+     */
+    result?: number;
 
-  /* -------------------------------------------- */
-  /*  Math Term Attributes                        */
-  /* -------------------------------------------- */
+    /**
+     * @defaultValue `true`
+     */
+    isIntermediate: boolean;
 
-  /** An array of evaluated DiceTerm instances that should be bubbled up to the parent Roll */
-  get dice(): DiceTerm[];
-}
+    /**
+     * @defaultValue `["fn", "terms"]`
+     */
+    static SERIALIZE_ATTRIBUTES: string[];
 
-declare namespace MathTerm {
-  interface TermData {
-    fn: string;
-    terms: string[];
-    options: RollTerm.Options;
+    /**
+     * An array of evaluated DiceTerm instances that should be bubbled up to the parent Roll
+     */
+    get dice(): DiceTerm[] | undefined;
+
+    get total(): number | undefined;
+
+    get expression(): string;
+
+    protected _evaluateSync({ minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): this;
+
+    protected _evaluate({ minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): Promise<this>;
   }
 }
+
+interface MathTermData {
+  fn: string;
+
+  /**
+   * @defaultValue `[]`
+   */
+  terms?: string[];
+
+  /**
+   * @defaultValue `{}`
+   */
+  options?: RollTerm.Options;
+}
+
+export {};

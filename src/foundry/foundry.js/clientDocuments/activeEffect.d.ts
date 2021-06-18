@@ -4,7 +4,7 @@ import { EffectChangeData } from '../../common/data/data.mjs/effectChangeData';
 
 declare global {
   /**
-   * The ActiveEffect embedded document within an Actor or Item document which extends the BaseRollTable abstraction.
+   * The client-side ActiveEffect document which extends the common BaseActiveEffect model.
    * Each ActiveEffect belongs to the effects collection of its parent Document.
    * Each ActiveEffect contains a ActiveEffectData object which provides its source data.
    *

@@ -4,7 +4,7 @@ import { DocumentMetadata, DocumentModificationOptions } from '../abstract/docum
 import { BaseUser } from './baseUser';
 
 /**
- * The Macro document model.
+ * The base Macro model definition which defines common behavior of an Macro document between both client and server.
  */
 export declare class BaseMacro extends Document<data.MacroData> {
   static get schema(): typeof data.MacroData;

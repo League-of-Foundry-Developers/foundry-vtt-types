@@ -8,7 +8,7 @@ export type ContextType<T extends Document<any, any>> = Context<ParentType<T>>;
 export type DocumentDataType<T extends Document<any, any>> = T extends Document<infer U, any> ? U : never;
 
 /**
- * The abstract base interface for all Document types.
+ * The abstract base class shared by both client and server-side which defines the model for a single document type.
  */
 declare abstract class Document<
   ConcreteDocumentData extends AnyDocumentData,

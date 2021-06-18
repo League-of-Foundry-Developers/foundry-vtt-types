@@ -6,6 +6,9 @@ import * as data from '../data/data.mjs';
 import { BaseUser } from './baseUser';
 
 //TODO Add Token as parent class once it is available
+/**
+ * The base Actor model definition which defines common behavior of an Actor document between both client and server.
+ */
 export declare class BaseActor extends Document<data.ActorData, Document<any, any>> {
   static get schema(): typeof data.ActorData;
 

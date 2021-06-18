@@ -63,7 +63,7 @@ declare global {
 }
 
 /**
- * An abstract pattern for a data object which is contained within every type of Document.
+ * The abstract base class which defines the data schema contained within a Document.
  * @typeParam ConcreteDocumentSchema - the schema of the document data
  * @typeParam PropertiesData - the runtime document properties of the the DocumentData
  * @typeParam SourceData - the type of the `_source` property

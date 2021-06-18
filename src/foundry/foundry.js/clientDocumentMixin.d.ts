@@ -5,8 +5,8 @@ import { ConfiguredDocumentClass, DocumentConstructor } from '../../types/helper
 declare global {
   // TODO: Replace ConstructorOf<…> with DocumentConstructor once the problem with circular reference has been solved
   /**
-   * The client-side document mixin which is used to extend the common BaseDocument.
-   * This mixin provides the client-side interface for database operations and common document behaviors.
+   * A mixin which extends each Document definition with specialized client-side behaviors.
+   * This mixin defines the client-side interface for database operations and common document behaviors.
    */
   const ClientDocumentMixin: <T extends ConstructorOf<foundry.abstract.Document<any, any>>>(
     Base: T

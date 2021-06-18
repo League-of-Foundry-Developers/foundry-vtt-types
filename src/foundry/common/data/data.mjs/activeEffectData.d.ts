@@ -139,7 +139,7 @@ interface ActiveEffectDataConstructorData {
 }
 
 /**
- * The data schema for a ActiveEffect document.
+ * The data schema for an ActiveEffect document.
  * @see BaseActiveEffect
  */
 export declare class ActiveEffectData extends DocumentData<
