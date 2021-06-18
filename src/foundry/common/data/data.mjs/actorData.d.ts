@@ -175,7 +175,7 @@ type ActorDataBaseSource = PropertiesToSource<ActorDataBaseProperties>;
 type ActorDataProperties = ActorDataBaseProperties & ConfiguredData<'Actor'>;
 type ActorDataSource = ActorDataBaseSource & ConfiguredSource<'Actor'>;
 
-type DocumentDataConstructor = typeof DocumentData;
+type DocumentDataConstructor = Pick<typeof DocumentData, keyof typeof DocumentData>;
 
 interface ActorDataConstructor extends DocumentDataConstructor {
   new (data: ActorDataConstructorData, document?: documents.BaseActor | null): ActorData;

@@ -146,7 +146,7 @@ type ItemDataBaseSource = PropertiesToSource<ItemDataBaseProperties>;
 type ItemDataProperties = ItemDataBaseProperties & ConfiguredData<'Item'>;
 type ItemDataSource = ItemDataBaseSource & ConfiguredSource<'Item'>;
 
-type DocumentDataConstructor = typeof DocumentData;
+type DocumentDataConstructor = Pick<typeof DocumentData, keyof typeof DocumentData>;
 
 interface ItemDataConstructor extends DocumentDataConstructor {
   new (data: ItemDataConstructorData, document?: documents.BaseItem | null): ItemData;
