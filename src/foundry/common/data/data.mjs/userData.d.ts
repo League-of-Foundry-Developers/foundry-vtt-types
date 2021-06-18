@@ -36,7 +36,7 @@ interface UserDataProperties {
   _id: string | null;
   avatar?: string | null;
   character: string | null;
-  color: string;
+  color: string | null;
   hotbar: Record<number | string, string>;
   name: string;
   password: string;
@@ -54,7 +54,8 @@ interface UserDataConstructorData {
   hotbar?: Record<number | string, string> | null;
   name: string;
   password?: string | null;
-  permissions?: Record<keyof typeof CONST.USER_PERMISSIONS, boolean> | null;
+  passwordSalt?: string | null;
+  permissions?: Partial<Record<keyof typeof CONST.USER_PERMISSIONS, boolean>> | null;
   role?: foundry.CONST.UserRole | null;
   flags?: Record<string, unknown> | null;
 }
