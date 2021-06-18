@@ -230,9 +230,13 @@ interface Request {
   updates?: AnyDocumentData[];
   ids?: string[];
   parent?: Document<any, any>;
-  query?: object;
+  query?: Query;
   options?: RequestOptions;
   pack?: string;
+}
+
+export interface Query {
+  _id: string;
 }
 
 interface RequestOptions {
