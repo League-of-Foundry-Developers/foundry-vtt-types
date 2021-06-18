@@ -8,16 +8,13 @@ declare global {
    * Each Compendium pack has its own associated instance of the CompendiumCollection class which contains its contents.
    */
   class CompendiumCollection<T extends DocumentConstructor, Name extends string> extends DocumentCollection<T, Name> {
-    //TODO get metadata
-    constructor(metadata?: object);
+    constructor(metadata: Metadata<InstanceType<ConfiguredDocumentClass<T>>>);
 
-    //TODO get metadata
     /** The compendium metadata which defines the compendium content and location */
-    metadata: object;
+    metadata: Metadata<InstanceType<ConfiguredDocumentClass<T>>>;
 
-    //TODO get object
     /**  A subsidiary collection which contains the more minimal index of the pack */
-    index: Collection<object>;
+    index: foundry.utils.Collection<InstanceType<ConfiguredDocumentClass<T>>>;
 
     /**
      * The amount of time that Document instances within this CompendiumCollection are held in memory.
