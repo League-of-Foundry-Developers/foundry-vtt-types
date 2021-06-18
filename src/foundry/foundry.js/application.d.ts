@@ -177,7 +177,7 @@ declare abstract class Application<P extends Application.Options = Application.O
    *                  is rendered in the DOM.
    *                  (default: `{}`)
    * @returns The rendered Application instance
-   *          Some subclasses return other results.
+   * @remarks Some subclasses return other results.
    */
   render(force?: boolean, options?: Application.RenderOptions): unknown;
 
@@ -185,7 +185,7 @@ declare abstract class Application<P extends Application.Options = Application.O
    * An asynchronous inner function which handles the rendering of the Application
    * @param force   - Render and display the application even if it is not currently displayed.
    *                  (default: `false`)
-   * @param options - Provided rendering options, see the render function for details
+   * @param options - New Application options which update the current values of the Application#options object
    *                  (default: `{}`)
    * @returns A Promise that resolves to the Application once rendering is complete
    */
@@ -218,14 +218,14 @@ declare abstract class Application<P extends Application.Options = Application.O
    * Render the inner application content
    * @param data - The data used to render the inner template
    * @returns A promise resolving to the constructed jQuery object
-   *          Some subclasses do not return a promise but the jQuery object directly.
+   * @remarks Some subclasses do not return a promise but the jQuery object directly.
    */
   protected _renderInner(data: object): Promise<JQuery> | JQuery;
 
   /**
    * Customize how inner HTML is replaced when the application is refreshed
-   * @param element - The original HTML element
-   * @param html    - New updated HTML
+   * @param element - The original HTML processed as a jQuery object
+   * @param html    - New updated HTML as a jQuery object
    */
   protected _replaceHTML(element: JQuery, html: JQuery): void;
 
@@ -249,8 +249,8 @@ declare abstract class Application<P extends Application.Options = Application.O
   protected _activateCoreListeners(html: JQuery): void;
 
   /**
-   * Once the HTML for an Application has been rendered, activate event
-   * listeners which provide interactivity for the application
+   * After rendering, activate event listeners which provide interactivity for the Application.
+   * This is where user-defined Application subclasses should attach their event-handling logic.
    */
   activateListeners(html: JQuery): void;
 
@@ -469,7 +469,8 @@ declare namespace Application {
     scrollY: string[];
 
     /**
-     * Track Tab navigation handlers which are active for this Application
+     * An array of tabbed container configurations which should be enabled
+     * for the application.
      * @defaultValue `[]`
      */
     tabs: Omit<Tabs.Options, 'callback'>[];
@@ -520,7 +521,8 @@ declare namespace Application {
     scale?: number;
 
     /**
-     * Apply focus to the application, maximizing it and bringing it to the top of the vertical stack.
+     * Apply focus to the application, maximizing it and bringing it to the top
+     * of the vertical stack.
      * @defaultValue `false`
      */
     focus?: boolean;
