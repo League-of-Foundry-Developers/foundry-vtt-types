@@ -118,7 +118,7 @@ interface ActorDataConstructorData {
   /**
    * An Actor subtype which configures the system data model applied
    */
-  type: string;
+  type: ActorDataSource['type'];
 
   /**
    * An image file path which provides the artwork for this Actor
@@ -129,7 +129,7 @@ interface ActorDataConstructorData {
   /**
    * The system data object which is defined by the system template.json model
    */
-  data?: object | null;
+  data?: DeepPartial<ActorDataSource['data']> | null;
 
   /**
    * Default Token settings which are used for Tokens created from this Actor
