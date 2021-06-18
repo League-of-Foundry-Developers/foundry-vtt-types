@@ -1,22 +1,20 @@
-interface MapSet<K, V> {
+interface MapReplacementMembers<K, V> {
   set(key: K, value: V): this;
+  delete(key: K): boolean;
 }
 
-type MapWithoutForEachAndIteratorAndGetAndAdjustedSet<K, V> = Omit<
-  Map<K, V>,
-  'forEach' | typeof Symbol.iterator | 'get' | 'set'
-> &
-  MapSet<K, V>;
+type PatchedMap<K, V> = Omit<Map<K, V>, 'forEach' | typeof Symbol.iterator | 'get' | 'set' | 'delete'> &
+  MapReplacementMembers<K, V>;
 
-interface MapWithoutForEachAndIteratorAndGetConstructor {
-  new (): MapWithoutForEachAndIteratorAndGetAndAdjustedSet<any, any>;
-  new <K, V>(entries?: readonly (readonly [K, V])[] | null): MapWithoutForEachAndIteratorAndGetAndAdjustedSet<K, V>;
-  new <K, V>(iterable: Iterable<readonly [K, V]>): MapWithoutForEachAndIteratorAndGetAndAdjustedSet<K, V>;
-  readonly [Symbol.species]: MapWithoutForEachAndIteratorAndGetConstructor;
-  readonly prototype: MapWithoutForEachAndIteratorAndGetAndAdjustedSet<any, any>;
+interface PatchedMapConstructor {
+  new (): PatchedMap<any, any>;
+  new <K, V>(entries?: readonly (readonly [K, V])[] | null): PatchedMap<K, V>;
+  new <K, V>(iterable: Iterable<readonly [K, V]>): PatchedMap<K, V>;
+  readonly [Symbol.species]: PatchedMapConstructor;
+  readonly prototype: PatchedMap<any, any>;
 }
 
-declare const Map: MapWithoutForEachAndIteratorAndGetConstructor;
+declare const Map: PatchedMapConstructor;
 
 /**
  * A reusable storage concept which blends the functionality of an Array with the efficient key-based lookup of a Map.
