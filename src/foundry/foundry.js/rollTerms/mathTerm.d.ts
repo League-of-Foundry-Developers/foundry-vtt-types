@@ -38,7 +38,7 @@ declare global {
     /**
      * An array of evaluated DiceTerm instances that should be bubbled up to the parent Roll
      */
-    get dice(): DiceTerm[];
+    get dice(): DiceTerm[] | undefined;
 
     get total(): number | undefined;
 
