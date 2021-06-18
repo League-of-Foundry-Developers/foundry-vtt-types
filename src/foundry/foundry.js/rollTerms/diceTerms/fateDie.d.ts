@@ -1,5 +1,5 @@
 /**
- * Define a three-sided Fate/Fudge dice term that can be used as part of a Roll formula
+ * A type of DiceTerm used to represent a three-sided Fate/Fudge die.
  * Mathematically behaves like 1d3-2
  */
 declare class FateDie extends DiceTerm {
@@ -7,13 +7,18 @@ declare class FateDie extends DiceTerm {
 
   faces: 3;
 
-  /* -------------------------------------------- */
+  /**
+   * @defaultValue `'f'`
+   */
+  static DENOMINATION: string;
 
-  static DENOMINATION: 'f';
-}
+  /**
+   * @override
+   */
+  roll({ minimize, maximize }?: { minimize: boolean; maximize: boolean }): DiceTerm.Result;
 
-declare namespace FateDie {
-  interface Data extends DiceTerm.Data {
-    class: 'FateDie';
-  }
+  /**
+   * @override
+   */
+  getResultLabel(result: DiceTerm.Result): string;
 }
