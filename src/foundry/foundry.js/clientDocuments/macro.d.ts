@@ -1,6 +1,6 @@
 declare global {
   /**
-   * The client-side Macro document which extends the common BaseMacro abstraction.
+   * The client-side Macro document which extends the common BaseMacro model.
    * Each Macro document contains MacroData which defines its data schema.
    *
    * @see {@link data.MacroData}              The Macro data schema
