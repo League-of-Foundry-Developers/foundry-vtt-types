@@ -74,7 +74,7 @@ declare abstract class RollTerm {
    * @param data - The de-serialized term data
    * @returns The re-constructed RollTerm object
    */
-  protected static _fromData(data: object): RollTerm;
+  protected static _fromData<T extends RollTerm>(this: ConstructorOf<T>, data: object): T;
 
   /**
    * Reconstruct a RollTerm instance from a provided JSON string
