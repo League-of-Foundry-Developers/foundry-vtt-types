@@ -3,7 +3,7 @@ import { Document } from '../abstract/module.mjs';
 import { DocumentMetadata } from '../abstract/document.mjs';
 
 /**
- * The Folder Document model.
+ * The base Folder model definition which defines common behavior of an Folder document between both client and server.
  */
 export declare class BaseFolder extends Document<data.FolderData, BaseFolder> {
   static get schema(): typeof data.FolderData;

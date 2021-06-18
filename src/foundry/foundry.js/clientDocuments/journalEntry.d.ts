@@ -2,7 +2,7 @@ import { DocumentDataType, DocumentModificationOptions } from '../../common/abst
 
 declare global {
   /**
-   * The client-side JournalEntry document which extends the common BaseJournalEntry abstraction.
+   * The client-side JournalEntry document which extends the common BaseJournalEntry model.
    * Each JournalEntry document contains JournalEntryData which defines its data schema.
    *
    * @see {@link data.JournalEntryData}              The JournalEntry data schema

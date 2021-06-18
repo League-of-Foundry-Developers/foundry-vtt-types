@@ -2,7 +2,7 @@ import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
 
 declare global {
   /**
-   * The Collection of ChatMessage documents which exist within the active World.
+   * The singleton collection of ChatMessage documents which exist within the active World.
    * This Collection is accessible within the Game object as game.messages.
    *
    * @see {@link ChatMessage} The ChatMessage entity
