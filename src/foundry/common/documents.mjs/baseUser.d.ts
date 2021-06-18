@@ -3,9 +3,7 @@ import { Document } from '../abstract/module.mjs';
 import * as data from '../data/data.mjs';
 
 /**
- * The base User Entity which is extended by both the server and client.
- * This base User provides shared functionality which is consistent for both sides of the application.
- * Each client who connects to a Foundry Virtual Tabletop session assumes the identity of one (and only one) User.
+ * The base User model definition which defines common behavior of an User document between both client and server.
  */
 export declare class BaseUser extends Document<data.UserData, null> {
   constructor(...args: ConstructorParameters<ConstructorOf<Document<data.UserData, null>>>);

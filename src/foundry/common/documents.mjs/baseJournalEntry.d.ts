@@ -3,7 +3,7 @@ import { Document } from '../abstract/module.mjs';
 import { DocumentMetadata } from '../abstract/document.mjs';
 
 /**
- * The JournalEntry document model.
+ * The base JournalEntry model definition which defines common behavior of an JournalEntry document between both client and server.
  */
 export declare class BaseJournalEntry extends Document<data.JournalEntryData> {
   static get schema(): typeof data.JournalEntryData;

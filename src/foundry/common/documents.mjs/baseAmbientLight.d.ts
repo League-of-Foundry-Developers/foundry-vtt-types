@@ -4,7 +4,7 @@ import * as data from '../data/data.mjs';
 import { BaseScene } from './baseScene';
 
 /**
- * The AmbientLight embedded document model.
+ * The base AmbientLight model definition which defines common behavior of an AmbientLight document between both client and server.
  */
 export declare class BaseAmbientLight extends Document<data.AmbientLightData, BaseScene> {
   static get schema(): typeof data.AmbientLightData;

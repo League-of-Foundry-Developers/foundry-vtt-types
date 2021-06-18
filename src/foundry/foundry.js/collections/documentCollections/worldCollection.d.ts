@@ -2,8 +2,9 @@ import { ConfiguredDocumentClass, DocumentConstructor } from '../../../../types/
 
 declare global {
   /**
-   * A singleton Collection of world-level Document objects within the Foundry Virtual Tabletop.
+   * A collection of world-level Document objects with a singleton instance per primary Document type.
    * Each primary Document type has an associated subclass of WorldCollection which contains them.
+   * @see {@link Game#collections}
    */
   abstract class WorldCollection<T extends DocumentConstructor, Name extends string> extends DocumentCollection<
     T,

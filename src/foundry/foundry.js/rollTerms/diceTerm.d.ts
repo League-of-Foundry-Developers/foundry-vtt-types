@@ -46,8 +46,11 @@ declare abstract class DiceTerm extends RollTerm {
    */
   static DENOMINATION: string;
 
-  /** Define the named modifiers that can be applied for this particular DiceTerm type. */
-  static MODIFIERS: Record<string, string | Function>;
+  /**
+   * Define the named modifiers that can be applied for this particular DiceTerm type.
+   * @defaultValue `{}`
+   */
+  static MODIFIERS: DiceTerm.Modifiers;
 
   /**
    * A regular expression pattern which captures the full set of term modifiers
@@ -107,7 +110,7 @@ declare abstract class DiceTerm extends RollTerm {
    * @param result - The rolled result
    * @returns The desired classes
    */
-  getResultCSS(result: DiceTerm.Result): string[];
+  getResultCSS(result: DiceTerm.Result): (string | null)[];
 
   /* -------------------------------------------- */
 
@@ -287,4 +290,7 @@ declare namespace DiceTerm {
     flavor: string;
     rolls: { result: string; classes: string }[];
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface Modifiers {}
 }

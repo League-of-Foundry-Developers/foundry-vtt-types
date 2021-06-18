@@ -1,5 +1,5 @@
 /**
- * The Collection of JournalEntry documents which exist within the active World.
+ * The singleton collection of JournalEntry documents which exist within the active World.
  * This Collection is accessible within the Game object as game.journal.
  *
  * @see {@link JournalEntry} The JournalEntry entity

@@ -2,7 +2,7 @@ import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
 
 declare global {
   /**
-   * The Collection of Macro documents which exist within the active World.
+   * The singleton collection of Macro documents which exist within the active World.
    * This Collection is accessible within the Game object as game.macros.
    *
    * @see {@link Macro} The Macro entity

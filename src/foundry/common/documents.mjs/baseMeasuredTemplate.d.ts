@@ -3,7 +3,7 @@ import { Document } from '../abstract/module.mjs';
 import { BaseUser } from './baseUser';
 
 /**
- * The MeasuredTemplate embedded document model.
+ * The base MeasuredTemplate model definition which defines common behavior of an MeasuredTemplate document between both client and server.
  */
 export declare class BaseMeasuredTemplate extends Document<any, any> {
   static get metadata(): Merge<
