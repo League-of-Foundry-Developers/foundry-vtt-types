@@ -25,7 +25,13 @@ export type PropertiesToSource<T extends object> = {
   [Key in keyof T]: PropertyTypeToSourceType<T[Key]>;
 };
 
-type SourceDataType<T extends Document<any, any> | AnyDocumentData> = T extends DocumentData<any, any, infer U, any>
+type SourceDataType<T extends Document<any, any> | AnyDocumentData> = T extends DocumentData<
+  any,
+  any,
+  infer U,
+  any,
+  any
+>
   ? U
   : T extends Document<infer U, any>
   ? SourceDataType<U>

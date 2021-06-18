@@ -51,6 +51,44 @@ interface EffectDurationDataProperties {
   startTurn?: number;
 }
 
+interface EffectDurationDataConstructorData {
+  /**
+   * The world time when the active effect first started
+   * @defaultValue `Date.now`
+   */
+  startTime?: number | null;
+
+  /**
+   * The maximum duration of the effect, in seconds
+   */
+  seconds?: number | null;
+
+  /**
+   * The _id of the CombatEncounter in which the effect first started
+   */
+  combat?: string | null;
+
+  /**
+   * The maximum duration of the effect, in combat rounds
+   */
+  rounds?: number | null;
+
+  /**
+   * The maximum duration of the effect, in combat turns
+   */
+  turns?: number | null;
+
+  /**
+   * The round of the CombatEncounter in which the effect first started
+   */
+  startRound?: number | null;
+
+  /**
+   * The turn of the CombatEncounter in which the effect first started
+   */
+  startTurn?: number | null;
+}
+
 /**
  * An embedded data structure which tracks the duration of an ActiveEffect.
  * @see ActiveEffectData
@@ -59,6 +97,7 @@ export declare class EffectDurationData extends DocumentData<
   EffectDurationDataSchema,
   EffectDurationDataProperties,
   PropertiesToSource<EffectDurationDataProperties>,
+  EffectDurationDataConstructorData,
   BaseActiveEffect
 > {
   static defineSchema(): EffectDurationDataSchema;

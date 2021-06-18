@@ -51,6 +51,9 @@ declare global {
   }
 }
 
+expectError(new foundry.data.ItemData());
+expectError(new foundry.data.ItemData({}));
+
 expectError(new foundry.data.ItemData({ name: 'Some Item With Wrong Type', type: 'foo' }));
 
 const itemData = new foundry.data.ItemData({ name: 'Some Item', type: 'weapon' });

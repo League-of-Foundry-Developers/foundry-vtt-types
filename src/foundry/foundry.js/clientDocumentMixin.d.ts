@@ -19,7 +19,7 @@ type ClientDocumentConstructor<T extends ConstructorOf<foundry.abstract.Document
   };
 
 export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>> {
-  constructor(data?: DeepPartial<T['data']['_source']>, context?: ContextType<T>);
+  constructor(data?: Parameters<T['data']['_initializeSource']>[0], context?: ContextType<T>);
 
   /**
    * A collection of Application instances which should be re-rendered whenever this document is updated.
@@ -162,17 +162,13 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
   /**
    * @see abstract.Document#_onCreate
    */
-  protected _onCreate(
-    data: DeepPartial<DocumentDataType<T>>,
-    options: DocumentModificationOptions,
-    userId: string
-  ): void;
+  protected _onCreate(data: T['data']['_source'], options: DocumentModificationOptions, userId: string): void;
 
   /**
    * @see abstract.Document#_onUpdate
    */
   protected _onUpdate(
-    data: DeepPartial<DocumentDataType<T>>,
+    data: DeepPartial<T['data']['_source']>,
     options: DocumentModificationOptions,
     userId: string
   ): void;
@@ -283,7 +279,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    */
   static createDialog<T extends DocumentConstructor>(
     this: T,
-    data?: DeepPartial<InstanceType<T>['data']['_source']> & Record<string, unknown>,
+    data?: Parameters<InstanceType<T>['data']['_initializeSource']>[0] & Record<string, unknown>,
     options?: Dialog.Options
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>>;
 
@@ -377,8 +373,16 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
   static update<T extends DocumentConstructor>(
     this: T,
     updates?:
-      | Array<DeepPartial<InstanceType<T>['data']['_source']> & { _id: string } & Record<string, unknown>>
-      | (DeepPartial<InstanceType<T>['data']['_source']> & { _id: string } & Record<string, unknown>),
+      | Array<
+          DeepPartial<Parameters<InstanceType<T>['data']['_initializeSource']>[0]> & { _id: string } & Record<
+              string,
+              unknown
+            >
+        >
+      | (DeepPartial<Parameters<InstanceType<T>['data']['_initializeSource']>[0]> & { _id: string } & Record<
+            string,
+            unknown
+          >),
     options?: DocumentModificationContext
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
@@ -455,7 +459,7 @@ type DropData<T extends foundry.abstract.Document<any, any>> = DropData.Data<T> 
 
 declare namespace DropData {
   interface Data<T extends foundry.abstract.Document<any, any>> {
-    data: DeepPartial<T['data']['_source']>;
+    data: T['data']['_source'];
   }
 
   interface Pack {

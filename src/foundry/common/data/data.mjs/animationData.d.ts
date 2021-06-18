@@ -40,6 +40,25 @@ interface AnimationDataProperties {
   intensity: number;
 }
 
+interface AnimationDataConstructorData {
+  /**
+   * The animation type which is applied
+   */
+  type?: string | null;
+
+  /**
+   * The speed of the animation, a number between 1 and 10
+   * @defaultValue `5`
+   */
+  speed?: number | null;
+
+  /**
+   * The intensity of the animation, a number between 1 and 10
+   * @defaultValue `5`
+   */
+  intensity?: number | null;
+}
+
 /**
  * An embedded data object which defines the properties of a light source animation
  */
@@ -47,6 +66,7 @@ export declare class AnimationData extends DocumentData<
   AnimationDataSchema,
   AnimationDataProperties,
   PropertiesToSource<AnimationDataProperties>,
+  AnimationDataConstructorData,
   BaseAmbientLight
 > {
   static defineSchema(): AnimationDataSchema;

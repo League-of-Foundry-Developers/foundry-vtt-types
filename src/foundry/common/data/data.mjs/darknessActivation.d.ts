@@ -22,6 +22,20 @@ interface DarknessActivationProperties {
   max: number;
 }
 
+interface DarknessActivationConstructorData {
+  /**
+   * The minimum darkness level for which activation occurs
+   * @defaultValue `0`
+   */
+  min?: number | null;
+
+  /**
+   * The maximum darkness level for which activation occurs
+   * @defaultValue `1`
+   */
+  max?: number | null;
+}
+
 /**
  * An embedded data object which defines the darkness range during which some attribute is active
  */
@@ -29,6 +43,7 @@ export declare class DarknessActivation extends DocumentData<
   DarknessActivationSchema,
   DarknessActivationProperties,
   PropertiesToSource<DarknessActivationProperties>,
+  DarknessActivationConstructorData,
   BaseAmbientLight
 > {
   static defineSchema(): DarknessActivationSchema;

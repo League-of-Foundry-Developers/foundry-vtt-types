@@ -64,11 +64,17 @@ declare global {
 
 /**
  * The abstract base class which defines the data schema contained within a Document.
+ * @typeParam ConcreteDocumentSchema - the schema of the document data
+ * @typeParam PropertiesData - the runtime document properties of the the DocumentData
+ * @typeParam SourceData - the type of the `_source` property
+ * @typeParam ConstructorData - the data to construct a new instance of this DocumentData
+ * @typeParam ConcreteDocument - the document, the document data belongs to
  */
 declare abstract class DocumentData<
   ConcreteDocumentSchema extends DocumentSchema,
   PropertiesData extends object,
   SourceData extends object = PropertiesToSource<PropertiesData>,
+  ConstructorData extends object = DeepPartial<SourceData>,
   ConcreteDocument extends Document<any, any> | null = null
 > {
   /**
@@ -77,7 +83,7 @@ declare abstract class DocumentData<
    * @param document - The document to which this data object belongs
    *                   (default: `null`)
    */
-  constructor(data?: DeepPartial<SourceData>, document?: ConcreteDocument | null);
+  constructor(data?: ConstructorData, document?: ConcreteDocument | null);
 
   /**
    * An immutable reverse-reference to the Document to which this data belongs, possibly null.
@@ -117,7 +123,7 @@ declare abstract class DocumentData<
   /**
    * Initialize the source data object in-place
    */
-  protected _initializeSource(data: DeepPartial<SourceData>): SourceData;
+  _initializeSource(data: ConstructorData): SourceData;
 
   /**
    * Get the default value for a schema field, conditional on the provided data
@@ -183,7 +189,7 @@ declare abstract class DocumentData<
     replace,
     strict
   }: {
-    changes: DeepPartial<SourceData>;
+    changes?: DeepPartial<ConstructorData>;
     children?: boolean;
     clean?: boolean;
     replace?: boolean;
@@ -249,7 +255,7 @@ declare abstract class DocumentData<
    * @returns The changed keys and values which are different than the previous data
    */
   update<U>(
-    data?: Expanded<U> extends DeepPartial<SourceData> ? U : DeepPartial<SourceData>,
+    data?: Expanded<U> extends DeepPartial<ConstructorData> ? U : DeepPartial<ConstructorData>,
     options?: UpdateOptions
   ): Expanded<U> extends DeepPartial<SourceData> ? DeepPartial<U> : DeepPartial<SourceData>;
 
@@ -309,4 +315,4 @@ interface UpdateOptions {
 
 export default DocumentData;
 
-export type AnyDocumentData = DocumentData<any, any, any, any>;
+export type AnyDocumentData = DocumentData<any, any, any, any, any>;

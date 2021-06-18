@@ -8,7 +8,7 @@ import { EffectDurationDataProperties } from '../../../../src/foundry/common/dat
 const baseItem = new foundry.documents.BaseItem();
 expectType<EmbeddedCollection<typeof ActiveEffect, foundry.data.ItemData>>(baseItem.effects);
 expectType<PropertiesToSource<ActiveEffectDataProperties>>(baseItem.data._source.effects[0]);
-expectType<EffectDurationDataProperties | undefined>(baseItem.data._source.effects[0].duration);
+expectType<EffectDurationDataProperties>(baseItem.data._source.effects[0].duration);
 
 interface ArmorDataSourceData {
   armorValue: number;
