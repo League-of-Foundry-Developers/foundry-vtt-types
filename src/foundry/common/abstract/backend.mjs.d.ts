@@ -3,7 +3,7 @@ import { AnyDocumentData } from './data.mjs';
 import Document from './document.mjs';
 
 /**
- * An interface which is required by both client and server-side to provide implementations for document operations.
+ * An interface shared by both the client and server-side which defines how creation, update, and deletion operations are transacted.
  */
 declare abstract class DatabaseBackend {
   /**

@@ -3,7 +3,7 @@ import { Document } from '../abstract/module.mjs';
 import { BaseUser } from './baseUser';
 
 /**
- * The Combatant embedded document model.
+ * The base Combatant model definition which defines common behavior of an Combatant document between both client and server.
  */
 export declare class BaseCombatant extends Document<any, any> {
   static get metadata(): Merge<

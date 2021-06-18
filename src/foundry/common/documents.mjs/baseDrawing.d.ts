@@ -3,7 +3,7 @@ import { Document } from '../abstract/module.mjs';
 import { BaseUser } from './baseUser';
 
 /**
- * The Drawing embedded document model.
+ * The base Drawing model definition which defines common behavior of an Drawing document between both client and server.
  */
 export declare class BaseDrawing extends Document<any, any> {
   static get metadata(): Merge<

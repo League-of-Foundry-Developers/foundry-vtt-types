@@ -3,7 +3,7 @@ import { Document } from '../abstract/module.mjs';
 import { BaseUser } from './baseUser';
 
 /**
- * The Wall embedded document model.
+ * The base Wall model definition which defines common behavior of an Wall document between both client and server.
  */
 export declare class BaseWall extends Document<any, any> {
   static get metadata(): Merge<

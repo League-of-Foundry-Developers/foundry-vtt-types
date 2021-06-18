@@ -3,7 +3,7 @@ import { DocumentDataType, DocumentModificationOptions } from '../../common/abst
 
 declare global {
   /**
-   * The client-side User document which extends the common BaseUser abstraction.
+   * The client-side User document which extends the common BaseUser model.
    * Each User document contains UserData which defines its data schema.
    *
    * @see {@link data.UserData}               The User data schema

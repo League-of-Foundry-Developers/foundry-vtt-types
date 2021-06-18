@@ -3,7 +3,7 @@ import { Document } from '../abstract/module.mjs';
 import { BaseUser } from './baseUser';
 
 /**
- * The FogExploration Document model.
+ * The base FogExploration model definition which defines common behavior of an FogExploration document between both client and server.
  */
 export declare class BaseFogExploration extends Document<any, any> {
   static get metadata(): Merge<

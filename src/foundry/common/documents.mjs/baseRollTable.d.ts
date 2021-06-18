@@ -3,7 +3,7 @@ import { Document } from '../abstract/module.mjs';
 import { BaseTableResult } from './baseTableResult';
 
 /**
- * The RollTable document model.
+ * The base RollTable model definition which defines common behavior of an RollTable document between both client and server.
  */
 export declare class BaseRollTable extends Document<any, any> {
   static get metadata(): Merge<

@@ -1,5 +1,5 @@
 /**
- * Define a fair n-sided die term that can be used as part of a Roll formula
+ * A type of DiceTerm used to represent rolling a fair n-sided die.
  *
  * @example
  * ```typescript
@@ -10,16 +10,45 @@
 declare class Die extends DiceTerm {
   constructor(termData?: Partial<Die.TermData>);
 
-  /* -------------------------------------------- */
+  /**
+   * @override
+   * @defaultValue `"d"`
+   */
+  static DENOMINATION: string;
+
+  /**
+   * @override
+   * @defaultValue
+   * ```typescript
+   * {
+   *   r: 'reroll';
+   *   rr: 'rerollRecursive';
+   *   x: 'explode';
+   *   xo: 'explodeOnce';
+   *   k: 'keep';
+   *   kh: 'keep';
+   *   kl: 'keep';
+   *   d: 'drop';
+   *   dh: 'drop';
+   *   dl: 'drop';
+   *   min: 'minimum';
+   *   max: 'maximum';
+   *   even: 'countEven';
+   *   odd: 'countOdd';
+   *   cs: 'countSuccess';
+   *   cf: 'countFailures';
+   *   df: 'deductFailures';
+   *   sf: 'subtractFailures';
+   *   ms: 'marginSuccess';
+   * }
+   * ```
+   */
+  static MODIFIERS: Die.Modifiers;
 
   /**
    * @override
    */
   get total(): number | null;
-
-  /* -------------------------------------------- */
-  /*  Term Modifiers                              */
-  /* -------------------------------------------- */
 
   /**
    * Re-roll the Die, rolling additional results for any values which fall within a target set.
@@ -35,8 +64,6 @@ declare class Die extends DiceTerm {
    * @returns False if the modifier was unmatched
    */
   reroll(modifier: string, { recursive }?: { recursive?: boolean }): boolean | void;
-
-  /* -------------------------------------------- */
 
   /**
    * @see {@link Die#reroll}
@@ -54,14 +81,10 @@ declare class Die extends DiceTerm {
    */
   explode(modifier: string, { recursive }?: { recursive: boolean }): boolean | void;
 
-  /* -------------------------------------------- */
-
   /**
    * @see {@link Die#explode}
    */
   explodeOnce(modifier: string): boolean | void;
-
-  /* -------------------------------------------- */
 
   /**
    * Keep a certain number of highest or lowest dice rolls from the result set.
@@ -76,8 +99,6 @@ declare class Die extends DiceTerm {
    */
   keep(modifier: string): boolean | void;
 
-  /* -------------------------------------------- */
-
   /**
    * Drop a certain number of highest or lowest dice rolls from the result set.
    *
@@ -90,8 +111,6 @@ declare class Die extends DiceTerm {
    * @param modifier - The matched modifier query
    */
   drop(modifier: string): boolean | void;
-
-  /* -------------------------------------------- */
 
   /**
    * Count the number of successful results which occurred in a given result set.
@@ -106,8 +125,6 @@ declare class Die extends DiceTerm {
    */
   countSuccess(modifier: string): boolean | void;
 
-  /* -------------------------------------------- */
-
   /**
    * Count the number of failed results which occurred in a given result set.
    * Failures are counted relative to some target, or relative to the lowest possible value if no target is given.
@@ -121,8 +138,6 @@ declare class Die extends DiceTerm {
    */
   countFailures(modifier: string): boolean | void;
 
-  /* -------------------------------------------- */
-
   /**
    * Count the number of even results which occurred in a given result set.
    * Even numbers are marked as a success and counted as 1
@@ -134,8 +149,6 @@ declare class Die extends DiceTerm {
    */
   countEven(modifier: string): boolean | void;
 
-  /* -------------------------------------------- */
-
   /**
    * Count the number of odd results which occurred in a given result set.
    * Odd numbers are marked as a success and counted as 1
@@ -146,8 +159,6 @@ declare class Die extends DiceTerm {
    * @param modifier - The matched modifier query
    */
   countOdd(modifier: string): boolean | void;
-
-  /* -------------------------------------------- */
 
   /**
    * Deduct the number of failures from the dice result, counting each failure as -1
@@ -162,8 +173,6 @@ declare class Die extends DiceTerm {
    */
   deductFailures(modifier: string): boolean | void;
 
-  /* -------------------------------------------- */
-
   /**
    * Subtract the value of failed dice from the non-failed total, where each failure counts as its negative value.
    * Failures are identified relative to some target, or relative to the lowest possible value if no target is given.
@@ -175,16 +184,12 @@ declare class Die extends DiceTerm {
    */
   subtractFailures(modifier: string): boolean | void;
 
-  /* -------------------------------------------- */
-
   /**
    * Subtract the total value of the DiceTerm from a target value, treating the difference as the final total.
    * Example: 6d6ms\>12    Roll 6d6 and subtract 12 from the resulting total.
    * @param modifier - The matched modifier query
    */
   marginSuccess(modifier: string): boolean | void;
-
-  /* -------------------------------------------- */
 
   /**
    * Constrain each rolled result to be at least some minimum value.
@@ -193,27 +198,25 @@ declare class Die extends DiceTerm {
    */
   minimum(modifier: string): boolean | void;
 
-  /* -------------------------------------------- */
-
   /**
    * Constrain each rolled result to be at most some maximum value.
    * Example: 6d6max5    Roll 6d6, each result must be at most 5
    * @param modifier - The matched modifier query
    */
   maximum(modifier: string): boolean | void;
+}
 
-  /* -------------------------------------------- */
+declare namespace Die {
+  interface Data extends Partial<TermData> {
+    class: 'Die';
+    results: DiceTerm.Result[];
+  }
 
-  /**
-   * @override
-   * @defaultValue `d`
-   */
-  static DENOMINATION: string;
+  interface TermData extends DiceTerm.TermData {
+    modifiers: Array<keyof typeof Die['MODIFIERS']>;
+  }
 
-  /**
-   * @override
-   */
-  static MODIFIERS: typeof DiceTerm.MODIFIERS & {
+  interface Modifiers {
     r: 'reroll';
     rr: 'rerollRecursive';
     x: 'explode';
@@ -233,16 +236,5 @@ declare class Die extends DiceTerm {
     df: 'deductFailures';
     sf: 'subtractFailures';
     ms: 'marginSuccess';
-  };
-}
-
-declare namespace Die {
-  interface Data extends Partial<TermData> {
-    class: 'Die';
-    results: DiceTerm.Result[];
-  }
-
-  interface TermData extends DiceTerm.TermData {
-    modifiers: Array<keyof typeof Die['MODIFIERS']>;
   }
 }
