@@ -10,6 +10,7 @@ import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 import { PrototypeTokenData } from '../data.mjs';
+import { PrototypeTokenDataConstructorData } from './prototypeTokenData.js';
 
 interface ActorDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
@@ -22,7 +23,7 @@ interface ActorDataSchema extends DocumentSchema {
   };
   img: FieldReturnType<typeof fields.IMAGE_FIELD, { default: () => string }>;
   data: FieldReturnType<typeof fields.OBJECT_FIELD, { default: (data: { type: string }) => any }>; // TODO
-  token: {
+  token: DocumentField<PrototypeTokenData> & {
     type: typeof PrototypeTokenData;
     required: true;
     default: (data: unknown) => { name: string; img: string };
@@ -134,17 +135,17 @@ interface ActorDataConstructorData {
   /**
    * Default Token settings which are used for Tokens created from this Actor
    */
-  token?: PrototypeTokenData | null;
+  token?: PrototypeTokenDataConstructorData | null;
 
   /**
    * A Collection of Item embedded Documents
    */
-  items?: ConfiguredDocumentClass<typeof documents.BaseItem>[] | null;
+  items?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseItem>>[0][] | null;
 
   /**
    * A collection of ActiveEffect embedded Documents
    */
-  effects?: ConfiguredDocumentClass<typeof documents.BaseActiveEffect>[] | null;
+  effects?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseActiveEffect>>[0][] | null;
 
   /**
    * The _id of a Folder which contains this Actor
