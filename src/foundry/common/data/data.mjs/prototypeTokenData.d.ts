@@ -4,4 +4,4 @@ import DocumentData from '../../abstract/data.mjs';
 export interface PrototypeTokenDataConstructorData {}
 
 //TODO
-export declare class PrototypeTokenData extends DocumentData<any, any, any, any> {}
+export declare class PrototypeTokenData extends DocumentData<any, any, any, any, any> {}
