@@ -3,8 +3,8 @@ import { DocumentData } from '../../abstract/module.mjs';
 import * as CONST from '../../constants.mjs';
 import { BaseAmbientLight } from '../../documents.mjs';
 import * as fields from '../fields.mjs';
-import { AnimationData } from './animationData';
-import { DarknessActivation } from './darknessActivation';
+import { AnimationData, AnimationDataConstructorData } from './animationData';
+import { DarknessActivation, DarknessActivationConstructorData } from './darknessActivation';
 
 interface AmbientLightDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
@@ -99,7 +99,7 @@ interface AmbientLightDataProperties {
 
   /**
    * A data object which configures token light animation settings, if one is applied
-   * @defaultValue `new AnimationData({})`
+   * @defaultValue `{}`
    */
   lightAnimation: AnimationData;
 
@@ -110,7 +110,7 @@ interface AmbientLightDataProperties {
   darknessThreshold: number;
 
   /**
-   * @defaultValue `new DarknessActivation({})`
+   * @defaultValue `{}`
    */
   darkness: DarknessActivation;
 
@@ -188,9 +188,9 @@ interface AmbientLightDataConstructorData {
 
   /**
    * A data object which configures token light animation settings, if one is applied
-   * @defaultValue `new AnimationData({})`
+   * @defaultValue `{}`
    */
-  lightAnimation?: AnimationData | null;
+  lightAnimation?: AnimationDataConstructorData | null;
 
   /**
    * A value of the Scene darkness level, above which this light source will be active
@@ -199,9 +199,9 @@ interface AmbientLightDataConstructorData {
   darknessThreshold?: number | null;
 
   /**
-   * @defaultValue `new DarknessActivation({})`
+   * @defaultValue `{}`
    */
-  darkness?: DarknessActivation | null;
+  darkness?: DarknessActivationConstructorData | null;
 
   /**
    * Is the light source currently hidden?

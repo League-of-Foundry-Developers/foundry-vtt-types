@@ -40,7 +40,7 @@ interface AnimationDataProperties {
   intensity: number;
 }
 
-interface AnimationDataConstructorData {
+export interface AnimationDataConstructorData {
   /**
    * The animation type which is applied
    */

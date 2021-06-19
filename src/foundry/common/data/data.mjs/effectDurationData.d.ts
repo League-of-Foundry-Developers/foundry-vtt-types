@@ -51,7 +51,7 @@ interface EffectDurationDataProperties {
   startTurn?: number;
 }
 
-interface EffectDurationDataConstructorData {
+export interface EffectDurationDataConstructorData {
   /**
    * The world time when the active effect first started
    * @defaultValue `null`

@@ -2,8 +2,8 @@ import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTyp
 import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
-import { EffectChangeData } from './effectChangeData';
-import { EffectDurationData } from './effectDurationData';
+import { EffectChangeData, EffectChangeDataConstructorData } from './effectChangeData';
+import { EffectDurationData, EffectDurationDataConstructorData } from './effectDurationData';
 
 interface ActiveEffectDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
@@ -91,7 +91,7 @@ interface ActiveEffectDataConstructorData {
   /**
    * The array of EffectChangeData objects which the ActiveEffect applies
    */
-  changes?: EffectChangeData[] | null;
+  changes?: EffectChangeDataConstructorData[] | null;
 
   /**
    * Is this ActiveEffect currently disabled?
@@ -102,7 +102,7 @@ interface ActiveEffectDataConstructorData {
   /**
    * An EffectDurationData object which describes the duration of the ActiveEffect
    */
-  duration?: EffectDurationData[] | null;
+  duration?: EffectDurationDataConstructorData | null;
 
   /**
    * An icon image path used to depict the ActiveEffect

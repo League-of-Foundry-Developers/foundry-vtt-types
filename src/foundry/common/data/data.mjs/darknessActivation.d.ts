@@ -22,7 +22,7 @@ interface DarknessActivationProperties {
   max: number;
 }
 
-interface DarknessActivationConstructorData {
+export interface DarknessActivationConstructorData {
   /**
    * The minimum darkness level for which activation occurs
    * @defaultValue `0`

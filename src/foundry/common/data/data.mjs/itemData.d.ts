@@ -115,7 +115,7 @@ interface ItemDataConstructorData {
   /**
    * A collection of ActiveEffect embedded Documents
    */
-  effects?: ConfiguredDocumentClass<typeof documents.BaseActiveEffect>[] | null;
+  effects?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseActiveEffect>>[0][] | null;
 
   /**
    * The _id of a Folder which contains this Item

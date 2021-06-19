@@ -41,7 +41,7 @@ interface EffectChangeDataProperties {
   priority?: number | null;
 }
 
-interface EffectChangeDataConstructorData {
+export interface EffectChangeDataConstructorData {
   /**
    * The attribute path in the Actor or Item data which the change modifies
    * @defaultValue `''`
