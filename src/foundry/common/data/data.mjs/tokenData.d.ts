@@ -11,7 +11,7 @@ interface VisionFieldOptions {
   validationError: 'Invalid {name} {field} distance which must be a number with absolute value less than 1000';
 }
 
-interface TokenDataSchema extends DocumentSchema {
+export interface TokenDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
   name: typeof fields.STRING_FIELD;
   displayName: DocumentField<CONST.TokenDisplayMode> & {
@@ -95,7 +95,7 @@ interface TokenDataSchema extends DocumentSchema {
   flags: typeof fields.OBJECT_FIELD;
 }
 
-interface TokenDataProperties {
+export interface TokenDataProperties {
   /**
    * The Token _id which uniquely identifies it within its parent Scene
    * @defaultValue `null`
@@ -308,7 +308,7 @@ interface TokenDataProperties {
   flags: Record<string, unknown>;
 }
 
-interface TokenDataConstructorData {
+export interface TokenDataConstructorData {
   /**
    * The Token _id which uniquely identifies it within its parent Scene
    * @defaultValue `null`
