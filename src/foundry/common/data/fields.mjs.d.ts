@@ -8,6 +8,7 @@ import { FieldReturnType } from '../../../types/helperTypes';
  * @remarks
  * Property type: `boolean`
  * Constructor type: `boolean | undefined | null`
+ * Default: `false`
  */
 export declare const BOOLEAN_FIELD: BooleanField;
 interface BooleanField extends DocumentField<boolean> {
@@ -140,6 +141,7 @@ interface PositiveIntegerField extends DocumentField<number> {
  * @remarks
  * Property type: `object`
  * Constructor type: `object | undefined | null`
+ * Default `{}`
  */
 export declare const OBJECT_FIELD: ObjectField;
 interface ObjectField extends DocumentField<object> {
@@ -179,6 +181,7 @@ interface NumericField extends DocumentField<number> {
  * @remarks
  * Property type: `number`
  * Constructor type: `number | undefined | null`
+ * Default: `0`
  */
 export declare const REQUIRED_NUMBER: RequiredNumber;
 interface RequiredNumber extends DocumentField<number> {
@@ -208,6 +211,7 @@ interface RequiredPositiveNumber extends DocumentField<number> {
  * @remarks
  * Property type: `number`
  * Constructor type: `number | undefined | null`
+ * Default: `360`
  */
 export declare const ANGLE_FIELD: AngleField;
 interface AngleField extends DocumentField<number> {
@@ -225,6 +229,7 @@ interface AngleField extends DocumentField<number> {
  * @remarks
  * Property type: `number`
  * Constructor type: `number | undefined | null`
+ * Default: `1`
  */
 export declare const ALPHA_FIELD: AlphaField;
 interface AlphaField extends DocumentField<number> {
@@ -255,6 +260,7 @@ interface RequiredString extends DocumentField<string> {
  * @remarks
  * Property type: `string`
  * Constructor type: `string | undefined | null`
+ * Default: `''`
  */
 export declare const BLANK_STRING: BlankString;
 interface BlankString extends DocumentField<string> {
@@ -270,6 +276,7 @@ interface BlankString extends DocumentField<string> {
  * @remarks
  * Property type: `number`
  * Constructor type: `number | undefined | null`
+ * Default: `0`
  */
 export declare const INTEGER_SORT_FIELD: IntegerSortField;
 interface IntegerSortField extends DocumentField<number> {
@@ -285,6 +292,7 @@ interface IntegerSortField extends DocumentField<number> {
  * @remarks
  * Property type: `number | undefined`
  * Constructor type: `number | undefined | null`
+ * Default: `Date.now`
  */
 export declare const TIMESTAMP_FIELD: TimestampField;
 interface TimestampField extends DocumentField<number> {
@@ -306,6 +314,7 @@ declare function _validateId(id: string | null): boolean;
  * @remarks
  * Property type: `string | null`
  * Constructor type: `string | undefined | null`
+ * Default: `null`
  */
 export declare const DOCUMENT_ID: DocumentId;
 interface DocumentId extends DocumentField<string | null> {
@@ -322,6 +331,7 @@ interface DocumentId extends DocumentField<string | null> {
  * @remarks
  * Property type: `Partial<Record<string, foundry.CONST.EntityPermission>>`
  * Constructor type: `Partial<Record<string, foundry.CONST.EntityPermission>> | undefined | null`
+ * Default: `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
  */
 export declare const DOCUMENT_PERMISSIONS: DocumentPermissions;
 interface DocumentPermissions extends DocumentField<Partial<Record<string, foundry.CONST.EntityPermission>>> {
