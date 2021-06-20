@@ -335,12 +335,14 @@ declare abstract class Document<
    * const data = [{name: "Special Sword", type: "weapon"}];
    * const created = await Item.create(data, {pack: "mymodule.mypack"});
    * ```
+   *
+   * @remarks If no document has actually been created, the returned {@link Promise} resolves to `undefined`.
    */
   static create<T extends DocumentConstructor>(
     this: T,
-    data?: Parameters<InstanceType<T>['data']['_initializeSource']>[0] & Record<string, unknown>,
+    data: Parameters<InstanceType<T>['data']['_initializeSource']>[0] & Record<string, unknown>,
     context?: DocumentModificationContext
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>>>;
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
 
   /**
    * Update this Document using incremental data, saving it to the database.
@@ -350,11 +352,13 @@ declare abstract class Document<
    * @param context - Additional context which customizes the update workflow
    *                  (default: `{}`)
    * @returns The updated Document instance
+   *
+   * @remarks If no document has actually been updated, the returned {@link Promise} resolves to `undefined`.
    */
   update(
     data?: DeepPartial<Parameters<ConcreteDocumentData['_initializeSource']>[0]> & Record<string, unknown>,
     context?: DocumentModificationContext
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   /**
    * Delete this Document, removing it from the database.
@@ -362,8 +366,10 @@ declare abstract class Document<
    * @param context - Additional context which customizes the deletion workflow
    *                  (default: `{}`)
    * @returns The deleted Document instance
+   *
+   * @remarks If no document has actually been deleted, the returned {@link Promise} resolves to `undefined`.
    */
-  delete(context?: DocumentModificationContext): Promise<this>;
+  delete(context?: DocumentModificationContext): Promise<this | undefined>;
 
   /**
    * Obtain a reference to the Array of source data within the data object for a certain embedded Document name

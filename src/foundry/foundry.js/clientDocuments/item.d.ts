@@ -1,6 +1,5 @@
 import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 
-// TODO
 declare global {
   /**
    * The client-side Item document which extends the common BaseItem abstraction.
@@ -33,7 +32,7 @@ declare global {
      * Return an array of the Active Effect instances which originated from this Item.
      * The returned instances are the ActiveEffect instances which exist on the Item itself.
      */
-    get transferredEffects(): ActiveEffect[];
+    get transferredEffects(): ReturnType<this['effects']['filter']>;
 
     /**
      * A convenience reference to the item type (data.type) of this Item

@@ -75,7 +75,7 @@ declare global {
      * @param event - (unused)
      * @override
      */
-    protected _updateObject(event: Event, formData: object): Promise<ConcreteDocument>;
+    protected _updateObject(event: Event, formData: object): Promise<ConcreteDocument | undefined>;
 
     /**
      * @deprecated since 0.8.0
