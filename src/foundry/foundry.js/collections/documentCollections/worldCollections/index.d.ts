@@ -1,3 +1,4 @@
+import './actors';
 import './fogExplorations';
 import './folders';
 import './items';
