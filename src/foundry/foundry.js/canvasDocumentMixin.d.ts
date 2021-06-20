@@ -1,4 +1,4 @@
-import { ContextType, DocumentDataType, DocumentModificationOptions } from '../common/abstract/document.mjs';
+import { ContextType, DocumentModificationOptions } from '../common/abstract/document.mjs';
 import { ClientDocumentMixin } from './clientDocumentMixin';
 
 declare global {

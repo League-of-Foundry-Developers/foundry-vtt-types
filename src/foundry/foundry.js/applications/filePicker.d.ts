@@ -257,7 +257,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * @param event - (unused)
    * @override
    */
-  protected _onSearchFilter(event: KeyboardEvent, query: string, html: HTMLElement): void;
+  protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
   /**
    * Handle file picker form submission
