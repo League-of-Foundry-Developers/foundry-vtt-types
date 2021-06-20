@@ -46,7 +46,7 @@ declare abstract class FormApplication<
    * The values of this Array are inner-objects with references to the MCE editor and other metadata
    * @defaultValue `{}`
    */
-  editors: Record<string, FormApplication.FormApplicationEditor>;
+  editors: Partial<Record<string, FormApplication.FormApplicationEditor>>;
 
   /**
    * Assign the default options which are supported by the entity edit sheet.
@@ -217,6 +217,37 @@ declare abstract class FormApplication<
   submit(options?: FormApplication.OnSubmitOptions): Promise<this> | void;
 }
 
+declare interface ApplicationOptions {
+  /**
+   * Whether to automatically close the application when it's contained
+   * form is submitted.
+   * @defaultValue `true`
+   */
+  closeOnSubmit: boolean;
+
+  /**
+   * Whether to automatically submit the contained HTML form when an input
+   * or select element is changed.
+   * @defaultValue `false`
+   */
+  submitOnChange: boolean;
+
+  /**
+   * Whether to automatically submit the contained HTML form when the
+   * application window is manually closed.
+   * @defaultValue `false`
+   */
+  submitOnClose: boolean;
+
+  /**
+   * Whether the application form is editable - if true, it's fields will
+   * be unlocked and the form can be submitted. If false, all form fields
+   * will be disabled and the form cannot be submitted.
+   * @defaultValue `true`
+   */
+  editable: boolean;
+}
+
 declare namespace FormApplication {
   interface CloseOptions extends Application.CloseOptions {
     submit?: boolean;
@@ -265,40 +296,11 @@ declare namespace FormApplication {
     preventRender?: boolean;
   }
 
-  interface Options extends Application.Options {
+  interface Options extends Application.Options, ApplicationOptions {
     /**
      * @defaultValue `['form']`
      */
     classes: string[];
-
-    /**
-     * Whether to automatically close the application when it's contained
-     * form is submitted.
-     * @defaultValue `true`
-     */
-    closeOnSubmit: boolean;
-
-    /**
-     * Whether to automatically submit the contained HTML form when an input
-     * or select element is changed.
-     * @defaultValue `false`
-     */
-    submitOnChange: boolean;
-
-    /**
-     * Whether to automatically submit the contained HTML form when the
-     * application window is manually closed.
-     * @defaultValue `false`
-     */
-    submitOnClose: boolean;
-
-    /**
-     * Whether the application form is editable - if true, it's fields will
-     * be unlocked and the form can be submitted. If false, all form fields
-     * will be disabled and the form cannot be submitted.
-     * @defaultValue `true`
-     */
-    editable: boolean;
   }
 }
 
