@@ -214,11 +214,7 @@ declare global {
      * @param userId  - (unused)
      * @remarks Second variant has been added because of `Token._onCreate()`
      */
-    protected _onCreate(
-      data: DeepPartial<D['data']['_source']>,
-      options: DocumentModificationOptions,
-      userId: string
-    ): void;
+    protected _onCreate(data: D['data']['_source'], options: DocumentModificationOptions, userId: string): void;
 
     /**
      * Define additional steps taken when an existing placeable object of this type is updated with new data
