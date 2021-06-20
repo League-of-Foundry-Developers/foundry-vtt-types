@@ -7,17 +7,18 @@ declare global {
    * @param object  - A Document instance which should be managed by this form.
    * @param options - Optional configuration parameters for how the form behaves.
    *                  (default: `{}`)
-   * @typeParam P - the type of the options object
-   * @typeParam D - The data structure used to render the handlebars template.
-   * @typeParam O - the type of the Document which should be managed by this form sheet
+   *
+   * @typeParam Options          - the type of the options object
+   * @typeParam Data             - The data structure used to render the handlebars template.
+   * @typeParam ConcreteDocument - the type of the Document which should be managed by this form sheet
    */
   abstract class DocumentSheet<
-    P extends DocumentSheet.Options = DocumentSheet.Options,
-    D extends object = DocumentSheet.Data,
-    O extends foundry.abstract.Document<any, any> = D extends DocumentSheet.Data<infer T>
+    Options extends DocumentSheet.Options = DocumentSheet.Options,
+    Data extends object = DocumentSheet.Data,
+    ConcreteDocument extends foundry.abstract.Document<any, any> = Data extends DocumentSheet.Data<infer T>
       ? T
       : foundry.abstract.Document<any, any>
-  > extends FormApplication<P, D, O> {
+  > extends FormApplication<Options, Data, ConcreteDocument> {
     /**
      * @defaultValue
      * ```typescript
@@ -33,7 +34,7 @@ declare global {
     /**
      * A semantic convenience reference to the Document instance which is the target object for this form.
      */
-    get document(): O;
+    get document(): ConcreteDocument;
 
     /**
      * @override
@@ -58,7 +59,7 @@ declare global {
     /**
      * @override
      */
-    getData(options?: Application.RenderOptions): D | Promise<D>;
+    getData(options?: Application.RenderOptions): Data | Promise<Data>;
 
     /**
      * @override
@@ -74,29 +75,29 @@ declare global {
      * @param event - (unused)
      * @override
      */
-    protected _updateObject(event: Event, formData: object): Promise<O>;
+    protected _updateObject(event: Event, formData: object): Promise<ConcreteDocument>;
 
     /**
      * @deprecated since 0.8.0
      */
-    get entity(): O;
+    get entity(): ConcreteDocument;
   }
 
   namespace DocumentSheet {
     /**
-     * @typeParam O - the type of the Document which should be managed by this form sheet
-     * @typeParam P - the type of the options object
+     * @typeParam ConcreteDocument - the type of the {@link foundry.abstract.Document} which should be managed by this form sheet
+     * @typeParam Options          - the type of the options object
      */
     interface Data<
-      O extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>,
-      P extends DocumentSheet.Options = DocumentSheet.Options
-    > extends FormApplication.Data<O, P> {
+      ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>,
+      Options extends DocumentSheet.Options = DocumentSheet.Options
+    > extends FormApplication.Data<ConcreteDocument, Options> {
       cssClass: string;
       editable: boolean;
-      document: O;
-      data: ToObjectFalseType<O>;
+      document: ConcreteDocument;
+      data: ToObjectFalseType<ConcreteDocument>;
       limited: boolean;
-      options: P;
+      options: Options;
       owner: boolean;
       title: string;
       readonly entity: this['data'];

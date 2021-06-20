@@ -545,12 +545,16 @@ declare abstract class Document<
    * Post-creation side effects are performed only for the client which requested the operation.
    * @param documents- The Document instances which were created
    * @param context  - The context for the modification operation
+   *
+   * @remarks The base implementation returns `void` but it is typed as
+   * `unknown` to allow deriving classes to return whatever they want. The
+   * return type is not meant to be used.
    */
-  protected static _onCreateDocuments<T extends Document<any, any>>(
-    this: ConstructorOf<T>,
-    documents: Array<T>,
+  protected static _onCreateDocuments<T extends DocumentConstructor>(
+    this: T,
+    documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
     context: DocumentModificationContext
-  ): Promise<void>;
+  ): Promise<unknown>;
 
   /**
    * Perform follow-up operations when a set of Documents of this type are updated.
@@ -558,12 +562,16 @@ declare abstract class Document<
    * Post-update side effects are performed only for the client which requested the operation.
    * @param documents - The Document instances which were updated
    * @param context   - The context for the modification operation
+   *
+   * @remarks The base implementation returns `void` but it is typed as
+   * `unknown` to allow deriving classes to return whatever they want. The
+   * return type is not meant to be used.
    */
-  protected static _onUpdateDocuments<T extends Document<any, any>>(
-    this: ConstructorOf<T>,
-    documents: Array<T>,
+  protected static _onUpdateDocuments<T extends DocumentConstructor>(
+    this: T,
+    documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
     context: DocumentModificationContext
-  ): Promise<void>;
+  ): Promise<unknown>;
 
   /**
    * Perform follow-up operations when a set of Documents of this type are deleted.
@@ -571,12 +579,16 @@ declare abstract class Document<
    * Post-deletion side effects are performed only for the client which requested the operation.
    * @param documents - The Document instances which were deleted
    * @param context   - The context for the modification operation
+   *
+   * @remarks The base implementation returns `void` but it is typed as
+   * `unknown` to allow deriving classes to return whatever they want. The
+   * return type is not meant to be used.
    */
-  protected static _onDeleteDocuments<T extends Document<any, any>>(
-    this: ConstructorOf<T>,
-    documents: Array<T>,
+  protected static _onDeleteDocuments<T extends DocumentConstructor>(
+    this: T,
+    documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
     context: DocumentModificationContext
-  ): Promise<void>;
+  ): Promise<unknown>;
 
   /**
    * Transform the Document instance into a plain object.

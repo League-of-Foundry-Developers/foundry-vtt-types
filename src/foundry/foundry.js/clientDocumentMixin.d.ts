@@ -116,7 +116,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
   /**
    * Obtain the FormApplication class constructor which should be used to configure this Document.
    */
-  protected _getSheetClass(): ConstructorOf<FormApplication> | null; // TODO: Replace mit ConfiguredSheetClass<T> once the circular reference problem has been solved
+  protected _getSheetClass(): ConstructorOf<FormApplication> | null; // TODO: Replace with ConfiguredSheetClass<T> once the circular reference problem has been solved
 
   /**
    * Prepare data for the Document.
