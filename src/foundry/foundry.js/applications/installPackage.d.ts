@@ -77,7 +77,7 @@ declare class InstallPackage<T extends InstallPackage.PackageType> extends Appli
   protected _onClickPackageInstall(event: JQuery.ClickEvent): void;
 
   /** @override */
-  protected _onSearchFilter(event: KeyboardEvent, query: string, html: HTMLElement): void;
+  protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
   /**
    * Organize package data and cache it to the application

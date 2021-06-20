@@ -84,7 +84,7 @@ declare abstract class SidebarDirectory<
    * @param event - (unused)
    * @override
    */
-  protected _onSearchFilter(event: KeyboardEvent, query: string, html: HTMLElement): void;
+  protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
   /**
    * Collapse all subfolders in this directory
