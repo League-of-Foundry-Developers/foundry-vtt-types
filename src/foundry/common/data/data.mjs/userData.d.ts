@@ -34,16 +34,30 @@ interface UserDataSchema extends DocumentSchema {
 
 interface UserDataProperties {
   _id: string | null;
-  avatar?: string;
+  avatar?: string | null;
   character: string | null;
-  color: string;
+  color: string | null;
   hotbar: Record<number | string, string>;
   name: string;
   password: string;
   passwordSalt?: string;
   permissions: Partial<Record<keyof typeof CONST.USER_PERMISSIONS, boolean>>;
-  role: ValueOf<typeof CONST.USER_ROLES>;
+  role: foundry.CONST.UserRole;
   flags: Record<string, unknown>;
+}
+
+interface UserDataConstructorData {
+  _id?: string | null;
+  avatar?: string | null;
+  character?: string | null;
+  color?: string | null;
+  hotbar?: Record<number | string, string> | null;
+  name: string;
+  password?: string | null;
+  passwordSalt?: string | null;
+  permissions?: Partial<Record<keyof typeof CONST.USER_PERMISSIONS, boolean>> | null;
+  role?: foundry.CONST.UserRole | null;
+  flags?: Record<string, unknown> | null;
 }
 
 /**
@@ -53,8 +67,11 @@ export declare class UserData extends DocumentData<
   UserDataSchema,
   UserDataProperties,
   PropertiesToSource<UserDataProperties>,
+  UserDataConstructorData,
   documents.BaseUser
 > {
+  constructor(data: UserDataConstructorData, document?: documents.BaseUser | null);
+
   static defineSchema(): UserDataSchema;
 }
 

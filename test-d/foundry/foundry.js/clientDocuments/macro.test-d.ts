@@ -1,7 +1,7 @@
 import { expectType } from 'tsd';
 import '../../../index';
 
-const macro = new Macro({ type: 'script', scope: 'global' });
+const macro = new Macro({ name: 'my macro', scope: 'global', type: 'script' });
 
 // properties and functions added by the concrete `Macro` class
 expectType<boolean>(macro.isAuthor);

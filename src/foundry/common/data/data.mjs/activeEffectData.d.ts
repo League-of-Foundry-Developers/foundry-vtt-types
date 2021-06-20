@@ -2,8 +2,8 @@ import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTyp
 import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
-import { EffectChangeData } from './effectChangeData';
-import { EffectDurationData } from './effectDurationData';
+import { EffectChangeData, EffectChangeDataConstructorData } from './effectChangeData';
+import { EffectDurationData, EffectDurationDataConstructorData } from './effectDurationData';
 
 interface ActiveEffectDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
@@ -46,15 +46,16 @@ interface ActiveEffectDataProperties {
   /**
    * An EffectDurationData object which describes the duration of the ActiveEffect
    */
-  duration?: EffectDurationData;
+  duration: EffectDurationData;
 
   /**
    * An icon image path used to depict the ActiveEffect
    */
-  icon?: string;
+  icon?: string | null;
 
   /**
    * A text label which describes the name of the ActiveEffect
+   * @defaultValue `''`
    */
   label: string;
 
@@ -65,9 +66,8 @@ interface ActiveEffectDataProperties {
 
   /**
    * A color string which applies a tint to the ActiveEffect icon
-   * @defaultValue `null`
    */
-  tint: string | null;
+  tint?: string | null;
 
   /**
    * Does this ActiveEffect automatically transfer from an Item to an Actor?
@@ -82,6 +82,62 @@ interface ActiveEffectDataProperties {
   flags: Record<string, unknown>;
 }
 
+interface ActiveEffectDataConstructorData {
+  /**
+   * The _id which uniquely identifies the ActiveEffect within a parent Actor or Item
+   */
+  _id?: string | null;
+
+  /**
+   * The array of EffectChangeData objects which the ActiveEffect applies
+   */
+  changes?: EffectChangeDataConstructorData[] | null;
+
+  /**
+   * Is this ActiveEffect currently disabled?
+   * @defaultValue `false`
+   */
+  disabled?: boolean | null;
+
+  /**
+   * An EffectDurationData object which describes the duration of the ActiveEffect
+   */
+  duration?: EffectDurationDataConstructorData | null;
+
+  /**
+   * An icon image path used to depict the ActiveEffect
+   */
+  icon?: string | null;
+
+  /**
+   * A text label which describes the name of the ActiveEffect
+   * @defaultValue `''`
+   */
+  label?: string | null;
+
+  /**
+   * A UUID reference to the document from which this ActiveEffect originated
+   */
+  origin?: string | null;
+
+  /**
+   * A color string which applies a tint to the ActiveEffect icon
+   */
+  tint?: string | null;
+
+  /**
+   * Does this ActiveEffect automatically transfer from an Item to an Actor?
+   * @defaultValue `true`
+   */
+  transfer?: boolean | null;
+
+  /**
+   * An object of optional key/value flags
+   * @defaultValue `{}`
+   */
+  flags?: Record<string, unknown> | null;
+}
+
 /**
  * The data schema for an ActiveEffect document.
  * @see BaseActiveEffect
@@ -90,6 +146,7 @@ export declare class ActiveEffectData extends DocumentData<
   ActiveEffectDataSchema,
   ActiveEffectDataProperties,
   PropertiesToSource<ActiveEffectDataProperties>,
+  ActiveEffectDataConstructorData,
   documents.BaseActiveEffect
 > {
   static defineSchema(): ActiveEffectDataSchema;

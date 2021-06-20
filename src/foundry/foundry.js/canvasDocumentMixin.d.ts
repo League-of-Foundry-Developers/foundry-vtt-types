@@ -18,7 +18,7 @@ type CanvasDocumentConstructor<T extends ConstructorOf<foundry.abstract.Document
   };
 
 declare class CanvasDocumentMixin<T extends foundry.abstract.Document<any, any>> extends ClientDocumentMixin<T> {
-  constructor(data?: DeepPartial<T['data']['_source']>, context?: ContextType<T>);
+  constructor(data?: Parameters<T['data']['_initializeSource']>[0], context?: ContextType<T>);
 
   /**
    * A reference to the PlaceableObject instance which represents this Embedded Document.
@@ -44,11 +44,7 @@ declare class CanvasDocumentMixin<T extends foundry.abstract.Document<any, any>>
   /**
    * @see abstract.Document#_onCreate
    */
-  protected _onCreate(
-    data: DeepPartial<T['data']['_source']>,
-    options: DocumentModificationOptions,
-    userId: string
-  ): void;
+  protected _onCreate(data: T['data']['_source'], options: DocumentModificationOptions, userId: string): void;
 
   /**
    * @see abstract.Document#_onUpdate
