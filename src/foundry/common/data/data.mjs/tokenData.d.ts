@@ -129,7 +129,7 @@ export interface TokenDataProperties {
    * Token-level data which overrides the base data of the associated Actor
    * @defaultValue `{}`
    */
-  actorData: DeepPartial<ActorDataSource['data']>;
+  actorData: DeepPartial<ActorDataSource>;
 
   /**
    * A file path to an image or video file used to depict the Token
