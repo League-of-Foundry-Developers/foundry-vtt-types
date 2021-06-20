@@ -1,4 +1,4 @@
-import { ContextType, DocumentDataType, DocumentModificationOptions } from '../common/abstract/document.mjs';
+import { ContextType, DocumentModificationOptions } from '../common/abstract/document.mjs';
 import { ClientDocumentMixin } from './clientDocumentMixin';
 
 declare global {
@@ -45,7 +45,7 @@ declare class CanvasDocumentMixin<T extends foundry.abstract.Document<any, any>>
    * @see abstract.Document#_onCreate
    */
   protected _onCreate(
-    data: DeepPartial<DocumentDataType<T>>,
+    data: DeepPartial<T['data']['_source']>,
     options: DocumentModificationOptions,
     userId: string
   ): void;
@@ -54,7 +54,7 @@ declare class CanvasDocumentMixin<T extends foundry.abstract.Document<any, any>>
    * @see abstract.Document#_onUpdate
    */
   protected _onUpdate(
-    data: DeepPartial<DocumentDataType<T>>,
+    data: DeepPartial<T['data']['_source']>,
     options: DocumentModificationOptions,
     userId: string
   ): void;

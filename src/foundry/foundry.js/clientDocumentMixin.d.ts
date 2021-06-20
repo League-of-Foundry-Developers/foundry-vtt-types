@@ -1,4 +1,4 @@
-import { ContextType, DocumentDataType, DocumentModificationOptions } from '../common/abstract/document.mjs';
+import { ContextType, DocumentModificationOptions } from '../common/abstract/document.mjs';
 
 import { ConfiguredDocumentClass, DocumentConstructor } from '../../types/helperTypes';
 
@@ -163,7 +163,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * @see abstract.Document#_onCreate
    */
   protected _onCreate(
-    data: DeepPartial<DocumentDataType<T>>,
+    data: DeepPartial<T['data']['_source']>,
     options: DocumentModificationOptions,
     userId: string
   ): void;
@@ -172,7 +172,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * @see abstract.Document#_onUpdate
    */
   protected _onUpdate(
-    data: DeepPartial<DocumentDataType<T>>,
+    data: DeepPartial<T['data']['_source']>,
     options: DocumentModificationOptions,
     userId: string
   ): void;
