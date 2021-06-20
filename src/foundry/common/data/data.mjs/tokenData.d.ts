@@ -4,7 +4,7 @@ import { CONST, documents } from '../../module.mjs';
 import * as fields from '../fields.mjs';
 import { AnimationData, AnimationDataConstructorData } from './animationData';
 import { TokenBarData, TokenBarDataConstructorData } from './tokenBarData';
-import { ActorDataProperties, ActorDataSource } from './actorData.js';
+import { ActorDataSource } from './actorData.js';
 
 interface VisionFieldOptions {
   validate: (d: number) => boolean;
@@ -15,7 +15,7 @@ export interface TokenDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
   name: typeof fields.STRING_FIELD;
   displayName: DocumentField<CONST.TokenDisplayMode> & {
-    type: Number;
+    type: typeof Number;
     required: true;
     default: typeof CONST.TOKEN_DISPLAY_MODES.NONE;
     validate: (m: any) => boolean;
@@ -29,7 +29,7 @@ export interface TokenDataSchema extends DocumentSchema {
   width: FieldReturnType<typeof fields.REQUIRED_POSITIVE_NUMBER, { default: number }>;
   height: FieldReturnType<typeof fields.REQUIRED_POSITIVE_NUMBER, { default: number }>;
   scale: DocumentField<number> & {
-    type: Number;
+    type: typeof Number;
     required: true;
     default: 1;
     validate: (s: unknown) => boolean;
@@ -43,7 +43,7 @@ export interface TokenDataSchema extends DocumentSchema {
   lockRotation: typeof fields.BOOLEAN_FIELD;
   rotation: FieldReturnType<typeof fields.ANGLE_FIELD, { default: number }>;
   effects: DocumentField<string[]> & {
-    type: String[];
+    type: typeof String[];
     required: true;
     default: string[];
   };
@@ -51,7 +51,7 @@ export interface TokenDataSchema extends DocumentSchema {
   alpha: typeof fields.ALPHA_FIELD;
   hidden: typeof fields.BOOLEAN_FIELD;
   vision: DocumentField<boolean> & {
-    type: Boolean;
+    type: typeof Boolean;
     required: true;
     default: (data: { readonly dimSight?: number; readonly brightSight?: number }) => boolean;
   };
@@ -64,31 +64,31 @@ export interface TokenDataSchema extends DocumentSchema {
   lightColor: typeof fields.COLOR_FIELD;
   lightAlpha: FieldReturnType<typeof fields.ALPHA_FIELD, { default: 0.25 }>;
   lightAnimation: DocumentField<AnimationData> & {
-    type: AnimationData;
+    type: typeof AnimationData;
     required: true;
     default: {};
   };
   disposition: DocumentField<CONST.TokenDisposition> & {
-    type: Number;
+    type: typeof Number;
     required: true;
     default: typeof CONST.TOKEN_DISPOSITIONS.HOSTILE;
     validate: (n: any) => boolean;
     validationError: 'Invalid {name} {field} which must be a value in CONST.TOKEN_DISPOSITIONS';
   };
   displayBars: DocumentField<CONST.TokenDisplayMode> & {
-    type: Number;
+    type: typeof Number;
     required: true;
     default: typeof CONST.TOKEN_DISPLAY_MODES.NONE;
     validate: (m: any) => boolean;
     validationError: 'Invalid {name} {field} which must be a value in CONST.TOKEN_DISPLAY_MODES';
   };
   bar1: DocumentField<TokenBarData> & {
-    type: TokenBarData;
+    type: typeof TokenBarData;
     required: true;
     default: () => { attribute: typeof game['system']['data']['primaryTokenAttribute'] | null };
   };
   bar2: DocumentField<TokenBarData> & {
-    type: TokenBarData;
+    type: typeof TokenBarData;
     required: true;
     default: () => { attribute: typeof game['system']['data']['secondaryTokenAttribute'] | null };
   };
@@ -129,7 +129,7 @@ export interface TokenDataProperties {
    * Token-level data which overrides the base data of the associated Actor
    * @defaultValue `{}`
    */
-  actorData: ActorDataProperties['data'];
+  actorData: DeepPartial<ActorDataSource['data']>;
 
   /**
    * A file path to an image or video file used to depict the Token
@@ -535,6 +535,7 @@ export class TokenData extends DocumentData<
 
   /**
    * The default icon used for newly created Item documents
+   * @defaultValue `CONST.DEFAULT_TOKEN`
    */
-  static DEFAULT_ICON: typeof CONST.DEFAULT_TOKEN;
+  static DEFAULT_ICON: string;
 }

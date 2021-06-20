@@ -1,4 +1,4 @@
-import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes.js';
+import { FieldReturnType, PropertiesToSource, ToObjectFalseType } from '../../../../types/helperTypes.js';
 import DocumentData from '../../abstract/data.mjs';
 import { documents } from '../../module.mjs.js';
 import * as fields from '../fields.mjs';
@@ -58,4 +58,21 @@ export class PrototypeTokenData extends DocumentData<
   PropertiesToSource<PrototypeTokenDataProperties>,
   PrototypeTokenDataConstructorData,
   documents.BaseActor
-> {}
+> {
+  /**
+   * @override
+   */
+  _initialize(): void;
+
+  /**
+   * @override
+   */
+  toObject(source?: true): ReturnType<this['toJSON']> & { actorId: documents.BaseActor['id'] };
+  toObject(
+    source: false
+  ): {
+    [Key in keyof PrototypeTokenDataSchema as string extends Key ? never : Key]: Key extends keyof this
+      ? ToObjectFalseType<this[Key]>
+      : undefined;
+  } & { actorId: documents.BaseActor['id'] };
+}
