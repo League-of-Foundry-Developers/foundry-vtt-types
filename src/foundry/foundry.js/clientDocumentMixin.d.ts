@@ -1,4 +1,4 @@
-import { ContextType, DocumentDataType, DocumentModificationOptions } from '../common/abstract/document.mjs';
+import { ContextType, DocumentModificationOptions } from '../common/abstract/document.mjs';
 
 import { ConfiguredDocumentClass, DocumentConstructor } from '../../types/helperTypes';
 

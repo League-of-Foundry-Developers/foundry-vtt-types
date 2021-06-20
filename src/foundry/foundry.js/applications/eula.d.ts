@@ -28,7 +28,7 @@ declare class EULA extends Application {
   getData(): EULA.Data | Promise<EULA.Data>;
 
   /** @override */
-  protected _renderOuter(options: Application.RenderOptions): Promise<JQuery<JQuery.Node>>;
+  protected _renderOuter(): Promise<JQuery<JQuery.Node>>;
 
   /** @override */
   activateListeners(html: JQuery): void;

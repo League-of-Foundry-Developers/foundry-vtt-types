@@ -37,6 +37,7 @@ declare abstract class FormApplication<
   /**
    * Keep track of any FilePicker instances which are associated with this form
    * The values of this Array are inner-objects with references to the FilePicker instances and other metadata
+   * @defaultValue `[]`
    */
   filepickers: FilePicker[];
 
@@ -52,6 +53,16 @@ declare abstract class FormApplication<
    * @returns The default options for this FormApplication class
    * @override
    * @see {@link Application.defaultOptions}
+   * @defaultValue
+   * ```typescript
+   * foundry.utils.mergeObject(super.defaultOptions, {
+   *   classes: ['form'],
+   *   closeOnSubmit: true,
+   *   submitOnChange: false,
+   *   submitOnClose: false,
+   *   editable: true
+   * });
+   * ```
    */
   static get defaultOptions(): FormApplication.Options;
 
@@ -61,7 +72,7 @@ declare abstract class FormApplication<
   get isEditable(): boolean;
 
   /**
-   * @param options - (unused) (default: `{}`)
+   * @param options - (default: `{}`)
    * @override
    */
   getData(options?: Application.RenderOptions): D | Promise<D>;
@@ -72,34 +83,42 @@ declare abstract class FormApplication<
   protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
 
   /**
-   * @param options - (unused)
    * @override
    */
-  protected _renderInner(data: D, options?: Application.RenderOptions): Promise<JQuery>;
+  protected _renderInner(data: D): Promise<JQuery>;
 
   /**
-   * Activate the default set of listeners for the Entity sheet
-   * These listeners handle basic stuff like form submission or updating images
-   *
-   * @param html - The rendered template ready to have listeners attached
+   * @override
+   */
+  protected _activateCoreListeners(html: JQuery): void;
+
+  /**
    * @override
    */
   activateListeners(html: JQuery): void;
 
   /**
    * If the form is not editable, disable its input fields
+   * @param form - The form HTML
    */
   protected _disableFields(form: HTMLElement): void;
 
   /**
    * Handle standard form submission steps
-   * @param event   - The submit event which triggered this handler
-   * @param options - (default: `{}`)
+   * @param event         - The submit event which triggered this handler
+   * @param updateData    - Additional specific data keys/values which override or extend the contents of
+   *                        the parsed form. This can be used to update other flags or data fields at the
+   *                        same time as processing a form submission to avoid multiple database operations.
+   *                        (default: `null`)
+   * @param preventClose  - Override the standard behavior of whether to close the form on submit
+   *                        (default: `false`)
+   * @param preventRender - Prevent the application from re-rendering as a result of form submission
+   *                        (default: `false`)
    * @returns A promise which resolves to the validated update data
    */
   protected _onSubmit(
     event: Event,
-    options?: FormApplication.OnSubmitOptions
+    { updateData, preventClose, preventRender }?: FormApplication.OnSubmitOptions
   ): Promise<Partial<Record<string, unknown>>>;
 
   /**
@@ -128,6 +147,13 @@ declare abstract class FormApplication<
    * @param event - The initial change event
    */
   protected _onChangeRange(event: JQuery.ChangeEvent): void;
+
+  /**
+   * Additional handling which should trigger when a FilePicker contained within this FormApplication is submitted.
+   * @param selection  - The target path which was selected
+   * @param filePicker - The FilePicker instance which was submitted
+   */
+  protected _onSelectFile(selection: string, filePicker: FilePicker): void;
 
   /**
    * This method is called upon form submission after form data is validated
@@ -164,8 +190,17 @@ declare abstract class FormApplication<
 
   /**
    * Activate a FilePicker instance present within the form
+   * @param event - The mouse click event on a file picker activation button
    */
-  protected _activateFilePicker(button: HTMLElement): void;
+  protected _activateFilePicker(event: PointerEvent): void;
+
+  /**
+   * Determine the configuration options used to initialize a FilePicker instance within this FormApplication.
+   * Subclasses can extend this method to customize the behavior of pickers within their form.
+   * @param event - The initiating mouse click event which opens the picker
+   * @returns Options passed to the FilePicker constructor
+   */
+  protected _getFilePickerOptions(event: PointerEvent): FilePickerOptions;
 
   /**
    * @param options - (default: `{}`)
@@ -179,26 +214,39 @@ declare abstract class FormApplication<
    *                  (default: `{}`)
    * @returns Return a self-reference for convenient method chaining
    */
-  submit(options?: FormApplication.OnSubmitOptions): Promise<this>;
-
-  /**
-   * @deprecated since 0.7.2
-   * @see {@link FormDataExtended}
-   */
-  static processForm(formElement: HTMLFormElement): FormDataExtended;
-
-  /**
-   * @deprecated since 0.7.3
-   * @see {@link FormApplication#activateEditor}
-   */
-  protected _createEditor(name: string, options?: TextEditor.Options, initialContent?: string): void;
+  submit(options?: FormApplication.OnSubmitOptions): Promise<this> | void;
 }
 
-/**
- * @deprecated since 0.7.0
- * @see {@link FormApplication.processForm}
- */
-declare function validateForm(formElement: HTMLFormElement): FormDataExtended;
+declare interface ApplicationOptions {
+  /**
+   * Whether to automatically close the application when it's contained
+   * form is submitted.
+   * @defaultValue `true`
+   */
+  closeOnSubmit: boolean;
+
+  /**
+   * Whether to automatically submit the contained HTML form when an input
+   * or select element is changed.
+   * @defaultValue `false`
+   */
+  submitOnChange: boolean;
+
+  /**
+   * Whether to automatically submit the contained HTML form when the
+   * application window is manually closed.
+   * @defaultValue `false`
+   */
+  submitOnClose: boolean;
+
+  /**
+   * Whether the application form is editable - if true, it's fields will
+   * be unlocked and the form can be submitted. If false, all form fields
+   * will be disabled and the form cannot be submitted.
+   * @defaultValue `true`
+   */
+  editable: boolean;
+}
 
 declare namespace FormApplication {
   interface CloseOptions extends Application.CloseOptions {
@@ -210,77 +258,56 @@ declare namespace FormApplication {
    * @typeParam P - the type of the options object
    */
   interface Data<O, P extends FormApplication.Options = FormApplication.Options> {
-    object: foundry.utils.Duplicated<O>;
+    object: O;
     options: P;
     title: string;
   }
 
   interface FormApplicationEditor {
-    active: boolean;
-    activate: boolean;
-    button: HTMLElement;
-    changed: boolean;
-    hasButton: boolean;
-    initial: string;
-    mce: Editor | null;
-    options: TextEditor.Options;
     target: string;
+    button: HTMLElement;
+    hasButton: boolean;
+    mce: Editor | null;
+    active: boolean;
+    changed: boolean;
+    options: TextEditor.Options;
+    initial: string;
   }
 
   interface OnSubmitOptions {
     /**
-     * Override the standard behavior of whether to close
-     * the form on submit
+     * Additional specific data keys/values which override or extend the contents of
+     * the parsed form. This can be used to update other flags or data fields at the
+     * same time as processing a form submission to avoid multiple database operations.
+     * @defaultValue `null`
+     */
+    updateData?: object;
+
+    /**
+     * Override the standard behavior of whether to close the form on submit
      * @defaultValue `false`
      */
     preventClose?: boolean;
 
     /**
-     * Prevent the application from re-rendering as a
-     * result of form submission
+     * Prevent the application from re-rendering as a result of form submission
      * @defaultValue `false`
      */
     preventRender?: boolean;
-
-    /**
-     * Additional specific data keys/values which override or extend the contents
-     * of the parsed form. This can be used to update other flags or data fields
-     * at the same time as processing a form submission to avoid multiple database
-     * operations.
-     * @defaultValue `null`
-     */
-    updateData?: object;
   }
 
-  interface Options extends Application.Options {
+  interface Options extends Application.Options, ApplicationOptions {
     /**
      * @defaultValue `['form']`
      */
     classes: string[];
-
-    /**
-     * Whether to automatically close the application when it's contained
-     * form is submitted. Default is true.
-     */
-    closeOnSubmit: boolean;
-
-    /**
-     * Whether to automatically submit the contained HTML form when an input
-     * or select element is changed. Default is false.
-     */
-    submitOnChange: boolean;
-
-    /**
-     * Whether to automatically submit the contained HTML form when the
-     * application window is manually closed. Default is false.
-     */
-    submitOnClose: boolean;
-
-    /**
-     * Whether the application form is editable - if true, it's fields will
-     * be unlocked and the form can be submitted. If false, all form fields
-     * will be disabled and the form cannot be submitted. Default is true.
-     */
-    editable: boolean;
   }
+}
+
+interface FilePickerOptions {
+  field: HTMLElement | null;
+  type: string;
+  current: string;
+  button: HTMLElement;
+  callback: FormApplication['_onSelectFile'];
 }

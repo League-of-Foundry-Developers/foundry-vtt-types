@@ -75,7 +75,7 @@ declare class ModuleManagement extends FormApplication<FormApplication.Options, 
   protected _onFilterList(event: JQuery.ClickEvent): void;
 
   /** @override */
-  protected _onSearchFilter(event: KeyboardEvent, query: string, html: HTMLElement): void;
+  protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
   static readonly CONFIG_SETTING: 'moduleConfiguration';
 }
