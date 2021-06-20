@@ -1,17 +1,13 @@
 import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 import { Document } from '../../../common/abstract/module.mjs';
+import { BaseScene } from '../../../common/documents.mjs';
 
 declare global {
   /**
    * An Abstract Base Class which defines a Placeable Object which represents an Entity placed on the Canvas
    */
-  abstract class PlaceableObject<
-    D extends Document<any, InstanceType<ConfiguredDocumentClass<typeof Scene>>> = Document<
-      any,
-      InstanceType<ConfiguredDocumentClass<typeof Scene>>
-    >
-  > extends PIXI.Container {
+  abstract class PlaceableObject<D extends Document<any, BaseScene> = Document<any, BaseScene>> extends PIXI.Container {
     /**
      * @param document - The Document instance which is represented by this object
      */
@@ -215,17 +211,22 @@ declare global {
      * @remarks Second variant has been added because of `Token._onCreate()`
      */
     protected _onCreate(
-      data: DeepPartial<DeepPartial<D>>,
-      options?: DocumentModificationOptions,
-      userId?: string
+      data: DeepPartial<D['data']['_source']>,
+      options: DocumentModificationOptions,
+      userId: string
     ): void;
 
     /**
      * Define additional steps taken when an existing placeable object of this type is updated with new data
      * @param options - (unused)
      * @param userId  - (unused)
+     * @remarks Called without options and userId in Drowing._onUpdate
      */
-    protected _onUpdate(changed: DeepPartial<D['data']>, options?: DocumentModificationOptions, userId?: string): void;
+    protected _onUpdate(
+      changed: DeepPartial<D['data']['_source']>,
+      options?: DocumentModificationOptions,
+      userId?: string
+    ): void;
 
     /**
      * Define additional steps taken when an existing placeable object of this type is deleted
@@ -379,7 +380,9 @@ declare global {
      * @param options - (default: `{}`)
      */
     static create(
-      data: Parameters<InstanceType<ConfiguredDocumentClass<typeof Scene>>['createEmbeddedDocuments']>[0],
+      data:
+        | Parameters<InstanceType<ConfiguredDocumentClass<typeof Scene>>['createEmbeddedDocuments']>[1]
+        | Parameters<InstanceType<ConfiguredDocumentClass<typeof Scene>>['createEmbeddedDocuments']>[1][],
       options?: Parameters<InstanceType<ConfiguredDocumentClass<typeof Scene>>['createEmbeddedDocuments']>[1]
     ): ReturnType<InstanceType<ConfiguredDocumentClass<typeof Scene>>['createEmbeddedDocuments']>;
 
