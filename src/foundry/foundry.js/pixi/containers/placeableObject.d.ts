@@ -1,13 +1,17 @@
 import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 import { Document } from '../../../common/abstract/module.mjs';
-import { BaseScene } from '../../../common/documents.mjs';
 
 declare global {
   /**
    * An Abstract Base Class which defines a Placeable Object which represents an Entity placed on the Canvas
    */
-  abstract class PlaceableObject<D extends Document<any, BaseScene> = Document<any, BaseScene>> extends PIXI.Container {
+  abstract class PlaceableObject<
+    D extends Document<any, InstanceType<ConfiguredDocumentClass<typeof Scene>>> = Document<
+      any,
+      InstanceType<ConfiguredDocumentClass<typeof Scene>>
+    >
+  > extends PIXI.Container {
     /**
      * @param document - The Document instance which is represented by this object
      */
