@@ -17,6 +17,18 @@ const user = await foundry.documents.BaseUser.create();
 expectType<foundry.data.UserData>(user.data);
 
 const baseUser = new BaseUser();
+expectType<boolean>(baseUser.hasRole('NONE'));
+expectType<boolean>(baseUser.hasRole('PLAYER'));
+expectType<boolean>(baseUser.hasRole('TRUSTED'));
+expectType<boolean>(baseUser.hasRole('ASSISTANT'));
+expectType<boolean>(baseUser.hasRole('GAMEMASTER'));
+
+expectType<boolean>(baseUser.hasRole(CONST.USER_ROLES.NONE));
+expectType<boolean>(baseUser.hasRole(CONST.USER_ROLES.PLAYER));
+expectType<boolean>(baseUser.hasRole(CONST.USER_ROLES.TRUSTED));
+expectType<boolean>(baseUser.hasRole(CONST.USER_ROLES.ASSISTANT));
+expectType<boolean>(baseUser.hasRole(CONST.USER_ROLES.GAMEMASTER));
+
 expectType<boolean>(baseUser.can('NONE'));
 expectType<boolean>(baseUser.can('PLAYER'));
 expectType<boolean>(baseUser.can('TRUSTED'));
@@ -47,3 +59,22 @@ expectType<boolean>(baseUser.can('TEMPLATE_CREATE'));
 expectType<boolean>(baseUser.can('TOKEN_CREATE'));
 expectType<boolean>(baseUser.can('TOKEN_CONFIGURE'));
 expectType<boolean>(baseUser.can('WALL_DOORS'));
+
+expectType<boolean>(baseUser.hasPermission('ACTOR_CREATE'));
+expectType<boolean>(baseUser.hasPermission('BROADCAST_AUDIO'));
+expectType<boolean>(baseUser.hasPermission('BROADCAST_VIDEO'));
+expectType<boolean>(baseUser.hasPermission('DRAWING_CREATE'));
+expectType<boolean>(baseUser.hasPermission('ITEM_CREATE'));
+expectType<boolean>(baseUser.hasPermission('FILES_BROWSE'));
+expectType<boolean>(baseUser.hasPermission('FILES_UPLOAD'));
+expectType<boolean>(baseUser.hasPermission('JOURNAL_CREATE'));
+expectType<boolean>(baseUser.hasPermission('MACRO_SCRIPT'));
+expectType<boolean>(baseUser.hasPermission('MESSAGE_WHISPER'));
+expectType<boolean>(baseUser.hasPermission('NOTE_CREATE'));
+expectType<boolean>(baseUser.hasPermission('SETTINGS_MODIFY'));
+expectType<boolean>(baseUser.hasPermission('SHOW_CURSOR'));
+expectType<boolean>(baseUser.hasPermission('SHOW_RULER'));
+expectType<boolean>(baseUser.hasPermission('TEMPLATE_CREATE'));
+expectType<boolean>(baseUser.hasPermission('TOKEN_CREATE'));
+expectType<boolean>(baseUser.hasPermission('TOKEN_CONFIGURE'));
+expectType<boolean>(baseUser.hasPermission('WALL_DOORS'));
