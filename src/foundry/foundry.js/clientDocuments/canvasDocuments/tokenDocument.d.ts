@@ -1,2 +1,6 @@
 // TODO
-declare class TokenDocument {}
+declare global {
+  class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {}
+}
+
+export {};

@@ -1,5 +1,5 @@
-import * as data from '../../../../common/data/data.mjs';
 import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
+import { DocumentModificationOptions } from '../../../../common/abstract/document.mjs';
 
 declare global {
   /**
@@ -7,7 +7,7 @@ declare global {
    * @see TokenDocument
    * @see TokenLayer
    */
-  class Token extends PlaceableObject<data.TokenData> {
+  class Token extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>> {
     /**
      * A Ray which represents the Token's current movement path
      */
@@ -109,7 +109,7 @@ declare global {
     /**
      * Return a reference to a Combatant that represents this Token, if one is present in the current encounter.
      */
-    get combatant(): Combatant | null;
+    get combatant(): InstanceType<ConfiguredDocumentClass<typeof Combatant>> | null;
 
     /**
      * An indicator for whether the Token is currently targeted by the active game User
@@ -193,7 +193,7 @@ declare global {
     /**
      * Update display of the Token, pulling latest data and re-rendering the display of Token components
      */
-    refresh(): Token;
+    refresh(): this;
 
     /**
      * Draw the Token border, taking into consideration the grid type and border color
@@ -316,7 +316,7 @@ declare global {
     protected _onControl({ releaseOthers, pan }?: { releaseOthers?: boolean; pan?: boolean }): void;
 
     /** @override */
-    protected _onRelease({ updateSight }?: { updateSight?: boolean }): void;
+    protected _onRelease({ updateSight }?: PlaceableObject.ReleaseOptions & { updateSight?: boolean }): void;
 
     /**
      * Get the center-point coordinate for a given grid position
@@ -409,7 +409,7 @@ declare global {
      * Toggle the visibility state of any Tokens in the currently selected set
      * @returns A Promise which resolves to the updated Token documents
      */
-    toggleVisibility(): Promise<TokenDocument[]>;
+    toggleVisibility(): Promise<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>[]>;
 
     /**
      * Return the token's sight origin, tailored for the direction of their movement velocity to break ties with walls
@@ -438,10 +438,17 @@ declare global {
     rotate(angle: number, snap: number): Promise<this>;
 
     /** @override */
-    protected _onCreate(options?: unknown, userId?: string): void;
+    protected _onCreate(
+      options: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>['data']['_source'],
+      userId: DocumentModificationOptions
+    ): void;
 
     /** @override */
-    protected _onUpdate(data?: DeepPartial<TokenData>, options?: { animate?: boolean }, userId?: string): void;
+    protected _onUpdate(
+      data?: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>['data']['_source']>,
+      options?: DocumentModificationOptions & { animate?: boolean },
+      userId?: string
+    ): void;
 
     /** @override */
     protected _onDelete(options?: unknown, userId?: string): void;
@@ -468,10 +475,10 @@ declare global {
     protected _onHoverIn(event: PIXI.InteractionEvent, options?: { hoverOutOthers?: boolean }): void;
 
     /** @override */
-    protected _onHoverOut(event: PIXI.InteractionEvent): boolean | void;
+    protected _onHoverOut(event: PIXI.InteractionEvent): false | void;
 
     /** @override */
-    protected _onClickLeft(event: PIXI.InteractionEvent): boolean | null;
+    protected _onClickLeft(event: PIXI.InteractionEvent): void;
 
     /** @override */
     protected _onClickLeft2(event?: PIXI.InteractionEvent): void;
@@ -488,7 +495,10 @@ declare global {
     /**
      * @deprecated since 0.8.0
      */
-    static fromActor(actor: Actor, tokenData?: DeepPartial<TokenData>): never;
+    static fromActor(
+      actor: InstanceType<ConfiguredDocumentClass<typeof Actor>>,
+      tokenData?: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>['data']['_source']
+    ): never;
 
     /**
      * A helper method to retrieve the underlying data behind one of the Token's attribute bars
@@ -508,7 +518,7 @@ declare global {
     } | null;
 
     /** @override */
-    clone(): Token;
+    clone(): this;
 
     /** @override */
     get bounds(): NormalizedRectangle;

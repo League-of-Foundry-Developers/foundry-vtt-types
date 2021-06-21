@@ -553,3 +553,6 @@ export class TokenData extends DocumentData<
    */
   static DEFAULT_ICON: string;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export declare interface TokenData extends TokenDataProperties {}
