@@ -1,6 +1,5 @@
 import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../../../common/abstract/document.mjs';
-import { MeasuredTemplateData } from '../../../../common/data/data.mjs';
 
 declare global {
   /**
@@ -118,7 +117,7 @@ declare global {
 
     /** @override */
     protected _onUpdate(
-      data: DeepPartial<MeasuredTemplateData>,
+      data: DeepPartial<foundry.data.MeasuredTemplateData>,
       options?: DocumentModificationOptions,
       userId?: string
     ): void;

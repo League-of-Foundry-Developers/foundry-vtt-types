@@ -1,3 +1,4 @@
+import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import * as data from '../data/data.mjs';
 import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
@@ -7,7 +8,10 @@ import { BaseUser } from './baseUser';
 /**
  * The base MeasuredTemplate model definition which defines common behavior of an MeasuredTemplate document between both client and server.
  */
-export declare class BaseMeasuredTemplate extends Document<data.MeasuredTemplateData, BaseScene> {
+export declare class BaseMeasuredTemplate extends Document<
+  data.MeasuredTemplateData,
+  InstanceType<ConfiguredDocumentClass<typeof BaseScene>>
+> {
   static get schema(): typeof data.MeasuredTemplateData;
 
   static get metadata(): Merge<
