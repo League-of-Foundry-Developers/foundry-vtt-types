@@ -29,6 +29,13 @@ export declare class BaseMeasuredTemplate extends Document<
     }
   >;
 
+  /** @override */
+  testUserPermission(
+    user: BaseUser,
+    permission: keyof typeof foundry.CONST.ENTITY_PERMISSIONS | foundry.CONST.EntityPermission,
+    { exact }?: { exact?: boolean }
+  ): boolean;
+
   /**
    * Is a user able to modify an existing MeasuredTemplate?
    */

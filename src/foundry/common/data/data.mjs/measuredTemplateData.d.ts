@@ -58,11 +58,16 @@ interface MeasuredTemplateProperties {
    * The angle of rotation for the measured template
    * @defaultValue `0`
    */
-  angle: number;
+  direction: number;
 
   /**
    * The angle of effect of the measured template, applies to cone types
-   * @defaultValue `360`
+   * @defaultValue `0`
+   */
+  angle: number;
+
+  /**
+   * The width of the measured template, applies to ray types
    */
   width: number;
 
@@ -90,6 +95,10 @@ interface MeasuredTemplateProperties {
   flags: Record<string, unknown>;
 }
 
+/**
+ * The data schema for a MeasuredTemplate embedded document.
+ * @see BaseMeasuredTemplate
+ */
 export declare class MeasuredTemplateData extends DocumentData<
   MeasuredTemplateDataSchema,
   MeasuredTemplateProperties,

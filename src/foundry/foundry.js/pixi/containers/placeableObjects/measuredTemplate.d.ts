@@ -9,6 +9,8 @@ declare global {
   class MeasuredTemplate extends PlaceableObject<
     InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>
   > {
+    constructor(document: InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>);
+
     controlIcon: ControlIcon | null;
     template: PIXI.Graphics | null;
     ruler: PreciseText | null;
@@ -117,7 +119,7 @@ declare global {
 
     /** @override */
     protected _onUpdate(
-      data: DeepPartial<foundry.data.MeasuredTemplateData>,
+      data: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>['data']['_source']>,
       options?: DocumentModificationOptions,
       userId?: string
     ): void;
