@@ -10,6 +10,7 @@ import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 import { PrototypeTokenData } from '../data.mjs';
+import { PrototypeTokenDataConstructorData } from './prototypeTokenData.js';
 
 interface ActorDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
@@ -22,7 +23,7 @@ interface ActorDataSchema extends DocumentSchema {
   };
   img: FieldReturnType<typeof fields.IMAGE_FIELD, { default: () => string }>;
   data: FieldReturnType<typeof fields.OBJECT_FIELD, { default: (data: { type: string }) => any }>; // TODO
-  token: {
+  token: DocumentField<PrototypeTokenData> & {
     type: typeof PrototypeTokenData;
     required: true;
     default: (data: unknown) => { name: string; img: string };
@@ -38,6 +39,7 @@ interface ActorDataSchema extends DocumentSchema {
 interface ActorDataBaseProperties {
   /**
    * The _id which uniquely identifies this Actor document
+   * @defaultValue `null`
    */
   _id: string | null;
 
@@ -53,6 +55,7 @@ interface ActorDataBaseProperties {
 
   /**
    * An image file path which provides the artwork for this Actor
+   * @defaultValue `ActorDataConstructor.DEFAULT_ICON`
    */
   img: string | null;
 
@@ -92,13 +95,81 @@ interface ActorDataBaseProperties {
    * An object which configures user permissions to this Actor
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission: Partial<Record<string, ValueOf<typeof CONST.ENTITY_PERMISSIONS>>>;
+  permission: Partial<Record<string, foundry.CONST.EntityPermission>>;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
   flags: Record<string, unknown>;
+}
+
+interface ActorDataConstructorData {
+  /**
+   * The _id which uniquely identifies this Actor document
+   * @defaultValue `null`
+   */
+  _id?: string | null;
+
+  /**
+   * The name of this Actor
+   */
+  name: string;
+
+  /**
+   * An Actor subtype which configures the system data model applied
+   */
+  type: ActorDataSource['type'];
+
+  /**
+   * An image file path which provides the artwork for this Actor
+   * @defaultValue `ActorDataConstructor.DEFAULT_ICON`
+   */
+  img?: string | null;
+
+  /**
+   * The system data object which is defined by the system template.json model
+   */
+  data?: DeepPartial<ActorDataSource['data']> | null;
+
+  /**
+   * Default Token settings which are used for Tokens created from this Actor
+   */
+  token?: PrototypeTokenDataConstructorData | null;
+
+  /**
+   * A Collection of Item embedded Documents
+   */
+  items?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseItem>>[0][] | null;
+
+  /**
+   * A collection of ActiveEffect embedded Documents
+   */
+  effects?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseActiveEffect>>[0][] | null;
+
+  /**
+   * The _id of a Folder which contains this Actor
+   * @defaultValue `null`
+   */
+  folder?: string | null;
+
+  /**
+   * The numeric sort value which orders this Actor relative to its siblings
+   * @defaultValue `0`
+   */
+  sort?: number | null;
+
+  /**
+   * An object which configures user permissions to this Actor
+   * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
+   */
+  permission?: Partial<Record<string, foundry.CONST.EntityPermission>> | null;
+
+  /**
+   * An object of optional key/value flags
+   * @defaultValue `{}`
+   */
+  flags?: Record<string, unknown> | null;
 }
 
 type ActorDataBaseSource = PropertiesToSource<ActorDataBaseProperties>;
@@ -108,7 +179,7 @@ type ActorDataSource = ActorDataBaseSource & ConfiguredSource<'Actor'>;
 type DocumentDataConstructor = Pick<typeof DocumentData, keyof typeof DocumentData>;
 
 interface ActorDataConstructor extends DocumentDataConstructor {
-  new (data?: DeepPartial<ActorDataSource>, document?: documents.BaseActor | null): ActorData;
+  new (data: ActorDataConstructorData, document?: documents.BaseActor | null): ActorData;
 
   defineSchema(): ActorDataSchema;
 
@@ -123,9 +194,15 @@ interface ActorDataConstructor extends DocumentDataConstructor {
  * The data schema for an Actor document.
  * @see BaseActor
  */
-export type ActorData = DocumentData<ActorDataSchema, ActorDataProperties, ActorDataSource, documents.BaseActor> &
+export type ActorData = DocumentData<
+  ActorDataSchema,
+  ActorDataProperties,
+  ActorDataSource,
+  ActorDataConstructorData,
+  documents.BaseActor
+> &
   ActorDataProperties & {
-    _initializeSource(data: DeepPartial<ActorDataSource>): ActorDataSource;
+    _initializeSource(data: ActorDataConstructorData): ActorDataSource;
 
     _initialize(): void;
   };

@@ -9,7 +9,7 @@ const baseActor = new foundry.documents.BaseActor();
 expectType<EmbeddedCollection<typeof ActiveEffect, foundry.data.ActorData>>(baseActor.effects);
 expectType<EmbeddedCollection<typeof Item, foundry.data.ActorData>>(baseActor.items);
 expectType<PropertiesToSource<ActiveEffectDataProperties>>(baseActor.data._source.effects[0]);
-expectType<EffectDurationDataProperties | undefined>(baseActor.data._source.effects[0].duration);
+expectType<EffectDurationDataProperties>(baseActor.data._source.effects[0].duration);
 
 interface CharacterDataSourceData {
   health: number;

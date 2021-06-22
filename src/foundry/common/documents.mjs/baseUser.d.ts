@@ -39,7 +39,7 @@ export declare class BaseUser extends Document<data.UserData, null> {
    * @returns Does the user have the ability to perform this action?
    */
   can(
-    action: ValueOf<typeof CONST.USER_ROLES> | keyof typeof CONST.USER_ROLES | ValueOf<foundry.CONST.EntityPermission>
+    action: ValueOf<typeof CONST.USER_ROLES> | keyof typeof CONST.USER_ROLES | keyof typeof CONST.USER_PERMISSIONS
   ): boolean;
 
   getUserLevel(user: BaseUser): typeof CONST.ENTITY_PERMISSIONS.OWNER | typeof CONST.ENTITY_PERMISSIONS.NONE;
@@ -49,7 +49,7 @@ export declare class BaseUser extends Document<data.UserData, null> {
    * @param permission - The permission name from USER_PERMISSIONS to test
    * @returns Does the user have at least this permission
    */
-  hasPermission(permission: ValueOf<foundry.CONST.EntityPermission>): boolean;
+  hasPermission(permission: keyof typeof CONST.USER_PERMISSIONS): boolean;
 
   /**
    * Test whether the User has at least the permission level of a certain role

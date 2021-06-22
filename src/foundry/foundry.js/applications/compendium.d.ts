@@ -236,7 +236,7 @@ declare class Compendium<P extends Application.Options = Application.Options> ex
   activateListeners(html: JQuery): void;
 
   /** @override */
-  protected _onSearchFilter(event: KeyboardEvent, query: string, html: HTMLElement): void;
+  protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
   /**
    * Handle opening a single compendium entry by invoking the configured entity class and its sheet

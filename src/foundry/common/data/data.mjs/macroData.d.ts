@@ -47,7 +47,7 @@ interface MacroDataProperties {
   /**
    * A Macro subtype from CONST.MACRO_TYPES
    */
-  type: ValueOf<typeof CONST.MACRO_TYPES>;
+  type: foundry.CONST.MacroTypes;
 
   /**
    * The _id of a User document which created this Macro *
@@ -56,14 +56,15 @@ interface MacroDataProperties {
 
   /**
    * An image file path which provides the thumbnail artwork for this Macro
+   * @defaultValue `CONST.DEFAULT_MACRO_ICON`
    */
-  img?: string;
+  img: string | null;
 
   /**
    * The scope of this Macro application from CONST.MACRO_SCOPES
    * @defaultValue `'global'`
    */
-  scope: ValueOf<typeof CONST.MACRO_SCOPES>;
+  scope: foundry.CONST.MacroScopes;
 
   /**
    * The string content of the macro command
@@ -87,13 +88,77 @@ interface MacroDataProperties {
    * An object which configures user permissions to this Macro
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission: Partial<Record<string, ValueOf<typeof CONST.ENTITY_PERMISSIONS>>>;
+  permission: Partial<Record<string, foundry.CONST.EntityPermission>>;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
   flags: Record<string, unknown>;
+}
+
+interface MacroDataConstructorData {
+  /**
+   * The _id which uniquely identifies this Macro document
+   */
+  _id?: string | null;
+
+  /**
+   * The name of this Macro
+   */
+  name: string;
+
+  /**
+   * A Macro subtype from CONST.MACRO_TYPES
+   */
+  type?: foundry.CONST.MacroTypes | null;
+
+  /**
+   * The _id of a User document which created this Macro *
+   */
+  author?: string | null;
+
+  /**
+   * An image file path which provides the thumbnail artwork for this Macro
+   * @defaultValue `CONST.DEFAULT_MACRO_ICON`
+   */
+  img?: string | null;
+
+  /**
+   * The scope of this Macro application from CONST.MACRO_SCOPES
+   * @defaultValue `'global'`
+   */
+  scope?: foundry.CONST.MacroScopes | null;
+
+  /**
+   * The string content of the macro command
+   * @defaultValue `''`
+   */
+  command?: string | null;
+
+  /**
+   * The _id of a Folder which contains this Macro
+   * @defaultValue `null`
+   */
+  folder?: string | null;
+
+  /**
+   * The numeric sort value which orders this Macro relative to its siblings
+   * @defaultValue `0`
+   */
+  sort?: number | null;
+
+  /**
+   * An object which configures user permissions to this Macro
+   * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
+   */
+  permission?: Partial<Record<string, foundry.CONST.EntityPermission>> | null;
+
+  /**
+   * An object of optional key/value flags
+   * @defaultValue `{}`
+   */
+  flags?: Record<string, unknown> | null;
 }
 
 /**
@@ -104,8 +169,11 @@ export declare class MacroData extends DocumentData<
   MacroDataSchema,
   MacroDataProperties,
   PropertiesToSource<MacroDataProperties>,
+  MacroDataConstructorData,
   documents.BaseMacro
 > {
+  constructor(data: MacroDataConstructorData, document?: documents.BaseMacro | null);
+
   static defineSchema(): MacroDataSchema;
 }
 

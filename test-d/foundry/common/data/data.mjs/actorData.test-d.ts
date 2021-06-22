@@ -51,6 +51,9 @@ declare global {
   }
 }
 
+expectError(new foundry.data.ActorData());
+expectError(new foundry.data.ActorData({}));
+
 expectError(new foundry.data.ActorData({ name: 'Some Actor With Wrong Type', type: 'foo' }));
 
 const actorData = new foundry.data.ActorData({ name: 'Some Actor', type: 'character' });

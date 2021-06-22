@@ -20,7 +20,7 @@ user.assignHotbarMacro(new Macro(), 1);
 
 expectType<string | null>(user.data._id);
 expectType<string | null>(user.data.character);
-expectType<string | undefined>(user.data.avatar);
+expectType<string | null | undefined>(user.data.avatar);
 
 // TODO: Modify to ConfiguredDocumentSheet<typeof User> | null once data can be grabbed from CONFIG
 expectType<FormApplication | null>(user.sheet);

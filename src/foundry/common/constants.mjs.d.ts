@@ -534,6 +534,19 @@ export const USER_PERMISSIONS: {
    * @defaultValue
    * ```typescript
    * {
+   *    label: "PERMISSION.NoteCreate",
+   *    hint: "PERMISSION.NoteCreateHint",
+   *    disableGM: false,
+   *    defaultRole: USER_ROLES.TRUSTED
+   * }
+   * ```
+   */
+  NOTE_CREATE: UserCapability;
+
+  /**
+   * @defaultValue
+   * ```typescript
+   * {
    *    label: "PERMISSION.SettingsModify",
    *    hint: "PERMISSION.SettingsModifyHint",
    *    disableGM: false,
@@ -785,9 +798,12 @@ export type DiceRollMode = ValueOf<typeof DICE_ROLL_MODES>;
 export type DrawingFillType = ValueOf<typeof DRAWING_FILL_TYPES>;
 export type DrawingType = ValueOf<typeof DRAWING_TYPES>;
 export type EntityPermission = ValueOf<typeof ENTITY_PERMISSIONS>;
+export type FolderEntityTypes = ValueOf<typeof FOLDER_ENTITY_TYPES>;
 export type GridType = ValueOf<typeof GRID_TYPES>;
-export type PackageTypes = ValueOf<typeof PACKAGE_TYPES>;
+export type MacroTypes = ValueOf<typeof CONST.MACRO_TYPES>;
+export type MacroScopes = ValueOf<typeof CONST.MACRO_SCOPES>;
 export type PackageAvailabilityCode = ValueOf<typeof PACKAGE_AVAILABILITY_CODES>;
+export type PackageTypes = ValueOf<typeof PACKAGE_TYPES>;
 export type PlaylistMode = ValueOf<typeof PLAYLIST_MODES>;
 export type SoftwareUpdateChannel = ValueOf<typeof SOFTWARE_UPDATE_CHANNELS>;
 export type SourceType = ValueOf<typeof SOURCE_TYPES>;

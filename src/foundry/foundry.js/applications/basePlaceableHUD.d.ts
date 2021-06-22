@@ -4,7 +4,7 @@
  * @typeParam P - the type of the options object
  */
 declare abstract class BasePlaceableHUD<
-  O extends PlaceableObject<PlaceableObject.Data>,
+  O extends PlaceableObject<any>,
   P extends Application.Options = Application.Options
 > extends Application<P> {
   /**

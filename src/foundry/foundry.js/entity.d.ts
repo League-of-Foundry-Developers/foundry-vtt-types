@@ -179,7 +179,7 @@ declare abstract class Entity<D extends Entity.Data = Entity.Data, PD extends D 
    * actor.sheet // ActorSheet
    * ```
    */
-  get sheet(): DocumentSheet<DocumentSheet.Options, DocumentSheet.Data<this>, this> | null;
+  get sheet(): DocumentSheet<DocumentSheet.Options, DocumentSheet.Data<any>, any> | null;
 
   /**
    * Obtain a reference to the DocumentSheet implementation which should be used to render the Entity instance

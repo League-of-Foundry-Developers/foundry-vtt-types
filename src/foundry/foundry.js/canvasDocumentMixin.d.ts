@@ -1,4 +1,4 @@
-import { ContextType, DocumentDataType, DocumentModificationOptions } from '../common/abstract/document.mjs';
+import { ContextType, DocumentModificationOptions } from '../common/abstract/document.mjs';
 import { ClientDocumentMixin } from './clientDocumentMixin';
 
 declare global {
@@ -18,7 +18,7 @@ type CanvasDocumentConstructor<T extends ConstructorOf<foundry.abstract.Document
   };
 
 declare class CanvasDocumentMixin<T extends foundry.abstract.Document<any, any>> extends ClientDocumentMixin<T> {
-  constructor(data?: DeepPartial<T['data']['_source']>, context?: ContextType<T>);
+  constructor(data?: Parameters<T['data']['_initializeSource']>[0], context?: ContextType<T>);
 
   /**
    * A reference to the PlaceableObject instance which represents this Embedded Document.
@@ -44,17 +44,13 @@ declare class CanvasDocumentMixin<T extends foundry.abstract.Document<any, any>>
   /**
    * @see abstract.Document#_onCreate
    */
-  protected _onCreate(
-    data: DeepPartial<DocumentDataType<T>>,
-    options: DocumentModificationOptions,
-    userId: string
-  ): void;
+  protected _onCreate(data: T['data']['_source'], options: DocumentModificationOptions, userId: string): void;
 
   /**
    * @see abstract.Document#_onUpdate
    */
   protected _onUpdate(
-    data: DeepPartial<DocumentDataType<T>>,
+    data: DeepPartial<T['data']['_source']>,
     options: DocumentModificationOptions,
     userId: string
   ): void;
