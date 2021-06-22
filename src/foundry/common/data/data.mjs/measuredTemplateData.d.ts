@@ -69,6 +69,7 @@ interface MeasuredTemplateProperties {
 
   /**
    * The width of the measured template, applies to ray types
+   * @defaultValue `1`
    */
   width: number;
 
@@ -87,7 +88,7 @@ interface MeasuredTemplateProperties {
   /**
    * A repeatable tiling texture used to add a texture fill to the template shape
    */
-  texture: string | null;
+  texture: string | undefined;
 
   /**
    * An object of optional key/value flags
