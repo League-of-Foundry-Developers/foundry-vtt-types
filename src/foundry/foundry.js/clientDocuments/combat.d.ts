@@ -11,7 +11,12 @@ declare global {
    *
    * @param data - Initial data provided to construct the Combat document
    */
-  class Combat extends ClientDocumentMixin(foundry.documents.BaseCombat) {}
+  class Combat extends ClientDocumentMixin(foundry.documents.BaseCombat) {
+    /**
+     * The configuration setting used to record Combat preferences
+     */
+    static CONFIG_SETTING: 'combatTrackerConfig';
+  }
 }
 
 export {};

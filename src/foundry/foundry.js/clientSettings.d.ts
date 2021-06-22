@@ -227,7 +227,7 @@ declare namespace ClientSettings {
   }
 
   interface Values {
-    'core.combatTrackerConfig': any; // TODO
+    [Combat.CONFIG_SETTING]: { resource: string; skipDefeated: boolean };
     [key: string]: unknown;
   }
 }
