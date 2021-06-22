@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectError, expectType } from 'tsd';
 import { BaseUser } from '../../../../src/foundry/common/documents.mjs';
 import { ConfiguredDocumentClass } from '../../../../src/types/helperTypes';
 
@@ -28,6 +28,10 @@ expectType<boolean>(baseUser.hasRole(CONST.USER_ROLES.PLAYER));
 expectType<boolean>(baseUser.hasRole(CONST.USER_ROLES.TRUSTED));
 expectType<boolean>(baseUser.hasRole(CONST.USER_ROLES.ASSISTANT));
 expectType<boolean>(baseUser.hasRole(CONST.USER_ROLES.GAMEMASTER));
+
+expectError(baseUser.hasRole('ACTOR_CREATE'));
+expectError(baseUser.hasRole(-1));
+expectError(baseUser.hasRole(100));
 
 expectType<boolean>(baseUser.can('NONE'));
 expectType<boolean>(baseUser.can('PLAYER'));
@@ -60,6 +64,10 @@ expectType<boolean>(baseUser.can('TOKEN_CREATE'));
 expectType<boolean>(baseUser.can('TOKEN_CONFIGURE'));
 expectType<boolean>(baseUser.can('WALL_DOORS'));
 
+expectError(baseUser.can(-1));
+expectError(baseUser.can(100));
+expectError(baseUser.can('SHOW_RULERS'));
+
 expectType<boolean>(baseUser.hasPermission('ACTOR_CREATE'));
 expectType<boolean>(baseUser.hasPermission('BROADCAST_AUDIO'));
 expectType<boolean>(baseUser.hasPermission('BROADCAST_VIDEO'));
@@ -78,3 +86,8 @@ expectType<boolean>(baseUser.hasPermission('TEMPLATE_CREATE'));
 expectType<boolean>(baseUser.hasPermission('TOKEN_CREATE'));
 expectType<boolean>(baseUser.hasPermission('TOKEN_CONFIGURE'));
 expectType<boolean>(baseUser.hasPermission('WALL_DOORS'));
+
+expectError(baseUser.hasPermission('GAMEMASTER'));
+expectError(baseUser.hasPermission(CONST.USER_ROLES.GAMEMASTER));
+expectError(baseUser.hasPermission(10));
+expectError(baseUser.hasPermission('SHOW_RULERS'));
