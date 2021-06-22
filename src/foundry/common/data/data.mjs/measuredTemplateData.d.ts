@@ -1,4 +1,4 @@
-import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
@@ -110,6 +110,14 @@ export declare class MeasuredTemplateData extends DocumentData<
   MeasuredTemplateDataConstructorData,
   documents.BaseMeasuredTemplate
 > {
+  /**
+   * @remarks This override does not exist in foundry but is added here to prepend runtime errors.
+   */
+  constructor(
+    data: MeasuredTemplateDataConstructorData | undefined,
+    document: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>
+  );
+
   static defineSchema(): MeasuredTemplateDataSchema;
 
   /** @override */
