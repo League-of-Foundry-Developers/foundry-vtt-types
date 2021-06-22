@@ -28,5 +28,5 @@ declare class Items extends WorldCollection<typeof foundry.documents.BaseItem, '
   /**
    * Return an Array of currently registered sheet classes for this Entity type
    */
-  static get registeredSheets(): ItemSheet[];
+  static get registeredSheets(): typeof ItemSheet[];
 }

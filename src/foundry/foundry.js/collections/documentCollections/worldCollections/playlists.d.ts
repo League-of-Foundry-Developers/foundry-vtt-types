@@ -9,6 +9,10 @@ declare global {
    * @see {@link PlaylistDirectory} The PlaylistDirectory sidebar directory
    */
   class Playlists extends WorldCollection<typeof foundry.documents.BasePlaylist, 'Playlists'> {
+    constructor(
+      data?: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BasePlaylist>>['data']['_source'][]
+    );
+
     /** @override */
     static documentName: 'Playlist';
 

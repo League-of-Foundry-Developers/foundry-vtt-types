@@ -67,6 +67,6 @@ declare global {
     /**
      * Return an Array of currently registered sheet classes for this Entity type
      */
-    static get registeredSheets(): ActorSheet[];
+    static get registeredSheets(): typeof ActorSheet[];
   }
 }
