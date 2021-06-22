@@ -98,11 +98,10 @@ declare global {
      * @param metadata - The compendium metadata used to create the new pack
      * @param options - Additional options which modify the Compendium creation request
      */
-    //TODO metadata, CompendiumCollection generics
-    static createCompendium(
-      metadata: object,
+    static createCompendium<T extends Metadata<any>>(
+      metadata: T,
       options: Partial<DocumentModificationOptions>
-    ): Promise<CompendiumCollection<any>>;
+    ): Promise<CompendiumCollection<T>>;
 
     /**
      * Assign configuration metadata settings to the compendium pack
