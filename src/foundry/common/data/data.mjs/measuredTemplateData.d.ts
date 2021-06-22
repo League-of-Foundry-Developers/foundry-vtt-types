@@ -1,13 +1,13 @@
-import { FieldReturnType } from '../../../../types/helperTypes';
+import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
 
 interface MeasuredTemplateDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
-  user: fields.ForeignDocumentField<{ type: documents.BaseUser; required: true }>;
+  user: fields.ForeignDocumentField<{ type: typeof documents.BaseUser; required: true }>;
   t: {
-    type: String;
+    type: typeof String;
     required: true;
     default: typeof CONST.MEASURED_TEMPLATE_TYPES.CIRCLE;
     validate: (t: unknown) => boolean;
@@ -35,7 +35,7 @@ interface MeasuredTemplateProperties {
    * The value in CONST.MEASURED_TEMPLATE_TYPES which defines the geometry type of this template
    * @defaultValue `'circle'`
    */
-  t: typeof CONST.MEASURED_TEMPLATE_TYPES;
+  t: ValueOf<foundry.CONST.MeasuredTemplateTypes>;
 
   /**
    * The x-coordinate position of the origin of the template effect
@@ -51,6 +51,7 @@ interface MeasuredTemplateProperties {
 
   /**
    * The distance of the template effect
+   * @defaultValue `1`
    */
   distance: number;
 
@@ -95,6 +96,8 @@ interface MeasuredTemplateProperties {
   flags: Record<string, unknown>;
 }
 
+type MeasuredTemplateDataConstructorData = Partial<MeasuredTemplateProperties>;
+
 /**
  * The data schema for a MeasuredTemplate embedded document.
  * @see BaseMeasuredTemplate
@@ -102,6 +105,8 @@ interface MeasuredTemplateProperties {
 export declare class MeasuredTemplateData extends DocumentData<
   MeasuredTemplateDataSchema,
   MeasuredTemplateProperties,
+  PropertiesToSource<MeasuredTemplateProperties>,
+  MeasuredTemplateDataConstructorData,
   documents.BaseMeasuredTemplate
 > {
   static defineSchema(): MeasuredTemplateDataSchema;

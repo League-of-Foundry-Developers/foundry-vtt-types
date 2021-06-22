@@ -42,12 +42,12 @@ declare global {
     /**
      * A convenience accessor for the border color as a numeric hex code
      */
-    get borderColor(): number;
+    get borderColor(): string | number;
 
     /**
      * A convenience accessor for the fill color as a numeric hex code
      */
-    get fillColor(): number;
+    get fillColor(): string | number;
 
     /**
      * A flag for whether the current User has full ownership over the MeasuredTemplate document.
