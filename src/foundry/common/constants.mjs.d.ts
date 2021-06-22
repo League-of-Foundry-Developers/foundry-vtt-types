@@ -534,6 +534,19 @@ export const USER_PERMISSIONS: {
    * @defaultValue
    * ```typescript
    * {
+   *    label: "PERMISSION.NoteCreate",
+   *    hint: "PERMISSION.NoteCreateHint",
+   *    disableGM: false,
+   *    defaultRole: USER_ROLES.TRUSTED
+   * }
+   * ```
+   */
+  NOTE_CREATE: UserCapability;
+
+  /**
+   * @defaultValue
+   * ```typescript
+   * {
    *    label: "PERMISSION.SettingsModify",
    *    hint: "PERMISSION.SettingsModifyHint",
    *    disableGM: false,
