@@ -6,6 +6,7 @@ declare global {
   /**
    * A collection of Document objects contained within a specific compendium pack.
    * Each Compendium pack has its own associated instance of the CompendiumCollection class which contains its contents.
+   * @param metadata - The compendium metadata, an object provided by game.data
    */
   class CompendiumCollection<T extends Metadata<any>> extends DocumentCollection<
     DocumentClassForMetadata<T>,
@@ -18,6 +19,9 @@ declare global {
 
     /**  A subsidiary collection which contains the more minimal index of the pack */
     index: foundry.utils.Collection<DocumentInstanceForMetadata<T>>;
+
+    /** A debounced function which will clear the contents of the Compendium pack if it is not accessed frequently. */
+    _flush: () => void;
 
     /**
      * The amount of time that Document instances within this CompendiumCollection are held in memory.
@@ -57,7 +61,7 @@ declare global {
     delete(id: string): boolean;
 
     /** Load the Compendium index and cache it as the keys and values of the Collection. */
-    getIndex(): Promise<DocumentInstanceForMetadata<T>['data']['_source']>;
+    getIndex(): Promise<this['index']>;
 
     /**
      * Get a single Document from this Compendium by ID.
@@ -70,6 +74,7 @@ declare global {
     /**
      * Load multiple documents from the Compendium pack using a provided query object.
      * @param query - A database query used to retrieve documents from the underlying database
+     *                default: `{}`
      * @returns The retrieved Document instances
      */
     getDocuments(query?: Query): Promise<DocumentInstanceForMetadata<T>[]>;
@@ -91,24 +96,26 @@ declare global {
      * Add a Document to the index, capturing it's relevant index attributes
      * @param document -The document to index
      */
-    indexDocument(document: DocumentInstanceForMetadata<T>): DocumentInstanceForMetadata<T>;
+    indexDocument(document: DocumentInstanceForMetadata<T>): void;
 
     /**
      * Create a new Compendium Collection using provided metadata.
      * @param metadata - The compendium metadata used to create the new pack
      * @param options - Additional options which modify the Compendium creation request
+     *                  default `{}`
      */
     static createCompendium<T extends Metadata<any>>(
       metadata: T,
-      options: Partial<DocumentModificationOptions>
+      options?: Partial<DocumentModificationOptions>
     ): Promise<CompendiumCollection<T>>;
 
     /**
      * Assign configuration metadata settings to the compendium pack
      * @param settings - The object of compendium settings to define
+     *                   default: `{}`
      * @returns A Promise which resolves once the setting is updated
      */
-    configure(settings: Partial<CompendiumConfiguration>): Promise<void>;
+    configure(settings?: Partial<CompendiumConfiguration>): Promise<void>;
 
     /**
      * Delete an existing world-level Compendium Collection.
@@ -120,13 +127,13 @@ declare global {
      * Duplicate a compendium pack to the current World.
      * @param label - A new Compendium label
      */
-    duplicateCompendium({ label }: { label?: string }): Promise<this>;
+    duplicateCompendium({ label }?: { label?: string }): Promise<this>;
 
     /**
      * Validate that the current user is able to modify content of this Compendium pack
-     * @remarks `requireUnlocked` has a default value of `true`
+     * @param requireUnlocked - `(default: true)`
      */
-    protected _assertUserCanModify({ requireUnlocked }: { requireUnlocked?: boolean }): boolean;
+    protected _assertUserCanModify({ requireUnlocked }?: { requireUnlocked?: boolean }): boolean;
 
     /** Request that a Compendium pack be migrated to the latest System data template */
     migrate(options?: object): Promise<this>;
@@ -177,13 +184,16 @@ declare global {
     importEntity(document: DocumentInstanceForMetadata<T>): ReturnType<this['importDocument']>;
 
     /** @deprecated since 0.8.0 */
-    createEntity(data: any, options: Partial<DocumentModificationOptions>): ReturnType<this['documentClass']['create']>;
+    createEntity(
+      data: any,
+      options?: Partial<DocumentModificationOptions>
+    ): ReturnType<this['documentClass']['create']>;
 
     /** @deprecated since 0.8.0 */
-    updateEntity(data: any, options: Partial<DocumentModificationOptions>): DocumentInstanceForMetadata<T>['update'];
+    updateEntity(data: any, options?: Partial<DocumentModificationOptions>): DocumentInstanceForMetadata<T>['update'];
 
     /** @deprecated since 0.8.0 */
-    deleteEntity(id: string, options: Partial<DocumentModificationOptions>): DocumentInstanceForMetadata<T>['delete'];
+    deleteEntity(id: string, options?: Partial<DocumentModificationOptions>): DocumentInstanceForMetadata<T>['delete'];
   }
 
   interface CompendiumConfiguration {
@@ -193,7 +203,7 @@ declare global {
 
   interface ImportAllOptions {
     /** An existing Folder _id to use. */
-    folderId: string;
+    folderId: string | null;
     /** A new Folder name to create. */
     folderName: string;
     /** Additional options forwarded to Document.createDocuments */
