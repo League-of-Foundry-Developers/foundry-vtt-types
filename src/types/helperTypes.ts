@@ -42,11 +42,13 @@ export type FieldReturnType<T extends DocumentField<any>, U extends Partial<Docu
 export type DocumentConstructor = Pick<typeof Document, keyof typeof Document> &
   (new (...args: any[]) => Document<any, any>);
 
-export type ConfiguredDocumentClass<T extends DocumentConstructor> = T['metadata']['name'] extends keyof CONFIG
-  ? 'documentClass' extends keyof CONFIG[T['metadata']['name']]
-    ? CONFIG[T['metadata']['name']]['documentClass']
-    : never
-  : T;
+export type ConfiguredDocumentClass<T extends DocumentConstructor> = ConfiguredDocumentClassForName<
+  T['metadata']['name']
+>;
+
+export type ConfiguredDocumentClassForName<Name extends keyof CONFIG> = 'documentClass' extends keyof CONFIG[Name]
+  ? CONFIG[Name]['documentClass']
+  : never;
 
 export type ConfiguredData<Name extends string> = Name extends keyof DataConfig ? DataConfig[Name] : {};
 

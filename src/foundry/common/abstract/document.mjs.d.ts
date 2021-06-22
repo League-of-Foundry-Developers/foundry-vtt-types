@@ -678,7 +678,7 @@ interface Context<Parent extends Document<any, any> | null> {
 }
 
 export interface Metadata<ConcreteDocument extends Document<any, any>> {
-  name: string;
+  name: keyof CONFIG;
   collection: string;
   label: string;
   types: string[] | Record<string, unknown>; // TODO: Record<string, unknown> is only there because In BaseTableResult this is set to CONST.TABLE_RESULT_TYPES, check if this is a bug in foundry
