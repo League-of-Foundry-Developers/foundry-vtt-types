@@ -77,18 +77,18 @@ interface MeasuredTemplateProperties {
    * A color string used to tint the border of the template shape
    * @defaultValue `'#000000'`
    */
-  borderColor: number;
+  borderColor: string | null;
 
   /**
    * A color string used to tint the fill of the template shape
    * @defaultValue `'#FF0000'`
    */
-  fillColor: number;
+  fillColor: string | null;
 
   /**
    * A repeatable tiling texture used to add a texture fill to the template shape
    */
-  texture: string | undefined;
+  texture: string | undefined | null;
 
   /**
    * An object of optional key/value flags
@@ -97,7 +97,77 @@ interface MeasuredTemplateProperties {
   flags: Record<string, unknown>;
 }
 
-type MeasuredTemplateDataConstructorData = Partial<MeasuredTemplateProperties>;
+interface MeasuredTemplateDataConstructorData {
+  /**
+   The _id which uniquely identifies this BaseMeasuredTemplate embedded document
+   */
+  _id?: string | null;
+
+  /**
+   * The value in CONST.MEASURED_TEMPLATE_TYPES which defines the geometry type of this template
+   * @defaultValue `'circle'`
+   */
+  t?: ValueOf<foundry.CONST.MeasuredTemplateTypes> | null;
+
+  /**
+   * The x-coordinate position of the origin of the template effect
+   * @defaultValue `0`
+   */
+  x?: number | null;
+
+  /**
+   * The y-coordinate position of the origin of the template effect
+   * @defaultValue `0`
+   */
+  y?: number | null;
+
+  /**
+   * The distance of the template effect
+   * @defaultValue `1`
+   */
+  distance?: number | null;
+
+  /**
+   * The angle of rotation for the measured template
+   * @defaultValue `0`
+   */
+  direction?: number | null;
+
+  /**
+   * The angle of effect of the measured template, applies to cone types
+   * @defaultValue `0`
+   */
+  angle?: number | null;
+
+  /**
+   * The width of the measured template, applies to ray types
+   * @defaultValue `1`
+   */
+  width?: number | null;
+
+  /**
+   * A color string used to tint the border of the template shape
+   * @defaultValue `'#000000'`
+   */
+  borderColor?: string | null;
+
+  /**
+   * A color string used to tint the fill of the template shape
+   * @defaultValue `'#FF0000'`
+   */
+  fillColor?: string | null;
+
+  /**
+   * A repeatable tiling texture used to add a texture fill to the template shape
+   */
+  texture?: string | null;
+
+  /**
+   * An object of optional key/value flags
+   * @defaultValue `{}`
+   */
+  flags?: Record<string, unknown> | null;
+}
 
 /**
  * The data schema for a MeasuredTemplate embedded document.
