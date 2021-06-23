@@ -7,3 +7,4 @@ import './journal';
 import './macros';
 import './messages';
 import './playlists';
+import './scenes';
