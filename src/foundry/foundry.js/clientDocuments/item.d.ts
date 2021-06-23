@@ -45,7 +45,7 @@ declare global {
     getRollData(): this['data']['data'];
 
     /** @override */
-    protected _getSheetClass(): typeof ItemSheet;
+    protected _getSheetClass(): typeof ItemSheet | null;
 
     /** @override */
     protected static _onCreateDocuments(

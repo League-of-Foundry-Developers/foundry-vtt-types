@@ -15,8 +15,6 @@ declare global {
     Data extends object = ItemSheet.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Item>>> {
     /**
-     * Assign the default options which are supported by this Application
-     *
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
