@@ -12,7 +12,7 @@ declare class Journal extends WorldCollection<typeof foundry.documents.BaseJourn
   /**
    * Open Socket listeners which transact JournalEntry data
    */
-  protected static _activateSocketListeners(socket: SocketIOClient.Socket): void;
+  protected static _activateSocketListeners(socket: io.Socket): void;
 
   /**
    * Handle a received request to show a JournalEntry to the current client

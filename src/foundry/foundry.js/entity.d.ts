@@ -287,7 +287,7 @@ declare abstract class Entity<D extends Entity.Data = Entity.Data, PD extends D 
    * Activate the Socket event listeners used to receive responses from events which modify database documents
    * @param socket - The active game socket
    */
-  static activateSocketListeners(socket: SocketIOClient.Socket): void;
+  static activateSocketListeners(socket: io.Socket): void;
 
   /**
    * Create one or multiple new entities using provided input data.

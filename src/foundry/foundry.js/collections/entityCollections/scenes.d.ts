@@ -26,7 +26,7 @@ declare class Scenes extends EntityCollection<Scene> {
   /* -------------------------------------------- */
 
   /** @override */
-  static socketListeners(socket: SocketIOClient.Socket): void;
+  static socketListeners(socket: io.Socket): void;
 
   /**
    * Augment the standard modifyDocument listener to flush fog exploration

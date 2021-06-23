@@ -31,7 +31,7 @@ declare class Users extends EntityCollection<User> {
   /* -------------------------------------------- */
 
   /** @override */
-  static socketListeners(socket: SocketIOClient.Socket): void;
+  static socketListeners(socket: io.Socket): void;
 
   /**
    * Handle receipt of activity data from another User connected to the Game session
