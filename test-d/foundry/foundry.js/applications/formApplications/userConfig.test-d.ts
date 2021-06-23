@@ -14,3 +14,6 @@ expectType<DocumentSheet.Options>(config.getData().options);
 const withCustomOptions = new UserConfig<DocumentSheet.Options & { custom: true }>();
 expectType<DocumentSheet.Options & { custom: true }>(withCustomOptions.options);
 expectType<DocumentSheet.Options & { custom: true }>(withCustomOptions.getData().options);
+
+const withCustomData = new UserConfig<DocumentSheet.Options, { me: User }>();
+expectType<{ me: User }>(withCustomData.getData());

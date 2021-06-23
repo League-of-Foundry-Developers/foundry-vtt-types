@@ -5,11 +5,10 @@ declare global {
    * The Application responsible for configuring a single User document.
    * @typeParam P - the type of the options object
    */
-  class UserConfig<P extends DocumentSheet.Options = DocumentSheet.Options> extends DocumentSheet<
-    P,
-    Data<P>,
-    InstanceType<ConfiguredDocumentClass<typeof User>>
-  > {
+  class UserConfig<
+    P extends DocumentSheet.Options = Options,
+    Data extends object = UserConfig.Data<P>
+  > extends DocumentSheet<P, Data, InstanceType<ConfiguredDocumentClass<typeof User>>> {
     /** @override */
     static get defaultOptions(): Options;
 
@@ -17,7 +16,7 @@ declare global {
     get title(): string;
 
     /** @override */
-    getData(options?: Application.RenderOptions): Data<P>;
+    getData(options?: Application.RenderOptions): Data;
 
     /** @override */
     activateListeners(html: JQuery): void;
@@ -31,6 +30,14 @@ declare global {
      * @remarks This method not overridden in foundry but added to provide types when overriding the UserConfig.
      */
     protected _updateObject(event: Event, formData: FormData): ReturnType<User['update']>;
+  }
+
+  namespace UserConfig {
+    interface Data<Options extends DocumentSheet.Options> {
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>;
+      actors: InstanceType<ConfiguredDocumentClass<typeof Actor>>[];
+      options: Options;
+    }
   }
 }
 
@@ -54,12 +61,6 @@ interface Options extends DocumentSheet.Options {
    * @defaultValue `auto`
    */
   height: DocumentSheet.Options['height'];
-}
-
-interface Data<Options extends DocumentSheet.Options> {
-  user: InstanceType<ConfiguredDocumentClass<typeof User>>;
-  actors: InstanceType<ConfiguredDocumentClass<typeof Actor>>[];
-  options: Options;
 }
 
 type FormData = Pick<foundry.data.UserData, 'avatar' | 'character' | 'color'>;
