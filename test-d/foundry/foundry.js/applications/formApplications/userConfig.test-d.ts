@@ -1,11 +1,16 @@
-import { expectType } from 'tsd';
-import { ConfiguredDocumentClass } from '../../../../../src/types/helperTypes';
+import { expectError, expectType } from 'tsd';
+
+expectType<UserConfig>(new UserConfig(new User()));
+expectType<UserConfig>(new UserConfig());
+expectType<UserConfig>(new UserConfig(undefined, { width: 100 }));
+expectError(new UserConfig(new foundry.documents.BaseUser()));
 
 const config = new UserConfig();
-expectType<InstanceType<ConfiguredDocumentClass<typeof User>>>(config.object);
 expectType<User>(config.object);
-expectType<InstanceType<ConfiguredDocumentClass<typeof User>>>(config.getData().user);
 expectType<User>(config.getData().user);
-expectType<InstanceType<ConfiguredDocumentClass<typeof Actor>>[]>(config.getData().actors);
 expectType<Actor[]>(config.getData().actors);
 expectType<DocumentSheet.Options>(config.getData().options);
+
+const withCustomOptions = new UserConfig<DocumentSheet.Options & { custom: true }>();
+expectType<DocumentSheet.Options & { custom: true }>(withCustomOptions.options);
+expectType<DocumentSheet.Options & { custom: true }>(withCustomOptions.getData().options);
