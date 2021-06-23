@@ -1,63 +1,76 @@
-// TODO: Remove when updating this class!!!
-// eslint-disable-next-line
-// @ts-nocheck
+import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 
-/**
- * A form designed for creating and editing an Active Effect on an Actor or Item entity.
- *
- * @typeParam P - the type of the options object
- * @typeParam D - The data structure used to render the handlebars template.
- * @typeParam O - the type of the ActiveEffect which should be managed by this form sheet
- */
-declare class ActiveEffectConfig<
-  P extends FormApplication.Options = FormApplication.Options,
-  D extends object = ActiveEffectConfig.Data,
-  O extends ActiveEffect = D extends ActiveEffectConfig.Data<infer T> ? T : ActiveEffect
-> extends FormApplication<P, D, O> {
+declare global {
   /**
-   * @param object  - The target active effect being configured
-   * @param options - Additional options which modify this application instance
+   * The Application responsible for configuring a single ActiveEffect document within a parent Actor or Item.
+   *
+   * @typeParam Options - the type of the options object
+   * @typeParam Data    - The data structure used to render the handlebars template.
+   * @typeParam O - the type of the ActiveEffect which should be managed by this form sheet
    */
-  constructor(object: O, options?: Partial<P>);
+  class ActiveEffectConfig<
+    Options extends DocumentSheet.Options = ActiveEffectConfig.Options,
+    Data extends object = ActiveEffectConfig.Data
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>> {
+    /**
+     * @override
+     * @defaultValue
+     * ```typescript
+     * foundry.utils.mergeObject(super.defaultOptions, {
+     *   classes: ["sheet", "active-effect-sheet"],
+     *   template: "templates/sheets/active-effect-config.html",
+     *   width: 560,
+     *   height: "auto",
+     *   tabs: [{navSelector: ".tabs", contentSelector: "form", initial: "details"}]
+     * });
+     * ```
+     */
+    static get defaultOptions(): ActiveEffectConfig.Options;
 
-  /** @override */
-  static get defaultOptions(): typeof FormApplication['defaultOptions'];
+    /** @override */
+    get title(): string;
 
-  /** @override */
-  get title(): string;
+    /**
+     * @override
+     *
+     * @remarks The implementation doesn't return a `Promise` but the return type includes it to allow extending
+     * classes to do that.
+     */
+    getData(options?: Application.RenderOptions): Data | Promise<Data>;
 
-  /** @override */
-  getData(options?: Application.RenderOptions): D | Promise<D>;
+    /** @override */
+    activateListeners(html: JQuery): void;
 
-  /** @override */
-  activateListeners(html: JQuery): void;
+    /**
+     * Provide centralized handling of mouse clicks on control buttons.
+     * Delegate responsibility out to action-specific handlers depending on the button action.
+     * @param event - The originating click event
+     */
+    protected _onEffectControl(event: JQuery.ClickEvent): this | void;
 
-  /**
-   * Provide centralized handling of mouse clicks on control buttons.
-   * Delegate responsibility out to action-specific handlers depending on the button action.
-   * @param event - The originating click event
-   */
-  protected _onEffectControl(event: JQuery.ClickEvent): this | void;
+    /**
+     * Handle adding a new change to the changes array.
+     */
+    protected _addEffectChange(): this;
 
-  /**
-   * Handle adding a new change to the changes array.
-   * @param button - The clicked action button
-   */
-  protected _addEffectChange(button: HTMLElement): void;
+    /**
+     * @override
+     * @param updateData - (default: `{}`)
+     */
+    _getSubmitData(updateData?: FormApplication.OnSubmitOptions['updateData']): object;
+    // TODO: Can we type this better?
+  }
 
-  /** @override */
-  protected _updateObject(event: Event, formData?: object): ReturnType<O['update']>;
-}
+  namespace ActiveEffectConfig {
+    interface Data {
+      effect: ActiveEffectConfig['object']['data'];
+      data: ActiveEffectConfig['object']['data'];
+      isActorEffect: boolean;
+      isItemEffect: boolean;
+      submitText: string;
+      modes: Record<keyof typeof foundry.CONST.ACTIVE_EFFECT_MODES, string>;
+    }
 
-declare namespace ActiveEffectConfig {
-  /**
-   * @typeParam A - the type of the ActiveEffect
-   */
-  interface Data<A extends ActiveEffect = ActiveEffect> {
-    effect: foundry.utils.Duplicated<A['data']>;
-    isActorEffect: boolean;
-    isItemEffect: boolean;
-    submitText: string;
-    modes: Record<keyof typeof foundry.CONST.ACTIVE_EFFECT_MODES, string>;
+    type Options = DocumentSheet.Options;
   }
 }
