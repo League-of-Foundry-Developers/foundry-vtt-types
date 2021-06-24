@@ -21,7 +21,7 @@ declare class AudioHelper {
    * Once a gesture is observed, we begin playing all elements of this Array.
    * @defaultValue `[]`
    */
-  pending: Howl[];
+  pending: any[];
 
   /**
    * A flag for whether video playback is currently locked by awaiting a user gesture
@@ -97,7 +97,7 @@ declare class AudioHelper {
     html5?: boolean;
     volume?: number;
     loop?: boolean;
-  }): Howl;
+  }): any;
 
   /* -------------------------------------------- */
 
@@ -196,7 +196,7 @@ declare class AudioHelper {
       loop: boolean;
     },
     push: boolean
-  ): Howl;
+  ): any;
 
   /* -------------------------------------------- */
 
@@ -323,7 +323,7 @@ declare namespace AudioHelper {
   }
 
   interface Sound {
-    howl: Howl;
+    howl: any;
     loaded: boolean;
     ids: [];
   }
