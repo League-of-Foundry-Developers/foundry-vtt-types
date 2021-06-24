@@ -230,9 +230,17 @@ interface Request {
   updates?: AnyDocumentData[];
   ids?: string[];
   parent?: Document<any, any>;
-  query?: object;
+  query?: object | IdQuery | SceneIdUserQuery;
   options?: RequestOptions;
   pack?: string;
+}
+
+export interface IdQuery {
+  _id: string;
+}
+export interface SceneIdUserQuery {
+  sceneId: string;
+  user: string;
 }
 
 interface RequestOptions {
