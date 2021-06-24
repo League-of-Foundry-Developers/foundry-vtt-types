@@ -17,11 +17,11 @@ declare abstract class FormApplication<
 > extends Application<Options> {
   /**
    * @param object  - Some object or entity which is the target to be updated.
-   *                  (default: `{}`)
    * @param options - Additional options which modify the rendering of the sheet.
    *                  (default: `{}`)
+   * @remarks Foundry allows passing no value to the constructor at all.
    */
-  constructor(object?: ConcreteObject, options?: Partial<Options>);
+  constructor(object: ConcreteObject, options?: Partial<Options>);
 
   /**
    * The object target which we are using this form to modify
