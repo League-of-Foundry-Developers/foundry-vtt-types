@@ -280,9 +280,7 @@ declare abstract class DocumentData<
    * @returns The extracted primitive object
    */
   toObject(source?: true): ReturnType<this['toJSON']>;
-  toObject(
-    source: false
-  ): {
+  toObject(source: false): {
     [Key in keyof ConcreteDocumentSchema as string extends Key ? never : Key]: Key extends keyof this
       ? ToObjectFalseType<this[Key]>
       : undefined;

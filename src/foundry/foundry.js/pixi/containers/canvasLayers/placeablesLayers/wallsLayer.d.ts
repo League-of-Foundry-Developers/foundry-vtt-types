@@ -178,9 +178,7 @@ declare class WallsLayer extends PlaceablesLayer<Wall> {
    * This method helps to translate each tool into a default wall data configuration for that type
    * @param tool - The active canvas tool
    */
-  protected _getWallDataFromActiveTool(
-    tool: string
-  ):
+  protected _getWallDataFromActiveTool(tool: string):
     | {
         move: ValueOf<typeof foundry.CONST['WALL_MOVEMENT_TYPES']>;
         sense: ValueOf<typeof foundry.CONST['WALL_SENSE_TYPES']>;

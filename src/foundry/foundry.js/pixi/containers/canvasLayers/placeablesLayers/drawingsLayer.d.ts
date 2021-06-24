@@ -48,9 +48,7 @@ declare class DrawingsLayer extends PlaceablesLayer<Drawing> {
    * @param origin - The initial coordinate
    * @returns The new drawing data
    */
-  protected _getNewDrawingData(
-    origin: Point
-  ): typeof foundry.CONST['DRAWING_DEFAULT_VALUES'] &
+  protected _getNewDrawingData(origin: Point): typeof foundry.CONST['DRAWING_DEFAULT_VALUES'] &
     (
       | {
           type: typeof foundry.CONST['DRAWING_TYPES']['RECTANGLE'] | typeof foundry.CONST['DRAWING_TYPES']['ELLIPSE'];

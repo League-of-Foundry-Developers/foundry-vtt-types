@@ -1,10 +1,9 @@
 import { DocumentConstructor } from '../../types/helperTypes';
 
-type ConfiguredDocumentClassOrDefault<
-  Fallback extends DocumentConstructor
-> = Fallback['metadata']['name'] extends keyof DocumentClassConfig
-  ? DocumentClassConfig[Fallback['metadata']['name']]
-  : Fallback;
+type ConfiguredDocumentClassOrDefault<Fallback extends DocumentConstructor> =
+  Fallback['metadata']['name'] extends keyof DocumentClassConfig
+    ? DocumentClassConfig[Fallback['metadata']['name']]
+    : Fallback;
 
 declare global {
   /**
