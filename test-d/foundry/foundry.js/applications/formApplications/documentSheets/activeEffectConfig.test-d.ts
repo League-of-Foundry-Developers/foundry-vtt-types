@@ -1,5 +1,5 @@
 import { expectError, expectType } from 'tsd';
-import { ActiveEffectData } from '../../../../../src/foundry/common/data/data.mjs';
+import { ActiveEffectData } from '../../../../../../src/foundry/common/data/data.mjs';
 
 expectType<ActiveEffectConfig>(new ActiveEffectConfig(new ActiveEffect()));
 expectType<ActiveEffectConfig>(new ActiveEffectConfig());
