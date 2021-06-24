@@ -1,4 +1,4 @@
-import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import { PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
@@ -8,7 +8,7 @@ interface CombatantDataSchema extends DocumentSchema {
   actorId: fields.ForeignDocumentField<{ type: typeof documents.BaseActor }>;
   tokenId: fields.ForeignDocumentField<{ type: typeof documents.BaseToken }>;
   name: typeof fields.STRING_FIELD;
-  img: FieldReturnType<typeof fields.IMAGE_FIELD, { default: () => string }>;
+  img: typeof fields.IMAGE_FIELD;
   initiative: typeof fields.NUMERIC_FIELD;
   hidden: typeof fields.BOOLEAN_FIELD;
   defeated: typeof fields.BOOLEAN_FIELD;
@@ -49,12 +49,12 @@ interface CombatantDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: Record<string, unknown> | null;
+  flags: Record<string, unknown>;
 }
 
 export interface CombatantDataConstructorData {
   /** The _id which uniquely identifies this Combatant embedded document */
-  _id: string | undefined | null;
+  _id?: string | null;
 
   actorId: string;
 
@@ -62,37 +62,31 @@ export interface CombatantDataConstructorData {
   tokenId: string;
 
   /** A customized name which replaces the name of the Token in the tracker */
-  name: string | undefined | null;
+  name?: string | null;
 
   /** A customized image which replaces the Token image in the tracker */
-  img: string | undefined | null;
+  img?: string | null;
 
   /** The initiative score for the Combatant which determines its turn order */
-  initiative: number | undefined | null;
+  initiative?: number | null;
 
   /**
    * Is this Combatant currently hidden?
    * @defaultValue `false`
    */
-  hidden: boolean | undefined | null;
+  hidden?: boolean | null;
 
   /**
    * Has this Combatant been defeated?
    * @defaultValue `false`
    */
-  defeated: boolean | undefined | null;
+  defeated?: boolean | null;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: Record<string, unknown> | null | null;
-}
-
-type DocumentDataConstructor = Pick<typeof DocumentData, keyof typeof DocumentData>;
-
-interface CombatantDataConstructor extends DocumentDataConstructor {
-  defineSchema(): CombatantDataSchema;
+  flags?: Record<string, unknown> | null;
 }
 
 /**
