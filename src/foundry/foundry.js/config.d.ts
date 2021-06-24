@@ -1533,7 +1533,7 @@ declare global {
       /**
        * @defaultValue `Combatant`
        */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseCombatant>; // TODO: Combatant
+      documentClass: ConfiguredDocumentClassOrDefault<typeof Combatant>;
 
       /**
        * @defaultValue `CombatantConfig`
