@@ -1,9 +1,8 @@
 interface MapReplacementMembers<K, V> {
   set(key: K, value: V): this;
-  delete(key: K): boolean;
 }
 
-type PatchedMap<K, V> = Omit<Map<K, V>, 'forEach' | typeof Symbol.iterator | 'get' | 'set' | 'delete'> &
+type PatchedMap<K, V> = Omit<Map<K, V>, 'forEach' | typeof Symbol.iterator | 'get' | 'set'> &
   MapReplacementMembers<K, V>;
 
 interface PatchedMapConstructor {

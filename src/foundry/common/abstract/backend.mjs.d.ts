@@ -230,7 +230,7 @@ interface Request {
   updates?: AnyDocumentData[];
   ids?: string[];
   parent?: Document<any, any>;
-  query?: Partial<Query>;
+  query?: object | Partial<Query>;
   options?: RequestOptions;
   pack?: string;
 }
