@@ -235,10 +235,10 @@ interface Request {
   pack?: string;
 }
 
-interface IdQuery {
+export interface IdQuery {
   _id: string;
 }
-interface SceneIdUserQuery {
+export interface SceneIdUserQuery {
   sceneId: string;
   user: string;
 }

@@ -1,5 +1,5 @@
 import { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import { Query } from '../../../common/abstract/backend.mjs';
+import { IdQuery } from '../../../common/abstract/backend.mjs';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
 declare global {
@@ -78,7 +78,7 @@ declare global {
      *                default: `{}`
      * @returns The retrieved Document instances
      */
-    getDocuments(query?: Query): Promise<DocumentInstanceForCompendiumMetadata<T>[]>;
+    getDocuments(query?: IdQuery): Promise<DocumentInstanceForCompendiumMetadata<T>[]>;
 
     /**
      * Import a Document into this Compendium Collection.
