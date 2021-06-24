@@ -190,7 +190,10 @@ declare global {
     ): ReturnType<this['documentClass']['create']>;
 
     /** @deprecated since 0.8.0 */
-    updateEntity(data: any, options?: Partial<DocumentModificationOptions>): DocumentInstanceForMetadata<T>['update'];
+    updateEntity(
+      data: DeepPartial<Parameters<DocumentInstanceForMetadata<T>['data']['_initializeSource']>[0]> & { _id: string },
+      options?: Partial<DocumentModificationOptions>
+    ): ReturnType<DocumentInstanceForMetadata<T>['update']>;
 
     /** @deprecated since 0.8.0 */
     deleteEntity(id: string, options?: Partial<DocumentModificationOptions>): DocumentInstanceForMetadata<T>['delete'];
