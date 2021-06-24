@@ -1,5 +1,4 @@
 import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
-import { BaseScene } from '../../../../common/documents.mjs';
 
 declare global {
   /**
@@ -36,11 +35,11 @@ declare global {
      * @param push    - Trigger other connected clients to also pre-load Scene resources
      *                  (default: `false`)
      */
-    preload(sceneId: string, push?: boolean): SocketIOClient.Socket | Promise<unknown[]>;
+    preload(sceneId: string, push?: boolean): io.Socket | Promise<unknown[]>;
     // TODO: This can be typed better
 
     /** @remarks This is not marked as protected because it is used in `Game.activateSocketListeners` */
-    static _activateSocketListeners(socket: SocketIOClient.Socket): void;
+    static _activateSocketListeners(socket: io.Socket): void;
 
     /**
      * Augment the standard modifyDocument listener to flush fog exploration
@@ -55,8 +54,11 @@ declare global {
     /** @override */
     fromCompendium(
       document:
-        | InstanceType<ConfiguredDocumentClass<typeof BaseScene>>
-        | InstanceType<ConfiguredDocumentClass<typeof BaseScene>>['data']['_source']
-    ): Omit<InstanceType<ConfiguredDocumentClass<typeof BaseScene>>['data']['_source'], '_id' | 'folder'>;
+        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>
+        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>['data']['_source']
+    ): Omit<
+      InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>['data']['_source'],
+      '_id' | 'folder'
+    >;
   }
 }
