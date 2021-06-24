@@ -7,7 +7,7 @@ declare global {
    * A collection of Document objects contained within a specific compendium pack.
    * Each Compendium pack has its own associated instance of the CompendiumCollection class which contains its contents.
    *
-   * @see {Game#packs}
+   * @see {@link Game#packs}
    */
   class CompendiumCollection<T extends CompendiumCollection.Metadata> extends DocumentCollection<
     DocumentClassForCompendiumMetadata<T>,
