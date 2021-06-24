@@ -28,7 +28,7 @@ interface CombatantDataProperties {
   name: string | undefined;
 
   /** A customized image which replaces the Token image in the tracker */
-  img: string | undefined;
+  img: string | undefined | null;
 
   /** The initiative score for the Combatant which determines its turn order */
   initiative: number | undefined | null;
