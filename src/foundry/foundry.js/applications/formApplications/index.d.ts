@@ -20,7 +20,6 @@ import './settingsConfig';
 import './setupConfigurationForm';
 import './tileConfig';
 import './tokenConfig';
-import './userConfig';
 import './userManagement';
 import './wallConfig';
 import './worldConfig';
