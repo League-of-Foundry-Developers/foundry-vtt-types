@@ -1,3 +1,4 @@
 import './pixiParticles';
-import './tinyMCE';
+import './simple-peer';
 import './socket.io-client';
+import './tinyMCE';
