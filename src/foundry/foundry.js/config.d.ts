@@ -1728,7 +1728,7 @@ declare global {
     /**
      * Default configuration options for TinyMCE editors
      */
-    TinyMCE: RawEditorSettings;
+    TinyMCE: tinyMCE.RawEditorSettings;
 
     /**
      * Configuration for the WebRTC implementation class

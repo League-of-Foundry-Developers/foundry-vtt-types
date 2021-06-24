@@ -46,5 +46,5 @@ declare class FormDataExtended extends FormData {
 }
 
 declare namespace FormDataExtended {
-  type EditorTuple = [string, Editor];
+  type EditorTuple = [string, tinyMCE.Editor];
 }
