@@ -6,7 +6,6 @@ declare global {
    *
    * @typeParam Options - the type of the options object
    * @typeParam Data    - The data structure used to render the handlebars template.
-   * @typeParam O - the type of the ActiveEffect which should be managed by this form sheet
    */
   class ActiveEffectConfig<
     Options extends DocumentSheet.Options = ActiveEffectConfig.Options,
@@ -51,7 +50,7 @@ declare global {
     /**
      * Handle adding a new change to the changes array.
      */
-    protected _addEffectChange(): this;
+    protected _addEffectChange(): Promise<this>;
 
     /**
      * @override
