@@ -1,3 +1,4 @@
+import './activeEffectConfig';
 import './actorSheet';
 import './itemSheet';
 import './journalSheet';

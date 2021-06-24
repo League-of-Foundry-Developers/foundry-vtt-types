@@ -1,4 +1,3 @@
-import './activeEffectConfig';
 import './ambientSoundConfig';
 import './avConfig';
 import './combatTrackerConfig';
