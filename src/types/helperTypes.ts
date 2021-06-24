@@ -52,7 +52,11 @@ export type ConfiguredDocumentClass<T extends DocumentConstructor> = ConfiguredD
   T['metadata']['name']
 >;
 
-export type ConfiguredDocumentClassForName<Name extends keyof CONFIG> = 'documentClass' extends keyof CONFIG[Name]
+export type DocumentType = keyof {
+  [Key in keyof CONFIG as 'documentClass' extends keyof CONFIG[Key] ? Key : never]: unknown;
+};
+
+export type ConfiguredDocumentClassForName<Name extends DocumentType> = 'documentClass' extends keyof CONFIG[Name]
   ? CONFIG[Name]['documentClass']
   : never;
 

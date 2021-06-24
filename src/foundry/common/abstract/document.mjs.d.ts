@@ -1,7 +1,12 @@
 import { BaseUser } from '../documents.mjs';
 import DatabaseBackend from './backend.mjs';
 import { AnyDocumentData } from './data.mjs';
-import { ConfiguredDocumentClass, DocumentConstructor, ToObjectFalseType } from '../../../types/helperTypes';
+import {
+  ConfiguredDocumentClass,
+  DocumentConstructor,
+  ToObjectFalseType,
+  DocumentType
+} from '../../../types/helperTypes';
 
 type ParentType<T extends Document<any, any>> = T extends Document<any, infer U> ? U : never;
 export type ContextType<T extends Document<any, any>> = Context<ParentType<T>>;
@@ -701,7 +706,7 @@ interface Context<Parent extends Document<any, any> | null> {
 }
 
 export interface Metadata<ConcreteDocument extends Document<any, any>> {
-  name: keyof CONFIG;
+  name: DocumentType;
   collection: string;
   label: string;
   types: string[] | Record<string, unknown>; // TODO: Record<string, unknown> is only there because In BaseTableResult this is set to CONST.TABLE_RESULT_TYPES, check if this is a bug in foundry
