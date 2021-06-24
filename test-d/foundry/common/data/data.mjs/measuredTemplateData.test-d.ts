@@ -11,6 +11,7 @@ expectType<foundry.data.MeasuredTemplateData>(
   new foundry.data.MeasuredTemplateData(
     {
       _id: null,
+      user: null,
       t: null,
       x: null,
       y: null,
@@ -29,6 +30,7 @@ expectType<foundry.data.MeasuredTemplateData>(
   new foundry.data.MeasuredTemplateData(
     {
       _id: undefined,
+      user: undefined,
       t: undefined,
       x: undefined,
       y: undefined,
@@ -48,6 +50,7 @@ expectType<foundry.data.MeasuredTemplateData>(
   new foundry.data.MeasuredTemplateData(
     {
       _id: '10',
+      user: '11',
       t: 'ray',
       x: 0,
       y: 0,
