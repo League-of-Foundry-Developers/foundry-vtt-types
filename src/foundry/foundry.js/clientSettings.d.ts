@@ -228,7 +228,7 @@ declare namespace ClientSettings {
 
   interface Values {
     [Combat.CONFIG_SETTING]: { resource: string; skipDefeated: boolean };
-    [CompendiumCollection.CONFIG_SETTING]: Partial<Record<string, CompendiumConfiguration>>;
+    [CompendiumCollection.CONFIG_SETTING]: Partial<Record<string, CompendiumCollection.Configuration>>;
     [key: string]: unknown;
   }
 }
