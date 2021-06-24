@@ -30,7 +30,7 @@
   ],
   "dependencies": {
     "@types/jquery": "~3.5.5",
-    "socket.io-client": "~4.1.2",
+    "socket.io-client": "4.1.2",
     "handlebars": "4.7.7",
     "pixi-particles": "4.3.1",
     "pixi.js": "5.3.4",
