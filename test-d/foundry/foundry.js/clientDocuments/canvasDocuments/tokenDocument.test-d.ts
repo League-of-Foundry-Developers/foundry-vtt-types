@@ -1,6 +1,5 @@
 import { expectType } from 'tsd';
 import EmbeddedCollection from '../../../../../src/foundry/common/abstract/embedded-collection.mjs';
-import { ActorData } from '../../../../../src/foundry/common/data/data.mjs';
 import { ConfiguredDocumentClass } from '../../../../../src/types/helperTypes';
 
 const doc = new TokenDocument({}, { parent: new foundry.documents.BaseScene() });
@@ -16,12 +15,12 @@ expectType<Promise<[InstanceType<ConfiguredDocumentClass<typeof Actor>> | null]>
   doc.modifyActorDocument({ actorLink: true, 'lightAnimation.speed': 5 }, {})
 );
 
-expectType<EmbeddedCollection<ConfiguredDocumentClass<typeof foundry.documents.BaseItem>, ActorData>>(
+expectType<EmbeddedCollection<ConfiguredDocumentClass<typeof foundry.documents.BaseItem>, foundry.data.ActorData>>(
   doc.getEmbeddedCollection('Item')
 );
-expectType<EmbeddedCollection<ConfiguredDocumentClass<typeof foundry.documents.BaseActiveEffect>, ActorData>>(
-  doc.getEmbeddedCollection('ActiveEffect')
-);
+expectType<
+  EmbeddedCollection<ConfiguredDocumentClass<typeof foundry.documents.BaseActiveEffect>, foundry.data.ActorData>
+>(doc.getEmbeddedCollection('ActiveEffect'));
 expectType<undefined>(doc.getEmbeddedCollection(''));
 
 expectType<Promise<Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>>>(
