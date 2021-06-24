@@ -9,6 +9,7 @@ declare global {
    *
    * @see {@link data.CombatantData}                  The Combatant data schema
    * @see {@link documents.Combat}                    The Combat document which contains Combatant embedded documents
+   * @see {@link applications.CombatantConfig}        The Combatant configuration application
    */
   class Combatant extends ClientDocumentMixin(foundry.documents.BaseCombatant) {
     /**
