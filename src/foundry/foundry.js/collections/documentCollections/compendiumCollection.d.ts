@@ -196,7 +196,10 @@ declare global {
     ): ReturnType<DocumentInstanceForMetadata<T>['update']>;
 
     /** @deprecated since 0.8.0 */
-    deleteEntity(id: string, options?: Partial<DocumentModificationOptions>): DocumentInstanceForMetadata<T>['delete'];
+    deleteEntity(
+      id: string,
+      options?: Partial<DocumentModificationOptions>
+    ): ReturnType<DocumentInstanceForMetadata<T>['delete']>;
   }
 
   interface CompendiumConfiguration {
