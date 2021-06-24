@@ -19,10 +19,10 @@ interface CombatantDataProperties {
   /** The _id which uniquely identifies this Combatant embedded document */
   _id: string | null;
 
-  actorId: string;
+  actorId: string | null;
 
   /** The _id of a Token associated with this Combatant */
-  tokenId: string;
+  tokenId: string | null;
 
   /** A customized name which replaces the name of the Token in the tracker */
   name: string | undefined;
@@ -56,10 +56,10 @@ export interface CombatantDataConstructorData {
   /** The _id which uniquely identifies this Combatant embedded document */
   _id?: string | null;
 
-  actorId: string;
+  actorId?: string | null;
 
   /** The _id of a Token associated with this Combatant */
-  tokenId: string;
+  tokenId?: string | null;
 
   /** A customized name which replaces the name of the Token in the tracker */
   name?: string | null;
@@ -100,6 +100,10 @@ export declare class CombatantData extends DocumentData<
   CombatantDataConstructorData,
   documents.BaseCombatant
 > {
+  /**
+   *  @remarks
+   *  This constructor only exists to restrict the type
+   */
   static defineSchema(): CombatantDataSchema;
 }
 
