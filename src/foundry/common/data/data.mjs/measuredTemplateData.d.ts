@@ -31,6 +31,8 @@ interface MeasuredTemplateProperties {
    */
   _id: string | null;
 
+  user: string | null;
+
   /**
    * The value in CONST.MEASURED_TEMPLATE_TYPES which defines the geometry type of this template
    * @defaultValue `'circle'`
@@ -102,6 +104,8 @@ interface MeasuredTemplateDataConstructorData {
    The _id which uniquely identifies this BaseMeasuredTemplate embedded document
    */
   _id?: string | null;
+
+  user?: string | null;
 
   /**
    * The value in CONST.MEASURED_TEMPLATE_TYPES which defines the geometry type of this template
