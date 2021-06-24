@@ -142,16 +142,8 @@ declare abstract class Document<
    * @returns The cloned Document instance
    */
   clone(
-    data?: DeepPartial<Parameters<ConcreteDocumentData['_initializeSource']>[0]>,
-    { save, keepId }?: { save: false; keepId?: boolean }
-  ): this;
-  clone(
     data: DeepPartial<Parameters<ConcreteDocumentData['_initializeSource']>[0]>,
-    { save, keepId }: { save: true; keepId?: boolean }
-  ): Promise<this>;
-  clone(
-    data: DeepPartial<Parameters<ConcreteDocumentData['_initializeSource']>[0]>,
-    { save, keepId }: { save: boolean; keepId?: boolean }
+    { save, keepId }: { save?: boolean; keepId?: boolean }
   ): this | Promise<this>;
 
   /**
