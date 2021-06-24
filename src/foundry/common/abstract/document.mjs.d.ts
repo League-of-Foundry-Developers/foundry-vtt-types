@@ -335,12 +335,14 @@ declare abstract class Document<
    * const data = [{name: "Special Sword", type: "weapon"}];
    * const created = await Item.create(data, {pack: "mymodule.mypack"});
    * ```
+   *
+   * @remarks If no document has actually been created, the returned {@link Promise} resolves to `undefined`.
    */
   static create<T extends DocumentConstructor>(
     this: T,
-    data?: Parameters<InstanceType<T>['data']['_initializeSource']>[0] & Record<string, unknown>,
+    data: Parameters<InstanceType<T>['data']['_initializeSource']>[0] & Record<string, unknown>,
     context?: DocumentModificationContext
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>>>;
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
 
   /**
    * Update this Document using incremental data, saving it to the database.
@@ -350,11 +352,13 @@ declare abstract class Document<
    * @param context - Additional context which customizes the update workflow
    *                  (default: `{}`)
    * @returns The updated Document instance
+   *
+   * @remarks If no document has actually been updated, the returned {@link Promise} resolves to `undefined`.
    */
   update(
     data?: DeepPartial<Parameters<ConcreteDocumentData['_initializeSource']>[0]> & Record<string, unknown>,
     context?: DocumentModificationContext
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   /**
    * Delete this Document, removing it from the database.
@@ -362,8 +366,10 @@ declare abstract class Document<
    * @param context - Additional context which customizes the deletion workflow
    *                  (default: `{}`)
    * @returns The deleted Document instance
+   *
+   * @remarks If no document has actually been deleted, the returned {@link Promise} resolves to `undefined`.
    */
-  delete(context?: DocumentModificationContext): Promise<this>;
+  delete(context?: DocumentModificationContext): Promise<this | undefined>;
 
   /**
    * Obtain a reference to the Array of source data within the data object for a certain embedded Document name
@@ -545,12 +551,16 @@ declare abstract class Document<
    * Post-creation side effects are performed only for the client which requested the operation.
    * @param documents- The Document instances which were created
    * @param context  - The context for the modification operation
+   *
+   * @remarks The base implementation returns `void` but it is typed as
+   * `unknown` to allow deriving classes to return whatever they want. The
+   * return type is not meant to be used.
    */
-  protected static _onCreateDocuments<T extends Document<any, any>>(
-    this: ConstructorOf<T>,
-    documents: Array<T>,
+  protected static _onCreateDocuments<T extends DocumentConstructor>(
+    this: T,
+    documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
     context: DocumentModificationContext
-  ): Promise<void>;
+  ): Promise<unknown>;
 
   /**
    * Perform follow-up operations when a set of Documents of this type are updated.
@@ -558,12 +568,16 @@ declare abstract class Document<
    * Post-update side effects are performed only for the client which requested the operation.
    * @param documents - The Document instances which were updated
    * @param context   - The context for the modification operation
+   *
+   * @remarks The base implementation returns `void` but it is typed as
+   * `unknown` to allow deriving classes to return whatever they want. The
+   * return type is not meant to be used.
    */
-  protected static _onUpdateDocuments<T extends Document<any, any>>(
-    this: ConstructorOf<T>,
-    documents: Array<T>,
+  protected static _onUpdateDocuments<T extends DocumentConstructor>(
+    this: T,
+    documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
     context: DocumentModificationContext
-  ): Promise<void>;
+  ): Promise<unknown>;
 
   /**
    * Perform follow-up operations when a set of Documents of this type are deleted.
@@ -571,12 +585,16 @@ declare abstract class Document<
    * Post-deletion side effects are performed only for the client which requested the operation.
    * @param documents - The Document instances which were deleted
    * @param context   - The context for the modification operation
+   *
+   * @remarks The base implementation returns `void` but it is typed as
+   * `unknown` to allow deriving classes to return whatever they want. The
+   * return type is not meant to be used.
    */
-  protected static _onDeleteDocuments<T extends Document<any, any>>(
-    this: ConstructorOf<T>,
-    documents: Array<T>,
+  protected static _onDeleteDocuments<T extends DocumentConstructor>(
+    this: T,
+    documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
     context: DocumentModificationContext
-  ): Promise<void>;
+  ): Promise<unknown>;
 
   /**
    * Transform the Document instance into a plain object.

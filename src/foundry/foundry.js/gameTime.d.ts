@@ -3,7 +3,7 @@
  * Uses a basic implementation of https://www.geeksforgeeks.org/cristians-algorithm/ for synchronization.
  */
 declare class GameTime {
-  constructor(socket: SocketIOClient.Socket);
+  constructor(socket: io.Socket);
 
   /**
    * The most recently synchronized timestamps retrieved from the server.
@@ -55,7 +55,7 @@ declare class GameTime {
   /**
    * Synchronize the local client game time with the official time kept by the server
    */
-  sync(socket: SocketIOClient.Socket): Promise<GameTime>;
+  sync(socket: io.Socket): Promise<GameTime>;
 
   /* -------------------------------------------- */
   /*  Event Handlers and Callbacks                */

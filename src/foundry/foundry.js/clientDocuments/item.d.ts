@@ -1,4 +1,5 @@
-// TODO
+import { ConfiguredDocumentClass } from '../../../types/helperTypes';
+
 declare global {
   /**
    * The client-side Item document which extends the common BaseItem abstraction.
@@ -8,7 +9,8 @@ declare global {
    * @see {@link documents.Items}            The world-level collection of Item documents
    * @see {@link applications.ItemSheet}     The Item configuration application
    *
-   * @param data - Initial data provided to construct the Item document
+   * @param data    - Initial data provided to construct the Item document
+   * @param context - The document context, see {@link foundry.abstract.Document}
    */
   class Item extends ClientDocumentMixin(foundry.documents.BaseItem) {
     /**
@@ -30,7 +32,7 @@ declare global {
      * Return an array of the Active Effect instances which originated from this Item.
      * The returned instances are the ActiveEffect instances which exist on the Item itself.
      */
-    get transferredEffects(): ActiveEffect[];
+    get transferredEffects(): ReturnType<this['effects']['filter']>;
 
     /**
      * A convenience reference to the item type (data.type) of this Item
@@ -41,6 +43,35 @@ declare global {
      * Prepare a data object which defines the data schema used by dice roll commands against this Item
      */
     getRollData(): this['data']['data'];
+
+    /** @override */
+    protected _getSheetClass(): typeof ItemSheet | null;
+
+    /** @override */
+    protected static _onCreateDocuments(
+      items: Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>,
+      context: DocumentModificationContext
+    ): Promise<unknown>;
+
+    /** @override */
+    protected static _onDeleteDocuments(
+      items: Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>,
+      context: DocumentModificationContext
+    ): Promise<unknown>;
+
+    /**
+     * You are referencing Item#_data which has been deprecated in favor of Item#data#_source. Support for this reference will be removed in 0.9.0
+     * @deprecated since 0.8.0
+     */
+    get _data(): this['data']['_source'];
+
+    /**
+     * @deprecated since 0.8.1
+     */
+    static createOwned(
+      itemData: Parameters<Item['data']['_initializeSource']>[0] & Record<string, unknown>,
+      actor: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>
+    ): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseItem>>;
   }
 }
 

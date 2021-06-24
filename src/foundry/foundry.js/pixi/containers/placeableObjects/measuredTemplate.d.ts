@@ -1,28 +1,16 @@
-import { BaseMeasuredTemplate } from '../../../../common/documents.mjs';
+import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
+import { DocumentModificationOptions } from '../../../../common/abstract/document.mjs';
 
 declare global {
   /**
    * A MeasuredTemplate is an implementation of PlaceableObject which represents an area of the canvas grid which is
    * covered by some effect.
-   *
-   * @example
-   * ```typescript
-   * MeasuredTemplate.create<MeasuredTemplate>({
-   *   t: "cone",
-   *   user: game.user._id,
-   *   x: 1000,
-   *   y: 1000,
-   *   direction: 0.45,
-   *   angle: 63.13,
-   *   distance: 30,
-   *   borderColor: "#FF0000",
-   *   fillColor: "#FF3366",
-   *   texture: "tiles/fire.jpg"
-   * });
-   * ```
    */
-  class MeasuredTemplate extends PlaceableObject<BaseMeasuredTemplate> {
-    // Draw portions of the content
+  class MeasuredTemplate extends PlaceableObject<
+    InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>
+  > {
+    constructor(document: InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>);
+
     controlIcon: ControlIcon | null;
     template: PIXI.Graphics | null;
     ruler: PreciseText | null;
@@ -30,7 +18,7 @@ declare global {
     /**
      * The tiling texture used for this template, if any
      */
-    texture: PIXI.Texture;
+    texture: PIXI.Texture | null;
 
     /**
      * The template shape used for testing point intersection
@@ -43,7 +31,7 @@ declare global {
     protected _borderThickness: number;
 
     /** @override */
-    static get embeddedName(): 'MeasuredTemplate';
+    static embeddedName: 'MeasuredTemplate';
 
     /**
      * @remarks
@@ -54,14 +42,16 @@ declare global {
     /**
      * A convenience accessor for the border color as a numeric hex code
      */
-    get borderColor(): number;
+    get borderColor(): string | number;
 
     /**
      * A convenience accessor for the fill color as a numeric hex code
      */
-    get fillColor(): string;
+    get fillColor(): string | number;
 
-    /** @override */
+    /**
+     * A flag for whether the current User has full ownership over the MeasuredTemplate document.
+     */
     get owner(): boolean;
 
     /** @override */
@@ -119,36 +109,22 @@ declare global {
     rotate(angle: number, snap: number): Promise<this>;
 
     /** @override */
-    protected _canControl(user: User, event?: any): boolean;
+    protected _canControl(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
     /** @override */
-    protected _canConfigure(user: User, event?: any): boolean;
+    protected _canConfigure(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
     /** @override */
-    protected _canView(user: User, event?: any): boolean;
+    protected _canView(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
     /** @override */
-    protected _onUpdate(data: MeasuredTemplate.Data): void;
+    protected _onUpdate(
+      data: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>['data']['_source']>,
+      options?: DocumentModificationOptions,
+      userId?: string
+    ): void;
 
     /** @override */
-    protected _onDelete(): void;
-  }
-
-  namespace MeasuredTemplate {
-    interface Data {
-      angle: number | null;
-      borderColor: string;
-      direction: number;
-      distance: number;
-      fillColor: string;
-      id: string;
-      locked: boolean;
-      t: 'circle' | 'rectangle' | 'cone' | 'ray';
-      texture: string;
-      user: string;
-      width: number | null;
-      x: number;
-      y: number;
-    }
+    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
   }
 }

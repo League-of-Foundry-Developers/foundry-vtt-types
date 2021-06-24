@@ -21,7 +21,7 @@ declare global {
   /**
    * @defaultValue `null`
    */
-  let socket: SocketIOClient.Socket | null;
+  let socket: io.Socket | null;
 
   /**
    * Each of thses are initialized depending on the current view. The views are the following:
@@ -230,7 +230,7 @@ declare global {
     /**
      * A reference to the open Socket.io connection
      */
-    socket: SocketIOClient.Socket;
+    socket: io.Socket;
 
     /**
      * A singleton GameTime instance which manages the progression of time within the game world.
@@ -287,7 +287,7 @@ declare global {
      * @param sessionId - The client session ID with which to establish the connection
      * @returns A promise which resolves to the connected socket, if successful
      */
-    static connect(sessionId: string): Promise<SocketIOClient.Socket>;
+    static connect(sessionId: string): Promise<io.Socket>;
 
     /* -------------------------------------------- */
 
@@ -302,21 +302,21 @@ declare global {
     /**
      * Get the current World status upon initial connection.
      */
-    static getWorldStatus(socket: SocketIOClient.Socket): Promise<boolean>;
+    static getWorldStatus(socket: io.Socket): Promise<boolean>;
 
     /* -------------------------------------------- */
 
     /**
      * Request World data from server and return it
      */
-    static getWorldData(socket: SocketIOClient.Socket): Promise<Game.Data>;
+    static getWorldData(socket: io.Socket): Promise<Game.Data>;
 
     /* -------------------------------------------- */
 
     /**
      * Request setup data from server and return it
      */
-    static getSetupData(socket: SocketIOClient.Socket): Promise<Game.Data>;
+    static getSetupData(socket: io.Socket): Promise<Game.Data>;
 
     /* -------------------------------------------- */
 
@@ -496,7 +496,7 @@ declare global {
     /**
      * General game-state socket listeners and event handlers
      */
-    static socketListeners(socket: SocketIOClient.Socket): void;
+    static socketListeners(socket: io.Socket): void;
 
     /* -------------------------------------------- */
     /*  Event Listeners and Handlers                */

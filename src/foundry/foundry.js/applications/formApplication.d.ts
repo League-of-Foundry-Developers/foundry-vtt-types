@@ -6,27 +6,27 @@
  * 2) The template used contains one (and only one) HTML form as it's outer-most element
  * 3) This abstract layer has no knowledge of what is being updated, so the implementation must define _updateObject
  *
- * @typeParam P - the type of the options object
- * @typeParam D - The data structure used to render the handlebars template.
- * @typeParam O - the type of the object or entity target which we are using this form to modify
+ * @typeParam Options        - the type of the options object
+ * @typeParam Data           - The data structure used to render the handlebars template.
+ * @typeParam ConcreteObject - the type of the object or {@link foundry.abstract.Document} which is modified by this form
  */
 declare abstract class FormApplication<
-  P extends FormApplication.Options = FormApplication.Options,
-  D extends object = FormApplication.Data<{}, P>,
-  O = D extends FormApplication.Data<infer T, P> ? T : {}
-> extends Application<P> {
+  Options extends FormApplication.Options = FormApplication.Options,
+  Data extends object = FormApplication.Data<{}, Options>,
+  ConcreteObject = Data extends FormApplication.Data<infer T, Options> ? T : {}
+> extends Application<Options> {
   /**
    * @param object  - Some object or entity which is the target to be updated.
-   *                  (default: `{}`)
    * @param options - Additional options which modify the rendering of the sheet.
    *                  (default: `{}`)
+   * @remarks Foundry allows passing no value to the constructor at all.
    */
-  constructor(object?: O, options?: Partial<P>);
+  constructor(object: ConcreteObject, options?: Partial<Options>);
 
   /**
    * The object target which we are using this form to modify
    */
-  object: O;
+  object: ConcreteObject;
 
   /**
    * A convenience reference to the form HTLMElement
@@ -75,7 +75,7 @@ declare abstract class FormApplication<
    * @param options - (default: `{}`)
    * @override
    */
-  getData(options?: Application.RenderOptions): D | Promise<D>;
+  getData(options?: Application.RenderOptions): Data | Promise<Data>;
 
   /**
    * @override
@@ -85,7 +85,7 @@ declare abstract class FormApplication<
   /**
    * @override
    */
-  protected _renderInner(data: D): Promise<JQuery>;
+  protected _renderInner(data: Data): Promise<JQuery>;
 
   /**
    * @override
@@ -254,12 +254,12 @@ declare namespace FormApplication {
   }
 
   /**
-   * @typeParam O - the type of the object
-   * @typeParam P - the type of the options object
+   * @typeParam ConcreteObject - the type of the object
+   * @typeParam Options        - the type of the options object
    */
-  interface Data<O, P extends FormApplication.Options = FormApplication.Options> {
-    object: O;
-    options: P;
+  interface Data<ConcreteObject, Options extends FormApplication.Options = FormApplication.Options> {
+    object: ConcreteObject;
+    options: Options;
     title: string;
   }
 
