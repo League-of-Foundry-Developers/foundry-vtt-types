@@ -13,9 +13,9 @@ declare const MIN_WINDOW_HEIGHT: 50;
 
 /**
  * The standard application window that is rendered for a large variety of UI elements in Foundry VTT.
- * @typeParam P - the type of the options object
+ * @typeParam Options - the type of the options object
  */
-declare abstract class Application<P extends Application.Options = Application.Options> {
+declare abstract class Application<Options extends Application.Options = Application.Options> {
   /**
    * @param options - Configuration options which control how the application is rendered.
    *                  Application subclasses may add additional supported options, but the
@@ -23,12 +23,12 @@ declare abstract class Application<P extends Application.Options = Application.O
    *                  passed to the constructor are combined with the defaultOptions defined
    *                  at the class level.
    */
-  constructor(options?: Partial<P>);
+  constructor(options?: Partial<Options>);
 
   /**
    * The options provided to this application upon initialization
    */
-  options: P;
+  options: Options;
 
   /**
    * The application ID is a unique incrementing integer which is used to identify every application window

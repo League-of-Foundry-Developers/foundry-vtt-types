@@ -116,7 +116,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
   /**
    * Obtain the FormApplication class constructor which should be used to configure this Document.
    */
-  protected _getSheetClass(): ConstructorOf<FormApplication> | null; // TODO: Replace mit ConfiguredSheetClass<T> once the circular reference problem has been solved
+  protected _getSheetClass(): ConstructorOf<FormApplication> | null; // TODO: Replace with ConfiguredSheetClass<T> once the circular reference problem has been solved
 
   /**
    * Prepare data for the Document.
@@ -281,7 +281,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
     this: T,
     data?: Parameters<InstanceType<T>['data']['_initializeSource']>[0] & Record<string, unknown>,
     options?: Dialog.Options
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>>>;
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
 
   /**
    * Present a Dialog form to confirm deletion of this Document.
@@ -289,7 +289,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    *                  (default: `{}`)
    * @returns A Promise which resolves to the deleted Document
    */
-  deleteDialog(options?: Dialog.Options): Promise<this>;
+  deleteDialog(options?: Dialog.Options): Promise<this | undefined>;
 
   /**
    * Export entity data to a JSON file which can be saved by the client and later imported into a different session.
@@ -310,7 +310,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
   static fromDropData<T extends DocumentConstructor>(
     data: DropData<InstanceType<T>>,
     options?: FromDropDataOptions
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>>>;
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
 
   /**
    * Update this Document using a provided JSON string.

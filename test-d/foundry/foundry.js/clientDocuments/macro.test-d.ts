@@ -14,7 +14,7 @@ expectType<Folder | null>(macro.folder);
 expectType<boolean>(macro.isOwner);
 
 // static properties and functions of `ClientDocumentMixin`
-expectType<Promise<Macro>>(Macro.createDialog());
+expectType<Promise<Macro | undefined>>(Macro.createDialog());
 expectType<Promise<Macro[]>>(Macro.delete());
 
 // static properties of `BaseMacro`
@@ -25,7 +25,7 @@ expectType<null>(macro.parent);
 expectType<string | null>(macro.pack);
 
 // static properties of `Document`
-expectType<Promise<Macro>>(Macro.create());
+expectType<Promise<Macro | undefined>>(Macro.create({ name: 'Some Macro' }));
 expectType<Promise<Macro[]>>(Macro.createDocuments([]));
 expectType<Promise<Macro[]>>(Macro.updateDocuments([]));
 expectType<Promise<Macro[]>>(Macro.deleteDocuments([]));

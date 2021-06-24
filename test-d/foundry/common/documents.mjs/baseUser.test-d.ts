@@ -2,7 +2,9 @@ import { expectError, expectType } from 'tsd';
 import { BaseUser } from '../../../../src/foundry/common/documents.mjs';
 import { ConfiguredDocumentClass } from '../../../../src/types/helperTypes';
 
-expectType<Promise<InstanceType<ConfiguredDocumentClass<typeof User>>>>(foundry.documents.BaseUser.create());
+expectType<Promise<InstanceType<ConfiguredDocumentClass<typeof User>> | undefined>>(
+  foundry.documents.BaseUser.create({ name: 'SomeUser' })
+);
 expectType<Promise<InstanceType<ConfiguredDocumentClass<typeof User>>[]>>(
   foundry.documents.BaseUser.createDocuments([])
 );
@@ -13,8 +15,10 @@ expectType<Promise<InstanceType<ConfiguredDocumentClass<typeof User>>[]>>(
   foundry.documents.BaseUser.deleteDocuments([])
 );
 
-const user = await foundry.documents.BaseUser.create();
-expectType<foundry.data.UserData>(user.data);
+const user = await foundry.documents.BaseUser.create({ name: 'Another User' });
+if (user) {
+  expectType<foundry.data.UserData>(user.data);
+}
 
 const baseUser = new BaseUser();
 expectType<boolean>(baseUser.hasRole('NONE'));
