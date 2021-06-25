@@ -114,7 +114,6 @@ import './foundry.js/pixi/containers/ruler';
 import './foundry.js/pixi/containers/baseGrids/hexagonalGrid';
 import './foundry.js/pixi/containers/baseGrids/squareGrid';
 
-import './foundry.js/pixi/containers/canvasLayers/backgroundLayer';
 import './foundry.js/pixi/containers/canvasLayers/controlsLayer';
 import './foundry.js/pixi/containers/canvasLayers/effectsLayer';
 import './foundry.js/pixi/containers/canvasLayers/gridLayer';
@@ -124,6 +123,7 @@ import './foundry.js/pixi/containers/canvasLayers/sightLayer';
 import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/drawingsLayer';
 import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/lightingLayer';
 import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/mapLayer';
+import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/mapLayers/backgroundLayer';
 import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/notesLayer';
 import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/soundsLayer';
 import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/templateLayer';
