@@ -144,7 +144,7 @@ declare abstract class DiceTerm extends RollTerm {
    * A helper comparison function.
    * Returns a boolean depending on whether the result compares favorably against the target.
    * @param result     - The result being compared
-   * @param comparison - The comparison operator in [=,\<,\<=,\>,\>=]
+   * @param comparison - The comparison operator in [=,&lt;,&lt;=,\>,\>=]
    * @param target     - The target value
    * @returns Is the comparison true?
    */

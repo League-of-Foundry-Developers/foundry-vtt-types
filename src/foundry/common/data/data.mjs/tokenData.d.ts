@@ -214,6 +214,7 @@ export interface TokenDataProperties {
   overlayEffect?: string;
 
   /**
+   * The opacity of the token image
    * @defaultValue `1`
    */
   alpha: number;
@@ -267,6 +268,12 @@ export interface TokenDataProperties {
   lightAngle: number;
 
   /**
+   * The color of the token's emitted light as an HTML hexadecimal color string
+   */
+  lightColor: string | undefined | null;
+
+  /**
+   * The intensity of any light emitted by the token
    * @defaultValue `0.25`
    */
   lightAlpha: number;
@@ -427,6 +434,7 @@ export interface TokenDataConstructorData {
   overlayEffect?: string | null;
 
   /**
+   * The opacity of the token image
    * @defaultValue `1`
    */
   alpha?: number | null;
@@ -480,6 +488,12 @@ export interface TokenDataConstructorData {
   lightAngle?: number | null;
 
   /**
+   * The color of the token's emitted light as an HTML hexadecimal color string
+   */
+  lightColor: string | undefined | null;
+
+  /**
+   * The intensity of any light emitted by the token
    * @defaultValue `0.25`
    */
   lightAlpha?: number | null;

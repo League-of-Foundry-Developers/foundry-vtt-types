@@ -20,6 +20,14 @@ declare class AVConfig extends FormApplication<AVConfig.Options, AVConfig.Data, 
   protected _setConfigSectionEnabled(selector: string, enabled?: boolean): void;
 
   /**
+   * Determine whether a given video or audio source, or audio sink has become
+   * unavailable since the last time it was set.
+   * @param sources - The available devices
+   * @param source  - The selected device
+   */
+  protected _isSourceUnavailable(sources: Record<string, string>, source: string): boolean;
+
+  /**
    * Callback when the server type changes
    * Will enable or disable the server section based on whether the user selected a custom server or not
    * @param event - The event that triggered the server type change
@@ -86,7 +94,7 @@ declare namespace AVConfig {
   }
 
   interface Data {
-    user: User | null;
+    user: Game['user'];
     modes: {
       [Key in ValueOf<typeof AVSettings.AV_MODES>]: string;
     };
@@ -110,5 +118,7 @@ declare namespace AVConfig {
     videoSrcUnavailable: boolean;
     audioSrcUnavailable: boolean;
     audioSinkUnavailable: boolean;
+    audioDisabled: boolean;
+    videoDisabled: boolean;
   }
 }
