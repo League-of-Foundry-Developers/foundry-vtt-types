@@ -28,7 +28,6 @@ jobs:
       - run: tsc
       - run: npm run lint:ci
       - run: npm test
-      - run: npm run prepublishOnly
       - name: Archive package.json
         uses: actions/upload-artifact@v2
         with:
