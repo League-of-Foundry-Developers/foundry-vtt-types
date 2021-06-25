@@ -76,22 +76,22 @@ declare global {
      * Draw the background Sprite for the layer, aligning its dimensions with those configured for the canvas.
      * @returns The rendered Sprite, or undefined if no background is present
      */
-    _drawBackground(): PIXI.Sprite | undefined;
+    protected _drawBackground(): PIXI.Sprite | undefined;
 
-    _onDragLeftStart(event: PIXI.InteractionEvent): Promise<void>;
+    protected _onDragLeftStart(event: PIXI.InteractionEvent): Promise<void>;
 
-    _onDragLeftMove(event: PIXI.InteractionEvent): void;
+    protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
-    _onDragLeftDrop(event: PIXI.InteractionEvent): undefined;
+    protected _onDragLeftDrop(event: PIXI.InteractionEvent): undefined;
 
-    _onDragLeftCancel(event: PointerEvent): void;
+    protected _onDragLeftCancel(event: PointerEvent): void;
 
     /**
      * Handle drop events for Tile data on the Tiles Layer
      * @param event - The concluding drag event
      * @param data - The extracted Tile data
      */
-    _onDropData(
+    protected _onDropData(
       event: DragEvent,
       data: Record<string, unknown>
     ): Promise<InstanceType<ConfiguredDocumentClassForName<'Tile'>> | undefined>;
@@ -102,7 +102,7 @@ declare global {
      * @param data  - The extracted Tile data
      * @returns The prepared data to create
      */
-    _getDropData(
+    protected _getDropData(
       event: DragEvent,
       data: Record<string, unknown>
     ): Promise<ConstructorParameters<typeof foundry.documents.BaseTile>[0]>;
