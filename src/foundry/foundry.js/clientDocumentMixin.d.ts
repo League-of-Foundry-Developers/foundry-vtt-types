@@ -308,6 +308,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * @returns The Document data that should be handled by the drop handler
    */
   static fromDropData<T extends DocumentConstructor>(
+    this: T,
     data: DropData<InstanceType<T>>,
     options?: FromDropDataOptions
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
@@ -455,7 +456,7 @@ interface SortOptions<T> {
   updateData?: any;
 }
 
-type DropData<T extends foundry.abstract.Document<any, any>> = DropData.Data<T> | DropData.Pack | DropData.Id;
+export type DropData<T extends foundry.abstract.Document<any, any>> = DropData.Data<T> | DropData.Pack | DropData.Id;
 
 declare namespace DropData {
   interface Data<T extends foundry.abstract.Document<any, any>> {

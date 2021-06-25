@@ -73,7 +73,7 @@ declare class EmbeddedCollection<
    * @returns The extracted array of primitive objects
    */
   toObject(source?: true): ReturnType<InstanceType<ContainedDocumentConstructor>['data']['toJSON']>[];
-  toObject(source: false): ToObjectFalseType<InstanceType<ContainedDocumentConstructor>['data']>;
+  toObject(source: false): ToObjectFalseType<InstanceType<ContainedDocumentConstructor>['data']>[];
 }
 
 export default EmbeddedCollection;

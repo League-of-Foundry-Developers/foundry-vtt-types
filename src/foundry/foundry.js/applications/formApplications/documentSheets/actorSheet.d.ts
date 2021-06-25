@@ -1,210 +1,203 @@
-// TODO: Remove when updating this class!!!
-// eslint-disable-next-line
-// @ts-nocheck
+import { ConfiguredDocumentClass, ConfiguredSheetClass, ToObjectFalseType } from '../../../../../types/helperTypes';
+import { DropData as ClientDocumentMixinDropData } from '../../../clientDocumentMixin';
 
-/**
- * The Actor configuration sheet.
- *
- * This Application is responsible for rendering an actor's attributes and allowing the actor to be edited.
- *
- * System modifications may elect to override this class to better suit their own game system by re-defining the value
- * CONFIG.Actor.sheetClass.
- * @typeParam D - The data structure used to render the handlebars template.
- * @typeParam O - the type of the Entity which should be managed by this form sheet
- * @typeParam P - the type of the options object
- */
-declare class ActorSheet<
-  D extends object = ActorSheet.Data<Actor>,
-  O extends Actor = D extends ActorSheet.Data<infer T> ? T : Actor,
-  P extends DocumentSheet.Options = DocumentSheet.Options
-> extends DocumentSheet<P, D, O> {
+declare global {
   /**
+   * The Application responsible for displaying and editing a single Actor document.
+   * This Application is responsible for rendering an actor's attributes and allowing the actor to be edited.
    * @param actor   - The Actor instance being displayed within the sheet.
-   * @param options - Additional options which modify the rendering of the Actor's sheet.
-   */
-  constructor(actor: O, options?: Partial<P>);
-
-  /**
-   * If this Actor Sheet represents a synthetic Token actor, reference the active Token
-   */
-  get token(): O['token'];
-
-  /**
-   * {@inheritdoc}
+   * @param options - Additional application configuration options.
    *
-   * @defaultValue
-   * ```typescript
-   * foundry.utils.mergeObject(super.defaultOptions, {
-   *   height: 720,
-   *   width: 800,
-   *   template: 'templates/sheets/actor-sheet.html',
-   *   closeOnSubmit: false,
-   *   submitOnClose: true,
-   *   submitOnChange: true,
-   *   resizable: true,
-   *   baseApplication: 'ActorSheet',
-   *   dragDrop: [{ dragSelector: '.item-list .item', dropSelector: null }],
-   *   token: null,
-   * });
-   * ```
+   * @typeParam Options - the type of the options object
+   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  static get defaultOptions(): typeof DocumentSheet['defaultOptions'];
+  class ActorSheet<
+    Options extends ActorSheet.Options = ActorSheet.Options,
+    Data extends object = ActorSheet.Data<Options>
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Actor>>> {
+    /**
+     * @defaultValue
+     * ```typescript
+     * foundry.utils.mergeObject(super.defaultOptions, {
+     *   height: 720,
+     *   width: 800,
+     *   template: 'templates/sheets/actor-sheet.html',
+     *   closeOnSubmit: false,
+     *   submitOnClose: true,
+     *   submitOnChange: true,
+     *   resizable: true,
+     *   baseApplication: 'ActorSheet',
+     *   dragDrop: [{ dragSelector: '.item-list .item', dropSelector: null }],
+     *   token: null,
+     * });
+     * ```
+     */
+    static get defaultOptions(): ActorSheet.Options;
 
-  /** {@inheritdoc} */
-  get id(): string;
+    /** @override */
+    get id(): string;
 
-  /** {@inheritdoc} */
-  get title(): string;
-
-  /**
-   * A convenience reference to the Actor entity
-   */
-  get actor(): O;
-
-  /**
-   * @param options - (unused)
-   * {@inheritdoc}
-   */
-  getData(options?: Application.RenderOptions): D | Promise<D>;
-
-  /**
-   * @override
-   */
-  render(force?: boolean, options?: Application.RenderOptions): this;
-
-  /** {@inheritdoc} */
-  protected _getHeaderButtons(): Application.HeaderButton[];
-
-  /** {@inheritdoc} */
-  activateListeners(html: JQuery): void;
-
-  /**
-   * Handle requests to configure the prototype Token for the Actor
-   */
-  protected _onConfigureToken(event: JQuery.ClickEvent): void;
-
-  /**
-   * Handle requests to configure the default sheet used by this Actor
-   */
-  protected _onConfigureSheet(event: JQuery.ClickEvent): void;
-
-  /**
-   * Handle changing the actor profile image by opening a FilePicker
-   */
-  protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
-
-  /** {@inheritdoc} */
-  protected _canDragStart(selector: string | null): boolean;
-
-  /** {@inheritdoc} */
-  protected _canDragDrop(selector: string | null): boolean;
-
-  /** {@inheritdoc} */
-  protected _onDragStart(event: DragEvent): void;
-
-  /** {@inheritdoc} */
-  _onDrop(
-    event: DragEvent
-  ): Promise<boolean | undefined | ActiveEffect.Data | ActorSheet.OwnedItemData<O> | ActorSheet.OwnedItemData<O>[]>;
-
-  /**
-   * Handle the dropping of ActiveEffect data onto an Actor Sheet
-   * @param event - The concluding DragEvent which contains drop data
-   * @param data  - The data transfer extracted from the event
-   * @returns A data object which describes the result of the drop
-   */
-  protected _onDropActiveEffect(
-    event: DragEvent,
-    data: ActorSheet.DropData.ActiveEffect
-  ): Promise<ActiveEffect.Data | undefined>;
-
-  /**
-   * Handle dropping of an Actor data onto another Actor sheet
-   * @param event - The concluding DragEvent which contains drop data
-   * @param data  - The data transfer extracted from the event
-   * @returns A data object which describes the result of the drop
-   */
-  protected _onDropActor(event: DragEvent, data: ActorSheet.DropData.Actor): Promise<boolean | undefined>;
-
-  /**
-   * Handle dropping of an item reference or item data onto an Actor Sheet
-   * @param event - The concluding DragEvent which contains drop data
-   * @param data  - The data transfer extracted from the event
-   * @returns A data object which describes the result of the drop
-   */
-  protected _onDropItem(
-    event: DragEvent,
-    data: ActorSheet.DropData.Item<ActorSheet.OwnedItemData<O>>
-  ): Promise<boolean | undefined | ActorSheet.OwnedItemData<O>>;
-
-  /**
-   * Handle dropping of a Folder on an Actor Sheet.
-   * Currently supports dropping a Folder of Items to create all items as owned items.
-   * @param event - The concluding DragEvent which contains drop data
-   * @param data  - The data transfer extracted from the event
-   * @returns A data object which describes the result of the drop
-   */
-  protected _onDropFolder(
-    event: DragEvent,
-    data: { type: 'Folder' } & (object | { entity: string; id: string })
-  ): Promise<boolean | undefined | ActorSheet.OwnedItemData<O>[] | ActorSheet.OwnedItemData<O>>;
-
-  /**
-   * Handle the final creation of dropped Item data on the Actor.
-   * This method is factored out to allow downstream classes the opportunity to override item creation behavior.
-   * @param itemData - The item data requested for creation
-   */
-  protected _onDropItemCreate(itemData: ActorSheet.OwnedItemData<O>): Promise<ActorSheet.OwnedItemData<O>>;
-
-  /**
-   * Handle a drop event for an existing Owned Item to sort that item
-   */
-  protected _onSortItem(
-    event: DragEvent,
-    itemData: ActorSheet.OwnedItemData<O>
-  ): Promise<ActorSheet.OwnedItemData<O>> | undefined;
-}
-
-declare namespace ActorSheet {
-  type OwnedItemData<O extends Actor> = O extends Actor<any, infer I> ? I['data'] : never;
-
-  /**
-   * @typeParam O - the type of the Entity which should be managed by this form
-   *                sheet
-   */
-  interface Data<O extends Actor = Actor> extends DocumentSheet.Data<O> {
-    actor: DocumentSheet.Data<O>['document'];
-    data: DocumentSheet.Data<O>['document']['data'];
-    items: DocumentSheet.Data<O>['document']['items'];
-  }
-
-  namespace DropData {
-    type Combined = ActiveEffect | Actor | Item | Folder;
-
-    interface ActiveEffect {
-      type?: 'ActiveEffect';
-      tokenId?: string;
-      actorId?: string;
-      data?: ActiveEffect.Data;
-    }
-
-    interface Actor {
-      type?: 'Actor';
-    }
+    /** @override */
+    get title(): string;
 
     /**
-     * @typeParam I - the item data
+     * A convenience reference to the Actor entity
      */
-    type Item<I extends Item.Data = Item.Data> = {
-      type?: 'Item';
-      actorId?: string;
-      tokenId?: string;
-    } & (DeepPartial<I> | { pack?: string } | { id?: string });
+    get actor(): this['object'];
 
-    interface Folder {
-      type?: 'Folder';
-      entity?: string;
-      id?: string;
+    /**
+     * If this Actor Sheet represents a synthetic Token actor, reference the active Token
+     */
+    get token(): Required<this['object']['token']> | Required<this['options']['token']> | null;
+
+    /** @override */
+    close(options?: FormApplication.CloseOptions): Promise<void>;
+
+    /**
+     * @override
+     */
+    getData(options?: Application.RenderOptions): Data | Promise<Data>;
+
+    /** @override */
+    protected _getHeaderButtons(): Application.HeaderButton[];
+
+    /** @override */
+    protected _getSubmitData(updateData?: object | null): Partial<Record<string, unknown>>;
+
+    /** @override */
+    activateListeners(html: JQuery): void;
+
+    /**
+     * Handle requests to configure the Token for the Actor
+     */
+    protected _onConfigureToken(event: JQuery.ClickEvent): void;
+
+    /**
+     * Handle requests to configure the default sheet used by this Actor
+     */
+    protected _onConfigureSheet(event: JQuery.ClickEvent): void;
+
+    /**
+     * Handle changing the actor profile image by opening a FilePicker
+     */
+    protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
+
+    /** @override */
+    protected _canDragStart(selector: string): boolean;
+
+    /** @override */
+    protected _canDragDrop(selector: string): boolean;
+
+    /** @override */
+    protected _onDragStart(event: DragEvent): void;
+
+    /** @override */
+    protected _onDrop(event: DragEvent): Promise<boolean | undefined> | unknown;
+
+    /**
+     * Handle the dropping of ActiveEffect data onto an Actor Sheet
+     * @param event - The concluding DragEvent which contains drop data
+     * @param data  - The data transfer extracted from the event
+     * @returns A data object which describes the result of the drop
+     * @remarks This is intentionally typed to return `Promise<unknown>` to
+     * allow overriding methods to return whatever they want. The return type is
+     * not meant to be used aside from being awaited.
+     */
+    protected _onDropActiveEffect(event: DragEvent, data: ActorSheet.DropData.ActiveEffect): Promise<unknown>;
+
+    /**
+     * Handle dropping of an item reference or item data onto an Actor Sheet
+     * @param event - The concluding DragEvent which contains drop data
+     * @param data  - The data transfer extracted from the event
+     * @returns A data object which describes the result of the drop
+     * @remarks This is intentionally typed to return `Promise<unknown>` to
+     * allow overriding methods to return whatever they want. The return type is
+     * not meant to be used aside from being awaited.
+     */
+    protected _onDropActor(event: DragEvent, data: ActorSheet.DropData.Actor): Promise<unknown>;
+
+    /**
+     * Handle dropping of an item reference or item data onto an Actor Sheet
+     * @param event - The concluding DragEvent which contains drop data
+     * @param data  - The data transfer extracted from the event
+     * @remarks This is intentionally typed to return `Promise<unknown>` to
+     * allow overriding methods to return whatever they want. The return type is
+     * not meant to be used aside from being awaited.
+     */
+    protected _onDropItem(event: DragEvent, data: ActorSheet.DropData.Item): Promise<unknown>;
+
+    /**
+     * Handle dropping of a Folder on an Actor Sheet.
+     * Currently supports dropping a Folder of Items to create all items as owned items.
+     * @param event - The concluding DragEvent which contains drop data
+     * @param data  - The data transfer extracted from the event
+     * @remarks This is intentionally typed to return `Promise<unknown>` to
+     * allow overriding methods to return whatever they want. The return type is
+     * not meant to be used aside from being awaited.
+     */
+    protected _onDropFolder(event: DragEvent, data: ActorSheet.DropData.Folder): Promise<unknown>;
+
+    /**
+     * Handle the final creation of dropped Item data on the Actor.
+     * This method is factored out to allow downstream classes the opportunity to override item creation behavior.
+     * @param itemData - The item data requested for creation
+     */
+    protected _onDropItemCreate(
+      itemData: foundry.data.ItemData['_source'][] | foundry.data.ItemData['_source']
+    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
+
+    /**
+     * Handle a drop event for an existing Owned Item to sort that item
+     */
+    protected _onSortItem(
+      event: DragEvent,
+      itemData: foundry.data.ItemData['_source']
+    ): undefined | Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
+  }
+
+  namespace ActorSheet {
+    /**
+     * @typeParam Options - the type of the options object
+     */
+    interface Data<Options extends ActorSheet.Options = ActorSheet.Options>
+      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Actor>>, Options> {
+      actor: this['object'];
+      items: ToObjectFalseType<foundry.data.ActorData>['items'];
+      effects: ToObjectFalseType<foundry.data.ActorData>['effects'];
+    }
+
+    type DropData =
+      | DropData.ActiveEffect
+      | DropData.Actor
+      | DropData.Item
+      | DropData.Folder
+      | (Partial<Record<string, unknown>> & { type: string });
+
+    namespace DropData {
+      interface ActiveEffect {
+        type: 'ActiveEffect';
+        tokenId?: string;
+        actorId?: string;
+        data: foundry.data.ActiveEffectData['_source'];
+      }
+
+      interface Actor {
+        type: 'Actor';
+      }
+
+      type Item = ClientDocumentMixinDropData<InstanceType<ConfiguredDocumentClass<typeof Item>>> & {
+        type: 'Item';
+      };
+
+      interface Folder {
+        type: 'Folder';
+        documentName: foundry.CONST.FolderEntityTypes;
+        id: string;
+      }
+    }
+
+    interface Options extends DocumentSheet.Options {
+      token?: InstanceType<ConfiguredSheetClass<typeof foundry.documents.BaseToken>> | null;
     }
   }
 }

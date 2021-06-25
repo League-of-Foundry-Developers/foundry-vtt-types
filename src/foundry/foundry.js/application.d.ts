@@ -313,7 +313,7 @@ declare abstract class Application<Options extends Application.Options = Applica
    * @param event - The originating DragEvent
    *                (unused)
    */
-  protected _onDrop(event: DragEvent): void;
+  protected _onDrop(event: DragEvent): unknown;
 
   /**
    * Bring the application to the top of the rendering stack
