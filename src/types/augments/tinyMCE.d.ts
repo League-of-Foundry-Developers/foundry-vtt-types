@@ -78,5 +78,5 @@ declare global {
   }
 
   // eslint-disable-next-line no-var
-  var tinyMCE: typeof _tinymce;
+  var tinymce: typeof _tinymce;
 }
