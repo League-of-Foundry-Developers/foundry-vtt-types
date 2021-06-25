@@ -4,7 +4,8 @@ import {
   ConfiguredDocumentClass,
   DocumentType,
   ConfiguredObjectClassForName,
-  ConfiguredDocumentClassForName
+  ConfiguredDocumentClassForName,
+  ConfiguredSheetClassForName
 } from '../../../../../types/helperTypes';
 import EmbeddedCollection from '../../../../common/abstract/embedded-collection.mjs';
 
@@ -17,7 +18,7 @@ declare global {
    */
   abstract class PlaceablesLayer<
     DocumentName extends DocumentType,
-    Options extends PlaceablesLayer.LayerOptions = PlaceablesLayer.LayerOptions
+    Options extends PlaceablesLayer.LayerOptions<DocumentName> = PlaceablesLayer.LayerOptions<DocumentName>
   > extends CanvasLayer<Options> {
     constructor();
 
@@ -62,7 +63,7 @@ declare global {
     quadtree: Quadtree<InstanceType<ConfiguredObjectClassForName<DocumentName>>> | null;
 
     /** @override */
-    static get layerOptions(): PlaceablesLayer.LayerOptions;
+    static get layerOptions(): PlaceablesLayer.LayerOptions<any>;
 
     /**
      * A reference to the named Document type which is contained within this Canvas Layer.
@@ -274,10 +275,11 @@ declare global {
     /**
      * Conclude a left-click drag workflow originating from the Canvas stage.
      * @see {@link Canvas#_onDragLeftDrop}
+     * @remarks Returns always a promise but is overridden in subclasses.
      */
     protected _onDragLeftDrop(
       event: PIXI.InteractionEvent
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<DocumentName>> | undefined>;
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<DocumentName>> | undefined> | undefined;
 
     /**
      * Cancel a left-click drag workflow originating from the Canvas stage.
@@ -354,7 +356,10 @@ declare global {
   namespace PlaceablesLayer {
     type HistoryEventType = 'create' | 'update' | 'delete';
 
-    interface LayerOptions extends CanvasLayer.LayerOptions {
+    /**
+     * @typeParam DocumentName - The key of the configuration which defines the object and document class.
+     */
+    interface LayerOptions<DocumentName extends DocumentType> extends CanvasLayer.LayerOptions {
       /**
        * Does this layer support a mouse-drag workflow to create new objects?
        * @defaultValue `game.user.isGM`
@@ -383,7 +388,7 @@ declare global {
        * The class used to represent an object on this layer.
        * @defaultValue `getDocumentClass(this.documentName)`
        */
-      objectClass: typeof foundry.abstract.Document | undefined;
+      objectClass: ConfiguredObjectClassForName<DocumentName>;
 
       /**
        * Does this layer use a quadtree to track object positions?
@@ -395,7 +400,9 @@ declare global {
        * The FormApplication class used to configure objects on this layer.
        * @defaultValue `CONFIG[this.documentName].sheetClass`
        */
-      sheetClass: typeof FormApplication;
+      sheetClass: ConfiguredSheetClassForName<DocumentName> extends never
+        ? ConstructorOf<FormApplication>
+        : ConfiguredSheetClassForName<DocumentName>;
     }
   }
 }

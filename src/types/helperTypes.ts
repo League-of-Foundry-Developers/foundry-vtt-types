@@ -80,6 +80,10 @@ export type ConfiguredObjectClassForName<Name extends DocumentType> = 'objectCla
   ? CONFIG[Name]['objectClass']
   : never;
 
+export type ConfiguredSheetClassForName<Name extends DocumentType> = 'sheetClass' extends keyof CONFIG[Name]
+  ? CONFIG[Name]['sheetClass']
+  : never;
+
 export type ConfiguredData<Name extends string> = Name extends keyof DataConfig ? DataConfig[Name] : {};
 
 export type ConfiguredSource<Name extends string> = Name extends keyof SourceConfig ? SourceConfig[Name] : {};

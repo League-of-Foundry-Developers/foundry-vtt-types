@@ -123,6 +123,7 @@ import './foundry.js/pixi/containers/canvasLayers/sightLayer';
 
 import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/drawingsLayer';
 import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/lightingLayer';
+import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/mapLayer';
 import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/notesLayer';
 import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/soundsLayer';
 import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/templateLayer';

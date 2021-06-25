@@ -2,10 +2,12 @@ import { expectError, expectType } from 'tsd';
 import EmbeddedCollection from '../../../../../../src/foundry/common/abstract/embedded-collection.mjs';
 import { DocumentConstructor } from '../../../../../../src/types/helperTypes';
 
-declare class SomeLightLayer extends PlaceablesLayer<'AmbientLight'> {}
+declare class SomeLightLayer extends PlaceablesLayer<'AmbientLight', PlaceablesLayer.LayerOptions<'AmbientLight'>> {}
 
 expectType<CanvasLayer>(SomeLightLayer.instance);
-expectType<PlaceablesLayer.LayerOptions>(SomeLightLayer.layerOptions);
+expectType<PlaceablesLayer.LayerOptions<any>>(SomeLightLayer.layerOptions);
+expectType<typeof foundry.abstract.Document | undefined>(SomeLightLayer.layerOptions.objectClass);
+expectType<ConstructorOf<FormApplication>>(SomeLightLayer.layerOptions.sheetClass);
 expectType<
   | 'ActiveEffect'
   | 'AmbientLight'
@@ -41,6 +43,8 @@ expectType<
 expectType<DocumentConstructor>(PlaceablesLayer.placeableClass);
 
 const layer = new SomeLightLayer();
+expectType<typeof foundry.abstract.Document | undefined>(layer.options.objectClass);
+expectType<typeof AmbientLightConfig | undefined>(layer.options.sheetClass);
 expectType<PIXI.Container | null>(layer.objects);
 expectType<PIXI.Container | null>(layer.preview);
 expectType<Array<{ type: 'create' | 'update' | 'delete'; data: Array<foundry.data.AmbientLightData> }>>(layer.history);
