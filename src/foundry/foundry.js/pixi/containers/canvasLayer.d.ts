@@ -1,14 +1,14 @@
 /**
  * An abstract pattern for primary layers of the game canvas to implement
+ * @typeParam Options - The type of the options in this layer.
  */
-declare abstract class CanvasLayer extends PIXI.Container {
+declare abstract class CanvasLayer<Options extends CanvasLayerOptions = CanvasLayerOptions> extends PIXI.Container {
   constructor();
 
   /**
-   * Track whether the canvas layer is currently active for interaction
-   * @defaultValue `false`
+   * @defaultValue `this.constructor.layerOptions`
    */
-  protected _active: boolean;
+  options: Options;
 
   /**
    * @defaultValue `false`
@@ -20,23 +20,21 @@ declare abstract class CanvasLayer extends PIXI.Container {
    */
   interactiveChildren: boolean;
 
-  /* -------------------------------------------- */
-  /*  Properties and Attributes
-  /* -------------------------------------------- */
+  /**
+   * Track whether the canvas layer is currently active for interaction
+   * @defaultValue `false`
+   */
+  protected _active: boolean;
 
   /**
    * Customize behaviors of this CanvasLayer by modifying some behaviors at a class level.
    */
-  static get layerOptions(): CanvasLayer.LayerOptions;
-
-  /* -------------------------------------------- */
+  static get layerOptions(): CanvasLayerOptions;
 
   /**
    * Return a reference to the active instance of this canvas layer
    */
   static get instance(): CanvasLayer;
-
-  /* -------------------------------------------- */
 
   /**
    * The canonical name of the CanvasLayer
@@ -44,54 +42,59 @@ declare abstract class CanvasLayer extends PIXI.Container {
    */
   name: string;
 
-  /* -------------------------------------------- */
-  /*  Rendering
-  /* -------------------------------------------- */
+  /**
+   * Draw the canvas layer, rendering its internal components and returning a Promise
+   * The Promise resolves to the drawn layer once its contents are successfully rendered.
+   */
+  draw(): Promise<this>;
 
   /**
    * Deconstruct data used in the current layer in preparation to re-draw the canvas
    */
-  tearDown(): void;
-
-  /* -------------------------------------------- */
-
-  /**
-   * Draw the canvas layer, rendering its internal components and returning a Promise
-   * The Promise resolves to the drawn layer once its contents are successfully rendered.
-   * @remarks Base implementation returns `Promise<this>`
-   */
-  draw(): unknown;
-
-  /* -------------------------------------------- */
-  /*  Methods
-  /* -------------------------------------------- */
+  tearDown(): Promise<this>;
 
   /**
    * Activate the CanvasLayer, deactivating other layers and marking this layer's children as interactive.
    * @returns The layer instance, now activated
-   * @remarks The base implementation returns `this`
    */
-  activate(): unknown;
-
-  /* -------------------------------------------- */
+  activate(): this;
 
   /**
    * Deactivate the CanvasLayer, removing interactivity from its children.
    * @returns The layer instance, now inactive
    */
-  deactivate(): void;
+  deactivate(): this;
+
+  /**
+   * Get the zIndex that should be used for ordering this layer vertically relative to others in the same Container.
+   */
+  getZIndex(): number;
+}
+
+/**
+ * Options which configure the behavior of a Canvas Layer.
+ */
+declare interface CanvasLayerOptions {
+  /**
+   * The layer name by which the instance is referenced within the Canvas
+   */
+  name: string;
+
+  /**
+   * The zIndex sorting of this layer relative to other layers
+   */
+  zIndex: number;
+
+  /**
+   * Should this layer be sorted to the top when it is active?
+   */
+  sortActiveTop: boolean;
 }
 
 declare namespace CanvasLayer {
-  interface LayerOptions {
-    /**
-     * Should this layer be sorted to the top when it is active?
-     */
-    sortActiveTop: boolean;
-
-    /**
-     * The zIndex sorting of this layer relative to other layers
-     */
-    zIndex: number;
-  }
+  /**
+   * Options which configure the behavior of a Canvas Layer.
+   * @remarks This type exists for consistency
+   */
+  type LayerOptions = CanvasLayerOptions;
 }
