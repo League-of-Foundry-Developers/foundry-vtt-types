@@ -1,6 +1,7 @@
 import DocumentData, { AnyDocumentData } from '../foundry/common/abstract/data.mjs';
 import Document from '../foundry/common/abstract/document.mjs';
 import EmbeddedCollection from '../foundry/common/abstract/embedded-collection.mjs';
+import { BaseScene } from '../foundry/common/documents.mjs';
 
 export type PropertiesDataType<T extends Document<any, any> | AnyDocumentData> = T extends DocumentData<
   any,
@@ -102,3 +103,10 @@ export type LayerClass<T extends DocumentConstructor> = T['metadata']['name'] ex
     ? CONFIG[T['metadata']['name']]['layerClass']
     : never
   : T;
+
+export type DocumentForPlaceable<P extends PlaceableObject> = P extends PlaceableObject<infer D> ? D : never;
+export type DataTypeForPlaceable<P extends PlaceableObject> = P extends PlaceableObject<infer Doc>
+  ? Doc extends Document<infer D, InstanceType<ConfiguredDocumentClass<typeof BaseScene>>>
+    ? D
+    : never
+  : never;
