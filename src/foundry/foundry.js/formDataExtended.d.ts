@@ -8,13 +8,14 @@
  *  Support for defined data types and type conversion
  *  Support for TinyMCE editors
  *  Support for editable HTML elements
- *
  */
 declare class FormDataExtended extends FormData {
   /**
    * @param form    - The form being processed
-   * @param editors - An array of TinyMCE editor instances which are present in this form
+   * @param editors - A record of TinyMCE editor metadata objects, indexed by their update key
+   *                  (default: `{}`)
    * @param dtypes  - A mapping of data types for form fields
+   *                  (default: `{}`)
    */
   constructor(
     form: HTMLFormElement,
@@ -25,13 +26,13 @@ declare class FormDataExtended extends FormData {
    * A mapping of data types requested for each form field
    * @defaultValue `{}`
    */
-  dtypes: Record<string, string>;
+  dtypes: Partial<Record<string, string>>;
 
   /**
    * A record of TinyMCE editors which are linked to this form
-   * @defaultValue `[]`
+   * @defaultValue `{}`
    */
-  editors: FormDataExtended.EditorTuple[];
+  editors: Partial<Record<string, FormApplication.FormApplicationEditor>>;
 
   /**
    * Process the HTML form element to populate the FormData instance.
@@ -43,8 +44,4 @@ declare class FormDataExtended extends FormData {
    * Export the FormData as an object
    */
   toObject(): Record<string, unknown>;
-}
-
-declare namespace FormDataExtended {
-  type EditorTuple = [string, Editor];
 }
