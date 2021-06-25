@@ -76,6 +76,10 @@ export type ConfiguredObjectClassForName<Name extends ObjectType> = 'objectClass
   ? CONFIG[Name]['objectClass']
   : never;
 
+export type ConfiguredObjectClassForName<Name extends DocumentType> = 'objectClass' extends keyof CONFIG[Name]
+  ? CONFIG[Name]['objectClass']
+  : never;
+
 export type ConfiguredData<Name extends string> = Name extends keyof DataConfig ? DataConfig[Name] : {};
 
 export type ConfiguredSource<Name extends string> = Name extends keyof SourceConfig ? SourceConfig[Name] : {};
@@ -104,7 +108,6 @@ export type LayerClass<T extends DocumentConstructor> = T['metadata']['name'] ex
     : never
   : T;
 
-export type DocumentForPlaceable<P extends PlaceableObject> = P extends PlaceableObject<infer D> ? D : never;
 export type DataTypeForPlaceable<P extends PlaceableObject> = P extends PlaceableObject<infer Doc>
   ? Doc extends Document<infer D, InstanceType<ConfiguredDocumentClass<typeof BaseScene>>>
     ? D

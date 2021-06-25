@@ -1,8 +1,10 @@
 import {
   DataTypeForPlaceable,
-  DocumentForPlaceable,
   DocumentConstructor,
-  ConfiguredDocumentClass
+  ConfiguredDocumentClass,
+  DocumentType,
+  ConfiguredObjectClassForName,
+  ConfiguredDocumentClassForName
 } from '../../../../../types/helperTypes';
 import EmbeddedCollection from '../../../../common/abstract/embedded-collection.mjs';
 
@@ -10,11 +12,13 @@ declare global {
   /**
    * A subclass of Canvas Layer which is specifically designed to contain multiple PlaceableObject instances,
    * each corresponding to an embedded Document.
-   * @typeParam Placeable - the type of the PlaceableObject in the layer
+   * @typeParam DocumentName - The key of the configuration which defines the object and document class.
+   * @typeParam Options      - The type of the options in this layer.
    */
   abstract class PlaceablesLayer<
-    Placeable extends PlaceableObject = PlaceableObject
-  > extends CanvasLayer<PlaceablesLayer.LayerOptions> {
+    DocumentName extends DocumentType,
+    Options extends PlaceablesLayer.LayerOptions = PlaceablesLayer.LayerOptions
+  > extends CanvasLayer<Options> {
     constructor();
 
     /**
@@ -32,30 +36,30 @@ declare global {
     /**
      * Keep track of history so that CTRL+Z can undo changes
      */
-    history: Array<CanvasHistory<Placeable>>;
+    history: Array<CanvasHistory<InstanceType<ConfiguredObjectClassForName<DocumentName>>>>;
 
     /**
      * Track the PlaceableObject on this layer which is currently being hovered upon
      * @defaultValue `null`
      */
-    protected _hover: Placeable | null;
+    protected _hover: InstanceType<ConfiguredObjectClassForName<DocumentName>> | null;
 
     /**
      * Track the set of PlaceableObjects on this layer which are currently controlled by their id
      * @defaultValue `{}`
      */
-    protected _controlled: Record<string, Placeable>;
+    protected _controlled: Record<string, InstanceType<ConfiguredObjectClassForName<DocumentName>>>;
 
     /**
      * Keep track of an object copied with CTRL+C which can be pasted later
      * @defaultValue `[]`
      */
-    protected _copy: Placeable[];
+    protected _copy: InstanceType<ConfiguredObjectClassForName<DocumentName>>[];
 
     /**
      * A Quadtree which partitions and organizes Walls into quadrants for efficient target identification.
      */
-    quadtree: Quadtree<Placeable> | null;
+    quadtree: Quadtree<InstanceType<ConfiguredObjectClassForName<DocumentName>>> | null;
 
     /** @override */
     static get layerOptions(): PlaceablesLayer.LayerOptions;
@@ -64,12 +68,15 @@ declare global {
      * A reference to the named Document type which is contained within this Canvas Layer.
      * @remarks This getter is abstract in {@link PlaceablesLayer}.
      */
-    static documentName: string;
+    static documentName: DocumentType;
 
     /**
      * Obtain a reference to the Collection of embedded Document instances within the currently viewed Scene
      */
-    get documentCollection(): EmbeddedCollection<any, foundry.data.SceneData> | null;
+    get documentCollection(): EmbeddedCollection<
+      ConfiguredDocumentClassForName<DocumentName>,
+      foundry.data.SceneData
+    > | null;
 
     /**
      * Define a Container implementation used to render placeable objects contained in this layer
@@ -85,22 +92,22 @@ declare global {
      * If objects on this PlaceableLayer have a HUD UI, provide a reference to its instance
      * @remarks Returns `null` unless overridden
      */
-    get hud(): BasePlaceableHUD<Placeable> | null;
+    get hud(): BasePlaceableHUD<InstanceType<ConfiguredObjectClassForName<DocumentName>>> | null;
 
     /**
      * A convenience method for accessing the placeable object instances contained in this layer
      */
-    get placeables(): Placeable[];
+    get placeables(): InstanceType<ConfiguredObjectClassForName<DocumentName>>[];
 
     /**
      * An Array of placeable objects in this layer which have the _controlled attribute
      */
-    get controlled(): Placeable[];
+    get controlled(): InstanceType<ConfiguredObjectClassForName<DocumentName>>[];
 
     /**
      * Obtain an iterable of objects which should be added to this PlaceableLayer
      */
-    getDocuments(): Iterable<DocumentForPlaceable<Placeable>>;
+    getDocuments(): Iterable<InstanceType<ConfiguredDocumentClassForName<DocumentName>>>;
 
     /** @override */
     draw(): Promise<this>;
@@ -108,7 +115,9 @@ declare global {
     /**
      * Draw a single placeable object
      */
-    createObject(data: DocumentForPlaceable<Placeable>): Placeable;
+    createObject(
+      data: InstanceType<ConfiguredDocumentClassForName<DocumentName>>
+    ): InstanceType<ConfiguredObjectClassForName<DocumentName>>;
 
     /** @override */
     tearDown(): Promise<this>;
@@ -125,7 +134,7 @@ declare global {
      * @param objectId - The ID of the contained object to retrieve
      * @returns The object instance, or undefined
      */
-    get(objectId: string): Placeable | undefined;
+    get(objectId: string): InstanceType<ConfiguredObjectClassForName<DocumentName>> | undefined;
 
     /**
      * Acquire control over all PlaceableObject instances which are visible and controllable within the layer.
@@ -134,7 +143,7 @@ declare global {
      *                  (default: `{}`)
      * @returns An array of objects that were controlled
      */
-    controlAll(options?: PlaceableObject.ControlOptions): Placeable[];
+    controlAll(options?: PlaceableObject.ControlOptions): InstanceType<ConfiguredObjectClassForName<DocumentName>>[];
 
     /**
      * Release all controlled PlaceableObject instance from this layer.
@@ -154,7 +163,7 @@ declare global {
      *                  (default: `{}`)
      * @returns An array of objects which were rotated
      */
-    rotateMany(options?: RotationOptions): Promise<Placeable[]>;
+    rotateMany(options?: RotationOptions): Promise<InstanceType<ConfiguredObjectClassForName<DocumentName>>[]>;
 
     /**
      * Simultaneously move multiple PlaceableObjects via keyboard movement offsets.
@@ -165,33 +174,38 @@ declare global {
      *                  (default: `{}`)
      * @returns An array of objects which were moved during the operation
      */
-    moveMany(options?: MovementOptions): Promise<Placeable[]> | undefined;
+    moveMany(
+      options?: MovementOptions
+    ): Promise<InstanceType<ConfiguredObjectClassForName<DocumentName>>[]> | undefined;
 
     /**
      * Undo a change to the objects in this layer
      * This method is typically activated using CTRL+Z while the layer is active
      */
-    undoHistory(): Promise<DocumentForPlaceable<Placeable>[]>;
+    undoHistory(): Promise<InstanceType<ConfiguredDocumentClassForName<DocumentName>>[]>;
 
     /**
      * A helper method to prompt for deletion of all PlaceableObject instances within the Scene
      * Renders a confirmation dialogue to confirm with the requester that all objects will be deleted
      * @returns An array of Document objects which were deleted by the operation
      */
-    deleteAll(): Promise<DocumentForPlaceable<Placeable>[]>;
+    deleteAll(): Promise<InstanceType<ConfiguredDocumentClassForName<DocumentName>>[]>;
 
     /**
      * Record a new CRUD event in the history log so that it can be undone later
      * @param type - The event type (create, update, delete)
      * @param data - The object data
      */
-    storeHistory(type: PlaceablesLayer.HistoryEventType, data: DataTypeForPlaceable<Placeable>): void;
+    storeHistory(
+      type: PlaceablesLayer.HistoryEventType,
+      data: DataTypeForPlaceable<InstanceType<ConfiguredObjectClassForName<DocumentName>>>
+    ): void;
 
     /**
      * Copy currently controlled PlaceableObjects to a temporary Array, ready to paste back into the scene later
      * @returns The Array of copied PlaceableObject instances
      */
-    copyObjects(): Placeable[];
+    copyObjects(): InstanceType<ConfiguredObjectClassForName<DocumentName>>[];
 
     /**
      * Paste currently copied PlaceableObjects back to the layer by creating new copies
@@ -199,7 +213,10 @@ declare global {
      * @param options  - (default: `{}`);
      * @returns An Array of created PlaceableObject instances
      */
-    pasteObjects(position: Point, options?: PasteOptions): Promise<DocumentForPlaceable<Placeable>[]>;
+    pasteObjects(
+      position: Point,
+      options?: PasteOptions
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<DocumentName>>[]>;
 
     /**
      * Select all PlaceableObject instances which fall within a coordinate rectangle.
@@ -220,11 +237,13 @@ declare global {
      */
     updateAll(
       transformation:
-        | ((placeable: Placeable) => Partial<DataTypeForPlaceable<Placeable>>)
-        | Partial<DataTypeForPlaceable<Placeable>>,
-      condition?: ((placeable: Placeable) => boolean) | null,
+        | ((
+            placeable: InstanceType<ConfiguredObjectClassForName<DocumentName>>
+          ) => Partial<DataTypeForPlaceable<InstanceType<ConfiguredObjectClassForName<DocumentName>>>>)
+        | Partial<DataTypeForPlaceable<InstanceType<ConfiguredObjectClassForName<DocumentName>>>>,
+      condition?: ((placeable: InstanceType<ConfiguredObjectClassForName<DocumentName>>) => boolean) | null,
       options?: DocumentModificationContext
-    ): Promise<Array<DocumentForPlaceable<Placeable>>>;
+    ): Promise<Array<InstanceType<ConfiguredDocumentClassForName<DocumentName>>>>;
 
     /**
      * Handle left mouse-click events which originate from the Canvas stage and are dispatched to this Layer.
@@ -256,7 +275,9 @@ declare global {
      * Conclude a left-click drag workflow originating from the Canvas stage.
      * @see {@link Canvas#_onDragLeftDrop}
      */
-    protected _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<DocumentForPlaceable<Placeable> | undefined>;
+    protected _onDragLeftDrop(
+      event: PIXI.InteractionEvent
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<DocumentName>> | undefined>;
 
     /**
      * Cancel a left-click drag workflow originating from the Canvas stage.
@@ -284,7 +305,9 @@ declare global {
      * @param event - The delete key press event which triggered the request
      *                (unused)
      */
-    protected _onDeleteKey(event?: any): Promise<DocumentForPlaceable<Placeable>[] | undefined>;
+    protected _onDeleteKey(
+      event?: any
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<DocumentName>>[] | undefined>;
 
     /**
      * @deprecated since 0.8.0
