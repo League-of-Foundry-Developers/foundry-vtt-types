@@ -86,7 +86,7 @@ declare global {
      * @param formula - A dice formula which overrides the default for this Combatant.
      * @returns The Roll instance to use for the combatant.
      */
-    rollInitiative(formula: string): Roll;
+    rollInitiative(formula: string): ReturnType<this['update']>;
 
     /** @override */
     prepareDerivedData(): void;
