@@ -21,7 +21,6 @@ expectType<EmbeddedCollection<ConfiguredDocumentClass<typeof foundry.documents.B
 expectType<
   EmbeddedCollection<ConfiguredDocumentClass<typeof foundry.documents.BaseActiveEffect>, foundry.data.ActorData>
 >(doc.getEmbeddedCollection('ActiveEffect'));
-expectType<undefined>(doc.getEmbeddedCollection(''));
 
 expectType<Promise<Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>>>(
   doc.createActorEmbeddedDocuments('Item', [{ name: 'My Item', 'effects.': 5 }], { noHook: true })

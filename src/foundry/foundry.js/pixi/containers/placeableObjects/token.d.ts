@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
+import { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from '../../../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../../../common/abstract/document.mjs';
 
 declare global {
@@ -51,7 +51,7 @@ declare global {
     /**
      * A convenient reference to the Actor object associated with the Token embedded document.
      */
-    get actor(): InstanceType<ConfiguredDocumentClass<typeof Actor>> | null;
+    get actor(): this['document']['actor'];
 
     /**
      * A convenient reference for whether the current User has full control over the Token document.
@@ -90,16 +90,7 @@ declare global {
     /**
      * The Token's current central position
      */
-    get center(): {
-      /*
-       * @property x The central x-coordinate
-       */
-      x: number;
-      /*
-       * @property y The central y-coordinate
-       */
-      y: number;
-    };
+    get center(): ReturnType<this['getCenter']>;
 
     /**
      * An indicator for whether or not this token is currently involved in the active combat encounter.
@@ -162,8 +153,11 @@ declare global {
     /**
      * Update the light and vision source objects associated with this Token
      * @param defer       - Defer refreshing the SightLayer to manually call that refresh later.
+     *                      (default: `false`)
      * @param deleted     - Indicate that this light source has been deleted.
+     *                      (default: `false`)
      * @param noUpdateFog - Never update the Fog exploration progress for this update.
+     *                      (default: `false`)
      */
     updateSource({ defer, deleted, noUpdateFog }?: { defer?: boolean; deleted?: boolean; noUpdateFog?: boolean }): void;
 
@@ -252,7 +246,7 @@ declare global {
     /**
      * Draw the overlay effect icon
      */
-    protected _drawOverlay({ src, tint }?: { src: string; tint: number }): Promise<void>;
+    protected _drawOverlay({ src, tint }?: { src?: string; tint?: number }): Promise<void>;
 
     /**
      * Draw a status effect icon
@@ -264,7 +258,7 @@ declare global {
      * @param mode - The mode from CONST.TOKEN_DISPLAY_MODES
      * @returns Is the attribute viewable?
      */
-    protected _canViewMode(mode: number): boolean;
+    protected _canViewMode(mode: foundry.CONST.TokenDisplayMode): boolean;
 
     /**
      * Animate Token movement along a certain path which is defined by a Ray object
@@ -276,8 +270,13 @@ declare global {
      * Animate the continual revealing of Token vision during a movement animation
      */
     protected _onMovementFrame(
-      dt: unknown,
-      anim: Array<{ context: unknown; name: string | null; duration: number; ontick: unknown }>,
+      dt: number,
+      anim: Array<{
+        context: unknown;
+        name: string | null;
+        duration: number;
+        ontick: (dt: number, attributes: CanvasAnimation.Attribute[]) => void;
+      }>,
       config: { fog?: boolean; sound?: boolean; source?: boolean }
     ): void;
 
@@ -316,7 +315,9 @@ declare global {
     protected _onControl({ releaseOthers, pan }?: { releaseOthers?: boolean; pan?: boolean }): void;
 
     /** @override */
-    protected _onRelease({ updateSight }?: PlaceableObject.ReleaseOptions & { updateSight?: boolean }): void;
+    protected _onRelease(
+      options: PlaceableObject.ReleaseOptions
+    ): Promise<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>> | undefined;
 
     /**
      * Get the center-point coordinate for a given grid position
@@ -337,10 +338,11 @@ declare global {
      * Return a Promise that resolves to the Token once the animation for the movement has been completed
      * @param x       - The x-coordinate of the token center
      * @param y       - The y-coordinate of the token center
-     * @param animate - Animate the movement path, default is `true`
+     * @param options - Additional options which configure the token movement
+     *                  (defaultValue: `{}`)
      * @returns The Token after animation has completed
      */
-    setPosition(x: number, y: number, { animate }?: { animate?: boolean }): Promise<this>;
+    setPosition(x: number, y: number, options?: PositionOptions): Promise<this>;
 
     /**
      * Update the Token velocity auto-regressively, shifting increasing weight towards more recent movement
@@ -367,7 +369,11 @@ declare global {
         user,
         releaseOthers,
         groupSelection
-      }?: { user?: User | null; releaseOthers?: boolean; groupSelection?: boolean }
+      }?: {
+        user?: InstanceType<ConfiguredDocumentClass<typeof User>> | null;
+        releaseOthers?: boolean;
+        groupSelection?: boolean;
+      }
     ): void;
 
     /**
@@ -375,28 +381,27 @@ declare global {
      * @param combat - A specific combat encounter to which this Token should be added
      * @returns The Token which initiated the toggle
      */
-    toggleCombat(combat?: Combat): Promise<this>;
+    toggleCombat(combat?: InstanceType<ConfiguredDocumentClass<typeof Combat>>): Promise<this>;
 
     /**
      * Toggle an active effect by it's texture path.
      * Copy the existing Array in order to ensure the update method detects the data as changed.
      *
      * @param effect  - The texture file-path of the effect icon to toggle on the Token.
-     * @param active  - Force a certain active state for the effect
-     * @param overlay - Whether to set the effect as the overlay effect?
-     *                  (default: `false`)
+     * @param options - Additional optional arguments which configure how the effect is handled.
+     *                  (defaultValue: `{}`)
      * @returns Was the texture applied (true) or removed (false)
      */
     toggleEffect(
-      effect: string | ConstructorParameters<typeof ActiveEffect>[0],
-      { active, overlay }?: { active?: boolean; overlay?: boolean }
+      effect: string | ConstructorParameters<ConfiguredDocumentClassForName<'ActiveEffect'>>[0],
+      options?: EffectToggleOptions
     ): Promise<boolean>;
 
     /**
      * A helper function to toggle a status effect which includes an Active Effect template
      */
     protected _toggleActiveEffect(
-      effectData: ConstructorParameters<typeof ActiveEffect>[0],
+      effectData: ConstructorParameters<ConfiguredDocumentClassForName<'ActiveEffect'>>[0],
       { overlay }?: { overlay?: boolean }
     ): Promise<boolean>;
 
@@ -451,25 +456,34 @@ declare global {
     ): void;
 
     /** @override */
-    protected _onDelete(options?: unknown, userId?: string): void;
+    protected _onDelete(options?: DocumentModificationOptions, userId?: string): void;
 
     /** @override */
-    protected _canControl(user?: User, event?: PIXI.InteractionEvent): boolean;
+    protected _canControl(
+      user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
+      event?: PIXI.InteractionEvent
+    ): boolean;
 
     /** @override */
-    protected _canHUD(user: User, event?: PIXI.InteractionEvent): boolean;
+    protected _canHUD(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: PIXI.InteractionEvent): boolean;
 
     /** @override */
-    protected _canConfigure(user?: User, event?: PIXI.InteractionEvent): true;
+    protected _canConfigure(
+      user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
+      event?: PIXI.InteractionEvent
+    ): true;
 
     /** @override */
-    protected _canHover(user?: User, event?: PIXI.InteractionEvent): true;
+    protected _canHover(user?: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: PIXI.InteractionEvent): true;
 
     /** @override */
-    protected _canView(user?: User, event?: PIXI.InteractionEvent): boolean;
+    protected _canView(
+      user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
+      event?: PIXI.InteractionEvent
+    ): boolean;
 
     /** @override */
-    protected _canDrag(user: User, event: PIXI.InteractionEvent): boolean;
+    protected _canDrag(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event: PIXI.InteractionEvent): boolean;
 
     /** @override */
     protected _onHoverIn(event: PIXI.InteractionEvent, options?: { hoverOutOthers?: boolean }): void;
@@ -501,30 +515,15 @@ declare global {
     ): never;
 
     /**
-     * A helper method to retrieve the underlying data behind one of the Token's attribute bars
-     * @param barName     - The named bar to retrieve the attribute for
-     * @param alternative - An alternative attribute path to get instead of the default one
-     * @returns The attribute displayed on the Token bar, if any
      * @deprecated since 0.8.0
      */
     getBarAttribute(
       barName: string,
       { alternative }?: { alternative?: string }
-    ): {
-      type: 'bar' | 'value';
-      attribute: string;
-      value: number;
-      max?: number;
-    } | null;
-
-    /** @override */
-    clone(): this;
-
-    /** @override */
-    get bounds(): NormalizedRectangle;
+    ): ReturnType<this['document']['getBarAttribute']>;
 
     /**
-     * @remarks Not used for `Token`
+     * @remarks This does not exist in foundry. It marks the controlIcon as not used because `Token` does never store a value here.
      */
     controlIcon: null;
   }
@@ -541,4 +540,26 @@ declare global {
       sy: number;
     }
   }
+}
+
+interface PositionOptions {
+  /**
+   * Animate the movement path
+   * @defaultValue `true`
+   */
+  animate?: boolean;
+}
+
+interface EffectToggleOptions {
+  /**
+   * Force a certain active state for the effect
+   * @defaultValue `false`
+   */
+  active?: boolean;
+
+  /**
+   * Whether to set the effect as the overlay effect?
+   * @defaultValue `false`
+   */
+  overlay?: boolean;
 }

@@ -1,8 +1,6 @@
 import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
-import { AnyDocumentData } from '../../../common/abstract/data.mjs';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 import * as data from '../../../common/data/data.mjs';
-import { ActorDataSource } from '../../../common/data/data.mjs/actorData';
 
 declare global {
   /**
@@ -63,8 +61,8 @@ declare global {
      * @override
      */
     clone(
-      data?: Parameters<foundry.abstract.Document<foundry.data.TokenData>['clone']>[0],
-      options?: Parameters<foundry.abstract.Document<foundry.data.TokenData>['clone']>[1]
+      data?: Parameters<foundry.documents.BaseToken['clone']>[0],
+      options?: Parameters<foundry.documents.BaseToken['clone']>[1]
     ): this;
 
     /**
@@ -82,7 +80,7 @@ declare global {
      */
     getBarAttribute(
       barName: string,
-      { alternative }: { alternative: string }
+      { alternative }?: { alternative?: string }
     ): SingleAttributeBar | ObjectAttributeBar | null;
 
     /**
@@ -101,7 +99,6 @@ declare global {
     /** @override */
     getEmbeddedCollection(embeddedName: 'Item'): data.ActorData['items'];
     getEmbeddedCollection(embeddedName: 'ActiveEffect'): data.ActorData['effects'];
-    getEmbeddedCollection(embeddedName: string): undefined;
 
     /**
      * Redirect creation of Documents within a synthetic Token Actor to instead update the tokenData override object.
@@ -120,11 +117,6 @@ declare global {
       data: Array<ConstructorParameters<ConfiguredDocumentClass<typeof ActiveEffect>>[0] | Record<string, unknown>>,
       options: Parameters<this['update']>[1]
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>[]>;
-    createActorEmbeddedDocuments(
-      embeddedName: string,
-      data: Record<string, unknown>[],
-      options: Parameters<this['update']>[1]
-    ): Promise<foundry.abstract.Document<AnyDocumentData>[]>;
 
     /**
      * Redirect updating of Documents within a synthetic Token Actor to instead update the tokenData override object.
@@ -143,11 +135,6 @@ declare global {
       updates: Array<ConstructorParameters<ConfiguredDocumentClass<typeof ActiveEffect>>[0] | Record<string, unknown>>,
       options: Parameters<this['update']>[1]
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>[]>;
-    updateActorEmbeddedDocuments(
-      embeddedName: string,
-      updates: Record<string, unknown>[],
-      options: Parameters<this['update']>[1]
-    ): Promise<foundry.abstract.Document<AnyDocumentData>[]>;
 
     /**
      * Redirect deletion of Documents within a synthetic Token Actor to instead update the tokenData override object.
@@ -166,31 +153,26 @@ declare global {
       ids: string[],
       options: Parameters<this['update']>[1]
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>[]>;
-    deleteActorEmbeddedDocuments(
-      embeddedName: string,
-      ids: string[],
-      options: Parameters<this['update']>[1]
-    ): Promise<foundry.abstract.Document<AnyDocumentData>[]>;
 
     /** @override */
     protected _preUpdate(
-      data: Parameters<foundry.abstract.Document<data.TokenData>['_preUpdate']>[0],
+      data: Parameters<foundry.documents.BaseToken['_preUpdate']>[0],
       options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>
     ): Promise<void>;
 
     /**
      * When the Actor data overrides change for an un-linked Token Actor, simulate the pre-update process.
      */
     protected _preUpdateTokenActor(
-      data: DeepPartial<ActorDataSource>,
+      data: Parameters<foundry.documents.BaseActor['_preUpdate']>[0],
       options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>
     ): Promise<void>;
 
     /** @override */
     protected _onUpdate(
-      data: Parameters<foundry.abstract.Document<data.TokenData>['_onUpdate']>[0],
+      data: Parameters<foundry.documents.BaseToken['_onUpdate']>[0],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -199,13 +181,13 @@ declare global {
      * When the base Actor for a TokenDocument changes, we may need to update its Actor instance
      * @param update - (default: `{}`)
      */
-    protected _onUpdateBaseActor(update?: DeepPartial<ActorDataSource>): void;
+    protected _onUpdateBaseActor(update?: Parameters<foundry.documents.BaseActor['_onUpdate']>[0]): void;
 
     /**
      * When the Actor data overrides change for an un-linked Token Actor, simulate the post-update process.
      */
     protected _onUpdateTokenActor(
-      data: DeepPartial<ActorDataSource>,
+      data: Parameters<foundry.documents.BaseActor['_onUpdate']>[0],
       options: DocumentModificationOptions,
       userId: string
     ): void;

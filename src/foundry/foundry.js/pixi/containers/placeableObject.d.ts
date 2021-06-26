@@ -73,7 +73,7 @@ declare global {
      * The bounding box for this PlaceableObject.
      * This is required if the layer uses a Quadtree, otherwise it is optional
      */
-    abstract get bounds(): Rectangle;
+    get bounds(): Rectangle;
 
     /**
      * The central coordinate pair of the placeable object based on it's own width and height
