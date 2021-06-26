@@ -1,3 +1,4 @@
+import { PropertiesToSource } from '../../../types/helperTypes';
 import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
 import { ChatMessageData } from '../data/data.mjs';
@@ -17,7 +18,7 @@ export declare class BaseChatMessage extends Document<data.ChatMessageData, null
       isPrimary: true;
       permissions: {
         create: (user: BaseUser, doc: BaseChatMessage) => boolean;
-        update: (user: BaseUser, doc: BaseChatMessage, data: Partial<ChatMessageData>) => boolean;
+        update: (user: BaseUser, doc: BaseChatMessage, data: Partial<PropertiesToSource<ChatMessageData>>) => boolean;
         delete: (user: BaseUser, doc: BaseChatMessage) => boolean;
       };
     }
