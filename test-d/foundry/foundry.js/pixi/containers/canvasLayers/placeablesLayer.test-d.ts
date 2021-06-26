@@ -43,8 +43,8 @@ expectType<
 expectType<DocumentConstructor>(PlaceablesLayer.placeableClass);
 
 const layer = new SomeLightLayer();
-expectType<typeof foundry.abstract.Document | undefined>(layer.options.objectClass);
-expectType<typeof AmbientLightConfig | undefined>(layer.options.sheetClass);
+expectType<ConstructorOf<AmbientLight>>(layer.options.objectClass);
+expectType<ConstructorOf<LightConfig>>(layer.options.sheetClass);
 expectType<PIXI.Container | null>(layer.objects);
 expectType<PIXI.Container | null>(layer.preview);
 expectType<Array<{ type: 'create' | 'update' | 'delete'; data: Array<foundry.data.AmbientLightData> }>>(layer.history);
@@ -55,7 +55,7 @@ expectType<BasePlaceableHUD<AmbientLight> | null>(layer.hud);
 expectType<AmbientLight[]>(layer.placeables);
 expectType<AmbientLight[]>(layer.controlled);
 expectType<Iterable<AmbientLightDocument>>(layer.getDocuments());
-expectType<Promise<SomeLightLayer>>(layer.draw());
+expectType<Promise<SomeLightLayer | undefined>>(layer.draw());
 expectType<AmbientLight>(layer.createObject(new AmbientLightDocument()));
 expectError(layer.createObject({}));
 expectError(layer.createObject());

@@ -5,7 +5,7 @@ declare global {
    * A PlaceablesLayer designed for rendering the visual Scene for a specific vertical cross-section.
    * Each MapLayer contains a single background image as well as an arbitrary number of Tile objects.
    */
-  class MapLayer<Options extends MapLayer.LayerOptions = MapLayer.LayerOptions> extends PlaceablesLayer<
+  class MapLayer<Options extends MapLayer.LayerOptions = MapLayer.LayerOptions<'background'>> extends PlaceablesLayer<
     'Tile',
     Options
   > {
@@ -33,8 +33,9 @@ declare global {
 
     /**
      * @remarks This is not overridden in foundry but reflects the real behavior.
+     * It returns the BackgroundLayer but ForegroundLayer has been added for subclasses.
      */
-    static get instance(): BackgroundLayer;
+    static get instance(): BackgroundLayer | ForegroundLayer;
 
     /**
      * @defaultValue
@@ -70,7 +71,11 @@ declare global {
 
     tearDown(): Promise<this>;
 
-    draw(): Promise<this>;
+    /**
+     * @override
+     * @remarks It returns Promise<this> but is overridden by a subclass in this way.
+     */
+    draw(): Promise<this | undefined>;
 
     /**
      * Draw the background Sprite for the layer, aligning its dimensions with those configured for the canvas.
@@ -109,7 +114,8 @@ declare global {
   }
 
   namespace MapLayer {
-    interface LayerOptions<Name extends string = 'background'> extends PlaceablesLayer.LayerOptions<'Tile'> {
+    interface LayerOptions<Name extends 'background' | 'foreground' = 'background' | 'foreground'>
+      extends PlaceablesLayer.LayerOptions<'Tile'> {
       name: Name;
       zIndex: 0;
       controllableObjects: true;

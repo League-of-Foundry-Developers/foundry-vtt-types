@@ -110,8 +110,11 @@ declare global {
      */
     getDocuments(): Iterable<InstanceType<ConfiguredDocumentClassForName<DocumentName>>>;
 
-    /** @override */
-    draw(): Promise<this>;
+    /**
+     * @override
+     * @remarks It returns Promise<this> but is overridden by a subclass in this way.
+     */
+    draw(): Promise<this | undefined>;
 
     /**
      * Draw a single placeable object

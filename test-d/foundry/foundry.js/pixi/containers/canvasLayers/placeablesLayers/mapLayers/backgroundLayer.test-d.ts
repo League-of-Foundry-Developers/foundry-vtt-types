@@ -4,6 +4,7 @@ expectType<BackgroundLayer>(BackgroundLayer.instance);
 expectType<MapLayer.LayerOptions<'background'>>(BackgroundLayer.layerOptions);
 
 const layer = new BackgroundLayer();
+expectType<'background'>(layer.options.name);
 expectType<PIXI.Graphics | undefined>(layer.outline);
 expectType<Promise<BackgroundLayer>>(layer.draw());
 expectType<Iterable<foundry.documents.BaseTile>>(layer.getDocuments()); // TODO: Replace with TileDocument once it is available

@@ -10,6 +10,16 @@ declare global {
    */
   class BackgroundLayer extends MapLayer {
     /**
+     * @remarks This is not overridden in foundry but reflects the real behavior.
+     */
+    static get instance(): BackgroundLayer;
+
+    /**
+     * @remarks This is not overridden in foundry but reflects the real behavior.
+     */
+    static get layerOptions(): MapLayer.LayerOptions<'background'>;
+
+    /**
      * The outline of the scene
      */
     outline: PIXI.Graphics | undefined;

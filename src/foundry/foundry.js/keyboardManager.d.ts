@@ -196,7 +196,7 @@ declare class KeyboardManager {
   /**
    * Handle keyboard movement once a small delay has elapsed to allow for multiple simultaneous key-presses.
    */
-  protected _handleMovement(event: KeyboardEvent, layer: PlaceablesLayer): void;
+  protected _handleMovement(event: KeyboardEvent, layer: PlaceablesLayer<any>): void;
 
   /* -------------------------------------------- */
 

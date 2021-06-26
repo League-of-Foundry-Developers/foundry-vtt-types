@@ -10,7 +10,7 @@ expectType<CanvasLayer.LayerOptions>(SomeLayer.layerOptions);
 const layer = new SomeLayer();
 expectType<CanvasLayerOptions>(layer.options);
 expectType<CanvasLayer.LayerOptions>(layer.options);
-expectType<Promise<SomeLayer>>(layer.draw());
+expectType<Promise<SomeLayer | undefined>>(layer.draw());
 expectType<Promise<SomeLayer>>(layer.tearDown());
 expectType<SomeLayer>(layer.activate());
 expectType<SomeLayer>(layer.deactivate());

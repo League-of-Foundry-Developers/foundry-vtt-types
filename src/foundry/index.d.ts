@@ -104,6 +104,7 @@ import './foundry.js/entities/user';
 import './foundry.js/pixi/blendModes';
 
 import './foundry.js/pixi/containers/baseGrid';
+import './foundry.js/pixi/containers/cachedContainer';
 import './foundry.js/pixi/containers/canvasLayer';
 import './foundry.js/pixi/containers/controlIcon';
 import './foundry.js/pixi/containers/cursor';
@@ -124,6 +125,7 @@ import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/drawingsLayer
 import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/lightingLayer';
 import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/mapLayer';
 import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/mapLayers/backgroundLayer';
+import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/mapLayers/foregroundLayer';
 import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/notesLayer';
 import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/soundsLayer';
 import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/templateLayer';

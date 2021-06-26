@@ -45,8 +45,9 @@ declare abstract class CanvasLayer<Options extends CanvasLayerOptions = CanvasLa
   /**
    * Draw the canvas layer, rendering its internal components and returning a Promise
    * The Promise resolves to the drawn layer once its contents are successfully rendered.
+   * @remarks It returns Promise<this> but is overridden by a subclass in this way.
    */
-  draw(): Promise<this>;
+  draw(): Promise<this | undefined>;
 
   /**
    * Deconstruct data used in the current layer in preparation to re-draw the canvas
