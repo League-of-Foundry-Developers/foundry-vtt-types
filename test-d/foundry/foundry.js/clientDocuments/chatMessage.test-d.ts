@@ -1,6 +1,7 @@
 import { expectError, expectType } from 'tsd';
-import { ActorData, ChatMessageData } from '../../../../src/foundry/common/data/data.mjs';
+import { ChatMessageData } from '../../../../src/foundry/common/data/data.mjs';
 import { ChatSpeakerData } from '../../../../src/foundry/common/data/data.mjs/chatSpeakerData';
+import { BaseToken } from '../../../../src/foundry/common/documents.mjs';
 
 expectType<ChatMessage>(new ChatMessage());
 expectType<ChatMessage>(new ChatMessage({}));
@@ -19,13 +20,14 @@ expectType<ChatSpeakerData>(ChatMessage.getSpeaker());
 expectType<ChatSpeakerData>(ChatMessage.getSpeaker({}));
 expectType<ChatSpeakerData>(ChatMessage.getSpeaker({ scene: game.scenes?.active }));
 expectType<ChatSpeakerData>(ChatMessage.getSpeaker({ actor: game.user?.character }));
-expectType<ChatSpeakerData>(ChatMessage.getSpeaker({ token: game.user?.character?.token }));
+expectType<ChatSpeakerData>(ChatMessage.getSpeaker({ token: game.user?.character?.token ?? undefined }));
+expectType<ChatSpeakerData>(ChatMessage.getSpeaker({ token: new BaseToken() })); // Todo: Replace with TokenDocument
 expectType<ChatSpeakerData>(ChatMessage.getSpeaker({ alias: 'Mario' }));
 expectType<ChatSpeakerData>(
   ChatMessage.getSpeaker({
     scene: game.scenes?.active,
     actor: game.user?.character,
-    token: game.user?.character?.token,
+    token: game.user?.character?.token ?? undefined,
     alias: 'Mario'
   })
 );
@@ -47,6 +49,6 @@ expectType<void>(chat.applyRollMode(CONST.DICE_ROLL_MODES.PRIVATE));
 expectType<void>(chat.applyRollMode(CONST.DICE_ROLL_MODES.PUBLIC));
 expectType<void>(chat.applyRollMode(CONST.DICE_ROLL_MODES.SELF));
 expectError(chat.applyRollMode('custom-roll-mode'));
-expectType<ActorData | {}>(chat.getRollData());
+expectType<Actor['getRollData']>(chat.getRollData());
 expectType<Promise<JQuery>>(chat.getHTML());
 expectType<string>(chat.export());
