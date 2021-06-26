@@ -61,11 +61,11 @@ declare global {
     /** An array of User documents who have ownership of this Document */
     get players(): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseUser>>[];
 
-    /** @inheritdoc */
+    /** @override */
     testUserPermission(
       user: BaseUser,
-      permission: 0 | 1 | 'NONE' | 'LIMITED' | 'OBSERVER' | 'OWNER' | 2 | 3,
-      { exact }?: { exact: boolean }
+      permission: keyof typeof foundry.CONST.ENTITY_PERMISSIONS | foundry.CONST.EntityPermission,
+      { exact }?: { exact?: boolean }
     ): boolean;
 
     /**
