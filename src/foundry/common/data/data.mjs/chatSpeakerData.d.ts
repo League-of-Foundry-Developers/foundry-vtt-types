@@ -1,7 +1,6 @@
 import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import { BaseChatMessage, BaseScene } from '../../documents.mjs';
-import { CONST, documents } from '../../module.mjs';
 import { ForeignDocumentField } from '../fields.mjs';
 import * as fields from '../fields.mjs';
 
