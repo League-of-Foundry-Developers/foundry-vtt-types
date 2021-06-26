@@ -1,3 +1,4 @@
+import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
 import { data } from '../module.mjs';
@@ -7,8 +8,11 @@ import { BaseUser } from './baseUser';
 /**
  * The base Combatant model definition which defines common behavior of an Combatant document between both client and server.
  */
-export declare class BaseCombatant extends Document<data.CombatantData, InstanceType<ConfiguredDocumentClass<typeof BaseCombat>>> {
-  static get schema: typeof data.CombatantData;
+export declare class BaseCombatant extends Document<
+  data.CombatantData,
+  InstanceType<ConfiguredDocumentClass<typeof BaseCombat>>
+> {
+  static get schema(): typeof data.CombatantData;
 
   static get metadata(): Merge<
     DocumentMetadata,
@@ -28,5 +32,5 @@ export declare class BaseCombatant extends Document<data.CombatantData, Instance
    * Is a user able to update an existing Combatant?
    * @remarks doc seems unused
    */
-  protected static _canUpdate(user: foundry.documents.BaseUser, doc: unknown, data: data.CombatantData): boolean;
+  protected static _canUpdate(user: BaseUser, doc: unknown, data: data.CombatantData): boolean;
 }

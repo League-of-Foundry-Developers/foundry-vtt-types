@@ -22,11 +22,17 @@ declare global {
       context: ConstructorParameters<typeof foundry.documents.BaseCombatant>[1]
     );
 
-    /** A cached reference to the Token which this Combatant represents, if any */
-    protected _token: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>> | null;
+    /**
+     * A cached reference to the Token which this Combatant represents, if any
+     * @defaultValue `undefined`
+     * */
+    protected _token: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>> | null | undefined;
 
-    /** A cached reference to the Actor which this Combatant represents, if any */
-    protected _actor: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>> | null;
+    /**
+     * A cached reference to the Actor which this Combatant represents, if any
+     * @defaultValue `undefined`
+     * */
+    protected _actor: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>> | null | undefined;
 
     /** The current value of the special tracked resource which pertains to this Combatant */
     resource: `${number}` | number | boolean | null;
