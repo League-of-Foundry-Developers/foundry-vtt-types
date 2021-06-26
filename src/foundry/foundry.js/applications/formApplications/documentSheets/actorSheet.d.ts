@@ -147,7 +147,7 @@ declare global {
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
 
     /**
-     * Handle a drop event for an existing Owned Item to sort that item
+     * Handle a drop event for an existing embedded Item to sort that Item relative to its siblings
      */
     protected _onSortItem(
       event: DragEvent,
