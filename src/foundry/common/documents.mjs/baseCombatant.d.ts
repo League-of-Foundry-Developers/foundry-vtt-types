@@ -7,7 +7,7 @@ import { BaseUser } from './baseUser';
 /**
  * The base Combatant model definition which defines common behavior of an Combatant document between both client and server.
  */
-export declare class BaseCombatant extends Document<data.CombatantData, BaseCombat> {
+export declare class BaseCombatant extends Document<data.CombatantData, InstanceType<ConfiguredDocumentClass<typeof BaseCombat>>> {
   static get metadata(): Merge<
     DocumentMetadata,
     {
