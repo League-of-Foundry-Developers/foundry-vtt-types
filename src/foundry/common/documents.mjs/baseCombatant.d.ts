@@ -1,11 +1,19 @@
+import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
+import { data } from '../module.mjs';
+import { BaseCombat } from './baseCombat';
 import { BaseUser } from './baseUser';
 
 /**
  * The base Combatant model definition which defines common behavior of an Combatant document between both client and server.
  */
-export declare class BaseCombatant extends Document<any, any> {
+export declare class BaseCombatant extends Document<
+  data.CombatantData,
+  InstanceType<ConfiguredDocumentClass<typeof BaseCombat>>
+> {
+  static get schema(): typeof data.CombatantData;
+
   static get metadata(): Merge<
     DocumentMetadata,
     {
@@ -15,8 +23,14 @@ export declare class BaseCombatant extends Document<any, any> {
       isEmbedded: true;
       permissions: {
         create: 'PLAYER';
-        update: (user: BaseUser, doc: any, data: any) => boolean;
+        update: typeof BaseCombatant._canUpdate;
       };
     }
   >;
+
+  /**
+   * Is a user able to update an existing Combatant?
+   * @remarks doc seems unused
+   */
+  protected static _canUpdate(user: BaseUser, doc: unknown, data: data.CombatantData): boolean;
 }
