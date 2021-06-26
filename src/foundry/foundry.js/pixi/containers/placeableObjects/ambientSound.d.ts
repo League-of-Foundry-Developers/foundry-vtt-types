@@ -22,7 +22,7 @@ declare global {
     /**
      * The Howl instance used to play this AmbientSound effect
      */
-    howl: Howl;
+    howl: any;
 
     /**
      * The Howl sound ID of the playing instance of this sound
@@ -32,7 +32,7 @@ declare global {
     /**
      * Create an audio helper instance to use for the Ambient Sound
      */
-    protected _createHowl(): Howl;
+    protected _createHowl(): any;
 
     /** @override */
     static get embeddedName(): 'AmbientSound';

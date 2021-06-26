@@ -416,9 +416,7 @@ declare global {
      * @param ray - The proposed movement ray
      * @returns An updated velocity with directional memory
      */
-    protected _updateVelocity(
-      ray: Ray
-    ): {
+    protected _updateVelocity(ray: Ray): {
       dx: number;
       sx: number;
       dy: number;

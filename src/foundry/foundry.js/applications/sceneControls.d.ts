@@ -77,9 +77,11 @@ declare class SceneControls extends Application {
   initialize({ control, layer, tool }?: { control?: string; layer?: string; tool?: string }): void;
 
   /** @override */
-  getData(
-    options?: Application.RenderOptions
-  ): { active: boolean; cssClass: '' | 'disabled'; controls: SceneControl[] };
+  getData(options?: Application.RenderOptions): {
+    active: boolean;
+    cssClass: '' | 'disabled';
+    controls: SceneControl[];
+  };
 
   /** @override */
   activateListeners(html: JQuery): void;

@@ -5,13 +5,13 @@ import { ConfiguredDocumentClass } from '../../../../../src/types/helperTypes';
 
 class EmbeddedOfSceneDocument extends Document<any, InstanceType<ConfiguredDocumentClass<typeof Scene>>> {
   get sheet(): DocumentSheet {
-    return (null as unknown) as DocumentSheet;
+    return null as unknown as DocumentSheet;
   }
 }
 
 class OnePlaceable extends PlaceableObject<EmbeddedOfSceneDocument> {
   get bounds(): Rectangle {
-    return (null as unknown) as Rectangle;
+    return null as unknown as Rectangle;
   }
 
   draw(): Promise<this> {

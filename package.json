@@ -8,9 +8,7 @@
     "lint:ci": "eslint --ext .d.ts,.test-d.ts .",
     "eslint:report": "eslint --output-file eslint_report.json --format json --ext .d.ts,.test-d.ts .",
     "test": "tsd",
-    "prepare": "husky install",
-    "prepublishOnly": "pinst --disable",
-    "postpublish": "pinst --enable"
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -29,27 +27,26 @@
     "typscript"
   ],
   "dependencies": {
-    "@types/howler": "2.2.1",
-    "@types/jquery": "3.5.1",
-    "socket.io-client": "4.1.2",
-    "handlebars": "4.7.6",
-    "pixi-particles": "^4.3.0",
+    "@types/jquery": "~3.5.5",
+    "@types/simple-peer": "~9.11.0",
+    "handlebars": "4.7.7",
+    "pixi-particles": "4.3.1",
     "pixi.js": "5.3.4",
-    "tinymce": "5.6.2",
-    "typescript": "^4.1.4"
+    "socket.io-client": "4.1.2",
+    "tinymce": "5.8.1",
+    "typescript": "^4.1.6"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.15.0",
-    "@typescript-eslint/parser": "^4.15.0",
-    "eslint": "^7.19.0",
-    "eslint-config-prettier": "^7.1.0",
-    "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-tsdoc": "^0.2.11",
-    "husky": "^5.1.1",
-    "lint-staged": "^10.5.4",
-    "pinst": "^2.1.6",
-    "prettier": "^2.2.1",
-    "tsd": "^0.14.0"
+    "@typescript-eslint/eslint-plugin": "^4.28.0",
+    "@typescript-eslint/parser": "^4.28.0",
+    "eslint": "^7.29.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-tsdoc": "^0.2.14",
+    "husky": "^6.0.0",
+    "lint-staged": "^11.0.0",
+    "prettier": "^2.3.2",
+    "tsd": "^0.17.0"
   },
   "husky": {
     "hooks": {

@@ -9,7 +9,7 @@ declare class TextEditor {
    *                  (default: `''`)
    * @returns The editor instance.
    */
-  static create(options: TextEditor.Options, content: string): Promise<Editor>;
+  static create(options: TextEditor.Options, content: string): Promise<tinyMCE.Editor>;
 
   /**
    * Safely decode an HTML string, removing invalid tags and converting entities back to unicode characters.
@@ -146,7 +146,7 @@ declare class TextEditor {
    * @param event  - The originating drop event which triggered the data transfer
    * @param editor - The TinyMCE editor instance being dropped on
    */
-  protected static _onDropEditorData(event: Event, editor: Editor): Promise<void>;
+  protected static _onDropEditorData(event: Event, editor: tinyMCE.Editor): Promise<void>;
 
   protected static _decoder: HTMLTextAreaElement;
 }

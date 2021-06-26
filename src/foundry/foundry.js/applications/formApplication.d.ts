@@ -267,7 +267,7 @@ declare namespace FormApplication {
     target: string;
     button: HTMLElement;
     hasButton: boolean;
-    mce: Editor | null;
+    mce: tinyMCE.Editor | null;
     active: boolean;
     changed: boolean;
     options: TextEditor.Options;

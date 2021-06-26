@@ -72,11 +72,11 @@ declare abstract class DatabaseBackend {
    *                  (default: `{}`)
    * @param pack    - A Compendium pack identifier
    */
-  protected _createArgs({
-    data,
-    options,
-    pack
-  }?: Request): { data: AnyDocumentData[]; options: RequestOptions; pack?: string };
+  protected _createArgs({ data, options, pack }?: Request): {
+    data: AnyDocumentData[];
+    options: RequestOptions;
+    pack?: string;
+  };
 
   /**
    * Create primary Document instances
@@ -114,11 +114,11 @@ declare abstract class DatabaseBackend {
    *                  (default: `{}`)
    * @param pack    - A Compendium pack identifier
    */
-  protected _updateArgs({
-    updates,
-    options,
-    pack
-  }?: Request): { updates: AnyDocumentData[]; options: RequestOptions; pack?: string };
+  protected _updateArgs({ updates, options, pack }?: Request): {
+    updates: AnyDocumentData[];
+    options: RequestOptions;
+    pack?: string;
+  };
 
   /**
    * Update primary Document instances

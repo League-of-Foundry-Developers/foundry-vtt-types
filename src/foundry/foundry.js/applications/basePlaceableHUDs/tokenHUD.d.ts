@@ -51,9 +51,7 @@ declare class TokenHUD extends BasePlaceableHUD<Token> {
    * });
    * ```
    */
-  getData(
-    options?: Application.RenderOptions
-  ): ReturnType<BasePlaceableHUD<Token>['getData']> & {
+  getData(options?: Application.RenderOptions): ReturnType<BasePlaceableHUD<Token>['getData']> & {
     canConfigure: boolean;
     canToggleCombat: boolean;
     displayBar1: boolean;
