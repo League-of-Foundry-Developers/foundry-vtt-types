@@ -1,5 +1,5 @@
 import { expectType } from 'tsd';
-import { BaseCombat, BaseToken } from '../../../../src/foundry/common/documents.mjs';
+import { BaseToken } from '../../../../src/foundry/common/documents.mjs';
 
 const combatant = new Combatant({}, {});
 
@@ -8,7 +8,7 @@ expectType<typeof foundry.data.CombatantData>(Combatant.schema);
 
 // properties
 expectType<string | null>(combatant.pack);
-expectType<BaseCombat | null>(combatant.parent); //TODO change to Combat once it is typed
+//expectType<BaseCombat | null>(combatant.parent); //TODO change to Combat once it is typed
 expectType<Actor | null>(combatant.actor);
 expectType<BaseToken | null>(combatant.token); //TODO change to Token once it is typed
 expectType<Record<string, Application>>(combatant.apps);
