@@ -1,5 +1,3 @@
-type DialogButton<T = unknown> = Dialog.Button<T>;
-
 /**
  * Create a modal dialog window displaying a title, a message, and a set of buttons which trigger callback functions.
  *
@@ -26,46 +24,45 @@ type DialogButton<T = unknown> = Dialog.Button<T>;
  * });
  * d.render(true);
  * ```
- * @typeParam P - the type of the options object
+ * @typeParam Options - the type of the options object
  */
-declare class Dialog<P extends Dialog.Options = Dialog.Options> extends Application<P> {
+declare class Dialog<Options extends Dialog.Options = Dialog.Options> extends Application<Options> {
   /**
    * @param data    - An object of dialog data which configures how the modal window is rendered
    * @param options - Dialog rendering options, see {@link Application}
    */
-  constructor(data: Dialog.Data, options?: Partial<P>);
+  constructor(data: Dialog.Data, options?: Partial<Options>);
 
   data: Dialog.Data;
 
-  /* -------------------------------------------- */
-
   /**
    * @override
+   * @defaultValue
+   * ```typescript
+   * foundry.utils.mergeObject(super.defaultOptions, {
+   *   template: "templates/hud/dialog.html",
+   *   classes: ["dialog"],
+   *   width: 400,
+   *   jQuery: true
+   * })
+   * ```
    */
   static get defaultOptions(): Dialog.Options;
-
-  /* -------------------------------------------- */
 
   /**
    * @override
    */
   static get title(): string;
 
-  /* -------------------------------------------- */
-
   /**
    * @override
    */
-  getData(): { content: string; buttons: Record<string, Dialog.Button> };
-
-  /* -------------------------------------------- */
+  getData(options?: Application.RenderOptions): { content: string; buttons: Record<string, Dialog.Button> };
 
   /**
    * @override
    */
   activateListeners(html: JQuery): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Handle a left-mouse click on one of the dialog choice buttons
@@ -73,16 +70,12 @@ declare class Dialog<P extends Dialog.Options = Dialog.Options> extends Applicat
    */
   protected _onClickButton(event: MouseEvent): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Handle a keydown event while the dialog is active
    * @param event - The keydown event
    */
   protected _onKeyDown(event: KeyboardEvent & { key: 'Escape' }): Promise<void>;
-  protected _onKeyDown(event: KeyboardEvent): Promise<void> | void;
-
-  /* -------------------------------------------- */
+  protected _onKeyDown(event: KeyboardEvent): void;
 
   /**
    * Submit the Dialog by selecting one of its buttons
@@ -90,16 +83,10 @@ declare class Dialog<P extends Dialog.Options = Dialog.Options> extends Applicat
    */
   protected submit(button: Dialog.Button): void;
 
-  /* -------------------------------------------- */
-
   /**
    * @override
    */
   close(options?: Application.CloseOptions): Promise<void>;
-
-  /* -------------------------------------------- */
-  /*  Factory Methods                             */
-  /* -------------------------------------------- */
 
   /**
    * A helper factory method to create simple confirmation dialog windows which consist of simple yes/no prompts.
@@ -130,7 +117,7 @@ declare class Dialog<P extends Dialog.Options = Dialog.Options> extends Applicat
    * });
    * ```
    */
-  static confirm<Y = true, N = false, R extends boolean = false>({
+  static confirm<Yes = true, No = false, RejectClose extends boolean = false>({
     title,
     content,
     yes,
@@ -142,14 +129,14 @@ declare class Dialog<P extends Dialog.Options = Dialog.Options> extends Applicat
   }?: {
     title: string;
     content: string;
-    yes?: (html: JQuery) => Y;
-    no?: (html: JQuery) => N;
+    yes?: (html: JQuery) => Yes;
+    no?: (html: JQuery) => No;
     render?: (html: JQuery) => void;
     defaultYes?: boolean;
-    rejectClose?: R;
+    rejectClose?: RejectClose;
     options?: Partial<Dialog.Options> & { jQuery?: true };
-  }): Promise<R extends true ? Y | N : Y | N | null>;
-  static confirm<Y = true, N = false, R extends boolean = false>({
+  }): Promise<RejectClose extends true ? Yes | No : Yes | No | null>;
+  static confirm<Yes = true, No = false, RejectClose extends boolean = false>({
     title,
     content,
     yes,
@@ -161,14 +148,14 @@ declare class Dialog<P extends Dialog.Options = Dialog.Options> extends Applicat
   }?: {
     title: string;
     content: string;
-    yes?: (html: HTMLElement) => Y;
-    no?: (html: HTMLElement) => N;
+    yes?: (html: HTMLElement) => Yes;
+    no?: (html: HTMLElement) => No;
     render?: (html: HTMLElement) => void;
     defaultYes?: boolean;
-    rejectClose?: R;
+    rejectClose?: RejectClose;
     options: Partial<Dialog.Options> & { jQuery: false };
-  }): Promise<R extends true ? Y | N : Y | N | null>;
-  static confirm<Y = true, N = false, R extends boolean = false>({
+  }): Promise<RejectClose extends true ? Yes | No : Yes | No | null>;
+  static confirm<Yes = true, No = false, RejectClose extends boolean = false>({
     title,
     content,
     yes,
@@ -180,41 +167,13 @@ declare class Dialog<P extends Dialog.Options = Dialog.Options> extends Applicat
   }?: {
     title: string;
     content: string;
-    yes?: (html: JQuery | HTMLElement) => Y;
-    no?: (html: JQuery | HTMLElement) => N;
+    yes?: (html: JQuery | HTMLElement) => Yes;
+    no?: (html: JQuery | HTMLElement) => No;
     render?: (html: JQuery | HTMLElement) => void;
     defaultYes?: boolean;
-    rejectClose?: R;
+    rejectClose?: RejectClose;
     options: Partial<Dialog.Options>;
-  }): Promise<R extends true ? Y | N : Y | N | null>;
-  /**
-   * @deprecated You are passing an options object as a second parameter to Dialog.confirm. This should now be passed in
-   *             as the options key of the first parameter.
-   */
-  static confirm<Y = true, N = false, R extends boolean = false>(
-    {
-      title,
-      content,
-      yes,
-      no,
-      render,
-      defaultYes,
-      rejectClose,
-      options
-    }: {
-      title: string;
-      content: string;
-      yes?: (html: JQuery | HTMLElement) => Y;
-      no?: (html: JQuery | HTMLElement) => N;
-      render?: (html: JQuery | HTMLElement) => void;
-      defaultYes?: boolean;
-      rejectClose?: R;
-      options?: Partial<Dialog.Options>;
-    },
-    old: Partial<Dialog.Options>
-  ): Promise<R extends true ? Y | N : Y | N | null>;
-
-  /* -------------------------------------------- */
+  }): Promise<RejectClose extends true ? Yes | No : Yes | No | null>;
 
   /**
    * A helper factory method to display a basic "prompt" style Dialog with a single button
@@ -305,12 +264,12 @@ declare namespace Dialog {
     /**
      * A callback function invoked when the dialog is rendered
      */
-    render?: Function;
+    render?: (element: JQuery | HTMLElement) => void;
 
     /**
      * Common callback operations to perform when the dialog is closed
      */
-    close?: Function;
+    close?: (element: JQuery | HTMLElement) => void;
 
     /**
      * The buttons which are displayed as action choices for the dialog
