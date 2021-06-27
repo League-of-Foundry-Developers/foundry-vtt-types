@@ -312,8 +312,12 @@ declare abstract class Application<Options extends Application.Options = Applica
    * Callback actions which occur when a dragged element is dropped on a target.
    * @param event - The originating DragEvent
    *                (unused)
+   * @remarks
+   * The implementation in {@link Application} actually returns `void` but it is
+   * typed as `unknown` to allow deriving methods to return whatever they want.
+   * The returned value is not meant to be used.
    */
-  protected _onDrop(event: DragEvent): void;
+  protected _onDrop(event: DragEvent): unknown;
 
   /**
    * Bring the application to the top of the rendering stack

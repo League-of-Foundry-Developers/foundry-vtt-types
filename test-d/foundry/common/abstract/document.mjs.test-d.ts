@@ -16,7 +16,7 @@ expectType<EffectChangeData[]>(baseActiveEffect.toObject(false).changes);
 
 const item = await Item.create({ name: 'Some Item', type: 'weapon' });
 if (item) {
-  expectType<EffectChangeData[]>(item.toObject(false).effects.changes);
+  expectType<EffectChangeData[]>(item.toObject(false).effects[0].changes);
   expectType<PropertiesToSource<ActiveEffectDataProperties>[]>(item.toObject().effects);
 }
 expectType<Promise<Macro | undefined>>(foundry.documents.BaseMacro.create({ name: '' }));

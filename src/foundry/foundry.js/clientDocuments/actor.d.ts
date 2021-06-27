@@ -32,7 +32,7 @@ declare global {
      */
     constructor(
       data: ConstructorParameters<typeof foundry.documents.BaseActor>[0],
-      context: ConstructorParameters<typeof foundry.documents.BaseActor>[1]
+      context?: ConstructorParameters<typeof foundry.documents.BaseActor>[1]
     );
 
     /**
@@ -280,5 +280,3 @@ declare global {
     }
   }
 }
-
-export {};
