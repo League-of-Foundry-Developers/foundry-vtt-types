@@ -7,6 +7,7 @@ import {
   ToObjectFalseType,
   DocumentType
 } from '../../../types/helperTypes';
+import EmbeddedCollection from './embedded-collection.mjs';
 
 type ParentType<T extends Document<any, any>> = T extends Document<any, infer U> ? U : never;
 export type ContextType<T extends Document<any, any>> = Context<ParentType<T>>;
@@ -141,16 +142,8 @@ declare abstract class Document<
    * @returns The cloned Document instance
    */
   clone(
-    data?: DeepPartial<Parameters<ConcreteDocumentData['_initializeSource']>[0]>,
-    { save, keepId }?: { save: false; keepId?: boolean }
-  ): this;
-  clone(
     data: DeepPartial<Parameters<ConcreteDocumentData['_initializeSource']>[0]>,
-    { save, keepId }: { save: true; keepId?: boolean }
-  ): Promise<this>;
-  clone(
-    data: DeepPartial<Parameters<ConcreteDocumentData['_initializeSource']>[0]>,
-    { save, keepId }: { save: boolean; keepId?: boolean }
+    { save, keepId }: { save?: boolean; keepId?: boolean }
   ): this | Promise<this>;
 
   /**
@@ -381,7 +374,7 @@ declare abstract class Document<
    * @param embeddedName - The name of the embedded Document type
    * @returns The Collection instance of embedded Documents of the requested type
    */
-  getEmbeddedCollection(embeddedName: string): Collection<Document<any, this>>; // TODO: Improve
+  getEmbeddedCollection(embeddedName: string): EmbeddedCollection<DocumentConstructor, AnyDocumentData>; // TODO: Improve
 
   /**
    * Get an embedded document by it's id from a named collection in the parent document.

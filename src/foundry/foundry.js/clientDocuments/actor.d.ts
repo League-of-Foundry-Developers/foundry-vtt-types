@@ -1,5 +1,6 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
+import { ConfiguredDocumentClass, DocumentConstructor } from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
+import EmbeddedCollection from '../../common/abstract/embedded-collection.mjs';
 
 declare global {
   /**
@@ -153,7 +154,7 @@ declare global {
     rollInitiative(options?: Actor.RollInitiativeOptions): Promise<void>;
 
     /** @override */
-    getEmbeddedCollection(embeddedName: string): Collection<foundry.abstract.Document<any, this>>;
+    getEmbeddedCollection(embeddedName: string): EmbeddedCollection<DocumentConstructor, foundry.data.ActorData>;
 
     /** @override */
     protected _preCreate(

@@ -1681,7 +1681,7 @@ declare global {
       /**
        * @defaultValue `TokenDocument`
        */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseToken>; // TODO: TokenDocument
+      documentClass: ConfiguredDocumentClassOrDefault<typeof TokenDocument>;
 
       /**
        * @defaultValue `Token`
