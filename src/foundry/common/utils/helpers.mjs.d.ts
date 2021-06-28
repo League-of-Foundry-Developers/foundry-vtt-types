@@ -284,7 +284,9 @@ type RemoveDeletingObjectKeys<T> = RemoveNever<
   }
 >;
 
-type MergeObjectProperty<T, U, M extends MergeObjectOptions> = T extends Record<string, any>
+type MergeObjectProperty<T, U, M extends MergeObjectOptions> = T extends Array<any>
+  ? U
+  : T extends Record<string, any>
   ? U extends Record<string, any>
     ? Result<T, U, Omit<M, 'insertKeys'> & { insertKeys: M['insertValues'] }>
     : U
