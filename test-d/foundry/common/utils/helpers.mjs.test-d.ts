@@ -286,11 +286,7 @@ expectAssignable<{ k1: { i3: { j1: string; j3: string } }; k2: number; k3: numbe
 );
 
 expectAssignable<FormApplication.Options>(
-  foundry.utils.mergeObject(
-    FormApplication.defaultOptions,
-    {
-      classes: ['my', 'custom', 'css']
-    },
-    { insertKeys: false }
-  )
+  foundry.utils.mergeObject(FormApplication.defaultOptions, {
+    classes: ['my', 'custom', 'css']
+  })
 );
