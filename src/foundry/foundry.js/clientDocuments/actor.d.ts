@@ -138,7 +138,7 @@ declare global {
      * @param isBar     - Whether the new value is part of an attribute bar, or just a direct value (default: `true`)
      * @returns The updated Actor document
      */
-    modifyTokenAttribute(attribute: string, value: number, isDelta: boolean, isBar: boolean): Promise<this>;
+    modifyTokenAttribute(attribute: string, value: number, isDelta: boolean, isBar: boolean): Promise<this | undefined>;
 
     /** @override */
     prepareEmbeddedEntities(): void;
