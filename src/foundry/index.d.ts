@@ -51,7 +51,6 @@ import './foundry.js/types';
 import './foundry.js/userTargets';
 import './foundry.js/utils';
 import './foundry.js/videoHelper';
-import './foundry.js/worldSettingsStorage';
 
 import './foundry.js/applications';
 

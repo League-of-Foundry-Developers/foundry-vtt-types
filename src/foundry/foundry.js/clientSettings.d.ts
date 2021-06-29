@@ -1,5 +1,5 @@
 /**
- * An abstract interface for managing defined game settings or settings menus for different packages.
+ * A class responsible for managing defined game settings or settings menus.
  * Each setting is a string key/value pair belonging to a certain package and a certain store scope.
  *
  * When Foundry Virtual Tabletop is initialized, a singleton instance of this class is constructed within the global
@@ -10,7 +10,7 @@
  * @see {@link SettingsConfig}
  */
 declare class ClientSettings {
-  constructor(worldSettings: WorldSettingsStorage.Setting[]);
+  constructor(worldSettings?: Setting['data']['_source'][]);
 
   /**
    * A object of registered game settings for this scope
@@ -25,8 +25,14 @@ declare class ClientSettings {
   /**
    * The storage interfaces used for persisting settings
    * Each storage interface shares the same API as window.localStorage
+   * @remarks This is a lie, it doesn't actually have the same interface...
    */
-  storage: Map<string, Storage>;
+  storage: Map<string, Storage | WorldSettings>;
+
+  /**
+   * The types of settings which should be constructed as a primitive type
+   */
+  protected static PRIMITIVE_TYPES: [typeof String, typeof Number, typeof Boolean, typeof Array];
 
   /**
    * Return a singleton instance of the Game Settings Configuration app
@@ -157,23 +163,6 @@ declare class ClientSettings {
     key: K,
     value: V
   ): Promise<V>;
-
-  /**
-   * Locally update a setting given a provided key and value
-   */
-  protected _update<M extends string, K extends string, V extends ClientSettings.Values[`${M}.${K}`]>(
-    setting:
-      | ClientSettings.PartialSetting<ClientSettings.Values[`${M}.${K}`]>
-      | ClientSettings.RegisteredMenuSettings[`${M}.${K}`],
-    key: `${M}.${K}`,
-    value: V
-  ): V;
-
-  /**
-   * Handle changes to a Setting document to apply them to the world setting
-   * storage
-   */
-  static socketListeners(socket: WebSocket): void;
 }
 
 declare namespace ClientSettings {
