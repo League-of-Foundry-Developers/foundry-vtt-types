@@ -285,8 +285,28 @@ expectAssignable<{ k1: { i3: { j1: string; j3: string } }; k2: number; k3: numbe
   )
 );
 
+// Array merging
+
 expectAssignable<FormApplication.Options>(
   foundry.utils.mergeObject(FormApplication.defaultOptions, {
     classes: ['my', 'custom', 'css']
   })
+);
+expectAssignable<{ a: number[] }>(foundry.utils.mergeObject({ a: ['foo'] }, { a: [0] }));
+expectAssignable<{ a: number[] }>(foundry.utils.mergeObject({ a: ['foo'] }, { a: [0] }, { insertKeys: true }));
+expectAssignable<{ a: number[] }>(foundry.utils.mergeObject({ a: ['foo'] }, { a: [0] }, { insertValues: true }));
+expectAssignable<{ a: number[] }>(foundry.utils.mergeObject({ a: ['foo'] }, { a: [0] }, { insertKeys: false }));
+expectAssignable<{ a: number[] }>(foundry.utils.mergeObject({ a: ['foo'] }, { a: [0] }, { insertValues: false }));
+expectAssignable<{ a: number[] }>(foundry.utils.mergeObject({ a: ['foo'] }, { a: [0] }, { enforceTypes: true }));
+expectAssignable<{ a: string[] }>(
+  foundry.utils.mergeObject({ a: ['foo'] }, { a: { b: 'foo' } }, { enforceTypes: true })
+);
+expectAssignable<{ a: { b: string } }>(
+  foundry.utils.mergeObject({ a: ['foo'] }, { a: { b: 'foo' } }, { enforceTypes: false })
+);
+expectAssignable<{ a: { b: string } }>(
+  foundry.utils.mergeObject({ a: { b: 'foo' } }, { a: ['foo'] }, { enforceTypes: true })
+);
+expectAssignable<{ a: string[] }>(
+  foundry.utils.mergeObject({ a: { b: 'foo' } }, { a: ['foo'] }, { enforceTypes: false })
 );
