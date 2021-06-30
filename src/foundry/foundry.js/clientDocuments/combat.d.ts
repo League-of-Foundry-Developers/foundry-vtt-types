@@ -1,7 +1,6 @@
 import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
 
-// TODO
 declare global {
   /**
    * The client-side Combat document which extends the common BaseCombat abstraction.
