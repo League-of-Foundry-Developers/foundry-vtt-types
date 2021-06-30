@@ -70,7 +70,7 @@ interface CombatDataConstructorData {
    * Is the Combat encounter currently active?
    * @defaultValue `false`
    */
-  active: boolean | null;
+  active?: boolean | null;
 
   /**
    * The current round of the Combat encounter
@@ -88,7 +88,7 @@ interface CombatDataConstructorData {
    * The current sort order of this Combat relative to others in the same Scene
    * @defaultValue `0`
    */
-  sort: number | null;
+  sort?: number | null;
 
   /**
    * An object of optional key/value flags
