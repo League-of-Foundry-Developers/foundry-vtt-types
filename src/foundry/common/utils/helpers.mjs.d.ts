@@ -313,17 +313,21 @@ type WithWidenedArrayTypes<T> = T extends Array<any>
   : T;
 
 export declare function mergeObject<
-  T,
-  U extends WithWidenedArrayTypes<T>,
+  T extends object,
+  U extends DeepPartial<WithWidenedArrayTypes<T>>,
   M extends MergeObjectOptions & { enforceTypes: true }
 >(original: T, other?: U, options?: M, _d?: number): Result<T, U, M>;
-export declare function mergeObject<T, U, M extends MergeObjectOptions & { enforceTypes: true }>(
-  original: T,
-  other?: U,
-  options?: M,
-  _d?: number
-): never;
-export declare function mergeObject<T, U, M extends MergeObjectOptions>(
+export declare function mergeObject<
+  T extends object,
+  U extends DeepPartial<Record<keyof T, never>> & object,
+  M extends MergeObjectOptions & { enforceTypes: true }
+>(original: T, other?: U, options?: M, _d?: number): Result<T, U, M>;
+export declare function mergeObject<
+  T extends object,
+  U extends object,
+  M extends MergeObjectOptions & { enforceTypes: true }
+>(original: T, other?: U, options?: M, _d?: number): never;
+export declare function mergeObject<T extends object, U extends object, M extends MergeObjectOptions>(
   original: T,
   other?: U,
   options?: M,
