@@ -91,7 +91,7 @@ declare global {
     interface Data<
       ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>,
       Options extends DocumentSheet.Options = DocumentSheet.Options
-    > extends FormApplication.Data<ConcreteDocument, Options> {
+    > {
       cssClass: string;
       editable: boolean;
       document: ConcreteDocument;
