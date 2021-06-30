@@ -284,12 +284,16 @@ type RemoveDeletingObjectKeys<T> = RemoveNever<
   }
 >;
 
-type MergeObjectProperty<T, U, M extends MergeObjectOptions> = T extends Record<string, any>
+type MergeObjectProperty<T, U, M extends MergeObjectOptions> = T extends Array<any>
+  ? U
+  : T extends Record<string, any>
   ? U extends Record<string, any>
-    ? Result<T, U, Omit<M, 'insertKeys'> & { insertKeys: M['insertValues'] }>
+    ? M extends { recursive: false }
+      ? U
+      : Result<T, U, Omit<M, 'insertKeys'> & { insertKeys: M['insertValues'] }>
     : U
   : U;
-type UpdateKeys<T, U, M extends MergeObjectOptions> = M extends { enforceTypes: true } | { overwrite: false }
+type UpdateKeys<T, U, M extends MergeObjectOptions> = M extends { overwrite: false }
   ? T
   : { [K in keyof T]: K extends keyof U ? MergeObjectProperty<T[K], U[K], M> : T[K] };
 type InsertKeys<T, U> = T & Omit<U, keyof T>;
@@ -302,7 +306,28 @@ type Result<T, U, M extends MergeObjectOptions> = UpdateInsert<
   M
 >;
 
-export declare function mergeObject<T, U, M extends MergeObjectOptions>(
+type WithWidenedArrayTypes<T> = T extends Array<any>
+  ? Array<any>
+  : T extends Record<string, any>
+  ? { [K in keyof T]: WithWidenedArrayTypes<T[K]> }
+  : T;
+
+export declare function mergeObject<
+  T extends object,
+  U extends DeepPartial<WithWidenedArrayTypes<T>>,
+  M extends MergeObjectOptions & { enforceTypes: true }
+>(original: T, other?: U, options?: M, _d?: number): Result<T, U, M>;
+export declare function mergeObject<
+  T extends object,
+  U extends DeepPartial<Record<keyof T, never>> & object,
+  M extends MergeObjectOptions & { enforceTypes: true }
+>(original: T, other?: U, options?: M, _d?: number): Result<T, U, M>;
+export declare function mergeObject<
+  T extends object,
+  U extends object,
+  M extends MergeObjectOptions & { enforceTypes: true }
+>(original: T, other?: U, options?: M, _d?: number): never;
+export declare function mergeObject<T extends object, U extends object, M extends MergeObjectOptions>(
   original: T,
   other?: U,
   options?: M,
