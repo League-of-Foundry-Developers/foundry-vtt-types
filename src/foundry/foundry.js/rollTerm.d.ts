@@ -44,15 +44,11 @@ declare abstract class RollTerm {
   /**
    * Evaluate the roll term, populating the results Array.
    * @param options - (default: `{}`)
-   * @param minimize - Apply the minimum possible result for each roll.
-   *                   (default: `false`)
-   * @param maximize - Apply the maximum possible result for each roll.
-   *                   (default: `false`)
-   * @param async    - Evaluate the term asynchronously, receiving a Promise as the returned value. This will become the default behavior in version 10.x
-   *                   (default: `false`)
    * @returns The evaluated dice term
    */
-  evaluate({ minimize, maximize, async }?: Partial<RollTerm.EvaluationOptions>): this;
+  evaluate(options?: Partial<RollTerm.EvaluationOptions & { async: false }>): this;
+  evaluate(options: Partial<RollTerm.EvaluationOptions> & { async: true }): Promise<this>;
+  evaluate(options?: Partial<RollTerm.EvaluationOptions>): this | Promise<this>;
 
   protected _evaluate({ minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): Promise<this>;
 
