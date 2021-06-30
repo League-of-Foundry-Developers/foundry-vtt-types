@@ -8,3 +8,4 @@ import './macros';
 import './messages';
 import './playlists';
 import './scenes';
+import './worldSettings';

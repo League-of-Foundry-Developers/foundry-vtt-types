@@ -60,7 +60,7 @@ declare namespace PermissionConfig {
 
   type FormData = Record<string, boolean>;
 
-  interface Permission extends Config.Permission {
+  interface Permission extends foundry.CONST.UserCapability {
     id: string;
     roles: Permission.Role[];
   }
