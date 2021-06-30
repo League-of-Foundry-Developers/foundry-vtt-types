@@ -1,4 +1,5 @@
 import { expectType } from 'tsd';
+import { MessageData } from '../../../src/foundry/foundry.js/roll';
 import '../../index';
 
 class CustomRoll<D extends object = {}> extends Roll<D> {}
@@ -39,3 +40,8 @@ expectType<string>(r.result); // 16 + 2 + 4
 
 // The total resulting from the roll
 expectType<number | undefined>(r.total); // 22
+
+expectType<Promise<ChatMessage | undefined>>(r.toMessage());
+expectType<Promise<ChatMessage | undefined>>(r.toMessage({}, { create: true }));
+expectType<MessageData<{}>>(r.toMessage({}, { create: false }));
+expectType<Promise<ChatMessage | undefined> | MessageData<{}>>(r.toMessage({}, { create: false as boolean }));
