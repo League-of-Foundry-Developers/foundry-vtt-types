@@ -30,3 +30,11 @@ clientSettings.set('foo', 'bar', false);
 expectType<boolean>(clientSettings.get('foo', 'bar'));
 
 expectType<unknown>(clientSettings.get('foo', 'baz'));
+
+// core settings
+
+expectType<{ resource: string; skipDefeated: boolean }>(clientSettings.get('core', 'combatTrackerConfig'));
+expectType<Partial<Record<string, CompendiumCollection.Configuration>>>(
+  clientSettings.get('core', 'compendiumConfiguration')
+);
+expectType<foundry.CONST.DiceRollMode>(clientSettings.get('core', 'rollMode'));
