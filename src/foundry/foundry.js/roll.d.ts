@@ -147,8 +147,8 @@ declare global {
      * ```
      */
     evaluate(options?: Partial<Options & { async: false }>): this;
-    evaluate(options?: Partial<Options & { async: true }>): Promise<this>;
-    evaluate(options?: Partial<Options>): this;
+    evaluate(options: Partial<Options> & { async: true }): Promise<this>;
+    evaluate(options?: Partial<Options>): this | Promise<this>;
 
     /**
      * Evaluate the roll asynchronously.
@@ -173,8 +173,8 @@ declare global {
      * @see Roll#evaluate
      */
     roll(options?: Partial<Options & { async: false }>): this;
-    roll(options?: Partial<Options & { async: true }>): Promise<this>;
-    roll(options?: Partial<Options>): this;
+    roll(options: Partial<Options> & { async: true }): Promise<this>;
+    roll(options?: Partial<Options>): this | Promise<this>;
 
     /**
      * Create a new Roll object using the original provided formula and data.
@@ -183,8 +183,8 @@ declare global {
      * @returns A new Roll object, rolled using the same formula and data
      */
     reroll(options?: Partial<Options & { async: false }>): this;
-    reroll(options?: Partial<Options & { async: true }>): Promise<this>;
-    reroll(options?: Partial<Options>): this;
+    reroll(options: Partial<Options> & { async: true }): Promise<this>;
+    reroll(options?: Partial<Options>): this | Promise<this>;
 
     /**
      * A factory method which constructs a Roll instance using the default configured Roll class.
