@@ -374,7 +374,7 @@ declare global {
     toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
       messageData?: T,
       { rollMode, create }?: { rollMode?: foundry.CONST.DiceRollMode; create?: true }
-    ): Promise<ConfiguredDocumentClass<typeof ChatMessage>>;
+    ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined>;
     toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
       messageData: T,
       { rollMode, create }: { rollMode?: foundry.CONST.DiceRollMode; create: false }
@@ -382,7 +382,7 @@ declare global {
     toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
       messageData: T,
       { rollMode, create }: { rollMode?: foundry.CONST.DiceRollMode; create: boolean }
-    ): Promise<ConfiguredDocumentClass<typeof ChatMessage>> | MessageData<T>;
+    ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined> | MessageData<T>;
 
     /**
      * Expand an inline roll element to display it's contained dice result as a tooltip
