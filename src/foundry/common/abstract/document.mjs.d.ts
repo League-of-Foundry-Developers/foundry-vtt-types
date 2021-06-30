@@ -382,12 +382,13 @@ declare abstract class Document<
    * @param id           - The id of the child document to retrieve
    * @param options      - Additional options which modify how embedded documents are retrieved
    * @param strict       - Throw an Error if the requested id does not exist. See Collection#get
+   *                       (default: `false`)
    * @returns The retrieved embedded Document instance, or undefined
    */
   getEmbeddedDocument(
     embeddedName: string,
     id: string,
-    { strict }: { strict?: boolean }
+    { strict }?: { strict?: boolean }
   ): Document<any, this> | undefined;
 
   /**
