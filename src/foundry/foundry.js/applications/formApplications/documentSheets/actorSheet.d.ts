@@ -161,7 +161,7 @@ declare global {
      */
     interface Data<Options extends ActorSheet.Options = ActorSheet.Options>
       extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Actor>>, Options> {
-      actor: this['object'];
+      actor: this['document'];
       items: ToObjectFalseType<foundry.data.ActorData>['items'];
       effects: ToObjectFalseType<foundry.data.ActorData>['effects'];
     }
