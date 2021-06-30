@@ -1,7 +1,8 @@
-export { AmbientLightData } from './ambientLightData';
 export { ActiveEffectData } from './activeEffectData';
 export { ActorData } from './actorData';
+export { AmbientLightData } from './ambientLightData';
 export { CombatantData } from './combatantData';
+export { CombatData } from './combatData';
 export { FolderData } from './folderData';
 export { ItemData } from './itemData';
 export { JournalEntryData } from './journalEntryData';
