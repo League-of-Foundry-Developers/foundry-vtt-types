@@ -310,6 +310,23 @@ type Result<T, U, M extends MergeObjectOptions> = UpdateInsert<
   M
 >;
 
+type WithWidenedArrayTypes<T> = T extends Array<any>
+  ? Array<any>
+  : T extends Record<string, any>
+  ? { [K in keyof T]: WithWidenedArrayTypes<T[K]> }
+  : T;
+
+export declare function mergeObject<
+  T,
+  U extends WithWidenedArrayTypes<T>,
+  M extends MergeObjectOptions & { enforceTypes: true }
+>(original: T, other?: U, options?: M, _d?: number): Result<T, U, M>;
+export declare function mergeObject<T, U, M extends MergeObjectOptions & { enforceTypes: true }>(
+  original: T,
+  other?: U,
+  options?: M,
+  _d?: number
+): never;
 export declare function mergeObject<T, U, M extends MergeObjectOptions>(
   original: T,
   other?: U,
