@@ -1,4 +1,4 @@
-import { expectAssignable, expectType } from 'tsd';
+import { expectAssignable, expectError, expectNotAssignable, expectType } from 'tsd';
 import '../../../index';
 
 const complexObject = {
@@ -311,3 +311,22 @@ expectAssignable<never>(foundry.utils.mergeObject({ a: { b: 'foo' } }, { a: ['fo
 expectAssignable<{ a: string[] }>(
   foundry.utils.mergeObject({ a: { b: 'foo' } }, { a: ['foo'] }, { enforceTypes: false })
 );
+
+// bonus round
+expectAssignable<{ a: number; b: number }>(foundry.utils.mergeObject({ a: 1 }, { b: 2 }, { enforceTypes: true }));
+expectNotAssignable<never>(foundry.utils.mergeObject({ a: 1 }, { b: 2 }, { enforceTypes: true }));
+
+expectAssignable<{ a: { a: number; b: number } }>(
+  foundry.utils.mergeObject({ a: { a: 1 } }, { a: { b: 2 } }, { enforceTypes: true })
+);
+expectNotAssignable<never>(foundry.utils.mergeObject({ a: { a: 1 } }, { b: { a: 2 } }, { enforceTypes: true }));
+
+expectAssignable<{ a: { a: number }; b: { a: number }; c: number }>(
+  foundry.utils.mergeObject({ a: { a: 1 }, c: 1 }, { b: { a: 2 }, c: 1 }, { enforceTypes: true })
+);
+expectNotAssignable<never>(
+  foundry.utils.mergeObject({ a: { a: 1 }, c: 1 }, { b: { a: 2 }, c: 1 }, { enforceTypes: true })
+);
+
+expectError(foundry.utils.mergeObject(1, 2));
+expectError(foundry.utils.mergeObject('foo', 'bar'));
