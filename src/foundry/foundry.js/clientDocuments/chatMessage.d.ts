@@ -76,14 +76,14 @@ declare global {
      */
     static applyRollMode(
       chatData: foundry.data.ChatMessageData,
-      rollMode: ValueOf<typeof CONST.DICE_ROLL_MODES>
+      rollMode: foundry.CONST.DiceRollMode
     ): foundry.data.ChatMessageData;
 
     /**
      * Update the data of a ChatMessage instance to apply a requested rollMode
      * @param rollMode - The rollMode preference to apply to this message data
      */
-    applyRollMode(rollMode: ValueOf<typeof CONST.DICE_ROLL_MODES>): void;
+    applyRollMode(rollMode: foundry.CONST.DiceRollMode): void;
 
     /**
      * Attempt to determine who is the speaking character (and token) for a certain Chat Message
@@ -108,7 +108,9 @@ declare global {
     }?: {
       scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>>;
       actor?: InstanceType<ConfiguredDocumentClass<typeof Actor>>;
-      token?: InstanceType<ConfiguredDocumentClass<typeof BaseToken>> | InstanceType<CONFIG['Token']['objectClass']>; // TODO: Replace with TokenDocument
+      token?:
+        | InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>
+        | InstanceType<CONFIG['Token']['objectClass']>;
       alias?: string;
     }): ChatSpeakerData;
 

@@ -1,7 +1,6 @@
 import { expectError, expectType } from 'tsd';
 import { ChatMessageData } from '../../../../src/foundry/common/data/data.mjs';
 import { ChatSpeakerData } from '../../../../src/foundry/common/data/data.mjs/chatSpeakerData';
-import { BaseToken } from '../../../../src/foundry/common/documents.mjs';
 
 expectType<ChatMessage>(new ChatMessage());
 expectType<ChatMessage>(new ChatMessage({}));
@@ -21,7 +20,7 @@ expectType<ChatSpeakerData>(ChatMessage.getSpeaker({}));
 expectType<ChatSpeakerData>(ChatMessage.getSpeaker({ scene: game.scenes?.active }));
 expectType<ChatSpeakerData>(ChatMessage.getSpeaker({ actor: game.user?.character }));
 expectType<ChatSpeakerData>(ChatMessage.getSpeaker({ token: game.user?.character?.token ?? undefined }));
-expectType<ChatSpeakerData>(ChatMessage.getSpeaker({ token: new BaseToken() })); // Todo: Replace with TokenDocument
+expectType<ChatSpeakerData>(ChatMessage.getSpeaker({ token: new TokenDocument() }));
 expectType<ChatSpeakerData>(ChatMessage.getSpeaker({ alias: 'Mario' }));
 expectType<ChatSpeakerData>(
   ChatMessage.getSpeaker({

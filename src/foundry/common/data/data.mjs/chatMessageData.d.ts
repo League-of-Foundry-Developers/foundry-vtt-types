@@ -17,7 +17,7 @@ interface ChatMessageDataSchema extends DocumentSchema {
   timestamp: FieldReturnType<typeof fields.TIMESTAMP_FIELD, { required: true }>;
   flavor: typeof fields.STRING_FIELD;
   content: typeof fields.BLANK_STRING;
-  speaker: DocumentField<typeof ChatSpeakerData> & { required: true; default: {} };
+  speaker: DocumentField<ChatSpeakerData> & { type: typeof ChatSpeakerData; required: true; default: {} };
   whisper: DocumentField<string[]> & {
     type: typeof String[];
     clean: (users: unknown[]) => string[];
@@ -41,7 +41,7 @@ interface ChatMessageDataProperties {
    * The message type from CONST.CHAT_MESSAGE_TYPES
    * @defaultValue `CONST.CHAT_MESSAGE_TYPES.OTHER`
    */
-  type: number;
+  type: CONST.ChatMessageType;
 
   /**
    * The _id of the User document who generated this message
@@ -117,7 +117,7 @@ export interface ChatMessageDataConstructorData {
    * The message type from CONST.CHAT_MESSAGE_TYPES
    * @defaultValue `CONST.CHAT_MESSAGE_TYPES.OTHER`
    */
-  type?: number | null;
+  type?: CONST.ChatMessageType | null;
 
   /**
    * The _id of the User document who generated this message

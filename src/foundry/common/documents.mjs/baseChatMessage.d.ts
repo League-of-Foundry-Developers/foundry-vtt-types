@@ -32,7 +32,11 @@ export declare class BaseChatMessage extends Document<data.ChatMessageData, null
   /**
    * Is a user able to update an existing chat message?
    */
-  protected static _canUpdate(user: BaseUser, doc: BaseChatMessage, data: Partial<ChatMessageData>): boolean;
+  protected static _canUpdate(
+    user: BaseUser,
+    doc: BaseChatMessage,
+    data: Partial<PropertiesToSource<ChatMessageData>>
+  ): boolean;
 
   /**
    * Is a user able to delete an existing chat message?
