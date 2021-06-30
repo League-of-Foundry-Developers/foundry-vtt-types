@@ -1,6 +1,7 @@
 import { expectType } from 'tsd';
+import { CombatData } from '../../../../../../src/foundry/common/data/data.mjs';
 
 const combatEncounters = new CombatEncounters();
 expectType<Combat>(combatEncounters.get('', { strict: true }));
-expectType<any[]>(combatEncounters.toJSON()); // TODO: Adjust when CombatData is typed
+expectType<CombatData['_source'][]>(combatEncounters.toJSON());
 expectType<null>(combatEncounters.directory);
