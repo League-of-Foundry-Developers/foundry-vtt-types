@@ -490,7 +490,7 @@ export interface TokenDataConstructorData {
   /**
    * The color of the token's emitted light as an HTML hexadecimal color string
    */
-  lightColor: string | undefined | null;
+  lightColor?: string | null;
 
   /**
    * The intensity of any light emitted by the token
