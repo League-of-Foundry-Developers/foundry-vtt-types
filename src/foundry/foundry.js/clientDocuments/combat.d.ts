@@ -76,7 +76,7 @@ declare global {
     nextRound(): ReturnType<this['update']>;
 
     /** Advance the combat to the next turn */
-    nextTurn(): Promise<this>;
+    nextTurn(): ReturnType<this['update']>;
 
     /** @override */
     prepareDerivedData(): void;
