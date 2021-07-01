@@ -44,7 +44,7 @@ declare global {
      * A reference to the Scene document within which this Combat encounter occurs.
      * If a specific Scene is not set in the Combat Data, the currently viewed scene is assumed instead.
      */
-    get scene(): InstanceType<ConfiguredDocumentClass<typeof Scene>>;
+    get scene(): InstanceType<ConfiguredDocumentClass<typeof Scene>> | undefined;
 
     /** Return the object of settings which modify the Combat Tracker behavior */
     get settings(): ClientSettings.Values[typeof Combat['CONFIG_SETTING']];
