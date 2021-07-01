@@ -47,7 +47,7 @@ declare global {
     get scene(): InstanceType<ConfiguredDocumentClass<typeof Scene>> | undefined;
 
     /** Return the object of settings which modify the Combat Tracker behavior */
-    get settings(): ClientSettings.Values[typeof Combat['CONFIG_SETTING']];
+    get settings(): typeof CombatEncounters['settings'];
 
     /** Has this combat encounter been started? */
     get started(): boolean;
