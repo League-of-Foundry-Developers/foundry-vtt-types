@@ -187,7 +187,10 @@ declare global {
     ): Combatant['update'];
 
     /** @deprecated since 0.8.0 */
-    deleteCombatant(id: string, options?: DocumentModificationContext): Combatant['delete'];
+    deleteCombatant(
+      id: string,
+      options?: DocumentModificationContext
+    ): NonNullable<ReturnType<this['combatants']['get']>>['delete'];
   }
 }
 
