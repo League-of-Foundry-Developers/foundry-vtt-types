@@ -64,7 +64,7 @@ interface CombatDataConstructorData {
   scene?: string | null;
 
   /** A Collection of Combatant embedded Documents */
-  combatants?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseCombatant>>[0][] | null;
+  combatants?: Parameters<CombatantData['_initializeSource']>[0][] | null;
 
   /**
    * Is the Combat encounter currently active?
