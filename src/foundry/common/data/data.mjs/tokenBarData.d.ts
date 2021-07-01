@@ -38,3 +38,6 @@ export declare class TokenBarData extends DocumentData<
 > {
   static defineSchema(): TokenBarDataSchema;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface TokenBarData extends TokenBarDataProperties {}

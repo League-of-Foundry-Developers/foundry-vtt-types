@@ -74,3 +74,6 @@ export class PrototypeTokenData extends DocumentData<
       : undefined;
   } & { actorId: documents.BaseActor['id'] };
 }
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface PrototypeTokenData extends PrototypeTokenDataProperties {}
