@@ -122,7 +122,7 @@ declare global {
     setInitiative(id: string, value: number): Promise<void>;
 
     /** Return the Array of combatants sorted into initiative order, breaking ties alphabetically by name. */
-    setupTurns(): InstanceType<ConfiguredDocumentClass<typeof Combatant>>[];
+    setupTurns(): this['turns'];
 
     /** Begin the combat encounter, advancing to round 1 and turn 1 */
     startCombat(): ReturnType<this['update']>;
