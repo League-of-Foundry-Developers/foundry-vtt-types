@@ -64,7 +64,7 @@ declare global {
     activate(): Promise<this>;
 
     /** Display a dialog querying the GM whether they wish to end the combat encounter and empty the tracker */
-    endCombat(): Promise<this>;
+    endCombat(): Promise<InstanceType<ConfiguredDocumentClass<typeof Combat>> | undefined>;
 
     /**
      * Get a Combatant using its Token id
