@@ -88,7 +88,7 @@ declare global {
     previousTurn(): ReturnType<this['update']>;
 
     /** Reset all combatant initiative scores, setting the turn back to zero */
-    resetAll(): Promise<this>;
+    resetAll(): ReturnType<this['update']>;
 
     /**
      * Roll initiative for one or multiple Combatants within the Combat entity
