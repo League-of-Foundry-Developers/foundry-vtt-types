@@ -73,7 +73,7 @@ declare global {
     getCombatantByToken(tokenId: string): ReturnType<this['combatants']['find']>;
 
     /** Advance the combat to the next round */
-    nextRound(): Promise<this>;
+    nextRound(): ReturnType<this['update']>;
 
     /** Advance the combat to the next turn */
     nextTurn(): Promise<this>;
