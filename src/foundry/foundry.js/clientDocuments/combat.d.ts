@@ -82,7 +82,7 @@ declare global {
     prepareDerivedData(): void;
 
     /** Rewind the combat to the previous round */
-    previousRound(): Promise<this>;
+    previousRound(): ReturnType<this['update']>;
 
     /** Rewind the combat to the previous turn */
     previousTurn(): Promise<this>;
