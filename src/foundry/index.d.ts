@@ -142,6 +142,8 @@ import './foundry.js/pixi/containers/placeableObjects/tile';
 import './foundry.js/pixi/containers/placeableObjects/token';
 import './foundry.js/pixi/containers/placeableObjects/wall';
 
+import './foundry.js/pixi/filters/abstractBaseMaskFilter';
+
 import './foundry.js/pixi/graphics/gridHighlight';
 import './foundry.js/pixi/graphics/resizeHandle';
 
