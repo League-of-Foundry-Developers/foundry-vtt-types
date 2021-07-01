@@ -23,11 +23,13 @@ declare class CachedContainer extends PIXI.Container {
 
   /**
    * An RGBA array used to define the clear color of the RenderTexture
+   * @defaultValue `[0, 0, 0, 1]`
    */
-  clearColor: [number, number, number, number];
+  clearColor: [r: number, g: number, b: number, a: number];
 
   /**
    * Should our Container also be displayed on screen, in addition to being drawn to the cached RenderTexture?
+   * @defaultValue `false`
    */
   displayed: boolean;
 
