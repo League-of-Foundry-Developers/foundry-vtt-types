@@ -2,7 +2,6 @@ import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
 import { ChatMessageData } from '../../common/data/data.mjs';
 import { ChatSpeakerData } from '../../common/data/data.mjs/chatSpeakerData';
-import { BaseToken, BaseUser } from '../../common/documents.mjs';
 
 declare global {
   /**
@@ -90,13 +89,9 @@ declare global {
      * First assume that the currently controlled Token is the speaker
      *
      * @param scene - The Scene in which the speaker resides
-     *                (defaultValue: `undefined`)
      * @param actor - The Actor whom is speaking
-     *                (defaultValue: `undefined`)
      * @param token - The Token whom is speaking
-     *                (defaultValue: `undefined`)
      * @param alias - The name of the speaker to display
-     *                (defaultValue: `undefined`)
      *
      * @returns The identified speaker data
      */
@@ -108,11 +103,9 @@ declare global {
     }?: {
       scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>>;
       actor?: InstanceType<ConfiguredDocumentClass<typeof Actor>>;
-      token?:
-        | InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>
-        | InstanceType<CONFIG['Token']['objectClass']>;
+      token?: InstanceType<CONFIG['Token']['objectClass']>;
       alias?: string;
-    }): ChatSpeakerData;
+    }): ChatSpeakerData['_source'];
 
     /**
      * A helper to prepare the speaker object based on a target TokenDocument
@@ -125,9 +118,24 @@ declare global {
       token,
       alias
     }: {
-      token: InstanceType<ConfiguredDocumentClass<typeof BaseToken>> | InstanceType<CONFIG['Token']['objectClass']>;
+      token: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>>;
       alias: string;
-    }): ChatSpeakerData;
+    }): ChatSpeakerData['_source'];
+    /**
+     * A helper to prepare the speaker object based on a target TokenDocument
+     *
+     * @param token - The TokenDocument of the speaker
+     * @param alias - The name of the speaker to display
+     * @returns The identified speaker data
+     * @deprecated Passing a Token is deprecated, a TokenDocument should be passed instead
+     */
+    protected static _getSpeakerFromToken({
+      token,
+      alias
+    }: {
+      token: InstanceType<CONFIG['Token']['objectClass']>;
+      alias: string;
+    }): ChatSpeakerData['_source'];
 
     /**
      * A helper to prepare the speaker object based on a target Actor
@@ -143,9 +151,9 @@ declare global {
       alias
     }: {
       scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>>;
-      actor?: InstanceType<ConfiguredDocumentClass<typeof Actor>>;
+      actor: InstanceType<ConfiguredDocumentClass<typeof Actor>>;
       alias?: string;
-    }): ChatSpeakerData;
+    }): ChatSpeakerData['_source'];
 
     /**
      * A helper to prepare the speaker object based on a target User
@@ -161,22 +169,20 @@ declare global {
       alias
     }: {
       scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>>;
-      user?: InstanceType<ConfiguredDocumentClass<typeof User>>;
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>;
       alias?: string;
-    }): ChatSpeakerData;
+    }): ChatSpeakerData['_source'];
 
     /**
      * Obtain an Actor instance which represents the speaker of this message (if any)
      * @param speaker - The speaker data object
      */
-    static getSpeakerActor(speaker: ChatSpeakerData): Actor | null;
-
-    /* -------------------------------------------- */
+    static getSpeakerActor(speaker: ChatSpeakerData['_source']): Actor | null;
 
     /**
      * Obtain a data object used to evaluate any dice rolls associated with this particular chat message
      */
-    getRollData(): InstanceType<ConfiguredDocumentClass<typeof Actor>>['getRollData'];
+    getRollData(): InstanceType<ConfiguredDocumentClass<typeof Actor>>['getRollData'] | {};
 
     /**
      * Given a string whisper target, return an Array of the user IDs which should be targeted for the whisper
@@ -195,7 +201,7 @@ declare global {
     _preCreate(
       data: Parameters<ChatMessageData['_initializeSource']>[0],
       options: DocumentModificationOptions,
-      user: BaseUser
+      user: foundry.documents.BaseUser
     ): Promise<void>;
 
     /** @override */

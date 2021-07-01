@@ -13,14 +13,14 @@ interface ChatMessageDataSchema extends DocumentSchema {
     validate: typeof _validateChatMessageType;
     validationError: 'The provided ChatMessage type must be in CONST.CHAT_MESSAGE_TYPES';
   };
-  user: fields.ForeignDocumentField<{ type: documents.BaseUser; required: true }>;
+  user: fields.ForeignDocumentField<{ type: typeof documents.BaseUser; required: true }>;
   timestamp: FieldReturnType<typeof fields.TIMESTAMP_FIELD, { required: true }>;
   flavor: typeof fields.STRING_FIELD;
   content: typeof fields.BLANK_STRING;
   speaker: DocumentField<ChatSpeakerData> & { type: typeof ChatSpeakerData; required: true; default: {} };
   whisper: DocumentField<string[]> & {
     type: typeof String[];
-    clean: (users: unknown[]) => string[];
+    clean: (users: Array<{ id: string } | string>) => string[];
     required: true;
     default: string[];
   };
@@ -204,4 +204,4 @@ export declare interface ChatMessageData extends ChatMessageDataProperties {}
  * @param type - The assigned message type
  * @returns Is it valid?
  */
-export function _validateChatMessageType(type: number): boolean;
+declare function _validateChatMessageType(type: number): boolean;

@@ -1,12 +1,12 @@
 import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
-import { BaseChatMessage, BaseScene } from '../../documents.mjs';
+import { BaseActor, BaseChatMessage, BaseScene } from '../../documents.mjs';
 import { ForeignDocumentField } from '../fields.mjs';
 import * as fields from '../fields.mjs';
 
 interface ChatSpeakerDataSchema extends DocumentSchema {
-  scene: ForeignDocumentField<{ type: BaseScene; required: false }>;
-  actor: ForeignDocumentField<{ type: BaseScene; required: false }>;
+  scene: ForeignDocumentField<{ type: typeof BaseScene; required: false }>;
+  actor: ForeignDocumentField<{ type: typeof BaseActor; required: false }>;
   token: FieldReturnType<typeof fields.DOCUMENT_ID, { required: false }>;
   alias: typeof fields.STRING_FIELD;
 }
@@ -63,7 +63,7 @@ export declare class ChatSpeakerData extends DocumentData<
   ChatSpeakerDataProperties,
   PropertiesToSource<ChatSpeakerDataProperties>,
   ChatSpeakerDataConstructorData,
-  BaseChatMessage // Todo: This is wrong
+  BaseChatMessage
 > {
   static defineSchema(): ChatSpeakerDataSchema;
 }

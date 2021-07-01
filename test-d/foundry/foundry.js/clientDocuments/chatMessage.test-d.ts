@@ -15,18 +15,17 @@ expectType<ChatMessageData>(
 expectType<ChatMessageData>(ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), CONST.DICE_ROLL_MODES.SELF));
 expectError(ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), 'custom-roll-mode'));
 
-expectType<ChatSpeakerData>(ChatMessage.getSpeaker());
-expectType<ChatSpeakerData>(ChatMessage.getSpeaker({}));
-expectType<ChatSpeakerData>(ChatMessage.getSpeaker({ scene: game.scenes?.active }));
-expectType<ChatSpeakerData>(ChatMessage.getSpeaker({ actor: game.user?.character }));
-expectType<ChatSpeakerData>(ChatMessage.getSpeaker({ token: game.user?.character?.token ?? undefined }));
-expectType<ChatSpeakerData>(ChatMessage.getSpeaker({ token: new TokenDocument() }));
-expectType<ChatSpeakerData>(ChatMessage.getSpeaker({ alias: 'Mario' }));
-expectType<ChatSpeakerData>(
+expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker());
+expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({}));
+expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({ scene: game.scenes?.active }));
+expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({ actor: game.user?.character }));
+expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({ token: new Token(new TokenDocument()) }));
+expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({ alias: 'Mario' }));
+expectType<ChatSpeakerData['_source']>(
   ChatMessage.getSpeaker({
     scene: game.scenes?.active,
     actor: game.user?.character,
-    token: game.user?.character?.token ?? undefined,
+    token: new Token(new TokenDocument()),
     alias: 'Mario'
   })
 );
@@ -48,6 +47,6 @@ expectType<void>(chat.applyRollMode(CONST.DICE_ROLL_MODES.PRIVATE));
 expectType<void>(chat.applyRollMode(CONST.DICE_ROLL_MODES.PUBLIC));
 expectType<void>(chat.applyRollMode(CONST.DICE_ROLL_MODES.SELF));
 expectError(chat.applyRollMode('custom-roll-mode'));
-expectType<Actor['getRollData']>(chat.getRollData());
+expectType<Actor['getRollData'] | {}>(chat.getRollData());
 expectType<Promise<JQuery>>(chat.getHTML());
 expectType<string>(chat.export());
