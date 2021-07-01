@@ -35,7 +35,7 @@ declare global {
     protected _soundPlaying: boolean;
 
     /** Get the Combatant who has the current turn. */
-    get combatant(): InstanceType<ConfiguredDocumentClass<typeof Combatant>>;
+    get combatant(): this['turns'][number];
 
     /** The numeric round of the Combat encounter */
     get round(): number;
