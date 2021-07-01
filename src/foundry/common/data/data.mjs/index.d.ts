@@ -1,6 +1,7 @@
 export { ActiveEffectData } from './activeEffectData';
 export { ActorData } from './actorData';
 export { AmbientLightData } from './ambientLightData';
+export { ChatMessageData } from './chatMessageData';
 export { CombatantData } from './combatantData';
 export { CombatData } from './combatData';
 export { FolderData } from './folderData';

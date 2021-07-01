@@ -24,16 +24,34 @@ expectType<Promise<TypeOfR>>(r.evaluate({ async: true }));
 expectType<TypeOfR>(r.evaluate({ async: false }));
 expectType<TypeOfR>(r.evaluate());
 expectType<TypeOfR>(r.evaluate({ minimize: true, maximize: true }));
+expectType<TypeOfR | Promise<TypeOfR>>(r.evaluate({ minimize: true, maximize: true, async: false as boolean }));
+expectType<TypeOfR | Promise<TypeOfR>>(
+  r.evaluate({ minimize: true, maximize: true, async: false as boolean | undefined })
+);
+expectType<TypeOfR>(r.evaluate({ minimize: true, maximize: true, async: false as false | undefined }));
+expectType<TypeOfR | Promise<TypeOfR>>(
+  r.evaluate({ minimize: true, maximize: true, async: false as true | undefined })
+);
 
 expectType<Promise<TypeOfR>>(r.roll({ async: true }));
 expectType<TypeOfR>(r.roll({ async: false }));
 expectType<TypeOfR>(r.roll());
 expectType<TypeOfR>(r.roll({ minimize: true, maximize: true }));
+expectType<TypeOfR | Promise<TypeOfR>>(r.roll({ minimize: true, maximize: true, async: false as boolean }));
+expectType<TypeOfR | Promise<TypeOfR>>(r.roll({ minimize: true, maximize: true, async: false as boolean | undefined }));
+expectType<TypeOfR>(r.roll({ minimize: true, maximize: true, async: false as false | undefined }));
+expectType<TypeOfR | Promise<TypeOfR>>(r.roll({ minimize: true, maximize: true, async: false as true | undefined }));
 
 expectType<Promise<TypeOfR>>(r.reroll({ async: true }));
 expectType<TypeOfR>(r.reroll({ async: false }));
 expectType<TypeOfR>(r.reroll());
 expectType<TypeOfR>(r.reroll({ minimize: true, maximize: true }));
+expectType<TypeOfR | Promise<TypeOfR>>(r.reroll({ minimize: true, maximize: true, async: false as boolean }));
+expectType<TypeOfR | Promise<TypeOfR>>(
+  r.reroll({ minimize: true, maximize: true, async: false as boolean | undefined })
+);
+expectType<TypeOfR>(r.reroll({ minimize: true, maximize: true, async: false as false | undefined }));
+expectType<TypeOfR | Promise<TypeOfR>>(r.reroll({ minimize: true, maximize: true, async: false as true | undefined }));
 
 // The resulting equation after it was rolled
 expectType<string>(r.result); // 16 + 2 + 4

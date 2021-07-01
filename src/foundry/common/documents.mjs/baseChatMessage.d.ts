@@ -1,11 +1,15 @@
 import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
+import { ChatMessageData } from '../data/data.mjs';
 import { BaseUser } from './baseUser';
+import * as data from '../data/data.mjs';
 
 /**
  * The base ChatMessage model definition which defines common behavior of an ChatMessage document between both client and server.
  */
-export declare class BaseChatMessage extends Document<any, any> {
+export declare class BaseChatMessage extends Document<data.ChatMessageData, null> {
+  static get schema(): typeof data.ChatMessageData;
+
   static get metadata(): Merge<
     DocumentMetadata,
     {
@@ -14,10 +18,25 @@ export declare class BaseChatMessage extends Document<any, any> {
       label: 'DOCUMENT.ChatMessage';
       isPrimary: true;
       permissions: {
-        create: (user: BaseUser, doc: any) => boolean;
-        update: (user: BaseUser, doc: any, data: any) => boolean;
-        delete: (user: BaseUser, doc: any) => boolean;
+        create: (user: BaseUser, doc: BaseChatMessage) => boolean;
+        update: (user: BaseUser, doc: BaseChatMessage, data: ChatMessageData['_source']) => boolean;
+        delete: (user: BaseUser, doc: BaseChatMessage) => boolean;
       };
     }
   >;
+
+  /**
+   * Is a user able to create a new chat message?
+   */
+  protected static _canCreate(user: BaseUser, doc: BaseChatMessage): boolean;
+
+  /**
+   * Is a user able to update an existing chat message?
+   */
+  protected static _canUpdate(user: BaseUser, doc: BaseChatMessage, data: ChatMessageData['_source']): boolean;
+
+  /**
+   * Is a user able to delete an existing chat message?
+   */
+  protected static _canDelete(user: BaseUser, doc: BaseChatMessage): boolean;
 }

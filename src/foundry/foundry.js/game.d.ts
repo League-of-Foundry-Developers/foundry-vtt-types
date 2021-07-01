@@ -751,7 +751,7 @@ declare global {
       paused?: boolean;
       playlists?: Playlist[];
       scenes?: Scene[];
-      settings?: WorldSettingsStorage.Setting[];
+      settings?: Setting['data']['_source'][];
       system?: string;
       systems?: System[];
       tables?: RollTable[];
