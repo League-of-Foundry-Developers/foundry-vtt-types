@@ -31,5 +31,9 @@ export declare class BaseCombat extends Document<data.CombatData> {
    * Is a user able to update an existing Combat?
    * @remarks doc seems unused
    */
-  protected static _canUpdate(user: BaseUser, doc: unknown, data: data.CombatantData): boolean;
+  protected static _canUpdate(
+    user: BaseUser,
+    doc: unknown,
+    data: Parameters<data.CombatantData['_initializeSource']>[0]
+  ): boolean;
 }
