@@ -125,7 +125,7 @@ declare global {
     setupTurns(): InstanceType<ConfiguredDocumentClass<typeof Combatant>>[];
 
     /** Begin the combat encounter, advancing to round 1 and turn 1 */
-    startCombat(): Promise<this>;
+    startCombat(): ReturnType<this['update']>;
 
     /**
      * Define how the array of Combatants is sorted in the displayed list of the tracker.
