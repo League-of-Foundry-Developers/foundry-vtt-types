@@ -184,7 +184,7 @@ declare global {
     updateCombatant(
       data: DeepPartial<Combatant['data']> & Record<string, unknown>,
       options?: DocumentModificationContext
-    ): Combatant['update'];
+    ): NonNullable<ReturnType<this['combatants']['get']>>['update'];
 
     /** @deprecated since 0.8.0 */
     deleteCombatant(
