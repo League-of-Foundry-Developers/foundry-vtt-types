@@ -85,7 +85,7 @@ declare global {
     previousRound(): ReturnType<this['update']>;
 
     /** Rewind the combat to the previous turn */
-    previousTurn(): Promise<this>;
+    previousTurn(): ReturnType<this['update']>;
 
     /** Reset all combatant initiative scores, setting the turn back to zero */
     resetAll(): Promise<this>;
