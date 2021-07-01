@@ -70,7 +70,7 @@ declare global {
      * Get a Combatant using its Token id
      * @param tokenId - The id of the Token for which to acquire the combatant
      */
-    getCombatantByToken(tokenId: string): InstanceType<ConfiguredDocumentClass<typeof Combatant>>;
+    getCombatantByToken(tokenId: string): ReturnType<this['combatants']['find']>;
 
     /** Advance the combat to the next round */
     nextRound(): Promise<this>;
