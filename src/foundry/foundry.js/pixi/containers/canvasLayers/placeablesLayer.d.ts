@@ -1,13 +1,14 @@
 import {
-  DataTypeForPlaceable,
+  DataSourceForPlaceable,
   DocumentConstructor,
   ConfiguredDocumentClass,
-  DocumentType,
   ConfiguredObjectClassForName,
   ConfiguredDocumentClassForName,
-  ConfiguredSheetClassForName
+  PlaceableDocumentType
 } from '../../../../../types/helperTypes';
 import EmbeddedCollection from '../../../../common/abstract/embedded-collection.mjs';
+
+type ConcretePlaceableOrPlaceableObject<T> = T extends PlaceableObject ? T : PlaceableObject;
 
 declare global {
   /**
@@ -17,7 +18,7 @@ declare global {
    * @typeParam Options      - The type of the options in this layer.
    */
   abstract class PlaceablesLayer<
-    DocumentName extends DocumentType,
+    DocumentName extends PlaceableDocumentType,
     Options extends PlaceablesLayer.LayerOptions<DocumentName> = PlaceablesLayer.LayerOptions<DocumentName>
   > extends CanvasLayer<Options> {
     constructor();
@@ -37,13 +38,17 @@ declare global {
     /**
      * Keep track of history so that CTRL+Z can undo changes
      */
-    history: Array<CanvasHistory<InstanceType<ConfiguredObjectClassForName<DocumentName>>>>;
+    history: Array<
+      CanvasHistory<ConcretePlaceableOrPlaceableObject<InstanceType<ConfiguredObjectClassForName<DocumentName>>>>
+    >;
 
     /**
      * Track the PlaceableObject on this layer which is currently being hovered upon
      * @defaultValue `null`
      */
-    protected _hover: InstanceType<ConfiguredObjectClassForName<DocumentName>> | null;
+    protected _hover: ConcretePlaceableOrPlaceableObject<
+      InstanceType<ConfiguredObjectClassForName<DocumentName>>
+    > | null;
 
     /**
      * Track the set of PlaceableObjects on this layer which are currently controlled by their id
@@ -55,12 +60,14 @@ declare global {
      * Keep track of an object copied with CTRL+C which can be pasted later
      * @defaultValue `[]`
      */
-    protected _copy: InstanceType<ConfiguredObjectClassForName<DocumentName>>[];
+    protected _copy: ConcretePlaceableOrPlaceableObject<InstanceType<ConfiguredObjectClassForName<DocumentName>>>[];
 
     /**
      * A Quadtree which partitions and organizes Walls into quadrants for efficient target identification.
      */
-    quadtree: Quadtree<InstanceType<ConfiguredObjectClassForName<DocumentName>>> | null;
+    quadtree: Quadtree<
+      ConcretePlaceableOrPlaceableObject<InstanceType<ConfiguredObjectClassForName<DocumentName>>>
+    > | null;
 
     /** @override */
     static get layerOptions(): PlaceablesLayer.LayerOptions<any>;
@@ -69,7 +76,7 @@ declare global {
      * A reference to the named Document type which is contained within this Canvas Layer.
      * @remarks This getter is abstract in {@link PlaceablesLayer}.
      */
-    static documentName: DocumentType;
+    static documentName: PlaceableDocumentType;
 
     /**
      * Obtain a reference to the Collection of embedded Document instances within the currently viewed Scene
@@ -82,7 +89,7 @@ declare global {
     /**
      * Define a Container implementation used to render placeable objects contained in this layer
      */
-    static get placeableClass(): DocumentConstructor;
+    static get placeableClass(): ConstructorOf<PlaceableObject>;
 
     /**
      * Return the precision relative to the Scene grid with which Placeable objects should be snapped
@@ -108,7 +115,7 @@ declare global {
     /**
      * Obtain an iterable of objects which should be added to this PlaceableLayer
      */
-    getDocuments(): Iterable<InstanceType<ConfiguredDocumentClassForName<DocumentName>>>;
+    getDocuments(): Exclude<this['documentCollection'], null> | [];
 
     /**
      * @override
@@ -202,7 +209,9 @@ declare global {
      */
     storeHistory(
       type: PlaceablesLayer.HistoryEventType,
-      data: DataTypeForPlaceable<InstanceType<ConfiguredObjectClassForName<DocumentName>>>
+      data: DataSourceForPlaceable<
+        ConcretePlaceableOrPlaceableObject<InstanceType<ConfiguredObjectClassForName<DocumentName>>>
+      >
     ): void;
 
     /**
@@ -243,8 +252,16 @@ declare global {
       transformation:
         | ((
             placeable: InstanceType<ConfiguredObjectClassForName<DocumentName>>
-          ) => Partial<DataTypeForPlaceable<InstanceType<ConfiguredObjectClassForName<DocumentName>>>>)
-        | Partial<DataTypeForPlaceable<InstanceType<ConfiguredObjectClassForName<DocumentName>>>>,
+          ) => Partial<
+            DataSourceForPlaceable<
+              ConcretePlaceableOrPlaceableObject<InstanceType<ConfiguredObjectClassForName<DocumentName>>>
+            >
+          >)
+        | Partial<
+            DataSourceForPlaceable<
+              ConcretePlaceableOrPlaceableObject<InstanceType<ConfiguredObjectClassForName<DocumentName>>>
+            >
+          >,
       condition?: ((placeable: InstanceType<ConfiguredObjectClassForName<DocumentName>>) => boolean) | null,
       options?: DocumentModificationContext
     ): Promise<Array<InstanceType<ConfiguredDocumentClassForName<DocumentName>>>>;
@@ -353,7 +370,7 @@ declare global {
     /**
      * The data corresponding to the action which may later be un-done
      */
-    data: DataTypeForPlaceable<Placeable>[];
+    data: DataSourceForPlaceable<Placeable>[];
   }
 
   namespace PlaceablesLayer {
@@ -362,7 +379,7 @@ declare global {
     /**
      * @typeParam DocumentName - The key of the configuration which defines the object and document class.
      */
-    interface LayerOptions<DocumentName extends DocumentType> extends CanvasLayer.LayerOptions {
+    interface LayerOptions<DocumentName extends PlaceableDocumentType> extends CanvasLayer.LayerOptions {
       /**
        * Does this layer support a mouse-drag workflow to create new objects?
        * @defaultValue `game.user.isGM`
@@ -403,9 +420,7 @@ declare global {
        * The FormApplication class used to configure objects on this layer.
        * @defaultValue `CONFIG[this.documentName].sheetClass`
        */
-      sheetClass: ConfiguredSheetClassForName<DocumentName> extends never
-        ? ConstructorOf<FormApplication>
-        : ConfiguredSheetClassForName<DocumentName>;
+      sheetClass: ConstructorOf<FormApplication>;
     }
   }
 }

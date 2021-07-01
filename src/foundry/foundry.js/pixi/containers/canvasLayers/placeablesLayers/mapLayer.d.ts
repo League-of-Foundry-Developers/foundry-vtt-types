@@ -98,7 +98,9 @@ declare global {
      */
     protected _onDropData(
       event: DragEvent,
-      data: Record<string, unknown>
+      data:
+        | { type: 'Tile'; img: string; tileSize?: number; x: number; y: number }
+        | ({ type: string } & Partial<Record<string, unknown>>)
     ): Promise<InstanceType<ConfiguredDocumentClassForName<'Tile'>> | undefined>;
 
     /**
@@ -109,7 +111,9 @@ declare global {
      */
     protected _getDropData(
       event: DragEvent,
-      data: Record<string, unknown>
+      data:
+        | { type: 'Tile'; img: string; tileSize?: number; x: number; y: number }
+        | ({ type: string } & Partial<Record<string, unknown>>)
     ): Promise<ConstructorParameters<typeof foundry.documents.BaseTile>[0]>;
   }
 

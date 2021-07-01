@@ -1,4 +1,5 @@
 import { expectType } from 'tsd';
+import EmbeddedCollection from '../../../../../../../../src/foundry/common/abstract/embedded-collection.mjs';
 
 expectType<ForegroundLayer>(ForegroundLayer.instance);
 expectType<MapLayer.LayerOptions<'foreground'>>(ForegroundLayer.layerOptions);
@@ -11,6 +12,6 @@ expectType<Promise<undefined>>(layer.draw());
 expectType<ForegroundLayer>(layer.deactivate());
 expectType<Promise<ForegroundLayer>>(layer.tearDown());
 expectType<number>(layer.getZIndex());
-expectType<Iterable<foundry.documents.BaseTile>>(layer.getDocuments()); // ToDo: Replace with TileDocument once it is available
+expectType<EmbeddedCollection<typeof foundry.documents.BaseTile, foundry.data.SceneData>>(layer.getDocuments()); // ToDo: Replace with TileDocument once it is available
 expectType<void>(layer.refresh());
 expectType<void>(layer.updateOcclusion());

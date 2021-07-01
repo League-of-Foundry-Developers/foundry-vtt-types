@@ -6,6 +6,7 @@ declare abstract class CanvasLayer<Options extends CanvasLayerOptions = CanvasLa
   constructor();
 
   /**
+   * Options for this layer instance.
    * @defaultValue `this.constructor.layerOptions`
    */
   options: Options;
@@ -40,7 +41,7 @@ declare abstract class CanvasLayer<Options extends CanvasLayerOptions = CanvasLa
    * The canonical name of the CanvasLayer
    * @remarks Foundry defines this as a getter, but since CanvasLayer extends PIXI.Container, it has to be a property.
    */
-  name: string;
+  readonly name: string;
 
   /**
    * Draw the canvas layer, rendering its internal components and returning a Promise

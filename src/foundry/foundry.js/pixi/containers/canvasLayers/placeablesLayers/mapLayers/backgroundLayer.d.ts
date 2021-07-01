@@ -1,7 +1,7 @@
 import {
   ConfiguredDocumentClassForName,
   ConfiguredObjectClassForName,
-  DataTypeForPlaceable
+  DataSourceForPlaceable
 } from '../../../../../../../types/helperTypes';
 
 declare global {
@@ -31,13 +31,13 @@ declare global {
      */
     protected _drawOutline(): PIXI.Graphics | undefined;
 
-    getDocuments(): Iterable<InstanceType<ConfiguredDocumentClassForName<'Tile'>>>;
+    getDocuments(): Exclude<this['documentCollection'], null>;
 
     getZIndex(): number;
 
     storeHistory(
       type: PlaceablesLayer.HistoryEventType,
-      data: DataTypeForPlaceable<InstanceType<ConfiguredObjectClassForName<'Tile'>>>
+      data: DataSourceForPlaceable<InstanceType<ConfiguredObjectClassForName<'Tile'>>>
     ): void;
   }
 }

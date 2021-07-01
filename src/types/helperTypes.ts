@@ -64,6 +64,16 @@ export type DocumentType = keyof {
   [Key in keyof CONFIG as 'documentClass' extends keyof CONFIG[Key] ? Key : never]: unknown;
 };
 
+export type PlaceableDocumentType =
+  | 'AmbientLight'
+  | 'AmbientSound'
+  | 'Drawing'
+  | 'MeasuredTemplate'
+  | 'Note'
+  | 'Tile'
+  | 'Token'
+  | 'Wall';
+
 export type ConfiguredDocumentClassForName<Name extends DocumentType> = 'documentClass' extends keyof CONFIG[Name]
   ? CONFIG[Name]['documentClass']
   : never;
@@ -76,12 +86,8 @@ export type ConfiguredObjectClassForName<Name extends ObjectType> = 'objectClass
   ? CONFIG[Name]['objectClass']
   : never;
 
-export type ConfiguredObjectClassForName<Name extends DocumentType> = 'objectClass' extends keyof CONFIG[Name]
+export type ConfiguredObjectClassForName<Name extends PlaceableDocumentType> = 'objectClass' extends keyof CONFIG[Name]
   ? CONFIG[Name]['objectClass']
-  : never;
-
-export type ConfiguredSheetClassForName<Name extends DocumentType> = 'sheetClass' extends keyof CONFIG[Name]
-  ? CONFIG[Name]['sheetClass']
   : never;
 
 export type ConfiguredData<Name extends string> = Name extends keyof DataConfig ? DataConfig[Name] : {};
@@ -112,8 +118,8 @@ export type LayerClass<T extends DocumentConstructor> = T['metadata']['name'] ex
     : never
   : T;
 
-export type DataTypeForPlaceable<P extends PlaceableObject> = P extends PlaceableObject<infer Doc>
-  ? Doc extends Document<infer D, InstanceType<ConfiguredDocumentClass<typeof BaseScene>>>
-    ? D
+export type DataSourceForPlaceable<P extends PlaceableObject> = P extends PlaceableObject<infer Doc>
+  ? Doc extends Document<infer D, any>
+    ? D['_source']
     : never
   : never;

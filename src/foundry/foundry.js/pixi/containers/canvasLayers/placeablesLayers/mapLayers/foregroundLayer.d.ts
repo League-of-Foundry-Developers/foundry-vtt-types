@@ -43,7 +43,7 @@ declare global {
 
     getZIndex(): number;
 
-    getDocuments(): Iterable<InstanceType<ConfiguredDocumentClassForName<'Tile'>>>;
+    getDocuments(): Exclude<this['documentCollection'], null>;
 
     /**
      * Refresh the display of tiles on the Foreground Layer depending on Token occlusion.
@@ -63,7 +63,9 @@ declare global {
 
     protected _getDropData(
       event: DragEvent,
-      data: Record<string, unknown>
+      data:
+        | { type: 'Tile'; img: string; tileSize?: number; x: number; y: number }
+        | ({ type: string } & Partial<Record<string, unknown>>)
     ): Promise<ConstructorParameters<typeof foundry.documents.BaseTile>[0]>;
   }
 }

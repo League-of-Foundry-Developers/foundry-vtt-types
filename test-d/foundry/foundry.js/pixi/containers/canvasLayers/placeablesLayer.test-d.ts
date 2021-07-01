@@ -1,60 +1,32 @@
 import { expectError, expectType } from 'tsd';
 import EmbeddedCollection from '../../../../../../src/foundry/common/abstract/embedded-collection.mjs';
-import { DocumentConstructor } from '../../../../../../src/types/helperTypes';
 
 declare class SomeLightLayer extends PlaceablesLayer<'AmbientLight', PlaceablesLayer.LayerOptions<'AmbientLight'>> {}
 
 expectType<CanvasLayer>(SomeLightLayer.instance);
 expectType<PlaceablesLayer.LayerOptions<any>>(SomeLightLayer.layerOptions);
-expectType<typeof foundry.abstract.Document | undefined>(SomeLightLayer.layerOptions.objectClass);
+expectType<any>(SomeLightLayer.layerOptions.objectClass); // TODO: Can this be typed to DocumentConstructor?
 expectType<ConstructorOf<FormApplication>>(SomeLightLayer.layerOptions.sheetClass);
-expectType<
-  | 'ActiveEffect'
-  | 'AmbientLight'
-  | 'AmbientSound'
-  | 'DatabaseBackend'
-  | 'Actor'
-  | 'ChatMessage'
-  | 'Combat'
-  | 'Combatant'
-  | 'Drawing'
-  | 'FogExploration'
-  | 'Folder'
-  | 'Item'
-  | 'JournalEntry'
-  | 'Macro'
-  | 'MeasuredTemplate'
-  | 'Note'
-  | 'Playlist'
-  | 'PlaylistSound'
-  | 'RollTable'
-  | 'Scene'
-  | 'Setting'
-  | 'TableResult'
-  | 'Tile'
-  | 'TinyMCE'
-  | 'Token'
-  | 'Wall'
-  | 'User'
-  | 'weatherEffects'
-  | 'controlIcons'
-  | 'supportedLanguages'
->(PlaceablesLayer.documentName);
-expectType<DocumentConstructor>(PlaceablesLayer.placeableClass);
+expectType<'AmbientLight' | 'AmbientSound' | 'Drawing' | 'MeasuredTemplate' | 'Note' | 'Tile' | 'Token' | 'Wall'>(
+  PlaceablesLayer.documentName
+);
+expectType<ConstructorOf<PlaceableObject>>(PlaceablesLayer.placeableClass);
 
 const layer = new SomeLightLayer();
 expectType<ConstructorOf<AmbientLight>>(layer.options.objectClass);
-expectType<ConstructorOf<LightConfig>>(layer.options.sheetClass);
+expectType<ConstructorOf<FormApplication>>(layer.options.sheetClass);
 expectType<PIXI.Container | null>(layer.objects);
 expectType<PIXI.Container | null>(layer.preview);
-expectType<Array<{ type: 'create' | 'update' | 'delete'; data: Array<foundry.data.AmbientLightData> }>>(layer.history);
+expectType<Array<{ type: 'create' | 'update' | 'delete'; data: Array<foundry.data.AmbientLightData['_source']> }>>(
+  layer.history
+);
 expectType<Quadtree<AmbientLight> | null>(layer.quadtree);
 expectType<EmbeddedCollection<typeof AmbientLightDocument, foundry.data.SceneData> | null>(layer.documentCollection);
 expectType<number>(layer.gridPrecision);
 expectType<BasePlaceableHUD<AmbientLight> | null>(layer.hud);
 expectType<AmbientLight[]>(layer.placeables);
 expectType<AmbientLight[]>(layer.controlled);
-expectType<Iterable<AmbientLightDocument>>(layer.getDocuments());
+expectType<EmbeddedCollection<typeof AmbientLightDocument, foundry.data.SceneData> | []>(layer.getDocuments());
 expectType<Promise<SomeLightLayer | undefined>>(layer.draw());
 expectType<AmbientLight>(layer.createObject(new AmbientLightDocument()));
 expectError(layer.createObject({}));
