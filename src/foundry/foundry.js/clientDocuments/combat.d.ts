@@ -183,7 +183,7 @@ declare global {
     /** @deprecated since 0.8.0 */
     updateCombatant(
       data: DeepPartial<Combatant['data']> & Record<string, unknown>,
-      context?: DocumentModificationContext
+      options?: DocumentModificationContext
     ): Combatant['update'];
 
     /** @deprecated since 0.8.0 */
