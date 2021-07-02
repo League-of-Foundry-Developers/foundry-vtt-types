@@ -35,13 +35,13 @@ interface CombatDataProperties {
    * The current round of the Combat encounter
    * @defaultValue `0`
    */
-  round: number | undefined;
+  round: number;
 
   /**
    * The current turn in the Combat round
    * @defaultValue `0`
    */
-  turn: number | undefined;
+  turn: number;
 
   /**
    * The current sort order of this Combat relative to others in the same Scene

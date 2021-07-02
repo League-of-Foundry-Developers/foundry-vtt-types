@@ -14,10 +14,10 @@ declare global {
    * @param data - Initial data provided to construct the Combat document
    */
   class Combat extends ClientDocumentMixin(foundry.documents.BaseCombat) {
-    /**
-     * The configuration setting used to record Combat preferences
-     */
-    static CONFIG_SETTING: 'combatTrackerConfig';
+    constructor(
+      data?: ConstructorParameters<ConstructorOf<foundry.documents.BaseCombat>>[0],
+      context?: ConstructorParameters<ConstructorOf<foundry.documents.BaseCombat>>[1]
+    );
 
     /** Track the sorted turn order of this combat encounter */
     turns: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[];
@@ -33,6 +33,9 @@ declare global {
      * @defaultValue `false`
      */
     protected _soundPlaying: boolean;
+
+    /** The configuration setting used to record Combat preferences */
+    static CONFIG_SETTING: 'combatTrackerConfig';
 
     /** Get the Combatant who has the current turn. */
     get combatant(): this['turns'][number];
@@ -140,7 +143,7 @@ declare global {
     protected _onCreate(data: this['data']['_source'], options: DocumentModificationOptions, userId: string): void;
 
     protected _onUpdate(
-      changed: DeepPartial<this['data']['_source']> & Record<string, unknown>,
+      changed: DeepPartial<this['data']['_source']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -149,7 +152,7 @@ declare global {
 
     protected _onCreateEmbeddedDocuments(
       embeddedName: string,
-      documents: foundry.abstract.Document<any, any>[],
+      documents: Combatant[],
       result: Record<string, unknown>[],
       options: DocumentModificationOptions,
       userId: string
@@ -157,7 +160,7 @@ declare global {
 
     protected _onUpdateEmbeddedDocuments(
       embeddedName: string,
-      documents: foundry.abstract.Document<any, any>[],
+      documents: Combatant[],
       result: Record<string, unknown>[],
       options: DocumentModificationOptions,
       userId: string
@@ -165,7 +168,7 @@ declare global {
 
     protected _onDeleteEmbeddedDocuments(
       embeddedName: string,
-      documents: foundry.abstract.Document<any, any>[],
+      documents: Combatant[],
       result: string[],
       options: DocumentModificationContext,
       userId: string
@@ -176,13 +179,13 @@ declare global {
 
     /** @deprecated since 0.8.0 */
     createCombatant(
-      data: Array<Record<string, unknown>>,
-      context?: DocumentModificationContext
+      data: Parameters<Combatant['data']['_initializeSource']>[0],
+      options?: DocumentModificationContext
     ): this['createEmbeddedDocuments'];
 
     /** @deprecated since 0.8.0 */
     updateCombatant(
-      data: DeepPartial<Combatant['data']> & Record<string, unknown>,
+      data: DeepPartial<Parameters<Combatant['data']['_initializeSource']>[0]>,
       options?: DocumentModificationContext
     ): NonNullable<ReturnType<this['combatants']['get']>>['update'];
 
@@ -213,10 +216,8 @@ interface InitiativeOptions {
 }
 
 interface RoundData {
-  round?: number | null;
-  turn?: number | null;
-  tokenId?: string | null;
-  combatantid?: string | null;
+  round: number | null;
+  turn: number | null;
+  tokenId: string | null;
+  combatantid: string | null;
 }
-
-export {};

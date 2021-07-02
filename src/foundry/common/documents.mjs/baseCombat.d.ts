@@ -8,6 +8,8 @@ import { BaseUser } from './baseUser';
  * The base Combat model definition which defines common behavior of an Combat document between both client and server.
  */
 export declare class BaseCombat extends Document<data.CombatData> {
+  static get schema(): typeof data.CombatData;
+
   static get metadata(): Merge<
     DocumentMetadata,
     {
