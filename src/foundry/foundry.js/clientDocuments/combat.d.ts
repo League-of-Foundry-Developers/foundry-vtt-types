@@ -3,7 +3,7 @@ import { DocumentModificationOptions } from '../../common/abstract/document.mjs'
 
 declare global {
   /**
-   * The client-side Combat document which extends the common BaseCombat abstraction.
+   * The Combat model definition which defines common behavior of an Combat document between both client and server.
    * Each Combat document contains CombatData which defines its data schema.
    *
    * @see {@link data.CombatData}               The Combat data schema
