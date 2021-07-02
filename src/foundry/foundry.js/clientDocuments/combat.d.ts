@@ -1,5 +1,6 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
+import { ConfiguredDocumentClass, PropertiesToSource } from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
+import { CombatantDataProperties } from '../../common/data/data.mjs/combatantData';
 
 declare global {
   /**
@@ -153,7 +154,7 @@ declare global {
     protected _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: Combatant[],
-      result: Record<string, unknown>[],
+      result: DeepPartial<PropertiesToSource<CombatantDataProperties>>[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -161,7 +162,7 @@ declare global {
     protected _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: Combatant[],
-      result: Record<string, unknown>[],
+      result: DeepPartial<PropertiesToSource<CombatantDataProperties>>[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
