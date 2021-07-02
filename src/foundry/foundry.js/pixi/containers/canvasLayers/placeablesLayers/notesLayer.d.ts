@@ -1,9 +1,9 @@
-/**
- * The Notes Layer Container
- */
 import { DropData } from '../../../../clientDocumentMixin';
 
 declare global {
+  /**
+   * The Notes Layer which contains Note canvas objects
+   */
   class NotesLayer extends PlaceablesLayer<'Note', NotesLayer.LayerOptions> {
     /**
      * @remarks This is not overridden in foundry but reflects the real behavior.
