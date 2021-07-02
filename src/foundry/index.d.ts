@@ -64,6 +64,7 @@ import './foundry.js/clientDocuments/canvasDocuments/tokenDocument';
 import './foundry.js/clientDocuments/chatMessage';
 import './foundry.js/clientDocuments/combat';
 import './foundry.js/clientDocuments/combatant';
+import './foundry.js/clientDocuments/fogExploration';
 import './foundry.js/clientDocuments/folder';
 import './foundry.js/clientDocuments/item';
 import './foundry.js/clientDocuments/journalEntry';
