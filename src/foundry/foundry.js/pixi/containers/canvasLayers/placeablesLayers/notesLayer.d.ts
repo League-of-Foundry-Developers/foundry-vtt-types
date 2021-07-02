@@ -1,53 +1,68 @@
 /**
  * The Notes Layer Container
  */
-declare class NotesLayer extends PlaceablesLayer<Note> {
-  /**
-   * @override
-   * @defaultValue
-   * ```
-   * mergeObject(super.layerOptions, {
-   *   canDragCreate: false,
-   *   objectClass: Note,
-   *   sheetClass: NoteConfig,
-   *   sortActiveTop: true,
-   *   zIndex: 60
-   * })
-   * ```
-   */
-  static get layerOptions(): PlaceablesLayer.LayerOptions;
+import { DropData } from '../../../../clientDocumentMixin';
 
-  /** @override */
-  activate(): this;
+declare global {
+  class NotesLayer extends PlaceablesLayer<'Note', NotesLayer.LayerOptions> {
+    /**
+     * @remarks This is not overridden in foundry but reflects the real behavior.
+     */
+    static get instance(): NotesLayer;
 
-  /** @override */
-  deactivate(): this;
+    /**
+     * @override
+     * @defaultValue
+     * ```
+     * foundry.utils.mergeObject(super.layerOptions, {
+     *  name: 'notes',
+     *  canDragCreate: false,
+     *  sortActiveTop: true,
+     *  zIndex: 60
+     * })
+     * ```
+     */
+    static get layerOptions(): NotesLayer.LayerOptions;
 
-  /**
-   * Register game settings used by the NotesLayer
-   */
-  static registerSettings(): void;
+    /** @override */
+    static documentName: 'Note';
 
-  /** @override */
-  protected _onMouseDown(event: PIXI.InteractionEvent): void;
+    /**
+     * The named core setting which tracks the toggled visibility state of map notes
+     */
+    static TOGGLE_SETTING: 'notesDisplayToggle';
 
-  /**
-   * Handle JournalEntry entity drop data
-   */
-  protected _onDropData(
-    event: DragEvent,
-    data: { id: string; type: 'JournalEntry'; x: number; y: number; pack?: string }
-  ): Promise<false | undefined>;
+    /** @override */
+    activate(): this;
 
-  /**
-   * @defaultValue `"notesDisplayToggle"`
-   */
-  static TOGGLE_SETTING: string;
-}
+    /** @override */
+    deactivate(): this;
 
-declare namespace NotesLayer {
-  type DropData = {
-    type?: 'JournalEntry';
-  } & Canvas.DropPosition &
-    DeepPartial<any>; // TODO: Update this
+    /**
+     * Register game settings used by the NotesLayer
+     */
+    static registerSettings(): void;
+
+    /** @override */
+    protected _onMouseDown(event: PIXI.InteractionEvent): void;
+
+    /**
+     * Handle JournalEntry entity drop data
+     */
+    protected _onDropData(event: DragEvent, data: DropData<JournalEntry>): Promise<false | void>;
+  }
+
+  namespace NotesLayer {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<'Note'> {
+      name: 'notes';
+      canDragCreate: false;
+      sortActiveTop: true;
+      zIndex: 60;
+    }
+
+    type DropData = {
+      type?: 'JournalEntry';
+    } & Canvas.DropPosition &
+      DeepPartial<any>; // TODO: Update this
+  }
 }

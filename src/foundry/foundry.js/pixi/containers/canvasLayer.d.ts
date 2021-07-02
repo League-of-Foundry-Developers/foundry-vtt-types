@@ -34,8 +34,9 @@ declare abstract class CanvasLayer<Options extends CanvasLayerOptions = CanvasLa
 
   /**
    * Return a reference to the active instance of this canvas layer
+   * @remarks `undefined` is just returned by the ControlsLayer which is probably a bug.
    */
-  static get instance(): CanvasLayer;
+  static get instance(): CanvasLayer | undefined;
 
   /**
    * The canonical name of the CanvasLayer
@@ -48,7 +49,7 @@ declare abstract class CanvasLayer<Options extends CanvasLayerOptions = CanvasLa
    * The Promise resolves to the drawn layer once its contents are successfully rendered.
    * @remarks It returns Promise<this> but is overridden by a subclass in this way.
    */
-  draw(): Promise<this | undefined>;
+  draw(): Promise<this | undefined> | this;
 
   /**
    * Deconstruct data used in the current layer in preparation to re-draw the canvas
@@ -64,8 +65,9 @@ declare abstract class CanvasLayer<Options extends CanvasLayerOptions = CanvasLa
   /**
    * Deactivate the CanvasLayer, removing interactivity from its children.
    * @returns The layer instance, now inactive
+   * @remarks It returns Promise<this> but is overridden by a subclass returning void.
    */
-  deactivate(): this;
+  deactivate(): this | void;
 
   /**
    * Get the zIndex that should be used for ordering this layer vertically relative to others in the same Container.

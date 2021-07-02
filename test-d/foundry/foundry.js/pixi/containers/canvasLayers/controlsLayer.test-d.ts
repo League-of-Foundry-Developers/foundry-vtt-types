@@ -12,7 +12,7 @@ expectType<PIXI.Container | null>(layer.doors);
 expectType<null>(layer.effects);
 expectType<PIXI.Container | null>(layer.rulers);
 expectType<PIXI.Graphics | null>(layer.select);
-expectType<boolean>(layer.interactiveChildren);
+expectType<true>(layer.interactiveChildren);
 expectType<Ruler | null>(layer.ruler);
 expectType<Ruler | null>(layer.getRulerForUser('my-user-id'));
 expectType<ControlsLayer>(layer.draw());

@@ -87,7 +87,7 @@ declare global {
 
     protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
-    protected _onDragLeftDrop(event: PIXI.InteractionEvent): undefined;
+    protected _onDragLeftDrop(event: PIXI.InteractionEvent): void;
 
     protected _onDragLeftCancel(event: PointerEvent): void;
 

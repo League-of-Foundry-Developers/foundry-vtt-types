@@ -3,7 +3,7 @@ import EmbeddedCollection from '../../../../../../src/foundry/common/abstract/em
 
 declare class SomeLightLayer extends PlaceablesLayer<'AmbientLight', PlaceablesLayer.LayerOptions<'AmbientLight'>> {}
 
-expectType<CanvasLayer>(SomeLightLayer.instance);
+expectType<CanvasLayer | undefined>(SomeLightLayer.instance);
 expectType<PlaceablesLayer.LayerOptions<any>>(SomeLightLayer.layerOptions);
 expectType<any>(SomeLightLayer.layerOptions.objectClass); // TODO: Can this be typed to DocumentConstructor?
 expectType<ConstructorOf<FormApplication>>(SomeLightLayer.layerOptions.sheetClass);
