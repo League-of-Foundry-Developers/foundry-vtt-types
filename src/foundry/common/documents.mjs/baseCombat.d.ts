@@ -31,7 +31,7 @@ export declare class BaseCombat extends Document<data.CombatData> {
 
   /**
    * Is a user able to update an existing Combat?
-   * @remarks doc seems unused
+   * @param doc - (unused)
    */
   protected static _canUpdate(
     user: BaseUser,
