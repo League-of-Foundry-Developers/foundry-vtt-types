@@ -6,21 +6,24 @@
  * 2) Ruler measurement
  * 3) Map pings
  */
-declare class ControlsLayer extends CanvasLayer {
+declare class ControlsLayer extends CanvasLayer<ControlsLayer.LayerOptions> {
   constructor();
 
   /**
    * Cursor position indicators
+   * @defaultValue `null`
    */
   cursors: PIXI.Container | null;
 
   /**
    * A mapping of user IDs to Cursor instances for quick access
+   * @defaultValue `{}`
    */
   protected _cursors: Partial<Record<string, Cursor>>;
 
   /**
    * Door control icons
+   * @defaultValue `null`
    */
   doors: PIXI.Container | null;
 
@@ -28,10 +31,11 @@ declare class ControlsLayer extends CanvasLayer {
    * Status effect icons
    * @remarks Always `null`
    */
-  effects: null; // This seems to be unused. - Bolts
+  effects: null;
 
   /**
    * Ruler tools, one per connected user
+   * @defaultValue `null`
    */
   rulers: PIXI.Container | null;
 
@@ -42,6 +46,7 @@ declare class ControlsLayer extends CanvasLayer {
 
   /**
    * Canvas selection rectangle
+   * @defaultValue `null`
    */
   select: PIXI.Graphics | null;
 
@@ -49,10 +54,15 @@ declare class ControlsLayer extends CanvasLayer {
   interactiveChildren: true;
 
   /**
-   * @override
-   * @defaultValue `mergeObject(super.layerOptions, { zIndex: 400 })`
+   * @remarks This is not overridden in foundry but reflects the real behavior.
    */
-  static get layerOptions(): CanvasLayer.LayerOptions;
+  static get instance(): undefined;
+
+  /**
+   * @override
+   * @defaultValue `mergeObject(super.layerOptions, { zIndex: 1000 })`
+   */
+  static get layerOptions(): ControlsLayer.LayerOptions;
 
   /**
    * A convenience accessor to the Ruler for the active game user
@@ -82,7 +92,7 @@ declare class ControlsLayer extends CanvasLayer {
    * @param wall - The Wall for which to create a DoorControl
    * @returns The created DoorControl
    */
-  createDoorControl(wall: Wall): Promise<DoorControl> | null;
+  createDoorControl(wall: Wall): ReturnType<DoorControl['draw']> | null;
 
   /**
    * Draw Ruler tools
@@ -111,19 +121,20 @@ declare class ControlsLayer extends CanvasLayer {
 
   /**
    * Update the cursor when the user moves to a new position
+   * @param user     - The User for whom to update the cursor
+   * @param position - The new cursor position
    */
   updateCursor(user: User, position: Point | null): void;
 
   /**
    * Update display of an active Ruler object for a user given provided data
    */
-  updateRuler(
-    user: User,
-    rulerData: {
-      class: 'Ruler';
-      waypoints: Ruler['waypoints'];
-      destination: Ruler['destination'];
-      _state: Ruler['_state'];
-    }
-  ): void;
+  updateRuler(user: User, rulerData: Parameters<Ruler['update']>[0] | null): void;
+}
+
+declare namespace ControlsLayer {
+  interface LayerOptions extends CanvasLayer.LayerOptions {
+    name: '';
+    zIndex: 1000;
+  }
 }

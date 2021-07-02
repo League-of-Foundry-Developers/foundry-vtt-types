@@ -24,3 +24,4 @@ expectType<void>(layer.drawSelect({ x: 100, y: 500, width: 200, height: 200 }));
 expectType<void>(layer.deactivate());
 expectType<Cursor>(layer.drawCursor(new User()));
 expectType<void>(layer.updateCursor(new User(), { x: 100, y: 500 }));
+expectType<void>(layer.updateCursor(new User(), null));
