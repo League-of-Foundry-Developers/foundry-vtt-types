@@ -3,33 +3,33 @@
  * This layer uses an event-driven workflow to perform the minimal required calculation in response to changes.
  * @see PointSource
  *
+ * The container structure of this layer is as follows:
+ * sight: SightLayer              The SightLayer itself
+ *   msk: PIXI.Graphics           A masking rectangle that restricts exploration to the scene background
+ *   unexplored: PIXI.Graphics    An unexplored background that spans the entire scene canvas
+ *   explored: PIXI.Container     The exploration container
+ *      revealed: PIXI.Container  The container of areas which have been previously revealed
+ *        saved: PIXI.Sprite      The saved FOW exploration texture from the database
+ *        pending: PIXI.Container A container of pending exploration polygons that have not yet been saved
+ *        roofs: PIXI.Container   A container of occluded roof sprites which should not be marked as explored
+ *      current: PIXI.Container   The current vision container
+ *        los: PIXI.Graphics      The current line-of-sight polygon
+ *        fov: PIXI.Graphics      The current filed-of-view polygon
+ *      msk: PIXI.Graphics        The masking rectangle that limits exploration to the Scene background
+ *
  * @example <caption>The sightRefresh hook</caption>
  * ```typescript
  * Hooks.on("sightRefresh", layer => {});
  * ```
  */
-declare class SightLayer extends CanvasLayer {
+declare class SightLayer extends CanvasLayer<SightLayer.LayerOptions> {
   constructor();
 
   /**
-   * Fog of War data object
-   * @defaultValue
-   * ```
-   * {
-   *   _id: null,
-   *   explored: null,
-   *   positions: {}
-   * }
-   * ```
+   * The FogExploration document which applies to this canvas view
+   * @defaultValue `null`
    */
-  fogData: {
-    _id: string | null;
-    explored: boolean | string | null;
-    positions: Record<`${number}_${number}`, { radius: number; limit: number }>;
-    scene?: string;
-    timestamp?: number;
-    user?: string;
-  };
+  exploration: FogExploration | null;
 
   /**
    * A Collection of vision sources which are currently active within the rendered Scene.
@@ -42,22 +42,10 @@ declare class SightLayer extends CanvasLayer {
   los: PIXI.Graphics;
 
   /**
-   * The blur distance for soft shadows
-   * @defaultValue `0`
-   */
-  protected _blurDistance: number;
-
-  /**
    * A status flag for whether the layer initialization workflow has succeeded
    * @defaultValue `false`
    */
   protected _initialized: boolean;
-
-  /**
-   * The downscaling resolution used for the saved fog texture
-   * @defaultValue `1`
-   */
-  protected _fogResolution: number;
 
   /**
    * A pool of fog of war exploration containers that can be recycled
@@ -80,13 +68,44 @@ declare class SightLayer extends CanvasLayer {
   /**
    * A debounced function to save fog of war exploration once a stream of updates have stopped
    */
-  debounceSaveFog: (...args: Parameters<this['update']>) => void;
+  debounceSaveFog: (...args: Parameters<this['saveFog']>) => void;
+
+  /**
+   * The configured resolution used for the saved fog-of-war texture
+   * @defaultValue `undefined`
+   */
+  protected _fogResolution: { resolution: number; width: number; height: number } | undefined;
+
+  /**
+   * Define the threshold value for the number of distinct Wall endpoints.
+   * Below this threshold, exact vision computation is used by casting a Ray at every endpoint.
+   * Above this threshold, approximate vision computation is used by culling to only nearby endpoints.
+   * @defaultValue `200`
+   */
+  static EXACT_VISION_THRESHOLD: number;
+
+  /**
+   * Define the number of positions that are explored before a set of fog updates are pushed to the server.
+   * @defaultValue `10`
+   */
+  static FOG_COMMIT_THRESHOLD: number;
+
+  /**
+   * @remarks This is not overridden in foundry but reflects the real behavior.
+   */
+  static get instance(): SightLayer;
 
   /**
    * @override
-   * @defaultValue `mergeObject(super.layerOptions, { zIndex: 210 })`
+   * @defaultValue
+   * ```typescript
+   * foundry.utils.mergeObject(super.layerOptions, {
+   *  name: 'sight',
+   *  zIndex: 400
+   * })
+   * ```
    */
-  static get layerOptions(): CanvasLayer.LayerOptions;
+  static get layerOptions(): SightLayer.LayerOptions;
 
   /**
    * Does the currently viewed Scene support Token field of vision?
@@ -99,7 +118,7 @@ declare class SightLayer extends CanvasLayer {
   get fogExploration(): boolean;
 
   /** @override */
-  tearDown(): Promise<void>;
+  tearDown(): Promise<this>;
 
   /**
    * Initialize the Sight Layer. Initialization has the following hierarchical workflow:
@@ -118,13 +137,13 @@ declare class SightLayer extends CanvasLayer {
    */
   initializeFog(): Promise<void>;
 
+  /**
+   * Initialize all Token sight sources which are present on this layer
+   */
+  initializeSources(): Promise<void>;
+
   /** @override */
   draw(): Promise<this>;
-
-  /**
-   * Draw the fog of war exploration container
-   */
-  protected _drawFogContainer(): PIXI.Container;
 
   /**
    * Construct a vision container that is used to render a single view position.
@@ -153,9 +172,13 @@ declare class SightLayer extends CanvasLayer {
    * @param noUpdateFog    - Never update the Fog exploration progress for this update
    *                         (default: `false`)
    */
-  refresh({ forceUpdateFog, noUpdateFog }?: { forceUpdateFog?: boolean; noUpdateFog?: boolean }): void;
-
-  /* -------------------------------------------- */
+  refresh({
+    forceUpdateFog,
+    noUpdateFog
+  }?: {
+    forceUpdateFog?: boolean;
+    noUpdateFog?: boolean;
+  }): void | ReturnType<this['restrictVisibility']>;
 
   /**
    * Restrict the visibility of certain canvas assets (like Tokens or DoorControls) based on the visibility polygon
@@ -164,28 +187,46 @@ declare class SightLayer extends CanvasLayer {
   restrictVisibility(): void;
 
   /**
+   * Test whether a point on the Canvas is visible based on the current vision and LOS polygons
+   *
+   * @param point     - The point in space to test, an object with coordinates x and y.
+   * @param tolerance - A numeric radial offset which allows for a non-exact match. For example, if
+   *                    tolerance is 2 then the test will pass if the point is within 2px of a vision
+   *                    polygon.
+   *                    (defaultValue: `2`)
+   * @param object    - An optional reference to the object whose visibility is being tested
+   *                    (defaultValue: `null`)
+   *
+   * @returns Whether the point is currently visible.
+   */
+  testVisibility(
+    point: Point,
+    { tolerance, object }?: { tolerance?: number; object?: PIXI.DisplayObject | null }
+  ): boolean;
+
+  /**
    * Once a new Fog of War location is explored, composite the explored container with the current staging sprite
    * Save that staging Sprite as the rendered fog exploration and swap it out for a fresh staging texture
    * Do all this asynchronously, so it doesn't block token movement animation since this takes some extra time
    */
-  protected commitFog(): Promise<void>;
+  commitFog(): void;
 
   /**
    * Load existing fog of war data from local storage and populate the initial exploration sprite
    */
-  loadFog(): Promise<PIXI.Texture>;
+  loadFog(): Promise<PIXI.Texture | void>;
 
   /**
    * Dispatch a request to reset the fog of war exploration status for all users within this Scene.
    * Once the server has deleted existing FogExploration documents, the _onResetFog handler will re-draw the canvas.
    */
-  resetFog(): Promise<Canvas | undefined>;
+  resetFog(): Promise<void>;
 
   /**
    * Save Fog of War exploration data to a base64 string to the FogExploration document in the database.
    * Assumes that the fog exploration has already been rendered as fog.rendered.texture.
    */
-  protected saveFog(): Promise<any>; // TODO: Type when SocketInterface is done
+  saveFog(): Promise<void>;
 
   /**
    * Update the fog layer when a player token reaches a board position which was not previously explored
@@ -196,102 +237,15 @@ declare class SightLayer extends CanvasLayer {
   updateFog(source: PointSource, force?: boolean): void;
 
   /**
-   * Choose an adaptive fog rendering resolution which downscales the saved fog textures for larger dimension Scenes
+   * Choose an adaptive fog rendering resolution which downscales the saved fog textures for larger dimension Scenes.
+   * It is important that the width and height of the fog texture is evenly divisible by the downscaling resolution.
    */
-  protected _configureFogResolution(): number;
-
-  /**
-   * Trigger a server-side update (or creation) of fog exploration status for a certain Scene
-   */
-  protected _createOrUpdateFogExploration(fogData: this['fogData']): Promise<any>; // TODO: Type when SocketInterface is done
+  protected _configureFogResolution(): { resolution: number; width: number; height: number };
 
   /**
    * If fog of war data is reset from the server, re-draw the canvas
-   * @param resetData - Fog reset data sent by the server
    */
-  protected _onResetFog(resetData: { reset: boolean; scene: string }): Promise<Canvas | undefined>;
-
-  /**
-   * Compute line-of-sight and field-of-vision polygons for a given origin position and visibility radius.
-   * The line-of-sight polygon defines the unrestricted area of visibility for the source.
-   * The field-of-vision polygon defines the restricted area of visibility for the source.
-   * @param origin       - An point with coordinates x and y representing the origin of the test
-   * @param radius       - A distance in canvas pixels which reflects the visible range
-   * @param angle        - An optional limited angle of emission with which to restrict polygons
-   *                       (default: `360`)
-   * @param density      - The desired radial density of emission for rays, in degrees
-   *                       (default: `6`)
-   * @param rotation     - (default: `0`)
-   * @param unrestricted - Compute sight that is unrestricted by walls
-   *                       (default: `false`)
-   * @returns The computed rays and polygons
-   */
-  static computeSight(
-    origin: Point,
-    radius: number,
-    {
-      angle,
-      density,
-      rotation,
-      unrestricted
-    }?: { angle?: number; density?: number; rotation?: number; unrestricted?: boolean }
-  ): { rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon };
-
-  /* -------------------------------------------- */
-
-  /**
-   * A helper method responsible for casting rays at wall endpoints.
-   * Rays are restricted by limiting angles.
-   *
-   * @param x          - The origin x-coordinate
-   * @param y          - The origin y-coordinate
-   * @param distance   - The ray distance
-   * @param density    - The desired radial density
-   *                     (default: `4`)
-   * @param endpoints  - An array of endpoints to target
-   * @param limitAngle - Whether the rays should be cast subject to a limited angle of emission
-   *                     (default: `false`)
-   * @param aMin       - The minimum bounding angle
-   * @param aMax       - The maximum bounding angle
-   *
-   * @returns An array of Ray objects
-   */
-  protected static _castRays(
-    x: number,
-    y: number,
-    distance: number,
-    {
-      density,
-      endpoints,
-      limitAngle,
-      aMin,
-      aMax
-    }: { density?: number; endpoints: PointArray[]; limitAngle: boolean; aMin: number; aMax: number }
-  ): Ray[];
-
-  /**
-   * Test whether a point on the Canvas is visible based on the current vision and LOS polygons
-   * @param point     - The point in space to test, an object with coordiantes x and y.
-   * @param tolerance - A numeric radial offset which allows for a non-exact match. For example, if
-   *                    tolerance is 2 then the test will pass if the point is within 2px of a vision
-   *                    polygon.
-   *                    (default: `2`)
-   * @param object    - An optional reference to the object whose visibility is being tested
-   *                    (default: `null`)
-   * @returns Whether the point is currently visible.
-   */
-  testVisibility(
-    point: Point,
-    { tolerance, object }?: { tolerance?: number; object?: PIXI.DisplayObject | null }
-  ): boolean;
-
-  /**
-   * Normalize an angle to ensure it is baselined to be the smallest angle that is greater than a minimum.
-   * @param aMin  - The lower-bound minimum angle
-   * @param angle - The angle to adjust
-   * @returns The adjusted angle which is greater than or equal to aMin.
-   */
-  protected static _adjustRayAngle(aMin: number, angle: number): number;
+  protected _handleResetFog(): Promise<void>;
 
   /**
    * Visualize the sight layer to understand algorithm performance.
@@ -310,40 +264,31 @@ declare class SightLayer extends CanvasLayer {
   ): void;
 
   /**
-   * @deprecated since 0.7.3
-   * @see {@link Canvas#initializeSources}
+   * @deprecated since 0.8.2
+   * @see WallsLayer#computePolygon
+   * Compute line-of-sight and field-of-vision polygons for a given origin position and visibility radius.
+   * The line-of-sight polygon defines the unrestricted area of visibility for the source.
+   * The field-of-vision polygon defines the restricted area of visibility for the source.
+   * @param angle        - (default: `360`)
+   * @param density      - (default: `6`)
+   * @param rotation     - (default: `0`)
+   * @param unrestricted - (default: `false`)
    */
-  initializeTokens({ defer }?: { defer?: boolean }): void;
+  static computeSight(
+    origin: Point,
+    radius: number,
+    {
+      angle,
+      density,
+      rotation,
+      unrestricted
+    }?: { angle?: number; density?: number; rotation?: number; unrestricted?: boolean }
+  ): { rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon };
+}
 
-  /**
-   * @deprecated since 0.7.3
-   * @see {@link SightLayer#refresh}
-   */
-  update(options?: { forceUpdateFog?: boolean; noUpdateFog?: boolean }): void;
-
-  /**
-   * @deprecated since 0.7.3
-   * @see {@link Token#updateSource}
-   */
-  updateToken(token: Token, options: { defer?: boolean; deleted?: boolean; noUpdateFog?: boolean }): void;
-
-  /**
-   * @deprecated since 0.7.3
-   * @see {@link AmbientLight#updateSource}
-   */
-  updateLight(light: AmbientLight, options: { defer: boolean; deleted: boolean }): boolean | void | null;
-
-  /**
-   * Define the threshold value for the number of distinct Wall endpoints.
-   * Below this threshold, exact vision computation is used by casting a Ray at every endpoint.
-   * Above this threshold, approximate vision computation is used by culling to only nearby endpoints.
-   * @defaultValue `500`
-   */
-  static EXACT_VISION_THRESHOLD: number;
-
-  /**
-   * Define the number of positions that are explored before a set of fog updates are pushed to the server.
-   * @defaultValue `10`
-   */
-  static FOG_COMMIT_THRESHOLD: number;
+declare namespace SightLayer {
+  interface LayerOptions extends CanvasLayer.LayerOptions {
+    name: 'sight';
+    zIndex: 400;
+  }
 }
