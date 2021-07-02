@@ -146,7 +146,7 @@ declare global {
       changed: DeepPartial<this['data']['_source']>,
       options: DocumentModificationOptions,
       userId: string
-    ): void;
+    ): void; //TODO Returntype could also be CombatTracker.scrollToTurn
 
     protected _onDelete(options: DocumentModificationOptions, userId: string): void;
 
