@@ -1,32 +1,40 @@
 /**
- * The DrawingsLayer subclass of PlaceablesLayer
- *
- * This layer implements a container for drawings which are rendered immediately above the TilesLayer
- * and immediately below the GridLayer.
+ * The DrawingsLayer subclass of PlaceablesLayer.
+ * This layer implements a container for drawings which are rendered immediately above the BackgroundLayer.
  */
-declare class DrawingsLayer extends PlaceablesLayer<Drawing> {
+declare class DrawingsLayer extends PlaceablesLayer<'Drawing', DrawingsLayer.LayerOptions> {
+  /**
+   * @remarks This is not overridden in foundry but reflects the real behavior.
+   */
+  static get instance(): DrawingsLayer;
+
   /**
    * @override
    * @defaultValue
    * ```
    * mergeObject(super.layerOptions, {
+   *   name: "drawings"
    *   canDragCreate: true,
-   *   canDelete: true,
    *   controllableObjects: true,
    *   rotatableObjects: true,
-   *   objectClass: Drawing,
-   *   sheetClass: DrawingConfig,
    *   zIndex: 20
    * })
    * ```
    */
-  static get layerOptions(): PlaceablesLayer.LayerOptions;
+  static get layerOptions(): DrawingsLayer.LayerOptions;
+
+  /** @override */
+  static documentName: 'Drawing';
+
+  /**
+   * The named game setting which persists default drawing configuration for the User
+   */
+  static DEFAULT_CONFIG_SETTING: 'defaultDrawingConfig';
 
   /**
    * Use an adaptive precision depending on the size of the grid
-   * @remarks Returns `2 | 4 | 8 | 16`
    */
-  get gridPrecision(): number;
+  get gridPrecision(): 0 | 8 | 16;
 
   /** @override */
   get hud(): Canvas['hud']['drawing'];
@@ -40,7 +48,7 @@ declare class DrawingsLayer extends PlaceablesLayer<Drawing> {
    * Override the deactivation behavior of this layer.
    * Placeables on this layer remain visible even when the layer is inactive.
    */
-  deactivate(): void;
+  deactivate(): this;
 
   /**
    * Get initial data for a new drawing.
@@ -48,22 +56,23 @@ declare class DrawingsLayer extends PlaceablesLayer<Drawing> {
    * @param origin - The initial coordinate
    * @returns The new drawing data
    */
-  protected _getNewDrawingData(origin: Point): typeof foundry.CONST['DRAWING_DEFAULT_VALUES'] &
+  protected _getNewDrawingData(origin: Point): typeof foundry.CONST['DRAWING_DEFAULT_VALUES'] & // TODO: This comes from config now
     (
       | {
-          type: typeof foundry.CONST['DRAWING_TYPES']['RECTANGLE'] | typeof foundry.CONST['DRAWING_TYPES']['ELLIPSE'];
+          type: typeof foundry.CONST.DRAWING_TYPES.RECTANGLE | typeof foundry.CONST.DRAWING_TYPES.ELLIPSE;
+          points: [];
         }
       | {
-          type: typeof foundry.CONST['DRAWING_TYPES']['POLYGON'];
+          type: typeof foundry.CONST.DRAWING_TYPES.POLYGON;
           points: PointArray[];
         }
       | {
-          type: typeof foundry.CONST['DRAWING_TYPES']['FREEHAND'];
+          type: typeof foundry.CONST.DRAWING_TYPES.FREEHAND;
           points: PointArray[];
           bezierFactor: number;
         }
       | {
-          type: typeof foundry.CONST['DRAWING_TYPES']['TEXT'];
+          type: typeof foundry.CONST.DRAWING_TYPES.TEXT;
           fillColor: string;
           fillAlpha: number;
           strokeColor: string;
@@ -72,8 +81,8 @@ declare class DrawingsLayer extends PlaceablesLayer<Drawing> {
     ) & {
       author: string;
       fillColor: string;
-      fillAlpha: number;
-      fontFamily: typeof CONFIG['defaultFontFamily'];
+      strokeColor: string;
+      fontFamily: typeof CONFIG.defaultFontFamily;
       x: number;
       y: number;
     };
@@ -82,10 +91,10 @@ declare class DrawingsLayer extends PlaceablesLayer<Drawing> {
   protected _onClickLeft(event: PIXI.InteractionEvent): void;
 
   /** @override */
-  protected _onClickLeft2(event: PIXI.InteractionEvent): void;
+  protected _onClickLeft2(event: PIXI.InteractionEvent): void | Promise<void>;
 
   /** @override */
-  protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
+  protected _onDragLeftStart(event: PIXI.InteractionEvent): ReturnType<Drawing['draw']>;
 
   /** @override */
   protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
@@ -93,16 +102,21 @@ declare class DrawingsLayer extends PlaceablesLayer<Drawing> {
   /**
    * Handling of mouse-up events which conclude a new object creation after dragging
    */
-  protected _onDragLeftDrop(event: PIXI.InteractionEvent): void;
+  protected _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<void>;
 
   /** @override */
   protected _onDragLeftCancel(event: PointerEvent): void;
 
   /** @override */
   protected _onClickRight(event: PIXI.InteractionEvent): void;
+}
 
-  /**
-   * @defaultValue `"defaultDrawingConfig"`
-   */
-  static DEFAULT_CONFIG_SETTING: string;
+declare namespace DrawingsLayer {
+  interface LayerOptions extends PlaceablesLayer.LayerOptions<'Drawing'> {
+    name: 'drawings';
+    canDragCreate: true;
+    controllableObjects: true;
+    rotatableObjects: true;
+    zIndex: 20;
+  }
 }
