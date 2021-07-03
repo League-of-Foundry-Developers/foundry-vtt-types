@@ -3,13 +3,13 @@ import { expectType } from 'tsd';
 expectType<'Token'>(TokenLayer.documentName);
 expectType<TokenLayer>(TokenLayer.instance);
 expectType<TokenLayer.LayerOptions>(TokenLayer.layerOptions);
-expectType<''>(TokenLayer.layerOptions.name);
+expectType<'tokens'>(TokenLayer.layerOptions.name);
 expectType<ConstructorOf<Token>>(TokenLayer.layerOptions.objectClass);
 
 const layer = new TokenLayer();
 expectType<ConstructorOf<Token>>(layer.options.objectClass);
 expectType<TokenLayer.LayerOptions>(layer.options);
-expectType<''>(layer.options.name);
+expectType<'tokens'>(layer.options.name);
 
 expectType<1>(layer.gridPrecision);
 
@@ -17,7 +17,7 @@ expectType<TokenHUD>(layer.hud);
 
 expectType<Token[]>(layer.ownedTokens);
 
-expectType<Promise<void>>(layer.tearDown());
+expectType<Promise<TokenLayer>>(layer.tearDown());
 
 expectType<TokenLayer>(layer.activate());
 
@@ -42,12 +42,12 @@ expectType<number>(layer.targetObjects({ x: 100, y: 100, width: 800, height: 600
 
 expectType<Token | null>(layer.cycleTokens(true, true));
 
-expectType<Promise<Combatant[] | void>>(layer.toggleCombat());
-expectType<Promise<Combatant[] | void>>(layer.toggleCombat(true));
-expectType<Promise<Combatant[] | void>>(layer.toggleCombat(true, null));
-expectType<Promise<Combatant[] | void>>(layer.toggleCombat(true, new Combat()));
-expectType<Promise<Combatant[] | void>>(layer.toggleCombat(true, new Combat(), {}));
-expectType<Promise<Combatant[] | void>>(
+expectType<Promise<Combat | Combatant[] | void>>(layer.toggleCombat());
+expectType<Promise<Combat | Combatant[] | void>>(layer.toggleCombat(true));
+expectType<Promise<Combat | Combatant[] | void>>(layer.toggleCombat(true, null));
+expectType<Promise<Combat | Combatant[] | void>>(layer.toggleCombat(true, new Combat()));
+expectType<Promise<Combat | Combatant[] | void>>(layer.toggleCombat(true, new Combat(), {}));
+expectType<Promise<Combat | Combatant[] | void>>(
   layer.toggleCombat(true, new Combat(), { token: new Token(new TokenDocument()) })
 );
 
