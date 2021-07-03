@@ -19,7 +19,8 @@ export type DocumentDataType<T extends Document<any, any>> = T extends Document<
  */
 declare abstract class Document<
   ConcreteDocumentData extends AnyDocumentData,
-  Parent extends Document<any, any> | null = null
+  Parent extends Document<any, any> | null = null,
+  Flags extends Record<string, unknown> = Record<string, unknown>
 > {
   /**
    * Create a new Document by providing an initial data object.
@@ -456,6 +457,8 @@ declare abstract class Document<
    * @param key   - The flag key
    * @returns The flag value
    */
+  getFlag<S extends keyof Flags, K extends keyof Flags[S]>(scope: S, key: K): Flags[S][K];
+  getFlag<S extends keyof Flags>(scope: S, key: string): unknown extends Flags[S] ? unknown : never;
   getFlag(scope: string, key: string): unknown;
 
   /**
@@ -476,7 +479,16 @@ declare abstract class Document<
    * @param value - The flag value
    * @returns A Promise resolving to the updated document
    */
-  setFlag(scope: string, key: string, value: unknown): Promise<this>;
+  setFlag<S extends keyof Flags, K extends keyof Flags[S], V extends Flags[S][K]>(
+    scope: S,
+    key: K,
+    value: V
+  ): Promise<this>;
+  setFlag<S extends keyof Flags, K extends string>(
+    scope: S,
+    key: K,
+    v: unknown extends Flags[S] ? unknown : never
+  ): Promise<this>;
 
   /**
    * Remove a flag assigned to the document

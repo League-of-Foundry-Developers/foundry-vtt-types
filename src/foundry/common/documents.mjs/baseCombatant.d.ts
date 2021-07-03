@@ -10,7 +10,8 @@ import { BaseUser } from './baseUser';
  */
 export declare class BaseCombatant extends Document<
   data.CombatantData,
-  InstanceType<ConfiguredDocumentClass<typeof BaseCombat>>
+  InstanceType<ConfiguredDocumentClass<typeof BaseCombat>>,
+  CombatantFlags
 > {
   static get schema(): typeof data.CombatantData;
 
