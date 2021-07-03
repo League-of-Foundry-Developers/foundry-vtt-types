@@ -19,7 +19,7 @@ expectType<void>(layer.initializeSources());
 
 expectType<number | void>(layer.refresh());
 expectType<number | void>(layer.refresh({}));
-expectType<number | void>(layer.refresh({ fade: true }));
+expectType<number | void>(layer.refresh({ fade: 50 }));
 
 expectType<void>(layer.previewSound({ x: 100, y: 0 }));
 
