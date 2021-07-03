@@ -8,7 +8,7 @@ expectType<ConstructorOf<AmbientLight>>(LightingLayer.layerOptions.objectClass);
 
 const layer = new LightingLayer();
 expectType<ConstructorOf<AmbientLight>>(layer.options.objectClass);
-expectType<LightingLayer.layerOptions>(layer.options);
+expectType<LightingLayer.LayerOptions>(layer.options);
 expectType<'lighting'>(layer.options.name);
 
 expectType<foundry.utils.Collection<PointSource>>(layer.sources);
@@ -21,9 +21,17 @@ expectType<PIXI.Container | null>(layer.coloration);
 
 expectType<PIXI.Container | null>(layer.illumination);
 
-expectType<{ black: LightChannel; dark: LightChannel; dim: LightChannel; bright: LightChannel } | undefined>(
-  layer.channels
-);
+expectType<
+  | {
+      background: LightChannel;
+      black: LightChannel;
+      bright: LightChannel;
+      canvas: LightChannel;
+      dark: LightChannel;
+      dim: LightChannel;
+    }
+  | undefined
+>(layer.channels);
 
 expectType<Promise<LightingLayer>>(layer.draw());
 

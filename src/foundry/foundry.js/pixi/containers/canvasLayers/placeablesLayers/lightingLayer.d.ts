@@ -14,7 +14,7 @@
  * Hooks.on("lightingRefresh", layer => {});
  * ```
  */
-declare class LightingLayer extends PlaceablesLayer<AmbientLight> {
+declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLayer.LayerOptions> {
   constructor();
 
   /**
@@ -23,32 +23,39 @@ declare class LightingLayer extends PlaceablesLayer<AmbientLight> {
   sources: foundry.utils.Collection<PointSource>;
 
   /**
-   * A mapping of different light level channels
+   * Increment this whenever lighting channels are re-configured.
+   * This informs lighting and vision sources whether they need to re-render.
+   * @defaultValue `0`
    */
-  channels: Record<'background' | 'black' | 'bright' | 'canvas' | 'dark' | 'dim', LightChannel>;
+  version: number;
+
   /**
    * The currently displayed darkness level, which may override the saved Scene value
+   * @defaultValue `0`
    */
-  protected darknessLevel: number | null;
+  protected darknessLevel: number;
 
   /**
    * The current client setting for whether global illumination is used or not
+   * @defaultValue `false`
    */
   globalLight: boolean;
 
   /**
    * The coloration container which visualizes the effect of light sources
+   * @defaultValue `null`
    */
   coloration: PIXI.Container | null;
 
   /**
    * The illumination container which visualizes darkness and light
+   * @defaultValue `null`
    */
   illumination: PIXI.Container | null;
 
   /**
    * A flag for whether the darkness level is currently animating
-   @defaultValue `false`
+   * @defaultValue `false`
    */
   protected _animating: boolean;
 
@@ -58,25 +65,32 @@ declare class LightingLayer extends PlaceablesLayer<AmbientLight> {
   protected _animatedSources: PointSource[];
 
   /**
-   * The blur distance for soft shadows
-   * @defaultValue `0`
+   * A mapping of different light level channels
+   * @defaultValue `undefined`
    */
-  protected _blurDistance: number;
+  channels: Record<'background' | 'black' | 'bright' | 'canvas' | 'dark' | 'dim', LightChannel> | undefined;
+
+  /** @override */
+  static documentName: 'AmbientLight';
+
+  /**
+   * @remarks This is not overridden in foundry but reflects the real behavior.
+   */
+  static get instance(): LightingLayer;
 
   /**
    * @override
    * @defaultValue
    * ```
-   * mergeObject(super.layerOptions, {
-   *   rotatableObjects: true,
-   *   objectClass: AmbientLight,
-   *   quadtree: true,
-   *   sheetClass: LightConfig,
-   *   zIndex: 200
+   * foundry.utils.mergeObject(super.layerOptions, {
+   *  name: "lighting",
+   *  rotatableObjects: true,
+   *  quadtree: true,
+   *  zIndex: 300
    * })
    * ```
    */
-  static get layerOptions(): PlaceablesLayer.LayerOptions;
+  static get layerOptions(): LightingLayer.LayerOptions;
 
   /**
    * Configure the lighting channels which are inputs to the ShadowMap
@@ -107,13 +121,18 @@ declare class LightingLayer extends PlaceablesLayer<AmbientLight> {
   hasGlobalIllumination(): boolean;
 
   /**
+   * Initialize all AmbientLight sources which are present on this layer
+   */
+  initializeSources(): void;
+
+  /**
    * Refresh the active display of the LightingLayer.
    * Update the scene background color, light sources, and darkness sources
    */
-  refresh(darkness?: number | null): void;
+  refresh(darkness?: number | undefined): void;
 
   /** @override */
-  tearDown(): Promise<void>;
+  tearDown(): Promise<this>;
 
   /**
    * Activate light source animation for AmbientLight objects within this layer
@@ -142,6 +161,13 @@ declare class LightingLayer extends PlaceablesLayer<AmbientLight> {
    */
   animateDarkness(target?: number, { duration }?: { duration?: number }): Promise<void>;
 
+  /**
+   * Actions to take when the darkness level of the Scene is changed
+   * @param darkness - The new darkness level
+   * @param prior    - The prior darkness level
+   */
+  protected _onDarknessChange(darkness: number, prior: number): void;
+
   /** @override */
   protected _onDragLeftStart(event: PIXI.InteractionEvent): Promise<AmbientLight>;
 
@@ -151,17 +177,17 @@ declare class LightingLayer extends PlaceablesLayer<AmbientLight> {
   /** @override */
   protected _onDragLeftCancel(event: PointerEvent): void;
 
-  /**
-   * @override
-   * @remarks Returns `Promise<AmbientLight> | undefined`
-   */
-  protected _onMouseWheel(event: WheelEvent): any;
+  /** @override */
+  protected _onMouseWheel(event: WheelEvent): void | ReturnType<AmbientLight['rotate']>;
+}
 
-  /**
-   * @deprecated since 0.7.3
-   * @see {@link LightingLayer#refresh}
-   */
-  update(...args: Parameters<LightingLayer['refresh']>): void;
+declare namespace LightingLayer {
+  interface LayerOptions extends PlaceablesLayer.LayerOptions<'AmbientLight'> {
+    name: 'lighting';
+    rotatableObjects: true;
+    quadtree: true;
+    zIndex: 300;
+  }
 }
 
 declare interface LightChannel {
