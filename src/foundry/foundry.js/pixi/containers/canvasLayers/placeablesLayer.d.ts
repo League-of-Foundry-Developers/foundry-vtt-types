@@ -1,6 +1,5 @@
 import {
   DataSourceForPlaceable,
-  DocumentConstructor,
   ConfiguredDocumentClass,
   ConfiguredObjectClassForName,
   ConfiguredDocumentClassForName,

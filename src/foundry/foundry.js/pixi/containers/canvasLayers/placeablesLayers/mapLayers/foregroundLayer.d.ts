@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClassForName, ConfiguredObjectClassForName } from '../../../../../../../types/helperTypes';
+import { ConfiguredObjectClassForName } from '../../../../../../../types/helperTypes';
 
 declare global {
   /**

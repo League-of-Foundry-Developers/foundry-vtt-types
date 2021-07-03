@@ -1,8 +1,4 @@
-import {
-  ConfiguredDocumentClassForName,
-  ConfiguredObjectClassForName,
-  DataSourceForPlaceable
-} from '../../../../../../../types/helperTypes';
+import { ConfiguredObjectClassForName, DataSourceForPlaceable } from '../../../../../../../types/helperTypes';
 
 declare global {
   /**
