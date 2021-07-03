@@ -199,7 +199,7 @@ declare global {
      * Renders a confirmation dialogue to confirm with the requester that all objects will be deleted
      * @returns An array of Document objects which were deleted by the operation
      */
-    deleteAll(): Promise<InstanceType<ConfiguredDocumentClassForName<DocumentName>>[]>;
+    deleteAll(): Promise<InstanceType<ConfiguredDocumentClassForName<DocumentName>>[] | false | null>;
 
     /**
      * Record a new CRUD event in the history log so that it can be undone later
