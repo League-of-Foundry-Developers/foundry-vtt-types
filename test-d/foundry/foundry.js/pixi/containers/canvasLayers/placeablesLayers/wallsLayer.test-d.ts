@@ -15,7 +15,7 @@ expectType<PointArray[]>(WallsLayer.getUniqueEndpoints([aWall], { type: 'movemen
 expectType<PointArray[]>(WallsLayer.getUniqueEndpoints([aWall], { type: 'sight' }));
 expectType<PointArray[]>(WallsLayer.getUniqueEndpoints([aWall], { type: 'sound' }));
 expectType<Ray[]>(WallsLayer.castRays(100, 200, 600));
-expectType<Ray[]>(WallsLayer.castRays(100, 200, 600), {});
+expectType<Ray[]>(WallsLayer.castRays(100, 200, 600, {}));
 expectType<Ray[]>(
   WallsLayer.castRays(100, 200, 600, { density: 4, endpoints: [[100, 200]], limitAngle: false, aMin: 100, aMax: 100 })
 );
@@ -34,8 +34,6 @@ expectType<'walls'>(layer.options.name);
 expectType<PIXI.Graphics | null>(layer.chain);
 
 expectType<PointArray[]>(layer.endpoints);
-
-expectType<{ id: string | null; point: PointArray | null }>(layer.last);
 
 expectType<Wall[]>(layer.doors);
 
@@ -67,40 +65,40 @@ expectType<void>(layer.highlightControlledSegments());
 expectType<number>(layer.releaseAll());
 expectType<number>(layer.releaseAll({ trigger: true }));
 
-expectType<Promise<foundry.documents.BaseWall>>(layer.pasteObjects({ x: 900, y: 800 }));
-expectType<Promise<foundry.documents.BaseWall>>(layer.pasteObjects({ x: 900, y: 800 }, {}));
-expectType<Promise<foundry.documents.BaseWall>>(layer.pasteObjects({ x: 900, y: 800 }, { hidden: true, snap: true }));
+expectType<Promise<foundry.documents.BaseWall[]>>(layer.pasteObjects({ x: 900, y: 800 }));
+expectType<Promise<foundry.documents.BaseWall[]>>(layer.pasteObjects({ x: 900, y: 800 }, {}));
+expectType<Promise<foundry.documents.BaseWall[]>>(layer.pasteObjects({ x: 900, y: 800 }, { hidden: true, snap: true }));
 
-expectType<{ rays: Ray[]; los: PIXI.Polygon; fox: PIXI.Polygon }>(layer.computePolygon({ x: 100, y: 300 }, 400));
-expectType<{ rays: Ray[]; los: PIXI.Polygon; fox: PIXI.Polygon }>(layer.computePolygon({ x: 100, y: 300 }, 400, {}));
-expectType<{ rays: Ray[]; los: PIXI.Polygon; fox: PIXI.Polygon }>(
+expectType<{ rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon }>(layer.computePolygon({ x: 100, y: 300 }, 400));
+expectType<{ rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon }>(layer.computePolygon({ x: 100, y: 300 }, 400, {}));
+expectType<{ rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon }>(
   layer.computePolygon({ x: 100, y: 300 }, 400, { type: 'sight' })
 );
-expectType<{ rays: Ray[]; los: PIXI.Polygon; fox: PIXI.Polygon }>(
+expectType<{ rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon }>(
   layer.computePolygon({ x: 100, y: 300 }, 400, { type: 'movement' })
 );
-expectType<{ rays: Ray[]; los: PIXI.Polygon; fox: PIXI.Polygon }>(
+expectType<{ rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon }>(
   layer.computePolygon({ x: 100, y: 300 }, 400, { type: 'sound' })
 );
-expectType<{ rays: Ray[]; los: PIXI.Polygon; fox: PIXI.Polygon }>(
+expectType<{ rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon }>(
   layer.computePolygon({ x: 100, y: 300 }, 400, { angle: 360, density: 6, rotation: 0, unrestricted: false })
 );
 
-expectType<RayIntersection[]>(layer.getRayCollision(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 })));
-expectType<RayIntersection[]>(layer.getRayCollision(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), {}));
-expectType<RayIntersection>(
-  layer.getRayCollision(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), { mode: 'closest' })
+expectType<RayIntersection[]>(layer.getRayCollisions(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 })));
+expectType<RayIntersection[]>(layer.getRayCollisions(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), {}));
+expectType<RayIntersection | null>(
+  layer.getRayCollisions(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), { mode: 'closest' })
 );
-expectType<boolean>(layer.getRayCollision(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), { mode: 'any' }));
+expectType<boolean>(layer.getRayCollisions(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), { mode: 'any' }));
 expectType<RayIntersection[]>(
-  layer.getRayCollision(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), { type: 'movement' })
-);
-expectType<RayIntersection[]>(
-  layer.getRayCollision(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), { type: 'sight' })
+  layer.getRayCollisions(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), { type: 'movement' })
 );
 expectType<RayIntersection[]>(
-  layer.getRayCollision(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), { type: 'sound' })
+  layer.getRayCollisions(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), { type: 'sight' })
 );
 expectType<RayIntersection[]>(
-  layer.getRayCollision(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), { _performance: { tests: 0 } })
+  layer.getRayCollisions(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), { type: 'sound' })
+);
+expectType<RayIntersection[]>(
+  layer.getRayCollisions(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), { _performance: { tests: 0 } })
 );
