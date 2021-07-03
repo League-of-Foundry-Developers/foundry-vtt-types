@@ -1,35 +1,13 @@
-import { BaseDrawing } from '../../../../common/documents.mjs';
+import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
+import { DocumentModificationOptions } from '../../../../common/abstract/document.mjs';
 
 declare global {
   /**
-   * The Drawing object is an implementation of the :class:`PlaceableObject` container.
-   * Each Drawing is a placeable object in the :class:`DrawingsLayer`.
-   *
-   * @example
-   * ```typescript
-   * Drawing.create<Drawing>({
-   *   type: CONST.DRAWING_TYPES.RECTANGLE,
-   *   author: game.user._id,
-   *   x: 1000,
-   *   y: 1000,
-   *   width: 800,
-   *   height: 600,
-   *   fillType: CONST.DRAWING_FILL_TYPES.SOLID,
-   *   fillColor: "#0000FF",
-   *   fillAlpha: 0.5,
-   *   strokeWidth: 4,
-   *   strokeColor: "#FF0000",
-   *   strokeAlpha: 0.75,
-   *   texture: "ui/parchment.jpg",
-   *   textureAlpha: 0.5,
-   *   text: "HELLO DRAWINGS!",
-   *   fontSize: 48,
-   *   textColor: "#00FF00",
-   *   points: []
-   * });
-   * ```
+   * The Drawing object is an implementation of the PlaceableObject container.
+   * Each Drawing is a placeable object in the DrawingsLayer.
    */
-  class Drawing extends PlaceableObject<BaseDrawing> {
+  class Drawing extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>> {
+    constructor(document: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>);
     /**
      * @remarks Not used for `Drawing`
      */
@@ -37,32 +15,38 @@ declare global {
 
     /**
      * The inner drawing container
+     * @defaultValue `null`
      */
     drawing: PIXI.Container | null;
 
     /**
      * The primary drawing shape
+     * @defaultValue `null`
      */
     shape: PIXI.Graphics | null;
 
     /**
      * Text content, if included
+     * @defaultValue `null`
      */
     text: PIXI.Text | null;
 
     /**
      * The Graphics outer frame and handles
+     * @defaultValue `null`
      */
     frame: PIXI.Container | null;
 
     /**
      * Internal timestamp for the previous freehand draw time, to limit sampling
+     * @defaultValue `0`
      */
     protected _drawTime: number;
     protected _sampleTime: number;
 
     /**
      * Internal flag for the permanent points of the polygon
+     * @defaultValue `foundry.utils.deepClone(this.data.points || [])`
      */
     protected _fixedPoints: Array<[number, number]>;
 
@@ -70,20 +54,15 @@ declare global {
     static get embeddedName(): 'Drawing';
 
     /**
-     * @remarks
-     * Not implemented for Drawing
+     * The rate at which points are sampled (in milliseconds) during a freehand drawing workflow
+     * @defaultValue `75`
+     */
+    static FREEHAND_SAMPLE_RATE: number;
+
+    /**
+     * @remarks Not implemented for Drawing
      */
     get bounds(): never;
-
-    /**
-     * A reference to the User who created the Drawing object
-     */
-    get author(): User;
-
-    /**
-     * A flag for whether the current user has full control over the Drawing object
-     */
-    get owner(): boolean;
 
     /**
      * A Boolean flag for whether or not the Drawing utilizes a tiled texture background
@@ -97,6 +76,11 @@ declare global {
 
     /** @override */
     draw(): Promise<this>;
+
+    /**
+     * Clean the drawing data to constrain its allowed position
+     */
+    protected _cleanData(): void;
 
     /**
      * Create the components of the drawing element, the drawing container, the drawn shape, and the overlay text
@@ -167,6 +151,7 @@ declare global {
 
     /**
      * Add a new polygon point to the drawing, ensuring it differs from the last one
+     * @param temporary - (default: `true`)
      */
     protected _addPoint(position: Point, temporary?: boolean): void;
 
@@ -179,26 +164,35 @@ declare global {
     protected _onControl(options: PlaceableObject.ControlOptions & { isNew?: boolean }): void;
 
     /** @override */
-    protected _onRelease(options: any): void;
+    protected _onRelease(options: PlaceableObject.ReleaseOptions): void;
 
     /** @override */
-    protected _onDelete(): void;
+    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
 
     /**
      * Handle text entry in an active text tool
      */
-    protected _onDrawingTextKeydown(event: KeyboardEvent): void;
+    protected _onDrawingTextKeydown(
+      event: KeyboardEvent
+    ):
+      | ReturnType<InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>['update']>
+      | ReturnType<InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>['delete']>
+      | void;
 
     /** @override */
-    protected _onUpdate(data: Drawing.Data): void;
+    protected _onUpdate(data: DeepPartial<foundry.data.DrawingData['_source']>): void;
 
-    /** @override */
+    /**
+     * @override
+     * @param event - unused
+     */
     protected _canControl(user: User, event?: any): boolean;
 
-    /** @override */
-    protected _canHUD(user: User, event?: any): boolean;
-
-    /** @override */
+    /**
+     * @override
+     * @param user  - unused
+     * @param event - unused
+     */
     protected _canConfigure(user: User, event?: any): boolean;
 
     /** @override */
@@ -216,7 +210,12 @@ declare global {
     protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
     /** @override */
-    protected _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<false | this | BaseDrawing[]>;
+    protected _onDragLeftDrop(
+      event: PIXI.InteractionEvent
+    ): Promise<
+      | ReturnType<InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>['update']>
+      | InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>[]
+    >;
 
     /** @override */
     protected _onDragLeftCancel(event: MouseEvent): void;
@@ -254,7 +253,9 @@ declare global {
      * Handle mouseup after dragging a tile scale handler
      * @param event - The mouseup event
      */
-    protected _onHandleDragDrop(event: PIXI.InteractionEvent): Promise<this>;
+    protected _onHandleDragDrop(
+      event: PIXI.InteractionEvent
+    ): ReturnType<InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>['update']>;
 
     /**
      * Handle cancellation of a drag event for one of the resizing handles
@@ -267,40 +268,30 @@ declare global {
      * @param dx       - The pixel distance dragged in the horizontal direction
      * @param dy       - The pixel distance dragged in the vertical direction
      */
-    protected _rescaleDimensions(original: Drawing.Data, dx: number, dy: number): Drawing.Data;
+    protected _rescaleDimensions(
+      original: Pick<foundry.data.DrawingData['_source'], 'x' | 'y' | 'points' | 'width' | 'height'>,
+      dx: number,
+      dy: number
+    ): Pick<foundry.data.DrawingData['_source'], 'x' | 'y' | 'width' | 'height' | 'points'>;
 
     /**
      * Adjust the location, dimensions, and points of the Drawing before committing the change
      * @param data - The Drawing data pending update
      * @returns The adjusted data
+     * @remarks This is intentionally public because it is called by the DrawingsLayer
      */
-    protected static normalizeShape(data: Drawing.Data): Drawing.Data;
-  }
+    static normalizeShape(
+      data: Pick<foundry.data.DrawingData['_source'], 'x' | 'y' | 'width' | 'height' | 'points'>
+    ): Pick<foundry.data.DrawingData['_source'], 'x' | 'y' | 'width' | 'height' | 'points'>;
 
-  namespace Drawing {
-    interface Data {
-      author: string;
-      bezierFactor: number;
-      fillAlpha: number;
-      fillColor: string;
-      fillType: foundry.CONST.DrawingFillType;
-      fontFamily: string;
-      fontSize: number;
-      height: number;
-      hidden: boolean;
-      locked: boolean;
-      points: Array<[number, number]>;
-      rotation: number;
-      strokeAlpha: number;
-      strokeColor: string;
-      strokeWidth: number;
-      textAlpha: number;
-      textColor: string;
-      type: 'r' | 'e' | 't' | 'p' | 'f';
-      width: number;
-      x: number;
-      y: number;
-      z: number;
-    }
+    /**
+     * @deprecated since 0.8.0
+     */
+    get author(): InstanceType<ConfiguredDocumentClass<typeof User>>;
+
+    /**
+     * @deprecated since 0.8.0
+     */
+    get owner(): boolean;
   }
 }
