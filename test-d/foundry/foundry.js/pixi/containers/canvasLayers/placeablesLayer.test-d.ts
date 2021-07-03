@@ -50,7 +50,7 @@ expectType<Promise<AmbientLight[]> | undefined>(
   layer.moveMany({ dx: 100, dy: 100, rotate: true, ids: ['abc', 'def'] })
 );
 expectType<Promise<AmbientLightDocument[]>>(layer.undoHistory());
-expectType<Promise<AmbientLightDocument[]>>(layer.deleteAll());
+expectType<Promise<AmbientLightDocument[] | false | null>>(layer.deleteAll());
 expectType<void>(layer.storeHistory('create', new AmbientLightDocument().data));
 expectType<void>(layer.storeHistory('update', new AmbientLightDocument().data));
 expectType<void>(layer.storeHistory('delete', new AmbientLightDocument().data));
