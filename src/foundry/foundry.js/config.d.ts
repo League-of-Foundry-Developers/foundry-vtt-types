@@ -1617,7 +1617,7 @@ declare global {
       /**
        * @defaultValue `DrawingDocument`
        */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseDrawing>; // TODO: DrawingDocument
+      documentClass: ConfiguredDocumentClassOrDefault<typeof DrawingDocument>;
 
       /**
        * @defaultValue `Drawing`
