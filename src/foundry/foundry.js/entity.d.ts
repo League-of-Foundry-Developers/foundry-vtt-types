@@ -132,15 +132,6 @@ declare abstract class Entity<D extends Entity.Data = Entity.Data, PD extends D 
   render(force?: boolean, context?: Entity.RenderOptions): void;
 
   /**
-   * Return a reference to the EntityCollection instance which stores Entity instances of this type. This property is
-   * available as both a static and instance method and should be overridden by subclass Entity implementations.
-   * @remarks This method is abstract on Entity.
-   */
-  static get collection(): EntityCollection;
-
-  get collection(): EntityCollection;
-
-  /**
    * The class name of the base Entity type, for example "Actor". This is useful in cases where there is an inheritance
    * chain. Many places throughout the framework rely upon the canonical entity name which may not always be equal
    * to the class name. This property is available as both a static and instance method.
@@ -806,7 +797,6 @@ declare namespace Entity {
 
   interface Config<E extends Entity = Entity> {
     baseEntity: ConstructorOf<E>;
-    collection?: EntityCollection<E>;
     embeddedEntities?: {
       [embedType: string]: string;
     };
