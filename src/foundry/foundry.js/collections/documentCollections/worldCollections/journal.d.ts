@@ -11,6 +11,7 @@ declare class Journal extends WorldCollection<typeof foundry.documents.BaseJourn
 
   /**
    * Open Socket listeners which transact JournalEntry data
+   * @remarks This is not marked as protected because it is used in {@link Game#activateSocketListeners}
    */
   protected static _activateSocketListeners(socket: io.Socket): void;
 

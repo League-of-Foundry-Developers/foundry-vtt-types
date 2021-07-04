@@ -92,7 +92,7 @@ declare global {
      * @param activityData - An object of User activity data to submit to the server for broadcast.
      *                       (default: `{}`)
      */
-    broadcastActivity(activityData?: BroadcastActivityData): void;
+    broadcastActivity(activityData?: User.ActivityData): void;
 
     /**
      * Get an Array of Macro Entities on this User's Hotbar by page
@@ -130,38 +130,40 @@ declare global {
      */
     setPermission(permission: keyof typeof CONST.USER_PERMISSIONS, allowed: boolean): Promise<this>;
   }
-}
 
-interface BroadcastActivityData {
-  /**
-   * The coordinates of the user's cursor
-   */
-  cursor?: boolean;
+  namespace User {
+    interface ActivityData {
+      /**
+       * The coordinates of the user's cursor
+       */
+      cursor?: boolean;
 
-  /**
-   * Is the user pulling focus to the cursor coordinates?
-   */
-  focus?: boolean;
+      /**
+       * Is the user pulling focus to the cursor coordinates?
+       */
+      focus?: boolean;
 
-  /**
-   * Is the user emitting a ping at the cursor coordinates?
-   */
-  ping?: boolean;
+      /**
+       * Is the user emitting a ping at the cursor coordinates?
+       */
+      ping?: boolean;
 
-  /**
-   * Serialized Ruler coordinate data in JSON format
-   */
-  ruler?: string;
+      /**
+       * Serialized Ruler coordinate data in JSON format
+       */
+      ruler?: string;
 
-  /**
-   * The id of the Scene currently being viewed by the User
-   */
-  sceneId?: string;
+      /**
+       * The id of the Scene currently being viewed by the User
+       */
+      sceneId?: string;
 
-  /**
-   * An id of Token ids which are targeted by the User
-   */
-  targets?: string[];
+      /**
+       * An array of Token ids which are targeted by the User
+       */
+      targets?: string[];
+    }
+  }
 }
 
 export {};

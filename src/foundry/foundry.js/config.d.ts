@@ -718,8 +718,9 @@ declare global {
 
       /**
        * @defaultValue `Users.permissions`
+       * @remarks this is set to `Users.permissions` but that property doesn't actually exist, see https://gitlab.com/foundrynet/foundryvtt/-/issues/5572
        */
-      permissions: typeof Users.permissions;
+      permissions: undefined;
     };
 
     /**
