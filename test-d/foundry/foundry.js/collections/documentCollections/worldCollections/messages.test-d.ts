@@ -5,4 +5,4 @@ import { PropertiesToSource } from '../../../../../../src/types/helperTypes';
 const messages = new Messages();
 expectType<ChatMessage>(messages.get('', { strict: true }));
 expectType<PropertiesToSource<ChatMessageDataProperties>[]>(messages.toJSON());
-expectType<null>(messages.directory);
+expectType<null | SidebarDirectory | undefined>(messages.directory);

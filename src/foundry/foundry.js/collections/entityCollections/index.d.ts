@@ -1,2 +1,1 @@
-import './rollTables';
 import './users';
