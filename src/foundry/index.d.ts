@@ -38,7 +38,6 @@ import './foundry.js/quadtree';
 import './foundry.js/ray';
 import './foundry.js/roll';
 import './foundry.js/searchFilter';
-import './foundry.js/setupConfiguration';
 import './foundry.js/specialEffect';
 import './foundry.js/socketInterface';
 import './foundry.js/sortingHelpers';

@@ -105,8 +105,8 @@ declare namespace ModuleManagement {
       hasStyles: boolean;
       systemOnly: boolean;
       systemTag: Game['system']['id'];
-      incompatible: SetupConfigurationForm.Data.AvailTagged<Game.Module>['incompatible'];
-      unavailable: SetupConfigurationForm.Data.AvailTagged<Game.Module>['unavailable'];
+      incompatible: any; // TODO
+      unavailable: any; // TODO
       dependencies: string[] | null;
     }
   }
