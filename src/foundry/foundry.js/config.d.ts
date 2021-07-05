@@ -1837,7 +1837,11 @@ declare global {
     /**
      * Configure the Application classes used to render various core UI elements in the application
      */
-    ui: {
+    ui: CONFIG.UI;
+  }
+
+  namespace CONFIG {
+    interface UI {
       /**
        * @defaultValue `MainMenu`
        */
@@ -1937,7 +1941,7 @@ declare global {
        * @defaultValue `CameraViews`
        */
       webrtc: ConstructorOf<CameraViews>;
-    };
+    }
   }
 
   const CONFIG: CONFIG;

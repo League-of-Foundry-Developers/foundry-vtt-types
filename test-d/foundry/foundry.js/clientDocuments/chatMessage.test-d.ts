@@ -17,18 +17,20 @@ expectError(ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), 'custo
 
 expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker());
 expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({}));
-expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({ scene: game.scenes?.active }));
-expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({ actor: game.user?.character }));
+if (game instanceof Game) {
+  expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({ scene: game.scenes?.active }));
+  expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({ actor: game.user?.character }));
+  expectType<ChatSpeakerData['_source']>(
+    ChatMessage.getSpeaker({
+      scene: game.scenes?.active,
+      actor: game.user?.character,
+      token: new Token(new TokenDocument()),
+      alias: 'Mario'
+    })
+  );
+}
 expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({ token: new Token(new TokenDocument()) }));
 expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({ alias: 'Mario' }));
-expectType<ChatSpeakerData['_source']>(
-  ChatMessage.getSpeaker({
-    scene: game.scenes?.active,
-    actor: game.user?.character,
-    token: new Token(new TokenDocument()),
-    alias: 'Mario'
-  })
-);
 
 expectType<Actor | null>(ChatMessage.getSpeakerActor(ChatMessage.getSpeaker()));
 expectType<User[]>(ChatMessage.getWhisperRecipients('Mario'));

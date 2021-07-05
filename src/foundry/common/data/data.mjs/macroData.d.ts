@@ -16,7 +16,7 @@ interface MacroDataSchema extends DocumentSchema {
   };
   author: fields.ForeignDocumentField<{
     type: typeof documents.BaseUser;
-    default: () => typeof game['user'];
+    default: () => Game['user'];
   }>;
   img: FieldReturnType<typeof fields.IMAGE_FIELD, { required: true; default: typeof CONST.DEFAULT_MACRO_ICON }>;
   scope: DocumentField<string> & {
