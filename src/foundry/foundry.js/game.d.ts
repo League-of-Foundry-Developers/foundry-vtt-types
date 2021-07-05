@@ -33,12 +33,12 @@ declare global {
     /**
      * The game World which is currently active
      */
-    world: any; // TODO
+    world: this['data']['world'];
 
     /**
      * The System which is used to power this game world
      */
-    system: any; // TODO
+    system: this['data']['system'];
 
     /**
      * A Map of active modules which are currently enabled in this World
@@ -46,7 +46,7 @@ declare global {
      * - This is actually defined twice. The second time it has the documentation "A mapping of installed modules".
      * - This includes _all_ modules that are installed, not only those that are enabled.
      */
-    modules: Map<string, any>; // TODO
+    modules: Map<string, this['data']['modules'][number]>;
 
     /**
      * A mapping of WorldCollection instances, one per primary Document type.
@@ -430,12 +430,71 @@ declare global {
   }
 
   namespace Game {
+    interface Language {
+      lang: string;
+      name: string;
+      path: string;
+    }
+
+    interface PackageData<T> {
+      type: 'world' | 'system' | 'module';
+      data: T;
+      id: string;
+      path: string;
+      scripts: string[];
+      esmodules: string[];
+      styles: string[];
+      languages: Language[];
+      packs: {
+        name: string;
+        label: string;
+        path: string;
+        private: boolean;
+        entity: PackDocumentType;
+        system?: string;
+        absPath: string;
+        package: string;
+      };
+      locked: boolean;
+      availability: number;
+      unavailable: boolean;
+      _systemUpdateCheckTime: number;
+    }
+
+    interface WorldData<T> extends PackageData<T> {
+      type: 'world';
+    }
+
+    interface SystemData<T> extends PackageData<T> {
+      type: 'system';
+      template: {
+        Actor?: {
+          types: string[];
+          templates?: Partial<Record<string, unknown>>;
+        } & Partial<Record<string, unknown>>;
+        Item?: {
+          types: string[];
+          templates?: Partial<Record<string, unknown>>;
+        } & Partial<Record<string, unknown>>;
+      };
+      entityTypes: { [Key in PrimaryDocumentType | 'Setting' | 'FogExploration']: string[] };
+      model: {
+        Actor: Partial<Record<string, Partial<Record<string, unknown>>>>;
+        Item: Partial<Record<string, Partial<Record<string, unknown>>>>;
+      };
+    }
+
+    interface ModuleData<T> extends PackageData<T> {
+      type: 'module';
+      active: boolean;
+    }
+
     type Data = {
       userId: string;
       version: string;
-      world: any; // TODO: Parameters<foundry.packages.WorldData['_initializeSource']>[0] & { data: foundry.packages.WorldData }
-      system: any; // TODO: Parameters<foundry.packages.SystemData['_initializeSource']>[0] & { data: foundry.packages.SystemData }
-      modules: any[]; // TODO: (Parameters<foundry.packages.ModuleData['_initializeSource']>[0] & { data: foundry.packages.ModuleData })[]
+      world: WorldData<any>; // TODO: WorldData<foundry.packages.WorldData>
+      system: SystemData<any>; // TODO: SystemData<foundry.packages.SystemData>
+      modules: ModuleData<any>[]; // TODO: ModuleData<foundry.packages.ModuleData>
       paused: boolean;
       addresses: {
         local: string;
@@ -453,20 +512,30 @@ declare global {
         demo: boolean;
       };
       activeUsers: string[];
-      settings?: foundry.documents.BaseSetting['data']['_source'][];
-      packs?: any[]; // TODO foundry.packages.PackageCompendiumData['_source'][]
+      packs: {
+        name: string;
+        label: string;
+        path: string;
+        private: boolean;
+        entity: PackDocumentType;
+        system?: string;
+        package: string;
+        index: { name: string; type: string; _id: string }[];
+      };
       coreUpdate: string | null;
       systemUpdate: string | null;
     } & {
-      [DocumentType in PrimaryDocumentType as ConfiguredDocumentClassForName<DocumentType>['metadata']['collection']]?: InstanceType<
+      [DocumentType in
+        | PrimaryDocumentType
+        | 'Setting' as ConfiguredDocumentClassForName<DocumentType>['metadata']['collection']]?: InstanceType<
         ConfiguredDocumentClassForName<DocumentType>
       >['data']['_source'][];
     };
 
     type ConstructorData = Omit<Data, 'world' | 'system' | 'modules'> & {
-      world: any; // TODO: Parameters<foundry.packages.WorldData['_initializeSource']>[0]
-      system: any; // TODO: Parameters<foundry.packages.SystemData['_initializeSource']>[0]
-      modules: any[]; // TODO: Parameters<foundry.packages.ModuleData['_initializeSource']>[0][]
+      world: WorldData<any>; // TODO: WorldData<foundry.packages.WorldData['_source]>
+      system: SystemData<any>; // TODO: SystemData<foundry.packages.SystemData['_source]>
+      modules: ModuleData<any>[]; // TODO: ModuleData<foundry.packages.ModuleData['_source]>
     };
 
     type Permissions = {
@@ -489,5 +558,7 @@ type PrimaryDocumentType =
   | 'Playlist'
   | 'RollTable'
   | 'ChatMessage';
+
+type PackDocumentType = 'Actor' | 'Item' | 'Scene' | 'JournalEntry' | 'Macro' | 'RollTable' | 'Playlist';
 
 type ConfiguredCollectionClassForName<Name extends PrimaryDocumentType> = InstanceType<CONFIG[Name]['collection']>;
