@@ -40,8 +40,13 @@ declare global {
 
     /**
      * Return a reference to the SidebarDirectory application for this WorldCollection, or null if it has not yet been created.
+     * @remarks
+     * In the case where `Lowercase<Name>` is not a property of {@link ui}, this actually always returns `null` but
+     * {@link RollTables} overrides this so we need to allow a wider return type.
      */
-    get directory(): Lowercase<Name> extends keyof typeof ui ? typeof ui[Lowercase<Name>] : null;
+    get directory(): Lowercase<Name> extends keyof typeof ui
+      ? typeof ui[Lowercase<Name>]
+      : null | SidebarDirectory | undefined;
 
     /**
      * Return a reference to the singleton instance of this WorldCollection, or null if it has not yet been created.
