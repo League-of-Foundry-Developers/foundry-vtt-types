@@ -118,9 +118,9 @@ declare global {
 
     /**
      * Initialized in
-     * - `/players`: as `UserManagement`
+     * - `/game`: after "setup", before "ready" hook
      */
-    players?: UserManagement;
+    players?: PlayerList;
 
     /**
      * Initialized in
@@ -139,12 +139,6 @@ declare global {
      * - `/game`: after "setup", before "ready" hook
      */
     settings?: ClientSettings;
-
-    /**
-     * Initialized in
-     * - `/setup`
-     */
-    setup?: SetupConfigurationForm;
 
     /**
      * Initialized in
