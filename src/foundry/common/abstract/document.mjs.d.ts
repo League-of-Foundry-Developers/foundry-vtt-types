@@ -19,8 +19,7 @@ export type DocumentDataType<T extends Document<any, any>> = T extends Document<
  */
 declare abstract class Document<
   ConcreteDocumentData extends AnyDocumentData,
-  Parent extends Document<any, any> | null = null,
-  Flags extends Record<string, unknown> = Record<string, unknown>
+  Parent extends Document<any, any> | null = null
 > {
   /**
    * Create a new Document by providing an initial data object.
@@ -457,8 +456,14 @@ declare abstract class Document<
    * @param key   - The flag key
    * @returns The flag value
    */
-  getFlag<S extends keyof Flags, K extends keyof Flags[S]>(scope: S, key: K): Flags[S][K];
-  getFlag<S extends keyof Flags>(scope: S, key: string): unknown extends Flags[S] ? unknown : never;
+  getFlag<
+    S extends keyof ConcreteDocumentData['_source']['flags'],
+    K extends keyof ConcreteDocumentData['_source']['flags'][S]
+  >(scope: S, key: K): ConcreteDocumentData['_source']['flags'][S][K];
+  getFlag<S extends keyof ConcreteDocumentData['_source']['flags']>(
+    scope: S,
+    key: string
+  ): unknown extends ConcreteDocumentData['_source']['flags'][S] ? unknown : never;
   getFlag(scope: string, key: string): unknown;
 
   /**
@@ -479,15 +484,15 @@ declare abstract class Document<
    * @param value - The flag value
    * @returns A Promise resolving to the updated document
    */
-  setFlag<S extends keyof Flags, K extends keyof Flags[S], V extends Flags[S][K]>(
+  setFlag<
+    S extends keyof ConcreteDocumentData['_source']['flags'],
+    K extends keyof ConcreteDocumentData['_source']['flags'][S],
+    V extends ConcreteDocumentData['_source']['flags'][S][K]
+  >(scope: S, key: K, value: V): Promise<this>;
+  setFlag<S extends keyof ConcreteDocumentData['_source']['flags'], K extends string>(
     scope: S,
     key: K,
-    value: V
-  ): Promise<this>;
-  setFlag<S extends keyof Flags, K extends string>(
-    scope: S,
-    key: K,
-    v: unknown extends Flags[S] ? unknown : never
+    v: unknown extends ConcreteDocumentData['_source']['flags'][S] ? unknown : never
   ): Promise<this>;
 
   /**
