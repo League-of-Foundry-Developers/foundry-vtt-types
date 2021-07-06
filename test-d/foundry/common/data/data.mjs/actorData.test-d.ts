@@ -7,6 +7,7 @@ interface CharacterDataSourceData {
 
 interface CharacterFlags {
   'my-module': {
+    known: boolean;
     xp: number;
   };
 }
@@ -35,6 +36,7 @@ interface NPCDataSourceData {
 interface NPCFlags {
   'my-module': {
     'hidden-name': string;
+    known: boolean;
   };
 }
 

@@ -456,14 +456,14 @@ declare abstract class Document<
    * @param key   - The flag key
    * @returns The flag value
    */
-  getFlag<
-    S extends keyof ConcreteDocumentData['_source']['flags'],
-    K extends keyof ConcreteDocumentData['_source']['flags'][S]
-  >(scope: S, key: K): ConcreteDocumentData['_source']['flags'][S][K];
-  getFlag<S extends keyof ConcreteDocumentData['_source']['flags']>(
+  getFlag<S extends keyof this['data']['_source']['flags'], K extends keyof this['data']['_source']['flags'][S]>(
+    scope: S,
+    key: K
+  ): this['data']['_source']['flags'][S][K];
+  getFlag<S extends keyof this['data']['_source']['flags']>(
     scope: S,
     key: string
-  ): unknown extends ConcreteDocumentData['_source']['flags'][S] ? unknown : never;
+  ): unknown extends this['data']['_source']['flags'][S] ? unknown : never;
   getFlag(scope: string, key: string): unknown;
 
   /**

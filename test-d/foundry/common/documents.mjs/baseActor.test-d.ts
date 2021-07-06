@@ -17,6 +17,7 @@ interface CharacterDataSourceData {
 
 interface CharacterFlags {
   'my-module': {
+    known: boolean;
     xp: number;
   };
 }
@@ -45,6 +46,7 @@ interface NPCDataSourceData {
 interface NPCFlags {
   'my-module': {
     'hidden-name': string;
+    known: boolean;
   };
 }
 
@@ -83,24 +85,37 @@ expectType<Actor | null>(baseActor.items.get('', { strict: true }).parent);
 if (baseActor.data._source.type === 'character') {
   expectType<number>(baseActor.data._source.data.health);
   expectError(baseActor.data._source.data.movement);
-  expectType<number>(baseActor.getFlag('my-module', 'xp'));
 } else {
   expectType<string>(baseActor.data._source.data.faction);
   expectType<number>(baseActor.data._source.data.challenge);
   expectError(baseActor.data._source.data.damage);
-  expectType<string>(baseActor.getFlag('my-module', 'hidden-name'));
 }
 
 if (baseActor.data.type === 'character') {
   expectType<number>(baseActor.data.data.health);
   expectType<number>(baseActor.data.data.movement);
-  expectType<number>(baseActor.getFlag('my-module', 'xp'));
 } else {
   expectType<string>(baseActor.data.data.faction);
   expectType<number>(baseActor.data.data.challenge);
   expectType<number>(baseActor.data.data.damage);
-  expectType<string>(baseActor.getFlag('my-module', 'hidden-name'));
 }
 
-expectType<number | undefined>(baseActor.getFlag('my-module', 'xp'));
-expectType<string | undefined>(baseActor.getFlag('my-module', 'hidden-name'));
+// shared flags are available
+expectType<boolean>(baseActor.getFlag('my-module', 'known'));
+// non shared flags are not available
+expectType<never>(baseActor.getFlag('my-module', 'xp'));
+expectType<never>(baseActor.getFlag('my-module', 'hidden-name'));
+// non shared flags are also not available if the type is known
+if (baseActor.data._source.type === 'character') {
+  expectType<never>(baseActor.getFlag('my-module', 'xp'));
+}
+if (baseActor.data.type === 'character') {
+  expectType<never>(baseActor.getFlag('my-module', 'xp'));
+}
+// flags are available if we cast the actor
+declare function isChar(
+  actor: foundry.documents.BaseActor
+): actor is foundry.documents.BaseActor & { data: CharacterDataProperties & { _source: CharacterDataSource } };
+if (isChar(baseActor)) {
+  expectType<number>(baseActor.getFlag('my-module', 'xp'));
+}
