@@ -15,9 +15,16 @@ interface CharacterDataSourceData {
   health: number;
 }
 
+interface CharacterFlags {
+  'my-module': {
+    xp: number;
+  };
+}
+
 interface CharacterDataSource {
   type: 'character';
   data: CharacterDataSourceData;
+  flags: CharacterFlags;
 }
 
 interface CharacterDataPropertiesData extends CharacterDataSourceData {
@@ -27,6 +34,7 @@ interface CharacterDataPropertiesData extends CharacterDataSourceData {
 interface CharacterDataProperties {
   type: 'character';
   data: CharacterDataPropertiesData;
+  flags: CharacterFlags;
 }
 
 interface NPCDataSourceData {
@@ -34,9 +42,16 @@ interface NPCDataSourceData {
   faction: string;
 }
 
+interface NPCFlags {
+  'my-module': {
+    'hidden-name': string;
+  };
+}
+
 interface NPCDataSource {
   type: 'npc';
   data: NPCDataSourceData;
+  flags: NPCFlags;
 }
 
 interface NPCDataPropertiesData extends NPCDataSourceData {
@@ -46,6 +61,7 @@ interface NPCDataPropertiesData extends NPCDataSourceData {
 interface NPCDataProperties {
   type: 'npc';
   data: NPCDataPropertiesData;
+  flags: NPCFlags;
 }
 
 type MyActorDataSource = CharacterDataSource | NPCDataSource;
@@ -67,17 +83,24 @@ expectType<Actor | null>(baseActor.items.get('', { strict: true }).parent);
 if (baseActor.data._source.type === 'character') {
   expectType<number>(baseActor.data._source.data.health);
   expectError(baseActor.data._source.data.movement);
+  expectType<number>(baseActor.getFlag('my-module', 'xp'));
 } else {
   expectType<string>(baseActor.data._source.data.faction);
   expectType<number>(baseActor.data._source.data.challenge);
   expectError(baseActor.data._source.data.damage);
+  expectType<string>(baseActor.getFlag('my-module', 'hidden-name'));
 }
 
 if (baseActor.data.type === 'character') {
   expectType<number>(baseActor.data.data.health);
   expectType<number>(baseActor.data.data.movement);
+  expectType<number>(baseActor.getFlag('my-module', 'xp'));
 } else {
   expectType<string>(baseActor.data.data.faction);
   expectType<number>(baseActor.data.data.challenge);
   expectType<number>(baseActor.data.data.damage);
+  expectType<string>(baseActor.getFlag('my-module', 'hidden-name'));
 }
+
+expectType<number | undefined>(baseActor.getFlag('my-module', 'xp'));
+expectType<string | undefined>(baseActor.getFlag('my-module', 'hidden-name'));
