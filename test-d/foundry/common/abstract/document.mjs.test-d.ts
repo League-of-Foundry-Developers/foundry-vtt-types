@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectError, expectType } from 'tsd';
 import '../../../../index';
 import { PropertiesToSource } from '../../../../src/types/helperTypes';
 import { ActiveEffectDataProperties } from '../../../../src/foundry/common/data/data.mjs/activeEffectData';
@@ -40,3 +40,25 @@ if (item) {
   expectType<Promise<Item | undefined>>(item.update(item.toObject()));
   expectType<Item | Promise<Item | undefined>>(item.clone(item.toObject()));
 }
+
+declare global {
+  interface CombatantFlags {
+    'my-system': {
+      value: boolean;
+      value2: number;
+    };
+  }
+}
+
+const combatant = new Combatant({}, {});
+expectType<{ value: boolean; value2: number }>(combatant.data.flags['my-system']);
+
+expectType<boolean>(combatant.getFlag('my-system', 'value'));
+expectType<number>(combatant.getFlag('my-system', 'value2'));
+expectType<never>(combatant.getFlag('my-system', 'unknown-key'));
+expectType<unknown>(combatant.getFlag('another-system', 'value'));
+
+expectType<Promise<Combatant>>(combatant.setFlag('my-system', 'value', true));
+expectError(combatant.setFlag('my-system', 'value', 2));
+expectError(combatant.setFlag('my-system', 'unknown-key', 2));
+expectType<Promise<Combatant>>(combatant.setFlag('another-system', 'value', true));
