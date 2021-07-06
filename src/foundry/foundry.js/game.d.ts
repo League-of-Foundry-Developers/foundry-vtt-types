@@ -450,7 +450,7 @@ declare global {
         label: string;
         path: string;
         private: boolean;
-        entity: PackDocumentType;
+        entity: foundry.CONST.CompendiumEntityType;
         system?: string;
         absPath: string;
         package: string;
@@ -477,7 +477,7 @@ declare global {
           templates?: Partial<Record<string, unknown>>;
         } & Partial<Record<string, unknown>>;
       };
-      entityTypes: { [Key in PrimaryDocumentType | 'Setting' | 'FogExploration']: string[] };
+      entityTypes: { [Key in foundry.CONST.EntityType | 'Setting' | 'FogExploration']: string[] };
       model: {
         Actor: Partial<Record<string, Partial<Record<string, unknown>>>>;
         Item: Partial<Record<string, Partial<Record<string, unknown>>>>;
@@ -492,9 +492,9 @@ declare global {
     type Data = {
       userId: string;
       version: string;
-      world: WorldData<any>; // TODO: WorldData<foundry.packages.WorldData>
-      system: SystemData<any>; // TODO: SystemData<foundry.packages.SystemData>
-      modules: ModuleData<any>[]; // TODO: ModuleData<foundry.packages.ModuleData>
+      world: WorldData<foundry.packages.WorldData>;
+      system: SystemData<foundry.packages.SystemData>;
+      modules: ModuleData<foundry.packages.ModuleData>[];
       paused: boolean;
       addresses: {
         local: string;
@@ -517,7 +517,7 @@ declare global {
         label: string;
         path: string;
         private: boolean;
-        entity: PackDocumentType;
+        entity: foundry.CONST.CompendiumEntityType;
         system?: string;
         package: string;
         index: { name: string; type: string; _id: string }[];
@@ -526,16 +526,16 @@ declare global {
       systemUpdate: string | null;
     } & {
       [DocumentType in
-        | PrimaryDocumentType
+        | foundry.CONST.EntityType
         | 'Setting' as ConfiguredDocumentClassForName<DocumentType>['metadata']['collection']]?: InstanceType<
         ConfiguredDocumentClassForName<DocumentType>
       >['data']['_source'][];
     };
 
     type ConstructorData = Omit<Data, 'world' | 'system' | 'modules'> & {
-      world: WorldData<any>; // TODO: WorldData<foundry.packages.WorldData['_source]>
-      system: SystemData<any>; // TODO: SystemData<foundry.packages.SystemData['_source]>
-      modules: ModuleData<any>[]; // TODO: ModuleData<foundry.packages.ModuleData['_source]>
+      world: WorldData<foundry.packages.WorldData['_source']>;
+      system: SystemData<foundry.packages.SystemData['_source']>;
+      modules: ModuleData<foundry.packages.ModuleData['_source']>[];
     };
 
     type Permissions = {
@@ -546,19 +546,4 @@ declare global {
   }
 }
 
-type PrimaryDocumentType =
-  | 'User'
-  | 'Folder'
-  | 'Actor'
-  | 'Item'
-  | 'Scene'
-  | 'Combat'
-  | 'JournalEntry'
-  | 'Macro'
-  | 'Playlist'
-  | 'RollTable'
-  | 'ChatMessage';
-
-type PackDocumentType = 'Actor' | 'Item' | 'Scene' | 'JournalEntry' | 'Macro' | 'RollTable' | 'Playlist';
-
-type ConfiguredCollectionClassForName<Name extends PrimaryDocumentType> = InstanceType<CONFIG[Name]['collection']>;
+type ConfiguredCollectionClassForName<Name extends foundry.CONST.EntityType> = InstanceType<CONFIG[Name]['collection']>;
