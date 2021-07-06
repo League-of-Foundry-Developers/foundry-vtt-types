@@ -501,8 +501,19 @@ declare global {
         remote: string;
       };
       files: {
-        storages: string[];
-        s3: any; // TODO
+        storages: ('public' | 'data' | 's3')[];
+        s3?: {
+          endpoint: {
+            protocol: string;
+            host: string;
+            port: number;
+            hostname: string;
+            pathname: string;
+            path: string;
+            href: string;
+          };
+          buckets: string[];
+        };
       };
       options: {
         language: string;
