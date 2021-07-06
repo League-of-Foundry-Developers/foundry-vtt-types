@@ -379,6 +379,8 @@ declare namespace FilePicker {
 
     button?: FilePicker['button'];
 
+    callback?: (path: string) => void;
+
     /**
      * @defaultValue `'templates/apps/filepicker.html'`
      */
