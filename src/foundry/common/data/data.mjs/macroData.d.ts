@@ -94,7 +94,7 @@ interface MacroDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: Record<string, unknown>;
+  flags: MacroFlags;
 }
 
 interface MacroDataConstructorData {
@@ -158,7 +158,7 @@ interface MacroDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: Record<string, unknown> | null;
+  flags?: MacroFlags | null;
 }
 
 /**
@@ -179,3 +179,9 @@ export declare class MacroData extends DocumentData<
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export declare interface MacroData extends MacroDataProperties {}
+
+declare global {
+  interface MacroFlags {
+    [key: string]: unknown;
+  }
+}

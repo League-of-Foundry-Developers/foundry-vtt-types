@@ -43,7 +43,7 @@ interface UserDataProperties {
   passwordSalt?: string;
   permissions: Partial<Record<keyof typeof CONST.USER_PERMISSIONS, boolean>>;
   role: foundry.CONST.UserRole;
-  flags: Record<string, unknown>;
+  flags: UserFlags;
 }
 
 interface UserDataConstructorData {
@@ -57,7 +57,7 @@ interface UserDataConstructorData {
   passwordSalt?: string | null;
   permissions?: Partial<Record<keyof typeof CONST.USER_PERMISSIONS, boolean>> | null;
   role?: foundry.CONST.UserRole | null;
-  flags?: Record<string, unknown> | null;
+  flags?: UserFlags | null;
 }
 
 /**
@@ -89,3 +89,9 @@ declare function _validateHotbar(bar: unknown): boolean;
  * @param perms - The attempted permissions data
  */
 declare function _validatePermissions(perms: unknown): boolean;
+
+declare global {
+  interface UserFlags {
+    [key: string]: unknown;
+  }
+}

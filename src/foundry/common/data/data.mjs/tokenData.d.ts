@@ -312,7 +312,7 @@ export interface TokenDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: Record<string, unknown>;
+  flags: TokenFlags;
 }
 
 export interface TokenDataConstructorData {
@@ -532,7 +532,7 @@ export interface TokenDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: Record<string, unknown> | null;
+  flags?: TokenFlags | null;
 }
 
 /**
@@ -556,3 +556,9 @@ export class TokenData extends DocumentData<
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export declare interface TokenData extends TokenDataProperties {}
+
+declare global {
+  interface TokenFlags {
+    [key: string]: unknown;
+  }
+}

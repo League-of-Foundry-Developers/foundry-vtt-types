@@ -104,7 +104,7 @@ interface ChatMessageDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: Record<string, unknown>;
+  flags: ChatMessageFlags;
 }
 
 export interface ChatMessageDataConstructorData {
@@ -180,7 +180,7 @@ export interface ChatMessageDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: Record<string, unknown> | null;
+  flags?: ChatMessageFlags | null;
 }
 
 /**
@@ -205,3 +205,9 @@ export declare interface ChatMessageData extends ChatMessageDataProperties {}
  * @returns Is it valid?
  */
 declare function _validateChatMessageType(type: number): boolean;
+
+declare global {
+  interface ChatMessageFlags {
+    [key: string]: unknown;
+  }
+}

@@ -79,7 +79,7 @@ interface ActiveEffectDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: Record<string, unknown>;
+  flags: ActiveEffectFlags;
 }
 
 interface ActiveEffectDataConstructorData {
@@ -135,7 +135,7 @@ interface ActiveEffectDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: Record<string, unknown> | null;
+  flags?: ActiveEffectFlags | null;
 }
 
 /**
@@ -154,3 +154,9 @@ export declare class ActiveEffectData extends DocumentData<
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export declare interface ActiveEffectData extends ActiveEffectDataProperties {}
+
+declare global {
+  interface ActiveEffectFlags {
+    [key: string]: unknown;
+  }
+}

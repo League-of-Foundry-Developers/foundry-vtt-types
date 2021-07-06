@@ -74,7 +74,7 @@ interface FolderDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: Record<string, unknown>;
+  flags: FolderFlags;
 }
 
 interface FolderDataConstructorData {
@@ -125,7 +125,7 @@ interface FolderDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: Record<string, unknown> | null;
+  flags?: FolderFlags | null;
 }
 
 /**
@@ -149,3 +149,9 @@ export type SortingModes = ValueOf<typeof FolderData.SORTING_MODES>;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export declare interface FolderData extends FolderDataProperties {}
+
+declare global {
+  interface FolderFlags {
+    [key: string]: unknown;
+  }
+}

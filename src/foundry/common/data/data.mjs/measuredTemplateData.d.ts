@@ -96,7 +96,7 @@ interface MeasuredTemplateProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: Record<string, unknown>;
+  flags: MeasuredTemplateFlags;
 }
 
 interface MeasuredTemplateDataConstructorData {
@@ -170,7 +170,7 @@ interface MeasuredTemplateDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: Record<string, unknown> | null;
+  flags?: MeasuredTemplateFlags | null;
 }
 
 /**
@@ -203,3 +203,9 @@ export declare class MeasuredTemplateData extends DocumentData<
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export declare interface MeasuredTemplateData extends MeasuredTemplateProperties {}
+
+declare global {
+  interface MeasuredTemplateFlags {
+    [key: string]: unknown;
+  }
+}

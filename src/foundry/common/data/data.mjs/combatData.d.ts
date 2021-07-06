@@ -59,7 +59,7 @@ interface CombatDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: Record<string, unknown>;
+  flags: CombatFlags;
 }
 
 interface CombatDataConstructorData {
@@ -100,7 +100,7 @@ interface CombatDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: Record<string, unknown> | null;
+  flags?: CombatFlags | null;
 }
 
 /**
@@ -119,3 +119,9 @@ export declare class CombatData extends DocumentData<
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export declare interface CombatData extends CombatDataProperties {}
+
+declare global {
+  interface CombatFlags {
+    [key: string]: unknown;
+  }
+}

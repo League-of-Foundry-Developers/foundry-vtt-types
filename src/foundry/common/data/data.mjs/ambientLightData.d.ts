@@ -124,7 +124,7 @@ interface AmbientLightDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: Record<string, unknown>;
+  flags: AmbientLightFlags;
 }
 
 interface AmbientLightDataConstructorData {
@@ -213,7 +213,7 @@ interface AmbientLightDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: Record<string, unknown> | null;
+  flags?: AmbientLightFlags | null;
 }
 
 /**
@@ -232,3 +232,9 @@ export declare class AmbientLightData extends DocumentData<
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export declare interface AmbientLightData extends AmbientLightDataProperties {}
+
+declare global {
+  interface AmbientLightFlags {
+    [key: string]: unknown;
+  }
+}

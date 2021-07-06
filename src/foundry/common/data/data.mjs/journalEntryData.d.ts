@@ -59,7 +59,7 @@ interface JournalEntryDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: Record<string, unknown>;
+  flags: JournalEntryFlags;
 }
 
 interface JournalEntryConstructorData {
@@ -107,7 +107,7 @@ interface JournalEntryConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: Record<string, unknown> | null;
+  flags?: JournalEntryFlags | null;
 }
 
 export declare class JournalEntryData extends DocumentData<
@@ -124,3 +124,9 @@ export declare class JournalEntryData extends DocumentData<
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface JournalEntryData extends JournalEntryDataProperties {}
+
+declare global {
+  interface JournalEntryFlags {
+    [key: string]: unknown;
+  }
+}
