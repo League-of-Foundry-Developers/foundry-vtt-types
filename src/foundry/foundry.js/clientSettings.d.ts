@@ -220,6 +220,7 @@ declare namespace ClientSettings {
     'core.compendiumConfiguration': Partial<Record<string, CompendiumCollection.Configuration>>;
     'core.rollMode': foundry.CONST.DiceRollMode;
     'core.animateRollTable': boolean;
+    'core.permissions': Game.Permissions;
     [key: string]: unknown;
   }
 }

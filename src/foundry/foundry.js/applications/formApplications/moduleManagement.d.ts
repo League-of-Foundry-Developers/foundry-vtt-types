@@ -1,3 +1,7 @@
+// TODO: Remove when updating this class!!!
+// eslint-disable-next-line
+// @ts-nocheck
+
 /**
  * The Module Management Application.
  * This application provides a view of which modules are available to be used and allows for configuration of the

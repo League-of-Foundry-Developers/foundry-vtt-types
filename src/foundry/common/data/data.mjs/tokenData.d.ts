@@ -85,12 +85,12 @@ export interface TokenDataSchema extends DocumentSchema {
   bar1: DocumentField<TokenBarData> & {
     type: typeof TokenBarData;
     required: true;
-    default: () => { attribute: typeof game['system']['data']['primaryTokenAttribute'] | null };
+    default: () => { attribute: Game['system']['data']['primaryTokenAttribute'] | null };
   };
   bar2: DocumentField<TokenBarData> & {
     type: typeof TokenBarData;
     required: true;
-    default: () => { attribute: typeof game['system']['data']['secondaryTokenAttribute'] | null };
+    default: () => { attribute: Game['system']['data']['secondaryTokenAttribute'] | null };
   };
   flags: typeof fields.OBJECT_FIELD;
 }

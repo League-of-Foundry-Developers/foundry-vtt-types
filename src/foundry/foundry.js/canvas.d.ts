@@ -323,7 +323,7 @@ declare class Canvas {
    * @param event - The Window resize event
    *                (default: `null`)
    */
-  protected _onResize(event?: Event | null): void;
+  protected _onResize(event?: UIEvent | null): void;
 
   /**
    * Handle mousewheel events which adjust the scale of the canvas

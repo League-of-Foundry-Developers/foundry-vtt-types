@@ -24,7 +24,7 @@ import './foundry.js/fonts';
 import './foundry.js/formDataExtended';
 import './foundry.js/game';
 import './foundry.js/gameTime';
-import './foundry.js/globals';
+import './foundry.js/globalVariables';
 import './foundry.js/handlebarsHelpers';
 import './foundry.js/hooks';
 import './foundry.js/imageHelper';

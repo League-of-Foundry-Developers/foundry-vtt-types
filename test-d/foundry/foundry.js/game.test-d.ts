@@ -1,8 +1,7 @@
-import '../../index';
+import { expectType } from 'tsd';
 
-game.someCustomProperty = 'some string';
-game.someMoreComplexProperty = {
-  a: 0,
-  b: [true, false],
-  c: 'some string'
-};
+declare const aGame: Game;
+
+expectType<CombatEncounters | undefined>(aGame.combats);
+expectType<Localization>(aGame.i18n);
+expectType<ClientSettings>(aGame.settings);
