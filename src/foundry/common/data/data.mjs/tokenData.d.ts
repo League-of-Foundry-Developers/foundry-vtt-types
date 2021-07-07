@@ -129,7 +129,7 @@ export interface TokenDataProperties {
    * Token-level data which overrides the base data of the associated Actor
    * @defaultValue `{}`
    */
-  actorData: DeepPartial<ActorDataSource>;
+  actorData: Partial<ActorDataSource>;
 
   /**
    * A file path to an image or video file used to depict the Token
@@ -349,7 +349,7 @@ export interface TokenDataConstructorData {
    * Token-level data which overrides the base data of the associated Actor
    * @defaultValue `{}`
    */
-  actorData?: DeepPartial<ActorDataSource> | null;
+  actorData?: Partial<ActorDataSource> | null;
 
   /**
    * A file path to an image or video file used to depict the Token
