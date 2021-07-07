@@ -63,7 +63,7 @@ expectType<foundry.data.DrawingData>(
 
 expectType<foundry.data.DrawingData>(
   new foundry.data.DrawingData({
-    author: game.user,
+    author: new User(),
     bezierFactor: 0,
     fillAlpha: 0.5,
     fillColor: '#FFFFFF',
