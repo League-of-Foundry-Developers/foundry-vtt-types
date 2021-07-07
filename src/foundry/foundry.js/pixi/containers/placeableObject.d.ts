@@ -105,7 +105,7 @@ declare global {
      * A Form Application which is used to configure the properties of this Placeable Object or the EmbeddedEntity
      * it represents.
      */
-    get sheet(): 'sheet' extends keyof D ? D['sheet'] : FormApplication;
+    get sheet(): 'sheet' extends keyof D ? D['sheet'] : FormApplication | null;
 
     /**
      * Test whether a user can perform a certain interaction with regards to a Placeable Object

@@ -34,8 +34,9 @@ declare class CanvasDocumentMixin<T extends foundry.abstract.Document<any, any>>
 
   /**
    * A reference to the CanvasLayer which contains Document objects of this type.
+   * @remarks
    */
-  get layer(): PlaceablesLayer | null; // TODO: Replace with InstanceType<LayerClass<T>> | null once the circular reference problem has been solved
+  get layer(): PlaceablesLayer; // TODO: Replace with InstanceType<LayerClass<T>> | null once the circular reference problem has been solved
 
   /**
    * An indicator for whether this document is currently rendered on the game canvas.

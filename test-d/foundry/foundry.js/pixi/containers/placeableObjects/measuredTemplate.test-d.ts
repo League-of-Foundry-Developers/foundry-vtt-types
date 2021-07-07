@@ -9,4 +9,4 @@ expectType<MeasuredTemplate>(template.refresh());
 expectType<foundry.data.MeasuredTemplateData>(template.data);
 
 // TODO: Modify to the configured document sheet once the data can be grabbed from config
-expectType<FormApplication>(template.sheet);
+expectType<FormApplication | null>(template.sheet);
