@@ -18,11 +18,10 @@ TypeScript type definitions for [Foundry Virtual Tabletop](https://foundryvtt.co
 
 We aim to support the latest patch release of minor versions of Foundry VTT, starting with 0.7.
 
-At the moment, only 0.7.10 is supported. Work on 0.8.x is in progress but there is still a lot to be done.
-
+At the moment, the latest 0.7.x and 0.8.x versions are supported. However, note that work on 0.8.x has not been completed yet, so there are still quite a few things which are either missing or typed incorrectly. Take a look at [0.8.x issues](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues?q=is%3Aopen+is%3Aissue+label%3A%22foundry+0.8.x%22) to see what still needs to be done.
 ## Installation
 
-You can install foundry-vtt-types from the [npm registry](https://npmjs.org/). We provide distribution tags for the different supported Foundry VTT versions that have the form `fvtt-<foundry-version>`. For example, the distribution tag for Foundry VTT 0.7.10 is `fvtt-0.7.10`.
+You can install foundry-vtt-types from the [npm registry](https://npmjs.org/). We provide distribution tags for the different supported Foundry VTT versions that have the form `fvtt-<foundry-version>`. For example, the distribution tag for Foundry VTT 0.8.8 is `fvtt-0.8.8`.
 
 In order to install the desired version, run
 
@@ -30,10 +29,10 @@ In order to install the desired version, run
 npm install --save-dev @league-of-foundry-developers/foundry-vtt-types@fvtt-<foundry-version>
 ```
 
-For example, to install the type definitions for Foundry VTT 0.7.10 run
+For example, to install the type definitions for Foundry VTT 0.8.8 run
 
 ```sh
-npm install --save-dev @league-of-foundry-developers/foundry-vtt-types@fvtt-0.7.10
+npm install --save-dev @league-of-foundry-developers/foundry-vtt-types@fvtt-0.8.8
 ```
 
 You can then update foundry-vtt-types using the regular update mechanism for npm (see [npm update](https://docs.npmjs.com/cli/v7/commands/npm-update)).
@@ -46,7 +45,8 @@ Add foundry-vtt-types to your types section in your `tsconfig.json`:
 {
   "compilerOptions": {
     "types": ["@league-of-foundry-developers/foundry-vtt-types"],
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "strictNullChecks": true,
   }
 }
 ```
@@ -55,8 +55,9 @@ This will make the type definitions available globally in your project.
 
 Make sure you are using `"moduleResolution": "node"`, too. It is required for some dependencies to be resolved correctly.
 
-You can find some information about how to actually work with the type definitions in the [Wiki](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/wiki). For example, [[0.7.x] Actors and Items](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/wiki/%5B0.7.x%5D-Actors-and-Items) describes how to set up custom `Actor` and `Item` classes for 0.7.x using the types.
+Also make sure to set `"strictNullChecks": true` because otherwise, some of the conditional types used in the type definitions resolve incorrectly and you will see a lot of errors.
 
+You can find some information about how to actually work with the type definitions in the [Wiki](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/wiki). If you are working with Foundry VTT 0.8.x, a good starting point is [[0.8.x] FAQ](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/wiki/%5B0.8.x%5D-FAQ).
 
 ## Acknowledgments
 
@@ -66,7 +67,7 @@ Originally forked from [Foundry Project Creator Types](https://gitlab.com/foundr
 
 Contributions are very welcome in order to decrease the individual workload. Filing issues for wrong / missing types is also a great way to help us improve the type definitions.
 
-There are individual branches for the different supported Foundry VTT versions that are being worked on. They are named according to the minor version of the Foundry VTT version, e.g. the branch for Foundry VTT 0.7 is called `foundry-0.7.x`. All work to improve the type definitions for a specific version needs to be done through Pull Requests to the corresponding branch.
+There are individual branches for the different supported Foundry VTT versions that are being worked on. They are named according to the minor version of the Foundry VTT version, e.g. the branch for Foundry VTT 0.8 is called `foundry-0.8.x`. All work to improve the type definitions for a specific version needs to be done through Pull Requests to the corresponding branch.
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for more details on how to contribute.
 
