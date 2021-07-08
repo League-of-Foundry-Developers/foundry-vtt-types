@@ -60,6 +60,14 @@ export type ConfiguredDocumentClassForName<Name extends DocumentType> = 'documen
   ? CONFIG[Name]['documentClass']
   : never;
 
+export type ObjectType = keyof {
+  [Key in keyof CONFIG as 'objectClass' extends keyof CONFIG[Key] ? Key : never]: unknown;
+};
+
+export type ConfiguredObjectClassForName<Name extends ObjectType> = 'objectClass' extends keyof CONFIG[Name]
+  ? CONFIG[Name]['objectClass']
+  : never;
+
 export type ConfiguredData<Name extends string> = Name extends keyof DataConfig ? DataConfig[Name] : {};
 
 export type ConfiguredSource<Name extends string> = Name extends keyof SourceConfig ? SourceConfig[Name] : {};
