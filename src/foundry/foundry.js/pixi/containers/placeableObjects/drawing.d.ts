@@ -8,6 +8,10 @@ declare global {
    */
   class Drawing extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>> {
     constructor(document: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>);
+    /**
+     * @remarks Not used for `Drawing`
+     */
+    controlIcon: null;
 
     /**
      * The inner drawing container
@@ -54,11 +58,6 @@ declare global {
      * @defaultValue `75`
      */
     static FREEHAND_SAMPLE_RATE: number;
-
-    /**
-     * @remarks Not implemented for Drawing
-     */
-    get bounds(): never;
 
     /**
      * A Boolean flag for whether or not the Drawing utilizes a tiled texture background

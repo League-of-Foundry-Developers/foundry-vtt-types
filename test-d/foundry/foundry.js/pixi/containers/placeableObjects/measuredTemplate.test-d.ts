@@ -4,7 +4,6 @@ expectType<'MeasuredTemplate'>(MeasuredTemplate.embeddedName);
 
 const template = new MeasuredTemplate(new MeasuredTemplateDocument());
 expectType<Promise<MeasuredTemplate>>(template.draw());
-expectType<never>(template.bounds);
 expectType<MeasuredTemplate>(template.refresh());
 expectType<foundry.data.MeasuredTemplateData>(template.data);
 
