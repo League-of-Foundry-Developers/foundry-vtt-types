@@ -276,9 +276,8 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * The data-type attribute is a string in ["image", "audio"] which sets the file extensions which will be accepted
    *
    * @param button  - The button element
-   * @param options - (unused)
    */
-  static fromButton(button: HTMLButtonElement, options?: any): FilePicker;
+  static fromButton(button: HTMLButtonElement): FilePicker;
 
   /**
    * Record the last-browsed directory path so that re-opening a different FilePicker instance uses the same target
