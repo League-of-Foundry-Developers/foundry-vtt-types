@@ -81,7 +81,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * Parse a s3 key to learn the bucket and the key prefix used for the request
    * @param key - A fully qualified key name or prefix path
    */
-  protected static parseS3URL(key: string): { bucket: string; keyPrefix: string };
+  protected static parseS3URL(key: string): { bucket: string | null; keyPrefix: string };
 
   /**
    * @override
