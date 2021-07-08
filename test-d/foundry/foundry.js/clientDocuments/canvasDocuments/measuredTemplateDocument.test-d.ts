@@ -2,7 +2,7 @@ import { expectType } from 'tsd';
 
 const doc = new MeasuredTemplateDocument();
 
-expectType<User>(doc.author);
+expectType<User | undefined>(doc.author);
 // TODO: Modify to TemplateLayer | null once data can be grabbed from CONFIG
 expectType<PlaceablesLayer>(doc.layer);
 
