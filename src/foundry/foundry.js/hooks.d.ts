@@ -1,4 +1,9 @@
-import { DocumentConstructor } from '../../types/helperTypes.js';
+import {
+  ConfiguredDocumentClass,
+  ConfiguredObjectClassForName,
+  DocumentConstructor,
+  ToObjectFalseType
+} from '../../types/helperTypes.js';
 import { DocumentModificationOptions } from '../common/abstract/document.mjs.js';
 import { EffectChangeData } from '../common/data/data.mjs/effectChangeData.js';
 
@@ -151,7 +156,7 @@ declare global {
        * @remarks This is called by {@link Hooks.call}.
        * @see {@link ActiveEffect#_applyCustom}
        */
-      applyActiveEffect: (actor: Actor, change: EffectChangeData) => boolean | void;
+      applyActiveEffect: (actor: ConfiguredDocumentClass<typeof Actor>, change: EffectChangeData) => boolean | void;
 
       /**
        * @remarks This is called before a {@link Canvas} is drawn.
@@ -201,7 +206,7 @@ declare global {
        */
       chatBubble: (
         token: Token,
-        jq: JQuery,
+        html: JQuery,
         message: string,
         options: {
           emote: boolean;
@@ -217,7 +222,11 @@ declare global {
        * @remarks An explicit return value of `false` prevents the chat message from being created.
        * @see {@link ChatLog#processMessage}
        */
-      chatMessage: (chatLog: ChatLog, message: string, chatData: any /* TODO: ChatMessageData */) => boolean | void;
+      chatMessage: (
+        chatLog: ChatLog,
+        message: string,
+        chatData: { user: string; speaker: ReturnType<ConfiguredDocumentClass<typeof ChatMessage>['getSpeaker']> }
+      ) => boolean | void;
 
       /**
        * @remarks This is called after the {@link SceneNavigation} is expanded or collapsed.
@@ -248,7 +257,11 @@ declare global {
        * @remarks An explicit return value of `false` prevents the Document being created.
        * @see {@link ActorSheet#_onDrop}
        */
-      dropActorSheetData: (actor: Actor, sheet: ActorSheet, data: ActorSheet.DropData) => boolean | void;
+      dropActorSheetData: (
+        actor: ConfiguredDocumentClass<typeof Actor>,
+        sheet: ActorSheet,
+        data: ActorSheet.DropData
+      ) => boolean | void;
 
       /**
        * @remarks This is called during the drop portion of a drag-and-drop event on a canvas.
@@ -260,7 +273,7 @@ declare global {
        */
       dropCanvasData: (
         canvas: Canvas,
-        data: TokenLayer.DropData | NotesLayer.DropData | /* TODO: User.DropData | */ TilesLayer.DropData
+        data: TokenLayer.DropData | NotesLayer.DropData | TilesLayer.DropData
       ) => boolean | void;
 
       /**
@@ -273,7 +286,7 @@ declare global {
        * @see {@link RollTableConfig#_onDrop}
        */
       dropRollTableSheetData: (
-        entity: foundry.abstract.Document<any, any>,
+        rollTable: InstanceType<ConfiguredDocumentClass<typeof RollTable>>,
         config: RollTableConfig,
         data: object
       ) => boolean | void;
@@ -333,7 +346,7 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link PointSource#_initializeShaders}
        */
-      initializePointSourceShaders: (pointSource: PointSource, animationType: string) => unknown;
+      initializePointSourceShaders: (pointSource: PointSource, animationType: string | null) => unknown;
 
       /**
        * @remarks This is called after refreshing the {@link LightingLayer}.
@@ -389,16 +402,25 @@ declare global {
       /**
        * A hook event that fires for each ChatMessage which is rendered for addition to the ChatLog.
        * This hook allows for final customization of the message HTML before it is added to the log.
-       * @param message     - the ChatMessage
-       * @param jq          - the JQuery of the rendered ChatMessage
-       * @param messageData - the data of the message
+       * @param message - The ChatMessage document being rendered
+       * @param html    - The pending HTML as a jQuery object
+       * @param data    - The input data provided for template rendering
        * @remarks This is called by {@link Hooks.call}.
        * @see {@link ChatMessage#render}
        */
       renderChatMessage: (
         message: ChatMessage,
-        jq: JQuery,
-        messageData: unknown /* TODO: ChatMessageData */
+        html: JQuery,
+        data: {
+          message: ToObjectFalseType<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>>;
+          user: Game['user'];
+          author: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>['user'];
+          alias: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>['alias'];
+          cssClass: string;
+          isWhisper: boolean;
+          whisperTo: string;
+          borderColor?: string;
+        }
       ) => boolean | void;
 
       /**
@@ -408,7 +430,7 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link AVSettings#_onSettingsChanged}
        */
-      rtcSettingsChanged: (settings: DeepPartial<AVSettings.Settings>, changed: object) => unknown;
+      rtcSettingsChanged: (settings: AVSettings, changed: DeepPartial<AVSettings.Settings>) => unknown;
 
       /**
        * @remarks This is called before the {@link Game} is fully set up.
@@ -433,7 +455,11 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link UserTargets#_hook}
        */
-      targetToken: (user: User, token: Token, targeted: boolean) => unknown;
+      targetToken: (
+        user: ConfiguredDocumentClass<typeof User>,
+        token: ConfiguredObjectClassForName<'Token'>,
+        targeted: boolean
+      ) => unknown;
 
       /**
        * A hook event that fires whenever the contents of a Compendium pack were modified.
@@ -498,13 +524,14 @@ declare global {
      * @param document - The new Document instance which has been created
      * @param options  - Additional options which modified the creation request
      * @param userId   - The ID of the User who triggered the creation workflow
+     * @typeParam D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining 'create' and the type name of the Document.
      * @remarks This is called by {@link Hooks.callAll}.
      * @see {@link ClientDatabaseBackend#_postCreateDocumentCallbacks}
      * @see {@link TokenDocument#_onUpdateTokenActor}
      */
     type CreateDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: D,
+      document: InstanceType<ConfiguredDocumentClass<D>>,
       options: DocumentModificationOptions,
       userId: string
     ) => unknown;
@@ -517,13 +544,14 @@ declare global {
      * @param document - The existing Document which was deleted
      * @param options  - Additional options which modified the deletion request
      * @param userId   - The ID of the User who triggered the deletion workflow
+     * @typeParam D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining 'delete' with the type name of the Document.
      * @remarks This is called by {@link Hooks.callAll}.
      * @see {@link ClientDatabaseBackend#_postDeleteDocumentCallbacks}
      * @see {@link TokenDocument#_onUpdateTokenActor}
      */
     type DeleteDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: D,
+      document: InstanceType<ConfiguredDocumentClass<D>>,
       options: DocumentModificationOptions,
       userId: string
     ) => unknown;
@@ -624,7 +652,7 @@ declare global {
      * @remarks This is called by {@link Hooks.callAll}.
      * @see {@link AudioHelper#_onChangeGlobalVolume}
      */
-    type GlobalVolumeChanged = (volumne: number) => unknown;
+    type GlobalVolumeChanged = (volume: number) => unknown;
 
     /**
      * @remarks This is called when the user mouse is entering or leaving a hover state over a {@link PlaceableObject}.
@@ -641,9 +669,9 @@ declare global {
     /**
      * @remarks This is called after copying {@link PlaceableObject}s in a copy-paste action, but before embedding them
      * into the {@link PlaceablesLayer}.
-     * @param copied - the originally copied PlaceableObjects
-     * @param pasted - the pasted copies with new coordinates
-     * @param P      - the type of the PlaceableObject
+     * @param copied   - the originally copied PlaceableObjects
+     * @param toCreate - the pasted copies with new coordinates
+     * @param P        - the type of the PlaceableObject
      * @remarks The name for this hook is dynamically created by joining 'paste' with the type name of the
      * PlaceableObject.
      * @remarks This is called by {@link Hooks.call}.
@@ -651,20 +679,8 @@ declare global {
      */
     type PastePlaceableObject<P extends PlaceableObject = PlaceableObject> = (
       copied: P[],
-      pasted: P[]
+      toCreate: Array<P['document']['data']['_source']>
     ) => boolean | void;
-
-    /**
-     * @remarks This is called after copying {@link Wall}s in a copy-paste action, but before embedding them into the
-     * {@link WallsLayer}.
-     * @param copied - the originally copied Walls
-     * @param pasted - the pasted copies with new coordiantes
-     * @param W      - the type of the Wall
-     * @remarks The name for this hook is dynamically created by joining 'paste' with the type name of the Wall.
-     * @remarks This is called by {@link Hooks.call}.
-     * @see {@link WallsLayer#pasteObjects}
-     */
-    type PasteWall<W extends Wall = Wall> = (copied: W[], pasted: W[]) => boolean | void;
 
     /**
      * A hook event that fires for every Document type before execution of a creation workflow. Substitute the
@@ -678,6 +694,7 @@ declare global {
      * @param data     - The initial data object provided to the document creation request
      * @param options  - Additional options which modify the creation request
      * @param userId   - The ID of the requesting user, always game.user.id
+     * @typeParam D    - the type of the Document constructor
      * @returns Explicitly return false to prevent creation of this Document
      * @remarks The name for this hook is dynamically created by joining 'preCreate' with the name of the Document.
      * @remarks This is called by {@link Hooks.call}.
@@ -685,8 +702,8 @@ declare global {
      * @see {@link TokenDocument#_preUpdateTokenActor}
      */
     type PreCreateDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: D,
-      data: ConstructorParameters<D>,
+      document: InstanceType<ConfiguredDocumentClass<D>>,
+      data: ConstructorParameters<D>[0],
       options: DocumentModificationOptions,
       userId: string
     ) => boolean | void;
@@ -702,6 +719,7 @@ declare global {
      * @param document - The Document instance being deleted
      * @param options  - Additional options which modify the deletion request
      * @param userId   - The ID of the requesting user, always game.user.id
+     * @typeParam D    - the type of the Document constructor
      * @returns Explicitly return false to prevent deletion of this Document
      * @remarks The name for this hook is dynamically created by joining 'preDelete' with the type name of the Document.
      * @remarks This is called by {@link Hooks.call}.
@@ -709,7 +727,7 @@ declare global {
      * @see {@link TokenDocument#_preUpdateTokenActor}
      */
     type PreDeleteDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: D,
+      document: InstanceType<ConfiguredDocumentClass<D>>,
       options: DocumentModificationOptions,
       userId: string
     ) => boolean | void;
@@ -726,6 +744,7 @@ declare global {
      * @param change   - Differential data that will be used to update the document
      * @param options  - Additional options which modify the update request
      * @param userId   - The ID of the requesting user, always game.user.id
+     * @typeParam D    - the type of the Document constructor
      * @returns Explicitly return false to prevent update of this Document
      * @remarks The name for this hook is dynamically created by joining 'preUpdate' with the type name of the Document.
      * @remarks This is called {@link Hooks.call}.
@@ -733,8 +752,8 @@ declare global {
      * @see {@link TokenDocument#_preUpdateTokenActor}
      */
     type PreUpdateDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: D,
-      change: DeepPartial<ConstructorParameters<D>>,
+      document: InstanceType<ConfiguredDocumentClass<D>>,
+      change: DeepPartial<ConstructorParameters<D>[0]>,
       options: DocumentModificationOptions,
       userId: string
     ) => boolean | void;
@@ -747,16 +766,15 @@ declare global {
      * @param app   - The Application instance being rendered
      * @param html  - The inner HTML of the document that will be displayed and may be modified
      * @param data  - The object of data used when rendering the application
-     * @typeParam D - the type of the Application data
      * @typeParam A - the type of the Application
      * @remarks The name for this hook is dynamically created by joining 'render' with the type name of the Application.
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link Application#_render}
      */
-    type RenderApplication<D = object, A extends Application = Application> = (
+    type RenderApplication<A extends Application = Application> = (
       app: A,
       html: JQuery,
-      data: D
+      data: ReturnType<A['getData']> extends Promise<infer T> ? T : ReturnType<A['getData']>
     ) => boolean | void;
 
     /**
@@ -768,14 +786,15 @@ declare global {
      * @param change   - Differential data that was used used to update the document
      * @param options  - Additional options which modified the update request
      * @param userId   - The ID of the User who triggered the update workflow
+     * @typeParam D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining 'update' with the type name of the Document.
      * @remarks This is called by {@link Hooks.callAll}.
      * @see {@link ClientDatabaseBackend#_postUpdateDocumentCallbacks}
      * @see {@link TokenDocument#_onUpdateTokenActor}
      */
     type UpdateDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: D,
-      change: DeepPartial<ConstructorParameters<D>>,
+      document: InstanceType<ConfiguredDocumentClass<D>>,
+      change: DeepPartial<ConstructorParameters<D>[0]>,
       options: DocumentModificationOptions,
       userId: string
     ) => unknown;
@@ -794,7 +813,6 @@ declare global {
       | GetSidebarDirectoryFolderContext
       | HoverPlaceableObject
       | PastePlaceableObject
-      | PasteWall
       | PreCreateDocument
       | PreDeleteDocument
       | PreUpdateDocument
