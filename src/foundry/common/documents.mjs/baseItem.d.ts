@@ -35,7 +35,7 @@ export declare class BaseItem extends Document<data.ItemData, InstanceType<Confi
    */
   get effects(): this['data']['effects'];
 
-  canUserModify(user: BaseUser, action: string, data?: object): boolean;
+  canUserModify(user: BaseUser, action: 'create' | 'update' | 'delete', data?: object): boolean;
 
   testUserPermission(
     user: BaseUser,

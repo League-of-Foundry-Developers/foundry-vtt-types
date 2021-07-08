@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
+import { ConfiguredDocumentClass, ConstructorDataType } from '../../../types/helperTypes';
 
 declare global {
   /**
@@ -69,10 +69,10 @@ declare global {
      * @deprecated since 0.8.1
      */
     static createOwned(
-      itemData: Parameters<Item['data']['_initializeSource']>[0] & Record<string, unknown>,
+      itemData:
+        | ConstructorDataType<foundry.data.ItemData>
+        | (ConstructorDataType<foundry.data.ItemData> & Record<string, unknown>),
       actor: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>
     ): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseItem>>;
   }
 }
-
-export {};

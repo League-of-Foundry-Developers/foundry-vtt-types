@@ -33,8 +33,7 @@ declare global {
      */
     protected _onChangeScene(
       scene: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>,
-      data: DeepPartial<Parameters<foundry.documents.BaseScene['data']['_initializeSource']>[0]> &
-        Record<string, unknown>
+      data: DeepPartial<ConstructorParameters<foundry.documents.BaseScene['data']>>
     ): Promise<void>;
   }
 }

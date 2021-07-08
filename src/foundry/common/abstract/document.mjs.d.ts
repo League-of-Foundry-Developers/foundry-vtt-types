@@ -5,7 +5,8 @@ import {
   ConfiguredDocumentClass,
   DocumentConstructor,
   ToObjectFalseType,
-  DocumentType
+  DocumentType,
+  ConstructorDataType
 } from '../../../types/helperTypes';
 import EmbeddedCollection from './embedded-collection.mjs';
 
@@ -25,7 +26,7 @@ declare abstract class Document<
    * @param data    - Initial data provided to construct the Document
    * @param context - Additional parameters which define Document context
    */
-  constructor(data?: Parameters<ConcreteDocumentData['_initializeSource']>[0], context?: Context<Parent>);
+  constructor(data?: ConstructorDataType<ConcreteDocumentData>, context?: Context<Parent>);
 
   /**
    * An immutable reverse-reference to the parent Document to which this embedded Document belongs.
@@ -142,9 +143,11 @@ declare abstract class Document<
    * @returns The cloned Document instance
    */
   clone(
-    data: DeepPartial<Parameters<ConcreteDocumentData['_initializeSource']>[0]>,
-    { save, keepId }: { save?: boolean; keepId?: boolean }
-  ): this | Promise<this>;
+    data?: DeepPartial<
+      ConstructorDataType<ConcreteDocumentData> | (ConstructorDataType<ConcreteDocumentData> & Record<string, unknown>)
+    >,
+    { save, keepId }?: { save?: boolean; keepId?: boolean }
+  ): this | Promise<this | undefined>;
 
   /**
    * Get the permission level that a specific User has over this Document, a value in CONST.ENTITY_PERMISSIONS.
@@ -175,7 +178,7 @@ declare abstract class Document<
    *                 (default: `{}`)
    * @returns  Does the User have permission?
    */
-  canUserModify(user: BaseUser, action: string, data?: object): boolean;
+  canUserModify(user: BaseUser, action: 'create' | 'update' | 'delete', data?: object): boolean;
 
   /**
    * Create multiple Documents using provided input data.
@@ -214,7 +217,10 @@ declare abstract class Document<
    */
   static createDocuments<T extends DocumentConstructor>(
     this: T,
-    data?: Array<Parameters<InstanceType<T>['data']['_initializeSource']>[0] & Record<string, unknown>>,
+    data?: Array<
+      | ConstructorDataType<InstanceType<T>['data']>
+      | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
+    >,
     context?: DocumentModificationContext
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
@@ -256,10 +262,10 @@ declare abstract class Document<
   static updateDocuments<T extends DocumentConstructor>(
     this: T,
     updates?: Array<
-      DeepPartial<Parameters<InstanceType<T>['data']['_initializeSource']>[0]> & { _id: string } & Record<
-          string,
-          unknown
-        >
+      DeepPartial<
+        | ConstructorDataType<InstanceType<T>['data']>
+        | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
+      >
     >,
     context?: DocumentModificationContext
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
@@ -338,7 +344,9 @@ declare abstract class Document<
    */
   static create<T extends DocumentConstructor>(
     this: T,
-    data: Parameters<InstanceType<T>['data']['_initializeSource']>[0] & Record<string, unknown>,
+    data:
+      | ConstructorDataType<InstanceType<T>['data']>
+      | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>),
     context?: DocumentModificationContext
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
 
@@ -354,7 +362,9 @@ declare abstract class Document<
    * @remarks If no document has actually been updated, the returned {@link Promise} resolves to `undefined`.
    */
   update(
-    data?: DeepPartial<Parameters<ConcreteDocumentData['_initializeSource']>[0]> & Record<string, unknown>,
+    data?: DeepPartial<
+      ConstructorDataType<ConcreteDocumentData> | (ConstructorDataType<ConcreteDocumentData> & Record<string, unknown>)
+    >,
     context?: DocumentModificationContext
   ): Promise<this | undefined>;
 
@@ -484,7 +494,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document creation
    */
   protected _preCreate(
-    data: Parameters<ConcreteDocumentData['_initializeSource']>[0],
+    data: ConstructorDataType<ConcreteDocumentData>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
@@ -497,7 +507,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document update
    */
   protected _preUpdate(
-    changed: DeepPartial<Parameters<ConcreteDocumentData['_initializeSource']>[0]> & Record<string, unknown>,
+    changed: DeepPartial<ConstructorDataType<ConcreteDocumentData>>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
@@ -707,9 +717,9 @@ export interface Metadata<ConcreteDocument extends Document<any, any>> {
   embedded: Record<string, ConstructorOf<Document<any, any>>>;
   hasSystemData: boolean;
   permissions: {
-    create: string | ((user: BaseUser, doc: ConcreteDocument, data?: any) => boolean);
-    update: string | ((user: BaseUser, doc: ConcreteDocument, data?: any) => boolean);
-    delete: string | ((user: BaseUser, doc: ConcreteDocument, data?: any) => boolean);
+    create: string | ((user: BaseUser, doc: ConcreteDocument, data?: object) => boolean); // data isn't actually ever passed in on the client side
+    update: string | ((user: BaseUser, doc: ConcreteDocument, data?: object) => boolean); // data isn't actually ever passed in on the client side
+    delete: string | ((user: BaseUser, doc: ConcreteDocument, data?: object) => boolean); // data isn't actually ever passed in on the client side
   };
   pack: any;
 }

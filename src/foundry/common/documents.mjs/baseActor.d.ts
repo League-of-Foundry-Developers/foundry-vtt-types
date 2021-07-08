@@ -4,6 +4,7 @@ import { BaseActiveEffect } from './baseActiveEffect';
 import { BaseItem } from './baseItem';
 import * as data from '../data/data.mjs';
 import { BaseUser } from './baseUser';
+import { ConstructorDataType } from '../../../types/helperTypes';
 
 //TODO Add Token as parent class once it is available
 /**
@@ -56,7 +57,7 @@ export declare class BaseActor extends Document<data.ActorData, Document<any, an
    * @param user    - The User requesting the document creation
    */
   protected _preCreate(
-    data: Parameters<data.ActorData['_initializeSource']>[0],
+    data: ConstructorDataType<data.ActorData>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
@@ -69,7 +70,7 @@ export declare class BaseActor extends Document<data.ActorData, Document<any, an
    * @param user    - The User requesting the document update
    */
   protected _preUpdate(
-    changed: DeepPartial<Parameters<data.ActorData['_initializeSource']>[0]> & Record<string, unknown>,
+    changed: DeepPartial<ConstructorDataType<data.ActorData>>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;

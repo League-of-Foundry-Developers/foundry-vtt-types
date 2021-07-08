@@ -1,3 +1,4 @@
+import { ConstructorDataType } from '../../types/helperTypes';
 import { ContextType, DocumentModificationOptions } from '../common/abstract/document.mjs';
 import { ClientDocumentMixin } from './clientDocumentMixin';
 
@@ -18,23 +19,23 @@ type CanvasDocumentConstructor<T extends ConstructorOf<foundry.abstract.Document
   };
 
 declare class CanvasDocumentMixin<T extends foundry.abstract.Document<any, any>> extends ClientDocumentMixin<T> {
-  constructor(data?: Parameters<T['data']['_initializeSource']>[0], context?: ContextType<T>);
+  constructor(data?: ConstructorDataType<T['data']>, context?: ContextType<T>);
 
   /**
    * A reference to the PlaceableObject instance which represents this Embedded Document.
    * @defaultValue `null`
    */
-  protected _object: PlaceableObject | null; // TODO: Replace mit InstanceType<ObjectClass<T>> | null once the circular reference problem has been solved
+  protected _object: PlaceableObject | null; // TODO: Replace with InstanceType<ObjectClass<T>> | null once the circular reference problem has been solved
 
   /**
    * A lazily constructed PlaceableObject instance which can represent this Document on the game canvas.
    */
-  get object(): PlaceableObject | null; // TODO: Replace mit InstanceType<ObjectClass<T>> | null once the circular reference problem has been solved
+  get object(): PlaceableObject | null; // TODO: Replace with InstanceType<ObjectClass<T>> | null once the circular reference problem has been solved
 
   /**
    * A reference to the CanvasLayer which contains Document objects of this type.
    */
-  get layer(): PlaceablesLayer | null; // TODO: Replace mit InstanceType<LayerClass<T>> | null once the circular reference problem has been solved
+  get layer(): PlaceablesLayer | null; // TODO: Replace with InstanceType<LayerClass<T>> | null once the circular reference problem has been solved
 
   /**
    * An indicator for whether this document is currently rendered on the game canvas.

@@ -37,6 +37,13 @@ type SourceDataType<T extends Document<any, any> | AnyDocumentData> = T extends 
   ? SourceDataType<U>
   : never;
 
+/**
+ * Returns the type of the constructor data for the given {@link DocumentData}.
+ */
+export type ConstructorDataType<T extends AnyDocumentData> = T['_initializeSource'] extends (data: infer U) => any
+  ? U
+  : never;
+
 type ObjectToDeepPartial<T> = T extends object ? DeepPartial<T> : T;
 
 export type PropertyTypeToSourceParameterType<T> = ObjectToDeepPartial<PropertyTypeToSourceType<T>>;

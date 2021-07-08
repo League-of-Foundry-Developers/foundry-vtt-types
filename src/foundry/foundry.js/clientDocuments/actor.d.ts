@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass, DocumentConstructor } from '../../../types/helperTypes';
+import { ConfiguredDocumentClass, ConstructorDataType, DocumentConstructor } from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
 import EmbeddedCollection from '../../common/abstract/embedded-collection.mjs';
 
@@ -158,7 +158,7 @@ declare global {
 
     /** @override */
     protected _preCreate(
-      data: Parameters<foundry.data.ActorData['_initializeSource']>[0],
+      data: ConstructorDataType<foundry.data.ActorData>,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;

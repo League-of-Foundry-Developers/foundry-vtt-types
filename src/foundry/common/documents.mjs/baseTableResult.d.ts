@@ -14,7 +14,7 @@ export declare class BaseTableResult extends Document<any, any> {
       label: 'DOCUMENT.TableResult';
       types: typeof CONST.TABLE_RESULT_TYPES;
       permissions: {
-        update: (user: BaseUser, doc: any, data: any) => boolean;
+        update: (user: BaseUser, doc: any, data?: object) => boolean;
       };
     }
   >;
