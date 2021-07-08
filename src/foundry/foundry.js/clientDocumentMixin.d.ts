@@ -1,6 +1,6 @@
 import { ContextType, DocumentModificationOptions } from '../common/abstract/document.mjs';
 
-import { ConfiguredDocumentClass, DocumentConstructor } from '../../types/helperTypes';
+import { ConfiguredDocumentClass, ConstructorDataType, DocumentConstructor } from '../../types/helperTypes';
 
 declare global {
   // TODO: Replace ConstructorOf<…> with DocumentConstructor once the problem with circular reference has been solved
@@ -19,7 +19,7 @@ type ClientDocumentConstructor<T extends ConstructorOf<foundry.abstract.Document
   };
 
 export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>> {
-  constructor(data?: Parameters<T['data']['_initializeSource']>[0], context?: ContextType<T>);
+  constructor(data?: ConstructorDataType<T['data']>, context?: ContextType<T>);
 
   /**
    * A collection of Application instances which should be re-rendered whenever this document is updated.
@@ -33,7 +33,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * A cached reference to the FormApplication instance used to configure this Document.
    * @defaultValue `null`
    */
-  protected _sheet: FormApplication | null; // TODO: Replace mit InstanceType<ConfiguredSheetClass<T>> once the circular reference problem has been solved
+  protected _sheet: FormApplication | null; // TODO: Replace with InstanceType<ConfiguredSheetClass<T>> once the circular reference problem has been solved
 
   /**
    * @see abstract.Document#_initialize
@@ -279,7 +279,10 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    */
   static createDialog<T extends DocumentConstructor>(
     this: T,
-    data?: Parameters<InstanceType<T>['data']['_initializeSource']>[0] & Record<string, unknown>,
+    data?: DeepPartial<
+      | ConstructorDataType<InstanceType<T>['data']>
+      | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
+    >,
     options?: Dialog.Options
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
 
@@ -332,10 +335,10 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * @param pack - A specific pack being exported to
    * @returns A data object of cleaned data suitable for compendium import
    */
-  toCompendium(
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    pack?: any /* TODO: CompendiumCollection and remove comment above */
-  ): Omit<ReturnType<T['toObject']>, '_id' | 'folder' | 'permission'> & {
+  toCompendium(pack?: CompendiumCollection<CompendiumCollection.Metadata>): Omit<
+    ReturnType<T['toObject']>,
+    '_id' | 'folder' | 'permission'
+  > & {
     permission?: T extends { toObject(): infer U } ? U : never; // TODO: Whether or not this property exists depends on `pack`, improve when `pack` is typed
   };
 
@@ -375,15 +378,15 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
     this: T,
     updates?:
       | Array<
-          DeepPartial<Parameters<InstanceType<T>['data']['_initializeSource']>[0]> & { _id: string } & Record<
-              string,
-              unknown
-            >
+          DeepPartial<
+            | ConstructorDataType<InstanceType<T>['data']>
+            | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
+          > & { _id: string }
         >
-      | (DeepPartial<Parameters<InstanceType<T>['data']['_initializeSource']>[0]> & { _id: string } & Record<
-            string,
-            unknown
-          >),
+      | (DeepPartial<
+          | ConstructorDataType<InstanceType<T>['data']>
+          | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
+        > & { _id: string }),
     options?: DocumentModificationContext
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 

@@ -15,8 +15,8 @@ export declare class BaseFogExploration extends Document<any, any> {
       isPrimary: true;
       permissions: {
         create: 'PLAYER';
-        update: (user: BaseUser, doc: any, data: any) => boolean;
-        delete: (user: BaseUser, doc: any, data: any) => boolean;
+        update: (user: BaseUser, doc: any, data?: object) => boolean;
+        delete: (user: BaseUser, doc: any, data?: object) => boolean;
       };
     }
   >;

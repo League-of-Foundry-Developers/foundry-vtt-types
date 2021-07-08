@@ -2,6 +2,7 @@ import * as data from '../data/data.mjs';
 import { Document } from '../abstract/module.mjs';
 import { DocumentMetadata, DocumentModificationOptions } from '../abstract/document.mjs';
 import { BaseUser } from './baseUser';
+import { ConstructorDataType } from '../../../types/helperTypes';
 
 /**
  * The base Macro model definition which defines common behavior of an Macro document between both client and server.
@@ -19,14 +20,14 @@ export declare class BaseMacro extends Document<data.MacroData> {
       types: ['script', 'chat']; // TODO: Automatically infer from CONST.MACRO_TYPES
       permissions: {
         create: 'PLAYER';
-        update: (user: BaseUser, doc: BaseMacro, data: any) => boolean;
+        update: (user: BaseUser, doc: BaseMacro, data?: object) => boolean;
         delete: (user: BaseUser, doc: BaseMacro) => boolean;
       };
     }
   >;
 
   protected _preCreate(
-    data: Parameters<data.MacroData['_initializeSource']>[0],
+    data: ConstructorDataType<data.MacroData>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
@@ -34,7 +35,7 @@ export declare class BaseMacro extends Document<data.MacroData> {
   /**
    * Is a user able to update an existing Macro document?
    */
-  protected static _canUpdate(user: BaseUser, doc: BaseMacro, data: unknown): boolean;
+  protected static _canUpdate(user: BaseUser, doc: BaseMacro, data?: object): boolean;
 
   /**
    * Is a user able to delete an existing Macro document?

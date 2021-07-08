@@ -15,8 +15,8 @@ export declare class BaseDrawing extends Document<any, any> {
       isEmbedded: true;
       permissions: {
         create: 'DRAWING_CREATE';
-        update: (user: BaseUser, doc: any, data: any) => boolean;
-        delete: (user: BaseUser, doc: any, data: any) => boolean;
+        update: (user: BaseUser, doc: any, data?: object) => boolean;
+        delete: (user: BaseUser, doc: any, data?: object) => boolean;
       };
     }
   >;

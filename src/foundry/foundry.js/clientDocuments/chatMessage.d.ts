@@ -1,7 +1,5 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
+import { ConfiguredDocumentClass, ConstructorDataType } from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
-import { ChatMessageData } from '../../common/data/data.mjs';
-import { ChatSpeakerData } from '../../common/data/data.mjs/chatSpeakerData';
 
 declare global {
   /**
@@ -105,7 +103,7 @@ declare global {
       actor?: InstanceType<ConfiguredDocumentClass<typeof Actor>>;
       token?: InstanceType<CONFIG['Token']['objectClass']>;
       alias?: string;
-    }): ChatSpeakerData['_source'];
+    }): foundry.data.ChatMessageData['speaker']['_source'];
 
     /**
      * A helper to prepare the speaker object based on a target TokenDocument
@@ -120,7 +118,7 @@ declare global {
     }: {
       token: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>>;
       alias: string;
-    }): ChatSpeakerData['_source'];
+    }): foundry.data.ChatMessageData['speaker']['_source'];
     /**
      * A helper to prepare the speaker object based on a target TokenDocument
      *
@@ -135,7 +133,7 @@ declare global {
     }: {
       token: InstanceType<CONFIG['Token']['objectClass']>;
       alias: string;
-    }): ChatSpeakerData['_source'];
+    }): foundry.data.ChatMessageData['speaker']['_source'];
 
     /**
      * A helper to prepare the speaker object based on a target Actor
@@ -153,7 +151,7 @@ declare global {
       scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>>;
       actor: InstanceType<ConfiguredDocumentClass<typeof Actor>>;
       alias?: string;
-    }): ChatSpeakerData['_source'];
+    }): foundry.data.ChatMessageData['speaker']['_source'];
 
     /**
      * A helper to prepare the speaker object based on a target User
@@ -171,13 +169,13 @@ declare global {
       scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>>;
       user: InstanceType<ConfiguredDocumentClass<typeof User>>;
       alias?: string;
-    }): ChatSpeakerData['_source'];
+    }): foundry.data.ChatMessageData['speaker']['_source'];
 
     /**
      * Obtain an Actor instance which represents the speaker of this message (if any)
      * @param speaker - The speaker data object
      */
-    static getSpeakerActor(speaker: ChatSpeakerData['_source']): Actor | null;
+    static getSpeakerActor(speaker: foundry.data.ChatMessageData['speaker']['_source']): Actor | null;
 
     /**
      * Obtain a data object used to evaluate any dice rolls associated with this particular chat message
@@ -199,17 +197,21 @@ declare global {
 
     /** @override */
     _preCreate(
-      data: Parameters<ChatMessageData['_initializeSource']>[0],
+      data: ConstructorDataType<foundry.data.ChatMessageData>,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;
 
     /** @override */
-    _onCreate(data: ChatMessageData['_source'], options: DocumentModificationOptions, userId: string): void;
+    _onCreate(
+      data: foundry.data.ChatMessageData['_source'],
+      options: DocumentModificationOptions,
+      userId: string
+    ): void;
 
     /** @override */
     _onUpdate(
-      data: DeepPartial<ChatMessageData['_source']> & Record<string, unknown>,
+      data: DeepPartial<foundry.data.ChatMessageData['_source']> & Record<string, unknown>,
       options: DocumentModificationOptions,
       userId: string
     ): void;

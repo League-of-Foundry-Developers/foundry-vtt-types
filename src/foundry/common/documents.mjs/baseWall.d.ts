@@ -16,7 +16,7 @@ export declare class BaseWall extends Document<any, InstanceType<ConfiguredDocum
       label: 'DOCUMENT.Wall';
       isEmbedded: true;
       permissions: {
-        update: (user: BaseUser, doc: any, data: any) => boolean;
+        update: (user: BaseUser, doc: any, data?: object) => boolean;
       };
     }
   >;

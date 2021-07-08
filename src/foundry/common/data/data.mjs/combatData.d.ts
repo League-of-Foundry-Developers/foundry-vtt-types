@@ -1,8 +1,14 @@
-import { ConfiguredDocumentClass, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import {
+  ConfiguredDocumentClass,
+  ConstructorDataType,
+  FieldReturnType,
+  PropertiesToSource
+} from '../../../../types/helperTypes';
 import EmbeddedCollection from '../../abstract/embedded-collection.mjs';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
+import { CombatantData } from './combatantData';
 
 interface CombatDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
@@ -64,7 +70,7 @@ interface CombatDataConstructorData {
   scene?: string | null;
 
   /** A Collection of Combatant embedded Documents */
-  combatants?: Parameters<foundry.data.CombatantData['_initializeSource']>[0][] | null;
+  combatants?: ConstructorDataType<CombatantData>[] | null;
 
   /**
    * Is the Combat encounter currently active?

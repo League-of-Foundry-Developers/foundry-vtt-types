@@ -17,3 +17,6 @@ expectType<Promise<Item | undefined>>(Item.createDialog()); // ClientDocumentMix
 // Properties
 // TODO: change to <InstanceType<ConfiguredSheetClass<Item>> | null> once the circular reference problem has been solved
 expectType<FormApplication | null>(doc.sheet);
+
+// ensure source can be used to create a new document with createDialog
+expectType<Promise<Item | undefined>>(Item.createDialog(doc.toObject()));

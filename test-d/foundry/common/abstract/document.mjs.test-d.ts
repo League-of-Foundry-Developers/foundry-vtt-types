@@ -30,3 +30,13 @@ if (user) {
   expectType<boolean>(user.testUserPermission(user, 'LIMITED', { exact: true }));
   expectType<boolean>(user.testUserPermission(user, 'OWNER', { exact: false }));
 }
+
+// verify that document lifecycle methods work with source data is possible
+
+if (item) {
+  expectType<Promise<Item[]>>(Item.createDocuments([item.toObject()]));
+  expectType<Promise<Item | undefined>>(Item.create(item.toObject()));
+  expectType<Promise<Item[]>>(Item.updateDocuments([item.toObject()]));
+  expectType<Promise<Item | undefined>>(item.update(item.toObject()));
+  expectType<Item | Promise<Item | undefined>>(item.clone(item.toObject()));
+}

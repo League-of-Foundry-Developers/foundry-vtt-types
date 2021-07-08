@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClassForName, ConstructorDataType } from '../../../../types/helperTypes';
 import { IdQuery } from '../../../common/abstract/backend.mjs';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
@@ -191,13 +191,18 @@ declare global {
 
     /** @deprecated since 0.8.0 */
     createEntity(
-      data: Parameters<DocumentInstanceForCompendiumMetadata<T>['data']['_initializeSource']>[0],
+      data:
+        | ConstructorDataType<DocumentInstanceForCompendiumMetadata<T>['data']>
+        | (ConstructorDataType<DocumentInstanceForCompendiumMetadata<T>['data']> & Record<string, unknown>),
       options?: Partial<DocumentModificationOptions>
     ): ReturnType<this['documentClass']['create']>;
 
     /** @deprecated since 0.8.0 */
     updateEntity(
-      data: DeepPartial<Parameters<DocumentInstanceForCompendiumMetadata<T>['data']['_initializeSource']>[0]> & {
+      data: DeepPartial<
+        | ConstructorDataType<DocumentInstanceForCompendiumMetadata<T>['data']>
+        | (ConstructorDataType<DocumentInstanceForCompendiumMetadata<T>['data']> & Record<string, unknown>)
+      > & {
         _id: string;
       },
       options?: Partial<DocumentModificationOptions>

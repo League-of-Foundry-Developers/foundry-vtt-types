@@ -1,4 +1,4 @@
-import { FieldReturnType, PropertiesToSource } from '../../../types/helperTypes';
+import { ConstructorDataType, FieldReturnType, PropertiesToSource } from '../../../types/helperTypes';
 import { DocumentData } from '../abstract/module.mjs';
 import * as fields from '../data/fields.mjs';
 import { PackageAuthorData } from './packageAuthorData';
@@ -187,7 +187,7 @@ export interface PackageDataConstructorData {
    * An array of author objects who are co-authors of this package. Preferred to the singular author field.
    * @defaultValue `[]`
    */
-  authors?: Parameters<PackageAuthorData['_initializeSource']>[0][] | null;
+  authors?: ConstructorDataType<PackageAuthorData>[] | null;
 
   /** A web url where more details about the package may be found */
   url?: string | null;
@@ -241,13 +241,13 @@ export interface PackageDataConstructorData {
    * An array of language data objects which are included by this package
    * @defaultValue `[]`
    */
-  languages?: Parameters<PackageLanguageData['_initializeSource']>[0][] | null;
+  languages?: ConstructorDataType<PackageLanguageData>[] | null;
 
   /**
    * An array of compendium packs which are included by this package
    * @defaultValue `[]`
    */
-  packs?: Parameters<PackageCompendiumData['_initializeSource']>[0][] | null;
+  packs?: ConstructorDataType<PackageCompendiumData>[] | null;
 
   /**
    * An array of game system names which this module supports
@@ -259,7 +259,7 @@ export interface PackageDataConstructorData {
    * An array of dependency objects which define required dependencies for using this package
    * @defaultValue `[]`
    */
-  dependencies?: Parameters<PackageDependencyData['_initializeSource']>[0][] | null;
+  dependencies?: ConstructorDataType<PackageDependencyData>[] | null;
 
   /**
    * Whether to require a package-specific socket namespace for this package
