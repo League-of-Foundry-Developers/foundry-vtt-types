@@ -48,7 +48,7 @@ declare global {
      * Internal flag for the permanent points of the polygon
      * @defaultValue `foundry.utils.deepClone(this.data.points || [])`
      */
-    protected _fixedPoints: Array<[number, number]>;
+    protected _fixedPoints: Array<[x: number, y: number]>;
 
     /** @override */
     static get embeddedName(): 'Drawing';

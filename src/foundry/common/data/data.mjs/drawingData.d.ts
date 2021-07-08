@@ -9,10 +9,10 @@ interface DrawingDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
   author: ForeignDocumentField<{ type: typeof documents.BaseUser; required: true }>;
   type: DocumentField<foundry.CONST.DrawingType> & {
-    type: String;
+    type: typeof String;
     required: true;
     default: typeof CONST.DRAWING_TYPES.POLYGON;
-    validate: (t: any) => t is foundry.CONST.DrawingType;
+    validate: (t: unknown) => t is foundry.CONST.DrawingType;
     validationError: 'Invalid {name} {field} which must be a value in CONST.DRAWING_TYPES';
   };
   x: typeof fields.REQUIRED_NUMBER;
@@ -21,8 +21,8 @@ interface DrawingDataSchema extends DocumentSchema {
   height: typeof fields.REQUIRED_NUMBER;
   rotation: FieldReturnType<typeof fields.ANGLE_FIELD, { default: 0 }>;
   z: typeof fields.REQUIRED_NUMBER;
-  points: DocumentField<Array<[number, number]>> & {
-    type: Array<[number, number]>;
+  points: DocumentField<Array<[x: number, y: number]>> & {
+    type: [typeof Array];
     required: true;
     default: [];
     validate: typeof _validateDrawingPoints;
@@ -33,7 +33,7 @@ interface DrawingDataSchema extends DocumentSchema {
     typeof fields.REQUIRED_NUMBER,
     {
       default: typeof CONST.DRAWING_FILL_TYPES.NONE;
-      validate: (v: any) => v is foundry.CONST.DrawingFillType;
+      validate: (v: unknown) => v is foundry.CONST.DrawingFillType;
       validationError: 'Invalid {name} {field} which must be a value in CONST.DRAWING_FILL_TYPES';
     }
   >;
@@ -118,7 +118,7 @@ interface DrawingDataProperties {
    * An array of points [x,y] which define polygon vertices
    * @defaultValue `[]`
    */
-  points: Array<[number, number]>;
+  points: Array<[x: number, y: number]>;
 
   /**
    * An amount of bezier smoothing applied, between 0 and 1
@@ -271,7 +271,7 @@ interface DrawingDataConstructorData {
    * An array of points [x,y] which define polygon vertices
    * @defaultValue `[]`
    */
-  points?: Array<[number, number]> | null;
+  points?: Array<[x: number, y: number]> | null;
 
   /**
    * An amount of bezier smoothing applied, between 0 and 1

@@ -13,6 +13,8 @@ export declare class BaseDrawing extends Document<
   InstanceType<ConfiguredDocumentClass<typeof BaseScene>>
 > {
   static get schema(): typeof data.DrawingData;
+
+  /** @override */
   static get metadata(): Merge<
     DocumentMetadata,
     {
