@@ -12,7 +12,8 @@ declare global {
   class DrawingDocument extends CanvasDocumentMixin(foundry.documents.BaseDrawing) {
     /**
      * A reference to the User who created the Drawing document.
+     * @remarks Will return undefined if the user has been deleted
      */
-    get author(): InstanceType<ConfiguredDocumentClass<typeof User>>;
+    get author(): InstanceType<ConfiguredDocumentClass<typeof User>> | undefined;
   }
 }
