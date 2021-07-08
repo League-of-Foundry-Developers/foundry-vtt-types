@@ -37,7 +37,7 @@ declare global {
      */
     preload(sceneId: string, push?: boolean): io.Socket | Promise<unknown[]>;
 
-    /** @remarks This is not marked as protected because it is used in `Game.activateSocketListeners` */
+    /** @remarks This is not marked as protected because it is used in {@link Game#activateSocketListeners} */
     static _activateSocketListeners(socket: io.Socket): void;
 
     /**

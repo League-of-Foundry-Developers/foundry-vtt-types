@@ -7,4 +7,7 @@ import './journal';
 import './macros';
 import './messages';
 import './playlists';
+import './rollTables';
 import './scenes';
+import './users';
+import './worldSettings';

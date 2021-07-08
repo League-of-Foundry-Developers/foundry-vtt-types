@@ -85,12 +85,12 @@ export interface TokenDataSchema extends DocumentSchema {
   bar1: DocumentField<TokenBarData> & {
     type: typeof TokenBarData;
     required: true;
-    default: () => { attribute: typeof game['system']['data']['primaryTokenAttribute'] | null };
+    default: () => { attribute: Game['system']['data']['primaryTokenAttribute'] | null };
   };
   bar2: DocumentField<TokenBarData> & {
     type: typeof TokenBarData;
     required: true;
-    default: () => { attribute: typeof game['system']['data']['secondaryTokenAttribute'] | null };
+    default: () => { attribute: Game['system']['data']['secondaryTokenAttribute'] | null };
   };
   flags: typeof fields.OBJECT_FIELD;
 }
@@ -129,7 +129,7 @@ export interface TokenDataProperties {
    * Token-level data which overrides the base data of the associated Actor
    * @defaultValue `{}`
    */
-  actorData: DeepPartial<ActorDataSource>;
+  actorData: Partial<ActorDataSource>;
 
   /**
    * A file path to an image or video file used to depict the Token
@@ -349,7 +349,7 @@ export interface TokenDataConstructorData {
    * Token-level data which overrides the base data of the associated Actor
    * @defaultValue `{}`
    */
-  actorData?: DeepPartial<ActorDataSource> | null;
+  actorData?: Partial<ActorDataSource> | null;
 
   /**
    * A file path to an image or video file used to depict the Token
@@ -490,7 +490,7 @@ export interface TokenDataConstructorData {
   /**
    * The color of the token's emitted light as an HTML hexadecimal color string
    */
-  lightColor: string | undefined | null;
+  lightColor?: string | null;
 
   /**
    * The intensity of any light emitted by the token

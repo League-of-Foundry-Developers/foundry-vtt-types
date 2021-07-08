@@ -1,3 +1,7 @@
+// TODO: Remove when updating this class!!!
+// eslint-disable-next-line
+// @ts-nocheck
+
 /**
  * The Module Management Application.
  * This application provides a view of which modules are available to be used and allows for configuration of the
@@ -105,8 +109,8 @@ declare namespace ModuleManagement {
       hasStyles: boolean;
       systemOnly: boolean;
       systemTag: Game['system']['id'];
-      incompatible: SetupConfigurationForm.Data.AvailTagged<Game.Module>['incompatible'];
-      unavailable: SetupConfigurationForm.Data.AvailTagged<Game.Module>['unavailable'];
+      incompatible: any; // TODO
+      unavailable: any; // TODO
       dependencies: string[] | null;
     }
   }

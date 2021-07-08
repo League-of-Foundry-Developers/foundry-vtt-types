@@ -1,4 +1,5 @@
 import { DocumentConstructor } from '../../types/helperTypes';
+import DatabaseBackend from '../common/abstract/backend.mjs';
 
 type ConfiguredDocumentClassOrDefault<Fallback extends DocumentConstructor> =
   Fallback['metadata']['name'] extends keyof DocumentClassConfig
@@ -186,8 +187,9 @@ declare global {
 
     /**
      * Configure the DatabaseBackend used to perform Document operations
+     * @defaultValue `new ClientDatabaseBackend()`
      */
-    DatabaseBackend: any; // TODO: ClientDatabaseBackend
+    DatabaseBackend: DatabaseBackend; // TODO: ClientDatabaseBackend
 
     /**
      * Configuration for the Actor document
@@ -361,7 +363,7 @@ declare global {
       /**
        * @defaultValue `FogExplorations`
        */
-      collection: any; // TODO: FogExplorations
+      collection: ConstructorOf<FogExplorations>;
     };
 
     /**
@@ -692,7 +694,7 @@ declare global {
 
     Setting: {
       documentClass: ConfiguredDocumentClassOrDefault<typeof Setting>;
-      collection: any; // TODO: ConstructorOf<WorldSettings>;
+      collection: ConstructorOf<WorldSettings>;
     };
 
     /**
@@ -716,8 +718,9 @@ declare global {
 
       /**
        * @defaultValue `Users.permissions`
+       * @remarks this is set to `Users.permissions` but that property doesn't actually exist, see https://gitlab.com/foundrynet/foundryvtt/-/issues/5572
        */
-      permissions: typeof Users.permissions;
+      permissions: undefined;
     };
 
     /**
@@ -786,7 +789,72 @@ declare global {
        */
       unexploredColor: number;
 
-      layers: any; // TODO
+      layers: {
+        /**
+         * @defaultValue `BackgroundLayer`
+         */
+        background: ConstructorOf<BackgroundLayer>;
+
+        /**
+         * @defaultValue `DrawingsLayer`
+         */
+        drawings: ConstructorOf<DrawingsLayer>;
+
+        /**
+         * @defaultValue `GridLayer`
+         */
+        grid: ConstructorOf<GridLayer>;
+
+        /**
+         * @defaultValue `WallsLayer`
+         */
+        walls: ConstructorOf<WallsLayer>;
+
+        /**
+         * @defaultValue `TemplateLayer`
+         */
+        templates: ConstructorOf<TemplateLayer>;
+
+        /**
+         * @defaultValue `NotesLayer`
+         */
+        notes: ConstructorOf<NotesLayer>;
+
+        /**
+         * @defaultValue `TokenLayer`
+         */
+        tokens: ConstructorOf<TokenLayer>;
+
+        /**
+         * @defaultValue `ForegroundLayer`
+         */
+        foreground: ConstructorOf<any>; // TODO: ForegroundLayer
+
+        /**
+         * @defaultValue `SoundsLayer`
+         */
+        sounds: ConstructorOf<SoundsLayer>;
+
+        /**
+         * @defaultValue `LightingLayer`
+         */
+        lighting: ConstructorOf<LightingLayer>;
+
+        /**
+         * @defaultValue `SightLayer`
+         */
+        sight: ConstructorOf<SightLayer>;
+
+        /**
+         * @defaultValue `EffectsLayer`
+         */
+        effects: ConstructorOf<EffectsLayer>;
+
+        /**
+         * @defaultValue `ControlsLayer`
+         */
+        controls: ConstructorOf<ControlsLayer>;
+      };
 
       lightLevels: {
         /**
@@ -1445,6 +1513,7 @@ declare global {
        * @defaultValue `ActiveEffect`
        */
       documentClass: ConfiguredDocumentClassOrDefault<typeof ActiveEffect>;
+
       /**
        * @defaultValue `ActiveEffectConfig`
        */
@@ -1469,6 +1538,7 @@ declare global {
        * @defaultValue `PlaylistSound`
        */
       documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BasePlaylistSound>; // TODO PlaylistSound
+
       /**
        * @defaultValue `PlaylistSoundConfig`
        */
@@ -1734,7 +1804,7 @@ declare global {
      */
     WebRTC: {
       /**
-       * @defaultValue `EasyRTCClient`
+       * @defaultValue `SimplePeerAVClient`
        */
       clientClass: ConstructorOf<AVClient>;
 
@@ -1767,7 +1837,11 @@ declare global {
     /**
      * Configure the Application classes used to render various core UI elements in the application
      */
-    ui: {
+    ui: CONFIG.UI;
+  }
+
+  namespace CONFIG {
+    interface UI {
       /**
        * @defaultValue `MainMenu`
        */
@@ -1867,17 +1941,8 @@ declare global {
        * @defaultValue `CameraViews`
        */
       webrtc: ConstructorOf<CameraViews>;
-    };
+    }
   }
 
   const CONFIG: CONFIG;
-
-  namespace Config {
-    interface Permission {
-      label: string;
-      hint: string;
-      disableGM: boolean;
-      defaultRole: foundry.CONST.UserRole;
-    }
-  }
 }

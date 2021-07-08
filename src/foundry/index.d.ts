@@ -24,7 +24,7 @@ import './foundry.js/fonts';
 import './foundry.js/formDataExtended';
 import './foundry.js/game';
 import './foundry.js/gameTime';
-import './foundry.js/globals';
+import './foundry.js/globalVariables';
 import './foundry.js/handlebarsHelpers';
 import './foundry.js/hooks';
 import './foundry.js/imageHelper';
@@ -38,7 +38,6 @@ import './foundry.js/quadtree';
 import './foundry.js/ray';
 import './foundry.js/roll';
 import './foundry.js/searchFilter';
-import './foundry.js/setupConfiguration';
 import './foundry.js/specialEffect';
 import './foundry.js/socketInterface';
 import './foundry.js/sortingHelpers';
@@ -51,7 +50,6 @@ import './foundry.js/types';
 import './foundry.js/userTargets';
 import './foundry.js/utils';
 import './foundry.js/videoHelper';
-import './foundry.js/worldSettingsStorage';
 
 import './foundry.js/applications';
 

@@ -1,178 +1,9 @@
-import { ConfiguredDocumentClass } from '../../types/helperTypes';
+import { ConfiguredDocumentClass, ConfiguredDocumentClassForName, DocumentConstructor } from '../../types/helperTypes';
 
 declare global {
   /**
-   * Initialized in
-   * - `/game`: after "setup", before "ready" hook
-   * - `/stream`: as `{ ready: false }`
-   * @defaultValue `null`
-   */
-  let canvas: Canvas | { ready: false } | null;
-
-  let game: Game;
-
-  /**
-   * Initialized in
-   * - `/game`: after "setup", before "ready" hook
-   * @defaultValue `null`
-   */
-  let keyboard: KeyboardManager | null;
-
-  /**
-   * @defaultValue `null`
-   */
-  let socket: io.Socket | null;
-
-  /**
-   * Each of thses are initialized depending on the current view. The views are the following:
-   * - `/license`
-   * - `/game`
-   * - `/setup`
-   * - `/stream`
-   * - `/players`
-   * - `/join`
-   */
-  const ui: {
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     */
-    actors?: ActorDirectory;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     * - `/stream`
-     */
-    chat?: ChatLog;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     */
-    combat?: CombatTracker;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     */
-    compendium?: CompendiumDirectory;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     */
-    controls?: SceneControls;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     */
-    hotbar?: Hotbar;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     */
-    items?: ItemDirectory;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     */
-    journal?: JournalDirectory;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     */
-    macros?: MacroDirectory;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     */
-    menu?: MainMenu;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     */
-    nav?: SceneNavigation;
-
-    /**
-     * Initialized in
-     * - `/license`
-     * - `/game`: after "setup", before "ready" hook
-     * - `/setup`
-     * - `/players`
-     * - `/join`
-     */
-    notifications?: Notifications;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     */
-    pause?: Pause;
-
-    /**
-     * Initialized in
-     * - `/players`: as `UserManagement`
-     */
-    players?: UserManagement;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     */
-    playlists?: PlaylistDirectory;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     */
-    scenes?: SceneDirectory;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     */
-    settings?: ClientSettings;
-
-    /**
-     * Initialized in
-     * - `/setup`
-     */
-    setup?: SetupConfigurationForm;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     */
-    sidebar?: Sidebar;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     */
-    tables?: RollTableDirectory;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     */
-    webrtc?: CameraViews;
-
-    /**
-     * @defaultValue `{}`
-     */
-    windows: Record<number, Application>;
-  };
-
-  /**
    * The core Game instance which encapsulates the data, settings, and states relevant for managing the game experience.
-   * The singleton instance of the Game class is available as the global variable `game`.
+   * The singleton instance of the Game class is available as the global variable game.
    */
   class Game {
     /**
@@ -181,7 +12,7 @@ declare global {
      * @param sessionId - The ID of the currently active client session retrieved from the browser cookie
      * @param socket    - The open web-socket which should be used to transact game-state data
      */
-    constructor(view: Game['view'], data: Game['data'], sessionId: Game['sessionId'], socket: Game['socket']);
+    constructor(view: Game['view'], data: Game.ConstructorData, sessionId: Game['sessionId'], socket: Game['socket']);
 
     /**
      * The named view which is currently active.
@@ -195,27 +26,56 @@ declare global {
     data: Game.Data;
 
     /**
+     * The id of the active World user, if any
+     */
+    userId: string | null;
+
+    /**
+     * The game World which is currently active
+     */
+    world: this['data']['world'];
+
+    /**
+     * The System which is used to power this game world
+     */
+    system: this['data']['system'];
+
+    /**
+     * A Map of active modules which are currently enabled in this World
+     * @remarks
+     * - This is actually defined twice. The second time it has the documentation "A mapping of installed modules".
+     * - This includes _all_ modules that are installed, not only those that are enabled.
+     */
+    modules: Map<string, this['data']['modules'][number]>;
+
+    /**
+     * A mapping of WorldCollection instances, one per primary Document type.
+     */
+    collections: foundry.utils.Collection<WorldCollection<DocumentConstructor, string>>;
+
+    /**
+     * A mapping of CompendiumCollection instances, one per Compendium pack.
+     */
+    packs: foundry.utils.Collection<CompendiumCollection<CompendiumCollection.Metadata>>;
+
+    /**
      * Localization support
      */
     i18n: Localization;
 
     /**
      * The Keyboard Manager
+     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
      * @defaultValue `null`
      */
-    keyboard?: KeyboardManager;
-
-    /**
-     * A mapping of installed modules
-     */
-    modules: Map<string, Game.Module>;
+    keyboard: KeyboardManager | null;
 
     /**
      * The user role permissions setting
-     * @remarks This is not yet initialized in the "setup" hook, but is initialized in the "ready" hook.
+     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
      * @defaultValue `null`
      */
-    permissions?: Game.Permissions;
+    permissions: Game.Permissions | null;
 
     /**
      * The client session id which is currently active
@@ -230,7 +90,7 @@ declare global {
     /**
      * A reference to the open Socket.io connection
      */
-    socket: io.Socket;
+    socket: io.Socket | null;
 
     /**
      * A singleton GameTime instance which manages the progression of time within the game world.
@@ -238,9 +98,9 @@ declare global {
     time: GameTime;
 
     /**
-     * The id of the active World user, if any
+     * A singleton reference to the Canvas object which may be used.
      */
-    userId: string | null;
+    canvas: Canvas;
 
     /**
      * A singleton instance of the Audio Helper class
@@ -254,33 +114,29 @@ declare global {
 
     /**
      * Whether the Game is running in debug mode
+     * @defaultValue `false`
      */
     debug: boolean;
 
     /**
      * A flag for whether texture assets for the game canvas are currently loading
+     * @defaultValue `false`
      */
     loading: boolean;
 
     /**
      * A flag for whether the Game has successfully reached the "ready" hook
+     * @defaultValue `false`
      */
     ready: boolean;
 
     /**
-     * Allow properties to be added dynamically
-     */
-    [key: string]: unknown;
-
-    /* -------------------------------------------- */
-
-    /**
      * Fetch World data and return a Game instance
+     * @param view      - The named view being created
+     * @param sessionId - The current sessionId of the connecting client
      * @returns A Promise which resolves to the created Game instance
      */
-    static create(): Promise<Game>;
-
-    /* -------------------------------------------- */
+    static create(view: string, sessionId: string | null): Promise<Game>;
 
     /**
      * Establish a live connection to the game server through the socket.io URL
@@ -289,105 +145,141 @@ declare global {
      */
     static connect(sessionId: string): Promise<io.Socket>;
 
-    /* -------------------------------------------- */
-
     /**
      * Retrieve the cookies which are attached to the client session
      * @returns The session cookies
      */
     static getCookies(): Record<string, string>;
 
-    /* -------------------------------------------- */
+    /**
+     * Request World data from server and return it
+     */
+    static getWorldData(socket: io.Socket): Promise<Game.Data>;
 
     /**
      * Get the current World status upon initial connection.
      */
     static getWorldStatus(socket: io.Socket): Promise<boolean>;
 
-    /* -------------------------------------------- */
+    /**
+     * Configure package data that is currently enabled for this world
+     */
+    setupPackages(data: Game.Data): void;
 
     /**
-     * Request World data from server and return it
+     * Return the named scopes which can exist for packages.
+     * Scopes are returned in the prioritization order that their content is loaded.
+     * @returns An array of string package scopes
      */
-    static getWorldData(socket: io.Socket): Promise<Game.Data>;
-
-    /* -------------------------------------------- */
-
-    /**
-     * Request setup data from server and return it
-     */
-    static getSetupData(socket: io.Socket): Promise<Game.Data>;
-
-    /* -------------------------------------------- */
+    getPackageScopes(): string[];
 
     /**
      * Initialize the Game for the current window location
      */
     initialize(): void;
 
-    /* -------------------------------------------- */
-
     /**
      * Display certain usability error messages which are likely to result in the player having a bad experience.
      */
     protected _displayUsabilityErrors(): void;
 
-    /* -------------------------------------------- */
-
     /**
      * Shut down the currently active Game. Requires GameMaster user permission.
      * @returns A Promise which resolves to the response object from the server
+     * @remarks The documentation is a lie, it returns `Promise<void>`, see https://gitlab.com/foundrynet/foundryvtt/-/issues/5573
      */
     shutDown(): Promise<void>;
-
-    /* -------------------------------------------- */
-    /*  Primary Game Initialization
-  /* -------------------------------------------- */
 
     /**
      * Fully set up the game state, initializing Entities, UI applications, and the Canvas
      */
     setupGame(): Promise<void>;
 
-    /* -------------------------------------------- */
-
     /**
-     * Initialize game state data by creating EntityCollection instances for every Entity types
+     * Initialize game state data by creating WorldCollection instances for every primary Document type
      */
     initializeEntities(): void;
 
-    /* -------------------------------------------- */
+    /**
+     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     */
+    users?: ConfiguredCollectionClassForName<'User'>;
+
+    /**
+     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     */
+    folders?: ConfiguredCollectionClassForName<'Folder'>;
+
+    /**
+     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     */
+    actors?: ConfiguredCollectionClassForName<'Actor'>;
+
+    /**
+     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     */
+    items?: ConfiguredCollectionClassForName<'Item'>;
+
+    /**
+     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     */
+    scenes?: ConfiguredCollectionClassForName<'Scene'>;
+
+    /**
+     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     */
+    combats?: ConfiguredCollectionClassForName<'Combat'>;
+
+    /**
+     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     */
+    journal?: ConfiguredCollectionClassForName<'JournalEntry'>;
+
+    /**
+     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     */
+    macros?: ConfiguredCollectionClassForName<'Macro'>;
+
+    /**
+     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     */
+    playlists?: ConfiguredCollectionClassForName<'Playlist'>;
+
+    /**
+     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     */
+    tables?: ConfiguredCollectionClassForName<'RollTable'>;
+
+    /**
+     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     */
+    messages?: ConfiguredCollectionClassForName<'ChatMessage'>;
 
     /**
      * Initialize the Compendium packs which are present within this Game
      * Create a Collection which maps each Compendium pack using it's collection ID
      */
-    initializePacks(
-      config?: Record<string, { locked?: boolean; private?: boolean }>
-    ): Promise<foundry.utils.Collection<Compendium>>;
-
-    /* -------------------------------------------- */
+    initializePacks(): Promise<this['packs']>;
 
     /**
      * Initialize the WebRTC implementation
      */
     initializeRTC(): Promise<boolean>;
 
-    /* -------------------------------------------- */
+    /**
+     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     */
+    webrtc?: AVMaster;
 
     /**
      * Initialize core UI elements
      */
     initializeUI(): void;
 
-    /* -------------------------------------------- */
-
     /**
      * Initialize the game Canvas
      */
     initializeCanvas(): Promise<void>;
-
-    /* -------------------------------------------- */
 
     /**
      * Ensure that necessary fonts have loaded and are ready for use
@@ -397,124 +289,75 @@ declare global {
      */
     protected _checkFontsReady(ms: number): Promise<void>;
 
-    /* -------------------------------------------- */
-
     /**
      * Initialize Keyboard and Mouse controls
      */
     initializeKeyboard(): void;
-
-    /* -------------------------------------------- */
 
     /**
      * Register core game settings
      */
     registerSettings(): void;
 
-    /* -------------------------------------------- */
-    /*  Properties                                  */
-    /* -------------------------------------------- */
-
     /**
      * Is the current session user authenticated as an application administrator?
      */
     get isAdmin(): boolean;
-
-    /* -------------------------------------------- */
 
     /**
      * The currently connected User entity, or null if Users is not yet initialized
      */
     get user(): InstanceType<ConfiguredDocumentClass<typeof User>> | null;
 
-    /* -------------------------------------------- */
-
-    /**
-     * Metadata regarding the current game World
-     */
-    get world(): Game.World;
-
-    /* -------------------------------------------- */
-
-    /**
-     * Metadata regarding the game System which powers this World
-     */
-    get system(): Game.System;
-
-    /* -------------------------------------------- */
-
     /**
      * A convenience accessor for the currently viewed Combat encounter
      */
-    get combat(): Combat;
-
-    /* -------------------------------------------- */
+    get combat(): CombatEncounters['viewed'];
 
     /**
      * A state variable which tracks whether or not the game session is currently paused
      */
     get paused(): boolean;
 
-    /* -------------------------------------------- */
-
     /**
      * A convenient reference to the currently active canvas tool
      */
     get activeTool(): string;
 
-    /* -------------------------------------------- */
-    /*  Methods                                     */
-    /* -------------------------------------------- */
-
     /**
      * Toggle the pause state of the game
      * Trigger the `pauseGame` Hook when the paused state changes
-     * @param pause - The new pause state
-     * @param push - Push the pause state change to other connected clients?
-     *               (default: `false`)
+     * @param pause - The desired pause state. When true, the game will be paused, when false the game will be un-paused.
+     * @param push  - Push the pause state change to other connected clients? Requires an GM user.
+     *                (default: `false`)
      */
     togglePause(pause: boolean, push?: boolean): void;
-
-    /* -------------------------------------------- */
 
     /**
      * Log out of the game session by returning to the Join screen
      */
     logOut(): void;
 
-    /* -------------------------------------------- */
-    /*  Socket Listeners and Handlers               */
-    /* -------------------------------------------- */
-
     /**
-     * Open socket listeners which transact game state data
+     * Activate Socket event listeners which are used to transact game state data with the server
      */
-    openSockets(): void;
-
-    /* -------------------------------------------- */
-
-    /**
-     * General game-state socket listeners and event handlers
-     */
-    static socketListeners(socket: io.Socket): void;
-
-    /* -------------------------------------------- */
-    /*  Event Listeners and Handlers                */
-    /* -------------------------------------------- */
+    activateSocketListeners(): void;
 
     /**
      * Activate Event Listeners which apply to every Game View
      */
     activateListeners(): void;
 
-    /* -------------------------------------------- */
+    /**
+     * Support mousewheel control for range type input elements
+     * @param event - A Mouse Wheel scroll event
+     */
+    protected static _handleMouseWheelInputChange(event: WheelEvent): void;
 
     /**
      * On left mouse clicks, check if the element is contained in a valid hyperlink and open it in a new tab.
      */
     protected _onClickHyperlink(event: MouseEvent): void;
-
-    /* -------------------------------------------- */
 
     /**
      * Prevent starting a drag and drop workflow on elements within the document unless the element has the draggable
@@ -523,15 +366,11 @@ declare global {
      */
     protected _onPreventDragstart(event: DragEvent): boolean;
 
-    /* -------------------------------------------- */
-
     /**
      * Disallow dragging of external content onto anything but a file input element
      * @param event - The requested drag event
      */
     protected _onPreventDragover(event: DragEvent): void;
-
-    /* -------------------------------------------- */
 
     /**
      * Disallow dropping of external content onto anything but a file input element
@@ -539,370 +378,183 @@ declare global {
      */
     protected _onPreventDrop(event: DragEvent): void;
 
-    /* -------------------------------------------- */
-
     /**
      * On a left-click event, remove any currently displayed inline roll tooltip
-     * @param event - The originating left-click event
+     * @param event - The mousedown pointer event
      */
-    protected _onLeftClick(event: MouseEvent): void;
+    protected _onPointerDown(event: PointerEvent): void;
 
-    /* -------------------------------------------- */
+    /**
+     * Fallback handling for mouse-up events which aren't handled further upstream.
+     * @param event - The mouseup pointer event
+     */
+    protected _onPointerUp(event: PointerEvent): void;
 
     /**
      * Handle resizing of the game window
      * Reposition any active UI windows
-     * @param event - (unused)
      */
-    protected _onWindowResize(event?: any): void;
-
-    /* -------------------------------------------- */
+    protected _onWindowResize(event: UIEvent): void;
 
     /**
      * Handle window unload operations to clean up any data which may be pending a final save
      * @param event - The window unload event which is about to occur
-     *                (unused)
      */
-    protected _onWindowBeforeUnload(event?: any): void;
-
-    /* -------------------------------------------- */
+    protected _onWindowBeforeUnload(event: Event): Promise<void>;
 
     /**
      * Handle cases where the browser window loses focus to reset detection of currently pressed keys
      * @param event - The originating window.blur event
      */
-    protected _onWindowBlur(event: Event): void;
-
-    /* -------------------------------------------- */
+    protected _onWindowBlur(event: FocusEvent): void;
 
     /**
      * @param event - (unused)
      */
-    protected _onWindowPopState(event?: any): void;
+    protected _onWindowPopState(event: PopStateEvent): void;
 
-    /* -------------------------------------------- */
-    /*  View Initialization Functions
-  /* -------------------------------------------- */
+    /**
+     * Initialize elements required for the current view
+     */
+    protected _initializeView(): Promise<void>;
 
     /**
      * Initialization steps for the primary Game view
      */
     protected _initializeGameView(): Promise<void>;
 
-    /* -------------------------------------------- */
-
-    /**
-     * Initialization steps for the game setup view
-     */
-    protected _initializeLicenseView(): Promise<void>;
-
-    /* -------------------------------------------- */
-
-    /**
-     * Initialization steps for the game setup view
-     */
-    protected _initializeSetupView(): Promise<void>;
-
-    /* -------------------------------------------- */
-
     /**
      * Initialization steps for the Stream helper view
      */
     protected _initializeStreamView(): Promise<void>;
-
-    /* -------------------------------------------- */
-
-    /**
-     * Initialize the Player Management View
-     */
-    protected _initializePlayersView(): Promise<void>;
-
-    /* -------------------------------------------- */
-
-    /**
-     * Initialization steps specifically for the game setup view
-     * This view is unique because a Game object does not exist for a non-authenticated player
-     */
-    protected _initializeJoinView(): Promise<void>;
-
-    /* -------------------------------------------- */
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     * - `/stream`
-     * - `/players`
-     */
-    users?: Users;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     * - `/stream`
-     */
-    messages?: Messages;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     * - `/stream`
-     */
-    scenes?: Scenes;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     * - `/stream`
-     */
-    actors?: Actors;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     * - `/stream`
-     */
-    items?: Items;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     * - `/stream`
-     */
-    journal?: Journal;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     * - `/stream`
-     */
-    macros?: Macros;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     * - `/stream`
-     */
-    playlists?: Playlists;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     * - `/stream`
-     */
-    combats?: CombatEncounters;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     * - `/stream`
-     */
-    tables?: RollTables;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     * - `/stream`
-     */
-    folders?: Folders;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     * - `/stream`
-     */
-    packs?: foundry.utils.Collection<Compendium>;
-
-    /**
-     * Initialized in
-     * - `/game`: after "setup", before "ready" hook
-     * - `/stream`
-     */
-    webrtc?: AVMaster;
   }
 
   namespace Game {
-    interface Data {
-      actors?: Actor[];
-      addresses?: {
-        local?: string;
-        remote?: string;
-      };
-      adminKey?: string;
-      combat?: Combat[];
-      coreUpdate?: any; // TODO: update later
-      files?: {
-        s3?: any; // TODO: update later
-        storages?: string[];
-      };
-      folders?: Folder[];
-      items?: Item[];
-      journal?: Journal[];
-      languages?: Language[];
-      macros?: Macro[];
-      messages?: ChatMessage[];
-      modules?: Module[];
-      options?: {
-        language?: string;
-        port?: number;
-        routePrefix?: string;
-        updateChannel?: string;
-      };
-      packs?: Pack[];
-      paused?: boolean;
-      playlists?: Playlist[];
-      scenes?: Scene[];
-      settings?: WorldSettingsStorage.Setting[];
-      system?: string;
-      systems?: System[];
-      tables?: RollTable[];
-      userId?: string;
-      users?: User[];
-      version?: string;
-      world?: string;
-      worlds?: World[];
-    }
-
     interface Language {
       lang: string;
       name: string;
       path: string;
     }
 
-    interface Module {
-      active: boolean;
-      data: Module.Data;
-      esmodules: string[];
+    interface PackageData<T> {
+      type: 'world' | 'system' | 'module';
+      data: T;
       id: string;
-      languages: Language[];
-      packs: Pack[];
       path: string;
       scripts: string[];
-      styles: string[];
-    }
-
-    namespace Module {
-      interface Data {
-        // TODO: complete later
-        availability: foundry.CONST.PackageAvailabilityCode;
-      }
-    }
-
-    interface Pack {
-      absPath?: string;
-      entity: string;
-      label: string;
-      name: string;
-      package?: string;
-      path: string;
-      system: string;
-    }
-
-    interface Permissions {
-      [permissionName: string]: foundry.CONST.UserRole[];
-    }
-
-    interface System {
-      data: System.Data;
-      entityTypes: Record<string, string[]>; // TODO: make this more precise
       esmodules: string[];
-      gridUnits: string;
-      id: string;
+      styles: string[];
       languages: Language[];
-      model: {
-        Actor: Record<string, unknown>;
-        Item: Record<string, unknown>;
+      packs: {
+        name: string;
+        label: string;
+        path: string;
+        private: boolean;
+        entity: foundry.CONST.CompendiumEntityType;
+        system?: string;
+        absPath: string;
+        package: string;
       };
-      packs: Pack[];
-      path: string;
-      scripts: string[];
-      styles: string[];
+      locked: boolean;
+      availability: number;
+      unavailable: boolean;
+      _systemUpdateCheckTime: number;
+    }
+
+    interface WorldData<T> extends PackageData<T> {
+      type: 'world';
+    }
+
+    interface SystemData<T> extends PackageData<T> {
+      type: 'system';
       template: {
-        Actor: Record<string, unknown>;
-        Item: Record<string, unknown>;
+        Actor?: {
+          types: string[];
+          templates?: Partial<Record<string, unknown>>;
+        } & Partial<Record<string, unknown>>;
+        Item?: {
+          types: string[];
+          templates?: Partial<Record<string, unknown>>;
+        } & Partial<Record<string, unknown>>;
+      };
+      entityTypes: { [Key in foundry.CONST.EntityType | 'Setting' | 'FogExploration']: string[] };
+      model: {
+        Actor: Partial<Record<string, Partial<Record<string, unknown>>>>;
+        Item: Partial<Record<string, Partial<Record<string, unknown>>>>;
       };
     }
 
-    namespace System {
-      interface Data {
-        author: string;
-        authors: string[];
-        availability: foundry.CONST.PackageAvailabilityCode;
-        bugs: string;
-        changelog: string;
-        compatibleCoreVersion: string;
-        description: string;
-        download: string;
-        esmodules: string[];
-        gridDistance: number;
-        gridUnits: string;
-        keywords: any[]; // TODO: type later
-        languages: Language[];
-        license: string;
-        manifest: string;
-        minimumCoreVersion: string;
-        name: string;
-        packs: Pack[];
-        primaryTokenAttribute: string;
-        readme: string;
-        scripts: string[];
-        secondaryTokenAttribute: string | null;
-        socket: boolean;
-        styles: string[];
-        title: string;
-        unavailable: boolean;
-        url: string;
-        version: string;
-      }
-    }
-
-    type View = 'game' | 'join' | 'license' | 'players' | 'setup' | 'stream';
-
-    interface World {
+    interface ModuleData<T> extends PackageData<T> {
+      type: 'module';
       active: boolean;
-      data: World.Data;
-      esmodules: string[];
-      id: string;
-      languages: Language[];
-      modules: Module[];
-      packs: Pack[];
-      path: string;
-      scritps: string[];
-      shortDesc: string;
-      styles: string[];
-      system: System;
     }
 
-    namespace World {
-      interface Data {
-        authors: string[];
-        availability: foundry.CONST.PackageAvailabilityCode;
-        background: string;
-        bugs: string;
-        changelog: string;
-        compatibleCoreVersion: string;
-        coreVersion: string;
-        description: string;
-        download: string;
-        esmodules: string[];
-        keywords: any[]; // TODO: type later
-        languages: Language[];
-        license: string;
-        manifest: string;
-        minimumCoreVersion: string;
+    type Data = {
+      userId: string;
+      version: string;
+      world: WorldData<foundry.packages.WorldData>;
+      system: SystemData<foundry.packages.SystemData>;
+      modules: ModuleData<foundry.packages.ModuleData>[];
+      paused: boolean;
+      addresses: {
+        local: string;
+        remote: string;
+      };
+      files: {
+        storages: ('public' | 'data' | 's3')[];
+        s3?: {
+          endpoint: {
+            protocol: string;
+            host: string;
+            port: number;
+            hostname: string;
+            pathname: string;
+            path: string;
+            href: string;
+          };
+          buckets: string[];
+        };
+      };
+      options: {
+        language: string;
+        port: number;
+        routePrefix: string | null;
+        updateChannel: string;
+        demo: boolean;
+      };
+      activeUsers: string[];
+      packs: {
         name: string;
-        nextSession: string | null;
-        packs: Pack[];
-        readme: string;
-        scripts: string[];
-        socket: boolean;
-        styles: string[];
-        system: string;
-        systemVersion: string;
-        title: string;
-        unavailable: boolean;
-        url: string;
-        version: string;
-      }
-    }
+        label: string;
+        path: string;
+        private: boolean;
+        entity: foundry.CONST.CompendiumEntityType;
+        system?: string;
+        package: string;
+        index: { name: string; type: string; _id: string }[];
+      };
+      coreUpdate: string | null;
+      systemUpdate: string | null;
+    } & {
+      [DocumentType in
+        | foundry.CONST.EntityType
+        | 'Setting' as ConfiguredDocumentClassForName<DocumentType>['metadata']['collection']]?: InstanceType<
+        ConfiguredDocumentClassForName<DocumentType>
+      >['data']['_source'][];
+    };
+
+    type ConstructorData = Omit<Data, 'world' | 'system' | 'modules'> & {
+      world: WorldData<foundry.packages.WorldData['_source']>;
+      system: SystemData<foundry.packages.SystemData['_source']>;
+      modules: ModuleData<foundry.packages.ModuleData['_source']>[];
+    };
+
+    type Permissions = {
+      [Key in keyof typeof foundry.CONST.USER_PERMISSIONS]: foundry.CONST.UserRole[];
+    };
+
+    type View = ValueOf<typeof foundry.CONST.GAME_VIEWS>;
   }
 }
+
+type ConfiguredCollectionClassForName<Name extends foundry.CONST.EntityType> = InstanceType<CONFIG[Name]['collection']>;

@@ -15,7 +15,7 @@ declare global {
     /**
      * Provide the settings object which configures the Combat entity
      */
-    static get settings(): ClientSettings.Values[typeof Combat['CONFIG_SETTING']];
+    static get settings(): ClientSettings.Values[`core.${typeof Combat['CONFIG_SETTING']}`];
 
     /**
      * Get an Array of Combat instances which apply to the current canvas scene
