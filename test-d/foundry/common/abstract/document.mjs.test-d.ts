@@ -68,9 +68,12 @@ expectType<boolean | undefined>(combatant.getFlag('my-optional-system', 'value')
 expectType<Promise<Combatant>>(combatant.setFlag('my-system', 'value', true));
 expectError(combatant.setFlag('my-system', 'value', 2));
 expectError(combatant.setFlag('my-system', 'unknown-key', 2));
+expectType<Promise<Combatant>>(combatant.setFlag('my-optional-system', 'value', true));
+expectError(combatant.setFlag('my-optional-system', 'value', undefined));
 expectType<Promise<Combatant>>(combatant.setFlag('another-system', 'value', true));
 
 expectType<Promise<Combatant>>(combatant.unsetFlag('my-system', 'value'));
-expectError(combatant.unsetFlag('my-system', 'value'));
+expectType<Promise<Combatant>>(combatant.unsetFlag('my-optional-system', 'value'));
 expectError(combatant.unsetFlag('my-system', 'unknown-key'));
+expectError(combatant.unsetFlag('my-optional-system', 'unknown-key'));
 expectType<Promise<Combatant>>(combatant.unsetFlag('another-system', 'value'));

@@ -460,6 +460,10 @@ declare abstract class Document<
     scope: S,
     key: K
   ): this['data']['_source']['flags'][S][K];
+  getFlag<
+    S extends keyof this['data']['_source']['flags'],
+    K extends keyof Required<this['data']['_source']['flags']>[S]
+  >(scope: S, key: K): Required<this['data']['_source']['flags']>[S][K] | undefined;
   getFlag<S extends keyof this['data']['_source']['flags']>(
     scope: S,
     key: string
@@ -485,14 +489,14 @@ declare abstract class Document<
    * @returns A Promise resolving to the updated document
    */
   setFlag<
-    S extends keyof ConcreteDocumentData['_source']['flags'],
-    K extends keyof ConcreteDocumentData['_source']['flags'][S],
-    V extends ConcreteDocumentData['_source']['flags'][S][K]
+    S extends keyof this['data']['_source']['flags'],
+    K extends keyof Required<this['data']['_source']['flags']>[S],
+    V extends Required<this['data']['_source']['flags']>[S][K]
   >(scope: S, key: K, value: V): Promise<this>;
-  setFlag<S extends keyof ConcreteDocumentData['_source']['flags'], K extends string>(
+  setFlag<S extends keyof this['data']['_source']['flags'], K extends string>(
     scope: S,
     key: K,
-    v: unknown extends ConcreteDocumentData['_source']['flags'][S] ? unknown : never
+    v: unknown extends this['data']['_source']['flags'][S] ? unknown : never
   ): Promise<this>;
 
   /**
