@@ -85,10 +85,6 @@ export type ConfiguredObjectClassForName<Name extends ObjectType> = 'objectClass
   ? CONFIG[Name]['objectClass']
   : never;
 
-export type ConfiguredObjectClassForName<Name extends PlaceableDocumentType> = 'objectClass' extends keyof CONFIG[Name]
-  ? CONFIG[Name]['objectClass']
-  : never;
-
 export type ConfiguredData<Name extends string> = Name extends keyof DataConfig ? DataConfig[Name] : {};
 
 export type ConfiguredSource<Name extends string> = Name extends keyof SourceConfig ? SourceConfig[Name] : {};

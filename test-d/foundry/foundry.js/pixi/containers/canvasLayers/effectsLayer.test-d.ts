@@ -1,6 +1,6 @@
 import { expectType } from 'tsd';
 
-expectType<EffectsLayer>(EffectsLayer.instance);
+expectType<EffectsLayer | undefined>(EffectsLayer.instance);
 expectType<EffectsLayer.LayerOptions>(EffectsLayer.layerOptions);
 expectType<'effects'>(EffectsLayer.layerOptions.name);
 
