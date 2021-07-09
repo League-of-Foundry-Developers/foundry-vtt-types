@@ -100,6 +100,8 @@ if (baseActor.data.type === 'character') {
   expectType<number>(baseActor.data.data.damage);
 }
 
+// Flags for actors and items can be configured via the SourceConfig. This is tested here.
+// For configuring flags for actors and items via FlagConfig please have a look into baseItem.test-d.ts.
 // shared flags are available
 expectType<boolean>(baseActor.getFlag('my-module', 'known'));
 // non shared flags are not available
