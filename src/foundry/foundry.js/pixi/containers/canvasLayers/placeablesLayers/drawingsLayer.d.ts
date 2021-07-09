@@ -55,8 +55,9 @@ declare class DrawingsLayer extends PlaceablesLayer<'Drawing', DrawingsLayer.Lay
    * Start with some global defaults, apply user default config, then apply mandatory overrides per tool.
    * @param origin - The initial coordinate
    * @returns The new drawing data
+   * @remarks This is used from DrawingConfig and hence public on purpose.
    */
-  protected _getNewDrawingData(origin: Point): typeof foundry.CONST['DRAWING_DEFAULT_VALUES'] & // TODO: This comes from config now
+  _getNewDrawingData(origin: Point | {}): ClientSettings.Values['core.defaultDrawingConfig'] &
     (
       | {
           type: typeof foundry.CONST.DRAWING_TYPES.RECTANGLE | typeof foundry.CONST.DRAWING_TYPES.ELLIPSE;
@@ -83,8 +84,8 @@ declare class DrawingsLayer extends PlaceablesLayer<'Drawing', DrawingsLayer.Lay
       fillColor: string;
       strokeColor: string;
       fontFamily: typeof CONFIG.defaultFontFamily;
-      x: number;
-      y: number;
+      x: number | undefined;
+      y: number | undefined;
     };
 
   /** @override */
