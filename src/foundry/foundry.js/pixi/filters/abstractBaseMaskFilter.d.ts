@@ -11,7 +11,7 @@ declare abstract class AbstractBaseMaskFilter extends PIXI.Filter {
    * The fragment shader which renders this filter.
    * A subclass of AbstractBaseMaskFilter must implement the fragmentShader(channel) static field.
    */
-  static fragmentShader: ((channel: string) => string) | null;
+  static fragmentShader: ((channel: 'r' | 'g' | 'b') => string) | null;
 
   /**
    * A factory method for creating the filter using its defined default values
@@ -22,7 +22,7 @@ declare abstract class AbstractBaseMaskFilter extends PIXI.Filter {
    */
   static create(
     defaultUniforms?: ConstructorParameters<typeof PIXI.Filter>[2],
-    channel?: string
+    channel?: 'r' | 'g' | 'b'
   ): AbstractBaseMaskFilter;
 
   /**
