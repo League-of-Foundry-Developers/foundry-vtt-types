@@ -6,135 +6,142 @@
  * 2) Ruler measurement
  * 3) Map pings
  */
-declare class ControlsLayer extends CanvasLayer<ControlsLayer.LayerOptions> {
-  constructor();
+import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from '../../../../../types/helperTypes';
 
-  /**
-   * Cursor position indicators
-   * @defaultValue `null`
-   */
-  cursors: PIXI.Container | null;
+declare global {
+  class ControlsLayer extends CanvasLayer<ControlsLayer.LayerOptions> {
+    constructor();
 
-  /**
-   * A mapping of user IDs to Cursor instances for quick access
-   * @defaultValue `{}`
-   */
-  protected _cursors: Partial<Record<string, Cursor>>;
+    /**
+     * Cursor position indicators
+     * @defaultValue `null`
+     */
+    cursors: PIXI.Container | null;
 
-  /**
-   * Door control icons
-   * @defaultValue `null`
-   */
-  doors: PIXI.Container | null;
+    /**
+     * A mapping of user IDs to Cursor instances for quick access
+     * @defaultValue `{}`
+     */
+    protected _cursors: Partial<Record<string, Cursor>>;
 
-  /**
-   * Status effect icons
-   * @remarks Always `null`
-   */
-  effects: null;
+    /**
+     * Door control icons
+     * @defaultValue `null`
+     */
+    doors: PIXI.Container | null;
 
-  /**
-   * Ruler tools, one per connected user
-   * @defaultValue `null`
-   */
-  rulers: PIXI.Container | null;
+    /**
+     * Status effect icons
+     * @remarks Always `null`
+     */
+    effects: null;
 
-  /**
-   * A convenience mapping of user IDs to Ruler instances for quick access
-   */
-  protected _rulers: Partial<Record<string, Ruler>>;
+    /**
+     * Ruler tools, one per connected user
+     * @defaultValue `null`
+     */
+    rulers: PIXI.Container | null;
 
-  /**
-   * Canvas selection rectangle
-   * @defaultValue `null`
-   */
-  select: PIXI.Graphics | null;
+    /**
+     * A convenience mapping of user IDs to Ruler instances for quick access
+     */
+    protected _rulers: Partial<Record<string, Ruler>>;
 
-  // The controls layer is always interactive
-  interactiveChildren: true;
+    /**
+     * Canvas selection rectangle
+     * @defaultValue `null`
+     */
+    select: PIXI.Graphics | null;
 
-  /**
-   * @remarks This is not overridden in foundry but reflects the real behavior.
-   */
-  static get instance(): undefined;
+    // The controls layer is always interactive
+    interactiveChildren: true;
 
-  /**
-   * @override
-   * @defaultValue `mergeObject(super.layerOptions, { zIndex: 1000 })`
-   */
-  static get layerOptions(): ControlsLayer.LayerOptions;
+    /**
+     * @remarks This is not overridden in foundry but reflects the real behavior.
+     */
+    static get instance(): undefined;
 
-  /**
-   * A convenience accessor to the Ruler for the active game user
-   */
-  get ruler(): ReturnType<ControlsLayer['getRulerForUser']>;
+    /**
+     * @override
+     * @defaultValue `mergeObject(super.layerOptions, { zIndex: 1000 })`
+     */
+    static get layerOptions(): ControlsLayer.LayerOptions;
 
-  /**
-   * Get the Ruler display for a specific User ID
-   */
-  getRulerForUser(userId: string): Ruler | null;
+    /**
+     * A convenience accessor to the Ruler for the active game user
+     */
+    get ruler(): ReturnType<ControlsLayer['getRulerForUser']>;
 
-  /** @override */
-  draw(): this;
+    /**
+     * Get the Ruler display for a specific User ID
+     */
+    getRulerForUser(userId: string): Ruler | null;
 
-  /**
-   * Draw the cursors container
-   */
-  drawCursors(): void;
+    /** @override */
+    draw(): this;
 
-  /**
-   * Draw the Door controls container
-   */
-  drawDoors(): void;
+    /**
+     * Draw the cursors container
+     */
+    drawCursors(): void;
 
-  /**
-   * Create a Door Control icon for a given Wall object
-   * @param wall - The Wall for which to create a DoorControl
-   * @returns The created DoorControl
-   */
-  createDoorControl(wall: Wall): ReturnType<DoorControl['draw']> | null;
+    /**
+     * Draw the Door controls container
+     */
+    drawDoors(): void;
 
-  /**
-   * Draw Ruler tools
-   */
-  drawRulers(): void;
+    /**
+     * Create a Door Control icon for a given Wall object
+     * @param wall - The Wall for which to create a DoorControl
+     * @returns The created DoorControl
+     */
+    createDoorControl(wall: InstanceType<ConfiguredObjectClassForName<'Wall'>>): ReturnType<DoorControl['draw']> | null;
 
-  /**
-   * Draw the select rectangle given an event originated within the base canvas layer
-   * @param coords - The rectangle coordinates of the form `{x, y, width, height}`
-   */
-  drawSelect({ x, y, width, height }: { x: number; y: number; width: number; height: number }): void;
+    /**
+     * Draw Ruler tools
+     */
+    drawRulers(): void;
 
-  /** @override */
-  deactivate(): void;
+    /**
+     * Draw the select rectangle given an event originated within the base canvas layer
+     * @param coords - The rectangle coordinates of the form `{x, y, width, height}`
+     */
+    drawSelect({ x, y, width, height }: { x: number; y: number; width: number; height: number }): void;
 
-  /**
-   * Handle mousemove events on the game canvas to broadcast activity of the user's cursor position
-   */
-  protected _onMoveCursor(event: PIXI.InteractionEvent): void;
+    /** @override */
+    deactivate(): void;
 
-  /**
-   * Create and draw the Cursor object for a given User
-   * @param user - The User entity for whom to draw the cursor Container
-   */
-  drawCursor(user: User): Cursor;
+    /**
+     * Handle mousemove events on the game canvas to broadcast activity of the user's cursor position
+     */
+    protected _onMoveCursor(event: PIXI.InteractionEvent): void;
 
-  /**
-   * Update the cursor when the user moves to a new position
-   * @param user     - The User for whom to update the cursor
-   * @param position - The new cursor position
-   */
-  updateCursor(user: User, position: Point | null): void;
+    /**
+     * Create and draw the Cursor object for a given User
+     * @param user - The User entity for whom to draw the cursor Container
+     */
+    drawCursor(user: InstanceType<ConfiguredDocumentClass<typeof User>>): Cursor;
 
-  /**
-   * Update display of an active Ruler object for a user given provided data
-   */
-  updateRuler(user: User, rulerData: Parameters<Ruler['update']>[0] | null): void;
-}
+    /**
+     * Update the cursor when the user moves to a new position
+     * @param user     - The User for whom to update the cursor
+     * @param position - The new cursor position
+     */
+    updateCursor(user: InstanceType<ConfiguredDocumentClass<typeof User>>, position: Point | null): void;
 
-declare namespace ControlsLayer {
-  interface LayerOptions extends CanvasLayer.LayerOptions {
-    name: '';
-    zIndex: 1000;
+    /**
+     * Update display of an active Ruler object for a user given provided data
+     */
+    updateRuler(
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
+      rulerData: Parameters<Ruler['update']>[0] | null
+    ): void;
+  }
+
+  namespace ControlsLayer {
+    interface LayerOptions extends CanvasLayer.LayerOptions {
+      name: '';
+      zIndex: 1000;
+    }
   }
 }
