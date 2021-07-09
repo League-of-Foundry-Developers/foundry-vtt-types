@@ -23,13 +23,14 @@ declare class EffectsLayer extends CanvasLayer<EffectsLayer.LayerOptions> {
 
   /**
    * An occlusion filter that prevents weather from being displayed in certain regions
+   * @defaultValue `undefined`
    */
   weatherOcclusionFilter: AbstractBaseMaskFilter | undefined;
 
   /**
    * @remarks This is not overridden in foundry but reflects the real behavior.
    */
-  static get instance(): EffectsLayer;
+  static get instance(): EffectsLayer | undefined;
 
   /**
    * @defaultValue
