@@ -1,6 +1,6 @@
 import {
   ConfiguredDocumentClass,
-  ConfiguredFlagsForName,
+  ConfiguredFlags,
   FieldReturnType,
   PropertiesToSource
 } from '../../../../types/helperTypes';
@@ -101,7 +101,7 @@ interface MeasuredTemplateProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlagsForName<'MeasuredTemplate'>;
+  flags: ConfiguredFlags<'MeasuredTemplate'>;
 }
 
 interface MeasuredTemplateDataConstructorData {
@@ -175,7 +175,7 @@ interface MeasuredTemplateDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlagsForName<'MeasuredTemplate'> | null;
+  flags?: ConfiguredFlags<'MeasuredTemplate'> | null;
 }
 
 /**

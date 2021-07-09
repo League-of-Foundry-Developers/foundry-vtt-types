@@ -1,7 +1,7 @@
 import { DocumentData } from '../../abstract/module.mjs';
 import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
-import { ConfiguredFlagsForName, PropertiesToSource } from '../../../../types/helperTypes';
+import { ConfiguredFlags, PropertiesToSource } from '../../../../types/helperTypes';
 
 interface JournalEntryDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
@@ -59,7 +59,7 @@ interface JournalEntryDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlagsForName<'JournalEntry'>;
+  flags: ConfiguredFlags<'JournalEntry'>;
 }
 
 interface JournalEntryConstructorData {
@@ -107,7 +107,7 @@ interface JournalEntryConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlagsForName<'JournalEntry'> | null;
+  flags?: ConfiguredFlags<'JournalEntry'> | null;
 }
 
 export declare class JournalEntryData extends DocumentData<

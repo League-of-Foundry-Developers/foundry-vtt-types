@@ -1,4 +1,4 @@
-import { ConfiguredFlagsForName, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
@@ -79,7 +79,7 @@ interface ActiveEffectDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlagsForName<'ActiveEffect'>;
+  flags: ConfiguredFlags<'ActiveEffect'>;
 }
 
 interface ActiveEffectDataConstructorData {
@@ -135,7 +135,7 @@ interface ActiveEffectDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlagsForName<'ActiveEffect'> | null;
+  flags?: ConfiguredFlags<'ActiveEffect'> | null;
 }
 
 /**
