@@ -1,3 +1,4 @@
+import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from '../../../../../../types/helperTypes';
 import { SelectOptions } from '../placeablesLayer';
 
 declare global {
@@ -96,7 +97,7 @@ declare global {
      * @param reset    - Restart the cycle order back at the beginning?
      * @returns The Token object which was cycled to, or null
      */
-    cycleTokens(forwards: boolean, reset: boolean): Token | null;
+    cycleTokens(forwards: boolean, reset: boolean): InstanceType<ConfiguredObjectClassForName<'Token'>> | null;
 
     /**
      * Add or remove the set of currently controlled Tokens from the active combat encounter
@@ -112,14 +113,18 @@ declare global {
      */
     toggleCombat(
       state?: boolean,
-      combat?: Combat | null,
-      { token }?: { token?: Token | null }
-    ): Promise<Combat | Combatant[] | void>;
+      combat?: InstanceType<ConfiguredDocumentClass<typeof Combat>> | null,
+      { token }?: { token?: InstanceType<ConfiguredObjectClassForName<'Token'>> | null }
+    ): Promise<
+      | InstanceType<ConfiguredDocumentClass<typeof Combat>>
+      | InstanceType<ConfiguredDocumentClass<typeof Combatant>>[]
+      | void
+    >;
 
     /**
      * Get the tab cycle order for tokens by sorting observable tokens based on their distance from top-left.
      */
-    protected _getCycleOrder(): Token[];
+    protected _getCycleOrder(): InstanceType<ConfiguredObjectClassForName<'Token'>>[];
 
     /**
      * Immediately conclude the animation of any/all tokens
@@ -129,7 +134,10 @@ declare global {
     /**
      * Handle dropping of Actor data onto the Scene canvas
      */
-    protected _onDropActorData(event: DragEvent, data: TokenLayer.DropData): Promise<void | false | Token>;
+    protected _onDropActorData(
+      event: DragEvent,
+      data: TokenLayer.DropData
+    ): Promise<void | false | InstanceType<ConfiguredObjectClassForName<'Token'>>>;
   }
 
   namespace TokenLayer {
