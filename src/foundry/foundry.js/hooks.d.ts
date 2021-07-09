@@ -156,7 +156,10 @@ declare global {
        * @remarks This is called by {@link Hooks.call}.
        * @see {@link ActiveEffect#_applyCustom}
        */
-      applyActiveEffect: (actor: ConfiguredDocumentClass<typeof Actor>, change: EffectChangeData) => boolean | void;
+      applyActiveEffect: (
+        actor: InstanceType<ConfiguredDocumentClass<typeof Actor>>,
+        change: EffectChangeData
+      ) => boolean | void;
 
       /**
        * @remarks This is called before a {@link Canvas} is drawn.
@@ -258,7 +261,7 @@ declare global {
        * @see {@link ActorSheet#_onDrop}
        */
       dropActorSheetData: (
-        actor: ConfiguredDocumentClass<typeof Actor>,
+        actor: InstanceType<ConfiguredDocumentClass<typeof Actor>>,
         sheet: ActorSheet,
         data: ActorSheet.DropData
       ) => boolean | void;
@@ -456,7 +459,7 @@ declare global {
        * @see {@link UserTargets#_hook}
        */
       targetToken: (
-        user: ConfiguredDocumentClass<typeof User>,
+        user: InstanceType<ConfiguredDocumentClass<typeof User>>,
         token: ConfiguredObjectClassForName<'Token'>,
         targeted: boolean
       ) => unknown;
