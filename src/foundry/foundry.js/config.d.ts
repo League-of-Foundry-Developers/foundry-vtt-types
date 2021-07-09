@@ -1617,7 +1617,7 @@ declare global {
       /**
        * @defaultValue `DrawingDocument`
        */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseDrawing>; // TODO: DrawingDocument
+      documentClass: ConfiguredDocumentClassOrDefault<typeof DrawingDocument>;
 
       /**
        * @defaultValue `Drawing`
@@ -1676,7 +1676,7 @@ declare global {
       /**
        * @defaultValue `MeasuredTemplateDocument`
        */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseMeasuredTemplate>; // TODO: MeasuredTemplateDocument
+      documentClass: ConfiguredDocumentClassOrDefault<typeof MeasuredTemplateDocument>;
 
       /**
        * @defaultValue `MeasuredTemplate`

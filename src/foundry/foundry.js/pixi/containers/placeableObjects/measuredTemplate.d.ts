@@ -34,12 +34,6 @@ declare global {
     static embeddedName: 'MeasuredTemplate';
 
     /**
-     * @remarks
-     * Not implemented by MeasuredTemplate
-     */
-    get bounds(): never;
-
-    /**
      * A convenience accessor for the border color as a numeric hex code
      */
     get borderColor(): string | number;

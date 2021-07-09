@@ -80,25 +80,25 @@ declare namespace DrawingConfig {
   };
 
   interface FormData {
-    bezierFactor: Drawing.Data['bezierFactor'];
-    fillAlpha: Drawing.Data['fillAlpha'];
-    fillColor: Drawing.Data['fillColor'];
-    fillType: Drawing.Data['fillType'];
-    fontFamily: Drawing.Data['fontFamily'];
-    fontSize: Drawing.Data['fontSize'] | null;
-    height: Drawing.Data['height'] | null;
-    rotation: Drawing.Data['rotation'] | null;
-    strokeAlpha: Drawing.Data['strokeAlpha'];
-    strokeColor: Drawing.Data['strokeColor'];
-    strokeWidth: Drawing.Data['strokeWidth'] | null;
+    bezierFactor: foundry.data.DrawingData['_source']['bezierFactor'];
+    fillAlpha: foundry.data.DrawingData['_source']['fillAlpha'];
+    fillColor: foundry.data.DrawingData['_source']['fillColor'];
+    fillType: foundry.data.DrawingData['_source']['fillType'];
+    fontFamily: foundry.data.DrawingData['_source']['fontFamily'];
+    fontSize: foundry.data.DrawingData['_source']['fontSize'] | null;
+    height: foundry.data.DrawingData['_source']['height'] | null;
+    rotation: foundry.data.DrawingData['_source']['rotation'] | null;
+    strokeAlpha: foundry.data.DrawingData['_source']['strokeAlpha'];
+    strokeColor: foundry.data.DrawingData['_source']['strokeColor'];
+    strokeWidth: foundry.data.DrawingData['_source']['strokeWidth'] | null;
     text: string;
-    textAlpha: Drawing.Data['textAlpha'];
-    textColor: Drawing.Data['textColor'];
+    textAlpha: foundry.data.DrawingData['_source']['textAlpha'];
+    textColor: foundry.data.DrawingData['_source']['textColor'];
     texture: string;
-    width: Drawing.Data['width'] | null;
-    x: Drawing.Data['x'] | null;
-    y: Drawing.Data['y'] | null;
-    z: Drawing.Data['z'] | null;
+    width: foundry.data.DrawingData['_source']['width'] | null;
+    x: foundry.data.DrawingData['_source']['x'] | null;
+    y: foundry.data.DrawingData['_source']['y'] | null;
+    z: foundry.data.DrawingData['_source']['z'] | null;
   }
 
   interface Options extends FormApplication.Options {

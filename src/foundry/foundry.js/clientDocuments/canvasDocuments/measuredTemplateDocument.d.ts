@@ -12,8 +12,9 @@ declare global {
   class MeasuredTemplateDocument extends CanvasDocumentMixin(foundry.documents.BaseMeasuredTemplate) {
     /**
      * A reference to the User who created the MeasuredTemplate document.
+     * @remarks Will return undefined if the user has been deleted
      */
-    get author(): InstanceType<ConfiguredDocumentClass<typeof User>>;
+    get author(): InstanceType<ConfiguredDocumentClass<typeof User>> | undefined;
   }
 }
 
