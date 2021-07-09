@@ -1,4 +1,4 @@
-import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import { ConfiguredFlagsForName, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as CONST from '../../constants.mjs';
 import { BaseAmbientLight } from '../../documents.mjs';
@@ -124,7 +124,7 @@ interface AmbientLightDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: AmbientLightFlags;
+  flags: ConfiguredFlagsForName<'AmbientLight'>;
 }
 
 interface AmbientLightDataConstructorData {
@@ -213,7 +213,7 @@ interface AmbientLightDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: AmbientLightFlags | null;
+  flags?: ConfiguredFlagsForName<'AmbientLight'> | null;
 }
 
 /**
@@ -232,9 +232,3 @@ export declare class AmbientLightData extends DocumentData<
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export declare interface AmbientLightData extends AmbientLightDataProperties {}
-
-declare global {
-  interface AmbientLightFlags {
-    [key: string]: unknown;
-  }
-}

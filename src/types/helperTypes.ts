@@ -102,3 +102,7 @@ export type LayerClass<T extends DocumentConstructor> = T['metadata']['name'] ex
     ? CONFIG[T['metadata']['name']]['layerClass']
     : never
   : T;
+
+export type ConfiguredFlagsForName<T extends string> = T extends keyof FlagConfig
+  ? FlagConfig[T] & Record<string, unknown>
+  : Record<string, unknown>;

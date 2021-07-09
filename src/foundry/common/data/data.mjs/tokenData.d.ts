@@ -1,5 +1,5 @@
 import DocumentData from '../../abstract/data.mjs';
-import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import { ConfiguredFlagsForName, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { CONST, documents } from '../../module.mjs';
 import * as fields from '../fields.mjs';
 import { AnimationData, AnimationDataConstructorData } from './animationData';
@@ -312,7 +312,7 @@ export interface TokenDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: TokenFlags;
+  flags: ConfiguredFlagsForName<'Token'>;
 }
 
 export interface TokenDataConstructorData {
@@ -532,7 +532,7 @@ export interface TokenDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: TokenFlags | null;
+  flags?: ConfiguredFlagsForName<'Token'> | null;
 }
 
 /**
@@ -556,9 +556,3 @@ export class TokenData extends DocumentData<
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export declare interface TokenData extends TokenDataProperties {}
-
-declare global {
-  interface TokenFlags {
-    [key: string]: unknown;
-  }
-}

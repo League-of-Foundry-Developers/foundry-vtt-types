@@ -1,4 +1,4 @@
-import { PropertiesToSource } from '../../../../types/helperTypes';
+import { ConfiguredFlagsForName, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
@@ -49,7 +49,7 @@ interface CombatantDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: CombatantFlags;
+  flags: ConfiguredFlagsForName<'Combatant'>;
 }
 
 export interface CombatantDataConstructorData {
@@ -86,7 +86,7 @@ export interface CombatantDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: CombatantFlags | null;
+  flags?: ConfiguredFlagsForName<'Combatant'> | null;
 }
 
 /**
@@ -109,9 +109,3 @@ export declare class CombatantData extends DocumentData<
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export declare interface CombatantData extends CombatantDataProperties {}
-
-declare global {
-  interface CombatantFlags {
-    [key: string]: unknown;
-  }
-}

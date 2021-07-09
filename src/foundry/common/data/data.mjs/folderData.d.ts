@@ -1,7 +1,7 @@
 import DocumentData from '../../abstract/data.mjs';
 import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
-import { PropertiesToSource } from '../../../../types/helperTypes';
+import { ConfiguredFlagsForName, PropertiesToSource } from '../../../../types/helperTypes';
 
 interface FolderDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
@@ -74,7 +74,7 @@ interface FolderDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: FolderFlags;
+  flags: ConfiguredFlagsForName<'Folder'>;
 }
 
 interface FolderDataConstructorData {
@@ -125,7 +125,7 @@ interface FolderDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: FolderFlags | null;
+  flags?: ConfiguredFlagsForName<'Folder'> | null;
 }
 
 /**
@@ -149,9 +149,3 @@ export type SortingModes = ValueOf<typeof FolderData.SORTING_MODES>;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export declare interface FolderData extends FolderDataProperties {}
-
-declare global {
-  interface FolderFlags {
-    [key: string]: unknown;
-  }
-}

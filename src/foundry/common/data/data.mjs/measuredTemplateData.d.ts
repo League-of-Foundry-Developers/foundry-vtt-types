@@ -1,4 +1,9 @@
-import { ConfiguredDocumentClass, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import {
+  ConfiguredDocumentClass,
+  ConfiguredFlagsForName,
+  FieldReturnType,
+  PropertiesToSource
+} from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
@@ -96,7 +101,7 @@ interface MeasuredTemplateProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: MeasuredTemplateFlags;
+  flags: ConfiguredFlagsForName<'MeasuredTemplate'>;
 }
 
 interface MeasuredTemplateDataConstructorData {
@@ -170,7 +175,7 @@ interface MeasuredTemplateDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: MeasuredTemplateFlags | null;
+  flags?: ConfiguredFlagsForName<'MeasuredTemplate'> | null;
 }
 
 /**
@@ -203,9 +208,3 @@ export declare class MeasuredTemplateData extends DocumentData<
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export declare interface MeasuredTemplateData extends MeasuredTemplateProperties {}
-
-declare global {
-  interface MeasuredTemplateFlags {
-    [key: string]: unknown;
-  }
-}

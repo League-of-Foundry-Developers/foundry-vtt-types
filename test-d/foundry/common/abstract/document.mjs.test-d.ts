@@ -42,10 +42,12 @@ if (item) {
 }
 
 declare global {
-  interface CombatantFlags {
-    'my-system': {
-      value: boolean;
-      value2: number;
+  interface FlagConfig {
+    Combatant: {
+      'my-system': {
+        value: boolean;
+        value2: number;
+      };
     };
   }
 }

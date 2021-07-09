@@ -1,5 +1,6 @@
 import {
   ConfiguredDocumentClass,
+  ConfiguredFlagsForName,
   ConstructorDataType,
   FieldReturnType,
   PropertiesToSource
@@ -59,7 +60,7 @@ interface CombatDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: CombatFlags;
+  flags: ConfiguredFlagsForName<'Combat'>;
 }
 
 interface CombatDataConstructorData {
@@ -100,7 +101,7 @@ interface CombatDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: CombatFlags | null;
+  flags?: ConfiguredFlagsForName<'Combat'> | null;
 }
 
 /**
@@ -119,9 +120,3 @@ export declare class CombatData extends DocumentData<
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export declare interface CombatData extends CombatDataProperties {}
-
-declare global {
-  interface CombatFlags {
-    [key: string]: unknown;
-  }
-}

@@ -1,4 +1,4 @@
-import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import { ConfiguredFlagsForName, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import DocumentData from '../../abstract/data.mjs';
 import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
@@ -43,7 +43,7 @@ interface UserDataProperties {
   passwordSalt?: string;
   permissions: Partial<Record<keyof typeof CONST.USER_PERMISSIONS, boolean>>;
   role: foundry.CONST.UserRole;
-  flags: UserFlags;
+  flags: ConfiguredFlagsForName<'User'>;
 }
 
 interface UserDataConstructorData {
@@ -57,7 +57,7 @@ interface UserDataConstructorData {
   passwordSalt?: string | null;
   permissions?: Partial<Record<keyof typeof CONST.USER_PERMISSIONS, boolean>> | null;
   role?: foundry.CONST.UserRole | null;
-  flags?: UserFlags | null;
+  flags?: ConfiguredFlagsForName<'User'> | null;
 }
 
 /**
@@ -89,9 +89,3 @@ declare function _validateHotbar(bar: unknown): boolean;
  * @param perms - The attempted permissions data
  */
 declare function _validatePermissions(perms: unknown): boolean;
-
-declare global {
-  interface UserFlags {
-    [key: string]: unknown;
-  }
-}

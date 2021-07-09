@@ -1,4 +1,4 @@
-import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import { ConfiguredFlagsForName, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
@@ -94,7 +94,7 @@ interface MacroDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: MacroFlags;
+  flags: ConfiguredFlagsForName<'Macro'>;
 }
 
 interface MacroDataConstructorData {
@@ -158,7 +158,7 @@ interface MacroDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: MacroFlags | null;
+  flags?: ConfiguredFlagsForName<'Macro'> | null;
 }
 
 /**
@@ -179,9 +179,3 @@ export declare class MacroData extends DocumentData<
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export declare interface MacroData extends MacroDataProperties {}
-
-declare global {
-  interface MacroFlags {
-    [key: string]: unknown;
-  }
-}

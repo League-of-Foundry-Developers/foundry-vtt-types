@@ -1,4 +1,4 @@
-import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import { ConfiguredFlagsForName, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
@@ -79,7 +79,7 @@ interface ActiveEffectDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ActiveEffectFlags;
+  flags: ConfiguredFlagsForName<'ActiveEffect'>;
 }
 
 interface ActiveEffectDataConstructorData {
@@ -135,7 +135,7 @@ interface ActiveEffectDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ActiveEffectFlags | null;
+  flags?: ConfiguredFlagsForName<'ActiveEffect'> | null;
 }
 
 /**
@@ -154,9 +154,3 @@ export declare class ActiveEffectData extends DocumentData<
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export declare interface ActiveEffectData extends ActiveEffectDataProperties {}
-
-declare global {
-  interface ActiveEffectFlags {
-    [key: string]: unknown;
-  }
-}

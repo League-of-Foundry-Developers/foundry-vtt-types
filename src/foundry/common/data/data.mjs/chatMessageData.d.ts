@@ -1,4 +1,4 @@
-import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import { ConfiguredFlagsForName, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import { CONST, documents } from '../../module.mjs';
 import * as fields from '../fields.mjs';
@@ -104,7 +104,7 @@ interface ChatMessageDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ChatMessageFlags;
+  flags: ConfiguredFlagsForName<'ChatMessage'>;
 }
 
 export interface ChatMessageDataConstructorData {
@@ -180,7 +180,7 @@ export interface ChatMessageDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ChatMessageFlags | null;
+  flags?: ConfiguredFlagsForName<'ChatMessage'> | null;
 }
 
 /**
@@ -205,9 +205,3 @@ export declare interface ChatMessageData extends ChatMessageDataProperties {}
  * @returns Is it valid?
  */
 declare function _validateChatMessageType(type: number): boolean;
-
-declare global {
-  interface ChatMessageFlags {
-    [key: string]: unknown;
-  }
-}
