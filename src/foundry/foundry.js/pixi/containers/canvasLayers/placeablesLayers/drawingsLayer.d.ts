@@ -57,36 +57,7 @@ declare class DrawingsLayer extends PlaceablesLayer<'Drawing', DrawingsLayer.Lay
    * @returns The new drawing data
    * @remarks This is used from DrawingConfig and hence public on purpose.
    */
-  _getNewDrawingData(origin: Point | {}): ClientSettings.Values['core.defaultDrawingConfig'] &
-    (
-      | {
-          type: typeof foundry.CONST.DRAWING_TYPES.RECTANGLE | typeof foundry.CONST.DRAWING_TYPES.ELLIPSE;
-          points: [];
-        }
-      | {
-          type: typeof foundry.CONST.DRAWING_TYPES.POLYGON;
-          points: PointArray[];
-        }
-      | {
-          type: typeof foundry.CONST.DRAWING_TYPES.FREEHAND;
-          points: PointArray[];
-          bezierFactor: number;
-        }
-      | {
-          type: typeof foundry.CONST.DRAWING_TYPES.TEXT;
-          fillColor: string;
-          fillAlpha: number;
-          strokeColor: string;
-          text: string;
-        }
-    ) & {
-      author: string;
-      fillColor: string;
-      strokeColor: string;
-      fontFamily: typeof CONFIG.defaultFontFamily;
-      x: number | undefined;
-      y: number | undefined;
-    };
+  _getNewDrawingData(origin: Point | {}): NewDrawingData;
 
   /** @override */
   protected _onClickLeft(event: PIXI.InteractionEvent): void;
@@ -121,3 +92,34 @@ declare namespace DrawingsLayer {
     zIndex: 20;
   }
 }
+
+type NewDrawingData = ClientSettings.Values['core.defaultDrawingConfig'] &
+  (
+    | {
+        type: typeof foundry.CONST.DRAWING_TYPES.RECTANGLE | typeof foundry.CONST.DRAWING_TYPES.ELLIPSE;
+        points: [];
+      }
+    | {
+        type: typeof foundry.CONST.DRAWING_TYPES.POLYGON;
+        points: PointArray[];
+      }
+    | {
+        type: typeof foundry.CONST.DRAWING_TYPES.FREEHAND;
+        points: PointArray[];
+        bezierFactor: number;
+      }
+    | {
+        type: typeof foundry.CONST.DRAWING_TYPES.TEXT;
+        fillColor: string;
+        fillAlpha: number;
+        strokeColor: string;
+        text: string;
+      }
+  ) & {
+    author: string;
+    fillColor: string;
+    strokeColor: string;
+    fontFamily: typeof CONFIG.defaultFontFamily;
+    x: number | undefined;
+    y: number | undefined;
+  };
