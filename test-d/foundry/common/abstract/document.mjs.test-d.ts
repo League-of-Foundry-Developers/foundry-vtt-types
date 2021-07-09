@@ -48,19 +48,29 @@ declare global {
         value: boolean;
         value2: number;
       };
+      'my-optional-system'?: {
+        value: boolean;
+      };
     };
   }
 }
 
 const combatant = new Combatant({}, {});
 expectType<{ value: boolean; value2: number }>(combatant.data.flags['my-system']);
+expectType<{ value: boolean } | undefined>(combatant.data.flags['my-optional-system']);
 
 expectType<boolean>(combatant.getFlag('my-system', 'value'));
 expectType<number>(combatant.getFlag('my-system', 'value2'));
 expectType<never>(combatant.getFlag('my-system', 'unknown-key'));
 expectType<unknown>(combatant.getFlag('another-system', 'value'));
+expectType<boolean | undefined>(combatant.getFlag('my-optional-system', 'value'));
 
 expectType<Promise<Combatant>>(combatant.setFlag('my-system', 'value', true));
 expectError(combatant.setFlag('my-system', 'value', 2));
 expectError(combatant.setFlag('my-system', 'unknown-key', 2));
 expectType<Promise<Combatant>>(combatant.setFlag('another-system', 'value', true));
+
+expectType<Promise<Combatant>>(combatant.unsetFlag('my-system', 'value'));
+expectError(combatant.unsetFlag('my-system', 'value'));
+expectError(combatant.unsetFlag('my-system', 'unknown-key'));
+expectType<Promise<Combatant>>(combatant.unsetFlag('another-system', 'value'));
