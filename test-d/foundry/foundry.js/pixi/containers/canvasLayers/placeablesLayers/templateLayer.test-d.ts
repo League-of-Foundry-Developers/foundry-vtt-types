@@ -1,7 +1,7 @@
 import { expectType } from 'tsd';
 
 expectType<'MeasuredTemplate'>(TemplateLayer.documentName);
-expectType<TemplateLayer>(TemplateLayer.instance);
+expectType<TemplateLayer | undefined>(TemplateLayer.instance);
 expectType<TemplateLayer.LayerOptions>(TemplateLayer.layerOptions);
 expectType<'templates'>(TemplateLayer.layerOptions.name);
 expectType<ConstructorOf<MeasuredTemplate>>(TemplateLayer.layerOptions.objectClass);

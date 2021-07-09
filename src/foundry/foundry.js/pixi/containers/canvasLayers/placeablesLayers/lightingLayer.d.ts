@@ -76,7 +76,7 @@ declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLaye
   /**
    * @remarks This is not overridden in foundry but reflects the real behavior.
    */
-  static get instance(): LightingLayer;
+  static get instance(): Canvas['lighting'];
 
   /**
    * @override

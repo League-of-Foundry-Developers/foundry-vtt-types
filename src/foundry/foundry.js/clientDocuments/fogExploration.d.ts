@@ -1,5 +1,6 @@
 //TODO: This is just a stub
 import { ClientDocumentMixin } from '../clientDocumentMixin';
+
 declare global {
   /**
 
@@ -10,3 +11,5 @@ declare global {
    */
   class FogExploration extends ClientDocumentMixin<foundry.documents.BaseFogExploration> {}
 }
+
+export {};

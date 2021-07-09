@@ -12,7 +12,7 @@ declare class SoundsLayer extends PlaceablesLayer<'AmbientSound', SoundsLayer.La
   /**
    * @remarks This is not overridden in foundry but reflects the real behavior.
    */
-  static get instance(): SoundsLayer;
+  static get instance(): Canvas['sounds'];
 
   /**
    * @override

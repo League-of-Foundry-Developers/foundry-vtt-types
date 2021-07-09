@@ -1,7 +1,7 @@
 import { expectType } from 'tsd';
 
 expectType<'Token'>(TokenLayer.documentName);
-expectType<TokenLayer>(TokenLayer.instance);
+expectType<TokenLayer | undefined>(TokenLayer.instance);
 expectType<TokenLayer.LayerOptions>(TokenLayer.layerOptions);
 expectType<'tokens'>(TokenLayer.layerOptions.name);
 expectType<ConstructorOf<Token>>(TokenLayer.layerOptions.objectClass);

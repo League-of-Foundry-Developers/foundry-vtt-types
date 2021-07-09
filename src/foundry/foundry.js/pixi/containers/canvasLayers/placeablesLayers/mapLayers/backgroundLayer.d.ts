@@ -8,7 +8,7 @@ declare global {
     /**
      * @remarks This is not overridden in foundry but reflects the real behavior.
      */
-    static get instance(): BackgroundLayer;
+    static get instance(): Canvas['background'];
 
     /**
      * @remarks This is not overridden in foundry but reflects the real behavior.

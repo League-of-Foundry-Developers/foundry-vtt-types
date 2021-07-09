@@ -60,7 +60,7 @@ declare global {
     /**
      * @remarks This is not overridden in foundry but reflects the real behavior.
      */
-    static get instance(): WallsLayer;
+    static get instance(): Canvas['walls'];
 
     /**
      * @override

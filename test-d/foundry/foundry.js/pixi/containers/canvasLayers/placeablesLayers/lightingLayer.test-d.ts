@@ -1,7 +1,7 @@
 import { expectType } from 'tsd';
 
 expectType<'AmbientLight'>(LightingLayer.documentName);
-expectType<LightingLayer>(LightingLayer.instance);
+expectType<LightingLayer | undefined>(LightingLayer.instance);
 expectType<LightingLayer.LayerOptions>(LightingLayer.layerOptions);
 expectType<'lighting'>(LightingLayer.layerOptions.name);
 expectType<ConstructorOf<AmbientLight>>(LightingLayer.layerOptions.objectClass);

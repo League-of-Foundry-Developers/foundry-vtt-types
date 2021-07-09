@@ -1,6 +1,6 @@
 import { expectType } from 'tsd';
 
-expectType<GridLayer>(GridLayer.instance);
+expectType<GridLayer | undefined>(GridLayer.instance);
 expectType<GridLayer.LayerOptions>(GridLayer.layerOptions);
 expectType<'grid'>(GridLayer.layerOptions.name);
 

@@ -1,7 +1,7 @@
 import { expectType } from 'tsd';
 
 expectType<'Note'>(NotesLayer.documentName);
-expectType<NotesLayer>(NotesLayer.instance);
+expectType<NotesLayer | undefined>(NotesLayer.instance);
 expectType<NotesLayer.LayerOptions>(NotesLayer.layerOptions);
 expectType<'notes'>(NotesLayer.layerOptions.name);
 expectType<ConstructorOf<Note>>(NotesLayer.layerOptions.objectClass);

@@ -1,7 +1,7 @@
 import { expectType } from 'tsd';
 
 expectType<'AmbientSound'>(SoundsLayer.documentName);
-expectType<SoundsLayer>(SoundsLayer.instance);
+expectType<SoundsLayer | undefined>(SoundsLayer.instance);
 expectType<SoundsLayer.LayerOptions>(SoundsLayer.layerOptions);
 expectType<'sounds'>(SoundsLayer.layerOptions.name);
 expectType<ConstructorOf<AmbientSound>>(SoundsLayer.layerOptions.objectClass);

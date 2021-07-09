@@ -18,7 +18,7 @@ declare global {
     /**
      * @remarks This is not overridden in foundry but reflects the real behavior.
      */
-    static get instance(): ForegroundLayer;
+    static get instance(): Canvas['foreground'];
 
     /**
      * Get an array of overhead Tile objects which are roofs

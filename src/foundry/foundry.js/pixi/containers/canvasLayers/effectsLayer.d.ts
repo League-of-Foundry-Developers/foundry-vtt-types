@@ -30,7 +30,7 @@ declare class EffectsLayer extends CanvasLayer<EffectsLayer.LayerOptions> {
   /**
    * @remarks This is not overridden in foundry but reflects the real behavior.
    */
-  static get instance(): EffectsLayer | undefined;
+  static get instance(): Canvas['effects'];
 
   /**
    * @defaultValue

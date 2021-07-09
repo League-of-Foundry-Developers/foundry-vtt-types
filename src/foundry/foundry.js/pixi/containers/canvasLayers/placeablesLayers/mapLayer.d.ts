@@ -35,7 +35,7 @@ declare global {
      * @remarks This is not overridden in foundry but reflects the real behavior.
      * It returns the BackgroundLayer but ForegroundLayer has been added for subclasses.
      */
-    static get instance(): BackgroundLayer | ForegroundLayer;
+    static get instance(): Canvas['background'] | Canvas['foreground'];
 
     /**
      * @defaultValue

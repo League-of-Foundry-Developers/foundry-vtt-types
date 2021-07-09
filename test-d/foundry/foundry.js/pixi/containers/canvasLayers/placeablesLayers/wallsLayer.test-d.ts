@@ -3,7 +3,7 @@ import { expectType } from 'tsd';
 const aWall = new Wall(new foundry.documents.BaseWall());
 
 expectType<'Wall'>(WallsLayer.documentName);
-expectType<WallsLayer>(WallsLayer.instance);
+expectType<WallsLayer | undefined>(WallsLayer.instance);
 expectType<WallsLayer.LayerOptions>(WallsLayer.layerOptions);
 expectType<'walls'>(WallsLayer.layerOptions.name);
 expectType<ConstructorOf<Wall>>(WallsLayer.layerOptions.objectClass);

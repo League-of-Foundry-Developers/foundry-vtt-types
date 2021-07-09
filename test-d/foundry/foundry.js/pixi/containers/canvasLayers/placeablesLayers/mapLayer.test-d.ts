@@ -5,7 +5,7 @@ expectType<MapLayer.LayerOptions>(MapLayer.layerOptions);
 expectType<'background' | 'foreground'>(MapLayer.layerOptions.name);
 expectType<ConstructorOf<Tile>>(MapLayer.layerOptions.objectClass);
 expectType<ConstructorOf<FormApplication>>(MapLayer.layerOptions.sheetClass);
-expectType<BackgroundLayer | ForegroundLayer>(MapLayer.instance);
+expectType<BackgroundLayer | ForegroundLayer | undefined>(MapLayer.instance);
 
 expectType<MapLayer>(new MapLayer());
 expectType<MapLayer>(new MapLayer({ bgPath: '/path/to/an/image.png', level: 1 }));

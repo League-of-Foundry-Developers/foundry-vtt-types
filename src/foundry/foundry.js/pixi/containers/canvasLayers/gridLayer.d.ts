@@ -25,7 +25,7 @@ declare class GridLayer extends CanvasLayer<GridLayer.LayerOptions> {
   /**
    * @remarks This is not overridden in foundry but reflects the real behavior.
    */
-  static get instance(): GridLayer;
+  static get instance(): Canvas['grid'];
 
   /**
    * @override

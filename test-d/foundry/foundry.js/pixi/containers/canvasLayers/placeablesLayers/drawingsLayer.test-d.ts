@@ -1,7 +1,7 @@
 import { expectType } from 'tsd';
 
 expectType<'Drawing'>(DrawingsLayer.documentName);
-expectType<DrawingsLayer>(DrawingsLayer.instance);
+expectType<DrawingsLayer | undefined>(DrawingsLayer.instance);
 expectType<DrawingsLayer.LayerOptions>(DrawingsLayer.layerOptions);
 expectType<'drawings'>(DrawingsLayer.layerOptions.name);
 expectType<ConstructorOf<Drawing>>(DrawingsLayer.layerOptions.objectClass);

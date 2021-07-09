@@ -1,6 +1,6 @@
 import { expectType } from 'tsd';
 
-expectType<SightLayer>(SightLayer.instance);
+expectType<SightLayer | undefined>(SightLayer.instance);
 expectType<SightLayer.LayerOptions>(SightLayer.layerOptions);
 expectType<'sight'>(SightLayer.layerOptions.name);
 expectType<number>(SightLayer.EXACT_VISION_THRESHOLD);

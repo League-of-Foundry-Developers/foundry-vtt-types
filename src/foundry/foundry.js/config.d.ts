@@ -358,7 +358,7 @@ declare global {
       /**
        * @defaultValue `FogExploration`
        */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseFogExploration>; // TODO: FogExploration
+      documentClass: ConfiguredDocumentClassOrDefault<typeof FogExploration>;
 
       /**
        * @defaultValue `FogExplorations`
@@ -828,7 +828,7 @@ declare global {
         /**
          * @defaultValue `ForegroundLayer`
          */
-        foreground: ConstructorOf<any>; // TODO: ForegroundLayer
+        foreground: ConstructorOf<ForegroundLayer>;
 
         /**
          * @defaultValue `SoundsLayer`

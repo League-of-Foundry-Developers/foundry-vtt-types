@@ -34,7 +34,6 @@ declare abstract class CanvasLayer<Options extends CanvasLayerOptions = CanvasLa
 
   /**
    * Return a reference to the active instance of this canvas layer
-   * @remarks `undefined` is just returned by the ControlsLayer which is probably a bug.
    */
   static get instance(): CanvasLayer | undefined;
 

@@ -6,7 +6,7 @@ declare class DrawingsLayer extends PlaceablesLayer<'Drawing', DrawingsLayer.Lay
   /**
    * @remarks This is not overridden in foundry but reflects the real behavior.
    */
-  static get instance(): DrawingsLayer;
+  static get instance(): Canvas['drawings'];
 
   /**
    * @override
