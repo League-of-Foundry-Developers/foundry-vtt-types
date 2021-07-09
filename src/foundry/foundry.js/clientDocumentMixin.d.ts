@@ -387,7 +387,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
           | ConstructorDataType<InstanceType<T>['data']>
           | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
         > & { _id: string }),
-    options?: DocumentModificationContext
+    options?: DocumentModificationContext & foundry.utils.MergeObjectOptions
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
