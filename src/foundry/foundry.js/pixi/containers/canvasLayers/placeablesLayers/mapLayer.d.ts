@@ -111,9 +111,7 @@ declare global {
      */
     protected _getDropData(
       event: DragEvent,
-      data:
-        | { type: 'Tile'; img: string; tileSize?: number; x: number; y: number }
-        | ({ type: string } & Partial<Record<string, unknown>>)
+      data: MapLayer.DropData
     ): Promise<ConstructorParameters<typeof foundry.documents.BaseTile>[0]>;
   }
 
@@ -125,6 +123,10 @@ declare global {
       controllableObjects: true;
       rotatableObjects: true;
     }
+
+    type DropData =
+      | { type: 'Tile'; img: string; tileSize?: number; x: number; y: number }
+      | ({ type: string } & Partial<Record<string, unknown>>);
   }
 }
 
