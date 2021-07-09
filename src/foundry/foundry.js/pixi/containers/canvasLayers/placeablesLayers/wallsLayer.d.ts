@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../../../types/helperTypes';
+import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from '../../../../../../types/helperTypes';
 import { PasteOptions } from '../placeablesLayer';
 
 declare global {
@@ -85,7 +85,7 @@ declare global {
     /**
      * An Array of Wall instances in the current Scene which act as Doors.
      */
-    get doors(): Wall[];
+    get doors(): InstanceType<ConfiguredObjectClassForName<'Wall'>>[];
 
     /**
      * Gate the precision of wall snapping to become less precise for small scale maps.
@@ -118,7 +118,7 @@ declare global {
      * @param wall  - The existing Wall object being chained to
      * @returns The [x,y] coordinates of the starting endpoint
      */
-    static getClosestEndpoint(point: Point, wall: Wall): PointArray;
+    static getClosestEndpoint(point: Point, wall: InstanceType<ConfiguredObjectClassForName<'Wall'>>): PointArray;
 
     /**
      * Given an array of Wall instances, identify the unique endpoints across all walls.
@@ -127,7 +127,12 @@ declare global {
      *                  (defaultValue: `{}`)
      * @returns An array of endpoints
      */
-    static getUniqueEndpoints(walls: Wall[] | Set<Wall>, options?: EndpointOptions): PointArray[];
+    static getUniqueEndpoints(
+      walls:
+        | InstanceType<ConfiguredObjectClassForName<'Wall'>>[]
+        | Set<InstanceType<ConfiguredObjectClassForName<'Wall'>>>,
+      options?: EndpointOptions
+    ): PointArray[];
 
     /**
      * Test whether movement along a given Ray collides with a Wall.
@@ -276,7 +281,7 @@ declare global {
      * @param wall - The Wall against which to test
      * @returns A RayIntersection if a collision occurred, or null
      */
-    static testWall(ray: Ray, wall: Wall): RayIntersection | null;
+    static testWall(ray: Ray, wall: InstanceType<ConfiguredObjectClassForName<'Wall'>>): RayIntersection | null;
 
     /**
      * Identify the closest collision point from an array of collisions
@@ -306,12 +311,12 @@ declare global {
     /**
      * @deprecated since 0.8.0
      */
-    get blockVision(): Wall[];
+    get blockVision(): InstanceType<ConfiguredObjectClassForName<'Wall'>>[];
 
     /**
      * @deprecated since 0.8.0
      */
-    get blockMovement(): Wall[];
+    get blockMovement(): InstanceType<ConfiguredObjectClassForName<'Wall'>>[];
   }
 
   namespace WallsLayer {
