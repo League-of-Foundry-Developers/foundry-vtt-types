@@ -77,22 +77,22 @@ declare global {
     getCombatantByToken(tokenId: string): ReturnType<this['combatants']['find']>;
 
     /** Advance the combat to the next round */
-    nextRound(): ReturnType<this['update']>;
+    nextRound(): Promise<this | undefined>;
 
     /** Advance the combat to the next turn */
-    nextTurn(): ReturnType<this['update']>;
+    nextTurn(): Promise<this | undefined>;
 
     /** @override */
     prepareDerivedData(): void;
 
     /** Rewind the combat to the previous round */
-    previousRound(): ReturnType<this['update']>;
+    previousRound(): Promise<this | undefined>;
 
     /** Rewind the combat to the previous turn */
-    previousTurn(): ReturnType<this['update']>;
+    previousTurn(): Promise<this | undefined>;
 
     /** Reset all combatant initiative scores, setting the turn back to zero */
-    resetAll(): ReturnType<this['update']>;
+    resetAll(): Promise<this | undefined>;
 
     /**
      * Roll initiative for one or multiple Combatants within the Combat entity
@@ -129,7 +129,7 @@ declare global {
     setupTurns(): this['turns'];
 
     /** Begin the combat encounter, advancing to round 1 and turn 1 */
-    startCombat(): ReturnType<this['update']>;
+    startCombat(): Promise<this | undefined>;
 
     /**
      * Define how the array of Combatants is sorted in the displayed list of the tracker.
