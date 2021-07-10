@@ -1,261 +1,246 @@
-/**
- * A shared pattern for the sidebar directory which Actors, Items, and Scenes all use
- * @typeParam P - the type of the options object
- */
-declare abstract class SidebarDirectory<
-  P extends SidebarDirectory.Options = SidebarDirectory.Options
-> extends SidebarTab<P> {
-  /**
-   * References to the set of Entities which are displayed in the Sidebar
-   */
-  entities: Entity[];
+import { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
+import { DropData } from '../../clientDocumentMixin';
 
+declare global {
   /**
-   * Reference the set of Folders which exist in this Sidebar
-   * @defaultValue `null`
+   * A shared pattern for the sidebar directory which Actors, Items, and Scenes all use
+   * @typeParam Options - The type of the options object
    */
-  folders: Folder[];
+  abstract class SidebarDirectory<
+    Name extends foundry.CONST.EntityType | 'FogExploration',
+    Options extends SidebarDirectory.Options = SidebarDirectory.Options
+  > extends SidebarTab<Options> {
+    constructor(options?: Partial<SidebarDirectory.Options>);
 
-  /**
-   * @override
-   */
-  static get defaultOptions(): SidebarDirectory.Options;
+    /**
+     * References to the set of Documents which are displayed in the Sidebar
+     */
+    documents: InstanceType<ConfiguredDocumentClassForName<Name>>[];
 
-  /**
-   * The named entity which this Sidebar Directory contains
-   * @remarks This method is abstract in SidebarTab.
-   */
-  static get entity(): string;
+    /**
+     * Reference the set of Folders which exist in this Sidebar
+     */
+    folders: InstanceType<ConfiguredDocumentClass<typeof Folder>>[];
 
-  /**
-   * The Entity collection which this Sidebar Directory contains
-   * @remarks This method is abstract in SidebarTab.
-   */
-  static get collection(): WorldCollection<any, any> | undefined;
+    /**
+     * A reference to the named Document type that this Sidebar Directory instance displays
+     * @defaultValue `'Document'`
+     */
+    static documentName: string;
 
-  /**
-   * A reference to the Entity class which is displayed within this EntityCollection
-   */
-  static get cls(): ConstructorOf<Entity>;
+    /**
+     * @override
+     * @defaultValue
+     * ```typescript
+     * const cls = getDocumentClass(this.documentName);
+     * const collection = cls.metadata.collection;
+     * foundry.utils.mergeObject(super.defaultOptions, {
+     *   id: collection,
+     *   template: `templates/sidebar/${collection}-directory.html`,
+     *   title: `${game.i18n.localize(cls.metadata.label)} Directory`,
+     *   renderUpdateKeys: ["name", "img", "thumb", "permission", "sort", "sorting", "folder"],
+     *   height: "auto",
+     *   scrollY: ["ol.directory-list"],
+     *   dragDrop: [{ dragSelector: ".directory-item",  dropSelector: ".directory-list"}],
+     *   filters: [{inputSelector: 'input[name="search"]', contentSelector: ".directory-list"}],
+     *   contextMenuSelector: ".entity"
+     * });
+     * ```
+     */
+    static get defaultOptions(): SidebarDirectory.Options;
 
-  /**
-   * Initialize the content of the directory by categorizing folders and entities into a hierarchical tree structure.
-   */
-  initialize(): void;
+    /**
+     * The WorldCollection instance which this Sidebar Directory displays.
+     */
+    static get collection(): WorldCollection<
+      ConfiguredDocumentClassForName<foundry.CONST.EntityType | 'FogExploration'>,
+      string
+    >;
 
-  tree: SidebarDirectory.Tree;
+    /**
+     * Initialize the content of the directory by categorizing folders and entities into a hierarchical tree structure.
+     */
+    initialize(): void;
 
-  /**
-   * Given an entity type and a list of entities, set up the folder tree for that entity
-   * @param folders  - The Array of Folder objects to organize
-   * @param entities - The Array of Entity objects to organize
-   * @returns A tree structure containing the folders and entities
-   */
-  static setupFolders(folders: Folder[], entities: Entity[]): SidebarDirectory.Tree;
+    /**
+     * Initialize the content of the directory by categorizing folders and entities into a hierarchical tree structure.
+     */
+    initialize(): void;
 
-  /**
-   * Populate a single folder with child folders and content
-   * This method is called recursively when building the folder tree
-   * @param allowChildren - (default: `true`)
-   */
-  protected static _populate(
-    folder: Folder,
-    folders: Folder[],
-    entities: Entity[],
-    {
-      allowChildren
-    }: {
-      allowChildren: boolean;
+    tree: SidebarDirectory.Tree<this['documents'][number]>;
+
+    /**
+     * Given an entity type and a list of entities, set up the folder tree for that entity
+     * @param folders  - The Array of Folder objects to organize
+     * @param entities - The Array of Entity objects to organize
+     * @returns A tree structure containing the folders and entities
+     */
+    static setupFolders<T extends SidebarDirectory<any, any>>(
+      this: ConstructorOf<T>,
+      folders: T['folders'],
+      entities: T['documents']
+    ): SidebarDirectory.Tree<T['documents'][number]>;
+
+    /**
+     * Populate a single folder with child folders and content
+     * This method is called recursively when building the folder tree
+     * @param allowChildren - (default: `true`)
+     */
+    protected static _populate<T extends SidebarDirectory<any, any>>(
+      this: ConstructorOf<T>,
+      folder: T['folders'][number],
+      folders: T['folders'],
+      entities: T['documents'],
+      {
+        allowChildren
+      }?: {
+        allowChildren: boolean;
+      }
+    ): [T['folders'], T['documents']];
+
+    /**
+     * @override
+     */
+    render(force?: boolean, context?: Partial<SidebarDirectory.RenderContext>): this | void;
+
+    /**
+     * @param options - (unused)
+     * @override
+     * @remarks
+     * This implementation doesn't actually return `PlaylistDirectory.Data`, it's only to allow {@link PlaylistDirectory}
+     * to override accordingly.
+     */
+    getData(options?: Application.RenderOptions): SidebarDirectory.Data<this['tree']> | PlaylistDirectory.Data;
+
+    /**
+     * @param event - (unused)
+     * @override
+     */
+    protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
+
+    /**
+     * Collapse all subfolders in this directory
+     */
+    collapseAll(): void;
+
+    /**
+     * Activate event listeners triggered within the Actor Directory HTML
+     */
+    activateListeners(html: JQuery): void;
+
+    /**
+     * Handle clicking on an Entity name in the Sidebar directory
+     * @param event - The originating click event
+     */
+    protected _onClickEntityName(event: JQuery.ClickEvent): void | Promise<void>;
+
+    /**
+     * Handle new creation request
+     * @param event - The originating button click event
+     */
+    protected _onCreateDocument(
+      event: JQuery.ClickEvent
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<Name>> | undefined>;
+
+    /**
+     * Create a new Folder in this SidebarDirectory
+     * @param event - The originating button click event
+     */
+    protected _onCreateFolder(event: JQuery.ClickEvent): void;
+
+    /**
+     * Handle toggling the collapsed or expanded state of a folder within the directory tab
+     * @param event - The originating click event
+     */
+    protected _toggleFolder(event: JQuery.ClickEvent): void;
+
+    /**
+     * @override
+     */
+    protected _onDragStart(event: DragEvent): void;
+
+    protected _dragType: string;
+
+    /** @override */
+    protected _canDragStart(selector: string): boolean;
+
+    /**
+     * Highlight folders as drop targets when a drag event enters or exits their area
+     * @param event - The DragEvent which is in progress
+     */
+    protected _onDragHighlight(event: JQuery.DragEnterEvent | JQuery.DragLeaveEvent): void;
+
+    /**
+     * @override
+     */
+    protected _onDrop(event: DragEvent): void;
+
+    /**
+     * Handle Document data being dropped into the directory.
+     * @param target - The target element
+     * @param data   - The data being dropped
+     */
+    protected _handleDroppedDocument(
+      target: HTMLElement,
+      data: DropData<InstanceType<ConfiguredDocumentClassForName<Name>>>
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<Name>> | undefined>;
+
+    /**
+     * Handle Folder data being dropped into the directory.
+     * @param target - The target element
+     * @param data   - The data being dropped
+     */
+    protected _handleDroppedFolder(
+      target: HTMLElement,
+      data: DropData<InstanceType<ConfiguredDocumentClass<typeof Folder>>>
+    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Folder>> | undefined>;
+
+    /**
+     * Default folder context actions
+     * @param html - The context menu HTML being rendered for the directory
+     */
+    protected _contextMenu(html: JQuery): void;
+
+    /**
+     * Get the set of ContextMenu options which should be used for Folders in a SidebarDirectory
+     * @returns The Array of context options passed to the ContextMenu instance
+     */
+    protected _getFolderContextOptions(): ContextMenu.Item[];
+
+    /**
+     * Get the set of ContextMenu options which should be used for Entities in a SidebarDirectory
+     * @returns The Array of context options passed to the ContextMenu instance
+     */
+    protected _getEntryContextOptions(): ContextMenu.Item[];
+
+    /**
+     * @deprecated since 0.8.0
+     */
+    get entities(): this['documents'];
+  }
+
+  namespace SidebarDirectory {
+    interface Data<ConcreteTree extends Tree<foundry.abstract.Document<any, any>>> {
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>;
+      tree: ConcreteTree;
+      canCreate: boolean;
+      sidebarIcon: string;
     }
-  ): [Folder[], Entity[]];
 
-  /**
-   * @override
-   */
-  render(force?: boolean, context?: Partial<SidebarDirectory.RenderContext>): this | void;
+    interface Options extends Application.Options {
+      renderUpdateKeys: string[];
+    }
 
-  /**
-   * @param options - (unused)
-   * @override
-   */
-  getData(options?: Application.RenderOptions): SidebarDirectory.Data | PlaylistDirectory.Data;
+    interface RenderContext extends Application.RenderOptions {
+      action: string;
+      data: string;
+      entityType: string;
+    }
 
-  /**
-   * @param event - (unused)
-   * @override
-   */
-  protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
-
-  /**
-   * Collapse all subfolders in this directory
-   */
-  collapseAll(): void;
-
-  /**
-   * Activate event listeners triggered within the Actor Directory HTML
-   */
-  activateListeners(html: JQuery): void;
-
-  /**
-   * Handle clicking on an Entity name in the Sidebar directory
-   * @param event - The originating click event
-   */
-  protected _onClickEntityName(event: JQuery.ClickEvent): void;
-
-  /**
-   * Handle new creation request
-   * @param event - The originating button click event
-   */
-  protected _onCreateEntity(event: JQuery.ClickEvent): Promise<Entity>;
-
-  /**
-   * Create a new Folder in this SidebarDirectory
-   * @param event - The originating button click event
-   */
-  protected _onCreateFolder(event: JQuery.ClickEvent): void;
-
-  /**
-   * Handle toggling the collapsed or expanded state of a folder within the directory tab
-   * @param event - The originating click event
-   */
-  protected _toggleFolder(event: JQuery.ClickEvent): void;
-
-  /**
-   * @override
-   */
-  protected _onDragStart(event: DragEvent): void;
-
-  protected _dragType: string;
-
-  /**
-   * Highlight folders as drop targets when a drag event enters or exits their area
-   * @param event - The DragEvent which is in progress
-   */
-  protected _onDragHighlight(event: JQuery.DragEnterEvent | JQuery.DragLeaveEvent): void;
-
-  /**
-   * @override
-   */
-  protected _onDrop(event: DragEvent): void;
-
-  /**
-   * Define the behavior of the sidebar tab when it received a dropped data object
-   * @param event - The original drop event
-   * @param data  - The data being dropped
-   */
-  protected _handleDropData(event: DragEvent, data: unknown): unknown;
-
-  /**
-   * Default folder context actions
-   */
-  protected _contextMenu(html: JQuery): void;
-
-  /**
-   * Get the set of ContextMenu options which should be used for Folders in a SidebarDirectory
-   * @returns The Array of context options passed to the ContextMenu instance
-   */
-  protected _getFolderContextOptions(): ContextMenu.Item[];
-
-  /**
-   * Get the set of ContextMenu options which should be used for Entities in a SidebarDirectory
-   * @returns The Array of context options passed to the ContextMenu instance
-   */
-  protected _getEntryContextOptions(): ContextMenu.Item[];
-}
-
-declare namespace SidebarDirectory {
-  interface Data {
-    user: User;
-
-    tree: SidebarDirectory['tree'];
-
-    canCreate: boolean;
-
-    sidebarIcon: string;
-  }
-
-  interface Options extends SidebarTab.Options {
-    /**
-     * @defaultValue
-     * ```typescript
-     * `${this.entity.toLowerCase()}s`
-     * ```
-     */
-    id: string;
-
-    /**
-     * @defaultValue
-     * ```typescript
-     * `templates/sidebar/${this.entity.toLowerCase()}-directory.html`
-     * ```
-     */
-    template: string;
-
-    /**
-     * @defaultValue
-     * ```typescript
-     * `${this.entity}s Directory`
-     * ```
-     */
-    title: string;
-
-    /**
-     * @defaultValue `['name', 'img', 'thumb', 'permission', 'sort', 'folder']`
-     */
-    renderUpdateKeys: string[];
-
-    /**
-     * @defaultValue `'auto'`
-     */
-    height: number | 'auto';
-
-    /**
-     * @defaultValue `['ol.directory-list']`
-     */
-    scrollY: string[];
-
-    dragDrop: Array<
-      DragDrop.Options & {
-        /**
-         * @defaultValue `'.directory-item'`
-         */
-        dragSelector: string;
-
-        /**
-         * @defaultValue `'.directory-list'`
-         */
-        dropSelector: string;
-      }
-    >;
-
-    filters: Array<
-      SearchFilter.Options & {
-        /**
-         * @defaultValue `'input[name="search"]'`
-         */
-        inputSelector: string;
-
-        /**
-         * @defaultValue `'.directory-list'`
-         */
-        contentSelector: string;
-      }
-    >;
-  }
-
-  interface RenderContext extends Application.RenderOptions {
-    action: string;
-
-    data: string;
-
-    entityType: string;
-  }
-
-  interface Tree {
-    root: boolean;
-
-    content: Entity[];
-
-    children: Folder[];
+    interface Tree<ConcreteDocument extends foundry.abstract.Document<any, any>> {
+      root?: boolean;
+      content: ConcreteDocument[];
+      children: (Folder & Tree<ConcreteDocument>)[];
+    }
   }
 }

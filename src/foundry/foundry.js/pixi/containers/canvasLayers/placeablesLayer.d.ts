@@ -255,7 +255,7 @@ declare abstract class PlaceablesLayer<P extends PlaceableObject = PlaceableObje
    *
    * @returns A Promise which resolves to the returned socket response (if successful)
    */
-  createMany(data: Array<PlaceablesLayer.DataType<P>>, options?: Entity.CreateOptions): Promise<P[]>;
+  createMany(data: Array<PlaceablesLayer.DataType<P>>, options?: any): Promise<P[]>;
 
   /* -------------------------------------------- */
 
@@ -269,7 +269,7 @@ declare abstract class PlaceablesLayer<P extends PlaceableObject = PlaceableObje
    * @returns A Promise which resolves to the returned socket response (if successful)
    */
   // TODO: update later
-  updateMany(data: any[], options?: Entity.UpdateOptions): Promise<Partial<P>>;
+  updateMany(data: any[], options?: any): Promise<Partial<P>>;
 
   /* -------------------------------------------- */
 
@@ -284,7 +284,7 @@ declare abstract class PlaceablesLayer<P extends PlaceableObject = PlaceableObje
    *
    * @returns A Promise which resolves to the returned socket response (if successful)
    */
-  deleteMany(ids: string[], options?: Entity.DeleteOptions): Promise<Array<Partial<P>> | Partial<P>>;
+  deleteMany(ids: string[], options?: any): Promise<Array<Partial<P>> | Partial<P>>;
 
   /* -------------------------------------------- */
 
@@ -301,7 +301,7 @@ declare abstract class PlaceablesLayer<P extends PlaceableObject = PlaceableObje
   updateAll(
     transformation: ((placeable: P) => P) | P,
     condition?: (placeable: P) => boolean,
-    options?: Entity.UpdateOptions
+    options?: any
   ): Promise<Array<Partial<P>> | Partial<P>>;
 
   /* -------------------------------------------- */

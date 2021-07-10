@@ -1,71 +1,71 @@
-/**
- * A compendium of knowledge arcane and mystical!
- */
-declare class CompendiumDirectory extends SidebarTab<CompendiumDirectory.Options> {
-  /**
-   * @override
-   */
-  static get defaultOptions(): CompendiumDirectory.Options;
+import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 
+declare global {
   /**
-   * @param options - (unused)
-   * @override
+   * A compendium of knowledge arcane and mystical!
+   * @typeParam Options - The type of the options object
    */
-  getData(options?: Application.RenderOptions): CompendiumDirectory.Data;
+  class CompendiumDirectory<Options extends Application.Options = Application.Options> extends SidebarTab<Options> {
+    /**
+     * @override
+     * @defaultValue
+     * ```typescript
+     * foundry.utils.mergeObject(super.defaultOptions, {
+     *   id: "compendium",
+     *   template: "templates/sidebar/compendium-directory.html",
+     *   title: "Compendium Packs"
+     * });
+     * ```
+     */
+    static get defaultOptions(): Application.Options;
 
-  /**
-   * @override
-   */
-  activateListeners(html: JQuery): void;
+    /**
+     * @param options - (unused)
+     * @override
+     */
+    getData(options?: Application.RenderOptions): CompendiumDirectory.Data;
 
-  /**
-   * Compendium sidebar Context Menu creation
-   */
-  protected _contextMenu(html: JQuery): void;
+    /**
+     * @override
+     */
+    activateListeners(html: JQuery): void;
 
-  /**
-   * Get the sidebar directory entry context options
-   * @returns The sidebar entry context options
-   */
-  protected _getEntryContextOptions(): ContextMenu.Item[];
+    /**
+     * Compendium sidebar Context Menu creation
+     * @param html - The HTML being rendered for the compendium directory
+     */
+    protected _contextMenu(html: JQuery): void;
 
-  /**
-   * Handle a Compendium Pack creation request
-   */
-  protected _onCreateCompendium(event: JQuery.ClickEvent): Promise<void>;
+    /**
+     * Get the sidebar directory entry context options
+     * @returns The sidebar entry context options
+     */
+    protected _getEntryContextOptions(): ContextMenu.Item[];
 
-  /**
-   * Handle a Compendium Pack deletion request
-   * @param pack - The pack object requested for deletion
-   */
-  protected _onDeleteCompendium(pack: Compendium): Promise<Compendium | void>;
-}
+    /**
+     * Handle a Compendium Pack creation request
+     * @param event - The originating click event
+     */
+    protected _onCreateCompendium(event: JQuery.ClickEvent): Promise<void>;
 
-declare namespace CompendiumDirectory {
-  interface Data {
-    user: User;
-    packs: Record<string, PackData>;
+    /**
+     * Handle a Compendium Pack deletion request
+     * @param pack - The pack object requested for deletion
+     */
+    protected _onDeleteCompendium(
+      pack: CompendiumCollection<CompendiumCollection.Metadata>
+    ): Promise<CompendiumCollection<CompendiumCollection.Metadata> | void>;
   }
 
-  interface Options extends SidebarTab.Options {
-    /**
-     * @defaultValue `'compendium'`
-     */
-    id: string;
+  namespace CompendiumDirectory {
+    interface Data {
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>;
+      packs: { [DocumentName in foundry.CONST.CompendiumEntityType]?: PackData<DocumentName> };
+    }
 
-    /**
-     * @defaultValue `'templates/sidebar/compendium.html'`
-     */
-    template: string;
-
-    /**
-     * @defaultValue `'Compendium Packs'`
-     */
-    title: string;
-  }
-
-  interface PackData {
-    label: string;
-    packs: Compendium[];
+    interface PackData<DocumentName extends foundry.CONST.CompendiumEntityType> {
+      label: DocumentName;
+      packs: CompendiumCollection<CompendiumCollection.Metadata & { entity: DocumentName }>[];
+    }
   }
 }

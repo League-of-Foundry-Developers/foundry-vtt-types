@@ -1,7 +1,11 @@
 /**
  * An abstract pattern followed by the different tabs of the sidebar
+ * @typeParam Options - The type of the options object
  */
-declare abstract class SidebarTab<P extends SidebarTab.Options = SidebarTab.Options> extends Application<P> {
+declare abstract class SidebarTab<
+  Options extends Application.Options = Application.Options
+> extends Application<Options> {
+  constructor(...args: ConstructorParameters<typeof Application>);
   /**
    * The base name of this sidebar tab
    */
@@ -9,44 +13,52 @@ declare abstract class SidebarTab<P extends SidebarTab.Options = SidebarTab.Opti
 
   /**
    * A reference to the pop-out variant of this SidebarTab, if one exists
+   * @defaultValue `null`
    */
-  protected _popout: SidebarTab | null;
+  protected _popout: this | null;
 
   /**
    * Denote whether or not this is the original version of the sidebar tab, or a pop-out variant
+   * @defaultValue `null`
    */
-  protected _original: SidebarTab | null;
+  protected _original: this | null;
 
   /**
    * @override
+   * @defaultValue
+   * ```typescript
+   * foundry.utils.mergeObject(super.defaultOptions, {
+   *   popOut: false,
+   *   width: 300,
+   *   height: "auto",
+   *   baseApplication: "SidebarTab"
+   * });
+   * ```
    */
-  static get defaultOptions(): SidebarTab.Options;
+  static get defaultOptions(): Application.Options;
 
-  /**
-   * @override
-   */
+  /**  @override */
   protected _renderInner(data: object): Promise<JQuery>;
 
-  /**
-   * @override
-   */
+  /** @override */
   protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+
+  /** @override */
+  render(force?: boolean, options?: Application.RenderOptions): unknown;
 
   /**
    * Activate this SidebarTab, switching focus to it
    */
   activate(): void;
 
-  /**
-   * @override
-   */
+  /** @override */
   close(options?: Application.CloseOptions): Promise<void>;
 
   /**
    * Create a second instance of this SidebarTab class which represents a singleton popped-out container
    * @returns The popped out sidebar tab instance
    */
-  createPopout(): SidebarTab;
+  createPopout(): this;
 
   /**
    * Render the SidebarTab as a pop-out container
@@ -57,23 +69,4 @@ declare abstract class SidebarTab<P extends SidebarTab.Options = SidebarTab.Opti
    * Handle lazy loading for sidebar images to only load them once they become observed
    */
   protected _onLazyLoadImage(entries: IntersectionObserverEntry[], observer: IntersectionObserver): void;
-}
-
-declare namespace SidebarTab {
-  interface Options extends Application.Options {
-    /**
-     * @defaultValue `false`
-     */
-    popOut: boolean;
-
-    /**
-     * @defaultValue `300`
-     */
-    width: number;
-
-    /**
-     * @defaultValue `'SidebarTab'`
-     */
-    baseApplication: string;
-  }
 }

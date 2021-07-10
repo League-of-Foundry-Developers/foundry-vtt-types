@@ -1,40 +1,12 @@
-// TODO: Remove when updating this class!!!
-// eslint-disable-next-line
-// @ts-nocheck
-
 /**
- * A directory list of RollTable entities in the Sidebar
+ * The sidebar directory which organizes and displays world-level RollTable documents.
+ * @typeParam Options - The type of the options object
  */
-declare class RollTableDirectory extends SidebarDirectory<RollTableDirectory.Options> {
-  static get defaultOptions(): RollTableDirectory.Options;
+declare class RollTableDirectory<
+  Options extends SidebarDirectory.Options = SidebarDirectory.Options
+> extends SidebarDirectory<'RollTable', Options> {
+  static get defaultOptions(): SidebarDirectory.Options;
 
-  /**
-   * Reference named Entity class which this directory lists
-   */
-  static get entity(): 'RollTable';
-
-  /**
-   * Reference the EntityCollection of Entity instances which this directory lists
-   * @see {@link Game.tables}
-   */
-  static get collection(): Game['tables'];
-}
-
-declare namespace RollTableDirectory {
-  interface Options extends SidebarDirectory.Options {
-    /**
-     * @defaultValue `'tables'`
-     */
-    id: string;
-
-    /**
-     * @defaultValue `'templates/sidebar/roll-table-directory.html'`
-     */
-    template: string;
-
-    /**
-     * @defaultValue `'Rollable Tables Directory'`
-     */
-    title: string;
-  }
+  /** @override */
+  static documentName: 'RollTable';
 }

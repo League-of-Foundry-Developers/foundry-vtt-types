@@ -1,12 +1,21 @@
 /**
  * A SidebarTab for providing help messages and settings configurations.
  * The Settings sidebar is the furthest-to-right using a triple-cogs icon.
+ * @typeParam Options - The type of the options object
  */
-declare class Settings extends SidebarTab<Settings.Options> {
+declare class Settings<Options extends Application.Options = Application.Options> extends SidebarTab<Options> {
   /**
    * @override
+   * @defaultValue
+   * ```typescript
+   * foundry.utils.mergeObject(super.defaultOptions, {
+   *   id: "setting",
+   *   template: "templates/sidebar/settings.html".
+   *   title: "Settings"
+   * })
+   * ```
    */
-  static get defaultOptions(): Settings.Options;
+  static get defaultOptions(): Application.Options;
 
   /**
    * @param options - (unused)
@@ -34,22 +43,5 @@ declare namespace Settings {
     canSetup: boolean;
     coreUpdate: string | false;
     modules: number;
-  }
-
-  interface Options extends SidebarTab.Options {
-    /**
-     * @defaultValue `'settings'`
-     */
-    id: string;
-
-    /**
-     * @defaultValue `'templates/sidebar/settings.html'`
-     */
-    template: string;
-
-    /**
-     * @defaultValue `'Setttings'`
-     */
-    title: string;
   }
 }
