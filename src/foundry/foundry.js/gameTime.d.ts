@@ -3,7 +3,7 @@
  * Uses a basic implementation of https://www.geeksforgeeks.org/cristians-algorithm/ for synchronization.
  */
 declare class GameTime {
-  constructor(socket: io.Socket);
+  constructor(socket: io.Socket | null | undefined);
 
   /**
    * The most recently synchronized timestamps retrieved from the server.
@@ -23,25 +23,21 @@ declare class GameTime {
    */
   protected _dts: number[];
 
-  /* -------------------------------------------- */
-  /*  Properties                                  */
-  /* -------------------------------------------- */
+  /**
+   * The amount of time to delay before re-syncing the official server time.
+   * @defaultValue `1000 * 60 * 5`
+   */
+  static SYNC_INTERVAL_MS: number;
 
   /**
    * The current server time based on the last synchronization point and the approximated one-way latency.
    */
   get serverTime(): number;
 
-  /* -------------------------------------------- */
-
   /**
    * The current World time based on the last recorded value of the core.time setting
    */
   get worldTime(): number;
-
-  /* -------------------------------------------- */
-  /*  Methods                                     */
-  /* -------------------------------------------- */
 
   /**
    * Advance the game time by a certain number of seconds
@@ -50,28 +46,16 @@ declare class GameTime {
    */
   advance(seconds: number): Promise<number>;
 
-  /* -------------------------------------------- */
-
   /**
    * Synchronize the local client game time with the official time kept by the server
    */
-  sync(socket: io.Socket): Promise<GameTime>;
-
-  /* -------------------------------------------- */
-  /*  Event Handlers and Callbacks                */
-  /* -------------------------------------------- */
+  sync(socket: io.Socket | null | undefined): Promise<this>;
 
   /**
    * Handle follow-up actions when the official World time is changed
    * @param worldTime - The new canonical World time.
    */
   onUpdateWorldTime(worldTime: number): void;
-
-  /**
-   * The amount of time to delay before re-syncing the official server time.
-   * @defaultValue `1000 * 60 * 5`
-   */
-  static SYNC_INTERVAL_MS: number;
 }
 
 declare namespace GameTime {
