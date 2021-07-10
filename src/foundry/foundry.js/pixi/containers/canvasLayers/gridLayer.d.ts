@@ -1,20 +1,20 @@
 /**
  * A CanvasLayer responsible for drawing a square grid
  */
-declare class GridLayer extends CanvasLayer {
+declare class GridLayer extends CanvasLayer<GridLayer.LayerOptions> {
   constructor();
 
   /**
    * The Grid container
-   * @defaultValue `null`
+   * @defaultValue `undefined`
    */
-  grid: BaseGrid | null;
+  grid: BaseGrid | undefined;
 
   /**
    * The Grid Highlight container
-   * @defaultValue `null`
+   * @defaultValue `undefined`
    */
-  highlight: PIXI.Container | null;
+  highlight: PIXI.Container | undefined;
 
   /**
    * Map named highlight layers
@@ -23,15 +23,21 @@ declare class GridLayer extends CanvasLayer {
   highlightLayers: Record<string, GridHighlight>;
 
   /**
+   * @remarks This is not overridden in foundry but reflects the real behavior.
+   */
+  static get instance(): Canvas['grid'];
+
+  /**
    * @override
    * @defaultValue
    * ```typescript
    * mergeObject(super.layerOptions, {
+   *   name: "grid",
    *   zIndex: 30
    * }
    * ```
    */
-  static get layerOptions(): CanvasLayer.LayerOptions;
+  static get layerOptions(): GridLayer.LayerOptions;
 
   /**
    * The grid type rendered in this Scene
@@ -62,25 +68,16 @@ declare class GridLayer extends CanvasLayer {
    * Draw the grid
    * @param preview - Override settings used in place of those saved to the Scene data
    */
-  draw({
-    type,
-    dimensions,
-    gridColor,
-    gridAlpha
-  }?: {
-    type?: foundry.CONST.GridType | null;
-    dimensions?: Canvas['dimensions'] | null;
-    gridColor?: number | string | null;
-    gridAlpha?: number | null;
-  }): Promise<this>;
+  draw(preview?: DrawOptions): Promise<this>;
 
   /**
    * Given a pair of coordinates (x1,y1), return the grid coordinates (x2,y2) which represent the snapped position
    * @param x        - The exact target location x
    * @param y        - The exact target location y
    * @param interval - An interval of grid spaces at which to snap, default is 1. If the interval is zero, no snapping occurs.
+   *                   (defaultValue: `1`)
    */
-  getSnappedPosition(x: number, y: number, interval: number): { x: number; y: number };
+  getSnappedPosition(x: number, y: number, interval?: number): { x: number; y: number };
 
   /**
    * Given a pair of coordinates (x, y) - return the top-left of the grid square which contains that point
@@ -102,7 +99,7 @@ declare class GridLayer extends CanvasLayer {
    *
    * @example
    * ```typescript
-   * let distance = canvas.grid.measureDistance((x: 1000, y: 1000), (x: 2000, y: 2000));
+   * let distance = canvas.grid.measureDistance({x: 1000, y: 1000}, {x: 2000, y: 2000});
    * ```
    */
   measureDistance(
@@ -165,4 +162,33 @@ declare class GridLayer extends CanvasLayer {
    * @param c1 - The candidate column position
    */
   isNeighbor(r0: number, c0: number, r1: number, c1: number): boolean;
+}
+
+declare namespace GridLayer {
+  interface LayerOptions extends CanvasLayer.LayerOptions {
+    name: 'grid';
+    zIndex: 30;
+  }
+}
+
+interface DrawOptions {
+  /**
+   * @defaultValue `null`
+   */
+  type?: foundry.CONST.GridType | null;
+
+  /**
+   * @defaultValue `null`
+   */
+  dimensions?: Canvas['dimensions'] | null;
+
+  /**
+   * @defaultValue `null`
+   */
+  gridColor?: number | string | null;
+
+  /**
+   * @defaultValue `null`
+   */
+  gridAlpha?: number | null;
 }

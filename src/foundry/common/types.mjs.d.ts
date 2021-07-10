@@ -16,7 +16,7 @@ declare type RayIntersection = {
   y: number;
   t0: number;
   t1: number;
-} | null;
+};
 
 /**
  * A standard rectangle interface.

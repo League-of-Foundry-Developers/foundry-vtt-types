@@ -1,40 +1,63 @@
 /**
  * A CanvasLayer for displaying visual effects like weather, transitions, flashes, or more
  */
-declare class EffectsLayer extends CanvasLayer {
-  constructor();
-
+declare class EffectsLayer extends CanvasLayer<EffectsLayer.LayerOptions> {
   /**
    * The weather overlay container
-   * @defaultValue `null`
+   * @defaultValue `undefined`
    */
-  weather: PIXI.Container | null;
+  weather: PIXI.Container | undefined;
 
   /**
    * The currently active weather effect
-   * @defaultValue `null`
+   * @defaultValue `undefined`
    */
-  weatherEffect: SpecialEffect | null;
+  weatherEffect: SpecialEffect | undefined;
 
   /**
    * Track any active emitters within this Scene
    * @defaultValue `[]`
    */
-  emitters: unknown[]; // I don't believe that this is ever populated right now - Bolts
+  emitters: PIXI.particles.Emitter[];
 
   /**
-   * @override
-   * @defaultValue `mergeObject(super.layerOptions, { zIndex: 300 })`
+   * An occlusion filter that prevents weather from being displayed in certain regions
+   * @defaultValue `undefined`
    */
-  static get layerOptions(): CanvasLayer.LayerOptions;
+  weatherOcclusionFilter: AbstractBaseMaskFilter | undefined;
+
+  /**
+   * @remarks This is not overridden in foundry but reflects the real behavior.
+   */
+  static get instance(): Canvas['effects'];
+
+  /**
+   * @defaultValue
+   * ```typescript
+   * foundry.utils.mergeObject(super.layerOptions, {
+   *  name: "effects",
+   *  zIndex: 700
+   * })
+   * ```
+   */
+  static get layerOptions(): EffectsLayer.LayerOptions;
 
   /** @override */
-  tearDown(): void;
+  tearDown(): Promise<this>;
+
+  /** @override */
+  draw(): Promise<undefined>;
 
   /**
-   * @override
+   * Draw the weather container.
+   * @returns The weather container, or null if no effect is present
    */
-  draw(): Promise<void>;
+  drawWeather(): Exclude<this['weather'], undefined> | null;
+}
 
-  drawWeather(): void;
+declare namespace EffectsLayer {
+  interface LayerOptions extends CanvasLayer.LayerOptions {
+    name: 'effects';
+    zIndex: 700;
+  }
 }

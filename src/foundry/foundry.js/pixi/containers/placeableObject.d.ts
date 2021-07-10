@@ -420,7 +420,7 @@ declare global {
     /**
      * @deprecated since 0.8.2
      */
-    static get layer(): PlaceablesLayer;
+    static get layer(): PlaceablesLayer<any>;
   }
 
   namespace PlaceableObject {

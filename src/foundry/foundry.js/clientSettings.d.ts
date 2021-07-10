@@ -221,6 +221,7 @@ declare namespace ClientSettings {
     'core.rollMode': foundry.CONST.DiceRollMode;
     'core.animateRollTable': boolean;
     'core.permissions': Game.Permissions;
+    'core.defaultDrawingConfig': foundry.data.DrawingData['_source'] | {};
     [key: string]: unknown;
   }
 }
