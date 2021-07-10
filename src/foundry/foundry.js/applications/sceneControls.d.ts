@@ -21,6 +21,7 @@ declare interface SceneControl {
 
 /**
  * Scene controls navigation menu
+ * @typeParam Options - the type of the options object
  */
 declare class SceneControls<Options extends Application.Options = Application.Options> extends Application<Options> {
   constructor(options?: Partial<Options>);
