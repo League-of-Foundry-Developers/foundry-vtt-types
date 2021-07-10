@@ -63,6 +63,7 @@ import './foundry.js/clientDocuments/canvasDocuments/tokenDocument';
 import './foundry.js/clientDocuments/chatMessage';
 import './foundry.js/clientDocuments/combat';
 import './foundry.js/clientDocuments/combatant';
+import './foundry.js/clientDocuments/fogExploration';
 import './foundry.js/clientDocuments/folder';
 import './foundry.js/clientDocuments/item';
 import './foundry.js/clientDocuments/journalEntry';
@@ -103,6 +104,7 @@ import './foundry.js/entities/user';
 import './foundry.js/pixi/blendModes';
 
 import './foundry.js/pixi/containers/baseGrid';
+import './foundry.js/pixi/containers/cachedContainer';
 import './foundry.js/pixi/containers/canvasLayer';
 import './foundry.js/pixi/containers/controlIcon';
 import './foundry.js/pixi/containers/cursor';
@@ -113,21 +115,7 @@ import './foundry.js/pixi/containers/ruler';
 import './foundry.js/pixi/containers/baseGrids/hexagonalGrid';
 import './foundry.js/pixi/containers/baseGrids/squareGrid';
 
-import './foundry.js/pixi/containers/canvasLayers/backgroundLayer';
-import './foundry.js/pixi/containers/canvasLayers/controlsLayer';
-import './foundry.js/pixi/containers/canvasLayers/effectsLayer';
-import './foundry.js/pixi/containers/canvasLayers/gridLayer';
-import './foundry.js/pixi/containers/canvasLayers/placeablesLayer';
-import './foundry.js/pixi/containers/canvasLayers/sightLayer';
-
-import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/drawingsLayer';
-import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/lightingLayer';
-import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/notesLayer';
-import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/soundsLayer';
-import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/templateLayer';
-import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/tilesLayer';
-import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/tokenLayer';
-import './foundry.js/pixi/containers/canvasLayers/placeablesLayers/wallsLayer';
+import './foundry.js/pixi/containers/canvasLayers';
 
 import './foundry.js/pixi/containers/placeableObjects/ambientLight';
 import './foundry.js/pixi/containers/placeableObjects/ambientSound';
@@ -137,6 +125,8 @@ import './foundry.js/pixi/containers/placeableObjects/note';
 import './foundry.js/pixi/containers/placeableObjects/tile';
 import './foundry.js/pixi/containers/placeableObjects/token';
 import './foundry.js/pixi/containers/placeableObjects/wall';
+
+import './foundry.js/pixi/filters/abstractBaseMaskFilter';
 
 import './foundry.js/pixi/graphics/gridHighlight';
 import './foundry.js/pixi/graphics/resizeHandle';

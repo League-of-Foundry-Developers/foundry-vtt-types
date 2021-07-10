@@ -63,6 +63,16 @@ export type DocumentType = keyof {
   [Key in keyof CONFIG as 'documentClass' extends keyof CONFIG[Key] ? Key : never]: unknown;
 };
 
+export type PlaceableDocumentType =
+  | 'AmbientLight'
+  | 'AmbientSound'
+  | 'Drawing'
+  | 'MeasuredTemplate'
+  | 'Note'
+  | 'Tile'
+  | 'Token'
+  | 'Wall';
+
 export type ConfiguredDocumentClassForName<Name extends DocumentType> = 'documentClass' extends keyof CONFIG[Name]
   ? CONFIG[Name]['documentClass']
   : never;
@@ -102,3 +112,9 @@ export type LayerClass<T extends DocumentConstructor> = T['metadata']['name'] ex
     ? CONFIG[T['metadata']['name']]['layerClass']
     : never
   : T;
+
+export type DataSourceForPlaceable<P extends PlaceableObject> = P extends PlaceableObject<infer Doc>
+  ? Doc extends Document<infer D, any>
+    ? D['_source']
+    : never
+  : never;

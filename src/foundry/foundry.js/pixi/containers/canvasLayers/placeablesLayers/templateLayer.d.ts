@@ -2,23 +2,29 @@
  * This Canvas Layer provides a container for MeasuredTemplate objects.
  * @see {@link MeasuredTemplate}
  */
-declare class TemplateLayer extends PlaceablesLayer<MeasuredTemplate> {
+declare class TemplateLayer extends PlaceablesLayer<'MeasuredTemplate', TemplateLayer.LayerOptions> {
+  /**
+   * @remarks This is not overridden in foundry but reflects the real behavior.
+   */
+  static get instance(): Canvas['templates'];
+
   /**
    * @override
    * @defaultValue
    * ```
    * mergeObject(super.layerOptions, {
+   *   name: "templates",
    *   canDragCreate: true,
-   *   canDelete: true,
    *   rotatableObjects: true,
-   *   objectClass: MeasuredTemplate,
-   *   sheetClass: MeasuredTemplateConfig,
    *   sortActiveTop: true,
    *   zIndex: 50
    * })
    * ```
    */
-  static get layerOptions(): PlaceablesLayer.LayerOptions;
+  static get layerOptions(): TemplateLayer.LayerOptions;
+
+  /** @override */
+  static documentName: 'MeasuredTemplate';
 
   /** @override */
   activate(): this;
@@ -32,14 +38,23 @@ declare class TemplateLayer extends PlaceablesLayer<MeasuredTemplate> {
   static registerSettings(): void;
 
   /** @override */
-  protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
+  protected _onDragLeftStart(event: PIXI.InteractionEvent): Promise<MeasuredTemplate>;
 
   /** @override */
   protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
   /**
    * @override
-   * @remarks Returns `Promise<MeasuredTemplate> | undefined`
    */
-  protected _onMouseWheel(event: WheelEvent): any;
+  protected _onMouseWheel(event: WheelEvent): void | ReturnType<MeasuredTemplate['rotate']>;
+}
+
+declare namespace TemplateLayer {
+  interface LayerOptions extends PlaceablesLayer.LayerOptions<'MeasuredTemplate'> {
+    name: 'templates';
+    canDragCreate: true;
+    rotatableObjects: true;
+    sortActiveTop: true;
+    zIndex: 50;
+  }
 }

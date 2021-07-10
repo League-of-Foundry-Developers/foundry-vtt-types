@@ -28,31 +28,31 @@ declare class Canvas {
 
   hud: HeadsUpDisplay;
 
-  background: any; // TODO: BackgroundLayer
+  background: BackgroundLayer | undefined;
 
-  tiles: any; //TODO: TilesLayer
+  foreground: ForegroundLayer | undefined;
 
-  drawings: any; //TODO: DrawingsLayer
+  drawings: DrawingsLayer | undefined;
 
-  grid: GridLayer;
+  grid: GridLayer | undefined;
 
-  walls: any; //TODO: WallsLayer
+  walls: WallsLayer | undefined;
 
-  templates: any; //TODO: TemplateLayer
+  templates: TemplateLayer | undefined;
 
-  notes: any; //TODO: NotesLayer
+  notes: NotesLayer | undefined;
 
-  tokens: TokenLayer;
+  tokens: TokenLayer | undefined;
 
-  lighting: LightingLayer;
+  lighting: LightingLayer | undefined;
 
-  sounds: any; //TODO: SoundsLayer
+  sounds: SoundsLayer | undefined;
 
-  sight: SightLayer;
+  sight: SightLayer | undefined;
 
-  effects: any; //TODO: EffectsLayer
+  effects: EffectsLayer | undefined;
 
-  controls: any; //TODO: ControlsLayer
+  controls: ControlsLayer | undefined;
 
   /**
    * @defaultValue `null`
@@ -410,7 +410,7 @@ declare namespace Canvas {
     Drawing: Canvas['drawings'];
     Note: Canvas['notes'];
     MeasuredTemplate: Canvas['templates'];
-    Tile: Canvas['tiles'];
+    Tile: Canvas['background'];
     Token: Canvas['tokens'];
     Wall: Canvas['walls'];
   }
