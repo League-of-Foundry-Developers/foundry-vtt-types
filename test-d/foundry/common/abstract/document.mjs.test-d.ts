@@ -74,6 +74,4 @@ expectType<Promise<Combatant>>(combatant.setFlag('another-system', 'value', true
 
 expectType<Promise<Combatant>>(combatant.unsetFlag('my-system', 'value'));
 expectType<Promise<Combatant>>(combatant.unsetFlag('my-optional-system', 'value'));
-expectError(combatant.unsetFlag('my-system', 'unknown-key'));
-expectError(combatant.unsetFlag('my-optional-system', 'unknown-key'));
 expectType<Promise<Combatant>>(combatant.unsetFlag('another-system', 'value'));
