@@ -332,6 +332,10 @@ declare namespace FilePicker {
     wildcard: string;
   }
 
+  /**
+   * A callback function to trigger once a file has been selected
+   * @param path - The path that was chosen
+   */
   type Callback = (path: string) => void;
 
   interface Data {
@@ -374,17 +378,38 @@ declare namespace FilePicker {
     target: string;
   }
 
+  /**
+   * Options for configuring FilePicker
+   */
   interface Options extends Application.Options {
+    /**
+     * The current file path being modified, if any
+     */
     current?: FilePicker['request'];
 
+    /**
+     * A current file source in "data", "public", or "s3"
+     */
     activeSource?: FilePicker['activeSource'];
 
+    /**
+     * A type of file to target, in "audio", "image", "video", "imagevideo" or "folder"
+     */
     type?: FilePicker['type'];
 
+    /**
+     * An HTML form field that the result of this selection is applied to
+     */
     field?: FilePicker['field'];
 
+    /**
+     * An HTML button element which triggers the display of this picker
+     */
     button?: FilePicker['button'];
 
+    /**
+     * A callback function to trigger once a file has been selected
+     */
     callback?: Callback;
 
     /**
