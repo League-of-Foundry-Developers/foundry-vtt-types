@@ -110,3 +110,13 @@ type Merge<T, U> = T extends object
       }
     : U
   : U;
+
+type StoredDocument<D extends foundry.abstract.Document<any, any>> = D & {
+  id: string;
+  data: D['data'] & {
+    _id: string;
+    _source: D['data']['_source'] & { _id: string };
+  };
+};
+
+type TemporaryDocument<D> = D extends StoredDocument<infer U> ? U : D;

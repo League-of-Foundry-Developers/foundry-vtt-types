@@ -63,7 +63,7 @@ declare global {
     clone(
       data?: Parameters<foundry.documents.BaseToken['clone']>[0],
       options?: Parameters<foundry.documents.BaseToken['clone']>[1]
-    ): this;
+    ): TemporaryDocument<this>;
 
     /**
      * Create a synthetic Actor using a provided Token instance
