@@ -23,16 +23,13 @@ declare global {
      * The translation dictionary for the target language
      * @defaultValue `{}`
      */
-    translations: Record<string, string | Record<string, string | Record<string, string | Record<string, unknown>>>>;
+    translations: Translations;
 
     /**
      * Fallback translations if the target keys are not found
      * @defaultValue `{}`
      */
-    protected _fallback: Record<
-      string,
-      string | Record<string, string | Record<string, string | Record<string, unknown>>>
-    >;
+    protected _fallback: Translations;
 
     /* -------------------------------------------- */
 
@@ -64,9 +61,7 @@ declare global {
      * @param lang - The language for which to load translations
      * @returns The retrieved translations object
      */
-    protected _getTranslations(
-      lang: string
-    ): Promise<Record<string, string | Record<string, string | Record<string, string | Record<string, unknown>>>>>;
+    protected _getTranslations(lang: string): Promise<Translations>;
 
     /**
      * Reduce the languages array provided by a package to an array of file paths of translations to load
@@ -81,9 +76,7 @@ declare global {
      * @param src - The translation file path to load
      * @returns The loaded translation dictionary
      */
-    protected _loadTranslationFile(
-      src: string
-    ): Promise<Record<string, string | Record<string, string | Record<string, string | Record<string, unknown>>>>>;
+    protected _loadTranslationFile(src: string): Promise<Translations>;
 
     /**
      * Return whether a certain string has a known translation defined.
@@ -141,3 +134,7 @@ declare global {
     format(stringId: string, data?: Record<string, any>): string;
   }
 }
+
+type Translations = {
+  [K: string]: string | Translations;
+};

@@ -1,12 +1,14 @@
 import { expectType } from 'tsd';
 
+type Translations = {
+  [K: string]: string | Translations;
+};
+
 new Localization();
 const localization = new Localization('en.core');
 expectType<string>(localization.lang);
 expectType<string>(localization.defaultModule);
-expectType<Record<string, string | Record<string, string | Record<string, string | Record<string, unknown>>>>>(
-  localization.translations
-);
+expectType<Translations>(localization.translations);
 expectType<Promise<void>>(localization.initialize());
 expectType<Promise<void>>(localization.setLanguage('de'));
 expectType<boolean>(localization.has('WORLD.DetailTab'));
