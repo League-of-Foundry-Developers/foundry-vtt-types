@@ -415,17 +415,17 @@ declare namespace FilePicker {
     /**
      * @defaultValue `'templates/apps/filepicker.html'`
      */
-    template: string;
+    template: Application.Options['template'];
 
     /**
      * @defaultValue `['filepicker']`
      */
-    classes: string[];
+    classes: Application.Options['classes'];
 
     /**
      * @defaultValue `520`
      */
-    width: number;
+    width: Application.Options['width'];
 
     tabs: Array<
       Tabs.Options & {
