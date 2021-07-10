@@ -17,9 +17,8 @@ declare class EffectsLayer extends CanvasLayer<EffectsLayer.LayerOptions> {
   /**
    * Track any active emitters within this Scene
    * @defaultValue `[]`
-   * @remarks I don't believe that this is ever populated right now - Bolts
    */
-  emitters: unknown[];
+  emitters: PIXI.particles.Emitter[];
 
   /**
    * An occlusion filter that prevents weather from being displayed in certain regions

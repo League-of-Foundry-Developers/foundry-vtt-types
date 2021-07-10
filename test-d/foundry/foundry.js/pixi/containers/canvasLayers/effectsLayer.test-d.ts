@@ -8,7 +8,7 @@ const layer = new EffectsLayer();
 expectType<'effects'>(layer.options.name);
 expectType<PIXI.Container | undefined>(layer.weather);
 expectType<SpecialEffect | undefined>(layer.weatherEffect);
-expectType<unknown[]>(layer.emitters);
+expectType<PIXI.particles.Emitter[]>(layer.emitters);
 expectType<AbstractBaseMaskFilter | undefined>(layer.weatherOcclusionFilter);
 expectType<Promise<EffectsLayer>>(layer.tearDown());
 expectType<Promise<undefined>>(layer.draw());
