@@ -1,28 +1,31 @@
-declare interface SceneControl {
-  activeTool: string;
-  icon: string;
-  layer: string;
+declare interface SceneControlTool {
   name: string;
   title: string;
-  tools: SceneControlTool[];
-  visible: boolean;
-}
-
-declare interface SceneControlTool {
+  icon: string;
+  visible?: boolean;
+  toggle?: boolean;
   active?: boolean;
   button?: boolean;
-  icon: string;
-  name: string;
   onClick?: () => void;
+}
+
+declare interface SceneControl {
+  name: string;
   title: string;
-  toggle?: boolean;
-  visible?: boolean;
+  layer: string;
+  icon: string;
+  visible: boolean;
+  tools: SceneControlTool[];
+  activeTool: string;
 }
 
 /**
  * Scene controls navigation menu
+ * @typeParam Options - the type of the options object
  */
-declare class SceneControls extends Application {
+declare class SceneControls<Options extends Application.Options = Application.Options> extends Application<Options> {
+  constructor(options?: Partial<Options>);
+
   /**
    * The name of the active Scene Control toolset
    * @defaultValue `"token"`
@@ -38,7 +41,7 @@ declare class SceneControls extends Application {
    * @override
    * @defaultValue
    * ```
-   * mergeObject(super.defaultOptions, {
+   * foundry.utils.mergeObject(super.defaultOptions, {
    *   width: 100,
    *   id: "controls",
    *   template: "templates/hud/controls.html",
@@ -46,7 +49,7 @@ declare class SceneControls extends Application {
    * })
    * ```
    */
-  static get defaultOptions(): typeof Application['defaultOptions'];
+  static get defaultOptions(): SceneControls.Options;
 
   /**
    * Return the active control set
@@ -70,11 +73,10 @@ declare class SceneControls extends Application {
 
   /**
    * Initialize the Scene Controls by obtaining the set of control buttons and rendering the HTML
-   * @param control - An optional control set to set as active
-   * @param layer   - An optional layer name to target as the active control
-   * @param tool    - A specific named tool to set as active for the palette
+   * @param options - Options which modify how the controls UI is initialized
+   *                  (defaultValue: `{}`)
    */
-  initialize({ control, layer, tool }?: { control?: string; layer?: string; tool?: string }): void;
+  initialize(options?: InitializeOptions): void;
 
   /** @override */
   getData(options?: Application.RenderOptions): {
@@ -103,4 +105,45 @@ declare class SceneControls extends Application {
    * These controls may be extended using the "getSceneControlButtons" Hook.
    */
   protected _getControlButtons(): SceneControl[];
+}
+
+declare namespace SceneControls {
+  export interface Options extends Application.Options {
+    /**
+     * @defaultValue `100`
+     */
+    width: number;
+
+    /**
+     * @defaultValue `"controls"`
+     */
+    id: string;
+
+    /**
+     * @defaultValue `"templates/hud/controls.html"`
+     */
+    template: string;
+
+    /**
+     * @defaultValue `false`
+     */
+    popOut: boolean;
+  }
+}
+
+interface InitializeOptions {
+  /**
+   * An optional control set to set as active
+   */
+  control?: string;
+
+  /**
+   * An optional layer name to target as the active control
+   */
+  layer?: string;
+
+  /**
+   * A specific named tool to set as active for the palette
+   */
+  tool?: string;
 }
