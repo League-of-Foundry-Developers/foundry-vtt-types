@@ -1,4 +1,4 @@
-import { PropertiesToSource } from '../../../../types/helperTypes';
+import { ConfiguredFlags, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
@@ -49,7 +49,7 @@ interface CombatantDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: Record<string, unknown>;
+  flags: ConfiguredFlags<'Combatant'>;
 }
 
 export interface CombatantDataConstructorData {
@@ -86,7 +86,7 @@ export interface CombatantDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: Record<string, unknown> | null;
+  flags?: ConfiguredFlags<'Combatant'> | null;
 }
 
 /**

@@ -1,5 +1,6 @@
 import {
   ConfiguredDocumentClass,
+  ConfiguredFlags,
   ConstructorDataType,
   FieldReturnType,
   PropertiesToSource
@@ -59,7 +60,7 @@ interface CombatDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: Record<string, unknown>;
+  flags: ConfiguredFlags<'Combat'>;
 }
 
 interface CombatDataConstructorData {
@@ -100,7 +101,7 @@ interface CombatDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: Record<string, unknown> | null;
+  flags?: ConfiguredFlags<'Combat'> | null;
 }
 
 /**

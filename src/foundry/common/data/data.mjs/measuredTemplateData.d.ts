@@ -1,4 +1,9 @@
-import { ConfiguredDocumentClass, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import {
+  ConfiguredDocumentClass,
+  ConfiguredFlags,
+  FieldReturnType,
+  PropertiesToSource
+} from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
@@ -96,7 +101,7 @@ interface MeasuredTemplateProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: Record<string, unknown>;
+  flags: ConfiguredFlags<'MeasuredTemplate'>;
 }
 
 interface MeasuredTemplateDataConstructorData {
@@ -170,7 +175,7 @@ interface MeasuredTemplateDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: Record<string, unknown> | null;
+  flags?: ConfiguredFlags<'MeasuredTemplate'> | null;
 }
 
 /**

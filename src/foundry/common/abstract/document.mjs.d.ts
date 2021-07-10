@@ -456,6 +456,18 @@ declare abstract class Document<
    * @param key   - The flag key
    * @returns The flag value
    */
+  getFlag<S extends keyof this['data']['_source']['flags'], K extends keyof this['data']['_source']['flags'][S]>(
+    scope: S,
+    key: K
+  ): this['data']['_source']['flags'][S][K];
+  getFlag<
+    S extends keyof this['data']['_source']['flags'],
+    K extends keyof Required<this['data']['_source']['flags']>[S]
+  >(scope: S, key: K): Required<this['data']['_source']['flags']>[S][K] | undefined;
+  getFlag<S extends keyof this['data']['_source']['flags']>(
+    scope: S,
+    key: string
+  ): unknown extends this['data']['_source']['flags'][S] ? unknown : never;
   getFlag(scope: string, key: string): unknown;
 
   /**
@@ -476,7 +488,16 @@ declare abstract class Document<
    * @param value - The flag value
    * @returns A Promise resolving to the updated document
    */
-  setFlag(scope: string, key: string, value: unknown): Promise<this>;
+  setFlag<
+    S extends keyof this['data']['_source']['flags'],
+    K extends keyof Required<this['data']['_source']['flags']>[S],
+    V extends Required<this['data']['_source']['flags']>[S][K]
+  >(scope: S, key: K, value: V): Promise<this>;
+  setFlag<S extends keyof this['data']['_source']['flags'], K extends string>(
+    scope: S,
+    key: K,
+    v: unknown extends this['data']['_source']['flags'][S] ? unknown : never
+  ): Promise<this>;
 
   /**
    * Remove a flag assigned to the document

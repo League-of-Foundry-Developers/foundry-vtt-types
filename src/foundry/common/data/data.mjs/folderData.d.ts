@@ -1,7 +1,7 @@
 import DocumentData from '../../abstract/data.mjs';
 import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
-import { PropertiesToSource } from '../../../../types/helperTypes';
+import { ConfiguredFlags, PropertiesToSource } from '../../../../types/helperTypes';
 
 interface FolderDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
@@ -74,7 +74,7 @@ interface FolderDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: Record<string, unknown>;
+  flags: ConfiguredFlags<'Folder'>;
 }
 
 interface FolderDataConstructorData {
@@ -125,7 +125,7 @@ interface FolderDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: Record<string, unknown> | null;
+  flags?: ConfiguredFlags<'Folder'> | null;
 }
 
 /**

@@ -1,5 +1,5 @@
 import DocumentData from '../../abstract/data.mjs';
-import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { CONST, documents } from '../../module.mjs';
 import * as fields from '../fields.mjs';
 import { AnimationData, AnimationDataConstructorData } from './animationData';
@@ -312,7 +312,7 @@ export interface TokenDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: Record<string, unknown>;
+  flags: ConfiguredFlags<'Token'>;
 }
 
 export interface TokenDataConstructorData {
@@ -532,7 +532,7 @@ export interface TokenDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: Record<string, unknown> | null;
+  flags?: ConfiguredFlags<'Token'> | null;
 }
 
 /**

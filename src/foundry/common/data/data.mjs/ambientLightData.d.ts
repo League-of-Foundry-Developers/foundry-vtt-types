@@ -1,4 +1,4 @@
-import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as CONST from '../../constants.mjs';
 import { BaseAmbientLight } from '../../documents.mjs';
@@ -124,7 +124,7 @@ interface AmbientLightDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: Record<string, unknown>;
+  flags: ConfiguredFlags<'AmbientLight'>;
 }
 
 interface AmbientLightDataConstructorData {
@@ -213,7 +213,7 @@ interface AmbientLightDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: Record<string, unknown> | null;
+  flags?: ConfiguredFlags<'AmbientLight'> | null;
 }
 
 /**

@@ -15,9 +15,17 @@ interface CharacterDataSourceData {
   health: number;
 }
 
+interface CharacterFlags {
+  'my-module': {
+    known: boolean;
+    xp: number;
+  };
+}
+
 interface CharacterDataSource {
   type: 'character';
   data: CharacterDataSourceData;
+  flags: CharacterFlags;
 }
 
 interface CharacterDataPropertiesData extends CharacterDataSourceData {
@@ -27,6 +35,7 @@ interface CharacterDataPropertiesData extends CharacterDataSourceData {
 interface CharacterDataProperties {
   type: 'character';
   data: CharacterDataPropertiesData;
+  flags: CharacterFlags;
 }
 
 interface NPCDataSourceData {
@@ -34,9 +43,17 @@ interface NPCDataSourceData {
   faction: string;
 }
 
+interface NPCFlags {
+  'my-module': {
+    'hidden-name': string;
+    known: boolean;
+  };
+}
+
 interface NPCDataSource {
   type: 'npc';
   data: NPCDataSourceData;
+  flags: NPCFlags;
 }
 
 interface NPCDataPropertiesData extends NPCDataSourceData {
@@ -46,6 +63,7 @@ interface NPCDataPropertiesData extends NPCDataSourceData {
 interface NPCDataProperties {
   type: 'npc';
   data: NPCDataPropertiesData;
+  flags: NPCFlags;
 }
 
 type MyActorDataSource = CharacterDataSource | NPCDataSource;
@@ -80,4 +98,26 @@ if (baseActor.data.type === 'character') {
   expectType<string>(baseActor.data.data.faction);
   expectType<number>(baseActor.data.data.challenge);
   expectType<number>(baseActor.data.data.damage);
+}
+
+// Flags for actors and items can be configured via the SourceConfig. This is tested here.
+// For configuring flags for actors and items via FlagConfig please have a look into baseItem.test-d.ts.
+// shared flags are available
+expectType<boolean>(baseActor.getFlag('my-module', 'known'));
+// non shared flags are not available
+expectType<never>(baseActor.getFlag('my-module', 'xp'));
+expectType<never>(baseActor.getFlag('my-module', 'hidden-name'));
+// non shared flags are also not available if the type is known
+if (baseActor.data._source.type === 'character') {
+  expectType<never>(baseActor.getFlag('my-module', 'xp'));
+}
+if (baseActor.data.type === 'character') {
+  expectType<never>(baseActor.getFlag('my-module', 'xp'));
+}
+// flags are available if we cast the actor
+declare function isChar(
+  actor: foundry.documents.BaseActor
+): actor is foundry.documents.BaseActor & { data: CharacterDataProperties & { _source: CharacterDataSource } };
+if (isChar(baseActor)) {
+  expectType<number>(baseActor.getFlag('my-module', 'xp'));
 }

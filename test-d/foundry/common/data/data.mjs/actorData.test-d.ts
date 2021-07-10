@@ -5,9 +5,17 @@ interface CharacterDataSourceData {
   health: number;
 }
 
+interface CharacterFlags {
+  'my-module': {
+    known: boolean;
+    xp: number;
+  };
+}
+
 interface CharacterDataSource {
   type: 'character';
   data: CharacterDataSourceData;
+  flags: CharacterFlags;
 }
 
 interface CharacterDataPropertiesData extends CharacterDataSourceData {
@@ -17,6 +25,7 @@ interface CharacterDataPropertiesData extends CharacterDataSourceData {
 interface CharacterDataProperties {
   type: 'character';
   data: CharacterDataPropertiesData;
+  flags: CharacterFlags;
 }
 
 interface NPCDataSourceData {
@@ -24,9 +33,17 @@ interface NPCDataSourceData {
   faction: string;
 }
 
+interface NPCFlags {
+  'my-module': {
+    'hidden-name': string;
+    known: boolean;
+  };
+}
+
 interface NPCDataSource {
   type: 'npc';
   data: NPCDataSourceData;
+  flags: NPCFlags;
 }
 
 interface NPCDataPropertiesData extends NPCDataSourceData {
@@ -36,6 +53,7 @@ interface NPCDataPropertiesData extends NPCDataSourceData {
 interface NPCDataProperties {
   type: 'npc';
   data: NPCDataPropertiesData;
+  flags: NPCFlags;
 }
 
 type MyActorDataSource = CharacterDataSource | NPCDataSource;
@@ -63,17 +81,21 @@ expectType<'character' | 'npc'>(actorData.type);
 if (actorData._source.type === 'character') {
   expectType<number>(actorData._source.data.health);
   expectError(actorData._source.data.movement);
+  expectType<number>(actorData._source.flags['my-module'].xp);
 } else {
   expectType<string>(actorData._source.data.faction);
   expectType<number>(actorData._source.data.challenge);
   expectError(actorData._source.data.damage);
+  expectType<string>(actorData._source.flags['my-module']['hidden-name']);
 }
 
 if (actorData.type === 'character') {
   expectType<number>(actorData.data.health);
   expectType<number>(actorData.data.movement);
+  expectType<number>(actorData.flags['my-module'].xp);
 } else {
   expectType<string>(actorData.data.faction);
   expectType<number>(actorData.data.challenge);
   expectType<number>(actorData.data.damage);
+  expectType<string>(actorData.flags['my-module']['hidden-name']);
 }

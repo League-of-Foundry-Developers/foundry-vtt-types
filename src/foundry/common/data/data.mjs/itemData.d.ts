@@ -2,6 +2,7 @@ import EmbeddedCollection from '../../abstract/embedded-collection.mjs';
 import {
   ConfiguredData,
   ConfiguredDocumentClass,
+  ConfiguredFlags,
   ConfiguredSource,
   FieldReturnType,
   PropertiesToSource
@@ -82,7 +83,7 @@ interface ItemDataBaseProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: Record<string, unknown>;
+  flags: ConfiguredFlags<'Item'>;
 }
 
 interface ItemDataConstructorData {
@@ -139,7 +140,7 @@ interface ItemDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: Record<string, unknown> | null;
+  flags?: ConfiguredFlags<'Item'> | null;
 }
 
 type ItemDataBaseSource = PropertiesToSource<ItemDataBaseProperties>;

@@ -1,4 +1,4 @@
-import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import { CONST, documents } from '../../module.mjs';
 import * as fields from '../fields.mjs';
@@ -104,7 +104,7 @@ interface ChatMessageDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: Record<string, unknown>;
+  flags: ConfiguredFlags<'ChatMessage'>;
 }
 
 export interface ChatMessageDataConstructorData {
@@ -180,7 +180,7 @@ export interface ChatMessageDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: Record<string, unknown> | null;
+  flags?: ConfiguredFlags<'ChatMessage'> | null;
 }
 
 /**

@@ -122,6 +122,9 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface SourceConfig {}
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface FlagConfig {}
+
   /**
    * Runtime configuration settings for Foundry VTT which exposes a large number of variables which determine how
    * aspects of the software behaves.

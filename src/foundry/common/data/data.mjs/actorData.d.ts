@@ -2,6 +2,7 @@ import EmbeddedCollection from '../../abstract/embedded-collection.mjs';
 import {
   ConfiguredData,
   ConfiguredDocumentClass,
+  ConfiguredFlags,
   ConfiguredSource,
   FieldReturnType,
   PropertiesToSource
@@ -101,7 +102,7 @@ interface ActorDataBaseProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: Record<string, unknown>;
+  flags: ConfiguredFlags<'Actor'>;
 }
 
 interface ActorDataConstructorData {
@@ -169,7 +170,7 @@ interface ActorDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: Record<string, unknown> | null;
+  flags?: ConfiguredFlags<'Actor'> | null;
 }
 
 type ActorDataBaseSource = PropertiesToSource<ActorDataBaseProperties>;

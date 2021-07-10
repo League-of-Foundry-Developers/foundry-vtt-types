@@ -89,6 +89,10 @@ export type ConfiguredData<Name extends string> = Name extends keyof DataConfig 
 
 export type ConfiguredSource<Name extends string> = Name extends keyof SourceConfig ? SourceConfig[Name] : {};
 
+export type ConfiguredFlags<T extends string> = T extends keyof FlagConfig
+  ? FlagConfig[T] & Record<string, unknown>
+  : Record<string, unknown>;
+
 export type ToObjectFalseType<T> = T extends {
   toObject: (source: false) => infer U;
 }
