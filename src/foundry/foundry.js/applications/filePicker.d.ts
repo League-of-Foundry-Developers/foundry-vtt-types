@@ -427,47 +427,25 @@ declare namespace FilePicker {
      */
     width: Application.Options['width'];
 
-    tabs: Array<
-      Tabs.Options & {
-        /**
-         * @defaultValue `'.tabs'`
-         */
-        navSelector: string;
-      }
-    >;
+    /**
+     * @defaultValue `[{navSelector: ".tabs"}]`
+     */
+    tabs: Application.Options['tabs'];
 
-    dragDrop: Array<
-      DragDrop.Options & {
-        /**
-         * @defaultValue `'.file'`
-         */
-        dragSelector: string;
-
-        /**
-         * @defaultValue `'.filepicker-body'`
-         */
-        dropSelector: string;
-      }
-    >;
+    /**
+     * @defaultValue `[{dragSelector: '.file', dropSelector: '.filepicker-body'}]`
+     */
+    dragDrop: Application.Options['dragDrop'];
 
     /**
      * @defaultValue `false`
      */
     tileSize: boolean;
 
-    filters: Array<
-      SearchFilter.Options & {
-        /**
-         * @defaultValue `'input[name="filter"]'`
-         */
-        inputSelector: string;
-
-        /**
-         * @defaultValue `'.filepicker-body'`
-         */
-        contentSelector: string;
-      }
-    >;
+    /**
+     * @defaultValue `[{ inputSelector: 'input[name="filter"]', contentSelector: ".filepicker-body" }]`
+     */
+    filters: Application.Options['filters'];
   }
 
   interface Result {
