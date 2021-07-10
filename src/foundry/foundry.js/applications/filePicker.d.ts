@@ -51,6 +51,11 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    */
   extensions: string[];
 
+  /**
+   * A callback function to trigger once a file has been selected
+   */
+  callback: FilePicker.Callback | undefined;
+
   protected _loaded: boolean;
 
   /**
@@ -327,6 +332,8 @@ declare namespace FilePicker {
     wildcard: string;
   }
 
+  type Callback = (path: string) => void;
+
   interface Data {
     bucket: string | null;
     canGoBack: boolean;
@@ -378,7 +385,7 @@ declare namespace FilePicker {
 
     button?: FilePicker['button'];
 
-    callback?: (path: string) => void;
+    callback?: Callback;
 
     /**
      * @defaultValue `'templates/apps/filepicker.html'`
