@@ -12,7 +12,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   /**
    * The full requested path given by the user
    */
-  request: string | null;
+  request: string | undefined;
 
   /**
    * The file sources which are available for browsing
@@ -39,17 +39,17 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   /**
    * The general file type which controls the set of extensions which will be accepted
    */
-  type: string;
+  type: string | undefined;
 
   /**
    * The target HTML element this file picker is bound to
    */
-  field: HTMLElement | null;
+  field: HTMLElement | undefined;
 
   /**
    * A button which controls the display of the picker UI
    */
-  button: HTMLElement | null;
+  button: HTMLElement | undefined;
 
   /**
    * The display mode of the FilePicker UI
@@ -59,7 +59,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   /**
    * The current set of file extensions which are being filtered upon
    */
-  extensions: string[];
+  extensions: string[] | undefined;
 
   protected _loaded: boolean;
 
