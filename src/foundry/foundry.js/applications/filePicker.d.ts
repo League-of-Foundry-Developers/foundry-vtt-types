@@ -335,7 +335,7 @@ declare namespace FilePicker {
     /**
      * The requested dir represents a wildcard path
      */
-    wildcard: string;
+    wildcard: boolean;
   }
 
   /**
