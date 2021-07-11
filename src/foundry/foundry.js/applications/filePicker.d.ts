@@ -159,15 +159,15 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   /**
    * Browse to a specific location for this FilePicker instance
    * @param target - The target within the currently active source location.
-   * @param options - Browsing options
+   * @param options - Browsing options (default: `{}`)
    */
   browse(target?: string, options?: Partial<FilePicker.BrowsingOptions>): Promise<FilePicker.Result | undefined>;
 
   /**
    * Browse files for a certain directory location
    * @param source  - The source location in which to browse. See FilePicker#sources for details
-   * @param target  - The target within the source location
-   * @param options - Optional arguments
+   * @param target  - The target within the source location (default: `""`)
+   * @param options - Optional arguments (default: `{}`)
    *
    * @returns A Promise which resolves to the directories and files contained in the location
    */
@@ -181,7 +181,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * Configure metadata settings regarding a certain file system path
    * @param source  - The source location in which to browse. See FilePicker#sources for details
    * @param target  - The target within the source location
-   * @param options - Optional arguments which modify the request
+   * @param options - Optional arguments which modify the request (default: `{}`)
    */
   static configurePath(
     source: FilePicker.DataSource,
@@ -224,7 +224,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   /**
    * Additional actions performed when the file-picker UI is rendered
    */
-  render(force?: boolean, options?: Application.RenderOptions): this | void | Promise<FilePicker.Result>;
+  render(force?: boolean, options?: Application.RenderOptions): void | ReturnType<this['browse']>;
 
   /**
    * Activate listeners to handle user interactivity for the FilePicker UI
