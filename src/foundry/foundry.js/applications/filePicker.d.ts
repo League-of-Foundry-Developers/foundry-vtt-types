@@ -53,7 +53,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
 
   /**
    * The display mode of the FilePicker UI
-   * @defaultValue - `FilePicker.LAST_DISPLAY_MODE`
+   * @defaultValue `FilePicker.LAST_DISPLAY_MODE`
    */
   displayMode: FilePicker.DisplayMode;
 
