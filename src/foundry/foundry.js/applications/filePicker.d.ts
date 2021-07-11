@@ -161,9 +161,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * @param target - The target within the currently active source location.
    * @param options - Browsing options
    */
-  browse(target?: string, options?: Partial<FilePicker.BrowsingOptions>): Promise<FilePicker.Result>;
-
-  // Promise<FilePicker.Result | undefined>
+  browse(target?: string, options?: Partial<FilePicker.BrowsingOptions>): Promise<FilePicker.Result | undefined>;
 
   /**
    * Browse files for a certain directory location
