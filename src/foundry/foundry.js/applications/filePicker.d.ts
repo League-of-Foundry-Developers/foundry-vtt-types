@@ -5,6 +5,11 @@
  */
 declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> extends Application<P> {
   /**
+   * @param options - Options that configure the behavior of the FilePicker
+   */
+  constructor(options: P);
+
+  /**
    * The full requested path given by the user
    */
   request: string | null;
