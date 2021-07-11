@@ -23,7 +23,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * Track the active source tab which is being browsed
    * @defaultValue `'data'`
    */
-  activeSource: string;
+  activeSource: FilePicker.DataSource;
 
   /**
    * A callback function to trigger once a file has been selected
@@ -363,6 +363,8 @@ declare namespace FilePicker {
     user: Game['user'];
   }
 
+  type DataSource = 'data' | 'public' | 's3';
+
   interface Dir {
     name: string;
     path: string;
@@ -395,7 +397,7 @@ declare namespace FilePicker {
     /**
      * A current file source in "data", "public", or "s3"
      */
-    activeSource?: FilePicker['activeSource'];
+    activeSource?: DataSource;
 
     /**
      * A type of file to target, in "audio", "image", "video", "imagevideo" or "folder"
