@@ -65,6 +65,35 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   protected _loaded: boolean;
 
   /**
+   * Record the last-browsed directory path so that re-opening a different FilePicker instance uses the same target
+   * @defaultValue `''`
+   */
+  static LAST_BROWSED_DIRECTORY: string;
+
+  /**
+   * Record the last-configured tile size which can automatically be applied to new FilePicker instances
+   * @defaultValue `null`
+   */
+  static LAST_TILE_SIZE: number | null;
+
+  /**
+   * Record the last-configured display mode so that re-opening a different FilePicker instance uses the same mode.
+   * @defaultValue `'list'`
+   */
+  static LAST_DISPLAY_MODE: FilePicker.DisplayMode;
+
+  /**
+   * Enumerate the allowed FilePicker display modes
+   */
+  static DISPLAY_MODES: ['list', 'thumbs', 'tiles', 'images'];
+
+  /**
+   * Cache the names of S3 buckets which can be used
+   * @defaultValue `null`
+   */
+  static S3_BUCKETS: string[] | null;
+
+  /**
    * @override
    */
   static get defaultOptions(): FilePicker.Options;
@@ -74,7 +103,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * @param target - The currently requested target path
    * @returns An array of the inferred source and target directory path
    */
-  protected _inferCurrentDirectory(target: string): [string, string];
+  protected _inferCurrentDirectory(target: string | undefined): [string, string];
 
   /**
    * Get the valid file extensions for a given named file picker type
@@ -289,35 +318,6 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * @param button  - The button element
    */
   static fromButton(button: HTMLButtonElement): FilePicker;
-
-  /**
-   * Record the last-browsed directory path so that re-opening a different FilePicker instance uses the same target
-   * @defaultValue `''`
-   */
-  static LAST_BROWSED_DIRECTORY: string;
-
-  /**
-   * Record the last-configured tile size which can automatically be applied to new FilePicker instances
-   * @defaultValue `null`
-   */
-  static LAST_TILE_SIZE: number | null;
-
-  /**
-   * Record the last-configured display mode so that re-opening a different FilePicker instance uses the same mode.
-   * @defaultValue `'list'`
-   */
-  static LAST_DISPLAY_MODE: FilePicker.DisplayMode;
-
-  /**
-   * Enumerate the allowed FilePicker display modes
-   */
-  static DISPLAY_MODES: ['list', 'thumbs', 'tiles', 'images'];
-
-  /**
-   * Cache the names of S3 buckets which can be used
-   * @defaultValue `null`
-   */
-  static S3_BUCKETS: string[] | null;
 }
 
 declare namespace FilePicker {
@@ -351,17 +351,19 @@ declare namespace FilePicker {
     canSelect: boolean;
     cssClass: string;
     dirs: Dir[];
-    displayMode: string;
-    extensions: string[];
+    displayMode: FilePicker.DisplayMode;
+    extensions: string[] | undefined;
     files: File[];
     isS3: boolean;
     noResults: boolean;
     request: string;
+    selected: string | undefined;
     source: Source;
     sources: Sources;
     target: string;
     tileSize: number | null;
     user: Game['user'];
+    submitText: 'FILES.SelectFolder' | 'FILES.SelectFile';
   }
 
   type DataSource = 'data' | 'public' | 's3';
