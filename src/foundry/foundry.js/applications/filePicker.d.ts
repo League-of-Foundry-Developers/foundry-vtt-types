@@ -7,7 +7,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   /**
    * @param options - Options that configure the behavior of the FilePicker
    */
-  constructor(options: Partial<P>);
+  constructor(options?: Partial<P>);
 
   /**
    * The full requested path given by the user
@@ -39,7 +39,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   /**
    * The general file type which controls the set of extensions which will be accepted
    */
-  type: string | undefined;
+  type: FilePicker.Type | undefined;
 
   /**
    * The target HTML element this file picker is bound to
@@ -107,8 +107,10 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
 
   /**
    * Get the valid file extensions for a given named file picker type
+   * @param type - The general type of file
+   * @returns A list of file extensions
    */
-  protected _getExtensions(type: string): string[] | undefined;
+  protected _getExtensions(type: FilePicker.Type): string[] | undefined;
 
   /**
    * Test a URL to see if it matches a well known s3 key pattern
@@ -161,6 +163,8 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    */
   browse(target?: string, options?: Partial<FilePicker.BrowsingOptions>): Promise<FilePicker.Result>;
 
+  // Promise<FilePicker.Result | undefined>
+
   /**
    * Browse files for a certain directory location
    * @param source  - The source location in which to browse. See FilePicker#sources for details
@@ -170,8 +174,8 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * @returns A Promise which resolves to the directories and files contained in the location
    */
   static browse(
-    source: string,
-    target: string,
+    source: FilePicker.DataSource,
+    target?: string,
     options?: Partial<FilePicker.BrowsingOptions>
   ): Promise<FilePicker.Result & { dirs?: string[] }>;
 
@@ -181,7 +185,11 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * @param target  - The target within the source location
    * @param options - Optional arguments which modify the request
    */
-  static configurePath(source: string, target: string, options?: Record<string, unknown>): Promise<unknown>;
+  static configurePath(
+    source: FilePicker.DataSource,
+    target: string,
+    options?: Record<string, unknown>
+  ): Promise<unknown>;
 
   /**
    * Create a subdirectory within a given source. The requested subdirectory path must not already exist.
@@ -189,7 +197,11 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * @param target  - The target within the source location
    * @param options - Optional arguments which modify the request
    */
-  static createDirectory(source: string, target: string, options?: Record<string, unknown>): Promise<unknown>;
+  static createDirectory(
+    source: FilePicker.DataSource,
+    target: string,
+    options?: Record<string, unknown>
+  ): Promise<unknown>;
 
   /**
    * General dispatcher method to submit file management commands to the server
@@ -205,7 +217,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * @returns The response object
    */
   static upload(
-    source: string,
+    source: FilePicker.DataSource,
     path: string,
     file: File,
     options?: Record<string, any>
@@ -325,7 +337,7 @@ declare namespace FilePicker {
     /**
      * A bucket within which to search if using the S3 source
      */
-    bucket: string;
+    bucket?: string;
 
     /**
      * An Array of file extensions to filter on
@@ -477,4 +489,6 @@ declare namespace FilePicker {
       bucket: string;
     };
   }
+
+  type Type = 'audio' | 'image' | 'video' | 'imagevideo' | 'folder';
 }
