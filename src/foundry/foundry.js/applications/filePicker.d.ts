@@ -26,6 +26,11 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   activeSource: string;
 
   /**
+   * A callback function to trigger once a file has been selected
+   */
+  callback: FilePicker.Callback | undefined;
+
+  /**
    * The latest set of results browsed from the server
    * @remarks This is never set.
    */
@@ -55,11 +60,6 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * The current set of file extensions which are being filtered upon
    */
   extensions: string[];
-
-  /**
-   * A callback function to trigger once a file has been selected
-   */
-  callback: FilePicker.Callback | undefined;
 
   protected _loaded: boolean;
 
