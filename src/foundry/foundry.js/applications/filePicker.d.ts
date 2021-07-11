@@ -7,7 +7,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   /**
    * @param options - Options that configure the behavior of the FilePicker
    */
-  constructor(options: P);
+  constructor(options: Partial<P>);
 
   /**
    * The full requested path given by the user
