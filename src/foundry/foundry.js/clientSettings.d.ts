@@ -183,11 +183,14 @@ declare namespace ClientSettings {
     hint?: string;
     name?: string;
     onChange?: (value: T) => void;
-    range?: {
-      max: number;
-      min: number;
-      step: number;
-    };
+    range?: T extends number
+      ? {
+          max: number;
+          min: number;
+          step: number;
+        }
+      : undefined;
+    filePicker?: T extends string ? true | 'audio' | 'image' | 'video' | 'imagevideo' | 'folder' : undefined;
     scope: string;
     type?: T extends boolean
       ? typeof Boolean

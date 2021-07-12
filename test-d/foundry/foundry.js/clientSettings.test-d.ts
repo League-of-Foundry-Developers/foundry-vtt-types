@@ -8,6 +8,8 @@ declare global {
   namespace ClientSettings {
     interface Values {
       'foo.bar': boolean;
+      'some.numberSetting': number;
+      'some.stringSetting': string;
     }
   }
 }
@@ -30,6 +32,44 @@ clientSettings.set('foo', 'bar', false);
 expectType<boolean>(clientSettings.get('foo', 'bar'));
 
 expectType<unknown>(clientSettings.get('foo', 'baz'));
+
+// can only use range for number settings
+expectError(
+  clientSettings.register('some', 'stringSetting', {
+    scope: 'world',
+    type: String,
+    range: {
+      min: 0,
+      max: 42,
+      step: 1
+    }
+  })
+);
+
+clientSettings.register('some', 'numberSetting', {
+  scope: 'world',
+  type: Number,
+  range: {
+    min: 0,
+    max: 42,
+    step: 1
+  }
+});
+
+// can only use filePicker for string settings
+expectError(
+  clientSettings.register('some', 'numberSetting', {
+    scope: 'world',
+    type: Number,
+    filePicker: 'audio'
+  })
+);
+
+clientSettings.register('some', 'stringSetting', {
+  scope: 'world',
+  type: String,
+  filePicker: 'audio'
+});
 
 // core settings
 
