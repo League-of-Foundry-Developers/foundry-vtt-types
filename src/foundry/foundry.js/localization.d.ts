@@ -5,6 +5,9 @@ declare global {
    * A helper class which assists with localization and string translation
    */
   class Localization {
+    /**
+     * @param serverLanguage - The default language configuration setting for the server
+     */
     constructor(serverLanguage?: string);
 
     /**
@@ -31,8 +34,6 @@ declare global {
      */
     protected _fallback: Translations;
 
-    /* -------------------------------------------- */
-
     /**
      * Initialize the Localization module
      * Discover available language translations and apply the current language setting
@@ -40,16 +41,12 @@ declare global {
      */
     initialize(): Promise<void>;
 
-    /* -------------------------------------------- */
-
     /**
      * Set a language as the active translation source for the session
      * @param lang - A language string in CONFIG.supportedLanguages
      * @returns A Promise which resolves once the translations for the requested language are ready
      */
     setLanguage(lang: string): Promise<void>;
-
-    /* -------------------------------------------- */
 
     /**
      * Discover the available supported languages from the set of packages which are provided
@@ -131,7 +128,7 @@ declare global {
      * {{localize "MYMODULE.GREETING" name="Andrew"}} <!-- Hello, this is my module! -->
      * ```
      */
-    format(stringId: string, data?: Record<string, any>): string;
+    format(stringId: string, data?: Record<string, unknown>): string;
   }
 }
 
