@@ -222,6 +222,7 @@ declare namespace ClientSettings {
     'core.animateRollTable': boolean;
     'core.permissions': Game.Permissions;
     'core.defaultDrawingConfig': foundry.data.DrawingData['_source'] | {};
+    'core.time': number;
     [key: string]: unknown;
   }
 }
