@@ -56,14 +56,14 @@ declare class ImagePopout extends FormApplication<ImagePopout.Options, ImagePopo
    * Determine the correct position and dimensions for the displayed image
    * @returns The positioning object which should be used for rendering
    */
-  protected static getPosition(img: string): Application.Position;
+  protected static getPosition(
+    img: string
+  ): Promise<{ width: number; height: number } | { width: number; height: number; top: number; left: number }>;
 
   /**
    * Determine the Image dimensions given a certain path
    */
-  static getImageSize(
-    path: string
-  ): Promise<{ width: number; height: number } | { width: number; height: number; top: number; left: number }>;
+  static getImageSize(path: string): Promise<[width: number, height: number]>;
 
   /**
    * Share the displayed image with other connected Users
