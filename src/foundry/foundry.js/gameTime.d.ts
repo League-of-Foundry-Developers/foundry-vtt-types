@@ -49,7 +49,7 @@ declare class GameTime {
   /**
    * Synchronize the local client game time with the official time kept by the server
    */
-  sync(socket: io.Socket | null | undefined): Promise<this>;
+  sync(socket?: io.Socket | null): Promise<this>;
 
   /**
    * Handle follow-up actions when the official World time is changed
