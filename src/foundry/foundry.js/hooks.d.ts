@@ -6,6 +6,7 @@ import {
 } from '../../types/helperTypes.js';
 import { DocumentModificationOptions } from '../common/abstract/document.mjs.js';
 import { EffectChangeData } from '../common/data/data.mjs/effectChangeData.js';
+import { DropData } from './clientDocumentMixin';
 
 declare global {
   /**
@@ -333,7 +334,11 @@ declare global {
        * @remarks An explicit return value of `false` prevents the Document being created.
        * @see {@link Hotbar#_onDrop}
        */
-      hotbarDrop: (hotbar: Hotbar, data: Hotbar.DropData, slot: number) => boolean | void;
+      hotbarDrop: (
+        hotbar: Hotbar,
+        data: DropData<InstanceType<ConfiguredDocumentClass<typeof Macro>>>,
+        slot: number
+      ) => boolean | void;
 
       /**
        * @remarks This is called before the {@link Game} is initialized for the current window location.
