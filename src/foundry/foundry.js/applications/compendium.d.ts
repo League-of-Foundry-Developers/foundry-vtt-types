@@ -30,7 +30,7 @@ declare class Compendium<
   static get defaultOptions(): Application.Options;
 
   /** @override */
-  getTitle(): string;
+  get title(): string;
 
   /**
    * A convenience redirection back to the metadata object of the associated CompendiumCollection
@@ -68,7 +68,7 @@ declare class Compendium<
   protected _onDragStart(event: DragEvent): void;
 
   /** @override */
-  protected _onDrop(event: DragEvent): ReturnType<this['collection']['importDocument']>;
+  protected _onDrop(event: DragEvent): ReturnType<this['collection']['importDocument']> | false;
 
   /**
    * Render the ContextMenu which applies to each compendium Document

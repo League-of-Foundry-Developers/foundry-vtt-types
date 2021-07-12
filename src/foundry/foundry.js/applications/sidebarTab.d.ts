@@ -8,6 +8,7 @@ declare abstract class SidebarTab<
   constructor(...args: ConstructorParameters<typeof Application>);
   /**
    * The base name of this sidebar tab
+   * @defaultValue `''`
    */
   tabName: string;
 
@@ -67,6 +68,8 @@ declare abstract class SidebarTab<
 
   /**
    * Handle lazy loading for sidebar images to only load them once they become observed
+   * @param entries  - The entries which are now observed
+   * @param observer - The intersection observer instance
    */
   protected _onLazyLoadImage(entries: IntersectionObserverEntry[], observer: IntersectionObserver): void;
 }

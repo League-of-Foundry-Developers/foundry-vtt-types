@@ -4,6 +4,7 @@ import { DropData } from '../../clientDocumentMixin';
 declare global {
   /**
    * A shared pattern for the sidebar directory which Actors, Items, and Scenes all use
+   * @typeParam Name    - The the type of document being handled by this {@link SidebarDirectory}.
    * @typeParam Options - The type of the options object
    */
   abstract class SidebarDirectory<
@@ -56,11 +57,6 @@ declare global {
       ConfiguredDocumentClassForName<foundry.CONST.EntityType | 'FogExploration'>,
       string
     >;
-
-    /**
-     * Initialize the content of the directory by categorizing folders and entities into a hierarchical tree structure.
-     */
-    initialize(): void;
 
     /**
      * Initialize the content of the directory by categorizing folders and entities into a hierarchical tree structure.
@@ -172,8 +168,11 @@ declare global {
 
     /**
      * @override
+     * @remarks
+     * The return type could be specified in more detail but it is not supposed to be used and this allows more
+     * flexibility for deriving classes.
      */
-    protected _onDrop(event: DragEvent): void;
+    protected _onDrop(event: DragEvent): unknown;
 
     /**
      * Handle Document data being dropped into the directory.
@@ -229,6 +228,7 @@ declare global {
 
     interface Options extends Application.Options {
       renderUpdateKeys: string[];
+      contextMenuSelector: string;
     }
 
     interface RenderContext extends Application.RenderOptions {

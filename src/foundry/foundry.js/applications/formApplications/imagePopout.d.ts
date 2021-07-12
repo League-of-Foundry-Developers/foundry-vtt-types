@@ -61,7 +61,9 @@ declare class ImagePopout extends FormApplication<ImagePopout.Options, ImagePopo
   /**
    * Determine the Image dimensions given a certain path
    */
-  static getImageSize(path: string): Promise<[width: number, height: number]>;
+  static getImageSize(
+    path: string
+  ): Promise<{ width: number; height: number } | { width: number; height: number; top: number; left: number }>;
 
   /**
    * Share the displayed image with other connected Users
@@ -75,7 +77,7 @@ declare class ImagePopout extends FormApplication<ImagePopout.Options, ImagePopo
     image,
     title,
     uuid
-  }: {
+  }?: {
     image: string;
     title: string;
     uuid: string;
