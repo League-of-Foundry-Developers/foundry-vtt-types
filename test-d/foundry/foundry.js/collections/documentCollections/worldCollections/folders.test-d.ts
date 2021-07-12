@@ -5,4 +5,4 @@ import { PropertiesToSource } from '../../../../../../src/types/helperTypes';
 const folders = new Folders();
 expectType<Folder>(folders.get('', { strict: true }));
 expectType<PropertiesToSource<FolderDataProperties>[]>(folders.toJSON());
-expectType<null | SidebarDirectory | undefined>(folders.directory);
+expectType<null | SidebarDirectory<'Folder'> | undefined>(folders.directory);

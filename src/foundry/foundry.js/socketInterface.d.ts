@@ -21,7 +21,7 @@ declare namespace SocketInterface {
     interface ModifyEmbeddedDocument {
       action: Action;
       data: any; // TODO: add generics to this
-      options: Entity.CreateOptions;
+      options: any;
       parentId: string;
       parentType: string;
       type: string;

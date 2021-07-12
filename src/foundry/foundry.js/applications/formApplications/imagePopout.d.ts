@@ -20,7 +20,12 @@
  * ```
  */
 declare class ImagePopout extends FormApplication<ImagePopout.Options, ImagePopout.Data, string> {
-  protected _related: Entity | object | null;
+  constructor(src: string, options?: ImagePopout.Options);
+
+  /**
+   * @defaultValue `null`
+   */
+  protected _related: foundry.abstract.Document<any, any> | null;
 
   /** @override */
   static get defaultOptions(): ImagePopout.Options;
@@ -39,7 +44,7 @@ declare class ImagePopout extends FormApplication<ImagePopout.Options, ImagePopo
   /**
    * Provide a reference to the Entity referenced by this popout, if one exists
    */
-  getRelatedObject(): Promise<Entity | object | null>;
+  getRelatedObject(): Promise<foundry.abstract.Document<any, any> | null>;
 
   /** @override */
   protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
@@ -49,8 +54,11 @@ declare class ImagePopout extends FormApplication<ImagePopout.Options, ImagePopo
 
   /**
    * Determine the correct position and dimensions for the displayed image
+   * @returns The positioning object which should be used for rendering
    */
-  protected static getPosition(img: string): Application.Position;
+  protected static getPosition(
+    img: string
+  ): Promise<{ width: number; height: number } | { width: number; height: number; top: number; left: number }>;
 
   /**
    * Determine the Image dimensions given a certain path
@@ -69,7 +77,7 @@ declare class ImagePopout extends FormApplication<ImagePopout.Options, ImagePopo
     image,
     title,
     uuid
-  }: {
+  }?: {
     image: string;
     title: string;
     uuid: string;
@@ -88,30 +96,37 @@ declare namespace ImagePopout {
      * @defaultValue `'templates/apps/image-popout.html'`
      */
     template: string;
+
     /**
      * @defaultValue `['image-popout', 'dark']`
      */
     classes: string[];
+
     /**
      * @defaultValue `false`
      */
     editable: boolean;
+
     /**
      * @defaultValue `true`
      */
     resizable: boolean;
+
     /**
      * @defaultValue `false`
      */
     shareable: boolean;
+
     /**
      * @defaultValue `null`
      */
     uuid: string | null;
   }
 
-  interface Data<T extends string = string> extends FormApplication.Data<T> {
+  interface Data {
     image: string;
+    options: Options;
+    title: string;
     showTitle: boolean;
   }
 }
