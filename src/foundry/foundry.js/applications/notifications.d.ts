@@ -10,16 +10,36 @@
  * ui.notifications.error("This is an error message");
  * ui.notifications.info("This is a 4th message which will not be shown until the first info message is done");
  * ```
+ *
+ * @typeParam Options - the type of the options object
  */
-declare class Notifications extends Application {
-  /** Notifications which are currently displayed */
-  active: JQuery[];
+declare class Notifications<Options extends Application.Options = Application.Options> extends Application<Options> {
+  constructor(options?: Partial<Options>);
 
-  /** Submitted notifications which are queued for display */
+  /**
+   * Submitted notifications which are queued for display
+   * @defaultValue `[]`
+   */
   queue: Notifications.Notification[];
 
-  /** @override */
-  static get defaultOptions(): typeof Application['defaultOptions'];
+  /**
+   * Notifications which are currently displayed
+   * @defaultValue `[]`
+   */
+  active: JQuery[];
+
+  /**
+   * @override
+   * @defaultValue
+   * ```typescript
+   * mergeObject(super.defaultOptions, {
+   *   popOut: false,
+   *   id: "notifications",
+   *   template: "templates/hud/notifications.html"
+   * });
+   * ```
+   */
+  static get defaultOptions(): Application.Options;
 
   /**
    * Initialize the Notifications system by displaying any system-generated messages which were passed from the server.
@@ -37,31 +57,31 @@ declare class Notifications extends Application {
    * @param message   - The content of the notification message
    * @param type      - The type of notification, currently "info", "warning", and "error" are supported
    *                    (default: `'info'`)
-   * @param permanent - Whether the notification should be permanently displayed unless otherwise dismissed
-   *                    (default: `false`)
+   * @param options   - Additional options which affect the notification
+   *                    (default: `{}`)
    */
-  notify(message: string, type?: 'info' | 'warning' | 'error', { permanent }?: { permanent?: boolean }): void;
+  notify(message: string, type?: 'info' | 'warning' | 'error', options?: Notifications.Options): void;
 
   /**
    * Display a notification with the "info" type
    * @param message - The content of the notification message
    * @param options - Notification options passed to the notify function
    */
-  info(message: string, options?: { permanent?: boolean }): void;
+  info(message: string, options?: Notifications.Options): void;
 
   /**
    * Display a notification with the "warning" type
    * @param message - The content of the notification message
    * @param options - Notification options passed to the notify function
    */
-  warn(message: string, options?: { permanent?: boolean }): void;
+  warn(message: string, options?: Notifications.Options): void;
 
   /**
    * Display a notification with the "error" type
    * @param message - The content of the notification message
    * @param options - Notification options passed to the notify function
    */
-  error(message: string, options?: { permanent?: boolean }): void;
+  error(message: string, options?: Notifications.Options): void;
 
   /**
    * Retrieve a pending notification from the queue and display it
@@ -70,6 +90,20 @@ declare class Notifications extends Application {
 }
 
 declare namespace Notifications {
+  interface Options {
+    /**
+     * Whether the notification should be permanently displayed unless otherwise dismissed
+     * @defaultValue `false`
+     */
+    permanent?: boolean;
+
+    /**
+     * Whether to localize the message content before displaying it
+     * @defaultValue `false`
+     */
+    localize?: boolean;
+  }
+
   interface Notification {
     message: string;
     type: 'info' | 'warning' | 'error';
