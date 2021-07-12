@@ -14,7 +14,6 @@ declare function getTexture(src: string): PIXI.Texture | null;
  * Load a single texture and return a Promise which resolves once the texture is ready to use
  * @param src      - The requested texture source
  * @param fallback - A fallback texture to use if the requested source is unavailable or invalid
- *                   (default: `undefined`)
  */
 declare function loadTexture(
   src: string,
@@ -23,7 +22,6 @@ declare function loadTexture(
   }?: {
     /**
      * A fallback texture to use if the requested source is unavailable or invalid
-     * @defaultValue `undefined`
      */
     fallback?: string;
   }
