@@ -3,7 +3,7 @@
  * Uses a basic implementation of https://www.geeksforgeeks.org/cristians-algorithm/ for synchronization.
  */
 declare class GameTime {
-  constructor(socket: io.Socket | null | undefined);
+  constructor(socket?: io.Socket | null);
 
   /**
    * The most recently synchronized timestamps retrieved from the server.
