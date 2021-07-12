@@ -55,7 +55,7 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): typeof Application['defaultOptions'];
+    static get defaultOptions(): Application.Options;
 
     /** @override */
     getData(options?: Application.RenderOptions): Hotbar.Data | Promise<Hotbar.Data>;
@@ -64,7 +64,7 @@ declare global {
      * Get the Array of Macro (or null) values that should be displayed on a numbered page of the bar
      * @param page -
      */
-    protected _getMacrosByPage(page: number): Macro[];
+    protected _getMacrosByPage(page: number): InstanceType<ConfiguredDocumentClass<typeof Macro>>[];
 
     /**
      * Collapse the Hotbar, minimizing its display.
@@ -150,14 +150,6 @@ declare global {
       page: number;
       macros: Macro[];
       barClass: 'collapsed' | '';
-    }
-
-    interface DropData {
-      type?: string;
-      data?: DeepPartial<foundry.data.MacroData>; // TODO: Might be incorrect, revisit this!!
-      id?: string;
-      pack?: string;
-      slot?: number;
     }
   }
 }
