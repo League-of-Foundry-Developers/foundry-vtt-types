@@ -193,12 +193,12 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * Create a subdirectory within a given source. The requested subdirectory path must not already exist.
    * @param source  - The source location in which to browse. See FilePicker#sources for details
    * @param target  - The target within the source location
-   * @param options - Optional arguments which modify the request
+   * @param options - Optional arguments which modify the request (default: `{}`)
    */
   static createDirectory(
     source: FilePicker.DataSource,
     target: string,
-    options?: Record<string, unknown>
+    options?: FilePicker.BrowsingOptions
   ): Promise<unknown>;
 
   /**
