@@ -161,7 +161,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * @param target - The target within the currently active source location.
    * @param options - Browsing options (default: `{}`)
    */
-  browse(target?: string, options?: Partial<FilePicker.BrowsingOptions>): Promise<FilePicker.Result | undefined>;
+  browse(target?: string, options?: FilePicker.BrowsingOptions): Promise<FilePicker.Result | undefined>;
 
   /**
    * Browse files for a certain directory location
@@ -174,7 +174,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   static browse(
     source: FilePicker.DataSource,
     target?: string,
-    options?: Partial<FilePicker.BrowsingOptions>
+    options?: FilePicker.BrowsingOptions
   ): Promise<FilePicker.Result & { dirs?: string[] }>;
 
   /**
@@ -334,18 +334,21 @@ declare namespace FilePicker {
   interface BrowsingOptions {
     /**
      * A bucket within which to search if using the S3 source
+     * @defaultValue `""`
      */
     bucket?: string;
 
     /**
      * An Array of file extensions to filter on
+     * @defaultValue (do not filter on extension)
      */
-    extensions: string[];
+    extensions?: string[];
 
     /**
      * The requested dir represents a wildcard path
+     * @defaultValue false
      */
-    wildcard: boolean;
+    wildcard?: boolean;
   }
 
   /**
