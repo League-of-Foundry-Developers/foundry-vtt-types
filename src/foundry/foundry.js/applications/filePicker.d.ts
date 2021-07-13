@@ -186,7 +186,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   static configurePath(
     source: FilePicker.DataSource,
     target: string,
-    options?: FilePicker.BrowsingOptions
+    options?: FilePicker.ConfigurePathOptions
   ): Promise<unknown>;
 
   /**
@@ -333,7 +333,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
 declare namespace FilePicker {
   interface CreateDirectoryOptions {
     /**
-     * A bucket within which to search if using the S3 source
+     * A bucket to use, if using the S3 source
      * @defaultValue `""`
      */
     bucket?: string;
@@ -341,7 +341,7 @@ declare namespace FilePicker {
 
   interface BrowsingOptions {
     /**
-     * A bucket within which to search if using the S3 source
+     * A bucket within which to search, if using the S3 source
      * @defaultValue `""`
      */
     bucket?: string;
@@ -357,6 +357,26 @@ declare namespace FilePicker {
      * @defaultValue false
      */
     wildcard?: boolean;
+  }
+
+  interface ConfigurePathOptions {
+    /**
+     * A bucket to use, if using the S3 source
+     * @defaultValue `""`
+     */
+    bucket?: string;
+
+    /**
+     * Set the privacy mode on this path
+     * @defaultValue true
+     */
+    private?: boolean;
+
+    /**
+     * Set the grid size
+     * @defaultValue `undefined`
+     */
+    gridSize?: number;
   }
 
   /**
