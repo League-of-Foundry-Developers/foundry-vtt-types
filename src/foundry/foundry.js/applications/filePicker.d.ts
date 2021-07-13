@@ -161,7 +161,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * @param target - The target within the currently active source location.
    * @param options - Browsing options (default: `{}`)
    */
-  browse(target?: string, options?: FilePicker.BrowsingOptions): Promise<FilePicker.Result | undefined>;
+  browse(target?: string, options?: FilePicker.BrowsingOptions): Promise<FilePicker.BrowseResult>;
 
   /**
    * Browse files for a certain directory location
@@ -175,7 +175,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
     source: FilePicker.DataSource,
     target?: string,
     options?: FilePicker.BrowsingOptions
-  ): Promise<FilePicker.Result & { dirs?: string[] }>;
+  ): Promise<FilePicker.BrowseResult>;
 
   /**
    * Configure metadata settings regarding a certain file system path
@@ -187,7 +187,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
     source: FilePicker.DataSource,
     target: string,
     options?: FilePicker.ConfigurePathOptions
-  ): Promise<unknown>;
+  ): Promise<FilePicker.ConfigurePathResult>;
 
   /**
    * Create a subdirectory within a given source. The requested subdirectory path must not already exist.
@@ -199,12 +199,15 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
     source: FilePicker.DataSource,
     target: string,
     options?: FilePicker.CreateDirectoryOptions
-  ): Promise<unknown>;
+  ): Promise<string>;
 
   /**
    * General dispatcher method to submit file management commands to the server
    */
-  protected static _manageFiles(data: FilePicker.ManageData, options?: Record<string, unknown>): Promise<unknown>;
+  protected static _manageFiles(
+    data: FilePicker.ManageData,
+    options?: Record<string, unknown>
+  ): Promise<Record<string, unknown>>;
 
   /**
    * Dispatch a POST request to the server containing a directory path and a file to upload
@@ -502,6 +505,21 @@ declare namespace FilePicker {
   interface Result {
     bucket?: string;
     target: string;
+  }
+
+  interface BrowseResult {
+    target: string;
+    private: boolean;
+    dirs: string[];
+    privateDirs: string[];
+    files: string[];
+    gridSize?: number;
+    extensions: [];
+  }
+
+  interface ConfigurePathResult {
+    private: boolean;
+    gridSize?: number;
   }
 
   interface Source {
