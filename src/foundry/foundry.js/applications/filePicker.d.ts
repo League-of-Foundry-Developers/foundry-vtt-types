@@ -198,7 +198,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   static createDirectory(
     source: FilePicker.DataSource,
     target: string,
-    options?: FilePicker.BrowsingOptions
+    options?: FilePicker.CreateDirectoryOptions
   ): Promise<unknown>;
 
   /**
@@ -331,6 +331,14 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
 }
 
 declare namespace FilePicker {
+  interface CreateDirectoryOptions {
+    /**
+     * A bucket within which to search if using the S3 source
+     * @defaultValue `""`
+     */
+    bucket?: string;
+  }
+
   interface BrowsingOptions {
     /**
      * A bucket within which to search if using the S3 source
@@ -340,7 +348,7 @@ declare namespace FilePicker {
 
     /**
      * An Array of file extensions to filter on
-     * @defaultValue (do not filter on extension)
+     * @defaultValue `[]` (do not filter on extension)
      */
     extensions?: string[];
 
