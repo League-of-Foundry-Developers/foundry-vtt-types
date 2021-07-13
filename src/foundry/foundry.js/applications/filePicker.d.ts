@@ -186,7 +186,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   static configurePath(
     source: FilePicker.DataSource,
     target: string,
-    options?: Record<string, unknown>
+    options?: FilePicker.BrowsingOptions
   ): Promise<unknown>;
 
   /**
