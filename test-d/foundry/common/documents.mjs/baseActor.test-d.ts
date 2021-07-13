@@ -114,10 +114,3 @@ if (baseActor.data._source.type === 'character') {
 if (baseActor.data.type === 'character') {
   expectType<never>(baseActor.getFlag('my-module', 'xp'));
 }
-// flags are available if we cast the actor
-declare function isChar(
-  actor: foundry.documents.BaseActor
-): actor is foundry.documents.BaseActor & { data: CharacterDataProperties & { _source: CharacterDataSource } };
-if (isChar(baseActor)) {
-  expectType<number>(baseActor.getFlag('my-module', 'xp'));
-}
