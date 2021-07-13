@@ -46,7 +46,7 @@ declare global {
      */
     get directory(): Lowercase<Name> extends keyof typeof ui
       ? typeof ui[Lowercase<Name>]
-      : null | SidebarDirectory | undefined;
+      : null | SidebarDirectory<ConfiguredDocumentClass<T>['metadata']['name']> | undefined;
 
     /**
      * Return a reference to the singleton instance of this WorldCollection, or null if it has not yet been created.

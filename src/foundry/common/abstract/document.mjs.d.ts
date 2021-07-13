@@ -456,18 +456,18 @@ declare abstract class Document<
    * @param key   - The flag key
    * @returns The flag value
    */
-  getFlag<S extends keyof this['data']['_source']['flags'], K extends keyof this['data']['_source']['flags'][S]>(
-    scope: S,
-    key: K
-  ): this['data']['_source']['flags'][S][K];
   getFlag<
-    S extends keyof this['data']['_source']['flags'],
-    K extends keyof Required<this['data']['_source']['flags']>[S]
-  >(scope: S, key: K): Required<this['data']['_source']['flags']>[S][K] | undefined;
-  getFlag<S extends keyof this['data']['_source']['flags']>(
+    S extends keyof ConcreteDocumentData['_source']['flags'],
+    K extends keyof ConcreteDocumentData['_source']['flags'][S]
+  >(scope: S, key: K): ConcreteDocumentData['_source']['flags'][S][K];
+  getFlag<
+    S extends keyof ConcreteDocumentData['_source']['flags'],
+    K extends keyof Required<ConcreteDocumentData['_source']['flags']>[S]
+  >(scope: S, key: K): Required<ConcreteDocumentData['_source']['flags']>[S][K] | undefined;
+  getFlag<S extends keyof ConcreteDocumentData['_source']['flags']>(
     scope: S,
     key: string
-  ): unknown extends this['data']['_source']['flags'][S] ? unknown : never;
+  ): unknown extends ConcreteDocumentData['_source']['flags'][S] ? unknown : never;
   getFlag(scope: string, key: string): unknown;
 
   /**
@@ -489,14 +489,14 @@ declare abstract class Document<
    * @returns A Promise resolving to the updated document
    */
   setFlag<
-    S extends keyof this['data']['_source']['flags'],
-    K extends keyof Required<this['data']['_source']['flags']>[S],
-    V extends Required<this['data']['_source']['flags']>[S][K]
+    S extends keyof ConcreteDocumentData['_source']['flags'],
+    K extends keyof Required<ConcreteDocumentData['_source']['flags']>[S],
+    V extends Required<ConcreteDocumentData['_source']['flags']>[S][K]
   >(scope: S, key: K, value: V): Promise<this>;
-  setFlag<S extends keyof this['data']['_source']['flags'], K extends string>(
+  setFlag<S extends keyof ConcreteDocumentData['_source']['flags'], K extends string>(
     scope: S,
     key: K,
-    v: unknown extends this['data']['_source']['flags'][S] ? unknown : never
+    v: unknown extends ConcreteDocumentData['_source']['flags'][S] ? unknown : never
   ): Promise<this>;
 
   /**

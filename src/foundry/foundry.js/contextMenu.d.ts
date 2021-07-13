@@ -2,14 +2,15 @@
  * Display a right-click activated Context Menu which provides a dropdown menu of options
  * A ContextMenu is constructed by designating a parent HTML container and a target selector
  * An Array of menuItems defines the entries of the menu which is displayed
- *
- * @param element - The containing HTML element within which the menu is positioned
- * @param selector - A CSS selector which activates the context menu.
- * @param menuItems - An Array of entries to display in the menu
- * @param eventName - Optionally override the triggering event which can spawn the menu
- *                    (default: `'contextmenu'`)
  */
 declare class ContextMenu {
+  /**
+   * @param element   - The containing HTML element within which the menu is positioned
+   * @param selector  - A CSS selector which activates the context menu.
+   * @param menuItems - An Array of entries to display in the menu
+   * @param eventName - Optionally override the triggering event which can spawn the menu
+   *                    (default: `'contextmenu'`)
+   */
   constructor(
     element: JQuery,
     selector: string | null | undefined,
@@ -44,52 +45,37 @@ declare class ContextMenu {
    */
   protected _expandUp: boolean;
 
-  /* -------------------------------------------- */
-
   /**
    * A convenience accessor to the context menu HTML object
    */
   get menu(): JQuery;
-
-  /* -------------------------------------------- */
 
   /**
    * Attach a ContextMenu instance to an HTML selector
    */
   bind(): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Animate closing the menu by sliding up and removing from the DOM
    */
   close(): Promise<void>;
 
-  /* -------------------------------------------- */
-
   protected _animateOpen(menu: JQuery): Promise<void>;
 
-  /* -------------------------------------------- */
-
   protected _animateClose(menu: JQuery): Promise<void>;
-
-  /* -------------------------------------------- */
 
   /**
    * Render the Context Menu by iterating over the menuItems it contains
    * Check the visibility of each menu item, and only render ones which are allowed by the item's logical condition
    * Attach a click handler to each item which is rendered
+   * @param target - The target element to which the context menu is attached
    */
-  render(target: JQuery): Promise<void>;
-
-  /* -------------------------------------------- */
+  render(target: JQuery): void | Promise<void>;
 
   /**
    * Set the position of the context menu, taking into consideration whether the menu should expand upward or downward
    */
   protected _setPosition(html: JQuery, target: JQuery): void;
-
-  /* -------------------------------------------- */
 
   static eventListeners(): void;
 }

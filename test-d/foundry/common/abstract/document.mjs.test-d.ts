@@ -75,3 +75,16 @@ expectType<Promise<Combatant>>(combatant.setFlag('another-system', 'value', true
 expectType<Promise<Combatant>>(combatant.unsetFlag('my-system', 'value'));
 expectType<Promise<Combatant>>(combatant.unsetFlag('my-optional-system', 'value'));
 expectType<Promise<Combatant>>(combatant.unsetFlag('another-system', 'value'));
+
+class MyCombatant extends Combatant {
+  setSomeFlag() {
+    expectType<{ value: boolean; value2: number }>(this.data.flags['my-system']);
+    expectType<{ value: boolean } | undefined>(this.data.flags['my-optional-system']);
+
+    expectType<boolean>(this.getFlag('my-system', 'value'));
+    expectType<unknown>(this.getFlag('another-system', 'value'));
+
+    expectType<Promise<this>>(this.setFlag('my-system', 'value', true));
+    expectType<Promise<this>>(this.setFlag('another-system', 'value', true));
+  }
+}
