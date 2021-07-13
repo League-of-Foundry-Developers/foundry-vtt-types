@@ -27,24 +27,24 @@
     "typscript"
   ],
   "dependencies": {
-    "@types/jquery": "~3.5.5",
-    "@types/simple-peer": "~9.11.0",
+    "@types/jquery": "~3.5.6",
+    "@types/simple-peer": "~9.11.1",
     "handlebars": "4.7.7",
     "pixi-particles": "4.3.1",
     "pixi.js": "5.3.4",
     "socket.io-client": "4.1.2",
     "tinymce": "5.8.1",
-    "typescript": "^4.1.6"
+    "typescript": "^4.3.5"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.28.0",
-    "@typescript-eslint/parser": "^4.28.0",
-    "eslint": "^7.29.0",
+    "@typescript-eslint/eslint-plugin": "^4.28.3",
+    "@typescript-eslint/parser": "^4.28.3",
+    "eslint": "^7.30.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-tsdoc": "^0.2.14",
-    "husky": "^6.0.0",
-    "lint-staged": "^11.0.0",
+    "husky": "^7.0.1",
+    "lint-staged": "^11.0.1",
     "prettier": "^2.3.2",
     "tsd": "^0.17.0"
   },

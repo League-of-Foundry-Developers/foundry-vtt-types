@@ -76,6 +76,7 @@ expectType<Promise<Combatant>>(combatant.unsetFlag('my-system', 'value'));
 expectType<Promise<Combatant>>(combatant.unsetFlag('my-optional-system', 'value'));
 expectType<Promise<Combatant>>(combatant.unsetFlag('another-system', 'value'));
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class MyCombatant extends Combatant {
   setSomeFlag() {
     expectType<{ value: boolean; value2: number }>(this.data.flags['my-system']);
