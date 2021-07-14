@@ -214,14 +214,14 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * @param source  - The data source to which the file should be uploaded
    * @param path    - The destination path
    * @param file    - The File object to upload
-   * @param options - Additional file upload options passed as form data
+   * @param options - Additional file upload options passed as form data (default `{}`)
    * @returns The response object
    */
   static upload(
     source: FilePicker.DataSource,
     path: string,
     file: File,
-    options?: Record<string, any>
+    options?: FilePicker.UploadOptions
   ): Promise<(Response & { path: string; message?: string }) | false | void>;
 
   /**
@@ -334,12 +334,14 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
 }
 
 declare namespace FilePicker {
-  interface CreateDirectoryOptions {
-    /**
-     * A bucket to use, if using the S3 source
-     * @defaultValue `""`
-     */
-    bucket?: string;
+  interface BrowseResult {
+    target: string;
+    private: boolean;
+    dirs: string[];
+    privateDirs: string[];
+    files: string[];
+    gridSize?: number;
+    extensions: [];
   }
 
   interface BrowsingOptions {
@@ -362,6 +364,12 @@ declare namespace FilePicker {
     wildcard?: boolean;
   }
 
+  /**
+   * A callback function to trigger once a file has been selected
+   * @param path - The path that was chosen
+   */
+  type Callback = (path: string) => void;
+
   interface ConfigurePathOptions {
     /**
      * A bucket to use, if using the S3 source
@@ -382,11 +390,18 @@ declare namespace FilePicker {
     gridSize?: number;
   }
 
-  /**
-   * A callback function to trigger once a file has been selected
-   * @param path - The path that was chosen
-   */
-  type Callback = (path: string) => void;
+  interface ConfigurePathResult {
+    private: boolean;
+    gridSize?: number;
+  }
+
+  interface CreateDirectoryOptions {
+    /**
+     * A bucket to use, if using the S3 source
+     * @defaultValue `""`
+     */
+    bucket?: string;
+  }
 
   interface Data {
     bucket: string | null;
@@ -507,21 +522,6 @@ declare namespace FilePicker {
     target: string;
   }
 
-  interface BrowseResult {
-    target: string;
-    private: boolean;
-    dirs: string[];
-    privateDirs: string[];
-    files: string[];
-    gridSize?: number;
-    extensions: [];
-  }
-
-  interface ConfigurePathResult {
-    private: boolean;
-    gridSize?: number;
-  }
-
   interface Source {
     target: string;
     label: string;
@@ -538,4 +538,15 @@ declare namespace FilePicker {
   }
 
   type Type = 'audio' | 'image' | 'video' | 'imagevideo' | 'folder';
+
+  /**
+   * Optional arguments for the `upload` method
+   */
+  interface UploadOptions {
+    /**
+     * A bucket to upload to, if using the S3 source
+     * @defaultValue `""`
+     */
+    bucket?: string;
+  }
 }
