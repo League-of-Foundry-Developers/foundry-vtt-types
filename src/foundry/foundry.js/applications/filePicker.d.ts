@@ -227,7 +227,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   /**
    * Additional actions performed when the file-picker UI is rendered
    */
-  render(force?: boolean, options?: Application.RenderOptions): void | ReturnType<this['browse']>;
+  render(force?: boolean, options?: Application.RenderOptions): ReturnType<this['browse']> | void;
 
   /**
    * Activate listeners to handle user interactivity for the FilePicker UI
@@ -273,12 +273,14 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * Handle user submission of the address bar to request an explicit target
    * @param event - The originating keydown event
    */
-  protected _onRequestTarget(event: KeyboardEvent): void;
+  protected _onRequestTarget(event: KeyboardEvent): ReturnType<this['browse']> | void;
 
   /**
    * Handle requests from the IntersectionObserver to lazily load an image file
+   * @param entries  - The entries which are now observed
+   * @param observer - The intersection observer instance
    */
-  protected _onLazyLoadImages(...args: any): void;
+  protected _onLazyLoadImages(entries: IntersectionObserverEntry[], observer: IntersectionObserver): void;
 
   /**
    * Handle file or folder selection within the file picker
