@@ -267,7 +267,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   /**
    * @override
    */
-  protected _onDrop(event: DragEvent): Promise<FilePicker.Result | void>;
+  protected _onDrop(event: DragEvent): Promise<FilePicker.BrowseResult | void>;
 
   /**
    * Handle user submission of the address bar to request an explicit target
@@ -286,7 +286,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * Handle file or folder selection within the file picker
    * @param event - The originating click event
    */
-  protected _onPick(event: JQuery.ClickEvent): Promise<FilePicker.Result> | undefined;
+  protected _onPick(event: JQuery.ClickEvent): ReturnType<this['browse']> | void;
 
   /**
    * Handle backwards navigation of the fol6der structure
