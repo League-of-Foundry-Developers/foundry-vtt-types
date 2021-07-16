@@ -522,11 +522,6 @@ declare global {
       filters: Application.Options['filters'];
     }
 
-    interface Result {
-      bucket?: string;
-      target: string;
-    }
-
     interface Source {
       target: string;
       label: string;
