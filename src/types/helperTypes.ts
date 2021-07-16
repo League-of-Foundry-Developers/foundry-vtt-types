@@ -126,11 +126,11 @@ export type DataSourceForPlaceable<P extends PlaceableObject> = P extends Placea
 /**
  * If `T` is `Promise<TResult>` then `TResult`; otherwise `T`.
  */
-export type PromisedType<T> = T extends Promise<infer Result> ? Result : T;
+export type PromisedType<T> = T extends Promise<infer TResult> ? TResult : T;
 
 /**
  * If `ReturnType<T>` is `Promise<TResult>` then `TResult`; otherwise `ReturnType<T>`.
  */
-export type PromisedReturnType<T extends (...args: any) => any> = ReturnType<T> extends Promise<infer ResultType>
-  ? ResultType
+export type PromisedReturnType<T extends (...args: any) => any> = ReturnType<T> extends Promise<infer TResult>
+  ? TResult
   : ReturnType<T>;
