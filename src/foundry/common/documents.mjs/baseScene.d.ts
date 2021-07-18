@@ -13,7 +13,7 @@ import { BaseWall } from './baseWall';
 /**
  * The base Scene model definition which defines common behavior of an Scene document between both client and server.
  */
-export declare class BaseScene extends Document<data.SceneData, null> {
+export declare class BaseScene extends Document<data.SceneData> {
   /** @override */
   static get schema(): typeof data.SceneData;
 

@@ -1,10 +1,13 @@
+import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
+import * as data from '../data/data.mjs';
+import { BaseScene } from './baseScene';
 
 /**
  * The base Tile model definition which defines common behavior of an Tile document between both client and server.
  */
-export declare class BaseTile extends Document<any, any> {
+export declare class BaseTile extends Document<data.TileData, InstanceType<ConfiguredDocumentClass<typeof BaseScene>>> {
   static get metadata(): Merge<
     DocumentMetadata,
     {
