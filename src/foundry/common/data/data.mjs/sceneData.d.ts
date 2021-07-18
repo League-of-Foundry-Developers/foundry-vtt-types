@@ -342,8 +342,6 @@ interface SceneDataProperties {
    * An object of optional key/value flags
    */
   flags: ConfiguredFlags<'Scene'>;
-
-  size: typeof NaN;
 }
 
 interface SceneDataConstructorData {
@@ -361,24 +359,24 @@ interface SceneDataConstructorData {
    * Is this scene currently active? Only one scene may be active at a given time.
    * @defaultValue `false`
    */
-  active?: boolean;
+  active?: boolean | null;
 
   /**
    * Is this scene displayed in the top navigation bar?
    * @defaultValue `true`
    */
-  navigation?: boolean;
+  navigation?: boolean | null;
 
   /**
    * The integer sorting order of this Scene in the navigation bar relative to others
    */
-  navOrder?: number;
+  navOrder?: number | null;
 
   /**
    * A string which overrides the canonical Scene name which is displayed in the navigation bar
    * @defaultValue `''`
    */
-  navName?: string;
+  navName?: string | null;
 
   /**
    * An image or video file path which provides the background media for the scene
@@ -401,20 +399,20 @@ interface SceneDataConstructorData {
    * The width of the scene canvas, this should normally be the width of the background media
    * @defaultValue `4000`
    */
-  width?: number;
+  width?: number | null;
 
   /**
    * The height of the scene canvas, this should normally be the height of the background media
    * @defaultValue `3000`
    */
-  height?: number;
+  height?: number | null;
 
   /**
    * The proportion of canvas padding applied around the outside of the scene
    * dimensions to provide additional buffer space
    * @defaultValue `0.25`
    */
-  padding?: number;
+  padding?: number | null;
 
   /**
    * The initial view coordinates for the scene, or null
@@ -432,25 +430,25 @@ interface SceneDataConstructorData {
    * The type of grid used in this scene, a number from CONST.GRID_TYPES
    * @defaultValue `CONST.GRID_TYPES.SQUARE`
    */
-  gridType?: CONST.GridType;
+  gridType?: CONST.GridType | null;
 
   /**
    * The grid size which represents the width (or height) of a single grid space
    * @defaultValue `100`
    */
-  grid?: number;
+  grid?: number | null;
 
   /**
    * A number of offset pixels that the background image is shifted horizontally relative to the grid
    * @defaultValue `0`
    */
-  shiftX?: number;
+  shiftX?: number | null;
 
   /**
    * A number of offset pixels that the background image is shifted vertically relative to the grid
    * @defaultValue `0`
    */
-  shiftY?: number;
+  shiftY?: number | null;
 
   /**
    * A string representing the color used to render the grid lines
@@ -462,40 +460,40 @@ interface SceneDataConstructorData {
    * A number between 0 and 1 for the opacity of the grid lines
    * @defaultValue `0.2`
    */
-  gridAlpha?: number;
+  gridAlpha?: number | null;
 
   /**
    * The number of distance units which are represented by a single grid space.
    */
-  gridDistance?: number;
+  gridDistance?: number | null;
 
   /**
    * A label for the units of measure which are used for grid distance.
    */
-  gridUnits?: string;
+  gridUnits?: string | null;
 
   /**
    * Do Tokens require vision in order to see the Scene environment?
    * @defaultValue `true`
    */
-  tokenVision?: boolean;
+  tokenVision?: boolean | null;
 
   /**
    * Should fog exploration progress be tracked for this Scene?
    * @defaultValue `true`
    */
-  fogExploration?: boolean;
+  fogExploration?: boolean | null;
 
   /**
    * The timestamp at which fog of war was last reset for this Scene.
    */
-  fogReset?: number;
+  fogReset?: number | null;
 
   /**
    * Does this Scene benefit from global illumination which provides bright light everywhere?
    * @defaultValue `false`
    */
-  globalLight?: boolean;
+  globalLight?: boolean | null;
 
   /**
    * A darkness level between 0 and 1, beyond which point global illumination is
@@ -509,48 +507,48 @@ interface SceneDataConstructorData {
    * (maximum illumination) and 1 represents mid-night (maximum darkness)
    * @defaultValue `0`
    */
-  darkness?: number;
+  darkness?: number | null;
 
   /**
    * A collection of embedded Drawing objects.
    */
-  drawings?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseDrawing>, SceneData>;
+  drawings?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseDrawing>, SceneData> | null;
 
   /**
    * A collection of embedded Token objects.
    */
-  tokens?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseToken>, SceneData>;
+  tokens?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseToken>, SceneData> | null;
 
   /**
    *
    * A collection of embedded AmbientLight objects.
    */
-  lights?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseAmbientLight>, SceneData>;
+  lights?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseAmbientLight>, SceneData> | null;
 
   /**
    * A collection of embedded Note objects.
    */
-  notes?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseNote>, SceneData>;
+  notes?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseNote>, SceneData> | null;
 
   /**
    * A collection of embedded AmbientSound objects.
    */
-  sounds?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseAmbientSound>, SceneData>;
+  sounds?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseAmbientSound>, SceneData> | null;
 
   /**
    * A collection of embedded MeasuredTemplate objects.
    */
-  templates?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseMeasuredTemplate>, SceneData>;
+  templates?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseMeasuredTemplate>, SceneData> | null;
 
   /**
    * A collection of embedded Tile objects.
    */
-  tiles?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseTile>, SceneData>;
+  tiles?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseTile>, SceneData> | null;
 
   /**
    * A collection of embedded Wall objects
    */
-  walls?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseWall>, SceneData>;
+  walls?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseWall>, SceneData> | null;
 
   /**
    * A linked Playlist document which should begin automatically playing when this
@@ -574,7 +572,7 @@ interface SceneDataConstructorData {
    * A named weather effect which should be rendered in this Scene.
    * @defaultValue `''`
    */
-  weather?: string;
+  weather?: string | null;
 
   /**
    * The _id of a Folder which contains this Actor
@@ -586,18 +584,18 @@ interface SceneDataConstructorData {
    * The numeric sort value which orders this Actor relative to its siblings
    * @defaultValue `0`
    */
-  sort?: number;
+  sort?: number | null;
 
   /**
    * An object which configures user permissions to this Actor
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission?: Partial<Record<string, foundry.CONST.EntityPermission>>;
+  permission?: Partial<Record<string, foundry.CONST.EntityPermission>> | null;
 
   /**
    * An object of optional key/value flags
    */
-  flags?: ConfiguredFlags<'Scene'>;
+  flags?: ConfiguredFlags<'Scene'> | null;
 }
 
 /**
@@ -615,6 +613,8 @@ export declare class SceneData extends DocumentData<
 
   /** @override */
   _initialize(): void;
+
+  size: number;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
