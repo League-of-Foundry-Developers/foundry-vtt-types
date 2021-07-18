@@ -14,6 +14,7 @@ import { AmbientLightData } from './ambientLightData';
 import { AmbientSoundData } from './ambientSoundData';
 import { DrawingData } from './drawingData';
 import { MeasuredTemplateData } from './measuredTemplateData';
+import { NoteData } from './noteData';
 import { TileData } from './tileData';
 import { TokenData } from './tokenData';
 import { WallData } from './wallData';
