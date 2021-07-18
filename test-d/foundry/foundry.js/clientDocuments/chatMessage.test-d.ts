@@ -1,18 +1,22 @@
 import { expectError, expectType } from 'tsd';
-import { ChatMessageData } from '../../../../src/foundry/common/data/data.mjs';
 import { ChatSpeakerData } from '../../../../src/foundry/common/data/data.mjs/chatSpeakerData';
+import { ConstructorDataType } from '../../../../src/types/helperTypes';
 
 expectType<ChatMessage>(new ChatMessage());
 expectType<ChatMessage>(new ChatMessage({}));
 
-expectType<ChatMessageData>(ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), CONST.DICE_ROLL_MODES.BLIND));
-expectType<ChatMessageData>(
-  ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), CONST.DICE_ROLL_MODES.PRIVATE)
+expectType<ConstructorDataType<foundry.data.ChatMessageData>>(
+  ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.BLIND)
 );
-expectType<ChatMessageData>(
-  ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), CONST.DICE_ROLL_MODES.PUBLIC)
+expectType<ConstructorDataType<foundry.data.ChatMessageData>>(
+  ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.PRIVATE)
 );
-expectType<ChatMessageData>(ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), CONST.DICE_ROLL_MODES.SELF));
+expectType<ConstructorDataType<foundry.data.ChatMessageData>>(
+  ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.PUBLIC)
+);
+expectType<ConstructorDataType<foundry.data.ChatMessageData>>(
+  ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.SELF)
+);
 expectError(ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), 'custom-roll-mode'));
 
 expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker());
