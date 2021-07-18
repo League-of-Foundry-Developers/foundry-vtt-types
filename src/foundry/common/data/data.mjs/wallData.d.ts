@@ -2,7 +2,6 @@ import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from '../../../.
 import DocumentData from '../../abstract/data.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
-import { SceneDataConstructorData } from './sceneData';
 
 interface WallDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
