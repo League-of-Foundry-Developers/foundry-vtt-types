@@ -15,6 +15,7 @@ export { NoteData } from './noteData';
 export { PrototypeTokenData } from './prototypeTokenData';
 export { SceneData } from './sceneData';
 export { SettingData } from './settingData';
+export { TileData } from './tileData';
 export { TokenBarData } from './tokenBarData';
 export { TokenData } from './tokenData';
 export { UserData } from './userData';
