@@ -1,6 +1,7 @@
 import {
   ConfiguredDocumentClass,
   ConfiguredFlags,
+  ConstructorDataType,
   FieldReturnType,
   PropertiesToSource
 } from '../../../../types/helperTypes';
@@ -9,6 +10,13 @@ import { DocumentData } from '../../abstract/module.mjs';
 import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
 import * as CONST from '../../constants.mjs';
+import { AmbientLightData } from './ambientLightData';
+import { AmbientSoundData } from './ambientSoundData';
+import { DrawingData } from './drawingData';
+import { MeasuredTemplateData } from './measuredTemplateData';
+import { TileData } from './tileData';
+import { TokenData } from './tokenData';
+import { WallData } from './wallData';
 
 interface SceneDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
@@ -512,43 +520,43 @@ interface SceneDataConstructorData {
   /**
    * A collection of embedded Drawing objects.
    */
-  drawings?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseDrawing>, SceneData> | null;
+  drawings?: ConstructorDataType<DrawingData>[] | null;
 
   /**
    * A collection of embedded Token objects.
    */
-  tokens?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseToken>, SceneData> | null;
+  tokens?: ConstructorDataType<TokenData>[] | null;
 
   /**
    *
    * A collection of embedded AmbientLight objects.
    */
-  lights?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseAmbientLight>, SceneData> | null;
+  lights?: ConstructorDataType<AmbientLightData>[] | null;
 
   /**
    * A collection of embedded Note objects.
    */
-  notes?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseNote>, SceneData> | null;
+  notes?: ConstructorDataType<NoteData>[] | null;
 
   /**
    * A collection of embedded AmbientSound objects.
    */
-  sounds?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseAmbientSound>, SceneData> | null;
+  sounds?: ConstructorDataType<AmbientSoundData>[] | null;
 
   /**
    * A collection of embedded MeasuredTemplate objects.
    */
-  templates?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseMeasuredTemplate>, SceneData> | null;
+  templates?: ConstructorDataType<MeasuredTemplateData>[] | null;
 
   /**
    * A collection of embedded Tile objects.
    */
-  tiles?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseTile>, SceneData> | null;
+  tiles?: ConstructorDataType<TileData>[] | null;
 
   /**
    * A collection of embedded Wall objects
    */
-  walls?: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseWall>, SceneData> | null;
+  walls?: ConstructorDataType<WallData>[] | null;
 
   /**
    * A linked Playlist document which should begin automatically playing when this
@@ -612,9 +620,14 @@ export declare class SceneData extends DocumentData<
   static defineSchema(): SceneDataSchema;
 
   /** @override */
-  _initialize(): void;
+  protected _initialize(): void;
 
   size: number;
+
+  /**
+   * @remarks This override does not exist in foundry but is added here to prepend runtime errors.
+   */
+  constructor(data: SceneDataConstructorData, document?: documents.BaseScene | null);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
