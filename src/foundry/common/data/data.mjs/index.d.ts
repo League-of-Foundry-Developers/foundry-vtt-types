@@ -11,6 +11,7 @@ export { ItemData } from './itemData';
 export { JournalEntryData } from './journalEntryData';
 export { MacroData } from './macroData';
 export { MeasuredTemplateData } from './measuredTemplateData';
+export { NoteData } from './noteData';
 export { PrototypeTokenData } from './prototypeTokenData';
 export { SceneData } from './sceneData';
 export { SettingData } from './settingData';
