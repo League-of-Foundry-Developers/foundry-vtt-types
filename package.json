@@ -53,10 +53,6 @@
       "pre-commit": "lint-staged"
     }
   },
-  "lint-staged": {
-    "*.(d.ts|test-d.ts)": "eslint --fix",
-    "*.(js|json)": "prettier --write"
-  },
   "files": [
     "index.d.ts",
     "src"
