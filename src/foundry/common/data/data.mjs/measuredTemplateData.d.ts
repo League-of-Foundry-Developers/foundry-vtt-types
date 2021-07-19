@@ -30,7 +30,7 @@ interface MeasuredTemplateDataSchema extends DocumentSchema {
   flags: typeof fields.OBJECT_FIELD;
 }
 
-interface MeasuredTemplateProperties {
+interface MeasuredTemplateDataProperties {
   /**
    The _id which uniquely identifies this BaseMeasuredTemplate embedded document
    */
@@ -184,8 +184,8 @@ interface MeasuredTemplateDataConstructorData {
  */
 export declare class MeasuredTemplateData extends DocumentData<
   MeasuredTemplateDataSchema,
-  MeasuredTemplateProperties,
-  PropertiesToSource<MeasuredTemplateProperties>,
+  MeasuredTemplateDataProperties,
+  PropertiesToSource<MeasuredTemplateDataProperties>,
   MeasuredTemplateDataConstructorData,
   documents.BaseMeasuredTemplate
 > {
@@ -207,4 +207,4 @@ export declare class MeasuredTemplateData extends DocumentData<
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface MeasuredTemplateData extends MeasuredTemplateProperties {}
+export declare interface MeasuredTemplateData extends MeasuredTemplateDataProperties {}

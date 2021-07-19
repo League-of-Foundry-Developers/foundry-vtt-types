@@ -1,6 +1,6 @@
 import { expectError, expectType } from 'tsd';
 
-const scene = new Scene();
+const scene = new Scene({ name: 'My scene' });
 
 expectError<foundry.data.MeasuredTemplateData>(new foundry.data.MeasuredTemplateData());
 expectError<foundry.data.MeasuredTemplateData>(new foundry.data.MeasuredTemplateData({ x: 100, y: 100 }));
