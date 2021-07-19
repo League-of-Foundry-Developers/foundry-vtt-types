@@ -56,8 +56,8 @@ declare interface Set<T> {
   /**
    * Test whether this set is a subset of some other set.
    * A set is a subset if all its members are also present in the other set.
-   * @param other - Some other set to compare against
-   * @returns Are the sets equal?
+   * @param other - Some other set that may be a subset of this one
+   * @returns Is the other set a subset of this one?
    */
   isSubset(other: Set<T>): boolean;
 }
