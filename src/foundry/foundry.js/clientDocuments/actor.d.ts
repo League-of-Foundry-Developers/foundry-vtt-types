@@ -165,7 +165,7 @@ declare global {
 
     /** @override */
     protected _onUpdate(
-      changed: DeepPartial<foundry.data.ActorData['_source']> & Record<string, unknown>,
+      changed: DeepPartial<foundry.data.ActorData['_source']>,
       options: DocumentModificationOptions,
       user: string
     ): void;
