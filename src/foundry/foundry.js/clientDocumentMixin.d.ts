@@ -336,7 +336,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * @returns A data object of cleaned data suitable for compendium import
    */
   toCompendium(pack?: CompendiumCollection<CompendiumCollection.Metadata>): Omit<
-    ReturnType<T['toObject']>,
+    T['data']['_source'],
     '_id' | 'folder' | 'permission'
   > & {
     permission?: T extends { toObject(): infer U } ? U : never; // TODO: Whether or not this property exists depends on `pack`, improve when `pack` is typed

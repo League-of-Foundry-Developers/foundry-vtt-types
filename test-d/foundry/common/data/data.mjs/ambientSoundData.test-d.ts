@@ -1,4 +1,4 @@
-import { expectError, expectType } from 'tsd';
+import { expectType } from 'tsd';
 
 expectType<foundry.data.AmbientSoundData>(new foundry.data.AmbientSoundData());
 expectType<foundry.data.AmbientSoundData>(new foundry.data.AmbientSoundData({}));

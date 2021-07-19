@@ -429,7 +429,7 @@ declare global {
     // TODO: Improve when `pack` is typed (see Document.toCompendium) 9716
     /** @override */
     toCompendium(pack?: CompendiumCollection<CompendiumCollection.Metadata>): Omit<
-      ReturnType<foundry.data.SceneData['toJSON']>,
+      foundry.data.SceneData['_source'],
       '_id' | 'folder' | 'permission'
     > & {
       permission?: foundry.data.SceneData extends { toObject(): infer U } ? U : never;
