@@ -217,7 +217,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    */
   protected _preUpdateEmbeddedDocuments(
     embeddedName: string,
-    result: Array<Record<string, unknown>>[],
+    result: Record<string, unknown>[],
     options: DocumentModificationOptions,
     userId: string
   ): void;
