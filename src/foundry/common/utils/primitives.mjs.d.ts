@@ -92,8 +92,9 @@ declare interface Number {
 
   /**
    * Round a number to the nearest number which is a multiple of a given interval
-   * @param interval - The interval to round the number to the nearest multiple of
-   *                   (default: `1`)
+   * @param interval- The interval to round the number to the nearest multiple of
+   * @param method  - The rounding method in: round, ceil, floor
+   *                  (default: `'round'`)
    * @returns The rounded number
    *
    * @example
@@ -101,10 +102,12 @@ declare interface Number {
    * let n = 17.18;
    * n.toNearest(5); // 15
    * n.toNearest(10); // 20
+   * n.toNearest(10, "floor"); // 10
+   * n.toNearest(10, "ceil"); // 20
    * n.toNearest(0.25); // 17.25
    * ```
    */
-  toNearest(interval?: number): number;
+  toNearest(interval?: number, method?: 'round' | 'ceil' | 'floor'): number;
 
   between(a: number, b: number, inclusive?: boolean): boolean;
 }
