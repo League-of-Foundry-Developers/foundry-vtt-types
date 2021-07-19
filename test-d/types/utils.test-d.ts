@@ -42,3 +42,10 @@ declare const titlecaseWithSpaces: Titlecase<'foo  bar'>;
 expectType<'Foo  Bar'>(titlecaseWithSpaces);
 declare const titlecaseWithThreeWords: Titlecase<'foo bar baz'>;
 expectType<'Foo Bar Baz'>(titlecaseWithThreeWords);
+
+type NumberPromise = Promise<number>;
+const promisedTypeOfNumProm: PromisedType<NumberPromise> = 0;
+expectType<number>(promisedTypeOfNumProm);
+
+const promisedTypeOfNumber: PromisedType<number> = 0;
+expectType<number>(promisedTypeOfNumber);
