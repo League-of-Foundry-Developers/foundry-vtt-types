@@ -20,7 +20,20 @@ expectType<CanvasLayer | null>(myCanvas.activeLayer);
 expectType<Promise<void>>(myCanvas.tearDown());
 expectType<Promise<Canvas>>(myCanvas.draw(new Scene({ name: 'My Scene' })));
 expectError(Canvas.getDimensions());
-expectType<Canvas.Dimensions>(Canvas.getDimensions({}));
+expectError(Canvas.getDimensions({}));
+const scene = canvas?.scene;
+if (scene) {
+  expectType<Canvas.Dimensions>(scene.data);
+}
+expectType<Canvas.Dimensions>(
+  Canvas.getDimensions({
+    grid: 100,
+    gridDistance: 10,
+    padding: 10,
+    shiftX: 10,
+    shiftY: 10
+  })
+);
 expectType<Canvas.Dimensions>(
   Canvas.getDimensions({
     width: 100,
@@ -34,7 +47,7 @@ expectType<Canvas.Dimensions>(
 );
 
 expectType<BackgroundLayer | null>(myCanvas.getLayer('BackgroundLayer'));
-expectType<DrawingsLayer | null>(myCanvas.getLayer('DrawingLayer'));
+expectType<DrawingsLayer | null>(myCanvas.getLayer('DrawingsLayer'));
 expectType<GridLayer | null>(myCanvas.getLayer('GridLayer'));
 expectType<WallsLayer | null>(myCanvas.getLayer('WallsLayer'));
 expectType<TemplateLayer | null>(myCanvas.getLayer('TemplateLayer'));
@@ -58,20 +71,20 @@ expectType<SoundsLayer | null>(myCanvas.getLayerByEmbeddedName('AmbientSound'));
 expectType<LightingLayer | null>(myCanvas.getLayerByEmbeddedName('AmbientLight'));
 expectType<null>(myCanvas.getLayerByEmbeddedName('any-string'));
 
-expectType<void>(myCanvas.activeLayer('background'));
-expectType<void>(myCanvas.activeLayer('foreground'));
-expectType<void>(myCanvas.activeLayer('drawings'));
-expectType<void>(myCanvas.activeLayer('grid'));
-expectType<void>(myCanvas.activeLayer('walls'));
-expectType<void>(myCanvas.activeLayer('templates'));
-expectType<void>(myCanvas.activeLayer('notes'));
-expectType<void>(myCanvas.activeLayer('tokens'));
-expectType<void>(myCanvas.activeLayer('lighting'));
-expectType<void>(myCanvas.activeLayer('sounds'));
-expectType<void>(myCanvas.activeLayer('sight'));
-expectType<void>(myCanvas.activeLayer('effects'));
-expectType<void>(myCanvas.activeLayer('controls'));
-expectError<void>(myCanvas.activeLayer('another-string'));
+expectType<void>(myCanvas.activateLayer('background'));
+expectType<void>(myCanvas.activateLayer('foreground'));
+expectType<void>(myCanvas.activateLayer('drawings'));
+expectType<void>(myCanvas.activateLayer('grid'));
+expectType<void>(myCanvas.activateLayer('walls'));
+expectType<void>(myCanvas.activateLayer('templates'));
+expectType<void>(myCanvas.activateLayer('notes'));
+expectType<void>(myCanvas.activateLayer('tokens'));
+expectType<void>(myCanvas.activateLayer('lighting'));
+expectType<void>(myCanvas.activateLayer('sounds'));
+expectType<void>(myCanvas.activateLayer('sight'));
+expectType<void>(myCanvas.activateLayer('effects'));
+expectType<void>(myCanvas.activateLayer('controls'));
+expectError<void>(myCanvas.activateLayer('another-string'));
 
 expectType<void>(myCanvas.pan());
 expectType<void>(myCanvas.pan({}));
