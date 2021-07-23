@@ -42,3 +42,48 @@ declare const titlecaseWithSpaces: Titlecase<'foo  bar'>;
 expectType<'Foo  Bar'>(titlecaseWithSpaces);
 declare const titlecaseWithThreeWords: Titlecase<'foo bar baz'>;
 expectType<'Foo Bar Baz'>(titlecaseWithThreeWords);
+
+declare const user: User;
+expectType<string | null>(user.id);
+expectType<string | null>(user.data._id);
+expectType<string | null>(user.data._source._id);
+expectType<string | null>(user.toJSON()._id);
+expectType<string | null>(user.data.toJSON()._id);
+expectType<string | null>(user.toObject()._id);
+expectType<string | null>(user.data.toObject()._id);
+expectType<string | null>(user.toObject(false)._id);
+expectType<string | null>(user.data.toObject(false)._id);
+expectType<User | Promise<User | undefined>>(user.clone());
+
+declare const storedUser: StoredDocument<User>;
+expectType<string>(storedUser.id);
+expectType<string>(storedUser.data._id);
+expectType<string>(storedUser.data._source._id);
+expectType<string>(storedUser.toJSON()._id);
+expectType<string>(storedUser.data.toJSON()._id);
+expectType<string>(storedUser.toObject()._id);
+expectType<string>(storedUser.data.toObject()._id);
+expectType<string>(storedUser.toObject(false)._id);
+expectType<string>(storedUser.data.toObject(false)._id);
+expectType<User | Promise<User | undefined>>(storedUser.clone());
+
+declare const actor: StoredDocument<Actor>;
+expectType<string>(actor.id);
+expectType<string>(actor.data._id);
+expectType<string>(actor.data._source._id);
+expectType<string>(actor.toJSON()._id);
+expectType<string>(actor.data.toJSON()._id);
+expectType<string>(actor.toObject()._id);
+expectType<string>(actor.data.toObject()._id);
+expectType<string>(actor.toObject(false)._id);
+expectType<string>(actor.data.toObject(false)._id);
+expectType<Actor | Promise<Actor | undefined>>(actor.clone());
+
+if (actor.data.type === 'character') {
+  expectType<number>(actor.data.data.health);
+  expectType<number>(actor.data.data.movement);
+} else {
+  expectType<string>(actor.data.data.faction);
+  expectType<number>(actor.data.data.challenge);
+  expectType<number>(actor.data.data.damage);
+}

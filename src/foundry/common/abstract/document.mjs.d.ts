@@ -147,7 +147,7 @@ declare abstract class Document<
       ConstructorDataType<ConcreteDocumentData> | (ConstructorDataType<ConcreteDocumentData> & Record<string, unknown>)
     >,
     { save, keepId }?: { save?: boolean; keepId?: boolean }
-  ): this | Promise<this | undefined>;
+  ): TemporaryDocument<this> | Promise<TemporaryDocument<this> | undefined>;
 
   /**
    * Get the permission level that a specific User has over this Document, a value in CONST.ENTITY_PERMISSIONS.
@@ -634,14 +634,20 @@ declare abstract class Document<
    * @returns The extracted primitive object
    */
   toObject(source?: true): ReturnType<this['toJSON']>;
-  toObject(source: false): ToObjectFalseType<ConcreteDocumentData>;
+  toObject(
+    source: false
+  ): this['id'] extends string
+    ? ToObjectFalseType<ConcreteDocumentData> & { _id: string }
+    : ToObjectFalseType<ConcreteDocumentData>;
 
   /**
    * Convert the Document instance to a primitive object which can be serialized.
    * See DocumentData#toJSON
    * @returns The document data expressed as a plain object
    */
-  toJSON(): ReturnType<ConcreteDocumentData['toJSON']>;
+  toJSON(): this['id'] extends string
+    ? ReturnType<ConcreteDocumentData['toJSON']> & { _id: string }
+    : ReturnType<ConcreteDocumentData['toJSON']>;
 }
 
 export interface DocumentModificationOptions {

@@ -290,7 +290,7 @@ declare abstract class DocumentData<
    * Extract the source data for the DocumentData into a simple object format that can be serialized.
    * @returns The document source data expressed as a plain object
    */
-  toJSON(): SourceData;
+  toJSON(): this['_id'] extends string ? SourceData & { _id: string } : SourceData;
 
   /**
    * Create a DocumentData instance using a provided serialized JSON string.
