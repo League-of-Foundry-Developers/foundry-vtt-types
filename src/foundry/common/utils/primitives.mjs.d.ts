@@ -92,9 +92,10 @@ declare interface Number {
 
   /**
    * Round a number to the nearest number which is a multiple of a given interval
-   * @param interval- The interval to round the number to the nearest multiple of
-   * @param method  - The rounding method in: round, ceil, floor
-   *                  (default: `'round'`)
+   * @param interval - The interval to round the number to the nearest multiple of
+   *                   (default: `1`)
+   * @param method   - The rounding method in: round, ceil, floor
+   *                   (default: `'round'`)
    * @returns The rounded number
    *
    * @example
