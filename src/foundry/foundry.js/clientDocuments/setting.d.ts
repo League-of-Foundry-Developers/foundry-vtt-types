@@ -1,6 +1,4 @@
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
-
-// TODO
 declare global {
   /**
    * The client-side Setting document which extends the common BaseSetting model.
