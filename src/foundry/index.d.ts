@@ -32,7 +32,6 @@ import './foundry.js/localization';
 import './foundry.js/mersenneTwister';
 import './foundry.js/mouseInteractionManager';
 import './foundry.js/pointSource';
-import './foundry.js/prototypes';
 import './foundry.js/quadtree';
 import './foundry.js/ray';
 import './foundry.js/roll';
