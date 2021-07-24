@@ -43,6 +43,13 @@ expectType<'Foo  Bar'>(titlecaseWithSpaces);
 declare const titlecaseWithThreeWords: Titlecase<'foo bar baz'>;
 expectType<'Foo Bar Baz'>(titlecaseWithThreeWords);
 
+type NumberPromise = Promise<number>;
+const promisedTypeOfNumProm: PromisedType<NumberPromise> = 0;
+expectType<number>(promisedTypeOfNumProm);
+
+const promisedTypeOfNumber: PromisedType<number> = 0;
+expectType<number>(promisedTypeOfNumber);
+
 declare const user: User;
 expectType<string | null>(user.id);
 expectType<string | null>(user.data._id);

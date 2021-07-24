@@ -111,6 +111,12 @@ type Merge<T, U> = T extends object
     : U
   : U;
 
+/**
+ * If `T` is `Promise<TResult>` then `TResult`; otherwise `T`.
+ * @typeParam T - the type which, if a Promise, will be unwrapped.
+ */
+type PromisedType<T> = T extends Promise<infer TResult> ? TResult : T;
+
 type StoredDocument<D extends foundry.abstract.Document<any, any>> = D & {
   id: string;
   data: D['data'] & {
