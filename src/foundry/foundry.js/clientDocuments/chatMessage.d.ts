@@ -72,9 +72,9 @@ declare global {
      * @returns The modified ChatMessage data with rollMode preferences applied
      */
     static applyRollMode(
-      chatData: foundry.data.ChatMessageData,
+      chatData: ConstructorDataType<foundry.data.ChatMessageData>,
       rollMode: foundry.CONST.DiceRollMode
-    ): foundry.data.ChatMessageData;
+    ): ConstructorDataType<foundry.data.ChatMessageData>;
 
     /**
      * Update the data of a ChatMessage instance to apply a requested rollMode

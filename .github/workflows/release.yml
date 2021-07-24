@@ -53,6 +53,7 @@ jobs:
         run: |
           export PUBLISHED_VERSION=$(jq -r '.version' package.json)
           npm publish --ignore-scripts --tag fvtt-${PUBLISHED_VERSION//-[0-9]*/}
+          npm dist-tag add @league-of-foundry-developers/foundry-vtt-types@${PUBLISHED_VERSION} latest
         shell: bash
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
