@@ -211,7 +211,7 @@ declare global {
 
     /** @override */
     _onUpdate(
-      data: DeepPartial<foundry.data.ChatMessageData['_source']> & Record<string, unknown>,
+      data: DeepPartial<foundry.data.ChatMessageData['_source']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;

@@ -562,7 +562,7 @@ declare abstract class Document<
    * @param user    - The id of the User requesting the document update
    */
   protected _onUpdate(
-    changed: DeepPartial<ConcreteDocumentData['_source']> & Record<string, unknown>,
+    changed: DeepPartial<ConcreteDocumentData['_source']>,
     options: DocumentModificationOptions,
     userId: string
   ): void;

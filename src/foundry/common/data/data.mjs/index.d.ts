@@ -15,3 +15,4 @@ export { SceneData } from './sceneData';
 export { TokenBarData } from './tokenBarData';
 export { TokenData } from './tokenData';
 export { UserData } from './userData';
+export { SettingData } from './settingData';

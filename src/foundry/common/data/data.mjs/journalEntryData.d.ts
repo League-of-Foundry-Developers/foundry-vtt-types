@@ -110,6 +110,10 @@ interface JournalEntryConstructorData {
   flags?: ConfiguredFlags<'JournalEntry'> | null;
 }
 
+/**
+ * The data schema for a JournalEntry document.
+ * @see BaseJournalEntry
+ */
 export declare class JournalEntryData extends DocumentData<
   JournalEntryDataSchema,
   JournalEntryDataProperties,
