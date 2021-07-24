@@ -229,9 +229,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    */
   render(force?: boolean, options?: Application.RenderOptions): ReturnType<this['browse']> | void;
 
-  /**
-   * Activate listeners to handle user interactivity for the FilePicker UI
-   */
+  /** @override */
   activateListeners(html: JQuery): void;
 
   /**
