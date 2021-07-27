@@ -1,3 +1,25 @@
+declare interface TabsConfiguration {
+  /**
+   * The CSS selector used to target the navigation element for these tabs
+   */
+  navSelector: string;
+
+  /**
+   * The CSS selector used to target the content container for these tabs
+   */
+  contentSelector?: string;
+
+  /**
+   * The tab name of the initially active tab
+   */
+  initial?: string;
+
+  /**
+   * An optional callback function that executes when the active tab is changed
+   */
+  callback?: ((event: MouseEvent | null, tabs: Tabs, tabName: string) => unknown) | null;
+}
+
 /**
  * A controller class for managing tabbed navigation within an Application instance.
  * @see {@link Application}
@@ -16,35 +38,32 @@
  * </section>
  * ```
  * @example
- * ```typescript
- * // TypeScript
+ * ```javascript
+ * // JavaScript
  * const tabs = new Tabs({navSelector: ".tabs", contentSelector: ".content", initial: "tab1"});
  * tabs.bind(html);
  * ```
  */
 declare class Tabs {
   /**
-   * @param navSelector     - The CSS selector used to target the navigation element for these tabs
-   * @param contentSelector - The CSS selector used to target the content container for these tabs
-   * @param initial         - The tab name of the initially active tab
-   * @param callback        - An optional callback function that executes when the active tab is changed
+   * @param config - The Tabs Configuration to use for this tabbed container
    */
-  constructor({ navSelector, contentSelector, initial, callback }: Tabs.Options);
+  constructor(config: TabsConfiguration);
 
   /**
    * The value of the active tab
    */
-  active: string | undefined;
+  active: TabsConfiguration['initial'];
 
   /**
    * A callback function to trigger when the tab is changed
    */
-  callback: ((event: null, tabs: Tabs, tabName: string) => unknown) | null | undefined;
+  callback: TabsConfiguration['callback'];
 
   /**
    * The CSS selector used to target the tab navigation element
    */
-  protected _navSelector: string;
+  protected _navSelector: TabsConfiguration['navSelector'];
 
   /**
    * A reference to the HTML navigation element the tab controller is bound to
@@ -55,7 +74,7 @@ declare class Tabs {
   /**
    * The CSS selector used to target the tab content element
    */
-  protected _contentSelector: string | undefined;
+  protected _contentSelector: TabsConfiguration['contentSelector'];
 
   /**
    * A reference to the HTML container element of the tab content
@@ -70,9 +89,7 @@ declare class Tabs {
 
   /**
    * Activate a new tab by name
-   * @param tabName         - Name of the tab to activate
-   * @param triggerCallback - Whether or not to trigger the callback
-   *                          (default: `false`)
+   * @param triggerCallback - (default: `false`)
    */
   activate(tabName: string, { triggerCallback }?: { triggerCallback?: boolean }): void;
 
@@ -81,15 +98,6 @@ declare class Tabs {
    * @param event - A left click event
    */
   protected _onClickNav(event: MouseEvent): void;
-}
-
-declare namespace Tabs {
-  interface Options {
-    navSelector: string;
-    contentSelector?: string;
-    initial?: string;
-    callback?: ((event: null, tabs: Tabs, tabName: string) => unknown) | null;
-  }
 }
 
 declare const TabsV2: typeof Tabs;

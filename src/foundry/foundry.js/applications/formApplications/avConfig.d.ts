@@ -90,7 +90,7 @@ declare namespace AVConfig {
     /**
      * @defaultValue `[{navSelector: '.tabs', contentSelector: 'form', initial: 'general'}]`
      */
-    tabs: (Tabs.Options & { contentSelector: string; initial: string })[];
+    tabs: (TabsConfiguration & { contentSelector: string; initial: string })[];
   }
 
   interface Data {
