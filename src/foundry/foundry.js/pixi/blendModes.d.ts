@@ -1,6 +1,6 @@
 declare const BLEND_MODES: {
   /**
-   * Register a custom blend mode equation which chooses the maximum color from each channel within the stack.
+   * A custom blend mode equation which chooses the maximum color from each channel within the stack.
    * @defaultValue
    * ```typescript
    * [
@@ -16,7 +16,7 @@ declare const BLEND_MODES: {
   MAX_COLOR: [GLenum, GLenum, GLenum, GLenum, GLenum, GLenum];
 
   /**
-   * Register a custom blend mode equation which chooses the minimum color from each channel within the stack.
+   * A custom blend mode equation which chooses the minimum color from each channel within the stack.
    * @defaultValue
    * ```typescript
    * [
