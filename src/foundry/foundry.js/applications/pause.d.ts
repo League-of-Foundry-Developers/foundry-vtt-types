@@ -1,13 +1,13 @@
 /**
  * Pause notification in the HUD
+ *
+ * @typeParam Options - the type of the options object
  */
-declare class Pause<D extends Pause.Data = Pause.Data> extends Application {
-  static get defaultOptions(): typeof Application['defaultOptions'];
+declare class Pause<Options extends Application.Options = Application.Options> extends Application<Options> {
+  static get defaultOptions(): Application.Options;
 
-  /**
-   * Prepare the default data which is required to render the Pause UI
-   */
-  getData(): D | Promise<D>;
+  /** @override */
+  getData(options?: Application.RenderOptions): Pause.Data | Promise<Pause.Data>;
 }
 
 declare namespace Pause {
