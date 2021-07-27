@@ -466,3 +466,165 @@ expectType<Promise<string>>(
     options: optionsWithJQueryUnknown
   })
 );
+
+// everything without 'rejectClose' is tested above
+// now we need to test an explicitly given 'rejectClose'
+
+expectType<Promise<string | null>>(
+  Dialog.prompt({
+    title: title,
+    content: content,
+    label: label,
+    callback: (html) => {
+      expectType<JQuery>(html);
+      return 'string';
+    },
+    rejectClose: false
+  })
+);
+expectType<Promise<string | null>>(
+  Dialog.prompt({
+    title: title,
+    content: content,
+    label: label,
+    callback: (html) => {
+      expectType<JQuery>(html);
+      return 'string';
+    },
+    options: { jQuery: true },
+    rejectClose: false
+  })
+);
+expectType<Promise<string | null>>(
+  Dialog.prompt({
+    title: title,
+    content: content,
+    label: label,
+    callback: (html) => {
+      expectType<HTMLElement>(html);
+      return 'string';
+    },
+    options: { jQuery: false },
+    rejectClose: false
+  })
+);
+expectType<Promise<string | null>>(
+  Dialog.prompt({
+    title: title,
+    content: content,
+    label: label,
+    callback: (html) => {
+      expectType<JQuery | HTMLElement>(html);
+      return 'string';
+    },
+    options: optionsWithJQueryUnknown,
+    rejectClose: false
+  })
+);
+expectType<Promise<string>>(
+  Dialog.prompt({
+    title: title,
+    content: content,
+    label: label,
+    callback: (html) => {
+      expectType<JQuery>(html);
+      return 'string';
+    },
+    rejectClose: true
+  })
+);
+expectType<Promise<string>>(
+  Dialog.prompt({
+    title: title,
+    content: content,
+    label: label,
+    callback: (html) => {
+      expectType<JQuery>(html);
+      return 'string';
+    },
+    options: { jQuery: true },
+    rejectClose: true
+  })
+);
+expectType<Promise<string>>(
+  Dialog.prompt({
+    title: title,
+    content: content,
+    label: label,
+    callback: (html) => {
+      expectType<HTMLElement>(html);
+      return 'string';
+    },
+    options: { jQuery: false },
+    rejectClose: true
+  })
+);
+expectType<Promise<string>>(
+  Dialog.prompt({
+    title: title,
+    content: content,
+    label: label,
+    callback: (html) => {
+      expectType<JQuery | HTMLElement>(html);
+      return 'string';
+    },
+    options: optionsWithJQueryUnknown,
+    rejectClose: true
+  })
+);
+
+expectType<Promise<string>>(
+  Dialog.prompt({
+    title: title,
+    content: content,
+    label: label,
+    callback: () => {
+      return 'string';
+    },
+    rejectClose: true
+  })
+);
+expectType<Promise<string | null>>(
+  Dialog.prompt({
+    title: title,
+    content: content,
+    label: label,
+    callback: () => {
+      return 'string';
+    },
+    rejectClose: false
+  })
+);
+expectType<Promise<string>>(
+  Dialog.prompt({
+    title: title,
+    content: content,
+    label: label,
+    callback: () => {
+      return 'string';
+    },
+    rejectClose: true
+  })
+);
+expectType<Promise<string | null>>(
+  Dialog.prompt({
+    title: title,
+    content: content,
+    label: label,
+    callback: () => {
+      return 'string';
+    },
+    rejectClose: false
+  })
+);
+expectType<Promise<string>>(
+  Dialog.prompt({
+    title: title,
+    content: content,
+    label: label,
+    callback: () => {
+      return 'string';
+    },
+    rejectClose: true
+  })
+);

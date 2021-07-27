@@ -92,18 +92,8 @@ declare class Dialog<Options extends Dialog.Options = Dialog.Options> extends Ap
    * A helper factory method to create simple confirmation dialog windows which consist of simple yes/no prompts.
    * If you require more flexibility, a custom Dialog instance is preferred.
    *
-   * @param title       - The confirmation window title
-   * @param content     - The confirmation message
-   * @param yes         - Callback function upon yes
-   * @param no          - Callback function upon no
-   * @param render      - A function to call when the dialog is rendered
-   * @param defaultYes  - Make "yes" the default choice?
-   *                      (default: `true`)
-   * @param rejectClose - Reject the Promise if the Dialog is closed without making a choice.
-   *                      (default: `false`)
-   * @param options     - Additional rendering options passed to the Dialog
-   *                      (default: `{}`)
-   *
+   * @param config - Confirmation dialog configuration
+   *                 (defaultValue: `{}`)
    * @returns A promise which resolves once the user makes a choice or closes the window
    *
    * @example
@@ -117,119 +107,40 @@ declare class Dialog<Options extends Dialog.Options = Dialog.Options> extends Ap
    * });
    * ```
    */
-  static confirm<Yes = true, No = false, RejectClose extends boolean = false>({
-    title,
-    content,
-    yes,
-    no,
-    render,
-    defaultYes,
-    rejectClose,
-    options
-  }?: {
-    title: string;
-    content: string;
-    yes?: (html: JQuery) => Yes;
-    no?: (html: JQuery) => No;
-    render?: (html: JQuery) => void;
-    defaultYes?: boolean;
-    rejectClose?: RejectClose;
-    options?: Partial<Dialog.Options> & { jQuery?: true };
-  }): Promise<RejectClose extends true ? Yes | No : Yes | No | null>;
-  static confirm<Yes = true, No = false, RejectClose extends boolean = false>({
-    title,
-    content,
-    yes,
-    no,
-    render,
-    defaultYes,
-    rejectClose,
-    options
-  }?: {
-    title: string;
-    content: string;
-    yes?: (html: HTMLElement) => Yes;
-    no?: (html: HTMLElement) => No;
-    render?: (html: HTMLElement) => void;
-    defaultYes?: boolean;
-    rejectClose?: RejectClose;
-    options: Partial<Dialog.Options> & { jQuery: false };
-  }): Promise<RejectClose extends true ? Yes | No : Yes | No | null>;
-  static confirm<Yes = true, No = false, RejectClose extends boolean = false>({
-    title,
-    content,
-    yes,
-    no,
-    render,
-    defaultYes,
-    rejectClose,
-    options
-  }?: {
-    title: string;
-    content: string;
-    yes?: (html: JQuery | HTMLElement) => Yes;
-    no?: (html: JQuery | HTMLElement) => No;
-    render?: (html: JQuery | HTMLElement) => void;
-    defaultYes?: boolean;
-    rejectClose?: RejectClose;
-    options: Partial<Dialog.Options>;
-  }): Promise<RejectClose extends true ? Yes | No : Yes | No | null>;
+  static confirm<Yes = true, No = false>(
+    config: ConfirmConfig<Yes, No, JQuery> & { options?: { jQuery?: true }; rejectClose: true }
+  ): Promise<Yes | No>;
+  static confirm<Yes = true, No = false>(
+    config: ConfirmConfig<Yes, No, JQuery> & { options?: { jQuery?: true } }
+  ): Promise<Yes | No | null>;
+  static confirm<Yes = true, No = false>(
+    config: ConfirmConfig<Yes, No, HTMLElement> & { options: { jQuery: false }; rejectClose: true }
+  ): Promise<Yes | No>;
+  static confirm<Yes = true, No = false>(
+    config: ConfirmConfig<Yes, No, HTMLElement> & { options: { jQuery: false } }
+  ): Promise<Yes | No | null>;
+  static confirm<Yes = true, No = false>(
+    config: ConfirmConfig<Yes, No, JQuery | HTMLElement> & { rejectClose: true }
+  ): Promise<Yes | No>;
+  static confirm<Yes = true, No = false>(
+    config?: ConfirmConfig<Yes, No, JQuery | HTMLElement>
+  ): Promise<Yes | No | null>;
 
   /**
    * A helper factory method to display a basic "prompt" style Dialog with a single button
-   * @param title    - The confirmation window title
-   * @param content  - The confirmation message
-   * @param label    - The confirmation button text
-   * @param callback - A callback function to fire when the button is clicked
-   * @param render   - A function that fires after the dialog is rendered
-   * @param options  - Additional rendering options
+   * @param config - Dialog configuration options
    * @returns A promise which resolves when clicked, or rejects if closed
    */
-  static prompt<T>({
-    title,
-    content,
-    label,
-    callback,
-    render,
-    options
-  }?: {
-    title: string;
-    content: string;
-    label?: string;
-    callback: (html: JQuery) => T;
-    render?: (html: JQuery) => void;
-    options?: Partial<Dialog.Options> & { jQuery?: true };
-  }): Promise<T>;
-  static prompt<T>({
-    title,
-    content,
-    label,
-    callback,
-    render,
-    options
-  }?: {
-    title: string;
-    content: string;
-    label?: string;
-    callback: (html: HTMLElement) => T;
-    render?: (html: HTMLElement) => void;
-    options: Partial<Dialog.Options> & { jQuery: false };
-  }): Promise<T>;
-  static prompt<T>({
-    title,
-    content,
-    label,
-    callback,
-    render,
-    options
-  }?: {
-    title: string;
-    content: string;
-    label?: string;
-    callback: (html: JQuery | HTMLElement) => T;
-    render?: (html: JQuery | HTMLElement) => void;
-    options: Partial<Dialog.Options>;
-  }): Promise<T>;
+  static prompt<T>(
+    config: PromptConfig<T, JQuery> & { options?: { jQuery?: true }; rejectClose: false }
+  ): Promise<T | null>;
+  static prompt<T>(config: PromptConfig<T, JQuery> & { options?: { jQuery?: true } }): Promise<T>;
+  static prompt<T>(
+    config: PromptConfig<T, HTMLElement> & { options: { jQuery: false }; rejectClose: false }
+  ): Promise<T | null>;
+  static prompt<T>(config: PromptConfig<T, HTMLElement> & { options: { jQuery: false } }): Promise<T>;
+  static prompt<T>(config: PromptConfig<T, JQuery | HTMLElement> & { rejectClose: false }): Promise<T | null>;
+  static prompt<T>(config: PromptConfig<T, JQuery | HTMLElement>): Promise<T>;
 }
 
 declare namespace Dialog {
@@ -306,4 +217,98 @@ declare namespace Dialog {
      */
     jQuery: boolean;
   }
+}
+
+/**
+ * @typeParam Yes          - The value returned by the yes callback
+ * @typeParam No           - The value returned by the no callback
+ * @typeParam JQueryOrHtml - The parameter passed to the callbacks, either JQuery or HTMLElement
+ */
+interface ConfirmConfig<Yes, No, JQueryOrHtml> {
+  /**
+   * The confirmation window title
+   */
+  title?: string;
+
+  /**
+   * The confirmation message
+   */
+  content?: string;
+
+  /**
+   * Callback function upon yes
+   */
+  yes?: (html: JQueryOrHtml) => Yes;
+
+  /**
+   * Callback function upon no
+   */
+  no?: (html: JQueryOrHtml) => No;
+
+  /**
+   * A function to call when the dialog is rendered
+   */
+  render?: (html: JQueryOrHtml) => void;
+
+  /**
+   * Make "yes" the default choice?
+   * @defaultValue `true`
+   */
+  defaultYes?: boolean;
+
+  /**
+   * Reject the Promise if the Dialog is closed without making a choice.
+   * @defaultValue `false`
+   */
+  rejectClose?: boolean;
+
+  /**
+   * Additional rendering options passed to the Dialog
+   * @defaultValue `{}`
+   */
+  options?: Partial<Dialog.Options>;
+}
+
+/**
+ * @typeParam Value        - The value returned by the callback function
+ * @typeParam JQueryOrHtml - The parameter passed to the callbacks, either JQuery or HTMLElement
+ */
+interface PromptConfig<Value, JQueryOrHtml> {
+  /**
+   * The confirmation window title
+   */
+  title?: string;
+
+  /**
+   * The confirmation message
+   */
+  content?: string;
+
+  /**
+   * The confirmation button text
+   */
+  label?: string;
+
+  /**
+   * A callback function to fire when the button is clicked
+   */
+  callback: (html: JQueryOrHtml) => Value;
+
+  /**
+   * A function that fires after the dialog is rendered
+   */
+  render?: (html: JQueryOrHtml) => void;
+
+  /**
+   * Reject the promise if the dialog is closed without confirming the
+   * choice, otherwise resolve as null
+   * @defaultValue `true`
+   */
+  rejectClose?: boolean;
+
+  /**
+   * Additional rendering options
+   * @defaultValue `{}`
+   */
+  options?: Partial<Dialog.Options>;
 }
