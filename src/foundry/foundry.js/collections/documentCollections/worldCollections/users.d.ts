@@ -14,7 +14,7 @@ declare global {
      * The User entity of the currently connected user
      * @defaultValue `null`
      */
-    current: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseUser>> | null;
+    current: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseUser>>> | null;
 
     /**
      * Initialize the Map object and all its contained entities

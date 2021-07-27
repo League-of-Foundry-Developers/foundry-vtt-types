@@ -307,7 +307,7 @@ declare global {
     /**
      * The currently connected User entity, or null if Users is not yet initialized
      */
-    get user(): InstanceType<ConfiguredDocumentClass<typeof User>> | null;
+    get user(): StoredDocument<InstanceType<ConfiguredDocumentClass<typeof User>>> | null;
 
     /**
      * A convenience accessor for the currently viewed Combat encounter
