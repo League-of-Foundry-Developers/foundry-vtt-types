@@ -1,19 +1,30 @@
 /**
- * The active Player List application
+ * The UI element which displays the list of Users who are currently playing within the active World.
+ *
+ * @typeParam Options - the type of the options object
  */
-declare class PlayerList extends Application {
+import { ConfiguredDocumentClass } from '../../../types/helperTypes';
+
+declare class PlayerList<Options extends Application.Options = Application.Options> extends Application<Options> {
+  constructor(options?: Partial<Options>);
+
+  /**
+   * An internal toggle for whether or not to show offline players or hide them
+   * @defaultValue `false`
+   */
+  protected _showOffline: boolean;
+
   /**
    * @defaultValue
    * ```typescript
-   * {
-   *   ...super.defaultOptions,
-   *   id: 'players',
-   *   template: 'templates/user/players.html',
+   * mergeObject(super.defaultOptions, {
+   *   id: "players",
+   *   template: "templates/user/players.html",
    *   popOut: false
-   * }
+   * })
    * ```
    */
-  static get defaultOptions(): typeof Application['defaultOptions'];
+  static get defaultOptions(): Application.Options;
 
   /** @override */
   render(force?: boolean, options?: Application.RenderOptions): this;
@@ -27,24 +38,19 @@ declare class PlayerList extends Application {
   /**
    * Return the default context options available for the Players application
    */
-  private _getUserContextOptions(): ContextMenu.Item[];
+  protected _getUserContextOptions(): ContextMenu.Item[];
 
   /**
    * Toggle display of the Players hud setting for whether or not to display offline players
+   * @param event - The originating click event
    */
-  private _onToggleOfflinePlayers(event: JQuery.ClickEvent): void;
+  protected _onToggleOfflinePlayers(event: JQuery.ClickEvent): void;
 }
 
 declare namespace PlayerList {
-  /**
-   * Data object returned from the PlayerList getData function
-   */
   interface Data {
-    /** List of users connected to Foundry */
-    users: User[];
-    /** If to show offline users */
+    users: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof User>>>[];
     showOffline: boolean;
-    /** If to hide the player list */
     hide: boolean;
   }
 }
