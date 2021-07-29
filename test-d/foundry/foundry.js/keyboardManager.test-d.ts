@@ -1,8 +1,7 @@
 import { expectType } from 'tsd';
 
-expectType<number>(KeyboardManager.MOUSE_WHEEL_RATE_LIMIT);
-expectType<['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']>(KeyboardManager.DIGIT_KEYS);
-expectType<{
+type DigitKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
+interface MovementKeys {
   w: ['up'];
   a: ['left'];
   s: ['down'];
@@ -23,13 +22,18 @@ expectType<{
   Numpad7: ['up', 'left'];
   Numpad8: ['up'];
   Numpad9: ['up', 'right'];
-}>(KeyboardManager.MOVEMENT_KEYS);
-expectType<{
+}
+interface ZoomKeys {
   PageUp: 'in';
   PageDown: 'out';
   NumpadAdd: 'in';
   NumpadSubtract: 'out';
-}>(KeyboardManager.ZOOM_KEYS);
+}
+
+expectType<50>(KeyboardManager.MOUSE_WHEEL_RATE_LIMIT);
+expectType<DigitKeys>(KeyboardManager.DIGIT_KEYS);
+expectType<MovementKeys>(KeyboardManager.MOVEMENT_KEYS);
+expectType<ZoomKeys>(KeyboardManager.ZOOM_KEYS);
 
 declare const event: Event;
 declare const interactionEvent: PIXI.InteractionEvent;
@@ -40,7 +44,7 @@ expectType<boolean>(manager.isDown('1'));
 expectType<boolean>(manager.isCtrl(event));
 expectType<boolean>(manager.isCtrl(interactionEvent));
 expectType<string>(manager.getKey(keyboardEvent));
-expectType<typeof KeyboardManager.MOVEMENT_KEYS>(manager.moveKeys);
-expectType<typeof KeyboardManager.DIGIT_KEYS>(manager.digitKeys);
-expectType<typeof KeyboardManager.ZOOM_KEYS>(manager.zoomKeys);
+expectType<MovementKeys>(manager.moveKeys);
+expectType<DigitKeys>(manager.digitKeys);
+expectType<ZoomKeys>(manager.zoomKeys);
 expectType<boolean>(manager.hasFocus);
