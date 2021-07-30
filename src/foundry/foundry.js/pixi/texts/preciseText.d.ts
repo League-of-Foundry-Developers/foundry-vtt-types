@@ -3,6 +3,8 @@
  * At default resolution Text often looks blurry or fuzzy.
  */
 declare class PreciseText extends PIXI.Text {
+  constructor(...args: ConstructorParameters<typeof PIXI.Text>);
+
   _autoResolution: false;
   _resolution: 2;
 }
