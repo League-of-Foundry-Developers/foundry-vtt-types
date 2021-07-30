@@ -1,19 +1,11 @@
-// TODO: Remove when updating this class!!!
-// eslint-disable-next-line
-// @ts-nocheck
-
 /**
  * The base grid class.
  * This double-dips to implement the "gridless" option
  */
 declare class BaseGrid extends PIXI.Container {
-  constructor(options: {
-    dimensions: Canvas['dimensions'];
-    color: string;
-    alpha: Scene['data']['gridAlpha'];
-    columns?: boolean;
-    even?: boolean;
-  });
+  constructor(options: BaseGrid.GridOptions);
+
+  options: BaseGrid.GridOptions;
 
   /**
    * Grid Unit Width
@@ -34,34 +26,13 @@ declare class BaseGrid extends PIXI.Container {
 
   /**
    * Highlight a grid position for a certain coordinates
-   * @param layer  - The highlight layer to use
-   * @param x      - The x-coordinate of the highlighted position
-   * @param y      - The y-coordinate of the highlighted position
-   * @param color  - The hex fill color of the highlight
-   *                 (default: `0x33BBFF`)
-   * @param border - The hex border color of the highlight
-   *                 (default: `null`)
-   * @param alpha  - The opacity of the highlight
-   *                 (default: `0.25`)
-   * @param shape  - A predefined shape to highlight
-   *                 (default: `null`)
+   * @param layer   - The highlight layer to use
+   * @param options - (default: `{}`)
    */
-  highlightGridPosition(
-    layer: GridHighlight,
-    options?: {
-      x?: number;
-      y?: number;
-      color?: number;
-      border?: number | null;
-      alpha?: number;
-      shape?: PIXI.Polygon | null;
-    }
-  ): void;
+  highlightGridPosition(layer: GridHighlight, options?: BaseGrid.HighlightGridPositionOptions): void;
 
   /**
    * Given a pair of coordinates (x, y) - return the top-left of the grid square which contains that point
-   * @param x - The x-coordinate
-   * @param y - The y-coordinate
    * @returns An Array [x, y] of the top-left coordinate of the square which contains (x, y)
    */
   getTopLeft(x: number, y: number): PointArray;
@@ -87,14 +58,14 @@ declare class BaseGrid extends PIXI.Container {
    *                   (default: `null`)
    * @returns An object containing the coordinates of the snapped location
    */
-  getSnappedPosition(x: number, y: number, interval: number | null): { x: number; y: number };
+  getSnappedPosition(x: number, y: number, interval?: number | null): { x: number; y: number };
 
   /**
    * Given a pair of pixel coordinates, return the grid position as an Array.
    * Always round down to the nearest grid position so the pixels are within the grid space (from top-left).
    * @param x - The x-coordinate pixel position
    * @param y - The y-coordinate pixel position
-   * @returns An array [x, y] representing the position in grid units
+   * @returns An array representing the position in grid units
    */
   getGridPositionFromPixels(x: number, y: number): PointArray;
 
@@ -103,7 +74,7 @@ declare class BaseGrid extends PIXI.Container {
    * Always round up to a whole pixel so the pixel is within the grid space (from top-left).
    * @param x - The x-coordinate grid position
    * @param y - The y-coordinate grid position
-   * @returns An array [x, y] representing the position in pixels
+   * @returns An array representing the position in pixels
    */
   getPixelsFromGridPosition(x: number, y: number): PointArray;
 
@@ -113,11 +84,8 @@ declare class BaseGrid extends PIXI.Container {
    * @param y  - The starting y-coordinate in pixels
    * @param dx - The number of grid positions to shift horizontally
    * @param dy - The number of grid positions to shift vertically
-   * @returns An array [x, y] representing the new position in pixels
    */
   shiftPosition(x: number, y: number, dx: number, dy: number): PointArray;
-
-  /* -------------------------------------------- */
 
   /**
    * Measure the distance traversed over an array of measured segments
@@ -126,12 +94,7 @@ declare class BaseGrid extends PIXI.Container {
    *                   (default: `{}`)
    * @returns An Array of distance measurements for each segment
    */
-  measureDistances(
-    segments: { ray: Ray; label?: Ruler['labels']['children'][number] }[],
-    options?: { gridSpaces?: boolean }
-  ): number[];
-
-  /* -------------------------------------------- */
+  measureDistances(segments: GridLayer.Segment[], options?: BaseGrid.MeasureDistancesOptions): number[];
 
   /**
    * Get the grid row and column positions which are neighbors of a certain position
@@ -140,4 +103,54 @@ declare class BaseGrid extends PIXI.Container {
    * @returns An array of grid positions which are neighbors of the row and column
    */
   getNeighbors(row: number, col: number): [number, number][];
+}
+
+declare namespace BaseGrid {
+  interface GridOptions {
+    dimensions: Canvas['dimensions'];
+    color: string;
+    alpha: Scene['data']['gridAlpha'];
+    columns?: boolean;
+    even?: boolean;
+  }
+
+  interface HighlightGridPositionOptions {
+    /**
+     * The x-coordinate of the highlighted position
+     */
+    x?: number;
+
+    /**
+     * The y-coordinate of the highlighted position
+     */
+    y?: number;
+
+    /**
+     * The hex fill color of the highlight
+     * @defaultValue `0x33BBFF`
+     */
+    color?: number;
+
+    /**
+     * The hex border color of the highlight
+     * @defaultValue `null`
+     */
+    border?: number | null;
+
+    /**
+     * The opacity of the highlight
+     * @defaultValue `0.25`
+     */
+    alpha?: number;
+
+    /**
+     * A predefined shape to highlight
+     * @defaultValue `null`
+     */
+    shape?: PIXI.Polygon | null;
+  }
+
+  interface MeasureDistancesOptions {
+    gridSpaces?: boolean;
+  }
 }

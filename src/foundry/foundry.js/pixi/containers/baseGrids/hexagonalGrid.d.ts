@@ -1,11 +1,9 @@
-// TODO: Remove when updating this class!!!
-// eslint-disable-next-line
-// @ts-nocheck
-
 /**
  * Construct a hexagonal grid
  */
 declare class HexagonalGrid extends BaseGrid {
+  constructor(options: BaseGrid.GridOptions);
+
   columns: boolean;
 
   even: boolean;
@@ -13,13 +11,6 @@ declare class HexagonalGrid extends BaseGrid {
   h: number;
 
   w: number;
-  constructor(options: {
-    dimensions: Canvas['dimensions'];
-    color: string;
-    alpha: Scene['data']['gridAlpha'];
-    columns?: boolean;
-    even?: boolean;
-  });
 
   /**
    * A matrix of x and y offsets which is multiplied by the width/height vector to get pointy-top polygon coordinates
@@ -46,7 +37,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @param w - An optional polygon width
    * @param h - An optional polygon height
    */
-  getPolygon(x: number, y: number, w: number, h: number): PointArray[];
+  getPolygon(x: number, y: number, w?: number, h?: number): PointArray[];
 
   protected _drawGrid(): PIXI.Graphics;
 
@@ -54,45 +45,47 @@ declare class HexagonalGrid extends BaseGrid {
 
   protected _drawColumns(grid: PIXI.Graphics, nrows: number, ncols: number): void;
 
-  /** @override */
-  getGridPositionFromPixels(x: number, y: number): PointArray;
+  /**
+   * Get the position in grid space from a pixel coordinate.
+   * @param x      - The origin x-coordinate
+   * @param y      - The origin y-coordinate
+   * @param method - The rounding method applied
+   *                 (default: `"floor"`)
+   * @returns The row, column combination
+   */
+  getGridPositionFromPixels(x: number, y: number, method?: 'floor' | 'ceil' | 'round'): PointArray;
 
   /** @override */
   getPixelsFromGridPosition(row: number, col: number): PointArray;
 
   /** @override */
-  getTopLeft(x: number, y: number): PointArray;
-
-  /** @override */
   getCenter(x: number, y: number): PointArray;
 
-  /** @override  */
-  getSnappedPosition(x: number, y: number, interval: number): { x: number; y: number };
+  /**
+   * @override
+   * @param interval - (default: `1`)
+   */
+  getSnappedPosition(x: number, y: number, interval?: number | null): { x: number; y: number };
+
+  _getClosestVertex(xc: number, yc: number, ox: number, oy: number): { x: number; y: number };
 
   /** @override */
   shiftPosition(x: number, y: number, dx: number, dy: number): PointArray;
 
-  /** @override */
-  highlightGridPosition(
-    layer: GridHighlight,
-    options: {
-      x: number;
-      y: number;
-      color: number;
-      border: number;
-      alpha: number;
-      shape: PIXI.Polygon;
-    }
-  ): void;
+  /**
+   * @override
+   * @param options - (default: `{}`)
+   */
+  highlightGridPosition(layer: GridHighlight, options?: BaseGrid.HighlightGridPositionOptions): void;
 
   /** @override */
   getNeighbors(row: number, col: number): [number, number][];
 
-  /** @override */
-  measureDistances(
-    segments: { ray: Ray; label?: Ruler['labels']['children'][number] }[],
-    options?: { gridSpaces?: boolean }
-  ): number[];
+  /**
+   * @override
+   * @param options - (default: `{}`)
+   */
+  measureDistances(segments: GridLayer.Segment[], options?: BaseGrid.MeasureDistancesOptions): number[];
 
   /**
    * Convert an offset coordinate (row, col) into a cube coordinate (q, r, s).
@@ -119,22 +112,10 @@ declare class HexagonalGrid extends BaseGrid {
    * @param x - The x-coordinate in pixels
    * @param y - The y-coordinate in pixels
    */
-  static pixelToCube(x: number, y: number): [number, number, number];
+  static pixelToCube(x: number, y: number): [q: number, r: number, s: number];
 
   /**
    * Measure the distance in hexagons between two cube coordinates
    */
-  static cubeDistance(a: number, b: number): number;
-
-  /**
-   * @deprecated since 0.7.4
-   * @see HexagonalGrid#getPolygon
-   */
-  getFlatHexPolygon(x: number, y: number, w: number, h: number): PointArray[];
-
-  /**
-   * @deprecated since 0.7.4
-   * @see HexagonalGrid.getPolygon
-   */
-  getPointyHexPolygon(x: number, y: number, w: number, h: number): PointArray[];
+  static cubeDistance(a: { q: number; r: number; s: number }, b: { q: number; r: number; s: number }): number;
 }

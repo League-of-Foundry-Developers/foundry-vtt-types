@@ -118,10 +118,7 @@ declare class GridLayer extends CanvasLayer<GridLayer.LayerOptions> {
    * @param segments - An array of measured segments
    * @param options  - Additional options which modify the measurement
    */
-  measureDistances(
-    segments: { ray: Ray; label?: Ruler['labels']['children'][number] }[],
-    options?: { gridSpaces?: boolean }
-  ): number[];
+  measureDistances(segments: GridLayer.Segment[], options?: { gridSpaces?: boolean }): number[];
 
   /**
    * Define a new Highlight graphic
@@ -168,6 +165,11 @@ declare namespace GridLayer {
   interface LayerOptions extends CanvasLayer.LayerOptions {
     name: 'grid';
     zIndex: 30;
+  }
+
+  interface Segment {
+    ray: Ray;
+    label?: Ruler['labels']['children'][number];
   }
 }
 

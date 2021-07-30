@@ -5,10 +5,11 @@ declare class SquareGrid extends BaseGrid {
   /** @override */
   draw(): this;
 
-  _drawLine(points: [number, number, number, number], lineColor: number, lineAlpha: number): PIXI.Graphics;
-
-  /** @override */
-  getTopLeft(x: number, y: number): PointArray;
+  _drawLine(
+    points: [x1: number, y1: number, x2: number, y2: number],
+    lineColor: number,
+    lineAlpha: number
+  ): PIXI.Graphics;
 
   /** @override */
   getCenter(x: number, y: number): PointArray;
@@ -19,7 +20,10 @@ declare class SquareGrid extends BaseGrid {
   /** @override */
   getPixelsFromGridPosition(row: number, col: number): PointArray;
 
-  /** @override */
+  /**
+   * @override
+   * @param interval - (default: `1`)
+   */
   getSnappedPosition(x: number, y: number, interval?: number | null): { x: number; y: number };
 
   /**
@@ -33,24 +37,17 @@ declare class SquareGrid extends BaseGrid {
 
   protected _getNearestVertex(x: number, y: number): PointArray;
 
-  /** @override */
-  highlightGridPosition(
-    layer: GridHighlight,
-    options?: {
-      x: number;
-      y: number;
-      color: number;
-      border: number;
-      alpha: number;
-      shape: PIXI.Polygon;
-    }
-  ): void;
+  /**
+   * @override
+   * @param options - (default: `{}`)
+   */
+  highlightGridPosition(layer: GridHighlight, options?: BaseGrid.HighlightGridPositionOptions): void;
 
-  /** @override */
-  measureDistances(
-    segments: { ray: Ray; label?: Ruler['labels']['children'][number] }[],
-    options?: { gridSpaces?: boolean }
-  ): number[];
+  /**
+   * @override
+   * @param options - (default: `{}`)
+   */
+  measureDistances(segments: GridLayer.Segment[], options?: BaseGrid.MeasureDistancesOptions): number[];
 
   /** @override */
   getNeighbors(row: number, col: number): [number, number][];
