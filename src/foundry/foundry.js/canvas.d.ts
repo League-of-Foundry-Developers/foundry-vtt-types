@@ -62,7 +62,7 @@ declare class Canvas {
   /**
    * @defaultValue `null`
    */
-  scene: Scene | null;
+  scene: StoredDocument<Scene> | null;
 
   /**
    * @defaultValue `null`
