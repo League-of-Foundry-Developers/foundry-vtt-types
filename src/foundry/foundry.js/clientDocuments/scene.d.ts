@@ -42,7 +42,8 @@ declare global {
     /**
      * Track the viewed position of each scene (while in memory only, not persisted)
      * When switching back to a previously viewed scene, we can automatically pan to the previous position.
-     * @remarks This is intentional public because it is used in Canvas._initializeCanvasPosition() and Canvas.pan()
+     * @defaultValue `{}`
+     * @remarks This is intentionally public because it is used in Canvas._initializeCanvasPosition() and Canvas.pan()
      */
     _viewPosition: { x: number; y: number; scale: number } | {};
 
@@ -71,7 +72,6 @@ declare global {
      */
     get playlist(): InstanceType<ConfiguredDocumentClass<typeof Playlist>> | null;
 
-    // TODO: Use PlaylistSound instead of BasePlaylistSound
     /**
      * A reference to the PlaylistSound document which should automatically play for this Scene, if any
      */
@@ -426,7 +426,6 @@ declare global {
       userId: string
     ): void;
 
-    // TODO: Improve when `pack` is typed (see Document.toCompendium) 9716
     /** @override */
     toCompendium(pack?: CompendiumCollection<CompendiumCollection.Metadata>): Omit<
       foundry.data.SceneData['_source'],
@@ -463,5 +462,3 @@ interface ThumbnailCreationData {
    */
   height: number;
 }
-
-export {};

@@ -8,6 +8,10 @@ import { BaseScene } from './baseScene';
  * The base Tile model definition which defines common behavior of an Tile document between both client and server.
  */
 export declare class BaseTile extends Document<data.TileData, InstanceType<ConfiguredDocumentClass<typeof BaseScene>>> {
+  /** @override */
+  static get schema(): typeof data.TileData;
+
+  /** @override */
   static get metadata(): Merge<
     DocumentMetadata,
     {

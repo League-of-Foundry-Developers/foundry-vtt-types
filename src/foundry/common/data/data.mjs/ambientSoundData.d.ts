@@ -1,7 +1,6 @@
 import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import DocumentData from '../../abstract/data.mjs';
 import * as documents from '../../documents.mjs';
-import { BaseAmbientSound } from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 import { DarknessActivation, DarknessActivationConstructorData } from './darknessActivation';
 
@@ -10,8 +9,8 @@ interface AmbientSoundDataSchema extends DocumentSchema {
   type: DocumentField<string> & {
     type: typeof String;
     required: true;
-    default: typeof BaseAmbientSound['metadata']['types'][0];
-    validate: (t: unknown) => t is ValueOf<typeof BaseAmbientSound['metadata']['types']>;
+    default: typeof documents.BaseAmbientSound['metadata']['types'][0];
+    validate: (t: unknown) => t is ValueOf<typeof documents.BaseAmbientSound['metadata']['types']>;
     validationError: 'Invalid {name} {field} which must be a value in BaseAmbientSound.metadata.types';
   };
   x: typeof fields.REQUIRED_NUMBER;
@@ -39,7 +38,7 @@ interface AmbientSoundDataProperties {
   /**
    * @defaultValue `documents.BaseAmbientSound.metadata.types[0]`
    */
-  type: ValueOf<typeof BaseAmbientSound['metadata']['types']>;
+  type: ValueOf<typeof documents.BaseAmbientSound['metadata']['types']>;
 
   /**
    * @defaultValue `0`
@@ -104,7 +103,7 @@ interface AmbientSoundDataConstructorData {
   /**
    * @defaultValue `documents.BaseAmbientSound.metadata.types[0]`
    */
-  type?: ValueOf<typeof BaseAmbientSound['metadata']['types']> | null;
+  type?: ValueOf<typeof documents.BaseAmbientSound['metadata']['types']> | null;
 
   /**
    * @defaultValue `0`

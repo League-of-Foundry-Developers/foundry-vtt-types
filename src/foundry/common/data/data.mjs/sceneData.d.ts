@@ -177,7 +177,7 @@ interface SceneDataProperties {
 
   /**
    * The color of the canvas which is displayed behind the scene background
-   * @defaultValue `#999999`
+   * @defaultValue `'#999999'`
    */
   backgroundColor: string | null;
 
@@ -207,7 +207,7 @@ interface SceneDataProperties {
 
   /**
    * A string representing the color used to render the grid lines
-   * @defaultValue `#000000`
+   * @defaultValue `'#000000'`
    */
   gridColor: string | null;
 
@@ -618,17 +618,17 @@ export declare class SceneData extends DocumentData<
   SceneDataConstructorData,
   documents.BaseScene
 > {
+  /**
+   * @remarks This override does not exist in foundry but is added here to prevent runtime errors.
+   */
+  constructor(data: SceneDataConstructorData, document?: documents.BaseScene | null);
+
   static defineSchema(): SceneDataSchema;
 
   /** @override */
   protected _initialize(): void;
 
   size: number;
-
-  /**
-   * @remarks This override does not exist in foundry but is added here to prepend runtime errors.
-   */
-  constructor(data: SceneDataConstructorData, document?: documents.BaseScene | null);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
