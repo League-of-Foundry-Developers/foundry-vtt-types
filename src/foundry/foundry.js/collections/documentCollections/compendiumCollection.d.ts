@@ -54,10 +54,13 @@ declare global {
     /** A convenience reference to the label which should be used as the title for the Compendium pack. */
     get title(): string;
 
-    get(key: string, { strict }: { strict: true }): DocumentInstanceForCompendiumMetadata<T>;
-    get(key: string, { strict }?: { strict?: false }): DocumentInstanceForCompendiumMetadata<T> | undefined;
+    get(key: string, { strict }: { strict: true }): StoredDocument<DocumentInstanceForCompendiumMetadata<T>>;
+    get(
+      key: string,
+      { strict }?: { strict?: false }
+    ): StoredDocument<DocumentInstanceForCompendiumMetadata<T>> | undefined;
 
-    set(id: string, document: DocumentInstanceForCompendiumMetadata<T>): this;
+    set(id: string, document: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>): this;
 
     delete: (id: string) => boolean;
 
@@ -70,7 +73,7 @@ declare global {
      * @param id -  The requested Document id
      * @returns The retrieved Document instance
      */
-    getDocument(id: string): Promise<DocumentInstanceForCompendiumMetadata<T> | undefined | null>;
+    getDocument(id: string): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>> | undefined | null>;
 
     /**
      * Load multiple documents from the Compendium pack using a provided query object.
@@ -78,7 +81,7 @@ declare global {
      *                default: `{}`
      * @returns The retrieved Document instances
      */
-    getDocuments(query?: IdQuery): Promise<DocumentInstanceForCompendiumMetadata<T>[]>;
+    getDocuments(query?: IdQuery): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
 
     /**
      * Import a Document into this Compendium Collection.
@@ -87,19 +90,23 @@ declare global {
      */
     importDocument(
       document: DocumentInstanceForCompendiumMetadata<T>
-    ): Promise<DocumentInstanceForCompendiumMetadata<T> | undefined>;
+    ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>> | undefined>;
 
     /**
      * Fully import the contents of a Compendium pack into a World folder.
      * @returns The imported Documents, now existing within the World
      */
-    importAll({ folderId, folderName, options }: ImportAllOptions): Promise<DocumentInstanceForCompendiumMetadata<T>[]>;
+    importAll({
+      folderId,
+      folderName,
+      options
+    }: ImportAllOptions): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
 
     /**
      * Add a Document to the index, capturing it's relevant index attributes
      * @param document -The document to index
      */
-    indexDocument(document: DocumentInstanceForCompendiumMetadata<T>): void;
+    indexDocument(document: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>): void;
 
     /**
      * Create a new Compendium Collection using provided metadata.
@@ -145,21 +152,21 @@ declare global {
     migrate(options?: object): Promise<this>;
 
     _onCreateDocuments(
-      documents: DocumentInstanceForCompendiumMetadata<T>[],
-      result: DocumentInstanceForCompendiumMetadata<T>['data']['_source'][],
+      documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
+      result: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>['data']['_source'][],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
     _onUpdateDocuments(
-      documents: DocumentInstanceForCompendiumMetadata<T>[],
-      result: DeepPartial<DocumentInstanceForCompendiumMetadata<T>>[],
+      documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
+      result: DeepPartial<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>>[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
     _onDeleteDocuments(
-      documents: DocumentInstanceForCompendiumMetadata<T>[],
+      documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
       result: string[],
       options: DocumentModificationOptions,
       userId: string
@@ -169,7 +176,7 @@ declare global {
      * Follow-up actions taken when Documents within this Compendium pack are modified
      */
     protected _onModifyContents(
-      documents: DocumentInstanceForCompendiumMetadata<T>[],
+      documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -181,7 +188,7 @@ declare global {
     getContent(): ReturnType<this['getDocuments']>;
 
     /** @deprecated since 0.8.0 */
-    getEntry(id: string): Promise<DocumentInstanceForCompendiumMetadata<T>['data']>;
+    getEntry(id: string): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>['data']>;
 
     /** @deprecated since 0.8.0 */
     getEntity(id: string): ReturnType<this['getDocument']>;

@@ -8,7 +8,7 @@ declare global {
    * @see {@link FogExploration} The FogExploration document
    */
   class Folders extends WorldCollection<typeof foundry.documents.BaseFolder, 'Folders'> {
-    constructor(data?: InstanceType<ConfiguredDocumentClass<typeof Folder>>['data']['_source'][]);
+    constructor(data?: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Folder>>>['data']['_source'][]);
 
     /**
      * Track which Folders are currently expanded in the UI
