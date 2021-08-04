@@ -1,5 +1,6 @@
 import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
+import * as data from '../data/data.mjs';
 import { BaseAmbientLight } from './baseAmbientLight';
 import { BaseAmbientSound } from './baseAmbientSound';
 import { BaseDrawing } from './baseDrawing';
@@ -12,7 +13,11 @@ import { BaseWall } from './baseWall';
 /**
  * The base Scene model definition which defines common behavior of an Scene document between both client and server.
  */
-export declare class BaseScene extends Document<any, any> {
+export declare class BaseScene extends Document<data.SceneData> {
+  /** @override */
+  static get schema(): typeof data.SceneData;
+
+  /** @override */
   static get metadata(): Merge<
     DocumentMetadata,
     {
@@ -32,4 +37,83 @@ export declare class BaseScene extends Document<any, any> {
       };
     }
   >;
+
+  /**
+   * A reference to the Collection of Drawing instances in the Scene document, indexed by _id.
+   */
+  get drawings(): this['data']['drawings'];
+
+  /**
+   * A reference to the Collection of AmbientLight instances in the Scene document, indexed by _id.
+   */
+  get lights(): this['data']['lights'];
+
+  /**
+   * A reference to the Collection of Note instances in the Scene document, indexed by _id.
+   */
+  get notes(): this['data']['notes'];
+
+  /**
+   * A reference to the Collection of AmbientSound instances in the Scene document, indexed by _id.
+   */
+  get sounds(): this['data']['sounds'];
+
+  /**
+   * A reference to the Collection of MeasuredTemplate instances in the Scene document, indexed by _id.
+   */
+  get templates(): this['data']['templates'];
+
+  /**
+   * A reference to the Collection of Token instances in the Scene document, indexed by _id.
+   */
+  get tokens(): this['data']['tokens'];
+
+  /**
+   * A reference to the Collection of Tile instances in the Scene document, indexed by _id.
+   */
+  get tiles(): this['data']['tiles'];
+
+  /**
+   * A reference to the Collection of Wall instances in the Scene document, indexed by _id.
+   */
+  get walls(): this['data']['walls'];
+
+  /**
+   * Get the Canvas dimensions which would be used to display this Scene.
+   * Apply padding to enlarge the playable space and round to the nearest 2x grid size to ensure symmetry.
+   * @returns An object describing the configured dimensions
+   */
+  static getDimensions({
+    width,
+    height,
+    size,
+    gridDistance,
+    padding,
+    shiftX,
+    shiftY
+  }?: Partial<DimensionsArguments>): Dimensions;
+}
+
+interface DimensionsArguments {
+  width: number;
+  height: number;
+  size: number;
+  gridDistance: number;
+  padding: number;
+  shiftX: number;
+  shiftY: number;
+}
+
+interface Dimensions {
+  sceneWidth: number;
+  sceneHeight: number;
+  size: number;
+  distance: number;
+  shiftX: number;
+  shiftY: number;
+  ratio: number;
+  paddingX: number;
+  width: number;
+  paddingY: number;
+  height: number;
 }

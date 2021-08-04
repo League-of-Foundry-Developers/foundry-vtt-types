@@ -1580,7 +1580,7 @@ declare global {
       /**
        * @defaultValue `AmbientSoundDocument`
        */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseAmbientSound>; // TODO: AmbientSoundDocument
+      documentClass: ConfiguredDocumentClassOrDefault<typeof AmbientSoundDocument>;
 
       /**
        * @defaultValue `AmbientSound`
@@ -1704,7 +1704,7 @@ declare global {
       /**
        * @defaultValue `NoteDocument`
        */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseNote>; // TODO: NodeDocument
+      documentClass: ConfiguredDocumentClassOrDefault<typeof NoteDocument>;
 
       /**
        * @defaultValue `Note`
@@ -1729,7 +1729,7 @@ declare global {
       /**
        * @defaultValue `TileDocument`
        */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseTile>; // TODO: TileDocument
+      documentClass: ConfiguredDocumentClassOrDefault<typeof TileDocument>;
 
       /**
        * @defaultValue `Tile`
@@ -1779,7 +1779,7 @@ declare global {
       /**
        * @defaultValue `WallDocument`
        */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseWall>; // TODO: WallDocument
+      documentClass: ConfiguredDocumentClassOrDefault<typeof WallDocument>;
 
       /**
        * @defaultValue `Wall`

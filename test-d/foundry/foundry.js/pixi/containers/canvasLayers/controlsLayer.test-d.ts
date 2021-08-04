@@ -4,6 +4,8 @@ expectType<undefined>(ControlsLayer.instance);
 expectType<ControlsLayer.LayerOptions>(ControlsLayer.layerOptions);
 expectType<''>(ControlsLayer.layerOptions.name);
 
+declare const wall: Wall;
+
 const layer = new ControlsLayer();
 expectType<''>(layer.options.name);
 expectType<ControlsLayer.LayerOptions>(layer.options);
@@ -18,7 +20,7 @@ expectType<Ruler | null>(layer.getRulerForUser('my-user-id'));
 expectType<ControlsLayer>(layer.draw());
 expectType<void>(layer.drawCursors());
 expectType<void>(layer.drawDoors());
-expectType<Promise<DoorControl> | null>(layer.createDoorControl(new Wall(new foundry.documents.BaseWall()))); // Todo: Replace with WallDocument
+expectType<Promise<DoorControl> | null>(layer.createDoorControl(wall));
 expectType<void>(layer.drawRulers());
 expectType<void>(layer.drawSelect({ x: 100, y: 500, width: 200, height: 200 }));
 expectType<void>(layer.deactivate());
