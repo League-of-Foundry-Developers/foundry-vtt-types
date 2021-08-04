@@ -8,9 +8,9 @@ const layer = new BackgroundLayer();
 expectType<'background'>(layer.options.name);
 expectType<PIXI.Graphics | undefined>(layer.outline);
 expectType<Promise<BackgroundLayer>>(layer.draw());
-expectType<EmbeddedCollection<typeof foundry.documents.BaseTile, foundry.data.SceneData>>(layer.getDocuments()); // TODO: Replace with TileDocument once it is available
+expectType<EmbeddedCollection<typeof TileDocument, foundry.data.SceneData>>(layer.getDocuments());
 expectType<number>(layer.getZIndex());
-expectType<void>(layer.storeHistory('create', new foundry.documents.BaseTile().data));
-expectType<void>(layer.storeHistory('update', new foundry.documents.BaseTile().data));
-expectType<void>(layer.storeHistory('delete', new foundry.documents.BaseTile().data));
-expectError(layer.storeHistory('new', new foundry.documents.BaseTile().data));
+expectType<void>(layer.storeHistory('create', new TileDocument().data));
+expectType<void>(layer.storeHistory('update', new TileDocument().data));
+expectType<void>(layer.storeHistory('delete', new TileDocument().data));
+expectError(layer.storeHistory('new', new TileDocument().data));

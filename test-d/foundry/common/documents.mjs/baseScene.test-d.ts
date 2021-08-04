@@ -70,13 +70,9 @@ expectType<foundry.documents.BaseScene>(scene);
 
 expectType<EmbeddedCollection<typeof DrawingDocument, foundry.data.SceneData>>(scene.drawings);
 expectType<EmbeddedCollection<typeof AmbientLightDocument, foundry.data.SceneData>>(scene.lights);
-// TODO: Replace with NoteDocument
-expectType<EmbeddedCollection<typeof foundry.documents.BaseNote, foundry.data.SceneData>>(scene.notes);
-// TODO: Replace with AmbientSoundDocument
-expectType<EmbeddedCollection<typeof foundry.documents.BaseAmbientSound, foundry.data.SceneData>>(scene.sounds);
+expectType<EmbeddedCollection<typeof NoteDocument, foundry.data.SceneData>>(scene.notes);
+expectType<EmbeddedCollection<typeof AmbientSoundDocument, foundry.data.SceneData>>(scene.sounds);
 expectType<EmbeddedCollection<typeof MeasuredTemplateDocument, foundry.data.SceneData>>(scene.templates);
 expectType<EmbeddedCollection<typeof TokenDocument, foundry.data.SceneData>>(scene.tokens);
-// TODO: Replace with TileDocument
-expectType<EmbeddedCollection<typeof foundry.documents.BaseTile, foundry.data.SceneData>>(scene.tiles);
-// TODO: Replace with WallDocument
-expectType<EmbeddedCollection<typeof foundry.documents.BaseWall, foundry.data.SceneData>>(scene.walls);
+expectType<EmbeddedCollection<typeof TileDocument, foundry.data.SceneData>>(scene.tiles);
+expectType<EmbeddedCollection<typeof WallDocument, foundry.data.SceneData>>(scene.walls);

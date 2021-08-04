@@ -1,6 +1,7 @@
 import { expectType } from 'tsd';
 
-const aWall = new Wall(new foundry.documents.BaseWall());
+declare const doc: WallDocument;
+const aWall = new Wall(doc);
 
 expectType<'Wall'>(WallsLayer.documentName);
 expectType<WallsLayer | undefined>(WallsLayer.instance);
@@ -65,9 +66,9 @@ expectType<void>(layer.highlightControlledSegments());
 expectType<number>(layer.releaseAll());
 expectType<number>(layer.releaseAll({ trigger: true }));
 
-expectType<Promise<foundry.documents.BaseWall[]>>(layer.pasteObjects({ x: 900, y: 800 }));
-expectType<Promise<foundry.documents.BaseWall[]>>(layer.pasteObjects({ x: 900, y: 800 }, {}));
-expectType<Promise<foundry.documents.BaseWall[]>>(layer.pasteObjects({ x: 900, y: 800 }, { hidden: true, snap: true }));
+expectType<Promise<WallDocument[]>>(layer.pasteObjects({ x: 900, y: 800 }));
+expectType<Promise<WallDocument[]>>(layer.pasteObjects({ x: 900, y: 800 }, {}));
+expectType<Promise<WallDocument[]>>(layer.pasteObjects({ x: 900, y: 800 }, { hidden: true, snap: true }));
 
 expectType<{ rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon }>(layer.computePolygon({ x: 100, y: 300 }, 400));
 expectType<{ rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon }>(layer.computePolygon({ x: 100, y: 300 }, 400, {}));

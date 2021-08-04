@@ -218,14 +218,14 @@ declare global {
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseNote>>[], // TODO Replace with NoteDocument
+      documents: InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>[],
       result: DeepPartial<PropertiesToSource<NoteDataProperties>>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseAmbientSound>>[], // TODO Replace with AmbientSoundDocument
+      documents: InstanceType<ConfiguredDocumentClass<typeof AmbientSoundDocument>>[],
       result: DeepPartial<PropertiesToSource<AmbientSoundDataProperties>>[],
       options: DocumentModificationContext,
       userId: string
@@ -239,14 +239,14 @@ declare global {
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseTile>>[], // TODO Replace with TileDocument
+      documents: InstanceType<ConfiguredDocumentClass<typeof TileDocument>>[],
       result: DeepPartial<PropertiesToSource<TileDataProperties>>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseWall>>[], // TODO Replace with WallDocument
+      documents: InstanceType<ConfiguredDocumentClass<typeof WallDocument>>[],
       result: DeepPartial<PropertiesToSource<WallDataProperties>>[],
       options: DocumentModificationContext,
       userId: string
@@ -326,14 +326,14 @@ declare global {
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseNote>>[], // TODO Replace with NoteDocument
+      documents: InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>[],
       result: DeepPartial<PropertiesToSource<NoteDataProperties>>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseAmbientSound>>[], // TODO Replace with AmbientSoundDocument
+      documents: InstanceType<ConfiguredDocumentClass<typeof AmbientSoundDocument>>[],
       result: DeepPartial<PropertiesToSource<AmbientSoundDataProperties>>[],
       options: DocumentModificationContext,
       userId: string
@@ -347,14 +347,14 @@ declare global {
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseTile>>[], // TODO Replace with TileDocument
+      documents: InstanceType<ConfiguredDocumentClass<typeof TileDocument>>[],
       result: DeepPartial<PropertiesToSource<TileDataProperties>>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseWall>>[], // TODO Replace with WallDocument
+      documents: InstanceType<ConfiguredDocumentClass<typeof WallDocument>>[],
       result: DeepPartial<PropertiesToSource<WallDataProperties>>[],
       options: DocumentModificationContext,
       userId: string
@@ -392,14 +392,14 @@ declare global {
     ): void;
     _onDeleteEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseNote>>[], // TODO Replace with NoteDocument
+      documents: InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>[],
       result: string[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onDeleteEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseAmbientSound>>[], // TODO Replace with AmbientSoundDocument
+      documents: InstanceType<ConfiguredDocumentClass<typeof AmbientSoundDocument>>[],
       result: string[],
       options: DocumentModificationContext,
       userId: string
@@ -413,14 +413,14 @@ declare global {
     ): void;
     _onDeleteEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseTile>>[], // TODO Replace with TileDocument
+      documents: InstanceType<ConfiguredDocumentClass<typeof TileDocument>>[],
       result: string[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onDeleteEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseWall>>[], // TODO Replace with WallDocument
+      documents: InstanceType<ConfiguredDocumentClass<typeof WallDocument>>[],
       result: string[],
       options: DocumentModificationContext,
       userId: string

@@ -11,6 +11,8 @@ export declare class BaseAmbientSound extends Document<
   data.AmbientSoundData,
   InstanceType<ConfiguredDocumentClass<typeof BaseScene>>
 > {
+  static get schema(): typeof data.AmbientSoundData;
+
   static get metadata(): Merge<
     DocumentMetadata,
     {

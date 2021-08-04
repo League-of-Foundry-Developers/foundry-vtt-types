@@ -724,7 +724,7 @@ declare global {
   }
 }
 
-interface Context<Parent extends Document<any, any> | null> {
+export interface Context<Parent extends Document<any, any> | null> {
   /**
    * A parent document within which this Document is embedded
    */

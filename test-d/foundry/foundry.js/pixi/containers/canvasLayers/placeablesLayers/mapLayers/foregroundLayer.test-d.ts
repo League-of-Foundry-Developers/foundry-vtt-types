@@ -12,6 +12,6 @@ expectType<Promise<undefined>>(layer.draw());
 expectType<ForegroundLayer>(layer.deactivate());
 expectType<Promise<ForegroundLayer>>(layer.tearDown());
 expectType<number>(layer.getZIndex());
-expectType<EmbeddedCollection<typeof foundry.documents.BaseTile, foundry.data.SceneData>>(layer.getDocuments()); // ToDo: Replace with TileDocument once it is available
+expectType<EmbeddedCollection<typeof TileDocument, foundry.data.SceneData>>(layer.getDocuments());
 expectType<void>(layer.refresh());
 expectType<void>(layer.updateOcclusion());
