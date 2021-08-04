@@ -1,9 +1,9 @@
 import { expectType } from 'tsd';
 
 expectType<PIXI.Ticker>(CanvasAnimation.ticker);
-expectType<Record<string, { fn: (dt: number) => void; context: PIXI.Container; resolve: (value: boolean) => void }>>(
-  CanvasAnimation.animations
-);
+expectType<
+  Partial<Record<string, { fn: (dt: number) => void; context: PIXI.Container; resolve: (value: boolean) => void }>>
+>(CanvasAnimation.animations);
 expectType<Promise<boolean>>(
   CanvasAnimation.animateLinear([{ parent: canvas?.stage?.pivot, attribute: 'x', to: 200 }])
 );

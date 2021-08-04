@@ -47,7 +47,7 @@ declare global {
      * An Array of pending canvas operations which should trigger on the next re-paint
      * @defaultValue `[]`
      */
-    pendingOperations: Array<[(args: any[]) => void, any, any[]]>;
+    pendingOperations: Array<[fn: (args: any[]) => void, scope: any, args: any[]]>;
 
     /**
      * A perception manager interface for batching lighting, sight, and sound updates
@@ -104,13 +104,13 @@ declare global {
     /**
      * The singleton interaction manager instance which handles mouse interaction on the Canvas.
      */
-    mouseInteractionManager: MouseInteractionManager<Exclude<this['stage'], undefined>> | undefined;
+    mouseInteractionManager: MouseInteractionManager<PIXI.Container> | undefined;
 
     /**
      * A reference to the MouseInteractionManager that is currently controlling pointer-based interaction, or null.
      * @defaultValue `null`
      */
-    currentMouseManager: MouseInteractionManager<Exclude<this['stage'], undefined>> | null;
+    currentMouseManager: MouseInteractionManager<PIXI.Container> | null;
 
     /**
      * Initialize the Canvas by creating the HTML element and PIXI application.
@@ -124,6 +124,32 @@ declare global {
     stage: PIXI.Container | undefined;
 
     protected _dragDrop: DragDrop | undefined;
+
+    background: BackgroundLayer | undefined;
+
+    drawings: DrawingsLayer | undefined;
+
+    grid: GridLayer | undefined;
+
+    walls: WallsLayer | undefined;
+
+    templates: TemplateLayer | undefined;
+
+    notes: NotesLayer | undefined;
+
+    tokens: TokenLayer | undefined;
+
+    foreground: ForegroundLayer | undefined;
+
+    sounds: SoundsLayer | undefined;
+
+    lighting: LightingLayer | undefined;
+
+    sight: SightLayer | undefined;
+
+    effects: EffectsLayer | undefined;
+
+    controls: ControlsLayer | undefined;
 
     msk: PIXI.Graphics | undefined;
 
@@ -152,32 +178,6 @@ declare global {
      * @param stage - The primary canvas stage
      */
     protected _createLayers(stage: PIXI.Container): void;
-
-    background: BackgroundLayer | undefined;
-
-    drawings: DrawingsLayer | undefined;
-
-    grid: GridLayer | undefined;
-
-    walls: WallsLayer | undefined;
-
-    templates: TemplateLayer | undefined;
-
-    notes: NotesLayer | undefined;
-
-    tokens: TokenLayer | undefined;
-
-    foreground: ForegroundLayer | undefined;
-
-    sounds: SoundsLayer | undefined;
-
-    lighting: LightingLayer | undefined;
-
-    sight: SightLayer | undefined;
-
-    effects: EffectsLayer | undefined;
-
-    controls: ControlsLayer | undefined;
 
     /**
      * When re-drawing the canvas, first tear down or discontinue some existing processes
@@ -240,7 +240,7 @@ declare global {
     getLayer(layerName: 'SightLayer'): SightLayer | null;
     getLayer(layerName: 'EffectsLayer'): EffectsLayer | null;
     getLayer(layerName: 'ControlsLayer'): ControlsLayer | null;
-    getLayer(layerName: string): null;
+    getLayer(layerName: string): CanvasLayer | null;
 
     /**
      * Given an embedded object name, get the canvas layer for that object
@@ -295,8 +295,9 @@ declare global {
 
     /**
      * Update the blur strength depending on the scale of the canvas stage
+     * @param scale - (default: `this.stage.scale.x`)
      */
-    protected updateBlur(scale: number): void;
+    protected updateBlur(scale?: number): void;
 
     /**
      * Attach event listeners to the game canvas to handle click and interaction events
@@ -404,12 +405,17 @@ declare global {
      * @param scope - The scope to which the method should be bound when called
      * @param args  - Arbitrary arguments to pass to the method when called
      */
-    addPendingOperation<S = any, A = any[]>(name: string, fn: (this: S, args: A) => void, scope: S, args: A): void;
+    addPendingOperation<S, A>(name: string, fn: (this: S, args: A) => void, scope: S, args: A): void;
 
     /**
      * Fire all pending functions that are registered in the pending operations queue and empty it.
      */
     triggerPendingOperations(): void;
+
+    /**
+     * @deprecated since 0.8.2
+     */
+    initializeSources(): void;
   }
 
   namespace Canvas {

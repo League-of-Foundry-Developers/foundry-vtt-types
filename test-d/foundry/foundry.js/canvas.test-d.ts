@@ -1,7 +1,7 @@
 import { expectAssignable, expectError, expectType } from 'tsd';
 
 const myCanvas = new Canvas();
-expectType<Scene | null>(myCanvas.scene);
+expectType<StoredDocument<Scene> | null>(myCanvas.scene);
 expectType<Canvas.Dimensions | null>(myCanvas.dimensions);
 expectType<HeadsUpDisplay | null>(myCanvas.hud);
 expectType<Array<[(args: any[]) => void, any, any[]]>>(myCanvas.pendingOperations);
@@ -23,7 +23,7 @@ expectError(Canvas.getDimensions());
 expectError(Canvas.getDimensions({}));
 const scene = canvas?.scene;
 if (scene) {
-  expectType<Canvas.Dimensions>(scene.data);
+  expectType<Canvas.Dimensions>(Canvas.getDimensions(scene.data));
 }
 expectType<Canvas.Dimensions>(
   Canvas.getDimensions({
@@ -59,7 +59,7 @@ expectType<LightingLayer | null>(myCanvas.getLayer('LightingLayer'));
 expectType<SightLayer | null>(myCanvas.getLayer('SightLayer'));
 expectType<EffectsLayer | null>(myCanvas.getLayer('EffectsLayer'));
 expectType<ControlsLayer | null>(myCanvas.getLayer('ControlsLayer'));
-expectType<null>(myCanvas.getLayer('any string'));
+expectType<CanvasLayer | null>(myCanvas.getLayer('any string'));
 
 expectType<BackgroundLayer | null>(myCanvas.getLayerByEmbeddedName('Tile'));
 expectType<DrawingsLayer | null>(myCanvas.getLayerByEmbeddedName('Drawing'));

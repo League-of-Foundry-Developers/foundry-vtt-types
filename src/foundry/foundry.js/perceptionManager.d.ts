@@ -31,12 +31,12 @@ declare class PerceptionManager {
    * The default values of update parameters.
    * When a refresh occurs, the staged parameters are reset to these initial values.
    */
-  static DEFAULTS: Options;
+  static DEFAULTS: PerceptionManager.Options;
 
   /**
    * The configured parameters for the next refresh.
    */
-  params: Options;
+  params: PerceptionManager.Options;
 
   /**
    * Cancel any pending perception refresh.
@@ -47,13 +47,13 @@ declare class PerceptionManager {
    * Schedule a perception update with requested parameters.
    * @param options - (default: `{}`)
    */
-  schedule(options?: DeepPartial<Options>): void;
+  schedule(options?: DeepPartial<PerceptionManager.Options>): void;
 
   /**
    * Perform an immediate perception update.
    * @param options - (default: `{}`)
    */
-  update(options?: DeepPartial<Options>): void;
+  update(options?: DeepPartial<PerceptionManager.Options>): void;
 
   /**
    * A helper function to perform an immediate initialization plus incremental refresh.
@@ -68,7 +68,7 @@ declare class PerceptionManager {
   /**
    * Set option flags which configure the next perception update
    */
-  protected _set(options: DeepPartial<Options>): void;
+  protected _set(options: DeepPartial<PerceptionManager.Options>): void;
 
   /**
    * Perform the perception update workflow
@@ -83,23 +83,25 @@ declare class PerceptionManager {
   protected _reset(): void;
 }
 
-interface Options {
-  lighting: {
-    initialize: boolean;
-    refresh: boolean;
-  };
-  sight: {
-    initialize: boolean;
-    refresh: boolean;
-    noUpdateFog: boolean;
-    forceUpdateFog: boolean;
-  };
-  sounds: {
-    initialize: boolean;
-    refresh: boolean;
-    fade: boolean;
-  };
-  foreground: {
-    refresh: boolean;
-  };
+declare namespace PerceptionManager {
+  interface Options {
+    lighting: {
+      initialize: boolean;
+      refresh: boolean;
+    };
+    sight: {
+      initialize: boolean;
+      refresh: boolean;
+      noUpdateFog: boolean;
+      forceUpdateFog: boolean;
+    };
+    sounds: {
+      initialize: boolean;
+      refresh: boolean;
+      fade: boolean;
+    };
+    foreground: {
+      refresh: boolean;
+    };
+  }
 }

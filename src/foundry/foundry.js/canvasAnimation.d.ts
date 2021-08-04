@@ -8,9 +8,8 @@ declare class CanvasAnimation {
    * Track an object of active animations by name, context, and function
    * This allows a currently playing animation to be referenced and terminated
    */
-  static animations: Record<
-    string,
-    { fn: (dt: number) => void; context: PIXI.Container; resolve: (value: boolean) => void }
+  static animations: Partial<
+    Record<string, { fn: (dt: number) => void; context: PIXI.Container; resolve: (value: boolean) => void }>
   >;
 
   /**
