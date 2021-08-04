@@ -1,24 +1,28 @@
-/**
- * A single Mouse Cursor
- */
-declare class Cursor extends PIXI.Container {
-  constructor(user: User);
+import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 
-  target: { x: number; y: number };
-
+declare global {
   /**
-   * Draw the user's cursor as a small dot with their user name attached as text
+   * A single Mouse Cursor
    */
-  draw(user: User): void;
+  class Cursor extends PIXI.Container {
+    constructor(user: InstanceType<ConfiguredDocumentClass<typeof User>>);
 
-  /**
-   * Move an existing cursor to a new position smoothly along the animation loop
-   */
-  protected _animate(): void;
+    /**
+     * @defaultValue `{x: 0, y: 0}`
+     */
+    target: { x: number; y: number };
 
-  /**
-   * Remove the cursor update from the animation loop and destroy the container.
-   * @param options - Additional options passed to the parent `PIXI.Container.destroy()` method
-   */
-  destroy(options?: { children?: boolean; texture?: boolean; baseTexture?: boolean }): void;
+    /**
+     * Draw the user's cursor as a small dot with their user name attached as text
+     */
+    draw(user: InstanceType<ConfiguredDocumentClass<typeof User>>): void;
+
+    /**
+     * Move an existing cursor to a new position smoothly along the animation loop
+     */
+    protected _animate(): void;
+
+    /** @override */
+    destroy(options?: Parameters<PIXI.Container['destroy']>[0]): void;
+  }
 }
