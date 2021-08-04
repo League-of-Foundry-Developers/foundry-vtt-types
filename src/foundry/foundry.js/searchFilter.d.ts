@@ -1,7 +1,6 @@
 /**
  * A controller class for managing a text input widget that filters the contents of some other UI element
  * @see {@link Application}
- *
  */
 declare class SearchFilter {
   /**
