@@ -37,7 +37,7 @@ declare class DrawingsLayer extends PlaceablesLayer<'Drawing', DrawingsLayer.Lay
   get gridPrecision(): 0 | 8 | 16;
 
   /** @override */
-  get hud(): Canvas['hud']['drawing'];
+  get hud(): Exclude<Canvas['hud'], null>['drawing'];
 
   /**
    * Render a configuration sheet to configure the default Drawing settings
