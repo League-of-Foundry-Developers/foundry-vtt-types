@@ -477,7 +477,7 @@ declare namespace Application {
      * for the application.
      * @defaultValue `[]`
      */
-    tabs: Omit<Tabs.Options, 'callback'>[];
+    tabs: Omit<TabsConfiguration, 'callback'>[];
 
     /**
      * @defaultValue `[]`

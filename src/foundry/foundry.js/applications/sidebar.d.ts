@@ -111,7 +111,7 @@ declare namespace Sidebar {
     width: number;
 
     tabs: Array<
-      Tabs.Options & {
+      TabsConfiguration & {
         /**
          * @defaultValue `'.tabs'`
          */
