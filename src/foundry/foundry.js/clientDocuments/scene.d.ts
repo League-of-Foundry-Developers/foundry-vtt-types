@@ -99,7 +99,7 @@ declare global {
         | (ConstructorDataType<foundry.data.SceneData> & Record<string, unknown>)
       >,
       options?: { save?: boolean; keepId?: boolean }
-    ): this | Promise<this | undefined>;
+    ): TemporaryDocument<this> | Promise<TemporaryDocument<this | undefined>>;
 
     /** @override */
     prepareBaseData(): void;
