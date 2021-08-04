@@ -1,19 +1,12 @@
 /**
  * A controller class for managing a text input widget that filters the contents of some other UI element
  * @see {@link Application}
- *
  */
 declare class SearchFilter {
   /**
-   * @param inputSelector   - The CSS selector used to target the text input element.
-   * @param contentSelector - The CSS selector used to target the content container for these tabs.
-   * @param initial         - The initial value of the search query.
-   *                          (default: `''`)
-   * @param callback        - A callback function which executes when the filter changes.
-   * @param delay           - The number of milliseconds to wait for text input before processing.
-   *                          (default: `100`)
+   * @param options - Options which customize the behavior of the filter
    */
-  constructor({ inputSelector, contentSelector, initial, callback, delay }: SearchFilter.Options);
+  constructor(options: SearchFilter.Options);
 
   /**
    * The value of the current query string
@@ -23,7 +16,13 @@ declare class SearchFilter {
   /**
    * A callback function to trigger when the tab is changed
    */
-  callback: (event: KeyboardEvent, query: string, content: string) => void;
+  callback: (event: KeyboardEvent, query: string, rgx: RegExp, content: string) => void;
+
+  /**
+   * The regular expression corresponding to the query that should be matched against
+   * @defaultValue `undefined`
+   */
+  rgx: RegExp | undefined;
 
   /**
    * The CSS selector used to target the tab navigation element
@@ -56,10 +55,19 @@ declare class SearchFilter {
   bind(html: HTMLElement): void;
 
   /**
-   * Handle key-up events within the filter input field
-   * @param event - The key-up event
+   * Perform a filtering of the content by invoking the callback function
+   * @param event - The triggering keyboard event
+   * @param query - The input search string
    */
-  protected _onKeyUp(event: KeyboardEvent): void;
+  filter(event: KeyboardEvent, query: string): void;
+
+  /**
+   * Clean a query term to standardize it for matching.
+   * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
+   * @param query - An input string which may contain leading/trailing spaces or diacritics
+   * @returns A cleaned string of ASCII characters for comparison
+   */
+  static cleanQuery(query: string): string;
 }
 
 declare namespace SearchFilter {
