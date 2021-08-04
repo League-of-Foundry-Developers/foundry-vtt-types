@@ -38,7 +38,7 @@ declare interface TabsConfiguration {
  * </section>
  * ```
  * @example
- * ```javascript
+ * ```typescript
  * // JavaScript
  * const tabs = new Tabs({navSelector: ".tabs", contentSelector: ".content", initial: "tab1"});
  * tabs.bind(html);
