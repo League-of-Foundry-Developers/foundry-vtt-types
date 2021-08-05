@@ -19,7 +19,7 @@ declare global {
      * Record the currently tracked Combat encounter
      * @defaultValue `null`
      */
-    combat: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combat>>> | null;
+    viewed: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combat>>> | null;
 
     /**
      * @override

@@ -34,7 +34,7 @@ declare global {
     /**
      * @remarks The parameter `id` is ignored, instead `document.id` is used as the key.
      */
-    set(id: string, document: InstanceType<ConfiguredDocumentClass<T>>): this;
+    set(id: string, document: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>): this;
 
     /**
      * Render any Applications associated with this DocumentCollection.
