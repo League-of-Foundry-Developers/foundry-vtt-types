@@ -102,7 +102,7 @@ declare class BaseGrid extends PIXI.Container {
    * @param col - The grid column coordinate against which to test for neighbors
    * @returns An array of grid positions which are neighbors of the row and column
    */
-  getNeighbors(row: number, col: number): [number, number][];
+  getNeighbors(row: number, col: number): PointArray[];
 }
 
 declare namespace BaseGrid {

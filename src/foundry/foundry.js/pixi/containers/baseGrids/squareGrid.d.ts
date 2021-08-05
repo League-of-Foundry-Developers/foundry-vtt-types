@@ -50,5 +50,5 @@ declare class SquareGrid extends BaseGrid {
   measureDistances(segments: GridLayer.Segment[], options?: BaseGrid.MeasureDistancesOptions): number[];
 
   /** @override */
-  getNeighbors(row: number, col: number): [number, number][];
+  getNeighbors(row: number, col: number): PointArray[];
 }

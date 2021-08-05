@@ -79,7 +79,7 @@ declare class HexagonalGrid extends BaseGrid {
   highlightGridPosition(layer: GridHighlight, options?: BaseGrid.HighlightGridPositionOptions): void;
 
   /** @override */
-  getNeighbors(row: number, col: number): [number, number][];
+  getNeighbors(row: number, col: number): PointArray[];
 
   /**
    * @override
