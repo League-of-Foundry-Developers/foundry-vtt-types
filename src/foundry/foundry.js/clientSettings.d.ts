@@ -226,6 +226,9 @@ declare namespace ClientSettings {
     'core.permissions': Game.Permissions;
     'core.defaultDrawingConfig': foundry.data.DrawingData['_source'] | {};
     'core.time': number;
+    'core.globalPlaylistVolume': number;
+    'core.globalAmbientVolume': number;
+    'core.globalInterfaceVolume': number;
     [key: string]: unknown;
   }
 }
