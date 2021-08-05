@@ -1,36 +1,54 @@
-/**
- * A subclass of Set which manages the Token ids which the User has targeted
- * @internal
- */
-declare class UserTargets extends Set<Token> {
-  constructor(user: UserTargets['user']);
+import { ConfiguredDocumentClass } from '../../types/helperTypes';
+import { ObjectClass } from '../../types/helperTypes';
 
-  user: User;
-
-  /**
-   * Return the Token IDs which are user targets
-   */
-  get ids(): string[];
-
-  /**
-   * @override
-   * @remarks
-   * Returns void, but Set<T>.add returns boolean
-   */
-  add(token: Token): any;
-
-  /** @override */
+interface SetReplacementMembers<T> {
+  add(value: T): void;
+  delete(value: T): void;
   clear(): void;
+}
 
-  /**
-   * @override
-   * @remarks
-   * Returns void, but Set<T>.delete returns boolean
-   */
-  delete(token: Token): any;
+type PatchedSet<T> = Omit<Set<T>, 'add' | 'delete' | 'clear'> & SetReplacementMembers<T>;
 
+interface PatchedSetConstructor {
+  new <T = any>(values?: readonly T[] | null): PatchedSet<T>;
+  readonly prototype: PatchedSet<any>;
+}
+
+declare const Set: PatchedSetConstructor;
+
+declare global {
   /**
-   * Dispatch the targetToken hook whenever the user's target set changes
+   * A subclass of Set which manages the Token ids which the User has targeted.
+   * @see User#targets
    */
-  protected _hook(token: Token, targeted: boolean): void;
+  class UserTargets extends Set<InstanceType<ObjectClass<typeof TokenDocument>>> {
+    constructor(user: UserTargets['user']);
+
+    user: InstanceType<ConfiguredDocumentClass<typeof User>>;
+
+    /**
+     * Return the Token IDs which are user targets
+     */
+    get ids(): string[];
+
+    /**
+     * @override
+     * @remarks Returns void, but Set<T>.add returns boolean
+     */
+    add(token: InstanceType<ObjectClass<typeof TokenDocument>>): void;
+
+    /** @override */
+    clear(): void;
+
+    /**
+     * @override
+     * @remarks Returns void, but Set<T>.delete returns boolean
+     */
+    delete(token: InstanceType<ObjectClass<typeof TokenDocument>>): void;
+
+    /**
+     * Dispatch the targetToken hook whenever the user's target set changes
+     */
+    protected _hook(token: InstanceType<ObjectClass<typeof TokenDocument>>, targeted: boolean): void;
+  }
 }

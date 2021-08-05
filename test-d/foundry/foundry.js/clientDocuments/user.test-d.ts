@@ -4,7 +4,7 @@ import { ConfiguredDocumentClass } from '../../../../src/types/helperTypes';
 const user = new User({ name: 'Test' });
 
 expectType<boolean>(user.active);
-expectAssignable<Set<Token>>(user.targets);
+expectType<UserTargets>(user.targets);
 expectType<string | null>(user.id);
 expectType<string | null>(user.viewedScene);
 expectType<string>(user.avatar);
