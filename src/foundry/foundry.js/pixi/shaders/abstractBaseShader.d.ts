@@ -17,9 +17,9 @@ declare abstract class AbstractBaseShader extends PIXI.Shader {
   /**
    * The fragment shader which renders this source.
    * A subclass of AbstractBaseShader must implement the fragmentShader static field.
+   * @defaultValue `""`
    *
-   * @remarks
-   * This is abstract, subclasses must implement it.
+   * @remarks This is abstract, subclasses must implement it.
    */
   static fragmentShader: string;
 
@@ -28,8 +28,7 @@ declare abstract class AbstractBaseShader extends PIXI.Shader {
    * A subclass of AbstractBaseShader must implement the defaultUniforms static field.
    * @defaultValue `{}`
    *
-   * @remarks
-   * This is abstract, subclasses must implement it.
+   * @remarks This is abstract, subclasses must implement it.
    */
   static defaultUniforms: AbstractBaseShader.Uniforms;
 
@@ -71,16 +70,6 @@ declare abstract class AbstractBaseShader extends PIXI.Shader {
    * @param coef - (default: `0.80`)
    */
   static FADE(amp?: number, coef?: number): string;
-
-  /**
-   * TODO: FOR TESTING
-   * An alternative easing function which is partially linear followed by exponential falloff
-   * @param slope - The slope of linear falloff
-   *                (default: `0.2`)
-   * @param order - The order of polynomial falloff
-   *                (default: `4`)
-   */
-  static FADE2(slope?: number, order?: number): string;
 
   /**
    * Convert a Hue-Saturation-Brightness color to RGB - useful to convert polar coordinates to RGB
