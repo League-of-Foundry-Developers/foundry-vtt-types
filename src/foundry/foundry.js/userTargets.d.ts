@@ -4,9 +4,10 @@ import { ObjectClass } from '../../types/helperTypes';
 interface SetReplacementMembers<T> {
   add(value: T): void;
   delete(value: T): void;
+  clear(): void;
 }
 
-type PatchedSet<T> = Omit<Set<T>, 'add' | 'delete'> & SetReplacementMembers<T>;
+type PatchedSet<T> = Omit<Set<T>, 'add' | 'delete' | 'clear'> & SetReplacementMembers<T>;
 
 interface PatchedSetConstructor {
   new <T = any>(values?: readonly T[] | null): PatchedSet<T>;
