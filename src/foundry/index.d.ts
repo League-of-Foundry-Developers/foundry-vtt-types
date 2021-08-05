@@ -2,6 +2,7 @@ import './common/module.mjs';
 
 import './foundry.js/actorTokenHelpers';
 import './foundry.js/application';
+import './foundry.js/audioContainer';
 import './foundry.js/audioHelper';
 import './foundry.js/avClient';
 import './foundry.js/avMaster';
@@ -40,6 +41,7 @@ import './foundry.js/searchFilter';
 import './foundry.js/specialEffect';
 import './foundry.js/socketInterface';
 import './foundry.js/sortingHelpers';
+import './foundry.js/sound';
 import './foundry.js/tabs';
 import './foundry.js/templateUtils';
 import './foundry.js/textEditor';
