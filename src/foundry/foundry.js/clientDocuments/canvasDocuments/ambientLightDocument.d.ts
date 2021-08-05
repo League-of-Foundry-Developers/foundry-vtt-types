@@ -1,7 +1,6 @@
-// TODO
 declare global {
   /**
-   * The client-side AmbientLight embedded document which extends the common BaseAmbientLight abstraction.
+   * The client-side AmbientLight document which extends the common BaseAmbientLight model.
    * Each AmbientLight document contains AmbientLightData which defines its data schema.
    *
    * @see {@link data.AmbientLightData}             The AmbientLight data schema
