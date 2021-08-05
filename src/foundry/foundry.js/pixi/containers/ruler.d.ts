@@ -5,7 +5,7 @@ declare global {
    * The Ruler - used to measure distances and trigger movements
    */
   class Ruler extends PIXI.Container {
-    /*
+    /**
      * @param user  - The User for whom to construct the Ruler instance
      * @param color - (default: `null`)
      */
@@ -158,6 +158,7 @@ declare global {
 
     /**
      * Handle the addition of a new waypoint in the Ruler measurement path
+     * @remarks point is intentionally typed as Point because it is called with event.data.origin and only uses x and y
      */
     protected _addWaypoint(point: Point): void;
 
