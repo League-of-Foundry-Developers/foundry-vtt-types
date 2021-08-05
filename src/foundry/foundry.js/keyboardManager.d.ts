@@ -156,7 +156,7 @@ declare class KeyboardManager {
   /**
    * Master mouse-wheel event keyboard handler
    */
-  protected _onWheel(event: Event): void;
+  protected _onWheel(event: WheelEvent): void;
 
   /**
    * Handle TAB keypress events
@@ -223,7 +223,7 @@ declare class KeyboardManager {
    * @param up        - Is it a keyup?
    * @param modifiers - What modifiers affect the keypress?
    */
-  protected _onDigit(event: any, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+  protected _onDigit(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /**
    * Handle "A" keypress events (CTRL only) to select all objects
@@ -232,7 +232,7 @@ declare class KeyboardManager {
    * @param up        - Is the key being released?
    * @param modifiers - The identified modifiers attached to this keypress
    */
-  protected _onKeyA(event: any, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
+  protected _onKeyA(event: KeyboardEvent, up: boolean, modifiers: KeyboardManager.MetaModifiers): void;
 
   /**
    * Handle "C" keypress events to copy data to clipboard
