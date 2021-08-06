@@ -3,10 +3,12 @@ declare interface QuadTreeObject<T> {
    * Rectangle of this object
    */
   r: Rectangle;
+
   /**
    * The stored data
    */
   t: T;
+
   /**
    * Set of quadtrees that hold this object
    */
@@ -21,7 +23,7 @@ declare class Quadtree<T> {
    * @param bounds  - The outer bounds of the region
    * @param options - Additional options which configure the Quadtree
    */
-  constructor(bounds: Rectangle, { maxObjects, maxDepth, _depth }?: Quadtree.Options);
+  constructor(bounds: Rectangle, options?: Quadtree.Options<T>);
 
   /**
    * The bounding rectangle of the region
@@ -59,9 +61,25 @@ declare class Quadtree<T> {
   nodes: Quadtree<T>[];
 
   /**
+   * A constant that enumerates the index order of the quadtree nodes from top-left to bottom-right.
+   */
+  static INDICES: {
+    tl: 0;
+    tr: 1;
+    bl: 2;
+    br: 3;
+  };
+
+  /**
    * Return an array of all the objects in the Quadtree (recursive)
    */
   get all(): QuadTreeObject<T>[];
+
+  /**
+   * Split this node into 4 sub-nodes.
+   * @returns The split Quadtree
+   */
+  split(): this;
 
   /**
    * Clear the quadtree of all existing contents
@@ -82,12 +100,6 @@ declare class Quadtree<T> {
    * @returns The Quadtree for method chaining
    */
   remove(target: T): this;
-
-  /**
-   * Split this node into 4 sub-nodes.
-   * @returns The split Quadtree
-   */
-  split(): this;
 
   /**
    * Get all the objects which could collide with the provided rectangle
@@ -114,39 +126,45 @@ declare class Quadtree<T> {
   getChildNodes(rect: Rectangle): Quadtree<T>[];
 
   /**
+   * Identify all nodes which are adjacent to this one within the parent Quadtree.
+   */
+  getAdjacentNodes(): Quadtree<T>[];
+
+  /**
    * Visualize the nodes and objects in the quadtree
    * @param objects - Visualize the rectangular bounds of objects in the Quadtree. Default is false.
    */
   visualize({ objects }?: { objects?: boolean }): void;
-
-  /**
-   * A constant that enumerates the index order of the quadtree nodes from top-left to bottom-right.
-   */
-  static readonly INDICES: {
-    tl: 0;
-    tr: 1;
-    bl: 2;
-    br: 3;
-  };
 }
 
 declare namespace Quadtree {
   /**
    * Additional options which configure the Quadtree
    */
-  interface Options {
+  interface Options<T> {
     /**
      * The maximum number of objects per node
+     * @defaultValue `20`
      */
     maxObjects?: number;
+
     /**
      * The maximum number of levels within the root Quadtree
+     * @defaultValue `4`
      */
     maxDepth?: number;
+
     /**
-     * The depth level of the sub-tree. For internal use only
+     * The depth level of the sub-tree. For internal use
+     * @defaultValue `0`
      * @internal
      */
     _depth?: number;
+
+    /**
+     * The root of the quadtree. For internal use
+     * @internal
+     */
+    _root?: Quadtree<T>;
   }
 }
