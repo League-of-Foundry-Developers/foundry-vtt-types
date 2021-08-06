@@ -1,15 +1,6 @@
 declare interface QuadTreeObject<T> {
-  /**
-   * Rectangle of this object
-   */
   r: Rectangle;
-  /**
-   * The stored data
-   */
   t: T;
-  /**
-   * Set of quadtrees that hold this object
-   */
   n: Set<Quadtree<T>>;
 }
 
@@ -21,7 +12,7 @@ declare class Quadtree<T> {
    * @param bounds  - The outer bounds of the region
    * @param options - Additional options which configure the Quadtree
    */
-  constructor(bounds: Rectangle, { maxObjects, maxDepth, _depth }?: Quadtree.Options);
+  constructor(bounds: Rectangle, options?: Quadtree.Options<T>);
 
   /**
    * The bounding rectangle of the region
@@ -59,9 +50,30 @@ declare class Quadtree<T> {
   nodes: Quadtree<T>[];
 
   /**
+   * The root Quadtree
+   */
+  root: Quadtree<T>;
+
+  /**
+   * A constant that enumerates the index order of the quadtree nodes from top-left to bottom-right.
+   */
+  static INDICES: {
+    tl: 0;
+    tr: 1;
+    bl: 2;
+    br: 3;
+  };
+
+  /**
    * Return an array of all the objects in the Quadtree (recursive)
    */
   get all(): QuadTreeObject<T>[];
+
+  /**
+   * Split this node into 4 sub-nodes.
+   * @returns The split Quadtree
+   */
+  split(): this;
 
   /**
    * Clear the quadtree of all existing contents
@@ -84,23 +96,18 @@ declare class Quadtree<T> {
   remove(target: T): this;
 
   /**
-   * Split this node into 4 sub-nodes.
-   * @returns The split Quadtree
-   */
-  split(): this;
-
-  /**
    * Get all the objects which could collide with the provided rectangle
    * @param rect - The target rectangle
    * @param _s   - The existing result set, for internal use.
+   *               (default: `new Set<T>()`)
    * @returns The objects in the Quadtree which represent potential collisions
    */
-  getObjects(rect: Rectangle, _s: Set<T>): Set<T>;
+  getObjects(rect: Rectangle, _s?: Set<T>): Set<T>;
 
   /**
    * Obtain the leaf nodes to which a target rectangle belongs.
    * This traverses the quadtree recursively obtaining the final nodes which have no children.
-   * @param rect - The target rectangle.
+   * @param rect - The target rectangle.x
    * @returns The Quadtree nodes to which the target rectangle belongs
    */
   getLeafNodes(rect: Rectangle): Quadtree<T>[];
@@ -114,39 +121,46 @@ declare class Quadtree<T> {
   getChildNodes(rect: Rectangle): Quadtree<T>[];
 
   /**
-   * Visualize the nodes and objects in the quadtree
-   * @param objects - Visualize the rectangular bounds of objects in the Quadtree. Default is false.
+   * Identify all nodes which are adjacent to this one within the parent Quadtree.
    */
-  visualize({ objects }?: { objects?: boolean }): void;
+  getAdjacentNodes(): Quadtree<T>[];
 
   /**
-   * A constant that enumerates the index order of the quadtree nodes from top-left to bottom-right.
+   * Visualize the nodes and objects in the quadtree
+   * @param objects - Visualize the rectangular bounds of objects in the Quadtree. Default is false.
+   *                  (default: `false`)
    */
-  static readonly INDICES: {
-    tl: 0;
-    tr: 1;
-    bl: 2;
-    br: 3;
-  };
+  visualize({ objects }?: { objects?: boolean }): void;
 }
 
 declare namespace Quadtree {
   /**
    * Additional options which configure the Quadtree
    */
-  interface Options {
+  interface Options<T> {
     /**
      * The maximum number of objects per node
+     * @defaultValue `20`
      */
     maxObjects?: number;
+
     /**
      * The maximum number of levels within the root Quadtree
+     * @defaultValue `4`
      */
     maxDepth?: number;
+
     /**
-     * The depth level of the sub-tree. For internal use only
+     * The depth level of the sub-tree. For internal use
+     * @defaultValue `0`
      * @internal
      */
     _depth?: number;
+
+    /**
+     * The root of the quadtree. For internal use
+     * @internal
+     */
+    _root?: Quadtree<T>;
   }
 }
