@@ -34,7 +34,7 @@ declare class HandlebarsHelpers {
    * <label>{{localize "CHAT.InvalidCommand", command=foo}}</label> <!-- "foo is not a valid chat message command." -->
    * ```
    */
-  static localize(value: string, options: Record<string, any>): string;
+  static localize(value: string, options: HandlebarsHelpers.LocalizeOptions): string;
 
   /**
    * A string formatting helper to display a number with a certain fixed number of decimals and an explicit sign.
@@ -82,7 +82,7 @@ declare class HandlebarsHelpers {
    * A helper to assign an `<option>` within a `<select>` block as selected based on its value
    * Escape the string as handlebars would, then escape any regexp characters in it
    */
-  static select(selected: string, options: HandlebarsHelpers.SelectOptions): Handlebars.SafeString;
+  static select(selected: string, options: HandlebarsHelpers.SelectOptions): string;
 
   /**
    * A helper to create a set of `<option>` elements in a `<select>` block based on a provided dictionary.
@@ -143,8 +143,7 @@ declare namespace HandlebarsHelpers {
       owner?: boolean;
 
       /**
-      button?: boolean;
-       *
+       * Include a button used to activate the editor later?
        */
       button?: boolean;
 
@@ -154,7 +153,7 @@ declare namespace HandlebarsHelpers {
       editable?: boolean;
 
       /**
-       * @defaultValue `''`
+       * @defaultValue `true`
        */
       entities?: boolean;
 
@@ -179,6 +178,10 @@ declare namespace HandlebarsHelpers {
        */
       target: string;
     };
+  }
+
+  interface LocalizeOptions extends Handlebars.HelperOptions {
+    hash: Record<string, unknown>;
   }
 
   interface NumberFormatOptions extends Handlebars.HelperOptions {
