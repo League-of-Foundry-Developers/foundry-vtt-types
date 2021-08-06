@@ -1,31 +1,47 @@
 /**
- * A helper class to provide common functionality for working with HTML5 audio and Howler instances
- * A singleton instance of this class is available as `game.audio`
- *
- * Audio playback in Foundry VTT is managed by Howler.js (https://howlerjs.com/). Several methods and
- * attributes in this API return :class:`Howl` instances. See the Howler documentation for details
- * and example usage of the Howl API.
+ * A helper class to provide common functionality for working with the Web Audio API.
+ * https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
+ * A singleton instance of this class is available as game#audio.
+ * @see Game#audio
  */
 declare class AudioHelper {
   constructor();
 
   /**
-   * The set of Howl instances which have been created for different audio paths
-   * @defaultValue `{}`
+   * The primary Audio Context used to play client-facing sounds.
+   * The context is undefined until the user's first gesture is observed.
+   * @defaultValue `undefined`
    */
-  sounds: Record<string, AudioHelper.Sound>;
+  context: AudioContext | undefined;
+
+  /**
+   * The set of AudioBuffer objects which are cached for different audio paths
+   */
+  buffers: Map<string, AudioBuffer>;
+
+  /**
+   * The set of singleton Sound instances which are cached for different audio paths
+   */
+  sounds: Map<string, Sound>;
+
+  /**
+   * Get an array of the Sound objects which are currently playing.
+   * @remarks It's not actually an `Array` but a `Map`.
+   */
+  playing: Map<number, Sound>;
 
   /**
    * A user gesture must be registered before audio can be played.
    * This Array contains the Howl instances which are requested for playback prior to a gesture.
    * Once a gesture is observed, we begin playing all elements of this Array.
    * @defaultValue `[]`
+   * @remarks It's not actually Howl instances (Howler is not used anymore) but function that will be executed.
    */
-  pending: any[];
+  pending: (() => void)[];
 
   /**
    * A flag for whether video playback is currently locked by awaiting a user gesture
-   * @defaultValue `false`
+   * @defaultValue `true`
    */
   locked: boolean;
 
@@ -33,12 +49,25 @@ declare class AudioHelper {
    * Audio Context singleton used for analysing audio levels of each stream
    * Only created if necessary to listen to audio streams.
    * @defaultValue `null`
+   * @internal
    */
   protected _audioContext: AudioContext | null;
 
   /**
    * Map of all streams that we listen to for determining the decibel levels.
    * Used for analyzing audio levels of each stream.
+   * Format of the object stored is :
+   * ```
+   * {id:
+   *   {
+   *     stream: MediaStream,
+   *     analyser: AudioAnalyser,
+   *     interval: Number,
+   *     callback: Function
+   *   }
+   * }
+   * ```
+   * @internal
    */
   protected _analyserStreams: Record<string, AudioHelper.AnalyserStream>;
 
@@ -46,60 +75,37 @@ declare class AudioHelper {
    * Interval ID as returned by setInterval for analysing the volume of streams
    * When set to 0, means no timer is set.
    * @defaultValue `0`
+   * @internal
    */
   protected _analyserInterval: number;
 
   /**
-   * Fast Fourrier Transform Array.
+   * Fast Fourier Transform Array.
    * Used for analysing the decibel level of streams. The array is allocated only once
    * then filled by the analyser repeatedly. We only generate it when we need to listen to
    * a stream's level, so we initialize it to null.
    * @defaultValue `null`
+   * @internal
    */
-  protected _fftArray: Float32Array[] | null;
+  protected _fftArray: Float32Array | null;
 
   /**
    * The Native interval for the AudioHelper to analyse audio levels from streams
    * Any interval passed to startLevelReports() would need to be a multiple of this value.
-   * Defaults to 50ms.
    * @defaultValue `50`
    */
-  levelAnalyserNativeInterval: number;
-
-  /* -------------------------------------------- */
+  static levelAnalyserNativeInterval: number;
 
   /**
    * Register client-level settings for global volume overrides
    */
   static registerSettings(): void;
 
-  /* -------------------------------------------- */
-
   /**
-   * Create a Howl instance for a given audio source URL
-   * @param preload  - (default: `false`)
-   * @param autoplay - (default: `false`)
-   * @param html5    - (default: `false`)
-   * @param volume   - (default: `0.0`)
-   * @param loop     - (default: `false`)
+   * Create a Sound instance for a given audio source URL
+   * @param options - Audio creation options
    */
-  create({
-    src,
-    preload,
-    autoplay,
-    html5,
-    volume,
-    loop
-  }?: {
-    src: string;
-    preload?: boolean;
-    autoplay?: boolean;
-    html5?: boolean;
-    volume?: number;
-    loop?: boolean;
-  }): any;
-
-  /* -------------------------------------------- */
+  create(options: AudioHelper.CreateOptions): Sound;
 
   /**
    * Test whether a source file has a supported audio extension type
@@ -108,129 +114,80 @@ declare class AudioHelper {
    */
   static hasAudioExtension(src: string): boolean;
 
-  /* -------------------------------------------- */
-
   /**
-   * Play a single audio effect by it's source path and Howl ID
+   * Given an input file path, determine a default name for the sound based on the filename
+   * @param src - An input file path
+   * @returns A default sound name for the path
    */
-  play(src: string, id: number): void;
-
-  /* -------------------------------------------- */
+  static getDefaultSoundName(src: string): string;
 
   /**
-   * Register an event listener to await the first mousemove gesture and begin
-   * playback once observed
+   * Play a single Sound by providing its source.
+   * @param src     - The file path to the audio source being played
+   * @param options - Additional options passed to Sound#play
+   * @returns The created Sound which is now playing
+   */
+  play(src: string, options?: Sound.PlayOptions): Promise<Sound>;
+
+  /**
+   * Register an event listener to await the first mousemove gesture and begin playback once observed
    */
   awaitFirstGesture(): void;
 
-  /* -------------------------------------------- */
-
   /**
-   * Handle the first observed user gesture
-   * @param event - The mouse-move event which enables playback
+   * Request that other connected clients begin preloading a certain sound path.
+   * @param src - The source file path requested for preload
+   * @returns A Promise which resolves once the preload is complete
    */
-  protected _onFirstGesture(event: Event): void;
-
-  /* -------------------------------------------- */
-
-  preload(data: any): void;
-
-  /* -------------------------------------------- */
-  /*  Socket Listeners and Handlers               */
-  /* -------------------------------------------- */
+  preload(src: string): Promise<Sound>;
 
   /**
    * Open socket listeners which transact ChatMessage data
+   * @internal
    */
-  protected static socketListeners(socket: any): void;
-
-  /* -------------------------------------------- */
+  static _activateSocketListeners(socket: io.Socket): void;
 
   /**
    * Play a one-off sound effect which is not part of a Playlist
    *
-   * @param data     - An object configuring the audio data to play
-   * @param src      - The audio source file path, either a public URL or a local path relative to the public directory
-   *                   (default: `null`)
-   * @param volume   - The volume level at which to play the audio, between 0 and 1
-   *                   (default: `1.0`)
-   * @param autoplay - Begin playback of the audio effect immediately once it is loaded.
-   *                   (default: `true`)
-   * @param loop     - Loop the audio effect and continue playing it until it is manually stopped.
-   *                   (default: `false`)
-   * @param push     - Push the audio sound effect to other connected clients?
-   *                   (default: `false`)
+   * @param data - An object configuring the audio data to play
+   * @param push - Push the audio sound effect to other connected clients?
+   *               (default: `false`)
    *
    * @returns A Howl instance which controls audio playback.
    *
    * @example
    * ```typescript
    * // Play the sound of a locked door for all players
-   * AudioHelper.play({src: "sounds/lock.wav", volume: 0.8, autoplay: true, loop: false}, true);
+   * AudioHelper.play({src: "sounds/lock.wav", volume: 0.8, loop: false}, true);
    * ```
+   * @remarks It actually returns a promise that resolves to a {@link Sound}, Howler isn't actually used anymore.
    */
-  static play(
-    data: {
-      /**
-       * The audio source file path, either a public URL or a local path relative to the public directory
-       * @defaultValue `null`
-       */
-      src: string;
-
-      /**
-       * The volume level at which to play the audio, between 0 and 1
-       * @defaultValue `1.0`
-       */
-      volume: number;
-
-      /**
-       * Begin playback of the audio effect immediately once it is loaded.
-       * @defaultValue `true`
-       */
-      autoplay: boolean;
-
-      /**
-       * Push the audio sound effect to other connected clients?
-       * @defaultValue `false`
-       */
-      loop: boolean;
-    },
-    push: boolean
-  ): any;
-
-  /* -------------------------------------------- */
+  static play(data: AudioHelper.PlayData, push?: boolean): Promise<Sound>;
 
   /**
-   * Create a Howl object and load it to be ready for later playback
-   * @param data - The audio data to preload
+   * Begin loading the sound for a provided source URL adding its
+   * @param src - The audio source path to preload
+   * @returns The created and loaded Sound ready for playback
    */
-  static preload(data: object): void;
-
-  /* -------------------------------------------- */
+  static preloadSound(src: string): Promise<Sound>;
 
   /**
    * Returns the volume value based on a range input volume control's position.
    * This is using an exponential approximation of the logarithmic nature of audio level perception
    * @param value - Value between [0, 1] of the range input
-   * @param order - the exponent of the curve
+   * @param order - The exponent of the curve
    *                (default: `1.5`)
    */
-  static inputToVolume(control: number | string, order?: number): number;
-
-  /* -------------------------------------------- */
+  static inputToVolume(value: number | string, order?: number): number;
 
   /**
    * Counterpart to inputToVolume()
    * Returns the input range value based on a volume
    * @param volume - Value between [0, 1] of the volume level
-   * @param order - the exponent of the curve
-   *                (default: `1.5`)
+   * @param order  - The exponent of the curve
    */
   static volumeToInput(volume: number, order?: number): number;
-
-  /* -------------------------------------------- */
-  /*  Audio Stream Analysis                       */
-  /* -------------------------------------------- */
 
   /**
    * Returns a singleton AudioContext if one can be created.
@@ -240,8 +197,6 @@ declare class AudioHelper {
    * @returns A singleton AudioContext or null if one is not available
    */
   getAudioContext(): AudioContext | null;
-
-  /* -------------------------------------------- */
 
   /**
    * Registers a stream for periodic reports of audio levels.
@@ -254,8 +209,7 @@ declare class AudioHelper {
    * @param callback  - The callback function to call with the decibel level.
    * @param interval  - The interval at which to produce reports.
    *                    (default: `50`)
-   * @param smoothing - The smoothingTimeConstant to set on the audio analyser.
-   *                    Refer to AudioAnalyser API docs.
+   * @param smoothing - The smoothingTimeConstant to set on the audio analyser. Refer to AudioAnalyser API docs.
    *                    (default: `0.1`)
    * @returns Returns whether or not listening to the stream was successful
    */
@@ -265,9 +219,7 @@ declare class AudioHelper {
     callback: (maxDecibel: number, fftArray: Float32Array) => void,
     interval?: number,
     smoothing?: number
-  ): boolean;
-
-  /* -------------------------------------------- */
+  ): boolean | undefined;
 
   /**
    * Stop sending audio level reports
@@ -277,8 +229,6 @@ declare class AudioHelper {
    */
   stopLevelReports(id: string): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Ensures the global analyser timer is started
    *
@@ -287,25 +237,39 @@ declare class AudioHelper {
    * I don't know if it actually helps much with performance but it's expected that limiting the number of timers
    * running at the same time is good practice and with JS itself, there's a potential for a timer congestion
    * phenomenon if too many are created.
+   * @internal
    */
   protected _ensureAnalyserTimer(): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Cancel the global analyser timer
    * If the timer is running and has become unnecessary, stops it.
+   * @internal
    */
   protected _cancelAnalyserTimer(): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Capture audio level for all speakers and emit a webrtcVolumes custom event with all the volume levels
    * detected since the last emit.
    * The event's detail is in the form of `{userId: decibelLevel}`
+   * @internal
    */
   protected _emitVolumes(): void;
+
+  /**
+   * Handle the first observed user gesture
+   * @param event - The mouse-move event which enables playback
+   * @internal
+   */
+  protected _onFirstGesture(event: Event): void;
+
+  /**
+   * Additional standard callback events that occur whenever a global volume slider is adjusted
+   * @param key    - The setting key
+   * @param volume - The new volume level
+   * @internal
+   */
+  protected _onChangeGlobalVolume(key: string, volume: number): void;
 }
 
 declare namespace AudioHelper {
@@ -313,18 +277,68 @@ declare namespace AudioHelper {
     stream: MediaStream;
     analyser: AnalyserNode;
     interval: number;
-    callback: (maxDecibel: number) => void;
+    callback: (maxDecibel: number, fftArray: Float32Array) => void;
 
     /**
      * Used as a counter of 50ms increments in case the interval is more than 50
      * @defaultValue `0`
+     * @internal
      */
     _lastEmit: number;
   }
+  interface CreateOptions {
+    /**
+     * The source URL for the audio file
+     */
+    src: string;
 
-  interface Sound {
-    howl: any;
-    loaded: boolean;
-    ids: [];
+    /**
+     * Reuse an existing Sound for this source?
+     * @defaultValue `true`
+     */
+    singleton?: boolean;
+
+    /**
+     * Begin loading the audio immediately?
+     * @defaultValue `false`
+     */
+    preload?: boolean;
+
+    /**
+     * Begin playing the audio as soon as it is ready?
+     * @defaultValue `false`
+     */
+    autoplay?: boolean;
+
+    /**
+     * Additional options passed to the play method if autoplay is true
+     * @defaultValue `{}`
+     */
+    autoplayOptions?: Sound.PlayOptions;
+  }
+
+  interface PlayData {
+    /**
+     * The audio source file path, either a public URL or a local path relative to the public directory
+     */
+    src: string;
+
+    /**
+     * The volume level at which to play the audio, between 0 and 1.
+     * @defaultValue `1.0`
+     */
+    volume?: number;
+
+    /**
+     * Begin playback of the audio effect immediately once it is loaded.
+     * @deprecated You are using the autoplay option of AudioHelper.play which is no longer supported in 0.8.0
+     */
+    autoplay?: boolean;
+
+    /**
+     * Loop the audio effect and continue playing it until it is manually stopped.
+     * @defaultValue `false`
+     */
+    loop?: boolean;
   }
 }
