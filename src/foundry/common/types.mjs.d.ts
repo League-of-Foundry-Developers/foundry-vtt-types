@@ -9,16 +9,6 @@ declare type Point = PIXI.Point | { x: number; y: number };
 declare type PointArray = [x: number, y: number];
 
 /**
- * A Ray intersection point
- */
-declare type RayIntersection = {
-  x: number;
-  y: number;
-  t0: number;
-  t1: number;
-};
-
-/**
  * A standard rectangle interface.
  */
 declare type Rectangle =
