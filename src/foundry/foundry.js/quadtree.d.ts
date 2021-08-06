@@ -1,17 +1,6 @@
 declare interface QuadTreeObject<T> {
-  /**
-   * Rectangle of this object
-   */
   r: Rectangle;
-
-  /**
-   * The stored data
-   */
   t: T;
-
-  /**
-   * Set of quadtrees that hold this object
-   */
   n: Set<Quadtree<T>>;
 }
 
@@ -61,6 +50,11 @@ declare class Quadtree<T> {
   nodes: Quadtree<T>[];
 
   /**
+   * The root Quadtree
+   */
+  root: Quadtree<T>;
+
+  /**
    * A constant that enumerates the index order of the quadtree nodes from top-left to bottom-right.
    */
   static INDICES: {
@@ -105,14 +99,15 @@ declare class Quadtree<T> {
    * Get all the objects which could collide with the provided rectangle
    * @param rect - The target rectangle
    * @param _s   - The existing result set, for internal use.
+   *               (default: `new Set<T>()`)
    * @returns The objects in the Quadtree which represent potential collisions
    */
-  getObjects(rect: Rectangle, _s: Set<T>): Set<T>;
+  getObjects(rect: Rectangle, _s?: Set<T>): Set<T>;
 
   /**
    * Obtain the leaf nodes to which a target rectangle belongs.
    * This traverses the quadtree recursively obtaining the final nodes which have no children.
-   * @param rect - The target rectangle.
+   * @param rect - The target rectangle.x
    * @returns The Quadtree nodes to which the target rectangle belongs
    */
   getLeafNodes(rect: Rectangle): Quadtree<T>[];
@@ -133,6 +128,7 @@ declare class Quadtree<T> {
   /**
    * Visualize the nodes and objects in the quadtree
    * @param objects - Visualize the rectangular bounds of objects in the Quadtree. Default is false.
+   *                  (default: `false`)
    */
   visualize({ objects }?: { objects?: boolean }): void;
 }
