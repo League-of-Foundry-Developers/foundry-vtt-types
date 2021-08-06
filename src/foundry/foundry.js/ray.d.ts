@@ -67,15 +67,17 @@ declare class Ray {
 
   /**
    * The cached angle, computed lazily in Ray#angle
+   * @defaultValue `undefined`
    * @internal
    */
-  protected _angle: number;
+  protected _angle: number | undefined;
 
   /**
    * The cached distance, computed lazily in Ray#distance
+   * @defaultValue `undefined`
    * @internal
    */
-  protected _distance: number;
+  protected _distance: number | undefined;
 
   /**
    * The normalized angle of the ray in radians on the range (-PI, PI).
@@ -112,7 +114,7 @@ declare class Ray {
    * @param B - The destination point [x,y]
    * @returns The constructed Ray instance
    */
-  static fromArrays(A: [x: number, y: number], B: [x: number, y: number]): Ray;
+  static fromArrays(A: PointArray, B: PointArray): Ray;
 
   /**
    * Project the Array by some proportion of it's initial distance.
