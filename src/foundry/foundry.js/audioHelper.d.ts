@@ -219,7 +219,7 @@ declare class AudioHelper {
     callback: (maxDecibel: number, fftArray: Float32Array) => void,
     interval?: number,
     smoothing?: number
-  ): boolean;
+  ): boolean | undefined;
 
   /**
    * Stop sending audio level reports

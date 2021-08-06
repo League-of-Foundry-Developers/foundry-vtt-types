@@ -48,6 +48,7 @@ declare class Sound {
   /**
    * If this Sound source is currently in the process of loading, this attribute contains a Promise that will resolve
    * when the loading process completes.
+   * @defaultValue `undefined`
    */
   loading: Promise<void> | undefined;
 
@@ -179,6 +180,7 @@ declare class Sound {
    * @param eventName- The event name being deactivated
    * @param fn       - The callback function to trigger when the event occurs
    * @param options  - Additional options that affect callback registration
+   *                   (default: `{}`)
    */
   on(eventName: Sound.EventName, fn: Sound.Callback, options?: Sound.OnOptions): number;
 
@@ -281,7 +283,7 @@ declare namespace Sound {
 
     /**
      * Fade volume changes over a desired duration in milliseconds
-     * @defaultValue 0
+     * @defaultValue `0`
      */
     fade?: number;
   }

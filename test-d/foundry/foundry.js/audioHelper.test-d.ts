@@ -58,6 +58,6 @@ expectType<AudioContext | null>(audioHelper.getAudioContext());
 declare const stream: MediaStream;
 declare const callback: (maxDecibel: number, fftArray: Float32Array) => void;
 
-expectType<boolean>(audioHelper.startLevelReports('some id', stream, callback));
-expectType<boolean>(audioHelper.startLevelReports('some id', stream, callback, 60, 0.2));
+expectType<boolean | undefined>(audioHelper.startLevelReports('some id', stream, callback));
+expectType<boolean | undefined>(audioHelper.startLevelReports('some id', stream, callback, 60, 0.2));
 expectType<void>(audioHelper.stopLevelReports('some id'));
