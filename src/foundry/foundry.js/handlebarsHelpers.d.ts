@@ -1,32 +1,29 @@
-/* -------------------------------------------- */
-/*  Handlebars Template Helpers                 */
-/* -------------------------------------------- */
-
 /**
  * A collection of Handlebars template helpers which can be used within HTML templates.
  */
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 declare class HandlebarsHelpers {
   /**
    * For checkboxes, if the value of the checkbox is true, add the "checked" property, otherwise add nothing.
    */
-  static checked(value: any): string;
+  static checked(value: unknown): string;
 
-  /* -------------------------------------------- */
+  /**
+   * Render a pair of inputs for selecting a color.
+   * @param options - Helper options
+   */
+  static colorPicker(options: HandlebarsHelpers.ColorPickerOptions): Handlebars.SafeString;
 
   /**
    * Construct an editor element for rich text editing with TinyMCE
+   * @param options - Helper options
    */
   static editor(options: HandlebarsHelpers.EditorOptions): Handlebars.SafeString;
 
-  /* -------------------------------------------- */
-
   /**
-   * Render a file-picker button linked to an <input> field
+   * Render a file-picker button linked to an `<input>` field
+   * @param options - Helper options
    */
-  static filePicker(options: object): Handlebars.SafeString | string;
-
-  /* -------------------------------------------- */
+  static filePicker(options: HandlebarsHelpers.FilePickerOptions): Handlebars.SafeString | string;
 
   /**
    * Translate a provided string key by using the loaded dictionary of localization strings.
@@ -37,16 +34,12 @@ declare class HandlebarsHelpers {
    * <label>{{localize "CHAT.InvalidCommand", command=foo}}</label> <!-- "foo is not a valid chat message command." -->
    * ```
    */
-  static localize(value: string, options: Record<string, any>): string;
-
-  /* -------------------------------------------- */
+  static localize(value: string, options: HandlebarsHelpers.LocalizeOptions): string;
 
   /**
    * A string formatting helper to display a number with a certain fixed number of decimals and an explicit sign.
    */
-  static numberFormat(value: any, options: HandlebarsHelpers.NumberFormatOptions): string;
-
-  /* -------------------------------------------- */
+  static numberFormat(value: string, options: HandlebarsHelpers.NumberFormatOptions): string;
 
   /**
    * A helper to create a set of radio checkbox input elements in a named set.
@@ -54,8 +47,7 @@ declare class HandlebarsHelpers {
    *
    * @param name     - The radio checkbox field name
    * @param choices  - A mapping of radio checkbox values to human readable labels
-   * @param checked  - Which key is currently checked?
-   * @param localize - Pass each label through string localization?
+   * @param options  - Options which customize the radio boxes creation
    *
    * @example <caption>The provided input data</caption>
    * ```typescript
@@ -80,24 +72,24 @@ declare class HandlebarsHelpers {
     options: HandlebarsHelpers.RadioBoxesOptions
   ): Handlebars.SafeString;
 
-  /* -------------------------------------------- */
+  /**
+   * Render a pair of inputs for selecting a color.
+   * @param options - Helper options
+   */
+  static rangePicker(options: HandlebarsHelpers.RangePickerOptions): Handlebars.SafeString;
 
   /**
-   * A helper to assign an <option> within a <select> block as selected based on its value
+   * A helper to assign an `<option>` within a `<select>` block as selected based on its value
    * Escape the string as handlebars would, then escape any regexp characters in it
    */
-  static select(selected: string, { fn }: { fn: Handlebars.TemplateDelegate }): Handlebars.SafeString;
-
-  /* -------------------------------------------- */
+  static select(selected: string, options: HandlebarsHelpers.SelectOptions): string;
 
   /**
-   * A helper to create a set of <option> elements in a <select> block based on a provided dictionary.
+   * A helper to create a set of `<option>` elements in a `<select>` block based on a provided dictionary.
    * The provided keys are the option values while the provided values are human readable labels.
    * This helper supports both single-select as well as multi-select input fields.
    *
-   * @param choices  - A mapping of radio checkbox values to human readable labels
-   * @param selected - Which key or array of keys that are currently selected?
-   * @param localize - Pass each label through string localization?
+   * @param choices - A mapping of radio checkbox values to human readable labels
    *
    * @example <caption>The provided input data</caption>
    * ```typescript
@@ -119,24 +111,80 @@ declare class HandlebarsHelpers {
 }
 
 declare namespace HandlebarsHelpers {
-  interface EditorOptions {
+  interface ColorPickerOptions extends Handlebars.HelperOptions {
     hash: {
+      /**
+       * The name of the field to create
+       */
+      name?: string;
+
+      /**
+       * The current color value
+       */
+      value?: string;
+
+      /**
+       * A default color string if a value is not provided
+       */
+      default?: string;
+    };
+  }
+
+  interface EditorOptions extends Handlebars.HelperOptions {
+    hash: {
+      /**
+       * The named target data element
+       */
+      target: string;
+
+      /**
+       * Is the current user an owner of the data?
+       */
+      owner?: boolean;
+
+      /**
+       * Include a button used to activate the editor later?
+       */
       button?: boolean;
+
+      /**
+       * Is the text editor area currently editable?
+       */
+      editable?: boolean;
+
+      /**
+       * @defaultValue `true`
+       */
+      entities?: boolean;
+
+      rollData?: object;
 
       /**
        * @defaultValue `''`
        */
       content?: string;
+    };
+  }
 
-      editable?: boolean;
+  interface FilePickerOptions extends Handlebars.HelperOptions {
+    hash: {
+      /**
+       * The type of FilePicker instance to display
+       */
+      type?: FilePicker.Type;
 
-      owner?: boolean;
-
+      /**
+       * The field name in the target data
+       */
       target: string;
     };
   }
 
-  interface NumberFormatOptions {
+  interface LocalizeOptions extends Handlebars.HelperOptions {
+    hash: Record<string, unknown>;
+  }
+
+  interface NumberFormatOptions extends Handlebars.HelperOptions {
     hash: {
       /**
        * @defaultValue `0`
@@ -150,36 +198,72 @@ declare namespace HandlebarsHelpers {
     };
   }
 
-  interface RadioBoxesOptions {
+  interface RadioBoxesOptions extends Handlebars.HelperOptions {
     hash: {
       /**
+       * Which key is currently checked?
        * @defaultValue `null`
        */
       checked?: string;
 
       /**
+       * Pass each label through string localization?
        * @defaultValue `false`
        */
       localize?: boolean;
     };
   }
 
-  interface SelectOptionsOptions {
+  interface RangePickerOptions extends Handlebars.HelperOptions {
+    /**
+     * The name of the field to create
+     * @defaultValue `'range'`
+     */
+    name?: string;
+
+    /**
+     * The current range value
+     */
+    value?: number;
+
+    /**
+     * The minimum allowed value
+     */
+    min?: number;
+
+    /**
+     * The maximum allowed value
+     */
+    max?: number;
+
+    /**
+     * The allowed step size
+     */
+    step?: number;
+  }
+
+  type SelectOptions = Handlebars.HelperOptions;
+
+  interface SelectOptionsOptions extends Handlebars.HelperOptions {
     hash: {
       /**
-       * @defaultValue `null`
+       * Which key or array of keys that are currently selected?
        */
-      blank?: string;
+      selected?: string | string[];
 
       /**
+       * Pass each label through string localization?
        * @defaultValue `false`
        */
       localize?: boolean;
 
-      /**
-       * @defaultValue `null`
-       */
-      selected?: string | string[];
+      blank?: string;
+
+      nameAttr?: string;
+
+      labelAttr?: string;
+
+      inverted?: boolean;
     };
   }
 }
