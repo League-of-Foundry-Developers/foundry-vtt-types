@@ -150,7 +150,7 @@ export interface ChatMessageDataConstructorData {
    * An array of User _id values to whom this message is privately whispered
    * @defaultValue `[]`
    */
-  whisper?: string[] | null;
+  whisper?: Array<{ id: string } | string> | null;
 
   /**
    * Is this message sent blindly where the creating User cannot see it?
