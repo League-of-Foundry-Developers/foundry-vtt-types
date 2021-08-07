@@ -1,6 +1,8 @@
 import { expectType } from 'tsd';
+import { FogExplorationDataProperties } from '../../../../../../src/foundry/common/data/data.mjs/fogExplorationData';
+import { PropertiesToSource } from '../../../../../../src/types/helperTypes';
 
 const fogExplorations = new FogExplorations();
 expectType<FogExploration>(fogExplorations.get('', { strict: true }));
-expectType<any[]>(fogExplorations.toJSON()); // TODO: Adjust as soon as FogExplorationData and BaseFogExploration have been typed
+expectType<PropertiesToSource<FogExplorationDataProperties>[]>(fogExplorations.toJSON());
 expectType<null | SidebarDirectory<'FogExploration'> | undefined>(fogExplorations.directory);
