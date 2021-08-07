@@ -6,6 +6,7 @@ export { ChatMessageData } from './chatMessageData';
 export { CombatantData } from './combatantData';
 export { CombatData } from './combatData';
 export { DrawingData } from './drawingData';
+export { FogExplorationData } from './fogExplorationData';
 export { FolderData } from './folderData';
 export { ItemData } from './itemData';
 export { JournalEntryData } from './journalEntryData';
