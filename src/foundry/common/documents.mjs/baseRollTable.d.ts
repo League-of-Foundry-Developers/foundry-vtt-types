@@ -5,7 +5,9 @@ import { BaseTableResult } from './baseTableResult';
 /**
  * The base RollTable model definition which defines common behavior of an RollTable document between both client and server.
  */
-export declare class BaseRollTable extends Document<any, any> {
+export declare class BaseRollTable extends Document<foundry.data.RollTableData> {
+  static get schema(): typeof foundry.data.RollTableData;
+
   static get metadata(): Merge<
     DocumentMetadata,
     {
@@ -18,4 +20,9 @@ export declare class BaseRollTable extends Document<any, any> {
       isPrimary: true;
     }
   >;
+
+  /**
+   * A reference to the Collection of TableResult instances in this document, indexed by _id.
+   */
+  get results(): this['data']['results'];
 }

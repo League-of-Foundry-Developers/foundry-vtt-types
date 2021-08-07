@@ -1562,7 +1562,7 @@ declare global {
       /**
        * @defaultValue `TableResult`
        */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseTableResult>; // TODO TableResult
+      documentClass: ConfiguredDocumentClassOrDefault<typeof TableResult>;
     };
 
     /**
