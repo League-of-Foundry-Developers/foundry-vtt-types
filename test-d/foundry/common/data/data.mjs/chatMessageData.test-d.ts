@@ -62,3 +62,24 @@ expectType<foundry.data.ChatMessageData>(
     }
   })
 );
+
+expectType<foundry.data.ChatMessageData>(
+  new foundry.data.ChatMessageData({
+    whisper: null
+  })
+);
+expectType<foundry.data.ChatMessageData>(
+  new foundry.data.ChatMessageData({
+    whisper: ['someId']
+  })
+);
+expectType<foundry.data.ChatMessageData>(
+  new foundry.data.ChatMessageData({
+    whisper: [{ id: 'someId' }]
+  })
+);
+expectType<foundry.data.ChatMessageData>(
+  new foundry.data.ChatMessageData({
+    whisper: [{ id: null }]
+  })
+);

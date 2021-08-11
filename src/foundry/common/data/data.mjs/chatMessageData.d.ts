@@ -20,7 +20,7 @@ interface ChatMessageDataSchema extends DocumentSchema {
   speaker: DocumentField<ChatSpeakerData> & { type: typeof ChatSpeakerData; required: true; default: {} };
   whisper: DocumentField<string[]> & {
     type: typeof String[];
-    clean: (users: Array<{ id: string } | string>) => string[];
+    clean: (users: Array<{ id: string | null } | string>) => string[];
     required: true;
     default: string[];
   };
@@ -150,7 +150,7 @@ export interface ChatMessageDataConstructorData {
    * An array of User _id values to whom this message is privately whispered
    * @defaultValue `[]`
    */
-  whisper?: Array<{ id: string } | string> | null;
+  whisper?: Array<{ id: string | null } | string> | null;
 
   /**
    * Is this message sent blindly where the creating User cannot see it?
