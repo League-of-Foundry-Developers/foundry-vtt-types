@@ -10,6 +10,15 @@ declare global {
    */
   class FogExploration extends ClientDocumentMixin(foundry.documents.BaseFogExploration) {
     /**
+     * @param data - Initial data provided to construct the FogExploration document
+     *               (default: `{}`)
+     */
+    constructor(
+      data?: ConstructorParameters<ConstructorOf<foundry.documents.BaseFogExploration>>[0],
+      context?: ConstructorParameters<ConstructorOf<foundry.documents.BaseFogExploration>>[1]
+    );
+
+    /**
      * Explore fog of war for a new point source position.
      * @param source - The candidate source of exploration
      * @param force  - Force the position to be re-explored
@@ -40,8 +49,9 @@ declare global {
 
     /**
      * Open Socket listeners which transact JournalEntry data
+     * @internal
      */
-    protected static _activateSocketListeners(socket: io.Socket): void;
+    static _activateSocketListeners(socket: io.Socket): void;
 
     /**
      * Handle a request from the server to reset fog of war for a particular scene.

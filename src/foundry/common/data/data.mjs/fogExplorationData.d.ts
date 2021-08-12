@@ -9,7 +9,7 @@ interface FogExplorationDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
   scene: ForeignDocumentField<{ type: typeof documents.BaseScene }>;
   user: ForeignDocumentField<{ type: typeof documents.BaseUser }>;
-  explored: {
+  explored: DocumentField<string> & {
     type: typeof String;
     required: true;
     nullable: true;
