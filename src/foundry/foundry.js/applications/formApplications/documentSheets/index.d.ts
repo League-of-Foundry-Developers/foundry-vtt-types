@@ -1,5 +1,6 @@
 import './activeEffectConfig';
 import './actorSheet';
+import './combatantConfig';
 import './itemSheet';
 import './journalSheet';
 import './macroConfig';

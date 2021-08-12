@@ -1,7 +1,6 @@
 import './ambientSoundConfig';
 import './avConfig';
 import './combatTrackerConfig';
-import './combatantConfig';
 import './documentSheet';
 import './documentSheets';
 import './drawingConfig';
