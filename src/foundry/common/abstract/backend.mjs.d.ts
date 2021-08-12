@@ -243,7 +243,7 @@ export interface SceneIdUserQuery {
   user: string;
 }
 
-interface RequestOptions {
+export interface RequestOptions {
   index?: boolean;
   broadcast?: boolean;
   temporary?: boolean;
