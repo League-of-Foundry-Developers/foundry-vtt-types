@@ -1,6 +1,7 @@
-import DocumentData, { AnyDocumentData } from '../foundry/common/abstract/data.mjs';
-import Document from '../foundry/common/abstract/document.mjs';
-import EmbeddedCollection from '../foundry/common/abstract/embedded-collection.mjs';
+import type DocumentData from '../foundry/common/abstract/data.mjs';
+import type { AnyDocumentData } from '../foundry/common/abstract/data.mjs';
+import type Document from '../foundry/common/abstract/document.mjs';
+import type EmbeddedCollection from '../foundry/common/abstract/embedded-collection.mjs';
 
 export type PropertiesDataType<T extends Document<any, any> | AnyDocumentData> = T extends DocumentData<
   any,
