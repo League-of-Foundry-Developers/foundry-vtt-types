@@ -1,5 +1,6 @@
+import type { ConfiguredDocumentClass } from '../../../../src/types/helperTypes';
+
 import { expectAssignable, expectType } from 'tsd';
-import { ConfiguredDocumentClass } from '../../../../src/types/helperTypes';
 
 const user = new User({ name: 'Test' });
 

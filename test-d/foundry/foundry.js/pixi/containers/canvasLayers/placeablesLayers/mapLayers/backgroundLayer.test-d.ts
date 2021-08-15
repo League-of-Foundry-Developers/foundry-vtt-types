@@ -1,5 +1,6 @@
+import type EmbeddedCollection from '../../../../../../../../src/foundry/common/abstract/embedded-collection.mjs';
+
 import { expectError, expectType } from 'tsd';
-import EmbeddedCollection from '../../../../../../../../src/foundry/common/abstract/embedded-collection.mjs';
 
 expectType<BackgroundLayer | undefined>(BackgroundLayer.instance);
 expectType<MapLayer.LayerOptions<'background'>>(BackgroundLayer.layerOptions);

@@ -1,5 +1,6 @@
+import type EmbeddedCollection from '../../../../src/foundry/common/abstract/embedded-collection.mjs';
+
 import { expectError, expectType } from 'tsd';
-import EmbeddedCollection from '../../../../src/foundry/common/abstract/embedded-collection.mjs';
 
 expectType<{
   distance: number;

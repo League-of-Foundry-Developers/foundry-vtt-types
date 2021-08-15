@@ -1,5 +1,6 @@
+import type { ActorDataSource } from '../../../../../../src/foundry/common/data/data.mjs/actorData';
+
 import { expectType } from 'tsd';
-import { ActorDataSource } from '../../../../../../src/foundry/common/data/data.mjs/actorData';
 
 const actors = new Actors();
 expectType<Actor>(actors.get('', { strict: true }));

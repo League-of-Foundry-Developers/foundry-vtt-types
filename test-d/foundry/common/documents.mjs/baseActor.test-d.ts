@@ -1,9 +1,10 @@
+import type EmbeddedCollection from '../../../../src/foundry/common/abstract/embedded-collection.mjs';
+import type { PropertiesToSource } from '../../../../src/types/helperTypes';
+import type { ActiveEffectDataProperties } from '../../../../src/foundry/common/data/data.mjs/activeEffectData';
+import type { EffectDurationDataProperties } from '../../../../src/foundry/common/data/data.mjs/effectDurationData';
+
 import { expectError, expectType } from 'tsd';
 import '../../../../index';
-import EmbeddedCollection from '../../../../src/foundry/common/abstract/embedded-collection.mjs';
-import { PropertiesToSource } from '../../../../src/types/helperTypes';
-import { ActiveEffectDataProperties } from '../../../../src/foundry/common/data/data.mjs/activeEffectData';
-import { EffectDurationDataProperties } from '../../../../src/foundry/common/data/data.mjs/effectDurationData';
 
 const baseActor = new foundry.documents.BaseActor();
 expectType<EmbeddedCollection<typeof ActiveEffect, foundry.data.ActorData>>(baseActor.effects);

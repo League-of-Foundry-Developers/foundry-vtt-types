@@ -1,6 +1,7 @@
+import type { JournalEntryDataProperties } from '../../../../../../src/foundry/common/data/data.mjs/journalEntryData';
+import type { PropertiesToSource } from '../../../../../../src/types/helperTypes';
+
 import { expectType } from 'tsd';
-import { JournalEntryDataProperties } from '../../../../../../src/foundry/common/data/data.mjs/journalEntryData';
-import { PropertiesToSource } from '../../../../../../src/types/helperTypes';
 
 const journal = new Journal();
 expectType<JournalEntry>(journal.get('', { strict: true }));

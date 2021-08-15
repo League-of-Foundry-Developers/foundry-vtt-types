@@ -1,5 +1,6 @@
+import type { CombatData } from '../../../../../../src/foundry/common/data/data.mjs';
+
 import { expectType } from 'tsd';
-import { CombatData } from '../../../../../../src/foundry/common/data/data.mjs';
 
 const combatEncounters = new CombatEncounters();
 expectType<Combat>(combatEncounters.get('', { strict: true }));
