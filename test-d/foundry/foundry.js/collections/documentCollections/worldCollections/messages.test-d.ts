@@ -1,8 +1,6 @@
 import { expectType } from 'tsd';
-import { ChatMessageDataProperties } from '../../../../../../src/foundry/common/data/data.mjs/chatMessageData';
-import { PropertiesToSource } from '../../../../../../src/types/helperTypes';
 
 const messages = new Messages();
-expectType<ChatMessage>(messages.get('', { strict: true }));
-expectType<PropertiesToSource<ChatMessageDataProperties>[]>(messages.toJSON());
+expectType<StoredDocument<ChatMessage>>(messages.get('', { strict: true }));
+expectType<StoredDocument<ChatMessage>['data']['_source'][]>(messages.toJSON());
 expectType<null | SidebarDirectory<'ChatMessage'> | undefined>(messages.directory);

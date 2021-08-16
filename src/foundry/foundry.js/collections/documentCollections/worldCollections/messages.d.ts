@@ -31,7 +31,9 @@ declare global {
      * @see {@link Dialog.confirm}
      */
     flush(): Promise<
-      Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseChatMessage>>[]> | false | null
+      | Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseChatMessage>>>[]>
+      | false
+      | null
     >;
   }
 }

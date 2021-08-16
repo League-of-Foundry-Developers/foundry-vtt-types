@@ -10,7 +10,9 @@ declare global {
    */
   class Playlists extends WorldCollection<typeof foundry.documents.BasePlaylist, 'Playlists'> {
     constructor(
-      data?: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BasePlaylist>>['data']['_source'][]
+      data?: StoredDocument<
+        InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BasePlaylist>>
+      >['data']['_source'][]
     );
 
     /** @override */
@@ -32,7 +34,7 @@ declare global {
      * @param data  - The incremental update data
      */
     protected _onChangeScene(
-      scene: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>,
+      scene: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>>,
       data: DeepPartial<ConstructorDataType<foundry.documents.BaseScene['data']>>
     ): Promise<void>;
   }

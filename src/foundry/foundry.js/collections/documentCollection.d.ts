@@ -6,7 +6,7 @@ declare global {
    * An abstract subclass of the Collection container which defines a collection of Document instances.
    */
   abstract class DocumentCollection<T extends DocumentConstructor, Name extends string> extends foundry.utils
-    .Collection<InstanceType<ConfiguredDocumentClass<T>>> {
+    .Collection<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>> {
     constructor();
 
     /**
@@ -34,7 +34,7 @@ declare global {
     /**
      * @remarks The parameter `id` is ignored, instead `document.id` is used as the key.
      */
-    set(id: string, document: InstanceType<ConfiguredDocumentClass<T>>): this;
+    set(id: string, document: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>): this;
 
     /**
      * Render any Applications associated with this DocumentCollection.
@@ -55,9 +55,9 @@ declare global {
       transformation:
         | DeepPartial<InstanceType<ConfiguredDocumentClass<T>>['data']['_source']>
         | ((
-            doc: InstanceType<ConfiguredDocumentClass<T>>
+            doc: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>
           ) => DeepPartial<InstanceType<ConfiguredDocumentClass<T>>['data']['_source']>),
-      condition?: ((obj: InstanceType<ConfiguredDocumentClass<T>>) => boolean) | null,
+      condition?: ((obj: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>) => boolean) | null,
       options?: DocumentModificationContext
     ): ReturnType<this['documentClass']['updateDocuments']>;
 
@@ -81,8 +81,8 @@ declare global {
      * @param userId    - The ID of the User who triggered the operation
      */
     _onCreateDocuments(
-      documents: InstanceType<ConfiguredDocumentClass<T>>[],
-      result: InstanceType<ConfiguredDocumentClass<T>>['data']['_source'][],
+      documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
+      result: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>['data']['_source'][],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -94,7 +94,7 @@ declare global {
      * @param userId  - The ID of the User who triggered the operation
      */
     _preUpdateDocuments(
-      result: DeepPartial<InstanceType<ConfiguredDocumentClass<T>>>[],
+      result: DeepPartial<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>>[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -107,8 +107,8 @@ declare global {
      * @param userId    - The ID of the User who triggered the operation
      */
     _onUpdateDocuments(
-      documents: InstanceType<ConfiguredDocumentClass<T>>[],
-      result: DeepPartial<InstanceType<ConfiguredDocumentClass<T>>>[],
+      documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
+      result: DeepPartial<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>>[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -129,7 +129,7 @@ declare global {
      * @param userId    - The ID of the User who triggered the operation
      */
     _onDeleteDocuments(
-      documents: InstanceType<ConfiguredDocumentClass<T>>[],
+      documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
       result: string[],
       options: DocumentModificationOptions,
       userId: string
