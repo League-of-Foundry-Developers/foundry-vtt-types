@@ -1,9 +1,8 @@
 /**
  * The Collection of Setting documents which exist within the active World.
- * This collection is accessible as game.settings.storages.get("world")
+ * This collection is accessible as game.settings.storage.get("world")
  *
- * @see {@link Macro} The Macro entity
- * @see {@link MacroDirectory} The MacroDirectory sidebar directory
+ * @see {@link Setting} The Setting document
  */
 declare class WorldSettings extends WorldCollection<typeof foundry.documents.BaseSetting, 'WorldSettings'> {
   /** @override */
@@ -13,10 +12,9 @@ declare class WorldSettings extends WorldCollection<typeof foundry.documents.Bas
   get directory(): null;
 
   /**
-   * Return the serialized value of the world setting as a string
+   * Return the Setting document with the given key.
    * @param key - The setting key
-   * @returns The serialized setting string
-   * @remarks The documentation is incorrect, this actually returns a `Setting | undefined`
+   * @returns The Setting.
    */
   getSetting(key: string): ReturnType<this['find']>;
 
