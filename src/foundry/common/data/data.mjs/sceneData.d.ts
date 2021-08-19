@@ -140,6 +140,7 @@ interface SceneDataProperties {
   img: string | undefined | null;
 
   /**
+   * An image or video file path which is drawn on top of all other elements in the scene
    * @defaultValue `undefined`
    */
   foreground: string | undefined | null;
@@ -394,6 +395,7 @@ interface SceneDataConstructorData {
   img?: string | undefined | null;
 
   /**
+   * An image or video file path which is drawn on top of all other elements in the scene
    * @defaultValue `undefined`
    */
   foreground?: string | undefined | null;

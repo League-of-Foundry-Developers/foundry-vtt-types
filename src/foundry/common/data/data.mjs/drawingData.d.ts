@@ -68,6 +68,7 @@ interface DrawingDataProperties {
   _id: string | null;
 
   /**
+   * The _id of the user who created the drawing
    * @defaultValue `null`
    */
   author: string | null;
@@ -221,6 +222,7 @@ interface DrawingDataConstructorData {
   _id?: string | null;
 
   /**
+   * The _id of the user who created the drawing
    * @defaultValue `null`
    */
   author?: InstanceType<ConfiguredDocumentClass<typeof BaseUser>> | string | null;
