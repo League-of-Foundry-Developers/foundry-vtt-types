@@ -134,7 +134,7 @@ declare class PlaylistDirectory extends SidebarDirectory<PlaylistDirectory.Optio
    * Get context menu options for individual sound effects
    * @returns The context options for each sound
    */
-  protected _getSoundContextOptions(): ContextMenu.Item[];
+  protected _getSoundContextOptions(): ContextMenuEntry[];
 }
 
 declare namespace PlaylistDirectory {

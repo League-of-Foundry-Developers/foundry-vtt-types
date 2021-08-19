@@ -80,6 +80,28 @@ declare class ContextMenu {
   static eventListeners(): void;
 }
 
+interface ContextMenuEntry {
+  /**
+   * The context menu label. Can be localized.
+   */
+  name: string;
+
+  /**
+   * A string containing an HTML icon element for the menu item
+   */
+  icon: string;
+
+  /**
+   * The function to call when the menu item is clicked. Receives the HTML element of the SidebarTab entry that this context menu is for.
+   */
+  callback: (target: JQuery) => void;
+
+  /**
+   * A function to call to determine if this item appears in the menu. Receives the HTML element of the SidebarTab entry that this context menu is for.
+   */
+  condition?: boolean | ((target: JQuery) => boolean);
+}
+
 declare namespace ContextMenu {
   interface Item {
     /**

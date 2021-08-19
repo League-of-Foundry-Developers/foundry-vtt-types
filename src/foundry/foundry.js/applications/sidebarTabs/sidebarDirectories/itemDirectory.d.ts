@@ -32,5 +32,5 @@ declare class ItemDirectory extends SidebarDirectory {
   /**
    * @override
    */
-  protected _getEntryContextOptions(): ContextMenu.Item[];
+  protected _getEntryContextOptions(): ContextMenuEntry[];
 }

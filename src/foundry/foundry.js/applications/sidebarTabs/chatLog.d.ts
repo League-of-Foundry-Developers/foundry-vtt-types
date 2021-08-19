@@ -206,7 +206,7 @@ declare class ChatLog extends SidebarTab<ChatLog.Options> {
    * Get the sidebar directory entry context options
    * @returns The sidebar entry context options
    */
-  protected _getEntryContextOptions(): ContextMenu.Item[];
+  protected _getEntryContextOptions(): ContextMenuEntry[];
 
   /**
    * Handle keydown events in the chat entry textarea
