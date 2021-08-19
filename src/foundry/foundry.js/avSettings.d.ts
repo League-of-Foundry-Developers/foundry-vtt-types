@@ -1,37 +1,15 @@
 declare class AVSettings {
   constructor();
 
-  protected _set<T>(key: string, value: T): void;
-
-  protected _change(): void;
-
   client: AVSettings.ClientSettings;
 
   world: AVSettings.WorldSettings;
 
   protected _original: AVSettings.Settings;
 
-  initialize(): void;
+  protected _set<T>(key: string, value: T): void;
 
-  changed(): void;
-
-  get<S extends 'client' | 'world'>(scope: S, setting: string): unknown; // TODO: Improve once we have proper typing for dot notation
-
-  getUser(userId: string): AVSettings.UserSettings | null;
-
-  set<S extends 'client' | 'world'>(scope: S, setting: string, value: unknown): void; // TODO: Improve once we have proper typing for dot notation
-
-  /**
-   * Return a mapping of AV settings for each game User.
-   */
-  get users(): Record<string, AVSettings.UserSettings>;
-
-  /**
-   * Prepare a standardized object of user settings data for a single User
-   */
-  protected _getUserSettings(user: User): AVSettings.UserSettings;
-
-  protected _onSettingsChanged(): void;
+  protected _change(): void;
 
   /**
    * WebRTC Mode, Disabled, Audio only, Video only, Audio & Video
@@ -89,18 +67,22 @@ declare class AVSettings {
       /**
        * @defaultValue `'AVSettings.VOICE_MODES.PTT'`
        */
-      mode: typeof AVSettings.VOICE_MODES[keyof typeof AVSettings.VOICE_MODES];
+      mode: AVSettings.VoiceMode;
 
       /**
-       * @defaultValue `192` (Tilde)
+       * @defaultValue
+       * ```
+       * "`"
+       * ```
        */
-      pttKey: number;
+      pttKey: string;
 
-      /* eslint-disable */
       /**
-       * @defaultValue ``"`"``
+       * @defaultValue
+       * ```
+       * "`"
+       * ```
        */
-      /* eslint-enable */
       pttName: string;
 
       /**
@@ -227,6 +209,33 @@ declare class AVSettings {
      */
     blocked: boolean;
   };
+
+  initialize(): void;
+
+  changed(): void;
+
+  get<S extends 'client' | 'world'>(scope: S, setting: string): unknown; // TODO: Improve once we have proper typing for dot notation
+
+  getUser(userId: string): AVSettings.UserSettings | null;
+
+  set<S extends 'client' | 'world'>(scope: S, setting: string, value: unknown): void; // TODO: Improve once we have proper typing for dot notation
+
+  /**
+   * Return a mapping of AV settings for each game User.
+   */
+  get users(): Record<string, AVSettings.UserSettings>;
+
+  /**
+   * Prepare a standardized object of user settings data for a single User
+   * @internal
+   */
+  protected _getUserSettings(user: User): AVSettings.UserSettings;
+
+  /**
+   * Handle setting changes to either rctClientSettings or rtcWorldSettings.
+   * @internal
+   */
+  protected _onSettingsChanged(): void;
 }
 
 declare namespace AVSettings {
@@ -235,5 +244,5 @@ declare namespace AVSettings {
   type StoredUserSettings = typeof AVSettings.DEFAULT_USER_SETTINGS;
   type UserSettings = StoredUserSettings & { canBroadCastAudio: boolean; canBroadcastVideo: boolean };
   type Settings = { client: ClientSettings; world: WorldSettings };
-  type VoiceMode = typeof AVSettings.VOICE_MODES[keyof typeof AVSettings.VOICE_MODES];
+  type VoiceMode = ValueOf<typeof AVSettings.VOICE_MODES>;
 }
