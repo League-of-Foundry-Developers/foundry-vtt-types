@@ -2,6 +2,7 @@ import * as fields from '../data/fields.mjs';
 import { PackageData, PackageDataConstructorData, PackageDataProperties, PackageDataSchema } from './packageData';
 
 interface SystemDataSchema extends PackageDataSchema {
+  background: typeof fields.STRING_FIELD;
   initiative: typeof fields.STRING_FIELD;
   gridDistance: typeof fields.NUMERIC_FIELD;
   gridUnits: typeof fields.STRING_FIELD;
@@ -10,6 +11,8 @@ interface SystemDataSchema extends PackageDataSchema {
 }
 
 interface SystemDataProperties extends PackageDataProperties {
+  background?: string;
+
   initiative?: string;
 
   /** A default distance measurement to use for Scenes in this system */
@@ -26,6 +29,8 @@ interface SystemDataProperties extends PackageDataProperties {
 }
 
 interface SystemDataConstructorData extends PackageDataConstructorData {
+  background?: string | null;
+
   initiative?: string | null;
 
   /** A default distance measurement to use for Scenes in this system */
