@@ -24,6 +24,7 @@ declare class AVMaster {
    * Flag to determine if we are connected to the signalling server or not.
    * This is required for synchronization between connection and reconnection attempts.
    * @defaultValue `false`
+   * @internal
    */
   protected _connected: boolean;
 
@@ -31,19 +32,25 @@ declare class AVMaster {
    * A flag to track whether the A/V system is currently in the process of reconnecting.
    * This occurs if the connection is lost or interrupted.
    * @defaultValue `false`
+   * @internal
    */
   protected _reconnecting: boolean;
 
   /**
    * @defaultValue `{}`
+   * @internal
    */
   protected _speakingData: AVMaster.SpeakingData;
+
   /**
    * @defaultValue `{}`
+   * @internal
    */
   protected _pttHandlers: AVMaster.PTTHandlers;
+
   /**
    * @defaultValue `0`
+   * @internal
    */
   protected _pttMuteTimeout: number;
 
@@ -68,6 +75,7 @@ declare class AVMaster {
 
   /**
    * Initialize the local broadcast state.
+   * @internal
    */
   protected _initialize(): void;
 
@@ -101,6 +109,7 @@ declare class AVMaster {
   /**
    * Set up audio level listeners to handle voice activation detection workflow.
    * @param mode - The currently selected voice broadcasting mode
+   * @internal
    */
   protected _initializeUserVoiceDetection(mode: AVSettings.VoiceMode): void;
 
@@ -135,24 +144,28 @@ declare class AVMaster {
    *
    * @param userId  - The user ID of the user whose audio levels are being reported
    * @param dbLevel - The audio level in decibels of the user within the last 50ms
+   * @internal
    */
   protected _onAudioLevel(userId: string, dbLevel: number): void;
 
   /**
    * Set up interactivity and handling of push-to-talk broadcasting workflow.
+   * @internal
    */
-  _initializePushToTalk(): void;
+  protected _initializePushToTalk(): void;
 
   /**
    * Resets the speaking history of a user
    * If the user was considered speaking, then mark them as not speaking
    * @param userId - The ID of the user
+   * @internal
    */
-  _resetSpeakingHistory(userId: string): void;
+  protected _resetSpeakingHistory(userId: string): void;
 
   /**
    * Handle activation of a push-to-talk key or button.
    * @param event - The original keydown event
+   * @internal
    */
   _onPTTStart(event: KeyboardEvent | MouseEvent): void;
 
@@ -161,6 +174,13 @@ declare class AVMaster {
    * @param event - The original keyup event
    */
   _onPTTEnd(event: KeyboardEvent | MouseEvent): void;
+
+  /**
+   * Handle matching old and new PTT configurations against the mouse or keyboard event.
+   * @param event - The original event
+   * @internal
+   */
+  _isPTTKey(event: KeyboardEvent | MouseEvent): boolean;
 
   render(): void;
 
