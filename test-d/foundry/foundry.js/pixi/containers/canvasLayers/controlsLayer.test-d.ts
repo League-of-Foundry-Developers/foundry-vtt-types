@@ -2,12 +2,12 @@ import { expectType } from 'tsd';
 
 expectType<undefined>(ControlsLayer.instance);
 expectType<ControlsLayer.LayerOptions>(ControlsLayer.layerOptions);
-expectType<''>(ControlsLayer.layerOptions.name);
+expectType<'controls'>(ControlsLayer.layerOptions.name);
 
 declare const wall: Wall;
 
 const layer = new ControlsLayer();
-expectType<''>(layer.options.name);
+expectType<'controls'>(layer.options.name);
 expectType<ControlsLayer.LayerOptions>(layer.options);
 expectType<PIXI.Container | null>(layer.cursors);
 expectType<PIXI.Container | null>(layer.doors);
