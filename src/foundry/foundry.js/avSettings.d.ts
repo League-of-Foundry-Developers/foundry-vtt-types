@@ -1,15 +1,15 @@
 declare class AVSettings {
   constructor();
 
+  protected _set<T>(key: string, value: T): void;
+
+  protected _change(): void;
+
   client: AVSettings.ClientSettings;
 
   world: AVSettings.WorldSettings;
 
   protected _original: AVSettings.Settings;
-
-  protected _set<T>(key: string, value: T): void;
-
-  protected _change(): void;
 
   /**
    * WebRTC Mode, Disabled, Audio only, Video only, Audio & Video

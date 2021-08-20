@@ -172,6 +172,7 @@ declare class AVMaster {
   /**
    * Handle deactivation of a push-to-talk key or button.
    * @param event - The original keyup event
+   * @internal
    */
   _onPTTEnd(event: KeyboardEvent | MouseEvent): void;
 
