@@ -80,10 +80,14 @@ interface TileDataProperties {
   rotation: number;
 
   /**
+   * The tile opacity
    * @defaultValue `1`
    */
   alpha: number;
 
+  /**
+   * A color to tint the tile
+   */
   tint: string | null | undefined;
 
   /**
@@ -99,12 +103,19 @@ interface TileDataProperties {
   locked: boolean;
 
   /**
+   * Is the tile an overhead tile?
    * @defaultValue `false`
    */
   overhead: boolean;
 
+  /**
+   * The tile's occlusion settings
+   */
   occlusion: TileOcclusion;
 
+  /**
+   * The tile's video settings
+   */
   video: VideoData;
 
   /**
@@ -162,10 +173,14 @@ interface TileDataConstructorData {
   rotation?: number | null;
 
   /**
+   * The tile opacity
    * @defaultValue `1`
    */
   alpha?: number | null;
 
+  /**
+   * A color to tint the tile
+   */
   tint?: string | null;
 
   /**
@@ -181,12 +196,19 @@ interface TileDataConstructorData {
   locked?: boolean | null;
 
   /**
+   * Is the tile an overhead tile?
    * @defaultValue `false`
    */
   overhead?: boolean | null;
 
+  /**
+   * The tile's occlusion settings
+   */
   occlusion?: TileOcclusionConstructorData | null;
 
+  /**
+   * The tile's video settings
+   */
   video?: VideoDataConstructorData | null;
 
   /**

@@ -37,6 +37,11 @@ declare global {
     /** The current value of the special tracked resource which pertains to this Combatant */
     resource: `${number}` | number | boolean | null;
 
+    /**
+     * A convenience alias of Combatant#parent which is more semantically intuitive
+     */
+    get combat(): InstanceType<ConfiguredDocumentClass<typeof Combat>> | null;
+
     /** Determine the image icon path that should be used to portray this Combatant in the combat tracker or elsewhere */
     get img(): string;
 

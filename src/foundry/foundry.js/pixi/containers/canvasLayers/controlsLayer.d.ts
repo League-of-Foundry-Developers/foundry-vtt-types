@@ -63,7 +63,7 @@ declare global {
 
     /**
      * @override
-     * @defaultValue `mergeObject(super.layerOptions, { zIndex: 1000 })`
+     * @defaultValue `mergeObject(super.layerOptions, { name: "controls", zIndex: 1000 })`
      */
     static get layerOptions(): ControlsLayer.LayerOptions;
 
@@ -140,7 +140,7 @@ declare global {
 
   namespace ControlsLayer {
     interface LayerOptions extends CanvasLayer.LayerOptions {
-      name: '';
+      name: 'controls';
       zIndex: 1000;
     }
   }

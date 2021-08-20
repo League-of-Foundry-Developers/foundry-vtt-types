@@ -36,7 +36,7 @@ declare class TextEditor {
       links,
       rolls,
       rollData // TODO: _createInlineRoll
-    }?: { secrets: boolean; entities: boolean; links: boolean; rolls: boolean; rollData: object }
+    }?: { secrets: boolean; entities: boolean; links: boolean; rolls: boolean; rollData: object | (() => object) }
   ): string;
 
   /**

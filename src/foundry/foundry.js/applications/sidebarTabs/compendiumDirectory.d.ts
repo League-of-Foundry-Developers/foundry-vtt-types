@@ -40,7 +40,7 @@ declare global {
      * Get the sidebar directory entry context options
      * @returns The sidebar entry context options
      */
-    protected _getEntryContextOptions(): ContextMenu.Item[];
+    protected _getEntryContextOptions(): ContextMenuEntry[];
 
     /**
      * Handle a Compendium Pack creation request

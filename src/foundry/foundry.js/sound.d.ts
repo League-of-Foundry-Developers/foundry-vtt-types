@@ -96,6 +96,11 @@ declare class Sound {
   get loaded(): boolean;
 
   /**
+   * Did the contained audio node fail to load?
+   */
+  get failed(): boolean;
+
+  /**
    * Is the audio source currently playing?
    */
   get playing(): boolean;

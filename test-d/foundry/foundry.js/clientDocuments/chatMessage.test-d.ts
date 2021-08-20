@@ -29,12 +29,12 @@ if (game instanceof Game) {
     ChatMessage.getSpeaker({
       scene: game.scenes?.active,
       actor: game.user?.character,
-      token: new Token(new TokenDocument()),
+      token: new TokenDocument(),
       alias: 'Mario'
     })
   );
 }
-expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({ token: new Token(new TokenDocument()) }));
+expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({ token: new TokenDocument() }));
 expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({ alias: 'Mario' }));
 
 expectType<Actor | null>(ChatMessage.getSpeakerActor(ChatMessage.getSpeaker()));

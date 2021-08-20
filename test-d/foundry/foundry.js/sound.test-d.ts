@@ -16,6 +16,7 @@ expectType<AudioParam | undefined>(sound.gain);
 expectType<number | undefined>(sound.currentTime);
 expectType<number | undefined>(sound.duration);
 expectType<boolean>(sound.loaded);
+expectType<boolean>(sound.failed);
 expectType<boolean>(sound.playing);
 expectType<boolean>(sound.loop);
 expectType<number | undefined>(sound.volume);

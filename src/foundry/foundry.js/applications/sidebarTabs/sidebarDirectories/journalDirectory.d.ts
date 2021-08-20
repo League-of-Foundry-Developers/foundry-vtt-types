@@ -29,7 +29,7 @@ declare class JournalDirectory extends SidebarDirectory<JournalDirectory.Options
   /**
    * @override
    */
-  protected _getEntryContextOptions(): ContextMenu.Item[];
+  protected _getEntryContextOptions(): ContextMenuEntry[];
 }
 
 declare namespace JournalDirectory {

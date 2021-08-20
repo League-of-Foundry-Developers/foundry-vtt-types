@@ -7,6 +7,7 @@ expectType<HeadsUpDisplay | null>(myCanvas.hud);
 expectType<Array<[(args: any[]) => void, any, any[]]>>(myCanvas.pendingOperations);
 expectType<PerceptionManager>(myCanvas.perception);
 expectType<boolean>(myCanvas.ready);
+expectType<boolean>(myCanvas.loading);
 expectType<boolean>(myCanvas.initialized);
 expectType<number>(myCanvas.blurDistance);
 expectType<PIXI.filters.BlurFilter[]>(myCanvas.blurFilters);

@@ -25,17 +25,17 @@ declare class AudioHelper {
   sounds: Map<string, Sound>;
 
   /**
-   * Get an array of the Sound objects which are currently playing.
+   * Get a map of the Sound objects which are currently playing.
    * @remarks It's not actually an `Array` but a `Map`.
    */
   playing: Map<number, Sound>;
 
   /**
    * A user gesture must be registered before audio can be played.
-   * This Array contains the Howl instances which are requested for playback prior to a gesture.
+   * This Array contains the Sound instances which are requested for playback prior to a gesture.
    * Once a gesture is observed, we begin playing all elements of this Array.
+   * @see Sound
    * @defaultValue `[]`
-   * @remarks It's not actually Howl instances (Howler is not used anymore) but function that will be executed.
    */
   pending: (() => void)[];
 
@@ -154,14 +154,13 @@ declare class AudioHelper {
    * @param push - Push the audio sound effect to other connected clients?
    *               (default: `false`)
    *
-   * @returns A Howl instance which controls audio playback.
+   * @returns A Sound instance which controls audio playback.
    *
    * @example
    * ```typescript
    * // Play the sound of a locked door for all players
    * AudioHelper.play({src: "sounds/lock.wav", volume: 0.8, loop: false}, true);
    * ```
-   * @remarks It actually returns a promise that resolves to a {@link Sound}, Howler isn't actually used anymore.
    */
   static play(data: AudioHelper.PlayData, push?: boolean): Promise<Sound>;
 

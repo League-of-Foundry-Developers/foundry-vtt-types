@@ -53,7 +53,7 @@ declare class SceneNavigation extends Application {
   /**
    * Get the set of ContextMenu options which should be applied for Scenes in the menu
    */
-  private _getContextMenuOptions(): ContextMenu.Item[];
+  private _getContextMenuOptions(): ContextMenuEntry[];
 
   /**
    * Handle left-click events on the scenes in the navigation menu

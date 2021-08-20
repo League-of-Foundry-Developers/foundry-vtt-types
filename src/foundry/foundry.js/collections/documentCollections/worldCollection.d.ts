@@ -15,9 +15,9 @@ declare global {
      * @param data - An array of data objects from which to create Document instances
      *               (default: `[]`)
      */
-    constructor(data?: InstanceType<ConfiguredDocumentClass<T>>['data']['_source'][]);
+    constructor(data?: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>['data']['_source'][]);
 
-    readonly _source: InstanceType<ConfiguredDocumentClass<T>>['data']['_source'][];
+    readonly _source: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>['data']['_source'][];
 
     /**
      * Initialize the WorldCollection object by constructing its contained Document instances
@@ -54,7 +54,7 @@ declare global {
     static get instance(): WorldCollection<DocumentConstructor, any>; // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class, which allows accessing the the static this type to use the `documentName`.
 
     /** @override */
-    set(id: string, document: InstanceType<ConfiguredDocumentClass<T>>): this;
+    set(id: string, document: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>): this;
 
     delete: (id: string) => boolean;
 
@@ -71,7 +71,7 @@ declare global {
       id: string,
       updateData?: DeepPartial<InstanceType<ConfiguredDocumentClass<T>>['data']['_source']>,
       options?: DocumentModificationContext
-    ): Promise<InstanceType<ConfiguredDocumentClass<T>>>;
+    ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>>;
 
     /**
      * Apply data transformations when importing a Document from a Compendium pack
@@ -80,6 +80,15 @@ declare global {
      */
     fromCompendium(
       document: InstanceType<ConfiguredDocumentClass<T>> | InstanceType<ConfiguredDocumentClass<T>>['data']['_source']
+    ): Omit<InstanceType<ConfiguredDocumentClass<T>>['data']['_source'], '_id' | 'folder'>;
+
+    /**
+     * Prepare a document from an outside source for import into this collection.
+     * @param data - The data to be prepared.
+     * @returns The prepared data.
+     */
+    prepareForImport(
+      data: InstanceType<ConfiguredDocumentClass<T>>['data']['_source']
     ): Omit<InstanceType<ConfiguredDocumentClass<T>>['data']['_source'], '_id' | 'folder'>;
 
     /**

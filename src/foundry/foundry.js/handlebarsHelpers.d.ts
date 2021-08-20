@@ -42,6 +42,11 @@ declare class HandlebarsHelpers {
   static numberFormat(value: string, options: HandlebarsHelpers.NumberFormatOptions): string;
 
   /**
+   * Render a form input field of type number with value appropriately rounded to step size.
+   */
+  static numberInput(value: string, options: HandlebarsHelpers.NumberInputOptions): Handlebars.SafeString;
+
+  /**
    * A helper to create a set of radio checkbox input elements in a named set.
    * The provided keys are the possible radio values while the provided values are human readable labels.
    *
@@ -90,6 +95,7 @@ declare class HandlebarsHelpers {
    * This helper supports both single-select as well as multi-select input fields.
    *
    * @param choices - A mapping of radio checkbox values to human readable labels
+   * @param options - Helper options
    *
    * @example <caption>The provided input data</caption>
    * ```typescript
@@ -101,6 +107,53 @@ declare class HandlebarsHelpers {
    * ```handlebars
    * <select name="importantChoice">
    *   {{selectOptions choices selected=value localize=true}}
+   * </select>
+   * ```
+   *
+   * @example <caption>The resulting HTML</caption>
+   * ```handlebars
+   * <select name="importantChoice">
+   *   <option value="a" selected>Choice A</option>
+   *   <option value="b">Choice B</option>
+   * </select>
+   * ```
+   *
+   * @example <caption>Using inverted</caption>
+   * ```typescript
+   * let choices = {"Choice A": "a", "Choice B": "b"};
+   * let value = "a";
+   * ```
+   *
+   * @example <caption>The template HTML structure</caption>
+   * ```handlebars
+   * <select name="importantChoice">
+   *   {{selectOptions choices selected=value inverted=true}}
+   * </select>
+   * ```
+   *
+   * @example <caption>Using nameAttr and labelAttr with objects</caption>
+   * ```typescript
+   * let choices = {foo: {key: "a", label: "Choice A"}, bar: {key: "b", label: "Choice B"}};
+   * let value = "b";
+   * ```
+   *
+   * @example <caption>The template HTML structure</caption>
+   * ```handlebars
+   * <select name="importantChoice">
+   *   {{selectOptions choices selected=value nameAttr="key" labelAttr="label"}}
+   * </select>
+   * ```
+   *
+   * @example <caption>Using nameAttr and labelAttr with arrays</caption>
+   * ```typescript
+   * let choices = [{key: "a", label: "Choice A"}, {key: "b", label: "Choice B"}];
+   * let value = "b";
+   * ```
+   *
+   * @example <caption>The template HTML structure</caption>
+   * ```handlebars
+   * <select name="importantChoice">
+   *   {{selectOptions choices selected=value nameAttr="key" labelAttr="label"}}
    * </select>
    * ```
    */
@@ -153,13 +206,18 @@ declare namespace HandlebarsHelpers {
       editable?: boolean;
 
       /**
+       * Replace dynamic entity links?
        * @defaultValue `true`
        */
       entities?: boolean;
 
-      rollData?: object;
+      /**
+       * The data object providing context for inline rolls
+       */
+      rollData?: object | (() => object);
 
       /**
+       * The original HTML content as a string
        * @defaultValue `''`
        */
       content?: string;
@@ -195,6 +253,36 @@ declare namespace HandlebarsHelpers {
        * @defaultValue `false`
        */
       sign?: boolean;
+    };
+  }
+
+  interface NumberInputOptions extends Handlebars.HelperOptions {
+    hash: {
+      /**
+       * @defaultValue `''`
+       */
+      name?: string;
+
+      step?: number;
+
+      /**
+       * @defaultValue `false`
+       */
+      disabled?: boolean;
+
+      /**
+       * @defaultValue `''`
+       */
+      placeholder?: string;
+
+      /**
+       * @defaultValue `''`
+       */
+      class?: string;
+
+      min?: number;
+
+      max?: number;
     };
   }
 
@@ -257,12 +345,25 @@ declare namespace HandlebarsHelpers {
        */
       localize?: boolean;
 
+      /**
+       * Add a blank option as the first option with this label
+       */
       blank?: string;
 
+      /**
+       * Look up a property in the choice object values to use as the option value
+       */
       nameAttr?: string;
 
+      /**
+       * Look up a property in the choice object values to use as the option label
+       */
       labelAttr?: string;
 
+      /**
+       * Use the choice object value as the option value, and the key as the label
+       * instead of vice-versa
+       */
       inverted?: boolean;
     };
   }

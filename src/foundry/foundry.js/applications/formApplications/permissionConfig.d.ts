@@ -28,7 +28,7 @@ declare class PermissionConfig extends FormApplication<FormApplication.Options, 
   /**
    * Prepare the permissions object used to render the configuration template
    */
-  protected _getPermissions(current: typeof CONFIG['User']['permissions']): PermissionConfig.Permission[];
+  protected _getPermissions(current: Game.Permissions): PermissionConfig.Permission[];
 
   /** @override */
   activateListeners(html: JQuery): void;

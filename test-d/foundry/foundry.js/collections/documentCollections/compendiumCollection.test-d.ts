@@ -10,5 +10,5 @@ const metadata = {
 };
 
 const compendiumCollection = new CompendiumCollection(metadata);
-expectType<JournalEntry>(compendiumCollection.get('', { strict: true }));
-expectType<Array<foundry.documents.BaseJournalEntry['data']['_source']>>(compendiumCollection.toJSON());
+expectType<StoredDocument<JournalEntry>>(compendiumCollection.get('', { strict: true }));
+expectType<Array<StoredDocument<foundry.documents.BaseJournalEntry>['data']['_source']>>(compendiumCollection.toJSON());

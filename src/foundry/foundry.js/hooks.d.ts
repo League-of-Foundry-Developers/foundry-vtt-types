@@ -307,21 +307,21 @@ declare global {
        * @remarks This is called after getting the {@link ContextMenu} options for the {@link SceneNavigation}, but before
        * creating the ContextMenu.
        * @param jq             - the JQuery of the ContextMenu parent element
-       * @param contextOptions - the already created ContextMenu.Items
+       * @param contextOptions - the already created ContextMenuEntrys
        * @remarks This is called by {@link Hooks.call}.
        * @see {@link SceneNavigation#activateListeners}
        */
-      getSceneNavigationContext: (jq: JQuery, contextOptions: ContextMenu.Item[]) => boolean | void;
+      getSceneNavigationContext: (jq: JQuery, contextOptions: ContextMenuEntry[]) => boolean | void;
 
       /**
        * @remarks This is called after getting the {@link ContextMenu} options for a {@link PlayerList} user, but before
        * creating the ContextMenu.
        * @param jq             - the JQuery of the ContextMenu parent element
-       * @param contextOptions - the already created ContextMenu.Items
+       * @param contextOptions - the already created ContextMenuEntrys
        * @remarks This is called by {@link Hooks.call}.
        * @see {@link PlayerList#activateListeners}
        */
-      getUserContextOptions: (jq: JQuery, contextOptions: ContextMenu.Item[]) => boolean | void;
+      getUserContextOptions: (jq: JQuery, contextOptions: ContextMenuEntry[]) => boolean | void;
 
       /**
        * A hook event that fires whenever data is dropped into a Hotbar slot.
@@ -589,7 +589,7 @@ declare global {
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link ChatLog#_contextMenu}
      */
-    type GetChatLogEntryContext = (jq: JQuery, entryOptions: ContextMenu.Item[]) => boolean | void;
+    type GetChatLogEntryContext = (jq: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
 
     /**
      * @remarks This is called after getting the {@link ContextMenu} options for a {@link CombatTracker} entry, but before
@@ -601,7 +601,7 @@ declare global {
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link CombatTracker#_contextMenu}
      */
-    type GetCombatTrackerEntryContext = (jq: JQuery, entryOptions: ContextMenu.Item[]) => boolean | void;
+    type GetCombatTrackerEntryContext = (jq: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
 
     /**
      * @remarks This is called after getting the {@link ContextMenu} options for a {@link CompendiumDirectory} entry, but
@@ -613,7 +613,7 @@ declare global {
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link CompendiumDirectory#_contextMenu}
      */
-    type GetCompendiumDirectoryEntryContext = (jq: JQuery, entryOptions: ContextMenu.Item[]) => boolean | void;
+    type GetCompendiumDirectoryEntryContext = (jq: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
 
     /**
      * @remarks This is called after getting the {@link ContextMenu} options for a {@link PlaylistDirectory} sound, but
@@ -625,7 +625,7 @@ declare global {
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link PlaylistDirectory#_contextMenu}
      */
-    type GetPlaylistDirectorySoundContext = (jq: JQuery, entryOptions: ContextMenu.Item[]) => boolean | void;
+    type GetPlaylistDirectorySoundContext = (jq: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
 
     /**
      * @remarks This is called after getting the {@link ContextMenu} options for a {@link SidebarDirectory} entry, but
@@ -637,7 +637,7 @@ declare global {
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link SidebarDirectory#_contextMenu}
      */
-    type GetSidebarDirectoryEntryContext = (jq: JQuery, entryOptions: ContextMenu.Item[]) => boolean | void;
+    type GetSidebarDirectoryEntryContext = (jq: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
 
     /**
      * @remarks This is called after getting the {@link ContextMenu} options for a {@link SidebarDirectory} folder, but
@@ -649,7 +649,7 @@ declare global {
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link SidebarDirectory#_contextMenu}
      */
-    type GetSidebarDirectoryFolderContext = (jq: JQuery, folderOptions: ContextMenu.Item[]) => boolean | void;
+    type GetSidebarDirectoryFolderContext = (jq: JQuery, folderOptions: ContextMenuEntry[]) => boolean | void;
 
     /**
      * A hook event that fires when the user modifies a global volume slider.

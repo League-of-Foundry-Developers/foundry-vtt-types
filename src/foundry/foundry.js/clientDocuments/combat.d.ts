@@ -64,8 +64,11 @@ declare global {
     /**
      * Set the current Combat encounter as active within the Scene.
      * Deactivate all other Combat encounters within the viewed Scene and set this one as active
+     * @param options - Additional context to customize the update workflow
      */
-    activate(): Promise<InstanceType<ConfiguredDocumentClass<typeof Combat>>[]>;
+    activate(
+      options?: DocumentModificationContext & foundry.utils.MergeObjectOptions
+    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Combat>>[]>;
 
     /** Display a dialog querying the GM whether they wish to end the combat encounter and empty the tracker */
     endCombat(): Promise<InstanceType<ConfiguredDocumentClass<typeof Combat>> | undefined>;
