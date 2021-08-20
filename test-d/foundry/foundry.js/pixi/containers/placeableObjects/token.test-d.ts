@@ -1,5 +1,6 @@
+import type { ConfiguredDocumentClass } from '../../../../../../src/types/helperTypes';
+
 import { expectType } from 'tsd';
-import { ConfiguredDocumentClass } from '../../../../../../src/types/helperTypes';
 
 const token = new Token(new TokenDocument());
 expectType<string>(token.id);

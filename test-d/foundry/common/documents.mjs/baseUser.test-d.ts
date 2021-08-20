@@ -1,6 +1,7 @@
+import type { ConfiguredDocumentClass } from '../../../../src/types/helperTypes';
+
 import { expectError, expectType } from 'tsd';
 import { BaseUser } from '../../../../src/foundry/common/documents.mjs';
-import { ConfiguredDocumentClass } from '../../../../src/types/helperTypes';
 
 expectType<Promise<InstanceType<ConfiguredDocumentClass<typeof User>> | undefined>>(
   foundry.documents.BaseUser.create({ name: 'SomeUser' })

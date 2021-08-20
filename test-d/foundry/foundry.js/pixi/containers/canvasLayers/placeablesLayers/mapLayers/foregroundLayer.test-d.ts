@@ -1,5 +1,6 @@
+import type EmbeddedCollection from '../../../../../../../../src/foundry/common/abstract/embedded-collection.mjs';
+
 import { expectType } from 'tsd';
-import EmbeddedCollection from '../../../../../../../../src/foundry/common/abstract/embedded-collection.mjs';
 
 expectType<ForegroundLayer | undefined>(ForegroundLayer.instance);
 expectType<MapLayer.LayerOptions<'foreground'>>(ForegroundLayer.layerOptions);

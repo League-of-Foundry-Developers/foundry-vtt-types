@@ -1,5 +1,6 @@
+import type { MessageData } from '../../../src/foundry/foundry.js/roll';
+
 import { expectType } from 'tsd';
-import { MessageData } from '../../../src/foundry/foundry.js/roll';
 import '../../index';
 
 class CustomRoll<D extends object = {}> extends Roll<D> {}

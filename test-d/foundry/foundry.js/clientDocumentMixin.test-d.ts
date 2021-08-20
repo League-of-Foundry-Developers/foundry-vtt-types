@@ -1,5 +1,6 @@
+import type * as data from '../../../src/foundry/common/data/data.mjs';
+
 import { expectType } from 'tsd';
-import * as data from '../../../src/foundry/common/data/data.mjs';
 
 const doc = new Item();
 

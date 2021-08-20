@@ -1,6 +1,7 @@
+import type EmbeddedCollection from '../../../../../src/foundry/common/abstract/embedded-collection.mjs';
+import type { ConfiguredDocumentClass } from '../../../../../src/types/helperTypes';
+
 import { expectType } from 'tsd';
-import EmbeddedCollection from '../../../../../src/foundry/common/abstract/embedded-collection.mjs';
-import { ConfiguredDocumentClass } from '../../../../../src/types/helperTypes';
 
 const doc = new TokenDocument({}, { parent: new foundry.documents.BaseScene() });
 expectType<InstanceType<ConfiguredDocumentClass<typeof Actor>> | null>(doc.actor);

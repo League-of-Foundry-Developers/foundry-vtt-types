@@ -1,11 +1,12 @@
-import { expectError, expectType } from 'tsd';
-import '../../../../index';
-import { PropertiesToSource } from '../../../../src/types/helperTypes';
-import { ActiveEffectDataProperties } from '../../../../src/foundry/common/data/data.mjs/activeEffectData';
-import {
+import type { PropertiesToSource } from '../../../../src/types/helperTypes';
+import type { ActiveEffectDataProperties } from '../../../../src/foundry/common/data/data.mjs/activeEffectData';
+import type {
   EffectChangeData,
   EffectChangeDataProperties
 } from '../../../../src/foundry/common/data/data.mjs/effectChangeData';
+
+import { expectError, expectType } from 'tsd';
+import '../../../../index';
 
 const baseActiveEffect = new foundry.documents.BaseActiveEffect();
 
