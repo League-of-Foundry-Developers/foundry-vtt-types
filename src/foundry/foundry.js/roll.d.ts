@@ -332,7 +332,7 @@ declare global {
      * @param options      - Options which customize classification
      *                       (default: `{}`)
      * @param intermediate - Allow intermediate terms
-     *                       (default: `false`)
+     *                       (default: `true`)
      * @param prior        - The prior classified term
      * @param next         - The next term to classify
      * @returns A classified RollTerm instance

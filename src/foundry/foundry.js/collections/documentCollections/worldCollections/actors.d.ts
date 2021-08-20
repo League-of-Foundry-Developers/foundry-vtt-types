@@ -14,16 +14,11 @@ declare global {
    * ```
    */
   class Actors extends WorldCollection<typeof foundry.documents.BaseActor, 'Actors'> {
-    constructor(
-      data?: StoredDocument<
-        InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>
-      >['data']['_source'][]
-    );
     /**
      * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
      * Each Actor is referenced by the Token.id.
      */
-    tokens: Partial<Record<string, InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>>>;
+    get tokens(): Partial<Record<string, InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>>>;
 
     /** @override */
     static documentName: 'Actor';

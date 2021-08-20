@@ -39,7 +39,7 @@ declare global {
     /**
      * Return the default context options available for the Players application
      */
-    protected _getUserContextOptions(): ContextMenu.Item[];
+    protected _getUserContextOptions(): ContextMenuEntry[];
 
     /**
      * Toggle display of the Players hud setting for whether or not to display offline players

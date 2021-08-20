@@ -204,13 +204,13 @@ declare global {
      * Get the set of ContextMenu options which should be used for Folders in a SidebarDirectory
      * @returns The Array of context options passed to the ContextMenu instance
      */
-    protected _getFolderContextOptions(): ContextMenu.Item[];
+    protected _getFolderContextOptions(): ContextMenuEntry[];
 
     /**
      * Get the set of ContextMenu options which should be used for Entities in a SidebarDirectory
      * @returns The Array of context options passed to the ContextMenu instance
      */
-    protected _getEntryContextOptions(): ContextMenu.Item[];
+    protected _getEntryContextOptions(): ContextMenuEntry[];
 
     /**
      * @deprecated since 0.8.0

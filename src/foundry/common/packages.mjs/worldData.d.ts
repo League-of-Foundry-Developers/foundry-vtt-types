@@ -1,3 +1,4 @@
+import { FieldReturnType } from '../../../types/helperTypes';
 import * as fields from '../data/fields.mjs';
 import { PackageData, PackageDataConstructorData, PackageDataProperties, PackageDataSchema } from './packageData';
 
@@ -8,6 +9,7 @@ interface WorldDataSchema extends Omit<PackageDataSchema, 'system'> {
   nextSession: typeof fields.STRING_FIELD;
   resetKeys: typeof fields.BOOLEAN_FIELD;
   safeMode: typeof fields.BOOLEAN_FIELD;
+  systemVersion: FieldReturnType<typeof fields.REQUIRED_STRING, { default: () => string }>;
 }
 
 interface WorldDataProperties extends Omit<PackageDataProperties, 'system'> {
@@ -26,6 +28,9 @@ interface WorldDataProperties extends Omit<PackageDataProperties, 'system'> {
   resetKeys: boolean;
 
   safeMode: boolean;
+
+  /** The version of the game system for which this world has been migrated */
+  systemVersion: string;
 }
 
 interface WorldDataConstructorData extends Omit<PackageDataConstructorData, 'system'> {
@@ -44,6 +49,9 @@ interface WorldDataConstructorData extends Omit<PackageDataConstructorData, 'sys
   resetKeys?: boolean | null;
 
   safeMode?: boolean | null;
+
+  /** The version of the game system for which this world has been migrated */
+  systemVersion?: string | null;
 }
 
 /**

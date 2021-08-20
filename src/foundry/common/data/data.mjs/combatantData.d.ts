@@ -19,6 +19,9 @@ interface CombatantDataProperties {
   /** The _id which uniquely identifies this Combatant embedded document */
   _id: string | null;
 
+  /**
+   * The _id of an Actor associated with this Combatant
+   */
   actorId: string | null;
 
   /** The _id of a Token associated with this Combatant */
@@ -56,6 +59,9 @@ export interface CombatantDataConstructorData {
   /** The _id which uniquely identifies this Combatant embedded document */
   _id?: string | null;
 
+  /**
+   * The _id of an Actor associated with this Combatant
+   */
   actorId?: string | null;
 
   /** The _id of a Token associated with this Combatant */

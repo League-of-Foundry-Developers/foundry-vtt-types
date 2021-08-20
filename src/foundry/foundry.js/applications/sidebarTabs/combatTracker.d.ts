@@ -116,7 +116,7 @@ declare global {
      * Get the sidebar directory entry context options
      * @returns The sidebar entry context options
      */
-    protected _getEntryContextOptions(): ContextMenu.Item[];
+    protected _getEntryContextOptions(): ContextMenuEntry[];
 
     /**
      * Display a dialog which prompts the user to enter a new initiative value for a Combatant

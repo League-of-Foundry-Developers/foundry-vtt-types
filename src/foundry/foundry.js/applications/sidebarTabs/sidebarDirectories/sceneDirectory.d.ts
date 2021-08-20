@@ -26,5 +26,5 @@ declare class SceneDirectory extends SidebarDirectory {
   /**
    * @override
    */
-  protected _getEntryContextOptions(): ContextMenu.Item[];
+  protected _getEntryContextOptions(): ContextMenuEntry[];
 }

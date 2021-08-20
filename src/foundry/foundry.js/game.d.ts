@@ -185,8 +185,6 @@ declare global {
 
     /**
      * Shut down the currently active Game. Requires GameMaster user permission.
-     * @returns A Promise which resolves to the response object from the server
-     * @remarks The documentation is a lie, it returns `Promise<void>`, see https://gitlab.com/foundrynet/foundryvtt/-/issues/5573
      */
     shutDown(): Promise<void>;
 

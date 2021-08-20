@@ -37,6 +37,12 @@ declare class AudioContainer {
   loaded: boolean;
 
   /**
+   * Did the audio source fail to load (a 404 or some other reason).
+   * @defaultValue `false`
+   */
+  failed: boolean;
+
+  /**
    * Is the audio source currently playing?
    * @defaultValue `false`
    */
@@ -89,7 +95,7 @@ declare class AudioContainer {
    * Determine the node type to use based on cached state and sound duration.
    * @internal
    */
-  protected _createNode(): Promise<AudioBufferSourceNode | MediaElementAudioSourceNode>;
+  protected _createNode(): Promise<AudioBufferSourceNode | MediaElementAudioSourceNode | undefined>;
 
   /**
    * Create an Audio source node using a buffered array.
@@ -141,4 +147,11 @@ declare class AudioContainer {
    * @internal
    */
   protected _onEnd(onended: () => void): void;
+
+  /**
+   * Unload the MediaElementAudioSourceNode to terminate any ongoing
+   * connections.
+   * @internal
+   */
+  protected _unloadMediaNode(): void;
 }

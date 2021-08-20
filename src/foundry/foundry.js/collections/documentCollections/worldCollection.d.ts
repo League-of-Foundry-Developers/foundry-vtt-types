@@ -83,6 +83,15 @@ declare global {
     ): Omit<InstanceType<ConfiguredDocumentClass<T>>['data']['_source'], '_id' | 'folder'>;
 
     /**
+     * Prepare a document from an outside source for import into this collection.
+     * @param data - The data to be prepared.
+     * @returns The prepared data.
+     */
+    prepareForImport(
+      data: InstanceType<ConfiguredDocumentClass<T>>['data']['_source']
+    ): Omit<InstanceType<ConfiguredDocumentClass<T>>['data']['_source'], '_id' | 'folder'>;
+
+    /**
      * The WorldCollection#insert method is deprecated in favor of the WorldCollection#set method and will be removed in 0.9.0
      * @deprecated since 0.8.0
      */

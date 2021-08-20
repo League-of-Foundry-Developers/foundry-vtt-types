@@ -61,6 +61,12 @@ declare global {
     ready: boolean;
 
     /**
+     * A flag to indicate whether a new Scene is currently being drawn.
+     * @defaultValue `false`
+     */
+    loading: boolean;
+
+    /**
      * A flag for whether the game Canvas is initialized and ready for drawing.
      * @defaultValue `false`
      */

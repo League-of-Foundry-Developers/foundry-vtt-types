@@ -7,7 +7,8 @@ expectType<typeof foundry.data.CombatantData>(Combatant.schema);
 
 // properties
 expectType<string | null>(combatant.pack);
-//expectType<BaseCombat | null>(combatant.parent); //TODO change to Combat once it is typed
+expectType<Combat | null>(combatant.parent);
+expectType<Combat | null>(combatant.combat);
 expectType<Actor | null>(combatant.actor);
 expectType<TokenDocument | null>(combatant.token);
 expectType<Record<string, Application>>(combatant.apps);

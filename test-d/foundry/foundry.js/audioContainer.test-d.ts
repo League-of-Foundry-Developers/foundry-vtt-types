@@ -7,6 +7,7 @@ expectType<AudioBufferSourceNode | MediaElementAudioSourceNode | undefined>(audi
 expectType<GainNode | undefined>(audioContainer.gainNode);
 expectType<boolean>(audioContainer.isBuffer);
 expectType<boolean>(audioContainer.loaded);
+expectType<boolean>(audioContainer.failed);
 expectType<boolean>(audioContainer.playing);
 expectType<boolean>(audioContainer.loop);
 expectType<number>(AudioContainer.MAX_BUFFER_DURATION);
