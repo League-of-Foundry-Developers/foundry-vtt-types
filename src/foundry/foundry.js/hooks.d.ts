@@ -151,9 +151,9 @@ declare global {
   namespace Hooks {
     interface StaticCallbacks {
       /**
-       * @remarks Called when applying custom active effect changes.
-       * @param actor  - the Actor to whom this effect should be applied
-       * @param change - the change data being applied
+       * A hook event that fires when a custom active effect is applied.
+       * @param actor  - The actor the active effect is being applied to
+       * @param change - The change data being applied
        * @remarks This is called by {@link Hooks.call}.
        * @see {@link ActiveEffect#_applyCustom}
        */
@@ -163,7 +163,7 @@ declare global {
       ) => boolean | void;
 
       /**
-       * @remarks This is called before a {@link Canvas} is drawn.
+       * A hook event that fires when the Canvas is initialized.
        * @param canvas - the Canvas
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link Canvas#draw}
@@ -171,10 +171,10 @@ declare global {
       canvasInit: (canvas: Canvas) => unknown;
 
       /**
-       * @remarks This is called when a {@link Canvas} is panned. When called during animated panning, the callback is
-       * called on every tick.
-       * @param canvas - the Canvas
-       * @param view   - the CanvasView
+       * A hook event that fires when the Canvas is panned.
+       * @param canvas - The canvas
+       * @param view   - The applied translate/transform
+       * @remarks When called during animated panning, the callback is called on every tick.
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link Canvas#pan}
        * @see {@link Canvas#animatePan}
@@ -182,8 +182,8 @@ declare global {
       canvasPan: (canvas: Canvas, view: Canvas.View) => unknown;
 
       /**
-       * @remarks This is called after a {@link Canvas} is done initializing.
-       * @param canvas - the Canvas
+       * A hook event that fires when the Canvas is ready.
+       * @param canvas - the canvas
        * @remarks This is called by {@link Hooks.call}.
        * @see {@link Canvas#draw}
        */
@@ -198,12 +198,12 @@ declare global {
       changeSidebarTab: (app: SidebarTab) => unknown;
 
       /**
-       * @remarks This is called when creating a {@link ChatBubble}, but before displaying it.
-       * @param token   - the speaking token
-       * @param jq      - the JQuery for the chat bubble
-       * @param message - the spoken message text
+       * A hook event that fires when a chat bubble is rendered.
+       * @param token   - The speaking token
+       * @param html    - The HTML for the chat bubble
+       * @param message - The spoken message text
        * @param options - additional options
-       * @param emote   - whether to style the speech bubble as an emote
+       * @remarks This is called when creating a {@link ChatBubble}, but before displaying it.
        * @remarks This is called by {@link Hooks.call}.
        * @remarks An explicit return value of `false` prevents the chat bubble being shown.
        * @see {@link ChatBubbles#say}
@@ -213,15 +213,16 @@ declare global {
         html: JQuery,
         message: string,
         options: {
+          /** Whether to style the speech bubble as an emote */
           emote: boolean;
         }
       ) => boolean | void;
 
       /**
-       * @remarks This is called first when processing a chat message.
-       * @param chatLog  - the ChatLog
-       * @param message  - the original string of the message content
-       * @param chatData - the ChatData
+       * A hook event that fires when a user sends a message through the ChatLog.
+       * @param chatLog  - The ChatLog instance
+       * @param message  - The trimmed message content
+       * @param chatData - The basic chat data
        * @remarks This is called by {@link Hooks.call}.
        * @remarks An explicit return value of `false` prevents the chat message from being created.
        * @see {@link ChatLog#processMessage}
@@ -229,13 +230,19 @@ declare global {
       chatMessage: (
         chatLog: ChatLog,
         message: string,
-        chatData: { user: string; speaker: ReturnType<ConfiguredDocumentClass<typeof ChatMessage>['getSpeaker']> }
+        chatData: {
+          /** The User sending the message */
+          user: string;
+
+          /** The identified speaker data, see {@link ChatMessage.getSpeaker} */
+          speaker: ReturnType<ConfiguredDocumentClass<typeof ChatMessage>['getSpeaker']>;
+        }
       ) => boolean | void;
 
       /**
-       * @remarks This is called after the {@link SceneNavigation} is expanded or collapsed.
-       * @param nav       - the SceneNavigation
-       * @param collapsed - whether the navigation is collapsed
+       * A hook event that fires when the SceneNavigation menu is expanded or collapsed.
+       * @param nav       - The SceneNavigation application
+       * @param collapsed - Whether the navigation is now collapsed or not
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link SceneNavigation#expand}
        * @see {@link SceneNavigation#collapse}
@@ -243,9 +250,9 @@ declare global {
       collapseSceneNavigation: (nav: SceneNavigation, collapsed: boolean) => unknown;
 
       /**
-       * @remarks This is called when expanding or collapsing a {@link Sidebar}.
-       * @param sidebar   - the Sidebar
-       * @param collapsed - whether the Sidebar is collapsed
+       * A hook event that fires when the Sidebar is collapsed or expanded.
+       * @param sidebar   - The Sidebar application
+       * @param collapsed - Whether the Sidebar is now collapsed or not
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link Sidebar#expand}
        * @see {@link Sidebar#collapse}
@@ -253,10 +260,10 @@ declare global {
       collapseSidebar: (sidebar: Sidebar, collapsed: boolean) => unknown;
 
       /**
-       * @remarks This is called during the drop portion of a drag-and-drop event on an actor sheet.
-       * @param actor - the Actor the sheet belongs to
-       * @param sheet - the ActorSheet, the data was dropped on
-       * @param data  - the dropped data, already parsed as an object via JSON
+       * A hook event that fires when some useful data is dropped onto an ActorSheet.
+       * @param actor - The Actor
+       * @param sheet - The ActorSheet application
+       * @param data  - The data that has been dropped onto the sheet
        * @remarks This is called by {@link Hooks.call}.
        * @remarks An explicit return value of `false` prevents the Document being created.
        * @see {@link ActorSheet#_onDrop}
@@ -268,9 +275,9 @@ declare global {
       ) => boolean | void;
 
       /**
-       * @remarks This is called during the drop portion of a drag-and-drop event on a canvas.
-       * @param canvas - the Canvas the data has been dropped on
-       * @param data   - the dropped data, already parsed as an object via JSON
+       * A hook event that fires when some useful data is dropped onto the Canvas.
+       * @param canvas - The Canvas
+       * @param data   - The data that has been dropped onto the Canvas
        * @remarks This is called by {@link Hooks.call}.
        * @remarks An explicit return value of `false` prevents the Document being created.
        * @see {@link Canvas#_onDrop}
@@ -281,10 +288,10 @@ declare global {
       ) => boolean | void;
 
       /**
-       * @remarks This is called during the drop portion of a drag-and-drop event on a roll table.
-       * @param entity - the Document the table belongs to
-       * @param config - the RollTableConfig
-       * @param data   - the dropped data, already parsed as an object via JSON
+       * A hook event that fires when some useful data is dropped onto a RollTableConfig.
+       * @param table  - The RollTable
+       * @param config - The RollTableConfig application
+       * @param data   - The data dropped onto the RollTableConfig
        * @remarks This is called by {@link Hooks.call}.
        * @remarks An explicit return value of `false` prevents the Document being created.
        * @see {@link RollTableConfig#_onDrop}
@@ -296,28 +303,26 @@ declare global {
       ) => boolean | void;
 
       /**
-       * @remarks This is called after the initial {@link SceneControls} have been set up.
-       * @param controls - the created controls
+       * A hook event that fires when the Scene controls are initialized.
+       * @param controls - The SceneControl configurations
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link SceneControls#_getControlButtons}
        */
       getSceneControlButtons: (controls: SceneControl[]) => unknown;
 
       /**
-       * @remarks This is called after getting the {@link ContextMenu} options for the {@link SceneNavigation}, but before
-       * creating the ContextMenu.
-       * @param jq             - the JQuery of the ContextMenu parent element
-       * @param contextOptions - the already created ContextMenuEntrys
+       * A hook event that fires when the context menu for a SceneNavigation entry is constructed.
+       * @param html         - The HTML element to which the context options are attached
+       * @param entryOptions - The context menu entries
        * @remarks This is called by {@link Hooks.call}.
        * @see {@link SceneNavigation#activateListeners}
        */
       getSceneNavigationContext: (jq: JQuery, contextOptions: ContextMenuEntry[]) => boolean | void;
 
       /**
-       * @remarks This is called after getting the {@link ContextMenu} options for a {@link PlayerList} user, but before
-       * creating the ContextMenu.
-       * @param jq             - the JQuery of the ContextMenu parent element
-       * @param contextOptions - the already created ContextMenuEntrys
+       * A hook event that fires when the context menu for a PlayersList entry is constructed.
+       * @param html         - The HTML element to which the context options are attached
+       * @param entryOptions - The context menu entries
        * @remarks This is called by {@link Hooks.call}.
        * @see {@link PlayerList#activateListeners}
        */
@@ -341,23 +346,23 @@ declare global {
       ) => boolean | void;
 
       /**
-       * @remarks This is called before the {@link Game} is initialized for the current window location.
+       * A hook event that fires as Foundry is initializing, right before any initialization tasks have begun.
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link Game#initialize}
        */
       init: () => unknown;
 
       /**
-       * @remarks This is called when initializing shaders for a {@link PointSource}.
-       * @param pointSource   - the PointSource to initialize shaders for
-       * @param animationType - a key used in `CONFIG.Canvas.lightAnimations`
+       * A hook event that fires after PointSource shaders have initialized.
+       * @param source        - The PointSource
+       * @param animationType - The animation type
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link PointSource#_initializeShaders}
        */
       initializePointSourceShaders: (pointSource: PointSource, animationType: string | null) => unknown;
 
       /**
-       * @remarks This is called after refreshing the {@link LightingLayer}.
+       * A hook event that fires when the LightingLayer is refreshed.
        * @param layer - the LightingLayer
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link LightingLayer#refresh}
@@ -365,29 +370,27 @@ declare global {
       lightingRefresh: (lighting: LightingLayer) => unknown;
 
       /**
-       * @remarks This is called when the values of a {@link Token} are updated and before updating the values of the
-       * associated {@link Actor}.
-       * @param attribute  - the attribute path
-       * @param isBar      - whether the new value is part of an attribute bar, or just a direct value
-       * @param isDelta    - whether the number represents a relative change (true) or an absolute change (false)
-       * @param value      - the target attribute value
-       * @param update     - the same object data, that will be passed to {@link Actor#update}
+       * A hook event that fires when a token's resource bar attribute has been modified.
+       * @param data    - A object describing the modification
+       * @param updates - The update delta that will be applied to the Token's actor
        * @returns whether the Actor should be updated
        * @remarks This is called by {@link Hooks.call}.
        * @see {@link Actor#modifyTokenAttribute}
        * @see {@link Actor#update}
        */
       modifyTokenAttribute: (
-        {
-          attribute,
-          isBar,
-          isDelta,
-          value
-        }: {
+        data: {
+          /** The attribute path */
           attribute: string;
-          isBar: boolean;
-          isDelta: boolean;
+
+          /** The target attribute value */
           value: number;
+
+          /** Whether the number represents a relative change (true) or an absolute change (false) */
+          isDelta: boolean;
+
+          /** Whether the new value is part of an attribute bar, or just a direct value */
+          isBar: boolean;
         },
         updates: Record<string, number>
       ) => boolean;
@@ -401,7 +404,7 @@ declare global {
       pauseGame: (paused: boolean) => unknown;
 
       /**
-       * @remarks This is called after the {@link Game} is fully set up.
+       * A hook event that fires when the game is fully ready.
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link Game#setupGame}
        */
@@ -432,34 +435,36 @@ declare global {
       ) => boolean | void;
 
       /**
-       * @remarks This is called after {@link AVSettings} are changed.
-       * @param settings - the AVSettings
-       * @param changed  - an object reflecting the changed settings
+       * A hook event that fires when the AV settings are changed.
+       * @param settings - The AVSettings manager
+       * @param changed  - The delta of the settings that have been changed
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link AVSettings#_onSettingsChanged}
        */
       rtcSettingsChanged: (settings: AVSettings, changed: DeepPartial<AVSettings.Settings>) => unknown;
 
       /**
-       * @remarks This is called before the {@link Game} is fully set up.
+       * A hook event that fires when Foundry has finished initializing but
+       * before the game state has been set up. Fires before any Documents, UI
+       * applications, or the Canvas have been initialized.
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link Game#setupGame}
        */
       setup: () => unknown;
 
       /**
-       * @remarks This is called after refreshing the {@link SightLayer}.
-       * @param layer - the SightLayer
+       * A hook event that fires when the SightLayer has been refreshed.
+       * @param layer - The SightLayer
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link SightLayer#restrictVisibility}
        */
       sightRefresh: (layer: SightLayer) => unknown;
 
       /**
-       * @remarks This is called after the targeted state for a {@link Token} changed.
-       * @param user     - the User that caused the targeted state change
-       * @param token    - the Token for which the targeted state changed
-       * @param targeted - whether the Token is targeted
+       * A hook event that fires when a token is targeted or un-targeted.
+       * @param user     - The User doing the targeting
+       * @param token    - The targeted Token
+       * @param targeted - Whether the Token has been targeted or untargeted
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link UserTargets#_hook}
        */
@@ -488,13 +493,13 @@ declare global {
       ) => unknown;
 
       /**
-       * @remarks This is called when the official world time changes.
+       * A hook event that fires when the World time has been updated.
        * @param worldTime - The new canonical World time
-       * @param dt        - the time advance delta, in seconds
+       * @param delta     - The time delta
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link GameTime#onUpdateWorldTime}
        */
-      updateWorldTime: (worldTime: number, dt: number) => unknown;
+      updateWorldTime: (worldTime: number, delta: number) => unknown;
     }
 
     /**
@@ -509,9 +514,11 @@ declare global {
     type CloseApplication<A extends Application = Application> = (app: A, html: JQuery) => boolean | void;
 
     /**
-     * @remarks This is called after assuming or releasing control over a {@link PlaceableObject}.
-     * @param object     - the PlaceableObject
-     * @param controlled - whether the PlaceableObject is controlled
+     * A hook event that fires when any PlaceableObject is selected or
+     * deselected. Substitute the PlaceableObject name in the hook event to
+     * target a specific PlaceableObject type, for example "controlToken".
+     * @param object     - The PlaceableObject
+     * @param controlled - Whether the PlaceableObject is selected or not
      * @typeParam P      - the type of the PlaceableObject
      * @remarks The name for this hook is dynamically created by joining 'control' and the type name of the
      * PlaceableObject.
@@ -616,10 +623,9 @@ declare global {
     type GetCompendiumDirectoryEntryContext = (jq: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
 
     /**
-     * @remarks This is called after getting the {@link ContextMenu} options for a {@link PlaylistDirectory} sound, but
-     * before creating the ContextMenu.
-     * @param jq           - the JQuery of the ContextMenu parent element
-     * @param entryOptions - the already created ContextMenuOptions
+     * A hook event that fires when the context menu for a Sound in the PlaylistDirectory is constructed.
+     * @param html         - The HTML element to which the context options are attached
+     * @param entryOptions - The context menu entries
      * @remarks The name for this hook is dynamically created by joining 'get' with the type name of the PlaylistDirectory
      * and 'SoundContext'.
      * @remarks This is called by {@link Hooks.call}.
@@ -628,10 +634,11 @@ declare global {
     type GetPlaylistDirectorySoundContext = (jq: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
 
     /**
-     * @remarks This is called after getting the {@link ContextMenu} options for a {@link SidebarDirectory} entry, but
-     * before creating the ContextMenu.
-     * @param jq           - the JQuery of the ContextMenu parent element
-     * @param entryOptions - the already created ContextMenuOptions
+     * A hook event that fires when the context menu for entries in a SidebarTab
+     * is constructed. Substitute the SidebarTab name in the hook event to target
+     * a specific SidebarTab, for example "getActorDirectoryEntryContext".
+     * @param html         - The HTML element to which the context options are attached
+     * @param entryOptions - The context menu entries
      * @remarks The name for this hook is dynamically created by joining 'get' with the type name of the SidebarDirectory
      * and 'EntryContext'.
      * @remarks This is called by {@link Hooks.call}.
@@ -640,10 +647,11 @@ declare global {
     type GetSidebarDirectoryEntryContext = (jq: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
 
     /**
-     * @remarks This is called after getting the {@link ContextMenu} options for a {@link SidebarDirectory} folder, but
-     * before creating the ContextMenu.
-     * @param jq            - the JQuery of the ContextMenu parent element
-     * @param folderOptions - the already created ContextMenuOptions
+     * A hook event that fires when the context menu for folders in a SidebarTab
+     * is constructed. Substitute the SidebarTab name in the hook event to target
+     * a specific SidebarTab, for example "getActorDirectoryFolderContext".
+     * @param html         - The HTML element to which the context options are attached
+     * @param entryOptions - The context menu entries
      * @remarks The name for this hook is dynamically created by joining 'get' with the type name of the SidebarDirectory
      * and 'FolderContext'.
      * @remarks This is called by {@link Hooks.call}.
@@ -663,9 +671,11 @@ declare global {
     type GlobalVolumeChanged = (volume: number) => unknown;
 
     /**
-     * @remarks This is called when the user mouse is entering or leaving a hover state over a {@link PlaceableObject}.
-     * @param object - the PlaceableObject
-     * @param hover  - whether the mouse is hovering over the PlaceableObject
+     * A hook event that fires when any PlaceableObject is hovered over or out.
+     * Substitute the PlaceableObject name in the hook event to target a specific
+     * PlaceableObject type, for example "hoverToken".
+     * @param object - The PlaceableObject
+     * @param hover  - Whether the PlaceableObject is hovered over or not
      * @typeParam P  - the type of the PlaceableObject
      * @remarks The name for this hook is dynamically created by joining 'hover' and the type name of the PlaceableObject.
      * @remarks This is called by {@link Hooks.callAll}.
@@ -675,11 +685,12 @@ declare global {
     type HoverPlaceableObject<P extends PlaceableObject = PlaceableObject> = (object: P, hover: boolean) => unknown;
 
     /**
-     * @remarks This is called after copying {@link PlaceableObject}s in a copy-paste action, but before embedding them
-     * into the {@link PlaceablesLayer}.
-     * @param copied   - the originally copied PlaceableObjects
-     * @param toCreate - the pasted copies with new coordinates
-     * @param P        - the type of the PlaceableObject
+     * A hook event that fires when any PlaceableObject is pasted onto the
+     * Scene. Substitute the PlaceableObject name in the hook event to target a
+     * specific PlaceableObject type, for example "pasteToken".
+     * @param copied     - The PlaceableObjects that were copied
+     * @param createData - The new objects that will be added to the Scene
+     * @param P          - the type of the PlaceableObject
      * @remarks The name for this hook is dynamically created by joining 'paste' with the type name of the
      * PlaceableObject.
      * @remarks This is called by {@link Hooks.call}.
