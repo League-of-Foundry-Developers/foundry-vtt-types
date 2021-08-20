@@ -11,7 +11,7 @@ TypeScript type definitions for [Foundry Virtual Tabletop](https://foundryvtt.co
 ![GitHub closed 0.7.x issues by-label](https://img.shields.io/github/issues-closed-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.7.x?color=%23fe631d)
 ![GitHub 0.8.x issues by-label](https://img.shields.io/github/issues-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.8.x?color=%23fe631d)
 ![GitHub closed 0.8.x issues by-label](https://img.shields.io/github/issues-closed-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.8.x?color=%23fe631d)
-![npm (tag)](https://img.shields.io/npm/v/@league-of-foundry-developers/foundry-vtt-types/latest)
+[![npm (tag)](https://img.shields.io/npm/v/@league-of-foundry-developers/foundry-vtt-types/latest)](https://www.npmjs.com/package/@league-of-foundry-developers/foundry-vtt-types)
 
 </div>
 
