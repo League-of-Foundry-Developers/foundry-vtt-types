@@ -22,9 +22,7 @@ declare class AVSettings {
   };
 
   static VOICE_MODES: {
-    ALWAYS: 'always';
-    ACTIVITY: 'activity';
-    PTT: 'ptt';
+    [x: string]: string;
   };
 
   static DEFAULT_CLIENT_SETTINGS: {

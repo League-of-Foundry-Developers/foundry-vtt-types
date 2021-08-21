@@ -108,4 +108,9 @@ declare abstract class AVClient {
    * @param changed - The settings which have changed
    */
   onSettingsChanged(changed: DeepPartial<AVSettings.Settings>): void;
+
+  /**
+   * Custom properties or methods implemented by AVClients
+   */
+  [x: string]: any;
 }
