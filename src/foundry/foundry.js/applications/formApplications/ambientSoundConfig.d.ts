@@ -30,7 +30,7 @@ declare class AmbientSoundConfig<
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): AmbientSoundConfig.Data;
+  getData(options?: Partial<P>): AmbientSoundConfig.Data;
 
   /**
    * @param event - (unused)

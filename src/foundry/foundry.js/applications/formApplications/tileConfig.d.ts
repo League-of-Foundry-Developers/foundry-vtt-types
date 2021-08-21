@@ -33,7 +33,7 @@ declare class TileConfig<P extends TileConfig.Options = TileConfig.Options> exte
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): TileConfig.Data;
+  getData(options?: Partial<P>): TileConfig.Data;
 
   /** @override */
   protected _onChangeInput(event: JQuery.ChangeEvent): void;

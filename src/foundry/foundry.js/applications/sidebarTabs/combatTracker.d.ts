@@ -49,7 +49,7 @@ declare global {
     /**
      * @override
      */
-    getData(options?: Application.RenderOptions): Promise<CombatTracker.Data>;
+    getData(options?: Partial<CombatTracker.Options>): Promise<CombatTracker.Data>;
 
     /**
      * @override

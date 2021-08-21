@@ -52,10 +52,10 @@ declare class TokenConfig<P extends TokenConfig.Options = TokenConfig.Options> e
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): Promise<TokenConfig.Data>;
+  getData(options?: Partial<P>): Promise<TokenConfig.Data>;
 
   /** @override */
-  render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+  render(force?: boolean, options?: Application.RenderOptions<P>): Promise<void>;
 
   /**
    * Inspect the Actor data model and identify the set of attributes which could be used for a Token Bar

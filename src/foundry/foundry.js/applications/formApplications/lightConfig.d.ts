@@ -31,7 +31,7 @@ declare class LightConfig<P extends FormApplication.Options = FormApplication.Op
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): LightConfig.Data;
+  getData(options?: Partial<P>): LightConfig.Data;
 
   /** @override */
   activateListeners(html: JQuery): void;

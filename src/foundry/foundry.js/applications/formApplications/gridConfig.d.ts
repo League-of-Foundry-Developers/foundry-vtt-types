@@ -56,12 +56,12 @@ declare class GridConfig<P extends FormApplication.Options = FormApplication.Opt
   /**
    * @override
    */
-  getData(options?: Application.RenderOptions): GridConfig.Data;
+  getData(options?: Partial<P>): GridConfig.Data;
 
   /**
    * @override
    */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+  protected _render(force?: boolean, options?: Application.RenderOptions<P>): Promise<void>;
 
   /**
    * @override

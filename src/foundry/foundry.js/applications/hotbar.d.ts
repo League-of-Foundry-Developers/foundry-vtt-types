@@ -58,7 +58,7 @@ declare global {
     static get defaultOptions(): Application.Options;
 
     /** @override */
-    getData(options?: Application.RenderOptions): Hotbar.Data | Promise<Hotbar.Data>;
+    getData(options?: Partial<Options>): Hotbar.Data | Promise<Hotbar.Data>;
 
     /**
      * Get the Array of Macro (or null) values that should be displayed on a numbered page of the bar

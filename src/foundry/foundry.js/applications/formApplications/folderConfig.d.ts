@@ -33,7 +33,7 @@ declare class FolderConfig extends FormApplication<FormApplication.Options, Fold
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): Promise<FolderConfig.Data>;
+  getData(options?: Partial<FormApplication.Options>): Promise<FolderConfig.Data>;
 
   /**
    * @param event - (unused)

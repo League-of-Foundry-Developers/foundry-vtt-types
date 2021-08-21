@@ -33,7 +33,7 @@ declare class PermissionControl<
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): PermissionControl.Data<E>;
+  getData(options?: Partial<P>): PermissionControl.Data<E>;
 
   /** @override */
   protected _updateObject(event: Event, formData: PermissionControl.FormData): Promise<E>;

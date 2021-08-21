@@ -37,7 +37,7 @@ declare class EntitySheetConfig<
    * Construct and return the data object used to render the HTML template for this form application.
    * @param options - (unused)
    */
-  getData(options?: Application.RenderOptions): EntitySheetConfig.Data<E>;
+  getData(options?: Partial<P>): EntitySheetConfig.Data<E>;
 
   /**
    * This method is called upon form submission after form data is validated

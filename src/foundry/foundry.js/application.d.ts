@@ -164,7 +164,7 @@ declare abstract class Application<Options extends Application.Options = Applica
    * If undefined, the default implementation will return an empty object allowing only for rendering of static HTML
    * @param options - (unused, default: `{}`)
    */
-  getData(options?: Application.RenderOptions): object | Promise<object>;
+  getData(options?: Partial<Options>): object | Promise<object>;
 
   /**
    * Render the Application by evaluating it's HTML template against the object of data provided by the getData method
@@ -179,7 +179,7 @@ declare abstract class Application<Options extends Application.Options = Applica
    * @returns The rendered Application instance
    * @remarks Some subclasses return other results.
    */
-  render(force?: boolean, options?: Application.RenderOptions): unknown;
+  render(force?: boolean, options?: Application.RenderOptions<Options>): unknown;
 
   /**
    * An asynchronous inner function which handles the rendering of the Application
@@ -189,7 +189,7 @@ declare abstract class Application<Options extends Application.Options = Applica
    *                  (default: `{}`)
    * @returns A Promise that resolves to the Application once rendering is complete
    */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+  protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
   /**
    * Return the inheritance chain for this Application class up to (and including) it's base Application class.
@@ -498,31 +498,31 @@ declare namespace Application {
     scale: number | null | undefined;
   }
 
-  interface RenderOptions {
+  type RenderOptions<Options extends Application.Options = Application.Options> = Partial<Options> & {
     /**
      * The left positioning attribute
      */
-    left?: number;
+    left?: number | null;
 
     /**
      * The top positioning attribute
      */
-    top?: number;
+    top?: number | null;
 
     /**
      * The rendered width
      */
-    width?: number;
+    width?: number | null;
 
     /**
      * The rendered height
      */
-    height?: number;
+    height?: number | null;
 
     /**
      * The rendered transformation scale
      */
-    scale?: number;
+    scale?: number | null;
 
     /**
      * Apply focus to the application, maximizing it and bringing it to the top
@@ -540,7 +540,7 @@ declare namespace Application {
      * The data change which motivated the render request
      */
     renderData?: object;
-  }
+  };
 
   /**
    * @see {@link Application.RENDER_STATES}

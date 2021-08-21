@@ -56,7 +56,7 @@ declare global {
     /**
      * @override
      */
-    getData(options?: Application.RenderOptions): Data | Promise<Data>;
+    getData(options?: Partial<Options>): Data | Promise<Data>;
 
     /** @override */
     protected _getHeaderButtons(): Application.HeaderButton[];

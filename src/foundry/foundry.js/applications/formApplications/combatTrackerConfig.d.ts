@@ -24,7 +24,7 @@ declare class CombatTrackerConfig extends FormApplication<FormApplication.Option
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): Promise<CombatTrackerConfig.Data>;
+  getData(options?: Partial<FormApplication.Options>): Promise<CombatTrackerConfig.Data>;
 
   /**
    * @param event - (unused)
