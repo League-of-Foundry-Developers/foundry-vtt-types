@@ -1,24 +1,35 @@
 /**
- * Render the Sidebar container, and after rendering insert Sidebar tabs
- * @typeParam P - the type of the options object
+ * Render the Sidebar container, and after rendering insert Sidebar tabs.
+ * @typeParam Options - the type of the options object
  */
-declare class Sidebar<P extends Sidebar.Options = Sidebar.Options> extends Application<P> {
+declare class Sidebar<Options extends Application.Options = Application.Options> extends Application<Options> {
   /**
-   * Sidebar application instances
-   * @defaultValue `[]`
+   * Singleton application instances for each sidebar tab
+   * @defaultValue `{}`
    */
-  apps: Application[];
+  tabs: Partial<Record<string, SidebarTab>>;
 
   /**
    * Track whether the sidebar container is currently collapsed
    * @defaultValue `false`
+   * @internal
    */
   protected _collapsed: boolean;
 
   /**
    * @override
+   * @defaultValue
+   * ```ts
+   * foundry.utils.mergeObject(super.defaultOptions, {
+   *   id: "sidebar",
+   *   template: "templates/sidebar/sidebar.html",
+   *   popOut: false,
+   *   width: 300,
+   *   tabs: [{navSelector: ".tabs", contentSelector: "#sidebar", initial: "chat"}]
+   * }
+   * ```
    */
-  static get defaultOptions(): Sidebar.Options;
+  static get defaultOptions(): Application.Options;
 
   /**
    * Return the name of the active Sidebar tab
@@ -26,9 +37,9 @@ declare class Sidebar<P extends Sidebar.Options = Sidebar.Options> extends Appli
   get activeTab(): string;
 
   /**
-   * Return an Array of pop-out sidebar tab Application instances
+   * Singleton application instances for each popout tab
    */
-  get popouts(): Application[];
+  get popouts(): Partial<Record<string, SidebarTab>>;
 
   /**
    * @param options - (unused)
@@ -38,6 +49,7 @@ declare class Sidebar<P extends Sidebar.Options = Sidebar.Options> extends Appli
 
   /**
    * @override
+   * @internal
    */
   protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
 
@@ -68,17 +80,20 @@ declare class Sidebar<P extends Sidebar.Options = Sidebar.Options> extends Appli
    * @param event - (unused)
    * @param tabs - (unused)
    * @override
+   * @internal
    */
   protected _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: string): void;
 
   /**
    * Handle right-click events on tab controls to trigger pop-out containers for each tab
    * @param event - The originating contextmenu event
+   * @internal
    */
   protected _onRightClickTab(event: MouseEvent): void;
 
   /**
    * Handle toggling of the Sidebar container's collapsed or expanded state
+   * @internal
    */
   protected _onToggleCollapse(event: MouseEvent): void;
 }
@@ -86,47 +101,7 @@ declare class Sidebar<P extends Sidebar.Options = Sidebar.Options> extends Appli
 declare namespace Sidebar {
   interface Data {
     coreUpdate: string | false;
-    user: User;
-  }
-
-  interface Options extends Application.Options {
-    /**
-     * @defaultValue `'sidebar'`
-     */
-    id: string;
-
-    /**
-     * @defaultValue `'templates/sidebar/sidebar.html'`
-     */
-    template: string;
-
-    /**
-     * @defaultValue `false`
-     */
-    popOut: boolean;
-
-    /**
-     * @defaultValue `300`
-     */
-    width: number;
-
-    tabs: Array<
-      TabsConfiguration & {
-        /**
-         * @defaultValue `'.tabs'`
-         */
-        navSelector: string;
-
-        /**
-         * @defaultValue `'#sidebar'`
-         */
-        contentSelector: string;
-
-        /**
-         * @defaultValue `'chat'`
-         */
-        initial: string;
-      }
-    >;
+    systemUpdate: string | false;
+    user: Game['user'];
   }
 }
