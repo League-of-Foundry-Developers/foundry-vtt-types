@@ -130,4 +130,9 @@ declare class SimplePeerAVClient extends AVClient {
 
   /** @override */
   onSettingsChanged(changed: DeepPartial<AVSettings.Settings>): Promise<void>;
+
+  /**
+   * Replace the local stream for each connected peer with a re-generated MediaStream
+   */
+  updateLocalStream(): Promise<void>;
 }
