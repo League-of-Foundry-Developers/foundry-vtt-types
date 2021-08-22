@@ -4,9 +4,6 @@ declare class CustomAVCLient extends AVClient {
   initialize(): Promise<void>;
   connect(): Promise<boolean>;
   disconnect(): Promise<boolean>;
-  getAudioSinks(): Promise<Record<string, string>>;
-  getAudioSources(): Promise<Record<string, string>>;
-  getVideoSources(): Promise<Record<string, string>>;
   getConnectedUsers(): string[];
   getMediaStreamForUser(userId: string): MediaStream | null;
   isAudioEnabled(): boolean;

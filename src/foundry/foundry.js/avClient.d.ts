@@ -1,5 +1,5 @@
 /**
- * An implementation interface for an Audio/Video client which is extended to provide broadcasting functionality.
+ * An interface for an Audio/Video client which is extended to provide broadcasting functionality.
  */
 declare abstract class AVClient {
   /**
@@ -8,9 +8,35 @@ declare abstract class AVClient {
    */
   constructor(master: AVMaster, settings: AVSettings);
 
+  /**
+   * The master orchestration instance
+   */
   master: AVMaster;
 
+  /**
+   * The active audio/video settings being used
+   */
   settings: AVSettings;
+
+  /**
+   * Is audio broadcasting push-to-talk enabled?
+   */
+  get isVoicePTT(): boolean;
+
+  /**
+   * Is audio broadcasting always enabled?
+   */
+  get isVoiceAlways(): boolean;
+
+  /**
+   * Is audio broadcasting voice-activation enabled?
+   */
+  get isVoiceActivated(): boolean;
+
+  /**
+   * Is the current user muted?
+   */
+  get isMuted(): false;
 
   /**
    * One-time initialization actions that should be performed for this client implementation.
@@ -37,19 +63,26 @@ declare abstract class AVClient {
    * Provide an Object of available audio sources which can be used by this implementation.
    * Each object key should be a device id and the key should be a human-readable label.
    */
-  abstract getAudioSinks(): Promise<Record<string, string>>;
+  getAudioSinks(): Promise<Record<string, string>>;
 
   /**
    * Provide an Object of available audio sources which can be used by this implementation.
    * Each object key should be a device id and the key should be a human-readable label.
    */
-  abstract getAudioSources(): Promise<Record<string, string>>;
+  getAudioSources(): Promise<Record<string, string>>;
 
   /**
    * Provide an Object of available video sources which can be used by this implementation.
    * Each object key should be a device id and the key should be a human-readable label.
    */
-  abstract getVideoSources(): Promise<Record<string, string>>;
+  getVideoSources(): Promise<Record<string, string>>;
+
+  /**
+   * Obtain a mapping of available device sources for a given type.
+   * @param kind - The type of device source being requested
+   * @internal
+   */
+  _getSourcesOfType(kind: MediaDeviceKind): Promise<Record<string, string>>;
 
   /**
    * Return an array of Foundry User IDs which are currently connected to A/V.
