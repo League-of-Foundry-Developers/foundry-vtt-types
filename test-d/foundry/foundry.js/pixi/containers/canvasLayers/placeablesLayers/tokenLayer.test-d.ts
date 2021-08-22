@@ -4,10 +4,10 @@ expectType<'Token'>(TokenLayer.documentName);
 expectType<TokenLayer | undefined>(TokenLayer.instance);
 expectType<TokenLayer.LayerOptions>(TokenLayer.layerOptions);
 expectType<'tokens'>(TokenLayer.layerOptions.name);
-expectType<ConstructorOf<Token>>(TokenLayer.layerOptions.objectClass);
+expectType<typeof Token>(TokenLayer.layerOptions.objectClass);
 
 const layer = new TokenLayer();
-expectType<ConstructorOf<Token>>(layer.options.objectClass);
+expectType<typeof Token>(layer.options.objectClass);
 expectType<TokenLayer.LayerOptions>(layer.options);
 expectType<'tokens'>(layer.options.name);
 

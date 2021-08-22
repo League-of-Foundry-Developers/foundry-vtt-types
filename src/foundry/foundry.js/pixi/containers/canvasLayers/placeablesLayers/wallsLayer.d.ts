@@ -320,7 +320,7 @@ declare global {
     interface LayerOptions extends PlaceablesLayer.LayerOptions<'Wall'> {
       name: 'walls';
       controllableObjects: true;
-      objectClass: ConstructorOf<Wall>;
+      objectClass: ConfiguredObjectClassForName<'Wall'>;
       quadtree: true;
       sheetClass: ConstructorOf<FormApplication>;
       sortActiveTop: boolean;

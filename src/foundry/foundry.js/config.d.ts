@@ -1,9 +1,14 @@
-import { DocumentConstructor } from '../../types/helperTypes';
+import { DocumentConstructor, PlaceableObjectConstructor } from '../../types/helperTypes';
 import DatabaseBackend from '../common/abstract/backend.mjs';
 
 type ConfiguredDocumentClassOrDefault<Fallback extends DocumentConstructor> =
   Fallback['metadata']['name'] extends keyof DocumentClassConfig
     ? DocumentClassConfig[Fallback['metadata']['name']]
+    : Fallback;
+
+type ConfiguredObjectClassOrDefault<Fallback extends PlaceableObjectConstructor> =
+  Fallback['embeddedName'] extends keyof PlaceableObjectClassConfig
+    ? PlaceableObjectClassConfig[Fallback['embeddedName']]
     : Fallback;
 
 declare global {
@@ -36,6 +41,36 @@ declare global {
 
   //eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DocumentClassConfig {}
+
+  /**
+   * This interface is used to configure the used object classes at a type
+   * level. Module and system authors should use declaration merging to provide
+   * the types of their configured object classes. It is extremely important
+   * that this is kept in sync with the configuration that actually happens at
+   * runtime.
+   *
+   * @example
+   * ```typescript
+   * // myToken.ts
+   * class MyToken extends Token {}
+   *
+   * // entryPoint.ts
+   * import { MyToken } from './myToken'
+   *
+   * Hooks.once('init', () => {
+   *   CONFIG.Token.objectClass = MyToken;
+   * });
+   *
+   * declare global {
+   *   interface PlaceableObjectClassConfig {
+   *     Token: typeof MyToken;
+   *   }
+   * }
+   * ```
+   */
+
+  //eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface PlaceableObjectClassConfig {}
 
   /**
    * This interface together with {@link SourceConfig} is used to configure the
@@ -1554,7 +1589,7 @@ declare global {
       /**
        * @defaultValue `AmbientLightDocument`
        */
-      objectClass: ConstructorOf<AmbientLight>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof AmbientLight>;
 
       /**
        * @defaultValue `AmbientLightDocument`
@@ -1579,7 +1614,7 @@ declare global {
       /**
        * @defaultValue `AmbientSound`
        */
-      objectClass: ConstructorOf<AmbientSound>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof AmbientSound>;
 
       /**
        * @defaultValue `SoundsLayer`
@@ -1619,7 +1654,7 @@ declare global {
       /**
        * @defaultValue `Drawing`
        */
-      objectClass: ConstructorOf<Drawing>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof Drawing>;
 
       /**
        * @defaultValue `DrawingsLayer`
@@ -1678,7 +1713,7 @@ declare global {
       /**
        * @defaultValue `MeasuredTemplate`
        */
-      objectClass: ConstructorOf<MeasuredTemplate>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
 
       /**
        * @defaultValue `TemplateLayer`
@@ -1703,7 +1738,7 @@ declare global {
       /**
        * @defaultValue `Note`
        */
-      objectClass: ConstructorOf<Note>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof Note>;
 
       /**
        * @defaultValue `NotesLayer`
@@ -1728,7 +1763,7 @@ declare global {
       /**
        * @defaultValue `Tile`
        */
-      objectClass: ConstructorOf<Tile>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof Tile>;
 
       /**
        * @defaultValue `BackgroundLayer`
@@ -1753,7 +1788,7 @@ declare global {
       /**
        * @defaultValue `Token`
        */
-      objectClass: ConstructorOf<Token>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof Token>;
 
       /**
        * @defaultValue `TokenLayer`
@@ -1778,7 +1813,7 @@ declare global {
       /**
        * @defaultValue `Wall`
        */
-      objectClass: ConstructorOf<Wall>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof Wall>;
 
       /**
        * @defaultValue `WallsLayer`

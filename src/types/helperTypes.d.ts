@@ -56,6 +56,9 @@ export type FieldReturnType<T extends DocumentField<any>, U extends Partial<Docu
 export type DocumentConstructor = Pick<typeof Document, keyof typeof Document> &
   (new (...args: any[]) => Document<any, any>);
 
+export type PlaceableObjectConstructor = Pick<typeof PlaceableObject, keyof typeof PlaceableObject> &
+  (new (...args: any[]) => PlaceableObject<any>);
+
 export type ConfiguredDocumentClass<T extends DocumentConstructor> = ConfiguredDocumentClassForName<
   T['metadata']['name']
 >;
