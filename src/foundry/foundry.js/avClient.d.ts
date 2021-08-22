@@ -36,7 +36,7 @@ declare abstract class AVClient {
   /**
    * Is the current user muted?
    */
-  get isMuted(): false;
+  get isMuted(): boolean;
 
   /**
    * One-time initialization actions that should be performed for this client implementation.

@@ -18,9 +18,11 @@ declare class CustomAVCLient extends AVClient {
 
 declare global {
   interface WebRTCConfig {
-    clientClass: CustomAVCLient;
+    clientClass: typeof CustomAVCLient;
   }
 }
+
+CONFIG.WebRTC.clientClass = CustomAVCLient;
 
 const avMaster = new AVMaster();
 

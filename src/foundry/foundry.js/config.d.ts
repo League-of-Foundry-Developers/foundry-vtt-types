@@ -1806,7 +1806,7 @@ declare global {
       /**
        * @defaultValue `SimplePeerAVClient`
        */
-      clientClass: PropertyTypeOrFallback<WebRTCConfig, 'clientClass', AVClient>;
+      clientClass: PropertyTypeOrFallback<WebRTCConfig, 'clientClass', typeof AVClient>;
 
       /**
        * @defaultValue `50`

@@ -12,7 +12,7 @@ declare class AVMaster {
   /**
    * The Audio/Video client class
    */
-  client: CONFIG['WebRTC']['clientClass'];
+  client: InstanceType<CONFIG['WebRTC']['clientClass']>;
 
   /**
    * A flag to track whether the current user is actively broadcasting their microphone.
