@@ -297,7 +297,7 @@ declare global {
        * @see {@link RollTableConfig#_onDrop}
        */
       dropRollTableSheetData: (
-        rollTable: InstanceType<ConfiguredDocumentClass<typeof RollTable>>,
+        table: InstanceType<ConfiguredDocumentClass<typeof RollTable>>,
         config: RollTableConfig,
         data: object
       ) => boolean | void;
@@ -317,7 +317,7 @@ declare global {
        * @remarks This is called by {@link Hooks.call}.
        * @see {@link SceneNavigation#activateListeners}
        */
-      getSceneNavigationContext: (jq: JQuery, contextOptions: ContextMenuEntry[]) => boolean | void;
+      getSceneNavigationContext: (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
 
       /**
        * A hook event that fires when the context menu for a PlayersList entry is constructed.
@@ -326,7 +326,7 @@ declare global {
        * @remarks This is called by {@link Hooks.call}.
        * @see {@link PlayerList#activateListeners}
        */
-      getUserContextOptions: (jq: JQuery, contextOptions: ContextMenuEntry[]) => boolean | void;
+      getUserContextOptions: (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
 
       /**
        * A hook event that fires whenever data is dropped into a Hotbar slot.
@@ -359,7 +359,7 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link PointSource#_initializeShaders}
        */
-      initializePointSourceShaders: (pointSource: PointSource, animationType: string | null) => unknown;
+      initializePointSourceShaders: (source: PointSource, animationType: string | null) => unknown;
 
       /**
        * A hook event that fires when the LightingLayer is refreshed.
@@ -367,7 +367,7 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link LightingLayer#refresh}
        */
-      lightingRefresh: (lighting: LightingLayer) => unknown;
+      lightingRefresh: (layer: LightingLayer) => unknown;
 
       /**
        * A hook event that fires when a token's resource bar attribute has been modified.
@@ -631,7 +631,7 @@ declare global {
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link PlaylistDirectory#_contextMenu}
      */
-    type GetPlaylistDirectorySoundContext = (jq: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
+    type GetPlaylistDirectorySoundContext = (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
 
     /**
      * A hook event that fires when the context menu for entries in a SidebarTab
@@ -644,7 +644,7 @@ declare global {
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link SidebarDirectory#_contextMenu}
      */
-    type GetSidebarDirectoryEntryContext = (jq: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
+    type GetSidebarDirectoryEntryContext = (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
 
     /**
      * A hook event that fires when the context menu for folders in a SidebarTab
@@ -657,7 +657,7 @@ declare global {
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link SidebarDirectory#_contextMenu}
      */
-    type GetSidebarDirectoryFolderContext = (jq: JQuery, folderOptions: ContextMenuEntry[]) => boolean | void;
+    type GetSidebarDirectoryFolderContext = (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
 
     /**
      * A hook event that fires when the user modifies a global volume slider.
@@ -690,7 +690,7 @@ declare global {
      * specific PlaceableObject type, for example "pasteToken".
      * @param copied     - The PlaceableObjects that were copied
      * @param createData - The new objects that will be added to the Scene
-     * @param P          - the type of the PlaceableObject
+     * @typeParam P      - the type of the PlaceableObject
      * @remarks The name for this hook is dynamically created by joining 'paste' with the type name of the
      * PlaceableObject.
      * @remarks This is called by {@link Hooks.call}.
@@ -698,7 +698,7 @@ declare global {
      */
     type PastePlaceableObject<P extends PlaceableObject = PlaceableObject> = (
       copied: P[],
-      toCreate: Array<P['document']['data']['_source']>
+      createData: Array<P['document']['data']['_source']>
     ) => boolean | void;
 
     /**
