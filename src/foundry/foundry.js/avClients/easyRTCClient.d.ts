@@ -1,6 +1,12 @@
 /**
  * An AVClient implementation that uses WebRTC and the EasyRTC library.
- */
+ * This client is deprecated and will be removed entirely in 0.9.x.
+ *
+ * If you wish to continue using it, you will need to manually enable it by:
+ * 1. Include the easyrtc.js library which is no longer served
+ * 2. Set CONFIG.WebRTC.clientClass = EasyRTCClient
+ *
+ * @deprecated since 0.8.7 */
 declare class EasyRTCClient extends AVClient {
   /**
    * @param master   - The master orchestration instance
