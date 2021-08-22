@@ -96,7 +96,7 @@ declare abstract class AVClient {
    * @param userId - The User id
    * @returns The MediaStream for the user, or null if the user does not have one
    */
-  abstract getMediaStreamForUser(userId: string): MediaStream | null;
+  abstract getMediaStreamForUser(userId: string): MediaStream | null | undefined;
 
   /**
    * Is outbound audio enabled for the current user?

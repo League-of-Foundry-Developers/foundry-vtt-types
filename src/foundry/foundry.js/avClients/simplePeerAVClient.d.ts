@@ -45,7 +45,7 @@ declare class SimplePeerAVClient extends AVClient {
   getConnectedUsers(): string[];
 
   /** @override */
-  getMediaStreamForUser(userId: string): MediaStream | null;
+  getMediaStreamForUser(userId: string): MediaStream | null | undefined;
 
   /** @override */
   isAudioEnabled(): boolean;
