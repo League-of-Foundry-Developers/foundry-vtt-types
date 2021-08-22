@@ -1,156 +1,166 @@
-// TODO: Remove when updating this class!!!
-// eslint-disable-next-line
-// @ts-nocheck
+import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 
-/**
- * A tool for fine tuning the grid in a Scene
- * @typeParam P - the type of the options object
- */
-declare class GridConfig<P extends FormApplication.Options = FormApplication.Options> extends FormApplication<
-  P,
-  GridConfig.Data,
-  Scene
-> {
-  constructor(scene: Scene, sheet: GridConfig['sheet'], options?: Partial<P>);
-
+declare global {
   /**
-   * Track the Scene Configuration sheet reference
+   * A tool for fine tuning the grid in a Scene
+   * @typeParam Options - the type of the options object
    */
-  sheet: SceneConfig;
+  class GridConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
+    Options,
+    GridConfig.Data,
+    InstanceType<ConfiguredDocumentClass<typeof Scene>>
+  > {
+    constructor(
+      scene: InstanceType<ConfiguredDocumentClass<typeof Scene>>,
+      sheet: GridConfig['sheet'],
+      options?: Partial<Options>
+    );
 
-  /**
-   * The counter-factual dimensions being evaluated
-   * @defaultValue `{}`
-   */
-  protected _dimensions: Canvas.Dimensions | {};
+    /**
+     * Track the Scene Configuration sheet reference
+     */
+    sheet: SceneConfig;
 
-  /**
-   * A reference to the bound key handler function so it can be removed
-   * @defaultValue `null`
-   */
-  protected _keyHandler: ((event: KeyboardEvent) => void) | null;
+    /**
+     * The counter-factual dimensions being evaluated
+     * @defaultValue `{}`
+     * @internal
+     */
+    protected _dimensions: Canvas.Dimensions | {};
 
-  /**
-   * A reference to the bound mousewheel handler function so it can be removed
-   * @defaultValue `null`
-   */
-  protected _wheelHandler: ((event: WheelEvent) => void) | null;
+    /**
+     * A reference to the bound key handler function so it can be removed
+     * @defaultValue `null`
+     * @internal
+     */
+    protected _keyHandler: ((event: KeyboardEvent) => void) | null;
 
-  /**
-   * @override
-   * @defaultValue
-   * ```typescript
-   * mergeObject(super.defaultOptions, {
-   *   id: "grid-config",
-   *   template: "templates/scene/grid-config.html",
-   *   title: game.i18n.localize("SCENES.GridConfigTool"),
-   *   width: 480,
-   *   height: "auto",
-   *   closeOnSubmit: true,
-   *   submitOnChange: true
-   * });
-   * ```
-   */
-  static get defaultOptions(): typeof FormApplication['defaultOptions'];
+    /**
+     * A reference to the bound mousewheel handler function so it can be removed
+     * @defaultValue `null`
+     * @internal
+     */
+    protected _wheelHandler: ((event: WheelEvent) => void) | null;
 
-  /**
-   * @override
-   */
-  getData(options?: Partial<P>): GridConfig.Data;
+    /**
+     * @override
+     * @defaultValue
+     * ```typescript
+     * foundry.utils.mergeObject(super.defaultOptions, {
+     *   id: "grid-config",
+     *   template: "templates/scene/grid-config.html",
+     *   title: game.i18n.localize("SCENES.GridConfigTool"),
+     *   width: 480,
+     *   height: "auto",
+     *   closeOnSubmit: true,
+     *   submitOnChange: true
+     * })
+     * ```
+     */
+    static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
-  /**
-   * @override
-   */
-  protected _render(force?: boolean, options?: Application.RenderOptions<P>): Promise<void>;
+    /** @override */
+    getData(options?: Partial<Options>): GridConfig.Data;
 
-  /**
-   * @override
-   */
-  activateListeners(html: JQuery): void;
+    /**
+     * @override
+     * @internal
+     */
+    protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
 
-  /**
-   * @override
-   */
-  close(options?: FormApplication.CloseOptions): ReturnType<FormApplication['close']>;
+    /** @override */
+    activateListeners(html: JQuery): void;
 
-  /**
-   * Handle resetting the form and re-drawing back to the original dimensions
-   * @param event - The original keydown event
-   */
-  protected _onKeyDown(event: KeyboardEvent): void;
+    /** @override */
+    close(options?: FormApplication.CloseOptions): ReturnType<FormApplication['close']>;
 
-  /**
-   * Handle resetting the form and re-drawing back to the original dimensions
-   * @param event - The original wheel event
-   */
-  protected _onWheel(event: WheelEvent): void;
+    /**
+     * Handle resetting the form and re-drawing back to the original dimensions
+     * @param event - The original keydown event
+     * @internal
+     */
+    protected _onKeyDown(event: KeyboardEvent): void;
 
-  /**
-   * Handle resetting the form and re-drawing back to the original dimensions
-   * @param event - The original click event
-   */
-  protected _onReset(event: JQuery.ClickEvent): void;
+    /**
+     * Handle resetting the form and re-drawing back to the original dimensions
+     * @param event - The original wheel event
+     * @internal
+     */
+    protected _onWheel(event: WheelEvent): void;
 
-  /**
-   * Scale the background size relative to the grid size
-   * @param delta - The directional change in background size
-   */
-  protected _scaleBackgroundSize(delta: number): void;
+    /**
+     * Handle resetting the form and re-drawing back to the original dimensions
+     * @param event - The original click event
+     * @internal
+     */
+    protected _onReset(event: JQuery.ClickEvent): void;
 
-  /**
-   * Scale the grid size relative to the background image.
-   * When scaling the grid size in this way, constrain the allowed values between 50px and 300px.
-   * @param delta - The grid size in pixels
-   */
-  protected _scaleGridSize(delta: number): void;
+    /**
+     * Scale the background size relative to the grid size
+     * @param delta - The directional change in background size
+     * @internal
+     */
+    protected _scaleBackgroundSize(delta: number): void;
 
-  /**
-   * Shift the background image relative to the grid layer
-   * @param deltaX - The number of pixels to shift in the x-direction
-   *                 (default: `0`)
-   * @param deltaY - The number of pixels to shift in the y-direction
-   *                 (default: `0`)
-   */
-  protected _shiftBackground({
-    deltaX,
-    deltaY
-  }?: {
-    deltaX?: number;
-    deltaY?: number;
-  }): ReturnType<GridConfig['_refresh']>;
+    /**
+     * Scale the grid size relative to the background image.
+     * When scaling the grid size in this way, constrain the allowed values between 50px and 300px.
+     * @param delta - The grid size in pixels
+     * @internal
+     */
+    protected _scaleGridSize(delta: number): void;
 
-  /**
-   * Temporarily refresh the display of the BackgroundLayer and GridLayer for the new pending dimensions
-   * @param background - Refresh the background display?
-   *                     (default: `false`)
-   * @param grid       - Refresh the grid display?
-   *                     (default: `false`)
-   */
-  protected _refresh({ background, grid }?: { background?: boolean; grid?: boolean }): void;
+    /**
+     * Shift the background image relative to the grid layer
+     * @param deltaX - The number of pixels to shift in the x-direction
+     *                 (default: `0`)
+     * @param deltaY - The number of pixels to shift in the y-direction
+     *                 (default: `0`)
+     * @internal
+     */
+    protected _shiftBackground({
+      deltaX,
+      deltaY
+    }?: {
+      deltaX?: number;
+      deltaY?: number;
+    }): ReturnType<GridConfig['_refresh']>;
 
-  /**
-   * @override
-   */
-  protected _onChangeInput(event: JQuery.ChangeEvent): void;
+    /**
+     * Temporarily refresh the display of the BackgroundLayer and GridLayer for the new pending dimensions
+     * @param background - Refresh the background display?
+     *                     (default: `false`)
+     * @param grid       - Refresh the grid display?
+     *                     (default: `false`)
+     * @internal
+     */
+    protected _refresh({ background, grid }?: { background?: boolean; grid?: boolean }): void;
 
-  /**
-   * @param event - (unused)
-   * @override
-   */
-  protected _updateObject(event: Event, formData: GridConfig.FormData): ReturnType<Scene['update']>;
-}
+    /**
+     * @override
+     */
+    protected _onChangeInput(event: JQuery.ChangeEvent): void;
 
-declare namespace GridConfig {
-  interface Data {
-    gridTypes: ReturnType<typeof SceneConfig['_getGridTypes']>;
-    scale: number;
-    scene: Scene.Data;
+    /**
+     * @param event - (unused)
+     * @override
+     */
+    protected _updateObject(event: Event, formData: GridConfig.FormData): ReturnType<Scene['update']>;
   }
 
-  type FormData = Pick<Scene.Data, 'gridType'> & {
-    grid: Scene.Data['grid'] | null;
-    scale: number | null;
-    shiftX: Scene.Data['shiftX'] | null;
-    shiftY: Scene.Data['shiftY'] | null;
-  };
+  namespace GridConfig {
+    interface Data {
+      gridTypes: ReturnType<typeof SceneConfig['_getGridTypes']>;
+      scale: number;
+      scene: foundry.data.SceneData;
+    }
+
+    type FormData = {
+      gridType: foundry.CONST.GridType;
+      grid: number | null;
+      scale: number | null;
+      shiftX: number | null;
+      shiftY: number | null;
+    };
+  }
 }
