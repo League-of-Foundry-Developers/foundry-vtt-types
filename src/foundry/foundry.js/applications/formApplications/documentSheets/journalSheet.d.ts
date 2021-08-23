@@ -25,6 +25,7 @@ declare global {
     /**
      * The size of the application when it was in text mode, so we can go back
      * to it when we switch modes.
+     * @defaultValue `null`
      * @internal
      */
     protected _textPos: Application.Position | null;
@@ -79,6 +80,8 @@ declare global {
     /**
      * Handle requests to switch the rendered mode of the Journal Entry sheet
      * Save the form before triggering the show request, in case content has changed
+     * @param event - The triggering click event
+     * @param mode  - The journal mode to display
      * @internal
      */
     protected _onSwapMode(event: Event, mode: JournalSheet.SheetMode): Promise<void>;
@@ -86,6 +89,7 @@ declare global {
     /**
      * Handle requests to show the referenced Journal Entry to other Users
      * Save the form before triggering the show request, in case content has changed
+     * @param event - The triggering click event
      * @internal
      */
     protected _onShowPlayers(event: Event): Promise<void>;
