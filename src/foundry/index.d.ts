@@ -53,7 +53,7 @@ import './foundry.js/videoHelper';
 
 import './foundry.js/applications';
 
-import './foundry.js/avClients/easyRTCClient';
+import './foundry.js/avClients';
 
 import './foundry.js/clientDocuments/activeEffect';
 import './foundry.js/clientDocuments/actor';

@@ -21,11 +21,7 @@ declare class AVSettings {
     AUDIO_VIDEO: 3;
   };
 
-  static VOICE_MODES: {
-    ALWAYS: 'always';
-    ACTIVITY: 'activity';
-    PTT: 'ptt';
-  };
+  static VOICE_MODES: AVSettings.VoiceModes;
 
   static DEFAULT_CLIENT_SETTINGS: {
     /**
@@ -244,5 +240,13 @@ declare namespace AVSettings {
   type StoredUserSettings = typeof AVSettings.DEFAULT_USER_SETTINGS;
   type UserSettings = StoredUserSettings & { canBroadCastAudio: boolean; canBroadcastVideo: boolean };
   type Settings = { client: ClientSettings; world: WorldSettings };
-  type VoiceMode = ValueOf<typeof AVSettings.VOICE_MODES>;
+  interface DefaultVoiceModes {
+    ALWAYS: 'always';
+    ACTIVITY: 'activity';
+    PTT: 'ptt';
+  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface Overrides {}
+  type VoiceModes = PropertyTypeOrFallback<AVSettings.Overrides, 'VoiceModes', DefaultVoiceModes>;
+  type VoiceMode = ValueOf<VoiceModes>;
 }

@@ -125,6 +125,9 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface FlagConfig {}
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface WebRTCConfig {}
+
   /**
    * Runtime configuration settings for Foundry VTT which exposes a large number of variables which determine how
    * aspects of the software behaves.
@@ -1803,7 +1806,7 @@ declare global {
       /**
        * @defaultValue `SimplePeerAVClient`
        */
-      clientClass: ConstructorOf<AVClient>;
+      clientClass: PropertyTypeOrFallback<WebRTCConfig, 'clientClass', typeof AVClient>;
 
       /**
        * @defaultValue `50`
