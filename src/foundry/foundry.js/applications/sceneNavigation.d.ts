@@ -33,7 +33,7 @@ declare class SceneNavigation extends Application {
   protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
 
   /** @override */
-  getData(options?: Application.RenderOptions): SceneNavigation.Data | Promise<SceneNavigation.Data>;
+  getData(options?: Partial<Application.Options>): SceneNavigation.Data | Promise<SceneNavigation.Data>;
 
   /**
    * Expand the SceneNavigation menu, sliding it down if it is currently collapsed

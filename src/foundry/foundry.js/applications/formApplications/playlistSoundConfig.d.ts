@@ -42,7 +42,7 @@ declare class PlaylistSoundConfig<P extends FormApplication.Options = FormApplic
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): PlaylistSoundConfig.Data;
+  getData(options?: Partial<P>): PlaylistSoundConfig.Data;
 
   /**
    * @param event - (unused)

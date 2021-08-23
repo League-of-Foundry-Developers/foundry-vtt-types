@@ -154,7 +154,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): Promise<FilePicker.Data>;
+  getData(options?: Partial<P>): Promise<FilePicker.Data>;
 
   /**
    * Browse to a specific location for this FilePicker instance
@@ -227,7 +227,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   /**
    * Additional actions performed when the file-picker UI is rendered
    */
-  render(force?: boolean, options?: Application.RenderOptions): ReturnType<this['browse']> | void;
+  render(force?: boolean, options?: Application.RenderOptions<P>): ReturnType<this['browse']> | void;
 
   /** @override */
   activateListeners(html: JQuery): void;

@@ -22,7 +22,7 @@ declare class ActorDirectory extends SidebarDirectory {
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): ActorDirectory.Data;
+  getData(options?: Partial<SidebarDirectory.Options>): ActorDirectory.Data;
 
   /**
    * @param selector - (unused)

@@ -38,7 +38,7 @@ declare class Compendium<
   get metadata(): this['collection']['metadata'];
 
   /** @override */
-  getData(options?: Application.RenderOptions): Promise<Compendium.Data<Metadata>>;
+  getData(options?: Partial<Options>): Promise<Compendium.Data<Metadata>>;
 
   /** @override */
   close(options?: Application.CloseOptions): Promise<void>;

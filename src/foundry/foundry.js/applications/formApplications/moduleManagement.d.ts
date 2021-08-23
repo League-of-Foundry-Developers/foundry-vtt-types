@@ -46,7 +46,7 @@ declare class ModuleManagement extends FormApplication<FormApplication.Options, 
   get isEditable(): boolean;
 
   /** @override */
-  getData(options?: Application.RenderOptions): ModuleManagement.Data;
+  getData(options?: Partial<FormApplication.Options>): ModuleManagement.Data;
 
   /** @override */
   activateListeners(html: JQuery): void;

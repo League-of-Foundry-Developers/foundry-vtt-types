@@ -59,12 +59,12 @@ declare global {
     /**
      * @override
      */
-    getData(options?: Application.RenderOptions): Data | Promise<Data>;
+    getData(options?: Partial<Options>): Data | Promise<Data>;
 
     /**
      * @override
      */
-    render(force?: boolean, options?: Application.RenderOptions): this;
+    render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 
     /**
      * @override

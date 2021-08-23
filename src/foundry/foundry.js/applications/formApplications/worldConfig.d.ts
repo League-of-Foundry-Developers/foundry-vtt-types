@@ -27,7 +27,7 @@ declare class WorldConfig extends FormApplication<WorldConfig.Options, WorldConf
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): WorldConfig.Data;
+  getData(options?: Partial<WorldConfig.Options>): WorldConfig.Data;
 
   /**
    * @remarks This method returns `Promise<void>`.

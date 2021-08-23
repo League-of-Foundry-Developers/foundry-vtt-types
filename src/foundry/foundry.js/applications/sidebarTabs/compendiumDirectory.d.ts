@@ -23,7 +23,7 @@ declare global {
      * @param options - (unused)
      * @override
      */
-    getData(options?: Application.RenderOptions): CompendiumDirectory.Data;
+    getData(options?: Partial<Options>): CompendiumDirectory.Data;
 
     /**
      * @override

@@ -1,109 +1,119 @@
-// TODO: Update this class once the `DocumentSheet` class has been updated to use `foundry.abstract.Document`s!!!
-// eslint-disable-next-line
-// @ts-nocheck
+import type { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
 
-/**
- * The JournalEntry Configuration Sheet
- * @typeParam P - the type of the options object
- * @typeParam D - The data structure used to render the handlebars template.
- * @typeParam O - the type of the Entity which should be managed by this form sheet
- */
-declare class JournalSheet<
-  P extends JournalSheet.Options = JournalSheet.Options,
-  D extends object = DocumentSheet.Data<JournalEntry>,
-  O extends JournalEntry = D extends DocumentSheet.Data<infer T> ? T : JournalEntry
-> extends DocumentSheet<P, D, O> {
+declare global {
   /**
-   * @param entity  - The JournalEntry instance which is being edited
-   * @param options - JournalSheet options
+   * The Application responsible for displaying and editing a single JournalEntry document.
+   * @typeParam Options - the type of the options object
+   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  constructor(entity: O, options?: Partial<P>);
+  class JournalSheet<
+    Options extends JournalSheet.Options = JournalSheet.Options,
+    Data extends object = JournalSheet.Data<Options>
+  > extends DocumentSheet<Options, Data> {
+    /**
+     * @param object  - The JournalEntry instance which is being edited
+     * @param options - Application options
+     */
+    constructor(object: ConcreteJournalEntry, options?: Partial<Options>);
 
-  protected _sheetMode: JournalSheet.SheetMode | null;
+    /**
+     * The current display mode of the journal. Either 'text' or 'image'.
+     * @internal
+     */
+    protected _sheetMode: JournalSheet.SheetMode | null;
 
-  /** @override */
-  static get defaultOptions(): JournalSheet.Options;
+    /**
+     * The size of the application when it was in text mode, so we can go back
+     * to it when we switch modes.
+     * @defaultValue `null`
+     * @internal
+     */
+    protected _textPos: Application.Position | null;
 
-  /** @override */
-  get id(): string;
+    /**
+     * @override
+     * @defaultValue
+     * ```ts
+     * foundry.utils.mergeObject(super.defaultOptions, {
+     *   classes: ["sheet", "journal-sheet"],
+     *   width: 720,
+     *   height: 800,
+     *   resizable: true,
+     *   closeOnSubmit: false,
+     *   submitOnClose: true,
+     *   viewPermission: CONST.ENTITY_PERMISSIONS.NONE
+     * })
+     * ```
+     */
+    static get defaultOptions(): JournalSheet.Options;
 
-  /** @override */
-  get template(): string;
+    /** @override */
+    get template(): string;
 
-  /** @override */
-  get title(): string;
+    /** @override */
+    get title(): string;
 
-  /** @override */
-  getData(options?: Application.RenderOptions): Promise<D> | D;
+    /**
+     * Guess the default view mode for the sheet based on the player's permissions to the Entry
+     * @internal
+     */
+    protected _inferDefaultMode(): JournalSheet.SheetMode | null;
 
-  /**
-   * Guess the default view mode for the sheet based on the player's permissions to the Entry
-   */
-  protected _inferDefaultMode(): JournalSheet.SheetMode | null;
+    /**@override */
+    protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
-  /** @override */
-  protected _render(force?: boolean, options?: JournalSheet.RenderOptions): Promise<void>;
+    /**
+     * @override
+     * @internal
+     */
+    protected _getHeaderButtons(): Application.HeaderButton[];
 
-  /** @override */
-  protected _getHeaderButtons(): Application.HeaderButton[];
+    /** @override */
+    getData(options?: Partial<Options>): Promise<Data> | Data;
 
-  /** @override */
-  protected _updateObject(event: Event, formData: object): Promise<O>;
+    /** @override */
+    protected _updateObject(
+      event: Event,
+      formData: JournalSheet.FormData
+    ): ReturnType<DocumentSheet<Options, Data>['_updateObject']>;
 
-  /**
-   * Handle requests to switch the rendered mode of the Journal Entry sheet
-   * Save the form before triggering the show request, in case content has changed
-   */
-  protected _onSwapMode(event: Event, mode: JournalSheet.SheetMode): Promise<void>;
+    /**
+     * Handle requests to switch the rendered mode of the Journal Entry sheet
+     * Save the form before triggering the show request, in case content has changed
+     * @param event - The triggering click event
+     * @param mode  - The journal mode to display
+     * @internal
+     */
+    protected _onSwapMode(event: Event, mode: JournalSheet.SheetMode): Promise<void>;
 
-  /**
-   * Handle requests to show the referenced Journal Entry to other Users
-   * Save the form before triggering the show request, in case content has changed
-   */
-  protected _onShowPlayers(event: Event): Promise<void>;
+    /**
+     * Handle requests to show the referenced Journal Entry to other Users
+     * Save the form before triggering the show request, in case content has changed
+     * @param event - The triggering click event
+     * @internal
+     */
+    protected _onShowPlayers(event: Event): Promise<void>;
+  }
+
+  namespace JournalSheet {
+    interface Options extends DocumentSheet.Options {
+      sheetMode?: SheetMode | null;
+    }
+
+    interface Data<Options extends JournalSheet.Options = JournalSheet.Options>
+      extends DocumentSheet.Data<ConcreteJournalEntry, Options> {
+      image: string;
+      folders: ReturnType<NonNullable<Game['folders']>['filter']>;
+    }
+
+    type SheetMode = 'text' | 'image';
+
+    interface FormData {
+      content: string;
+      folder: string;
+      name: string;
+    }
+  }
 }
 
-declare namespace JournalSheet {
-  interface RenderOptions extends Application.RenderOptions {
-    sheetMode?: SheetMode | null;
-  }
-
-  interface Options extends DocumentSheet.Options {
-    /**
-     * @defaultValue `['sheet', 'journal-sheet']`
-     */
-    classes: string[];
-    /**
-     * @defaultValue `720`
-     */
-    width: number;
-    /**
-     * @defaultValue `800`
-     */
-    height: number;
-    /**
-     * @defaultValue `true`
-     */
-    resizable: boolean;
-    /**
-     * @defaultValue `false`
-     */
-    closeOnSubmit: boolean;
-    /**
-     * @defaultValue `true`
-     */
-    submitOnClose: boolean;
-    /**
-     * @defaultValue {@link ENTITY_PERMISSIONS.NONE}
-     */
-    viewPermission: foundry.CONST.EntityPermission;
-    sheetMode?: SheetMode | null;
-  }
-
-  interface Data<O extends JournalEntry = JournalEntry> extends DocumentSheet.Data<O> {
-    image: string;
-    folders: Folder[];
-  }
-
-  type SheetMode = 'text' | 'image';
-}
+type ConcreteJournalEntry = InstanceType<ConfiguredDocumentClass<typeof JournalEntry>>;

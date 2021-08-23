@@ -24,7 +24,7 @@ declare global {
      * @param options - (unused)
      * @override
      */
-    getData(options?: Application.RenderOptions): Settings.Data;
+    getData(options?: Partial<Options>): Settings.Data;
 
     /**
      * @override

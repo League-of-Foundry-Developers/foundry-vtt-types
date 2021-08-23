@@ -34,7 +34,7 @@ declare class ImagePopout extends FormApplication<ImagePopout.Options, ImagePopo
   get title(): string;
 
   /** @override */
-  getData(options?: Application.RenderOptions): Promise<ImagePopout.Data>;
+  getData(options?: Partial<ImagePopout.Options>): Promise<ImagePopout.Data>;
 
   /**
    * Test whether the title of the image popout should be visible to the user
@@ -47,7 +47,7 @@ declare class ImagePopout extends FormApplication<ImagePopout.Options, ImagePopo
   getRelatedObject(): Promise<foundry.abstract.Document<any, any> | null>;
 
   /** @override */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+  protected _render(force?: boolean, options?: Application.RenderOptions<ImagePopout.Options>): Promise<void>;
 
   /** @override */
   protected _getHeaderButtons(): Application.HeaderButton[];

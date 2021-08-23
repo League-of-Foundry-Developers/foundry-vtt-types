@@ -28,10 +28,10 @@ declare global {
     static get defaultOptions(): Application.Options;
 
     /** @override */
-    render(force?: boolean, options?: Application.RenderOptions): this;
+    render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 
     /** @override */
-    getData(options?: Application.RenderOptions): PlayerList.Data | Promise<PlayerList.Data>;
+    getData(options?: Partial<Options>): PlayerList.Data | Promise<PlayerList.Data>;
 
     /** @override */
     activateListeners(html: JQuery): void;

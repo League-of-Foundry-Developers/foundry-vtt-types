@@ -50,7 +50,7 @@ declare class Notifications<Options extends Application.Options = Application.Op
   protected _renderInner(data: object): JQuery;
 
   /** @override */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+  protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
   /**
    * Push a new notification into the queue

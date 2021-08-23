@@ -79,7 +79,7 @@ declare class SceneControls<Options extends Application.Options = Application.Op
   initialize(options?: InitializeOptions): void;
 
   /** @override */
-  getData(options?: Application.RenderOptions): {
+  getData(options?: Partial<Options>): {
     active: boolean;
     cssClass: '' | 'disabled';
     controls: SceneControl[];

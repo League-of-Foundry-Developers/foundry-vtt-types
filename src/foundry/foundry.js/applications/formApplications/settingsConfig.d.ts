@@ -25,7 +25,7 @@ declare class SettingsConfig extends FormApplication<FormApplication.Options, Se
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): SettingsConfig.Data;
+  getData(options?: Partial<FormApplication.Options>): SettingsConfig.Data;
 
   /** @override */
   activateListeners(html: JQuery): void;

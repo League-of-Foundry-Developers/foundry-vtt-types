@@ -25,7 +25,7 @@ declare class MacroDirectory extends SidebarDirectory<MacroDirectory.Options> {
   /**
    * @override
    */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+  protected _render(force?: boolean, options?: SidebarDirectory.RenderContext<MacroDirectory.Options>): Promise<void>;
 
   /**
    * @override
