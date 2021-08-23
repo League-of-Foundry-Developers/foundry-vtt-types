@@ -38,7 +38,7 @@ expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({ token: new Token
 expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({ alias: 'Mario' }));
 
 expectType<Actor | null>(ChatMessage.getSpeakerActor(ChatMessage.getSpeaker()));
-expectType<User[]>(ChatMessage.getWhisperRecipients('Mario'));
+expectType<StoredDocument<User>[]>(ChatMessage.getWhisperRecipients('Mario'));
 
 const chat = new ChatMessage();
 expectType<string>(chat.alias);

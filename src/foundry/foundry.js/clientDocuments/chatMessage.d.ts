@@ -188,7 +188,7 @@ declare global {
      * @param name - The target name of the whisper target
      * @returns An array of User instances
      */
-    static getWhisperRecipients(name: string): InstanceType<ConfiguredDocumentClass<typeof User>>[];
+    static getWhisperRecipients(name: string): StoredDocument<InstanceType<ConfiguredDocumentClass<typeof User>>>[];
 
     /**
      * Render the HTML for the ChatMessage which should be added to the log
