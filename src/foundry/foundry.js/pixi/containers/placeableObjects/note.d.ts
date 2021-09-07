@@ -1,4 +1,4 @@
-import { BaseNote } from '../../../../common/documents.mjs';
+import type { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
 
 declare global {
   /**
@@ -21,7 +21,7 @@ declare global {
    * });
    * ```
    */
-  class Note extends PlaceableObject<BaseNote> {
+  class Note extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>> {
     /**
      * The associated JournalEntry which is described by this note
      */
@@ -80,7 +80,7 @@ declare global {
     /** @override */
     protected _onHoverIn(
       event: PIXI.InteractionEvent,
-      options?: Parameters<PlaceableObject<BaseNote>['_onHoverIn']>[1]
+      options?: Parameters<PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>>['_onHoverIn']>[1]
     ): false | void;
 
     /** @override */

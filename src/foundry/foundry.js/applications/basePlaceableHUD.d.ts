@@ -1,40 +1,40 @@
 /**
  * An abstract base class for displaying a heads-up-display interface bound to a Placeable Object on the canvas
- * @typeParam O - the type of the PlaceableObject
- * @typeParam P - the type of the options object
+ * @typeParam Object - the type of the PlaceableObject
+ * @typeParam Options - the type of the options object
  */
 declare abstract class BasePlaceableHUD<
-  O extends PlaceableObject<any>,
-  P extends Application.Options = Application.Options
-> extends Application<P> {
+  Object extends PlaceableObject<any> = PlaceableObject,
+  Options extends Application.Options = Application.Options
+> extends Application<Options> {
   /**
    * Reference a PlaceableObject this HUD is currently bound to
-   * @defaultValue `null`
+   * @defaultValue `undefined`
    */
-  object: O | null;
+  object: Object | undefined;
 
   /**
    * @override
    * @defaultValue
    * ```
-   * mergeObject(super.defaultOptions, {
+   * foundry.utils.mergeObject(super.defaultOptions, {
    *   classes: ["placeable-hud"],
    *   popOut: false
    * })
    * ```
    */
-  static get defaultOptions(): typeof Application['defaultOptions'];
+  static get defaultOptions(): Application.Options;
 
   /**
    * Convenience access for the canvas layer which this HUD modifies
    */
-  get layer(): O['layer'];
+  get layer(): Object['layer'] | undefined;
 
   /**
    * Bind the HUD to a new PlaceableObject and display it
    * @param object - A PlaceableObject instance to which the HUD should be bound
    */
-  bind(object: O): void;
+  bind(object: Object): void;
 
   /**
    * Clear the HUD by fading out it's active HTML and recording the new display state
@@ -42,52 +42,48 @@ declare abstract class BasePlaceableHUD<
   clear(): void;
 
   /** @override */
-  _render(...args: Parameters<Application<P>['_render']>): Promise<void>;
+  _render(...args: Parameters<Application<Options>['_render']>): Promise<void>;
 
-  /**
-   * @override
-   * @defaultValue
-   * ```
-   * mergeObject(this.object.data, {
-   *   id: this.id,
-   *   classes: this.options.classes.join(' '),
-   *   appId: this.appId,
-   *   isGM: game.user.isGM,
-   *   icons: CONFIG.controlIcons
-   * });
-   * ```
-   */
-  getData(options?: Partial<P>): foundry.utils.Duplicated<O['data']> & {
-    id: Application['id'];
+  /** @override */
+  getData(options?: Partial<Options>): ReturnType<Object['data']['toJSON']> & {
+    id: BasePlaceableHUD['id'];
     classes: string;
-    appId: Application['appId'];
+    appId: BasePlaceableHUD['appId'];
     isGM: boolean;
     icons: typeof CONFIG['controlIcons'];
   };
 
-  /**
-   * @override
-   * @remarks Returns `void`
-   */
-  setPosition({ left, top, width, height, scale }?: Partial<Application.Position>): any;
+  /** @override */
+  setPosition({ left, top, width, height, scale }?: Partial<Application.Position>): undefined;
 
   /** @override */
-  activateListeners(html: JQuery<HTMLElement>): void;
+  activateListeners(html: JQuery): void;
+
+  /**
+   * Handle mouse clicks to control a HUD control button
+   * @param event - The originating click event
+   * @remarks This will always return a promise with documents is overridden by TokenHUD.
+   */
+  protected _onClickControl(event: JQuery.ClickEvent): Promise<Array<Object['document']> | void | boolean> | void;
 
   /**
    * Toggle the visible state of all controlled objects in the Layer
    * @param event - The originating click event
+   * @internal
    */
-  protected _onToggleVisibility(event: JQuery.ClickEvent): Promise<void>;
+  protected _onToggleVisibility(event: JQuery.ClickEvent): Promise<Array<Object['document']>>;
 
   /**
    * Toggle locked state of all controlled objects in the Layer
    * @param event - The originating click event
+   * @internal
    */
-  protected _onToggleLocked(event: JQuery.ClickEvent): Promise<void>;
+  protected _onToggleLocked(event: JQuery.ClickEvent): Promise<Array<Object['document']>>;
 
   /**
    * Handle sorting the z-order of the object
+   * @param up    - Move the object upwards in the vertical stack?
+   * @param event - The originating mouse click event
    */
-  protected _onSort(up: boolean, event: JQuery.ClickEvent): Promise<void>;
+  protected _onSort(up: boolean, event: JQuery.ClickEvent): Promise<Array<Object['document']>>;
 }
