@@ -42,11 +42,10 @@ declare global {
      */
     get avatar(): string;
 
-    // TODO: Replace return type with ReturnType<Game['actors']['get']> once this is possible
     /**
      * Return the Actor instance of the user's impersonated character (or undefined)
      */
-    get character(): InstanceType<ConfiguredDocumentClass<typeof Actor>> | undefined;
+    get character(): ReturnType<Exclude<Game['actors'], undefined>['get']>;
 
     /**
      * A convenience shortcut for the permissions object of the current User
@@ -129,6 +128,15 @@ declare global {
      * @deprecated since 0.8.0
      */
     setPermission(permission: keyof typeof CONST.USER_PERMISSIONS, allowed: boolean): Promise<this>;
+
+    /** @remarks This property is set by PlayerList.getData() */
+    charname?: string;
+
+    /** @remarks This property is set by PlayerList.getData() */
+    color?: string;
+
+    /** @remarks This property is set by PlayerList.getData() */
+    border?: string;
   }
 
   namespace User {
@@ -165,5 +173,3 @@ declare global {
     }
   }
 }
-
-export {};
