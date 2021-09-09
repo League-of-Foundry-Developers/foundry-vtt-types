@@ -1,4 +1,9 @@
-import { ConfiguredDocumentClass, ConstructorDataType, DocumentConstructor } from '../../../types/helperTypes';
+import {
+  ConfiguredDocumentClass,
+  ConfiguredObjectClassForName,
+  ConstructorDataType,
+  DocumentConstructor
+} from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
 import EmbeddedCollection from '../../common/abstract/embedded-collection.mjs';
 
@@ -105,9 +110,16 @@ declare global {
      * @returns An array of Token instances in the current Scene which reference this Actor.
      */
     getActiveTokens(
-      linked?: boolean,
-      document?: boolean
+      linked: boolean,
+      document: true
     ): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>>[];
+    getActiveTokens(linked?: boolean, document?: false): InstanceType<ConfiguredObjectClassForName<'Token'>>[];
+    getActiveTokens(
+      linked: boolean,
+      document: boolean
+    ):
+      | InstanceType<ConfiguredObjectClassForName<'Token'>>[]
+      | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>>[];
 
     /**
      * Prepare a data object which defines the data schema used by dice roll commands against this Actor
