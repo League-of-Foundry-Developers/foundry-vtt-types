@@ -25,7 +25,7 @@ expectType<null>(macro.parent);
 expectType<string | null>(macro.pack);
 
 // static properties of `Document`
-expectType<Promise<Macro | undefined>>(Macro.create({ name: 'Some Macro' }));
-expectType<Promise<Macro[]>>(Macro.createDocuments([]));
+expectType<Promise<StoredDocument<Macro> | undefined>>(Macro.create({ name: 'Some Macro' }));
+expectType<Promise<StoredDocument<Macro>[]>>(Macro.createDocuments([]));
 expectType<Promise<Macro[]>>(Macro.updateDocuments([]));
 expectType<Promise<Macro[]>>(Macro.deleteDocuments([]));

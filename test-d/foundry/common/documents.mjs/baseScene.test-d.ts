@@ -57,9 +57,9 @@ expectError(foundry.documents.BaseScene.create());
 
 expectError(foundry.documents.BaseScene.create({}));
 
-expectType<Promise<Scene | undefined>>(foundry.documents.BaseScene.create({ name: 'My scene' }));
+expectType<Promise<StoredDocument<Scene> | undefined>>(foundry.documents.BaseScene.create({ name: 'My scene' }));
 
-const myScene = await foundry.documents.BaseScene.create({ name: 'My second scene' });
+const myScene = await foundry.documents.BaseScene.create({ name: 'My second scene' }, { temporary: true });
 if (myScene) {
   expectType<foundry.data.SceneData>(myScene.data);
 }

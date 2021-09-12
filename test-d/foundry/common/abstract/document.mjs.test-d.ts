@@ -4,9 +4,7 @@ import type {
   EffectChangeData,
   EffectChangeDataProperties
 } from '../../../../src/foundry/common/data/data.mjs/effectChangeData';
-
 import { expectError, expectType } from 'tsd';
-import '../../../../index';
 
 const baseActiveEffect = new foundry.documents.BaseActiveEffect();
 
@@ -20,8 +18,21 @@ if (item) {
   expectType<EffectChangeData[]>(item.toObject(false).effects[0].changes);
   expectType<PropertiesToSource<ActiveEffectDataProperties>[]>(item.toObject().effects);
 }
-expectType<Promise<Macro | undefined>>(foundry.documents.BaseMacro.create({ name: '' }));
-expectType<Promise<Macro[]>>(foundry.documents.BaseMacro.createDocuments([]));
+
+declare const bool: boolean;
+
+expectType<Promise<Macro | undefined>>(foundry.documents.BaseMacro.create({ name: '' }, { temporary: bool }));
+expectType<Promise<Macro | undefined>>(foundry.documents.BaseMacro.create({ name: '' }, { temporary: true }));
+expectType<Promise<StoredDocument<Macro> | undefined>>(foundry.documents.BaseMacro.create({ name: '' }));
+expectType<Promise<StoredDocument<Macro> | undefined>>(
+  foundry.documents.BaseMacro.create({ name: '' }, { temporary: false })
+);
+
+expectType<Promise<Macro[]>>(foundry.documents.BaseMacro.createDocuments([], { temporary: bool }));
+expectType<Promise<Macro[]>>(foundry.documents.BaseMacro.createDocuments([], { temporary: true }));
+expectType<Promise<StoredDocument<Macro>[]>>(foundry.documents.BaseMacro.createDocuments([]));
+expectType<Promise<StoredDocument<Macro>[]>>(foundry.documents.BaseMacro.createDocuments([], { temporary: false }));
+
 expectType<Promise<Macro[]>>(foundry.documents.BaseMacro.updateDocuments([]));
 expectType<Promise<Macro[]>>(foundry.documents.BaseMacro.deleteDocuments([]));
 const user = await User.create({ name: 'Some User' });
@@ -32,13 +43,28 @@ if (user) {
   expectType<boolean>(user.testUserPermission(user, 'OWNER', { exact: false }));
 }
 
+// test creation of embedded documents
+declare const actor: Actor;
+expectType<Promise<foundry.abstract.Document<any, Actor>[]>>(
+  actor.createEmbeddedDocuments('ActiveEffect', [], { temporary: true })
+);
+expectType<Promise<foundry.abstract.Document<any, Actor>[]>>(
+  actor.createEmbeddedDocuments('ActiveEffect', [], { temporary: bool })
+);
+expectType<Promise<StoredDocument<foundry.abstract.Document<any, Actor>>[]>>(
+  actor.createEmbeddedDocuments('ActiveEffect', [], { temporary: false })
+);
+expectType<Promise<StoredDocument<foundry.abstract.Document<any, Actor>>[]>>(
+  actor.createEmbeddedDocuments('ActiveEffect', [])
+);
+
 // verify that document lifecycle methods work with source data is possible
 
 if (item) {
-  expectType<Promise<Item[]>>(Item.createDocuments([item.toObject()]));
-  expectType<Promise<Item | undefined>>(Item.create(item.toObject()));
+  expectType<Promise<StoredDocument<Item>[]>>(Item.createDocuments([item.toObject()]));
+  expectType<Promise<StoredDocument<Item> | undefined>>(Item.create(item.toObject()));
   expectType<Promise<Item[]>>(Item.updateDocuments([item.toObject()]));
-  expectType<Promise<Item | undefined>>(item.update(item.toObject()));
+  expectType<Promise<StoredDocument<Item> | undefined>>(item.update(item.toObject()));
   expectType<Item | Promise<Item | undefined>>(item.clone(item.toObject()));
 }
 

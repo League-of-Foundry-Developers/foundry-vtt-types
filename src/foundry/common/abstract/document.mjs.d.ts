@@ -217,12 +217,28 @@ declare abstract class Document<
    */
   static createDocuments<T extends DocumentConstructor>(
     this: T,
+    data: Array<
+      | ConstructorDataType<InstanceType<T>['data']>
+      | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
+    >,
+    context: DocumentModificationContext & { temporary: false }
+  ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[]>;
+  static createDocuments<T extends DocumentConstructor>(
+    this: T,
+    data: Array<
+      | ConstructorDataType<InstanceType<T>['data']>
+      | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
+    >,
+    context: DocumentModificationContext & { temporary: boolean }
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
+  static createDocuments<T extends DocumentConstructor>(
+    this: T,
     data?: Array<
       | ConstructorDataType<InstanceType<T>['data']>
       | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
     >,
     context?: DocumentModificationContext
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
+  ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[]>;
 
   /**
    * Update multiple Document instances using provided differential data.
@@ -347,8 +363,22 @@ declare abstract class Document<
     data:
       | ConstructorDataType<InstanceType<T>['data']>
       | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>),
-    context?: DocumentModificationContext
+    context: DocumentModificationContext & { temporary: false }
+  ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>> | undefined>;
+  static create<T extends DocumentConstructor>(
+    this: T,
+    data:
+      | ConstructorDataType<InstanceType<T>['data']>
+      | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>),
+    context: DocumentModificationContext & { temporary: boolean }
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
+  static create<T extends DocumentConstructor>(
+    this: T,
+    data:
+      | ConstructorDataType<InstanceType<T>['data']>
+      | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>),
+    context?: DocumentModificationContext
+  ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>> | undefined>;
 
   /**
    * Update this Document using incremental data, saving it to the database.
@@ -413,9 +443,19 @@ declare abstract class Document<
    */
   createEmbeddedDocuments(
     embeddedName: string,
-    data?: Array<Record<string, unknown>>,
-    context?: DocumentModificationContext
+    data: Array<Record<string, unknown>>,
+    context: DocumentModificationContext & { temporary: false }
+  ): Promise<Array<StoredDocument<Document<any, this>>>>;
+  createEmbeddedDocuments(
+    embeddedName: string,
+    data: Array<Record<string, unknown>>,
+    context: DocumentModificationContext & { temporary: boolean }
   ): Promise<Array<Document<any, this>>>;
+  createEmbeddedDocuments(
+    embeddedName: string,
+    data: Array<Record<string, unknown>>,
+    context?: DocumentModificationContext
+  ): Promise<Array<StoredDocument<Document<any, this>>>>;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
