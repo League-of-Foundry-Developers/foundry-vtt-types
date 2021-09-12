@@ -45,7 +45,7 @@ declare global {
      * Delegate responsibility out to action-specific handlers depending on the button action.
      * @param event - The originating click event
      */
-    protected _onEffectControl(event: JQuery.ClickEvent): this | void;
+    protected _onEffectControl(event: JQuery.ClickEvent): Promise<this> | void;
 
     /**
      * Handle adding a new change to the changes array.
