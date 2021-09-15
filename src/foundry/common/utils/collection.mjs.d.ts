@@ -46,6 +46,7 @@ declare class Collection<T> extends Map<string, T> {
    * let a = c.find(entry => entry === "A");
    * ```
    */
+  find<S extends T>(condition: (e: T) => e is S): S | undefined;
   find(condition: (e: T) => boolean): T | undefined;
 
   /**
@@ -61,6 +62,7 @@ declare class Collection<T> extends Map<string, T> {
    * let hasA = c.filters(entry => entry.slice(0) === "A");
    * ```
    */
+  filter<S extends T>(condition: (e: T) => e is S): S[];
   filter(condition: (e: T) => boolean): T[];
 
   /**
