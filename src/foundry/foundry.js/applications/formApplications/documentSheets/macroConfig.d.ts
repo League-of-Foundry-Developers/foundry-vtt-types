@@ -1,69 +1,78 @@
-/**
- * A Macro configuration sheet
- *
- * @see {@link Macro} The Macro Entity which is being configured
- */
-// TODO: Remove this when `DocumentSheet` has been updated to use `foundry.abstract.Document`s instead of entities!!!
-// eslint-disable-next-line
-// @ts-ignore
-declare class MacroConfig extends DocumentSheet<DocumentSheet.Options, MacroConfig.Data, Macro> {
-  /**
-   * @override
-   * @defaultValue
-   * ```typescript
-   * mergeObject(super.defaultOptions, {
-   *   classes: ["sheet", "macro-sheet"],
-   *   template: "templates/sheets/macro-config.html",
-   *   width: 560,
-   *   height: 480,
-   *   resizable: true
-   * });
-   * ```
-   */
-  static get defaultOptions(): typeof DocumentSheet['defaultOptions'];
+import type { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
 
+declare global {
   /**
-   * @override
+   * A Macro configuration sheet
+   *
+   * @see {@link Macro} The Macro Entity which is being configured
+   * @typeParam Options - the type of the options object
+   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  get id(): string;
+  class MacroConfig<
+    Options extends DocumentSheet.Options = MacroConfig.Options,
+    Data extends object = MacroConfig.Data<Options>
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Macro>>> {
+    /**
+     * @override
+     * @defaultValue
+     * ```typescript
+     * foundry.utils.mergeObject(super.defaultOptions, {
+     *   classes: ["sheet", "macro-sheet"],
+     *   template: "templates/sheets/macro-config.html",
+     *   width: 560,
+     *   height: 480,
+     *   resizable: true
+     * });
+     * ```
+     */
+    static get defaultOptions(): MacroConfig.Options;
 
-  /**
-   * @override
-   */
-  getData(): MacroConfig.Data;
+    /** @override */
+    get id(): string;
 
-  /**
-   * @override
-   */
-  activateListeners(html: JQuery): void;
+    /** @override */
+    getData(options?: Partial<Options>): Data;
 
-  /**
-   * Handle changing the actor profile image by opening a FilePicker
-   */
-  protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
+    /** @override */
+    activateListeners(html: JQuery): void;
 
-  /**
-   * Save and execute the macro using the button on the configuration sheet
-   * @param event - The originating click event
-   */
-  protected _onExecute(event: JQuery.ClickEvent): Promise<void>;
+    /**
+     * Handle changing the actor profile image by opening a FilePicker
+     * @internal
+     */
+    protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
 
-  /**
-   * @override
-   */
-  protected _updateObject(event: Event, formData: MacroConfig.FormData): Promise<Macro>;
-}
+    /**
+     * Save and execute the macro using the button on the configuration sheet
+     * @param event - The originating click event
+     * @internal
+     */
+    protected _onExecute(event: JQuery.ClickEvent): Promise<void>;
 
-declare namespace MacroConfig {
-  interface Data extends DocumentSheet.Data {
-    macroTypes: foundry.utils.Duplicated<Game['system']['entityTypes']['Macro']>;
-    macroScopes: typeof foundry.CONST['MACRO_SCOPES'];
+    /** @override */
+    protected _updateObject(
+      event: Event,
+      formData: MacroConfig.FormData
+    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Macro>> | undefined>;
   }
 
-  type FormData = {
-    command: string;
-    img: string;
-    name: string;
-    type: ValueOf<typeof CONST.MACRO_TYPES>;
-  };
+  namespace MacroConfig {
+    type Options = DocumentSheet.Options;
+
+    /**
+     * @typeParam Options - the type of the options object
+     */
+    interface Data<Options extends DocumentSheet.Options>
+      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Macro>>, Options> {
+      macroTypes: Array<ValueOf<typeof CONST.MACRO_TYPES>>;
+      macroScopes: typeof foundry.CONST['MACRO_SCOPES'];
+    }
+
+    type FormData = {
+      command: string;
+      img: string;
+      name: string;
+      type: ValueOf<typeof CONST.MACRO_TYPES>;
+    };
+  }
 }
