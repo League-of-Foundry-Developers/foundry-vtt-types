@@ -9,3 +9,4 @@ expectType<Actor>((await actorSheet.getData()).actor);
 expectType<ToObjectFalseType<foundry.data.ItemData>[]>((await actorSheet.getData()).items);
 expectType<ToObjectFalseType<foundry.data.ActiveEffectData>[]>((await actorSheet.getData()).effects);
 expectType<ActorSheet.Options>((await actorSheet.getData()).options);
+expectType<TokenDocument | null>(actorSheet.token);

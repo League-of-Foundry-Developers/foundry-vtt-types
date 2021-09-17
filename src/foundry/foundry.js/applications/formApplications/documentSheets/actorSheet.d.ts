@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass, ConfiguredSheetClass, ToObjectFalseType } from '../../../../../types/helperTypes';
+import { ConfiguredDocumentClass, ToObjectFalseType } from '../../../../../types/helperTypes';
 import { DropData as ClientDocumentMixinDropData } from '../../../clientDocumentMixin';
 
 declare global {
@@ -48,7 +48,7 @@ declare global {
     /**
      * If this Actor Sheet represents a synthetic Token actor, reference the active Token
      */
-    get token(): Required<this['object']['token']> | Required<this['options']['token']> | null;
+    get token(): Exclude<this['object']['token'] | this['options']['token'], undefined> | null;
 
     /** @override */
     close(options?: FormApplication.CloseOptions): Promise<void>;
@@ -197,7 +197,7 @@ declare global {
     }
 
     interface Options extends DocumentSheet.Options {
-      token?: InstanceType<ConfiguredSheetClass<typeof foundry.documents.BaseToken>> | null;
+      token?: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>> | null;
     }
   }
 }
