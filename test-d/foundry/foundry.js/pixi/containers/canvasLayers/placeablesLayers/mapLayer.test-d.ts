@@ -3,7 +3,7 @@ import { expectType } from 'tsd';
 expectType<'Tile'>(MapLayer.documentName);
 expectType<MapLayer.LayerOptions>(MapLayer.layerOptions);
 expectType<'background' | 'foreground'>(MapLayer.layerOptions.name);
-expectType<ConstructorOf<Tile>>(MapLayer.layerOptions.objectClass);
+expectType<typeof Tile>(MapLayer.layerOptions.objectClass);
 expectType<ConstructorOf<FormApplication>>(MapLayer.layerOptions.sheetClass);
 expectType<BackgroundLayer | ForegroundLayer | undefined>(MapLayer.instance);
 

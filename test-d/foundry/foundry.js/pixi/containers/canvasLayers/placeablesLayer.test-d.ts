@@ -13,7 +13,7 @@ expectType<'AmbientLight' | 'AmbientSound' | 'Drawing' | 'MeasuredTemplate' | 'N
 expectType<ConstructorOf<PlaceableObject>>(PlaceablesLayer.placeableClass);
 
 const layer = new SomeLightLayer();
-expectType<ConstructorOf<AmbientLight>>(layer.options.objectClass);
+expectType<typeof AmbientLight>(layer.options.objectClass);
 expectType<ConstructorOf<FormApplication>>(layer.options.sheetClass);
 expectType<PIXI.Container | null>(layer.objects);
 expectType<PIXI.Container | null>(layer.preview);
