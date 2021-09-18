@@ -25,18 +25,16 @@ expectType<
     effectsClass: string;
     combatClass: string;
     targetClass: string;
-    statusEffects: Partial<
-      Record<
-        string,
-        {
-          id: string;
-          title: string | null;
-          src: string;
-          isActive: boolean;
-          isOverlay: boolean;
-          cssClass: string;
-        }
-      >
+    statusEffects: Record<
+      string,
+      {
+        id: string;
+        title: string | null;
+        src: string;
+        isActive: boolean;
+        isOverlay: boolean;
+        cssClass: string;
+      }
     >;
   }
 >(hud.getData());
