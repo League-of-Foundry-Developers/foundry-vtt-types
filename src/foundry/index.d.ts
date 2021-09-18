@@ -38,6 +38,7 @@ import './foundry.js/ray';
 import './foundry.js/roll';
 import './foundry.js/searchFilter';
 import './foundry.js/specialEffect';
+import './foundry.js/specialEffects';
 import './foundry.js/socketInterface';
 import './foundry.js/sortingHelpers';
 import './foundry.js/sound';
@@ -96,7 +97,3 @@ import './foundry.js/rollTerms/diceTerms/die';
 import './foundry.js/rollTerms/diceTerms/fateDie';
 
 import './foundry.js/pixi';
-
-import './foundry.js/specialEffects/autumnLeavesWeatherEffect';
-import './foundry.js/specialEffects/rainWeatherEffect';
-import './foundry.js/specialEffects/snowWeatherEffect';
