@@ -14,7 +14,7 @@ expectType<TokenDocument | null>(combatant.token);
 expectType<Record<string, Application>>(combatant.apps);
 
 // static properties
-expectType<Promise<Combatant | undefined>>(Combatant.create({ name: 'Some Combatant' }));
-expectType<Promise<Combatant[]>>(Combatant.createDocuments([]));
+expectType<Promise<StoredDocument<Combatant> | undefined>>(Combatant.create({ name: 'Some Combatant' }));
+expectType<Promise<StoredDocument<Combatant>[]>>(Combatant.createDocuments([]));
 expectType<Promise<Combatant[]>>(Combatant.updateDocuments([]));
 expectType<Promise<Combatant[]>>(Combatant.deleteDocuments([]));
