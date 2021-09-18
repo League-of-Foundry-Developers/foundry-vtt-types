@@ -14,7 +14,7 @@ declare class MainMenu extends Application {
    * }
    * ```
    * */
-  static get defaultOptions(): typeof Application['defaultOptions'];
+  static get defaultOptions(): Application.Options;
 
   /**
    * The structure of menu items
@@ -36,13 +36,13 @@ declare class MainMenu extends Application {
    *   players: {
    *     label: 'MENU.Players',
    *     icon: '<i class="fas fa-users"></i>',
-   *     enabled: game.user.isGM,
+   *     enabled: game.user.isGM && !game.data.options.demo,
    *     onClick: () => (window.location.href = './players')
    *   },
    *   world: {
    *     label: 'MENU.Setup',
    *     icon: '<i class="fas fa-globe"></i>',
-   *     enabled: game.user.isGM,
+   *     enabled: game.user.hasRole("GAMEMASTER")  && !game.data.options.demo,
    *     onClick: () => game.shutDown()
    *   }
    * }
@@ -50,8 +50,11 @@ declare class MainMenu extends Application {
    */
   get items(): MainMenu.MenuStructure;
 
-  /** @override */
-  getData(): { items: MainMenu.MenuStructure };
+  /**
+   * @override
+   * @param options - (unused)
+   */
+  getData(options?: Partial<Application.Options>): { items: MainMenu.MenuStructure };
 
   /** @override */
   activateListeners(html: JQuery): void;
