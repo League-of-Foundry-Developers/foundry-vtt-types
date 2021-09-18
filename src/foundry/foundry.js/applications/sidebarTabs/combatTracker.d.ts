@@ -1,19 +1,18 @@
-// TODO: Remove when updating this class!!!
-// eslint-disable-next-line
-// @ts-nocheck
-
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from '../../../../types/helperTypes';
 
 declare global {
   /**
-   * The combat and turn order tracker tab
+   * The sidebar directory which organizes and displays world-level Combat documents.
    */
-  class CombatTracker extends SidebarTab<CombatTracker.Options> {
+  class CombatTracker<Options extends Application.Options = CombatTracker.Options> extends SidebarTab<Options> {
+    constructor(options?: Partial<Options>);
+
     /**
      * Record a reference to the currently highlighted Token
      * @defaultValue `null`
+     * @internal
      */
-    protected _highlighted: Token | null;
+    protected _highlighted: ConfiguredObjectClassForName<'Token'> | null;
 
     /**
      * Record the currently tracked Combat encounter
@@ -21,15 +20,16 @@ declare global {
      */
     viewed: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combat>>> | null;
 
-    /**
-     * @override
-     */
+    /** @override */
     static get defaultOptions(): CombatTracker.Options;
 
     /**
-     * @override
+     * Return an array of Combat encounters which occur within the current Scene.
      */
-    createPopout(): CombatTracker;
+    get combats(): ReturnType<CombatEncounters['filter']>;
+
+    /** @override */
+    createPopout(): this;
 
     /**
      * Initialize the combat tracker to display a specific combat encounter.
@@ -46,94 +46,105 @@ declare global {
      */
     scrollToTurn(): void;
 
-    /**
-     * @override
-     */
-    getData(options?: Partial<CombatTracker.Options>): Promise<CombatTracker.Data>;
+    /** @override */
+    getData(options?: Partial<Options>): Promise<CombatTracker.Data>;
 
-    /**
-     * @override
-     */
+    /** @override */
     activateListeners(html: JQuery): void;
 
     /**
      * Handle new Combat creation request
+     * @internal
      */
     protected _onCombatCreate(event: JQuery.ClickEvent): Promise<void>;
 
     /**
      * Handle a Combat deletion request
+     * @internal
      * @remarks This is never called
      */
     protected _onCombatDelete(event: Event): Promise<void>;
 
     /**
      * Handle a Combat cycle request
+     * @internal
      */
-    protected _onCombatCycle(event: JQuery.ClickEvent): Promise<void>;
+    protected _onCombatCycle(event: Event): Promise<void>;
 
     /**
      * Handle click events on Combat control buttons
      * @param event - The originating mousedown event
+     * @internal
      */
     protected _onCombatControl(event: JQuery.ClickEvent): Promise<void>;
 
     /**
      * Handle a Combatant control toggle
      * @param event - The originating mousedown event
+     * @internal
      */
     protected _onCombatantControl(event: JQuery.ClickEvent): Promise<void>;
 
     /**
      * Handle toggling the defeated status effect on a combatant Token
-     * @param c - The combatant data being modified
+     * @param combatant - The combatant data being modified
+     * @returns A Promise that resolves after all operations are complete
+     * @internal
      */
-    protected _onToggleDefeatedStatus(c: Combat.Combatant): Promise<void>;
+    protected _onToggleDefeatedStatus(
+      combatant: InstanceType<ConfiguredDocumentClass<typeof Combatant>>
+    ): Promise<void>;
 
     /**
      * Handle mouse-down event on a combatant name in the tracker
      * @param event - The originating mousedown event
      * @returns A Promise that resolves once the pan is complete
+     * @internal
      */
-    protected _onCombatantMouseDown(event: JQuery.ClickEvent): Promise<void> | void;
+    protected _onCombatantMouseDown(event: JQuery.ClickEvent): Promise<boolean | void>;
 
     /**
      * Handle mouse-hover events on a combatant in the tracker
+     * @internal
      */
-    protected _onCombatantHover(event: JQuery.MouseEnterEvent): void;
+    protected _onCombatantHoverIn(event: JQuery.MouseEnterEvent): void;
 
     /**
      * Handle mouse-unhover events for a combatant in the tracker
+     * @internal
      */
     protected _onCombatantHoverOut(event: JQuery.MouseLeaveEvent): void;
 
     /**
-     * Default folder context actions
+     * Attach context menu options to elements in the tracker
+     * @param html - The HTML element to which context options are attached
+     * @internal
      */
     protected _contextMenu(html: JQuery): void;
 
     /**
      * Get the sidebar directory entry context options
      * @returns The sidebar entry context options
+     * @internal
      */
     protected _getEntryContextOptions(): ContextMenuEntry[];
 
     /**
      * Display a dialog which prompts the user to enter a new initiative value for a Combatant
+     * @internal
      */
     protected _onConfigureCombatant(li: JQuery): void;
   }
 
   namespace CombatTracker {
-    type Data = {
-      user: User;
-      started: boolean;
-      settings: Combat.ConfigValue;
-    } & (
+    type Data =
       | {
-          combats: [];
+          user: Game['user'];
+          combats: CombatTracker['combats'];
+          combatCount: number;
+          started: boolean;
+          settings: ClientSettings.Values[`core.${typeof Combat.CONFIG_SETTING}`];
           currentIndex: -1;
-          combatCount: 0;
           hasCombat: false;
           combat: null;
           turns: [];
@@ -142,21 +153,39 @@ declare global {
           control: false;
         }
       | {
-          combats: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combat>>>[];
-          currentIndex: number;
+          user: Game['user'];
+          combats: CombatTracker['combats'];
           combatCount: number;
+          started: boolean;
+          settings: ClientSettings.Values[`core.${typeof Combat.CONFIG_SETTING}`];
+          currentIndex: number;
           hasCombat: true;
           combat: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combat>>>;
           turns: Turn[];
           previousId: string | null;
           nextId: string | null;
+          control: boolean;
           round: number;
           turn: number;
-          control: boolean;
-        }
-    );
+        };
 
-    interface Options extends SidebarTab.Options {
+    type Turn = {
+      id: string;
+      name: string;
+      img: string;
+      active: boolean;
+      owner: boolean;
+      defeated: boolean;
+      hidden: boolean;
+      initiative: number | null;
+      hasRolled: boolean;
+      hasResource: boolean;
+      ressource: `${number}` | number | boolean | null;
+      css: string;
+      effects: Set<string>;
+    };
+
+    interface Options extends Application.Options {
       /**
        * @defaultValue `'combat'`
        */
@@ -177,13 +206,5 @@ declare global {
        */
       scrollY: string[];
     }
-
-    type Turn = foundry.utils.Duplicated<Combat.Combatant> & {
-      effects: Set<unknown>;
-      active: boolean;
-      css: string;
-      hasRolled: boolean;
-      hasResource: boolean;
-    };
   }
 }
