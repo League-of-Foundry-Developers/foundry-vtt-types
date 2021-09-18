@@ -21,23 +21,11 @@ declare class TextEditor {
   /**
    * Enrich HTML content by replacing or augmenting components of it
    * @param content  - The original HTML content (as a string)
-   * @param secrets  - Remove secret tags?
-   * @param entities - Replace dynamic entity links?
-   * @param links    - Replace hyperlink content?
-   * @param rolls    - Replace inline dice rolls?
-   * @param rollData - The data object providing context for inline rolls
+   * @param options  - Additional options which configure how HTML is enriched
+   *                   (default: `{}`)
    * @returns The enriched HTML content
    */
-  static enrichHTML(
-    content: string,
-    {
-      secrets,
-      entities,
-      links,
-      rolls,
-      rollData // TODO: _createInlineRoll
-    }?: { secrets: boolean; entities: boolean; links: boolean; rolls: boolean; rollData: object | (() => object) }
-  ): string;
+  static enrichHTML(content: string, options?: Partial<TextEditor.EnrichOptions>): string;
 
   /**
    * Preview an HTML fragment by constructing a substring of a given length from its inner text.
@@ -232,5 +220,36 @@ declare namespace TextEditor {
      * @defaultValue `'styleselect bullist numlist image table hr link removeformat code save'`
      */
     toolbar?: string;
+  }
+
+  interface EnrichOptions {
+    /**
+     * Include secret tags in the final HTML? If false secret blocks will be removed.
+     * @defaultValue `false`
+     */
+    secrets: boolean;
+
+    /**
+     * Replace dynamic entity links?
+     * @defaultValue `true`
+     */
+    entities: boolean;
+
+    /**
+     * Replace hyperlink content?
+     * @defaultValue `true`
+     */
+    links: boolean;
+
+    /**
+     * Replace inline dice rolls?
+     * @defaultValue `true`
+     */
+    rolls: boolean;
+
+    /**
+     * The data object providing context for inline rolls
+     */
+    rollData: object | (() => object);
   }
 }
