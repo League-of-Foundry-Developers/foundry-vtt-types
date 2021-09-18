@@ -43,7 +43,7 @@ declare class RollTableConfig<P extends DocumentSheet.Options = DocumentSheet.Op
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): RollTableConfig.Data;
+  getData(options?: Partial<P>): RollTableConfig.Data;
 
   /**
    * @override

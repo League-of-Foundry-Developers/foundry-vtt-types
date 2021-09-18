@@ -35,7 +35,7 @@ declare class NoteConfig<P extends FormApplication.Options = FormApplication.Opt
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): NoteConfig.Data;
+  getData(options?: Partial<P>): NoteConfig.Data;
 
   /**
    * @param event - (unused)

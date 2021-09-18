@@ -65,10 +65,10 @@ declare global {
     get collection(): Messages;
 
     /** @override */
-    getData(options?: Application.RenderOptions): ChatLog.Data;
+    getData(options?: Partial<ChatLog.Options>): ChatLog.Data;
 
     /** @override */
-    protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+    protected _render(force?: boolean, options?: Application.RenderOptions<ChatLog.Options>): Promise<void>;
 
     /**
      * @override

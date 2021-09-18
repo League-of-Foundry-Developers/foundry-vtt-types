@@ -60,7 +60,7 @@ declare global {
     static get defaultOptions(): typeof FormApplication['defaultOptions'];
 
     /** @override */
-    getData(options?: Application.RenderOptions): GridConfig.Data;
+    getData(options?: Partial<Options>): GridConfig.Data;
 
     /**
      * @override

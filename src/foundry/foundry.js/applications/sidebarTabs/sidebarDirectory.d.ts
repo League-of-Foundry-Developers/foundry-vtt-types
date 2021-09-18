@@ -97,7 +97,7 @@ declare global {
     /**
      * @override
      */
-    render(force?: boolean, context?: Partial<SidebarDirectory.RenderContext>): this | void;
+    render(force?: boolean, context?: SidebarDirectory.RenderContext<Options>): this | void;
 
     /**
      * @param options - (unused)
@@ -106,7 +106,7 @@ declare global {
      * This implementation doesn't actually return `PlaylistDirectory.Data`, it's only to allow {@link PlaylistDirectory}
      * to override accordingly.
      */
-    getData(options?: Application.RenderOptions): SidebarDirectory.Data<this['tree']> | PlaylistDirectory.Data;
+    getData(options?: Partial<Options>): SidebarDirectory.Data<this['tree']> | PlaylistDirectory.Data;
 
     /**
      * @param event - (unused)
@@ -231,11 +231,12 @@ declare global {
       contextMenuSelector: string;
     }
 
-    interface RenderContext extends Application.RenderOptions {
-      action: string;
-      data: string;
-      entityType: string;
-    }
+    type RenderContext<Options extends SidebarDirectory.Options = SidebarDirectory.Options> =
+      Application.RenderOptions<Options> & {
+        action?: string;
+        data?: string;
+        entityType?: string;
+      };
 
     interface Tree<ConcreteDocument extends foundry.abstract.Document<any, any>> {
       root?: boolean;

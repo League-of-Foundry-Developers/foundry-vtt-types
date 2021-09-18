@@ -23,7 +23,7 @@ declare class PermissionConfig extends FormApplication<FormApplication.Options, 
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): PermissionConfig.Data;
+  getData(options?: Partial<FormApplication.Options>): PermissionConfig.Data;
 
   /**
    * Prepare the permissions object used to render the configuration template

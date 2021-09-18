@@ -35,7 +35,7 @@ declare global {
      * @remarks The implementation doesn't return a `Promise` but the return type includes it to allow extending
      * classes to do that.
      */
-    getData(options?: Application.RenderOptions): Data | Promise<Data>;
+    getData(options?: Partial<Options>): Data | Promise<Data>;
 
     /** @override */
     activateListeners(html: JQuery): void;
@@ -45,7 +45,7 @@ declare global {
      * Delegate responsibility out to action-specific handlers depending on the button action.
      * @param event - The originating click event
      */
-    protected _onEffectControl(event: JQuery.ClickEvent): this | void;
+    protected _onEffectControl(event: JQuery.ClickEvent): Promise<this> | void;
 
     /**
      * Handle adding a new change to the changes array.

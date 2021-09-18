@@ -26,7 +26,7 @@ declare class PlaylistConfig extends DocumentSheet<DocumentSheet.Options, Playli
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): PlaylistConfig.Data;
+  getData(options?: Partial<DocumentSheet.Options>): PlaylistConfig.Data;
 }
 
 declare namespace PlaylistConfig {

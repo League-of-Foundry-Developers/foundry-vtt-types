@@ -45,13 +45,13 @@ declare class Sidebar<Options extends Application.Options = Application.Options>
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): Sidebar.Data;
+  getData(options?: Partial<Options>): Sidebar.Data;
 
   /**
    * @override
    * @internal
    */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+  protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
   /**
    * Activate a Sidebar tab by it's name

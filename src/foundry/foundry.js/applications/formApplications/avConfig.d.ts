@@ -6,7 +6,7 @@ declare class AVConfig extends FormApplication<AVConfig.Options, AVConfig.Data, 
   static get defaultOptions(): AVConfig.Options;
 
   /** @override */
-  getData(options: Application.RenderOptions): Promise<AVConfig.Data>;
+  getData(options: Partial<AVConfig.Options>): Promise<AVConfig.Data>;
 
   /** @override */
   activateListeners(html: JQuery): void;

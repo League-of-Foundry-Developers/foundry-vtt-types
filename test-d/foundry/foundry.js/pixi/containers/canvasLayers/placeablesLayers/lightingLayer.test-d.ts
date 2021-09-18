@@ -4,10 +4,10 @@ expectType<'AmbientLight'>(LightingLayer.documentName);
 expectType<LightingLayer | undefined>(LightingLayer.instance);
 expectType<LightingLayer.LayerOptions>(LightingLayer.layerOptions);
 expectType<'lighting'>(LightingLayer.layerOptions.name);
-expectType<ConstructorOf<AmbientLight>>(LightingLayer.layerOptions.objectClass);
+expectType<typeof AmbientLight>(LightingLayer.layerOptions.objectClass);
 
 const layer = new LightingLayer();
-expectType<ConstructorOf<AmbientLight>>(layer.options.objectClass);
+expectType<typeof AmbientLight>(layer.options.objectClass);
 expectType<LightingLayer.LayerOptions>(layer.options);
 expectType<'lighting'>(layer.options.name);
 

@@ -75,12 +75,12 @@ declare abstract class FormApplication<
    * @param options - (default: `{}`)
    * @override
    */
-  getData(options?: Application.RenderOptions): Data | Promise<Data>;
+  getData(options?: Partial<Options>): Data | Promise<Data>;
 
   /**
    * @override
    */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+  protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
   /**
    * @override

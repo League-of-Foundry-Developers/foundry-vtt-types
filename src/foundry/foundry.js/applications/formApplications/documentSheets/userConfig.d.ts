@@ -28,7 +28,7 @@ declare global {
     get title(): string;
 
     /** @override */
-    getData(options?: Application.RenderOptions): Data;
+    getData(options?: Partial<Options>): Data;
 
     /** @override */
     activateListeners(html: JQuery): void;

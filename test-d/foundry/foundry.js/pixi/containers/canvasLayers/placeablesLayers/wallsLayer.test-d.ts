@@ -7,7 +7,7 @@ expectType<'Wall'>(WallsLayer.documentName);
 expectType<WallsLayer | undefined>(WallsLayer.instance);
 expectType<WallsLayer.LayerOptions>(WallsLayer.layerOptions);
 expectType<'walls'>(WallsLayer.layerOptions.name);
-expectType<ConstructorOf<Wall>>(WallsLayer.layerOptions.objectClass);
+expectType<typeof Wall>(WallsLayer.layerOptions.objectClass);
 expectType<PointArray>(WallsLayer.getClosestEndpoint({ x: 2, y: 3 }, aWall));
 expectType<PointArray[]>(WallsLayer.getUniqueEndpoints([aWall]));
 expectType<PointArray[]>(WallsLayer.getUniqueEndpoints([aWall], {}));
@@ -28,7 +28,7 @@ if (intersection) {
 }
 
 const layer = new WallsLayer();
-expectType<ConstructorOf<Wall>>(layer.options.objectClass);
+expectType<typeof Wall>(layer.options.objectClass);
 expectType<WallsLayer.LayerOptions>(layer.options);
 expectType<'walls'>(layer.options.name);
 

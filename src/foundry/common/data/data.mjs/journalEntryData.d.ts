@@ -35,7 +35,7 @@ interface JournalEntryDataProperties {
   /**
    * An image file path which provides the artwork for this JournalEntry
    */
-  img?: string | null;
+  img: string | null | undefined;
 
   /**
    * The _id of a Folder which contains this JournalEntry

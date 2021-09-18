@@ -36,7 +36,7 @@ declare class DrawingConfig<P extends DrawingConfig.Options = DrawingConfig.Opti
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): DrawingConfig.Data;
+  getData(options?: Partial<P>): DrawingConfig.Data;
 
   /**
    * Get the names and labels of fill type choices which can be applied

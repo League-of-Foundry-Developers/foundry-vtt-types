@@ -35,7 +35,7 @@ declare class SceneConfig extends DocumentSheet<DocumentSheet.Options, SceneConf
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): SceneConfig.Data;
+  getData(options?: Partial<DocumentSheet.Options>): SceneConfig.Data;
 
   /**
    * Get an enumeration of the available grid types which can be applied to this Scene

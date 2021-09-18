@@ -56,16 +56,16 @@ declare class CameraViews<P extends Application.Options = Application.Options> e
    * Extend the render logic to first check whether a render is necessary based on the context
    * If a specific context was provided, make sure an update to the navigation is necessary before rendering
    */
-  render(force?: boolean, context?: Application.RenderOptions): Application['render'];
+  render(force?: boolean, context?: Application.RenderOptions<P>): Application['render'];
 
   /** @override */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+  protected _render(force?: boolean, options?: Application.RenderOptions<P>): Promise<void>;
 
   /**
    * @param options - (unused)
    * @override
    */
-  getData(options?: Application.RenderOptions): CameraViews.Data;
+  getData(options?: Partial<P>): CameraViews.Data;
 
   maxZ: number;
 

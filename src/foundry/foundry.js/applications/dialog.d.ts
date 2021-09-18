@@ -57,7 +57,7 @@ declare class Dialog<Options extends Dialog.Options = Dialog.Options> extends Ap
   /**
    * @override
    */
-  getData(options?: Application.RenderOptions): { content: string; buttons: Record<string, Dialog.Button> };
+  getData(options?: Partial<Options>): { content: string; buttons: Record<string, Dialog.Button> };
 
   /**
    * @override

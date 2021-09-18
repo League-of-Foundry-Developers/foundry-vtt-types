@@ -36,7 +36,7 @@ declare class PlaylistDirectory extends SidebarDirectory<PlaylistDirectory.Optio
    * Prepare the data used to render the AudioList application
    * @param options - (unused)
    */
-  getData(options?: Application.RenderOptions): PlaylistDirectory.Data;
+  getData(options?: Partial<PlaylistDirectory.Options>): PlaylistDirectory.Data;
 
   /**
    * Given a constant playback mode, provide the FontAwesome icon used to display it
