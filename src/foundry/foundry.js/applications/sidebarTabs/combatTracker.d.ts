@@ -165,19 +165,19 @@ declare global {
           previousId: string | null;
           nextId: string | null;
           control: boolean;
-          round: foundry.data.CombatData['round'];
-          turn: foundry.data.CombatData['turn'];
+          round: number;
+          turn: number;
         };
 
     type Turn = {
-      id: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combatant>>>['id'];
-      name: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combatant>>>['name'];
-      img: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combatant>>>['img'];
+      id: string;
+      name: string;
+      img: string;
       active: boolean;
-      owner: InstanceType<ConfiguredDocumentClass<typeof Combatant>>['isOwner'];
-      defeated: foundry.data.CombatantData['defeated'];
-      hidden: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combatant>>>['hidden'];
-      initiative: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combatant>>>['initiative'];
+      owner: boolean;
+      defeated: boolean;
+      hidden: boolean;
+      initiative: number | null;
       hasRolled: boolean;
       hasResource: boolean;
       ressource: `${number}` | number | boolean | null;

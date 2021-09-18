@@ -1,5 +1,4 @@
 import { expectType } from 'tsd';
-import { ConfiguredDocumentClass } from '../../../../../src/types/helperTypes';
 
 declare const combat: Combat;
 
