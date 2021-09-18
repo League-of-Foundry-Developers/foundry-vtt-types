@@ -361,7 +361,7 @@ declare abstract class Application<Options extends Application.Options = Applica
     width,
     height,
     scale
-  }?: Partial<Application.Position>): (Application.Position & { height: number }) | undefined;
+  }?: Partial<Application.Position>): (Application.Position & { height: number }) | void;
 
   /**
    * Handle application minimization behavior - collapsing content and reducing the size of the header

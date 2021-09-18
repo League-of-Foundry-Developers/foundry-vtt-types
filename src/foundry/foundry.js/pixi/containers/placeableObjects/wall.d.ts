@@ -136,11 +136,7 @@ declare global {
     protected _onCreate(): void;
 
     /** @override */
-    protected _onUpdate(
-      changed: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof WallDocument>>['data']>,
-      options?: any,
-      userId?: string
-    ): void;
+    protected _onUpdate(changed: DeepPartial<foundry.data.WallData>, options?: any, userId?: string): void;
 
     /** @override */
     protected _onDelete(): void;

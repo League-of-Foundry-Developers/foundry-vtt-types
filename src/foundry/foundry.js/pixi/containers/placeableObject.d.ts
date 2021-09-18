@@ -365,9 +365,8 @@ declare global {
      * Callback actions which occur on a mouse-move operation.
      * @see MouseInteractionManager#_handleDragDrop
      * @param event - The triggering canvas interaction event
-     * @remarks `ReturnType<D['update']>` is just returned by subclasses.
      */
-    protected _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<false | this | D[] | ReturnType<D['update']>>;
+    protected _onDragLeftDrop(event: PIXI.InteractionEvent): unknown;
 
     /**
      * Callback actions which occur on a mouse-move operation.

@@ -6,7 +6,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class TileHUD<Options extends Application.Options = Application.Options> extends BasePlaceableHUD<
-    ConcreteObject,
+    ConcreteTile,
     Options
   > {
     /**
@@ -22,7 +22,7 @@ declare global {
     static get defaultOptions(): Application.Options;
 
     /** @override */
-    getData(options?: Partial<Options>): ReturnType<BasePlaceableHUD<ConcreteObject>['getData']> & {
+    getData(options?: Partial<Options>): ReturnType<BasePlaceableHUD<ConcreteTile>['getData']> & {
       isVideo: boolean;
       lockedClass: string;
       visibilityClass: string;
@@ -36,8 +36,8 @@ declare global {
      * @override
      * @param options - (unused)
      */
-    setPosition(options?: Partial<Application.Position>): undefined;
+    setPosition(options?: Partial<Application.Position>): void;
   }
 }
 
-type ConcreteObject = InstanceType<ConfiguredObjectClassForName<'Tile'>>;
+type ConcreteTile = InstanceType<ConfiguredObjectClassForName<'Tile'>>;

@@ -100,9 +100,7 @@ declare global {
     protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
     /** @override */
-    protected _onDragLeftDrop(
-      event: PIXI.InteractionEvent
-    ): Promise<false | this | InstanceType<ConfiguredDocumentClass<typeof TileDocument>>[]>;
+    protected _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<unknown>;
 
     /** @override */
     protected _onDragLeftCancel(event: MouseEvent): void;

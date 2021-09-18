@@ -7,12 +7,13 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class TokenHUD<Options extends Application.Options = Application.Options> extends BasePlaceableHUD<
-    ConcreteObject,
+    ConcreteToken,
     Options
   > {
     /**
      * Track whether the status effects control palette is currently expanded or hidden
      * @defaultValue `false`
+     * @internal
      */
     protected _statusEffects: boolean;
 
@@ -29,7 +30,7 @@ declare global {
     static get defaultOptions(): Application.Options;
 
     /** @override */
-    bind(object: ConcreteObject): void;
+    bind(object: ConcreteToken): void;
 
     /**
      * Refresh the currently active state of all status effect icons in the Token HUD selector.
@@ -40,16 +41,16 @@ declare global {
      * @override
      * @param _position - (unused)
      */
-    setPosition(_position?: Partial<Application.Position>): undefined;
+    setPosition(_position?: Partial<Application.Position>): void;
 
     /** @override */
-    getData(options?: Partial<Application.Options>): ReturnType<BasePlaceableHUD<ConcreteObject>['getData']> & {
+    getData(options?: Partial<Application.Options>): ReturnType<BasePlaceableHUD<ConcreteToken>['getData']> & {
       canConfigure: boolean;
       canToggleCombat: boolean;
       displayBar1: boolean;
-      bar1Data: ReturnType<ConcreteObject['document']['getBarAttribute']>;
+      bar1Data: ReturnType<ConcreteToken['document']['getBarAttribute']>;
       displayBar2: boolean;
-      bar2Data: ReturnType<ConcreteObject['document']['getBarAttribute']>;
+      bar2Data: ReturnType<ConcreteToken['document']['getBarAttribute']>;
       visibilityClass: string;
       effectsClass: string;
       combatClass: string;
@@ -61,25 +62,23 @@ declare global {
      * Get an array of icon paths which represent valid status effect choices
      * @internal
      */
-    protected _getStatusEffectChoices(): Partial<
-      Record<
-        string,
-        {
-          id: string;
-          title: string;
-          src: string;
-          isActive: boolean;
-          isOverlay: boolean;
-          cssClass: string;
-        }
-      >
+    protected _getStatusEffectChoices(): Record<
+      string,
+      {
+        id: string;
+        title: string | null;
+        src: string;
+        isActive: boolean;
+        isOverlay: boolean;
+        cssClass: string;
+      }
     >;
 
     /** @override */
     activateListeners(html: JQuery): void;
 
     /** @override */
-    protected _onClickControl(event: JQuery.ClickEvent): Promise<void | boolean> | void;
+    protected _onClickControl(event: JQuery.ClickEvent): unknown;
 
     /**
      * Handle initial click to focus an attribute update field
@@ -117,7 +116,7 @@ declare global {
      * Handle left-click events to toggle the displayed state of the status effect selection palette
      * @internal
      */
-    protected _onClickStatusEffects(event: JQuery.ClickEvent): void;
+    protected _onToggleStatusEffects(event: JQuery.ClickEvent): void;
 
     /**
      * Assign css selectors for the active state of the status effects selection palette
@@ -143,4 +142,4 @@ declare global {
   }
 }
 
-type ConcreteObject = InstanceType<ConfiguredObjectClassForName<'Token'>>;
+type ConcreteToken = InstanceType<ConfiguredObjectClassForName<'Token'>>;

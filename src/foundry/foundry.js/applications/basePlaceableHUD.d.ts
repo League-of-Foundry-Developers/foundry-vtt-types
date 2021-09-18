@@ -46,15 +46,15 @@ declare abstract class BasePlaceableHUD<
 
   /** @override */
   getData(options?: Partial<Options>): ReturnType<Object['data']['toJSON']> & {
-    id: BasePlaceableHUD['id'];
+    id: string;
     classes: string;
-    appId: BasePlaceableHUD['appId'];
+    appId: number;
     isGM: boolean;
     icons: typeof CONFIG['controlIcons'];
   };
 
   /** @override */
-  setPosition({ left, top, width, height, scale }?: Partial<Application.Position>): undefined;
+  setPosition({ left, top, width, height, scale }?: Partial<Application.Position>): void;
 
   /** @override */
   activateListeners(html: JQuery): void;
@@ -64,7 +64,7 @@ declare abstract class BasePlaceableHUD<
    * @param event - The originating click event
    * @remarks This will always return a promise with documents is overridden by TokenHUD.
    */
-  protected _onClickControl(event: JQuery.ClickEvent): Promise<Array<Object['document']> | void | boolean> | void;
+  protected _onClickControl(event: JQuery.ClickEvent): unknown;
 
   /**
    * Toggle the visible state of all controlled objects in the Layer

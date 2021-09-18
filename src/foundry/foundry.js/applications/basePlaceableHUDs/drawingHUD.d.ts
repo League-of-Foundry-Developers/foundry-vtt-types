@@ -6,7 +6,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class DrawingHUD<Options extends Application.Options = Application.Options> extends BasePlaceableHUD<
-    ConcreteObject,
+    ConcreteDrawing,
     Options
   > {
     /**
@@ -22,7 +22,7 @@ declare global {
     static get defaultOptions(): Application.Options;
 
     /** @override */
-    getData(options?: Partial<Options>): ReturnType<BasePlaceableHUD<ConcreteObject>['getData']> & {
+    getData(options?: Partial<Options>): ReturnType<BasePlaceableHUD<ConcreteDrawing>['getData']> & {
       lockedClass: string;
       visibilityClass: string;
     };
@@ -31,8 +31,8 @@ declare global {
      * @override
      * @param options - (unused)
      */
-    setPosition(options?: Partial<Application.Position>): undefined;
+    setPosition(options?: Partial<Application.Position>): void;
   }
 }
 
-type ConcreteObject = InstanceType<ConfiguredObjectClassForName<'Drawing'>>;
+type ConcreteDrawing = InstanceType<ConfiguredObjectClassForName<'Drawing'>>;
