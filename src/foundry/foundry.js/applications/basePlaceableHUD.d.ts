@@ -42,7 +42,7 @@ declare abstract class BasePlaceableHUD<
   clear(): void;
 
   /** @override */
-  _render(...args: Parameters<Application['_render']>): Promise<void>;
+  _render(...args: Parameters<Application<P>['_render']>): Promise<void>;
 
   /**
    * @override

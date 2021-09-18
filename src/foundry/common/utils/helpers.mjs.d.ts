@@ -273,16 +273,12 @@ export declare function isObjectEmpty(obj: object): boolean;
 type OmitByValue<T, ValueType> = { [Key in keyof T as T[Key] extends ValueType ? never : Key]: T[Key] };
 type RemoveNever<T> = OmitByValue<T, never>;
 type PropWithMinus<K> = K extends string ? `-=${K}` : never;
-type DeleteByObjectKeys<T, U> = RemoveNever<
-  {
-    [K in keyof T]: PropWithMinus<K> extends keyof U ? (U[PropWithMinus<K>] extends null ? never : T[K]) : T[K];
-  }
->;
-type RemoveDeletingObjectKeys<T> = RemoveNever<
-  {
-    [K in keyof T]: K extends string ? (Capitalize<K> extends K ? (T[K] extends null ? never : T[K]) : T[K]) : T[K];
-  }
->;
+type DeleteByObjectKeys<T, U> = RemoveNever<{
+  [K in keyof T]: PropWithMinus<K> extends keyof U ? (U[PropWithMinus<K>] extends null ? never : T[K]) : T[K];
+}>;
+type RemoveDeletingObjectKeys<T> = RemoveNever<{
+  [K in keyof T]: K extends string ? (Capitalize<K> extends K ? (T[K] extends null ? never : T[K]) : T[K]) : T[K];
+}>;
 
 type MergeObjectProperty<T, U, M extends MergeObjectOptions> = T extends Array<any>
   ? U
@@ -339,37 +335,37 @@ interface MergeObjectOptions {
    * Control whether to insert new top-level objects into the resulting structure which do not previously exist in the original object.
    * @defaultValue `true`
    */
-  insertKeys?: boolean;
+  insertKeys?: boolean | undefined;
 
   /**
    * Control whether to insert new nested values into child objects in the resulting structure which did not previously exist in the original object.
    * @defaultValue `true`
    */
-  insertValues?: boolean;
+  insertValues?: boolean | undefined;
 
   /**
    * Control whether to replace existing values in the source, or only merge values which do not already exist in the original object.
    * @defaultValue `true`
    */
-  overwrite?: boolean;
+  overwrite?: boolean | undefined;
 
   /**
    * Control whether to merge inner-objects recursively (if true), or whether to simply replace inner objects with a provided new value.
    * @defaultValue `true`
    */
-  recursive?: boolean;
+  recursive?: boolean | undefined;
 
   /**
    * Control whether to apply updates to the original object in-place (if true), otherwise the original object is duplicated and the copy is merged.
    * @defaultValue `true`
    */
-  inplace?: boolean;
+  inplace?: boolean | undefined;
 
   /**
    * Control whether strict type checking requires that the value of a key in the other object must match the data type in the original data to be merged.
    * @defaultValue `false`
    */
-  enforceTypes?: boolean;
+  enforceTypes?: boolean | undefined;
 }
 
 /**

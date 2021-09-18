@@ -66,7 +66,7 @@ declare global {
      * @override
      * @internal
      */
-    protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+    protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
     /** @override */
     activateListeners(html: JQuery): void;
