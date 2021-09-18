@@ -70,7 +70,7 @@ declare global {
     protected _attemptCORSReload<T>(
       src: string,
       resolve: (tex: PIXI.Texture) => void,
-      reject: () => T
+      reject: (reason: string) => T
     ): Promise<PIXI.Texture | T>;
 
     /**
