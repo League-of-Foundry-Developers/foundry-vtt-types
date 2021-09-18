@@ -30,7 +30,7 @@ expectType<
         string,
         {
           id: string;
-          title: string;
+          title: string | null;
           src: string;
           isActive: boolean;
           isOverlay: boolean;
@@ -40,4 +40,4 @@ expectType<
     >;
   }
 >(hud.getData());
-expectType<undefined>(hud.setPosition());
+expectType<void>(hud.setPosition());

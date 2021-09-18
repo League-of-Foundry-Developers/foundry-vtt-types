@@ -18,4 +18,4 @@ expectType<
     visibilityClass: string;
   }
 >(hud.getData());
-expectType<undefined>(hud.setPosition());
+expectType<void>(hud.setPosition());
