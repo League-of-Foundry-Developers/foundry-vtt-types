@@ -73,5 +73,5 @@ declare namespace MainMenu {
     onClick: () => void;
   }
 
-  type MenuStructure = Partial<{ [name: string]: MenuItem }>;
+  type MenuStructure = { [name: string]: MenuItem };
 }
