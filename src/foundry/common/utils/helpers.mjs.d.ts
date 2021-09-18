@@ -273,16 +273,12 @@ export declare function isObjectEmpty(obj: object): boolean;
 type OmitByValue<T, ValueType> = { [Key in keyof T as T[Key] extends ValueType ? never : Key]: T[Key] };
 type RemoveNever<T> = OmitByValue<T, never>;
 type PropWithMinus<K> = K extends string ? `-=${K}` : never;
-type DeleteByObjectKeys<T, U> = RemoveNever<
-  {
-    [K in keyof T]: PropWithMinus<K> extends keyof U ? (U[PropWithMinus<K>] extends null ? never : T[K]) : T[K];
-  }
->;
-type RemoveDeletingObjectKeys<T> = RemoveNever<
-  {
-    [K in keyof T]: K extends string ? (Capitalize<K> extends K ? (T[K] extends null ? never : T[K]) : T[K]) : T[K];
-  }
->;
+type DeleteByObjectKeys<T, U> = RemoveNever<{
+  [K in keyof T]: PropWithMinus<K> extends keyof U ? (U[PropWithMinus<K>] extends null ? never : T[K]) : T[K];
+}>;
+type RemoveDeletingObjectKeys<T> = RemoveNever<{
+  [K in keyof T]: K extends string ? (Capitalize<K> extends K ? (T[K] extends null ? never : T[K]) : T[K]) : T[K];
+}>;
 
 type MergeObjectProperty<T, U, M extends MergeObjectOptions> = T extends Array<any>
   ? U
