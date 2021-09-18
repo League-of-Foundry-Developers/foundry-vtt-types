@@ -377,7 +377,7 @@ declare abstract class Application<Options extends Application.Options = Applica
 
 declare namespace Application {
   interface CloseOptions {
-    force?: boolean;
+    force?: boolean | undefined;
   }
 
   interface HeaderButton {
@@ -421,7 +421,7 @@ declare namespace Application {
     /**
      * A transformation scale for the rendered HTML
      */
-    scale?: number | null;
+    scale?: number | null | undefined;
 
     /**
      * Whether to display the application as a pop-out container
@@ -502,44 +502,44 @@ declare namespace Application {
     /**
      * The left positioning attribute
      */
-    left?: number | null;
+    left?: number | null | undefined;
 
     /**
      * The top positioning attribute
      */
-    top?: number | null;
+    top?: number | null | undefined;
 
     /**
      * The rendered width
      */
-    width?: number | null;
+    width?: number | null | undefined;
 
     /**
      * The rendered height
      */
-    height?: number | null;
+    height?: number | null | undefined;
 
     /**
      * The rendered transformation scale
      */
-    scale?: number | null;
+    scale?: number | null | undefined;
 
     /**
      * Apply focus to the application, maximizing it and bringing it to the top
      * of the vertical stack.
      * @defaultValue `false`
      */
-    focus?: boolean;
+    focus?: boolean | undefined;
 
     /**
      * A context-providing string which suggests what event triggered the render
      */
-    renderContext?: string;
+    renderContext?: string | undefined;
 
     /**
      * The data change which motivated the render request
      */
-    renderData?: object;
+    renderData?: object | undefined;
   };
 
   /**
