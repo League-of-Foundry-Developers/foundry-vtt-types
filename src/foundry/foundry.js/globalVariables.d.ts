@@ -113,6 +113,19 @@ declare global {
    * This is only for debugging, and may be removed in the future, so it's not safe to use.
    */
   let _token: InstanceType<CONFIG['Token']['objectClass']> | null;
+
+  /*
+   * Global Vairables
+   * The following variables are declared directly in foundry's HTML file (or more concretely, in `main.hbs`)
+   */
+
+  const SIGNED_EULA: boolean;
+
+  const ROUTE_PREFIX: string;
+
+  const MESSAGES:
+    | { type: Notifications.Notification['type']; message: string; options: Notifications.Options }[]
+    | null;
 }
 
 export {};
