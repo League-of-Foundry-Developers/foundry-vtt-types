@@ -1,4 +1,4 @@
-import { BaseWall } from '../../../../common/documents.mjs';
+import type { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
 
 declare global {
   /**
@@ -21,7 +21,7 @@ declare global {
    * });
    * ```
    */
-  class Wall extends PlaceableObject<BaseWall> {
+  class Wall extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof WallDocument>>> {
     /**
      * @remarks Not used for `Wall`
      */
@@ -136,7 +136,7 @@ declare global {
     protected _onCreate(): void;
 
     /** @override */
-    protected _onUpdate(changed: DeepPartial<BaseWall['data']>, options?: any, userId?: string): void;
+    protected _onUpdate(changed: DeepPartial<foundry.data.WallData>, options?: any, userId?: string): void;
 
     /** @override */
     protected _onDelete(): void;

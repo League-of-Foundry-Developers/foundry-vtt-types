@@ -1,34 +1,38 @@
-/**
- * An implementation of the PlaceableHUD base class which renders a heads-up-display interface for Drawing objects.
- */
-declare class DrawingHUD extends BasePlaceableHUD<Drawing> {
-  /**
-   * @override
-   * @defaultValue
-   * ```
-   * mergeObject(super.defaultOptions, {
-   *   id: "drawing-hud",
-   *   template: "templates/hud/drawing-hud.html"
-   * })
-   * ```
-   */
-  static get defaultOptions(): typeof Application['defaultOptions'];
+import { ConfiguredObjectClassForName } from '../../../../types/helperTypes';
 
+declare global {
   /**
-   * @override
-   * @defaultValue
-   * ```
-   * mergeObject(super.getData(), {
-   *   lockedClass: data.locked ? "active" : "",
-   *   visibilityClass: data.hidden ? "active" : "",
-   * })
-   * ```
+   * An implementation of the PlaceableHUD base class which renders a heads-up-display interface for Drawing objects.
+   * @typeParam Options - the type of the options object
    */
-  getData(): ReturnType<BasePlaceableHUD<Drawing>['getData']> & {
-    lockedClass: string;
-    visibilityClass: string;
-  };
+  class DrawingHUD<Options extends Application.Options = Application.Options> extends BasePlaceableHUD<
+    ConcreteDrawing,
+    Options
+  > {
+    /**
+     * @override
+     * @defaultValue
+     * ```
+     * foundry.utils.mergeObject(super.defaultOptions, {
+     *   id: "drawing-hud",
+     *   template: "templates/hud/drawing-hud.html"
+     * })
+     * ```
+     */
+    static get defaultOptions(): Application.Options;
 
-  /** @override */
-  setPosition(): void;
+    /** @override */
+    getData(options?: Partial<Options>): ReturnType<BasePlaceableHUD<ConcreteDrawing>['getData']> & {
+      lockedClass: string;
+      visibilityClass: string;
+    };
+
+    /**
+     * @override
+     * @param options - (unused)
+     */
+    setPosition(options?: Partial<Application.Position>): void;
+  }
 }
+
+type ConcreteDrawing = InstanceType<ConfiguredObjectClassForName<'Drawing'>>;

@@ -1,4 +1,4 @@
-import { BaseAmbientSound } from '../../../../common/documents.mjs';
+import type { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
 
 declare global {
   /**
@@ -18,7 +18,7 @@ declare global {
    * });
    * ```
    */
-  class AmbientSound extends PlaceableObject<BaseAmbientSound> {
+  class AmbientSound extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof AmbientSoundDocument>>> {
     /**
      * The Howl instance used to play this AmbientSound effect
      */

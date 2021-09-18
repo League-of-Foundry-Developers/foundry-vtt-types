@@ -1,9 +1,9 @@
-import { BaseTile } from '../../../../common/documents.mjs';
+import type { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
 
 declare global {
   /**
    * A Tile is an implementation of PlaceableObject which represents a static piece of artwork or prop within the Scene.
-   * Tiles are drawn above the {@link BackroundLayer} but below the {@link TokenLayer}.
+   * Tiles are drawn above the {@link BackgroundLayer} but below the {@link TokenLayer}.
    *
    * @example
    * ```typescript
@@ -25,7 +25,7 @@ declare global {
    * @see {@link TileSheet}
    * @see {@link TileHUD}
    */
-  class Tile extends PlaceableObject<BaseTile> {
+  class Tile extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof TileDocument>>> {
     /**
      * @remarks Not used for `Tile`
      */
@@ -100,7 +100,7 @@ declare global {
     protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
     /** @override */
-    protected _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<false | this | BaseTile[]>;
+    protected _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<unknown>;
 
     /** @override */
     protected _onDragLeftCancel(event: MouseEvent): void;

@@ -1,25 +1,43 @@
-/**
- * An implementation of the PlaceableHUD base class which renders a heads-up-display interface for Tile objects.
- */
-declare class TileHUD extends BasePlaceableHUD<Tile> {
+import { ConfiguredObjectClassForName } from '../../../../types/helperTypes';
+
+declare global {
   /**
-   * @override
-   * @defaultValue
-   * ```
-   * mergeObject(super.defaultOptions, {
-   *   id: "tile-hud",
-   *   template: "templates/hud/drawing-hud.html"
-   * })
-   * ```
+   * An implementation of the PlaceableHUD base class which renders a heads-up-display interface for Tile objects.
+   * @typeParam Options - the type of the options object
    */
-  static get defaultOptions(): typeof Application['defaultOptions'];
+  class TileHUD<Options extends Application.Options = Application.Options> extends BasePlaceableHUD<
+    ConcreteTile,
+    Options
+  > {
+    /**
+     * @override
+     * @defaultValue
+     * ```
+     * foundry.utils.mergeObject(super.defaultOptions, {
+     *   id: "tile-hud",
+     *   template: "templates/hud/tile-hud.html"
+     * })
+     * ```
+     */
+    static get defaultOptions(): Application.Options;
 
-  /** @override */
-  getData(): ReturnType<BasePlaceableHUD<Tile>['getData']> & {
-    lockedClass: string;
-    visibilityClass: string;
-  };
+    /** @override */
+    getData(options?: Partial<Options>): ReturnType<BasePlaceableHUD<ConcreteTile>['getData']> & {
+      isVideo: boolean;
+      lockedClass: string;
+      visibilityClass: string;
+      overheadClass: string;
+      underfootClass: string;
+      videoIcon: string;
+      videoTitle: string;
+    };
 
-  /** @override */
-  setPosition(): void;
+    /**
+     * @override
+     * @param options - (unused)
+     */
+    setPosition(options?: Partial<Application.Position>): void;
+  }
 }
+
+type ConcreteTile = InstanceType<ConfiguredObjectClassForName<'Tile'>>;

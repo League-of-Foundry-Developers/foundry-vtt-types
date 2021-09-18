@@ -1,4 +1,4 @@
-import { BaseAmbientLight } from '../../../../common/documents.mjs';
+import type { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
 
 declare global {
   /**
@@ -19,7 +19,7 @@ declare global {
    * });
    * ```
    */
-  class AmbientLight extends PlaceableObject<BaseAmbientLight> {
+  class AmbientLight extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof AmbientLightDocument>>> {
     /**
      * A reference to the PointSource object which defines this light source area of effect
      */
