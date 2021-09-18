@@ -26,6 +26,10 @@ interface ActiveEffectDataSchema extends DocumentSchema {
   flags: typeof fields.OBJECT_FIELD; // TODO: add more concrete object type
 }
 
+interface CoreFlags {
+  core?: { statusId?: string; overlay?: boolean };
+}
+
 interface ActiveEffectDataProperties {
   /**
    * The _id which uniquely identifies the ActiveEffect within a parent Actor or Item
@@ -79,7 +83,7 @@ interface ActiveEffectDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'ActiveEffect'>;
+  flags: ConfiguredFlags<'ActiveEffect'> & CoreFlags;
 }
 
 interface ActiveEffectDataConstructorData {
@@ -135,7 +139,7 @@ interface ActiveEffectDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'ActiveEffect'> | null;
+  flags?: (ConfiguredFlags<'ActiveEffect'> & CoreFlags) | null;
 }
 
 /**

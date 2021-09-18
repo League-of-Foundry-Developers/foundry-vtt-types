@@ -157,14 +157,8 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface SourceConfig {}
 
-  interface FlagConfig {
-    ActiveEffect: {
-      core?: {
-        statusId?: string;
-        overlay?: boolean;
-      };
-    };
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface FlagConfig {}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface WebRTCConfig {}
