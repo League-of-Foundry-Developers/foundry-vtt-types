@@ -6,15 +6,15 @@ declare class VideoHelper {
   constructor();
 
   /**
-   * A collectinon of HTML5 video objects which are currently active within the FVTT page
+   * A collection of HTML5 video objects which are currently active within the FVTT page
    * @defaultValue `[]`
+   * @remarks This seems to be unused.
    */
   videos: HTMLVideoElement[];
 
   /**
    * A user gesture must be registered before video playback can begin.
    * This Set records the video elements which await such a gesture.
-   * @defaultValue an empty Set
    */
   pending: Set<HTMLVideoElement>;
 
@@ -30,22 +30,20 @@ declare class VideoHelper {
    */
   locked: boolean;
 
-  /* -------------------------------------------- */
-  /*  Methods                                     */
-  /* -------------------------------------------- */
-
   static hasVideoExtension(src: string): boolean;
-
-  /* -------------------------------------------- */
 
   /**
    * Play a single video source
    * If playback is not yet enabled, add the video to the pending queue
    * @param video - The VIDEO element to play
    */
-  play(video: HTMLElement): void;
+  play(video: HTMLVideoElement): void;
 
-  /* -------------------------------------------- */
+  /**
+   * Stop a single video source
+   * @param video - The VIDEO element to stop
+   */
+  stop(video: HTMLVideoElement): void;
 
   /**
    * Register an event listener to await the first mousemove gesture and begin playback once observed
@@ -54,16 +52,13 @@ declare class VideoHelper {
    */
   awaitFirstGesture(): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Handle the first observed user gesture
    * We need a slight delay because unfortunately Chrome is stupid and doesn't always acknowledge the gesture fast enough.
    * @param event - The mouse-move event which enables playback
+   * @internal
    */
   protected _onFirstGesture(event: Event): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Create and cache a static thumbnail to use for the video.
