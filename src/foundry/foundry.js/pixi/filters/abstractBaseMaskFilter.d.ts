@@ -18,12 +18,13 @@ declare abstract class AbstractBaseMaskFilter extends PIXI.Filter {
    * @param defaultUniforms - Initial uniforms provided to the filter
    *                          (default: `{}`)
    * @param channel         - A color channel to target for masking.
-   *                          (default: `r`)
+   *                          (default: `'r'`)
    */
-  static create(
+  static create<T extends AbstractBaseMaskFilter>(
+    this: ConstructorOf<T>,
     defaultUniforms?: ConstructorParameters<typeof PIXI.Filter>[2],
     channel?: 'r' | 'g' | 'b'
-  ): AbstractBaseMaskFilter;
+  ): T;
 
   /**
    * @override
