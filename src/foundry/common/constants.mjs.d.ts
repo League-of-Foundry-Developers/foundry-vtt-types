@@ -278,11 +278,11 @@ export const TABLE_RESULT_TYPES: {
  * Define the valid anchor locations for a Tooltip displayed on a Placeable Object
  */
 export const TEXT_ANCHOR_POINTS: {
-  BOTTOM: 0;
-  CENTER: 1;
-  LEFT: 2;
-  RIGHT: 3;
-  TOP: 4;
+  CENTER: 0;
+  BOTTOM: 1;
+  TOP: 2;
+  LEFT: 3;
+  RIGHT: 4;
 };
 
 /**
@@ -360,30 +360,11 @@ export const MEASURED_TEMPLATE_TYPES: MeasuredTemplateTypes;
  * @defaultValue
  * ```typescript
  * [
- *   'application/json',
- *   'application/ogg',
- *   'application/pdf',
- *   'audio/wave',
- *   'audio/wav',
- *   'audio/webm',
- *   'audio/ogg',
- *   'audio/midi',
- *   'audio/mpeg',
- *   'audio/opus',
- *   'audio/aac',
- *   'image/apng',
- *   'image/bmp',
- *   'image/gif',
- *   'image/jpeg',
- *   'image/png',
- *   'image/svg+xml',
- *   'image/tiff',
- *   'image/webp',
- *   'text/plain',
- *   'text/markdown',
- *   'video/mpeg',
- *   'video/mp4',
- *   'video/ogg'
+ *   "application/json", "application/ogg", "application/pdf",
+ *   "audio/wave", "audio/wav", "audio/webm", "audio/ogg", "audio/midi", "audio/mpeg", "audio/opus", "audio/aac",
+ *   "image/apng", "image/bmp", "image/gif", "image/jpeg", "image/png", "image/svg+xml", "image/tiff", "image/webp",
+ *   "text/plain", "text/markdown",
+ *   "video/mpeg", "video/mp4", "video/ogg"
  * ]
  * ```
  */
@@ -695,7 +676,7 @@ export const WALL_SENSE_TYPES: {
 
 /**
  * The allowed set of HTML template extensions
- * @defaultValue `["html", "hbs"]`
+ * @defaultValue `["html", "handlebars", "hbs"]`
  */
 export const HTML_FILE_EXTENSIONS: string[];
 
@@ -716,6 +697,26 @@ export const VIDEO_FILE_EXTENSIONS: string[];
  * @defaultValue `["flac", "m4a", "mp3", "ogg", "opus", "wav", "webm"]`
  */
 export const AUDIO_FILE_EXTENSIONS: string[];
+
+/**
+ * @deprecated since 0.8.0
+ */
+export const DRAWING_DEFAULT_VALUES: {
+  width: 0;
+  height: 0;
+  rotation: 0;
+  z: 0;
+  hidden: false;
+  locked: false;
+  fillType: typeof DRAWING_FILL_TYPES.NONE;
+  fillAlpha: 0.5;
+  bezierFactor: 0.0;
+  strokeAlpha: 1.0;
+  strokeWidth: 8;
+  fontSize: 48;
+  textAlpha: 1.0;
+  textColor: '#FFFFFF';
+};
 
 export type ActiveEffectMode = ValueOf<typeof ACTIVE_EFFECT_MODES>;
 export type ChatMessageType = ValueOf<typeof CHAT_MESSAGE_TYPES>;
