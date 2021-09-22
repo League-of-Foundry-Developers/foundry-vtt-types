@@ -1,4 +1,7 @@
 import type { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
+import type { DocumentModificationOptions } from '../../../../common/abstract/document.mjs';
+import type { WallData } from '../../../../common/data/data.mjs';
+import type { HoverInOptions } from '../placeableObject';
 
 declare global {
   /**
@@ -6,35 +9,35 @@ declare global {
    * Walls are used to restrict Token movement or visibility as well as to define the areas of effect for ambient lights
    * and sounds.
    *
+   * @see {@link WallDocument}
    * @see {@link WallsLayer}
    * @see {@link WallConfig}
-   *
-   * @example
-   * ```typescript
-   * Wall.create<Wall>({
-   *  c = [100, 200, 400, 600],
-   *  move: CONST.WALL_MOVEMENT_TYPES.NORMAL,
-   *  sense: CONST.WALL_SENSE_TYPES.NORMAL,
-   *  dir: CONST.WALL_DIRECTIONS.BOTH,
-   *  door: CONST.WALL_DOOR_TYPES.DOOR,
-   *  ds: CONST.WALL_DOOR_STATES.CLOSED
-   * });
-   * ```
    */
-  class Wall extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof WallDocument>>> {
+  class Wall extends PlaceableObject<ConcreteWallDocument> {
     /**
      * @remarks Not used for `Wall`
      */
     controlIcon: null;
+
     /**
      * @remarks Type is `MouseInteractionManager<this, this['endpoints']>`
      */
     mouseInteractionManager: MouseInteractionManager<this, any> | null;
 
+    constructor(document: ConcreteWallDocument);
+
     /**
      * An reference the Door Control icon associated with this Wall, if any
+     * @internal
+     * @defaultValue `null`
      */
-    protected doorControl: DoorControl | null;
+    doorControl: DoorControl | null;
+
+    /**
+     * A reference to an overhead Tile that is a roof, interior to which this wall is contained
+     * @defaultValue `undefined`
+     */
+    roof: Tile | undefined;
 
     /** @override */
     static get embeddedName(): 'Wall';
@@ -42,7 +45,7 @@ declare global {
     /**
      * A convenience reference to the coordinates Array for the Wall endpoints, [x0,y0,x1,y1].
      */
-    get coords(): Wall.Data['c'];
+    get coords(): Wall['data']['c'];
 
     /** @override */
     get bounds(): NormalizedRectangle;
@@ -50,7 +53,7 @@ declare global {
     /**
      * Return the coordinates [x,y] at the midpoint of the wall segment
      */
-    get midpoint(): [number, number];
+    get midpoint(): PointArray;
 
     /** @override */
     get center(): PIXI.Point;
@@ -70,8 +73,6 @@ declare global {
     /** @override */
     draw(): Promise<this>;
 
-    endpoints: PIXI.Graphics;
-
     /** @override */
     protected _createInteractionManager(): NonNullable<this['mouseInteractionManager']>;
 
@@ -82,7 +83,7 @@ declare global {
      * Draw a directional prompt icon for one-way walls to illustrate their direction of effect.
      * @returns The drawn icon
      */
-    protected _drawDirection(): PIXI.Sprite | void; // TODO: returning void may be unreachable
+    protected _drawDirection(): PIXI.Sprite | null;
 
     /** @override */
     refresh(): this;
@@ -92,26 +93,33 @@ declare global {
      * @param coords - The original wall coordinates
      * @param pad    - The amount of padding to apply
      * @returns A constructed Polygon for the line
+     * @internal
      */
     protected _getWallHitPolygon(coords: [number, number, number, number], pad: number): PIXI.Polygon;
 
     /**
      * Given the properties of the wall - decide upon a color to render the wall for display on the WallsLayer
+     * @internal
      */
     protected _getWallColor(): number;
 
-    /** @override */
+    /**
+     * @override
+     * @param chain - (default: `false`)
+     */
     protected _onControl({ chain }?: PlaceableObject.ControlOptions & { chain?: boolean }): void;
 
     /** @override */
-    protected _onRelease(): void;
+    protected _onRelease(options?: PlaceableObject.ReleaseOptions): void;
 
     /** @override */
-    destroy(options?: { children?: boolean; texture?: boolean; baseTexture?: boolean }): void;
+    destroy(options?: Parameters<PIXI.Container['destroy']>[0]): void;
 
     /**
      * Test whether the Wall direction lies between two provided angles
      * This test is used for collision and vision checks against one-directional walls
+     * @param lower - The lower-bound limiting angle in radians
+     * @param upper - The upper-bound limiting angle in radians
      */
     isDirectionBetweenAngles(lower: number, upper: number): boolean;
 
@@ -127,37 +135,44 @@ declare global {
      * @returns An object reporting ids and endpoints of the linked segments
      */
     getLinkedSegments(): {
-      ids: string;
-      walls: Wall[];
+      ids: string[];
+      walls: WallsLayer['placeables'];
       endpoints: Array<[number, number]>;
     };
 
     /** @override */
-    protected _onCreate(): void;
+    protected _onCreate(data: WallData['_source'], options: DocumentModificationOptions, userId: string): void;
 
     /** @override */
-    protected _onUpdate(changed: DeepPartial<foundry.data.WallData>, options?: any, userId?: string): void;
+    protected _onUpdate(
+      changed: DeepPartial<WallData['_source']>,
+      options?: DocumentModificationOptions,
+      userId?: string
+    ): void;
 
     /** @override */
-    protected _onDelete(): void;
+    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
 
     /**
      * Callback actions when a wall that contains a door is moved or its state is changed
      * @param doorChange - Update vision and sound restrictions
+     *                     (default: `false`)
+     * @internal
      */
     protected _onModifyWall(doorChange?: boolean): Promise<void>;
 
     /** @override */
-    protected _canControl(user?: User, event?: PIXI.InteractionEvent): boolean;
+    protected _canControl(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
     /** @override */
-    protected _onHoverIn(event: PIXI.InteractionEvent, options?: { hoverOutOthers: boolean }): void;
+    protected _onHoverIn(event: PIXI.InteractionEvent, options?: HoverInOptions): false | void;
 
     /** @override */
-    protected _onHoverOut(event: PIXI.InteractionEvent): void;
+    protected _onHoverOut(event: PIXI.InteractionEvent): false | void;
 
     /**
      * Handle mouse-hover events on the line segment itself, pulling the Wall to the front of the container stack
+     * @internal
      */
     protected _onMouseOverLine(event: PIXI.InteractionEvent): void;
 
@@ -179,42 +194,6 @@ declare global {
     /** @override */
     protected _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<any>;
   }
-
-  namespace Wall {
-    interface Data {
-      /**
-       * Coordinates of the endpoints
-       */
-      c: [number, number, number, number];
-      /**
-       * 0 - both
-       * 1 - left
-       * 2 - right
-       */
-      dir?: foundry.CONST.WallDirection;
-      /**
-       * 0 - wall
-       * 1 - door
-       * 2 - secret
-       */
-      door: foundry.CONST.WallDoorType;
-      /**
-       * 0 - closed
-       * 1 - open
-       * 2 - locked
-       */
-      ds: foundry.CONST.WallDoorState;
-      /**
-       * 0 - blocked
-       * 1 - allowed
-       */
-      move: foundry.CONST.WallMovementType;
-      /**
-       * 0 - opaque
-       * 1 - transparent
-       * 2 - terrain
-       */
-      sense: foundry.CONST.WallSenseType;
-    }
-  }
 }
+
+type ConcreteWallDocument = InstanceType<ConfiguredDocumentClass<typeof WallDocument>>;

@@ -67,10 +67,10 @@ declare namespace WallConfig {
 
   interface FormData {
     dir: foundry.CONST.WallDirection;
-    door: Wall.Data['door'];
-    ds?: Wall.Data['ds'];
-    move: Wall.Data['move'];
-    sense: Wall.Data['sense'];
+    door: Wall['data']['door'];
+    ds?: Wall['data']['ds'];
+    move: Wall['data']['move'];
+    sense: Wall['data']['sense'];
   }
 
   interface Options extends FormApplication.Options {
