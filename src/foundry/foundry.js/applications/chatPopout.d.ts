@@ -2,6 +2,7 @@ import type { ConfiguredDocumentClass } from '../../../types/helperTypes';
 
 declare global {
   /**
+   * A simple application which supports popping a ChatMessage out to a separate UI window.
    * @typeParam Options - the type of the options object
    */
   class ChatPopout<Options extends Application.Options = Application.Options> extends Application<Options> {
