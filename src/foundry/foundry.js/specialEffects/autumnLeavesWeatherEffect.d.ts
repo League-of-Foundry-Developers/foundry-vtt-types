@@ -1,17 +1,14 @@
 /**
  * A special full-screen weather effect which uses one Emitters to render gently falling autumn leaves
  */
-
 declare class AutumnLeavesWeatherEffect extends SpecialEffect {
+  /**
+   * @defaultValue `'Autumn Leaves'`
+   */
   static get label(): string;
 
-  static get effectOptions(): SpecialEffect.Options;
-
-  getParticleEmitters(): PIXI.particles.Emitter[];
-
-  protected _getLeafEmitter(parent: PIXI.Container): PIXI.particles.Emitter;
-
   /**
+   * Configuration for the falling leaves particle effect
    * @defaultValue
    * ```typescript
    * {
@@ -55,4 +52,28 @@ declare class AutumnLeavesWeatherEffect extends SpecialEffect {
    * ```
    */
   static LEAF_CONFIG: PIXI.particles.EmitterConfig | PIXI.particles.OldEmitterConfig;
+
+  /**
+   * @defaultValue
+   * ```typescript
+   * {
+   *   density: {
+   *     label: "Particle Density",
+   *     type: this.OPTION_TYPES.RANGE,
+   *     value: 1,
+   *     min: 0.05,
+   *     max: 1,
+   *     step: 0.05
+   *   }
+   * }
+   * ```
+   */
+  static get effectOptions(): SpecialEffect.Options;
+
+  getParticleEmitters(): PIXI.particles.Emitter[];
+
+  /**
+   * @internal
+   */
+  protected _getLeafEmitter(parent: PIXI.Container): PIXI.particles.Emitter;
 }

@@ -12,20 +12,9 @@ declare class SpecialEffect {
 
   /**
    * Use this flag as a way to pass a stop signal into the animation frame
+   * @internal
    */
   protected _stop: boolean | null;
-
-  static get label(): string;
-
-  static get effectOptions(): SpecialEffect.Options;
-
-  getParticleEmitters(): PIXI.particles.Emitter[];
-
-  play(duration: number): void;
-
-  stop(): void;
-
-  protected _startEmitter(emitter: PIXI.particles.Emitter): void;
 
   static OPTION_TYPES: {
     VALUE: 1;
@@ -51,6 +40,39 @@ declare class SpecialEffect {
    * ```
    */
   static DEFAULT_CONFIG: PIXI.particles.EmitterConfig | PIXI.particles.OldEmitterConfig;
+
+  /**
+   * @defaultValue `'Special Effect'`
+   */
+  static get label(): string;
+
+  /**
+   * @defaultValue
+   * ```typescript
+   * {
+   *   density: {
+   *     label: "Particle Density",
+   *     type: this.OPTION_TYPES.RANGE,
+   *     value: 0.5,
+   *     min: 0.1,
+   *     max: 5,
+   *     step: 0.1
+   *   }
+   * }
+   * ```
+   */
+  static get effectOptions(): SpecialEffect.Options;
+
+  getParticleEmitters(): PIXI.particles.Emitter[];
+
+  play(duration: number): void;
+
+  stop(): void;
+
+  /**
+   * @internal
+   */
+  protected _startEmitter(emitter: PIXI.particles.Emitter): void;
 }
 
 declare namespace SpecialEffect {
