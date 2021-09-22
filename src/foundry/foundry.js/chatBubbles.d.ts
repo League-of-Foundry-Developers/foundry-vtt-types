@@ -22,6 +22,7 @@ declare class ChatBubbles {
    * Track which Token was most recently panned to highlight
    * Use this to avoid repeat panning
    * @defaultValue `null`
+   * @internal
    */
   protected _panned: Token | null;
 
@@ -41,6 +42,7 @@ declare class ChatBubbles {
 
   /**
    * Clear any existing chat bubble for a certain Token
+   * @internal
    */
   protected _clearBubble(token: Token): Promise<void>;
 
@@ -48,6 +50,7 @@ declare class ChatBubbles {
    * Render the HTML template for the chat bubble
    * @param data - Template data
    * @returns The rendered HTML
+   * @internal
    */
   protected _renderHTML(data: { token: Token; message: string; emote: boolean }): Promise<string>;
 
@@ -55,11 +58,13 @@ declare class ChatBubbles {
    * Before displaying the chat message, determine it's constrained and unconstrained dimensions
    * @param message - The message content
    * @returns The rendered message dimensions
+   * @internal
    */
   protected _getMessageDimensions(message: string): ChatBubbles.Dimensions;
 
   /**
    * Assign styling parameters to the chat bubble, toggling either a left or right display (randomly)
+   * @internal
    */
   protected _setPosition(token: Token, html: JQuery, dimensions: ChatBubbles.Dimensions): void;
 
