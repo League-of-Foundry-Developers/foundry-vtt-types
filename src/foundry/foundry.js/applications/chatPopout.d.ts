@@ -1,41 +1,42 @@
-// TODO: Remove when updating this class!!!
-// eslint-disable-next-line
-// @ts-nocheck
+import type { ConfiguredDocumentClass } from '../../../types/helperTypes';
 
-/**
- * @typeParam P - the type of the options object
- */
-declare class ChatPopout<P extends Application.Options = Application.Options> extends Application<P> {
-  constructor(message: ChatPopout['message'], options?: Partial<P>);
-
+declare global {
   /**
-   * The displayed Chat Message entity
+   * A simple application which supports popping a ChatMessage out to a separate UI window.
+   * @typeParam Options - the type of the options object
    */
-  message: ChatMessage;
+  class ChatPopout<Options extends Application.Options = Application.Options> extends Application<Options> {
+    constructor(message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>, options?: Partial<Options>);
 
-  /**
-   * @override
-   * @defaultValue
-   * ```typescript
-   * mergeObject(super.defaultOptions, {
-   *   width: 300,
-   *   height: "auto",
-   *   classes: ["chat-popout"]
-   * })
-   * ```
-   */
-  static get defaultOptions(): typeof Application['defaultOptions'];
+    /**
+     * The displayed Chat Message entity
+     */
+    message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>;
 
-  /** @override */
-  get id(): string;
+    /**
+     * @override
+     * @defaultValue
+     * ```typescript
+     * foundry.utils.mergeObject(super.defaultOptions, {
+     *   width: 300,
+     *   height: "auto",
+     *   classes: ["chat-popout"]
+     * })
+     * ```
+     */
+    static get defaultOptions(): Application.Options;
 
-  /** @override */
-  get title(): string;
+    /** @override */
+    get id(): string;
 
-  /**
-   * @param data    - (unused)
-   * @param options - (unused)
-   * @override
-   */
-  protected _renderInner(data?: any, options?: any): ReturnType<this['message']['render']>;
+    /** @override */
+    get title(): string;
+
+    /**
+     * @param data    - (unused)
+     * @param options - (unused)
+     * @override
+     */
+    protected _renderInner(data: object, options?: unknown): Promise<JQuery> | JQuery;
+  }
 }
