@@ -24,10 +24,10 @@ declare global {
     turns: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[];
 
     /** Record the current round, turn, and tokenId to understand changes in the encounter state */
-    protected current: RoundData;
+    current: RoundData;
 
     /** Track the previous round, turn, and tokenId to understand changes in the encounter state */
-    protected previous: RoundData;
+    previous: RoundData;
 
     /**
      * Track whether a sound notification is currently being played to avoid double-dipping
