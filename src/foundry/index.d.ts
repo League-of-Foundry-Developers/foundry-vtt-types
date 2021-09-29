@@ -78,6 +78,7 @@ import './foundry.js/clientDocuments/playlist';
 import './foundry.js/clientDocuments/rollTable';
 import './foundry.js/clientDocuments/scene';
 import './foundry.js/clientDocuments/setting';
+import './foundry.js/clientDocuments/tableResult';
 import './foundry.js/clientDocuments/user';
 
 import './foundry.js/collections';
