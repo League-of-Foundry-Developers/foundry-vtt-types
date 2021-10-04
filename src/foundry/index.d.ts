@@ -11,6 +11,7 @@ import './foundry.js/canvas';
 import './foundry.js/canvasAnimation';
 import './foundry.js/canvasDocumentMixin';
 import './foundry.js/chatBubbles';
+import './foundry.js/clientDocuments';
 import './foundry.js/clientDocumentMixin';
 import './foundry.js/clientSettings';
 import './foundry.js/config';
@@ -55,31 +56,6 @@ import './foundry.js/videoHelper';
 import './foundry.js/applications';
 
 import './foundry.js/avClients';
-
-import './foundry.js/clientDocuments/activeEffect';
-import './foundry.js/clientDocuments/actor';
-import './foundry.js/clientDocuments/canvasDocuments/ambientLightDocument';
-import './foundry.js/clientDocuments/canvasDocuments/ambientSoundDocument';
-import './foundry.js/clientDocuments/canvasDocuments/drawingDocument';
-import './foundry.js/clientDocuments/canvasDocuments/measuredTemplateDocument';
-import './foundry.js/clientDocuments/canvasDocuments/noteDocument';
-import './foundry.js/clientDocuments/canvasDocuments/tileDocument';
-import './foundry.js/clientDocuments/canvasDocuments/tokenDocument';
-import './foundry.js/clientDocuments/canvasDocuments/wallDocument';
-import './foundry.js/clientDocuments/chatMessage';
-import './foundry.js/clientDocuments/combat';
-import './foundry.js/clientDocuments/combatant';
-import './foundry.js/clientDocuments/fogExploration';
-import './foundry.js/clientDocuments/folder';
-import './foundry.js/clientDocuments/item';
-import './foundry.js/clientDocuments/journalEntry';
-import './foundry.js/clientDocuments/macro';
-import './foundry.js/clientDocuments/playlist';
-import './foundry.js/clientDocuments/rollTable';
-import './foundry.js/clientDocuments/scene';
-import './foundry.js/clientDocuments/setting';
-import './foundry.js/clientDocuments/tableResult';
-import './foundry.js/clientDocuments/user';
 
 import './foundry.js/collections';
 
