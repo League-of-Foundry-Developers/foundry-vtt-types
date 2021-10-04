@@ -161,7 +161,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
    * @param target - The target within the currently active source location.
    * @param options - Browsing options (default: `{}`)
    */
-  browse(target?: string, options?: FilePicker.BrowsingOptions): Promise<FilePicker.BrowseResult>;
+  browse(target?: string, options?: FilePicker.BrowsingOptions): Promise<FilePicker.BrowseResult | undefined>;
 
   /**
    * Browse files for a certain directory location
@@ -175,7 +175,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
     source: FilePicker.DataSource,
     target?: string,
     options?: FilePicker.BrowsingOptions
-  ): Promise<FilePicker.BrowseResult>;
+  ): Promise<FilePicker.BrowseResult | undefined>;
 
   /**
    * Configure metadata settings regarding a certain file system path
@@ -207,7 +207,7 @@ declare class FilePicker<P extends FilePicker.Options = FilePicker.Options> exte
   protected static _manageFiles(
     data: FilePicker.ManageData,
     options?: Record<string, unknown>
-  ): Promise<Record<string, unknown>>;
+  ): Promise<Record<string, unknown> | undefined>;
 
   /**
    * Dispatch a POST request to the server containing a directory path and a file to upload
