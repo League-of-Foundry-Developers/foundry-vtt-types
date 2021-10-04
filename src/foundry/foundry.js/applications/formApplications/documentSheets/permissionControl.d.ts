@@ -1,72 +1,66 @@
-/**
- * A generic application for configuring permissions for various Entity types
- * @typeParam P - the type of the options object
- * @typeParam E - the type of the entity
- */
-declare class PermissionControl<
-  P extends DocumentSheet.Options = DocumentSheet.Options,
-  E extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>
-> extends DocumentSheet<P, PermissionControl.Data<E>, E> {
+import type { ConfiguredDocumentClassForName } from '../../../../../types/helperTypes';
+
+declare global {
   /**
-   * @param entity  - The Entity instance for which permissions are being configured.
-   * @param options - Application options.
+   * A generic application for configuring permissions for various Entity types
+   * @typeParam Options          - the type of the options object
+   * @typeParam Data             - The data structure used to render the handlebars template.
+   * @typeParam ConcreteDocument - the type of the Document which should be managed by this form sheet
    */
-  constructor(entity: E, options?: Partial<P>);
+  class PermissionControl<
+    Options extends DocumentSheet.Options = DocumentSheet.Options,
+    Data extends object = DocumentSheet.Data,
+    ConcreteDocument extends foundry.abstract.Document<any, any> = Data extends DocumentSheet.Data<infer T>
+      ? T
+      : foundry.abstract.Document<any, any>
+  > extends DocumentSheet<Options, PermissionControl.Data<ConcreteDocument>, ConcreteDocument> {
+    /**
+     * @override
+     * @defaultValue
+     * ```typescript
+     * mergeObject(super.defaultOptions, {
+     *   id: "permission",
+     *   template: "templates/apps/permission.html",
+     *   width: 400
+     * });
+     * ```
+     */
+    static get defaultOptions(): DocumentSheet.Options;
 
-  /**
-   * @override
-   * @defaultValue
-   * ```typescript
-   * mergeObject(super.defaultOptions, {
-   *   id: "permission",
-   *   template: "templates/apps/permission.html",
-   *   width: 400
-   * });
-   * ```
-   */
-  static get defaultOptions(): typeof DocumentSheet['defaultOptions'];
+    /** @override */
+    get title(): string;
 
-  /** @override */
-  get title(): string;
+    /**
+     * @override
+     * @param options - (unused)
+     */
+    getData(options?: Partial<Options>): PermissionControl.Data<ConcreteDocument>;
 
-  /**
-   * @param options - (unused)
-   * @override
-   */
-  getData(options?: Partial<P>): PermissionControl.Data<E>;
-
-  /** @override */
-  protected _updateObject(event: Event, formData: PermissionControl.FormData): Promise<E>;
-}
-
-declare namespace PermissionControl {
-  interface Data<E extends foundry.abstract.Document<any, any>> extends DocumentSheet.Data {
-    entity: E;
-    currentDefault: number | '-1';
-    instructions: string;
-    defaultLevels: E extends Folder ? Data.FolderDefaultLevels : Data.EntityDefaultLevels;
-    playerLevels: E extends Folder ? Data.FolderPlayerLevels : Data.EntityPlayerLevels;
-    isFolder: E extends Folder ? true : false;
-    users: { user: User; level: number | '-1' }[];
+    /** @override */
+    protected _updateObject(event: Event, formData: PermissionControl.FormData): Promise<unknown>;
   }
 
-  namespace Data {
-    type EntityDefaultLevels = Omit<EntityPlayerLevels, '-1'>;
+  namespace PermissionControl {
+    interface Data<ConcreteDocument extends foundry.abstract.Document<any, any>> extends DocumentSheet.Data {
+      entity: ConcreteDocument;
+      currentDefault: foundry.CONST.EntityPermission | '-1';
+      instructions: string;
+      defaultLevels: Record<foundry.CONST.EntityPermission, string> & { '-1'?: string };
+      playerLevels: Record<foundry.CONST.EntityPermission | '-1', string> & { '-2'?: string };
+      isFolder: boolean;
+      users: {
+        user: InstanceType<ConfiguredDocumentClassForName<'User'>>;
+        level: foundry.CONST.EntityPermission | '-1';
+      }[];
+    }
 
-    type EntityPlayerLevels = Record<foundry.CONST.EntityPermission, string> & { '-1': string };
+    interface FormData {
+      [userId: string]: FormData.InputPermissionLevel;
+      default: FormData.InputPermissionLevel;
+    }
 
-    type FolderDefaultLevels = Omit<FolderPlayerLevels, '-2'>;
-
-    type FolderPlayerLevels = Record<foundry.CONST.EntityPermission, string> & { '-2': string; '-1': string };
-  }
-
-  interface FormData {
-    [userId: string]: FormData.InputPermissionLevel;
-    default: FormData.InputPermissionLevel;
-  }
-
-  namespace FormData {
-    // TODO: find a way to get this dynamically from ENTITY_PERMISSIONS
-    type InputPermissionLevel = '-1' | '0' | '1' | '2' | '3';
+    namespace FormData {
+      type InputPermissionLevel = foundry.CONST.EntityPermission | -1 | -2;
+    }
   }
 }
