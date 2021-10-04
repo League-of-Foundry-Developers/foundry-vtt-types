@@ -80,8 +80,8 @@ interface AudioField extends DocumentField<string> {
 /**
  * A standard integer field which may be used in a Document.
  * @remarks
- * Property type: `string | undefined`
- * Constructor type: `string | undefined | null`
+ * Property type: `number | undefined`
+ * Constructor type: `number | undefined | null`
  */
 export declare const INTEGER_FIELD: IntegerField;
 interface IntegerField extends DocumentField<number> {
