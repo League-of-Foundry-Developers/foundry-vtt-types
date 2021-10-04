@@ -12,8 +12,7 @@ expectType<string | null | undefined>(scene.img);
 expectType<boolean>(scene.isView);
 expectType<JournalEntry | null>(scene.journal);
 expectType<Playlist | null>(scene.playlist);
-// TODO: Use PlaylistSound instead of BasePlaylistSound
-expectType<foundry.documents.BasePlaylistSound | null>(scene.playlistSound);
+expectType<PlaylistSound | null>(scene.playlistSound);
 expectType<Promise<Scene | undefined>>(scene.activate());
 expectType<Promise<Scene | undefined>>(scene.view());
 expectType<Scene | Promise<Scene | undefined>>(scene.clone());

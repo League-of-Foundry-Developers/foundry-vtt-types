@@ -10,6 +10,7 @@ import './item';
 import './journalEntry';
 import './macro';
 import './playlist';
+import './playlistSound';
 import './rollTable';
 import './scene';
 import './setting';
