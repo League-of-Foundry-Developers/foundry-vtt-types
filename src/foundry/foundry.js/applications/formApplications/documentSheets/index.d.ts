@@ -8,4 +8,5 @@ import './permissionControl';
 import './playlistConfig';
 import './rollTableConfig';
 import './sceneConfig';
+import './tileConfig';
 import './userConfig';

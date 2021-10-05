@@ -15,7 +15,6 @@ import './noteConfig';
 import './permissionConfig';
 import './playlistSoundConfig';
 import './settingsConfig';
-import './tileConfig';
 import './tokenConfig';
 import './wallConfig';
 import './worldConfig';
