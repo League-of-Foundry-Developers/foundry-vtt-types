@@ -1,44 +1,22 @@
-import type { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
+import type { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from '../../../../../types/helperTypes';
+import { HoverInOptions } from '../placeableObject';
 
 declare global {
   /**
    * A Note is an implementation of PlaceableObject which represents an annotated location within the Scene.
    * Each Note links to a JournalEntry entity and represents it's location on the map.
-   *
-   * @example
-   * ```typescript
-   * Note.create<Note>({
-   *   entryId: journalEntry.id,
-   *   x: 1000,
-   *   y: 1000,
-   *   icon: "icons/my-journal-icon.svg",
-   *   iconSize: 40,
-   *   iconTint: "#00FF000",
-   *   text: "A custom label",
-   *   fontSize: 48,
-   *   textAnchor: CONST.TEXT_ANCHOR_POINTS.CENTER,
-   *   textColor: "#00FFFF"
-   * });
-   * ```
    */
   class Note extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>> {
-    /**
-     * The associated JournalEntry which is described by this note
-     */
-    entry: JournalEntry;
-
     /** @override */
     static get embeddedName(): 'Note';
 
     /**
-     * @remarks
-     * Not implemented for Note
+     * The associated JournalEntry which is described by this note
      */
-    get bounds(): never;
+    get entry(): InstanceType<ConfiguredDocumentClassForName<'JournalEntry'>>;
 
     /**
-     * Return the text label which describes the Note
-     * Use a manually specified label with a fallback to the JournalEntry name
+     * The text label used to annotate this Note
      */
     get text(): string;
 
@@ -69,40 +47,21 @@ declare global {
     refresh(): this;
 
     /** @override */
-    protected _onUpdate(data: Note.Data): Promise<this>;
+    protected _onUpdate(changed: DeepPartial<foundry.data.NoteData['_source']>): void;
 
     /** @override */
-    protected _canHover(user: User): true;
+    protected _canHover(user: InstanceType<ConfiguredDocumentClassForName<'User'>>): true;
 
     /** @override */
-    protected _canView(user: User): boolean;
+    protected _canView(user: InstanceType<ConfiguredDocumentClassForName<'User'>>): boolean;
 
     /** @override */
-    protected _onHoverIn(
-      event: PIXI.InteractionEvent,
-      options?: Parameters<PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>>['_onHoverIn']>[1]
-    ): false | void;
+    protected _onHoverIn(event: PIXI.InteractionEvent, options?: HoverInOptions): false | void;
 
     /** @override */
     protected _onHoverOut(event: PIXI.InteractionEvent): false | void;
 
     /** @override */
     protected _onClickLeft2(event: PIXI.InteractionEvent): void;
-  }
-}
-
-declare namespace Note {
-  interface Data {
-    entryId: string;
-    fontFamily: string;
-    fontSize: number;
-    icon: string;
-    iconSize: number;
-    iconTint: string;
-    text: string;
-    textAnchor: foundry.CONST.TextAnchorPoint;
-    textColor: string;
-    x: number;
-    y: number;
   }
 }
