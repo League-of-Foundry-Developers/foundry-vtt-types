@@ -200,7 +200,7 @@ declare abstract class FormApplication<
    * @param event - The initiating mouse click event which opens the picker
    * @returns Options passed to the FilePicker constructor
    */
-  protected _getFilePickerOptions(event: PointerEvent): FilePickerOptions;
+  protected _getFilePickerOptions(event: PointerEvent): FilePicker.Options;
 
   /**
    * @param options - (default: `{}`)
@@ -302,12 +302,4 @@ declare namespace FormApplication {
      */
     classes: string[];
   }
-}
-
-interface FilePickerOptions {
-  field: HTMLElement | null;
-  type: string;
-  current: string;
-  button: HTMLElement;
-  callback: FormApplication['_onSelectFile'];
 }
