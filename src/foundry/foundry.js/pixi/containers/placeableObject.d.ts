@@ -42,8 +42,9 @@ declare global {
     /**
      * A control icon for interacting with the object
      * @defaultValue `null`
+     * @remarks `undefined` is returned by subclasses only
      */
-    controlIcon: ControlIcon | null;
+    controlIcon: ControlIcon | null | undefined;
 
     /**
      * A mouse interaction manager instance which handles mouse workflows related to this object.
