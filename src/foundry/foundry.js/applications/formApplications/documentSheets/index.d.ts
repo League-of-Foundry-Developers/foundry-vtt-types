@@ -6,6 +6,7 @@ import './journalSheet';
 import './macroConfig';
 import './permissionControl';
 import './playlistConfig';
+import './playlistSoundConfig';
 import './rollTableConfig';
 import './sceneConfig';
 import './userConfig';
