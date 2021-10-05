@@ -1,7 +1,8 @@
 /**
  * Render the HUD container
+ * @typeParam Options - the type of the options object
  */
-declare class HeadsUpDisplay extends Application {
+declare class HeadsUpDisplay<Options extends Application.Options = Application.Options> extends Application<Options> {
   /**
    * Token HUD
    */
@@ -23,7 +24,7 @@ declare class HeadsUpDisplay extends Application {
   bubbles: ChatBubbles;
 
   /**
-   * Define default options which configure the HUD
+   * @override
    * @defaultValue
    * ```
    * mergeObject(super.defaultOptions, {
@@ -33,11 +34,16 @@ declare class HeadsUpDisplay extends Application {
    * })
    * ```
    */
-  static get defaultOptions(): typeof Application['defaultOptions'];
+  static get defaultOptions(): Application.Options;
 
-  getData(): {} | { width: number; height: number };
+  /** @override */
+  getData(options?: Partial<Options>): {} | { width: number; height: number };
 
-  _render(...args: Parameters<Application['_render']>): Promise<void>;
+  /** @override */
+  protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
+  /**
+   * Align the position of the HUD layer to the current position of the canvas
+   */
   align(): void;
 }
