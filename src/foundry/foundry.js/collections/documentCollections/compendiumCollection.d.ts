@@ -268,6 +268,9 @@ type DocumentInstanceForCompendiumMetadata<T extends CompendiumCollection.Metada
 type IndexTypeForMetadata<T extends CompendiumCollection.Metadata> = foundry.utils.Collection<
   Pick<
     StoredDocument<DocumentInstanceForCompendiumMetadata<T>>['data'],
-    '_id' | 'name' | 'img' | ('type' extends keyof DocumentInstanceForCompendiumMetadata<T>['data'] ? 'type' : never)
+    | '_id'
+    | 'name'
+    | ('img' extends keyof StoredDocument<DocumentInstanceForCompendiumMetadata<T>>['data'] ? 'img' : never)
+    | ('type' extends keyof StoredDocument<DocumentInstanceForCompendiumMetadata<T>>['data'] ? 'type' : never)
   >
 >;
