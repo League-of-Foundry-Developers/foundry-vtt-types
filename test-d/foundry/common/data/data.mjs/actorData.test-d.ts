@@ -1,8 +1,11 @@
 import { expectError, expectType } from 'tsd';
-import '../../../../../index';
 
 interface CharacterDataSourceData {
   health: number;
+  hands: {
+    left: string | null;
+    right: string | null;
+  };
 }
 
 interface CharacterFlags {
@@ -99,3 +102,5 @@ if (actorData.type === 'character') {
   expectType<number>(actorData.data.damage);
   expectType<string>(actorData.flags['my-module']['hidden-name']);
 }
+
+actorData.update({ data: { hands: { left: '' } } });
