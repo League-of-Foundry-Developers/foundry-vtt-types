@@ -4,7 +4,6 @@ import type { ActiveEffectDataProperties } from '../../../../src/foundry/common/
 import type { EffectDurationDataProperties } from '../../../../src/foundry/common/data/data.mjs/effectDurationData';
 
 import { expectError, expectType } from 'tsd';
-import '../../../../index';
 
 const baseActor = new foundry.documents.BaseActor();
 expectType<EmbeddedCollection<typeof ActiveEffect, foundry.data.ActorData>>(baseActor.effects);
@@ -14,6 +13,10 @@ expectType<EffectDurationDataProperties>(baseActor.data._source.effects[0].durat
 
 interface CharacterDataSourceData {
   health: number;
+  hands: {
+    left: string | null;
+    right: string | null;
+  };
 }
 
 interface CharacterFlags {
