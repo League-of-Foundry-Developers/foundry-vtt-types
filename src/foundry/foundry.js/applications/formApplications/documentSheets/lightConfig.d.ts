@@ -10,7 +10,7 @@ declare global {
    */
   class LightConfig<
     Options extends DocumentSheet.Options = DocumentSheet.Options,
-    Data extends object = LightConfig.Data
+    Data extends object = LightConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'AmbientLight'>>> {
     /**
      * @override
@@ -61,7 +61,8 @@ declare global {
   }
 
   namespace LightConfig {
-    interface Data extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'AmbientLight'>>> {
+    interface Data<Options extends DocumentSheet.Options>
+      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'AmbientLight'>>, Options> {
       submitText: string;
       lightTypes: Record<foundry.CONST.SourceType, string>;
       lightAnimations: Record<string, string> & {
