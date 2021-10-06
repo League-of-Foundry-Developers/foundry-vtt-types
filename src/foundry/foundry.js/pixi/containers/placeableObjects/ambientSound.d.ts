@@ -1,47 +1,32 @@
-import type { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
+import type { ConfiguredDocumentClassForName } from '../../../../../types/helperTypes';
+import { DocumentModificationOptions } from '../../../../common/abstract/document.mjs';
 
 declare global {
   /**
    * An AmbientSound is an implementation of PlaceableObject which represents a dynamic audio source within the Scene.
-   *
-   * @example
-   * ```typescript
-   * AmbientSound.create({
-   *   t: "l",
-   *   x: 1000,
-   *   y: 1000,
-   *   radius: 60,
-   *   easing: true,
-   *   path: "sounds/audio-file.mp3",
-   *   repeat: true,
-   *   volume: 0.4
-   * });
-   * ```
    */
-  class AmbientSound extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof AmbientSoundDocument>>> {
-    /**
-     * The Howl instance used to play this AmbientSound effect
-     */
-    howl: any;
+  class AmbientSound extends PlaceableObject<InstanceType<ConfiguredDocumentClassForName<'AmbientSound'>>> {
+    constructor(document: InstanceType<ConfiguredDocumentClassForName<'AmbientSound'>>);
 
     /**
-     * The Howl sound ID of the playing instance of this sound
+     * The Sound which manages playback for this AmbientSound effect
      */
-    howlId?: number;
-
-    /**
-     * Create an audio helper instance to use for the Ambient Sound
-     */
-    protected _createHowl(): any;
+    sound: Sound | null;
 
     /** @override */
-    static get embeddedName(): 'AmbientSound';
+    static embeddedName: 'AmbientSound';
 
     /**
-     * @remarks
-     * Not implemented for AmbientSound
+     * Create a Sound used to play this AmbientSound object
+     * @internal
      */
-    get bounds(): never;
+    _createSound(): Sound | null;
+
+    /**
+     * Is this ambient sound is currently audible based on its hidden state and the darkness level of the Scene?
+     */
+    get isAudible(): boolean;
 
     /**
      * A convenience accessor for the sound type
@@ -57,27 +42,25 @@ declare global {
      * Toggle playback of the sound depending on whether or not it is audible
      * @param isAudible - Is the sound audible?
      * @param volume    - The target playback volume
-     * @param fade      - Whether to fade the volume from its previous level
+     * @param options   - Additional options which affect sound synchronization
      */
-    play(isAudible: boolean, volume?: number, { fade }?: { fade?: boolean }): void | number;
+    sync(isAudible: boolean, volume: number, options?: Partial<AmbientSound.SyncOptions>): void;
 
-    /**
-     * @override
-     * @remarks
-     * Returns void
-     */
-    clear(): any;
+    /** @override */
+    clear(): this;
 
     /** @override */
     draw(): Promise<this>;
 
     /**
      * Draw the graphical preview of the audio source area of effect
+     * @internal
      */
-    protected drawField(): PIXI.Container;
+    drawField(): PIXI.Container;
 
     /**
      * Draw the ControlIcon for the AmbientLight
+     * @internal
      */
     protected _drawControlIcon(): ControlIcon;
 
@@ -85,35 +68,53 @@ declare global {
     refresh(): this;
 
     /**
+     * Refresh the display of the ControlIcon for this AmbientSound source
+     */
+    refreshControl(): void;
+
+    /**
      * Compute the field-of-vision for an object, determining its effective line-of-sight and field-of-vision polygons
      * @returns An object containing the rays, LOS polygon, and FOV polygon for the light
      */
-    computeFOV(): {
-      fov: PIXI.Polygon | null;
-      los: PIXI.Polygon | null;
-      rays: Array<Ray> | null;
-    };
+    updateSource(): { rays: null; los: null; fov: PIXI.Circle } | ReturnType<WallsLayer['computePolygon']>;
 
     /** @override */
-    protected _onCreate(): void;
+    protected _onCreate(
+      data: foundry.data.AmbientSoundData['_source'],
+      options: DocumentModificationOptions,
+      userId: string
+    ): void;
 
     /** @override */
-    protected _onUpdate(data: AmbientSound.Data): void;
+    protected _onUpdate(
+      changed: DeepPartial<foundry.data.AmbientSoundData['_source']>,
+      options?: DocumentModificationOptions,
+      userId?: string
+    ): void;
 
     /** @override */
-    protected _onDelete(): void;
+    protected _onDelete(...args: Parameters<PlaceableObject['_onDelete']>): void;
+
+    /** @override */
+    protected _canHUD(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
+
+    /** @override */
+    protected _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
+
+    /** @override */
+    protected _onClickRight(event: PIXI.InteractionEvent): void;
+
+    /** @override */
+    protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
   }
 
   namespace AmbientSound {
-    interface Data {
-      easing: boolean;
-      path: string;
-      radius: number;
-      repeat: boolean;
-      type: 'l' | 'g';
-      volume: number;
-      x: number;
-      y: number;
+    interface SyncOptions {
+      /**
+       * A duration in milliseconds to fade volume transition
+       * @defaultValue `250`
+       */
+      fade: number;
     }
   }
 }
