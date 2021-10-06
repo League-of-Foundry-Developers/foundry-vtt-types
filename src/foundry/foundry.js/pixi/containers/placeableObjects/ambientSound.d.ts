@@ -1,6 +1,5 @@
-import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
 import type { ConfiguredDocumentClassForName } from '../../../../../types/helperTypes';
-import { DocumentModificationOptions } from '../../../../common/abstract/document.mjs';
+import type { DocumentModificationOptions } from '../../../../common/abstract/document.mjs';
 
 declare global {
   /**
