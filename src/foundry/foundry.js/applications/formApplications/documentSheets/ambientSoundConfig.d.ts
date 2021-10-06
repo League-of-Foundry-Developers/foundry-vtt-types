@@ -9,7 +9,7 @@ declare global {
    */
   class AmbientSoundConfig<
     Options extends DocumentSheet.Options = AmbientSoundConfig.Options,
-    Data extends object = AmbientSoundConfig.Data
+    Data extends object = AmbientSoundConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'AmbientSound'>>> {
     /**
      * @override
@@ -44,7 +44,8 @@ declare global {
   }
 
   namespace AmbientSoundConfig {
-    interface Data extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'AmbientSound'>>> {
+    interface Data<Options extends DocumentSheet.Options>
+      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'AmbientSound'>>, Options> {
       submitText: string;
     }
 
