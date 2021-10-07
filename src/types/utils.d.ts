@@ -3,7 +3,7 @@
  * @internal
  */
 declare type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+  [P in keyof T]?: Exclude<T[P], undefined> extends object ? DeepPartial<Exclude<T[P], undefined>> : T[P];
 };
 
 /**
