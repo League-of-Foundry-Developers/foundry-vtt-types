@@ -2,7 +2,7 @@ import { expectError, expectType } from 'tsd';
 
 interface CharacterDataSourceData {
   health: number;
-  hands: {
+  hands?: {
     left: string | null;
     right: string | null;
   };
@@ -103,4 +103,5 @@ if (actorData.type === 'character') {
   expectType<string>(actorData.flags['my-module']['hidden-name']);
 }
 
+// Optional properties
 actorData.update({ data: { hands: { left: '' } } });

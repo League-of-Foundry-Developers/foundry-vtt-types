@@ -13,7 +13,7 @@ expectType<EffectDurationDataProperties>(baseActor.data._source.effects[0].durat
 
 interface CharacterDataSourceData {
   health: number;
-  hands: {
+  hands?: {
     left: string | null;
     right: string | null;
   };
