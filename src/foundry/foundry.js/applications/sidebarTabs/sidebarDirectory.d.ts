@@ -106,7 +106,7 @@ declare global {
      * This implementation doesn't actually return `PlaylistDirectory.Data`, it's only to allow {@link PlaylistDirectory}
      * to override accordingly.
      */
-    getData(options?: Partial<Options>): SidebarDirectory.Data<this['tree']> | PlaylistDirectory.Data;
+    getData(options?: Partial<Options>): SidebarDirectory.Data<this['tree']>;
 
     /**
      * @param event - (unused)

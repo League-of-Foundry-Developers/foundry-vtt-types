@@ -13,7 +13,6 @@ import './measuredTemplateConfig';
 import './moduleManagement';
 import './noteConfig';
 import './permissionConfig';
-import './playlistSoundConfig';
 import './settingsConfig';
 import './tileConfig';
 import './tokenConfig';

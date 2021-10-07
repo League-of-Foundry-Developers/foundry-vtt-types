@@ -1,36 +1,49 @@
-// TODO: Remove when updating this class!!!
-// eslint-disable-next-line
-// @ts-nocheck
+import type { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
 
-/**
- * Playlist Configuration Sheet
- */
-declare class PlaylistConfig extends DocumentSheet<DocumentSheet.Options, PlaylistConfig.Data, Playlist> {
+declare global {
   /**
-   * @defaultValue
-   * ```typescript
-   * const options = super.defaultOptions;
-   * options.id = "playlist-config";
-   * options.template = "templates/playlist/edit-playlist.html";
-   * options.width = 360;
-   * ```
+   * The Application responsible for configuring a single Playlist document.
+   * @typeParam Options - the type of the options object
+   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  static get defaultOptions(): typeof DocumentSheet['defaultOptions'];
+  class PlaylistConfig<
+    Options extends DocumentSheet.Options = DocumentSheet.Options,
+    Data extends object = PlaylistConfig.Data<Options>
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Playlist>>> {
+    /**
+     * @defaultValue
+     * ```typescript
+     * const options = super.defaultOptions;
+     * options.id = "playlist-config";
+     * options.template = "templates/playlist/edit-playlist.html";
+     * options.width = 360;
+     * ```
+     */
+    static get defaultOptions(): DocumentSheet.Options;
 
-  /**
-   * @override
-   */
-  get title(): string;
+    /** @override */
+    get title(): string;
 
-  /**
-   * @param options - (unused)
-   * @override
-   */
-  getData(options?: Partial<DocumentSheet.Options>): PlaylistConfig.Data;
-}
+    /**
+     * @override
+     * @param options - (unused)
+     */
+    getData(options?: Partial<Options>): Data | Promise<Data>;
 
-declare namespace PlaylistConfig {
-  interface Data extends foundry.utils.Duplicated<PlaylistConfig['object']['data']> {
-    modes: Record<string, ValueOf<typeof foundry.CONST['PLAYLIST_MODES']>>;
+    /** @override */
+    protected _getFilePickerOptions(event: PointerEvent): FilePicker.Options;
+
+    /**
+     * @override
+     * @remarks The return type could be given more concretely but it is not supposed to be used.
+     */
+    protected _onSelectFile(selection: string, filePicker: FilePicker): unknown;
+  }
+
+  namespace PlaylistConfig {
+    interface Data<Options extends DocumentSheet.Options = DocumentSheet.Options>
+      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Playlist>>, Options> {
+      modes: Record<foundry.CONST.PlaylistMode, string>;
+    }
   }
 }

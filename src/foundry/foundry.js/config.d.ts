@@ -1572,7 +1572,7 @@ declare global {
       /**
        * @defaultValue `PlaylistSound`
        */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BasePlaylistSound>; // TODO PlaylistSound
+      documentClass: ConfiguredDocumentClassOrDefault<typeof PlaylistSound>;
 
       /**
        * @defaultValue `PlaylistSoundConfig`

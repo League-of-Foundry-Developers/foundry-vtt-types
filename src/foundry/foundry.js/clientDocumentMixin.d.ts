@@ -339,7 +339,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
     T['data']['_source'],
     '_id' | 'folder' | 'permission'
   > & {
-    permission?: T extends { toObject(): infer U } ? U : never;
+    permission?: T['data']['_source']['permission'];
   };
 
   /**

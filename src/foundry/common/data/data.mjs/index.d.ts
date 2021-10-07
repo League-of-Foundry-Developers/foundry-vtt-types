@@ -13,6 +13,8 @@ export { JournalEntryData } from './journalEntryData';
 export { MacroData } from './macroData';
 export { MeasuredTemplateData } from './measuredTemplateData';
 export { NoteData } from './noteData';
+export { PlaylistData } from './playlistData';
+export { PlaylistSoundData } from './playlistSoundData';
 export { PrototypeTokenData } from './prototypeTokenData';
 export { RollTableData } from './rollTableData';
 export { SceneData } from './sceneData';
