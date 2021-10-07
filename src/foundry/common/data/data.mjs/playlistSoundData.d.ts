@@ -136,7 +136,7 @@ export declare class PlaylistSoundData extends DocumentData<
   static defineSchema(): PlaylistSoundDataSchema;
 
   /** @override */
-  _initialize(): void;
+  protected _initialize(): void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

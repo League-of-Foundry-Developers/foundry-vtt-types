@@ -245,6 +245,7 @@ declare global {
 
   namespace PlaylistDirectory {
     interface Data extends SidebarDirectory.Data<PlaylistDirectory.Data.Tree> {
+      playingSounds: PlaylistDirectory.Data.Sound[];
       showPlaying: boolean;
       playlistModifier: number;
       ambientModifier: number;

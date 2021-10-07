@@ -28,7 +28,7 @@ declare global {
      * @override
      * @param options - (unused)
      */
-    getData(options?: Partial<Options>): Data;
+    getData(options?: Partial<Options>): Data | Promise<Data>;
 
     /** @override */
     protected _getFilePickerOptions(event: PointerEvent): FilePicker.Options;
