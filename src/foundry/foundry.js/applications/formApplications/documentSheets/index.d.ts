@@ -3,6 +3,7 @@ import './actorSheet';
 import './combatantConfig';
 import './itemSheet';
 import './journalSheet';
+import './lightConfig';
 import './macroConfig';
 import './permissionControl';
 import './playlistConfig';
