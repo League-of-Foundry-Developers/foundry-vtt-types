@@ -7,6 +7,18 @@ expectType<{ a?: string }>(membersBecomeOptional);
 const nestedMembersBecomeOptional: DeepPartial<{ a: { b: string } }> = { a: {} };
 expectType<{ a?: { b?: string } }>(nestedMembersBecomeOptional);
 
+const membersOfOptionalMembersBecomeOptional: DeepPartial<{ a?: { b: string } }> = { a: {} };
+expectType<{ a?: { b?: string } }>(membersOfOptionalMembersBecomeOptional);
+
+const membersInsideOfArraysBecomeOptional: DeepPartial<Array<{ a: string; b: string }>> = [{ a: 'a' }, { b: 'b' }];
+expectType<Array<{ a?: string; b?: string }>>(membersInsideOfArraysBecomeOptional);
+
+const membersInsideOfReadonlyArraysBecomeOptional: DeepPartial<ReadonlyArray<{ a: string; b: string }>> = [
+  { a: 'a' },
+  { b: 'b' }
+];
+expectType<ReadonlyArray<{ a?: string; b?: string }>>(membersInsideOfReadonlyArraysBecomeOptional);
+
 const expanded1: Expanded<{ foo: string }> = { foo: '' };
 expectType<{ foo: string }>(expanded1);
 const expanded2: Expanded<{ 'foo.bar': string }> = { foo: { bar: '' } };

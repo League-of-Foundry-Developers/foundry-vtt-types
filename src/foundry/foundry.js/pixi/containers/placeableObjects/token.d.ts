@@ -450,7 +450,7 @@ declare global {
 
     /** @override */
     protected _onUpdate(
-      data?: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>['data']['_source']>,
+      data: DeepPartial<foundry.data.TokenData['_source']>,
       options?: DocumentModificationOptions & { animate?: boolean },
       userId?: string
     ): void;

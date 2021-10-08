@@ -2,9 +2,13 @@
  * Recursively sets keys of an object to optional. Used primarily for update methods
  * @internal
  */
-declare type DeepPartial<T> = {
-  [P in keyof T]?: Exclude<T[P], undefined> extends object ? DeepPartial<Exclude<T[P], undefined>> : T[P];
-};
+declare type DeepPartial<T> = T extends Array<infer U>
+  ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U>
+  ? ReadonlyArray<DeepPartial<U>>
+  : {
+      [P in keyof T]?: Exclude<T[P], undefined> extends object ? DeepPartial<Exclude<T[P], undefined>> : T[P];
+    };
 
 /**
  * References the constructor of type `T`
