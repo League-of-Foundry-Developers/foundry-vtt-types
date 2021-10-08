@@ -44,16 +44,19 @@ declare global {
 
     /**
      * A cached mapping of non-transparent pixels
+     * @defaultValue `undefined`
      * @internal
      */
-    protected _alphaMap: {
-      minX: number;
-      minY: number;
-      maxX: number;
-      maxY: number;
-      pixels: Uint8Array | undefined;
-      texture: PIXI.RenderTexture | undefined;
-    };
+    protected _alphaMap:
+      | {
+          minX: number;
+          minY: number;
+          maxX: number;
+          maxY: number;
+          pixels: Uint8Array | undefined;
+          texture: PIXI.RenderTexture | undefined;
+        }
+      | undefined;
 
     /**
      * A flag which tracks whether the overhead tile is currently in an occluded state
@@ -173,7 +176,7 @@ declare global {
     ): Promise<this> | void;
 
     /** @override */
-    _onDelete(options: DocumentModificationOptions, userId: string): void;
+    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
 
     /** @override */
     activateListeners(): void;
