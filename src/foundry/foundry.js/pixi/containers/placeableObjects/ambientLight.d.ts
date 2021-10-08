@@ -6,6 +6,8 @@ declare global {
    * An AmbientLight is an implementation of PlaceableObject which represents a dynamic light source within the Scene.
    */
   class AmbientLight extends PlaceableObject<InstanceType<ConfiguredDocumentClassForName<'AmbientLight'>>> {
+    constructor(document: InstanceType<ConfiguredDocumentClassForName<'AmbientLight'>>);
+
     /**
      * A reference to the PointSource object which defines this light source area of effect
      */
@@ -13,6 +15,7 @@ declare global {
 
     /**
      * A reference to the ControlIcon used to configure this light
+     * @defaultValue `undefined`
      */
     controlIcon: ControlIcon | undefined;
 
