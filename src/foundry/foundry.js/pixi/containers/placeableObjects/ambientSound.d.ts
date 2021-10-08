@@ -20,7 +20,7 @@ declare global {
      * Create a Sound used to play this AmbientSound object
      * @internal
      */
-    _createSound(): Sound | null;
+    protected _createSound(): Sound | null;
 
     /**
      * Is this ambient sound is currently audible based on its hidden state and the darkness level of the Scene?
