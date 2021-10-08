@@ -22,13 +22,9 @@ declare class GridHighlight extends PIXI.Graphics {
    */
   highlight(x: number, y: number): boolean;
 
-  /**
-   * Extend the Graphics clear logic to also reset the highlighted positions
-   */
+  /** @override */
   clear(): this;
 
-  /**
-   * Extend how this Graphics container is destroyed to also remove parent layer references
-   */
+  /** @override */
   destroy(...args: Parameters<PIXI.Graphics['destroy']>): void;
 }
