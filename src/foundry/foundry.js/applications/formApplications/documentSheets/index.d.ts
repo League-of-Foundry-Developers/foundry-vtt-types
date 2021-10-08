@@ -9,4 +9,5 @@ import './playlistConfig';
 import './playlistSoundConfig';
 import './rollTableConfig';
 import './sceneConfig';
+import './tileConfig';
 import './userConfig';

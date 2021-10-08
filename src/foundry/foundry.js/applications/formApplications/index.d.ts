@@ -14,7 +14,6 @@ import './moduleManagement';
 import './noteConfig';
 import './permissionConfig';
 import './settingsConfig';
-import './tileConfig';
 import './tokenConfig';
 import './wallConfig';
 import './worldConfig';
