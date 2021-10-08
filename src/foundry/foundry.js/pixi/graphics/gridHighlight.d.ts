@@ -22,14 +22,9 @@ declare class GridHighlight extends PIXI.Graphics {
    */
   highlight(x: number, y: number): boolean;
 
-  /**
-   * Extend the Graphics clear logic to also reset the highlighted positions
-   * @remarks Returns `void`, see https://gitlab.com/foundrynet/foundryvtt/-/issues/4732
-   */
-  clear(): any;
+  /** @override */
+  clear(): this;
 
-  /**
-   * Extend how this Graphics container is destroyed to also remove parent layer references
-   */
-  destroy(options?: { children?: boolean; texture?: boolean; baseTexture?: boolean }): void;
+  /** @override */
+  destroy(...args: Parameters<PIXI.Graphics['destroy']>): void;
 }
