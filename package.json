@@ -1,6 +1,6 @@
 {
   "name": "@league-of-foundry-developers/foundry-vtt-types",
-  "version": "0.8.9-4",
+  "version": "0.8.9-5",
   "description": "TypeScript type definitions for Foundry VTT",
   "scripts": {
     "lint": "./node_modules/typescript/bin/tsc && eslint --ext .d.ts,.test-d.ts .",
