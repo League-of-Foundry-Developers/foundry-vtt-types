@@ -24,8 +24,9 @@ declare abstract class CanvasLayer<Options extends CanvasLayerOptions = CanvasLa
   /**
    * Track whether the canvas layer is currently active for interaction
    * @defaultValue `false`
+   * @remarks This is public because it's checked from outside in foundry and modules sometimes need to do the same.
    */
-  protected _active: boolean;
+  _active: boolean;
 
   /**
    * Customize behaviors of this CanvasLayer by modifying some behaviors at a class level.

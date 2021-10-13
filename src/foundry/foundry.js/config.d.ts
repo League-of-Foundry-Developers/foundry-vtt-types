@@ -824,72 +824,7 @@ declare global {
        */
       unexploredColor: number;
 
-      layers: {
-        /**
-         * @defaultValue `BackgroundLayer`
-         */
-        background: ConstructorOf<BackgroundLayer>;
-
-        /**
-         * @defaultValue `DrawingsLayer`
-         */
-        drawings: ConstructorOf<DrawingsLayer>;
-
-        /**
-         * @defaultValue `GridLayer`
-         */
-        grid: ConstructorOf<GridLayer>;
-
-        /**
-         * @defaultValue `WallsLayer`
-         */
-        walls: ConstructorOf<WallsLayer>;
-
-        /**
-         * @defaultValue `TemplateLayer`
-         */
-        templates: ConstructorOf<TemplateLayer>;
-
-        /**
-         * @defaultValue `NotesLayer`
-         */
-        notes: ConstructorOf<NotesLayer>;
-
-        /**
-         * @defaultValue `TokenLayer`
-         */
-        tokens: ConstructorOf<TokenLayer>;
-
-        /**
-         * @defaultValue `ForegroundLayer`
-         */
-        foreground: ConstructorOf<ForegroundLayer>;
-
-        /**
-         * @defaultValue `SoundsLayer`
-         */
-        sounds: ConstructorOf<SoundsLayer>;
-
-        /**
-         * @defaultValue `LightingLayer`
-         */
-        lighting: ConstructorOf<LightingLayer>;
-
-        /**
-         * @defaultValue `SightLayer`
-         */
-        sight: ConstructorOf<SightLayer>;
-
-        /**
-         * @defaultValue `EffectsLayer`
-         */
-        effects: ConstructorOf<EffectsLayer>;
-
-        /**
-         * @defaultValue `ControlsLayer`
-         */
-        controls: ConstructorOf<ControlsLayer>;
-      };
+      layers: CONFIG.Canvas.Layers;
 
       lightLevels: {
         /**
@@ -1976,6 +1911,77 @@ declare global {
        * @defaultValue `CameraViews`
        */
       webrtc: ConstructorOf<CameraViews>;
+    }
+
+    namespace Canvas {
+      interface Layers {
+        /**
+         * @defaultValue `BackgroundLayer`
+         */
+        background: ConstructorOf<BackgroundLayer>;
+
+        /**
+         * @defaultValue `DrawingsLayer`
+         */
+        drawings: ConstructorOf<DrawingsLayer>;
+
+        /**
+         * @defaultValue `GridLayer`
+         */
+        grid: ConstructorOf<GridLayer>;
+
+        /**
+         * @defaultValue `WallsLayer`
+         */
+        walls: ConstructorOf<WallsLayer>;
+
+        /**
+         * @defaultValue `TemplateLayer`
+         */
+        templates: ConstructorOf<TemplateLayer>;
+
+        /**
+         * @defaultValue `NotesLayer`
+         */
+        notes: ConstructorOf<NotesLayer>;
+
+        /**
+         * @defaultValue `TokenLayer`
+         */
+        tokens: ConstructorOf<TokenLayer>;
+
+        /**
+         * @defaultValue `ForegroundLayer`
+         */
+        foreground: ConstructorOf<ForegroundLayer>;
+
+        /**
+         * @defaultValue `SoundsLayer`
+         */
+        sounds: ConstructorOf<SoundsLayer>;
+
+        /**
+         * @defaultValue `LightingLayer`
+         */
+        lighting: ConstructorOf<LightingLayer>;
+
+        /**
+         * @defaultValue `SightLayer`
+         */
+        sight: ConstructorOf<SightLayer>;
+
+        /**
+         * @defaultValue `EffectsLayer`
+         */
+        effects: ConstructorOf<EffectsLayer>;
+
+        /**
+         * @defaultValue `ControlsLayer`
+         */
+        controls: ConstructorOf<ControlsLayer>;
+
+        [key: string]: ConstructorOf<CanvasLayer>;
+      }
     }
   }
 

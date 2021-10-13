@@ -1,4 +1,8 @@
-import { ConfiguredObjectClassForName, DataSourceForPlaceable } from '../../../../../../../types/helperTypes';
+import {
+  ConfiguredDocumentClassForName,
+  ConfiguredObjectClassForName,
+  DataSourceForPlaceable
+} from '../../../../../../../types/helperTypes';
 
 declare global {
   /**
@@ -27,7 +31,7 @@ declare global {
      */
     protected _drawOutline(): PIXI.Graphics | undefined;
 
-    getDocuments(): Exclude<this['documentCollection'], null>;
+    getDocuments(): Exclude<this['documentCollection'], null> | InstanceType<ConfiguredDocumentClassForName<'Tile'>>[];
 
     getZIndex(): number;
 

@@ -114,7 +114,9 @@ declare global {
     /**
      * Obtain an iterable of objects which should be added to this PlaceableLayer
      */
-    getDocuments(): Exclude<this['documentCollection'], null> | [];
+    getDocuments():
+      | Exclude<this['documentCollection'], null>
+      | InstanceType<ConfiguredDocumentClassForName<DocumentName>>[];
 
     /**
      * @override
