@@ -17,9 +17,9 @@ expectType<PIXI.Container>(ruler.labels);
 expectType<{ INACTIVE: 0; STARTING: 1; MEASURING: 2; MOVING: 3 }>(Ruler.STATES);
 expectType<boolean>(ruler.active);
 
-expectType<Array<{ ray: Ray; label: PIXI.DisplayObject }>>(ruler.measure(new PIXI.Point()));
-expectType<Array<{ ray: Ray; label: PIXI.DisplayObject }>>(ruler.measure({ x: 10, y: 10 }, {}));
-expectType<Array<{ ray: Ray; label: PIXI.DisplayObject }>>(ruler.measure({ x: 10, y: 10 }, { gridSpaces: true }));
+expectType<Array<Ruler.Segment>>(ruler.measure(new PIXI.Point()));
+expectType<Array<Ruler.Segment>>(ruler.measure({ x: 10, y: 10 }, {}));
+expectType<Array<Ruler.Segment>>(ruler.measure({ x: 10, y: 10 }, { gridSpaces: true }));
 
 expectType<Promise<false | undefined>>(ruler.moveToken());
 expectType<void>(ruler.clear());

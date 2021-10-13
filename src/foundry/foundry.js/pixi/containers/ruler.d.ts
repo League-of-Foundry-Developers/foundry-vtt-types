@@ -82,13 +82,7 @@ declare global {
      * @param gridSpaces  - Restrict measurement only to grid spaces
      *                      (default: `true`)
      */
-    measure(
-      destination: Point,
-      { gridSpaces }?: { gridSpaces?: boolean }
-    ): {
-      ray: Ray;
-      label: PIXI.DisplayObject;
-    }[];
+    measure(destination: Point, { gridSpaces }?: { gridSpaces?: boolean }): Ruler.Segment[];
 
     /**
      * Get the text label for a segment of the measured path
@@ -188,5 +182,15 @@ declare global {
      * @param data - Ruler data with which to update the display
      */
     update(data: ReturnType<Ruler['toJSON']>): void;
+  }
+
+  namespace Ruler {
+    interface Segment {
+      distance: number;
+      label: PIXI.DisplayObject;
+      last: boolean;
+      ray: Ray;
+      text: string;
+    }
   }
 }
