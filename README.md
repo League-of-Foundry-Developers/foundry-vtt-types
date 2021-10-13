@@ -108,6 +108,16 @@ You can run the tests with
 npm run test
 ```
 
+## Creating a release
+
+To create a release, you have to create a new release commit, tag it and create a GitHub release from that. The CI will
+handle the rest.
+
+```
+npm version prerelease
+git push --follow-tags
+```
+
 ## License
 
 This project is licensed under the MIT license. You can find a copy at [LICENSE](LICENSE).
