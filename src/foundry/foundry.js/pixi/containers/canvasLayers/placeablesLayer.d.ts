@@ -52,8 +52,9 @@ declare global {
     /**
      * Track the set of PlaceableObjects on this layer which are currently controlled by their id
      * @defaultValue `{}`
+     * @remarks This is public because it's used from externally by foundry and modules might need to do the same.
      */
-    protected _controlled: Record<string, InstanceType<ConfiguredObjectClassForName<DocumentName>>>;
+    _controlled: Record<string, InstanceType<ConfiguredObjectClassForName<DocumentName>>>;
 
     /**
      * Keep track of an object copied with CTRL+C which can be pasted later
