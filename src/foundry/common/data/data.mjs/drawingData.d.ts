@@ -3,7 +3,12 @@ import { BaseUser } from '../../documents.mjs';
 import { ForeignDocumentField } from '../fields.mjs';
 import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
-import { ConfiguredDocumentClass, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import {
+  ConfiguredDocumentClass,
+  ConfiguredFlags,
+  FieldReturnType,
+  PropertiesToSource
+} from '../../../../types/helperTypes';
 
 interface DrawingDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
@@ -211,7 +216,7 @@ interface DrawingDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: Record<string, unknown>;
+  flags: ConfiguredFlags<'Drawing'>;
 }
 
 interface DrawingDataConstructorData {
@@ -365,7 +370,7 @@ interface DrawingDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: Record<string, unknown> | null;
+  flags?: ConfiguredFlags<'Drawing'> | null;
 }
 
 /**

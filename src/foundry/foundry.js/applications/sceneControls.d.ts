@@ -1,15 +1,25 @@
-declare interface SceneControlTool {
+interface SceneControlToolBase {
   name: string;
   title: string;
   icon: string;
   visible?: boolean;
-  toggle?: boolean;
   active?: boolean;
+}
+
+interface SceneControlToolToggle extends SceneControlToolBase {
+  toggle: true;
+  onClick?: (toggled: boolean) => void;
+}
+
+interface SceneControlToolNoToggle extends SceneControlToolBase {
+  toggle?: false;
   button?: boolean;
   onClick?: () => void;
 }
 
-declare interface SceneControl {
+type SceneControlTool = SceneControlToolToggle | SceneControlToolNoToggle;
+
+interface SceneControl {
   name: string;
   title: string;
   layer: string;

@@ -26,7 +26,9 @@ expectType<number>(layer.gridPrecision);
 expectType<BasePlaceableHUD<AmbientLight> | null>(layer.hud);
 expectType<AmbientLight[]>(layer.placeables);
 expectType<AmbientLight[]>(layer.controlled);
-expectType<EmbeddedCollection<typeof AmbientLightDocument, foundry.data.SceneData> | []>(layer.getDocuments());
+expectType<EmbeddedCollection<typeof AmbientLightDocument, foundry.data.SceneData> | AmbientLightDocument[]>(
+  layer.getDocuments()
+);
 expectType<Promise<SomeLightLayer | undefined>>(layer.draw());
 expectType<AmbientLight>(layer.createObject(new AmbientLightDocument()));
 expectError(layer.createObject({}));

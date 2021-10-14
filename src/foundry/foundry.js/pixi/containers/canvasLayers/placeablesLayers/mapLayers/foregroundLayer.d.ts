@@ -1,4 +1,4 @@
-import { ConfiguredObjectClassForName } from '../../../../../../../types/helperTypes';
+import { ConfiguredDocumentClassForName, ConfiguredObjectClassForName } from '../../../../../../../types/helperTypes';
 
 declare global {
   /**
@@ -43,7 +43,7 @@ declare global {
 
     getZIndex(): number;
 
-    getDocuments(): Exclude<this['documentCollection'], null>;
+    getDocuments(): Exclude<this['documentCollection'], null> | InstanceType<ConfiguredDocumentClassForName<'Tile'>>[];
 
     /**
      * Refresh the display of tiles on the Foreground Layer depending on Token occlusion.
