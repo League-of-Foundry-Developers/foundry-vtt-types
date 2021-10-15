@@ -1,27 +1,37 @@
-// TODO: Remove when updating this class!!!
-// eslint-disable-next-line
-// @ts-nocheck
-
 /**
  * The Module Management Application.
  * This application provides a view of which modules are available to be used and allows for configuration of the
  * set of modules which are active within the World.
+ * @typeParam Options - The type of the options object
+ * @typeParam Data    - The data structure used to render the handlebars template.
  */
-declare class ModuleManagement extends FormApplication<FormApplication.Options, ModuleManagement.Data, any> {
+
+declare class ModuleManagement<
+  Options extends FormApplication.Options = FormApplication.Options,
+  Data extends object = ModuleManagement.Data
+> extends FormApplication<Options, Data, undefined> {
   /**
    * @defaultValue `'all'`
+   * @internal
    */
   protected _filter: ModuleManagement.FilterName;
 
   /**
    * @defaultValue `false`
+   * @internal
    */
   protected _expanded: boolean;
 
   /**
    * @defaultValue `{}`
+   * @internal
    */
-  protected _checked: Partial<Record<string, boolean>>;
+  protected _checked: Record<string, boolean>;
+
+  /**
+   * The named game setting which persists module configuration.
+   */
+  static CONFIG_SETTING: 'moduleConfiguration';
 
   /**
    * @override
@@ -40,57 +50,63 @@ declare class ModuleManagement extends FormApplication<FormApplication.Options, 
    * });
    * ```
    */
-  static get defaultOptions(): typeof FormApplication['defaultOptions'];
+  static get defaultOptions(): FormApplication.Options;
 
   /** @override */
   get isEditable(): boolean;
 
   /** @override */
-  getData(options?: Partial<FormApplication.Options>): ModuleManagement.Data;
+  getData(options?: Partial<Options>): Data | Promise<Data>;
 
   /** @override */
   activateListeners(html: JQuery): void;
 
   /**
-   * @param event - (unused)
    * @override
+   * @param event - (unused)
    */
-  // TODO: type return value when the class' config setting is typed
-  protected _updateObject(event: Event, formData: ModuleManagement.FormData): Promise<unknown>;
+  protected _updateObject(event: Event, formData: ModuleManagement.FormData): Promise<Record<string, boolean>>;
+
+  /**
+   * Restores the Form UI to the internal checked state
+   * @internal
+   */
+  protected _restoreCheckboxState(): void;
 
   /**
    * Handle changes to a module checkbox to prompt for whether or not to enable dependencies
+   * @internal
    */
-  protected _onChangeCheckbox(event: JQuery.ChangeEvent): void;
+  protected _onChangeCheckbox(event: JQuery.ChangeEvent): unknown;
 
   /**
    * Handle a button-click to deactivate all modules
+   * @internal
    */
   protected _onDeactivateAll(event: JQuery.ClickEvent): void;
 
   /**
    * Handle expanding or collapsing the display of descriptive elements
+   * @internal
    */
   protected _onExpandCollapse(event: JQuery.ClickEvent): void;
 
   /**
    * Handle a button-click to deactivate all modules
+   * @internal
    */
   protected _onFilterList(event: JQuery.ClickEvent): void;
 
   /** @override */
   protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
-
-  static readonly CONFIG_SETTING: 'moduleConfiguration';
 }
 
 declare namespace ModuleManagement {
   interface Data {
-    editable: ModuleManagement['isEditable'];
+    editable: boolean;
     filters: [Data.Filter<'all'>, Data.Filter<'active'>, Data.Filter<'inactive'>];
     modules: Data.Module[];
-    query: undefined; // TODO: this seems to reference an undefined value (`this._query`)
-    expanded: ModuleManagement['_expanded'];
+    expanded: boolean;
   }
 
   namespace Data {
@@ -101,23 +117,25 @@ declare namespace ModuleManagement {
       count: number;
     }
 
-    interface Module extends foundry.utils.Duplicated<Game.Module> {
+    type Module = foundry.packages.ModuleData['_source'] & {
       active: boolean;
+      availability: number;
+      data: foundry.packages.ModuleData;
       css: ' active' | '';
       hasPacks: boolean;
       hasScripts: boolean;
       hasStyles: boolean;
       systemOnly: boolean;
       systemTag: Game['system']['id'];
-      incompatible: any; // TODO
-      unavailable: any; // TODO
       dependencies: string[] | null;
-    }
+      unavailable?: string;
+      incompatible?: string;
+    };
   }
 
   type FilterName = 'all' | 'active' | 'inactive';
 
-  interface FormData {
+  type FormData = Record<string, boolean> & {
     search: string;
-  }
+  };
 }
