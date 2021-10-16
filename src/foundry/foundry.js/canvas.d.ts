@@ -399,6 +399,7 @@ declare global {
 
     /**
      * Event handler for the drop portion of a drag-and-drop event.
+     * @internal
      */
     protected _onDrop(event: DragEvent): unknown;
 

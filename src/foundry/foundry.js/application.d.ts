@@ -316,6 +316,7 @@ declare abstract class Application<Options extends Application.Options = Applica
    * The implementation in {@link Application} actually returns `void` but it is
    * typed as `unknown` to allow deriving methods to return whatever they want.
    * The returned value is not meant to be used.
+   * @internal
    */
   protected _onDrop(event: DragEvent): unknown;
 
