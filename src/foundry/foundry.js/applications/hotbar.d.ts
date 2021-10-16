@@ -134,9 +134,7 @@ declare global {
     protected _canDragDrop(selector: string): boolean;
 
     /** @override */
-    protected _onDrop(
-      event: DragEvent
-    ): void | ReturnType<InstanceType<ConfiguredDocumentClass<typeof User>>['assignHotbarMacro']>;
+    protected _onDrop(event: DragEvent): void;
 
     /**
      * Handle click events to toggle display of the macro bar

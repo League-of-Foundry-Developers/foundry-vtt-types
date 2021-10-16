@@ -168,11 +168,8 @@ declare global {
 
     /**
      * @override
-     * @remarks
-     * The return type could be specified in more detail but it is not supposed to be used and this allows more
-     * flexibility for deriving classes.
      */
-    protected _onDrop(event: DragEvent): unknown;
+    protected _onDrop(event: DragEvent): void;
 
     /**
      * Handle Document data being dropped into the directory.

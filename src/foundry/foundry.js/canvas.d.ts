@@ -400,7 +400,7 @@ declare global {
     /**
      * Event handler for the drop portion of a drag-and-drop event.
      */
-    protected _onDrop(event: DragEvent): unknown;
+    protected _onDrop(event: DragEvent): void;
 
     /**
      * Add a pending canvas operation that should fire once the socket handling workflow concludes.
