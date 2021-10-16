@@ -17,6 +17,8 @@ declare global {
      */
     constructor(document: D);
 
+    protected _original?: this | undefined;
+
     /**
      * Retain a reference to the Scene within which this Placeable Object resides
      */
