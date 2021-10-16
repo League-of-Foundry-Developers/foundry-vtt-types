@@ -229,6 +229,7 @@ declare namespace ClientSettings {
     'core.globalPlaylistVolume': number;
     'core.globalAmbientVolume': number;
     'core.globalInterfaceVolume': number;
+    'core.moduleConfiguration': Record<string, boolean>;
     [key: string]: unknown;
   }
 }
