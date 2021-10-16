@@ -273,7 +273,7 @@ declare global {
      * @param event - (unused)
      * @see {@link Canvas#_onClickLeft}
      */
-    protected _onClickLeft(event: PIXI.InteractionEvent): number | void;
+    protected _onClickLeft(event: PIXI.InteractionEvent): void;
 
     /**
      * Handle double left-click events which originate from the Canvas stage and are dispatched to this Layer.
@@ -285,9 +285,8 @@ declare global {
     /**
      * Start a left-click drag workflow originating from the Canvas stage.
      * @see {@link Canvas#_onDragLeftStart}
-     * @remarks This returns Promise<void> but is overridden by some subclasses.
      */
-    protected _onDragLeftStart(event: PIXI.InteractionEvent): Promise<void | PlaceableObject>;
+    protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
 
     /**
      * Continue a left-click drag workflow originating from the Canvas stage.
@@ -298,11 +297,8 @@ declare global {
     /**
      * Conclude a left-click drag workflow originating from the Canvas stage.
      * @see {@link Canvas#_onDragLeftDrop}
-     * @remarks Returns always a promise but is overridden in subclasses.
      */
-    protected _onDragLeftDrop(
-      event: PIXI.InteractionEvent
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<DocumentName>> | void> | void;
+    protected _onDragLeftDrop(event: PIXI.InteractionEvent): void;
 
     /**
      * Cancel a left-click drag workflow originating from the Canvas stage.
@@ -322,23 +318,15 @@ declare global {
      * Handle mouse-wheel events at the PlaceableObjects layer level to rotate multiple objects at once.
      * This handler will rotate all controlled objects by some incremental angle.
      * @param event - The mousewheel event which originated the request
-     * @remarks This methods just returns ReturnType\<this['rotateMany']\>|void but is overridden by subclasses
      */
-    protected _onMouseWheel(
-      event: WheelEvent
-    ):
-      | ReturnType<this['rotateMany']>
-      | ReturnType<InstanceType<ConfiguredObjectClassForName<DocumentName>>['rotate']>
-      | void;
+    protected _onMouseWheel(event: WheelEvent): void;
 
     /**
      * Handle a DELETE keypress while a placeable object is hovered
      * @param event - The delete key press event which triggered the request
      *                (unused)
      */
-    protected _onDeleteKey(
-      event?: any
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<DocumentName>>[] | undefined>;
+    protected _onDeleteKey(event?: any): void;
 
     /**
      * @deprecated since 0.8.0
