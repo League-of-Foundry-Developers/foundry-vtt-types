@@ -17,6 +17,7 @@ declare global {
      */
     constructor(document: D);
 
+    /** @internal */
     protected _original?: this | undefined;
 
     /**
