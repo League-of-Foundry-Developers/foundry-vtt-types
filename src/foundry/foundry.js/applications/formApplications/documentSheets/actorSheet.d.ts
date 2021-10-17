@@ -92,7 +92,7 @@ declare global {
     protected _onDragStart(event: DragEvent): void;
 
     /** @override */
-    protected _onDrop(event: DragEvent): Promise<boolean | undefined> | unknown;
+    protected _onDrop(event: DragEvent): void;
 
     /**
      * Handle the dropping of ActiveEffect data onto an Actor Sheet
