@@ -50,7 +50,7 @@ declare global {
      * A mouse interaction manager instance which handles mouse workflows related to this object.
      * @defaultValue `null`
      */
-    mouseInteractionManager: MouseInteractionManager<this, ControlIcon | this> | null;
+    mouseInteractionManager: MouseInteractionManager<this> | null;
 
     /**
      * An indicator for whether the object is currently controlled

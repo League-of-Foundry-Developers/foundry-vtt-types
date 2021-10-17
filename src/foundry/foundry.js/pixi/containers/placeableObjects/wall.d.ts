@@ -22,7 +22,7 @@ declare global {
     /**
      * @remarks Type is `MouseInteractionManager<this, this['endpoints']>`
      */
-    mouseInteractionManager: MouseInteractionManager<this, any> | null;
+    mouseInteractionManager: MouseInteractionManager<this> | null;
 
     constructor(document: ConcreteWallDocument);
 
