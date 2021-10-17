@@ -34,7 +34,22 @@ declare class TextEditor {
    *                  (default: `250`)
    * @returns The previewed HTML
    */
-  static previewHTML(content: string, length: number): string;
+  static previewHTML(content: string, length?: number): string;
+
+  /**
+   * Truncate an HTML fragment to a maximum number of text content characters, removing any unused elements.
+   * @param html       - The root HTML element.
+   * @param maxLength  - The maximum allowed length of the text content.
+   *                     (default: `50`)
+   * @param splitWords - Whether to truncate by splitting on white space (if true) or breaking words.
+   *                     (default: `true`)
+   * @param suffix     - A suffix string to append to denote that the text was truncated.
+   *                     (default: `'…'`)
+   */
+  static truncateHTML(
+    html: HTMLElement,
+    { maxLength, splitWords, suffix }: { maxLength?: number; splitWords?: boolean; suffix?: string }
+  ): HTMLElement;
 
   /**
    * Truncate a fragment of text to a maximum number of characters.
@@ -55,11 +70,13 @@ declare class TextEditor {
    * Recursively identify the text nodes within a parent HTML node for potential content replacement.
    * @param parent - The parent HTML Element
    * @returns An array of contained Text nodes
+   * @internal
    */
   protected static _getTextNodes(parent: HTMLElement): Text[];
 
   /**
    * Facilitate the replacement of text node content using a matching regex rule and a provided replacement function.
+   * @internal
    */
   protected static _replaceTextContent(
     text: Text[],
@@ -69,6 +86,7 @@ declare class TextEditor {
 
   /**
    * Replace a matched portion of a Text node with a replacement Node
+   * @internal
    */
   protected static _replaceTextNode(text: Text, match: RegExpMatchArray, replacement: Node): void;
 
@@ -79,13 +97,15 @@ declare class TextEditor {
    * @param target - The requested match target (_id or name)
    * @param name   - A customized or over-ridden display name for the link
    * @returns An HTML element for the entity link
+   * @internal
    */
-  protected static _createEntityLink(match: string, type: string, target: string, name: string): HTMLAnchorElement;
+  protected static _createContentLink(match: string, type: string, target: string, name: string): HTMLAnchorElement;
 
   /**
    * Replace a hyperlink-like string with an actual HTML <a> tag
    * @param match - The full matched string
    * @returns An HTML element for the entity link
+   * @internal
    */
   protected static _createHyperlink(match: string): HTMLAnchorElement;
 
@@ -95,47 +115,58 @@ declare class TextEditor {
    * @param command - An optional command
    * @param formula - The matched formula
    * @param closing - The closing brackets for the inline roll
+   * @param label   - An optional label which configures the button text
    * @returns The replaced match
+   * @internal
    */
   protected static _createInlineRoll(
     match: string,
     command: string,
     formula: string,
     closing: string,
+    label?: string,
     ...args: object[]
-  ): string;
+  ): HTMLAnchorElement | null;
 
   static activateListeners(): void;
 
   /**
    * Handle click events on Entity Links
+   * @internal
    */
-  protected static _onClickEntityLink(event: Event): Promise<void>;
+  protected static _onClickContentLink(event: JQuery.ClickEvent): void;
 
   /**
    * Handle left-mouse clicks on an inline roll, dispatching the formula or displaying the tooltip
    * @param event - The initiating click event
+   * @internal
    */
-  protected static _onClickInlineRoll(event: MouseEvent): Promise<void | Promise<void> | Promise<ChatMessage> | object>;
+  protected static _onClickInlineRoll(event: JQuery.ClickEvent): void;
 
   /**
    * Begin a Drag+Drop workflow for a dynamic content link
    * @param event - The originating drag event
+   * @internal
    */
-  protected static _onDragEntityLink(event: Event): void;
+  protected static _onDragEntityLink(event: JQuery.DragStartEvent): void;
 
   /**
    * Begin a a data transfer drag event with default handling
+   * @internal
    */
-  protected _onDragStart(event: Event): void;
+  protected _onDragStart(event: DragEvent): void;
 
   /**
    * Handle dropping of transferred data onto the active rich text editor
    * @param event  - The originating drop event which triggered the data transfer
    * @param editor - The TinyMCE editor instance being dropped on
    */
-  protected static _onDropEditorData(event: Event, editor: tinyMCE.Editor): Promise<void>;
+  protected static _onDropEditorData(event: DragEvent, editor: tinyMCE.Editor): void;
 
+  /**
+   * Singleton decoder area
+   * @internal
+   */
   protected static _decoder: HTMLTextAreaElement;
 }
 
