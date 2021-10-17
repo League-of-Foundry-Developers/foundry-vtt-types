@@ -11,6 +11,7 @@ import './journalEntry';
 import './macro';
 import './playlist';
 import './playlistSound';
+import './prototypeToken';
 import './rollTable';
 import './scene';
 import './setting';
