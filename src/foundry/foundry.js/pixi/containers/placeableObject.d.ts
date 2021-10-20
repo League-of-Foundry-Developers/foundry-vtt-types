@@ -17,6 +17,9 @@ declare global {
      */
     constructor(document: D);
 
+    /** @internal */
+    protected _original?: this | undefined;
+
     /**
      * Retain a reference to the Scene within which this Placeable Object resides
      */
@@ -50,7 +53,7 @@ declare global {
      * A mouse interaction manager instance which handles mouse workflows related to this object.
      * @defaultValue `null`
      */
-    mouseInteractionManager: MouseInteractionManager<this, ControlIcon | this> | null;
+    mouseInteractionManager: MouseInteractionManager<this> | null;
 
     /**
      * An indicator for whether the object is currently controlled

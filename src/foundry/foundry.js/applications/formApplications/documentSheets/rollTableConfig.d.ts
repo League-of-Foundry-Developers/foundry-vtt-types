@@ -71,7 +71,7 @@ declare class RollTableConfig<P extends DocumentSheet.Options = DocumentSheet.Op
    * @override
    * @internal
    */
-  protected _onDrop(event: DragEvent): ReturnType<RollTableConfig['_onCreateResult']>;
+  protected _onDrop(event: DragEvent): void;
 
   /**
    * Handle changing the actor profile image by opening a FilePicker

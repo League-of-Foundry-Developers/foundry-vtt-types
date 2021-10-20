@@ -71,7 +71,7 @@ declare class Compendium<
    * @override
    * @internal
    */
-  protected _onDrop(event: DragEvent): ReturnType<this['collection']['importDocument']> | false;
+  protected _onDrop(event: DragEvent): void;
 
   /**
    * Render the ContextMenu which applies to each compendium Document

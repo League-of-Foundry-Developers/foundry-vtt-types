@@ -67,7 +67,7 @@ declare class SceneNavigation extends Application {
    * @override
    * @internal
    */
-  protected _onDrop(event: DragEvent): Promise<boolean | undefined | void>;
+  protected _onDrop(event: DragEvent): void;
 
   /** @override */
   private _onToggleNav(event: JQuery.ClickEvent): void;

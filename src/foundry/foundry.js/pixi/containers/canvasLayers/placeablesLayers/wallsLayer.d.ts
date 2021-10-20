@@ -196,7 +196,7 @@ declare global {
       | this['_cloneType'];
 
     /** @override */
-    protected _onDragLeftStart(event: PIXI.InteractionEvent): Promise<Wall>;
+    protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
 
     /** @override */
     protected _onDragLeftMove(event: PIXI.InteractionEvent): void;

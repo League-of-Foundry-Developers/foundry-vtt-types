@@ -29,8 +29,7 @@ expectAssignable<Document<any, any>>(placeable.document);
 expectType<EmbeddedOfSceneDocument>(placeable.document);
 expectType<DocumentSheet>(placeable.sheet);
 
-class NoIcon extends PlaceableObject<EmbeddedOfSceneDocument> {
-  controlIcon!: null;
+class ConcretePlaceableObject extends PlaceableObject<EmbeddedOfSceneDocument> {
   get bounds(): NormalizedRectangle {
     throw new Error('Not implemented');
   }
@@ -41,21 +40,6 @@ class NoIcon extends PlaceableObject<EmbeddedOfSceneDocument> {
     return this;
   }
 }
-expectType<MouseInteractionManager<NoIcon, NoIcon | ControlIcon> | null>(
-  new NoIcon(new EmbeddedOfSceneDocument()).mouseInteractionManager
-);
-
-class HasIcon extends PlaceableObject {
-  get bounds(): NormalizedRectangle {
-    throw new Error('Not implemented');
-  }
-  async draw() {
-    return this;
-  }
-  refresh() {
-    return this;
-  }
-}
-expectType<MouseInteractionManager<HasIcon, HasIcon | ControlIcon> | null>(
-  new HasIcon(new EmbeddedOfSceneDocument()).mouseInteractionManager
+expectType<MouseInteractionManager<ConcretePlaceableObject> | null>(
+  new ConcretePlaceableObject(new EmbeddedOfSceneDocument()).mouseInteractionManager
 );
