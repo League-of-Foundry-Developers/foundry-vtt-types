@@ -326,9 +326,7 @@ declare class FilePicker<
    * Present the user with a dialog to create a subdirectory within their currentl
    * @internal browsed file storate location.
    */
-  protected _createDirectoryDialog(
-    source: FilePicker.Source
-  ): Promise<FilePicker.BrowseResult | undefined | void | null>;
+  protected _createDirectoryDialog(source: FilePicker.Source): void;
 
   /**
    * Handle changes to the bucket selector
