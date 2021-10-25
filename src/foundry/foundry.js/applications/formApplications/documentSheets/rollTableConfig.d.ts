@@ -69,6 +69,7 @@ declare class RollTableConfig<P extends DocumentSheet.Options = DocumentSheet.Op
 
   /**
    * @override
+   * @internal
    */
   protected _onDrop(event: DragEvent): void;
 

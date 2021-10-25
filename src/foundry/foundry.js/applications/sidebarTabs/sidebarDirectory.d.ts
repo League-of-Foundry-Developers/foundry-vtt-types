@@ -168,6 +168,7 @@ declare global {
 
     /**
      * @override
+     * @internal
      */
     protected _onDrop(event: DragEvent): void;
 

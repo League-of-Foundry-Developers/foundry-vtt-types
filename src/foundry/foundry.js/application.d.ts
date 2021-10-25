@@ -312,6 +312,7 @@ declare abstract class Application<Options extends Application.Options = Applica
    * Callback actions which occur when a dragged element is dropped on a target.
    * @param event - The originating DragEvent
    *                (unused)
+   * @internal
    */
   protected _onDrop(event: DragEvent): void;
 

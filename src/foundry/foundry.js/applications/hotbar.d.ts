@@ -133,7 +133,10 @@ declare global {
      */
     protected _canDragDrop(selector: string): boolean;
 
-    /** @override */
+    /**
+     * @override
+     * @internal
+     */
     protected _onDrop(event: DragEvent): void;
 
     /**

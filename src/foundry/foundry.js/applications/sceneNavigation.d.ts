@@ -63,7 +63,10 @@ declare class SceneNavigation extends Application {
   /** @override */
   protected _onDragStart(event: DragEvent): void;
 
-  /** @override */
+  /**
+   * @override
+   * @internal
+   */
   protected _onDrop(event: DragEvent): void;
 
   /** @override */
