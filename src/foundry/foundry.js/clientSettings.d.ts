@@ -219,7 +219,7 @@ declare namespace ClientSettings {
   }
 
   interface Values {
-    'core.combatTrackerConfig': { resource: string; skipDefeated: boolean };
+    'core.combatTrackerConfig': { resource: string; skipDefeated: boolean } | {};
     'core.compendiumConfiguration': Partial<Record<string, CompendiumCollection.Configuration>>;
     'core.rollMode': foundry.CONST.DiceRollMode;
     'core.animateRollTable': boolean;
