@@ -1,5 +1,6 @@
 import './avConfig';
 import './combatTrackerConfig';
+import './defaultTokenConfig';
 import './documentSheet';
 import './documentSheets';
 import './drawingConfig';
