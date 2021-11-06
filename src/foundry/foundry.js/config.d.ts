@@ -249,7 +249,7 @@ declare global {
       /**
        * @defaultValue `{}`
        */
-      sheetClasses: EntitySheetConfig.SheetClasses;
+      sheetClasses: CONFIG.SheetClasses;
 
       /**
        * @defaultValue `'fas fa-user'`
@@ -444,7 +444,7 @@ declare global {
       /**
        * @defaultValue `{}`
        */
-      sheetClasses: EntitySheetConfig.SheetClasses;
+      sheetClasses: CONFIG.SheetClasses;
 
       /**
        * @defaultValue `'fas fa-suitcase'`
@@ -1983,6 +1983,15 @@ declare global {
         [key: string]: ConstructorOf<CanvasLayer>;
       }
     }
+
+    interface SheetClass {
+      id: string;
+      cls: ConstructorOf<FormApplication>;
+      label: string;
+      default: boolean;
+    }
+
+    type SheetClasses = Record<string, Record<string, SheetClass>>;
   }
 
   const CONFIG: CONFIG;
