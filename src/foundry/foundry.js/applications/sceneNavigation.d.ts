@@ -1,92 +1,108 @@
-// TODO: Remove when updating this class!!!
-// eslint-disable-next-line
-// @ts-nocheck
+import type { ConfiguredDocumentClassForName, ToObjectFalseType } from '../../../types/helperTypes';
 
-/**
- * Top menu scene navigation
- */
-declare class SceneNavigation extends Application {
+declare global {
   /**
-   * Assign the default options which are supported by the SceneNavigation UI
-   * @defaultValue
-   * ```typescript
-   * {
-   *   ...super.defaultOptions,
-   *   id: 'navigation',
-   *   template: 'templates/hud/navigation.html',
-   *   popOut: false,
-   *   dragDrop: [{dragSelector: ".scene"}]
-   * }
-   * ```
+   * The UI element which displays the Scene documents which are currently enabled for quick navigation.
+   *
+   * @typeParam Options - the type of the options object
+   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  static get defaultOptions(): typeof Application['defaultOptions'];
+  class SceneNavigation<
+    Options extends Application.Options = Application.Options,
+    Data extends object = SceneNavigation.Data
+  > extends Application<Options> {
+    constructor(options?: Partial<Options>);
 
-  /**
-   * Return an Array of Scenes which are displayed in the Navigation bar
-   */
-  get scenes(): Scene[];
+    /**
+     * Navigation collapsed state
+     * @internal
+     */
+    protected _collapsed: boolean;
 
-  /** @override */
-  render(force?: boolean, options?: Application.RenderOptions): this | undefined;
+    /**
+     * @override
+     * @defaultValue
+     * ```typescript
+     * foundry.utils.mergeObject(super.defaultOptions, {
+     *   id: "navigation",
+     *   template: "templates/hud/navigation.html",
+     *   popOut: false,
+     *   dragDrop: [{ dragSelector: ".scene" }],
+     * })
+     * ```
+     */
+    static get defaultOptions(): Application.Options;
 
-  /** @override */
-  protected _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+    /**
+     * Return an Array of Scenes which are displayed in the Navigation bar
+     */
+    get scenes(): InstanceType<ConfiguredDocumentClassForName<'Scene'>>[];
 
-  /** @override */
-  getData(options?: Partial<Application.Options>): SceneNavigation.Data | Promise<SceneNavigation.Data>;
+    /** @override */
+    render(force?: boolean, context?: Application.RenderOptions<Options>): this | void;
 
-  /**
-   * Expand the SceneNavigation menu, sliding it down if it is currently collapsed
-   */
-  expand(): Promise<boolean>;
+    /** @override */
+    protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
-  /**
-   * Collapse the SceneNavigation menu, sliding it up if it is currently expanded
-   */
-  collapse(): Promise<boolean>;
+    /** @override */
+    getData(options?: Partial<Application.Options>): Data | Promise<Data>;
 
-  /**
-   * Activate Scene Navigation event listeners
-   */
-  activateListeners(html: JQuery): void;
+    /**
+     * Expand the SceneNavigation menu, sliding it down if it is currently collapsed
+     */
+    expand(): Promise<boolean>;
 
-  /**
-   * Get the set of ContextMenu options which should be applied for Scenes in the menu
-   */
-  private _getContextMenuOptions(): ContextMenuEntry[];
+    /**
+     * Collapse the SceneNavigation menu, sliding it up if it is currently expanded
+     */
+    collapse(): Promise<boolean>;
 
-  /**
-   * Handle left-click events on the scenes in the navigation menu
-   */
-  private _onClickScene(event: JQuery.ClickEvent): void;
+    /** @override */
+    activateListeners(html: JQuery): void;
 
-  /** @override */
-  protected _onDragStart(event: DragEvent): void;
+    /**
+     * Get the set of ContextMenu options which should be applied for Scenes in the menu
+     * @returns The Array of context options passed to the ContextMenu instance
+     * @internal
+     */
+    protected _getContextMenuOptions(): ContextMenuEntry[];
 
-  /**
-   * @override
-   * @internal
-   */
-  protected _onDrop(event: DragEvent): void;
+    /**
+     * Handle left-click events on the scenes in the navigation menu
+     * @internal
+     */
+    protected _onClickScene(event: JQuery.ClickEvent): void;
 
-  /** @override */
-  private _onToggleNav(event: JQuery.ClickEvent): void;
+    /**
+     * @override
+     * @internal
+     */
+    protected _onDragStart(event: DragEvent): void;
 
-  /**
-   * Updated the loading progress bar
-   * @param context - The message to display in the progress back
-   * @param pct     - The percentage the progress bar has completed
-   */
-  static _onLoadProgress(context: string, pct: number): void;
-}
+    /**
+     * @override
+     * @internal
+     */
+    protected _onDrop(event: DragEvent): void;
 
-declare namespace SceneNavigation {
-  interface Data {
-    collapsed: boolean;
-    scenes: (foundry.utils.Duplicated<Scene['data']> & {
-      users: { letter: string; color: User['data']['color'] };
-      visible: boolean;
-      css: [string | null];
-    })[];
+    /**
+     * Handle navigation menu toggle click events
+     * @internal
+     */
+    protected _onToggleNav(event: JQuery.ClickEvent): void;
+
+    static _onLoadProgress(context: string, pct: number): void;
+  }
+
+  namespace SceneNavigation {
+    interface Data {
+      collapsed: boolean;
+      scenes: (ToObjectFalseType<foundry.data.SceneData> & {
+        name: string;
+        users: { letter: string; color: string };
+        visible: boolean;
+        css: string;
+      })[];
+    }
   }
 }
