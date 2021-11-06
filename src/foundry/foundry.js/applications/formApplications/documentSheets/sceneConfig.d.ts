@@ -1,129 +1,152 @@
-// TODO: Remove when updating this class!!!
-// eslint-disable-next-line
-// @ts-nocheck
+import type { ConfiguredDocumentClassForName, DocumentConstructor } from '../../../../../types/helperTypes';
 
-/**
- * A Scene configuration sheet
- * @see {@link Scene} The Scene Entity which is being configured
- */
-declare class SceneConfig extends DocumentSheet<DocumentSheet.Options, SceneConfig.Data, Scene> {
+declare global {
   /**
-   * @override
-   * @defaultValue
-   * ```typescript
-   * mergeObject(super.defaultOptions, {
-   *   classes: ["sheet", "scene-sheet"],
-   *   template: "templates/scene/config.html",
-   *   width: 680,
-   *   height: "auto"
-   * });
-   * ```
+   * The Application responsible for configuring a single Scene document.
+   * @see {@link Scene} The Scene Document which is being configured
+   *
+   * @typeParam Options - the type of the options object
+   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  static get defaultOptions(): typeof DocumentSheet['defaultOptions'];
+  class SceneConfig<
+    Options extends DocumentSheet.Options = DocumentSheet.Options,
+    Data extends object = SceneConfig.Data<Options>
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Scene'>>> {
+    /**
+     * @override
+     * @defaultValue
+     * ```typescript
+     * foundry.utils.mergeObject(super.defaultOptions, {
+     *   id: "scene-config",
+     *   classes: ["sheet", "scene-sheet"],
+     *   template: "templates/scene/config.html",
+     *   width: 680,
+     *   height: "auto",
+     * });
+     * ```
+     */
+    static get defaultOptions(): DocumentSheet.Options;
 
-  /**
-   * @override
-   */
-  get id(): string;
+    /**
+     * @override
+     */
+    get title(): string;
 
-  /**
-   * @override
-   */
-  get title(): string;
+    /**
+     * @override
+     * @remarks This incorrectly overrides `Application#render` by potentially returning `void`, see https://gitlab.com/foundrynet/foundryvtt/-/issues/6026.
+     */
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    render(force?: boolean, options?: Application.RenderOptions<Options>): this | void;
 
-  /**
-   * @param options - (unused)
-   * @override
-   */
-  getData(options?: Partial<DocumentSheet.Options>): SceneConfig.Data;
+    /**
+     * @param options - (unused)
+     * @override
+     */
+    getData(options?: Partial<DocumentSheet.Options>): Data | Promise<Data>;
 
-  /**
-   * Get an enumeration of the available grid types which can be applied to this Scene
-   */
-  protected static _getGridTypes(): Record<foundry.CONST.GridType, string>;
+    /**
+     * Get an enumeration of the available grid types which can be applied to this Scene
+     * @internal
+     */
+    protected static _getGridTypes(): Record<foundry.CONST.GridType, string>;
 
-  /**
-   * Get the available weather effect types which can be applied to this Scene
-   */
-  protected _getWeatherTypes(): Record<string, string>;
+    /**
+     * Get the available weather effect types which can be applied to this Scene
+     * @internal
+     */
+    protected _getWeatherTypes(): Record<string, string>;
 
-  /**
-   * Get the alphabetized entities which can be chosen as a configuration for the scene
-   */
-  protected _getEntities(collection: EntityCollection): { _id: string; name: string }[];
+    /**
+     * Get the alphabetized Documents which can be chosen as a configuration for the Scene
+     * @internal
+     */
+    protected _getDocuments(collection: WorldCollection<DocumentConstructor, string>): { _id: string; name: string }[];
 
-  /**
-   * @override
-   */
-  activateListeners(html: JQuery): void;
+    /** @override */
+    activateListeners(html: JQuery): void;
 
-  /**
-   * Capture the current Scene position and zoom level as the initial view in the Scene config
-   * @param event - The originating click event
-   */
-  protected _onCapturePosition(event: JQuery.ClickEvent): void;
+    /**
+     * Capture the current Scene position and zoom level as the initial view in the Scene config
+     * @param event - The originating click event
+     * @internal
+     */
+    protected _onCapturePosition(event: JQuery.ClickEvent): void;
 
-  /**
-   * @override
-   */
-  protected _onChangeRange(event: JQuery.ChangeEvent): void;
+    /** @override */
+    protected _onChangeRange(event: JQuery.ChangeEvent): void;
 
-  /**
-   * Handle click events to open the grid configuration application
-   * @param event - The originating click event
-   */
-  protected _onGridConfig(event: JQuery.ClickEvent): SceneConfig['minimize'];
+    /**
+     * Handle updating the select menu of PlaylistSound options when the Playlist is changed
+     * @param event - The initiating select change event
+     * @internal
+     */
+    _onChangePlaylist(event: JQuery.ChangeEvent): void;
 
-  /**
-   * @override
-   */
-  protected _updateObject(event: Event, formData: SceneConfig.FormData): Promise<Scene>;
-}
+    /**
+     * Handle click events to open the grid configuration application
+     * @param event - The originating click event
+     */
+    protected _onGridConfig(event: JQuery.ClickEvent): void;
 
-declare namespace SceneConfig {
-  interface Data extends DocumentSheet.Data {
-    gridTypes: ReturnType<typeof SceneConfig['_getGridTypes']>;
-    weatherTypes: ReturnType<SceneConfig['_getWeatherTypes']>;
-    playlists: ReturnType<SceneConfig['_getEntities']>;
-    journals: ReturnType<SceneConfig['_getEntities']>;
-    hasGlobalThreshold: boolean;
-    document: DocumentSheet.Data['document'] & {
-      /**
-       * @defaultValue `0`
-       */
-      globalLightThreshold: number;
-    };
+    /**
+     * @override
+     */
+    protected _updateObject(
+      event: Event,
+      formData: SceneConfig.FormData
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Scene'>> | undefined>;
   }
 
-  type FormData = {
-    backgroundColor: Scene.Data['backgroundColor'];
-    darkness: Scene.Data['darkness'];
-    fogExploration: Scene.Data['fogExploration'];
-    globalLight: Scene.Data['globalLight'];
-    globalLightThreshold: Scene.Data['globalLightThreshold'];
-    grid: GridConfig.FormData['grid'];
-    gridAlpha: Scene.Data['gridAlpha'];
-    gridColor: Scene.Data['gridColor'];
-    gridDistance: Scene.Data['gridDistance'] | null;
-    gridType: foundry.CONST.GridType;
-    gridUnits: Scene.Data['gridUnits'];
-    hasGlobalThreshold: boolean;
-    height: Scene.Data['height'] | null;
-    img: Scene.Data['img'];
-    'initial.scale': number | null;
-    'initial.x': number | null;
-    'initial.y': number | null;
-    journal: Scene.Data['journal'];
-    name: string;
-    navName: Scene.Data['navName'];
-    navigation: Scene.Data['navigation'];
-    padding: Scene.Data['padding'];
-    'permission.default': Scene.Data['permission'];
-    playlist: Scene.Data['playlist'];
-    shiftX: GridConfig.FormData['shiftX'];
-    shiftY: GridConfig.FormData['shiftY'];
-    tokenVision: Scene.Data['tokenVision'];
-    weather: Scene.Data['weather'];
-    width: Scene.Data['width'] | null;
-  };
+  namespace SceneConfig {
+    interface Data<Options extends DocumentSheet.Options = DocumentSheet.Options>
+      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Scene'>>, Options> {
+      gridTypes: ReturnType<typeof SceneConfig['_getGridTypes']>;
+      weatherTypes: ReturnType<SceneConfig['_getWeatherTypes']>;
+      playlists: ReturnType<SceneConfig['_getDocuments']>;
+      sounds: ReturnType<SceneConfig['_getDocuments']>;
+      journals: ReturnType<SceneConfig['_getDocuments']>;
+      hasGlobalThreshold: boolean;
+      data: DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Scene'>>, Options>['data'] & {
+        /**
+         * @defaultValue `0`
+         */
+        globalLightThreshold: number;
+      };
+    }
+
+    type FormData = {
+      backgroundColor: string;
+      darkness: number;
+      fogExploration: boolean;
+      foreground: string;
+      globalLight: boolean;
+      globalLightThreshold: number;
+      grid: number | null;
+      gridAlpha: number;
+      gridColor: string;
+      gridDistance: number | null;
+      gridType: foundry.CONST.GridType;
+      gridUnits: string;
+      hasGlobalThreshold: boolean;
+      height: number | null;
+      img: string;
+      'initial.scale': number | null;
+      'initial.x': number | null;
+      'initial.y': number | null;
+      journal: string;
+      name: string;
+      navName: string;
+      navigation: boolean;
+      padding: number;
+      'permission.default': foundry.CONST.EntityPermission;
+      playlist: string;
+      shiftX: number | null;
+      shiftY: number | null;
+      tokenVision: boolean;
+      weather: string;
+      width: number | null;
+    };
+  }
 }
