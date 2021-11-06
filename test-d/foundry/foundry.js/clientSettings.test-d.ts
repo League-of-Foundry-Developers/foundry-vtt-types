@@ -73,7 +73,7 @@ clientSettings.register('some', 'stringSetting', {
 
 // core settings
 
-expectType<{ resource: string; skipDefeated: boolean }>(clientSettings.get('core', 'combatTrackerConfig'));
+expectType<{ resource: string; skipDefeated: boolean } | {}>(clientSettings.get('core', 'combatTrackerConfig'));
 expectType<Partial<Record<string, CompendiumCollection.Configuration>>>(
   clientSettings.get('core', 'compendiumConfiguration')
 );

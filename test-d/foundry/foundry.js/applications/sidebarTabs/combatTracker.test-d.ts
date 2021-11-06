@@ -21,7 +21,7 @@ expectType<
       combats: StoredDocument<Combat>[];
       combatCount: number;
       started: boolean;
-      settings: { resource: string; skipDefeated: boolean };
+      settings: { resource: string; skipDefeated: boolean } | {};
       currentIndex: -1;
       hasCombat: false;
       combat: null;
@@ -35,7 +35,7 @@ expectType<
       combats: StoredDocument<Combat>[];
       combatCount: number;
       started: boolean;
-      settings: { resource: string; skipDefeated: boolean };
+      settings: { resource: string; skipDefeated: boolean } | {};
       currentIndex: number;
       hasCombat: true;
       combat: StoredDocument<Combat>;
