@@ -3,13 +3,14 @@ declare global {
    * A sheet that alters the values of the default Token configuration used when new Token documents are created.
    */
   class DefaultTokenConfig<
-    Options extends FormApplication.Options = FormApplication.Options
-  > extends FormApplication<Options> {
+    Options extends FormApplication.Options = FormApplication.Options,
+    Data extends DefaultTokenConfig.Data = DefaultTokenConfig.Data
+  > extends FormApplication<Options, Data, foundry.data.TokenData['toObject']> {
     constructor(object: unknown, options: Options);
 
     data: foundry.data.TokenData;
 
-    object: foundry.data.TokenData['toObject'];
+    override object: foundry.data.TokenData['toObject'];
 
     /**
      * The named world setting that stores the default Token configuration
@@ -17,7 +18,6 @@ declare global {
     static SETTING: string;
 
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -30,11 +30,13 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): typeof FormApplication['defaultOptions'];
+    static override get defaultOptions(): typeof FormApplication['defaultOptions'];
 
-    override getData(options: unknown): Promise<DefaultTokenConfig.Data>;
+    override getData(options: unknown): Promise<Data>;
 
-    override _getSubmitData(updateData?: DefaultTokenConfig.Data): DefaultTokenConfig.Data;
+    override _getSubmitData(
+      updateData?: Parameters<FormApplication['_getSubmitData']>[0]
+    ): ReturnType<FormApplication['_getSubmitData']>;
 
     override _updateObject(event: Event, formData?: object): Promise<unknown>;
 
