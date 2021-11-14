@@ -1,154 +1,170 @@
-// TODO: Remove when updating this class!!!
-// eslint-disable-next-line
-// @ts-nocheck
+import type { DocumentConstructor } from '../../../../types/helperTypes';
 
-/**
- * Entity Sheet Configuration Application
- * @typeParam P - the type of the options object
- * @typeParam E - the type of the Entity, this sheet is used to configure
- */
-declare class EntitySheetConfig<
-  P extends FormApplication.Options = FormApplication.Options,
-  E extends Entity = Entity
-> extends FormApplication<P, EntitySheetConfig.Data, E> {
+declare global {
   /**
-   * @param entity  - The Entity object for which the sheet is being configured
-   * @param options - Additional Application options
+   * Entity Sheet Configuration Application
+   * @typeParam Options          - The type of the options object
+   * @typeParam Data             - The data structure used to render the handlebars template.
+   * @typeParam ConcreteDocument - The type of the Document which is being managed
    */
-  constructor(entity: E, options?: Partial<P>);
+  class EntitySheetConfig<
+    Options extends FormApplication.Options = FormApplication.Options,
+    Data extends object = EntitySheetConfig.Data<foundry.abstract.Document<any, any>, Options>,
+    ConcreteDocument extends foundry.abstract.Document<any, any> = Data extends EntitySheetConfig.Data<infer T>
+      ? T
+      : foundry.abstract.Document<any, any>
+  > extends FormApplication<Options, Data, ConcreteDocument> {
+    /**
+     * @defaultValue
+     * ```typescript
+     * foundry.utils.mergeObject(super.defaultOptions, {
+     *   id: "sheet-config",
+     *   template: "templates/sheets/sheet-config.html",
+     *   width: 400,
+     * })
+     * ```
+     */
+    static get defaultOptions(): FormApplication.Options;
 
-  /**
-   * @defaultValue
-   * ```typescript
-   * const options = super.defaultOptions;
-   * options.id = "sheet-config";
-   * options.template = "templates/sheets/sheet-config.html";
-   * options.width = 400;
-   * ```
-   */
-  static get defaultOptions(): typeof FormApplication['defaultOptions'];
+    /**
+     * An array of pending sheet assignments which are submitted before other elements of the framework are ready.
+     * @internal
+     */
+    static _pending: Array<EntitySheetConfig.SheetAssignment>;
 
-  /**
-   * Add the Entity name into the window title
-   */
-  get title(): string;
+    /** @override */
+    get title(): string;
 
-  /**
-   * Construct and return the data object used to render the HTML template for this form application.
-   * @param options - (unused)
-   */
-  getData(options?: Partial<P>): EntitySheetConfig.Data<E>;
+    /** @override */
+    getData(options?: Partial<Options>): Data | Promise<Data>;
 
-  /**
-   * This method is called upon form submission after form data is validated
-   * @param event    - The initial triggering submission event
-   * @param formData - The object of validated form data with which to update the object
-   */
-  protected _updateObject(event: Event, formData: EntitySheetConfig.FormData): Promise<void>;
+    /** @override */
+    protected _updateObject(event: Event, formData: EntitySheetConfig.FormData): Promise<void>;
 
-  /**
-   * Initialize the configured Sheet preferences for Entities which support dynamic Sheet assignment
-   * Create the configuration structure for supported entities
-   * Process any pending sheet registrations
-   * Update the default values from settings data
-   */
-  static initializeSheets(): void;
+    /**
+     * Initialize the configured Sheet preferences for Entities which support dynamic Sheet assignment
+     * Create the configuration structure for supported entities
+     * Process any pending sheet registrations
+     * Update the default values from settings data
+     */
+    static initializeSheets(): void;
 
-  /**
-   * Register a sheet class as a candidate which can be used to display entities of a given type
-   * @param entityClass - The Entity for which to register a new Sheet option
-   * @param scope       - Provide a unique namespace scope for this sheet
-   * @param sheetClass  - A defined Application class used to render the sheet
-   * @param label       - A human readable label for the sheet name, which will be localized
-   * @param types       - An array of entity types for which this sheet should be used
-   *                      (default: `[]`)
-   * @param makeDefault - Whether to make this sheet the default for provided types
-   *                      (default: `false`)
-   */
-  static registerSheet(
-    entityClass: ConstructorOf<Entity>,
-    scope: string,
-    sheetClass: ConstructorOf<FormApplication>,
-    { label, types, makeDefault }?: { label?: string; types?: string[]; makeDefault?: boolean }
-  ): void;
+    /**
+     * @internal
+     */
+    protected static _getDocumentTypes(cls: DocumentConstructor, types?: string[]): string[];
 
-  protected static _registerSheet({
-    entityClass,
-    id,
-    label,
-    sheetClass,
-    types,
-    makeDefault
-  }: Exclude<EntitySheetConfig.Config, 'action'>): void;
+    /**
+     * Register a sheet class as a candidate which can be used to display entities of a given type
+     * @param documentClass - The Document class for which to register a new Sheet option
+     * @param scope         - Provide a unique namespace scope for this sheet
+     * @param sheetClass    - A defined Application class used to render the sheet
+     * @param options       - Additional options used for sheet registration
+     */
+    static registerSheet(
+      documentClass: DocumentConstructor,
+      scope: string,
+      sheetClass: ConstructorOf<Application>,
+      { label, types, makeDefault }?: EntitySheetConfig.RegisterSheetOptions
+    ): void;
 
-  /**
-   * Unregister a sheet class, removing it from the list of available Applications to use for an Entity type
-   * @param entityClass - The Entity for which to register a new Sheet option
-   * @param scope       - Provide a unique namespace scope for this sheet
-   * @param sheetClass  - A defined Application class used to render the sheet
-   * @param types       - An Array of types for which this sheet should be removed
-   */
-  static unregisterSheet(
-    entityClass: ConstructorOf<Entity>,
-    scope: string,
-    sheetClass: ConstructorOf<FormApplication>,
-    { types }?: { types?: string[] }
-  ): void;
+    /**
+     * Perform the sheet registration
+     * @internal
+     */
+    protected static _registerSheet({
+      documentClass,
+      id,
+      label,
+      sheetClass,
+      types,
+      makeDefault
+    }: Omit<EntitySheetConfig.SheetRegistration, 'action'>): void;
 
-  protected static _unregisterSheet({
-    entityClass,
-    id,
-    types
-  }: Pick<EntitySheetConfig.Config, 'entityClass' | 'id' | 'types'>): void;
+    /**
+     * Unregister a sheet class, removing it from the list of available Applications to use for a Document type
+     * @param documentClass - The Document class for which to register a new Sheet option
+     * @param scope         - Provide a unique namespace scope for this sheet
+     * @param sheetClass    - A defined Application class used to render the sheet
+     * @param types         - An Array of types for which this sheet should be removed
+     */
+    static unregisterSheet(
+      documentClass: DocumentConstructor,
+      scope: string,
+      sheetClass: ConstructorOf<Application>,
+      { types }?: { types?: string[] }
+    ): void;
 
-  /**
-   * @typeParam T - the string array, passed as the types parameter
-   */
-  protected static _getEntityTypes<T extends string[]>(entityClass: any, types: T): T;
-  protected static _getEntityTypes(entityClass: ConstructorOf<Entity>): string[];
+    /**
+     * Perform the sheet de-registration
+     * @internal
+     */
+    protected static _unregisterSheet({
+      documentClass,
+      id,
+      types
+    }: Omit<EntitySheetConfig.SheetUnregistration, 'action'>): void;
 
-  /**
-   * Update the currently default Sheets using a new core world setting
-   */
-  protected static _updateDefaultSheets(setting?: Record<'Actor' | 'Item', Record<string, string>>): void;
-
-  protected _pending: EntitySheetConfig.Config[];
-}
-
-declare namespace EntitySheetConfig {
-  interface Config {
-    action: 'register' | 'unregister';
-    entityClass: ConstructorOf<Entity>;
-    id: string;
-    label: string;
-    sheetClass: ConstructorOf<FormApplication>;
-    types: string[];
-    makeDefault: boolean;
+    /**
+     * Update the currently default Sheets using a new core world setting
+     */
+    static updateDefaultSheets(setting?: Record<'Actor' | 'Item', Record<string, string>>): void;
   }
 
-  /**
-   * @typeParam P - the type of the options object
-   * @typeParam E - the type of the entity
-   */
-  interface Data<E extends Entity = Entity, P extends FormApplication.Options = FormApplication.Options> {
-    entityName: EntitySheetConfig<P, E>['object']['entity'];
-    isGM: User['isGM'];
-    object: foundry.utils.Duplicated<EntitySheetConfig<P, E>['object']['data']>;
-    options: EntitySheetConfig<P, E>['options'];
-    sheetClass: ReturnType<E['getFlag']> | '';
-    sheetClasses: Record<SheetClass['id'], SheetClass['label']>;
-    defaultClass: SheetClass['id'] | null;
-    blankLabel: ReturnType<Localization['localize']>;
+  namespace EntitySheetConfig {
+    type SheetRegistration = {
+      action: 'register';
+      documentClass: DocumentConstructor;
+      id: string;
+      label: string;
+      sheetClass: ConstructorOf<Application>;
+      types: string[];
+      makeDefault: boolean;
+    };
+
+    type SheetUnregistration = {
+      action: 'unregister';
+      documentClass: DocumentConstructor;
+      id: string;
+      types: string[];
+    };
+
+    type SheetAssignment = SheetRegistration | SheetUnregistration;
+
+    /**
+     * @typeParam ConcreteDocument - The type of the Document which is being managed
+     * @typeParam Options          - The type of the options object
+     */
+    interface Data<
+      ConcreteDocument extends foundry.abstract.Document<any, any>,
+      Options extends FormApplication.Options = FormApplication.Options
+    > {
+      isGM: boolean;
+      object: foundry.utils.Duplicated<ConcreteDocument['data']>;
+      options: Options;
+      sheetClass: string;
+      sheetClasses: Record<string, string>;
+      defaultClass: string;
+      blankLabel: string;
+    }
+
+    interface FormData {
+      defaultClass: string;
+      sheetClass: string;
+    }
+
+    interface RegisterSheetOptions {
+      /** A human readable label for the sheet name, which will be localized */
+      label?: string;
+
+      /** An array of entity types for which this sheet should be used */
+      types?: string[];
+
+      /**
+       * Whether to make this sheet the default for provided types
+       * @defaultValue `false`
+       */
+      makeDefault?: boolean;
+    }
   }
-
-  type FormData = Pick<Data, 'defaultClass' | 'sheetClass'>;
-
-  interface SheetClass {
-    id: string | number;
-    cls?: ConstructorOf<FormApplication>;
-    label: string;
-    default: boolean;
-  }
-
-  type SheetClasses = Record<string, Record<string, SheetClass>>;
 }
