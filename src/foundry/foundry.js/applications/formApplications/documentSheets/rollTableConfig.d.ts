@@ -1,153 +1,194 @@
-// TODO: Remove when updating this class!!!
-// eslint-disable-next-line
-// @ts-nocheck
+import type {
+  ConfiguredDocumentClassForName,
+  ConstructorDataType,
+  ToObjectFalseType
+} from '../../../../../types/helperTypes';
 
-/**
- * The RollTable configuration sheet
- * @typeParam P - the type of the options object
- */
-declare class RollTableConfig<P extends DocumentSheet.Options = DocumentSheet.Options> extends DocumentSheet<
-  P,
-  RollTableConfig.Data,
-  RollTable
-> {
+declare global {
   /**
-   * @param table   - The rollable table entity being configured
-   * @param options - Additional application rendering options
+   * The Application responsible for displaying and editing a single RollTable document.
+   * @typeParam Options - the type of the options object
+   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  constructor(table: RollTable, options?: Partial<P>);
+  class RollTableConfig<
+    Options extends DocumentSheet.Options = DocumentSheet.Options,
+    Data extends object = ActorSheet.Data<Options>
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'RollTable'>>> {
+    /**
+     * @defaultValue
+     * ```typescript
+     * foundry.utils.mergeObject(super.defaultOptions, {
+     *   classes: ["sheet", "roll-table-config"],
+     *   template: "templates/sheets/roll-table-config.html",
+     *   width: 720,
+     *   height: "auto",
+     *   closeOnSubmit: false,
+     *   viewPermission: CONST.ENTITY_PERMISSIONS.OBSERVER,
+     *   scrollY: ["ol.table-results"],
+     *   dragDrop: [{ dragSelector: null, dropSelector: null }],
+     * })
+     * ```
+     */
+    static get defaultOptions(): DocumentSheet.Options;
 
-  /**
-   * @defaultValue
-   * ```typescript
-   * mergeObject(super.defaultOptions, {
-   *   classes: ["sheet", "roll-table-config"],
-   *   template: "templates/sheets/roll-table-config.html",
-   *   width: 720,
-   *   height: "auto",
-   *   closeOnSubmit: false,
-   *   viewPermission: ENTITY_PERMISSIONS.OBSERVER,
-   *   scrollY: ["ol.table-results"],
-   *   dragDrop: [{dragSelector: null, dropSelector: null}]
-   * })
-   * ```
-   */
-  static get defaultOptions(): typeof DocumentSheet['defaultOptions'];
+    /**
+     * @override
+     */
+    get title(): string;
 
-  /**
-   * @override
-   */
-  get title(): string;
+    /**
+     * @param options - (unused)
+     * @override
+     */
+    getData(options?: Partial<Options>): Data | Promise<Data>;
 
-  /**
-   * @param options - (unused)
-   * @override
-   */
-  getData(options?: Partial<P>): RollTableConfig.Data;
+    /**
+     * @override
+     */
+    activateListeners(html: JQuery): void;
 
-  /**
-   * @override
-   */
-  activateListeners(html: JQuery): void;
+    /**
+     * Handle creating a TableResult in the RollTable entity
+     * @param event      - The originating mouse event
+     * @param resultData - An optional object of result data to use
+     * @internal
+     */
+    protected _onCreateResult(
+      event: JQuery.ClickEvent | DragEvent,
+      resultData?: ConstructorDataType<foundry.data.TableResultData>
+    ): Promise<ConfiguredDocumentClassForName<'TableResult'>[]>;
 
-  /**
-   * Handle creating a TableResult in the RollTable entity
-   * @param event      - The originating mouse event
-   * @param resultData - An optional object of result data to use
-   */
-  protected _onCreateResult(event: JQuery.ClickEvent | DragEvent, resultData?: object): Promise<RollTable.Result>;
+    /**
+     * Submit the entire form when a table result type is changed, in case there are other active changes
+     * @internal
+     */
+    protected _onChangeResultType(event: JQuery.ChangeEvent): void;
 
-  /**
-   * Submit the entire form when a table result type is changed, in case there are other active changes
-   */
-  protected _onChangeResultType(event: JQuery.ClickEvent): ReturnType<RollTableConfig['_onSubmit']>;
+    /**
+     * Handle deleting a TableResult from the RollTable entity
+     * @param event - The originating click event
+     * @returns The deleted TableResult document
+     * @internal
+     */
+    protected _onDeleteResult(
+      event: JQuery.ClickEvent
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<'TableResult'>> | undefined>;
 
-  /**
-   * Handle deleting a TableResult from the RollTable entity
-   */
-  protected _onDeleteResult(event: JQuery.ClickEvent): Promise<RollTable.Result>;
+    /**
+     * @override
+     * @internal
+     */
+    protected _onDrop(event: DragEvent): void;
 
-  /**
-   * @override
-   * @internal
-   */
-  protected _onDrop(event: DragEvent): void;
+    /**
+     * Handle changing the actor profile image by opening a FilePicker
+     * @internal
+     */
+    protected _onEditImage(event: JQuery.ClickEvent): void;
 
-  /**
-   * Handle changing the actor profile image by opening a FilePicker
-   */
-  protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
+    /**
+     * Handle a button click to re-normalize dice result ranges across all RollTable results
+     * @internal
+     */
+    protected _onNormalizeResults(event: JQuery.ClickEvent): void;
 
-  /**
-   * Handle a button click to re-normalize dice result ranges across all RollTable results
-   */
-  protected _onNormalizeResults(event: JQuery.ClickEvent): Promise<RollTable>;
+    /**
+     * Handle toggling the drawn status of the result in the table
+     * @internal
+     */
+    protected _onLockResult(event: JQuery.ClickEvent): void;
 
-  /**
-   * Handle toggling the drawn status of the result in the table
-   */
-  protected _onLockResult(event: JQuery.ClickEvent): Promise<RollTable.Result>;
+    /**
+     * Reset the Table to it's original composition with all options unlocked
+     * @internal
+     */
+    protected _onResetTable(event: JQuery.ClickEvent): void;
 
-  /**
-   * Reset the Table to it's original composition with all options unlocked
-   */
-  protected _onResetTable(event: JQuery.ClickEvent): Promise<RollTable.Result>;
+    /**
+     * Handle drawing a result from the RollTable
+     * @internal
+     */
+    protected _onRollTable(event: JQuery.ClickEvent): void;
 
-  /**
-   * Handle drawing a result from the RollTable
-   */
-  protected _onRollTable(event: JQuery.ClickEvent): Promise<void>;
+    /**
+     * Configure the update object workflow for the Roll Table configuration sheet
+     * Additional logic is needed here to reconstruct the results array from the editable fields on the sheet
+     * @param event    - The form submission event
+     * @param formData - The validated FormData translated into an Object for submission
+     * @internal
+     */
+    protected _updateObject(
+      event: Event,
+      formData: RollTableConfig.FormData
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<'RollTable'>> | undefined>;
 
-  /**
-   * Configure the update object workflow for the Roll Table configuration sheet
-   * Additional logic is needed here to reconstruct the results array from the editable fields on the sheet
-   * @param event    - The form submission event
-   * @param formData - The validated FormData translated into an Object for submission
-   */
-  protected _updateObject(event: Event, formData: RollTableConfig.FormData): Promise<RollTable>;
+    /**
+     * Display a roulette style animation when a Roll Table result is drawn from the sheet
+     * @param results - An Array of drawn table results to highlight
+     * @returns A Promise which resolves once the animation is complete
+     */
+    protected _animateRoll(results: InstanceType<ConfiguredDocumentClassForName<'TableResult'>>[]): Promise<void[]>;
 
-  /**
-   * Display a roulette style animation when a Roll Table result is drawn from the sheet
-   * @param results - An Array of drawn table results to highlight
-   */
-  protected _animateRoll(results: RollTable.Result[]): Promise<void>;
+    /**
+     * Animate a "roulette" through the table until arriving at the final loop and a drawn result
+     */
+    protected _animateRoulette(
+      ol: HTMLOListElement,
+      drawnIds: Set<string>,
+      nLoops: number,
+      animTime: number,
+      animOffset: number
+    ): Promise<void>;
 
-  /**
-   * Animate a "roulette" through the table until arriving at the final loop and a drawn result
-   */
-  protected _animateRoulette(
-    ol: HTMLOListElement,
-    drawnIds: string[],
-    nLoops: number,
-    animTime: number,
-    animOffset: number
-  ): Promise<void>;
+    /**
+     * Display a flashing animation on the selected result to emphasize the draw
+     * @param item - The HTML \<li\> item of the winning result
+     * @returns A Promise that resolves once the animation is complete
+     */
+    protected _flashResult(item: HTMLElement): Promise<void>;
+  }
 
-  /**
-   * Display a flashing animation on the selected result to emphasize the draw
-   * @param item - The HTML <li> item of the winning result
-   */
-  protected _flashResult(item: HTMLElement): Promise<void>;
-}
+  namespace RollTableConfig {
+    interface Data extends DocumentSheet.Data<RollTable> {
+      results: ToObjectFalseType<foundry.data.TableResultData> & {
+        isText: boolean;
+        isEntity: boolean;
+        isCompendium: boolean;
+        img: string;
+        text: string;
+      };
+      resultTypes: {
+        [Key in keyof typeof foundry.CONST.TABLE_RESULT_TYPES as typeof foundry.CONST.TABLE_RESULT_TYPES[Key]]: Titlecase<Key>;
+      };
+      entityTypes: typeof foundry.CONST.COMPENDIUM_ENTITY_TYPES;
+      compendiumPacks: string[];
+    }
 
-declare namespace RollTableConfig {
-  interface Data extends DocumentSheet.Data<RollTable> {
-    results: RollTable.Result;
-    resultTypes: {
-      [Key in keyof typeof foundry.CONST['TABLE_RESULT_TYPES'] as typeof foundry.CONST['TABLE_RESULT_TYPES'][Key]]: Key;
+    type FormData = {
+      description: string;
+      displayRoll: boolean;
+      formula: string;
+      img: string;
+      name: string;
+      replacement: boolean;
+    } & FormDataResults;
+
+    type FormDataResults = {
+      [Key in number as `results.${number}._id`]: string;
+    } & {
+      [Key in number as `results.${number}.drawn`]: boolean;
+    } & {
+      [Key in number as `results.${number}.img`]: string;
+    } & {
+      [Key in number as `results.${number}.rangeH`]: number;
+    } & {
+      [Key in number as `results.${number}.rangeL`]: number;
+    } & {
+      [Key in number as `results.${number}.text`]: string;
+    } & {
+      [Key in number as `results.${number}.type`]: foundry.CONST.TableResultType;
+    } & {
+      [Key in number as `results.${number}.weight`]: string;
     };
-    entityTypes: typeof foundry.CONST['COMPENDIUM_ENTITY_TYPES'];
-    compendiumPacks: string[];
-  }
-
-  interface FormData
-    extends Pick<RollTable.Data, 'description' | 'displayRoll' | 'formula' | 'img' | 'name' | 'replacement'> {
-    [index: number]: FormDataResult;
-  }
-
-  interface FormDataResult
-    extends Pick<RollTable.Result, '_id' | 'drawn' | 'img' | 'resultId' | 'text' | 'type' | 'weight'> {
-    rangeH: RollTable.Result['range'][1];
-    rangeL: RollTable.Result['range'][0];
   }
 }
