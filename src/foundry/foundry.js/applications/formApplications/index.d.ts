@@ -9,7 +9,6 @@ import './gridConfig';
 import './imagePopout';
 import './measuredTemplateConfig';
 import './moduleManagement';
-import './noteConfig';
 import './permissionConfig';
 import './settingsConfig';
 import './tokenConfig';
