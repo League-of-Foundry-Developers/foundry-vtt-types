@@ -2,6 +2,7 @@ import './activeEffectConfig';
 import './actorSheet';
 import './ambientSoundConfig';
 import './combatantConfig';
+import './folderConfig';
 import './itemSheet';
 import './journalSheet';
 import './lightConfig';

@@ -1,5 +1,5 @@
-import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
-import type { SortingModes } from '../../../common/data/data.mjs/folderData';
+import type { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
+import type { SortingModes } from '../../../../common/data/data.mjs/folderData';
 
 declare global {
   /**
