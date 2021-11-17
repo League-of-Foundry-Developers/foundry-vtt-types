@@ -128,7 +128,7 @@ declare abstract class FormApplication<
    * @returns The prepared update data
    */
   // TODO: Maybe we can calculate how the flattened `updateData` looks like, then it would be Partial<Record<string, unknown>> & Flattened<T>
-  protected _getSubmitData(updateData?: object | null): Partial<Record<string, unknown>>;
+  protected _getSubmitData(updateData?: object | null): Record<string, unknown>;
 
   /**
    * Handle changes to an input element, submitting the form if options.submitOnChange is true.

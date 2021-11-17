@@ -1,175 +1,163 @@
-// TODO: Remove when updating this class!!!
-// eslint-disable-next-line
-// @ts-nocheck
+import type { ConfiguredDocumentClassForName, ConstructorDataType } from '../../../../types/helperTypes';
 
-/**
- * A Token Configuration Application
- * @typeParam P - the type of the options object
- */
-declare class TokenConfig<P extends TokenConfig.Options = TokenConfig.Options> extends FormApplication<
-  P,
-  TokenConfig.Data,
-  Token
-> {
+declare global {
   /**
-   * @param token   - The Token object for which settings are being configured
-   * @param options - TokenConfig ui options (see Application)
+   * The Application responsible for configuring a single Token document within a parent Scene.
+   * @typeParam Options - The type of the options object
+   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  constructor(token: Token, options?: Partial<P>);
+  class TokenConfig<
+    Options extends FormApplication.Options = FormApplication.Options,
+    Data extends object = TokenConfig.Data<Options>
+  > extends FormApplication<
+    Options,
+    Data,
+    InstanceType<ConfiguredDocumentClassForName<'Token'>> | InstanceType<ConfiguredDocumentClassForName<'Actor'>>
+  > {
+    constructor(
+      object:
+        | InstanceType<ConfiguredDocumentClassForName<'Token'>>
+        | InstanceType<ConfiguredDocumentClassForName<'Actor'>>,
+      options?: Partial<Options>
+    );
 
-  /**
-   * @override
-   * @defaultValue
-   * ```typescript
-   * mergeObject(super.defaultOptions, {
-   *   classes: ["sheet", "token-sheet"],
-   *   template: "templates/scene/token-config.html",
-   *   width: 480,
-   *   height: "auto",
-   *   tabs: [{navSelector: ".tabs", contentSelector: "form", initial: "character"}]
-   * });
-   * ```
-   */
-  static get defaultOptions(): TokenConfig.Options;
+    token: InstanceType<ConfiguredDocumentClassForName<'Token'>> | PrototypeTokenDocument;
 
-  /** @override */
-  get id(): string;
-
-  /**
-   * Convenience access for the Token object
-   */
-  get token(): this['object'];
-
-  /**
-   * Convenience access for the Token's linked Actor, if any
-   */
-  get actor(): this['token']['actor'];
-
-  /** @override */
-  get title(): string;
-
-  /**
-   * @param options - (unused)
-   * @override
-   */
-  getData(options?: Partial<P>): Promise<TokenConfig.Data>;
-
-  /** @override */
-  render(force?: boolean, options?: Application.RenderOptions<P>): Promise<void>;
-
-  /**
-   * Inspect the Actor data model and identify the set of attributes which could be used for a Token Bar
-   */
-  static getTrackedAttributeChoices(attributes: TokenConfig.Attributes): Partial<Record<string, string[]>>;
-
-  /**
-   * Test whether an individual data object is a valid attribute - containing both a "value" and "max" field
-   * @param data  - The data object to search
-   * @param _path - The attribute path being recursed
-   *                (default: `[]`)
-   * @returns An object containing both bar and value attribute paths
-   */
-  protected static getTrackedAttributes(data: object, _path: string[]): TokenConfig.Attributes;
-
-  /**
-   * Get an Object of image paths and filenames to display in the Token sheet
-   */
-  protected _getAlternateTokenImages(): Promise<Partial<Record<string, string>>>;
-
-  /** @override */
-  activateListeners(html: JQuery): void;
-
-  /** @override */
-  protected _getSubmitData(
-    updateData?: TokenConfig.FormData
-  ): ReturnType<FormApplication['_getSubmitData']> & { lightAlpha: number };
-
-  /** @override */
-  protected _updateObject(event: Event, formData: TokenConfig.FormData): Promise<void>;
-
-  /**
-   * Update certain fields of a linked actor token when token configuration is changed
-   * @param tokenData - The new token data
-   */
-  protected _updateActorData(tokenData: TokenConfig.FormData): ReturnType<Actor['update']> | void;
-
-  /**
-   * Handle Token assignment requests to update the default prototype Token
-   * @param event - The left-click event on the assign token button
-   */
-  protected _onAssignToken(event: JQuery.ClickEvent): Promise<void>;
-
-  /**
-   * Handle changing the attribute bar in the drop-down selector to update the default current and max value
-   */
-  protected _onBarChange(ev: JQuery.ChangeEvent): Promise<void>;
-}
-
-declare namespace TokenConfig {
-  interface Attributes {
-    bar: string[][];
-    value: string[][];
-  }
-
-  interface Data {
-    cssClasses: 'prototype' | '';
-    isPrototype: Options['configureDefault'];
-    hasAlternates: boolean;
-    alternateImages: TokenConfig['_getAlternateTokenImages'] | [];
-    object: foundry.utils.Duplicated<TokenConfig['token']['data']>;
-    options: TokenConfig['options'];
-    gridUnits: Scene['data']['gridUnits'] | Game['system']['gridUnits'];
-    barAttributes: ReturnType<typeof TokenConfig['getTrackedAttributeChoices']>;
-    bar1: ReturnType<TokenConfig['object']['getBarAttribute']>;
-    bar2: ReturnType<TokenConfig['object']['getBarAttribute']>;
-    displayModes: Record<foundry.CONST.TokenDisplayMode, string>;
-    actors: Array<Pick<Actor, '_id' | 'name'>>;
-    dispositions: Record<foundry.CONST.TokenDisposition, string>;
-    lightAnimations: { [Key in keyof typeof CONFIG['Canvas']['lightAnimations']]: string } & { '': 'None' };
-    lightAlpha: number;
-    isGM: User['isGM'];
-  }
-
-  interface FormData {
-    actorId: Token.Data['actorId'];
-    actorLink: Token.Data['actorLink'];
-    alternateImages?: string;
-    'bar1.attribute': Token.Data['bar1']['attribute'];
-    'bar2.attribute': Token.Data['bar2']['attribute'];
-    brightLight: Token.Data['brightLight'] | null;
-    brightSight: Token.Data['brightSight'] | null;
-    dimLight: Token.Data['dimLight'] | null;
-    dimSight: Token.Data['dimSight'] | null;
-    displayBars: Token.Data['displayBars'];
-    displayName: Token.Data['displayName'];
-    disposition: Token.Data['disposition'];
-    elevation: Token.Data['elevation'] | null;
-    height: Token.Data['height'] | null;
-    img: Token.Data['img'];
-    lightAlpha: Token.Data['lightAlpha'];
-    lightAngle: Token.Data['lightAngle'] | null;
-    'lightAnimation.intensity': Token.Data['lightAnimation']['intensity'];
-    'lightAnimation.speed': Token.Data['lightAnimation']['speed'];
-    'lightAnimation.type': Token.Data['lightAnimation']['type'];
-    lightColor: Token.Data['lightColor'];
-    lockRotation: Token.Data['lockRotation'];
-    mirrorX: Token.Data['mirrorX'];
-    mirrorY: Token.Data['mirrorY'];
-    name: Token.Data['name'];
-    rotation: Token.Data['rotation'] | null;
-    scale: Token.Data['scale'];
-    sightAngle: Token.Data['sightAngle'] | null;
-    tint: Token.Data['tint'];
-    vision: Token.Data['vision'];
-    width: Token.Data['width'] | null;
-    x: Token.Data['x'] | null;
-    y: Token.Data['y'] | null;
-  }
-
-  interface Options extends FormApplication.Options {
     /**
-     * Configure the default actor token on submit
+     * @override
+     * @defaultValue
+     * ```typescript
+     * foundry.utils.mergeObject(super.defaultOptions, {
+     *   classes: ["sheet", "token-sheet"],
+     *   template: "templates/scene/token-config.html",
+     *   width: 480,
+     *   height: "auto",
+     *   tabs: [{ navSelector: ".tabs", contentSelector: "form", initial: "character" }],
+     * })
+     * ```
      */
-    configureDefault?: boolean;
+    static get defaultOptions(): FormApplication.Options;
+
+    /** @override */
+    get id(): string;
+
+    /**
+     * A convenience accessor to test whether we are configuring the prototype Token for an Actor.
+     */
+    get isPrototype(): boolean;
+
+    /**
+     * Convenience access to the Actor document that this Token represents
+     */
+    get actor(): InstanceType<ConfiguredDocumentClassForName<'Actor'>>;
+
+    /** @override */
+    get title(): string;
+
+    /** @override */
+    getData(options?: Partial<Options>): Data | Promise<Data>;
+
+    /** @override */
+    render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<this>;
+
+    /**
+     * Get an Object of image paths and filenames to display in the Token sheet
+     * @internal
+     */
+    protected _getAlternateTokenImages(): Promise<Record<string, string>>;
+
+    /** @override */
+    activateListeners(html: JQuery): void;
+
+    /** @override */
+    protected _getSubmitData(
+      updateData?: ConstructorDataType<foundry.data.TokenData>
+    ): Record<string, unknown> & { lightAlpha: number };
+
+    /** @override */
+    protected _updateObject(
+      event: Event,
+      formData: TokenConfig.FormData
+    ): Promise<
+      | InstanceType<ConfiguredDocumentClassForName<'Token'>>
+      | InstanceType<ConfiguredDocumentClassForName<'Actor'>>
+      | undefined
+    >;
+
+    /**
+     * Handle Token assignment requests to update the default prototype Token
+     * @param event - The left-click event on the assign token button
+     * @internal
+     */
+    protected _onAssignToken(event: JQuery.ClickEvent): void;
+
+    /**
+     * Handle changing the attribute bar in the drop-down selector to update the default current and max value
+     * @internal
+     */
+    protected _onBarChange(ev: JQuery.ChangeEvent): void;
+  }
+
+  namespace TokenConfig {
+    interface Attributes {
+      bar: string[][];
+      value: string[][];
+    }
+
+    interface Data<Options extends FormApplication.Options = FormApplication.Options> {
+      cssClasses: string;
+      isPrototype: boolean;
+      hasAlternates: boolean;
+      alternateImages: Record<string, string> | [];
+      object: foundry.data.PrototypeTokenData | foundry.data.TokenData;
+      options: Options;
+      gridUnits: string | undefined;
+      barAttributes: Record<string, string[]>;
+      bar1: ReturnType<TokenDocument['getBarAttribute']>;
+      bar2: ReturnType<TokenDocument['getBarAttribute']>;
+      displayModes: Record<foundry.CONST.TokenDisplayMode, string>;
+      actors: { _id: string; name: string }[];
+      dispositions: Record<foundry.CONST.TokenDisposition, string>;
+      lightAnimations: { [Key in keyof typeof CONFIG.Canvas.lightAnimations]: string } & { '': string };
+      lightAlpha: number;
+      isGM: boolean;
+    }
+
+    interface FormData {
+      actorId: string;
+      actorLink: boolean;
+      alternateImages?: string;
+      alpha: number;
+      'bar1.attribute': string;
+      'bar2.attribute': string;
+      brightLight: number | null;
+      brightSight: number | null;
+      dimLight: number | null;
+      dimSight: number | null;
+      displayBars: foundry.CONST.TokenDisplayMode;
+      displayName: foundry.CONST.TokenDisplayMode;
+      disposition: foundry.CONST.TokenDisposition;
+      elevation: number | null;
+      height: number | null;
+      img: string;
+      lightAlpha: number;
+      lightAngle: number | null;
+      'lightAnimation.intensity': number;
+      'lightAnimation.speed': number;
+      'lightAnimation.type': string;
+      lightColor: string;
+      lockRotation: boolean;
+      mirrorX: boolean;
+      mirrorY: boolean;
+      name: StringTerm;
+      rotation: number | null;
+      scale: number;
+      sightAngle: number | null;
+      tint: string;
+      vision: boolean;
+      width: number | null;
+      x: number | null;
+      y: number | null;
+    }
   }
 }

@@ -56,7 +56,7 @@ declare global {
      * @override
      * @param updateData - (default: `{}`)
      */
-    _getSubmitData(updateData?: FormApplication.OnSubmitOptions['updateData']): object;
+    _getSubmitData(updateData?: FormApplication.OnSubmitOptions['updateData']): Record<string, unknown>;
     // TODO: Can we type this better?
   }
 
