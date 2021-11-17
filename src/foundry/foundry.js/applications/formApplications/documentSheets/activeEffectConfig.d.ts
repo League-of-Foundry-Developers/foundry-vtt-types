@@ -67,7 +67,7 @@ declare global {
       isActorEffect: boolean;
       isItemEffect: boolean;
       submitText: string;
-      modes: Record<keyof typeof foundry.CONST.ACTIVE_EFFECT_MODES, string>;
+      modes: Record<foundry.CONST.ActiveEffectMode, string>;
     }
 
     type Options = DocumentSheet.Options;
