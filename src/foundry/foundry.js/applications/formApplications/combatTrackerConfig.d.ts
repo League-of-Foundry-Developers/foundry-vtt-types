@@ -1,46 +1,39 @@
-// TODO: Remove when updating this class!!!
-// eslint-disable-next-line
-// @ts-nocheck
-
 /**
- * Configure the Combat tracker to display additional information as appropriate
+ * The Application responsible for configuring the CombatTracker and its contents.
+ * @typeParam Options - The type of the options object
+ * @typeParam Data    - The data structure used to render the handlebars template.
  */
-declare class CombatTrackerConfig extends FormApplication<FormApplication.Options, CombatTrackerConfig.Data> {
+declare class CombatTrackerConfig<
+  Options extends FormApplication.Options = FormApplication.Options,
+  Data extends object = CombatTrackerConfig.Data
+> extends FormApplication<Options, Data, undefined> {
   /**
    * @defaultValue
    * ```typescript
-   * mergeObject(super.defaultOptions, {
+   * foundry.utils.mergeObject(super.defaultOptions, {
    *   id: "combat-config",
    *   title: game.i18n.localize("COMBAT.Settings"),
    *   classes: ["sheet", "combat-sheet"],
    *   template: "templates/sheets/combat-config.html",
-   *   width: 420
-   * });
+   *   width: 420,
+   * })
    * ```
    */
-  static get defaultOptions(): typeof FormApplication['defaultOptions'];
+  static get defaultOptions(): FormApplication.Options;
 
-  /**
-   * @param options - (unused)
-   * @override
-   */
-  getData(options?: Partial<FormApplication.Options>): Promise<CombatTrackerConfig.Data>;
+  /** @override */
+  getData(options?: Partial<Options>): Data | Promise<Data>;
 
-  /**
-   * @param event - (unused)
-   * @override
-   */
-  protected _updateObject(event?: Event, formData?: Combat.ConfigValue): Promise<Combat.ConfigValue>;
-
-  /**
-   * Get an Array of attribute choices which could be tracked for Actors in the Combat Tracker
-   */
-  getAttributeChoices(): ReturnType<typeof TokenConfig['getTrackedAttributeChoices']>;
+  /** @override */
+  protected _updateObject(
+    event: Event,
+    formData: ClientSettings.Values['core.combatTrackerConfig']
+  ): Promise<ClientSettings.Values['core.combatTrackerConfig']>;
 }
 
 declare namespace CombatTrackerConfig {
   interface Data {
-    settings: Combat.ConfigValue;
-    attributeChoices: ReturnType<CombatTrackerConfig['getAttributeChoices']>;
+    settings: ClientSettings.Values['core.combatTrackerConfig'];
+    attributeChoices: Record<string, string[]>;
   }
 }
