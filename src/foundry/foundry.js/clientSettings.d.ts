@@ -230,6 +230,18 @@ declare namespace ClientSettings {
     'core.globalAmbientVolume': number;
     'core.globalInterfaceVolume': number;
     'core.moduleConfiguration': Record<string, boolean>;
+    'core.chatBubbles': boolean;
+    'core.chatBubblesPan': boolean;
+    'core.coneTemplateType': 'round' | 'flat';
+    'core.language': string;
+    'core.leftClickRelease': boolean;
+    'core.lightAnimation': boolean;
+    'core.maxFPS': number;
+    'core.mipmap': boolean;
+    'core.noCanvas': boolean;
+    'core.softShadows': boolean;
+    'core.tokenDragPreview': boolean;
+    'core.visionAnimation': boolean;
     [key: string]: unknown;
   }
 }
