@@ -4,7 +4,6 @@ import './documentSheet';
 import './documentSheets';
 import './drawingConfig';
 import './entitySheetConfig';
-import './folderConfig';
 import './gridConfig';
 import './imagePopout';
 import './measuredTemplateConfig';
