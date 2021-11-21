@@ -7,7 +7,6 @@ import './drawingConfig';
 import './entitySheetConfig';
 import './gridConfig';
 import './imagePopout';
-import './measuredTemplateConfig';
 import './moduleManagement';
 import './permissionConfig';
 import './settingsConfig';
