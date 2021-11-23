@@ -204,7 +204,7 @@ declare global {
     /**
      * Inspect the Actor data model and identify the set of attributes which could be used for a Token Bar
      */
-    static getTrackedAttributeChoices(attributes?: TrackedAttributes): Partial<Record<string, string[]>>;
+    static getTrackedAttributeChoices(attributes?: TrackedAttributes): Record<string, string[]>;
   }
 }
 
