@@ -7,6 +7,7 @@ import './itemSheet';
 import './journalSheet';
 import './lightConfig';
 import './macroConfig';
+import './measuredTemplateConfig';
 import './noteConfig';
 import './permissionControl';
 import './playlistConfig';
