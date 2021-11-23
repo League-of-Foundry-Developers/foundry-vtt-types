@@ -1,33 +1,33 @@
-// TODO: Remove when updating this class!!!
-// eslint-disable-next-line
-// @ts-nocheck
-
 /**
  * The World Management setup application
+ * @typeParam Options - The type of the options object
+ * @typeParam Data    - The data structure used to render the handlebars template.
  */
-declare class WorldConfig extends FormApplication<WorldConfig.Options, WorldConfig.Data, Game.World> {
+declare class WorldConfig<
+  Options extends WorldConfig.Options = WorldConfig.Options,
+  Data extends object = WorldConfig.Data
+> extends FormApplication<Options, Data, Game.WorldData<foundry.packages.WorldData>> {
   /**
    * @defaultValue
    * ```typescript
-   * mergeObject(super.defaultOptions, {
+   * foundry.utils.mergeObject(super.defaultOptions, {
    *   id: "world-config",
-   *   template: "templates/setup/world-config.html",
+   *   template: "templates/sidebar/apps/world-config.html",
    *   width: 600,
    *   height: "auto",
-   *   create: false
-   * });
+   *   create: false,
+   * })
    * ```
    */
   static get defaultOptions(): WorldConfig.Options;
 
+  static WORLD_KB_URL: 'https://foundryvtt.com/article/game-worlds/';
+
   /** @override */
   get title(): string;
 
-  /**
-   * @param options - (unused)
-   * @override
-   */
-  getData(options?: Partial<WorldConfig.Options>): WorldConfig.Data;
+  /** @override */
+  getData(options?: Partial<Options>): Data | Promise<Data>;
 
   /**
    * @remarks This method returns `Promise<void>`.
@@ -39,16 +39,22 @@ declare class WorldConfig extends FormApplication<WorldConfig.Options, WorldConf
    * @remarks This method does not exist on WorldConfig and only exists to make the typescript compile!
    */
   protected _updateObject(...args: unknown[]): Promise<unknown>;
+
+  /** @override **/
+  activateEditor(name: string, options?: TextEditor.Options, initialContent?: string): void;
 }
 
 declare namespace WorldConfig {
   interface Data {
-    world: WorldConfig['object'];
-    systems: Game.System[];
-    isCreate: WorldConfig['options']['create'];
+    world: Game.WorldData<foundry.packages.WorldData>;
+    isCreate: boolean;
     submitText: string;
     nextDate: string;
     nextTime: string;
+    worldKbUrl: typeof WorldConfig['WORLD_KB_URL'];
+    inWorld: boolean;
+    showEditFields: boolean;
+    systems?: Game.SystemData<foundry.packages.SystemData>[];
   }
 
   interface Options extends FormApplication.Options {
@@ -56,5 +62,7 @@ declare namespace WorldConfig {
      * @defaultValue `false`
      */
     create: boolean;
+
+    inWorld?: boolean;
   }
 }
