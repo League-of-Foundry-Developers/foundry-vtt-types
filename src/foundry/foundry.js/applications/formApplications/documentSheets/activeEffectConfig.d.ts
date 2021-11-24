@@ -56,7 +56,7 @@ declare global {
      * @override
      * @param updateData - (default: `{}`)
      */
-    _getSubmitData(updateData?: FormApplication.OnSubmitOptions['updateData']): object;
+    _getSubmitData(updateData?: FormApplication.OnSubmitOptions['updateData']): Record<string, unknown>;
     // TODO: Can we type this better?
   }
 
@@ -67,7 +67,7 @@ declare global {
       isActorEffect: boolean;
       isItemEffect: boolean;
       submitText: string;
-      modes: Record<keyof typeof foundry.CONST.ACTIVE_EFFECT_MODES, string>;
+      modes: Record<foundry.CONST.ActiveEffectMode, string>;
     }
 
     type Options = DocumentSheet.Options;

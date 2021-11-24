@@ -13,9 +13,7 @@ expectType<foundry.data.ActiveEffectData>((await config.getData()).data);
 expectType<boolean>((await config.getData()).isActorEffect);
 expectType<boolean>((await config.getData()).isItemEffect);
 expectType<string>((await config.getData()).submitText);
-expectType<Record<'CUSTOM' | 'MULTIPLY' | 'ADD' | 'DOWNGRADE' | 'UPGRADE' | 'OVERRIDE', string>>(
-  (await config.getData()).modes
-);
+expectType<Record<foundry.CONST.ActiveEffectMode, string>>((await config.getData()).modes);
 expectType<DocumentSheet.Options>(config.options);
 
 const withCustomOptions = new ActiveEffectConfig<DocumentSheet.Options & { custom: true }>(new ActiveEffect());
