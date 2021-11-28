@@ -1,36 +1,13 @@
-// TODO: Remove when updating this class!!!
-// eslint-disable-next-line
-// @ts-nocheck
-
 /**
- * A directory of Item entities in the Sidebar
+ * The sidebar directory which organizes and displays world-level Item documents.
  */
-declare class ItemDirectory extends SidebarDirectory {
-  /**
-   * @override
-   */
-  static get entity(): 'Item';
+declare class ItemDirectory extends SidebarDirectory<'Item'> {
+  /** @override */
+  static documentName: 'Item';
 
-  /**
-   * @override
-   * @see {@link Game.items}
-   */
-  static get collection(): Game['items'];
+  /** @override */
+  protected _canDragDrop(selector: string): boolean;
 
-  /**
-   * @param selector - (unused)
-   * @override
-   */
-  protected _canDragStart(selector: string | null): boolean;
-
-  /**
-   * @param selector - (unused)
-   * @override
-   */
-  protected _canDragDrop(selector: string | null): boolean;
-
-  /**
-   * @override
-   */
+  /** @override */
   protected _getEntryContextOptions(): ContextMenuEntry[];
 }
