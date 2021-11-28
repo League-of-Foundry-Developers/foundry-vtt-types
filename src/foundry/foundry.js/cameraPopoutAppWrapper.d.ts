@@ -25,16 +25,20 @@ declare class CameraPopoutAppWrapper {
    */
   userId: string;
 
+  /** @defaultValue `true` */
+  popOut: boolean;
+
+  /** @defaultValue `{}` */
+  options: Record<string, unknown>;
+
   /**
    * Get the current position of this popout window
    */
   get position(): Application.Position;
 
-  /** @override */
   setPosition({ left, top, width, height, scale }?: Partial<Application.Position>): void;
 
   private _onResize(event: Event): void;
 
-  /** @override */
   bringToTop(): void;
 }
