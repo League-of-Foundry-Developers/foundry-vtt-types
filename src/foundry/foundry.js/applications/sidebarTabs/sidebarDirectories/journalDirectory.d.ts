@@ -1,47 +1,27 @@
 /**
- * A directory list of JournalEntry entities in the Sidebar
+ * The sidebar directory which organizes and displays world-level JournalEntry documents.
  */
-// TODO: Remove when this class is updated!!!
-// eslint-disable-next-line
-// @ts-ignore
-declare class JournalDirectory extends SidebarDirectory<JournalDirectory.Options> {
+declare class JournalDirectory extends SidebarDirectory<'JournalEntry'> {
+  /** @override */
+  static documentName: 'JournalEntry';
+
   /**
    * @override
+   * @defaultValue
+   * ```typescript
+   * const options = super.defaultOptions;
+   * options.id = "journal";
+   * options.template = "templates/sidebar/journal-directory.html";
+   * return options;
+   * ```
    */
-  static get defaultOptions(): JournalDirectory.Options;
+  static get defaultOptions(): SidebarDirectory.Options;
 
   /**
    * @override
    */
   get title(): string;
 
-  /**
-   * @override
-   */
-  static get entity(): 'JournalEntry';
-
-  /**
-   * @override
-   * @see {@link Game.journal}
-   */
-  static get collection(): Game['journal'];
-
-  /**
-   * @override
-   */
+  /** @override */
   protected _getEntryContextOptions(): ContextMenuEntry[];
-}
-
-declare namespace JournalDirectory {
-  interface Options extends SidebarDirectory.Options {
-    /**
-     * @defaultValue `'journal'`
-     */
-    id: string;
-
-    /**
-     * @defaultValue `'templates/sidebar/journal-directory.html'`
-     */
-    template: string;
-  }
 }
