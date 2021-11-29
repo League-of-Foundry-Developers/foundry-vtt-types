@@ -1,9 +1,9 @@
+/**
+ * The lenient variety of global variables defining everything up front.
+ *
+ * TODO: Add more documentation here to describe as necessary.
+ */
 declare global {
-  /**
-   * The lenient variety of global variables defining everything up front.
-   *
-   * TODO: Add more documentation here to describe as necessary.
-   */
   let vtt: 'Foundry VTT';
 
   /**
