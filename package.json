@@ -2,6 +2,14 @@
   "name": "@league-of-foundry-developers/foundry-vtt-types",
   "version": "0.8.9-7",
   "description": "TypeScript type definitions for Foundry VTT",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts"
+    },
+    "./lenient": {
+      "types": "./index-lenient.d.ts"
+    }
+  },
   "scripts": {
     "lint": "./node_modules/typescript/bin/tsc && eslint --ext .d.ts,.test-d.ts .",
     "lint:fix": "eslint --fix --ext .d.ts,.test-d.ts .",

@@ -1,4 +1,4 @@
 {
   "extends": "../tsconfig.json",
-  "include": ["../index.d.ts", "./foundry", "./types"]
+  "include": ["../index.d.ts", "../index-lenient.d.ts", "./foundry", "./types"]
 }

@@ -115,7 +115,7 @@ declare global {
   let _token: InstanceType<CONFIG['Token']['objectClass']> | null;
 
   /*
-   * Global Vairables
+   * Global Variables
    * The following variables are declared directly in foundry's HTML file (or more concretely, in `main.hbs`)
    */
 
