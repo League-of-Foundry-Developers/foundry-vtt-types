@@ -704,6 +704,11 @@ export interface DocumentModificationOptions {
   index?: boolean;
 
   /**
+   * An array of fields to retrieve when indexing the collection
+   */
+  indexFields?: string[];
+
+  /**
    * When performing a creation operation, keep the provided _id instead of clearing it.
    * @defaultValue `false`
    */

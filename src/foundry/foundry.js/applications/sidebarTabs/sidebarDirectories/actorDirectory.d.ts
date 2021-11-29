@@ -1,67 +1,24 @@
-// TODO: Remove when updating this class!!!
-// eslint-disable-next-line
-// @ts-nocheck
-
 /**
- * A directory list of Actor entities in the Sidebar
- * @see {@link Actor}
+ * The sidebar directory which organizes and displays world-level Actor documents.
  */
-declare class ActorDirectory extends SidebarDirectory {
-  /**
-   * @override
-   */
-  static get entity(): 'Actor';
+declare class ActorDirectory extends SidebarDirectory<'Actor'> {
+  constructor(...args: ConstructorParameters<typeof SidebarDirectory>);
 
-  /**
-   * @override
-   * @see {@link Game.actors}
-   */
-  static get collection(): Game['actors'];
+  /** @override */
+  static documentName: 'Actor';
 
-  /**
-   * @param options - (unused)
-   * @override
-   */
-  getData(options?: Partial<SidebarDirectory.Options>): ActorDirectory.Data;
+  /** @override */
+  protected _canDragStart(selector: string): boolean;
 
-  /**
-   * @param selector - (unused)
-   * @override
-   */
-  protected _canDragStart(selector: string | null): boolean;
+  /**  @override */
+  protected _onDragStart(event: DragEvent): void;
 
-  /**
-   * @override
-   */
-  protected _onDragStart(event: DragEvent): false | void;
+  /** @override */
+  protected _canDragDrop(selector: string): boolean;
 
-  /**
-   * @param selector - (unused)
-   * @override
-   */
-  protected _canDragDrop(selector: string | null): boolean;
-
-  /**
-   * @override
-   */
+  /** @override */
   protected _onClickEntityName(event: JQuery.ClickEvent): Promise<void>;
 
-  /**
-   * @override
-   */
+  /** @override */
   protected _getEntryContextOptions(): ContextMenuEntry[];
-}
-
-declare namespace ActorDirectory {
-  interface Data extends SidebarDirectory.Data {
-    /**
-     * @defaultValue `'templates/sidebar/folder-partial.html'`
-     */
-    folderPartial: string;
-
-    /**
-     * @defaultValue `'templates/sidebar/actor-partial.html'`
-     */
-    entityPartial: string;
-  }
 }

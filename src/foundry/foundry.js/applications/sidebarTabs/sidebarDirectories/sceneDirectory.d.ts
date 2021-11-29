@@ -1,30 +1,13 @@
-// TODO: Remove when updating this class!!!
-// eslint-disable-next-line
-// @ts-nocheck
-
 /**
  * A directory listing of active game scenes
  */
-declare class SceneDirectory extends SidebarDirectory {
-  /**
-   * @override
-   */
-  static get entity(): 'Scene';
+declare class SceneDirectory extends SidebarDirectory<'Scene'> {
+  /** @override */
+  static documentName: 'Scene';
 
-  /**
-   * @override
-   * @see {@link Game.scenes}
-   */
-  static get collection(): Game['scenes'];
+  /** @override */
+  protected _render(force?: boolean, options?: Application.RenderOptions<SidebarDirectory.Options>): Promise<void>;
 
-  /**
-   * @override
-   * @remarks This is never called.
-   */
-  protected _onCreate(event: Event): Promise<Scene>;
-
-  /**
-   * @override
-   */
+  /** @override */
   protected _getEntryContextOptions(): ContextMenuEntry[];
 }
