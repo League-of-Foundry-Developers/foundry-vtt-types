@@ -68,6 +68,7 @@
   },
   "files": [
     "index.d.ts",
+    "index-lenient.d.ts",
     "src"
   ],
   "publishConfig": {
