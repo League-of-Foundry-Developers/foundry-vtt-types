@@ -2,7 +2,20 @@
  * A helper class used by the Sight Layer to represent a source of vision or illumination.
  */
 declare class PointSource {
-  constructor();
+  /**
+   * @param object - The object responsible for the PointSource
+   */
+  constructor(object: PlaceableObject, sourceType: PointSource.SourceType);
+
+  /**
+   * The object responsible for the PointSource
+   */
+  object: PlaceableObject;
+
+  /**
+   * The type of source
+   */
+  sourceType: PointSource.SourceType;
 
   /**
    * The light or darkness container for this source
@@ -21,10 +34,16 @@ declare class PointSource {
   active: boolean;
 
   /**
+   * The range of Scene darkness values for which this Source should be active
+   * @defaultValue `{ min: 0, max: 0 }`
+   */
+  darkness: { min: number; max: number };
+
+  /**
    * Internal flag for whether this is a darkness source
    * @defaultValue `false`
    */
-  darkness: boolean;
+  isDarkness: boolean;
 
   /**
    * Is the light source limited by an angle of emission?
@@ -41,26 +60,65 @@ declare class PointSource {
   /**
    * Internal flag for animation throttling time
    * @defaultValue `0`
+   * @internal
    */
   protected _animateTime: number;
 
   /**
    * An integer seed which de-synchronizes otherwise similar animations
    * @defaultValue `null`
+   * @internal
    */
   protected _animateSeed: number | null;
 
   /**
+   * A flag for the lighting channels version that this source is using.
+   * @defaultValue `0`
+   * @internal
+   */
+  protected _lightingVersion: number;
+
+  /**
    * A flag for whether to re-initialize illumination shader uniforms the next time the light is rendered.
    * @defaultValue `true`
+   * @internal
    */
   protected _resetIlluminationUniforms: boolean;
 
   /**
    * A flag for whether to re-initialize coloration shader uniforms the next time the light is rendered.
    * @defaultValue `true`
+   *@internal
    */
   protected _resetColorationUniforms: boolean;
+
+  /**
+   * An internal flag for whether to render coloration for this source
+   * @defaultValue `false`
+   * @internal
+   */
+  protected _hasColor: boolean;
+
+  /**
+   * The default Geometry stored in the GPU for all Point Source meshes.
+   */
+  static GEOMETRY: PIXI.Geometry;
+
+  /**
+   * Create the structure of a source Container which can be rendered to the sight layer shadow-map
+   * @returns The constructed light source container
+   * @internal
+   */
+  protected _createContainer(shaderCls: ConstructorOf<AbstractBaseShader>): PIXI.Container;
+
+  /**
+   * Initialize the source with provided object data.
+   *
+   * @param data - Input data which configures the source.
+   *
+   * @returns A reference to the initialized source
+   */
+  initialize(data?: PointSource.Data): PointSource.Initialized<this>;
 
   /**
    * The x-coordinate of the source location
@@ -117,13 +175,7 @@ declare class PointSource {
   alpha?: number;
 
   /**
-   * A level of darkness beyond which this light is active
-   * @defaultValue `undefined`
-   */
-  darknessThreshold?: number;
-
-  /**
-   * The source type from {@link SOURCE_TYPES}
+   * The source type from CONST.SOURCE_TYPES
    * @defaultValue `undefined`
    */
   type?: foundry.CONST.SourceType;
@@ -143,7 +195,7 @@ declare class PointSource {
   /**
    * @defaultValue `undefined`
    */
-  colorRGB?: [number, number, number];
+  colorRGB?: [r: number, g: number, b: number];
 
   /**
    * @defaultValue `undefined`
@@ -161,91 +213,24 @@ declare class PointSource {
   los?: PIXI.Polygon;
 
   /**
-   * Create the structure of a source Container which can be rendered to the sight layer shadow-map
-   * @returns The constructed light source container
-   */
-  protected _createContainer(shaderCls: ConstructorOf<AbstractBaseShader>): PIXI.Container;
-
-  /**
-   * Initialize the source with provided object data.
-   *
-   * @param x                 - The x-coordinate of the source location
-   *                            (default: `0`)
-   * @param y                 - The y-coordinate of the source location
-   *                            (default: `0`)
-   * @param z                 - An optional z-index sorting for the source
-   *                            (default: `null`)
-   * @param dim               - The allowed radius of dim vision or illumination
-   *                            (default: `0`)
-   * @param bright            - The allowed radius of bright vision or illumination
-   *                            (default: `0`)
-   * @param angle             - The angle of emission for this point source
-   *                            (default: `360`)
-   * @param rotation          - The angle of rotation for this point source
-   *                            (default: `0`)
-   * @param color             - A tint color for the emitted light, if any
-   *                            (default: `null`)
-   * @param alpha             - An opacity for the emitted light, if any
-   *                            (default: `0.5`)
-   * @param darknessThreshold - A level of darkness beyond which this light is active
-   *                            (default: `0`)
-   * @param type              - The source type from SOURCE_TYPES
-   *                            (default: `SOURCE_TYPES.LOCAL`)
-   * @param animation         - An animation configuration for the source
-   *                            (default: `{type: null}`)
-   * @param seed              - An integer seed to synchronize (or de-synchronize) animations
-   *                            (default: `undefined`)
-   *
-   * @returns A reference to the initialized source
-   */
-  initialize({
-    x,
-    y,
-    z,
-    dim,
-    bright,
-    angle,
-    rotation,
-    color,
-    alpha,
-    darknessThreshold,
-    type,
-    animation,
-    seed
-  }?: {
-    x?: number;
-    y?: number;
-    z?: number | null;
-    dim?: number;
-    bright?: number;
-    angle?: number;
-    rotation?: number;
-    color?: number | string | null;
-    alpha?: number;
-    darknessThreshold?: number;
-    type?: string;
-    animation?: PointSource.Animation;
-    seed?: number;
-  }): this;
-
-  /**
    * Initialize the shaders used for this animation.
    * Reset the current shader values back to defaults.
    * Swap to a different Shader instance if necessary.
+   * @internal
    */
   protected _initializeShaders(): void;
 
   /**
    * Initialize the blend mode and vertical sorting of this source relative to others in the container.
+   * @internal
    */
   protected _initializeBlending(): void;
 
   /**
    * Draw the display of this source for the darkness/light container of the SightLayer.
-   * @param updateChannels - Is this drawing initiated because lighting channels have changed?
    * @returns The rendered light container
    */
-  drawLight({ updateChannels }?: { updateChannels?: boolean }): PIXI.Container;
+  drawLight(): PIXI.Container;
 
   /**
    * Draw and return a container used to depict the visible color tint of the light source on the LightingLayer
@@ -256,6 +241,7 @@ declare class PointSource {
   /**
    * A common helper function for updating the display of a source container.
    * Assign the container position, dimensions, and polygons.
+   * @internal
    */
   protected _drawContainer(c: PIXI.Container): PIXI.Container;
 
@@ -269,25 +255,31 @@ declare class PointSource {
    * A torch animation where the luminosity and coloration decays each frame and is revitalized by flashes
    * @param dt        - Delta time
    * @param speed     - The animation speed, from 1 to 10
+   *                    (default: `5`)
    * @param intensity - The animation intensity, from 1 to 10
+   *                    (default: `5`)
    */
-  animateTorch: PointSource.AnimationFunction;
+  animateTorch(dt: number, { speed, intensity }?: PointSource.AnimationProperties): void;
 
   /**
    * A basic "pulse" animation which expands and contracts.
    * @param dt        - Delta time
    * @param speed     - The animation speed, from 1 to 10
+   *                    (default: `5`)
    * @param intensity - The animation intensity, from 1 to 10
+   *                    (default: `5`)
    */
-  animatePulse: PointSource.AnimationFunction;
+  animatePulse(dt: number, { speed, intensity }?: PointSource.AnimationProperties): void;
 
   /**
    * Emanate waves of light from the source origin point
    * @param dt        - Delta time
    * @param speed     - The animation speed, from 1 to 10
+   *                    (default: `5`)
    * @param intensity - The animation intensity, from 1 to 10
+   *                    (default: `5`)
    */
-  animateTime: PointSource.AnimationFunction;
+  animateTime(dt: number, { speed, intensity }?: PointSource.AnimationProperties): void;
 
   /**
    * Evolve a value using a stochastic AR(1) process
@@ -298,6 +290,7 @@ declare class PointSource {
    * @param max    - The maximum allowed outcome, or null
    * @param min    - The minimum allowed outcome, or null
    * @returns The new value of the process
+   * @internal
    */
   protected _ar1(
     y: number,
@@ -309,11 +302,106 @@ declare class PointSource {
       min
     }: { phi?: number; center?: number; sigma?: number; max?: number | null; min?: number | null }
   ): number;
-
-  static GEOMETRY: PIXI.Geometry;
 }
 
 declare namespace PointSource {
+  type SourceType = 'light' | 'sight';
+
+  interface Data {
+    /**
+     * The x-coordinate of the source location
+     * @defaultValue `0`
+     */
+    x?: number;
+
+    /** The y-coordinate of the source location
+     * @defaultValue `0`
+     */
+    y?: number;
+
+    /** An optional z-index sorting for the source
+     * @defaultValue `null`
+     */
+    z?: number | null;
+
+    /** The allowed radius of dim vision or illumination
+     * @defaultValue `0`
+     */
+    dim?: number;
+
+    /** The allowed radius of bright vision or illumination
+     * @defaultValue `0`
+     */
+    bright?: number;
+
+    /** The angle of emission for this point source
+     * @defaultValue `360`
+     */
+    angle?: number;
+
+    /**
+     * The angle of rotation for this point source
+     * @defaultValue `0`
+     */
+    rotation?: number;
+
+    /**
+     * A tint color for the emitted light, if any
+     * @defaultValue `null`
+     */
+    color?: number | string | null;
+
+    /** An opacity for the emitted light, if any
+     * @defaultValue `0.5`
+     */
+    alpha: number;
+
+    /**
+     * A darkness range (min and max) for which the source should be active
+     * @defaultValue `{ min: 0, max: 1 }`
+     */
+    darkness?: { min: number; max: number };
+
+    /**
+     * The source type from CONST.SOURCE_TYPES
+     * @defaultValue `CONST.SOURCE_TYPES.LOCAL`
+     */
+    type?: foundry.CONST.SourceType;
+
+    /**
+     * An animation configuration for the source
+     * @defaultValue `{ type: null }`
+     */
+    animation?: PointSource.Animation;
+
+    /**
+     * An integer seed to synchronize (or de-synchronize) animations
+     */
+    seed?: number;
+  }
+
+  type Initialized<P extends PointSource> = P &
+    Required<
+      Pick<
+        P,
+        | 'animation'
+        | 'angle'
+        | 'alpha'
+        | 'bright'
+        | 'color'
+        | 'dim'
+        | 'rotation'
+        | 'type'
+        | 'x'
+        | 'y'
+        | 'z'
+        | 'colorRGB'
+        | 'ratio'
+        | 'fov'
+        | 'los'
+      >
+    >;
+
   interface AnimationProperties {
     speed?: number;
     intensity?: number;

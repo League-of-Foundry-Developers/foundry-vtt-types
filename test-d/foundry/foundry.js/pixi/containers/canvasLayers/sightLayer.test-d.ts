@@ -33,5 +33,5 @@ expectType<void>(layer.commitFog());
 expectType<Promise<PIXI.Texture | void>>(layer.loadFog());
 expectType<Promise<void>>(layer.resetFog());
 expectType<Promise<void>>(layer.saveFog());
-expectType<void>(layer.updateFog(new PointSource()));
-expectType<void>(layer.updateFog(new PointSource(), true));
+expectType<void>(layer.updateFog(new PointSource(new AmbientLight(new AmbientLightDocument()), 'light')));
+expectType<void>(layer.updateFog(new PointSource(new AmbientLight(new AmbientLightDocument()), 'light'), true));
