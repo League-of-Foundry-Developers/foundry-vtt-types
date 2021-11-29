@@ -1,5 +1,4 @@
 import { ConfiguredDocumentClassForName, ConstructorDataType } from '../../../../types/helperTypes';
-import { IdQuery } from '../../../common/abstract/backend.mjs';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
 declare global {
@@ -26,6 +25,12 @@ declare global {
     _flush: () => void;
 
     /**
+     * Has this Compendium pack been fully indexed?
+     * @defaultValue `false`
+     */
+    indexed: boolean;
+
+    /**
      * The amount of time that Document instances within this CompendiumCollection are held in memory.
      * Accessing the contents of the Compendium pack extends the duration of this lifetime.
      * @defaultValue `300`
@@ -36,6 +41,32 @@ declare global {
      * The named game setting which contains Compendium configurations.
      */
     static CONFIG_SETTING: 'compendiumConfiguration';
+
+    /**
+     * The default index fields which should be retrieved for each Compendium document type
+     */
+    static INDEX_FIELDS: {
+      /** @defaultValue `["name", "img", "type"]` */
+      Actor: (keyof foundry.data.ActorData['_source'])[];
+
+      /** @defaultValue `["name", "img", "type"]` */
+      Item: (keyof foundry.data.ItemData['_source'])[];
+
+      /** @defaultValue `["name", "thumb"]` */
+      Scene: (keyof foundry.data.SceneData['_source'])[];
+
+      /** @defaultValue `["name", "img"]` */
+      JournalEntry: (keyof foundry.data.JournalEntryData['_source'])[];
+
+      /** @defaultValue `["name", "img"]` */
+      Macro: (keyof foundry.data.MacroData['_source'])[];
+
+      /** @defaultValue `["name", "img"]` */
+      RollTable: (keyof foundry.data.RollTableData['_source'])[];
+
+      /** @defaultValue `["name"]` */
+      Playlist: (keyof foundry.data.PlaylistData['_source'])[];
+    };
 
     /** The canonical Compendium name - comprised of the originating package and the pack name */
     get collection(): string;
@@ -64,8 +95,11 @@ declare global {
 
     delete: (id: string) => boolean;
 
-    /** Load the Compendium index and cache it as the keys and values of the Collection. */
-    getIndex(): Promise<this['index']>;
+    /**
+     * Load the Compendium index and cache it as the keys and values of the Collection.
+     * @param options - Options which customize how the index is created
+     */
+    getIndex(options?: CompendiumCollection.GetIndexOptions<T>): Promise<this['index']>;
 
     /**
      * Get a single Document from this Compendium by ID.
@@ -81,7 +115,7 @@ declare global {
      *                default: `{}`
      * @returns The retrieved Document instances
      */
-    getDocuments(query?: IdQuery): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
+    getDocuments(query?: Record<string, unknown>): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
 
     /**
      * Import a Document into this Compendium Collection.
@@ -236,6 +270,11 @@ declare global {
       package: string;
       system?: string;
     }
+
+    interface GetIndexOptions<T extends CompendiumCollection.Metadata> {
+      /** An array of fields to return as part of the index */
+      fields?: (keyof DocumentInstanceForCompendiumMetadata<T>['data']['_source'])[];
+    }
   }
 }
 
@@ -266,11 +305,5 @@ type DocumentInstanceForCompendiumMetadata<T extends CompendiumCollection.Metada
 >;
 
 type IndexTypeForMetadata<T extends CompendiumCollection.Metadata> = foundry.utils.Collection<
-  Pick<
-    StoredDocument<DocumentInstanceForCompendiumMetadata<T>>['data'],
-    | '_id'
-    | 'name'
-    | ('img' extends keyof StoredDocument<DocumentInstanceForCompendiumMetadata<T>>['data'] ? 'img' : never)
-    | ('type' extends keyof StoredDocument<DocumentInstanceForCompendiumMetadata<T>>['data'] ? 'type' : never)
-  >
+  { _id: string } & Partial<DocumentInstanceForCompendiumMetadata<T>['data']['_source']>
 >;
