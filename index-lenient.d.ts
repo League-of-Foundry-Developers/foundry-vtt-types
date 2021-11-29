@@ -2,8 +2,9 @@ import './index';
 
 declare global {
   interface LenientGlobalVariableConfig {
+    canvas: never;
     game: never;
     socket: never;
-    canvas: never;
+    ui: never;
   }
 }

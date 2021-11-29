@@ -15,6 +15,7 @@ declare global {
    * The currently supported variables are:
    * - {@link game}
    * - {@link socket}
+   * - {@link ui}
    * - {@link canvas}
    *
    * @example
@@ -64,9 +65,7 @@ declare global {
      * @defaultValue `{}`
      */
     windows: Record<number, Application>;
-  } & {
-    [Key in keyof CONFIG['ui']]?: InstanceType<CONFIG['ui'][Key]>;
-  };
+  } & ('ui' extends keyof LenientGlobalVariableTypes ? UiApplications : Partial<UiApplications>);
 
   /** The client-side console is the default logger  */
   let logger: typeof console;
@@ -127,5 +126,9 @@ declare global {
     | { type: Notifications.Notification['type']; message: string; options: Notifications.Options }[]
     | null;
 }
+
+type UiApplications = {
+  [Key in keyof CONFIG['ui']]: InstanceType<CONFIG['ui'][Key]>;
+};
 
 export {};
