@@ -1,7 +1,7 @@
 /**
  * The Camera UI View that displays all the camera feeds as individual video elements.
  * @typeParam Options - the type of the options object
- * @typeParam Data           - The data structure used to render the handlebars template.
+ * @typeParam Data    - The data structure used to render the handlebars template.
  */
 declare class CameraViews<
   Options extends Application.Options = Application.Options,
@@ -50,7 +50,7 @@ declare class CameraViews<
    * Extend the render logic to first check whether a render is necessary based on the context
    * If a specific context was provided, make sure an update to the navigation is necessary before rendering
    */
-  render(force?: boolean, context?: Application.RenderOptions<Options>): this;
+  render(force?: boolean, context?: Application.RenderOptions<Options>): this | void;
 
   /** @override */
   protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
