@@ -11,6 +11,7 @@ import './foundry.js/canvas';
 import './foundry.js/canvasAnimation';
 import './foundry.js/canvasDocumentMixin';
 import './foundry.js/chatBubbles';
+import './foundry.js/clientDatabaseBackend';
 import './foundry.js/clientDocuments';
 import './foundry.js/clientDocumentMixin';
 import './foundry.js/clientSettings';

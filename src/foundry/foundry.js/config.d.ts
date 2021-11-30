@@ -1,5 +1,4 @@
 import { DocumentConstructor, PlaceableObjectConstructor } from '../../types/helperTypes';
-import DatabaseBackend from '../common/abstract/backend.mjs';
 
 type ConfiguredDocumentClassOrDefault<Fallback extends DocumentConstructor> =
   Fallback['metadata']['name'] extends keyof DocumentClassConfig
@@ -230,7 +229,7 @@ declare global {
      * Configure the DatabaseBackend used to perform Document operations
      * @defaultValue `new ClientDatabaseBackend()`
      */
-    DatabaseBackend: DatabaseBackend; // TODO: ClientDatabaseBackend
+    DatabaseBackend: ClientDatabaseBackend;
 
     /**
      * Configuration for the Actor document

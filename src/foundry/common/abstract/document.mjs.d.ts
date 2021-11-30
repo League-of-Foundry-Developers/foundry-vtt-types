@@ -1,5 +1,4 @@
 import { BaseUser } from '../documents.mjs';
-import DatabaseBackend from './backend.mjs';
 import { AnyDocumentData } from './data.mjs';
 import {
   ConfiguredDocumentClass,
@@ -82,7 +81,7 @@ declare abstract class Document<
   /**
    * The database backend used to execute operations and handle results
    */
-  static get database(): DatabaseBackend; // TODO: Reference type defined in CONFIG
+  static get database(): CONFIG['DatabaseBackend'];
 
   /**
    * Return a reference to the implemented subclass of this base document type.
