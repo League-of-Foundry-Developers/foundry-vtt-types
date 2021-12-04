@@ -1,6 +1,6 @@
 {
   "name": "@league-of-foundry-developers/foundry-vtt-types",
-  "version": "0.8.9-8",
+  "version": "0.8.9-9",
   "description": "TypeScript type definitions for Foundry VTT",
   "exports": {
     ".": {
