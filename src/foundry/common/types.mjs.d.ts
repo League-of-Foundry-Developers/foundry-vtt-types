@@ -84,4 +84,9 @@ interface SocketResponse {
    * Data returned as a result of the request
    */
   data?: RequestData;
+
+  /**
+   * An Array of created data objects
+   */
+  result?: object[];
 }

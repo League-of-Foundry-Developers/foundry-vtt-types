@@ -27,22 +27,28 @@ declare abstract class DatabaseBackend {
 
   /**
    * Get primary Document instances
+   * @remarks
+   * foundry actually declares this function to take parameters `documentClass`, `query`, `options`, and `user` but
+   * that's not how it is called and also not how the subclasses implement it.
+   * See https://gitlab.com/foundrynet/foundryvtt/-/issues/6177
    */
   protected abstract _getDocuments<T extends Document<any, any>>(
     documentClass: ConstructorOf<T>,
-    query: Request,
-    options: RequestOptions,
+    request: Request,
     user: BaseUser
   ): Promise<T[]>;
 
   /**
    * Get embedded Document instances
+   * @remarks
+   * foundry actually declares this function to take parameters `documentClass`, `parent`, `query`, `options`, and
+   * `user` but that's not how it is called and also not how the subclasses implement it.
+   * See https://gitlab.com/foundrynet/foundryvtt/-/issues/6177
    */
   protected abstract _getEmbeddedDocuments<T extends Document<any, any>>(
     documentClass: ConstructorOf<T>,
     parent: T extends Document<any, infer U> ? U : never,
-    query: Request,
-    options: RequestOptions,
+    request: Request,
     user: BaseUser
   ): Promise<T[]>;
 
@@ -198,7 +204,8 @@ declare abstract class DatabaseBackend {
    * @param action    - The action performed
    * @param type      - The document type
    * @param documents - The documents modified
-   * @param info      - The logging level
+   * @param level     - The logging level
+   *                    (default: `'info'`)
    * @param parent    - A parent document
    * @param pack      - A compendium pack within which the operation occurred
    */
@@ -225,7 +232,7 @@ declare abstract class DatabaseBackend {
   protected _logContext({ parent, pack }?: { parent?: Document<any, any>; pack?: string }): string;
 }
 
-interface Request {
+export interface Request {
   data?: AnyDocumentData[];
   updates?: AnyDocumentData[];
   ids?: string[];
