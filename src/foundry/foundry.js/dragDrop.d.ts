@@ -31,13 +31,13 @@ declare class DragDrop {
    * The HTML selector which identifies draggable elements
    * @defaultValue `undefined`
    */
-  dragSelector: string | undefined;
+  dragSelector: string | null | undefined;
 
   /**
    * The HTML selector which identifies drop targets
    * @defaultValue `undefined`
    */
-  dropSelector: string | undefined;
+  dropSelector: string | null | undefined;
 
   /**
    * A set of permission checking functions for each action of the Drag and Drop workflow
