@@ -204,7 +204,8 @@ declare abstract class DatabaseBackend {
    * @param action    - The action performed
    * @param type      - The document type
    * @param documents - The documents modified
-   * @param info      - The logging level
+   * @param level     - The logging level
+   *                    (default: `'info'`)
    * @param parent    - A parent document
    * @param pack      - A compendium pack within which the operation occurred
    */

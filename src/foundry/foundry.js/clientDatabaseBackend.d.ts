@@ -20,7 +20,12 @@ declare global {
       user: InstanceType<ConfiguredDocumentClassForName<'User'>>
     ): Promise<T[]>;
 
-    /** @override */
+    /**
+     * @override
+     * @remarks
+     * Get operations for embedded Documents are currently un-supported.
+     * The returned promise always rejects.
+     */
     protected _getEmbeddedDocuments<T extends Document<any, any>>(
       documentClass: ConstructorOf<T>,
       parent: T extends Document<any, infer U> ? U : never,
