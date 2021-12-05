@@ -42,7 +42,7 @@ interface UserDataProperties {
   password: string;
   passwordSalt?: string;
   permissions: Partial<Record<keyof typeof CONST.USER_PERMISSIONS, boolean>>;
-  role: foundry.CONST.UserRole;
+  role: foundry.CONST.USER_ROLES;
   flags: ConfiguredFlags<'User'>;
 }
 
@@ -56,7 +56,7 @@ interface UserDataConstructorData {
   password?: string | null;
   passwordSalt?: string | null;
   permissions?: Partial<Record<keyof typeof CONST.USER_PERMISSIONS, boolean>> | null;
-  role?: foundry.CONST.UserRole | null;
+  role?: foundry.CONST.USER_ROLES | null;
   flags?: ConfiguredFlags<'User'> | null;
 }
 

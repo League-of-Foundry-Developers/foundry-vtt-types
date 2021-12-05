@@ -6,7 +6,7 @@ import { ChatSpeakerData, ChatSpeakerDataConstructorData } from './chatSpeakerDa
 
 interface ChatMessageDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
-  type: DocumentField<CONST.ChatMessageType> & {
+  type: DocumentField<CONST.CHAT_MESSAGE_TYPES> & {
     type: typeof Number;
     required: true;
     default: typeof CONST.CHAT_MESSAGE_TYPES.OTHER;
@@ -41,7 +41,7 @@ interface ChatMessageDataProperties {
    * The message type from CONST.CHAT_MESSAGE_TYPES
    * @defaultValue `CONST.CHAT_MESSAGE_TYPES.OTHER`
    */
-  type: CONST.ChatMessageType;
+  type: CONST.CHAT_MESSAGE_TYPES;
 
   /**
    * The _id of the User document who generated this message
@@ -117,7 +117,7 @@ export interface ChatMessageDataConstructorData {
    * The message type from CONST.CHAT_MESSAGE_TYPES
    * @defaultValue `CONST.CHAT_MESSAGE_TYPES.OTHER`
    */
-  type?: CONST.ChatMessageType | null;
+  type?: CONST.CHAT_MESSAGE_TYPES | null;
 
   /**
    * The _id of the User document who generated this message

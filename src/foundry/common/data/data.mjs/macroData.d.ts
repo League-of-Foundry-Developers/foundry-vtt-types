@@ -47,7 +47,7 @@ interface MacroDataProperties {
   /**
    * A Macro subtype from CONST.MACRO_TYPES
    */
-  type: foundry.CONST.MacroTypes;
+  type: foundry.CONST.MACRO_TYPES;
 
   /**
    * The _id of a User document which created this Macro *
@@ -64,7 +64,7 @@ interface MacroDataProperties {
    * The scope of this Macro application from CONST.MACRO_SCOPES
    * @defaultValue `'global'`
    */
-  scope: foundry.CONST.MacroScopes;
+  scope: foundry.CONST.MACRO_SCOPES;
 
   /**
    * The string content of the macro command
@@ -88,7 +88,7 @@ interface MacroDataProperties {
    * An object which configures user permissions to this Macro
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission: Partial<Record<string, foundry.CONST.EntityPermission>>;
+  permission: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>>;
 
   /**
    * An object of optional key/value flags
@@ -111,7 +111,7 @@ interface MacroDataConstructorData {
   /**
    * A Macro subtype from CONST.MACRO_TYPES
    */
-  type?: foundry.CONST.MacroTypes | null;
+  type?: foundry.CONST.MACRO_TYPES | null;
 
   /**
    * The _id of a User document which created this Macro *
@@ -128,7 +128,7 @@ interface MacroDataConstructorData {
    * The scope of this Macro application from CONST.MACRO_SCOPES
    * @defaultValue `'global'`
    */
-  scope?: foundry.CONST.MacroScopes | null;
+  scope?: foundry.CONST.MACRO_SCOPES | null;
 
   /**
    * The string content of the macro command
@@ -152,7 +152,7 @@ interface MacroDataConstructorData {
    * An object which configures user permissions to this Macro
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission?: Partial<Record<string, foundry.CONST.EntityPermission>> | null;
+  permission?: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>> | null;
 
   /**
    * An object of optional key/value flags

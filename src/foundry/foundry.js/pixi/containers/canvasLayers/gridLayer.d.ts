@@ -42,7 +42,7 @@ declare class GridLayer extends CanvasLayer<GridLayer.LayerOptions> {
   /**
    * The grid type rendered in this Scene
    */
-  get type(): foundry.CONST.GridType;
+  get type(): foundry.CONST.GRID_TYPES;
 
   /**
    * A convenient reference to the pixel grid size used throughout this layer
@@ -177,7 +177,7 @@ interface DrawOptions {
   /**
    * @defaultValue `null`
    */
-  type?: foundry.CONST.GridType | null;
+  type?: foundry.CONST.GRID_TYPES | null;
 
   /**
    * @defaultValue `null`

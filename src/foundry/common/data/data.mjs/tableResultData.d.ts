@@ -5,10 +5,10 @@ import { fields } from '../module.mjs';
 
 interface TableResultDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
-  type: DocumentField<foundry.CONST.TableResultType> & {
+  type: DocumentField<foundry.CONST.TABLE_RESULT_TYPES> & {
     type: typeof Number;
     default: typeof CONST.TABLE_RESULT_TYPES.TEXT;
-    validate: (t: unknown) => t is foundry.CONST.TableResultType;
+    validate: (t: unknown) => t is foundry.CONST.TABLE_RESULT_TYPES;
     validationError: 'Invalid TableResult type provided';
   };
   text: typeof fields.BLANK_STRING;
@@ -46,7 +46,7 @@ interface TableResultDataProperties {
    * A result sub-type from CONST.TABLE_RESULT_TYPES
    * @defaultValue `CONST.TABLE_RESULT_TYPES.TEXT`
    */
-  type: foundry.CONST.TableResultType;
+  type: foundry.CONST.TABLE_RESULT_TYPES;
 
   /**
    * The text which describes the table result
@@ -104,7 +104,7 @@ interface TableResultDataConstructorData {
    * A result sub-type from CONST.TABLE_RESULT_TYPES
    * @defaultValue `CONST.TABLE_RESULT_TYPES.TEXT`
    */
-  type?: foundry.CONST.TableResultType | null | undefined;
+  type?: foundry.CONST.TABLE_RESULT_TYPES | null | undefined;
 
   /**
    * The text which describes the table result

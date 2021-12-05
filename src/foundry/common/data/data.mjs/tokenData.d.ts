@@ -14,7 +14,7 @@ interface VisionFieldOptions {
 export interface TokenDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
   name: typeof fields.STRING_FIELD;
-  displayName: DocumentField<CONST.TokenDisplayMode> & {
+  displayName: DocumentField<CONST.TOKEN_DISPLAY_MODES> & {
     type: typeof Number;
     required: true;
     default: typeof CONST.TOKEN_DISPLAY_MODES.NONE;
@@ -68,14 +68,14 @@ export interface TokenDataSchema extends DocumentSchema {
     required: true;
     default: {};
   };
-  disposition: DocumentField<CONST.TokenDisposition> & {
+  disposition: DocumentField<CONST.TOKEN_DISPOSITIONS> & {
     type: typeof Number;
     required: true;
     default: typeof CONST.TOKEN_DISPOSITIONS.HOSTILE;
     validate: (n: any) => boolean;
     validationError: 'Invalid {name} {field} which must be a value in CONST.TOKEN_DISPOSITIONS';
   };
-  displayBars: DocumentField<CONST.TokenDisplayMode> & {
+  displayBars: DocumentField<CONST.TOKEN_DISPLAY_MODES> & {
     type: typeof Number;
     required: true;
     default: typeof CONST.TOKEN_DISPLAY_MODES.NONE;
@@ -111,7 +111,7 @@ export interface TokenDataProperties {
    * The display mode of the Token nameplate, from CONST.TOKEN_DISPLAY_MODES
    * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
    */
-  displayName: CONST.TokenDisplayMode;
+  displayName: CONST.TOKEN_DISPLAY_MODES;
 
   /**
    * The _id of an Actor document which this Token represents
@@ -288,13 +288,13 @@ export interface TokenDataProperties {
    * A displayed Token disposition from CONST.TOKEN_DISPOSITIONS
    * @defaultValue `CONST.TOKEN_DISPOSITIONS.HOSTILE`
    */
-  disposition: CONST.TokenDisposition;
+  disposition: CONST.TOKEN_DISPOSITIONS;
 
   /**
    * The display mode of Token resource bars, from CONST.TOKEN_DISPLAY_MODES
    * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
    */
-  displayBars: CONST.TokenDisplayMode;
+  displayBars: CONST.TOKEN_DISPLAY_MODES;
 
   /**
    * The configuration of the Token's primary resource bar
@@ -331,7 +331,7 @@ export interface TokenDataConstructorData {
    * The display mode of the Token nameplate, from CONST.TOKEN_DISPLAY_MODES
    * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
    */
-  displayName?: CONST.TokenDisplayMode | null;
+  displayName?: CONST.TOKEN_DISPLAY_MODES | null;
 
   /**
    * The _id of an Actor document which this Token represents
@@ -508,13 +508,13 @@ export interface TokenDataConstructorData {
    * A displayed Token disposition from CONST.TOKEN_DISPOSITIONS
    * @defaultValue `CONST.TOKEN_DISPOSITIONS.HOSTILE`
    */
-  disposition?: CONST.TokenDisposition | null;
+  disposition?: CONST.TOKEN_DISPOSITIONS | null;
 
   /**
    * The display mode of Token resource bars, from CONST.TOKEN_DISPLAY_MODES
    * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
    */
-  displayBars?: CONST.TokenDisplayMode | null;
+  displayBars?: CONST.TOKEN_DISPLAY_MODES | null;
 
   /**
    * The configuration of the Token's primary resource bar

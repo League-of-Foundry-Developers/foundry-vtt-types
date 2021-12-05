@@ -448,7 +448,7 @@ declare global {
         label: string;
         path: string;
         private: boolean;
-        entity: foundry.CONST.CompendiumEntityType;
+        entity: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
         system?: string;
         absPath: string;
         package: string;
@@ -475,7 +475,7 @@ declare global {
           templates?: Partial<Record<string, unknown>>;
         } & Partial<Record<string, unknown>>;
       };
-      entityTypes: { [Key in foundry.CONST.EntityType | 'Setting' | 'FogExploration']: string[] };
+      entityTypes: { [Key in foundry.CONST.DOCUMENT_TYPES | 'Setting' | 'FogExploration']: string[] };
       model: {
         Actor: Partial<Record<string, Partial<Record<string, unknown>>>>;
         Item: Partial<Record<string, Partial<Record<string, unknown>>>>;
@@ -526,7 +526,7 @@ declare global {
         label: string;
         path: string;
         private: boolean;
-        entity: foundry.CONST.CompendiumEntityType;
+        entity: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
         system?: string;
         package: string;
         index: { name: string; type: string; _id: string }[];
@@ -535,7 +535,7 @@ declare global {
       systemUpdate: string | null;
     } & {
       [DocumentType in
-        | foundry.CONST.EntityType
+        | foundry.CONST.DOCUMENT_TYPES
         | 'Setting' as ConfiguredDocumentClassForName<DocumentType>['metadata']['collection']]?: InstanceType<
         ConfiguredDocumentClassForName<DocumentType>
       >['data']['_source'][];
@@ -548,11 +548,13 @@ declare global {
     };
 
     type Permissions = {
-      [Key in keyof typeof foundry.CONST.USER_PERMISSIONS]: foundry.CONST.UserRole[];
+      [Key in keyof typeof foundry.CONST.USER_PERMISSIONS]: foundry.CONST.USER_ROLES[];
     };
 
     type View = ValueOf<typeof foundry.CONST.GAME_VIEWS>;
   }
 }
 
-type ConfiguredCollectionClassForName<Name extends foundry.CONST.EntityType> = InstanceType<CONFIG[Name]['collection']>;
+type ConfiguredCollectionClassForName<Name extends foundry.CONST.DOCUMENT_TYPES> = InstanceType<
+  CONFIG[Name]['collection']
+>;

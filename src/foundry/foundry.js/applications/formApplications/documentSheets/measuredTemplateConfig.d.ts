@@ -50,7 +50,7 @@ declare global {
       direction: number | null;
       distance: number | null;
       fillColor: string;
-      t: ValueOf<foundry.CONST.MeasuredTemplateTypes>;
+      t: ValueOf<foundry.CONST.MEASURED_TEMPLATE_TYPES>;
       texture: string;
       width: number | null;
       x: number | null;

@@ -51,7 +51,7 @@ declare global {
       entries: Journal['contents'];
       icons: CONFIG['JournalEntry']['noteIcons'];
       fontFamilies: Record<string, string>;
-      textAnchors: Record<foundry.CONST.TextAnchorPoint, string>;
+      textAnchors: Record<foundry.CONST.TEXT_ANCHOR_POINTS, string>;
       submitText: string;
     }
 
@@ -63,7 +63,7 @@ declare global {
       iconSize: number | null;
       iconTint: string;
       text: string;
-      textAnchor: foundry.CONST.TextAnchorPoint;
+      textAnchor: foundry.CONST.TEXT_ANCHOR_POINTS;
       textColor: string;
       x: number | null;
       y: number | null;

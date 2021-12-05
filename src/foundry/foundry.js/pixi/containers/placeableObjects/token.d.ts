@@ -258,7 +258,7 @@ declare global {
      * @param mode - The mode from CONST.TOKEN_DISPLAY_MODES
      * @returns Is the attribute viewable?
      */
-    protected _canViewMode(mode: foundry.CONST.TokenDisplayMode): boolean;
+    protected _canViewMode(mode: foundry.CONST.TOKEN_DISPLAY_MODES): boolean;
 
     /**
      * Animate Token movement along a certain path which is defined by a Ray object

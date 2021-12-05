@@ -64,7 +64,7 @@ declare global {
     interface Data<Options extends DocumentSheet.Options>
       extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'AmbientLight'>>, Options> {
       submitText: string;
-      lightTypes: Record<foundry.CONST.SourceType, string>;
+      lightTypes: Record<foundry.CONST.SOURCE_TYPES, string>;
       lightAnimations: Record<string, string> & {
         '': 'None';
       };

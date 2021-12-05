@@ -8,7 +8,7 @@ declare global {
    * @typeParam Options - The type of the options object
    */
   abstract class SidebarDirectory<
-    Name extends foundry.CONST.EntityType | 'FogExploration',
+    Name extends foundry.CONST.DOCUMENT_TYPES | 'FogExploration',
     Options extends SidebarDirectory.Options = SidebarDirectory.Options
   > extends SidebarTab<Options> {
     constructor(options?: Partial<SidebarDirectory.Options>);
@@ -54,7 +54,7 @@ declare global {
      * The WorldCollection instance which this Sidebar Directory displays.
      */
     static get collection(): WorldCollection<
-      ConfiguredDocumentClassForName<foundry.CONST.EntityType | 'FogExploration'>,
+      ConfiguredDocumentClassForName<foundry.CONST.DOCUMENT_TYPES | 'FogExploration'>,
       string
     >;
 

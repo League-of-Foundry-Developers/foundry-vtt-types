@@ -43,7 +43,7 @@ declare global {
   namespace PlaylistConfig {
     interface Data<Options extends DocumentSheet.Options = DocumentSheet.Options>
       extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Playlist>>, Options> {
-      modes: Record<foundry.CONST.PlaylistMode, string>;
+      modes: Record<foundry.CONST.PLAYLIST_MODES, string>;
     }
   }
 }

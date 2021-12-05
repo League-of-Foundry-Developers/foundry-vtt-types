@@ -186,7 +186,7 @@ declare global {
     } & {
       [Key in number as `results.${number}.text`]: string;
     } & {
-      [Key in number as `results.${number}.type`]: foundry.CONST.TableResultType;
+      [Key in number as `results.${number}.type`]: foundry.CONST.TABLE_RESULT_TYPES;
     } & {
       [Key in number as `results.${number}.weight`]: string;
     };

@@ -51,7 +51,7 @@ interface SceneDataSchema extends DocumentSchema {
     typeof fields.REQUIRED_NUMBER,
     {
       default: typeof CONST.GRID_TYPES.SQUARE;
-      validate: (t: unknown) => t is CONST.GridType;
+      validate: (t: unknown) => t is CONST.GRID_TYPES;
       validationError: 'Invalid {name } {field} which must be a value in CONST.GRID_TYPES';
     }
   >;
@@ -186,7 +186,7 @@ interface SceneDataProperties {
    * The type of grid used in this scene, a number from CONST.GRID_TYPES
    * @defaultValue `CONST.GRID_TYPES.SQUARE`
    */
-  gridType: CONST.GridType;
+  gridType: CONST.GRID_TYPES;
 
   /**
    * The grid size which represents the width (or height) of a single grid space
@@ -346,7 +346,7 @@ interface SceneDataProperties {
    * An object which configures user permissions to this Actor
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission: Partial<Record<string, foundry.CONST.EntityPermission>>;
+  permission: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>>;
 
   /**
    * An object of optional key/value flags
@@ -441,7 +441,7 @@ interface SceneDataConstructorData {
    * The type of grid used in this scene, a number from CONST.GRID_TYPES
    * @defaultValue `CONST.GRID_TYPES.SQUARE`
    */
-  gridType?: CONST.GridType | null;
+  gridType?: CONST.GRID_TYPES | null;
 
   /**
    * The grid size which represents the width (or height) of a single grid space
@@ -601,7 +601,7 @@ interface SceneDataConstructorData {
    * An object which configures user permissions to this Actor
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission?: Partial<Record<string, foundry.CONST.EntityPermission>> | null;
+  permission?: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>> | null;
 
   /**
    * An object of optional key/value flags

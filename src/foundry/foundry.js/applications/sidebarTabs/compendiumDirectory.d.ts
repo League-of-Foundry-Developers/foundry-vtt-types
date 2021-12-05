@@ -60,10 +60,10 @@ declare global {
   namespace CompendiumDirectory {
     interface Data {
       user: InstanceType<ConfiguredDocumentClass<typeof User>>;
-      packs: { [DocumentName in foundry.CONST.CompendiumEntityType]?: PackData<DocumentName> };
+      packs: { [DocumentName in foundry.CONST.COMPENDIUM_DOCUMENT_TYPES]?: PackData<DocumentName> };
     }
 
-    interface PackData<DocumentName extends foundry.CONST.CompendiumEntityType> {
+    interface PackData<DocumentName extends foundry.CONST.COMPENDIUM_DOCUMENT_TYPES> {
       label: DocumentName;
       packs: CompendiumCollection<CompendiumCollection.Metadata & { entity: DocumentName }>[];
     }

@@ -10,11 +10,11 @@ interface PlaylistDataSchema extends DocumentSchema {
   name: typeof fields.REQUIRED_STRING;
   description: typeof fields.BLANK_STRING;
   sounds: fields.EmbeddedCollectionField<typeof documents.BasePlaylistSound>;
-  mode: DocumentField<foundry.CONST.PlaylistMode> & {
+  mode: DocumentField<foundry.CONST.PLAYLIST_MODES> & {
     type: typeof Number;
     required: true;
     default: typeof CONST.PLAYLIST_MODES.SEQUENTIAL;
-    validate: (m: unknown) => m is foundry.CONST.PlaylistMode;
+    validate: (m: unknown) => m is foundry.CONST.PLAYLIST_MODES;
     validationError: 'Invalid {name} {field} provided which must be a value from CONST.PLAYLIST_MODES';
   };
   playing: typeof fields.BOOLEAN_FIELD;
@@ -51,7 +51,7 @@ interface PlaylistDataProperties {
    * The playback mode for sounds in this playlist
    * @defaultValue `CONST.PLAYLIST_MODES.SEQUENTIAL`
    */
-  mode: foundry.CONST.PlaylistMode;
+  mode: foundry.CONST.PLAYLIST_MODES;
 
   /**
    * Is this playlist currently playing?
@@ -79,7 +79,7 @@ interface PlaylistDataProperties {
    * An object which configures user permissions to this playlist
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission: Record<string, foundry.CONST.EntityPermission>;
+  permission: Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>;
 
   /**
    * An object of optional key/value flags
@@ -116,7 +116,7 @@ interface PlaylistDataConstructorData {
    * The playback mode for sounds in this playlist
    * @defaultValue `CONST.PLAYLIST_MODES.SEQUENTIAL`
    */
-  mode?: foundry.CONST.PlaylistMode | null | undefined;
+  mode?: foundry.CONST.PLAYLIST_MODES | null | undefined;
 
   /**
    * Is this playlist currently playing?
@@ -144,7 +144,7 @@ interface PlaylistDataConstructorData {
    * An object which configures user permissions to this playlist
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission?: Record<string, foundry.CONST.EntityPermission> | undefined | null;
+  permission?: Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS> | undefined | null;
 
   /**
    * An object of optional key/value flags

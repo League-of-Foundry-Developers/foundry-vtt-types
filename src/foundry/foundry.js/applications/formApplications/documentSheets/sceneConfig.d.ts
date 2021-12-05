@@ -50,7 +50,7 @@ declare global {
      * Get an enumeration of the available grid types which can be applied to this Scene
      * @internal
      */
-    protected static _getGridTypes(): Record<foundry.CONST.GridType, string>;
+    protected static _getGridTypes(): Record<foundry.CONST.GRID_TYPES, string>;
 
     /**
      * Get the available weather effect types which can be applied to this Scene
@@ -127,7 +127,7 @@ declare global {
       gridAlpha: number;
       gridColor: string;
       gridDistance: number | null;
-      gridType: foundry.CONST.GridType;
+      gridType: foundry.CONST.GRID_TYPES;
       gridUnits: string;
       hasGlobalThreshold: boolean;
       height: number | null;
@@ -140,7 +140,7 @@ declare global {
       navName: string;
       navigation: boolean;
       padding: number;
-      'permission.default': foundry.CONST.EntityPermission;
+      'permission.default': foundry.CONST.DOCUMENT_PERMISSION_LEVELS;
       playlist: string;
       shiftX: number | null;
       shiftY: number | null;

@@ -51,7 +51,7 @@ declare global {
     interface Data<Options extends DocumentSheet.Options>
       extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Tile'>>, Options> {
       submitText: string;
-      occlusionModes: Record<foundry.CONST.TileOcclusionModes, string>;
+      occlusionModes: Record<foundry.CONST.TILE_OCCLUSION_MODES, string>;
     }
 
     type FormData = Pick<TileDataConstructorData, 'height' | 'img' | 'rotation' | 'width' | 'x' | 'y'>;

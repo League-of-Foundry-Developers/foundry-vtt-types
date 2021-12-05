@@ -15,7 +15,7 @@ interface PackageCompendiumDataSchema extends DocumentSchema {
   entity: FieldReturnType<
     typeof fields.REQUIRED_STRING,
     {
-      validate: (v: string) => v is foundry.CONST.CompendiumEntityType;
+      validate: (v: string) => v is foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
       validationError: 'Invalid package compendium entity type provided which must be a value in CONST.COMPENDIUM_ENTITY_TYPES';
     }
   >;
@@ -35,7 +35,7 @@ interface PackageCompendiumDataProperties {
   private: boolean;
 
   /** The specific document type that is contained within this compendium pack */
-  entity: foundry.CONST.CompendiumEntityType;
+  entity: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
 
   /** Denote that this compendium pack requires a specific game system to function properly. */
   system?: string;
@@ -54,7 +54,7 @@ interface PackageCompendiumDataConstructorData {
   private?: boolean | null;
 
   /** The specific document type that is contained within this compendium pack */
-  entity: foundry.CONST.CompendiumEntityType;
+  entity: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
 
   /** Denote that this compendium pack requires a specific game system to function properly. */
   system?: string;

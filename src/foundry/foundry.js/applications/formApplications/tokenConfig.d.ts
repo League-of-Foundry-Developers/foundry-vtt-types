@@ -115,9 +115,9 @@ declare global {
       barAttributes: Record<string, string[]>;
       bar1: ReturnType<TokenDocument['getBarAttribute']>;
       bar2: ReturnType<TokenDocument['getBarAttribute']>;
-      displayModes: Record<foundry.CONST.TokenDisplayMode, string>;
+      displayModes: Record<foundry.CONST.TOKEN_DISPLAY_MODES, string>;
       actors: { _id: string; name: string }[];
-      dispositions: Record<foundry.CONST.TokenDisposition, string>;
+      dispositions: Record<foundry.CONST.TOKEN_DISPOSITIONS, string>;
       lightAnimations: { [Key in keyof typeof CONFIG.Canvas.lightAnimations]: string } & { '': string };
       lightAlpha: number;
       isGM: boolean;
@@ -134,9 +134,9 @@ declare global {
       brightSight: number | null;
       dimLight: number | null;
       dimSight: number | null;
-      displayBars: foundry.CONST.TokenDisplayMode;
-      displayName: foundry.CONST.TokenDisplayMode;
-      disposition: foundry.CONST.TokenDisposition;
+      displayBars: foundry.CONST.TOKEN_DISPLAY_MODES;
+      displayName: foundry.CONST.TOKEN_DISPLAY_MODES;
+      disposition: foundry.CONST.TOKEN_DISPOSITIONS;
       elevation: number | null;
       height: number | null;
       img: string;

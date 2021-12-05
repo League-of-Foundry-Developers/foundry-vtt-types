@@ -194,7 +194,7 @@ declare global {
 
       interface Folder {
         type: 'Folder';
-        documentName: foundry.CONST.FolderEntityTypes;
+        documentName: foundry.CONST.FOLDER_DOCUMENT_TYPES;
         id: string;
       }
     }
