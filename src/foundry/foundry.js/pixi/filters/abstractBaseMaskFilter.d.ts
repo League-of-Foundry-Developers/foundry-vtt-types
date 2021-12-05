@@ -31,10 +31,10 @@ declare abstract class AbstractBaseMaskFilter extends PIXI.Filter {
    * @param currentState - (unused)
    */
   apply(
-    filterManager: PIXI.systems.FilterSystem,
+    filterManager: PIXI.FilterSystem,
     input: PIXI.RenderTexture,
     output: PIXI.RenderTexture,
-    clear: PIXI.CLEAR_MODES,
-    currentState: any
+    clear?: PIXI.CLEAR_MODES,
+    currentState?: PIXI.FilterState
   ): void;
 }
