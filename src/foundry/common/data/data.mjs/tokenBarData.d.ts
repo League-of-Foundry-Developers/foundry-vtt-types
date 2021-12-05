@@ -14,6 +14,7 @@ interface TokenBarDataSchema extends DocumentSchema {
 interface TokenBarDataProperties {
   /**
    * The attribute path within the Token's Actor data which should be displayed
+   * @defaultValue `null`
    */
   attribute: string | null;
 }
@@ -21,8 +22,9 @@ interface TokenBarDataProperties {
 export interface TokenBarDataConstructorData {
   /**
    * The attribute path within the Token's Actor data which should be displayed
+   * @defaultValue `null`
    */
-  attribute?: string | null;
+  attribute?: string | null | undefined;
 }
 
 /**

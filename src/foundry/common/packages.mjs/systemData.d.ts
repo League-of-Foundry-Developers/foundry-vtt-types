@@ -11,39 +11,39 @@ interface SystemDataSchema extends PackageDataSchema {
 }
 
 interface SystemDataProperties extends PackageDataProperties {
-  background?: string;
+  background: string | undefined;
 
-  initiative?: string;
+  initiative: string | undefined;
 
   /** A default distance measurement to use for Scenes in this system */
-  gridDistance?: number | null;
+  gridDistance: number | null | undefined;
 
   /** A default unit of measure to use for distance measurement in this system */
-  gridUnits?: string;
+  gridUnits: string | undefined;
 
   /** An Actor data attribute path to use for Token primary resource bars */
-  primaryTokenAttribute?: string;
+  primaryTokenAttribute: string | undefined;
 
   /** An Actor data attribute path to use for Token secondary resource bars */
-  secondaryTokenAttribute?: string;
+  secondaryTokenAttribute: string | undefined;
 }
 
 interface SystemDataConstructorData extends PackageDataConstructorData {
-  background?: string | null;
+  background?: string | null | undefined;
 
-  initiative?: string | null;
+  initiative?: string | null | undefined;
 
   /** A default distance measurement to use for Scenes in this system */
-  gridDistance?: number | null;
+  gridDistance?: number | null | undefined;
 
   /** A default unit of measure to use for distance measurement in this system */
-  gridUnits?: string | null;
+  gridUnits?: string | null | undefined;
 
   /** An Actor data attribute path to use for Token primary resource bars */
-  primaryTokenAttribute?: string | null;
+  primaryTokenAttribute?: string | null | undefined;
 
   /** An Actor data attribute path to use for Token secondary resource bars */
-  secondaryTokenAttribute?: string | null;
+  secondaryTokenAttribute?: string | null | undefined;
 }
 
 /**

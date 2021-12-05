@@ -99,10 +99,10 @@ declare global {
       token,
       alias
     }?: {
-      scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>>;
-      actor?: InstanceType<ConfiguredDocumentClass<typeof Actor>>;
-      token?: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>;
-      alias?: string;
+      scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>> | undefined;
+      actor?: InstanceType<ConfiguredDocumentClass<typeof Actor>> | undefined;
+      token?: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>> | undefined;
+      alias?: string | undefined;
     }): foundry.data.ChatMessageData['speaker']['_source'];
 
     /**

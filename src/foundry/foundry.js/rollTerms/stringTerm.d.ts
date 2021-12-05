@@ -16,7 +16,7 @@ declare global {
 
     get total(): string;
 
-    evaluate(options?: Partial<RollTerm.EvaluationOptions>): never;
+    evaluate(options?: InexactPartial<RollTerm.EvaluationOptions>): never;
   }
 }
 

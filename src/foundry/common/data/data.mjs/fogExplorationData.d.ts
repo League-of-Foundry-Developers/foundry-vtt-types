@@ -61,34 +61,34 @@ interface FogExplorationDataConstructorData {
    * The _id which uniquely identifies this FogExploration document
    * @defaultValue `null`
    */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
   /**
    * The _id of the Scene document to which this fog applies
    * @defaultValue `null`
    */
-  scene?: string | null | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>;
+  scene?: string | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>> | null | undefined;
 
   /**
    * The _id of the User document to which this fog applies
    * @defaultValue `null`
    */
-  user?: string | null;
+  user?: string | null | undefined;
 
   /**
    * The base64 png image of the explored fog polygon
    * @defaultValue `null`
    */
-  explored?: string | null;
+  explored?: string | null | undefined;
 
   /**
    * The object of scene positions which have been explored at a certain vision radius
    * @defaultValue `{}`
    */
-  positions?: Record<string, { radius: number; limit: boolean }> | null;
+  positions?: Record<string, { radius: number; limit: boolean }> | null | undefined;
 
   /** The timestamp at which this fog exploration was last updated */
-  timestamp?: number | null;
+  timestamp?: number | null | undefined;
 }
 
 /**

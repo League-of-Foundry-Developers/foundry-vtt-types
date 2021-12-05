@@ -34,19 +34,19 @@ export interface VideoDataConstructorData {
    * Automatically loop the video?
    * @defaultValue `true`
    */
-  loop?: boolean | null;
+  loop?: boolean | null | undefined;
 
   /**
    * Should the video play automatically?
    * @defaultValue `true`
    */
-  autoplay?: boolean | null;
+  autoplay?: boolean | null | undefined;
 
   /**
    * The volume level of any audio that the video file contains
    * @defaultValue `0`
    */
-  volume?: number | null;
+  volume?: number | null | undefined;
 }
 
 /**

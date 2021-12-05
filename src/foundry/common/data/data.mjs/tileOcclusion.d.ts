@@ -34,13 +34,13 @@ export interface TileOcclusionConstructorData {
    * The occlusion mode from CONST.TILE_OCCLUSION_MODES
    * @defaultValue `CONST.TILE_OCCLUSION_MODES.FADE`
    */
-  mode?: foundry.CONST.TILE_OCCLUSION_MODES | null;
+  mode?: foundry.CONST.TILE_OCCLUSION_MODES | null | undefined;
 
   /**
    * The occlusion alpha between 0 and 1
    * @defaultValue `0`
    */
-  alpha?: number | null;
+  alpha?: number | null | undefined;
 }
 
 /**

@@ -128,11 +128,11 @@ expectType<{ a: string | number }>(foundry.utils.duplicate({ a: ((): string | nu
 
 expectType<{ a: string | null }>(foundry.utils.duplicate({ a: ((): string | null => '')() }));
 
-expectType<{ a?: string }>(foundry.utils.duplicate({ a: ((): string | undefined => '')() }));
+expectType<{ a?: string | undefined }>(foundry.utils.duplicate({ a: ((): string | undefined => '')() }));
 
-expectType<{ a?: string }>(foundry.utils.duplicate({ a: ((): string | Function => '')() }));
+expectType<{ a?: string | undefined }>(foundry.utils.duplicate({ a: ((): string | Function => '')() }));
 
-expectType<{ a?: string }>(foundry.utils.duplicate({ a: ((): string | symbol => '')() }));
+expectType<{ a?: string | undefined }>(foundry.utils.duplicate({ a: ((): string | symbol => '')() }));
 
 expectType<{ a: Array<string> }>(foundry.utils.duplicate({ a: [''] }));
 
@@ -166,9 +166,9 @@ expectType<
     | boolean
     | null
     | {
-        d?: boolean;
+        d?: boolean | undefined;
         e: Array<boolean>;
-        f: { g: number; h?: number };
+        f: { g: number; h?: number | undefined };
       }
   >
 >(foundry.utils.duplicate(complexObject));

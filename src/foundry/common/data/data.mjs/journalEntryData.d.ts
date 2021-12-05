@@ -67,7 +67,7 @@ interface JournalEntryConstructorData {
    * The _id which uniquely identifies this JournalEntry document
    * @defaultValue `null`
    */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
   /**
    * The name of this JournalEntry
@@ -78,36 +78,36 @@ interface JournalEntryConstructorData {
    * The HTML content of the JournalEntry
    * @defaultValue `''`
    */
-  content?: string | null;
+  content?: string | null | undefined;
 
   /**
    * An image file path which provides the artwork for this JournalEntry
    */
-  img?: string | null;
+  img?: string | null | undefined;
 
   /**
    * The _id of a Folder which contains this JournalEntry
    * @defaultValue `null`
    */
-  folder?: string | null;
+  folder?: string | null | undefined;
 
   /**
    * The numeric sort value which orders this JournalEntry relative to its siblings
    * @defaultValue `0`
    */
-  sort?: number | null;
+  sort?: number | null | undefined;
 
   /**
    * An object which configures user permissions to this JournalEntry
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission?: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>> | null;
+  permission?: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>> | null | undefined;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'JournalEntry'> | null;
+  flags?: ConfiguredFlags<'JournalEntry'> | null | undefined;
 }
 
 /**

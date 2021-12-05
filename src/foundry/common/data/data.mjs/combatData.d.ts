@@ -65,43 +65,43 @@ interface CombatDataProperties {
 
 interface CombatDataConstructorData {
   /** The _id which uniquely identifies this Combat document */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
   /** The _id of a Scene within which this Combat occurs */
-  scene?: string | null;
+  scene?: string | null | undefined;
 
   /** A Collection of Combatant embedded Documents */
-  combatants?: ConstructorDataType<CombatantData>[] | null;
+  combatants?: ConstructorDataType<CombatantData>[] | null | undefined;
 
   /**
    * Is the Combat encounter currently active?
    * @defaultValue `false`
    */
-  active?: boolean | null;
+  active?: boolean | null | undefined;
 
   /**
    * The current round of the Combat encounter
    * @defaultValue `0`
    */
-  round?: number | null;
+  round?: number | null | undefined;
 
   /**
    * The current turn in the Combat round
    * @defaultValue `0`
    */
-  turn?: number | null;
+  turn?: number | null | undefined;
 
   /**
    * The current sort order of this Combat relative to others in the same Scene
    * @defaultValue `0`
    */
-  sort?: number | null;
+  sort?: number | null | undefined;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Combat'> | null;
+  flags?: ConfiguredFlags<'Combat'> | null | undefined;
 }
 
 /**

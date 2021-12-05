@@ -17,13 +17,13 @@ interface WorldDataProperties extends Omit<PackageDataProperties, 'system'> {
   system: string;
 
   /** A web URL or local file path which provides a background banner image */
-  background?: string;
+  background: string | undefined;
 
   /** The version of the core software for which this world has been migrated */
   coreVersion: string;
 
   /** An ISO datetime string when the next game session is scheduled to occur */
-  nextSession?: string;
+  nextSession: string | undefined;
 
   resetKeys: boolean;
 
@@ -38,20 +38,20 @@ interface WorldDataConstructorData extends Omit<PackageDataConstructorData, 'sys
   system: string;
 
   /** A web URL or local file path which provides a background banner image */
-  background?: string | null;
+  background?: string | null | undefined;
 
   /** The version of the core software for which this world has been migrated */
   coreVersion: string;
 
   /** An ISO datetime string when the next game session is scheduled to occur */
-  nextSession?: string | null;
+  nextSession?: string | null | undefined;
 
-  resetKeys?: boolean | null;
+  resetKeys?: boolean | null | undefined;
 
-  safeMode?: boolean | null;
+  safeMode?: boolean | null | undefined;
 
   /** The version of the game system for which this world has been migrated */
-  systemVersion?: string | null;
+  systemVersion?: string | null | undefined;
 }
 
 /**

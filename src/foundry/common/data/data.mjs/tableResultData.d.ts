@@ -98,7 +98,7 @@ interface TableResultDataConstructorData {
    * The _id which uniquely identifies this TableResult embedded document
    * @defaultValue `null`
    */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
   /**
    * A result sub-type from CONST.TABLE_RESULT_TYPES
@@ -109,7 +109,7 @@ interface TableResultDataConstructorData {
   /**
    * The text which describes the table result
    */
-  text?: string | null;
+  text?: string | null | undefined;
 
   /**
    * An image file url that represents the table result

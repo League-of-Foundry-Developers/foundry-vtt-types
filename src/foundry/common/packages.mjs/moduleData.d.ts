@@ -28,17 +28,17 @@ interface ModuleDataConstructorData extends PackageDataConstructorData {
   /**
    * Does this module provide a translation for the core software?
    */
-  coreTranslation?: boolean | null;
+  coreTranslation?: boolean | null | undefined;
 
   /** A minimum version number of the game system that this module requires */
-  minimumSystemVersion?: string | null;
+  minimumSystemVersion?: string | null | undefined;
 
   /**
    * A library module provides no user-facing functionality and is solely for
    * use by other modules. Loaded before any system or module scripts.
    * @defaultValue `false`
    */
-  library?: boolean | null;
+  library?: boolean | null | undefined;
 }
 
 /**

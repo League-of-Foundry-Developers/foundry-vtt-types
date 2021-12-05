@@ -55,7 +55,7 @@ interface ActiveEffectDataProperties {
   /**
    * An icon image path used to depict the ActiveEffect
    */
-  icon?: string | null;
+  icon: string | null | undefined;
 
   /**
    * A text label which describes the name of the ActiveEffect
@@ -66,12 +66,12 @@ interface ActiveEffectDataProperties {
   /**
    * A UUID reference to the document from which this ActiveEffect originated
    */
-  origin?: string;
+  origin: string | undefined;
 
   /**
    * A color string which applies a tint to the ActiveEffect icon
    */
-  tint?: string | null;
+  tint: string | null | undefined;
 
   /**
    * Does this ActiveEffect automatically transfer from an Item to an Actor?
@@ -90,56 +90,56 @@ interface ActiveEffectDataConstructorData {
   /**
    * The _id which uniquely identifies the ActiveEffect within a parent Actor or Item
    */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
   /**
    * The array of EffectChangeData objects which the ActiveEffect applies
    */
-  changes?: EffectChangeDataConstructorData[] | null;
+  changes?: EffectChangeDataConstructorData[] | null | undefined;
 
   /**
    * Is this ActiveEffect currently disabled?
    * @defaultValue `false`
    */
-  disabled?: boolean | null;
+  disabled?: boolean | null | undefined;
 
   /**
    * An EffectDurationData object which describes the duration of the ActiveEffect
    */
-  duration?: EffectDurationDataConstructorData | null;
+  duration?: EffectDurationDataConstructorData | null | undefined;
 
   /**
    * An icon image path used to depict the ActiveEffect
    */
-  icon?: string | null;
+  icon?: string | null | undefined;
 
   /**
    * A text label which describes the name of the ActiveEffect
    * @defaultValue `''`
    */
-  label?: string | null;
+  label?: string | null | undefined;
 
   /**
    * A UUID reference to the document from which this ActiveEffect originated
    */
-  origin?: string | null;
+  origin?: string | null | undefined;
 
   /**
    * A color string which applies a tint to the ActiveEffect icon
    */
-  tint?: string | null;
+  tint?: string | null | undefined;
 
   /**
    * Does this ActiveEffect automatically transfer from an Item to an Actor?
    * @defaultValue `true`
    */
-  transfer?: boolean | null;
+  transfer?: boolean | null | undefined;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: (ConfiguredFlags<'ActiveEffect'> & CoreFlags) | null;
+  flags?: (ConfiguredFlags<'ActiveEffect'> & CoreFlags) | null | undefined;
 }
 
 /**
