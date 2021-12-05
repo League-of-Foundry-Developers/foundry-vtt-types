@@ -5,40 +5,58 @@
 TypeScript type definitions for [Foundry Virtual Tabletop](https://foundryvtt.com/) (unofficial)
 
 [![League Discord Server](https://img.shields.io/discord/732325252788387980?label=League%20of%20Extraordinary%20Foundry%20VTT%20Developers)](https://discord.gg/52DNPzqm2Z)
-![GitHub 0.7.x issues by-label](https://img.shields.io/github/issues-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.7.x?color=%23fe631d)
-![GitHub closed 0.7.x issues by-label](https://img.shields.io/github/issues-closed-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.7.x?color=%23fe631d)
-![GitHub 0.8.x issues by-label](https://img.shields.io/github/issues-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.8.x?color=%23fe631d)
-![GitHub closed 0.8.x issues by-label](https://img.shields.io/github/issues-closed-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%200.8.x?color=%23fe631d)
+![GitHub V9 issues by-label](https://img.shields.io/github/issues-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%20V9?color=%23fe631d)
+![GitHub closed V9 issues by-label](https://img.shields.io/github/issues-closed-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%20V9?color=%23fe631d)
 [![npm (tag)](https://img.shields.io/npm/v/@league-of-foundry-developers/foundry-vtt-types/latest)](https://www.npmjs.com/package/@league-of-foundry-developers/foundry-vtt-types)
 
 </div>
 
 ## Supported Foundry VTT versions
 
-We aim to support the latest patch release of minor versions of Foundry VTT, starting with 0.7.
+We aim to support the latest release of each Foundry VTT version (0.7, 0.8, 9, etc.), starting with 0.7.
 
-At the moment, the latest 0.7.x and 0.8.x versions are supported.
+At the moment, both version 0.7 and 0.8 are supported. Work on support for version 9 is in progress.
+
 
 ## Installation
 
-You can install foundry-vtt-types from the [npm registry](https://npmjs.org/). We provide distribution tags for the
-different supported Foundry VTT versions that have the form `fvtt-<foundry-version>`. For example, the distribution tag
-for Foundry VTT 0.8.9 is `fvtt-0.8.9`.
+You can install foundry-vtt-types from the [npm registry](https://npmjs.org/).
 
-In order to install the desired version, run
+In order to install the latest version, run
 
 ```sh
-npm install --save-dev @league-of-foundry-developers/foundry-vtt-types@fvtt-<foundry-version>
+npm install --save-dev @league-of-foundry-developers/foundry-vtt-types
 ```
 
-For example, to install the type definitions for Foundry VTT 0.8.9 run
+In order to install a specific version run
 
 ```sh
-npm install --save-dev @league-of-foundry-developers/foundry-vtt-types@fvtt-0.8.9
+npm install --save-dev @league-of-foundry-developers/foundry-vtt-types@<version>
+```
+
+For example, to install version `0.8.9-9`, run
+
+```sh
+npm install --save-dev @league-of-foundry-developers/foundry-vtt-types@0.8.9-9
 ```
 
 You can then update foundry-vtt-types using the regular update mechanism for npm
 (see [npm update](https://docs.npmjs.com/cli/v7/commands/npm-update)).
+
+## Versioning scheme
+
+The versions of the foundry-vtt-types correspond to the releases of Foundry VTT. The versioning scheme of Foundry VTT
+changed with version 9, so the versioning scheme for the foundry-vtt-types also changes with that version:
+* For Foundry VTT version 0.7 and 0.8, the versioning scheme is
+  ```
+  0.<foundy-minor-version>.<foundry-patch-version>-<increment>
+  ```
+* For Foundry VTT version 9 and onwards, the versioning scheme is
+  ```
+  <foundry-version>.<foundry-build>.<increment>
+  ```
+In both cases, `increment` is a number that increases with every individual release of the foundry-vtt-types for that
+Foundry VTT release.
 
 ## Usage
 
@@ -59,13 +77,13 @@ This will make the type definitions available globally in your project.
 Make sure you are using `"moduleResolution": "node"`, too. It is required for some dependencies to be resolved
 correctly.
 
-Also make sure to set `"strictNullChecks": true` because otherwise, some of the conditional types used in the type
-definitions resolve incorrectly and you will see a lot of errors.
+Also make sure to set `"strictNullChecks": true` because otherwise, some conditional types used in the type definitions
+resolve incorrectly, and you will see a lot of errors. Alternatively, you can just set `"strict": true`, which
+implicitly sets `strictNullChecks`. This is actually what we **recommend**, but it's not required.
 
 You can find some information about how to actually work with the type definitions in the
-[Wiki](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/wiki). If you are working with Foundry VTT
-0.8.x, a good starting point is
-[[0.8.x] FAQ](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/wiki/%5B0.8.x%5D-FAQ).
+[Wiki](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/wiki). A good starting point is
+the [FAQ](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/wiki/FAQ).
 
 ## Acknowledgments
 
@@ -77,10 +95,10 @@ by [@NickEastNL](https://gitlab.com/NvanOosten)
 Contributions are very welcome in order to decrease the individual workload. Filing issues for wrong / missing types is
 also a great way to help us improve the type definitions.
 
-There are individual branches for the different supported Foundry VTT versions that are being worked on. They are named
-according to the minor version of the Foundry VTT version, e.g. the branch for Foundry VTT 0.8 is called
-`foundry-0.8.x`. All work to improve the type definitions for a specific version needs to be done through Pull Requests
-to the corresponding branch.
+Development on the current version of Foundry VTT is done on the `main` branch. Additionally, we keep branches for the
+older version of Foundry VTT that we still support. These branches are named according to the Foundry VTT version they
+correspond to. For example, the branch for Foundry VTT 0.8 is called `foundry-0.8.x`. All work to improve the type
+definitions needs to be done through Pull Requests to the relevant branch.
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for more details on how to contribute.
 
@@ -89,7 +107,7 @@ If you have any specific questions, feel free to contact us in the
 
 ## Type-Checking, Linting, Testing
 
-When contributing, make sure sure that the type checks pass, the linter is green and the tests are green. We _do_ have
+When contributing, make sure that the type checks pass, the linter is green and the tests are green. We _do_ have
 checks in the CI but running this locally also helps you while developing and saves you time as you don't have to wait
 for the CI.
 
@@ -111,7 +129,7 @@ To create a release, you have to create a new release commit, tag it and create 
 handle the rest.
 
 ```
-npm version prerelease
+npm version <release-type>
 git push --follow-tags
 ```
 

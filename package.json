@@ -23,7 +23,26 @@
     "type": "git",
     "url": "https://github.com/League-of-Foundry-Developers/foundry-vtt-types"
   },
-  "author": "Kai Moschcau",
+  "contributors": [
+    {
+      "name": "Kai Moschcau"
+    },
+    {
+      "name": "Johannes Loher"
+    },
+    {
+      "name": "Oskar Pfeifer-Bley"
+    },
+    {
+      "name": "FloRad"
+    },
+    {
+      "name": "NickEastNL"
+    },
+    {
+      "name": "BoltsJ"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues"
@@ -64,7 +83,7 @@
   },
   "lint-staged": {
     "*.(d.ts|test-d.ts)": "eslint --fix",
-    "*.(js|json)": "prettier --write"
+    "*.(js|json|yml)": "prettier --write"
   },
   "files": [
     "index.d.ts",

@@ -9,8 +9,7 @@ The following is a set of guidelines for contributing to foundry-vtt-types. Thes
 - Documentation: [README.md](README.md), [Wiki](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/wiki)
 - Issue tracker: [Issues](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues)
 - Project boards
-  - [0.7.x](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/projects/1)
-  - [0.8.x](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/projects/2)
+  - [Foundry VTT V9](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/projects/5)
 - Communication: [League Discord](https://discord.gg/52DNPzqm2Z) (ask for the TypeScript related channels if you're not already in them)
 
 ## Ways of contributing
@@ -42,13 +41,16 @@ You can also suggest ideas for the project beyond plain Foundry VTT types. The g
 
 If you are unsure where to start, you can look through issues tagged with [help wanted](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22). These are issues that we would like to have help with.
 
-We also recommend to take a look at the corresponding project board to make sure that nobody is working on your issue yet. Additionally, please let us know if you start working on a specific issue (by writing a comment in that issue) so that we can avoid doing duplicate work.
+We also recommend taking a look at the corresponding project board to make sure that nobody is working on your issue yet. Additionally, please let us know if you start working on a specific issue (by writing a comment in that issue) so that we can avoid doing duplicate work.
 
 ### Pull requests
 
 #### Branching model
 
-We use a very simple branching model. We have a branch for every supported Foundry VTT version called `foundry-<major>.<minor>.x` (e.g. `foundry-0.8.x`). All changes for the type definitions for a given Foundry VTT version need to be made through Pull Requests towards the corresponding branch.
+We use a very simple branching model. Development for the current Foundry VTT version happens on the `main` branch.
+Additionally, we have branches for older supported Foundry VTT versions. They are named according to the Foundry VTT
+version to which they belong (e.g. `foundry-0.8.x`). All changes for the type definitions for a given Foundry VTT
+version need to be made through Pull Requests towards the corresponding branch.
 
 #### Submitting pull requests
 
@@ -58,31 +60,31 @@ When creating a pull request, please provide the following information:
 - What does this pull request implement?
 - What changes are made in this pull request?
 
-## Styleguides, General Guidelines, and Common Patterns
+## Style guides, General Guidelines, and Common Patterns
 
 ### Style
 
-We use [prettier](https://prettier.io/) to automatically format the code and have ESlint check for the correct formatting. This even runs automatically as a pre-commit hook so usually you don't have to care for much here. However, there is one additional style guideline that prettier doesn't enforce for us:
+We use [prettier](https://prettier.io/) to automatically format the code and have ESlint check for the correct formatting. This even runs automatically as a pre-commit hook, so usually you don't have to care for much here. However, there is one additional style guideline that prettier doesn't enforce for us:
 
 In TSDoc comments, always make sure to align the `-` for all `@param`s.
 
-In very rare occasions, it is acceptable to disable prettier for a specific part of the code to improve the formatting manually, e.g. for deeply nested conditional types, which are simply unreadable if we let prettier format them. See  [Prettier – Ignoring Code](https://prettier.io/docs/en/ignore.html#javascript) to find out how to do this.
+In very rare occasions, it is acceptable to disable prettier for a specific part of the code to improve the formatting manually, e.g. for deeply nested conditional types, which are simply unreadable if we let prettier format them. See [Prettier – Ignoring Code](https://prettier.io/docs/en/ignore.html#javascript) to find out how to do this.
 
 ### General Guidelines
 
 1. Try to match the source code Foundry VTT as closely as possible in your type definitions. In particular, the order of declarations should be exactly the same. This allows for easy side by side viewing of the original source code and the type definitions, making the life of code reviewers much easier :)
-2. Try not to pollute the global namespace with custom types that are not declared by Foundry VTT itself (typedefs from from Foundry VTT should be declared). Instead use a namespace named like the related class and put your custom type in there. Alternatively, if you don't want the type to be easily accessible at all, make your declaration file a a module (e.g. by adding an empty export), declare the things should should be visible globally in a `declare global {}` block and simply put the things that should _not_ be visible globally outside of that block.
-3. The file structure follows the structure of Foundry VTT but additionally, every class has its own file and the files are structured by class hierarchy. Declarations for code that is not a class should be structured in a sensible way but there are no clear guidelines.
+2. Try not to pollute the global namespace with custom types that are not declared by Foundry VTT itself (typedefs from Foundry VTT should be declared). Instead, use a namespace named like the related class and put your custom type in there. Alternatively, if you don't want the type to be easily accessible at all, make your declaration file a module (e.g. by adding an empty export), declare the things should be visible globally in a `declare global {}` block and simply put the things that should _not_ be visible globally outside that block.
+3. The file structure follows the structure of Foundry VTT but additionally, every class has its own file and the files are structured by class hierarchy. Declarations for code that is not a class should be structured in a sensible way, but there are no clear guidelines.
 4. Generic utility types not defined in Foundry VTT belong in `src/types/utils.d.ts`.
 5. Utility types that are specific to Foundry VTT belong in `src/types/helperTypes.d.ts`.
 6. Augments for libraries bundled with Foundry VTT belong in their corresponding file in `src/types/augments`.
-7. Write tests where applicable. Not everything needs to be tested, these are just type definitions after all. But in particular for complicated type definitions it makes a lot of sense to add tests. That way you can also verify for yourself that your type definitions are actually working as intended.
+7. Write tests where applicable. Not everything needs to be tested, these are just type definitions after all. But in particular for complicated type definitions it makes a lot of sense to add tests.
 
 ### Common Patterns
 
 #### Adding type definitions for a `getDefaultOptions` static property
 
-If the type of the options is different from that of the parent class, provide a new `Options` `interface` in the `namespace` of the class you are adding types for. It makes sense to add the default values in that type via `@defaultValue` TSDoc. Use this interface as return type for for `getDefaultOptions`.
+If the type of the options is different from that of the parent class, provide a new `Options` `interface` in the `namespace` of the class you are adding types for. It makes sense to add the default values in that type via `@defaultValue` TSDoc. Use this interface as return type for `getDefaultOptions`.
 
 If the type does not differ, just use the `Options` interface from the parent class.
 
