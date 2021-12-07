@@ -1,0 +1,19 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'daily'
+    ignore:
+      - dependency-name: 'handlebars'
+      - dependency-name: 'pixi-particles'
+      - dependency-name: 'pixi.js'
+      - dependency-name: 'socket.io-client'
+      - dependency-name: 'tinymce'
+      - dependency-name: 'tinymce'
+      - dependency-name: '@types/jquery'
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: '@types/simple-peer'
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: 'typescript' # v4.5.2 is slow. Remove as soon as a version that is fixed is released
+      - dependency-name: 'tsd' # 0.19.0 uses  typescript v4.5.2. Remove as soon as a version is released that uses a fixed typescript version
