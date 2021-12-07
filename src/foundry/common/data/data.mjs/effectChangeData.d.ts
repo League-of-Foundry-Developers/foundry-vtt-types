@@ -33,12 +33,12 @@ interface EffectChangeDataProperties {
   /**
    * The modification mode with which the change is applied
    */
-  mode: CONST.ActiveEffectMode;
+  mode: CONST.ACTIVE_EFFECT_MODES;
 
   /**
    * The priority level with which this change is applied
    */
-  priority?: number | null;
+  priority: number | null | undefined;
 }
 
 export interface EffectChangeDataConstructorData {
@@ -46,23 +46,23 @@ export interface EffectChangeDataConstructorData {
    * The attribute path in the Actor or Item data which the change modifies
    * @defaultValue `''`
    */
-  key?: string | null;
+  key?: string | null | undefined;
 
   /**
    * The value of the change effect
    * @defaultValue `''`
    */
-  value?: string | null;
+  value?: string | null | undefined;
 
   /**
    * The modification mode with which the change is applied
    */
-  mode?: CONST.ActiveEffectMode | null;
+  mode?: CONST.ACTIVE_EFFECT_MODES | null | undefined;
 
   /**
    * The priority level with which this change is applied
    */
-  priority?: number | null;
+  priority?: number | null | undefined;
 }
 
 /**

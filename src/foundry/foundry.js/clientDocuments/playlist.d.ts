@@ -38,7 +38,7 @@ declare global {
     /**
      * The playback mode for the Playlist instance
      */
-    get mode(): foundry.CONST.PlaylistMode;
+    get mode(): foundry.CONST.PLAYLIST_MODES;
 
     /**
      * The order in which sounds within this playlist will be played (if sequential or shuffled)

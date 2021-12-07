@@ -57,42 +57,42 @@ interface CombatantDataProperties {
 
 export interface CombatantDataConstructorData {
   /** The _id which uniquely identifies this Combatant embedded document */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
   /**
    * The _id of an Actor associated with this Combatant
    */
-  actorId?: string | null;
+  actorId?: string | null | undefined;
 
   /** The _id of a Token associated with this Combatant */
-  tokenId?: string | null;
+  tokenId?: string | null | undefined;
 
   /** A customized name which replaces the name of the Token in the tracker */
-  name?: string | null;
+  name?: string | null | undefined;
 
   /** A customized image which replaces the Token image in the tracker */
-  img?: string | null;
+  img?: string | null | undefined;
 
   /** The initiative score for the Combatant which determines its turn order */
-  initiative?: number | null;
+  initiative?: number | null | undefined;
 
   /**
    * Is this Combatant currently hidden?
    * @defaultValue `false`
    */
-  hidden?: boolean | null;
+  hidden?: boolean | null | undefined;
 
   /**
    * Has this Combatant been defeated?
    * @defaultValue `false`
    */
-  defeated?: boolean | null;
+  defeated?: boolean | null | undefined;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Combatant'> | null;
+  flags?: ConfiguredFlags<'Combatant'> | null | undefined;
 }
 
 /**

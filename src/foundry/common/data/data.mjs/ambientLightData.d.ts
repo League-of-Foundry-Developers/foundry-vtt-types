@@ -8,7 +8,7 @@ import { DarknessActivation, DarknessActivationConstructorData } from './darknes
 
 interface AmbientLightDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
-  t: DocumentField<CONST.SourceType> & {
+  t: DocumentField<CONST.SOURCE_TYPES> & {
     type: String;
     required: true;
     default: 'l';
@@ -48,7 +48,7 @@ interface AmbientLightDataProperties {
    * The source type in CONST.SOURCE_TYPES which defines the behavior of this light
    * @defaultValue `'l'`
    */
-  t: CONST.SourceType;
+  t: CONST.SOURCE_TYPES;
 
   /**
    * The x-coordinate position of the origin of the light
@@ -89,7 +89,7 @@ interface AmbientLightDataProperties {
   /**
    * An optional color string which applies coloration to the resulting light source
    */
-  tintColor?: string | null;
+  tintColor: string | null | undefined;
 
   /**
    * The intensity of coloration applied to this light source, a number between 0 and 1
@@ -131,89 +131,89 @@ interface AmbientLightDataConstructorData {
   /**
    * The _id which uniquely identifies this BaseAmbientLight embedded document
    */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
   /**
    * The source type in CONST.SOURCE_TYPES which defines the behavior of this light
    * @defaultValue `'l'`
    */
-  t?: CONST.SourceType | null;
+  t?: CONST.SOURCE_TYPES | null | undefined;
 
   /**
    * The x-coordinate position of the origin of the light
    * @defaultValue `0`
    */
-  x?: number | null;
+  x?: number | null | undefined;
 
   /**
    * The y-coordinate position of the origin of the light
    * @defaultValue `0`
    */
-  y?: number | null;
+  y?: number | null | undefined;
 
   /**
    * The angle of rotation for the tile between 0 and 360
    * @defaultValue `0`
    */
-  rotation?: number | null;
+  rotation?: number | null | undefined;
 
   /**
    * The radius of dim light emitted in distance units, negative values produce darkness
    * @defaultValue `0`
    */
-  dim?: number | null;
+  dim?: number | null | undefined;
 
   /**
    * The radius of bright light emitted in distance units, negative values produce blackness
    * @defaultValue `0`
    */
-  bright?: number | null;
+  bright?: number | null | undefined;
 
   /**
    * The angle of emission of the light source in degrees
    * @defaultValue `360`
    */
-  angle?: number | null;
+  angle?: number | null | undefined;
 
   /**
    * An optional color string which applies coloration to the resulting light source
    */
-  tintColor?: string | null;
+  tintColor?: string | null | undefined;
 
   /**
    * The intensity of coloration applied to this light source, a number between 0 and 1
    * @defaultValue `0.25`
    */
-  tintAlpha?: number | null;
+  tintAlpha?: number | null | undefined;
 
   /**
    * A data object which configures token light animation settings, if one is applied
    * @defaultValue `{}`
    */
-  lightAnimation?: AnimationDataConstructorData | null;
+  lightAnimation?: AnimationDataConstructorData | null | undefined;
 
   /**
    * A value of the Scene darkness level, above which this light source will be active
    * @defaultValue `0`
    */
-  darknessThreshold?: number | null;
+  darknessThreshold?: number | null | undefined;
 
   /**
    * @defaultValue `{}`
    */
-  darkness?: DarknessActivationConstructorData | null;
+  darkness?: DarknessActivationConstructorData | null | undefined;
 
   /**
    * Is the light source currently hidden?
    * @defaultValue `false`
    */
-  hidden?: boolean | null;
+  hidden?: boolean | null | undefined;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'AmbientLight'> | null;
+  flags?: ConfiguredFlags<'AmbientLight'> | null | undefined;
 }
 
 /**

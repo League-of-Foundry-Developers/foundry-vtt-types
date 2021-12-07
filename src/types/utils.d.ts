@@ -2,8 +2,16 @@
  * Recursively sets keys of an object to optional. Used primarily for update methods
  * @internal
  */
-declare type DeepPartial<T> = {
+type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
+/**
+ * Make all properties in T optional and explicitly allow `undefined`
+ * @internal
+ */
+type InexactPartial<T> = {
+  [P in keyof T]?: T[P] | undefined;
 };
 
 /**
@@ -75,7 +83,7 @@ type Expanded<O> = O extends Record<string, unknown>
  * Union type of the types of the values in `T`
  * @internal
  */
-type ValueOf<T> = T extends Array<unknown> ? T[number] : T[keyof T];
+type ValueOf<T> = T extends Array<unknown> | ReadonlyArray<unknown> ? T[number] : T[keyof T];
 
 /**
  * Transforms a string to lowercase and the first character to uppercase.

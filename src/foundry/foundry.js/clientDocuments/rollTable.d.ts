@@ -158,7 +158,7 @@ declare global {
       /**
        * The chat roll mode to use when displaying the result
        */
-      rollMode: foundry.CONST.DiceRollMode;
+      rollMode: foundry.CONST.DICE_ROLL_MODES;
     }
 
     /**

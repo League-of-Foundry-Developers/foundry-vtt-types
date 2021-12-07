@@ -77,7 +77,7 @@ interface ItemDataBaseProperties {
    * An object which configures user permissions to this Item
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission: Partial<Record<string, foundry.CONST.EntityPermission>>;
+  permission: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>>;
 
   /**
    * An object of optional key/value flags
@@ -90,7 +90,7 @@ interface ItemDataConstructorData {
   /**
    * The _id which uniquely identifies this Item document
    */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
   /**
    * The name of this Item
@@ -106,41 +106,41 @@ interface ItemDataConstructorData {
    * An image file path which provides the artwork for this Item
    * @defaultValue `ItemData.DEFAULT_ICON`
    */
-  img?: string | null;
+  img?: string | null | undefined;
 
   /**
    * The system data object which is defined by the system template.json model
    */
-  data?: DeepPartial<ItemDataSource['data']> | null;
+  data?: DeepPartial<ItemDataSource['data']> | null | undefined;
 
   /**
    * A collection of ActiveEffect embedded Documents
    */
-  effects?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseActiveEffect>>[0][] | null;
+  effects?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseActiveEffect>>[0][] | null | undefined;
 
   /**
    * The _id of a Folder which contains this Item
    * @defaultValue `null`
    */
-  folder?: string | null;
+  folder?: string | null | undefined;
 
   /**
    * The numeric sort value which orders this Item relative to its siblings
    * @defaultValue `0`
    */
-  sort?: number | null;
+  sort?: number | null | undefined;
 
   /**
    * An object which configures user permissions to this Item
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission?: Partial<Record<string, foundry.CONST.EntityPermission>> | null;
+  permission?: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>> | null | undefined;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Item'> | null;
+  flags?: ConfiguredFlags<'Item'> | null | undefined;
 }
 
 type ItemDataBaseSource = PropertiesToSource<ItemDataBaseProperties>;

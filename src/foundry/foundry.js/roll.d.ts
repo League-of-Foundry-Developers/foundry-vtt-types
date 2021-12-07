@@ -42,7 +42,7 @@ declare global {
     /**
      * Options which modify or describe the Roll
      */
-    options: Partial<Options>;
+    options: InexactPartial<Options>;
 
     /**
      * The identified terms of the Roll
@@ -146,21 +146,21 @@ declare global {
      * console.log(r.total);  // 11
      * ```
      */
-    evaluate(options?: Partial<Options & { async: false }>): this;
-    evaluate(options: Partial<Options> & { async: true }): Promise<this>;
-    evaluate(options?: Partial<Options>): this | Promise<this>;
+    evaluate(options?: InexactPartial<Options & { async: false }>): this;
+    evaluate(options: InexactPartial<Options> & { async: true }): Promise<this>;
+    evaluate(options?: InexactPartial<Options>): this | Promise<this>;
 
     /**
      * Evaluate the roll asynchronously.
      * A temporary helper method used to migrate behavior from 0.7.x (sync by default) to 0.9.x (async by default).
      */
-    protected _evaluate(options?: Partial<Omit<Options, 'async'>>): Promise<this>;
+    protected _evaluate(options?: InexactPartial<Omit<Options, 'async'>>): Promise<this>;
 
     /**
      * Evaluate the roll synchronously.
      * A temporary helper method used to migrate behavior from 0.7.x (sync by default) to 0.9.x (async by default).
      */
-    protected _evaluateSync(options?: Partial<Omit<Options, 'async'>>): this;
+    protected _evaluateSync(options?: InexactPartial<Omit<Options, 'async'>>): this;
 
     /**
      * Safely evaluate the final total result for the Roll using its component terms.
@@ -172,9 +172,9 @@ declare global {
      * Alias for evaluate.
      * @see Roll#evaluate
      */
-    roll(options?: Partial<Options & { async: false }>): this;
-    roll(options: Partial<Options> & { async: true }): Promise<this>;
-    roll(options?: Partial<Options>): this | Promise<this>;
+    roll(options?: InexactPartial<Options & { async: false }>): this;
+    roll(options: InexactPartial<Options> & { async: true }): Promise<this>;
+    roll(options?: InexactPartial<Options>): this | Promise<this>;
 
     /**
      * Create a new Roll object using the original provided formula and data.
@@ -182,9 +182,9 @@ declare global {
      * @param options - Evaluation options passed to Roll#evaluate
      * @returns A new Roll object, rolled using the same formula and data
      */
-    reroll(options?: Partial<Options & { async: false }>): this;
-    reroll(options: Partial<Options> & { async: true }): Promise<this>;
-    reroll(options?: Partial<Options>): this | Promise<this>;
+    reroll(options?: InexactPartial<Options & { async: false }>): this;
+    reroll(options: InexactPartial<Options> & { async: true }): Promise<this>;
+    reroll(options?: InexactPartial<Options>): this | Promise<this>;
 
     /**
      * A factory method which constructs a Roll instance using the default configured Roll class.
@@ -197,7 +197,7 @@ declare global {
     static create<D extends Record<string, unknown> = {}>(
       formula: string,
       data?: D,
-      options?: Partial<Options>
+      options?: InexactPartial<Options>
     ): typeof CONFIG.Dice.rolls extends [infer T] ? T : Roll<D>;
 
     /**
@@ -302,7 +302,7 @@ declare global {
      *                   (default: `{}`)
      * @returns An array of terms, split on dice pool terms
      */
-    protected _splitGroup(_formula: string, options?: Partial<SplitGroupOptions>): string[];
+    protected _splitGroup(_formula: string, options?: InexactPartial<SplitGroupOptions>): string[];
 
     /**
      * Split a formula by identifying arithmetic terms
@@ -373,15 +373,15 @@ declare global {
      */
     toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
       messageData?: T,
-      { rollMode, create }?: { rollMode?: foundry.CONST.DiceRollMode; create?: true }
+      { rollMode, create }?: { rollMode?: foundry.CONST.DICE_ROLL_MODES; create?: true }
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined>;
     toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
       messageData: T,
-      { rollMode, create }: { rollMode?: foundry.CONST.DiceRollMode; create: false }
+      { rollMode, create }: { rollMode?: foundry.CONST.DICE_ROLL_MODES; create: false }
     ): MessageData<T>;
     toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
       messageData: T,
-      { rollMode, create }: { rollMode?: foundry.CONST.DiceRollMode; create: boolean }
+      { rollMode, create }: { rollMode?: foundry.CONST.DICE_ROLL_MODES; create: boolean }
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined> | MessageData<T>;
 
     /**
@@ -441,7 +441,7 @@ declare global {
      */
     static fromTerms(
       terms: RollTerm[],
-      options?: Partial<Options>
+      options?: InexactPartial<Options>
     ): typeof CONFIG.Dice.rolls extends [infer T] ? T : Roll<{}>;
 
     /**

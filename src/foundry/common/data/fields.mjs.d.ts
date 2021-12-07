@@ -334,7 +334,7 @@ interface DocumentId extends DocumentField<string | null> {
  * Default: `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
  */
 export declare const DOCUMENT_PERMISSIONS: DocumentPermissions;
-interface DocumentPermissions extends DocumentField<Partial<Record<string, foundry.CONST.EntityPermission>>> {
+interface DocumentPermissions extends DocumentField<Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>>> {
   type: typeof Object;
   required: true;
   nullable: false;

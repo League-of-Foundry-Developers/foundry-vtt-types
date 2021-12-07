@@ -6,7 +6,7 @@ import { ChatSpeakerData, ChatSpeakerDataConstructorData } from './chatSpeakerDa
 
 interface ChatMessageDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
-  type: DocumentField<CONST.ChatMessageType> & {
+  type: DocumentField<CONST.CHAT_MESSAGE_TYPES> & {
     type: typeof Number;
     required: true;
     default: typeof CONST.CHAT_MESSAGE_TYPES.OTHER;
@@ -41,7 +41,7 @@ interface ChatMessageDataProperties {
    * The message type from CONST.CHAT_MESSAGE_TYPES
    * @defaultValue `CONST.CHAT_MESSAGE_TYPES.OTHER`
    */
-  type: CONST.ChatMessageType;
+  type: CONST.CHAT_MESSAGE_TYPES;
 
   /**
    * The _id of the User document who generated this message
@@ -57,7 +57,7 @@ interface ChatMessageDataProperties {
   /**
    * An optional flavor text message which summarizes this message
    */
-  flavor?: string;
+  flavor: string | undefined;
 
   /**
    * The HTML content of this chat message
@@ -86,13 +86,13 @@ interface ChatMessageDataProperties {
    * The serialized content of a Roll instance which belongs to the ChatMessage
    * @defaultValue `undefined`
    */
-  roll?: string;
+  roll: string | undefined;
 
   /**
    * The URL of an audio file which plays when this message is received
    * @defaultValue `undefined`
    */
-  sound?: string | null;
+  sound: string | null | undefined;
 
   /**
    * Is this message styled as an emote?
@@ -111,76 +111,76 @@ export interface ChatMessageDataConstructorData {
   /**
    * The _id which uniquely identifies this ChatMessage document
    */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
   /**
    * The message type from CONST.CHAT_MESSAGE_TYPES
    * @defaultValue `CONST.CHAT_MESSAGE_TYPES.OTHER`
    */
-  type?: CONST.ChatMessageType | null;
+  type?: CONST.CHAT_MESSAGE_TYPES | null | undefined;
 
   /**
    * The _id of the User document who generated this message
    */
-  user?: string | null;
+  user?: string | null | undefined;
 
   /**
    * The timestamp at which point this message was generated
    * @defaultValue `Date.now()`
    */
-  timestamp?: number | null;
+  timestamp?: number | null | undefined;
 
   /**
    * An optional flavor text message which summarizes this message
    */
-  flavor?: string | null;
+  flavor?: string | null | undefined;
 
   /**
    * The HTML content of this chat message
    * @defaultValue `""`
    */
-  content?: string | null;
+  content?: string | null | undefined;
 
   /**
    * A ChatSpeakerData object which describes the origin of the ChatMessage
    */
-  speaker?: ChatSpeakerDataConstructorData | null;
+  speaker?: ChatSpeakerDataConstructorData | null | undefined;
 
   /**
    * An array of User _id values to whom this message is privately whispered
    * @defaultValue `[]`
    */
-  whisper?: Array<{ id: string } | string> | null;
+  whisper?: Array<{ id: string } | string> | null | undefined;
 
   /**
    * Is this message sent blindly where the creating User cannot see it?
    * @defaultValue `false`
    */
-  blind?: boolean | null;
+  blind?: boolean | null | undefined;
 
   /**
    * The serialized content of a Roll instance which belongs to the ChatMessage
    * @defaultValue `undefined`
    */
-  roll?: string | null;
+  roll?: string | null | undefined;
 
   /**
    * The URL of an audio file which plays when this message is received
    * @defaultValue `undefined`
    */
-  sound?: string | null;
+  sound?: string | null | undefined;
 
   /**
    * Is this message styled as an emote?
    * @defaultValue `false`
    */
-  emote?: boolean | null;
+  emote?: boolean | null | undefined;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'ChatMessage'> | null;
+  flags?: ConfiguredFlags<'ChatMessage'> | null | undefined;
 }
 
 /**

@@ -23,32 +23,32 @@ interface EffectDurationDataProperties {
   /**
    * The maximum duration of the effect, in seconds
    */
-  seconds?: number;
+  seconds: number | undefined;
 
   /**
    * The _id of the CombatEncounter in which the effect first started
    */
-  combat?: string;
+  combat: string | undefined;
 
   /**
    * The maximum duration of the effect, in combat rounds
    */
-  rounds?: number;
+  rounds: number | undefined;
 
   /**
    * The maximum duration of the effect, in combat turns
    */
-  turns?: number;
+  turns: number | undefined;
 
   /**
    * The round of the CombatEncounter in which the effect first started
    */
-  startRound?: number;
+  startRound: number | undefined;
 
   /**
    * The turn of the CombatEncounter in which the effect first started
    */
-  startTurn?: number;
+  startTurn: number | undefined;
 }
 
 export interface EffectDurationDataConstructorData {
@@ -56,37 +56,37 @@ export interface EffectDurationDataConstructorData {
    * The world time when the active effect first started
    * @defaultValue `null`
    */
-  startTime?: number | null;
+  startTime?: number | null | undefined;
 
   /**
    * The maximum duration of the effect, in seconds
    */
-  seconds?: number | null;
+  seconds?: number | null | undefined;
 
   /**
    * The _id of the CombatEncounter in which the effect first started
    */
-  combat?: string | null;
+  combat?: string | null | undefined;
 
   /**
    * The maximum duration of the effect, in combat rounds
    */
-  rounds?: number | null;
+  rounds?: number | null | undefined;
 
   /**
    * The maximum duration of the effect, in combat turns
    */
-  turns?: number | null;
+  turns?: number | null | undefined;
 
   /**
    * The round of the CombatEncounter in which the effect first started
    */
-  startRound?: number | null;
+  startRound?: number | null | undefined;
 
   /**
    * The turn of the CombatEncounter in which the effect first started
    */
-  startTurn?: number | null;
+  startTurn?: number | null | undefined;
 }
 
 /**

@@ -1,7 +1,6 @@
 import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
-import { EntityPermission } from '../constants.mjs';
 import * as data from '../data/data.mjs';
 import { BaseScene } from './baseScene';
 import { BaseUser } from './baseUser';
@@ -30,7 +29,7 @@ export declare class BaseNote extends Document<data.NoteData, InstanceType<Confi
   /** @override */
   testUserPermission(
     user: BaseUser,
-    permission: keyof typeof foundry.CONST.ENTITY_PERMISSIONS | EntityPermission,
+    permission: keyof typeof foundry.CONST.DOCUMENT_PERMISSION_LEVELS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,
     { exact }?: { exact?: boolean }
   ): boolean;
 }

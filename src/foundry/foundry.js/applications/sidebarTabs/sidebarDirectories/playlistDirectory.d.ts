@@ -114,13 +114,13 @@ declare global {
      * Given a constant playback mode, provide the FontAwesome icon used to display it
      * @internal
      */
-    protected _getModeIcon(mode: foundry.CONST.PlaylistMode): string;
+    protected _getModeIcon(mode: foundry.CONST.PLAYLIST_MODES): string;
 
     /**
      * Given a constant playback mode, provide the string tooltip used to describe it
      * @internal
      */
-    protected _getModeTooltip(mode: foundry.CONST.PlaylistMode): string;
+    protected _getModeTooltip(mode: foundry.CONST.PLAYLIST_MODES): string;
 
     /** @override */
     activateListeners(html: JQuery): void;

@@ -15,7 +15,7 @@ interface WallDataSchema extends DocumentSchema {
     typeof fields.REQUIRED_NUMBER,
     {
       default: typeof CONST.WALL_MOVEMENT_TYPES.NORMAL;
-      validate: (v: unknown) => v is foundry.CONST.WallMovementType;
+      validate: (v: unknown) => v is foundry.CONST.WALL_MOVEMENT_TYPES;
       validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_MOVEMENT_TYPES';
     }
   >;
@@ -23,7 +23,7 @@ interface WallDataSchema extends DocumentSchema {
     typeof fields.REQUIRED_NUMBER,
     {
       default: typeof CONST.WALL_SENSE_TYPES.NORMAL;
-      validate: (v: unknown) => v is foundry.CONST.WallSenseType;
+      validate: (v: unknown) => v is foundry.CONST.WALL_SENSE_TYPES;
       validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_SENSE_TYPES';
     }
   >;
@@ -31,7 +31,7 @@ interface WallDataSchema extends DocumentSchema {
     typeof fields.REQUIRED_NUMBER,
     {
       default: typeof CONST.WALL_SENSE_TYPES.NORMAL;
-      validate: (v: unknown) => v is foundry.CONST.WallSenseType;
+      validate: (v: unknown) => v is foundry.CONST.WALL_SENSE_TYPES;
       validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_SENSE_TYPES';
     }
   >;
@@ -39,7 +39,7 @@ interface WallDataSchema extends DocumentSchema {
     typeof fields.REQUIRED_NUMBER,
     {
       default: typeof CONST.WALL_DIRECTIONS.BOTH;
-      validate: (v: unknown) => v is foundry.CONST.WallDirection;
+      validate: (v: unknown) => v is foundry.CONST.WALL_DIRECTIONS;
       validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_DIRECTIONS';
     }
   >;
@@ -47,7 +47,7 @@ interface WallDataSchema extends DocumentSchema {
     typeof fields.REQUIRED_NUMBER,
     {
       default: typeof CONST.WALL_DOOR_TYPES.NONE;
-      validate: (v: unknown) => v is foundry.CONST.WallDoorType;
+      validate: (v: unknown) => v is foundry.CONST.WALL_DOOR_TYPES;
       validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_DOOR_TYPES';
     }
   >;
@@ -55,7 +55,7 @@ interface WallDataSchema extends DocumentSchema {
     typeof fields.REQUIRED_NUMBER,
     {
       default: typeof CONST.WALL_DOOR_STATES.CLOSED;
-      validate: (v: unknown) => v is foundry.CONST.WallDoorState;
+      validate: (v: unknown) => v is foundry.CONST.WALL_DOOR_STATES;
       validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_DOOR_STATES';
     }
   >;
@@ -77,36 +77,36 @@ interface WallDataProperties {
    * The movement restriction type of this wall
    * @defaultValue `CONST.WALL_MOVEMENT_TYPES.NORMAL`
    */
-  move: foundry.CONST.WallMovementType;
+  move: foundry.CONST.WALL_MOVEMENT_TYPES;
 
   /**
    * The sensory restriction type of this wall
    * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
    */
-  sense: foundry.CONST.WallSenseType;
+  sense: foundry.CONST.WALL_SENSE_TYPES;
 
   /**
    * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
    */
-  sound: foundry.CONST.WallSenseType;
+  sound: foundry.CONST.WALL_SENSE_TYPES;
 
   /**
    * The direction of effect imposed by this wall
    * @defaultValue `CONST.WALL_DIRECTIONS.BOTH`
    */
-  dir: foundry.CONST.WallDirection;
+  dir: foundry.CONST.WALL_DIRECTIONS;
 
   /**
    * The type of door which this wall contains, if any
    * @defaultValue `CONST.WALL_DOOR_TYPES.NONE`
    */
-  door: foundry.CONST.WallDoorType;
+  door: foundry.CONST.WALL_DOOR_TYPES;
 
   /**
    * The state of the door this wall contains, if any
    * @defaultValue `CONST.WALL_DOOR_STATES.CLOSED`
    */
-  ds: foundry.CONST.WallDoorState;
+  ds: foundry.CONST.WALL_DOOR_STATES;
 
   /**
    * An object of optional key/value flags
@@ -119,7 +119,7 @@ interface WallDataConstructorData {
   /**
    * The _id which uniquely identifies the embedded Wall document
    */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
   /**
    * The wall coordinates, a length-4 array of finite numbers [x0,y0,x1,y1]
@@ -130,42 +130,42 @@ interface WallDataConstructorData {
    * The movement restriction type of this wall
    * @defaultValue `CONST.WALL_MOVEMENT_TYPES.NORMAL`
    */
-  move?: foundry.CONST.WallMovementType | null;
+  move?: foundry.CONST.WALL_MOVEMENT_TYPES | null | undefined;
 
   /**
    * The sensory restriction type of this wall
    * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
    */
-  sense?: foundry.CONST.WallSenseType | null;
+  sense?: foundry.CONST.WALL_SENSE_TYPES | null | undefined;
 
   /**
    * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
    */
-  sound?: foundry.CONST.WallSenseType | null;
+  sound?: foundry.CONST.WALL_SENSE_TYPES | null | undefined;
 
   /**
    * The direction of effect imposed by this wall
    * @defaultValue `CONST.WALL_DIRECTIONS.BOTH`
    */
-  dir?: foundry.CONST.WallDirection | null;
+  dir?: foundry.CONST.WALL_DIRECTIONS | null | undefined;
 
   /**
    * The type of door which this wall contains, if any
    * @defaultValue `CONST.WALL_DOOR_TYPES.NONE`
    */
-  door?: foundry.CONST.WallDoorType | null;
+  door?: foundry.CONST.WALL_DOOR_TYPES | null | undefined;
 
   /**
    * The state of the door this wall contains, if any
    * @defaultValue `CONST.WALL_DOOR_STATES.CLOSED`
    */
-  ds?: foundry.CONST.WallDoorState | null;
+  ds?: foundry.CONST.WALL_DOOR_STATES | null | undefined;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Wall'> | null;
+  flags?: ConfiguredFlags<'Wall'> | null | undefined;
 }
 
 /**

@@ -9,7 +9,7 @@ expectType<'grid'>(layer.options.name);
 expectType<BaseGrid | undefined>(layer.grid);
 expectType<PIXI.Container | undefined>(layer.highlight);
 expectType<Record<string, GridHighlight>>(layer.highlightLayers);
-expectType<foundry.CONST.GridType>(layer.type);
+expectType<foundry.CONST.GRID_TYPES>(layer.type);
 expectType<number>(layer.size);
 expectType<number>(layer.w);
 expectType<number>(layer.h);

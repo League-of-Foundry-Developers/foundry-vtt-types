@@ -153,7 +153,7 @@ declare abstract class Document<
    * @param user - The User being tested
    * @returns A numeric permission level from CONST.ENTITY_PERMISSIONS or null
    */
-  getUserLevel(user: BaseUser): foundry.CONST.EntityPermission | null;
+  getUserLevel(user: BaseUser): foundry.CONST.DOCUMENT_PERMISSION_LEVELS | null;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document
@@ -165,7 +165,7 @@ declare abstract class Document<
    */
   testUserPermission(
     user: BaseUser,
-    permission: keyof typeof foundry.CONST.ENTITY_PERMISSIONS | foundry.CONST.EntityPermission,
+    permission: keyof typeof foundry.CONST.DOCUMENT_PERMISSION_LEVELS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,
     { exact }?: { exact?: boolean }
   ): boolean;
 

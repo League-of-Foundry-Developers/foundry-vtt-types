@@ -51,7 +51,7 @@ interface SceneDataSchema extends DocumentSchema {
     typeof fields.REQUIRED_NUMBER,
     {
       default: typeof CONST.GRID_TYPES.SQUARE;
-      validate: (t: unknown) => t is CONST.GridType;
+      validate: (t: unknown) => t is CONST.GRID_TYPES;
       validationError: 'Invalid {name } {field} which must be a value in CONST.GRID_TYPES';
     }
   >;
@@ -186,7 +186,7 @@ interface SceneDataProperties {
    * The type of grid used in this scene, a number from CONST.GRID_TYPES
    * @defaultValue `CONST.GRID_TYPES.SQUARE`
    */
-  gridType: CONST.GridType;
+  gridType: CONST.GRID_TYPES;
 
   /**
    * The grid size which represents the width (or height) of a single grid space
@@ -346,7 +346,7 @@ interface SceneDataProperties {
    * An object which configures user permissions to this Actor
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission: Partial<Record<string, foundry.CONST.EntityPermission>>;
+  permission: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>>;
 
   /**
    * An object of optional key/value flags
@@ -358,7 +358,7 @@ interface SceneDataConstructorData {
   /**
    * The _id which uniquely identifies this Scene document
    */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
   /**
    * The name of this scene
@@ -369,244 +369,244 @@ interface SceneDataConstructorData {
    * Is this scene currently active? Only one scene may be active at a given time.
    * @defaultValue `false`
    */
-  active?: boolean | null;
+  active?: boolean | null | undefined;
 
   /**
    * Is this scene displayed in the top navigation bar?
    * @defaultValue `true`
    */
-  navigation?: boolean | null;
+  navigation?: boolean | null | undefined;
 
   /**
    * The integer sorting order of this Scene in the navigation bar relative to others
    */
-  navOrder?: number | null;
+  navOrder?: number | null | undefined;
 
   /**
    * A string which overrides the canonical Scene name which is displayed in the navigation bar
    * @defaultValue `''`
    */
-  navName?: string | null;
+  navName?: string | null | undefined;
 
   /**
    * An image or video file path which provides the background media for the scene
    * @defaultValue `undefined`
    */
-  img?: string | undefined | null;
+  img?: string | undefined | null | undefined;
 
   /**
    * An image or video file path which is drawn on top of all other elements in the scene
    * @defaultValue `undefined`
    */
-  foreground?: string | undefined | null;
+  foreground?: string | undefined | null | undefined;
 
   /**
    * A thumbnail image (base64) or file path which visually summarizes the scene
    * @defaultValue `undefined`
    */
-  thumb?: string | undefined | null;
+  thumb?: string | undefined | null | undefined;
 
   /**
    * The width of the scene canvas, this should normally be the width of the background media
    * @defaultValue `4000`
    */
-  width?: number | null;
+  width?: number | null | undefined;
 
   /**
    * The height of the scene canvas, this should normally be the height of the background media
    * @defaultValue `3000`
    */
-  height?: number | null;
+  height?: number | null | undefined;
 
   /**
    * The proportion of canvas padding applied around the outside of the scene
    * dimensions to provide additional buffer space
    * @defaultValue `0.25`
    */
-  padding?: number | null;
+  padding?: number | null | undefined;
 
   /**
    * The initial view coordinates for the scene, or null
    * @defaultValue `null`
    */
-  initial?: { x: number; y: number; scale: number } | null;
+  initial?: { x: number; y: number; scale: number } | null | undefined;
 
   /**
    * The color of the canvas which is displayed behind the scene background
    * @defaultValue `#999999`
    */
-  backgroundColor?: string | null;
+  backgroundColor?: string | null | undefined;
 
   /**
    * The type of grid used in this scene, a number from CONST.GRID_TYPES
    * @defaultValue `CONST.GRID_TYPES.SQUARE`
    */
-  gridType?: CONST.GridType | null;
+  gridType?: CONST.GRID_TYPES | null | undefined;
 
   /**
    * The grid size which represents the width (or height) of a single grid space
    * @defaultValue `100`
    */
-  grid?: number | null;
+  grid?: number | null | undefined;
 
   /**
    * A number of offset pixels that the background image is shifted horizontally relative to the grid
    * @defaultValue `0`
    */
-  shiftX?: number | null;
+  shiftX?: number | null | undefined;
 
   /**
    * A number of offset pixels that the background image is shifted vertically relative to the grid
    * @defaultValue `0`
    */
-  shiftY?: number | null;
+  shiftY?: number | null | undefined;
 
   /**
    * A string representing the color used to render the grid lines
    * @defaultValue `#000000`
    */
-  gridColor?: string | null;
+  gridColor?: string | null | undefined;
 
   /**
    * A number between 0 and 1 for the opacity of the grid lines
    * @defaultValue `0.2`
    */
-  gridAlpha?: number | null;
+  gridAlpha?: number | null | undefined;
 
   /**
    * The number of distance units which are represented by a single grid space.
    */
-  gridDistance?: number | null;
+  gridDistance?: number | null | undefined;
 
   /**
    * A label for the units of measure which are used for grid distance.
    */
-  gridUnits?: string | null;
+  gridUnits?: string | null | undefined;
 
   /**
    * Do Tokens require vision in order to see the Scene environment?
    * @defaultValue `true`
    */
-  tokenVision?: boolean | null;
+  tokenVision?: boolean | null | undefined;
 
   /**
    * Should fog exploration progress be tracked for this Scene?
    * @defaultValue `true`
    */
-  fogExploration?: boolean | null;
+  fogExploration?: boolean | null | undefined;
 
   /**
    * The timestamp at which fog of war was last reset for this Scene.
    */
-  fogReset?: number | null;
+  fogReset?: number | null | undefined;
 
   /**
    * Does this Scene benefit from global illumination which provides bright light everywhere?
    * @defaultValue `false`
    */
-  globalLight?: boolean | null;
+  globalLight?: boolean | null | undefined;
 
   /**
    * A darkness level between 0 and 1, beyond which point global illumination is
    * temporarily disabled if globalLight is true.
    * @defaultValue `null`
    */
-  globalLightThreshold?: number | null;
+  globalLightThreshold?: number | null | undefined;
 
   /**
    * The ambient darkness level in this Scene, where 0 represents mid-day
    * (maximum illumination) and 1 represents mid-night (maximum darkness)
    * @defaultValue `0`
    */
-  darkness?: number | null;
+  darkness?: number | null | undefined;
 
   /**
    * A collection of embedded Drawing objects.
    */
-  drawings?: ConstructorDataType<DrawingData>[] | null;
+  drawings?: ConstructorDataType<DrawingData>[] | null | undefined;
 
   /**
    * A collection of embedded Token objects.
    */
-  tokens?: ConstructorDataType<TokenData>[] | null;
+  tokens?: ConstructorDataType<TokenData>[] | null | undefined;
 
   /**
    *
    * A collection of embedded AmbientLight objects.
    */
-  lights?: ConstructorDataType<AmbientLightData>[] | null;
+  lights?: ConstructorDataType<AmbientLightData>[] | null | undefined;
 
   /**
    * A collection of embedded Note objects.
    */
-  notes?: ConstructorDataType<NoteData>[] | null;
+  notes?: ConstructorDataType<NoteData>[] | null | undefined;
 
   /**
    * A collection of embedded AmbientSound objects.
    */
-  sounds?: ConstructorDataType<AmbientSoundData>[] | null;
+  sounds?: ConstructorDataType<AmbientSoundData>[] | null | undefined;
 
   /**
    * A collection of embedded MeasuredTemplate objects.
    */
-  templates?: ConstructorDataType<MeasuredTemplateData>[] | null;
+  templates?: ConstructorDataType<MeasuredTemplateData>[] | null | undefined;
 
   /**
    * A collection of embedded Tile objects.
    */
-  tiles?: ConstructorDataType<TileData>[] | null;
+  tiles?: ConstructorDataType<TileData>[] | null | undefined;
 
   /**
    * A collection of embedded Wall objects
    */
-  walls?: ConstructorDataType<WallData>[] | null;
+  walls?: ConstructorDataType<WallData>[] | null | undefined;
 
   /**
    * A linked Playlist document which should begin automatically playing when this
    * Scene becomes active.
    * @defaultValue `null`
    */
-  playlist?: string | null;
+  playlist?: string | null | undefined;
 
   /**
    * @defaultValue `null`
    */
-  playlistSound?: string | null;
+  playlistSound?: string | null | undefined;
 
   /**
    * A linked JournalEntry document which provides narrative details about this Scene.
    * @defaultValue `null`
    */
-  journal?: string | null;
+  journal?: string | null | undefined;
 
   /**
    * A named weather effect which should be rendered in this Scene.
    * @defaultValue `''`
    */
-  weather?: string | null;
+  weather?: string | null | undefined;
 
   /**
    * The _id of a Folder which contains this Actor
    * @defaultValue `null`
    */
-  folder?: string | null;
+  folder?: string | null | undefined;
 
   /**
    * The numeric sort value which orders this Actor relative to its siblings
    * @defaultValue `0`
    */
-  sort?: number | null;
+  sort?: number | null | undefined;
 
   /**
    * An object which configures user permissions to this Actor
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission?: Partial<Record<string, foundry.CONST.EntityPermission>> | null;
+  permission?: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>> | null | undefined;
 
   /**
    * An object of optional key/value flags
    */
-  flags?: ConfiguredFlags<'Scene'> | null;
+  flags?: ConfiguredFlags<'Scene'> | null | undefined;
 }
 
 /**

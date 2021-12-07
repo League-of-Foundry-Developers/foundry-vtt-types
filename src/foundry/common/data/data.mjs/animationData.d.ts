@@ -25,7 +25,7 @@ interface AnimationDataProperties {
   /**
    * The animation type which is applied
    */
-  type?: string;
+  type: string | undefined;
 
   /**
    * The speed of the animation, a number between 1 and 10
@@ -44,19 +44,19 @@ export interface AnimationDataConstructorData {
   /**
    * The animation type which is applied
    */
-  type?: string | null;
+  type?: string | null | undefined;
 
   /**
    * The speed of the animation, a number between 1 and 10
    * @defaultValue `5`
    */
-  speed?: number | null;
+  speed?: number | null | undefined;
 
   /**
    * The intensity of the animation, a number between 1 and 10
    * @defaultValue `5`
    */
-  intensity?: number | null;
+  intensity?: number | null | undefined;
 }
 
 /**

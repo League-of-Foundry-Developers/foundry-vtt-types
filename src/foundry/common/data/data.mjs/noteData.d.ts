@@ -43,7 +43,7 @@ interface NoteDataSchema extends DocumentSchema {
     type: typeof Number;
     required: true;
     default: typeof CONST.TEXT_ANCHOR_POINTS.BOTTOM;
-    validate: (p: unknown) => p is foundry.CONST.TextAnchorPoint;
+    validate: (p: unknown) => p is foundry.CONST.TEXT_ANCHOR_POINTS;
     validationError: 'Invalid {name} {field} which must be a value in CONST.TEXT_ANCHOR_POINTS';
   };
   textColor: FieldReturnType<typeof fields.COLOR_FIELD, { default: '#FFFFFF' }>;
@@ -112,7 +112,7 @@ interface NoteDataProperties {
    * to the note icon.
    * @defaultValue `CONST.TEXT_ANCHOR_POINTS.BOTTOM`
    */
-  textAnchor: foundry.CONST.TextAnchorPoint;
+  textAnchor: foundry.CONST.TEXT_ANCHOR_POINTS;
 
   /**
    * The string that defines the color with which the note text is rendered
@@ -131,77 +131,77 @@ interface NoteDataConstructorData {
   /**
    * The _id which uniquely identifies this BaseNote embedded document
    */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
   /**
    * The _id of a JournalEntry document which this Note represents
    * @defaultValue `null`
    */
-  entryId?: string | null;
+  entryId?: string | null | undefined;
 
   /**
    * The x-coordinate position of the center of the note icon
    * @defaultValue `0`
    */
-  x?: number | null;
+  x?: number | null | undefined;
 
   /**
    * The y-coordinate position of the center of the note icon
    * @defaultValue `0`
    */
-  y?: number | null;
+  y?: number | null | undefined;
 
   /**
    * An image icon path used to represent this note
    */
-  icon?: string | null;
+  icon?: string | null | undefined;
 
   /**
    * The pixel size of the map note icon
    * @defaultValue `40`
    */
-  iconSize?: number | null;
+  iconSize?: number | null | undefined;
 
   /**
    * An optional color string used to tint the map note icon
    */
-  iconTint?: string | null;
+  iconTint?: string | null | undefined;
 
   /**
    * Optional text which overrides the title of the linked Journal Entry
    */
-  text?: string | null;
+  text?: string | null | undefined;
 
   /**
    * The font family used to display the text label on this note
    * @defaultValue `CONFIG?.defaultFontFamily || "Signika"`
    */
-  fontFamily?: string | null;
+  fontFamily?: string | null | undefined;
 
   /**
    * The font size used to display the text label on this note
    * @defaultValue `48`
    */
-  fontSize?: number | null;
+  fontSize?: number | null | undefined;
 
   /**
    * A value in CONST.TEXT_ANCHOR_POINTS which defines where the text label anchors
    * to the note icon.
    * @defaultValue `CONST.TEXT_ANCHOR_POINTS.BOTTOM`
    */
-  textAnchor?: foundry.CONST.TextAnchorPoint | null;
+  textAnchor?: foundry.CONST.TEXT_ANCHOR_POINTS | null | undefined;
 
   /**
    * The string that defines the color with which the note text is rendered
    * @defaultValue `#FFFFFF`
    */
-  textColor?: string | null;
+  textColor?: string | null | undefined;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Note'> | null;
+  flags?: ConfiguredFlags<'Note'> | null | undefined;
 }
 
 /**

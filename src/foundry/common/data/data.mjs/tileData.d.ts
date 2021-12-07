@@ -129,93 +129,93 @@ interface TileDataConstructorData {
   /**
    * The _id which uniquely identifies this Tile embedded document
    */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
   /**
    * An image or video file path which this tile displays
    */
-  img?: string | null;
+  img?: string | null | undefined;
 
   /**
    * The pixel width of the tile
    * @defaultValue `0`
    */
-  width?: number | null;
+  width?: number | null | undefined;
 
   /**
    * The pixel height of the tile
    * @defaultValue `0`
    */
-  height?: number | null;
+  height?: number | null | undefined;
 
   /**
    * The x-coordinate position of the top-left corner of the tile
    * @defaultValue `0`
    */
-  x?: number | null;
+  x?: number | null | undefined;
 
   /**
    * The y-coordinate position of the top-left corner of the tile
    * @defaultValue `0`
    */
-  y?: number | null;
+  y?: number | null | undefined;
 
   /**
    * The z-index ordering of this tile relative to its siblings
    * @defaultValue `100`
    */
-  z?: number | null;
+  z?: number | null | undefined;
 
   /**
    * The angle of rotation for the tile between 0 and 360
    * @defaultValue `0`
    */
-  rotation?: number | null;
+  rotation?: number | null | undefined;
 
   /**
    * The tile opacity
    * @defaultValue `1`
    */
-  alpha?: number | null;
+  alpha?: number | null | undefined;
 
   /**
    * A color to tint the tile
    */
-  tint?: string | null;
+  tint?: string | null | undefined;
 
   /**
    * Is the tile currently hidden?
    * @defaultValue `false`
    */
-  hidden?: boolean | null;
+  hidden?: boolean | null | undefined;
 
   /**
    * Is the tile currently locked?
    * @defaultValue `false`
    */
-  locked?: boolean | null;
+  locked?: boolean | null | undefined;
 
   /**
    * Is the tile an overhead tile?
    * @defaultValue `false`
    */
-  overhead?: boolean | null;
+  overhead?: boolean | null | undefined;
 
   /**
    * The tile's occlusion settings
    */
-  occlusion?: TileOcclusionConstructorData | null;
+  occlusion?: TileOcclusionConstructorData | null | undefined;
 
   /**
    * The tile's video settings
    */
-  video?: VideoDataConstructorData | null;
+  video?: VideoDataConstructorData | null | undefined;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Tile'> | null;
+  flags?: ConfiguredFlags<'Tile'> | null | undefined;
 }
 
 /**

@@ -34,7 +34,7 @@ export declare class BaseTableResult extends Document<
 
   testUserPermission(
     user: BaseUser,
-    permission: keyof typeof foundry.CONST.ENTITY_PERMISSIONS | foundry.CONST.EntityPermission,
+    permission: keyof typeof foundry.CONST.DOCUMENT_PERMISSION_LEVELS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,
     { exact }?: { exact?: boolean }
   ): boolean;
 }

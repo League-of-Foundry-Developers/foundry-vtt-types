@@ -76,7 +76,7 @@ declare global {
       bezierFactor: number;
       fillAlpha: number;
       fillColor: string;
-      fillType: foundry.CONST.DrawingFillType;
+      fillType: foundry.CONST.DRAWING_FILL_TYPES;
       fontFamily: string;
       fontSize: number | null;
       height: number | null;

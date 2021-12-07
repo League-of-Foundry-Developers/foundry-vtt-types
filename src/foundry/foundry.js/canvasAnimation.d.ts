@@ -39,7 +39,7 @@ declare class CanvasAnimation {
    */
   static animateLinear(
     attributes: CanvasAnimation.Attribute[],
-    options?: Partial<LinearAnimationOptions>
+    options?: InexactPartial<LinearAnimationOptions>
   ): Promise<boolean>;
 
   /**

@@ -27,13 +27,13 @@ export interface DarknessActivationConstructorData {
    * The minimum darkness level for which activation occurs
    * @defaultValue `0`
    */
-  min?: number | null;
+  min?: number | null | undefined;
 
   /**
    * The maximum darkness level for which activation occurs
    * @defaultValue `1`
    */
-  max?: number | null;
+  max?: number | null | undefined;
 }
 
 /**

@@ -11,7 +11,7 @@ const config = new MacroConfig(macro);
 expectType<Macro>(config.object);
 expectType<Macro>(config.getData().document);
 expectType<Array<'script' | 'chat'>>(config.getData().macroTypes);
-expectType<['global', 'actors', 'actor']>(config.getData().macroScopes);
+expectType<readonly ['global', 'actors', 'actor']>(config.getData().macroScopes);
 expectType<MacroConfig.Options>(config.getData().options);
 
 const withCustomOptions = new MacroConfig<DocumentSheet.Options & { custom: true }>(macro);

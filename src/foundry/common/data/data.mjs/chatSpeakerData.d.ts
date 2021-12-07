@@ -30,29 +30,29 @@ interface ChatSpeakerDataProperties {
   /**
    * An overridden alias name used instead of the Actor or Token name
    */
-  alias?: string;
+  alias: string | undefined;
 }
 
 interface ChatSpeakerDataConstructorData {
   /**
    * The _id of the Scene where this message was created
    */
-  scene?: string | null;
+  scene?: string | null | undefined;
 
   /**
    * The _id of the Actor who generated this message
    */
-  actor?: string | null;
+  actor?: string | null | undefined;
 
   /**
    * The _id of the Token who generated this message
    */
-  token?: string | null;
+  token?: string | null | undefined;
 
   /**
    * An overridden alias name used instead of the Actor or Token name
    */
-  alias?: string | null;
+  alias?: string | null | undefined;
 }
 
 /**

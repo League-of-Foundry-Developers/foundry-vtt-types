@@ -5,7 +5,7 @@ on:
     types: [created]
 
 env:
-  node_version: 14
+  node_version: 16
 
 jobs:
   verify:
@@ -28,11 +28,6 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint:ci
       - run: npm test
-      - name: Archive package.json
-        uses: actions/upload-artifact@v2
-        with:
-          name: package.json
-          path: package.json
 
   publish:
     needs: verify
@@ -44,16 +39,8 @@ jobs:
         with:
           node-version: ${{ env.node_version }}
           registry-url: 'https://registry.npmjs.org'
-      - run: rm package.json
-      - name: Download prepared package.json
-        uses: actions/download-artifact@v2
-        with:
-          name: package.json
       - name: Publish
-        run: |
-          export PUBLISHED_VERSION=$(jq -r '.version' package.json)
-          npm publish --ignore-scripts --tag fvtt-${PUBLISHED_VERSION//-[0-9]*/}
-          npm dist-tag add @league-of-foundry-developers/foundry-vtt-types@${PUBLISHED_VERSION} latest
+        run: npm publish --ignore-scripts
         shell: bash
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

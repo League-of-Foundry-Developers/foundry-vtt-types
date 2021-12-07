@@ -47,7 +47,7 @@ interface MacroDataProperties {
   /**
    * A Macro subtype from CONST.MACRO_TYPES
    */
-  type: foundry.CONST.MacroTypes;
+  type: foundry.CONST.MACRO_TYPES;
 
   /**
    * The _id of a User document which created this Macro *
@@ -64,7 +64,7 @@ interface MacroDataProperties {
    * The scope of this Macro application from CONST.MACRO_SCOPES
    * @defaultValue `'global'`
    */
-  scope: foundry.CONST.MacroScopes;
+  scope: foundry.CONST.MACRO_SCOPES;
 
   /**
    * The string content of the macro command
@@ -88,7 +88,7 @@ interface MacroDataProperties {
    * An object which configures user permissions to this Macro
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission: Partial<Record<string, foundry.CONST.EntityPermission>>;
+  permission: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>>;
 
   /**
    * An object of optional key/value flags
@@ -101,7 +101,7 @@ interface MacroDataConstructorData {
   /**
    * The _id which uniquely identifies this Macro document
    */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
   /**
    * The name of this Macro
@@ -111,54 +111,54 @@ interface MacroDataConstructorData {
   /**
    * A Macro subtype from CONST.MACRO_TYPES
    */
-  type?: foundry.CONST.MacroTypes | null;
+  type?: foundry.CONST.MACRO_TYPES | null | undefined;
 
   /**
    * The _id of a User document which created this Macro *
    */
-  author?: string | null;
+  author?: string | null | undefined;
 
   /**
    * An image file path which provides the thumbnail artwork for this Macro
    * @defaultValue `CONST.DEFAULT_MACRO_ICON`
    */
-  img?: string | null;
+  img?: string | null | undefined;
 
   /**
    * The scope of this Macro application from CONST.MACRO_SCOPES
    * @defaultValue `'global'`
    */
-  scope?: foundry.CONST.MacroScopes | null;
+  scope?: foundry.CONST.MACRO_SCOPES | null | undefined;
 
   /**
    * The string content of the macro command
    * @defaultValue `''`
    */
-  command?: string | null;
+  command?: string | null | undefined;
 
   /**
    * The _id of a Folder which contains this Macro
    * @defaultValue `null`
    */
-  folder?: string | null;
+  folder?: string | null | undefined;
 
   /**
    * The numeric sort value which orders this Macro relative to its siblings
    * @defaultValue `0`
    */
-  sort?: number | null;
+  sort?: number | null | undefined;
 
   /**
    * An object which configures user permissions to this Macro
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission?: Partial<Record<string, foundry.CONST.EntityPermission>> | null;
+  permission?: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>> | null | undefined;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Macro'> | null;
+  flags?: ConfiguredFlags<'Macro'> | null | undefined;
 }
 
 /**

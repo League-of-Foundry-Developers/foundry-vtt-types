@@ -64,7 +64,7 @@ declare global {
       name: string;
       parent: string;
       sorting: SortingModes;
-      type: foundry.CONST.FolderEntityTypes;
+      type: foundry.CONST.FOLDER_DOCUMENT_TYPES;
     }
   }
 }

@@ -6,10 +6,10 @@ import { ConfiguredFlags, PropertiesToSource } from '../../../../types/helperTyp
 interface FolderDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
   name: typeof fields.REQUIRED_STRING;
-  type: DocumentField<foundry.CONST.FolderEntityTypes> & {
+  type: DocumentField<foundry.CONST.FOLDER_DOCUMENT_TYPES> & {
     type: String;
     required: true;
-    validate: (t: unknown) => t is foundry.CONST.FolderEntityTypes;
+    validate: (t: unknown) => t is foundry.CONST.FOLDER_DOCUMENT_TYPES;
     validationError: 'Invalid Folder type provided';
   };
   description: typeof fields.STRING_FIELD;
@@ -40,7 +40,7 @@ interface FolderDataProperties {
   /**
    * The document type which this Folder contains, from CONST.FOLDER_ENTITY_TYPES
    */
-  type: foundry.CONST.FolderEntityTypes;
+  type: foundry.CONST.FOLDER_DOCUMENT_TYPES;
 
   /**
    * An HTML description of the contents of this folder
@@ -68,7 +68,7 @@ interface FolderDataProperties {
   /**
    * A color string used for the background color of this Folder
    */
-  color?: string | null;
+  color: string | null | undefined;
 
   /**
    * An object of optional key/value flags
@@ -81,7 +81,7 @@ interface FolderDataConstructorData {
   /**
    * The _id which uniquely identifies this Folder document
    */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
   /**
    * The name of this Folder
@@ -91,41 +91,41 @@ interface FolderDataConstructorData {
   /**
    * The document type which this Folder contains, from CONST.FOLDER_ENTITY_TYPES
    */
-  type: foundry.CONST.FolderEntityTypes;
+  type: foundry.CONST.FOLDER_DOCUMENT_TYPES;
 
   /**
    * An HTML description of the contents of this folder
    */
-  description?: string | null;
+  description?: string | null | undefined;
 
   /**
    * The _id of a parent Folder which contains this Folder
    * @defaultValue `null`
    */
-  parent?: string | null;
+  parent?: string | null | undefined;
 
   /**
    * The sorting mode used to organize documents within this Folder, in ["a", "m"]
    * @defaultValue `'a'`
    */
-  sorting?: SortingModes | null;
+  sorting?: SortingModes | null | undefined;
 
   /**
    * The numeric sort value which orders this Folder relative to its siblings
    * @defaultValue `0`
    */
-  sort?: number | null;
+  sort?: number | null | undefined;
 
   /**
    * A color string used for the background color of this Folder
    */
-  color?: string | null;
+  color?: string | null | undefined;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Folder'> | null;
+  flags?: ConfiguredFlags<'Folder'> | null | undefined;
 }
 
 /**
