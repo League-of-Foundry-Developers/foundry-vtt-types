@@ -34,30 +34,30 @@ interface UserDataSchema extends DocumentSchema {
 
 interface UserDataProperties {
   _id: string | null;
-  avatar?: string | null;
+  avatar: string | null | undefined;
   character: string | null;
   color: string | null;
   hotbar: Record<number | string, string>;
   name: string;
   password: string;
-  passwordSalt?: string;
+  passwordSalt: string | undefined;
   permissions: Partial<Record<keyof typeof CONST.USER_PERMISSIONS, boolean>>;
   role: foundry.CONST.USER_ROLES;
   flags: ConfiguredFlags<'User'>;
 }
 
 interface UserDataConstructorData {
-  _id?: string | null;
-  avatar?: string | null;
-  character?: string | null;
-  color?: string | null;
-  hotbar?: Record<number | string, string> | null;
+  _id?: string | null | undefined;
+  avatar?: string | null | undefined;
+  character?: string | null | undefined;
+  color?: string | null | undefined;
+  hotbar?: Record<number | string, string> | null | undefined;
   name: string;
-  password?: string | null;
-  passwordSalt?: string | null;
-  permissions?: Partial<Record<keyof typeof CONST.USER_PERMISSIONS, boolean>> | null;
-  role?: foundry.CONST.USER_ROLES | null;
-  flags?: ConfiguredFlags<'User'> | null;
+  password?: string | null | undefined;
+  passwordSalt?: string | null | undefined;
+  permissions?: Partial<Record<keyof typeof CONST.USER_PERMISSIONS, boolean>> | null | undefined;
+  role?: foundry.CONST.USER_ROLES | null | undefined;
+  flags?: ConfiguredFlags<'User'> | null | undefined;
 }
 
 /**

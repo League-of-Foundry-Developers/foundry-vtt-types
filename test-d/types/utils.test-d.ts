@@ -24,7 +24,7 @@ expectType<{ foo: { bar: string | number } }>(expanded7);
 const expanded8: Expanded<{ foo: { bar: string } | { baz: number } }> = { foo: { bar: '' } };
 expectType<{ foo: { bar: string } | { baz: number } }>(expanded8);
 const expanded9: Expanded<{ 'foo.bar'?: string }> = {};
-expectType<{ foo?: { bar: string | undefined } | undefined }>(expanded9);
+expectType<{ foo?: { bar: string | undefined } }>(expanded9);
 
 declare const titlecaseEmpty: Titlecase<''>;
 expectType<''>(titlecaseEmpty);

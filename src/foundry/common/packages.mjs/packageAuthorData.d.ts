@@ -18,24 +18,24 @@ interface PackageAuthorDataProperties {
   /**
    * The author email address
    */
-  email?: string;
+  email: string | undefined;
 
   /**
    *  A website url for the author
    */
-  url?: string;
+  url: string | undefined;
 
   /**
    *  A Discord username for the author
    */
-  discord?: string;
+  discord: string | undefined;
 }
 
 interface PackageAuthorDataConstructorData {
   name: string;
-  email?: string | null;
-  url?: string | null;
-  discord?: string | null;
+  email?: string | null | undefined;
+  url?: string | null | undefined;
+  discord?: string | null | undefined;
 }
 
 /**

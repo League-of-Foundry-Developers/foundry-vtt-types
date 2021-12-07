@@ -105,7 +105,7 @@ export interface TokenDataProperties {
   /**
    * The name used to describe the Token
    */
-  name?: string;
+  name: string | undefined;
 
   /**
    * The display mode of the Token nameplate, from CONST.TOKEN_DISPLAY_MODES
@@ -320,24 +320,24 @@ export interface TokenDataConstructorData {
    * The Token _id which uniquely identifies it within its parent Scene
    * @defaultValue `null`
    */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
   /**
    * The name used to describe the Token
    */
-  name?: string | null;
+  name?: string | null | undefined;
 
   /**
    * The display mode of the Token nameplate, from CONST.TOKEN_DISPLAY_MODES
    * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
    */
-  displayName?: CONST.TOKEN_DISPLAY_MODES | null;
+  displayName?: CONST.TOKEN_DISPLAY_MODES | null | undefined;
 
   /**
    * The _id of an Actor document which this Token represents
    * @defaultValue `null`
    */
-  actorId?: string | null;
+  actorId?: string | null | undefined;
 
   /**
    * Does this Token uniquely represent a singular Actor, or is it one of many?
@@ -349,190 +349,190 @@ export interface TokenDataConstructorData {
    * Token-level data which overrides the base data of the associated Actor
    * @defaultValue `{}`
    */
-  actorData?: Partial<ActorDataSource> | null;
+  actorData?: Partial<ActorDataSource> | null | undefined;
 
   /**
    * A file path to an image or video file used to depict the Token
    * @defaultValue `this.DEFAULT_ICON`
    */
-  img?: string | null;
+  img?: string | null | undefined;
 
   /**
    * An optional color tint applied to the Token image
    */
-  tint?: string | null;
+  tint?: string | null | undefined;
 
   /**
    * The width of the Token in grid units
    * @defaultValue `1`
    */
-  width?: number | null;
+  width?: number | null | undefined;
 
   /**
    * The height of the Token in grid units
    * @defaultValue `1`
    */
-  height?: number | null;
+  height?: number | null | undefined;
 
   /**
    * A scale factor applied to the Token image, between 0.25 and 3
    * @defaultValue `1`
    */
-  scale?: number | null;
+  scale?: number | null | undefined;
 
   /**
    * Flip the Token image horizontally?
    * @defaultValue `false`
    */
-  mirrorX?: boolean | null;
+  mirrorX?: boolean | null | undefined;
 
   /**
    * Flip the Token image vertically?
    * @defaultValue `false`
    */
-  mirrorY?: boolean | null;
+  mirrorY?: boolean | null | undefined;
 
   /**
    * The x-coordinate of the top-left corner of the Token
    * @defaultValue `0`
    */
-  x?: number | null;
+  x?: number | null | undefined;
 
   /**
    * The y-coordinate of the top-left corner of the Token
    * @defaultValue `0`
    */
-  y?: number | null;
+  y?: number | null | undefined;
 
   /**
    * The vertical elevation of the Token, in distance units
    * @defaultValue `0`
    */
-  elevation?: number | null;
+  elevation?: number | null | undefined;
 
   /**
    * Prevent the Token image from visually rotating?
    * @defaultValue `false`
    */
-  lockRotation?: boolean | null;
+  lockRotation?: boolean | null | undefined;
 
   /**
    * The rotation of the Token in degrees, from 0 to 360. A value of 0 represents a southward-facing Token.
    * @defaultValue `0`
    */
-  rotation?: number | null;
+  rotation?: number | null | undefined;
 
   /**
    * An array of effect icon paths which are displayed on the Token
    * @defaultValue `[]`
    */
-  effects?: string[] | null;
+  effects?: string[] | null | undefined;
 
   /**
    * A single icon path which is displayed as an overlay on the Token
    */
-  overlayEffect?: string | null;
+  overlayEffect?: string | null | undefined;
 
   /**
    * The opacity of the token image
    * @defaultValue `1`
    */
-  alpha?: number | null;
+  alpha?: number | null | undefined;
 
   /**
    * Is the Token currently hidden from player view?
    * @defaultValue `false`
    */
-  hidden?: boolean | null;
+  hidden?: boolean | null | undefined;
 
   /**
    * Is this Token a source of vision?
    * @defaultValue Whether dimSight or brightSight have a value greater 0.
    */
-  vision?: boolean | null;
+  vision?: boolean | null | undefined;
 
   /**
    * How far in distance units the Token can naturally see as if in dim light
    * @defaultValue `0`
    */
-  dimSight?: number | null;
+  dimSight?: number | null | undefined;
 
   /**
    * How far in distance units the Token can naturally see as if in bright light
    * @defaultValue `0`
    */
-  brightSight?: number | null;
+  brightSight?: number | null | undefined;
 
   /**
    * How far in distance units this Token emits dim light
    * @defaultValue `0`
    */
-  dimLight?: number | null;
+  dimLight?: number | null | undefined;
 
   /**
    * How far in distance units this Token emits bright light
    * @defaultValue `0`
    */
-  brightLight?: number | null;
+  brightLight?: number | null | undefined;
 
   /**
    * The angle at which this Token is able to see, if it has vision
    * @defaultValue `360`
    */
-  sightAngle?: number | null;
+  sightAngle?: number | null | undefined;
 
   /**
    * The angle at which this Token is able to emit light
    * @defaultValue `360`
    */
-  lightAngle?: number | null;
+  lightAngle?: number | null | undefined;
 
   /**
    * The color of the token's emitted light as an HTML hexadecimal color string
    */
-  lightColor?: string | null;
+  lightColor?: string | null | undefined;
 
   /**
    * The intensity of any light emitted by the token
    * @defaultValue `0.25`
    */
-  lightAlpha?: number | null;
+  lightAlpha?: number | null | undefined;
 
   /**
    * A data object which configures token light animation settings
    * @defaultValue `{}`
    */
-  lightAnimation?: AnimationDataConstructorData | null;
+  lightAnimation?: AnimationDataConstructorData | null | undefined;
 
   /**
    * A displayed Token disposition from CONST.TOKEN_DISPOSITIONS
    * @defaultValue `CONST.TOKEN_DISPOSITIONS.HOSTILE`
    */
-  disposition?: CONST.TOKEN_DISPOSITIONS | null;
+  disposition?: CONST.TOKEN_DISPOSITIONS | null | undefined;
 
   /**
    * The display mode of Token resource bars, from CONST.TOKEN_DISPLAY_MODES
    * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
    */
-  displayBars?: CONST.TOKEN_DISPLAY_MODES | null;
+  displayBars?: CONST.TOKEN_DISPLAY_MODES | null | undefined;
 
   /**
    * The configuration of the Token's primary resource bar
    * @defaultValue `{ attribute: game?.system.data.primaryTokenAttribute || null }`
    */
-  bar1?: TokenBarDataConstructorData | null;
+  bar1?: TokenBarDataConstructorData | null | undefined;
 
   /**
    * The configuration of the Token's secondary resource bar
    * @defaultValue `{ attribute: game?.system.data.secondaryTokenAttribute || null }`
    */
-  bar2?: TokenBarDataConstructorData | null;
+  bar2?: TokenBarDataConstructorData | null | undefined;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Token'> | null;
+  flags?: ConfiguredFlags<'Token'> | null | undefined;
 }
 
 /**

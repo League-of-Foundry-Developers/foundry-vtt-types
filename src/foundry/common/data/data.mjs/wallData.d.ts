@@ -119,7 +119,7 @@ interface WallDataConstructorData {
   /**
    * The _id which uniquely identifies the embedded Wall document
    */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
   /**
    * The wall coordinates, a length-4 array of finite numbers [x0,y0,x1,y1]
@@ -130,42 +130,42 @@ interface WallDataConstructorData {
    * The movement restriction type of this wall
    * @defaultValue `CONST.WALL_MOVEMENT_TYPES.NORMAL`
    */
-  move?: foundry.CONST.WALL_MOVEMENT_TYPES | null;
+  move?: foundry.CONST.WALL_MOVEMENT_TYPES | null | undefined;
 
   /**
    * The sensory restriction type of this wall
    * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
    */
-  sense?: foundry.CONST.WALL_SENSE_TYPES | null;
+  sense?: foundry.CONST.WALL_SENSE_TYPES | null | undefined;
 
   /**
    * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
    */
-  sound?: foundry.CONST.WALL_SENSE_TYPES | null;
+  sound?: foundry.CONST.WALL_SENSE_TYPES | null | undefined;
 
   /**
    * The direction of effect imposed by this wall
    * @defaultValue `CONST.WALL_DIRECTIONS.BOTH`
    */
-  dir?: foundry.CONST.WALL_DIRECTIONS | null;
+  dir?: foundry.CONST.WALL_DIRECTIONS | null | undefined;
 
   /**
    * The type of door which this wall contains, if any
    * @defaultValue `CONST.WALL_DOOR_TYPES.NONE`
    */
-  door?: foundry.CONST.WALL_DOOR_TYPES | null;
+  door?: foundry.CONST.WALL_DOOR_TYPES | null | undefined;
 
   /**
    * The state of the door this wall contains, if any
    * @defaultValue `CONST.WALL_DOOR_STATES.CLOSED`
    */
-  ds?: foundry.CONST.WALL_DOOR_STATES | null;
+  ds?: foundry.CONST.WALL_DOOR_STATES | null | undefined;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Wall'> | null;
+  flags?: ConfiguredFlags<'Wall'> | null | undefined;
 }
 
 /**

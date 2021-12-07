@@ -43,13 +43,13 @@ export interface PrototypeTokenDataConstructorData extends Omit<TokenDataConstru
    * Uses a random "wildcard" image path which is resolved with a Token is created
    * @defaultValue `false`
    */
-  randomImg?: boolean | null;
+  randomImg?: boolean | null | undefined;
 
   /**
    * A file path to an image or video file used to depict the Token
    * @defaultValue `CONST.DEFAULT_TOKEN`
    */
-  img?: string | null;
+  img?: string | null | undefined;
 }
 
 export class PrototypeTokenData extends DocumentData<

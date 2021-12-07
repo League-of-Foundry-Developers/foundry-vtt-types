@@ -36,7 +36,7 @@ interface SettingDataConstructorData {
   /**
    * The _id which uniquely identifies this Setting document
    */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
   /**
    * The setting key, a composite of \{scope\}.\{name\}

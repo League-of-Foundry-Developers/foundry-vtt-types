@@ -98,65 +98,65 @@ interface AmbientSoundDataConstructorData {
   /**
    * The _id which uniquely identifies this AmbientSound document
    */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
   /**
    * @defaultValue `documents.BaseAmbientSound.metadata.types[0]`
    */
-  type?: ValueOf<typeof documents.BaseAmbientSound['metadata']['types']> | null;
+  type?: ValueOf<typeof documents.BaseAmbientSound['metadata']['types']> | null | undefined;
 
   /**
    * @defaultValue `0`
    */
-  x?: number | null;
+  x?: number | null | undefined;
 
   /**
    * @defaultValue `0`
    */
-  y?: number | null;
+  y?: number | null | undefined;
 
   /**
    * @defaultValue `0`
    */
-  radius?: number | null;
+  radius?: number | null | undefined;
 
   /**
    * The audio file path that is played by this sound
    */
-  path?: string | null;
+  path?: string | null | undefined;
 
   /**
    * Does this sound loop?
    * @defaultValue `false`
    */
-  repeat?: boolean | null;
+  repeat?: boolean | null | undefined;
 
   /**
    * The audio volume of the sound, from 0 to 1
    * @defaultValue `0.5`
    */
-  volume?: number | null;
+  volume?: number | null | undefined;
 
   /**
    * @defaultValue `true`
    */
-  easing?: boolean | null;
+  easing?: boolean | null | undefined;
 
   /**
    * @defaultValue `false`
    */
-  hidden?: boolean | null;
+  hidden?: boolean | null | undefined;
 
   /**
    * @defaultValue `{}`
    */
-  darkness?: DarknessActivationConstructorData | null;
+  darkness?: DarknessActivationConstructorData | null | undefined;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'AmbientSound'> | null;
+  flags?: ConfiguredFlags<'AmbientSound'> | null | undefined;
 }
 
 /**

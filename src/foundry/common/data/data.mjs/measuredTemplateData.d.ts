@@ -108,74 +108,74 @@ interface MeasuredTemplateDataConstructorData {
   /**
    The _id which uniquely identifies this BaseMeasuredTemplate embedded document
    */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
-  user?: string | null;
+  user?: string | null | undefined;
 
   /**
    * The value in CONST.MEASURED_TEMPLATE_TYPES which defines the geometry type of this template
    * @defaultValue `'circle'`
    */
-  t?: ValueOf<foundry.CONST.MEASURED_TEMPLATE_TYPES> | null;
+  t?: ValueOf<foundry.CONST.MEASURED_TEMPLATE_TYPES> | null | undefined;
 
   /**
    * The x-coordinate position of the origin of the template effect
    * @defaultValue `0`
    */
-  x?: number | null;
+  x?: number | null | undefined;
 
   /**
    * The y-coordinate position of the origin of the template effect
    * @defaultValue `0`
    */
-  y?: number | null;
+  y?: number | null | undefined;
 
   /**
    * The distance of the template effect
    * @defaultValue `1`
    */
-  distance?: number | null;
+  distance?: number | null | undefined;
 
   /**
    * The angle of rotation for the measured template
    * @defaultValue `0`
    */
-  direction?: number | null;
+  direction?: number | null | undefined;
 
   /**
    * The angle of effect of the measured template, applies to cone types
    * @defaultValue `0`
    */
-  angle?: number | null;
+  angle?: number | null | undefined;
 
   /**
    * The width of the measured template, applies to ray types
    * @defaultValue `1`
    */
-  width?: number | null;
+  width?: number | null | undefined;
 
   /**
    * A color string used to tint the border of the template shape
    * @defaultValue `'#000000'`
    */
-  borderColor?: string | null;
+  borderColor?: string | null | undefined;
 
   /**
    * A color string used to tint the fill of the template shape
    * @defaultValue `'#FF0000'`
    */
-  fillColor?: string | null;
+  fillColor?: string | null | undefined;
 
   /**
    * A repeatable tiling texture used to add a texture fill to the template shape
    */
-  texture?: string | null;
+  texture?: string | null | undefined;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'MeasuredTemplate'> | null;
+  flags?: ConfiguredFlags<'MeasuredTemplate'> | null | undefined;
 }
 
 /**

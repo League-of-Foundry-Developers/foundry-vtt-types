@@ -23,7 +23,7 @@ interface PackageDependencyDataProperties {
   type: foundry.CONST.PACKAGE_TYPES;
 
   /** An explicit manifest URL, otherwise learned from the Foundry web server */
-  manifest?: string;
+  manifest: string | undefined;
 }
 
 interface PackageDependencyDataConstructorData {
@@ -31,10 +31,10 @@ interface PackageDependencyDataConstructorData {
   name: string;
 
   /** The dependency package type, from CONST.PACKAGE_TYPES */
-  type?: foundry.CONST.PACKAGE_TYPES | null;
+  type?: foundry.CONST.PACKAGE_TYPES | null | undefined;
 
   /** An explicit manifest URL, otherwise learned from the Foundry web server */
-  manifest?: string | null;
+  manifest?: string | null | undefined;
 }
 
 /**

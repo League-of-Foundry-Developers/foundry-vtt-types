@@ -95,7 +95,7 @@ interface RollTableDataConstructorData {
   /**
    * The _id which uniquely identifies this RollTable document
    */
-  _id?: string | null;
+  _id?: string | null | undefined;
 
   /**
    * The name of this RollTable
@@ -105,56 +105,56 @@ interface RollTableDataConstructorData {
   /**
    * An image file path which provides the thumbnail artwork for this RollTable
    */
-  img?: string | null;
+  img?: string | null | undefined;
 
   /**
    * The HTML text description for this RollTable document
    */
-  description?: string | null;
+  description?: string | null | undefined;
 
   /**
    * A Collection of TableResult embedded documents which belong to this RollTable
    */
-  results?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseTableResult>>[0][] | null;
+  results?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseTableResult>>[0][] | null | undefined;
 
   /**
    * The Roll formula which determines the results chosen from the table
    */
-  formula?: string | null;
+  formula?: string | null | undefined;
 
   /**
    * Are results from this table drawn with replacement?
    * @defaultValue `true`
    */
-  replacement?: boolean | null;
+  replacement?: boolean | null | undefined;
 
   /**
    * Is the Roll result used to draw from this RollTable displayed in chat?
    * @defaultValue `true`
    */
-  displayRoll?: boolean | null;
+  displayRoll?: boolean | null | undefined;
 
   /**
    * The _id of a Folder which contains this RollTable
    */
-  folder?: string | null;
+  folder?: string | null | undefined;
 
   /**
    * The numeric sort value which orders this RollTable relative to its siblings
    */
-  sort?: number | null;
+  sort?: number | null | undefined;
 
   /**
    * An object which configures user permissions to this RollTable
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission?: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>> | null;
+  permission?: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>> | null | undefined;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'RollTable'> | null;
+  flags?: ConfiguredFlags<'RollTable'> | null | undefined;
 }
 
 /**

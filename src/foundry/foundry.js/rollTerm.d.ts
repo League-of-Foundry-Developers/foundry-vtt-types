@@ -46,9 +46,9 @@ declare abstract class RollTerm {
    * @param options - (default: `{}`)
    * @returns The evaluated dice term
    */
-  evaluate(options?: Partial<RollTerm.EvaluationOptions & { async: false }>): this;
-  evaluate(options: Partial<RollTerm.EvaluationOptions> & { async: true }): Promise<this>;
-  evaluate(options?: Partial<RollTerm.EvaluationOptions>): this | Promise<this>;
+  evaluate(options?: InexactPartial<RollTerm.EvaluationOptions & { async: false }>): this;
+  evaluate(options: InexactPartial<RollTerm.EvaluationOptions> & { async: true }): Promise<this>;
+  evaluate(options?: InexactPartial<RollTerm.EvaluationOptions>): this | Promise<this>;
 
   protected _evaluate({ minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): Promise<this>;
 

@@ -21,15 +21,15 @@ interface PackageLanguageDataProperties {
   lang: string;
 
   /** The human-readable language name */
-  name?: string;
+  name: string | undefined;
 
   /** The relative path to included JSON translation strings */
-  path?: string;
+  path: string | undefined;
 
   /** Only apply this set of translations when a specific system is being used */
-  system?: string;
+  system: string | undefined;
 
-  module?: string;
+  module: string | undefined;
 }
 
 interface PackageLanguageDataConstructorData {
@@ -37,15 +37,15 @@ interface PackageLanguageDataConstructorData {
   lang: string;
 
   /** The human-readable language name */
-  name?: string | null;
+  name?: string | null | undefined;
 
   /** The relative path to included JSON translation strings */
-  path?: string | null;
+  path?: string | null | undefined;
 
   /** Only apply this set of translations when a specific system is being used */
-  system?: string | null;
+  system?: string | null | undefined;
 
-  module?: string | null;
+  module?: string | null | undefined;
 }
 
 /**

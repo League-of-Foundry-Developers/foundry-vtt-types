@@ -38,7 +38,7 @@ interface PackageCompendiumDataProperties {
   entity: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
 
   /** Denote that this compendium pack requires a specific game system to function properly. */
-  system?: string;
+  system: string | undefined;
 }
 
 interface PackageCompendiumDataConstructorData {
@@ -51,13 +51,13 @@ interface PackageCompendiumDataConstructorData {
   /** The local relative path to the compendium source .db file. The filename should match the name attribute. */
   path: string;
 
-  private?: boolean | null;
+  private?: boolean | null | undefined;
 
   /** The specific document type that is contained within this compendium pack */
   entity: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
 
   /** Denote that this compendium pack requires a specific game system to function properly. */
-  system?: string;
+  system?: string | null | undefined;
 }
 
 /**
