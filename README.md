@@ -2,6 +2,8 @@
 
 <div align=center>
 
+<img align=center src="./media/img/league-logo-ts.svg" alt="League Logo TS" width="150"/>
+
 TypeScript type definitions for [Foundry Virtual Tabletop](https://foundryvtt.com/) (unofficial)
 
 [![League Discord Server](https://img.shields.io/discord/732325252788387980?label=League%20of%20Extraordinary%20Foundry%20VTT%20Developers)](https://discord.gg/52DNPzqm2Z)
