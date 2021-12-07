@@ -6,8 +6,7 @@
     "moduleResolution": "Node",
     "noEmit": true,
     "strict": true,
-    "target": "ES2020",
-    "allowSyntheticDefaultImports": true
+    "target": "ES2020"
   },
   "include": ["index.d.ts"]
 }
