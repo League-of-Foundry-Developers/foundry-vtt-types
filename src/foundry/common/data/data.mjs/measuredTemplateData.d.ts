@@ -42,7 +42,7 @@ interface MeasuredTemplateDataProperties {
    * The value in CONST.MEASURED_TEMPLATE_TYPES which defines the geometry type of this template
    * @defaultValue `'circle'`
    */
-  t: ValueOf<foundry.CONST.MeasuredTemplateTypes>;
+  t: foundry.CONST.MEASURED_TEMPLATE_TYPES;
 
   /**
    * The x-coordinate position of the origin of the template effect
@@ -116,7 +116,7 @@ interface MeasuredTemplateDataConstructorData {
    * The value in CONST.MEASURED_TEMPLATE_TYPES which defines the geometry type of this template
    * @defaultValue `'circle'`
    */
-  t?: ValueOf<foundry.CONST.MeasuredTemplateTypes> | null;
+  t?: ValueOf<foundry.CONST.MEASURED_TEMPLATE_TYPES> | null;
 
   /**
    * The x-coordinate position of the origin of the template effect

@@ -61,12 +61,12 @@ declare global {
     }
 
     interface FormData {
-      dir: foundry.CONST.WallDirection;
-      door: foundry.CONST.WallDoorType;
-      ds?: foundry.CONST.WallDoorState;
-      move: foundry.CONST.WallMovementType;
-      sense: foundry.CONST.WallSenseType;
-      sound: foundry.CONST.WallSenseType;
+      dir: foundry.CONST.WALL_DIRECTIONS;
+      door: foundry.CONST.WALL_DOOR_TYPES;
+      ds?: foundry.CONST.WALL_DOOR_STATES;
+      move: foundry.CONST.WALL_MOVEMENT_TYPES;
+      sense: foundry.CONST.WALL_SENSE_TYPES;
+      sound: foundry.CONST.WALL_SENSE_TYPES;
     }
   }
 }

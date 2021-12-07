@@ -8,7 +8,7 @@ interface TileOcclusionSchema extends DocumentSchema {
     typeof fields.REQUIRED_NUMBER,
     {
       default: typeof CONST.TILE_OCCLUSION_MODES.FADE;
-      validate: (m: unknown) => m is foundry.CONST.TileOcclusionModes;
+      validate: (m: unknown) => m is foundry.CONST.TILE_OCCLUSION_MODES;
       validationError: 'Invalid {name} {field} which must be a value in CONST.TILE_OCCLUSION_MODES';
     }
   >;
@@ -20,7 +20,7 @@ interface TileOcclusionProperties {
    * The occlusion mode from CONST.TILE_OCCLUSION_MODES
    * @defaultValue `CONST.TILE_OCCLUSION_MODES.FADE`
    */
-  mode: foundry.CONST.TileOcclusionModes;
+  mode: foundry.CONST.TILE_OCCLUSION_MODES;
 
   /**
    * The occlusion alpha between 0 and 1
@@ -34,7 +34,7 @@ export interface TileOcclusionConstructorData {
    * The occlusion mode from CONST.TILE_OCCLUSION_MODES
    * @defaultValue `CONST.TILE_OCCLUSION_MODES.FADE`
    */
-  mode?: foundry.CONST.TileOcclusionModes | null;
+  mode?: foundry.CONST.TILE_OCCLUSION_MODES | null;
 
   /**
    * The occlusion alpha between 0 and 1

@@ -8,7 +8,7 @@ import { DarknessActivation, DarknessActivationConstructorData } from './darknes
 
 interface AmbientLightDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
-  t: DocumentField<CONST.SourceType> & {
+  t: DocumentField<CONST.SOURCE_TYPES> & {
     type: String;
     required: true;
     default: 'l';
@@ -48,7 +48,7 @@ interface AmbientLightDataProperties {
    * The source type in CONST.SOURCE_TYPES which defines the behavior of this light
    * @defaultValue `'l'`
    */
-  t: CONST.SourceType;
+  t: CONST.SOURCE_TYPES;
 
   /**
    * The x-coordinate position of the origin of the light
@@ -137,7 +137,7 @@ interface AmbientLightDataConstructorData {
    * The source type in CONST.SOURCE_TYPES which defines the behavior of this light
    * @defaultValue `'l'`
    */
-  t?: CONST.SourceType | null;
+  t?: CONST.SOURCE_TYPES | null;
 
   /**
    * The x-coordinate position of the origin of the light

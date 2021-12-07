@@ -189,9 +189,9 @@ declare global {
      */
     protected _getWallDataFromActiveTool(tool: string):
       | {
-          move: foundry.CONST.WallMovementType;
-          sense: foundry.CONST.WallSenseType;
-          door?: foundry.CONST.WallDoorType;
+          move: foundry.CONST.WALL_MOVEMENT_TYPES;
+          sense: foundry.CONST.WALL_SENSE_TYPES;
+          door?: foundry.CONST.WALL_DOOR_TYPES;
         }
       | this['_cloneType'];
 

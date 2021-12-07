@@ -33,7 +33,7 @@ interface EffectChangeDataProperties {
   /**
    * The modification mode with which the change is applied
    */
-  mode: CONST.ActiveEffectMode;
+  mode: CONST.ACTIVE_EFFECT_MODES;
 
   /**
    * The priority level with which this change is applied
@@ -57,7 +57,7 @@ export interface EffectChangeDataConstructorData {
   /**
    * The modification mode with which the change is applied
    */
-  mode?: CONST.ActiveEffectMode | null;
+  mode?: CONST.ACTIVE_EFFECT_MODES | null;
 
   /**
    * The priority level with which this change is applied

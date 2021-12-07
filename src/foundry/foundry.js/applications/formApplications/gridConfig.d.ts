@@ -156,7 +156,7 @@ declare global {
     }
 
     type FormData = {
-      gridType: foundry.CONST.GridType;
+      gridType: foundry.CONST.GRID_TYPES;
       grid: number | null;
       scale: number | null;
       shiftX: number | null;

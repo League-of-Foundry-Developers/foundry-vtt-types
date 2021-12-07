@@ -178,7 +178,7 @@ declare class PointSource {
    * The source type from CONST.SOURCE_TYPES
    * @defaultValue `undefined`
    */
-  type?: foundry.CONST.SourceType;
+  type?: foundry.CONST.SOURCE_TYPES;
 
   /**
    * An animation configuration for the source
@@ -366,7 +366,7 @@ declare namespace PointSource {
      * The source type from CONST.SOURCE_TYPES
      * @defaultValue `CONST.SOURCE_TYPES.LOCAL`
      */
-    type?: foundry.CONST.SourceType;
+    type?: foundry.CONST.SOURCE_TYPES;
 
     /**
      * An animation configuration for the source

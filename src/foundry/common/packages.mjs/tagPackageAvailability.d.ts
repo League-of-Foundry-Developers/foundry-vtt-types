@@ -4,6 +4,6 @@
  * @remarks This doesn't actually update the package, it just sets the `unavailable` and `incompatible` flags if needed.
  */
 export declare function tagPackageAvailability(pkg: {
-  availability: foundry.CONST.PackageAvailabilityCode;
-  type: foundry.CONST.PackageTypes;
+  availability: foundry.CONST.PACKAGE_AVAILABILITY_CODES;
+  type: foundry.CONST.PACKAGE_TYPES;
 }): void;

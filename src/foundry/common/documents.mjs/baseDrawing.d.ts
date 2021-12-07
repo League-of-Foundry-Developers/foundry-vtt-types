@@ -33,7 +33,7 @@ export declare class BaseDrawing extends Document<
   /** @override */
   testUserPermission(
     user: BaseUser,
-    permission: keyof typeof foundry.CONST.ENTITY_PERMISSIONS | foundry.CONST.EntityPermission,
+    permission: keyof typeof foundry.CONST.ENTITY_PERMISSIONS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,
     { exact }?: { exact?: boolean }
   ): boolean;
 

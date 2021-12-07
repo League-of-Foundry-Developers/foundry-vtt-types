@@ -120,7 +120,7 @@ declare global {
       /**
        * @defaultValue {@link ENTITY_PERMISSIONS.LIMITED}
        */
-      viewPermission: foundry.CONST.EntityPermission;
+      viewPermission: foundry.CONST.DOCUMENT_PERMISSION_LEVELS;
     }
   }
 }

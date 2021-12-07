@@ -373,15 +373,15 @@ declare global {
      */
     toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
       messageData?: T,
-      { rollMode, create }?: { rollMode?: foundry.CONST.DiceRollMode; create?: true }
+      { rollMode, create }?: { rollMode?: foundry.CONST.DICE_ROLL_MODES; create?: true }
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined>;
     toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
       messageData: T,
-      { rollMode, create }: { rollMode?: foundry.CONST.DiceRollMode; create: false }
+      { rollMode, create }: { rollMode?: foundry.CONST.DICE_ROLL_MODES; create: false }
     ): MessageData<T>;
     toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
       messageData: T,
-      { rollMode, create }: { rollMode?: foundry.CONST.DiceRollMode; create: boolean }
+      { rollMode, create }: { rollMode?: foundry.CONST.DICE_ROLL_MODES; create: boolean }
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined> | MessageData<T>;
 
     /**

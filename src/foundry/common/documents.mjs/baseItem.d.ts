@@ -39,7 +39,7 @@ export declare class BaseItem extends Document<data.ItemData, InstanceType<Confi
 
   testUserPermission(
     user: BaseUser,
-    permission: keyof typeof foundry.CONST.ENTITY_PERMISSIONS | foundry.CONST.EntityPermission,
+    permission: keyof typeof foundry.CONST.ENTITY_PERMISSIONS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,
     { exact }: { exact?: boolean }
   ): boolean;
 

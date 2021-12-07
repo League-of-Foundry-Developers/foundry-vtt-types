@@ -43,7 +43,7 @@ interface NoteDataSchema extends DocumentSchema {
     type: typeof Number;
     required: true;
     default: typeof CONST.TEXT_ANCHOR_POINTS.BOTTOM;
-    validate: (p: unknown) => p is foundry.CONST.TextAnchorPoint;
+    validate: (p: unknown) => p is foundry.CONST.TEXT_ANCHOR_POINTS;
     validationError: 'Invalid {name} {field} which must be a value in CONST.TEXT_ANCHOR_POINTS';
   };
   textColor: FieldReturnType<typeof fields.COLOR_FIELD, { default: '#FFFFFF' }>;
@@ -112,7 +112,7 @@ interface NoteDataProperties {
    * to the note icon.
    * @defaultValue `CONST.TEXT_ANCHOR_POINTS.BOTTOM`
    */
-  textAnchor: foundry.CONST.TextAnchorPoint;
+  textAnchor: foundry.CONST.TEXT_ANCHOR_POINTS;
 
   /**
    * The string that defines the color with which the note text is rendered
@@ -189,7 +189,7 @@ interface NoteDataConstructorData {
    * to the note icon.
    * @defaultValue `CONST.TEXT_ANCHOR_POINTS.BOTTOM`
    */
-  textAnchor?: foundry.CONST.TextAnchorPoint | null;
+  textAnchor?: foundry.CONST.TEXT_ANCHOR_POINTS | null;
 
   /**
    * The string that defines the color with which the note text is rendered

@@ -13,11 +13,11 @@ import {
 interface DrawingDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
   author: ForeignDocumentField<{ type: typeof documents.BaseUser; required: true }>;
-  type: DocumentField<foundry.CONST.DrawingType> & {
+  type: DocumentField<foundry.CONST.MACRO_TYPES> & {
     type: typeof String;
     required: true;
     default: typeof CONST.DRAWING_TYPES.POLYGON;
-    validate: (t: unknown) => t is foundry.CONST.DrawingType;
+    validate: (t: unknown) => t is foundry.CONST.MACRO_TYPES;
     validationError: 'Invalid {name} {field} which must be a value in CONST.DRAWING_TYPES';
   };
   x: typeof fields.REQUIRED_NUMBER;
@@ -38,7 +38,7 @@ interface DrawingDataSchema extends DocumentSchema {
     typeof fields.REQUIRED_NUMBER,
     {
       default: typeof CONST.DRAWING_FILL_TYPES.NONE;
-      validate: (v: unknown) => v is foundry.CONST.DrawingFillType;
+      validate: (v: unknown) => v is foundry.CONST.DRAWING_FILL_TYPES;
       validationError: 'Invalid {name} {field} which must be a value in CONST.DRAWING_FILL_TYPES';
     }
   >;
@@ -82,7 +82,7 @@ interface DrawingDataProperties {
    * The value in CONST.DRAWING_TYPES which defines the geometry type of this drawing
    * @defaultValue `CONST.DRAWING_TYPES.POLYGON`
    */
-  type: foundry.CONST.DrawingType;
+  type: foundry.CONST.MACRO_TYPES;
 
   /**
    * The x-coordinate position of the top-left corner of the drawn shape
@@ -136,7 +136,7 @@ interface DrawingDataProperties {
    * The fill type of the drawing shape, a value from CONST.DRAWING_FILL_TYPES
    * @defaultValue `CONST.DRAWING_FILL_TYPES.NONE`
    */
-  fillType: foundry.CONST.DrawingFillType;
+  fillType: foundry.CONST.DRAWING_FILL_TYPES;
 
   /**
    * An optional color string with which to fill the drawing geometry
@@ -236,7 +236,7 @@ interface DrawingDataConstructorData {
    * The value in CONST.DRAWING_TYPES which defines the geometry type of this drawing
    * @defaultValue `CONST.DRAWING_TYPES.POLYGON`
    */
-  type?: foundry.CONST.DrawingType | null;
+  type?: foundry.CONST.DRAWING_TYPES | null;
 
   /**
    * The x-coordinate position of the top-left corner of the drawn shape
@@ -290,7 +290,7 @@ interface DrawingDataConstructorData {
    * The fill type of the drawing shape, a value from CONST.DRAWING_FILL_TYPES
    * @defaultValue `CONST.DRAWING_FILL_TYPES.NONE`
    */
-  fillType?: foundry.CONST.DrawingFillType | null;
+  fillType?: foundry.CONST.DRAWING_FILL_TYPES | null;
 
   /**
    * An optional color string with which to fill the drawing geometry

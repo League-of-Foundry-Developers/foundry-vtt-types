@@ -6,10 +6,10 @@ import { ConfiguredFlags, PropertiesToSource } from '../../../../types/helperTyp
 interface FolderDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
   name: typeof fields.REQUIRED_STRING;
-  type: DocumentField<foundry.CONST.FolderEntityTypes> & {
+  type: DocumentField<foundry.CONST.FOLDER_DOCUMENT_TYPES> & {
     type: String;
     required: true;
-    validate: (t: unknown) => t is foundry.CONST.FolderEntityTypes;
+    validate: (t: unknown) => t is foundry.CONST.FOLDER_DOCUMENT_TYPES;
     validationError: 'Invalid Folder type provided';
   };
   description: typeof fields.STRING_FIELD;
@@ -40,7 +40,7 @@ interface FolderDataProperties {
   /**
    * The document type which this Folder contains, from CONST.FOLDER_ENTITY_TYPES
    */
-  type: foundry.CONST.FolderEntityTypes;
+  type: foundry.CONST.FOLDER_DOCUMENT_TYPES;
 
   /**
    * An HTML description of the contents of this folder
@@ -91,7 +91,7 @@ interface FolderDataConstructorData {
   /**
    * The document type which this Folder contains, from CONST.FOLDER_ENTITY_TYPES
    */
-  type: foundry.CONST.FolderEntityTypes;
+  type: foundry.CONST.FOLDER_DOCUMENT_TYPES;
 
   /**
    * An HTML description of the contents of this folder
