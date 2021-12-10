@@ -56,6 +56,17 @@ export const CARD_DRAW_MODES: Readonly<{
 export type CARD_DRAW_MODES = ValueOf<typeof CARD_DRAW_MODES>;
 
 /**
+ * An enumeration of canvas performance modes.
+ */
+export const CANVAS_PERFORMANCE_MODES: Readonly<{
+  LOW: 0;
+  MED: 1;
+  HIGH: 2;
+  MAX: 3;
+}>;
+export type CANVAS_PERFORMANCE_MODES = ValueOf<typeof CANVAS_PERFORMANCE_MODES>;
+
+/**
  * Valid Chat Message types
  */
 export const CHAT_MESSAGE_TYPES: Readonly<{
@@ -80,11 +91,13 @@ export const DEFAULT_TOKEN: 'icons/svg/mystery-man.svg';
 
 /**
  * The default artwork used for Note placeables if none is provided
+ * @deprecated since v9, use NoteData.DEFAULT_ICON instead.
  */
 export const DEFAULT_NOTE_ICON: 'icons/svg/book.svg';
 
 /**
  * The default icon image used for Macro documents if no other image is provided
+ * @deprecated since v9, use MacroData.DEFAULT_ICON instead.
  */
 export const DEFAULT_MACRO_ICON: 'icons/svg/dice-target.svg';
 
