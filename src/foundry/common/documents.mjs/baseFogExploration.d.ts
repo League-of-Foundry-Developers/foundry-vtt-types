@@ -18,6 +18,7 @@ export declare class BaseFogExploration extends Document<data.FogExplorationData
       name: 'FogExploration';
       collection: 'fog';
       label: 'DOCUMENT.FogExploration';
+      labelPlural: 'DOCUMENT.FogExplorations';
       isPrimary: true;
       permissions: {
         create: 'PLAYER';

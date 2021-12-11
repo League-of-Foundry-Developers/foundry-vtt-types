@@ -19,6 +19,7 @@ export declare class BaseNote extends Document<data.NoteData, InstanceType<Confi
       name: 'Note';
       collection: 'notes';
       label: 'DOCUMENT.Note';
+      labelPlural: 'DOCUMENT.Notes';
       isEmbedded: true;
       permissions: {
         create: 'NOTE_CREATE';

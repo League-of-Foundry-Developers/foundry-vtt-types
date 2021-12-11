@@ -791,7 +791,8 @@ export interface Metadata<ConcreteDocument extends Document<any, any>> {
   name: DocumentType;
   collection: string;
   label: string;
-  types: string[] | Record<string, unknown>; // TODO: Record<string, unknown> is only there because In BaseTableResult this is set to CONST.TABLE_RESULT_TYPES, check if this is a bug in foundry
+  labelPlural: string; // This is not set for the Document class but every class that implements Document actually provides it.
+  types: readonly string[];
   embedded: Record<string, ConstructorOf<Document<any, any>>>;
   hasSystemData: boolean;
   permissions: {

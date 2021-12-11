@@ -17,6 +17,7 @@ export declare class BasePlaylist extends Document<data.PlaylistData> {
       name: 'Playlist';
       collection: 'playlists';
       label: 'DOCUMENT.Playlist';
+      labelPlural: 'DOCUMENT.Playlists';
       embedded: {
         PlaylistSound: typeof BasePlaylistSound;
       };

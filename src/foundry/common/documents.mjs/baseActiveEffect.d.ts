@@ -13,24 +13,29 @@ export declare class BaseActiveEffect extends Document<
   data.ActiveEffectData,
   InstanceType<ConfiguredDocumentClass<typeof BaseActor>> | InstanceType<ConfiguredDocumentClass<typeof BaseItem>>
 > {
+  /** @override */
   static get schema(): ConstructorOf<data.ActiveEffectData>;
 
+  /** @override */
   static get metadata(): Merge<
     DocumentMetadata,
     {
       name: 'ActiveEffect';
       collection: 'effects';
       label: 'DOCUMENT.ActiveEffect';
+      labelPlural: 'DOCUMENT.ActiveEffects';
       isEmbedded: true;
     }
   >;
 
+  /** @override */
   protected _preCreate(
     data: ConstructorDataType<data.ActiveEffectData>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
 
+  /** @override */
   testUserPermission(
     user: BaseUser,
     permission: keyof typeof foundry.CONST.ENTITY_PERMISSIONS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,

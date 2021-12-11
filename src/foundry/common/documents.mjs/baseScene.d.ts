@@ -24,6 +24,7 @@ export declare class BaseScene extends Document<data.SceneData> {
       name: 'Scene';
       collection: 'scenes';
       label: 'DOCUMENT.Scene';
+      labelPlural: 'DOCUMENT.Scenes';
       isPrimary: true;
       embedded: {
         AmbientLight: typeof BaseAmbientLight;

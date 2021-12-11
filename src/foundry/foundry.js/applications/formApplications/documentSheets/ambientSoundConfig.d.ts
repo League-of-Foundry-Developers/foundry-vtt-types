@@ -49,7 +49,7 @@ declare global {
       submitText: string;
     }
 
-    type FormData = Pick<foundry.data.AmbientSoundData, 'easing' | 'path' | 'type' | 'volume'> &
+    type FormData = Pick<foundry.data.AmbientSoundData, 'easing' | 'path' | 'volume'> &
       Pick<AmbientSoundDataConstructorData, 'radius' | 'x' | 'y'>;
 
     type Options = DocumentSheet.Options;

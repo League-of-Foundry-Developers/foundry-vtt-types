@@ -23,6 +23,7 @@ export declare class BasePlaylistSound extends Document<
       name: 'PlaylistSound';
       collection: 'sounds';
       label: 'DOCUMENT.PlaylistSound';
+      labelPlural: 'DOCUMENT.PlaylistSounds';
       isEmbedded: true;
     }
   >;

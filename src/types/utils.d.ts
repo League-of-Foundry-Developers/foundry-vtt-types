@@ -104,7 +104,7 @@ type Titlecase<S extends string> = S extends `${infer A} ${infer B}`
  * @typeParam U - The type that will be merged into `T`.
  */
 type Merge<T, U> = T extends object
-  ? U extends Array<any>
+  ? U extends Array<any> | ReadonlyArray<any>
     ? U
     : U extends object
     ? {

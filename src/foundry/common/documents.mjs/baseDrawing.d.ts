@@ -2,6 +2,7 @@ import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
 import * as data from '../data/data.mjs';
+import type { CONST } from '../module.mjs';
 import { BaseScene } from './baseScene';
 import { BaseUser } from './baseUser';
 
@@ -12,6 +13,7 @@ export declare class BaseDrawing extends Document<
   data.DrawingData,
   InstanceType<ConfiguredDocumentClass<typeof BaseScene>>
 > {
+  /** @override */
   static get schema(): typeof data.DrawingData;
 
   /** @override */
@@ -21,7 +23,15 @@ export declare class BaseDrawing extends Document<
       name: 'Drawing';
       collection: 'drawings';
       label: 'DOCUMENT.Drawing';
+      labelPlural: 'DOCUMENT.Drawings';
       isEmbedded: true;
+      types: [
+        typeof CONST.DRAWING_TYPES.RECTANGLE,
+        typeof CONST.DRAWING_TYPES.ELLIPSE,
+        typeof CONST.DRAWING_TYPES.TEXT,
+        typeof CONST.DRAWING_TYPES.POLYGON,
+        typeof CONST.DRAWING_TYPES.FREEHAND
+      ];
       permissions: {
         create: 'DRAWING_CREATE';
         update: (user: BaseUser, doc: BaseDrawing, data?: object) => boolean;

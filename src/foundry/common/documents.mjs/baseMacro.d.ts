@@ -3,21 +3,25 @@ import { Document } from '../abstract/module.mjs';
 import { DocumentMetadata, DocumentModificationOptions } from '../abstract/document.mjs';
 import { BaseUser } from './baseUser';
 import { ConstructorDataType } from '../../../types/helperTypes';
+import * as CONST from '../constants.mjs';
 
 /**
  * The base Macro model definition which defines common behavior of an Macro document between both client and server.
  */
 export declare class BaseMacro extends Document<data.MacroData> {
+  /** @override */
   static get schema(): typeof data.MacroData;
 
+  /** @override */
   static get metadata(): Merge<
     DocumentMetadata,
     {
       name: 'Macro';
       collection: 'macros';
       label: 'DOCUMENT.Macro';
+      labelPlural: 'DOCUMENT.Macros';
       isPrimary: true;
-      types: ['script', 'chat']; // TODO: Automatically infer from CONST.MACRO_TYPES
+      types: [typeof CONST.MACRO_TYPES.SCRIPT, typeof CONST.MACRO_TYPES.CHAT];
       permissions: {
         create: 'PLAYER';
         update: (user: BaseUser, doc: BaseMacro, data?: object) => boolean;
@@ -26,19 +30,17 @@ export declare class BaseMacro extends Document<data.MacroData> {
     }
   >;
 
+  /** @override */
   protected _preCreate(
     data: ConstructorDataType<data.MacroData>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
 
-  /**
-   * Is a user able to update an existing Macro document?
-   */
-  protected static _canUpdate(user: BaseUser, doc: BaseMacro, data?: object): boolean;
-
-  /**
-   * Is a user able to delete an existing Macro document?
-   */
-  protected static _canDelete(user: BaseUser, doc: BaseMacro): boolean;
+  /** @override */
+  testUserPermission(
+    user: BaseUser,
+    permission: keyof typeof foundry.CONST.DOCUMENT_PERMISSION_LEVELS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,
+    { exact }: { exact?: boolean }
+  ): boolean;
 }

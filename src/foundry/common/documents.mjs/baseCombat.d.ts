@@ -9,14 +9,17 @@ import { BaseUser } from './baseUser';
  * The base Combat model definition which defines common behavior of an Combat document between both client and server.
  */
 export declare class BaseCombat extends Document<data.CombatData> {
+  /** @override */
   static get schema(): typeof data.CombatData;
 
+  /** @override */
   static get metadata(): Merge<
     DocumentMetadata,
     {
       name: 'Combat';
       collection: 'combats';
       label: 'DOCUMENT.Combat';
+      labelPlural: 'DOCUMENT.Combats';
       embedded: {
         Combatant: typeof BaseCombatant;
       };
@@ -34,5 +37,5 @@ export declare class BaseCombat extends Document<data.CombatData> {
    * Is a user able to update an existing Combat?
    * @param doc - (unused)
    */
-  protected static _canUpdate(user: BaseUser, doc: unknown, data?: ConstructorDataType<data.CombatData>): boolean;
+  protected static _canUpdate(user: BaseUser, doc: BaseCombat, data?: ConstructorDataType<data.CombatData>): boolean;
 }

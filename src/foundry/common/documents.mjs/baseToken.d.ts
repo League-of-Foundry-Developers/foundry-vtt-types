@@ -11,14 +11,17 @@ export declare class BaseToken extends Document<
   data.TokenData,
   InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>
 > {
+  /** @override */
   static get schema(): typeof data.TokenData;
 
+  /** @override */
   static get metadata(): Merge<
     DocumentMetadata,
     {
       name: 'Token';
       collection: 'tokens';
       label: 'DOCUMENT.Token';
+      labelPlural: 'DOCUMENT.Tokens';
       isEmbedded: true;
       permissions: {
         create: 'TOKEN_CREATE';

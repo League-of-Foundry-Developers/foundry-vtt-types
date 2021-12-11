@@ -13,14 +13,17 @@ export declare class BaseUser extends Document<data.UserData, null> {
    */
   readonly role: ValueOf<typeof CONST.USER_ROLES>;
 
+  /** @override */
   static get schema(): typeof data.UserData;
 
+  /** @override */
   static get metadata(): Merge<
     DocumentMetadata,
     {
       name: 'User';
       collection: 'users';
       label: 'DOCUMENT.User';
+      labelPlural: 'DOCUMENT.Users';
       isPrimary: true;
     }
   >;
@@ -42,7 +45,10 @@ export declare class BaseUser extends Document<data.UserData, null> {
     action: ValueOf<typeof CONST.USER_ROLES> | keyof typeof CONST.USER_ROLES | keyof typeof CONST.USER_PERMISSIONS
   ): boolean;
 
-  getUserLevel(user: BaseUser): typeof CONST.ENTITY_PERMISSIONS.OWNER | typeof CONST.ENTITY_PERMISSIONS.NONE;
+  /** @override */
+  getUserLevel(
+    user: BaseUser
+  ): typeof CONST.DOCUMENT_PERMISSION_LEVELS.OWNER | typeof CONST.DOCUMENT_PERMISSION_LEVELS.NONE;
 
   /**
    * Test whether the User has at least a specific permission

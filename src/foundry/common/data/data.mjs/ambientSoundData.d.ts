@@ -6,13 +6,6 @@ import { DarknessActivation, DarknessActivationConstructorData } from './darknes
 
 interface AmbientSoundDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
-  type: DocumentField<string> & {
-    type: typeof String;
-    required: true;
-    default: typeof documents.BaseAmbientSound['metadata']['types'][0];
-    validate: (t: unknown) => t is ValueOf<typeof documents.BaseAmbientSound['metadata']['types']>;
-    validationError: 'Invalid {name} {field} which must be a value in BaseAmbientSound.metadata.types';
-  };
   x: typeof fields.REQUIRED_NUMBER;
   y: typeof fields.REQUIRED_NUMBER;
   radius: typeof fields.REQUIRED_NUMBER;
@@ -34,11 +27,6 @@ interface AmbientSoundDataProperties {
    * The _id which uniquely identifies this AmbientSound document
    */
   _id: string | null;
-
-  /**
-   * @defaultValue `documents.BaseAmbientSound.metadata.types[0]`
-   */
-  type: ValueOf<typeof documents.BaseAmbientSound['metadata']['types']>;
 
   /**
    * @defaultValue `0`
@@ -99,11 +87,6 @@ interface AmbientSoundDataConstructorData {
    * The _id which uniquely identifies this AmbientSound document
    */
   _id?: string | null | undefined;
-
-  /**
-   * @defaultValue `documents.BaseAmbientSound.metadata.types[0]`
-   */
-  type?: ValueOf<typeof documents.BaseAmbientSound['metadata']['types']> | null | undefined;
 
   /**
    * @defaultValue `0`
