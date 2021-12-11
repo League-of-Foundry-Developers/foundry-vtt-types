@@ -149,16 +149,16 @@ declare abstract class Document<
   ): TemporaryDocument<this> | Promise<TemporaryDocument<this> | undefined>;
 
   /**
-   * Get the permission level that a specific User has over this Document, a value in CONST.ENTITY_PERMISSIONS.
+   * Get the permission level that a specific User has over this Document, a value in CONST.DOCUMENT_PERMISSION_LEVELS.
    * @param user - The User being tested
-   * @returns A numeric permission level from CONST.ENTITY_PERMISSIONS or null
+   * @returns A numeric permission level from CONST.DOCUMENT_PERMISSION_LEVELS or null
    */
   getUserLevel(user: BaseUser): foundry.CONST.DOCUMENT_PERMISSION_LEVELS | null;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document
    * @param user       - The User being tested
-   * @param permission - The permission level from ENTITY_PERMISSIONS to test
+   * @param permission - The permission level from DOCUMENT_PERMISSION_LEVELS to test
    * @param exact      - Require the exact permission level requested?
    *                     (default: `false`)
    * @returns Does the user have this permission level over the Document?
@@ -687,6 +687,13 @@ declare abstract class Document<
   toJSON(): this['id'] extends string
     ? ReturnType<ConcreteDocumentData['toJSON']> & { _id: string }
     : ReturnType<ConcreteDocumentData['toJSON']>;
+
+  /**
+   * For Documents which include game system data, migrate the system data object to conform to its latest data model.
+   * The data model is defined by the template.json specification included by the game system.
+   * @returns The migrated system data object
+   */
+  migrateSystemData(): object;
 }
 
 export interface DocumentModificationOptions {
@@ -784,7 +791,8 @@ export interface Metadata<ConcreteDocument extends Document<any, any>> {
   name: DocumentType;
   collection: string;
   label: string;
-  types: string[] | Record<string, unknown>; // TODO: Record<string, unknown> is only there because In BaseTableResult this is set to CONST.TABLE_RESULT_TYPES, check if this is a bug in foundry
+  labelPlural: string; // This is not set for the Document class but every class that implements Document actually provides it.
+  types: readonly string[];
   embedded: Record<string, ConstructorOf<Document<any, any>>>;
   hasSystemData: boolean;
   permissions: {

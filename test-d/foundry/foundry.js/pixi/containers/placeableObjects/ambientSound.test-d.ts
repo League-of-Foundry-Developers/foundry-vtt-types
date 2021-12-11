@@ -9,7 +9,6 @@ expectError(new AmbientSound());
 const sound = new AmbientSound(doc);
 expectType<Sound | null>(sound.sound);
 expectType<boolean>(sound.isAudible);
-expectType<AmbientSoundDocument['type']>(sound.type);
 expectType<number>(sound.radius);
 expectType<void>(sound.sync(true, 10));
 expectType<void>(sound.sync(true, 10, {}));

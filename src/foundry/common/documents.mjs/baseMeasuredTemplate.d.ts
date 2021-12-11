@@ -12,14 +12,17 @@ export declare class BaseMeasuredTemplate extends Document<
   data.MeasuredTemplateData,
   InstanceType<ConfiguredDocumentClass<typeof BaseScene>>
 > {
+  /** @override */
   static get schema(): typeof data.MeasuredTemplateData;
 
+  /** @override */
   static get metadata(): Merge<
     DocumentMetadata,
     {
       name: 'MeasuredTemplate';
       collection: 'templates';
       label: 'DOCUMENT.MeasuredTemplate';
+      labelPlural: 'DOCUMENT.MeasuredTemplates';
       isEmbedded: true;
       permissions: {
         create: 'TEMPLATE_CREATE';

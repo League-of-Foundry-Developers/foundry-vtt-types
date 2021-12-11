@@ -28,6 +28,7 @@ export declare class BaseWall extends Document<data.WallData, InstanceType<Confi
       name: 'Wall';
       collection: 'walls';
       label: 'DOCUMENT.Wall';
+      labelPlural: 'DOCUMENT.Walls';
       isEmbedded: true;
       permissions: {
         update: typeof BaseWall._canUpdate;

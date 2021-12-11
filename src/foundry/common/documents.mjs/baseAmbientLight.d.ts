@@ -11,14 +11,17 @@ export declare class BaseAmbientLight extends Document<
   data.AmbientLightData,
   InstanceType<ConfiguredDocumentClass<typeof BaseScene>>
 > {
+  /** @override */
   static get schema(): typeof data.AmbientLightData;
 
+  /** @override */
   static get metadata(): Merge<
     DocumentMetadata,
     {
       name: 'AmbientLight';
       collection: 'lights';
       label: 'DOCUMENT.AmbientLight';
+      labelPlural: 'DOCUMENT.AmbientLights';
       isEmbedded: true;
     }
   >;

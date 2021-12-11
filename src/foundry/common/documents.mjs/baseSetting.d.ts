@@ -16,6 +16,7 @@ export declare class BaseSetting extends Document<data.SettingData> {
       name: 'Setting';
       collection: 'settings';
       label: 'DOCUMENT.Setting';
+      labelPlural: 'DOCUMENT.Settings';
       isPrimary: true;
       permissions: {
         create: 'SETTINGS_MODIFY';

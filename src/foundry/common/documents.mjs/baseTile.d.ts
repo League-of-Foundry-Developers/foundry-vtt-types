@@ -18,6 +18,7 @@ export declare class BaseTile extends Document<data.TileData, InstanceType<Confi
       name: 'Tile';
       collection: 'tiles';
       label: 'DOCUMENT.Tile';
+      labelPlural: 'DOCUMENT.Tiles';
       isEmbedded: true;
     }
   >;

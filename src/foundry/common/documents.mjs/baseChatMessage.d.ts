@@ -7,14 +7,17 @@ import * as data from '../data/data.mjs';
  * The base ChatMessage model definition which defines common behavior of an ChatMessage document between both client and server.
  */
 export declare class BaseChatMessage extends Document<data.ChatMessageData, null> {
+  /** @override */
   static get schema(): typeof data.ChatMessageData;
 
+  /** @override */
   static get metadata(): Merge<
     DocumentMetadata,
     {
       name: 'ChatMessage';
       collection: 'messages';
       label: 'DOCUMENT.ChatMessage';
+      labelPlural: 'DOCUMENT.ChatMessages';
       isPrimary: true;
       permissions: {
         create: (user: BaseUser, doc: BaseChatMessage) => boolean;
