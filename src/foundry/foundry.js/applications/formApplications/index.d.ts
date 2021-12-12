@@ -7,6 +7,7 @@ import './drawingConfig';
 import './entitySheetConfig';
 import './gridConfig';
 import './imagePopout';
+import './keybindingsConfig';
 import './moduleManagement';
 import './permissionConfig';
 import './settingsConfig';

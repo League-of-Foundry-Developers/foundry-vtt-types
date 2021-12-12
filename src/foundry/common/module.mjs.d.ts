@@ -6,6 +6,7 @@ import * as _data from './data/module.mjs';
 import * as _documents from './documents.mjs';
 import * as _packages from './packages.mjs';
 import * as _utils from './utils/module.mjs';
+import * as _config from './config.mjs';
 
 /**
  * Constant definitions used throughout the Foundry Virtual Tabletop framework.
@@ -68,6 +69,8 @@ declare global {
      * Package data definitions, validations, and schema
      */
     export import packages = _packages; // eslint-disable-line @typescript-eslint/no-unused-vars
+
+    export import config = _config; // eslint-disable-line @typescript-eslint/no-unused-vars
   }
 
   /**
