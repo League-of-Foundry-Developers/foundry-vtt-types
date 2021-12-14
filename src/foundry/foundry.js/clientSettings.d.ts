@@ -219,27 +219,28 @@ declare namespace ClientSettings {
   }
 
   interface Values {
-    'core.combatTrackerConfig': { resource: string; skipDefeated: boolean } | {};
-    'core.compendiumConfiguration': Partial<Record<string, CompendiumCollection.Configuration>>;
-    'core.rollMode': foundry.CONST.DICE_ROLL_MODES;
     'core.animateRollTable': boolean;
-    'core.permissions': Game.Permissions;
-    'core.defaultDrawingConfig': foundry.data.DrawingData['_source'] | {};
-    'core.time': number;
-    'core.globalPlaylistVolume': number;
-    'core.globalAmbientVolume': number;
-    'core.globalInterfaceVolume': number;
-    'core.moduleConfiguration': Record<string, boolean>;
     'core.chatBubbles': boolean;
     'core.chatBubblesPan': boolean;
+    'core.combatTrackerConfig': { resource: string; skipDefeated: boolean } | {};
+    'core.compendiumConfiguration': Partial<Record<string, CompendiumCollection.Configuration>>;
     'core.coneTemplateType': 'round' | 'flat';
+    'core.defaultDrawingConfig': foundry.data.DrawingData['_source'] | {};
+    'core.globalAmbientVolume': number;
+    'core.globalInterfaceVolume': number;
+    'core.globalPlaylistVolume': number;
+    'core.keybindings': Record<string, KeybindingActionBinding[]>;
     'core.language': string;
     'core.leftClickRelease': boolean;
     'core.lightAnimation': boolean;
     'core.maxFPS': number;
     'core.mipmap': boolean;
+    'core.moduleConfiguration': Record<string, boolean>;
     'core.noCanvas': boolean;
+    'core.permissions': Game.Permissions;
+    'core.rollMode': foundry.CONST.DICE_ROLL_MODES;
     'core.softShadows': boolean;
+    'core.time': number;
     'core.tokenDragPreview': boolean;
     'core.visionAnimation': boolean;
     [key: string]: unknown;

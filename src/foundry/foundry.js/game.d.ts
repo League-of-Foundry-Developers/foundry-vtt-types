@@ -1,3 +1,4 @@
+import type { Socket } from 'socket.io-client';
 import { ConfiguredDocumentClass, ConfiguredDocumentClassForName, DocumentConstructor } from '../../types/helperTypes';
 
 declare global {
@@ -24,6 +25,9 @@ declare global {
      * The object of world data passed from the server
      */
     data: Game.Data;
+
+    /** The Release data for this version of Foundry */
+    release: foundry.config.ReleaseData;
 
     /**
      * The id of the active World user, if any
@@ -71,6 +75,20 @@ declare global {
     keyboard: KeyboardManager | null;
 
     /**
+     * The Mouse Manager
+     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     * @defaultValue `null`
+     */
+    mouse: MouseManager | null;
+
+    /**
+     * The Gamepad Manager
+     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     * @defaultValue `null`
+     */
+    gamepad: GamepadManager | null;
+
+    /**
      * The user role permissions setting
      * @remarks Initialized between the `'setup'` and `'ready'` hook events.
      * @defaultValue `null`
@@ -86,6 +104,11 @@ declare global {
      * Client settings which are used to configure application behavior
      */
     settings: ClientSettings;
+
+    /**
+     * Client keybindings which are used to configure application behavior
+     */
+    keybindings: ClientKeybindings;
 
     /**
      * A reference to the open Socket.io connection
@@ -130,6 +153,9 @@ declare global {
      */
     ready: boolean;
 
+    /** Returns the current version of the Release, usable for comparisons using isNewerVersion */
+    get version(): string;
+
     /**
      * Fetch World data and return a Game instance
      * @param view      - The named view being created
@@ -150,6 +176,13 @@ declare global {
      * @returns The session cookies
      */
     static getCookies(): Record<string, string>;
+
+    /**
+     * Request World data from server and return it
+     * @param socket - The active socket connection
+     * @param view   - The view for which data is being requested
+     */
+    static getData(socket: Socket, view: string): Promise<unknown>;
 
     /**
      * Request World data from server and return it
@@ -189,14 +222,14 @@ declare global {
     shutDown(): Promise<void>;
 
     /**
-     * Fully set up the game state, initializing Entities, UI applications, and the Canvas
+     * Fully set up the game state, initializing Documents, UI applications, and the Canvas
      */
     setupGame(): Promise<void>;
 
     /**
      * Initialize game state data by creating WorldCollection instances for every primary Document type
      */
-    initializeEntities(): void;
+    initializeDocuments(): void;
 
     /**
      * @remarks Initialized between the `'setup'` and `'ready'` hook events.
@@ -288,9 +321,19 @@ declare global {
     protected _checkFontsReady(ms: number): Promise<void>;
 
     /**
-     * Initialize Keyboard and Mouse controls
+     * Initialize Keyboard controls
      */
     initializeKeyboard(): void;
+
+    /**
+     * Initialize Mouse controls
+     */
+    initializeMouse(): void;
+
+    /**
+     * Initialize Gamepad controls
+     */
+    initializeGamepads(): void;
 
     /**
      * Register core game settings
@@ -332,9 +375,22 @@ declare global {
     togglePause(pause: boolean, push?: boolean): void;
 
     /**
+     * Open Character sheet for current token or controlled actor
+     * @returns The ActorSheet which was toggled, or null if the User has no character
+     */
+    toggleCharacterSheet(): ActorSheet | null;
+
+    /**
      * Log out of the game session by returning to the Join screen
      */
     logOut(): void;
+
+    /**
+     * Scale the base font size according to the user's settings.
+     * @param index - Optionally supply a font size index to use, otherwise use the user's setting.
+     *                Available font sizes, starting at index 1, are: 8, 10, 12, 14, 16, 18, 20, 24, 28, and 32.
+     */
+    scaleFonts(index?: number): void;
 
     /**
      * Activate Socket event listeners which are used to transact game state data with the server
@@ -389,8 +445,9 @@ declare global {
     protected _onPointerUp(event: PointerEvent): void;
 
     /**
-     * Handle resizing of the game window
-     * Reposition any active UI windows
+     * Handle resizing of the game window by adjusting the canvas and repositioning active interface applications.
+     * @param event - The window resize event which has occurred
+     * @internal
      */
     protected _onWindowResize(event: UIEvent): void;
 
@@ -425,6 +482,11 @@ declare global {
      * Initialization steps for the Stream helper view
      */
     protected _initializeStreamView(): Promise<void>;
+
+    /**
+     * @deprecated since v9 - Use initializeDocuments instead.
+     */
+    initializeEntities(): void;
   }
 
   namespace Game {
@@ -489,6 +551,7 @@ declare global {
 
     type Data = {
       userId: string;
+      /** @deprecated since V9 */
       version: string;
       world: WorldData<foundry.packages.WorldData>;
       system: SystemData<foundry.packages.SystemData>;
