@@ -55,7 +55,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    *
    * @example <caption>A Document may belong to a Folder</caption>
    * ```typescript
-   * let folder = game.folders.entities[0];
+   * let folder = game.folders.contents[0];
    * let actor = await Actor.create({name: "New Actor", folder: folder.id});
    * console.log(actor.data.folder); // folder.id;
    * console.log(actor.folder); // folder;
@@ -86,7 +86,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
 
   /**
    * Return the permission level that the current game User has over this Document.
-   * See the CONST.ENTITY_PERMISSIONS object for an enumeration of these levels.
+   * See the CONST.DOCUMENT_PERMISSION_LEVELS object for an enumeration of these levels.
    *
    * @example
    * ```typescript
@@ -95,7 +95,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * actor.permission; // 2
    * ```
    */
-  get permission(): ValueOf<typeof CONST.ENTITY_PERMISSIONS>;
+  get permission(): ValueOf<typeof CONST.DOCUMENT_PERMISSION_LEVELS>;
 
   /**
    * Lazily obtain a FormApplication instance used to configure this Document, or null if no sheet is available.
@@ -133,7 +133,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
   /**
    * Prepare all embedded Document instances which exist within this primary Document.
    */
-  prepareEmbeddedEntities(): void;
+  prepareEmbeddedDocuments(): void;
 
   /**
    * Apply transformations or derivations to the values of the source data object.
@@ -273,7 +273,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * Choose a name and a type from a select menu of types.
    * @param data    - Initial data with which to populate the creation form
    *                  (default: `{}`)
-   * @param options - Positioning and sizing options for the resulting dialog
+   * @param context - Additional context options or dialog positioning options
    *                  (default: `{}`)
    * @returns A Promise which resolves to the created Document
    */
@@ -283,7 +283,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
       | ConstructorDataType<InstanceType<T>['data']>
       | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
     >,
-    options?: Dialog.Options
+    context?: DocumentModificationContext & Dialog.Options
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
 
   /**
@@ -295,15 +295,16 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
   deleteDialog(options?: Dialog.Options): Promise<this | undefined>;
 
   /**
-   * Export entity data to a JSON file which can be saved by the client and later imported into a different session.
+   * Export document data to a JSON file which can be saved by the client and later imported into a different session.
+   * @param options - Additional options passed to the {@link ClientDocumentMixin#toCompendium} method
    */
-  exportToJSON(): void;
+  exportToJSON(options?: CompendiumExportOptions): void;
 
   /**
    * A helper function to handle obtaining the relevant Document from dropped data provided via a DataTransfer event.
    * The dropped data could have:
    * 1. A compendium pack and entry id
-   * 2. A World Entity _id
+   * 2. A World Document _id
    * 3. A data object explicitly provided
    *
    * @param data    - The data object extracted from a DataTransfer event
@@ -333,103 +334,54 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * Remove any features of the data which are world-specific.
    * This function is asynchronous in case any complex operations are required prior to exporting.
    * @param pack - A specific pack being exported to
+   *               (unused)
+   * @param options - Additional options which modify how the document is converted
+   *                  (default: `{}`)
    * @returns A data object of cleaned data suitable for compendium import
    */
-  toCompendium(pack?: CompendiumCollection<CompendiumCollection.Metadata>): Omit<
-    T['data']['_source'],
-    '_id' | 'folder' | 'permission'
-  > & {
+  toCompendium(
+    pack?: CompendiumCollection<CompendiumCollection.Metadata>,
+    options?: CompendiumExportOptions
+  ): Omit<T['data']['_source'], '_id' | 'folder' | 'permission'> & {
     permission?: T['data']['_source']['permission'];
   };
 
   /**
-   * @deprecated since 0.8.0
+   * @deprecated since v9 - Use prepareEmbeddedDocuments instead.
    */
-  get _id(): T['id'];
+  prepareEmbeddedEntities(): void;
+}
+
+interface CompendiumExportOptions {
+  /**
+   * Clear the flags object
+   * @defaultValue `false`
+   */
+  clearFlags: boolean;
 
   /**
-   * @deprecated since 0.8.0
+   * Clear the currently assigned folder and sort order
+   * @defaultValue `true`
    */
-  static get config(): any;
+  clearSort: boolean;
 
   /**
-   * @deprecated since 0.8.0
+   * Clear document permissions
+   * @defaultValue `true`
    */
-  get entity(): T['documentName'];
+  clearPermissions: boolean;
 
   /**
-   * @deprecated since 0.8.0
+   * Clear fields which store document state
+   * @defaultValue `true`
    */
-  get owner(): this['isOwner'];
+  clearState: boolean;
 
   /**
-   * @deprecated since 0.8.0
+   * Retain the current Document id
+   * @defaultValue `false`
    */
-  hasPerm(
-    user: foundry.documents.BaseUser,
-    permission: keyof typeof foundry.CONST.DOCUMENT_PERMISSION_LEVELS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,
-    exact?: boolean
-  ): ReturnType<T['testUserPermission']>;
-
-  /**
-   * @deprecated since 0.8.0
-   */
-  static update<T extends DocumentConstructor>(
-    this: T,
-    updates?:
-      | Array<
-          DeepPartial<
-            | ConstructorDataType<InstanceType<T>['data']>
-            | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
-          > & { _id: string }
-        >
-      | (DeepPartial<
-          | ConstructorDataType<InstanceType<T>['data']>
-          | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
-        > & { _id: string }),
-    options?: DocumentModificationContext & foundry.utils.MergeObjectOptions
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
-
-  /**
-   * @deprecated since 0.8.0
-   */
-  static delete<T extends DocumentConstructor>(
-    this: T,
-    ids?: string[],
-    options?: DocumentModificationContext
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
-
-  /**
-   * @deprecated since 0.8.0
-   */
-  getEmbeddedEntity(...args: Parameters<T['getEmbeddedDocument']>): ReturnType<T['getEmbeddedDocument']>;
-
-  /**
-   * @deprecated since 0.8.0
-   */
-  createEmbeddedEntity(
-    documentName: string,
-    data?: Record<string, unknown> | Array<Record<string, unknown>>,
-    options?: DocumentModificationContext
-  ): ReturnType<T['createEmbeddedDocuments']>;
-
-  /**
-   * @deprecated since 0.8.0
-   */
-  updateEmbeddedEntity(
-    documentName: string,
-    data?: Array<Record<string, unknown>> | Record<string, unknown>,
-    options?: DocumentModificationContext
-  ): ReturnType<T['updateEmbeddedDocuments']>;
-
-  /**
-   * @deprecated since 0.8.0
-   */
-  deleteEmbeddedEntity(
-    documentName: string,
-    ids: string[] | string,
-    options: DocumentModificationContext
-  ): ReturnType<T['deleteEmbeddedDocuments']>;
+  keepId: boolean;
 }
 
 interface SortOptions<T> {
