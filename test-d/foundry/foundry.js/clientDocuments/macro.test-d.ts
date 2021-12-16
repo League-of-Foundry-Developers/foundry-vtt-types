@@ -15,7 +15,6 @@ expectType<boolean>(macro.isOwner);
 
 // static properties and functions of `ClientDocumentMixin`
 expectType<Promise<Macro | undefined>>(Macro.createDialog());
-expectType<Promise<Macro[]>>(Macro.delete());
 
 // static properties of `BaseMacro`
 expectType<typeof foundry.data.MacroData>(Macro.schema);
