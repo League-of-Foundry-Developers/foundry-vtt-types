@@ -283,7 +283,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
       | ConstructorDataType<InstanceType<T>['data']>
       | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
     >,
-    context?: DocumentModificationContext & Dialog.Options
+    context?: Pick<DocumentModificationContext, 'parent' | 'pack'> & Partial<Dialog.Options>
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
 
   /**
@@ -333,14 +333,14 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * Transform the Document data to be stored in a Compendium pack.
    * Remove any features of the data which are world-specific.
    * This function is asynchronous in case any complex operations are required prior to exporting.
-   * @param pack - A specific pack being exported to
-   *               (unused)
+   * @param pack    - A specific pack being exported to
+   *                  (unused)
    * @param options - Additional options which modify how the document is converted
    *                  (default: `{}`)
    * @returns A data object of cleaned data suitable for compendium import
    */
   toCompendium(
-    pack?: CompendiumCollection<CompendiumCollection.Metadata>,
+    pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
     options?: CompendiumExportOptions
   ): Omit<T['data']['_source'], '_id' | 'folder' | 'permission'> & {
     permission?: T['data']['_source']['permission'];
