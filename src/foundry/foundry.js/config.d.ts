@@ -612,11 +612,13 @@ declare global {
 
       groups: {
         /** @defaultValue `{ groupClass: PrimaryCanvasGroup }` */
-        primary: CONFIG.Canvas.GroupDefinition<unknown>; // FIXME: ConstructorOf<typeof PrimaryCanvasGroup>
+        primary: CONFIG.Canvas.GroupDefinition<typeof PrimaryCanvasGroup>;
+
         /** @defaultValue `{ groupClass: EffectsCanvasGroup }` */
-        effects: CONFIG.Canvas.GroupDefinition<unknown>; // FIXME: ConstructorOf<typeof EffectsCanvasGroup>
+        effects: CONFIG.Canvas.GroupDefinition<typeof EffectsCanvasGroup>;
+
         /** @defaultValue `{ groupClass: InterfaceCanvasGroup }` */
-        interface: CONFIG.Canvas.GroupDefinition<unknown>; // FIXME: ConstructorOf<typeof InterfaceCanvasGroup>;
+        interface: CONFIG.Canvas.GroupDefinition<typeof InterfaceCanvasGroup>;
       };
 
       layers: CONFIG.Canvas.Layers;
