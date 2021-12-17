@@ -1419,7 +1419,7 @@ declare global {
       actors: ConstructorOf<ActorDirectory>;
 
       /** @defaultValue `CardsDirectory` */
-      cards: unknown; // FIXME ConstructorOf<CardsDirectory>
+      cards: ConstructorOf<SidebarTab>; // FIXME ConstructorOf<CardsDirectory>
 
       /** @defaultValue `ChatLog` */
       chat: ConstructorOf<ChatLog>;
