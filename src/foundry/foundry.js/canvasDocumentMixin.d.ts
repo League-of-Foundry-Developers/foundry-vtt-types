@@ -28,6 +28,13 @@ declare class CanvasDocumentMixin<T extends foundry.abstract.Document<any, any>>
   protected _object: PlaceableObject | null; // TODO: Replace with InstanceType<ObjectClass<T>> | null once the circular reference problem has been solved
 
   /**
+   * Has this object been deliberately destroyed as part of the deletion workflow?
+   * @internal
+   * @defaultValue `false`
+   */
+  protected _destroyed: boolean;
+
+  /**
    * A lazily constructed PlaceableObject instance which can represent this Document on the game canvas.
    */
   get object(): PlaceableObject | null; // TODO: Replace with InstanceType<ObjectClass<T>> | null once the circular reference problem has been solved
