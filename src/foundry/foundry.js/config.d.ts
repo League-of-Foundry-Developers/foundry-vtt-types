@@ -1970,9 +1970,9 @@ declare global {
         sight: ConstructorOf<SightLayer>;
 
         /**
-         * @defaultValue `EffectsLayer`
+         * @defaultValue `WeatherLayer`
          */
-        effects: ConstructorOf<EffectsLayer>;
+        effects: ConstructorOf<WeatherLayer>;
 
         /**
          * @defaultValue `ControlsLayer`

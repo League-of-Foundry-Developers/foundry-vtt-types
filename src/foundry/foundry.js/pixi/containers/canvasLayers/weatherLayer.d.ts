@@ -1,7 +1,7 @@
 /**
  * A CanvasLayer for displaying visual effects like weather, transitions, flashes, or more
  */
-declare class EffectsLayer extends CanvasLayer<EffectsLayer.LayerOptions> {
+declare class WeatherLayer extends CanvasLayer<WeatherLayer.LayerOptions> {
   /**
    * The weather overlay container
    * @defaultValue `undefined`
@@ -15,7 +15,7 @@ declare class EffectsLayer extends CanvasLayer<EffectsLayer.LayerOptions> {
   weatherEffect: SpecialEffect | undefined;
 
   /**
-   * Track any active emitters within this Scene
+   * Track the set of particle Emitter instances which are active within this Scene.
    * @defaultValue `[]`
    */
   emitters: PIXI.particles.Emitter[];
@@ -29,7 +29,7 @@ declare class EffectsLayer extends CanvasLayer<EffectsLayer.LayerOptions> {
   /**
    * @remarks This is not overridden in foundry but reflects the real behavior.
    */
-  static get instance(): Canvas['effects'];
+  static get instance(): Canvas['weather'];
 
   /**
    * @defaultValue
@@ -40,7 +40,7 @@ declare class EffectsLayer extends CanvasLayer<EffectsLayer.LayerOptions> {
    * })
    * ```
    */
-  static get layerOptions(): EffectsLayer.LayerOptions;
+  static get layerOptions(): WeatherLayer.LayerOptions;
 
   /** @override */
   tearDown(): Promise<this>;
@@ -55,7 +55,7 @@ declare class EffectsLayer extends CanvasLayer<EffectsLayer.LayerOptions> {
   drawWeather(): Exclude<this['weather'], undefined> | null;
 }
 
-declare namespace EffectsLayer {
+declare namespace WeatherLayer {
   interface LayerOptions extends CanvasLayer.LayerOptions {
     name: 'effects';
     zIndex: 700;
