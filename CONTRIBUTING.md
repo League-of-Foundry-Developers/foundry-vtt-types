@@ -205,6 +205,22 @@ declare class AVSettings {
 }
 ```
 
+#### Marking things for future changes
+
+There are some comments we use to mark places in the code, where we should have a look later on. For things that could
+be extended or improved later, but are not needed for the proper functioning of the types, TODO comments can be used.
+```typescript
+// TODO: Some description to explain what should be done
+```
+
+When updating types, especially between major Foundry versions, it happens that types are referenced in one class, that
+are not defined or updated yet. In those cases FIXME comments should be used. Ideally those should also have the final
+type code in their description. In general it is favorable to have these places just commented instead of the types not
+compiling.
+```typescript
+// FIXME: SomeNotYetExistingType // This will be added in PR #...
+```
+
 ## Final Words
 
 If you've made it this far: Thanks for reading and for trying to contribute. It is much appreciated. We're hoping to see
