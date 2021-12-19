@@ -612,13 +612,13 @@ declare global {
 
       groups: {
         /** @defaultValue `{ groupClass: PrimaryCanvasGroup }` */
-        primary: CONFIG.Canvas.GroupDefinition<typeof PrimaryCanvasGroup>;
+        primary: CONFIG.Canvas.GroupDefinition<ConstructorOf<PrimaryCanvasGroup>>;
 
         /** @defaultValue `{ groupClass: EffectsCanvasGroup }` */
-        effects: CONFIG.Canvas.GroupDefinition<typeof EffectsCanvasGroup>;
+        effects: CONFIG.Canvas.GroupDefinition<ConstructorOf<EffectsCanvasGroup>>;
 
         /** @defaultValue `{ groupClass: InterfaceCanvasGroup }` */
-        interface: CONFIG.Canvas.GroupDefinition<typeof InterfaceCanvasGroup>;
+        interface: CONFIG.Canvas.GroupDefinition<ConstructorOf<InterfaceCanvasGroup>>;
       };
 
       layers: CONFIG.Canvas.Layers;
@@ -1510,8 +1510,9 @@ declare global {
         [key: string]: LayerDefinition<ConstructorOf<CanvasLayer>>;
       }
 
-      interface GroupDefinition<GroupClass extends unknown> {
-        // FIXME: extends ConstructorOf<CanvasGroup>;
+      // TODO: The type spec could be improved, if we add a types only interface common to the canvas groups. Otherwise
+      // the first common superclass they share is `PIXI.Container`.
+      interface GroupDefinition<GroupClass extends ConstructorOf<PIXI.Container>> {
         groupClass: GroupClass;
       }
 
