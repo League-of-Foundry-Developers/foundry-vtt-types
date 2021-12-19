@@ -153,21 +153,21 @@ If the type is not configurable by the user, it should most likely be `Construct
 allow deriving classes to be used as value. In rare occasions (i.e. when really only instances of this specific class
 may be assigned, no deriving classes), `typeof NameOfTheClass` can be used.
 
-Example (`documentClass` is configurable, `sheetClass` is not):
+Example (`documentClass` is configurable, `collection` is not):
 ```typescript
     /**
-     * Configuration for the ActiveEffect embedded document type
+     * Configuration for the Actor document
      */
-    ActiveEffect: {
+    Actor: {
       /**
-       * @defaultValue `ActiveEffect`
+       * @defaultValue `Actor`
        */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof ActiveEffect>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof Actor>;
 
       /**
-       * @defaultValue `ActiveEffectConfig`
+       * @defaultValue `Actors`
        */
-      sheetClass: ConstructorOf<ActiveEffectConfig>;
+      collection: ConstructorOf<Actors>;
     };
 ```
 
