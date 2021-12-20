@@ -6,7 +6,7 @@ import * as fields from '../fields.mjs';
 interface WallDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
   c: DocumentField<[x0: number, y0: number, x1: number, y1: number]> & {
-    type: [typeof Number];
+    type: typeof Number[];
     required: true;
     validate: (c: unknown) => c is [x0: number, y0: number, x1: number, y1: number];
     validationError: 'Invalid {name} coordinates provided which must be a length-4 array of finite numbers';

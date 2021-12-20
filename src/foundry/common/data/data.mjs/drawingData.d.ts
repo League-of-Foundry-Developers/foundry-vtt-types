@@ -27,7 +27,7 @@ interface DrawingDataSchema extends DocumentSchema {
   rotation: FieldReturnType<typeof fields.ANGLE_FIELD, { default: 0 }>;
   z: typeof fields.REQUIRED_NUMBER;
   points: DocumentField<Array<[x: number, y: number]>> & {
-    type: [typeof Array];
+    type: typeof Array[];
     required: true;
     default: [];
     validate: typeof _validateDrawingPoints;

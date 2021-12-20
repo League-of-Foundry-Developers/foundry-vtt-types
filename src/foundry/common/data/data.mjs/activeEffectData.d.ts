@@ -10,7 +10,7 @@ interface ActiveEffectDataSchema extends DocumentSchema {
   changes: DocumentField<EffectChangeData[]> & {
     default: [];
     required: true;
-    type: [typeof EffectChangeData];
+    type: Array<typeof EffectChangeData>;
   };
   disabled: typeof fields.BOOLEAN_FIELD;
   duration: DocumentField<EffectDurationData> & {
