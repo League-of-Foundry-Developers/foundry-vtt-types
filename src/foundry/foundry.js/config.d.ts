@@ -636,16 +636,7 @@ declare global {
       /** @defaultValue `0x000000` */
       unexploredColor: number;
 
-      groups: {
-        /** @defaultValue `{ groupClass: PrimaryCanvasGroup }` */
-        primary: CONFIG.Canvas.GroupDefinition<ConstructorOf<PrimaryCanvasGroup>>;
-
-        /** @defaultValue `{ groupClass: EffectsCanvasGroup }` */
-        effects: CONFIG.Canvas.GroupDefinition<ConstructorOf<EffectsCanvasGroup>>;
-
-        /** @defaultValue `{ groupClass: InterfaceCanvasGroup }` */
-        interface: CONFIG.Canvas.GroupDefinition<ConstructorOf<InterfaceCanvasGroup>>;
-      };
+      groups: CONFIG.Canvas.Groups;
 
       layers: CONFIG.Canvas.Layers;
 
@@ -1491,6 +1482,19 @@ declare global {
     }
 
     namespace Canvas {
+      interface Groups {
+        /** @defaultValue `{ groupClass: PrimaryCanvasGroup }` */
+        primary: CONFIG.Canvas.GroupDefinition<typeof PrimaryCanvasGroup>;
+
+        /** @defaultValue `{ groupClass: EffectsCanvasGroup }` */
+        effects: CONFIG.Canvas.GroupDefinition<typeof EffectsCanvasGroup>;
+
+        /** @defaultValue `{ groupClass: InterfaceCanvasGroup }` */
+        interface: CONFIG.Canvas.GroupDefinition<typeof InterfaceCanvasGroup>;
+
+        [key: string]: CONFIG.Canvas.GroupDefinition;
+      }
+
       interface Layers {
         /** @defaultValue `{ layerClass: BackgroundLayer, group: "primary" }` */
         background: LayerDefinition<ConstructorOf<BackgroundLayer>>;
@@ -1531,16 +1535,27 @@ declare global {
         /** @defaultValue `{ layerClass: ControlsLayer, group: "interface" }` */
         controls: LayerDefinition<ConstructorOf<ControlsLayer>>;
 
-        [key: string]: LayerDefinition<ConstructorOf<CanvasLayer>>;
+        [key: string]: LayerDefinition;
       }
 
-      // TODO: The type spec could be improved, if we add a types only interface common to the canvas groups. Otherwise
-      // the first common superclass they share is `PIXI.Container`.
-      interface GroupDefinition<GroupClass extends ConstructorOf<PIXI.Container>> {
+      interface CanvasGroup extends PIXI.Container {
+        sortableChildren: boolean;
+      }
+
+      interface CanvasGroupConstructor extends ConstructorOf<PIXI.Container> {
+        new (): CanvasGroup;
+
+        /**
+         * The name of this canvas group
+         */
+        groupName: string;
+      }
+
+      interface GroupDefinition<GroupClass extends CanvasGroupConstructor = CanvasGroupConstructor> {
         groupClass: GroupClass;
       }
 
-      interface LayerDefinition<LayerClass extends ConstructorOf<CanvasLayer>> {
+      interface LayerDefinition<LayerClass extends ConstructorOf<CanvasLayer> = ConstructorOf<CanvasLayer>> {
         layerClass: LayerClass;
         group: keyof CONFIG['Canvas']['groups'];
       }
