@@ -89,6 +89,11 @@ declare global {
     gamepad: GamepadManager | null;
 
     /**
+     * The New User Experience manager.
+     */
+    nue: NewUserExperience;
+
+    /**
      * The user role permissions setting
      * @remarks Initialized between the `'setup'` and `'ready'` hook events.
      * @defaultValue `null`
