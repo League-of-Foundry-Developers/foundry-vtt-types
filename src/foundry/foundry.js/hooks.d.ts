@@ -163,6 +163,22 @@ declare global {
       ) => boolean | void;
 
       /**
+       * A hook event that fires immediately prior to PIXI Application construction with the configuration parameters.
+       * @param canvasConfig - Canvas configuration parameters that will be used
+       */
+      canvasConfig: (canvasConfig: {
+        view: HTMLCanvasElement;
+        width: number;
+        height: number;
+        transparent: boolean;
+        resolution: number;
+        autoDensity: boolean;
+        backgroundColor: string | null;
+        antialias: boolean;
+        powerPreference: string;
+      }) => unknown;
+
+      /**
        * A hook event that fires when the Canvas is initialized.
        * @param canvas - the Canvas
        * @remarks This is called by {@link Hooks.callAll}.

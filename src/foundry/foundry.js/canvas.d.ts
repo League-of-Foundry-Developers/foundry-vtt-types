@@ -13,7 +13,7 @@ import { BaseScene } from '../common/documents.mjs';
  * @example <caption>Example Canvas commands</caption>
  * ```typescript
  * canvas.ready; // Is the canvas ready for use?
- * canvas.scene; // The currently viewed Scene entity.
+ * canvas.scene; // The currently viewed Scene document.
  * canvas.dimensions; // The dimensions of the current Scene.
  * canvas.draw(); // Completely re-draw the game canvas (this is usually unnecessary).
  * canvas.pan(x, y, zoom); // Pan the canvas to new coordinates and scale.
@@ -108,15 +108,43 @@ declare global {
     blurFilters: PIXI.filters.BlurFilter[];
 
     /**
+     * A reference to the MouseInteractionManager that is currently controlling pointer-based interaction, or null.
+     */
+    currentMouseManager: MouseInteractionManager<PIXI.Container> | null;
+
+    /**
+     * Record framerate performance data
+     */
+    fps: {
+      /** @defaultValue `[]` */
+      values: number[];
+
+      /** @defaultValue `0` */
+      last: number;
+
+      /** @defaultValue `0` */
+      average: number;
+
+      /** @defaultValue `0` */
+      render: number;
+
+      /** @defaultValue `document.getElementById("fps")` */
+      element: HTMLElement;
+
+      /** @defaultValue `undefined` */
+      fn: TickerCallback<void> | undefined;
+    };
+
+    /**
      * The singleton interaction manager instance which handles mouse interaction on the Canvas.
      */
     mouseInteractionManager: MouseInteractionManager<PIXI.Container> | undefined;
 
     /**
-     * A reference to the MouseInteractionManager that is currently controlling pointer-based interaction, or null.
-     * @defaultValue `null`
+     * The renderer screen dimensions.
+     * @defaultValue `[0, 0]`
      */
-    currentMouseManager: MouseInteractionManager<PIXI.Container> | null;
+    screenDimensions: [x: number, y: number];
 
     /**
      * Initialize the Canvas by creating the HTML element and PIXI application.
@@ -125,39 +153,53 @@ declare global {
      */
     initialize(): void;
 
-    app: PIXI.Application | undefined;
+    app?: PIXI.Application;
 
-    stage: PIXI.Container | undefined;
+    stage?: PIXI.Container;
 
-    protected _dragDrop: DragDrop | undefined;
+    protected _dragDrop?: DragDrop;
 
-    background: BackgroundLayer | undefined;
+    outline?: PIXI.Graphics;
 
-    drawings: DrawingsLayer | undefined;
+    msk?: PIXI.Graphics;
 
-    grid: GridLayer | undefined;
+    readonly primary?: PrimaryCanvasGroup;
 
-    walls: WallsLayer | undefined;
+    readonly effects?: EffectsCanvasGroup;
 
-    templates: TemplateLayer | undefined;
+    readonly interface?: InterfaceCanvasGroup;
 
-    notes: NotesLayer | undefined;
+    readonly background?: BackgroundLayer;
 
-    tokens: TokenLayer | undefined;
+    readonly drawings?: DrawingsLayer;
 
-    foreground: ForegroundLayer | undefined;
+    readonly grid?: GridLayer;
 
-    sounds: SoundsLayer | undefined;
+    readonly walls?: WallsLayer;
 
-    lighting: LightingLayer | undefined;
+    readonly templates?: TemplateLayer;
 
-    sight: SightLayer | undefined;
+    readonly notes?: NotesLayer;
 
-    effects: EffectsLayer | undefined;
+    readonly tokens?: TokenLayer;
 
-    controls: ControlsLayer | undefined;
+    readonly foreground?: ForegroundLayer;
 
-    msk: PIXI.Graphics | undefined;
+    readonly sounds?: SoundsLayer;
+
+    readonly lighting?: LightingLayer;
+
+    readonly sight?: SightLayer;
+
+    readonly weather?: WeatherLayer;
+
+    readonly controls?: ControlsLayer;
+
+    /**
+     * Display warnings for known performance issues which may occur due to the user's hardware or browser configuration
+     * @internal
+     */
+    protected _displayPerformanceWarnings(): void;
 
     /**
      * The id of the currently displayed Scene.
@@ -180,10 +222,10 @@ declare global {
     get activeLayer(): CanvasLayer | null;
 
     /**
-     * Create the layers of the game Canvas.
-     * @param stage - The primary canvas stage
+     * Initialize the group containers of the game Canvas.
+     * @internal
      */
-    protected _createLayers(stage: PIXI.Container): void;
+    protected _createGroups(): void;
 
     /**
      * When re-drawing the canvas, first tear down or discontinue some existing processes
@@ -197,6 +239,15 @@ declare global {
      */
     draw(scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>>): Promise<this>;
 
+    performance?: PerformanceSettings;
+
+    /**
+     * Get the value of a GL parameter
+     * @param parameter - The GL parameter to retrieve
+     * @returns The returned value type depends of the parameter to retrieve
+     */
+    getGLParameter(parameter: string): unknown;
+
     /**
      * Get the canvas active dimensions based on the size of the scene's map.
      * We expand the image size by a factor of 1.5 and round to the nearest 2x grid size.
@@ -205,6 +256,12 @@ declare global {
      * @param data - The scene dimensions data being established
      */
     static getDimensions(data: Canvas.DimensionsData): Canvas.Dimensions;
+
+    /**
+     * Configure performance settings for hte canvas application based on the selected performance mode
+     * @internal
+     */
+    protected _configurePerformanceMode(): PerformanceSettings;
 
     /**
      * Once the canvas is drawn, initialize control, visibility, and audio states
@@ -230,25 +287,6 @@ declare global {
     protected _initializeTokenControl(): void;
 
     /**
-     * Get a reference to the a specific CanvasLayer by it's name
-     * @param layerName - The name of the canvas layer to get
-     */
-    getLayer(layerName: 'BackgroundLayer'): BackgroundLayer | null;
-    getLayer(layerName: 'DrawingsLayer'): DrawingsLayer | null;
-    getLayer(layerName: 'GridLayer'): GridLayer | null;
-    getLayer(layerName: 'WallsLayer'): WallsLayer | null;
-    getLayer(layerName: 'TemplateLayer'): TemplateLayer | null;
-    getLayer(layerName: 'NotesLayer'): NotesLayer | null;
-    getLayer(layerName: 'TokenLayer'): TokenLayer | null;
-    getLayer(layerName: 'ForegroundLayer'): ForegroundLayer | null;
-    getLayer(layerName: 'SoundsLayer'): SoundsLayer | null;
-    getLayer(layerName: 'LightingLayer'): LightingLayer | null;
-    getLayer(layerName: 'SightLayer'): SightLayer | null;
-    getLayer(layerName: 'EffectsLayer'): EffectsLayer | null;
-    getLayer(layerName: 'ControlsLayer'): ControlsLayer | null;
-    getLayer(layerName: string): CanvasLayer | null;
-
-    /**
      * Given an embedded object name, get the canvas layer for that object
      */
     getLayerByEmbeddedName<T extends string>(
@@ -260,6 +298,22 @@ declare global {
      * @param layerName - The named layer to activate
      */
     activateLayer(layerName: LayerName): void;
+
+    /**
+     * Activate framerate tracking by adding an HTML element to the display and refreshing it every frame.
+     */
+    activateFPSMeter(): void;
+
+    /**
+     * Deactivate framerate tracking by canceling ticker updates and removing the HTML element.
+     */
+    deactivateFPSMeter(): void;
+
+    /**
+     * Measure average framerate per second over the past 30 frames
+     * @internal
+     */
+    protected _measureFPS(): void;
 
     /**
      * Pan the canvas to a certain \{x,y\} coordinate and a certain zoom level
@@ -286,6 +340,11 @@ declare global {
     recenter(coordinates?: PanView): ReturnType<this['animatePan']>;
 
     /**
+     * Highlight objects on any layers which are visible
+     */
+    highlightObjects(active: boolean): void;
+
+    /**
      * Get the constrained zoom scale parameter which is allowed by the maxZoom parameter
      * @param x     - The requested x-coordinate
      * @param y     - The requested y-coordinate
@@ -304,6 +363,12 @@ declare global {
      * @param scale - (default: `this.stage.scale.x`)
      */
     protected updateBlur(scale?: number): void;
+
+    /**
+     * Sets the background color.
+     * @param color - The color to set the canvas background to.
+     */
+    setBackgroundColor(color: string): void;
 
     /**
      * Attach event listeners to the game canvas to handle click and interaction events
@@ -420,9 +485,25 @@ declare global {
     triggerPendingOperations(): void;
 
     /**
-     * @deprecated since 0.8.2
+     * Get a reference to the a specific CanvasLayer by it's name
+     * @param layerName - The name of the canvas layer to get
+     *                    (unused)
+     * @deprecated since v9, will be deleted in v10
      */
-    initializeSources(): void;
+    getLayer(layerName: any): {
+      BackgroundLayer: Canvas['background'];
+      DrawingsLayer: Canvas['drawings'];
+      GridLayer: Canvas['grid'];
+      TemplateLayer: Canvas['templates'];
+      TokenLayer: Canvas['tokens'];
+      WallsLayer: Canvas['walls'];
+      LightingLayer: Canvas['lighting'];
+      WeatherLayer: Canvas['weather'];
+      SightLayer: Canvas['sight'];
+      SoundsLayer: Canvas['sounds'];
+      NotesLayer: Canvas['notes'];
+      ControlsLayer: Canvas['controls'];
+    };
   }
 
   namespace Canvas {
@@ -453,6 +534,27 @@ declare global {
       scale: number;
     }
   }
+}
+
+type TickerCallback<T> = (this: T, dt: number) => any;
+
+interface PerformanceSettings {
+  mode: foundry.CONST.CANVAS_PERFORMANCE_MODES;
+  blur: {
+    enabled: boolean;
+    illumination: boolean;
+  };
+  mipmap: 'ON' | 'OFF';
+  msaa: boolean;
+  fps: number;
+  tokenAnimation: boolean;
+  lightAnimation: boolean;
+  textures: {
+    enabled: boolean;
+    maxSize: number;
+    p2Steps: number;
+    p2StepsMax: number;
+  };
 }
 
 interface PanView {

@@ -1521,7 +1521,7 @@ declare global {
         lighting: LayerDefinition<ConstructorOf<LightingLayer>>;
 
         /** @defaultValue `{ layerClass: WeatherLayer, group: "effects" }` */
-        weather: LayerDefinition<ConstructorOf<CanvasLayer>>; // FIXME: WeatherLayer
+        weather: LayerDefinition<ConstructorOf<WeatherLayer>>;
 
         /** @defaultValue `{ layerClass: SightLayer, group: "effects" }` */
         sight: LayerDefinition<ConstructorOf<SightLayer>>;

@@ -47,21 +47,6 @@ expectType<Canvas.Dimensions>(
   })
 );
 
-expectType<BackgroundLayer | null>(myCanvas.getLayer('BackgroundLayer'));
-expectType<DrawingsLayer | null>(myCanvas.getLayer('DrawingsLayer'));
-expectType<GridLayer | null>(myCanvas.getLayer('GridLayer'));
-expectType<WallsLayer | null>(myCanvas.getLayer('WallsLayer'));
-expectType<TemplateLayer | null>(myCanvas.getLayer('TemplateLayer'));
-expectType<NotesLayer | null>(myCanvas.getLayer('NotesLayer'));
-expectType<TokenLayer | null>(myCanvas.getLayer('TokenLayer'));
-expectType<ForegroundLayer | null>(myCanvas.getLayer('ForegroundLayer'));
-expectType<SoundsLayer | null>(myCanvas.getLayer('SoundsLayer'));
-expectType<LightingLayer | null>(myCanvas.getLayer('LightingLayer'));
-expectType<SightLayer | null>(myCanvas.getLayer('SightLayer'));
-expectType<EffectsLayer | null>(myCanvas.getLayer('EffectsLayer'));
-expectType<ControlsLayer | null>(myCanvas.getLayer('ControlsLayer'));
-expectType<CanvasLayer | null>(myCanvas.getLayer('any string'));
-
 expectType<BackgroundLayer | null>(myCanvas.getLayerByEmbeddedName('Tile'));
 expectType<DrawingsLayer | null>(myCanvas.getLayerByEmbeddedName('Drawing'));
 expectType<WallsLayer | null>(myCanvas.getLayerByEmbeddedName('Wall'));

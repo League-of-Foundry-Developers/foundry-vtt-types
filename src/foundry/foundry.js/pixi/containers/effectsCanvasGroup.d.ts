@@ -8,7 +8,7 @@ declare class EffectsCanvasGroup extends PIXI.Container {
 
   lighting: LightingLayer;
 
-  weather: CanvasLayer; // FIXME: WeatherLayer
+  weather: WeatherLayer;
 
   sight: SightLayer;
 
