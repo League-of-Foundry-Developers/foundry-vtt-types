@@ -16,6 +16,12 @@ declare class KeybindingsConfig<
   protected _category: string;
 
   /**
+   * A Map of pending Edits. The Keys are bindingIds
+   * @internal
+   */
+  protected _pendingEdits: Map<string, KeybindingsConfig.PendingBinding[]>;
+
+  /**
    * @override
    * @defaultValue
    * ```typescript
@@ -39,6 +45,10 @@ declare class KeybindingsConfig<
    */
   getData(options?: Partial<Options>): Data;
 
+  /**
+   * Builds the set of Bindings into a form usable for display and configuration
+   * @internal
+   */
   protected _getCategoryData(): KeybindingsConfig.CategoryData;
 
   /**
@@ -59,7 +69,7 @@ declare class KeybindingsConfig<
   protected _detectConflictingActions(
     actionId: string,
     action: KeybindingActionConfig,
-    binding: KeybindingsConfig.Binding
+    binding: KeybindingActionBinding
   ): KeybindingAction[];
 
   /**
@@ -104,6 +114,88 @@ declare class KeybindingsConfig<
   protected _onClickCategoryCollapse(event: MouseEvent): void;
 
   /**
+   * Handle left-click events to reset all Actions to Default
+   * @internal
+   */
+  protected _onClickResetActions(event: MouseEvent): Promise<void>;
+
+  /**
+   * Handle Control clicks
+   * @internal
+   */
+  protected _onClickBindingControl(event: MouseEvent): void;
+
+  /**
+   * Handle left-click events to show / hide a certain category
+   * @internal
+   */
+  protected _onClickAdd(event: MouseEvent): Promise<void>;
+
+  /**
+   * Handle left-click events to show / hide a certain category
+   * @internal
+   */
+  protected _onClickDelete(event: MouseEvent): Promise<void>;
+
+  /**
+   * Inserts a Binding into the Pending Edits object, creating a new Map entry as needed
+   * @internal
+   */
+  protected _addPendingEdit(
+    namespace: string,
+    action: string,
+    bindingIndex: number,
+    binding: KeybindingsConfig.PendingBinding
+  ): void;
+
+  /**
+   * Toggle visibility of the Edit / Save UI
+   * @internal
+   */
+  protected _onClickEditableBinding(event: MouseEvent): void;
+
+  /**
+   * Toggle visibility of the Edit UI
+   * @internal
+   */
+  protected _onDoubleClickKey(event: MouseEvent): void;
+
+  /**
+   * Save the new Binding value and update the display of the UI
+   * @internal
+   */
+  protected _onClickSaveBinding(event: MouseEvent): Promise<void>;
+
+  /**
+   * Given a clicked Action element, finds the parent Action
+   * @internal
+   */
+  protected _getParentAction(event: KeyboardEvent | MouseEvent): {
+    namespace: string;
+    action: string;
+    actionHtml: HTMLElement;
+  };
+
+  /**
+   * Given a Clicked binding control element, finds the parent Binding
+   * @internal
+   */
+  protected _getParentBinding(event: KeyboardEvent | MouseEvent): { bindingHtml: HTMLElement; bindingId: string };
+
+  /**
+   * Iterates over all Pending edits, merging them in with unedited Bindings and then saving and resetting the UI
+   * @internal
+   */
+  protected _savePendingEdits(): Promise<void>;
+
+  /**
+   * Processes input from the keyboard to form a list of pending Binding edits
+   * @param event - The keyboard event
+   * @internal
+   */
+  protected _onKeydownBindingInput(event: KeyboardEvent): void;
+
+  /**
    * @param event - (unused)
    * @override
    */
@@ -141,7 +233,7 @@ declare namespace KeybindingsConfig {
 
   interface ActionData extends KeybindingActionConfig {
     category: string;
-    bindings: ConflictedBinding[];
+    bindings: DisplayBinding[];
     id: string;
     name: string;
     hint?: string;
@@ -149,15 +241,17 @@ declare namespace KeybindingsConfig {
     notes: string;
   }
 
-  interface Binding extends Partial<KeybindingActionBinding> {
+  interface DisplayBinding extends Partial<KeybindingActionBinding> {
+    id: string;
     display: string;
     cssClasses: string;
     isEditable: boolean;
     isFirst: boolean;
+    conflicts: string;
+    hasConflicts: boolean;
   }
 
-  interface ConflictedBinding extends Binding {
-    conflicts?: string;
-    hasConflicts: boolean;
+  interface PendingBinding extends KeybindingActionBinding {
+    index: number;
   }
 }
