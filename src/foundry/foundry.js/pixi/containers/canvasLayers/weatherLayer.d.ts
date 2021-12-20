@@ -35,8 +35,8 @@ declare class WeatherLayer extends CanvasLayer<WeatherLayer.LayerOptions> {
    * @defaultValue
    * ```typescript
    * foundry.utils.mergeObject(super.layerOptions, {
-   *  name: "effects",
-   *  zIndex: 700
+   *   name: "effects",
+   *   zIndex: 700
    * })
    * ```
    */

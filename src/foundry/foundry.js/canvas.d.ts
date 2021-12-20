@@ -1,6 +1,5 @@
 import { ConfiguredDocumentClass } from '../../types/helperTypes';
 import { BaseScene } from '../common/documents.mjs';
-import type { CONST } from '../common/module.mjs.js';
 
 /**
  * The virtual tabletop environment is implemented using a WebGL powered HTML 5 canvas using the powerful PIXI.js
@@ -121,7 +120,7 @@ declare global {
       values: number[];
 
       /** @defaultValue `0` */
-      last: 0;
+      last: number;
 
       /** @defaultValue `0` */
       average: number;
@@ -133,7 +132,7 @@ declare global {
       element: HTMLElement;
 
       /** @defaultValue `undefined` */
-      fn: Function | undefined;
+      fn: TickerCallback<void> | undefined;
     };
 
     /**
@@ -145,7 +144,7 @@ declare global {
      * The renderer screen dimensions.
      * @defaultValue `[0, 0]`
      */
-    screenDimensions: [number, number];
+    screenDimensions: [x: number, y: number];
 
     /**
      * Initialize the Canvas by creating the HTML element and PIXI application.
@@ -154,47 +153,53 @@ declare global {
      */
     initialize(): void;
 
-    app: PIXI.Application | undefined;
+    app?: PIXI.Application;
 
-    stage: PIXI.Container | undefined;
+    stage?: PIXI.Container;
 
-    protected _dragDrop: DragDrop | undefined;
+    protected _dragDrop?: DragDrop;
 
-    primary: unknown; // FIXME: PrimaryCanvasGroup | undefined
+    outline?: PIXI.Graphics;
 
-    effects: unknown; // FIXME: EffectsCanvasGroup | undefined
+    msk?: PIXI.Graphics;
 
-    interface: unknown; // FIXME: InterfaceCanvasGroup | undefined
+    readonly primary?: PrimaryCanvasGroup;
 
-    background: BackgroundLayer | undefined;
+    readonly effects?: EffectsCanvasGroup;
 
-    drawings: DrawingsLayer | undefined;
+    readonly interface?: InterfaceCanvasGroup;
 
-    grid: GridLayer | undefined;
+    readonly background?: BackgroundLayer;
 
-    walls: WallsLayer | undefined;
+    readonly drawings?: DrawingsLayer;
 
-    templates: TemplateLayer | undefined;
+    readonly grid?: GridLayer;
 
-    notes: NotesLayer | undefined;
+    readonly walls?: WallsLayer;
 
-    tokens: TokenLayer | undefined;
+    readonly templates?: TemplateLayer;
 
-    foreground: ForegroundLayer | undefined;
+    readonly notes?: NotesLayer;
 
-    sounds: SoundsLayer | undefined;
+    readonly tokens?: TokenLayer;
 
-    lighting: LightingLayer | undefined;
+    readonly foreground?: ForegroundLayer;
 
-    sight: SightLayer | undefined;
+    readonly sounds?: SoundsLayer;
 
-    weather: WeatherLayer | undefined;
+    readonly lighting?: LightingLayer;
 
-    controls: ControlsLayer | undefined;
+    readonly sight?: SightLayer;
 
-    outline: PIXI.Graphics | undefined;
+    readonly weather?: WeatherLayer;
 
-    msk: PIXI.Graphics | undefined;
+    readonly controls?: ControlsLayer;
+
+    /**
+     * Display warnings for known performance issues which may occur due to the user's hardware or browser configuration
+     * @internal
+     */
+    protected _displayPerformanceWarnings(): void;
 
     /**
      * The id of the currently displayed Scene.
@@ -234,7 +239,7 @@ declare global {
      */
     draw(scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>>): Promise<this>;
 
-    performance: PerformanceSettings | undefined;
+    performance?: PerformanceSettings;
 
     /**
      * Get the value of a GL parameter
@@ -254,6 +259,7 @@ declare global {
 
     /**
      * Configure performance settings for hte canvas application based on the selected performance mode
+     * @internal
      */
     protected _configurePerformanceMode(): PerformanceSettings;
 
@@ -530,8 +536,10 @@ declare global {
   }
 }
 
+type TickerCallback<T> = (this: T, dt: number) => any;
+
 interface PerformanceSettings {
-  mode: CONST.CANVAS_PERFORMANCE_MODES;
+  mode: foundry.CONST.CANVAS_PERFORMANCE_MODES;
   blur: {
     enabled: boolean;
     illumination: boolean;
