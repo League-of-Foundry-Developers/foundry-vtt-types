@@ -19,7 +19,7 @@ declare class KeybindingsConfig<
    * A Map of pending Edits. The Keys are bindingIds
    * @internal
    */
-  protected _pendingEdits: Map<string, KeybindingActionBinding[]>;
+  protected _pendingEdits: Map<string, KeybindingsConfig.PendingBinding[]>;
 
   /**
    * @override
@@ -145,7 +145,7 @@ declare class KeybindingsConfig<
     namespace: string,
     action: string,
     bindingIndex: number,
-    binding: KeybindingActionBinding
+    binding: KeybindingsConfig.PendingBinding
   ): void;
 
   /**
@@ -249,5 +249,9 @@ declare namespace KeybindingsConfig {
     isFirst: boolean;
     conflicts: string;
     hasConflicts: boolean;
+  }
+
+  interface PendingBinding extends KeybindingActionBinding {
+    index: number;
   }
 }
