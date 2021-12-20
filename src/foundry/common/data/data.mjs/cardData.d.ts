@@ -30,7 +30,7 @@ interface CardDataSchema extends DocumentSchema {
     default: Record<string, never>;
   };
   faces: {
-    type: Array<typeof CardFaceData>;
+    type: [typeof CardFaceData];
     required: true;
     default: [];
   };

@@ -17,7 +17,7 @@ interface TableResultDataSchema extends DocumentSchema {
   resultId: typeof fields.STRING_FIELD;
   weight: typeof fields.POSITIVE_INTEGER_FIELD;
   range: {
-    type: typeof Number[];
+    type: [typeof Number];
     required: true;
     default: [];
     validate: typeof _isValidResultRange;
