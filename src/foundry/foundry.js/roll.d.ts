@@ -73,11 +73,6 @@ declare global {
     protected _total: number | undefined;
 
     /**
-     * A Proxy environment for safely evaluating a string using only available Math functions
-     */
-    static MATH_PROXY: MathProxy;
-
-    /**
      * The HTML template path used to render a complete Roll object to the chat log
      * @defaultValue `'templates/dice/roll.html'`
      */
@@ -116,6 +111,9 @@ declare global {
      * Return the total result of the Roll expression if it has been evaluated.
      */
     get total(): number | undefined;
+
+    /** Whether this Roll contains entirely deterministic terms or whether there is some randomness. */
+    get isDeterministic(): boolean;
 
     /**
      * Alter the Roll expression by adding or multiplying the number of dice which are rolled
@@ -229,7 +227,7 @@ declare global {
      *                  (default: `10000`)
      * @returns The rolled totals
      */
-    static simulate(formula: string, n?: number): number[];
+    static simulate(formula: string, n?: number): Promise<number[]>;
 
     /**
      * Parse a formula by following an order of operations:
@@ -352,7 +350,7 @@ declare global {
      * Render a Roll instance to HTML
      * @param chatOptions - An object configuring the behavior of the resulting chat message.
      *                      (default: `{}`)
-     * @returns The rendered HTML template as a string
+     * @returns The rendered HTML tooltip as a string
      */
     render(chatOptions?: ChatOptions): Promise<string>;
 
@@ -443,11 +441,6 @@ declare global {
       terms: RollTerm[],
       options?: InexactPartial<Options>
     ): typeof CONFIG.Dice.rolls extends [infer T] ? T : Roll<{}>;
-
-    /**
-     * @deprecated since 0.8.1
-     */
-    get _rolled(): boolean;
   }
 }
 
@@ -493,13 +486,6 @@ interface Data {
 }
 
 type Flavor = Record<`%F${number}%`, string>;
-
-/**
- * @deprecated since 0.8.1
- */
-interface MathProxy extends Math {
-  safeEval: (arg: Parameters<typeof Roll['safeEval']>) => ReturnType<typeof Roll['safeEval']>;
-}
 
 type MessageData<T extends DeepPartial<ConstructorParameters<typeof ChatMessage>[0]>> = {
   user: string;

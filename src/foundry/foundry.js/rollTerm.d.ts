@@ -110,7 +110,7 @@ declare namespace RollTerm {
     /**
      * Evaluate the roll asynchronously, receiving a Promise as the returned value.
      * This will become the default behavior in version 10.x
-     * @defaultValue `false`
+     * @defaultValue `true`
      */
     async: boolean;
   }
