@@ -226,7 +226,7 @@ declare global {
       sidebarIcon: string;
 
       /** @defaultValue `{}` */
-      typeLabels: Partial<Record<string, string>>;
+      typeLabels: Record<string, string>;
     };
 
     /**
@@ -248,6 +248,32 @@ declare global {
 
       /** @defaultValue `Cards` */
       documentClass: unknown; // FIXME: ConfiguredDocumentClassOrDefault<typeof Cards>
+
+      presets: {
+        /**
+         * @defaultValue
+         * ```javascript
+         * {
+         *   type: "deck",
+         *   label: "CARDS.DeckPresetPokerDark",
+         *   src: "cards/poker-deck-dark.json"
+         * }
+         * ```
+         */
+        pokerDark: CONFIG.Cards.Preset;
+
+        /**
+         * @defaultValue
+         * ```javascript
+         * {
+         *   type: "deck",
+         *   label: "CARDS.DeckPresetPokerLight",
+         *   src: "cards/poker-deck-light.json"
+         * }
+         * ```
+         */
+        pokerLight: CONFIG.Cards.Preset;
+      } & Record<string, CONFIG.Cards.Preset>;
     };
 
     /**
@@ -314,7 +340,7 @@ declare global {
 
         /** @defaultValue `'CHAT.RollSelf'` */
         selfroll: string;
-      } & Partial<Record<string, string>>;
+      } & Record<string, string>;
 
       /** @defaultValue `[Roll]` */
       rolls: Array<ConstructorOf<Roll>>;
@@ -339,7 +365,7 @@ declare global {
         c: typeof Coin;
         d: typeof Die;
         f: typeof FateDie;
-      } & Partial<Record<string, ConstructorOf<DiceTerm>>>;
+      } & Record<string, ConstructorOf<DiceTerm>>;
 
       /** @defaultValue `MersenneTwister.random` */
       randomUniform: () => number;
@@ -381,7 +407,7 @@ declare global {
       sidebarIcon: string;
 
       /** @defaultValue `{}` */
-      typeLabels: Partial<Record<string, string>>;
+      typeLabels: Record<string, string>;
     };
 
     /**
@@ -475,7 +501,7 @@ declare global {
 
         /** @defaultValue `'icons/svg/windmill.svg'` */
         Windmill: string;
-      } & Partial<Record<string, string>>;
+      } & Record<string, string>;
 
       /** @defaultValue `'fas fa-book-open'` */
       sidebarIcon: string;
@@ -863,16 +889,14 @@ declare global {
           /** @defaultValue `FairyLightColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
         };
-      } & Partial<
-        Record<
-          string,
-          {
-            label: string;
-            animation: PointSource.AnimationFunction;
-            illuminationShader?: ConstructorOf<AbstractBaseShader>;
-            colorationShader?: ConstructorOf<AbstractBaseShader>;
-          }
-        >
+      } & Record<
+        string,
+        {
+          label: string;
+          animation: PointSource.AnimationFunction;
+          illuminationShader?: ConstructorOf<AbstractBaseShader>;
+          colorationShader?: ConstructorOf<AbstractBaseShader>;
+        }
       >;
     };
 
@@ -911,7 +935,7 @@ declare global {
 
       /** @defaultValue `SnowWeatherEffect` */
       snow: ConstructorOf<SpecialEffect>;
-    } & Partial<Record<string, ConstructorOf<SpecialEffect>>>;
+    } & Record<string, ConstructorOf<SpecialEffect>>;
 
     /**
      * The control icons used for rendering common HUD operations
@@ -964,7 +988,7 @@ declare global {
 
       /** @defaultValue `'icons/svg/door-locked-outline.svg'` */
       doorLocked: string;
-    } & Partial<Record<string, string>>;
+    } & Record<string, string>;
 
     /**
      * Suggested font families that are displayed wherever a choice is presented
@@ -1171,7 +1195,7 @@ declare global {
      */
     supportedLanguages: {
       en: string;
-    } & Partial<Record<string, string>>;
+    } & Record<string, string>;
 
     /**
      * Configuration for time tracking
@@ -1290,7 +1314,7 @@ declare global {
 
         /** @defaultValue `'Ray'` */
         ray: string;
-      } & Partial<Record<string, string>>;
+      };
 
       /** @defaultValue `MeasuredTemplateDocument` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof MeasuredTemplateDocument>;
@@ -1520,14 +1544,13 @@ declare global {
       }
     }
 
-    interface SheetClass {
-      id: string;
-      cls: ConstructorOf<FormApplication>;
-      label: string;
-      default: boolean;
+    namespace Cards {
+      interface Preset {
+        type: string;
+        label: string;
+        src: string;
+      }
     }
-
-    type SheetClasses = Record<string, Record<string, SheetClass>>;
   }
 
   const CONFIG: CONFIG;
