@@ -1538,19 +1538,6 @@ declare global {
         [key: string]: LayerDefinition;
       }
 
-      interface CanvasGroup extends PIXI.Container {
-        sortableChildren: boolean;
-      }
-
-      interface CanvasGroupConstructor extends ConstructorOf<PIXI.Container> {
-        new (): CanvasGroup;
-
-        /**
-         * The name of this canvas group
-         */
-        groupName: string;
-      }
-
       interface GroupDefinition<GroupClass extends CanvasGroupConstructor = CanvasGroupConstructor> {
         groupClass: GroupClass;
       }
@@ -1571,4 +1558,18 @@ declare global {
   }
 
   const CONFIG: CONFIG;
+}
+
+type PixiContainerConstructor = typeof PIXI.Container;
+interface CanvasGroup extends PIXI.Container {
+  sortableChildren: boolean;
+}
+
+interface CanvasGroupConstructor extends PixiContainerConstructor {
+  new (): CanvasGroup;
+
+  /**
+   * The name of this canvas group
+   */
+  groupName: string;
 }
