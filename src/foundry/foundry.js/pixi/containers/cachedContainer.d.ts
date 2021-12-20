@@ -33,6 +33,14 @@ declare class CachedContainer extends PIXI.Container {
    */
   displayed: boolean;
 
+  /**
+   * A bound Sprite which uses this container's render texture
+   */
+  get sprite(): PIXI.Sprite;
+
+  /** @internal */
+  protected _sprite: PIXI.Sprite | undefined;
+
   destroy(options?: Parameters<PIXI.Container['destroy']>[0]): ReturnType<PIXI.Container['destroy']>;
 
   render(renderer: Parameters<PIXI.Container['render']>[0]): void;

@@ -1,11 +1,14 @@
 import './baseGrid';
 import './baseGrids';
 import './cachedContainer';
+import './cachedContainers';
 import './canvasLayer';
 import './canvasLayers';
 import './controlIcon';
 import './cursor';
 import './doorControl';
+import './effectsCanvasGroup';
+import './interfaceCanvasGroup';
 import './placeableObject';
 import './placeableObjects';
 import './ruler';

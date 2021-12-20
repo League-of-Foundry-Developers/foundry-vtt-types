@@ -1,4 +1,4 @@
-import * as CONST from '../constants.mjs';
+import { DOCUMENT_PERMISSION_LEVELS } from '../constants.mjs';
 import { hasImageExtension, isColorString, isJSON } from './validators.mjs';
 import { Document } from '../abstract/module.mjs';
 import { FieldReturnType } from '../../../types/helperTypes';
@@ -192,6 +192,23 @@ interface RequiredNumber extends DocumentField<number> {
 }
 
 /**
+ * A field used to designate a non-negative number
+ * @remarks
+ * Property type: `number`
+ * Constructor type: `number | undefined | null`
+ * Default: `0`
+ */
+export declare const NONNEGATIVE_NUMBER_FIELD: NonNegativeNumberField;
+interface NonNegativeNumberField extends DocumentField<number> {
+  type: typeof Number;
+  required: true;
+  nullable: false;
+  default: 0;
+  validate: (n: unknown) => boolean;
+  validationError: '{name} {field} "{value}" must be a non-negative number';
+}
+
+/**
  * A required numeric field which must be a positive finite value that may be included in a Document.
  * @remarks
  * Property type: `number`
@@ -329,16 +346,16 @@ interface DocumentId extends DocumentField<string | null> {
 /**
  * The standard permissions object which may be included by a Document.
  * @remarks
- * Property type: `Partial<Record<string, foundry.CONST.EntityPermission>>`
- * Constructor type: `Partial<Record<string, foundry.CONST.EntityPermission>> | undefined | null`
- * Default: `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
+ * Property type: `Partial<Record<string, DOCUMENT_PERMISSION_LEVELS>>`
+ * Constructor type: `Partial<Record<string, DOCUMENT_PERMISSION_LEVELS>> | undefined | null`
+ * Default: `{ default: DOCUMENT_PERMISSION_LEVELS.NONE }`
  */
 export declare const DOCUMENT_PERMISSIONS: DocumentPermissions;
-interface DocumentPermissions extends DocumentField<Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>>> {
+interface DocumentPermissions extends DocumentField<Partial<Record<string, DOCUMENT_PERMISSION_LEVELS>>> {
   type: typeof Object;
   required: true;
   nullable: false;
-  default: { default: typeof CONST.ENTITY_PERMISSIONS.NONE };
+  default: { default: typeof DOCUMENT_PERMISSION_LEVELS.NONE };
   validate: typeof _validatePermissions;
   validationError: '{name} {field} "{value}" is not a mapping of user IDs and document permission levels';
 }
@@ -418,6 +435,20 @@ interface EmbeddedCollectionField<
   required: Options extends { required?: true } ? true : Options extends { required: false } ? false : boolean;
   default: Options extends { default?: Array<infer U> } ? Array<U> : unknown[];
   isCollection: true;
+}
+
+/**
+ * A special field which contains a data object defined from the game System model.
+ * @param document - The Document class definition
+ */
+export declare function systemDataField<
+  DocumentSpecifier extends { readonly documentName: keyof Game.SystemData<any>['model'] }
+>(document: DocumentSpecifier): SystemDataField;
+// TODO: Improve
+interface SystemDataField extends DocumentField<any> {
+  type: typeof Object;
+  default: (data: { type?: string }) => Record<string, Record<string, unknown>>;
+  required: true;
 }
 
 /**

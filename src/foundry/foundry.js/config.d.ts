@@ -150,9 +150,7 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DataConfig {}
 
-  /**
-   * @see {@link DataConfig}
-   */
+  /** @see {@link DataConfig} */
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface SourceConfig {}
 
@@ -174,55 +172,38 @@ declare global {
      * Configure debugging flags to display additional information
      */
     debug: {
-      /**
-       * @defaultValue `false`
-       */
+      /** @defaultValue `false` */
       dice: boolean;
 
-      /**
-       * @defaultValue `false`
-       */
+      /** @defaultValue `false` */
       documents: boolean;
 
-      /**
-       * @defaultValue `false`
-       */
+      /** @defaultValue `false` */
       fog: boolean;
 
-      /**
-       * @defaultValue `false`
-       */
+      /** @defaultValue `false` */
       hooks: boolean;
 
-      /**
-       * @defaultValue `false`
-       */
-      sight: boolean;
-
-      /**
-       * @defaultValue `false`
-       */
-      sightRays: boolean;
-
-      /**
-       * @defaultValue `false`
-       */
+      /** @defaultValue `false` */
       av: boolean;
 
-      /**
-       * @defaultValue `false`
-       */
+      /** @defaultValue `false` */
       avclient: boolean;
 
-      /**
-       * @defaultValue `false`
-       */
+      /** @defaultValue `false` */
       mouseInteraction: boolean;
 
-      /**
-       * @defaultValue `false`
-       */
+      /** @defaultValue `false` */
       time: boolean;
+
+      /** @defaultValue `false` */
+      keybindings: boolean;
+
+      /** @defaultValue `false` */
+      polygons: boolean;
+
+      /** @defaultValue `false` */
+      gamepad: boolean;
     };
 
     /**
@@ -235,58 +216,83 @@ declare global {
      * Configuration for the Actor document
      */
     Actor: {
-      /**
-       * @defaultValue `Actor`
-       */
+      /** @defaultValue `Actor` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof Actor>;
 
-      /**
-       * @defaultValue `Actors`
-       */
+      /** @defaultValue `Actors` */
       collection: ConstructorOf<Actors>;
 
-      /**
-       * @defaultValue `{}`
-       */
-      sheetClasses: CONFIG.SheetClasses;
-
-      /**
-       * @defaultValue `'fas fa-user'`
-       */
+      /** @defaultValue `'fas fa-user'` */
       sidebarIcon: string;
 
-      /**
-       * @defaultValue `{}`
-       */
-      typeLabels: Partial<Record<string, string>>;
+      /** @defaultValue `{}` */
+      typeLabels: Record<string, string>;
+    };
+
+    /**
+     * Configuration for the Adventure document.
+     * Currently for internal use only.
+     * @internal
+     */
+    Adventure: {
+      /** @defaultValue `foundry.documents.BaseAdventure` */
+      documentClass: unknown; // FIXME: ConstructorOf<foundry.documents.BaseAdventure>;
+    };
+
+    /**
+     * Configuration for the Cards primary Document type
+     */
+    Cards: {
+      /** @defaultValue `CardStacks` */
+      collection: unknown; // FIXME: ConfiguredDocumentClassOrDefault<typeof CardStacks>
+
+      /** @defaultValue `Cards` */
+      documentClass: unknown; // FIXME: ConfiguredDocumentClassOrDefault<typeof Cards>
+
+      presets: {
+        /**
+         * @defaultValue
+         * ```javascript
+         * {
+         *   type: "deck",
+         *   label: "CARDS.DeckPresetPokerDark",
+         *   src: "cards/poker-deck-dark.json"
+         * }
+         * ```
+         */
+        pokerDark: CONFIG.Cards.Preset;
+
+        /**
+         * @defaultValue
+         * ```javascript
+         * {
+         *   type: "deck",
+         *   label: "CARDS.DeckPresetPokerLight",
+         *   src: "cards/poker-deck-light.json"
+         * }
+         * ```
+         */
+        pokerLight: CONFIG.Cards.Preset;
+      } & Record<string, CONFIG.Cards.Preset>;
     };
 
     /**
      * Configuration for the ChatMessage document
      */
     ChatMessage: {
-      /**
-       * @defaultValue `ChatMessage`
-       */
+      /** @defaultValue `ChatMessage` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof ChatMessage>;
-      /**
-       * @defaultValue `Messages`
-       */
+
+      /** @defaultValue `Messages` */
       collection: ConstructorOf<Messages>;
 
-      /**
-       * @defaultValue `'templates/sidebar/chat-message.html'`
-       */
+      /** @defaultValue `'templates/sidebar/chat-message.html'` */
       template: string;
 
-      /**
-       * @defaultValue `'fas fa-comments'`
-       */
+      /** @defaultValue `'fas fa-comments'` */
       sidebarIcon: string;
 
-      /**
-       * @defaultValue `100`
-       */
+      /** @defaultValue `100` */
       batchSize: number;
     };
 
@@ -294,35 +300,23 @@ declare global {
      * Configuration for the Combat document
      */
     Combat: {
-      /**
-       * @defaultValue `Combat`
-       */
+      /** @defaultValue `Combat` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof Combat>;
 
-      /**
-       * @defaultValue `CombatEncounters`
-       */
+      /** @defaultValue `CombatEncounters` */
       collection: ConstructorOf<CombatEncounters>;
 
-      /**
-       * @defaultValue `'dead'`
-       */
+      /** @defaultValue `'dead'` */
       defeatedStatusId: string;
 
-      /**
-       * @defaultValue `'fas fa-fist-raised'`
-       */
+      /** @defaultValue `'fas fa-fist-raised'` */
       sidebarIcon: string;
 
       initiative: {
-        /**
-         * @defaultValue `null`
-         */
+        /** @defaultValue `null` */
         formula: string | null;
 
-        /**
-         * @defaultValue `2`
-         */
+        /** @defaultValue `2` */
         decimals: number;
       };
     };
@@ -331,36 +325,24 @@ declare global {
      * Configuration for dice rolling behaviors in the Foundry VTT client
      */
     Dice: {
-      /**
-       * @defaultValue `[Die, FateDie]`
-       */
+      /** @defaultValue `[Die, FateDie]` */
       types: Array<ConstructorOf<DiceTerm>>;
 
       rollModes: {
-        /**
-         * @defaultValue `'CHAT.RollPublic'`
-         */
+        /** @defaultValue `'CHAT.RollPublic'` */
         roll: string;
 
-        /**
-         * @defaultValue `'CHAT.RollPrivate'`
-         */
+        /** @defaultValue `'CHAT.RollPrivate'` */
         gmroll: string;
 
-        /**
-         * @defaultValue `CHAT.RollBlind'`
-         */
+        /** @defaultValue `CHAT.RollBlind'` */
         blindroll: string;
 
-        /**
-         * @defaultValue `'CHAT.RollSelf'`
-         */
+        /** @defaultValue `'CHAT.RollSelf'` */
         selfroll: string;
-      } & Partial<Record<string, string>>;
+      } & Record<string, string>;
 
-      /**
-       * @defaultValue `[Roll]`
-       */
+      /** @defaultValue `[Roll]` */
       rolls: Array<ConstructorOf<Roll>>;
 
       /**
@@ -383,11 +365,9 @@ declare global {
         c: typeof Coin;
         d: typeof Die;
         f: typeof FateDie;
-      } & Partial<Record<string, ConstructorOf<DiceTerm>>>;
+      } & Record<string, ConstructorOf<DiceTerm>>;
 
-      /**
-       * @defaultValue `MersenneTwister.random`
-       */
+      /** @defaultValue `MersenneTwister.random` */
       randomUniform: () => number;
     };
 
@@ -395,14 +375,10 @@ declare global {
      * Configuration for the FogExploration document
      */
     FogExploration: {
-      /**
-       * @defaultValue `FogExploration`
-       */
+      /** @defaultValue `FogExploration` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof FogExploration>;
 
-      /**
-       * @defaultValue `FogExplorations`
-       */
+      /** @defaultValue `FogExplorations` */
       collection: ConstructorOf<FogExplorations>;
     };
 
@@ -410,210 +386,124 @@ declare global {
      * Configuration for the Folder entity
      */
     Folder: {
-      /**
-       * @defaultValue `Folder`
-       */
+      /** @defaultValue `Folder` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof Folder>;
 
-      /**
-       * @defaultValue `Folders`
-       */
+      /** @defaultValue `Folders` */
       collection: ConstructorOf<Folders>;
-
-      /**
-       * @defaultValue `FolderConfig`
-       */
-      sheetClass: ConstructorOf<FolderConfig>;
     };
 
     /**
      * Configuration for the default Item entity class
      */
     Item: {
-      /**
-       * @defaultValue `Item`
-       */
+      /** @defaultValue `Item` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof Item>;
 
-      /**
-       * @defaultValue `Items`
-       */
+      /** @defaultValue `Items` */
       collection: ConstructorOf<Items>;
 
-      /**
-       * @defaultValue `{}`
-       */
-      sheetClasses: CONFIG.SheetClasses;
-
-      /**
-       * @defaultValue `'fas fa-suitcase'`
-       */
+      /** @defaultValue `'fas fa-suitcase'` */
       sidebarIcon: string;
 
-      /**
-       * defaultValue `{}`
-       */
-      typeLabels: Partial<Record<string, string>>;
+      /** @defaultValue `{}` */
+      typeLabels: Record<string, string>;
     };
 
     /**
      * Configuration for the JournalEntry entity
      */
     JournalEntry: {
-      /**
-       * @defaultValue `JournalEntry`
-       */
+      /** @defaultValue `JournalEntry` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof JournalEntry>;
 
-      /**
-       * @defaultValue `Journal`
-       */
+      /** @defaultValue `Journal` */
       collection: ConstructorOf<Journal>;
 
-      /**
-       * @defaultValue `JournalSheet`
-       */
-      sheetClass: ConstructorOf<JournalSheet>;
-
       noteIcons: {
-        /**
-         * @defaultValue `'icons/svg/anchor.svg'`
-         */
+        /** @defaultValue `'icons/svg/anchor.svg'` */
         Anchor: string;
 
-        /**
-         * @defaultValue `'icons/svg/barrel.svg'`
-         */
+        /** @defaultValue `'icons/svg/barrel.svg'` */
         Barrel: string;
 
-        /**
-         * @defaultValue `'icons/svg/book.svg'`
-         */
+        /** @defaultValue `'icons/svg/book.svg'` */
         Book: string;
 
-        /**
-         * @defaultValue `'icons/svg/bridge.svg'`
-         */
+        /** @defaultValue `'icons/svg/bridge.svg'` */
         Bridge: string;
 
-        /**
-         * @defaultValue `'icons/svg/cave.svg'`
-         */
+        /** @defaultValue `'icons/svg/cave.svg'` */
         Cave: string;
 
-        /**
-         * @defaultValue `'icons/svg/castle.svg`
-         */
+        /** @defaultValue `'icons/svg/castle.svg` */
         Castle: string;
 
-        /**
-         * @defaultValue `'icons/svg/chest.svg'`
-         */
+        /** @defaultValue `'icons/svg/chest.svg'` */
         Chest: string;
 
-        /**
-         * @defaultValue `'icons/svg/city.svg'`
-         */
+        /** @defaultValue `'icons/svg/city.svg'` */
         City: string;
 
-        /**
-         * @defaultValue `'icons/svg/coins.svg'`
-         */
+        /** @defaultValue `'icons/svg/coins.svg'` */
         Coins: string;
 
-        /**
-         * @defaultValue `'icons/svg/fire.svg'`
-         */
+        /** @defaultValue `'icons/svg/fire.svg'` */
         Fire: string;
 
-        /**
-         * @defaultValue `'icons/svg/hanging-sign.svg'`
-         */
+        /** @defaultValue `'icons/svg/hanging-sign.svg'` */
         'Hanging Sign': string;
 
-        /**
-         * @defaultValue `'icons/svg/house.svg'`
-         */
+        /** @defaultValue `'icons/svg/house.svg'` */
         House: string;
 
-        /**
-         * @defaultValue `'icons/svg/mountain.svg'`
-         */
+        /** @defaultValue `'icons/svg/mountain.svg'` */
         Mountain: string;
 
-        /**
-         * @defaultValue `'icons/svg/oak.svg'`
-         */
+        /** @defaultValue `'icons/svg/oak.svg'` */
         'Oak Tree': string;
 
-        /**
-         * @defaultValue `'icons/svg/obelisk.svg'`
-         */
+        /** @defaultValue `'icons/svg/obelisk.svg'` */
         Obelisk: string;
 
-        /**
-         * @defaultValue `'icons/svg/pawprint.svg'`
-         */
+        /** @defaultValue `'icons/svg/pawprint.svg'` */
         Pawprint: string;
 
-        /**
-         * @defaultValue `'icons/svg/ruins.svg'`
-         */
+        /** @defaultValue `'icons/svg/ruins.svg'` */
         Ruins: string;
 
-        /**
-         * @defaultValue `'icons/svg/tankard.svg'`
-         */
+        /** @defaultValue `'icons/svg/tankard.svg'` */
         Tankard: string;
 
-        /**
-         * @defaultValue `'icons/svg/temple.svg'`
-         */
+        /** @defaultValue `'icons/svg/temple.svg'` */
         Temple: string;
 
-        /**
-         * @defaultValue `'icons/svg/tower.svg'`
-         */
+        /** @defaultValue `'icons/svg/tower.svg'` */
         Tower: string;
 
-        /**
-         * @defaultValue `'icons/svg/trap.svg'`
-         */
+        /** @defaultValue `'icons/svg/trap.svg'` */
         Trap: string;
 
-        /**
-         * @defaultValue `'icons/svg/skull.svg'`
-         */
+        /** @defaultValue `'icons/svg/skull.svg'` */
         Skull: string;
 
-        /**
-         * @defaultValue `'icons/svg/statue.svg'`
-         */
+        /** @defaultValue `'icons/svg/statue.svg'` */
         Statue: string;
 
-        /**
-         * @defaultValue `'icons/svg/sword.svg'`
-         */
+        /** @defaultValue `'icons/svg/sword.svg'` */
         Sword: string;
 
-        /**
-         * @defaultValue `'icons/svg/village.svg'`
-         */
+        /** @defaultValue `'icons/svg/village.svg'` */
         Village: string;
 
-        /**
-         * @defaultValue `'icons/svg/waterfall.svg'`
-         */
+        /** @defaultValue `'icons/svg/waterfall.svg'` */
         Waterfall: string;
-        /**
-         * @defaultValue `'icons/svg/windmill.svg'`
-         */
-        Windmill: string;
-      } & Partial<Record<string, string>>;
 
-      /**
-       * @defaultValue `'fas fa-book-open'`
-       */
+        /** @defaultValue `'icons/svg/windmill.svg'` */
+        Windmill: string;
+      } & Record<string, string>;
+
+      /** @defaultValue `'fas fa-book-open'` */
       sidebarIcon: string;
     };
 
@@ -621,24 +511,13 @@ declare global {
      * Configuration for the Macro entity
      */
     Macro: {
-      /**
-       * @defaultValue `Macro`
-       */
+      /** @defaultValue `Macro` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof Macro>;
 
-      /**
-       * @defaultValue `Macros`
-       */
+      /** @defaultValue `Macros` */
       collection: ConstructorOf<Macros>;
 
-      /**
-       * @defaultValue `MacroConfig`
-       */
-      sheetClass: ConstructorOf<MacroConfig>;
-
-      /**
-       * @defaultValue `'fas fa-terminal'`
-       */
+      /** @defaultValue `'fas fa-terminal'` */
       sidebarIcon: string;
     };
 
@@ -646,29 +525,16 @@ declare global {
      * Configuration for the default Playlist entity class
      */
     Playlist: {
-      /**
-       * @defaultValue `Playlist`
-       */
+      /** @defaultValue `Playlist` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof Playlist>;
 
-      /**
-       * @defaultValue `Playlists`
-       */
+      /** @defaultValue `Playlists` */
       collection: ConstructorOf<Playlists>;
 
-      /**
-       * @defaultValue `PlaylistConfig`
-       */
-      sheetClass: ConstructorOf<PlaylistConfig>;
-
-      /**
-       * @defaultValue `'fas fa-music'`
-       */
+      /** @defaultValue `'fas fa-music'` */
       sidebarIcon: string;
 
-      /**
-       * @defaultValue `20`
-       */
+      /** @defaultValue `20` */
       autoPreloadSeconds: number;
     };
 
@@ -676,34 +542,19 @@ declare global {
      * Configuration for RollTable random draws
      */
     RollTable: {
-      /**
-       * @defaultValue `RollTable`
-       */
+      /** @defaultValue `RollTable` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof RollTable>;
 
-      /**
-       * @defaultValue `RollTables`
-       */
+      /** @defaultValue `RollTables` */
       collection: ConstructorOf<RollTables>;
 
-      /**
-       * @defaultValue `RollTableConfig`
-       */
-      sheetClass: ConstructorOf<RollTableConfig>;
-
-      /**
-       * @defaultValue `'fas fa-th-list'`
-       */
+      /** @defaultValue `'fas fa-th-list'` */
       sidebarIcon: string;
 
-      /**
-       * @defaultValue `'icons/svg/d20-black.svg'`
-       */
+      /** @defaultValue `'icons/svg/d20-black.svg'` */
       resultIcon: string;
 
-      /**
-       * @defaultValue `'templates/dice/table-result.html'`
-       */
+      /** @defaultValue `'templates/dice/table-result.html'` */
       resultTemplate: string;
     };
 
@@ -711,29 +562,21 @@ declare global {
      * Configuration for the default Scene entity class
      */
     Scene: {
-      /**
-       * @defaultValue `Scene`
-       */
+      /** @defaultValue `Scene` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof Scene>;
 
-      /**
-       * @defaultValue `Scenes`
-       */
+      /** @defaultValue `Scenes` */
       collection: ConstructorOf<Scenes>;
 
-      /**
-       * @defaultValue `SceneConfig`
-       */
-      sheetClass: ConstructorOf<SceneConfig>;
-
-      /**
-       * @defaultValue `'fas fa-map'`
-       */
+      /** @defaultValue `'fas fa-map'` */
       sidebarIcon: string;
     };
 
     Setting: {
+      /** @defaultValue `Setting` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof Setting>;
+
+      /** @defaultValue `WorldSettings` */
       collection: ConstructorOf<WorldSettings>;
     };
 
@@ -741,378 +584,312 @@ declare global {
      * Configuration for the User entity, it's roles, and permissions
      */
     User: {
-      /**
-       * @defaultValue `User`
-       */
+      /** @defaultValue `User` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof User>;
 
-      /**
-       * @defaultValue `Users`
-       */
+      /** @defaultValue `Users` */
       collection: ConstructorOf<Users>;
-
-      /**
-       * @defaultValue `UserConfig`
-       */
-      sheetClass: ConstructorOf<UserConfig>;
     };
 
     /**
      * Configuration settings for the Canvas and its contained layers and objects
      */
     Canvas: {
-      /**
-       * @defaultValue `8`
-       */
+      /** @defaultValue `8` */
       blurStrength: number;
 
-      /**
-       * @defaultValue `0x242448`
-       */
+      /** @defaultValue `ScreenCulling` */
+      cullingBackend: unknown; // FIXME: ConstructorOf<typeof ScreenCulling>
+
+      /** @defaultValue `0x242448` */
       darknessColor: number;
 
-      /**
-       * @defaultValue `0.4`
-       */
+      /** @defaultValue `0.25` */
       darknessLightPenalty: number;
 
-      /**
-       * @defaultValue `0xeeeeee`
-       */
+      /** @defaultValue `0xeeeeee` */
       daylightColor: number;
 
       dispositionColors: {
-        /**
-         * @defaultValue `0xe72124`
-         */
+        /** @defaultValue `0xe72124` */
         HOSTILE: number;
 
-        /**
-         * @defaultValue `0xf1d836`
-         */
+        /** @defaultValue `0xf1d836` */
         NEUTRAL: number;
 
-        /**
-         * @defaultValue `0x43dfdf`
-         */
+        /** @defaultValue `0x43dfdf` */
         FRIENDLY: number;
 
-        /**
-         * @defaultValue `0x555555`
-         */
+        /** @defaultValue `0x555555` */
         INACTIVE: number;
 
-        /**
-         * @defaultValue `0x33bc4e`
-         */
+        /** @defaultValue `0x33bc4e` */
         PARTY: number;
 
-        /**
-         * @defaultValue `0xff9829`
-         */
+        /** @defaultValue `0xff9829` */
         CONTROLLED: number;
       };
 
-      /**
-       * @defaultValue `0x7f7f7f`
-       */
+      /** @defaultValue `0x7f7f7f` */
       exploredColor: number;
 
-      /**
-       * @defaultValue `0x000000`
-       */
+      /** @defaultValue `0x000000` */
       unexploredColor: number;
+
+      groups: CONFIG.Canvas.Groups;
 
       layers: CONFIG.Canvas.Layers;
 
       lightLevels: {
-        /**
-         * @defaultValue `0`
-         */
+        /** @defaultValue `0` */
         dark: number;
 
-        /**
-         * @defaultValue `0.5`
-         */
+        /** @defaultValue `0.25` */
         dim: number;
 
-        /**
-         * @defaultValue `1.0`
-         */
+        /** @defaultValue `1.0` */
         bright: number;
       };
 
-      /**
-       * @defaultValue `0xb86200`
-       */
+      /** @defaultValue `0xb86200` */
       normalLightColor: number;
 
-      /**
-       * @defaultValue `3.0`
-       */
+      /** @defaultValue `3.0` */
       maxZoom: number;
 
-      /**
-       * @defaultValue `4`
-       */
+      /** @defaultValue `4` */
       objectBorderThickness: number;
 
       lightAnimations: {
         torch: {
-          /**
-           * @defaultValue `'LIGHT.AnimationTorch'`
-           */
+          /** @defaultValue `'LIGHT.AnimationTorch'` */
           label: string;
 
-          /**
-           * @defaultValue PointSource.prototype.animateTorch
-           */
+          /** @defaultValue LightSource.prototype.animateTorch */
           animation: PointSource.AnimationFunction;
 
-          /**
-           * @defaultValue `TorchIlluminationShader`
-           */
+          /** @defaultValue `TorchIlluminationShader` */
           illuminationShader: ConstructorOf<AbstractBaseShader>;
 
-          /**
-           * @defaultValue `TorchColorationShader`
-           */
+          /** @defaultValue `TorchColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
         };
 
         pulse: {
-          /**
-           * @defaultValue `'LIGHT.AnimationPulse'`
-           */
+          /** @defaultValue `'LIGHT.AnimationPulse'` */
           label: string;
 
-          /**
-           * @defaultValue `PointSource.prototype.animatePulse`
-           */
+          /** @defaultValue `LightSource.prototype.animatePulse` */
           animation: PointSource.AnimationFunction;
 
-          /**
-           * @defaultValue `PulseIlluminationShader`
-           */
+          /** @defaultValue `PulseIlluminationShader` */
           illuminationShader: ConstructorOf<AbstractBaseShader>;
 
-          /**
-           * @defaultValue `PulseColorationShader`
-           */
+          /** @defaultValue `PulseColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
         };
 
         chroma: {
-          /**
-           * @defaultValue `'LIGHT.AnimationChroma'`
-           */
+          /** @defaultValue `'LIGHT.AnimationChroma'` */
           label: string;
 
-          /**
-           * @defaultValue `PointSource.prototype.animateTime`
-           */
+          /** @defaultValue `LightSource.prototype.animateTime` */
           animation: PointSource.AnimationFunction;
 
-          /**
-           * @defaultValue `ChromaColorationShader`
-           */
+          /** @defaultValue `ChromaColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
         };
 
         wave: {
-          /**
-           * @defaultValue `'LIGHT.AnimationWave'`
-           */
+          /** @defaultValue `'LIGHT.AnimationWave'` */
           label: string;
 
-          /**
-           * @defaultValue `PointSource.prototype.animateTime`
-           */
+          /** @defaultValue `LightSource.prototype.animateTime` */
           animation: PointSource.AnimationFunction;
 
-          /**
-           * @defaultValue `WaveIlluminationShader`
-           */
+          /** @defaultValue `WaveIlluminationShader` */
           illuminationShader: ConstructorOf<AbstractBaseShader>;
 
-          /**
-           * @defaultValue `WaveColorationShader`
-           */
+          /** @defaultValue `WaveColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
         };
 
         fog: {
-          /**
-           * @defaultValue `'LIGHT.AnimationFog'`
-           */
+          /** @defaultValue `'LIGHT.AnimationFog'` */
           label: string;
 
-          /**
-           * @defaultValue `PointSource.prototype.animateTime`
-           */
+          /** @defaultValue `LightSource.prototype.animateTime` */
           animation: PointSource.AnimationFunction;
 
-          /**
-           * @defaultValue `FogColorationShader`
-           */
+          /** @defaultValue `FogColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
         };
 
         sunburst: {
-          /**
-           * @defaultValue `'LIGHT.AnimationSunburst'`
-           */
+          /** @defaultValue `'LIGHT.AnimationSunburst'` */
           label: string;
 
-          /**
-           * @defaultValue `PointSource.prototype.animateTime`
-           */
+          /** @defaultValue `LightSource.prototype.animateTime` */
           animation: PointSource.AnimationFunction;
 
-          /**
-           * @defaultValue `SunburstIlluminationShader`
-           */
+          /** @defaultValue `SunburstIlluminationShader` */
           illuminationShader: ConstructorOf<AbstractBaseShader>;
 
-          /**
-           * @defaultValue `SunburstColorationShader`
-           */
+          /** @defaultValue `SunburstColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
         };
 
         dome: {
-          /**
-           * @defaultValue `'LIGHT.AnimationLightDome'`
-           */
+          /** @defaultValue `'LIGHT.AnimationLightDome'` */
           label: string;
 
-          /**
-           * @defaultValue `PointSource.prototype.animateTime`
-           */
+          /** @defaultValue `LightSource.prototype.animateTime` */
           animation: PointSource.AnimationFunction;
 
-          /**
-           * @defaultValue `LightDomeColorationShader`
-           */
+          /** @defaultValue `LightDomeColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
         };
 
         emanation: {
-          /**
-           * @defaultValue `'LIGHT.AnimationEmanation'`
-           */
+          /** @defaultValue `'LIGHT.AnimationEmanation'` */
           label: string;
 
-          /**
-           * @defaultValue `PointSource.prototype.animateTime`
-           */
+          /** @defaultValue `LightSource.prototype.animateTime` */
           animation: PointSource.AnimationFunction;
 
-          /**
-           * @defaultValue `EmanationColorationShader`
-           */
+          /** @defaultValue `EmanationColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
         };
 
         hexa: {
-          /**
-           * @defaultValue `'LIGHT.AnimationHexaDome';`
-           */
+          /** @defaultValue `'LIGHT.AnimationHexaDome';` */
           label: string;
 
-          /**
-           * @defaultValue `PointSource.prototype.animateTime`
-           */
+          /** @defaultValue `LightSource.prototype.animateTime` */
           animation: PointSource.AnimationFunction;
 
-          /**
-           * @defaultValue `HexaDomeColorationShader`
-           */
+          /** @defaultValue `HexaDomeColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
         };
 
         ghost: {
-          /**
-           * @defaultValue `'LIGHT.AnimationGhostLight'`
-           */
+          /** @defaultValue `'LIGHT.AnimationGhostLight'` */
           label: string;
 
-          /**
-           * @defaultValue `PointSource.prototype.animateTime`
-           */
+          /** @defaultValue `LightSource.prototype.animateTime` */
           animation: PointSource.AnimationFunction;
 
-          /**
-           * @defaultValue `GhostLightIlluminationShader`
-           */
+          /** @defaultValue `GhostLightIlluminationShader` */
           illuminationShader: ConstructorOf<AbstractBaseShader>;
 
-          /**
-           * @defaultValue `GhostLightColorationShader`
-           */
+          /** @defaultValue `GhostLightColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
         };
 
         energy: {
-          /**
-           * @defaultValue `'LIGHT.AnimationEnergyField'`
-           */
+          /** @defaultValue `'LIGHT.AnimationEnergyField'` */
           label: string;
 
-          /**
-           * @defaultValue `PointSource.prototype.animateTime`
-           */
+          /** @defaultValue `LightSource.prototype.animateTime` */
           animation: PointSource.AnimationFunction;
 
-          /**
-           * @defaultValue `EnergyFieldColorationShader`
-           */
+          /** @defaultValue `EnergyFieldColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
         };
 
         roiling: {
-          /**
-           * @defaultValue `'LIGHT.AnimationRoilingMass'`
-           */
+          /** @defaultValue `'LIGHT.AnimationRoilingMass'` */
           label: string;
 
-          /**
-           * @defaultValue `PointSource.prototype.animateTime`
-           */
+          /** @defaultValue `LightSource.prototype.animateTime` */
           animation: PointSource.AnimationFunction;
 
-          /**
-           * @defaultValue `RoilingIlluminationShader`
-           */
+          /** @defaultValue `RoilingIlluminationShader` */
           illuminationShader: ConstructorOf<AbstractBaseShader>;
         };
 
         hole: {
-          /**
-           * @defaultValue `'LIGHT.AnimationBlackHole'`
-           */
+          /** @defaultValue `'LIGHT.AnimationBlackHole'` */
           label: string;
 
-          /**
-           * @defaultValue `PointSource.prototype.animateTime`
-           */
+          /** @defaultValue `LightSource.prototype.animateTime` */
           animation: PointSource.AnimationFunction;
 
-          /**
-           * @defaultValue `BlackHoleIlluminationShader`
-           */
+          /** @defaultValue `BlackHoleIlluminationShader` */
           illuminationShader: ConstructorOf<AbstractBaseShader>;
         };
-      } & Partial<
-        Record<
-          string,
-          {
-            label: string;
-            animation: PointSource.AnimationFunction;
-            illuminationShader?: ConstructorOf<AbstractBaseShader>;
-            colorationShader?: ConstructorOf<AbstractBaseShader>;
-          }
-        >
+
+        vortex: {
+          /** @defaultValue `'LIGHT.AnimationVortex'` */
+          label: string;
+
+          /** @defaultValue `LightSource.prototype.animateTime` */
+          animation: PointSource.AnimationFunction;
+
+          /** @defaultValue `VortexIlluminationShader` */
+          illuminationShader: ConstructorOf<AbstractBaseShader>;
+
+          /** @defaultValue `VortexColorationShader` */
+          colorationShader: ConstructorOf<AbstractBaseShader>;
+        };
+
+        witchwave: {
+          /** @defaultValue `'LIGHT.AnimationBewitchingWave'` */
+          label: string;
+
+          /** @defaultValue `LightSource.prototype.animateTime` */
+          animation: PointSource.AnimationFunction;
+
+          /** @defaultValue `BewitchingWaveIlluminationShader` */
+          illuminationShader: ConstructorOf<AbstractBaseShader>;
+
+          /** @defaultValue `BewitchingWaveColorationShader` */
+          colorationShader: ConstructorOf<AbstractBaseShader>;
+        };
+
+        rainbowswirl: {
+          /** @defaultValue `'LIGHT.AnimationSwirlingRainbow'` */
+          label: string;
+
+          /** @defaultValue `LightSource.prototype.animateTime` */
+          animation: PointSource.AnimationFunction;
+
+          /** @defaultValue `SwirlingRainbowColorationShader` */
+          colorationShader: ConstructorOf<AbstractBaseShader>;
+        };
+
+        radialrainbow: {
+          /** @defaultValue `'LIGHT.AnimationRadialRainbow'` */
+          label: string;
+
+          /** @defaultValue `LightSource.prototype.animateTime` */
+          animation: PointSource.AnimationFunction;
+
+          /** @defaultValue `RadialRainbowColorationShader` */
+          colorationShader: ConstructorOf<AbstractBaseShader>;
+        };
+
+        fairy: {
+          /** @defaultValue `'LIGHT.AnimationFairyLight'` */
+          label: string;
+
+          /** @defaultValue `LightSource.prototype.animateTime` */
+          animation: PointSource.AnimationFunction;
+
+          /** @defaultValue `FairyLightIlluminationShader` */
+          illuminationShader: ConstructorOf<AbstractBaseShader>;
+
+          /** @defaultValue `FairyLightColorationShader` */
+          colorationShader: ConstructorOf<AbstractBaseShader>;
+        };
+      } & Record<
+        string,
+        {
+          label: string;
+          animation: PointSource.AnimationFunction;
+          illuminationShader?: ConstructorOf<AbstractBaseShader>;
+          colorationShader?: ConstructorOf<AbstractBaseShader>;
+        }
       >;
     };
 
@@ -1143,106 +920,68 @@ declare global {
      * Available Weather Effects implementations
      */
     weatherEffects: {
-      /**
-       * @defaultValue `AutumnLeavesWeatherEffect`
-       */
+      /** @defaultValue `AutumnLeavesWeatherEffect` */
       leaves: ConstructorOf<SpecialEffect>;
 
-      /**
-       * @defaultValue `RainWeatherEffect`
-       */
+      /** @defaultValue `RainWeatherEffect` */
       rain: ConstructorOf<SpecialEffect>;
 
-      /**
-       * @defaultValue `SnowWeatherEffect`
-       */
+      /** @defaultValue `SnowWeatherEffect` */
       snow: ConstructorOf<SpecialEffect>;
-    } & Partial<Record<string, ConstructorOf<SpecialEffect>>>;
+    } & Record<string, ConstructorOf<SpecialEffect>>;
 
     /**
      * The control icons used for rendering common HUD operations
      */
     controlIcons: {
-      /**
-       * @defaultValue `'icons/svg/combat.svg'`
-       */
+      /** @defaultValue `'icons/svg/combat.svg'` */
       combat: string;
 
-      /**
-       * @defaultValue `'icons/svg/cowled.svg'`
-       */
+      /** @defaultValue `'icons/svg/cowled.svg'` */
       visibility: string;
 
-      /**
-       * @defaultValue `'icons/svg/aura.svg'`
-       */
+      /** @defaultValue `'icons/svg/aura.svg'` */
       effects: string;
 
-      /**
-       * @defaultValue `'icons/svg/padlock.svg'`
-       */
+      /** @defaultValue `'icons/svg/padlock.svg'` */
       lock: string;
 
-      /**
-       * @defaultValue `'icons/svg/up.svg'`
-       */
+      /** @defaultValue `'icons/svg/up.svg'` */
       up: string;
 
-      /**
-       * @defaultValue `'icons/svg/down.svg'`
-       */
+      /** @defaultValue `'icons/svg/down.svg'` */
       down: string;
 
-      /**
-       * @defaultValue `'icons/svg/skull.svg'`
-       */
+      /** @defaultValue `'icons/svg/skull.svg'` */
       defeated: string;
 
-      /**
-       * @defaultValue `'icons/svg/light.svg'`
-       */
+      /** @defaultValue `'icons/svg/light.svg'` */
       light: string;
 
-      /**
-       * @defaultValue `'icons/svg/light-off.svg'`
-       */
+      /** @defaultValue `'icons/svg/light-off.svg'` */
       lightOff: string;
 
-      /**
-       * @defaultValue `'icons/svg/explosion.svg'`
-       */
+      /** @defaultValue `'icons/svg/explosion.svg'` */
       template: string;
 
-      /**
-       * @defaultValue `'icons/svg/sound.svg'`
-       */
+      /** @defaultValue `'icons/svg/sound.svg'` */
       sound: string;
 
-      /**
-       * @defaultValue `'icons/svg/sound-off.svg'`
-       */
+      /** @defaultValue `'icons/svg/sound-off.svg'` */
       soundOff: string;
 
-      /**
-       * @defaultValue `'icons/svg/door-closed-outline.svg'`
-       */
+      /** @defaultValue `'icons/svg/door-closed-outline.svg'` */
       doorClosed: string;
 
-      /**
-       * @defaultValue `'icons/svg/door-open-outline.svg'`
-       */
+      /** @defaultValue `'icons/svg/door-open-outline.svg'` */
       doorOpen: string;
 
-      /**
-       * @defaultValue `'icons/svg/door-secret-outline.svg'`
-       */
+      /** @defaultValue `'icons/svg/door-secret-outline.svg'` */
       doorSecret: string;
 
-      /**
-       * @defaultValue `'icons/svg/door-locked-outline.svg'`
-       */
+      /** @defaultValue `'icons/svg/door-locked-outline.svg'` */
       doorLocked: string;
-    } & Partial<Record<string, string>>;
+    } & Record<string, string>;
 
     /**
      * Suggested font families that are displayed wherever a choice is presented
@@ -1430,24 +1169,16 @@ declare global {
      * A mapping of core audio effects used which can be replaced by systems or mods
      */
     sounds: {
-      /**
-       * @defaultValue `'sounds/dice.wav'`
-       */
+      /** @defaultValue `'sounds/dice.wav'` */
       dice: string;
 
-      /**
-       * @defaultValue `'sounds/lock.wav'`
-       */
+      /** @defaultValue `'sounds/lock.wav'` */
       lock: string;
 
-      /**
-       * @defaultValue `'sounds/notify.wav'`
-       */
+      /** @defaultValue `'sounds/notify.wav'` */
       notification: string;
 
-      /**
-       * @defaultValue `'sounds/drums.wav'`
-       */
+      /** @defaultValue `'sounds/drums.wav'` */
       combat: string;
     };
 
@@ -1457,20 +1188,16 @@ declare global {
      */
     supportedLanguages: {
       en: string;
-    } & Partial<Record<string, string>>;
+    } & Record<string, string>;
 
     /**
      * Configuration for time tracking
      */
     time: {
-      /**
-       * @defaultValue `0`
-       */
+      /** @defaultValue `0` */
       turnTime: number;
 
-      /**
-       * @defaultValue `0`
-       */
+      /** @defaultValue `0` */
       roundTime: number;
     };
 
@@ -1478,24 +1205,23 @@ declare global {
      * Configuration for the ActiveEffect embedded document type
      */
     ActiveEffect: {
-      /**
-       * @defaultValue `ActiveEffect`
-       */
+      /** @defaultValue `ActiveEffect` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof ActiveEffect>;
+    };
 
-      /**
-       * @defaultValue `ActiveEffectConfig`
-       */
-      sheetClass: ConstructorOf<ActiveEffectConfig>;
+    /**
+     * Configuration for the Card embedded Document type
+     */
+    Card: {
+      /** @defaultValue `Card` */
+      documentClass: unknown; // FIXME: ConfiguredDocumentClassOrDefault<typeof Card>
     };
 
     /**
      * Configuration for the TableResult embedded document type
      */
     TableResult: {
-      /**
-       * @defaultValue `TableResult`
-       */
+      /** @defaultValue `TableResult` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof TableResult>;
     };
 
@@ -1503,105 +1229,58 @@ declare global {
      * Configuration for the ActiveEffect embedded document type
      */
     PlaylistSound: {
-      /**
-       * @defaultValue `PlaylistSound`
-       */
+      /** @defaultValue `PlaylistSound` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof PlaylistSound>;
-
-      /**
-       * @defaultValue `PlaylistSoundConfig`
-       */
-      sheetClass: ConstructorOf<PlaylistSoundConfig>;
     };
 
     /**
      * Configuration for the AmbientLight embedded document type and its representation on the game Canvas
      */
     AmbientLight: {
-      /**
-       * @defaultValue `AmbientLightDocument`
-       */
+      /** @defaultValue `AmbientLightDocument` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof AmbientLightDocument>;
 
-      /**
-       * @defaultValue `AmbientLightDocument`
-       */
+      /** @defaultValue `AmbientLightDocument` */
       objectClass: ConfiguredObjectClassOrDefault<typeof AmbientLight>;
 
-      /**
-       * @defaultValue `AmbientLightDocument`
-       */
+      /** @defaultValue `AmbientLightDocument` */
       layerClass: ConstructorOf<LightingLayer>;
-
-      /**
-       * @defaultValue `AmbientLightDocument`
-       */
-      sheetClass: ConstructorOf<LightConfig>;
     };
 
     /**
      * Configuration for the AmbientSound embedded document type and its representation on the game Canvas
      */
     AmbientSound: {
-      /**
-       * @defaultValue `AmbientSoundDocument`
-       */
+      /** @defaultValue `AmbientSoundDocument` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof AmbientSoundDocument>;
 
-      /**
-       * @defaultValue `AmbientSound`
-       */
+      /** @defaultValue `AmbientSound` */
       objectClass: ConfiguredObjectClassOrDefault<typeof AmbientSound>;
 
-      /**
-       * @defaultValue `SoundsLayer`
-       */
+      /** @defaultValue `SoundsLayer` */
       layerClass: ConstructorOf<SoundsLayer>;
-
-      /**
-       * @defaultValue `AmbientSoundConfig`
-       */
-      sheetClass: ConstructorOf<AmbientSoundConfig>;
     };
 
     /**
      * Configuration for the Combatant embedded document type within a Combat document
      */
     Combatant: {
-      /**
-       * @defaultValue `Combatant`
-       */
+      /** @defaultValue `Combatant` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof Combatant>;
-
-      /**
-       * @defaultValue `CombatantConfig`
-       */
-      sheetClass: ConstructorOf<CombatantConfig>;
     };
 
     /**
      * Configuration for the Drawing embedded document type and its representation on the game Canvas
      */
     Drawing: {
-      /**
-       * @defaultValue `DrawingDocument`
-       */
+      /** @defaultValue `DrawingDocument` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof DrawingDocument>;
 
-      /**
-       * @defaultValue `Drawing`
-       */
+      /** @defaultValue `Drawing` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Drawing>;
 
-      /**
-       * @defaultValue `DrawingsLayer`
-       */
+      /** @defaultValue `DrawingsLayer` */
       layerClass: ConstructorOf<DrawingsLayer>;
-
-      /**
-       * @defaultValue `DrawingConfig`
-       */
-      sheetClass: ConstructorOf<DrawingConfig>;
     };
 
     /**
@@ -1609,158 +1288,94 @@ declare global {
      */
     MeasuredTemplate: {
       defaults: {
-        /**
-         * @defaultValue `53.13`
-         */
+        /** @defaultValue `53.13` */
         angle: number;
 
-        /**
-         * @defaultValue `1`
-         */
+        /** @defaultValue `1` */
         width: number;
       };
 
       types: {
-        /**
-         * @defaultValue `'Circle'`
-         */
+        /** @defaultValue `'Circle'` */
         circle: string;
 
-        /**
-         * @defaultValue `'Cone'`
-         */
+        /** @defaultValue `'Cone'` */
         cone: string;
 
-        /**
-         * @defaultValue `'Rectangle'`
-         */
+        /** @defaultValue `'Rectangle'` */
         rect: string;
 
-        /**
-         * @defaultValue `'Ray'`
-         */
+        /** @defaultValue `'Ray'` */
         ray: string;
-      } & Partial<Record<string, string>>;
+      };
 
-      /**
-       * @defaultValue `MeasuredTemplateDocument`
-       */
+      /** @defaultValue `MeasuredTemplateDocument` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof MeasuredTemplateDocument>;
 
-      /**
-       * @defaultValue `MeasuredTemplate`
-       */
+      /** @defaultValue `MeasuredTemplate` */
       objectClass: ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
 
-      /**
-       * @defaultValue `TemplateLayer`
-       */
+      /** @defaultValue `TemplateLayer` */
       layerClass: ConstructorOf<TemplateLayer>;
-
-      /**
-       * @defaultValue `MeasuredTemplateConfig`
-       */
-      sheetClass: ConstructorOf<MeasuredTemplateConfig>;
     };
 
     /**
      * Configuration for the Note embedded document type and its representation on the game Canvas
      */
     Note: {
-      /**
-       * @defaultValue `NoteDocument`
-       */
+      /** @defaultValue `NoteDocument` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof NoteDocument>;
 
-      /**
-       * @defaultValue `Note`
-       */
+      /** @defaultValue `Note` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Note>;
 
-      /**
-       * @defaultValue `NotesLayer`
-       */
+      /** @defaultValue `NotesLayer` */
       layerClass: ConstructorOf<NotesLayer>;
-
-      /**
-       * @defaultValue `NoteConfig`
-       */
-      sheetClass: ConstructorOf<NoteConfig>;
     };
 
     /**
      * Configuration for the Tile embedded document type and its representation on the game Canvas
      */
     Tile: {
-      /**
-       * @defaultValue `TileDocument`
-       */
+      /** @defaultValue `TileDocument` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof TileDocument>;
 
-      /**
-       * @defaultValue `Tile`
-       */
+      /** @defaultValue `Tile` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Tile>;
 
-      /**
-       * @defaultValue `BackgroundLayer`
-       */
+      /** @defaultValue `BackgroundLayer` */
       layerClass: ConstructorOf<BackgroundLayer>;
-
-      /**
-       * @defaultValue `TileConfig`
-       */
-      sheetClass: ConstructorOf<TileConfig>;
     };
 
     /**
      * Configuration for the Token embedded document type and its representation on the game Canvas
      */
     Token: {
-      /**
-       * @defaultValue `TokenDocument`
-       */
+      /** @defaultValue `TokenDocument` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof TokenDocument>;
 
-      /**
-       * @defaultValue `Token`
-       */
+      /** @defaultValue `Token` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Token>;
 
-      /**
-       * @defaultValue `TokenLayer`
-       */
+      /** @defaultValue `TokenLayer` */
       layerClass: ConstructorOf<TokenLayer>;
 
-      /**
-       * @defaultValue `TokenConfig`
-       */
-      sheetClass: ConstructorOf<TokenConfig>;
+      /** @defaultValue `TokenConfig` */
+      prototypeSheetClass: ConstructorOf<TokenConfig>;
     };
 
     /**
      * Configuration for the Wall embedded document type and its representation on the game Canvas
      */
     Wall: {
-      /**
-       * @defaultValue `WallDocument`
-       */
+      /** @defaultValue `WallDocument` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof WallDocument>;
 
-      /**
-       * @defaultValue `Wall`
-       */
+      /** @defaultValue `Wall` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Wall>;
 
-      /**
-       * @defaultValue `WallsLayer`
-       */
+      /** @defaultValue `WallsLayer` */
       layerClass: ConstructorOf<WallsLayer>;
-
-      /**
-       * @defaultValue `WallConfig`
-       */
-      sheetClass: ConstructorOf<WallConfig>;
     };
 
     /**
@@ -1772,35 +1387,26 @@ declare global {
      * Configuration for the WebRTC implementation class
      */
     WebRTC: {
-      /**
-       * @defaultValue `SimplePeerAVClient`
-       */
+      /** @defaultValue `SimplePeerAVClient` */
       clientClass: PropertyTypeOrFallback<WebRTCConfig, 'clientClass', typeof AVClient>;
 
-      /**
-       * @defaultValue `50`
-       */
+      /** @defaultValue `50` */
       detectPeerVolumeInterval: number;
 
-      /**
-       * @defaultValue `20`
-       */
+      /** @defaultValue `20` */
       detectSelfVolumeInterval: number;
 
-      /**
-       * @defaultValue `25`
-       */
+      /** @defaultValue `25` */
       emitVolumeInterval: number;
 
-      /**
-       * @defaultValue `2`
-       */
+      /** @defaultValue `2` */
       speakingThresholdEvents: number;
 
-      /**
-       * @defaultValue `10`
-       */
+      /** @defaultValue `10` */
       speakingHistoryLength: number;
+
+      /** @defaultValue `8` */
+      connectedUserPollIntervalS: number;
     };
 
     /**
@@ -1811,187 +1417,159 @@ declare global {
 
   namespace CONFIG {
     interface UI {
-      /**
-       * @defaultValue `MainMenu`
-       */
+      /** @defaultValue `MainMenu` */
       menu: ConstructorOf<MainMenu>;
 
-      /**
-       * @defaultValue `Sidebar`
-       */
+      /** @defaultValue `Sidebar` */
       sidebar: ConstructorOf<Sidebar>;
 
-      /**
-       * @defaultValue `Pause`
-       */
+      /** @defaultValue `Pause` */
       pause: ConstructorOf<Pause>;
 
-      /**
-       * @defaultValue `SceneNavigation`
-       */
+      /** @defaultValue `SceneNavigation` */
       nav: ConstructorOf<SceneNavigation>;
 
-      /**
-       * @defaultValue `Notifications`
-       */
+      /** @defaultValue `Notifications` */
       notifications: ConstructorOf<Notifications>;
 
-      /**
-       * @defaultValue `ActorDirectory`
-       */
+      /** @defaultValue `ActorDirectory` */
       actors: ConstructorOf<ActorDirectory>;
 
-      /**
-       * @defaultValue `ChatLog`
-       */
+      /** @defaultValue `CardsDirectory` */
+      cards: ConstructorOf<SidebarTab>; // FIXME ConstructorOf<CardsDirectory>
+
+      /** @defaultValue `ChatLog` */
       chat: ConstructorOf<ChatLog>;
 
-      /**
-       * @defaultValue `CombatTracker`
-       */
+      /** @defaultValue `CombatTracker` */
       combat: ConstructorOf<CombatTracker>;
 
-      /**
-       * @defaultValue `CompendiumDirectory`
-       */
+      /** @defaultValue `CompendiumDirectory` */
       compendium: ConstructorOf<CompendiumDirectory>;
 
-      /**
-       * @defaultValue `SceneControls`
-       */
+      /** @defaultValue `SceneControls` */
       controls: ConstructorOf<SceneControls>;
 
-      /**
-       * @defaultValue `Hotbar`
-       */
+      /** @defaultValue `Hotbar` */
       hotbar: ConstructorOf<Hotbar>;
 
-      /**
-       * @defaultValue `ItemDirectory`
-       */
+      /** @defaultValue `ItemDirectory` */
       items: ConstructorOf<ItemDirectory>;
 
-      /**
-       * @defaultValue `JournalDirectory`
-       */
+      /** @defaultValue `JournalDirectory` */
       journal: ConstructorOf<JournalDirectory>;
 
-      /**
-       * @defaultValue `MacroDirectory`
-       */
+      /** @defaultValue `MacroDirectory` */
       macros: ConstructorOf<MacroDirectory>;
 
-      /**
-       * @defaultValue `PlayerList`
-       */
+      /** @defaultValue `PlayerList` */
       players: ConstructorOf<PlayerList>;
 
-      /**
-       * @defaultValue `PlaylistDirectory`
-       */
+      /** @defaultValue `PlaylistDirectory` */
       playlists: ConstructorOf<PlaylistDirectory>;
 
-      /**
-       * @defaultValue `SceneDirectory`
-       */
+      /** @defaultValue `SceneDirectory` */
       scenes: ConstructorOf<SceneDirectory>;
 
-      /**
-       * @defaultValue `Settings`
-       */
+      /** @defaultValue `Settings` */
       settings: ConstructorOf<Settings>;
 
-      /**
-       * @defaultValue `RollTableDirectory`
-       */
+      /** @defaultValue `RollTableDirectory` */
       tables: ConstructorOf<RollTableDirectory>;
 
-      /**
-       * @defaultValue `CameraViews`
-       */
+      /** @defaultValue `CameraViews` */
       webrtc: ConstructorOf<CameraViews>;
     }
 
     namespace Canvas {
+      interface Groups {
+        /** @defaultValue `{ groupClass: PrimaryCanvasGroup }` */
+        primary: CONFIG.Canvas.GroupDefinition<typeof PrimaryCanvasGroup>;
+
+        /** @defaultValue `{ groupClass: EffectsCanvasGroup }` */
+        effects: CONFIG.Canvas.GroupDefinition<typeof EffectsCanvasGroup>;
+
+        /** @defaultValue `{ groupClass: InterfaceCanvasGroup }` */
+        interface: CONFIG.Canvas.GroupDefinition<typeof InterfaceCanvasGroup>;
+
+        [key: string]: CONFIG.Canvas.GroupDefinition;
+      }
+
       interface Layers {
-        /**
-         * @defaultValue `BackgroundLayer`
-         */
-        background: ConstructorOf<BackgroundLayer>;
+        /** @defaultValue `{ layerClass: BackgroundLayer, group: "primary" }` */
+        background: LayerDefinition<ConstructorOf<BackgroundLayer>>;
 
-        /**
-         * @defaultValue `DrawingsLayer`
-         */
-        drawings: ConstructorOf<DrawingsLayer>;
+        /** @defaultValue `{ layerClass: DrawingsLayer, group: "primary" }` */
+        drawings: LayerDefinition<ConstructorOf<DrawingsLayer>>;
 
-        /**
-         * @defaultValue `GridLayer`
-         */
-        grid: ConstructorOf<GridLayer>;
+        /** @defaultValue `{ layerClass: GridLayer, group: "primary" }` */
+        grid: LayerDefinition<ConstructorOf<GridLayer>>;
 
-        /**
-         * @defaultValue `WallsLayer`
-         */
-        walls: ConstructorOf<WallsLayer>;
+        /** @defaultValue `{ layerClass: TemplateLayer, group: "primary" }` */
+        templates: LayerDefinition<ConstructorOf<TemplateLayer>>;
 
-        /**
-         * @defaultValue `TemplateLayer`
-         */
-        templates: ConstructorOf<TemplateLayer>;
+        /** @defaultValue `{ layerClass: TokenLayer, group: "primary" }` */
+        tokens: LayerDefinition<ConstructorOf<TokenLayer>>;
 
-        /**
-         * @defaultValue `NotesLayer`
-         */
-        notes: ConstructorOf<NotesLayer>;
+        /** @defaultValue `{ layerClass: ForegroundLayer, group: "primary" }` */
+        foreground: LayerDefinition<ConstructorOf<ForegroundLayer>>;
 
-        /**
-         * @defaultValue `TokenLayer`
-         */
-        tokens: ConstructorOf<TokenLayer>;
+        /** @defaultValue `{ layerClass: WallsLayer, group: "effects" }` */
+        walls: LayerDefinition<ConstructorOf<WallsLayer>>;
 
-        /**
-         * @defaultValue `ForegroundLayer`
-         */
-        foreground: ConstructorOf<ForegroundLayer>;
+        /** @defaultValue `{ layerClass: LightingLayer, group: "effects" }` */
+        lighting: LayerDefinition<ConstructorOf<LightingLayer>>;
 
-        /**
-         * @defaultValue `SoundsLayer`
-         */
-        sounds: ConstructorOf<SoundsLayer>;
+        /** @defaultValue `{ layerClass: WeatherLayer, group: "effects" }` */
+        weather: LayerDefinition<ConstructorOf<CanvasLayer>>; // FIXME: WeatherLayer
 
-        /**
-         * @defaultValue `LightingLayer`
-         */
-        lighting: ConstructorOf<LightingLayer>;
+        /** @defaultValue `{ layerClass: SightLayer, group: "effects" }` */
+        sight: LayerDefinition<ConstructorOf<SightLayer>>;
 
-        /**
-         * @defaultValue `SightLayer`
-         */
-        sight: ConstructorOf<SightLayer>;
+        /** @defaultValue `{ layerClass: SoundsLayer, group: "interface" }` */
+        sounds: LayerDefinition<ConstructorOf<SoundsLayer>>;
 
-        /**
-         * @defaultValue `EffectsLayer`
-         */
-        effects: ConstructorOf<EffectsLayer>;
+        /** @defaultValue `{ layerClass: NotesLayer, group: "interface" }` */
+        notes: LayerDefinition<ConstructorOf<NotesLayer>>;
 
-        /**
-         * @defaultValue `ControlsLayer`
-         */
-        controls: ConstructorOf<ControlsLayer>;
+        /** @defaultValue `{ layerClass: ControlsLayer, group: "interface" }` */
+        controls: LayerDefinition<ConstructorOf<ControlsLayer>>;
 
-        [key: string]: ConstructorOf<CanvasLayer>;
+        [key: string]: LayerDefinition;
+      }
+
+      interface GroupDefinition<GroupClass extends CanvasGroupConstructor = CanvasGroupConstructor> {
+        groupClass: GroupClass;
+      }
+
+      interface LayerDefinition<LayerClass extends ConstructorOf<CanvasLayer> = ConstructorOf<CanvasLayer>> {
+        layerClass: LayerClass;
+        group: keyof CONFIG['Canvas']['groups'];
       }
     }
 
-    interface SheetClass {
-      id: string;
-      cls: ConstructorOf<FormApplication>;
-      label: string;
-      default: boolean;
+    namespace Cards {
+      interface Preset {
+        type: string;
+        label: string;
+        src: string;
+      }
     }
-
-    type SheetClasses = Record<string, Record<string, SheetClass>>;
   }
 
   const CONFIG: CONFIG;
+}
+
+type PixiContainerConstructor = typeof PIXI.Container;
+interface CanvasGroup extends PIXI.Container {
+  sortableChildren: boolean;
+}
+
+interface CanvasGroupConstructor extends PixiContainerConstructor {
+  new (): CanvasGroup;
+
+  /**
+   * The name of this canvas group
+   */
+  groupName: string;
 }
