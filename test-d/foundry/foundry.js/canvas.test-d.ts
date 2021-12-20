@@ -15,7 +15,7 @@ expectType<MouseInteractionManager | undefined>(myCanvas.mouseInteractionManager
 expectType<MouseInteractionManager | null>(myCanvas.currentMouseManager);
 expectType<void>(myCanvas.initialize());
 expectType<string | null>(myCanvas.id);
-expectAssignable<Record<string, ConstructorOf<CanvasLayer>>>(Canvas.layers);
+expectAssignable<Record<string, CONFIG.Canvas.LayerDefinition<ConstructorOf<CanvasLayer>>>>(Canvas.layers);
 expectType<CanvasLayer[]>(myCanvas.layers);
 expectType<CanvasLayer | null>(myCanvas.activeLayer);
 expectType<Promise<void>>(myCanvas.tearDown());
