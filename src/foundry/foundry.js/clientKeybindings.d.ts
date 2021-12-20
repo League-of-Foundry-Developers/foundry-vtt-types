@@ -10,9 +10,7 @@
  * @see {@link KeybindingsConfig}
  */
 declare class ClientKeybindings {
-  static MOVEMENT_DIRECTIONS: ClientKeybindings.MovementDirections;
-
-  static ZOOM_DIRECTIONS: ClientKeybindings.ZoomDirections;
+  constructor();
 
   /** Registered Keybinding actions */
   actions: Map<string, KeybindingActionConfig>;
@@ -34,11 +32,20 @@ declare class ClientKeybindings {
   protected _registered: number;
 
   /**
-   * A mapping of movement keys which are pending
+   * A timestamp which tracks the last time a pan operation was performed
    * @internal
-   * @defaultValue `null`
+   * @defaultValue `0`
    */
-  protected _moveKeys: Set<string> | null;
+  protected _moveTime: number;
+
+  static MOVEMENT_DIRECTIONS: ClientKeybindings.MovementDirections;
+
+  static ZOOM_DIRECTIONS: ClientKeybindings.ZoomDirections;
+
+  /**
+   * An alias of the movement key set tracked by the keyboard
+   */
+  get moveKeys(): Set<string>;
 
   /** Initializes the keybinding values for all registered actions */
   initialize(): void;
@@ -57,8 +64,8 @@ declare class ClientKeybindings {
    *   hint: "A description of what will occur when the Keybinding is executed.",
    *   uneditable: [
    *     {
-   *       key: "1",
-   *       modifiers: [ "CONTROL" ]
+   *       key: "Digit1",
+   *       modifiers: ["Control"]
    *     }
    *   ],
    *   editable: [
@@ -69,7 +76,7 @@ declare class ClientKeybindings {
    *   onDown: () => { ui.notifications.info("Pressed!") },
    *   onUp: () => {},
    *   restricted: true,                         // Restrict this Keybinding to gamemaster only?
-   *   reservedModifiers: [ "ALT" ],             // If ALT is pressed, the notification is permanent instead of temporary
+   *   reservedModifiers: ["Alt""],              // If the ALT modifier is pressed, the notification is permanent instead of temporary
    *   precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
    * }
    * ```
@@ -115,12 +122,19 @@ declare class ClientKeybindings {
 
   /**
    * A helper method that, when given a value, ensures that the returned value is a standardized Binding array
-   * @param values - The values
+   * @param values - An array of keybinding assignments to be validated
+   * @returns An array of keybinding assignments confirmed as valid
    * @internal
    */
-  protected static _standardizeBindings(
-    values?: Array<KeybindingActionBinding | undefined> | null | undefined
-  ): Array<Required<KeybindingActionBinding> | undefined> | null | undefined;
+  protected static _validateBindings(values: Array<KeybindingActionBinding>): Array<Required<KeybindingActionBinding>>;
+
+  /**
+   * Validate that assigned modifiers are allowed
+   * @param keys - An array of modifiers which may be valid
+   * @returns An array of modifiers which are confirmed as valid
+   * @internal
+   */
+  protected static _validateModifiers(keys: string[]): string[];
 
   /**
    * Compares two Keybinding Actions based on their Order

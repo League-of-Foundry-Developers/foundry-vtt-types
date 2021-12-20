@@ -11,54 +11,65 @@ declare class KeyboardManager {
   downKeys: Set<string>;
 
   /**
-   * @defaultValue `null`
+   * The set of movement keys which were recently pressed
    */
-  protected _moveTime: number | null;
+  moveKeys: Set<string>;
 
   /**
-   * Enumerate the "digit keys"
+   * Allowed modifier keys
    */
-  static DIGIT_KEYS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
-
-  /**
-   * Map keys used for movement
-   */
-  static MOVEMENT_KEYS: {
-    W: ['up'];
-    A: ['left'];
-    S: ['down'];
-    D: ['right'];
-    ARROWUP: ['up'];
-    ARROWRIGHT: ['right'];
-    ARROWDOWN: ['down'];
-    ARROWLEFT: ['left'];
-    NUMPAD1: ['down', 'left'];
-    NUMPAD2: ['down'];
-    NUMPAD3: ['down', 'right'];
-    NUMPAD4: ['left'];
-    NUMPAD6: ['right'];
-    NUMPAD7: ['up', 'left'];
-    NUMPAD8: ['up'];
-    NUMPAD9: ['up', 'right'];
+  static MODIFIER_KEYS: {
+    CONTROL: 'Control';
+    SHIFT: 'Shift';
+    ALT: 'Alt';
   };
 
   /**
-   * Map keys used for canvas zooming
+   * Track which KeyboardEvent#code presses associate with each modifier
    */
-  static ZOOM_KEYS: {
-    PAGEUP: 'in';
-    PAGEDOWN: 'out';
-    NUMPADADD: 'in';
-    NUMPADSUBTRACT: 'out';
+  static MODIFIER_CODES: {
+    Alt: ['AltLeft', 'AltRight'];
+    Control: ['ControlLeft', 'ControlRight', 'MetaLeft', 'MetaRight'];
+    Shift: ['ShiftLeft', 'ShiftRight'];
   };
+
+  /**
+   * Key codes which are "protected" and should not be used because they are reserved for browser-level actions.
+   */
+  static PROTECTED_KEYS: ['F5', 'F11', 'F12', 'PrintScreen', 'ScrollLock', 'NumLock', 'CapsLock'];
 
   /** The OS-specific string display for what their Command key is */
-  static CONTROL_KEY_STRING: string;
+  static CONTROL_KEY_STRING: '⌘' | 'Control';
 
   /**
-   * Reset tracking for which keys are in the down and released states
+   * An special mapping of how special KeyboardEvent#code values should map to displayed strings or symbols.
+   * Values in this configuration object override any other display formatting rules which may be applied.
    */
-  protected _reset(): void;
+  static KEYCODE_DISPLAY_MAPPING: {
+    ArrowLeft: '🡸';
+    ArrowRight: '🡺';
+    ArrowUp: '🡹';
+    ArrowDown: '🡻';
+    Backquote: '`';
+    Backslash: '\\';
+    BracketLeft: '[';
+    BracketRight: ']';
+    Comma: ',';
+    Equal: '=';
+    MetaLeft: '⌘' | '⊞';
+    Minus: '-';
+    NumpadAdd: 'Numpad+';
+    NumpadSubtract: 'Numpad-';
+    Period: '.';
+    Quote: "'";
+    Semicolon: ';';
+    Slash: '/';
+  };
+
+  /**
+   * Test whether an input currently has focus
+   */
+  get hasFocus(): boolean;
 
   /**
    * Emulates a key being pressed, triggering the Keyboard event workflow.
@@ -68,7 +79,33 @@ declare class KeyboardManager {
   static emulateKeypress(up: boolean, key: string): void;
 
   /**
-   * Converts a Keyboard Context event into a string representation, such as "C" or "CTRL+C"
+   * Format a KeyboardEvent#code into a displayed string.
+   * @param code - The input code
+   * @returns The displayed string for this code
+   */
+  static getKeycodeDisplayString(code: string): string;
+
+  /**
+   * Get a standardized keyboard context for a given event.
+   * Every individual keypress is uniquely identified using the KeyboardEvent#code property.
+   * A list of possible key codes is documented here: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code/code_values
+   *
+   * @param event - The originating keypress event
+   * @param up    - A flag for whether the key is down or up
+   *                (default: `false`)
+   * @returns The standardized context of the event
+   */
+  static getKeyboardEventContext(event: KeyboardEvent, up: boolean): KeyboardEventContext;
+
+  /**
+   * Report whether a modifier in KeyboardManager.MODIFIER_KEYS is currently actively depressed.
+   * @param modifier - A modifier in MODIFIER_KEYS
+   * @returns Is this modifier key currently down (active)?
+   */
+  isModifierActive(modifier: string): boolean;
+
+  /**
+   * Converts a Keyboard Context event into a string representation, such as "C" or "Control+C"
    * @param context          - The standardized context of the event
    * @param includeModifiers - If True, includes modifiers in the string representation
    *                           (default: `true`)
@@ -77,27 +114,11 @@ declare class KeyboardManager {
   protected static _getContextDisplayString(context: KeyboardEventContext, includeModifiers?: boolean): string;
 
   /**
-   * Get a standardized keyboard context for a given event
-   * @param event - The originating keypress event
-   * @param up    - A flag for whether the key is down or up
-   *                (default: `false`)
-   * @returns The standardized context of the event
-   */
-  static getKeyboardEventContext(event: KeyboardEvent, up?: boolean): KeyboardEventContext;
-
-  /**
-   * Standardizes a string key, replacing shorthands with full values and uppercasing the string
-   * @param key - The key to standardize
-   * @returns The standardized key
-   */
-  static standardizeKey(key: string): string;
-
-  /**
-   * Given a standardized pressed key, find all matching registered Keybind Actions
+   * Given a standardized pressed key, find all matching registered Keybind Actions.
    * @param context - A standardized keyboard event context
    * @returns The matched Keybind Actions. May be empty.
    */
-  protected static _getMatchingKeybinds(context: KeyboardEventContext): KeybindingAction[];
+  protected static _getMatchingActions(context: KeyboardEventContext): KeybindingAction[];
 
   /**
    * Test whether a keypress context matches the registration for a keybinding action
@@ -120,31 +141,16 @@ declare class KeyboardManager {
 
   /**
    * Processes a keyboard event context, checking it against registered keybinding actions
-   *
    * @param context - The keyboard event context
    * @internal
    */
   protected _processKeyboardContext(context: KeyboardEventContext): void;
 
   /**
-   * The key codes which represent a possible movement key
+   * Reset tracking for which keys are in the down and released states
+   * @internal
    */
-  get moveKeys(): KeybindingActionBinding[];
-
-  /**
-   * The key codes which represent a digit key
-   */
-  get digitKeys(): typeof KeyboardManager.DIGIT_KEYS;
-
-  /**
-   * Return the Bindings used for zooming the canvas
-   */
-  get zoomKeys(): KeybindingActionBinding[];
-
-  /**
-   * Test whether an input currently has focus
-   */
-  get hasFocus(): boolean;
+  protected _reset(): void;
 
   /**
    * Handle a key press into the down position
@@ -164,18 +170,14 @@ declare class KeyboardManager {
   static get MOUSE_WHEEL_RATE_LIMIT(): number;
 
   /**
-   * @deprecated since v9, will be removed in v10
-   * A helper method to test whether, given an Event, the CTRL (or CMD, or META) keys are pressed
-   * @param event - The originating event or canvas interaction
-   */
-  static isControl(event: KeyboardEvent | PIXI.InteractionEvent): boolean;
-
-  /**
    * @deprecated since V9, will be removed in V10
    * Return whether the key code is currently in the DOWN state
    * @param code - The key code to test
    */
   isDown(code: string): boolean;
+
+  /** @deprecated since v9, will be removed in v10 */
+  static isControl(event: KeyboardEvent | PIXI.InteractionEvent): boolean;
 
   /**
    * @deprecated since v9, will be removed in v10
@@ -183,9 +185,46 @@ declare class KeyboardManager {
    */
   isCtrl(event: Event | PIXI.InteractionEvent): boolean;
 
-  /**
-   * The set of key codes which are currently depressed (down)
-   * @deprecated in favor of `downKeys`. Will be removed in V10.
-   */
+  /** @deprecated since v9, will be removed in v10 */
   get _downKeys(): Set<string>;
+
+  /** @deprecated since v9, will be removed in v10 */
+  static DIGIT_KEYS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
+
+  /** @deprecated since v9, will be removed in v10 */
+  static MOVEMENT_KEYS: {
+    W: ['up'];
+    A: ['left'];
+    S: ['down'];
+    D: ['right'];
+    ARROWUP: ['up'];
+    ARROWRIGHT: ['right'];
+    ARROWDOWN: ['down'];
+    ARROWLEFT: ['left'];
+    NUMPAD1: ['down', 'left'];
+    NUMPAD2: ['down'];
+    NUMPAD3: ['down', 'right'];
+    NUMPAD4: ['left'];
+    NUMPAD6: ['right'];
+    NUMPAD7: ['up', 'left'];
+    NUMPAD8: ['up'];
+    NUMPAD9: ['up', 'right'];
+  };
+
+  /** @deprecated since v9, will be removed in v10 */
+  static ZOOM_KEYS: {
+    PAGEUP: 'in';
+    PAGEDOWN: 'out';
+    NUMPADADD: 'in';
+    NUMPADSUBTRACT: 'out';
+  };
+
+  /** @deprecated since v9, will be removed in v10 */
+  static standardizeKey(key: string): string;
+
+  /** @deprecated since v9, will be removed in v10 */
+  get digitKeys(): typeof KeyboardManager.DIGIT_KEYS;
+
+  /** @deprecated since v9, will be removed in v10 */
+  get zoomKeys(): KeybindingActionBinding[];
 }
