@@ -68,6 +68,9 @@ declare abstract class DiceTerm extends RollTerm {
   /** Return an array of rolled values which are still active within this term */
   get values(): number[];
 
+  /** @override */
+  get isDeterministic(): boolean;
+
   /* -------------------------------------------- */
 
   /**

@@ -204,6 +204,9 @@ interface PoolTermConstructorData {
    */
   terms?: string[];
 
+  /** @override */
+  get isDeterministic(): boolean;
+
   /**
    * @defaultValue `[]`
    */

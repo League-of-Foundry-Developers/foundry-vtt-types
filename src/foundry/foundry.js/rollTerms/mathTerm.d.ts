@@ -44,6 +44,9 @@ declare global {
 
     get expression(): string;
 
+    /** @override */
+    get isDeterministic(): boolean;
+
     protected _evaluateSync({ minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): this;
 
     protected _evaluate({ minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): Promise<this>;
