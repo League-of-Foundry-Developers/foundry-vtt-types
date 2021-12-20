@@ -8,15 +8,15 @@ import { EffectDurationData, EffectDurationDataConstructorData } from './effectD
 interface ActiveEffectDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
   changes: DocumentField<EffectChangeData[]> & {
-    default: [];
-    required: true;
     type: [typeof EffectChangeData];
+    required: true;
+    default: [];
   };
   disabled: typeof fields.BOOLEAN_FIELD;
   duration: DocumentField<EffectDurationData> & {
-    default: {};
-    required: true;
     type: typeof EffectDurationData;
+    required: true;
+    default: {};
   };
   icon: typeof fields.IMAGE_FIELD;
   label: typeof fields.BLANK_STRING;

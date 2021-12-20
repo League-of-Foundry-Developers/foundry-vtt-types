@@ -19,7 +19,7 @@ interface ChatMessageDataSchema extends DocumentSchema {
   content: typeof fields.BLANK_STRING;
   speaker: DocumentField<ChatSpeakerData> & { type: typeof ChatSpeakerData; required: true; default: {} };
   whisper: DocumentField<string[]> & {
-    type: typeof String[];
+    type: [typeof String];
     clean: (users: Array<{ id: string } | string>) => string[];
     required: true;
     default: string[];

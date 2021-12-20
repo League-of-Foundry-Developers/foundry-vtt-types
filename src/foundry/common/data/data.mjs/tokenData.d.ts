@@ -43,7 +43,7 @@ export interface TokenDataSchema extends DocumentSchema {
   lockRotation: typeof fields.BOOLEAN_FIELD;
   rotation: FieldReturnType<typeof fields.ANGLE_FIELD, { default: number }>;
   effects: DocumentField<string[]> & {
-    type: typeof String[];
+    type: [typeof String];
     required: true;
     default: string[];
   };
