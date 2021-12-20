@@ -41,6 +41,9 @@ declare abstract class RollTerm {
   /** Optional flavor text which modifies and describes this term. */
   get flavor(): string;
 
+  /** Whether this term is entirely deterministic or contains some randomness. */
+  get isDeterministic(): boolean;
+
   /**
    * Evaluate the roll term, populating the results Array.
    * @param options - (default: `{}`)
@@ -107,7 +110,7 @@ declare namespace RollTerm {
     /**
      * Evaluate the roll asynchronously, receiving a Promise as the returned value.
      * This will become the default behavior in version 10.x
-     * @defaultValue `false`
+     * @defaultValue `true`
      */
     async: boolean;
   }

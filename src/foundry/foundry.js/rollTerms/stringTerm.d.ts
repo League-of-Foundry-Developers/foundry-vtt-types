@@ -16,6 +16,9 @@ declare global {
 
     get total(): string;
 
+    /** @override */
+    get isDeterministic(): boolean;
+
     evaluate(options?: InexactPartial<RollTerm.EvaluationOptions>): never;
   }
 }
