@@ -61,10 +61,10 @@ declare interface KeybindingActionConfig {
 
 /** A Client Keybinding Action Binding */
 declare interface KeybindingActionBinding {
-  /** The Keyboard key that matches this binding */
+  /** The KeyboardEvent#code value from https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code/code_values */
   key: string;
 
-  /** A list of string modifiers required to match this binding, such as [ "CONTROL" ] */
+  /** An array of modifiers keys from KeyboardManager.MODIFIER_KEYS which are required for this binding to be activated */
   modifiers?: string[];
 }
 
@@ -86,9 +86,6 @@ declare interface KeybindingAction {
 declare interface KeyboardEventContext {
   /** The normalized string key, such as "A" */
   key: string;
-
-  /** The executing Keybinding Action */
-  action: string;
 
   /** The originating keypress event */
   event: KeyboardEvent;
@@ -113,6 +110,9 @@ declare interface KeyboardEventContext {
 
   /** True if the given key is being held down such that it is automatically repeating. */
   repeat: boolean;
+
+  /** The executing Keybinding Action. May be undefined until the action is known. */
+  action: string | undefined;
 }
 
 type RequestData = object | object[] | string | string[];
