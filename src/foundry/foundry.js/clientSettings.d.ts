@@ -236,6 +236,7 @@ declare namespace ClientSettings {
     'core.maxFPS': number;
     'core.mipmap': boolean;
     'core.moduleConfiguration': Record<string, boolean>;
+    'core.nue.shownTips': boolean;
     'core.noCanvas': boolean;
     'core.permissions': Game.Permissions;
     'core.rollMode': foundry.CONST.DICE_ROLL_MODES;
