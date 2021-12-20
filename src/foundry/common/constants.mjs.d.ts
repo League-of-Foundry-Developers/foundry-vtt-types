@@ -153,6 +153,7 @@ export type DOCUMENT_PERMISSION_LEVELS = ValueOf<typeof DOCUMENT_PERMISSION_LEVE
  */
 export const DOCUMENT_LINK_TYPES: readonly [
   'Actor',
+  'Cards',
   'Item',
   'Scene',
   'JournalEntry',
