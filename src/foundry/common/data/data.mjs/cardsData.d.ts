@@ -96,7 +96,7 @@ interface CardsDataBaseProperties {
    * An object which configures user permissions to this stack
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>>;
+  permission: Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>;
 
   /**
    * An object of optional key/value flags
@@ -164,7 +164,7 @@ interface CardsDataConstructorData {
    * An object which configures user permissions to this stack
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission?: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>> | undefined | null;
+  permission?: Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS> | undefined | null;
 
   /**
    * An object of optional key/value flags
@@ -203,10 +203,6 @@ export type CardsData = DocumentData<
   CardsDataConstructorData
   // FIXME: documents.BaseCards
 > &
-  CardsDataProperties & {
-    _initializeSource(data: CardsDataConstructorData): CardsDataSource;
-
-    _initialize(): void;
-  };
+  CardsDataProperties;
 
 export declare const CardsData: CardsDataConstructor;

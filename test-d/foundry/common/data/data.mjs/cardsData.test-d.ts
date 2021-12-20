@@ -51,6 +51,7 @@ declare global {
 
 expectError(new foundry.data.CardsData());
 expectError(new foundry.data.CardsData({}));
+expectType<foundry.data.CardsData>(new foundry.data.CardsData({ name: 'Some Cards' }));
 
 expectError(new foundry.data.CardsData({ name: 'Some Cards With Wrong Type', type: 'foo' }));
 

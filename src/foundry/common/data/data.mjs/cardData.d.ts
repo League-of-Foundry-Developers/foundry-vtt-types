@@ -82,8 +82,8 @@ interface CardDataBaseProperties {
   /**  */
   value: number | undefined | null;
 
-  /** @defaultValue `{}` */
-  back: CardFaceData | Record<string, never>;
+  /** @defaultValue `new CardFaceData({})` */
+  back: CardFaceData;
 
   /**
    * An array of faces which can be displayed for the card
@@ -154,7 +154,7 @@ interface CardDataConstructorData {
    * A category of card (for example, a suit) to which this card belongs
    * @defaultValue `game.system.documentTypes.Card[0]`
    */
-  type?: string | undefined | null;
+  type?: CardDataSource['type'] | undefined | null;
 
   /** Game system data which is defined by the system template.json model */
   data?: DeepPartial<CardDataSource['data']> | undefined | null;
@@ -165,7 +165,7 @@ interface CardDataConstructorData {
   /**  */
   value?: number | undefined | null;
 
-  /**  */
+  /** @defaultValue `new CardFaceData({})` */
   back?: CardFaceDataConstructorData | undefined | null;
 
   /**
@@ -178,7 +178,7 @@ interface CardDataConstructorData {
    * The index of the currently displayed face
    * @defaultValue `null`
    */
-  face: number | null;
+  face?: number | undefined | null;
 
   /**
    * Whether this card is currently drawn from its source deck
@@ -240,10 +240,6 @@ export type CardData = DocumentData<
   CardDataConstructorData
   // FIXME: documents.BaseCard
 > &
-  CardDataProperties & {
-    _initializeSource(data: CardDataConstructorData): CardDataSource;
-
-    _initialize(): void;
-  };
+  CardDataProperties;
 
 export declare const CardData: CardDataConstructor;
