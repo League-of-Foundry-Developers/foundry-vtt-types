@@ -65,9 +65,7 @@ declare abstract class DiceTerm extends RollTerm {
   /*  Dice Term Attributes                        */
   /* -------------------------------------------- */
 
-  /**
-   * Return an array of rolled values which are still active within this term
-   */
+  /** Return an array of rolled values which are still active within this term */
   get values(): number[];
 
   /* -------------------------------------------- */
@@ -219,13 +217,6 @@ declare abstract class DiceTerm extends RollTerm {
   /* -------------------------------------------- */
 
   /**
-   * @deprecated since 0.8.1
-   */
-  static fromExpression(expression: string, options: DiceTerm.Options): DiceTerm | null;
-
-  /* -------------------------------------------- */
-
-  /**
    * Determine whether a string expression matches this type of term
    * @param expression - The expression to parse
    * @param options - Additional options which customize the match
@@ -242,18 +233,6 @@ declare abstract class DiceTerm extends RollTerm {
    * @returns The constructed term
    */
   static fromMatch(match: RegExpMatchArray): DiceTerm;
-
-  /* -------------------------------------------- */
-
-  /**
-   * @deprecated since 0.8.1
-   */
-  static fromResults(options: Partial<DiceTerm.TermData>, results: DiceTerm.Result[]): DiceTerm;
-
-  /**
-   * @deprecated since 0.8.1
-   */
-  static getResultLabel(): string;
 }
 
 declare namespace DiceTerm {

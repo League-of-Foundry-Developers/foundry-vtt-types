@@ -488,7 +488,7 @@ interface SplitGroupOptions {
 interface Data {
   formula: string;
   results: Array<number | string>;
-  terms: Array<(PoolTerm.TermData & { class: 'DicePool' }) | DiceTerm.Data>;
+  terms: Array<PoolTerm.TermData | DiceTerm.Data>;
   total: number | null;
 }
 

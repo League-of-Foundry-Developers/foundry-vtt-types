@@ -177,11 +177,6 @@ declare global {
     countFailures(modifier: string): ReturnType<Die['countFailures']>;
   }
 
-  /**
-   * @deprecated since 0.8.1
-   */
-  const DicePool: typeof PoolTerm;
-
   namespace PoolTerm {
     /**
      * @remarks This interface is not defined by foundry itself. It only exists
