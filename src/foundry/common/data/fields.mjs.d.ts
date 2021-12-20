@@ -1,4 +1,4 @@
-import * as CONST from '../constants.mjs';
+import { DOCUMENT_PERMISSION_LEVELS } from '../constants.mjs';
 import { hasImageExtension, isColorString, isJSON } from './validators.mjs';
 import { Document } from '../abstract/module.mjs';
 import { FieldReturnType } from '../../../types/helperTypes';
@@ -346,16 +346,16 @@ interface DocumentId extends DocumentField<string | null> {
 /**
  * The standard permissions object which may be included by a Document.
  * @remarks
- * Property type: `Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>>`
- * Constructor type: `Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>> | undefined | null`
- * Default: `{ default: CONST.DOCUMENT_PERMISSION_LEVELS.NONE }`
+ * Property type: `Partial<Record<string, DOCUMENT_PERMISSION_LEVELS>>`
+ * Constructor type: `Partial<Record<string, DOCUMENT_PERMISSION_LEVELS>> | undefined | null`
+ * Default: `{ default: DOCUMENT_PERMISSION_LEVELS.NONE }`
  */
 export declare const DOCUMENT_PERMISSIONS: DocumentPermissions;
-interface DocumentPermissions extends DocumentField<Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>>> {
+interface DocumentPermissions extends DocumentField<Partial<Record<string, DOCUMENT_PERMISSION_LEVELS>>> {
   type: typeof Object;
   required: true;
   nullable: false;
-  default: { default: typeof CONST.DOCUMENT_PERMISSION_LEVELS.NONE };
+  default: { default: typeof DOCUMENT_PERMISSION_LEVELS.NONE };
   validate: typeof _validatePermissions;
   validationError: '{name} {field} "{value}" is not a mapping of user IDs and document permission levels';
 }
@@ -447,7 +447,7 @@ export declare function systemDataField<
 // TODO: Improve
 interface SystemDataField extends DocumentField<any> {
   type: typeof Object;
-  default: (data: { type?: string }) => Partial<Record<string, Partial<Record<string, unknown>>>> | {};
+  default: (data: { type?: string }) => Record<string, Record<string, unknown>>;
   required: true;
 }
 
