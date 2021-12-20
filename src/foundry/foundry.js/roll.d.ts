@@ -72,6 +72,9 @@ declare global {
      */
     protected _total: number | undefined;
 
+    /** A Proxy environment for safely evaluating a string using only available Math functions */
+    static MATH_PROXY: Math;
+
     /**
      * The HTML template path used to render a complete Roll object to the chat log
      * @defaultValue `'templates/dice/roll.html'`
@@ -350,7 +353,7 @@ declare global {
      * Render a Roll instance to HTML
      * @param chatOptions - An object configuring the behavior of the resulting chat message.
      *                      (default: `{}`)
-     * @returns The rendered HTML tooltip as a string
+     * @returns The rendered HTML template as a string
      */
     render(chatOptions?: ChatOptions): Promise<string>;
 
