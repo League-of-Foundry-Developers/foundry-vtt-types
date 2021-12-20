@@ -124,7 +124,7 @@ declare abstract class Document<
   get name(): string | null;
 
   /**
-   * Test whether a given User has a sufficient role in order to create Documents of this type.
+   * Test whether a given User has a sufficient role in order to create Documents of this type in general.
    * @param user - The User being tested
    * @returns Does the User have a sufficient role to create?
    */
@@ -137,15 +137,15 @@ declare abstract class Document<
    *                 (default: `{}`)
    * @param save   - Save the clone to the World database?
    *                 (default: `false`)
-   * @param keepId - Keep the original Document ID? Otherwise the ID will become undefined
-   *                 (default: `false`)
+   * @param context - Additional context options passed to the create method
+   *                 (default: `{}`)
    * @returns The cloned Document instance
    */
   clone(
     data?: DeepPartial<
       ConstructorDataType<ConcreteDocumentData> | (ConstructorDataType<ConcreteDocumentData> & Record<string, unknown>)
     >,
-    { save, keepId }?: { save?: boolean; keepId?: boolean }
+    { save, ...context }?: { save: boolean } & DocumentModificationContext
   ): TemporaryDocument<this> | Promise<TemporaryDocument<this> | undefined>;
 
   /**
@@ -719,6 +719,12 @@ export interface DocumentModificationOptions {
    * @defaultValue `false`
    */
   keepId?: boolean;
+
+  /**
+   * When performing a creation operation, keep existing _id values of documents embedded within the one being created instead of generating new ones.
+   * @defaultValue `true`
+   */
+  keepEmbeddedIds?: boolean;
 
   /**
    * Create a temporary document which is not saved to the database. Only used during creation.
