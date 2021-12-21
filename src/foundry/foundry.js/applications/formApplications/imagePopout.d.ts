@@ -20,7 +20,7 @@
  * ```
  */
 declare class ImagePopout extends FormApplication<ImagePopout.Options, ImagePopout.Data, string> {
-  constructor(src: string, options?: ImagePopout.Options);
+  constructor(src: string, options?: Partial<ImagePopout.Options>);
 
   /**
    * @defaultValue `null`
