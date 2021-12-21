@@ -2,8 +2,13 @@
  * Benchmark the performance of a function, calling it a requested number of iterations.
  * @param func       - The function to benchmark
  * @param iterations - The number of iterations to test
+ * @param args       - Additional arguments passed to the benchmarked function
  */
-export declare function benchmark(func: () => unknown, iterations: number): void;
+export declare function benchmark<F extends (...args: any[]) => unknown>(
+  func: F,
+  iterations: number,
+  ...args: Parameters<F>
+): Promise<void>;
 
 /**
  * Wrap a callback in a debounced timeout.
@@ -22,9 +27,18 @@ export declare function debounce<T extends (...args: any[]) => unknown>(
  * This method DOES support recursive data structures containing inner objects or arrays.
  * This method DOES NOT support advanced object types like Set, Map, or other specialized classes.
  * @param original - Some sort of data
+ * @param options  - Options to configure the behaviour of deepClone
  * @returns The clone of that data
  */
-export declare function deepClone<T>(original: T): T;
+export declare function deepClone<T>(original: T, options?: DeepCloneOptions): T;
+
+interface DeepCloneOptions {
+  /**
+   * Throw an Error if deepClone is unable to clone something instead of returning the original
+   * @defaultValue `false`
+   */
+  strict?: boolean;
+}
 
 /**
  * Deeply difference an object against some other, returning the update keys and values
@@ -100,6 +114,17 @@ type InnerDuplicated<T> = T extends { toJSON(): infer U }
  * @internal
  */
 export type Duplicated<T> = T extends NonStringifiable ? never : InnerDuplicated<T>;
+
+/**
+ * Test whether some class is a subclass of a parent.
+ * @param cls    - The class to test
+ * @param parent - Some other class which may be a parent
+ * @returns Is the class a subclass of the parent?
+ */
+export declare function isSubclass(
+  cls: new (...args: any[]) => unknown,
+  parent: new (...args: any[]) => unknown
+): boolean;
 
 /**
  * Encode a url-like string by replacing any characters which need encoding

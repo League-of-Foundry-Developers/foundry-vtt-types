@@ -1,6 +1,22 @@
 import { expectAssignable, expectError, expectNotAssignable, expectType } from 'tsd';
 import '../../../index';
 
+// benchmark
+
+declare function functionWithoutParameters(): void;
+declare function functionWithParameters(a: number, b: string, c?: boolean): void;
+declare function functionWithReturnTypeOtherThanVoid(): number;
+
+expectType<Promise<void>>(foundry.utils.benchmark(functionWithoutParameters, 42));
+expectError(foundry.utils.benchmark(functionWithoutParameters, 42, 'unknown argument'));
+expectType<Promise<void>>(foundry.utils.benchmark(functionWithParameters, 42, 1, '', false));
+expectType<Promise<void>>(foundry.utils.benchmark(functionWithParameters, 42, 1, ''));
+expectError(foundry.utils.benchmark(functionWithParameters, 42, 1));
+expectError(foundry.utils.benchmark(functionWithParameters, 42, 1, '', 'unknown argument'));
+expectType<Promise<void>>(foundry.utils.benchmark(functionWithReturnTypeOtherThanVoid, 42));
+
+// deepClone
+
 const complexObject = {
   a: '',
   b: 0,
@@ -15,8 +31,6 @@ const complexObject = {
     }
   ]
 };
-
-// deepClone
 
 expectType<string>(foundry.utils.deepClone('abc' as string));
 expectType<'abc'>(foundry.utils.deepClone('abc'));
@@ -34,6 +48,10 @@ expectType<Array<string>>(foundry.utils.deepClone(['a', 'b']));
 expectType<{ a: string; b: number }>(foundry.utils.deepClone({ a: 'foo', b: 42 }));
 expectType<Date>(foundry.utils.deepClone(new Date()));
 expectType<typeof complexObject>(foundry.utils.deepClone(complexObject));
+
+expectType<string>(foundry.utils.deepClone('abc' as string, { strict: false }));
+expectType<string>(foundry.utils.deepClone('abc' as string, { strict: true }));
+expectType<string>(foundry.utils.deepClone('abc' as string, { strict: true as boolean }));
 
 // duplicate
 
@@ -172,6 +190,17 @@ expectType<
       }
   >
 >(foundry.utils.duplicate(complexObject));
+
+// isSubclass
+
+declare class ClassWithNoConstructorParameters {}
+
+declare class ClassWithConstructorParameters {
+  constructor(a: number, b: string);
+}
+
+expectType<boolean>(foundry.utils.isSubclass(ClassWithNoConstructorParameters, ClassWithConstructorParameters));
+expectType<boolean>(foundry.utils.isSubclass(ClassWithConstructorParameters, ClassWithNoConstructorParameters));
 
 // invertObject
 expectType<{ readonly 1: 'a'; readonly foo: 'b' }>(foundry.utils.invertObject({ a: 1, b: 'foo' } as const));
