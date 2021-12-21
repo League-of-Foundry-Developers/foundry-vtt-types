@@ -80,10 +80,16 @@ interface CardsDataBaseProperties {
    */
   rotation: number;
 
-  /** @defaultValue `false` */
+  /**
+   * Whether or not to publicly display the number of cards in this stack
+   * @defaultValue `false`
+   */
   displayCount: boolean;
 
-  /** @defaultValue `null` */
+  /**
+   * The _id of a Folder which contains this document
+   * @defaultValue `null`
+   */
   folder: string | null;
 
   /**
@@ -148,10 +154,16 @@ interface CardsDataConstructorData {
    */
   rotation?: number | undefined | null;
 
-  /** @defaultValue `false` */
+  /**
+   * Whether or not to publicly display the number of cards in this stack
+   * @defaultValue `false`
+   */
   displayCount?: boolean | undefined | null;
 
-  /** @defaultValue `null` */
+  /**
+   * The _id of a Folder which contains this document
+   * @defaultValue `null`
+   */
   folder?: string | undefined | null;
 
   /**
