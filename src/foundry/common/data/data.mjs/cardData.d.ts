@@ -76,17 +76,23 @@ interface CardDataBaseProperties {
   /** Game system data which is defined by the system template.json model */
   data: object;
 
-  /** @defaultValue `""` */
+  /**
+   * An optional suit designation which is used by default sorting
+   * @defaultValue `""`
+   */
   suit: string;
 
-  /**  */
+  /** An optional numeric value of the card which is used by default sorting */
   value: number | undefined | null;
 
-  /** @defaultValue `new CardFaceData({})` */
+  /**
+   * An object of face data which describes the back of this card
+   * @defaultValue `new CardFaceData({})`
+   */
   back: CardFaceData;
 
   /**
-   * An array of faces which can be displayed for the card
+   * An array of face data which represent displayable faces of this card
    * @defaultValue `[]`
    */
   faces: CardFaceData[];
@@ -159,17 +165,22 @@ interface CardDataConstructorData {
   /** Game system data which is defined by the system template.json model */
   data?: DeepPartial<CardDataSource['data']> | undefined | null;
 
-  /** @defaultValue `""` */
+  /**
+   * An optional suit designation which is used by default sorting
+   * @defaultValue `""`
+   */
   suit?: string | undefined | null;
 
-  /**  */
+  /** An optional numeric value of the card which is used by default sorting */
   value?: number | undefined | null;
 
-  /** @defaultValue `new CardFaceData({})` */
-  back?: CardFaceDataConstructorData | undefined | null;
+  /**
+   * An object of face data which describes the back of this card
+   * @defaultValue `new CardFaceData({})`
+   */ back?: CardFaceDataConstructorData | undefined | null;
 
   /**
-   * An array of faces which can be displayed for the card
+   * An array of face data which represent displayable faces of this card
    * @defaultValue `[]`
    */
   faces?: CardFaceDataConstructorData[] | undefined | null;
