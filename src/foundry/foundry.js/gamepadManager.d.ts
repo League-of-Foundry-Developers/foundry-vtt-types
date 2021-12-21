@@ -30,7 +30,7 @@ declare class GamepadManager {
   protected _pollGamepads(): void;
 
   /**
-   * Converts a Gamepad Input event into a KeyboardEventContext, then processes it
+   * Converts a Gamepad Input event into a KeyboardEvent, then fires it
    * @param gamepadId - The string representation of the Gamepad Input
    * @param up        - True if the Input is pressed or active
    * @param repeat    - True if the Input is being held

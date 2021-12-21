@@ -73,10 +73,27 @@ declare class KeyboardManager {
 
   /**
    * Emulates a key being pressed, triggering the Keyboard event workflow.
-   * @param up  - If True, emulates the `keyup` Event. Else, the `keydown` event
-   * @param key - The string Key that is being pressed
+   * @param up       - If True, emulates the `keyup` Event. Else, the `keydown` event
+   * @param code     - The KeyboardEvent#code which is being pressed
+   * @param altKey   - Emulate the ALT modifier as pressed
+   *                   (default: `false`)
+   * @param ctrlKey  - Emulate the CONTROL modifier as pressed
+   *                   (default: `false`)
+   * @param shiftKey - Emulate the SHIFT modifier as pressed
+   *                   (default: `false`)
+   * @param repeat   - Emulate this as a repeat event
+   *                   (default: `false`)
    */
-  static emulateKeypress(up: boolean, key: string): void;
+  static emulateKeypress(
+    up: boolean,
+    key: string,
+    {
+      altKey,
+      ctrlKey,
+      shiftKey,
+      repeat
+    }?: { altKey?: boolean; ctrlKey?: boolean; shiftKey?: boolean; repeat?: boolean }
+  ): void;
 
   /**
    * Format a KeyboardEvent#code into a displayed string.
