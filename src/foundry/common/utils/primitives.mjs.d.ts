@@ -1,4 +1,4 @@
-declare interface Math {
+interface Math {
   /**
    * Bound a number between some minimum and maximum value, inclusively
    * @param num - The current value
@@ -44,7 +44,7 @@ declare interface Math {
   toRadians(angle: number): number;
 }
 
-declare interface Set<T> {
+interface Set<T> {
   /**
    * Test whether this set is equal to some other set.
    * Sets are equal if they share the same members, independent of order
@@ -52,6 +52,26 @@ declare interface Set<T> {
    * @returns Are the sets equal?
    */
   equals(other: Set<T>): boolean;
+
+  /**
+   * Return the first value from the set.
+   * @returns The first element in the set, or undefined
+   */
+  first(): T | undefined;
+
+  /**
+   * Return the intersection of two sets.
+   * @param other - Some other set to compare against
+   * @returns The intersection of both sets
+   */
+  intersection(other: Set<T>): Set<T>;
+
+  /**
+   * Test whether this set has an intersection with another set.
+   * @param other - Another set to compare against
+   * @returns Do the sets intersect?
+   */
+  intersects(other: Set<T>): boolean;
 
   /**
    * Test whether this set is a subset of some other set.
@@ -62,9 +82,15 @@ declare interface Set<T> {
   isSubset(other: Set<T>): boolean;
 }
 
-declare interface String {
+interface String {
+  /**
+   * Capitalize a string, transforming it's first character to a capital letter
+   */
   capitalize<S extends string>(this: S): Capitalize<S>;
 
+  /**
+   * Convert a string to Title Case where the first letter of each word is capitalized
+   */
   titleCase<S extends string>(this: S): Titlecase<S>;
 
   /**
@@ -74,20 +100,59 @@ declare interface String {
 
   /**
    * Transform any string into a url-viable slug string
-   * @param replacement - The replacement character to separate terms
-   *                      (default: `'-'`)
-   * @param strict      - Replace all non-alphanumeric characters, or allow them?
-   *                      (default: `false`)
+   * @param options - Optional arguments which customize how the slugify operation is performed
    * @returns The cleaned slug string
    */
-  slugify({ replacement, strict }?: { replacement?: string; strict?: boolean }): string;
+  slugify(options?: String.SlugifyOptions): string;
 }
 
-declare interface Number {
+declare namespace String {
+  interface SlugifyOptions {
+    /**
+     * The replacement character to separate terms
+     * @defaultValue `'-'`
+     */
+    replacement?: string;
+
+    /**
+     * Replace all non-alphanumeric characters, or allow them?
+     * @defaultValue `false`
+     */
+    strict?: boolean;
+  }
+}
+
+interface Number {
+  /**
+   * Test for near-equivalence of two numbers within some permitted epsilon
+   * @param n - Some other number
+   * @param e - Some permitted epsilon, by default 1e-8
+                (default: `1e-8`)
+   * @returns Are the numbers almost equal?
+   */
+  almostEqual(n: number, e?: number): boolean;
+
+  /**
+   * Transform a number to an ordinal string representation. i.e.
+   * ```
+   * 1 => 1st
+   * 2 => 2nd
+   * 3 => 3rd
+   * ```
+   */
   ordinalString(): string;
 
+  /**
+   * Return a string front-padded by zeroes to reach a certain number of numeral characters
+   * @param digits - The number of characters desired
+   * @returns The zero-padded number
+   */
   paddedString(digits: number): string;
 
+  /**
+   * Return a string prefaced by the sign of the number (+) or (-)
+   * @returns The signed number as a string
+   */
   signedString(): string;
 
   /**
@@ -110,10 +175,15 @@ declare interface Number {
    */
   toNearest(interval?: number, method?: 'round' | 'ceil' | 'floor'): number;
 
+  /**
+   * A faster numeric between check which avoids type coercion to the Number object
+   * Since this avoids coercion, if non-numbers are passed in unpredictable results will occur. Use with caution.
+   * @param inclusive - (default: `true`)
+   */
   between(a: number, b: number, inclusive?: boolean): boolean;
 }
 
-declare interface NumberConstructor {
+interface NumberConstructor {
   /**
    * A faster numeric between check which avoids type coercion to the Number object
    * Since this avoids coercion, if non-numbers are passed in unpredictable results will occur. Use with caution.
@@ -123,19 +193,27 @@ declare interface NumberConstructor {
 
   /**
    * Test whether a value is numeric
-   * This is the highest performing algorithm currently available
-   * https://jsperf.com/isnan-vs-typeof/5
+   * This is the highest performing algorithm currently available, per https://jsperf.com/isnan-vs-typeof/5
    * @param n - A value to test
    * @returns Is it a number?
    */
   isNumeric(n: unknown): n is number;
 }
 
-declare interface ArrayConstructor {
+interface ArrayConstructor {
+  /**
+   * Create and initialize an array of length n with integers from 0 to n-1
+   * @param n - The desired array length
+   * @returns An array of integers from 0 to n
+   */
   fromRange(n: number): number[];
 }
 
-declare interface Array<T> {
+interface Array<T> {
+  /**
+   * Flatten nested arrays by concatenating their contents
+   * @returns An array containing the concatenated inner values
+   */
   deepFlatten(): Array<Array.Flattened<T>>;
 
   /**
@@ -171,7 +249,7 @@ declare namespace Array {
   type Flattened<T> = T extends Array<infer U> ? Flattened<U> : T;
 }
 
-declare interface Date {
+interface Date {
   /**
    * Test whether a Date instance is valid.
    * A valid date returns a number for its timestamp, and NaN otherwise.
@@ -192,6 +270,11 @@ declare interface Date {
   toTimeInputString(): string;
 }
 
-declare interface RegExpConstructor {
+interface RegExpConstructor {
+  /**
+   * Escape a given input string, prefacing special characters with backslashes for use in a regular expression
+   * @param string - The un-escaped input string
+   * @returns  The escaped string, suitable for use in regular expression
+   */
   escape(string: string): string;
 }
