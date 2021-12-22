@@ -1,5 +1,6 @@
 import './activeEffectConfig';
 import './actorSheet';
+import './ambientLightConfig';
 import './ambientSoundConfig';
 import './combatantConfig';
 import './folderConfig';

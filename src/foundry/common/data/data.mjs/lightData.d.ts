@@ -85,7 +85,7 @@ interface LightDataProperties {
    * The amount of contrast this light applies to the background texture
    * @defaultValue `0`
    */
-  constrast: number;
+  contrast: number;
 
   /**
    * The depth of shadows this light applies to the background texture
@@ -162,7 +162,7 @@ interface LightDataConstructorData {
    * The amount of contrast this light applies to the background texture
    * @defaultValue `0`
    */
-  constrast?: number | undefined | null;
+  contrast?: number | undefined | null;
 
   /**
    * The depth of shadows this light applies to the background texture
