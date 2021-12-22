@@ -1,10 +1,9 @@
+import { expectError, expectType } from 'tsd';
+
 import type EmbeddedCollection from '../../../../src/foundry/common/abstract/embedded-collection.mjs';
 import type { PropertiesToSource } from '../../../../src/types/helperTypes';
 import type { ActiveEffectDataProperties } from '../../../../src/foundry/common/data/data.mjs/activeEffectData';
 import type { EffectDurationDataProperties } from '../../../../src/foundry/common/data/data.mjs/effectDurationData';
-
-import { expectError, expectType } from 'tsd';
-import '../../../../index';
 
 const baseActor = new foundry.documents.BaseActor();
 expectType<EmbeddedCollection<typeof ActiveEffect, foundry.data.ActorData>>(baseActor.effects);
@@ -101,7 +100,7 @@ if (baseActor.data.type === 'character') {
   expectType<number>(baseActor.data.data.damage);
 }
 
-// Flags for actors and items can be configured via the SourceConfig. This is tested here.
+// Flags for Actor, Items, Card, and Cards documents can be configured via the SourceConfig. This is tested here.
 // For configuring flags for actors and items via FlagConfig please have a look into baseItem.test-d.ts.
 // shared flags are available
 expectType<boolean>(baseActor.getFlag('my-module', 'known'));

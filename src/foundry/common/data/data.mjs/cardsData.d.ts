@@ -1,10 +1,12 @@
 import {
   ConfiguredData,
+  ConfiguredDocumentClass,
   ConfiguredFlags,
   ConfiguredSource,
   FieldReturnType,
   PropertiesToSource
 } from '../../../../types/helperTypes.js';
+import type EmbeddedCollection from '../../abstract/embedded-collection.mjs.js';
 import { DocumentData } from '../../abstract/module.mjs.js';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
@@ -23,7 +25,7 @@ interface CardsDataSchema extends DocumentSchema {
   description: typeof fields.BLANK_STRING;
   img: FieldReturnType<typeof fields.VIDEO_FIELD, { default: () => string }>;
   data: fields.SystemDataField;
-  // FIXME: cards: fields.EmbeddedCollectionField<typeof documents.BaseCard>
+  cards: fields.EmbeddedCollectionField<typeof documents.BaseCard>;
   width: typeof fields.POSITIVE_INTEGER_FIELD;
   heigth: typeof fields.POSITIVE_INTEGER_FIELD;
   rotation: typeof fields.ANGLE_FIELD;
@@ -66,7 +68,7 @@ interface CardsDataBaseProperties {
   data: object;
 
   /** A collection of Card documents which currently belong to this stack */
-  cards: unknown; // FIXME: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseCard>, CardsData>;
+  cards: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseCard>, CardsData>;
 
   /** The visible width of this stack */
   width: number | undefined;
@@ -140,7 +142,7 @@ interface CardsDataConstructorData {
   data?: DeepPartial<CardsDataSource['data']> | undefined | null;
 
   /** A collection of Card documents which currently belong to this stack */
-  cards?: unknown | undefined | null; // FIXME: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseCard>>[0][];
+  cards?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseCard>>[0][] | undefined | null;
 
   /** The visible width of this stack */
   width?: number | undefined | null;
@@ -192,7 +194,7 @@ type CardsDataSource = CardsDataBaseSource & ConfiguredSource<'Cards'>;
 type DocumentDataConstructor = Pick<typeof DocumentData, keyof typeof DocumentData>;
 
 interface CardsDataConstructor extends DocumentDataConstructor {
-  new (data: CardsDataConstructorData, document?: unknown | null): CardsData; // FIXME: documents.BaseCards
+  new (data: CardsDataConstructorData, document?: documents.BaseCards | null | undefined): CardsData;
 
   defineSchema(): CardsDataSchema;
 
@@ -212,8 +214,8 @@ export type CardsData = DocumentData<
   CardsDataSchema,
   CardsDataProperties,
   CardsDataSource,
-  CardsDataConstructorData
-  // FIXME: documents.BaseCards
+  CardsDataConstructorData,
+  documents.BaseCards
 > &
   CardsDataProperties;
 

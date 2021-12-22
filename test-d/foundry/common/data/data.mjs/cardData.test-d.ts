@@ -4,18 +4,34 @@ interface OldCardDataSourceData {
   condition: 'grubby';
 }
 
+interface OldCardFlags {
+  'my-module': {
+    someProp: boolean;
+    marked: boolean;
+  };
+}
+
 interface OldCardDataSource {
   type: 'old';
   data: OldCardDataSourceData;
+  flags: OldCardFlags;
 }
 
 interface UnoCardDataSourceData {
   special: boolean;
 }
 
+interface UnoCardFlags {
+  'my-module': {
+    someProp: boolean;
+    folded: boolean;
+  };
+}
+
 interface UnoCardDataSource {
   type: 'uno';
   data: UnoCardDataSourceData;
+  flags: UnoCardFlags;
 }
 
 interface OldCardDataPropertiesData extends OldCardDataSourceData {
@@ -25,6 +41,7 @@ interface OldCardDataPropertiesData extends OldCardDataSourceData {
 interface OldCardDataProperties {
   type: 'old';
   data: OldCardDataPropertiesData;
+  flags: OldCardFlags;
 }
 
 interface UnoCardDataPropertiesData extends UnoCardDataSourceData {
@@ -34,6 +51,7 @@ interface UnoCardDataPropertiesData extends UnoCardDataSourceData {
 interface UnoCardDataProperties {
   type: 'uno';
   data: UnoCardDataPropertiesData;
+  flags: UnoCardFlags;
 }
 
 type MyCardDataSource = OldCardDataSource | UnoCardDataSource;

@@ -7,6 +7,7 @@ import type {
 } from '../../../../types/helperTypes.js';
 import type DocumentData from '../../abstract/data.mjs.js';
 import * as fields from '../fields.mjs';
+import * as documents from '../../documents.mjs';
 import type { CardFaceData, CardFaceDataConstructorData } from './cardFaceData.js';
 
 interface CardDataSchema extends DocumentSchema {
@@ -235,7 +236,7 @@ type CardDataSource = CardDataBaseSource & ConfiguredSource<'Card'>;
 type DocumentDataConstructor = Pick<typeof DocumentData, keyof typeof DocumentData>;
 
 interface CardDataConstructor extends DocumentDataConstructor {
-  new (data: CardDataConstructorData, document?: unknown | null): CardData; // FIXME: documents.BaseCard;
+  new (data: CardDataConstructorData, document?: documents.BaseCard | null | undefined): CardData;
 
   defineSchema(): CardDataSchema;
 }
@@ -248,8 +249,8 @@ export type CardData = DocumentData<
   CardDataSchema,
   CardDataProperties,
   CardDataSource,
-  CardDataConstructorData
-  // FIXME: documents.BaseCard
+  CardDataConstructorData,
+  documents.BaseCard
 > &
   CardDataProperties;
 
