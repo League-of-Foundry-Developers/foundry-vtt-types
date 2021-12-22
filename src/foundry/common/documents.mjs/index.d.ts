@@ -2,6 +2,8 @@ export { BaseActiveEffect } from './baseActiveEffect';
 export { BaseActor } from './baseActor';
 export { BaseAmbientLight } from './baseAmbientLight';
 export { BaseAmbientSound } from './baseAmbientSound';
+export { BaseCard } from './baseCard';
+export { BaseCards } from './baseCards';
 export { BaseCombat } from './baseCombat';
 export { BaseCombatant } from './baseCombatant';
 export { BaseChatMessage } from './baseChatMessage';
