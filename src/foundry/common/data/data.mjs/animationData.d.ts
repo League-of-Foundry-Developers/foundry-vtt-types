@@ -10,7 +10,7 @@ interface AnimationDataSchema extends DocumentSchema {
     required: false;
     default: 5;
     validate: (a: number) => boolean;
-    validationError: 'Light animation speed must be an integer between 1 and 10';
+    validationError: 'Light animation speed must be an integer between 0 and 10';
   };
   intensity: DocumentField<number> & {
     type: typeof Number;
@@ -19,6 +19,7 @@ interface AnimationDataSchema extends DocumentSchema {
     validate: (a: number) => boolean;
     validationError: 'Light animation intensity must be an integer between 1 and 10';
   };
+  reverse: typeof fields.BOOLEAN_FIELD;
 }
 
 interface AnimationDataProperties {
@@ -38,6 +39,9 @@ interface AnimationDataProperties {
    * @defaultValue `5`
    */
   intensity: number;
+
+  /** @defaultValue `false` */
+  reverse: boolean;
 }
 
 export interface AnimationDataConstructorData {
@@ -57,6 +61,9 @@ export interface AnimationDataConstructorData {
    * @defaultValue `5`
    */
   intensity?: number | null | undefined;
+
+  /** @defaultValue `false` */
+  reverse?: boolean | undefined | null;
 }
 
 /**

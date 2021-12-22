@@ -8,10 +8,11 @@ interface AmbientSoundDataSchema extends DocumentSchema {
   _id: typeof fields.DOCUMENT_ID;
   x: typeof fields.REQUIRED_NUMBER;
   y: typeof fields.REQUIRED_NUMBER;
-  radius: typeof fields.REQUIRED_NUMBER;
+  radius: typeof fields.NONNEGATIVE_NUMBER_FIELD;
   path: typeof fields.AUDIO_FIELD;
   repeat: typeof fields.BOOLEAN_FIELD;
   volume: FieldReturnType<typeof fields.ALPHA_FIELD, { default: 0.5 }>;
+  walls: FieldReturnType<typeof fields.BOOLEAN_FIELD, { default: true }>;
   easing: FieldReturnType<typeof fields.BOOLEAN_FIELD, { default: true }>;
   hidden: typeof fields.BOOLEAN_FIELD;
   darkness: DocumentField<DarknessActivation> & {
@@ -25,22 +26,17 @@ interface AmbientSoundDataSchema extends DocumentSchema {
 interface AmbientSoundDataProperties {
   /**
    * The _id which uniquely identifies this AmbientSound document
+   * @defaultValue `null`
    */
   _id: string | null;
 
-  /**
-   * @defaultValue `0`
-   */
+  /** @defaultValue `0` */
   x: number;
 
-  /**
-   * @defaultValue `0`
-   */
+  /** @defaultValue `0` */
   y: number;
 
-  /**
-   * @defaultValue `0`
-   */
+  /** @defaultValue `0` */
   radius: number;
 
   /**
@@ -60,19 +56,13 @@ interface AmbientSoundDataProperties {
    */
   volume: number;
 
-  /**
-   * @defaultValue `true`
-   */
+  /** @defaultValue `true` */
   easing: boolean;
 
-  /**
-   * @defaultValue `false`
-   */
+  /** @defaultValue `false` */
   hidden: boolean;
 
-  /**
-   * @defaultValue `{}`
-   */
+  /** @defaultValue `{}` */
   darkness: DarknessActivation;
 
   /**
@@ -85,22 +75,17 @@ interface AmbientSoundDataProperties {
 interface AmbientSoundDataConstructorData {
   /**
    * The _id which uniquely identifies this AmbientSound document
+   * @defaultValue `null`
    */
   _id?: string | null | undefined;
 
-  /**
-   * @defaultValue `0`
-   */
+  /** @defaultValue `0` */
   x?: number | null | undefined;
 
-  /**
-   * @defaultValue `0`
-   */
+  /** @defaultValue `0` */
   y?: number | null | undefined;
 
-  /**
-   * @defaultValue `0`
-   */
+  /** @defaultValue `0` */
   radius?: number | null | undefined;
 
   /**
@@ -120,19 +105,13 @@ interface AmbientSoundDataConstructorData {
    */
   volume?: number | null | undefined;
 
-  /**
-   * @defaultValue `true`
-   */
+  /** @defaultValue `true` */
   easing?: boolean | null | undefined;
 
-  /**
-   * @defaultValue `false`
-   */
+  /** @defaultValue `false` */
   hidden?: boolean | null | undefined;
 
-  /**
-   * @defaultValue `{}`
-   */
+  /** @defaultValue `{}` */
   darkness?: DarknessActivationConstructorData | null | undefined;
 
   /**
@@ -154,6 +133,8 @@ export declare class AmbientSoundData extends DocumentData<
   documents.BaseAmbientSound
 > {
   static defineSchema(): AmbientSoundDataSchema;
+
+  _initializeSource(data: AmbientSoundDataConstructorData): PropertiesToSource<AmbientSoundDataProperties>;
 
   /** @override */
   protected _initialize(): void;
