@@ -56,6 +56,9 @@ interface AmbientSoundDataProperties {
    */
   volume: number;
 
+  /** @defaultValue `false` */
+  walls: boolean;
+
   /** @defaultValue `true` */
   easing: boolean;
 
@@ -104,6 +107,9 @@ interface AmbientSoundDataConstructorData {
    * @defaultValue `0.5`
    */
   volume?: number | null | undefined;
+
+  /** @defaultValue `false` */
+  walls?: boolean | null | undefined;
 
   /** @defaultValue `true` */
   easing?: boolean | null | undefined;
