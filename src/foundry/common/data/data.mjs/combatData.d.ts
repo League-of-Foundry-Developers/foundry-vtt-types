@@ -1,7 +1,6 @@
 import {
   ConfiguredDocumentClass,
   ConfiguredFlags,
-  ConstructorDataType,
   FieldReturnType,
   PropertiesToSource
 } from '../../../../types/helperTypes';
@@ -9,27 +8,36 @@ import EmbeddedCollection from '../../abstract/embedded-collection.mjs';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
-import { CombatantData } from './combatantData';
+import { CombatantDataConstructorData } from './combatantData';
 
 interface CombatDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
+  _id: fields.DocumentId;
   scene: fields.ForeignDocumentField<{ type: typeof documents.BaseScene }>;
   combatants: fields.EmbeddedCollectionField<typeof documents.BaseCombatant>;
-  active: typeof fields.BOOLEAN_FIELD;
-  round: FieldReturnType<typeof fields.NONNEGATIVE_INTEGER_FIELD, { default: 0; required: true }>;
-  turn: FieldReturnType<typeof fields.NONNEGATIVE_INTEGER_FIELD, { default: 0; required: true }>;
-  sort: typeof fields.INTEGER_SORT_FIELD;
-  flags: typeof fields.OBJECT_FIELD;
+  active: fields.BooleanField;
+  round: FieldReturnType<fields.NonnegativeIntegerField, { default: 0; required: true }>;
+  turn: FieldReturnType<fields.NonnegativeIntegerField, { default: 0; required: true }>;
+  sort: fields.IntegerSortField;
+  flags: fields.ObjectField;
 }
 
 interface CombatDataProperties {
-  /** The _id which uniquely identifies this Combat document */
+  /**
+   * The _id which uniquely identifies this Combat document
+   * @defaultValue `null`
+   */
   _id: string | null;
 
-  /** The _id of a Scene within which this Combat occurs */
+  /**
+   * The _id of a Scene within which this Combat occurs
+   * @defaultValue `null`
+   */
   scene: string | null;
 
-  /** A Collection of Combatant embedded Documents */
+  /**
+   * A Collection of Combatant embedded Documents
+   * @defaultValue `[]`
+   */
   combatants: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseCombatant>, CombatData>;
 
   /**
@@ -64,14 +72,23 @@ interface CombatDataProperties {
 }
 
 interface CombatDataConstructorData {
-  /** The _id which uniquely identifies this Combat document */
+  /**
+   * The _id which uniquely identifies this Combat document
+   * @defaultValue `null`
+   */
   _id?: string | null | undefined;
 
-  /** The _id of a Scene within which this Combat occurs */
-  scene?: string | null | undefined;
+  /**
+   * The _id of a Scene within which this Combat occurs
+   * @defaultValue `null`
+   */
+  scene?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseScene>> | string | null | undefined;
 
-  /** A Collection of Combatant embedded Documents */
-  combatants?: ConstructorDataType<CombatantData>[] | null | undefined;
+  /**
+   * A Collection of Combatant embedded Documents
+   * @defaultValue `[]`
+   */
+  combatants?: CombatantDataConstructorData[] | null | undefined;
 
   /**
    * Is the Combat encounter currently active?
@@ -108,15 +125,16 @@ interface CombatDataConstructorData {
  * The data schema for an Combat document.
  * @see BaseCombat
  */
-export declare class CombatData extends DocumentData<
+export class CombatData extends DocumentData<
   CombatDataSchema,
   CombatDataProperties,
   PropertiesToSource<CombatDataProperties>,
   CombatDataConstructorData,
   documents.BaseCombat
 > {
+  /** @override */
   static defineSchema(): CombatDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface CombatData extends CombatDataProperties {}
+export interface CombatData extends CombatDataProperties {}

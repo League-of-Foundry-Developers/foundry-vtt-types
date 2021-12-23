@@ -5,22 +5,22 @@ import * as fields from '../fields.mjs';
 import { DarknessActivation, DarknessActivationConstructorData } from './darknessActivation';
 
 interface AmbientSoundDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
-  x: typeof fields.REQUIRED_NUMBER;
-  y: typeof fields.REQUIRED_NUMBER;
-  radius: typeof fields.NONNEGATIVE_NUMBER_FIELD;
-  path: typeof fields.AUDIO_FIELD;
-  repeat: typeof fields.BOOLEAN_FIELD;
-  volume: FieldReturnType<typeof fields.ALPHA_FIELD, { default: 0.5 }>;
-  walls: FieldReturnType<typeof fields.BOOLEAN_FIELD, { default: true }>;
-  easing: FieldReturnType<typeof fields.BOOLEAN_FIELD, { default: true }>;
-  hidden: typeof fields.BOOLEAN_FIELD;
+  _id: fields.DocumentId;
+  x: fields.RequiredNumber;
+  y: fields.RequiredNumber;
+  radius: fields.NonnegativeNumberField;
+  path: fields.AudioField;
+  repeat: fields.BooleanField;
+  volume: FieldReturnType<fields.AlphaField, { default: 0.5 }>;
+  walls: FieldReturnType<fields.BooleanField, { default: true }>;
+  easing: FieldReturnType<fields.BooleanField, { default: true }>;
+  hidden: fields.BooleanField;
   darkness: DocumentField<DarknessActivation> & {
     type: typeof DarknessActivation;
     required: true;
-    default: {};
+    default: Record<string, never>;
   };
-  flags: typeof fields.OBJECT_FIELD;
+  flags: fields.ObjectField;
 }
 
 interface AmbientSoundDataProperties {
@@ -65,7 +65,7 @@ interface AmbientSoundDataProperties {
   /** @defaultValue `false` */
   hidden: boolean;
 
-  /** @defaultValue `{}` */
+  /** @defaultValue `new DarknessActivation({})` */
   darkness: DarknessActivation;
 
   /**
@@ -117,7 +117,7 @@ interface AmbientSoundDataConstructorData {
   /** @defaultValue `false` */
   hidden?: boolean | null | undefined;
 
-  /** @defaultValue `{}` */
+  /** @defaultValue `new DarknessActivation({})` */
   darkness?: DarknessActivationConstructorData | null | undefined;
 
   /**
@@ -131,15 +131,17 @@ interface AmbientSoundDataConstructorData {
  * The data schema for a AmbientSound embedded document.
  * @see BaseAmbientSound
  */
-export declare class AmbientSoundData extends DocumentData<
+export class AmbientSoundData extends DocumentData<
   AmbientSoundDataSchema,
   AmbientSoundDataProperties,
   PropertiesToSource<AmbientSoundDataProperties>,
   AmbientSoundDataConstructorData,
   documents.BaseAmbientSound
 > {
+  /** @override */
   static defineSchema(): AmbientSoundDataSchema;
 
+  /** @override */
   _initializeSource(data: AmbientSoundDataConstructorData): PropertiesToSource<AmbientSoundDataProperties>;
 
   /** @override */
@@ -147,4 +149,4 @@ export declare class AmbientSoundData extends DocumentData<
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface AmbientSoundData extends AmbientSoundDataProperties {}
+export interface AmbientSoundData extends AmbientSoundDataProperties {}

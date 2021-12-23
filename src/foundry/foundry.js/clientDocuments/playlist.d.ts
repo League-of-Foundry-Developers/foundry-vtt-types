@@ -1,5 +1,6 @@
-import type { ConfiguredDocumentClass, ConstructorDataType } from '../../../types/helperTypes';
+import type { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import type { DocumentModificationOptions } from '../../common/abstract/document.mjs';
+import type { PlaylistDataConstructorData } from '../../common/data/data.mjs/playlistData.js';
 
 declare global {
   /**
@@ -128,7 +129,7 @@ declare global {
 
     /** @override */
     protected _preUpdate(
-      changed: DeepPartial<ConstructorDataType<foundry.data.PlaylistData>>,
+      changed: DeepPartial<PlaylistDataConstructorData>,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;

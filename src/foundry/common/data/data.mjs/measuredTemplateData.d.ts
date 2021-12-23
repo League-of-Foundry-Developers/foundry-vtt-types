@@ -5,11 +5,11 @@ import {
   PropertiesToSource
 } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
-import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
+import * as fields from '../fields.mjs';
 
 interface MeasuredTemplateDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
+  _id: fields.DocumentId;
   user: fields.ForeignDocumentField<{ type: typeof documents.BaseUser; required: true }>;
   t: {
     type: typeof String;
@@ -18,21 +18,22 @@ interface MeasuredTemplateDataSchema extends DocumentSchema {
     validate: (t: unknown) => boolean;
     validationError: 'Invalid {name} {field} which must be a value in CONST.MEASURED_TEMPLATE_TYPES';
   };
-  x: typeof fields.REQUIRED_NUMBER;
-  y: typeof fields.REQUIRED_NUMBER;
-  distance: FieldReturnType<typeof fields.REQUIRED_POSITIVE_NUMBER, { default: 1 }>;
-  direction: FieldReturnType<typeof fields.ANGLE_FIELD, { default: 0 }>;
-  angle: typeof fields.ANGLE_FIELD;
-  width: FieldReturnType<typeof fields.REQUIRED_POSITIVE_NUMBER, { default: 1 }>;
-  borderColor: FieldReturnType<typeof fields.COLOR_FIELD, { required: true; default: '#000000' }>;
-  fillColor: FieldReturnType<typeof fields.COLOR_FIELD, { required: true; default: '#FF0000' }>;
-  texture: typeof fields.VIDEO_FIELD;
-  flags: typeof fields.OBJECT_FIELD;
+  x: fields.RequiredNumber;
+  y: fields.RequiredNumber;
+  distance: FieldReturnType<fields.RequiredPositiveNumber, { default: 1 }>;
+  direction: FieldReturnType<fields.AngleField, { default: 0 }>;
+  angle: fields.AngleField;
+  width: FieldReturnType<fields.RequiredPositiveNumber, { default: 1 }>;
+  borderColor: FieldReturnType<fields.ColorField, { required: true; default: '#000000' }>;
+  fillColor: FieldReturnType<fields.ColorField, { required: true; default: '#FF0000' }>;
+  texture: fields.VideoField;
+  flags: fields.ObjectField;
 }
 
 interface MeasuredTemplateDataProperties {
   /**
-   The _id which uniquely identifies this BaseMeasuredTemplate embedded document
+   * The _id which uniquely identifies this BaseMeasuredTemplate embedded document
+   * @defaultValue `null`
    */
   _id: string | null;
 
@@ -40,7 +41,7 @@ interface MeasuredTemplateDataProperties {
 
   /**
    * The value in CONST.MEASURED_TEMPLATE_TYPES which defines the geometry type of this template
-   * @defaultValue `'circle'`
+   * @defaultValue `foundry.CONST.MEASURED_TEMPLATE_TYPES.CIRCLE`
    */
   t: foundry.CONST.MEASURED_TEMPLATE_TYPES;
 
@@ -70,7 +71,7 @@ interface MeasuredTemplateDataProperties {
 
   /**
    * The angle of effect of the measured template, applies to cone types
-   * @defaultValue `0`
+   * @defaultValue `360`
    */
   angle: number;
 
@@ -95,7 +96,7 @@ interface MeasuredTemplateDataProperties {
   /**
    * A repeatable tiling texture used to add a texture fill to the template shape
    */
-  texture: string | undefined | null;
+  texture: string | null | undefined;
 
   /**
    * An object of optional key/value flags
@@ -106,15 +107,16 @@ interface MeasuredTemplateDataProperties {
 
 interface MeasuredTemplateDataConstructorData {
   /**
-   The _id which uniquely identifies this BaseMeasuredTemplate embedded document
+   * The _id which uniquely identifies this BaseMeasuredTemplate embedded document
+   * @defaultValue `null`
    */
   _id?: string | null | undefined;
 
-  user?: string | null | undefined;
+  user?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseUser>> | string | null | undefined;
 
   /**
    * The value in CONST.MEASURED_TEMPLATE_TYPES which defines the geometry type of this template
-   * @defaultValue `'circle'`
+   * @defaultValue `foundry.CONST.MEASURED_TEMPLATE_TYPES.CIRCLE`
    */
   t?: ValueOf<foundry.CONST.MEASURED_TEMPLATE_TYPES> | null | undefined;
 
@@ -144,7 +146,7 @@ interface MeasuredTemplateDataConstructorData {
 
   /**
    * The angle of effect of the measured template, applies to cone types
-   * @defaultValue `0`
+   * @defaultValue `360`
    */
   angle?: number | null | undefined;
 
@@ -182,7 +184,7 @@ interface MeasuredTemplateDataConstructorData {
  * The data schema for a MeasuredTemplate embedded document.
  * @see BaseMeasuredTemplate
  */
-export declare class MeasuredTemplateData extends DocumentData<
+export class MeasuredTemplateData extends DocumentData<
   MeasuredTemplateDataSchema,
   MeasuredTemplateDataProperties,
   PropertiesToSource<MeasuredTemplateDataProperties>,
@@ -197,6 +199,7 @@ export declare class MeasuredTemplateData extends DocumentData<
     document: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>
   );
 
+  /** @override */
   static defineSchema(): MeasuredTemplateDataSchema;
 
   /** @override */
@@ -207,4 +210,4 @@ export declare class MeasuredTemplateData extends DocumentData<
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface MeasuredTemplateData extends MeasuredTemplateDataProperties {}
+export interface MeasuredTemplateData extends MeasuredTemplateDataProperties {}

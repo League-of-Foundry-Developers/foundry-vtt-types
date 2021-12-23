@@ -440,7 +440,7 @@ declare namespace Application {
 
     /**
      * The default CSS id to assign to the rendered HTML
-     * @defaultValue `''`
+     * @defaultValue `""`
      */
     id: string;
 
@@ -452,7 +452,7 @@ declare namespace Application {
 
     /**
      * A default window title string (popOut only)
-     * @defaultValue `''`
+     * @defaultValue `""`
      */
     title: string;
 

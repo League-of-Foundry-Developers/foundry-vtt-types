@@ -1,19 +1,24 @@
+import {
+  ConfiguredDocumentClass,
+  ConfiguredFlags,
+  FieldReturnType,
+  PropertiesToSource
+} from '../../../../types/helperTypes';
 import DocumentData from '../../abstract/data.mjs';
-import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { CONST, documents } from '../../module.mjs';
 import * as fields from '../fields.mjs';
+import { ActorDataSource } from './actorData.js';
 import { AnimationData, AnimationDataConstructorData } from './animationData';
 import { TokenBarData, TokenBarDataConstructorData } from './tokenBarData';
-import { ActorDataSource } from './actorData.js';
 
 interface VisionFieldOptions {
   validate: (d: number) => boolean;
   validationError: 'Invalid {name} {field} distance which must be a number with absolute value less than 1000';
 }
 
-export interface TokenDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
-  name: typeof fields.STRING_FIELD;
+interface TokenDataSchema extends DocumentSchema {
+  _id: fields.DocumentId;
+  name: fields.StringField;
   displayName: DocumentField<CONST.TOKEN_DISPLAY_MODES> & {
     type: typeof Number;
     required: true;
@@ -22,12 +27,12 @@ export interface TokenDataSchema extends DocumentSchema {
     validationError: 'Invalid {name} {field} which must be a value in CONST.TOKEN_DISPLAY_MODES';
   };
   actorId: fields.ForeignDocumentField<{ type: documents.BaseActor; required: true }>;
-  actorLink: typeof fields.BOOLEAN_FIELD;
-  actorData: typeof fields.OBJECT_FIELD;
-  img: FieldReturnType<typeof fields.VIDEO_FIELD, { default: () => string }>;
-  tint: typeof fields.COLOR_FIELD;
-  width: FieldReturnType<typeof fields.REQUIRED_POSITIVE_NUMBER, { default: number }>;
-  height: FieldReturnType<typeof fields.REQUIRED_POSITIVE_NUMBER, { default: number }>;
+  actorLink: fields.BooleanField;
+  actorData: fields.ObjectField;
+  img: FieldReturnType<fields.VideoField, { default: () => typeof TokenData.DEFAULT_ICON }>;
+  tint: fields.ColorField;
+  width: FieldReturnType<fields.RequiredPositiveNumber, { default: 1 }>;
+  height: FieldReturnType<fields.RequiredPositiveNumber, { default: 1 }>;
   scale: DocumentField<number> & {
     type: typeof Number;
     required: true;
@@ -35,38 +40,38 @@ export interface TokenDataSchema extends DocumentSchema {
     validate: (s: unknown) => boolean;
     validationError: 'Invalid {name} {field} which must be a number between 0.25 and 10';
   };
-  mirrorX: typeof fields.BOOLEAN_FIELD;
-  mirrorY: typeof fields.BOOLEAN_FIELD;
-  x: typeof fields.REQUIRED_NUMBER;
-  y: typeof fields.REQUIRED_NUMBER;
-  elevation: typeof fields.REQUIRED_NUMBER;
-  lockRotation: typeof fields.BOOLEAN_FIELD;
-  rotation: FieldReturnType<typeof fields.ANGLE_FIELD, { default: number }>;
+  mirrorX: fields.BooleanField;
+  mirrorY: fields.BooleanField;
+  x: fields.RequiredNumber;
+  y: fields.RequiredNumber;
+  elevation: fields.RequiredNumber;
+  lockRotation: fields.BooleanField;
+  rotation: FieldReturnType<fields.AngleField, { default: 0 }>;
   effects: DocumentField<string[]> & {
     type: [typeof String];
     required: true;
     default: string[];
   };
-  overlayEffect: typeof fields.STRING_FIELD;
-  alpha: typeof fields.ALPHA_FIELD;
-  hidden: typeof fields.BOOLEAN_FIELD;
+  overlayEffect: fields.StringField;
+  alpha: fields.AlphaField;
+  hidden: fields.BooleanField;
   vision: DocumentField<boolean> & {
     type: typeof Boolean;
     required: true;
     default: (data: { readonly dimSight?: number; readonly brightSight?: number }) => boolean;
   };
-  dimSight: FieldReturnType<typeof fields.REQUIRED_NUMBER, VisionFieldOptions>;
-  brightSight: FieldReturnType<typeof fields.REQUIRED_NUMBER, VisionFieldOptions>;
-  dimLight: FieldReturnType<typeof fields.REQUIRED_NUMBER, VisionFieldOptions>;
-  brightLight: FieldReturnType<typeof fields.REQUIRED_NUMBER, VisionFieldOptions>;
-  sightAngle: typeof fields.ANGLE_FIELD;
-  lightAngle: typeof fields.ANGLE_FIELD;
-  lightColor: typeof fields.COLOR_FIELD;
-  lightAlpha: FieldReturnType<typeof fields.ALPHA_FIELD, { default: 0.25 }>;
+  dimSight: FieldReturnType<fields.RequiredNumber, VisionFieldOptions>;
+  brightSight: FieldReturnType<fields.RequiredNumber, VisionFieldOptions>;
+  dimLight: FieldReturnType<fields.RequiredNumber, VisionFieldOptions>;
+  brightLight: FieldReturnType<fields.RequiredNumber, VisionFieldOptions>;
+  sightAngle: fields.AngleField;
+  lightAngle: fields.AngleField;
+  lightColor: fields.ColorField;
+  lightAlpha: FieldReturnType<fields.AlphaField, { default: 0.25 }>;
   lightAnimation: DocumentField<AnimationData> & {
     type: typeof AnimationData;
     required: true;
-    default: {};
+    default: Record<string, never>;
   };
   disposition: DocumentField<CONST.TOKEN_DISPOSITIONS> & {
     type: typeof Number;
@@ -92,10 +97,10 @@ export interface TokenDataSchema extends DocumentSchema {
     required: true;
     default: () => { attribute: Game['system']['data']['secondaryTokenAttribute'] | null };
   };
-  flags: typeof fields.OBJECT_FIELD;
+  flags: fields.ObjectField;
 }
 
-export interface TokenDataProperties {
+interface TokenDataProperties {
   /**
    * The Token _id which uniquely identifies it within its parent Scene
    * @defaultValue `null`
@@ -133,14 +138,14 @@ export interface TokenDataProperties {
 
   /**
    * A file path to an image or video file used to depict the Token
-   * @defaultValue `this.DEFAULT_ICON`
+   * @defaultValue `TokenData.DEFAULT_ICON`
    */
   img: string | null;
 
   /**
    * An optional color tint applied to the Token image
    */
-  tint?: string | null;
+  tint: string | null | undefined;
 
   /**
    * The width of the Token in grid units
@@ -211,7 +216,7 @@ export interface TokenDataProperties {
   /**
    * A single icon path which is displayed as an overlay on the Token
    */
-  overlayEffect?: string;
+  overlayEffect: string | undefined;
 
   /**
    * The opacity of the token image
@@ -270,7 +275,7 @@ export interface TokenDataProperties {
   /**
    * The color of the token's emitted light as an HTML hexadecimal color string
    */
-  lightColor: string | undefined | null;
+  lightColor: string | null | undefined;
 
   /**
    * The intensity of any light emitted by the token
@@ -280,7 +285,7 @@ export interface TokenDataProperties {
 
   /**
    * A data object which configures token light animation settings
-   * @defaultValue `{}`
+   * @defaultValue `new AnimationData({})`
    */
   lightAnimation: AnimationData;
 
@@ -298,13 +303,13 @@ export interface TokenDataProperties {
 
   /**
    * The configuration of the Token's primary resource bar
-   * @defaultValue `{ attribute: game?.system.data.primaryTokenAttribute || null }`
+   * @defaultValue `new TokenBarData({ attribute: game?.system.data.primaryTokenAttribute || null })`
    */
   bar1: TokenBarData;
 
   /**
    * The configuration of the Token's secondary resource bar
-   * @defaultValue `{ attribute: game?.system.data.secondaryTokenAttribute || null }`
+   * @defaultValue `new TokenBarData({ attribute: game?.system.data.secondaryTokenAttribute || null })`
    */
   bar2: TokenBarData;
 
@@ -315,7 +320,7 @@ export interface TokenDataProperties {
   flags: ConfiguredFlags<'Token'>;
 }
 
-export interface TokenDataConstructorData {
+interface TokenDataConstructorData {
   /**
    * The Token _id which uniquely identifies it within its parent Scene
    * @defaultValue `null`
@@ -337,7 +342,7 @@ export interface TokenDataConstructorData {
    * The _id of an Actor document which this Token represents
    * @defaultValue `null`
    */
-  actorId?: string | null | undefined;
+  actorId?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseActor>> | string | null | undefined;
 
   /**
    * Does this Token uniquely represent a singular Actor, or is it one of many?
@@ -353,7 +358,7 @@ export interface TokenDataConstructorData {
 
   /**
    * A file path to an image or video file used to depict the Token
-   * @defaultValue `this.DEFAULT_ICON`
+   * @defaultValue `TokenData.DEFAULT_ICON`
    */
   img?: string | null | undefined;
 
@@ -500,7 +505,7 @@ export interface TokenDataConstructorData {
 
   /**
    * A data object which configures token light animation settings
-   * @defaultValue `{}`
+   * @defaultValue `new AnimationData({})`
    */
   lightAnimation?: AnimationDataConstructorData | null | undefined;
 
@@ -518,13 +523,13 @@ export interface TokenDataConstructorData {
 
   /**
    * The configuration of the Token's primary resource bar
-   * @defaultValue `{ attribute: game?.system.data.primaryTokenAttribute || null }`
+   * @defaultValue `new TokenBarData({ attribute: game?.system.data.primaryTokenAttribute || null })`
    */
   bar1?: TokenBarDataConstructorData | null | undefined;
 
   /**
    * The configuration of the Token's secondary resource bar
-   * @defaultValue `{ attribute: game?.system.data.secondaryTokenAttribute || null }`
+   * @defaultValue `new TokenBarData({ attribute: game?.system.data.secondaryTokenAttribute || null })`
    */
   bar2?: TokenBarDataConstructorData | null | undefined;
 
@@ -545,6 +550,7 @@ export class TokenData extends DocumentData<
   TokenDataConstructorData,
   documents.BaseToken
 > {
+  /** @override */
   static defineSchema(): TokenDataSchema;
 
   /**
@@ -555,4 +561,4 @@ export class TokenData extends DocumentData<
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface TokenData extends TokenDataProperties {}
+export interface TokenData extends TokenDataProperties {}

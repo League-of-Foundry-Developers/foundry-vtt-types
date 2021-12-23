@@ -1,17 +1,17 @@
-import DocumentData from '../../abstract/data.mjs';
-import { BaseUser } from '../../documents.mjs';
-import { ForeignDocumentField } from '../fields.mjs';
-import * as fields from '../fields.mjs';
-import * as documents from '../../documents.mjs';
 import {
   ConfiguredDocumentClass,
   ConfiguredFlags,
   FieldReturnType,
   PropertiesToSource
 } from '../../../../types/helperTypes';
+import DocumentData from '../../abstract/data.mjs';
+import * as documents from '../../documents.mjs';
+import { BaseUser } from '../../documents.mjs';
+import * as fields from '../fields.mjs';
+import { ForeignDocumentField } from '../fields.mjs';
 
 interface DrawingDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
+  _id: fields.DocumentId;
   author: ForeignDocumentField<{ type: typeof documents.BaseUser; required: true }>;
   type: DocumentField<foundry.CONST.MACRO_TYPES> & {
     type: typeof String;
@@ -20,12 +20,12 @@ interface DrawingDataSchema extends DocumentSchema {
     validate: (t: unknown) => t is foundry.CONST.MACRO_TYPES;
     validationError: 'Invalid {name} {field} which must be a value in CONST.DRAWING_TYPES';
   };
-  x: typeof fields.REQUIRED_NUMBER;
-  y: typeof fields.REQUIRED_NUMBER;
-  width: typeof fields.REQUIRED_NUMBER;
-  height: typeof fields.REQUIRED_NUMBER;
-  rotation: FieldReturnType<typeof fields.ANGLE_FIELD, { default: 0 }>;
-  z: typeof fields.REQUIRED_NUMBER;
+  x: fields.RequiredNumber;
+  y: fields.RequiredNumber;
+  width: fields.RequiredNumber;
+  height: fields.RequiredNumber;
+  rotation: FieldReturnType<fields.AngleField, { default: 0 }>;
+  z: fields.RequiredNumber;
   points: DocumentField<Array<[x: number, y: number]>> & {
     type: [typeof Array];
     required: true;
@@ -33,36 +33,36 @@ interface DrawingDataSchema extends DocumentSchema {
     validate: typeof _validateDrawingPoints;
     validationError: 'Invalid {name} {field} which must be an array of points [x,y]';
   };
-  bezierFactor: FieldReturnType<typeof fields.ALPHA_FIELD, { default: 0 }>;
+  bezierFactor: FieldReturnType<fields.AlphaField, { default: 0 }>;
   fillType: FieldReturnType<
-    typeof fields.REQUIRED_NUMBER,
+    fields.RequiredNumber,
     {
       default: typeof CONST.DRAWING_FILL_TYPES.NONE;
       validate: (v: unknown) => v is foundry.CONST.DRAWING_FILL_TYPES;
       validationError: 'Invalid {name} {field} which must be a value in CONST.DRAWING_FILL_TYPES';
     }
   >;
-  fillColor: typeof fields.COLOR_FIELD;
-  fillAlpha: FieldReturnType<typeof fields.ALPHA_FIELD, { default: 0.5 }>;
-  strokeWidth: FieldReturnType<typeof fields.NONNEGATIVE_INTEGER_FIELD, { default: 8 }>;
-  strokeColor: typeof fields.COLOR_FIELD;
-  strokeAlpha: typeof fields.ALPHA_FIELD;
-  texture: typeof fields.IMAGE_FIELD;
-  text: typeof fields.STRING_FIELD;
-  fontFamily: FieldReturnType<typeof fields.REQUIRED_STRING, { default: 'Signika' }>;
+  fillColor: fields.ColorField;
+  fillAlpha: FieldReturnType<fields.AlphaField, { default: 0.5 }>;
+  strokeWidth: FieldReturnType<fields.NonnegativeIntegerField, { default: 8 }>;
+  strokeColor: fields.ColorField;
+  strokeAlpha: fields.AlphaField;
+  texture: fields.ImageField;
+  text: fields.StringField;
+  fontFamily: FieldReturnType<fields.RequiredString, { default: 'Signika' }>;
   fontSize: FieldReturnType<
-    typeof fields.POSITIVE_INTEGER_FIELD,
+    fields.PositiveIntegerField,
     {
       default: 48;
       validate: (n: unknown) => boolean;
       validationError: 'Invalid {name} {field} which must be an integer between 8 and 256';
     }
   >;
-  textColor: FieldReturnType<typeof fields.COLOR_FIELD, { default: '#FFFFFF' }>;
-  textAlpha: typeof fields.ALPHA_FIELD;
-  hidden: typeof fields.BOOLEAN_FIELD;
-  locked: typeof fields.BOOLEAN_FIELD;
-  flags: typeof fields.OBJECT_FIELD;
+  textColor: FieldReturnType<fields.ColorField, { default: '#FFFFFF' }>;
+  textAlpha: fields.AlphaField;
+  hidden: fields.BooleanField;
+  locked: fields.BooleanField;
+  flags: fields.ObjectField;
 }
 
 interface DrawingDataProperties {
@@ -380,13 +380,14 @@ interface DrawingDataConstructorData {
  * @param data     - Initial data used to construct the data object
  * @param document - The embedded document to which this data object belongs
  */
-export declare class DrawingData extends DocumentData<
+export class DrawingData extends DocumentData<
   DrawingDataSchema,
   DrawingDataProperties,
   PropertiesToSource<DrawingDataProperties>,
   DrawingDataConstructorData,
   documents.BaseFolder
 > {
+  /** @override */
   static defineSchema(): DrawingDataSchema;
 
   /** @override */
@@ -397,7 +398,7 @@ export declare class DrawingData extends DocumentData<
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface DrawingData extends DrawingDataProperties {}
+export interface DrawingData extends DrawingDataProperties {}
 
 /**
  * Validate the array of points which comprises a polygon drawing

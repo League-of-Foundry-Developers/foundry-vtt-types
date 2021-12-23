@@ -1,36 +1,35 @@
 import {
   ConfiguredDocumentClass,
   ConfiguredFlags,
-  ConstructorDataType,
   FieldReturnType,
   PropertiesToSource
 } from '../../../../types/helperTypes';
 import EmbeddedCollection from '../../abstract/embedded-collection.mjs';
 import { DocumentData } from '../../abstract/module.mjs';
-import * as fields from '../fields.mjs';
-import * as documents from '../../documents.mjs';
 import * as CONST from '../../constants.mjs';
-import { AmbientLightData } from './ambientLightData';
-import { AmbientSoundData } from './ambientSoundData';
-import { DrawingData } from './drawingData';
-import { MeasuredTemplateData } from './measuredTemplateData';
-import { NoteData } from './noteData';
-import { TileData } from './tileData';
-import { TokenData } from './tokenData';
-import { WallData } from './wallData';
+import * as documents from '../../documents.mjs';
+import * as fields from '../fields.mjs';
+import { AmbientLightDataConstructorData } from './ambientLightData';
+import { AmbientSoundDataConstructorData } from './ambientSoundData';
+import { DrawingDataConstructorData } from './drawingData';
+import { MeasuredTemplateDataConstructorData } from './measuredTemplateData';
+import { NoteDataConstructorData } from './noteData';
+import { TileDataConstructorData } from './tileData';
+import { TokenDataConstructorData } from './tokenData';
+import { WallDataConstructorData } from './wallData';
 
 interface SceneDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
-  name: typeof fields.REQUIRED_STRING;
-  active: typeof fields.BOOLEAN_FIELD;
-  navigation: FieldReturnType<typeof fields.BOOLEAN_FIELD, { default: true }>;
-  navOrder: typeof fields.INTEGER_SORT_FIELD;
-  navName: typeof fields.BLANK_STRING;
-  img: typeof fields.VIDEO_FIELD;
-  foreground: typeof fields.VIDEO_FIELD;
-  thumb: typeof fields.IMAGE_FIELD;
-  width: FieldReturnType<typeof fields.POSITIVE_INTEGER_FIELD, { required: true; default: 4000 }>;
-  height: FieldReturnType<typeof fields.POSITIVE_INTEGER_FIELD, { required: true; default: 3000 }>;
+  _id: fields.DocumentId;
+  name: fields.RequiredString;
+  active: fields.BooleanField;
+  navigation: FieldReturnType<fields.BooleanField, { default: true }>;
+  navOrder: fields.IntegerSortField;
+  navName: fields.BlankString;
+  img: fields.VideoField;
+  foreground: fields.VideoField;
+  thumb: fields.ImageField;
+  width: FieldReturnType<fields.PositiveIntegerField, { required: true; default: 4000 }>;
+  height: FieldReturnType<fields.PositiveIntegerField, { required: true; default: 3000 }>;
   padding: {
     type: typeof Number;
     required: true;
@@ -46,9 +45,9 @@ interface SceneDataSchema extends DocumentSchema {
     validate: typeof _validateInitialViewPosition;
     validationError: 'Invalid initial view position object provided for Scene';
   };
-  backgroundColor: FieldReturnType<typeof fields.COLOR_FIELD, { required: true; default: '#999999' }>;
+  backgroundColor: FieldReturnType<fields.ColorField, { required: true; default: '#999999' }>;
   gridType: FieldReturnType<
-    typeof fields.REQUIRED_NUMBER,
+    fields.RequiredNumber,
     {
       default: typeof CONST.GRID_TYPES.SQUARE;
       validate: (t: unknown) => t is CONST.GRID_TYPES;
@@ -62,16 +61,16 @@ interface SceneDataSchema extends DocumentSchema {
     validate: (n: unknown) => boolean;
     validationError: `Invalid {name} {field} which must be an integer number of pixels, ${typeof CONST.GRID_MIN_SIZE} or greater`;
   };
-  shiftX: FieldReturnType<typeof fields.INTEGER_FIELD, { required: true; default: 0 }>;
-  shiftY: FieldReturnType<typeof fields.INTEGER_FIELD, { required: true; default: 0 }>;
-  gridColor: FieldReturnType<typeof fields.COLOR_FIELD, { required: true; default: '#000000' }>;
-  gridAlpha: FieldReturnType<typeof fields.ALPHA_FIELD, { required: true; default: 0.2 }>;
-  gridDistance: FieldReturnType<typeof fields.REQUIRED_POSITIVE_NUMBER, { default: () => number }>;
-  gridUnits: FieldReturnType<typeof fields.BLANK_STRING, { default: () => string }>;
-  tokenVision: FieldReturnType<typeof fields.BOOLEAN_FIELD, { default: true }>;
-  fogExploration: FieldReturnType<typeof fields.BOOLEAN_FIELD, { default: true }>;
-  fogReset: typeof fields.TIMESTAMP_FIELD;
-  globalLight: typeof fields.BOOLEAN_FIELD;
+  shiftX: FieldReturnType<fields.IntegerField, { required: true; default: 0 }>;
+  shiftY: FieldReturnType<fields.IntegerField, { required: true; default: 0 }>;
+  gridColor: FieldReturnType<fields.ColorField, { required: true; default: '#000000' }>;
+  gridAlpha: FieldReturnType<fields.AlphaField, { required: true; default: 0.2 }>;
+  gridDistance: FieldReturnType<fields.RequiredPositiveNumber, { default: () => number }>;
+  gridUnits: FieldReturnType<fields.BlankString, { default: () => string }>;
+  tokenVision: FieldReturnType<fields.BooleanField, { default: true }>;
+  fogExploration: FieldReturnType<fields.BooleanField, { default: true }>;
+  fogReset: fields.TimestampField;
+  globalLight: fields.BooleanField;
   globalLightThreshold: {
     type: typeof Number;
     required: true;
@@ -80,7 +79,7 @@ interface SceneDataSchema extends DocumentSchema {
     validate: (n: unknown) => boolean;
     validationError: 'Invalid {name} {field} which must be null, or a number between 0 and 1';
   };
-  darkness: FieldReturnType<typeof fields.ALPHA_FIELD, { default: 0 }>;
+  darkness: FieldReturnType<fields.AlphaField, { default: 0 }>;
   drawings: fields.EmbeddedCollectionField<typeof documents.BaseDrawing>;
   tokens: fields.EmbeddedCollectionField<typeof documents.BaseToken>;
   lights: fields.EmbeddedCollectionField<typeof documents.BaseAmbientLight>;
@@ -92,16 +91,17 @@ interface SceneDataSchema extends DocumentSchema {
   playlist: fields.ForeignDocumentField<{ type: typeof documents.BasePlaylist; required: false }>;
   playlistSound: fields.ForeignDocumentField<{ type: typeof documents.BasePlaylistSound; required: false }>;
   journal: fields.ForeignDocumentField<{ type: typeof documents.BaseJournalEntry; required: false }>;
-  weather: typeof fields.BLANK_STRING;
+  weather: fields.BlankString;
   folder: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
-  sort: typeof fields.INTEGER_SORT_FIELD;
-  permission: typeof fields.DOCUMENT_PERMISSIONS;
-  flags: typeof fields.BLANK_STRING;
+  sort: fields.IntegerSortField;
+  permission: fields.DocumentPermissions;
+  flags: fields.BlankString;
 }
 
 interface SceneDataProperties {
   /**
    * The _id which uniquely identifies this Scene document
+   * @defaultValue `null`
    */
   _id: string | null;
 
@@ -124,32 +124,30 @@ interface SceneDataProperties {
 
   /**
    * The integer sorting order of this Scene in the navigation bar relative to others
+   * @defaultValue `0`
    */
   navOrder: number;
 
   /**
    * A string which overrides the canonical Scene name which is displayed in the navigation bar
-   * @defaultValue `''`
+   * @defaultValue `""`
    */
   navName: string;
 
   /**
    * An image or video file path which provides the background media for the scene
-   * @defaultValue `undefined`
    */
-  img: string | undefined | null;
+  img: string | null | undefined;
 
   /**
    * An image or video file path which is drawn on top of all other elements in the scene
-   * @defaultValue `undefined`
    */
-  foreground: string | undefined | null;
+  foreground: string | null | undefined;
 
   /**
    * A thumbnail image (base64) or file path which visually summarizes the scene
-   * @defaultValue `undefined`
    */
-  thumb: string | undefined | null;
+  thumb: string | null | undefined;
 
   /**
    * The width of the scene canvas, this should normally be the width of the background media
@@ -220,11 +218,13 @@ interface SceneDataProperties {
 
   /**
    * The number of distance units which are represented by a single grid space.
+   * @defaultValue `game.system.data.gridDistance || 1`
    */
   gridDistance: number;
 
   /**
    * A label for the units of measure which are used for grid distance.
+   * @defaultValue `game.system.data.gridUnits ?? ""`
    */
   gridUnits: string;
 
@@ -242,6 +242,7 @@ interface SceneDataProperties {
 
   /**
    * The timestamp at which fog of war was last reset for this Scene.
+   * @defaultValue `Date.now()`
    */
   fogReset: number;
 
@@ -267,42 +268,49 @@ interface SceneDataProperties {
 
   /**
    * A collection of embedded Drawing objects.
+   * @defaultValue `[]`
    */
   drawings: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseDrawing>, SceneData>;
 
   /**
    * A collection of embedded Token objects.
+   * @defaultValue `[]`
    */
   tokens: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseToken>, SceneData>;
 
   /**
-   *
    * A collection of embedded AmbientLight objects.
+   * @defaultValue `[]`
    */
   lights: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseAmbientLight>, SceneData>;
 
   /**
    * A collection of embedded Note objects.
+   * @defaultValue `[]`
    */
   notes: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseNote>, SceneData>;
 
   /**
    * A collection of embedded AmbientSound objects.
+   * @defaultValue `[]`
    */
   sounds: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseAmbientSound>, SceneData>;
 
   /**
    * A collection of embedded MeasuredTemplate objects.
+   * @defaultValue `[]`
    */
   templates: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseMeasuredTemplate>, SceneData>;
 
   /**
    * A collection of embedded Tile objects.
+   * @defaultValue `[]`
    */
   tiles: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseTile>, SceneData>;
 
   /**
    * A collection of embedded Wall objects
+   * @defaultValue `[]`
    */
   walls: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseWall>, SceneData>;
 
@@ -326,7 +334,7 @@ interface SceneDataProperties {
 
   /**
    * A named weather effect which should be rendered in this Scene.
-   * @defaultValue `''`
+   * @defaultValue `""`
    */
   weather: string;
 
@@ -357,6 +365,7 @@ interface SceneDataProperties {
 interface SceneDataConstructorData {
   /**
    * The _id which uniquely identifies this Scene document
+   * @defaultValue `null`
    */
   _id?: string | null | undefined;
 
@@ -379,32 +388,30 @@ interface SceneDataConstructorData {
 
   /**
    * The integer sorting order of this Scene in the navigation bar relative to others
+   * @defaultValue `0`
    */
   navOrder?: number | null | undefined;
 
   /**
    * A string which overrides the canonical Scene name which is displayed in the navigation bar
-   * @defaultValue `''`
+   * @defaultValue `""`
    */
   navName?: string | null | undefined;
 
   /**
    * An image or video file path which provides the background media for the scene
-   * @defaultValue `undefined`
    */
-  img?: string | undefined | null | undefined;
+  img?: string | null | undefined;
 
   /**
    * An image or video file path which is drawn on top of all other elements in the scene
-   * @defaultValue `undefined`
    */
-  foreground?: string | undefined | null | undefined;
+  foreground?: string | null | undefined;
 
   /**
    * A thumbnail image (base64) or file path which visually summarizes the scene
-   * @defaultValue `undefined`
    */
-  thumb?: string | undefined | null | undefined;
+  thumb?: string | null | undefined;
 
   /**
    * The width of the scene canvas, this should normally be the width of the background media
@@ -475,11 +482,13 @@ interface SceneDataConstructorData {
 
   /**
    * The number of distance units which are represented by a single grid space.
+   * @defaultValue `game.system.data.gridDistance || 1`
    */
   gridDistance?: number | null | undefined;
 
   /**
    * A label for the units of measure which are used for grid distance.
+   * @defaultValue `game.system.data.gridUnits ?? ""`
    */
   gridUnits?: string | null | undefined;
 
@@ -497,6 +506,7 @@ interface SceneDataConstructorData {
 
   /**
    * The timestamp at which fog of war was last reset for this Scene.
+   * @defaultValue `Date.now()`
    */
   fogReset?: number | null | undefined;
 
@@ -522,66 +532,73 @@ interface SceneDataConstructorData {
 
   /**
    * A collection of embedded Drawing objects.
+   * @defaultValue `[]`
    */
-  drawings?: ConstructorDataType<DrawingData>[] | null | undefined;
+  drawings?: DrawingDataConstructorData[] | null | undefined;
 
   /**
    * A collection of embedded Token objects.
+   * @defaultValue `[]`
    */
-  tokens?: ConstructorDataType<TokenData>[] | null | undefined;
+  tokens?: TokenDataConstructorData[] | null | undefined;
 
   /**
-   *
    * A collection of embedded AmbientLight objects.
+   * @defaultValue `[]`
    */
-  lights?: ConstructorDataType<AmbientLightData>[] | null | undefined;
+  lights?: AmbientLightDataConstructorData[] | null | undefined;
 
   /**
    * A collection of embedded Note objects.
+   * @defaultValue `[]`
    */
-  notes?: ConstructorDataType<NoteData>[] | null | undefined;
+  notes?: NoteDataConstructorData[] | null | undefined;
 
   /**
    * A collection of embedded AmbientSound objects.
+   * @defaultValue `[]`
    */
-  sounds?: ConstructorDataType<AmbientSoundData>[] | null | undefined;
+  sounds?: AmbientSoundDataConstructorData[] | null | undefined;
 
   /**
    * A collection of embedded MeasuredTemplate objects.
+   * @defaultValue `[]`
    */
-  templates?: ConstructorDataType<MeasuredTemplateData>[] | null | undefined;
+  templates?: MeasuredTemplateDataConstructorData[] | null | undefined;
 
   /**
    * A collection of embedded Tile objects.
+   * @defaultValue `[]`
    */
-  tiles?: ConstructorDataType<TileData>[] | null | undefined;
+  tiles?: TileDataConstructorData[] | null | undefined;
 
   /**
    * A collection of embedded Wall objects
+   * @defaultValue `[]`
    */
-  walls?: ConstructorDataType<WallData>[] | null | undefined;
+  walls?: WallDataConstructorData[] | null | undefined;
 
   /**
    * A linked Playlist document which should begin automatically playing when this
    * Scene becomes active.
    * @defaultValue `null`
    */
-  playlist?: string | null | undefined;
+  playlist?: InstanceType<ConfiguredDocumentClass<typeof documents.BasePlaylist>> | string | null | undefined;
 
   /**
    * @defaultValue `null`
    */
-  playlistSound?: string | null | undefined;
+  playlistSound?: InstanceType<ConfiguredDocumentClass<typeof documents.BasePlaylistSound>> | string | null | undefined;
 
   /**
    * A linked JournalEntry document which provides narrative details about this Scene.
    * @defaultValue `null`
    */
-  journal?: string | null | undefined;
+  journal?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseJournalEntry>> | string | null | undefined;
 
   /**
    * A named weather effect which should be rendered in this Scene.
-   * @defaultValue `''`
+   * @defaultValue `""`
    */
   weather?: string | null | undefined;
 
@@ -589,7 +606,7 @@ interface SceneDataConstructorData {
    * The _id of a Folder which contains this Actor
    * @defaultValue `null`
    */
-  folder?: string | null | undefined;
+  folder?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseFolder>> | string | null | undefined;
 
   /**
    * The numeric sort value which orders this Actor relative to its siblings
@@ -613,7 +630,7 @@ interface SceneDataConstructorData {
  * The data schema for a Scene document.
  * @see BaseScene
  */
-export declare class SceneData extends DocumentData<
+export class SceneData extends DocumentData<
   SceneDataSchema,
   SceneDataProperties,
   PropertiesToSource<SceneDataProperties>,
@@ -625,6 +642,7 @@ export declare class SceneData extends DocumentData<
    */
   constructor(data: SceneDataConstructorData, document?: documents.BaseScene | null);
 
+  /** @override */
   static defineSchema(): SceneDataSchema;
 
   /** @override */
@@ -634,7 +652,7 @@ export declare class SceneData extends DocumentData<
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface SceneData extends SceneDataProperties {}
+export interface SceneData extends SceneDataProperties {}
 
 /**
  * Verify that the initial view position for a Scene is valid

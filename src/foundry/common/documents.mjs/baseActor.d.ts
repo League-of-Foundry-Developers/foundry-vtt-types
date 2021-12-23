@@ -1,11 +1,12 @@
+import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentMetadata, DocumentModificationOptions } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
+import * as data from '../data/data.mjs';
+import type { ActorDataConstructorData } from '../data/data.mjs/actorData.js';
 import { BaseActiveEffect } from './baseActiveEffect';
 import { BaseItem } from './baseItem';
-import * as data from '../data/data.mjs';
-import { BaseUser } from './baseUser';
-import { ConfiguredDocumentClass, ConstructorDataType } from '../../../types/helperTypes';
 import { BaseToken } from './baseToken';
+import { BaseUser } from './baseUser';
 
 /**
  * The base Actor model definition which defines common behavior of an Actor document between both client and server.
@@ -54,14 +55,14 @@ export declare class BaseActor extends Document<
 
   /** @override */
   protected _preCreate(
-    data: ConstructorDataType<data.ActorData>,
+    data: ActorDataConstructorData,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
 
   /** @override */
   protected _preUpdate(
-    changed: DeepPartial<ConstructorDataType<data.ActorData>>,
+    changed: DeepPartial<ActorDataConstructorData>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;

@@ -1,4 +1,3 @@
-import EmbeddedCollection from '../../abstract/embedded-collection.mjs';
 import {
   ConfiguredData,
   ConfiguredDocumentClass,
@@ -7,23 +6,24 @@ import {
   FieldReturnType,
   PropertiesToSource
 } from '../../../../types/helperTypes';
+import EmbeddedCollection from '../../abstract/embedded-collection.mjs';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
 import { PrototypeTokenData } from '../data.mjs';
+import * as fields from '../fields.mjs';
 import { PrototypeTokenDataConstructorData } from './prototypeTokenData.js';
 
 interface ActorDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
-  name: typeof fields.REQUIRED_STRING;
+  _id: fields.DocumentId;
+  name: fields.RequiredString;
   type: DocumentField<string> & {
     type: typeof String;
     required: true;
     validate: (t: unknown) => boolean;
     validationError: 'The provided Actor type must be in the array of types defined by the game system';
   };
-  img: FieldReturnType<typeof fields.IMAGE_FIELD, { default: () => string }>;
-  data: FieldReturnType<typeof fields.OBJECT_FIELD, { default: (data: { type: string }) => any }>; // TODO
+  img: FieldReturnType<fields.ImageField, { default: () => string }>;
+  data: FieldReturnType<fields.ObjectField, { default: (data: { type: string }) => any }>; // TODO
   token: DocumentField<PrototypeTokenData> & {
     type: typeof PrototypeTokenData;
     required: true;
@@ -32,9 +32,9 @@ interface ActorDataSchema extends DocumentSchema {
   items: fields.EmbeddedCollectionField<typeof documents.BaseItem>;
   effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect>;
   folder: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
-  sort: typeof fields.INTEGER_SORT_FIELD;
-  permission: typeof fields.DOCUMENT_PERMISSIONS;
-  flags: typeof fields.OBJECT_FIELD;
+  sort: fields.IntegerSortField;
+  permission: fields.DocumentPermissions;
+  flags: fields.ObjectField;
 }
 
 interface ActorDataBaseProperties {
@@ -62,21 +62,25 @@ interface ActorDataBaseProperties {
 
   /**
    * The system data object which is defined by the system template.json model
+   * @defaultValue template from template.json for type or `{}`
    */
   data: object;
 
   /**
    * Default Token settings which are used for Tokens created from this Actor
+   * @defaultValue `new PrototypeTokenData({ this.data.name, this.data.img })`
    */
   token: PrototypeTokenData;
 
   /**
    * A Collection of Item embedded Documents
+   * @defaultValue `[]`
    */
   items: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseItem>, ActorData>;
 
   /**
    * A collection of ActiveEffect embedded Documents
+   * @defaultValue `[]`
    */
   effects: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseActiveEffect>, ActorData>;
 
@@ -130,21 +134,25 @@ interface ActorDataConstructorData {
 
   /**
    * The system data object which is defined by the system template.json model
+   * @defaultValue template from template.json for type or `{}`
    */
   data?: DeepPartial<ActorDataSource['data']> | null | undefined;
 
   /**
    * Default Token settings which are used for Tokens created from this Actor
+   * @defaultValue `new PrototypeTokenData({ this.data.name, this.data.img })`
    */
   token?: PrototypeTokenDataConstructorData | null | undefined;
 
   /**
    * A Collection of Item embedded Documents
+   * @defaultValue `[]`
    */
   items?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseItem>>[0][] | null | undefined;
 
   /**
    * A collection of ActiveEffect embedded Documents
+   * @defaultValue `[]`
    */
   effects?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseActiveEffect>>[0][] | null | undefined;
 
@@ -152,7 +160,7 @@ interface ActorDataConstructorData {
    * The _id of a Folder which contains this Actor
    * @defaultValue `null`
    */
-  folder?: string | null | undefined;
+  folder?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseFolder>> | string | null | undefined;
 
   /**
    * The numeric sort value which orders this Actor relative to its siblings
@@ -182,6 +190,7 @@ type DocumentDataConstructor = Pick<typeof DocumentData, keyof typeof DocumentDa
 interface ActorDataConstructor extends DocumentDataConstructor {
   new (data: ActorDataConstructorData, document?: documents.BaseActor | null): ActorData;
 
+  /** @override */
   defineSchema(): ActorDataSchema;
 
   /**
@@ -203,9 +212,11 @@ export type ActorData = DocumentData<
   documents.BaseActor
 > &
   ActorDataProperties & {
+    /** @override */
     _initializeSource(data: ActorDataConstructorData): ActorDataSource;
 
+    /** @override */
     _initialize(): void;
   };
 
-export declare const ActorData: ActorDataConstructor;
+export const ActorData: ActorDataConstructor;

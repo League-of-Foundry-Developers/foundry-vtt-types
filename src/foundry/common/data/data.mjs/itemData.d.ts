@@ -1,4 +1,3 @@
-import EmbeddedCollection from '../../abstract/embedded-collection.mjs';
 import {
   ConfiguredData,
   ConfiguredDocumentClass,
@@ -7,31 +6,33 @@ import {
   FieldReturnType,
   PropertiesToSource
 } from '../../../../types/helperTypes';
+import EmbeddedCollection from '../../abstract/embedded-collection.mjs';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 
 interface ItemDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
-  name: typeof fields.REQUIRED_STRING;
+  _id: fields.DocumentId;
+  name: fields.RequiredString;
   type: DocumentField<string> & {
     type: typeof String;
     required: true;
     validate: (t: unknown) => boolean;
     validationError: 'The provided Item type must be in the array of types defined by the game system';
   };
-  img: FieldReturnType<typeof fields.IMAGE_FIELD, { default: () => string }>;
-  data: FieldReturnType<typeof fields.OBJECT_FIELD, { default: (data: { type: string }) => any }>; // TODO
+  img: FieldReturnType<fields.ImageField, { default: () => string }>;
+  data: FieldReturnType<fields.ObjectField, { default: (data: { type: string }) => any }>; // TODO
   effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect>;
   folder: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
-  sort: typeof fields.INTEGER_SORT_FIELD;
-  permission: typeof fields.DOCUMENT_PERMISSIONS;
-  flags: typeof fields.OBJECT_FIELD;
+  sort: fields.IntegerSortField;
+  permission: fields.DocumentPermissions;
+  flags: fields.ObjectField;
 }
 
 interface ItemDataBaseProperties {
   /**
    * The _id which uniquely identifies this Item document
+   * @defaultValue `null`
    */
   _id: string | null;
 
@@ -53,11 +54,13 @@ interface ItemDataBaseProperties {
 
   /**
    * The system data object which is defined by the system template.json model
+   * @defaultValue template from template.json for type or `{}`
    */
   data: object;
 
   /**
    * A collection of ActiveEffect embedded Documents
+   * @defaultValue `[]`
    */
   effects: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseActiveEffect>, ItemData>;
 
@@ -89,6 +92,7 @@ interface ItemDataBaseProperties {
 interface ItemDataConstructorData {
   /**
    * The _id which uniquely identifies this Item document
+   * @defaultValue `null`
    */
   _id?: string | null | undefined;
 
@@ -110,11 +114,13 @@ interface ItemDataConstructorData {
 
   /**
    * The system data object which is defined by the system template.json model
+   * @defaultValue template from template.json for type or `{}`
    */
   data?: DeepPartial<ItemDataSource['data']> | null | undefined;
 
   /**
    * A collection of ActiveEffect embedded Documents
+   * @defaultValue `[]`
    */
   effects?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseActiveEffect>>[0][] | null | undefined;
 
@@ -122,7 +128,7 @@ interface ItemDataConstructorData {
    * The _id of a Folder which contains this Item
    * @defaultValue `null`
    */
-  folder?: string | null | undefined;
+  folder?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseFolder>> | string | null | undefined;
 
   /**
    * The numeric sort value which orders this Item relative to its siblings
@@ -152,6 +158,7 @@ type DocumentDataConstructor = Pick<typeof DocumentData, keyof typeof DocumentDa
 interface ItemDataConstructor extends DocumentDataConstructor {
   new (data: ItemDataConstructorData, document?: documents.BaseItem | null): ItemData;
 
+  /** @override */
   defineSchema(): ItemDataSchema;
 
   /**
@@ -173,6 +180,7 @@ export type ItemData = DocumentData<
   documents.BaseItem
 > &
   ItemDataProperties & {
+    /** @override */
     _initializeSource(data: ItemDataConstructorData): ItemDataSource;
   };
-export declare const ItemData: ItemDataConstructor;
+export const ItemData: ItemDataConstructor;

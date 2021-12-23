@@ -4,7 +4,7 @@ import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 
 interface WallDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
+  _id: fields.DocumentId;
   c: DocumentField<[x0: number, y0: number, x1: number, y1: number]> & {
     type: [typeof Number];
     required: true;
@@ -12,7 +12,7 @@ interface WallDataSchema extends DocumentSchema {
     validationError: 'Invalid {name} coordinates provided which must be a length-4 array of finite numbers';
   };
   move: FieldReturnType<
-    typeof fields.REQUIRED_NUMBER,
+    fields.RequiredNumber,
     {
       default: typeof CONST.WALL_MOVEMENT_TYPES.NORMAL;
       validate: (v: unknown) => v is foundry.CONST.WALL_MOVEMENT_TYPES;
@@ -20,7 +20,7 @@ interface WallDataSchema extends DocumentSchema {
     }
   >;
   sense: FieldReturnType<
-    typeof fields.REQUIRED_NUMBER,
+    fields.RequiredNumber,
     {
       default: typeof CONST.WALL_SENSE_TYPES.NORMAL;
       validate: (v: unknown) => v is foundry.CONST.WALL_SENSE_TYPES;
@@ -28,7 +28,7 @@ interface WallDataSchema extends DocumentSchema {
     }
   >;
   sound: FieldReturnType<
-    typeof fields.REQUIRED_NUMBER,
+    fields.RequiredNumber,
     {
       default: typeof CONST.WALL_SENSE_TYPES.NORMAL;
       validate: (v: unknown) => v is foundry.CONST.WALL_SENSE_TYPES;
@@ -36,7 +36,7 @@ interface WallDataSchema extends DocumentSchema {
     }
   >;
   dir: FieldReturnType<
-    typeof fields.REQUIRED_NUMBER,
+    fields.RequiredNumber,
     {
       default: typeof CONST.WALL_DIRECTIONS.BOTH;
       validate: (v: unknown) => v is foundry.CONST.WALL_DIRECTIONS;
@@ -44,7 +44,7 @@ interface WallDataSchema extends DocumentSchema {
     }
   >;
   door: FieldReturnType<
-    typeof fields.REQUIRED_NUMBER,
+    fields.RequiredNumber,
     {
       default: typeof CONST.WALL_DOOR_TYPES.NONE;
       validate: (v: unknown) => v is foundry.CONST.WALL_DOOR_TYPES;
@@ -52,19 +52,20 @@ interface WallDataSchema extends DocumentSchema {
     }
   >;
   ds: FieldReturnType<
-    typeof fields.REQUIRED_NUMBER,
+    fields.RequiredNumber,
     {
       default: typeof CONST.WALL_DOOR_STATES.CLOSED;
       validate: (v: unknown) => v is foundry.CONST.WALL_DOOR_STATES;
       validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_DOOR_STATES';
     }
   >;
-  flags: typeof fields.OBJECT_FIELD;
+  flags: fields.ObjectField;
 }
 
 interface WallDataProperties {
   /**
    * The _id which uniquely identifies the embedded Wall document
+   * @defaultValue `null`
    */
   _id: string | null;
 
@@ -118,6 +119,7 @@ interface WallDataProperties {
 interface WallDataConstructorData {
   /**
    * The _id which uniquely identifies the embedded Wall document
+   * @defaultValue `null`
    */
   _id?: string | null | undefined;
 
@@ -172,7 +174,7 @@ interface WallDataConstructorData {
  * The data schema for a Wall document.
  * @see BaseWall
  */
-export declare class WallData extends DocumentData<
+export class WallData extends DocumentData<
   WallDataSchema,
   WallDataProperties,
   PropertiesToSource<WallDataProperties>,
@@ -181,6 +183,7 @@ export declare class WallData extends DocumentData<
 > {
   /**
    * The data schema for a WallData object
+   * @override
    */
   static defineSchema(): WallDataSchema;
 
@@ -191,4 +194,4 @@ export declare class WallData extends DocumentData<
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface WallData extends WallDataProperties {}
+export interface WallData extends WallDataProperties {}

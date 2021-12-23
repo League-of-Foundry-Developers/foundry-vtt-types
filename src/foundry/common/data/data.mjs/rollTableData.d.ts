@@ -10,23 +10,24 @@ import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 
 interface RollTableDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
-  name: typeof fields.REQUIRED_STRING;
-  img: FieldReturnType<typeof fields.IMAGE_FIELD, { default: () => string }>;
-  description: typeof fields.STRING_FIELD;
+  _id: fields.DocumentId;
+  name: fields.RequiredString;
+  img: FieldReturnType<fields.ImageField, { default: () => typeof RollTableData.DEFAULT_ICON }>;
+  description: fields.StringField;
   results: fields.EmbeddedCollectionField<typeof documents.BaseTableResult>;
-  formula: typeof fields.STRING_FIELD;
-  replacement: FieldReturnType<typeof fields.BOOLEAN_FIELD, { default: true }>;
-  displayRoll: FieldReturnType<typeof fields.BOOLEAN_FIELD, { default: true }>;
+  formula: fields.StringField;
+  replacement: FieldReturnType<fields.BooleanField, { default: true }>;
+  displayRoll: FieldReturnType<fields.BooleanField, { default: true }>;
   folder: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
-  sort: typeof fields.INTEGER_SORT_FIELD;
-  permission: typeof fields.DOCUMENT_PERMISSIONS;
-  flags: typeof fields.OBJECT_FIELD;
+  sort: fields.IntegerSortField;
+  permission: fields.DocumentPermissions;
+  flags: fields.ObjectField;
 }
 
 interface RollTableDataProperties {
   /**
    * The _id which uniquely identifies this RollTable document
+   * @defaultValue `null`
    */
   _id: string | null;
 
@@ -37,6 +38,7 @@ interface RollTableDataProperties {
 
   /**
    * An image file path which provides the thumbnail artwork for this RollTable
+   * @defaultValue `RollTableData.DEFAULT_ICON`
    */
   img: string;
 
@@ -47,6 +49,7 @@ interface RollTableDataProperties {
 
   /**
    * A Collection of TableResult embedded documents which belong to this RollTable
+   * @defaultValue `[]`
    */
   results: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseTableResult>, RollTableData>;
 
@@ -104,6 +107,7 @@ interface RollTableDataConstructorData {
 
   /**
    * An image file path which provides the thumbnail artwork for this RollTable
+   * @defaultValue `RollTableData.DEFAULT_ICON`
    */
   img?: string | null | undefined;
 
@@ -114,6 +118,7 @@ interface RollTableDataConstructorData {
 
   /**
    * A Collection of TableResult embedded documents which belong to this RollTable
+   * @defaultValue `[]`
    */
   results?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseTableResult>>[0][] | null | undefined;
 
@@ -137,7 +142,7 @@ interface RollTableDataConstructorData {
   /**
    * The _id of a Folder which contains this RollTable
    */
-  folder?: string | null | undefined;
+  folder?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseFolder>> | string | null | undefined;
 
   /**
    * The numeric sort value which orders this RollTable relative to its siblings
@@ -161,13 +166,14 @@ interface RollTableDataConstructorData {
  * The data schema for an RollTable document.
  * @see BaseRollTable
  */
-export declare class RollTableData extends DocumentData<
+export class RollTableData extends DocumentData<
   RollTableDataSchema,
   RollTableDataProperties,
   PropertiesToSource<RollTableDataProperties>,
   RollTableDataConstructorData,
   documents.BaseRollTable
 > {
+  /** @override */
   static defineSchema(): RollTableDataSchema;
 
   /**
@@ -179,4 +185,4 @@ export declare class RollTableData extends DocumentData<
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface RollTableData extends RollTableDataProperties {}
+export interface RollTableData extends RollTableDataProperties {}

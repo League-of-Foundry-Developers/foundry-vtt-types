@@ -1,8 +1,8 @@
-import { ConstructorDataType } from '../../../types/helperTypes';
 import { DocumentMetadata, DocumentModificationOptions } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
-import { BaseUser } from './baseUser';
 import * as data from '../data/data.mjs';
+import type { FogExplorationDataConstructorData } from '../data/data.mjs/fogExplorationData.js';
+import { BaseUser } from './baseUser';
 
 /**
  * The base FogExploration model definition which defines common behavior of an FogExploration document between both client and server.
@@ -30,7 +30,7 @@ export declare class BaseFogExploration extends Document<data.FogExplorationData
 
   /** @override */
   protected _preUpdate(
-    changed: DeepPartial<ConstructorDataType<data.FogExplorationData>>,
+    changed: DeepPartial<FogExplorationDataConstructorData>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;

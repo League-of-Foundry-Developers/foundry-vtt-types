@@ -1,4 +1,5 @@
-import { ConfiguredDocumentClass, ConstructorDataType } from '../../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
+import type { SceneDataConstructorData } from '../../../../common/data/data.mjs/sceneData.js';
 
 declare global {
   /**
@@ -35,7 +36,7 @@ declare global {
      */
     protected _onChangeScene(
       scene: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>>,
-      data: DeepPartial<ConstructorDataType<foundry.documents.BaseScene['data']>>
+      data: DeepPartial<SceneDataConstructorData>
     ): Promise<void>;
   }
 }

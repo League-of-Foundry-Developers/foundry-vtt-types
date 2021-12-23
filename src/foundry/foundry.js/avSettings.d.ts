@@ -116,22 +116,22 @@ declare class AVSettings {
       type: string;
 
       /**
-       * @defaultValue `''`
+       * @defaultValue `""`
        */
       url: string;
 
       /**
-       * @defaultValue `''`
+       * @defaultValue `""`
        */
       room: string;
 
       /**
-       * @defaultValue `''`
+       * @defaultValue `""`
        */
       username: string;
 
       /**
-       * @defaultValue `''`
+       * @defaultValue `""`
        */
       password: string;
     };
@@ -143,17 +143,17 @@ declare class AVSettings {
       type: string;
 
       /**
-       * @defaultValue `''`
+       * @defaultValue `""`
        */
       url: string;
 
       /**
-       * @defaultValue `''`
+       * @defaultValue `""`
        */
       username: string;
 
       /**
-       * @defaultValue `''`
+       * @defaultValue `""`
        */
       password: string;
     };

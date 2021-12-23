@@ -1,13 +1,23 @@
-import { ConfiguredDocumentClass, ConstructorDataType, PropertiesToSource } from '../../../types/helperTypes';
+import { ConfiguredDocumentClass, PropertiesToSource } from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
-import { AmbientLightDataProperties } from '../../common/data/data.mjs/ambientLightData';
-import { AmbientSoundDataProperties } from '../../common/data/data.mjs/ambientSoundData';
-import { DrawingDataProperties } from '../../common/data/data.mjs/drawingData';
-import { MeasuredTemplateDataProperties } from '../../common/data/data.mjs/measuredTemplateData';
-import { NoteDataProperties } from '../../common/data/data.mjs/noteData';
-import { TileDataProperties } from '../../common/data/data.mjs/tileData';
-import { TokenDataProperties } from '../../common/data/data.mjs/tokenData';
-import { WallDataProperties } from '../../common/data/data.mjs/wallData';
+import {
+  AmbientLightDataConstructorData,
+  AmbientLightDataProperties
+} from '../../common/data/data.mjs/ambientLightData';
+import {
+  AmbientSoundDataConstructorData,
+  AmbientSoundDataProperties
+} from '../../common/data/data.mjs/ambientSoundData';
+import { DrawingDataConstructorData, DrawingDataProperties } from '../../common/data/data.mjs/drawingData';
+import {
+  MeasuredTemplateDataConstructorData,
+  MeasuredTemplateDataProperties
+} from '../../common/data/data.mjs/measuredTemplateData';
+import { NoteDataConstructorData, NoteDataProperties } from '../../common/data/data.mjs/noteData';
+import type { SceneDataConstructorData } from '../../common/data/data.mjs/sceneData.js';
+import { TileDataConstructorData, TileDataProperties } from '../../common/data/data.mjs/tileData';
+import { TokenDataConstructorData, TokenDataProperties } from '../../common/data/data.mjs/tokenData';
+import { WallDataConstructorData, WallDataProperties } from '../../common/data/data.mjs/wallData';
 
 declare global {
   /**
@@ -94,10 +104,7 @@ declare global {
      * @param options    - (default: `{}`)
      */
     clone(
-      createData?: DeepPartial<
-        | ConstructorDataType<foundry.data.SceneData>
-        | (ConstructorDataType<foundry.data.SceneData> & Record<string, unknown>)
-      >,
+      createData?: DeepPartial<SceneDataConstructorData | (SceneDataConstructorData & Record<string, unknown>)>,
       options?: { save?: boolean; keepId?: boolean }
     ): TemporaryDocument<this> | Promise<TemporaryDocument<this | undefined>>;
 
@@ -106,7 +113,7 @@ declare global {
 
     /** @override */
     protected _preCreate(
-      data: ConstructorDataType<foundry.data.SceneData>,
+      data: SceneDataConstructorData,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;
@@ -120,7 +127,7 @@ declare global {
 
     /** @override */
     protected _preUpdate(
-      changed: DeepPartial<ConstructorDataType<foundry.data.SceneData>>,
+      changed: DeepPartial<SceneDataConstructorData>,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;
@@ -147,49 +154,49 @@ declare global {
     /** @override */
     _preCreateEmbeddedDocuments(
       embeddedName: string,
-      result: ConstructorDataType<foundry.data.DrawingData>[],
+      result: DrawingDataConstructorData[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
     _preCreateEmbeddedDocuments(
       embeddedName: string,
-      result: ConstructorDataType<foundry.data.TokenData>[],
+      result: TokenDataConstructorData[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
     _preCreateEmbeddedDocuments(
       embeddedName: string,
-      result: ConstructorDataType<foundry.data.AmbientLightData>[],
+      result: AmbientLightDataConstructorData[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
     _preCreateEmbeddedDocuments(
       embeddedName: string,
-      result: ConstructorDataType<foundry.data.NoteData>[],
+      result: NoteDataConstructorData[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
     _preCreateEmbeddedDocuments(
       embeddedName: string,
-      result: ConstructorDataType<foundry.data.AmbientSoundData>[],
+      result: AmbientSoundDataConstructorData[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
     _preCreateEmbeddedDocuments(
       embeddedName: string,
-      result: ConstructorDataType<foundry.data.MeasuredTemplateData>[],
+      result: MeasuredTemplateDataConstructorData[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
     _preCreateEmbeddedDocuments(
       embeddedName: string,
-      result: ConstructorDataType<foundry.data.TileData>[],
+      result: TileDataConstructorData[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
     _preCreateEmbeddedDocuments(
       embeddedName: string,
-      result: ConstructorDataType<foundry.data.WallData>[],
+      result: WallDataConstructorData[],
       options: DocumentModificationOptions,
       userId: string
     ): void;

@@ -1,10 +1,10 @@
-import { ConstructorDataType, FieldReturnType, PropertiesToSource } from '../../../types/helperTypes';
+import { FieldReturnType, PropertiesToSource } from '../../../types/helperTypes';
 import { DocumentData } from '../abstract/module.mjs';
 import * as fields from '../data/fields.mjs';
-import { PackageAuthorData } from './packageAuthorData';
-import { PackageCompendiumData } from './packageCompendiumData';
-import { PackageDependencyData } from './packageDependencyData';
-import { PackageLanguageData } from './packageLanguageData';
+import { PackageAuthorData, PackageAuthorDataConstructorData } from './packageAuthorData';
+import { PackageCompendiumData, PackageCompendiumDataConstructorData } from './packageCompendiumData';
+import { PackageDependencyData, PackageDependencyDataConstructorData } from './packageDependencyData';
+import { PackageLanguageData, PackageLanguageDataConstructorData } from './packageLanguageData';
 
 /**
  * A helper field used for string arrays
@@ -187,7 +187,7 @@ export interface PackageDataConstructorData {
    * An array of author objects who are co-authors of this package. Preferred to the singular author field.
    * @defaultValue `[]`
    */
-  authors?: ConstructorDataType<PackageAuthorData>[] | null | undefined;
+  authors?: PackageAuthorDataConstructorData[] | null | undefined;
 
   /** A web url where more details about the package may be found */
   url?: string | null | undefined;
@@ -241,13 +241,13 @@ export interface PackageDataConstructorData {
    * An array of language data objects which are included by this package
    * @defaultValue `[]`
    */
-  languages?: ConstructorDataType<PackageLanguageData>[] | null | undefined;
+  languages?: PackageLanguageDataConstructorData[] | null | undefined;
 
   /**
    * An array of compendium packs which are included by this package
    * @defaultValue `[]`
    */
-  packs?: ConstructorDataType<PackageCompendiumData>[] | null | undefined;
+  packs?: PackageCompendiumDataConstructorData[] | null | undefined;
 
   /**
    * An array of game system names which this module supports
@@ -259,7 +259,7 @@ export interface PackageDataConstructorData {
    * An array of dependency objects which define required dependencies for using this package
    * @defaultValue `[]`
    */
-  dependencies?: ConstructorDataType<PackageDependencyData>[] | null | undefined;
+  dependencies?: PackageDependencyDataConstructorData[] | null | undefined;
 
   /**
    * Whether to require a package-specific socket namespace for this package

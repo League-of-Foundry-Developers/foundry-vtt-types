@@ -1,4 +1,5 @@
-import { ConfiguredDocumentClass, ConstructorDataType } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import type { ChatMessageDataConstructorData } from '../../../common/data/data.mjs/chatMessageData.js';
 
 declare global {
   /**
@@ -162,7 +163,7 @@ declare global {
     protected _processDiceCommand(
       command: string,
       match: RegExpMatchArray,
-      chatData: ConstructorDataType<foundry.data.ChatMessageData>,
+      chatData: ChatMessageDataConstructorData,
       createOptions: DocumentModificationContext
     ): void;
 
@@ -178,7 +179,7 @@ declare global {
     protected _processWhisperCommand(
       command: string,
       match: RegExpMatchArray,
-      chatData: ConstructorDataType<foundry.data.ChatMessageData>,
+      chatData: ChatMessageDataConstructorData,
       createOptions: DocumentModificationContext
     ): void;
 
@@ -193,7 +194,7 @@ declare global {
     protected _processChatCommand(
       command: string,
       match: RegExpMatchArray,
-      chatData: ConstructorDataType<foundry.data.ChatMessageData>,
+      chatData: ChatMessageDataConstructorData,
       createOptions: DocumentModificationContext
     ): void;
 

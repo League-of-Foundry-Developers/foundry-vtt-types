@@ -1,24 +1,25 @@
-import * as fields from '../fields.mjs';
 import type { ConfiguredFlags, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import type DocumentData from '../../abstract/data.mjs';
 import type { documents } from '../../module.mjs';
+import * as fields from '../fields.mjs';
 
 interface PlaylistSoundDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
-  name: typeof fields.REQUIRED_STRING;
-  description: typeof fields.BLANK_STRING;
-  path: typeof fields.AUDIO_FIELD;
-  playing: typeof fields.BOOLEAN_FIELD;
-  pausedTime: FieldReturnType<typeof fields.NUMERIC_FIELD, { default: null }>;
-  repeat: typeof fields.BOOLEAN_FIELD;
-  volume: FieldReturnType<typeof fields.ALPHA_FIELD, { default: 0.5 }>;
-  fade: typeof fields.INTEGER_FIELD;
-  flags: typeof fields.OBJECT_FIELD;
+  _id: fields.DocumentId;
+  name: fields.RequiredString;
+  description: fields.BlankString;
+  path: fields.AudioField;
+  playing: fields.BooleanField;
+  pausedTime: FieldReturnType<fields.NumericField, { default: null }>;
+  repeat: fields.BooleanField;
+  volume: FieldReturnType<fields.AlphaField, { default: 0.5 }>;
+  fade: fields.IntegerField;
+  flags: fields.ObjectField;
 }
 
 interface PlaylistSoundDataProperties {
   /**
    * The _id which uniquely identifies this PlaylistSound document
+   * @defaultValue `null`
    */
   _id: string | null;
 
@@ -28,14 +29,14 @@ interface PlaylistSoundDataProperties {
   name: string;
 
   /**
-   * @defaultValue `''`
+   * @defaultValue `""`
    */
   description: string;
 
   /**
    * The audio file path that is played by this sound
    */
-  path: string | undefined | null;
+  path: string | null | undefined;
 
   /**
    * Is this sound currently playing?
@@ -72,6 +73,7 @@ interface PlaylistSoundDataProperties {
 interface PlaylistSoundDataConstructorData {
   /**
    * The _id which uniquely identifies this PlaylistSound document
+   * @defaultValue `null`
    */
   _id?: string | null | undefined;
 
@@ -81,14 +83,14 @@ interface PlaylistSoundDataConstructorData {
   name: string;
 
   /**
-   * @defaultValue `''`
+   * @defaultValue `""`
    */
   description?: string | null | undefined;
 
   /**
    * The audio file path that is played by this sound
    */
-  path?: string | undefined | null;
+  path?: string | null | undefined;
 
   /**
    * Is this sound currently playing?
@@ -126,13 +128,14 @@ interface PlaylistSoundDataConstructorData {
  * The data schema for a PlaylistSound embedded document.
  * @see BasePlaylistSound
  */
-export declare class PlaylistSoundData extends DocumentData<
+export class PlaylistSoundData extends DocumentData<
   PlaylistSoundDataSchema,
   PlaylistSoundDataProperties,
   PropertiesToSource<PlaylistSoundDataProperties>,
   PlaylistSoundDataConstructorData,
   documents.BasePlaylistSound
 > {
+  /** @override */
   static defineSchema(): PlaylistSoundDataSchema;
 
   /** @override */

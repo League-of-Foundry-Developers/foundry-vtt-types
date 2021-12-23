@@ -1,8 +1,5 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConstructorDataType,
-  ToObjectFalseType
-} from '../../../../../types/helperTypes';
+import type { ConfiguredDocumentClassForName, ToObjectFalseType } from '../../../../../types/helperTypes';
+import type { TableResultDataConstructorData } from '../../../../common/data/data.mjs/tableResultData.js';
 
 declare global {
   /**
@@ -55,7 +52,7 @@ declare global {
      */
     protected _onCreateResult(
       event: JQuery.ClickEvent | DragEvent,
-      resultData?: ConstructorDataType<foundry.data.TableResultData>
+      resultData?: TableResultDataConstructorData
     ): Promise<ConfiguredDocumentClassForName<'TableResult'>[]>;
 
     /**

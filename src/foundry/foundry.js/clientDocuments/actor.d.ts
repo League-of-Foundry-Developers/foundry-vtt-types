@@ -1,11 +1,7 @@
-import {
-  ConfiguredDocumentClass,
-  ConfiguredObjectClassForName,
-  ConstructorDataType,
-  DocumentConstructor
-} from '../../../types/helperTypes';
+import { ConfiguredDocumentClass, ConfiguredObjectClassForName, DocumentConstructor } from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
 import EmbeddedCollection from '../../common/abstract/embedded-collection.mjs';
+import type { ActorDataConstructorData } from '../../common/data/data.mjs/actorData.js';
 
 declare global {
   /**
@@ -170,7 +166,7 @@ declare global {
 
     /** @override */
     protected _preCreate(
-      data: ConstructorDataType<foundry.data.ActorData>,
+      data: ActorDataConstructorData,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;

@@ -6,26 +6,26 @@ import type { AnimationData, AnimationDataConstructorData } from './animationDat
 import type { DarknessActivation, DarknessActivationConstructorData } from './darknessActivation.js';
 
 interface LightDataSchema extends DocumentSchema {
-  alpha: FieldReturnType<typeof fields.ALPHA_FIELD, { default: 0.5 }>;
-  angle: typeof fields.ANGLE_FIELD;
-  bright: typeof fields.NONNEGATIVE_NUMBER_FIELD;
-  color: typeof fields.COLOR_FIELD;
-  coloration: FieldReturnType<typeof fields.NONNEGATIVE_INTEGER_FIELD, { default: 1 }>;
-  dim: typeof fields.NONNEGATIVE_NUMBER_FIELD;
-  gradual: FieldReturnType<typeof fields.BOOLEAN_FIELD, { default: true }>;
-  luminosity: FieldReturnType<typeof LightData.LIGHT_UNIFORM_FIELD, { default: 0.5 }>;
-  saturation: typeof LightData.LIGHT_UNIFORM_FIELD;
-  contrast: typeof LightData.LIGHT_UNIFORM_FIELD;
-  shadows: typeof LightData.LIGHT_UNIFORM_FIELD;
+  alpha: FieldReturnType<fields.AlphaField, { default: 0.5 }>;
+  angle: fields.AngleField;
+  bright: fields.NonnegativeNumberField;
+  color: fields.ColorField;
+  coloration: FieldReturnType<fields.NonnegativeIntegerField, { default: 1 }>;
+  dim: fields.NonnegativeNumberField;
+  gradual: FieldReturnType<fields.BooleanField, { default: true }>;
+  luminosity: FieldReturnType<LightData.LightUniformField, { default: 0.5 }>;
+  saturation: LightData.LightUniformField;
+  contrast: LightData.LightUniformField;
+  shadows: LightData.LightUniformField;
   animation: DocumentField<AnimationData> & {
     type: typeof AnimationData;
     required: true;
-    default: {};
+    default: Record<string, never>;
   };
   darkness: DocumentField<DarknessActivation> & {
     type: typeof DarknessActivation;
     required: true;
-    default: {};
+    default: Record<string, never>;
   };
 }
 
@@ -49,7 +49,7 @@ interface LightDataProperties {
   bright: number;
 
   /** A tint color for the emitted light, if any */
-  color: string | undefined | null;
+  color: string | null | undefined;
 
   /**
    * The coloration technique applied in the shader
@@ -111,109 +111,117 @@ interface LightDataConstructorData {
    * An opacity for the emitted light, if any
    * @defaultValue `0.5`
    */
-  alpha?: number | undefined | null;
+  alpha?: number | null | undefined;
 
   /**
    * The angle of emission for this point source
    * @defaultValue `360`
    */
-  angle?: number | undefined | null;
+  angle?: number | null | undefined;
 
   /**
    * The allowed radius of bright vision or illumination
    * @defaultValue `0`
    */
-  bright?: number | undefined | null;
+  bright?: number | null | undefined;
 
   /** A tint color for the emitted light, if any */
-  color?: string | undefined | null;
+  color?: string | null | undefined;
 
   /**
    * The coloration technique applied in the shader
    * @defaultValue `1`
    */
-  coloration?: number | undefined | null;
+  coloration?: number | null | undefined;
 
   /**
    * The allowed radius of dim vision or illumination
    * @defaultValue `0`
    */
-  dim?: number | undefined | null;
+  dim?: number | null | undefined;
 
   /**
    * Fade the difference between bright, dim, and dark gradually?
    * @defaultValue `true`
    */
-  gradual?: boolean | undefined | null;
+  gradual?: boolean | null | undefined;
 
   /**
    * The luminosity applied in the shader
    * @defaultValue `0.5`
    */
-  luminosity?: number | undefined | null;
+  luminosity?: number | null | undefined;
 
   /**
    * The amount of color saturation this light applies to the background texture
    * @defaultValue `0`
    */
-  saturation?: number | undefined | null;
+  saturation?: number | null | undefined;
 
   /**
    * The amount of contrast this light applies to the background texture
    * @defaultValue `0`
    */
-  contrast?: number | undefined | null;
+  contrast?: number | null | undefined;
 
   /**
    * The depth of shadows this light applies to the background texture
    * @defaultValue `0`
    */
-  shadows?: number | undefined | null;
+  shadows?: number | null | undefined;
 
   /**
    * An animation configuration for the source
    * @defaultValue `new AnimationData({})`
    */
-  animation?: AnimationDataConstructorData | undefined | null;
+  animation?: AnimationDataConstructorData | null | undefined;
 
   /**
    * A darkness range (min and max) for which the source should be active
    * @defaultValue `new DarknessActivation({})`
    */
-  darkness?: DarknessActivationConstructorData | undefined | null;
+  darkness?: DarknessActivationConstructorData | null | undefined;
 }
 
 /**
  * A reusable document structure for the internal data used to render the appearance of a light source.
  * This is re-used by both the AmbientLightData and TokenData classes.
  */
-export declare class LightData extends DocumentData<
+export class LightData extends DocumentData<
   LightDataSchema,
   LightDataProperties,
   PropertiesToSource<LightDataProperties>,
   LightDataConstructorData,
   documents.BaseAmbientLight | documents.BaseToken
 > {
+  /** @override */
   static defineSchema(): LightDataSchema;
 
   /**
    * A reusable field definition for uniform fields used by LightData
-   * @remarks
+   */
+  static LIGHT_UNIFORM_FIELD: LightData.LightUniformField;
+
+  /** @override */
+  _initializeSource(data: LightDataConstructorData): PropertiesToSource<LightDataProperties>;
+
+  /** @override */
+  protected _initialize(): void;
+}
+
+declare namespace LightData {
+  /**
    * Property type: `number`
-   * Constructor type: `number | undefined | null`
+   * Constructor type: `number | null | undefined`
    * Default: `0`
    */
-  static LIGHT_UNIFORM_FIELD: {
+  interface LightUniformField {
     type: typeof Number;
     required: true;
     default: 0;
     validate: (n: number) => boolean;
     validationError: '{name} {field} "{value}" is not a number between -1 and 1';
-  };
-
-  _initializeSource(data: LightDataConstructorData): PropertiesToSource<LightDataProperties>;
-
-  _initialize(): void;
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

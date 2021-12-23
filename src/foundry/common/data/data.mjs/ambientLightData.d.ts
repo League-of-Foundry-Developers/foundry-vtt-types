@@ -5,19 +5,19 @@ import * as fields from '../fields.mjs';
 import type { LightData, LightDataConstructorData } from './lightData.js';
 
 interface AmbientLightDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
-  x: typeof fields.REQUIRED_NUMBER;
-  y: typeof fields.REQUIRED_NUMBER;
-  rotation: FieldReturnType<typeof fields.ANGLE_FIELD, { default: 0 }>;
-  walls: FieldReturnType<typeof fields.BOOLEAN_FIELD, { default: true }>;
-  vision: typeof fields.BOOLEAN_FIELD;
+  _id: fields.DocumentId;
+  x: fields.RequiredNumber;
+  y: fields.RequiredNumber;
+  rotation: FieldReturnType<fields.AngleField, { default: 0 }>;
+  walls: FieldReturnType<fields.BooleanField, { default: true }>;
+  vision: fields.BooleanField;
   config: DocumentField<LightData> & {
     type: typeof LightData;
     required: true;
-    default: {};
+    default: Record<string, never>;
   };
-  hidden: typeof fields.BOOLEAN_FIELD;
-  flags: typeof fields.OBJECT_FIELD;
+  hidden: fields.BooleanField;
+  flags: fields.ObjectField;
 }
 
 interface AmbientLightDataProperties {
@@ -103,19 +103,19 @@ interface AmbientLightDataConstructorData {
    * Whether or not this light source is constrained by Walls
    * @defaultValue `true`
    */
-  walls?: boolean | undefined | null;
+  walls?: boolean | null | undefined;
 
   /**
    * Whether or not this light source provides a source of vision
    * @defaultValue `false`
    */
-  vision?: boolean | undefined | null;
+  vision?: boolean | null | undefined;
 
   /**
    * Light configuration data
    * @defaultValue `new LightData({})`
    */
-  config?: LightDataConstructorData | undefined | null;
+  config?: LightDataConstructorData | null | undefined;
 
   /**
    * Is the light source currently hidden?
@@ -134,19 +134,22 @@ interface AmbientLightDataConstructorData {
  * The data schema for a AmbientLight embedded document.
  * @see BaseAmbientLight
  */
-export declare class AmbientLightData extends DocumentData<
+export class AmbientLightData extends DocumentData<
   AmbientLightDataSchema,
   AmbientLightDataProperties,
   PropertiesToSource<AmbientLightDataProperties>,
   AmbientLightDataConstructorData,
   BaseAmbientLight
 > {
+  /** @override */
   static defineSchema(): AmbientLightDataSchema;
 
+  /** @override */
   _initializeSource(data: AmbientLightDataConstructorData): PropertiesToSource<AmbientLightDataProperties>;
 
-  _initialize(): void;
+  /** @override */
+  protected _initialize(): void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface AmbientLightData extends AmbientLightDataProperties {}
+export interface AmbientLightData extends AmbientLightDataProperties {}

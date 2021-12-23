@@ -1,6 +1,6 @@
-import { ConstructorDataType } from '../../../types/helperTypes';
 import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
+import type { CombatDataConstructorData } from '../data/data.mjs/combatData.js';
 import { data } from '../module.mjs';
 import { BaseCombatant } from './baseCombatant';
 import { BaseUser } from './baseUser';
@@ -37,5 +37,5 @@ export declare class BaseCombat extends Document<data.CombatData> {
    * Is a user able to update an existing Combat?
    * @param doc - (unused)
    */
-  protected static _canUpdate(user: BaseUser, doc: BaseCombat, data?: ConstructorDataType<data.CombatData>): boolean;
+  protected static _canUpdate(user: BaseUser, doc: BaseCombat, data?: CombatDataConstructorData): boolean;
 }
