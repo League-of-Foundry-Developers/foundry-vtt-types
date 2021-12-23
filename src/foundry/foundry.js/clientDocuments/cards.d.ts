@@ -272,15 +272,13 @@ declare global {
        * The name of the action being performed, used as part of the dispatched Hook event
        * @defaultValue `'deal'`
        */
-      action?: DealAction | undefined;
+      action?: string | undefined;
     }
-
-    type DealAction = 'deal' | 'pass';
 
     /** Additional context which describes the operation */
     interface DealContext {
       /** The action name being performed, i.e. "deal", "pass" */
-      action: DealAction;
+      action: string;
 
       /** An array of Card creation operations to be performed in each destination Cards document */
       toCreate: ConstructorDataType<foundry.data.CardData>[][];
@@ -304,15 +302,13 @@ declare global {
        * The name of the action being performed, used as part of the dispatched Hook event
        * @defaultValue `'pass'`
        */
-      action?: PassAction | undefined;
+      action?: string | undefined;
     }
-
-    type PassAction = 'pass' | 'play' | 'discard' | 'draw';
 
     /** Additional context which describes the operation */
     interface PassContext {
       /** The action name being performed, i.e. "pass", "play", "discard", "draw" */
-      action: PassAction;
+      action: string;
 
       /** Card creation operations to be performed in the destination Cards document */
       toCreate: ConstructorDataType<foundry.data.CardData>[];
