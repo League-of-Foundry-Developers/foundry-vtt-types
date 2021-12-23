@@ -247,7 +247,7 @@ declare global {
       collection: unknown; // FIXME: ConfiguredDocumentClassOrDefault<typeof CardStacks>
 
       /** @defaultValue `Cards` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseCards>; // FIXME: ConfiguredDocumentClassOrDefault<typeof Cards>
+      documentClass: ConfiguredDocumentClassOrDefault<typeof Cards>; // FIXME: ConfiguredDocumentClassOrDefault<typeof Cards>
 
       presets: {
         /**
@@ -1214,7 +1214,7 @@ declare global {
      */
     Card: {
       /** @defaultValue `Card` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseCard>; // FIXME: ConfiguredDocumentClassOrDefault<typeof Card>
+      documentClass: ConfiguredDocumentClassOrDefault<typeof Card>; // FIXME: ConfiguredDocumentClassOrDefault<typeof Card>
     };
 
     /**

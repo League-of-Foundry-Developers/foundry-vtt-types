@@ -14,7 +14,7 @@ expectType<boolean>(doc.isGlobal); // class itself
 // Test the inheritance of static members
 expectType<string>(AmbientLightDocument.documentName); // Document
 expectType<typeof data.AmbientLightData>(AmbientLightDocument.schema); // Base-Document
-expectType<Promise<AmbientLightDocument | undefined>>(AmbientLightDocument.createDialog()); // ClientDocumentMixin
+expectType<Promise<AmbientLightDocument | null | undefined>>(AmbientLightDocument.createDialog()); // ClientDocumentMixin
 
 // Test the props
 // TODO: change to <InstanceType<ObjectClass<AmbientLightDocument>> | null>  once the circular reference problem has been solved

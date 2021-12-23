@@ -14,7 +14,7 @@ expectType<Folder | null>(macro.folder);
 expectType<boolean>(macro.isOwner);
 
 // static properties and functions of `ClientDocumentMixin`
-expectType<Promise<Macro | undefined>>(Macro.createDialog());
+expectType<Promise<Macro | null | undefined>>(Macro.createDialog());
 
 // static properties of `BaseMacro`
 expectType<typeof foundry.data.MacroData>(Macro.schema);

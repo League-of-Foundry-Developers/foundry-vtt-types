@@ -1,5 +1,6 @@
 import {
   ConfiguredDocumentClass,
+  ConfiguredDocumentClassForName,
   ConfiguredObjectClassForName,
   DocumentConstructor,
   ToObjectFalseType
@@ -276,6 +277,20 @@ declare global {
       collapseSidebar: (sidebar: Sidebar, collapsed: boolean) => unknown;
 
       /**
+       * A hook event that fires when Cards are dealt from a deck to other hands
+       * @param origin             - The origin Cards document
+       * @param destinations       - An array of destination Cards documents
+       * @param context            - Additional context which describes the operation
+       * @remarks This is called by {@link Hooks.call}.
+       * @remarks An explicit return value of `false` prevents the operation.
+       */
+      dealCards: (
+        origin: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
+        destinations: InstanceType<ConfiguredDocumentClassForName<'Cards'>>[],
+        context: Cards.DealContext
+      ) => boolean | void;
+
+      /**
        * A hook event that fires when some useful data is dropped onto an ActorSheet.
        * @param actor - The Actor
        * @param sheet - The ActorSheet application
@@ -410,6 +425,20 @@ declare global {
         },
         updates: Record<string, number>
       ) => boolean;
+
+      /**
+       * A hook event that fires when Cards are passed from one stack to another
+       * @param origin      - The origin Cards document
+       * @param destination - The destination Cards document
+       * @param context     - Additional context which describes the operation
+       * @remarks This is called by {@link Hooks.call}.
+       * @remarks An explicit return value of `false` prevents the operation.
+       */
+      passCards: (
+        origin: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
+        destination: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
+        context: Cards.DealContext
+      ) => boolean | void;
 
       /**
        * A hook event that fires when the game is paused or un-paused.

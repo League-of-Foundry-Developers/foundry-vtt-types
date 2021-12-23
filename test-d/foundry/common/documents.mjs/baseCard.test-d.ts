@@ -74,7 +74,7 @@ declare global {
 }
 
 expectType<'old' | 'uno'>(baseCard.data.type);
-expectType<foundry.documents.BaseCards | null>(baseCard.parent);
+expectType<Cards | null>(baseCard.parent);
 
 if (baseCard.data._source.type === 'old') {
   expectType<'grubby'>(baseCard.data._source.data.condition);
