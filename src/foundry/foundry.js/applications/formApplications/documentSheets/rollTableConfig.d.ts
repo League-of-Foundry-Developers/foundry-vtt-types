@@ -9,7 +9,7 @@ declare global {
    */
   class RollTableConfig<
     Options extends DocumentSheet.Options = DocumentSheet.Options,
-    Data extends object = ActorSheet.Data<Options>
+    Data extends object = RollTableConfig.Data
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'RollTable'>>> {
     /**
      * @defaultValue
