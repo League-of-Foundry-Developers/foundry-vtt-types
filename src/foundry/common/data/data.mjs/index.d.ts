@@ -1,5 +1,6 @@
 export { ActiveEffectData } from './activeEffectData';
 export { ActorData } from './actorData';
+export { AdventureData } from './adventureData';
 export { AmbientLightData } from './ambientLightData';
 export { AmbientSoundData } from './ambientSoundData';
 export { ChatMessageData } from './chatMessageData';
