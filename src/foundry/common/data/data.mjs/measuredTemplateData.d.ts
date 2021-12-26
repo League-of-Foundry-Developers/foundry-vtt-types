@@ -20,7 +20,7 @@ interface MeasuredTemplateDataSchema extends DocumentSchema {
   };
   x: fields.RequiredNumber;
   y: fields.RequiredNumber;
-  distance: FieldReturnType<fields.RequiredPositiveNumber, { default: 1 }>;
+  distance: FieldReturnType<fields.RequiredPositiveNumber, { default: 1; validate: (n: number) => boolean }>;
   direction: FieldReturnType<fields.AngleField, { default: 0 }>;
   angle: fields.AngleField;
   width: FieldReturnType<fields.RequiredPositiveNumber, { default: 1 }>;

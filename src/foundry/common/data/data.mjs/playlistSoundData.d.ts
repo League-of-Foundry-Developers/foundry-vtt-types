@@ -13,6 +13,7 @@ interface PlaylistSoundDataSchema extends DocumentSchema {
   repeat: fields.BooleanField;
   volume: FieldReturnType<fields.AlphaField, { default: 0.5 }>;
   fade: fields.IntegerField;
+  sort: fields.IntegerSortField;
   flags: fields.ObjectField;
 }
 
@@ -29,6 +30,7 @@ interface PlaylistSoundDataProperties {
   name: string;
 
   /**
+   * The description of this sound track
    * @defaultValue `""`
    */
   description: string;
@@ -45,6 +47,7 @@ interface PlaylistSoundDataProperties {
   playing: boolean;
 
   /**
+   * The time in seconds at which playback was paused
    * @defaultValue `null`
    */
   pausedTime: number | null;
@@ -61,7 +64,11 @@ interface PlaylistSoundDataProperties {
    */
   volume: number;
 
+  /** A duration in milliseconds to fade volume transition */
   fade: number | undefined;
+
+  /** @defaultValue `0` */
+  sort: number;
 
   /**
    * An object of optional key/value flags
@@ -83,6 +90,7 @@ interface PlaylistSoundDataConstructorData {
   name: string;
 
   /**
+   * The description of this sound track
    * @defaultValue `""`
    */
   description?: string | null | undefined;
@@ -99,6 +107,7 @@ interface PlaylistSoundDataConstructorData {
   playing?: boolean | null | undefined;
 
   /**
+   * The time in seconds at which playback was paused
    * @defaultValue `null`
    */
   pausedTime?: number | null | undefined;
@@ -115,7 +124,11 @@ interface PlaylistSoundDataConstructorData {
    */
   volume?: number | null | undefined;
 
+  /** A duration in milliseconds to fade volume transition */
   fade?: number | null | undefined;
+
+  /** @defaultValue `0` */
+  sort: number | null | undefined;
 
   /**
    * An object of optional key/value flags

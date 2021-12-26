@@ -19,6 +19,13 @@ interface PlaylistDataSchema extends DocumentSchema {
   playing: fields.BooleanField;
   fade: fields.IntegerField;
   folder: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
+  sorting: DocumentField<foundry.CONST.PLAYLIST_SORT_MODES> & {
+    type: foundry.CONST.PLAYLIST_SORT_MODES;
+    required: true;
+    default: typeof foundry.CONST.PLAYLIST_SORT_MODES.ALPHABETICAL;
+    validate: (m: unknown) => m is foundry.CONST.PLAYLIST_SORT_MODES;
+    validationError: 'Invalid Playlist sorting mode';
+  };
   sort: fields.IntegerSortField;
   seed: fields.NonnegativeIntegerField;
   permission: fields.DocumentPermissions;
@@ -38,6 +45,7 @@ interface PlaylistDataProperties {
   name: string;
 
   /**
+   * The description of this playlist
    * @defaultValue `""`
    */
   description: string;
@@ -60,6 +68,7 @@ interface PlaylistDataProperties {
    */
   playing: boolean;
 
+  /** A duration in milliseconds to fade volume transition */
   fade: number | undefined;
 
   /**
@@ -69,11 +78,18 @@ interface PlaylistDataProperties {
   folder: string | null;
 
   /**
+   * The sorting mode used for this playlist.
+   * @defaultValue `CONST.PLAYLIST_SORT_MODES.ALPHABETICAL`
+   */
+  sorting: foundry.CONST.PLAYLIST_SORT_MODES;
+
+  /**
    * The numeric sort value which orders this playlist relative to its siblings
    * @defaultValue `0`
    */
   sort: number;
 
+  /** A seed used for playlist randomization to guarantee that all clients generate the same random order. */
   seed: number | undefined;
 
   /**
@@ -102,6 +118,7 @@ interface PlaylistDataConstructorData {
   name: string;
 
   /**
+   * The description of this playlist
    * @defaultValue `""`
    */
   description?: string | null | undefined;
@@ -127,6 +144,7 @@ interface PlaylistDataConstructorData {
    */
   playing?: boolean | null | undefined;
 
+  /** A duration in milliseconds to fade volume transition */
   fade?: number | null | undefined;
 
   /**
@@ -136,11 +154,18 @@ interface PlaylistDataConstructorData {
   folder?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseFolder>> | string | null | undefined;
 
   /**
+   * The sorting mode used for this playlist.
+   * @defaultValue `CONST.PLAYLIST_SORT_MODES.ALPHABETICAL`
+   */
+  sorting?: foundry.CONST.PLAYLIST_SORT_MODES | null | undefined;
+
+  /**
    * The numeric sort value which orders this playlist relative to its siblings
    * @defaultValue `0`
    */
   sort?: number | null | undefined;
 
+  /** A seed used for playlist randomization to guarantee that all clients generate the same random order. */
   seed?: number | null | undefined;
 
   /**

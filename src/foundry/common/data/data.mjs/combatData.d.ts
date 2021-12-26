@@ -16,7 +16,15 @@ interface CombatDataSchema extends DocumentSchema {
   combatants: fields.EmbeddedCollectionField<typeof documents.BaseCombatant>;
   active: fields.BooleanField;
   round: FieldReturnType<fields.NonnegativeIntegerField, { default: 0; required: true }>;
-  turn: FieldReturnType<fields.NonnegativeIntegerField, { default: 0; required: true }>;
+  turn: FieldReturnType<
+    fields.NonnegativeIntegerField,
+    {
+      default: 0;
+      required: true;
+      nullable: true;
+      validate: (n: unknown) => boolean;
+    }
+  >;
   sort: fields.IntegerSortField;
   flags: fields.ObjectField;
 }
@@ -56,7 +64,7 @@ interface CombatDataProperties {
    * The current turn in the Combat round
    * @defaultValue `0`
    */
-  turn: number;
+  turn: number | null;
 
   /**
    * The current sort order of this Combat relative to others in the same Scene
