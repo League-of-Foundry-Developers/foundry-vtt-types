@@ -70,8 +70,8 @@ declare global {
      * Document is returned.
      */
     static createDialog(
-      data?: DeepPartial<FolderDataConstructorData | (FolderDataConstructorData & Record<string, unknown>)>,
-      options?: Dialog.Options
+      data?: DeepPartial<FolderDataConstructorData | (FolderDataConstructorData & Record<string, unknown>)> | undefined,
+      options?: Dialog.Options | undefined
     ): any;
 
     /**

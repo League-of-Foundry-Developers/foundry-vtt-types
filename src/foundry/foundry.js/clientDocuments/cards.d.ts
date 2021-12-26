@@ -64,8 +64,8 @@ declare global {
      */
     deal(
       to: InstanceType<ConfiguredDocumentClassForName<'Cards'>>[],
-      number?: number,
-      options?: Cards.DealOptions
+      number?: number | undefined,
+      options?: Cards.DealOptions | undefined
     ): Promise<InstanceType<ConfiguredDocumentClassForName<'Cards'>>>;
 
     /**
@@ -78,7 +78,7 @@ declare global {
     pass(
       to: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
       ids: string[],
-      options?: Cards.PassOptions
+      options?: Cards.PassOptions | undefined
     ): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>>[]>;
 
     /**
@@ -91,8 +91,8 @@ declare global {
      */
     draw(
       from: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
-      number?: number,
-      options?: Cards.DrawOptions
+      number?: number | undefined,
+      options?: Cards.DrawOptions | undefined
     ): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>>[]>;
 
     /**
@@ -101,7 +101,9 @@ declare global {
      * @returns The Cards document after the shuffle operation has completed
      * @remarks The returns documentaion is incorrect (https://gitlab.com/foundrynet/foundryvtt/-/issues/6367).
      */
-    shuffle(options?: Cards.ShuffleOptions): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>>[]>;
+    shuffle(
+      options?: Cards.ShuffleOptions | undefined
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>>[]>;
 
     /**
      * Reset the Cards stack, retrieving all original cards from other stacks where they may have been drawn if this is a
@@ -112,7 +114,7 @@ declare global {
      * @remarks The returns documentaion is incorrect (https://gitlab.com/foundrynet/foundryvtt/-/issues/6367).
      */
     reset(
-      options: Cards.ResetOptions
+      options?: Cards.ResetOptions | undefined
     ): Promise<
       InstanceType<ConfiguredDocumentClassForName<'Card'>>[] | InstanceType<ConfiguredDocumentClassForName<'Cards'>>
     >;
@@ -126,7 +128,9 @@ declare global {
      * @internal
      * @remarks The returns documentaion is incorrect (https://gitlab.com/foundrynet/foundryvtt/-/issues/6367).
      */
-    protected _resetDeck(options?: Cards.ResetOptions): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>>[]>;
+    protected _resetDeck(
+      options?: Cards.ResetOptions | undefined
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>>[]>;
 
     /**
      * Return all cards in this stack to their original decks.
@@ -135,7 +139,9 @@ declare global {
      * @returns The Cards document after the return operation has completed.
      * @internal
      */
-    protected _resetStack(ptions?: Cards.ResetOptions): Promise<InstanceType<ConfiguredDocumentClassForName<'Cards'>>>;
+    protected _resetStack(
+      options?: Cards.ResetOptions | undefined
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Cards'>>>;
 
     /**
      * A sorting function that is used to determine the standard order of Card documents within an un-shuffled stack.
@@ -188,8 +194,8 @@ declare global {
     /** @override */
     static deleteDocuments<T extends DocumentConstructor>(
       this: T,
-      ids?: string[],
-      context?: DocumentModificationContext
+      ids?: string[] | undefined,
+      context?: DocumentModificationContext | undefined
     ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
     /**
@@ -231,17 +237,19 @@ declare global {
     resetDialog(): Promise<InstanceType<ConfiguredDocumentClassForName<'Cards'>> | false | null>;
 
     /** @override */
-    deleteDialog(options: Partial<Dialog.Options>): Promise<this | false | null | undefined>;
+    deleteDialog(options?: Partial<Dialog.Options> | undefined): Promise<this | false | null | undefined>;
 
     // TODO: It's a bit weird that we have to do it in this generic way but otherwise there is an error overriding this. Investigate later.
     /** @override */
     static createDialog<T extends DocumentConstructor>(
       this: T,
-      data?: DeepPartial<
-        | ConstructorDataType<foundry.data.CardsData>
-        | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
-      >,
-      context?: Pick<DocumentModificationContext, 'parent' | 'pack'> & Partial<Dialog.Options>
+      data?:
+        | DeepPartial<
+            | ConstructorDataType<foundry.data.CardsData>
+            | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
+          >
+        | undefined,
+      context?: (Pick<DocumentModificationContext, 'parent' | 'pack'> & Partial<Dialog.Options>) | undefined
     ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
   }
 

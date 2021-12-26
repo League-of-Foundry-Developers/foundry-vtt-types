@@ -80,7 +80,7 @@ declare global {
      */
     pass(
       to: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
-      options?: Cards.PassOptions
+      options?: Cards.PassOptions | undefined
     ): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>> | undefined>;
 
     /**
@@ -90,7 +90,7 @@ declare global {
      */
     play(
       to: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
-      options?: Cards.PassOptions
+      options?: Cards.PassOptions | undefined
     ): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>> | undefined>;
 
     /**
@@ -100,7 +100,7 @@ declare global {
      */
     discard(
       to: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
-      options?: Cards.PassOptions
+      options?: Cards.PassOptions | undefined
     ): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>> | undefined>;
 
     /**
@@ -109,7 +109,7 @@ declare global {
      *                  (default: `{}`)
      * @returns A reference to the reset card belonging to its original parent
      */
-    reset(options?: Cards.ResetOptions): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>>>;
+    reset(options?: Cards.ResetOptions | undefined): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>>>;
 
     /**
      * Create a chat message which displays this Card.
@@ -120,8 +120,8 @@ declare global {
      * @returns The created chat message
      */
     toMessage(
-      messageData?: ConstructorDataType<foundry.data.ChatMessageData>,
-      options?: DocumentModificationContext
+      messageData?: ConstructorDataType<foundry.data.ChatMessageData> | undefined,
+      options?: DocumentModificationContext | undefined
     ): Promise<InstanceType<ConfiguredDocumentClassForName<'ChatMessage'>> | undefined>;
   }
 }
