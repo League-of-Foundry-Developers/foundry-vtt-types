@@ -11,11 +11,11 @@ import * as fields from '../fields.mjs';
 interface MeasuredTemplateDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
   user: fields.ForeignDocumentField<{ type: typeof documents.BaseUser; required: true }>;
-  t: {
+  t: DocumentField<typeof foundry.CONST.MEASURED_TEMPLATE_TYPES> & {
     type: typeof String;
     required: true;
-    default: typeof CONST.MEASURED_TEMPLATE_TYPES.CIRCLE;
-    validate: (t: unknown) => boolean;
+    default: typeof foundry.CONST.MEASURED_TEMPLATE_TYPES.CIRCLE;
+    validate: (t: unknown) => t is typeof foundry.CONST.MEASURED_TEMPLATE_TYPES;
     validationError: 'Invalid {name} {field} which must be a value in CONST.MEASURED_TEMPLATE_TYPES';
   };
   x: fields.RequiredNumber;
@@ -118,7 +118,7 @@ interface MeasuredTemplateDataConstructorData {
    * The value in CONST.MEASURED_TEMPLATE_TYPES which defines the geometry type of this template
    * @defaultValue `foundry.CONST.MEASURED_TEMPLATE_TYPES.CIRCLE`
    */
-  t?: ValueOf<foundry.CONST.MEASURED_TEMPLATE_TYPES> | null | undefined;
+  t?: foundry.CONST.MEASURED_TEMPLATE_TYPES | null | undefined;
 
   /**
    * The x-coordinate position of the origin of the template effect

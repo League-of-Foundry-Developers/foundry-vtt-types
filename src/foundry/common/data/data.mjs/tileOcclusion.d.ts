@@ -7,7 +7,7 @@ interface TileOcclusionSchema extends DocumentSchema {
   mode: FieldReturnType<
     fields.RequiredNumber,
     {
-      default: typeof CONST.TILE_OCCLUSION_MODES.FADE;
+      default: typeof foundry.CONST.TILE_OCCLUSION_MODES.FADE;
       validate: (m: unknown) => m is foundry.CONST.TILE_OCCLUSION_MODES;
       validationError: 'Invalid {name} {field} which must be a value in CONST.TILE_OCCLUSION_MODES';
     }

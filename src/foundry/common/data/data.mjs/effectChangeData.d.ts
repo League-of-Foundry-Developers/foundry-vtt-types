@@ -1,6 +1,5 @@
 import { PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
-import * as CONST from '../../constants.mjs';
 import { BaseActiveEffect } from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 
@@ -10,7 +9,7 @@ interface EffectChangeDataSchema extends DocumentSchema {
   mode: DocumentField<number> & {
     type: typeof Number;
     required: true;
-    default: typeof CONST.ACTIVE_EFFECT_MODES.ADD;
+    default: typeof foundry.CONST.ACTIVE_EFFECT_MODES.ADD;
     validate: (m: unknown) => boolean;
     validationError: 'Invalid mode specified for change in ActiveEffectData';
   };
@@ -34,7 +33,7 @@ interface EffectChangeDataProperties {
    * The modification mode with which the change is applied
    * @defaultValue `CONST.ACTIVE_EFFECT_MODES.ADD`
    */
-  mode: CONST.ACTIVE_EFFECT_MODES;
+  mode: foundry.CONST.ACTIVE_EFFECT_MODES;
 
   /**
    * The priority level with which this change is applied
@@ -59,7 +58,7 @@ interface EffectChangeDataConstructorData {
    * The modification mode with which the change is applied
    * @defaultValue `CONST.ACTIVE_EFFECT_MODES.ADD`
    */
-  mode?: CONST.ACTIVE_EFFECT_MODES | null | undefined;
+  mode?: foundry.CONST.ACTIVE_EFFECT_MODES | null | undefined;
 
   /**
    * The priority level with which this change is applied

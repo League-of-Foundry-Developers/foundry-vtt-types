@@ -5,7 +5,7 @@ import {
   PropertiesToSource
 } from '../../../../types/helperTypes';
 import DocumentData from '../../abstract/data.mjs';
-import { CONST, documents } from '../../module.mjs';
+import { documents } from '../../module.mjs';
 import * as fields from '../fields.mjs';
 import { ActorDataSource } from './actorData.js';
 import { AnimationData, AnimationDataConstructorData } from './animationData';
@@ -19,10 +19,10 @@ interface VisionFieldOptions {
 interface TokenDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
   name: fields.StringField;
-  displayName: DocumentField<CONST.TOKEN_DISPLAY_MODES> & {
+  displayName: DocumentField<foundry.CONST.TOKEN_DISPLAY_MODES> & {
     type: typeof Number;
     required: true;
-    default: typeof CONST.TOKEN_DISPLAY_MODES.NONE;
+    default: typeof foundry.CONST.TOKEN_DISPLAY_MODES.NONE;
     validate: (m: any) => boolean;
     validationError: 'Invalid {name} {field} which must be a value in CONST.TOKEN_DISPLAY_MODES';
   };
@@ -73,17 +73,17 @@ interface TokenDataSchema extends DocumentSchema {
     required: true;
     default: Record<string, never>;
   };
-  disposition: DocumentField<CONST.TOKEN_DISPOSITIONS> & {
+  disposition: DocumentField<foundry.CONST.TOKEN_DISPOSITIONS> & {
     type: typeof Number;
     required: true;
-    default: typeof CONST.TOKEN_DISPOSITIONS.HOSTILE;
+    default: typeof foundry.CONST.TOKEN_DISPOSITIONS.HOSTILE;
     validate: (n: any) => boolean;
     validationError: 'Invalid {name} {field} which must be a value in CONST.TOKEN_DISPOSITIONS';
   };
-  displayBars: DocumentField<CONST.TOKEN_DISPLAY_MODES> & {
+  displayBars: DocumentField<foundry.CONST.TOKEN_DISPLAY_MODES> & {
     type: typeof Number;
     required: true;
-    default: typeof CONST.TOKEN_DISPLAY_MODES.NONE;
+    default: typeof foundry.CONST.TOKEN_DISPLAY_MODES.NONE;
     validate: (m: any) => boolean;
     validationError: 'Invalid {name} {field} which must be a value in CONST.TOKEN_DISPLAY_MODES';
   };
@@ -116,7 +116,7 @@ interface TokenDataProperties {
    * The display mode of the Token nameplate, from CONST.TOKEN_DISPLAY_MODES
    * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
    */
-  displayName: CONST.TOKEN_DISPLAY_MODES;
+  displayName: foundry.CONST.TOKEN_DISPLAY_MODES;
 
   /**
    * The _id of an Actor document which this Token represents
@@ -293,13 +293,13 @@ interface TokenDataProperties {
    * A displayed Token disposition from CONST.TOKEN_DISPOSITIONS
    * @defaultValue `CONST.TOKEN_DISPOSITIONS.HOSTILE`
    */
-  disposition: CONST.TOKEN_DISPOSITIONS;
+  disposition: foundry.CONST.TOKEN_DISPOSITIONS;
 
   /**
    * The display mode of Token resource bars, from CONST.TOKEN_DISPLAY_MODES
    * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
    */
-  displayBars: CONST.TOKEN_DISPLAY_MODES;
+  displayBars: foundry.CONST.TOKEN_DISPLAY_MODES;
 
   /**
    * The configuration of the Token's primary resource bar
@@ -336,7 +336,7 @@ interface TokenDataConstructorData {
    * The display mode of the Token nameplate, from CONST.TOKEN_DISPLAY_MODES
    * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
    */
-  displayName?: CONST.TOKEN_DISPLAY_MODES | null | undefined;
+  displayName?: foundry.CONST.TOKEN_DISPLAY_MODES | null | undefined;
 
   /**
    * The _id of an Actor document which this Token represents
@@ -513,13 +513,13 @@ interface TokenDataConstructorData {
    * A displayed Token disposition from CONST.TOKEN_DISPOSITIONS
    * @defaultValue `CONST.TOKEN_DISPOSITIONS.HOSTILE`
    */
-  disposition?: CONST.TOKEN_DISPOSITIONS | null | undefined;
+  disposition?: foundry.CONST.TOKEN_DISPOSITIONS | null | undefined;
 
   /**
    * The display mode of Token resource bars, from CONST.TOKEN_DISPLAY_MODES
    * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
    */
-  displayBars?: CONST.TOKEN_DISPLAY_MODES | null | undefined;
+  displayBars?: foundry.CONST.TOKEN_DISPLAY_MODES | null | undefined;
 
   /**
    * The configuration of the Token's primary resource bar
