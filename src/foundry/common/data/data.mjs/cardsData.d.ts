@@ -72,7 +72,7 @@ interface CardsDataBaseProperties {
 
   /**
    * A collection of Card documents which currently belong to this stack
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(CardData, [], BaseCard.implementation)`
    */
   cards: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseCard>, CardsData>;
 
@@ -155,7 +155,7 @@ interface CardsDataConstructorData {
 
   /**
    * A collection of Card documents which currently belong to this stack
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(CardData, [], BaseCard.implementation)`
    */
   cards?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseCard>>[0][] | null | undefined;
 

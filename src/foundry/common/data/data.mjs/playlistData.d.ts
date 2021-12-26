@@ -12,7 +12,7 @@ interface PlaylistDataSchema extends DocumentSchema {
   mode: DocumentField<foundry.CONST.PLAYLIST_MODES> & {
     type: typeof Number;
     required: true;
-    default: typeof CONST.PLAYLIST_MODES.SEQUENTIAL;
+    default: typeof foundry.CONST.PLAYLIST_MODES.SEQUENTIAL;
     validate: (m: unknown) => m is foundry.CONST.PLAYLIST_MODES;
     validationError: 'Invalid {name} {field} provided which must be a value from CONST.PLAYLIST_MODES';
   };
@@ -44,7 +44,7 @@ interface PlaylistDataProperties {
 
   /**
    * A Collection of PlaylistSounds embedded documents which belong to this playlist
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(PlaylistSoundData, [], BasePlaylistSound.implementation)`
    */
   sounds: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BasePlaylistSound>, PlaylistData>;
 
@@ -108,7 +108,7 @@ interface PlaylistDataConstructorData {
 
   /**
    * A Collection of PlaylistSounds embedded documents which belong to this playlist
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(PlaylistSoundData, [], BasePlaylistSound.implementation)`
    */
   sounds?:
     | EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BasePlaylistSound>, PlaylistData>

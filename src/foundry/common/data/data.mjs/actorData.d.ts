@@ -74,13 +74,13 @@ interface ActorDataBaseProperties {
 
   /**
    * A Collection of Item embedded Documents
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(ItemData, [], BaseItem.implementation)`
    */
   items: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseItem>, ActorData>;
 
   /**
    * A collection of ActiveEffect embedded Documents
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(ActiveEffectData, [], BaseActiveEffect.implementation)`
    */
   effects: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseActiveEffect>, ActorData>;
 
@@ -146,13 +146,13 @@ interface ActorDataConstructorData {
 
   /**
    * A Collection of Item embedded Documents
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(ItemData, [], BaseItem.implementation)`
    */
   items?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseItem>>[0][] | null | undefined;
 
   /**
    * A collection of ActiveEffect embedded Documents
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(ActiveEffectData, [], BaseActiveEffect.implementation)`
    */
   effects?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseActiveEffect>>[0][] | null | undefined;
 
