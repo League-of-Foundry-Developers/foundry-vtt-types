@@ -3,13 +3,13 @@ import * as fields from '../data/fields.mjs';
 import { PackageData, PackageDataConstructorData, PackageDataProperties, PackageDataSchema } from './packageData';
 
 interface WorldDataSchema extends Omit<PackageDataSchema, 'system'> {
-  system: typeof fields.REQUIRED_STRING;
-  background: typeof fields.STRING_FIELD;
-  coreVersion: typeof fields.REQUIRED_STRING;
-  nextSession: typeof fields.STRING_FIELD;
-  resetKeys: typeof fields.BOOLEAN_FIELD;
-  safeMode: typeof fields.BOOLEAN_FIELD;
-  systemVersion: FieldReturnType<typeof fields.REQUIRED_STRING, { default: () => string }>;
+  system: fields.RequiredString;
+  background: fields.StringField;
+  coreVersion: fields.RequiredString;
+  nextSession: fields.StringField;
+  resetKeys: fields.BooleanField;
+  safeMode: fields.BooleanField;
+  systemVersion: FieldReturnType<fields.RequiredString, { default: () => string }>;
 }
 
 interface WorldDataProperties extends Omit<PackageDataProperties, 'system'> {
@@ -25,11 +25,16 @@ interface WorldDataProperties extends Omit<PackageDataProperties, 'system'> {
   /** An ISO datetime string when the next game session is scheduled to occur */
   nextSession: string | undefined;
 
+  /** @defaultValue `false` */
   resetKeys: boolean;
 
+  /** @defaultValue `false` */
   safeMode: boolean;
 
-  /** The version of the game system for which this world has been migrated */
+  /**
+   * The version of the game system for which this world has been migrated
+   * @defaultValue `game.system?.data.version ?? ""`
+   */
   systemVersion: string;
 }
 
@@ -46,11 +51,16 @@ interface WorldDataConstructorData extends Omit<PackageDataConstructorData, 'sys
   /** An ISO datetime string when the next game session is scheduled to occur */
   nextSession?: string | null | undefined;
 
+  /** @defaultValue `false` */
   resetKeys?: boolean | null | undefined;
 
+  /** @defaultValue `false` */
   safeMode?: boolean | null | undefined;
 
-  /** The version of the game system for which this world has been migrated */
+  /**
+   * The version of the game system for which this world has been migrated
+   * @defaultValue `game.system?.data.version ?? ""`
+   */
   systemVersion?: string | null | undefined;
 }
 
@@ -58,9 +68,10 @@ interface WorldDataConstructorData extends Omit<PackageDataConstructorData, 'sys
  * The data schema used to define World manifest files.
  * Extends the basic PackageData schema with some additional world-specific fields.
  */
-export declare class WorldData extends PackageData<WorldDataSchema, WorldDataProperties, WorldDataConstructorData> {
+export class WorldData extends PackageData<WorldDataSchema, WorldDataProperties, WorldDataConstructorData> {
+  /** @override */
   static defineSchema(): WorldDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface WorldData extends WorldDataProperties {}
+export interface WorldData extends WorldDataProperties {}
