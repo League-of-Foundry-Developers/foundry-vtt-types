@@ -60,7 +60,7 @@ interface ItemDataBaseProperties {
 
   /**
    * A collection of ActiveEffect embedded Documents
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(ActiveEffectData, [], BaseActiveEffect.implementation)`
    */
   effects: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseActiveEffect>, ItemData>;
 
@@ -120,7 +120,7 @@ interface ItemDataConstructorData {
 
   /**
    * A collection of ActiveEffect embedded Documents
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(ActiveEffectData, [], BaseActiveEffect.implementation)`
    */
   effects?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseActiveEffect>>[0][] | null | undefined;
 

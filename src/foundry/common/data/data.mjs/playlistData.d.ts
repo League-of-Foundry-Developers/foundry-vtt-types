@@ -44,7 +44,7 @@ interface PlaylistDataProperties {
 
   /**
    * A Collection of PlaylistSounds embedded documents which belong to this playlist
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(PlaylistSoundData, [], BasePlaylistSound.implementation)`
    */
   sounds: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BasePlaylistSound>, PlaylistData>;
 
@@ -108,7 +108,7 @@ interface PlaylistDataConstructorData {
 
   /**
    * A Collection of PlaylistSounds embedded documents which belong to this playlist
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(PlaylistSoundData, [], BasePlaylistSound.implementation)`
    */
   sounds?:
     | EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BasePlaylistSound>, PlaylistData>

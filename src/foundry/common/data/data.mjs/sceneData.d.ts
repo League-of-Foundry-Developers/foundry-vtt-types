@@ -267,49 +267,49 @@ interface SceneDataProperties {
 
   /**
    * A collection of embedded Drawing objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(DrawingData, [], BaseDrawing.implementation)`
    */
   drawings: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseDrawing>, SceneData>;
 
   /**
    * A collection of embedded Token objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(TokenData, [], BaseToken.implementation)`
    */
   tokens: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseToken>, SceneData>;
 
   /**
    * A collection of embedded AmbientLight objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(AmbientLightData, [], BaseAmbientLight.implementation)`
    */
   lights: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseAmbientLight>, SceneData>;
 
   /**
    * A collection of embedded Note objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(NoteData, [], BaseNote.implementation)`
    */
   notes: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseNote>, SceneData>;
 
   /**
    * A collection of embedded AmbientSound objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(AmbientSoundData, [], BaseAmbientSound.implementation)`
    */
   sounds: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseAmbientSound>, SceneData>;
 
   /**
    * A collection of embedded MeasuredTemplate objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(MeasuredTemplateData, [], BaseMeasuredTemplate.implementation)`
    */
   templates: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseMeasuredTemplate>, SceneData>;
 
   /**
    * A collection of embedded Tile objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(TileData, [], BaseTile.implementation)`
    */
   tiles: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseTile>, SceneData>;
 
   /**
    * A collection of embedded Wall objects
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(WallData, [], BaseWall.implementation)`
    */
   walls: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseWall>, SceneData>;
 
@@ -531,49 +531,49 @@ interface SceneDataConstructorData {
 
   /**
    * A collection of embedded Drawing objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(DrawingData, [], BaseDrawing.implementation)`
    */
   drawings?: DrawingDataConstructorData[] | null | undefined;
 
   /**
    * A collection of embedded Token objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(TokenData, [], BaseToken.implementation)`
    */
   tokens?: TokenDataConstructorData[] | null | undefined;
 
   /**
    * A collection of embedded AmbientLight objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(AmbientLightData, [], BaseAmbientLight.implementation)`
    */
   lights?: AmbientLightDataConstructorData[] | null | undefined;
 
   /**
    * A collection of embedded Note objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(NoteData, [], BaseNote.implementation)`
    */
   notes?: NoteDataConstructorData[] | null | undefined;
 
   /**
    * A collection of embedded AmbientSound objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(AmbientSoundData, [], BaseAmbientSound.implementation)`
    */
   sounds?: AmbientSoundDataConstructorData[] | null | undefined;
 
   /**
    * A collection of embedded MeasuredTemplate objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(MeasuredTemplateData, [], BaseMeasuredTemplate.implementation)`
    */
   templates?: MeasuredTemplateDataConstructorData[] | null | undefined;
 
   /**
    * A collection of embedded Tile objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(TileData, [], BaseTile.implementation)`
    */
   tiles?: TileDataConstructorData[] | null | undefined;
 
   /**
    * A collection of embedded Wall objects
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(WallData, [], BaseWall.implementation)`
    */
   walls?: WallDataConstructorData[] | null | undefined;
 

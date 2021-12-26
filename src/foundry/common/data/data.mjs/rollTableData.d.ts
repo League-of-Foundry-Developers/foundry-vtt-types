@@ -49,7 +49,7 @@ interface RollTableDataProperties {
 
   /**
    * A Collection of TableResult embedded documents which belong to this RollTable
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(TableResultData, [], BaseTableResult.implementation)`
    */
   results: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseTableResult>, RollTableData>;
 
@@ -118,7 +118,7 @@ interface RollTableDataConstructorData {
 
   /**
    * A Collection of TableResult embedded documents which belong to this RollTable
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(TableResultData, [], BaseTableResult.implementation)`
    */
   results?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseTableResult>>[0][] | null | undefined;
 
