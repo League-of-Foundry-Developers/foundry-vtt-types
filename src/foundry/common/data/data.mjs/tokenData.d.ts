@@ -8,13 +8,8 @@ import DocumentData from '../../abstract/data.mjs';
 import { CONST, documents } from '../../module.mjs';
 import * as fields from '../fields.mjs';
 import { ActorDataSource } from './actorData.js';
-import { AnimationData, AnimationDataConstructorData } from './animationData';
+import { LightData, LightDataConstructorData } from './lightData';
 import { TokenBarData, TokenBarDataConstructorData } from './tokenBarData';
-
-interface VisionFieldOptions {
-  validate: (d: number) => boolean;
-  validationError: 'Invalid {name} {field} distance which must be a number with absolute value less than 1000';
-}
 
 interface TokenDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -60,16 +55,11 @@ interface TokenDataSchema extends DocumentSchema {
     required: true;
     default: (data: { readonly dimSight?: number; readonly brightSight?: number }) => boolean;
   };
-  dimSight: FieldReturnType<fields.RequiredNumber, VisionFieldOptions>;
-  brightSight: FieldReturnType<fields.RequiredNumber, VisionFieldOptions>;
-  dimLight: FieldReturnType<fields.RequiredNumber, VisionFieldOptions>;
-  brightLight: FieldReturnType<fields.RequiredNumber, VisionFieldOptions>;
+  dimSight: fields.NonnegativeNumberField;
+  brightSight: fields.NonnegativeNumberField;
   sightAngle: fields.AngleField;
-  lightAngle: fields.AngleField;
-  lightColor: fields.ColorField;
-  lightAlpha: FieldReturnType<fields.AlphaField, { default: 0.25 }>;
-  lightAnimation: DocumentField<AnimationData> & {
-    type: typeof AnimationData;
+  light: DocumentField<LightData> & {
+    type: typeof LightData;
     required: true;
     default: Record<string, never>;
   };
@@ -249,45 +239,16 @@ interface TokenDataProperties {
   brightSight: number;
 
   /**
-   * How far in distance units this Token emits dim light
-   * @defaultValue `0`
-   */
-  dimLight: number;
-
-  /**
-   * How far in distance units this Token emits bright light
-   * @defaultValue `0`
-   */
-  brightLight: number;
-
-  /**
    * The angle at which this Token is able to see, if it has vision
    * @defaultValue `360`
    */
   sightAngle: number;
 
   /**
-   * The angle at which this Token is able to emit light
-   * @defaultValue `360`
+   * Configuration of the light source that this Token emits, if any
+   * @defaultValue `new LightData({})`
    */
-  lightAngle: number;
-
-  /**
-   * The color of the token's emitted light as an HTML hexadecimal color string
-   */
-  lightColor: string | null | undefined;
-
-  /**
-   * The intensity of any light emitted by the token
-   * @defaultValue `0.25`
-   */
-  lightAlpha: number;
-
-  /**
-   * A data object which configures token light animation settings
-   * @defaultValue `new AnimationData({})`
-   */
-  lightAnimation: AnimationData;
+  light: LightData;
 
   /**
    * A displayed Token disposition from CONST.TOKEN_DISPOSITIONS
@@ -469,45 +430,16 @@ interface TokenDataConstructorData {
   brightSight?: number | null | undefined;
 
   /**
-   * How far in distance units this Token emits dim light
-   * @defaultValue `0`
-   */
-  dimLight?: number | null | undefined;
-
-  /**
-   * How far in distance units this Token emits bright light
-   * @defaultValue `0`
-   */
-  brightLight?: number | null | undefined;
-
-  /**
    * The angle at which this Token is able to see, if it has vision
    * @defaultValue `360`
    */
   sightAngle?: number | null | undefined;
 
   /**
-   * The angle at which this Token is able to emit light
-   * @defaultValue `360`
+   * Configuration of the light source that this Token emits, if any
+   * @defaultValue `new LightData({})`
    */
-  lightAngle?: number | null | undefined;
-
-  /**
-   * The color of the token's emitted light as an HTML hexadecimal color string
-   */
-  lightColor?: string | null | undefined;
-
-  /**
-   * The intensity of any light emitted by the token
-   * @defaultValue `0.25`
-   */
-  lightAlpha?: number | null | undefined;
-
-  /**
-   * A data object which configures token light animation settings
-   * @defaultValue `new AnimationData({})`
-   */
-  lightAnimation?: AnimationDataConstructorData | null | undefined;
+  light?: LightDataConstructorData | null | undefined;
 
   /**
    * A displayed Token disposition from CONST.TOKEN_DISPOSITIONS
@@ -554,10 +486,16 @@ export class TokenData extends DocumentData<
   static defineSchema(): TokenDataSchema;
 
   /**
-   * The default icon used for newly created Item documents
+   * The default icon used for newly created Token documents
    * @defaultValue `CONST.DEFAULT_TOKEN`
    */
   static DEFAULT_ICON: string;
+
+  /** @override */
+  _initializeSource(data: TokenDataConstructorData): PropertiesToSource<TokenDataProperties>;
+
+  /** @override */
+  protected _initialize(): void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
