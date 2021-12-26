@@ -16,7 +16,7 @@ interface DrawingDataSchema extends DocumentSchema {
   type: DocumentField<foundry.CONST.DRAWING_TYPES> & {
     type: typeof String;
     required: true;
-    default: typeof CONST.DRAWING_TYPES.POLYGON;
+    default: typeof foundry.CONST.DRAWING_TYPES.POLYGON;
     validate: (t: unknown) => t is foundry.CONST.DRAWING_TYPES;
     validationError: 'Invalid {name} {field} which must be a value in CONST.DRAWING_TYPES';
   };
@@ -37,7 +37,7 @@ interface DrawingDataSchema extends DocumentSchema {
   fillType: FieldReturnType<
     fields.RequiredNumber,
     {
-      default: typeof CONST.DRAWING_FILL_TYPES.NONE;
+      default: typeof foundry.CONST.DRAWING_FILL_TYPES.NONE;
       validate: (v: unknown) => v is foundry.CONST.DRAWING_FILL_TYPES;
       validationError: 'Invalid {name} {field} which must be a value in CONST.DRAWING_FILL_TYPES';
     }

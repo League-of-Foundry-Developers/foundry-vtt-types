@@ -11,11 +11,11 @@ import * as fields from '../fields.mjs';
 interface MeasuredTemplateDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
   user: fields.ForeignDocumentField<{ type: typeof documents.BaseUser; required: true }>;
-  t: DocumentField<typeof CONST.MEASURED_TEMPLATE_TYPES> & {
+  t: DocumentField<typeof foundry.CONST.MEASURED_TEMPLATE_TYPES> & {
     type: typeof String;
     required: true;
-    default: typeof CONST.MEASURED_TEMPLATE_TYPES.CIRCLE;
-    validate: (t: unknown) => t is typeof CONST.MEASURED_TEMPLATE_TYPES;
+    default: typeof foundry.CONST.MEASURED_TEMPLATE_TYPES.CIRCLE;
+    validate: (t: unknown) => t is typeof foundry.CONST.MEASURED_TEMPLATE_TYPES;
     validationError: 'Invalid {name} {field} which must be a value in CONST.MEASURED_TEMPLATE_TYPES';
   };
   x: fields.RequiredNumber;

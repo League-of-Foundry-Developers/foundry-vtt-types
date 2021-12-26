@@ -6,7 +6,6 @@ import {
 } from '../../../../types/helperTypes';
 import EmbeddedCollection from '../../abstract/embedded-collection.mjs';
 import { DocumentData } from '../../abstract/module.mjs';
-import * as CONST from '../../constants.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 import { AmbientLightDataConstructorData } from './ambientLightData';
@@ -49,8 +48,8 @@ interface SceneDataSchema extends DocumentSchema {
   gridType: FieldReturnType<
     fields.RequiredNumber,
     {
-      default: typeof CONST.GRID_TYPES.SQUARE;
-      validate: (t: unknown) => t is CONST.GRID_TYPES;
+      default: typeof foundry.CONST.GRID_TYPES.SQUARE;
+      validate: (t: unknown) => t is foundry.CONST.GRID_TYPES;
       validationError: 'Invalid {name } {field} which must be a value in CONST.GRID_TYPES';
     }
   >;
@@ -59,7 +58,7 @@ interface SceneDataSchema extends DocumentSchema {
     required: true;
     default: 100;
     validate: (n: unknown) => boolean;
-    validationError: `Invalid {name} {field} which must be an integer number of pixels, ${typeof CONST.GRID_MIN_SIZE} or greater`;
+    validationError: `Invalid {name} {field} which must be an integer number of pixels, ${typeof foundry.CONST.GRID_MIN_SIZE} or greater`;
   };
   shiftX: FieldReturnType<fields.IntegerField, { required: true; default: 0 }>;
   shiftY: FieldReturnType<fields.IntegerField, { required: true; default: 0 }>;
@@ -184,7 +183,7 @@ interface SceneDataProperties {
    * The type of grid used in this scene, a number from CONST.GRID_TYPES
    * @defaultValue `CONST.GRID_TYPES.SQUARE`
    */
-  gridType: CONST.GRID_TYPES;
+  gridType: foundry.CONST.GRID_TYPES;
 
   /**
    * The grid size which represents the width (or height) of a single grid space
@@ -448,7 +447,7 @@ interface SceneDataConstructorData {
    * The type of grid used in this scene, a number from CONST.GRID_TYPES
    * @defaultValue `CONST.GRID_TYPES.SQUARE`
    */
-  gridType?: CONST.GRID_TYPES | null | undefined;
+  gridType?: foundry.CONST.GRID_TYPES | null | undefined;
 
   /**
    * The grid size which represents the width (or height) of a single grid space
