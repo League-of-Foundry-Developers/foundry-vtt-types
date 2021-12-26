@@ -23,7 +23,7 @@ interface ActorDataSchema extends DocumentSchema {
     validationError: 'The provided Actor type must be in the array of types defined by the game system';
   };
   img: FieldReturnType<fields.ImageField, { default: () => string }>;
-  data: FieldReturnType<fields.ObjectField, { default: (data: { type: string }) => any }>; // TODO
+  data: fields.SystemDataField;
   token: DocumentField<PrototypeTokenData> & {
     type: typeof PrototypeTokenData;
     required: true;
