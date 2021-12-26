@@ -4,16 +4,16 @@ import * as fields from '../data/fields.mjs';
 
 interface PackageLanguageDataSchema extends DocumentSchema {
   lang: FieldReturnType<
-    typeof fields.REQUIRED_STRING,
+    fields.RequiredString,
     {
       validate: (lang: string) => boolean;
       validationError: 'Invalid language code provided which is not supported by Intl.getCanonicalLocales';
     }
   >;
-  name: typeof fields.STRING_FIELD;
-  path: typeof fields.STRING_FIELD;
-  system: typeof fields.STRING_FIELD;
-  module: typeof fields.STRING_FIELD;
+  name: fields.StringField;
+  path: fields.RequiredString;
+  system: fields.StringField;
+  module: fields.StringField;
 }
 
 interface PackageLanguageDataProperties {
@@ -24,7 +24,7 @@ interface PackageLanguageDataProperties {
   name: string | undefined;
 
   /** The relative path to included JSON translation strings */
-  path: string | undefined;
+  path: string;
 
   /** Only apply this set of translations when a specific system is being used */
   system: string | undefined;
@@ -40,7 +40,7 @@ interface PackageLanguageDataConstructorData {
   name?: string | null | undefined;
 
   /** The relative path to included JSON translation strings */
-  path?: string | null | undefined;
+  path: string;
 
   /** Only apply this set of translations when a specific system is being used */
   system?: string | null | undefined;
@@ -51,12 +51,13 @@ interface PackageLanguageDataConstructorData {
 /**
  * An inner data object which represents a single language specification provided by a package in the languages array.
  */
-export declare class PackageLanguageData extends DocumentData<
+export class PackageLanguageData extends DocumentData<
   PackageLanguageDataSchema,
   PackageLanguageDataProperties,
   PropertiesToSource<PackageLanguageDataProperties>,
   PackageLanguageDataConstructorData
 > {
+  /** @override */
   static defineSchema(): PackageLanguageDataSchema;
 
   /** @override */
@@ -71,4 +72,4 @@ export declare class PackageLanguageData extends DocumentData<
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface PackageLanguageData extends PackageLanguageDataProperties {}
+export interface PackageLanguageData extends PackageLanguageDataProperties {}

@@ -1,69 +1,106 @@
-import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import {
+  ConfiguredDocumentClass,
+  ConfiguredFlags,
+  FieldReturnType,
+  PropertiesToSource
+} from '../../../../types/helperTypes';
 import DocumentData from '../../abstract/data.mjs';
-import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
+import * as fields from '../fields.mjs';
 
 interface UserDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
-  avatar: typeof fields.IMAGE_FIELD;
+  _id: fields.DocumentId;
+  avatar: fields.ImageField;
   character: fields.ForeignDocumentField<{ type: typeof documents.BaseActor; required: false }>;
-  color: FieldReturnType<typeof fields.COLOR_FIELD, { required: true }>;
-  hotbar: DocumentField<Record<number | string, string>> & {
+  color: FieldReturnType<fields.ColorField, { required: true }>;
+  hotbar: DocumentField<Record<number | `${number}`, string>> & {
     required: true;
-    default: Record<never, never>;
+    default: Record<number | `${number}`, never>;
     validate: typeof _validateHotbar;
     validationError: 'Invalid User hotbar data structure';
   };
-  name: typeof fields.REQUIRED_STRING;
-  password: typeof fields.BLANK_STRING;
-  passwordSalt: typeof fields.STRING_FIELD;
+  name: fields.RequiredString;
+  password: fields.BlankString;
+  passwordSalt: fields.StringField;
   permissions: FieldReturnType<
-    typeof fields.DOCUMENT_PERMISSIONS,
+    fields.DocumentPermissions,
     {
-      default: Record<never, never>;
+      default: Record<string, never>;
       validate: typeof _validatePermissions;
     }
   >;
-  role: DocumentField<number> & {
+  role: DocumentField<foundry.CONST.USER_ROLES> & {
     required: true;
     nullable: false;
-    default: typeof CONST.USER_ROLES.PLAYER;
+    default: typeof foundry.CONST.USER_ROLES.PLAYER;
   };
-  flags: typeof fields.OBJECT_FIELD;
+  flags: fields.ObjectField;
 }
 
 interface UserDataProperties {
+  /** @defaultValue `null` */
   _id: string | null;
+
   avatar: string | null | undefined;
+
   character: string | null;
-  color: string | null;
-  hotbar: Record<number | string, string>;
+
+  color: string | null | undefined;
+
+  /** @defaultValue `{}` */
+  hotbar: Record<number | `${number}`, string>;
+
   name: string;
+
+  /** @defaultValue `""` */
   password: string;
+
   passwordSalt: string | undefined;
-  permissions: Partial<Record<keyof typeof CONST.USER_PERMISSIONS, boolean>>;
+
+  /** @defaultValue `{}` */
+  permissions: Partial<Record<keyof typeof foundry.CONST.USER_PERMISSIONS, boolean>>;
+
+  /** @defaultValue `foundry.CONST.USER_ROLES.PLAYER` */
   role: foundry.CONST.USER_ROLES;
+
+  /** @defaultValue `{}` */
   flags: ConfiguredFlags<'User'>;
 }
 
 interface UserDataConstructorData {
+  /** @defaultValue `null` */
   _id?: string | null | undefined;
+
   avatar?: string | null | undefined;
-  character?: string | null | undefined;
+
+  character?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseActor>> | string | null | undefined;
+
   color?: string | null | undefined;
-  hotbar?: Record<number | string, string> | null | undefined;
+
+  /** @defaultValue `{}` */
+  hotbar?: Record<number | `${number}`, string> | null | undefined;
+
   name: string;
+
+  /** @defaultValue `""` */
   password?: string | null | undefined;
+
   passwordSalt?: string | null | undefined;
-  permissions?: Partial<Record<keyof typeof CONST.USER_PERMISSIONS, boolean>> | null | undefined;
+
+  /** @defaultValue `{}` */
+  permissions?: Partial<Record<keyof typeof foundry.CONST.USER_PERMISSIONS, boolean>> | null | undefined;
+
+  /** @defaultValue `foundry.CONST.USER_ROLES.PLAYER` */
   role?: foundry.CONST.USER_ROLES | null | undefined;
+
+  /** @defaultValue `{}` */
   flags?: ConfiguredFlags<'User'> | null | undefined;
 }
 
 /**
  * The data schema for a User document
  */
-export declare class UserData extends DocumentData<
+export class UserData extends DocumentData<
   UserDataSchema,
   UserDataProperties,
   PropertiesToSource<UserDataProperties>,
@@ -72,11 +109,12 @@ export declare class UserData extends DocumentData<
 > {
   constructor(data: UserDataConstructorData, document?: documents.BaseUser | null);
 
+  /** @override */
   static defineSchema(): UserDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface UserData extends UserDataProperties {}
+export interface UserData extends UserDataProperties {}
 
 /**
  * Validate the structure of the User hotbar object

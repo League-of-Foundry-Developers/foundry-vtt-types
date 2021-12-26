@@ -19,7 +19,7 @@ interface TokenBarDataProperties {
   attribute: string | null;
 }
 
-export interface TokenBarDataConstructorData {
+interface TokenBarDataConstructorData {
   /**
    * The attribute path within the Token's Actor data which should be displayed
    * @defaultValue `null`
@@ -31,13 +31,14 @@ export interface TokenBarDataConstructorData {
  * An embedded data structure for the contents of a Token attribute bar.
  * @see TokenData
  */
-export declare class TokenBarData extends DocumentData<
+export class TokenBarData extends DocumentData<
   TokenBarDataSchema,
   TokenBarDataProperties,
   PropertiesToSource<TokenBarDataProperties>,
   TokenBarDataConstructorData,
   documents.BaseToken
 > {
+  /** @override */
   static defineSchema(): TokenBarDataSchema;
 }
 

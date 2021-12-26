@@ -1,5 +1,6 @@
+import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
-import { ConfiguredDocumentClass, ConstructorDataType } from '../../../types/helperTypes';
+import type { ActiveEffectDataConstructorData } from '../../common/data/data.mjs/activeEffectData.js';
 import { EffectChangeData } from '../../common/data/data.mjs/effectChangeData';
 
 declare global {
@@ -133,7 +134,7 @@ declare global {
     protected _getSourceName(): Promise<string>;
 
     protected _preCreate(
-      data: ConstructorDataType<foundry.data.ActiveEffectData>,
+      data: ActiveEffectDataConstructorData,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;

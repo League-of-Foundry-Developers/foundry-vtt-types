@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClassForName, ConstructorDataType } from '../../../../types/helperTypes';
+import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
+import type { TokenDataConstructorData } from '../../../common/data/data.mjs/tokenData.js';
 
 declare global {
   /**
@@ -70,9 +71,7 @@ declare global {
     activateListeners(html: JQuery): void;
 
     /** @override */
-    protected _getSubmitData(
-      updateData?: ConstructorDataType<foundry.data.TokenData>
-    ): Record<string, unknown> & { lightAlpha: number };
+    protected _getSubmitData(updateData?: TokenDataConstructorData): Record<string, unknown> & { lightAlpha: number };
 
     /** @override */
     protected _updateObject(

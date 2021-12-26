@@ -1,34 +1,34 @@
+import type { ConfiguredDocumentClass, ConfiguredFlags, PropertiesToSource } from '../../../../types/helperTypes';
+import type DocumentData from '../../abstract/data.mjs';
+import type EmbeddedCollection from '../../abstract/embedded-collection.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 
-import type { ConfiguredDocumentClass, ConfiguredFlags, PropertiesToSource } from '../../../../types/helperTypes';
-import type EmbeddedCollection from '../../abstract/embedded-collection.mjs';
-import type DocumentData from '../../abstract/data.mjs';
-
 interface PlaylistDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
-  name: typeof fields.REQUIRED_STRING;
-  description: typeof fields.BLANK_STRING;
+  _id: fields.DocumentId;
+  name: fields.RequiredString;
+  description: fields.BlankString;
   sounds: fields.EmbeddedCollectionField<typeof documents.BasePlaylistSound>;
   mode: DocumentField<foundry.CONST.PLAYLIST_MODES> & {
     type: typeof Number;
     required: true;
-    default: typeof CONST.PLAYLIST_MODES.SEQUENTIAL;
+    default: typeof foundry.CONST.PLAYLIST_MODES.SEQUENTIAL;
     validate: (m: unknown) => m is foundry.CONST.PLAYLIST_MODES;
     validationError: 'Invalid {name} {field} provided which must be a value from CONST.PLAYLIST_MODES';
   };
-  playing: typeof fields.BOOLEAN_FIELD;
-  fade: typeof fields.INTEGER_FIELD;
+  playing: fields.BooleanField;
+  fade: fields.IntegerField;
   folder: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
-  sort: typeof fields.INTEGER_SORT_FIELD;
-  seed: typeof fields.NONNEGATIVE_INTEGER_FIELD;
-  permission: typeof fields.DOCUMENT_PERMISSIONS;
-  flags: typeof fields.OBJECT_FIELD;
+  sort: fields.IntegerSortField;
+  seed: fields.NonnegativeIntegerField;
+  permission: fields.DocumentPermissions;
+  flags: fields.ObjectField;
 }
 
 interface PlaylistDataProperties {
   /**
    * The _id which uniquely identifies this Playlist document
+   * @defaultValue `null`
    */
   _id: string | null;
 
@@ -38,12 +38,13 @@ interface PlaylistDataProperties {
   name: string;
 
   /**
-   * @defaultValue `''`
+   * @defaultValue `""`
    */
   description: string;
 
   /**
    * A Collection of PlaylistSounds embedded documents which belong to this playlist
+   * @defaultValue `new EmbeddedCollection(PlaylistSoundData, [], BasePlaylistSound.implementation)`
    */
   sounds: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BasePlaylistSound>, PlaylistData>;
 
@@ -91,6 +92,7 @@ interface PlaylistDataProperties {
 interface PlaylistDataConstructorData {
   /**
    * The _id which uniquely identifies this Playlist document
+   * @defaultValue `null`
    */
   _id?: string | null | undefined;
 
@@ -100,12 +102,13 @@ interface PlaylistDataConstructorData {
   name: string;
 
   /**
-   * @defaultValue `''`
+   * @defaultValue `""`
    */
   description?: string | null | undefined;
 
   /**
    * A Collection of PlaylistSounds embedded documents which belong to this playlist
+   * @defaultValue `new EmbeddedCollection(PlaylistSoundData, [], BasePlaylistSound.implementation)`
    */
   sounds?:
     | EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BasePlaylistSound>, PlaylistData>
@@ -124,13 +127,13 @@ interface PlaylistDataConstructorData {
    */
   playing?: boolean | null | undefined;
 
-  fade?: number | undefined | null;
+  fade?: number | null | undefined;
 
   /**
    * The _id of a Folder which contains this playlist
    * @defaultValue `null`
    */
-  folder?: string | null | undefined;
+  folder?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseFolder>> | string | null | undefined;
 
   /**
    * The numeric sort value which orders this playlist relative to its siblings
@@ -138,13 +141,13 @@ interface PlaylistDataConstructorData {
    */
   sort?: number | null | undefined;
 
-  seed?: number | undefined | null;
+  seed?: number | null | undefined;
 
   /**
    * An object which configures user permissions to this playlist
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission?: Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS> | undefined | null;
+  permission?: Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS> | null | undefined;
 
   /**
    * An object of optional key/value flags
@@ -157,13 +160,14 @@ interface PlaylistDataConstructorData {
  * The data schema for a Playlist document.
  * @see BasePlaylist
  */
-export declare class PlaylistData extends DocumentData<
+export class PlaylistData extends DocumentData<
   PlaylistDataSchema,
   PlaylistDataProperties,
   PropertiesToSource<PlaylistDataProperties>,
   PlaylistDataConstructorData,
   documents.BasePlaylist
 > {
+  /** @override */
   static defineSchema(): PlaylistDataSchema;
 }
 

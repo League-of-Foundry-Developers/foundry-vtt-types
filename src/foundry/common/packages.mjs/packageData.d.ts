@@ -1,21 +1,38 @@
-import { ConstructorDataType, FieldReturnType, PropertiesToSource } from '../../../types/helperTypes';
+import { FieldReturnType, PropertiesToSource } from '../../../types/helperTypes';
 import { DocumentData } from '../abstract/module.mjs';
 import * as fields from '../data/fields.mjs';
-import { PackageAuthorData } from './packageAuthorData';
-import { PackageCompendiumData } from './packageCompendiumData';
-import { PackageDependencyData } from './packageDependencyData';
-import { PackageLanguageData } from './packageLanguageData';
+import { PackageAuthorData, PackageAuthorDataConstructorData } from './packageAuthorData';
+import { PackageCompendiumData, PackageCompendiumDataConstructorData } from './packageCompendiumData';
+import { PackageDependencyData, PackageDependencyDataConstructorData } from './packageDependencyData';
+import { PackageLanguageData, PackageLanguageDataConstructorData } from './packageLanguageData';
 
 /**
  * A helper field used for string arrays
  */
-declare const STRING_ARRAY_FIELD: DocumentField<string[]> & {
-  type: [String];
+declare const STRING_ARRAY_FIELD: StringArrayField;
+/**
+ * Property type: `string[]`
+ * Constructor type: `string[] | null | undefined`
+ * Default `[]`
+ */
+type StringArrayField = DocumentField<string[]> & {
+  type: [typeof String];
   required: true;
   default: [];
   clean: (v: unknown) => string[];
 };
 
+/**
+ * A helper field used for arrays of package include objects
+ */
+declare const INCLUDE_ARRAY_FIELD: <T extends ConstructorOf<DocumentData<any, any>>>(
+  type: T
+) => IncludeArrayFieldReturnType<T>;
+/**
+ * Property type: `T[]`
+ * Constructor type: `T[] | null | undefined`
+ * Default `[]`
+ */
 type IncludeArrayFieldReturnType<T extends ConstructorOf<DocumentData<any, any>>> = DocumentField<
   Array<InstanceType<T>>
 > & {
@@ -25,49 +42,45 @@ type IncludeArrayFieldReturnType<T extends ConstructorOf<DocumentData<any, any>>
   clean: (v: unknown) => InstanceType<T>['_source'][];
 };
 
-/**
- * A helper field used for arrays of package include objects
- */
-declare const INCLUDE_ARRAY_FIELD: <T extends ConstructorOf<DocumentData<any, any>>>(
-  type: T
-) => IncludeArrayFieldReturnType<T>;
-
-export interface PackageDataSchema extends DocumentSchema {
-  name: typeof fields.STRING_FIELD;
-  title: typeof fields.STRING_FIELD;
-  description: typeof fields.BLANK_STRING;
-  author: typeof fields.STRING_FIELD;
+interface PackageDataSchema extends DocumentSchema {
+  name: fields.RequiredString;
+  title: fields.RequiredString;
+  description: fields.BlankString;
+  author: fields.StringField;
   authors: IncludeArrayFieldReturnType<typeof PackageAuthorData>;
-  url: typeof fields.STRING_FIELD;
-  license: typeof fields.STRING_FIELD;
-  readme: typeof fields.STRING_FIELD;
-  bugs: typeof fields.STRING_FIELD;
-  changelog: typeof fields.STRING_FIELD;
-  flags: typeof fields.OBJECT_FIELD;
-  version: FieldReturnType<typeof fields.REQUIRED_STRING, { default: '1.0.0' }>;
-  minimumCoreVersion: typeof fields.STRING_FIELD;
-  compatibleCoreVersion: typeof fields.STRING_FIELD;
-  scripts: typeof STRING_ARRAY_FIELD;
-  esmodules: typeof STRING_ARRAY_FIELD;
-  styles: typeof STRING_ARRAY_FIELD;
+  url: fields.StringField;
+  license: fields.StringField;
+  readme: fields.StringField;
+  bugs: fields.StringField;
+  changelog: fields.StringField;
+  flags: fields.ObjectField;
+  version: FieldReturnType<fields.RequiredString, { default: '1.0.0' }>;
+  minimumCoreVersion: fields.StringField;
+  compatibleCoreVersion: fields.StringField;
+  scripts: StringArrayField;
+  esmodules: StringArrayField;
+  styles: StringArrayField;
   languages: IncludeArrayFieldReturnType<typeof PackageLanguageData>;
   packs: IncludeArrayFieldReturnType<typeof PackageCompendiumData>;
-  system: typeof STRING_ARRAY_FIELD;
+  system: StringArrayField;
   dependencies: IncludeArrayFieldReturnType<typeof PackageDependencyData>;
-  socket: FieldReturnType<typeof fields.BOOLEAN_FIELD, { default: false }>;
-  manifest: typeof fields.STRING_FIELD;
-  download: typeof fields.STRING_FIELD;
-  protected: FieldReturnType<typeof fields.BOOLEAN_FIELD, { default: false }>;
+  socket: FieldReturnType<fields.BooleanField, { default: false }>;
+  manifest: fields.StringField;
+  download: fields.StringField;
+  protected: FieldReturnType<fields.BooleanField, { default: false }>;
 }
 
-export interface PackageDataProperties {
+interface PackageDataProperties {
   /** The canonical package name, should be lower-case with no spaces or special characters */
-  name: string | undefined;
+  name: string;
 
   /** The human-readable package title, containing spaces and special characters */
-  title: string | undefined;
+  title: string;
 
-  /** An optional package description, may contain HTML */
+  /**
+   * An optional package description, may contain HTML
+   * @defaultValue `""`
+   */
   description: string;
 
   /** A singular package author; this is an old field staged for later deprecation, please use authors */
@@ -99,7 +112,7 @@ export interface PackageDataProperties {
 
   /**
    * The current package version
-   * @defaultValue `'1.0.0'`
+   * @defaultValue `"1.0.0"`
    */
   version: string;
 
@@ -163,21 +176,24 @@ export interface PackageDataProperties {
   /** A publicly accessible web URL where the source files for this package may be downloaded. Required in order to support module installation. */
   download: string | undefined;
 
-  /***
+  /**
    * Whether this package uses the protected content access system.
    * @defaultValue `false`
    */
   protected: boolean;
 }
 
-export interface PackageDataConstructorData {
+interface PackageDataConstructorData {
   /** The canonical package name, should be lower-case with no spaces or special characters */
-  name?: string | null | undefined;
+  name: string;
 
   /** The human-readable package title, containing spaces and special characters */
-  title?: string | null | undefined;
+  title: string;
 
-  /** An optional package description, may contain HTML */
+  /**
+   * An optional package description, may contain HTML
+   * @defaultValue `""`
+   */
   description?: string | null | undefined;
 
   /** A singular package author; this is an old field staged for later deprecation, please use authors */
@@ -187,7 +203,7 @@ export interface PackageDataConstructorData {
    * An array of author objects who are co-authors of this package. Preferred to the singular author field.
    * @defaultValue `[]`
    */
-  authors?: ConstructorDataType<PackageAuthorData>[] | null | undefined;
+  authors?: PackageAuthorDataConstructorData[] | null | undefined;
 
   /** A web url where more details about the package may be found */
   url?: string | null | undefined;
@@ -209,7 +225,7 @@ export interface PackageDataConstructorData {
 
   /**
    * The current package version
-   * @defaultValue `'1.0.0'`
+   * @defaultValue `"1.0.0"`
    */
   version?: string | null | undefined;
 
@@ -241,13 +257,13 @@ export interface PackageDataConstructorData {
    * An array of language data objects which are included by this package
    * @defaultValue `[]`
    */
-  languages?: ConstructorDataType<PackageLanguageData>[] | null | undefined;
+  languages?: PackageLanguageDataConstructorData[] | null | undefined;
 
   /**
    * An array of compendium packs which are included by this package
    * @defaultValue `[]`
    */
-  packs?: ConstructorDataType<PackageCompendiumData>[] | null | undefined;
+  packs?: PackageCompendiumDataConstructorData[] | null | undefined;
 
   /**
    * An array of game system names which this module supports
@@ -259,7 +275,7 @@ export interface PackageDataConstructorData {
    * An array of dependency objects which define required dependencies for using this package
    * @defaultValue `[]`
    */
-  dependencies?: ConstructorDataType<PackageDependencyData>[] | null | undefined;
+  dependencies?: PackageDependencyDataConstructorData[] | null | undefined;
 
   /**
    * Whether to require a package-specific socket namespace for this package
@@ -273,7 +289,7 @@ export interface PackageDataConstructorData {
   /** A publicly accessible web URL where the source files for this package may be downloaded. Required in order to support module installation. */
   download?: string | null | undefined;
 
-  /***
+  /**
    * Whether this package uses the protected content access system.
    * @defaultValue `false`
    */
@@ -284,11 +300,12 @@ export interface PackageDataConstructorData {
  * The data schema used to define a Package manifest.
  * Specific types of packages extend this schema with additional fields.
  */
-export declare class PackageData<
+export class PackageData<
   Schema extends Omit<PackageDataSchema, 'system'>,
   Properties extends Omit<PackageDataProperties, 'system'>,
   ConstructorData extends Omit<PackageDataConstructorData, 'system'>
 > extends DocumentData<Schema, Properties, PropertiesToSource<PackageDataProperties>, ConstructorData> {
+  /** @override */
   static defineSchema(): Omit<PackageDataSchema, 'system'>;
 
   /** @override */

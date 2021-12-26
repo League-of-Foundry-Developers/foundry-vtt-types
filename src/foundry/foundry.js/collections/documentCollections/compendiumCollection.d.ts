@@ -286,7 +286,7 @@ interface ImportAllOptions {
   folderId?: string | null;
   /**
    * A new Folder name to create.
-   * @defaultValue `''`
+   * @defaultValue `""`
    * */
   folderName?: string;
   /**

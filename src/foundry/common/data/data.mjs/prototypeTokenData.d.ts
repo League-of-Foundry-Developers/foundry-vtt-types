@@ -17,9 +17,9 @@ type FieldExclusions =
   | 'hidden';
 
 interface PrototypeTokenDataSchema extends Omit<TokenDataSchema, FieldExclusions> {
-  randomImg: typeof fields.BOOLEAN_FIELD;
+  randomImg: fields.BooleanField;
   img: FieldReturnType<
-    typeof fields.VIDEO_FIELD,
+    fields.VideoField,
     { default: typeof foundry.CONST.DEFAULT_TOKEN; validate: (src: unknown) => boolean }
   >;
 }
@@ -38,7 +38,7 @@ interface PrototypeTokenDataProperties extends Omit<TokenDataProperties, FieldEx
   img: string | null;
 }
 
-export interface PrototypeTokenDataConstructorData extends Omit<TokenDataConstructorData, FieldExclusions> {
+interface PrototypeTokenDataConstructorData extends Omit<TokenDataConstructorData, FieldExclusions> {
   /**
    * Uses a random "wildcard" image path which is resolved with a Token is created
    * @defaultValue `false`
@@ -59,14 +59,10 @@ export class PrototypeTokenData extends DocumentData<
   PrototypeTokenDataConstructorData,
   documents.BaseActor
 > {
-  /**
-   * @override
-   */
+  /** @override */
   _initialize(): void;
 
-  /**
-   * @override
-   */
+  /** @override */
   toObject(source?: true): ReturnType<this['toJSON']> & { actorId: documents.BaseActor['id'] };
   toObject(source: false): {
     [Key in keyof PrototypeTokenDataSchema as string extends Key ? never : Key]: Key extends keyof this

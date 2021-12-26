@@ -6,16 +6,16 @@ import type {
   PropertiesToSource
 } from '../../../../types/helperTypes.js';
 import type DocumentData from '../../abstract/data.mjs.js';
-import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
+import * as fields from '../fields.mjs';
 import type { CardFaceData, CardFaceDataConstructorData } from './cardFaceData.js';
 
 interface CardDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
-  name: typeof fields.REQUIRED_STRING;
-  description: typeof fields.BLANK_STRING;
+  _id: fields.DocumentId;
+  name: fields.RequiredString;
+  description: fields.BlankString;
   type: FieldReturnType<
-    typeof fields.REQUIRED_STRING,
+    fields.RequiredString,
     {
       default: () => string;
       validate: (t: unknown) => boolean;
@@ -23,19 +23,19 @@ interface CardDataSchema extends DocumentSchema {
     }
   >;
   data: fields.SystemDataField;
-  suit: typeof fields.BLANK_STRING;
-  value: typeof fields.NUMERIC_FIELD;
-  back: {
+  suit: fields.BlankString;
+  value: fields.NumericField;
+  back: DocumentField<CardFaceData> & {
     type: typeof CardFaceData;
     required: true;
     default: Record<string, never>;
   };
-  faces: {
+  faces: DocumentField<CardFaceData[]> & {
     type: [typeof CardFaceData];
     required: true;
     default: [];
   };
-  face: {
+  face: DocumentField<number> & {
     type: typeof Number;
     required: true;
     default: null;
@@ -43,13 +43,13 @@ interface CardDataSchema extends DocumentSchema {
     validate: (f: unknown) => boolean;
     validationError: '{name} {field} "{value}" must have a non-negative integer value or null';
   };
-  drawn: typeof fields.BOOLEAN_FIELD;
-  origin: typeof fields.DOCUMENT_ID;
-  width: typeof fields.POSITIVE_INTEGER_FIELD;
-  height: typeof fields.POSITIVE_INTEGER_FIELD;
-  rotation: typeof fields.ANGLE_FIELD;
-  sort: typeof fields.INTEGER_SORT_FIELD;
-  flags: typeof fields.OBJECT_FIELD;
+  drawn: fields.BooleanField;
+  origin: fields.DocumentId;
+  width: fields.PositiveIntegerField;
+  height: fields.PositiveIntegerField;
+  rotation: fields.AngleField;
+  sort: fields.IntegerSortField;
+  flags: fields.ObjectField;
 }
 
 interface CardDataBaseProperties {
@@ -74,7 +74,10 @@ interface CardDataBaseProperties {
    */
   type: string;
 
-  /** Game system data which is defined by the system template.json model */
+  /**
+   * Game system data which is defined by the system template.json model
+   * @defaultValue template from template.json for type or `{}`
+   */
   data: object;
 
   /**
@@ -84,7 +87,7 @@ interface CardDataBaseProperties {
   suit: string;
 
   /** An optional numeric value of the card which is used by default sorting */
-  value: number | undefined | null;
+  value: number | null | undefined;
 
   /**
    * An object of face data which describes the back of this card
@@ -146,7 +149,7 @@ interface CardDataConstructorData {
    * The _id which uniquely identifies this Card document
    * @defaultValue `null`
    */
-  _id?: string | undefined | null;
+  _id?: string | null | undefined;
 
   /** The text name of this card */
   name: string;
@@ -155,78 +158,82 @@ interface CardDataConstructorData {
    * A text description of this card which applies to all faces
    * @defaultValue `""`
    */
-  description?: string | undefined | null;
+  description?: string | null | undefined;
 
   /**
    * A category of card (for example, a suit) to which this card belongs
    * @defaultValue `game.system.documentTypes.Card[0]`
    */
-  type?: CardDataSource['type'] | undefined | null;
+  type?: CardDataSource['type'] | null | undefined;
 
-  /** Game system data which is defined by the system template.json model */
-  data?: DeepPartial<CardDataSource['data']> | undefined | null;
+  /**
+   * Game system data which is defined by the system template.json model
+   * @defaultValue template from template.json for type or `{}`
+   */
+  data?: DeepPartial<CardDataSource['data']> | null | undefined;
 
   /**
    * An optional suit designation which is used by default sorting
    * @defaultValue `""`
    */
-  suit?: string | undefined | null;
+  suit?: string | null | undefined;
 
   /** An optional numeric value of the card which is used by default sorting */
-  value?: number | undefined | null;
+  value?: number | null | undefined;
 
   /**
    * An object of face data which describes the back of this card
    * @defaultValue `new CardFaceData({})`
-   */ back?: CardFaceDataConstructorData | undefined | null;
+   */
+  back?: CardFaceDataConstructorData | null | undefined;
 
   /**
    * An array of face data which represent displayable faces of this card
    * @defaultValue `[]`
    */
-  faces?: CardFaceDataConstructorData[] | undefined | null;
+  faces?: CardFaceDataConstructorData[] | null | undefined;
 
   /**
    * The index of the currently displayed face
    * @defaultValue `null`
    */
-  face?: number | undefined | null;
+  face?: number | null | undefined;
 
   /**
    * Whether this card is currently drawn from its source deck
    * @defaultValue `false`
    */
-  drawn?: boolean | undefined | null;
+  drawn?: boolean | null | undefined;
 
   /**
    * The document ID of the origin deck to which this card belongs
    * @defaultValue `null`
    */
-  origin?: string | undefined | null;
+  origin?: string | null | undefined;
 
   /** The visible width of this card */
-  width?: number | undefined | null;
+  width?: number | null | undefined;
 
   /** The visible height of this card */
-  height?: number | undefined | null;
+  height?: number | null | undefined;
 
   /**
    * The angle of rotation of this card
    * @defaultValue `360`
    */
-  rotation?: number | undefined | null;
+  rotation?: number | null | undefined;
 
   /**
    * The sort order of this card relative to others in the same stack
    * @defaultValue `0`
    */
-  sort?: number | undefined | null;
+  sort?: number | null | undefined;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Card'> | undefined | null;
+  flags?: ConfiguredFlags<'Card'> | null | undefined;
 }
 
 type CardDataBaseSource = PropertiesToSource<CardDataBaseProperties>;
@@ -238,6 +245,7 @@ type DocumentDataConstructor = Pick<typeof DocumentData, keyof typeof DocumentDa
 interface CardDataConstructor extends DocumentDataConstructor {
   new (data: CardDataConstructorData, document?: documents.BaseCard | null | undefined): CardData;
 
+  /** @override */
   defineSchema(): CardDataSchema;
 }
 
@@ -254,4 +262,4 @@ export type CardData = DocumentData<
 > &
   CardDataProperties;
 
-export declare const CardData: CardDataConstructor;
+export const CardData: CardDataConstructor;

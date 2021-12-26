@@ -4,9 +4,9 @@ import { documents } from '../../module.mjs';
 import * as fields from '../fields.mjs';
 
 interface VideoDataSchema extends DocumentSchema {
-  loop: FieldReturnType<typeof fields.BOOLEAN_FIELD, { default: true }>;
-  autoplay: FieldReturnType<typeof fields.BOOLEAN_FIELD, { default: true }>;
-  volume: FieldReturnType<typeof fields.ALPHA_FIELD, { default: 0 }>;
+  loop: FieldReturnType<fields.BooleanField, { default: true }>;
+  autoplay: FieldReturnType<fields.BooleanField, { default: true }>;
+  volume: FieldReturnType<fields.AlphaField, { default: 0 }>;
 }
 
 interface VideoDataProperties {
@@ -29,7 +29,7 @@ interface VideoDataProperties {
   volume: number;
 }
 
-export interface VideoDataConstructorData {
+interface VideoDataConstructorData {
   /**
    * Automatically loop the video?
    * @defaultValue `true`
@@ -52,13 +52,14 @@ export interface VideoDataConstructorData {
 /**
  * An inner-object which defines the schema for how Tile video backgrounds are managed
  */
-export declare class VideoData extends DocumentData<
+export class VideoData extends DocumentData<
   VideoDataSchema,
   VideoDataProperties,
   PropertiesToSource<VideoDataProperties>,
   VideoDataConstructorData,
   documents.BaseTile
 > {
+  /** @override */
   static defineSchema(): VideoDataSchema;
 
   /** @override */

@@ -4,8 +4,8 @@ import { BaseAmbientLight } from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 
 interface DarknessActivationSchema extends DocumentSchema {
-  min: FieldReturnType<typeof fields.ALPHA_FIELD, { default: 0 }>;
-  max: typeof fields.ALPHA_FIELD;
+  min: FieldReturnType<fields.AlphaField, { default: 0 }>;
+  max: fields.AlphaField;
 }
 
 interface DarknessActivationProperties {
@@ -22,7 +22,7 @@ interface DarknessActivationProperties {
   max: number;
 }
 
-export interface DarknessActivationConstructorData {
+interface DarknessActivationConstructorData {
   /**
    * The minimum darkness level for which activation occurs
    * @defaultValue `0`
@@ -39,15 +39,16 @@ export interface DarknessActivationConstructorData {
 /**
  * An embedded data object which defines the darkness range during which some attribute is active
  */
-export declare class DarknessActivation extends DocumentData<
+export class DarknessActivation extends DocumentData<
   DarknessActivationSchema,
   DarknessActivationProperties,
   PropertiesToSource<DarknessActivationProperties>,
   DarknessActivationConstructorData,
   BaseAmbientLight
 > {
+  /** @override */
   static defineSchema(): DarknessActivationSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface DarknessActivation extends DarknessActivationProperties {}
+export interface DarknessActivation extends DarknessActivationProperties {}

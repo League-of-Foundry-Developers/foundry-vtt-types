@@ -171,7 +171,7 @@ declare abstract class FormApplication<
    * @param options        - TinyMCE initialization options passed to TextEditor.create
    *                         (default: `{}`)
    * @param initialContent - Initial text content for the editor area.
-   *                         (default: `''`)
+   *                         (default: `""`)
    */
   activateEditor(name: string, options?: TextEditor.Options, initialContent?: string): void;
 

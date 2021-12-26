@@ -1,18 +1,18 @@
+import { ConfiguredDocumentClass, ConfiguredFlags, PropertiesToSource } from '../../../../types/helperTypes';
 import DocumentData from '../../abstract/data.mjs';
-import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
-import { ConfiguredFlags, PropertiesToSource } from '../../../../types/helperTypes';
+import * as fields from '../fields.mjs';
 
 interface FolderDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
-  name: typeof fields.REQUIRED_STRING;
+  _id: fields.DocumentId;
+  name: fields.RequiredString;
   type: DocumentField<foundry.CONST.FOLDER_DOCUMENT_TYPES> & {
     type: String;
     required: true;
     validate: (t: unknown) => t is foundry.CONST.FOLDER_DOCUMENT_TYPES;
     validationError: 'Invalid Folder type provided';
   };
-  description: typeof fields.STRING_FIELD;
+  description: fields.StringField;
   parent: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
   sorting: DocumentField<SortingModes> & {
     type: String;
@@ -21,14 +21,15 @@ interface FolderDataSchema extends DocumentSchema {
     validate: (mode: unknown) => mode is SortingModes;
     validationError: 'Invalid Folder sorting mode';
   };
-  sort: typeof fields.INTEGER_SORT_FIELD;
-  color: typeof fields.COLOR_FIELD;
-  flags: typeof fields.OBJECT_FIELD;
+  sort: fields.IntegerSortField;
+  color: fields.ColorField;
+  flags: fields.ObjectField;
 }
 
 interface FolderDataProperties {
   /**
    * The _id which uniquely identifies this Folder document
+   * @defaultValue `null`
    */
   _id: string | null;
 
@@ -45,7 +46,7 @@ interface FolderDataProperties {
   /**
    * An HTML description of the contents of this folder
    */
-  description?: string;
+  description?: string | undefined;
 
   /**
    * The _id of a parent Folder which contains this Folder
@@ -80,6 +81,7 @@ interface FolderDataProperties {
 interface FolderDataConstructorData {
   /**
    * The _id which uniquely identifies this Folder document
+   * @defaultValue `null`
    */
   _id?: string | null | undefined;
 
@@ -102,7 +104,7 @@ interface FolderDataConstructorData {
    * The _id of a parent Folder which contains this Folder
    * @defaultValue `null`
    */
-  parent?: string | null | undefined;
+  parent?: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseFolder>> | string | null | undefined;
 
   /**
    * The sorting mode used to organize documents within this Folder, in ["a", "m"]
@@ -131,7 +133,7 @@ interface FolderDataConstructorData {
 /**
  * The data schema for a Folder document.
  */
-export declare class FolderData extends DocumentData<
+export class FolderData extends DocumentData<
   FolderDataSchema,
   FolderDataProperties,
   PropertiesToSource<FolderDataProperties>,
@@ -140,6 +142,7 @@ export declare class FolderData extends DocumentData<
 > {
   constructor(data: FolderDataConstructorData, document?: documents.BaseFolder | null);
 
+  /** @override */
   static defineSchema(): FolderDataSchema;
 
   static SORTING_MODES: ['a', 'm'];
@@ -148,4 +151,4 @@ export declare class FolderData extends DocumentData<
 export type SortingModes = ValueOf<typeof FolderData.SORTING_MODES>;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface FolderData extends FolderDataProperties {}
+export interface FolderData extends FolderDataProperties {}

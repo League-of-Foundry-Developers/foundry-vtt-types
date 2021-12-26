@@ -4,7 +4,7 @@ import { BaseAmbientLight } from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 
 interface AnimationDataSchema extends DocumentSchema {
-  type: typeof fields.STRING_FIELD;
+  type: fields.StringField;
   speed: DocumentField<number> & {
     type: typeof Number;
     required: false;
@@ -19,7 +19,7 @@ interface AnimationDataSchema extends DocumentSchema {
     validate: (a: number) => boolean;
     validationError: 'Light animation intensity must be an integer between 1 and 10';
   };
-  reverse: typeof fields.BOOLEAN_FIELD;
+  reverse: fields.BooleanField;
 }
 
 interface AnimationDataProperties {
@@ -44,7 +44,7 @@ interface AnimationDataProperties {
   reverse: boolean;
 }
 
-export interface AnimationDataConstructorData {
+interface AnimationDataConstructorData {
   /**
    * The animation type which is applied
    */
@@ -63,21 +63,22 @@ export interface AnimationDataConstructorData {
   intensity?: number | null | undefined;
 
   /** @defaultValue `false` */
-  reverse?: boolean | undefined | null;
+  reverse?: boolean | null | undefined;
 }
 
 /**
  * An embedded data object which defines the properties of a light source animation
  */
-export declare class AnimationData extends DocumentData<
+export class AnimationData extends DocumentData<
   AnimationDataSchema,
   AnimationDataProperties,
   PropertiesToSource<AnimationDataProperties>,
   AnimationDataConstructorData,
   BaseAmbientLight
 > {
+  /** @override */
   static defineSchema(): AnimationDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface AnimationData extends AnimationDataProperties {}
+export interface AnimationData extends AnimationDataProperties {}

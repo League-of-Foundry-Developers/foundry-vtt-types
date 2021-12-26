@@ -218,7 +218,7 @@ declare namespace HandlebarsHelpers {
 
       /**
        * The original HTML content as a string
-       * @defaultValue `''`
+       * @defaultValue `""`
        */
       content?: string;
     };
@@ -259,7 +259,7 @@ declare namespace HandlebarsHelpers {
   interface NumberInputOptions extends Handlebars.HelperOptions {
     hash: {
       /**
-       * @defaultValue `''`
+       * @defaultValue `""`
        */
       name?: string;
 
@@ -271,12 +271,12 @@ declare namespace HandlebarsHelpers {
       disabled?: boolean;
 
       /**
-       * @defaultValue `''`
+       * @defaultValue `""`
        */
       placeholder?: string;
 
       /**
-       * @defaultValue `''`
+       * @defaultValue `""`
        */
       class?: string;
 

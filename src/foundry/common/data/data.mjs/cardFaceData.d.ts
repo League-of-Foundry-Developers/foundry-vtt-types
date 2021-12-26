@@ -3,9 +3,9 @@ import type DocumentData from '../../abstract/data.mjs.js';
 import * as fields from '../fields.mjs';
 
 interface CardFaceDataSchema extends DocumentSchema {
-  name: typeof fields.BLANK_STRING;
-  text: typeof fields.BLANK_STRING;
-  img: typeof fields.VIDEO_FIELD;
+  name: fields.BlankString;
+  text: fields.BlankString;
+  img: fields.VideoField;
 }
 
 interface CardFaceDataProperties {
@@ -22,7 +22,7 @@ interface CardFaceDataProperties {
   text: string;
 
   /** A displayed image or video file which depicts the face */
-  img: string | undefined | null;
+  img: string | null | undefined;
 }
 
 interface CardFaceDataConstructorData {
@@ -30,28 +30,29 @@ interface CardFaceDataConstructorData {
    * A name for this card face
    * @defaultValue `""`
    */
-  name?: string | undefined | null;
+  name?: string | null | undefined;
 
   /**
    * Displayed text that belongs to this face
    * @defaultValue `""`
    */
-  text?: string | undefined | null;
+  text?: string | null | undefined;
 
   /** A displayed image or video file which depicts the face */
-  img?: string | undefined | null;
+  img?: string | null | undefined;
 }
 
 /**
  * The data schema of a single card face which belongs to a specific Card.
  * @see CardData
  */
-export declare class CardFaceData extends DocumentData<
+export class CardFaceData extends DocumentData<
   CardFaceDataSchema,
   CardFaceDataProperties,
   PropertiesToSource<CardFaceDataProperties>,
   CardFaceDataConstructorData
 > {
+  /** @override */
   static defineSchema(): CardFaceDataSchema;
 
   /**
@@ -60,3 +61,6 @@ export declare class CardFaceData extends DocumentData<
    */
   static DEFAULT_ICON: string;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface CardFaceData extends CardFaceDataProperties {}

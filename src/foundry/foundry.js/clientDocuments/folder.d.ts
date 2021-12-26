@@ -1,5 +1,6 @@
+import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
-import { ConfiguredDocumentClass, ConstructorDataType } from '../../../types/helperTypes';
+import type { FolderDataConstructorData } from '../../common/data/data.mjs/folderData.js';
 
 declare global {
   /**
@@ -69,10 +70,7 @@ declare global {
      * Document is returned.
      */
     static createDialog(
-      data?: DeepPartial<
-        | ConstructorDataType<foundry.data.FolderData>
-        | (ConstructorDataType<foundry.data.FolderData> & Record<string, unknown>)
-      >,
+      data?: DeepPartial<FolderDataConstructorData | (FolderDataConstructorData & Record<string, unknown>)>,
       options?: Dialog.Options
     ): any;
 

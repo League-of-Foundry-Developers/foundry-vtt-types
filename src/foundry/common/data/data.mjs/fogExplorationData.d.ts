@@ -1,12 +1,12 @@
-import DocumentData from '../../abstract/data.mjs';
-import { ForeignDocumentField } from '../fields.mjs';
-import * as fields from '../fields.mjs';
-import * as documents from '../../documents.mjs';
 import { ConfiguredDocumentClass, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import DocumentData from '../../abstract/data.mjs';
+import * as documents from '../../documents.mjs';
+import * as fields from '../fields.mjs';
+import { ForeignDocumentField } from '../fields.mjs';
 import { isBase64Image } from '../validators.mjs';
 
 interface FogExplorationDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
+  _id: fields.DocumentId;
   scene: ForeignDocumentField<{ type: typeof documents.BaseScene }>;
   user: ForeignDocumentField<{ type: typeof documents.BaseUser }>;
   explored: DocumentField<string> & {
@@ -17,8 +17,8 @@ interface FogExplorationDataSchema extends DocumentSchema {
     validate: typeof isBase64Image;
     validationError: 'The provided FogExploration explored image is not a valid base64 image string';
   };
-  positions: typeof fields.OBJECT_FIELD;
-  timestamp: FieldReturnType<typeof fields.TIMESTAMP_FIELD, { required: true }>;
+  positions: fields.ObjectField;
+  timestamp: FieldReturnType<fields.TimestampField, { required: true }>;
 }
 
 interface FogExplorationDataProperties {
@@ -52,7 +52,10 @@ interface FogExplorationDataProperties {
    */
   positions: Record<string, { radius: number; limit: boolean }>;
 
-  /** The timestamp at which this fog exploration was last updated */
+  /**
+   * The timestamp at which this fog exploration was last updated
+   * @defaultValue `Date.now()`
+   */
   timestamp: number;
 }
 
@@ -67,13 +70,13 @@ interface FogExplorationDataConstructorData {
    * The _id of the Scene document to which this fog applies
    * @defaultValue `null`
    */
-  scene?: string | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>> | null | undefined;
+  scene?: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>> | string | null | undefined;
 
   /**
    * The _id of the User document to which this fog applies
    * @defaultValue `null`
    */
-  user?: string | null | undefined;
+  user?: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseUser>> | string | null | undefined;
 
   /**
    * The base64 png image of the explored fog polygon
@@ -87,21 +90,25 @@ interface FogExplorationDataConstructorData {
    */
   positions?: Record<string, { radius: number; limit: boolean }> | null | undefined;
 
-  /** The timestamp at which this fog exploration was last updated */
+  /**
+   * The timestamp at which this fog exploration was last updated
+   * @defaultValue `Date.now()`
+   */
   timestamp?: number | null | undefined;
 }
 
 /**
  * The data schema for a FogExploration document.
  */
-export declare class FogExplorationData extends DocumentData<
+export class FogExplorationData extends DocumentData<
   FogExplorationDataSchema,
   FogExplorationDataProperties,
   PropertiesToSource<FogExplorationDataProperties>,
   FogExplorationDataConstructorData
 > {
+  /** @override */
   static defineSchema(): FogExplorationDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface FogExplorationData extends FogExplorationDataProperties {}
+export interface FogExplorationData extends FogExplorationDataProperties {}

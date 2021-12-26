@@ -1,58 +1,64 @@
-import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import {
+  ConfiguredDocumentClass,
+  ConfiguredFlags,
+  FieldReturnType,
+  PropertiesToSource
+} from '../../../../types/helperTypes';
 import DocumentData from '../../abstract/data.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 
 interface NoteDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
+  _id: fields.DocumentId;
   entryId: fields.ForeignDocumentField<{ type: typeof documents.BaseJournalEntry; required: false }>;
-  x: typeof fields.REQUIRED_NUMBER;
-  y: typeof fields.REQUIRED_NUMBER;
+  x: fields.RequiredNumber;
+  y: fields.RequiredNumber;
   icon: FieldReturnType<
-    typeof fields.IMAGE_FIELD,
+    fields.ImageField,
     {
       required: true;
-      default: typeof CONST.DEFAULT_NOTE_ICON;
+      default: typeof foundry.CONST.DEFAULT_NOTE_ICON;
     }
   >;
   iconSize: FieldReturnType<
-    typeof fields.REQUIRED_NUMBER,
+    fields.RequiredNumber,
     {
       default: 40;
       validate: (n: unknown) => n is number;
       validationError: 'Invalid {name} {field} which must be an integer greater than 32';
     }
   >;
-  iconTint: typeof fields.COLOR_FIELD;
-  text: typeof fields.STRING_FIELD;
+  iconTint: fields.ColorField;
+  text: fields.StringField;
   fontFamily: FieldReturnType<
-    typeof fields.REQUIRED_STRING,
+    fields.RequiredString,
     {
       default: () => typeof CONFIG['defaultFontFamily'];
     }
   >;
   fontSize: FieldReturnType<
-    typeof fields.REQUIRED_NUMBER,
+    fields.RequiredNumber,
     {
       default: 48;
       validate: (n: unknown) => n is number;
       validationError: 'Invalid {name} {field} which must be an integer between 8 and 128';
     }
   >;
-  textAnchor: DocumentField<number> & {
+  textAnchor: DocumentField<typeof foundry.CONST.TEXT_ANCHOR_POINTS> & {
     type: typeof Number;
     required: true;
-    default: typeof CONST.TEXT_ANCHOR_POINTS.BOTTOM;
+    default: typeof foundry.CONST.TEXT_ANCHOR_POINTS.BOTTOM;
     validate: (p: unknown) => p is foundry.CONST.TEXT_ANCHOR_POINTS;
     validationError: 'Invalid {name} {field} which must be a value in CONST.TEXT_ANCHOR_POINTS';
   };
-  textColor: FieldReturnType<typeof fields.COLOR_FIELD, { default: '#FFFFFF' }>;
-  flags: typeof fields.OBJECT_FIELD;
+  textColor: FieldReturnType<fields.ColorField, { default: '#FFFFFF' }>;
+  flags: fields.ObjectField;
 }
 
 interface NoteDataProperties {
   /**
    * The _id which uniquely identifies this BaseNote embedded document
+   * @defaultValue `null`
    */
   _id: string | null;
 
@@ -76,6 +82,7 @@ interface NoteDataProperties {
 
   /**
    * An image icon path used to represent this note
+   * @defaultValue `CONST.DEFAULT_NOTE_ICON`
    */
   icon: string | null;
 
@@ -130,6 +137,7 @@ interface NoteDataProperties {
 interface NoteDataConstructorData {
   /**
    * The _id which uniquely identifies this BaseNote embedded document
+   * @defaultValue `null`
    */
   _id?: string | null | undefined;
 
@@ -137,7 +145,7 @@ interface NoteDataConstructorData {
    * The _id of a JournalEntry document which this Note represents
    * @defaultValue `null`
    */
-  entryId?: string | null | undefined;
+  entryId?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseJournalEntry>> | string | null | undefined;
 
   /**
    * The x-coordinate position of the center of the note icon
@@ -153,6 +161,7 @@ interface NoteDataConstructorData {
 
   /**
    * An image icon path used to represent this note
+   * @defaultValue `CONST.DEFAULT_NOTE_ICON`
    */
   icon?: string | null | undefined;
 
@@ -208,15 +217,16 @@ interface NoteDataConstructorData {
  * The data schema for a Note embedded document.
  * @see BaseNote
  */
-export declare class NoteData extends DocumentData<
+export class NoteData extends DocumentData<
   NoteDataSchema,
   NoteDataProperties,
   PropertiesToSource<NoteDataProperties>,
   NoteDataConstructorData,
   documents.BaseNote
 > {
+  /** @override */
   static defineSchema(): NoteDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface NoteData extends NoteDataProperties {}
+export interface NoteData extends NoteDataProperties {}

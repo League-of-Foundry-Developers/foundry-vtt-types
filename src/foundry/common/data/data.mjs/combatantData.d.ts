@@ -1,40 +1,47 @@
-import { ConfiguredFlags, PropertiesToSource } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass, ConfiguredFlags, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 
 interface CombatantDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
+  _id: fields.DocumentId;
   actorId: fields.ForeignDocumentField<{ type: typeof documents.BaseActor }>;
   tokenId: fields.ForeignDocumentField<{ type: typeof documents.BaseToken }>;
-  name: typeof fields.STRING_FIELD;
-  img: typeof fields.IMAGE_FIELD;
-  initiative: typeof fields.NUMERIC_FIELD;
-  hidden: typeof fields.BOOLEAN_FIELD;
-  defeated: typeof fields.BOOLEAN_FIELD;
-  flags: typeof fields.OBJECT_FIELD;
+  name: fields.StringField;
+  img: fields.ImageField;
+  initiative: fields.NumericField;
+  hidden: fields.BooleanField;
+  defeated: fields.BooleanField;
+  flags: fields.ObjectField;
 }
 
 interface CombatantDataProperties {
-  /** The _id which uniquely identifies this Combatant embedded document */
+  /**
+   * The _id which uniquely identifies this Combatant embedded document
+   * @defaultValue `null`
+   */
   _id: string | null;
 
   /**
    * The _id of an Actor associated with this Combatant
+   * @defaultValue `null`
    */
   actorId: string | null;
 
-  /** The _id of a Token associated with this Combatant */
+  /**
+   * The _id of a Token associated with this Combatant
+   * @defaultValue `null`
+   */
   tokenId: string | null;
 
   /** A customized name which replaces the name of the Token in the tracker */
   name: string | undefined;
 
   /** A customized image which replaces the Token image in the tracker */
-  img: string | undefined | null;
+  img: string | null | undefined;
 
   /** The initiative score for the Combatant which determines its turn order */
-  initiative: number | undefined | null;
+  initiative: number | null | undefined;
 
   /**
    * Is this Combatant currently hidden?
@@ -55,17 +62,24 @@ interface CombatantDataProperties {
   flags: ConfiguredFlags<'Combatant'>;
 }
 
-export interface CombatantDataConstructorData {
-  /** The _id which uniquely identifies this Combatant embedded document */
+interface CombatantDataConstructorData {
+  /**
+   * The _id which uniquely identifies this Combatant embedded document
+   * @defaultValue `null`
+   */
   _id?: string | null | undefined;
 
   /**
    * The _id of an Actor associated with this Combatant
+   * @defaultValue `null`
    */
-  actorId?: string | null | undefined;
+  actorId?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseActor>> | string | null | undefined;
 
-  /** The _id of a Token associated with this Combatant */
-  tokenId?: string | null | undefined;
+  /**
+   * The _id of a Token associated with this Combatant
+   * @defaultValue `null`
+   */
+  tokenId?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseToken>> | string | null | undefined;
 
   /** A customized name which replaces the name of the Token in the tracker */
   name?: string | null | undefined;
@@ -99,19 +113,16 @@ export interface CombatantDataConstructorData {
  * The data schema for a Combatant embedded document within a CombatEncounter document.
  * @see CombatantData
  */
-export declare class CombatantData extends DocumentData<
+export class CombatantData extends DocumentData<
   CombatantDataSchema,
   CombatantDataProperties,
   PropertiesToSource<CombatantDataProperties>,
   CombatantDataConstructorData,
   documents.BaseCombatant
 > {
-  /**
-   *  @remarks
-   *  This constructor only exists to restrict the type
-   */
+  /** @override */
   static defineSchema(): CombatantDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface CombatantData extends CombatantDataProperties {}
+export interface CombatantData extends CombatantDataProperties {}
