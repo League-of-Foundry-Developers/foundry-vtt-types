@@ -475,7 +475,7 @@ export function embeddedCollectionField<
  * }
  * ```
  * With default config:
- * Property type: `EmbeddedCollection<DocumentConstructor, DocumentData>`
+ * Property type: `EmbeddedCollection<DocumentConstructor, ParentDocumentData>`
  * Constructor type: `DocumentConstructorData[] | null | undefined`
  * Default: `new EmbeddedCollection(DocumentData, [], DocumentConstructor)`
  */
