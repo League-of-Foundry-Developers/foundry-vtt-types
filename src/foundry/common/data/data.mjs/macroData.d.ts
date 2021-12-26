@@ -5,30 +5,29 @@ import {
   PropertiesToSource
 } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
-import * as CONST from '../../constants.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 
 interface MacroDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
   name: fields.RequiredString;
-  type: DocumentField<string> & {
+  type: DocumentField<foundry.CONST.MACRO_TYPES> & {
     type: String;
     required: true;
-    default: typeof CONST.MACRO_TYPES.CHAT;
-    validate: (t: unknown) => boolean;
+    default: typeof foundry.CONST.MACRO_TYPES.CHAT;
+    validate: (t: unknown) => t is foundry.CONST.MACRO_TYPES;
     validationError: 'The provided Macro type must be in CONST.MACRO_TYPES';
   };
   author: fields.ForeignDocumentField<{
     type: typeof documents.BaseUser;
     default: () => Game['user'];
   }>;
-  img: FieldReturnType<fields.ImageField, { required: true; default: typeof CONST.DEFAULT_MACRO_ICON }>;
-  scope: DocumentField<string> & {
+  img: FieldReturnType<fields.ImageField, { required: true; default: typeof foundry.CONST.DEFAULT_MACRO_ICON }>;
+  scope: DocumentField<foundry.CONST.MACRO_SCOPES> & {
     type: String;
     required: true;
-    default: typeof CONST.MACRO_SCOPES[0];
-    validate: (t: unknown) => boolean;
+    default: typeof foundry.CONST.MACRO_SCOPES[0];
+    validate: (t: unknown) => t is foundry.CONST.MACRO_SCOPES;
     validationError: 'The provided Macro scope must be in CONST.MACRO_SCOPES';
   };
   command: fields.BlankString;
@@ -70,7 +69,7 @@ interface MacroDataProperties {
 
   /**
    * The scope of this Macro application from CONST.MACRO_SCOPES
-   * @defaultValue `'global'`
+   * @defaultValue `CONST.MACRO_SCOPES[0]` ("global")
    */
   scope: foundry.CONST.MACRO_SCOPES;
 
@@ -137,7 +136,7 @@ interface MacroDataConstructorData {
 
   /**
    * The scope of this Macro application from CONST.MACRO_SCOPES
-   * @defaultValue `'global'`
+   * @defaultValue `CONST.MACRO_SCOPES[0]` ("global")
    */
   scope?: foundry.CONST.MACRO_SCOPES | null | undefined;
 

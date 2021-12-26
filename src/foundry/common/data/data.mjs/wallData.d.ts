@@ -14,7 +14,7 @@ interface WallDataSchema extends DocumentSchema {
   move: FieldReturnType<
     fields.RequiredNumber,
     {
-      default: typeof CONST.WALL_MOVEMENT_TYPES.NORMAL;
+      default: typeof foundry.CONST.WALL_MOVEMENT_TYPES.NORMAL;
       validate: (v: unknown) => v is foundry.CONST.WALL_MOVEMENT_TYPES;
       validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_MOVEMENT_TYPES';
     }
@@ -22,7 +22,7 @@ interface WallDataSchema extends DocumentSchema {
   sense: FieldReturnType<
     fields.RequiredNumber,
     {
-      default: typeof CONST.WALL_SENSE_TYPES.NORMAL;
+      default: typeof foundry.CONST.WALL_SENSE_TYPES.NORMAL;
       validate: (v: unknown) => v is foundry.CONST.WALL_SENSE_TYPES;
       validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_SENSE_TYPES';
     }
@@ -30,7 +30,7 @@ interface WallDataSchema extends DocumentSchema {
   sound: FieldReturnType<
     fields.RequiredNumber,
     {
-      default: typeof CONST.WALL_SENSE_TYPES.NORMAL;
+      default: typeof foundry.CONST.WALL_SENSE_TYPES.NORMAL;
       validate: (v: unknown) => v is foundry.CONST.WALL_SENSE_TYPES;
       validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_SENSE_TYPES';
     }
@@ -38,7 +38,7 @@ interface WallDataSchema extends DocumentSchema {
   dir: FieldReturnType<
     fields.RequiredNumber,
     {
-      default: typeof CONST.WALL_DIRECTIONS.BOTH;
+      default: typeof foundry.CONST.WALL_DIRECTIONS.BOTH;
       validate: (v: unknown) => v is foundry.CONST.WALL_DIRECTIONS;
       validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_DIRECTIONS';
     }
@@ -46,7 +46,7 @@ interface WallDataSchema extends DocumentSchema {
   door: FieldReturnType<
     fields.RequiredNumber,
     {
-      default: typeof CONST.WALL_DOOR_TYPES.NONE;
+      default: typeof foundry.CONST.WALL_DOOR_TYPES.NONE;
       validate: (v: unknown) => v is foundry.CONST.WALL_DOOR_TYPES;
       validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_DOOR_TYPES';
     }
@@ -54,7 +54,7 @@ interface WallDataSchema extends DocumentSchema {
   ds: FieldReturnType<
     fields.RequiredNumber,
     {
-      default: typeof CONST.WALL_DOOR_STATES.CLOSED;
+      default: typeof foundry.CONST.WALL_DOOR_STATES.CLOSED;
       validate: (v: unknown) => v is foundry.CONST.WALL_DOOR_STATES;
       validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_DOOR_STATES';
     }

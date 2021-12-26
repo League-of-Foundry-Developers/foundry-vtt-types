@@ -29,10 +29,10 @@ interface UserDataSchema extends DocumentSchema {
       validate: typeof _validatePermissions;
     }
   >;
-  role: DocumentField<number> & {
+  role: DocumentField<foundry.CONST.USER_ROLES> & {
     required: true;
     nullable: false;
-    default: typeof CONST.USER_ROLES.PLAYER;
+    default: typeof foundry.CONST.USER_ROLES.PLAYER;
   };
   flags: fields.ObjectField;
 }
@@ -58,7 +58,7 @@ interface UserDataProperties {
   passwordSalt: string | undefined;
 
   /** @defaultValue `{}` */
-  permissions: Partial<Record<keyof typeof CONST.USER_PERMISSIONS, boolean>>;
+  permissions: Partial<Record<keyof typeof foundry.CONST.USER_PERMISSIONS, boolean>>;
 
   /** @defaultValue `foundry.CONST.USER_ROLES.PLAYER` */
   role: foundry.CONST.USER_ROLES;
@@ -88,7 +88,7 @@ interface UserDataConstructorData {
   passwordSalt?: string | null | undefined;
 
   /** @defaultValue `{}` */
-  permissions?: Partial<Record<keyof typeof CONST.USER_PERMISSIONS, boolean>> | null | undefined;
+  permissions?: Partial<Record<keyof typeof foundry.CONST.USER_PERMISSIONS, boolean>> | null | undefined;
 
   /** @defaultValue `foundry.CONST.USER_ROLES.PLAYER` */
   role?: foundry.CONST.USER_ROLES | null | undefined;
