@@ -13,11 +13,11 @@ import { ForeignDocumentField } from '../fields.mjs';
 interface DrawingDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
   author: ForeignDocumentField<{ type: typeof documents.BaseUser; required: true }>;
-  type: DocumentField<foundry.CONST.MACRO_TYPES> & {
+  type: DocumentField<foundry.CONST.DRAWING_TYPES> & {
     type: typeof String;
     required: true;
     default: typeof CONST.DRAWING_TYPES.POLYGON;
-    validate: (t: unknown) => t is foundry.CONST.MACRO_TYPES;
+    validate: (t: unknown) => t is foundry.CONST.DRAWING_TYPES;
     validationError: 'Invalid {name} {field} which must be a value in CONST.DRAWING_TYPES';
   };
   x: fields.RequiredNumber;
@@ -82,7 +82,7 @@ interface DrawingDataProperties {
    * The value in CONST.DRAWING_TYPES which defines the geometry type of this drawing
    * @defaultValue `CONST.DRAWING_TYPES.POLYGON`
    */
-  type: foundry.CONST.MACRO_TYPES;
+  type: foundry.CONST.DRAWING_TYPES;
 
   /**
    * The x-coordinate position of the top-left corner of the drawn shape

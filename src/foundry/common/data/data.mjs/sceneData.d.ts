@@ -30,14 +30,14 @@ interface SceneDataSchema extends DocumentSchema {
   thumb: fields.ImageField;
   width: FieldReturnType<fields.PositiveIntegerField, { required: true; default: 4000 }>;
   height: FieldReturnType<fields.PositiveIntegerField, { required: true; default: 3000 }>;
-  padding: {
+  padding: DocumentField<Number> & {
     type: typeof Number;
     required: true;
     default: 0.25;
     validate: (p: unknown) => boolean;
     validation: 'Invalid {name} {field} which must be a number between 0 and 0.5';
   };
-  initial: {
+  initial: DocumentField<Object> & {
     type: typeof Object;
     required: false;
     nullable: true;
@@ -54,7 +54,7 @@ interface SceneDataSchema extends DocumentSchema {
       validationError: 'Invalid {name } {field} which must be a value in CONST.GRID_TYPES';
     }
   >;
-  grid: {
+  grid: DocumentField<Number> & {
     type: typeof Number;
     required: true;
     default: 100;
@@ -71,7 +71,7 @@ interface SceneDataSchema extends DocumentSchema {
   fogExploration: FieldReturnType<fields.BooleanField, { default: true }>;
   fogReset: fields.TimestampField;
   globalLight: fields.BooleanField;
-  globalLightThreshold: {
+  globalLightThreshold: DocumentField<Number> & {
     type: typeof Number;
     required: true;
     nullable: true;
@@ -86,7 +86,7 @@ interface SceneDataSchema extends DocumentSchema {
   notes: fields.EmbeddedCollectionField<typeof documents.BaseNote>;
   sounds: fields.EmbeddedCollectionField<typeof documents.BaseAmbientSound>;
   templates: fields.EmbeddedCollectionField<typeof documents.BaseMeasuredTemplate>;
-  tiles: fields.EmbeddedCollectionField<typeof documents.BaseToken>;
+  tiles: fields.EmbeddedCollectionField<typeof documents.BaseTile>;
   walls: fields.EmbeddedCollectionField<typeof documents.BaseWall>;
   playlist: fields.ForeignDocumentField<{ type: typeof documents.BasePlaylist; required: false }>;
   playlistSound: fields.ForeignDocumentField<{ type: typeof documents.BasePlaylistSound; required: false }>;
@@ -95,7 +95,7 @@ interface SceneDataSchema extends DocumentSchema {
   folder: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
   sort: fields.IntegerSortField;
   permission: fields.DocumentPermissions;
-  flags: fields.BlankString;
+  flags: fields.ObjectField;
 }
 
 interface SceneDataProperties {

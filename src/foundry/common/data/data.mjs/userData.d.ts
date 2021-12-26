@@ -29,7 +29,7 @@ interface UserDataSchema extends DocumentSchema {
       validate: typeof _validatePermissions;
     }
   >;
-  role: DocumentField<number> & {
+  role: DocumentField<foundry.CONST.USER_ROLES> & {
     required: true;
     nullable: false;
     default: typeof CONST.USER_ROLES.PLAYER;

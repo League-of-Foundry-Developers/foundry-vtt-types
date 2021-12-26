@@ -12,11 +12,11 @@ import * as fields from '../fields.mjs';
 interface MacroDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
   name: fields.RequiredString;
-  type: DocumentField<string> & {
+  type: DocumentField<CONST.MACRO_TYPES> & {
     type: String;
     required: true;
     default: typeof CONST.MACRO_TYPES.CHAT;
-    validate: (t: unknown) => boolean;
+    validate: (t: unknown) => t is CONST.MACRO_TYPES;
     validationError: 'The provided Macro type must be in CONST.MACRO_TYPES';
   };
   author: fields.ForeignDocumentField<{
@@ -24,11 +24,11 @@ interface MacroDataSchema extends DocumentSchema {
     default: () => Game['user'];
   }>;
   img: FieldReturnType<fields.ImageField, { required: true; default: typeof CONST.DEFAULT_MACRO_ICON }>;
-  scope: DocumentField<string> & {
+  scope: DocumentField<CONST.MACRO_SCOPES> & {
     type: String;
     required: true;
     default: typeof CONST.MACRO_SCOPES[0];
-    validate: (t: unknown) => boolean;
+    validate: (t: unknown) => t is CONST.MACRO_SCOPES;
     validationError: 'The provided Macro scope must be in CONST.MACRO_SCOPES';
   };
   command: fields.BlankString;

@@ -16,7 +16,7 @@ interface TableResultDataSchema extends DocumentSchema {
   collection: fields.StringField;
   resultId: fields.StringField;
   weight: fields.PositiveIntegerField;
-  range: {
+  range: DocumentField<[number, number]> & {
     type: [typeof Number];
     required: true;
     default: [];

@@ -44,7 +44,7 @@ interface NoteDataSchema extends DocumentSchema {
       validationError: 'Invalid {name} {field} which must be an integer between 8 and 128';
     }
   >;
-  textAnchor: DocumentField<number> & {
+  textAnchor: DocumentField<typeof CONST.TEXT_ANCHOR_POINTS> & {
     type: typeof Number;
     required: true;
     default: typeof CONST.TEXT_ANCHOR_POINTS.BOTTOM;
