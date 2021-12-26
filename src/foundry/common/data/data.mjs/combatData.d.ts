@@ -36,7 +36,7 @@ interface CombatDataProperties {
 
   /**
    * A Collection of Combatant embedded Documents
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(CombatantData, [], BaseCombatant.implementation)`
    */
   combatants: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseCombatant>, CombatData>;
 
@@ -86,7 +86,7 @@ interface CombatDataConstructorData {
 
   /**
    * A Collection of Combatant embedded Documents
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(CombatantData, [], BaseCombatant.implementation)`
    */
   combatants?: CombatantDataConstructorData[] | null | undefined;
 

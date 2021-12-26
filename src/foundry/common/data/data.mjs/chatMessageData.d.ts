@@ -5,16 +5,16 @@ import {
   PropertiesToSource
 } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
-import { CONST, documents } from '../../module.mjs';
+import { documents } from '../../module.mjs';
 import * as fields from '../fields.mjs';
 import { ChatSpeakerData, ChatSpeakerDataConstructorData } from './chatSpeakerData';
 
 interface ChatMessageDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
-  type: DocumentField<CONST.CHAT_MESSAGE_TYPES> & {
+  type: DocumentField<foundry.CONST.CHAT_MESSAGE_TYPES> & {
     type: typeof Number;
     required: true;
-    default: typeof CONST.CHAT_MESSAGE_TYPES.OTHER;
+    default: typeof foundry.CONST.CHAT_MESSAGE_TYPES.OTHER;
     validate: typeof _validateChatMessageType;
     validationError: 'The provided ChatMessage type must be in CONST.CHAT_MESSAGE_TYPES';
   };
@@ -51,7 +51,7 @@ interface ChatMessageDataProperties {
    * The message type from CONST.CHAT_MESSAGE_TYPES
    * @defaultValue `CONST.CHAT_MESSAGE_TYPES.OTHER`
    */
-  type: CONST.CHAT_MESSAGE_TYPES;
+  type: foundry.CONST.CHAT_MESSAGE_TYPES;
 
   /**
    * The _id of the User document who generated this message
@@ -128,7 +128,7 @@ interface ChatMessageDataConstructorData {
    * The message type from CONST.CHAT_MESSAGE_TYPES
    * @defaultValue `CONST.CHAT_MESSAGE_TYPES.OTHER`
    */
-  type?: CONST.CHAT_MESSAGE_TYPES | null | undefined;
+  type?: foundry.CONST.CHAT_MESSAGE_TYPES | null | undefined;
 
   /**
    * The _id of the User document who generated this message

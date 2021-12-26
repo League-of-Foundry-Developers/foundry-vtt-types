@@ -2,19 +2,20 @@ import * as fields from '../data/fields.mjs';
 import { PackageData, PackageDataConstructorData, PackageDataProperties, PackageDataSchema } from './packageData';
 
 interface ModuleDataSchema extends PackageDataSchema {
-  coreTranslation: typeof fields.BOOLEAN_FIELD;
-  minimumSystemVersion: typeof fields.STRING_FIELD;
-  library: typeof fields.BOOLEAN_FIELD;
+  coreTranslation: fields.BooleanField;
+  minimumSystemVersion: fields.StringField;
+  library: fields.BooleanField;
 }
 
 interface ModuleDataProperties extends PackageDataProperties {
   /**
    * Does this module provide a translation for the core software?
+   * @defaultValue `false`
    */
   coreTranslation: boolean;
 
   /** A minimum version number of the game system that this module requires */
-  minimumSystemVersion?: string;
+  minimumSystemVersion: string | undefined;
 
   /**
    * A library module provides no user-facing functionality and is solely for
@@ -27,6 +28,7 @@ interface ModuleDataProperties extends PackageDataProperties {
 interface ModuleDataConstructorData extends PackageDataConstructorData {
   /**
    * Does this module provide a translation for the core software?
+   * @defaultValue `false`
    */
   coreTranslation?: boolean | null | undefined;
 
@@ -45,9 +47,10 @@ interface ModuleDataConstructorData extends PackageDataConstructorData {
  * The data schema used to define Module manifest files.
  * Extends the basic PackageData schema with some additional module-specific fields.
  */
-export declare class ModuleData extends PackageData<ModuleDataSchema, ModuleDataProperties, ModuleDataConstructorData> {
+export class ModuleData extends PackageData<ModuleDataSchema, ModuleDataProperties, ModuleDataConstructorData> {
+  /** @override */
   static defineSchema(): ModuleDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface ModuleData extends ModuleDataProperties {}
+export interface ModuleData extends ModuleDataProperties {}

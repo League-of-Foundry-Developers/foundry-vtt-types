@@ -3,23 +3,18 @@ import { DocumentData } from '../abstract/module.mjs';
 import * as fields from '../data/fields.mjs';
 
 interface PackageCompendiumDataSchema extends DocumentSchema {
-  name: typeof fields.REQUIRED_STRING;
-  label: typeof fields.REQUIRED_STRING;
-  path: typeof fields.REQUIRED_STRING;
-  private: FieldReturnType<
-    typeof fields.BOOLEAN_FIELD,
-    {
-      default: false;
-    }
-  >;
+  name: fields.RequiredString;
+  label: fields.RequiredString;
+  path: fields.RequiredString;
+  private: FieldReturnType<fields.BooleanField, { default: false }>;
   entity: FieldReturnType<
-    typeof fields.REQUIRED_STRING,
+    fields.RequiredString,
     {
       validate: (v: string) => v is foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
       validationError: 'Invalid package compendium entity type provided which must be a value in CONST.COMPENDIUM_ENTITY_TYPES';
     }
   >;
-  system: typeof fields.STRING_FIELD;
+  system: fields.StringField;
 }
 
 interface PackageCompendiumDataProperties {
@@ -32,6 +27,7 @@ interface PackageCompendiumDataProperties {
   /** The local relative path to the compendium source .db file. The filename should match the name attribute. */
   path: string;
 
+  /** @defaultValue `false` */
   private: boolean;
 
   /** The specific document type that is contained within this compendium pack */
@@ -51,6 +47,7 @@ interface PackageCompendiumDataConstructorData {
   /** The local relative path to the compendium source .db file. The filename should match the name attribute. */
   path: string;
 
+  /** @defaultValue `false` */
   private?: boolean | null | undefined;
 
   /** The specific document type that is contained within this compendium pack */
@@ -63,14 +60,15 @@ interface PackageCompendiumDataConstructorData {
 /**
  * An inner data object which represents a single compendium pack definition provided by a package in the packs array.
  */
-export declare class PackageCompendiumData extends DocumentData<
+export class PackageCompendiumData extends DocumentData<
   PackageCompendiumDataSchema,
   PackageCompendiumDataProperties,
   PropertiesToSource<PackageCompendiumDataProperties>,
   PackageCompendiumDataConstructorData
 > {
+  /** @override */
   static defineSchema(): PackageCompendiumDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface PackageCompendiumData extends PackageCompendiumDataProperties {}
+export interface PackageCompendiumData extends PackageCompendiumDataProperties {}

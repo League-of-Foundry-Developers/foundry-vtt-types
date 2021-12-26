@@ -7,7 +7,7 @@ interface TableResultDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
   type: DocumentField<foundry.CONST.TABLE_RESULT_TYPES> & {
     type: typeof Number;
-    default: typeof CONST.TABLE_RESULT_TYPES.TEXT;
+    default: typeof foundry.CONST.TABLE_RESULT_TYPES.TEXT;
     validate: (t: unknown) => t is foundry.CONST.TABLE_RESULT_TYPES;
     validationError: 'Invalid TableResult type provided';
   };
@@ -16,7 +16,7 @@ interface TableResultDataSchema extends DocumentSchema {
   collection: fields.StringField;
   resultId: fields.StringField;
   weight: fields.PositiveIntegerField;
-  range: {
+  range: DocumentField<[number, number]> & {
     type: [typeof Number];
     required: true;
     default: [];

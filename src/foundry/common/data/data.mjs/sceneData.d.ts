@@ -6,7 +6,6 @@ import {
 } from '../../../../types/helperTypes';
 import EmbeddedCollection from '../../abstract/embedded-collection.mjs';
 import { DocumentData } from '../../abstract/module.mjs';
-import * as CONST from '../../constants.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 import { AmbientLightDataConstructorData } from './ambientLightData';
@@ -30,14 +29,14 @@ interface SceneDataSchema extends DocumentSchema {
   thumb: fields.ImageField;
   width: FieldReturnType<fields.PositiveIntegerField, { required: true; default: 4000 }>;
   height: FieldReturnType<fields.PositiveIntegerField, { required: true; default: 3000 }>;
-  padding: {
+  padding: DocumentField<Number> & {
     type: typeof Number;
     required: true;
     default: 0.25;
     validate: (p: unknown) => boolean;
     validation: 'Invalid {name} {field} which must be a number between 0 and 0.5';
   };
-  initial: {
+  initial: DocumentField<Object> & {
     type: typeof Object;
     required: false;
     nullable: true;
@@ -49,17 +48,17 @@ interface SceneDataSchema extends DocumentSchema {
   gridType: FieldReturnType<
     fields.RequiredNumber,
     {
-      default: typeof CONST.GRID_TYPES.SQUARE;
-      validate: (t: unknown) => t is CONST.GRID_TYPES;
+      default: typeof foundry.CONST.GRID_TYPES.SQUARE;
+      validate: (t: unknown) => t is foundry.CONST.GRID_TYPES;
       validationError: 'Invalid {name } {field} which must be a value in CONST.GRID_TYPES';
     }
   >;
-  grid: {
+  grid: DocumentField<Number> & {
     type: typeof Number;
     required: true;
     default: 100;
     validate: (n: unknown) => boolean;
-    validationError: `Invalid {name} {field} which must be an integer number of pixels, ${typeof CONST.GRID_MIN_SIZE} or greater`;
+    validationError: `Invalid {name} {field} which must be an integer number of pixels, ${typeof foundry.CONST.GRID_MIN_SIZE} or greater`;
   };
   shiftX: FieldReturnType<fields.IntegerField, { required: true; default: 0 }>;
   shiftY: FieldReturnType<fields.IntegerField, { required: true; default: 0 }>;
@@ -71,7 +70,7 @@ interface SceneDataSchema extends DocumentSchema {
   fogExploration: FieldReturnType<fields.BooleanField, { default: true }>;
   fogReset: fields.TimestampField;
   globalLight: fields.BooleanField;
-  globalLightThreshold: {
+  globalLightThreshold: DocumentField<Number> & {
     type: typeof Number;
     required: true;
     nullable: true;
@@ -86,7 +85,7 @@ interface SceneDataSchema extends DocumentSchema {
   notes: fields.EmbeddedCollectionField<typeof documents.BaseNote>;
   sounds: fields.EmbeddedCollectionField<typeof documents.BaseAmbientSound>;
   templates: fields.EmbeddedCollectionField<typeof documents.BaseMeasuredTemplate>;
-  tiles: fields.EmbeddedCollectionField<typeof documents.BaseToken>;
+  tiles: fields.EmbeddedCollectionField<typeof documents.BaseTile>;
   walls: fields.EmbeddedCollectionField<typeof documents.BaseWall>;
   playlist: fields.ForeignDocumentField<{ type: typeof documents.BasePlaylist; required: false }>;
   playlistSound: fields.ForeignDocumentField<{ type: typeof documents.BasePlaylistSound; required: false }>;
@@ -95,7 +94,7 @@ interface SceneDataSchema extends DocumentSchema {
   folder: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
   sort: fields.IntegerSortField;
   permission: fields.DocumentPermissions;
-  flags: fields.BlankString;
+  flags: fields.ObjectField;
 }
 
 interface SceneDataProperties {
@@ -184,7 +183,7 @@ interface SceneDataProperties {
    * The type of grid used in this scene, a number from CONST.GRID_TYPES
    * @defaultValue `CONST.GRID_TYPES.SQUARE`
    */
-  gridType: CONST.GRID_TYPES;
+  gridType: foundry.CONST.GRID_TYPES;
 
   /**
    * The grid size which represents the width (or height) of a single grid space
@@ -268,49 +267,49 @@ interface SceneDataProperties {
 
   /**
    * A collection of embedded Drawing objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(DrawingData, [], BaseDrawing.implementation)`
    */
   drawings: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseDrawing>, SceneData>;
 
   /**
    * A collection of embedded Token objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(TokenData, [], BaseToken.implementation)`
    */
   tokens: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseToken>, SceneData>;
 
   /**
    * A collection of embedded AmbientLight objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(AmbientLightData, [], BaseAmbientLight.implementation)`
    */
   lights: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseAmbientLight>, SceneData>;
 
   /**
    * A collection of embedded Note objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(NoteData, [], BaseNote.implementation)`
    */
   notes: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseNote>, SceneData>;
 
   /**
    * A collection of embedded AmbientSound objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(AmbientSoundData, [], BaseAmbientSound.implementation)`
    */
   sounds: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseAmbientSound>, SceneData>;
 
   /**
    * A collection of embedded MeasuredTemplate objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(MeasuredTemplateData, [], BaseMeasuredTemplate.implementation)`
    */
   templates: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseMeasuredTemplate>, SceneData>;
 
   /**
    * A collection of embedded Tile objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(TileData, [], BaseTile.implementation)`
    */
   tiles: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseTile>, SceneData>;
 
   /**
    * A collection of embedded Wall objects
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(WallData, [], BaseWall.implementation)`
    */
   walls: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseWall>, SceneData>;
 
@@ -448,7 +447,7 @@ interface SceneDataConstructorData {
    * The type of grid used in this scene, a number from CONST.GRID_TYPES
    * @defaultValue `CONST.GRID_TYPES.SQUARE`
    */
-  gridType?: CONST.GRID_TYPES | null | undefined;
+  gridType?: foundry.CONST.GRID_TYPES | null | undefined;
 
   /**
    * The grid size which represents the width (or height) of a single grid space
@@ -532,49 +531,49 @@ interface SceneDataConstructorData {
 
   /**
    * A collection of embedded Drawing objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(DrawingData, [], BaseDrawing.implementation)`
    */
   drawings?: DrawingDataConstructorData[] | null | undefined;
 
   /**
    * A collection of embedded Token objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(TokenData, [], BaseToken.implementation)`
    */
   tokens?: TokenDataConstructorData[] | null | undefined;
 
   /**
    * A collection of embedded AmbientLight objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(AmbientLightData, [], BaseAmbientLight.implementation)`
    */
   lights?: AmbientLightDataConstructorData[] | null | undefined;
 
   /**
    * A collection of embedded Note objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(NoteData, [], BaseNote.implementation)`
    */
   notes?: NoteDataConstructorData[] | null | undefined;
 
   /**
    * A collection of embedded AmbientSound objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(AmbientSoundData, [], BaseAmbientSound.implementation)`
    */
   sounds?: AmbientSoundDataConstructorData[] | null | undefined;
 
   /**
    * A collection of embedded MeasuredTemplate objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(MeasuredTemplateData, [], BaseMeasuredTemplate.implementation)`
    */
   templates?: MeasuredTemplateDataConstructorData[] | null | undefined;
 
   /**
    * A collection of embedded Tile objects.
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(TileData, [], BaseTile.implementation)`
    */
   tiles?: TileDataConstructorData[] | null | undefined;
 
   /**
    * A collection of embedded Wall objects
-   * @defaultValue `[]`
+   * @defaultValue `new EmbeddedCollection(WallData, [], BaseWall.implementation)`
    */
   walls?: WallDataConstructorData[] | null | undefined;
 

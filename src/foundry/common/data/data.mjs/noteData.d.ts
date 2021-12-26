@@ -17,7 +17,7 @@ interface NoteDataSchema extends DocumentSchema {
     fields.ImageField,
     {
       required: true;
-      default: typeof CONST.DEFAULT_NOTE_ICON;
+      default: typeof foundry.CONST.DEFAULT_NOTE_ICON;
     }
   >;
   iconSize: FieldReturnType<
@@ -44,10 +44,10 @@ interface NoteDataSchema extends DocumentSchema {
       validationError: 'Invalid {name} {field} which must be an integer between 8 and 128';
     }
   >;
-  textAnchor: DocumentField<number> & {
+  textAnchor: DocumentField<typeof foundry.CONST.TEXT_ANCHOR_POINTS> & {
     type: typeof Number;
     required: true;
-    default: typeof CONST.TEXT_ANCHOR_POINTS.BOTTOM;
+    default: typeof foundry.CONST.TEXT_ANCHOR_POINTS.BOTTOM;
     validate: (p: unknown) => p is foundry.CONST.TEXT_ANCHOR_POINTS;
     validationError: 'Invalid {name} {field} which must be a value in CONST.TEXT_ANCHOR_POINTS';
   };
