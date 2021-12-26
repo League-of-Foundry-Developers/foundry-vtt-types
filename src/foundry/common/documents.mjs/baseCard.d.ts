@@ -1,9 +1,10 @@
+import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentMetadata, DocumentModificationOptions } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
 import * as data from '../data/data.mjs';
-import { BaseUser } from './baseUser';
-import { ConfiguredDocumentClass, ConstructorDataType } from '../../../types/helperTypes';
+import type { CardDataConstructorData } from '../data/data.mjs/cardData.js';
 import { BaseCards } from './baseCards';
+import { BaseUser } from './baseUser';
 
 /**
  * The base Card definition which defines common behavior of an embedded Card document shared by both client and server.
@@ -37,7 +38,7 @@ export declare class BaseCard extends Document<data.CardData, InstanceType<Confi
 
   /** @override */
   protected _preCreate(
-    data: ConstructorDataType<data.CardData>,
+    data: CardDataConstructorData,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;

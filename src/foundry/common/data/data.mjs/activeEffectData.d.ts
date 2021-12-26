@@ -6,24 +6,24 @@ import { EffectChangeData, EffectChangeDataConstructorData } from './effectChang
 import { EffectDurationData, EffectDurationDataConstructorData } from './effectDurationData';
 
 interface ActiveEffectDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
+  _id: fields.DocumentId;
   changes: DocumentField<EffectChangeData[]> & {
     type: [typeof EffectChangeData];
     required: true;
     default: [];
   };
-  disabled: typeof fields.BOOLEAN_FIELD;
+  disabled: fields.BooleanField;
   duration: DocumentField<EffectDurationData> & {
     type: typeof EffectDurationData;
     required: true;
-    default: {};
+    default: Record<string, never>;
   };
-  icon: typeof fields.IMAGE_FIELD;
-  label: typeof fields.BLANK_STRING;
-  origin: typeof fields.STRING_FIELD;
-  tint: typeof fields.COLOR_FIELD;
-  transfer: FieldReturnType<typeof fields.BOOLEAN_FIELD, { default: true }>;
-  flags: typeof fields.OBJECT_FIELD; // TODO: add more concrete object type
+  icon: fields.ImageField;
+  label: fields.BlankString;
+  origin: fields.StringField;
+  tint: fields.ColorField;
+  transfer: FieldReturnType<fields.BooleanField, { default: true }>;
+  flags: fields.ObjectField;
 }
 
 interface CoreFlags {
@@ -33,11 +33,13 @@ interface CoreFlags {
 interface ActiveEffectDataProperties {
   /**
    * The _id which uniquely identifies the ActiveEffect within a parent Actor or Item
+   * @defaultValue `null`
    */
   _id: string | null;
 
   /**
    * The array of EffectChangeData objects which the ActiveEffect applies
+   * @defaultValue `[]`
    */
   changes: EffectChangeData[];
 
@@ -49,6 +51,7 @@ interface ActiveEffectDataProperties {
 
   /**
    * An EffectDurationData object which describes the duration of the ActiveEffect
+   * @defaultValue `new EffectDurationData({})`
    */
   duration: EffectDurationData;
 
@@ -59,7 +62,7 @@ interface ActiveEffectDataProperties {
 
   /**
    * A text label which describes the name of the ActiveEffect
-   * @defaultValue `''`
+   * @defaultValue `""`
    */
   label: string;
 
@@ -89,11 +92,13 @@ interface ActiveEffectDataProperties {
 interface ActiveEffectDataConstructorData {
   /**
    * The _id which uniquely identifies the ActiveEffect within a parent Actor or Item
+   * @defaultValue `null`
    */
   _id?: string | null | undefined;
 
   /**
    * The array of EffectChangeData objects which the ActiveEffect applies
+   * @defaultValue `[]`
    */
   changes?: EffectChangeDataConstructorData[] | null | undefined;
 
@@ -105,6 +110,7 @@ interface ActiveEffectDataConstructorData {
 
   /**
    * An EffectDurationData object which describes the duration of the ActiveEffect
+   * @defaultValue `new EffectDurationData({})`
    */
   duration?: EffectDurationDataConstructorData | null | undefined;
 
@@ -115,7 +121,7 @@ interface ActiveEffectDataConstructorData {
 
   /**
    * A text label which describes the name of the ActiveEffect
-   * @defaultValue `''`
+   * @defaultValue `""`
    */
   label?: string | null | undefined;
 
@@ -146,15 +152,16 @@ interface ActiveEffectDataConstructorData {
  * The data schema for an ActiveEffect document.
  * @see BaseActiveEffect
  */
-export declare class ActiveEffectData extends DocumentData<
+export class ActiveEffectData extends DocumentData<
   ActiveEffectDataSchema,
   ActiveEffectDataProperties,
   PropertiesToSource<ActiveEffectDataProperties>,
   ActiveEffectDataConstructorData,
   documents.BaseActiveEffect
 > {
+  /** @override */
   static defineSchema(): ActiveEffectDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface ActiveEffectData extends ActiveEffectDataProperties {}
+export interface ActiveEffectData extends ActiveEffectDataProperties {}

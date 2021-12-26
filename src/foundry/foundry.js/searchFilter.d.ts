@@ -84,7 +84,7 @@ declare namespace SearchFilter {
 
     /**
      * The initial value of the search query.
-     * @defaultValue `''`
+     * @defaultValue `""`
      */
     initial?: SearchFilter['query'];
 

@@ -3,23 +3,26 @@ import { DocumentData } from '../abstract/module.mjs';
 import * as fields from '../data/fields.mjs';
 
 interface PackageDependencyDataSchema extends DocumentSchema {
-  name: typeof fields.REQUIRED_STRING;
+  name: fields.RequiredString;
   type: FieldReturnType<
-    typeof fields.REQUIRED_STRING,
+    fields.RequiredString,
     {
       default: 'module';
       validate: (v: unknown) => boolean;
       validationError: 'Invalid package type "{value}" which must be a value from CONST.PACKAGE_TYPES';
     }
   >;
-  manifest: typeof fields.STRING_FIELD;
+  manifest: fields.StringField;
 }
 
 interface PackageDependencyDataProperties {
   /** The dependency package name */
   name: string;
 
-  /** The dependency package type, from CONST.PACKAGE_TYPES */
+  /**
+   * The dependency package type, from CONST.PACKAGE_TYPES
+   * @defaultValue `"module"`
+   */
   type: foundry.CONST.PACKAGE_TYPES;
 
   /** An explicit manifest URL, otherwise learned from the Foundry web server */
@@ -30,7 +33,10 @@ interface PackageDependencyDataConstructorData {
   /** The dependency package name */
   name: string;
 
-  /** The dependency package type, from CONST.PACKAGE_TYPES */
+  /**
+   * The dependency package type, from CONST.PACKAGE_TYPES
+   * @defaultValue `"module"`
+   */
   type?: foundry.CONST.PACKAGE_TYPES | null | undefined;
 
   /** An explicit manifest URL, otherwise learned from the Foundry web server */
@@ -40,12 +46,13 @@ interface PackageDependencyDataConstructorData {
 /**
  * An inner data object which represents a single package dependency in the dependencies array.
  */
-export declare class PackageDependencyData extends DocumentData<
+export class PackageDependencyData extends DocumentData<
   PackageDependencyDataSchema,
   PackageDependencyDataProperties,
   PropertiesToSource<PackageDependencyDataProperties>,
   PackageDependencyDataConstructorData
 > {
+  /** @override */
   static defineSchema(): PackageDependencyDataSchema;
 
   /** @override */
@@ -56,4 +63,4 @@ export declare class PackageDependencyData extends DocumentData<
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface PackageDependencyData extends PackageDependencyDataProperties {}
+export interface PackageDependencyData extends PackageDependencyDataProperties {}

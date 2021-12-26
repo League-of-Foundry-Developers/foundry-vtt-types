@@ -12,28 +12,28 @@ import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 
 interface CardsDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
-  name: typeof fields.REQUIRED_STRING;
+  _id: fields.DocumentId;
+  name: fields.RequiredString;
   type: FieldReturnType<
-    typeof fields.REQUIRED_STRING,
+    fields.RequiredString,
     {
       default: () => string;
       validate: (t: unknown) => boolean;
       validationError: '{name} {field} "{value}" is not a valid type';
     }
   >;
-  description: typeof fields.BLANK_STRING;
-  img: FieldReturnType<typeof fields.VIDEO_FIELD, { default: () => string }>;
+  description: fields.BlankString;
+  img: FieldReturnType<fields.VideoField, { default: () => string }>;
   data: fields.SystemDataField;
   cards: fields.EmbeddedCollectionField<typeof documents.BaseCard>;
-  width: typeof fields.POSITIVE_INTEGER_FIELD;
-  heigth: typeof fields.POSITIVE_INTEGER_FIELD;
-  rotation: typeof fields.ANGLE_FIELD;
-  displayCount: typeof fields.BOOLEAN_FIELD;
+  width: fields.PositiveIntegerField;
+  heigth: fields.PositiveIntegerField;
+  rotation: fields.AngleField;
+  displayCount: fields.BooleanField;
   folder: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
-  sort: typeof fields.INTEGER_SORT_FIELD;
-  permission: typeof fields.DOCUMENT_PERMISSIONS;
-  flags: typeof fields.OBJECT_FIELD;
+  sort: fields.IntegerSortField;
+  permission: fields.DocumentPermissions;
+  flags: fields.ObjectField;
 }
 
 interface CardsDataBaseProperties {
@@ -64,10 +64,16 @@ interface CardsDataBaseProperties {
    */
   img: string | null;
 
-  /** Game system data which is defined by the system template.json model */
+  /**
+   * Game system data which is defined by the system template.json model
+   * @defaultValue template from template.json for type or `{}`
+   */
   data: object;
 
-  /** A collection of Card documents which currently belong to this stack */
+  /**
+   * A collection of Card documents which currently belong to this stack
+   * @defaultValue `new EmbeddedCollection(CardData, [], BaseCard.implementation)`
+   */
   cards: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseCard>, CardsData>;
 
   /** The visible width of this stack */
@@ -118,73 +124,82 @@ interface CardsDataConstructorData {
    * The _id which uniquely identifies this stack of Cards document
    * @defaultValue `null`
    */
-  _id?: string | undefined | null;
+  _id?: string | null | undefined;
 
   /** The text name of this stack */
   name: string;
 
-  /** The type of this stack, in BaseCards.metadata.types */
-  type?: CardsDataSource['type'] | undefined | null;
+  /**
+   * The type of this stack, in BaseCards.metadata.types
+   * @defaultValue `game.system.documentTypes.Cards[0]`
+   */
+  type?: CardsDataSource['type'] | null | undefined;
 
   /**
    * A text description of this stack
    * @defaultValue `""`
    */
-  description?: string | undefined | null;
+  description?: string | null | undefined;
 
   /**
    * An image or video which is used to represent the stack of cards
    * @defaultValue `CardsData.DEFAULT_ICON`
    */
-  img?: string | undefined | null;
+  img?: string | null | undefined;
 
-  /** Game system data which is defined by the system template.json model */
-  data?: DeepPartial<CardsDataSource['data']> | undefined | null;
+  /**
+   * Game system data which is defined by the system template.json model
+   * @defaultValue template from template.json for type or `{}`
+   */
+  data?: DeepPartial<CardsDataSource['data']> | null | undefined;
 
-  /** A collection of Card documents which currently belong to this stack */
-  cards?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseCard>>[0][] | undefined | null;
+  /**
+   * A collection of Card documents which currently belong to this stack
+   * @defaultValue `new EmbeddedCollection(CardData, [], BaseCard.implementation)`
+   */
+  cards?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseCard>>[0][] | null | undefined;
 
   /** The visible width of this stack */
-  width?: number | undefined | null;
+  width?: number | null | undefined;
 
   /** The visible height of this stack */
-  height?: number | undefined | null;
+  height?: number | null | undefined;
 
   /**
    * The angle of rotation of this stack
    * @defaultValue `360`
    */
-  rotation?: number | undefined | null;
+  rotation?: number | null | undefined;
 
   /**
    * Whether or not to publicly display the number of cards in this stack
    * @defaultValue `false`
    */
-  displayCount?: boolean | undefined | null;
+  displayCount?: boolean | null | undefined;
 
   /**
    * The _id of a Folder which contains this document
    * @defaultValue `null`
    */
-  folder?: string | undefined | null;
+  folder?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseFolder>> | string | null | undefined;
 
   /**
    * The sort order of this stack relative to others in its parent collection
    * @defaultValue `0`
    */
-  sort?: number | undefined | null;
+  sort?: number | null | undefined;
 
   /**
    * An object which configures user permissions to this stack
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
-  permission?: Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS> | undefined | null;
+  permission?: Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS> | null | undefined;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Cards'> | undefined | null;
+  flags?: ConfiguredFlags<'Cards'> | null | undefined;
 }
 
 type CardsDataBaseSource = PropertiesToSource<CardsDataBaseProperties>;
@@ -196,6 +211,7 @@ type DocumentDataConstructor = Pick<typeof DocumentData, keyof typeof DocumentDa
 interface CardsDataConstructor extends DocumentDataConstructor {
   new (data: CardsDataConstructorData, document?: documents.BaseCards | null | undefined): CardsData;
 
+  /** @override */
   defineSchema(): CardsDataSchema;
 
   /**
@@ -219,4 +235,4 @@ export type CardsData = DocumentData<
 > &
   CardsDataProperties;
 
-export declare const CardsData: CardsDataConstructor;
+export const CardsData: CardsDataConstructor;

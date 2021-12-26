@@ -6,7 +6,7 @@ declare class TextEditor {
    * Create a Rich Text Editor. The current implementation uses TinyMCE
    * @param options - Configuration options provided to the Editor init
    * @param content - Initial HTML or text content to populate the editor with
-   *                  (default: `''`)
+   *                  (default: `""`)
    * @returns The editor instance.
    */
   static create(options: TextEditor.Options, content: string): Promise<tinyMCE.Editor>;

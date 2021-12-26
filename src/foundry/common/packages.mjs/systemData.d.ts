@@ -2,12 +2,12 @@ import * as fields from '../data/fields.mjs';
 import { PackageData, PackageDataConstructorData, PackageDataProperties, PackageDataSchema } from './packageData';
 
 interface SystemDataSchema extends PackageDataSchema {
-  background: typeof fields.STRING_FIELD;
-  initiative: typeof fields.STRING_FIELD;
-  gridDistance: typeof fields.NUMERIC_FIELD;
-  gridUnits: typeof fields.STRING_FIELD;
-  primaryTokenAttribute: typeof fields.STRING_FIELD;
-  secondaryTokenAttribute: typeof fields.STRING_FIELD;
+  background: fields.StringField;
+  initiative: fields.StringField;
+  gridDistance: fields.NumericField;
+  gridUnits: fields.StringField;
+  primaryTokenAttribute: fields.StringField;
+  secondaryTokenAttribute: fields.StringField;
 }
 
 interface SystemDataProperties extends PackageDataProperties {
@@ -50,9 +50,10 @@ interface SystemDataConstructorData extends PackageDataConstructorData {
  * The data schema used to define System manifest files.
  * Extends the basic PackageData schema with some additional system-specific fields.
  */
-export declare class SystemData extends PackageData<SystemDataSchema, SystemDataProperties, SystemDataConstructorData> {
+export class SystemData extends PackageData<SystemDataSchema, SystemDataProperties, SystemDataConstructorData> {
+  /** @override */
   static defineSchema(): SystemDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface SystemData extends SystemDataProperties {}
+export interface SystemData extends SystemDataProperties {}

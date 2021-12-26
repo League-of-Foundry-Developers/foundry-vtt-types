@@ -5,42 +5,38 @@ import * as fields from '../fields.mjs';
 import { DarknessActivation, DarknessActivationConstructorData } from './darknessActivation';
 
 interface AmbientSoundDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
-  x: typeof fields.REQUIRED_NUMBER;
-  y: typeof fields.REQUIRED_NUMBER;
-  radius: typeof fields.REQUIRED_NUMBER;
-  path: typeof fields.AUDIO_FIELD;
-  repeat: typeof fields.BOOLEAN_FIELD;
-  volume: FieldReturnType<typeof fields.ALPHA_FIELD, { default: 0.5 }>;
-  easing: FieldReturnType<typeof fields.BOOLEAN_FIELD, { default: true }>;
-  hidden: typeof fields.BOOLEAN_FIELD;
+  _id: fields.DocumentId;
+  x: fields.RequiredNumber;
+  y: fields.RequiredNumber;
+  radius: fields.NonnegativeNumberField;
+  path: fields.AudioField;
+  repeat: fields.BooleanField;
+  volume: FieldReturnType<fields.AlphaField, { default: 0.5 }>;
+  walls: FieldReturnType<fields.BooleanField, { default: true }>;
+  easing: FieldReturnType<fields.BooleanField, { default: true }>;
+  hidden: fields.BooleanField;
   darkness: DocumentField<DarknessActivation> & {
     type: typeof DarknessActivation;
     required: true;
-    default: {};
+    default: Record<string, never>;
   };
-  flags: typeof fields.OBJECT_FIELD;
+  flags: fields.ObjectField;
 }
 
 interface AmbientSoundDataProperties {
   /**
    * The _id which uniquely identifies this AmbientSound document
+   * @defaultValue `null`
    */
   _id: string | null;
 
-  /**
-   * @defaultValue `0`
-   */
+  /** @defaultValue `0` */
   x: number;
 
-  /**
-   * @defaultValue `0`
-   */
+  /** @defaultValue `0` */
   y: number;
 
-  /**
-   * @defaultValue `0`
-   */
+  /** @defaultValue `0` */
   radius: number;
 
   /**
@@ -60,19 +56,16 @@ interface AmbientSoundDataProperties {
    */
   volume: number;
 
-  /**
-   * @defaultValue `true`
-   */
+  /** @defaultValue `true` */
+  walls: boolean;
+
+  /** @defaultValue `true` */
   easing: boolean;
 
-  /**
-   * @defaultValue `false`
-   */
+  /** @defaultValue `false` */
   hidden: boolean;
 
-  /**
-   * @defaultValue `{}`
-   */
+  /** @defaultValue `new DarknessActivation({})` */
   darkness: DarknessActivation;
 
   /**
@@ -85,22 +78,17 @@ interface AmbientSoundDataProperties {
 interface AmbientSoundDataConstructorData {
   /**
    * The _id which uniquely identifies this AmbientSound document
+   * @defaultValue `null`
    */
   _id?: string | null | undefined;
 
-  /**
-   * @defaultValue `0`
-   */
+  /** @defaultValue `0` */
   x?: number | null | undefined;
 
-  /**
-   * @defaultValue `0`
-   */
+  /** @defaultValue `0` */
   y?: number | null | undefined;
 
-  /**
-   * @defaultValue `0`
-   */
+  /** @defaultValue `0` */
   radius?: number | null | undefined;
 
   /**
@@ -120,19 +108,16 @@ interface AmbientSoundDataConstructorData {
    */
   volume?: number | null | undefined;
 
-  /**
-   * @defaultValue `true`
-   */
+  /** @defaultValue `true` */
+  walls?: boolean | null | undefined;
+
+  /** @defaultValue `true` */
   easing?: boolean | null | undefined;
 
-  /**
-   * @defaultValue `false`
-   */
+  /** @defaultValue `false` */
   hidden?: boolean | null | undefined;
 
-  /**
-   * @defaultValue `{}`
-   */
+  /** @defaultValue `new DarknessActivation({})` */
   darkness?: DarknessActivationConstructorData | null | undefined;
 
   /**
@@ -146,18 +131,22 @@ interface AmbientSoundDataConstructorData {
  * The data schema for a AmbientSound embedded document.
  * @see BaseAmbientSound
  */
-export declare class AmbientSoundData extends DocumentData<
+export class AmbientSoundData extends DocumentData<
   AmbientSoundDataSchema,
   AmbientSoundDataProperties,
   PropertiesToSource<AmbientSoundDataProperties>,
   AmbientSoundDataConstructorData,
   documents.BaseAmbientSound
 > {
+  /** @override */
   static defineSchema(): AmbientSoundDataSchema;
+
+  /** @override */
+  _initializeSource(data: AmbientSoundDataConstructorData): PropertiesToSource<AmbientSoundDataProperties>;
 
   /** @override */
   protected _initialize(): void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface AmbientSoundData extends AmbientSoundDataProperties {}
+export interface AmbientSoundData extends AmbientSoundDataProperties {}

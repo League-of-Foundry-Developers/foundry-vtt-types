@@ -1,17 +1,17 @@
+import { ConfiguredDocumentClass, ConfiguredFlags, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
-import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
-import { ConfiguredFlags, PropertiesToSource } from '../../../../types/helperTypes';
+import * as fields from '../fields.mjs';
 
 interface JournalEntryDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
-  name: typeof fields.REQUIRED_STRING;
-  content: typeof fields.BLANK_STRING;
-  img: typeof fields.IMAGE_FIELD;
+  _id: fields.DocumentId;
+  name: fields.RequiredString;
+  content: fields.BlankString;
+  img: fields.ImageField;
   folder: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
-  sort: typeof fields.INTEGER_SORT_FIELD;
-  permission: typeof fields.DOCUMENT_PERMISSIONS;
-  flags: typeof fields.OBJECT_FIELD;
+  sort: fields.IntegerSortField;
+  permission: fields.DocumentPermissions;
+  flags: fields.ObjectField;
 }
 
 interface JournalEntryDataProperties {
@@ -28,7 +28,7 @@ interface JournalEntryDataProperties {
 
   /**
    * The HTML content of the JournalEntry
-   * @defaultValue `''`
+   * @defaultValue `""`
    */
   content: string;
 
@@ -76,7 +76,7 @@ interface JournalEntryConstructorData {
 
   /**
    * The HTML content of the JournalEntry
-   * @defaultValue `''`
+   * @defaultValue `""`
    */
   content?: string | null | undefined;
 
@@ -89,7 +89,7 @@ interface JournalEntryConstructorData {
    * The _id of a Folder which contains this JournalEntry
    * @defaultValue `null`
    */
-  folder?: string | null | undefined;
+  folder?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseFolder>> | string | null | undefined;
 
   /**
    * The numeric sort value which orders this JournalEntry relative to its siblings
@@ -114,7 +114,7 @@ interface JournalEntryConstructorData {
  * The data schema for a JournalEntry document.
  * @see BaseJournalEntry
  */
-export declare class JournalEntryData extends DocumentData<
+export class JournalEntryData extends DocumentData<
   JournalEntryDataSchema,
   JournalEntryDataProperties,
   PropertiesToSource<JournalEntryDataProperties>,
@@ -123,6 +123,7 @@ export declare class JournalEntryData extends DocumentData<
 > {
   constructor(data: JournalEntryConstructorData, document?: documents.BaseJournalEntry | null);
 
+  /** @override */
   static defineSchema(): JournalEntryDataSchema;
 }
 

@@ -3,53 +3,53 @@ import { DocumentData } from '../abstract/module.mjs';
 import * as fields from '../data/fields.mjs';
 
 interface PackageAuthorDataSchema extends DocumentSchema {
-  name: typeof fields.REQUIRED_STRING;
-  email: typeof fields.STRING_FIELD;
-  url: typeof fields.STRING_FIELD;
-  discord: typeof fields.STRING_FIELD;
+  name: fields.RequiredString;
+  email: fields.StringField;
+  url: fields.StringField;
+  discord: fields.StringField;
 }
 
 interface PackageAuthorDataProperties {
-  /**
-   * The author name
-   */
+  /** The author name */
   name: string;
 
-  /**
-   * The author email address
-   */
+  /** The author email address */
   email: string | undefined;
 
-  /**
-   *  A website url for the author
-   */
+  /** A website url for the author */
   url: string | undefined;
 
-  /**
-   *  A Discord username for the author
-   */
+  /** A Discord username for the author */
   discord: string | undefined;
 }
 
 interface PackageAuthorDataConstructorData {
+  /** The author name */
   name: string;
+
+  /** The author email address */
   email?: string | null | undefined;
+
+  /** A website url for the author */
   url?: string | null | undefined;
+
+  /** A Discord username for the author */
   discord?: string | null | undefined;
 }
 
 /**
  * An inner data object which represents a single package author in the authors array.
  */
-export declare class PackageAuthorData extends DocumentData<
+export class PackageAuthorData extends DocumentData<
   PackageAuthorDataSchema,
   PackageAuthorDataProperties,
   PropertiesToSource<PackageAuthorDataProperties>,
   PackageAuthorDataConstructorData,
   null
 > {
-  constructor(data?: DeepPartial<PropertiesToSource<PackageAuthorDataProperties>>, document?: null);
+  constructor(data?: PackageAuthorDataConstructorData, document?: null);
 
+  /** @override */
   static defineSchema(): PackageAuthorDataSchema;
 }
 

@@ -4,27 +4,27 @@ import { BaseTableResult } from '../../documents.mjs';
 import { fields } from '../module.mjs';
 
 interface TableResultDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
+  _id: fields.DocumentId;
   type: DocumentField<foundry.CONST.TABLE_RESULT_TYPES> & {
     type: typeof Number;
-    default: typeof CONST.TABLE_RESULT_TYPES.TEXT;
+    default: typeof foundry.CONST.TABLE_RESULT_TYPES.TEXT;
     validate: (t: unknown) => t is foundry.CONST.TABLE_RESULT_TYPES;
     validationError: 'Invalid TableResult type provided';
   };
-  text: typeof fields.BLANK_STRING;
-  img: typeof fields.IMAGE_FIELD;
-  collection: typeof fields.STRING_FIELD;
-  resultId: typeof fields.STRING_FIELD;
-  weight: typeof fields.POSITIVE_INTEGER_FIELD;
-  range: {
+  text: fields.BlankString;
+  img: fields.ImageField;
+  collection: fields.StringField;
+  resultId: fields.StringField;
+  weight: fields.PositiveIntegerField;
+  range: DocumentField<[number, number]> & {
     type: [typeof Number];
     required: true;
     default: [];
     validate: typeof _isValidResultRange;
     validationError: 'Invalid TableResult range which must be a length-2 array of ascending integers';
   };
-  drawn: typeof fields.BOOLEAN_FIELD;
-  flags: typeof fields.OBJECT_FIELD;
+  drawn: fields.BooleanField;
+  flags: fields.ObjectField;
 }
 
 /**
@@ -50,13 +50,14 @@ interface TableResultDataProperties {
 
   /**
    * The text which describes the table result
+   * @defaultValue `""`
    */
   text: string;
 
   /**
    * An image file url that represents the table result
    */
-  img: string | undefined;
+  img: string | null | undefined;
 
   /**
    * A named collection from which this result is drawn
@@ -70,7 +71,6 @@ interface TableResultDataProperties {
 
   /**
    * The probabilistic weight of this result relative to other results
-   * @defaultValue `1`
    */
   weight: number | undefined;
 
@@ -108,29 +108,29 @@ interface TableResultDataConstructorData {
 
   /**
    * The text which describes the table result
+   * @defaultValue `""`
    */
   text?: string | null | undefined;
 
   /**
    * An image file url that represents the table result
    */
-  img?: string | undefined | null;
+  img?: string | null | undefined;
 
   /**
    * A named collection from which this result is drawn
    */
-  collection?: string | undefined | null;
+  collection?: string | null | undefined;
 
   /**
    * The _id of a Document within the collection this result references
    */
-  resultId?: string | undefined | null;
+  resultId?: string | null | undefined;
 
   /**
    * The probabilistic weight of this result relative to other results
-   * @defaultValue `1`
    */
-  weight?: number | undefined | null;
+  weight?: number | null | undefined;
 
   /**
    * A length 2 array of ascending integers which defines the range of dice roll
@@ -142,21 +142,22 @@ interface TableResultDataConstructorData {
    * Has this result already been drawn (without replacement)
    * @defaultValue `false`
    */
-  drawn?: boolean | undefined | null;
+  drawn?: boolean | null | undefined;
 
   /**
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'TableResult'> | undefined | null;
+  flags?: ConfiguredFlags<'TableResult'> | null | undefined;
 }
 
-export declare class TableResultData extends DocumentData<
+export class TableResultData extends DocumentData<
   TableResultDataSchema,
   TableResultDataProperties,
   PropertiesToSource<TableResultDataProperties>,
   TableResultDataConstructorData,
   BaseTableResult
 > {
+  /** @override */
   static defineSchema(): TableResultDataSchema;
 }

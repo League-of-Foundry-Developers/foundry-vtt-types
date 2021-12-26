@@ -1,40 +1,41 @@
-import { TileOcclusion, TileOcclusionConstructorData } from './tileOcclusion';
-import { VideoData, VideoDataConstructorData } from './videoData';
 import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import DocumentData from '../../abstract/data.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
+import { TileOcclusion, TileOcclusionConstructorData } from './tileOcclusion';
+import { VideoData, VideoDataConstructorData } from './videoData';
 
 interface TileDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
-  img: typeof fields.VIDEO_FIELD;
-  width: typeof fields.REQUIRED_NUMBER;
-  height: typeof fields.REQUIRED_NUMBER;
-  x: typeof fields.REQUIRED_NUMBER;
-  y: typeof fields.REQUIRED_NUMBER;
-  z: FieldReturnType<typeof fields.INTEGER_FIELD, { required: true; default: 100 }>;
-  rotation: FieldReturnType<typeof fields.ANGLE_FIELD, { default: 0 }>;
-  alpha: typeof fields.ALPHA_FIELD;
-  tint: typeof fields.COLOR_FIELD;
-  hidden: typeof fields.BOOLEAN_FIELD;
-  locked: typeof fields.BOOLEAN_FIELD;
-  overhead: FieldReturnType<typeof fields.BOOLEAN_FIELD, { default: false }>;
+  _id: fields.DocumentId;
+  img: fields.VideoField;
+  width: fields.RequiredNumber;
+  height: fields.RequiredNumber;
+  x: fields.RequiredNumber;
+  y: fields.RequiredNumber;
+  z: FieldReturnType<fields.IntegerField, { required: true; default: 100 }>;
+  rotation: FieldReturnType<fields.AngleField, { default: 0 }>;
+  alpha: fields.AlphaField;
+  tint: fields.ColorField;
+  hidden: fields.BooleanField;
+  locked: fields.BooleanField;
+  overhead: FieldReturnType<fields.BooleanField, { default: false }>;
   occlusion: DocumentField<TileOcclusion> & {
     type: typeof TileOcclusion;
     required: false;
-    default: {};
+    default: Record<string, never>;
   };
   video: DocumentField<VideoData> & {
     type: typeof VideoData;
     required: false;
-    default: {};
+    default: Record<string, never>;
   };
-  flags: typeof fields.OBJECT_FIELD;
+  flags: fields.ObjectField;
 }
 
 interface TileDataProperties {
   /**
    * The _id which uniquely identifies this Tile embedded document
+   * @defaultValue `null`
    */
   _id: string | null;
 
@@ -110,11 +111,13 @@ interface TileDataProperties {
 
   /**
    * The tile's occlusion settings
+   * @defaultValue `new TileOcclusion({})`
    */
   occlusion: TileOcclusion;
 
   /**
    * The tile's video settings
+   * @defaultValue `new VideoData({})`
    */
   video: VideoData;
 
@@ -128,6 +131,7 @@ interface TileDataProperties {
 interface TileDataConstructorData {
   /**
    * The _id which uniquely identifies this Tile embedded document
+   * @defaultValue `null`
    */
   _id?: string | null | undefined;
 
@@ -203,11 +207,13 @@ interface TileDataConstructorData {
 
   /**
    * The tile's occlusion settings
+   * @defaultValue `new TileOcclusion({})`
    */
   occlusion?: TileOcclusionConstructorData | null | undefined;
 
   /**
    * The tile's video settings
+   * @defaultValue `new VideoData({})`
    */
   video?: VideoDataConstructorData | null | undefined;
 
@@ -222,13 +228,14 @@ interface TileDataConstructorData {
  * The data schema for a Tile embedded document.
  * @see BaseTile
  */
-export declare class TileData extends DocumentData<
+export class TileData extends DocumentData<
   TileDataSchema,
   TileDataProperties,
   PropertiesToSource<TileDataProperties>,
   TileDataConstructorData,
   documents.BaseTile
 > {
+  /** @override */
   static defineSchema(): TileDataSchema;
 
   /** @override */
@@ -236,4 +243,4 @@ export declare class TileData extends DocumentData<
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface TileData extends TileDataProperties {}
+export interface TileData extends TileDataProperties {}

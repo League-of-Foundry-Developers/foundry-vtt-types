@@ -70,7 +70,7 @@ declare class FilePicker<
 
   /**
    * Record the last-browsed directory path so that re-opening a different FilePicker instance uses the same target
-   * @defaultValue `''`
+   * @defaultValue `""`
    */
   static LAST_BROWSED_DIRECTORY: string;
 

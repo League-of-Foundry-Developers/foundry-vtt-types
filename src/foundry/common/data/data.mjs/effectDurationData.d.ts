@@ -4,13 +4,13 @@ import { BaseActiveEffect } from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 
 interface EffectDurationDataSchema extends DocumentSchema {
-  startTime: FieldReturnType<typeof fields.NUMERIC_FIELD, { default: null }>;
-  seconds: typeof fields.NONNEGATIVE_INTEGER_FIELD;
-  combat: typeof fields.STRING_FIELD;
-  rounds: typeof fields.NONNEGATIVE_INTEGER_FIELD;
-  turns: typeof fields.NONNEGATIVE_INTEGER_FIELD;
-  startRound: typeof fields.NONNEGATIVE_INTEGER_FIELD;
-  startTurn: typeof fields.NONNEGATIVE_INTEGER_FIELD;
+  startTime: FieldReturnType<fields.NumericField, { default: null }>;
+  seconds: fields.NonnegativeIntegerField;
+  combat: fields.StringField;
+  rounds: fields.NonnegativeIntegerField;
+  turns: fields.NonnegativeIntegerField;
+  startRound: fields.NonnegativeIntegerField;
+  startTurn: fields.NonnegativeIntegerField;
 }
 
 interface EffectDurationDataProperties {
@@ -51,7 +51,7 @@ interface EffectDurationDataProperties {
   startTurn: number | undefined;
 }
 
-export interface EffectDurationDataConstructorData {
+interface EffectDurationDataConstructorData {
   /**
    * The world time when the active effect first started
    * @defaultValue `null`
@@ -93,15 +93,16 @@ export interface EffectDurationDataConstructorData {
  * An embedded data structure which tracks the duration of an ActiveEffect.
  * @see ActiveEffectData
  */
-export declare class EffectDurationData extends DocumentData<
+export class EffectDurationData extends DocumentData<
   EffectDurationDataSchema,
   EffectDurationDataProperties,
   PropertiesToSource<EffectDurationDataProperties>,
   EffectDurationDataConstructorData,
   BaseActiveEffect
 > {
+  /** @override */
   static defineSchema(): EffectDurationDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface EffectDurationData extends EffectDurationDataProperties {}
+export interface EffectDurationData extends EffectDurationDataProperties {}

@@ -1,6 +1,7 @@
-import { ConfiguredDocumentClass, ConstructorDataType, PropertiesToSource } from '../../../types/helperTypes';
+import { ConfiguredDocumentClass, PropertiesToSource } from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
 import { CombatantDataProperties } from '../../common/data/data.mjs/combatantData';
+import type { CombatDataConstructorData } from '../../common/data/data.mjs/combatData.js';
 
 declare global {
   /**
@@ -183,18 +184,13 @@ declare global {
 
     /** @deprecated since 0.8.0 */
     createCombatant(
-      data:
-        | ConstructorDataType<foundry.data.CombatData>
-        | (ConstructorDataType<foundry.data.CombatData> & Record<string, unknown>),
+      data: CombatDataConstructorData | (CombatDataConstructorData & Record<string, unknown>),
       options?: DocumentModificationContext
     ): this['createEmbeddedDocuments'];
 
     /** @deprecated since 0.8.0 */
     updateCombatant(
-      data: DeepPartial<
-        | ConstructorDataType<foundry.data.CombatData>
-        | (ConstructorDataType<foundry.data.CombatData> & Record<string, unknown>)
-      >,
+      data: DeepPartial<CombatDataConstructorData | (CombatDataConstructorData & Record<string, unknown>)>,
       options?: DocumentModificationContext
     ): NonNullable<ReturnType<this['combatants']['get']>>['update'];
 

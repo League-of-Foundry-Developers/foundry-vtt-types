@@ -13,6 +13,7 @@ export { FogExplorationData } from './fogExplorationData';
 export { FolderData } from './folderData';
 export { ItemData } from './itemData';
 export { JournalEntryData } from './journalEntryData';
+export { LightData } from './lightData';
 export { MacroData } from './macroData';
 export { MeasuredTemplateData } from './measuredTemplateData';
 export { NoteData } from './noteData';

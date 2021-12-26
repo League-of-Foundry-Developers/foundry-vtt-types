@@ -1,9 +1,9 @@
-import * as data from '../data/data.mjs';
-import { Document } from '../abstract/module.mjs';
 import { DocumentMetadata, DocumentModificationOptions } from '../abstract/document.mjs';
-import { BaseUser } from './baseUser';
-import { ConstructorDataType } from '../../../types/helperTypes';
+import { Document } from '../abstract/module.mjs';
 import * as CONST from '../constants.mjs';
+import * as data from '../data/data.mjs';
+import type { MacroDataConstructorData } from '../data/data.mjs/macroData.js';
+import { BaseUser } from './baseUser';
 
 /**
  * The base Macro model definition which defines common behavior of an Macro document between both client and server.
@@ -32,7 +32,7 @@ export declare class BaseMacro extends Document<data.MacroData> {
 
   /** @override */
   protected _preCreate(
-    data: ConstructorDataType<data.MacroData>,
+    data: MacroDataConstructorData,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;

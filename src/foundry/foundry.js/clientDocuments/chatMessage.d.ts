@@ -1,5 +1,6 @@
-import { ConfiguredDocumentClass, ConstructorDataType } from '../../../types/helperTypes';
+import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
+import type { ChatMessageDataConstructorData } from '../../common/data/data.mjs/chatMessageData.js';
 
 declare global {
   /**
@@ -72,9 +73,9 @@ declare global {
      * @returns The modified ChatMessage data with rollMode preferences applied
      */
     static applyRollMode(
-      chatData: ConstructorDataType<foundry.data.ChatMessageData>,
+      chatData: ChatMessageDataConstructorData,
       rollMode: foundry.CONST.DICE_ROLL_MODES
-    ): ConstructorDataType<foundry.data.ChatMessageData>;
+    ): ChatMessageDataConstructorData;
 
     /**
      * Update the data of a ChatMessage instance to apply a requested rollMode
@@ -197,7 +198,7 @@ declare global {
 
     /** @override */
     _preCreate(
-      data: ConstructorDataType<foundry.data.ChatMessageData>,
+      data: ChatMessageDataConstructorData,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;

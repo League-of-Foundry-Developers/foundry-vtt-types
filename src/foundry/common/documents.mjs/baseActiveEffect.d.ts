@@ -1,7 +1,8 @@
+import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentMetadata, DocumentModificationOptions } from '../abstract/document.mjs';
-import { ConfiguredDocumentClass, ConstructorDataType } from '../../../types/helperTypes';
 import { Document } from '../abstract/module.mjs';
 import * as data from '../data/data.mjs';
+import type { ActiveEffectDataConstructorData } from '../data/data.mjs/activeEffectData.js';
 import { BaseActor } from './baseActor';
 import { BaseItem } from './baseItem';
 import { BaseUser } from './baseUser';
@@ -30,7 +31,7 @@ export declare class BaseActiveEffect extends Document<
 
   /** @override */
   protected _preCreate(
-    data: ConstructorDataType<data.ActiveEffectData>,
+    data: ActiveEffectDataConstructorData,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;

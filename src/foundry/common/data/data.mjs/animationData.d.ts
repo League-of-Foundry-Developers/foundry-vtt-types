@@ -4,13 +4,13 @@ import { BaseAmbientLight } from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 
 interface AnimationDataSchema extends DocumentSchema {
-  type: typeof fields.STRING_FIELD;
+  type: fields.StringField;
   speed: DocumentField<number> & {
     type: typeof Number;
     required: false;
     default: 5;
     validate: (a: number) => boolean;
-    validationError: 'Light animation speed must be an integer between 1 and 10';
+    validationError: 'Light animation speed must be an integer between 0 and 10';
   };
   intensity: DocumentField<number> & {
     type: typeof Number;
@@ -19,6 +19,7 @@ interface AnimationDataSchema extends DocumentSchema {
     validate: (a: number) => boolean;
     validationError: 'Light animation intensity must be an integer between 1 and 10';
   };
+  reverse: fields.BooleanField;
 }
 
 interface AnimationDataProperties {
@@ -38,9 +39,12 @@ interface AnimationDataProperties {
    * @defaultValue `5`
    */
   intensity: number;
+
+  /** @defaultValue `false` */
+  reverse: boolean;
 }
 
-export interface AnimationDataConstructorData {
+interface AnimationDataConstructorData {
   /**
    * The animation type which is applied
    */
@@ -57,20 +61,24 @@ export interface AnimationDataConstructorData {
    * @defaultValue `5`
    */
   intensity?: number | null | undefined;
+
+  /** @defaultValue `false` */
+  reverse?: boolean | null | undefined;
 }
 
 /**
  * An embedded data object which defines the properties of a light source animation
  */
-export declare class AnimationData extends DocumentData<
+export class AnimationData extends DocumentData<
   AnimationDataSchema,
   AnimationDataProperties,
   PropertiesToSource<AnimationDataProperties>,
   AnimationDataConstructorData,
   BaseAmbientLight
 > {
+  /** @override */
   static defineSchema(): AnimationDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface AnimationData extends AnimationDataProperties {}
+export interface AnimationData extends AnimationDataProperties {}

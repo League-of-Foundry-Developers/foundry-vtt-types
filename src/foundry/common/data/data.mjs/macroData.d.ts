@@ -1,41 +1,46 @@
-import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
+import {
+  ConfiguredDocumentClass,
+  ConfiguredFlags,
+  FieldReturnType,
+  PropertiesToSource
+} from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
-import * as fields from '../fields.mjs';
 import * as documents from '../../documents.mjs';
-import * as CONST from '../../constants.mjs';
+import * as fields from '../fields.mjs';
 
 interface MacroDataSchema extends DocumentSchema {
-  _id: typeof fields.DOCUMENT_ID;
-  name: typeof fields.REQUIRED_STRING;
-  type: DocumentField<string> & {
+  _id: fields.DocumentId;
+  name: fields.RequiredString;
+  type: DocumentField<foundry.CONST.MACRO_TYPES> & {
     type: String;
     required: true;
-    default: typeof CONST.MACRO_TYPES.CHAT;
-    validate: (t: unknown) => boolean;
+    default: typeof foundry.CONST.MACRO_TYPES.CHAT;
+    validate: (t: unknown) => t is foundry.CONST.MACRO_TYPES;
     validationError: 'The provided Macro type must be in CONST.MACRO_TYPES';
   };
   author: fields.ForeignDocumentField<{
     type: typeof documents.BaseUser;
     default: () => Game['user'];
   }>;
-  img: FieldReturnType<typeof fields.IMAGE_FIELD, { required: true; default: typeof CONST.DEFAULT_MACRO_ICON }>;
-  scope: DocumentField<string> & {
+  img: FieldReturnType<fields.ImageField, { required: true; default: typeof foundry.CONST.DEFAULT_MACRO_ICON }>;
+  scope: DocumentField<foundry.CONST.MACRO_SCOPES> & {
     type: String;
     required: true;
-    default: typeof CONST.MACRO_SCOPES[0];
-    validate: (t: unknown) => boolean;
+    default: typeof foundry.CONST.MACRO_SCOPES[0];
+    validate: (t: unknown) => t is foundry.CONST.MACRO_SCOPES;
     validationError: 'The provided Macro scope must be in CONST.MACRO_SCOPES';
   };
-  command: typeof fields.BLANK_STRING;
+  command: fields.BlankString;
   folder: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
-  sort: typeof fields.INTEGER_SORT_FIELD;
-  permission: typeof fields.DOCUMENT_PERMISSIONS;
-  flags: typeof fields.OBJECT_FIELD;
+  sort: fields.IntegerSortField;
+  permission: fields.DocumentPermissions;
+  flags: fields.ObjectField;
 }
 
 interface MacroDataProperties {
   /**
    * The _id which uniquely identifies this Macro document
+   * @defaultValue `null`
    */
   _id: string | null;
 
@@ -46,11 +51,13 @@ interface MacroDataProperties {
 
   /**
    * A Macro subtype from CONST.MACRO_TYPES
+   * @defaultValue `foundry.CONST.MACRO_TYPES.CHAT`
    */
   type: foundry.CONST.MACRO_TYPES;
 
   /**
    * The _id of a User document which created this Macro *
+   * @defaultValue `game?.user`
    */
   author: string;
 
@@ -62,13 +69,13 @@ interface MacroDataProperties {
 
   /**
    * The scope of this Macro application from CONST.MACRO_SCOPES
-   * @defaultValue `'global'`
+   * @defaultValue `CONST.MACRO_SCOPES[0]` ("global")
    */
   scope: foundry.CONST.MACRO_SCOPES;
 
   /**
    * The string content of the macro command
-   * @defaultValue `''`
+   * @defaultValue `""`
    */
   command: string;
 
@@ -100,6 +107,7 @@ interface MacroDataProperties {
 interface MacroDataConstructorData {
   /**
    * The _id which uniquely identifies this Macro document
+   * @defaultValue `null`
    */
   _id?: string | null | undefined;
 
@@ -110,13 +118,15 @@ interface MacroDataConstructorData {
 
   /**
    * A Macro subtype from CONST.MACRO_TYPES
+   * @defaultValue `foundry.CONST.MACRO_TYPES.CHAT`
    */
   type?: foundry.CONST.MACRO_TYPES | null | undefined;
 
   /**
    * The _id of a User document which created this Macro *
+   * @defaultValue `game?.user`
    */
-  author?: string | null | undefined;
+  author?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseUser>> | string | null | undefined;
 
   /**
    * An image file path which provides the thumbnail artwork for this Macro
@@ -126,13 +136,13 @@ interface MacroDataConstructorData {
 
   /**
    * The scope of this Macro application from CONST.MACRO_SCOPES
-   * @defaultValue `'global'`
+   * @defaultValue `CONST.MACRO_SCOPES[0]` ("global")
    */
   scope?: foundry.CONST.MACRO_SCOPES | null | undefined;
 
   /**
    * The string content of the macro command
-   * @defaultValue `''`
+   * @defaultValue `""`
    */
   command?: string | null | undefined;
 
@@ -140,7 +150,7 @@ interface MacroDataConstructorData {
    * The _id of a Folder which contains this Macro
    * @defaultValue `null`
    */
-  folder?: string | null | undefined;
+  folder?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseFolder>> | string | null | undefined;
 
   /**
    * The numeric sort value which orders this Macro relative to its siblings
@@ -165,7 +175,7 @@ interface MacroDataConstructorData {
  * The data schema for a Macro document.
  * @see BaseMacro
  */
-export declare class MacroData extends DocumentData<
+export class MacroData extends DocumentData<
   MacroDataSchema,
   MacroDataProperties,
   PropertiesToSource<MacroDataProperties>,
@@ -174,8 +184,9 @@ export declare class MacroData extends DocumentData<
 > {
   constructor(data: MacroDataConstructorData, document?: documents.BaseMacro | null);
 
+  /** @override */
   static defineSchema(): MacroDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export declare interface MacroData extends MacroDataProperties {}
+export interface MacroData extends MacroDataProperties {}

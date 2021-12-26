@@ -5,12 +5,13 @@ import { FieldReturnType } from '../../../types/helperTypes';
 
 /**
  * A required boolean field which may be used in a Document.
- * @remarks
+ */
+export const BOOLEAN_FIELD: BooleanField;
+/**
  * Property type: `boolean`
- * Constructor type: `boolean | undefined | null`
+ * Constructor type: `boolean | null | undefined`
  * Default: `false`
  */
-export declare const BOOLEAN_FIELD: BooleanField;
 interface BooleanField extends DocumentField<boolean> {
   type: typeof Boolean;
   required: true;
@@ -19,11 +20,12 @@ interface BooleanField extends DocumentField<boolean> {
 
 /**
  * A standard string color field which may be used in a Document.
- * @remarks
- * Property type: `string | undefined | null`
- * Constructor type: `string | undefined | null`
  */
-export declare const COLOR_FIELD: ColorField;
+export const COLOR_FIELD: ColorField;
+/**
+ * Property type: `string | null | undefined`
+ * Constructor type: `string | null | undefined`
+ */
 interface ColorField extends DocumentField<string> {
   type: typeof String;
   required: false;
@@ -34,11 +36,12 @@ interface ColorField extends DocumentField<string> {
 
 /**
  * A standard string field for an image file path which may be used in a Document.
- * @remarks
- * Property type: `string | undefined | null`
- * Constructor type: `string | undefined | null`
  */
-export declare const IMAGE_FIELD: ImageField;
+export const IMAGE_FIELD: ImageField;
+/**
+ * Property type: `string | null | undefined`
+ * Constructor type: `string | null | undefined`
+ */
 interface ImageField extends DocumentField<string> {
   type: typeof String;
   required: false;
@@ -49,11 +52,12 @@ interface ImageField extends DocumentField<string> {
 
 /**
  * A standard string field for a video or image file path may be used in a Document.
- * @remarks
- * Property type: `string | undefined | null`
- * Constructor type: `string | undefined | null`
  */
-export declare const VIDEO_FIELD: VideoField;
+export const VIDEO_FIELD: VideoField;
+/**
+ * Property type: `string | null | undefined`
+ * Constructor type: `string | null | undefined`
+ */
 interface VideoField extends DocumentField<string> {
   type: typeof String;
   required: false;
@@ -64,11 +68,12 @@ interface VideoField extends DocumentField<string> {
 
 /**
  * A standard string field for an audio file path which may be used in a Document.
- * @remarks
- * Property type: `string | undefined | null`
- * Constructor type: `string | undefined | null`
  */
-export declare const AUDIO_FIELD: AudioField;
+export const AUDIO_FIELD: AudioField;
+/**
+ * Property type: `string | null | undefined`
+ * Constructor type: `string | null | undefined`
+ */
 interface AudioField extends DocumentField<string> {
   type: typeof String;
   required: false;
@@ -79,11 +84,12 @@ interface AudioField extends DocumentField<string> {
 
 /**
  * A standard integer field which may be used in a Document.
- * @remarks
- * Property type: `number | undefined`
- * Constructor type: `number | undefined | null`
  */
-export declare const INTEGER_FIELD: IntegerField;
+export const INTEGER_FIELD: IntegerField;
+/**
+ * Property type: `number | undefined`
+ * Constructor type: `number | null | undefined`
+ */
 interface IntegerField extends DocumentField<number> {
   type: typeof Number;
   required: false;
@@ -93,12 +99,13 @@ interface IntegerField extends DocumentField<number> {
 
 /**
  * A string field which contains serialized JSON data that may be used in a Document.
- * @remarks
- * Property type: `string | undefined`
- * Constructor type: `string | object | undefined | null`
  */
-export declare const JSON_FIELD: JSONField;
-interface JSONField extends DocumentField<string> {
+export const JSON_FIELD: JsonField;
+/**
+ * Property type: `string | undefined`
+ * Constructor type: `string | object | null | undefined`
+ */
+interface JsonField extends DocumentField<string> {
   type: typeof String;
   required: false;
   clean: (s: unknown) => string;
@@ -108,11 +115,12 @@ interface JSONField extends DocumentField<string> {
 
 /**
  * A non-negative integer field which may be used in a Document.
- * @remarks
- * Property type: `number | undefined`
- * Constructor type: `number | undefined | null`
  */
-export declare const NONNEGATIVE_INTEGER_FIELD: NonnegativeIntegerField;
+export const NONNEGATIVE_INTEGER_FIELD: NonnegativeIntegerField;
+/**
+ * Property type: `number | undefined`
+ * Constructor type: `number | null | undefined`
+ */
 interface NonnegativeIntegerField extends DocumentField<number> {
   type: typeof Number;
   required: false;
@@ -124,11 +132,12 @@ interface NonnegativeIntegerField extends DocumentField<number> {
  * A non-negative integer field which may be used in a Document.
  *
  * @remarks The validation actually checks for `> 0`, the JSDoc is incorrect in foundry.
- * @remarks
- * Property type: `number | undefined`
- * Constructor type: `number | undefined | null`
  */
-export declare const POSITIVE_INTEGER_FIELD: PositiveIntegerField;
+export const POSITIVE_INTEGER_FIELD: PositiveIntegerField;
+/**
+ * Property type: `number | undefined`
+ * Constructor type: `number | null | undefined`
+ */
 interface PositiveIntegerField extends DocumentField<number> {
   type: typeof Number;
   required: false;
@@ -138,25 +147,27 @@ interface PositiveIntegerField extends DocumentField<number> {
 
 /**
  * A template for a required inner-object field which may be used in a Document.
- * @remarks
+ */
+export const OBJECT_FIELD: ObjectField;
+/**
  * Property type: `object`
- * Constructor type: `object | undefined | null`
+ * Constructor type: `object | null | undefined`
  * Default `{}`
  */
-export declare const OBJECT_FIELD: ObjectField;
 interface ObjectField extends DocumentField<object> {
   type: typeof Object;
-  default: {};
+  default: Record<string, never>;
   required: true;
 }
 
 /**
  * An optional string field which may be included by a Document.
- * @remarks
- * Property type: `string | undefined`
- * Constructor type: `string | undefined | null`
  */
-export declare const STRING_FIELD: StringField;
+export const STRING_FIELD: StringField;
+/**
+ * Property type: `string | undefined`
+ * Constructor type: `string | null | undefined`
+ */
 interface StringField extends DocumentField<string> {
   type: typeof String;
   required: false;
@@ -165,11 +176,12 @@ interface StringField extends DocumentField<string> {
 
 /**
  * An optional numeric field which may be included in a Document.
- * @remarks
- * Property type: `number | undefined | null`
- * Constructor type: `number | undefined | null`
  */
-export declare const NUMERIC_FIELD: NumericField;
+export const NUMERIC_FIELD: NumericField;
+/**
+ * Property type: `number | null | undefined`
+ * Constructor type: `number | null | undefined`
+ */
 interface NumericField extends DocumentField<number> {
   type: typeof Number;
   required: false;
@@ -178,12 +190,13 @@ interface NumericField extends DocumentField<number> {
 
 /**
  * A required numeric field which may be included in a Document and may not be null.
- * @remarks
+ */
+export const REQUIRED_NUMBER: RequiredNumber;
+/**
  * Property type: `number`
- * Constructor type: `number | undefined | null`
+ * Constructor type: `number | null | undefined`
  * Default: `0`
  */
-export declare const REQUIRED_NUMBER: RequiredNumber;
 interface RequiredNumber extends DocumentField<number> {
   type: typeof Number;
   required: true;
@@ -193,13 +206,14 @@ interface RequiredNumber extends DocumentField<number> {
 
 /**
  * A field used to designate a non-negative number
- * @remarks
+ */
+export const NONNEGATIVE_NUMBER_FIELD: NonnegativeNumberField;
+/**
  * Property type: `number`
- * Constructor type: `number | undefined | null`
+ * Constructor type: `number | null | undefined`
  * Default: `0`
  */
-export declare const NONNEGATIVE_NUMBER_FIELD: NonNegativeNumberField;
-interface NonNegativeNumberField extends DocumentField<number> {
+interface NonnegativeNumberField extends DocumentField<number> {
   type: typeof Number;
   required: true;
   nullable: false;
@@ -210,11 +224,12 @@ interface NonNegativeNumberField extends DocumentField<number> {
 
 /**
  * A required numeric field which must be a positive finite value that may be included in a Document.
- * @remarks
+ */
+export const REQUIRED_POSITIVE_NUMBER: RequiredPositiveNumber;
+/**
  * Property type: `number`
  * Constructor type: `number`
  */
-export declare const REQUIRED_POSITIVE_NUMBER: RequiredPositiveNumber;
 interface RequiredPositiveNumber extends DocumentField<number> {
   type: typeof Number;
   required: true;
@@ -225,12 +240,13 @@ interface RequiredPositiveNumber extends DocumentField<number> {
 
 /**
  * A required numeric field which represents an angle of rotation in degrees between 0 and 360.
- * @remarks
+ */
+export const ANGLE_FIELD: AngleField;
+/**
  * Property type: `number`
- * Constructor type: `number | undefined | null`
+ * Constructor type: `number | null | undefined`
  * Default: `360`
  */
-export declare const ANGLE_FIELD: AngleField;
 interface AngleField extends DocumentField<number> {
   type: typeof Number;
   required: true;
@@ -243,12 +259,13 @@ interface AngleField extends DocumentField<number> {
 
 /**
  * A required numeric field which represents a uniform number between 0 and 1.
- * @remarks
+ */
+export const ALPHA_FIELD: AlphaField;
+/**
  * Property type: `number`
- * Constructor type: `number | undefined | null`
+ * Constructor type: `number | null | undefined`
  * Default: `1`
  */
-export declare const ALPHA_FIELD: AlphaField;
 interface AlphaField extends DocumentField<number> {
   type: typeof Number;
   required: true;
@@ -260,11 +277,12 @@ interface AlphaField extends DocumentField<number> {
 
 /**
  * A string field which requires a non-blank value and may not be null.
- * @remarks
+ */
+export const REQUIRED_STRING: RequiredString;
+/**
  * Property type: `string`
  * Constructor type: `string`
  */
-export declare const REQUIRED_STRING: RequiredString;
 interface RequiredString extends DocumentField<string> {
   type: typeof String;
   required: true;
@@ -274,12 +292,13 @@ interface RequiredString extends DocumentField<string> {
 
 /**
  * A string field which is required, but may be left blank as an empty string.
- * @remarks
- * Property type: `string`
- * Constructor type: `string | undefined | null`
- * Default: `''`
  */
-export declare const BLANK_STRING: BlankString;
+export const BLANK_STRING: BlankString;
+/**
+ * Property type: `string`
+ * Constructor type: `string | null | undefined`
+ * Default: `""`
+ */
 interface BlankString extends DocumentField<string> {
   type: typeof String;
   required: true;
@@ -290,12 +309,13 @@ interface BlankString extends DocumentField<string> {
 
 /**
  * A field used for integer sorting of a Document relative to its siblings
- * @remarks
+ */
+export const INTEGER_SORT_FIELD: IntegerSortField;
+/**
  * Property type: `number`
- * Constructor type: `number | undefined | null`
+ * Constructor type: `number | null | undefined`
  * Default: `0`
  */
-export declare const INTEGER_SORT_FIELD: IntegerSortField;
 interface IntegerSortField extends DocumentField<number> {
   type: typeof Number;
   required: true;
@@ -306,12 +326,13 @@ interface IntegerSortField extends DocumentField<number> {
 
 /**
  * A numeric timestamp field which may be used in a Document.
- * @remarks
- * Property type: `number | undefined`
- * Constructor type: `number | undefined | null`
- * Default: `Date.now`
  */
-export declare const TIMESTAMP_FIELD: TimestampField;
+export const TIMESTAMP_FIELD: TimestampField;
+/**
+ * Property type: `number | undefined`
+ * Constructor type: `number | null | undefined`
+ * Default: `Date.now()`
+ */
 interface TimestampField extends DocumentField<number> {
   type: typeof Number;
   required: false;
@@ -328,12 +349,13 @@ declare function _validateId(id: string | null): boolean;
 
 /**
  * The standard identifier for a Document.
- * @remarks
+ */
+export const DOCUMENT_ID: DocumentId;
+/**
  * Property type: `string | null`
- * Constructor type: `string | undefined | null`
+ * Constructor type: `string | null | undefined`
  * Default: `null`
  */
-export declare const DOCUMENT_ID: DocumentId;
 interface DocumentId extends DocumentField<string | null> {
   type: typeof String;
   required: true;
@@ -345,12 +367,13 @@ interface DocumentId extends DocumentField<string | null> {
 
 /**
  * The standard permissions object which may be included by a Document.
- * @remarks
+ */
+export const DOCUMENT_PERMISSIONS: DocumentPermissions;
+/**
  * Property type: `Partial<Record<string, DOCUMENT_PERMISSION_LEVELS>>`
- * Constructor type: `Partial<Record<string, DOCUMENT_PERMISSION_LEVELS>> | undefined | null`
+ * Constructor type: `Partial<Record<string, DOCUMENT_PERMISSION_LEVELS>> | null | undefined`
  * Default: `{ default: DOCUMENT_PERMISSION_LEVELS.NONE }`
  */
-export declare const DOCUMENT_PERMISSIONS: DocumentPermissions;
 interface DocumentPermissions extends DocumentField<Partial<Record<string, DOCUMENT_PERMISSION_LEVELS>>> {
   type: typeof Object;
   required: true;
@@ -379,9 +402,22 @@ interface ForeignDocumentFieldOptions {
 /**
  * Create a foreign key field which references a primary Document id
  */
-export declare function foreignDocumentField<T extends ForeignDocumentFieldOptions>(
-  options: T
-): ForeignDocumentField<T>;
+export function foreignDocumentField<T extends ForeignDocumentFieldOptions>(options: T): ForeignDocumentField<T>;
+/**
+ * Default config:
+ * ```
+ * {
+ *   type: String,
+ *   required: false,
+ *   nullable: true,
+ *   default: null
+ * }
+ * ```
+ * With default config:
+ * Property type: `string | null`
+ * Constructor type: `ForeignDocument | string | null | undefined`
+ * Default: `null`
+ */
 interface ForeignDocumentField<T extends ForeignDocumentFieldOptions> extends DocumentField<string | null> {
   type: typeof String;
   required: T extends {
@@ -419,13 +455,30 @@ interface EmbeddedCollectionFieldOptions {
  * @param options  - Additional field options
  *                   (default: `{}`)
  */
-export declare function embeddedCollectionField<
+export function embeddedCollectionField<
   ConcreteDocumentConstructor extends { readonly documentName: string } & ConstructorOf<Document<any, any>>,
   Options extends EmbeddedCollectionFieldOptions
 >(
   document: ConcreteDocumentConstructor,
   options?: Options
 ): EmbeddedCollectionField<ConcreteDocumentConstructor, Options>;
+/**
+ * Default config:
+ * ```
+ * {
+ *   type: {
+ *     [documentName]: DocumentConstructor
+ *   },
+ *   required: true,
+ *   default: [],
+ *   isCollection: true
+ * }
+ * ```
+ * With default config:
+ * Property type: `EmbeddedCollection<DocumentConstructor, ParentDocumentData>`
+ * Constructor type: `DocumentConstructorData[] | null | undefined`
+ * Default: `new EmbeddedCollection(DocumentData, [], DocumentConstructor)`
+ */
 // TODO: Improve
 interface EmbeddedCollectionField<
   ConcreteDocumentConstructor extends ConstructorOf<Document<any, any>>,
@@ -441,9 +494,22 @@ interface EmbeddedCollectionField<
  * A special field which contains a data object defined from the game System model.
  * @param document - The Document class definition
  */
-export declare function systemDataField<
+export function systemDataField<
   DocumentSpecifier extends { readonly documentName: keyof Game.SystemData<any>['model'] }
 >(document: DocumentSpecifier): SystemDataField;
+/**
+ * Default config:
+ * ```
+ * {
+ *   type: Object,
+ *   required: true,
+ *   default: object // template object of object type from template.json
+ * }
+ * ```
+ * Property type: `object`
+ * Constructor type: `object | null | undefined`
+ * Default: `{}`
+ */
 // TODO: Improve
 interface SystemDataField extends DocumentField<any> {
   type: typeof Object;
@@ -454,7 +520,7 @@ interface SystemDataField extends DocumentField<any> {
 /**
  * Return a document field which is a modification of a static field type
  */
-export declare function field<T extends DocumentField<any>, U extends Partial<DocumentField<any>>>(
+export function field<T extends DocumentField<any>, U extends Partial<DocumentField<any>>>(
   field: T,
   options?: U
 ): FieldReturnType<T, U>;

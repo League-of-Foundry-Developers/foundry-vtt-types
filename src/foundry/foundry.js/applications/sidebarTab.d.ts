@@ -8,7 +8,7 @@ declare abstract class SidebarTab<
   constructor(...args: ConstructorParameters<typeof Application>);
   /**
    * The base name of this sidebar tab
-   * @defaultValue `''`
+   * @defaultValue `""`
    */
   tabName: string;
 
