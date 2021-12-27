@@ -480,6 +480,18 @@ declare global {
       ) => boolean | void;
 
       /**
+       * A hook event that fires when a stack of Cards are returned to the decks they originally came from.
+       * @param origin   - The origin Cards document.
+       * @param returned - The cards being returned.
+       * @param context  - Additional context which describes the operation.
+       */
+      returnCards: (
+        origin: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
+        returned: InstanceType<ConfiguredDocumentClassForName<'Card'>>[],
+        context: Cards.ReturnContext
+      ) => boolean | void;
+
+      /**
        * A hook event that fires when the AV settings are changed.
        * @param settings - The AVSettings manager
        * @param changed  - The delta of the settings that have been changed

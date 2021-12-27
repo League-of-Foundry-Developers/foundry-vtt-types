@@ -10,9 +10,8 @@ expectType<string>(card.img);
 expectType<string>(card.name);
 expectType<Cards | undefined | null>(card.source);
 expectType<boolean>(card.isHome);
-expectType<boolean>(card.isHome);
+expectType<boolean>(card.showFace);
 expectType<boolean>(card.hasNextFace);
-expectType<boolean>(card.hasPreviousFace);
 expectType<boolean>(card.hasPreviousFace);
 
 // flip

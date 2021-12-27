@@ -16,6 +16,12 @@ declare global {
     get back(): foundry.data.CardFaceData;
 
     /**
+     * @defaultValue `undefined`
+     * @internal
+     */
+    protected _back?: foundry.data.CardFaceData | undefined;
+
+    /**
      * The current card face
      */
     get face(): foundry.data.CardFaceData | null;

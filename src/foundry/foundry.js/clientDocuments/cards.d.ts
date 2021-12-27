@@ -351,6 +351,7 @@ declare global {
        * Modifications to make to each Card as part of the shuffle operation,
        * for example the displayed face
        * @defaultValue `{}`
+       * @remarks This is not actually used by {@link Cards.shuffle}.
        */
       updateData?: DeepPartial<ConstructorDataType<foundry.data.CardData>> | undefined;
     }
@@ -363,6 +364,21 @@ declare global {
        * @defaultValue `{}`
        */
       updateData?: DeepPartial<ConstructorDataType<foundry.data.CardData>> | undefined;
+    }
+
+    /** Additional context which describes the operation. */
+    interface ReturnContext {
+      /**
+       * A mapping of Card deck IDs to the update operations that
+       * will be performed on them.
+       */
+      toUpdate: Record<string, DeepPartial<ConstructorDataType<foundry.data.CardData>>[]>;
+
+      /**
+       * Card deletion operations to be performed on the origin Cards
+       * document.
+       */
+      fromDelete: string[];
     }
   }
 }
