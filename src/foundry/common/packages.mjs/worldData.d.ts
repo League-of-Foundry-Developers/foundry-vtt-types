@@ -33,7 +33,7 @@ interface WorldDataProperties extends Omit<PackageDataProperties, 'system'> {
 
   /**
    * The version of the game system for which this world has been migrated
-   * @defaultValue `game.system?.data.version ?? ""`
+   * @defaultValue `"0"`
    */
   systemVersion: string;
 }
@@ -59,7 +59,7 @@ interface WorldDataConstructorData extends Omit<PackageDataConstructorData, 'sys
 
   /**
    * The version of the game system for which this world has been migrated
-   * @defaultValue `game.system?.data.version ?? ""`
+   * @defaultValue `"0"`
    */
   systemVersion?: string | null | undefined;
 }

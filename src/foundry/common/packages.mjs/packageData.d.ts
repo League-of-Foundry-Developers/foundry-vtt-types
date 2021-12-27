@@ -1,5 +1,6 @@
 import { FieldReturnType, PropertiesToSource } from '../../../types/helperTypes';
 import { DocumentData } from '../abstract/module.mjs';
+import type { PACKAGE_AVAILABILITY_CODES } from '../constants.mjs.js';
 import * as fields from '../data/fields.mjs';
 import { PackageAuthorData, PackageAuthorDataConstructorData } from './packageAuthorData';
 import { PackageCompendiumData, PackageCompendiumDataConstructorData } from './packageCompendiumData';
@@ -310,4 +311,12 @@ export class PackageData<
 
   /** @override */
   _initializeSource(data: ConstructorData): PropertiesToSource<PackageDataProperties>;
+
+  /**
+   * Determine the availability a package based on the version numbers of its dependencies.
+   */
+  static checkAvailability(
+    minimumCoreVersion: number | string | null | undefined,
+    compatibleCoreVersion: number | string | null | undefined
+  ): PACKAGE_AVAILABILITY_CODES;
 }
