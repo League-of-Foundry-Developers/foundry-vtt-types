@@ -491,7 +491,11 @@ export class TokenData extends DocumentData<
    */
   static DEFAULT_ICON: string;
 
-  /** @override */
+  /**
+   * Migrate TokenData attributes to the new inner LightData structure.
+   * This can be safely removed after several major versions have passed. Maybe V12?
+   * @override
+   */
   _initializeSource(data: TokenDataConstructorData): PropertiesToSource<TokenDataProperties>;
 
   /** @override */
