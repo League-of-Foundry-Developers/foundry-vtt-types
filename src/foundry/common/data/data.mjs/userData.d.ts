@@ -38,18 +38,29 @@ interface UserDataSchema extends DocumentSchema {
 }
 
 interface UserDataProperties {
-  /** @defaultValue `null` */
+  /**
+   * The _id which uniquely identifies this User document.
+   * @defaultValue `null`
+   */
   _id: string | null;
 
+  /** The user's avatar image. */
   avatar: string | null | undefined;
 
+  /** A linked Actor document that is this user's impersonated character. */
   character: string | null;
 
+  /** A color to represent this user. */
   color: string | null | undefined;
 
-  /** @defaultValue `{}` */
+  /**
+   * A mapping of hotbar slot number to Macro id that represents this user's hotbar
+   * configuration.
+   * @defaultValue `{}`
+   */
   hotbar: Record<number | `${number}`, string>;
 
+  /** The user's name. */
   name: string;
 
   /** @defaultValue `""` */
@@ -57,29 +68,49 @@ interface UserDataProperties {
 
   passwordSalt: string | undefined;
 
-  /** @defaultValue `{}` */
+  /**
+   * The user's individual permission configuration, see CONST.USER_PERMISSIONS.
+   * @defaultValue `{}`
+   */
   permissions: Partial<Record<keyof typeof foundry.CONST.USER_PERMISSIONS, boolean>>;
 
-  /** @defaultValue `foundry.CONST.USER_ROLES.PLAYER` */
+  /**
+   * The user's role, see CONST.USER_ROLES.
+   * @defaultValue `foundry.CONST.USER_ROLES.PLAYER`
+   */
   role: foundry.CONST.USER_ROLES;
 
-  /** @defaultValue `{}` */
+  /**
+   * An object of optional key/value flags.
+   * @defaultValue `{}`
+   */
   flags: ConfiguredFlags<'User'>;
 }
 
 interface UserDataConstructorData {
-  /** @defaultValue `null` */
+  /**
+   * The _id which uniquely identifies this User document.
+   * @defaultValue `null`
+   */
   _id?: string | null | undefined;
 
+  /** The user's avatar image. */
   avatar?: string | null | undefined;
 
+  /** A linked Actor document that is this user's impersonated character. */
   character?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseActor>> | string | null | undefined;
 
+  /** A color to represent this user. */
   color?: string | null | undefined;
 
-  /** @defaultValue `{}` */
+  /**
+   * A mapping of hotbar slot number to Macro id that represents this user's hotbar
+   * configuration.
+   * @defaultValue `{}`
+   */
   hotbar?: Record<number | `${number}`, string> | null | undefined;
 
+  /** The user's name. */
   name: string;
 
   /** @defaultValue `""` */
@@ -87,13 +118,22 @@ interface UserDataConstructorData {
 
   passwordSalt?: string | null | undefined;
 
-  /** @defaultValue `{}` */
+  /**
+   * The user's individual permission configuration, see CONST.USER_PERMISSIONS.
+   * @defaultValue `{}`
+   */
   permissions?: Partial<Record<keyof typeof foundry.CONST.USER_PERMISSIONS, boolean>> | null | undefined;
 
-  /** @defaultValue `foundry.CONST.USER_ROLES.PLAYER` */
+  /**
+   * The user's role, see CONST.USER_ROLES.
+   * @defaultValue `foundry.CONST.USER_ROLES.PLAYER`
+   */
   role?: foundry.CONST.USER_ROLES | null | undefined;
 
-  /** @defaultValue `{}` */
+  /**
+   * An object of optional key/value flags.
+   * @defaultValue `{}`
+   */
   flags?: ConfiguredFlags<'User'> | null | undefined;
 }
 

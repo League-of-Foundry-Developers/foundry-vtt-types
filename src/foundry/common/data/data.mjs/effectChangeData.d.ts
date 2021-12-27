@@ -1,4 +1,4 @@
-import { PropertiesToSource } from '../../../../types/helperTypes';
+import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import { BaseActiveEffect } from '../../documents.mjs';
 import * as fields from '../fields.mjs';
@@ -6,13 +6,7 @@ import * as fields from '../fields.mjs';
 interface EffectChangeDataSchema extends DocumentSchema {
   key: fields.BlankString;
   value: fields.BlankString;
-  mode: DocumentField<number> & {
-    type: typeof Number;
-    required: true;
-    default: typeof foundry.CONST.ACTIVE_EFFECT_MODES.ADD;
-    validate: (m: unknown) => boolean;
-    validationError: 'Invalid mode specified for change in ActiveEffectData';
-  };
+  mode: FieldReturnType<fields.NonnegativeNumberField, { default: typeof foundry.CONST.ACTIVE_EFFECT_MODES.ADD }>;
   priority: fields.NumericField;
 }
 

@@ -22,7 +22,7 @@ interface MacroDataSchema extends DocumentSchema {
     type: typeof documents.BaseUser;
     default: () => Game['user'];
   }>;
-  img: FieldReturnType<fields.ImageField, { required: true; default: typeof foundry.CONST.DEFAULT_MACRO_ICON }>;
+  img: FieldReturnType<fields.ImageField, { required: true; default: typeof MacroData.DEFAULT_ICON }>;
   scope: DocumentField<foundry.CONST.MACRO_SCOPES> & {
     type: String;
     required: true;
@@ -186,6 +186,12 @@ export class MacroData extends DocumentData<
 
   /** @override */
   static defineSchema(): MacroDataSchema;
+
+  /**
+   * The default icon used for newly created Macro documents.
+   * @defaultValue `"icons/svg/dice-target.svg"`
+   */
+  static DEFAULT_ICON: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

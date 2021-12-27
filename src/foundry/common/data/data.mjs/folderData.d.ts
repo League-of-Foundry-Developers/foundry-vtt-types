@@ -39,7 +39,7 @@ interface FolderDataProperties {
   name: string;
 
   /**
-   * The document type which this Folder contains, from CONST.FOLDER_ENTITY_TYPES
+   * The document type which this Folder contains, from CONST.FOLDER_DOCUMENT_TYPES
    */
   type: foundry.CONST.FOLDER_DOCUMENT_TYPES;
 
@@ -91,7 +91,7 @@ interface FolderDataConstructorData {
   name: string;
 
   /**
-   * The document type which this Folder contains, from CONST.FOLDER_ENTITY_TYPES
+   * The document type which this Folder contains, from CONST.FOLDER_DOCUMENT_TYPES
    */
   type: foundry.CONST.FOLDER_DOCUMENT_TYPES;
 

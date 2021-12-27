@@ -11,6 +11,14 @@ interface WallDataSchema extends DocumentSchema {
     validate: (c: unknown) => c is [x0: number, y0: number, x1: number, y1: number];
     validationError: 'Invalid {name} coordinates provided which must be a length-4 array of finite numbers';
   };
+  light: FieldReturnType<
+    fields.RequiredNumber,
+    {
+      default: typeof foundry.CONST.WALL_SENSE_TYPES.NORMAL;
+      validate: (v: unknown) => v is foundry.CONST.WALL_SENSE_TYPES;
+      validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_SENSE_TYPES';
+    }
+  >;
   move: FieldReturnType<
     fields.RequiredNumber,
     {
@@ -19,7 +27,7 @@ interface WallDataSchema extends DocumentSchema {
       validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_MOVEMENT_TYPES';
     }
   >;
-  sense: FieldReturnType<
+  sight: FieldReturnType<
     fields.RequiredNumber,
     {
       default: typeof foundry.CONST.WALL_SENSE_TYPES.NORMAL;
@@ -75,18 +83,25 @@ interface WallDataProperties {
   c: [x0: number, y0: number, x1: number, y1: number];
 
   /**
+   * The illumination restriction type of this wall
+   * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
+   */
+  light: foundry.CONST.WALL_SENSE_TYPES;
+
+  /**
    * The movement restriction type of this wall
    * @defaultValue `CONST.WALL_MOVEMENT_TYPES.NORMAL`
    */
   move: foundry.CONST.WALL_MOVEMENT_TYPES;
 
   /**
-   * The sensory restriction type of this wall
+   * The visual restriction type of this wall
    * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
    */
-  sense: foundry.CONST.WALL_SENSE_TYPES;
+  sight: foundry.CONST.WALL_SENSE_TYPES;
 
   /**
+   * The auditory restriction type of this wall
    * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
    */
   sound: foundry.CONST.WALL_SENSE_TYPES;
@@ -129,18 +144,25 @@ interface WallDataConstructorData {
   c: [x0: number, y0: number, x1: number, y1: number];
 
   /**
+   * The illumination restriction type of this wall
+   * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
+   */
+  light?: foundry.CONST.WALL_SENSE_TYPES | null | undefined;
+
+  /**
    * The movement restriction type of this wall
    * @defaultValue `CONST.WALL_MOVEMENT_TYPES.NORMAL`
    */
   move?: foundry.CONST.WALL_MOVEMENT_TYPES | null | undefined;
 
   /**
-   * The sensory restriction type of this wall
+   * The visual restriction type of this wall
    * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
    */
-  sense?: foundry.CONST.WALL_SENSE_TYPES | null | undefined;
+  sight?: foundry.CONST.WALL_SENSE_TYPES | null | undefined;
 
   /**
+   * The auditory restriction type of this wall
    * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
    */
   sound?: foundry.CONST.WALL_SENSE_TYPES | null | undefined;
@@ -191,6 +213,9 @@ export class WallData extends DocumentData<
    * @remarks This override does not exist in foundry but is added here to prepend runtime errors.
    */
   constructor(data: WallDataConstructorData, document?: documents.BaseWall | null);
+
+  /** @override */
+  _initializeSource(data?: WallDataConstructorData): PropertiesToSource<WallDataProperties>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

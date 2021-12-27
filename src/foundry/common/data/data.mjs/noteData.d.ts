@@ -13,13 +13,7 @@ interface NoteDataSchema extends DocumentSchema {
   entryId: fields.ForeignDocumentField<{ type: typeof documents.BaseJournalEntry; required: false }>;
   x: fields.RequiredNumber;
   y: fields.RequiredNumber;
-  icon: FieldReturnType<
-    fields.ImageField,
-    {
-      required: true;
-      default: typeof foundry.CONST.DEFAULT_NOTE_ICON;
-    }
-  >;
+  icon: FieldReturnType<fields.ImageField, { required: true; default: typeof NoteData.DEFAULT_ICON }>;
   iconSize: FieldReturnType<
     fields.RequiredNumber,
     {
@@ -226,6 +220,12 @@ export class NoteData extends DocumentData<
 > {
   /** @override */
   static defineSchema(): NoteDataSchema;
+
+  /**
+   * The default icon used for newly created Note documents.
+   * @defaultValue `"icons/svg/book.svg"`
+   */
+  static DEFAULT_ICON: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

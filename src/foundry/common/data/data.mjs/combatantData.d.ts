@@ -7,6 +7,7 @@ interface CombatantDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
   actorId: fields.ForeignDocumentField<{ type: typeof documents.BaseActor }>;
   tokenId: fields.ForeignDocumentField<{ type: typeof documents.BaseToken }>;
+  sceneId: fields.ForeignDocumentField<{ type: typeof documents.BaseScene }>;
   name: fields.StringField;
   img: fields.ImageField;
   initiative: fields.NumericField;
@@ -33,6 +34,9 @@ interface CombatantDataProperties {
    * @defaultValue `null`
    */
   tokenId: string | null;
+
+  /** @defaultValue `null` */
+  sceneId: string | null;
 
   /** A customized name which replaces the name of the Token in the tracker */
   name: string | undefined;
@@ -80,6 +84,9 @@ interface CombatantDataConstructorData {
    * @defaultValue `null`
    */
   tokenId?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseToken>> | string | null | undefined;
+
+  /** @defaultValue `null` */
+  sceneId?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseScene>> | string | null | undefined;
 
   /** A customized name which replaces the name of the Token in the tracker */
   name?: string | null | undefined;

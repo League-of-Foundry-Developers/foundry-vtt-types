@@ -8,8 +8,9 @@ expectType<foundry.data.WallData>(
   new foundry.data.WallData({
     _id: null,
     c: [10, 20, 30, 40],
+    light: null,
     move: null,
-    sense: null,
+    sight: null,
     sound: null,
     dir: null,
     door: null,
@@ -21,8 +22,9 @@ expectType<foundry.data.WallData>(
   new foundry.data.WallData({
     _id: undefined,
     c: [10, 20, 30, 40],
+    light: undefined,
     move: undefined,
-    sense: undefined,
+    sight: undefined,
     sound: undefined,
     dir: undefined,
     door: undefined,
@@ -33,13 +35,20 @@ expectType<foundry.data.WallData>(
 expectType<foundry.data.WallData>(
   new foundry.data.WallData({
     c: [10, 20, 30, 40],
+    light: foundry.CONST.WALL_SENSE_TYPES.NORMAL,
     move: foundry.CONST.WALL_MOVEMENT_TYPES.NORMAL,
-    sense: foundry.CONST.WALL_SENSE_TYPES.NORMAL,
+    sight: foundry.CONST.WALL_SENSE_TYPES.NORMAL,
     sound: foundry.CONST.WALL_SENSE_TYPES.NORMAL,
     dir: foundry.CONST.WALL_DIRECTIONS.BOTH,
     door: foundry.CONST.WALL_DOOR_TYPES.NONE,
     ds: foundry.CONST.WALL_DOOR_STATES.CLOSED,
     flags: {}
+  })
+);
+expectError(
+  new foundry.data.WallData({
+    c: [10, 20, 30, 40],
+    light: 9999
   })
 );
 expectError(
@@ -51,7 +60,7 @@ expectError(
 expectError(
   new foundry.data.WallData({
     c: [10, 20, 30, 40],
-    sense: 9999
+    sight: 9999
   })
 );
 expectError(

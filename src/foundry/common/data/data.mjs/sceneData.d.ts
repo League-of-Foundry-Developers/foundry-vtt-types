@@ -321,6 +321,8 @@ interface SceneDataProperties {
   playlist: string | null;
 
   /**
+   * A linked PlaylistSound document from the selected playlist that will
+   * begin automatically playing when this Scene becomes active.
    * @defaultValue `null`
    */
   playlistSound: string | null;
@@ -350,7 +352,7 @@ interface SceneDataProperties {
   sort: number;
 
   /**
-   * An object which configures user permissions to this Actor
+   * An object which configures user permissions to this Scene
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
   permission: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>>;
@@ -585,6 +587,8 @@ interface SceneDataConstructorData {
   playlist?: InstanceType<ConfiguredDocumentClass<typeof documents.BasePlaylist>> | string | null | undefined;
 
   /**
+   * A linked PlaylistSound document from the selected playlist that will
+   * begin automatically playing when this Scene becomes active.
    * @defaultValue `null`
    */
   playlistSound?: InstanceType<ConfiguredDocumentClass<typeof documents.BasePlaylistSound>> | string | null | undefined;
@@ -614,7 +618,7 @@ interface SceneDataConstructorData {
   sort?: number | null | undefined;
 
   /**
-   * An object which configures user permissions to this Actor
+   * An object which configures user permissions to this Scene
    * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
    */
   permission?: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>> | null | undefined;
