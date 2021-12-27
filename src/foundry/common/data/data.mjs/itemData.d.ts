@@ -21,7 +21,7 @@ interface ItemDataSchema extends DocumentSchema {
     validationError: 'The provided Item type must be in the array of types defined by the game system';
   };
   img: FieldReturnType<fields.ImageField, { default: () => typeof ItemData.DEFAULT_ICON }>;
-  data: FieldReturnType<fields.ObjectField, { default: (data: { type: string }) => any }>; // TODO
+  data: fields.SystemDataField;
   effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect>;
   folder: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
   sort: fields.IntegerSortField;
