@@ -1,4 +1,5 @@
 import './actorDirectory';
+import './cardsDirectory';
 import './itemDirectory';
 import './journalDirectory';
 import './macroDirectory';

@@ -106,7 +106,7 @@ export const DEFAULT_MACRO_ICON: 'icons/svg/dice-target.svg';
  */
 export const DOCUMENT_TYPES: readonly [
   'Actor',
-  // 'Cards', // TODO: Add when cards support is added
+  'Cards',
   'ChatMessage',
   'Combat',
   'Item',
@@ -125,7 +125,7 @@ export type DOCUMENT_TYPES = ValueOf<typeof DOCUMENT_TYPES>;
  */
 export const COMPENDIUM_DOCUMENT_TYPES: readonly [
   'Actor',
-  // 'Cards', // TODO: Add when cards support is added
+  'Cards',
   'Item',
   'JournalEntry',
   'Macro',
@@ -209,7 +209,7 @@ export const FOLDER_DOCUMENT_TYPES: readonly [
   'JournalEntry',
   'Playlist',
   'RollTable',
-  // 'Cards', // TODO: Add when cards support is added
+  'Cards',
   'Macro'
 ];
 export type FOLDER_DOCUMENT_TYPES = ValueOf<typeof FOLDER_DOCUMENT_TYPES>;

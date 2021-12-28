@@ -289,6 +289,11 @@ declare global {
     /**
      * @remarks Initialized between the `'setup'` and `'ready'` hook events.
      */
+    cards?: ConfiguredCollectionClassForName<'Cards'>;
+
+    /**
+     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     */
     messages?: ConfiguredCollectionClassForName<'ChatMessage'>;
 
     /**
