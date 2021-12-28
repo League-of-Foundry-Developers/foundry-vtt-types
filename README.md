@@ -17,7 +17,7 @@ TypeScript type definitions for [Foundry Virtual Tabletop](https://foundryvtt.co
 
 We aim to support the latest release of each Foundry VTT version (0.7, 0.8, 9, etc.), starting with 0.7.
 
-At the moment, both version 0.7 and 0.8 are supported. Work on support for version 9 is in progress.
+At the moment, both version 0.7 and 0.8 are fully supported. Version 9 is already partially supported, but there is still a lot to be done. See https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues?q=is%3Aopen+is%3Aissue+label%3A%22foundry+V9%22 to keep track of the progress.
 
 
 ## Installation
@@ -36,10 +36,10 @@ In order to install a specific version run
 npm install --save-dev @league-of-foundry-developers/foundry-vtt-types@<version>
 ```
 
-For example, to install version `0.8.9-9`, run
+For example, to install version `9.238.0`, run
 
 ```sh
-npm install --save-dev @league-of-foundry-developers/foundry-vtt-types@0.8.9-9
+npm install --save-dev @league-of-foundry-developers/foundry-vtt-types@9.238.0
 ```
 
 You can then update foundry-vtt-types using the regular update mechanism for npm
