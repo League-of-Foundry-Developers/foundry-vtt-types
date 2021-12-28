@@ -1,6 +1,8 @@
 import './activeEffect';
 import './actor';
 import './canvasDocuments';
+import './card';
+import './cards';
 import './chatMessage';
 import './combat';
 import './combatant';

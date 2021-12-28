@@ -279,12 +279,14 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    */
   static createDialog<T extends DocumentConstructor>(
     this: T,
-    data?: DeepPartial<
-      | ConstructorDataType<InstanceType<T>['data']>
-      | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
-    >,
-    context?: Pick<DocumentModificationContext, 'parent' | 'pack'> & Partial<Dialog.Options>
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
+    data?:
+      | DeepPartial<
+          | ConstructorDataType<InstanceType<T>['data']>
+          | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
+        >
+      | undefined,
+    context?: (Pick<DocumentModificationContext, 'parent' | 'pack'> & Partial<Dialog.Options>) | undefined
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
 
   /**
    * Present a Dialog form to confirm deletion of this Document.
@@ -292,7 +294,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    *                  (default: `{}`)
    * @returns A Promise which resolves to the deleted Document
    */
-  deleteDialog(options?: Dialog.Options): Promise<this | undefined>;
+  deleteDialog(options?: Partial<Dialog.Options> | undefined): Promise<this | false | null | undefined>;
 
   /**
    * Export document data to a JSON file which can be saved by the client and later imported into a different session.

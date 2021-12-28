@@ -6,7 +6,7 @@ import type { CardDataSource } from '../../../../src/foundry/common/data/data.mj
 import type { CardFaceDataProperties } from '../../../../src/foundry/common/data/data.mjs/cardFaceData.js';
 
 const baseCards = new foundry.documents.BaseCards();
-expectType<EmbeddedCollection<typeof foundry.documents.BaseCard, foundry.data.CardsData>>(baseCards.cards);
+expectType<EmbeddedCollection<typeof Card, foundry.data.CardsData>>(baseCards.cards);
 expectType<CardDataSource>(baseCards.data._source.cards[0]);
 expectType<PropertiesToSource<CardFaceDataProperties>>(baseCards.data._source.cards[0].faces[0]);
 

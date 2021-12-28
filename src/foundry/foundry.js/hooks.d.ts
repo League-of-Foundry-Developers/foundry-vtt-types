@@ -1,5 +1,6 @@
 import {
   ConfiguredDocumentClass,
+  ConfiguredDocumentClassForName,
   ConfiguredObjectClassForName,
   DocumentConstructor,
   ToObjectFalseType
@@ -276,6 +277,20 @@ declare global {
       collapseSidebar: (sidebar: Sidebar, collapsed: boolean) => unknown;
 
       /**
+       * A hook event that fires when Cards are dealt from a deck to other hands
+       * @param origin             - The origin Cards document
+       * @param destinations       - An array of destination Cards documents
+       * @param context            - Additional context which describes the operation
+       * @remarks This is called by {@link Hooks.call}.
+       * @remarks An explicit return value of `false` prevents the operation.
+       */
+      dealCards: (
+        origin: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
+        destinations: InstanceType<ConfiguredDocumentClassForName<'Cards'>>[],
+        context: Cards.DealContext
+      ) => boolean | void;
+
+      /**
        * A hook event that fires when some useful data is dropped onto an ActorSheet.
        * @param actor - The Actor
        * @param sheet - The ActorSheet application
@@ -412,6 +427,20 @@ declare global {
       ) => boolean;
 
       /**
+       * A hook event that fires when Cards are passed from one stack to another
+       * @param origin      - The origin Cards document
+       * @param destination - The destination Cards document
+       * @param context     - Additional context which describes the operation
+       * @remarks This is called by {@link Hooks.call}.
+       * @remarks An explicit return value of `false` prevents the operation.
+       */
+      passCards: (
+        origin: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
+        destination: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
+        context: Cards.DealContext
+      ) => boolean | void;
+
+      /**
        * A hook event that fires when the game is paused or un-paused.
        * @param paused - Is the game now paused (true) or un-paused (false)
        * @remarks This is called by {@link Hooks.callAll}.
@@ -448,6 +477,18 @@ declare global {
           whisperTo: string;
           borderColor?: string;
         }
+      ) => boolean | void;
+
+      /**
+       * A hook event that fires when a stack of Cards are returned to the decks they originally came from.
+       * @param origin   - The origin Cards document.
+       * @param returned - The cards being returned.
+       * @param context  - Additional context which describes the operation.
+       */
+      returnCards: (
+        origin: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
+        returned: InstanceType<ConfiguredDocumentClassForName<'Card'>>[],
+        context: Cards.ReturnContext
       ) => boolean | void;
 
       /**
