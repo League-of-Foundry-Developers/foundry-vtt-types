@@ -161,3 +161,6 @@ export class TableResultData extends DocumentData<
   /** @override */
   static defineSchema(): TableResultDataSchema;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export declare interface TableResultData extends TableResultDataProperties {}
