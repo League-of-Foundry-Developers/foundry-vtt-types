@@ -1,5 +1,6 @@
 export { BaseActiveEffect } from './baseActiveEffect';
 export { BaseActor } from './baseActor';
+export { BaseAdventure } from './baseAdventure';
 export { BaseAmbientLight } from './baseAmbientLight';
 export { BaseAmbientSound } from './baseAmbientSound';
 export { BaseCard } from './baseCard';
