@@ -244,7 +244,7 @@ declare global {
      */
     Cards: {
       /** @defaultValue `CardStacks` */
-      collection: unknown; // FIXME: ConfiguredDocumentClassOrDefault<typeof CardStacks>
+      collection: ConstructorOf<CardStacks>;
 
       /** @defaultValue `Cards` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof Cards>;
@@ -1436,7 +1436,7 @@ declare global {
       actors: ConstructorOf<ActorDirectory>;
 
       /** @defaultValue `CardsDirectory` */
-      cards: ConstructorOf<SidebarTab>; // FIXME ConstructorOf<CardsDirectory>
+      cards: ConstructorOf<CardsDirectory>;
 
       /** @defaultValue `ChatLog` */
       chat: ConstructorOf<ChatLog>;
