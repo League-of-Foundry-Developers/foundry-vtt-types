@@ -507,72 +507,98 @@ declare global {
     }
 
     interface PackageData<T> {
-      type: 'world' | 'system' | 'module';
+      availability: number;
       data: T;
-      id: string;
-      path: string;
-      scripts: string[];
       esmodules: string[];
-      styles: string[];
+      id: string;
       languages: Language[];
+      locked: boolean;
       packs: {
-        name: string;
+        absPath: string;
+        /** @deprecated since V9 */
+        entity: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
         label: string;
+        name: string;
+        package: string;
         path: string;
         private: boolean;
-        entity: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
         system?: string;
-        absPath: string;
-        package: string;
+        type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
       };
-      locked: boolean;
-      availability: number;
+      scripts: string[];
+      styles: string[];
+      type: 'world' | 'system' | 'module';
       unavailable: boolean;
-      _systemUpdateCheckTime: number;
-    }
-
-    interface WorldData<T> extends PackageData<T> {
-      type: 'world';
-    }
-
-    interface SystemData<T> extends PackageData<T> {
-      type: 'system';
-      template: {
-        Actor?: {
-          types: string[];
-          templates?: Partial<Record<string, unknown>>;
-        } & Partial<Record<string, unknown>>;
-        Item?: {
-          types: string[];
-          templates?: Partial<Record<string, unknown>>;
-        } & Partial<Record<string, unknown>>;
-      };
-      entityTypes: { [Key in foundry.CONST.DOCUMENT_TYPES | 'Setting' | 'FogExploration']: string[] };
-      model: {
-        Actor: Partial<Record<string, Partial<Record<string, unknown>>>>;
-        Item: Partial<Record<string, Partial<Record<string, unknown>>>>;
-      };
     }
 
     interface ModuleData<T> extends PackageData<T> {
-      type: 'module';
       active: boolean;
+      path: string;
+      type: 'module';
+    }
+
+    interface SystemData<T> extends PackageData<T> {
+      _systemUpdateCheckTime: number;
+      documentTypes: {
+        [Key in
+          | foundry.CONST.DOCUMENT_TYPES
+          | 'ActiveEffect'
+          | 'Adventure'
+          | 'AmbientLight'
+          | 'AmbientSound'
+          | 'Card'
+          | 'Combatant'
+          | 'Drawing'
+          | 'FogExploration'
+          | 'MeasuredTemplate'
+          | 'Note'
+          | 'PlaylistSound'
+          | 'Setting'
+          | 'TableResult'
+          | 'Tile'
+          | 'Token'
+          | 'Wall']: string[];
+      };
+      model: {
+        Actor: Record<string, Record<string, unknown>>;
+        Cards: Record<string, Record<string, unknown>>;
+        Item: Record<string, Record<string, unknown>>;
+      };
+      path: string;
+      template: {
+        Actor?: {
+          types: string[];
+          templates?: Record<string, unknown>;
+        } & Record<string, unknown>;
+        Item?: {
+          types: string[];
+          templates?: Record<string, unknown>;
+        } & Record<string, unknown>;
+      };
+      type: 'system';
+    }
+
+    interface WorldData<T> extends PackageData<T> {
+      _systemUpdateCheckTime: number;
+      type: 'world';
     }
 
     type Data = {
-      userId: string;
-      /** @deprecated since V9 */
-      version: string;
-      world: WorldData<foundry.packages.WorldData>;
-      system: SystemData<foundry.packages.SystemData>;
-      modules: ModuleData<foundry.packages.ModuleData>[];
-      paused: boolean;
+      activeUsers: string[];
       addresses: {
         local: string;
         remote: string;
+        remoteIsAccessible: boolean;
+      };
+      coreUpdate: {
+        channel: unknown | null;
+        couldReachWebsite: boolean;
+        hasUpdate: boolean;
+        slowResponse: boolean;
+        version: unknown | null;
+        willDisableModules: boolean;
       };
       files: {
-        storages: ('public' | 'data' | 's3')[];
         s3?: {
           endpoint: {
             protocol: string;
@@ -584,28 +610,48 @@ declare global {
             href: string;
           };
           buckets: string[];
-        };
+        } | null;
+        storages: ('public' | 'data' | 's3')[];
       };
+      modules: ModuleData<foundry.packages.ModuleData>[];
       options: {
+        demo: boolean;
         language: string;
         port: number;
         routePrefix: string | null;
         updateChannel: string;
-        demo: boolean;
       };
-      activeUsers: string[];
       packs: {
-        name: string;
+        /** @deprecated since V9 */
+        entity: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
+        index: {
+          _id: string;
+          name: string;
+          type: string;
+        }[];
         label: string;
+        name: string;
+        package: string;
         path: string;
         private: boolean;
-        entity: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
         system?: string;
-        package: string;
-        index: { name: string; type: string; _id: string }[];
+        type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
+      }[];
+      paused: boolean;
+      release: {
+        build: number;
+        channel: 'Stable' | 'Testing' | 'Development' | 'Prototype';
+        download: string;
+        generation: string;
+        notes: string;
+        time: number;
       };
-      coreUpdate: string | null;
+      system: SystemData<foundry.packages.SystemData>;
       systemUpdate: string | null;
+      userId: string;
+      /** @deprecated since V9 */
+      version?: string;
+      world: WorldData<foundry.packages.WorldData>;
     } & {
       [DocumentType in
         | foundry.CONST.DOCUMENT_TYPES
