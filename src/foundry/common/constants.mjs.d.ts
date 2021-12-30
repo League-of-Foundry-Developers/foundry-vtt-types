@@ -721,6 +721,7 @@ export type WALL_DOOR_STATES = ValueOf<typeof WALL_DOOR_STATES>;
  * The wall properties which restrict the way interaction occurs with a specific wall
  */
 export const WALL_RESTRICTION_TYPES: readonly ['light', 'sight', 'sound', 'move'];
+export type WALL_RESTRICTION_TYPES = ValueOf<typeof WALL_RESTRICTION_TYPES>;
 
 /**
  * The types of sensory collision which a Wall may impose
