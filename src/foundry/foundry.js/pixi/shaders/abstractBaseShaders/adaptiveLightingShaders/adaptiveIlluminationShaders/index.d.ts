@@ -1,7 +1,10 @@
+import './bewitchingWaveIlluminationShader';
 import './blackHoleIlluminationShader';
+import './fairyLightIlluminationShader';
 import './ghostLightIlluminationShader';
 import './pulseIlluminationShader';
 import './roilingIlluminationShader';
 import './sunburstIlluminationShader';
 import './torchIlluminationShader';
+import './vortexIlluminationShader';
 import './waveIlluminationShader';

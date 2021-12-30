@@ -1,7 +1,7 @@
 /**
- * Torch animation coloration shader
+ * Pulse animation coloration shader
  */
-declare class TorchColorationShader extends StandardColorationShader {
+declare class PulseColorationShader extends AdaptiveColorationShader {
   static fragmentShader: string;
 
   /**
@@ -9,7 +9,7 @@ declare class TorchColorationShader extends StandardColorationShader {
    * @defaultValue
    * ```typescript
    * Object.assign({}, super.defaultUniforms, {
-   *   ratio: 0
+   *   pulse: 0
    * })
    * ```
    */

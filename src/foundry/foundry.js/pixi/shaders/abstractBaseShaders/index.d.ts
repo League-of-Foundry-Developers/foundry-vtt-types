@@ -1,4 +1,3 @@
-import './standardColorationShader';
-import './standardColorationShaders';
-import './standardIlluminationShader';
-import './standardIlluminationShaders';
+import './adaptiveLightingShader';
+import './adaptiveLightingShaders';
+import './baseSamplerShader';

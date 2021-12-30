@@ -1,6 +1,6 @@
 /**
  * Pulse animation illumination shader
  */
-declare class PulseIlluminationShader extends StandardIlluminationShader {
+declare class PulseIlluminationShader extends AdaptiveIlluminationShader {
   static fragmentShader: string;
 }
