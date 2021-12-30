@@ -384,13 +384,12 @@ declare global {
       init: () => unknown;
 
       /**
-       * A hook event that fires after PointSource shaders have initialized.
-       * @param source        - The PointSource
-       * @param animationType - The animation type
+       * A hook event that fires after LightSource shaders have initialized.
+       * @param source - The LightSource being initialized
        * @remarks This is called by {@link Hooks.callAll}.
-       * @see {@link PointSource#_initializeShaders}
+       * @see {@link LightSource#_initializeShaders}
        */
-      initializePointSourceShaders: (source: PointSource, animationType: string | null) => unknown;
+      initializeLightSourceShaders: (source: LightSource) => unknown;
 
       /**
        * A hook event that fires when the LightingLayer is refreshed.
