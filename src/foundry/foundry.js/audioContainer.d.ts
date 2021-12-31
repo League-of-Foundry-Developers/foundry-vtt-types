@@ -2,7 +2,6 @@
  * An AudioSourceNode container which handles the strategy of node type to use for playback.
  * Used by the Sound interface which controls playback.
  * This class is for internal use only and should not be used by external callers.
- * @internal
  */
 declare class AudioContainer {
   constructor(src: string);
@@ -31,16 +30,11 @@ declare class AudioContainer {
   isBuffer: boolean;
 
   /**
-   * Has the source for this audio container been loaded to a point that playback can begin?
-   * @defaultValue `false`
+   * Whether we have attempted to load the audio node or not, and whether it failed.
+   * @see {@link LOAD_STATES}
+   * @defaultValue `AudioContainer.LOAD_STATES.NONE`
    */
-  loaded: boolean;
-
-  /**
-   * Did the audio source fail to load (a 404 or some other reason).
-   * @defaultValue `false`
-   */
-  failed: boolean;
+  loadState: AudioContainer.LoadStates;
 
   /**
    * Is the audio source currently playing?
@@ -64,6 +58,26 @@ declare class AudioContainer {
    * @defaultValue `10 * 60`
    */
   static MAX_BUFFER_DURATION: number;
+
+  /**
+   * The sequence of container loading states.
+   */
+  static LOAD_STATES: {
+    FAILED: -1;
+    NONE: 0;
+    LOADING: 1;
+    LOADED: 2;
+  };
+
+  /**
+   * Has the audio file been loaded either fully or for streaming.
+   */
+  get loaded(): boolean;
+
+  /**
+   * Did the audio file fail to load.
+   */
+  get failed(): boolean;
 
   /**
    * A reference to the AudioBuffer if the sourceNode is a AudioBufferSourceNode.
@@ -154,4 +168,8 @@ declare class AudioContainer {
    * @internal
    */
   protected _unloadMediaNode(): void;
+}
+
+declare namespace AudioContainer {
+  type LoadStates = ValueOf<typeof AudioContainer['LOAD_STATES']>;
 }
