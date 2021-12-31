@@ -81,6 +81,8 @@ declare class VisionSource extends PointSource {
    */
   initialize(data?: Partial<VisionSourceData>): this;
 
+  fov: PIXI.Polygon | undefined;
+
   /**
    * Initialize the blend mode and vertical sorting of this source relative to others in the container.
    * @internal
