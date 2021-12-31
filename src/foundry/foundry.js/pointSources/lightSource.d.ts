@@ -32,7 +32,7 @@ interface LightSourceData extends PointSource.Data {
   contrast: number;
 
   /** A darkness range (min and max) for which the source should be active */
-  darkness: unknown; // FIXME: { min: number; max: number } ?
+  darkness: { min: number; max: number };
 
   /** The allowed radius of dim vision or illumination */
   dim: number;
@@ -63,7 +63,7 @@ interface LightAnimationConfiguration {
   label: string;
 
   /** The animation function that runs every frame */
-  animation: Function; // FIXME: LightAnimationFunction
+  animation: (this: LightSource, dt: number, animation: LightAnimationConfiguration) => void;
 
   /** A custom illumination shader used by this animation */
   illuminationShader: AdaptiveIlluminationShader;
@@ -79,6 +79,8 @@ interface LightAnimationConfiguration {
 
   /** The animation time */
   time?: number;
+
+  type?: keyof typeof CONFIG.Canvas.lightAnimations | null;
 }
 
 /**
