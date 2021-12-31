@@ -1,5 +1,5 @@
 /**
- * I don't know what this will do yet
+ * TODO: Document Me
  */
 declare class SpecialEffect {
   constructor(parent: PIXI.Container, options?: DeepPartial<SpecialEffect.Options>);
