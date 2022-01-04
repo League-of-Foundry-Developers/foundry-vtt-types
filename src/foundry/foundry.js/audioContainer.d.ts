@@ -34,7 +34,7 @@ declare class AudioContainer {
    * @see {@link LOAD_STATES}
    * @defaultValue `AudioContainer.LOAD_STATES.NONE`
    */
-  loadState: AudioContainer.LoadStates;
+  loadState: AudioContainer.LOAD_STATES;
 
   /**
    * Is the audio source currently playing?
@@ -171,5 +171,5 @@ declare class AudioContainer {
 }
 
 declare namespace AudioContainer {
-  type LoadStates = ValueOf<typeof AudioContainer['LOAD_STATES']>;
+  type LOAD_STATES = ValueOf<typeof AudioContainer['LOAD_STATES']>;
 }
