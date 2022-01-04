@@ -5,10 +5,6 @@
 declare class PreciseText extends PIXI.Text {
   constructor(...args: ConstructorParameters<typeof PIXI.Text>);
 
-  _autoResolution: false;
-
-  _resolution: 2;
-
   /**
    * Prepare a TextStyle object which merges the canvas defaults with user-provided options
    * @param anchor  - A text anchor point from CONST.TEXT_ANCHOR_POINTS
