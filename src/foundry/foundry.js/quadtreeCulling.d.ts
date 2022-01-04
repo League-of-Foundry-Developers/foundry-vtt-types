@@ -7,5 +7,5 @@ declare class QuadtreeCulling {
 
   cull(screen: Rectangle): void;
 
-  _getRect(screen: Rectangle): NormalizedRectangle;
+  protected _getRect(screen: Rectangle): NormalizedRectangle;
 }
