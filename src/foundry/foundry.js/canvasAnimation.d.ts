@@ -1,3 +1,17 @@
+interface CanvasAnimationData {
+  /** The animation function being executed each frame */
+  fn: (dt: number) => void;
+
+  /** The object context within which animation occurs */
+  context: PIXI.DisplayObject;
+
+  /** A Promise which resolves once the animation is complete */
+  promise: Promise<boolean>;
+
+  /** The resolution function, allowing animation to be ended early */
+  resolve: (value: boolean) => void;
+}
+
 /**
  * A helper class providing utility methods for PIXI Canvas animation
  */
@@ -8,9 +22,7 @@ declare class CanvasAnimation {
    * Track an object of active animations by name, context, and function
    * This allows a currently playing animation to be referenced and terminated
    */
-  static animations: Partial<
-    Record<string, { fn: (dt: number) => void; context: PIXI.Container; resolve: (value: boolean) => void }>
-  >;
+  static animations: Record<string, CanvasAnimationData>;
 
   /**
    * Apply a linear animation from the current value of some attribute to a new value
@@ -41,6 +53,13 @@ declare class CanvasAnimation {
     attributes: CanvasAnimation.Attribute[],
     options?: InexactPartial<LinearAnimationOptions>
   ): Promise<boolean>;
+
+  /**
+   * Retrieve an animation currently in progress by its name
+   * @param name - The animation name to retrieve
+   * @returns The animation data, or undefined
+   */
+  static getAnimation(name: string): CanvasAnimationData | undefined;
 
   /**
    * If an animation using a certain name already exists, terminate it
@@ -75,7 +94,7 @@ declare class CanvasAnimation {
    */
   protected static _animateFrame(
     deltaTime: number,
-    resolve: (value: boolean) => void,
+    resolve: CanvasAnimationData['resolve'],
     reject: (reason?: any) => void,
     attributes: CanvasAnimation.Attribute[],
     duration: number,
@@ -85,8 +104,12 @@ declare class CanvasAnimation {
 
 declare namespace CanvasAnimation {
   interface Attribute {
-    parent: any;
     attribute: string;
+    d?: number;
+    delta?: number;
+    done?: number;
+    parent: any;
+    remaining?: number;
     to: number;
   }
 }
@@ -95,7 +118,7 @@ interface LinearAnimationOptions {
   /**
    * An animation context to use which defines scope
    */
-  context: PIXI.Container;
+  context: PIXI.DisplayObject;
 
   /**
    * Provide a unique animation name which may be referenced later
@@ -117,7 +140,7 @@ interface LinearAnimationOptions {
 type TickFunction = (dt: number, attributes: CanvasAnimation.Attribute[]) => void;
 type TransitionFunction = (
   dt: number,
-  resolve: (value: boolean) => void,
+  resolve: CanvasAnimationData['resolve'],
   reject: (reason?: any) => void,
   attributes: CanvasAnimation.Attribute[],
   duration: number,
