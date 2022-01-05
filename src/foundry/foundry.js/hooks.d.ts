@@ -97,6 +97,46 @@ declare global {
     ): ReturnType<H> | undefined;
 
     /**
+     * Notify subscribers that an error has occurred within foundry.
+     * @param location - The method where the error was caught.
+     * @param err      - The error.
+     */
+    static onError(
+      location: string,
+      err: Error,
+      {
+        msg,
+        notify,
+        log,
+        ...data
+      }?: {
+        /**
+         * Additional data to pass to the hook subscribers.
+         * @defaultValue `{}`
+         */
+        [key: string]: unknown;
+
+        /**
+         * A message to prefix the caught error with and/or to use in the notification.
+         * @defaultValue `""`
+         */
+        msg?: string | undefined;
+
+        /**
+         * The level at which to log the error to console (if at all).
+         * @defaultValue `null`
+         */
+        notify?: keyof NonNullable<typeof ui['notifications']> | null | undefined;
+
+        /**
+         * The level at which to spawn a notification in the UI (if at all).
+         * @defaultValue `null`
+         */
+        log?: keyof typeof console | null | undefined;
+      }
+    ): void;
+
+    /**
      * @defaultValue `{}`
      */
     protected static _hooks: Record<string, (...args: any) => any>;
@@ -166,6 +206,7 @@ declare global {
       /**
        * A hook event that fires immediately prior to PIXI Application construction with the configuration parameters.
        * @param canvasConfig - Canvas configuration parameters that will be used
+       * @remarks This is called by {@link Hooks.callAll}.
        */
       canvasConfig: (canvasConfig: {
         view: HTMLCanvasElement;
@@ -177,7 +218,7 @@ declare global {
         backgroundColor: string | null;
         antialias: boolean;
         powerPreference: string;
-      }) => unknown;
+      }) => void;
 
       /**
        * A hook event that fires when the Canvas is initialized.
@@ -185,7 +226,7 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link Canvas#draw}
        */
-      canvasInit: (canvas: Canvas) => unknown;
+      canvasInit: (canvas: Canvas) => void;
 
       /**
        * A hook event that fires when the Canvas is panned.
@@ -196,7 +237,7 @@ declare global {
        * @see {@link Canvas#pan}
        * @see {@link Canvas#animatePan}
        */
-      canvasPan: (canvas: Canvas, view: Canvas.View) => unknown;
+      canvasPan: (canvas: Canvas, view: Canvas.View) => void;
 
       /**
        * A hook event that fires when the Canvas is ready.
@@ -212,7 +253,7 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link Sidebar#_onChangeTab}
        */
-      changeSidebarTab: (app: SidebarTab) => unknown;
+      changeSidebarTab: (app: SidebarTab) => void;
 
       /**
        * A hook event that fires when a chat bubble is rendered.
@@ -264,7 +305,7 @@ declare global {
        * @see {@link SceneNavigation#expand}
        * @see {@link SceneNavigation#collapse}
        */
-      collapseSceneNavigation: (nav: SceneNavigation, collapsed: boolean) => unknown;
+      collapseSceneNavigation: (nav: SceneNavigation, collapsed: boolean) => void;
 
       /**
        * A hook event that fires when the Sidebar is collapsed or expanded.
@@ -274,7 +315,7 @@ declare global {
        * @see {@link Sidebar#expand}
        * @see {@link Sidebar#collapse}
        */
-      collapseSidebar: (sidebar: Sidebar, collapsed: boolean) => unknown;
+      collapseSidebar: (sidebar: Sidebar, collapsed: boolean) => void;
 
       /**
        * A hook event that fires when Cards are dealt from a deck to other hands
@@ -334,12 +375,24 @@ declare global {
       ) => boolean | void;
 
       /**
+       * A hook event that fires whenever foundry experiences an error.
+       *
+       * @param location - The method where the error was caught.
+       * @param err      - The error.
+       * @param data     - Additional data that might be provided, based on the nature of the error.
+       *                   (default: `{}`)
+       * @remarks This is called by {@link Hooks.callAll}.
+       * @see {@link Hooks.onError}
+       */
+      error: (...args: ValueOf<ErrorCallbackParameters>) => void;
+
+      /**
        * A hook event that fires when the Scene controls are initialized.
        * @param controls - The SceneControl configurations
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link SceneControls#_getControlButtons}
        */
-      getSceneControlButtons: (controls: SceneControl[]) => unknown;
+      getSceneControlButtons: (controls: SceneControl[]) => void;
 
       /**
        * A hook event that fires when the context menu for a SceneNavigation entry is constructed.
@@ -381,7 +434,7 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link Game#initialize}
        */
-      init: () => unknown;
+      init: () => void;
 
       /**
        * A hook event that fires after PointSource shaders have initialized.
@@ -390,7 +443,8 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link PointSource#_initializeShaders}
        */
-      initializePointSourceShaders: (source: PointSource, animationType: string | null) => unknown;
+      // FIXME: Replace with `initializeLightSourceShaders`
+      initializePointSourceShaders: (source: PointSource, animationType: string | null) => void;
 
       /**
        * A hook event that fires when the LightingLayer is refreshed.
@@ -398,7 +452,7 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link LightingLayer#refresh}
        */
-      lightingRefresh: (layer: LightingLayer) => unknown;
+      lightingRefresh: (layer: LightingLayer) => void;
 
       /**
        * A hook event that fires when a token's resource bar attribute has been modified.
@@ -446,14 +500,14 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link Game#togglePause}
        */
-      pauseGame: (paused: boolean) => unknown;
+      pauseGame: (paused: boolean) => void;
 
       /**
        * A hook event that fires when the game is fully ready.
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link Game#setupGame}
        */
-      ready: () => unknown;
+      ready: () => void;
 
       /**
        * A hook event that fires for each ChatMessage which is rendered for addition to the ChatLog.
@@ -498,7 +552,7 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link AVSettings#_onSettingsChanged}
        */
-      rtcSettingsChanged: (settings: AVSettings, changed: DeepPartial<AVSettings.Settings>) => unknown;
+      rtcSettingsChanged: (settings: AVSettings, changed: DeepPartial<AVSettings.Settings>) => void;
 
       /**
        * A hook event that fires when Foundry has finished initializing but
@@ -507,7 +561,7 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link Game#setupGame}
        */
-      setup: () => unknown;
+      setup: () => void;
 
       /**
        * A hook event that fires when the SightLayer has been refreshed.
@@ -515,7 +569,7 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link SightLayer#restrictVisibility}
        */
-      sightRefresh: (layer: SightLayer) => unknown;
+      sightRefresh: (layer: SightLayer) => void;
 
       /**
        * A hook event that fires when a token is targeted or un-targeted.
@@ -529,7 +583,7 @@ declare global {
         user: InstanceType<ConfiguredDocumentClass<typeof User>>,
         token: ConfiguredObjectClassForName<'Token'>,
         targeted: boolean
-      ) => unknown;
+      ) => void;
 
       /**
        * A hook event that fires whenever the contents of a Compendium pack were modified.
@@ -547,7 +601,7 @@ declare global {
         documents: foundry.abstract.Document<any, any>[],
         options: DocumentModificationOptions,
         userId: string
-      ) => unknown;
+      ) => void;
 
       /**
        * A hook event that fires when the World time has been updated.
@@ -556,7 +610,7 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link GameTime#onUpdateWorldTime}
        */
-      updateWorldTime: (worldTime: number, delta: number) => unknown;
+      updateWorldTime: (worldTime: number, delta: number) => void;
     }
 
     /**
@@ -583,10 +637,7 @@ declare global {
      * @see {@link PlaceableObject#control}
      * @see {@link PlaceableObject#release}
      */
-    type ControlPlaceableObject<P extends PlaceableObject = PlaceableObject> = (
-      object: P,
-      controlled: boolean
-    ) => unknown;
+    type ControlPlaceableObject<P extends PlaceableObject = PlaceableObject> = (object: P, controlled: boolean) => void;
 
     /**
      * A hook event that fires for every embedded Document type after conclusion of a creation workflow.
@@ -606,7 +657,7 @@ declare global {
       document: InstanceType<ConfiguredDocumentClass<D>>,
       options: DocumentModificationOptions,
       userId: string
-    ) => unknown;
+    ) => void;
 
     /**
      * A hook event that fires for every Document type after conclusion of an deletion workflow.
@@ -626,7 +677,7 @@ declare global {
       document: InstanceType<ConfiguredDocumentClass<D>>,
       options: DocumentModificationOptions,
       userId: string
-    ) => unknown;
+    ) => void;
 
     /**
      * A hook event that fires whenever this Application is first rendered to add buttons to its header.
@@ -644,40 +695,15 @@ declare global {
     ) => boolean | void;
 
     /**
-     * @remarks This is called after getting the {@link ContextMenu} options for a {@link ChatLog}, but before creating
-     * the ContextMenu.
-     * @param jq           - the JQuery of the ContextMenu parent element
-     * @param entryOptions - the already created ContextMenuOptions
-     * @remarks The name for this hook is dynamically created by joining 'get' with the type name of the ChatLog and
-     * 'EntryContext'.
+     * A hook event that fires when the context menu for entries in an Application is constructed. Substitute the
+     * Application name in the hook event to target a specific Application, for example
+     * "getActorDirectoryEntryContext".
+     * @param html         - The HTML element to which the context options are attached
+     * @param entryOptions - The context menu entries
      * @remarks This is called by {@link Hooks.call}.
-     * @see {@link ChatLog#_contextMenu}
+     * @see {@link ContextMenu.create}
      */
-    type GetChatLogEntryContext = (jq: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
-
-    /**
-     * @remarks This is called after getting the {@link ContextMenu} options for a {@link CombatTracker} entry, but before
-     * creating the ContextMenu.
-     * @param jq           - the JQuery of the ContextMenu parent element
-     * @param entryOptions - the already created ContextMenuOptions
-     * @remarks The name for this hook is dynamically created by joining 'get' with the type name of the CombatTracker and
-     * 'EntryContext'.
-     * @remarks This is called by {@link Hooks.call}.
-     * @see {@link CombatTracker#_contextMenu}
-     */
-    type GetCombatTrackerEntryContext = (jq: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
-
-    /**
-     * @remarks This is called after getting the {@link ContextMenu} options for a {@link CompendiumDirectory} entry, but
-     * before creating the ContextMenu.
-     * @param jq           - the JQuery of the ContextMenu parent element
-     * @param entryOptions - the already created ContextMenuOptions
-     * @remarks The name for this hook is dynamically created by joining 'get' with the type name of the
-     * CompendiumDirectory and 'EntryContext'.
-     * @remarks This is called by {@link Hooks.call}.
-     * @see {@link CompendiumDirectory#_contextMenu}
-     */
-    type GetCompendiumDirectoryEntryContext = (jq: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
+    type GetEntryContext = (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
 
     /**
      * A hook event that fires when the context menu for a Sound in the PlaylistDirectory is constructed.
@@ -689,19 +715,6 @@ declare global {
      * @see {@link PlaylistDirectory#_contextMenu}
      */
     type GetPlaylistDirectorySoundContext = (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
-
-    /**
-     * A hook event that fires when the context menu for entries in a SidebarTab
-     * is constructed. Substitute the SidebarTab name in the hook event to target
-     * a specific SidebarTab, for example "getActorDirectoryEntryContext".
-     * @param html         - The HTML element to which the context options are attached
-     * @param entryOptions - The context menu entries
-     * @remarks The name for this hook is dynamically created by joining 'get' with the type name of the SidebarDirectory
-     * and 'EntryContext'.
-     * @remarks This is called by {@link Hooks.call}.
-     * @see {@link SidebarDirectory#_contextMenu}
-     */
-    type GetSidebarDirectoryEntryContext = (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
 
     /**
      * A hook event that fires when the context menu for folders in a SidebarTab
@@ -725,7 +738,7 @@ declare global {
      * @remarks This is called by {@link Hooks.callAll}.
      * @see {@link AudioHelper#_onChangeGlobalVolume}
      */
-    type GlobalVolumeChanged = (volume: number) => unknown;
+    type GlobalVolumeChanged = (volume: number) => void;
 
     /**
      * A hook event that fires when any PlaceableObject is hovered over or out.
@@ -739,7 +752,7 @@ declare global {
      * @see {@link PlaceableObject#_onHoverIn}
      * @see {@link PlaceableObject#_onHoverOut}
      */
-    type HoverPlaceableObject<P extends PlaceableObject = PlaceableObject> = (object: P, hover: boolean) => unknown;
+    type HoverPlaceableObject<P extends PlaceableObject = PlaceableObject> = (object: P, hover: boolean) => void;
 
     /**
      * A hook event that fires when any PlaceableObject is pasted onto the
@@ -873,7 +886,7 @@ declare global {
       change: DeepPartial<ConstructorParameters<D>[0]>,
       options: DocumentModificationOptions,
       userId: string
-    ) => unknown;
+    ) => void;
 
     type DynamicCallbacks =
       | CloseApplication
@@ -881,11 +894,8 @@ declare global {
       | CreateDocument
       | DeleteDocument
       | GetApplicationHeaderButtons
-      | GetChatLogEntryContext
-      | GetCombatTrackerEntryContext
-      | GetCompendiumDirectoryEntryContext
+      | GetEntryContext
       | GetPlaylistDirectorySoundContext
-      | GetSidebarDirectoryEntryContext
       | GetSidebarDirectoryFolderContext
       | HoverPlaceableObject
       | PastePlaceableObject
@@ -894,5 +904,52 @@ declare global {
       | PreUpdateDocument
       | RenderApplication
       | UpdateDocument;
+
+    interface ErrorCallbackParameters {
+      'Canvas#draw': [location: 'Canvas#draw', err: Error, data: { layer: CanvasLayer }];
+      'Application#render': [location: 'Application#render', err: Error, data: Application.RenderOptions];
+      'Localization#_loadTranslationFile': [
+        location: 'Localization#_loadTranslationFile',
+        err: Error,
+        data: { src: string }
+      ];
+      'ClientDatabaseBackend#_preCreateDocumentArray': [
+        location: 'ClientDatabaseBackend#_preCreateDocumentArray',
+        err: Error,
+        data: { id: string }
+      ];
+      'ClientDatabaseBackend#_preUpdateDocumentArray': [
+        location: 'ClientDatabaseBackend#_preUpdateDocumentArray',
+        err: Error,
+        data: { id: string }
+      ];
+      'WorldCollection#_initialize': [location: 'WorldCollection#_initialize', err: Error, data: { id: string }];
+      'ClientDocumentMixin#_initialize': [
+        location: 'ClientDocumentMixin#_initialize',
+        err: Error,
+        data: { id: string }
+      ];
+      'Actor#getTokenImages': [location: 'Actor#getTokenImages', err: Error, data: Record<string, never>];
+      'Macro#executeChat': [location: 'Macro#executeChat', err: Error, data: { command: string }];
+      'ChatMessage#roll': [location: 'ChatMessage#roll', err: Error, data: { command: string }];
+      'DefaultTokenConfig#_updateObject': [
+        location: 'DefaultTokenConfig#_updateObject',
+        err: Error,
+        data: Record<string, never>
+      ];
+      'SceneConfig#_updateObject': [location: 'SceneConfig#_updateObject', err: Error, data: { scene: string }];
+      'SidebarDirectory.setupFolders': [
+        location: 'SidebarDirectory.setupFolders',
+        err: Error,
+        data: Record<string, never>
+      ];
+      'Sidebar#_render': [location: 'Sidebar#_render', err: Error, data: { name: string }];
+      'Game#initializeCanvas': [location: 'Game#initializeCanvas', err: Error, data: Record<string, never>];
+      'EmbeddedCollection#_initialize': [
+        location: 'EmbeddedCollection#_initialize',
+        err: Error,
+        data: { id: string; documentName: string }
+      ];
+    }
   }
 }
