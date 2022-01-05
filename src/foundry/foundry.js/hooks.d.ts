@@ -170,14 +170,27 @@ declare global {
    *
    * @example Using a callback type with a static name
    * ```typescript
-   * Hooks.on('updateWorldTime', (worldTime, dt) => {
+   * Hooks.on("updateWorldTime", (worldTime, dt) => {
+   *   worldTime; // number
+   *   dt; // number
    *   // [...]
    * })
    * ```
    *
    * @example Using a callback with a dynamic name and generic parameter
    * ```typescript
-   * Hooks.on<Hooks.CloseApplication<FormApplication>>('closeFormApplication', (app, jq) => {
+   * Hooks.on<Hooks.CloseApplication<FormApplication>>("closeFormApplication", (app, jq) => {
+   *   app; // FormApplication
+   *   jq; // JQuery
+   *   // [...]
+   * })
+   * ```
+   *
+   * @example Using the `error` callback type
+   * ```typescript
+   * Hooks.on("error", (...args) => {
+   *   if (args[0] === "Canvas#draw")
+   *     args[2].layer // CanvasLayer
    *   // [...]
    * })
    * ```
