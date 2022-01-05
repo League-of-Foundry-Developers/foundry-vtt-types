@@ -100,6 +100,7 @@ declare global {
      * Notify subscribers that an error has occurred within foundry.
      * @param location - The method where the error was caught.
      * @param err      - The error.
+     * @param options  - Additional options to configure behaviour.
      */
     static onError(
       location: string,
