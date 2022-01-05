@@ -175,13 +175,6 @@ declare global {
    * })
    * ```
    *
-   * @example Using a callback with a dynamic name
-   * ```typescript
-   * Hooks.on<Hooks.GetCompendiumDirectoryEntryContext>('getJournalEntryContext', (jq, entryOptions) => {
-   *   // [...]
-   * })
-   * ```
-   *
    * @example Using a callback with a dynamic name and generic parameter
    * ```typescript
    * Hooks.on<Hooks.CloseApplication<FormApplication>>('closeFormApplication', (app, jq) => {
