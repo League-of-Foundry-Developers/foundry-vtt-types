@@ -1,6 +1,6 @@
 /**
  * Ghost light animation illumination shader
  */
-declare class GhostLightIlluminationShader extends StandardIlluminationShader {
+declare class GhostLightIlluminationShader extends AdaptiveIlluminationShader {
   static fragmentShader: string;
 }

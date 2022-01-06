@@ -1,6 +1,6 @@
 /**
  * Wave animation coloration shader
  */
-declare class WaveColorationShader extends StandardColorationShader {
+declare class WaveColorationShader extends AdaptiveColorationShader {
   static fragmentShader: string;
 }

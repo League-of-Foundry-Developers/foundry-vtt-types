@@ -1,11 +1,16 @@
+import './bewitchingWaveColorationShader';
 import './chromaColorationShader';
 import './emanationColorationShader';
 import './energyFieldColorationShader';
+import './fairyLightColorationShader';
 import './fogColorationShader';
 import './ghostLightColorationShader';
 import './hexaDomeColorationShader';
 import './lightDomeColorationShader';
 import './pulseColorationShader';
+import './radialRainbowColorationShader';
 import './sunburstColorationShader';
+import './swirlingRainbowColorationShader';
 import './torchColorationShader';
+import './vortexColorationShader';
 import './waveColorationShader';

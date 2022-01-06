@@ -1,7 +1,7 @@
 /**
- * Light dome animation coloration shader
+ * Torch animation coloration shader
  */
-declare class LightDomeColorationShader extends StandardColorationShader {
+declare class TorchColorationShader extends AdaptiveColorationShader {
   static fragmentShader: string;
 
   /**
@@ -9,7 +9,8 @@ declare class LightDomeColorationShader extends StandardColorationShader {
    * @defaultValue
    * ```typescript
    * Object.assign({}, super.defaultUniforms, {
-   *   color: PIXI.utils.hex2rgb(0xCEECEE)
+   *   ratio: 0,
+   *   brightnessPulse: 1
    * })
    * ```
    */

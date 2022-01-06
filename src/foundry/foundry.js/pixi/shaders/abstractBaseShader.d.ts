@@ -2,6 +2,9 @@
  * This class defines an interface which all shaders utilize
  */
 declare abstract class AbstractBaseShader extends PIXI.Shader {
+  /** The current uniforms of the Shader */
+  uniforms: AbstractBaseShader.Uniforms;
+
   constructor(program: PIXI.Program, uniforms: AbstractBaseShader.Uniforms);
 
   /**
@@ -10,12 +13,16 @@ declare abstract class AbstractBaseShader extends PIXI.Shader {
   protected _defaults: AbstractBaseShader.Uniforms;
 
   /**
-   * The default vertex shader used by all instances of AbstractBaseShader
+   * The raw vertex shader used by this class.
+   * A subclass of AbstractBaseShader must implement the fragmentShader static field.
+   * @defaultValue `""`
+   *
+   * @remarks This is abstract, subclasses must implement it.
    */
   static vertexShader: string;
 
   /**
-   * The fragment shader which renders this source.
+   * The raw fragment shader used by this class.
    * A subclass of AbstractBaseShader must implement the fragmentShader static field.
    * @defaultValue `""`
    *
@@ -39,42 +46,9 @@ declare abstract class AbstractBaseShader extends PIXI.Shader {
 
   /**
    * Reset the shader uniforms back to their provided default values
+   * @internal
    */
   protected reset(): void;
-
-  /**
-   * A Vec3 pseudo-random generator, based on uv position
-   */
-  static PRNG3D: string;
-
-  /**
-   * A conventional pseudo-random number generator with the "golden" numbers, based on uv position
-   */
-  static PRNG: string;
-
-  /**
-   * A conventional noise generator
-   */
-  static NOISE: string;
-
-  /**
-   * Fractional Brownian Motion for a given number of octaves
-   * @param octaves - (default: `4`)
-   * @param amp     - (default: `1.0`)
-   */
-  static FBM(octaves?: number, amp?: number): string;
-
-  /**
-   * Fade easing to use with distance in interval [0,1]
-   * @param amp  - (default: `3`)
-   * @param coef - (default: `0.80`)
-   */
-  static FADE(amp?: number, coef?: number): string;
-
-  /**
-   * Convert a Hue-Saturation-Brightness color to RGB - useful to convert polar coordinates to RGB
-   */
-  static HSB2RGB: string;
 }
 
 declare namespace AbstractBaseShader {
@@ -91,5 +65,5 @@ declare namespace AbstractBaseShader {
     | { x: number; y: number; z: number; w: number }[]
     | PIXI.Texture;
 
-  type Uniforms = Partial<Record<string, AbstractBaseShader.UniformValue>>;
+  type Uniforms = Record<string, AbstractBaseShader.UniformValue>;
 }
