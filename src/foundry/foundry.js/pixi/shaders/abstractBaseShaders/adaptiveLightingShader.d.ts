@@ -95,5 +95,20 @@ declare class AdaptiveLightingShader extends AbstractBaseShader {
   /**
    * A mapping of available coloration techniques
    */
-  static COLORATION_TECHNIQUES: Record<string, LightingTechnique>;
+  static COLORATION_TECHNIQUES: AdaptiveLightingShader.ColorationTechniques;
+}
+
+declare namespace AdaptiveLightingShader {
+  interface ColorationTechniques extends Record<string, LightingTechnique> {
+    LEGACY: LightingTechnique;
+    LUMINANCE: LightingTechnique;
+    INTERNAL_HALO: LightingTechnique;
+    EXTERNAL_HALO: LightingTechnique;
+    COLOR_BURN: LightingTechnique;
+    INTERNAL_BURN: LightingTechnique;
+    EXTERNAL_BURN: LightingTechnique;
+    LOW_ABSORPTION: LightingTechnique;
+    HIGH_ABSORPTION: LightingTechnique;
+    INVERT_ABSORPTION: LightingTechnique;
+  }
 }
