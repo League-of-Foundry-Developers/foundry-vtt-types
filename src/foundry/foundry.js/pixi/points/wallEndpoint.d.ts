@@ -1,4 +1,4 @@
-import type { ConfiguredObjectClassOrDefault } from '../../config.js';
+import type { ConfiguredObjectClassForName } from '../../../../types/helperTypes.js';
 
 declare global {
   /**
@@ -29,7 +29,7 @@ declare global {
     /**
      * Record the set of walls which connect to this Endpoint
      */
-    walls: Set<ConfiguredObjectClassOrDefault<typeof Wall>>;
+    walls: Set<ConfiguredObjectClassForName<'Wall'>>;
 
     /**
      * Record whether this point is the endpoint of any Wall
@@ -66,7 +66,7 @@ declare global {
      */
     protected _c: { left: boolean; right: boolean } | undefined;
 
-    attachWall(wall: ConfiguredObjectClassOrDefault<typeof Wall>): this;
+    attachWall(wall: ConfiguredObjectClassForName<'Wall'>): this;
 
     /**
      * Does this endpoint equal some other endpoint?

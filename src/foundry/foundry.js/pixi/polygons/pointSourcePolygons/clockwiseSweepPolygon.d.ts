@@ -1,4 +1,4 @@
-import type { ConfiguredObjectClassOrDefault } from '../../../config.js';
+import type { ConfiguredObjectClassForName } from '../../../../../types/helperTypes.js';
 
 declare global {
   type VertexMap = Map<number, PolygonVertex>;
@@ -129,7 +129,7 @@ declare global {
      * Get the super-set of walls which could potentially apply to this polygon.
      * @internal
      */
-    protected _getWalls(): ConfiguredObjectClassOrDefault<typeof Wall>[];
+    protected _getWalls(): ConfiguredObjectClassForName<'Wall'>[];
 
     /**
      * Restrict the set of candidate edges to those which appear within the limited angle of emission.
@@ -307,7 +307,7 @@ declare global {
      *
      */
     static testWallInclusion(
-      wall: ConfiguredObjectClassOrDefault<typeof Wall>,
+      wall: ConfiguredObjectClassForName<'Wall'>,
       origin: Point,
       type: foundry.CONST.WALL_RESTRICTION_TYPES
     ): boolean;

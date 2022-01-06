@@ -1,4 +1,4 @@
-import type { ConfiguredObjectClassOrDefault } from './config.js';
+import type { ConfiguredObjectClassForName } from '../../types/helperTypes.js';
 
 declare global {
   /**
@@ -19,7 +19,7 @@ declare global {
      * @param type - The type of polygon being constructed
      */
     static fromWall(
-      wall: ConfiguredObjectClassOrDefault<typeof Wall> | WallDocument,
+      wall: ConfiguredObjectClassForName<'Wall'> | WallDocument,
       type: foundry.CONST.WALL_RESTRICTION_TYPES
     ): PolygonEdge;
   }
