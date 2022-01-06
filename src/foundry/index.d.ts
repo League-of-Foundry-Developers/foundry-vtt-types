@@ -16,6 +16,7 @@ import './foundry.js/clientDocuments';
 import './foundry.js/clientDocumentMixin';
 import './foundry.js/clientKeybindings';
 import './foundry.js/clientSettings';
+import './foundry.js/collisionResult';
 import './foundry.js/config';
 import './foundry.js/constants';
 import './foundry.js/contextMenu';
@@ -39,6 +40,8 @@ import './foundry.js/mouseManager';
 import './foundry.js/newUserExperience';
 import './foundry.js/perceptionManager';
 import './foundry.js/pointSource';
+import './foundry.js/polygonEdge';
+import './foundry.js/polygonVertex';
 import './foundry.js/quadtree';
 import './foundry.js/quadtreeCulling';
 import './foundry.js/ray';
@@ -81,3 +84,5 @@ import './foundry.js/rollTerms/diceTerms/die';
 import './foundry.js/rollTerms/diceTerms/fateDie';
 
 import './foundry.js/pixi';
+
+import './foundry.js/rays';

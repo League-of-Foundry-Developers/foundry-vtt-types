@@ -1,1 +1,2 @@
-import './sourcePolygon';
+import './pointSourcePolygon';
+import './pointSourcePolygons';

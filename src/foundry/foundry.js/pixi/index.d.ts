@@ -2,6 +2,7 @@ import './blendModes';
 import './containers';
 import './filters';
 import './graphics';
+import './points';
 import './polygons';
 import './rectangles';
 import './shaders';
