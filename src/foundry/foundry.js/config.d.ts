@@ -1,4 +1,5 @@
 import { DocumentConstructor, PlaceableObjectConstructor } from '../../types/helperTypes';
+import type { ActiveEffectDataConstructorData } from '../common/data/data.mjs/activeEffectData';
 
 type ConfiguredDocumentClassOrDefault<Fallback extends DocumentConstructor> =
   Fallback['metadata']['name'] extends keyof DocumentClassConfig
@@ -1163,7 +1164,7 @@ declare global {
      * ]
      * ```
      */
-    statusEffects: { id: string; label: string; icon: string }[];
+    statusEffects: ActiveEffectDataConstructorData & { id: string }[];
 
     /**
      * A mapping of core audio effects used which can be replaced by systems or mods
