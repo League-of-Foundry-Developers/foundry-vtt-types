@@ -46,6 +46,7 @@ declare abstract class AbstractBaseShader extends PIXI.Shader {
 
   /**
    * Reset the shader uniforms back to their provided default values
+   * @internal
    */
   protected reset(): void;
 }
@@ -64,5 +65,5 @@ declare namespace AbstractBaseShader {
     | { x: number; y: number; z: number; w: number }[]
     | PIXI.Texture;
 
-  type Uniforms = Partial<Record<string, AbstractBaseShader.UniformValue>>;
+  type Uniforms = Record<string, AbstractBaseShader.UniformValue>;
 }

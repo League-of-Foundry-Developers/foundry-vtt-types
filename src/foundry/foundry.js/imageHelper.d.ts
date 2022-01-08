@@ -34,6 +34,15 @@ declare class ImageHelper {
    * @returns A base64 png string of the texture
    */
   static textureToImage(texture: PIXI.Texture): string;
+
+  /**
+   * Asynchronously convert a DisplayObject container to base64 using Canvas#toBlob and FileReader
+   * @param target  - A PIXI display object to convert
+   * @param type    - The requested mime type of the output, default is image/png
+   * @param quality - A number between 0 and 1 for image quality if image/jpeg or image/webp
+   * @returns A processed base64 string
+   */
+  static pixiToBase64(target: PIXI.DisplayObject, type: string, quality: number): Promise<string>;
 }
 
 declare namespace ImageHelper {

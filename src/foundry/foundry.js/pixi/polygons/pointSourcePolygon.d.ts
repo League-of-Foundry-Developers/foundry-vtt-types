@@ -1,30 +1,27 @@
 interface PointSourcePolygonConfig {
   /** The type of polygon being computed */
-  type: foundry.CONST.WALL_RESTRICTION_TYPES;
+  type?: foundry.CONST.WALL_RESTRICTION_TYPES;
 
-  /**
-   * The angle of emission, if limited
-   * @defaultValue `360`
-   */
-  angle: number;
+  /** The angle of emission, if limited */
+  angle?: number;
 
   /** The desired density of padding rays, a number per PI */
-  density: number;
+  density?: number;
 
   /** A limited radius of the resulting polygon */
-  radius: number;
+  radius?: number;
 
   /** The direction of facing, required if the angle is limited */
-  rotation: number;
+  rotation?: number;
 
   /** Display debugging visualization and logging for the polygon */
-  debug: boolean;
+  debug?: boolean;
 
   /** Is this polygon constrained by any walls? */
-  walls: boolean;
+  walls?: boolean;
 
   /** The object (if any) that spawned this polygon. */
-  source: PointSource;
+  source?: PointSource;
 }
 
 /**
@@ -38,11 +35,13 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
 
   /**
    * The configuration of this polygon.
+   * @defaultValue `{}`
    */
   config: PointSourcePolygonConfig;
 
   /**
    * A cached array of SightRay objects used to compute the polygon.
+   * @defaultValue `[]`
    */
   rays: SightRay[];
 
@@ -67,10 +66,12 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
    * Compute the polygon given a point origin and radius
    * @param origin - The origin source point
    * @param config - Configuration options which customize the polygon computation
-   *                 (default: `{}`)
    * @returns The computed polygon instance
    */
-  static create(origin: Point, config?: Partial<PointSourcePolygonConfig>): ReturnType<PointSourcePolygon['compute']>;
+  static create(
+    origin: Point,
+    config: Parameters<PointSourcePolygon['initialize']>[1]
+  ): ReturnType<PointSourcePolygon['compute']>;
 
   /**
    * Compute the polygon using the origin and configuration options.

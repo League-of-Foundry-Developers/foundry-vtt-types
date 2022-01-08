@@ -599,7 +599,7 @@ declare global {
       blurStrength: number;
 
       /** @defaultValue `ScreenCulling` */
-      cullingBackend: unknown; // FIXME: ConstructorOf<typeof ScreenCulling>
+      cullingBackend: ConstructorOf<typeof ScreenCulling | typeof QuadtreeCulling>;
 
       /** @defaultValue `0x242448` */
       darknessColor: number;

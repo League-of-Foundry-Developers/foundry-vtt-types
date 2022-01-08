@@ -74,7 +74,7 @@ declare global {
     interface Data<Options extends DocumentSheet.Options>
       extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'AmbientLight'>>, Options> {
       isAdvanced: boolean;
-      colorationTechniques: unknown; // FIXME: typeof AdaptiveLightingShader.COLORATION_TECHNIQUES
+      colorationTechniques: typeof AdaptiveLightingShader.COLORATION_TECHNIQUES;
       lightAnimations: Record<string, string> & {
         '': 'None';
       };

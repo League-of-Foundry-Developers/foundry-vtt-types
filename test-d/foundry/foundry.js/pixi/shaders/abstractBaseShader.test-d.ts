@@ -10,8 +10,8 @@ class TestShader extends AbstractBaseShader {
 }
 
 const testShader = TestShader.create();
-expectType<AbstractBaseShader.UniformValue | undefined>(testShader.defaults.foo);
-expectType<AbstractBaseShader.UniformValue | undefined>(testShader.defaults.bar);
+expectType<AbstractBaseShader.UniformValue>(testShader.defaults.foo);
+expectType<AbstractBaseShader.UniformValue>(testShader.defaults.bar);
 
 const testShader2 = TestShader.create({
   alpha: 1.0,

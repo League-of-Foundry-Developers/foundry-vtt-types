@@ -11,11 +11,11 @@ declare class PolygonVertex {
 
   key: number;
 
-  protected _distance: unknown;
+  protected _distance: number | undefined;
 
-  protected _d2: unknown;
+  protected _d2: undefined;
 
-  protected _index: unknown;
+  protected _index: number | undefined;
 
   /** @defaultValue `false` */
   protected _inLimitedAngle: boolean;
