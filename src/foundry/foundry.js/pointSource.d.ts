@@ -17,7 +17,7 @@ declare abstract class PointSource {
    * Each subclass must implement this attribute.
    * @remarks This is undefined in PointSource.
    */
-  static sourceType: PointSource.SourceType | undefined;
+  static sourceType: string | undefined;
 
   /**
    * The default Geometry stored in the GPU for all Point Source meshes.
@@ -132,8 +132,6 @@ declare abstract class PointSource {
 }
 
 declare namespace PointSource {
-  type SourceType = 'light' | 'sound' | 'vision';
-
   interface Data {
     /** The x-coordinate of the source location */
     x?: number;

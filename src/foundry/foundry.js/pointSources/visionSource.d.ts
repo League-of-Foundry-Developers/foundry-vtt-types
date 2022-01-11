@@ -1,121 +1,125 @@
-interface VisionSourceData extends PointSource.Data {
-  x: number;
+import type { ConfiguredObjectClassForName } from '../../../types/helperTypes.js';
 
-  y: number;
+declare global {
+  interface VisionSourceData extends Exclude<PointSource.Data, 'walls'> {
+    x: number;
 
-  /** An optional z-index sorting for the source */
-  z: number;
+    y: number;
 
-  /** The angle of rotation for this point source */
-  rotation: number;
+    /** An optional z-index sorting for the source */
+    z: number;
 
-  /** The angle of emission for this point source */
-  angle: number;
+    /** The angle of rotation for this point source */
+    rotation: number;
 
-  /** The allowed radius of bright vision or illumination */
-  bright: number;
+    /** The angle of emission for this point source */
+    angle: number;
 
-  /** The allowed radius of dim vision or illumination */
-  dim: number;
-}
+    /** The allowed radius of bright vision or illumination */
+    bright: number;
 
-/**
- * A specialized subclass of the PointSource abstraction which is used to control the rendering of vision sources.
- */
-declare class VisionSource extends PointSource {
-  /** @param object - The Token object that generates this vision source */
-  constructor(object: Token);
+    /** The allowed radius of dim vision or illumination */
+    dim: number;
+  }
 
   /**
-   * The current vision mesh for this source
-   * @defaultValue `this._createMesh(AdaptiveIlluminationShader)`
+   * A specialized subclass of the PointSource abstraction which is used to control the rendering of vision sources.
    */
-  illumination: PIXI.Mesh;
+  class VisionSource extends PointSource {
+    /** @param object - The Token object that generates this vision source */
+    constructor(object: InstanceType<ConfiguredObjectClassForName<'Token'>>);
 
-  /** @override */
-  static sourceType: 'vision';
+    /**
+     * The current vision mesh for this source
+     * @defaultValue `this._createMesh(AdaptiveIlluminationShader)`
+     */
+    illumination: PIXI.Mesh;
 
-  /**
-   * Keys in the VisionSourceData structure which, when modified, change the appearance of the source
-   * @defaultValue `["dim", "bright"]`
-   * @internal
-   */
-  protected static _appearanceKeys: string[];
+    /** @override */
+    static sourceType: 'vision';
 
-  /**
-   * The object of data which configures how the source is rendered
-   * @defaultValue `{}`
-   */
-  data: Partial<VisionSourceData>;
+    /**
+     * Keys in the VisionSourceData structure which, when modified, change the appearance of the source
+     * @defaultValue `["dim", "bright"]`
+     * @internal
+     */
+    protected static _appearanceKeys: string[];
 
-  /**
-   * The ratio of dim:bright as part of the source radius
-   * @defaultValue `undefined`
-   */
-  ratio: number | undefined;
+    /**
+     * The object of data which configures how the source is rendered
+     * @defaultValue `{}`
+     */
+    data: Partial<VisionSourceData>;
 
-  /**
-   * The rendered field-of-vision texture for the source for use within shaders.
-   * @defaultValue `undefined`
-   */
-  fovTexture: PIXI.RenderTexture | undefined;
+    /**
+     * The ratio of dim:bright as part of the source radius
+     * @defaultValue `undefined`
+     */
+    ratio: number | undefined;
 
-  /**
-   * Track which uniforms need to be reset
-   * @defaultValue `{ illumination: true }`
-   * @internal
-   */
-  protected _resetUniforms: Record<string, boolean>;
+    /**
+     * The rendered field-of-vision texture for the source for use within shaders.
+     * @defaultValue `undefined`
+     */
+    fovTexture: PIXI.RenderTexture | undefined;
 
-  /**
-   * To track if a source is temporarily shutdown to avoid glitches
-   * @defaultValue `{ illumination: false }`
-   * @internal
-   */
-  protected _shutdown: Record<string, boolean>;
+    /**
+     * Track which uniforms need to be reset
+     * @defaultValue `{ illumination: true }`
+     * @internal
+     */
+    protected _resetUniforms: { illumination: boolean };
 
-  /**
-   * Initialize the source with provided object data.
-   * @param data - Initial data provided to the point source
-   * @returns A reference to the initialized source
-   */
-  initialize(data?: Partial<VisionSourceData>): this;
+    /**
+     * To track if a source is temporarily shutdown to avoid glitches
+     * @defaultValue `{ illumination: false }`
+     * @internal
+     */
+    protected _shutdown: { illumination: boolean };
 
-  fov: PIXI.Polygon | undefined;
+    /**
+     * Initialize the source with provided object data.
+     * @param data - Initial data provided to the point source
+     * @returns A reference to the initialized source
+     */
+    initialize(data?: Partial<VisionSourceData>): this;
 
-  /**
-   * Initialize the blend mode and vertical sorting of this source relative to others in the container.
-   * @internal
-   */
-  protected _initializeBlending(): void;
+    fov?: PIXI.Circle;
 
-  /**
-   * Process new input data provided to the LightSource.
-   * @param data - Initial data provided to the vision source
-   * @returns The changes compared to the prior data
-   * @internal
-   */
-  protected _initializeData(data: Partial<VisionSourceData>): Partial<VisionSourceData>;
+    /**
+     * Initialize the blend mode and vertical sorting of this source relative to others in the container.
+     * @internal
+     */
+    protected _initializeBlending(): void;
 
-  /**
-   * Draw the display of this source to remove darkness from the LightingLayer illumination container.
-   * @see LightSource#drawLight
-   * @returns The rendered light container
-   */
-  drawVision(): PIXI.Container;
+    /**
+     * Process new input data provided to the LightSource.
+     * @param data - Initial data provided to the vision source
+     * @returns The changes compared to the prior data
+     * @internal
+     */
+    protected _initializeData(data: Partial<VisionSourceData>): Partial<VisionSourceData>;
 
-  /**
-   * Draw a Container used for exploring the FOV area of Token sight in the SightLayer
-   */
-  drawSight(): PIXI.Container;
+    /**
+     * Draw the display of this source to remove darkness from the LightingLayer illumination container.
+     * @see LightSource#drawLight
+     * @returns The rendered light container
+     */
+    drawVision(): PIXI.Container | null;
 
-  /**
-   * Update shader uniforms by providing data from this PointSource
-   * @param shader - The shader being updated
-   * @internal
-   */
-  protected _updateIlluminationUniforms(shader: AdaptiveIlluminationShader): void;
+    /**
+     * Draw a Container used for exploring the FOV area of Token sight in the SightLayer
+     */
+    drawSight(): PIXI.Container;
 
-  /** @override */
-  protected _drawRenderTextureContainer(): PIXI.Container;
+    /**
+     * Update shader uniforms by providing data from this PointSource
+     * @param shader - The shader being updated
+     * @internal
+     */
+    protected _updateIlluminationUniforms(shader: AdaptiveIlluminationShader): void;
+
+    /** @override */
+    protected _drawRenderTextureContainer(): PIXI.Container;
+  }
 }
