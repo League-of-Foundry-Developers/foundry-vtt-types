@@ -32,12 +32,12 @@ declare global {
     /**
      * A reference to the PointSource object which defines this vision source area of effect
      */
-    vision: PointSource;
+    vision: VisionSource;
 
     /**
      * A reference to the PointSource object which defines this light source area of effect
      */
-    light: PointSource;
+    light: LightSource;
 
     /** @override */
     static get embeddedName(): 'Token';
