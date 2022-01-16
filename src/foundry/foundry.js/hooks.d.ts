@@ -437,6 +437,13 @@ declare global {
       ) => boolean | void;
 
       /**
+       * A hook event that fires once Localization translations have been loaded and are ready for use.
+       * @remarks This is called by {@link Hooks.callAll}.
+       * @see {@link Localization#initialize}
+       */
+      i18nInit: () => void;
+
+      /**
        * A hook event that fires as Foundry is initializing, right before any initialization tasks have begun.
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link Game#initialize}
