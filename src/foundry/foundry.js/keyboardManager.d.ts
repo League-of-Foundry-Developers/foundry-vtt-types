@@ -67,7 +67,7 @@ declare class KeyboardManager {
   };
 
   /**
-   * Test whether an input currently has focus
+   * Test whether a Form Element currently has focus
    */
   get hasFocus(): boolean;
 
@@ -93,7 +93,7 @@ declare class KeyboardManager {
       shiftKey,
       repeat
     }?: { altKey?: boolean; ctrlKey?: boolean; shiftKey?: boolean; repeat?: boolean }
-  ): void;
+  ): KeyboardEventContext;
 
   /**
    * Format a KeyboardEvent#code into a displayed string.
