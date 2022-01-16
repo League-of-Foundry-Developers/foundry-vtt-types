@@ -13,7 +13,8 @@ const r = new Roll('2d20kh + @prof + @strMod', { prof: 2, strMod: 4 });
 // create the configured roll instance
 expectType<CustomRoll<{}>>(Roll.create('1d20'));
 expectType<CustomRoll<{ prof: number }>>(Roll.create('1d20 + @prof', { prof: 2 }));
-expectType<CustomRoll<{}>>(Roll.fromTerms([]));
+expectType<Roll<object>>(Roll.fromTerms([]));
+expectType<CustomRoll<object>>(CustomRoll.fromTerms([]));
 
 // The parsed terms of the roll formula
 // [Die, OperatorTerm, NumericTerm, OperatorTerm, NumericTerm]
