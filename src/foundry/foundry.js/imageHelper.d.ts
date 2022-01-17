@@ -12,7 +12,7 @@ declare class ImageHelper {
    */
   static createThumbnail(
     src: string | PIXI.DisplayObject,
-    options?: ImageHelper.CompositeOptions
+    options?: ImageHelper.CompositeOptions & ImageHelper.TextureToImageOptions
   ): Promise<ImageHelper.ThumbnailReturn>;
 
   /* -------------------------------------------- */
@@ -31,9 +31,10 @@ declare class ImageHelper {
   /**
    * Extract a texture to a base64 PNG string
    * @param texture - The Texture object to extract
+   * @param options - (default: `{}`)
    * @returns A base64 png string of the texture
    */
-  static textureToImage(texture: PIXI.Texture): string;
+  static textureToImage(texture: PIXI.Texture, { format, quality }?: ImageHelper.TextureToImageOptions): string;
 
   /**
    * Asynchronously convert a DisplayObject container to base64 using Canvas#toBlob and FileReader
@@ -80,6 +81,20 @@ declare namespace ImageHelper {
      * @defaultValue The width of the object passed to {@link ImageHelper.compositeCanvasTexture}
      */
     width?: number;
+  }
+
+  interface TextureToImageOptions {
+    /**
+     * Image format, e.g. "image/jpeg" or "image/webp".
+     * @defaultValue `"image/png"`
+     */
+    format?: string;
+
+    /**
+     * JPEG or WEBP compression from 0 to 1. Default is 0.92.
+     * @defaultValue `0.92`
+     */
+    quality?: number;
   }
 
   /**
