@@ -62,7 +62,7 @@ interface JournalEntryDataProperties {
   flags: ConfiguredFlags<'JournalEntry'>;
 }
 
-interface JournalEntryConstructorData {
+interface JournalEntryDataConstructorData {
   /**
    * The _id which uniquely identifies this JournalEntry document
    * @defaultValue `null`
@@ -118,10 +118,10 @@ export class JournalEntryData extends DocumentData<
   JournalEntryDataSchema,
   JournalEntryDataProperties,
   PropertiesToSource<JournalEntryDataProperties>,
-  JournalEntryConstructorData,
+  JournalEntryDataConstructorData,
   documents.BaseJournalEntry
 > {
-  constructor(data: JournalEntryConstructorData, document?: documents.BaseJournalEntry | null);
+  constructor(data: JournalEntryDataConstructorData, document?: documents.BaseJournalEntry | null);
 
   /** @override */
   static defineSchema(): JournalEntryDataSchema;
