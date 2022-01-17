@@ -18,7 +18,28 @@ expectType<ConstructorDataType<foundry.data.ChatMessageData>>(
 expectType<ConstructorDataType<foundry.data.ChatMessageData>>(
   ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.SELF)
 );
-expectError(ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), 'custom-roll-mode'));
+
+expectType<ConstructorDataType<foundry.data.ChatMessageData>>(
+  ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), 'roll')
+);
+
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace CONFIG {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
+    namespace Dice {
+      interface RollModes {
+        'custom-roll-mode': 'Some Custom Roll Mode';
+      }
+    }
+  }
+}
+
+expectType<ConstructorDataType<foundry.data.ChatMessageData>>(
+  ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), 'custom-roll-mode')
+);
+
+expectError(ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), 'unknown-roll-mode'));
 
 expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker());
 expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({}));
@@ -53,7 +74,9 @@ expectType<void>(chat.applyRollMode(CONST.DICE_ROLL_MODES.BLIND));
 expectType<void>(chat.applyRollMode(CONST.DICE_ROLL_MODES.PRIVATE));
 expectType<void>(chat.applyRollMode(CONST.DICE_ROLL_MODES.PUBLIC));
 expectType<void>(chat.applyRollMode(CONST.DICE_ROLL_MODES.SELF));
-expectError(chat.applyRollMode('custom-roll-mode'));
+expectType<void>(chat.applyRollMode('roll'));
+expectType<void>(chat.applyRollMode('custom-roll-mode'));
+expectError(chat.applyRollMode('unknown-roll-mode'));
 expectType<Actor['getRollData'] | {}>(chat.getRollData());
 expectType<Promise<JQuery>>(chat.getHTML());
 expectType<string>(chat.export());

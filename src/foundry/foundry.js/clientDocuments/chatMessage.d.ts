@@ -74,14 +74,14 @@ declare global {
      */
     static applyRollMode(
       chatData: ChatMessageDataConstructorData,
-      rollMode: foundry.CONST.DICE_ROLL_MODES
+      rollMode: keyof typeof CONFIG.Dice.rollModes | 'roll'
     ): ChatMessageDataConstructorData;
 
     /**
      * Update the data of a ChatMessage instance to apply a requested rollMode
      * @param rollMode - The rollMode preference to apply to this message data
      */
-    applyRollMode(rollMode: foundry.CONST.DICE_ROLL_MODES): void;
+    applyRollMode(rollMode: keyof typeof CONFIG.Dice.rollModes | 'roll'): void;
 
     /**
      * Attempt to determine who is the speaking character (and token) for a certain Chat Message
