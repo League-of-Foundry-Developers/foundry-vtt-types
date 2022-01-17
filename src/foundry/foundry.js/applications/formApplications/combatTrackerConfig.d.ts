@@ -4,7 +4,7 @@
  * @typeParam Data    - The data structure used to render the handlebars template.
  */
 declare class CombatTrackerConfig<
-  Options extends FormApplication.Options = FormApplication.Options,
+  Options extends FormApplicationOptions = FormApplicationOptions,
   Data extends object = CombatTrackerConfig.Data
 > extends FormApplication<Options, Data, undefined> {
   /**
@@ -19,7 +19,7 @@ declare class CombatTrackerConfig<
    * })
    * ```
    */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): FormApplicationOptions;
 
   /** @override */
   getData(options?: Partial<Options>): Data | Promise<Data>;

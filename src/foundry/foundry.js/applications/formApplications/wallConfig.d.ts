@@ -7,7 +7,7 @@ declare global {
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
   class WallConfig<
-    Options extends FormApplication.Options = FormApplication.Options,
+    Options extends FormApplicationOptions = FormApplicationOptions,
     Data extends object = WallConfig.Data<Options>
   > extends FormApplication<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Wall'>>> {
     /**
@@ -20,7 +20,7 @@ declare global {
      * options.width = 400;
      * ```
      */
-    static get defaultOptions(): FormApplication.Options;
+    static get defaultOptions(): FormApplicationOptions;
 
     /** @override */
     get title(): string;
@@ -39,7 +39,7 @@ declare global {
   }
 
   namespace WallConfig {
-    interface Data<Options extends FormApplication.Options = FormApplication.Options> {
+    interface Data<Options extends FormApplicationOptions = FormApplicationOptions> {
       object: foundry.data.WallData['_source'];
       options: Options;
       moveTypes: {

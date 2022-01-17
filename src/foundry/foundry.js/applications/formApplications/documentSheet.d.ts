@@ -103,7 +103,7 @@ declare global {
       readonly entity: this['data'];
     }
 
-    interface Options extends FormApplication.Options {
+    interface Options extends FormApplicationOptions {
       /**
        * @defaultValue `['sheet']`
        */

@@ -1,3 +1,40 @@
+interface FormApplicationOptions extends ApplicationOptions {
+  /**
+   * Whether to automatically close the application when it's contained
+   * form is submitted.
+   * @defaultValue `true`
+   */
+  closeOnSubmit: boolean;
+
+  /**
+   * Whether to automatically submit the contained HTML form when an input
+   * or select element is changed.
+   * @defaultValue `false`
+   */
+  submitOnChange: boolean;
+
+  /**
+   * Whether to automatically submit the contained HTML form when the
+   * application window is manually closed.
+   * @defaultValue `false`
+   */
+  submitOnClose: boolean;
+
+  /**
+   * Whether the application form is editable - if true, it's fields will
+   * be unlocked and the form can be submitted. If false, all form fields
+   * will be disabled and the form cannot be submitted.
+   * @defaultValue `true`
+   */
+  editable: boolean;
+
+  /**
+   * Support configuration of the sheet type used for this application.
+   * @defaultValue `false`
+   */
+  sheetConfig: boolean;
+}
+
 /**
  * An abstract pattern for defining an Application responsible for updating some object using an HTML form
  *
@@ -11,7 +48,7 @@
  * @typeParam ConcreteObject - the type of the object or {@link foundry.abstract.Document} which is modified by this form
  */
 declare abstract class FormApplication<
-  Options extends FormApplication.Options = FormApplication.Options,
+  Options extends FormApplicationOptions = FormApplicationOptions,
   Data extends object = FormApplication.Data<{}, Options>,
   ConcreteObject = Data extends FormApplication.Data<infer T, Options> ? T : {}
 > extends Application<Options> {
@@ -46,7 +83,7 @@ declare abstract class FormApplication<
    * The values of this Array are inner-objects with references to the MCE editor and other metadata
    * @defaultValue `{}`
    */
-  editors: Partial<Record<string, FormApplication.FormApplicationEditor>>;
+  editors: Record<string, FormApplication.FormApplicationEditor>;
 
   /**
    * Assign the default options which are supported by the entity edit sheet.
@@ -56,15 +93,16 @@ declare abstract class FormApplication<
    * @defaultValue
    * ```typescript
    * foundry.utils.mergeObject(super.defaultOptions, {
-   *   classes: ['form'],
+   *   classes: ["form"],
    *   closeOnSubmit: true,
+   *   editable: true,
+   *   sheetConfig: false,
    *   submitOnChange: false,
-   *   submitOnClose: false,
-   *   editable: true
+   *   submitOnClose: false
    * });
    * ```
    */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): FormApplicationOptions;
 
   /**
    * Is the Form Application currently editable?
@@ -257,7 +295,7 @@ declare namespace FormApplication {
    * @typeParam ConcreteObject - the type of the object
    * @typeParam Options        - the type of the options object
    */
-  interface Data<ConcreteObject, Options extends FormApplication.Options = FormApplication.Options> {
+  interface Data<ConcreteObject, Options extends FormApplicationOptions = FormApplicationOptions> {
     object: ConcreteObject;
     options: Options;
     title: string;
@@ -294,12 +332,5 @@ declare namespace FormApplication {
      * @defaultValue `false`
      */
     preventRender?: boolean;
-  }
-
-  interface Options extends ApplicationOptions, ApplicationOptions {
-    /**
-     * @defaultValue `['form']`
-     */
-    classes: string[];
   }
 }

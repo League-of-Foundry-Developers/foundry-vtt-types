@@ -33,7 +33,7 @@ declare global {
      * @param options - (unused)
      * @override
      */
-    getData(options?: Partial<FormApplication.Options>): Promise<FolderConfig.Data>;
+    getData(options?: Partial<FormApplicationOptions>): Promise<FolderConfig.Data>;
 
     /**
      * @param event - (unused)
