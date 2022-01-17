@@ -1,6 +1,14 @@
 import { ToObjectFalseType } from '../../../../types/helperTypes';
 
 declare global {
+  interface DocumentSheetOptions extends FormApplicationOptions {
+    /**
+     * The default permissions required to view this Document sheet.
+     * @defaultValue {@link CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED}
+     */
+    viewPermission: foundry.CONST.DOCUMENT_PERMISSION_LEVELS;
+  }
+
   /**
    * Extend the FormApplication pattern to incorporate specific logic for viewing or editing Document instances.
    * See the FormApplication documentation for more complete description of this interface.
@@ -13,7 +21,7 @@ declare global {
    * @typeParam ConcreteDocument - the type of the Document which should be managed by this form sheet
    */
   abstract class DocumentSheet<
-    Options extends DocumentSheet.Options = DocumentSheet.Options,
+    Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends object = DocumentSheet.Data,
     ConcreteDocument extends foundry.abstract.Document<any, any> = Data extends DocumentSheet.Data<infer T>
       ? T
@@ -23,13 +31,14 @@ declare global {
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
-     *   classes: ['sheet'],
+     *   classes: ["sheet"],
      *   template: `templates/sheets/${this.name.toLowerCase()}.html`,
-     *   viewPermission: CONST.ENTITY_PERMISSIONS.LIMITED
+     *   viewPermission: CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED,
+     *   sheetConfig: true
      * });
      * ```
      */
-    static get defaultOptions(): DocumentSheet.Options;
+    static get defaultOptions(): DocumentSheetOptions;
 
     /**
      * A semantic convenience reference to the Document instance which is the target object for this form.
@@ -72,15 +81,16 @@ declare global {
     protected _getHeaderButtons(): Application.HeaderButton[];
 
     /**
+     * Handle requests to configure the default sheet used by this Document
+     * @internal
+     */
+    protected _onConfigureSheet(event: JQuery.ClickEvent): void;
+
+    /**
      * @param event - (unused)
      * @override
      */
     protected _updateObject(event: Event, formData: object): Promise<unknown>;
-
-    /**
-     * @deprecated since 0.8.0
-     */
-    get entity(): ConcreteDocument;
   }
 
   namespace DocumentSheet {
@@ -90,7 +100,7 @@ declare global {
      */
     interface Data<
       ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>,
-      Options extends DocumentSheet.Options = DocumentSheet.Options
+      Options extends DocumentSheetOptions = DocumentSheetOptions
     > {
       cssClass: string;
       editable: boolean;
@@ -100,27 +110,6 @@ declare global {
       options: Options;
       owner: boolean;
       title: string;
-      readonly entity: this['data'];
-    }
-
-    interface Options extends FormApplicationOptions {
-      /**
-       * @defaultValue `['sheet']`
-       */
-      classes: string[];
-
-      /**
-       * @defaultValue
-       * ```javascript
-       * `templates/sheets/${this.name.toLowerCase()}.html`
-       * ```
-       */
-      template: string;
-
-      /**
-       * @defaultValue {@link ENTITY_PERMISSIONS.LIMITED}
-       */
-      viewPermission: foundry.CONST.DOCUMENT_PERMISSION_LEVELS;
     }
   }
 }

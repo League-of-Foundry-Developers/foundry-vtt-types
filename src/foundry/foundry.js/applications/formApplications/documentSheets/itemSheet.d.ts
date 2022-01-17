@@ -83,6 +83,6 @@ declare global {
       item: this['document'];
     }
 
-    type Options = DocumentSheet.Options;
+    type Options = DocumentSheetOptions;
   }
 }

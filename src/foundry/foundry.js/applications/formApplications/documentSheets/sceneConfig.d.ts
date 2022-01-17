@@ -9,7 +9,7 @@ declare global {
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
   class SceneConfig<
-    Options extends DocumentSheet.Options = DocumentSheet.Options,
+    Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends object = SceneConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Scene'>>> {
     /**
@@ -25,7 +25,7 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): DocumentSheet.Options;
+    static get defaultOptions(): DocumentSheetOptions;
 
     /**
      * @override
@@ -44,7 +44,7 @@ declare global {
      * @param options - (unused)
      * @override
      */
-    getData(options?: Partial<DocumentSheet.Options>): Data | Promise<Data>;
+    getData(options?: Partial<DocumentSheetOptions>): Data | Promise<Data>;
 
     /**
      * Get an enumeration of the available grid types which can be applied to this Scene
@@ -100,7 +100,7 @@ declare global {
   }
 
   namespace SceneConfig {
-    interface Data<Options extends DocumentSheet.Options = DocumentSheet.Options>
+    interface Data<Options extends DocumentSheetOptions = DocumentSheetOptions>
       extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Scene'>>, Options> {
       gridTypes: ReturnType<typeof SceneConfig['_getGridTypes']>;
       weatherTypes: ReturnType<SceneConfig['_getWeatherTypes']>;

@@ -2,7 +2,7 @@ import { expectType } from 'tsd';
 
 declare const doc: AmbientSoundDocument;
 
-expectType<DocumentSheet.Options>(AmbientSoundConfig.defaultOptions);
+expectType<DocumentSheetOptions>(AmbientSoundConfig.defaultOptions);
 
 const config = new AmbientSoundConfig(doc);
 expectType<string>(config.title);
