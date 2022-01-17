@@ -62,8 +62,8 @@ expectError(cards.draw(cards, undefined, { unknownProp: 0 }));
 expectError(cards.draw(cards, undefined, { updateData: { unknownProp: 3 } }));
 
 // shuffle
-expectType<Promise<Card[]>>(cards.shuffle());
-expectType<Promise<Card[]>>(
+expectType<Promise<Cards>>(cards.shuffle());
+expectType<Promise<Cards>>(
   cards.shuffle({
     updateData: {
       value: 1
@@ -75,8 +75,8 @@ expectError(cards.shuffle({ unknownProp: 0 }));
 expectError(cards.shuffle({ updateData: { unknownProp: 3 } }));
 
 // reset
-expectType<Promise<Card[] | Cards>>(cards.reset());
-expectType<Promise<Card[] | Cards>>(
+expectType<Promise<Cards>>(cards.reset());
+expectType<Promise<Cards>>(
   cards.reset({
     updateData: {
       value: 1
