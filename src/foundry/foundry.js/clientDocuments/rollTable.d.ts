@@ -158,7 +158,7 @@ declare global {
       /**
        * The chat roll mode to use when displaying the result
        */
-      rollMode: foundry.CONST.DICE_ROLL_MODES;
+      rollMode: keyof CONFIG.Dice.RollModes | 'roll';
     }
 
     /**
@@ -180,7 +180,7 @@ declare global {
        * Additional options which customize the created messages
        * @defaultValue `{}`
        */
-      messageOptions: ConstructorParameters<typeof foundry.documents.BaseChatMessage>[1];
+      messageOptions: DocumentModificationContext & { rollMode: keyof CONFIG.Dice.RollModes | 'roll' };
     }
 
     interface RollOptions {

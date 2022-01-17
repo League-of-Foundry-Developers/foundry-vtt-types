@@ -276,7 +276,7 @@ declare global {
      * @param mode - The new roll mode setting
      * @internal
      */
-    protected static _setRollMode(mode: foundry.CONST.DICE_ROLL_MODES): void;
+    protected static _setRollMode(mode: keyof CONFIG.Dice.RollModes): void;
   }
 
   namespace ChatLog {
@@ -297,7 +297,7 @@ declare global {
 
     interface Data {
       user: InstanceType<ConfiguredDocumentClass<typeof User>>;
-      rollMode: foundry.CONST.DICE_ROLL_MODES;
+      rollMode: keyof CONFIG.Dice.RollModes;
       rollModes: typeof CONFIG['Dice']['rollModes'];
       isStream: boolean;
     }

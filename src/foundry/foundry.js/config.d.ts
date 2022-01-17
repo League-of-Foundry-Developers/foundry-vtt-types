@@ -328,19 +328,7 @@ declare global {
       /** @defaultValue `[Die, FateDie]` */
       types: Array<ConstructorOf<DiceTerm>>;
 
-      rollModes: {
-        /** @defaultValue `'CHAT.RollPublic'` */
-        roll: string;
-
-        /** @defaultValue `'CHAT.RollPrivate'` */
-        gmroll: string;
-
-        /** @defaultValue `CHAT.RollBlind'` */
-        blindroll: string;
-
-        /** @defaultValue `'CHAT.RollSelf'` */
-        selfroll: string;
-      } & Record<string, string>;
+      rollModes: CONFIG.Dice.RollModes;
 
       /** @defaultValue `[Roll]` */
       rolls: Array<ConstructorOf<Roll>>;
@@ -1560,6 +1548,11 @@ declare global {
         label: string;
         src: string;
       }
+    }
+
+    namespace Dice {
+      // eslint-disable-next-line @typescript-eslint/no-empty-interface
+      interface RollModes extends Record<foundry.CONST.DICE_ROLL_MODES, string> {}
     }
   }
 
