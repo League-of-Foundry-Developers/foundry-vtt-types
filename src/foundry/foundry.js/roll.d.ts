@@ -351,11 +351,29 @@ declare global {
 
     /**
      * Render a Roll instance to HTML
-     * @param chatOptions - An object configuring the behavior of the resulting chat message.
-     *                      (default: `{}`)
+     * @param options - Options which affect how the Roll is rendered
+     *                  (default: `{}`)
      * @returns The rendered HTML template as a string
      */
-    render(chatOptions?: ChatOptions): Promise<string>;
+    render(options?: {
+      /**
+       * Flavor text to include
+       * @defaultValue `undefined`
+       */
+      flavor?: string;
+
+      /**
+       * A custom HTML template path
+       * @defaultValue `this.constructor.CHAT_TEMPLATE`
+       */
+      template?: string;
+
+      /**
+       * Is the Roll displayed privately?
+       * @defaultValue `false`
+       */
+      isPrivate?: boolean;
+    }): Promise<string>;
 
     /**
      * Transform a Roll instance into a ChatMessage, displaying the roll result.
@@ -440,35 +458,12 @@ declare global {
      * roll.formula; // 4d8 + 8
      * ```
      */
-    static fromTerms(
+    static fromTerms<T extends ConstructorOf<Roll<any>>>(
+      this: T,
       terms: RollTerm[],
       options?: InexactPartial<Options>
-    ): typeof CONFIG.Dice.rolls extends [infer T] ? T : Roll<{}>;
+    ): InstanceType<T>;
   }
-}
-
-interface ChatOptions {
-  /**
-   * @defaultValue `false`
-   */
-  blind?: boolean;
-
-  /**
-   * @defaultValue `null`
-   */
-  flavor?: any;
-
-  /**
-   * @defaultValue `false`
-   */
-  isPrivate?: boolean;
-
-  template?: string;
-
-  /**
-   * @defaultValue The id of the current user
-   */
-  user?: string;
 }
 
 type Options = RollTerm.EvaluationOptions;
