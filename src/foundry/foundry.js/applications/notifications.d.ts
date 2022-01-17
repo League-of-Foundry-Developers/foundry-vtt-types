@@ -13,7 +13,7 @@
  *
  * @typeParam Options - the type of the options object
  */
-declare class Notifications<Options extends Application.Options = Application.Options> extends Application<Options> {
+declare class Notifications<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
   constructor(options?: Partial<Options>);
 
   /**
@@ -39,15 +39,18 @@ declare class Notifications<Options extends Application.Options = Application.Op
    * });
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): ApplicationOptions;
 
   /**
    * Initialize the Notifications system by displaying any system-generated messages which were passed from the server.
    */
   initialize(): void;
 
-  /** @override */
-  protected _renderInner(data: object): JQuery;
+  /**
+   * @override
+   * @remarks This return a `JQuery`, which is incompatible with the expected `Promise<JQuery` (see https://gitlab.com/foundrynet/foundryvtt/-/issues/6554).
+   */
+  protected _renderInner(data: object): any;
 
   /** @override */
   protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;

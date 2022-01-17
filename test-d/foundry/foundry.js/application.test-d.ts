@@ -1,6 +1,6 @@
 import { expectType } from 'tsd';
 
-expectType<Application.Options>(Application.defaultOptions);
+expectType<ApplicationOptions>(Application.defaultOptions);
 
 const app = new (class extends Application {})();
 expectType<string>(app.id);
@@ -13,7 +13,7 @@ expectType<boolean>(app.rendered);
 
 expectType<void>(app.bringToTop());
 expectType<object | Promise<object>>(app.getData());
-expectType<Application.Options>(app.options);
+expectType<ApplicationOptions>(app.options);
 expectType<Promise<void>>(app.close({ force: false }));
 expectType<Promise<void>>(app.close());
 expectType<unknown>(app.render());

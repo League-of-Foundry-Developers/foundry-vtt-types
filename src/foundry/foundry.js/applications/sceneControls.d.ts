@@ -33,7 +33,7 @@ interface SceneControl {
  * Scene controls navigation menu
  * @typeParam Options - the type of the options object
  */
-declare class SceneControls<Options extends Application.Options = Application.Options> extends Application<Options> {
+declare class SceneControls<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
   constructor(options?: Partial<Options>);
 
   /**
@@ -118,7 +118,7 @@ declare class SceneControls<Options extends Application.Options = Application.Op
 }
 
 declare namespace SceneControls {
-  export interface Options extends Application.Options {
+  export interface Options extends ApplicationOptions {
     /**
      * @defaultValue `100`
      */

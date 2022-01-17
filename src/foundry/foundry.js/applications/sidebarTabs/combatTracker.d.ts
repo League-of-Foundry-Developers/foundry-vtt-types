@@ -4,7 +4,7 @@ declare global {
   /**
    * The sidebar directory which organizes and displays world-level Combat documents.
    */
-  class CombatTracker<Options extends Application.Options = CombatTracker.Options> extends SidebarTab<Options> {
+  class CombatTracker<Options extends ApplicationOptions = CombatTracker.Options> extends SidebarTab<Options> {
     constructor(options?: Partial<Options>);
 
     /**
@@ -185,7 +185,7 @@ declare global {
       effects: Set<string>;
     };
 
-    interface Options extends Application.Options {
+    interface Options extends ApplicationOptions {
       /**
        * @defaultValue `'combat'`
        */

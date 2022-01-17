@@ -302,7 +302,7 @@ declare global {
       isStream: boolean;
     }
 
-    interface Options extends Application.Options {
+    interface Options extends ApplicationOptions {
       /**
        * @defaultValue `'chat'`
        */

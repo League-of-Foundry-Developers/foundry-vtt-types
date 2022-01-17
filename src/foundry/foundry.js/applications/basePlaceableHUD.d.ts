@@ -5,7 +5,7 @@
  */
 declare abstract class BasePlaceableHUD<
   Object extends PlaceableObject<any> = PlaceableObject,
-  Options extends Application.Options = Application.Options
+  Options extends ApplicationOptions = ApplicationOptions
 > extends Application<Options> {
   /**
    * Reference a PlaceableObject this HUD is currently bound to
@@ -23,7 +23,7 @@ declare abstract class BasePlaceableHUD<
    * })
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): ApplicationOptions;
 
   /**
    * Convenience access for the canvas layer which this HUD modifies

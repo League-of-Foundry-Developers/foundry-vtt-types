@@ -39,7 +39,7 @@ declare global {
     /**
      * Render any Applications associated with this DocumentCollection.
      */
-    render(force?: boolean, options?: Application.Options): void;
+    render(force?: boolean, options?: ApplicationOptions): void;
 
     /**
      * Update all objects in this DocumentCollection with a provided transformation.

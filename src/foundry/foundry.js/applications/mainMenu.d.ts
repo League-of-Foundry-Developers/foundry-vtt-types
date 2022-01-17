@@ -14,7 +14,7 @@ declare class MainMenu extends Application {
    * }
    * ```
    * */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): ApplicationOptions;
 
   /**
    * The structure of menu items
@@ -54,7 +54,7 @@ declare class MainMenu extends Application {
    * @override
    * @param options - (unused)
    */
-  getData(options?: Partial<Application.Options>): { items: MainMenu.MenuStructure };
+  getData(options?: Partial<ApplicationOptions>): { items: MainMenu.MenuStructure };
 
   /** @override */
   activateListeners(html: JQuery): void;

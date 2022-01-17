@@ -296,7 +296,7 @@ declare namespace FormApplication {
     preventRender?: boolean;
   }
 
-  interface Options extends Application.Options, ApplicationOptions {
+  interface Options extends ApplicationOptions, ApplicationOptions {
     /**
      * @defaultValue `['form']`
      */

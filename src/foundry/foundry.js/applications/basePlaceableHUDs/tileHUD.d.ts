@@ -5,7 +5,7 @@ declare global {
    * An implementation of the PlaceableHUD base class which renders a heads-up-display interface for Tile objects.
    * @typeParam Options - the type of the options object
    */
-  class TileHUD<Options extends Application.Options = Application.Options> extends BasePlaceableHUD<
+  class TileHUD<Options extends ApplicationOptions = ApplicationOptions> extends BasePlaceableHUD<
     ConcreteTile,
     Options
   > {
@@ -19,7 +19,7 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): Application.Options;
+    static get defaultOptions(): ApplicationOptions;
 
     /** @override */
     getData(options?: Partial<Options>): ReturnType<BasePlaceableHUD<ConcreteTile>['getData']> & {

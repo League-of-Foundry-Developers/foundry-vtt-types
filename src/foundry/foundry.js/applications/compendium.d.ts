@@ -5,7 +5,7 @@
  */
 declare class Compendium<
   Metadata extends CompendiumCollection.Metadata,
-  Options extends Application.Options = Application.Options
+  Options extends ApplicationOptions = ApplicationOptions
 > extends Application<Options> {
   constructor(collection: CompendiumCollection<Metadata>, options?: Partial<Options>);
 
@@ -27,7 +27,7 @@ declare class Compendium<
    * });
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): ApplicationOptions;
 
   /** @override */
   get title(): string;

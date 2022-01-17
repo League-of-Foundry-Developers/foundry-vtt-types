@@ -8,7 +8,7 @@ declare global {
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
   class SceneNavigation<
-    Options extends Application.Options = Application.Options,
+    Options extends ApplicationOptions = ApplicationOptions,
     Data extends object = SceneNavigation.Data
   > extends Application<Options> {
     constructor(options?: Partial<Options>);
@@ -31,7 +31,7 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): Application.Options;
+    static get defaultOptions(): ApplicationOptions;
 
     /**
      * Return an Array of Scenes which are displayed in the Navigation bar
@@ -45,7 +45,7 @@ declare global {
     protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
     /** @override */
-    getData(options?: Partial<Application.Options>): Data | Promise<Data>;
+    getData(options?: Partial<ApplicationOptions>): Data | Promise<Data>;
 
     /**
      * Expand the SceneNavigation menu, sliding it down if it is currently collapsed

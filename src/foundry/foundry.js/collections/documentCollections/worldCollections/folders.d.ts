@@ -19,7 +19,7 @@ declare global {
     static documentName: 'Folder';
 
     /** @override */
-    render(force?: boolean, context?: Application.Options): void;
+    render(force?: boolean, context?: ApplicationOptions): void;
 
     /**
      * Refresh the display of any active JournalSheet instances where the folder list will change.

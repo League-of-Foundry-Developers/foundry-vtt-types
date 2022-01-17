@@ -3,7 +3,7 @@
  * @typeParam Options - The type of the options object
  */
 declare abstract class SidebarTab<
-  Options extends Application.Options = Application.Options
+  Options extends ApplicationOptions = ApplicationOptions
 > extends Application<Options> {
   constructor(...args: ConstructorParameters<typeof Application>);
   /**
@@ -36,7 +36,7 @@ declare abstract class SidebarTab<
    * });
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): ApplicationOptions;
 
   /**  @override */
   protected _renderInner(data: object): Promise<JQuery>;
