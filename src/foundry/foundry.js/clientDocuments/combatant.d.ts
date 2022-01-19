@@ -1,5 +1,4 @@
 import { ConfiguredDocumentClass } from '../../../types/helperTypes';
-import { BaseUser } from '../../common/documents.mjs';
 
 declare global {
   /**
@@ -22,18 +21,6 @@ declare global {
       context: ConstructorParameters<typeof foundry.documents.BaseCombatant>[1]
     );
 
-    /**
-     * A cached reference to the Token which this Combatant represents, if any
-     * @defaultValue `undefined`
-     * */
-    protected _token: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>> | null | undefined;
-
-    /**
-     * A cached reference to the Actor which this Combatant represents, if any
-     * @defaultValue `undefined`
-     * */
-    protected _actor: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>> | null | undefined;
-
     /** The current value of the special tracked resource which pertains to this Combatant */
     resource: `${number}` | number | boolean | null;
 
@@ -54,8 +41,8 @@ declare global {
     /** @override */
     get isOwner(): boolean;
 
-    /** Is this Combatant entry currently visible in the Combat Tracker? */
-    get isVisible(): boolean;
+    /** @override */
+    get visible(): boolean;
 
     /** Is this Combatant "hidden", either because they are explicitly marked as hidden or because their token is hidden */
     get hidden(): boolean;
@@ -72,9 +59,14 @@ declare global {
     /** An array of User documents who have ownership of this Document */
     get players(): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseUser>>[];
 
+    /**
+     * Has this combatant been marked as defeated?
+     */
+    get isDefeated(): boolean;
+
     /** @override */
     testUserPermission(
-      user: BaseUser,
+      user: foundry.documents.BaseUser,
       permission: keyof typeof foundry.CONST.DOCUMENT_PERMISSION_LEVELS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,
       { exact }?: { exact?: boolean }
     ): boolean;
@@ -89,7 +81,7 @@ declare global {
     /**
      * Roll initiative for this particular combatant.
      * @param formula - A dice formula which overrides the default for this Combatant.
-     * @returns The Roll instance to use for the combatant.
+     * @returns The updated Combatant.
      */
     rollInitiative(formula: string): Promise<this | undefined>;
 
@@ -107,6 +99,11 @@ declare global {
      * @returns  The initiative formula to use for this combatant.
      */
     protected _getInitiativeFormula(): string;
+
+    /**
+     * @deprecated since v9
+     */
+    get isVisible(): boolean;
   }
 }
 export {};
