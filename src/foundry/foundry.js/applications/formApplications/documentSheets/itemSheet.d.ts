@@ -7,13 +7,17 @@ declare global {
    * @param item    - The Item instance being displayed within the sheet.
    * @param options - Additional application configuration options.
    *
-   * @typeParam Options - the type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
+   * @typeParam Options      - the type of the options object
+   * @typeParam ConcreteItem - The concrete Item document class that this sheet manages
+   * @typeParam Data         - The data structure used to render the handlebars template.
    */
   class ItemSheet<
     Options extends ItemSheet.Options = ItemSheet.Options,
-    Data extends object = ItemSheet.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Item>>> {
+    ConcreteItem extends InstanceType<ConfiguredDocumentClass<typeof Item>> = InstanceType<
+      ConfiguredDocumentClass<typeof Item>
+    >,
+    Data extends object = ItemSheet.Data<Options, ConcreteItem>
+  > extends DocumentSheet<Options, Data, ConcreteItem> {
     /**
      * @defaultValue
      * ```typescript
@@ -78,8 +82,12 @@ declare global {
     /**
      * @typeParam Options - the type of the options object
      */
-    interface Data<Options extends ItemSheet.Options = ItemSheet.Options>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Item>>, Options> {
+    interface Data<
+      Options extends ItemSheet.Options = ItemSheet.Options,
+      ConcreteItem extends InstanceType<ConfiguredDocumentClass<typeof Item>> = InstanceType<
+        ConfiguredDocumentClass<typeof Item>
+      >
+    > extends DocumentSheet.Data<ConcreteItem, Options> {
       item: this['document'];
     }
 

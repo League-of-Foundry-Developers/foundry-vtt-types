@@ -8,13 +8,17 @@ declare global {
    * @param actor   - The Actor instance being displayed within the sheet.
    * @param options - Additional application configuration options.
    *
-   * @typeParam Options - the type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
+   * @typeParam Options       - The type of the options object
+   * @typeParam ConcreteActor - The concrete Actor document class that this sheet manages
+   * @typeParam Data          - The data structure used to render the handlebars template
    */
   class ActorSheet<
     Options extends ActorSheet.Options = ActorSheet.Options,
-    Data extends object = ActorSheet.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Actor>>> {
+    ConcreteActor extends InstanceType<ConfiguredDocumentClass<typeof Actor>> = InstanceType<
+      ConfiguredDocumentClass<typeof Actor>
+    >,
+    Data extends object = ActorSheet.Data<Options, ConcreteActor>
+  > extends DocumentSheet<Options, Data, ConcreteActor> {
     /**
      * @defaultValue
      * ```typescript
@@ -162,8 +166,12 @@ declare global {
     /**
      * @typeParam Options - the type of the options object
      */
-    interface Data<Options extends ActorSheet.Options = ActorSheet.Options>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Actor>>, Options> {
+    interface Data<
+      Options extends ActorSheet.Options = ActorSheet.Options,
+      ConcreteActor extends InstanceType<ConfiguredDocumentClass<typeof Actor>> = InstanceType<
+        ConfiguredDocumentClass<typeof Actor>
+      >
+    > extends DocumentSheet.Data<ConcreteActor, Options> {
       actor: this['document'];
       items: ToObjectFalseType<foundry.data.ActorData>['items'];
       effects: ToObjectFalseType<foundry.data.ActorData>['effects'];
