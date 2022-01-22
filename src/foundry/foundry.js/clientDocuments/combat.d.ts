@@ -83,13 +83,13 @@ declare global {
      * Get a Combatant using its Token id
      * @param tokenId - The id of the Token for which to acquire the combatant
      */
-    getCombatantByToken(tokenId: string): InstanceType<ConfiguredDocumentClass<typeof Combat>> | undefined;
+    getCombatantByToken(tokenId: string): InstanceType<ConfiguredDocumentClass<typeof Combatant>> | undefined;
 
     /**
      * Get a Combatant using its Actor id
      * @param actorId - The id of the Actor for which to acquire the combatant
      */
-    getCombatantByActor(actorId: string): InstanceType<ConfiguredDocumentClass<typeof Combat>> | undefined;
+    getCombatantByActor(actorId: string): InstanceType<ConfiguredDocumentClass<typeof Combatant>> | undefined;
 
     /** Advance the combat to the next round */
     nextRound(): Promise<this | undefined>;
