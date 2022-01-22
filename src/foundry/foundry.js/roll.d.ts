@@ -147,21 +147,21 @@ declare global {
      * console.log(r.total);  // 11
      * ```
      */
-    evaluate(options?: InexactPartial<Options & { async: false }>): this;
-    evaluate(options: InexactPartial<Options> & { async: true }): Promise<this>;
-    evaluate(options?: InexactPartial<Options>): this | Promise<this>;
+    evaluate(options?: InexactPartial<Options & { async: false }>): Evaluated<this>;
+    evaluate(options: InexactPartial<Options> & { async: true }): Promise<Evaluated<this>>;
+    evaluate(options?: InexactPartial<Options>): Evaluated<this> | Promise<Evaluated<this>>;
 
     /**
      * Evaluate the roll asynchronously.
      * A temporary helper method used to migrate behavior from 0.7.x (sync by default) to 0.9.x (async by default).
      */
-    protected _evaluate(options?: InexactPartial<Omit<Options, 'async'>>): Promise<this>;
+    protected _evaluate(options?: InexactPartial<Omit<Options, 'async'>>): Promise<Evaluated<this>>;
 
     /**
      * Evaluate the roll synchronously.
      * A temporary helper method used to migrate behavior from 0.7.x (sync by default) to 0.9.x (async by default).
      */
-    protected _evaluateSync(options?: InexactPartial<Omit<Options, 'async'>>): this;
+    protected _evaluateSync(options?: InexactPartial<Omit<Options, 'async'>>): Evaluated<this>;
 
     /**
      * Safely evaluate the final total result for the Roll using its component terms.
@@ -173,9 +173,9 @@ declare global {
      * Alias for evaluate.
      * @see Roll#evaluate
      */
-    roll(options?: InexactPartial<Options & { async: false }>): this;
-    roll(options: InexactPartial<Options> & { async: true }): Promise<this>;
-    roll(options?: InexactPartial<Options>): this | Promise<this>;
+    roll(options?: InexactPartial<Options & { async: false }>): Evaluated<this>;
+    roll(options: InexactPartial<Options> & { async: true }): Promise<Evaluated<this>>;
+    roll(options?: InexactPartial<Options>): Evaluated<this> | Promise<Evaluated<this>>;
 
     /**
      * Create a new Roll object using the original provided formula and data.
@@ -183,9 +183,9 @@ declare global {
      * @param options - Evaluation options passed to Roll#evaluate
      * @returns A new Roll object, rolled using the same formula and data
      */
-    reroll(options?: InexactPartial<Options & { async: false }>): this;
-    reroll(options: InexactPartial<Options> & { async: true }): Promise<this>;
-    reroll(options?: InexactPartial<Options>): this | Promise<this>;
+    reroll(options?: InexactPartial<Options & { async: false }>): Evaluated<this>;
+    reroll(options: InexactPartial<Options> & { async: true }): Promise<Evaluated<this>>;
+    reroll(options?: InexactPartial<Options>): Evaluated<this> | Promise<Evaluated<this>>;
 
     /**
      * A factory method which constructs a Roll instance using the default configured Roll class.
@@ -491,3 +491,5 @@ type MessageData<T extends DeepPartial<ConstructorParameters<typeof ChatMessage>
   content: number;
   sound: typeof CONFIG.sounds.dice;
 } & T;
+
+type Evaluated<T extends Roll> = T & { _evaluated: true; _total: number; get total(): number };
