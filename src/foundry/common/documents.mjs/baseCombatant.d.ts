@@ -26,7 +26,7 @@ export declare class BaseCombatant extends Document<
       isEmbedded: true;
       labelPlural: 'DOCUMENT.Combatants';
       permissions: {
-        create: 'PLAYER';
+        create: typeof BaseCombatant._canCreate;
         update: typeof BaseCombatant._canUpdate;
       };
     }
@@ -38,8 +38,6 @@ export declare class BaseCombatant extends Document<
    */
   protected static _canUpdate(user: BaseUser, doc: BaseCombatant, data?: CombatantDataConstructorData): boolean;
 
-  /**
-   * Is a user able to create this Combatant?
-   */
+  /** Is a user able to create this Combatant? */
   protected static _canCreate(user: BaseUser, doc: BaseCombatant, data?: CombatantDataConstructorData): boolean;
 }
