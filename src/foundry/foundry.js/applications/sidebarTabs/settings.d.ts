@@ -6,7 +6,7 @@ declare global {
    * The Settings sidebar is the furthest-to-right using a triple-cogs icon.
    * @typeParam Options - The type of the options object
    */
-  class Settings<Options extends Application.Options = Application.Options> extends SidebarTab<Options> {
+  class Settings<Options extends ApplicationOptions = ApplicationOptions> extends SidebarTab<Options> {
     /**
      * @override
      * @defaultValue
@@ -18,7 +18,7 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): Application.Options;
+    static get defaultOptions(): ApplicationOptions;
 
     /**
      * @param options - (unused)

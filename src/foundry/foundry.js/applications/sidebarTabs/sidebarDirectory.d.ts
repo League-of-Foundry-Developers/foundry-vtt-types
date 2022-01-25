@@ -224,7 +224,7 @@ declare global {
       sidebarIcon: string;
     }
 
-    interface Options extends Application.Options {
+    interface Options extends ApplicationOptions {
       renderUpdateKeys: string[];
       contextMenuSelector: string;
     }

@@ -8,11 +8,11 @@ const config = new UserConfig(new User());
 expectType<User>(config.object);
 expectType<User>(config.getData().user);
 expectType<Actor[]>(config.getData().actors);
-expectType<DocumentSheet.Options>(config.getData().options);
+expectType<DocumentSheetOptions>(config.getData().options);
 
-const withCustomOptions = new UserConfig<DocumentSheet.Options & { custom: true }>(new User());
-expectType<DocumentSheet.Options & { custom: true }>(withCustomOptions.options);
-expectType<DocumentSheet.Options & { custom: true }>(withCustomOptions.getData().options);
+const withCustomOptions = new UserConfig<DocumentSheetOptions & { custom: true }>(new User());
+expectType<DocumentSheetOptions & { custom: true }>(withCustomOptions.options);
+expectType<DocumentSheetOptions & { custom: true }>(withCustomOptions.getData().options);
 
-const withCustomData = new UserConfig<DocumentSheet.Options, { me: User }>(new User());
+const withCustomData = new UserConfig<DocumentSheetOptions, { me: User }>(new User());
 expectType<{ me: User }>(withCustomData.getData());

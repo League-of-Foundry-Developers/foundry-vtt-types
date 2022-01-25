@@ -8,7 +8,7 @@ declare global {
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
   class SettingsConfig<
-    Options extends FormApplication.Options = FormApplication.Options,
+    Options extends FormApplicationOptions = FormApplicationOptions,
     Data extends object = SettingsConfig.Data
   > extends FormApplication<Options, Data> {
     /**

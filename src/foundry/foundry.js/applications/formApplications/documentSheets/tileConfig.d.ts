@@ -48,7 +48,7 @@ declare global {
   }
 
   namespace TileConfig {
-    interface Data<Options extends DocumentSheet.Options>
+    interface Data<Options extends DocumentSheetOptions>
       extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Tile'>>, Options> {
       submitText: string;
       occlusionModes: Record<foundry.CONST.TILE_OCCLUSION_MODES, string>;
@@ -56,7 +56,7 @@ declare global {
 
     type FormData = Pick<TileDataConstructorData, 'height' | 'img' | 'rotation' | 'width' | 'x' | 'y'>;
 
-    interface Options extends DocumentSheet.Options {
+    interface Options extends DocumentSheetOptions {
       /**
        * Configure a preview version of a tile which is not yet saved
        */

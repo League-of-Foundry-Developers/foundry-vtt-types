@@ -7,7 +7,7 @@
  */
 
 declare class ModuleManagement<
-  Options extends FormApplication.Options = FormApplication.Options,
+  Options extends FormApplicationOptions = FormApplicationOptions,
   Data extends object = ModuleManagement.Data
 > extends FormApplication<Options, Data, undefined> {
   /**
@@ -50,7 +50,7 @@ declare class ModuleManagement<
    * });
    * ```
    */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): FormApplicationOptions;
 
   /** @override */
   get isEditable(): boolean;

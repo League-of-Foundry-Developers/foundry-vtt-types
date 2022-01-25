@@ -8,7 +8,7 @@ declare global {
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
   class MeasuredTemplateConfig<
-    Options extends DocumentSheet.Options = DocumentSheet.Options,
+    Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends object = MeasuredTemplateConfig.Data
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'MeasuredTemplate'>>> {
     /**
@@ -24,7 +24,7 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): DocumentSheet.Options;
+    static get defaultOptions(): DocumentSheetOptions;
 
     /** @override */
     getData(): Data | Promise<Data>;
@@ -37,7 +37,7 @@ declare global {
   }
 
   namespace MeasuredTemplateConfig {
-    interface Data<Options extends DocumentSheet.Options = DocumentSheet.Options>
+    interface Data<Options extends DocumentSheetOptions = DocumentSheetOptions>
       extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'MeasuredTemplate'>>, Options> {
       templateTypes: typeof CONFIG.MeasuredTemplate.types;
       gridUnits: string;

@@ -8,7 +8,7 @@ declare global {
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
   class ActiveEffectConfig<
-    Options extends DocumentSheet.Options = ActiveEffectConfig.Options,
+    Options extends DocumentSheetOptions = ActiveEffectConfig.Options,
     Data extends object = ActiveEffectConfig.Data
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>> {
     /**
@@ -70,6 +70,6 @@ declare global {
       modes: Record<foundry.CONST.ACTIVE_EFFECT_MODES, string>;
     }
 
-    type Options = DocumentSheet.Options;
+    type Options = DocumentSheetOptions;
   }
 }

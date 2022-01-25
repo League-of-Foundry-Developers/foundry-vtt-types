@@ -8,7 +8,7 @@ declare global {
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
   class AmbientSoundConfig<
-    Options extends DocumentSheet.Options = AmbientSoundConfig.Options,
+    Options extends DocumentSheetOptions = AmbientSoundConfig.Options,
     Data extends object = AmbientSoundConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'AmbientSound'>>> {
     /**
@@ -22,7 +22,7 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): DocumentSheet.Options;
+    static get defaultOptions(): DocumentSheetOptions;
 
     /** @override */
     get title(): string;
@@ -44,7 +44,7 @@ declare global {
   }
 
   namespace AmbientSoundConfig {
-    interface Data<Options extends DocumentSheet.Options>
+    interface Data<Options extends DocumentSheetOptions>
       extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'AmbientSound'>>, Options> {
       submitText: string;
     }
@@ -52,6 +52,6 @@ declare global {
     type FormData = Pick<foundry.data.AmbientSoundData, 'easing' | 'path' | 'volume'> &
       Pick<AmbientSoundDataConstructorData, 'radius' | 'x' | 'y'>;
 
-    type Options = DocumentSheet.Options;
+    type Options = DocumentSheetOptions;
   }
 }

@@ -193,7 +193,7 @@ declare namespace Dialog {
     default: string;
   }
 
-  interface Options extends Application.Options {
+  interface Options extends ApplicationOptions {
     /**
      * @defaultValue `400`
      */

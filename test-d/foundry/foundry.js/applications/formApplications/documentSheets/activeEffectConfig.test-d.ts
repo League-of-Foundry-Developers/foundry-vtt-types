@@ -14,10 +14,10 @@ expectType<boolean>((await config.getData()).isActorEffect);
 expectType<boolean>((await config.getData()).isItemEffect);
 expectType<string>((await config.getData()).submitText);
 expectType<Record<foundry.CONST.ACTIVE_EFFECT_MODES, string>>((await config.getData()).modes);
-expectType<DocumentSheet.Options>(config.options);
+expectType<DocumentSheetOptions>(config.options);
 
-const withCustomOptions = new ActiveEffectConfig<DocumentSheet.Options & { custom: true }>(new ActiveEffect());
-expectType<DocumentSheet.Options & { custom: true }>(withCustomOptions.options);
+const withCustomOptions = new ActiveEffectConfig<DocumentSheetOptions & { custom: true }>(new ActiveEffect());
+expectType<DocumentSheetOptions & { custom: true }>(withCustomOptions.options);
 
-const withCustomData = new ActiveEffectConfig<DocumentSheet.Options, { object: ActiveEffectData }>(new ActiveEffect());
+const withCustomData = new ActiveEffectConfig<DocumentSheetOptions, { object: ActiveEffectData }>(new ActiveEffect());
 expectType<Promise<{ object: ActiveEffectData }> | { object: ActiveEffectData }>(withCustomData.getData());

@@ -56,7 +56,7 @@ declare class AVConfig extends FormApplication<AVConfig.Options, AVConfig.Data, 
 }
 
 declare namespace AVConfig {
-  interface Options extends FormApplication.Options {
+  interface Options extends FormApplicationOptions {
     /**
      * @defaultValue `game.i18n.localize('WEBRTC.Title')`
      */

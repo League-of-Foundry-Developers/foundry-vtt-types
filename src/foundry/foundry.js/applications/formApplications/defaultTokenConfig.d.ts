@@ -3,7 +3,7 @@ declare global {
    * A sheet that alters the values of the default Token configuration used when new Token documents are created.
    */
   class DefaultTokenConfig<
-    Options extends FormApplication.Options = FormApplication.Options,
+    Options extends FormApplicationOptions = FormApplicationOptions,
     Data extends DefaultTokenConfig.Data = DefaultTokenConfig.Data
   > extends FormApplication<Options, Data, foundry.data.TokenData['_source']> {
     constructor(object: unknown, options: Options);

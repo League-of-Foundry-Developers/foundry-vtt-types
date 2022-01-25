@@ -7,7 +7,7 @@ declare global {
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
   class UserConfig<
-    Options extends DocumentSheet.Options = UserConfig.Options,
+    Options extends DocumentSheetOptions = UserConfig.Options,
     Data extends object = UserConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof User>>> {
     /**
@@ -48,32 +48,32 @@ declare global {
   }
 
   namespace UserConfig {
-    interface Data<Options extends DocumentSheet.Options> {
+    interface Data<Options extends DocumentSheetOptions> {
       user: InstanceType<ConfiguredDocumentClass<typeof User>>;
       actors: InstanceType<ConfiguredDocumentClass<typeof Actor>>[];
       options: Options;
     }
 
-    interface Options extends DocumentSheet.Options {
+    interface Options extends DocumentSheetOptions {
       /**
        * @defaultValue `["sheet", "user-config"]`
        */
-      classes: DocumentSheet.Options['classes'];
+      classes: DocumentSheetOptions['classes'];
 
       /**
        * @defaultValue `"templates/user/user-config.html"`
        */
-      template: DocumentSheet.Options['template'];
+      template: DocumentSheetOptions['template'];
 
       /**
        * @defaultValue `400`
        */
-      width: DocumentSheet.Options['width'];
+      width: DocumentSheetOptions['width'];
 
       /**
        * @defaultValue `auto`
        */
-      height: DocumentSheet.Options['height'];
+      height: DocumentSheetOptions['height'];
     }
   }
 }

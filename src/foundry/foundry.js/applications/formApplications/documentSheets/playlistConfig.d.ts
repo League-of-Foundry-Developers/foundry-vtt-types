@@ -7,7 +7,7 @@ declare global {
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
   class PlaylistConfig<
-    Options extends DocumentSheet.Options = DocumentSheet.Options,
+    Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends object = PlaylistConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Playlist>>> {
     /**
@@ -19,7 +19,7 @@ declare global {
      * options.width = 360;
      * ```
      */
-    static get defaultOptions(): DocumentSheet.Options;
+    static get defaultOptions(): DocumentSheetOptions;
 
     /** @override */
     get title(): string;
@@ -41,7 +41,7 @@ declare global {
   }
 
   namespace PlaylistConfig {
-    interface Data<Options extends DocumentSheet.Options = DocumentSheet.Options>
+    interface Data<Options extends DocumentSheetOptions = DocumentSheetOptions>
       extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Playlist>>, Options> {
       modes: Record<foundry.CONST.PLAYLIST_MODES, string>;
     }
