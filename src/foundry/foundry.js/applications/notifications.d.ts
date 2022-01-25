@@ -48,7 +48,7 @@ declare class Notifications<Options extends ApplicationOptions = ApplicationOpti
 
   /**
    * @override
-   * @remarks This return a `JQuery`, which is incompatible with the expected `Promise<JQuery` (see https://gitlab.com/foundrynet/foundryvtt/-/issues/6554).
+   * @remarks This return a `JQuery`, which is incompatible with the expected `Promise<JQuery>` (see https://gitlab.com/foundrynet/foundryvtt/-/issues/6554).
    */
   protected _renderInner(data: object): any;
 
