@@ -62,11 +62,12 @@ declare global {
     /**
      * Use the Fetch API to retrieve a resource and return a Blob instance for it.
      * @param options - Options to configure the loading behaviour.
+     *                  (default: `{}`)
      * @internal
      */
     protected _fetchResource(
       src: string,
-      options: {
+      options?: {
         /**
          * Append a cache-busting query parameter to the request.
          * @defaultValue `false`
