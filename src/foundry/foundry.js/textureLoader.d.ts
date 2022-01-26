@@ -72,7 +72,7 @@ declare global {
          * Append a cache-busting query parameter to the request.
          * @defaultValue `false`
          */
-        bustCache: boolean;
+        bustCache?: boolean | undefined;
       }
     ): Promise<Blob>;
 
