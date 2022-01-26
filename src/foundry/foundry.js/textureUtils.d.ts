@@ -20,6 +20,6 @@ declare function loadTexture(
   src: string,
   options?: {
     /** A fallback texture to use if the requested source is unavailable or invalid */
-    fallback?: string;
+    fallback?: string | undefined;
   }
 ): Promise<PIXI.Texture | null>;
