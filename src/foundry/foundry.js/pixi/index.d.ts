@@ -7,3 +7,4 @@ import './polygons';
 import './rectangles';
 import './shaders';
 import './texts';
+import './transforms';
