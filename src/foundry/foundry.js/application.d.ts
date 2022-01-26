@@ -323,7 +323,7 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
    * @returns A promise resolving to the constructed jQuery object
    * @internal
    */
-  protected _renderOuter(): Promise<HTMLElement> | Promise<JQuery<JQuery.Node>>;
+  protected _renderOuter(): Promise<JQuery>;
 
   /**
    * Render the inner application content
