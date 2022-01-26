@@ -97,12 +97,12 @@ declare class Quadtree<T> {
 
   /**
    * Get all the objects which could collide with the provided rectangle
-   * @param rect - The target rectangle
+   * @param rect - The normalized target rectangle
    * @param _s   - The existing result set, for internal use.
    *               (default: `new Set<T>()`)
    * @returns The objects in the Quadtree which represent potential collisions
    */
-  getObjects(rect: Rectangle, _s?: Set<T>): Set<T>;
+  getObjects(rect: NormalizedRectangle, _s?: Set<T>): Set<T>;
 
   /**
    * Obtain the leaf nodes to which a target rectangle belongs.
