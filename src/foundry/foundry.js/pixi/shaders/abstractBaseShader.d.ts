@@ -14,7 +14,7 @@ declare abstract class AbstractBaseShader extends PIXI.Shader {
 
   /**
    * The raw vertex shader used by this class.
-   * A subclass of AbstractBaseShader must implement the fragmentShader static field.
+   * A subclass of AbstractBaseShader must implement the vertexShader static field.
    * @defaultValue `""`
    *
    * @remarks This is abstract, subclasses must implement it.
