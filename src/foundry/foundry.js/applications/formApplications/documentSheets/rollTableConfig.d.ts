@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClassForName, ToObjectFalseType } from '../../../../../types/helperTypes';
-import type { TableResultDataConstructorData } from '../../../../common/data/data.mjs/tableResultData.js';
+import type { TableResultDataConstructorData } from '../../../../common/data/data.mjs/tableResultData';
 
 declare global {
   /**

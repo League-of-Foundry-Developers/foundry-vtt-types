@@ -2,7 +2,7 @@ import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from '../../../.
 import { DocumentData } from '../../abstract/module.mjs';
 import { BaseAmbientLight } from '../../documents.mjs';
 import * as fields from '../fields.mjs';
-import type { LightData, LightDataConstructorData } from './lightData.js';
+import type { LightData, LightDataConstructorData } from './lightData';
 
 interface AmbientLightDataSchema extends DocumentSchema {
   _id: fields.DocumentId;

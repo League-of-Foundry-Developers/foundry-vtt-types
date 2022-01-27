@@ -1,4 +1,4 @@
-import type { ConfiguredObjectClassForName } from '../../../types/helperTypes.js';
+import type { ConfiguredObjectClassForName } from '../../../types/helperTypes';
 
 declare global {
   /** @see {@link foundry.data.LightData} */

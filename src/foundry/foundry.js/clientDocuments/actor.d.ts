@@ -1,7 +1,7 @@
 import { ConfiguredDocumentClass, ConfiguredObjectClassForName, DocumentConstructor } from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
 import EmbeddedCollection from '../../common/abstract/embedded-collection.mjs';
-import type { ActorDataConstructorData } from '../../common/data/data.mjs/actorData.js';
+import type { ActorDataConstructorData } from '../../common/data/data.mjs/actorData';
 import type { ItemDataSource } from '../../common/data/data.mjs/itemData';
 
 declare global {

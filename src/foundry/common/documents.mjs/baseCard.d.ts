@@ -2,7 +2,7 @@ import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentMetadata, DocumentModificationOptions } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
 import * as data from '../data/data.mjs';
-import type { CardDataConstructorData, CardDataSource } from '../data/data.mjs/cardData.js';
+import type { CardDataConstructorData, CardDataSource } from '../data/data.mjs/cardData';
 import { BaseCards } from './baseCards';
 import { BaseUser } from './baseUser';
 

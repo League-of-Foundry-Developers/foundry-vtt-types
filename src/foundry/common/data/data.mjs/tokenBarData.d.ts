@@ -1,4 +1,4 @@
-import { PropertiesToSource } from '../../../../types/helperTypes.js';
+import { PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import { documents } from '../../module.mjs';
 

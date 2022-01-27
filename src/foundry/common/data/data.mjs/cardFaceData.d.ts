@@ -1,5 +1,5 @@
-import type { PropertiesToSource } from '../../../../types/helperTypes.js';
-import type DocumentData from '../../abstract/data.mjs.js';
+import type { PropertiesToSource } from '../../../../types/helperTypes';
+import type DocumentData from '../../abstract/data.mjs';
 import * as fields from '../fields.mjs';
 
 interface CardFaceDataSchema extends DocumentSchema {

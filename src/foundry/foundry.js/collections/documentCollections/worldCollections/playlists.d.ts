@@ -1,5 +1,5 @@
 import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
-import type { SceneDataConstructorData } from '../../../../common/data/data.mjs/sceneData.js';
+import type { SceneDataConstructorData } from '../../../../common/data/data.mjs/sceneData';
 
 declare global {
   /**

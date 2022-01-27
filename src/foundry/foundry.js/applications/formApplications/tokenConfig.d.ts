@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import type { TokenDataConstructorData } from '../../../common/data/data.mjs/tokenData.js';
+import type { TokenDataConstructorData } from '../../../common/data/data.mjs/tokenData';
 
 declare global {
   /**

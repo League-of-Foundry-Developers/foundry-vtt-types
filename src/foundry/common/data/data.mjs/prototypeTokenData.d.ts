@@ -1,8 +1,8 @@
-import { FieldReturnType, PropertiesToSource, ToObjectFalseType } from '../../../../types/helperTypes.js';
+import { FieldReturnType, PropertiesToSource, ToObjectFalseType } from '../../../../types/helperTypes';
 import DocumentData from '../../abstract/data.mjs';
-import { documents } from '../../module.mjs.js';
+import { documents } from '../../module.mjs';
 import * as fields from '../fields.mjs';
-import { TokenDataConstructorData, TokenDataProperties, TokenDataSchema } from './tokenData.js';
+import { TokenDataConstructorData, TokenDataProperties, TokenDataSchema } from './tokenData';
 
 type FieldExclusions =
   | '_id'

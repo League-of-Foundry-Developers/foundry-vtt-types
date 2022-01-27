@@ -1,7 +1,7 @@
 import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
-import type { CombatantDataConstructorData, CombatantDataSource } from '../data/data.mjs/combatantData.js';
+import type { CombatantDataConstructorData, CombatantDataSource } from '../data/data.mjs/combatantData';
 import { data } from '../module.mjs';
 import { BaseCombat } from './baseCombat';
 import { BaseUser } from './baseUser';

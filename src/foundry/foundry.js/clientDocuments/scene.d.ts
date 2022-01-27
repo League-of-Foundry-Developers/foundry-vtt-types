@@ -18,7 +18,7 @@ import type { TileDataConstructorData, TileDataSource } from '../../common/data/
 import type { TokenDataConstructorData, TokenDataSource } from '../../common/data/data.mjs/tokenData';
 import type { WallDataConstructorData, WallDataSource } from '../../common/data/data.mjs/wallData';
 
-import type { SceneDataConstructorData } from '../../common/data/data.mjs/sceneData.js';
+import type { SceneDataConstructorData } from '../../common/data/data.mjs/sceneData';
 
 declare global {
   /**

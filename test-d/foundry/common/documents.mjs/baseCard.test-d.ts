@@ -1,6 +1,6 @@
 import { expectError, expectType } from 'tsd';
 
-import type { CardFaceDataSource } from '../../../../src/foundry/common/data/data.mjs/cardFaceData.js';
+import type { CardFaceDataSource } from '../../../../src/foundry/common/data/data.mjs/cardFaceData';
 
 const baseCard = new foundry.documents.BaseCard();
 expectType<CardFaceDataSource>(baseCard.data._source.faces[0]);

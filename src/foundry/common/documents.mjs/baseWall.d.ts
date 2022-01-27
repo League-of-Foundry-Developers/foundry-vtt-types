@@ -2,7 +2,7 @@ import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { Context, DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
 import * as data from '../data/data.mjs';
-import type { WallDataConstructorData } from '../data/data.mjs/wallData.js';
+import type { WallDataConstructorData } from '../data/data.mjs/wallData';
 import { BaseScene } from './baseScene';
 import { BaseUser } from './baseUser';
 

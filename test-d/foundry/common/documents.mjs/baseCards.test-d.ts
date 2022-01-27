@@ -1,8 +1,8 @@
 import { expectError, expectType } from 'tsd';
 
 import type EmbeddedCollection from '../../../../src/foundry/common/abstract/embedded-collection.mjs';
-import type { CardDataSource } from '../../../../src/foundry/common/data/data.mjs/cardData.js';
-import type { CardFaceDataSource } from '../../../../src/foundry/common/data/data.mjs/cardFaceData.js';
+import type { CardDataSource } from '../../../../src/foundry/common/data/data.mjs/cardData';
+import type { CardFaceDataSource } from '../../../../src/foundry/common/data/data.mjs/cardFaceData';
 
 const baseCards = new foundry.documents.BaseCards();
 expectType<EmbeddedCollection<typeof Card, foundry.data.CardsData>>(baseCards.cards);

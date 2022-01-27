@@ -2,7 +2,7 @@ import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentMetadata, DocumentModificationOptions } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
 import * as data from '../data/data.mjs';
-import type { ActorDataConstructorData } from '../data/data.mjs/actorData.js';
+import type { ActorDataConstructorData } from '../data/data.mjs/actorData';
 import { BaseActiveEffect } from './baseActiveEffect';
 import { BaseItem } from './baseItem';
 import { BaseToken } from './baseToken';

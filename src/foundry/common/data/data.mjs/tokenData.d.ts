@@ -7,7 +7,7 @@ import {
 import DocumentData from '../../abstract/data.mjs';
 import { documents } from '../../module.mjs';
 import * as fields from '../fields.mjs';
-import { ActorDataSource } from './actorData.js';
+import { ActorDataSource } from './actorData';
 import { LightData, LightDataConstructorData } from './lightData';
 import { TokenBarData, TokenBarDataConstructorData } from './tokenBarData';
 

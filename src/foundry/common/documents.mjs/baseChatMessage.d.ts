@@ -2,7 +2,7 @@ import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
 import { BaseUser } from './baseUser';
 import * as data from '../data/data.mjs';
-import type { ChatMessageDataConstructorData } from '../data/data.mjs/chatMessageData.js';
+import type { ChatMessageDataConstructorData } from '../data/data.mjs/chatMessageData';
 
 /**
  * The base ChatMessage model definition which defines common behavior of an ChatMessage document between both client and server.

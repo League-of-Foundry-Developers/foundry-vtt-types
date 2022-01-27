@@ -1,6 +1,6 @@
 import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
-import type { CombatDataConstructorData } from '../data/data.mjs/combatData.js';
+import type { CombatDataConstructorData } from '../data/data.mjs/combatData';
 import { data } from '../module.mjs';
 import { BaseCombatant } from './baseCombatant';
 import { BaseUser } from './baseUser';

@@ -1,6 +1,6 @@
 import { FieldReturnType, PropertiesToSource } from '../../../types/helperTypes';
 import { DocumentData } from '../abstract/module.mjs';
-import type { PACKAGE_AVAILABILITY_CODES } from '../constants.mjs.js';
+import type { PACKAGE_AVAILABILITY_CODES } from '../constants.mjs';
 import * as fields from '../data/fields.mjs';
 import { PackageAuthorData, PackageAuthorDataConstructorData } from './packageAuthorData';
 import { PackageCompendiumData, PackageCompendiumDataConstructorData } from './packageCompendiumData';

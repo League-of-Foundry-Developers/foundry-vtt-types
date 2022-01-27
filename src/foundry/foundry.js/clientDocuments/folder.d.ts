@@ -1,6 +1,6 @@
 import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
-import type { FolderDataConstructorData } from '../../common/data/data.mjs/folderData.js';
+import type { FolderDataConstructorData } from '../../common/data/data.mjs/folderData';
 
 declare global {
   /**
