@@ -1,6 +1,7 @@
 import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
 import * as data from '../data/data.mjs';
+import type { UserDataConstructorData, UserDataSource } from '../data/data.mjs/userData';
 
 /**
  * The base User model definition which defines common behavior of an User document between both client and server.
@@ -25,8 +26,39 @@ export declare class BaseUser extends Document<data.UserData, null> {
       label: 'DOCUMENT.User';
       labelPlural: 'DOCUMENT.Users';
       isPrimary: true;
+      permissions: {
+        create: typeof BaseUser._canCreate;
+        update: typeof BaseUser._canUpdate;
+        delete: typeof BaseUser._canDelete;
+      };
     }
   >;
+
+  /**
+   * Is a user able to create an existing User?
+   * @param user - The user attempting the creation.
+   * @param doc  - The User document being created.
+   * @param data - The supplied creation data.
+   * @internal
+   */
+  protected static _canCreate(user: BaseUser, doc: BaseUser, data: UserDataSource): boolean;
+
+  /**
+   * Is a user able to update an existing User?
+   * @param user - The user attempting the update.
+   * @param doc  - The User document being updated.
+   * @param data - The update delta.
+   * @internal
+   */
+  protected static _canUpdate(user: BaseUser, doc: BaseUser, data: DeepPartial<UserDataConstructorData>): boolean;
+
+  /**
+   * Is a user able to delete an existing User?
+   * @param user - The user attempting the deletion.
+   * @param doc  - The User document being deleted.
+   * @internal
+   */
+  protected static _canDelete(user: BaseUser, doc: BaseUser): boolean;
 
   /**
    * Test whether the User has a GAMEMASTER or ASSISTANT role in this World?

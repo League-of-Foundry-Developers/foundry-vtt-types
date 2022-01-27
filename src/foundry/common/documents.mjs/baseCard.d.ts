@@ -1,5 +1,5 @@
 import { ConfiguredDocumentClass } from '../../../types/helperTypes';
-import { DocumentMetadata, DocumentModificationOptions } from '../abstract/document.mjs';
+import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
 import * as data from '../data/data.mjs';
 import type { CardDataConstructorData, CardDataSource } from '../data/data.mjs/cardData';
@@ -35,13 +35,6 @@ export declare class BaseCard extends Document<data.CardData, InstanceType<Confi
    * The sub-type of Card.
    */
   get type(): data.CardData['type'];
-
-  /** @override */
-  protected _preCreate(
-    data: CardDataConstructorData,
-    options: DocumentModificationOptions,
-    user: BaseUser
-  ): Promise<void>;
 
   /**
    * Is a User able to create a new embedded Card document within this parent?
