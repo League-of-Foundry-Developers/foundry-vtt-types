@@ -207,6 +207,8 @@ interface NoteDataConstructorData {
   flags?: ConfiguredFlags<'Note'> | null | undefined;
 }
 
+type NoteDataSource = PropertiesToSource<NoteDataProperties>;
+
 /**
  * The data schema for a Note embedded document.
  * @see BaseNote
@@ -214,7 +216,7 @@ interface NoteDataConstructorData {
 export class NoteData extends DocumentData<
   NoteDataSchema,
   NoteDataProperties,
-  PropertiesToSource<NoteDataProperties>,
+  NoteDataSource,
   NoteDataConstructorData,
   documents.BaseNote
 > {

@@ -192,6 +192,8 @@ interface WallDataConstructorData {
   flags?: ConfiguredFlags<'Wall'> | null | undefined;
 }
 
+type WallDataSource = PropertiesToSource<WallDataProperties>;
+
 /**
  * The data schema for a Wall document.
  * @see BaseWall
@@ -199,7 +201,7 @@ interface WallDataConstructorData {
 export class WallData extends DocumentData<
   WallDataSchema,
   WallDataProperties,
-  PropertiesToSource<WallDataProperties>,
+  WallDataSource,
   WallDataConstructorData,
   documents.BaseWall
 > {
@@ -215,7 +217,7 @@ export class WallData extends DocumentData<
   constructor(data: WallDataConstructorData, document?: documents.BaseWall | null);
 
   /** @override */
-  _initializeSource(data?: WallDataConstructorData): PropertiesToSource<WallDataProperties>;
+  _initializeSource(data?: WallDataConstructorData): WallDataSource;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

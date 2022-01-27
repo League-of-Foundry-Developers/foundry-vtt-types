@@ -1,10 +1,9 @@
 import { expectError, expectType } from 'tsd';
 
-import type { PropertiesToSource } from '../../../../src/types/helperTypes';
-import type { CardFaceDataProperties } from '../../../../src/foundry/common/data/data.mjs/cardFaceData.js';
+import type { CardFaceDataSource } from '../../../../src/foundry/common/data/data.mjs/cardFaceData.js';
 
 const baseCard = new foundry.documents.BaseCard();
-expectType<PropertiesToSource<CardFaceDataProperties>>(baseCard.data._source.faces[0]);
+expectType<CardFaceDataSource>(baseCard.data._source.faces[0]);
 
 interface OldCardDataSourceData {
   condition: 'grubby';

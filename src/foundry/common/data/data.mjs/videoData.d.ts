@@ -49,13 +49,15 @@ interface VideoDataConstructorData {
   volume?: number | null | undefined;
 }
 
+type VideoDataSource = PropertiesToSource<VideoDataProperties>;
+
 /**
  * An inner-object which defines the schema for how Tile video backgrounds are managed
  */
 export class VideoData extends DocumentData<
   VideoDataSchema,
   VideoDataProperties,
-  PropertiesToSource<VideoDataProperties>,
+  VideoDataSource,
   VideoDataConstructorData,
   documents.BaseTile
 > {

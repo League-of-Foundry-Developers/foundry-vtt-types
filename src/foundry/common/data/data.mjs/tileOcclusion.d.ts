@@ -43,13 +43,15 @@ interface TileOcclusionConstructorData {
   alpha?: number | null | undefined;
 }
 
+type TileOcclusionSource = PropertiesToSource<TileOcclusionProperties>;
+
 /**
  * An inner-object which defines the schema for how Tile occlusion settings are defined
  */
 export class TileOcclusion extends DocumentData<
   TileOcclusionSchema,
   TileOcclusionProperties,
-  PropertiesToSource<TileOcclusionProperties>,
+  TileOcclusionSource,
   TileOcclusionConstructorData,
   documents.BaseTile
 > {

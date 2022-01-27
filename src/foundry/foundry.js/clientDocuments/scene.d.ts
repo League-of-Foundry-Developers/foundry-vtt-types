@@ -1,23 +1,24 @@
-import { ConfiguredDocumentClass, PropertiesToSource } from '../../../types/helperTypes';
-import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
-import {
+import type { ConfiguredDocumentClass } from '../../../types/helperTypes';
+import type { DocumentModificationOptions } from '../../common/abstract/document.mjs';
+import type {
   AmbientLightDataConstructorData,
-  AmbientLightDataProperties
+  AmbientLightDataSource
 } from '../../common/data/data.mjs/ambientLightData';
-import {
+import type {
   AmbientSoundDataConstructorData,
-  AmbientSoundDataProperties
+  AmbientSoundDataSource
 } from '../../common/data/data.mjs/ambientSoundData';
-import { DrawingDataConstructorData, DrawingDataProperties } from '../../common/data/data.mjs/drawingData';
-import {
+import type { DrawingDataConstructorData, DrawingDataSource } from '../../common/data/data.mjs/drawingData';
+import type {
   MeasuredTemplateDataConstructorData,
-  MeasuredTemplateDataProperties
+  MeasuredTemplateDataSource
 } from '../../common/data/data.mjs/measuredTemplateData';
-import { NoteDataConstructorData, NoteDataProperties } from '../../common/data/data.mjs/noteData';
+import type { NoteDataConstructorData, NoteDataSource } from '../../common/data/data.mjs/noteData';
+import type { TileDataConstructorData, TileDataSource } from '../../common/data/data.mjs/tileData';
+import type { TokenDataConstructorData, TokenDataSource } from '../../common/data/data.mjs/tokenData';
+import type { WallDataConstructorData, WallDataSource } from '../../common/data/data.mjs/wallData';
+
 import type { SceneDataConstructorData } from '../../common/data/data.mjs/sceneData.js';
-import { TileDataConstructorData, TileDataProperties } from '../../common/data/data.mjs/tileData';
-import { TokenDataConstructorData, TokenDataProperties } from '../../common/data/data.mjs/tokenData';
-import { WallDataConstructorData, WallDataProperties } from '../../common/data/data.mjs/wallData';
 
 declare global {
   /**
@@ -205,56 +206,56 @@ declare global {
     _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>[],
-      result: DeepPartial<PropertiesToSource<DrawingDataProperties>>[],
+      result: DeepPartial<DrawingDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>[],
-      result: DeepPartial<PropertiesToSource<TokenDataProperties>>[],
+      result: DeepPartial<TokenDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof AmbientLightDocument>>[],
-      result: DeepPartial<PropertiesToSource<AmbientLightDataProperties>>[],
+      result: DeepPartial<AmbientLightDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>[],
-      result: DeepPartial<PropertiesToSource<NoteDataProperties>>[],
+      result: DeepPartial<NoteDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof AmbientSoundDocument>>[],
-      result: DeepPartial<PropertiesToSource<AmbientSoundDataProperties>>[],
+      result: DeepPartial<AmbientSoundDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>[],
-      result: DeepPartial<PropertiesToSource<MeasuredTemplateDataProperties>>[],
+      result: DeepPartial<MeasuredTemplateDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof TileDocument>>[],
-      result: DeepPartial<PropertiesToSource<TileDataProperties>>[],
+      result: DeepPartial<TileDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof WallDocument>>[],
-      result: DeepPartial<PropertiesToSource<WallDataProperties>>[],
+      result: DeepPartial<WallDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -262,49 +263,49 @@ declare global {
     /** @override */
     _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<PropertiesToSource<DrawingDataProperties>>[],
+      result: DeepPartial<DrawingDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<PropertiesToSource<TokenDataProperties>>[],
+      result: DeepPartial<TokenDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<PropertiesToSource<AmbientLightDataProperties>>[],
+      result: DeepPartial<AmbientLightDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<PropertiesToSource<NoteDataProperties>>[],
+      result: DeepPartial<NoteDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<PropertiesToSource<AmbientSoundDataProperties>>[],
+      result: DeepPartial<AmbientSoundDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<PropertiesToSource<MeasuredTemplateDataProperties>>[],
+      result: DeepPartial<MeasuredTemplateDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<PropertiesToSource<TileDataProperties>>[],
+      result: DeepPartial<TileDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<PropertiesToSource<WallDataProperties>>[],
+      result: DeepPartial<WallDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -313,56 +314,56 @@ declare global {
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>[],
-      result: DeepPartial<PropertiesToSource<DrawingDataProperties>>[],
+      result: DeepPartial<DrawingDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>[],
-      result: DeepPartial<PropertiesToSource<TokenDataProperties>>[],
+      result: DeepPartial<TokenDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof AmbientLightDocument>>[],
-      result: DeepPartial<PropertiesToSource<AmbientLightDataProperties>>[],
+      result: DeepPartial<AmbientLightDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>[],
-      result: DeepPartial<PropertiesToSource<NoteDataProperties>>[],
+      result: DeepPartial<NoteDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof AmbientSoundDocument>>[],
-      result: DeepPartial<PropertiesToSource<AmbientSoundDataProperties>>[],
+      result: DeepPartial<AmbientSoundDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>[],
-      result: DeepPartial<PropertiesToSource<MeasuredTemplateDataProperties>>[],
+      result: DeepPartial<MeasuredTemplateDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof TileDocument>>[],
-      result: DeepPartial<PropertiesToSource<TileDataProperties>>[],
+      result: DeepPartial<TileDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof WallDocument>>[],
-      result: DeepPartial<PropertiesToSource<WallDataProperties>>[],
+      result: DeepPartial<WallDataSource>[],
       options: DocumentModificationContext,
       userId: string
     ): void;

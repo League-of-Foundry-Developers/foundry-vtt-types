@@ -89,6 +89,8 @@ interface EffectDurationDataConstructorData {
   startTurn?: number | null | undefined;
 }
 
+type EffectDurationDataSource = PropertiesToSource<EffectDurationDataProperties>;
+
 /**
  * An embedded data structure which tracks the duration of an ActiveEffect.
  * @see ActiveEffectData
@@ -96,7 +98,7 @@ interface EffectDurationDataConstructorData {
 export class EffectDurationData extends DocumentData<
   EffectDurationDataSchema,
   EffectDurationDataProperties,
-  PropertiesToSource<EffectDurationDataProperties>,
+  EffectDurationDataSource,
   EffectDurationDataConstructorData,
   BaseActiveEffect
 > {

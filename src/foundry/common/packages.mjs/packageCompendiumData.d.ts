@@ -62,20 +62,22 @@ interface PackageCompendiumDataConstructorData {
   system?: string | null | undefined;
 }
 
+type PackageCompendiumDataSource = PropertiesToSource<PackageCompendiumDataProperties>;
+
 /**
  * An inner data object which represents a single compendium pack definition provided by a package in the packs array.
  */
 export class PackageCompendiumData extends DocumentData<
   PackageCompendiumDataSchema,
   PackageCompendiumDataProperties,
-  PropertiesToSource<PackageCompendiumDataProperties>,
+  PackageCompendiumDataSource,
   PackageCompendiumDataConstructorData
 > {
   /** @override */
   static defineSchema(): PackageCompendiumDataSchema;
 
   /** @override */
-  _initializeSource(data: PackageCompendiumDataConstructorData): PropertiesToSource<PackageCompendiumDataProperties>;
+  _initializeSource(data: PackageCompendiumDataConstructorData): PackageCompendiumDataSource;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

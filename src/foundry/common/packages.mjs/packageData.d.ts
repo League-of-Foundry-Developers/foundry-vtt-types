@@ -296,7 +296,6 @@ interface PackageDataConstructorData {
    */
   protected?: boolean | null | undefined;
 }
-
 /**
  * The data schema used to define a Package manifest.
  * Specific types of packages extend this schema with additional fields.
@@ -305,12 +304,12 @@ export class PackageData<
   Schema extends Omit<PackageDataSchema, 'system'>,
   Properties extends Omit<PackageDataProperties, 'system'>,
   ConstructorData extends Omit<PackageDataConstructorData, 'system'>
-> extends DocumentData<Schema, Properties, PropertiesToSource<PackageDataProperties>, ConstructorData> {
+> extends DocumentData<Schema, Properties, PropertiesToSource<Properties>, ConstructorData> {
   /** @override */
   static defineSchema(): Omit<PackageDataSchema, 'system'>;
 
   /** @override */
-  _initializeSource(data: ConstructorData): PropertiesToSource<PackageDataProperties>;
+  _initializeSource(data: ConstructorData): PropertiesToSource<Properties>;
 
   /**
    * Determine the availability a package based on the version numbers of its dependencies.

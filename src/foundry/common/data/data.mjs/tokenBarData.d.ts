@@ -27,6 +27,8 @@ interface TokenBarDataConstructorData {
   attribute?: string | null | undefined;
 }
 
+type TokenBarDataSource = PropertiesToSource<TokenBarDataProperties>;
+
 /**
  * An embedded data structure for the contents of a Token attribute bar.
  * @see TokenData
@@ -34,7 +36,7 @@ interface TokenBarDataConstructorData {
 export class TokenBarData extends DocumentData<
   TokenBarDataSchema,
   TokenBarDataProperties,
-  PropertiesToSource<TokenBarDataProperties>,
+  TokenBarDataSource,
   TokenBarDataConstructorData,
   documents.BaseToken
 > {

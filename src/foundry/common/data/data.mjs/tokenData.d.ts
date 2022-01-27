@@ -472,13 +472,15 @@ interface TokenDataConstructorData {
   flags?: ConfiguredFlags<'Token'> | null | undefined;
 }
 
+type TokenDataSource = PropertiesToSource<TokenDataProperties>;
+
 /**
  * The data schema for a Token document.
  */
 export class TokenData extends DocumentData<
   TokenDataSchema,
   TokenDataProperties,
-  PropertiesToSource<TokenDataProperties>,
+  TokenDataSource,
   TokenDataConstructorData,
   documents.BaseToken
 > {
@@ -496,7 +498,7 @@ export class TokenData extends DocumentData<
    * This can be safely removed after several major versions have passed. Maybe V12?
    * @override
    */
-  _initializeSource(data: TokenDataConstructorData): PropertiesToSource<TokenDataProperties>;
+  _initializeSource(data: TokenDataConstructorData): TokenDataSource;
 
   /** @override */
   protected _initialize(): void;

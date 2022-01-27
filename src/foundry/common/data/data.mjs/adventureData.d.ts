@@ -128,6 +128,8 @@ interface AdventureDataConstructorData {
   flags?: Record<string, unknown> | null | undefined;
 }
 
+type AdventureDataSource = PropertiesToSource<AdventureDataProperties>;
+
 /**
  * A data schema which encompasses a collection of base Documents which comprise an adventure module.
  *
@@ -140,7 +142,7 @@ interface AdventureDataConstructorData {
 export class AdventureData extends DocumentData<
   AdventureDataSchema,
   AdventureDataProperties,
-  PropertiesToSource<AdventureDataProperties>,
+  AdventureDataSource,
   AdventureDataConstructorData
 > {
   /** @override */

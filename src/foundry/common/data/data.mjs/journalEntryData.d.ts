@@ -110,6 +110,8 @@ interface JournalEntryDataConstructorData {
   flags?: ConfiguredFlags<'JournalEntry'> | null | undefined;
 }
 
+type JournalEntryDataSource = PropertiesToSource<JournalEntryDataProperties>;
+
 /**
  * The data schema for a JournalEntry document.
  * @see BaseJournalEntry
@@ -117,7 +119,7 @@ interface JournalEntryDataConstructorData {
 export class JournalEntryData extends DocumentData<
   JournalEntryDataSchema,
   JournalEntryDataProperties,
-  PropertiesToSource<JournalEntryDataProperties>,
+  JournalEntryDataSource,
   JournalEntryDataConstructorData,
   documents.BaseJournalEntry
 > {

@@ -181,6 +181,8 @@ interface PlaylistDataConstructorData {
   flags?: ConfiguredFlags<'Playlist'> | null | undefined;
 }
 
+type PlaylistDataSource = PropertiesToSource<PlaylistDataProperties>;
+
 /**
  * The data schema for a Playlist document.
  * @see BasePlaylist
@@ -188,7 +190,7 @@ interface PlaylistDataConstructorData {
 export class PlaylistData extends DocumentData<
   PlaylistDataSchema,
   PlaylistDataProperties,
-  PropertiesToSource<PlaylistDataProperties>,
+  PlaylistDataSource,
   PlaylistDataConstructorData,
   documents.BasePlaylist
 > {

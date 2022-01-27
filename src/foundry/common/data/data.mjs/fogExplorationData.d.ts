@@ -97,13 +97,15 @@ interface FogExplorationDataConstructorData {
   timestamp?: number | null | undefined;
 }
 
+type FogExplorationDataSource = PropertiesToSource<FogExplorationDataProperties>;
+
 /**
  * The data schema for a FogExploration document.
  */
 export class FogExplorationData extends DocumentData<
   FogExplorationDataSchema,
   FogExplorationDataProperties,
-  PropertiesToSource<FogExplorationDataProperties>,
+  FogExplorationDataSource,
   FogExplorationDataConstructorData
 > {
   /** @override */

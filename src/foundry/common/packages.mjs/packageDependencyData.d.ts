@@ -43,13 +43,15 @@ interface PackageDependencyDataConstructorData {
   manifest?: string | null | undefined;
 }
 
+type PackageDependencyDataSource = PropertiesToSource<PackageDependencyDataProperties>;
+
 /**
  * An inner data object which represents a single package dependency in the dependencies array.
  */
 export class PackageDependencyData extends DocumentData<
   PackageDependencyDataSchema,
   PackageDependencyDataProperties,
-  PropertiesToSource<PackageDependencyDataProperties>,
+  PackageDependencyDataSource,
   PackageDependencyDataConstructorData
 > {
   /** @override */

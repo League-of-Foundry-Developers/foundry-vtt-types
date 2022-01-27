@@ -60,6 +60,8 @@ interface EffectChangeDataConstructorData {
   priority?: number | null | undefined;
 }
 
+type EffectChangeDataSource = PropertiesToSource<EffectChangeDataProperties>;
+
 /**
  * An embedded data structure which defines the structure of a change applied by an ActiveEffect.
  * @see ActiveEffectData
@@ -67,7 +69,7 @@ interface EffectChangeDataConstructorData {
 export class EffectChangeData extends DocumentData<
   EffectChangeDataSchema,
   EffectChangeDataProperties,
-  PropertiesToSource<EffectChangeDataProperties>,
+  EffectChangeDataSource,
   EffectChangeDataConstructorData,
   BaseActiveEffect
 > {

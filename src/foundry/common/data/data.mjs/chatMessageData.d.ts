@@ -194,13 +194,15 @@ interface ChatMessageDataConstructorData {
   flags?: ConfiguredFlags<'ChatMessage'> | null | undefined;
 }
 
+type ChatMessageDataSource = PropertiesToSource<ChatMessageDataProperties>;
+
 /**
  * An embedded data object which defines the properties of a light source animation
  */
 export class ChatMessageData extends DocumentData<
   ChatMessageDataSchema,
   ChatMessageDataProperties,
-  PropertiesToSource<ChatMessageDataProperties>,
+  ChatMessageDataSource,
   ChatMessageDataConstructorData,
   documents.BaseChatMessage
 > {

@@ -171,6 +171,8 @@ interface MacroDataConstructorData {
   flags?: ConfiguredFlags<'Macro'> | null | undefined;
 }
 
+type MacroDataSource = PropertiesToSource<MacroDataProperties>;
+
 /**
  * The data schema for a Macro document.
  * @see BaseMacro
@@ -178,7 +180,7 @@ interface MacroDataConstructorData {
 export class MacroData extends DocumentData<
   MacroDataSchema,
   MacroDataProperties,
-  PropertiesToSource<MacroDataProperties>,
+  MacroDataSource,
   MacroDataConstructorData,
   documents.BaseMacro
 > {

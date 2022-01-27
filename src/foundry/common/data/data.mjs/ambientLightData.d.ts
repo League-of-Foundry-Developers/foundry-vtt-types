@@ -130,6 +130,8 @@ interface AmbientLightDataConstructorData {
   flags?: ConfiguredFlags<'AmbientLight'> | null | undefined;
 }
 
+type AmbientLightDataSource = PropertiesToSource<AmbientLightDataProperties>;
+
 /**
  * The data schema for a AmbientLight embedded document.
  * @see BaseAmbientLight
@@ -137,7 +139,7 @@ interface AmbientLightDataConstructorData {
 export class AmbientLightData extends DocumentData<
   AmbientLightDataSchema,
   AmbientLightDataProperties,
-  PropertiesToSource<AmbientLightDataProperties>,
+  AmbientLightDataSource,
   AmbientLightDataConstructorData,
   BaseAmbientLight
 > {
@@ -145,7 +147,7 @@ export class AmbientLightData extends DocumentData<
   static defineSchema(): AmbientLightDataSchema;
 
   /** @override */
-  _initializeSource(data: AmbientLightDataConstructorData): PropertiesToSource<AmbientLightDataProperties>;
+  _initializeSource(data: AmbientLightDataConstructorData): AmbientLightDataSource;
 
   /** @override */
   protected _initialize(): void;

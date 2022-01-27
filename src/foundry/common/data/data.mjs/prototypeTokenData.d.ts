@@ -52,10 +52,12 @@ interface PrototypeTokenDataConstructorData extends Omit<TokenDataConstructorDat
   img?: string | null | undefined;
 }
 
+type PrototypeTokenDataSource = PropertiesToSource<PrototypeTokenDataProperties>;
+
 export class PrototypeTokenData extends DocumentData<
   PrototypeTokenDataSchema,
   PrototypeTokenDataProperties,
-  PropertiesToSource<PrototypeTokenDataProperties>,
+  PrototypeTokenDataSource,
   PrototypeTokenDataConstructorData,
   documents.BaseActor
 > {

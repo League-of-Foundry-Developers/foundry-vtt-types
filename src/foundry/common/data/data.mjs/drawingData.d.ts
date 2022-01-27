@@ -373,6 +373,8 @@ interface DrawingDataConstructorData {
   flags?: ConfiguredFlags<'Drawing'> | null | undefined;
 }
 
+type DrawingDataSource = PropertiesToSource<DrawingDataProperties>;
+
 /**
  * The data schema for a Drawing embedded document.
  * @see BaseDrawing
@@ -383,7 +385,7 @@ interface DrawingDataConstructorData {
 export class DrawingData extends DocumentData<
   DrawingDataSchema,
   DrawingDataProperties,
-  PropertiesToSource<DrawingDataProperties>,
+  DrawingDataSource,
   DrawingDataConstructorData,
   documents.BaseFolder
 > {
