@@ -73,6 +73,11 @@ declare global {
     initialized: boolean;
 
     /**
+     * A promise that resolves when the canvas is first initialized and ready.
+     */
+    initializing: Promise<void> | null;
+
+    /**
      * Track the timestamp of the last stage zoom operation
      * @defaultValue `0`
      */
