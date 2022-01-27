@@ -2,6 +2,7 @@ import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
 import { BaseUser } from './baseUser';
 import * as data from '../data/data.mjs';
+import type { ChatMessageDataConstructorData } from '../data/data.mjs/chatMessageData.js';
 
 /**
  * The base ChatMessage model definition which defines common behavior of an ChatMessage document between both client and server.
@@ -35,7 +36,11 @@ export declare class BaseChatMessage extends Document<data.ChatMessageData, null
   /**
    * Is a user able to update an existing chat message?
    */
-  protected static _canUpdate(user: BaseUser, doc: BaseChatMessage, data?: object): boolean;
+  protected static _canUpdate(
+    user: BaseUser,
+    doc: BaseChatMessage,
+    data: DeepPartial<ChatMessageDataConstructorData>
+  ): boolean;
 
   /**
    * Is a user able to delete an existing chat message?

@@ -802,9 +802,15 @@ export interface Metadata<ConcreteDocument extends Document<any, any>> {
   embedded: Record<string, ConstructorOf<Document<any, any>>>;
   hasSystemData: boolean;
   permissions: {
-    create: string | ((user: BaseUser, doc: ConcreteDocument, data?: object) => boolean); // data isn't actually ever passed in on the client side
-    update: string | ((user: BaseUser, doc: ConcreteDocument, data?: object) => boolean); // data isn't actually ever passed in on the client side
-    delete: string | ((user: BaseUser, doc: ConcreteDocument, data?: object) => boolean); // data isn't actually ever passed in on the client side
+    create: string | ((user: BaseUser, doc: ConcreteDocument, data: ConcreteDocument['data']['_source']) => boolean);
+    update:
+      | string
+      | ((
+          user: BaseUser,
+          doc: ConcreteDocument,
+          data: DeepPartial<ConstructorDataType<ConcreteDocument['data']>>
+        ) => boolean);
+    delete: string | ((user: BaseUser, doc: ConcreteDocument, data: {}) => boolean);
   };
   pack: any;
 }

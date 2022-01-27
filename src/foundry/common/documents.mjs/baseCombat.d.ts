@@ -35,7 +35,6 @@ export declare class BaseCombat extends Document<data.CombatData> {
 
   /**
    * Is a user able to update an existing Combat?
-   * @param doc - (unused)
    */
-  protected static _canUpdate(user: BaseUser, doc: BaseCombat, data?: CombatDataConstructorData): boolean;
+  protected static _canUpdate(user: BaseUser, doc: BaseCombat, data: DeepPartial<CombatDataConstructorData>): boolean;
 }

@@ -39,5 +39,5 @@ export declare class BaseWall extends Document<data.WallData, InstanceType<Confi
   /**
    * Is a user able to update an existing Wall?
    */
-  protected static _canUpdate(user: BaseUser, doc: BaseWall, data?: Partial<WallDataConstructorData>): boolean;
+  protected static _canUpdate(user: BaseUser, doc: BaseWall, data: DeepPartial<WallDataConstructorData>): boolean;
 }

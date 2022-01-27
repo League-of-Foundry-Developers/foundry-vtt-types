@@ -2,7 +2,7 @@ import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentMetadata, DocumentModificationOptions } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
 import * as data from '../data/data.mjs';
-import type { CardDataConstructorData } from '../data/data.mjs/cardData.js';
+import type { CardDataConstructorData, CardDataSource } from '../data/data.mjs/cardData.js';
 import { BaseCards } from './baseCards';
 import { BaseUser } from './baseUser';
 
@@ -25,8 +25,8 @@ export declare class BaseCard extends Document<data.CardData, InstanceType<Confi
       types: string[];
       hasSystemData: true;
       permissions: {
-        create: typeof BaseCard['_canCreate'];
-        update: typeof BaseCard['_canUpdate'];
+        create: typeof BaseCard._canCreate;
+        update: typeof BaseCard._canUpdate;
       };
     }
   >;
@@ -46,12 +46,12 @@ export declare class BaseCard extends Document<data.CardData, InstanceType<Confi
   /**
    * Is a User able to create a new embedded Card document within this parent?
    */
-  protected static _canCreate(user: BaseUser, doc: BaseCard, data?: object): boolean;
+  protected static _canCreate(user: BaseUser, doc: BaseCard, data: CardDataSource): boolean;
 
   /**
    * Is a user able to update an existing Card?
    */
-  protected static _canUpdate(user: BaseUser, doc: BaseCard, data?: object): boolean;
+  protected static _canUpdate(user: BaseUser, doc: BaseCard, data: DeepPartial<CardDataConstructorData>): boolean;
 
   /** @override */
   testUserPermission(
