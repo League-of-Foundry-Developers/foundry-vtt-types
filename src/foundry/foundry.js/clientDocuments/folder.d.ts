@@ -1,6 +1,5 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
+import { ConfiguredDocumentClass, ConstructorDataType, DocumentConstructor } from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
-import type { FolderDataConstructorData } from '../../common/data/data.mjs/folderData.js';
 
 declare global {
   /**
@@ -65,14 +64,21 @@ declare global {
      * @returns An active FolderConfig instance for creating the new Folder entity
      *
      * @remarks
-     * This actually returns a FolderConfig but that is incorrectly overriding
-     * ClientDocumentMixin.createDialog, for which a Promise of the created
-     * Document is returned.
+     * The documented return type is incorrect. It now returns a promise that resolves to the
+     * created folder as intended. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6619
+     *
+     * For weird reasons, we need to make this generic.
      */
-    static createDialog(
-      data?: DeepPartial<FolderDataConstructorData | (FolderDataConstructorData & Record<string, unknown>)> | undefined,
-      options?: Dialog.Options | undefined
-    ): any;
+    static createDialog<T extends DocumentConstructor>(
+      this: T,
+      data?:
+        | DeepPartial<
+            | ConstructorDataType<InstanceType<T>['data']>
+            | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
+          >
+        | undefined,
+      options?: Partial<DocumentSheetOptions> | undefined
+    ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
 
     /**
      * Export all Documents contained in this Folder to a given Compendium pack.
