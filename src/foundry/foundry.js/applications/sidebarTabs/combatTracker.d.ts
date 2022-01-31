@@ -4,7 +4,7 @@ declare global {
   /**
    * The sidebar directory which organizes and displays world-level Combat documents.
    */
-  class CombatTracker<Options extends ApplicationOptions = CombatTracker.Options> extends SidebarTab<Options> {
+  class CombatTracker<Options extends ApplicationOptions = ApplicationOptions> extends SidebarTab<Options> {
     constructor(options?: Partial<Options>);
 
     /**
@@ -20,13 +20,23 @@ declare global {
      */
     viewed: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combat>>> | null;
 
-    /** @override */
-    static get defaultOptions(): CombatTracker.Options;
+    /**
+     * @defaultValue
+     * ```typescript
+     * foundry.utils.mergeObject(super.defaultOptions, {
+     *   id: "combat",
+     *   template: "templates/sidebar/combat-tracker.html",
+     *   title: "COMBAT.SidebarTitle",
+     *   scrollY: [".directory-list"]
+     * })
+     * ```
+     */
+    static get defaultOptions(): ApplicationOptions;
 
     /**
      * Return an array of Combat encounters which occur within the current Scene.
      */
-    get combats(): ReturnType<CombatEncounters['filter']>;
+    get combats(): StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combat>>>[];
 
     /** @override */
     createPopout(): this;
@@ -116,6 +126,12 @@ declare global {
     protected _onCombatantHoverOut(event: JQuery.MouseLeaveEvent): void;
 
     /**
+     * Highlight a hovered combatant in the tracker.
+     * @param combatant - The Combatant
+     * @param hover     - Whether they are being hovered in or out.
+     */
+    hoverCombatant(combatant: InstanceType<ConfiguredDocumentClass<typeof Combatant>>, hover: boolean): void;
+    /**
      * Attach context menu options to elements in the tracker
      * @param html - The HTML element to which context options are attached
      * @internal
@@ -123,8 +139,8 @@ declare global {
     protected _contextMenu(html: JQuery): void;
 
     /**
-     * Get the sidebar directory entry context options
-     * @returns The sidebar entry context options
+     * Get the Combatant entry context options
+     * @returns The Combatant entry context options
      * @internal
      */
     protected _getEntryContextOptions(): ContextMenuEntry[];
@@ -144,6 +160,8 @@ declare global {
           combatCount: number;
           started: boolean;
           settings: ClientSettings.Values[`core.${typeof Combat.CONFIG_SETTING}`];
+          linked: boolean;
+          labels: { scoped: string };
           currentIndex: -1;
           hasCombat: false;
           combat: null;
@@ -158,6 +176,8 @@ declare global {
           combatCount: number;
           started: boolean;
           settings: ClientSettings.Values[`core.${typeof Combat.CONFIG_SETTING}`];
+          linked: boolean;
+          labels: { scoped: string };
           currentIndex: number;
           hasCombat: true;
           combat: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combat>>>;
@@ -184,27 +204,5 @@ declare global {
       css: string;
       effects: Set<string>;
     };
-
-    interface Options extends ApplicationOptions {
-      /**
-       * @defaultValue `'combat'`
-       */
-      id: string;
-
-      /**
-       * @defaultValue `'templates/sidebar/combat-tracker.html'`
-       */
-      template: string;
-
-      /**
-       * @defaultValue `'Combat Tracker'`
-       */
-      title: string;
-
-      /**
-       * @defaultValue `['.directory-list']`
-       */
-      scrollY: string[];
-    }
   }
 }
