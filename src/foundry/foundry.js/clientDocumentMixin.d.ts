@@ -275,7 +275,8 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    *                  (default: `{}`)
    * @param context - Additional context options or dialog positioning options
    *                  (default: `{}`)
-   * @returns A Promise which resolves to the created Document
+   * @returns A Promise which resolves to the created Document, or null if the dialog was
+   *          closed.
    */
   static createDialog<T extends DocumentConstructor>(
     this: T,
