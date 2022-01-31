@@ -249,6 +249,9 @@ declare global {
       /** @defaultValue `Cards` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof Cards>;
 
+      /** @defaultValue `"fas fa-id-badge"` */
+      sidebarIcon: string;
+
       presets: {
         /**
          * @defaultValue
@@ -505,7 +508,7 @@ declare global {
       /** @defaultValue `Macros` */
       collection: ConstructorOf<Macros>;
 
-      /** @defaultValue `'fas fa-terminal'` */
+      /** @defaultValue `'fas fa-code'` */
       sidebarIcon: string;
     };
 
@@ -973,7 +976,7 @@ declare global {
 
     /**
      * Suggested font families that are displayed wherever a choice is presented
-     * @defaultValue `['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Times New Roman', 'Signika', 'Modesto Condensed']`
+     * @defaultValue `["Arial", "Courier", "Courier New", "Helvetica", "Signika", "Times", "Times New Roman", "Modesto Condensed"]`
      */
     fontFamilies: string[];
 
