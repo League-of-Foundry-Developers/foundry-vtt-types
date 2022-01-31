@@ -130,7 +130,7 @@ declare global {
      * @param combatant - The Combatant
      * @param hover     - Whether they are being hovered in or out.
      */
-    hoverCombatant(combatant: InstanceType<ConfiguredDocumentClass<typeof Combat>>, hover: boolean): void;
+    hoverCombatant(combatant: InstanceType<ConfiguredDocumentClass<typeof Combatant>>, hover: boolean): void;
     /**
      * Attach context menu options to elements in the tracker
      * @param html - The HTML element to which context options are attached
