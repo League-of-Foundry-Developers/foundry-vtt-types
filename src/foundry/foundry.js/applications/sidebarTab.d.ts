@@ -38,14 +38,11 @@ declare abstract class SidebarTab<
    */
   static get defaultOptions(): ApplicationOptions;
 
-  /**  @override */
-  protected _renderInner(data: object): Promise<JQuery>;
-
   /** @override */
   protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
-  /** @override */
-  render(force?: boolean, options?: Application.RenderOptions<Options>): unknown;
+  /**  @override */
+  protected _renderInner(data: object): Promise<JQuery>;
 
   /**
    * Activate this SidebarTab, switching focus to it
