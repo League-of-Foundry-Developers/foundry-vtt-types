@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectAssignable, expectType } from 'tsd';
 
 declare const document: boolean;
 
@@ -7,4 +7,5 @@ expectType<Token[]>(actor.getActiveTokens());
 expectType<Token[]>(actor.getActiveTokens(false, false));
 expectType<TokenDocument[]>(actor.getActiveTokens(false, true));
 expectType<Token[] | TokenDocument[]>(actor.getActiveTokens(false, document));
-expectType<number>(actor.itemTypes['armor'][0].data.data.armorValue);
+
+expectAssignable<foundry.data.ItemData>(actor.itemTypes['armor'][0].data);
