@@ -1,8 +1,7 @@
 import { ConfiguredDocumentClass, ConfiguredObjectClassForName, DocumentConstructor } from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
 import EmbeddedCollection from '../../common/abstract/embedded-collection.mjs';
-import type { ActorDataConstructorData } from '../../common/data/data.mjs/actorData';
-import type { ItemDataSource } from '../../common/data/data.mjs/itemData';
+import type { ActorDataConstructorData } from '../../common/data/data.mjs/actorData.js';
 
 declare global {
   /**
@@ -65,13 +64,10 @@ declare global {
     /**
      * Provide an object which organizes all embedded Item instances by their type
      */
-    get itemTypes(): {
-      [Key in foundry.documents.BaseItem['data']['type']]: Array<
-        InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseItem>> & {
-          data: foundry.data.ItemData & { type: Key; _source: ItemDataSource & { type: Key } };
-        }
-      >;
-    };
+    get itemTypes(): Record<
+      foundry.documents.BaseItem['data']['type'],
+      Array<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseItem>>>
+    >;
     /**
      * Test whether an Actor entity is a synthetic representation of a Token (if true) or a full Entity (if false)
      */

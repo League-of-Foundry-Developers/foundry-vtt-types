@@ -2,7 +2,7 @@ import { expectType } from 'tsd';
 
 declare const combat: Combat;
 
-expectType<CombatTracker.Options>(CombatTracker.defaultOptions);
+expectType<ApplicationOptions>(CombatTracker.defaultOptions);
 
 const tracker = new CombatTracker();
 expectType<StoredDocument<Combat>[]>(tracker.combats);
@@ -22,6 +22,8 @@ expectType<
       combatCount: number;
       started: boolean;
       settings: { resource: string; skipDefeated: boolean } | {};
+      linked: boolean;
+      labels: { scoped: string };
       currentIndex: -1;
       hasCombat: false;
       combat: null;
@@ -36,6 +38,8 @@ expectType<
       combatCount: number;
       started: boolean;
       settings: { resource: string; skipDefeated: boolean } | {};
+      linked: boolean;
+      labels: { scoped: string };
       currentIndex: number;
       hasCombat: true;
       combat: StoredDocument<Combat>;

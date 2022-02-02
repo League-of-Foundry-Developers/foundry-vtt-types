@@ -47,7 +47,8 @@ declare global {
     get source(): InstanceType<ConfiguredDocumentClassForName<'Cards'>> | undefined | null;
 
     /**
-     * A convenience property for whether or not the Card is within its source Cards stack.
+     * A convenience property for whether or not the Card is within its source Cards stack. Cards in decks are always
+     * considered home.
      */
     get isHome(): boolean;
 

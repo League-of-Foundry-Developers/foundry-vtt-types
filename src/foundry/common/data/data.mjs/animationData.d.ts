@@ -29,7 +29,7 @@ interface AnimationDataProperties {
   type: string | undefined;
 
   /**
-   * The speed of the animation, a number between 1 and 10
+   * The speed of the animation, a number between 0 and 10
    * @defaultValue `5`
    */
   speed: number;
@@ -40,7 +40,10 @@ interface AnimationDataProperties {
    */
   intensity: number;
 
-  /** @defaultValue `false` */
+  /**
+   * Reverse the direction of animation.
+   * @defaultValue `false`
+   */
   reverse: boolean;
 }
 
@@ -51,7 +54,7 @@ interface AnimationDataConstructorData {
   type?: string | null | undefined;
 
   /**
-   * The speed of the animation, a number between 1 and 10
+   * The speed of the animation, a number between 0 and 10
    * @defaultValue `5`
    */
   speed?: number | null | undefined;
@@ -62,7 +65,10 @@ interface AnimationDataConstructorData {
    */
   intensity?: number | null | undefined;
 
-  /** @defaultValue `false` */
+  /**
+   * Reverse the direction of animation.
+   * @defaultValue `false`
+   */
   reverse?: boolean | null | undefined;
 }
 

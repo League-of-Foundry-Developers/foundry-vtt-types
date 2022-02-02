@@ -120,6 +120,14 @@ declare global {
     protected _compute(): void;
 
     /**
+     * Round vertices of a ray segment
+     * @param ray - The provided ray
+     * @returns The ray with rounded vertices
+     * @internal
+     */
+    protected _roundRayVertices(ray: Ray): Ray;
+
+    /**
      * Translate walls and other obstacles into edges which limit visibility
      * @internal
      */

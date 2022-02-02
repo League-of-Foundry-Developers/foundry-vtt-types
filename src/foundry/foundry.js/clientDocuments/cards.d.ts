@@ -211,15 +211,10 @@ declare global {
      * Display a dialog which prompts the user to play a specific Card to some other Cards document
      * @see {@link Cards#pass}
      * @param card - The specific card being played as part of this dialog
-     * @remarks returns documentation is incorrect (see https://gitlab.com/foundrynet/foundryvtt/-/issues/6367)
      */
     playDialog(
       card: InstanceType<ConfiguredDocumentClassForName<'Card'>>
-    ): Promise<
-      | InstanceType<ConfiguredDocumentClassForName<'Card'>>[]
-      | InstanceType<ConfiguredDocumentClassForName<'Cards'>>
-      | null
-    >;
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>>[] | void | null>;
 
     /**
      * Display a confirmation dialog for whether or not the user wishes to reset a Cards stack

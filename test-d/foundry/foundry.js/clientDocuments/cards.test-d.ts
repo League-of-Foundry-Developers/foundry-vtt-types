@@ -97,7 +97,7 @@ expectType<Promise<Card[] | null>>(cards.drawDialog());
 expectType<Promise<Cards | null>>(cards.passDialog());
 
 // playDialog
-expectType<Promise<Card[] | Cards | null>>(cards.playDialog(new Card({ name: 'Some Card' })));
+expectType<Promise<Card[] | void | null>>(cards.playDialog(new Card({ name: 'Some Card' })));
 
 // resetDialog
 expectType<Promise<Cards | false | null>>(cards.resetDialog());
