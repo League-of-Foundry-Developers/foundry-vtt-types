@@ -44,7 +44,7 @@ interface CardDataSchema extends DocumentSchema {
     validationError: '{name} {field} "{value}" must have a non-negative integer value or null';
   };
   drawn: fields.BooleanField;
-  origin: fields.DocumentId;
+  origin: Omit<fields.DocumentId, 'nullable'> & { nullable: true };
   width: fields.PositiveIntegerField;
   height: fields.PositiveIntegerField;
   rotation: fields.AngleField;
