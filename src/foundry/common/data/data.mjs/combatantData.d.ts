@@ -116,6 +116,8 @@ interface CombatantDataConstructorData {
   flags?: ConfiguredFlags<'Combatant'> | null | undefined;
 }
 
+type CombatantDataSource = PropertiesToSource<CombatantDataProperties>;
+
 /**
  * The data schema for a Combatant embedded document within a CombatEncounter document.
  * @see CombatantData
@@ -123,7 +125,7 @@ interface CombatantDataConstructorData {
 export class CombatantData extends DocumentData<
   CombatantDataSchema,
   CombatantDataProperties,
-  PropertiesToSource<CombatantDataProperties>,
+  CombatantDataSource,
   CombatantDataConstructorData,
   documents.BaseCombatant
 > {

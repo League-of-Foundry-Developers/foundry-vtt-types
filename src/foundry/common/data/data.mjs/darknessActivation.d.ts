@@ -36,13 +36,15 @@ interface DarknessActivationConstructorData {
   max?: number | null | undefined;
 }
 
+type DarknessActivationSource = PropertiesToSource<DarknessActivationProperties>;
+
 /**
  * An embedded data object which defines the darkness range during which some attribute is active
  */
 export class DarknessActivation extends DocumentData<
   DarknessActivationSchema,
   DarknessActivationProperties,
-  PropertiesToSource<DarknessActivationProperties>,
+  DarknessActivationSource,
   DarknessActivationConstructorData,
   BaseAmbientLight
 > {

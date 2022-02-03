@@ -162,6 +162,8 @@ interface RollTableDataConstructorData {
   flags?: ConfiguredFlags<'RollTable'> | null | undefined;
 }
 
+type RollTableDataSource = PropertiesToSource<RollTableDataProperties>;
+
 /**
  * The data schema for an RollTable document.
  * @see BaseRollTable
@@ -169,7 +171,7 @@ interface RollTableDataConstructorData {
 export class RollTableData extends DocumentData<
   RollTableDataSchema,
   RollTableDataProperties,
-  PropertiesToSource<RollTableDataProperties>,
+  RollTableDataSource,
   RollTableDataConstructorData,
   documents.BaseRollTable
 > {

@@ -1,5 +1,4 @@
-import type { PropertiesToSource } from '../../../../src/types/helperTypes';
-import type { ActiveEffectDataProperties } from '../../../../src/foundry/common/data/data.mjs/activeEffectData';
+import type { ActiveEffectDataSource } from '../../../../src/foundry/common/data/data.mjs/activeEffectData';
 import type {
   EffectChangeData,
   EffectChangeDataProperties
@@ -16,7 +15,7 @@ expectType<EffectChangeData[]>(baseActiveEffect.toObject(false).changes);
 const item = await Item.create({ name: 'Some Item', type: 'weapon' });
 if (item) {
   expectType<EffectChangeData[]>(item.toObject(false).effects[0].changes);
-  expectType<PropertiesToSource<ActiveEffectDataProperties>[]>(item.toObject().effects);
+  expectType<ActiveEffectDataSource[]>(item.toObject().effects);
 }
 
 declare const bool: boolean;

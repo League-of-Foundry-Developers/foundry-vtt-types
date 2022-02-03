@@ -2,6 +2,7 @@ import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
 import * as data from '../data/data.mjs';
+import type { TokenDataConstructorData } from '../data/data.mjs/tokenData';
 import { BaseUser } from './baseUser';
 
 /**
@@ -25,7 +26,7 @@ export declare class BaseToken extends Document<
       isEmbedded: true;
       permissions: {
         create: 'TOKEN_CREATE';
-        update: typeof BaseToken['_canUpdate'];
+        update: typeof BaseToken._canUpdate;
       };
     }
   >;
@@ -38,5 +39,5 @@ export declare class BaseToken extends Document<
   /**
    * Is a user able to update an existing Token?
    */
-  protected static _canUpdate(user: BaseUser, doc: BaseToken, data: unknown): boolean;
+  protected static _canUpdate(user: BaseUser, doc: BaseToken, data: DeepPartial<TokenDataConstructorData>): boolean;
 }

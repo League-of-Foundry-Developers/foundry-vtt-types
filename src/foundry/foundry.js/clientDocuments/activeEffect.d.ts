@@ -1,6 +1,6 @@
 import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
-import type { ActiveEffectDataConstructorData } from '../../common/data/data.mjs/activeEffectData.js';
+import type { ActiveEffectDataConstructorData } from '../../common/data/data.mjs/activeEffectData';
 import { EffectChangeData } from '../../common/data/data.mjs/effectChangeData';
 
 declare global {

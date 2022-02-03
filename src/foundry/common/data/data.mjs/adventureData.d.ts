@@ -1,17 +1,17 @@
-import type { PropertiesToSource } from '../../../../types/helperTypes.js';
+import type { PropertiesToSource } from '../../../../types/helperTypes';
 import type DocumentData from '../../abstract/data.mjs';
 import { AnyDocumentData } from '../../abstract/data.mjs';
 import * as fields from '../fields.mjs';
-import type { ActorData, ActorDataConstructorData } from './actorData.js';
-import type { CardsData, CardsDataConstructorData } from './cardsData.js';
-import type { CombatData, CombatDataConstructorData } from './combatData.js';
-import type { FolderData, FolderDataConstructorData } from './folderData.js';
-import type { ItemData, ItemDataConstructorData } from './itemData.js';
-import type { JournalEntryData, JournalEntryDataConstructorData } from './journalEntryData.js';
-import type { MacroData, MacroDataConstructorData } from './macroData.js';
-import type { PlaylistData, PlaylistDataConstructorData } from './playlistData.js';
-import type { RollTableData, RollTableDataConstructorData } from './rollTableData.js';
-import type { SceneData, SceneDataConstructorData } from './sceneData.js';
+import type { ActorData, ActorDataConstructorData } from './actorData';
+import type { CardsData, CardsDataConstructorData } from './cardsData';
+import type { CombatData, CombatDataConstructorData } from './combatData';
+import type { FolderData, FolderDataConstructorData } from './folderData';
+import type { ItemData, ItemDataConstructorData } from './itemData';
+import type { JournalEntryData, JournalEntryDataConstructorData } from './journalEntryData';
+import type { MacroData, MacroDataConstructorData } from './macroData';
+import type { PlaylistData, PlaylistDataConstructorData } from './playlistData';
+import type { RollTableData, RollTableDataConstructorData } from './rollTableData';
+import type { SceneData, SceneDataConstructorData } from './sceneData';
 
 interface AdventureDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -128,6 +128,8 @@ interface AdventureDataConstructorData {
   flags?: Record<string, unknown> | null | undefined;
 }
 
+type AdventureDataSource = PropertiesToSource<AdventureDataProperties>;
+
 /**
  * A data schema which encompasses a collection of base Documents which comprise an adventure module.
  *
@@ -140,7 +142,7 @@ interface AdventureDataConstructorData {
 export class AdventureData extends DocumentData<
   AdventureDataSchema,
   AdventureDataProperties,
-  PropertiesToSource<AdventureDataProperties>,
+  AdventureDataSource,
   AdventureDataConstructorData
 > {
   /** @override */

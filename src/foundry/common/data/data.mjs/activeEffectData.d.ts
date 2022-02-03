@@ -148,6 +148,8 @@ interface ActiveEffectDataConstructorData {
   flags?: (ConfiguredFlags<'ActiveEffect'> & CoreFlags) | null | undefined;
 }
 
+type ActiveEffectDataSource = PropertiesToSource<ActiveEffectDataProperties>;
+
 /**
  * The data schema for an ActiveEffect document.
  * @see BaseActiveEffect
@@ -155,7 +157,7 @@ interface ActiveEffectDataConstructorData {
 export class ActiveEffectData extends DocumentData<
   ActiveEffectDataSchema,
   ActiveEffectDataProperties,
-  PropertiesToSource<ActiveEffectDataProperties>,
+  ActiveEffectDataSource,
   ActiveEffectDataConstructorData,
   documents.BaseActiveEffect
 > {

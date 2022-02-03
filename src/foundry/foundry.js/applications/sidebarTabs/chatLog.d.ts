@@ -1,5 +1,5 @@
 import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
-import type { ChatMessageDataConstructorData } from '../../../common/data/data.mjs/chatMessageData.js';
+import type { ChatMessageDataConstructorData } from '../../../common/data/data.mjs/chatMessageData';
 
 declare global {
   /**

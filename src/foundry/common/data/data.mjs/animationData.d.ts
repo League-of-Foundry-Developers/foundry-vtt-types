@@ -72,13 +72,15 @@ interface AnimationDataConstructorData {
   reverse?: boolean | null | undefined;
 }
 
+type AnimationDataSource = PropertiesToSource<AnimationDataProperties>;
+
 /**
  * An embedded data object which defines the properties of a light source animation
  */
 export class AnimationData extends DocumentData<
   AnimationDataSchema,
   AnimationDataProperties,
-  PropertiesToSource<AnimationDataProperties>,
+  AnimationDataSource,
   AnimationDataConstructorData,
   BaseAmbientLight
 > {

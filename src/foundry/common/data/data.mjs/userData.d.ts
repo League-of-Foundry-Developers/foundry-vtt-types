@@ -144,13 +144,15 @@ interface UserDataConstructorData {
   flags?: ConfiguredFlags<'User'> | null | undefined;
 }
 
+type UserDataSource = PropertiesToSource<UserDataProperties>;
+
 /**
  * The data schema for a User document
  */
 export class UserData extends DocumentData<
   UserDataSchema,
   UserDataProperties,
-  PropertiesToSource<UserDataProperties>,
+  UserDataSource,
   UserDataConstructorData,
   documents.BaseUser
 > {

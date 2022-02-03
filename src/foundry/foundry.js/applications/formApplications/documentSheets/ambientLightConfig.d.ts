@@ -1,8 +1,8 @@
 import type { ConfiguredDocumentClassForName } from '../../../../../types/helperTypes';
 import type { AmbientLightDataConstructorData } from '../../../../common/data/data.mjs/ambientLightData';
 import type { AnimationDataConstructorData } from '../../../../common/data/data.mjs/animationData';
-import type { DarknessActivationConstructorData } from '../../../../common/data/data.mjs/darknessActivation.js';
-import type { LightDataConstructorData } from '../../../../common/data/data.mjs/lightData.js';
+import type { DarknessActivationConstructorData } from '../../../../common/data/data.mjs/darknessActivation';
+import type { LightDataConstructorData } from '../../../../common/data/data.mjs/lightData';
 
 declare global {
   /**

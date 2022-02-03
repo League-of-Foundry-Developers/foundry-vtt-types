@@ -2,7 +2,7 @@ import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from '../../../.
 import { DocumentData } from '../../abstract/module.mjs';
 import { BaseAmbientLight } from '../../documents.mjs';
 import * as fields from '../fields.mjs';
-import type { LightData, LightDataConstructorData } from './lightData.js';
+import type { LightData, LightDataConstructorData } from './lightData';
 
 interface AmbientLightDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -130,6 +130,8 @@ interface AmbientLightDataConstructorData {
   flags?: ConfiguredFlags<'AmbientLight'> | null | undefined;
 }
 
+type AmbientLightDataSource = PropertiesToSource<AmbientLightDataProperties>;
+
 /**
  * The data schema for a AmbientLight embedded document.
  * @see BaseAmbientLight
@@ -137,7 +139,7 @@ interface AmbientLightDataConstructorData {
 export class AmbientLightData extends DocumentData<
   AmbientLightDataSchema,
   AmbientLightDataProperties,
-  PropertiesToSource<AmbientLightDataProperties>,
+  AmbientLightDataSource,
   AmbientLightDataConstructorData,
   BaseAmbientLight
 > {
@@ -145,7 +147,7 @@ export class AmbientLightData extends DocumentData<
   static defineSchema(): AmbientLightDataSchema;
 
   /** @override */
-  _initializeSource(data: AmbientLightDataConstructorData): PropertiesToSource<AmbientLightDataProperties>;
+  _initializeSource(data: AmbientLightDataConstructorData): AmbientLightDataSource;
 
   /** @override */
   protected _initialize(): void;

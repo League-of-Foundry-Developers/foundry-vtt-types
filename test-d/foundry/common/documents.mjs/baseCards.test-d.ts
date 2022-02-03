@@ -1,14 +1,13 @@
 import { expectError, expectType } from 'tsd';
 
 import type EmbeddedCollection from '../../../../src/foundry/common/abstract/embedded-collection.mjs';
-import type { PropertiesToSource } from '../../../../src/types/helperTypes';
-import type { CardDataSource } from '../../../../src/foundry/common/data/data.mjs/cardData.js';
-import type { CardFaceDataProperties } from '../../../../src/foundry/common/data/data.mjs/cardFaceData.js';
+import type { CardDataSource } from '../../../../src/foundry/common/data/data.mjs/cardData';
+import type { CardFaceDataSource } from '../../../../src/foundry/common/data/data.mjs/cardFaceData';
 
 const baseCards = new foundry.documents.BaseCards();
 expectType<EmbeddedCollection<typeof Card, foundry.data.CardsData>>(baseCards.cards);
 expectType<CardDataSource>(baseCards.data._source.cards[0]);
-expectType<PropertiesToSource<CardFaceDataProperties>>(baseCards.data._source.cards[0].faces[0]);
+expectType<CardFaceDataSource>(baseCards.data._source.cards[0].faces[0]);
 
 interface GermanDeckDataSourceData {
   mostUsedGame: 'Skat';

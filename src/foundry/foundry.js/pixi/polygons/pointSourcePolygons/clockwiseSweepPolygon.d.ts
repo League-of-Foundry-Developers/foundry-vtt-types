@@ -1,4 +1,4 @@
-import type { ConfiguredObjectClassForName } from '../../../../../types/helperTypes.js';
+import type { ConfiguredObjectClassForName } from '../../../../../types/helperTypes';
 
 declare global {
   type VertexMap = Map<number, PolygonVertex>;

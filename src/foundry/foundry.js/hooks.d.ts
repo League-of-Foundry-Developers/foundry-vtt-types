@@ -4,9 +4,9 @@ import {
   ConfiguredObjectClassForName,
   DocumentConstructor,
   ToObjectFalseType
-} from '../../types/helperTypes.js';
-import { DocumentModificationOptions } from '../common/abstract/document.mjs.js';
-import { EffectChangeData } from '../common/data/data.mjs/effectChangeData.js';
+} from '../../types/helperTypes';
+import { DocumentModificationOptions } from '../common/abstract/document.mjs';
+import { EffectChangeData } from '../common/data/data.mjs/effectChangeData';
 import { DropData } from './clientDocumentMixin';
 
 declare global {

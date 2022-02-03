@@ -2,7 +2,7 @@ import { DocumentMetadata, DocumentModificationOptions } from '../abstract/docum
 import { Document } from '../abstract/module.mjs';
 import * as CONST from '../constants.mjs';
 import * as data from '../data/data.mjs';
-import type { MacroDataConstructorData } from '../data/data.mjs/macroData.js';
+import type { MacroDataConstructorData } from '../data/data.mjs/macroData';
 import { BaseUser } from './baseUser';
 
 /**

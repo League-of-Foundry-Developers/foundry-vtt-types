@@ -11,7 +11,7 @@ import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import { PrototypeTokenData } from '../data.mjs';
 import * as fields from '../fields.mjs';
-import { PrototypeTokenDataConstructorData } from './prototypeTokenData.js';
+import { PrototypeTokenDataConstructorData } from './prototypeTokenData';
 
 interface ActorDataSchema extends DocumentSchema {
   _id: fields.DocumentId;

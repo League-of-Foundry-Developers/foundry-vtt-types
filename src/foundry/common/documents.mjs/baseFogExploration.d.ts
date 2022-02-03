@@ -1,7 +1,7 @@
 import { DocumentMetadata, DocumentModificationOptions } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
 import * as data from '../data/data.mjs';
-import type { FogExplorationDataConstructorData } from '../data/data.mjs/fogExplorationData.js';
+import type { FogExplorationDataConstructorData } from '../data/data.mjs/fogExplorationData';
 import { BaseUser } from './baseUser';
 
 /**

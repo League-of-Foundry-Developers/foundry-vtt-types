@@ -629,6 +629,8 @@ interface SceneDataConstructorData {
   flags?: ConfiguredFlags<'Scene'> | null | undefined;
 }
 
+type SceneDataSource = PropertiesToSource<SceneDataProperties>;
+
 /**
  * The data schema for a Scene document.
  * @see BaseScene
@@ -636,7 +638,7 @@ interface SceneDataConstructorData {
 export class SceneData extends DocumentData<
   SceneDataSchema,
   SceneDataProperties,
-  PropertiesToSource<SceneDataProperties>,
+  SceneDataSource,
   SceneDataConstructorData,
   documents.BaseScene
 > {

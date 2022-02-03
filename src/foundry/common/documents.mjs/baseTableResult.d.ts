@@ -1,6 +1,7 @@
 import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
+import type { TableResultDataConstructorData } from '../data/data.mjs/tableResultData';
 import { BaseRollTable } from './baseRollTable';
 import { BaseUser } from './baseUser';
 
@@ -28,7 +29,7 @@ export declare class BaseTableResult extends Document<
         `${typeof CONST.TABLE_RESULT_TYPES.COMPENDIUM}`
       ];
       permissions: {
-        update: (user: BaseUser, doc: any, data?: object) => boolean;
+        update: typeof BaseTableResult._canUpdate;
       };
     }
   >;
@@ -36,7 +37,11 @@ export declare class BaseTableResult extends Document<
   /**
    * Is a user able to update an existing TableResult?
    */
-  protected static _canUpdate(user: BaseUser, doc: BaseTableResult, data?: object): boolean;
+  protected static _canUpdate(
+    user: BaseUser,
+    doc: BaseTableResult,
+    data: DeepPartial<TableResultDataConstructorData>
+  ): boolean;
 
   /** @override */
   testUserPermission(

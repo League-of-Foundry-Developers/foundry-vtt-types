@@ -171,6 +171,8 @@ interface AmbientSoundDataConstructorData {
   flags?: ConfiguredFlags<'AmbientSound'> | null | undefined;
 }
 
+type AmbientSoundDataSource = PropertiesToSource<AmbientSoundDataProperties>;
+
 /**
  * The data schema for a AmbientSound embedded document.
  * @see BaseAmbientSound
@@ -178,7 +180,7 @@ interface AmbientSoundDataConstructorData {
 export class AmbientSoundData extends DocumentData<
   AmbientSoundDataSchema,
   AmbientSoundDataProperties,
-  PropertiesToSource<AmbientSoundDataProperties>,
+  AmbientSoundDataSource,
   AmbientSoundDataConstructorData,
   documents.BaseAmbientSound
 > {
@@ -186,7 +188,7 @@ export class AmbientSoundData extends DocumentData<
   static defineSchema(): AmbientSoundDataSchema;
 
   /** @override */
-  _initializeSource(data: AmbientSoundDataConstructorData): PropertiesToSource<AmbientSoundDataProperties>;
+  _initializeSource(data: AmbientSoundDataConstructorData): AmbientSoundDataSource;
 
   /** @override */
   protected _initialize(): void;

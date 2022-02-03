@@ -129,6 +129,8 @@ interface CombatDataConstructorData {
   flags?: ConfiguredFlags<'Combat'> | null | undefined;
 }
 
+type CombatDataSource = PropertiesToSource<CombatDataProperties>;
+
 /**
  * The data schema for an Combat document.
  * @see BaseCombat
@@ -136,7 +138,7 @@ interface CombatDataConstructorData {
 export class CombatData extends DocumentData<
   CombatDataSchema,
   CombatDataProperties,
-  PropertiesToSource<CombatDataProperties>,
+  CombatDataSource,
   CombatDataConstructorData,
   documents.BaseCombat
 > {

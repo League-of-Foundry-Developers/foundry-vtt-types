@@ -1,7 +1,7 @@
-import type { ConfiguredDocumentClass, PropertiesToSource } from '../../../types/helperTypes';
+import type { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import type { DocumentModificationOptions } from '../../common/abstract/document.mjs';
-import type { ChatMessageDataConstructorData } from '../../common/data/data.mjs/chatMessageData.js';
-import type { CombatantDataProperties } from '../../common/data/data.mjs/combatantData';
+import type { ChatMessageDataConstructorData } from '../../common/data/data.mjs/chatMessageData';
+import type { CombatantDataSource } from '../../common/data/data.mjs/combatantData';
 
 declare global {
   /**
@@ -177,7 +177,7 @@ declare global {
     protected _onCreateEmbeddedDocuments(
       type: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
-      result: PropertiesToSource<CombatantDataProperties>[],
+      result: CombatantDataSource[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -186,7 +186,7 @@ declare global {
     protected _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
-      result: PropertiesToSource<CombatantDataProperties>[],
+      result: CombatantDataSource[],
       options: DocumentModificationOptions,
       userId: string
     ): void;

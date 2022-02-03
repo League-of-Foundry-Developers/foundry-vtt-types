@@ -1,4 +1,4 @@
-import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes.js';
+import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import { documents } from '../../module.mjs';
 import * as fields from '../fields.mjs';
@@ -49,13 +49,15 @@ interface VideoDataConstructorData {
   volume?: number | null | undefined;
 }
 
+type VideoDataSource = PropertiesToSource<VideoDataProperties>;
+
 /**
  * An inner-object which defines the schema for how Tile video backgrounds are managed
  */
 export class VideoData extends DocumentData<
   VideoDataSchema,
   VideoDataProperties,
-  PropertiesToSource<VideoDataProperties>,
+  VideoDataSource,
   VideoDataConstructorData,
   documents.BaseTile
 > {

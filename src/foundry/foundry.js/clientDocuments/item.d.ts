@@ -1,5 +1,5 @@
 import { ConfiguredDocumentClass } from '../../../types/helperTypes';
-import type { ItemDataConstructorData } from '../../common/data/data.mjs/itemData.js';
+import type { ItemDataConstructorData } from '../../common/data/data.mjs/itemData';
 
 declare global {
   /**

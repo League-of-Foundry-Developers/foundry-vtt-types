@@ -130,13 +130,15 @@ interface FolderDataConstructorData {
   flags?: ConfiguredFlags<'Folder'> | null | undefined;
 }
 
+type FolderDataSource = PropertiesToSource<FolderDataProperties>;
+
 /**
  * The data schema for a Folder document.
  */
 export class FolderData extends DocumentData<
   FolderDataSchema,
   FolderDataProperties,
-  PropertiesToSource<FolderDataProperties>,
+  FolderDataSource,
   FolderDataConstructorData,
   documents.BaseFolder
 > {
