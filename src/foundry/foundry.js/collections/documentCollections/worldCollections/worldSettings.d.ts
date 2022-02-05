@@ -12,7 +12,7 @@ declare class WorldSettings extends WorldCollection<typeof foundry.documents.Bas
   get directory(): undefined;
 
   /**
-   * Return the Setting document with the given key.
+   * Return the Setting or Keybind document with the given key.
    * @param key - The setting key
    * @returns The Setting.
    */

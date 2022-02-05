@@ -5,7 +5,7 @@ declare global {
    * The singleton collection of Actor documents which exist within the active World.
    * This Collection is accessible within the Game object as game.actors.
    *
-   * @see {@link Actor} The Actor entity
+   * @see {@link Actor} The Actor document
    * @see {@link ActorDirectory} The ActorDirectory sidebar directory
    *
    * @example <caption>Retrieve an existing Actor by its id</caption>
@@ -27,7 +27,8 @@ declare global {
     fromCompendium(
       document:
         | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>
-        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>['data']['_source']
+        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>['data']['_source'],
+      options?: WorldCollection.FromCompendiumOptions | undefined
     ): Omit<
       InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>['data']['_source'],
       '_id' | 'folder'

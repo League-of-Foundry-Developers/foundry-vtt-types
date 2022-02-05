@@ -5,7 +5,7 @@ declare global {
    * The singleton collection of Scene documents which exist within the active World.
    * This Collection is accessible within the Game object as game.scenes.
    *
-   * @see {@link Scene} The Scene entity
+   * @see {@link Scene} The Scene document
    * @see {@link SceneDirectory} The SceneDirectory sidebar directory
    */
   class Scenes extends WorldCollection<typeof foundry.documents.BaseScene, 'Scenes'> {
@@ -54,7 +54,8 @@ declare global {
     fromCompendium(
       document:
         | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>
-        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>['data']['_source']
+        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>['data']['_source'],
+      options?: WorldCollection.FromCompendiumOptions | undefined
     ): Omit<
       InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>['data']['_source'],
       '_id' | 'folder'
