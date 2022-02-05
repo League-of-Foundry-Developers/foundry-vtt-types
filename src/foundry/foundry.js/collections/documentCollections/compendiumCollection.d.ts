@@ -185,21 +185,21 @@ declare global {
      */
     migrate(options?: object): Promise<this>;
 
-    _onCreateDocuments(
+    protected _onCreateDocuments(
       documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
-      result: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>['data']['_source'][],
+      result: (DocumentInstanceForCompendiumMetadata<T>['data']['_source'] & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
-    _onUpdateDocuments(
+    protected _onUpdateDocuments(
       documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
-      result: DeepPartial<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>>[],
+      result: (DeepPartial<DocumentInstanceForCompendiumMetadata<T>['data']['_source']> & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
-    _onDeleteDocuments(
+    protected _onDeleteDocuments(
       documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
       result: string[],
       options: DocumentModificationOptions,
