@@ -9,7 +9,7 @@ declare class WorldSettings extends WorldCollection<typeof foundry.documents.Bas
   static documentName: 'Setting';
 
   /** @override */
-  get directory(): null;
+  get directory(): undefined;
 
   /**
    * Return the Setting document with the given key.
