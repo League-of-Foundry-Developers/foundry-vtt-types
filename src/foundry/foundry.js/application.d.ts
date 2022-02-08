@@ -542,7 +542,7 @@ declare namespace Application {
     /**
      * The rendered height
      */
-    height?: number | null | undefined;
+    height?: number | 'auto' | null | undefined;
 
     /**
      * The rendered transformation scale
