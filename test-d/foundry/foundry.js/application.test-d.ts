@@ -18,3 +18,4 @@ expectType<Promise<void>>(app.close({ force: false }));
 expectType<Promise<void>>(app.close());
 expectType<unknown>(app.render());
 expectType<unknown>(app.render(true));
+expectType<unknown>(app.render(false, { height: 'auto' }));
