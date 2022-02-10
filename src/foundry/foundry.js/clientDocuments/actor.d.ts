@@ -120,7 +120,7 @@ declare global {
     /**
      * Prepare a data object which defines the data schema used by dice roll commands against this Actor
      */
-    getRollData(): this['data']['data'];
+    getRollData(): object;
 
     /** @override */
     protected _getSheetClass(): ConstructorOf<FormApplication> | null;

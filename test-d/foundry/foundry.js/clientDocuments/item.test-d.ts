@@ -57,5 +57,5 @@ if (item) {
   expectType<boolean>(item.isOwned);
   expectType<ActiveEffect[]>(item.transferredEffects);
   expectType<'weapon' | 'armor'>(item.type);
-  expectType<(object & ArmorDataPropertiesData) | (object & WeaponDataPropertiesData)>(item.getRollData());
+  expectType<object>(item.getRollData());
 }
