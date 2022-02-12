@@ -47,7 +47,7 @@ declare global {
      * @param transformation - An object of data or function to apply to all matched objects
      * @param condition      - A function which tests whether to target each object
      *                         (default: `null`)
-     * @param options        - Additional options passed to Entity.update
+     * @param options        - Additional options passed to Document.update
      *                         (default: `{}`)
      * @returns An array of updated data once the operation is complete
      */
@@ -67,8 +67,8 @@ declare global {
      * @param options - Options which modified the creation operation
      * @param userId  - The ID of the User who triggered the operation
      */
-    _preCreateDocuments(
-      result: InstanceType<ConfiguredDocumentClass<T>>['data']['_source'][],
+    protected _preCreateDocuments(
+      result: (InstanceType<T>['data']['_source'] & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -80,9 +80,9 @@ declare global {
      * @param options   - Options which modified the creation operation
      * @param userId    - The ID of the User who triggered the operation
      */
-    _onCreateDocuments(
+    protected _onCreateDocuments(
       documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
-      result: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>['data']['_source'][],
+      result: (InstanceType<T>['data']['_source'] & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -93,8 +93,8 @@ declare global {
      * @param options - Options which modified the update operation
      * @param userId  - The ID of the User who triggered the operation
      */
-    _preUpdateDocuments(
-      result: DeepPartial<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>>[],
+    protected _preUpdateDocuments(
+      result: (DeepPartial<InstanceType<T>['data']['_source']> & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -106,9 +106,9 @@ declare global {
      * @param options   - Options which modified the update operation
      * @param userId    - The ID of the User who triggered the operation
      */
-    _onUpdateDocuments(
+    protected _onUpdateDocuments(
       documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
-      result: DeepPartial<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>>[],
+      result: (DeepPartial<InstanceType<T>['data']['_source']> & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -119,7 +119,7 @@ declare global {
      * @param options - Options which modified the deletion operation
      * @param userId  - The ID of the User who triggered the operation
      */
-    _preDeleteDocuments(result: string[], options: DocumentModificationOptions, userId: string): void;
+    protected _preDeleteDocuments(result: string[], options: DocumentModificationOptions, userId: string): void;
 
     /**
      * Follow-up actions taken after a set of Documents in this Collection are deleted.
@@ -128,11 +128,65 @@ declare global {
      * @param options   - Options which modified the deletion operation
      * @param userId    - The ID of the User who triggered the operation
      */
-    _onDeleteDocuments(
+    protected _onDeleteDocuments(
       documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
       result: string[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
+
+    /**
+     * Generate the render context information provided for CRUD operations.
+     * @param action    - The CRUD operation.
+     * @param documents - The documents being operated on.
+     * @param data      - An array of creation or update objects, or an array of document IDs, depending on
+     *                    the operation.
+     * @internal
+     */
+    protected _getRenderContext(
+      action: DocumentCollection.RenderContext.Create<T>['action'],
+      documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
+      data: (InstanceType<T>['data']['_source'] & { _id: string })[]
+    ): DocumentCollection.RenderContext.Create<T>;
+    protected _getRenderContext(
+      action: DocumentCollection.RenderContext.Update<T>['action'],
+      documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
+      data: (DeepPartial<InstanceType<T>['data']['_source']> & { _id: string })[]
+    ): DocumentCollection.RenderContext.Update<T>;
+    protected _getRenderContext(
+      action: DocumentCollection.RenderContext.Delete<T>['action'],
+      documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
+      data: string[]
+    ): DocumentCollection.RenderContext.Delete<T>;
+  }
+
+  namespace DocumentCollection {
+    namespace RenderContext {
+      interface Base<T extends DocumentConstructor> {
+        documentType: T['metadata']['name'];
+        documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[];
+
+        /** @deprecated The 'entities' render context is deprecated. Please use 'documents' instead. */
+        get entities(): this['documents'];
+
+        /** @deprecated The 'entityType' render context is deprecated. Please use 'documentType' instead. */
+        get entityType(): this['documentType'];
+      }
+
+      interface Create<T extends DocumentConstructor> extends Base<T> {
+        action: 'create';
+        data: (InstanceType<T>['data']['_source'] & { _id: string })[];
+      }
+
+      interface Update<T extends DocumentConstructor> extends Base<T> {
+        action: 'update';
+        data: (DeepPartial<InstanceType<T>['data']['_source']> & { _id: string })[];
+      }
+
+      interface Delete<T extends DocumentConstructor> extends Base<T> {
+        action: 'delete';
+        data: string[];
+      }
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClassForName, ConstructorDataType } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
 declare global {
@@ -16,12 +16,18 @@ declare global {
     constructor(metadata: T);
 
     /** The compendium metadata which defines the compendium content and location */
-    metadata: T;
+    metadata: T & {
+      /** @deprecated "The 'entity' field of compendium metadata is deprecated. Please use CompendiumCollection#documentName instead." */
+      get entity(): T['type'];
+    };
 
     /**  A subsidiary collection which contains the more minimal index of the pack */
     index: IndexTypeForMetadata<T>;
 
-    /** A debounced function which will clear the contents of the Compendium pack if it is not accessed frequently. */
+    /**
+     * A debounced function which will clear the contents of the Compendium pack if it is not accessed frequently.
+     * @internal
+     */
     _flush: () => void;
 
     /**
@@ -44,13 +50,20 @@ declare global {
 
     /**
      * The default index fields which should be retrieved for each Compendium document type
+     * @remarks TODO: We should also allow nested paths
      */
     static INDEX_FIELDS: {
       /** @defaultValue `["name", "img", "type"]` */
       Actor: (keyof foundry.data.ActorData['_source'])[];
 
+      /** @defaultValue `["name", "img"]` */
+      Adventure: (keyof foundry.data.AdventureData['_source'])[];
+
       /** @defaultValue `["name", "img", "type"]` */
       Item: (keyof foundry.data.ItemData['_source'])[];
+
+      /** @defaultValue `["name", "img", "type"]` */
+      Cards: (keyof foundry.data.CardsData['_source'])[];
 
       /** @defaultValue `["name", "thumb"]` */
       Scene: (keyof foundry.data.SceneData['_source'])[];
@@ -74,7 +87,7 @@ declare global {
     /** Access the compendium configuration data for this pack */
     get config(): CompendiumCollection.Configuration | {};
 
-    get documentName(): this['metadata']['entity'];
+    get documentName(): this['metadata']['type'];
 
     /** Track whether the Compendium Collection is locked for editing */
     get locked(): boolean;
@@ -88,7 +101,7 @@ declare global {
     get(key: string, { strict }: { strict: true }): StoredDocument<DocumentInstanceForCompendiumMetadata<T>>;
     get(
       key: string,
-      { strict }?: { strict?: false }
+      { strict }?: { strict?: false | undefined } | undefined
     ): StoredDocument<DocumentInstanceForCompendiumMetadata<T>> | undefined;
 
     set(id: string, document: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>): this;
@@ -99,7 +112,7 @@ declare global {
      * Load the Compendium index and cache it as the keys and values of the Collection.
      * @param options - Options which customize how the index is created
      */
-    getIndex(options?: CompendiumCollection.GetIndexOptions<T>): Promise<this['index']>;
+    getIndex(options?: CompendiumCollection.GetIndexOptions<T> | undefined): Promise<this['index']>;
 
     /**
      * Get a single Document from this Compendium by ID.
@@ -115,26 +128,47 @@ declare global {
      *                default: `{}`
      * @returns The retrieved Document instances
      */
-    getDocuments(query?: Record<string, unknown>): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
+    getDocuments(
+      query?: Record<string, unknown> | undefined
+    ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
 
     /**
      * Import a Document into this Compendium Collection.
      * @param document - The existing Document you wish to import
+     * @param options  - Additional options which modify how the data is imported. See {@link ClientDocumentMixin#toCompendium}
+     *                   (default: `{}`)
      * @returns The imported Document instance
      */
     importDocument(
-      document: DocumentInstanceForCompendiumMetadata<T>
+      document: DocumentInstanceForCompendiumMetadata<T>,
+      options?: ClientDocumentMixin.CompendiumExportOptions | undefined
     ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>> | undefined>;
 
     /**
      * Fully import the contents of a Compendium pack into a World folder.
+     * @param folderId   - An existing Folder _id to use.
+     *                     (default: `null`)
+     * @param folderName - A new Folder name to create.
+     *                     (default: `''`)
+     * @param options    - Additional options forwarded to {@link WorldCollection#fromCompendium} and {@link Document.createDocuments}
+     *                     (default: `{}`)
      * @returns The imported Documents, now existing within the World
      */
     importAll({
       folderId,
       folderName,
       options
-    }: ImportAllOptions): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
+    }?: ImportAllOptions | undefined): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
+
+    /**
+     * Provide a dialog form that prompts the user to import the full contents of a Compendium pack into the World.
+     * @param options - Additional options passed to the Dialog.confirm method
+     *                  (default: `{}`)
+     * @returns A Promise which resolves or rejects once the dialog has been submitted or closed
+     */
+    importDialog(
+      options?: Dialog.Options | undefined
+    ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[] | null | false>;
 
     /**
      * Add a Document to the index, capturing it's relevant index attributes
@@ -150,7 +184,7 @@ declare global {
      */
     static createCompendium<T extends CompendiumCollection.Metadata>(
       metadata: T,
-      options?: Partial<DocumentModificationOptions>
+      options?: Partial<DocumentModificationOptions> | undefined
     ): Promise<CompendiumCollection<T>>;
 
     /**
@@ -159,7 +193,9 @@ declare global {
      *                   default: `{}`
      * @returns A Promise which resolves once the setting is updated
      */
-    configure(settings?: Partial<CompendiumCollection.Configuration>): Promise<CompendiumCollection.Configuration>;
+    configure(
+      settings?: Partial<CompendiumCollection.Configuration> | undefined
+    ): Promise<CompendiumCollection.Configuration>;
 
     /**
      * Delete an existing world-level Compendium Collection.
@@ -171,35 +207,49 @@ declare global {
      * Duplicate a compendium pack to the current World.
      * @param label - A new Compendium label
      */
-    duplicateCompendium({ label }?: { label?: string }): Promise<this>;
+    duplicateCompendium({ label }?: { label?: string | undefined }): Promise<this>;
 
     /**
      * Validate that the current user is able to modify content of this Compendium pack
      * @param requireUnlocked - `(default: true)`
+     * @internal
      */
-    protected _assertUserCanModify({ requireUnlocked }?: { requireUnlocked?: boolean }): true;
+    protected _assertUserCanModify({ requireUnlocked }?: { requireUnlocked?: boolean | undefined } | undefined): true;
 
     /**
      * Request that a Compendium pack be migrated to the latest System data template
-     * TODO: find better type for options, used in socket dispatch
+     * @remarks
+     * Currently, there are no options that are being considered by foundry when migrating a
+     * a compendium pack.
      */
-    migrate(options?: object): Promise<this>;
+    migrate(options?: Record<string, unknown> | undefined): Promise<this>;
 
-    _onCreateDocuments(
+    /** @override */
+    updateAll(
+      transformation:
+        | DeepPartial<DocumentInstanceForCompendiumMetadata<T>['data']['_source']>
+        | ((
+            doc: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>
+          ) => DeepPartial<DocumentInstanceForCompendiumMetadata<T>['data']['_source']>),
+      condition?: ((obj: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>) => boolean) | null,
+      options?: DocumentModificationContext
+    ): ReturnType<this['documentClass']['updateDocuments']>;
+
+    protected _onCreateDocuments(
       documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
-      result: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>['data']['_source'][],
+      result: (DocumentInstanceForCompendiumMetadata<T>['data']['_source'] & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
-    _onUpdateDocuments(
+    protected _onUpdateDocuments(
       documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
-      result: DeepPartial<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>>[],
+      result: (DeepPartial<DocumentInstanceForCompendiumMetadata<T>['data']['_source']> & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
-    _onDeleteDocuments(
+    protected _onDeleteDocuments(
       documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
       result: string[],
       options: DocumentModificationOptions,
@@ -208,52 +258,13 @@ declare global {
 
     /**
      * Follow-up actions taken when Documents within this Compendium pack are modified
+     * @internal
      */
     protected _onModifyContents(
       documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
-
-    /** @deprecated since 0.8.0 */
-    get entity(): this['documentClass']['documentName'];
-
-    /** @deprecated since 0.8.0 */
-    getContent(): ReturnType<this['getDocuments']>;
-
-    /** @deprecated since 0.8.0 */
-    getEntry(id: string): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>['data']>;
-
-    /** @deprecated since 0.8.0 */
-    getEntity(id: string): ReturnType<this['getDocument']>;
-
-    /** @deprecated since 0.8.0 */
-    importEntity(document: DocumentInstanceForCompendiumMetadata<T>): ReturnType<this['importDocument']>;
-
-    /** @deprecated since 0.8.0 */
-    createEntity(
-      data:
-        | ConstructorDataType<DocumentInstanceForCompendiumMetadata<T>['data']>
-        | (ConstructorDataType<DocumentInstanceForCompendiumMetadata<T>['data']> & Record<string, unknown>),
-      options?: Partial<DocumentModificationOptions>
-    ): ReturnType<this['documentClass']['create']>;
-
-    /** @deprecated since 0.8.0 */
-    updateEntity(
-      data: DeepPartial<
-        | ConstructorDataType<DocumentInstanceForCompendiumMetadata<T>['data']>
-        | (ConstructorDataType<DocumentInstanceForCompendiumMetadata<T>['data']> & Record<string, unknown>)
-      > & {
-        _id: string;
-      },
-      options?: Partial<DocumentModificationOptions>
-    ): ReturnType<DocumentInstanceForCompendiumMetadata<T>['update']>;
-
-    /** @deprecated since 0.8.0 */
-    deleteEntity(
-      id: string,
-      options?: Partial<DocumentModificationOptions>
-    ): ReturnType<DocumentInstanceForCompendiumMetadata<T>['delete']>;
   }
 
   namespace CompendiumCollection {
@@ -262,7 +273,7 @@ declare global {
       locked: boolean;
     }
     interface Metadata {
-      entity: 'Actor' | 'Item' | 'JournalEntry' | 'Macro' | 'Playlist' | 'RollTable' | 'Scene';
+      type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
       name: string;
       label: string;
       path: string;
@@ -283,21 +294,21 @@ interface ImportAllOptions {
    * An existing Folder _id to use.
    * @defaultValue `null`
    * */
-  folderId?: string | null;
+  folderId?: string | null | undefined;
   /**
    * A new Folder name to create.
    * @defaultValue `""`
    * */
-  folderName?: string;
+  folderName?: string | undefined;
   /**
-   * Additional options forwarded to Document.createDocuments
+   * Additional options forwarded to {@link WorldCollection#fromCompendium} and {@link Document.createDocuments}
    * @defaultValue `{}`
    */
-  options?: DocumentModificationContext;
+  options?: (DocumentModificationContext & WorldCollection.FromCompendiumOptions) | undefined;
 }
 
 type DocumentClassForCompendiumMetadata<T extends CompendiumCollection.Metadata> = ConfiguredDocumentClassForName<
-  T['entity']
+  T['type']
 >;
 
 type DocumentInstanceForCompendiumMetadata<T extends CompendiumCollection.Metadata> = InstanceType<

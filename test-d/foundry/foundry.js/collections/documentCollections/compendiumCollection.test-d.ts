@@ -1,7 +1,7 @@
 import { expectError, expectType } from 'tsd';
 
 const metadata = {
-  entity: 'JournalEntry' as const,
+  type: 'JournalEntry' as const,
   label: 'Important Plotholes',
   name: 'plotholes',
   package: 'some-package',
@@ -18,7 +18,7 @@ expectType<{ _id: string } & Partial<foundry.data.JournalEntryData['_source']>>(
 );
 
 const itemCollection = new CompendiumCollection({
-  entity: 'Item',
+  type: 'Item',
   label: 'Important items',
   name: 'items',
   package: 'other-package',

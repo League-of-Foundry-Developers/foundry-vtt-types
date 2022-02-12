@@ -5,7 +5,7 @@ declare global {
    * The singleton collection of Folder documents which exist within the active World.
    * This Collection is accessible within the Game object as game.fog.
    *
-   * @see {@link FogExploration} The FogExploration document
+   * @see {@link Folder} The Folder document
    */
   class Folders extends WorldCollection<typeof foundry.documents.BaseFolder, 'Folders'> {
     constructor(data?: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Folder>>>['data']['_source'][]);

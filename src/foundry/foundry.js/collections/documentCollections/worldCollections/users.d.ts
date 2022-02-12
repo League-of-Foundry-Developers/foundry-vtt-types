@@ -5,19 +5,21 @@ declare global {
    * The singleton collection of User documents which exist within the active World.
    * This Collection is accessible within the Game object as game.users.
    *
-   * @see {@link User} The User entity
+   * @see {@link User} The User document
    */
   class Users extends WorldCollection<typeof foundry.documents.BaseUser, 'Users'> {
     constructor(data?: foundry.data.UserData['_source'][]);
 
     /**
-     * The User entity of the currently connected user
+     * The User document of the currently connected user
      * @defaultValue `null`
      */
     current: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseUser>>> | null;
 
     /**
-     * Initialize the Map object and all its contained entities
+     * Initialize the Map object and all its contained documents
+     * @override
+     * @internal
      */
     protected _initialize(): void;
 
@@ -36,7 +38,8 @@ declare global {
      * Handle receipt of activity data from another User connected to the Game session
      * @param userId       - The User id who generated the activity data
      * @param activityData - The object of activity data
+     *                       (default: `{}`)
      */
-    protected static _handleUserActivity(userId: string, activityData?: User.ActivityData): void;
+    protected static _handleUserActivity(userId: string, activityData?: ActivityData | undefined): void;
   }
 }

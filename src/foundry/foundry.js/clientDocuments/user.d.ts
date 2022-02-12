@@ -2,6 +2,32 @@ import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentDataType, DocumentModificationOptions } from '../../common/abstract/document.mjs';
 
 declare global {
+  interface ActivityData {
+    /** The ID of the scene that the user is viewing. */
+    sceneId?: string | null | undefined;
+
+    /** The position of the user's cursor. */
+    cursor?: { x: number; y: number } | null | undefined;
+
+    /** The state of the user's ruler, if they are currently using one. */
+    ruler?: RulerData | null | undefined;
+
+    /** The IDs of the tokens the user has targeted in the currently viewed */
+    targets?: string[] | undefined;
+
+    /** Whether the user has an open WS connection to the server or not. */
+    active?: boolean | undefined;
+
+    /** Is the user pulling focus to the cursor coordinates? */
+    focus?: boolean | undefined;
+
+    /** Is the user emitting a ping at the cursor coordinates? */
+    ping?: boolean | undefined;
+
+    /** The state of the user's AV settings. */
+    av?: AVSettingsData | undefined;
+  }
+
   /**
    * The client-side User document which extends the common BaseUser model.
    * Each User document contains UserData which defines its data schema.
@@ -91,7 +117,7 @@ declare global {
      * @param activityData - An object of User activity data to submit to the server for broadcast.
      *                       (default: `{}`)
      */
-    broadcastActivity(activityData?: User.ActivityData): void;
+    broadcastActivity(activityData?: ActivityData): void;
 
     /**
      * Get an Array of Macro Entities on this User's Hotbar by page
@@ -137,39 +163,5 @@ declare global {
 
     /** @remarks This property is set by PlayerList.getData() */
     border?: string;
-  }
-
-  namespace User {
-    interface ActivityData {
-      /**
-       * The coordinates of the user's cursor
-       */
-      cursor?: boolean;
-
-      /**
-       * Is the user pulling focus to the cursor coordinates?
-       */
-      focus?: boolean;
-
-      /**
-       * Is the user emitting a ping at the cursor coordinates?
-       */
-      ping?: boolean;
-
-      /**
-       * Serialized Ruler coordinate data in JSON format
-       */
-      ruler?: string;
-
-      /**
-       * The id of the Scene currently being viewed by the User
-       */
-      sceneId?: string;
-
-      /**
-       * An array of Token ids which are targeted by the User
-       */
-      targets?: string[];
-    }
   }
 }
