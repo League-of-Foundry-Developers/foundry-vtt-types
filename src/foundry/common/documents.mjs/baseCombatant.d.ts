@@ -6,31 +6,34 @@ import { data } from '../module.mjs';
 import { BaseCombat } from './baseCombat';
 import { BaseUser } from './baseUser';
 
+type CombatantMetadata = Merge<
+  DocumentMetadata,
+  {
+    name: 'Combatant';
+    collection: 'combatants';
+    label: 'DOCUMENT.Combatant';
+    isEmbedded: true;
+    labelPlural: 'DOCUMENT.Combatants';
+    permissions: {
+      create: (user: BaseUser, doc: BaseCombatant, data: CombatantDataSource) => boolean;
+      update: (user: BaseUser, doc: BaseCombatant, data: DeepPartial<CombatantDataConstructorData>) => boolean;
+    };
+  }
+>;
+
 /**
  * The base Combatant model definition which defines common behavior of an Combatant document between both client and server.
  */
 export declare class BaseCombatant extends Document<
   data.CombatantData,
-  InstanceType<ConfiguredDocumentClass<typeof BaseCombat>>
+  InstanceType<ConfiguredDocumentClass<typeof BaseCombat>>,
+  CombatantMetadata
 > {
   /** @override */
   static get schema(): typeof data.CombatantData;
 
   /** @override */
-  static get metadata(): Merge<
-    DocumentMetadata,
-    {
-      name: 'Combatant';
-      collection: 'combatants';
-      label: 'DOCUMENT.Combatant';
-      isEmbedded: true;
-      labelPlural: 'DOCUMENT.Combatants';
-      permissions: {
-        create: typeof BaseCombatant._canCreate;
-        update: typeof BaseCombatant._canUpdate;
-      };
-    }
-  >;
+  static get metadata(): CombatantMetadata;
 
   /**
    * Is a user able to update an existing Combatant?

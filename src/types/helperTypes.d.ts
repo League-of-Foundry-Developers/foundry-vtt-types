@@ -63,9 +63,35 @@ export type ConfiguredDocumentClass<T extends DocumentConstructor> = ConfiguredD
   T['metadata']['name']
 >;
 
-export type DocumentType = keyof {
-  [Key in keyof CONFIG as 'documentClass' extends keyof CONFIG[Key] ? Key : never]: unknown;
-};
+export type DocumentType =
+  | 'Actor'
+  | 'Adventure'
+  | 'Cards'
+  | 'ChatMessage'
+  | 'Combat'
+  | 'FogExploration'
+  | 'Folder'
+  | 'Item'
+  | 'JournalEntry'
+  | 'Macro'
+  | 'Playlist'
+  | 'RollTable'
+  | 'Scene'
+  | 'Setting'
+  | 'User'
+  | 'ActiveEffect'
+  | 'Card'
+  | 'TableResult'
+  | 'PlaylistSound'
+  | 'AmbientLight'
+  | 'AmbientSound'
+  | 'Combatant'
+  | 'Drawing'
+  | 'MeasuredTemplate'
+  | 'Note'
+  | 'Tile'
+  | 'Token'
+  | 'Wall';
 
 export type PlaceableDocumentType =
   | 'AmbientLight'
@@ -77,17 +103,9 @@ export type PlaceableDocumentType =
   | 'Token'
   | 'Wall';
 
-export type ConfiguredDocumentClassForName<Name extends DocumentType> = 'documentClass' extends keyof CONFIG[Name]
-  ? CONFIG[Name]['documentClass']
-  : never;
+export type ConfiguredDocumentClassForName<Name extends DocumentType> = CONFIG[Name]['documentClass'];
 
-export type ObjectType = keyof {
-  [Key in keyof CONFIG as 'objectClass' extends keyof CONFIG[Key] ? Key : never]: unknown;
-};
-
-export type ConfiguredObjectClassForName<Name extends ObjectType> = 'objectClass' extends keyof CONFIG[Name]
-  ? CONFIG[Name]['objectClass']
-  : never;
+export type ConfiguredObjectClassForName<Name extends PlaceableDocumentType> = CONFIG[Name]['objectClass'];
 
 export type ConfiguredData<Name extends string> = Name extends keyof DataConfig ? DataConfig[Name] : {};
 

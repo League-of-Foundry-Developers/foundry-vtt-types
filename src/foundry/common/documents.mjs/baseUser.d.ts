@@ -3,10 +3,26 @@ import { Document } from '../abstract/module.mjs';
 import * as data from '../data/data.mjs';
 import type { UserDataConstructorData, UserDataSource } from '../data/data.mjs/userData';
 
+type UserMetadata = Merge<
+  DocumentMetadata,
+  {
+    name: 'User';
+    collection: 'users';
+    label: 'DOCUMENT.User';
+    labelPlural: 'DOCUMENT.Users';
+    isPrimary: true;
+    permissions: {
+      create: (user: BaseUser, doc: BaseUser, data: UserDataSource) => boolean;
+      update: (user: BaseUser, doc: BaseUser, data: DeepPartial<UserDataConstructorData>) => boolean;
+      delete: (user: BaseUser, doc: BaseUser) => boolean;
+    };
+  }
+>;
+
 /**
  * The base User model definition which defines common behavior of an User document between both client and server.
  */
-export declare class BaseUser extends Document<data.UserData, null> {
+export declare class BaseUser extends Document<data.UserData, null, UserMetadata> {
   constructor(...args: ConstructorParameters<ConstructorOf<Document<data.UserData, null>>>);
 
   /**
@@ -18,21 +34,7 @@ export declare class BaseUser extends Document<data.UserData, null> {
   static get schema(): typeof data.UserData;
 
   /** @override */
-  static get metadata(): Merge<
-    DocumentMetadata,
-    {
-      name: 'User';
-      collection: 'users';
-      label: 'DOCUMENT.User';
-      labelPlural: 'DOCUMENT.Users';
-      isPrimary: true;
-      permissions: {
-        create: typeof BaseUser._canCreate;
-        update: typeof BaseUser._canUpdate;
-        delete: typeof BaseUser._canDelete;
-      };
-    }
-  >;
+  static get metadata(): UserMetadata;
 
   /**
    * Is a user able to create an existing User?

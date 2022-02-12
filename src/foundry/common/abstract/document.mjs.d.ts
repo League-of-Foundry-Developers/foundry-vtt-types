@@ -18,7 +18,8 @@ export type DocumentDataType<T extends Document<any, any>> = T extends Document<
  */
 declare abstract class Document<
   ConcreteDocumentData extends AnyDocumentData,
-  Parent extends Document<any, any> | null = null
+  Parent extends Document<any, any> | null = null,
+  ConcreteMetadata extends Metadata<any> = Metadata<any>
 > {
   /**
    * Create a new Document by providing an initial data object.
@@ -101,12 +102,12 @@ declare abstract class Document<
   /**
    * The named collection to which this Document belongs.
    */
-  get collectionName(): string;
+  get collectionName(): ConcreteMetadata['collection'];
 
   /**
    * The canonical name of this Document type, for example "Actor".
    */
-  get documentName(): string;
+  get documentName(): ConcreteMetadata['name'];
 
   /**
    * The canonical identifier for this Document

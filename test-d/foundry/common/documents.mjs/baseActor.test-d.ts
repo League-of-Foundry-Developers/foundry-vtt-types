@@ -113,3 +113,4 @@ if (baseActor.data._source.type === 'character') {
 if (baseActor.data.type === 'character') {
   expectType<never>(baseActor.getFlag('my-module', 'xp'));
 }
+expectType<'Actor'>(baseActor.documentName);

@@ -10,34 +10,36 @@ import { BaseTile } from './baseTile';
 import { BaseToken } from './baseToken';
 import { BaseWall } from './baseWall';
 
+type SceneMetadata = Merge<
+  DocumentMetadata,
+  {
+    name: 'Scene';
+    collection: 'scenes';
+    label: 'DOCUMENT.Scene';
+    labelPlural: 'DOCUMENT.Scenes';
+    isPrimary: true;
+    embedded: {
+      AmbientLight: typeof BaseAmbientLight;
+      AmbientSound: typeof BaseAmbientSound;
+      Drawing: typeof BaseDrawing;
+      MeasuredTemplate: typeof BaseMeasuredTemplate;
+      Note: typeof BaseNote;
+      Tile: typeof BaseTile;
+      Token: typeof BaseToken;
+      Wall: typeof BaseWall;
+    };
+  }
+>;
+
 /**
  * The base Scene model definition which defines common behavior of an Scene document between both client and server.
  */
-export declare class BaseScene extends Document<data.SceneData> {
+export declare class BaseScene extends Document<data.SceneData, null, SceneMetadata> {
   /** @override */
   static get schema(): typeof data.SceneData;
 
   /** @override */
-  static get metadata(): Merge<
-    DocumentMetadata,
-    {
-      name: 'Scene';
-      collection: 'scenes';
-      label: 'DOCUMENT.Scene';
-      labelPlural: 'DOCUMENT.Scenes';
-      isPrimary: true;
-      embedded: {
-        AmbientLight: typeof BaseAmbientLight;
-        AmbientSound: typeof BaseAmbientSound;
-        Drawing: typeof BaseDrawing;
-        MeasuredTemplate: typeof BaseMeasuredTemplate;
-        Note: typeof BaseNote;
-        Tile: typeof BaseTile;
-        Token: typeof BaseToken;
-        Wall: typeof BaseWall;
-      };
-    }
-  >;
+  static get metadata(): SceneMetadata;
 
   /**
    * A reference to the Collection of Drawing instances in the Scene document, indexed by _id.

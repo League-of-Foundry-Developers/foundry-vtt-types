@@ -7,27 +7,30 @@ import { BaseActor } from './baseActor';
 import { BaseItem } from './baseItem';
 import { BaseUser } from './baseUser';
 
+type ActiveEffectMetadata = Merge<
+  DocumentMetadata,
+  {
+    name: 'ActiveEffect';
+    collection: 'effects';
+    label: 'DOCUMENT.ActiveEffect';
+    labelPlural: 'DOCUMENT.ActiveEffects';
+    isEmbedded: true;
+  }
+>;
+
 /**
  * The base ActiveEffect model definition which defines common behavior of an ActiveEffect document between both client and server.
  */
 export declare class BaseActiveEffect extends Document<
   data.ActiveEffectData,
-  InstanceType<ConfiguredDocumentClass<typeof BaseActor>> | InstanceType<ConfiguredDocumentClass<typeof BaseItem>>
+  InstanceType<ConfiguredDocumentClass<typeof BaseActor>> | InstanceType<ConfiguredDocumentClass<typeof BaseItem>>,
+  ActiveEffectMetadata
 > {
   /** @override */
   static get schema(): ConstructorOf<data.ActiveEffectData>;
 
   /** @override */
-  static get metadata(): Merge<
-    DocumentMetadata,
-    {
-      name: 'ActiveEffect';
-      collection: 'effects';
-      label: 'DOCUMENT.ActiveEffect';
-      labelPlural: 'DOCUMENT.ActiveEffects';
-      isEmbedded: true;
-    }
-  >;
+  static get metadata(): ActiveEffectMetadata;
 
   /** @override */
   protected _preCreate(

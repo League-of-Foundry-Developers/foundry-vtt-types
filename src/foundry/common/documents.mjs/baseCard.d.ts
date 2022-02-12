@@ -6,30 +6,36 @@ import type { CardDataConstructorData, CardDataSource } from '../data/data.mjs/c
 import { BaseCards } from './baseCards';
 import { BaseUser } from './baseUser';
 
+type CardMetadata = Merge<
+  DocumentMetadata,
+  {
+    name: 'Card';
+    collection: 'cards';
+    label: 'DOCUMENT.Card';
+    labelPlural: 'DOCUMENT.Cards';
+    isEmbedded: true;
+    types: string[];
+    hasSystemData: true;
+    permissions: {
+      create: (user: BaseUser, doc: BaseCard, data: CardDataSource) => boolean;
+      update: (user: BaseUser, doc: BaseCard, data: DeepPartial<CardDataConstructorData>) => boolean;
+    };
+  }
+>;
+
 /**
  * The base Card definition which defines common behavior of an embedded Card document shared by both client and server.
  */
-export declare class BaseCard extends Document<data.CardData, InstanceType<ConfiguredDocumentClass<typeof BaseCards>>> {
+export declare class BaseCard extends Document<
+  data.CardData,
+  InstanceType<ConfiguredDocumentClass<typeof BaseCards>>,
+  CardMetadata
+> {
   /** @override */
   static get schema(): typeof data.CardData;
 
   /** @override */
-  static get metadata(): Merge<
-    DocumentMetadata,
-    {
-      name: 'Card';
-      collection: 'cards';
-      label: 'DOCUMENT.Card';
-      labelPlural: 'DOCUMENT.Cards';
-      isEmbedded: true;
-      types: string[];
-      hasSystemData: true;
-      permissions: {
-        create: typeof BaseCard._canCreate;
-        update: typeof BaseCard._canUpdate;
-      };
-    }
-  >;
+  static get metadata(): CardMetadata;
 
   /**
    * The sub-type of Card.
