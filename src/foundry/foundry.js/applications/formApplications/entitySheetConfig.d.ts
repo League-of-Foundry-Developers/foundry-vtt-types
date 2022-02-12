@@ -64,7 +64,7 @@ declare global {
     static registerSheet(
       documentClass: DocumentConstructor,
       scope: string,
-      sheetClass: ConstructorOf<FormApplication>,
+      sheetClass: ConstructorOf<FormApplication<FormApplicationOptions, any, any>>,
       { label, types, makeDefault }?: EntitySheetConfig.RegisterSheetOptions
     ): void;
 
@@ -91,7 +91,7 @@ declare global {
     static unregisterSheet(
       documentClass: DocumentConstructor,
       scope: string,
-      sheetClass: ConstructorOf<FormApplication>,
+      sheetClass: ConstructorOf<FormApplication<FormApplicationOptions, any, any>>,
       { types }?: { types?: string[] }
     ): void;
 
