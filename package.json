@@ -58,10 +58,11 @@
   "dependencies": {
     "@pixi/graphics-smooth": "0.0.22",
     "@types/jquery": "~3.5.9",
+    "@types/offscreencanvas": "^2019.6.4",
     "@types/simple-peer": "~9.11.1",
     "handlebars": "4.7.7",
     "pixi-particles": "4.3.1",
-    "pixi.js": "5.3.11",
+    "pixi.js": "6.2.1",
     "socket.io-client": "4.3.2",
     "tinymce": "5.10.1"
   },
