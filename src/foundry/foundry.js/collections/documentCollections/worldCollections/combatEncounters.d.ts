@@ -5,7 +5,7 @@ declare global {
    * The singleton collection of Combat documents which exist within the active World.
    * This Collection is accessible within the Game object as game.combats.
    *
-   * @see {@link Combat} The Combat entity
+   * @see {@link Combat} The Combat document
    * @see {@link CombatTracker} The CombatTracker sidebar directory
    */
   class CombatEncounters extends WorldCollection<typeof foundry.documents.BaseCombat, 'CombatEncounters'> {
@@ -13,9 +13,12 @@ declare global {
     static documentName: 'Combat';
 
     /**
-     * Provide the settings object which configures the Combat entity
+     * Provide the settings object which configures the Combat document
      */
     static get settings(): ClientSettings.Values[`core.${typeof Combat['CONFIG_SETTING']}`];
+
+    /** @override */
+    get directory(): typeof ui['combat'];
 
     /**
      * Get an Array of Combat instances which apply to the current canvas scene

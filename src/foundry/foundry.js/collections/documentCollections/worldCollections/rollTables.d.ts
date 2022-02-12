@@ -13,7 +13,7 @@ declare class RollTables extends WorldCollection<typeof foundry.documents.BaseRo
   get directory(): typeof ui['tables'];
 
   /**
-   * Register world settings related to RollTable entities
+   * Register world settings related to RollTable documents
    */
   static registerSettings(): void;
 }

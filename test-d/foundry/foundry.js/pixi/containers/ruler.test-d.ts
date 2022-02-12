@@ -23,11 +23,5 @@ expectType<Array<Ruler.Segment>>(ruler.measure({ x: 10, y: 10 }, { gridSpaces: t
 
 expectType<Promise<false | undefined>>(ruler.moveToken());
 expectType<void>(ruler.clear());
-expectType<{
-  class: 'Ruler';
-  name: string;
-  waypoints: PIXI.Point[];
-  destination: PIXI.Point | null;
-  _state: 0 | 1 | 2 | 3;
-}>(ruler.toJSON());
+expectType<RulerData>(ruler.toJSON());
 expectType<void>(ruler.update(ruler.toJSON()));
