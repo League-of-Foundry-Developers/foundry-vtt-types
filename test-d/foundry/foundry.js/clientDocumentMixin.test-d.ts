@@ -5,7 +5,7 @@ import { expectType } from 'tsd';
 const doc = new Item();
 
 // Test the inheritance
-expectType<string>(doc.documentName); // Document
+expectType<'Item'>(doc.documentName); // Document
 expectType<object>(doc.migrateSystemData()); // Base-Document
 expectType<string>(doc.uuid); // ClientDocumentMixin
 expectType<ActiveEffect[]>(doc.transferredEffects); // class itself

@@ -8,36 +8,39 @@ import { BaseItem } from './baseItem';
 import { BaseToken } from './baseToken';
 import { BaseUser } from './baseUser';
 
+type ActorMetadata = Merge<
+  DocumentMetadata,
+  {
+    name: 'Actor';
+    collection: 'actors';
+    label: 'DOCUMENT.Actor';
+    labelPlural: 'DOCUMENT.Actors';
+    embedded: {
+      ActiveEffect: typeof BaseActiveEffect;
+      Item: typeof BaseItem;
+    };
+    isPrimary: true;
+    hasSystemData: true;
+    permissions: {
+      create: 'ACTOR_CREATE';
+    };
+    types: string[];
+  }
+>;
+
 /**
  * The base Actor model definition which defines common behavior of an Actor document between both client and server.
  */
 export declare class BaseActor extends Document<
   data.ActorData,
-  InstanceType<ConfiguredDocumentClass<typeof BaseToken>>
+  InstanceType<ConfiguredDocumentClass<typeof BaseToken>>,
+  ActorMetadata
 > {
   /** @override */
   static get schema(): typeof data.ActorData;
 
   /** @override */
-  static get metadata(): Merge<
-    DocumentMetadata,
-    {
-      name: 'Actor';
-      collection: 'actors';
-      label: 'DOCUMENT.Actor';
-      labelPlural: 'DOCUMENT.Actors';
-      embedded: {
-        ActiveEffect: typeof BaseActiveEffect;
-        Item: typeof BaseItem;
-      };
-      isPrimary: true;
-      hasSystemData: true;
-      permissions: {
-        create: 'ACTOR_CREATE';
-      };
-      types: string[];
-    }
-  >;
+  static get metadata(): ActorMetadata;
   /*
    * A reference to the Collection of embedded ActiveEffect instances in the Actor document, indexed by _id.
    */

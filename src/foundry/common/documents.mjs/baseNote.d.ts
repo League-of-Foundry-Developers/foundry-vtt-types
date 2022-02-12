@@ -5,27 +5,33 @@ import * as data from '../data/data.mjs';
 import { BaseScene } from './baseScene';
 import { BaseUser } from './baseUser';
 
+type NoteMetadata = Merge<
+  DocumentMetadata,
+  {
+    name: 'Note';
+    collection: 'notes';
+    label: 'DOCUMENT.Note';
+    labelPlural: 'DOCUMENT.Notes';
+    isEmbedded: true;
+    permissions: {
+      create: 'NOTE_CREATE';
+    };
+  }
+>;
+
 /**
  * The base Note model definition which defines common behavior of an Note document between both client and server.
  */
-export declare class BaseNote extends Document<data.NoteData, InstanceType<ConfiguredDocumentClass<typeof BaseScene>>> {
+export declare class BaseNote extends Document<
+  data.NoteData,
+  InstanceType<ConfiguredDocumentClass<typeof BaseScene>>,
+  NoteMetadata
+> {
   /** @override */
   static get schema(): typeof data.NoteData;
 
   /** @override */
-  static get metadata(): Merge<
-    DocumentMetadata,
-    {
-      name: 'Note';
-      collection: 'notes';
-      label: 'DOCUMENT.Note';
-      labelPlural: 'DOCUMENT.Notes';
-      isEmbedded: true;
-      permissions: {
-        create: 'NOTE_CREATE';
-      };
-    }
-  >;
+  static get metadata(): NoteMetadata;
 
   /** @override */
   testUserPermission(

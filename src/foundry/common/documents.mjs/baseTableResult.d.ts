@@ -5,34 +5,37 @@ import type { TableResultDataConstructorData } from '../data/data.mjs/tableResul
 import { BaseRollTable } from './baseRollTable';
 import { BaseUser } from './baseUser';
 
+type TableResultMetadata = Merge<
+  DocumentMetadata,
+  {
+    name: 'TableResult';
+    collection: 'results';
+    label: 'DOCUMENT.TableResult';
+    labelPlural: 'DOCUMENT.TableResults';
+    types: [
+      `${typeof CONST.TABLE_RESULT_TYPES.TEXT}`,
+      `${typeof CONST.TABLE_RESULT_TYPES.DOCUMENT}`,
+      `${typeof CONST.TABLE_RESULT_TYPES.COMPENDIUM}`
+    ];
+    permissions: {
+      update: (user: BaseUser, doc: BaseTableResult, data: DeepPartial<TableResultDataConstructorData>) => boolean;
+    };
+  }
+>;
+
 /**
  * The base TableResult model definition which defines common behavior of an TableResult document between both client and server.
  */
 export declare class BaseTableResult extends Document<
   foundry.data.TableResultData,
-  InstanceType<ConfiguredDocumentClass<typeof BaseRollTable>>
+  InstanceType<ConfiguredDocumentClass<typeof BaseRollTable>>,
+  TableResultMetadata
 > {
   /** @override */
   static get schema(): typeof foundry.data.TableResultData;
 
   /** @override */
-  static get metadata(): Merge<
-    DocumentMetadata,
-    {
-      name: 'TableResult';
-      collection: 'results';
-      label: 'DOCUMENT.TableResult';
-      labelPlural: 'DOCUMENT.TableResults';
-      types: [
-        `${typeof CONST.TABLE_RESULT_TYPES.TEXT}`,
-        `${typeof CONST.TABLE_RESULT_TYPES.DOCUMENT}`,
-        `${typeof CONST.TABLE_RESULT_TYPES.COMPENDIUM}`
-      ];
-      permissions: {
-        update: typeof BaseTableResult._canUpdate;
-      };
-    }
-  >;
+  static get metadata(): TableResultMetadata;
 
   /**
    * Is a user able to update an existing TableResult?

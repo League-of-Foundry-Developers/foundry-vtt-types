@@ -1,4 +1,5 @@
 import { ConfiguredDocumentClass, DocumentConstructor } from '../../../../types/helperTypes';
+import type { DOCUMENT_TYPES } from '../../../common/constants.mjs';
 
 declare global {
   /**
@@ -47,7 +48,12 @@ declare global {
      */
     get directory(): Lowercase<Name> extends keyof typeof ui
       ? typeof ui[Lowercase<Name>]
-      : SidebarDirectory<ConfiguredDocumentClass<T>['metadata']['name']> | SidebarTab | undefined;
+      :
+          | (ConfiguredDocumentClass<T>['metadata']['name'] extends DOCUMENT_TYPES
+              ? SidebarDirectory<ConfiguredDocumentClass<T>['metadata']['name']>
+              : never)
+          | SidebarTab
+          | undefined;
 
     /**
      * Return a reference to the singleton instance of this WorldCollection, or null if it has not yet been created.

@@ -5,30 +5,32 @@ import { data } from '../module.mjs';
 import { BaseCombatant } from './baseCombatant';
 import { BaseUser } from './baseUser';
 
+type CombatMetadata = Merge<
+  DocumentMetadata,
+  {
+    name: 'Combat';
+    collection: 'combats';
+    label: 'DOCUMENT.Combat';
+    labelPlural: 'DOCUMENT.Combats';
+    embedded: {
+      Combatant: typeof BaseCombatant;
+    };
+    isPrimary: true;
+    permissions: {
+      update: (user: BaseUser, doc: BaseCombat, data: DeepPartial<CombatDataConstructorData>) => boolean;
+    };
+  }
+>;
+
 /**
  * The base Combat model definition which defines common behavior of an Combat document between both client and server.
  */
-export declare class BaseCombat extends Document<data.CombatData> {
+export declare class BaseCombat extends Document<data.CombatData, null, CombatMetadata> {
   /** @override */
   static get schema(): typeof data.CombatData;
 
   /** @override */
-  static get metadata(): Merge<
-    DocumentMetadata,
-    {
-      name: 'Combat';
-      collection: 'combats';
-      label: 'DOCUMENT.Combat';
-      labelPlural: 'DOCUMENT.Combats';
-      embedded: {
-        Combatant: typeof BaseCombatant;
-      };
-      isPrimary: true;
-      permissions: {
-        update: typeof BaseCombat._canUpdate;
-      };
-    }
-  >;
+  static get metadata(): CombatMetadata;
 
   /** A reference to the Collection of Combatant instances in the Combat document, indexed by id. */
   get combatants(): this['data']['combatants'];

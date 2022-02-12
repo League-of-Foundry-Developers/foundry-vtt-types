@@ -5,31 +5,34 @@ import * as data from '../data/data.mjs';
 import type { TokenDataConstructorData } from '../data/data.mjs/tokenData';
 import { BaseUser } from './baseUser';
 
+type TokenMetadata = Merge<
+  DocumentMetadata,
+  {
+    name: 'Token';
+    collection: 'tokens';
+    label: 'DOCUMENT.Token';
+    labelPlural: 'DOCUMENT.Tokens';
+    isEmbedded: true;
+    permissions: {
+      create: 'TOKEN_CREATE';
+      update: (user: BaseUser, doc: BaseToken, data: DeepPartial<TokenDataConstructorData>) => boolean;
+    };
+  }
+>;
+
 /**
  * The base Token model definition which defines common behavior of an Token document between both client and server.
  */
 export declare class BaseToken extends Document<
   data.TokenData,
-  InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>
+  InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>,
+  TokenMetadata
 > {
   /** @override */
   static get schema(): typeof data.TokenData;
 
   /** @override */
-  static get metadata(): Merge<
-    DocumentMetadata,
-    {
-      name: 'Token';
-      collection: 'tokens';
-      label: 'DOCUMENT.Token';
-      labelPlural: 'DOCUMENT.Tokens';
-      isEmbedded: true;
-      permissions: {
-        create: 'TOKEN_CREATE';
-        update: typeof BaseToken._canUpdate;
-      };
-    }
-  >;
+  static get metadata(): TokenMetadata;
 
   /**
    * A convenience reference to the name which should be displayed for the Token
