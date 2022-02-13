@@ -197,7 +197,7 @@ interface NumberConstructor {
    * @param n - A value to test
    * @returns Is it a number?
    */
-  isNumeric(n: unknown): n is number;
+  isNumeric(n: unknown): boolean;
 
   /**
    * Attempt to create a number from a user-provided string.
