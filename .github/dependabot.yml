@@ -14,4 +14,3 @@ updates:
       - dependency-name: 'pixi.js'
       - dependency-name: 'socket.io-client'
       - dependency-name: 'tinymce'
-      - dependency-name: 'tsd' # 0.19.0 uses  typescript v4.5.2. Remove as soon as a version is released that uses a fixed typescript version
