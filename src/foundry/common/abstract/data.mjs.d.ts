@@ -283,14 +283,14 @@ declare abstract class DocumentData<
   toObject(source: false): {
     [Key in keyof ConcreteDocumentSchema as string extends Key ? never : Key]: Key extends keyof this
       ? ToObjectFalseType<this[Key]>
-      : undefined;
+      : unknown;
   };
 
   /**
    * Extract the source data for the DocumentData into a simple object format that can be serialized.
    * @returns The document source data expressed as a plain object
    */
-  toJSON(): this['_id'] extends string ? SourceData & { _id: string } : SourceData;
+  toJSON(): this['_id'] extends string ? this['_source'] & { _id: string } : this['_source'];
 
   /**
    * Create a DocumentData instance using a provided serialized JSON string.
