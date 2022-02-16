@@ -211,7 +211,7 @@ declare namespace ClientSettings {
     label?: string;
     name?: string;
     restricted: boolean;
-    type: ConstructorOf<FormApplication<FormApplicationOptions, object>>;
+    type: ConstructorOf<FormApplication<FormApplicationOptions, object, undefined>>;
   }
 
   interface RegisteredMenuSettings {
