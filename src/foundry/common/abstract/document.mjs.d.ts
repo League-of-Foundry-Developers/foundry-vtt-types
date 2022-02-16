@@ -673,7 +673,11 @@ declare abstract class Document<
    * @param source - Draw values from the underlying data source rather than transformed values
    * @returns The extracted primitive object
    */
-  toObject(source?: true): ReturnType<this['toJSON']>;
+  toObject(
+    source?: true
+  ): this['id'] extends string
+    ? ReturnType<this['data']['toJSON']> & { _id: string }
+    : ReturnType<this['data']['toJSON']>;
   toObject(
     source: false
   ): this['id'] extends string
@@ -686,8 +690,8 @@ declare abstract class Document<
    * @returns The document data expressed as a plain object
    */
   toJSON(): this['id'] extends string
-    ? ReturnType<ConcreteDocumentData['toJSON']> & { _id: string }
-    : ReturnType<ConcreteDocumentData['toJSON']>;
+    ? ReturnType<this['data']['toJSON']> & { _id: string }
+    : ReturnType<this['data']['toJSON']>;
 
   /**
    * For Documents which include game system data, migrate the system data object to conform to its latest data model.
