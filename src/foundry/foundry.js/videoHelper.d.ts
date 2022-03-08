@@ -6,13 +6,6 @@ declare class VideoHelper {
   constructor();
 
   /**
-   * A collection of HTML5 video objects which are currently active within the FVTT page
-   * @defaultValue `[]`
-   * @remarks This seems to be unused.
-   */
-  videos: HTMLVideoElement[];
-
-  /**
    * A user gesture must be registered before video playback can begin.
    * This Set records the video elements which await such a gesture.
    */
