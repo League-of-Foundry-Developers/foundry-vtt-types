@@ -441,7 +441,6 @@ export declare function setProperty(object: object, key: string, value: any): bo
 
 /**
  * Express a timestamp as a relative string
- * TODO - figure out a way to localize this
  * @param timeStamp - A timestamp string or Date object to be formatted as a relative time
  * @returns A string expression for the relative time
  */
