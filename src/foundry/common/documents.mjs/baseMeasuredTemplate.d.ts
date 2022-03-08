@@ -15,7 +15,7 @@ type MeasuredTemplateMetadata = Merge<
     labelPlural: 'DOCUMENT.MeasuredTemplates';
     isEmbedded: true;
     permissions: {
-      create: 'TEMPLATE_CREATE';
+      create: (user: BaseUser, doc: BaseMeasuredTemplate) => boolean;
       update: (
         user: BaseUser,
         doc: BaseMeasuredTemplate,
@@ -50,6 +50,13 @@ export declare class BaseMeasuredTemplate extends Document<
     permission: keyof typeof foundry.CONST.DOCUMENT_PERMISSION_LEVELS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,
     { exact }?: { exact?: boolean }
   ): boolean;
+
+  /**
+   * Is a user able to create a new MeasuredTemplate?
+   * @param user - The user attempting the creation operation.
+   * @param doc  - The MeasuredTemplate being created.
+   */
+  protected static _canCreate(user: BaseUser, doc: BaseMeasuredTemplate): boolean;
 
   /**
    * Is a user able to modify an existing MeasuredTemplate?
