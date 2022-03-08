@@ -66,11 +66,12 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
    * Compute the polygon given a point origin and radius
    * @param origin - The origin source point
    * @param config - Configuration options which customize the polygon computation
+   *                 (default: `{}`)
    * @returns The computed polygon instance
    */
   static create(
     origin: Point,
-    config: Parameters<PointSourcePolygon['initialize']>[1]
+    config?: Parameters<PointSourcePolygon['initialize']>[1] | undefined
   ): ReturnType<PointSourcePolygon['compute']>;
 
   /**
