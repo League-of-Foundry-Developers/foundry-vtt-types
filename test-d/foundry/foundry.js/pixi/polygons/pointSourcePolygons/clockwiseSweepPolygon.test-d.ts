@@ -1,9 +1,12 @@
 import { expectType } from 'tsd';
 
 const someRay = new Ray({ x: 0, y: 0 }, { x: 0, y: 0 });
-expectType<boolean>(ClockwiseSweepPolygon.getRayCollisions(someRay, { mode: 'any' }));
-expectType<PolygonVertex>(ClockwiseSweepPolygon.getRayCollisions(someRay, { mode: 'closest' }));
-expectType<PolygonVertex[]>(ClockwiseSweepPolygon.getRayCollisions(someRay, { mode: 'all' }));
+const somePolygonRay: PolygonRay = someRay as PolygonRay;
+somePolygonRay.result = new CollisionResult();
+
+expectType<boolean>(ClockwiseSweepPolygon.getRayCollisions(somePolygonRay, { mode: 'any' }));
+expectType<PolygonVertex>(ClockwiseSweepPolygon.getRayCollisions(somePolygonRay, { mode: 'closest' }));
+expectType<PolygonVertex[]>(ClockwiseSweepPolygon.getRayCollisions(somePolygonRay, { mode: 'all' }));
 
 declare const initializedConfig: ClockwiseSweepPolygon.InitializedConfig;
 expectType<boolean>(initializedConfig.hasLimitedRadius);
@@ -16,8 +19,8 @@ expectType<number>(initializedConfig.angle);
 expectType<number>(initializedConfig.rotation);
 expectType<boolean>(initializedConfig.hasLimitedAngle);
 expectType<number>(initializedConfig.density);
-expectType<Ray | undefined>(initializedConfig.rMax);
-expectType<Ray>(initializedConfig.rMin);
+expectType<PolygonRay | undefined>(initializedConfig.rMax);
+expectType<PolygonRay>(initializedConfig.rMin);
 declare const limitedAngleConfig: ClockwiseSweepPolygon.LimitedAngleConfig;
 expectType<boolean>(limitedAngleConfig.hasLimitedRadius);
 expectType<number>(limitedAngleConfig.radius);
@@ -29,5 +32,5 @@ expectType<number>(limitedAngleConfig.angle);
 expectType<number>(limitedAngleConfig.rotation);
 expectType<true>(limitedAngleConfig.hasLimitedAngle);
 expectType<number>(limitedAngleConfig.density);
-expectType<Ray>(limitedAngleConfig.rMax);
-expectType<Ray>(limitedAngleConfig.rMin);
+expectType<PolygonRay>(limitedAngleConfig.rMax);
+expectType<PolygonRay>(limitedAngleConfig.rMin);
