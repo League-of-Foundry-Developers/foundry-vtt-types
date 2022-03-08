@@ -817,6 +817,7 @@ export const TEXT_FILE_EXTENSIONS: Readonly<{
   md: 'text/markdown';
   pdf: 'application/pdf';
   txt: 'text/plain';
+  xml: 'application/xml';
 }>;
 export type TEXT_FILE_EXTENSIONS = ValueOf<typeof TEXT_FILE_EXTENSIONS>;
 
