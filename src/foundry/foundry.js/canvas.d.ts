@@ -125,9 +125,6 @@ declare global {
       values: number[];
 
       /** @defaultValue `0` */
-      last: number;
-
-      /** @defaultValue `0` */
       average: number;
 
       /** @defaultValue `0` */
@@ -135,9 +132,6 @@ declare global {
 
       /** @defaultValue `document.getElementById("fps")` */
       element: HTMLElement;
-
-      /** @defaultValue `undefined` */
-      fn: TickerCallback<void> | undefined;
     };
 
     /**
@@ -540,8 +534,6 @@ declare global {
     }
   }
 }
-
-type TickerCallback<T> = (this: T, dt: number) => any;
 
 interface PerformanceSettings {
   mode: foundry.CONST.CANVAS_PERFORMANCE_MODES;
