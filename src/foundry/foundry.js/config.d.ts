@@ -1155,7 +1155,7 @@ declare global {
      * ]
      * ```
      */
-    statusEffects: ActiveEffectDataConstructorData & { id: string }[];
+    statusEffects: (ActiveEffectDataConstructorData & { id: string })[];
 
     /**
      * A mapping of core audio effects used which can be replaced by systems or mods
