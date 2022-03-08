@@ -3,7 +3,7 @@
  * Mathematically behaves like 1d3-2
  */
 declare class FateDie extends DiceTerm {
-  constructor(termData?: Partial<DiceTerm.TermData>);
+  constructor(termData?: Partial<FateDie.TermData>);
 
   faces: 3;
 
@@ -11,6 +11,9 @@ declare class FateDie extends DiceTerm {
    * @defaultValue `'f'`
    */
   static DENOMINATION: string;
+
+  /** @override */
+  static MODIFIERS: FateDie.Modifiers;
 
   /**
    * @override
@@ -21,4 +24,21 @@ declare class FateDie extends DiceTerm {
    * @override
    */
   getResultLabel(result: DiceTerm.Result): string;
+}
+
+declare namespace FateDie {
+  interface TermData extends DiceTerm.TermData {
+    modifiers: Array<keyof typeof FateDie['MODIFIERS']>;
+  }
+
+  interface Modifiers {
+    r: Die['reroll'];
+    rr: Die['rerollRecursive'];
+    k: Die['keep'];
+    kh: Die['keep'];
+    kl: Die['keep'];
+    d: Die['drop'];
+    dh: Die['drop'];
+    dl: Die['drop'];
+  }
 }
