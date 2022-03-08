@@ -1,5 +1,5 @@
 import { ConfiguredDocumentClass } from '../../../types/helperTypes';
-import type { ItemDataConstructorData } from '../../common/data/data.mjs/itemData.js';
+import type { ItemDataConstructorData } from '../../common/data/data.mjs/itemData';
 
 declare global {
   /**
@@ -43,7 +43,7 @@ declare global {
     /**
      * Prepare a data object which defines the data schema used by dice roll commands against this Item
      */
-    getRollData(): this['data']['data'];
+    getRollData(): object;
 
     /** @override */
     protected _getSheetClass(): typeof ItemSheet | null;

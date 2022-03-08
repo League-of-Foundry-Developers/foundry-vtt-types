@@ -5,7 +5,7 @@ declare global {
    * A tool for fine tuning the grid in a Scene
    * @typeParam Options - the type of the options object
    */
-  class GridConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
+  class GridConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
     Options,
     GridConfig.Data,
     InstanceType<ConfiguredDocumentClass<typeof Scene>>

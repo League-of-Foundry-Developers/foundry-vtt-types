@@ -57,7 +57,7 @@ declare namespace WorldConfig {
     systems?: Game.SystemData<foundry.packages.SystemData>[];
   }
 
-  interface Options extends FormApplication.Options {
+  interface Options extends FormApplicationOptions {
     /**
      * @defaultValue `false`
      */

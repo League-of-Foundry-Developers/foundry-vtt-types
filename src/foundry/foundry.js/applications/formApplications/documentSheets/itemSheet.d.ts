@@ -39,7 +39,7 @@ declare global {
     /**
      * A convenience reference to the Item entity
      */
-    get item(): InstanceType<ConfiguredDocumentClass<typeof Item>>;
+    get item(): this['object'];
 
     /**
      * The Actor instance which owns this item. This may be null if the item is
@@ -83,6 +83,6 @@ declare global {
       item: this['document'];
     }
 
-    type Options = DocumentSheet.Options;
+    type Options = DocumentSheetOptions;
   }
 }

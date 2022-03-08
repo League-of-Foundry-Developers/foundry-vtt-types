@@ -4,7 +4,7 @@
  * @typeParam Data    - The data structure used to render the handlebars template.
  */
 declare class CameraViews<
-  Options extends Application.Options = Application.Options,
+  Options extends ApplicationOptions = ApplicationOptions,
   Data extends object = CameraViews.Data
 > extends Application<Options> {
   /**
@@ -18,7 +18,7 @@ declare class CameraViews<
    * })
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): ApplicationOptions;
 
   /**
    * A reference to the master AV orchestrator instance

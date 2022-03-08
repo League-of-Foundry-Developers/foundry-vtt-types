@@ -3,7 +3,7 @@
  * @typeParam Options - The type of the options object
  */
 declare abstract class SidebarTab<
-  Options extends Application.Options = Application.Options
+  Options extends ApplicationOptions = ApplicationOptions
 > extends Application<Options> {
   constructor(...args: ConstructorParameters<typeof Application>);
   /**
@@ -36,16 +36,13 @@ declare abstract class SidebarTab<
    * });
    * ```
    */
-  static get defaultOptions(): Application.Options;
-
-  /**  @override */
-  protected _renderInner(data: object): Promise<JQuery>;
+  static get defaultOptions(): ApplicationOptions;
 
   /** @override */
   protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
-  /** @override */
-  render(force?: boolean, options?: Application.RenderOptions<Options>): unknown;
+  /**  @override */
+  protected _renderInner(data: object): Promise<JQuery>;
 
   /**
    * Activate this SidebarTab, switching focus to it

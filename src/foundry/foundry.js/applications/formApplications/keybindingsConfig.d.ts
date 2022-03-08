@@ -2,7 +2,7 @@
  * Allows for viewing and editing of Keybinding Actions
  */
 declare class KeybindingsConfig<
-  Options extends FormApplication.Options = FormApplication.Options,
+  Options extends FormApplicationOptions = FormApplicationOptions,
   Data extends KeybindingsConfig.Data = KeybindingsConfig.Data
 > extends FormApplication<Options, Data> {
   /**
@@ -37,7 +37,7 @@ declare class KeybindingsConfig<
    * })
    * ```
    */
-  static get defaultOptions(): FormApplication.Options;
+  static get defaultOptions(): FormApplicationOptions;
 
   /**
    * @param options - (unused)

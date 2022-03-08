@@ -91,7 +91,7 @@ declare class ImagePopout extends FormApplication<ImagePopout.Options, ImagePopo
 }
 
 declare namespace ImagePopout {
-  interface Options extends FormApplication.Options {
+  interface Options extends FormApplicationOptions {
     /**
      * @defaultValue `'templates/apps/image-popout.html'`
      */

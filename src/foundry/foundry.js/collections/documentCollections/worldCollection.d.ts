@@ -1,4 +1,5 @@
 import { ConfiguredDocumentClass, DocumentConstructor } from '../../../../types/helperTypes';
+import type { DOCUMENT_TYPES } from '../../../common/constants.mjs';
 
 declare global {
   /**
@@ -21,6 +22,7 @@ declare global {
 
     /**
      * Initialize the WorldCollection object by constructing its contained Document instances
+     * @internal
      */
     protected _initialize(): void;
 
@@ -39,14 +41,19 @@ declare global {
     static documentName: string | null;
 
     /**
-     * Return a reference to the SidebarDirectory application for this WorldCollection, or null if it has not yet been created.
+     * Return a reference to the SidebarDirectory application for this WorldCollection.
      * @remarks
-     * In the case where `Lowercase<Name>` is not a property of {@link ui}, this actually always returns `null` but
-     * {@link RollTables} overrides this so we need to allow a wider return type.
+     * In the case where `Lowercase<Name>` is not a property of {@link ui}, this actually always returns `undefined`,
+     * but {@link RollTables} overrides this, so we need to allow a wider return type.
      */
     get directory(): Lowercase<Name> extends keyof typeof ui
       ? typeof ui[Lowercase<Name>]
-      : null | SidebarDirectory<ConfiguredDocumentClass<T>['metadata']['name']> | undefined;
+      :
+          | (ConfiguredDocumentClass<T>['metadata']['name'] extends DOCUMENT_TYPES
+              ? SidebarDirectory<ConfiguredDocumentClass<T>['metadata']['name']>
+              : never)
+          | SidebarTab
+          | undefined;
 
     /**
      * Return a reference to the singleton instance of this WorldCollection, or null if it has not yet been created.
@@ -63,23 +70,30 @@ declare global {
      * @param pack       - The CompendiumCollection instance from which to import
      * @param id         - The ID of the compendium entry to import
      * @param updateData - Optional additional data used to modify the imported Document before it is created
-     * @param options    - Optional arguments passed to the Document.create method
+     *                     (default: `{}`)
+     * @param options    - Optional arguments passed to the {@link WorldCollection#fromCompendium} and {@link Document.create} methods
+     *                     (default: `{}`)
      * @returns The imported Document instance
      */
     importFromCompendium(
-      pack: any, // TODO: CompendiumCollection
+      pack: CompendiumCollection<
+        CompendiumCollection.Metadata & { type: ConfiguredDocumentClass<T>['metadata']['name'] }
+      >,
       id: string,
-      updateData?: DeepPartial<InstanceType<ConfiguredDocumentClass<T>>['data']['_source']>,
-      options?: DocumentModificationContext
+      updateData?: DeepPartial<InstanceType<ConfiguredDocumentClass<T>>['data']['_source']> | undefined,
+      options?: (DocumentModificationContext & WorldCollection.FromCompendiumOptions) | undefined
     ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>>;
 
     /**
      * Apply data transformations when importing a Document from a Compendium pack
      * @param document - The source Document, or a plain data object
+     * @param options  - Additional options which modify how the document is imported
+     *                   (default: `{}`)
      * @returns The processed data ready for world Document creation
      */
     fromCompendium(
-      document: InstanceType<ConfiguredDocumentClass<T>> | InstanceType<ConfiguredDocumentClass<T>>['data']['_source']
+      document: InstanceType<ConfiguredDocumentClass<T>> | InstanceType<ConfiguredDocumentClass<T>>['data']['_source'],
+      options?: WorldCollection.FromCompendiumOptions | undefined
     ): Omit<InstanceType<ConfiguredDocumentClass<T>>['data']['_source'], '_id' | 'folder'>;
 
     /**
@@ -92,36 +106,63 @@ declare global {
     ): Omit<InstanceType<ConfiguredDocumentClass<T>>['data']['_source'], '_id' | 'folder'>;
 
     /**
-     * The WorldCollection#insert method is deprecated in favor of the WorldCollection#set method and will be removed in 0.9.0
-     * @deprecated since 0.8.0
+     * Register a Document sheet class as a candidate which can be used to display Documents of a given type.
+     * See {@link DocumentSheetConfig.registerSheet} for details.
+     * @see DocumentSheetConfig.registerSheet
+     *
+     * @example <caption>Register a new ActorSheet subclass for use with certain Actor types.</caption>
+     * ```typescript
+     * Actors.registerSheet("dnd5e", ActorSheet5eCharacter, { types: ["character], makeDefault: true });
+     * ```
      */
-    insert(document: InstanceType<ConfiguredDocumentClass<T>>): this;
+    static registerSheet(...args: DropFirst<Parameters<typeof EntitySheetConfig.registerSheet>>): void;
 
     /**
-     * The WorldCollection#remove method is deprecated in favor of the WorldCollection#delete method and will be removed in 0.9.0
-     * @deprecated since 0.8.0
+     * Unregister a Document sheet class, removing it from the list of available sheet Applications to use.
+     * See {@link DocumentSheetConfig.unregisterSheet} for detauls.
+     * @see DocumentSheetConfig.unregisterSheet
+     *
+     * @example <caption>Deregister the default ActorSheet subclass to replace it with others.</caption>
+     * Actors.unregisterSheet("core", ActorSheet);
      */
-    remove(id: string): boolean;
+    static unregisterSheet(...args: DropFirst<Parameters<typeof EntitySheetConfig.unregisterSheet>>): void;
 
     /**
-     * The WorldCollection#entities property is deprecated in favor of the Collection#contents attribute and will be removed in 0.9.0
-     * @deprecated since 0.8.0
+     * Return an array of currently registered sheet classes for this Document type.
+     * @remarks
+     * This is documented to return only {@link DocumentSheet}s but {@link DrawingConfig} is just a
+     * {@link FormApplication}. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6454.
      */
-    get entities(): this['contents'];
+    static get registeredSheets(): FormApplication[];
+  }
 
-    /**
-     * The WorldCollection#object property has been deprecated in favor of WorldCollection#documentClass. Support will be removed in 0.9.0
-     * @deprecated since 0.8.0
-     */
-    get object(): this['documentClass'];
+  namespace WorldCollection {
+    interface FromCompendiumOptions {
+      /**
+       * Add flags which track the import source
+       * @defaultValue `false`
+       */
+      addFlags?: boolean | undefined;
 
-    /**
-     * The WorldCollection#importFromCollection method has been deprecated in favor of WorldCollection#importFromCompendium. Support for the old method name will be removed in 0.9.0
-     * @deprecated since 0.8.0
-     */
-    importFromCollection(
-      packName: string,
-      ...args: Parameters<this['importFromCompendium']> extends [any, ...infer U] ? U : never
-    ): ReturnType<this['importFromCompendium']>;
+      /**
+       * Clear the currently assigned folder and sort order
+       * @defaultValue `true`
+       */
+      clearSort?: boolean | undefined;
+
+      /**
+       * Clear document permissions
+       * @defaultValue `true`
+       */
+      clearPermissions?: boolean | undefined;
+
+      /**
+       * Retain the Document id from the source Compendium
+       * @defaultValue `false`
+       */
+      keepId?: boolean | undefined;
+    }
   }
 }
+
+type DropFirst<T extends Array<unknown>> = T extends [unknown, ...infer V] ? V : T;

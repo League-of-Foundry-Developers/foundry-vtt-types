@@ -199,7 +199,7 @@ declare global {
       }
     }
 
-    interface Options extends DocumentSheet.Options {
+    interface Options extends DocumentSheetOptions {
       token?: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>> | null;
     }
   }

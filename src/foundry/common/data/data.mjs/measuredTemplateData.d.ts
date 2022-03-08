@@ -180,6 +180,8 @@ interface MeasuredTemplateDataConstructorData {
   flags?: ConfiguredFlags<'MeasuredTemplate'> | null | undefined;
 }
 
+type MeasuredTemplateDataSource = PropertiesToSource<MeasuredTemplateDataProperties>;
+
 /**
  * The data schema for a MeasuredTemplate embedded document.
  * @see BaseMeasuredTemplate
@@ -187,7 +189,7 @@ interface MeasuredTemplateDataConstructorData {
 export class MeasuredTemplateData extends DocumentData<
   MeasuredTemplateDataSchema,
   MeasuredTemplateDataProperties,
-  PropertiesToSource<MeasuredTemplateDataProperties>,
+  MeasuredTemplateDataSource,
   MeasuredTemplateDataConstructorData,
   documents.BaseMeasuredTemplate
 > {

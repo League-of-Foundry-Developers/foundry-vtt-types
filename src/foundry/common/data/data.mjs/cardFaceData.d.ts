@@ -1,5 +1,5 @@
-import type { PropertiesToSource } from '../../../../types/helperTypes.js';
-import type DocumentData from '../../abstract/data.mjs.js';
+import type { PropertiesToSource } from '../../../../types/helperTypes';
+import type DocumentData from '../../abstract/data.mjs';
 import * as fields from '../fields.mjs';
 
 interface CardFaceDataSchema extends DocumentSchema {
@@ -42,6 +42,8 @@ interface CardFaceDataConstructorData {
   img?: string | null | undefined;
 }
 
+type CardFaceDataSource = PropertiesToSource<CardFaceDataProperties>;
+
 /**
  * The data schema of a single card face which belongs to a specific Card.
  * @see CardData
@@ -49,7 +51,7 @@ interface CardFaceDataConstructorData {
 export class CardFaceData extends DocumentData<
   CardFaceDataSchema,
   CardFaceDataProperties,
-  PropertiesToSource<CardFaceDataProperties>,
+  CardFaceDataSource,
   CardFaceDataConstructorData
 > {
   /** @override */

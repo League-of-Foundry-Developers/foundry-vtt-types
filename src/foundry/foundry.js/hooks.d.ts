@@ -4,9 +4,9 @@ import {
   ConfiguredObjectClassForName,
   DocumentConstructor,
   ToObjectFalseType
-} from '../../types/helperTypes.js';
-import { DocumentModificationOptions } from '../common/abstract/document.mjs.js';
-import { EffectChangeData } from '../common/data/data.mjs/effectChangeData.js';
+} from '../../types/helperTypes';
+import { DocumentModificationOptions } from '../common/abstract/document.mjs';
+import { EffectChangeData } from '../common/data/data.mjs/effectChangeData';
 import { DropData } from './clientDocumentMixin';
 
 declare global {
@@ -437,6 +437,13 @@ declare global {
       ) => boolean | void;
 
       /**
+       * A hook event that fires once Localization translations have been loaded and are ready for use.
+       * @remarks This is called by {@link Hooks.callAll}.
+       * @see {@link Localization#initialize}
+       */
+      i18nInit: () => void;
+
+      /**
        * A hook event that fires as Foundry is initializing, right before any initialization tasks have begun.
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link Game#initialize}
@@ -444,14 +451,12 @@ declare global {
       init: () => void;
 
       /**
-       * A hook event that fires after PointSource shaders have initialized.
-       * @param source        - The PointSource
-       * @param animationType - The animation type
+       * A hook event that fires after LightSource shaders have initialized.
+       * @param source - The LightSource being initialized
        * @remarks This is called by {@link Hooks.callAll}.
-       * @see {@link PointSource#_initializeShaders}
+       * @see {@link LightSource#_initializeShaders}
        */
-      // FIXME: Replace with `initializeLightSourceShaders`
-      initializePointSourceShaders: (source: PointSource, animationType: string | null) => void;
+      initializeLightSourceShaders: (source: LightSource) => void;
 
       /**
        * A hook event that fires when the LightingLayer is refreshed.

@@ -2,6 +2,18 @@ import { DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
 import * as data from '../data/data.mjs';
 
+type AdventureMetadata = Merge<
+  DocumentMetadata,
+  {
+    name: 'Adventure';
+    collection: 'adventures';
+    label: 'DOCUMENT.Adventure';
+    labelPlural: 'DOCUMENT.Adventures';
+    isPrimary: false;
+    isEmbedded: false;
+  }
+>;
+
 /**
  * The base Adventure model definition which defines common behavior of an Adventure document between both client and server.
  *
@@ -9,22 +21,12 @@ import * as data from '../data/data.mjs';
  * Until then it is for internal use only. Use this at your own risk.
  * @internal
  */
-export class BaseAdventure extends Document<data.AdventureData> {
+export class BaseAdventure extends Document<data.AdventureData, null, AdventureMetadata> {
   /** @override */
   static get schema(): typeof data.AdventureData;
 
   /** @override */
-  static get metadata(): Merge<
-    DocumentMetadata,
-    {
-      name: 'Adventure';
-      collection: 'adventures';
-      label: 'DOCUMENT.Adventure';
-      labelPlural: 'DOCUMENT.Adventures';
-      isPrimary: false;
-      isEmbedded: false;
-    }
-  >;
+  static get metadata(): AdventureMetadata;
 
   /**
    * A convenient reference to the file path of the Adventure's profile image.

@@ -96,7 +96,7 @@ declare global {
   }
 
   namespace JournalSheet {
-    interface Options extends DocumentSheet.Options {
+    interface Options extends DocumentSheetOptions {
       sheetMode?: SheetMode | null;
     }
 

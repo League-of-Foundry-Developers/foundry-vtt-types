@@ -6,7 +6,7 @@ declare global {
    * The Application responsible for configuring a single Folder document.
    */
   class FolderConfig extends DocumentSheet<
-    DocumentSheet.Options,
+    DocumentSheetOptions,
     FolderConfig.Data,
     InstanceType<ConfiguredDocumentClass<typeof Folder>>
   > {
@@ -33,7 +33,7 @@ declare global {
      * @param options - (unused)
      * @override
      */
-    getData(options?: Partial<FormApplication.Options>): Promise<FolderConfig.Data>;
+    getData(options?: Partial<FormApplicationOptions>): Promise<FolderConfig.Data>;
 
     /**
      * @param event - (unused)

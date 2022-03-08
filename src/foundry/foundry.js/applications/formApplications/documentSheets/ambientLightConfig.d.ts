@@ -1,8 +1,8 @@
 import type { ConfiguredDocumentClassForName } from '../../../../../types/helperTypes';
 import type { AmbientLightDataConstructorData } from '../../../../common/data/data.mjs/ambientLightData';
 import type { AnimationDataConstructorData } from '../../../../common/data/data.mjs/animationData';
-import type { DarknessActivationConstructorData } from '../../../../common/data/data.mjs/darknessActivation.js';
-import type { LightDataConstructorData } from '../../../../common/data/data.mjs/lightData.js';
+import type { DarknessActivationConstructorData } from '../../../../common/data/data.mjs/darknessActivation';
+import type { LightDataConstructorData } from '../../../../common/data/data.mjs/lightData';
 
 declare global {
   /**
@@ -11,7 +11,7 @@ declare global {
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
   class AmbientLightConfig<
-    Options extends DocumentSheet.Options = DocumentSheet.Options,
+    Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends object = AmbientLightConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'AmbientLight'>>> {
     /**
@@ -29,7 +29,7 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): DocumentSheet.Options;
+    static get defaultOptions(): DocumentSheetOptions;
 
     /**
      * @param options - (unused)
@@ -71,7 +71,7 @@ declare global {
   }
 
   namespace AmbientLightConfig {
-    interface Data<Options extends DocumentSheet.Options>
+    interface Data<Options extends DocumentSheetOptions>
       extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'AmbientLight'>>, Options> {
       isAdvanced: boolean;
       colorationTechniques: typeof AdaptiveLightingShader.COLORATION_TECHNIQUES;

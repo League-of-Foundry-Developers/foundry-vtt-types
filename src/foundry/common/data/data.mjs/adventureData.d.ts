@@ -1,17 +1,17 @@
-import type { PropertiesToSource } from '../../../../types/helperTypes.js';
+import type { PropertiesToSource } from '../../../../types/helperTypes';
 import type DocumentData from '../../abstract/data.mjs';
 import { AnyDocumentData } from '../../abstract/data.mjs';
 import * as fields from '../fields.mjs';
-import type { ActorData } from './actorData.js';
-import type { CardsData } from './cardsData.js';
-import type { CombatData } from './combatData.js';
-import type { FolderData } from './folderData.js';
-import type { ItemData } from './itemData.js';
-import type { JournalEntryData } from './journalEntryData.js';
-import type { MacroData } from './macroData.js';
-import type { PlaylistData } from './playlistData.js';
-import type { RollTableData } from './rollTableData.js';
-import type { SceneData } from './sceneData.js';
+import type { ActorData, ActorDataConstructorData } from './actorData';
+import type { CardsData, CardsDataConstructorData } from './cardsData';
+import type { CombatData, CombatDataConstructorData } from './combatData';
+import type { FolderData, FolderDataConstructorData } from './folderData';
+import type { ItemData, ItemDataConstructorData } from './itemData';
+import type { JournalEntryData, JournalEntryDataConstructorData } from './journalEntryData';
+import type { MacroData, MacroDataConstructorData } from './macroData';
+import type { PlaylistData, PlaylistDataConstructorData } from './playlistData';
+import type { RollTableData, RollTableDataConstructorData } from './rollTableData';
+import type { SceneData, SceneDataConstructorData } from './sceneData';
 
 interface AdventureDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -92,34 +92,34 @@ interface AdventureDataConstructorData {
   description?: string | null | undefined;
 
   /** @defaultValue `[]` */
-  actors?: ActorData[] | null | undefined;
+  actors?: ActorDataConstructorData[] | null | undefined;
 
   /** @defaultValue `[]` */
-  combats?: CombatData[] | null | undefined;
+  combats?: CombatDataConstructorData[] | null | undefined;
 
   /** @defaultValue `[]` */
-  items?: ItemData[] | null | undefined;
+  items?: ItemDataConstructorData[] | null | undefined;
 
   /** @defaultValue `[]` */
-  scenes?: SceneData[] | null | undefined;
+  scenes?: SceneDataConstructorData[] | null | undefined;
 
   /** @defaultValue `[]` */
-  journal?: JournalEntryData[] | null | undefined;
+  journal?: JournalEntryDataConstructorData[] | null | undefined;
 
   /** @defaultValue `[]` */
-  tables?: RollTableData[] | null | undefined;
+  tables?: RollTableDataConstructorData[] | null | undefined;
 
   /** @defaultValue `[]` */
-  macros?: MacroData[] | null | undefined;
+  macros?: MacroDataConstructorData[] | null | undefined;
 
   /** @defaultValue `[]` */
-  cards?: CardsData[] | null | undefined;
+  cards?: CardsDataConstructorData[] | null | undefined;
 
   /** @defaultValue `[]` */
-  playlists?: PlaylistData[] | null | undefined;
+  playlists?: PlaylistDataConstructorData[] | null | undefined;
 
   /** @defaultValue `[]` */
-  folders?: FolderData[] | null | undefined;
+  folders?: FolderDataConstructorData[] | null | undefined;
 
   /** @defaultValue `0` */
   sort?: number | null | undefined;
@@ -127,6 +127,8 @@ interface AdventureDataConstructorData {
   /** @defaultValue `{}` */
   flags?: Record<string, unknown> | null | undefined;
 }
+
+type AdventureDataSource = PropertiesToSource<AdventureDataProperties>;
 
 /**
  * A data schema which encompasses a collection of base Documents which comprise an adventure module.
@@ -140,7 +142,7 @@ interface AdventureDataConstructorData {
 export class AdventureData extends DocumentData<
   AdventureDataSchema,
   AdventureDataProperties,
-  PropertiesToSource<AdventureDataProperties>,
+  AdventureDataSource,
   AdventureDataConstructorData
 > {
   /** @override */
@@ -155,7 +157,7 @@ export class AdventureData extends DocumentData<
 
 /**
  * Property type: `D[]`
- * Constructor type: `D[] | null | undefined`
+ * Constructor type: `ConstructorDataType<D>[] | null | undefined`
  * Default: `[]`
  */
 type AdventureDocumentsField<D extends ConstructorOf<AnyDocumentData>> = DocumentField<D> & {

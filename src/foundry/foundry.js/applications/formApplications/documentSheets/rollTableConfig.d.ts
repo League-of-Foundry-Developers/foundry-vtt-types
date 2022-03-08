@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClassForName, ToObjectFalseType } from '../../../../../types/helperTypes';
-import type { TableResultDataConstructorData } from '../../../../common/data/data.mjs/tableResultData.js';
+import type { TableResultDataConstructorData } from '../../../../common/data/data.mjs/tableResultData';
 
 declare global {
   /**
@@ -8,7 +8,7 @@ declare global {
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
   class RollTableConfig<
-    Options extends DocumentSheet.Options = DocumentSheet.Options,
+    Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends object = RollTableConfig.Data
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'RollTable'>>> {
     /**
@@ -26,7 +26,7 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): DocumentSheet.Options;
+    static get defaultOptions(): DocumentSheetOptions;
 
     /**
      * @override

@@ -445,13 +445,13 @@ interface Vision {
    * @remarks
    * This is required but has been set to optional because of PointSource
    */
-  fov?: PIXI.Polygon | null;
+  fov?: PIXI.Circle | undefined;
 
   /**
    * @remarks
    * This is required but has been set to optional because of PointSource
    */
-  los?: PIXI.Polygon | null;
+  los?: PointSourcePolygon | undefined;
 }
 
 interface RotationOptions {

@@ -52,6 +52,8 @@ interface SettingDataConstructorData {
   value: string | object;
 }
 
+type SettingDataSource = PropertiesToSource<SettingDataProperties>;
+
 /**
  * The data schema for a Setting document.
  * @see BaseSetting
@@ -59,7 +61,7 @@ interface SettingDataConstructorData {
 export class SettingData extends DocumentData<
   SettingDataSchema,
   SettingDataProperties,
-  PropertiesToSource<SettingDataProperties>,
+  SettingDataSource,
   SettingDataConstructorData,
   documents.BaseSetting
 > {

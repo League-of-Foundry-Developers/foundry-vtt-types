@@ -99,11 +99,8 @@ declare global {
      * Shuffle this Cards stack, randomizing the sort order of all the cards it contains.
      * @param options - (default: `{}`)
      * @returns The Cards document after the shuffle operation has completed
-     * @remarks The returns documentaion is incorrect (https://gitlab.com/foundrynet/foundryvtt/-/issues/6367).
      */
-    shuffle(
-      options?: Cards.ShuffleOptions | undefined
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>>[]>;
+    shuffle(options?: Cards.ShuffleOptions | undefined): Promise<InstanceType<ConfiguredDocumentClassForName<'Cards'>>>;
 
     /**
      * Reset the Cards stack, retrieving all original cards from other stacks where they may have been drawn if this is a
@@ -111,13 +108,8 @@ declare global {
      * @param options - Options which modify the reset operation
      *                  (default: `{}`)
      * @returns The Cards document after the reset operation has completed
-     * @remarks The returns documentaion is incorrect (https://gitlab.com/foundrynet/foundryvtt/-/issues/6367).
      */
-    reset(
-      options?: Cards.ResetOptions | undefined
-    ): Promise<
-      InstanceType<ConfiguredDocumentClassForName<'Card'>>[] | InstanceType<ConfiguredDocumentClassForName<'Cards'>>
-    >;
+    reset(options?: Cards.ResetOptions | undefined): Promise<InstanceType<ConfiguredDocumentClassForName<'Cards'>>>;
 
     /**
      * Perform a reset operation for a deck, retrieving all original cards from other stacks where they may have been
@@ -126,11 +118,10 @@ declare global {
      *                  (default: `{}`)
      * @returns The Cards document after the reset operation has completed.
      * @internal
-     * @remarks The returns documentaion is incorrect (https://gitlab.com/foundrynet/foundryvtt/-/issues/6367).
      */
     protected _resetDeck(
       options?: Cards.ResetOptions | undefined
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>>[]>;
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Cards'>>>;
 
     /**
      * Return all cards in this stack to their original decks.
@@ -220,15 +211,10 @@ declare global {
      * Display a dialog which prompts the user to play a specific Card to some other Cards document
      * @see {@link Cards#pass}
      * @param card - The specific card being played as part of this dialog
-     * @remarks returns documentation is incorrect.
      */
     playDialog(
       card: InstanceType<ConfiguredDocumentClassForName<'Card'>>
-    ): Promise<
-      | InstanceType<ConfiguredDocumentClassForName<'Card'>>[]
-      | InstanceType<ConfiguredDocumentClassForName<'Cards'>>
-      | null
-    >;
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>>[] | void | null>;
 
     /**
      * Display a confirmation dialog for whether or not the user wishes to reset a Cards stack

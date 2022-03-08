@@ -5,19 +5,24 @@ declare global {
    * The singleton collection of ChatMessage documents which exist within the active World.
    * This Collection is accessible within the Game object as game.messages.
    *
-   * @see {@link ChatMessage} The ChatMessage entity
+   * @see {@link ChatMessage} The ChatMessage document
    * @see {@link ChatLog} The ChatLog sidebar directory
    */
   class Messages extends WorldCollection<typeof foundry.documents.BaseChatMessage, 'Messages'> {
     /** @override */
     static documentName: 'ChatMessage';
 
+    /**
+     * @override
+     * */
+    get directory(): typeof ui.chat;
+
     /** @override */
     render(force?: boolean): void;
 
     /**
      * If requested, dispatch a Chat Bubble UI for the newly created message
-     * @param message - The ChatMessage entity to say
+     * @param message - The ChatMessage document to say
      */
     sayBubble(message: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseChatMessage>>): void;
 

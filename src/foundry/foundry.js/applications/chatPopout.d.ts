@@ -5,7 +5,7 @@ declare global {
    * A simple application which supports popping a ChatMessage out to a separate UI window.
    * @typeParam Options - the type of the options object
    */
-  class ChatPopout<Options extends Application.Options = Application.Options> extends Application<Options> {
+  class ChatPopout<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
     constructor(message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>, options?: Partial<Options>);
 
     /**
@@ -24,7 +24,7 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): Application.Options;
+    static get defaultOptions(): ApplicationOptions;
 
     /** @override */
     get id(): string;
@@ -37,6 +37,6 @@ declare global {
      * @param options - (unused)
      * @override
      */
-    protected _renderInner(data: object, options?: unknown): Promise<JQuery> | JQuery;
+    protected _renderInner(data: object, options?: unknown): Promise<JQuery>;
   }
 }

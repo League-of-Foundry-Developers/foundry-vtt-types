@@ -37,13 +37,15 @@ interface PackageAuthorDataConstructorData {
   discord?: string | null | undefined;
 }
 
+type PackageAuthorDataSource = PropertiesToSource<PackageAuthorDataProperties>;
+
 /**
  * An inner data object which represents a single package author in the authors array.
  */
 export class PackageAuthorData extends DocumentData<
   PackageAuthorDataSchema,
   PackageAuthorDataProperties,
-  PropertiesToSource<PackageAuthorDataProperties>,
+  PackageAuthorDataSource,
   PackageAuthorDataConstructorData,
   null
 > {

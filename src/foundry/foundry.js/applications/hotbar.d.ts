@@ -16,7 +16,7 @@ declare global {
    *
    * @typeParam Options - the type of the options object
    */
-  class Hotbar<Options extends Application.Options = Application.Options> extends Application<Options> {
+  class Hotbar<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
     constructor(options?: Partial<Options>);
 
     /**
@@ -55,7 +55,7 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): Application.Options;
+    static get defaultOptions(): ApplicationOptions;
 
     /** @override */
     getData(options?: Partial<Options>): Hotbar.Data | Promise<Hotbar.Data>;

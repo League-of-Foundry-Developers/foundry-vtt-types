@@ -8,11 +8,11 @@ declare global {
     /**
      * The cached mapping of textures
      */
-    cache: Map<string, { tex: PIXI.Texture; time: number }>;
+    cache: Map<string, { tex: PIXI.BaseTexture; time: number }>;
 
     /**
      * The duration in milliseconds for which a texture will remain cached
-     * @defaultValue `1000`
+     * @defaultValue `1000 * 60 * 15`
      */
     static CACHE_TTL: number;
 
@@ -33,14 +33,14 @@ declare global {
      * @param options - Additional options which modify loading
      * @returns A Promise which resolves once all textures are loaded
      */
-    load(sources: string[], options?: Partial<TextureLoader.LoadOptions>): Promise<void[]>;
+    load(sources: string[], options?: Partial<TextureLoader.LoadOptions>): Promise<PIXI.BaseTexture | void[]>;
 
     /**
      * Load a single texture on-demand from a given source URL path
      * @param src - The source texture path to load
      * @returns The loaded texture object
      */
-    loadTexture(src: string): Promise<PIXI.Texture>;
+    loadTexture(src: string): Promise<PIXI.BaseTexture>;
 
     /**
      * Log texture loading progress in the console and in the Scene loading bar
@@ -57,40 +57,50 @@ declare global {
     /**
      * Load an image texture from a provided source url
      */
-    loadImageTexture(src: string): Promise<PIXI.Texture>;
+    loadImageTexture(src: string): Promise<PIXI.BaseTexture>;
 
     /**
-     * If an attempted image load failed, we may attempt a re-load in case the issue was CORS + caching
-     * Cross-origin requests which failed might be CORS, or might be 404, no way to know - so try a 2nd time
-     * @param src     - The source URL being attempted
-     * @param resolve - Resolve the promise
-     * @param reject  - Reject the promise
+     * Use the Fetch API to retrieve a resource and return a Blob instance for it.
+     * @param options - Options to configure the loading behaviour.
+     *                  (default: `{}`)
      * @internal
      */
-    protected _attemptCORSReload<T>(
+    protected _fetchResource(
       src: string,
-      resolve: (tex: PIXI.Texture) => void,
-      reject: (reason: string) => T
-    ): Promise<PIXI.Texture | T>;
+      options?: {
+        /**
+         * Append a cache-busting query parameter to the request.
+         * @defaultValue `false`
+         */
+        bustCache?: boolean | undefined;
+      }
+    ): Promise<Blob>;
+
+    /**
+     * Return a URL with a cache-busting query parameter appended.
+     * @param src - The source URL being attempted
+     * @returns The new URL, or false on a failure.
+     * @internal
+     */
+    protected _getCacheBustURL(src: string): string | false;
 
     /**
      * Load a video texture from a provided source url
-     * @param src -
      */
-    loadVideoTexture(src: string): Promise<PIXI.Texture>;
+    loadVideoTexture(src: string): Promise<PIXI.BaseTexture>;
 
     /**
      * Add an image url to the texture cache
      * @param src - The source URL
      * @param tex - The readied texture
      */
-    setCache(src: string, tex: PIXI.Texture): void;
+    setCache(src: string, tex: PIXI.BaseTexture): void;
 
     /**
      * Retrieve a texture from the texture cache
      * @param src - The source URL
      */
-    getCache(src: string): PIXI.Texture | undefined;
+    getCache(src: string): PIXI.BaseTexture | undefined;
 
     /**
      * Expire (and destroy) textures from the cache which have not been used for more than CACHE_TTL milliseconds.

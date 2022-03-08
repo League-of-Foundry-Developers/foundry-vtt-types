@@ -1,9 +1,9 @@
-import type { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes.js';
+import type { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
 import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
-import type { AnimationData, AnimationDataConstructorData } from './animationData.js';
-import type { DarknessActivation, DarknessActivationConstructorData } from './darknessActivation.js';
+import type { AnimationData, AnimationDataConstructorData } from './animationData';
+import type { DarknessActivation, DarknessActivationConstructorData } from './darknessActivation';
 
 interface LightDataSchema extends DocumentSchema {
   alpha: FieldReturnType<fields.AlphaField, { default: 0.5 }>;
@@ -183,6 +183,8 @@ interface LightDataConstructorData {
   darkness?: DarknessActivationConstructorData | null | undefined;
 }
 
+type LightDataSource = PropertiesToSource<LightDataProperties>;
+
 /**
  * A reusable document structure for the internal data used to render the appearance of a light source.
  * This is re-used by both the AmbientLightData and TokenData classes.
@@ -190,7 +192,7 @@ interface LightDataConstructorData {
 export class LightData extends DocumentData<
   LightDataSchema,
   LightDataProperties,
-  PropertiesToSource<LightDataProperties>,
+  LightDataSource,
   LightDataConstructorData,
   documents.BaseAmbientLight | documents.BaseToken
 > {
@@ -203,7 +205,7 @@ export class LightData extends DocumentData<
   static LIGHT_UNIFORM_FIELD: LightData.LightUniformField;
 
   /** @override */
-  _initializeSource(data: LightDataConstructorData): PropertiesToSource<LightDataProperties>;
+  _initializeSource(data: LightDataConstructorData): LightDataSource;
 
   /** @override */
   protected _initialize(): void;

@@ -197,7 +197,14 @@ interface NumberConstructor {
    * @param n - A value to test
    * @returns Is it a number?
    */
-  isNumeric(n: unknown): n is number;
+  isNumeric(n: unknown): boolean;
+
+  /**
+   * Attempt to create a number from a user-provided string.
+   * @param str - The string.
+   * @returns The number that the string represents, or NaN if no number could be determined.
+   */
+  fromString(str: string): number;
 }
 
 interface ArrayConstructor {

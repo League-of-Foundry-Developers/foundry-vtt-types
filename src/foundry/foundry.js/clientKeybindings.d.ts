@@ -240,11 +240,21 @@ declare class ClientKeybindings {
   protected _onPan(context: KeyboardEventContext, movementDirections: ClientKeybindings.MovementDirection[]): boolean;
 
   /**
-   * Handle number key presses
+   * Handle Macro executions
    * @param context - The context data of the event
    * @internal
    */
-  protected static _onMacro(context: KeyboardEventContext): true;
+  protected static _onMacroExecute(
+    context: KeyboardEventContext,
+    number: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0
+  ): boolean;
+
+  /**
+   * Handle Macro page swaps
+   * @param context - The context data of the event
+   * @internal
+   */
+  protected static _onMacroPageSwap(context: KeyboardEventContext, page: number): true;
 
   /**
    * Handle action to copy data to clipboard

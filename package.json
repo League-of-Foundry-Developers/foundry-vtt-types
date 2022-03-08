@@ -1,6 +1,6 @@
 {
   "name": "@league-of-foundry-developers/foundry-vtt-types",
-  "version": "9.238.1",
+  "version": "9.249.4",
   "description": "TypeScript type definitions for Foundry VTT",
   "exports": {
     ".": {
@@ -73,8 +73,8 @@
     "husky": "^7.0.4",
     "lint-staged": "^12.1.2",
     "prettier": "^2.5.1",
-    "tsd": "~0.18.0",
-    "typescript": "~4.5.3"
+    "tsd": "^0.19.1",
+    "typescript": "~4.6.2"
   },
   "husky": {
     "hooks": {

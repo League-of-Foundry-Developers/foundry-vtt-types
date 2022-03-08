@@ -258,43 +258,6 @@ export declare function isNewerVersion(v1: number | string, v0: number | string)
  */
 export declare function isObjectEmpty(obj: object): boolean;
 
-/**
- * Update a source object by replacing its keys and values with those from a target object.
- *
- * @param original - The initial object which should be updated with values from the target
- * @param other    - A new object whose values should replace those in the source
- *                   (default: `{}`)
- * @param options  - Additional options which configure the merge
- *                   (default: `{}`)
- * @param _d       - A privately used parameter to track recursion depth.
- *                   (default: `0`)
- * @returns The original source object including updated, inserted, or overwritten records.
- *
- * @example <caption>Control how new keys and values are added</caption>
- * ```typescript
- * mergeObject({k1: "v1"}, {k2: "v2"}, {insertKeys: false}); // {k1: "v1"}
- * mergeObject({k1: "v1"}, {k2: "v2"}, {insertKeys: true});  // {k1: "v1", k2: "v2"}
- * mergeObject({k1: {i1: "v1"}}, {k1: {i2: "v2"}}, {insertValues: false}); // {k1: {i1: "v1"}}
- * mergeObject({k1: {i1: "v1"}}, {k1: {i2: "v2"}}, {insertValues: true}); // {k1: {i1: "v1", i2: "v2"}}
- * ```
- *
- * @example <caption>Control how existing data is overwritten</caption>
- * ```typescript
- * mergeObject({k1: "v1"}, {k1: "v2"}, {overwrite: true}); // {k1: "v2"}
- * mergeObject({k1: "v1"}, {k1: "v2"}, {overwrite: false}); // {k1: "v1"}
- * ```
- *
- * @example <caption>Control whether merges are performed recursively</caption>
- * ```typescript
- * mergeObject({k1: {i1: "v1"}}, {k1: {i2: "v2"}}, {recursive: false}); // {k1: {i1: "v2"}}
- * mergeObject({k1: {i1: "v1"}}, {k1: {i2: "v2"}}, {recursive: true}); // {k1: {i1: "v1", i2: "v2"}}
- * ```
- *
- * @example <caption>Deleting an existing object key</caption>
- * ```typescript
- * mergeObject({k1: "v1", k2: "v2"}, {"-=k1": null});   // {k2: "v2"}
- * ```
- */
 type OmitByValue<T, ValueType> = { [Key in keyof T as T[Key] extends ValueType ? never : Key]: T[Key] };
 type RemoveNever<T> = OmitByValue<T, never>;
 type PropWithMinus<K> = K extends string ? `-=${K}` : never;
@@ -333,6 +296,43 @@ type WithWidenedArrayTypes<T> = T extends Array<any>
   ? { [K in keyof T]: WithWidenedArrayTypes<T[K]> }
   : T;
 
+/**
+ * Update a source object by replacing its keys and values with those from a target object.
+ *
+ * @param original - The initial object which should be updated with values from the target
+ * @param other    - A new object whose values should replace those in the source
+ *                   (default: `{}`)
+ * @param options  - Additional options which configure the merge
+ *                   (default: `{}`)
+ * @param _d       - A privately used parameter to track recursion depth.
+ *                   (default: `0`)
+ * @returns The original source object including updated, inserted, or overwritten records.
+ *
+ * @example <caption>Control how new keys and values are added</caption>
+ * ```typescript
+ * mergeObject({k1: "v1"}, {k2: "v2"}, {insertKeys: false}); // {k1: "v1"}
+ * mergeObject({k1: "v1"}, {k2: "v2"}, {insertKeys: true});  // {k1: "v1", k2: "v2"}
+ * mergeObject({k1: {i1: "v1"}}, {k1: {i2: "v2"}}, {insertValues: false}); // {k1: {i1: "v1"}}
+ * mergeObject({k1: {i1: "v1"}}, {k1: {i2: "v2"}}, {insertValues: true}); // {k1: {i1: "v1", i2: "v2"}}
+ * ```
+ *
+ * @example <caption>Control how existing data is overwritten</caption>
+ * ```typescript
+ * mergeObject({k1: "v1"}, {k1: "v2"}, {overwrite: true}); // {k1: "v2"}
+ * mergeObject({k1: "v1"}, {k1: "v2"}, {overwrite: false}); // {k1: "v1"}
+ * ```
+ *
+ * @example <caption>Control whether merges are performed recursively</caption>
+ * ```typescript
+ * mergeObject({k1: {i1: "v1"}}, {k1: {i2: "v2"}}, {recursive: false}); // {k1: {i1: "v2"}}
+ * mergeObject({k1: {i1: "v1"}}, {k1: {i2: "v2"}}, {recursive: true}); // {k1: {i1: "v1", i2: "v2"}}
+ * ```
+ *
+ * @example <caption>Deleting an existing object key</caption>
+ * ```typescript
+ * mergeObject({k1: "v1", k2: "v2"}, {"-=k1": null});   // {k2: "v2"}
+ * ```
+ */
 export declare function mergeObject<
   T extends object,
   U extends DeepPartial<WithWidenedArrayTypes<T>>,

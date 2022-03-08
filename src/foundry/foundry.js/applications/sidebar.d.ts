@@ -2,7 +2,7 @@
  * Render the Sidebar container, and after rendering insert Sidebar tabs.
  * @typeParam Options - the type of the options object
  */
-declare class Sidebar<Options extends Application.Options = Application.Options> extends Application<Options> {
+declare class Sidebar<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
   /**
    * Singleton application instances for each sidebar tab
    * @defaultValue `{}`
@@ -29,7 +29,7 @@ declare class Sidebar<Options extends Application.Options = Application.Options>
    * }
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): ApplicationOptions;
 
   /**
    * Return the name of the active Sidebar tab

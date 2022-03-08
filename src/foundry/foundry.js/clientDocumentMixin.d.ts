@@ -11,6 +11,40 @@ declare global {
   const ClientDocumentMixin: <T extends ConstructorOf<foundry.abstract.Document<any, any>>>(
     Base: T
   ) => ClientDocumentConstructor<T>;
+
+  namespace ClientDocumentMixin {
+    interface CompendiumExportOptions {
+      /**
+       * Clear the flags object
+       * @defaultValue `false`
+       */
+      clearFlags?: boolean | undefined;
+
+      /**
+       * Clear the currently assigned folder and sort order
+       * @defaultValue `true`
+       */
+      clearSort?: boolean | undefined;
+
+      /**
+       * Clear document permissions
+       * @defaultValue `true`
+       */
+      clearPermissions?: boolean | undefined;
+
+      /**
+       * Clear fields which store document state
+       * @defaultValue `true`
+       */
+      clearState?: boolean | undefined;
+
+      /**
+       * Retain the current Document id
+       * @defaultValue `false`
+       */
+      keepId?: boolean | undefined;
+    }
+  }
 }
 
 type ClientDocumentConstructor<T extends ConstructorOf<foundry.abstract.Document<any, any>>> = Pick<T, keyof T> &
@@ -275,7 +309,8 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    *                  (default: `{}`)
    * @param context - Additional context options or dialog positioning options
    *                  (default: `{}`)
-   * @returns A Promise which resolves to the created Document
+   * @returns A Promise which resolves to the created Document, or null if the dialog was
+   *          closed.
    */
   static createDialog<T extends DocumentConstructor>(
     this: T,
@@ -300,7 +335,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * Export document data to a JSON file which can be saved by the client and later imported into a different session.
    * @param options - Additional options passed to the {@link ClientDocumentMixin#toCompendium} method
    */
-  exportToJSON(options?: CompendiumExportOptions): void;
+  exportToJSON(options?: ClientDocumentMixin.CompendiumExportOptions): void;
 
   /**
    * A helper function to handle obtaining the relevant Document from dropped data provided via a DataTransfer event.
@@ -343,7 +378,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    */
   toCompendium(
     pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
-    options?: CompendiumExportOptions
+    options?: ClientDocumentMixin.CompendiumExportOptions
   ): Omit<T['data']['_source'], '_id' | 'folder' | 'permission'> & {
     permission?: T['data']['_source']['permission'];
   };
@@ -352,38 +387,6 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * @deprecated since v9 - Use prepareEmbeddedDocuments instead.
    */
   prepareEmbeddedEntities(): void;
-}
-
-interface CompendiumExportOptions {
-  /**
-   * Clear the flags object
-   * @defaultValue `false`
-   */
-  clearFlags: boolean;
-
-  /**
-   * Clear the currently assigned folder and sort order
-   * @defaultValue `true`
-   */
-  clearSort: boolean;
-
-  /**
-   * Clear document permissions
-   * @defaultValue `true`
-   */
-  clearPermissions: boolean;
-
-  /**
-   * Clear fields which store document state
-   * @defaultValue `true`
-   */
-  clearState: boolean;
-
-  /**
-   * Retain the current Document id
-   * @defaultValue `false`
-   */
-  keepId: boolean;
 }
 
 interface SortOptions<T> {

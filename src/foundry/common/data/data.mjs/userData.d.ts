@@ -63,9 +63,13 @@ interface UserDataProperties {
   /** The user's name. */
   name: string;
 
-  /** @defaultValue `""` */
+  /**
+   * The user's password. Available only on the Server side for security.
+   * @defaultValue `""`
+   */
   password: string;
 
+  /** The user's password salt. Available only on the Server side for security. */
   passwordSalt: string | undefined;
 
   /**
@@ -113,9 +117,12 @@ interface UserDataConstructorData {
   /** The user's name. */
   name: string;
 
-  /** @defaultValue `""` */
-  password?: string | null | undefined;
+  /**
+   * The user's password. Available only on the Server side for security.
+   * @defaultValue `""`
+   */ password?: string | null | undefined;
 
+  /** The user's password salt. Available only on the Server side for security. */
   passwordSalt?: string | null | undefined;
 
   /**
@@ -137,13 +144,15 @@ interface UserDataConstructorData {
   flags?: ConfiguredFlags<'User'> | null | undefined;
 }
 
+type UserDataSource = PropertiesToSource<UserDataProperties>;
+
 /**
  * The data schema for a User document
  */
 export class UserData extends DocumentData<
   UserDataSchema,
   UserDataProperties,
-  PropertiesToSource<UserDataProperties>,
+  UserDataSource,
   UserDataConstructorData,
   documents.BaseUser
 > {

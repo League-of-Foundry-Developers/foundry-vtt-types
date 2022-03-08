@@ -2,9 +2,23 @@ import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { Context, DocumentMetadata } from '../abstract/document.mjs';
 import { Document } from '../abstract/module.mjs';
 import * as data from '../data/data.mjs';
-import type { WallDataConstructorData } from '../data/data.mjs/wallData.js';
+import type { WallDataConstructorData } from '../data/data.mjs/wallData';
 import { BaseScene } from './baseScene';
 import { BaseUser } from './baseUser';
+
+type WallMetadata = Merge<
+  DocumentMetadata,
+  {
+    name: 'Wall';
+    collection: 'walls';
+    label: 'DOCUMENT.Wall';
+    labelPlural: 'DOCUMENT.Walls';
+    isEmbedded: true;
+    permissions: {
+      update: (user: BaseUser, doc: BaseWall, data: DeepPartial<WallDataConstructorData>) => boolean;
+    };
+  }
+>;
 
 /**
  * The base Wall model definition which defines common behavior of an Wall document between both client and server.
@@ -22,22 +36,10 @@ export declare class BaseWall extends Document<data.WallData, InstanceType<Confi
   static get schema(): typeof data.WallData;
 
   /** @override */
-  static get metadata(): Merge<
-    DocumentMetadata,
-    {
-      name: 'Wall';
-      collection: 'walls';
-      label: 'DOCUMENT.Wall';
-      labelPlural: 'DOCUMENT.Walls';
-      isEmbedded: true;
-      permissions: {
-        update: typeof BaseWall._canUpdate;
-      };
-    }
-  >;
+  static get metadata(): WallMetadata;
 
   /**
    * Is a user able to update an existing Wall?
    */
-  protected static _canUpdate(user: BaseUser, doc: BaseWall, data?: Partial<WallDataConstructorData>): boolean;
+  protected static _canUpdate(user: BaseUser, doc: BaseWall, data: DeepPartial<WallDataConstructorData>): boolean;
 }

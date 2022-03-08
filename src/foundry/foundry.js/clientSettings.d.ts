@@ -211,7 +211,7 @@ declare namespace ClientSettings {
     label?: string;
     name?: string;
     restricted: boolean;
-    type: ConstructorOf<FormApplication<FormApplication.Options, object>>;
+    type: ConstructorOf<FormApplication<FormApplicationOptions, object, undefined>>;
   }
 
   interface RegisteredMenuSettings {
@@ -239,7 +239,7 @@ declare namespace ClientSettings {
     'core.nue.shownTips': boolean;
     'core.noCanvas': boolean;
     'core.permissions': Game.Permissions;
-    'core.rollMode': foundry.CONST.DICE_ROLL_MODES;
+    'core.rollMode': keyof CONFIG.Dice.RollModes;
     'core.softShadows': boolean;
     'core.time': number;
     'core.tokenDragPreview': boolean;

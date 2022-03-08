@@ -77,4 +77,4 @@ expectType<{ resource: string; skipDefeated: boolean } | {}>(clientSettings.get(
 expectType<Partial<Record<string, CompendiumCollection.Configuration>>>(
   clientSettings.get('core', 'compendiumConfiguration')
 );
-expectType<foundry.CONST.DICE_ROLL_MODES>(clientSettings.get('core', 'rollMode'));
+expectType<keyof CONFIG.Dice.RollModes>(clientSettings.get('core', 'rollMode'));

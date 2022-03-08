@@ -1,9 +1,10 @@
 import './common/module.mjs';
-
 import './foundry.js/application';
+import './foundry.js/applications';
 import './foundry.js/audioContainer';
 import './foundry.js/audioHelper';
 import './foundry.js/avClient';
+import './foundry.js/avClients';
 import './foundry.js/avMaster';
 import './foundry.js/avSettings';
 import './foundry.js/cameraPopoutAppWrapper';
@@ -12,10 +13,11 @@ import './foundry.js/canvasAnimation';
 import './foundry.js/canvasDocumentMixin';
 import './foundry.js/chatBubbles';
 import './foundry.js/clientDatabaseBackend';
-import './foundry.js/clientDocuments';
 import './foundry.js/clientDocumentMixin';
+import './foundry.js/clientDocuments';
 import './foundry.js/clientKeybindings';
 import './foundry.js/clientSettings';
+import './foundry.js/collections';
 import './foundry.js/collisionResult';
 import './foundry.js/config';
 import './foundry.js/constants';
@@ -26,8 +28,8 @@ import './foundry.js/features';
 import './foundry.js/fonts';
 import './foundry.js/formDataExtended';
 import './foundry.js/game';
-import './foundry.js/gamepadManager';
 import './foundry.js/gameTime';
+import './foundry.js/gamepadManager';
 import './foundry.js/globalVariables';
 import './foundry.js/handlebarsHelpers';
 import './foundry.js/hooks';
@@ -39,20 +41,34 @@ import './foundry.js/mouseInteractionManager';
 import './foundry.js/mouseManager';
 import './foundry.js/newUserExperience';
 import './foundry.js/perceptionManager';
+import './foundry.js/pixi';
 import './foundry.js/pointSource';
+import './foundry.js/pointSources';
 import './foundry.js/polygonEdge';
 import './foundry.js/polygonVertex';
 import './foundry.js/quadtree';
 import './foundry.js/quadtreeCulling';
 import './foundry.js/ray';
+import './foundry.js/rays';
 import './foundry.js/roll';
+import './foundry.js/rollTerm';
+import './foundry.js/rollTerms/diceTerm';
+import './foundry.js/rollTerms/diceTerms/coin';
+import './foundry.js/rollTerms/diceTerms/die';
+import './foundry.js/rollTerms/diceTerms/fateDie';
+import './foundry.js/rollTerms/mathTerm';
+import './foundry.js/rollTerms/numericTerm';
+import './foundry.js/rollTerms/operatorTerm';
+import './foundry.js/rollTerms/parentheticalTerm';
+import './foundry.js/rollTerms/poolTerm';
+import './foundry.js/rollTerms/stringTerm';
 import './foundry.js/screenCulling';
 import './foundry.js/searchFilter';
-import './foundry.js/specialEffect';
-import './foundry.js/specialEffects';
 import './foundry.js/socketInterface';
 import './foundry.js/sortingHelpers';
 import './foundry.js/sound';
+import './foundry.js/specialEffect';
+import './foundry.js/specialEffects';
 import './foundry.js/tabs';
 import './foundry.js/templateUtils';
 import './foundry.js/textEditor';
@@ -62,27 +78,3 @@ import './foundry.js/types';
 import './foundry.js/userTargets';
 import './foundry.js/utils';
 import './foundry.js/videoHelper';
-
-import './foundry.js/applications';
-
-import './foundry.js/avClients';
-
-import './foundry.js/collections';
-
-import './foundry.js/rollTerm';
-
-import './foundry.js/rollTerms/diceTerm';
-import './foundry.js/rollTerms/mathTerm';
-import './foundry.js/rollTerms/numericTerm';
-import './foundry.js/rollTerms/operatorTerm';
-import './foundry.js/rollTerms/parentheticalTerm';
-import './foundry.js/rollTerms/poolTerm';
-import './foundry.js/rollTerms/stringTerm';
-
-import './foundry.js/rollTerms/diceTerms/coin';
-import './foundry.js/rollTerms/diceTerms/die';
-import './foundry.js/rollTerms/diceTerms/fateDie';
-
-import './foundry.js/pixi';
-
-import './foundry.js/rays';

@@ -137,6 +137,8 @@ interface PlaylistSoundDataConstructorData {
   flags?: ConfiguredFlags<'PlaylistSound'> | null | undefined;
 }
 
+type PlaylistSoundDataSource = PropertiesToSource<PlaylistSoundDataProperties>;
+
 /**
  * The data schema for a PlaylistSound embedded document.
  * @see BasePlaylistSound
@@ -144,7 +146,7 @@ interface PlaylistSoundDataConstructorData {
 export class PlaylistSoundData extends DocumentData<
   PlaylistSoundDataSchema,
   PlaylistSoundDataProperties,
-  PropertiesToSource<PlaylistSoundDataProperties>,
+  PlaylistSoundDataSource,
   PlaylistSoundDataConstructorData,
   documents.BasePlaylistSound
 > {

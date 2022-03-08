@@ -1,7 +1,7 @@
-import { ConfiguredDocumentClass, PropertiesToSource } from '../../../types/helperTypes';
-import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
-import { CombatantDataProperties } from '../../common/data/data.mjs/combatantData';
-import type { CombatDataConstructorData } from '../../common/data/data.mjs/combatData.js';
+import type { ConfiguredDocumentClass } from '../../../types/helperTypes';
+import type { DocumentModificationOptions } from '../../common/abstract/document.mjs';
+import type { ChatMessageDataConstructorData } from '../../common/data/data.mjs/chatMessageData';
+import type { CombatantDataSource } from '../../common/data/data.mjs/combatantData';
 
 declare global {
   /**
@@ -12,10 +12,11 @@ declare global {
    * @see {@link documents.Combats}             The world-level collection of Combat documents
    * @see {@link embedded.Combatant}            The Combatant embedded document which exists within a Combat document
    * @see {@link applications.CombatConfig}     The Combat configuration application
-   *
-   * @param data - Initial data provided to construct the Combat document
    */
   class Combat extends ClientDocumentMixin(foundry.documents.BaseCombat) {
+    /**
+     * @param data - Initial data provided to construct the Combat document
+     */
     constructor(
       data?: ConstructorParameters<ConstructorOf<foundry.documents.BaseCombat>>[0],
       context?: ConstructorParameters<ConstructorOf<foundry.documents.BaseCombat>>[1]
@@ -33,6 +34,7 @@ declare global {
     /**
      * Track whether a sound notification is currently being played to avoid double-dipping
      * @defaultValue `false`
+     * @internal
      */
     protected _soundPlaying: boolean;
 
@@ -40,7 +42,7 @@ declare global {
     static CONFIG_SETTING: 'combatTrackerConfig';
 
     /** Get the Combatant who has the current turn. */
-    get combatant(): this['turns'][number];
+    get combatant(): this['turns'][number] | undefined;
 
     /** The numeric round of the Combat encounter */
     get round(): number;
@@ -58,9 +60,12 @@ declare global {
     get started(): boolean;
 
     /** The numeric turn of the combat round in the Combat encounter */
-    get turn(): number;
+    get turn(): number | null;
 
     get visible(): true;
+
+    /** Is this combat active in the current scene? */
+    get isActive(): boolean;
 
     /**
      * Set the current Combat encounter as active within the Scene.
@@ -78,7 +83,13 @@ declare global {
      * Get a Combatant using its Token id
      * @param tokenId - The id of the Token for which to acquire the combatant
      */
-    getCombatantByToken(tokenId: string): ReturnType<this['combatants']['find']>;
+    getCombatantByToken(tokenId: string): InstanceType<ConfiguredDocumentClass<typeof Combatant>> | undefined;
+
+    /**
+     * Get a Combatant using its Actor id
+     * @param actorId - The id of the Actor for which to acquire the combatant
+     */
+    getCombatantByActor(actorId: string): InstanceType<ConfiguredDocumentClass<typeof Combatant>> | undefined;
 
     /** Advance the combat to the next round */
     nextRound(): Promise<this | undefined>;
@@ -95,15 +106,18 @@ declare global {
     /** Rewind the combat to the previous turn */
     previousTurn(): Promise<this | undefined>;
 
+    /** Toggle whether this combat is linked to the scene or globally available. */
+    toggleSceneLink(): Promise<this | undefined>;
+
     /** Reset all combatant initiative scores, setting the turn back to zero */
     resetAll(): Promise<this | undefined>;
 
     /**
-     * Roll initiative for one or multiple Combatants within the Combat entity
-     * @param ids - A Combatant id or Array of ids for which to roll
+     * Roll initiative for one or multiple Combatants within the Combat document
+     * @param ids     - A Combatant id or Array of ids for which to roll
      * @param options - Additional options which modify how initiative rolls are created or presented.
      *                  default `{}`
-     * @returns  A promise which resolves to the updated Combat entity once updates are complete.
+     * @returns A promise which resolves to the updated Combat document once updates are complete.
      */
     rollInitiative(ids: string | string[], options?: InitiativeOptions): Promise<this>;
 
@@ -112,19 +126,19 @@ declare global {
      * @param options - Additional options forwarded to the Combat.rollInitiative method
      *                  default `{}`
      */
-    rollAll(options?: InitiativeOptions): this['rollInitiative'];
+    rollAll(options?: InitiativeOptions): Promise<this>;
 
     /**
      * Roll initiative for all non-player actors who have not already rolled
      * @param options - Additional options forwarded to the Combat.rollInitiative method
      *                  default `{}`
      */
-    rollNPC(options?: InitiativeOptions): this['rollInitiative'];
+    rollNPC(options?: InitiativeOptions): Promise<this>;
 
     /**
      * Assign initiative for a single Combatant within the Combat encounter.
      * Update the Combat turn order to maintain the same combatant as the current turn.
-     * @param id - The combatant ID for which to set initiative
+     * @param id    - The combatant ID for which to set initiative
      * @param value - A specific initiative value to set
      */
     setInitiative(id: string, value: number): Promise<void>;
@@ -139,66 +153,52 @@ declare global {
      * Define how the array of Combatants is sorted in the displayed list of the tracker.
      * This method can be overridden by a system or module which needs to display combatants in an alternative order.
      * By default sort by initiative, next falling back to name, lastly tie-breaking by combatant id.
+     * @internal
      */
     protected _sortCombatants(
       a: InstanceType<ConfiguredDocumentClass<typeof Combatant>>,
       b: InstanceType<ConfiguredDocumentClass<typeof Combatant>>
     ): number;
 
+    /** @override */
     protected _onCreate(data: this['data']['_source'], options: DocumentModificationOptions, userId: string): void;
 
+    /** @override */
     protected _onUpdate(
       changed: DeepPartial<this['data']['_source']>,
       options: DocumentModificationOptions,
       userId: string
-    ): void; //TODO Returntype could also be CombatTracker.scrollToTurn
+    ): void;
 
+    /** @override */
     protected _onDelete(options: DocumentModificationOptions, userId: string): void;
 
+    /** @override */
     protected _onCreateEmbeddedDocuments(
-      embeddedName: string,
-      documents: Combatant[],
-      result: DeepPartial<PropertiesToSource<CombatantDataProperties>>[],
+      type: string,
+      documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
+      result: CombatantDataSource[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
+    /** @override */
     protected _onUpdateEmbeddedDocuments(
       embeddedName: string,
-      documents: Combatant[],
-      result: DeepPartial<PropertiesToSource<CombatantDataProperties>>[],
+      documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
+      result: CombatantDataSource[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
+    /** @override */
     protected _onDeleteEmbeddedDocuments(
       embeddedName: string,
-      documents: Combatant[],
+      documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
       result: string[],
       options: DocumentModificationContext,
       userId: string
     ): void;
-
-    /** @deprecated since 0.8.0 */
-    getCombatant(id: string): this['combatants']['get'];
-
-    /** @deprecated since 0.8.0 */
-    createCombatant(
-      data: CombatDataConstructorData | (CombatDataConstructorData & Record<string, unknown>),
-      options?: DocumentModificationContext
-    ): this['createEmbeddedDocuments'];
-
-    /** @deprecated since 0.8.0 */
-    updateCombatant(
-      data: DeepPartial<CombatDataConstructorData | (CombatDataConstructorData & Record<string, unknown>)>,
-      options?: DocumentModificationContext
-    ): NonNullable<ReturnType<this['combatants']['get']>>['update'];
-
-    /** @deprecated since 0.8.0 */
-    deleteCombatant(
-      id: string,
-      options?: DocumentModificationContext
-    ): NonNullable<ReturnType<this['combatants']['get']>>['delete'];
   }
 }
 
@@ -208,16 +208,18 @@ interface InitiativeOptions {
    * @defaultValue `null`
    */
   formula?: string | null;
+
   /**
    * Update the Combat turn after adding new initiative scores to keep the turn on the same Combatant.
    * @defaultValue `true`
    */
   updateTurn?: boolean;
+
   /**
    * Additional options with which to customize created Chat Messages
    * @defaultValue `{}`
    */
-  messageOptions?: object; //TODO Type properly once ChatMessage is typed
+  messageOptions?: ChatMessageDataConstructorData;
 }
 
 interface RoundData {

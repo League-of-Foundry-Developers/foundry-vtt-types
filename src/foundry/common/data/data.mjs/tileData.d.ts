@@ -224,6 +224,8 @@ interface TileDataConstructorData {
   flags?: ConfiguredFlags<'Tile'> | null | undefined;
 }
 
+type TileDataSource = PropertiesToSource<TileDataProperties>;
+
 /**
  * The data schema for a Tile embedded document.
  * @see BaseTile
@@ -231,7 +233,7 @@ interface TileDataConstructorData {
 export class TileData extends DocumentData<
   TileDataSchema,
   TileDataProperties,
-  PropertiesToSource<TileDataProperties>,
+  TileDataSource,
   TileDataConstructorData,
   documents.BaseTile
 > {
@@ -239,7 +241,7 @@ export class TileData extends DocumentData<
   static defineSchema(): TileDataSchema;
 
   /** @override */
-  _initializeSource(data: TileDataConstructorData): PropertiesToSource<TileDataProperties>;
+  _initializeSource(data: TileDataConstructorData): TileDataSource;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

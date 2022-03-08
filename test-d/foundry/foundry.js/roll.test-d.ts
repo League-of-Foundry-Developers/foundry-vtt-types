@@ -1,4 +1,4 @@
-import type { MessageData } from '../../../src/foundry/foundry.js/roll';
+import type { Evaluated, MessageData } from '../../../src/foundry/foundry.js/roll';
 
 import { expectType } from 'tsd';
 import '../../index';
@@ -13,7 +13,8 @@ const r = new Roll('2d20kh + @prof + @strMod', { prof: 2, strMod: 4 });
 // create the configured roll instance
 expectType<CustomRoll<{}>>(Roll.create('1d20'));
 expectType<CustomRoll<{ prof: number }>>(Roll.create('1d20 + @prof', { prof: 2 }));
-expectType<CustomRoll<{}>>(Roll.fromTerms([]));
+expectType<Roll<object>>(Roll.fromTerms([]));
+expectType<CustomRoll<object>>(CustomRoll.fromTerms([]));
 
 // The parsed terms of the roll formula
 // [Die, OperatorTerm, NumericTerm, OperatorTerm, NumericTerm]
@@ -21,38 +22,53 @@ expectType<RollTerm[]>(r.terms);
 
 // Execute the roll
 type TypeOfR = Roll<{ prof: number; strMod: number }>;
-expectType<Promise<TypeOfR>>(r.evaluate({ async: true }));
-expectType<TypeOfR>(r.evaluate({ async: false }));
-expectType<TypeOfR>(r.evaluate());
-expectType<TypeOfR>(r.evaluate({ minimize: true, maximize: true }));
-expectType<TypeOfR | Promise<TypeOfR>>(r.evaluate({ minimize: true, maximize: true, async: false as boolean }));
-expectType<TypeOfR | Promise<TypeOfR>>(
+expectType<Promise<Evaluated<TypeOfR>>>(r.evaluate({ async: true }));
+expectType<Evaluated<TypeOfR>>(r.evaluate({ async: false }));
+expectType<Evaluated<TypeOfR>>(r.evaluate());
+expectType<Evaluated<TypeOfR>>(r.evaluate({ minimize: true, maximize: true }));
+expectType<Evaluated<TypeOfR> | Promise<Evaluated<TypeOfR>>>(
+  r.evaluate({ minimize: true, maximize: true, async: false as boolean })
+);
+expectType<Evaluated<TypeOfR> | Promise<Evaluated<TypeOfR>>>(
   r.evaluate({ minimize: true, maximize: true, async: false as boolean | undefined })
 );
-expectType<TypeOfR>(r.evaluate({ minimize: true, maximize: true, async: false as false | undefined }));
-expectType<TypeOfR | Promise<TypeOfR>>(
+expectType<Evaluated<TypeOfR>>(r.evaluate({ minimize: true, maximize: true, async: false as false | undefined }));
+expectType<Evaluated<TypeOfR> | Promise<Evaluated<TypeOfR>>>(
   r.evaluate({ minimize: true, maximize: true, async: false as true | undefined })
 );
+expectType<number>(await r.evaluate().total);
 
-expectType<Promise<TypeOfR>>(r.roll({ async: true }));
-expectType<TypeOfR>(r.roll({ async: false }));
-expectType<TypeOfR>(r.roll());
-expectType<TypeOfR>(r.roll({ minimize: true, maximize: true }));
-expectType<TypeOfR | Promise<TypeOfR>>(r.roll({ minimize: true, maximize: true, async: false as boolean }));
-expectType<TypeOfR | Promise<TypeOfR>>(r.roll({ minimize: true, maximize: true, async: false as boolean | undefined }));
-expectType<TypeOfR>(r.roll({ minimize: true, maximize: true, async: false as false | undefined }));
-expectType<TypeOfR | Promise<TypeOfR>>(r.roll({ minimize: true, maximize: true, async: false as true | undefined }));
+expectType<Promise<Evaluated<TypeOfR>>>(r.roll({ async: true }));
+expectType<Evaluated<TypeOfR>>(r.roll({ async: false }));
+expectType<Evaluated<TypeOfR>>(r.roll());
+expectType<Evaluated<TypeOfR>>(r.roll({ minimize: true, maximize: true }));
+expectType<Evaluated<TypeOfR> | Promise<Evaluated<TypeOfR>>>(
+  r.roll({ minimize: true, maximize: true, async: false as boolean })
+);
+expectType<Evaluated<TypeOfR> | Promise<Evaluated<TypeOfR>>>(
+  r.roll({ minimize: true, maximize: true, async: false as boolean | undefined })
+);
+expectType<Evaluated<TypeOfR>>(r.roll({ minimize: true, maximize: true, async: false as false | undefined }));
+expectType<Evaluated<TypeOfR> | Promise<Evaluated<TypeOfR>>>(
+  r.roll({ minimize: true, maximize: true, async: false as true | undefined })
+);
+expectType<number>(await r.roll().total);
 
-expectType<Promise<TypeOfR>>(r.reroll({ async: true }));
-expectType<TypeOfR>(r.reroll({ async: false }));
-expectType<TypeOfR>(r.reroll());
-expectType<TypeOfR>(r.reroll({ minimize: true, maximize: true }));
-expectType<TypeOfR | Promise<TypeOfR>>(r.reroll({ minimize: true, maximize: true, async: false as boolean }));
-expectType<TypeOfR | Promise<TypeOfR>>(
+expectType<Promise<Evaluated<TypeOfR>>>(r.reroll({ async: true }));
+expectType<Evaluated<TypeOfR>>(r.reroll({ async: false }));
+expectType<Evaluated<TypeOfR>>(r.reroll());
+expectType<Evaluated<TypeOfR>>(r.reroll({ minimize: true, maximize: true }));
+expectType<Evaluated<TypeOfR> | Promise<Evaluated<TypeOfR>>>(
+  r.reroll({ minimize: true, maximize: true, async: false as boolean })
+);
+expectType<Evaluated<TypeOfR> | Promise<Evaluated<TypeOfR>>>(
   r.reroll({ minimize: true, maximize: true, async: false as boolean | undefined })
 );
-expectType<TypeOfR>(r.reroll({ minimize: true, maximize: true, async: false as false | undefined }));
-expectType<TypeOfR | Promise<TypeOfR>>(r.reroll({ minimize: true, maximize: true, async: false as true | undefined }));
+expectType<Evaluated<TypeOfR>>(r.reroll({ minimize: true, maximize: true, async: false as false | undefined }));
+expectType<Evaluated<TypeOfR> | Promise<Evaluated<TypeOfR>>>(
+  r.reroll({ minimize: true, maximize: true, async: false as true | undefined })
+);
+expectType<number>(await r.reroll().total);
 
 // The resulting equation after it was rolled
 expectType<string>(r.result); // 16 + 2 + 4

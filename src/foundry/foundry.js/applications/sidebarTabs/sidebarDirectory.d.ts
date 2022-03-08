@@ -8,7 +8,7 @@ declare global {
    * @typeParam Options - The type of the options object
    */
   abstract class SidebarDirectory<
-    Name extends foundry.CONST.DOCUMENT_TYPES | 'FogExploration',
+    Name extends foundry.CONST.DOCUMENT_TYPES,
     Options extends SidebarDirectory.Options = SidebarDirectory.Options
   > extends SidebarTab<Options> {
     constructor(options?: Partial<SidebarDirectory.Options>);
@@ -224,7 +224,7 @@ declare global {
       sidebarIcon: string;
     }
 
-    interface Options extends Application.Options {
+    interface Options extends ApplicationOptions {
       renderUpdateKeys: string[];
       contextMenuSelector: string;
     }

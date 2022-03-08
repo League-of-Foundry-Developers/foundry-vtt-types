@@ -18,7 +18,8 @@ export type DocumentDataType<T extends Document<any, any>> = T extends Document<
  */
 declare abstract class Document<
   ConcreteDocumentData extends AnyDocumentData,
-  Parent extends Document<any, any> | null = null
+  Parent extends Document<any, any> | null = null,
+  ConcreteMetadata extends Metadata<any> = Metadata<any>
 > {
   /**
    * Create a new Document by providing an initial data object.
@@ -101,12 +102,12 @@ declare abstract class Document<
   /**
    * The named collection to which this Document belongs.
    */
-  get collectionName(): string;
+  get collectionName(): ConcreteMetadata['collection'];
 
   /**
    * The canonical name of this Document type, for example "Actor".
    */
-  get documentName(): string;
+  get documentName(): ConcreteMetadata['name'];
 
   /**
    * The canonical identifier for this Document
@@ -672,7 +673,11 @@ declare abstract class Document<
    * @param source - Draw values from the underlying data source rather than transformed values
    * @returns The extracted primitive object
    */
-  toObject(source?: true): ReturnType<this['toJSON']>;
+  toObject(
+    source?: true
+  ): this['id'] extends string
+    ? ReturnType<this['data']['toJSON']> & { _id: string }
+    : ReturnType<this['data']['toJSON']>;
   toObject(
     source: false
   ): this['id'] extends string
@@ -685,8 +690,8 @@ declare abstract class Document<
    * @returns The document data expressed as a plain object
    */
   toJSON(): this['id'] extends string
-    ? ReturnType<ConcreteDocumentData['toJSON']> & { _id: string }
-    : ReturnType<ConcreteDocumentData['toJSON']>;
+    ? ReturnType<this['data']['toJSON']> & { _id: string }
+    : ReturnType<this['data']['toJSON']>;
 
   /**
    * For Documents which include game system data, migrate the system data object to conform to its latest data model.
@@ -802,9 +807,15 @@ export interface Metadata<ConcreteDocument extends Document<any, any>> {
   embedded: Record<string, ConstructorOf<Document<any, any>>>;
   hasSystemData: boolean;
   permissions: {
-    create: string | ((user: BaseUser, doc: ConcreteDocument, data?: object) => boolean); // data isn't actually ever passed in on the client side
-    update: string | ((user: BaseUser, doc: ConcreteDocument, data?: object) => boolean); // data isn't actually ever passed in on the client side
-    delete: string | ((user: BaseUser, doc: ConcreteDocument, data?: object) => boolean); // data isn't actually ever passed in on the client side
+    create: string | ((user: BaseUser, doc: ConcreteDocument, data: ConcreteDocument['data']['_source']) => boolean);
+    update:
+      | string
+      | ((
+          user: BaseUser,
+          doc: ConcreteDocument,
+          data: DeepPartial<ConstructorDataType<ConcreteDocument['data']>>
+        ) => boolean);
+    delete: string | ((user: BaseUser, doc: ConcreteDocument, data: {}) => boolean);
   };
   pack: any;
 }

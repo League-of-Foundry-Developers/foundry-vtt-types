@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import type { TokenDataConstructorData } from '../../../common/data/data.mjs/tokenData.js';
+import type { TokenDataConstructorData } from '../../../common/data/data.mjs/tokenData';
 
 declare global {
   /**
@@ -8,7 +8,7 @@ declare global {
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
   class TokenConfig<
-    Options extends FormApplication.Options = FormApplication.Options,
+    Options extends FormApplicationOptions = FormApplicationOptions,
     Data extends object = TokenConfig.Data<Options>
   > extends FormApplication<
     Options,
@@ -37,7 +37,7 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): FormApplication.Options;
+    static get defaultOptions(): FormApplicationOptions;
 
     /** @override */
     get id(): string;
@@ -103,7 +103,7 @@ declare global {
       value: string[][];
     }
 
-    interface Data<Options extends FormApplication.Options = FormApplication.Options> {
+    interface Data<Options extends FormApplicationOptions = FormApplicationOptions> {
       cssClasses: string;
       isPrototype: boolean;
       hasAlternates: boolean;

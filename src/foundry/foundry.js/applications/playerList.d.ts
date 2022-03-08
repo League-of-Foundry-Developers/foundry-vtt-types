@@ -6,7 +6,7 @@ declare global {
    *
    * @typeParam Options - the type of the options object
    */
-  class PlayerList<Options extends Application.Options = Application.Options> extends Application<Options> {
+  class PlayerList<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
     constructor(options?: Partial<Options>);
 
     /**
@@ -25,7 +25,7 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): Application.Options;
+    static get defaultOptions(): ApplicationOptions;
 
     /** @override */
     render(force?: boolean, options?: Application.RenderOptions<Options>): this;

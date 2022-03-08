@@ -5,7 +5,7 @@ declare global {
    * A compendium of knowledge arcane and mystical!
    * @typeParam Options - The type of the options object
    */
-  class CompendiumDirectory<Options extends Application.Options = Application.Options> extends SidebarTab<Options> {
+  class CompendiumDirectory<Options extends ApplicationOptions = ApplicationOptions> extends SidebarTab<Options> {
     /**
      * @override
      * @defaultValue
@@ -17,7 +17,7 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): Application.Options;
+    static get defaultOptions(): ApplicationOptions;
 
     /**
      * @param options - (unused)

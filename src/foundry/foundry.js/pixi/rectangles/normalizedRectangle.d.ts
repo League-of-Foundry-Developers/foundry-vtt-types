@@ -5,6 +5,13 @@ declare class NormalizedRectangle extends PIXI.Rectangle {
   constructor(x: number, y: number, width: number, height: number);
 
   /**
+   * Determine whether some other Rectangle intersects with this one.
+   * @param other - Some other rectangle against which to compare
+   * @returns Do the rectangles intersect?
+   */
+  intersects(other: PIXI.Rectangle): boolean;
+
+  /**
    * Generate a new rectangle by rotating this one clockwise about its center by a certain number of radians
    * @param radians - The angle of rotation
    * @returns A new rotated rectangle

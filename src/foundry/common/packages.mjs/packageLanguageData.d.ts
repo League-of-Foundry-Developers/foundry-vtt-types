@@ -48,13 +48,15 @@ interface PackageLanguageDataConstructorData {
   module?: string | null | undefined;
 }
 
+type PackageLanguageDataSource = PropertiesToSource<PackageLanguageDataProperties>;
+
 /**
  * An inner data object which represents a single language specification provided by a package in the languages array.
  */
 export class PackageLanguageData extends DocumentData<
   PackageLanguageDataSchema,
   PackageLanguageDataProperties,
-  PropertiesToSource<PackageLanguageDataProperties>,
+  PackageLanguageDataSource,
   PackageLanguageDataConstructorData
 > {
   /** @override */

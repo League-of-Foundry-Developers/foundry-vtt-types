@@ -250,6 +250,9 @@ declare global {
       /** @defaultValue `Cards` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof Cards>;
 
+      /** @defaultValue `"fas fa-id-badge"` */
+      sidebarIcon: string;
+
       presets: {
         /**
          * @defaultValue
@@ -329,19 +332,7 @@ declare global {
       /** @defaultValue `[Die, FateDie]` */
       types: Array<ConstructorOf<DiceTerm>>;
 
-      rollModes: {
-        /** @defaultValue `'CHAT.RollPublic'` */
-        roll: string;
-
-        /** @defaultValue `'CHAT.RollPrivate'` */
-        gmroll: string;
-
-        /** @defaultValue `CHAT.RollBlind'` */
-        blindroll: string;
-
-        /** @defaultValue `'CHAT.RollSelf'` */
-        selfroll: string;
-      } & Record<string, string>;
+      rollModes: CONFIG.Dice.RollModes;
 
       /** @defaultValue `[Roll]` */
       rolls: Array<ConstructorOf<Roll>>;
@@ -518,7 +509,7 @@ declare global {
       /** @defaultValue `Macros` */
       collection: ConstructorOf<Macros>;
 
-      /** @defaultValue `'fas fa-terminal'` */
+      /** @defaultValue `'fas fa-code'` */
       sidebarIcon: string;
     };
 
@@ -666,8 +657,8 @@ declare global {
           /** @defaultValue `'LIGHT.AnimationTorch'` */
           label: string;
 
-          /** @defaultValue LightSource.prototype.animateTorch */
-          animation: PointSource.AnimationFunction;
+          /** @defaultValue `LightSource.prototype.animateTorch` */
+          animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `TorchIlluminationShader` */
           illuminationShader: ConstructorOf<AbstractBaseShader>;
@@ -681,7 +672,7 @@ declare global {
           label: string;
 
           /** @defaultValue `LightSource.prototype.animatePulse` */
-          animation: PointSource.AnimationFunction;
+          animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `PulseIlluminationShader` */
           illuminationShader: ConstructorOf<AbstractBaseShader>;
@@ -695,7 +686,7 @@ declare global {
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
-          animation: PointSource.AnimationFunction;
+          animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `ChromaColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
@@ -706,7 +697,7 @@ declare global {
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
-          animation: PointSource.AnimationFunction;
+          animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `WaveIlluminationShader` */
           illuminationShader: ConstructorOf<AbstractBaseShader>;
@@ -720,7 +711,7 @@ declare global {
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
-          animation: PointSource.AnimationFunction;
+          animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `FogColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
@@ -731,7 +722,7 @@ declare global {
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
-          animation: PointSource.AnimationFunction;
+          animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `SunburstIlluminationShader` */
           illuminationShader: ConstructorOf<AbstractBaseShader>;
@@ -745,7 +736,7 @@ declare global {
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
-          animation: PointSource.AnimationFunction;
+          animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `LightDomeColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
@@ -756,7 +747,7 @@ declare global {
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
-          animation: PointSource.AnimationFunction;
+          animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `EmanationColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
@@ -767,7 +758,7 @@ declare global {
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
-          animation: PointSource.AnimationFunction;
+          animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `HexaDomeColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
@@ -778,7 +769,7 @@ declare global {
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
-          animation: PointSource.AnimationFunction;
+          animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `GhostLightIlluminationShader` */
           illuminationShader: ConstructorOf<AbstractBaseShader>;
@@ -792,7 +783,7 @@ declare global {
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
-          animation: PointSource.AnimationFunction;
+          animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `EnergyFieldColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
@@ -803,7 +794,7 @@ declare global {
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
-          animation: PointSource.AnimationFunction;
+          animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `RoilingIlluminationShader` */
           illuminationShader: ConstructorOf<AbstractBaseShader>;
@@ -814,7 +805,7 @@ declare global {
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
-          animation: PointSource.AnimationFunction;
+          animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `BlackHoleIlluminationShader` */
           illuminationShader: ConstructorOf<AbstractBaseShader>;
@@ -825,7 +816,7 @@ declare global {
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
-          animation: PointSource.AnimationFunction;
+          animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `VortexIlluminationShader` */
           illuminationShader: ConstructorOf<AbstractBaseShader>;
@@ -839,7 +830,7 @@ declare global {
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
-          animation: PointSource.AnimationFunction;
+          animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `BewitchingWaveIlluminationShader` */
           illuminationShader: ConstructorOf<AbstractBaseShader>;
@@ -853,7 +844,7 @@ declare global {
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
-          animation: PointSource.AnimationFunction;
+          animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `SwirlingRainbowColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
@@ -864,7 +855,7 @@ declare global {
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
-          animation: PointSource.AnimationFunction;
+          animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `RadialRainbowColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
@@ -875,7 +866,7 @@ declare global {
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
-          animation: PointSource.AnimationFunction;
+          animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `FairyLightIlluminationShader` */
           illuminationShader: ConstructorOf<AbstractBaseShader>;
@@ -887,7 +878,7 @@ declare global {
         string,
         {
           label: string;
-          animation: PointSource.AnimationFunction;
+          animation: CONFIG.Canvas.LightAnimationFunction;
           illuminationShader?: ConstructorOf<AbstractBaseShader>;
           colorationShader?: ConstructorOf<AbstractBaseShader>;
         }
@@ -986,7 +977,7 @@ declare global {
 
     /**
      * Suggested font families that are displayed wherever a choice is presented
-     * @defaultValue `['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Times New Roman', 'Signika', 'Modesto Condensed']`
+     * @defaultValue `["Arial", "Courier", "Courier New", "Helvetica", "Signika", "Times", "Times New Roman", "Modesto Condensed"]`
      */
     fontFamilies: string[];
 
@@ -1547,6 +1538,12 @@ declare global {
         layerClass: LayerClass;
         group: keyof CONFIG['Canvas']['groups'];
       }
+
+      type LightAnimationFunction = (
+        this: PointSource,
+        dt: number,
+        properties?: { speed?: number; intensity?: number; reverse?: false }
+      ) => void;
     }
 
     namespace Cards {
@@ -1555,6 +1552,11 @@ declare global {
         label: string;
         src: string;
       }
+    }
+
+    namespace Dice {
+      // eslint-disable-next-line @typescript-eslint/no-empty-interface
+      interface RollModes extends Record<foundry.CONST.DICE_ROLL_MODES, string> {}
     }
   }
 

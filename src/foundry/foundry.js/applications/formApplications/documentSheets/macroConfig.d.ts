@@ -9,7 +9,7 @@ declare global {
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
   class MacroConfig<
-    Options extends DocumentSheet.Options = MacroConfig.Options,
+    Options extends DocumentSheetOptions = MacroConfig.Options,
     Data extends object = MacroConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Macro>>> {
     /**
@@ -57,12 +57,12 @@ declare global {
   }
 
   namespace MacroConfig {
-    type Options = DocumentSheet.Options;
+    type Options = DocumentSheetOptions;
 
     /**
      * @typeParam Options - the type of the options object
      */
-    interface Data<Options extends DocumentSheet.Options>
+    interface Data<Options extends DocumentSheetOptions>
       extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Macro>>, Options> {
       macroTypes: Array<ValueOf<typeof CONST.MACRO_TYPES>>;
       macroScopes: typeof foundry.CONST['MACRO_SCOPES'];

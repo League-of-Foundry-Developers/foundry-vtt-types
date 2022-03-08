@@ -4,11 +4,11 @@ import type {
   ConfiguredSource,
   FieldReturnType,
   PropertiesToSource
-} from '../../../../types/helperTypes.js';
-import type DocumentData from '../../abstract/data.mjs.js';
+} from '../../../../types/helperTypes';
+import type DocumentData from '../../abstract/data.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
-import type { CardFaceData, CardFaceDataConstructorData } from './cardFaceData.js';
+import type { CardFaceData, CardFaceDataConstructorData } from './cardFaceData';
 
 interface CardDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -44,7 +44,7 @@ interface CardDataSchema extends DocumentSchema {
     validationError: '{name} {field} "{value}" must have a non-negative integer value or null';
   };
   drawn: fields.BooleanField;
-  origin: fields.DocumentId;
+  origin: Omit<fields.DocumentId, 'nullable'> & { nullable: true };
   width: fields.PositiveIntegerField;
   height: fields.PositiveIntegerField;
   rotation: fields.AngleField;

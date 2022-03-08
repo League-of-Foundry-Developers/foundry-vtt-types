@@ -65,12 +65,14 @@ export interface ReleaseDataConstructorData {
   download?: string | undefined | null;
 }
 
+type ReleaseDataSource = PropertiesToSource<ReleaseDataProperties>;
+
 /** A data object which represents the details of this Release of Foundry VTT */
 export declare class ReleaseData<
   Schema extends ReleaseDataSchema = ReleaseDataSchema,
   Properties extends ReleaseDataProperties = ReleaseDataProperties,
   ConstructorData extends ReleaseDataConstructorData = ReleaseDataConstructorData
-> extends DocumentData<Schema, Properties, PropertiesToSource<ReleaseDataProperties>, ConstructorData> {
+> extends DocumentData<Schema, Properties, ReleaseDataSource, ConstructorData> {
   static defineSchema(): ReleaseDataSchema;
 
   /** A formatted string for shortened display, such as "Version 9" */

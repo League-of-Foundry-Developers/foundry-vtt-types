@@ -61,13 +61,15 @@ interface ChatSpeakerDataConstructorData {
   alias?: string | null | undefined;
 }
 
+type ChatSpeakerDataSource = PropertiesToSource<ChatSpeakerDataProperties>;
+
 /**
  * An embedded data object which defines the properties of a light source animation
  */
 export class ChatSpeakerData extends DocumentData<
   ChatSpeakerDataSchema,
   ChatSpeakerDataProperties,
-  PropertiesToSource<ChatSpeakerDataProperties>,
+  ChatSpeakerDataSource,
   ChatSpeakerDataConstructorData,
   BaseChatMessage
 > {

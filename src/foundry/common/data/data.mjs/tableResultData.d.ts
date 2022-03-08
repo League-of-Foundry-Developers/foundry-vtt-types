@@ -151,10 +151,12 @@ interface TableResultDataConstructorData {
   flags?: ConfiguredFlags<'TableResult'> | null | undefined;
 }
 
+type TableResultDataSource = PropertiesToSource<TableResultDataProperties>;
+
 export class TableResultData extends DocumentData<
   TableResultDataSchema,
   TableResultDataProperties,
-  PropertiesToSource<TableResultDataProperties>,
+  TableResultDataSource,
   TableResultDataConstructorData,
   BaseTableResult
 > {

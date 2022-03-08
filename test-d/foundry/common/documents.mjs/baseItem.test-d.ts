@@ -2,13 +2,12 @@ import { expectError, expectType } from 'tsd';
 
 import type EmbeddedCollection from '../../../../src/foundry/common/abstract/embedded-collection.mjs';
 import type { BaseItem } from '../../../../src/foundry/common/documents.mjs';
-import type { PropertiesToSource } from '../../../../src/types/helperTypes';
-import type { ActiveEffectDataProperties } from '../../../../src/foundry/common/data/data.mjs/activeEffectData';
+import type { ActiveEffectDataSource } from '../../../../src/foundry/common/data/data.mjs/activeEffectData';
 import type { EffectDurationDataProperties } from '../../../../src/foundry/common/data/data.mjs/effectDurationData';
 
 const baseItem = new foundry.documents.BaseItem();
 expectType<EmbeddedCollection<typeof ActiveEffect, foundry.data.ItemData>>(baseItem.effects);
-expectType<PropertiesToSource<ActiveEffectDataProperties>>(baseItem.data._source.effects[0]);
+expectType<ActiveEffectDataSource>(baseItem.data._source.effects[0]);
 expectType<EffectDurationDataProperties>(baseItem.data._source.effects[0].duration);
 
 interface ArmorDataSourceData {

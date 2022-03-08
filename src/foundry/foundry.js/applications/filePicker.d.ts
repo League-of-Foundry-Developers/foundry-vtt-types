@@ -470,7 +470,7 @@ declare namespace FilePicker {
   /**
    * Options for configuring FilePicker
    */
-  interface Options extends Application.Options {
+  interface Options extends ApplicationOptions {
     /**
      * A type of file to target, in "audio", "image", "video", "imagevideo" or "folder"
      */

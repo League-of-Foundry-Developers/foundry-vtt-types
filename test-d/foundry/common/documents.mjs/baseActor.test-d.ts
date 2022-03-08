@@ -1,14 +1,13 @@
 import { expectError, expectType } from 'tsd';
 
 import type EmbeddedCollection from '../../../../src/foundry/common/abstract/embedded-collection.mjs';
-import type { PropertiesToSource } from '../../../../src/types/helperTypes';
-import type { ActiveEffectDataProperties } from '../../../../src/foundry/common/data/data.mjs/activeEffectData';
+import type { ActiveEffectDataSource } from '../../../../src/foundry/common/data/data.mjs/activeEffectData';
 import type { EffectDurationDataProperties } from '../../../../src/foundry/common/data/data.mjs/effectDurationData';
 
 const baseActor = new foundry.documents.BaseActor();
 expectType<EmbeddedCollection<typeof ActiveEffect, foundry.data.ActorData>>(baseActor.effects);
 expectType<EmbeddedCollection<typeof Item, foundry.data.ActorData>>(baseActor.items);
-expectType<PropertiesToSource<ActiveEffectDataProperties>>(baseActor.data._source.effects[0]);
+expectType<ActiveEffectDataSource>(baseActor.data._source.effects[0]);
 expectType<EffectDurationDataProperties>(baseActor.data._source.effects[0].duration);
 
 interface CharacterDataSourceData {
@@ -114,3 +113,4 @@ if (baseActor.data._source.type === 'character') {
 if (baseActor.data.type === 'character') {
   expectType<never>(baseActor.getFlag('my-module', 'xp'));
 }
+expectType<'Actor'>(baseActor.documentName);

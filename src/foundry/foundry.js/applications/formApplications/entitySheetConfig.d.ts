@@ -8,7 +8,7 @@ declare global {
    * @typeParam ConcreteDocument - The type of the Document which is being managed
    */
   class EntitySheetConfig<
-    Options extends FormApplication.Options = FormApplication.Options,
+    Options extends FormApplicationOptions = FormApplicationOptions,
     Data extends object = EntitySheetConfig.Data<foundry.abstract.Document<any, any>, Options>,
     ConcreteDocument extends foundry.abstract.Document<any, any> = Data extends EntitySheetConfig.Data<infer T>
       ? T
@@ -24,7 +24,7 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): FormApplication.Options;
+    static get defaultOptions(): FormApplicationOptions;
 
     /**
      * An array of pending sheet assignments which are submitted before other elements of the framework are ready.
@@ -64,7 +64,7 @@ declare global {
     static registerSheet(
       documentClass: DocumentConstructor,
       scope: string,
-      sheetClass: ConstructorOf<Application>,
+      sheetClass: ConstructorOf<FormApplication<FormApplicationOptions, any, any>>,
       { label, types, makeDefault }?: EntitySheetConfig.RegisterSheetOptions
     ): void;
 
@@ -91,7 +91,7 @@ declare global {
     static unregisterSheet(
       documentClass: DocumentConstructor,
       scope: string,
-      sheetClass: ConstructorOf<Application>,
+      sheetClass: ConstructorOf<FormApplication<FormApplicationOptions, any, any>>,
       { types }?: { types?: string[] }
     ): void;
 
@@ -137,7 +137,7 @@ declare global {
      */
     interface Data<
       ConcreteDocument extends foundry.abstract.Document<any, any>,
-      Options extends FormApplication.Options = FormApplication.Options
+      Options extends FormApplicationOptions = FormApplicationOptions
     > {
       isGM: boolean;
       object: foundry.utils.Duplicated<ConcreteDocument['data']>;

@@ -94,7 +94,7 @@ declare global {
       z: number | null;
     }
 
-    interface Options extends FormApplication.Options {
+    interface Options extends FormApplicationOptions {
       /**
        * Configure the default drawing settings, instead of a specific Drawing
        * @defaultValue `false`

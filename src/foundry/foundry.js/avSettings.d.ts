@@ -1,3 +1,14 @@
+interface AVSettingsData {
+  /** Whether this user has muted themselves. */
+  muted?: boolean | undefined;
+
+  /** Whether this user has hidden their video. */
+  hidden?: boolean | undefined;
+
+  /** Whether the user is broadcasting audio. */
+  speaking?: boolean | undefined;
+}
+
 declare class AVSettings {
   constructor();
 

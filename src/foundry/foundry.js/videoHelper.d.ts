@@ -65,7 +65,8 @@ declare class VideoHelper {
    * The thumbnail is cached using the video file path or URL.
    * @param src     - The source video URL
    * @param options - Thumbnail creation options, including width and height
-   * @returns The created and cached base64 thumbnail image
+   * @returns The created and cached base64 thumbnail image, or a placeholder image if the canvas is
+   *          disabled and no thumbnail can be generated.
    */
   createThumbnail(src: string, options: ImageHelper.CompositeOptions): Promise<string>;
 }

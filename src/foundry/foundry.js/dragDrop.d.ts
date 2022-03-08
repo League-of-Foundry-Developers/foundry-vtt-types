@@ -1,3 +1,27 @@
+interface DragDropConfiguration {
+  /**
+   * The CSS selector used to target draggable elements.
+   */
+  dragSelector?: DragDrop['dragSelector'];
+
+  /**
+   * The CSS selector used to target viable drop targets.
+   */
+  dropSelector?: DragDrop['dropSelector'];
+
+  /**
+   * An object of permission test functions for each action
+   * @defaultValue `{}`
+   */
+  permissions?: DragDrop['permissions'];
+
+  /**
+   * An object of callback functions for each action
+   * @defaultValue `{}`
+   */
+  callbacks?: DragDrop['callbacks'];
+}
+
 /**
  * A controller class for managing drag and drop workflows within an Application instance.
  * The controller manages the following actions: dragstart, dragover, drop
@@ -16,16 +40,9 @@
  */
 declare class DragDrop {
   /**
-   * @param dragSelector - The CSS selector used to target draggable elements.
-   *                       (default: `undefined`)
-   * @param dropSelector - The CSS selector used to target viable drop targets.
-   *                       (default: `undefined`)
-   * @param permissions  - An object of permission test functions for each action
-   *                       (default: `{}`)
-   * @param callbacks    - An object of callback functions for each action
-   *                       (default: `{}`)
+   * @param options - (default: `{}`)
    */
-  constructor({ dragSelector, dropSelector, permissions, callbacks }?: DragDrop.Options);
+  constructor({ dragSelector, dropSelector, permissions, callbacks }?: DragDropConfiguration);
 
   /**
    * The HTML selector which identifies draggable elements
@@ -65,7 +82,7 @@ declare class DragDrop {
   callback(event: DragEvent, action: DragDrop.Action): void;
 
   /**
-   * Test whether the current user has permission to perform a step of the workflow
+   * Execute a callback function associated with a certain action in the workflow
    * @param action   - The action being attempted
    * @param selector - The selector being targeted
    * @returns Can the action be performed?
@@ -97,29 +114,5 @@ declare class DragDrop {
 }
 
 declare namespace DragDrop {
-  interface Options {
-    /**
-     * The CSS selector used to target draggable elements.
-     */
-    dragSelector?: DragDrop['dragSelector'];
-
-    /**
-     * The CSS selector used to target viable drop targets.
-     */
-    dropSelector?: DragDrop['dropSelector'];
-
-    /**
-     * An object of permission test functions for each action
-     * @defaultValue `{}`
-     */
-    permissions?: DragDrop['permissions'];
-
-    /**
-     * An object of callback functions for each action
-     * @defaultValue `{}`
-     */
-    callbacks?: DragDrop['callbacks'];
-  }
-
   type Action = 'dragstart' | 'dragover' | 'drop';
 }

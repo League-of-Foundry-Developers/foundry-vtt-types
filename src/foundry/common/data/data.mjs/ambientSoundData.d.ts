@@ -30,13 +30,22 @@ interface AmbientSoundDataProperties {
    */
   _id: string | null;
 
-  /** @defaultValue `0` */
+  /**
+   * The x-coordinate position of the origin of the sound.
+   * @defaultValue `0`
+   */
   x: number;
 
-  /** @defaultValue `0` */
+  /**
+   * The y-coordinate position of the origin of the sound.
+   * @defaultValue `0`
+   */
   y: number;
 
-  /** @defaultValue `0` */
+  /**
+   * The radius of the emitted sound.
+   * @defaultValue `0`
+   */
   radius: number;
 
   /**
@@ -56,16 +65,29 @@ interface AmbientSoundDataProperties {
    */
   volume: number;
 
-  /** @defaultValue `true` */
+  /**
+   * Whether or not this sound source is constrained by Walls.
+   * @defaultValue `true`
+   */
   walls: boolean;
 
-  /** @defaultValue `true` */
+  /**
+   * Whether to adjust the volume of the sound heard by the listener based on how
+   * close the listener is to the center of the sound source.
+   * @defaultValue `true`
+   */
   easing: boolean;
 
-  /** @defaultValue `false` */
+  /**
+   * Is the sound source currently hidden?
+   * @defaultValue `false`
+   */
   hidden: boolean;
 
-  /** @defaultValue `new DarknessActivation({})` */
+  /**
+   * Darkness activation configuration data.
+   * @defaultValue `new DarknessActivation({})`
+   */
   darkness: DarknessActivation;
 
   /**
@@ -82,13 +104,22 @@ interface AmbientSoundDataConstructorData {
    */
   _id?: string | null | undefined;
 
-  /** @defaultValue `0` */
+  /**
+   * The x-coordinate position of the origin of the sound.
+   * @defaultValue `0`
+   */
   x?: number | null | undefined;
 
-  /** @defaultValue `0` */
+  /**
+   * The y-coordinate position of the origin of the sound.
+   * @defaultValue `0`
+   */
   y?: number | null | undefined;
 
-  /** @defaultValue `0` */
+  /**
+   * The radius of the emitted sound.
+   * @defaultValue `0`
+   */
   radius?: number | null | undefined;
 
   /**
@@ -108,16 +139,29 @@ interface AmbientSoundDataConstructorData {
    */
   volume?: number | null | undefined;
 
-  /** @defaultValue `true` */
+  /**
+   * Whether or not this sound source is constrained by Walls.
+   * @defaultValue `true`
+   */
   walls?: boolean | null | undefined;
 
-  /** @defaultValue `true` */
+  /**
+   * Whether to adjust the volume of the sound heard by the listener based on how
+   * close the listener is to the center of the sound source.
+   * @defaultValue `true`
+   */
   easing?: boolean | null | undefined;
 
-  /** @defaultValue `false` */
+  /**
+   * Is the sound source currently hidden?
+   * @defaultValue `false`
+   */
   hidden?: boolean | null | undefined;
 
-  /** @defaultValue `new DarknessActivation({})` */
+  /**
+   * Darkness activation configuration data.
+   * @defaultValue `new DarknessActivation({})`
+   */
   darkness?: DarknessActivationConstructorData | null | undefined;
 
   /**
@@ -127,6 +171,8 @@ interface AmbientSoundDataConstructorData {
   flags?: ConfiguredFlags<'AmbientSound'> | null | undefined;
 }
 
+type AmbientSoundDataSource = PropertiesToSource<AmbientSoundDataProperties>;
+
 /**
  * The data schema for a AmbientSound embedded document.
  * @see BaseAmbientSound
@@ -134,7 +180,7 @@ interface AmbientSoundDataConstructorData {
 export class AmbientSoundData extends DocumentData<
   AmbientSoundDataSchema,
   AmbientSoundDataProperties,
-  PropertiesToSource<AmbientSoundDataProperties>,
+  AmbientSoundDataSource,
   AmbientSoundDataConstructorData,
   documents.BaseAmbientSound
 > {
@@ -142,7 +188,7 @@ export class AmbientSoundData extends DocumentData<
   static defineSchema(): AmbientSoundDataSchema;
 
   /** @override */
-  _initializeSource(data: AmbientSoundDataConstructorData): PropertiesToSource<AmbientSoundDataProperties>;
+  _initializeSource(data: AmbientSoundDataConstructorData): AmbientSoundDataSource;
 
   /** @override */
   protected _initialize(): void;

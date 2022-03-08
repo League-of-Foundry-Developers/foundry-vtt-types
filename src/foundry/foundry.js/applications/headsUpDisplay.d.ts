@@ -2,7 +2,7 @@
  * Render the HUD container
  * @typeParam Options - the type of the options object
  */
-declare class HeadsUpDisplay<Options extends Application.Options = Application.Options> extends Application<Options> {
+declare class HeadsUpDisplay<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
   /**
    * Token HUD
    */
@@ -34,7 +34,7 @@ declare class HeadsUpDisplay<Options extends Application.Options = Application.O
    * })
    * ```
    */
-  static get defaultOptions(): Application.Options;
+  static get defaultOptions(): ApplicationOptions;
 
   /** @override */
   getData(options?: Partial<Options>): {} | { width: number; height: number };

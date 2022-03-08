@@ -1,6 +1,23 @@
 import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from '../../../../types/helperTypes';
 
 declare global {
+  interface RulerData {
+    /** The ruler measurement state. */
+    _state: Ruler['_state'];
+
+    /** A unique name for the ruler containing the owning user's ID. */
+    name: string;
+
+    /** The current point the ruler has been extended to. */
+    destination: PIXI.Point;
+
+    /** The class name of this ruler instance. */
+    class: string;
+
+    /** Additional waypoints along the ruler's length, including the starting point. */
+    waypoints: PIXI.Point[];
+  }
+
   /**
    * The Ruler - used to measure distances and trigger movements
    */
@@ -169,13 +186,7 @@ declare global {
      */
     protected _endMeasurement(): void;
 
-    toJSON(): {
-      class: 'Ruler';
-      name: string;
-      waypoints: Ruler['waypoints'];
-      destination: Ruler['destination'];
-      _state: Ruler['_state'];
-    };
+    toJSON(): RulerData;
 
     /**
      * Update a Ruler instance using data provided through the cursor activity socket

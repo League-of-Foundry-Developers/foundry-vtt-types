@@ -8,7 +8,7 @@ declare global {
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
   class CombatantConfig<
-    Options extends DocumentSheet.Options = CombatantConfig.Options,
+    Options extends DocumentSheetOptions = CombatantConfig.Options,
     Data extends CombatantConfig.Data<Options> = CombatantConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Combatant>>> {
     /**
@@ -39,7 +39,7 @@ declare global {
   }
 
   namespace CombatantConfig {
-    interface Options extends DocumentSheet.Options {
+    interface Options extends DocumentSheetOptions {
       id: 'combatant-config';
       title: string;
       classes: string[];
@@ -47,7 +47,7 @@ declare global {
       width: number;
     }
 
-    type Data<Options extends DocumentSheet.Options> = DocumentSheet.Data<
+    type Data<Options extends DocumentSheetOptions> = DocumentSheet.Data<
       InstanceType<ConfiguredDocumentClass<typeof Combatant>>,
       Options
     >;

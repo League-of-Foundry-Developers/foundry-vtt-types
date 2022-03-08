@@ -10,7 +10,7 @@ declare global {
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
   class PlaylistSoundConfig<
-    Options extends DocumentSheet.Options = DocumentSheet.Options,
+    Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends object = PlaylistSoundConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>> {
     /**
@@ -24,7 +24,7 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): DocumentSheet.Options;
+    static get defaultOptions(): DocumentSheetOptions;
 
     /** @override */
     get title(): string;
@@ -58,7 +58,7 @@ declare global {
     /**
      * @typeParam Options - the type of the options object
      */
-    interface Data<Options extends DocumentSheet.Options = DocumentSheet.Options>
+    interface Data<Options extends DocumentSheetOptions = DocumentSheetOptions>
       extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>, Options> {
       lvolume: number;
     }

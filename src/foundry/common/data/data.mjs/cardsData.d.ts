@@ -5,9 +5,9 @@ import {
   ConfiguredSource,
   FieldReturnType,
   PropertiesToSource
-} from '../../../../types/helperTypes.js';
-import type EmbeddedCollection from '../../abstract/embedded-collection.mjs.js';
-import { DocumentData } from '../../abstract/module.mjs.js';
+} from '../../../../types/helperTypes';
+import type EmbeddedCollection from '../../abstract/embedded-collection.mjs';
+import { DocumentData } from '../../abstract/module.mjs';
 import * as documents from '../../documents.mjs';
 import * as fields from '../fields.mjs';
 

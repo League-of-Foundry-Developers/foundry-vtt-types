@@ -6,32 +6,38 @@ import { BaseActiveEffect } from './baseActiveEffect';
 import { BaseUser } from './baseUser';
 import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 
+type ItemMetadata = Merge<
+  DocumentMetadata,
+  {
+    name: 'Item';
+    collection: 'items';
+    label: 'DOCUMENT.Item';
+    labelPlural: 'DOCUMENT.Items';
+    embedded: {
+      ActiveEffect: typeof BaseActiveEffect;
+    };
+    isPrimary: true;
+    hasSystemData: true;
+    types: string[];
+    permissions: {
+      create: 'ITEM_CREATE';
+    };
+  }
+>;
+
 /**
  * The base Item model definition which defines common behavior of an Item document between both client and server.
  */
-export declare class BaseItem extends Document<data.ItemData, InstanceType<ConfiguredDocumentClass<typeof BaseActor>>> {
+export declare class BaseItem extends Document<
+  data.ItemData,
+  InstanceType<ConfiguredDocumentClass<typeof BaseActor>>,
+  ItemMetadata
+> {
   /** @override */
   static get schema(): typeof data.ItemData;
 
   /** @override */
-  static get metadata(): Merge<
-    DocumentMetadata,
-    {
-      name: 'Item';
-      collection: 'items';
-      label: 'DOCUMENT.Item';
-      labelPlural: 'DOCUMENT.Items';
-      embedded: {
-        ActiveEffect: typeof BaseActiveEffect;
-      };
-      isPrimary: true;
-      hasSystemData: true;
-      types: string[];
-      permissions: {
-        create: 'ITEM_CREATE';
-      };
-    }
-  >;
+  static get metadata(): ItemMetadata;
 
   /**
    * A reference to the Collection of ActiveEffect instances in the Item document, indexed by _id.

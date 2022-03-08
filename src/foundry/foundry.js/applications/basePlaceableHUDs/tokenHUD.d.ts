@@ -6,7 +6,7 @@ declare global {
    * This interface provides controls for visibility, attribute bars, elevation, status effects, and more.
    * @typeParam Options - the type of the options object
    */
-  class TokenHUD<Options extends Application.Options = Application.Options> extends BasePlaceableHUD<
+  class TokenHUD<Options extends ApplicationOptions = ApplicationOptions> extends BasePlaceableHUD<
     ConcreteToken,
     Options
   > {
@@ -27,7 +27,7 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): Application.Options;
+    static get defaultOptions(): ApplicationOptions;
 
     /** @override */
     bind(object: ConcreteToken): void;
@@ -44,7 +44,7 @@ declare global {
     setPosition(_position?: Partial<Application.Position>): void;
 
     /** @override */
-    getData(options?: Partial<Application.Options>): ReturnType<BasePlaceableHUD<ConcreteToken>['getData']> & {
+    getData(options?: Partial<ApplicationOptions>): ReturnType<BasePlaceableHUD<ConcreteToken>['getData']> & {
       canConfigure: boolean;
       canToggleCombat: boolean;
       displayBar1: boolean;
