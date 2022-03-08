@@ -164,7 +164,9 @@ declare global {
      * Provide a dialog form that prompts the user to import the full contents of a Compendium pack into the World.
      * @param options - Additional options passed to the Dialog.confirm method
      *                  (default: `{}`)
-     * @returns A Promise which resolves or rejects once the dialog has been submitted or closed
+     * @returns A promise which resolves in the following ways: an array of imported
+     *          Documents if the "yes" button was pressed, false if the "no" button was pressed, or
+     *          null if the dialog was closed without making a choice.
      */
     importDialog(
       options?: Dialog.Options | undefined
