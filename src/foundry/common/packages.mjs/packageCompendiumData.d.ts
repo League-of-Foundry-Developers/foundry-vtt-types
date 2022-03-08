@@ -3,7 +3,13 @@ import { DocumentData } from '../abstract/module.mjs';
 import * as fields from '../data/fields.mjs';
 
 interface PackageCompendiumDataSchema extends DocumentSchema {
-  name: fields.RequiredString;
+  name: FieldReturnType<
+    fields.RequiredString,
+    {
+      validate: (v: string) => boolean;
+      validationError: "Invalid compendium name '{value}'. Compendium names cannot contain dots.";
+    }
+  >;
   label: fields.RequiredString;
   path: fields.RequiredString;
   private: FieldReturnType<fields.BooleanField, { default: false }>;
