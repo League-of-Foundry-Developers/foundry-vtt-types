@@ -524,7 +524,7 @@ declare global {
         private: boolean;
         system?: string;
         type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
-      };
+      }[];
       scripts: string[];
       styles: string[];
       type: 'world' | 'system' | 'module';
