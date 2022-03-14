@@ -103,6 +103,12 @@ export type PlaceableDocumentType =
   | 'Token'
   | 'Wall';
 
+export type DocumentSubTypes<T extends DocumentType> = 'type' extends keyof InstanceType<
+  ConfiguredDocumentClassForName<T>
+>['data']
+  ? InstanceType<ConfiguredDocumentClassForName<T>>['data']['type']
+  : typeof foundry.CONST.BASE_DOCUMENT_TYPE;
+
 export type ConfiguredDocumentClassForName<Name extends DocumentType> = CONFIG[Name]['documentClass'];
 
 export type ConfiguredObjectClassForName<Name extends PlaceableDocumentType> = CONFIG[Name]['objectClass'];
