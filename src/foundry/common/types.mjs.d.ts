@@ -295,5 +295,5 @@ interface SocketResponse {
   /**
    * An Array of created data objects
    */
-  result?: object[];
+  result?: object[] | string[];
 }
