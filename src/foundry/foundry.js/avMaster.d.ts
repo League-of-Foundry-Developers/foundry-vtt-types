@@ -29,6 +29,14 @@ declare class AVMaster {
   protected _connected: boolean;
 
   /**
+   * The cached connection promise.
+   * This is required to prevent re-triggering a connection while one is already in progress.
+   * @defaultValue `null`
+   * @internal
+   */
+  protected _connecting: Promise<boolean> | null;
+
+  /**
    * A flag to track whether the A/V system is currently in the process of reconnecting.
    * This occurs if the connection is lost or interrupted.
    * @defaultValue `false`
@@ -40,13 +48,7 @@ declare class AVMaster {
    * @defaultValue `{}`
    * @internal
    */
-  protected _speakingData: AVMaster.SpeakingData;
-
-  /**
-   * @defaultValue `{}`
-   * @internal
-   */
-  protected _pttHandlers: AVMaster.PTTHandlers;
+  protected _speakingData: { speaking: boolean; volumeHistories: number[] };
 
   /**
    * @defaultValue `0`
@@ -54,7 +56,7 @@ declare class AVMaster {
    */
   protected _pttMuteTimeout: number;
 
-  get mode(): AVSettings.VoiceMode;
+  get mode(): AVSettings.AV_MODES;
 
   /**
    * Connect to the Audio/Video client.
@@ -111,29 +113,27 @@ declare class AVMaster {
    * @param mode - The currently selected voice broadcasting mode
    * @internal
    */
-  protected _initializeUserVoiceDetection(mode: AVSettings.VoiceMode): void;
+  protected _initializeUserVoiceDetection(mode: AVSettings.VOICE_MODES): void;
 
   /**
    * Activate voice detection tracking for a userId on a provided MediaStream.
    * Currently only a MediaStream is supported because MediaStreamTrack processing is not yet supported cross-browser.
-   * @param userId - The Foundry User ID whose voice is being processed
    * @param stream - The MediaStream which corresponds to that User
    * @param ms     - A number of milliseconds which represents the voice activation volume interval
    *                 (default: `CONFIG.WebRTC.detectPeerVolumeInterval`)
    */
-  activateVoiceDetection(userId: string, stream: MediaStream, ms?: number): void;
+  activateVoiceDetection(stream: MediaStream, ms?: number): void;
 
   /**
    * Actions which the orchestration layer should take when a peer user disconnects from the audio/video service.
-   * @param userId - The id of the disconnecting User
    */
-  deactivateVoiceDetection(userId: string): void;
+  deactivateVoiceDetection(): void;
 
   /**
    * Periodic notification of user audio level
    *
-   * This function uses the audio level (in dB) of each stream it's listening to to determine if a user
-   * is speaking or not and notifies the UI of such changes.
+   * This function uses the audio level (in dB) of the audio stream to determine if the user is speaking or not and
+   * notifies the UI of such changes.
    *
    * The User is considered speaking if they are above the decibel threshold in any of the history values.
    * This marks them as speaking as soon as they have a high enough volume, and marks them as not speaking only after
@@ -142,46 +142,31 @@ declare class AVMaster {
    * There can be more optimal ways to do this and which uses whether the user was already considered speaking before
    * or not, in order to eliminate short bursts of audio (coughing for example).
    *
-   * @param userId  - The user ID of the user whose audio levels are being reported
    * @param dbLevel - The audio level in decibels of the user within the last 50ms
    * @internal
    */
-  protected _onAudioLevel(userId: string, dbLevel: number): void;
-
-  /**
-   * Set up interactivity and handling of push-to-talk broadcasting workflow.
-   * @internal
-   */
-  protected _initializePushToTalk(): void;
+  protected _onAudioLevel(dbLevel: number): void;
 
   /**
    * Resets the speaking history of a user
    * If the user was considered speaking, then mark them as not speaking
-   * @param userId - The ID of the user
    * @internal
    */
-  protected _resetSpeakingHistory(userId: string): void;
+  protected _resetSpeakingHistory(): void;
 
   /**
    * Handle activation of a push-to-talk key or button.
-   * @param event - The original keydown event
+   * @param context - The context data of the event
    * @internal
    */
-  _onPTTStart(event: KeyboardEvent | MouseEvent): void;
+  _onPTTStart(context: KeyboardEventContext): void;
 
   /**
    * Handle deactivation of a push-to-talk key or button.
-   * @param event - The original keyup event
+   * @param context - The context data of the event
    * @internal
    */
-  _onPTTEnd(event: KeyboardEvent | MouseEvent): void;
-
-  /**
-   * Handle matching old and new PTT configurations against the mouse or keyboard event.
-   * @param event - The original event
-   * @internal
-   */
-  _isPTTKey(event: KeyboardEvent | MouseEvent): boolean;
+  _onPTTEnd(context: KeyboardEventContext): void;
 
   render(): void;
 
@@ -199,16 +184,4 @@ declare class AVMaster {
   onSettingsChanged(changed: DeepPartial<AVSettings.Settings>): void;
 
   debug(message: string): void;
-}
-
-declare namespace AVMaster {
-  type SpeakingData = Partial<Record<string, { speaking: boolean; volumeHistories: number[] }>>;
-  type PTTHandler = (event: KeyboardEvent | MouseEvent) => void;
-  type PTTHandlers =
-    | {}
-    | { mousedown: PTTHandler; mouseup: PTTHandler }
-    | {
-        keydown: PTTHandler;
-        keyup: PTTHandler;
-      };
 }

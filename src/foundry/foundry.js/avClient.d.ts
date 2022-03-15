@@ -82,7 +82,7 @@ declare abstract class AVClient {
    * @param kind - The type of device source being requested
    * @internal
    */
-  _getSourcesOfType(kind: MediaDeviceKind): Promise<Record<string, string>>;
+  protected _getSourcesOfType(kind: MediaDeviceKind): Promise<Record<string, string>>;
 
   /**
    * Return an array of Foundry User IDs which are currently connected to A/V.
@@ -97,6 +97,14 @@ declare abstract class AVClient {
    * @returns The MediaStream for the user, or null if the user does not have one
    */
   abstract getMediaStreamForUser(userId: string): MediaStream | null | undefined;
+
+  /**
+   * Provide a MediaStream for monitoring a given user's voice volume levels.
+   * @param userId - The User ID.
+   * @returns The MediaStream for the user, or null if the user does not have one.
+   * @remarks The getLevelsStreamForUser() method must be defined by an AVClient subclass and will be strictly required starting in v10
+   */
+  getLevelsStreamForUser(userId: string): MediaStream | null | undefined;
 
   /**
    * Is outbound audio enabled for the current user?
@@ -141,4 +149,10 @@ declare abstract class AVClient {
    * @param changed - The settings which have changed
    */
   onSettingsChanged(changed: DeepPartial<AVSettings.Settings>): void;
+
+  /**
+   * Replace the local stream for each connected peer with a re-generated MediaStream.
+   * @remarks The updateLocalStream() method must be defined by an AVClient subclass.
+   */
+  abstract updateLocalStream(): Promise<void>;
 }

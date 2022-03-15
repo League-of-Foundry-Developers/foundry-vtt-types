@@ -20,4 +20,4 @@ AVSettings.VOICE_MODES = {
 expectType<CustomVoiceModes>(AVSettings.VOICE_MODES);
 
 const avMaster = new AVMaster();
-expectType<'custom'>(avMaster.mode);
+expectType<'custom'>(avMaster.settings.client.voice.mode);
