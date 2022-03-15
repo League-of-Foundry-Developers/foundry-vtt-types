@@ -20,12 +20,12 @@ declare global {
     /**
      * A object of registered game settings for this scope
      */
-    settings: Map<string, ClientSettings.CompleteSetting>;
+    settings: Map<string, SettingConfig>;
 
     /**
      * Registered settings menus which trigger secondary applications
      */
-    menus: Map<string, ClientSettings.CompleteMenuSetting>;
+    menus: Map<string, SettingSubmenuConfig>;
 
     /**
      * The storage interfaces used for persisting settings
@@ -47,12 +47,12 @@ declare global {
     /**
      * Register a new game setting under this setting scope
      *
-     * @param module - The namespace under which the setting is registered
-     * @param key    - The key name for the setting under the namespace module
-     * @param data   - Configuration for setting data
-     * @typeParam M  - The module name to register the setting for
-     * @typeParam K  - The key to register the setting for
-     * @typeParam T  - The type of the setting value
+     * @param namespace - The namespace under which the setting is registered
+     * @param key       - The key name for the setting under the namespace module
+     * @param data      - Configuration for setting data
+     * @typeParam N     - The namespace under which the setting is registered, as a type
+     * @typeParam K     - The key name for the setting under the namespace module, as a type
+     * @typeParam T     - The type of the setting value
      *
      * @example
      * ```typescript
@@ -95,22 +95,22 @@ declare global {
      * });
      * ```
      */
-    register<M extends string, K extends string, T>(
-      module: M,
+    register<N extends string, K extends string, T>(
+      namespace: N,
       key: K,
-      data: ClientSettings.Values[`${M}.${K}`] extends boolean | number | bigint | string | symbol | object
-        ? ClientSettings.PartialSetting<ClientSettings.Values[`${M}.${K}`]>
-        : ClientSettings.PartialSetting<T>
+      data: ClientSettings.Values[`${N}.${K}`] extends string | number | boolean | Array<any> | object
+        ? ClientSettings.PartialSettingConfig<ClientSettings.Values[`${N}.${K}`]>
+        : ClientSettings.PartialSettingConfig<T>
     ): void;
 
     /**
      * Register a new sub-settings menu
      *
-     * @param module - The namespace under which the menu is registered
-     * @param key    - The key name for the setting under the namespace module
-     * @param data   - Configuration for setting data
-     * @typeParam M  - The module name to register the menu setting for
-     * @typeParam K  - The key to register the menu setting for
+     * @param namespace - The namespace under which the menu is registered
+     * @param key       - The key name for the setting under the namespace module
+     * @param data      - Configuration for setting data
+     * @typeParam N     - The namespace under which the menu is registered, as a type
+     * @typeParam K     - The key name for the setting under the namespace module, as a type
      *
      * @example
      * ```typescript
@@ -125,19 +125,19 @@ declare global {
      * });
      * ```
      */
-    registerMenu<M extends string, K extends string>(
-      module: M,
+    registerMenu<N extends string, K extends string>(
+      namespace: N,
       key: K,
-      data: ClientSettings.RegisteredMenuSettings[`${M}.${K}`]
+      data: ClientSettings.PartialSettingSubmenuConfig
     ): void;
 
     /**
-     * Get the value of a game setting for a certain module and setting key
+     * Get the value of a game setting for a certain namespace and setting key
      *
-     * @param module - The module namespace under which the setting is registered
-     * @param key    - The setting key to retrieve
-     * @typeParam M  - The module name to register the get for
-     * @typeParam K  - The key to get the setting for
+     * @param namespace - The namespace under which the setting is registered
+     * @param key       - The setting key to retrieve
+     * @typeParam N     - The namespace under which the setting is registered, as a type
+     * @typeParam K     - The setting key to retrieve, as a type
      *
      * @example
      * ```typescript
@@ -145,17 +145,17 @@ declare global {
      * game.settings.get("myModule", "myClientSetting");
      * ```
      */
-    get<M extends string, K extends string>(module: M, key: K): ClientSettings.Values[`${M}.${K}`];
+    get<N extends string, K extends string>(namespace: N, key: K): ClientSettings.Values[`${N}.${K}`];
 
     /**
-     * Set the value of a game setting for a certain module and setting key
+     * Set the value of a game setting for a certain namespace and setting key
      *
-     * @param module - The module namespace under which the setting is registered
-     * @param key    - The setting key to retrieve
-     * @param value  - The data to assign to the setting key
-     * @typeParam M  - The module name to register the get for
-     * @typeParam K  - The key to get the setting for
-     * @typeParam V  - The value type to get the value for
+     * @param namespace - The namespace under which the setting is registered
+     * @param key       - The setting key to retrieve
+     * @param value     - The data to assign to the setting key
+     * @typeParam N     - The namespace under which the setting is registered, as a type
+     * @typeParam K     - The setting key to retrieve, as a type
+     * @typeParam V     - The type of the value being set
      *
      * @example
      * ```typescript
@@ -163,65 +163,17 @@ declare global {
      * game.settings.set("myModule", "myClientSetting", "b");
      * ```
      */
-    set<M extends string, K extends string, V extends ClientSettings.Values[`${M}.${K}`]>(
-      module: M,
+    set<N extends string, K extends string, V extends ClientSettings.Values[`${N}.${K}`]>(
+      namespace: N,
       key: K,
       value: V
     ): Promise<V>;
   }
 
   namespace ClientSettings {
-    interface CompleteSetting<T = unknown> extends PartialSetting<T> {
-      key: string;
-      module: string;
-    }
+    type PartialSettingConfig<T = unknown> = InexactPartial<Omit<SettingConfig<T>, 'key' | 'namespace'>>;
 
-    interface CompleteMenuSetting extends PartialMenuSetting {
-      key: string;
-      module: string;
-    }
-
-    interface PartialSetting<T = unknown> {
-      choices?: Record<string, string>;
-      config?: boolean;
-      default?: T;
-      hint?: string;
-      name?: string;
-      onChange?: (value: T) => void;
-      range?: T extends number
-        ? {
-            max: number;
-            min: number;
-            step: number;
-          }
-        : undefined;
-      filePicker?: T extends string ? true | 'audio' | 'image' | 'video' | 'imagevideo' | 'folder' : undefined;
-      scope: string;
-      type?: T extends boolean
-        ? typeof Boolean
-        : T extends number
-        ? typeof Number
-        : T extends bigint
-        ? typeof BigInt
-        : T extends string
-        ? typeof String
-        : T extends symbol
-        ? typeof Symbol
-        : ConstructorOf<T>;
-    }
-
-    interface PartialMenuSetting {
-      hint?: string;
-      icon?: string;
-      label?: string;
-      name?: string;
-      restricted: boolean;
-      type: ConstructorOf<FormApplication<FormApplicationOptions, object, undefined>>;
-    }
-
-    interface RegisteredMenuSettings {
-      [key: string]: PartialMenuSetting;
-    }
+    type PartialSettingSubmenuConfig = Omit<SettingSubmenuConfig, 'key' | 'namespace'>;
 
     interface Values {
       'core.animateRollTable': boolean;
