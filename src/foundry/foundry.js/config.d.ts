@@ -382,6 +382,9 @@ declare global {
 
       /** @defaultValue `Folders` */
       collection: ConstructorOf<Folders>;
+
+      /** @defaultValue `'fas fa-folder'` */
+      sidebarIcon: string;
     };
 
     /**

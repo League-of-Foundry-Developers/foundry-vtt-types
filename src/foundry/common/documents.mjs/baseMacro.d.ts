@@ -16,9 +16,6 @@ type MacroMetadata = Merge<
     types: [typeof CONST.MACRO_TYPES.SCRIPT, typeof CONST.MACRO_TYPES.CHAT];
     permissions: {
       create: 'PLAYER';
-      // TODO: fix when fixed by foundry (https://gitlab.com/foundrynet/foundryvtt/-/issues/6694)
-      // update: undefined;
-      // delete: undefined;
     };
   }
 >;

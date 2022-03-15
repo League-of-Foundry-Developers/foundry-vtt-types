@@ -69,6 +69,7 @@ declare global {
      * Handle a SocketResponse from the server when one or multiple documents were created
      * @param response - The provided Socket response
      * @returns An Array of created Document instances
+     * @internal
      */
     protected _handleCreateDocuments(response: SocketResponse): foundry.abstract.Document<any, any>[];
 
@@ -76,6 +77,7 @@ declare global {
      * Handle a SocketResponse from the server when one or multiple documents were created
      * @param response - The provided Socket response
      * @returns An Array of created Document instances
+     * @internal
      */
     protected _handleCreateEmbeddedDocuments(response: SocketResponse): foundry.abstract.Document<any, any>[];
 
@@ -125,6 +127,7 @@ declare global {
      * Handle a SocketResponse from the server when one or multiple documents were updated
      * @param response - The provided Socket response
      * @returns An Array of updated Document instances
+     * @internal
      */
     protected _handleUpdateDocuments(response: SocketResponse): foundry.abstract.Document<any, any>[];
 
@@ -132,6 +135,7 @@ declare global {
      * Handle a SocketResponse from the server when embedded Documents are updated in a parent Document.
      * @param response - The provided Socket response
      * @returns An Array of updated Document instances
+     * @internal
      */
     protected _handleUpdateEmbeddedDocuments(response: SocketResponse): foundry.abstract.Document<any, any>[];
 
@@ -178,6 +182,7 @@ declare global {
      * Handle a SocketResponse from the server where Documents are deleted.
      * @param response - The provided Socket response
      * @returns An Array of deleted Document instances
+     * @internal
      */
     protected _handleDeleteDocuments(response: SocketResponse): foundry.abstract.Document<any, any>[];
 
@@ -185,6 +190,7 @@ declare global {
      * Handle a SocketResponse from the server when embedded Documents are deleted from a parent Document.
      * @param response - The provided Socket response
      * @returns An Array of deleted Document instances
+     * @internal
      */
     protected _handleDeleteEmbeddedDocuments(response: SocketResponse): foundry.abstract.Document<any, any>[];
 

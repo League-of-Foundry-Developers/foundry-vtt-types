@@ -37,13 +37,13 @@ declare global {
      * The minimum ray of emission
      * @defaultValue `Ray.fromAngle(origin.x, origin.y, config.aMin, config.radius)`
      */
-    rMin?: Ray;
+    rMin?: PolygonRay;
 
     /**
      * The maximum ray of emission
      * @defaultValue `config.hasLimitedAngle && Ray.fromAngle(origin.x, origin.y, config.aMax, config.radius)`
      */
-    rMax?: Ray;
+    rMax?: PolygonRay;
 
     /**
      * Does this polygon have a limited radius?
@@ -68,6 +68,10 @@ declare global {
      * @defaultValue `0.5 / config.radius`
      */
     radiusE?: number;
+  }
+
+  interface PolygonRay extends Ray {
+    result: CollisionResult;
   }
 
   /**
@@ -97,7 +101,7 @@ declare global {
     /**
      * A collection of rays which are fired at vertices
      */
-    rays: SightRay[];
+    rays: PolygonRay[];
 
     static benchmark(
       iterations: number,
@@ -125,7 +129,7 @@ declare global {
      * @returns The ray with rounded vertices
      * @internal
      */
-    protected _roundRayVertices(ray: Ray): Ray;
+    protected _roundRayVertices(ray: PolygonRay): PolygonRay;
 
     /**
      * Translate walls and other obstacles into edges which limit visibility
@@ -194,7 +198,7 @@ declare global {
      * @internal
      */
     protected _isVertexBehindActiveEdges(
-      ray: Ray,
+      ray: PolygonRay,
       vertex: PolygonVertex,
       activeEdges: EdgeSet
     ): { isBehind: boolean; wasLimited: boolean };
@@ -207,7 +211,12 @@ declare global {
      * @param activeEdges - The set of active edges
      * @internal
      */
-    protected _determineRayResult(ray: Ray, vertex: PolygonVertex, result: CollisionResult, activeEdges: EdgeSet): void;
+    protected _determineRayResult(
+      ray: PolygonRay,
+      vertex: PolygonVertex,
+      result: CollisionResult,
+      activeEdges: EdgeSet
+    ): void;
 
     /**
      * Jump to a new closest active edge.
@@ -223,7 +232,7 @@ declare global {
      *                          (default: `true`)
      */
     protected _beginNewEdge(
-      ray: Ray,
+      ray: PolygonRay,
       result: CollisionResult,
       activeEdges: EdgeSet,
       isBinding: boolean,
@@ -241,7 +250,12 @@ declare global {
      * @param activeEdges - The set of currently active edges
      * @param isBinding   - Is the target vertex a binding collision point?
      */
-    protected _completeCurrentEdge(ray: Ray, result: CollisionResult, activeEdges: EdgeSet, isBinding: boolean): void;
+    protected _completeCurrentEdge(
+      ray: PolygonRay,
+      result: CollisionResult,
+      activeEdges: EdgeSet,
+      isBinding: boolean
+    ): void;
 
     /**
      * Augment a CollisionResult with an additional secondary collision.
@@ -251,7 +265,7 @@ declare global {
      * @param edges  - The subset of active edges which are candidates for collision
      * @internal
      */
-    protected _getSecondaryCollisions(ray: Ray, result: CollisionResult, edges: EdgeSet): PolygonVertex[];
+    protected _getSecondaryCollisions(ray: PolygonRay, result: CollisionResult, edges: EdgeSet): PolygonVertex[];
 
     /**
      * Identify collision points for a required terminal ray.
@@ -261,7 +275,7 @@ declare global {
      * @param result      - The pending collision result
      * @param activeEdges - The set of currently active edges
      */
-    protected _findRequiredCollision(ray: Ray, result: CollisionResult, activeEdges: EdgeSet): void;
+    protected _findRequiredCollision(ray: PolygonRay, result: CollisionResult, activeEdges: EdgeSet): void;
 
     /**
      * Identify the collision points between an emitted Ray and a set of active edges.
@@ -271,7 +285,7 @@ declare global {
      * @internal
      */
     protected _getRayCollisions(
-      ray: Ray,
+      ray: PolygonRay,
       activeEdges: EdgeSet,
       {
         minimumDistance
@@ -304,7 +318,7 @@ declare global {
      * @param r1 - The next ray that collides with some vertex
      * @internal
      */
-    protected _getPaddingPoints(r0: Ray, r1: Ray): Point[];
+    protected _getPaddingPoints(r0: PolygonRay, r1: PolygonRay): Point[];
 
     /**
      * Test whether a wall should be included in the computed polygon for a given origin and type
@@ -328,7 +342,7 @@ declare global {
      * @param angle  - The angle being tested, in degrees
      * @returns Is the vertex between the two rays?
      */
-    static pointBetweenRays(vertex: PolygonVertex, rMin: Ray, rMax: Ray, angle: number): boolean;
+    static pointBetweenRays(vertex: PolygonVertex, rMin: PolygonRay, rMax: PolygonRay, angle: number): boolean;
 
     /** @override */
     visualize(): void;
@@ -342,7 +356,7 @@ declare global {
      *          The closest collision, if mode is "closest"
      */
     static getRayCollisions<Mode extends 'any' | 'closest' | 'all'>(
-      ray: Ray,
+      ray: PolygonRay,
       options?: {
         /**
          * Which collision type to check, a value in CONST.WALL_RESTRICTION_TYPES
@@ -368,7 +382,7 @@ declare global {
      * Visualize the polygon, displaying its computed area, rays, and collision points
      * @internal
      */
-    protected static _visualizeCollision(ray: Ray, edges: EdgeSet, collisions: PolygonVertex[]): void;
+    protected static _visualizeCollision(ray: PolygonRay, edges: EdgeSet, collisions: PolygonVertex[]): void;
   }
 
   namespace ClockwiseSweepPolygon {
@@ -385,12 +399,12 @@ declare global {
       rotation: number;
       hasLimitedAngle: boolean;
       density: number;
-      rMin: Ray;
+      rMin: PolygonRay;
     }
 
     interface LimitedAngleConfig extends InitializedConfig {
       hasLimitedAngle: true;
-      rMax: Ray;
+      rMax: PolygonRay;
     }
   }
 }

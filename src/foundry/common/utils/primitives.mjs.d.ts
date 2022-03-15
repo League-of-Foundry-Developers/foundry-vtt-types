@@ -201,10 +201,10 @@ interface NumberConstructor {
 
   /**
    * Attempt to create a number from a user-provided string.
-   * @param str - The string.
+   * @param n - The value to convert; typically a string, but may already be a number.
    * @returns The number that the string represents, or NaN if no number could be determined.
    */
-  fromString(str: string): number;
+  fromString(str: string | number): number;
 }
 
 interface ArrayConstructor {

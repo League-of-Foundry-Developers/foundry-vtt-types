@@ -207,11 +207,6 @@ declare class Die extends DiceTerm {
 }
 
 declare namespace Die {
-  interface Data extends Partial<TermData> {
-    class: 'Die';
-    results: DiceTerm.Result[];
-  }
-
   interface TermData extends DiceTerm.TermData {
     modifiers: Array<keyof typeof Die['MODIFIERS']>;
   }

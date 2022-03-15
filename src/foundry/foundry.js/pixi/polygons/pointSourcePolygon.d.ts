@@ -42,8 +42,9 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
   /**
    * A cached array of SightRay objects used to compute the polygon.
    * @defaultValue `[]`
+   * @remarks This is documented as `SightRay[]` but that's only correct for the {@link RadialSweepPolygon}
    */
-  rays: SightRay[];
+  rays: Ray[];
 
   /**
    * Compute the rectangular bounds for the Polygon.
@@ -66,11 +67,12 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
    * Compute the polygon given a point origin and radius
    * @param origin - The origin source point
    * @param config - Configuration options which customize the polygon computation
+   *                 (default: `{}`)
    * @returns The computed polygon instance
    */
   static create(
     origin: Point,
-    config: Parameters<PointSourcePolygon['initialize']>[1]
+    config?: Parameters<PointSourcePolygon['initialize']>[1] | undefined
   ): ReturnType<PointSourcePolygon['compute']>;
 
   /**
