@@ -35,6 +35,7 @@ declare class Semaphore {
   /**
    * A queue of pending function signatures
    * @defaultValue `[]`
+   * @internal
    * @remarks The first element of an element of `_queue` is always a function and the rest of the elements are
    * parameters to be passed to that function.
    */
@@ -43,6 +44,7 @@ declare class Semaphore {
   /**
    * The number of tasks which are currently underway
    * @defaultValue `0`
+   * @internal
    */
   protected _active: number;
 
@@ -60,8 +62,9 @@ declare class Semaphore {
    * Add a new tasks to the managed queue
    * @param fn   - A callable function
    * @param args - Function arguments
+   * @returns A promise that resolves once the added function is executed
    */
-  add<F extends (...args: any[]) => any>(fn: F, ...args: Parameters<F>): void;
+  add<F extends (...args: any[]) => any>(fn: F, ...args: Parameters<F>): Promise<Awaited<ReturnType<F>>>;
 
   /**
    * Abandon any tasks which have not yet concluded
@@ -72,9 +75,9 @@ declare class Semaphore {
    * Attempt to perform a task from the queue.
    * If all workers are busy, do nothing.
    * If successful, try again.
-   * @returns Was a function called?
+   * @internal
    */
-  protected _try(): Promise<boolean>;
+  protected _try(): Promise<false | void>;
 }
 
 export default Semaphore;
