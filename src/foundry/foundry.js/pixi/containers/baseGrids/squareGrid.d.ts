@@ -3,9 +3,10 @@
  */
 declare class SquareGrid extends BaseGrid {
   /** @override */
-  draw(): this;
+  draw(preview?: BaseGrid.Preview | undefined): this;
 
-  _drawLine(
+  /** @internal */
+  protected _drawLine(
     points: [x1: number, y1: number, x2: number, y2: number],
     lineColor: number,
     lineAlpha: number
@@ -35,6 +36,7 @@ declare class SquareGrid extends BaseGrid {
    */
   shiftPosition(x: number, y: number, dx: number, dy: number): PointArray;
 
+  /** @internal */
   protected _getNearestVertex(x: number, y: number): PointArray;
 
   /**
@@ -47,7 +49,7 @@ declare class SquareGrid extends BaseGrid {
    * @override
    * @param options - (default: `{}`)
    */
-  measureDistances(segments: GridLayer.Segment[], options?: BaseGrid.MeasureDistancesOptions): number[];
+  measureDistances(segments: GridLayer.Segment[], options?: MeasureDistancesOptions): number[];
 
   /** @override */
   getNeighbors(row: number, col: number): PointArray[];

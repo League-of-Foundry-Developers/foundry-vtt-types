@@ -28,7 +28,7 @@ declare class HexagonalGrid extends BaseGrid {
   get hexPoints(): PointArray[];
 
   /** @override */
-  draw(): this;
+  draw(preview?: BaseGrid.Preview | undefined): this;
 
   /**
    * A convenience method for getting all the polygon points relative to a top-left [x,y] coordinate pair
@@ -39,10 +39,17 @@ declare class HexagonalGrid extends BaseGrid {
    */
   getPolygon(x: number, y: number, w?: number, h?: number): PointArray[];
 
-  protected _drawGrid(): PIXI.Graphics;
+  /**
+   * Draw the grid lines.
+   * @param preview - Override settings used in place of those saved to the scene data.
+   * @internal
+   */
+  protected _drawGrid(preview?: BaseGrid.Preview | undefined): PIXI.Graphics;
 
+  /** @internal */
   protected _drawRows(grid: PIXI.Graphics, nrows: number, ncols: number): void;
 
+  /** @internal */
   protected _drawColumns(grid: PIXI.Graphics, nrows: number, ncols: number): void;
 
   /**
@@ -67,7 +74,8 @@ declare class HexagonalGrid extends BaseGrid {
    */
   getSnappedPosition(x: number, y: number, interval?: number | null): { x: number; y: number };
 
-  _getClosestVertex(xc: number, yc: number, ox: number, oy: number): { x: number; y: number };
+  /** @internal */
+  protected _getClosestVertex(xc: number, yc: number, ox: number, oy: number): { x: number; y: number };
 
   /** @override */
   shiftPosition(x: number, y: number, dx: number, dy: number): PointArray;
@@ -81,11 +89,8 @@ declare class HexagonalGrid extends BaseGrid {
   /** @override */
   getNeighbors(row: number, col: number): PointArray[];
 
-  /**
-   * @override
-   * @param options - (default: `{}`)
-   */
-  measureDistances(segments: GridLayer.Segment[], options?: BaseGrid.MeasureDistancesOptions): number[];
+  /** @override */
+  measureDistances(segments: GridLayer.Segment[], options?: MeasureDistancesOptions): number[];
 
   /**
    * Convert an offset coordinate (row, col) into a cube coordinate (q, r, s).
