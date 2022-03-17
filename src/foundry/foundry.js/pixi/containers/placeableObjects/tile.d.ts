@@ -72,6 +72,9 @@ declare global {
      */
     get aspectRatio(): number;
 
+    /** @override */
+    get bounds(): Rectangle;
+
     /**
      * The HTML source element for the primary Tile texture
      */

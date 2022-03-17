@@ -27,6 +27,9 @@ declare global {
      */
     get isAudible(): boolean;
 
+    /** @override */
+    get bounds(): Rectangle;
+
     /**
      * A convenience accessor for the sound type
      */

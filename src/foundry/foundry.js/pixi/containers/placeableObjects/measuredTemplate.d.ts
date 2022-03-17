@@ -33,6 +33,9 @@ declare global {
     /** @override */
     static embeddedName: 'MeasuredTemplate';
 
+    /** @override */
+    get bounds(): Rectangle;
+
     /**
      * A convenience accessor for the border color as a numeric hex code
      */

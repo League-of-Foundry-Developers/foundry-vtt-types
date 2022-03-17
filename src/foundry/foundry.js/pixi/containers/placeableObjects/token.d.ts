@@ -77,6 +77,9 @@ declare global {
      */
     readonly name: string;
 
+    /** @override */
+    get bounds(): Rectangle;
+
     /**
      * Translate the token's grid width into a pixel width based on the canvas size
      */
