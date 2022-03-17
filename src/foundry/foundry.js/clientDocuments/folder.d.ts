@@ -52,22 +52,19 @@ declare global {
     get parentFolder(): Folder | null;
 
     /**
-     * Return the named Entity type for elements in this folder.
-     */
-    get type(): this['data']['type'];
-
-    /**
-     * Create a new Folder by rendering a dialog window to provide basic creation details
+     * Present a Dialog form to create a new Folder.
+     * @see {@link ClientDocumentMixin.createDialog}
      * @param data    - Initial data with which to populate the creation form
-     * @param options - Initial positioning and sizing options for the dialog form
      *                  (default: `{}`)
-     * @returns An active FolderConfig instance for creating the new Folder entity
+     * @param context - Additional context options or dialog positioning options
+     *                  (default: `{}`)
+     * @returns A Promise which resolves to the created Folder, or null if the dialog was closed.
      *
      * @remarks
-     * The documented return type is incorrect. It now returns a promise that resolves to the
-     * created folder as intended. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6619
-     *
      * For weird reasons, we need to make this generic.
+     *
+     * The type of `context` is actually `{options?: DocumentSheetOptions} | undefined` but that's incompatible with the
+     * base implementation. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6863.
      */
     static createDialog<T extends DocumentConstructor>(
       this: T,
@@ -77,18 +74,21 @@ declare global {
             | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
           >
         | undefined,
-      options?: Partial<DocumentSheetOptions> | undefined
+      context?: any
     ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
 
     /**
      * Export all Documents contained in this Folder to a given Compendium pack.
      * Optionally update existing Documents within the Pack by name, otherwise append all new entries.
-     * @param  pack         - A Compendium pack to which the entities will be exported
-     * @param  updateByName - Update existing entries in the Compendium pack, matching by name
-     *                        (default: `false`)
+     * @param pack    - A Compendium pack to which the documents will be exported
+     * @param options - Additional options which customize how content is exported. See {@link ClientDocumentMixin#toCompendium}
+     *                  (default: `{}`)
      * @returns The updated Compendium Collection instance
      */
-    exportToCompendium(pack: any, { updateByName }?: { updateByName?: boolean }): Promise<any>; // TODO: CompendiumCollection
+    exportToCompendium<Metadata extends CompendiumCollection.Metadata>(
+      pack: CompendiumCollection<Metadata>,
+      options?: Folder.ExportToCompendiumOptions | undefined
+    ): Promise<CompendiumCollection<Metadata>>;
 
     /**
      * Provide a dialog form that allows for exporting the contents of a Folder into an eligible Compendium pack.
@@ -108,10 +108,12 @@ declare global {
     getSubfolders(recursive?: boolean): InstanceType<ConfiguredDocumentClass<typeof Folder>>[];
 
     protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+  }
 
-    /**
-     * @deprecated since 0.8.0
-     */
-    get entities(): this['contents'];
+  namespace Folder {
+    interface ExportToCompendiumOptions {
+      /** Update existing entries in the Compendium pack, matching by name */
+      updateByName?: boolean | undefined;
+    }
   }
 }
