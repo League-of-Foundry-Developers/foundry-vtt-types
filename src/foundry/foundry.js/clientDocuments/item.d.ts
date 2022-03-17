@@ -1,5 +1,4 @@
 import { ConfiguredDocumentClass } from '../../../types/helperTypes';
-import type { ItemDataConstructorData } from '../../common/data/data.mjs/itemData';
 
 declare global {
   /**
@@ -25,6 +24,11 @@ declare global {
     get img(): this['data']['img'];
 
     /**
+     * Provide a thumbnail image path used to represent this document.
+     */
+    get thumbnail(): this['data']['img'];
+
+    /**
      * A convenience alias of Item#isEmbedded which is preserves legacy support
      */
     get isOwned(): this['isEmbedded'];
@@ -36,17 +40,9 @@ declare global {
     get transferredEffects(): ReturnType<this['effects']['filter']>;
 
     /**
-     * A convenience reference to the item type (data.type) of this Item
-     */
-    get type(): this['data']['type'];
-
-    /**
      * Prepare a data object which defines the data schema used by dice roll commands against this Item
      */
     getRollData(): object;
-
-    /** @override */
-    protected _getSheetClass(): typeof ItemSheet | null;
 
     /** @override */
     protected static _onCreateDocuments(
@@ -59,19 +55,5 @@ declare global {
       items: Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>,
       context: DocumentModificationContext
     ): Promise<unknown>;
-
-    /**
-     * You are referencing Item#_data which has been deprecated in favor of Item#data#_source. Support for this reference will be removed in 0.9.0
-     * @deprecated since 0.8.0
-     */
-    get _data(): this['data']['_source'];
-
-    /**
-     * @deprecated since 0.8.1
-     */
-    static createOwned(
-      itemData: ItemDataConstructorData | (ItemDataConstructorData & Record<string, unknown>),
-      actor: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>
-    ): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseItem>>;
   }
 }
