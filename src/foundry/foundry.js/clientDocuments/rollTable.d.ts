@@ -21,6 +21,11 @@ declare global {
     );
 
     /**
+     * Provide a thumbnail image path used to represent this document.
+     */
+    get thumbnail(): this['data']['img'];
+
+    /**
      * Display a result drawn from a RollTable in the Chat Log along.
      * Optionally also display the Roll which produced the result and configure aspects of the displayed messages.
      *
@@ -65,6 +70,9 @@ declare global {
      * Note that this function only performs the roll and identifies the result, the RollTable#draw function should be
      * called to formalize the draw from the table.
      *
+     * @param options - (default: `{}`)
+     * @returns The Roll and results drawn by that Roll
+     *
      * @example
      * ```typescript
      * // Draw results using the default table formula
@@ -75,7 +83,7 @@ declare global {
      * const customResults = await table.roll({roll});
      * ```
      */
-    roll(options?: RollTable.RollOptions): Promise<RollTableDraw>;
+    roll(options?: RollTable.RollOptions | undefined): Promise<RollTableDraw>;
 
     /**
      * Get an Array of valid results for a given rolled total
@@ -103,28 +111,22 @@ declare global {
     ): void;
 
     /** @override */
-    toCompendium(pack?: CompendiumCollection<CompendiumCollection.Metadata>): Omit<
-      foundry.data.RollTableData['_source'],
-      '_id' | 'folder' | 'permission'
-    > & {
+    toCompendium(
+      pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
+      options?: ClientDocumentMixin.CompendiumExportOptions | undefined
+    ): Omit<foundry.data.RollTableData['_source'], '_id' | 'folder' | 'permission'> & {
       permission?: foundry.data.RollTableData extends { toObject(): infer U } ? U : never;
     };
 
     /**
-     * Create a new RollTable entity using all of the Entities from a specific Folder as new results.
-     * @param folder  - The Folder entity from which to create a roll table
+     * Create a new RollTable document using all of the Documents from a specific Folder as new results.
+     * @param folder  - The Folder document from which to create a roll table
      * @param options - Additional options passed to the RollTable.create method
      */
     static fromFolder(
       folder: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseFolder>>,
       options?: DocumentModificationOptions
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseRollTable>> | undefined>;
-
-    /**
-     * The RollTable#getTableResult method is deprecated in favor of RollTable#results#get and will be removed in 0.9.0
-     * @deprecated since 0.8.0
-     */
-    getTableResult(id: string): ReturnType<this['results']['get']>;
   }
 
   namespace RollTable {
@@ -190,7 +192,7 @@ declare global {
       roll?: Roll;
 
       /**
-       * If a RollTable entity is drawn as a result, recursively roll it
+       * If a RollTable document is drawn as a result, recursively roll it
        * @defaultValue `true`
        */
       recursive?: boolean;
