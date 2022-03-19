@@ -32,6 +32,11 @@ declare global {
     protected _sheet: FormApplication | null; // TODO: Actually an ActiveEffectConfig according to foundry but this is a problem with ClientDocumentMixins _sheet, this should actually be inferred from the CONFIG
 
     /**
+     * Is there some system logic that makes this active effect ineligible for application?
+     */
+    get isSuppressed(): boolean;
+
+    /**
      * Summarize the active effect duration
      */
     get duration(): DurationSummary;
@@ -62,12 +67,6 @@ declare global {
      * A cached property for obtaining the source name
      */
     get sourceName(): string;
-
-    /**
-     * An instance of the ActiveEffectConfig sheet to use for this ActiveEffect instance.
-     * The reference to the sheet is cached so the same sheet instance is reused.
-     */
-    get sheet(): FormApplication; // TODO: Actually an ActiveEffectConfig according to foundry but this is a problem with ClientDocumentMixin's sheet, this should actually be inferred from the CONFIG
 
     /**
      * Apply this ActiveEffect to a provided Actor.
@@ -138,6 +137,29 @@ declare global {
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;
+
+    /** @override */
+    protected _onCreate(
+      data: foundry.data.ActiveEffectData['_source'],
+      options: DocumentModificationOptions,
+      userId: string
+    ): void;
+
+    /** @override */
+    protected _onUpdate(
+      data: DeepPartial<foundry.data.ActiveEffectData['_source']>,
+      options: DocumentModificationOptions,
+      userId: string
+    ): void;
+
+    /** @override */
+    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+
+    /**
+     * Display changes to active effects as scrolling Token status text.
+     * @internal
+     */
+    protected _displayScrollingStatus(enabled: boolean): void;
   }
 }
 
