@@ -90,7 +90,7 @@ declare global {
 
     /**
      * Assign a Macro to a numbered hotbar slot between 1 and 50
-     * @param macro    - The Macro entity to assign
+     * @param macro    - The Macro document to assign
      * @param slot     - A specific numbered hotbar slot to fill
      * @param fromSlot - An optional origin slot from which the Macro is being shifted
      * @returns A Promise which resolves once the User update is complete
@@ -120,7 +120,7 @@ declare global {
     broadcastActivity(activityData?: ActivityData): void;
 
     /**
-     * Get an Array of Macro Entities on this User's Hotbar by page
+     * Get an Array of Macro Documents on this User's Hotbar by page
      * @param page - The hotbar page number
      *               (default: `1`)
      */
@@ -144,16 +144,6 @@ declare global {
 
     /** @override  */
     _onDelete(options: DocumentModificationOptions, userId: string): void;
-
-    /**
-     * @deprecated since 0.8.0
-     */
-    isRole(role: Parameters<User['hasRole']>[0]): boolean;
-
-    /**
-     * @deprecated since 0.8.0
-     */
-    setPermission(permission: keyof typeof CONST.USER_PERMISSIONS, allowed: boolean): Promise<this>;
 
     /** @remarks This property is set by PlayerList.getData() */
     charname?: string;
