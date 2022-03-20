@@ -3,30 +3,40 @@ import { DocumentModificationOptions } from '../../../../common/abstract/documen
 
 declare global {
   /**
-   * A MeasuredTemplate is an implementation of PlaceableObject which represents an area of the canvas grid which is
-   * covered by some effect.
+   * A type of Placeable Object which highlights an area of the grid as covered by some area of effect.
+   * @see {@link MeasuredTemplateDocument}
+   * @see {@link TemplateLayer}
    */
   class MeasuredTemplate extends PlaceableObject<
     InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>
   > {
-    constructor(document: InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>);
-
-    controlIcon: ControlIcon | null;
-    template: PIXI.Graphics | null;
-    ruler: PreciseText | null;
+    /**
+     * The geometry shape used for testing point intersection
+     * @defaultValue `undefined`
+     */
+    shape: PIXI.Circle | PIXI.Ellipse | PIXI.Polygon | PIXI.Rectangle | PIXI.RoundedRectangle | undefined;
 
     /**
      * The tiling texture used for this template, if any
      */
-    texture: PIXI.Texture | null;
+    texture: PIXI.Texture | undefined;
 
     /**
-     * The template shape used for testing point intersection
+     * The template graphics
+     * @defaultValue `undefined`
      */
-    shape: PIXI.Circle | PIXI.Ellipse | PIXI.Polygon | PIXI.Rectangle | PIXI.RoundedRectangle;
+    template: PIXI.Graphics | undefined;
+
+    /**
+     * The UI frame container which depicts Token metadata and status, displayed in the ControlsLayer.
+     * @defaultValue `new ObjectHUD(this)`
+     */
+    hud: MeasuredTemplate.ObjectHUD;
 
     /**
      * Internal property used to configure the control border thickness
+     * @defaultValue `3`
+     * @internal
      */
     protected _borderThickness: number;
 
@@ -54,13 +64,24 @@ declare global {
     /** @override */
     draw(): Promise<this>;
 
+    /** @override */
+    destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
+
+    /**
+     * Draw the HUD container which provides an interface for managing this template
+     * @internal
+     */
+    protected _drawHUD(): MeasuredTemplate.InitializedObjectHUD;
+
     /**
      * Draw the ControlIcon for the MeasuredTemplate
+     * @internal
      */
     protected _drawControlIcon(): ControlIcon;
 
     /**
      * Draw the Text label used for the MeasuredTemplate
+     * @internal
      */
     protected _drawRulerText(): PreciseText;
 
@@ -69,31 +90,31 @@ declare global {
 
     /**
      * Get a Circular area of effect given a radius of effect
+     * @internal
      */
     protected _getCircleShape(distance: number): PIXI.Circle;
 
     /**
      * Get a Conical area of effect given a direction, angle, and distance
+     * @internal
      */
     protected _getConeShape(direction: number, angle: number, distance: number): PIXI.Polygon;
 
     /**
      * Get a Rectangular area of effect given a width and height
+     * @internal
      */
     protected _getRectShape(direction: number, distance: number): NormalizedRectangle;
 
     /**
      * Get a rotated Rectangular area of effect given a width, height, and direction
+     * @internal
      */
     protected _getRayShape(direction: number, distance: number, width: number): PIXI.Polygon;
 
     /**
-     * Draw the rotation control handle and assign event listeners
-     */
-    protected _drawRotationHandle(radius: number): void;
-
-    /**
      * Update the displayed ruler tooltip text
+     * @internal
      */
     protected _refreshRulerText(): void;
 
@@ -123,5 +144,21 @@ declare global {
 
     /** @override */
     protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+  }
+
+  namespace MeasuredTemplate {
+    interface ObjectHUD extends globalThis.ObjectHUD {
+      /**
+       * Template control icon
+       */
+      icon?: ControlIcon;
+
+      /**
+       * Ruler text tooltip
+       */
+      ruler?: PreciseText;
+    }
+
+    type InitializedObjectHUD = RequiredProps<ObjectHUD, 'icon' | 'ruler'>;
   }
 }
