@@ -62,6 +62,11 @@ declare global {
     get img(): this['data']['img'];
 
     /**
+     * Provide a thumbnail image path used to represent this document.
+     */
+    get thumbnail(): this['data']['img'];
+
+    /**
      * Provide an object which organizes all embedded Item instances by their type
      */
     get itemTypes(): Record<
@@ -69,7 +74,7 @@ declare global {
       Array<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseItem>>>
     >;
     /**
-     * Test whether an Actor entity is a synthetic representation of a Token (if true) or a full Entity (if false)
+     * Test whether an Actor document is a synthetic representation of a Token (if true) or a full Document (if false)
      */
     get isToken(): boolean;
 
@@ -82,11 +87,6 @@ declare global {
      * Return a reference to the TokenDocument which owns this Actor as a synthetic override
      */
     get token(): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>> | null;
-
-    /**
-     * A convenience reference to the item type (data.type) of this Actor
-     */
-    get type(): this['data']['type'];
 
     /** @override */
     get uuid(): string;
@@ -122,9 +122,6 @@ declare global {
      */
     getRollData(): object;
 
-    /** @override */
-    protected _getSheetClass(): ConstructorOf<FormApplication> | null;
-
     /**
      * Create a new TokenData object which can be used to create a Token representation of the Actor.
      * @param data - Additional data, such as x, y, rotation, etc. for the created token data (default: `{}`)
@@ -149,15 +146,15 @@ declare global {
     modifyTokenAttribute(attribute: string, value: number, isDelta: boolean, isBar: boolean): Promise<this | undefined>;
 
     /** @override */
-    prepareEmbeddedEntities(): void;
+    prepareEmbeddedDocuments(): void;
 
     /**
      * Roll initiative for all Combatants in the currently active Combat encounter which are associated with this Actor.
-     * If viewing a full Actor entity, all Tokens which map to that actor will be targeted for initiative rolls.
+     * If viewing a full Actor document, all Tokens which map to that actor will be targeted for initiative rolls.
      * If viewing a synthetic Token actor, only that particular Token will be targeted for an initiative roll.
      *
      * @param options - Configuration for how initiative for this Actor is rolled.
-     * @returns A promise which resolves to the Combat entity once rolls are complete.
+     * @returns A promise which resolves to the Combat document once rolls are complete.
      */
     rollInitiative(options?: Actor.RollInitiativeOptions): Promise<void>;
 
@@ -206,65 +203,11 @@ declare global {
     ): void;
 
     /**
-     * Refresh the display of active Tokens for this Actor if ActiveEffects were changed
+     * Perform various actions on active tokens if embedded documents were changed.
+     * @param embeddedName - The type of embedded document that was modified.
+     * @internal
      */
-    protected _refreshTokens(): void;
-
-    /**
-     * You are referencing Actor#_data which has been deprecated in favor of Actor#data#_source. Support for this reference will be removed in 0.9.0
-     * @deprecated since 0.8.0
-     */
-    get _data(): this['data']['_source'];
-
-    /**
-     * You are referencing Actor#getOwnedItem(itemId) which is deprecated in favor of Actor#items#get(itemId). Support will be removed in 0.9.0
-     * @deprecated since 0.8.0
-     */
-    getOwnedItem(itemId: string): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseItem>> | undefined;
-
-    /**
-     * You are referencing Actor#createOwnedItem which is deprecated in favor of Item.create or Actor#createEmbeddedDocuments. Support will be removed in 0.9.0
-     * @deprecated since 0.8.0
-     */
-    createOwnedItem(
-      itemData: Parameters<this['createEmbeddedDocuments']>[1][] | Parameters<this['createEmbeddedDocuments']>[1],
-      options: Parameters<this['createEmbeddedDocuments']>[2]
-    ): ReturnType<this['createEmbeddedDocuments']>;
-
-    /**
-     * You are referencing Actor#updateOwnedItem which is deprecated in favor of Item#update or Actor#updateEmbeddedDocuments. Support will be removed in 0.9.0
-     * @deprecated since 0.8.0
-     */
-    updateOwnedItem(
-      itemData: Parameters<this['updateEmbeddedDocuments']>[1][] | Parameters<this['updateEmbeddedDocuments']>[1],
-      options: Parameters<this['updateEmbeddedDocuments']>[2]
-    ): ReturnType<this['updateEmbeddedDocuments']>;
-
-    /**
-     * You are referencing Actor#deleteOwnedItem which is deprecated in favor of Item#delete or Actor#deleteEmbeddedDocuments. Support will be removed in 0.9.0
-     * @deprecated since 0.8.0
-     */
-    deleteOwnedItem(
-      itemId: Parameters<this['deleteEmbeddedDocuments']>[1][] | Parameters<this['deleteEmbeddedDocuments']>[1],
-      options: Parameters<this['deleteEmbeddedDocuments']>[2]
-    ): ReturnType<this['deleteEmbeddedDocuments']>;
-
-    /**
-     * You are referencing Actor.fromToken which is deprecated in favor of TokenDocument#getActor. Support will be removed in 0.9.0
-     * @deprecated since 0.8.0
-     */
-    static fromToken(
-      token: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>>
-    ): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>;
-
-    /**
-     * You are referencing Actor.createTokenActor which is deprecated in favor of TokenDocument#getActor. Support will be removed in 0.9.0
-     * @deprecated since 0.8.0
-     */
-    static createTokenActor(
-      _baseActor: unknown,
-      token: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>>
-    ): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>;
+    protected _onEmbeddedDocumentChange(embeddedName: string): void;
   }
   namespace Actor {
     interface RollInitiativeOptions {
