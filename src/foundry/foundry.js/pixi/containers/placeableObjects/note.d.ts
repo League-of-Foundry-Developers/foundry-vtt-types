@@ -4,11 +4,11 @@ import { HoverInOptions } from '../placeableObject';
 declare global {
   /**
    * A Note is an implementation of PlaceableObject which represents an annotated location within the Scene.
-   * Each Note links to a JournalEntry entity and represents it's location on the map.
+   * Each Note links to a JournalEntry document and represents its location on the map.
    */
   class Note extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>> {
     /** @override */
-    static get embeddedName(): 'Note';
+    static embeddedName: 'Note';
 
     /** @override */
     get bounds(): Rectangle;
@@ -27,6 +27,13 @@ declare global {
      * The Map Note icon size
      */
     get size(): number;
+
+    /**
+     * Determine whether the Note is visible to the current user based on their perspective of the Scene.
+     * Visibility depends on permission to the underlying journal entry, as well as the perspective of controlled Tokens.
+     * If Token Vision is required, the user must have a token with vision over the note to see it.
+     */
+    get isVisible(): boolean;
 
     /** @override */
     draw(): Promise<this>;
