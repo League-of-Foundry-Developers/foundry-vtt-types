@@ -1,3 +1,13 @@
+interface DialogOptions extends ApplicationOptions {
+  /**
+   * Whether to provide jQuery objects to callback functions (if true) or plain
+   * HTMLElement instances (if false). This is currently true by default but in the
+   * future will become false by default.
+   * @defaultValue `true`
+   */
+  jQuery: boolean;
+}
+
 /**
  * Create a modal dialog window displaying a title, a message, and a set of buttons which trigger callback functions.
  *
@@ -26,7 +36,7 @@
  * ```
  * @typeParam Options - the type of the options object
  */
-declare class Dialog<Options extends Dialog.Options = Dialog.Options> extends Application<Options> {
+declare class Dialog<Options extends DialogOptions = DialogOptions> extends Application<Options> {
   /**
    * @param data    - An object of dialog data which configures how the modal window is rendered
    * @param options - Dialog rendering options, see {@link Application}
@@ -47,7 +57,7 @@ declare class Dialog<Options extends Dialog.Options = Dialog.Options> extends Ap
    * })
    * ```
    */
-  static get defaultOptions(): Dialog.Options;
+  static get defaultOptions(): DialogOptions;
 
   /**
    * @override
@@ -192,31 +202,6 @@ declare namespace Dialog {
      */
     default: string;
   }
-
-  interface Options extends ApplicationOptions {
-    /**
-     * @defaultValue `400`
-     */
-    width: number;
-
-    /**
-     * @defaultValue `['dialog']`
-     */
-    classes: string[];
-
-    /**
-     * @defaultValue `'templates/hud/dialog.html'`
-     */
-    template: string;
-
-    /**
-     * Whether to provide jQuery objects to callback functions (if true) or plain
-     * HTMLElement instances (if false). This is currently true by default but in the
-     * future will become false by default.
-     * @defaultValue `true`
-     */
-    jQuery: boolean;
-  }
 }
 
 /**
@@ -266,7 +251,7 @@ interface ConfirmConfig<Yes, No, JQueryOrHtml> {
    * Additional rendering options passed to the Dialog
    * @defaultValue `{}`
    */
-  options?: Partial<Dialog.Options>;
+  options?: Partial<DialogOptions>;
 }
 
 /**
@@ -310,5 +295,5 @@ interface PromptConfig<Value, JQueryOrHtml> {
    * Additional rendering options
    * @defaultValue `{}`
    */
-  options?: Partial<Dialog.Options>;
+  options?: Partial<DialogOptions>;
 }

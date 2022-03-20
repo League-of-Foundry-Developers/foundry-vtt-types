@@ -97,7 +97,7 @@ declare global {
      *                  (default: `{}`)
      * @returns A Promise which resolves or rejects once the dialog has been submitted or closed
      */
-    exportDialog(pack: string, options?: Dialog.Options): Promise<void>;
+    exportDialog(pack: string, options?: DialogOptions): Promise<void>;
 
     /**
      * Get the Folder documents which are sub-folders of the current folder, either direct children or recursively.
