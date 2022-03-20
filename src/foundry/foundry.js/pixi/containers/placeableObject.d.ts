@@ -4,7 +4,7 @@ import { Document } from '../../../common/abstract/module.mjs';
 
 declare global {
   /**
-   * An Abstract Base Class which defines a Placeable Object which represents an Entity placed on the Canvas
+   * An Abstract Base Class which defines a Placeable Object which represents a Document placed on the Canvas
    */
   abstract class PlaceableObject<
     D extends Document<any, InstanceType<ConfiguredDocumentClass<typeof Scene>>> = Document<
@@ -68,8 +68,8 @@ declare global {
     protected _hover: boolean;
 
     /**
-     * Identify the official EmbeddedEntity name for this PlaceableObject class
-     * @remarks This getter is abstract in {@link PlaceableObject}.
+     * Identify the official Document name for this PlaceableObject class
+     * @remarks This is abstract in {@link PlaceableObject}.
      */
     static embeddedName: string;
 
@@ -77,7 +77,7 @@ declare global {
      * The bounding box for this PlaceableObject.
      * This is required if the layer uses a Quadtree, otherwise it is optional
      */
-    get bounds(): Rectangle;
+    abstract get bounds(): Rectangle;
 
     /**
      * The central coordinate pair of the placeable object based on it's own width and height
@@ -106,8 +106,8 @@ declare global {
     get los(): this['vision']['los'];
 
     /**
-     * A Form Application which is used to configure the properties of this Placeable Object or the EmbeddedEntity
-     * it represents.
+     * A Form Application which is used to configure the properties of this Placeable Object or the Document it
+     * represents.
      */
     get sheet(): 'sheet' extends keyof D ? D['sheet'] : FormApplication | null;
 
@@ -151,7 +151,7 @@ declare global {
     protected _canView(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
     /**
-     * Does the User have permission to create the underlying Embedded Entity?
+     * Does the User have permission to create the underlying Document?
      * @param event - (unused)
      */
     protected _canCreate(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
@@ -169,13 +169,13 @@ declare global {
     protected _canHover(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
     /**
-     * Does the User have permission to update the underlying Embedded Entity?
+     * Does the User have permission to update the underlying Document?
      * @param event - (unused)
      */
     protected _canUpdate(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
     /**
-     * Does the User have permission to delete the underlying Embedded Entity?
+     * Does the User have permission to delete the underlying Document?
      * @param event - (unused)
      */
     protected _canDelete(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
@@ -378,52 +378,6 @@ declare global {
      * @param event - The triggering mouse click event
      */
     protected _onDragLeftCancel(event: MouseEvent): void;
-
-    /**
-     * @deprecated since 0.8.0
-     * @param options - (default: `{}`)
-     */
-    static create(
-      data:
-        | Parameters<InstanceType<ConfiguredDocumentClass<typeof Scene>>['createEmbeddedDocuments']>[1]
-        | Parameters<InstanceType<ConfiguredDocumentClass<typeof Scene>>['createEmbeddedDocuments']>[1][],
-      options?: Parameters<InstanceType<ConfiguredDocumentClass<typeof Scene>>['createEmbeddedDocuments']>[1]
-    ): ReturnType<InstanceType<ConfiguredDocumentClass<typeof Scene>>['createEmbeddedDocuments']>;
-
-    /**
-     * @deprecated since 0.8.0
-     */
-    update(data: Parameters<D['update']>[0], options: Parameters<D['update']>[1]): ReturnType<D['update']>;
-
-    /**
-     * @deprecated since 0.8.0
-     */
-    delete(options: Parameters<D['delete']>[0]): ReturnType<D['delete']>;
-
-    /**
-     * @deprecated since 0.8.0
-     */
-    getFlag(scope: string, key: string): ReturnType<D['getFlag']>;
-
-    /**
-     * @deprecated since 0.8.0
-     */
-    setFlag(scope: string, key: string, value: unknown): ReturnType<D['setFlag']>;
-
-    /**
-     * @deprecated since 0.8.0
-     */
-    unsetFlag(scope: string, key: string): ReturnType<D['unsetFlag']>;
-
-    /**
-     * @deprecated since 0.8.0
-     */
-    get uuid(): string;
-
-    /**
-     * @deprecated since 0.8.2
-     */
-    static get layer(): PlaceablesLayer<any>;
   }
 
   namespace PlaceableObject {

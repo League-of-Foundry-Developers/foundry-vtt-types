@@ -10,6 +10,9 @@ declare global {
     /** @override */
     static get embeddedName(): 'Note';
 
+    /** @override */
+    get bounds(): Rectangle;
+
     /**
      * The associated JournalEntry which is described by this note
      */

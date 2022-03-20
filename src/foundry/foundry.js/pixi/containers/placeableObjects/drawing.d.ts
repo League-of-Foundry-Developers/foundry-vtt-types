@@ -59,6 +59,9 @@ declare global {
      */
     static FREEHAND_SAMPLE_RATE: number;
 
+    /** @override */
+    get bounds(): Rectangle;
+
     /**
      * A Boolean flag for whether or not the Drawing utilizes a tiled texture background
      */
