@@ -136,3 +136,8 @@ type StoredDocument<D extends foundry.abstract.Document<any, any>> = D & {
 type TemporaryDocument<D> = D extends StoredDocument<infer U> ? U : D;
 
 type PropertyTypeOrFallback<T, Key extends string, Fallback> = Key extends keyof T ? T[Key] : Fallback;
+
+/**
+ * Makes the given keys `K` of the type `T` required
+ */
+type RequiredProps<T, K extends keyof T> = Required<Pick<T, K>> & Omit<T, K>;
