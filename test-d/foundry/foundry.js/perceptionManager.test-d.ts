@@ -18,7 +18,7 @@ expectType<void>(
 expectType<void>(
   manager.schedule({
     lighting: { initialize: true, refresh: true },
-    sight: { initialize: false, refresh: true, noUpdateFog: true, forceUpdateFog: true },
+    sight: { initialize: false, refresh: true, skipUpdateFog: true, forceUpdateFog: true },
     sounds: { initialize: false, refresh: false, fade: true },
     foreground: { refresh: true }
   })
@@ -36,7 +36,7 @@ expectType<void>(
 expectType<void>(
   manager.update({
     lighting: { initialize: true, refresh: true },
-    sight: { initialize: false, refresh: true, noUpdateFog: true, forceUpdateFog: true },
+    sight: { initialize: false, refresh: true, skipUpdateFog: true, forceUpdateFog: true },
     sounds: { initialize: false, refresh: false, fade: true },
     foreground: { refresh: true }
   })
