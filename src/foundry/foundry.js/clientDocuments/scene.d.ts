@@ -69,17 +69,22 @@ declare global {
     get img(): this['data']['img'];
 
     /**
+     * Provide a thumbnail image path used to represent this document.
+     */
+    get thumbnail(): this['data']['thumb'];
+
+    /**
      * A convenience accessor for whether the Scene is currently viewed
      */
     get isView(): boolean;
 
     /**
-     * A reference to the JournalEntry entity associated with this Scene, or null
+     * A reference to the JournalEntry document associated with this Scene, or null
      */
     get journal(): InstanceType<ConfiguredDocumentClass<typeof JournalEntry>> | null;
 
     /**
-     * A reference to the Playlist entity for this Scene, or null
+     * A reference to the Playlist document for this Scene, or null
      */
     get playlist(): InstanceType<ConfiguredDocumentClass<typeof Playlist>> | null;
 
@@ -435,10 +440,10 @@ declare global {
     ): void;
 
     /** @override */
-    toCompendium(pack?: CompendiumCollection<CompendiumCollection.Metadata>): Omit<
-      foundry.data.SceneData['_source'],
-      '_id' | 'folder' | 'permission'
-    > & {
+    toCompendium(
+      pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
+      options?: ClientDocumentMixin.CompendiumExportOptions | undefined
+    ): Omit<foundry.data.SceneData['_source'], '_id' | 'folder' | 'permission'> & {
       permission?: foundry.data.SceneData extends { toObject(): infer U } ? U : never;
     };
 
@@ -451,7 +456,7 @@ declare global {
   }
 }
 
-interface ThumbnailCreationData {
+interface ThumbnailCreationData extends ImageHelper.TextureToImageOptions {
   /**
    * A background image to use for thumbnail creation, otherwise the current scene
    * background is used.

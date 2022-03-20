@@ -377,8 +377,8 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * @returns A data object of cleaned data suitable for compendium import
    */
   toCompendium(
-    pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
-    options?: ClientDocumentMixin.CompendiumExportOptions
+    pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
+    options?: ClientDocumentMixin.CompendiumExportOptions | undefined
   ): Omit<T['data']['_source'], '_id' | 'folder' | 'permission'> & {
     permission?: T['data']['_source']['permission'];
   };
