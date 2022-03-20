@@ -25,22 +25,37 @@ declare global {
     protected _validPosition: { x: number; y: number };
 
     /**
-     * Track the set of User entities which are currently targeting this Token
+     * Track the set of User documents which are currently targeting this Token
      */
     targeted: Set<User>;
 
     /**
-     * A reference to the PointSource object which defines this vision source area of effect
+     * A reference to the VisionSource object which defines this vision source area of effect
      */
     vision: VisionSource;
 
     /**
-     * A reference to the PointSource object which defines this light source area of effect
+     * A reference to the LightSource object which defines this light source area of effect
      */
     light: LightSource;
 
+    /**
+     * A linked ObjectHUD element which is synchronized with the location and visibility of this Token
+     * @defaultValue `new ObjectHUD(this);`
+     */
+    hud: Token.ObjectHUD;
+
+    /** @defaultValue `undefined` */
+    texture?: PIXI.Texture | null;
+
+    /** @defaultValue `undefined` */
+    border?: PIXI.Graphics;
+
+    /** @defaultValue `undefined` */
+    icon?: PIXI.Sprite;
+
     /** @override */
-    static get embeddedName(): 'Token';
+    static embeddedName: 'Token';
 
     /**
      * Establish an initial velocity of the token based on it's direction of facing.
@@ -96,6 +111,16 @@ declare global {
     get center(): ReturnType<this['getCenter']>;
 
     /**
+     * The HTML source element for the primary Tile texture
+     */
+    get sourceElement(): HTMLImageElement | HTMLVideoElement | undefined;
+
+    /**
+     * Does this Tile depict an animated video texture?
+     */
+    get isVideo(): boolean;
+
+    /**
      * An indicator for whether or not this token is currently involved in the active combat encounter.
      */
     get inCombat(): boolean;
@@ -120,6 +145,11 @@ declare global {
      * @see {@link SightLayer#testVisibility}
      */
     get isVisible(): boolean;
+
+    /**
+     * The animation name used for Token movement
+     */
+    get movementAnimationName(): string;
 
     /**
      * Test whether the Token has sight (or blindness) at any radius
@@ -155,22 +185,42 @@ declare global {
 
     /**
      * Update the light and vision source objects associated with this Token
-     * @param defer       - Defer refreshing the SightLayer to manually call that refresh later.
-     *                      (default: `false`)
-     * @param deleted     - Indicate that this light source has been deleted.
-     *                      (default: `false`)
-     * @param noUpdateFog - Never update the Fog exploration progress for this update.
-     *                      (default: `false`)
+     * @param options - (default: `{}}`)
      */
-    updateSource({ defer, deleted, noUpdateFog }?: { defer?: boolean; deleted?: boolean; noUpdateFog?: boolean }): void;
+    updateSource(options?: Token.UpdateSourceOptions | undefined): void;
+
+    /**
+     * Update an emitted light source associated with this Token.
+     * @param options - (default `{}`)
+     */
+    updateLightSource(options?: Token.UpdateLightSourceOptions | undefined): void;
+
+    /**
+     * Update an Token vision source associated for this token.
+     * @param options - (default `{}`)
+     */
+    updateVisionSource(options?: Token.UpdateVisionSourceOptions | undefined): void;
 
     /**
      * Test whether this Token is a viable vision source for the current User
+     * @internal
      */
     protected _isVisionSource(): boolean;
 
     /** @override */
+    clear(): this;
+
+    /** @override */
     draw(): Promise<this>;
+
+    /**
+     * Draw the HUD container which provides an interface for managing this Token
+     * @internal
+     */
+    protected _drawHUD(): Token.InitializedObjectHUD;
+
+    /** @override */
+    destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
 
     /**
      * Apply initial sanitizations to the provided input data to ensure that a Token has valid required attributes.
@@ -188,30 +238,55 @@ declare global {
     protected _drawIcon(): Promise<PIXI.Sprite>;
 
     /**
+     * Play video for this Token (if applicable).
+     * @param playing - Should the Token video be playing?
+     *                  (default: `true`)
+     * @param options - Additional options for modifying video playback
+     *                  (default: `{}`)
+     */
+    play(playing?: boolean | undefined, options?: Token.PlayOptions | undefined): void;
+
+    /**
+     * Unlink the playback of this video token from the playback of other tokens which are using the same base texture.
+     * @param source - The video element source
+     * @internal
+     */
+    protected _unlinkVideoPlayback(source: HTMLVideoElement): Promise<void>;
+
+    /**
      * Update display of the Token, pulling latest data and re-rendering the display of Token components
      */
     refresh(): this;
 
     /**
      * Draw the Token border, taking into consideration the grid type and border color
+     * @internal
      */
     protected _refreshBorder(): void;
 
     /**
      * Get the hex color that should be used to render the Token border
      * @returns The hex color used to depict the border color
+     * @internal
      */
     protected _getBorderColor(): number | null;
 
     /**
+     * Refresh the display of the Token HUD interface.
+     */
+    refreshHUD(): void;
+
+    /**
      * Refresh the target indicators for the Token.
      * Draw both target arrows for the primary User as well as indicator pips for other Users targeting the same Token.
+     * @internal
      */
     protected _refreshTarget(): void;
 
     /**
      * Refresh the display of Token attribute bars, rendering latest resource data
      * If the bar attribute is valid (has a value and max), draw the bar. Otherwise hide it.
+     * @internal
      */
     drawBars(): void;
 
@@ -221,7 +296,7 @@ declare global {
      * @param bar    - The Bar container
      * @param data   - Resource data for this bar
      */
-    protected _drawBar(number: number, bar: PIXI.Graphics, data: ReturnType<Token['getBarAttribute']>): void;
+    protected _drawBar(number: number, bar: PIXI.Graphics, data: ReturnType<TokenDocument['getBarAttribute']>): void;
 
     /**
      * Draw the token's nameplate as a text object
@@ -231,14 +306,18 @@ declare global {
 
     /**
      * Draw a text tooltip for the token which can be used to display Elevation or a resource value
+     * @returns The text object used to render the tooltip
+     * @internal
      */
-    drawTooltip(): void;
+    protected _drawTooltip(): PreciseText;
 
     /**
      * Return the text which should be displayed in a token's tooltip field
+     * @internal
      */
     protected _getTooltipText(): string;
 
+    /** @internal */
     protected _getTextStyle(): PIXI.TextStyle;
 
     /**
@@ -248,11 +327,14 @@ declare global {
 
     /**
      * Draw the overlay effect icon
+     * @param options - (default: `{}`)
+     * @internal
      */
-    protected _drawOverlay({ src, tint }?: { src?: string; tint?: number }): Promise<void>;
+    protected _drawOverlay(options?: Token.DrawOverlayOptions | undefined): Promise<void>;
 
     /**
      * Draw a status effect icon
+     * @internal
      */
     protected _drawEffect(src: string, i: number, bg: PIXI.Graphics, w: number, tint: number): Promise<void>;
 
@@ -260,6 +342,7 @@ declare global {
      * Helper method to determine whether a token attribute is viewable under a certain mode
      * @param mode - The mode from CONST.TOKEN_DISPLAY_MODES
      * @returns Is the attribute viewable?
+     * @internal
      */
     protected _canViewMode(mode: foundry.CONST.TOKEN_DISPLAY_MODES): boolean;
 
@@ -271,6 +354,7 @@ declare global {
 
     /**
      * Animate the continual revealing of Token vision during a movement animation
+     * @internal
      */
     protected _onMovementFrame(
       dt: number,
@@ -288,6 +372,7 @@ declare global {
      * @param source - (default: `false`)
      * @param sound  - (default: `false`)
      * @param fog    - (default: `false`)
+     * @internal
      */
     protected _animatePerceptionFrame({
       source,
@@ -314,6 +399,7 @@ declare global {
     /**
      * @param releaseOthers - (default: `true`)
      * @param pan           - (default: `false`)
+     * @override
      */
     protected _onControl({ releaseOthers, pan }?: { releaseOthers?: boolean; pan?: boolean }): void;
 
@@ -345,13 +431,14 @@ declare global {
      *                  (defaultValue: `{}`)
      * @returns The Token after animation has completed
      */
-    setPosition(x: number, y: number, options?: PositionOptions): Promise<this>;
+    setPosition(x: number, y: number, options?: Token.PositionOptions): Promise<this>;
 
     /**
      * Update the Token velocity auto-regressively, shifting increasing weight towards more recent movement
      * Employ a magic constant chosen to minimize (effectively zero) the likelihood of trigonometric edge cases
      * @param ray - The proposed movement ray
      * @returns An updated velocity with directional memory
+     * @internal
      */
     protected _updateVelocity(ray: Ray): Token.Velocity;
 
@@ -387,7 +474,7 @@ declare global {
     toggleCombat(combat?: InstanceType<ConfiguredDocumentClass<typeof Combat>>): Promise<this>;
 
     /**
-     * Toggle an active effect by it's texture path.
+     * Toggle an active effect by its texture path.
      * Copy the existing Array in order to ensure the update method detects the data as changed.
      *
      * @param effect  - The texture file-path of the effect icon to toggle on the Token.
@@ -397,19 +484,12 @@ declare global {
      */
     toggleEffect(
       effect: string | ConstructorParameters<ConfiguredDocumentClassForName<'ActiveEffect'>>[0],
-      options?: EffectToggleOptions
-    ): Promise<boolean>;
-
-    /**
-     * A helper function to toggle a status effect which includes an Active Effect template
-     */
-    protected _toggleActiveEffect(
-      effectData: ConstructorParameters<ConfiguredDocumentClassForName<'ActiveEffect'>>[0],
-      { overlay }?: { overlay?: boolean }
+      options?: Token.EffectToggleOptions | undefined
     ): Promise<boolean>;
 
     /**
      * A helper function to toggle the overlay status icon on the Token
+     * @internal
      */
     protected _toggleOverlayEffect(texture: string, { active }?: { active: boolean }): Promise<this>;
 
@@ -442,8 +522,9 @@ declare global {
     /**
      * Extend the PlaceableObject.rotate method to prevent rotation if the Token is in the midst of a movement animation
      * @returns Actually a Promise<void>
+     * @remarks The return type is `Promise<this> | undefined` but this breaks the interface of PlaceableObject, see https://gitlab.com/foundrynet/foundryvtt/-/issues/6876
      */
-    rotate(angle: number, snap: number): Promise<this>;
+    rotate(...args: Parameters<PlaceableObject['rotate']>): any;
 
     /** @override */
     protected _onCreate(
@@ -509,22 +590,8 @@ declare global {
     /** @override */
     protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
-    /**
-     * @deprecated since 0.8.0
-     */
-    static fromActor(
-      actor: InstanceType<ConfiguredDocumentClass<typeof Actor>>,
-      tokenData?: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>['data']['_source']
-    ): never;
-
-    /**
-     * @deprecated since 0.8.0
-     */
-    getBarAttribute(
-      barName: string,
-      { alternative }?: { alternative?: string }
-    ): ReturnType<this['document']['getBarAttribute']>;
-
+    /** @override */
+    protected _onDragLeftCancel(event: MouseEvent): void;
     /**
      * @remarks This does not exist in foundry. It marks the controlIcon as not used because `Token` does never store a value here.
      */
@@ -542,27 +609,114 @@ declare global {
       dy: number;
       sy: number;
     }
+
+    /** The UI frame container which depicts Token metadata and status, displayed in the ControlsLayer. */
+    interface ObjectHUD extends globalThis.ObjectHUD {
+      /** Token health bars */
+      bars?: PIXI.Container;
+
+      /** Token nameplate */
+      nameplate?: PreciseText;
+
+      /** Token elevation tooltip */
+      tooltip?: PreciseText;
+
+      /** Token status effects */
+      effects?: PIXI.Container;
+
+      /** Token target marker */
+      target?: PIXI.Graphics;
+    }
+
+    type InitializedObjectHUD = RequiredProps<ObjectHUD, 'bars' | 'nameplate' | 'tooltip' | 'effects' | 'target'>;
+
+    interface UpdateLightSourceOptions {
+      /**
+       * Defer refreshing the LightingLayer to manually call that refresh later.
+       * @defaultValue `false`
+       */
+      defer?: boolean | undefined;
+
+      /**
+       * Indicate that this light source has been deleted.
+       * @defaultValue `false`
+       */
+      deleted?: boolean | undefined;
+    }
+
+    interface UpdateVisionSourceOptions {
+      /**
+       * Defer refreshing the SightLayer to manually call that refresh later.
+       * @defaultValue `false`
+       */
+      defer?: boolean | undefined;
+
+      /**
+       * Indicate that this vision source has been deleted.
+       * @defaultValue `false`
+       */
+      deleted?: boolean | undefined;
+
+      /**
+       * Never update the Fog exploration progress for this update.
+       * @defaultValue `false`
+       */
+      skipUpdateFog?: boolean | undefined;
+    }
+
+    type UpdateSourceOptions = UpdateLightSourceOptions & UpdateVisionSourceOptions;
+
+    interface PlayOptions {
+      /**
+       * Should the video loop?
+       * @defaultValue `true`
+       */
+      loop?: boolean | undefined;
+
+      /**
+       * A specific timestamp between 0 and the video duration to begin playback
+       * @defaultValue `0`
+       */
+      offset?: number | undefined;
+
+      /**
+       * Desired volume level of the video's audio channel (if any)
+       * @defaultValue `0`
+       */
+      volume?: number | undefined;
+    }
+
+    interface DrawOverlayOptions {
+      src?: string | undefined;
+      tint?: number | undefined;
+    }
+
+    interface PositionOptions {
+      /**
+       * Animate the movement path
+       * @defaultValue `true`
+       */
+      animate?: boolean;
+
+      /**
+       * Automatically re-center the view if token movement goes off-screen
+       * @defaultValue `true`
+       */
+      recenter?: boolean | undefined;
+    }
+
+    interface EffectToggleOptions {
+      /**
+       * Force a certain active state for the effect
+       * @defaultValue `false`
+       */
+      active?: boolean | undefined;
+
+      /**
+       * Whether to set the effect as the overlay effect?
+       * @defaultValue `false`
+       */
+      overlay?: boolean | undefined;
+    }
   }
-}
-
-interface PositionOptions {
-  /**
-   * Animate the movement path
-   * @defaultValue `true`
-   */
-  animate?: boolean;
-}
-
-interface EffectToggleOptions {
-  /**
-   * Force a certain active state for the effect
-   * @defaultValue `false`
-   */
-  active?: boolean;
-
-  /**
-   * Whether to set the effect as the overlay effect?
-   * @defaultValue `false`
-   */
-  overlay?: boolean;
 }
