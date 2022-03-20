@@ -5,7 +5,7 @@ declare const doc: AmbientLightDocument;
 expectType<'AmbientLight'>(AmbientLight.embeddedName);
 
 const light = new AmbientLight(doc);
-expectType<PointSource>(light.source);
+expectType<LightSource>(light.source);
 expectType<ControlIcon | undefined>(light.controlIcon);
 expectType<NormalizedRectangle>(light.bounds);
 expectType<boolean>(light.global);

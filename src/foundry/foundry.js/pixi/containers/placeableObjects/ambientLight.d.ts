@@ -11,7 +11,7 @@ declare global {
     /**
      * A reference to the PointSource object which defines this light source area of effect
      */
-    source: PointSource;
+    source: LightSource;
 
     /**
      * A reference to the ControlIcon used to configure this light
@@ -24,6 +24,11 @@ declare global {
 
     /** @override */
     get bounds(): NormalizedRectangle;
+
+    /**
+     * A convenience accessor to the LightData configuration object
+     */
+    get config(): foundry.data.LightData;
 
     /**
      * Test whether a specific AmbientLight source provides global illumination
@@ -53,6 +58,9 @@ declare global {
     /** @override */
     draw(): Promise<this>;
 
+    /** @override */
+    destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
+
     /**
      * Draw the ControlIcon for the AmbientLight
      * @internal
@@ -74,12 +82,9 @@ declare global {
 
     /**
      * Update the source object associated with this light
-     * @param defer   - Defer refreshing the LightingLayer to manually call that refresh later.
-     *                  (default: `false`)
-     * @param deleted - Indicate that this light source has been deleted.
-     *                  (default: `false`)
+     * @param options - (default: `{}}`)
      */
-    updateSource({ defer, deleted }?: { defer?: boolean; deleted?: boolean }): null | void;
+    updateSource(options?: AmbientLight.UpdateSourceOptions | undefined): void;
 
     /** @override */
     protected _onCreate(
@@ -115,5 +120,21 @@ declare global {
 
     /** @override */
     protected _onDragLeftCancel(event: MouseEvent): void;
+  }
+
+  namespace AmbientLight {
+    interface UpdateSourceOptions {
+      /**
+       * Defer refreshing the LightingLayer to manually call that refresh later.
+       * @defaultValue `false`
+       */
+      defer?: boolean | undefined;
+
+      /**
+       * Indicate that this light source has been deleted.
+       * @defaultValue `false`
+       */
+      deleted?: boolean | undefined;
+    }
   }
 }
