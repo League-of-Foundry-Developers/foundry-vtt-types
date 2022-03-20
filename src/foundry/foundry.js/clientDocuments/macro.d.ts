@@ -16,6 +16,16 @@ declare global {
     get isAuthor(): boolean;
 
     /**
+     * Test whether the current user is capable of executing a Macro script
+     */
+    get canExecute(): boolean;
+
+    /**
+     * Provide a thumbnail image path used to represent this document.
+     */
+    get thumbnail(): string | null;
+
+    /**
      * Execute the Macro command.
      * @param scope - Provide some additional scope configuration for the Macro
      */
