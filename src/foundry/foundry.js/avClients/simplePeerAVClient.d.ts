@@ -10,6 +10,12 @@ declare class SimplePeerAVClient extends AVClient {
   localStream: MediaStream | null;
 
   /**
+   * The dedicated audio stream used to measure volume levels for voice activity detection.
+   * @defaultValue `null`
+   */
+  levelsStream: MediaStream | null;
+
+  /**
    * A mapping of connected peers
    */
   peers: Map<string, SimplePeer.Instance>;
@@ -24,7 +30,7 @@ declare class SimplePeerAVClient extends AVClient {
    * @defaultValue `false`
    * @internal
    */
-  _initialized: boolean;
+  protected _initialized: boolean;
 
   /**
    * Is outbound broadcast of local audio enabled?
@@ -32,8 +38,20 @@ declare class SimplePeerAVClient extends AVClient {
    */
   audioBroadcastEnabled: boolean;
 
+  /**
+   * The polling interval ID for connected users that might have unexpectedly dropped out of our peer network.
+   * @internal
+   */
+  protected _connectionPoll: number | null;
+
   /** @override */
   connect(): Promise<boolean>;
+
+  /**
+   * Try to establish a peer connection with each user connected to the server.
+   * @internal
+   */
+  protected _connect(): Promise<SimplePeer.Instance[]>;
 
   /** @override */
   disconnect(): Promise<boolean>;
@@ -46,6 +64,9 @@ declare class SimplePeerAVClient extends AVClient {
 
   /** @override */
   getMediaStreamForUser(userId: string): MediaStream | null | undefined;
+
+  /** @override */
+  getLevelsStreamForUser(userId: string): MediaStream | null | undefined;
 
   /** @override */
   isAudioEnabled(): boolean;
@@ -69,6 +90,14 @@ declare class SimplePeerAVClient extends AVClient {
    * Initialize a local media stream for the current user
    */
   initializeLocalStream(): Promise<MediaStream | null>;
+
+  /**
+   * Attempt to create local media streams.
+   * @param params - Parameters for the getUserMedia request.
+   * @returns The created MediaStream or an error.
+   * @internal
+   */
+  protected _createMediaStream(params: MediaStreamConstraints): Promise<MediaStream | Error>;
 
   /**
    * Listen for Audio/Video updates on the av socket to broker connections between peers
@@ -131,8 +160,6 @@ declare class SimplePeerAVClient extends AVClient {
   /** @override */
   onSettingsChanged(changed: DeepPartial<AVSettings.Settings>): Promise<void>;
 
-  /**
-   * Replace the local stream for each connected peer with a re-generated MediaStream
-   */
+  /** @override */
   updateLocalStream(): Promise<void>;
 }

@@ -1,6 +1,7 @@
 import { expectType } from 'tsd';
 
 declare class CustomAVCLient extends AVClient {
+  updateLocalStream(): Promise<void>;
   initialize(): Promise<void>;
   connect(): Promise<boolean>;
   disconnect(): Promise<boolean>;

@@ -12,9 +12,11 @@ interface AVSettingsData {
 declare class AVSettings {
   constructor();
 
-  protected _set<T>(key: string, value: T): void;
+  /** @internal */
+  protected _set: <T>(key: string, value: T) => void;
 
-  protected _change(): void;
+  /** @internal */
+  protected _change: () => void;
 
   client: AVSettings.ClientSettings;
 
@@ -74,15 +76,7 @@ declare class AVSettings {
       /**
        * @defaultValue `'AVSettings.VOICE_MODES.PTT'`
        */
-      mode: AVSettings.VoiceMode;
-
-      /**
-       * @defaultValue
-       * ```
-       * "`"
-       * ```
-       */
-      pttKey: string;
+      mode: AVSettings.VOICE_MODES;
 
       /**
        * @defaultValue
@@ -91,11 +85,6 @@ declare class AVSettings {
        * ```
        */
       pttName: string;
-
-      /**
-       * @defaultValue `false`
-       */
-      pttMouse: boolean;
 
       /**
        * @defaultValue `100`
@@ -111,41 +100,14 @@ declare class AVSettings {
     /**
      * @defaultValue `{}`
      */
-    users: Partial<Record<string, AVSettings.StoredUserSettings>>;
+    users: Record<string, AVSettings.StoredUserSettings>;
   };
 
   static DEFAULT_WORLD_SETTINGS: {
     /**
      * @defaultValue `AVSettings.AV_MODES.DISABLED`
      */
-    mode: AVSettings.VoiceMode;
-
-    server: {
-      /**
-       * @defaultValue `'FVTT'`
-       */
-      type: string;
-
-      /**
-       * @defaultValue `""`
-       */
-      url: string;
-
-      /**
-       * @defaultValue `""`
-       */
-      room: string;
-
-      /**
-       * @defaultValue `""`
-       */
-      username: string;
-
-      /**
-       * @defaultValue `""`
-       */
-      password: string;
-    };
+    mode: AVSettings.AV_MODES;
 
     turn: {
       /**
@@ -217,6 +179,11 @@ declare class AVSettings {
     blocked: boolean;
   };
 
+  /**
+   * Stores the transient AV activity data received from other users.
+   */
+  activity: Record<string, AVSettingsData>;
+
   initialize(): void;
 
   changed(): void;
@@ -243,6 +210,11 @@ declare class AVSettings {
    * @internal
    */
   protected _onSettingsChanged(): void;
+
+  /**
+   * Handle another connected user changing their AV settings.
+   */
+  handleUserActivity(userId: string, settings: AVSettingsData): void;
 }
 
 declare namespace AVSettings {
@@ -259,5 +231,6 @@ declare namespace AVSettings {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface Overrides {}
   type VoiceModes = PropertyTypeOrFallback<AVSettings.Overrides, 'VoiceModes', DefaultVoiceModes>;
-  type VoiceMode = ValueOf<VoiceModes>;
+  type VOICE_MODES = ValueOf<VoiceModes>;
+  type AV_MODES = ValueOf<typeof AVSettings.AV_MODES>;
 }

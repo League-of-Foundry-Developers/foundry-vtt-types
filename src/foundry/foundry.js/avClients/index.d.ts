@@ -1,2 +1,1 @@
-import './easyRTCClient';
 import './simplePeerAVClient';
