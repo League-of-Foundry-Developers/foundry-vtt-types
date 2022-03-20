@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
+import { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from '../../../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../../../common/abstract/document.mjs';
 
 declare global {
@@ -40,18 +40,25 @@ declare global {
     /**
      * Internal timestamp for the previous freehand draw time, to limit sampling
      * @defaultValue `0`
+     * @internal
      */
     protected _drawTime: number;
+
+    /**
+     * @defaultValue `0`
+     * @internal
+     */
     protected _sampleTime: number;
 
     /**
      * Internal flag for the permanent points of the polygon
      * @defaultValue `foundry.utils.deepClone(this.data.points || [])`
+     * @internal
      */
     protected _fixedPoints: Array<[x: number, y: number]>;
 
     /** @override */
-    static get embeddedName(): 'Drawing';
+    static embeddedName: 'Drawing';
 
     /**
      * The rate at which points are sampled (in milliseconds) during a freehand drawing workflow
@@ -77,6 +84,7 @@ declare global {
 
     /**
      * Clean the drawing data to constrain its allowed position
+     * @internal
      */
     protected _cleanData(): void;
 
@@ -87,11 +95,13 @@ declare global {
 
     /**
      * Create elements for the foreground text
+     * @internal
      */
     protected _createText(): PreciseText;
 
     /**
      * Create elements for the Drawing border and handles
+     * @internal
      */
     protected _createFrame(): void;
 
@@ -100,21 +110,25 @@ declare global {
 
     /**
      * Draw rectangular shapes
+     * @internal
      */
     protected _drawRectangle(): void;
 
     /**
      * Draw ellipsoid shapes
+     * @internal
      */
     protected _drawEllipse(): void;
 
     /**
      * Draw polygonal shapes
+     * @internal
      */
     protected _drawPolygon(): void;
 
     /**
      * Draw freehand shapes with bezier spline smoothing
+     * @internal
      */
     protected _drawFreehand(): void;
 
@@ -125,6 +139,7 @@ declare global {
      * @param previous - The prior point
      * @param point    - The current point
      * @param next     - The next point
+     * @internal
      */
     protected _getBezierControlPoints(
       factor: number,
@@ -144,17 +159,20 @@ declare global {
 
     /**
      * Refresh the boundary frame which outlines the Drawing shape
+     * @internal
      */
     protected _refreshFrame({ x, y, width, height }: Rectangle): void;
 
     /**
      * Add a new polygon point to the drawing, ensuring it differs from the last one
      * @param temporary - (default: `true`)
+     * @internal
      */
     protected _addPoint(position: Point, temporary?: boolean): void;
 
     /**
      * Remove the last fixed point from the polygon
+     * @internal
      */
     protected _removePoint(): void;
 
@@ -169,13 +187,9 @@ declare global {
 
     /**
      * Handle text entry in an active text tool
+     * @internal
      */
-    protected _onDrawingTextKeydown(
-      event: KeyboardEvent
-    ):
-      | ReturnType<InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>['update']>
-      | ReturnType<InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>['delete']>
-      | void;
+    protected _onDrawingTextKeydown(event: KeyboardEvent): void;
 
     /** @override */
     protected _onUpdate(data: DeepPartial<foundry.data.DrawingData['_source']>): void;
@@ -184,20 +198,21 @@ declare global {
      * @override
      * @param event - unused
      */
-    protected _canControl(user: User, event?: any): boolean;
+    protected _canControl(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
 
     /**
      * @override
      * @param user  - unused
      * @param event - unused
      */
-    protected _canConfigure(user: User, event?: any): boolean;
+    protected _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
 
     /** @override */
     activateListeners(): void;
 
     /**
      * Handle mouse movement which modifies the dimensions of the drawn shape
+     * @internal
      */
     protected _onMouseDraw(event: PIXI.InteractionEvent): void;
 
@@ -216,35 +231,41 @@ declare global {
     /**
      * Handle mouse-over event on a control handle
      * @param event - The mouseover event
+     * @internal
      */
     protected _onHandleHoverIn(event: PIXI.InteractionEvent): void;
 
     /**
      * Handle mouse-out event on a control handle
      * @param event - The mouseout event
+     * @internal
      */
     protected _onHandleHoverOut(event: PIXI.InteractionEvent): void;
 
     /**
      * When we start a drag event - create a preview copy of the Tile for re-positioning
      * @param event - The mousedown event
+     * @internal
      */
     protected _onHandleMouseDown(event: PIXI.InteractionEvent): void;
 
     /**
      * Handle the beginning of a drag event on a resize handle
+     * @internal
      */
     protected _onHandleDragStart(event: PIXI.InteractionEvent): void;
 
     /**
      * Handle mousemove while dragging a tile scale handler
      * @param event - The mousemove event
+     * @internal
      */
     protected _onHandleDragMove(event: PIXI.InteractionEvent): void;
 
     /**
      * Handle mouseup after dragging a tile scale handler
      * @param event - The mouseup event
+     * @internal
      */
     protected _onHandleDragDrop(
       event: PIXI.InteractionEvent
@@ -252,6 +273,7 @@ declare global {
 
     /**
      * Handle cancellation of a drag event for one of the resizing handles
+     * @internal
      */
     protected _onHandleDragCancel(event: PIXI.InteractionEvent): void;
 
@@ -260,6 +282,7 @@ declare global {
      * @param original - The original drawing data
      * @param dx       - The pixel distance dragged in the horizontal direction
      * @param dy       - The pixel distance dragged in the vertical direction
+     * @internal
      */
     protected _rescaleDimensions(
       original: Pick<foundry.data.DrawingData['_source'], 'x' | 'y' | 'points' | 'width' | 'height'>,
@@ -272,19 +295,10 @@ declare global {
      * @param data - The Drawing data pending update
      * @returns The adjusted data
      * @remarks This is intentionally public because it is called by the DrawingsLayer
+     * @internal
      */
     static normalizeShape(
       data: Pick<foundry.data.DrawingData['_source'], 'x' | 'y' | 'width' | 'height' | 'points'>
     ): Pick<foundry.data.DrawingData['_source'], 'x' | 'y' | 'width' | 'height' | 'points'>;
-
-    /**
-     * @deprecated since 0.8.0
-     */
-    get author(): InstanceType<ConfiguredDocumentClass<typeof User>>;
-
-    /**
-     * @deprecated since 0.8.0
-     */
-    get owner(): boolean;
   }
 }
