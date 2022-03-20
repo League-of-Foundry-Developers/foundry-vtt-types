@@ -92,9 +92,11 @@ declare class GridLayer extends CanvasLayer<GridLayer.LayerOptions> {
   getCenter(x: number, y: number): PointArray;
 
   /**
-   * Measure the grid-wise distance between two point coordinates.
-   * @param origin - The origin point
-   * @param target - The target point
+   * Measure the distance between two point coordinates.
+   * @param origin  - The origin point
+   * @param target  - The target point
+   * @param options - Additional options which modify the measurement
+   *                  (default: `{}`)
    * @returns The measured distance between these points
    *
    * @example
@@ -110,15 +112,17 @@ declare class GridLayer extends CanvasLayer<GridLayer.LayerOptions> {
     target: {
       x: number;
       y: number;
-    }
+    },
+    options?: MeasureDistancesOptions | undefined
   ): number;
 
   /**
    * Measure the distance traveled over an array of distance segments.
    * @param segments - An array of measured segments
    * @param options  - Additional options which modify the measurement
+   *                   (default: `{}`)
    */
-  measureDistances(segments: GridLayer.Segment[], options?: { gridSpaces?: boolean }): number[];
+  measureDistances(segments: GridLayer.Segment[], options?: MeasureDistancesOptions | undefined): number[];
 
   /**
    * Define a new Highlight graphic
@@ -193,4 +197,9 @@ interface DrawOptions {
    * @defaultValue `null`
    */
   gridAlpha?: number | null;
+}
+
+interface MeasureDistancesOptions {
+  /** Return the distance in grid increments rather than the co-ordinate distance. */
+  gridSpaces?: boolean;
 }

@@ -22,7 +22,12 @@ declare class BaseGrid extends PIXI.Container {
    */
   highlight: PIXI.Container;
 
-  draw(): this;
+  /**
+   * Draw the grid. Subclasses are expected to override this method to perform their type-specific drawing logic.
+   * @param preview - Override settings used in place of those saved to the scene data.
+   *                  (default: `{}`)
+   */
+  draw(preview?: BaseGrid.Preview | undefined): this;
 
   /**
    * Highlight a grid position for a certain coordinates
@@ -94,7 +99,7 @@ declare class BaseGrid extends PIXI.Container {
    *                   (default: `{}`)
    * @returns An Array of distance measurements for each segment
    */
-  measureDistances(segments: GridLayer.Segment[], options?: BaseGrid.MeasureDistancesOptions): number[];
+  measureDistances(segments: GridLayer.Segment[], options?: MeasureDistancesOptions | undefined): number[];
 
   /**
    * Get the grid row and column positions which are neighbors of a certain position
@@ -112,6 +117,20 @@ declare namespace BaseGrid {
     alpha: Scene['data']['gridAlpha'];
     columns?: boolean;
     even?: boolean;
+  }
+
+  interface Preview {
+    /**
+     * The grid color.
+     * @defaultValue `null`
+     */
+    gridColor?: string | null | undefined;
+
+    /**
+     * The grid transparency.
+     * @defaultValue `null`
+     */
+    gridAlpha?: number | null | undefined;
   }
 
   interface HighlightGridPositionOptions {
@@ -148,9 +167,5 @@ declare namespace BaseGrid {
      * @defaultValue `null`
      */
     shape?: PIXI.Polygon | null;
-  }
-
-  interface MeasureDistancesOptions {
-    gridSpaces?: boolean;
   }
 }
