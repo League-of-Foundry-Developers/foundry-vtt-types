@@ -8,6 +8,23 @@ declare class HandlebarsHelpers {
   static checked(value: unknown): string;
 
   /**
+   * For use in form inputs. If the supplied value is truthy, add the "disabled" property, otherwise add nothing.
+   */
+  static disabled(value: unknown): string;
+
+  /**
+   * Concatenate a number of string terms into a single string.
+   * This is useful for passing arguments with variable names.
+   * @param values - The values to concatenate
+   *
+   * @example <caption>Concatenate several string parts to create a dynamic variable</caption>
+   * ```handlebars
+   * {{filePicker target=(concat "faces." i ".img") type="image"}}
+   * ```
+   */
+  static concat(...values: string[]): Handlebars.SafeString;
+
+  /**
    * Render a pair of inputs for selecting a color.
    * @param options - Helper options
    */
@@ -31,12 +48,15 @@ declare class HandlebarsHelpers {
    * @example <caption>Translate a provided localization string, optionally including formatting parameters</caption>
    * ```handlebars
    * <label>{{localize "ACTOR.Create"}}</label> <!-- "Create Actor" -->
-   * <label>{{localize "CHAT.InvalidCommand", command=foo}}</label> <!-- "foo is not a valid chat message command." -->
+   * <label>{{localize "CHAT.InvalidCommand" command=foo}}</label> <!-- "foo is not a valid chat message command." -->
    * ```
    */
   static localize(value: string, options: HandlebarsHelpers.LocalizeOptions): string;
 
   /**
+   * @param value   - A numeric value to format
+   * @param options - Additional options which customize the resulting format
+   * @returns The formatted string to be included in a template
    * A string formatting helper to display a number with a certain fixed number of decimals and an explicit sign.
    */
   static numberFormat(value: string, options: HandlebarsHelpers.NumberFormatOptions): string;
@@ -78,7 +98,7 @@ declare class HandlebarsHelpers {
   ): Handlebars.SafeString;
 
   /**
-   * Render a pair of inputs for selecting a color.
+   * Render a pair of inputs for selecting a value in a range.
    * @param options - Helper options
    */
   static rangePicker(options: HandlebarsHelpers.RangePickerOptions): Handlebars.SafeString;
@@ -206,10 +226,10 @@ declare namespace HandlebarsHelpers {
       editable?: boolean;
 
       /**
-       * Replace dynamic entity links?
+       * Replace dynamic document links?
        * @defaultValue `true`
        */
-      entities?: boolean;
+      documents?: boolean;
 
       /**
        * The data object providing context for inline rolls
@@ -245,11 +265,13 @@ declare namespace HandlebarsHelpers {
   interface NumberFormatOptions extends Handlebars.HelperOptions {
     hash: {
       /**
+       * The number of decimal places to include in the resulting string
        * @defaultValue `0`
        */
       decimals?: number;
 
       /**
+       * Whether to include an explicit "+" sign for positive numbers
        * @defaultValue `false`
        */
       sign?: boolean;
