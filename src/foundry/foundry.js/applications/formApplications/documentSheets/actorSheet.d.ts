@@ -41,7 +41,7 @@ declare global {
     get title(): string;
 
     /**
-     * A convenience reference to the Actor entity
+     * A convenience reference to the Actor document
      */
     get actor(): this['object'];
 
@@ -71,11 +71,6 @@ declare global {
      * Handle requests to configure the Token for the Actor
      */
     protected _onConfigureToken(event: JQuery.ClickEvent): void;
-
-    /**
-     * Handle requests to configure the default sheet used by this Actor
-     */
-    protected _onConfigureSheet(event: JQuery.ClickEvent): void;
 
     /**
      * Handle changing the actor profile image by opening a FilePicker
@@ -156,6 +151,13 @@ declare global {
       event: DragEvent,
       itemData: foundry.data.ItemData['_source']
     ): undefined | Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
+
+    /**
+     * Is the drop data coming from the same actor?
+     * @param data - The drop data.
+     * @internal
+     */
+    protected _isFromSameActor(data: ActorSheet.DropData.Item): Promise<boolean>;
   }
 
   namespace ActorSheet {
