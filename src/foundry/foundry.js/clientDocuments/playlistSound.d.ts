@@ -4,7 +4,7 @@ import type { DocumentModificationOptions } from '../../common/abstract/document
 declare global {
   /**
    * The client-side PlaylistSound document which extends the common BasePlaylistSound model.
-   * Each PlaylistSound belongs to the sounds collection of a Playlist entity.
+   * Each PlaylistSound belongs to the sounds collection of a Playlist document.
    * Each PlaylistSound contains a PlaylistSoundData object which provides its source data.
    *
    * @see {@link foundry.data.PlaylistSoundData} The PlaylistSound data schema
