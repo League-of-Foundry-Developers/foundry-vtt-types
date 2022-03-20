@@ -71,37 +71,6 @@ declare global {
   let logger: typeof console;
 
   /**
-   * @deprecated since 0.8.0
-   * You are referencing the FEATURES object which has been deprecated as it is no longer an agreed-upon method for how to track evolution of the Foundry Virtual Tabletop API. Discussion about alternate approaches is actively ongoing within the League of Developers community. For the time being the recommendation is to test against game.data.version to understand the current Foundry VTT version which is active. The FEATURES object will be removed in 0.9.0.
-   */
-  let FEATURES: {
-    readonly ACTIVE_EFFECTS: 2;
-    readonly ACTORS: 3;
-    readonly AUDIO_VIDEO: 2;
-    readonly CHAT: 3;
-    readonly COMBAT: 3;
-    readonly COMPENDIUM: 3;
-    readonly DICE: 2;
-    readonly DRAWINGS: 3;
-    readonly ENTITIES: 5;
-    readonly GRID: 2;
-    readonly ITEMS: 3;
-    readonly JOURNAL: 2;
-    readonly LIGHTING: 3;
-    readonly LOCALIZATION: 2;
-    readonly MACROS: 2;
-    readonly NOTES: 2;
-    readonly PLAYLISTS: 2;
-    readonly ROLL_TABLES: 2;
-    readonly SETTINGS: 3;
-    readonly SOUND: 2;
-    readonly TEMPLATES: 2;
-    readonly TILES: 3;
-    readonly TOKENS: 4;
-    readonly WALLS: 3;
-  };
-
-  /**
    * @defaultValue `undefined`
    * Initialized between the `'DOMContentLoaded'` event and the `'init'` hook event.
    */
