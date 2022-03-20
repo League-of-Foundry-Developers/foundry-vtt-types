@@ -85,6 +85,13 @@ declare class Sidebar<Options extends ApplicationOptions = ApplicationOptions> e
   protected _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: string): void;
 
   /**
+   * Handle the special case of left-clicking a tab when the sidebar is collapsed.
+   * @param event - The originating click event
+   * @internal
+   */
+  protected _onLeftClickTab(event: MouseEvent): void;
+
+  /**
    * Handle right-click events on tab controls to trigger pop-out containers for each tab
    * @param event - The originating contextmenu event
    * @internal
