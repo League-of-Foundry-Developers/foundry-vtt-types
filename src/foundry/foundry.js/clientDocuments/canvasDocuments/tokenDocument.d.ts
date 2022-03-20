@@ -1,6 +1,7 @@
 import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 import * as data from '../../../common/data/data.mjs';
+import type { ActiveEffectDataConstructorData } from '../../../common/data/data.mjs/activeEffectData';
 
 declare global {
   /**
@@ -30,8 +31,8 @@ declare global {
 
     /**
      * A lazily evaluated reference to the Actor this Token modifies.
-     * If actorLink is true, then the entity is the primary Actor document.
-     * Otherwise the Actor entity is a synthetic (ephemeral) document constructed using the Token's actorData.
+     * If actorLink is true, then the document is the primary Actor document.
+     * Otherwise the Actor document is a synthetic (ephemeral) document constructed using the Token's actorData.
      */
     get actor(): InstanceType<ConfiguredDocumentClass<typeof Actor>> | null;
 
@@ -56,6 +57,11 @@ declare global {
     get inCombat(): boolean;
 
     /**
+     * Is the Token currently hidden from player view?
+     */
+    get hidden(): boolean;
+
+    /**
      * @param data    - (default: `{}`, unused)
      * @param options - (default: `{}`, unused)
      * @override
@@ -67,7 +73,7 @@ declare global {
 
     /**
      * Create a synthetic Actor using a provided Token instance
-     * If the Token data is linked, return the true Actor entity
+     * If the Token data is linked, return the true Actor document
      * If the Token data is not linked, create a synthetic Actor using the Token's actorData override
      */
     getActor(): InstanceType<ConfiguredDocumentClass<typeof Actor>> | null;
@@ -82,6 +88,18 @@ declare global {
       barName: string,
       { alternative }?: { alternative?: string }
     ): SingleAttributeBar | ObjectAttributeBar | null;
+
+    /**
+     * A helper function to toggle a status effect which includes an Active Effect template
+     * @param effectData - The Active Effect data, including statusId
+     * @param options    - Options to configure application of the Active Effect
+     *                     (default: `{}`)
+     * @returns Whether the Active Effect is now on or off
+     */
+    toggleActiveEffect(
+      effectData: ActiveEffectDataConstructorData & { id: string; label: string; icon: string },
+      options?: ToggleActiveEffectOptions | undefined
+    ): Promise<boolean>;
 
     /**
      * Redirect updates to a synthetic Token Actor to instead update the tokenData override object.
@@ -138,10 +156,10 @@ declare global {
 
     /**
      * Redirect deletion of Documents within a synthetic Token Actor to instead update the tokenData override object.
-     * @param embeddedName - The named embedded Document type being modified
-     * @param ids          - The provided differential data with which to update the embedded Documents
-     * @param options      - Provided options which modify the update request
-     * @returns The updated Embedded Document instances
+     * @param embeddedName - The named embedded Document type being deleted
+     * @param ids          - The IDs of Documents to delete
+     * @param options      - Provided options which modify the deletion request
+     * @returns The deleted Embedded Document instances
      */
     deleteActorEmbeddedDocuments(
       embeddedName: 'Item',
@@ -163,6 +181,7 @@ declare global {
 
     /**
      * When the Actor data overrides change for an un-linked Token Actor, simulate the pre-update process.
+     * @internal
      */
     protected _preUpdateTokenActor(
       data: Parameters<foundry.documents.BaseActor['_preUpdate']>[0],
@@ -180,11 +199,16 @@ declare global {
     /**
      * When the base Actor for a TokenDocument changes, we may need to update its Actor instance
      * @param update - (default: `{}`)
+     * @internal
      */
-    protected _onUpdateBaseActor(update?: Parameters<foundry.documents.BaseActor['_onUpdate']>[0]): void;
+    protected _onUpdateBaseActor(
+      update?: Parameters<foundry.documents.BaseActor['_onUpdate']>[0],
+      options?: Parameters<foundry.data.ActorData['update']>[1]
+    ): void;
 
     /**
      * When the Actor data overrides change for an un-linked Token Actor, simulate the post-update process.
+     * @internal
      */
     protected _onUpdateTokenActor(
       data: Parameters<foundry.documents.BaseActor['_onUpdate']>[0],
@@ -228,4 +252,13 @@ interface TrackedAttributes {
   value: string[][];
 }
 
-export {};
+interface ToggleActiveEffectOptions {
+  /**
+   * Should the Active Effect icon be displayed as an overlay on the token?
+   * @defaultValue `false`
+   */
+  overlay?: boolean | undefined;
+
+  /** Force a certain active state for the effect. */
+  active?: boolean | undefined;
+}
