@@ -81,7 +81,7 @@ declare global {
     protected static _replaceTextContent(
       text: Text[],
       rgx: RegExp,
-      func: (...match: RegExpMatchArray[]) => Node
+      func: (...match: RegExpMatchArray) => Node
     ): boolean;
 
     /**
