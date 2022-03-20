@@ -66,20 +66,20 @@ declare global {
       interface Data {
         core: {
           version: string;
-          menus: ClientSettings.CompleteMenuSetting[];
+          menus: SettingSubmenuConfig[];
           settings: Setting[];
           none: boolean;
         };
         system: {
           title: Game['system']['data']['title'];
-          menus: ClientSettings.CompleteMenuSetting[];
+          menus: SettingSubmenuConfig[];
           settings: Setting[];
           none: boolean;
         };
-        modules: { title: string; menus: ClientSettings.CompleteMenuSetting[]; settings: Setting[] }[];
+        modules: { title: string; menus: SettingSubmenuConfig[]; settings: Setting[] }[];
       }
 
-      interface Setting extends Omit<ClientSettings.CompleteSetting, 'type'> {
+      interface Setting extends Omit<SettingConfig, 'type'> {
         id: string;
         name: string;
         hint: string;

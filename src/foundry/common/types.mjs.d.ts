@@ -1,17 +1,17 @@
 /**
  * A single point, expressed as an object \{x, y\}
  */
-declare type Point = PIXI.Point | { x: number; y: number };
+type Point = PIXI.Point | { x: number; y: number };
 
 /**
  * A single point, expressed as an array \[x,y\]
  */
-declare type PointArray = [x: number, y: number];
+type PointArray = [x: number, y: number];
 
 /**
  * A standard rectangle interface.
  */
-declare type Rectangle =
+type Rectangle =
   | PIXI.Rectangle
   | {
       x: number;
@@ -20,8 +20,89 @@ declare type Rectangle =
       height: number;
     };
 
+/** A Client Setting */
+interface SettingConfig<T = unknown> {
+  /** A unique machine-readable id for the setting */
+  key: string;
+
+  /** The namespace the setting belongs to */
+  namespace: string;
+
+  /** The human readable name */
+  name?: string | undefined;
+
+  /** An additional human readable hint */
+  hint?: string | undefined;
+
+  /**
+   * The scope the Setting is stored in, either World or Client
+   * @defaultValue `'client'`
+   */
+  scope: 'world' | 'client';
+
+  /** Indicates if this Setting should render in the Config application */
+  config?: boolean | undefined;
+
+  /** The JS Type that the Setting is storing */
+  type?: T extends string
+    ? typeof String
+    : T extends number
+    ? typeof Number
+    : T extends boolean
+    ? typeof Boolean
+    : T extends Array<any>
+    ? typeof Array
+    : ConstructorOf<T>;
+
+  /** For string Types, defines the allowable values */
+  choices?: (T extends string ? Record<string, string> : never) | undefined;
+
+  /** For numeric Types, defines the allowable range */
+  range?:
+    | (T extends number
+        ? {
+            max: number;
+            min: number;
+            step: number;
+          }
+        : never)
+    | undefined;
+
+  /** The default value */
+  default?: T;
+
+  /** Executes when the value of this Setting changes */
+  onChange?: (value: T) => void;
+
+  filePicker?: (T extends string ? true | 'audio' | 'image' | 'video' | 'imagevideo' | 'folder' : never) | undefined;
+}
+
+interface SettingSubmenuConfig {
+  key: string;
+
+  namespace: string;
+
+  /** The human readable name */
+  name?: string | undefined;
+
+  /** The human readable label */
+  label?: string | undefined;
+
+  /** An additional human readable hint */
+  hint?: string | undefined;
+
+  /** The classname of an Icon to render */
+  icon?: string | undefined;
+
+  /** The FormApplication to render */
+  type: ConstructorOf<FormApplication<FormApplicationOptions, object, undefined>>;
+
+  /** If true, only a GM can edit this Setting */
+  restricted?: boolean | undefined;
+}
+
 /** A Client Keybinding Action Configuration */
-declare interface KeybindingActionConfig {
+interface KeybindingActionConfig {
   /** The namespace within which the action was registered */
   namespace?: string;
 
@@ -60,7 +141,7 @@ declare interface KeybindingActionConfig {
 }
 
 /** A Client Keybinding Action Binding */
-declare interface KeybindingActionBinding {
+interface KeybindingActionBinding {
   /** The KeyboardEvent#code value from https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code/code_values */
   key: string;
 
@@ -68,22 +149,44 @@ declare interface KeybindingActionBinding {
   modifiers?: string[];
 }
 
-declare interface KeybindingAction {
+/** An action that can occur when a key is pressed */
+interface KeybindingAction {
+  /** The namespaced machine identifier of the Action */
   action: string;
+
+  /** The Keyboard key */
   key: string;
+
+  /** The human readable name */
   name: string;
+
+  /** Required modifiers */
   requiredModifiers: string[];
+
+  /** Optional (reserved) modifiers */
   optionalModifiers: string[];
+
+  /** The handler that executes onDown */
   onDown: Function;
+
+  /** The handler that executes onUp */
   onUp: Function;
+
+  /** If True, allows Repeat events to execute this Action's onDown */
   repeat: boolean;
+
+  /** If true, only a GM can execute this Action */
   restricted: boolean;
+
+  /** The registration precedence */
   precedence: number;
+
+  /** The registration order */
   order: number;
 }
 
 /** Keyboard event context */
-declare interface KeyboardEventContext {
+interface KeyboardEventContext {
   /** The normalized string key, such as "A" */
   key: string;
 
@@ -113,6 +216,15 @@ declare interface KeyboardEventContext {
 
   /** The executing Keybinding Action. May be undefined until the action is known. */
   action: string | undefined;
+}
+
+/** Connected Gamepad info */
+interface ConnectedGamepad {
+  /** A map of axes values */
+  axes: Map<string, number>;
+
+  /** The Set of pressed Buttons */
+  activeButtons: Set<string>;
 }
 
 type RequestData = object | object[] | string | string[];
@@ -183,5 +295,5 @@ interface SocketResponse {
   /**
    * An Array of created data objects
    */
-  result?: object[];
+  result?: object[] | string[];
 }

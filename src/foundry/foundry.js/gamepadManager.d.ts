@@ -3,6 +3,18 @@ declare class GamepadManager {
   constructor();
 
   /**
+   * @defaultValue `null`
+   * @internal
+   */
+  protected _gamepadPoller: number | null;
+
+  /**
+   * The connected Gamepads
+   * @internal
+   */
+  protected _connectedGamepads: Map<string, ConnectedGamepad>;
+
+  /**
    * How often Gamepad polling should check for button presses
    * @defaultValue `100`
    */
