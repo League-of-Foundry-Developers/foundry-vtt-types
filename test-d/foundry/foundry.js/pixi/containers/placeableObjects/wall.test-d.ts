@@ -6,7 +6,7 @@ declare const doc: WallDocument;
 declare const ray: Ray;
 
 const wall = new Wall(doc);
-expectType<DoorControl | null>(wall.doorControl);
+expectType<DoorControl | undefined | null>(wall.doorControl);
 expectType<MouseInteractionManager<Wall> | null>(wall.mouseInteractionManager);
 expectType<Tile | undefined>(wall.roof);
 expectType<[number, number, number, number]>(wall.coords);

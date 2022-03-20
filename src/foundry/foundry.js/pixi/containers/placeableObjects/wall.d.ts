@@ -1,6 +1,10 @@
-import type { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
+import type {
+  ConfiguredDocumentClass,
+  ConfiguredDocumentClassForName,
+  ConfiguredObjectClassForName
+} from '../../../../../types/helperTypes';
 import type { DocumentModificationOptions } from '../../../../common/abstract/document.mjs';
-import type { WallData } from '../../../../common/data/data.mjs';
+import type { LineIntersection } from '../../../../common/utils/geometry.mjs';
 import type { HoverInOptions } from '../placeableObject';
 
 declare global {
@@ -20,35 +24,82 @@ declare global {
     controlIcon: null;
 
     /**
-     * @remarks Type is `MouseInteractionManager<this, this['endpoints']>`
-     */
-    mouseInteractionManager: MouseInteractionManager<this> | null;
-
-    constructor(document: ConcreteWallDocument);
-
-    /**
      * An reference the Door Control icon associated with this Wall, if any
      * @internal
-     * @defaultValue `null`
+     * @defaultValue `undefined`
      */
-    doorControl: DoorControl | null;
+    doorControl: DoorControl | undefined | null;
 
     /**
      * A reference to an overhead Tile that is a roof, interior to which this wall is contained
      * @defaultValue `undefined`
      */
-    roof: Tile | undefined;
+    roof: InstanceType<ConfiguredObjectClassForName<'Tile'>> | undefined;
+
+    /**
+     * A set which tracks other Wall instances that this Wall intersects with (excluding shared endpoints)
+     */
+    intersectsWith: Map<InstanceType<ConfiguredObjectClassForName<'Wall'>>, LineIntersection>;
+
+    /**
+     * Cached representation of this wall's endpoints as {@link PolygonVertex}es.
+     * @defaultValue `null`
+     * @internal
+     */
+    protected _vertices: { a: PolygonVertex; b: PolygonVertex } | null;
+
+    /**
+     * Cached representation of the set of this wall's vertices.
+     * @defaultValue `null`
+     * @internal
+     */
+    protected _wallKeys: Set<string> | null;
 
     /** @override */
-    static get embeddedName(): 'Wall';
+    static embeddedName: 'Wall';
 
     /**
      * A convenience reference to the coordinates Array for the Wall endpoints, [x0,y0,x1,y1].
      */
     get coords(): Wall['data']['c'];
 
+    /**
+     * The initial endpoint of the Wall
+     */
+    get A(): Point;
+
+    /**
+     * The second endpoint of the Wall
+     */
+    get B(): Point;
+
+    /**
+     * The endpoints of the wall as {@link PolygonVertex}es.
+     */
+    get vertices(): { a: PolygonVertex; b: PolygonVertex };
+
+    /**
+     * The set of keys for this wall's endpoints.
+     */
+    get wallKeys(): Set<string>;
+
     /** @override */
     get bounds(): NormalizedRectangle;
+
+    /**
+     * A boolean for whether this wall contains a door
+     */
+    get isDoor(): boolean;
+
+    /**
+     * A boolean for whether the wall contains an open door
+     */
+    get isOpen(): boolean;
+
+    /**
+     * Is this Wall interior to a non-occluded roof Tile?
+     */
+    get hasActiveRoof(): boolean;
 
     /**
      * Return the coordinates [x,y] at the midpoint of the wall segment
@@ -73,6 +124,19 @@ declare global {
     /** @override */
     draw(): Promise<this>;
 
+    /**
+     * Draw a control icon that is used to manipulate the door's open/closed state
+     */
+    createDoorControl(): DoorControl;
+
+    /**
+     * Determine the orientation of this wall with respect to a reference point
+     * @param point - Some reference point, relative to which orientation is determined
+     * @returns An orientation in CONST.WALL_DIRECTIONS which indicates whether the Point is left,
+     *          right, or collinear (both) with the Wall
+     */
+    orientPoint(point: Point): number;
+
     /** @override */
     protected _createInteractionManager(): NonNullable<this['mouseInteractionManager']>;
 
@@ -82,6 +146,7 @@ declare global {
     /**
      * Draw a directional prompt icon for one-way walls to illustrate their direction of effect.
      * @returns The drawn icon
+     * @internal
      */
     protected _drawDirection(): PIXI.Sprite | null;
 
@@ -113,7 +178,7 @@ declare global {
     protected _onRelease(options?: PlaceableObject.ReleaseOptions): void;
 
     /** @override */
-    destroy(options?: Parameters<PIXI.Container['destroy']>[0]): void;
+    destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
 
     /**
      * Test whether the Wall direction lies between two provided angles
@@ -137,15 +202,41 @@ declare global {
     getLinkedSegments(): {
       ids: string[];
       walls: WallsLayer['placeables'];
-      endpoints: Array<[number, number]>;
+      endpoints: Array<[x: number, y: number]>;
     };
 
+    /**
+     * Determine whether this wall is beneath a roof tile, and is considered "interior", or not.
+     */
+    identifyInteriorState(): void;
+
+    /**
+     * Update any intersections with this wall.
+     */
+    updateIntersections(): void;
+
+    /**
+     * Record the intersection points between this wall and another, if any.
+     * @param other - The other wall.
+     */
+    protected _identifyIntersectionsWith(other: InstanceType<ConfiguredDocumentClassForName<'Wall'>>): void;
+
+    /**
+     * Remove this wall's intersections.
+     * @internal
+     */
+    protected _removeIntersections(): void;
+
     /** @override */
-    protected _onCreate(data: WallData['_source'], options: DocumentModificationOptions, userId: string): void;
+    protected _onCreate(
+      data: foundry.data.WallData['_source'],
+      options: DocumentModificationOptions,
+      userId: string
+    ): void;
 
     /** @override */
     protected _onUpdate(
-      changed: DeepPartial<WallData['_source']>,
+      changed: DeepPartial<foundry.data.WallData['_source']>,
       options?: DocumentModificationOptions,
       userId?: string
     ): void;
