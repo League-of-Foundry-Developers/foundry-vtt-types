@@ -91,7 +91,10 @@ declare global {
      */
     protected _onToggleNav(event: JQuery.ClickEvent): void;
 
-    static _onLoadProgress(context: string, pct: number): void;
+    /**
+     * Display progress of some major operation like loading Scene textures.
+     */
+    static displayProgressBar(options: SceneNavigation.DisplayProgressBarOptions): void;
   }
 
   namespace SceneNavigation {
@@ -103,6 +106,18 @@ declare global {
         visible: boolean;
         css: string;
       })[];
+    }
+
+    interface DisplayProgressBarOptions {
+      /**
+       * A text label to display
+       */
+      label?: string | undefined;
+
+      /**
+       * A percentage of progress between 0 and 100
+       */
+      pct: number;
     }
   }
 }
