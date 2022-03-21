@@ -55,7 +55,7 @@ interface SettingConfig<T = unknown> {
     : ConstructorOf<T>;
 
   /** For string Types, defines the allowable values */
-  choices?: (T extends string ? Record<string, string> : never) | undefined;
+  choices?: (T extends number | string ? Record<T, string> : never) | undefined;
 
   /** For numeric Types, defines the allowable range */
   range?:
