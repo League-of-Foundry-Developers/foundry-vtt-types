@@ -23,13 +23,6 @@ declare global {
     );
 
     /**
-     * Each sound which is played within the Playlist has a created Sound instance.
-     * The keys of this object are the sound IDs and the values are the Sound instances.
-     * @remarks This seems to be unused and will always be the empty object, see https://gitlab.com/foundrynet/foundryvtt/-/issues/5970
-     */
-    audio: {};
-
-    /**
      * Playlists may have a playback order which defines the sequence of Playlist Sounds
      * @defaultValue `undefined`
      * @internal
@@ -57,7 +50,7 @@ declare global {
 
     /**
      * Begin simultaneous playback for all sounds in the Playlist.
-     * @returns The updated Playlist entity
+     * @returns The updated Playlist document
      */
     playAll(): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
 
@@ -94,7 +87,7 @@ declare global {
 
     /**
      * End playback for any/all currently playing sounds within the Playlist.
-     * @returns The updated Playlist entity
+     * @returns The updated Playlist document
      */
     stopAll(): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
 
@@ -187,10 +180,10 @@ declare global {
     _onSoundStart(sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>): Promise<void>;
 
     /** @override */
-    toCompendium(pack?: CompendiumCollection<CompendiumCollection.Metadata>): Omit<
-      foundry.data.PlaylistData['_source'],
-      '_id' | 'folder' | 'permission'
-    > & {
+    toCompendium(
+      pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
+      options?: ClientDocumentMixin.CompendiumExportOptions | undefined
+    ): Omit<foundry.data.PlaylistData['_source'], '_id' | 'folder' | 'permission'> & {
       permission?: foundry.data.PlaylistData['_source']['permission'];
     };
   }
