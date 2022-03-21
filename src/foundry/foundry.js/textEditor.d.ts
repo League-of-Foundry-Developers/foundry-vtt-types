@@ -102,7 +102,7 @@ declare global {
     protected static _createContentLink(match: string, type: string, target: string, name: string): HTMLAnchorElement;
 
     /**
-     * Replace a hyperlink-like string with an actual HTML <a> tag
+     * Replace a hyperlink-like string with an actual HTML &lt;a&gt; tag
      * @param match - The full matched string
      * @returns An HTML element for the document link
      * @internal
