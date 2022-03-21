@@ -92,7 +92,7 @@ declare namespace PerceptionManager {
     sight: {
       initialize: boolean;
       refresh: boolean;
-      noUpdateFog: boolean;
+      skipUpdateFog: boolean;
       forceUpdateFog: boolean;
     };
     sounds: {
