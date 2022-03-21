@@ -18,6 +18,4 @@ expectType<Promise<AmbientSound>>(sound.draw());
 expectType<PIXI.Container>(sound.drawField());
 expectType<AmbientSound>(sound.refresh());
 expectType<void>(sound.refreshControl());
-expectType<{ rays: null; los: null; fov: PIXI.Circle } | { rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon }>(
-  sound.updateSource()
-);
+expectType<void>(sound.updateSource());

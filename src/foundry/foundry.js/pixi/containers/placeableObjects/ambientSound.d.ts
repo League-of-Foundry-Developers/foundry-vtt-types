@@ -13,6 +13,11 @@ declare global {
      */
     sound: Sound | null;
 
+    /**
+     * A SoundSource object which manages the area of effect for this ambient sound
+     */
+    source: SoundSource;
+
     /** @override */
     static embeddedName: 'AmbientSound';
 
@@ -31,9 +36,9 @@ declare global {
     get bounds(): Rectangle;
 
     /**
-     * A convenience accessor for the sound type
+     * The named identified for the source object associated with this ambient sound
      */
-    get type(): 'l' | 'g';
+    get sourceId(): string;
 
     /**
      * A convenience accessor for the sound radius in pixels
@@ -53,6 +58,9 @@ declare global {
 
     /** @override */
     draw(): Promise<this>;
+
+    /** @override */
+    destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
 
     /**
      * Draw the graphical preview of the audio source area of effect
@@ -76,9 +84,9 @@ declare global {
 
     /**
      * Compute the field-of-vision for an object, determining its effective line-of-sight and field-of-vision polygons
-     * @returns An object containing the rays, LOS polygon, and FOV polygon for the light
+     * @param options - (default: `{}`)
      */
-    updateSource(): { rays: null; los: null; fov: PIXI.Circle } | ReturnType<WallsLayer['computePolygon']>;
+    updateSource(options?: AmbientSound.UpdateSourceOptions | undefined): void;
 
     /** @override */
     protected _onCreate(
@@ -117,6 +125,20 @@ declare global {
        * @defaultValue `250`
        */
       fade: number;
+    }
+
+    interface UpdateSourceOptions {
+      /**
+       * Defer refreshing the SoundsLayer to manually call that refresh later.
+       * @defaultValue `false`
+       */
+      defer?: boolean | undefined;
+
+      /**
+       * Indicate that this SoundSource has been deleted.
+       * @defaultValue `false`
+       */
+      deleted?: boolean | undefined;
     }
   }
 }
