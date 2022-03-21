@@ -59,6 +59,11 @@ declare abstract class FormApplication<
    * @remarks Foundry allows passing no value to the constructor at all.
    */
   constructor(object: ConcreteObject, options?: Partial<Options>);
+  constructor(
+    ...args: ConcreteObject extends undefined
+      ? [ConcreteObject?, Partial<Options>?]
+      : [ConcreteObject, Partial<Options>?]
+  );
 
   /**
    * The object target which we are using this form to modify
