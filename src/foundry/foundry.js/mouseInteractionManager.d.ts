@@ -96,7 +96,7 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
 
   /**
    * The throttling time below which a mouse move event will not be handled
-   * @defaultValue `Math.ceil(1000 / canvas.app.ticker.maxFPS)`
+   * @defaultValue `Math.ceil(1000 / (canvas.app.ticker.maxFPS || 60));`
    * @internal
    */
   protected _dragThrottleMS: number;
