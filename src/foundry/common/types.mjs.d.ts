@@ -95,7 +95,10 @@ interface SettingSubmenuConfig {
   icon?: string | undefined;
 
   /** The FormApplication to render */
-  type: ConstructorOf<FormApplication<FormApplicationOptions, object, undefined>>;
+  // TODO: Find a better way to type this. Ideally, we would find a way to conditionally make the first parameter of FormApplication optional...
+  type:
+    | (new () => FormApplication<any, any, any>)
+    | ConstructorOf<FormApplication<FormApplicationOptions, object, undefined>>;
 
   /** If true, only a GM can edit this Setting */
   restricted?: boolean | undefined;
