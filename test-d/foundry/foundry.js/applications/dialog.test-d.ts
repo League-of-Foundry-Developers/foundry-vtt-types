@@ -258,7 +258,7 @@ expectType<Promise<true | false | null>>(
   })
 );
 
-const optionsWithJQueryUnknown = ((): Partial<Dialog.Options> => ({}))();
+const optionsWithJQueryUnknown = ((): Partial<DialogOptions> => ({}))();
 
 expectType<Promise<true | false | null>>(
   Dialog.confirm({

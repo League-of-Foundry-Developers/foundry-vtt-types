@@ -169,7 +169,7 @@ declare global {
      *          null if the dialog was closed without making a choice.
      */
     importDialog(
-      options?: Dialog.Options | undefined
+      options?: DialogOptions | undefined
     ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[] | null | false>;
 
     /**
