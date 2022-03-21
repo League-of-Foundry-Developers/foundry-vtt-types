@@ -37,6 +37,12 @@ declare global {
     tile: PIXI.Sprite | undefined;
 
     /**
+     * The occlusion image sprite
+     * @defaultValue `undefined`
+     */
+    occlusionTile: PIXI.Sprite | undefined;
+
+    /**
      * A Tile background which is displayed if no valid image texture is present
      * @defaultValue `undefined`
      */
@@ -94,7 +100,12 @@ declare global {
     draw(): Promise<this>;
 
     /** @override */
-    refresh(): this;
+    destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
+
+    /**
+     * @param options - (default: `{}`)
+     * @override */
+    refresh(options?: Tile.RefreshOptions | undefined): this;
 
     /**
      * Refresh the display of the Tile border
@@ -114,7 +125,14 @@ declare global {
      * @param options - Additional options for modifying video playback
      *                  (default: `{}`)
      */
-    play(playing: boolean, options?: Partial<Tile.PlayOptions>): void;
+    play(playing: boolean, options?: Tile.PlayOptions | undefined): void;
+
+    /**
+     * Unlink the playback of this video tile from the playback of other tokens which are using the same base texture.
+     * @param source - The video element source
+     * @internal
+     */
+    protected _unlinkVideoPlayback(source: HTMLVideoElement): Promise<void>;
 
     /**
      * Update the occlusion rendering for this overhead Tile for a given controlled Token.
@@ -131,7 +149,7 @@ declare global {
      */
     testOcclusion(
       token: InstanceType<ConfiguredObjectClassForName<'Token'>>,
-      options?: Partial<Tile.OcclusionOptions>
+      options?: Tile.OcclusionOptions | undefined
     ): boolean;
 
     /**
@@ -157,7 +175,7 @@ declare global {
      * @param options - Options which customize the return value
      * @internal
      */
-    protected _createAlphaMap(options: Partial<Tile.AlphaMapOptions>): Exclude<Tile['_alphaMap'], undefined>;
+    protected _createAlphaMap(options: Tile.AlphaMapOptions): Exclude<Tile['_alphaMap'], undefined>;
 
     /**
      * Compute the alpha-based bounding box for the tile, including an angle of rotation.
@@ -242,7 +260,7 @@ declare global {
      * Get resized Tile dimensions
      * @internal
      */
-    protected _getResizedDimensions(event: MouseEvent, origin: Point, destination: Point): NormalizedRectangle;
+    protected _getResizedDimensions(event: MouseEvent, origin: Point, destination: Point): Rectangle;
 
     /**
      * Handle cancellation of a drag event for one of the resizing handles
@@ -251,18 +269,27 @@ declare global {
 
     /**
      * Create a preview tile with a background texture instead of an image
+     * @param data - Initial data with which to create the preview Tile
      */
-    static createPreview(data: TileDataConstructorData): Tile;
+    static createPreview(data: TileDataConstructorData): InstanceType<ConfiguredObjectClassForName<'Tile'>>;
   }
 
   namespace Tile {
+    interface RefreshOptions {
+      /**
+       * Also refresh the perception layer.
+       * @defaultValue `false`
+       */
+      refreshPerception?: boolean | undefined;
+    }
+
     interface PlayOptions {
       /** Should the video loop? */
-      loop: boolean;
+      loop?: boolean | undefined;
       /** A specific timestamp between 0 and the video duration to begin playback */
-      offset: number;
+      offset?: number | undefined;
       /** Desired volume level of the video's audio channel (if any) */
-      volume: number;
+      volume?: number | undefined;
     }
 
     interface OcclusionOptions {
@@ -270,7 +297,7 @@ declare global {
        * Test corners of the hit-box in addition to the token center?
        * @defaultValue `true`
        */
-      corners: boolean;
+      corners?: boolean | undefined;
     }
 
     interface AlphaMapOptions {
@@ -278,13 +305,13 @@ declare global {
        * Keep the Uint8Array of pixel alphas?
        * @defaultValue `false`
        */
-      keepPixels: boolean;
+      keepPixels?: boolean | undefined;
 
       /**
        * Keep the pure white RenderTexture?
        * @defaultValue `false`
        */
-      keepTexture: boolean;
+      keepTexture?: boolean | undefined;
     }
   }
 }
