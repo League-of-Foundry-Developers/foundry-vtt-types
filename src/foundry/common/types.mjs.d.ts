@@ -119,10 +119,10 @@ interface KeybindingActionConfig {
   editable?: KeybindingActionBinding[];
 
   /** A function to execute when a key down event occurs. If True is returned, the event is consumed and no further keybinds execute. */
-  onDown?: () => boolean | void;
+  onDown?: (ctx: KeyboardEventContext) => boolean | void;
 
   /** A function to execute when a key up event occurs. If True is returned, the event is consumed and no further keybinds execute. */
-  onUp?: () => boolean | void;
+  onUp?: (ctx: KeyboardEventContext) => boolean | void;
 
   /** If True, allows Repeat events to execute the Action's onDown. Defaults to false. */
   repeat?: boolean;
