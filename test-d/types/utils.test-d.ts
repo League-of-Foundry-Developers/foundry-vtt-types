@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectAssignable, expectType } from 'tsd';
 import '../../index';
 
 const membersBecomeOptional: DeepPartial<{ a: string }> = {};
@@ -94,3 +94,11 @@ if (actor.data.type === 'character') {
   expectType<number>(actor.data.data.challenge);
   expectType<number>(actor.data.data.damage);
 }
+
+// we need to test with `expectAssignable` because the types are not considered euqal, even though they are structurally the same
+type A = { foo?: string; bar?: number; baz: boolean };
+type B = { foo: string; bar?: number; baz: boolean };
+declare const someVariable: RequiredProps<A, 'foo'>;
+declare const someOtherVariable: B;
+expectAssignable<B>(someVariable);
+expectAssignable<RequiredProps<A, 'foo'>>(someOtherVariable);

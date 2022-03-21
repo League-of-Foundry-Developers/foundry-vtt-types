@@ -9,6 +9,7 @@ import './cursor';
 import './doorControl';
 import './effectsCanvasGroup';
 import './interfaceCanvasGroup';
+import './objectHUD';
 import './placeableObject';
 import './placeableObjects';
 import './ruler';
