@@ -110,7 +110,7 @@ declare global {
     protected static _createHyperlink(match: string): HTMLAnchorElement;
 
     /**
-     * Replace an inline roll formula with a rollable <a> element or an eagerly evaluated roll result
+     * Replace an inline roll formula with a rollable &lt;a&gt; element or an eagerly evaluated roll result
      * @param match   - The matched string
      * @param command - An optional command
      * @param formula - The matched formula
