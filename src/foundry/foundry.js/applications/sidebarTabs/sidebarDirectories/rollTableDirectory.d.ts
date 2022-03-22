@@ -3,7 +3,7 @@
  * @typeParam Options - The type of the options object
  */
 declare class RollTableDirectory<
-  Options extends SidebarDirectory.Options = SidebarDirectory.Options
+  Options extends SidebarDirectoryOptions = SidebarDirectoryOptions
 > extends SidebarDirectory<'RollTable', Options> {
   /** @override */
   static documentName: 'RollTable';

@@ -6,7 +6,7 @@
  * @see {@link MacroConfig}   The Macro Configuration Sheet
  */
 declare class MacroDirectory extends SidebarDirectory<'Macro'> {
-  constructor(options?: Partial<SidebarDirectory.Options>);
+  constructor(options?: Partial<SidebarDirectoryOptions>);
 
   /** @override */
   static documentName: 'Macro';

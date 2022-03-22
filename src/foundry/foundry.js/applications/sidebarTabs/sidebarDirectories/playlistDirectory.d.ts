@@ -5,7 +5,7 @@ declare global {
    * The sidebar directory which organizes and displays world-level Playlist documents.
    * @typeParam Options - The type of the options object
    */
-  class PlaylistDirectory<Options extends SidebarDirectory.Options = SidebarDirectory.Options> extends SidebarDirectory<
+  class PlaylistDirectory<Options extends SidebarDirectoryOptions = SidebarDirectoryOptions> extends SidebarDirectory<
     'Playlist',
     Options
   > {
@@ -59,7 +59,7 @@ declare global {
      * return options;
      * ```
      */
-    static get defaultOptions(): SidebarDirectory.Options;
+    static get defaultOptions(): SidebarDirectoryOptions;
 
     /**
      * Initialize the set of Playlists which should be displayed in an expanded form
@@ -73,7 +73,7 @@ declare global {
     get playing(): InstanceType<ConfiguredDocumentClass<typeof Playlist>>[];
 
     /** @override */
-    getData(options?: Partial<Options>): PlaylistDirectory.Data;
+    getData(options?: Partial<Options>): Promise<PlaylistDirectory.Data>;
 
     /**
      * Augment the tree directory structure with playlist-level data objects for rendering

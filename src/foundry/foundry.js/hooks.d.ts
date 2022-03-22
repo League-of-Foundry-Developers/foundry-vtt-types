@@ -715,7 +715,7 @@ declare global {
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link ContextMenu.create}
      */
-    type GetEntryContext = (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
+    type GetApplicationEntryContext = (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
 
     /**
      * A hook event that fires when the context menu for a Sound in the PlaylistDirectory is constructed.
@@ -729,17 +729,14 @@ declare global {
     type GetPlaylistDirectorySoundContext = (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
 
     /**
-     * A hook event that fires when the context menu for folders in a SidebarTab
-     * is constructed. Substitute the SidebarTab name in the hook event to target
-     * a specific SidebarTab, for example "getActorDirectoryFolderContext".
+     * A hook event that fires when the context menu for folders in a SidebarTab is constructed. Substitute the
+     * SidebarTab name in the hook event to target a specific SidebarTab, for example "getActorDirectoryFolderContext".
      * @param html         - The HTML element to which the context options are attached
      * @param entryOptions - The context menu entries
-     * @remarks The name for this hook is dynamically created by joining 'get' with the type name of the SidebarDirectory
-     * and 'FolderContext'.
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link SidebarDirectory#_contextMenu}
      */
-    type GetSidebarDirectoryFolderContext = (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
+    type GetSidebarTabFolderContext = (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
 
     /**
      * A hook event that fires when the user modifies a global volume slider.
@@ -906,9 +903,9 @@ declare global {
       | CreateDocument
       | DeleteDocument
       | GetApplicationHeaderButtons
-      | GetEntryContext
+      | GetApplicationEntryContext
       | GetPlaylistDirectorySoundContext
-      | GetSidebarDirectoryFolderContext
+      | GetSidebarTabFolderContext
       | HoverPlaceableObject
       | PastePlaceableObject
       | PreCreateDocument

@@ -6,7 +6,7 @@ declare class SceneDirectory extends SidebarDirectory<'Scene'> {
   static documentName: 'Scene';
 
   /** @override */
-  protected _render(force?: boolean, options?: Application.RenderOptions<SidebarDirectory.Options>): Promise<void>;
+  protected _render(force?: boolean, options?: Application.RenderOptions<SidebarDirectoryOptions>): Promise<void>;
 
   /** @override */
   protected _getEntryContextOptions(): ContextMenuEntry[];

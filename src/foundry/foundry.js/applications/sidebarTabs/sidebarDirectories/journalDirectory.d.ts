@@ -15,7 +15,7 @@ declare class JournalDirectory extends SidebarDirectory<'JournalEntry'> {
    * return options;
    * ```
    */
-  static get defaultOptions(): SidebarDirectory.Options;
+  static get defaultOptions(): SidebarDirectoryOptions;
 
   /**
    * @override
