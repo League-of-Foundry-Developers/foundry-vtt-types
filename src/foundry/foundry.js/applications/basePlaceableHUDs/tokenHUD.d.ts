@@ -98,7 +98,7 @@ declare global {
      * Handle attribute bar update
      * @internal
      */
-    protected _onAttributeUpdate(event: JQuery.ChangeEvent): void;
+    protected _onAttributeUpdate(event: JQuery.FocusOutEvent): void;
 
     /**
      * Toggle Token combat state
@@ -126,12 +126,16 @@ declare global {
 
     /**
      * Handle toggling a token status effect icon
-     * @param overlay - (default: `false`)
      * @internal
      */
     protected _onToggleEffect(
       event: JQuery.ClickEvent | JQuery.ContextMenuEvent,
-      { overlay }?: { overlay?: boolean }
+      {
+        overlay
+      }?: {
+        /** @defaultValue `@false` */
+        overlay?: boolean;
+      }
     ): Promise<boolean>;
 
     /**
