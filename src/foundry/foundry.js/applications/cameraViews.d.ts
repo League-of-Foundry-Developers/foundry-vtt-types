@@ -14,7 +14,7 @@ declare class CameraViews<
    * return foundry.utils.mergeObject(super.defaultOptions, {
    *   id: "camera-views",
    *   template: "templates/hud/camera-views.html",
-   *   popOut: false,
+   *   popOut: false
    * })
    * ```
    */
@@ -27,14 +27,14 @@ declare class CameraViews<
 
   /**
    * Obtain a reference to the div.camera-view which is used to portray a given Foundry User.
-   * @param userId - The ID of the User entity
+   * @param userId - The ID of the User document
    */
   getUserCameraView(userId: string): HTMLElement | null;
 
   /**
    * Obtain a reference to the video.user-camera which displays the video channel for a requested Foundry User.
    * If the user is not broadcasting video this will return null.
-   * @param userId - The ID of the User entity
+   * @param userId - The ID of the User document
    */
   getUserVideoElement(userId: string): HTMLVideoElement | null;
 
