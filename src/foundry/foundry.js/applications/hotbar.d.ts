@@ -94,11 +94,15 @@ declare global {
     /** @override */
     activateListeners(html: JQuery): void;
 
-    /**
-     * Create a Context Menu attached to each Macro button
-     * @param html - The HTML being rendered for the hotbar
-     */
+    /** @override */
     protected _contextMenu(html: JQuery): void;
+
+    /**
+     * Get the Macro entry context options
+     * @returns The Macro entry context options
+     * @internal
+     */
+    protected _getEntryContextOptions(): ContextMenuEntry[];
 
     /**
      * Handle left-click events to
