@@ -27,6 +27,9 @@ declare class ControlIcon extends PIXI.Container {
 
   borderColor: number;
 
+  /**
+   * The color of the icon tint, if any
+   */
   tintColor: number | null;
 
   /**
