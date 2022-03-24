@@ -587,8 +587,8 @@ declare global {
       activeUsers: string[];
       addresses: {
         local: string;
-        remote: string;
-        remoteIsAccessible: boolean;
+        remote?: string | undefined;
+        remoteIsAccessible: boolean | null;
       };
       coreUpdate: {
         channel: unknown | null;
