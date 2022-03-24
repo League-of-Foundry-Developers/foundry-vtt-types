@@ -6,7 +6,6 @@ declare class SomeLightLayer extends PlaceablesLayer<'AmbientLight', PlaceablesL
 expectType<CanvasLayer | undefined>(SomeLightLayer.instance);
 expectType<PlaceablesLayer.LayerOptions<any>>(SomeLightLayer.layerOptions);
 expectType<any>(SomeLightLayer.layerOptions.objectClass); // TODO: Can this be typed to DocumentConstructor?
-expectType<ConstructorOf<FormApplication>>(SomeLightLayer.layerOptions.sheetClass);
 expectType<'AmbientLight' | 'AmbientSound' | 'Drawing' | 'MeasuredTemplate' | 'Note' | 'Tile' | 'Token' | 'Wall'>(
   PlaceablesLayer.documentName
 );
@@ -14,7 +13,6 @@ expectType<ConstructorOf<PlaceableObject>>(PlaceablesLayer.placeableClass);
 
 const layer = new SomeLightLayer();
 expectType<typeof AmbientLight>(layer.options.objectClass);
-expectType<ConstructorOf<FormApplication>>(layer.options.sheetClass);
 expectType<PIXI.Container | null>(layer.objects);
 expectType<PIXI.Container | null>(layer.preview);
 expectType<Array<{ type: 'create' | 'update' | 'delete'; data: Array<foundry.data.AmbientLightData['_source']> }>>(
@@ -30,7 +28,7 @@ expectType<EmbeddedCollection<typeof AmbientLightDocument, foundry.data.SceneDat
   layer.getDocuments()
 );
 expectType<Promise<SomeLightLayer | undefined>>(layer.draw());
-expectType<AmbientLight>(layer.createObject(new AmbientLightDocument()));
+expectType<AmbientLight | null>(layer.createObject(new AmbientLightDocument()));
 expectError(layer.createObject({}));
 expectError(layer.createObject());
 expectType<Promise<SomeLightLayer>>(layer.tearDown());
