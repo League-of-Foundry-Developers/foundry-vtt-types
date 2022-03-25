@@ -1,9 +1,9 @@
 import {
   DataSourceForPlaceable,
-  ConfiguredDocumentClass,
   ConfiguredObjectClassForName,
   ConfiguredDocumentClassForName,
-  PlaceableDocumentType
+  PlaceableDocumentType,
+  ConstructorDataType
 } from '../../../../../types/helperTypes';
 import EmbeddedCollection from '../../../../common/abstract/embedded-collection.mjs';
 
@@ -291,13 +291,15 @@ declare global {
       event: DragEvent,
       {
         center
-      }: {
-        /**
-         * Return the co-ordinates of the center of the nearest grid element.
-         * @defaultValue `true`
-         */
-        center: boolean;
-      }
+      }?:
+        | {
+            /**
+             * Return the co-ordinates of the center of the nearest grid element.
+             * @defaultValue `true`
+             */
+            center?: boolean | undefined;
+          }
+        | undefined
     ): [tx: number, ty: number] | false;
 
     /**
@@ -305,7 +307,10 @@ declare global {
      * @param createData - The data to create the object with.
      * @param position   - The position to render the sheet at.
      */
-    protected _createPreview(createData: unknown, { top, left }: { top: number; left: number }): Promise<void>; // FIXME: type createData better
+    protected _createPreview(
+      createData: ConstructorDataType<InstanceType<ConfiguredDocumentClassForName<DocumentName>>['data']>,
+      { top, left }: { top: number; left: number }
+    ): Promise<void>;
 
     /**
      * Handle left mouse-click events which originate from the Canvas stage and are dispatched to this Layer.
