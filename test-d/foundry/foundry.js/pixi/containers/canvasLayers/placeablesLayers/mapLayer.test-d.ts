@@ -4,7 +4,6 @@ expectType<'Tile'>(MapLayer.documentName);
 expectType<MapLayer.LayerOptions>(MapLayer.layerOptions);
 expectType<'background' | 'foreground'>(MapLayer.layerOptions.name);
 expectType<typeof Tile>(MapLayer.layerOptions.objectClass);
-expectType<ConstructorOf<FormApplication>>(MapLayer.layerOptions.sheetClass);
 expectType<BackgroundLayer | ForegroundLayer | undefined>(MapLayer.instance);
 
 expectType<MapLayer>(new MapLayer());

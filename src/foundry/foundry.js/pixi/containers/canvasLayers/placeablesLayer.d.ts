@@ -1,9 +1,9 @@
 import {
   DataSourceForPlaceable,
-  ConfiguredDocumentClass,
   ConfiguredObjectClassForName,
   ConfiguredDocumentClassForName,
-  PlaceableDocumentType
+  PlaceableDocumentType,
+  ConstructorDataType
 } from '../../../../../types/helperTypes';
 import EmbeddedCollection from '../../../../common/abstract/embedded-collection.mjs';
 
@@ -79,6 +79,16 @@ declare global {
     static documentName: PlaceableDocumentType;
 
     /**
+     * Creation states affected to placeables during their construction.
+     */
+    static CREATION_STATES: Readonly<{
+      NONE: 0;
+      POTENTIAL: 1;
+      CONFIRMED: 2;
+      COMPLETED: 3;
+    }>;
+
+    /**
      * Obtain a reference to the Collection of embedded Document instances within the currently viewed Scene
      */
     get documentCollection(): EmbeddedCollection<
@@ -130,7 +140,7 @@ declare global {
      */
     createObject(
       data: InstanceType<ConfiguredDocumentClassForName<DocumentName>>
-    ): InstanceType<ConfiguredObjectClassForName<DocumentName>>;
+    ): InstanceType<ConfiguredObjectClassForName<DocumentName>> | null;
 
     /** @override */
     tearDown(): Promise<this>;
@@ -140,6 +150,11 @@ declare global {
 
     /** @override */
     deactivate(): this;
+
+    /**
+     * Clear the contents of the preview container, restoring visibility of original (non-preview) objects.
+     */
+    clearPreviewContainer(): void;
 
     /**
      * Get a PlaceableObject contained in this layer by it's ID
@@ -246,7 +261,7 @@ declare global {
      * @param transformation - An object of data or function to apply to all matched objects
      * @param condition      - A function which tests whether to target each object
      *                         (default: `null`)
-     * @param options        - Additional options passed to Entity.update
+     * @param options        - Additional options passed to Document.update
      *                         (default: `{}`)
      * @returns An array of updated data once the operation is complete
      */
@@ -267,6 +282,35 @@ declare global {
       condition?: ((placeable: InstanceType<ConfiguredObjectClassForName<DocumentName>>) => boolean) | null,
       options?: DocumentModificationContext
     ): Promise<Array<InstanceType<ConfiguredDocumentClassForName<DocumentName>>>>;
+
+    /**
+     * Get the world-transformed drop position.
+     * @returns Returns the transformed x, y co-ordinates, or false if the drag event was outside the canvas.
+     */
+    protected _canvasCoordinatesFromDrop(
+      event: DragEvent,
+      {
+        center
+      }?:
+        | {
+            /**
+             * Return the co-ordinates of the center of the nearest grid element.
+             * @defaultValue `true`
+             */
+            center?: boolean | undefined;
+          }
+        | undefined
+    ): [tx: number, ty: number] | false;
+
+    /**
+     * Create a preview of this layer's object type from a world document and show its sheet so it can be finalized.
+     * @param createData - The data to create the object with.
+     * @param position   - The position to render the sheet at.
+     */
+    protected _createPreview(
+      createData: ConstructorDataType<InstanceType<ConfiguredDocumentClassForName<DocumentName>>['data']>,
+      { top, left }: { top: number; left: number }
+    ): Promise<void>;
 
     /**
      * Handle left mouse-click events which originate from the Canvas stage and are dispatched to this Layer.
@@ -327,35 +371,6 @@ declare global {
      *                (unused)
      */
     protected _onDeleteKey(event?: any): void;
-
-    /**
-     * @deprecated since 0.8.0
-     */
-    static get dataArray(): string;
-
-    /**
-     * @deprecated since 0.8.0
-     */
-    createMany(
-      data: Parameters<InstanceType<ConfiguredDocumentClass<typeof Scene>>['createEmbeddedDocuments']>[1],
-      options: Parameters<InstanceType<ConfiguredDocumentClass<typeof Scene>>['createEmbeddedDocuments']>[2]
-    ): ReturnType<InstanceType<ConfiguredDocumentClass<typeof Scene>>['createEmbeddedDocuments']>;
-
-    /**
-     * @deprecated since 0.8.0
-     */
-    updateMany(
-      data: Parameters<InstanceType<ConfiguredDocumentClass<typeof Scene>>['updateEmbeddedDocuments']>[1],
-      options: Parameters<InstanceType<ConfiguredDocumentClass<typeof Scene>>['updateEmbeddedDocuments']>[2]
-    ): ReturnType<InstanceType<ConfiguredDocumentClass<typeof Scene>>['updateEmbeddedDocuments']>;
-
-    /**
-     * @deprecated since 0.8.0
-     */
-    deleteMany(
-      data: Parameters<InstanceType<ConfiguredDocumentClass<typeof Scene>>['deleteEmbeddedDocuments']>[1],
-      options: Parameters<InstanceType<ConfiguredDocumentClass<typeof Scene>>['deleteEmbeddedDocuments']>[2]
-    ): ReturnType<InstanceType<ConfiguredDocumentClass<typeof Scene>>['deleteEmbeddedDocuments']>;
   }
 
   interface CanvasHistory<Placeable extends PlaceableObject> {
@@ -372,6 +387,8 @@ declare global {
 
   namespace PlaceablesLayer {
     type HistoryEventType = 'create' | 'update' | 'delete';
+
+    type CreationState = ValueOf<typeof PlaceablesLayer['CREATION_STATES']>;
 
     /**
      * @typeParam DocumentName - The key of the configuration which defines the object and document class.
@@ -409,15 +426,9 @@ declare global {
 
       /**
        * Does this layer use a quadtree to track object positions?
-       * @defaultValue `false`
+       * @defaultValue `true`
        */
       quadtree: boolean;
-
-      /**
-       * The FormApplication class used to configure objects on this layer.
-       * @defaultValue `CONFIG[this.documentName].sheetClass`
-       */
-      sheetClass: ConstructorOf<FormApplication>;
     }
   }
 }
