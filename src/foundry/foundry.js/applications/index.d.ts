@@ -21,3 +21,4 @@ import './sceneNavigation';
 import './sidebar';
 import './sidebarTab';
 import './sidebarTabs';
+import './supportDetails';
