@@ -1,16 +1,25 @@
 import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
 
 declare global {
+  interface DrawingConfigOptions extends FormApplicationOptions {
+    /**
+     * Configure the default drawing settings, instead of a specific Drawing
+     * @defaultValue `false`
+     */
+    configureDefault: boolean;
+  }
+
   /**
    * The Application responsible for configuring a single Drawing document within a parent Scene.
    * @typeParam Options - the type of the options object
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
   class DrawingConfig<
-    Options extends DrawingConfig.Options = DrawingConfig.Options,
+    Options extends DrawingConfigOptions = DrawingConfigOptions,
     Data extends object = DrawingConfig.Data<Options>
   > extends FormApplication<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Drawing'>>> {
     /**
+     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -18,16 +27,19 @@ declare global {
      *   classes: ["sheet"],
      *   template: "templates/scene/drawing-config.html",
      *   width: 480,
-     *   height: 360,
+     *   height: "auto",
      *   configureDefault: false,
      *   tabs: [{ navSelector: ".tabs", contentSelector: "form", initial: "position" }],
      * });
      * ```
      */
-    static get defaultOptions(): DrawingConfig.Options;
+    static get defaultOptions(): DrawingConfigOptions;
 
     /** @override */
     get title(): string;
+
+    /** @override */
+    get id(): string;
 
     /** @override */
     getData(options?: Partial<Options>): Data | Promise<Data>;
@@ -58,7 +70,7 @@ declare global {
   }
 
   namespace DrawingConfig {
-    interface Data<Options extends DrawingConfig.Options = DrawingConfig.Options> {
+    interface Data<Options extends DrawingConfigOptions = DrawingConfigOptions> {
       author: string;
       isDefault: boolean;
       fillTypes: DrawingConfig.FillTypes;
@@ -92,19 +104,6 @@ declare global {
       x: number | null;
       y: number | null;
       z: number | null;
-    }
-
-    interface Options extends FormApplicationOptions {
-      /**
-       * Configure the default drawing settings, instead of a specific Drawing
-       * @defaultValue `false`
-       */
-      configureDefault: boolean;
-
-      /**
-       * Configure a preview version of the Drawing which is not yet saved
-       */
-      preview?: boolean;
     }
   }
 }
