@@ -39,7 +39,7 @@ declare global {
     getData(options?: Partial<Options>): Data | Promise<Data>;
 
     /** @override */
-    protected _updateObject(event: Event, formData: EntitySheetConfig.FormData): Promise<void>;
+    protected _updateObject(event: Event, formData: EntitySheetConfig.FormData): Promise<unknown>;
 
     /**
      * Initialize the configured Sheet preferences for Entities which support dynamic Sheet assignment

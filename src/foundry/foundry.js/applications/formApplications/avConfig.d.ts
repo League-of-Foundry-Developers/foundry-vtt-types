@@ -50,7 +50,7 @@ declare class AVConfig<
   protected _onTurnTypeChanged(event: JQuery.ChangeEvent): void;
 
   /** @override */
-  protected _updateObject(event: Event, formData?: object): Promise<void>;
+  protected _updateObject(event: Event, formData?: object): Promise<unknown>;
 }
 
 declare namespace AVConfig {

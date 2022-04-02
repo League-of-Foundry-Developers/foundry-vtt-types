@@ -39,10 +39,7 @@ declare global {
     protected static _getFillTypes(): DrawingConfig.FillTypes;
 
     /** @override */
-    protected _updateObject(
-      event: Event,
-      formData: DrawingConfig.FormData
-    ): Promise<foundry.data.DrawingData['_source'] | ConfiguredDocumentClassForName<'Drawing'> | undefined>;
+    protected _updateObject(event: Event, formData: DrawingConfig.FormData): Promise<unknown>;
 
     /** @override */
     close(options?: FormApplication.CloseOptions): Promise<void>;

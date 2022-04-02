@@ -51,7 +51,7 @@ declare global {
     protected _onResetDefaults(event: JQuery.ClickEvent): void;
 
     /** @override */
-    protected _updateObject(event: Event, formData: SettingsConfig.FormData): Promise<void>;
+    protected _updateObject(event: Event, formData: SettingsConfig.FormData): Promise<unknown>;
   }
 
   namespace SettingsConfig {

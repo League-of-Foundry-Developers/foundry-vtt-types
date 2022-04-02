@@ -32,10 +32,7 @@ declare global {
      * @param event - (unused)
      * @override
      */
-    protected _updateObject(
-      event: Event,
-      formData: CombatantConfig.FormData
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Combatant>> | undefined>;
+    protected _updateObject(event: Event, formData: CombatantConfig.FormData): Promise<unknown>;
   }
 
   namespace CombatantConfig {

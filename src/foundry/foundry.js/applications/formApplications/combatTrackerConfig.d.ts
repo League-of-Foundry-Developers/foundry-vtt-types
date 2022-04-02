@@ -25,10 +25,7 @@ declare class CombatTrackerConfig<
   getData(options?: Partial<Options>): Data | Promise<Data>;
 
   /** @override */
-  protected _updateObject(
-    event: Event,
-    formData: ClientSettings.Values['core.combatTrackerConfig']
-  ): Promise<ClientSettings.Values['core.combatTrackerConfig']>;
+  protected _updateObject(event: Event, formData: ClientSettings.Values['core.combatTrackerConfig']): Promise<unknown>;
 }
 
 declare namespace CombatTrackerConfig {

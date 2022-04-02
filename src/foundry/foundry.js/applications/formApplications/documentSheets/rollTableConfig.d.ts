@@ -114,10 +114,7 @@ declare global {
      * @param formData - The validated FormData translated into an Object for submission
      * @internal
      */
-    protected _updateObject(
-      event: Event,
-      formData: RollTableConfig.FormData
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'RollTable'>> | undefined>;
+    protected _updateObject(event: Event, formData: RollTableConfig.FormData): Promise<unknown>;
 
     /**
      * Display a roulette style animation when a Roll Table result is drawn from the sheet

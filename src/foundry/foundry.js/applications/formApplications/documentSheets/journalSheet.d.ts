@@ -72,10 +72,7 @@ declare global {
     getData(options?: Partial<Options>): Promise<Data> | Data;
 
     /** @override */
-    protected _updateObject(
-      event: Event,
-      formData: JournalSheet.FormData
-    ): ReturnType<DocumentSheet<Options, Data>['_updateObject']>;
+    protected _updateObject(event: Event, formData: JournalSheet.FormData): Promise<unknown>;
 
     /**
      * Handle requests to switch the rendered mode of the Journal Entry sheet

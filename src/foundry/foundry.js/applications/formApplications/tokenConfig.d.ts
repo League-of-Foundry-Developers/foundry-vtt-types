@@ -74,14 +74,7 @@ declare global {
     protected _getSubmitData(updateData?: TokenDataConstructorData): Record<string, unknown> & { lightAlpha: number };
 
     /** @override */
-    protected _updateObject(
-      event: Event,
-      formData: TokenConfig.FormData
-    ): Promise<
-      | InstanceType<ConfiguredDocumentClassForName<'Token'>>
-      | InstanceType<ConfiguredDocumentClassForName<'Actor'>>
-      | undefined
-    >;
+    protected _updateObject(event: Event, formData: TokenConfig.FormData): Promise<unknown>;
 
     /**
      * Handle Token assignment requests to update the default prototype Token

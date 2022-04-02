@@ -41,10 +41,7 @@ declare global {
      * @param event - (unused)
      * @override
      */
-    protected _updateObject(
-      event: Event,
-      formData: TileConfig.FormData
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Tile'>> | undefined>;
+    protected _updateObject(event: Event, formData: TileConfig.FormData): Promise<unknown>;
   }
 
   namespace TileConfig {

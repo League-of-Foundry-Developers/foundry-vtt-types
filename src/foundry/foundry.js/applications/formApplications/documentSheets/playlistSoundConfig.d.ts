@@ -48,10 +48,7 @@ declare global {
      * @override
      * @param event - (unused)
      */
-    protected _updateObject(
-      event: Event,
-      formData: PlaylistSoundConfig.FormData
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>> | undefined>;
+    protected _updateObject(event: Event, formData: PlaylistSoundConfig.FormData): Promise<unknown>;
   }
 
   namespace PlaylistSoundConfig {

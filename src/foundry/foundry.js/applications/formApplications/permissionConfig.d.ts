@@ -49,7 +49,7 @@ declare class PermissionConfig extends FormApplication<FormApplicationOptions, P
    * @param event - (unused)
    * @override
    */
-  protected _updateObject(event: Event, formData: PermissionConfig.FormData): Promise<void>;
+  protected _updateObject(event: Event, formData: PermissionConfig.FormData): Promise<unknown>;
 }
 
 declare namespace PermissionConfig {
