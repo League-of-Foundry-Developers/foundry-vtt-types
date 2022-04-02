@@ -1,7 +1,24 @@
+interface ImagePopoutOptions extends FormApplicationOptions {
+  /**
+   * Can this image be shared with connected users?
+   * @defaultValue `false`
+   */
+  shareable: boolean;
+
+  /**
+   * The UUID of some related {@link Document}.
+   * @defaultValue `null`
+   */
+  uuid: string | null;
+}
+
 /**
  * An Image Popout Application which features a single image in a lightbox style frame.
  * This popout can also be used as a form, allowing the user to edit an image which is being used.
  * Furthermore, this application allows for sharing the display of an image with other connected players.
+ *
+ * @typeParam Options - The type of the options object
+ * @typeParam Data    - The data structure used to render the handlebars template.
  *
  * @example
  * ```typescript
@@ -9,7 +26,7 @@
  * const ip = new ImagePopout("path/to/image.jpg", {
  *   title: "My Featured Image",
  *   shareable: true,
- *   entity: game.actors.getName("My Hero")
+ *   uuid: game.actors.getName("My Hero").uuid
  * });
  *
  * // Display the image popout
@@ -19,7 +36,10 @@
  * ip.share();
  * ```
  */
-declare class ImagePopout extends FormApplication<ImagePopout.Options, ImagePopout.Data, string> {
+declare class ImagePopout<
+  Options extends ImagePopoutOptions = ImagePopoutOptions,
+  Data extends object = ImagePopout.Data
+> extends FormApplication<Options, Data, string> {
   constructor(src: string, options?: Partial<ImagePopout.Options>);
 
   /**
@@ -27,14 +47,27 @@ declare class ImagePopout extends FormApplication<ImagePopout.Options, ImagePopo
    */
   protected _related: foundry.abstract.Document<any, any> | null;
 
-  /** @override */
-  static get defaultOptions(): ImagePopout.Options;
+  /**
+   * @override
+   * @defaultValue
+   * ```typescript
+   * foundry.utils.mergeObject(super.defaultOptions, {
+   *   template: "templates/apps/image-popout.html",
+   *   classes: ["image-popout", "dark"],
+   *   editable: false,
+   *   resizable: true,
+   *   shareable: false,
+   *   uuid: null
+   * })
+   * ```
+   */
+  static get defaultOptions(): ImagePopoutOptions;
 
   /** @override */
   get title(): string;
 
   /** @override */
-  getData(options?: Partial<ImagePopout.Options>): Promise<ImagePopout.Data>;
+  getData(options?: Partial<Options> | undefined): Promise<Data>;
 
   /**
    * Test whether the title of the image popout should be visible to the user
@@ -42,12 +75,12 @@ declare class ImagePopout extends FormApplication<ImagePopout.Options, ImagePopo
   isTitleVisible(): boolean;
 
   /**
-   * Provide a reference to the Entity referenced by this popout, if one exists
+   * Provide a reference to the Document referenced by this popout, if one exists
    */
   getRelatedObject(): Promise<foundry.abstract.Document<any, any> | null>;
 
   /** @override */
-  protected _render(force?: boolean, options?: Application.RenderOptions<ImagePopout.Options>): Promise<void>;
+  protected _render(force?: boolean, options?: Application.RenderOptions<Options> | undefined): Promise<void>;
 
   /** @override */
   protected _getHeaderButtons(): Application.HeaderButton[];
