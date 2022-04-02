@@ -26,6 +26,7 @@ declare global {
      *   resizable: true,
      *   baseApplication: "ItemSheet",
      *   id: "item"
+     * })
      * ```
      */
     static get defaultOptions(): ItemSheet.Options;
@@ -37,7 +38,7 @@ declare global {
     get title(): string;
 
     /**
-     * A convenience reference to the Item entity
+     * A convenience reference to the Item document
      */
     get item(): this['object'];
 
@@ -58,18 +59,11 @@ declare global {
     getData(options?: Partial<Options>): Data | Promise<Data>;
 
     /** @override */
-    protected _getHeaderButtons(): Application.HeaderButton[];
-
-    /** @override */
     activateListeners(html: JQuery): void;
 
     /**
-     * Handle requests to configure the default sheet used by this Item
-     */
-    protected _onConfigureSheet(event: JQuery.ClickEvent): void;
-
-    /**
      * Handle changing the item image
+     * @internal
      */
     protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
   }
