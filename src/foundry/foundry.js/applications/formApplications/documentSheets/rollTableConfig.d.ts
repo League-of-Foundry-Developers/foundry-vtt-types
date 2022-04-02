@@ -9,9 +9,10 @@ declare global {
    */
   class RollTableConfig<
     Options extends DocumentSheetOptions = DocumentSheetOptions,
-    Data extends object = RollTableConfig.Data
+    Data extends object = RollTableConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'RollTable'>>> {
     /**
+     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -20,7 +21,7 @@ declare global {
      *   width: 720,
      *   height: "auto",
      *   closeOnSubmit: false,
-     *   viewPermission: CONST.ENTITY_PERMISSIONS.OBSERVER,
+     *   viewPermission: CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER,
      *   scrollY: ["ol.table-results"],
      *   dragDrop: [{ dragSelector: null, dropSelector: null }],
      * })
@@ -45,7 +46,7 @@ declare global {
     activateListeners(html: JQuery): void;
 
     /**
-     * Handle creating a TableResult in the RollTable entity
+     * Handle creating a TableResult in the RollTable document
      * @param event      - The originating mouse event
      * @param resultData - An optional object of result data to use
      * @internal
@@ -62,7 +63,7 @@ declare global {
     protected _onChangeResultType(event: JQuery.ChangeEvent): void;
 
     /**
-     * Handle deleting a TableResult from the RollTable entity
+     * Handle deleting a TableResult from the RollTable document
      * @param event - The originating click event
      * @returns The deleted TableResult document
      * @internal
@@ -146,10 +147,11 @@ declare global {
   }
 
   namespace RollTableConfig {
-    interface Data extends DocumentSheet.Data<RollTable> {
+    interface Data<Options extends DocumentSheetOptions = DocumentSheetOptions>
+      extends DocumentSheet.Data<RollTable, Options> {
       results: ToObjectFalseType<foundry.data.TableResultData> & {
         isText: boolean;
-        isEntity: boolean;
+        isDocument: boolean;
         isCompendium: boolean;
         img: string;
         text: string;
@@ -157,7 +159,7 @@ declare global {
       resultTypes: {
         [Key in keyof typeof foundry.CONST.TABLE_RESULT_TYPES as typeof foundry.CONST.TABLE_RESULT_TYPES[Key]]: Titlecase<Key>;
       };
-      entityTypes: typeof foundry.CONST.COMPENDIUM_ENTITY_TYPES;
+      documentTypes: typeof foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
       compendiumPacks: string[];
     }
 
