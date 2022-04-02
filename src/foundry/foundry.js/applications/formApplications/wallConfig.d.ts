@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
+import type { ConfiguredDocumentClassForName, ConfiguredObjectClassForName } from '../../../../types/helperTypes';
 
 declare global {
   /**
@@ -7,26 +7,35 @@ declare global {
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
   class WallConfig<
-    Options extends FormApplicationOptions = FormApplicationOptions,
+    Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends object = WallConfig.Data<Options>
-  > extends FormApplication<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Wall'>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Wall'>>> {
     /**
      * @defaultValue
      * ```typescript
      * const options = super.defaultOptions;
-     * options.id = "wall-config";
-     * options.title = "Wall Configuration";
      * options.template = "templates/scene/wall-config.html";
      * options.width = 400;
      * ```
      */
-    static get defaultOptions(): FormApplicationOptions;
+    static get defaultOptions(): DocumentSheetOptions;
+
+    /**
+     * An array of Wall ids that should all be edited when changes to this config form are submitted
+     * @defaultValue `[]`
+     */
+    editTargets: string[];
 
     /** @override */
     get title(): string;
 
     /** @override */
-    render(force?: boolean, options?: Application.RenderOptions<Options>): this;
+    render(
+      force?: boolean,
+      options?: Application.RenderOptions<Options> & {
+        walls?: InstanceType<ConfiguredObjectClassForName<'Wall'>>[] | undefined;
+      }
+    ): this;
 
     /** @override */
     getData(): Data | Promise<Data>;
@@ -39,9 +48,9 @@ declare global {
   }
 
   namespace WallConfig {
-    interface Data<Options extends FormApplicationOptions = FormApplicationOptions> {
-      object: foundry.data.WallData['_source'];
-      options: Options;
+    interface Data<Options extends DocumentSheetOptions = DocumentSheetOptions>
+      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Wall'>>, Options> {
+      object: DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Wall'>>, Options>['data'];
       moveTypes: {
         [Key in keyof typeof foundry.CONST.WALL_MOVEMENT_TYPES as typeof foundry.CONST.WALL_MOVEMENT_TYPES[Key]]: Titlecase<Key>;
       };
@@ -63,9 +72,10 @@ declare global {
     interface FormData {
       dir: foundry.CONST.WALL_DIRECTIONS;
       door: foundry.CONST.WALL_DOOR_TYPES;
+      light: foundry.CONST.WALL_SENSE_TYPES;
       ds?: foundry.CONST.WALL_DOOR_STATES;
       move: foundry.CONST.WALL_MOVEMENT_TYPES;
-      sense: foundry.CONST.WALL_SENSE_TYPES;
+      sight: foundry.CONST.WALL_SENSE_TYPES;
       sound: foundry.CONST.WALL_SENSE_TYPES;
     }
   }
