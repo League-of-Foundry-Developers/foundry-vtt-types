@@ -8,6 +8,7 @@ declare class CombatTrackerConfig<
   Data extends object = CombatTrackerConfig.Data
 > extends FormApplication<Options, Data, undefined> {
   /**
+   * @override
    * @defaultValue
    * ```typescript
    * foundry.utils.mergeObject(super.defaultOptions, {
