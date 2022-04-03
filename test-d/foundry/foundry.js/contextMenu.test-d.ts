@@ -19,4 +19,4 @@ const contextMenu = new ContextMenu(element, '.some-class', [
 
 expectType<void>(contextMenu.bind());
 expectType<void | Promise<void>>(contextMenu.render(element));
-expectType<ContextMenu.Item[]>(contextMenu.menuItems);
+expectType<ContextMenuEntry[]>(contextMenu.menuItems);
