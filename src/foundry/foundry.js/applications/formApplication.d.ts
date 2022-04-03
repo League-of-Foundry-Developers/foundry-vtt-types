@@ -243,7 +243,7 @@ declare abstract class FormApplication<
    * @param event - The initiating mouse click event which opens the picker
    * @returns Options passed to the FilePicker constructor
    */
-  protected _getFilePickerOptions(event: PointerEvent): FilePicker.Options;
+  protected _getFilePickerOptions(event: PointerEvent): FilePickerOptions;
 
   /**
    * @param options - (default: `{}`)

@@ -31,7 +31,7 @@ declare global {
     getData(options?: Partial<Options>): Data | Promise<Data>;
 
     /** @override */
-    protected _getFilePickerOptions(event: PointerEvent): FilePicker.Options;
+    protected _getFilePickerOptions(event: PointerEvent): FilePickerOptions;
 
     /**
      * @override
