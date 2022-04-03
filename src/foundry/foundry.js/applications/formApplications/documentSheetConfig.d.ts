@@ -1,16 +1,16 @@
-import type { DocumentConstructor } from '../../../../types/helperTypes';
+import type { DocumentConstructor, DocumentType } from '../../../../types/helperTypes';
 
 declare global {
   /**
-   * Entity Sheet Configuration Application
+   * Document Sheet Configuration Application
    * @typeParam Options          - The type of the options object
    * @typeParam Data             - The data structure used to render the handlebars template.
    * @typeParam ConcreteDocument - The type of the Document which is being managed
    */
-  class EntitySheetConfig<
+  class DocumentSheetConfig<
     Options extends FormApplicationOptions = FormApplicationOptions,
-    Data extends object = EntitySheetConfig.Data<foundry.abstract.Document<any, any>, Options>,
-    ConcreteDocument extends foundry.abstract.Document<any, any> = Data extends EntitySheetConfig.Data<infer T>
+    Data extends object = DocumentSheetConfig.Data<foundry.abstract.Document<any, any>, Options>,
+    ConcreteDocument extends foundry.abstract.Document<any, any> = Data extends DocumentSheetConfig.Data<infer T>
       ? T
       : foundry.abstract.Document<any, any>
   > extends FormApplication<Options, Data, ConcreteDocument> {
@@ -18,9 +18,9 @@ declare global {
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
-     *   id: "sheet-config",
+     *   classes: ["form", "sheet-config"],
      *   template: "templates/sheets/sheet-config.html",
-     *   width: 400,
+     *   width: 400
      * })
      * ```
      */
@@ -30,7 +30,7 @@ declare global {
      * An array of pending sheet assignments which are submitted before other elements of the framework are ready.
      * @internal
      */
-    static _pending: Array<EntitySheetConfig.SheetAssignment>;
+    protected static _pending: Array<DocumentSheetConfig.SheetAssignment>;
 
     /** @override */
     get title(): string;
@@ -39,11 +39,11 @@ declare global {
     getData(options?: Partial<Options>): Data | Promise<Data>;
 
     /** @override */
-    protected _updateObject(event: Event, formData: EntitySheetConfig.FormData): Promise<void>;
+    protected _updateObject(event: Event, formData: DocumentSheetConfig.FormData): Promise<void>;
 
     /**
-     * Initialize the configured Sheet preferences for Entities which support dynamic Sheet assignment
-     * Create the configuration structure for supported entities
+     * Initialize the configured Sheet preferences for Documents which support dynamic Sheet assignment
+     * Create the configuration structure for supported documents
      * Process any pending sheet registrations
      * Update the default values from settings data
      */
@@ -55,7 +55,7 @@ declare global {
     protected static _getDocumentTypes(cls: DocumentConstructor, types?: string[]): string[];
 
     /**
-     * Register a sheet class as a candidate which can be used to display entities of a given type
+     * Register a sheet class as a candidate which can be used to display documents of a given type
      * @param documentClass - The Document class for which to register a new Sheet option
      * @param scope         - Provide a unique namespace scope for this sheet
      * @param sheetClass    - A defined Application class used to render the sheet
@@ -65,7 +65,7 @@ declare global {
       documentClass: DocumentConstructor,
       scope: string,
       sheetClass: ConstructorOf<FormApplication<FormApplicationOptions, any, any>>,
-      { label, types, makeDefault }?: EntitySheetConfig.RegisterSheetOptions
+      { label, types, makeDefault }?: DocumentSheetConfig.RegisterSheetOptions | undefined
     ): void;
 
     /**
@@ -79,7 +79,7 @@ declare global {
       sheetClass,
       types,
       makeDefault
-    }: Omit<EntitySheetConfig.SheetRegistration, 'action'>): void;
+    }: Omit<DocumentSheetConfig.SheetRegistration, 'action'>): void;
 
     /**
      * Unregister a sheet class, removing it from the list of available Applications to use for a Document type
@@ -103,15 +103,21 @@ declare global {
       documentClass,
       id,
       types
-    }: Omit<EntitySheetConfig.SheetUnregistration, 'action'>): void;
+    }: Omit<DocumentSheetConfig.SheetUnregistration, 'action'>): void;
 
     /**
      * Update the currently default Sheets using a new core world setting
      */
-    static updateDefaultSheets(setting?: Record<'Actor' | 'Item', Record<string, string>>): void;
+    static updateDefaultSheets(setting?: Record<DocumentType, Record<string, string>>): void;
+
+    /**
+     * Initialize default sheet configurations for all document types.
+     * @internal
+     */
+    protected static _registerDefaultSheets(): void;
   }
 
-  namespace EntitySheetConfig {
+  namespace DocumentSheetConfig {
     type SheetRegistration = {
       action: 'register';
       documentClass: DocumentConstructor;
@@ -140,7 +146,7 @@ declare global {
       Options extends FormApplicationOptions = FormApplicationOptions
     > {
       isGM: boolean;
-      object: foundry.utils.Duplicated<ConcreteDocument['data']>;
+      object: ConcreteDocument['data']['_source'];
       options: Options;
       sheetClass: string;
       sheetClasses: Record<string, string>;
@@ -157,7 +163,7 @@ declare global {
       /** A human readable label for the sheet name, which will be localized */
       label?: string;
 
-      /** An array of entity types for which this sheet should be used */
+      /** An array of document types for which this sheet should be used */
       types?: string[];
 
       /**
@@ -167,4 +173,15 @@ declare global {
       makeDefault?: boolean;
     }
   }
+
+  /**
+   * @deprecated since v9
+   */
+  class EntitySheetConfig<
+    Options extends FormApplicationOptions = FormApplicationOptions,
+    Data extends object = DocumentSheetConfig.Data<foundry.abstract.Document<any, any>, Options>,
+    ConcreteDocument extends foundry.abstract.Document<any, any> = Data extends DocumentSheetConfig.Data<infer T>
+      ? T
+      : foundry.abstract.Document<any, any>
+  > extends DocumentSheetConfig<Options, Data, ConcreteDocument> {}
 }
