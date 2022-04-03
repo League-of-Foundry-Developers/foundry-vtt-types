@@ -1,9 +1,10 @@
 import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import type { TokenDataConstructorData } from '../../../common/data/data.mjs/tokenData';
 
 declare global {
   /**
    * The Application responsible for configuring a single Token document within a parent Scene.
+   * Note that due to an oversight, this class does not inherit from {@link DocumentSheet} as it was intended to, and will
+   * be changed in v10.
    * @typeParam Options - The type of the options object
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
@@ -33,7 +34,11 @@ declare global {
      *   template: "templates/scene/token-config.html",
      *   width: 480,
      *   height: "auto",
-     *   tabs: [{ navSelector: ".tabs", contentSelector: "form", initial: "character" }],
+     *   tabs: [
+     *     {navSelector: '.tabs[data-group="main"]', contentSelector: "form", initial: "character"},
+     *     {navSelector: '.tabs[data-group="light"]', contentSelector: '.tab[data-tab="light"]', initial: "basic"}
+     *   ],
+     *   sheetConfig: true
      * })
      * ```
      */
@@ -61,6 +66,9 @@ declare global {
     /** @override */
     render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<this>;
 
+    /** @override */
+    protected _renderInner(...args: [Data]): Promise<JQuery>;
+
     /**
      * Get an Object of image paths and filenames to display in the Token sheet
      * @internal
@@ -68,10 +76,16 @@ declare global {
     protected _getAlternateTokenImages(): Promise<Record<string, string>>;
 
     /** @override */
-    activateListeners(html: JQuery): void;
+    protected _getHeaderButtons(): Application.HeaderButton[];
+
+    /**
+     * Shim for {@link DocumentSheet#_onConfigureSheet} that will be replaced in v10 when this class subclasses it.
+     * @internal
+     */
+    protected _onConfigureSheet(event: JQuery.ClickEvent): void;
 
     /** @override */
-    protected _getSubmitData(updateData?: TokenDataConstructorData): Record<string, unknown> & { lightAlpha: number };
+    activateListeners(html: JQuery): void;
 
     /** @override */
     protected _updateObject(
@@ -112,13 +126,13 @@ declare global {
       options: Options;
       gridUnits: string | undefined;
       barAttributes: Record<string, string[]>;
-      bar1: ReturnType<TokenDocument['getBarAttribute']>;
-      bar2: ReturnType<TokenDocument['getBarAttribute']>;
+      bar1: ReturnType<TokenDocument['getBarAttribute']> | undefined;
+      bar2: ReturnType<TokenDocument['getBarAttribute']> | undefined;
+      colorationTechniques: AdaptiveLightingShader.ColorationTechniques;
       displayModes: Record<foundry.CONST.TOKEN_DISPLAY_MODES, string>;
       actors: { _id: string; name: string }[];
       dispositions: Record<foundry.CONST.TOKEN_DISPOSITIONS, string>;
       lightAnimations: { [Key in keyof typeof CONFIG.Canvas.lightAnimations]: string } & { '': string };
-      lightAlpha: number;
       isGM: boolean;
     }
 
