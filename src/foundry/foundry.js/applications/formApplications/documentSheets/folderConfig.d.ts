@@ -4,12 +4,14 @@ import type { SortingModes } from '../../../../common/data/data.mjs/folderData';
 declare global {
   /**
    * The Application responsible for configuring a single Folder document.
+   *
+   * @typeParam Options - the type of the options object
+   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class FolderConfig extends DocumentSheet<
-    DocumentSheetOptions,
-    FolderConfig.Data,
-    InstanceType<ConfiguredDocumentClass<typeof Folder>>
-  > {
+  class FolderConfig<
+    Options extends FolderConfig.Options = FolderConfig.Options,
+    Data extends object = FolderConfig.Data
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Folder>>> {
     /**
      * @override
      * @defaultValue
@@ -21,7 +23,7 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): typeof DocumentSheet['defaultOptions'];
+    static get defaultOptions(): DocumentSheetOptions;
 
     /** @override */
     get id(): string;
@@ -29,11 +31,14 @@ declare global {
     /** @override */
     get title(): string;
 
+    /** @override */
+    close(options?: Application.CloseOptions | undefined): Promise<void>;
+
     /**
      * @param options - (unused)
      * @override
      */
-    getData(options?: Partial<FormApplicationOptions>): Promise<FolderConfig.Data>;
+    getData(options?: Partial<Options>): Promise<Data>;
 
     /**
      * @param event - (unused)
@@ -47,6 +52,10 @@ declare global {
   }
 
   namespace FolderConfig {
+    interface Options extends DocumentSheetOptions {
+      resolve?: (doc: InstanceType<ConfiguredDocumentClass<typeof Folder>>) => void;
+    }
+
     interface Data {
       name: string;
       newName: string;
