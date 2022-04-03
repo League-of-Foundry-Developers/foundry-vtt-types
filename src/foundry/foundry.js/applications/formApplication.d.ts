@@ -178,7 +178,7 @@ declare abstract class FormApplication<
    * Do not preventDefault in this handler as other interactions on the form may also be occurring.
    * @param event - The initial change event
    */
-  protected _onChangeInput(event: JQuery.ChangeEvent): void | Promise<unknown>;
+  protected _onChangeInput(event: JQuery.ChangeEvent): void;
 
   /**
    * Handle the change of a color picker input which enters it's chosen value into a related input field
