@@ -1,13 +1,18 @@
 import type { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
 
 declare global {
+  interface JournalSheetOptions extends DocumentSheetOptions {
+    /** The current display mode of the journal. Either 'text' or 'image'. */
+    sheetMode?: JournalSheet.SheetMode | null;
+  }
+
   /**
    * The Application responsible for displaying and editing a single JournalEntry document.
    * @typeParam Options - the type of the options object
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
   class JournalSheet<
-    Options extends JournalSheet.Options = JournalSheet.Options,
+    Options extends JournalSheetOptions = JournalSheetOptions,
     Data extends object = JournalSheet.Data<Options>
   > extends DocumentSheet<Options, Data> {
     /**
@@ -41,11 +46,11 @@ declare global {
      *   resizable: true,
      *   closeOnSubmit: false,
      *   submitOnClose: true,
-     *   viewPermission: CONST.ENTITY_PERMISSIONS.NONE
+     *   viewPermission: CONST.DOCUMENT_PERMISSION_LEVELS.NONE
      * })
      * ```
      */
-    static get defaultOptions(): JournalSheet.Options;
+    static get defaultOptions(): JournalSheetOptions;
 
     /** @override */
     get template(): string;
@@ -96,11 +101,7 @@ declare global {
   }
 
   namespace JournalSheet {
-    interface Options extends DocumentSheetOptions {
-      sheetMode?: SheetMode | null;
-    }
-
-    interface Data<Options extends JournalSheet.Options = JournalSheet.Options>
+    interface Data<Options extends JournalSheetOptions = JournalSheetOptions>
       extends DocumentSheet.Data<ConcreteJournalEntry, Options> {
       image: string;
       folders: ReturnType<NonNullable<Game['folders']>['filter']>;
