@@ -9,7 +9,7 @@ declare global {
     constructor(message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>, options?: Partial<Options>);
 
     /**
-     * The displayed Chat Message entity
+     * The displayed Chat Message document
      */
     message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>;
 
