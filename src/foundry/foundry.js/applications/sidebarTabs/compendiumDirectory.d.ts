@@ -4,8 +4,12 @@ declare global {
   /**
    * A compendium of knowledge arcane and mystical!
    * @typeParam Options - The type of the options object
+   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class CompendiumDirectory<Options extends ApplicationOptions = ApplicationOptions> extends SidebarTab<Options> {
+  class CompendiumDirectory<
+    Options extends ApplicationOptions = ApplicationOptions,
+    Data extends object = CompendiumDirectory.Data
+  > extends SidebarTab<Options> {
     /**
      * @override
      * @defaultValue
@@ -13,7 +17,7 @@ declare global {
      * foundry.utils.mergeObject(super.defaultOptions, {
      *   id: "compendium",
      *   template: "templates/sidebar/compendium-directory.html",
-     *   title: "Compendium Packs"
+     *   title: "COMPENDIUM.SidebarTitle"
      * });
      * ```
      */
@@ -23,7 +27,7 @@ declare global {
      * @param options - (unused)
      * @override
      */
-    getData(options?: Partial<Options>): CompendiumDirectory.Data;
+    getData(options?: Partial<Options>): Data | Promise<Data>;
 
     /**
      * @override
@@ -39,22 +43,32 @@ declare global {
     /**
      * Get the sidebar directory entry context options
      * @returns The sidebar entry context options
+     * @internal
      */
     protected _getEntryContextOptions(): ContextMenuEntry[];
 
     /**
      * Handle a Compendium Pack creation request
      * @param event - The originating click event
+     * @internal
      */
     protected _onCreateCompendium(event: JQuery.ClickEvent): Promise<void>;
 
     /**
      * Handle a Compendium Pack deletion request
      * @param pack - The pack object requested for deletion
+     * @internal
      */
     protected _onDeleteCompendium(
       pack: CompendiumCollection<CompendiumCollection.Metadata>
     ): Promise<CompendiumCollection<CompendiumCollection.Metadata> | void>;
+
+    /**
+     * Toggle the compendium entry open/closed state in the sidebar.
+     * @param pack - The name of the compendium pack.
+     * @internal
+     */
+    protected _toggleOpenState(pack: string): void;
   }
 
   namespace CompendiumDirectory {
