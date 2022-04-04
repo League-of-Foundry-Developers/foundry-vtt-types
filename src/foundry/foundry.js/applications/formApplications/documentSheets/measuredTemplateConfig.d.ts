@@ -3,7 +3,6 @@ import type { ConfiguredDocumentClassForName } from '../../../../../types/helper
 declare global {
   /**
    * The Application responsible for configuring a single MeasuredTemplate document within a parent Scene.
-   * @see {@link MeasuredTemplate}
    * @typeParam Options - the type of the options object
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
@@ -18,7 +17,7 @@ declare global {
      * foundry.utils.mergeObject(super.defaultOptions, {
      *   id: "template-config",
      *   classes: ["sheet", "template-sheet"],
-     *   title: "Measurement Template Configuration",
+     *   title: "TEMPLATE.MeasuredConfig",
      *   template: "templates/scene/template-config.html",
      *   width: 400,
      * })

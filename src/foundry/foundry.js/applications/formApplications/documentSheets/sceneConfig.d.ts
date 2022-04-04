@@ -2,9 +2,7 @@ import type { ConfiguredDocumentClassForName, DocumentConstructor } from '../../
 
 declare global {
   /**
-   * The Application responsible for configuring a single Scene document.
-   * @see {@link Scene} The Scene Document which is being configured
-   *
+   * The Application responsible for configuring a single Scene document.   *
    * @typeParam Options - the type of the options object
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
@@ -20,8 +18,9 @@ declare global {
      *   id: "scene-config",
      *   classes: ["sheet", "scene-sheet"],
      *   template: "templates/scene/config.html",
-     *   width: 680,
+     *   width: 560,
      *   height: "auto",
+     *   tabs: [{navSelector: ".tabs", contentSelector: "form", initial: "basic"}]
      * });
      * ```
      */
@@ -32,13 +31,11 @@ declare global {
      */
     get title(): string;
 
-    /**
-     * @override
-     * @remarks This incorrectly overrides `Application#render` by potentially returning `void`, see https://gitlab.com/foundrynet/foundryvtt/-/issues/6026.
-     */
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    render(force?: boolean, options?: Application.RenderOptions<Options>): this | void;
+    /** @override */
+    close(options?: Application.CloseOptions | undefined): Promise<void>;
+
+    /** @override */
+    render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 
     /**
      * @param options - (unused)
@@ -75,7 +72,26 @@ declare global {
     protected _onCapturePosition(event: JQuery.ClickEvent): void;
 
     /** @override */
+    protected _onChangeInput(event: JQuery.ChangeEvent): void;
+
+    /** @override */
+    protected _onChangeColorPicker(event: JQuery.ChangeEvent): void;
+
+    /** @override */
     protected _onChangeRange(event: JQuery.ChangeEvent): void;
+
+    /**
+     * Live update the scene as certain properties are changed.
+     * @param changed - The changed property.
+     * @internal
+     */
+    protected _previewScene(changed: string): void;
+
+    /**
+     * Reset the previewed darkness level, background color, grid alpha, and grid color back to their true values.
+     * @internal
+     */
+    protected _resetScenePreview(): void;
 
     /**
      * Handle updating the select menu of PlaylistSound options when the Playlist is changed

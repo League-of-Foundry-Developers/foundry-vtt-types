@@ -4,7 +4,6 @@ declare global {
   /**
    * A Macro configuration sheet
    *
-   * @see {@link Macro} The Macro Entity which is being configured
    * @typeParam Options - the type of the options object
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
@@ -35,6 +34,9 @@ declare global {
 
     /** @override */
     activateListeners(html: JQuery): void;
+
+    /** @override */
+    protected _disableFields(form: HTMLElement): void;
 
     /**
      * Handle changing the actor profile image by opening a FilePicker

@@ -14,7 +14,7 @@ declare class ContextMenu {
   constructor(
     element: JQuery,
     selector: string | null | undefined,
-    menuItems: ContextMenu.Item[],
+    menuItems: ContextMenuEntry[],
     { eventName }?: { eventName?: string }
   );
 
@@ -37,7 +37,7 @@ declare class ContextMenu {
   /**
    * The array of menu items being rendered
    */
-  menuItems: ContextMenu.Item[];
+  menuItems: ContextMenuEntry[];
 
   /**
    * Track which direction the menu is expanded in
@@ -51,17 +51,40 @@ declare class ContextMenu {
   get menu(): JQuery;
 
   /**
+   * Create a ContextMenu for this Application and dispatch hooks.
+   * @param app       - The Application this ContextMenu belongs to.
+   * @param html      - The Application's rendered HTML.
+   * @param selector  - The target CSS selector which activates the menu.
+   * @param menuItems - The array of menu items being rendered.
+   * @param hookName  - The name of the hook to call.
+   *                    (default: `'EntryContext'`)
+   */
+  static create(
+    app: Application,
+    html: JQuery,
+    selector: string,
+    menuItems: ContextMenuEntry[],
+    hookName?: string
+  ): ContextMenu;
+
+  /**
    * Attach a ContextMenu instance to an HTML selector
    */
   bind(): void;
 
   /**
-   * Animate closing the menu by sliding up and removing from the DOM
+   * Closes the menu and removes it from the DOM.
+   * @param options - Options to configure the closing behavior.
    */
-  close(): Promise<void>;
+  close(options?: ContextMenu.CloseOptions | undefined): Promise<void>;
 
+  /** @internal */
+  protected _close(): void;
+
+  /** @internal */
   protected _animateOpen(menu: JQuery): Promise<void>;
 
+  /** @internal */
   protected _animateClose(menu: JQuery): Promise<void>;
 
   /**
@@ -78,6 +101,16 @@ declare class ContextMenu {
   protected _setPosition(html: JQuery, target: JQuery): void;
 
   static eventListeners(): void;
+}
+
+declare namespace ContextMenu {
+  interface CloseOptions {
+    /**
+     * Animate the context menu closing.
+     * @defaultValue `true`
+     */
+    animate?: boolean;
+  }
 }
 
 interface ContextMenuEntry {
@@ -100,28 +133,4 @@ interface ContextMenuEntry {
    * A function to call to determine if this item appears in the menu. Receives the HTML element of the SidebarTab entry that this context menu is for.
    */
   condition?: boolean | ((target: JQuery) => boolean);
-}
-
-declare namespace ContextMenu {
-  interface Item {
-    /**
-     * The displayed item name
-     */
-    name: string;
-
-    /**
-     * An icon glyph HTML string
-     */
-    icon: string;
-
-    /**
-     * A function which returns a Boolean for whether or not to display the item
-     */
-    condition?: boolean | ((target: JQuery) => boolean);
-
-    /**
-     * A callback function to trigger when the entry of the menu is clicked
-     */
-    callback: (target: JQuery) => void;
-  }
 }

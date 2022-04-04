@@ -12,6 +12,7 @@ declare global {
     Data extends CombatantConfig.Data<Options> = CombatantConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Combatant>>> {
     /**
+     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {

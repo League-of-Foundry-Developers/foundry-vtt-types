@@ -31,7 +31,7 @@ declare global {
     getData(options?: Partial<Options>): Data | Promise<Data>;
 
     /** @override */
-    protected _getFilePickerOptions(event: PointerEvent): FilePicker.Options;
+    protected _getFilePickerOptions(event: PointerEvent): FilePickerOptions;
 
     /**
      * @override
@@ -44,6 +44,7 @@ declare global {
     interface Data<Options extends DocumentSheetOptions = DocumentSheetOptions>
       extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Playlist>>, Options> {
       modes: Record<foundry.CONST.PLAYLIST_MODES, string>;
+      sorting: Record<foundry.CONST.PLAYLIST_SORT_MODES, string>;
     }
   }
 }

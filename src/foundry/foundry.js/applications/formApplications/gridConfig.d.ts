@@ -75,14 +75,14 @@ declare global {
     close(options?: FormApplication.CloseOptions): ReturnType<FormApplication['close']>;
 
     /**
-     * Handle resetting the form and re-drawing back to the original dimensions
+     * Handle keyboard events.
      * @param event - The original keydown event
      * @internal
      */
     protected _onKeyDown(event: KeyboardEvent): void;
 
     /**
-     * Handle resetting the form and re-drawing back to the original dimensions
+     * Handle mousewheel events.
      * @param event - The original wheel event
      * @internal
      */
