@@ -17,8 +17,5 @@ declare class ActorDirectory extends SidebarDirectory<'Actor'> {
   protected _canDragDrop(selector: string): boolean;
 
   /** @override */
-  protected _onClickEntityName(event: JQuery.ClickEvent): Promise<void>;
-
-  /** @override */
   protected _getEntryContextOptions(): ContextMenuEntry[];
 }
