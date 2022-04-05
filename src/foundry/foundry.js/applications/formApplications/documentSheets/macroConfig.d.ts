@@ -52,10 +52,7 @@ declare global {
     protected _onExecute(event: JQuery.ClickEvent): Promise<void>;
 
     /** @override */
-    protected _updateObject(
-      event: Event,
-      formData: MacroConfig.FormData
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Macro>> | undefined>;
+    protected _updateObject(event: Event, formData: MacroConfig.FormData): Promise<unknown>;
   }
 
   namespace MacroConfig {

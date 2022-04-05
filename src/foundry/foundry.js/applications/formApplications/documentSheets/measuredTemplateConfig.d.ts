@@ -29,10 +29,7 @@ declare global {
     getData(): Data | Promise<Data>;
 
     /** @override */
-    protected _updateObject(
-      event: Event,
-      formData: MeasuredTemplateConfig.FormData
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'MeasuredTemplate'>> | undefined>;
+    protected _updateObject(event: Event, formData: MeasuredTemplateConfig.FormData): Promise<unknown>;
   }
 
   namespace MeasuredTemplateConfig {

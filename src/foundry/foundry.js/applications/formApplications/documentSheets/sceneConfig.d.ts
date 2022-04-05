@@ -109,10 +109,7 @@ declare global {
     /**
      * @override
      */
-    protected _updateObject(
-      event: Event,
-      formData: SceneConfig.FormData
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Scene'>> | undefined>;
+    protected _updateObject(event: Event, formData: SceneConfig.FormData): Promise<unknown>;
   }
 
   namespace SceneConfig {

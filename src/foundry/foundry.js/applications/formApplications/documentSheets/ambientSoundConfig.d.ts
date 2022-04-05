@@ -34,10 +34,7 @@ declare global {
      * @param event - (unused)
      * @override
      */
-    protected _updateObject(
-      event: Event,
-      formData: AmbientSoundConfig.FormData
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'AmbientSound'>>>;
+    protected _updateObject(event: Event, formData: AmbientSoundConfig.FormData): Promise<unknown>;
 
     /** @override */
     close(options?: Application.CloseOptions): Promise<void>;

@@ -145,7 +145,7 @@ declare global {
      * @param event - (unused)
      * @override
      */
-    protected _updateObject(event: Event, formData: GridConfig.FormData): ReturnType<Scene['update']>;
+    protected _updateObject(event: Event, formData: GridConfig.FormData): Promise<unknown>;
   }
 
   namespace GridConfig {

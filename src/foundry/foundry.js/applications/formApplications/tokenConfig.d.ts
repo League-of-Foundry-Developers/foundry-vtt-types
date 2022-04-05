@@ -88,14 +88,7 @@ declare global {
     activateListeners(html: JQuery): void;
 
     /** @override */
-    protected _updateObject(
-      event: Event,
-      formData: TokenConfig.FormData
-    ): Promise<
-      | InstanceType<ConfiguredDocumentClassForName<'Token'>>
-      | InstanceType<ConfiguredDocumentClassForName<'Actor'>>
-      | undefined
-    >;
+    protected _updateObject(event: Event, formData: TokenConfig.FormData): Promise<unknown>;
 
     /**
      * Handle Token assignment requests to update the default prototype Token

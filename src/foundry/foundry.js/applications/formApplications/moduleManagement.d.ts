@@ -65,7 +65,7 @@ declare class ModuleManagement<
    * @override
    * @param event - (unused)
    */
-  protected _updateObject(event: Event, formData: ModuleManagement.FormData): Promise<Record<string, boolean>>;
+  protected _updateObject(event: Event, formData: ModuleManagement.FormData): Promise<unknown>;
 
   /**
    * Restores the Form UI to the internal checked state

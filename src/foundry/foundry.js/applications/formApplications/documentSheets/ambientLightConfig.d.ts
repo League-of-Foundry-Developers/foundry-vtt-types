@@ -58,10 +58,7 @@ declare global {
      * @param event - (unused)
      * @override
      */
-    protected _updateObject(
-      event: Event,
-      formData: AmbientLightConfig.FormData
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'AmbientLight'>> | undefined>;
+    protected _updateObject(event: Event, formData: AmbientLightConfig.FormData): Promise<unknown>;
 
     /**
      * Refresh the display of the AmbientLight object

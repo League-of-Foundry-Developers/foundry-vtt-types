@@ -33,10 +33,7 @@ declare global {
      * @param event - (unused)
      * @override
      */
-    protected _updateObject(
-      event: Event,
-      formData: NoteConfig.FormData
-    ): Promise<ConfiguredDocumentClassForName<'Note'> | undefined>;
+    protected _updateObject(event: Event, formData: NoteConfig.FormData): Promise<unknown>;
 
     /**
      * @override

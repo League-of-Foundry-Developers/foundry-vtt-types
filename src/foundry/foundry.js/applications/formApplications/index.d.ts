@@ -1,6 +1,5 @@
 import './avConfig';
 import './combatTrackerConfig';
-import './defaultTokenConfig';
 import './documentSheet';
 import './documentSheetConfig';
 import './documentSheets';
@@ -12,5 +11,6 @@ import './moduleManagement';
 import './permissionConfig';
 import './settingsConfig';
 import './tokenConfig';
+import './tokenConfigs';
 import './wallConfig';
 import './worldConfig';

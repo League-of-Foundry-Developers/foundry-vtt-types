@@ -41,10 +41,7 @@ declare global {
     /**
      * @remarks This method not overridden in foundry but added to provide types when overriding the UserConfig.
      */
-    protected _updateObject(
-      event: Event,
-      formData: FormData
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof User>> | undefined>;
+    protected _updateObject(event: Event, formData: FormData): Promise<unknown>;
   }
 
   namespace UserConfig {
