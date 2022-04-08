@@ -1,3 +1,6 @@
+import type { ConfiguredDocumentClassForName } from '../../../../../types/helperTypes';
+import type { TokenBarData } from '../../../../common/data/data.mjs/tokenBarData';
+
 declare global {
   /**
    * A sheet that alters the values of the default Token configuration used when new Token documents are created.
@@ -5,13 +8,18 @@ declare global {
   class DefaultTokenConfig<
     Options extends FormApplicationOptions = FormApplicationOptions,
     Data extends DefaultTokenConfig.Data = DefaultTokenConfig.Data
-  > extends FormApplication<Options, Data, foundry.data.TokenData['_source']> {
-    constructor(object: unknown, options: Options);
+  > extends TokenConfig<Options, Data> {
+    constructor(object: unknown, options?: Partial<Options> | undefined);
 
     data: foundry.data.TokenData;
 
+    object: InstanceType<ConfiguredDocumentClassForName<'Token'>>;
+
+    token: InstanceType<ConfiguredDocumentClassForName<'Token'>>;
+
     /**
      * The named world setting that stores the default Token configuration
+     * @defaultValue `"defaultToken"`
      */
     static SETTING: string;
 
@@ -20,24 +28,26 @@ declare global {
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
-     *   id: "default-token-config",
-     *   classes: ["sheet"],
      *   template: "templates/scene/default-token-config.html",
-     *   title: "Default Token Configuration",
-     *   width: 480,
-     *   height: "auto"
+     *   sheetConfig: false
      * })
      * ```
      */
-    static get defaultOptions(): typeof FormApplication['defaultOptions'];
+    static get defaultOptions(): FormApplicationOptions;
+
+    /** @override */
+    get id(): string;
+
+    /** @override */
+    get title(): string;
 
     /** @override */
     getData(options: unknown): Data | Promise<Data>;
 
     /** @override */
     _getSubmitData(
-      updateData?: Parameters<FormApplication['_getSubmitData']>[0]
-    ): ReturnType<FormApplication['_getSubmitData']>;
+      updateData?: Parameters<TokenConfig['_getSubmitData']>[0]
+    ): ReturnType<TokenConfig['_getSubmitData']>;
 
     /** @override */
     _updateObject(event: Event, formData?: object): Promise<unknown>;
@@ -49,16 +59,19 @@ declare global {
      * Reset the form to default values
      */
     reset(): void;
+
+    /** @override */
+    protected _onBarChange(): Promise<void>;
   }
 
   namespace DefaultTokenConfig {
-    interface Data {
-      object: DefaultTokenConfig['object'];
+    interface Data<Options extends FormApplicationOptions = FormApplicationOptions>
+      extends Omit<TokenConfig.Data<Options>, 'object' | 'bar1' | 'bar2'> {
+      object: foundry.data.TokenData['_source'];
+      isDefault: true;
       barAttributes: ReturnType<typeof TokenDocument['getTrackedAttributeChoices']>;
-      dispositions: Record<ValueOf<typeof CONST.TOKEN_DISPOSITIONS>, string>;
-      lightAnimations: Record<string, string>;
-      displayModes: Record<ValueOf<typeof CONST.TOKEN_DISPLAY_MODES>, string>;
-      lightAlpha: number;
+      bar1: TokenBarData;
+      bar2: TokenBarData;
     }
   }
 }

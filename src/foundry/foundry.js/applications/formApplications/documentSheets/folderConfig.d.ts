@@ -45,10 +45,7 @@ declare global {
      * @override
      * @internal
      */
-    protected _updateObject(
-      event: Event,
-      formData: FolderConfig.FormData
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Folder>> | undefined>;
+    protected _updateObject(event: Event, formData: FolderConfig.FormData): Promise<unknown>;
   }
 
   namespace FolderConfig {

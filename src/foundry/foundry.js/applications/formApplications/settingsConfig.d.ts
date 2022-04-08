@@ -2,7 +2,7 @@ import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 
 declare global {
   /**
-   * The Application responsible for displaying and editing a single Setting document.
+   * The Application responsible for displaying and editing the client and world settings for this world.
    * This form renders the settings defined via the game.settings.register API which have config = true
    * @typeParam Options - The type of the options object
    * @typeParam Data    - The data structure used to render the handlebars template.
@@ -21,7 +21,9 @@ declare global {
      *   template: "templates/sidebar/apps/settings-config.html",
      *   width: 600,
      *   height: "auto",
-     *   tabs: [{ navSelector: ".tabs", contentSelector: ".content", initial: "core" }],
+     *   tabs: [
+     *     {navSelector: ".tabs", contentSelector: ".content", initial: "core"}
+     *   ]
      * })
      * ```
      */
@@ -50,8 +52,18 @@ declare global {
      */
     protected _onResetDefaults(event: JQuery.ClickEvent): void;
 
+    /**
+     * Preview font scaling as the setting is changed.
+     * @param event - The triggering event.
+     * @internal
+     */
+    protected _previewFontScaling(event: JQuery.ChangeEvent): void;
+
     /** @override */
-    protected _updateObject(event: Event, formData: SettingsConfig.FormData): Promise<void>;
+    close(options?: Application.CloseOptions | undefined): Promise<void>;
+
+    /** @override */
+    protected _updateObject(event: Event, formData: SettingsConfig.FormData): Promise<unknown>;
   }
 
   namespace SettingsConfig {

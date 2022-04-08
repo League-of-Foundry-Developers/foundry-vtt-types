@@ -41,10 +41,7 @@ declare global {
     getData(): Data | Promise<Data>;
 
     /** @override */
-    protected _updateObject(
-      event: Event,
-      formData: WallConfig.FormData
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Wall'>> | undefined>;
+    protected _updateObject(event: Event, formData: WallConfig.FormData): Promise<unknown>;
   }
 
   namespace WallConfig {
