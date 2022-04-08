@@ -5,28 +5,18 @@
  * @typeParam Options - The type of the options object
  * @typeParam Data    - The data structure used to render the handlebars template.
  */
-
 declare class ModuleManagement<
   Options extends FormApplicationOptions = FormApplicationOptions,
   Data extends object = ModuleManagement.Data
 > extends FormApplication<Options, Data, undefined> {
-  /**
-   * @defaultValue `'all'`
-   * @internal
-   */
+  /** @internal */
   protected _filter: ModuleManagement.FilterName;
 
   /**
-   * @defaultValue `false`
+   * @defaultValue `true`
    * @internal
    */
   protected _expanded: boolean;
-
-  /**
-   * @defaultValue `{}`
-   * @internal
-   */
-  protected _checked: Record<string, boolean>;
 
   /**
    * The named game setting which persists module configuration.
@@ -61,17 +51,11 @@ declare class ModuleManagement<
   /** @override */
   activateListeners(html: JQuery): void;
 
-  /**
-   * @override
-   * @param event - (unused)
-   */
-  protected _updateObject(event: Event, formData: ModuleManagement.FormData): Promise<unknown>;
+  /** @override */
+  protected _renderInner(data: Data): Promise<JQuery>;
 
-  /**
-   * Restores the Form UI to the internal checked state
-   * @internal
-   */
-  protected _restoreCheckboxState(): void;
+  /** @override */
+  protected _updateObject(event: Event, formData: ModuleManagement.FormData): Promise<unknown>;
 
   /**
    * Handle changes to a module checkbox to prompt for whether or not to enable dependencies
@@ -117,11 +101,11 @@ declare namespace ModuleManagement {
       count: number;
     }
 
-    type Module = foundry.packages.ModuleData['_source'] & {
+    type Module = Exclude<foundry.packages.ModuleData['_source'], 'authors'> & {
       active: boolean;
       availability: number;
       data: foundry.packages.ModuleData;
-      css: ' active' | '';
+      css: string;
       hasPacks: boolean;
       hasScripts: boolean;
       hasStyles: boolean;
@@ -130,6 +114,8 @@ declare namespace ModuleManagement {
       dependencies: string[] | null;
       unavailable?: string;
       incompatible?: string;
+      authors: string | undefined;
+      labels: string;
     };
   }
 
