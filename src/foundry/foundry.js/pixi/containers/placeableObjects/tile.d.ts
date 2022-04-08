@@ -70,6 +70,12 @@ declare global {
      */
     occluded: boolean;
 
+    /**
+     * A flag which tracks if the Tile is currently playing
+     * @defaultValue `false`
+     */
+    playing: boolean;
+
     /** @override */
     static embeddedName: 'Tile';
 
@@ -95,6 +101,11 @@ declare global {
      * Is this tile a roof
      */
     get isRoof(): boolean;
+
+    /**
+     * The effective volume at which this Tile should be playing, including the global ambient volume modifier
+     */
+    get volume(): number;
 
     /** @override */
     draw(): Promise<this>;
