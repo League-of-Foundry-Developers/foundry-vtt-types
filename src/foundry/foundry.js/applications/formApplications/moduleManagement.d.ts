@@ -55,7 +55,7 @@ declare class ModuleManagement<
   protected _renderInner(data: Data): Promise<JQuery>;
 
   /** @override */
-  protected _updateObject(event: Event, formData: ModuleManagement.FormData): Promise<Record<string, boolean>>;
+  protected _updateObject(event: Event, formData: ModuleManagement.FormData): Promise<unknown>;
 
   /**
    * Handle changes to a module checkbox to prompt for whether or not to enable dependencies
