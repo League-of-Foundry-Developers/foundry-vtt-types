@@ -60,11 +60,7 @@ declare global {
      *                  (default: `{}`)
      * @returns A Promise which resolves to the created Folder, or null if the dialog was closed.
      *
-     * @remarks
-     * For weird reasons, we need to make this generic.
-     *
-     * The type of `context` is actually `{options?: DocumentSheetOptions} | undefined` but that's incompatible with the
-     * base implementation. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6863.
+     * @remarks For weird reasons, we need to make this generic.
      */
     static createDialog<T extends DocumentConstructor>(
       this: T,
@@ -74,7 +70,7 @@ declare global {
             | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
           >
         | undefined,
-      context?: any
+      context?: Partial<Omit<FolderConfig.Options, 'resolve'>>
     ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
 
     /**
