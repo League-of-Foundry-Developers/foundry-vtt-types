@@ -259,6 +259,12 @@ declare global {
     refresh(): this;
 
     /**
+     * Size and display the Token Icon
+     * @internal
+     */
+    protected _refreshIcon(): void;
+
+    /**
      * Draw the Token border, taking into consideration the grid type and border color
      * @internal
      */
@@ -444,27 +450,12 @@ declare global {
 
     /**
      * Set this Token as an active target for the current game User
-     * @param targeted       - Is the Token now targeted?
-     *                         (default: `true`)
-     * @param user           - Assign the token as a target for a specific User
-     *                         (default: `null` which will use the current user)
-     * @param releaseOthers  - Release other active targets for the same player?
-     *                         (default: `true`)
-     * @param groupSelection - Is this target being set as part of a group selection workflow?
-     *                         (default: `false`)
+     * @param targeted - Is the Token now targeted?
+     *                   (default: `true`)
+     * @param context  - Additional context options
+     *                   (default `{}`)
      */
-    setTarget(
-      targeted?: boolean,
-      {
-        user,
-        releaseOthers,
-        groupSelection
-      }?: {
-        user?: InstanceType<ConfiguredDocumentClass<typeof User>> | null;
-        releaseOthers?: boolean;
-        groupSelection?: boolean;
-      }
-    ): void;
+    setTarget(targeted?: boolean, context?: Token.SetTargetContext | undefined): void;
 
     /**
      * Add or remove the currently controlled Tokens from the active combat encounter
@@ -519,12 +510,8 @@ declare global {
     /** @override */
     protected _getShiftedPosition(dx: number, dy: number): { x: number; y: number };
 
-    /**
-     * Extend the PlaceableObject.rotate method to prevent rotation if the Token is in the midst of a movement animation
-     * @returns Actually a Promise<void>
-     * @remarks The return type is `Promise<this> | undefined` but this breaks the interface of PlaceableObject, see https://gitlab.com/foundrynet/foundryvtt/-/issues/6876
-     */
-    rotate(...args: Parameters<PlaceableObject['rotate']>): any;
+    /** @override */
+    rotate(...args: Parameters<PlaceableObject['rotate']>): Promise<this>;
 
     /** @override */
     protected _onCreate(
@@ -717,6 +704,26 @@ declare global {
        * @defaultValue `false`
        */
       overlay?: boolean | undefined;
+    }
+
+    interface SetTargetContext {
+      /**
+       * Assign the token as a target for a specific User
+       * @defaultValue `null`
+       */
+      user?: InstanceType<ConfiguredDocumentClass<typeof User>> | null | undefined;
+
+      /**
+       * Release other active targets for the same player?
+       * @defaultValue `true`
+       */
+      releaseOthers?: boolean | undefined;
+
+      /**
+       * Is this target being set as part of a group selection workflow?
+       * @defaultValue `Is this target being set as part of a group selection workflow?`
+       */
+      groupSelection?: boolean | undefined;
     }
   }
 }
