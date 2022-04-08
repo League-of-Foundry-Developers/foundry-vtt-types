@@ -441,7 +441,6 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
    * @param event - The originating DragEvent
    *                (unused)
    * @internal
-   * @internal
    */
   protected _onDrop(event: DragEvent): void;
 

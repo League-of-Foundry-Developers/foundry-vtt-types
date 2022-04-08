@@ -50,12 +50,19 @@ declare global {
 
     /**
      * @override
+     * @defaultValue `'templates/sidebar/playlist-partial.html'`
+     */
+    static documentPartial: string;
+
+    /**
+     * @override
      * @defaultValue
      * ```typescript
      * const options = super.defaultOptions;
-     * options.dragDrop[0].dragSelector = ".playlist-name";
+     * options.template = "templates/sidebar/playlists-directory.html";
+     * options.dragDrop[0].dragSelector = ".playlist-name, .sound-name";
      * options.renderUpdateKeys = ["name", "playing", "mode", "sounds", "sort", "sorting", "folder"];
-     * options.contextMenuSelector = ".entity .playlist-header";
+     * options.contextMenuSelector = ".document .playlist-header";
      * return options;
      * ```
      */
@@ -68,12 +75,18 @@ declare global {
     protected _createExpandedSet(): Set<string>;
 
     /**
-     * Return an Array of the Playlist entities which are currently playing
+     * Return an Array of the Playlist documents which are currently playing
      */
     get playing(): InstanceType<ConfiguredDocumentClass<typeof Playlist>>[];
 
+    /**
+     * Whether the 'currently playing' element is pinned to the top or bottom of the display.
+     * @internal
+     */
+    protected get _playingLocation(): 'top' | 'bottom';
+
     /** @override */
-    getData(options?: Partial<Options>): PlaylistDirectory.Data;
+    getData(options?: Partial<Options>): PlaylistDirectory.Data | Promise<PlaylistDirectory.Data>;
 
     /**
      * Augment the tree directory structure with playlist-level data objects for rendering
@@ -206,7 +219,10 @@ declare global {
      * @param event - The initial click event
      * @internal
      */
-    protected _onSoundToggleMode(event: JQuery.ClickEvent): unknown;
+    protected _onSoundToggleMode(event: JQuery.ClickEvent): void;
+
+    /** @internal */
+    protected _onPlayingPin(): void;
 
     /** @override */
     protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
@@ -241,6 +257,12 @@ declare global {
      * @internal
      */
     protected _getSoundContextOptions(): ContextMenuEntry[];
+
+    /** @override */
+    protected _onDragStart(event: DragEvent): void;
+
+    /** @override */
+    protected _onDrop(event: DragEvent): void;
   }
 
   namespace PlaylistDirectory {
@@ -251,6 +273,17 @@ declare global {
       ambientModifier: number;
       interfaceModifier: number;
       volumeExpanded: boolean;
+      currentlyPlaying: {
+        class: `location-${'top' | 'bottom'}`;
+        location: {
+          top: boolean;
+          bottom: boolean;
+        };
+        pin: {
+          label: string;
+          caret: 'down' | 'up';
+        };
+      };
     }
 
     namespace Data {
