@@ -2,12 +2,20 @@ import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 import type { ChatMessageDataConstructorData } from '../../../common/data/data.mjs/chatMessageData';
 
 declare global {
+  interface ChatLogOptions extends ApplicationOptions {
+    /**
+     * Is this chat log being rendered as part of the stream view?
+     * @defaultValue `false`
+     */
+    stream: boolean;
+  }
+
   /**
    * The sidebar directory which organizes and displays world-level ChatMessage documents.
    * @see {@link Sidebar}
    */
-  class ChatLog extends SidebarTab<ChatLog.Options> {
-    constructor(options?: Partial<ChatLog.Options>);
+  class ChatLog extends SidebarTab<ChatLogOptions> {
+    constructor(options?: Partial<ChatLogOptions>);
 
     /**
      * Track any pending text which the user has submitted in the chat log textarea
@@ -57,8 +65,19 @@ declare global {
      */
     _onChatKeyDownBinding: ((event: JQuery.KeyDownEvent) => void) | null;
 
-    /** @override */
-    static get defaultOptions(): ChatLog.Options;
+    /**
+     * @override
+     * @defaultValue
+     * ```typescript
+     * foundry.utils.mergeObject(super.defaultOptions, {
+     *   id: "chat",
+     *   template: "templates/sidebar/chat-log.html",
+     *   title: game.i18n.localize("CHAT.Title"),
+     *   stream: false
+     * })
+     * ```
+     */
+    static get defaultOptions(): ChatLogOptions;
 
     /**
      * A reference to the Messages collection that the chat log displays
@@ -66,10 +85,10 @@ declare global {
     get collection(): Messages;
 
     /** @override */
-    getData(options?: Partial<ChatLog.Options>): ChatLog.Data;
+    getData(options?: Partial<ChatLogOptions>): ChatLog.Data;
 
     /** @override */
-    protected _render(force?: boolean, options?: Application.RenderOptions<ChatLog.Options>): Promise<void>;
+    protected _render(force?: boolean, options?: Application.RenderOptions<ChatLogOptions>): Promise<void>;
 
     /**
      * @override
@@ -112,12 +131,18 @@ declare global {
 
     /**
      * Post a single chat message to the log
-     * @param message - A ChatMessage entity instance to post to the log
+     * @param message - A ChatMessage document instance to post to the log
      * @param notify  - Trigger a notification which shows the log as having a new unread message
      *                  (default: `false`)
+     * @param options - Additional options for how the message is posted to the log
+     *                  (default: `{}`)
      * @returns A Promise which resolves once the message is posted
      */
-    postOne(message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>, notify?: boolean): Promise<void>;
+    postOne(
+      message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>,
+      notify?: boolean | undefined,
+      options?: ChatLog.PostOneOptions | undefined
+    ): Promise<void>;
 
     /**
      * Scroll the chat log to the bottom
@@ -143,9 +168,17 @@ declare global {
     activateListeners(html: JQuery): void;
 
     /**
+     * Handle dropping of transferred data onto the chat editor
+     * @param event - The originating drop event which triggered the data transfer
+     * @internal
+     */
+    protected static _onDropTextAreaData(event: DragEvent): void;
+
+    /**
      * Prepare the data object of chat message data depending on the type of message being posted
      * @param message - The original string of the message content
-     * @returns A Promise resolving to the prepared chat data object
+     * @returns A Promise resolving to the prepared chat data object, or void if we were executing
+     *          a macro instead.
      */
     protected processMessage(
       message: string
@@ -199,6 +232,14 @@ declare global {
     ): void;
 
     /**
+     * Process messages which execute a macro.
+     * @param command - The chat command typed.
+     * @param match   - The RegExp matches.
+     * @internal
+     */
+    protected _processMacroCommand(command: string, match: RegExpMatchArray): void;
+
+    /**
      * Add a sent message to an array of remembered messages to be re-sent if the user pages up with the up arrow key
      * @param message - The message text being remembered
      * @internal
@@ -213,15 +254,12 @@ declare global {
      */
     protected _recall(direction: number): string;
 
-    /**
-     * Attach context menu options to messages in the chat log.
-     * @param html - The HTML element to which context options are attached
-     */
+    /** @override */
     protected _contextMenu(html: JQuery): void;
 
     /**
      * Get the ChatLog entry context options
-     * @returns The sidebar entry context options
+     * @returns The ChatLog entry context options
      * @internal
      */
     protected _getEntryContextOptions(): ContextMenuEntry[];
@@ -285,13 +323,15 @@ declare global {
       | 'gmroll'
       | 'blindroll'
       | 'selfroll'
+      | 'publicroll'
+      | 'ic'
+      | 'ooc'
+      | 'emote'
       | 'whisper'
       | 'reply'
       | 'gm'
       | 'players'
-      | 'ic'
-      | 'emote'
-      | 'ooc'
+      | 'macro'
       | 'invalid'
       | 'none';
 
@@ -302,33 +342,20 @@ declare global {
       isStream: boolean;
     }
 
-    interface Options extends ApplicationOptions {
-      /**
-       * @defaultValue `'chat'`
-       */
-      id: string;
-
-      /**
-       * @defaultValue `'templates/sidebar/chat-log.html'`
-       */
-      template: string;
-
-      title: string;
-
-      scrollContainer: null;
-
-      /**
-       * @defaultValue `false`
-       */
-      stream: boolean;
-    }
-
     interface ScrollBottomOptions {
       /**
        * If a popout exists, scroll it too
        * @defaultValue `undefined`
        */
       popout?: boolean;
+    }
+
+    interface PostOneOptions {
+      /**
+       * An existing message ID to append the message before, by default the new message is
+       * appended to the end of the log.
+       */
+      before?: string | undefined;
     }
   }
 }
