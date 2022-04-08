@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
+import { ConfiguredDocumentClass, ConfiguredObjectClassForName, ToObjectFalseType } from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
 import type { ChatMessageDataConstructorData } from '../../common/data/data.mjs/chatMessageData';
 
@@ -13,16 +13,25 @@ declare global {
    * @param data - Initial data provided to construct the ChatMessage document
    */
   class ChatMessage extends ClientDocumentMixin(foundry.documents.BaseChatMessage) {
-    constructor(
-      data?: ConstructorParameters<ConstructorOf<foundry.documents.BaseChatMessage>>[0],
-      context?: ConstructorParameters<ConstructorOf<foundry.documents.BaseChatMessage>>[1]
-    );
-
     /**
-     * If the chat message contains a Roll instance, cache it here
+     * The cached Roll instance that this message contains, if any
      * @defaultValue `null`
+     * @internal
      */
     protected _roll: Roll | null;
+
+    /**
+     * Is the display of the roll in this message collapsed (false) or expanded (true)
+     * @defaultValue `false`
+     * @internal
+     */
+    protected _rollExpanded: boolean;
+
+    /**
+     * Is this ChatMessage currently displayed in the sidebar ChatLog?
+     * @defaultValue `false`
+     */
+    logged: boolean;
 
     /**
      * Return the recommended String alias for this message.
@@ -61,7 +70,7 @@ declare global {
     /**
      * The User who created the chat message.
      */
-    get user(): User | undefined;
+    get user(): InstanceType<ConfiguredDocumentClass<typeof User>> | undefined;
 
     /** @override */
     prepareData(): void;
@@ -87,44 +96,32 @@ declare global {
      * Attempt to determine who is the speaking character (and token) for a certain Chat Message
      * First assume that the currently controlled Token is the speaker
      *
-     * @param scene - The Scene in which the speaker resides
-     * @param actor - The Actor whom is speaking
-     * @param token - The Token whom is speaking
-     * @param alias - The name of the speaker to display
+     * @param options - (default: `{}`)
      *
      * @returns The identified speaker data
      */
-    static getSpeaker({
-      scene,
-      actor,
-      token,
-      alias
-    }?: {
-      scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>> | undefined;
-      actor?: InstanceType<ConfiguredDocumentClass<typeof Actor>> | undefined;
-      token?: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>> | undefined;
-      alias?: string | undefined;
-    }): foundry.data.ChatMessageData['speaker']['_source'];
+    static getSpeaker(
+      options?: ChatMessage.GetSpeakerOptions | undefined
+    ): foundry.data.ChatMessageData['speaker']['_source'];
 
     /**
      * A helper to prepare the speaker object based on a target TokenDocument
      *
-     * @param token - The TokenDocument of the speaker
-     * @param alias - The name of the speaker to display
      * @returns The identified speaker data
      */
     protected static _getSpeakerFromToken({
       token,
       alias
     }: {
-      token: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>>;
-      alias: string;
+      /** The TokenDocument of the speaker */
+      token: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>;
+
+      /** The name of the speaker to display */
+      alias?: string | undefined;
     }): foundry.data.ChatMessageData['speaker']['_source'];
     /**
      * A helper to prepare the speaker object based on a target TokenDocument
      *
-     * @param token - The TokenDocument of the speaker
-     * @param alias - The name of the speaker to display
      * @returns The identified speaker data
      * @deprecated Passing a Token is deprecated, a TokenDocument should be passed instead
      */
@@ -132,16 +129,16 @@ declare global {
       token,
       alias
     }: {
-      token: InstanceType<CONFIG['Token']['objectClass']>;
-      alias: string;
+      /** The TokenDocument of the speaker */
+      token: InstanceType<ConfiguredObjectClassForName<'Token'>>;
+
+      /** The name of the speaker to display */
+      alias?: string | undefined;
     }): foundry.data.ChatMessageData['speaker']['_source'];
 
     /**
      * A helper to prepare the speaker object based on a target Actor
      *
-     * @param scene - The Scene is which the speaker resides
-     * @param actor - The Actor that is speaking
-     * @param alias - The name of the speaker to display
      * @returns The identified speaker data
      */
     protected static _getSpeakerFromActor({
@@ -149,17 +146,19 @@ declare global {
       actor,
       alias
     }: {
-      scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>>;
+      /** The Scene is which the speaker resides */
+      scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>> | undefined;
+
+      /** The Actor that is speaking */
       actor: InstanceType<ConfiguredDocumentClass<typeof Actor>>;
-      alias?: string;
+
+      /** The name of the speaker to display */
+      alias?: string | undefined;
     }): foundry.data.ChatMessageData['speaker']['_source'];
 
     /**
      * A helper to prepare the speaker object based on a target User
      *
-     * @param scene - The Scene in which the speaker resides
-     * @param user  - The User who is speaking
-     * @param alias - The name of the speaker to display
      * @returns The identified speaker data
      */
     protected static _getSpeakerFromUser({
@@ -167,21 +166,28 @@ declare global {
       user,
       alias
     }: {
-      scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>>;
+      /** The Scene in which the speaker resides */
+      scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>> | undefined;
+
+      /** The User who is speaking */
       user: InstanceType<ConfiguredDocumentClass<typeof User>>;
-      alias?: string;
+
+      /** The name of the speaker to display */
+      alias?: string | undefined;
     }): foundry.data.ChatMessageData['speaker']['_source'];
 
     /**
      * Obtain an Actor instance which represents the speaker of this message (if any)
      * @param speaker - The speaker data object
      */
-    static getSpeakerActor(speaker: foundry.data.ChatMessageData['speaker']['_source']): Actor | null;
+    static getSpeakerActor(
+      speaker: foundry.data.ChatMessageData['speaker']['_source']
+    ): InstanceType<ConfiguredDocumentClass<typeof Actor>> | null;
 
     /**
      * Obtain a data object used to evaluate any dice rolls associated with this particular chat message
      */
-    getRollData(): InstanceType<ConfiguredDocumentClass<typeof Actor>>['getRollData'] | {};
+    getRollData(): object;
 
     /**
      * Given a string whisper target, return an Array of the user IDs which should be targeted for the whisper
@@ -196,35 +202,67 @@ declare global {
      */
     getHTML(): Promise<JQuery>;
 
+    /**
+     * Render the inner HTML content for ROLL type messages.
+     * @param messageData - The chat message data used to render the message HTML
+     * @internal
+     */
+    protected _renderRollContent(messageData: ChatMessage.MessageData): Promise<void>;
+
     /** @override */
-    _preCreate(
+    protected _preCreate(
       data: ChatMessageDataConstructorData,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;
 
     /** @override */
-    _onCreate(
+    protected _onCreate(
       data: foundry.data.ChatMessageData['_source'],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
     /** @override */
-    _onUpdate(
+    protected _onUpdate(
       data: DeepPartial<foundry.data.ChatMessageData['_source']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
     /** @override */
-    _onDelete(options: DocumentModificationOptions, userId: string): void;
+    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
 
     /**
      * Export the content of the chat message into a standardized log format
      */
     export(): string;
   }
-}
 
-export {};
+  namespace ChatMessage {
+    interface GetSpeakerOptions {
+      /** The Scene in which the speaker resides */
+      scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>> | undefined;
+
+      /** The Actor whom is speaking */
+      actor?: InstanceType<ConfiguredDocumentClass<typeof Actor>> | undefined;
+
+      /** The Token whom is speaking */
+      token?: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>> | undefined;
+
+      /** The name of the speaker to display */
+      alias?: string | undefined;
+    }
+
+    interface MessageData {
+      message: ToObjectFalseType<ChatMessage>;
+      user: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof User>>>;
+      author: InstanceType<ConfiguredDocumentClass<typeof User>> | undefined;
+      alias: string;
+      cssClass: string;
+      isWhisper: boolean;
+      canDelete: boolean;
+      whisperTo: string;
+    }
+  }
+}

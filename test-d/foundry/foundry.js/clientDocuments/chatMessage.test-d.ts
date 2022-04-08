@@ -77,6 +77,6 @@ expectType<void>(chat.applyRollMode(CONST.DICE_ROLL_MODES.SELF));
 expectType<void>(chat.applyRollMode('roll'));
 expectType<void>(chat.applyRollMode('custom-roll-mode'));
 expectError(chat.applyRollMode('unknown-roll-mode'));
-expectType<Actor['getRollData'] | {}>(chat.getRollData());
+expectType<object>(chat.getRollData());
 expectType<Promise<JQuery>>(chat.getHTML());
 expectType<string>(chat.export());
