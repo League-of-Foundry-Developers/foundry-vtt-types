@@ -60,6 +60,11 @@ declare global {
     static CLOSE_REGEXP: RegExp;
 
     /**
+     * A regular expression pattern used to match the entirety of a DicePool expression.
+     */
+    static REGEXP: RegExp;
+
+    /**
      * @defaultValue `["terms", "modifiers", "rolls", "results"]`
      */
     static SERIALIZE_ATTRIBUTES: string[];
