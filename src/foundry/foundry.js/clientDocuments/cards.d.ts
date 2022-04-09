@@ -182,6 +182,9 @@ declare global {
       userId: string
     ): void;
 
+    /** @override */
+    protected _preDelete(options: DocumentModificationOptions, user: foundry.documents.BaseUser): Promise<void>;
+
     // TODO: It's a bit weird that we have to do it in this generic way but otherwise there is an error overriding this. Investigate later.
     /** @override */
     static deleteDocuments<T extends DocumentConstructor>(
