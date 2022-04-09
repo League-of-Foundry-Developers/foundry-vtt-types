@@ -43,7 +43,7 @@ expectType<boolean>(layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y
 expectType<boolean>(layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y: 100 }), { type: 'sound' }));
 expectType<boolean>(layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y: 100 }), { mode: 'any' }));
 
-expectType<PolygonVertex | null | boolean>(
+expectType<PolygonVertex | boolean>(
   layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y: 100 }), { mode: 'closest' })
 );
 expectType<PolygonVertex[] | boolean>(
