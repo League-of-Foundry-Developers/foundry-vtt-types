@@ -1,41 +1,12 @@
 import { expectType } from 'tsd';
 
-declare const doc: WallDocument;
-const aWall = new Wall(doc);
-
-expectType<'Wall'>(WallsLayer.documentName);
 expectType<WallsLayer | undefined>(WallsLayer.instance);
-expectType<WallsLayer.LayerOptions>(WallsLayer.layerOptions);
-expectType<'walls'>(WallsLayer.layerOptions.name);
 expectType<typeof Wall>(WallsLayer.layerOptions.objectClass);
-expectType<PointArray>(WallsLayer.getClosestEndpoint({ x: 2, y: 3 }, aWall));
-expectType<PointArray[]>(WallsLayer.getUniqueEndpoints([aWall]));
-expectType<PointArray[]>(WallsLayer.getUniqueEndpoints([aWall], {}));
-expectType<PointArray[]>(WallsLayer.getUniqueEndpoints([aWall], { bounds: new NormalizedRectangle(10, 10, 100, 100) }));
-expectType<PointArray[]>(WallsLayer.getUniqueEndpoints([aWall], { type: 'movement' }));
-expectType<PointArray[]>(WallsLayer.getUniqueEndpoints([aWall], { type: 'sight' }));
-expectType<PointArray[]>(WallsLayer.getUniqueEndpoints([aWall], { type: 'sound' }));
 
 const layer = new WallsLayer();
 expectType<typeof Wall>(layer.options.objectClass);
 expectType<WallsLayer.LayerOptions>(layer.options);
 expectType<'walls'>(layer.options.name);
-
-expectType<PIXI.Graphics | null>(layer.chain);
-
-expectType<PointArray[]>(layer.endpoints);
-
-expectType<Wall[]>(layer.doors);
-
-expectType<number>(layer.gridPrecision);
-
-expectType<Promise<WallsLayer>>(layer.draw());
-
-expectType<WallsLayer>(layer.deactivate());
-
-expectType<void>(layer.initialize());
-
-expectType<void>(layer.identifyInteriorWalls());
 
 expectType<boolean>(layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y: 100 })));
 expectType<boolean>(layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y: 100 }), { type: 'move' }));
@@ -50,45 +21,6 @@ expectType<PolygonVertex[] | boolean>(
   layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y: 100 }), { mode: 'all' })
 );
 
-expectType<void>(layer.highlightControlledSegments());
-
-expectType<number>(layer.releaseAll());
-expectType<number>(layer.releaseAll({ trigger: true }));
-
 expectType<Promise<WallDocument[]>>(layer.pasteObjects({ x: 900, y: 800 }));
 expectType<Promise<WallDocument[]>>(layer.pasteObjects({ x: 900, y: 800 }, {}));
 expectType<Promise<WallDocument[]>>(layer.pasteObjects({ x: 900, y: 800 }, { hidden: true, snap: true }));
-
-expectType<{ rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon }>(layer.computePolygon({ x: 100, y: 300 }, 400));
-expectType<{ rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon }>(layer.computePolygon({ x: 100, y: 300 }, 400, {}));
-expectType<{ rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon }>(
-  layer.computePolygon({ x: 100, y: 300 }, 400, { type: 'sight' })
-);
-expectType<{ rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon }>(
-  layer.computePolygon({ x: 100, y: 300 }, 400, { type: 'movement' })
-);
-expectType<{ rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon }>(
-  layer.computePolygon({ x: 100, y: 300 }, 400, { type: 'sound' })
-);
-expectType<{ rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon }>(
-  layer.computePolygon({ x: 100, y: 300 }, 400, { angle: 360, density: 6, rotation: 0, unrestricted: false })
-);
-
-expectType<RayIntersection[]>(layer.getRayCollisions(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 })));
-expectType<RayIntersection[]>(layer.getRayCollisions(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), {}));
-expectType<RayIntersection | null>(
-  layer.getRayCollisions(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), { mode: 'closest' })
-);
-expectType<boolean>(layer.getRayCollisions(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), { mode: 'any' }));
-expectType<RayIntersection[]>(
-  layer.getRayCollisions(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), { type: 'movement' })
-);
-expectType<RayIntersection[]>(
-  layer.getRayCollisions(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), { type: 'sight' })
-);
-expectType<RayIntersection[]>(
-  layer.getRayCollisions(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), { type: 'sound' })
-);
-expectType<RayIntersection[]>(
-  layer.getRayCollisions(new Ray({ x: 100, y: 700 }, { x: 700, y: 100 }), { _performance: { tests: 0 } })
-);
