@@ -2,12 +2,18 @@
  * An interface for displaying the content of a CompendiumCollection.
  * @typeParam Metadata - The metadata of the compendium
  * @typeParam Options  - The type of the options object
+ * @typeParam Data    - The data structure used to render the handlebars template.
  */
 declare class Compendium<
   Metadata extends CompendiumCollection.Metadata,
-  Options extends ApplicationOptions = ApplicationOptions
+  Options extends ApplicationOptions = ApplicationOptions,
+  Data extends object = Compendium.Data<Metadata>
 > extends Application<Options> {
-  constructor(collection: CompendiumCollection<Metadata>, options?: Partial<Options>);
+  /**
+   * @param collection - The {@link CompendiumCollection} object represented by this interface.
+   * @param options    - Application configuration options.
+   */
+  constructor(collection: CompendiumCollection<Metadata>, options?: Partial<Options> | undefined);
 
   collection: CompendiumCollection<Metadata>;
 
@@ -38,7 +44,7 @@ declare class Compendium<
   get metadata(): this['collection']['metadata'];
 
   /** @override */
-  getData(options?: Partial<Options>): Promise<Compendium.Data<Metadata>>;
+  getData(options?: Partial<Options>): Promise<Data> | Data;
 
   /** @override */
   close(options?: Application.CloseOptions): Promise<void>;
@@ -47,13 +53,10 @@ declare class Compendium<
   activateListeners(html: JQuery): void;
 
   /**
-   * Handle opening a single compendium entry by invoking the configured entity class and its sheet
+   * Handle opening a single compendium entry by invoking the configured document class and its sheet
    * @param event - The originating click event
-   * @remarks
-   * This actually returns a promise of {@link FormApplication} but the return type is not meant to be used, so it is
-   * typed as `unknown` to give deriving classes more freedom.
    */
-  protected _onClickEntry(event: JQuery.ClickEvent): Promise<unknown>;
+  protected _onClickEntry(event: JQuery.ClickEvent): void;
 
   /** @override */
   protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
@@ -73,16 +76,22 @@ declare class Compendium<
    */
   protected _onDrop(event: DragEvent): void;
 
-  /**
-   * Render the ContextMenu which applies to each compendium Document
-   */
+  /** @override */
   protected _contextMenu(html: JQuery): void;
+
+  /**
+   * Get Compendium entry context options
+   * @returns The Compendium entry context options
+   * @internal
+   */
+  protected _getEntryContextOptions(): ContextMenuEntry;
 }
 
 declare namespace Compendium {
   interface Data<Metadata extends CompendiumCollection.Metadata> {
     collection: CompendiumCollection<Metadata>;
-    cssClass: string;
+    documentCls: string;
     index: CompendiumCollection<Metadata>['index'];
+    documentPartial: string;
   }
 }
