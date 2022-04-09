@@ -4,18 +4,17 @@
  * @see PointSource
  *
  * The container structure of this layer is as follows:
- * sight: SightLayer              The SightLayer itself
- *   msk: PIXI.Graphics           A masking rectangle that restricts exploration to the scene background
- *   unexplored: PIXI.Graphics    An unexplored background that spans the entire scene canvas
- *   explored: PIXI.Container     The exploration container
- *      revealed: PIXI.Container  The container of areas which have been previously revealed
- *        saved: PIXI.Sprite      The saved FOW exploration texture from the database
- *        pending: PIXI.Container A container of pending exploration polygons that have not yet been saved
- *        roofs: PIXI.Container   A container of occluded roof sprites which should not be marked as explored
- *      current: PIXI.Container   The current vision container
- *        los: PIXI.Graphics      The current line-of-sight polygon
- *        fov: PIXI.Graphics      The current filed-of-view polygon
- *      msk: PIXI.Graphics        The masking rectangle that limits exploration to the Scene background
+ *
+ * unexplored   The unexplored background which spans the entire canvas
+ * explored     The exploration container which tracks exploration progress
+ * revealed       A container of regions which have previously been revealed
+ * saved          The saved fog exploration texture
+ * pending        Pending exploration which has not yet been committed to the texture
+ * vision         The container of current vision exploration
+ * vision.base      Baseline provided vision
+ * vision.fov       Current light source field-of-view polygons
+ * vision.los       Current vision source line-of-sight polygons
+ * vision.roofs     Roof textures which should temporarily be revealed
  *
  * @example <caption>The sightRefresh hook</caption>
  * ```typescript
@@ -26,6 +25,21 @@ import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
 
 declare global {
   class SightLayer extends CanvasLayer<SightLayer.LayerOptions> {
+    /** The unexplored background which spans the entire canvas */
+    unexplored?: PIXI.Graphics;
+
+    /** The exploration container which tracks exploration progress */
+    explored?: PIXI.Container;
+
+    /** A container of regions which have previously been revealed */
+    revealed?: PIXI.Container;
+
+    /** The saved fog exploration texture */
+    saved?: PIXI.Sprite;
+
+    /** Pending exploration which has not yet been committed to the texture */
+    pending?: PIXI.Container;
+
     constructor();
 
     /**
@@ -40,33 +54,11 @@ declare global {
     sources: foundry.utils.Collection<PointSource>;
 
     /**
-     * The canonical line-of-sight polygon which defines current Token visibility.
-     */
-    los: PIXI.Graphics;
-
-    /**
      * A status flag for whether the layer initialization workflow has succeeded
      * @defaultValue `false`
+     * @internal
      */
     protected _initialized: boolean;
-
-    /**
-     * A pool of fog of war exploration containers that can be recycled
-     * @defaultValue `[]`
-     */
-    protected _visionPool: PIXI.Container[];
-
-    /**
-     * Track whether fog of war exploration has been updated and required saving
-     * @defaultValue `false`
-     */
-    protected _fogUpdated: boolean;
-
-    /**
-     * Track the number of moves which have updated fog of war
-     * @defaultValue `0`
-     */
-    protected _fogUpdates: number;
 
     /**
      * A debounced function to save fog of war exploration once a stream of updates have stopped
@@ -74,10 +66,64 @@ declare global {
     debounceSaveFog: (...args: Parameters<this['saveFog']>) => void;
 
     /**
-     * The configured resolution used for the saved fog-of-war texture
+     * The current vision container which provides line-of-sight for vision sources and field-of-view of light sources.
      * @defaultValue `undefined`
      */
+    vision:
+      | (PIXI.Container & {
+          /** Baseline provided vision */
+          base: PIXI.Graphics;
+
+          /** Current light source field-of-view polygons */
+          fov: PIXI.Container;
+
+          /** Current vision source line-of-sight polygons */
+          los: PIXI.Graphics;
+
+          /** Roof textures which should temporarily be revealed */
+          roofs: PIXI.Container;
+        })
+      | undefined;
+
+    /**
+     * The canonical line-of-sight polygon which defines current Token visibility.
+     * @defaultValue `undefined`
+     */
+    los: PIXI.Graphics | undefined;
+
+    /**
+     * A cached container which creates a render texture used for the LOS mask.
+     * @defaultValue `undefined`
+     */
+    losCache: CachedContainer | undefined;
+
+    /**
+     * Track whether we have pending fog updates which have not yet been saved to the database
+     * @defaultValue `false`
+     * @internal
+     */
+    protected _fogUpdated: boolean;
+
+    /**
+     * The configured resolution used for the saved fog-of-war texture
+     * @defaultValue `undefined`
+     * @internal
+     */
     protected _fogResolution: { resolution: number; width: number; height: number } | undefined;
+
+    /**
+     * A pool of RenderTexture objects which can be cycled through to save fog exploration progress.
+     * @defaultValue `[]`
+     * @internal
+     */
+    protected _fogTextures: PIXI.RenderTexture[];
+
+    /**
+     * Track whether there is a source of vision within the buffer region outside the primary scene canvas
+     * @defaultValue `false`
+     * @internal
+     */
+    protected _inBuffer: boolean;
 
     /**
      * Define the threshold value for the number of distinct Wall endpoints.
@@ -92,6 +138,12 @@ declare global {
      * @defaultValue `10`
      */
     static FOG_COMMIT_THRESHOLD: number;
+
+    /**
+     * The maximum allowable fog of war texture size.
+     * @defaultValue `4096`
+     */
+    static MAXIMUM_FOW_TEXTURE_SIZE: number;
 
     /**
      * @remarks This is not overridden in foundry but reflects the real behavior.
@@ -124,18 +176,6 @@ declare global {
     tearDown(): Promise<this>;
 
     /**
-     * Initialize the Sight Layer. Initialization has the following hierarchical workflow:
-     *
-     * Initialize Layer (reset entire layer)
-     *  InitializeLights (used to reset all lights)
-     *    UpdateLight (update a single light)
-     *  InitializeTokens (reset all tokens)
-     *    UpdateToken (update a single token)
-     *  Initialize Fog (reset FOW state)
-     */
-    initialize(): Promise<void>;
-
-    /**
      * Initialize fog of war - resetting it when switching scenes or re-drawing the canvas
      */
     initializeFog(): Promise<void>;
@@ -145,42 +185,45 @@ declare global {
      */
     initializeSources(): Promise<void>;
 
+    /**
+     * Update FoW unexplored and explored colors
+     */
+    updateFogExplorationColors(): void;
+
     /** @override */
     draw(): Promise<this>;
 
     /**
+     * Create the cached container and sprite used to provide a LOS mask
+     * @internal
+     */
+    protected _createCachedMask(): void;
+
+    /**
      * Construct a vision container that is used to render a single view position.
-     * These containers are placed into the _visionPool and recycled as needed.
+     * @internal
      */
     protected _createVisionContainer(): PIXI.Container;
 
     /**
-     * Obtain a vision container from the recycling pool, or create one if no container exists.
-     * Assign the container as the current fog exploration and the current LOS polygon.
-     */
-    protected _getVisionContainer(): PIXI.Container;
-
-    /**
-     * Return a vision container back to the pool, recycling it for future use.
-     * @param c - The container to recycle
-     */
-    protected _recycleVisionContainer(c: PIXI.Container): void;
-
-    /**
      * Update the display of the sight layer.
      * Organize sources into rendering queues and draw lighting containers for each source
-     *
-     * @param forceUpdateFog - Always update the Fog exploration progress for this update
-     *                         (default: `false`)
-     * @param noUpdateFog    - Never update the Fog exploration progress for this update
-     *                         (default: `false`)
      */
     refresh({
       forceUpdateFog,
-      noUpdateFog
+      skipUpdateFog
     }?: {
+      /**
+       * Always update the Fog exploration progress for this update
+       * (default: `false`)
+       */
       forceUpdateFog?: boolean;
-      noUpdateFog?: boolean;
+
+      /**
+       * Never update the Fog exploration progress for this update
+       * (default: `false`)
+       */
+      skipUpdateFog?: boolean;
     }): void | ReturnType<this['restrictVisibility']>;
 
     /**
@@ -192,20 +235,32 @@ declare global {
     /**
      * Test whether a point on the Canvas is visible based on the current vision and LOS polygons
      *
-     * @param point     - The point in space to test, an object with coordinates x and y.
-     * @param tolerance - A numeric radial offset which allows for a non-exact match. For example, if
-     *                    tolerance is 2 then the test will pass if the point is within 2px of a vision
-     *                    polygon.
-     *                    (defaultValue: `2`)
-     * @param object    - An optional reference to the object whose visibility is being tested
-     *                    (defaultValue: `null`)
-     *
+     * @param point - The point in space to test, an object with coordinates x and y.
      * @returns Whether the point is currently visible.
      */
     testVisibility(
       point: Point,
-      { tolerance, object }?: { tolerance?: number; object?: PIXI.DisplayObject | null }
+      {
+        tolerance,
+        object
+      }?: {
+        /**
+         * A numeric radial offset which allows for a non-exact match. For example, if
+         * tolerance is 2 then the test will pass if the point is within 2px of a vision
+         * polygon.
+         * (defaultValue: `2`)
+         */
+        tolerance?: number;
+
+        /**
+         * An optional reference to the object whose visibility is being tested
+         * (defaultValue: `null`)
+         */
+        object?: PIXI.DisplayObject | null;
+      }
     ): boolean;
+
+    protected _getFogTexture(): PIXI.RenderTexture;
 
     /**
      * Once a new Fog of War location is explored, composite the explored container with the current staging sprite
@@ -242,6 +297,7 @@ declare global {
     /**
      * Choose an adaptive fog rendering resolution which downscales the saved fog textures for larger dimension Scenes.
      * It is important that the width and height of the fog texture is evenly divisible by the downscaling resolution.
+     * @internal
      */
     protected _configureFogResolution(): { resolution: number; width: number; height: number };
 
@@ -249,44 +305,6 @@ declare global {
      * If fog of war data is reset from the server, re-draw the canvas
      */
     protected _handleResetFog(): Promise<void>;
-
-    /**
-     * Visualize the sight layer to understand algorithm performance.
-     * @param bounds    - The initial rectangular bounds of the vision check
-     * @param endpoints - The wall endpoints being tested
-     * @param rays      - The array of cast vision Rays
-     * @param los       - The resulting line-of-sight polygon
-     * @param fov       - The resulting field-of-vision polygon
-     */
-    protected static _visualizeSight(
-      bounds: Rectangle,
-      endpoints: PointArray[],
-      rays: Ray[],
-      los: PIXI.Polygon,
-      fov: PIXI.Polygon
-    ): void;
-
-    /**
-     * @deprecated since 0.8.2
-     * @see WallsLayer#computePolygon
-     * Compute line-of-sight and field-of-vision polygons for a given origin position and visibility radius.
-     * The line-of-sight polygon defines the unrestricted area of visibility for the source.
-     * The field-of-vision polygon defines the restricted area of visibility for the source.
-     * @param angle        - (default: `360`)
-     * @param density      - (default: `6`)
-     * @param rotation     - (default: `0`)
-     * @param unrestricted - (default: `false`)
-     */
-    static computeSight(
-      origin: Point,
-      radius: number,
-      {
-        angle,
-        density,
-        rotation,
-        unrestricted
-      }?: { angle?: number; density?: number; rotation?: number; unrestricted?: boolean }
-    ): { rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon };
   }
 
   namespace SightLayer {
