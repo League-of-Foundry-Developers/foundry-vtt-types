@@ -47,7 +47,7 @@ declare global {
     protected _onMouseDown(event: PIXI.InteractionEvent): void;
 
     /**
-     * Handle JournalEntry entity drop data
+     * Handle JournalEntry document drop data
      */
     protected _onDropData(event: DragEvent, data: DropData<JournalEntry>): Promise<false | void>;
   }
