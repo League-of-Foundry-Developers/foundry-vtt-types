@@ -44,6 +44,7 @@ declare global {
     interface Data<Options extends DocumentSheetOptions>
       extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'AmbientSound'>>, Options> {
       submitText: string;
+      gridUnits: string;
     }
 
     type FormData = Pick<foundry.data.AmbientSoundData, 'easing' | 'path' | 'volume'> &
