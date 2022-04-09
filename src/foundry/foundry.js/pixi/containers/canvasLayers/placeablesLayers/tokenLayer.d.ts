@@ -107,19 +107,13 @@ declare global {
      *                  (default: `null`)
      * @param  token  - A specific Token which is the origin of the group toggle request
      *                  (default: `null`)
-     * @returns The updated Combat encounter
-     * @remarks Returns the created Combatants or undefined if there is no combat and one can't be created
-     *          or the combat if the user is no GM and wants to remove combatants.
+     * @returns The Combatants added or removed
      */
     toggleCombat(
       state?: boolean,
       combat?: InstanceType<ConfiguredDocumentClass<typeof Combat>> | null,
       { token }?: { token?: InstanceType<ConfiguredObjectClassForName<'Token'>> | null }
-    ): Promise<
-      | InstanceType<ConfiguredDocumentClass<typeof Combat>>
-      | InstanceType<ConfiguredDocumentClass<typeof Combatant>>[]
-      | void
-    >;
+    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Combatant>>[]>;
 
     /**
      * Get the tab cycle order for tokens by sorting observable tokens based on their distance from top-left.
@@ -138,6 +132,9 @@ declare global {
       event: DragEvent,
       data: TokenLayer.DropData
     ): Promise<void | false | InstanceType<ConfiguredObjectClassForName<'Token'>>>;
+
+    /** @override */
+    protected _onClickLeft(event: PIXI.InteractionEvent): void;
   }
 
   namespace TokenLayer {

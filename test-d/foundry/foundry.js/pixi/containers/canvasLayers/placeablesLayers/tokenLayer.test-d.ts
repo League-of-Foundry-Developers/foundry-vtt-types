@@ -42,13 +42,11 @@ expectType<number>(layer.targetObjects({ x: 100, y: 100, width: 800, height: 600
 
 expectType<Token | null>(layer.cycleTokens(true, true));
 
-expectType<Promise<Combat | Combatant[] | void>>(layer.toggleCombat());
-expectType<Promise<Combat | Combatant[] | void>>(layer.toggleCombat(true));
-expectType<Promise<Combat | Combatant[] | void>>(layer.toggleCombat(true, null));
-expectType<Promise<Combat | Combatant[] | void>>(layer.toggleCombat(true, new Combat()));
-expectType<Promise<Combat | Combatant[] | void>>(layer.toggleCombat(true, new Combat(), {}));
-expectType<Promise<Combat | Combatant[] | void>>(
-  layer.toggleCombat(true, new Combat(), { token: new Token(new TokenDocument()) })
-);
+expectType<Promise<Combatant[]>>(layer.toggleCombat());
+expectType<Promise<Combatant[]>>(layer.toggleCombat(true));
+expectType<Promise<Combatant[]>>(layer.toggleCombat(true, null));
+expectType<Promise<Combatant[]>>(layer.toggleCombat(true, new Combat()));
+expectType<Promise<Combatant[]>>(layer.toggleCombat(true, new Combat(), {}));
+expectType<Promise<Combatant[]>>(layer.toggleCombat(true, new Combat(), { token: new Token(new TokenDocument()) }));
 
 expectType<void>(layer.concludeAnimation());
