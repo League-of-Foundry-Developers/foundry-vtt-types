@@ -20,16 +20,16 @@ declare global {
     static get layerOptions(): MapLayer.LayerOptions<'background'>;
 
     /**
-     * The outline of the scene
+     * The outline of the scene.
+     * Not rendered within the BackgroundLayer, but rather beneath it so it does not impact the PrimaryMesh texture.
      */
     outline: PIXI.Graphics | undefined;
 
-    draw(): Promise<this>;
-
     /**
      * Draw a background outline which emphasizes what portion of the canvas is playable space and what is buffer.
+     * @param outline - The outline graphics to use
      */
-    protected _drawOutline(): PIXI.Graphics | undefined;
+    drawOutline(outline: PIXI.Graphics): void;
 
     getDocuments(): Exclude<this['documentCollection'], null> | InstanceType<ConfiguredDocumentClassForName<'Tile'>>[];
 
