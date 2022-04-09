@@ -15,17 +15,6 @@ expectType<PointArray[]>(WallsLayer.getUniqueEndpoints([aWall], { bounds: new No
 expectType<PointArray[]>(WallsLayer.getUniqueEndpoints([aWall], { type: 'movement' }));
 expectType<PointArray[]>(WallsLayer.getUniqueEndpoints([aWall], { type: 'sight' }));
 expectType<PointArray[]>(WallsLayer.getUniqueEndpoints([aWall], { type: 'sound' }));
-expectType<Ray[]>(WallsLayer.castRays(100, 200, 600));
-expectType<Ray[]>(WallsLayer.castRays(100, 200, 600, {}));
-expectType<Ray[]>(
-  WallsLayer.castRays(100, 200, 600, { density: 4, endpoints: [[100, 200]], limitAngle: false, aMin: 100, aMax: 100 })
-);
-
-const intersection = WallsLayer.testWall(new Ray({ x: 100, y: 100 }, { x: 200, y: 300 }), aWall);
-expectType<RayIntersection | null>(intersection);
-if (intersection) {
-  expectType<RayIntersection | null>(WallsLayer.getClosestCollision([intersection]));
-}
 
 const layer = new WallsLayer();
 expectType<typeof Wall>(layer.options.objectClass);
@@ -49,15 +38,15 @@ expectType<void>(layer.initialize());
 expectType<void>(layer.identifyInteriorWalls());
 
 expectType<boolean>(layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y: 100 })));
-expectType<boolean>(layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y: 100 }), { type: 'movement' }));
+expectType<boolean>(layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y: 100 }), { type: 'move' }));
 expectType<boolean>(layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y: 100 }), { type: 'sight' }));
 expectType<boolean>(layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y: 100 }), { type: 'sound' }));
 expectType<boolean>(layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y: 100 }), { mode: 'any' }));
 
-expectType<RayIntersection | null | boolean>(
+expectType<PolygonVertex | null | boolean>(
   layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y: 100 }), { mode: 'closest' })
 );
-expectType<RayIntersection[] | boolean>(
+expectType<PolygonVertex[] | boolean>(
   layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y: 100 }), { mode: 'all' })
 );
 

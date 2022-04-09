@@ -11,17 +11,16 @@ declare global {
     constructor();
 
     /**
+     * An array of Wall objects which represent the boundaries of the canvas.
+     * @defaultValue `new Set()`
+     */
+    boundaries: Set<Wall>;
+
+    /**
      * A graphics layer used to display chained Wall selection
      * @defaultValue `null`
      */
     chain: PIXI.Graphics | null;
-
-    /**
-     * An array of all the unique perception-blocking endpoints which are present in the layer
-     * We keep this array cached for faster sight polygon computations
-     * @defaultValue `[]`
-     */
-    endpoints: PointArray[];
 
     /**
      * Track whether we are currently within a chained placement workflow
@@ -47,13 +46,11 @@ declare global {
      * @defaultValue
      * ```
      * {
-     *   id: null,
      *   point: null,
      * }
      * ```
      */
     protected last: {
-      id: string | null;
       point: PointArray | null;
     };
 
@@ -69,9 +66,6 @@ declare global {
      * mergeObject(super.layerOptions, {
      *  name: "walls"
      *  controllableObjects: true,
-     *  objectClass: Wall,
-     *  quadtree: true,
-     *  sheetClass: WallConfig,
      *  sortActiveTop: true,
      *  zIndex: 40
      * })
@@ -108,6 +102,12 @@ declare global {
     initialize(): void;
 
     /**
+     * Initialization to identify all intersections between walls.
+     * These intersections are cached and used later when computing point source polygons.
+     */
+    identifyWallIntersections(): void;
+
+    /**
      * Identify walls which are treated as "interior" because they are contained fully within a roof tile.
      */
     identifyInteriorWalls(): void;
@@ -121,30 +121,20 @@ declare global {
     static getClosestEndpoint(point: Point, wall: InstanceType<ConfiguredObjectClassForName<'Wall'>>): PointArray;
 
     /**
-     * Given an array of Wall instances, identify the unique endpoints across all walls.
-     * @param walls   - An array of Wall instances
-     * @param options - Additional options which modify the set of endpoints identified
-     *                  (defaultValue: `{}`)
-     * @returns An array of endpoints
-     */
-    static getUniqueEndpoints(
-      walls:
-        | InstanceType<ConfiguredObjectClassForName<'Wall'>>[]
-        | Set<InstanceType<ConfiguredObjectClassForName<'Wall'>>>,
-      options?: EndpointOptions
-    ): PointArray[];
-
-    /**
      * Test whether movement along a given Ray collides with a Wall.
      * @param ray     - The attempted movement
      * @param options - Options which customize how collision is tested
-     * @returns Does a collision occur?
+     * @returns False if there are no Walls
+     *          True if the Ray is outside the Canvas
+     *          Whether any collision occurred if mode is "any"
+     *          An array of collisions, if mode is "all"
+     *          The closest collision, if mode is "closest"
      */
-    checkCollision(ray: Ray, options: CollisionOptions & { mode: 'all' }): boolean | RayIntersection[];
-    checkCollision(ray: Ray, options: CollisionOptions & { mode: 'closest' }): boolean | RayIntersection | null;
+    checkCollision(ray: Ray, options: CollisionOptions & { mode: 'all' }): boolean | PolygonVertex[];
+    checkCollision(ray: Ray, options: CollisionOptions & { mode: 'closest' }): boolean | PolygonVertex;
     checkCollision(ray: Ray, options: CollisionOptions & { mode: 'any' }): boolean;
     checkCollision(ray: Ray, options: Omit<CollisionOptions, 'mode'>): boolean;
-    checkCollision(ray: Ray, options: CollisionOptions): boolean | RayIntersection | null;
+    checkCollision(ray: Ray, options: CollisionOptions): boolean | PolygonVertex;
     checkCollision(ray: Ray, options?: CollisionOptions): boolean;
 
     /**
@@ -163,6 +153,12 @@ declare global {
       position: Point,
       options?: PasteOptions
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseWall>>[]>;
+
+    /**
+     * Create temporary WallDocument instances which represent the rectangular boundaries of the canvas.
+     * @internal
+     */
+    protected _createBoundaries(): void;
 
     /**
      * Pan the canvas view when the cursor position gets close to the edge of the frame
@@ -189,8 +185,10 @@ declare global {
      */
     protected _getWallDataFromActiveTool(tool: string):
       | {
-          move: foundry.CONST.WALL_MOVEMENT_TYPES;
-          sense: foundry.CONST.WALL_SENSE_TYPES;
+          light: foundry.CONST.WALL_SENSE_TYPES;
+          sight: foundry.CONST.WALL_SENSE_TYPES;
+          sound: foundry.CONST.WALL_SENSE_TYPES;
+          move: foundry.CONST.WALL_SENSE_TYPES;
           door?: foundry.CONST.WALL_DOOR_TYPES;
         }
       | this['_cloneType'];
@@ -210,32 +208,14 @@ declare global {
     /** @override */
     protected _onClickRight(event: PIXI.InteractionEvent): void;
 
-    /**
-     * Compute source polygons of a requested type for a given origin position and maximum radius.
-     * This method returns two polygons, one which is unrestricted by the provided radius, and one that is constrained
-     * by the maximum radius.
-     *
-     * @param origin  - An point with coordinates x and y representing the origin of the test
-     * @param radius  - A distance in canvas pixels which reflects the visible range
-     * @param options - Additional options which modify the sight computation
-     *                  (default: `{}`)
-     * @returns The computed rays and polygons
-     */
+    /** @deprecated since v9 */
     computePolygon(
       origin: Point,
       radius: number,
       options?: ComputePolygonOptions
     ): { rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon };
 
-    /**
-     * Get the set of wall collisions for a given Ray
-     * @param ray     - The Ray being tested
-     * @param options - Options which customize how collision is tested
-     *                  (default: `{}`)
-     * @returns An array of collisions, if mode is "all"
-     *          The closest collision, if mode is "closest"
-     *          Whether any collision occurred if mode is "any"
-     */
+    /** @deprecated since v9 */
     getRayCollisions(ray: Ray, options: RayCollisionsOptions & { mode: 'all' }): RayIntersection[];
     getRayCollisions(ray: Ray, options: RayCollisionsOptions & { mode: 'closest' }): RayIntersection | null;
     getRayCollisions(ray: Ray, options: RayCollisionsOptions & { mode: 'any' }): boolean;
@@ -243,77 +223,26 @@ declare global {
     getRayCollisions(ray: Ray, options?: RayCollisionsOptions): RayIntersection[] | RayIntersection | boolean | null;
 
     /**
-     * A helper method responsible for casting rays at wall endpoints.
-     * Rays are restricted by limiting angles.
-     *
-     * @param x          - The origin x-coordinate
-     * @param y          - The origin y-coordinate
-     * @param distance   - The ray distance
-     * @param density    - The desired radial density
-     *                     (default: `4`)
-     * @param endpoints  - An array of endpoints to target
-     * @param limitAngle - Whether the rays should be cast subject to a limited angle of emission
-     *                     (default: `false`)
-     * @param aMin       - The minimum bounding angle
-     * @param aMax       - The maximum bounding angle
-     *
-     * @returns An array of Ray objects
+     * An array of all the unique perception-blocking endpoints which are present in the layer
+     * We keep this array cached for faster sight polygon computations
+     * @deprecated since v9
      */
-    static castRays(
-      x: number,
-      y: number,
-      distance: number,
-      {
-        density,
-        endpoints,
-        limitAngle,
-        aMin,
-        aMax
-      }?: { density?: number; endpoints?: PointArray[]; limitAngle?: boolean; aMin?: number; aMax?: number }
-    ): Ray[];
+    get endpoints(): PointArray[];
 
     /**
-     * Test a single Ray against a single Wall
-     * @param ray  - The Ray being tested
-     * @param wall - The Wall against which to test
-     * @returns A RayIntersection if a collision occurred, or null
+     * Given an array of Wall instances, identify the unique endpoints across all walls.
+     * @param walls   - An array of Wall instances
+     * @param options - Additional options which modify the set of endpoints identified
+     *                  (defaultValue: `{}`)
+     * @returns An array of endpoints
+     * @deprecated since v9
      */
-    static testWall(ray: Ray, wall: InstanceType<ConfiguredObjectClassForName<'Wall'>>): RayIntersection | null;
-
-    /**
-     * Identify the closest collision point from an array of collisions
-     * @param collisions - An array of intersection points
-     * @returns The closest blocking intersection or null if no collision occurred
-     */
-    static getClosestCollision(collisions: RayIntersection[]): RayIntersection | null;
-
-    /**
-     * Normalize an angle to ensure it is baselined to be the smallest angle that is greater than a minimum.
-     * @param aMin  - The lower-bound minimum angle
-     * @param angle - The angle to adjust
-     * @returns The adjusted angle which is greater than or equal to aMin.
-     */
-    protected static _normalizeAngle(aMin: number, angle: number): number;
-
-    /**
-     * Map source types to wall collision types
-     * @param type - The source polygon type
-     * @returns The wall collision attribute
-     */
-    protected static _mapCollisionType(type: 'movement'): 'move';
-    protected static _mapCollisionType(type: 'light'): 'sense';
-    protected static _mapCollisionType(type: 'sight'): 'sense';
-    protected static _mapCollisionType(type: 'sound'): 'sound';
-
-    /**
-     * @deprecated since 0.8.0
-     */
-    get blockVision(): InstanceType<ConfiguredObjectClassForName<'Wall'>>[];
-
-    /**
-     * @deprecated since 0.8.0
-     */
-    get blockMovement(): InstanceType<ConfiguredObjectClassForName<'Wall'>>[];
+    static getUniqueEndpoints(
+      walls:
+        | InstanceType<ConfiguredObjectClassForName<'Wall'>>[]
+        | Set<InstanceType<ConfiguredObjectClassForName<'Wall'>>>,
+      options?: EndpointOptions
+    ): PointArray[];
   }
 
   namespace WallsLayer {
@@ -345,9 +274,9 @@ interface EndpointOptions {
 interface CollisionOptions {
   /**
    * Which collision type to check: movement, sight, sound
-   * @defaultValue `'movement'`
+   * @defaultValue `'move'`
    */
-  type?: 'movement' | 'sight' | 'sound';
+  type?: 'move' | 'sight' | 'sound';
 
   /**
    * Which type of collisions are returned: any, closest, all
