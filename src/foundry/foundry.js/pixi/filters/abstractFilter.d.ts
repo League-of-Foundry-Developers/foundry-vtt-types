@@ -11,8 +11,9 @@ declare abstract class AbstractFilter extends PIXI.Filter {
   /**
    * The fragment shader which renders this filter.
    * @defaultValue `undefined`
+   * @remarks This is a function in {@link GlowFilter}. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6937
    */
-  static fragmentShader: string | undefined;
+  static fragmentShader: string | ((quality: number, distance: number) => string) | undefined;
 
   /**
    * The vertex shader which renders this filter.
