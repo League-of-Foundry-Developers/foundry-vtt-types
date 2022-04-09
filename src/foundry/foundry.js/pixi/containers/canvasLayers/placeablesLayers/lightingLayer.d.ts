@@ -20,7 +20,7 @@ declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLaye
   /**
    * A mapping of light sources which are active within the rendered Scene
    */
-  sources: foundry.utils.Collection<PointSource>;
+  sources: foundry.utils.Collection<LightSource>;
 
   /**
    * Increment this whenever lighting channels are re-configured.
@@ -33,7 +33,7 @@ declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLaye
    * The currently displayed darkness level, which may override the saved Scene value
    * @defaultValue `0`
    */
-  protected darknessLevel: number;
+  darknessLevel: number;
 
   /**
    * The current client setting for whether global illumination is used or not
@@ -54,21 +54,21 @@ declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLaye
   illumination: PIXI.Container | null;
 
   /**
-   * A flag for whether the darkness level is currently animating
-   * @defaultValue `false`
+   * The background container which visualizes the background
+   * @defaultValue `null`
    */
-  protected _animating: boolean;
+  background: PIXI.Container | null;
 
   /**
    * An array of light sources which are currently animated
    */
-  protected _animatedSources: PointSource[];
+  protected _animatedSources: LightSource[];
 
   /**
    * A mapping of different light level channels
    * @defaultValue `undefined`
    */
-  channels: Record<'background' | 'black' | 'bright' | 'canvas' | 'dark' | 'dim', LightChannel> | undefined;
+  channels: ChannelConfig | undefined;
 
   /** @override */
   static documentName: 'AmbientLight';
@@ -85,7 +85,6 @@ declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLaye
    * foundry.utils.mergeObject(super.layerOptions, {
    *  name: "lighting",
    *  rotatableObjects: true,
-   *  quadtree: true,
    *  zIndex: 300
    * })
    * ```
@@ -93,27 +92,46 @@ declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLaye
   static get layerOptions(): LightingLayer.LayerOptions;
 
   /**
+   * TODO: Significant portions of this method may no longer be needed
    * Configure the lighting channels which are inputs to the ShadowMap
+   * @internal
    */
-  protected _configureChannels(
-    darkness?: number | null
-  ): Record<'background' | 'black' | 'bright' | 'canvas' | 'dark' | 'dim', LightChannel>;
+  protected _configureChannels({
+    darkness,
+    backgroundColor
+  }?: {
+    /** Darkness level override. */
+    darkness?: number;
+
+    /** Canvas background color override. */
+    backgroundColor?: number;
+  }): ChannelConfig;
 
   /**
    * @override
    */
   draw(): Promise<this>;
 
+  masks?: PIXI.Container;
+
   /**
    * Draw the coloration container which is responsible for rendering the visible hue of a light source.
    * Apply an additive blend to the entire container after each individual light source is blended via screen.
+   * @internal
    */
   protected _drawColorationContainer(): PIXI.Container;
 
   /**
    * Draw the illumination container which is responsible for displaying darkness and light.
+   * @internal
    */
   protected _drawIlluminationContainer(): PIXI.Container;
+
+  /**
+   * Draw the background container which is responsible for displaying altered background.
+   * @internal
+   */
+  protected _drawBackgroundContainer(): PIXI.Container;
 
   /**
    * Does this scene currently benefit from global illumination?
@@ -129,7 +147,19 @@ declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLaye
    * Refresh the active display of the LightingLayer.
    * Update the scene background color, light sources, and darkness sources
    */
-  refresh(darkness?: number | undefined): void;
+  refresh({
+    darkness,
+    backgroundColor
+  }?: {
+    /**
+     * An override darkness level to which the layer should be temporarily
+     * rendered.
+     */
+    darkness?: number;
+
+    /** An override canvas background color. */
+    backgroundColor?: number;
+  }): void;
 
   /** @override */
   tearDown(): Promise<this>;
@@ -147,6 +177,7 @@ declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLaye
   /**
    * The ticker handler which manages animation delegation
    * @param dt - Delta time
+   * @internal
    */
   protected _animateSource(dt: number): void;
 
@@ -155,16 +186,26 @@ declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLaye
    * Only begin animating if another animation is not already in progress.
    * @param target   - The target darkness level between 0 and 1
    *                   (default: `1.0`)
-   * @param duration - The desired animation time in milliseconds. Default is 10 seconds
-   *                   (default: `10000`)
    * @returns A Promise which resolves once the animation is complete
    */
-  animateDarkness(target?: number, { duration }?: { duration?: number }): Promise<void>;
+  animateDarkness(
+    target?: number,
+    {
+      duration
+    }?: {
+      /**
+       * The desired animation time in milliseconds. Default is 10 seconds
+       * @defaultValue `10000`
+       */
+      duration?: number;
+    }
+  ): Promise<void>;
 
   /**
    * Actions to take when the darkness level of the Scene is changed
    * @param darkness - The new darkness level
    * @param prior    - The prior darkness level
+   * @internal
    */
   protected _onDarknessChange(darkness: number, prior: number): void;
 
@@ -185,10 +226,13 @@ declare namespace LightingLayer {
   interface LayerOptions extends PlaceablesLayer.LayerOptions<'AmbientLight'> {
     name: 'lighting';
     rotatableObjects: true;
-    quadtree: true;
     zIndex: 300;
   }
 }
+
+declare type ChannelConfig = Record<'canvas' | 'background' | 'black' | 'bright' | 'dark' | 'dim', LightChannel> & {
+  darkness: { level: number; rgb: [number, number, number] };
+};
 
 declare interface LightChannel {
   hex: number;
