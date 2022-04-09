@@ -37,6 +37,15 @@ declare global {
      */
     protected _drawOcclusionMask(): CachedContainer;
 
+    /**
+     * Perform one-time initialization actions which affect the foreground layer.
+     * These actions presume and require that the layer has already been drawn.
+     */
+    initialize(): void;
+
+    /** @override */
+    activate(): this;
+
     deactivate(): this;
 
     tearDown(): Promise<this>;
@@ -49,6 +58,18 @@ declare global {
      * Refresh the display of tiles on the Foreground Layer depending on Token occlusion.
      */
     refresh(): void;
+
+    /**
+     * Add a roof sprite to the occlusion roof mask container
+     * @param tile - The roof tile being added
+     */
+    addRoofSprite(tile: Tile): void;
+
+    /**
+     * Remove a roof sprite from occlusion roof mask container
+     * @param tile - The roof tile being removed
+     */
+    removeRoofSprite(tile: Tile): void;
 
     /**
      * Update occlusion for all tiles on the foreground layer
