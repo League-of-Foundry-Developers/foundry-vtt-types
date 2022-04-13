@@ -4,6 +4,16 @@
  * The alpha [threshold,1] is re-mapped to [0,1] with an hermite interpolation slope to prevent pixelation.
  */
 declare class RoofMaskFilter extends AbstractFilter {
+  /**
+   * @defaultValue
+   * ```typescript
+   * {
+   *   alphaThreshold: 0.75,
+   *   turnToColor: false,
+   *   color: [1, 1, 1]
+   * }
+   * ```
+   */
   static defaultUniforms: AbstractBaseShader.Uniforms;
 
   static fragmentShader: string;
