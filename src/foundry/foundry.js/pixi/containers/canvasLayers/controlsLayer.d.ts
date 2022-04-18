@@ -63,13 +63,14 @@ declare global {
     protected _rulers: Record<string, Ruler>;
 
     /**
-     * @remarks This is not overridden in foundry but reflects the real behavior.
-     */
-    static get instance(): undefined;
-
-    /**
      * @override
-     * @defaultValue `mergeObject(super.layerOptions, { name: "controls", zIndex: 1000 })`
+     * @defaultValue
+     * ```typescript
+     * foundry.utils.mergeObject(super.layerOptions, {
+     *   name: "controls",
+     *   zIndex: 1000
+     * })
+     * ```
      */
     static get layerOptions(): ControlsLayer.LayerOptions;
 
@@ -85,8 +86,6 @@ declare global {
 
     /** @override */
     draw(): Promise<this>;
-
-    interactiveChildren: true;
 
     /**
      * @override
