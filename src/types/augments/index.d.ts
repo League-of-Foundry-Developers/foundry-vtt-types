@@ -1,3 +1,4 @@
+import './pixiGraphicsSmooth';
 import './pixiLegacyGraphics';
 import './pixiParticles';
 import './simple-peer';

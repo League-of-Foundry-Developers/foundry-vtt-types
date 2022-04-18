@@ -55,6 +55,7 @@
     "typscript"
   ],
   "dependencies": {
+    "@pixi/graphics-smooth": "0.0.22",
     "@types/jquery": "~3.5.9",
     "@types/simple-peer": "~9.11.1",
     "handlebars": "4.7.7",
