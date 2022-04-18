@@ -30,6 +30,11 @@ declare global {
      */
     get drawnCards(): InstanceType<ConfiguredDocumentClassForName<'Card'>>[];
 
+    /**
+     * Returns the localized Label for the type of Card Stack this is
+     */
+    get typeLabel(): string;
+
     /** @override */
     static createDocuments(
       data: Array<

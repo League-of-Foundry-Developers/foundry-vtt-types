@@ -198,6 +198,7 @@ export declare function getParentClasses(cls: ConstructorOf<any>): Array<Constru
  * @param object - The object to traverse
  * @param key    - An object property with notation a.b.c
  * @returns The value of the found property
+ * @throws {@link Error} Throws an Error if the object is not in fact an object
  */
 export declare function getProperty(object: object, key: string): any;
 
