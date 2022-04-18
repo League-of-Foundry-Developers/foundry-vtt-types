@@ -1238,7 +1238,7 @@ declare global {
       objectClass: ConfiguredObjectClassOrDefault<typeof AmbientLight>;
 
       /** @defaultValue `AmbientLightDocument` */
-      layerClass: ConstructorOf<LightingLayer>;
+      layerClass: typeof LightingLayer;
     };
 
     /**
@@ -1252,7 +1252,7 @@ declare global {
       objectClass: ConfiguredObjectClassOrDefault<typeof AmbientSound>;
 
       /** @defaultValue `SoundsLayer` */
-      layerClass: ConstructorOf<SoundsLayer>;
+      layerClass: typeof SoundsLayer;
     };
 
     /**
@@ -1274,7 +1274,7 @@ declare global {
       objectClass: ConfiguredObjectClassOrDefault<typeof Drawing>;
 
       /** @defaultValue `DrawingsLayer` */
-      layerClass: ConstructorOf<DrawingsLayer>;
+      layerClass: typeof DrawingsLayer;
     };
 
     /**
@@ -1310,7 +1310,7 @@ declare global {
       objectClass: ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
 
       /** @defaultValue `TemplateLayer` */
-      layerClass: ConstructorOf<TemplateLayer>;
+      layerClass: typeof TemplateLayer;
     };
 
     /**
@@ -1324,7 +1324,7 @@ declare global {
       objectClass: ConfiguredObjectClassOrDefault<typeof Note>;
 
       /** @defaultValue `NotesLayer` */
-      layerClass: ConstructorOf<NotesLayer>;
+      layerClass: typeof NotesLayer;
     };
 
     /**
@@ -1338,7 +1338,7 @@ declare global {
       objectClass: ConfiguredObjectClassOrDefault<typeof Tile>;
 
       /** @defaultValue `BackgroundLayer` */
-      layerClass: ConstructorOf<BackgroundLayer>;
+      layerClass: typeof BackgroundLayer;
     };
 
     /**
@@ -1352,7 +1352,7 @@ declare global {
       objectClass: ConfiguredObjectClassOrDefault<typeof Token>;
 
       /** @defaultValue `TokenLayer` */
-      layerClass: ConstructorOf<TokenLayer>;
+      layerClass: typeof TokenLayer;
 
       /** @defaultValue `TokenConfig` */
       prototypeSheetClass: ConstructorOf<TokenConfig>;
@@ -1369,7 +1369,7 @@ declare global {
       objectClass: ConfiguredObjectClassOrDefault<typeof Wall>;
 
       /** @defaultValue `WallsLayer` */
-      layerClass: ConstructorOf<WallsLayer>;
+      layerClass: typeof WallsLayer;
     };
 
     /**
@@ -1491,43 +1491,43 @@ declare global {
 
       interface Layers {
         /** @defaultValue `{ layerClass: BackgroundLayer, group: "primary" }` */
-        background: LayerDefinition<ConstructorOf<BackgroundLayer>>;
+        background: LayerDefinition<typeof BackgroundLayer>;
 
         /** @defaultValue `{ layerClass: DrawingsLayer, group: "primary" }` */
-        drawings: LayerDefinition<ConstructorOf<DrawingsLayer>>;
+        drawings: LayerDefinition<typeof DrawingsLayer>;
 
         /** @defaultValue `{ layerClass: GridLayer, group: "primary" }` */
-        grid: LayerDefinition<ConstructorOf<GridLayer>>;
+        grid: LayerDefinition<typeof GridLayer>;
 
         /** @defaultValue `{ layerClass: TemplateLayer, group: "primary" }` */
-        templates: LayerDefinition<ConstructorOf<TemplateLayer>>;
+        templates: LayerDefinition<typeof TemplateLayer>;
 
         /** @defaultValue `{ layerClass: TokenLayer, group: "primary" }` */
-        tokens: LayerDefinition<ConstructorOf<TokenLayer>>;
+        tokens: LayerDefinition<typeof TokenLayer>;
 
         /** @defaultValue `{ layerClass: ForegroundLayer, group: "primary" }` */
-        foreground: LayerDefinition<ConstructorOf<ForegroundLayer>>;
+        foreground: LayerDefinition<typeof ForegroundLayer>;
 
         /** @defaultValue `{ layerClass: WallsLayer, group: "effects" }` */
-        walls: LayerDefinition<ConstructorOf<WallsLayer>>;
+        walls: LayerDefinition<typeof WallsLayer>;
 
         /** @defaultValue `{ layerClass: LightingLayer, group: "effects" }` */
-        lighting: LayerDefinition<ConstructorOf<LightingLayer>>;
+        lighting: LayerDefinition<typeof LightingLayer>;
 
         /** @defaultValue `{ layerClass: WeatherLayer, group: "effects" }` */
-        weather: LayerDefinition<ConstructorOf<WeatherLayer>>;
+        weather: LayerDefinition<typeof WeatherLayer>;
 
         /** @defaultValue `{ layerClass: SightLayer, group: "effects" }` */
-        sight: LayerDefinition<ConstructorOf<SightLayer>>;
+        sight: LayerDefinition<typeof SightLayer>;
 
         /** @defaultValue `{ layerClass: SoundsLayer, group: "interface" }` */
-        sounds: LayerDefinition<ConstructorOf<SoundsLayer>>;
+        sounds: LayerDefinition<typeof SoundsLayer>;
 
         /** @defaultValue `{ layerClass: NotesLayer, group: "interface" }` */
-        notes: LayerDefinition<ConstructorOf<NotesLayer>>;
+        notes: LayerDefinition<typeof NotesLayer>;
 
         /** @defaultValue `{ layerClass: ControlsLayer, group: "interface" }` */
-        controls: LayerDefinition<ConstructorOf<ControlsLayer>>;
+        controls: LayerDefinition<typeof ControlsLayer>;
 
         [key: string]: LayerDefinition;
       }
