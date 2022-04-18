@@ -53,8 +53,9 @@ declare abstract class CanvasLayer<Options extends CanvasLayerOptions = CanvasLa
 
   /**
    * Deconstruct data used in the current layer in preparation to re-draw the canvas
+   * @remarks ControlsLayer returns void. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6939
    */
-  tearDown(): Promise<this>;
+  tearDown(): Promise<this | void>;
 
   /**
    * Activate the CanvasLayer, deactivating other layers and marking this layer's children as interactive.

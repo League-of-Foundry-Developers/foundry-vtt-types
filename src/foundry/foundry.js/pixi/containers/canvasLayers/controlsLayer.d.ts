@@ -6,64 +6,71 @@
  * 2) Ruler measurement
  * 3) Map pings
  */
-import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from '../../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
 
 declare global {
   class ControlsLayer extends CanvasLayer<ControlsLayer.LayerOptions> {
     constructor();
 
     /**
-     * Cursor position indicators
-     * @defaultValue `null`
+     * A container of DoorControl instances
+     * @defaultValue `this.addChild(new PIXI.Container())`
      */
-    cursors: PIXI.Container | null;
+    doors: PIXI.Container;
+
+    /**
+     * A container of HUD interface elements
+     * @defaultValue `this.addChild(new PIXI.Container())`
+     */
+    hud: PIXI.Container;
+
+    /**
+     * A container of cursor interaction elements.
+     * Contains cursors, rulers, interaction rectangles, and pings
+     * @defaultValue `this.addChild(new PIXI.Container())`
+     */
+    cursors: PIXI.Container;
+
+    /**
+     * Ruler tools, one per connected user
+     * @defaultValue `this.addChild(new PIXI.Container())`
+     */
+    rulers: PIXI.Container;
+
+    /**
+     * A graphics instance used for drawing debugging visualization
+     * @defaultValue `this.addChild(new PIXI.Graphics())`
+     */
+    debug: PIXI.Graphics;
+
+    /**
+     * Canvas selection rectangle
+     * @defaultValue `undefined`
+     */
+    select: PIXI.Graphics | undefined;
 
     /**
      * A mapping of user IDs to Cursor instances for quick access
      * @defaultValue `{}`
      */
-    protected _cursors: Partial<Record<string, Cursor>>;
-
-    /**
-     * Door control icons
-     * @defaultValue `null`
-     */
-    doors: PIXI.Container | null;
-
-    /**
-     * Status effect icons
-     * @remarks Always `null`
-     */
-    effects: null;
-
-    /**
-     * Ruler tools, one per connected user
-     * @defaultValue `null`
-     */
-    rulers: PIXI.Container | null;
+    protected _cursors: Record<string, Cursor>;
 
     /**
      * A convenience mapping of user IDs to Ruler instances for quick access
+     * @internal
+     * @defaultValue `{}`
      */
-    protected _rulers: Partial<Record<string, Ruler>>;
-
-    /**
-     * Canvas selection rectangle
-     * @defaultValue `null`
-     */
-    select: PIXI.Graphics | null;
-
-    // The controls layer is always interactive
-    interactiveChildren: true;
-
-    /**
-     * @remarks This is not overridden in foundry but reflects the real behavior.
-     */
-    static get instance(): undefined;
+    protected _rulers: Record<string, Ruler>;
 
     /**
      * @override
-     * @defaultValue `mergeObject(super.layerOptions, { name: "controls", zIndex: 1000 })`
+     * @defaultValue
+     * ```typescript
+     * foundry.utils.mergeObject(super.layerOptions, {
+     *   name: "controls",
+     *   zIndex: 1000
+     * })
+     * ```
      */
     static get layerOptions(): ControlsLayer.LayerOptions;
 
@@ -78,24 +85,18 @@ declare global {
     getRulerForUser(userId: string): Ruler | null;
 
     /** @override */
-    draw(): this;
+    draw(): Promise<this>;
+
+    /**
+     * @override
+     * @remarks This breaks polymorphism. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6939
+     */
+    tearDown(): Promise<void>;
 
     /**
      * Draw the cursors container
      */
     drawCursors(): void;
-
-    /**
-     * Draw the Door controls container
-     */
-    drawDoors(): void;
-
-    /**
-     * Create a Door Control icon for a given Wall object
-     * @param wall - The Wall for which to create a DoorControl
-     * @returns The created DoorControl
-     */
-    createDoorControl(wall: InstanceType<ConfiguredObjectClassForName<'Wall'>>): ReturnType<DoorControl['draw']> | null;
 
     /**
      * Draw Ruler tools
@@ -118,7 +119,7 @@ declare global {
 
     /**
      * Create and draw the Cursor object for a given User
-     * @param user - The User entity for whom to draw the cursor Container
+     * @param user - The User document for whom to draw the cursor Container
      */
     drawCursor(user: InstanceType<ConfiguredDocumentClass<typeof User>>): Cursor;
 
