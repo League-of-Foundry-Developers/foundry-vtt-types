@@ -75,18 +75,36 @@ declare global {
 
     /**
      * Target all Token instances which fall within a coordinate rectangle.
-     *
-     * @param x             - The top-left x-coordinate of the selection rectangle
-     * @param y             - The top-left y-coordinate of the selection rectangle
-     * @param width         - The width of the selection rectangle
-     * @param height        - The height of the selection rectangle
-     * @param releaseOthers - Whether or not to release other targeted tokens
-     *                        (default: `true`)
      * @returns The number of Token instances which were targeted.
      */
     targetObjects(
-      { x, y, width, height }: { x: number; y: number; width: number; height: number },
-      { releaseOthers }?: { releaseOthers?: boolean }
+      {
+        x,
+        y,
+        width,
+        height
+      }: {
+        /** The top-left x-coordinate of the selection rectangle */
+        x: number;
+
+        /** The top-left y-coordinate of the selection rectangle */
+        y: number;
+
+        /** The width of the selection rectangle */
+        width: number;
+
+        /** The height of the selection rectangle */
+        height: number;
+      },
+      {
+        releaseOthers
+      }?: {
+        /**
+         * Whether or not to release other targeted tokens
+         * @defaultValue `true`
+         */
+        releaseOthers?: boolean;
+      }
     ): number;
 
     /**
@@ -105,21 +123,21 @@ declare global {
      *                  (default: `true`)
      * @param  combat - A Combat encounter from which to add or remove the Token
      *                  (default: `null`)
-     * @param  token  - A specific Token which is the origin of the group toggle request
-     *                  (default: `null`)
-     * @returns The updated Combat encounter
-     * @remarks Returns the created Combatants or undefined if there is no combat and one can't be created
-     *          or the combat if the user is no GM and wants to remove combatants.
+     * @returns The Combatants added or removed
      */
     toggleCombat(
       state?: boolean,
       combat?: InstanceType<ConfiguredDocumentClass<typeof Combat>> | null,
-      { token }?: { token?: InstanceType<ConfiguredObjectClassForName<'Token'>> | null }
-    ): Promise<
-      | InstanceType<ConfiguredDocumentClass<typeof Combat>>
-      | InstanceType<ConfiguredDocumentClass<typeof Combatant>>[]
-      | void
-    >;
+      {
+        token
+      }?: {
+        /**
+         * A specific Token which is the origin of the group toggle request
+         * @defaultValue `null`
+         */
+        token?: InstanceType<ConfiguredObjectClassForName<'Token'>> | null;
+      }
+    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Combatant>>[]>;
 
     /**
      * Get the tab cycle order for tokens by sorting observable tokens based on their distance from top-left.
@@ -138,6 +156,9 @@ declare global {
       event: DragEvent,
       data: TokenLayer.DropData
     ): Promise<void | false | InstanceType<ConfiguredObjectClassForName<'Token'>>>;
+
+    /** @override */
+    protected _onClickLeft(event: PIXI.InteractionEvent): void;
   }
 
   namespace TokenLayer {
