@@ -1,14 +1,14 @@
-/**
- * A CanvasLayer for displaying UI controls which are overlayed on top of other layers.
- *
- * We track three types of events:
- * 1) Cursor movement
- * 2) Ruler measurement
- * 3) Map pings
- */
 import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
 
 declare global {
+  /**
+   * A CanvasLayer for displaying UI controls which are overlayed on top of other layers.
+   *
+   * We track three types of events:
+   * 1) Cursor movement
+   * 2) Ruler measurement
+   * 3) Map pings
+   */
   class ControlsLayer extends CanvasLayer<ControlsLayer.LayerOptions> {
     constructor();
 
