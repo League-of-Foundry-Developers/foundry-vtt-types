@@ -5,7 +5,7 @@ declare global {
   /**
    * A DocumentSheet application responsible for displaying and editing a single embedded Card document.
    *
-   * @typeParam Options - the type of the options object
+   * @typeParam Options - The type of the options object
    * @typeParam Data    - The data structure used to render the handlebars template.
    */
   class CardConfig<
@@ -21,14 +21,14 @@ declare global {
      *   width: 480,
      *   height: "auto",
      *   tabs: [{navSelector: ".tabs", contentSelector: "form", initial: "details"}]
-     * });
+     * })
      * ```
      */
     static override get defaultOptions(): DocumentSheetOptions;
 
-    override getData(options?: Partial<Options>): Data;
+    override getData(options?: Partial<Options>): Data | Promise<Data>;
 
-    override activateListeners(html: JQuery<HTMLElement>): void;
+    override activateListeners(html: JQuery): void;
 
     protected override _getSubmitData(
       updateData?: object | null
@@ -39,7 +39,7 @@ declare global {
      * @param event - The originating click event
      * @returns A Promise which resolves once the handler has completed
      */
-    protected _onFaceControl(event: MouseEvent): Promise<void>;
+    protected _onFaceControl(event: JQuery.ClickEvent): Promise<void>;
   }
 
   namespace CardConfig {

@@ -3,6 +3,9 @@ import type { ConfiguredDocumentClassForName } from '../../../../../types/helper
 declare global {
   /**
    * A DocumentSheet application responsible for displaying and editing a single Cards stack.
+   *
+   * @typeParam Options - The type of the options object
+   * @typeParam Data    - The data structure used to render the handlebars template.
    */
   class CardsConfig<
     Options extends DocumentSheetOptions = DocumentSheetOptions,
@@ -30,21 +33,21 @@ declare global {
      *   dragDrop: [{dragSelector: "ol.cards li.card", dropSelector: "ol.cards"}],
      *   tabs: [{navSelector: ".tabs", contentSelector: "form", initial: "cards"}],
      *   scrollY: ["ol.cards"]
-     * });
+     * })
      * ```
      */
     static override get defaultOptions(): DocumentSheetOptions;
 
-    override getData(options?: Partial<Options>): Data;
+    override getData(options?: Partial<Options>): Data | Promise<Data>;
 
-    override activateListeners(html: JQuery<HTMLElement>): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * Handle card control actions which modify single cards on the sheet.
      * @param event - The originating click event
      * @returns A Promise which resolves once the handler has completed
      */
-    protected _onCardControl(event: MouseEvent): Promise<void>;
+    protected _onCardControl(event: JQuery.ClickEvent): Promise<void>;
 
     /**
      * Handle lazy-loading card face images.
@@ -70,14 +73,14 @@ declare global {
      */
     protected _onSortCard(
       event: DragEvent,
-      card: Card
+      card: InstanceType<ConfiguredDocumentClassForName<'Card'>>
     ): ReturnType<InstanceType<ConfiguredDocumentClassForName<'Cards'>>['updateEmbeddedDocuments']>;
   }
 
   namespace CardsConfig {
     interface Data<Options extends DocumentSheetOptions>
       extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Cards'>>, Options> {
-      cards: InstanceType<ConfiguredDocumentClassForName<'Cards'>>;
+      cards: InstanceType<ConfiguredDocumentClassForName<'Card'>>[];
       types: Record<string, string>;
       inCompendium: boolean;
     }
