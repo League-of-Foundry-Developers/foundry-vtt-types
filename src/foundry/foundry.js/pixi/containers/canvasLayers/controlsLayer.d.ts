@@ -6,7 +6,7 @@
  * 2) Ruler measurement
  * 3) Map pings
  */
-import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from '../../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
 
 declare global {
   class ControlsLayer extends CanvasLayer<ControlsLayer.LayerOptions> {
