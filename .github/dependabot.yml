@@ -5,6 +5,15 @@ updates:
     schedule:
       interval: 'daily'
     ignore:
+      - dependency-name: '@pixi/constants'
+      - dependency-name: '@pixi/core'
+      - dependency-name: '@pixi/display'
+      - dependency-name: '@pixi/graphics-smooth'
+      - dependency-name: '@pixi/graphics'
+      - dependency-name: '@pixi/math'
+      - dependency-name: '@pixi/runner'
+      - dependency-name: '@pixi/settings'
+      - dependency-name: '@pixi/utils'
       - dependency-name: '@types/jquery'
         update-types: ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: '@types/simple-peer'
