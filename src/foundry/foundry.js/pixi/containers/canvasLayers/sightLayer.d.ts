@@ -260,6 +260,7 @@ declare global {
       }
     ): boolean;
 
+    /** @internal */
     protected _getFogTexture(): PIXI.RenderTexture;
 
     /**
@@ -310,7 +311,6 @@ declare global {
   namespace SightLayer {
     interface LayerOptions extends CanvasLayer.LayerOptions {
       name: 'sight';
-      zIndex: 400;
     }
   }
 }
