@@ -70,6 +70,12 @@ declare global {
      */
     sync(): void | Promise<void> | Promise<Sound>;
 
+    override _onCreate(
+      data: foundry.data.PlaylistSoundData['_source'],
+      options: DocumentModificationOptions,
+      userId: string
+    ): void;
+
     /** @override */
     protected _onUpdate(
       changed: DeepPartial<foundry.data.PlaylistSoundData['_source']>,

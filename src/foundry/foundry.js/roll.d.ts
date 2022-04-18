@@ -16,7 +16,7 @@ declare global {
    * console.log(r.terms);    // [Die, OperatorTerm, NumericTerm, OperatorTerm, NumericTerm]
    *
    * // Execute the roll
-   * r.evaluate();
+   * await r.evaluate();
    *
    * // The resulting equation after it was rolled
    * console.log(r.result);   // 16 + 2 + 4
@@ -142,7 +142,7 @@ declare global {
      * @example
      * ```typescript
      * let r = new Roll("2d6 + 4 + 1d4");
-     * r.evaluate();
+     * await r.evaluate();
      * console.log(r.result); // 5 + 4 + 2
      * console.log(r.total);  // 11
      * ```

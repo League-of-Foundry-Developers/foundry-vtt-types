@@ -117,7 +117,7 @@ declare global {
       alternateImages: Record<string, string> | [];
       object: foundry.data.PrototypeTokenData | foundry.data.TokenData;
       options: Options;
-      gridUnits: string | undefined;
+      gridUnits: string;
       barAttributes: Record<string, string[]>;
       bar1: ReturnType<TokenDocument['getBarAttribute']> | undefined;
       bar2: ReturnType<TokenDocument['getBarAttribute']> | undefined;
