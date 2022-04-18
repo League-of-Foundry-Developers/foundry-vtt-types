@@ -10,6 +10,12 @@ declare class SoundsLayer extends PlaceablesLayer<'AmbientSound', SoundsLayer.La
   livePreview: boolean;
 
   /**
+   * A mapping of ambient audio sources which are active within the rendered Scene
+   * @defaultValue `new foundry.utils.Collection()`
+   */
+  sources: foundry.utils.Collection<SoundSource>;
+
+  /**
    * @remarks This is not overridden in foundry but reflects the real behavior.
    */
   static get instance(): Canvas['sounds'];
@@ -97,9 +103,11 @@ declare class SoundsLayer extends PlaceablesLayer<'AmbientSound', SoundsLayer.La
   protected _onDragLeftCancel(event: PointerEvent): void;
 
   /**
-   * @deprecated since 0.8.2
+   * Handle PlaylistSound document drop data.
+   * @param event - The drag drop event
+   * @param data  - The dropped transfer data.
    */
-  update(options?: { fade?: number }): ReturnType<this['refresh']>;
+  protected _onDropData(event: DragEvent, data: unknown): Promise<void>;
 }
 
 declare namespace SoundsLayer {
