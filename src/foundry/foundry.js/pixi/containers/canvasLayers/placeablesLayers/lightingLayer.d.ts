@@ -61,6 +61,7 @@ declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLaye
 
   /**
    * An array of light sources which are currently animated
+   * @internal
    */
   protected _animatedSources: LightSource[];
 
@@ -225,16 +226,14 @@ declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLaye
 declare namespace LightingLayer {
   interface LayerOptions extends PlaceablesLayer.LayerOptions<'AmbientLight'> {
     name: 'lighting';
-    rotatableObjects: true;
-    zIndex: 300;
   }
 }
 
-declare type ChannelConfig = Record<'canvas' | 'background' | 'black' | 'bright' | 'dark' | 'dim', LightChannel> & {
-  darkness: { level: number; rgb: [number, number, number] };
+type ChannelConfig = Record<'canvas' | 'background' | 'black' | 'bright' | 'dark' | 'dim', LightChannel> & {
+  darkness: { level: number; rgb: [r: number, g: number, b: number] };
 };
 
-declare interface LightChannel {
+interface LightChannel {
   hex: number;
-  rgb: [number, number, number];
+  rgb: [r: number, g: number, b: number];
 }
