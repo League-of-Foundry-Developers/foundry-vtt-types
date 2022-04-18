@@ -53,14 +53,14 @@ declare global {
      * A mapping of user IDs to Cursor instances for quick access
      * @defaultValue `{}`
      */
-    protected _cursors: Partial<Record<string, Cursor>>;
+    protected _cursors: Record<string, Cursor>;
 
     /**
      * A convenience mapping of user IDs to Ruler instances for quick access
      * @internal
      * @defaultValue `{}`
      */
-    protected _rulers: Partial<Record<string, Ruler>>;
+    protected _rulers: Record<string, Ruler>;
 
     /**
      * @remarks This is not overridden in foundry but reflects the real behavior.
