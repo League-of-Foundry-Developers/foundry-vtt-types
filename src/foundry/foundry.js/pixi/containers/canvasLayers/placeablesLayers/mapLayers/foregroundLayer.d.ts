@@ -63,13 +63,13 @@ declare global {
      * Add a roof sprite to the occlusion roof mask container
      * @param tile - The roof tile being added
      */
-    addRoofSprite(tile: Tile): void;
+    addRoofSprite(tile: InstanceType<ConfiguredObjectClassForName<'Tile'>>): void;
 
     /**
      * Remove a roof sprite from occlusion roof mask container
      * @param tile - The roof tile being removed
      */
-    removeRoofSprite(tile: Tile): void;
+    removeRoofSprite(tile: InstanceType<ConfiguredObjectClassForName<'Tile'>>): void;
 
     /**
      * Update occlusion for all tiles on the foreground layer

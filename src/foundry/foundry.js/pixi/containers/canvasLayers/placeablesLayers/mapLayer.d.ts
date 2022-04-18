@@ -119,9 +119,6 @@ declare global {
     interface LayerOptions<Name extends 'background' | 'foreground' = 'background' | 'foreground'>
       extends PlaceablesLayer.LayerOptions<'Tile'> {
       name: Name;
-      zIndex: 0;
-      controllableObjects: true;
-      rotatableObjects: true;
     }
 
     type DropData =
