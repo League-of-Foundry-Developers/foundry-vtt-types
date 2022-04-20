@@ -1,6 +1,6 @@
 import { ConstructorDataType } from '../../types/helperTypes';
 import { ContextType, DocumentModificationOptions } from '../common/abstract/document.mjs';
-import { ClientDocumentMixin } from './clientDocumentMixin';
+import { ClientDocumentMixin } from '../client/data/abstract/client-document';
 
 declare global {
   // TODO: Replace ConstructorOf<…> with DocumentConstructor once the problem with circular reference has been solved

@@ -7,7 +7,7 @@ import {
 } from '../../types/helperTypes';
 import { DocumentModificationOptions } from '../common/abstract/document.mjs';
 import { EffectChangeData } from '../common/data/data.mjs/effectChangeData';
-import { DropData } from './clientDocumentMixin';
+import { DropData } from '../client/data/abstract/client-document';
 
 declare global {
   /**
