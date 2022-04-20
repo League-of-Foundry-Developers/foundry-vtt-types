@@ -10,7 +10,6 @@ import './combatant';
 import './drawing';
 import './fog-exploration';
 import './folder';
-import './index';
 import './item';
 import './journal-entry';
 import './macro';

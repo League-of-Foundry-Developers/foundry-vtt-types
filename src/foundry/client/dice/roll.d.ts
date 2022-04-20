@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../types/helperTypes';
+import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 
 declare global {
   /**
@@ -147,8 +147,8 @@ declare global {
      * console.log(r.total);  // 11
      * ```
      */
-    evaluate(options?: InexactPartial<Options & { async: false }>): Evaluated<this>;
-    evaluate(options: InexactPartial<Options> & { async: true }): Promise<Evaluated<this>>;
+    evaluate(options?: InexactPartial<Options> & { async: true }): Promise<Evaluated<this>>;
+    evaluate(options: InexactPartial<Options & { async: false }>): Evaluated<this>;
     evaluate(options?: InexactPartial<Options>): Evaluated<this> | Promise<Evaluated<this>>;
 
     /**
@@ -173,8 +173,8 @@ declare global {
      * Alias for evaluate.
      * @see Roll#evaluate
      */
-    roll(options?: InexactPartial<Options & { async: false }>): Evaluated<this>;
-    roll(options: InexactPartial<Options> & { async: true }): Promise<Evaluated<this>>;
+    roll(options?: InexactPartial<Options> & { async: true }): Promise<Evaluated<this>>;
+    roll(options: InexactPartial<Options & { async: false }>): Evaluated<this>;
     roll(options?: InexactPartial<Options>): Evaluated<this> | Promise<Evaluated<this>>;
 
     /**
@@ -183,8 +183,8 @@ declare global {
      * @param options - Evaluation options passed to Roll#evaluate
      * @returns A new Roll object, rolled using the same formula and data
      */
-    reroll(options?: InexactPartial<Options & { async: false }>): Evaluated<this>;
-    reroll(options: InexactPartial<Options> & { async: true }): Promise<Evaluated<this>>;
+    reroll(options?: InexactPartial<Options> & { async: true }): Promise<Evaluated<this>>;
+    reroll(options: InexactPartial<Options & { async: false }>): Evaluated<this>;
     reroll(options?: InexactPartial<Options>): Evaluated<this> | Promise<Evaluated<this>>;
 
     /**
