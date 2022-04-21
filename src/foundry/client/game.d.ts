@@ -672,6 +672,12 @@ declare global {
 
     type View = ValueOf<typeof foundry.CONST.GAME_VIEWS>;
   }
+
+  /**
+   * @defaultValue `undefined`
+   * Initialized between the `'DOMContentLoaded'` event and the `'init'` hook event.
+   */
+  let canvas: 'canvas' extends keyof LenientGlobalVariableTypes ? Canvas : Canvas | undefined;
 }
 
 type ConfiguredCollectionClassForName<Name extends foundry.CONST.DOCUMENT_TYPES> = InstanceType<

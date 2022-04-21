@@ -7,5 +7,6 @@ import './data';
 import './dice';
 import './game';
 import './head';
+import './pixi';
 import './tail';
 import './ui';

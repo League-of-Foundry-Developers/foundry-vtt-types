@@ -1,26 +1,3 @@
 import './common/module.mjs';
 import './client';
 import './templates';
-import './foundry.js/canvas';
-import './foundry.js/canvasAnimation';
-import './foundry.js/collections';
-import './foundry.js/collisionResult';
-import './foundry.js/globalVariables';
-import './foundry.js/mouseInteractionManager';
-import './foundry.js/perceptionManager';
-import './foundry.js/pixi';
-import './foundry.js/pointSource';
-import './foundry.js/pointSources';
-import './foundry.js/polygonEdge';
-import './foundry.js/polygonVertex';
-import './foundry.js/quadtree';
-import './foundry.js/quadtreeCulling';
-import './foundry.js/ray';
-import './foundry.js/rays';
-
-import './foundry.js/screenCulling';
-import './foundry.js/specialEffect';
-import './foundry.js/specialEffects';
-import './foundry.js/textureLoader';
-import './foundry.js/textureUtils';
-import './foundry.js/userTargets';
