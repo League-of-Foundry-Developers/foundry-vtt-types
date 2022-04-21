@@ -1,2 +1,0 @@
-import './pointSourcePolygon';
-import './pointSourcePolygons';

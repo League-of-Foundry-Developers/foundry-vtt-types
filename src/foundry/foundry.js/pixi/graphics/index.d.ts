@@ -1,2 +1,0 @@
-import './gridHighlight';
-import './resizeHandle';

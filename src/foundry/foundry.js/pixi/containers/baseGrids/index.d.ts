@@ -1,2 +1,0 @@
-import './hexagonalGrid';
-import './squareGrid';
