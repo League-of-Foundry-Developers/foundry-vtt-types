@@ -38,8 +38,7 @@ declare global {
      */
     get combats(): StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combat>>>[];
 
-    /** @override */
-    createPopout(): this;
+    override createPopout(): this;
 
     /**
      * Initialize the combat tracker to display a specific combat encounter.
@@ -56,11 +55,9 @@ declare global {
      */
     scrollToTurn(): void;
 
-    /** @override */
-    getData(options?: Partial<Options>): Promise<CombatTracker.Data>;
+    override getData(options?: Partial<Options>): Promise<CombatTracker.Data>;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * Handle new Combat creation request

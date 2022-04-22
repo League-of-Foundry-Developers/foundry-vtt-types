@@ -19,11 +19,9 @@ type FolderMetadata = Merge<
  * The base Folder model definition which defines common behavior of an Folder document between both client and server.
  */
 export declare class BaseFolder extends Document<data.FolderData, BaseFolder, FolderMetadata> {
-  /** @override */
-  static get schema(): typeof data.FolderData;
+  static override get schema(): typeof data.FolderData;
 
-  /** @override */
-  static get metadata(): FolderMetadata;
+  static override get metadata(): FolderMetadata;
 
   /**
    * The type of Document contained within this Folder.

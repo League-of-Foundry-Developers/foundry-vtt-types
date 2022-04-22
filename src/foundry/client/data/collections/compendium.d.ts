@@ -226,8 +226,7 @@ declare global {
      */
     migrate(options?: Record<string, unknown> | undefined): Promise<this>;
 
-    /** @override */
-    updateAll(
+    override updateAll(
       transformation:
         | DeepPartial<DocumentInstanceForCompendiumMetadata<T>['data']['_source']>
         | ((

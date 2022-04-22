@@ -27,14 +27,11 @@ export declare class BaseNote extends Document<
   InstanceType<ConfiguredDocumentClass<typeof BaseScene>>,
   NoteMetadata
 > {
-  /** @override */
-  static get schema(): typeof data.NoteData;
+  static override get schema(): typeof data.NoteData;
 
-  /** @override */
-  static get metadata(): NoteMetadata;
+  static override get metadata(): NoteMetadata;
 
-  /** @override */
-  testUserPermission(
+  override testUserPermission(
     user: BaseUser,
     permission: keyof typeof foundry.CONST.DOCUMENT_PERMISSION_LEVELS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,
     { exact }?: { exact?: boolean }

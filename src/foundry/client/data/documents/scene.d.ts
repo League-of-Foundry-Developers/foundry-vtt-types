@@ -105,51 +105,46 @@ declare global {
     view(): Promise<this | undefined>;
 
     /**
-     * @override
      * @param createData - (default: `{}`)
      * @param options    - (default: `{}`)
      */
-    clone(
+    override clone(
       createData?: DeepPartial<SceneDataConstructorData | (SceneDataConstructorData & Record<string, unknown>)>,
       options?: { save?: boolean; keepId?: boolean }
     ): TemporaryDocument<this> | Promise<TemporaryDocument<this | undefined>>;
 
-    /** @override */
-    prepareBaseData(): void;
+    override prepareBaseData(): void;
 
-    /** @override */
-    protected _preCreate(
+    protected override _preCreate(
       data: SceneDataConstructorData,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;
 
-    /** @override */
-    protected _onCreate(
+    protected override _onCreate(
       data: foundry.data.SceneData['_source'],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
-    /** @override */
-    protected _preUpdate(
+    protected override _preUpdate(
       changed: DeepPartial<SceneDataConstructorData>,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;
 
-    /** @override */
-    protected _onUpdate(
+    protected override _onUpdate(
       changed: DeepPartial<foundry.data.SceneData['_source']> & Record<string, unknown>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
-    /** @override */
-    protected _preDelete(options: DocumentModificationOptions, user: foundry.documents.BaseUser): Promise<void>;
+    protected override _preDelete(
+      options: DocumentModificationOptions,
+      user: foundry.documents.BaseUser
+    ): Promise<void>;
 
-    /** @override */
-    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
     /**
      * Handle Scene activation workflow if the active state is changed to true
@@ -157,8 +152,7 @@ declare global {
      */
     protected _onActivate(active: boolean): ReturnType<this['view']> | ReturnType<Canvas['draw']> | void;
 
-    /** @override */
-    _preCreateEmbeddedDocuments(
+    override _preCreateEmbeddedDocuments(
       embeddedName: string,
       result: DrawingDataConstructorData[],
       options: DocumentModificationOptions,
@@ -207,8 +201,7 @@ declare global {
       userId: string
     ): void;
 
-    /** @override */
-    _onCreateEmbeddedDocuments(
+    override _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>[],
       result: DeepPartial<DrawingDataSource>[],
@@ -265,8 +258,7 @@ declare global {
       userId: string
     ): void;
 
-    /** @override */
-    _preUpdateEmbeddedDocuments(
+    override _preUpdateEmbeddedDocuments(
       embeddedName: string,
       result: DeepPartial<DrawingDataSource>[],
       options: DocumentModificationContext,
@@ -315,8 +307,7 @@ declare global {
       userId: string
     ): void;
 
-    /** @override */
-    _onUpdateEmbeddedDocuments(
+    override _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>[],
       result: DeepPartial<DrawingDataSource>[],
@@ -373,16 +364,14 @@ declare global {
       userId: string
     ): void;
 
-    /** @override */
-    _preDeleteEmbeddedDocuments(
+    override _preDeleteEmbeddedDocuments(
       embeddedName: string,
       result: string[],
       options: DocumentModificationContext,
       userId: string
     ): void;
 
-    /** @override */
-    _onDeleteEmbeddedDocuments(
+    override _onDeleteEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>[],
       result: string[],
@@ -439,8 +428,7 @@ declare global {
       userId: string
     ): void;
 
-    /** @override */
-    toCompendium(
+    override toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocumentMixin.CompendiumExportOptions | undefined
     ): Omit<foundry.data.SceneData['_source'], '_id' | 'folder' | 'permission'> & {

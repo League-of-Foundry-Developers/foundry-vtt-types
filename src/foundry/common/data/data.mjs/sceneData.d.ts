@@ -647,11 +647,9 @@ export class SceneData extends DocumentData<
    */
   constructor(data: SceneDataConstructorData, document?: documents.BaseScene | null);
 
-  /** @override */
-  static defineSchema(): SceneDataSchema;
+  static override defineSchema(): SceneDataSchema;
 
-  /** @override */
-  protected _initialize(): void;
+  protected override _initialize(): void;
 
   size: number;
 }

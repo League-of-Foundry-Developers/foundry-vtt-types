@@ -32,19 +32,16 @@ declare global {
     get ids(): string[];
 
     /**
-     * @override
      * @remarks Returns void, but Set<T>.add returns boolean
      */
-    add(token: InstanceType<ObjectClass<typeof TokenDocument>>): void;
+    override add(token: InstanceType<ObjectClass<typeof TokenDocument>>): void;
 
-    /** @override */
-    clear(): void;
+    override clear(): void;
 
     /**
-     * @override
      * @remarks Returns void, but Set<T>.delete returns boolean
      */
-    delete(token: InstanceType<ObjectClass<typeof TokenDocument>>): void;
+    override delete(token: InstanceType<ObjectClass<typeof TokenDocument>>): void;
 
     /**
      * Dispatch the targetToken hook whenever the user's target set changes

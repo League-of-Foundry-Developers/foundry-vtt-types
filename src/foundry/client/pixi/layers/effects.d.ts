@@ -42,11 +42,9 @@ declare class WeatherLayer extends CanvasLayer<WeatherLayer.LayerOptions> {
    */
   static get layerOptions(): WeatherLayer.LayerOptions;
 
-  /** @override */
-  tearDown(): Promise<this>;
+  override tearDown(): Promise<this>;
 
-  /** @override */
-  draw(): Promise<undefined>;
+  override draw(): Promise<undefined>;
 
   /**
    * Draw the weather container.

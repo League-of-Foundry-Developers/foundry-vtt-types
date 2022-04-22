@@ -211,7 +211,6 @@ type DocumentDataConstructor = Pick<typeof DocumentData, keyof typeof DocumentDa
 interface CardsDataConstructor extends DocumentDataConstructor {
   new (data: CardsDataConstructorData, document?: documents.BaseCards | null | undefined): CardsData;
 
-  /** @override */
   defineSchema(): CardsDataSchema;
 
   /**

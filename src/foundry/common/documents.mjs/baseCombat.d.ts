@@ -26,11 +26,9 @@ type CombatMetadata = Merge<
  * The base Combat model definition which defines common behavior of an Combat document between both client and server.
  */
 export declare class BaseCombat extends Document<data.CombatData, null, CombatMetadata> {
-  /** @override */
-  static get schema(): typeof data.CombatData;
+  static override get schema(): typeof data.CombatData;
 
-  /** @override */
-  static get metadata(): CombatMetadata;
+  static override get metadata(): CombatMetadata;
 
   /** A reference to the Collection of Combatant instances in the Combat document, indexed by id. */
   get combatants(): this['data']['combatants'];

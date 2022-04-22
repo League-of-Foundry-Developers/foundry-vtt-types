@@ -6,6 +6,5 @@
  * @see {@link ItemDirectory} The ItemDirectory sidebar directory
  */
 declare class Items extends WorldCollection<typeof foundry.documents.BaseItem, 'Items'> {
-  /** @override */
-  static documentName: 'Item';
+  static override documentName: 'Item';
 }

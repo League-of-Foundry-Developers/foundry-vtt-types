@@ -12,7 +12,6 @@ declare global {
     Data extends object = SettingsConfig.Data
   > extends FormApplication<Options, Data> {
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -27,16 +26,14 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): typeof FormApplication['defaultOptions'];
+    static override get defaultOptions(): typeof FormApplication['defaultOptions'];
 
     /**
      * @param options - (unused)
-     * @override
      */
-    getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): Data | Promise<Data>;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * Handle activating the button to configure User Role permissions
@@ -59,11 +56,9 @@ declare global {
      */
     protected _previewFontScaling(event: JQuery.ChangeEvent): void;
 
-    /** @override */
-    close(options?: Application.CloseOptions | undefined): Promise<void>;
+    override close(options?: Application.CloseOptions | undefined): Promise<void>;
 
-    /** @override */
-    protected _updateObject(event: Event, formData: SettingsConfig.FormData): Promise<unknown>;
+    protected override _updateObject(event: Event, formData: SettingsConfig.FormData): Promise<unknown>;
   }
 
   namespace SettingsConfig {

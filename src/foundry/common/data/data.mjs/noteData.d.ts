@@ -220,8 +220,7 @@ export class NoteData extends DocumentData<
   NoteDataConstructorData,
   documents.BaseNote
 > {
-  /** @override */
-  static defineSchema(): NoteDataSchema;
+  static override defineSchema(): NoteDataSchema;
 
   /**
    * The default icon used for newly created Note documents.

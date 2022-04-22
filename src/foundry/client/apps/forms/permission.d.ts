@@ -15,7 +15,6 @@ declare global {
       : foundry.abstract.Document<any, any>
   > extends DocumentSheet<Options, PermissionControl.Data, ConcreteDocument> {
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -25,16 +24,13 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): DocumentSheetOptions;
 
-    /** @override */
-    get title(): string;
+    override get title(): string;
 
-    /** @override */
-    getData(options?: Partial<Options> | undefined): PermissionControl.Data | Promise<PermissionControl.Data>;
+    override getData(options?: Partial<Options> | undefined): PermissionControl.Data | Promise<PermissionControl.Data>;
 
-    /** @override */
-    protected _updateObject(event: Event, formData: PermissionControl.FormData): Promise<unknown>;
+    protected override _updateObject(event: Event, formData: PermissionControl.FormData): Promise<unknown>;
   }
 
   namespace PermissionControl {

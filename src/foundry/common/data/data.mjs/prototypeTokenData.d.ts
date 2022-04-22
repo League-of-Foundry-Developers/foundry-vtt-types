@@ -61,11 +61,9 @@ export class PrototypeTokenData extends DocumentData<
   PrototypeTokenDataConstructorData,
   documents.BaseActor
 > {
-  /** @override */
-  _initialize(): void;
+  override _initialize(): void;
 
-  /** @override */
-  toObject(source?: true): ReturnType<this['toJSON']> & { actorId: documents.BaseActor['id'] };
+  override toObject(source?: true): ReturnType<this['toJSON']> & { actorId: documents.BaseActor['id'] };
   toObject(source: false): {
     [Key in keyof PrototypeTokenDataSchema as string extends Key ? never : Key]: Key extends keyof this
       ? ToObjectFalseType<this[Key]>

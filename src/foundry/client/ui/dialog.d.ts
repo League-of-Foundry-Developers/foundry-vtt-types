@@ -46,7 +46,6 @@ declare class Dialog<Options extends DialogOptions = DialogOptions> extends Appl
   data: Dialog.Data;
 
   /**
-   * @override
    * @defaultValue
    * ```typescript
    * foundry.utils.mergeObject(super.defaultOptions, {
@@ -57,22 +56,13 @@ declare class Dialog<Options extends DialogOptions = DialogOptions> extends Appl
    * })
    * ```
    */
-  static get defaultOptions(): DialogOptions;
+  static override get defaultOptions(): DialogOptions;
 
-  /**
-   * @override
-   */
   static get title(): string;
 
-  /**
-   * @override
-   */
-  getData(options?: Partial<Options>): { content: string; buttons: Record<string, Dialog.Button> };
+  override getData(options?: Partial<Options>): { content: string; buttons: Record<string, Dialog.Button> };
 
-  /**
-   * @override
-   */
-  activateListeners(html: JQuery): void;
+  override activateListeners(html: JQuery): void;
 
   /**
    * Handle a left-mouse click on one of the dialog choice buttons
@@ -93,10 +83,7 @@ declare class Dialog<Options extends DialogOptions = DialogOptions> extends Appl
    */
   protected submit(button: Dialog.Button): void;
 
-  /**
-   * @override
-   */
-  close(options?: Application.CloseOptions): Promise<void>;
+  override close(options?: Application.CloseOptions): Promise<void>;
 
   /**
    * A helper factory method to create simple confirmation dialog windows which consist of simple yes/no prompts.

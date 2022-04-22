@@ -15,7 +15,6 @@ declare global {
     Data extends object = AmbientLightConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'AmbientLight'>>> {
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -29,36 +28,30 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): DocumentSheetOptions;
 
     /**
      * @param options - (unused)
-     * @override
      */
-    getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): Data | Promise<Data>;
 
-    /** @override */
-    close(options?: Application.CloseOptions): Promise<void>;
+    override close(options?: Application.CloseOptions): Promise<void>;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * Preview the change caused by a change on the form by refreshing the display of the light source
      */
     protected _onChangeInput(event: JQuery.ChangeEvent): Promise<void>;
 
-    /** @override */
     protected _onResetForm(event: PointerEvent): void;
 
-    /** @override */
-    protected _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: string): void;
+    protected override _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: string): void;
 
     /**
      * @param event - (unused)
-     * @override
      */
-    protected _updateObject(event: Event, formData: AmbientLightConfig.FormData): Promise<unknown>;
+    protected override _updateObject(event: Event, formData: AmbientLightConfig.FormData): Promise<unknown>;
 
     /**
      * Refresh the display of the AmbientLight object

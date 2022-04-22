@@ -22,7 +22,6 @@ declare global {
      */
     protected _animate(): void;
 
-    /** @override */
-    destroy(options?: Parameters<PIXI.Container['destroy']>[0]): void;
+    override destroy(options?: Parameters<PIXI.Container['destroy']>[0]): void;
   }
 }

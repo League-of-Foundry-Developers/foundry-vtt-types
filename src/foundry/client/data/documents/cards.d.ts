@@ -35,8 +35,7 @@ declare global {
      */
     get typeLabel(): string;
 
-    /** @override */
-    static createDocuments(
+    static override createDocuments(
       data: Array<
         | ConstructorDataType<foundry.data.CardsData>
         | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
@@ -180,19 +179,19 @@ declare global {
       context: Record<string, unknown>
     ): Promise<InstanceType<ConfiguredDocumentClassForName<'ChatMessage'>> | undefined>;
 
-    /** @override */
-    protected _onUpdate(
+    protected override _onUpdate(
       data: DeepPartial<foundry.data.CardsData>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
-    /** @override */
-    protected _preDelete(options: DocumentModificationOptions, user: foundry.documents.BaseUser): Promise<void>;
+    protected override _preDelete(
+      options: DocumentModificationOptions,
+      user: foundry.documents.BaseUser
+    ): Promise<void>;
 
     // TODO: It's a bit weird that we have to do it in this generic way but otherwise there is an error overriding this. Investigate later.
-    /** @override */
-    static deleteDocuments<T extends DocumentConstructor>(
+    static override deleteDocuments<T extends DocumentConstructor>(
       this: T,
       ids?: string[] | undefined,
       context?: DocumentModificationContext | undefined
@@ -231,12 +230,10 @@ declare global {
      */
     resetDialog(): Promise<InstanceType<ConfiguredDocumentClassForName<'Cards'>> | false | null>;
 
-    /** @override */
-    deleteDialog(options?: Partial<DialogOptions> | undefined): Promise<this | false | null | undefined>;
+    override deleteDialog(options?: Partial<DialogOptions> | undefined): Promise<this | false | null | undefined>;
 
     // TODO: It's a bit weird that we have to do it in this generic way but otherwise there is an error overriding this. Investigate later.
-    /** @override */
-    static createDialog<T extends DocumentConstructor>(
+    static override createDialog<T extends DocumentConstructor>(
       this: T,
       data?:
         | DeepPartial<

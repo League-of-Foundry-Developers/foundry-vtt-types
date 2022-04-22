@@ -305,11 +305,9 @@ export class PackageData<
   Properties extends Omit<PackageDataProperties, 'system'>,
   ConstructorData extends Omit<PackageDataConstructorData, 'system'>
 > extends DocumentData<Schema, Properties, PropertiesToSource<Properties>, ConstructorData> {
-  /** @override */
-  static defineSchema(): Omit<PackageDataSchema, 'system'>;
+  static override defineSchema(): Omit<PackageDataSchema, 'system'>;
 
-  /** @override */
-  _initializeSource(data: ConstructorData): PropertiesToSource<Properties>;
+  override _initializeSource(data: ConstructorData): PropertiesToSource<Properties>;
 
   /**
    * Determine the availability a package based on the version numbers of its dependencies.

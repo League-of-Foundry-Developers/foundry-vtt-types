@@ -19,7 +19,6 @@ declare global {
     Data extends object = DrawingConfig.Data<Options>
   > extends FormApplication<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Drawing'>>> {
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -33,16 +32,13 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): DrawingConfigOptions;
+    static override get defaultOptions(): DrawingConfigOptions;
 
-    /** @override */
-    get title(): string;
+    override get title(): string;
 
-    /** @override */
-    get id(): string;
+    override get id(): string;
 
-    /** @override */
-    getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): Data | Promise<Data>;
 
     /**
      * Get the names and labels of fill type choices which can be applied
@@ -50,14 +46,11 @@ declare global {
      */
     protected static _getFillTypes(): DrawingConfig.FillTypes;
 
-    /** @override */
-    protected _updateObject(event: Event, formData: DrawingConfig.FormData): Promise<unknown>;
+    protected override _updateObject(event: Event, formData: DrawingConfig.FormData): Promise<unknown>;
 
-    /** @override */
-    close(options?: FormApplication.CloseOptions): Promise<void>;
+    override close(options?: FormApplication.CloseOptions): Promise<void>;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * Reset the user Drawing configuration settings to their default values

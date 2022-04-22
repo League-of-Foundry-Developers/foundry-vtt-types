@@ -27,14 +27,11 @@ declare global {
      */
     static get defaultOptions(): ApplicationOptions;
 
-    /** @override */
-    render(force?: boolean, options?: Application.RenderOptions<Options>): this;
+    override render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 
-    /** @override */
-    getData(options?: Partial<Options>): PlayerList.Data | Promise<PlayerList.Data>;
+    override getData(options?: Partial<Options>): PlayerList.Data | Promise<PlayerList.Data>;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * Return the default context options available for the Players application

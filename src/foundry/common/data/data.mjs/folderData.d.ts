@@ -144,8 +144,7 @@ export class FolderData extends DocumentData<
 > {
   constructor(data: FolderDataConstructorData, document?: documents.BaseFolder | null);
 
-  /** @override */
-  static defineSchema(): FolderDataSchema;
+  static override defineSchema(): FolderDataSchema;
 
   static SORTING_MODES: ['a', 'm'];
 }

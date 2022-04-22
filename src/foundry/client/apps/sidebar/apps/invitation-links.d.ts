@@ -9,7 +9,6 @@ declare class InvitationLinks<
   Data extends object = InvitationLinks.Data
 > extends Application<Options> {
   /**
-   * @override
    * @defaultValue
    * ```typescript
    * foundry.utils.mergeObject(super.defaultOptions, {
@@ -20,13 +19,11 @@ declare class InvitationLinks<
    * })
    * ```
    */
-  static get defaultOptions(): ApplicationOptions;
+  static override get defaultOptions(): ApplicationOptions;
 
-  /** @override */
-  getData(options?: Partial<Options> | undefined): Promise<Data>;
+  override getData(options?: Partial<Options> | undefined): Promise<Data>;
 
-  /** @override */
-  activateListeners(html: JQuery): void;
+  override activateListeners(html: JQuery): void;
 }
 
 declare namespace InvitationLinks {

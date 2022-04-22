@@ -12,7 +12,6 @@ declare global {
     Data extends object = Settings.Data
   > extends SidebarTab<Options> {
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * const options = super.defaultOptions;
@@ -21,13 +20,11 @@ declare global {
      * options.title = "Settings";
      * ```
      */
-    static get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): ApplicationOptions;
 
-    /** @override */
-    getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): Data | Promise<Data>;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * Delegate different actions for different settings buttons
@@ -67,7 +64,6 @@ declare global {
     url: string;
 
     /**
-     * @override
      * @defaultValue
      * ```
      * mergeObject(super.defaultOptions, {
@@ -80,12 +76,10 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): typeof Application['defaultOptions'];
+    static override get defaultOptions(): typeof Application['defaultOptions'];
 
-    /** @override */
-    getData(options?: Partial<ApplicationOptions>): Promise<{ src: string }>;
+    override getData(options?: Partial<ApplicationOptions>): Promise<{ src: string }>;
 
-    /** @override */
-    close(options?: Application.CloseOptions): ReturnType<Application['close']>;
+    override close(options?: Application.CloseOptions): ReturnType<Application['close']>;
   }
 }

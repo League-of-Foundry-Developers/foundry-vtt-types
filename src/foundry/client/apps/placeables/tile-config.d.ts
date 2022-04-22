@@ -12,7 +12,6 @@ declare global {
     Data extends object = TileConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Tile'>>> {
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * mergeObject(super.defaultOptions, {
@@ -26,22 +25,18 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): TileConfig.Options;
+    static override get defaultOptions(): TileConfig.Options;
 
-    /** @override */
-    close(options?: Application.CloseOptions | undefined): Promise<void>;
+    override close(options?: Application.CloseOptions | undefined): Promise<void>;
 
-    /** @override */
-    getData(options?: Partial<Options> | undefined): Data | Promise<Data>;
+    override getData(options?: Partial<Options> | undefined): Data | Promise<Data>;
 
-    /** @override */
-    protected _onChangeInput(event: JQuery.ChangeEvent): void;
+    protected override _onChangeInput(event: JQuery.ChangeEvent): void;
 
     /**
      * @param event - (unused)
-     * @override
      */
-    protected _updateObject(event: Event, formData: TileConfig.FormData): Promise<unknown>;
+    protected override _updateObject(event: Event, formData: TileConfig.FormData): Promise<unknown>;
   }
 
   namespace TileConfig {

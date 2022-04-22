@@ -24,7 +24,6 @@ declare class HeadsUpDisplay<Options extends ApplicationOptions = ApplicationOpt
   bubbles: ChatBubbles;
 
   /**
-   * @override
    * @defaultValue
    * ```
    * mergeObject(super.defaultOptions, {
@@ -34,13 +33,11 @@ declare class HeadsUpDisplay<Options extends ApplicationOptions = ApplicationOpt
    * })
    * ```
    */
-  static get defaultOptions(): ApplicationOptions;
+  static override get defaultOptions(): ApplicationOptions;
 
-  /** @override */
-  getData(options?: Partial<Options>): {} | { width: number; height: number };
+  override getData(options?: Partial<Options>): {} | { width: number; height: number };
 
-  /** @override */
-  protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
+  protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
   /**
    * Align the position of the HUD layer to the current position of the canvas

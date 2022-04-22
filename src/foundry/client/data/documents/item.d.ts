@@ -44,14 +44,14 @@ declare global {
      */
     getRollData(): object;
 
-    /** @override */
-    protected static _onCreateDocuments(
+    // @ts-expect-error For some reason, proctected static methods from Document are lost, so ts complains that this isn't actually an override
+    protected static override _onCreateDocuments(
       items: Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>,
       context: DocumentModificationContext
     ): Promise<unknown>;
 
-    /** @override */
-    protected static _onDeleteDocuments(
+    // @ts-expect-error For some reason, proctected static methods from Document are lost, so ts complains that this isn't actually an override
+    protected static override _onDeleteDocuments(
       items: Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>,
       context: DocumentModificationContext
     ): Promise<unknown>;

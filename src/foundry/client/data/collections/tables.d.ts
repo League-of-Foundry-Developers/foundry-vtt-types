@@ -6,11 +6,9 @@
  * @see {@link RollTableDirectory} The RollTableDirectory sidebar directory
  */
 declare class RollTables extends WorldCollection<typeof foundry.documents.BaseRollTable, 'RollTables'> {
-  /** @override */
-  static documentName: 'RollTable';
+  static override documentName: 'RollTable';
 
-  /** @override */
-  get directory(): typeof ui['tables'];
+  override get directory(): typeof ui['tables'];
 
   /**
    * Register world settings related to RollTable documents

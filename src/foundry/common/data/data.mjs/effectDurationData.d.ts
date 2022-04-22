@@ -102,8 +102,7 @@ export class EffectDurationData extends DocumentData<
   EffectDurationDataConstructorData,
   BaseActiveEffect
 > {
-  /** @override */
-  static defineSchema(): EffectDurationDataSchema;
+  static override defineSchema(): EffectDurationDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

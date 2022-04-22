@@ -484,8 +484,7 @@ export class TokenData extends DocumentData<
   TokenDataConstructorData,
   documents.BaseToken
 > {
-  /** @override */
-  static defineSchema(): TokenDataSchema;
+  static override defineSchema(): TokenDataSchema;
 
   /**
    * The default icon used for newly created Token documents
@@ -496,12 +495,10 @@ export class TokenData extends DocumentData<
   /**
    * Migrate TokenData attributes to the new inner LightData structure.
    * This can be safely removed after several major versions have passed. Maybe V12?
-   * @override
    */
-  _initializeSource(data: TokenDataConstructorData): TokenDataSource;
+  override _initializeSource(data: TokenDataConstructorData): TokenDataSource;
 
-  /** @override */
-  protected _initialize(): void;
+  protected override _initialize(): void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

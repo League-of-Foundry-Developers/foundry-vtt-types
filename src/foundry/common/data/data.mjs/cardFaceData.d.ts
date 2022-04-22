@@ -54,8 +54,7 @@ export class CardFaceData extends DocumentData<
   CardFaceDataSource,
   CardFaceDataConstructorData
 > {
-  /** @override */
-  static defineSchema(): CardFaceDataSchema;
+  static override defineSchema(): CardFaceDataSchema;
 
   /**
    * The default icon used for a card face that does not have a custom image set

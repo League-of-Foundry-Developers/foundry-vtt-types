@@ -389,14 +389,11 @@ export class DrawingData extends DocumentData<
   DrawingDataConstructorData,
   documents.BaseFolder
 > {
-  /** @override */
-  static defineSchema(): DrawingDataSchema;
+  static override defineSchema(): DrawingDataSchema;
 
-  /** @override */
-  protected _initialize(): void;
+  protected override _initialize(): void;
 
-  /** @override */
-  protected _validateDocument(): void;
+  protected override _validateDocument(): void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

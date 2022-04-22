@@ -79,11 +79,9 @@ export class PackageCompendiumData extends DocumentData<
   PackageCompendiumDataSource,
   PackageCompendiumDataConstructorData
 > {
-  /** @override */
-  static defineSchema(): PackageCompendiumDataSchema;
+  static override defineSchema(): PackageCompendiumDataSchema;
 
-  /** @override */
-  _initializeSource(data: PackageCompendiumDataConstructorData): PackageCompendiumDataSource;
+  override _initializeSource(data: PackageCompendiumDataConstructorData): PackageCompendiumDataSource;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

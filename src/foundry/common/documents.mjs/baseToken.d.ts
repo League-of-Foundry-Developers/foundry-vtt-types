@@ -28,11 +28,9 @@ export declare class BaseToken extends Document<
   InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>,
   TokenMetadata
 > {
-  /** @override */
-  static get schema(): typeof data.TokenData;
+  static override get schema(): typeof data.TokenData;
 
-  /** @override */
-  static get metadata(): TokenMetadata;
+  static override get metadata(): TokenMetadata;
 
   /**
    * A convenience reference to the name which should be displayed for the Token

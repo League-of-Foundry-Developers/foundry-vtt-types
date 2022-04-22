@@ -21,7 +21,6 @@ declare class SoundsLayer extends PlaceablesLayer<'AmbientSound', SoundsLayer.La
   static get instance(): Canvas['sounds'];
 
   /**
-   * @override
    * @defaultValue
    * ```
    * foundry.utils.mergeObject(super.layerOptions, {
@@ -30,13 +29,12 @@ declare class SoundsLayer extends PlaceablesLayer<'AmbientSound', SoundsLayer.La
    * })
    * ```
    * */
-  static get layerOptions(): SoundsLayer.LayerOptions;
 
-  /** @override */
-  static documentName: 'AmbientSound';
+  static override get layerOptions(): SoundsLayer.LayerOptions;
 
-  /** @override */
-  tearDown(): Promise<this>;
+  static override documentName: 'AmbientSound';
+
+  override tearDown(): Promise<this>;
 
   /**
    * Initialize all AmbientSound sources which are present on this layer
@@ -90,17 +88,13 @@ declare class SoundsLayer extends PlaceablesLayer<'AmbientSound', SoundsLayer.La
    */
   protected _onMouseMove(event: PIXI.InteractionEvent): void;
 
-  /** @override */
-  protected _onDragLeftStart(event: PIXI.InteractionEvent): ReturnType<AmbientSound['draw']>;
+  protected override _onDragLeftStart(event: PIXI.InteractionEvent): ReturnType<AmbientSound['draw']>;
 
-  /** @override */
-  protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+  protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
-  /** @override */
-  protected _onDragLeftDrop(event: PIXI.InteractionEvent): void;
+  protected override _onDragLeftDrop(event: PIXI.InteractionEvent): void;
 
-  /** @override */
-  protected _onDragLeftCancel(event: PointerEvent): void;
+  protected override _onDragLeftCancel(event: PointerEvent): void;
 
   /**
    * Handle PlaylistSound document drop data.

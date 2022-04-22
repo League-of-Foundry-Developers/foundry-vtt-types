@@ -21,20 +21,11 @@ declare class Coin extends DiceTerm {
    */
   static MODIFIERS: Coin.Modifiers;
 
-  /**
-   * @override
-   */
-  roll(options?: { maximize: boolean; minimize: boolean }): DiceTerm.Result;
+  override roll(options?: { maximize: boolean; minimize: boolean }): DiceTerm.Result;
 
-  /**
-   * @override
-   */
-  getResultLabel(result: DiceTerm.Result): string;
+  override getResultLabel(result: DiceTerm.Result): string;
 
-  /**
-   * @override
-   */
-  getResultCSS(result: DiceTerm.Result): (string | null)[];
+  override getResultCSS(result: DiceTerm.Result): (string | null)[];
 
   /**
    * Call the result of the coin flip, marking any coins that matched the called target as a success

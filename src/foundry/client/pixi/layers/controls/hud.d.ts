@@ -30,11 +30,9 @@ declare class SynchronizedTransform extends PIXI.Transform {
   /** @internal */
   protected _syncLocalID: number;
 
-  /** @override */
-  updateTransform(parentTransform: PIXI.Transform): void;
+  override updateTransform(parentTransform: PIXI.Transform): void;
 
-  /** @override */
-  updateLocalTransform(): void;
+  override updateLocalTransform(): void;
 }
 
 /**
@@ -56,15 +54,13 @@ declare class ObjectHUD extends PIXI.Container {
    */
   transform: PIXI.Transform;
 
-  /** @override */
   // @ts-expect-error this is a property in `PIXI.Container` but foundry overrides it as an accessor.
-  get visible(): boolean;
-  set visible(value: boolean);
+  override get visible(): boolean;
+  override set visible(value: boolean);
 
-  /** @override */
   // @ts-expect-error this is a property in `PIXI.Container` but foundry overrides it as an accessor.
-  get renderable(): boolean;
-  set renderable(value: boolean);
+  override get renderable(): boolean;
+  override set renderable(value: boolean);
 
   /**
    * Display scrolling status text originating from this ObjectHUD container.

@@ -84,8 +84,7 @@ export class AnimationData extends DocumentData<
   AnimationDataConstructorData,
   BaseAmbientLight
 > {
-  /** @override */
-  static defineSchema(): AnimationDataSchema;
+  static override defineSchema(): AnimationDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

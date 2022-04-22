@@ -58,8 +58,7 @@ declare global {
     /** @defaultValue `undefined` */
     icon?: PIXI.Sprite;
 
-    /** @override */
-    static embeddedName: 'Token';
+    static override embeddedName: 'Token';
 
     /**
      * Establish an initial velocity of the token based on it's direction of facing.
@@ -96,8 +95,7 @@ declare global {
      */
     readonly name: string;
 
-    /** @override */
-    get bounds(): Rectangle;
+    override get bounds(): Rectangle;
 
     /**
      * Translate the token's grid width into a pixel width based on the canvas size
@@ -211,11 +209,9 @@ declare global {
      */
     protected _isVisionSource(): boolean;
 
-    /** @override */
-    clear(): this;
+    override clear(): this;
 
-    /** @override */
-    draw(): Promise<this>;
+    override draw(): Promise<this>;
 
     /**
      * Draw the HUD container which provides an interface for managing this Token
@@ -223,8 +219,7 @@ declare global {
      */
     protected _drawHUD(): Token.InitializedObjectHUD;
 
-    /** @override */
-    destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
+    override destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
 
     /**
      * Apply initial sanitizations to the provided input data to ensure that a Token has valid required attributes.
@@ -409,12 +404,10 @@ declare global {
     /**
      * @param releaseOthers - (default: `true`)
      * @param pan           - (default: `false`)
-     * @override
      */
-    protected _onControl({ releaseOthers, pan }?: { releaseOthers?: boolean; pan?: boolean }): void;
+    protected override _onControl({ releaseOthers, pan }?: { releaseOthers?: boolean; pan?: boolean }): void;
 
-    /** @override */
-    protected _onRelease(
+    protected override _onRelease(
       options: PlaceableObject.ReleaseOptions
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>> | undefined;
 
@@ -511,78 +504,68 @@ declare global {
      */
     getLightRadius(units: number): number;
 
-    /** @override */
-    protected _getShiftedPosition(dx: number, dy: number): { x: number; y: number };
+    protected override _getShiftedPosition(dx: number, dy: number): { x: number; y: number };
 
-    /** @override */
-    rotate(...args: Parameters<PlaceableObject['rotate']>): Promise<this>;
+    override rotate(...args: Parameters<PlaceableObject['rotate']>): Promise<this>;
 
-    /** @override */
-    protected _onCreate(
+    protected override _onCreate(
       options: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>['data']['_source'],
       userId: DocumentModificationOptions
     ): void;
 
-    /** @override */
-    protected _onUpdate(
+    protected override _onUpdate(
       data?: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>['data']['_source']>,
       options?: DocumentModificationOptions & { animate?: boolean },
       userId?: string
     ): void;
 
-    /** @override */
-    protected _onDelete(options?: DocumentModificationOptions, userId?: string): void;
+    protected override _onDelete(options?: DocumentModificationOptions, userId?: string): void;
 
-    /** @override */
-    protected _canControl(
+    protected override _canControl(
       user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
       event?: PIXI.InteractionEvent
     ): boolean;
 
-    /** @override */
-    protected _canHUD(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: PIXI.InteractionEvent): boolean;
+    protected override _canHUD(
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
+      event?: PIXI.InteractionEvent
+    ): boolean;
 
-    /** @override */
-    protected _canConfigure(
+    protected override _canConfigure(
       user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
       event?: PIXI.InteractionEvent
     ): true;
 
-    /** @override */
-    protected _canHover(user?: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: PIXI.InteractionEvent): true;
+    protected override _canHover(
+      user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
+      event?: PIXI.InteractionEvent
+    ): true;
 
-    /** @override */
-    protected _canView(
+    protected override _canView(
       user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
       event?: PIXI.InteractionEvent
     ): boolean;
 
-    /** @override */
-    protected _canDrag(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event: PIXI.InteractionEvent): boolean;
+    protected override _canDrag(
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
+      event: PIXI.InteractionEvent
+    ): boolean;
 
-    /** @override */
-    protected _onHoverIn(event: PIXI.InteractionEvent, options?: { hoverOutOthers?: boolean }): void;
+    protected override _onHoverIn(event: PIXI.InteractionEvent, options?: { hoverOutOthers?: boolean }): void;
 
-    /** @override */
-    protected _onHoverOut(event: PIXI.InteractionEvent): false | void;
+    protected override _onHoverOut(event: PIXI.InteractionEvent): false | void;
 
-    /** @override */
-    protected _onClickLeft(event: PIXI.InteractionEvent): void;
+    protected override _onClickLeft(event: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onClickLeft2(event?: PIXI.InteractionEvent): void;
+    protected override _onClickLeft2(event?: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onClickRight2(event: PIXI.InteractionEvent): void;
+    protected override _onClickRight2(event: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<any>;
+    protected override _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<any>;
 
-    /** @override */
-    protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onDragLeftCancel(event: MouseEvent): void;
+    protected override _onDragLeftCancel(event: MouseEvent): void;
     /**
      * @remarks This does not exist in foundry. It marks the controlIcon as not used because `Token` does never store a value here.
      */

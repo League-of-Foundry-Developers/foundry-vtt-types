@@ -13,8 +13,7 @@ interface LightingTechnique {
  * This class defines an interface which all adaptive lighting shaders extend.
  */
 declare class AdaptiveLightingShader extends AbstractBaseShader {
-  /** @override */
-  static vertexShader: string;
+  static override vertexShader: string;
 
   /**
    * Useful constant values computed at compile time
@@ -138,11 +137,9 @@ declare class AdaptiveBackgroundShader extends AdaptiveLightingShader {
    */
   static SHADER_HEADER: string;
 
-  /** @override */
-  static fragmentShader: string;
+  static override fragmentShader: string;
 
   /**
-   * @override
    * @defaultValue
    * ```javascript
    * {
@@ -162,7 +159,7 @@ declare class AdaptiveBackgroundShader extends AdaptiveLightingShader {
    * }
    * ```
    */
-  static defaultUniforms: AbstractBaseShader.Uniforms;
+  static override defaultUniforms: AbstractBaseShader.Uniforms;
 
   /**
    * Flag whether the background shader is currently required.
@@ -196,11 +193,9 @@ declare class AdaptiveIlluminationShader extends AdaptiveLightingShader {
    */
   static SHADER_HEADER: string;
 
-  /** @override */
-  static fragmentShader: string;
+  static override fragmentShader: string;
 
   /**
-   * @override
    * @defaultValue
    * ```javascript
    * {
@@ -224,7 +219,7 @@ declare class AdaptiveIlluminationShader extends AdaptiveLightingShader {
    * }
    * ```
    */
-  static defaultUniforms: AbstractBaseShader.Uniforms;
+  static override defaultUniforms: AbstractBaseShader.Uniforms;
 
   /**
    * Determine the correct illumination penalty to apply for a given darkness level and luminosity
@@ -255,11 +250,9 @@ declare class AdaptiveColorationShader extends AdaptiveLightingShader {
    */
   static SHADER_HEADER: string;
 
-  /** @override */
-  static fragmentShader: string;
+  static override fragmentShader: string;
 
   /**
-   * @override
    * @defaultValue
    * ```javascript
    * {
@@ -280,7 +273,7 @@ declare class AdaptiveColorationShader extends AdaptiveLightingShader {
    * }
    * ```
    */
-  static defaultUniforms: AbstractBaseShader.Uniforms;
+  static override defaultUniforms: AbstractBaseShader.Uniforms;
 }
 
 /**
@@ -297,7 +290,6 @@ declare class TorchColorationShader extends AdaptiveColorationShader {
   static fragmentShader: string;
 
   /**
-   * @override
    * @defaultValue
    * ```typescript
    * Object.assign({}, super.defaultUniforms, {
@@ -306,7 +298,7 @@ declare class TorchColorationShader extends AdaptiveColorationShader {
    * })
    * ```
    */
-  static defaultUniforms: AbstractBaseShader.Uniforms;
+  static override defaultUniforms: AbstractBaseShader.Uniforms;
 }
 
 /**
@@ -323,7 +315,6 @@ declare class PulseColorationShader extends AdaptiveColorationShader {
   static fragmentShader: string;
 
   /**
-   * @override
    * @defaultValue
    * ```typescript
    * Object.assign({}, super.defaultUniforms, {
@@ -331,7 +322,7 @@ declare class PulseColorationShader extends AdaptiveColorationShader {
    * })
    * ```
    */
-  static defaultUniforms: AbstractBaseShader.Uniforms;
+  static override defaultUniforms: AbstractBaseShader.Uniforms;
 }
 
 /**

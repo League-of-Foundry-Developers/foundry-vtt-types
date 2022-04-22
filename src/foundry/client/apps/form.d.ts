@@ -96,7 +96,6 @@ declare global {
     /**
      * Assign the default options which are supported by the entity edit sheet.
      * @returns The default options for this FormApplication class
-     * @override
      * @see {@link Application.defaultOptions}
      * @defaultValue
      * ```typescript
@@ -110,7 +109,7 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): FormApplicationOptions;
+    static override get defaultOptions(): FormApplicationOptions;
 
     /**
      * Is the Form Application currently editable?
@@ -119,29 +118,16 @@ declare global {
 
     /**
      * @param options - (default: `{}`)
-     * @override
      */
-    getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): Data | Promise<Data>;
 
-    /**
-     * @override
-     */
-    protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
+    protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
-    /**
-     * @override
-     */
-    protected _renderInner(data: Data): Promise<JQuery>;
+    protected override _renderInner(data: Data): Promise<JQuery>;
 
-    /**
-     * @override
-     */
-    protected _activateCoreListeners(html: JQuery): void;
+    protected override _activateCoreListeners(html: JQuery): void;
 
-    /**
-     * @override
-     */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * If the form is not editable, disable its input fields
@@ -250,9 +236,8 @@ declare global {
 
     /**
      * @param options - (default: `{}`)
-     * @override
      */
-    close(options?: FormApplication.CloseOptions): Promise<void>;
+    override close(options?: FormApplication.CloseOptions): Promise<void>;
 
     /**
      * Submit the contents of a Form Application, processing its content as defined by the Application
@@ -356,40 +341,19 @@ declare global {
      */
     get document(): ConcreteDocument;
 
-    /**
-     * @override
-     */
-    get id(): string;
+    override get id(): string;
 
-    /**
-     * @override
-     */
-    get isEditable(): boolean;
+    override get isEditable(): boolean;
 
-    /**
-     * @override
-     */
-    get title(): string;
+    override get title(): string;
 
-    /**
-     * @override
-     */
-    close(options?: FormApplication.CloseOptions): Promise<void>;
+    override close(options?: FormApplication.CloseOptions): Promise<void>;
 
-    /**
-     * @override
-     */
-    getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): Data | Promise<Data>;
 
-    /**
-     * @override
-     */
-    render(force?: boolean, options?: Application.RenderOptions<Options>): this;
+    override render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 
-    /**
-     * @override
-     */
-    protected _getHeaderButtons(): Application.HeaderButton[];
+    protected override _getHeaderButtons(): Application.HeaderButton[];
 
     /**
      * Handle requests to configure the default sheet used by this Document
@@ -399,9 +363,8 @@ declare global {
 
     /**
      * @param event - (unused)
-     * @override
      */
-    protected _updateObject(event: Event, formData: object): Promise<unknown>;
+    protected override _updateObject(event: Event, formData: object): Promise<unknown>;
   }
 
   namespace DocumentSheet {

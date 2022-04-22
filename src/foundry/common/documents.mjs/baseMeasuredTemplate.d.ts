@@ -38,14 +38,11 @@ export declare class BaseMeasuredTemplate extends Document<
   InstanceType<ConfiguredDocumentClass<typeof BaseScene>>,
   MeasuredTemplateMetadata
 > {
-  /** @override */
-  static get schema(): typeof data.MeasuredTemplateData;
+  static override get schema(): typeof data.MeasuredTemplateData;
 
-  /** @override */
-  static get metadata(): MeasuredTemplateMetadata;
+  static override get metadata(): MeasuredTemplateMetadata;
 
-  /** @override */
-  testUserPermission(
+  override testUserPermission(
     user: BaseUser,
     permission: keyof typeof foundry.CONST.DOCUMENT_PERMISSION_LEVELS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,
     { exact }?: { exact?: boolean }

@@ -12,7 +12,6 @@ declare global {
     Data extends object = ActiveEffectConfig.Data
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>> {
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -24,21 +23,13 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): ActiveEffectConfig.Options;
+    static override get defaultOptions(): ActiveEffectConfig.Options;
 
-    /** @override */
-    get title(): string;
+    override get title(): string;
 
-    /**
-     * @override
-     *
-     * @remarks The implementation doesn't return a `Promise` but the return type includes it to allow extending
-     * classes to do that.
-     */
-    getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): Data | Promise<Data>;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * Provide centralized handling of mouse clicks on control buttons.
@@ -53,10 +44,9 @@ declare global {
     protected _addEffectChange(): Promise<this>;
 
     /**
-     * @override
      * @param updateData - (default: `{}`)
      */
-    _getSubmitData(updateData?: FormApplication.OnSubmitOptions['updateData']): Record<string, unknown>;
+    override _getSubmitData(updateData?: FormApplication.OnSubmitOptions['updateData']): Record<string, unknown>;
     // TODO: Can we type this better?
   }
 

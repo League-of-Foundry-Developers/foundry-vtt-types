@@ -11,7 +11,6 @@ declare global {
     Data extends object = MeasuredTemplateConfig.Data
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'MeasuredTemplate'>>> {
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -23,13 +22,11 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): DocumentSheetOptions;
 
-    /** @override */
-    getData(): Data | Promise<Data>;
+    override getData(): Data | Promise<Data>;
 
-    /** @override */
-    protected _updateObject(event: Event, formData: MeasuredTemplateConfig.FormData): Promise<unknown>;
+    protected override _updateObject(event: Event, formData: MeasuredTemplateConfig.FormData): Promise<unknown>;
   }
 
   namespace MeasuredTemplateConfig {

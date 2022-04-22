@@ -57,8 +57,7 @@ declare global {
      */
     protected _fixedPoints: Array<[x: number, y: number]>;
 
-    /** @override */
-    static embeddedName: 'Drawing';
+    static override embeddedName: 'Drawing';
 
     /**
      * The rate at which points are sampled (in milliseconds) during a freehand drawing workflow
@@ -66,8 +65,7 @@ declare global {
      */
     static FREEHAND_SAMPLE_RATE: number;
 
-    /** @override */
-    get bounds(): Rectangle;
+    override get bounds(): Rectangle;
 
     /**
      * A Boolean flag for whether or not the Drawing utilizes a tiled texture background
@@ -79,8 +77,7 @@ declare global {
      */
     get isPolygon(): boolean;
 
-    /** @override */
-    draw(): Promise<this>;
+    override draw(): Promise<this>;
 
     /**
      * Clean the drawing data to constrain its allowed position
@@ -105,8 +102,7 @@ declare global {
      */
     protected _createFrame(): void;
 
-    /** @override */
-    refresh(): void;
+    override refresh(): void;
 
     /**
      * Draw rectangular shapes
@@ -176,14 +172,11 @@ declare global {
      */
     protected _removePoint(): void;
 
-    /** @override */
-    protected _onControl(options: PlaceableObject.ControlOptions & { isNew?: boolean }): void;
+    protected override _onControl(options: PlaceableObject.ControlOptions & { isNew?: boolean }): void;
 
-    /** @override */
-    protected _onRelease(options: PlaceableObject.ReleaseOptions): void;
+    protected override _onRelease(options: PlaceableObject.ReleaseOptions): void;
 
-    /** @override */
-    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
     /**
      * Handle text entry in an active text tool
@@ -191,24 +184,20 @@ declare global {
      */
     protected _onDrawingTextKeydown(event: KeyboardEvent): void;
 
-    /** @override */
-    protected _onUpdate(data: DeepPartial<foundry.data.DrawingData['_source']>): void;
+    protected override _onUpdate(data: DeepPartial<foundry.data.DrawingData['_source']>): void;
 
     /**
-     * @override
      * @param event - unused
      */
-    protected _canControl(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
+    protected override _canControl(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
 
     /**
-     * @override
      * @param user  - unused
      * @param event - unused
      */
-    protected _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
+    protected override _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
 
-    /** @override */
-    activateListeners(): void;
+    override activateListeners(): void;
 
     /**
      * Handle mouse movement which modifies the dimensions of the drawn shape
@@ -216,17 +205,13 @@ declare global {
      */
     protected _onMouseDraw(event: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftStart(event: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<unknown>;
+    protected override _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<unknown>;
 
-    /** @override */
-    protected _onDragLeftCancel(event: MouseEvent): void;
+    protected override _onDragLeftCancel(event: MouseEvent): void;
 
     /**
      * Handle mouse-over event on a control handle

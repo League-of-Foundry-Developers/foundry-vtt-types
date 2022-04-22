@@ -76,8 +76,7 @@ declare global {
      */
     get user(): InstanceType<ConfiguredDocumentClass<typeof User>> | undefined;
 
-    /** @override */
-    prepareData(): void;
+    override prepareData(): void;
 
     /**
      * Transform a provided object of ChatMessage data by applying a certain rollMode to the data object.
@@ -213,29 +212,25 @@ declare global {
      */
     protected _renderRollContent(messageData: ChatMessage.MessageData): Promise<void>;
 
-    /** @override */
-    protected _preCreate(
+    protected override _preCreate(
       data: ChatMessageDataConstructorData,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;
 
-    /** @override */
-    protected _onCreate(
+    protected override _onCreate(
       data: foundry.data.ChatMessageData['_source'],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
-    /** @override */
-    protected _onUpdate(
+    protected override _onUpdate(
       data: DeepPartial<foundry.data.ChatMessageData['_source']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
-    /** @override */
-    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
     /**
      * Export the content of the chat message into a standardized log format

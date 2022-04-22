@@ -13,35 +13,31 @@ declare global {
      */
     activateSocketListeners(socket: io.Socket): void;
 
-    /** @override */
-    protected _getDocuments<T extends Document<any, any>>(
+    protected override _getDocuments<T extends Document<any, any>>(
       documentClass: ConstructorOf<T>,
       request: Request,
       user: InstanceType<ConfiguredDocumentClassForName<'User'>>
     ): Promise<T[]>;
 
     /**
-     * @override
      * @remarks
      * Get operations for embedded Documents are currently un-supported.
      * The returned promise always rejects.
      */
-    protected _getEmbeddedDocuments<T extends Document<any, any>>(
+    protected override _getEmbeddedDocuments<T extends Document<any, any>>(
       documentClass: ConstructorOf<T>,
       parent: T extends Document<any, infer U> ? U : never,
       request: Request,
       user: InstanceType<ConfiguredDocumentClassForName<'User'>>
     ): Promise<never>;
 
-    /** @override */
-    protected _createDocuments<T extends Document<any, any>>(
+    protected override _createDocuments<T extends Document<any, any>>(
       documentClass: ConstructorOf<T>,
       request: Request,
       user: InstanceType<ConfiguredDocumentClassForName<'User'>>
     ): Promise<T[]>;
 
-    /** @override */
-    protected _createEmbeddedDocuments<T extends Document<any, any>>(
+    protected override _createEmbeddedDocuments<T extends Document<any, any>>(
       documentClass: ConstructorOf<T>,
       parent: T extends Document<any, infer U> ? U : never,
       request: Request,
@@ -93,15 +89,13 @@ declare global {
       { options, userId, parent, pack }: Pick<Request, 'options' | 'parent' | 'pack'> & { userId?: string }
     ): (() => void)[];
 
-    /** @override */
-    protected _updateDocuments<T extends Document<any, any>>(
+    protected override _updateDocuments<T extends Document<any, any>>(
       documentClass: ConstructorOf<T>,
       request: Request,
       user: InstanceType<ConfiguredDocumentClassForName<'User'>>
     ): Promise<T[]>;
 
-    /** @override */
-    protected _updateEmbeddedDocuments<T extends Document<any, any>>(
+    protected override _updateEmbeddedDocuments<T extends Document<any, any>>(
       documentClass: ConstructorOf<T>,
       parent: T extends Document<any, infer U> ? U : never,
       request: Request,
@@ -150,15 +144,13 @@ declare global {
       { options, userId }: Pick<Request, 'options'> & { userId?: string }
     ): () => void;
 
-    /** @override */
-    protected _deleteDocuments<T extends Document<any, any>>(
+    protected override _deleteDocuments<T extends Document<any, any>>(
       documentClass: ConstructorOf<T>,
       request: Request,
       user: InstanceType<ConfiguredDocumentClassForName<'User'>>
     ): Promise<T[]>;
 
-    /** @override */
-    protected _deleteEmbeddedDocuments<T extends Document<any, any>>(
+    protected override _deleteEmbeddedDocuments<T extends Document<any, any>>(
       documentClass: ConstructorOf<T>,
       parent: T extends Document<any, infer U> ? U : never,
       request: Request,
@@ -205,11 +197,9 @@ declare global {
       { options, userId }: Pick<Request, 'options'> & { userId?: string }
     ): (() => void)[];
 
-    /** @override */
-    getFlagScopes(): string[];
+    override getFlagScopes(): string[];
 
-    /** @override */
-    getCompendiumScopes(): string[];
+    override getCompendiumScopes(): string[];
   }
 }
 

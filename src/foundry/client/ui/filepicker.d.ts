@@ -127,7 +127,6 @@ declare class FilePicker<
   static S3_BUCKETS: string[] | null;
 
   /**
-   * @override
    * @defaultValue
    * ```typescript
    * foundry.utils.mergeObject(super.defaultOptions, {
@@ -141,7 +140,7 @@ declare class FilePicker<
    * })
    * ```
    */
-  static get defaultOptions(): FilePickerOptions;
+  static override get defaultOptions(): FilePickerOptions;
 
   /**
    * Given a current file path, determine the directory it belongs to
@@ -170,10 +169,7 @@ declare class FilePicker<
    */
   static parseS3URL(key: string): { bucket: string | null; keyPrefix: string };
 
-  /**
-   * @override
-   */
-  get title(): string;
+  override get title(): string;
 
   /**
    * Return the source object for the currently active source
@@ -196,10 +192,9 @@ declare class FilePicker<
   static get uploadURL(): string;
 
   /**
-   * @override
    * @param options - (unused)
    */
-  getData(options?: Partial<Options> | undefined): Data | Promise<Data>;
+  override getData(options?: Partial<Options> | undefined): Data | Promise<Data>;
 
   /**
    * Browse to a specific location for this FilePicker instance
@@ -283,13 +278,11 @@ declare class FilePicker<
   ): Promise<FilePicker.UploadResult | false | void | {}>;
 
   /**
-   * @override
    * Additional actions performed when the file-picker UI is rendered
    */
-  render(force?: boolean | undefined, options?: Application.RenderOptions<Options> | undefined): this;
+  override render(force?: boolean | undefined, options?: Application.RenderOptions<Options> | undefined): this;
 
-  /** @override */
-  activateListeners(html: JQuery): void;
+  override activateListeners(html: JQuery): void;
 
   /**
    * Handle a click event to change the display mode of the File Picker
@@ -301,33 +294,26 @@ declare class FilePicker<
   /**
    * @param event - (unused)
    * @param event - (unused)
-   * @override
    * @internal
    */
-  protected _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: this['activeSource']): void;
+  protected override _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: this['activeSource']): void;
 
   /**
-   * @override
    * @param selector - (unused)
    */
-  protected _canDragStart(selector: string | null): boolean;
+  protected override _canDragStart(selector: string | null): boolean;
 
   /**
-   * @override
    * @param selector - (unused)
    */
-  protected _canDragDrop(selector: string | null): boolean;
+  protected override _canDragDrop(selector: string | null): boolean;
+
+  protected override _onDragStart(event: DragEvent): void;
 
   /**
-   * @override
-   */
-  protected _onDragStart(event: DragEvent): void;
-
-  /**
-   * @override
    * @internal
    */
-  protected _onDrop(event: DragEvent): void;
+  protected override _onDrop(event: DragEvent): void;
 
   /**
    * Handle user submission of the address bar to request an explicit target
@@ -367,11 +353,10 @@ declare class FilePicker<
    */
   protected _onChangeBucket(event: JQuery.ChangeEvent): void;
 
-  /**
-   * @override */
-  protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
+  /** */
 
-  /** @override */
+  protected override _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
+
   protected _onSubmit(ev: Event): void;
 
   /**

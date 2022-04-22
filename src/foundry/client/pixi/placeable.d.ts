@@ -195,8 +195,7 @@ declare global {
      */
     clone(): this;
 
-    /** @override */
-    destroy(options?: Parameters<PIXI.Container['destroy']>[0]): void;
+    override destroy(options?: Parameters<PIXI.Container['destroy']>[0]): void;
 
     /**
      * Draw the placeable object into its parent container

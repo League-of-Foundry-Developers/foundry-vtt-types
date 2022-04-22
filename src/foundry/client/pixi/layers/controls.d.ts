@@ -63,7 +63,6 @@ declare global {
     protected _rulers: Record<string, Ruler>;
 
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.layerOptions, {
@@ -72,7 +71,7 @@ declare global {
      * })
      * ```
      */
-    static get layerOptions(): ControlsLayer.LayerOptions;
+    static override get layerOptions(): ControlsLayer.LayerOptions;
 
     /**
      * A convenience accessor to the Ruler for the active game user
@@ -84,14 +83,12 @@ declare global {
      */
     getRulerForUser(userId: string): Ruler | null;
 
-    /** @override */
-    draw(): Promise<this>;
+    override draw(): Promise<this>;
 
     /**
-     * @override
      * @remarks This breaks polymorphism. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6939
      */
-    tearDown(): Promise<void>;
+    override tearDown(): Promise<void>;
 
     /**
      * Draw the cursors container
@@ -109,8 +106,7 @@ declare global {
      */
     drawSelect({ x, y, width, height }: { x: number; y: number; width: number; height: number }): void;
 
-    /** @override */
-    deactivate(): void;
+    override deactivate(): void;
 
     /**
      * Handle mousemove events on the game canvas to broadcast activity of the user's cursor position

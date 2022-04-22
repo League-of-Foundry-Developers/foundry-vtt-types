@@ -55,8 +55,7 @@ export class TileOcclusion extends DocumentData<
   TileOcclusionConstructorData,
   documents.BaseTile
 > {
-  /** @override */
-  static defineSchema(): TileOcclusionSchema;
+  static override defineSchema(): TileOcclusionSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

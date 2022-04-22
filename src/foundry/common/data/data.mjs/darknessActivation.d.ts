@@ -48,8 +48,7 @@ export class DarknessActivation extends DocumentData<
   DarknessActivationConstructorData,
   BaseAmbientLight
 > {
-  /** @override */
-  static defineSchema(): DarknessActivationSchema;
+  static override defineSchema(): DarknessActivationSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

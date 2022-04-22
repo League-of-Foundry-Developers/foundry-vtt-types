@@ -29,11 +29,9 @@ export declare class BaseCombatant extends Document<
   InstanceType<ConfiguredDocumentClass<typeof BaseCombat>>,
   CombatantMetadata
 > {
-  /** @override */
-  static get schema(): typeof data.CombatantData;
+  static override get schema(): typeof data.CombatantData;
 
-  /** @override */
-  static get metadata(): CombatantMetadata;
+  static override get metadata(): CombatantMetadata;
 
   /**
    * Is a user able to update an existing Combatant?

@@ -12,18 +12,11 @@ declare class FateDie extends DiceTerm {
    */
   static DENOMINATION: string;
 
-  /** @override */
-  static MODIFIERS: FateDie.Modifiers;
+  static override MODIFIERS: FateDie.Modifiers;
 
-  /**
-   * @override
-   */
-  roll({ minimize, maximize }?: { minimize: boolean; maximize: boolean }): DiceTerm.Result;
+  override roll({ minimize, maximize }?: { minimize: boolean; maximize: boolean }): DiceTerm.Result;
 
-  /**
-   * @override
-   */
-  getResultLabel(result: DiceTerm.Result): string;
+  override getResultLabel(result: DiceTerm.Result): string;
 }
 
 declare namespace FateDie {

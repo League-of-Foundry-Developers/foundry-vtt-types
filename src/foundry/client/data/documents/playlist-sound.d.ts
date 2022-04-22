@@ -76,15 +76,13 @@ declare global {
       userId: string
     ): void;
 
-    /** @override */
-    protected _onUpdate(
+    protected override _onUpdate(
       changed: DeepPartial<foundry.data.PlaylistSoundData['_source']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
-    /** @override */
-    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
     /**
      * Special handling that occurs when a PlaylistSound reaches the natural conclusion of its playback.

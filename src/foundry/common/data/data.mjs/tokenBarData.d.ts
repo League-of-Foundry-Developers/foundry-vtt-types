@@ -40,8 +40,7 @@ export class TokenBarData extends DocumentData<
   TokenBarDataConstructorData,
   documents.BaseToken
 > {
-  /** @override */
-  static defineSchema(): TokenBarDataSchema;
+  static override defineSchema(): TokenBarDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

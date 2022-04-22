@@ -61,11 +61,9 @@ export class VideoData extends DocumentData<
   VideoDataConstructorData,
   documents.BaseTile
 > {
-  /** @override */
-  static defineSchema(): VideoDataSchema;
+  static override defineSchema(): VideoDataSchema;
 
-  /** @override */
-  protected _initialize(): void;
+  protected override _initialize(): void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

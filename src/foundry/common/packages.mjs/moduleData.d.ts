@@ -48,8 +48,7 @@ interface ModuleDataConstructorData extends PackageDataConstructorData {
  * Extends the basic PackageData schema with some additional module-specific fields.
  */
 export class ModuleData extends PackageData<ModuleDataSchema, ModuleDataProperties, ModuleDataConstructorData> {
-  /** @override */
-  static defineSchema(): ModuleDataSchema;
+  static override defineSchema(): ModuleDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

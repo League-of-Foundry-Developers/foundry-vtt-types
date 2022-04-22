@@ -19,8 +19,7 @@ declare global {
     /** @param object - The AmbientSound object that generates this sound source */
     constructor(object: InstanceType<ConfiguredObjectClassForName<'AmbientSound'>>);
 
-    /** @override */
-    static sourceType: 'sound';
+    static override sourceType: 'sound';
 
     /**
      * The object of data which configures how the source is rendered

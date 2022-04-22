@@ -207,17 +207,15 @@ export class WallData extends DocumentData<
 > {
   /**
    * The data schema for a WallData object
-   * @override
    */
-  static defineSchema(): WallDataSchema;
+  static override defineSchema(): WallDataSchema;
 
   /**
    * @remarks This override does not exist in foundry but is added here to prepend runtime errors.
    */
   constructor(data: WallDataConstructorData, document?: documents.BaseWall | null);
 
-  /** @override */
-  _initializeSource(data?: WallDataConstructorData): WallDataSource;
+  override _initializeSource(data?: WallDataConstructorData): WallDataSource;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

@@ -76,16 +76,14 @@ declare global {
      */
     playing: boolean;
 
-    /** @override */
-    static embeddedName: 'Tile';
+    static override embeddedName: 'Tile';
 
     /**
      * Get the native aspect ratio of the base texture for the Tile sprite
      */
     get aspectRatio(): number;
 
-    /** @override */
-    get bounds(): Rectangle;
+    override get bounds(): Rectangle;
 
     /**
      * The HTML source element for the primary Tile texture
@@ -107,16 +105,14 @@ declare global {
      */
     get volume(): number;
 
-    /** @override */
-    draw(): Promise<this>;
+    override draw(): Promise<this>;
 
-    /** @override */
-    destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
+    override destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
 
     /**
-     * @param options - (default: `{}`)
-     * @override */
-    refresh(options?: Tile.RefreshOptions | undefined): this;
+     * @param options - (default: `{}`) */
+
+    override refresh(options?: Tile.RefreshOptions | undefined): this;
 
     /**
      * Refresh the display of the Tile border
@@ -200,36 +196,27 @@ declare global {
      */
     protected _createOcclusionFilter(): AbstractBaseMaskFilter;
 
-    /** @override */
-    protected _onUpdate(
+    protected override _onUpdate(
       changed: DeepPartial<foundry.data.TileData['_source']>,
       options?: DocumentModificationOptions,
       userId?: string
     ): Promise<this> | void;
 
-    /** @override */
-    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
-    /** @override */
-    activateListeners(): void;
+    override activateListeners(): void;
 
-    /** @override */
-    protected _canConfigure(user: User, event?: any): boolean;
+    protected override _canConfigure(user: User, event?: any): boolean;
 
-    /** @override */
-    protected _onClickLeft2(event: PIXI.InteractionEvent): void;
+    protected override _onClickLeft2(event: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftStart(event: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<unknown>;
+    protected override _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<unknown>;
 
-    /** @override */
-    protected _onDragLeftCancel(event: MouseEvent): void;
+    protected override _onDragLeftCancel(event: MouseEvent): void;
 
     /**
      * Handle mouse-over event on a control handle

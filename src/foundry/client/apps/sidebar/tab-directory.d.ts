@@ -30,7 +30,18 @@ declare global {
     static documentName: string;
 
     /**
-     * @override
+     * The path to the template partial which renders a single Document within this directory
+     * @defaultValue `"templates/sidebar/document-partial.html"`
+     */
+    static documentPartial: string;
+
+    /**
+     * The path to the template partial which renders a single Folder within this directory
+     * @defaultValue `"templates/sidebar/folder-partial.html"`
+     */
+    static folderPartial: string;
+
+    /**
      * @defaultValue
      * ```typescript
      * const cls = getDocumentClass(this.documentName);
@@ -48,7 +59,7 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): SidebarDirectory.Options;
+    static override get defaultOptions(): SidebarDirectory.Options;
 
     /**
      * The WorldCollection instance which this Sidebar Directory displays.
@@ -94,27 +105,16 @@ declare global {
       }
     ): [T['folders'], T['documents']];
 
-    /**
-     * @override
-     */
-    render(force?: boolean, context?: SidebarDirectory.RenderContext<Options>): this | void;
+    override render(force?: boolean, context?: SidebarDirectory.RenderContext<Options>): this | void;
 
-    /**
-     * @param options - (unused)
-     * @override
-     * @remarks
-     * This implementation doesn't actually return `PlaylistDirectory.Data`, it's only to allow {@link PlaylistDirectory}
-     * to override accordingly.
-     */
-    getData(
+    override getData(
       options?: Partial<Options>
     ): SidebarDirectory.Data<this['tree']> | Promise<SidebarDirectory.Data<this['tree']>>;
 
     /**
      * @param event - (unused)
-     * @override
      */
-    protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
+    protected override _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
     /**
      * Collapse all subfolders in this directory
@@ -152,15 +152,11 @@ declare global {
      */
     protected _toggleFolder(event: JQuery.ClickEvent): void;
 
-    /**
-     * @override
-     */
-    protected _onDragStart(event: DragEvent): void;
+    protected override _onDragStart(event: DragEvent): void;
 
     protected _dragType: string;
 
-    /** @override */
-    protected _canDragStart(selector: string): boolean;
+    protected override _canDragStart(selector: string): boolean;
 
     /**
      * Highlight folders as drop targets when a drag event enters or exits their area
@@ -168,11 +164,7 @@ declare global {
      */
     protected _onDragHighlight(event: JQuery.DragEnterEvent | JQuery.DragLeaveEvent): void;
 
-    /**
-     * @override
-     * @internal
-     */
-    protected _onDrop(event: DragEvent): void;
+    protected override _onDrop(event: DragEvent): void;
 
     /**
      * Handle Document data being dropped into the directory.

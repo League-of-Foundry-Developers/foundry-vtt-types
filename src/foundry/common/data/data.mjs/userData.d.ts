@@ -158,8 +158,7 @@ export class UserData extends DocumentData<
 > {
   constructor(data: UserDataConstructorData, document?: documents.BaseUser | null);
 
-  /** @override */
-  static defineSchema(): UserDataSchema;
+  static override defineSchema(): UserDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

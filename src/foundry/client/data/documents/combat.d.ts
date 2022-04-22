@@ -97,8 +97,7 @@ declare global {
     /** Advance the combat to the next turn */
     nextTurn(): Promise<this | undefined>;
 
-    /** @override */
-    prepareDerivedData(): void;
+    override prepareDerivedData(): void;
 
     /** Rewind the combat to the previous round */
     previousRound(): Promise<this | undefined>;
@@ -160,21 +159,21 @@ declare global {
       b: InstanceType<ConfiguredDocumentClass<typeof Combatant>>
     ): number;
 
-    /** @override */
-    protected _onCreate(data: this['data']['_source'], options: DocumentModificationOptions, userId: string): void;
+    protected override _onCreate(
+      data: this['data']['_source'],
+      options: DocumentModificationOptions,
+      userId: string
+    ): void;
 
-    /** @override */
-    protected _onUpdate(
+    protected override _onUpdate(
       changed: DeepPartial<this['data']['_source']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
-    /** @override */
-    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
-    /** @override */
-    protected _onCreateEmbeddedDocuments(
+    protected override _onCreateEmbeddedDocuments(
       type: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
       result: CombatantDataSource[],
@@ -182,8 +181,7 @@ declare global {
       userId: string
     ): void;
 
-    /** @override */
-    protected _onUpdateEmbeddedDocuments(
+    protected override _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
       result: CombatantDataSource[],
@@ -191,8 +189,7 @@ declare global {
       userId: string
     ): void;
 
-    /** @override */
-    protected _onDeleteEmbeddedDocuments(
+    protected override _onDeleteEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
       result: string[],

@@ -25,14 +25,11 @@ export declare class BasePlaylistSound extends Document<
   InstanceType<ConfiguredDocumentClass<typeof BasePlaylist>>,
   PlaylistSoundMetadata
 > {
-  /** @override */
-  static get schema(): typeof data.PlaylistSoundData;
+  static override get schema(): typeof data.PlaylistSoundData;
 
-  /** @override */
-  static get metadata(): PlaylistSoundMetadata;
+  static override get metadata(): PlaylistSoundMetadata;
 
-  /** @override */
-  testUserPermission(
+  override testUserPermission(
     user: BaseUser,
     permission: keyof typeof foundry.CONST.DOCUMENT_PERMISSION_LEVELS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,
     { exact }?: { exact?: boolean }

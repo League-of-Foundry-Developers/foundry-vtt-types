@@ -76,10 +76,9 @@ declare global {
     tearDown(): Promise<this>;
 
     /**
-     * @override
      * @remarks It returns Promise<this> but is overridden by a subclass in this way.
      */
-    draw(): Promise<this | undefined>;
+    override draw(): Promise<this | undefined>;
 
     /**
      * Draw the background Sprite for the layer, aligning its dimensions with those configured for the canvas.
@@ -208,8 +207,7 @@ declare global {
      */
     initialize(): void;
 
-    /** @override */
-    activate(): this;
+    override activate(): this;
 
     deactivate(): this;
 

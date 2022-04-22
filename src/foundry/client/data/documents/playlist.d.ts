@@ -45,8 +45,7 @@ declare global {
      */
     get playing(): boolean;
 
-    /** @override */
-    get visible(): boolean;
+    override get visible(): boolean;
 
     /**
      * Begin simultaneous playback for all sounds in the Playlist.
@@ -120,25 +119,21 @@ declare global {
       b: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>
     ): number;
 
-    /** @override */
-    protected _preUpdate(
+    protected override _preUpdate(
       changed: DeepPartial<PlaylistDataConstructorData>,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;
 
-    /** @override */
-    protected _onUpdate(
+    protected override _onUpdate(
       changed: DeepPartial<foundry.data.PlaylistData['_source']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
-    /** @override */
-    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
-    /** @override */
-    protected _onCreateEmbeddedDocuments(
+    protected override _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: foundry.abstract.Document<any, any>[],
       result: Record<string, unknown>[],
@@ -146,8 +141,7 @@ declare global {
       userId: string
     ): void;
 
-    /** @override */
-    protected _onUpdateEmbeddedDocuments(
+    protected override _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: foundry.abstract.Document<any, any>[],
       result: Record<string, unknown>[],
@@ -155,8 +149,7 @@ declare global {
       userId: string
     ): void;
 
-    /** @override */
-    protected _onDeleteEmbeddedDocuments(
+    protected override _onDeleteEmbeddedDocuments(
       embeddedName: string,
       documents: foundry.abstract.Document<any, any>[],
       result: string[],
@@ -179,8 +172,7 @@ declare global {
      */
     _onSoundStart(sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>): Promise<void>;
 
-    /** @override */
-    toCompendium(
+    override toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocumentMixin.CompendiumExportOptions | undefined
     ): Omit<foundry.data.PlaylistData['_source'], '_id' | 'folder' | 'permission'> & {

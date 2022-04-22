@@ -9,7 +9,6 @@ declare class DrawingsLayer extends PlaceablesLayer<'Drawing', DrawingsLayer.Lay
   static get instance(): Canvas['drawings'];
 
   /**
-   * @override
    * @defaultValue
    * ```
    * mergeObject(super.layerOptions, {
@@ -21,10 +20,9 @@ declare class DrawingsLayer extends PlaceablesLayer<'Drawing', DrawingsLayer.Lay
    * })
    * ```
    */
-  static get layerOptions(): DrawingsLayer.LayerOptions;
+  static override get layerOptions(): DrawingsLayer.LayerOptions;
 
-  /** @override */
-  static documentName: 'Drawing';
+  static override documentName: 'Drawing';
 
   /**
    * The named game setting which persists default drawing configuration for the User
@@ -36,8 +34,7 @@ declare class DrawingsLayer extends PlaceablesLayer<'Drawing', DrawingsLayer.Lay
    */
   get gridPrecision(): 0 | 8 | 16;
 
-  /** @override */
-  get hud(): Exclude<Canvas['hud'], null>['drawing'];
+  override get hud(): Exclude<Canvas['hud'], null>['drawing'];
 
   /**
    * Render a configuration sheet to configure the default Drawing settings
@@ -59,28 +56,22 @@ declare class DrawingsLayer extends PlaceablesLayer<'Drawing', DrawingsLayer.Lay
    */
   _getNewDrawingData(origin: Point | {}): NewDrawingData;
 
-  /** @override */
-  protected _onClickLeft(event: PIXI.InteractionEvent): void;
+  protected override _onClickLeft(event: PIXI.InteractionEvent): void;
 
-  /** @override */
-  protected _onClickLeft2(event: PIXI.InteractionEvent): void | Promise<void>;
+  protected override _onClickLeft2(event: PIXI.InteractionEvent): void | Promise<void>;
 
-  /** @override */
-  protected _onDragLeftStart(event: PIXI.InteractionEvent): ReturnType<Drawing['draw']>;
+  protected override _onDragLeftStart(event: PIXI.InteractionEvent): ReturnType<Drawing['draw']>;
 
-  /** @override */
-  protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+  protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
   /**
    * Handling of mouse-up events which conclude a new object creation after dragging
    */
   protected _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<void>;
 
-  /** @override */
-  protected _onDragLeftCancel(event: PointerEvent): void;
+  protected override _onDragLeftCancel(event: PointerEvent): void;
 
-  /** @override */
-  protected _onClickRight(event: PIXI.InteractionEvent): void;
+  protected override _onClickRight(event: PIXI.InteractionEvent): void;
 }
 
 declare namespace DrawingsLayer {

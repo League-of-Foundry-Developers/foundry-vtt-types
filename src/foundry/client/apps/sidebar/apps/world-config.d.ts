@@ -18,7 +18,6 @@ declare class WorldConfig<
   Data extends object = WorldConfig.Data
 > extends FormApplication<Options, Data, Game.WorldData<foundry.packages.WorldData>> {
   /**
-   * @override
    * @defaultValue
    * ```typescript
    * foundry.utils.mergeObject(super.defaultOptions, {
@@ -30,24 +29,20 @@ declare class WorldConfig<
    * })
    * ```
    */
-  static get defaultOptions(): WorldConfigOptions;
+  static override get defaultOptions(): WorldConfigOptions;
 
   static WORLD_KB_URL: 'https://foundryvtt.com/article/game-worlds/';
 
-  /** @override */
-  get title(): string;
+  override get title(): string;
 
-  /** @override */
-  activateListeners(html: JQuery): void;
+  override activateListeners(html: JQuery): void;
 
-  /** @override */
-  getData(options?: Partial<Options>): Data | Promise<Data>;
+  override getData(options?: Partial<Options>): Data | Promise<Data>;
 
   /**
    * @remarks This method returns `Promise<void>`.
-   * @override
    */
-  protected _onSubmit(event: Event): Promise<any>;
+  protected override _onSubmit(event: Event): Promise<any>;
 
   /**
    * @remarks This method does not exist on WorldConfig and only exists to make the typescript compile!
@@ -60,8 +55,11 @@ declare class WorldConfig<
    */
   protected _onTitleChange(event: JQuery.TriggeredEvent): void;
 
-  /** @override **/
-  activateEditor(name: string, options?: TextEditor.Options | undefined, initialContent?: string | undefined): void;
+  override activateEditor(
+    name: string,
+    options?: TextEditor.Options | undefined,
+    initialContent?: string | undefined
+  ): void;
 }
 
 declare namespace WorldConfig {

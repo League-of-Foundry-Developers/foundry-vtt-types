@@ -7,11 +7,9 @@ declare global {
    * Each Note links to a JournalEntry document and represents its location on the map.
    */
   class Note extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>> {
-    /** @override */
-    static embeddedName: 'Note';
+    static override embeddedName: 'Note';
 
-    /** @override */
-    get bounds(): Rectangle;
+    override get bounds(): Rectangle;
 
     /**
      * The associated JournalEntry which is described by this note
@@ -35,8 +33,7 @@ declare global {
      */
     get isVisible(): boolean;
 
-    /** @override */
-    draw(): Promise<this>;
+    override draw(): Promise<this>;
 
     /**
      * Draw the ControlIcon for the Map Note
@@ -53,25 +50,18 @@ declare global {
      */
     protected _getTextStyle(): PIXI.TextStyle;
 
-    /** @override */
-    refresh(): this;
+    override refresh(): this;
 
-    /** @override */
-    protected _onUpdate(changed: DeepPartial<foundry.data.NoteData['_source']>): void;
+    protected override _onUpdate(changed: DeepPartial<foundry.data.NoteData['_source']>): void;
 
-    /** @override */
-    protected _canHover(user: InstanceType<ConfiguredDocumentClassForName<'User'>>): true;
+    protected override _canHover(user: InstanceType<ConfiguredDocumentClassForName<'User'>>): true;
 
-    /** @override */
-    protected _canView(user: InstanceType<ConfiguredDocumentClassForName<'User'>>): boolean;
+    protected override _canView(user: InstanceType<ConfiguredDocumentClassForName<'User'>>): boolean;
 
-    /** @override */
-    protected _onHoverIn(event: PIXI.InteractionEvent, options?: HoverInOptions): false | void;
+    protected override _onHoverIn(event: PIXI.InteractionEvent, options?: HoverInOptions): false | void;
 
-    /** @override */
-    protected _onHoverOut(event: PIXI.InteractionEvent): false | void;
+    protected override _onHoverOut(event: PIXI.InteractionEvent): false | void;
 
-    /** @override */
-    protected _onClickLeft2(event: PIXI.InteractionEvent): void;
+    protected override _onClickLeft2(event: PIXI.InteractionEvent): void;
   }
 }

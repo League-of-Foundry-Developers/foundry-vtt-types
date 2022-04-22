@@ -9,7 +9,6 @@ declare class TemplateLayer extends PlaceablesLayer<'MeasuredTemplate', Template
   static get instance(): Canvas['templates'];
 
   /**
-   * @override
    * @defaultValue
    * ```
    * mergeObject(super.layerOptions, {
@@ -21,32 +20,24 @@ declare class TemplateLayer extends PlaceablesLayer<'MeasuredTemplate', Template
    * })
    * ```
    */
-  static get layerOptions(): TemplateLayer.LayerOptions;
+  static override get layerOptions(): TemplateLayer.LayerOptions;
 
-  /** @override */
-  static documentName: 'MeasuredTemplate';
+  static override documentName: 'MeasuredTemplate';
 
-  /** @override */
-  activate(): this;
+  override activate(): this;
 
-  /** @override */
-  deactivate(): this;
+  override deactivate(): this;
 
   /**
    * Register game settings used by the TemplatesLayer
    */
   static registerSettings(): void;
 
-  /** @override */
-  protected _onDragLeftStart(event: PIXI.InteractionEvent): Promise<MeasuredTemplate>;
+  protected override _onDragLeftStart(event: PIXI.InteractionEvent): Promise<MeasuredTemplate>;
 
-  /** @override */
-  protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+  protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
-  /**
-   * @override
-   */
-  protected _onMouseWheel(event: WheelEvent): void | ReturnType<MeasuredTemplate['rotate']>;
+  protected override _onMouseWheel(event: WheelEvent): void | ReturnType<MeasuredTemplate['rotate']>;
 }
 
 declare namespace TemplateLayer {

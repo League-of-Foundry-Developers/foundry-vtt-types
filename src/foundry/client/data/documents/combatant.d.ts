@@ -12,7 +12,6 @@ declare global {
    */
   class Combatant extends ClientDocumentMixin(foundry.documents.BaseCombatant) {
     /**
-     * @override
      * @param data    - Initial data provided to construct the Combatant document
      * @param context - The document context, see {@link foundry.abstract.Document}
      */
@@ -38,11 +37,9 @@ declare global {
     /** This is treated as a non-player combatant if it has no associated actor and no player users who can control it */
     get isNPC(): boolean;
 
-    /** @override */
-    get isOwner(): boolean;
+    override get isOwner(): boolean;
 
-    /** @override */
-    get visible(): boolean;
+    override get visible(): boolean;
 
     /** Is this Combatant "hidden", either because they are explicitly marked as hidden or because their token is hidden */
     get hidden(): boolean;
@@ -64,8 +61,7 @@ declare global {
      */
     get isDefeated(): boolean;
 
-    /** @override */
-    testUserPermission(
+    override testUserPermission(
       user: foundry.documents.BaseUser,
       permission: keyof typeof foundry.CONST.DOCUMENT_PERMISSION_LEVELS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,
       { exact }?: { exact?: boolean }
@@ -85,8 +81,7 @@ declare global {
      */
     rollInitiative(formula: string): Promise<this | undefined>;
 
-    /** @override */
-    prepareDerivedData(): void;
+    override prepareDerivedData(): void;
 
     /**
      * Update the value of the tracked resource for this Combatant.

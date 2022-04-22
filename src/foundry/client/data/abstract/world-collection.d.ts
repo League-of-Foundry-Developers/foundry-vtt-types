@@ -60,8 +60,7 @@ declare global {
      */
     static get instance(): WorldCollection<DocumentConstructor, any>; // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class, which allows accessing the the static this type to use the `documentName`.
 
-    /** @override */
-    set(id: string, document: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>): this;
+    override set(id: string, document: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>): this;
 
     delete: (id: string) => boolean;
 

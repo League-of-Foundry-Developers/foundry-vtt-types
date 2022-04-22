@@ -44,8 +44,7 @@ declare class SimplePeerAVClient extends AVClient {
    */
   protected _connectionPoll: number | null;
 
-  /** @override */
-  connect(): Promise<boolean>;
+  override connect(): Promise<boolean>;
 
   /**
    * Try to establish a peer connection with each user connected to the server.
@@ -53,38 +52,27 @@ declare class SimplePeerAVClient extends AVClient {
    */
   protected _connect(): Promise<SimplePeer.Instance[]>;
 
-  /** @override */
-  disconnect(): Promise<boolean>;
+  override disconnect(): Promise<boolean>;
 
-  /** @override */
-  initialize(): Promise<void>;
+  override initialize(): Promise<void>;
 
-  /** @override */
-  getConnectedUsers(): string[];
+  override getConnectedUsers(): string[];
 
-  /** @override */
-  getMediaStreamForUser(userId: string): MediaStream | null | undefined;
+  override getMediaStreamForUser(userId: string): MediaStream | null | undefined;
 
-  /** @override */
-  getLevelsStreamForUser(userId: string): MediaStream | null | undefined;
+  override getLevelsStreamForUser(userId: string): MediaStream | null | undefined;
 
-  /** @override */
-  isAudioEnabled(): boolean;
+  override isAudioEnabled(): boolean;
 
-  /** @override */
-  isVideoEnabled(): boolean;
+  override isVideoEnabled(): boolean;
 
-  /** @override */
-  toggleAudio(enable: boolean): void;
+  override toggleAudio(enable: boolean): void;
 
-  /** @override */
-  toggleBroadcast(broadcast: boolean): void;
+  override toggleBroadcast(broadcast: boolean): void;
 
-  /** @override */
-  toggleVideo(enable: boolean): void;
+  override toggleVideo(enable: boolean): void;
 
-  /** @override */
-  setUserVideo(userId: string, videoElement: HTMLVideoElement): Promise<void>;
+  override setUserVideo(userId: string, videoElement: HTMLVideoElement): Promise<void>;
 
   /**
    * Initialize a local media stream for the current user
@@ -157,9 +145,7 @@ declare class SimplePeerAVClient extends AVClient {
    */
   disconnectAll(): Promise<Array<void>>;
 
-  /** @override */
-  onSettingsChanged(changed: DeepPartial<AVSettings.Settings>): Promise<void>;
+  override onSettingsChanged(changed: DeepPartial<AVSettings.Settings>): Promise<void>;
 
-  /** @override */
-  updateLocalStream(): Promise<void>;
+  override updateLocalStream(): Promise<void>;
 }

@@ -2,8 +2,7 @@
  * Construct a square grid container
  */
 declare class SquareGrid extends BaseGrid {
-  /** @override */
-  draw(preview?: BaseGrid.Preview | undefined): this;
+  override draw(preview?: BaseGrid.Preview | undefined): this;
 
   /** @internal */
   protected _drawLine(
@@ -12,20 +11,16 @@ declare class SquareGrid extends BaseGrid {
     lineAlpha: number
   ): PIXI.Graphics;
 
-  /** @override */
-  getCenter(x: number, y: number): PointArray;
+  override getCenter(x: number, y: number): PointArray;
 
-  /** @override */
-  getGridPositionFromPixels(x: number, y: number): PointArray;
+  override getGridPositionFromPixels(x: number, y: number): PointArray;
 
-  /** @override */
-  getPixelsFromGridPosition(row: number, col: number): PointArray;
+  override getPixelsFromGridPosition(row: number, col: number): PointArray;
 
   /**
-   * @override
    * @param interval - (default: `1`)
    */
-  getSnappedPosition(x: number, y: number, interval?: number | null): { x: number; y: number };
+  override getSnappedPosition(x: number, y: number, interval?: number | null): { x: number; y: number };
 
   /**
    * Shift a pixel position [x,y] by some number of grid units dx and dy
@@ -40,17 +35,14 @@ declare class SquareGrid extends BaseGrid {
   protected _getNearestVertex(x: number, y: number): PointArray;
 
   /**
-   * @override
    * @param options - (default: `{}`)
    */
-  highlightGridPosition(layer: GridHighlight, options?: BaseGrid.HighlightGridPositionOptions): void;
+  override highlightGridPosition(layer: GridHighlight, options?: BaseGrid.HighlightGridPositionOptions): void;
 
   /**
-   * @override
    * @param options - (default: `{}`)
    */
-  measureDistances(segments: GridLayer.Segment[], options?: MeasureDistancesOptions): number[];
+  override measureDistances(segments: GridLayer.Segment[], options?: MeasureDistancesOptions): number[];
 
-  /** @override */
-  getNeighbors(row: number, col: number): PointArray[];
+  override getNeighbors(row: number, col: number): PointArray[];
 }

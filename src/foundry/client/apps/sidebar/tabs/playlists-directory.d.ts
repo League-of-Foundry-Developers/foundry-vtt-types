@@ -45,17 +45,14 @@ declare global {
      */
     protected _playingSoundsData?: PlaylistDirectory.Data.Sound[] | undefined;
 
-    /** @override */
-    static documentName: 'Playlist';
+    static override documentName: 'Playlist';
 
     /**
-     * @override
      * @defaultValue `'templates/sidebar/playlist-partial.html'`
      */
-    static documentPartial: string;
+    static override documentPartial: string;
 
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * const options = super.defaultOptions;
@@ -66,7 +63,7 @@ declare global {
      * return options;
      * ```
      */
-    static get defaultOptions(): SidebarDirectory.Options;
+    static override get defaultOptions(): SidebarDirectory.Options;
 
     /**
      * Initialize the set of Playlists which should be displayed in an expanded form
@@ -85,8 +82,7 @@ declare global {
      */
     protected get _playingLocation(): 'top' | 'bottom';
 
-    /** @override */
-    getData(options?: Partial<Options>): PlaylistDirectory.Data | Promise<PlaylistDirectory.Data>;
+    override getData(options?: Partial<Options>): PlaylistDirectory.Data | Promise<PlaylistDirectory.Data>;
 
     /**
      * Augment the tree directory structure with playlist-level data objects for rendering
@@ -135,8 +131,7 @@ declare global {
      */
     protected _getModeTooltip(mode: foundry.CONST.PLAYLIST_MODES): string;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * Handle global volume change for the playlist sidebar
@@ -145,8 +140,7 @@ declare global {
      */
     protected _onGlobalVolume(event: JQuery.ChangeEvent): unknown;
 
-    /** @override */
-    collapseAll(): void;
+    override collapseAll(): void;
 
     /**
      * Handle Playlist collapse toggle
@@ -224,8 +218,7 @@ declare global {
     /** @internal */
     protected _onPlayingPin(): void;
 
-    /** @override */
-    protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
+    protected override _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
     /**
      * Update the displayed timestamps for all currently playing audio sources.
@@ -242,14 +235,11 @@ declare global {
      */
     protected _formatTimestamp(seconds: number): string;
 
-    /** @override */
-    protected _contextMenu(html: JQuery): void;
+    protected override _contextMenu(html: JQuery): void;
 
-    /** @override */
-    protected _getFolderContextOptions(): ContextMenuEntry[];
+    protected override _getFolderContextOptions(): ContextMenuEntry[];
 
-    /** @override */
-    protected _getEntryContextOptions(): ContextMenuEntry[];
+    protected override _getEntryContextOptions(): ContextMenuEntry[];
 
     /**
      * Get context menu options for individual sound effects
@@ -258,11 +248,9 @@ declare global {
      */
     protected _getSoundContextOptions(): ContextMenuEntry[];
 
-    /** @override */
-    protected _onDragStart(event: DragEvent): void;
+    protected override _onDragStart(event: DragEvent): void;
 
-    /** @override */
-    protected _onDrop(event: DragEvent): void;
+    protected override _onDrop(event: DragEvent): void;
   }
 
   namespace PlaylistDirectory {

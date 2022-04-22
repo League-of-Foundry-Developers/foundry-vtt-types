@@ -138,22 +138,19 @@ declare global {
       user: foundry.documents.BaseUser
     ): Promise<void>;
 
-    /** @override */
-    protected _onCreate(
+    protected override _onCreate(
       data: foundry.data.ActiveEffectData['_source'],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
-    /** @override */
-    protected _onUpdate(
+    protected override _onUpdate(
       data: DeepPartial<foundry.data.ActiveEffectData['_source']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
-    /** @override */
-    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
     /**
      * Display changes to active effects as scrolling Token status text.

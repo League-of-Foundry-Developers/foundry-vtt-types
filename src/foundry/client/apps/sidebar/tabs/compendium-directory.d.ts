@@ -11,7 +11,6 @@ declare global {
     Data extends object = CompendiumDirectory.Data
   > extends SidebarTab<Options> {
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -21,18 +20,14 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): ApplicationOptions;
 
     /**
      * @param options - (unused)
-     * @override
      */
-    getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): Data | Promise<Data>;
 
-    /**
-     * @override
-     */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * Compendium sidebar Context Menu creation

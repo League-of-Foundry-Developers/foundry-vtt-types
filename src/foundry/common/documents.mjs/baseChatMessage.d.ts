@@ -24,11 +24,9 @@ type ChatMessageMetadata = Merge<
  * The base ChatMessage model definition which defines common behavior of an ChatMessage document between both client and server.
  */
 export declare class BaseChatMessage extends Document<data.ChatMessageData, null, ChatMessageMetadata> {
-  /** @override */
-  static get schema(): typeof data.ChatMessageData;
+  static override get schema(): typeof data.ChatMessageData;
 
-  /** @override */
-  static get metadata(): ChatMessageMetadata;
+  static override get metadata(): ChatMessageMetadata;
 
   /**
    * Is a user able to create a new chat message?

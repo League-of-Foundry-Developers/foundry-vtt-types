@@ -32,7 +32,6 @@ declare global {
    */
   class Actor extends ClientDocumentMixin(foundry.documents.BaseActor) {
     /**
-     * @override
      * @param data    - Initial data provided to construct the Actor document
      * @param context - The document context, see {@link foundry.abstract.Document}
      */
@@ -92,8 +91,7 @@ declare global {
      */
     get token(): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>> | null;
 
-    /** @override */
-    get uuid(): string;
+    override get uuid(): string;
 
     /**
      * Apply any transformations to the Actor data which are caused by ActiveEffects.
@@ -149,8 +147,7 @@ declare global {
      */
     modifyTokenAttribute(attribute: string, value: number, isDelta: boolean, isBar: boolean): Promise<this | undefined>;
 
-    /** @override */
-    prepareEmbeddedDocuments(): void;
+    override prepareEmbeddedDocuments(): void;
 
     /**
      * Roll initiative for all Combatants in the currently active Combat encounter which are associated with this Actor.
@@ -162,25 +159,23 @@ declare global {
      */
     rollInitiative(options?: Actor.RollInitiativeOptions): Promise<void>;
 
-    /** @override */
-    getEmbeddedCollection(embeddedName: string): EmbeddedCollection<DocumentConstructor, foundry.data.ActorData>;
+    override getEmbeddedCollection(
+      embeddedName: string
+    ): EmbeddedCollection<DocumentConstructor, foundry.data.ActorData>;
 
-    /** @override */
-    protected _preCreate(
+    protected override _preCreate(
       data: ActorDataConstructorData,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;
 
-    /** @override */
-    protected _onUpdate(
+    protected override _onUpdate(
       changed: DeepPartial<foundry.data.ActorData['_source']>,
       options: DocumentModificationOptions,
       user: string
     ): void;
 
-    /** @override */
-    protected _onCreateEmbeddedDocuments(
+    protected override _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: foundry.abstract.Document<any, any>[],
       result: Record<string, unknown>[],
@@ -188,8 +183,7 @@ declare global {
       userId: string
     ): void;
 
-    /** @override */
-    protected _onUpdateEmbeddedDocuments(
+    protected override _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: foundry.abstract.Document<any, any>[],
       result: Record<string, unknown>[],
@@ -197,8 +191,7 @@ declare global {
       userId: string
     ): void;
 
-    /** @override */
-    protected _onDeleteEmbeddedDocuments(
+    protected override _onDeleteEmbeddedDocuments(
       embeddedName: string,
       documents: foundry.abstract.Document<any, any>[],
       result: string[],

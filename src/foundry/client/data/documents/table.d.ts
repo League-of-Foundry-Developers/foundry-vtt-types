@@ -92,8 +92,7 @@ declare global {
      */
     getResultsForRoll(value: number): InstanceType<ConfiguredDocumentClass<typeof TableResult>>[];
 
-    /** @override */
-    protected _onCreateEmbeddedDocuments(
+    protected override _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: foundry.abstract.Document<any, any>[],
       result: Record<string, unknown>[],
@@ -101,8 +100,7 @@ declare global {
       userId: string
     ): void;
 
-    /** @override */
-    _onDeleteEmbeddedDocuments(
+    override _onDeleteEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof TableResult>>[],
       result: string[],
@@ -110,8 +108,7 @@ declare global {
       userId: string
     ): void;
 
-    /** @override */
-    toCompendium(
+    override toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocumentMixin.CompendiumExportOptions | undefined
     ): Omit<foundry.data.RollTableData['_source'], '_id' | 'folder' | 'permission'> & {

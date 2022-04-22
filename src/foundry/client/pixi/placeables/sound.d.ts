@@ -18,8 +18,7 @@ declare global {
      */
     source: SoundSource;
 
-    /** @override */
-    static embeddedName: 'AmbientSound';
+    static override embeddedName: 'AmbientSound';
 
     /**
      * Create a Sound used to play this AmbientSound object
@@ -32,8 +31,7 @@ declare global {
      */
     get isAudible(): boolean;
 
-    /** @override */
-    get bounds(): Rectangle;
+    override get bounds(): Rectangle;
 
     /**
      * The named identified for the source object associated with this ambient sound
@@ -53,14 +51,11 @@ declare global {
      */
     sync(isAudible: boolean, volume: number, options?: Partial<AmbientSound.SyncOptions>): void;
 
-    /** @override */
-    clear(): this;
+    override clear(): this;
 
-    /** @override */
-    draw(): Promise<this>;
+    override draw(): Promise<this>;
 
-    /** @override */
-    destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
+    override destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
 
     /**
      * Draw the graphical preview of the audio source area of effect
@@ -74,8 +69,7 @@ declare global {
      */
     protected _drawControlIcon(): ControlIcon;
 
-    /** @override */
-    refresh(): this;
+    override refresh(): this;
 
     /**
      * Refresh the display of the ControlIcon for this AmbientSound source
@@ -88,34 +82,27 @@ declare global {
      */
     updateSource(options?: AmbientSound.UpdateSourceOptions | undefined): void;
 
-    /** @override */
-    protected _onCreate(
+    protected override _onCreate(
       data: foundry.data.AmbientSoundData['_source'],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
-    /** @override */
-    protected _onUpdate(
+    protected override _onUpdate(
       changed: DeepPartial<foundry.data.AmbientSoundData['_source']>,
       options?: DocumentModificationOptions,
       userId?: string
     ): void;
 
-    /** @override */
-    protected _onDelete(...args: Parameters<PlaceableObject['_onDelete']>): void;
+    protected override _onDelete(...args: Parameters<PlaceableObject['_onDelete']>): void;
 
-    /** @override */
-    protected _canHUD(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
+    protected override _canHUD(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
 
-    /** @override */
-    protected _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
+    protected override _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
 
-    /** @override */
-    protected _onClickRight(event: PIXI.InteractionEvent): void;
+    protected override _onClickRight(event: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
   }
 
   namespace AmbientSound {

@@ -23,11 +23,9 @@ type CardsMetadata = Merge<
  * The base Cards definition which defines common behavior of an Cards document shared by both client and server.
  */
 export declare class BaseCards extends Document<data.CardsData, null, CardsMetadata> {
-  /** @override */
-  static get schema(): typeof data.CardsData;
+  static override get schema(): typeof data.CardsData;
 
-  /** @override */
-  static get metadata(): CardsMetadata;
+  static override get metadata(): CardsMetadata;
 
   /**
    * A reference to the Collection of Card documents contained within this Cards stack, indexed by _id.

@@ -6,8 +6,7 @@
  * @see {@link JournalDirectory} The JournalDirectory sidebar directory
  */
 declare class Journal extends WorldCollection<typeof foundry.documents.BaseJournalEntry, 'Journal'> {
-  /** @override */
-  static documentName: 'JournalEntry';
+  static override documentName: 'JournalEntry';
 
   /**
    * Open Socket listeners which transact JournalEntry data

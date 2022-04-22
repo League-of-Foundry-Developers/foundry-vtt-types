@@ -14,7 +14,6 @@ declare global {
     message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>;
 
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -24,19 +23,16 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): ApplicationOptions;
 
-    /** @override */
-    get id(): string;
+    override get id(): string;
 
-    /** @override */
-    get title(): string;
+    override get title(): string;
 
     /**
      * @param data    - (unused)
      * @param options - (unused)
-     * @override
      */
-    protected _renderInner(data: object, options?: unknown): Promise<JQuery>;
+    protected override _renderInner(data: object, options?: unknown): Promise<JQuery>;
   }
 }

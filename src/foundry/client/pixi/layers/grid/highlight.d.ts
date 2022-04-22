@@ -22,9 +22,7 @@ declare class GridHighlight extends PIXI.Graphics {
    */
   highlight(x: number, y: number): boolean;
 
-  /** @override */
-  clear(): this;
+  override clear(): this;
 
-  /** @override */
-  destroy(...args: Parameters<PIXI.Graphics['destroy']>): void;
+  override destroy(...args: Parameters<PIXI.Graphics['destroy']>): void;
 }

@@ -190,7 +190,6 @@ type DocumentDataConstructor = Pick<typeof DocumentData, keyof typeof DocumentDa
 interface ActorDataConstructor extends DocumentDataConstructor {
   new (data: ActorDataConstructorData, document?: documents.BaseActor | null): ActorData;
 
-  /** @override */
   defineSchema(): ActorDataSchema;
 
   /**
@@ -212,10 +211,8 @@ export type ActorData = DocumentData<
   documents.BaseActor
 > &
   ActorDataProperties & {
-    /** @override */
     _initializeSource(data: ActorDataConstructorData): ActorDataSource;
 
-    /** @override */
     _initialize(): void;
   };
 

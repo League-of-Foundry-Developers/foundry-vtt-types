@@ -69,8 +69,7 @@ declare global {
       ConcretePlaceableOrPlaceableObject<InstanceType<ConfiguredObjectClassForName<DocumentName>>>
     > | null;
 
-    /** @override */
-    static get layerOptions(): PlaceablesLayer.LayerOptions<any>;
+    static override get layerOptions(): PlaceablesLayer.LayerOptions<any>;
 
     /**
      * A reference to the named Document type which is contained within this Canvas Layer.
@@ -130,10 +129,9 @@ declare global {
       | InstanceType<ConfiguredDocumentClassForName<DocumentName>>[];
 
     /**
-     * @override
      * @remarks It returns Promise<this> but is overridden by a subclass in this way.
      */
-    draw(): Promise<this | undefined>;
+    override draw(): Promise<this | undefined>;
 
     /**
      * Draw a single placeable object
@@ -142,14 +140,11 @@ declare global {
       data: InstanceType<ConfiguredDocumentClassForName<DocumentName>>
     ): InstanceType<ConfiguredObjectClassForName<DocumentName>> | null;
 
-    /** @override */
-    tearDown(): Promise<this>;
+    override tearDown(): Promise<this>;
 
-    /** @override */
-    activate(): this;
+    override activate(): this;
 
-    /** @override */
-    deactivate(): this;
+    override deactivate(): this;
 
     /**
      * Clear the contents of the preview container, restoring visibility of original (non-preview) objects.

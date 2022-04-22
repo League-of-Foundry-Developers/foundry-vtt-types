@@ -10,7 +10,6 @@ declare global {
     Options
   > {
     /**
-     * @override
      * @defaultValue
      * ```
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -19,19 +18,14 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): ApplicationOptions;
 
-    /** @override */
-    getData(options?: Partial<Options>): ReturnType<BasePlaceableHUD<ConcreteDrawing>['getData']> & {
+    override getData(options?: Partial<Options>): ReturnType<BasePlaceableHUD<ConcreteDrawing>['getData']> & {
       lockedClass: string;
       visibilityClass: string;
     };
 
-    /**
-     * @override
-     * @param options - (unused)
-     */
-    setPosition(options?: Partial<Application.Position>): void;
+    override setPosition(options?: Partial<Application.Position>): void;
   }
 }
 

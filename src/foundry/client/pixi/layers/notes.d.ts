@@ -11,7 +11,6 @@ declare global {
     static get instance(): Canvas['notes'];
 
     /**
-     * @override
      * @defaultValue
      * ```
      * foundry.utils.mergeObject(super.layerOptions, {
@@ -22,28 +21,25 @@ declare global {
      * })
      * ```
      */
-    static get layerOptions(): NotesLayer.LayerOptions;
+    static override get layerOptions(): NotesLayer.LayerOptions;
 
-    /** @override */
-    static documentName: 'Note';
+    static override documentName: 'Note';
 
     /**
      * The named core setting which tracks the toggled visibility state of map notes
      */
     static TOGGLE_SETTING: 'notesDisplayToggle';
 
-    /** @override */
-    activate(): this;
+    override activate(): this;
 
-    /** @override */
-    deactivate(): this;
+    override deactivate(): this;
 
     /**
      * Register game settings used by the NotesLayer
      */
     static registerSettings(): void;
 
-    /** @override */
+    /** @remarks this method seems to be unused, see https://gitlab.com/foundrynet/foundryvtt/-/issues/7004 */
     protected _onMouseDown(event: PIXI.InteractionEvent): void;
 
     /**

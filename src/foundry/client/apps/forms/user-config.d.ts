@@ -11,7 +11,6 @@ declare global {
     Data extends object = UserConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof User>>> {
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -22,16 +21,13 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): UserConfig.Options;
+    static override get defaultOptions(): UserConfig.Options;
 
-    /** @override */
-    get title(): string;
+    override get title(): string;
 
-    /** @override */
-    getData(options?: Partial<Options>): Data;
+    override getData(options?: Partial<Options>): Data;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * Handle changing the user avatar image by opening a FilePicker

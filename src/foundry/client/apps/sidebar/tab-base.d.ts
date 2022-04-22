@@ -25,7 +25,6 @@ declare abstract class SidebarTab<
   protected _original: this | null;
 
   /**
-   * @override
    * @defaultValue
    * ```typescript
    * foundry.utils.mergeObject(super.defaultOptions, {
@@ -36,21 +35,18 @@ declare abstract class SidebarTab<
    * });
    * ```
    */
-  static get defaultOptions(): ApplicationOptions;
+  static override get defaultOptions(): ApplicationOptions;
 
-  /** @override */
-  protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
+  protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
-  /**  @override */
-  protected _renderInner(data: object): Promise<JQuery>;
+  protected override _renderInner(data: object): Promise<JQuery>;
 
   /**
    * Activate this SidebarTab, switching focus to it
    */
   activate(): void;
 
-  /** @override */
-  close(options?: Application.CloseOptions): Promise<void>;
+  override close(options?: Application.CloseOptions): Promise<void>;
 
   /**
    * Create a second instance of this SidebarTab class which represents a singleton popped-out container

@@ -18,7 +18,6 @@ declare class Compendium<
   collection: CompendiumCollection<Metadata>;
 
   /**
-   * @override
    * @defaultValue
    * ```typescript
    * foundry.utils.mergeObject(super.defaultOptions, {
@@ -33,24 +32,20 @@ declare class Compendium<
    * });
    * ```
    */
-  static get defaultOptions(): ApplicationOptions;
+  static override get defaultOptions(): ApplicationOptions;
 
-  /** @override */
-  get title(): string;
+  override get title(): string;
 
   /**
    * A convenience redirection back to the metadata object of the associated CompendiumCollection
    */
   get metadata(): this['collection']['metadata'];
 
-  /** @override */
-  getData(options?: Partial<Options>): Promise<Data> | Data;
+  override getData(options?: Partial<Options>): Promise<Data> | Data;
 
-  /** @override */
-  close(options?: Application.CloseOptions): Promise<void>;
+  override close(options?: Application.CloseOptions): Promise<void>;
 
-  /** @override */
-  activateListeners(html: JQuery): void;
+  override activateListeners(html: JQuery): void;
 
   /**
    * Handle opening a single compendium entry by invoking the configured document class and its sheet
@@ -58,26 +53,20 @@ declare class Compendium<
    */
   protected _onClickEntry(event: JQuery.ClickEvent): void;
 
-  /** @override */
-  protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
+  protected override _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
-  /** @override */
-  protected _canDragStart(selector: string): boolean;
+  protected override _canDragStart(selector: string): boolean;
 
-  /** @override */
-  protected _canDragDrop(selector: string): boolean;
+  protected override _canDragDrop(selector: string): boolean;
 
-  /** @override */
-  protected _onDragStart(event: DragEvent): void;
+  protected override _onDragStart(event: DragEvent): void;
 
   /**
-   * @override
    * @internal
    */
-  protected _onDrop(event: DragEvent): void;
+  protected override _onDrop(event: DragEvent): void;
 
-  /** @override */
-  protected _contextMenu(html: JQuery): void;
+  protected override _contextMenu(html: JQuery): void;
 
   /**
    * Get Compendium entry context options

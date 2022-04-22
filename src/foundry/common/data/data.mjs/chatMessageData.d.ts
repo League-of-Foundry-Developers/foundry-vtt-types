@@ -206,8 +206,7 @@ export class ChatMessageData extends DocumentData<
   ChatMessageDataConstructorData,
   documents.BaseChatMessage
 > {
-  /** @override */
-  static defineSchema(): ChatMessageDataSchema;
+  static override defineSchema(): ChatMessageDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

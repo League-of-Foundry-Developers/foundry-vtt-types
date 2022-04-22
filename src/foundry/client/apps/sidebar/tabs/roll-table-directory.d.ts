@@ -5,6 +5,5 @@
 declare class RollTableDirectory<
   Options extends SidebarDirectory.Options = SidebarDirectory.Options
 > extends SidebarDirectory<'RollTable', Options> {
-  /** @override */
-  static documentName: 'RollTable';
+  static override documentName: 'RollTable';
 }

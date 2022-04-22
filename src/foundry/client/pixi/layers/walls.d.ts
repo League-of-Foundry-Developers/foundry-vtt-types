@@ -60,7 +60,6 @@ declare global {
     static get instance(): Canvas['walls'];
 
     /**
-     * @override
      * @defaultValue
      * ```
      * mergeObject(super.layerOptions, {
@@ -71,10 +70,9 @@ declare global {
      * })
      * ```
      */
-    static get layerOptions(): WallsLayer.LayerOptions;
+    static override get layerOptions(): WallsLayer.LayerOptions;
 
-    /** @override */
-    static documentName: 'Wall';
+    static override documentName: 'Wall';
 
     /**
      * An Array of Wall instances in the current Scene which act as Doors.
@@ -87,13 +85,9 @@ declare global {
      */
     get gridPrecision(): number;
 
-    /**
-     * @override
-     */
-    draw(): Promise<this>;
+    override draw(): Promise<this>;
 
-    /** @override */
-    deactivate(): this;
+    override deactivate(): this;
 
     /**
      * Perform initialization steps for the WallsLayer whenever the composition of walls in the Scene is changed.
@@ -142,14 +136,12 @@ declare global {
      */
     highlightControlledSegments(): void;
 
-    /** @override */
-    releaseAll(options?: PlaceableObject.ReleaseOptions): number;
+    override releaseAll(options?: PlaceableObject.ReleaseOptions): number;
 
     /**
-     * @override
      * @param options - (unused)
      */
-    pasteObjects(
+    override pasteObjects(
       position: Point,
       options?: PasteOptions
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseWall>>[]>;
@@ -193,20 +185,15 @@ declare global {
         }
       | this['_cloneType'];
 
-    /** @override */
-    protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftStart(event: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onDragLeftDrop(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftDrop(event: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onDragLeftCancel(event: PointerEvent): void;
+    protected override _onDragLeftCancel(event: PointerEvent): void;
 
-    /** @override */
-    protected _onClickRight(event: PIXI.InteractionEvent): void;
+    protected override _onClickRight(event: PIXI.InteractionEvent): void;
 
     /** @deprecated since v9 */
     computePolygon(

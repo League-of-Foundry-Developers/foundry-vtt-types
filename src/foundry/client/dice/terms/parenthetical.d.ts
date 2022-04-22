@@ -22,8 +22,7 @@ declare class ParentheticalTerm extends RollTerm {
   /** An array of evaluated DiceTerm instances that should be bubbled up to the parent Roll */
   get dice(): DiceTerm[];
 
-  /** @override */
-  get isDeterministic(): boolean;
+  override get isDeterministic(): boolean;
 
   /**
    * Construct a ParentheticalTerm from an Array of component terms which should be wrapped inside the parentheses.

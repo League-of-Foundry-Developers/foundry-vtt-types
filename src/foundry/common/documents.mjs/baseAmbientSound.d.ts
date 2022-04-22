@@ -23,9 +23,7 @@ export declare class BaseAmbientSound extends Document<
   InstanceType<ConfiguredDocumentClass<typeof BaseScene>>,
   AmbientSoundMetadata
 > {
-  /** @override */
-  static get schema(): typeof data.AmbientSoundData;
+  static override get schema(): typeof data.AmbientSoundData;
 
-  /** @override */
-  static get metadata(): AmbientSoundMetadata;
+  static override get metadata(): AmbientSoundMetadata;
 }

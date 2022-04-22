@@ -24,21 +24,17 @@ type MacroMetadata = Merge<
  * The base Macro model definition which defines common behavior of an Macro document between both client and server.
  */
 export declare class BaseMacro extends Document<data.MacroData, null, MacroMetadata> {
-  /** @override */
-  static get schema(): typeof data.MacroData;
+  static override get schema(): typeof data.MacroData;
 
-  /** @override */
-  static get metadata(): MacroMetadata;
+  static override get metadata(): MacroMetadata;
 
-  /** @override */
-  protected _preCreate(
+  protected override _preCreate(
     data: MacroDataConstructorData,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
 
-  /** @override */
-  testUserPermission(
+  override testUserPermission(
     user: BaseUser,
     permission: keyof typeof foundry.CONST.DOCUMENT_PERMISSION_LEVELS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,
     { exact }: { exact?: boolean }

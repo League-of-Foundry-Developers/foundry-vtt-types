@@ -160,8 +160,7 @@ declare global {
      */
     coloration: PIXI.Mesh;
 
-    /** @override */
-    static sourceType: 'light';
+    static override sourceType: 'light';
 
     /**
      * Strength of the blur for light source edges

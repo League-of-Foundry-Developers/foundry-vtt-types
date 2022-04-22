@@ -151,7 +151,6 @@ declare global {
     static get instance(): Canvas['sight'];
 
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.layerOptions, {
@@ -160,7 +159,7 @@ declare global {
      * })
      * ```
      */
-    static get layerOptions(): SightLayer.LayerOptions;
+    static override get layerOptions(): SightLayer.LayerOptions;
 
     /**
      * Does the currently viewed Scene support Token field of vision?
@@ -172,8 +171,7 @@ declare global {
      */
     get fogExploration(): boolean;
 
-    /** @override */
-    tearDown(): Promise<this>;
+    override tearDown(): Promise<this>;
 
     /**
      * Initialize fog of war - resetting it when switching scenes or re-drawing the canvas
@@ -190,8 +188,7 @@ declare global {
      */
     updateFogExplorationColors(): void;
 
-    /** @override */
-    draw(): Promise<this>;
+    override draw(): Promise<this>;
 
     /**
      * Create the cached container and sprite used to provide a LOS mask

@@ -20,7 +20,6 @@ declare global {
     protected _collapsed: boolean;
 
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -31,21 +30,18 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): ApplicationOptions;
 
     /**
      * Return an Array of Scenes which are displayed in the Navigation bar
      */
     get scenes(): InstanceType<ConfiguredDocumentClassForName<'Scene'>>[];
 
-    /** @override */
-    render(force?: boolean, context?: Application.RenderOptions<Options>): this | void;
+    override render(force?: boolean, context?: Application.RenderOptions<Options>): this | void;
 
-    /** @override */
-    protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
+    protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
-    /** @override */
-    getData(options?: Partial<ApplicationOptions>): Data | Promise<Data>;
+    override getData(options?: Partial<ApplicationOptions>): Data | Promise<Data>;
 
     /**
      * Expand the SceneNavigation menu, sliding it down if it is currently collapsed
@@ -57,8 +53,7 @@ declare global {
      */
     collapse(): Promise<boolean>;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * Get the set of ContextMenu options which should be applied for Scenes in the menu
@@ -73,17 +68,9 @@ declare global {
      */
     protected _onClickScene(event: JQuery.ClickEvent): void;
 
-    /**
-     * @override
-     * @internal
-     */
-    protected _onDragStart(event: DragEvent): void;
+    protected override _onDragStart(event: DragEvent): void;
 
-    /**
-     * @override
-     * @internal
-     */
-    protected _onDrop(event: DragEvent): void;
+    protected override _onDrop(event: DragEvent): void;
 
     /**
      * Handle navigation menu toggle click events

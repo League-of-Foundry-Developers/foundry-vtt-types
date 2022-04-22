@@ -26,7 +26,6 @@ declare global {
     static get instance(): Canvas['tokens'];
 
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.layerOptions, {
@@ -38,15 +37,11 @@ declare global {
      * })
      * ```
      */
-    static get layerOptions(): TokenLayer.LayerOptions;
+    static override get layerOptions(): TokenLayer.LayerOptions;
 
-    /**
-     * @override
-     */
-    static documentName: 'Token';
+    static override documentName: 'Token';
 
-    /** @override */
-    get gridPrecision(): 1;
+    override get gridPrecision(): 1;
 
     /**
      * Token objects on this layer utilize the TokenHUD
@@ -58,20 +53,16 @@ declare global {
      */
     get ownedTokens(): ReturnType<this['placeables']['filter']>;
 
-    /** @override */
-    tearDown(): Promise<this>;
+    override tearDown(): Promise<this>;
 
-    /** @override */
-    activate(): this;
+    override activate(): this;
 
-    /** @override */
-    deactivate(): this;
+    override deactivate(): this;
 
     /**
-     * @override
      * @param options - (default: `{}`)
      */
-    selectObjects(options?: SelectOptions): boolean;
+    override selectObjects(options?: SelectOptions): boolean;
 
     /**
      * Target all Token instances which fall within a coordinate rectangle.
@@ -157,8 +148,7 @@ declare global {
       data: TokenLayer.DropData
     ): Promise<void | false | InstanceType<ConfiguredObjectClassForName<'Token'>>>;
 
-    /** @override */
-    protected _onClickLeft(event: PIXI.InteractionEvent): void;
+    protected override _onClickLeft(event: PIXI.InteractionEvent): void;
   }
 
   namespace TokenLayer {

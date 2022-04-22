@@ -108,8 +108,7 @@ export class FogExplorationData extends DocumentData<
   FogExplorationDataSource,
   FogExplorationDataConstructorData
 > {
-  /** @override */
-  static defineSchema(): FogExplorationDataSchema;
+  static override defineSchema(): FogExplorationDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

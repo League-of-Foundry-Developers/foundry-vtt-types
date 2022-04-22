@@ -31,11 +31,9 @@ export declare class BaseCard extends Document<
   InstanceType<ConfiguredDocumentClass<typeof BaseCards>>,
   CardMetadata
 > {
-  /** @override */
-  static get schema(): typeof data.CardData;
+  static override get schema(): typeof data.CardData;
 
-  /** @override */
-  static get metadata(): CardMetadata;
+  static override get metadata(): CardMetadata;
 
   /**
    * The sub-type of Card.
@@ -52,8 +50,7 @@ export declare class BaseCard extends Document<
    */
   protected static _canUpdate(user: BaseUser, doc: BaseCard, data: DeepPartial<CardDataConstructorData>): boolean;
 
-  /** @override */
-  testUserPermission(
+  override testUserPermission(
     user: BaseUser,
     permission: keyof typeof foundry.CONST.DOCUMENT_PERMISSION_LEVELS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,
     { exact }: { exact?: boolean }

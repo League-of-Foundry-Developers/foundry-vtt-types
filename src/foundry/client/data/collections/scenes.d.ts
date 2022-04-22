@@ -9,8 +9,7 @@ declare global {
    * @see {@link SceneDirectory} The SceneDirectory sidebar directory
    */
   class Scenes extends WorldCollection<typeof foundry.documents.BaseScene, 'Scenes'> {
-    /** @override */
-    static documentName: 'Scene';
+    static override documentName: 'Scene';
 
     /**
      * Return a reference to the Scene which is currently active
@@ -50,8 +49,7 @@ declare global {
      */
     protected static _pullToScene(sceneId: string): void;
 
-    /** @override */
-    fromCompendium(
+    override fromCompendium(
       document:
         | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>
         | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>['data']['_source'],

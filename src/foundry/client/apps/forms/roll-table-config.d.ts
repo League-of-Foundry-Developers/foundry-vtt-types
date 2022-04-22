@@ -12,7 +12,6 @@ declare global {
     Data extends object = RollTableConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'RollTable'>>> {
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -27,23 +26,16 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): DocumentSheetOptions;
 
-    /**
-     * @override
-     */
-    get title(): string;
+    override get title(): string;
 
     /**
      * @param options - (unused)
-     * @override
      */
-    getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): Data | Promise<Data>;
 
-    /**
-     * @override
-     */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * Handle creating a TableResult in the RollTable document
@@ -72,11 +64,7 @@ declare global {
       event: JQuery.ClickEvent
     ): Promise<InstanceType<ConfiguredDocumentClassForName<'TableResult'>> | undefined>;
 
-    /**
-     * @override
-     * @internal
-     */
-    protected _onDrop(event: DragEvent): void;
+    protected override _onDrop(event: DragEvent): void;
 
     /**
      * Handle changing the actor profile image by opening a FilePicker

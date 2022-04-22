@@ -14,7 +14,6 @@ declare global {
     Data extends object = PlaylistSoundConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>> {
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -24,19 +23,13 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): DocumentSheetOptions;
 
-    /** @override */
-    get title(): string;
+    override get title(): string;
 
-    /**
-     * @override
-     * @param options - (unused)
-     */
-    getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): Data | Promise<Data>;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * Auto-populate the track name using the provided filename, if a name is not already set
@@ -44,11 +37,7 @@ declare global {
      */
     protected _onSourceChange(event: JQuery.ChangeEvent): void;
 
-    /**
-     * @override
-     * @param event - (unused)
-     */
-    protected _updateObject(event: Event, formData: PlaylistSoundConfig.FormData): Promise<unknown>;
+    protected override _updateObject(event: Event, formData: PlaylistSoundConfig.FormData): Promise<unknown>;
   }
 
   namespace PlaylistSoundConfig {

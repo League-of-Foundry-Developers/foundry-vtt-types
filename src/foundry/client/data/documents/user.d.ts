@@ -135,15 +135,13 @@ declare global {
      */
     updateTokenTargets(targetIds?: string[]): void;
 
-    /** @override  */
-    _onUpdate(
+    override _onUpdate(
       data: DeepPartial<DocumentDataType<foundry.documents.BaseUser>>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
-    /** @override  */
-    _onDelete(options: DocumentModificationOptions, userId: string): void;
+    override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
     /** @remarks This property is set by PlayerList.getData() */
     charname?: string;

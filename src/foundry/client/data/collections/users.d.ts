@@ -18,13 +18,11 @@ declare global {
 
     /**
      * Initialize the Map object and all its contained documents
-     * @override
      * @internal
      */
-    protected _initialize(): void;
+    protected override _initialize(): void;
 
-    /** @override */
-    static documentName: 'User';
+    static override documentName: 'User';
 
     /**
      * Get the users with player roles
