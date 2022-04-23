@@ -66,9 +66,8 @@ declare global {
     /**
      * @param data    - (default: `{}`, unused)
      * @param options - (default: `{}`, unused)
-     * @override
      */
-    clone(
+    override clone(
       data?: Parameters<foundry.documents.BaseToken['clone']>[0],
       options?: Parameters<foundry.documents.BaseToken['clone']>[1]
     ): TemporaryDocument<this>;
@@ -116,8 +115,7 @@ declare global {
       options: Parameters<this['update']>[1]
     ): Promise<[this['actor']]>;
 
-    /** @override */
-    getEmbeddedCollection(embeddedName: 'Item'): data.ActorData['items'];
+    override getEmbeddedCollection(embeddedName: 'Item'): data.ActorData['items'];
     getEmbeddedCollection(embeddedName: 'ActiveEffect'): data.ActorData['effects'];
 
     /**
@@ -174,8 +172,7 @@ declare global {
       options: Parameters<this['update']>[1]
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>[]>;
 
-    /** @override */
-    protected _preUpdate(
+    protected override _preUpdate(
       data: Parameters<foundry.documents.BaseToken['_preUpdate']>[0],
       options: DocumentModificationOptions,
       user: InstanceType<ConfiguredDocumentClass<typeof User>>
@@ -191,8 +188,7 @@ declare global {
       user: InstanceType<ConfiguredDocumentClass<typeof User>>
     ): Promise<void>;
 
-    /** @override */
-    protected _onUpdate(
+    protected override _onUpdate(
       data: Parameters<foundry.documents.BaseToken['_onUpdate']>[0],
       options: DocumentModificationOptions,
       userId: string
@@ -248,8 +244,7 @@ declare global {
   class PrototypeTokenDocument extends TokenDocument {
     static get schema(): typeof foundry.data.PrototypeTokenData;
 
-    /** @override */
-    update(
+    override update(
       data?: DeepPartial<PrototypeTokenDataConstructorData> | undefined,
       context?: (DocumentModificationContext & foundry.utils.MergeObjectOptions) | undefined
     ): Promise<this | undefined>;

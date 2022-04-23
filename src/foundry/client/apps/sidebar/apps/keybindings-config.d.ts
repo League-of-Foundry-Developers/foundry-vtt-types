@@ -22,7 +22,6 @@ declare class KeybindingsConfig<
   protected _pendingEdits: Map<string, KeybindingsConfig.PendingBinding[]>;
 
   /**
-   * @override
    * @defaultValue
    * ```typescript
    * foundry.utils.mergeObject(super.defaultOptions, {
@@ -37,13 +36,12 @@ declare class KeybindingsConfig<
    * })
    * ```
    */
-  static get defaultOptions(): FormApplicationOptions;
+  static override get defaultOptions(): FormApplicationOptions;
 
   /**
    * @param options - (unused)
-   * @override
    */
-  getData(options?: Partial<Options>): Data;
+  override getData(options?: Partial<Options>): Data;
 
   /**
    * Builds the set of Bindings into a form usable for display and configuration
@@ -98,8 +96,7 @@ declare class KeybindingsConfig<
    */
   protected _categorizeAction(action: KeybindingsConfig): KeybindingsConfig.BaseCategory;
 
-  /** @override */
-  activateListeners(html: JQuery): void;
+  override activateListeners(html: JQuery): void;
 
   /**
    * Handle left-click events to filter to a certain category
@@ -197,9 +194,8 @@ declare class KeybindingsConfig<
 
   /**
    * @param event - (unused)
-   * @override
    */
-  protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
+  protected override _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
   /** @remarks KeybindingsConfig does not implement this method. */
   protected _updateObject(event?: unknown, formData?: unknown): Promise<never>;

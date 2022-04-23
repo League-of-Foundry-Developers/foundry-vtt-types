@@ -12,7 +12,6 @@ declare global {
     Data extends object = MacroConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Macro>>> {
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -24,19 +23,15 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): MacroConfig.Options;
+    static override get defaultOptions(): MacroConfig.Options;
 
-    /** @override */
-    get id(): string;
+    override get id(): string;
 
-    /** @override */
-    getData(options?: Partial<Options>): Data;
+    override getData(options?: Partial<Options>): Data;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
-    /** @override */
-    protected _disableFields(form: HTMLElement): void;
+    protected override _disableFields(form: HTMLElement): void;
 
     /**
      * Handle changing the actor profile image by opening a FilePicker
@@ -51,8 +46,7 @@ declare global {
      */
     protected _onExecute(event: JQuery.ClickEvent): Promise<void>;
 
-    /** @override */
-    protected _updateObject(event: Event, formData: MacroConfig.FormData): Promise<unknown>;
+    protected override _updateObject(event: Event, formData: MacroConfig.FormData): Promise<unknown>;
   }
 
   namespace MacroConfig {

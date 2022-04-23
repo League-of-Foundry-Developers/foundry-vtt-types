@@ -186,8 +186,7 @@ export class MacroData extends DocumentData<
 > {
   constructor(data: MacroDataConstructorData, document?: documents.BaseMacro | null);
 
-  /** @override */
-  static defineSchema(): MacroDataSchema;
+  static override defineSchema(): MacroDataSchema;
 
   /**
    * The default icon used for newly created Macro documents.

@@ -44,7 +44,6 @@ declare global {
     protected _hover: number | null;
 
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * mergeObject(super.defaultOptions, {
@@ -55,10 +54,9 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): ApplicationOptions;
 
-    /** @override */
-    getData(options?: Partial<Options>): Hotbar.Data | Promise<Hotbar.Data>;
+    override getData(options?: Partial<Options>): Hotbar.Data | Promise<Hotbar.Data>;
 
     /**
      * Get the Array of Macro (or null) values that should be displayed on a numbered page of the bar
@@ -91,11 +89,9 @@ declare global {
      */
     cyclePage(direction?: number): void;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
-    /** @override */
-    protected _contextMenu(html: JQuery): void;
+    protected override _contextMenu(html: JQuery): void;
 
     /**
      * Get the Macro entry context options
@@ -122,26 +118,13 @@ declare global {
      */
     protected _onClickPageControl(event: JQuery.ClickEvent): void;
 
-    /**
-     * @override
-     * @param selector - (unused)
-     */
-    protected _canDragStart(selector: string): boolean;
+    protected override _canDragStart(selector: string): boolean;
 
-    /** @override */
-    protected _onDragStart(event: DragEvent): false | void;
+    protected override _onDragStart(event: DragEvent): false | void;
 
-    /**
-     * @override
-     * @param selector - (unused)
-     */
-    protected _canDragDrop(selector: string): boolean;
+    protected override _canDragDrop(selector: string): boolean;
 
-    /**
-     * @override
-     * @internal
-     */
-    protected _onDrop(event: DragEvent): void;
+    protected override _onDrop(event: DragEvent): void;
 
     /**
      * Handle click events to toggle display of the macro bar

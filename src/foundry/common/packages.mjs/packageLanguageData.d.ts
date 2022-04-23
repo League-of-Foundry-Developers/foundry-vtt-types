@@ -59,11 +59,9 @@ export class PackageLanguageData extends DocumentData<
   PackageLanguageDataSource,
   PackageLanguageDataConstructorData
 > {
-  /** @override */
-  static defineSchema(): PackageLanguageDataSchema;
+  static override defineSchema(): PackageLanguageDataSchema;
 
-  /** @override */
-  protected _initialize(): void;
+  protected override _initialize(): void;
 
   /**
    * Validate that a language code is supported as a canonical locale

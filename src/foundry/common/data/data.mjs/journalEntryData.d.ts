@@ -125,8 +125,7 @@ export class JournalEntryData extends DocumentData<
 > {
   constructor(data: JournalEntryDataConstructorData, document?: documents.BaseJournalEntry | null);
 
-  /** @override */
-  static defineSchema(): JournalEntryDataSchema;
+  static override defineSchema(): JournalEntryDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

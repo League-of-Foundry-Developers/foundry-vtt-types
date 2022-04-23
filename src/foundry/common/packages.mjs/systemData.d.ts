@@ -51,8 +51,7 @@ interface SystemDataConstructorData extends PackageDataConstructorData {
  * Extends the basic PackageData schema with some additional system-specific fields.
  */
 export class SystemData extends PackageData<SystemDataSchema, SystemDataProperties, SystemDataConstructorData> {
-  /** @override */
-  static defineSchema(): SystemDataSchema;
+  static override defineSchema(): SystemDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

@@ -35,8 +35,7 @@ declare global {
      */
     illumination: PIXI.Mesh;
 
-    /** @override */
-    static sourceType: 'vision';
+    static override sourceType: 'vision';
 
     /**
      * Keys in the VisionSourceData structure which, when modified, change the appearance of the source
@@ -119,7 +118,6 @@ declare global {
      */
     protected _updateIlluminationUniforms(shader: AdaptiveIlluminationShader): void;
 
-    /** @override */
-    protected _drawRenderTextureContainer(): PIXI.Container;
+    protected override _drawRenderTextureContainer(): PIXI.Container;
   }
 }

@@ -32,11 +32,9 @@ export declare class BaseWall extends Document<data.WallData, InstanceType<Confi
     context?: Context<InstanceType<ConfiguredDocumentClass<typeof BaseScene>>>
   );
 
-  /** @override */
-  static get schema(): typeof data.WallData;
+  static override get schema(): typeof data.WallData;
 
-  /** @override */
-  static get metadata(): WallMetadata;
+  static override get metadata(): WallMetadata;
 
   /**
    * Is a user able to update an existing Wall?

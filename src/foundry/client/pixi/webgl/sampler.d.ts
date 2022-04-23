@@ -2,14 +2,11 @@
  * A simple shader to emulate a PIXI.Sprite with a PIXI.Mesh (but faster!)
  */
 declare class BaseSamplerShader extends AbstractBaseShader {
-  /** @override */
-  static vertexShader: string;
+  static override vertexShader: string;
 
-  /** @override */
-  static fragmentShader: string;
+  static override fragmentShader: string;
 
   /**
-   * @override
    * @defaultValue
    * ```javascript
    * {
@@ -18,5 +15,5 @@ declare class BaseSamplerShader extends AbstractBaseShader {
    * };
    * ```
    */
-  static defaultUniforms: AbstractBaseShader.Uniforms;
+  static override defaultUniforms: AbstractBaseShader.Uniforms;
 }

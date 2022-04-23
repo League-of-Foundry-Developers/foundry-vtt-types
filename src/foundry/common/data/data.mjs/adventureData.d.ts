@@ -145,8 +145,7 @@ export class AdventureData extends DocumentData<
   AdventureDataSource,
   AdventureDataConstructorData
 > {
-  /** @override */
-  static defineSchema(): AdventureDataSchema;
+  static override defineSchema(): AdventureDataSchema;
 
   /**
    * A type of data field which stores a collection of document data objects

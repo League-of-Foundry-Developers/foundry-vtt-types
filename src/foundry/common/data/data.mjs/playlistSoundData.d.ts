@@ -150,11 +150,9 @@ export class PlaylistSoundData extends DocumentData<
   PlaylistSoundDataConstructorData,
   documents.BasePlaylistSound
 > {
-  /** @override */
-  static defineSchema(): PlaylistSoundDataSchema;
+  static override defineSchema(): PlaylistSoundDataSchema;
 
-  /** @override */
-  protected _initialize(): void;
+  protected override _initialize(): void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

@@ -129,8 +129,7 @@ export class CombatantData extends DocumentData<
   CombatantDataConstructorData,
   documents.BaseCombatant
 > {
-  /** @override */
-  static defineSchema(): CombatantDataSchema;
+  static override defineSchema(): CombatantDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

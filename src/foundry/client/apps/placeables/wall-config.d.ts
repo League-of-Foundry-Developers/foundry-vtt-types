@@ -26,22 +26,18 @@ declare global {
      */
     editTargets: string[];
 
-    /** @override */
-    get title(): string;
+    override get title(): string;
 
-    /** @override */
-    render(
+    override render(
       force?: boolean,
       options?: Application.RenderOptions<Options> & {
         walls?: InstanceType<ConfiguredObjectClassForName<'Wall'>>[] | undefined;
       }
     ): this;
 
-    /** @override */
-    getData(): Data | Promise<Data>;
+    override getData(): Data | Promise<Data>;
 
-    /** @override */
-    protected _updateObject(event: Event, formData: WallConfig.FormData): Promise<unknown>;
+    protected override _updateObject(event: Event, formData: WallConfig.FormData): Promise<unknown>;
   }
 
   namespace WallConfig {

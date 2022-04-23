@@ -20,9 +20,7 @@ type JournalEntryMetadata = Merge<
  * The base JournalEntry model definition which defines common behavior of an JournalEntry document between both client and server.
  */
 export declare class BaseJournalEntry extends Document<data.JournalEntryData, null, JournalEntryMetadata> {
-  /** @override */
-  static get schema(): typeof data.JournalEntryData;
+  static override get schema(): typeof data.JournalEntryData;
 
-  /** @override */
-  static get metadata(): JournalEntryMetadata;
+  static override get metadata(): JournalEntryMetadata;
 }

@@ -73,8 +73,7 @@ export class EffectChangeData extends DocumentData<
   EffectChangeDataConstructorData,
   BaseActiveEffect
 > {
-  /** @override */
-  static defineSchema(): EffectChangeDataSchema;
+  static override defineSchema(): EffectChangeDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

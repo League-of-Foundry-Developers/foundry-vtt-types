@@ -15,11 +15,9 @@ declare global {
      */
     protected _expanded: Partial<Record<string, boolean>>;
 
-    /** @override */
-    static documentName: 'Folder';
+    static override documentName: 'Folder';
 
-    /** @override */
-    render(force?: boolean, context?: ApplicationOptions): void;
+    override render(force?: boolean, context?: ApplicationOptions): void;
 
     /**
      * Refresh the display of any active JournalSheet instances where the folder list will change.

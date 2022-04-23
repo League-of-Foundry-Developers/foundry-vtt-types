@@ -10,8 +10,7 @@ declare class Pause<
 > extends Application<Options> {
   static get defaultOptions(): ApplicationOptions;
 
-  /** @override */
-  getData(options?: Partial<Options>): Data | Promise<Data>;
+  override getData(options?: Partial<Options>): Data | Promise<Data>;
 }
 
 declare namespace Pause {

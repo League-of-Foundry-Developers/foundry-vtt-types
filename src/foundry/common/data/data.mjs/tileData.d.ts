@@ -237,11 +237,9 @@ export class TileData extends DocumentData<
   TileDataConstructorData,
   documents.BaseTile
 > {
-  /** @override */
-  static defineSchema(): TileDataSchema;
+  static override defineSchema(): TileDataSchema;
 
-  /** @override */
-  _initializeSource(data: TileDataConstructorData): TileDataSource;
+  override _initializeSource(data: TileDataConstructorData): TileDataSource;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

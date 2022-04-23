@@ -40,11 +40,9 @@ declare global {
      */
     protected _borderThickness: number;
 
-    /** @override */
-    static embeddedName: 'MeasuredTemplate';
+    static override embeddedName: 'MeasuredTemplate';
 
-    /** @override */
-    get bounds(): Rectangle;
+    override get bounds(): Rectangle;
 
     /**
      * A convenience accessor for the border color as a numeric hex code
@@ -61,11 +59,9 @@ declare global {
      */
     get owner(): boolean;
 
-    /** @override */
-    draw(): Promise<this>;
+    override draw(): Promise<this>;
 
-    /** @override */
-    destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
+    override destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
 
     /**
      * Draw the HUD container which provides an interface for managing this template
@@ -85,8 +81,7 @@ declare global {
      */
     protected _drawRulerText(): PreciseText;
 
-    /** @override */
-    refresh(): this;
+    override refresh(): this;
 
     /**
      * Get a Circular area of effect given a radius of effect
@@ -123,27 +118,21 @@ declare global {
      */
     highlightGrid(): void;
 
-    /** @override */
-    rotate(angle: number, snap: number): Promise<this>;
+    override rotate(angle: number, snap: number): Promise<this>;
 
-    /** @override */
-    protected _canControl(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected override _canControl(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
-    /** @override */
-    protected _canConfigure(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected override _canConfigure(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
-    /** @override */
-    protected _canView(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected override _canView(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
-    /** @override */
-    protected _onUpdate(
+    protected override _onUpdate(
       data: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>['data']['_source']>,
       options?: DocumentModificationOptions,
       userId?: string
     ): void;
 
-    /** @override */
-    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
   }
 
   namespace MeasuredTemplate {

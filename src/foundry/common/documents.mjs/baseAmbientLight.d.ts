@@ -23,12 +23,9 @@ export declare class BaseAmbientLight extends Document<
   InstanceType<ConfiguredDocumentClass<typeof BaseScene>>,
   AmbientLightMetadata
 > {
-  /** @override */
-  static get schema(): typeof data.AmbientLightData;
+  static override get schema(): typeof data.AmbientLightData;
 
-  /** @override */
-  static get metadata(): AmbientLightMetadata;
+  static override get metadata(): AmbientLightMetadata;
 
-  /** @override */
-  protected _initialize(): void;
+  protected override _initialize(): void;
 }

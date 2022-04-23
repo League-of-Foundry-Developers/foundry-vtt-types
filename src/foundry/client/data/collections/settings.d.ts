@@ -5,11 +5,9 @@
  * @see {@link Setting} The Setting document
  */
 declare class WorldSettings extends WorldCollection<typeof foundry.documents.BaseSetting, 'WorldSettings'> {
-  /** @override */
-  static documentName: 'Setting';
+  static override documentName: 'Setting';
 
-  /** @override */
-  get directory(): undefined;
+  override get directory(): undefined;
 
   /**
    * Return the Setting or Keybind document with the given key.

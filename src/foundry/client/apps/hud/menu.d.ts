@@ -3,7 +3,6 @@
  */
 declare class MainMenu extends Application {
   /**
-   * @override
    * @defaultValue
    * ```typescript
    * {
@@ -14,7 +13,7 @@ declare class MainMenu extends Application {
    * }
    * ```
    * */
-  static get defaultOptions(): ApplicationOptions;
+  static override get defaultOptions(): ApplicationOptions;
 
   /**
    * The structure of menu items
@@ -50,14 +49,9 @@ declare class MainMenu extends Application {
    */
   get items(): MainMenu.MenuStructure;
 
-  /**
-   * @override
-   * @param options - (unused)
-   */
-  getData(options?: Partial<ApplicationOptions>): { items: MainMenu.MenuStructure };
+  override getData(options?: Partial<ApplicationOptions>): { items: MainMenu.MenuStructure };
 
-  /** @override */
-  activateListeners(html: JQuery): void;
+  override activateListeners(html: JQuery): void;
 
   /**
    * Toggle display of the menu (or render it in the first place)

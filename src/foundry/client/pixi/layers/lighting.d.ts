@@ -71,8 +71,7 @@ declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLaye
    */
   channels: ChannelConfig | undefined;
 
-  /** @override */
-  static documentName: 'AmbientLight';
+  static override documentName: 'AmbientLight';
 
   /**
    * @remarks This is not overridden in foundry but reflects the real behavior.
@@ -80,7 +79,6 @@ declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLaye
   static get instance(): Canvas['lighting'];
 
   /**
-   * @override
    * @defaultValue
    * ```
    * foundry.utils.mergeObject(super.layerOptions, {
@@ -90,7 +88,7 @@ declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLaye
    * })
    * ```
    */
-  static get layerOptions(): LightingLayer.LayerOptions;
+  static override get layerOptions(): LightingLayer.LayerOptions;
 
   /**
    * TODO: Significant portions of this method may no longer be needed
@@ -108,10 +106,7 @@ declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLaye
     backgroundColor?: number;
   }): ChannelConfig;
 
-  /**
-   * @override
-   */
-  draw(): Promise<this>;
+  override draw(): Promise<this>;
 
   masks?: PIXI.Container;
 
@@ -162,8 +157,7 @@ declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLaye
     backgroundColor?: number;
   }): void;
 
-  /** @override */
-  tearDown(): Promise<this>;
+  override tearDown(): Promise<this>;
 
   /**
    * Activate light source animation for AmbientLight objects within this layer
@@ -210,17 +204,13 @@ declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLaye
    */
   protected _onDarknessChange(darkness: number, prior: number): void;
 
-  /** @override */
-  protected _onDragLeftStart(event: PIXI.InteractionEvent): Promise<AmbientLight>;
+  protected override _onDragLeftStart(event: PIXI.InteractionEvent): Promise<AmbientLight>;
 
-  /** @override */
-  protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+  protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
-  /** @override */
-  protected _onDragLeftCancel(event: PointerEvent): void;
+  protected override _onDragLeftCancel(event: PointerEvent): void;
 
-  /** @override */
-  protected _onMouseWheel(event: WheelEvent): void | ReturnType<AmbientLight['rotate']>;
+  protected override _onMouseWheel(event: WheelEvent): void | ReturnType<AmbientLight['rotate']>;
 }
 
 declare namespace LightingLayer {

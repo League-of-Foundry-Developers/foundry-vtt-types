@@ -8,6 +8,5 @@
 declare class MacroDirectory extends SidebarDirectory<'Macro'> {
   constructor(options?: Partial<SidebarDirectory.Options>);
 
-  /** @override */
-  static documentName: 'Macro';
+  static override documentName: 'Macro';
 }

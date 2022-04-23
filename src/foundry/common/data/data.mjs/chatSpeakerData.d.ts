@@ -73,8 +73,7 @@ export class ChatSpeakerData extends DocumentData<
   ChatSpeakerDataConstructorData,
   BaseChatMessage
 > {
-  /** @override */
-  static defineSchema(): ChatSpeakerDataSchema;
+  static override defineSchema(): ChatSpeakerDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

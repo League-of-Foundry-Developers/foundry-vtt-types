@@ -26,10 +26,9 @@ declare class PrimaryCanvasGroup extends CachedContainer {
   static groupName: string;
 
   /**
-   * @override
    * @defaultValue `[0, 0, 0, 0]`
    */
-  clearColor: [r: number, g: number, b: number, a: number];
+  override clearColor: [r: number, g: number, b: number, a: number];
 
   /**
    * Create the member layers of the scene container
@@ -37,6 +36,5 @@ declare class PrimaryCanvasGroup extends CachedContainer {
    */
   protected _createLayers(): void;
 
-  /** @override */
-  render(renderer: Parameters<PIXI.Container['render']>[0]): void;
+  override render(renderer: Parameters<PIXI.Container['render']>[0]): void;
 }

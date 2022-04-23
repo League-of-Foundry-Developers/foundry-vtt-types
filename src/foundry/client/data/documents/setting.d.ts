@@ -18,8 +18,7 @@ declare global {
      */
     get value(): unknown;
 
-    /** @override */
-    protected _onCreate(
+    protected override _onCreate(
       data: foundry.data.SettingData['_source'],
       options: DocumentModificationOptions,
       userId: string

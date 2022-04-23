@@ -17,14 +17,11 @@ declare global {
      */
     constructor(object?: AVMaster | undefined, options?: Partial<Options> | undefined);
 
-    /** @override */
-    static get defaultOptions(): FormApplicationOptions;
+    static override get defaultOptions(): FormApplicationOptions;
 
-    /** @override */
-    getData(options: Partial<Options>): Promise<Data>;
+    override getData(options: Partial<Options>): Promise<Data>;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * Set a section's input to enabled or disabled
@@ -52,8 +49,7 @@ declare global {
      */
     protected _onTurnTypeChanged(event: JQuery.ChangeEvent): void;
 
-    /** @override */
-    protected _updateObject(event: Event, formData?: object): Promise<unknown>;
+    protected override _updateObject(event: Event, formData?: object): Promise<unknown>;
   }
 
   namespace AVConfig {

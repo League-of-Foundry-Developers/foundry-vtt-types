@@ -26,21 +26,17 @@ export declare class BaseActiveEffect extends Document<
   InstanceType<ConfiguredDocumentClass<typeof BaseActor>> | InstanceType<ConfiguredDocumentClass<typeof BaseItem>>,
   ActiveEffectMetadata
 > {
-  /** @override */
-  static get schema(): ConstructorOf<data.ActiveEffectData>;
+  static override get schema(): ConstructorOf<data.ActiveEffectData>;
 
-  /** @override */
-  static get metadata(): ActiveEffectMetadata;
+  static override get metadata(): ActiveEffectMetadata;
 
-  /** @override */
-  protected _preCreate(
+  protected override _preCreate(
     data: ActiveEffectDataConstructorData,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
 
-  /** @override */
-  testUserPermission(
+  override testUserPermission(
     user: BaseUser,
     permission: keyof typeof foundry.CONST.ENTITY_PERMISSIONS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,
     { exact }: { exact?: boolean }

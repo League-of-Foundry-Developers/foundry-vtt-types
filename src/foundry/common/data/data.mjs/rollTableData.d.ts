@@ -175,8 +175,7 @@ export class RollTableData extends DocumentData<
   RollTableDataConstructorData,
   documents.BaseRollTable
 > {
-  /** @override */
-  static defineSchema(): RollTableDataSchema;
+  static override defineSchema(): RollTableDataSchema;
 
   /**
    * The default icon used for newly created Macro documents

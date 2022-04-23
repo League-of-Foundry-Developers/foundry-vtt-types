@@ -28,7 +28,6 @@ declare class GridLayer extends CanvasLayer<GridLayer.LayerOptions> {
   static get instance(): Canvas['grid'];
 
   /**
-   * @override
    * @defaultValue
    * ```typescript
    * mergeObject(super.layerOptions, {
@@ -37,7 +36,7 @@ declare class GridLayer extends CanvasLayer<GridLayer.LayerOptions> {
    * }
    * ```
    */
-  static get layerOptions(): GridLayer.LayerOptions;
+  static override get layerOptions(): GridLayer.LayerOptions;
 
   /**
    * The grid type rendered in this Scene

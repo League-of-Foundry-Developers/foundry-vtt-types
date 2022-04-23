@@ -72,8 +72,7 @@ export class SettingData extends DocumentData<
    */
   constructor(data: SettingDataConstructorData, document?: documents.BaseSetting | null);
 
-  /** @override */
-  static defineSchema(): SettingDataSchema;
+  static override defineSchema(): SettingDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

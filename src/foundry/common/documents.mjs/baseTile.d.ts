@@ -23,9 +23,7 @@ export declare class BaseTile extends Document<
   InstanceType<ConfiguredDocumentClass<typeof BaseScene>>,
   TileMetadata
 > {
-  /** @override */
-  static get schema(): typeof data.TileData;
+  static override get schema(): typeof data.TileData;
 
-  /** @override */
-  static get metadata(): TileMetadata;
+  static override get metadata(): TileMetadata;
 }

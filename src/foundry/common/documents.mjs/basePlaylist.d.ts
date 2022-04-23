@@ -21,11 +21,9 @@ type PlaylistMetadata = Merge<
  * The base Playlist model definition which defines common behavior of an Playlist document between both client and server.
  */
 export declare class BasePlaylist extends Document<data.PlaylistData, null, PlaylistMetadata> {
-  /** @override */
-  static get schema(): typeof data.PlaylistData;
+  static override get schema(): typeof data.PlaylistData;
 
-  /** @override */
-  static get metadata(): PlaylistMetadata;
+  static override get metadata(): PlaylistMetadata;
 
   /**
    * A reference to the Collection of ActiveEffect instances in the Actor document, indexed by _id.

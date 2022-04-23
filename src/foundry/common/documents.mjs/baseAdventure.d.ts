@@ -22,11 +22,9 @@ type AdventureMetadata = Merge<
  * @internal
  */
 export class BaseAdventure extends Document<data.AdventureData, null, AdventureMetadata> {
-  /** @override */
-  static get schema(): typeof data.AdventureData;
+  static override get schema(): typeof data.AdventureData;
 
-  /** @override */
-  static get metadata(): AdventureMetadata;
+  static override get metadata(): AdventureMetadata;
 
   /**
    * A convenient reference to the file path of the Adventure's profile image.

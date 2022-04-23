@@ -43,7 +43,6 @@ declare global {
     protected _wheelHandler: ((event: WheelEvent) => void) | null;
 
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -57,22 +56,15 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): typeof FormApplication['defaultOptions'];
+    static override get defaultOptions(): typeof FormApplication['defaultOptions'];
 
-    /** @override */
-    getData(options?: Partial<Options>): GridConfig.Data;
+    override getData(options?: Partial<Options>): GridConfig.Data;
 
-    /**
-     * @override
-     * @internal
-     */
-    protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
+    protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
-    /** @override */
-    close(options?: FormApplication.CloseOptions): ReturnType<FormApplication['close']>;
+    override close(options?: FormApplication.CloseOptions): ReturnType<FormApplication['close']>;
 
     /**
      * Handle keyboard events.
@@ -136,16 +128,12 @@ declare global {
      */
     protected _refresh({ background, grid }?: { background?: boolean; grid?: boolean }): void;
 
-    /**
-     * @override
-     */
-    protected _onChangeInput(event: JQuery.ChangeEvent): void;
+    protected override _onChangeInput(event: JQuery.ChangeEvent): void;
 
     /**
      * @param event - (unused)
-     * @override
      */
-    protected _updateObject(event: Event, formData: GridConfig.FormData): Promise<unknown>;
+    protected override _updateObject(event: Event, formData: GridConfig.FormData): Promise<unknown>;
   }
 
   namespace GridConfig {

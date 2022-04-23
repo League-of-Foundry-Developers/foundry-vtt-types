@@ -160,8 +160,7 @@ export class TableResultData extends DocumentData<
   TableResultDataConstructorData,
   BaseTableResult
 > {
-  /** @override */
-  static defineSchema(): TableResultDataSchema;
+  static override defineSchema(): TableResultDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

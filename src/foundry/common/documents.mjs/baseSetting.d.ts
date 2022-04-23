@@ -22,11 +22,9 @@ type SettingMetadata = Merge<
  * The base Setting model definition which defines common behavior of an Setting document between both client and server.
  */
 export declare class BaseSetting extends Document<data.SettingData, null, SettingMetadata> {
-  /** @override */
-  static get schema(): typeof data.SettingData;
+  static override get schema(): typeof data.SettingData;
 
-  /** @override */
-  static get metadata(): SettingMetadata;
+  static override get metadata(): SettingMetadata;
 
   /**
    * A convenience reference to the key which identifies this game setting.

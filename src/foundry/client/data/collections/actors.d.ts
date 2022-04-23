@@ -20,11 +20,9 @@ declare global {
      */
     get tokens(): Partial<Record<string, InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>>>;
 
-    /** @override */
-    static documentName: 'Actor';
+    static override documentName: 'Actor';
 
-    /** @override */
-    fromCompendium(
+    override fromCompendium(
       document:
         | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>
         | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>['data']['_source'],

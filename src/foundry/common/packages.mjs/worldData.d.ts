@@ -69,8 +69,7 @@ interface WorldDataConstructorData extends Omit<PackageDataConstructorData, 'sys
  * Extends the basic PackageData schema with some additional world-specific fields.
  */
 export class WorldData extends PackageData<WorldDataSchema, WorldDataProperties, WorldDataConstructorData> {
-  /** @override */
-  static defineSchema(): WorldDataSchema;
+  static override defineSchema(): WorldDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

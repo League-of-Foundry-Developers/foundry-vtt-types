@@ -34,11 +34,9 @@ declare global {
      */
     static get defaultOptions(): ActorSheet.Options;
 
-    /** @override */
-    get id(): string;
+    override get id(): string;
 
-    /** @override */
-    get title(): string;
+    override get title(): string;
 
     /**
      * A convenience reference to the Actor document
@@ -50,22 +48,15 @@ declare global {
      */
     get token(): Exclude<this['object']['token'] | this['options']['token'], undefined> | null;
 
-    /** @override */
-    close(options?: FormApplication.CloseOptions): Promise<void>;
+    override close(options?: FormApplication.CloseOptions): Promise<void>;
 
-    /**
-     * @override
-     */
-    getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): Data | Promise<Data>;
 
-    /** @override */
-    protected _getHeaderButtons(): Application.HeaderButton[];
+    protected override _getHeaderButtons(): Application.HeaderButton[];
 
-    /** @override */
-    protected _getSubmitData(updateData?: object | null): Partial<Record<string, unknown>>;
+    protected override _getSubmitData(updateData?: object | null): Partial<Record<string, unknown>>;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * Handle requests to configure the Token for the Actor
@@ -77,20 +68,13 @@ declare global {
      */
     protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
 
-    /** @override */
-    protected _canDragStart(selector: string): boolean;
+    protected override _canDragStart(selector: string): boolean;
 
-    /** @override */
-    protected _canDragDrop(selector: string): boolean;
+    protected override _canDragDrop(selector: string): boolean;
 
-    /** @override */
-    protected _onDragStart(event: DragEvent): void;
+    protected override _onDragStart(event: DragEvent): void;
 
-    /**
-     * @override
-     * @internal
-     */
-    protected _onDrop(event: DragEvent): void;
+    protected override _onDrop(event: DragEvent): void;
 
     /**
      * Handle the dropping of ActiveEffect data onto an Actor Sheet

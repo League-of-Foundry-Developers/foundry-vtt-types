@@ -12,7 +12,6 @@ declare global {
     Data extends CombatantConfig.Data<Options> = CombatantConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Combatant>>> {
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -24,16 +23,14 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): CombatantConfig.Options;
+    static override get defaultOptions(): CombatantConfig.Options;
 
-    /** @override */
-    get title(): string;
+    override get title(): string;
 
     /**
      * @param event - (unused)
-     * @override
      */
-    protected _updateObject(event: Event, formData: CombatantConfig.FormData): Promise<unknown>;
+    protected override _updateObject(event: Event, formData: CombatantConfig.FormData): Promise<unknown>;
   }
 
   namespace CombatantConfig {

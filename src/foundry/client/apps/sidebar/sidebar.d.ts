@@ -17,7 +17,6 @@ declare class Sidebar<Options extends ApplicationOptions = ApplicationOptions> e
   protected _collapsed: boolean;
 
   /**
-   * @override
    * @defaultValue
    * ```ts
    * foundry.utils.mergeObject(super.defaultOptions, {
@@ -29,7 +28,7 @@ declare class Sidebar<Options extends ApplicationOptions = ApplicationOptions> e
    * }
    * ```
    */
-  static get defaultOptions(): ApplicationOptions;
+  static override get defaultOptions(): ApplicationOptions;
 
   /**
    * Return the name of the active Sidebar tab
@@ -43,15 +42,13 @@ declare class Sidebar<Options extends ApplicationOptions = ApplicationOptions> e
 
   /**
    * @param options - (unused)
-   * @override
    */
-  getData(options?: Partial<Options>): Sidebar.Data;
+  override getData(options?: Partial<Options>): Sidebar.Data;
 
   /**
-   * @override
    * @internal
    */
-  protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
+  protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
   /**
    * Activate a Sidebar tab by it's name
@@ -71,18 +68,12 @@ declare class Sidebar<Options extends ApplicationOptions = ApplicationOptions> e
    */
   collapse(): void;
 
-  /**
-   * @override
-   */
-  activateListeners(html: JQuery): void;
+  override activateListeners(html: JQuery): void;
 
   /**
-   * @param event - (unused)
-   * @param tabs - (unused)
-   * @override
    * @internal
    */
-  protected _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: string): void;
+  protected override _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: string): void;
 
   /**
    * Handle the special case of left-clicking a tab when the sidebar is collapsed.

@@ -21,23 +21,16 @@ declare global {
      */
     static get defaultOptions(): DocumentSheetOptions;
 
-    /** @override */
-    get title(): string;
+    override get title(): string;
+
+    override getData(options?: Partial<Options>): Data | Promise<Data>;
+
+    protected override _getFilePickerOptions(event: PointerEvent): FilePickerOptions;
 
     /**
-     * @override
-     * @param options - (unused)
-     */
-    getData(options?: Partial<Options>): Data | Promise<Data>;
-
-    /** @override */
-    protected _getFilePickerOptions(event: PointerEvent): FilePickerOptions;
-
-    /**
-     * @override
      * @remarks The return type could be given more concretely but it is not supposed to be used.
      */
-    protected _onSelectFile(selection: string, filePicker: FilePicker): unknown;
+    protected override _onSelectFile(selection: string, filePicker: FilePicker): unknown;
   }
 
   namespace PlaylistConfig {

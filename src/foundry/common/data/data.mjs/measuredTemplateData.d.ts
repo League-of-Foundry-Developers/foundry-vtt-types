@@ -201,14 +201,11 @@ export class MeasuredTemplateData extends DocumentData<
     document: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>
   );
 
-  /** @override */
-  static defineSchema(): MeasuredTemplateDataSchema;
+  static override defineSchema(): MeasuredTemplateDataSchema;
 
-  /** @override */
-  protected _initialize(): void;
+  protected override _initialize(): void;
 
-  /** @override */
-  protected _validateDocument(): void;
+  protected override _validateDocument(): void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

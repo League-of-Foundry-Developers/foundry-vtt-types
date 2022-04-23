@@ -30,11 +30,9 @@ export declare class BaseUser extends Document<data.UserData, null, UserMetadata
    */
   readonly role: ValueOf<typeof CONST.USER_ROLES>;
 
-  /** @override */
-  static get schema(): typeof data.UserData;
+  static override get schema(): typeof data.UserData;
 
-  /** @override */
-  static get metadata(): UserMetadata;
+  static override get metadata(): UserMetadata;
 
   /**
    * Is a user able to create an existing User?
@@ -79,8 +77,7 @@ export declare class BaseUser extends Document<data.UserData, null, UserMetadata
     action: ValueOf<typeof CONST.USER_ROLES> | keyof typeof CONST.USER_ROLES | keyof typeof CONST.USER_PERMISSIONS
   ): boolean;
 
-  /** @override */
-  getUserLevel(
+  override getUserLevel(
     user: BaseUser
   ): typeof CONST.DOCUMENT_PERMISSION_LEVELS.OWNER | typeof CONST.DOCUMENT_PERMISSION_LEVELS.NONE;
 

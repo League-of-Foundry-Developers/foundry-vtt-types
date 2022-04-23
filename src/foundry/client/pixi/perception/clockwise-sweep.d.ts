@@ -114,14 +114,12 @@ declare global {
     ): ReturnType<ClockwiseSweepPolygon['compute']>;
 
     /**
-     * @override
      * @param origin - The provided polygon origin
      * @param config - The provided configuration object
      */
-    initialize(origin: Point, config: ClockwiseSweepPolygon.InitConfig): void;
+    override initialize(origin: Point, config: ClockwiseSweepPolygon.InitConfig): void;
 
-    /** @override */
-    protected _compute(): void;
+    protected override _compute(): void;
 
     /**
      * Round vertices of a ray segment
@@ -344,8 +342,7 @@ declare global {
      */
     static pointBetweenRays(vertex: PolygonVertex, rMin: PolygonRay, rMax: PolygonRay, angle: number): boolean;
 
-    /** @override */
-    visualize(): void;
+    override visualize(): void;
 
     /**
      * Check whether a given ray intersects with walls.

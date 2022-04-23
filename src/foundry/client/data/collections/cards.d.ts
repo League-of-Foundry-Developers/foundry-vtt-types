@@ -4,6 +4,5 @@
  * @see {@link Cards} The Cards document
  */
 declare class CardStacks extends WorldCollection<typeof foundry.documents.BaseCards, 'Cards'> {
-  /** @override */
-  static documentName: 'Cards';
+  static override documentName: 'Cards';
 }

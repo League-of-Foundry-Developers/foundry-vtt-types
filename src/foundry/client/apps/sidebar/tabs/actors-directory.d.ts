@@ -4,18 +4,13 @@
 declare class ActorDirectory extends SidebarDirectory<'Actor'> {
   constructor(...args: ConstructorParameters<typeof SidebarDirectory>);
 
-  /** @override */
-  static documentName: 'Actor';
+  static override documentName: 'Actor';
 
-  /** @override */
-  protected _canDragStart(selector: string): boolean;
+  protected override _canDragStart(selector: string): boolean;
 
-  /**  @override */
-  protected _onDragStart(event: DragEvent): void;
+  protected override _onDragStart(event: DragEvent): void;
 
-  /** @override */
-  protected _canDragDrop(selector: string): boolean;
+  protected override _canDragDrop(selector: string): boolean;
 
-  /** @override */
-  protected _getEntryContextOptions(): ContextMenuEntry[];
+  protected override _getEntryContextOptions(): ContextMenuEntry[];
 }

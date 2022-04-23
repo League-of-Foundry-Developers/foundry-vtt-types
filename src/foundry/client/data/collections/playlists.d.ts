@@ -16,8 +16,7 @@ declare global {
       >['data']['_source'][]
     );
 
-    /** @override */
-    static documentName: 'Playlist';
+    static override documentName: 'Playlist';
 
     /**
      * Return the subset of Playlist documents which are currently playing

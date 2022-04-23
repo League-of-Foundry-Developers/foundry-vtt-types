@@ -3,7 +3,6 @@
  */
 declare class PermissionConfig extends FormApplication<FormApplicationOptions, PermissionConfig.Data> {
   /**
-   * @override
    * @defaultValue
    * ```typescript
    * mergeObject(super.defaultOptions, {
@@ -17,21 +16,19 @@ declare class PermissionConfig extends FormApplication<FormApplicationOptions, P
    * })
    * ```
    */
-  static get defaultOptions(): typeof FormApplication['defaultOptions'];
+  static override get defaultOptions(): typeof FormApplication['defaultOptions'];
 
   /**
    * @param options - (unused)
-   * @override
    */
-  getData(options?: Partial<FormApplicationOptions>): PermissionConfig.Data;
+  override getData(options?: Partial<FormApplicationOptions>): PermissionConfig.Data;
 
   /**
    * Prepare the permissions object used to render the configuration template
    */
   protected _getPermissions(current: Game.Permissions): PermissionConfig.Permission[];
 
-  /** @override */
-  activateListeners(html: JQuery): void;
+  override activateListeners(html: JQuery): void;
 
   /**
    * Handle button click to reset default settings
@@ -39,17 +36,15 @@ declare class PermissionConfig extends FormApplication<FormApplicationOptions, P
    */
   protected _onResetDefaults(event: JQuery.ClickEvent): void;
 
-  /** @override */
-  protected _onSubmit(
+  protected override _onSubmit(
     event: Event,
     options?: FormApplication.OnSubmitOptions
   ): ReturnType<FormApplication['_onSubmit']>;
 
   /**
    * @param event - (unused)
-   * @override
    */
-  protected _updateObject(event: Event, formData: PermissionConfig.FormData): Promise<unknown>;
+  protected override _updateObject(event: Event, formData: PermissionConfig.FormData): Promise<unknown>;
 }
 
 declare namespace PermissionConfig {

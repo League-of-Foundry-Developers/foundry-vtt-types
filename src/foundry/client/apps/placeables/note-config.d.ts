@@ -11,7 +11,6 @@ declare global {
     Data extends object = NoteConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Note'>>> {
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -21,24 +20,19 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): DocumentSheetOptions;
 
     /**
      * @param options - (unused)
-     * @override
      */
-    getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): Data | Promise<Data>;
 
     /**
      * @param event - (unused)
-     * @override
      */
-    protected _updateObject(event: Event, formData: NoteConfig.FormData): Promise<unknown>;
+    protected override _updateObject(event: Event, formData: NoteConfig.FormData): Promise<unknown>;
 
-    /**
-     * @override
-     */
-    close(options?: Application.CloseOptions): Promise<void>;
+    override close(options?: Application.CloseOptions): Promise<void>;
   }
 
   namespace NoteConfig {

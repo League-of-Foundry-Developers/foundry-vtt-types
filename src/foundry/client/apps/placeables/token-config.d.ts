@@ -27,7 +27,6 @@ declare global {
     token: InstanceType<ConfiguredDocumentClassForName<'Token'>> | PrototypeTokenDocument;
 
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -43,10 +42,9 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): FormApplicationOptions;
+    static override get defaultOptions(): FormApplicationOptions;
 
-    /** @override */
-    get id(): string;
+    override get id(): string;
 
     /**
      * A convenience accessor to test whether we are configuring the prototype Token for an Actor.
@@ -58,17 +56,13 @@ declare global {
      */
     get actor(): InstanceType<ConfiguredDocumentClassForName<'Actor'>>;
 
-    /** @override */
-    get title(): string;
+    override get title(): string;
 
-    /** @override */
-    getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): Data | Promise<Data>;
 
-    /** @override */
-    render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<this>;
+    override render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<this>;
 
-    /** @override */
-    protected _renderInner(...args: [Data]): Promise<JQuery>;
+    protected override _renderInner(...args: [Data]): Promise<JQuery>;
 
     /**
      * Get an Object of image paths and filenames to display in the Token sheet
@@ -76,8 +70,7 @@ declare global {
      */
     protected _getAlternateTokenImages(): Promise<Record<string, string>>;
 
-    /** @override */
-    protected _getHeaderButtons(): Application.HeaderButton[];
+    protected override _getHeaderButtons(): Application.HeaderButton[];
 
     /**
      * Shim for {@link DocumentSheet#_onConfigureSheet} that will be replaced in v10 when this class subclasses it.
@@ -85,11 +78,9 @@ declare global {
      */
     protected _onConfigureSheet(event: JQuery.ClickEvent): void;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
-    /** @override */
-    protected _updateObject(event: Event, formData: TokenConfig.FormData): Promise<unknown>;
+    protected override _updateObject(event: Event, formData: TokenConfig.FormData): Promise<unknown>;
 
     /**
      * Handle Token assignment requests to update the default prototype Token
@@ -190,7 +181,6 @@ declare global {
     static SETTING: string;
 
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -199,35 +189,28 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): FormApplicationOptions;
+    static override get defaultOptions(): FormApplicationOptions;
 
-    /** @override */
-    get id(): string;
+    override get id(): string;
 
-    /** @override */
-    get title(): string;
+    override get title(): string;
 
-    /** @override */
-    getData(options: unknown): Data | Promise<Data>;
+    override getData(options: unknown): Data | Promise<Data>;
 
-    /** @override */
-    _getSubmitData(
+    override _getSubmitData(
       updateData?: Parameters<TokenConfig['_getSubmitData']>[0]
     ): ReturnType<TokenConfig['_getSubmitData']>;
 
-    /** @override */
-    _updateObject(event: Event, formData?: object): Promise<unknown>;
+    override _updateObject(event: Event, formData?: object): Promise<unknown>;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * Reset the form to default values
      */
     reset(): void;
 
-    /** @override */
-    protected _onBarChange(): Promise<void>;
+    protected override _onBarChange(): Promise<void>;
   }
 
   namespace DefaultTokenConfig {

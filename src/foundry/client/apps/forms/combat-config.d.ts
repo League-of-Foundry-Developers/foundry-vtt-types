@@ -11,7 +11,6 @@ declare global {
     Data extends object = CombatTrackerConfig.Data
   > extends FormApplication<Options, Data, undefined> {
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -23,13 +22,11 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): FormApplicationOptions;
+    static override get defaultOptions(): FormApplicationOptions;
 
-    /** @override */
-    getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): Data | Promise<Data>;
 
-    /** @override */
-    protected _updateObject(
+    protected override _updateObject(
       event: Event,
       formData: ClientSettings.Values['core.combatTrackerConfig']
     ): Promise<unknown>;

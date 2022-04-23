@@ -24,7 +24,6 @@ declare class ModuleManagement<
   static CONFIG_SETTING: 'moduleConfiguration';
 
   /**
-   * @override
    * @defaultValue
    * ```typescript
    * mergeObject(super.defaultOptions, {
@@ -40,22 +39,17 @@ declare class ModuleManagement<
    * });
    * ```
    */
-  static get defaultOptions(): FormApplicationOptions;
+  static override get defaultOptions(): FormApplicationOptions;
 
-  /** @override */
-  get isEditable(): boolean;
+  override get isEditable(): boolean;
 
-  /** @override */
-  getData(options?: Partial<Options>): Data | Promise<Data>;
+  override getData(options?: Partial<Options>): Data | Promise<Data>;
 
-  /** @override */
-  activateListeners(html: JQuery): void;
+  override activateListeners(html: JQuery): void;
 
-  /** @override */
-  protected _renderInner(data: Data): Promise<JQuery>;
+  protected override _renderInner(data: Data): Promise<JQuery>;
 
-  /** @override */
-  protected _updateObject(event: Event, formData: ModuleManagement.FormData): Promise<unknown>;
+  protected override _updateObject(event: Event, formData: ModuleManagement.FormData): Promise<unknown>;
 
   /**
    * Handle changes to a module checkbox to prompt for whether or not to enable dependencies
@@ -81,8 +75,7 @@ declare class ModuleManagement<
    */
   protected _onFilterList(event: JQuery.ClickEvent): void;
 
-  /** @override */
-  protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
+  protected override _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 }
 
 declare namespace ModuleManagement {

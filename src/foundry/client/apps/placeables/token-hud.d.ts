@@ -18,7 +18,6 @@ declare global {
     protected _statusEffects: boolean;
 
     /**
-     * @override
      * @defaultValue
      * ```
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -27,24 +26,18 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): ApplicationOptions;
 
-    /** @override */
-    bind(object: ConcreteToken): void;
+    override bind(object: ConcreteToken): void;
 
     /**
      * Refresh the currently active state of all status effect icons in the Token HUD selector.
      */
     refreshStatusIcons(): void;
 
-    /**
-     * @override
-     * @param _position - (unused)
-     */
-    setPosition(_position?: Partial<Application.Position>): void;
+    override setPosition(_position?: Partial<Application.Position>): void;
 
-    /** @override */
-    getData(options?: Partial<ApplicationOptions>): ReturnType<BasePlaceableHUD<ConcreteToken>['getData']> & {
+    override getData(options?: Partial<ApplicationOptions>): ReturnType<BasePlaceableHUD<ConcreteToken>['getData']> & {
       canConfigure: boolean;
       canToggleCombat: boolean;
       displayBar1: boolean;
@@ -74,11 +67,9 @@ declare global {
       }
     >;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
-    /** @override */
-    protected _onClickControl(event: JQuery.ClickEvent): unknown;
+    protected override _onClickControl(event: JQuery.ClickEvent): unknown;
 
     /**
      * Handle initial click to focus an attribute update field

@@ -48,7 +48,6 @@ declare class SceneControls<Options extends ApplicationOptions = ApplicationOpti
   controls: SceneControl[];
 
   /**
-   * @override
    * @defaultValue
    * ```
    * foundry.utils.mergeObject(super.defaultOptions, {
@@ -59,7 +58,7 @@ declare class SceneControls<Options extends ApplicationOptions = ApplicationOpti
    * })
    * ```
    */
-  static get defaultOptions(): SceneControls.Options;
+  static override get defaultOptions(): SceneControls.Options;
 
   /**
    * Return the active control set
@@ -88,15 +87,13 @@ declare class SceneControls<Options extends ApplicationOptions = ApplicationOpti
    */
   initialize(options?: InitializeOptions): void;
 
-  /** @override */
-  getData(options?: Partial<Options>): {
+  override getData(options?: Partial<Options>): {
     active: boolean;
     cssClass: '' | 'disabled';
     controls: SceneControl[];
   };
 
-  /** @override */
-  activateListeners(html: JQuery): void;
+  override activateListeners(html: JQuery): void;
 
   /**
    * Handle click events on a Control set

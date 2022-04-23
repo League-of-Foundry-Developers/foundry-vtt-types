@@ -10,7 +10,6 @@ declare global {
     Options
   > {
     /**
-     * @override
      * @defaultValue
      * ```
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -19,10 +18,9 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): ApplicationOptions;
 
-    /** @override */
-    getData(options?: Partial<Options>): ReturnType<BasePlaceableHUD<ConcreteTile>['getData']> & {
+    override getData(options?: Partial<Options>): ReturnType<BasePlaceableHUD<ConcreteTile>['getData']> & {
       isVideo: boolean;
       lockedClass: string;
       visibilityClass: string;
@@ -32,11 +30,7 @@ declare global {
       videoTitle: string;
     };
 
-    /**
-     * @override
-     * @param options - (unused)
-     */
-    setPosition(options?: Partial<Application.Position>): void;
+    override setPosition(options?: Partial<Application.Position>): void;
   }
 }
 

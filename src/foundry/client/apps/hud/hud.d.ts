@@ -14,7 +14,6 @@ declare abstract class BasePlaceableHUD<
   object: Object | undefined;
 
   /**
-   * @override
    * @defaultValue
    * ```
    * foundry.utils.mergeObject(super.defaultOptions, {
@@ -23,7 +22,7 @@ declare abstract class BasePlaceableHUD<
    * })
    * ```
    */
-  static get defaultOptions(): ApplicationOptions;
+  static override get defaultOptions(): ApplicationOptions;
 
   /**
    * Convenience access for the canvas layer which this HUD modifies
@@ -41,11 +40,9 @@ declare abstract class BasePlaceableHUD<
    */
   clear(): void;
 
-  /** @override */
-  _render(...args: Parameters<Application<Options>['_render']>): Promise<void>;
+  override _render(...args: Parameters<Application<Options>['_render']>): Promise<void>;
 
-  /** @override */
-  getData(options?: Partial<Options>): ReturnType<Object['data']['toJSON']> & {
+  override getData(options?: Partial<Options>): ReturnType<Object['data']['toJSON']> & {
     id: string;
     classes: string;
     appId: number;
@@ -53,11 +50,9 @@ declare abstract class BasePlaceableHUD<
     icons: typeof CONFIG['controlIcons'];
   };
 
-  /** @override */
-  setPosition({ left, top, width, height, scale }?: Partial<Application.Position>): void;
+  override setPosition({ left, top, width, height, scale }?: Partial<Application.Position>): void;
 
-  /** @override */
-  activateListeners(html: JQuery): void;
+  override activateListeners(html: JQuery): void;
 
   /**
    * Handle mouse clicks to control a HUD control button

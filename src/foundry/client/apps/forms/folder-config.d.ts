@@ -13,7 +13,6 @@ declare global {
     Data extends object = FolderConfig.Data
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Folder>>> {
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -23,29 +22,24 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): DocumentSheetOptions;
 
-    /** @override */
-    get id(): string;
+    override get id(): string;
 
-    /** @override */
-    get title(): string;
+    override get title(): string;
 
-    /** @override */
-    close(options?: Application.CloseOptions | undefined): Promise<void>;
+    override close(options?: Application.CloseOptions | undefined): Promise<void>;
 
     /**
      * @param options - (unused)
-     * @override
      */
-    getData(options?: Partial<Options>): Promise<Data>;
+    override getData(options?: Partial<Options>): Promise<Data>;
 
     /**
      * @param event - (unused)
-     * @override
      * @internal
      */
-    protected _updateObject(event: Event, formData: FolderConfig.FormData): Promise<unknown>;
+    protected override _updateObject(event: Event, formData: FolderConfig.FormData): Promise<unknown>;
   }
 
   namespace FolderConfig {

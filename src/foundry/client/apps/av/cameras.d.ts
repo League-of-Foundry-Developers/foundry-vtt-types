@@ -11,7 +11,6 @@ declare global {
     Data extends object = CameraViews.Data
   > extends Application<Options> {
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * return foundry.utils.mergeObject(super.defaultOptions, {
@@ -21,7 +20,7 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): ApplicationOptions;
 
     /**
      * A reference to the master AV orchestrator instance
@@ -55,14 +54,12 @@ declare global {
      */
     render(force?: boolean, context?: Application.RenderOptions<Options>): this | void;
 
-    /** @override */
-    protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
+    protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
     /**
      * @param options - (unused)
-     * @override
      */
-    getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): Data | Promise<Data>;
 
     /** @defaultValue `undefined` */
     maxZ?: number;
@@ -79,8 +76,7 @@ declare global {
      */
     protected static _sortUsers(a: CameraViews.Data.User, b: CameraViews.Data.User): number;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * On hover in a camera container, show/hide the controls.

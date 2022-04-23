@@ -27,10 +27,9 @@ declare abstract class AbstractBaseMaskFilter extends PIXI.Filter {
   ): T;
 
   /**
-   * @override
    * @param currentState - (unused)
    */
-  apply(
+  override apply(
     filterManager: PIXI.systems.FilterSystem,
     input: PIXI.RenderTexture,
     output: PIXI.RenderTexture,
@@ -163,7 +162,6 @@ declare class RoofMaskFilter extends AbstractFilter {
  */
 declare class GlowFilter extends AbstractFilter {
   /**
-   * @override
    * @defaultValue
    * ```typescript
    * {
@@ -174,17 +172,14 @@ declare class GlowFilter extends AbstractFilter {
    * }
    * ```
    */
-  static defaultUniforms: AbstractBaseShader.Uniforms & { distance: number; quality: number };
+  static override defaultUniforms: AbstractBaseShader.Uniforms & { distance: number; quality: number };
 
   /**
-   * @override
    * @remarks This could change, see https://gitlab.com/foundrynet/foundryvtt/-/issues/6937
    */
-  static fragmentShader(quality: number, distance: number): string;
+  static override fragmentShader(quality: number, distance: number): string;
 
-  /** @override */
-  static vertexShader: string;
+  static override vertexShader: string;
 
-  /** @override */
-  static create(uniforms: AbstractBaseShader.Uniforms): GlowFilter;
+  static override create(uniforms: AbstractBaseShader.Uniforms): GlowFilter;
 }

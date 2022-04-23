@@ -66,7 +66,6 @@ declare global {
     _onChatKeyDownBinding: ((event: JQuery.KeyDownEvent) => void) | null;
 
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -77,24 +76,18 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): ChatLogOptions;
+    static override get defaultOptions(): ChatLogOptions;
 
     /**
      * A reference to the Messages collection that the chat log displays
      */
     get collection(): Messages;
 
-    /** @override */
-    getData(options?: Partial<ChatLogOptions>): ChatLog.Data;
+    override getData(options?: Partial<ChatLogOptions>): ChatLog.Data;
 
-    /** @override */
-    protected _render(force?: boolean, options?: Application.RenderOptions<ChatLogOptions>): Promise<void>;
+    protected override _render(force?: boolean, options?: Application.RenderOptions<ChatLogOptions>): Promise<void>;
 
-    /**
-     * @override
-     * @internal
-     */
-    protected _renderInner(data: ChatLog.Data): Promise<JQuery>;
+    protected override _renderInner(data: ChatLog.Data): Promise<JQuery>;
 
     /**
      * Render a batch of additional messages, prepending them to the top of the log
@@ -164,8 +157,7 @@ declare global {
      */
     updateTimestamps(): void;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * Handle dropping of transferred data onto the chat editor
@@ -254,8 +246,7 @@ declare global {
      */
     protected _recall(direction: number): string;
 
-    /** @override */
-    protected _contextMenu(html: JQuery): void;
+    protected override _contextMenu(html: JQuery): void;
 
     /**
      * Get the ChatLog entry context options

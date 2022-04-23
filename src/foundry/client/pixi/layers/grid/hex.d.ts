@@ -27,8 +27,7 @@ declare class HexagonalGrid extends BaseGrid {
    */
   get hexPoints(): PointArray[];
 
-  /** @override */
-  draw(preview?: BaseGrid.Preview | undefined): this;
+  override draw(preview?: BaseGrid.Preview | undefined): this;
 
   /**
    * A convenience method for getting all the polygon points relative to a top-left [x,y] coordinate pair
@@ -62,35 +61,28 @@ declare class HexagonalGrid extends BaseGrid {
    */
   getGridPositionFromPixels(x: number, y: number, method?: 'floor' | 'ceil' | 'round'): PointArray;
 
-  /** @override */
-  getPixelsFromGridPosition(row: number, col: number): PointArray;
+  override getPixelsFromGridPosition(row: number, col: number): PointArray;
 
-  /** @override */
-  getCenter(x: number, y: number): PointArray;
+  override getCenter(x: number, y: number): PointArray;
 
   /**
-   * @override
    * @param interval - (default: `1`)
    */
-  getSnappedPosition(x: number, y: number, interval?: number | null): { x: number; y: number };
+  override getSnappedPosition(x: number, y: number, interval?: number | null): { x: number; y: number };
 
   /** @internal */
   protected _getClosestVertex(xc: number, yc: number, ox: number, oy: number): { x: number; y: number };
 
-  /** @override */
-  shiftPosition(x: number, y: number, dx: number, dy: number): PointArray;
+  override shiftPosition(x: number, y: number, dx: number, dy: number): PointArray;
 
   /**
-   * @override
    * @param options - (default: `{}`)
    */
-  highlightGridPosition(layer: GridHighlight, options?: BaseGrid.HighlightGridPositionOptions): void;
+  override highlightGridPosition(layer: GridHighlight, options?: BaseGrid.HighlightGridPositionOptions): void;
 
-  /** @override */
-  getNeighbors(row: number, col: number): PointArray[];
+  override getNeighbors(row: number, col: number): PointArray[];
 
-  /** @override */
-  measureDistances(segments: GridLayer.Segment[], options?: MeasureDistancesOptions): number[];
+  override measureDistances(segments: GridLayer.Segment[], options?: MeasureDistancesOptions): number[];
 
   /**
    * Convert an offset coordinate (row, col) into a cube coordinate (q, r, s).

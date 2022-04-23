@@ -29,7 +29,6 @@ declare class Notifications<Options extends ApplicationOptions = ApplicationOpti
   active: JQuery[];
 
   /**
-   * @override
    * @defaultValue
    * ```typescript
    * mergeObject(super.defaultOptions, {
@@ -39,18 +38,16 @@ declare class Notifications<Options extends ApplicationOptions = ApplicationOpti
    * });
    * ```
    */
-  static get defaultOptions(): ApplicationOptions;
+  static override get defaultOptions(): ApplicationOptions;
 
   /**
    * Initialize the Notifications system by displaying any system-generated messages which were passed from the server.
    */
   initialize(): void;
 
-  /** @override */
-  protected _renderInner(data: object): Promise<JQuery>;
+  protected override _renderInner(data: object): Promise<JQuery>;
 
-  /** @override */
-  protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
+  protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
   /**
    * Push a new notification into the queue

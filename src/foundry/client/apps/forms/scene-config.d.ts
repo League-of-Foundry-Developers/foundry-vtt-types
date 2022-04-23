@@ -11,7 +11,6 @@ declare global {
     Data extends object = SceneConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Scene'>>> {
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -24,24 +23,18 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): DocumentSheetOptions;
 
-    /**
-     * @override
-     */
-    get title(): string;
+    override get title(): string;
 
-    /** @override */
-    close(options?: Application.CloseOptions | undefined): Promise<void>;
+    override close(options?: Application.CloseOptions | undefined): Promise<void>;
 
-    /** @override */
-    render(force?: boolean, options?: Application.RenderOptions<Options>): this;
+    override render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 
     /**
      * @param options - (unused)
-     * @override
      */
-    getData(options?: Partial<DocumentSheetOptions>): Data | Promise<Data>;
+    override getData(options?: Partial<DocumentSheetOptions>): Data | Promise<Data>;
 
     /**
      * Get an enumeration of the available grid types which can be applied to this Scene
@@ -61,8 +54,7 @@ declare global {
      */
     protected _getDocuments(collection: WorldCollection<DocumentConstructor, string>): { _id: string; name: string }[];
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * Capture the current Scene position and zoom level as the initial view in the Scene config
@@ -71,14 +63,11 @@ declare global {
      */
     protected _onCapturePosition(event: JQuery.ClickEvent): void;
 
-    /** @override */
-    protected _onChangeInput(event: JQuery.ChangeEvent): void;
+    protected override _onChangeInput(event: JQuery.ChangeEvent): void;
 
-    /** @override */
-    protected _onChangeColorPicker(event: JQuery.ChangeEvent): void;
+    protected override _onChangeColorPicker(event: JQuery.ChangeEvent): void;
 
-    /** @override */
-    protected _onChangeRange(event: JQuery.ChangeEvent): void;
+    protected override _onChangeRange(event: JQuery.ChangeEvent): void;
 
     /**
      * Live update the scene as certain properties are changed.
@@ -106,10 +95,7 @@ declare global {
      */
     protected _onGridConfig(event: JQuery.ClickEvent): void;
 
-    /**
-     * @override
-     */
-    protected _updateObject(event: Event, formData: SceneConfig.FormData): Promise<unknown>;
+    protected override _updateObject(event: Event, formData: SceneConfig.FormData): Promise<unknown>;
   }
 
   namespace SceneConfig {

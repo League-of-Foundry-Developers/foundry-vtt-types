@@ -196,19 +196,16 @@ export class LightData extends DocumentData<
   LightDataConstructorData,
   documents.BaseAmbientLight | documents.BaseToken
 > {
-  /** @override */
-  static defineSchema(): LightDataSchema;
+  static override defineSchema(): LightDataSchema;
 
   /**
    * A reusable field definition for uniform fields used by LightData
    */
   static LIGHT_UNIFORM_FIELD: LightData.LightUniformField;
 
-  /** @override */
-  _initializeSource(data: LightDataConstructorData): LightDataSource;
+  override _initializeSource(data: LightDataConstructorData): LightDataSource;
 
-  /** @override */
-  protected _initialize(): void;
+  protected override _initialize(): void;
 }
 
 declare namespace LightData {

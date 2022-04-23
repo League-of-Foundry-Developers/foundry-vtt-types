@@ -31,11 +31,9 @@ declare global {
      */
     static get defaultOptions(): ItemSheet.Options;
 
-    /** @override */
-    get id(): string;
+    override get id(): string;
 
-    /** @override */
-    get title(): string;
+    override get title(): string;
 
     /**
      * A convenience reference to the Item document
@@ -50,16 +48,14 @@ declare global {
 
     /**
      * @param options - (unused)
-     * @override
      *
      * @remarks The implementation in {@link ItemSheet} doesn't return a
      * `Promise` but the return type includes it to allow extending classes to
      * do that.
      */
-    getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): Data | Promise<Data>;
 
-    /** @override */
-    activateListeners(html: JQuery): void;
+    override activateListeners(html: JQuery): void;
 
     /**
      * Handle changing the item image

@@ -20,7 +20,6 @@ import { BaseScene } from '../../common/documents.mjs';
  * canvas.recenter(); // Re-center the canvas on the currently controlled Token.
  * ```
  */
-
 declare global {
   class Canvas {
     constructor();

@@ -8,7 +8,6 @@ declare class SupportDetails<
   Data extends object = SupportDetails.Data
 > extends Application<Options> {
   /**
-   * @override
    * @defaultValue
    * ```typescript
    * const options = super.defaultOptions;
@@ -20,7 +19,7 @@ declare class SupportDetails<
    * return options;
    * ```
    */
-  static get defaultOptions(): ApplicationOptions;
+  static override get defaultOptions(): ApplicationOptions;
 
   /**
    * Returns the support report data
@@ -28,10 +27,9 @@ declare class SupportDetails<
   getData(options?: Partial<Options> | undefined): Data | Promise<Data>;
 
   /**
-   * @override
    * Binds the Support Report copy button
    */
-  activateListeners(html: JQuery): void;
+  override activateListeners(html: JQuery): void;
 
   /**
    * Collects a number of metrics that is useful for Support

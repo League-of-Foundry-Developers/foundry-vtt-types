@@ -2,18 +2,17 @@
  * A directory listing of active game scenes
  */
 declare class SceneDirectory extends SidebarDirectory<'Scene'> {
-  /** @override */
-  static documentName: 'Scene';
+  static override documentName: 'Scene';
 
   /**
-   * @override
    * @defaultValue `"templates/sidebar/scene-partial.html"`
    */
-  static documentPartial: string;
+  static override documentPartial: string;
 
-  /** @override */
-  protected _render(force?: boolean, options?: Application.RenderOptions<SidebarDirectory.Options>): Promise<void>;
+  protected override _render(
+    force?: boolean,
+    options?: Application.RenderOptions<SidebarDirectory.Options>
+  ): Promise<void>;
 
-  /** @override */
-  protected _getEntryContextOptions(): ContextMenuEntry[];
+  protected override _getEntryContextOptions(): ContextMenuEntry[];
 }

@@ -143,14 +143,11 @@ export class AmbientLightData extends DocumentData<
   AmbientLightDataConstructorData,
   BaseAmbientLight
 > {
-  /** @override */
-  static defineSchema(): AmbientLightDataSchema;
+  static override defineSchema(): AmbientLightDataSchema;
 
-  /** @override */
-  _initializeSource(data: AmbientLightDataConstructorData): AmbientLightDataSource;
+  override _initializeSource(data: AmbientLightDataConstructorData): AmbientLightDataSource;
 
-  /** @override */
-  protected _initialize(): void;
+  protected override _initialize(): void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

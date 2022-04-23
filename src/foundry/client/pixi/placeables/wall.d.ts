@@ -55,8 +55,7 @@ declare global {
      */
     protected _wallKeys: Set<string> | null;
 
-    /** @override */
-    static embeddedName: 'Wall';
+    static override embeddedName: 'Wall';
 
     /**
      * A convenience reference to the coordinates Array for the Wall endpoints, [x0,y0,x1,y1].
@@ -83,8 +82,7 @@ declare global {
      */
     get wallKeys(): Set<string>;
 
-    /** @override */
-    get bounds(): NormalizedRectangle;
+    override get bounds(): NormalizedRectangle;
 
     /**
      * A boolean for whether this wall contains a door
@@ -106,8 +104,7 @@ declare global {
      */
     get midpoint(): PointArray;
 
-    /** @override */
-    get center(): PIXI.Point;
+    override get center(): PIXI.Point;
 
     /**
      * Get the direction of effect for a directional Wall
@@ -121,8 +118,7 @@ declare global {
      */
     toRay(): Ray;
 
-    /** @override */
-    draw(): Promise<this>;
+    override draw(): Promise<this>;
 
     /**
      * Draw a control icon that is used to manipulate the door's open/closed state
@@ -137,11 +133,9 @@ declare global {
      */
     orientPoint(point: Point): number;
 
-    /** @override */
-    protected _createInteractionManager(): NonNullable<this['mouseInteractionManager']>;
+    protected override _createInteractionManager(): NonNullable<this['mouseInteractionManager']>;
 
-    /** @override */
-    activateListeners(): void;
+    override activateListeners(): void;
 
     /**
      * Draw a directional prompt icon for one-way walls to illustrate their direction of effect.
@@ -150,8 +144,7 @@ declare global {
      */
     protected _drawDirection(): PIXI.Sprite | null;
 
-    /** @override */
-    refresh(): this;
+    override refresh(): this;
 
     /**
      * Compute an approximate Polygon which encloses the line segment providing a specific hitArea for the line
@@ -169,16 +162,13 @@ declare global {
     protected _getWallColor(): number;
 
     /**
-     * @override
      * @param chain - (default: `false`)
      */
-    protected _onControl({ chain }?: PlaceableObject.ControlOptions & { chain?: boolean }): void;
+    protected override _onControl({ chain }?: PlaceableObject.ControlOptions & { chain?: boolean }): void;
 
-    /** @override */
-    protected _onRelease(options?: PlaceableObject.ReleaseOptions): void;
+    protected override _onRelease(options?: PlaceableObject.ReleaseOptions): void;
 
-    /** @override */
-    destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
+    override destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
 
     /**
      * Test whether the Wall direction lies between two provided angles
@@ -227,22 +217,19 @@ declare global {
      */
     protected _removeIntersections(): void;
 
-    /** @override */
-    protected _onCreate(
+    protected override _onCreate(
       data: foundry.data.WallData['_source'],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
-    /** @override */
-    protected _onUpdate(
+    protected override _onUpdate(
       changed: DeepPartial<foundry.data.WallData['_source']>,
       options?: DocumentModificationOptions,
       userId?: string
     ): void;
 
-    /** @override */
-    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
     /**
      * Callback actions when a wall that contains a door is moved or its state is changed
@@ -252,14 +239,11 @@ declare global {
      */
     protected _onModifyWall(doorChange?: boolean): Promise<void>;
 
-    /** @override */
-    protected _canControl(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected override _canControl(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
-    /** @override */
-    protected _onHoverIn(event: PIXI.InteractionEvent, options?: HoverInOptions): false | void;
+    protected override _onHoverIn(event: PIXI.InteractionEvent, options?: HoverInOptions): false | void;
 
-    /** @override */
-    protected _onHoverOut(event: PIXI.InteractionEvent): false | void;
+    protected override _onHoverOut(event: PIXI.InteractionEvent): false | void;
 
     /**
      * Handle mouse-hover events on the line segment itself, pulling the Wall to the front of the container stack
@@ -267,23 +251,17 @@ declare global {
      */
     protected _onMouseOverLine(event: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onClickLeft(event: PIXI.InteractionEvent): boolean;
+    protected override _onClickLeft(event: PIXI.InteractionEvent): boolean;
 
-    /** @override */
-    protected _onClickLeft2(event: PIXI.InteractionEvent): void;
+    protected override _onClickLeft2(event: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onClickRight2(event: PIXI.InteractionEvent): void;
+    protected override _onClickRight2(event: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftStart(event: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<any>;
+    protected override _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<any>;
   }
 }
 

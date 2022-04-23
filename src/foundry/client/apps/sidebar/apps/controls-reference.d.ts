@@ -20,8 +20,7 @@ declare class ControlsReference<
    */
   static get defaultOptions(): ApplicationOptions;
 
-  /** @override */
-  getData(options?: Partial<Options>): Data | Promise<Data>;
+  override getData(options?: Partial<Options>): Data | Promise<Data>;
 }
 
 declare namespace ControlsReference {

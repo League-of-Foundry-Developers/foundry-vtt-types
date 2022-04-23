@@ -184,14 +184,11 @@ export class AmbientSoundData extends DocumentData<
   AmbientSoundDataConstructorData,
   documents.BaseAmbientSound
 > {
-  /** @override */
-  static defineSchema(): AmbientSoundDataSchema;
+  static override defineSchema(): AmbientSoundDataSchema;
 
-  /** @override */
-  _initializeSource(data: AmbientSoundDataConstructorData): AmbientSoundDataSource;
+  override _initializeSource(data: AmbientSoundDataConstructorData): AmbientSoundDataSource;
 
-  /** @override */
-  protected _initialize(): void;
+  protected override _initialize(): void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

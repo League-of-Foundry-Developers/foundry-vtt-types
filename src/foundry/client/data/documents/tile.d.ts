@@ -7,9 +7,7 @@
  * @see {@link applications.TileConfig}       The Tile configuration application
  */
 declare class TileDocument extends CanvasDocumentMixin(foundry.documents.BaseTile) {
-  /** @override */
-  prepareDerivedData(): void;
+  override prepareDerivedData(): void;
 
-  /** @override */
-  get layer(): ForegroundLayer | BackgroundLayer;
+  override get layer(): ForegroundLayer | BackgroundLayer;
 }

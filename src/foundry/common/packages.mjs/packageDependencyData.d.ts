@@ -54,14 +54,15 @@ export class PackageDependencyData extends DocumentData<
   PackageDependencyDataSource,
   PackageDependencyDataConstructorData
 > {
-  /** @override */
-  static defineSchema(): PackageDependencyDataSchema;
+  static override defineSchema(): PackageDependencyDataSchema;
 
-  /** @override */
-  protected _getMissingFieldErrorMessage(name: string, field: DocumentField<unknown>): string;
+  protected override _getMissingFieldErrorMessage(name: string, field: DocumentField<unknown>): string;
 
-  /** @override */
-  protected _getInvalidFieldValueErrorMessage(name: string, field: DocumentField<unknown>, value: unknown): string;
+  protected override _getInvalidFieldValueErrorMessage(
+    name: string,
+    field: DocumentField<unknown>,
+    value: unknown
+  ): string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

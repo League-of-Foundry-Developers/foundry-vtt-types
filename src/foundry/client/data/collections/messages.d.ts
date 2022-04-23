@@ -9,16 +9,14 @@ declare global {
    * @see {@link ChatLog} The ChatLog sidebar directory
    */
   class Messages extends WorldCollection<typeof foundry.documents.BaseChatMessage, 'Messages'> {
-    /** @override */
-    static documentName: 'ChatMessage';
+    static override documentName: 'ChatMessage';
 
     /**
-     * @override
      * */
-    get directory(): typeof ui.chat;
 
-    /** @override */
-    render(force?: boolean): void;
+    override get directory(): typeof ui.chat;
+
+    override render(force?: boolean): void;
 
     /**
      * If requested, dispatch a Chat Bubble UI for the newly created message

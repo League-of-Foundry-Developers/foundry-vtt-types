@@ -36,7 +36,6 @@ declare global {
     protected _textPos: Application.Position | null;
 
     /**
-     * @override
      * @defaultValue
      * ```ts
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -50,13 +49,11 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): JournalSheetOptions;
+    static override get defaultOptions(): JournalSheetOptions;
 
-    /** @override */
-    get template(): string;
+    override get template(): string;
 
-    /** @override */
-    get title(): string;
+    override get title(): string;
 
     /**
      * Guess the default view mode for the sheet based on the player's permissions to the Entry
@@ -64,20 +61,13 @@ declare global {
      */
     protected _inferDefaultMode(): JournalSheet.SheetMode | null;
 
-    /**@override */
-    protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
+    protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
-    /**
-     * @override
-     * @internal
-     */
-    protected _getHeaderButtons(): Application.HeaderButton[];
+    protected override _getHeaderButtons(): Application.HeaderButton[];
 
-    /** @override */
-    getData(options?: Partial<Options>): Promise<Data> | Data;
+    override getData(options?: Partial<Options>): Promise<Data> | Data;
 
-    /** @override */
-    protected _updateObject(event: Event, formData: JournalSheet.FormData): Promise<unknown>;
+    protected override _updateObject(event: Event, formData: JournalSheet.FormData): Promise<unknown>;
 
     /**
      * Handle requests to switch the rendered mode of the Journal Entry sheet

@@ -67,8 +67,7 @@ declare global {
      */
     get hasPreviousFace(): boolean;
 
-    /** @override */
-    prepareDerivedData(): void;
+    override prepareDerivedData(): void;
 
     /**
      * Flip this card to some other face. A specific face may be requested, otherwise:

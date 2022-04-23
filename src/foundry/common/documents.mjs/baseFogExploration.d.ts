@@ -24,14 +24,11 @@ type FogExplorationMetadata = Merge<
  * The base FogExploration model definition which defines common behavior of an FogExploration document between both client and server.
  */
 export declare class BaseFogExploration extends Document<data.FogExplorationData, null, FogExplorationMetadata> {
-  /** @override */
-  static get schema(): typeof data.FogExplorationData;
+  static override get schema(): typeof data.FogExplorationData;
 
-  /** @override */
-  static get metadata(): FogExplorationMetadata;
+  static override get metadata(): FogExplorationMetadata;
 
-  /** @override */
-  protected _preUpdate(
+  protected override _preUpdate(
     changed: DeepPartial<FogExplorationDataConstructorData>,
     options: DocumentModificationOptions,
     user: BaseUser

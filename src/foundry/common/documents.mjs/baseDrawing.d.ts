@@ -37,14 +37,11 @@ export declare class BaseDrawing extends Document<
   InstanceType<ConfiguredDocumentClass<typeof BaseScene>>,
   DrawingMetadata
 > {
-  /** @override */
-  static get schema(): typeof data.DrawingData;
+  static override get schema(): typeof data.DrawingData;
 
-  /** @override */
-  static get metadata(): DrawingMetadata;
+  static override get metadata(): DrawingMetadata;
 
-  /** @override */
-  testUserPermission(
+  override testUserPermission(
     user: BaseUser,
     permission: keyof typeof foundry.CONST.ENTITY_PERMISSIONS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,
     { exact }?: { exact?: boolean }

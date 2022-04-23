@@ -31,11 +31,9 @@ export declare class BaseTableResult extends Document<
   InstanceType<ConfiguredDocumentClass<typeof BaseRollTable>>,
   TableResultMetadata
 > {
-  /** @override */
-  static get schema(): typeof foundry.data.TableResultData;
+  static override get schema(): typeof foundry.data.TableResultData;
 
-  /** @override */
-  static get metadata(): TableResultMetadata;
+  static override get metadata(): TableResultMetadata;
 
   /**
    * Is a user able to update an existing TableResult?
@@ -46,8 +44,7 @@ export declare class BaseTableResult extends Document<
     data: DeepPartial<TableResultDataConstructorData>
   ): boolean;
 
-  /** @override */
-  testUserPermission(
+  override testUserPermission(
     user: BaseUser,
     permission: keyof typeof foundry.CONST.DOCUMENT_PERMISSION_LEVELS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,
     { exact }?: { exact?: boolean }

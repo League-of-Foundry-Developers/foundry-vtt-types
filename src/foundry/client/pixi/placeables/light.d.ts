@@ -19,11 +19,9 @@ declare global {
      */
     controlIcon: ControlIcon | undefined;
 
-    /** @override */
-    static embeddedName: 'AmbientLight';
+    static override embeddedName: 'AmbientLight';
 
-    /** @override */
-    get bounds(): NormalizedRectangle;
+    override get bounds(): NormalizedRectangle;
 
     /**
      * A convenience accessor to the LightData configuration object
@@ -55,11 +53,9 @@ declare global {
      */
     get isVisible(): boolean;
 
-    /** @override */
-    draw(): Promise<this>;
+    override draw(): Promise<this>;
 
-    /** @override */
-    destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
+    override destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
 
     /**
      * Draw the ControlIcon for the AmbientLight
@@ -67,8 +63,7 @@ declare global {
      */
     protected _drawControlIcon(): ControlIcon;
 
-    /** @override */
-    refresh(): this;
+    override refresh(): this;
 
     /**
      * Refresh the display of the ControlIcon for this AmbientLight source
@@ -86,40 +81,31 @@ declare global {
      */
     updateSource(options?: AmbientLight.UpdateSourceOptions | undefined): void;
 
-    /** @override */
-    protected _onCreate(
+    protected override _onCreate(
       data: foundry.data.AmbientLightData['_source'],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
-    /** @override */
-    protected _onUpdate(
+    protected override _onUpdate(
       changed: DeepPartial<foundry.data.AmbientLightData['_source']>,
       options?: DocumentModificationOptions,
       userId?: string
     ): void;
 
-    /** @override */
-    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
-    /** @override */
-    protected _canHUD(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
+    protected override _canHUD(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
 
-    /** @override */
-    protected _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
+    protected override _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
 
-    /** @override */
-    protected _onClickRight(event: PIXI.InteractionEvent): Promise<this>;
+    protected override _onClickRight(event: PIXI.InteractionEvent): Promise<this>;
 
-    /** @override */
-    protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftStart(event: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
-    /** @override */
-    protected _onDragLeftCancel(event: MouseEvent): void;
+    protected override _onDragLeftCancel(event: MouseEvent): void;
   }
 
   namespace AmbientLight {

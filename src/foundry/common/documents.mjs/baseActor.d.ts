@@ -36,11 +36,9 @@ export declare class BaseActor extends Document<
   InstanceType<ConfiguredDocumentClass<typeof BaseToken>>,
   ActorMetadata
 > {
-  /** @override */
-  static get schema(): typeof data.ActorData;
+  static override get schema(): typeof data.ActorData;
 
-  /** @override */
-  static get metadata(): ActorMetadata;
+  static override get metadata(): ActorMetadata;
   /*
    * A reference to the Collection of embedded ActiveEffect instances in the Actor document, indexed by _id.
    */
@@ -56,15 +54,13 @@ export declare class BaseActor extends Document<
    */
   get type(): data.ActorData['type'];
 
-  /** @override */
-  protected _preCreate(
+  protected override _preCreate(
     data: ActorDataConstructorData,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
 
-  /** @override */
-  protected _preUpdate(
+  protected override _preUpdate(
     changed: DeepPartial<ActorDataConstructorData>,
     options: DocumentModificationOptions,
     user: BaseUser

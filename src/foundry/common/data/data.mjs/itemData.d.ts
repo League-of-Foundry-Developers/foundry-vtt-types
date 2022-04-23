@@ -158,7 +158,6 @@ type DocumentDataConstructor = Pick<typeof DocumentData, keyof typeof DocumentDa
 interface ItemDataConstructor extends DocumentDataConstructor {
   new (data: ItemDataConstructorData, document?: documents.BaseItem | null): ItemData;
 
-  /** @override */
   defineSchema(): ItemDataSchema;
 
   /**
@@ -180,7 +179,6 @@ export type ItemData = DocumentData<
   documents.BaseItem
 > &
   ItemDataProperties & {
-    /** @override */
     _initializeSource(data: ItemDataConstructorData): ItemDataSource;
   };
 export const ItemData: ItemDataConstructor;

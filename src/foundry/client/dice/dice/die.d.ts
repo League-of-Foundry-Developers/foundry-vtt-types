@@ -11,13 +11,11 @@ declare class Die extends DiceTerm {
   constructor(termData?: Partial<Die.TermData>);
 
   /**
-   * @override
    * @defaultValue `"d"`
    */
-  static DENOMINATION: string;
+  static override DENOMINATION: string;
 
   /**
-   * @override
    * @defaultValue
    * ```typescript
    * {
@@ -43,12 +41,9 @@ declare class Die extends DiceTerm {
    * }
    * ```
    */
-  static MODIFIERS: Die.Modifiers;
+  static override MODIFIERS: Die.Modifiers;
 
-  /**
-   * @override
-   */
-  get total(): number | null;
+  override get total(): number | null;
 
   /**
    * Re-roll the Die, rolling additional results for any values which fall within a target set.

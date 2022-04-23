@@ -12,7 +12,6 @@ declare global {
     Data extends object = AmbientSoundConfig.Data<Options>
   > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'AmbientSound'>>> {
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -24,20 +23,16 @@ declare global {
      */
     static get defaultOptions(): DocumentSheetOptions;
 
-    /** @override */
-    get title(): string;
+    override get title(): string;
 
-    /** @override */
-    getData(options?: Partial<Options>): Promise<Data> | Data;
+    override getData(options?: Partial<Options>): Promise<Data> | Data;
 
     /**
      * @param event - (unused)
-     * @override
      */
-    protected _updateObject(event: Event, formData: AmbientSoundConfig.FormData): Promise<unknown>;
+    protected override _updateObject(event: Event, formData: AmbientSoundConfig.FormData): Promise<unknown>;
 
-    /** @override */
-    close(options?: Application.CloseOptions): Promise<void>;
+    override close(options?: Application.CloseOptions): Promise<void>;
   }
 
   namespace AmbientSoundConfig {

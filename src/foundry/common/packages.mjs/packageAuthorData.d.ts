@@ -51,8 +51,7 @@ export class PackageAuthorData extends DocumentData<
 > {
   constructor(data?: PackageAuthorDataConstructorData, document?: null);
 
-  /** @override */
-  static defineSchema(): PackageAuthorDataSchema;
+  static override defineSchema(): PackageAuthorDataSchema;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

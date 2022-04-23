@@ -51,7 +51,6 @@ declare global {
     protected _related: foundry.abstract.Document<any, any> | null;
 
     /**
-     * @override
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -64,13 +63,11 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): ImagePopoutOptions;
+    static override get defaultOptions(): ImagePopoutOptions;
 
-    /** @override */
-    get title(): string;
+    override get title(): string;
 
-    /** @override */
-    getData(options?: Partial<Options> | undefined): Promise<Data>;
+    override getData(options?: Partial<Options> | undefined): Promise<Data>;
 
     /**
      * Test whether the title of the image popout should be visible to the user
@@ -82,11 +79,12 @@ declare global {
      */
     getRelatedObject(): Promise<foundry.abstract.Document<any, any> | null>;
 
-    /** @override */
-    protected _render(force?: boolean, options?: Application.RenderOptions<Options> | undefined): Promise<void>;
+    protected override _render(
+      force?: boolean,
+      options?: Application.RenderOptions<Options> | undefined
+    ): Promise<void>;
 
-    /** @override */
-    protected _getHeaderButtons(): Application.HeaderButton[];
+    protected override _getHeaderButtons(): Application.HeaderButton[];
 
     /**
      * Determine the correct position and dimensions for the displayed image
@@ -120,10 +118,9 @@ declare global {
     }): ImagePopout;
 
     /**
-     * @override
      * @remarks Not implemented for ImagePopout
      */
-    protected _updateObject(event: Event, formData?: object): never;
+    protected override _updateObject(event: Event, formData?: object): never;
   }
 
   namespace ImagePopout {

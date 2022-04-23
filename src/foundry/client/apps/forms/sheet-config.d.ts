@@ -32,14 +32,11 @@ declare global {
      */
     protected static _pending: Array<DocumentSheetConfig.SheetAssignment>;
 
-    /** @override */
-    get title(): string;
+    override get title(): string;
 
-    /** @override */
-    getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): Data | Promise<Data>;
 
-    /** @override */
-    protected _updateObject(event: Event, formData: DocumentSheetConfig.FormData): Promise<unknown>;
+    protected override _updateObject(event: Event, formData: DocumentSheetConfig.FormData): Promise<unknown>;
 
     /**
      * Initialize the configured Sheet preferences for Documents which support dynamic Sheet assignment
