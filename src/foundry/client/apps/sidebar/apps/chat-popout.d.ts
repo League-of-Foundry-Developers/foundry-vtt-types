@@ -29,10 +29,6 @@ declare global {
 
     override get title(): string;
 
-    /**
-     * @param data    - (unused)
-     * @param options - (unused)
-     */
     protected override _renderInner(data: object, options?: unknown): Promise<JQuery>;
   }
 }

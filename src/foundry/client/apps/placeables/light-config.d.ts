@@ -30,9 +30,6 @@ declare global {
      */
     static override get defaultOptions(): DocumentSheetOptions;
 
-    /**
-     * @param options - (unused)
-     */
     override getData(options?: Partial<Options>): Data | Promise<Data>;
 
     override close(options?: Application.CloseOptions): Promise<void>;
@@ -48,9 +45,6 @@ declare global {
 
     protected override _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: string): void;
 
-    /**
-     * @param event - (unused)
-     */
     protected override _updateObject(event: Event, formData: AmbientLightConfig.FormData): Promise<unknown>;
 
     /**

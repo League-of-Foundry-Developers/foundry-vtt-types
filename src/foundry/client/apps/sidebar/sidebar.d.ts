@@ -40,9 +40,6 @@ declare class Sidebar<Options extends ApplicationOptions = ApplicationOptions> e
    */
   get popouts(): Partial<Record<string, SidebarTab>>;
 
-  /**
-   * @param options - (unused)
-   */
   override getData(options?: Partial<Options>): Sidebar.Data;
 
   /**

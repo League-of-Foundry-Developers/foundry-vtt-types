@@ -138,9 +138,6 @@ declare global {
 
     override releaseAll(options?: PlaceableObject.ReleaseOptions): number;
 
-    /**
-     * @param options - (unused)
-     */
     override pasteObjects(
       position: Point,
       options?: PasteOptions

@@ -182,7 +182,6 @@ declare global {
      * @param match         - The matched RegExp expressions
      * @param chatData      - The initial chat data
      * @param createOptions - Options used to create the message
-     *                        (unused)
      * @internal
      */
     protected _processDiceCommand(

@@ -27,9 +27,6 @@ declare global {
 
     override get title(): string;
 
-    /**
-     * @param event - (unused)
-     */
     protected override _updateObject(event: Event, formData: CombatantConfig.FormData): Promise<unknown>;
   }
 

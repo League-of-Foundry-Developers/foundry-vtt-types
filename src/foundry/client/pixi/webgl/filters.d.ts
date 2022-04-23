@@ -26,9 +26,6 @@ declare abstract class AbstractBaseMaskFilter extends PIXI.Filter {
     channel?: 'r' | 'g' | 'b'
   ): T;
 
-  /**
-   * @param currentState - (unused)
-   */
   override apply(
     filterManager: PIXI.systems.FilterSystem,
     input: PIXI.RenderTexture,

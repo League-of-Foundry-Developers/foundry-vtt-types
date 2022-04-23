@@ -309,14 +309,12 @@ declare global {
 
     /**
      * Handle left mouse-click events which originate from the Canvas stage and are dispatched to this Layer.
-     * @param event - (unused)
      * @see {@link Canvas#_onClickLeft}
      */
     protected _onClickLeft(event: PIXI.InteractionEvent): void;
 
     /**
      * Handle double left-click events which originate from the Canvas stage and are dispatched to this Layer.
-     * @param event - (unused)
      * @see {@link Canvas#_onClickLeft2}
      */
     protected _onClickLeft2(event: PIXI.InteractionEvent): void;
@@ -341,14 +339,12 @@ declare global {
 
     /**
      * Cancel a left-click drag workflow originating from the Canvas stage.
-     * @param event - (unused)
      * @see {@link Canvas#_onDragLeftDrop}
      */
     protected _onDragLeftCancel(event: PointerEvent): void;
 
     /**
      * Handle right mouse-click events which originate from the Canvas stage and are dispatched to this Layer.
-     * @param event - (unused)
      * @see {@link Canvas#_onClickRight}
      */
     protected _onClickRight(event: PIXI.InteractionEvent): void;
@@ -363,7 +359,6 @@ declare global {
     /**
      * Handle a DELETE keypress while a placeable object is hovered
      * @param event - The delete key press event which triggered the request
-     *                (unused)
      */
     protected _onDeleteKey(event?: any): void;
   }

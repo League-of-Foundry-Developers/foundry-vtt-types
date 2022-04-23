@@ -28,9 +28,6 @@ declare global {
      */
     static override get defaultOptions(): typeof FormApplication['defaultOptions'];
 
-    /**
-     * @param options - (unused)
-     */
     override getData(options?: Partial<Options>): Data | Promise<Data>;
 
     override activateListeners(html: JQuery): void;

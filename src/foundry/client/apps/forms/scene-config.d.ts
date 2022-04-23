@@ -31,9 +31,6 @@ declare global {
 
     override render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 
-    /**
-     * @param options - (unused)
-     */
     override getData(options?: Partial<DocumentSheetOptions>): Data | Promise<Data>;
 
     /**

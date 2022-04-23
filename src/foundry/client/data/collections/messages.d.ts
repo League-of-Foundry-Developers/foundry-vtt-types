@@ -11,9 +11,6 @@ declare global {
   class Messages extends WorldCollection<typeof foundry.documents.BaseChatMessage, 'Messages'> {
     static override documentName: 'ChatMessage';
 
-    /**
-     * */
-
     override get directory(): typeof ui.chat;
 
     override render(force?: boolean): void;

@@ -18,9 +18,6 @@ declare class PermissionConfig extends FormApplication<FormApplicationOptions, P
    */
   static override get defaultOptions(): typeof FormApplication['defaultOptions'];
 
-  /**
-   * @param options - (unused)
-   */
   override getData(options?: Partial<FormApplicationOptions>): PermissionConfig.Data;
 
   /**
@@ -41,9 +38,6 @@ declare class PermissionConfig extends FormApplication<FormApplicationOptions, P
     options?: FormApplication.OnSubmitOptions
   ): ReturnType<FormApplication['_onSubmit']>;
 
-  /**
-   * @param event - (unused)
-   */
   protected override _updateObject(event: Event, formData: PermissionConfig.FormData): Promise<unknown>;
 }
 

@@ -33,9 +33,6 @@ declare global {
 
     protected override _onChangeInput(event: JQuery.ChangeEvent): void;
 
-    /**
-     * @param event - (unused)
-     */
     protected override _updateObject(event: Event, formData: TileConfig.FormData): Promise<unknown>;
   }
 

@@ -473,9 +473,6 @@ declare global {
      */
     protected _onWindowBlur(event: FocusEvent): void;
 
-    /**
-     * @param event - (unused)
-     */
     protected _onWindowPopState(event: PopStateEvent): void;
 
     /**

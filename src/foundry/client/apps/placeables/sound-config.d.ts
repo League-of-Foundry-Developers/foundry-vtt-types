@@ -27,9 +27,6 @@ declare global {
 
     override getData(options?: Partial<Options>): Promise<Data> | Data;
 
-    /**
-     * @param event - (unused)
-     */
     protected override _updateObject(event: Event, formData: AmbientSoundConfig.FormData): Promise<unknown>;
 
     override close(options?: Application.CloseOptions): Promise<void>;

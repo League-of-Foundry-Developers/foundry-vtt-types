@@ -346,7 +346,6 @@ declare global {
     /**
      * A torch animation where the luminosity and coloration decays each frame and is revitalized by flashes
      * @param dt        - Delta time
-     *                    (unused)
      * @param speed     - The animation speed, from 1 to 10
      *                    (default: `5`)
      * @param intensity - The animation intensity, from 1 to 10
@@ -357,7 +356,6 @@ declare global {
     /**
      * A basic "pulse" animation which expands and contracts.
      * @param dt        - Delta time
-     *                    (unused)
      * @param speed     - The animation speed, from 1 to 10
      *                    (default: `5`)
      * @param intensity - The animation intensity, from 1 to 10
@@ -373,7 +371,6 @@ declare global {
     /**
      * Emanate waves of light from the source origin point
      * @param dt        - Delta time
-     *                    (unused)
      * @param speed     - The animation speed, from 1 to 10
      *                    (default: `5`)
      * @param intensity - The animation intensity, from 1 to 10

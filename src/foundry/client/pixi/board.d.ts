@@ -432,7 +432,6 @@ declare global {
     /**
      * Handle the conclusion of a right-mouse drag workflow the Canvas stage.
      * @see {@link MouseInteractionManager#_handleDragDrop}
-     * @param event - (unused)
      */
     protected _onDragRightDrop(event: PIXI.InteractionEvent): void;
 
@@ -485,7 +484,6 @@ declare global {
     /**
      * Get a reference to the a specific CanvasLayer by it's name
      * @param layerName - The name of the canvas layer to get
-     *                    (unused)
      * @deprecated since v9, will be deleted in v10
      */
     getLayer(layerName: any): {

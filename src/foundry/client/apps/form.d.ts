@@ -190,9 +190,7 @@ declare global {
     /**
      * This method is called upon form submission after form data is validated
      * @param event    - The initial triggering submission event
-     *                   (unused)
      * @param formData - The object of validated form data with which to update the object
-     *                   (unused)
      * @returns A Promise which resolves once the update operation has completed
      */
     protected abstract _updateObject(event: Event, formData?: object): Promise<unknown>;
@@ -361,9 +359,6 @@ declare global {
      */
     protected _onConfigureSheet(event: JQuery.ClickEvent): void;
 
-    /**
-     * @param event - (unused)
-     */
     protected override _updateObject(event: Event, formData: object): Promise<unknown>;
   }
 

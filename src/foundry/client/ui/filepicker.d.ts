@@ -191,9 +191,6 @@ declare class FilePicker<
    */
   static get uploadURL(): string;
 
-  /**
-   * @param options - (unused)
-   */
   override getData(options?: Partial<Options> | undefined): Data | Promise<Data>;
 
   /**
@@ -291,21 +288,10 @@ declare class FilePicker<
    */
   protected _onChangeDisplayMode(event: JQuery.ClickEvent): void;
 
-  /**
-   * @param event - (unused)
-   * @param event - (unused)
-   * @internal
-   */
   protected override _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: this['activeSource']): void;
 
-  /**
-   * @param selector - (unused)
-   */
   protected override _canDragStart(selector: string | null): boolean;
 
-  /**
-   * @param selector - (unused)
-   */
   protected override _canDragDrop(selector: string | null): boolean;
 
   protected override _onDragStart(event: DragEvent): void;
