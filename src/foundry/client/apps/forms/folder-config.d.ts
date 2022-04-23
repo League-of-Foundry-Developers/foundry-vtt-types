@@ -30,15 +30,8 @@ declare global {
 
     override close(options?: Application.CloseOptions | undefined): Promise<void>;
 
-    /**
-     * @param options - (unused)
-     */
     override getData(options?: Partial<Options>): Promise<Data>;
 
-    /**
-     * @param event - (unused)
-     * @internal
-     */
     protected override _updateObject(event: Event, formData: FolderConfig.FormData): Promise<unknown>;
   }
 

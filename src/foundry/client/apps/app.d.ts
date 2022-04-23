@@ -379,11 +379,8 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
   /**
    * Handle changes to the active tab in a configured Tabs controller
    * @param event  - A left click event
-   *                 (unused)
    * @param tabs   - The Tabs controller
-   *                 (unused)
    * @param active - The new active tab name
-   *                 (unused)
    * @internal
    */
   protected _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: string): void;
@@ -391,13 +388,9 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
   /**
    * Handle changes to search filtering controllers which are bound to the Application
    * @param event - The key-up event from keyboard input
-   *                (unused)
    * @param query - The regular expression to test against
-   *                (unused)
    * @param rgx   - The regular expression to test against
-   *                (unused)
    * @param html  - The HTML element which should be filtered
-   *                (unused)
    * @internal
    */
   protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
@@ -405,7 +398,6 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
   /**
    * Define whether a user is able to begin a dragstart workflow for a given drag selector
    * @param selector - The candidate HTML selector for dragging
-   *                   (unused)
    * @returns Can the current user drag this selector?
    * @internal
    */
@@ -414,7 +406,6 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
   /**
    * Define whether a user is able to conclude a drag-and-drop workflow for a given drop selector
    * @param selector - The candidate HTML selector for the drop target
-   *                   (unused)
    * @returns Can the current user drop on this selector?
    * @internal
    */
@@ -423,7 +414,6 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
   /**
    * Callback actions which occur at the beginning of a drag start workflow.
    * @param event - The originating DragEvent
-   *                (unused)
    * @internal
    */
   protected _onDragStart(event: DragEvent): void;
@@ -431,7 +421,6 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
   /**
    * Callback actions which occur when a dragged element is over a drop target.
    * @param event - originating DragEvent
-   *                (unused)
    * @internal
    */
   protected _onDragOver(event: DragEvent): void;
@@ -439,7 +428,6 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
   /**
    * Callback actions which occur when a dragged element is dropped on a target.
    * @param event - The originating DragEvent
-   *                (unused)
    * @internal
    */
   protected _onDrop(event: DragEvent): void;
@@ -495,7 +483,6 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
 
   /**
    * Additional actions to take when the application window is resized
-   * @param event - (unused)
    */
   protected _onResize(event: Event): void;
 }

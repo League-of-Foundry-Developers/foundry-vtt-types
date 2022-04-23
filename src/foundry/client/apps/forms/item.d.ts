@@ -46,13 +46,6 @@ declare global {
      */
     get actor(): this['item']['actor'];
 
-    /**
-     * @param options - (unused)
-     *
-     * @remarks The implementation in {@link ItemSheet} doesn't return a
-     * `Promise` but the return type includes it to allow extending classes to
-     * do that.
-     */
     override getData(options?: Partial<Options>): Data | Promise<Data>;
 
     override activateListeners(html: JQuery): void;

@@ -55,12 +55,10 @@ declare global {
      */
     protected _onLazyLoadImage(entries: IntersectionObserverEntry[], observer: IntersectionObserver): void;
 
-    /** @param selector - (unused) */
     protected override _canDragStart(selector: string): boolean;
 
     protected override _onDragStart(event: DragEvent): void;
 
-    /** @param selector - (unused) */
     protected override _canDragDrop(selector: string): boolean;
 
     protected override _onDrop(event: DragEvent): void;

@@ -111,9 +111,6 @@ declare global {
       options?: Partial<Options>
     ): SidebarDirectory.Data<this['tree']> | Promise<SidebarDirectory.Data<this['tree']>>;
 
-    /**
-     * @param event - (unused)
-     */
     protected override _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
     /**

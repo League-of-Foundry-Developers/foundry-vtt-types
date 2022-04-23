@@ -30,9 +30,6 @@ declare global {
 
     override get title(): string;
 
-    /**
-     * @param options - (unused)
-     */
     override getData(options?: Partial<Options>): Data | Promise<Data>;
 
     override activateListeners(html: JQuery): void;

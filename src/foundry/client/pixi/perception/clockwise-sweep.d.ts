@@ -189,7 +189,6 @@ declare global {
     /**
      * Test whether a target vertex is behind some closer active edge
      * @param ray         - The ray being evaluated
-     *                      (unused)
      * @param vertex      - The target vertex
      * @param activeEdges - The set of active edges
      * @returns Is the target vertex behind some closer edge?

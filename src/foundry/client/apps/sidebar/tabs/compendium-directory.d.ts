@@ -22,9 +22,6 @@ declare global {
      */
     static override get defaultOptions(): ApplicationOptions;
 
-    /**
-     * @param options - (unused)
-     */
     override getData(options?: Partial<Options>): Data | Promise<Data>;
 
     override activateListeners(html: JQuery): void;

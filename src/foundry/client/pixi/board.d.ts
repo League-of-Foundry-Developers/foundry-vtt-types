@@ -1,26 +1,26 @@
 import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { BaseScene } from '../../common/documents.mjs';
 
-/**
- * The virtual tabletop environment is implemented using a WebGL powered HTML 5 canvas using the powerful PIXI.js
- * library. The canvas is comprised of an ordered sequence of layers which define rendering groups and collections of
- * objects that are drawn on the canvas itself.
- *
- * @see {@link CanvasLayer} An abstract class for all Canvas layers.
- * @see {@link PlaceablesLayer} An abstract class for Canvas Layers which contain Placeable Objects.
- * @see {@link PlaceableObject} An abstract class for objects which are placed into the Scene and drawn on the canvas.
- *
- * @example <caption>Example Canvas commands</caption>
- * ```typescript
- * canvas.ready; // Is the canvas ready for use?
- * canvas.scene; // The currently viewed Scene document.
- * canvas.dimensions; // The dimensions of the current Scene.
- * canvas.draw(); // Completely re-draw the game canvas (this is usually unnecessary).
- * canvas.pan(x, y, zoom); // Pan the canvas to new coordinates and scale.
- * canvas.recenter(); // Re-center the canvas on the currently controlled Token.
- * ```
- */
 declare global {
+  /**
+   * The virtual tabletop environment is implemented using a WebGL powered HTML 5 canvas using the powerful PIXI.js
+   * library. The canvas is comprised of an ordered sequence of layers which define rendering groups and collections of
+   * objects that are drawn on the canvas itself.
+   *
+   * @see {@link CanvasLayer} An abstract class for all Canvas layers.
+   * @see {@link PlaceablesLayer} An abstract class for Canvas Layers which contain Placeable Objects.
+   * @see {@link PlaceableObject} An abstract class for objects which are placed into the Scene and drawn on the canvas.
+   *
+   * @example <caption>Example Canvas commands</caption>
+   * ```typescript
+   * canvas.ready; // Is the canvas ready for use?
+   * canvas.scene; // The currently viewed Scene document.
+   * canvas.dimensions; // The dimensions of the current Scene.
+   * canvas.draw(); // Completely re-draw the game canvas (this is usually unnecessary).
+   * canvas.pan(x, y, zoom); // Pan the canvas to new coordinates and scale.
+   * canvas.recenter(); // Re-center the canvas on the currently controlled Token.
+   * ```
+   */
   class Canvas {
     constructor();
 
@@ -432,7 +432,6 @@ declare global {
     /**
      * Handle the conclusion of a right-mouse drag workflow the Canvas stage.
      * @see {@link MouseInteractionManager#_handleDragDrop}
-     * @param event - (unused)
      */
     protected _onDragRightDrop(event: PIXI.InteractionEvent): void;
 
@@ -485,7 +484,6 @@ declare global {
     /**
      * Get a reference to the a specific CanvasLayer by it's name
      * @param layerName - The name of the canvas layer to get
-     *                    (unused)
      * @deprecated since v9, will be deleted in v10
      */
     getLayer(layerName: any): {

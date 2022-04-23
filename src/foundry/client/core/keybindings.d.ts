@@ -149,9 +149,7 @@ declare class ClientKeybindings {
   /**
    * Handle Select all action
    * @param event   - The originating keyboard event
-   *                  (unused)
    * @param context - The context data of the event
-   *                  (unused)
    * @internal
    */
   protected static _onSelectAllObjects(event?: KeyboardEvent, context?: KeyboardEventContext): boolean;
@@ -166,16 +164,14 @@ declare class ClientKeybindings {
   /**
    * Handle Dismiss actions
    * @param context - The context data of the event
-   *                  (unused)
    * @internal
    */
   protected static _onDismiss(context?: KeyboardEventContext): boolean;
 
   /**
    * Open Character sheet for current token or controlled actor
-   * @param event   - (unused)
+   * @param event   -
    * @param context - The context data of the event
-   *                  (unused)
    * @internal
    */
   protected static _onToggleCharacterSheet(event?: KeyboardEvent, context?: KeyboardEventContext): ActorSheet | null;
@@ -191,7 +187,6 @@ declare class ClientKeybindings {
    * Handle DELETE Keypress Events
    * @param event   - The originating keyboard event
    * @param context - The context data of the event
-   *                  (unused)
    * @internal
    */
   protected static _onDelete(event: KeyboardEvent, context?: KeyboardEventContext): boolean;
@@ -210,7 +205,6 @@ declare class ClientKeybindings {
   /**
    * Handle Measured Ruler Movement Action
    * @param context - The context data of the event
-   *                  (unused)
    * @internal
    */
   protected static _onMeasuredRulerMovement(context?: KeyboardEventContext): boolean | void;
@@ -218,7 +212,6 @@ declare class ClientKeybindings {
   /**
    * Handle Pause Action
    * @param context - The context data of the event
-   *                  (unused)
    * @internal
    */
   protected static _onPause(context?: KeyboardEventContext): true;
@@ -226,7 +219,6 @@ declare class ClientKeybindings {
   /**
    * Handle Highlight action
    * @param context - The context data of the event
-   *                  (unused)
    * @internal
    */
   protected static _onHighlight(context?: KeyboardEventContext): boolean;
@@ -259,7 +251,6 @@ declare class ClientKeybindings {
   /**
    * Handle action to copy data to clipboard
    * @param context - The context data of the event
-   *                  (unused)
    * @internal
    */
   protected static _onCopy(context?: KeyboardEventContext): boolean;
@@ -274,7 +265,6 @@ declare class ClientKeybindings {
   /**
    * Handle Undo action
    * @param context - The context data of the event
-   *                  (unused)
    * @internal
    */
   protected static _onUndo(context?: KeyboardEventContext): boolean;
@@ -282,7 +272,6 @@ declare class ClientKeybindings {
   /**
    * Handle presses to keyboard zoom keys
    * @param context       - The context data of the event
-   *                        (unused)
    * @param zoomDirection - The direction to zoom
    * @internal
    */

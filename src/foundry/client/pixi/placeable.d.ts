@@ -124,59 +124,46 @@ declare global {
 
     /**
      * Can the User access the HUD for this Placeable Object?
-     * @param user  - (unused)
-     * @param event - (unused)
      */
     protected _canHUD(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
     /**
      * Does the User have permission to configure the Placeable Object?
-     * @param user  - (unused)
-     * @param event - (unused)
      */
     protected _canConfigure(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
     /**
      * Does the User have permission to control the Placeable Object?
-     * @param user  - (unused)
-     * @param event - (unused)
      */
     protected _canControl(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
     /**
      * Does the User have permission to view details of the Placeable Object?
-     * @param user  - (unused)
-     * @param event - (unused)
      */
     protected _canView(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
     /**
      * Does the User have permission to create the underlying Document?
-     * @param event - (unused)
      */
     protected _canCreate(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
     /**
      * Does the User have permission to drag this Placeable Object?
-     * @param event - (unused)
      */
     protected _canDrag(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
     /**
      * Does the User have permission to hover on this Placeable Object?
-     * @param event - (unused)
      */
     protected _canHover(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
     /**
      * Does the User have permission to update the underlying Document?
-     * @param event - (unused)
      */
     protected _canUpdate(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
     /**
      * Does the User have permission to delete the underlying Document?
-     * @param event - (unused)
      */
     protected _canDelete(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
@@ -212,17 +199,11 @@ declare global {
 
     /**
      * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
-     * @param data    - (unused)
-     * @param options - (unused)
-     * @param userId  - (unused)
-     * @remarks Second variant has been added because of `Token._onCreate()`
      */
     protected _onCreate(data: D['data']['_source'], options: DocumentModificationOptions, userId: string): void;
 
     /**
      * Define additional steps taken when an existing placeable object of this type is updated with new data
-     * @param options - (unused)
-     * @param userId  - (unused)
      * @remarks Called without options and userId in Drowing._onUpdate
      */
     protected _onUpdate(
@@ -233,8 +214,6 @@ declare global {
 
     /**
      * Define additional steps taken when an existing placeable object of this type is deleted
-     * @param options - (unused)
-     * @param userId  - (unused)
      */
     protected _onDelete(options: DocumentModificationOptions, userId: string): void;
 
@@ -249,7 +228,6 @@ declare global {
     /**
      * Additional events which trigger once control of the object is established
      * @param options - Optional parameters which apply for specific implementations
-     *                  (unused)
      */
     protected _onControl(options?: PlaceableObject.ControlOptions): void;
 
@@ -264,7 +242,6 @@ declare global {
     /**
      * Additional events which trigger once control of the object is released
      * @param options - Options which modify the releasing workflow
-     *                  (unused)
      */
     protected _onRelease(options?: PlaceableObject.ReleaseOptions): void;
 

@@ -22,14 +22,8 @@ declare global {
      */
     static override get defaultOptions(): DocumentSheetOptions;
 
-    /**
-     * @param options - (unused)
-     */
     override getData(options?: Partial<Options>): Data | Promise<Data>;
 
-    /**
-     * @param event - (unused)
-     */
     protected override _updateObject(event: Event, formData: NoteConfig.FormData): Promise<unknown>;
 
     override close(options?: Application.CloseOptions): Promise<void>;

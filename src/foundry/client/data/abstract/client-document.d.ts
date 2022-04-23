@@ -370,7 +370,6 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * Remove any features of the data which are world-specific.
    * This function is asynchronous in case any complex operations are required prior to exporting.
    * @param pack    - A specific pack being exported to
-   *                  (unused)
    * @param options - Additional options which modify how the document is converted
    *                  (default: `{}`)
    * @returns A data object of cleaned data suitable for compendium import

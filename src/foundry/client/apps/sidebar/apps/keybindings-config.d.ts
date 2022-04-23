@@ -38,9 +38,6 @@ declare class KeybindingsConfig<
    */
   static override get defaultOptions(): FormApplicationOptions;
 
-  /**
-   * @param options - (unused)
-   */
   override getData(options?: Partial<Options>): Data;
 
   /**
@@ -192,9 +189,6 @@ declare class KeybindingsConfig<
    */
   protected _onKeydownBindingInput(event: KeyboardEvent): void;
 
-  /**
-   * @param event - (unused)
-   */
   protected override _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
   /** @remarks KeybindingsConfig does not implement this method. */
