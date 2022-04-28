@@ -223,5 +223,5 @@ interface RoundData {
   round: number | null;
   turn: number | null;
   tokenId: string | null;
-  combatantid: string | null;
+  combatantId: string | null;
 }
