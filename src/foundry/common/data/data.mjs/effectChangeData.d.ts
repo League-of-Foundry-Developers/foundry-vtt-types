@@ -27,7 +27,7 @@ interface EffectChangeDataProperties {
    * The modification mode with which the change is applied
    * @defaultValue `CONST.ACTIVE_EFFECT_MODES.ADD`
    */
-  mode: foundry.CONST.ACTIVE_EFFECT_MODES;
+  mode: number;
 
   /**
    * The priority level with which this change is applied
@@ -52,7 +52,7 @@ interface EffectChangeDataConstructorData {
    * The modification mode with which the change is applied
    * @defaultValue `CONST.ACTIVE_EFFECT_MODES.ADD`
    */
-  mode?: foundry.CONST.ACTIVE_EFFECT_MODES | null | undefined;
+  mode?: number | null | undefined;
 
   /**
    * The priority level with which this change is applied
