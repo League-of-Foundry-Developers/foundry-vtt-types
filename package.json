@@ -10,6 +10,7 @@
       "types": "./index-lenient.d.ts"
     }
   },
+  "types": "./index.d.ts",
   "scripts": {
     "lint": "./node_modules/typescript/bin/tsc && eslint --ext .d.ts,.test-d.ts .",
     "lint:fix": "eslint --fix --ext .d.ts,.test-d.ts .",
