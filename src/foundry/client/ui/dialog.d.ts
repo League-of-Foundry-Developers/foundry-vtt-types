@@ -187,7 +187,7 @@ declare namespace Dialog {
     /**
      * The name of the default button which should be triggered on Enter
      */
-    default: string;
+    default?: string | undefined;
   }
 }
 
