@@ -1,8 +1,6 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass, StatusEffect } from '../../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs.js';
 import * as data from '../../../common/data/data.mjs/index.js';
-
-import type { ActiveEffectDataConstructorData } from '../../../common/data/data.mjs/activeEffectData';
 import type { PrototypeTokenDataConstructorData } from '../../../common/data/data.mjs/prototypeTokenData';
 
 declare global {
@@ -97,10 +95,7 @@ declare global {
      *                     (default: `{}`)
      * @returns Whether the Active Effect is now on or off
      */
-    toggleActiveEffect(
-      effectData: ActiveEffectDataConstructorData & { id: string; label: string; icon: string },
-      options?: ToggleActiveEffectOptions | undefined
-    ): Promise<boolean>;
+    toggleActiveEffect(effectData: StatusEffect, options?: ToggleActiveEffectOptions | undefined): Promise<boolean>;
 
     /**
      * Redirect updates to a synthetic Token Actor to instead update the tokenData override object.

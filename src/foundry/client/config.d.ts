@@ -1,4 +1,4 @@
-import { DocumentConstructor, PlaceableObjectConstructor } from '../../types/helperTypes';
+import { DocumentConstructor, PlaceableObjectConstructor, StatusEffect } from '../../types/helperTypes';
 
 declare global {
   /**
@@ -998,7 +998,7 @@ declare global {
      * ]
      * ```
      */
-    statusEffects: { id: string; label: string; icon: string }[];
+    statusEffects: StatusEffect[];
 
     /**
      * A mapping of core audio effects used which can be replaced by systems or mods

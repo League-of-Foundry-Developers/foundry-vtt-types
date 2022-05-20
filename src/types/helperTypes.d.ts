@@ -1,7 +1,7 @@
-import DocumentData from '../foundry/common/abstract/data.mjs';
-import { AnyDocumentData } from '../foundry/common/abstract/data.mjs';
+import DocumentData, { AnyDocumentData } from '../foundry/common/abstract/data.mjs';
 import Document from '../foundry/common/abstract/document.mjs';
 import EmbeddedCollection from '../foundry/common/abstract/embedded-collection.mjs';
+import type { ActiveEffectDataConstructorData } from '../foundry/common/data/data.mjs/activeEffectData.js';
 
 export type PropertiesDataType<T extends Document<any, any> | AnyDocumentData> = T extends DocumentData<
   any,
@@ -150,3 +150,5 @@ export type DataSourceForPlaceable<P extends PlaceableObject> = P extends Placea
     ? D['_source']
     : never
   : never;
+
+export type StatusEffect = ActiveEffectDataConstructorData & { id: string };
