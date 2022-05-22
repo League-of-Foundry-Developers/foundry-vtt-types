@@ -1,4 +1,5 @@
-import { DocumentConstructor, PlaceableObjectConstructor, StatusEffect } from '../../types/helperTypes';
+import { DocumentConstructor, PlaceableObjectConstructor } from '../../types/helperTypes';
+import type { StatusEffect } from './data/documents/token';
 
 declare global {
   /**
@@ -93,31 +94,7 @@ declare global {
       /** @defaultValue `"fas fa-id-badge"` */
       sidebarIcon: string;
 
-      presets: {
-        /**
-         * @defaultValue
-         * ```javascript
-         * {
-         *   type: "deck",
-         *   label: "CARDS.DeckPresetPokerDark",
-         *   src: "cards/poker-deck-dark.json"
-         * }
-         * ```
-         */
-        pokerDark: CONFIG.Cards.Preset;
-
-        /**
-         * @defaultValue
-         * ```javascript
-         * {
-         *   type: "deck",
-         *   label: "CARDS.DeckPresetPokerLight",
-         *   src: "cards/poker-deck-light.json"
-         * }
-         * ```
-         */
-        pokerLight: CONFIG.Cards.Preset;
-      } & Record<string, CONFIG.Cards.Preset>;
+      presets: Record<string, CONFIG.Cards.Preset>;
     };
 
     /**

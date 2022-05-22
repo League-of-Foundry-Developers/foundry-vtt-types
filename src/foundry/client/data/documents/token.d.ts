@@ -1,5 +1,6 @@
-import { ConfiguredDocumentClass, StatusEffect } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs.js';
+import type { ActiveEffectDataConstructorData } from '../../../common/data/data.mjs/activeEffectData';
 import * as data from '../../../common/data/data.mjs/index.js';
 import type { PrototypeTokenDataConstructorData } from '../../../common/data/data.mjs/prototypeTokenData';
 
@@ -276,3 +277,5 @@ interface ToggleActiveEffectOptions {
   /** Force a certain active state for the effect. */
   active?: boolean | undefined;
 }
+
+export type StatusEffect = ActiveEffectDataConstructorData & { id: string };
