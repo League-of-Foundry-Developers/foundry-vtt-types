@@ -1,5 +1,4 @@
-import DocumentData from '../foundry/common/abstract/data.mjs';
-import { AnyDocumentData } from '../foundry/common/abstract/data.mjs';
+import DocumentData, { AnyDocumentData } from '../foundry/common/abstract/data.mjs';
 import Document from '../foundry/common/abstract/document.mjs';
 import EmbeddedCollection from '../foundry/common/abstract/embedded-collection.mjs';
 
