@@ -94,6 +94,21 @@ declare global {
       /** @defaultValue `"fas fa-id-badge"` */
       sidebarIcon: string;
 
+      /**
+       * @defaultValue
+       * ```javascript
+       * pokerDark: {
+       *   type: "deck",
+       *   label: "CARDS.DeckPresetPokerDark",
+       *   src: "cards/poker-deck-dark.json"
+       * },
+       * pokerLight: {
+       *   type: "deck",
+       *   label: "CARDS.DeckPresetPokerLight",
+       *   src: "cards/poker-deck-light.json"
+       * }
+       * ```
+       */
       presets: Record<string, CONFIG.Cards.Preset>;
     };
 
