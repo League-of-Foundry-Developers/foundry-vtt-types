@@ -125,7 +125,7 @@ type Merge<T, U> = T extends object
  */
 type PromisedType<T> = T extends Promise<infer TResult> ? TResult : T;
 
-type StoredDocument<D extends foundry.abstract.Document<any, any>> = D & {
+type StoredDocument<D extends { data: { _source: unknown } }> = D & {
   id: string;
   data: D['data'] & {
     _id: string;
