@@ -96,16 +96,18 @@ declare global {
 
       /**
        * @defaultValue
-       * ```javascript
-       * pokerDark: {
-       *   type: "deck",
-       *   label: "CARDS.DeckPresetPokerDark",
-       *   src: "cards/poker-deck-dark.json"
-       * },
-       * pokerLight: {
-       *   type: "deck",
-       *   label: "CARDS.DeckPresetPokerLight",
-       *   src: "cards/poker-deck-light.json"
+       * ```typescript
+       * {
+       *  pokerDark: {
+       *    type: "deck",
+       *    label: "CARDS.DeckPresetPokerDark",
+       *    src: "cards/poker-deck-dark.json"
+       *  },
+       *  pokerLight: {
+       *    type: "deck",
+       *    label: "CARDS.DeckPresetPokerLight",
+       *    src: "cards/poker-deck-light.json"
+       *  }
        * }
        * ```
        */
