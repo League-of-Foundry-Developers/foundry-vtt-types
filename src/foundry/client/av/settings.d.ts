@@ -221,7 +221,7 @@ declare namespace AVSettings {
   type ClientSettings = typeof AVSettings.DEFAULT_CLIENT_SETTINGS;
   type WorldSettings = typeof AVSettings.DEFAULT_WORLD_SETTINGS;
   type StoredUserSettings = typeof AVSettings.DEFAULT_USER_SETTINGS;
-  type UserSettings = StoredUserSettings & { canBroadCastAudio: boolean; canBroadcastVideo: boolean };
+  type UserSettings = StoredUserSettings & { canBroadcastAudio: boolean; canBroadcastVideo: boolean };
   type Settings = { client: ClientSettings; world: WorldSettings };
   interface DefaultVoiceModes {
     ALWAYS: 'always';
