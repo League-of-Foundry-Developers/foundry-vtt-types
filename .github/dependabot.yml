@@ -1,5 +1,9 @@
 version: 2
 updates:
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'daily'
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
@@ -9,6 +13,7 @@ updates:
         update-types: ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: '@types/simple-peer'
         update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: '@pixi/graphics-smooth'
       - dependency-name: 'handlebars'
       - dependency-name: 'pixi-particles'
       - dependency-name: 'pixi.js'
