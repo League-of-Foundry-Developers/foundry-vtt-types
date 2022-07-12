@@ -51,12 +51,9 @@ declare global {
 
     override fromCompendium(
       document:
-        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>
-        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>['data']['_source'],
+        | InstanceType<ConfiguredDocumentClass<typeof Scene>>
+        | InstanceType<ConfiguredDocumentClass<typeof Scene>>['data']['_source'],
       options?: WorldCollection.FromCompendiumOptions | undefined
-    ): Omit<
-      InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>['data']['_source'],
-      '_id' | 'folder'
-    >;
+    ): Omit<InstanceType<ConfiguredDocumentClass<typeof Scene>>['data']['_source'], '_id' | 'folder'>;
   }
 }

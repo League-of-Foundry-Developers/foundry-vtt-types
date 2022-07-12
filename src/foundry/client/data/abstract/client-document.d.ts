@@ -1,5 +1,7 @@
 import { ContextType, DocumentModificationOptions } from '../../../common/abstract/document.mjs';
-import { ConfiguredDocumentClass, ConstructorDataType, DocumentConstructor } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass, DocumentConstructor } from '../../../../types/helperTypes';
+import type DataModel from '../../../common/abstract/data.mjs.js';
+import type { documents } from '../../../common/module.mjs.js';
 
 declare global {
   // TODO: Replace ConstructorOf<…> with DocumentConstructor once the problem with circular reference has been solved
@@ -7,7 +9,7 @@ declare global {
    * A mixin which extends each Document definition with specialized client-side behaviors.
    * This mixin defines the client-side interface for database operations and common document behaviors.
    */
-  const ClientDocumentMixin: <T extends ConstructorOf<foundry.abstract.Document<any, any>>>(
+  const ClientDocumentMixin: <T extends ConstructorOf<foundry.abstract.Document<any, any, any, any>>>(
     Base: T
   ) => ClientDocumentConstructor<T>;
 
@@ -46,13 +48,16 @@ declare global {
   }
 }
 
-type ClientDocumentConstructor<T extends ConstructorOf<foundry.abstract.Document<any, any>>> = Pick<T, keyof T> &
+type ClientDocumentConstructor<T extends ConstructorOf<foundry.abstract.Document<any, any, any, any>>> = Pick<
+  T,
+  keyof T
+> &
   Pick<typeof ClientDocumentMixin, keyof typeof ClientDocumentMixin> & {
     new (...args: ConstructorParameters<T>): InstanceType<T> & ClientDocumentMixin<InstanceType<T>>;
   };
 
-export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>> {
-  constructor(data?: ConstructorDataType<T['data']>, context?: ContextType<T>);
+export declare class ClientDocumentMixin<T extends AnyDocument> {
+  constructor(data?: DataModel.SchemaToSourceInput<T['schema']>, context?: ContextType<T>);
 
   /**
    * A collection of Application instances which should be re-rendered whenever this document is updated.
@@ -235,7 +240,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    */
   protected _onCreateEmbeddedDocuments(
     embeddedName: string,
-    documents: foundry.abstract.Document<any, any>[],
+    documents: AnyDocument[],
     result: Record<string, unknown>[],
     options: DocumentModificationOptions,
     userId: string
@@ -265,7 +270,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    */
   protected _onUpdateEmbeddedDocuments(
     embeddedName: string,
-    documents: foundry.abstract.Document<any, any>[],
+    documents: AnyDocument[],
     result: Record<string, unknown>[],
     options: DocumentModificationContext,
     userId: string
@@ -295,7 +300,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    */
   protected _onDeleteEmbeddedDocuments(
     embeddedName: string,
-    documents: foundry.abstract.Document<any, any>[],
+    documents: AnyDocument[],
     result: string[],
     options: DocumentModificationContext,
     userId: string
@@ -315,8 +320,8 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
     this: T,
     data?:
       | DeepPartial<
-          | ConstructorDataType<InstanceType<T>['data']>
-          | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
+          | DataModel.SchemaToSourceInput<InstanceType<T>['schema']>
+          | (DataModel.SchemaToSourceInput<InstanceType<T>['schema']> & Record<string, unknown>)
         >
       | undefined,
     context?: (Pick<DocumentModificationContext, 'parent' | 'pack'> & Partial<DialogOptions>) | undefined
@@ -414,10 +419,10 @@ interface SortOptions<T> {
   updateData?: any;
 }
 
-export type DropData<T extends foundry.abstract.Document<any, any>> = DropData.Data<T> | DropData.Pack | DropData.Id;
+export type DropData<T extends AnyDocument> = DropData.Data<T> | DropData.Pack | DropData.Id;
 
 declare namespace DropData {
-  interface Data<T extends foundry.abstract.Document<any, any>> {
+  interface Data<T extends AnyDocument> {
     data: T['data']['_source'];
   }
 

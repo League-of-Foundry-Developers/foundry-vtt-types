@@ -1,4 +1,7 @@
-import type { ConfiguredDocumentClassForName, ConstructorDataType } from '../../../../types/helperTypes';
+import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
+import type DataModel from '../../../common/abstract/data.mjs';
+
+export {};
 
 declare global {
   /**
@@ -10,26 +13,9 @@ declare global {
    */
   class Card extends ClientDocumentMixin(foundry.documents.BaseCard) {
     /**
-     * The card back.
-     * This reference is cached and lazily evaluated to retrieve an image and name from the source deck.
-     */
-    get back(): foundry.data.CardFaceData;
-
-    /**
-     * @defaultValue `undefined`
-     * @internal
-     */
-    protected _back?: foundry.data.CardFaceData | undefined;
-
-    /**
      * The current card face
      */
-    get face(): foundry.data.CardFaceData | null;
-
-    /**
-     * The image used to depict the back of this card
-     */
-    get backImg(): string;
+    get currentFace(): this['faces'][number] | null;
 
     /**
      * The image of the currently displayed card face or back
@@ -37,14 +23,9 @@ declare global {
     get img(): string;
 
     /**
-     * The name of the current card face, or the name of the card itself
-     */
-    get name(): string;
-
-    /**
      * A reference to the source Cards document which defines this Card.
      */
-    get source(): InstanceType<ConfiguredDocumentClassForName<'Cards'>> | undefined | null;
+    get source(): InstanceType<ConfiguredDocumentClassForName<'Cards'>> | null;
 
     /**
      * A convenience property for whether or not the Card is within its source Cards stack. Cards in decks are always
@@ -126,7 +107,7 @@ declare global {
      * @returns The created chat message
      */
     toMessage(
-      messageData?: ConstructorDataType<foundry.data.ChatMessageData> | undefined,
+      messageData?: DataModel.SchemaToSourceInput<foundry.documents.BaseChatMessage['schema']> | undefined,
       options?: DocumentModificationContext | undefined
     ): Promise<InstanceType<ConfiguredDocumentClassForName<'ChatMessage'>> | undefined>;
   }

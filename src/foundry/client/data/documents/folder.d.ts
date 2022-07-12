@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass, ConstructorDataType, DocumentConstructor } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass, DocumentConstructor } from '../../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
 declare global {
@@ -65,10 +65,7 @@ declare global {
     static createDialog<T extends DocumentConstructor>(
       this: T,
       data?:
-        | DeepPartial<
-            | ConstructorDataType<InstanceType<T>['data']>
-            | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
-          >
+        | DeepPartial<InstanceType<T>['_source'] | (InstanceType<T>['_source'] & Record<string, unknown>)>
         | undefined,
       context?: Partial<Omit<FolderConfig.Options, 'resolve'>>
     ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;

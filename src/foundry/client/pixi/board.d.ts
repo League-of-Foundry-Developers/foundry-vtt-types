@@ -1,5 +1,4 @@
 import { ConfiguredDocumentClass } from '../../../types/helperTypes';
-import { BaseScene } from '../../common/documents.mjs';
 
 declare global {
   /**
@@ -503,7 +502,7 @@ declare global {
   }
 
   namespace Canvas {
-    interface Dimensions extends ReturnType<typeof BaseScene['getDimensions']> {
+    interface Dimensions extends ReturnType<Scene['getDimensions']> {
       rect: PIXI.Rectangle;
       sceneRect: PIXI.Rectangle;
       maxR: number;

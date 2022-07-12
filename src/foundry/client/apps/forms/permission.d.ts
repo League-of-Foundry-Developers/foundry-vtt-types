@@ -10,9 +10,7 @@ declare global {
   class PermissionControl<
     Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends object = PermissionControl.Data,
-    ConcreteDocument extends foundry.abstract.Document<any, any> = Data extends DocumentSheet.Data<infer T>
-      ? T
-      : foundry.abstract.Document<any, any>
+    ConcreteDocument extends AnyDocument = Data extends DocumentSheet.Data<infer T> ? T : AnyDocument
   > extends DocumentSheet<Options, PermissionControl.Data, ConcreteDocument> {
     /**
      * @defaultValue

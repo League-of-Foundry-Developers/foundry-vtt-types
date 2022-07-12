@@ -279,7 +279,7 @@ declare global {
         playlists: PlaylistDirectory.Data.Playlist[];
       }
 
-      type Playlist = ToObjectFalseType<foundry.data.PlaylistData> & {
+      type Playlist = ToObjectFalseType<foundry.documents.BasePlaylist> & {
         modeTooltip: string;
         modeIcon: string;
         disabled: boolean;
@@ -289,7 +289,7 @@ declare global {
         sounds: PlaylistDirectory.Data.Sound[];
       };
 
-      type Sound = ToObjectFalseType<foundry.data.PlaylistSoundData> & {
+      type Sound = ToObjectFalseType<foundry.documents.BasePlaylistSound> & {
         playlistId: string | null;
         css: string;
         controlCSS: string;

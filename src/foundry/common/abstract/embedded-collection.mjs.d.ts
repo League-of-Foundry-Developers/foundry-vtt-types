@@ -1,6 +1,6 @@
 import _Collection from '../utils/collection.mjs';
-import { AnyDocumentData } from './data.mjs';
-import { DocumentConstructor, ToObjectFalseType } from '../../../types/helperTypes';
+import { DataModel } from './data.mjs';
+import { ToObjectFalseType } from '../../../types/helperTypes';
 
 type Collection<T> = Omit<_Collection<T>, 'set' | 'delete'>;
 
@@ -19,50 +19,41 @@ declare const Collection: CollectionConstructor;
  * Used for the specific task of containing embedded Document instances within a parent Document.
  */
 declare class EmbeddedCollection<
-  ContainedDocumentConstructor extends DocumentConstructor,
-  ParentDocumentData extends AnyDocumentData
-> extends Collection<InstanceType<ContainedDocumentConstructor>> {
+  DocumentClass extends foundry.abstract.Document.AnyConstructor,
+  ConcreteDataModel extends DataModel.Any
+> extends Collection<InstanceType<DocumentClass>> {
   /**
-   * @param documentData  - The parent DocumentData instance to which this collection belongs
+   * @param model         - The parent DataModel instance to which this collection belongs
    * @param sourceArray   - The source data array for the collection in the parent Document data
    * @param documentClass - The Document class implementation contained by the collection
    */
   constructor(
-    documentData: ParentDocumentData,
-    sourceArray: ConstructorParameters<ContainedDocumentConstructor>[0][],
-    documentClass: ContainedDocumentConstructor
+    model: ConcreteDataModel,
+    sourceArray: DeepPartial<InstanceType<DocumentClass>['data']['_source']>[],
+    documentClass: DocumentClass
   );
 
   /**
-   * The parent DocumentData to which this EmbeddedCollection instance belongs.
+   * The Document implementation used to construct instances within this collection.
    */
-  readonly parent: ParentDocumentData;
+  readonly documentClass: DocumentClass;
 
   /**
-   * The parent DocumentData to which this EmbeddedCollection instance belongs.
+   * The parent DataModel to which this EmbeddedCollection instance belongs.
    */
-  readonly document: ParentDocumentData['document'];
-
-  /**
-   * The Document implementation used to construct instances within this collection
-   */
-  readonly documentClass: ContainedDocumentConstructor;
+  #model: ConcreteDataModel;
 
   /**
    * The source data array from which the embedded collection is created
    */
-  readonly _source: DeepPartial<InstanceType<ContainedDocumentConstructor>['data']['_source']>[];
+  readonly _source: DeepPartial<InstanceType<DocumentClass>['data']['_source']>[];
 
   /**
    * Initialize the EmbeddedCollection object by constructing its contained Document instances
    */
-  protected _initialize(): void;
+  #initialize(): void;
 
-  set(
-    key: string,
-    value: InstanceType<ContainedDocumentConstructor>,
-    { modifySource }: { modifySource?: boolean }
-  ): this;
+  set(key: string, value: InstanceType<DocumentClass>, { modifySource }: { modifySource?: boolean }): this;
 
   delete(key: string, { modifySource }: { modifySource?: boolean }): boolean;
 
@@ -72,8 +63,8 @@ declare class EmbeddedCollection<
    *                 (default: `true`)
    * @returns The extracted array of primitive objects
    */
-  toObject(source?: true): ReturnType<InstanceType<ContainedDocumentConstructor>['data']['toJSON']>[];
-  toObject(source: false): ToObjectFalseType<InstanceType<ContainedDocumentConstructor>['data']>[];
+  toObject(source?: true): ReturnType<ConcreteDataModel['toJSON']>[];
+  toObject(source: false): ToObjectFalseType<ConcreteDataModel>[];
 }
 
 export default EmbeddedCollection;

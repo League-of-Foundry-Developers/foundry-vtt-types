@@ -208,7 +208,7 @@ declare global {
   }
 
   namespace SidebarDirectory {
-    interface Data<ConcreteTree extends Tree<foundry.abstract.Document<any, any>>> {
+    interface Data<ConcreteTree extends Tree<AnyDocument>> {
       user: InstanceType<ConfiguredDocumentClass<typeof User>>;
       tree: ConcreteTree;
       canCreate: boolean;
@@ -227,7 +227,7 @@ declare global {
         entityType?: string;
       };
 
-    interface Tree<ConcreteDocument extends foundry.abstract.Document<any, any>> {
+    interface Tree<ConcreteDocument extends AnyDocument> {
       root?: boolean;
       content: ConcreteDocument[];
       children: (Folder & Tree<ConcreteDocument>)[];

@@ -1,6 +1,6 @@
 import type { ConfiguredDocumentClass, ConfiguredObjectClassForName } from '../../../../types/helperTypes';
+import type DataModel from '../../../common/abstract/data.mjs';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
-import type { TileDataConstructorData } from '../../../common/data/data.mjs/tileData';
 
 declare global {
   /**
@@ -197,7 +197,7 @@ declare global {
     protected _createOcclusionFilter(): AbstractBaseMaskFilter;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.TileData['_source']>,
+      changed: DeepPartial<foundry.documents.BaseTile['_source']>,
       options?: DocumentModificationOptions,
       userId?: string
     ): Promise<this> | void;
@@ -269,7 +269,9 @@ declare global {
      * Create a preview tile with a background texture instead of an image
      * @param data - Initial data with which to create the preview Tile
      */
-    static createPreview(data: TileDataConstructorData): InstanceType<ConfiguredObjectClassForName<'Tile'>>;
+    static createPreview(
+      data: DataModel.SchemaToSourceInput<foundry.documents.BaseTile['schema']>
+    ): InstanceType<ConfiguredObjectClassForName<'Tile'>>;
   }
 
   namespace Tile {

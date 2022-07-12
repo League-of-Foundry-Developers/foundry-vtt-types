@@ -1,7 +1,5 @@
 import type { DocumentSubTypes, DocumentType } from '../../../types/helperTypes';
 
-import type { TokenDataSource } from '../../common/data/data.mjs/tokenData';
-
 declare global {
   /**
    * A class responsible for managing defined game settings or settings menus.
@@ -182,8 +180,8 @@ declare global {
       'core.combatTrackerConfig': { resource: string; skipDefeated: boolean } | {};
       'core.compendiumConfiguration': Partial<Record<string, CompendiumCollection.Configuration>>;
       'core.coneTemplateType': 'round' | 'flat';
-      'core.defaultDrawingConfig': foundry.data.DrawingData['_source'] | {};
-      'core.defaultToken': DeepPartial<TokenDataSource>;
+      'core.defaultDrawingConfig': foundry.documents.BaseDrawing['_source'] | {};
+      'core.defaultToken': DeepPartial<foundry.documents.BaseToken['_source']>;
       'core.disableResolutionScaling': boolean;
       'core.fontSize': number;
       'core.fpsMeter': boolean;

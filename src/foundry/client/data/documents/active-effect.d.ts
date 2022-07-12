@@ -1,7 +1,8 @@
 import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import type DataModel from '../../../common/abstract/data.mjs';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
-import type { ActiveEffectDataConstructorData } from '../../../common/data/data.mjs/activeEffectData';
-import { EffectChangeData } from '../../../common/data/data.mjs/effectChangeData';
+import type BaseActiveEffect from '../../../common/documents/active-effect.mjs';
+import { type EffectChangeData } from '../../../common/documents/active-effect.mjs';
 
 declare global {
   /**
@@ -37,11 +38,6 @@ declare global {
     get isSuppressed(): boolean;
 
     /**
-     * Summarize the active effect duration
-     */
-    get duration(): DurationSummary;
-
-    /**
      * Format a round+turn combination as a decimal
      * @param round  - The round number
      * @param turn   - The turn number
@@ -74,7 +70,7 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    apply(actor: ConfiguredActor, change: EffectChangeData): unknown;
+    apply(actor: ConfiguredActor, change: DataModel.SchemaToSource<EffectChangeData>): unknown;
 
     /**
      * Apply an ActiveEffect that uses an ADD application mode.
@@ -89,7 +85,7 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    protected _applyAdd(actor: ConfiguredActor, change: EffectChangeData): unknown;
+    protected _applyAdd(actor: ConfiguredActor, change: DataModel.SchemaToSource<EffectChangeData>): unknown;
 
     /**
      * Apply an ActiveEffect that uses a MULTIPLY application mode.
@@ -98,7 +94,7 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    protected _applyMultiply(actor: ConfiguredActor, change: EffectChangeData): unknown;
+    protected _applyMultiply(actor: ConfiguredActor, change: DataModel.SchemaToSource<EffectChangeData>): unknown;
 
     /**
      * Apply an ActiveEffect that uses an OVERRIDE application mode.
@@ -107,7 +103,7 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    protected _applyOverride(actor: ConfiguredActor, change: EffectChangeData): unknown;
+    protected _applyOverride(actor: ConfiguredActor, change: DataModel.SchemaToSource<EffectChangeData>): unknown;
 
     /**
      * Apply an ActiveEffect that uses an UPGRADE, or DOWNGRADE application mode.
@@ -116,7 +112,7 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    protected _applyUpgrade(actor: ConfiguredActor, change: EffectChangeData): unknown;
+    protected _applyUpgrade(actor: ConfiguredActor, change: DataModel.SchemaToSource<EffectChangeData>): unknown;
 
     /**
      * Apply an ActiveEffect that uses a CUSTOM application mode.
@@ -125,7 +121,7 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    protected _applyCustom(actor: ConfiguredActor, change: EffectChangeData): unknown;
+    protected _applyCustom(actor: ConfiguredActor, change: DataModel.SchemaToSource<EffectChangeData>): unknown;
 
     /**
      * Get the name of the source of the Active Effect
@@ -133,19 +129,19 @@ declare global {
     protected _getSourceName(): Promise<string>;
 
     protected _preCreate(
-      data: ActiveEffectDataConstructorData,
+      data: DataModel.SchemaToSourceInput<this['schema']>,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;
 
     protected override _onCreate(
-      data: foundry.data.ActiveEffectData['_source'],
+      data: BaseActiveEffect['_source'],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
     protected override _onUpdate(
-      data: DeepPartial<foundry.data.ActiveEffectData['_source']>,
+      data: DeepPartial<this['data']['_source']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -167,6 +163,6 @@ interface DurationSummary {
   label: string;
 }
 
-type ConfiguredActor = InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>;
+type ConfiguredActor = InstanceType<ConfiguredDocumentClass<typeof Actor>>;
 
 export {};

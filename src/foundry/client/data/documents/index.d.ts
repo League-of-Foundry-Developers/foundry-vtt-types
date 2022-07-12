@@ -1,5 +1,6 @@
 import './active-effect';
 import './actor';
+import './adventure';
 import './ambient-light';
 import './ambient-sound';
 import './card';
@@ -11,6 +12,7 @@ import './drawing';
 import './fog-exploration';
 import './folder';
 import './item';
+import './journal-entry-page';
 import './journal-entry';
 import './macro';
 import './measured-template';

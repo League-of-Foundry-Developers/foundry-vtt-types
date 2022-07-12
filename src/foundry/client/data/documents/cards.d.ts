@@ -1,9 +1,9 @@
 import type {
   ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
-  ConstructorDataType,
   DocumentConstructor
 } from '../../../../types/helperTypes';
+import type DataModel from '../../../common/abstract/data.mjs';
 import type { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
 declare global {
@@ -37,22 +37,22 @@ declare global {
 
     static override createDocuments(
       data: Array<
-        | ConstructorDataType<foundry.data.CardsData>
-        | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
+        | DataModel.SchemaToSourceInput<foundry.documents.BaseCards['schema']>
+        | (DataModel.SchemaToSourceInput<foundry.documents.BaseCards['schema']> & Record<string, unknown>)
       >,
       context: DocumentModificationContext & { temporary: false }
     ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClassForName<'Cards'>>>[]>;
     static createDocuments(
       data: Array<
-        | ConstructorDataType<foundry.data.CardsData>
-        | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
+        | DataModel.SchemaToSourceInput<foundry.documents.BaseCards['schema']>
+        | (DataModel.SchemaToSourceInput<foundry.documents.BaseCards['schema']> & Record<string, unknown>)
       >,
       context: DocumentModificationContext & { temporary: boolean }
     ): Promise<InstanceType<ConfiguredDocumentClassForName<'Cards'>>[]>;
     static createDocuments(
       data: Array<
-        | ConstructorDataType<foundry.data.CardsData>
-        | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
+        | DataModel.SchemaToSourceInput<foundry.documents.BaseCards['schema']>
+        | (DataModel.SchemaToSourceInput<foundry.documents.BaseCards['schema']> & Record<string, unknown>)
       >,
       context?: DocumentModificationContext
     ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClassForName<'Cards'>>>[]>;
@@ -144,14 +144,14 @@ declare global {
      * @param a - The card being sorted
      * @param b - Another card being sorted against
      */
-    protected sortStandard(a: foundry.data.CardData, b: foundry.data.CardData): number;
+    protected sortStandard(a: foundry.documents.BaseCard['data'], b: foundry.documents.BaseCard['data']): number;
 
     /**
      * A sorting function that is used to determine the order of Card documents within a shuffled stack.
      * @param a - The card being sorted
      * @param b - Another card being sorted against
      */
-    protected sortShuffled(a: foundry.data.CardData, b: foundry.data.CardData): number;
+    protected sortShuffled(a: foundry.documents.BaseCard['data'], b: foundry.documents.BaseCard['data']): number;
 
     /**
      * An internal helper method for drawing a certain number of Card documents from this Cards stack.
@@ -180,7 +180,7 @@ declare global {
     ): Promise<InstanceType<ConfiguredDocumentClassForName<'ChatMessage'>> | undefined>;
 
     protected override _onUpdate(
-      data: DeepPartial<foundry.data.CardsData>,
+      data: DeepPartial<foundry.documents.BaseCards['data']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -237,8 +237,8 @@ declare global {
       this: T,
       data?:
         | DeepPartial<
-            | ConstructorDataType<foundry.data.CardsData>
-            | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
+            | DataModel.SchemaToSourceInput<foundry.documents.BaseCards['schema']>
+            | (DataModel.SchemaToSourceInput<foundry.documents.BaseCards['schema']> & Record<string, unknown>)
           >
         | undefined,
       context?: (Pick<DocumentModificationContext, 'parent' | 'pack'> & Partial<DialogOptions>) | undefined
@@ -266,7 +266,7 @@ declare global {
        * for example the displayed face
        * @defaultValue `{}`
        */
-      updateData?: DeepPartial<ConstructorDataType<foundry.data.CardData>> | undefined;
+      updateData?: DeepPartial<DataModel.SchemaToSourceInput<foundry.documents.BaseCard['schema']>> | undefined;
 
       /**
        * The name of the action being performed, used as part of the dispatched Hook event
@@ -281,10 +281,10 @@ declare global {
       action: string;
 
       /** An array of Card creation operations to be performed in each destination Cards document */
-      toCreate: ConstructorDataType<foundry.data.CardData>[][];
+      toCreate: DataModel.SchemaToSourceInput<foundry.documents.BaseCard['schema']>[][];
 
       /** Card update operations to be performed in the origin Cards document */
-      fromUpdate: DeepPartial<ConstructorDataType<foundry.data.CardData>>[];
+      fromUpdate: DeepPartial<DataModel.SchemaToSourceInput<foundry.documents.BaseCard['schema']>>[];
 
       /** Card deletion operations to be performed in the origin Cards document */
       fromDelete: string[];
@@ -296,7 +296,7 @@ declare global {
        * for example the displayed face
        * @defaultValue `{}`
        */
-      updateData?: DeepPartial<ConstructorDataType<foundry.data.CardData>> | undefined;
+      updateData?: DeepPartial<DataModel.SchemaToSourceInput<foundry.documents.BaseCard['schema']>> | undefined;
 
       /**
        * The name of the action being performed, used as part of the dispatched Hook event
@@ -311,13 +311,13 @@ declare global {
       action: string;
 
       /** Card creation operations to be performed in the destination Cards document */
-      toCreate: ConstructorDataType<foundry.data.CardData>[];
+      toCreate: DataModel.SchemaToSourceInput<foundry.documents.BaseCard['schema']>[];
 
       /** Card update operations to be performed in the destination Cards document */
-      toUpdate: DeepPartial<ConstructorDataType<foundry.data.CardData>>[];
+      toUpdate: DeepPartial<DataModel.SchemaToSourceInput<foundry.documents.BaseCard['schema']>>[];
 
       /** Card update operations to be performed in the origin Cards document */
-      fromUpdate: DeepPartial<ConstructorDataType<foundry.data.CardData>>[];
+      fromUpdate: DeepPartial<DataModel.SchemaToSourceInput<foundry.documents.BaseCard['schema']>>[];
 
       /** Card deletion operations to be performed in the origin Cards document */
       fromDelete: string[];
@@ -335,7 +335,7 @@ declare global {
        * for example the displayed face
        * @defaultValue `{}`
        */
-      updateData?: DeepPartial<ConstructorDataType<foundry.data.CardData>> | undefined;
+      updateData?: DeepPartial<DataModel.SchemaToSourceInput<foundry.documents.BaseCard['schema']>> | undefined;
     }
 
     interface ShuffleOptions extends BaseOperationOptions {
@@ -345,7 +345,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks This is not actually used by {@link Cards.shuffle}.
        */
-      updateData?: DeepPartial<ConstructorDataType<foundry.data.CardData>> | undefined;
+      updateData?: DeepPartial<DataModel.SchemaToSourceInput<foundry.documents.BaseCard['schema']>> | undefined;
     }
 
     /** Options which modify the reset operation */
@@ -355,7 +355,7 @@ declare global {
        * for example the displayed face
        * @defaultValue `{}`
        */
-      updateData?: DeepPartial<ConstructorDataType<foundry.data.CardData>> | undefined;
+      updateData?: DeepPartial<DataModel.SchemaToSourceInput<foundry.documents.BaseCard['schema']>> | undefined;
     }
 
     /** Additional context which describes the operation. */
@@ -364,7 +364,7 @@ declare global {
        * A mapping of Card deck IDs to the update operations that
        * will be performed on them.
        */
-      toUpdate: Record<string, DeepPartial<ConstructorDataType<foundry.data.CardData>>[]>;
+      toUpdate: Record<string, DeepPartial<DataModel.SchemaToSourceInput<foundry.documents.BaseCard['schema']>>[]>;
 
       /**
        * Card deletion operations to be performed on the origin Cards

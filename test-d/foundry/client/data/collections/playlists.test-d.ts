@@ -1,5 +1,5 @@
 import { expectType } from 'tsd';
-import type { PlaylistDataSource } from '../../../../../src/foundry/common/data/data.mjs/playlistData';
+import type { PlaylistDataSource } from '../../../../../src/foundry/common/data/data.mjs.d.ts/playlistData';
 
 const playlists = new Playlists();
 expectType<StoredDocument<Playlist>>(playlists.get('', { strict: true }));

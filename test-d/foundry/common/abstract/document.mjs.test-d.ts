@@ -1,8 +1,8 @@
-import type { ActiveEffectDataSource } from '../../../../src/foundry/common/data/data.mjs/activeEffectData';
+import type { ActiveEffectDataSource } from '../../../../src/foundry/common/data/data.mjs.d.ts/activeEffectData';
 import type {
   EffectChangeData,
   EffectChangeDataProperties
-} from '../../../../src/foundry/common/data/data.mjs/effectChangeData';
+} from '../../../../src/foundry/common/data/data.mjs.d.ts/effectChangeData';
 import { expectError, expectType } from 'tsd';
 
 const baseActiveEffect = new foundry.documents.BaseActiveEffect();

@@ -1,4 +1,4 @@
-import type EmbeddedCollection from '../../../../../src/foundry/common/abstract/embedded-collection.mjs.js';
+import type EmbeddedCollection from '../../../../../src/foundry/common/abstract/embedded-collection.mjs';
 import type { ConfiguredDocumentClass } from '../../../../../src/types/helperTypes';
 
 import { expectType } from 'tsd';
@@ -16,12 +16,12 @@ expectType<Promise<[InstanceType<ConfiguredDocumentClass<typeof Actor>> | null]>
   doc.modifyActorDocument({ actorLink: true, 'lightAnimation.speed': 5 }, {})
 );
 
-expectType<EmbeddedCollection<ConfiguredDocumentClass<typeof foundry.documents.BaseItem>, foundry.data.ActorData>>(
+expectType<EmbeddedCollection<ConfiguredDocumentClass<typeof Item>, foundry.data.ActorData>>(
   doc.getEmbeddedCollection('Item')
 );
-expectType<
-  EmbeddedCollection<ConfiguredDocumentClass<typeof foundry.documents.BaseActiveEffect>, foundry.data.ActorData>
->(doc.getEmbeddedCollection('ActiveEffect'));
+expectType<EmbeddedCollection<ConfiguredDocumentClass<typeof ActiveEffect>, foundry.data.ActorData>>(
+  doc.getEmbeddedCollection('ActiveEffect')
+);
 
 expectType<Promise<Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>>>(
   doc.createActorEmbeddedDocuments('Item', [{ name: 'My Item', 'effects.': 5 }], { noHook: true })

@@ -9,10 +9,8 @@ declare global {
    */
   class DocumentSheetConfig<
     Options extends FormApplicationOptions = FormApplicationOptions,
-    Data extends object = DocumentSheetConfig.Data<foundry.abstract.Document<any, any>, Options>,
-    ConcreteDocument extends foundry.abstract.Document<any, any> = Data extends DocumentSheetConfig.Data<infer T>
-      ? T
-      : foundry.abstract.Document<any, any>
+    Data extends object = DocumentSheetConfig.Data<AnyDocument, Options>,
+    ConcreteDocument extends AnyDocument = Data extends DocumentSheetConfig.Data<infer T> ? T : AnyDocument
   > extends FormApplication<Options, Data, ConcreteDocument> {
     /**
      * @defaultValue
@@ -139,7 +137,7 @@ declare global {
      * @typeParam Options          - The type of the options object
      */
     interface Data<
-      ConcreteDocument extends foundry.abstract.Document<any, any>,
+      ConcreteDocument extends AnyDocument,
       Options extends FormApplicationOptions = FormApplicationOptions
     > {
       isGM: boolean;
@@ -176,9 +174,7 @@ declare global {
    */
   class EntitySheetConfig<
     Options extends FormApplicationOptions = FormApplicationOptions,
-    Data extends object = DocumentSheetConfig.Data<foundry.abstract.Document<any, any>, Options>,
-    ConcreteDocument extends foundry.abstract.Document<any, any> = Data extends DocumentSheetConfig.Data<infer T>
-      ? T
-      : foundry.abstract.Document<any, any>
+    Data extends object = DocumentSheetConfig.Data<AnyDocument, Options>,
+    ConcreteDocument extends AnyDocument = Data extends DocumentSheetConfig.Data<infer T> ? T : AnyDocument
   > extends DocumentSheetConfig<Options, Data, ConcreteDocument> {}
 }

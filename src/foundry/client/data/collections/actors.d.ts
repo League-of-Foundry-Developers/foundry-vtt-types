@@ -18,18 +18,15 @@ declare global {
      * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
      * Each Actor is referenced by the Token.id.
      */
-    get tokens(): Partial<Record<string, InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>>>;
+    get tokens(): Partial<Record<string, InstanceType<ConfiguredDocumentClass<typeof Actor>>>>;
 
     static override documentName: 'Actor';
 
     override fromCompendium(
       document:
-        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>
-        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>['data']['_source'],
+        | InstanceType<ConfiguredDocumentClass<typeof Actor>>
+        | InstanceType<ConfiguredDocumentClass<typeof Actor>>['data']['_source'],
       options?: WorldCollection.FromCompendiumOptions | undefined
-    ): Omit<
-      InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>['data']['_source'],
-      '_id' | 'folder'
-    >;
+    ): Omit<InstanceType<ConfiguredDocumentClass<typeof Actor>>['data']['_source'], '_id' | 'folder'>;
   }
 }

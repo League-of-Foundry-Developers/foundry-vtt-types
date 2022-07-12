@@ -1,24 +1,68 @@
 import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import type DataModel from '../../../common/abstract/data.mjs';
 import type { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
-import type {
-  AmbientLightDataConstructorData,
-  AmbientLightDataSource
-} from '../../../common/data/data.mjs/ambientLightData';
-import type {
-  AmbientSoundDataConstructorData,
-  AmbientSoundDataSource
-} from '../../../common/data/data.mjs/ambientSoundData';
-import type { DrawingDataConstructorData, DrawingDataSource } from '../../../common/data/data.mjs/drawingData';
-import type {
-  MeasuredTemplateDataConstructorData,
-  MeasuredTemplateDataSource
-} from '../../../common/data/data.mjs/measuredTemplateData';
-import type { NoteDataConstructorData, NoteDataSource } from '../../../common/data/data.mjs/noteData';
-import type { TileDataConstructorData, TileDataSource } from '../../../common/data/data.mjs/tileData';
-import type { TokenDataConstructorData, TokenDataSource } from '../../../common/data/data.mjs/tokenData';
-import type { WallDataConstructorData, WallDataSource } from '../../../common/data/data.mjs/wallData';
 
-import type { SceneDataConstructorData } from '../../../common/data/data.mjs/sceneData';
+type SceneDimensions = {
+  /**
+   * The width of the canvas.
+   */
+  width: number;
+
+  /**
+   * The height of the canvas.
+   */
+  height: number;
+
+  /**
+   * The grid size.
+   */
+  size: number;
+
+  /**
+   * The canvas rectangle.
+   */
+  rect: Rectangle;
+
+  /**
+   * The X coordinate of the scene rectangle within the larger canvas.
+   */
+  sceneX: number;
+
+  /**
+   * The Y coordinate of the scene rectangle within the larger canvas.
+   */
+  sceneY: number;
+
+  /**
+   * The width of the scene.
+   */
+  sceneWidth: number;
+
+  /**
+   * The height of the scene.
+   */
+  sceneHeight: number;
+
+  /**
+   * The scene rectangle.
+   */
+  sceneRect: Rectangle;
+
+  /**
+   * The number of distance units in a single grid space.
+   */
+  distance: number;
+
+  /**
+   * The aspect ratio of the scene rectangle.
+   */
+  ratio: number;
+
+  /**
+   * The length of the longest line that can be drawn on the canvas.
+   */
+  maxR: number;
+};
 
 declare global {
   /**
@@ -59,16 +103,6 @@ declare global {
     _viewPosition: { x: number; y: number; scale: number } | {};
 
     /**
-     * A convenience accessor for whether the Scene is currently active
-     */
-    get active(): this['data']['active'];
-
-    /**
-     * A convenience accessor for the background image of the Scene
-     */
-    get img(): this['data']['img'];
-
-    /**
      * Provide a thumbnail image path used to represent this document.
      */
     get thumbnail(): this['data']['thumb'];
@@ -77,21 +111,6 @@ declare global {
      * A convenience accessor for whether the Scene is currently viewed
      */
     get isView(): boolean;
-
-    /**
-     * A reference to the JournalEntry document associated with this Scene, or null
-     */
-    get journal(): InstanceType<ConfiguredDocumentClass<typeof JournalEntry>> | null;
-
-    /**
-     * A reference to the Playlist document for this Scene, or null
-     */
-    get playlist(): InstanceType<ConfiguredDocumentClass<typeof Playlist>> | null;
-
-    /**
-     * A reference to the PlaylistSound document which should automatically play for this Scene, if any
-     */
-    get playlistSound(): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BasePlaylistSound>> | null;
 
     /**
      * Set this scene as currently active
@@ -109,32 +128,42 @@ declare global {
      * @param options    - (default: `{}`)
      */
     override clone(
-      createData?: DeepPartial<SceneDataConstructorData | (SceneDataConstructorData & Record<string, unknown>)>,
+      createData?: DeepPartial<
+        | DataModel.SchemaToSourceInput<foundry.documents.BaseScene['schema']>
+        | (DataModel.SchemaToSourceInput<foundry.documents.BaseScene['schema']> & Record<string, unknown>)
+      >,
       options?: { save?: boolean; keepId?: boolean }
     ): TemporaryDocument<this> | Promise<TemporaryDocument<this | undefined>>;
 
     override prepareBaseData(): void;
 
+    /**
+     * Get the Canvas dimensions which would be used to display this Scene.
+     * Apply padding to enlarge the playable space and round to the nearest 2x grid size to ensure symmetry.
+     * The rounding accomplishes that the padding buffer around the map always contains whole grid spaces.
+     */
+    getDimensions(): SceneDimensions;
+
     protected override _preCreate(
-      data: SceneDataConstructorData,
+      data: DataModel.SchemaToSourceInput<foundry.documents.BaseScene['schema']>,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;
 
     protected override _onCreate(
-      data: foundry.data.SceneData['_source'],
+      data: foundry.documents.BaseScene['_source'],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
     protected override _preUpdate(
-      changed: DeepPartial<SceneDataConstructorData>,
+      changed: DeepPartial<DataModel.SchemaToSourceInput<foundry.documents.BaseScene['schema']>>,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.SceneData['_source']> & Record<string, unknown>,
+      changed: DeepPartial<foundry.documents.BaseScene['_source']> & Record<string, unknown>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -154,49 +183,49 @@ declare global {
 
     override _preCreateEmbeddedDocuments(
       embeddedName: string,
-      result: DrawingDataConstructorData[],
+      result: DataModel.SchemaToSourceInput<foundry.documents.BaseDrawing['schema']>[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
     _preCreateEmbeddedDocuments(
       embeddedName: string,
-      result: TokenDataConstructorData[],
+      result: DataModel.SchemaToSourceInput<foundry.documents.BaseToken['schema']>[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
     _preCreateEmbeddedDocuments(
       embeddedName: string,
-      result: AmbientLightDataConstructorData[],
+      result: DataModel.SchemaToSourceInput<foundry.documents.BaseAmbientLight['schema']>[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
     _preCreateEmbeddedDocuments(
       embeddedName: string,
-      result: NoteDataConstructorData[],
+      result: DataModel.SchemaToSourceInput<foundry.documents.BaseNote['schema']>[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
     _preCreateEmbeddedDocuments(
       embeddedName: string,
-      result: AmbientSoundDataConstructorData[],
+      result: DataModel.SchemaToSourceInput<foundry.documents.BaseAmbientSound['schema']>[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
     _preCreateEmbeddedDocuments(
       embeddedName: string,
-      result: MeasuredTemplateDataConstructorData[],
+      result: DataModel.SchemaToSourceInput<foundry.documents.BaseMeasuredTemplate['schema']>[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
     _preCreateEmbeddedDocuments(
       embeddedName: string,
-      result: TileDataConstructorData[],
+      result: DataModel.SchemaToSourceInput<foundry.documents.BaseTile['schema']>[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
     _preCreateEmbeddedDocuments(
       embeddedName: string,
-      result: WallDataConstructorData[],
+      result: DataModel.SchemaToSourceInput<foundry.documents.BaseWall['schema']>[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -204,105 +233,105 @@ declare global {
     override _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>[],
-      result: DeepPartial<DrawingDataSource>[],
+      result: DeepPartial<foundry.documents.BaseDrawing['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>[],
-      result: DeepPartial<TokenDataSource>[],
+      result: DeepPartial<foundry.documents.BaseToken['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof AmbientLightDocument>>[],
-      result: DeepPartial<AmbientLightDataSource>[],
+      result: DeepPartial<foundry.documents.BaseAmbientLight['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>[],
-      result: DeepPartial<NoteDataSource>[],
+      result: DeepPartial<foundry.documents.BaseNote['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof AmbientSoundDocument>>[],
-      result: DeepPartial<AmbientSoundDataSource>[],
+      result: DeepPartial<foundry.documents.BaseAmbientSound['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>[],
-      result: DeepPartial<MeasuredTemplateDataSource>[],
+      result: DeepPartial<foundry.documents.BaseMeasuredTemplate['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof TileDocument>>[],
-      result: DeepPartial<TileDataSource>[],
+      result: DeepPartial<foundry.documents.BaseTile['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof WallDocument>>[],
-      result: DeepPartial<WallDataSource>[],
+      result: DeepPartial<foundry.documents.BaseWall['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
 
     override _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<DrawingDataSource>[],
+      result: DeepPartial<foundry.documents.BaseDrawing['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<TokenDataSource>[],
+      result: DeepPartial<foundry.documents.BaseToken['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<AmbientLightDataSource>[],
+      result: DeepPartial<foundry.documents.BaseAmbientLight['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<NoteDataSource>[],
+      result: DeepPartial<foundry.documents.BaseNote['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<AmbientSoundDataSource>[],
+      result: DeepPartial<foundry.documents.BaseAmbientSound['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<MeasuredTemplateDataSource>[],
+      result: DeepPartial<foundry.documents.BaseMeasuredTemplate['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<TileDataSource>[],
+      result: DeepPartial<foundry.documents.BaseTile['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<WallDataSource>[],
+      result: DeepPartial<foundry.documents.BaseWall['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -310,56 +339,56 @@ declare global {
     override _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>[],
-      result: DeepPartial<DrawingDataSource>[],
+      result: DeepPartial<foundry.documents.BaseDrawing['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>[],
-      result: DeepPartial<TokenDataSource>[],
+      result: DeepPartial<foundry.documents.BaseToken['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof AmbientLightDocument>>[],
-      result: DeepPartial<AmbientLightDataSource>[],
+      result: DeepPartial<foundry.documents.BaseAmbientLight['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>[],
-      result: DeepPartial<NoteDataSource>[],
+      result: DeepPartial<foundry.documents.BaseNote['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof AmbientSoundDocument>>[],
-      result: DeepPartial<AmbientSoundDataSource>[],
+      result: DeepPartial<foundry.documents.BaseAmbientSound['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>[],
-      result: DeepPartial<MeasuredTemplateDataSource>[],
+      result: DeepPartial<foundry.documents.BaseMeasuredTemplate['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof TileDocument>>[],
-      result: DeepPartial<TileDataSource>[],
+      result: DeepPartial<foundry.documents.BaseTile['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof WallDocument>>[],
-      result: DeepPartial<WallDataSource>[],
+      result: DeepPartial<foundry.documents.BaseWall['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -431,8 +460,8 @@ declare global {
     override toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocumentMixin.CompendiumExportOptions | undefined
-    ): Omit<foundry.data.SceneData['_source'], '_id' | 'folder' | 'permission'> & {
-      permission?: foundry.data.SceneData extends { toObject(): infer U } ? U : never;
+    ): Omit<foundry.documents.BaseScene['_source'], '_id' | 'folder' | 'permission'> & {
+      permission?: foundry.documents.BaseScene['data'] extends { toObject(): infer U } ? U : never;
     };
 
     /**

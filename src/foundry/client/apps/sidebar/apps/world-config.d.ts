@@ -72,6 +72,6 @@ declare namespace WorldConfig {
     worldKbUrl: typeof WorldConfig['WORLD_KB_URL'];
     inWorld: boolean;
     showEditFields: boolean;
-    systems?: Game.SystemData<foundry.packages.SystemData>[];
+    systems?: Collection<System>;
   }
 }

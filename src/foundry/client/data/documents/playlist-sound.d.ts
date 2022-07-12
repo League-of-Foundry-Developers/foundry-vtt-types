@@ -1,16 +1,14 @@
 import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import type { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
+import type { DocumentModificationOptions } from '../../../common/abstract/document.mjs.js';
 
 declare global {
   /**
    * The client-side PlaylistSound document which extends the common BasePlaylistSound model.
    * Each PlaylistSound belongs to the sounds collection of a Playlist document.
-   * Each PlaylistSound contains a PlaylistSoundData object which provides its source data.
    *
-   * @see {@link foundry.data.PlaylistSoundData} The PlaylistSound data schema
-   * @see {@link Playlist}                       The Playlist document which contains PlaylistSound embedded documents
-   * @see {@link Sound}                          The Sound API which manages web audio playback
-   *
+   * @see {@link Playlist}              The Playlist document which contains PlaylistSound embedded documents
+   * @see {@link PlaylistSoundConfig}   The PlaylistSound configuration application
+   * @see {@link Sound}                 The Sound API which manages web audio playback
    */
   class PlaylistSound extends ClientDocumentMixin(foundry.documents.BasePlaylistSound) {
     /**
@@ -46,21 +44,6 @@ declare global {
     protected _createSound(): Sound | null;
 
     /**
-     * A convenience reference to the HTTP path to the source audio file
-     */
-    get path(): string | undefined | null;
-
-    /**
-     * A convenience indicator for whether this sound is currently playing.
-     */
-    get playing(): boolean;
-
-    /**
-     * The effective volume at which this PlaylistSound should be playing, including the global playlist volume modifier
-     */
-    get volume(): number;
-
-    /**
      * Determine the fade duration for this PlaylistSound based on its own configuration and that of its parent.
      */
     get fadeDuration(): number;
@@ -71,13 +54,13 @@ declare global {
     sync(): void | Promise<void> | Promise<Sound>;
 
     override _onCreate(
-      data: foundry.data.PlaylistSoundData['_source'],
+      data: foundry.documents.BasePlaylistSound['_source'],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.PlaylistSoundData['_source']>,
+      changed: DeepPartial<foundry.documents.BasePlaylistSound['_source']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;

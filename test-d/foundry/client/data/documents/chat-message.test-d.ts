@@ -1,4 +1,4 @@
-import type { ChatSpeakerData } from '../../../../../src/foundry/common/data/data.mjs/chatSpeakerData';
+import type { ChatSpeakerData } from '../../../../../src/foundry/common/data/data.mjs.d.ts/chatSpeakerData';
 import type { ConstructorDataType } from '../../../../../src/types/helperTypes';
 
 import { expectError, expectType } from 'tsd';

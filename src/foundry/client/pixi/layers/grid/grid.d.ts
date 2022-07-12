@@ -114,7 +114,7 @@ declare namespace BaseGrid {
   interface GridOptions {
     dimensions: Canvas['dimensions'];
     color: string;
-    alpha: Scene['data']['gridAlpha'];
+    alpha: foundry.documents.BaseScene['grid']['alpha'];
     columns?: boolean;
     even?: boolean;
   }

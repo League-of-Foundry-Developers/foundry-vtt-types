@@ -19,7 +19,7 @@ declare global {
      * If requested, dispatch a Chat Bubble UI for the newly created message
      * @param message - The ChatMessage document to say
      */
-    sayBubble(message: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseChatMessage>>): void;
+    sayBubble(message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>): void;
 
     /**
      * Handle export of the chat log to a text file
@@ -31,9 +31,7 @@ declare global {
      * @see {@link Dialog.confirm}
      */
     flush(): Promise<
-      | Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseChatMessage>>>[]>
-      | false
-      | null
+      Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>>[]> | false | null
     >;
   }
 }

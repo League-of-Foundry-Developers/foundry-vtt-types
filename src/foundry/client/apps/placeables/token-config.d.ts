@@ -1,5 +1,4 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import type { TokenBarData } from '../../../common/data/data.mjs/tokenBarData';
+import type { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
 
 declare global {
   /**
@@ -107,7 +106,7 @@ declare global {
       isPrototype: boolean;
       hasAlternates: boolean;
       alternateImages: Record<string, string> | [];
-      object: foundry.data.PrototypeTokenData | foundry.data.TokenData;
+      object: foundry.data.PrototypeTokenData | foundry.documents.BaseToken['data'];
       options: Options;
       gridUnits: string;
       barAttributes: Record<string, string[]>;
@@ -168,7 +167,7 @@ declare global {
   > extends TokenConfig<Options, Data> {
     constructor(object: unknown, options?: Partial<Options> | undefined);
 
-    data: foundry.data.TokenData;
+    data: foundry.documents.BaseToken['data'];
 
     object: InstanceType<ConfiguredDocumentClassForName<'Token'>>;
 
@@ -216,11 +215,11 @@ declare global {
   namespace DefaultTokenConfig {
     interface Data<Options extends FormApplicationOptions = FormApplicationOptions>
       extends Omit<TokenConfig.Data<Options>, 'object' | 'bar1' | 'bar2'> {
-      object: foundry.data.TokenData['_source'];
+      object: foundry.documents.BaseToken['_source'];
       isDefault: true;
-      barAttributes: ReturnType<typeof TokenDocument['getTrackedAttributeChoices']>;
-      bar1: TokenBarData;
-      bar2: TokenBarData;
+      barAttributes: ReturnType<ConfiguredDocumentClass<typeof TokenDocument>['getTrackedAttributeChoices']>;
+      bar1: foundry.documents.BaseToken['bar1'];
+      bar2: foundry.documents.BaseToken['bar2'];
     }
   }
 }

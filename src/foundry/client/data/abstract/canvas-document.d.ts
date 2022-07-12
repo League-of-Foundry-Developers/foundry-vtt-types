@@ -1,4 +1,4 @@
-import { ConstructorDataType } from '../../../../types/helperTypes';
+import type DataModel from '../../../common/abstract/data.mjs.js';
 import { ContextType, DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 import { ClientDocumentMixin } from './client-document';
 
@@ -7,19 +7,17 @@ declare global {
   /**
    * A specialized sub-class of the ClientDocumentMixin which is used for document types that are intended to be represented upon the game Canvas.
    */
-  const CanvasDocumentMixin: <T extends ConstructorOf<foundry.abstract.Document<any, any>>>(
-    Base: T
-  ) => CanvasDocumentConstructor<T>;
+
+  const CanvasDocumentMixin: <T>(Base: T) => T; //CanvasDocumentConstructor<T>;
 }
 
-type CanvasDocumentConstructor<T extends ConstructorOf<foundry.abstract.Document<any, any>>> = Pick<T, keyof T> &
-  Pick<typeof CanvasDocumentMixin, keyof typeof CanvasDocumentMixin> &
+type CanvasDocumentConstructor<T extends ConstructorOf<AnyDocument>> = Pick<T, keyof T> &
   Pick<typeof ClientDocumentMixin, keyof typeof ClientDocumentMixin> & {
     new (...args: ConstructorParameters<T>): InstanceType<T> & CanvasDocumentMixin<InstanceType<T>>;
   };
 
-declare class CanvasDocumentMixin<T extends foundry.abstract.Document<any, any>> extends ClientDocumentMixin<T> {
-  constructor(data?: ConstructorDataType<T['data']>, context?: ContextType<T>);
+declare class CanvasDocumentMixin<T extends AnyDocument> extends ClientDocumentMixin<T> {
+  constructor(data?: DataModel.SchemaToSourceInput<T['schema']>, context?: ContextType<T>);
 
   /**
    * A reference to the PlaceableObject instance which represents this Embedded Document.

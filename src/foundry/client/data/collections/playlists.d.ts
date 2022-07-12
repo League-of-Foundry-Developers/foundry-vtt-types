@@ -1,5 +1,4 @@
 import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
-import type { SceneDataConstructorData } from '../../../common/data/data.mjs/sceneData';
 
 declare global {
   /**
@@ -10,11 +9,7 @@ declare global {
    * @see {@link PlaylistDirectory} The PlaylistDirectory sidebar directory
    */
   class Playlists extends WorldCollection<typeof foundry.documents.BasePlaylist, 'Playlists'> {
-    constructor(
-      data?: StoredDocument<
-        InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BasePlaylist>>
-      >['data']['_source'][]
-    );
+    constructor(data?: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Playlist>>>['data']['_source'][]);
 
     static override documentName: 'Playlist';
 
@@ -34,8 +29,8 @@ declare global {
      * @param data  - The incremental update data
      */
     protected _onChangeScene(
-      scene: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>>,
-      data: DeepPartial<SceneDataConstructorData>
+      scene: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Scene>>>,
+      data: DeepPartial<foundry.documents.BaseScene['_source']>
     ): Promise<void>;
   }
 }

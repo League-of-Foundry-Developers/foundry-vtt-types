@@ -1,8 +1,5 @@
 import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import type { AmbientLightDataConstructorData } from '../../../common/data/data.mjs/ambientLightData';
-import type { AnimationDataConstructorData } from '../../../common/data/data.mjs/animationData';
-import type { DarknessActivationConstructorData } from '../../../common/data/data.mjs/darknessActivation';
-import type { LightDataConstructorData } from '../../../common/data/data.mjs/lightData';
+import type DataModel from '../../../common/abstract/data.mjs';
 
 declare global {
   /**
@@ -65,24 +62,28 @@ declare global {
       submitText: string;
     }
 
-    interface FormData extends Pick<AmbientLightDataConstructorData, 'x' | 'y' | 'rotation' | 'walls' | 'vision'> {
-      'config.dim': LightDataConstructorData['dim'];
-      'config.bright': LightDataConstructorData['bright'];
-      'config.angle': LightDataConstructorData['angle'];
-      'config.color': LightDataConstructorData['color'];
-      'config.alpha': LightDataConstructorData['alpha'];
-      'config.darkness.min': DarknessActivationConstructorData['min'];
-      'config.darkness.max': DarknessActivationConstructorData['max'];
-      'config.animation.type': AnimationDataConstructorData['type'];
-      'config.animation.speed': AnimationDataConstructorData['speed'];
-      'config.animation.reverse': AnimationDataConstructorData['reverse'];
-      'config.animation.intensity': AnimationDataConstructorData['intensity'];
-      'config.coloration': LightDataConstructorData['coloration'];
-      'config.luminosity': LightDataConstructorData['luminosity'];
-      'config.gradual': LightDataConstructorData['gradual'];
-      'config.saturation': LightDataConstructorData['saturation'];
-      'config.contrast': LightDataConstructorData['contrast'];
-      'config.shadows': LightDataConstructorData['shadows'];
+    interface FormData
+      extends Pick<
+        DataModel.SchemaToSourceInput<foundry.documents.BaseAmbientLight['schema']>,
+        'x' | 'y' | 'rotation' | 'walls' | 'vision'
+      > {
+      'config.dim': foundry.data.LightData['dim'];
+      'config.bright': foundry.data.LightData['bright'];
+      'config.angle': foundry.data.LightData['angle'];
+      'config.color': foundry.data.LightData['color'];
+      'config.alpha': foundry.data.LightData['alpha'];
+      'config.darkness.min': foundry.data.LightData['darkness']['min'];
+      'config.darkness.max': foundry.data.LightData['darkness']['max'];
+      'config.animation.type': foundry.data.LightData['animation']['type'];
+      'config.animation.speed': foundry.data.LightData['animation']['speed'];
+      'config.animation.reverse': foundry.data.LightData['animation']['reverse'];
+      'config.animation.intensity': foundry.data.LightData['animation']['intensity'];
+      'config.coloration': foundry.data.LightData['coloration'];
+      'config.luminosity': foundry.data.LightData['luminosity'];
+      'config.attenuation': foundry.data.LightData['attenuation'];
+      'config.saturation': foundry.data.LightData['saturation'];
+      'config.contrast': foundry.data.LightData['contrast'];
+      'config.shadows': foundry.data.LightData['shadows'];
     }
   }
 

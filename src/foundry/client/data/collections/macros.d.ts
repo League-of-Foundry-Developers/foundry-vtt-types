@@ -15,12 +15,9 @@ declare global {
 
     override fromCompendium(
       document:
-        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseMacro>>
-        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseMacro>>['data']['_source'],
+        | InstanceType<ConfiguredDocumentClass<typeof Macro>>
+        | InstanceType<ConfiguredDocumentClass<typeof Macro>>['data']['_source'],
       options?: WorldCollection.FromCompendiumOptions | undefined
-    ): Omit<
-      InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseMacro>>['data']['_source'],
-      '_id' | 'folder'
-    >;
+    ): Omit<InstanceType<ConfiguredDocumentClass<typeof Macro>>['data']['_source'], '_id' | 'folder'>;
   }
 }

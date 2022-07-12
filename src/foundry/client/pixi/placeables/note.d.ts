@@ -52,7 +52,7 @@ declare global {
 
     override refresh(): this;
 
-    protected override _onUpdate(changed: DeepPartial<foundry.data.NoteData['_source']>): void;
+    protected override _onUpdate(changed: DeepPartial<foundry.documents.BaseNote['_source']>): void;
 
     protected override _canHover(user: InstanceType<ConfiguredDocumentClassForName<'User'>>): true;
 

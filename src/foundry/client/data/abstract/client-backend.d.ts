@@ -1,6 +1,6 @@
 import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import type { Request } from '../../../common/abstract/backend.mjs.js';
-import type Document from '../../../common/abstract/document.mjs.js';
+import type { Request } from '../../../common/abstract/backend.mjs';
+import type Document from '../../../common/abstract/document.mjs';
 
 declare global {
   /**
@@ -13,7 +13,7 @@ declare global {
      */
     activateSocketListeners(socket: io.Socket): void;
 
-    protected override _getDocuments<T extends Document<any, any>>(
+    protected override _getDocuments<T extends AnyDocument>(
       documentClass: ConstructorOf<T>,
       request: Request,
       user: InstanceType<ConfiguredDocumentClassForName<'User'>>
@@ -24,22 +24,22 @@ declare global {
      * Get operations for embedded Documents are currently un-supported.
      * The returned promise always rejects.
      */
-    protected override _getEmbeddedDocuments<T extends Document<any, any>>(
+    protected override _getEmbeddedDocuments<T extends AnyDocument>(
       documentClass: ConstructorOf<T>,
-      parent: T extends Document<any, infer U> ? U : never,
+      parent: Document.ParentTypeFor<T>,
       request: Request,
       user: InstanceType<ConfiguredDocumentClassForName<'User'>>
     ): Promise<never>;
 
-    protected override _createDocuments<T extends Document<any, any>>(
+    protected override _createDocuments<T extends AnyDocument>(
       documentClass: ConstructorOf<T>,
       request: Request,
       user: InstanceType<ConfiguredDocumentClassForName<'User'>>
     ): Promise<T[]>;
 
-    protected override _createEmbeddedDocuments<T extends Document<any, any>>(
+    protected override _createEmbeddedDocuments<T extends AnyDocument>(
       documentClass: ConstructorOf<T>,
-      parent: T extends Document<any, infer U> ? U : never,
+      parent: Document.ParentTypeFor<T>,
       request: Request,
       user: InstanceType<ConfiguredDocumentClassForName<'User'>>
     ): Promise<T[]>;
@@ -48,7 +48,7 @@ declare global {
      * Perform a standardized pre-creation workflow for all Document types. For internal use only.
      * @internal
      */
-    protected _preCreateDocumentArray<T extends Document<any, any>>(
+    protected _preCreateDocumentArray<T extends AnyDocument>(
       documentClass: ConstructorOf<T>,
       {
         data,
@@ -67,7 +67,7 @@ declare global {
      * @returns An Array of created Document instances
      * @internal
      */
-    protected _handleCreateDocuments(response: SocketResponse): foundry.abstract.Document<any, any>[];
+    protected _handleCreateDocuments(response: SocketResponse): AnyDocument[];
 
     /**
      * Handle a SocketResponse from the server when one or multiple documents were created
@@ -75,7 +75,7 @@ declare global {
      * @returns An Array of created Document instances
      * @internal
      */
-    protected _handleCreateEmbeddedDocuments(response: SocketResponse): foundry.abstract.Document<any, any>[];
+    protected _handleCreateEmbeddedDocuments(response: SocketResponse): AnyDocument[];
 
     /**
      * Perform a standardized post-creation workflow for all Document types. For internal use only.
@@ -84,20 +84,20 @@ declare global {
      */
     protected _postCreateDocumentCallbacks(
       type: string,
-      collection: Collection<foundry.abstract.Document<any, any>>,
+      collection: Collection<AnyDocument>,
       result: object[],
       { options, userId, parent, pack }: Pick<Request, 'options' | 'parent' | 'pack'> & { userId?: string }
     ): (() => void)[];
 
-    protected override _updateDocuments<T extends Document<any, any>>(
+    protected override _updateDocuments<T extends AnyDocument>(
       documentClass: ConstructorOf<T>,
       request: Request,
       user: InstanceType<ConfiguredDocumentClassForName<'User'>>
     ): Promise<T[]>;
 
-    protected override _updateEmbeddedDocuments<T extends Document<any, any>>(
+    protected override _updateEmbeddedDocuments<T extends AnyDocument>(
       documentClass: ConstructorOf<T>,
-      parent: T extends Document<any, infer U> ? U : never,
+      parent: Document.ParentTypeFor<T>,
       request: Request,
       user: InstanceType<ConfiguredDocumentClassForName<'User'>>
     ): Promise<T[]>;
@@ -106,7 +106,7 @@ declare global {
      * Perform a standardized pre-update workflow for all Document types. For internal use only.
      * @internal
      */
-    protected _preUpdateDocumentArray<T extends Document<any, any>>(
+    protected _preUpdateDocumentArray<T extends AnyDocument>(
       collection: Collection<T>,
       {
         updates,
@@ -123,7 +123,7 @@ declare global {
      * @returns An Array of updated Document instances
      * @internal
      */
-    protected _handleUpdateDocuments(response: SocketResponse): foundry.abstract.Document<any, any>[];
+    protected _handleUpdateDocuments(response: SocketResponse): AnyDocument[];
 
     /**
      * Handle a SocketResponse from the server when embedded Documents are updated in a parent Document.
@@ -131,7 +131,7 @@ declare global {
      * @returns An Array of updated Document instances
      * @internal
      */
-    protected _handleUpdateEmbeddedDocuments(response: SocketResponse): foundry.abstract.Document<any, any>[];
+    protected _handleUpdateEmbeddedDocuments(response: SocketResponse): AnyDocument[];
 
     /**
      * Perform a standardized post-update workflow for all Document types. For internal use only.
@@ -139,20 +139,20 @@ declare global {
      * @internal
      */
     protected _postUpdateDocumentCallbacks(
-      collection: Collection<foundry.abstract.Document<any, any>>,
+      collection: Collection<AnyDocument>,
       result: object[],
       { options, userId }: Pick<Request, 'options'> & { userId?: string }
     ): () => void;
 
-    protected override _deleteDocuments<T extends Document<any, any>>(
+    protected override _deleteDocuments<T extends AnyDocument>(
       documentClass: ConstructorOf<T>,
       request: Request,
       user: InstanceType<ConfiguredDocumentClassForName<'User'>>
     ): Promise<T[]>;
 
-    protected override _deleteEmbeddedDocuments<T extends Document<any, any>>(
+    protected override _deleteEmbeddedDocuments<T extends AnyDocument>(
       documentClass: ConstructorOf<T>,
-      parent: T extends Document<any, infer U> ? U : never,
+      parent: Document.ParentTypeFor<T>,
       request: Request,
       user: InstanceType<ConfiguredDocumentClassForName<'User'>>
     ): Promise<T[]>;
@@ -161,7 +161,7 @@ declare global {
      * Perform a standardized pre-delete workflow for all Document types. For internal use only.
      * @internal
      */
-    protected _preDeleteDocumentArray<T extends Document<any, any>>(
+    protected _preDeleteDocumentArray<T extends AnyDocument>(
       collection: Collection<T>,
       {
         ids,
@@ -176,7 +176,7 @@ declare global {
      * @returns An Array of deleted Document instances
      * @internal
      */
-    protected _handleDeleteDocuments(response: SocketResponse): foundry.abstract.Document<any, any>[];
+    protected _handleDeleteDocuments(response: SocketResponse): AnyDocument[];
 
     /**
      * Handle a SocketResponse from the server when embedded Documents are deleted from a parent Document.
@@ -184,7 +184,7 @@ declare global {
      * @returns An Array of deleted Document instances
      * @internal
      */
-    protected _handleDeleteEmbeddedDocuments(response: SocketResponse): foundry.abstract.Document<any, any>[];
+    protected _handleDeleteEmbeddedDocuments(response: SocketResponse): AnyDocument[];
 
     /**
      * Perform a standardized post-deletion workflow for all Document types. For internal use only.
@@ -192,7 +192,7 @@ declare global {
      * @internal
      */
     protected _postDeleteDocumentCallbacks(
-      collection: Collection<foundry.abstract.Document<any, any>>,
+      collection: Collection<AnyDocument>,
       result: object[],
       { options, userId }: Pick<Request, 'options'> & { userId?: string }
     ): (() => void)[];

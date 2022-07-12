@@ -1,5 +1,4 @@
-import type { ConfiguredDocumentClassForName, ConstructorDataType } from '../../../../types/helperTypes.js';
-import type { CardFaceData } from '../../../common/data/module.mjs.js';
+import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes.js';
 
 declare global {
   /**
@@ -29,10 +28,6 @@ declare global {
     override getData(options?: Partial<Options>): Data | Promise<Data>;
 
     override activateListeners(html: JQuery): void;
-
-    protected override _getSubmitData(
-      updateData?: object | null
-    ): Record<string, unknown> & { faces: ConstructorDataType<CardFaceData>[] };
 
     /**
      * Handle card face control actions which modify single cards on the sheet.

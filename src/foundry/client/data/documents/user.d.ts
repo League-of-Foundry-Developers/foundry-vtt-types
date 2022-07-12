@@ -1,5 +1,5 @@
 import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
-import { DocumentDataType, DocumentModificationOptions } from '../../../common/abstract/document.mjs';
+import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
 declare global {
   interface ActivityData {
@@ -64,21 +64,6 @@ declare global {
     viewedScene: string | null;
 
     /**
-     * Return the User avatar icon or the controlled actor's image
-     */
-    get avatar(): string;
-
-    /**
-     * Return the Actor instance of the user's impersonated character (or undefined)
-     */
-    get character(): ReturnType<Exclude<Game['actors'], undefined>['get']>;
-
-    /**
-     * A convenience shortcut for the permissions object of the current User
-     */
-    get permissions(): foundry.data.UserData['permissions'];
-
-    /**
      * A flag for whether the current User is a Trusted Player
      */
     get isTrusted(): boolean;
@@ -136,7 +121,7 @@ declare global {
     updateTokenTargets(targetIds?: string[]): void;
 
     override _onUpdate(
-      data: DeepPartial<DocumentDataType<foundry.documents.BaseUser>>,
+      data: DeepPartial<foundry.documents.BaseUser['data']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -145,9 +130,6 @@ declare global {
 
     /** @remarks This property is set by PlayerList.getData() */
     charname?: string;
-
-    /** @remarks This property is set by PlayerList.getData() */
-    color?: string;
 
     /** @remarks This property is set by PlayerList.getData() */
     border?: string;

@@ -28,12 +28,6 @@ declare global {
      */
     get combat(): InstanceType<ConfiguredDocumentClass<typeof Combat>> | null;
 
-    /** Determine the image icon path that should be used to portray this Combatant in the combat tracker or elsewhere */
-    get img(): string;
-
-    /**  A convenience reference to the current initiative score of this Combatant */
-    get initiative(): number | null;
-
     /** This is treated as a non-player combatant if it has no associated actor and no player users who can control it */
     get isNPC(): boolean;
 
@@ -41,20 +35,17 @@ declare global {
 
     override get visible(): boolean;
 
-    /** Is this Combatant "hidden", either because they are explicitly marked as hidden or because their token is hidden */
-    get hidden(): boolean;
-
     /** The displayed name for the Combatant is based off its own configured data, or the data of its represented Token. */
     get name(): string;
 
     /** A reference to the Actor document which this Combatant represents, if any */
-    get actor(): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>> | null;
+    get actor(): InstanceType<ConfiguredDocumentClass<typeof Actor>> | null;
 
     /** A reference to the Token document which this Combatant represents, if any */
     get token(): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>> | null;
 
     /** An array of User documents who have ownership of this Document */
-    get players(): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseUser>>[];
+    get players(): InstanceType<ConfiguredDocumentClass<typeof User>>[];
 
     /**
      * Has this combatant been marked as defeated?
@@ -101,4 +92,3 @@ declare global {
     get isVisible(): boolean;
   }
 }
-export {};

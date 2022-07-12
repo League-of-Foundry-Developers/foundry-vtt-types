@@ -1,4 +1,4 @@
-import { ModuleData, SystemData } from '../../common/packages.mjs';
+export {};
 
 declare global {
   /**
@@ -66,7 +66,10 @@ declare global {
      * @param lang - The target language to filter on
      * @returns An array of translation file paths
      */
-    protected _filterLanguagePaths(pkg: ModuleData | SystemData, lang: string): string[];
+    protected _filterLanguagePaths(
+      pkg: foundry.packages.BaseModule['data'] | foundry.packages.BaseSystem['data'],
+      lang: string
+    ): string[];
 
     /**
      * Load a single translation file and return its contents as processed JSON

@@ -1,453 +1,1428 @@
-import { DOCUMENT_PERMISSION_LEVELS } from '../constants.mjs';
-import { hasImageExtension, isColorString, isJSON } from './validators.mjs';
+import { DOCUMENT_OWNERSHIP_LEVELS } from '../constants.mjs';
 import { Document } from '../abstract/module.mjs';
-import { FieldReturnType } from '../../../types/helperTypes';
+import DataModel, { DataSchema } from '../abstract/data.mjs';
+import type { DocumentConstructor, StructuralClass } from '../../../types/helperTypes.js';
+import EmbeddedCollection from '../abstract/embedded-collection.mjs';
+import type { Context } from '../abstract/document.mjs.js';
+
+type InitialType<T> = T | null | undefined | ((initialData: unknown) => T | null | undefined);
+
+export declare namespace DataField {
+  export type RequiredOptions<T> = DataField.DefaultOptions<T> & {
+    /** The name of this data field within the schema that contains it */
+    name: string;
+
+    /** A data validation function which accepts one argument with the current value. */
+    validate(value: T): boolean | void;
+  };
+
+  export type Options<ExtendsOptions extends AnyExtendsOptions> = Partial<
+    RequiredOptions<ExtendsOptions['SourceType']>
+  > &
+    ExtendsOptions['ExtraOptions'];
+
+  export type DefaultOptions<T> = {
+    /** Is this field required to be populated? */
+    required: boolean;
+
+    /** Can this field have null values? */
+    nullable: boolean;
+
+    /** Should the prepared value of the field be read-only, preventing it from being changed unless a change to the _source data is applied. */
+    readonly: boolean;
+
+    /** The initial value of a field, or a function which assigns that initial value. */
+    initial: InitialType<T>;
+
+    /** A localizable label displayed on forms which render this field. */
+    label: string;
+
+    /** Localizable help text displayed on forms which render this field. */
+    hint: string;
+
+    /** A custom validation error string. When displayed will be prepended with the document name, field name, and candidate value. */
+    validationError: string;
+  };
+
+  export type FoundryDefaultOptions = {
+    required: false;
+    nullable: false;
+    readonly: false;
+    initial: undefined;
+    label: '';
+    hint: '';
+    validationError: 'is not a valid value';
+  };
+
+  export type Any = InstanceType<typeof DataField>;
+
+  export type AnyConstructor = Pick<typeof DataField, keyof typeof DataField> & {
+    new (...args: any): Any;
+  };
+
+  export type ApplyableProperties<
+    Field extends DataField.Any,
+    Options extends object,
+    Result extends object
+  > = keyof Field extends unknown
+    ? Field[keyof Field] extends (options: Options) => Result
+      ? keyof Field
+      : never
+    : never;
+
+  export type InitialTypeFor<Field extends Any> = Field['initial'] extends () => infer R ? R : Field['initial'];
+
+  export type InitializedTypeFor<Field extends Any> = InternalInitializedTypeFor<Field, Field['#extendsOptions']>;
+
+  type InternalInitializedTypeFor<Field extends Any, ExtendsOptions extends AnyExtendsOptions> =
+    | ExtendsOptions['InitializedType']
+    | ExtraTypes<Field>;
+
+  export type SourceTypeFor<Field extends Any> = InternalSourceTypeFor<Field, ExtendsOptionsFor<Field>>;
+
+  type InternalSourceTypeFor<Field extends Any, ExtendsOptions extends AnyExtendsOptions> =
+    | Exclude<ExtendsOptions['SourceType'], undefined | null>
+    | ExtraTypes<Field>;
+
+  type ExtraTypes<Field extends Any> =
+    | (false extends ('required' extends keyof Field ? Field['required'] : never) ? undefined : never)
+    | (true extends ('nullable' extends keyof Field ? Field['nullable'] : never) ? null : never);
+
+  export type OptionsFor<Field extends typeof DataField> = Field extends abstract new (...args: any[]) => DataField<
+    infer Options,
+    any
+  >
+    ? Options
+    : never;
+
+  // `infer Options` is required here as opposed to `any`.
+  // The reason why is probably immensely cursed and related to structurally defining the class.
+  export type ExtendsOptionsFor<Field extends Any> = Field extends DataField<infer Options, infer ExtendsOptions>
+    ? ExtendsOptions
+    : never;
+
+  export type OptionalExtendsOptions = {
+    InitializedType?: any;
+    ValidateType?: any;
+  };
+
+  export type ExtendsOptions<
+    SourceType extends JSONValue,
+    DefaultOptionsValue extends DataField.DefaultOptions<SourceType> & InexactPartial<ExtraOptions>,
+    ExtraOptions extends object = {},
+    OptionalOptions extends OptionalExtendsOptions = {}
+  > = {
+    SourceType: SourceType;
+    ExtraOptions: ExtraOptions;
+
+    DefaultOptionsValue: DefaultOptionsValue;
+  } & SimpleMerge<
+    {
+      InitializedType: SourceType;
+      ValidateType: Error | undefined;
+    },
+    Pick<OptionalOptions, keyof OptionalExtendsOptions & keyof OptionalOptions>
+  >;
+
+  export type AnyExtendsOptions = ExtendsOptions<any, any, any, any>;
+}
+
+export declare abstract class DataField<
+  Options extends DataField.Options<ExtendsOptions>,
+  ExtendsOptions extends DataField.AnyExtendsOptions
+> extends _InternalDataField<Options, ExtendsOptions> {
+  constructor(options: Options);
+
+  // This private property is added so that statements such as `X extends DataField<any, infer ExtendsOptions> ? ... : ...` can function correctly.
+  // Essentially Typescript will infer the type parameter structurally by looking properties and because we're only using transforms of the type parameter it can't figure it out.
+  // See:
+  // - https://github.com/microsoft/TypeScript/issues/40796
+  // - https://github.com/Microsoft/TypeScript/wiki/FAQ#why-doesnt-type-inference-work-on-this-interface-interface-foot--
+  #extendsOptions: ExtendsOptions;
+
+  /**
+   * Default parameters for this field type
+   *
+   * @remarks To get type and runtime characteristics synced your implementation's return value and type MUST be synced up with `ExtendsOptions`.
+   * If your implementation looks like this:
+   * ```ts
+   * class SomeField<
+   *   Options extends DataField.Options<ExtendsOptions>,
+   *   ExtendsOptions extends DataField.AnyExtendsOption
+   * > {
+   *   static get _defaults(): DefaultOptions {
+   *     return mergeObject(super._defaults, {
+   *       readonly: true,
+   *       initial: "foo",
+   *       exampleProp: "abc"
+   *     });
+   *   }
+   * }
+   * ```
+   * `ExtendsOptions` should be `DataField.ExtendsOptions<{}>`
+   * `ExtraOptions` should be `{ exampleProp: string }`
+   * `DefaultOptionsValue` should be `SimpleMerge<DataField.FoundryDefaultOptions, { readonly: true, initial: "foo", exampleProp: "abc" }>`
+   * `DefaultOptions` should be `SimpleMerge<DataField.DefaultOptions<T>, {}>`
+   */
+  protected static get _defaults(): DataField.DefaultOptions<unknown>;
+
+  //   /**
+  //    * Apply a function to this DataField which propagates through recursively to any contained data schema.
+  //    * @param fn - The function to apply
+  //    * @param value - The current value of this field
+  //    * @returns The results object
+  //    */
+  //   apply<Result extends Record<string, never>>(
+  //     fn: DataField.ApplyableProperties<this, {}, Result> | ((options: {}) => Result),
+  //     value: DataField.InternalInitializedTypeFor<this, ExtendsOptions>
+  //   ): Result;
+
+  //   /**
+  //    * {@inheritdoc}
+  //    *
+  //    * @param options - Additional options passed to the applied function
+  //    */
+  //   apply<Result extends Record<string, unknown>, Options extends Record<string, unknown>>(
+  //     fn: DataField.ApplyableProperties<this, Options, Result> | ((options: Options) => Result),
+  //     value: DataField.InternalSourceTypeFor<this, ExtendsOptions>,
+  //     options: Options
+  //   ): Result;
+
+  //   // Data has the same type as DataModel.cleanData's source
+  //   /**
+  //    * Coerce source data to ensure that it conforms to the correct data type for the field.
+  //    * Data coercion operations should be simple and synchronous as these are applied whenever a DataModel is constructed.
+  //    * For one-off cleaning of user-provided input the sanitize method should be used.
+  //    * @param value - The initial value
+  //    * @param data - The source data object
+  //    * @param options - Additional options for how the field is cast
+  //    * @returns - The cast value
+  //    */
+  //   clean(
+  //     value: unknown,
+  //     data: Record<string, unknown>,
+  //     options: Record<string, unknown>
+  //   ): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
+
+  //   abstract _cast(value: unknown): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
+
+  //   /**
+  //    * Attempt to retrieve a valid initial value for the DataField.
+  //    * @param data - The source data object for which an initial value is required
+  //    * @returns - A valid initial value
+  //    * @throws - An error if there is no valid initial value defined
+  //    */
+  //   getInitialValue(data: Record<string, unknown>): DataField.InitialTypeFor<this>;
+
+  //   /**
+  //    * Validate a candidate input for this field, ensuring it meets the field requirements.
+  //    * A validation failure can be provided as a raised Error (with a string message) or by returning false.
+  //    * A validator which returns true denotes that the result is certainly valid and further validations are unnecessary.
+  //    * @param value - The initial value
+  //    * @param options - Options which affect validation behavior
+  //    * @returns - An Error instance if the value is not valid
+  //    */
+  //   validate(
+  //     value: DataField.InternalInitializedTypeFor<this, ExtendsOptions>,
+  //     options: Record<string, unknown>
+  //   ): ExtendsOptions['ValidateType'];
+
+  //   /**
+  //    * Special validation rules which supersede regular field validation.
+  //    * This validator screens for certain values which are otherwise incompatible with this field like null or undefined.
+  //    * @param value - The candidate value
+  //    * @returns - A boolean to indicate with certainty whether the value is valid. Otherwise, return void.
+  //    * @throws - May throw a specific error if the value is not valid
+  //    */
+  //   protected _validateSpecial(value: DataField.InternalInitializedTypeFor<this, ExtendsOptions>): boolean | void;
+
+  //   /**
+  //    * A default type-specific validator that can be overridden by child classes
+  //    * @param value - The candidate value
+  //    * @returns - A boolean to indicate with certainty whether the value is valid. Otherwise, return void.
+  //    * @throws - May throw a specific error if the value is not valid
+  //    */
+  //   protected _validateType(value: DataField.InternalInitializedTypeFor<this, ExtendsOptions>): boolean | void;
+
+  //   /**
+  //    * Initialize the original source data into a mutable copy for the DataModel instance.
+  //    * @param model - The DataModel instance that this field belongs to
+  //    * @param name - The field name of this instance within the model
+  //    * @param value - The source value of the field
+  //    * @returns - An initialized copy of the source data
+  //    */
+  //   initialize(
+  //     model: DataModel.Any,
+  //     name: string,
+  //     value: DataField.SourceTypeFor<this>
+  //   ): DataField.InternalInitializedTypeFor<this, ExtendsOptions>;
+
+  /**
+   * Export the current value of the field into a serializable object.
+   * @param model - The DataModel instance that this field belongs to
+   * @param name - The field name of this instance within the model
+   * @param value - The initialized value of the field
+   * @returns - An exported representation of the field
+   */
+  toObject(
+    model: DataModel.Any,
+    name: string,
+    value: DataField.InitializedTypeFor<this>
+  ): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
+}
+
+type JSONValue = object | number | string | boolean | null | undefined;
+
+// `_InternalDataField` exists so that on `DataField` the extra generic parameters are not visible.
+// At least generic parameter to do the calculations seems to HAVE to exist to work around extremely buggy behavior between forms that should be equivalent;
+// - `new () => ...`
+// - `new <_Computation = ...>() => _Computation`
+
+// @ts-expect-error subclassing StructuralClass gives an error
+declare class _InternalDataField<
+  Options extends DataField.Options<ExtendsOptions>,
+  ExtendsOptions extends DataField.AnyExtendsOptions,
+  // any should be eliminated because `RemoveIndex<any>` will not add the base properties and merging in `any` would make it too generic.
+  _Options extends DataField.Options<ExtendsOptions> = RemoveIndex<
+    IsAny<Options> extends true ? DataField.Options<ExtendsOptions> : Options
+  >,
+  _ExtendsOptions extends DataField.AnyExtendsOptions = RemoveIndex<
+    IsAny<ExtendsOptions> extends true ? DataField.AnyExtendsOptions : ExtendsOptions
+  >,
+  _ComputedDataField extends Record<string, unknown> = { options: _Options } & SimpleMerge<
+    _ExtendsOptions['DefaultOptionsValue'],
+    Pick<_Options, RequiredProperties<_Options>>
+  >
+> extends StructuralClass<_ComputedDataField> {}
+
+type SimpleMerge<T, U> = Omit<T, keyof U> & U;
+
+export namespace BooleanField {
+  export type Type = boolean;
+
+  export type DefaultOptionsValue = SimpleMerge<
+    DataField.FoundryDefaultOptions,
+    {
+      required: true;
+      nullable: false;
+      initial: false;
+    }
+  >;
+
+  export type ExtendsOptions = DataField.ExtendsOptions<BooleanField.Type, BooleanField.DefaultOptionsValue>;
+}
 
 /**
- * A required boolean field which may be used in a Document.
+ * A subclass of [DataField]{@link DataField} which deals with boolean-typed data.
  */
-export const BOOLEAN_FIELD: BooleanField;
+export declare class BooleanField<
+  Options extends DataField.Options<ExtendsOptions>,
+  ExtendsOptions extends DataField.AnyExtendsOptions = BooleanField.ExtendsOptions
+> extends DataField<Options, ExtendsOptions> {
+  //   _cast(value: unknown): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
+}
+
+export type DataFieldChoices<T> =
+  | readonly T[]
+  | {
+      [label: string]: T;
+    }
+  | (() => T[]);
+
+export type DataFieldChoicesOptions<Choices extends DataFieldChoices<any>> = Choices extends unknown
+  ? Choices extends () => any[]
+    ? ReturnType<Choices>[number]
+    : ValueOf<Choices>
+  : never;
+
+export type ChoicesOptions<
+  ExtendsOptions extends DataField.AnyExtendsOptions,
+  Choices extends DataFieldChoices<any> | undefined
+> = Choices extends unknown
+  ? Choices extends undefined
+    ? SimpleMerge<DataField.Options<ExtendsOptions>, { choices?: undefined }>
+    : SimpleMerge<
+        DataField.Options<ExtendsOptions>,
+        { choices?: Choices; initial?: InitialType<DataFieldChoicesOptions<Exclude<Choices, undefined>>> }
+      >
+  : never;
+
+export namespace NumberField {
+  export type Type = number;
+
+  export type DefaultOptionsValue = SimpleMerge<
+    DataField.FoundryDefaultOptions,
+    {
+      initial: null;
+      nullable: true;
+      min: undefined;
+      max: undefined;
+      step: undefined;
+      integer: false;
+      positive: false;
+      choices: undefined;
+    }
+  >;
+
+  export type ExtraOptions = Partial<{
+    /** A minimum allowed value */
+    min: number;
+
+    /** A maximum allowed value */
+    max: number;
+
+    /** A permitted step size */
+    step: number;
+
+    /** Must the number be an integer? */
+    integer: boolean;
+
+    /** Must the number be positive? */
+    positive: boolean;
+
+    /** An array of values or an object of values/labels which represent allowed choices for the field. A function may be provided which dynamically returns the array of choices. */
+    choices: DataFieldChoices<number>;
+  }>;
+
+  export type ExtendsOptions<Choices extends DataFieldChoices<NumberField.Type> | undefined> = SimpleMerge<
+    DataField.ExtendsOptions<
+      Choices extends undefined ? NumberField.Type : DataFieldChoicesOptions<Exclude<Choices, undefined>>,
+      any,
+      NumberField.ExtraOptions
+    >,
+    // We are purposefully violating an invariant here which is that DefaultOptionsValue.initial should be assignable to SourceType.
+    // When `choices` is defined this is not always true.
+    {
+      // If choices are provided, the field should not be null by default
+      DefaultOptionsValue: SimpleMerge<
+        NumberField.DefaultOptionsValue,
+        Choices extends undefined
+          ? {}
+          : {
+              nullable: false;
+            }
+      >;
+    }
+  >;
+}
+
+export type NeverOr<T, D> = [unknown] extends [T] ? D : T;
+
 /**
- * Property type: `boolean`
- * Constructor type: `boolean | null | undefined`
- * Default: `false`
+ * A subclass of [DataField]{@link DataField} which deals with number-typed data.
  */
-interface BooleanField extends DocumentField<boolean> {
-  type: typeof Boolean;
+export declare class NumberField<
+  Options extends ChoicesOptions<ExtendsOptions, NeverOr<Choices, undefined>>,
+  Choices extends DataFieldChoices<NumberField.Type> | undefined = Options['choices'],
+  ExtendsOptions extends DataField.AnyExtendsOptions = NumberField.ExtendsOptions<NeverOr<Choices, undefined>>
+> extends DataField<SimpleMerge<Options, { Options: NeverOr<Choices, undefined> }>, ExtendsOptions> {
+  constructor(options: Options & { choices?: Choices });
+
+  //   _cast(value: unknown): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
+
+  /**
+   * Test whether a provided value is a valid choice from the allowed choice set
+   * @param value - The provided value
+   * @returns - Is the choice valid?
+   */
+  //   #isValidChoice(value: DataField.SourceTypeFor<this>): boolean;
+}
+
+export namespace StringField {
+  export type Type = string;
+
+  export type DefaultOptionsValue = SimpleMerge<
+    DataField.FoundryDefaultOptions,
+    {
+      initial: '';
+      blank: true;
+      trim: true;
+      nullable: false;
+      choices: undefined;
+    }
+  >;
+
+  export type ExtraOptions = Partial<{
+    /** Is the string allowed to be blank (empty)? */
+    blank: boolean;
+
+    /** Should any provided string be trimmed as part of cleaning? */
+    trim: boolean;
+
+    /** An array of values or an object of values/labels which represent allowed choices for the field. A function may be provided which dynamically returns the array of choices. */
+    choices: DataFieldChoices<string>;
+  }>;
+
+  export type ExtendsOptions<Choices extends DataFieldChoices<StringField.Type> | undefined> = SimpleMerge<
+    DataField.ExtendsOptions<
+      Choices extends undefined ? StringField.Type : DataFieldChoicesOptions<Exclude<Choices, undefined>>,
+      any,
+      StringField.ExtraOptions
+    >,
+    {
+      // If choices are provided, the field should not be null or blank by default
+      DefaultOptionsValue: SimpleMerge<
+        StringField.DefaultOptionsValue,
+        Choices extends undefined
+          ? {}
+          : {
+              nullable: false;
+              blank: false;
+            }
+      >;
+    }
+  >;
+}
+
+/**
+ * A subclass of [DataField]{@link DataField} which deals with string-typed data.
+ */
+export declare class StringField<
+  Options extends ChoicesOptions<ExtendsOptions, NeverOr<Choices, undefined>>,
+  Choices extends DataFieldChoices<StringField.Type> | undefined = Options['choices'],
+  ExtendsOptions extends DataField.AnyExtendsOptions = StringField.ExtendsOptions<NeverOr<Choices, undefined>>
+> extends DataField<Options, ExtendsOptions> {
+  // This constructor overload is not a mistake. Yes `Options & { choices: Choices }` should be functionally equivalent to `Options`. However by explicitly including Choices in the type this seems to be enough to get Typescript to infer Choices concretely rather than always being EXACTLY `DataFieldChoices<StringField.Type> | undefined` when inferring.
+  // See: https://tsplay.dev/N91BqN
+  constructor(options: Options & { choices?: Choices });
+
+  //   _cast(value: unknown): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
+
+  /**
+   * Test whether a provided value is a valid choice from the allowed choice set
+   * @param value - The provided value
+   * @returns - Is the choice valid?
+   */
+  #isValidChoice(value: StringField.Type): boolean;
+}
+
+export declare namespace ObjectField {
+  export type Type = Record<string, unknown>;
+
+  export type DefaultOptionsValue = SimpleMerge<
+    DataField.FoundryDefaultOptions,
+    {
+      required: true;
+      nullable: false;
+      initial: {};
+    }
+  >;
+
+  export type ExtraOptions = {};
+
+  export type ExtendsOptions = DataField.ExtendsOptions<Type, DefaultOptionsValue, ExtraOptions>;
+}
+
+/**
+ * A subclass of [DataField]{@link DataField} which deals with object-typed data.
+ */
+export declare class ObjectField<
+  Options extends DataField.Options<ExtendsOptions>,
+  ExtendsOptions extends DataField.AnyExtendsOptions = ObjectField.ExtendsOptions
+> extends DataField<Options, ExtendsOptions> {
+  //   _cast(value: unknown): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
+}
+
+export declare namespace ArrayField {
+  export type DefaultOptionsValue = SimpleMerge<
+    DataField.FoundryDefaultOptions,
+    {
+      required: true;
+      nullable: false;
+      initial: [];
+    }
+  >;
+
+  export type ExtraOptions = {};
+
+  export type AnyExtendsOptions = DataField.ExtendsOptions<any, any, any, any> & {
+    InputElement: any;
+  };
+  export type ExtendsOptions<Element> = DataField.ExtendsOptions<Array<Element>, DefaultOptionsValue, ExtraOptions> & {
+    InputElement: Element;
+  };
+}
+
+/**
+ * A subclass of [DataField]{@link DataField} which deals with array-typed data.
+ */
+export declare class ArrayField<
+  InputElement extends ExtendsOptions['InputElement'],
+  Options extends DataField.Options<ExtendsOptions>,
+  ExtendsOptions extends ArrayField.AnyExtendsOptions = SimpleMerge<
+    ArrayField.ExtendsOptions<DataField.Any>,
+    {
+      SourceType: Array<DataField.SourceTypeFor<InputElement>>;
+      InitializedType: Array<DataField.InitializedTypeFor<InputElement>>;
+    }
+  >
+> extends DataField<Options, ExtendsOptions> {
+  constructor(element: InputElement, options: Options);
+
+  /**
+   * Validate the contained element type of the ArrayField
+   * @param element - The type of Array element
+   * @returns - The validated element type
+   * @throws - An error if the element is not a valid type
+   */
+  protected static _validateElementType(element: unknown): void;
+
+  //   _cast(
+  //     value: ExtendsOptions['InputElement'] | Array<ExtendsOptions['InputElement']>
+  //   ): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
+
+  /**
+   * Validate every element of the ArrayField
+   * @param value   - The array to validate
+   * @param options - Validation options
+   * @returns - An array of element-specific errors
+   */
+  protected _validateElements(value: ExtendsOptions['InputElement'][], options: Record<string, unknown>): Error[];
+
+  /** @override */
+  //   override initialize(
+  //     model: DataModel.Any,
+  //     name: string,
+  //     value: DataField.SourceTypeFor<this>
+  //   ): ExtendsOptions['InitializedType'];
+
+  /** @override */
+  //   override toObject(
+  //     model: DataModel.Any,
+  //     name: string,
+  //     value: ExtendsOptions['InitializedType']
+  //   ): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
+}
+
+export declare namespace SetField {
+  export type DefaultOptionsValue = ArrayField.DefaultOptionsValue;
+  export type ExtraOptions = ArrayField.ExtraOptions;
+  export type AnyExtendsOptions = ArrayField.AnyExtendsOptions;
+  export type ExtendsOptions<Element> = ArrayField.ExtendsOptions<Element>;
+}
+
+/**
+ * A subclass of [ArrayField]{@link ArrayField} which supports a set of contained elements.
+ * Elements in this set are treated as fungible and may be represented in any order or discarded if invalid.
+ */
+export declare class SetField<
+  InputElement extends ExtendsOptions['InputElement'],
+  Options extends DataField.Options<ExtendsOptions>,
+  ExtendsOptions extends SetField.AnyExtendsOptions = SimpleMerge<
+    SetField.ExtendsOptions<InputElement>,
+    {
+      InputElement: DataField.Any;
+      InitializedType: Set<DataField.ExtendsOptionsFor<InputElement>['InitializedType']>;
+    }
+  >
+> extends ArrayField<InputElement, Options, ExtendsOptions> {}
+
+export declare namespace SchemaField {
+  export type DefaultOptionsValue = ObjectField.DefaultOptionsValue;
+
+  export type ExtraOptions = ObjectField.ExtraOptions;
+
+  export type OptionalDataSchema = Record<string, DataField<any, any> & RequiredProps<DataField<any, any>, 'initial'>>;
+
+  export type ExtendsOptions<Schema extends DataSchema> = DataField.ExtendsOptions<
+    Partial<DataModel.SchemaToSourceInput<Schema>>,
+    DefaultOptionsValue,
+    ExtraOptions,
+    {
+      ValidateType: Record<string, Error> | Error;
+      InitializedType: DataModel.SchemaToData<Schema>;
+    }
+  >;
+
+  export type DataSchema = Record<string, DataField.Any>;
+
+  /**
+   * Includes `DataField#apply`'s options.
+   */
+  export type ApplyToSchemaOptions = Partial<{
+    partial: boolean;
+    filter: boolean;
+  }> &
+    Record<string, unknown>;
+
+  export type CleanSchemaOptions = {
+    /** Allow partial cleaning of source data, ignoring absent fields */
+    partial: boolean;
+  };
+
+  export type ValidateSchemaOptions = {
+    partial: boolean;
+    fallback: boolean;
+  };
+
+  export type DataValidationOptions = {
+    /**
+     * Attempt to replace invalid values with valid defaults?
+     * (default: `false`)
+     */
+    fallback: boolean;
+
+    /**
+     * Allow partial source data, ignoring absent fields?
+     * (default: `false`)
+     */
+    partial: boolean;
+  };
+}
+
+/**
+ * A subclass of [ObjectField]{@link ObjectField} which supports an inner schema of keys and DataField values.
+ */
+declare class SchemaField<
+  ConcreteSchema extends DataSchema,
+  Options extends DataField.Options<ExtendsOptions>,
+  ExtendsOptions extends DataField.AnyExtendsOptions = SchemaField.ExtendsOptions<ConcreteSchema>
+> extends ObjectField<Options, ExtendsOptions> {
+  initial: 'initial' extends RequiredProperties<Options>
+    ? Extract<ObjectField<Options, ExtendsOptions>, { initial: unknown }>['initial']
+    : () => ReturnType<any>; // typeof SchemaField.cleanSchema
+
+  /* -------------------------------------------- */
+
+  /**
+   * Validate the structure of the provided Data Schema definition.
+   * @param schema - The provided data schema
+   * @returns The validated schema
+   */
+  static #validateDataSchemaFormat(schema: unknown): DataSchema;
+
+  /* -------------------------------------------- */
+
+  /**
+   * The inner data schema which this field contains.
+   */
+  schema: ConcreteSchema;
+
+  //   /* -------------------------------------------- */
+
+  //   /** {@inheritdoc} */
+  //   _cleanType(value, data, options) {
+  //     value = super._cleanType(value, data, options);
+  //     return this.constructor.cleanSchema(this.schema, value || {}, options);
+  //   }
+
+  //   /** @override */
+  //   override initialize(model, name, value) {
+  //     if (!value) return value;
+  //     const data = {};
+  //     for (let [k, field] of Object.entries(this.schema)) {
+  //       data[k] = field.initialize(model, `${name}.${k}`, value[k]);
+  //     }
+  //     return data;
+  //   }
+
+  //   /** @override */
+  //   override toObject(model, name, value) {
+  //     const data = {};
+  //     for (let [k, field] of Object.entries(this.schema)) {
+  //       data[k] = field.toObject(model, `${name}.${k}`, value[k]);
+  //     }
+  //     return data;
+  //   }
+
+  //   /** @override */
+  //   override apply(fn, data = {}, options = {}) {
+  //     return this.constructor.applyToSchema(this.schema, fn, data, options);
+  //   }
+
+  //   /**
+  //    * {@inheritdoc}
+  //    */
+  //   override _validateType(value, options = {}) {
+  //     if (!(value instanceof Object)) throw new Error('must be an object');
+  //     const errors = this.constructor.validateSchema(this.schema, value, options);
+  //     if (!isEmpty(errors)) throw new MultiValidationError(errors);
+  //   }
+
+  //   /* ---------------------------------------- */
+  //   /*  Schema Management Helpers               */
+  //   /* ---------------------------------------- */
+
+  //   /**
+  //    * Apply a transformation function to a certain Data Schema.
+  //    * Used by both the SchemaField and the top-level DataModel itself.
+  //    * @param {DataSchema} schema       The data schema to which the function is applied
+  //    * @param {function|string} fn      A function to apply or a string which references a named function which
+  //    *                                  must exist on every DataField subclass
+  //    * @param {object} [data={}]        Input data which is passed to the applied function
+  //    * @param {object} [options={}]     Options which are passed to the applied function
+  //    * @returns {object}                An object with the hierarchical structure of the data schema containing the
+  //    *                                  returned values of the applied function
+  //    */
+  //   static applyToSchema(schema, fn, data = {}, options = {}) {
+  //     const results = {};
+  //     for (const [key, field] of Object.entries(schema)) {
+  //       if (options.partial && !(key in data)) continue;
+  //       const r = field.apply(fn, data[key], options);
+  //       if (!options.filter || !isEmpty(r)) results[key] = r;
+  //     }
+  //     return results;
+  //   }
+
+  //   /**
+  //    * Clean a data source object to conform to a specific provided schema.
+  //    * @param {DataSchema} schema       The data schema to which the function is applied
+  //    * @param {object} source           The source data object
+  //    * @param {object} [options={}]     Additional options which modify data cleaning behavior
+  //    * @param {boolean} [options.partial=false]   Allow partial cleaning of source data, ignoring absent fields
+  //    * @returns {object}                The cleaned source data
+  //    */
+  //   static cleanSchema(schema, source, { partial = false } = {}) {
+  //     // Clean each field which belongs to the schema
+  //     for (const [name, field] of Object.entries(schema)) {
+  //       if (!(name in source) && partial) continue;
+  //       source[name] = field.clean(source[name], source, { partial });
+  //     }
+
+  //     // Delete any keys which do not
+  //     for (const k of Object.keys(source)) {
+  //       if (!(k in schema)) delete source[k];
+  //     }
+  //     return source;
+  //   }
+
+  //   /* ---------------------------------------- */
+
+  /**
+   * Validate an object of data against its provided schema.
+   * @param schema - The schema against which to validate
+   * @param source - The source data to validate
+   *                 (default: `{}`)
+   * @param options - Additional options which modify validation behavior
+   *                  (default: `{}`)
+   * @returns An object of any validation Errors which occurred corresponding to the field structure of the provided schema
+   */
+  static validateSchema(
+    schema: DataSchema,
+    source?: Record<string, unknown>,
+    options?: SchemaField.DataValidationOptions
+  ): Record<string, Error>;
+}
+
+export declare namespace EmbeddedDataField {
+  export type DefaultOptionsValue = SchemaField.DefaultOptionsValue;
+
+  export type ExtraOptions = SchemaField.ExtraOptions;
+
+  export type DataModelConstructor = Pick<typeof DataModel, keyof typeof DataModel> &
+    (new <Parent extends AnyDocument | null>(data?: any, context?: Context<any>) => DataModel.Any);
+
+  export type ExtendsOptions<Model extends DataModelConstructor> = SchemaField.ExtendsOptions<
+    ReturnType<Model['defineSchema']>
+  >;
+}
+
+/**
+ * A subclass of [ObjectField]{@link ObjectField} which embeds some other DataModel definition as an inner object.
+ */
+export declare class EmbeddedDataField<
+  Model extends EmbeddedDataField.DataModelConstructor,
+  Options extends DataField.Options<ExtendsOptions>,
+  ExtendsOptions extends DataField.AnyExtendsOptions = EmbeddedDataField.ExtendsOptions<Model>
+> extends SchemaField<ReturnType<Model['defineSchema']>, Options, ExtendsOptions> {
+  constructor(model: Model, options: Options);
+
+  model: Model;
+}
+
+export declare namespace EmbeddedCollectionField {
+  export type Type = foundry.abstract.Document.AnyConstructor;
+
+  export type ExtendsOptions<Element extends Type> = ArrayField.AnyExtendsOptions & {
+    InputElement: Type;
+    SourceType: InstanceType<Element>['_source'][];
+    InitializedType: EmbeddedCollection<Element, DataModel.Any>;
+  };
+
+  export type AnyExtendsOptions = ArrayField.AnyExtendsOptions;
+}
+
+/**
+ * A subclass of [ArrayField]{@link ArrayField} which supports an embedded Document collection.
+ * Invalid elements will be dropped from the collection during validation rather than failing for the field entirely.
+ */
+export declare class EmbeddedCollectionField<
+  InputElement extends ExtendsOptions['InputElement'],
+  Options extends DataField.Options<ExtendsOptions>,
+  ExtendsOptions extends EmbeddedCollectionField.AnyExtendsOptions = EmbeddedCollectionField.ExtendsOptions<InputElement>
+> extends ArrayField<InputElement, Options, ExtendsOptions> {
+  /**
+   * A reference to the DataModel subclass of the embedded document element
+   */
+  get model(): Extract<Element, EmbeddedCollectionField.Type>['implementation'];
+
+  /**
+   * The DataSchema of the contained Document model.
+   */
+  schema: Extract<Element, EmbeddedCollectionField.Type>['schema'];
+}
+
+export declare namespace DocumentIdField {
+  export type Type = StringField.Type;
+
+  export type DefaultOptionsValue = SimpleMerge<
+    StringField.DefaultOptionsValue,
+    {
+      required: true;
+      blank: false;
+      nullable: true;
+      initial: null;
+      readonly: true;
+      validationError: 'is not a valid Document ID string';
+    }
+  >;
+
+  export type ExtraOptions = StringField.ExtraOptions;
+
+  export type ExtendsOptions<Choices extends DataFieldChoices<DocumentIdField.Type> | undefined> = SimpleMerge<
+    StringField.ExtendsOptions<Choices>,
+    {
+      DefaultOptionsValue: DefaultOptionsValue;
+    }
+  >;
+}
+
+/**
+ * A subclass of [StringField]{@link StringField} which provides the primary _id for a Document.
+ * The field may be initially null, but it must be non-null when it is saved to the database.
+ */
+export declare class DocumentIdField<
+  Options extends ChoicesOptions<ExtendsOptions, NeverOr<Choices, undefined>>,
+  Choices extends DataFieldChoices<StringField.Type> | undefined = Options['choices'],
+  ExtendsOptions extends DataField.AnyExtendsOptions = DocumentIdField.ExtendsOptions<NeverOr<Choices, undefined>>
+> extends StringField<Options, Choices, ExtendsOptions> {}
+
+export declare namespace ForeignDocumentField {
+  export type Type = DocumentIdField.Type;
+
+  export type DefaultOptionsValue = SimpleMerge<
+    DocumentIdField.DefaultOptionsValue,
+    {
+      nullable: true;
+      readonly: false;
+      idOnly: false;
+    }
+  >;
+
+  export type ExtraOptions = DocumentIdField.ExtraOptions &
+    Partial<{
+      idOnly: boolean;
+    }>;
+
+  export type ExtendsOptions<Choices extends DataFieldChoices<ForeignDocumentField.Type> | undefined> = SimpleMerge<
+    DocumentIdField.ExtendsOptions<Choices>,
+    {
+      DefaultOptionsValue: DefaultOptionsValue;
+      ExtraOptions: ExtraOptions;
+    }
+  >;
+}
+
+/**
+ * A special class of [StringField]{@link StringField} field which references another DataModel by its id.
+ * This field may also be null to indicate that no foreign model is linked.
+ */
+export declare class ForeignDocumentField<
+  Model extends Pick<typeof DataModel, keyof typeof DataModel> &
+    (abstract new <Parent extends DataModel.Any>(data?: any, context?: Context<any>) => DataModel.Any),
+  Options extends ChoicesOptions<ExtendsOptions, NeverOr<Choices, undefined>>,
+  Choices extends DataFieldChoices<DocumentIdField.Type> | undefined = Options['choices'],
+  ExtendsOptions extends DataField.AnyExtendsOptions = ForeignDocumentField.ExtendsOptions<NeverOr<Choices, undefined>>
+> extends StringField<Options, Choices, ExtendsOptions> {
+  constructor(model: Model, options: Options);
+
+  model: Model;
+}
+
+export declare namespace SystemDataField {
+  export type Type = ObjectField.Type;
+
+  export type DefaultOptionsValue = SimpleMerge<ObjectField.DefaultOptionsValue, { required: true }>;
+
+  export type ExtraOptions = ObjectField.ExtraOptions;
+
+  export type ExtendsOptions = ObjectField.ExtendsOptions;
+}
+
+/**
+ * A subclass of [StringField]{@link StringField} which provides the primary _id for a Document.
+ * The field may be initially null, but it must be non-null when it is saved to the database.
+ */
+export declare class SystemDataField<
+  ConcreteDocument extends DocumentConstructor,
+  Options extends DataField.Options<ExtendsOptions>,
+  ExtendsOptions extends DataField.AnyExtendsOptions = SystemDataField.ExtendsOptions
+> extends ObjectField<Options, ExtendsOptions> {
+  constructor(document: ConcreteDocument, options: Options);
+
+  document: ConcreteDocument;
+
+  /**
+   * A convenience accessor for the name of the document type associated with this SystemDataField
+   */
+  get documentName(): string;
+
+  /**
+   * Get the DataModel definition that should be used for this type of document.
+   * @param type - The Document instance type
+   * @returns - The DataModel class, or null
+   */
+  getModelForType(type: string): typeof DataModel | null;
+
+  /** @override */
+  //   override getInitialValue(data: Record<string, unknown>): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
+}
+
+export declare namespace ColorField {
+  export type Type = StringField.Type;
+
+  export type DefaultOptionsValue = SimpleMerge<
+    StringField.DefaultOptionsValue,
+    {
+      nullable: true;
+      initial: null;
+      blank: false;
+      validationError: 'is not a valid hexadecimal color string';
+    }
+  >;
+
+  export type ExtraOptions = StringField.ExtraOptions;
+
+  export type ExtendsOptions<Choices extends DataFieldChoices<ColorField.Type> | undefined> = SimpleMerge<
+    StringField.ExtendsOptions<Choices>,
+    {
+      DefaultOptionsValue: DefaultOptionsValue;
+    }
+  >;
+}
+
+/**
+ * A special [StringField]{@link StringField} which records a standardized CSS color string.
+ */
+export declare class ColorField<
+  Options extends ChoicesOptions<ExtendsOptions, NeverOr<Choices, undefined>>,
+  Choices extends DataFieldChoices<ColorField.Type> | undefined = Options['choices'],
+  ExtendsOptions extends DataField.AnyExtendsOptions = ColorField.ExtendsOptions<NeverOr<Choices, undefined>>
+> extends StringField<Options, Choices, ExtendsOptions> {
+  static get _defaults(): ColorField.DefaultOptionsValue;
+}
+
+export declare namespace FilePathField {
+  export type Type = StringField.Type;
+
+  export type DefaultOptionsValue = SimpleMerge<
+    StringField.DefaultOptionsValue,
+    {
+      categories: [];
+      base64: false;
+      nullable: true;
+      blank: false;
+      initial: null;
+    }
+  >;
+
+  export type ExtraOptions = StringField.ExtraOptions &
+    Partial<{
+      /** A set of categories in CONST.FILE_CATEGORIES which this field supports */
+      categories: Array<keyof typeof CONST['FILE_CATEGORIES']>;
+
+      /** Is embedded base64 data supported in lieu of a file path? */
+      base64: boolean;
+    }>;
+
+  export type ExtendsOptions<Choices extends DataFieldChoices<FilePathField.Type> | undefined> = SimpleMerge<
+    StringField.ExtendsOptions<Choices>,
+    {
+      DefaultOptionsValue: DefaultOptionsValue;
+      ExtraOptions: ExtraOptions;
+    }
+  >;
+}
+
+export declare class FilePathField<
+  Options extends ChoicesOptions<ExtendsOptions, NeverOr<Choices, undefined>>,
+  Choices extends DataFieldChoices<FilePathField.Type> | undefined = Options['choices'],
+  ExtendsOptions extends DataField.AnyExtendsOptions = FilePathField.ExtendsOptions<NeverOr<Choices, undefined>>
+> extends StringField<Options, Choices, ExtendsOptions> {
+  static get _defaults(): FilePathField.DefaultOptionsValue;
+}
+
+export declare namespace AngleField {
+  export type Type = NumberField.Type;
+
+  export type DefaultOptionsValue = SimpleMerge<
+    NumberField.DefaultOptionsValue,
+    {
+      required: true;
+      nullable: false;
+      initial: 0;
+      base: 0;
+      min: 0;
+      max: 360;
+      validationError: 'is not a number between 0 and 360';
+    }
+  >;
+
+  export type ExtraOptions = NumberField.ExtraOptions &
+    Partial<{
+      /** Whether the base angle should be treated as 360 or as 0 */
+      base: number;
+    }>;
+
+  export type ExtendsOptions<Choices extends DataFieldChoices<AngleField.Type> | undefined> = SimpleMerge<
+    NumberField.ExtendsOptions<Choices>,
+    {
+      DefaultOptionsValue: DefaultOptionsValue;
+      ExtraOptions: ExtraOptions;
+    }
+  >;
+}
+
+/**
+ * A special [NumberField]{@link NumberField} which represents an angle of rotation in degrees between 0 and 360.
+ */
+export declare class AngleField<
+  Options extends ChoicesOptions<ExtendsOptions, NeverOr<Choices, undefined>>,
+  Choices extends DataFieldChoices<AngleField.Type> | undefined = Options['choices'],
+  ExtendsOptions extends DataField.AnyExtendsOptions = AngleField.ExtendsOptions<NeverOr<Choices, undefined>>
+> extends NumberField<Options, Choices, ExtendsOptions> {}
+
+export namespace AlphaField {
+  export type Type = NumberField.Type;
+
+  export type DefaultOptionsValue = SimpleMerge<
+    NumberField.DefaultOptionsValue,
+    {
+      required: true;
+      nullable: false;
+      initial: 1;
+      min: 0;
+      max: 1;
+      validationError: 'is not a number between 0 and 1';
+    }
+  >;
+
+  export type ExtraOptions = NumberField.ExtraOptions;
+
+  export type ExtendsOptions<Choices extends DataFieldChoices<AlphaField.Type> | undefined> = SimpleMerge<
+    NumberField.ExtendsOptions<Choices>,
+    {
+      DefaultOptionsValue: DefaultOptionsValue;
+    }
+  >;
+}
+
+/**
+ * A special [NumberField]{@link NumberField} represents a number between 0 and 1.
+ */
+export declare class AlphaField<
+  Options extends ChoicesOptions<ExtendsOptions, NeverOr<Choices, undefined>>,
+  Choices extends DataFieldChoices<AlphaField.Type> | undefined = Options['choices'],
+  ExtendsOptions extends DataField.AnyExtendsOptions = AlphaField.ExtendsOptions<NeverOr<Choices, undefined>>
+> extends NumberField<Options, Choices, ExtendsOptions> {}
+
+export namespace DocumentOwnershipField {
+  export type Type = ObjectField.Type;
+
+  export type DefaultOptionsValue = SimpleMerge<
+    ObjectField.DefaultOptionsValue,
+    {
+      initial: { default: typeof DOCUMENT_OWNERSHIP_LEVELS.NONE };
+      validationError: 'is not a mapping of user IDs and document permission levels';
+    }
+  >;
+
+  export type ExtraOptions = ObjectField.ExtraOptions;
+
+  export type ExtendsOptions = SimpleMerge<
+    ObjectField.ExtendsOptions,
+    {
+      DefaultOptionsValue: DefaultOptionsValue;
+    }
+  >;
+}
+
+/**
+ * A special [ObjectField]{@link ObjectField} which captures a mapping of User IDs to Document permission levels.
+ */
+export declare class DocumentOwnershipField<
+  Options extends DataField.Options<ExtendsOptions>,
+  ExtendsOptions extends DataField.AnyExtendsOptions = DocumentOwnershipField.ExtendsOptions
+> extends ObjectField<Options> {}
+
+export declare namespace JSONField {
+  export type Type = StringField.Type;
+
+  export type DefaultOptionsValue = SimpleMerge<
+    StringField.DefaultOptionsValue,
+    {
+      blank: false;
+      validationError: 'is not a valid JSON string';
+    }
+  >;
+
+  export type ExtraOptions = StringField.ExtraOptions;
+
+  export type ExtendsOptions<Choices extends DataFieldChoices<JSONField.Type> | undefined = undefined> = SimpleMerge<
+    StringField.ExtendsOptions<Choices>,
+    {
+      DefaultOptionsValue: DefaultOptionsValue;
+    }
+  >;
+}
+
+/**
+ * A special [StringField]{@link StringField} which contains serialized JSON data.
+ */
+export declare class JSONField<
+  Options extends ChoicesOptions<ExtendsOptions, NeverOr<Choices, undefined>>,
+  Choices extends DataFieldChoices<JSONField.Type> | undefined = Options['choices'],
+  ExtendsOptions extends DataField.AnyExtendsOptions = JSONField.ExtendsOptions<NeverOr<Choices, undefined>>
+> extends StringField<Options, Choices, ExtendsOptions> {}
+
+export namespace HTMLField {
+  export type Type = StringField.Type;
+
+  export type DefaultOptionsValue = SimpleMerge<
+    StringField.DefaultOptionsValue,
+    {
+      required: true;
+      blank: true;
+    }
+  >;
+
+  export type ExtraOptions = StringField.ExtraOptions;
+
+  export type ExtendsOptions<Choices extends DataFieldChoices<HTMLField.Type> | undefined = undefined> = SimpleMerge<
+    StringField.ExtendsOptions<Choices>,
+    {
+      DefaultOptionsValue: DefaultOptionsValue;
+    }
+  >;
+}
+
+/**
+ * A subclass of [StringField]{@link StringField} which contains a sanitized HTML string.
+ * This class does not override any StringField behaviors, but is used by the server-side to identify fields which
+ * require sanitization of user input.
+
+ */
+export declare class HTMLField<
+  Options extends ChoicesOptions<ExtendsOptions, NeverOr<Choices, undefined>>,
+  Choices extends DataFieldChoices<HTMLField.Type> | undefined = Options['choices'],
+  ExtendsOptions extends DataField.AnyExtendsOptions = HTMLField.ExtendsOptions<NeverOr<Choices, undefined>>
+> extends StringField<Options, Choices, ExtendsOptions> {}
+
+/* ---------------------------------------- */
+/*  DEPRECATIONS                            */
+/* ---------------------------------------- */
+
+/**
+ * @deprecated since v10
+ * @see AngleField
+ */
+export const ANGLE_FIELD: AngleField<{}>;
+
+/**
+ * @deprecated since v10
+ * @see AlphaField
+ */
+export const ALPHA_FIELD: AlphaField<{}>;
+
+/**
+ * @deprecated since v10
+ * @see FilePathField
+ */
+export const AUDIO_FIELD: FilePathField<{ categories: ['AUDIO'] }>;
+
+/**
+ * @deprecated since v10
+ * @see StringField
+ */
+export const BLANK_STRING: StringField<{
   required: true;
-  default: false;
-}
+  nullable: false;
+  blank: true;
+}>;
 
 /**
- * A standard string color field which may be used in a Document.
+ * @deprecated since v10
+ * @see BooleanField
  */
-export const COLOR_FIELD: ColorField;
-/**
- * Property type: `string | null | undefined`
- * Constructor type: `string | null | undefined`
- */
-interface ColorField extends DocumentField<string> {
-  type: typeof String;
-  required: false;
-  nullable: true;
-  validate: typeof isColorString;
-  validationError: '{name} {field} "{value}" is not a valid hexadecimal color string';
-}
+export const BOOLEAN_FIELD: BooleanField<{}>;
 
 /**
- * A standard string field for an image file path which may be used in a Document.
+ * @deprecated since v10
+ * @see ColorField
  */
-export const IMAGE_FIELD: ImageField;
-/**
- * Property type: `string | null | undefined`
- * Constructor type: `string | null | undefined`
- */
-interface ImageField extends DocumentField<string> {
-  type: typeof String;
-  required: false;
-  nullable: true;
-  validate: typeof hasImageExtension;
-  validationError: '{name} {field} "{value}" does not have a valid image file extension';
-}
+export const COLOR_FIELD: ColorField<{}>;
 
 /**
- * A standard string field for a video or image file path may be used in a Document.
+ * @deprecated since v10
+ * @see DocumentIdField
  */
-export const VIDEO_FIELD: VideoField;
-/**
- * Property type: `string | null | undefined`
- * Constructor type: `string | null | undefined`
- */
-interface VideoField extends DocumentField<string> {
-  type: typeof String;
-  required: false;
-  nullable: true;
-  validate: (src: string | null) => boolean;
-  validationError: '{name} {field} "{value}" does not have a valid image or video file extension';
-}
+export const DOCUMENT_ID: DocumentIdField<{}>;
 
 /**
- * A standard string field for an audio file path which may be used in a Document.
+ * @deprecated since v10
+ * @see DocumentOwnershipField
  */
-export const AUDIO_FIELD: AudioField;
+export const DOCUMENT_PERMISSIONS: DocumentOwnershipField<{}>;
+
+// SET CATEGORIES
 /**
- * Property type: `string | null | undefined`
- * Constructor type: `string | null | undefined`
+ * @deprecated since v10
+ * @see FilePathField
  */
-interface AudioField extends DocumentField<string> {
-  type: typeof String;
-  required: false;
-  nullable: true;
-  validate: (src: string | null) => boolean;
-  validationError: '{name} {field} "{value}" does not have a valid audio file extension';
-}
+export const IMAGE_FIELD: FilePathField<{ categories: ['IMAGE'] }>;
 
 /**
- * A standard integer field which may be used in a Document.
+ * @deprecated since v10
+ * @see NumberField
  */
-export const INTEGER_FIELD: IntegerField;
+export const INTEGER_FIELD: NumberField<{
+  integer: true;
+  validationError: 'does not have an integer value';
+}>;
+
 /**
- * Property type: `number | undefined`
- * Constructor type: `number | null | undefined`
+ * @deprecated since v10
+ * @see NumberField
  */
-interface IntegerField extends DocumentField<number> {
-  type: typeof Number;
-  required: false;
-  validate: typeof Number.isInteger;
-  validationError: '{name} {field} "{value}" does not have an integer value';
-}
+export const INTEGER_SORT_FIELD: NumberField<{
+  required: true;
+  initial: 0;
+  integer: true;
+  validationError: 'is not an integer';
+}>;
+
+/**
+ * @deprecated since v10
+ * @see NumberField
+ */
+export const NONNEGATIVE_INTEGER_FIELD: NumberField<{
+  min: 0;
+  integer: true;
+  validationError: 'does not have an non-negative integer value';
+}>;
+
+/**
+ * @deprecated since v10
+ * @see NumberField
+ */
+export const NONNEGATIVE_NUMBER_FIELD: NumberField<{
+  min: 0;
+  integer: true;
+  validationError: 'does not have an non-negative integer value';
+}>;
+
+/**
+ * @deprecated since v10
+ * @see NumberField
+ */
+export const NUMERIC_FIELD: NumberField<{}>;
+
+/**
+ * @deprecated since v10
+ * @see ObjectField
+ */
+export const OBJECT_FIELD: ObjectField<{}>;
+
+/**
+ * @deprecated since v10
+ * @see NumberField
+ */
+export const POSITIVE_INTEGER_FIELD: NumberField<{
+  min: 1;
+  integer: true;
+  validationError: 'does not have an non-negative integer value';
+}>;
+
+/**
+ * @deprecated since v10
+ * @see NumberField
+ */
+export const REQUIRED_NUMBER: NumberField<{
+  required: true;
+  nullable: false;
+}>;
+
+/**
+ * @deprecated since v10
+ * @see NumberField
+ */
+export const REQUIRED_POSITIVE_NUMBER: NumberField<{
+  required: true;
+  nullable: false;
+  validate: (value: number) => boolean;
+  validationError: 'is not a positive number';
+}>;
+
+/**
+ * @deprecated since v10
+ * @see StringField
+ */
+export const REQUIRED_STRING: StringField<{
+  required: true;
+  nullable: false;
+  blank: false;
+  validationError: 'must be a non-blank string';
+}>;
+
+/**
+ * @deprecated since v10
+ * @see StringField
+ */
+export const STRING_FIELD: StringField<{}>;
+
+/**
+ * @deprecated since v10
+ * @see NumberField
+ */
+export const TIMESTAMP_FIELD: NumberField<{
+  default: typeof Date.now;
+  nullable: false;
+}>;
 
 /**
  * A string field which contains serialized JSON data that may be used in a Document.
  */
-export const JSON_FIELD: JsonField;
-/**
- * Property type: `string | undefined`
- * Constructor type: `string | object | null | undefined`
- */
-interface JsonField extends DocumentField<string> {
-  type: typeof String;
-  required: false;
-  clean: (s: unknown) => string;
-  validate: typeof isJSON;
-  validationError: '{name} {field} "{value}" is not a valid JSON string';
-}
+export const JSON_FIELD: JSONField<{}>;
 
 /**
- * A non-negative integer field which may be used in a Document.
+ * @deprecated since v10
+ * @see FilePathField
  */
-export const NONNEGATIVE_INTEGER_FIELD: NonnegativeIntegerField;
-/**
- * Property type: `number | undefined`
- * Constructor type: `number | null | undefined`
- */
-interface NonnegativeIntegerField extends DocumentField<number> {
-  type: typeof Number;
-  required: false;
-  validate: (n: unknown) => boolean;
-  validationError: '{name} {field} "{value}" does not have an non-negative integer value';
-}
+export const VIDEO_FIELD: FilePathField<{ categories: ['IMAGE', 'VIDEO'] }>;
 
 /**
- * A non-negative integer field which may be used in a Document.
- *
- * @remarks The validation actually checks for `> 0`, the JSDoc is incorrect in foundry.
+ * @deprecated since v10
+ * @see SystemDataField
  */
-export const POSITIVE_INTEGER_FIELD: PositiveIntegerField;
-/**
- * Property type: `number | undefined`
- * Constructor type: `number | null | undefined`
- */
-interface PositiveIntegerField extends DocumentField<number> {
-  type: typeof Number;
-  required: false;
-  validate: (n: unknown) => boolean;
-  validationError: '{name} {field} "{value}" does not have an non-negative integer value';
-}
+export function systemDataField<Document extends DocumentConstructor>(
+  document: Document
+): SystemDataField<Document, {}>;
 
-/**
- * A template for a required inner-object field which may be used in a Document.
- */
-export const OBJECT_FIELD: ObjectField;
-/**
- * Property type: `object`
- * Constructor type: `object | null | undefined`
- * Default `{}`
- */
-interface ObjectField extends DocumentField<object> {
-  type: typeof Object;
-  default: Record<string, never>;
-  required: true;
-}
-
-/**
- * An optional string field which may be included by a Document.
- */
-export const STRING_FIELD: StringField;
-/**
- * Property type: `string | undefined`
- * Constructor type: `string | null | undefined`
- */
-interface StringField extends DocumentField<string> {
-  type: typeof String;
-  required: false;
-  nullable: false;
-}
-
-/**
- * An optional numeric field which may be included in a Document.
- */
-export const NUMERIC_FIELD: NumericField;
-/**
- * Property type: `number | null | undefined`
- * Constructor type: `number | null | undefined`
- */
-interface NumericField extends DocumentField<number> {
-  type: typeof Number;
-  required: false;
-  nullable: true;
-}
-
-/**
- * A required numeric field which may be included in a Document and may not be null.
- */
-export const REQUIRED_NUMBER: RequiredNumber;
-/**
- * Property type: `number`
- * Constructor type: `number | null | undefined`
- * Default: `0`
- */
-interface RequiredNumber extends DocumentField<number> {
-  type: typeof Number;
-  required: true;
-  nullable: false;
-  default: 0;
-}
-
-/**
- * A field used to designate a non-negative number
- */
-export const NONNEGATIVE_NUMBER_FIELD: NonnegativeNumberField;
-/**
- * Property type: `number`
- * Constructor type: `number | null | undefined`
- * Default: `0`
- */
-interface NonnegativeNumberField extends DocumentField<number> {
-  type: typeof Number;
-  required: true;
-  nullable: false;
-  default: 0;
-  validate: (n: unknown) => boolean;
-  validationError: '{name} {field} "{value}" must be a non-negative number';
-}
-
-/**
- * A required numeric field which must be a positive finite value that may be included in a Document.
- */
-export const REQUIRED_POSITIVE_NUMBER: RequiredPositiveNumber;
-/**
- * Property type: `number`
- * Constructor type: `number`
- */
-interface RequiredPositiveNumber extends DocumentField<number> {
-  type: typeof Number;
-  required: true;
-  nullable: false;
-  validate: (n: unknown) => boolean;
-  validationError: '{name} {field} "{value}" is not a positive number';
-}
-
-/**
- * A required numeric field which represents an angle of rotation in degrees between 0 and 360.
- */
-export const ANGLE_FIELD: AngleField;
-/**
- * Property type: `number`
- * Constructor type: `number | null | undefined`
- * Default: `360`
- */
-interface AngleField extends DocumentField<number> {
-  type: typeof Number;
-  required: true;
-  nullable: false;
-  default: 360;
-  clean: (n: unknown) => number;
-  validate: (n: number) => boolean;
-  validationError: '{name} {field} "{value}" is not a number between 0 and 360';
-}
-
-/**
- * A required numeric field which represents a uniform number between 0 and 1.
- */
-export const ALPHA_FIELD: AlphaField;
-/**
- * Property type: `number`
- * Constructor type: `number | null | undefined`
- * Default: `1`
- */
-interface AlphaField extends DocumentField<number> {
-  type: typeof Number;
-  required: true;
-  nullable: false;
-  default: 1;
-  validate: (n: number) => boolean;
-  validationError: '{name} {field} "{value}" is not a number between 0 and 1';
-}
-
-/**
- * A string field which requires a non-blank value and may not be null.
- */
-export const REQUIRED_STRING: RequiredString;
-/**
- * Property type: `string`
- * Constructor type: `string`
- */
-interface RequiredString extends DocumentField<string> {
-  type: typeof String;
-  required: true;
-  nullable: false;
-  clean: <T>(v: T) => T extends undefined ? undefined : string;
-}
-
-/**
- * A string field which is required, but may be left blank as an empty string.
- */
-export const BLANK_STRING: BlankString;
-/**
- * Property type: `string`
- * Constructor type: `string | null | undefined`
- * Default: `""`
- */
-interface BlankString extends DocumentField<string> {
-  type: typeof String;
-  required: true;
-  nullable: false;
-  clean: (v: unknown) => string;
-  default: '';
-}
-
-/**
- * A field used for integer sorting of a Document relative to its siblings
- */
-export const INTEGER_SORT_FIELD: IntegerSortField;
-/**
- * Property type: `number`
- * Constructor type: `number | null | undefined`
- * Default: `0`
- */
-interface IntegerSortField extends DocumentField<number> {
-  type: typeof Number;
-  required: true;
-  default: 0;
-  validate: typeof Number.isInteger;
-  validationError: '{name} {field} "{value}" is not an integer';
-}
-
-/**
- * A numeric timestamp field which may be used in a Document.
- */
-export const TIMESTAMP_FIELD: TimestampField;
-/**
- * Property type: `number | undefined`
- * Constructor type: `number | null | undefined`
- * Default: `Date.now()`
- */
-interface TimestampField extends DocumentField<number> {
-  type: typeof Number;
-  required: false;
-  default: typeof Date.now;
-  nullable: false;
-}
-
-/**
- * Validate that the ID of a Document object is either null (not yet saved) or a valid string.
- * @param id - The _id to test
- * @returns Is it valid?
- */
-declare function _validateId(id: string | null): boolean;
-
-/**
- * The standard identifier for a Document.
- */
-export const DOCUMENT_ID: DocumentId;
-/**
- * Property type: `string | null`
- * Constructor type: `string | null | undefined`
- * Default: `null`
- */
-interface DocumentId extends DocumentField<string | null> {
-  type: typeof String;
-  required: true;
-  default: null;
-  nullable: false;
-  validate: typeof _validateId;
-  validationError: '{name} {field} "{value}" is not a valid document ID string';
-}
-
-/**
- * The standard permissions object which may be included by a Document.
- */
-export const DOCUMENT_PERMISSIONS: DocumentPermissions;
-/**
- * Property type: `Partial<Record<string, DOCUMENT_PERMISSION_LEVELS>>`
- * Constructor type: `Partial<Record<string, DOCUMENT_PERMISSION_LEVELS>> | null | undefined`
- * Default: `{ default: DOCUMENT_PERMISSION_LEVELS.NONE }`
- */
-interface DocumentPermissions extends DocumentField<Partial<Record<string, DOCUMENT_PERMISSION_LEVELS>>> {
-  type: typeof Object;
-  required: true;
-  nullable: false;
-  default: { default: typeof DOCUMENT_PERMISSION_LEVELS.NONE };
-  validate: typeof _validatePermissions;
-  validationError: '{name} {field} "{value}" is not a mapping of user IDs and document permission levels';
-}
-
-/**
- * Validate the structure of the permissions object: all keys are valid IDs and all values are permission levels
- * @param perms - The provided permissions object
- * @returns Is the object valid?
- */
-declare function _validatePermissions(perms: object): boolean;
-
-interface ForeignDocumentFieldOptions {
-  type: {
-    readonly documentName: string;
+type ForeignDocumentFieldOptions<Choices extends DataFieldChoices<ForeignDocumentField.Type> | undefined> =
+  ChoicesOptions<ForeignDocumentField.ExtendsOptions<Choices>, Choices> & {
+    type: {
+      model: any;
+    };
   };
-  required?: boolean;
-  nullable?: boolean;
-  default?: any;
-}
 
 /**
- * Create a foreign key field which references a primary Document id
+ * @deprecated since v10
+ * @see ForeignDocumentField
  */
-export function foreignDocumentField<T extends ForeignDocumentFieldOptions>(options: T): ForeignDocumentField<T>;
-/**
- * Default config:
- * ```
- * {
- *   type: String,
- *   required: false,
- *   nullable: true,
- *   default: null
- * }
- * ```
- * With default config:
- * Property type: `string | null`
- * Constructor type: `ForeignDocument | string | null | undefined`
- * Default: `null`
- */
-interface ForeignDocumentField<T extends ForeignDocumentFieldOptions> extends DocumentField<string | null> {
-  type: typeof String;
-  required: T extends {
-    required: true;
-  }
-    ? true
-    : false;
-  nullable: T extends {
-    nullable?: true;
-  }
-    ? true
-    : T extends {
-        nullable: false;
-      }
-    ? false
-    : boolean;
-  default: T extends {
-    default: infer U;
-  }
-    ? U
-    : null;
-  clean: (d: unknown) => string | null;
-  validate: typeof _validateId;
-  validationError: `{name} {field} "{value}" is not a valid ${T['type']['documentName']} id`;
-}
-
-interface EmbeddedCollectionFieldOptions {
-  required?: boolean;
-  default?: any[];
-}
+export function foreignDocumentField<
+  Options extends ForeignDocumentFieldOptions<NeverOr<Choices, undefined>>,
+  Choices extends DataFieldChoices<ForeignDocumentField.Type> | undefined = Options['choices']
+>(options: Options & { choices?: Choices }): ForeignDocumentField<Options['type']['model'], Options, Choices>;
 
 /**
  * Create a special field which contains a Collection of embedded Documents
@@ -456,71 +1431,17 @@ interface EmbeddedCollectionFieldOptions {
  *                   (default: `{}`)
  */
 export function embeddedCollectionField<
-  ConcreteDocumentConstructor extends { readonly documentName: string } & ConstructorOf<Document<any, any>>,
-  Options extends EmbeddedCollectionFieldOptions
+  ConcreteDocumentConstructor extends EmbeddedCollectionField.Type,
+  Options extends DataField.Options<EmbeddedCollectionField.ExtendsOptions<ConcreteDocumentConstructor>>
 >(
   document: ConcreteDocumentConstructor,
   options?: Options
 ): EmbeddedCollectionField<ConcreteDocumentConstructor, Options>;
-/**
- * Default config:
- * ```
- * {
- *   type: {
- *     [documentName]: DocumentConstructor
- *   },
- *   required: true,
- *   default: [],
- *   isCollection: true
- * }
- * ```
- * With default config:
- * Property type: `EmbeddedCollection<DocumentConstructor, ParentDocumentData>`
- * Constructor type: `DocumentConstructorData[] | null | undefined`
- * Default: `new EmbeddedCollection(DocumentData, [], DocumentConstructor)`
- */
-// TODO: Improve
-interface EmbeddedCollectionField<
-  ConcreteDocumentConstructor extends ConstructorOf<Document<any, any>>,
-  Options extends EmbeddedCollectionFieldOptions = {}
-> extends DocumentField<any> {
-  type: Partial<Record<string, ConcreteDocumentConstructor>>;
-  required: Options extends { required?: true } ? true : Options extends { required: false } ? false : boolean;
-  default: Options extends { default?: Array<infer U> } ? Array<U> : unknown[];
-  isCollection: true;
-}
-
-/**
- * A special field which contains a data object defined from the game System model.
- * @param document - The Document class definition
- */
-export function systemDataField<
-  DocumentSpecifier extends { readonly documentName: keyof Game.SystemData<any>['model'] }
->(document: DocumentSpecifier): SystemDataField;
-/**
- * Default config:
- * ```
- * {
- *   type: Object,
- *   required: true,
- *   default: object // template object of object type from template.json
- * }
- * ```
- * Property type: `object`
- * Constructor type: `object | null | undefined`
- * Default: `{}`
- */
-// TODO: Improve
-interface SystemDataField extends DocumentField<any> {
-  type: typeof Object;
-  default: (data: { type?: string }) => Record<string, Record<string, unknown>>;
-  required: true;
-}
 
 /**
  * Return a document field which is a modification of a static field type
  */
-export function field<T extends DocumentField<any>, U extends Partial<DocumentField<any>>>(
-  field: T,
-  options?: U
-): FieldReturnType<T, U>;
+export function field<
+  Type extends String | Number | Boolean | Object | unknown[] | object,
+  Options extends Record<string, unknown>
+>(field: { type: Type }, options?: Options): DataField.Any;

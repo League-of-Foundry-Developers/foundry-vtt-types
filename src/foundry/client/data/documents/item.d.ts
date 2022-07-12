@@ -19,11 +19,6 @@ declare global {
     get actor(): this['parent'];
 
     /**
-     * A convenience reference to the image path (data.img) used to represent this Item
-     */
-    get img(): this['data']['img'];
-
-    /**
      * Provide a thumbnail image path used to represent this document.
      */
     get thumbnail(): this['data']['img'];

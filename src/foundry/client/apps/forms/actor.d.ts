@@ -1,5 +1,6 @@
 import { ConfiguredDocumentClass, ToObjectFalseType } from '../../../../types/helperTypes';
 import { DropData as ClientDocumentMixinDropData } from '../../data/abstract/client-document';
+import * as documents from '../../../common/documents/module.mjs';
 
 declare global {
   /**
@@ -125,7 +126,7 @@ declare global {
      * @param itemData - The item data requested for creation
      */
     protected _onDropItemCreate(
-      itemData: foundry.data.ItemData['_source'][] | foundry.data.ItemData['_source']
+      itemData: documents.BaseItem['data']['_source'][] | documents.BaseItem['data']['_source']
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
 
     /**
@@ -133,7 +134,7 @@ declare global {
      */
     protected _onSortItem(
       event: DragEvent,
-      itemData: foundry.data.ItemData['_source']
+      itemData: documents.BaseItem['data']['_source']
     ): undefined | Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
 
     /**
@@ -151,8 +152,8 @@ declare global {
     interface Data<Options extends ActorSheet.Options = ActorSheet.Options>
       extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Actor>>, Options> {
       actor: this['document'];
-      items: ToObjectFalseType<foundry.data.ActorData>['items'];
-      effects: ToObjectFalseType<foundry.data.ActorData>['effects'];
+      items: ToObjectFalseType<documents.BaseActor>['items'];
+      effects: ToObjectFalseType<documents.BaseActor>['effects'];
     }
 
     type DropData =
@@ -167,7 +168,7 @@ declare global {
         type: 'ActiveEffect';
         tokenId?: string;
         actorId?: string;
-        data: foundry.data.ActiveEffectData['_source'];
+        data: documents.BaseActiveEffect['data']['_source'];
       }
 
       interface Actor {

@@ -65,7 +65,7 @@ declare global {
       isDefault: boolean;
       fillTypes: DrawingConfig.FillTypes;
       fontFamilies: Record<string, string>;
-      object: foundry.data.DrawingData['_source'];
+      object: foundry.documents.BaseDrawing['_source'];
       options: Options;
       submitText: string;
     }

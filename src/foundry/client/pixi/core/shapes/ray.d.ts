@@ -1,4 +1,4 @@
-import type { LineIntersection } from '../../../../common/utils/geometry.mjs.js';
+import type { LineIntersection } from '../../../../common/utils/geometry.mjs';
 
 declare global {
   interface RayIntersection {

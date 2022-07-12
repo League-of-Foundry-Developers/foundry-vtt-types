@@ -8,13 +8,13 @@ declare global {
    * @see {@link User} The User document
    */
   class Users extends WorldCollection<typeof foundry.documents.BaseUser, 'Users'> {
-    constructor(data?: foundry.data.UserData['_source'][]);
+    constructor(data?: foundry.documents.BaseUser['_source'][]);
 
     /**
      * The User document of the currently connected user
      * @defaultValue `null`
      */
-    current: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseUser>>> | null;
+    current: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof User>>> | null;
 
     /**
      * Initialize the Map object and all its contained documents

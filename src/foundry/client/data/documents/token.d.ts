@@ -1,8 +1,6 @@
 import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
-import { DocumentModificationOptions } from '../../../common/abstract/document.mjs.js';
-import type { ActiveEffectDataConstructorData } from '../../../common/data/data.mjs/activeEffectData';
-import * as data from '../../../common/data/data.mjs/index.js';
-import type { PrototypeTokenDataConstructorData } from '../../../common/data/data.mjs/prototypeTokenData';
+import type DataModel from '../../../common/abstract/data.mjs';
+import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
 declare global {
   /**
@@ -58,11 +56,6 @@ declare global {
     get inCombat(): boolean;
 
     /**
-     * Is the Token currently hidden from player view?
-     */
-    get hidden(): boolean;
-
-    /**
      * @param data    - (default: `{}`, unused)
      * @param options - (default: `{}`, unused)
      */
@@ -111,8 +104,8 @@ declare global {
       options: Parameters<this['update']>[1]
     ): Promise<[this['actor']]>;
 
-    override getEmbeddedCollection(embeddedName: 'Item'): data.ActorData['items'];
-    getEmbeddedCollection(embeddedName: 'ActiveEffect'): data.ActorData['effects'];
+    override getEmbeddedCollection(embeddedName: 'Item'): foundry.documents.BaseActor['data']['items'];
+    getEmbeddedCollection(embeddedName: 'ActiveEffect'): foundry.documents.BaseActor['data']['effects'];
 
     /**
      * Redirect creation of Documents within a synthetic Token Actor to instead update the tokenData override object.
@@ -197,7 +190,7 @@ declare global {
      */
     protected _onUpdateBaseActor(
       update?: Parameters<foundry.documents.BaseActor['_onUpdate']>[0],
-      options?: Parameters<foundry.data.ActorData['update']>[1]
+      options?: Parameters<foundry.documents.BaseActor['data']['update']>[1]
     ): void;
 
     /**
@@ -237,14 +230,7 @@ declare global {
    */
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  class PrototypeTokenDocument extends TokenDocument {
-    static get schema(): typeof foundry.data.PrototypeTokenData;
-
-    override update(
-      data?: DeepPartial<PrototypeTokenDataConstructorData> | undefined,
-      context?: (DocumentModificationContext & foundry.utils.MergeObjectOptions) | undefined
-    ): Promise<this | undefined>;
-  }
+  class PrototypeTokenDocument extends foundry.data.PrototypeToken {}
 }
 
 interface SingleAttributeBar {
@@ -278,4 +264,4 @@ interface ToggleActiveEffectOptions {
   active?: boolean | undefined;
 }
 
-export type StatusEffect = ActiveEffectDataConstructorData & { id: string };
+export type StatusEffect = DataModel.SchemaToSourceInput<foundry.documents.BaseActiveEffect['schema']> & { id: string };

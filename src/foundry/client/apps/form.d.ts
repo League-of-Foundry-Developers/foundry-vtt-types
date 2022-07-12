@@ -317,9 +317,7 @@ declare global {
   abstract class DocumentSheet<
     Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends object = DocumentSheet.Data,
-    ConcreteDocument extends foundry.abstract.Document<any, any> = Data extends DocumentSheet.Data<infer T>
-      ? T
-      : foundry.abstract.Document<any, any>
+    ConcreteDocument extends AnyDocument = Data extends DocumentSheet.Data<infer T> ? T : AnyDocument
   > extends FormApplication<Options, Data, ConcreteDocument> {
     /**
      * @defaultValue
@@ -368,7 +366,7 @@ declare global {
      * @typeParam Options          - the type of the options object
      */
     interface Data<
-      ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>,
+      ConcreteDocument extends AnyDocument = AnyDocument,
       Options extends DocumentSheetOptions = DocumentSheetOptions
     > {
       cssClass: string;

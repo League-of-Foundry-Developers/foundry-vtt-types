@@ -1,242 +1,347 @@
-import Document from './document.mjs';
-import EmbeddedCollection from './embedded-collection.mjs';
-import {
-  DocumentConstructor,
-  PropertiesToSource,
-  PropertyTypeToSourceParameterType,
-  ToObjectFalseType
-} from '../../../types/helperTypes';
+import { StructuralClass } from './../../../types/helperTypes.d';
+import { ToObjectType } from '../../../types/helperTypes';
+import type {
+  DataField,
+  DataFieldChoicesOptions,
+  EmbeddedCollectionField,
+  NumberField,
+  StringField
+} from '../data/fields.mjs';
 
-declare global {
-  /**
-   * A schema entry which describes a field of DocumentData
-   * @typeparam T - the inner type of the document field
-   */
-  interface DocumentField<T> {
+declare namespace DataModel {
+  export type ConstructorOptions = InexactPartial<{
     /**
-     * An object which defines the data type of this field
+     * A parent DataModel instance to which this DataModel belongs
+     * (default: `null`)
      */
-    type: object;
+    parent: Any | null;
 
     /**
-     * Is this field required to have an assigned value? Default is false.
+     * Control the strictness of validation for initially provided data
+     * (default: `true`)
      */
-    required: boolean;
+    strict: boolean;
+  }>;
+
+  export type FormatValidationErrorsOptions = InexactPartial<{
+    /** A prefix label that should prepend any error messages */
+    label: string;
+
+    /** A field namespace that should prepend key names with dot-notation */
+    namespace: string;
+  }>;
+
+  export type CleanDataOptions = Partial<{
+    /**
+     * Allow partial cleaning of source data, ignoring absent fields
+     * (default: `false`)
+     */
+    partial: boolean;
+  }>;
+
+  export type InitializeOptions = Record<string, never>;
+
+  export type ValidateOptions<SourceData extends Record<string, unknown>> = InexactPartial<{
+    /** A specific set of proposed changes to validate, rather than the full source data of the model. */
+    changes: DeepPartial<SourceData>;
 
     /**
-     * Can the field be populated by a null value? Default is true.
+     * If changes are provided, attempt to clean the changes before validating them
+     * (default: `false`)
      */
-    nullable?: boolean;
+    clean: boolean;
 
     /**
-     * A static default value or a function which assigns a default value
+     * Allow replacement of invalid values with valid defaults?
+     * (default: `false`)
      */
-    default?: PropertyTypeToSourceParameterType<T> | ((data?: object) => T);
-
-    collection?: boolean;
+    fallback: boolean;
 
     /**
-     * An optional cleaning function which sanitizes input data to this field
+     * Throw if an invalid value is encountered, otherwise log a warning?
      */
-    clean?: (input: unknown) => T;
+    strict: boolean;
 
     /**
-     * A function which asserts that the value of this field is valid
+     * Perform validation on individual fields?
      */
-    validate?: (value: T) => boolean;
+    fields: boolean;
 
     /**
-     * An error message which is displayed if validation fails
+     * Perform joint validation on the full data model?
+     * Joint validation will be performed by default if no changes are passed.
+     * Joint validation will be disabled by default if changes are passed.
+     * Joint validation can be performed on a complete set of changes (for example testing a complete data model) by explicitly passing true.
      */
-    validationError?: string;
+    joint?: boolean;
+  }>;
 
+  /** Includes `ConstructorData`. */
+  export type FromSourceContext = {
     /**
-     * Is the field an embedded Document collection?
+     * Models created from trusted source data are validated non-strictly
+     * (default: `false`)
      */
-    isCollection?: boolean;
-  }
+    strict?: boolean;
+  } & Record<string, unknown>;
 
-  /**
-   * The schema of a Document
-   */
-  type DocumentSchema = Partial<Record<string, DocumentField<any>>>;
+  export type UpdateSourceOptions = {
+    /**
+     * Allow replacement of invalid values with valid defaults?
+     * (default: `false`)
+     */
+    fallback: boolean;
+  };
+
+  export type UpdateDataOptions = {
+    _backup: Record<string, unknown>;
+    _diff: Record<string, unknown>;
+  } & UpdateFieldOptions;
+
+  export type UpdateFieldOptions = {
+    /**
+     * Allow replacement of invalid values with valid defaults?
+     * (default: `false`)
+     */
+    fallback?: boolean;
+    recursive?: boolean;
+    _collections?: Record<string, EmbeddedCollectionField<any, any>>;
+    _diff: Record<string, unknown>;
+  };
+
+  export type ShimDataOptions = Partial<{
+    /**
+     * Apply shims to embedded models?
+     * (default: `true`)
+     */
+    embedded: boolean;
+  }>;
+
+  export type InitializedDataFor<Model extends Any> = Model extends DataModel<any, infer ConcreteDataSchema>
+    ? SchemaToData<ConcreteDataSchema>
+    : never;
+
+  export type SchemaToSourceInput<ConcreteDataSchema extends DataSchema> = GetSchemaValue<
+    ConstructPartial<ConstructReadonly<RemoveIndex<ConcreteDataSchema>>>,
+    'SourceType'
+  >;
+
+  export type ConstructPartial<ConcreteDataSchema extends DataSchema> = PartialProps<
+    ConcreteDataSchema,
+    {
+      // Essentially tests this condition that will give if it's required:
+      //   (required === true && initial === undefined) ||
+      //   (nullable === false && initial === null) ||
+      //   ((field instanceof NumberField || field instanceof StringField) && choices !== undefined && !choices.includes(initial)) ||
+      //   (field instanceof StringField && blank === false && initial === '')
+      // In every case validation will automatically fail if given no value thusly a value must be given to prevent this error.
+      [K in keyof ConcreteDataSchema]: OrList<
+        [
+          And<Extends<ConcreteDataSchema[K]['required'], true>, Equals<ConcreteDataSchema[K]['initial'], undefined>>,
+          And<Extends<ConcreteDataSchema[K]['nullable'], false>, Equals<ConcreteDataSchema[K]['initial'], null>>,
+          ConcreteDataSchema[K] extends NumberField<any, any> | StringField<any, any>
+            ? Equals<ConcreteDataSchema[K]['choices'], undefined> extends true
+              ? false
+              : Extends<
+                  ConcreteDataSchema[K]['initial'],
+                  DataFieldChoicesOptions<Exclude<ConcreteDataSchema[K]['choices'], undefined>>
+                >
+            : false,
+          ConcreteDataSchema[K] extends StringField<any, any>
+            ? And<Extends<ConcreteDataSchema[K]['blank'], false>, Equals<ConcreteDataSchema[K]['initial'], ''>>
+            : false
+        ]
+      > extends false
+        ? K
+        : never;
+    }[keyof ConcreteDataSchema]
+  >;
+
+  export type SchemaToSource<ConcreteDataSchema extends DataSchema> = GetSchemaValue<
+    ConstructReadonly<RemoveIndex<ConcreteDataSchema>>,
+    'SourceType'
+  >;
+
+  export type GetSchemaValue<
+    ConcreteDataSchema extends DataSchema,
+    ExtendsOptionsKey extends keyof DataField.AnyExtendsOptions
+  > = {
+    [K in keyof ConcreteDataSchema]: DataField.ExtendsOptionsFor<ConcreteDataSchema[K]>[ExtendsOptionsKey];
+  };
+
+  export type ConstructReadonly<ConcreteDataSchema extends DataSchema> = ReadonlyProps<
+    ConcreteDataSchema,
+    {
+      [K in keyof ConcreteDataSchema]: ConcreteDataSchema[K]['readonly'] extends true ? K : never;
+    }[keyof ConcreteDataSchema]
+  >;
+
+  export type SchemaToData<ConcreteDataSchema extends DataSchema> = GetSchemaValue<
+    ConstructReadonly<RemoveIndex<ConcreteDataSchema>>,
+    'InitializedType'
+  >;
+
+  export type SchemaFor<Model extends Any> = Model extends DataModel<any, infer ConcreteDataSchema>
+    ? ConcreteDataSchema
+    : never;
+
+  export type Any = DataModel<any, any, any>;
+
+  export type AnyConstructor = Pick<typeof DataModel, keyof typeof DataModel> &
+    (abstract new (...params: any[]) => DataModel.Any);
 }
+
+export type DataSchema = {
+  [name: string]: DataField.Any;
+};
+
+// @ts-expect-error subclassing StructuralClass gives an error
+declare abstract class _InternalDataModel<
+  ConcreteDataSchema extends DataSchema,
+  _ComputedDataModel extends object = RemoveIndex<DataModel.SchemaToData<ConcreteDataSchema>>
+> extends StructuralClass<_ComputedDataModel> {}
+
+type DataModelShims = {
+  /**
+   * @deprecated since v10
+   */
+  update: DataModel<any, any, any>['updateSource'];
+};
 
 /**
  * The abstract base class which defines the data schema contained within a Document.
- * @typeParam ConcreteDocumentSchema - the schema of the document data
- * @typeParam PropertiesData - the runtime document properties of the the DocumentData
- * @typeParam SourceData - the type of the `_source` property
- * @typeParam ConstructorData - the data to construct a new instance of this DocumentData
- * @typeParam ConcreteDocument - the document, the document data belongs to
  */
-declare abstract class DocumentData<
-  ConcreteDocumentSchema extends DocumentSchema,
-  PropertiesData extends object,
-  SourceData extends object = PropertiesToSource<PropertiesData>,
-  ConstructorData extends object = DeepPartial<SourceData>,
-  ConcreteDocument extends Document<any, any> | null = null
-> {
+declare abstract class DataModel<
+  Parent extends AnyDocument | null,
+  ConcreteDataSchema extends DataSchema,
+  ConcreteDataModelShims extends Record<string, unknown> = {}
+> extends _InternalDataModel<ConcreteDataSchema> {
   /**
-   * @param data     - Initial data used to construct the data object
+   * @param data    - Initial data used to construct the data object
+   *                  (default: `{}`)
+   * @param options - Options which affect DataModel construction
    *                   (default: `{}`)
-   * @param document - The document to which this data object belongs
-   *                   (default: `null`)
    */
-  constructor(data?: ConstructorData, document?: ConcreteDocument | null);
+  constructor(data?: DataModel.SchemaToSourceInput<ConcreteDataSchema>, options?: DataModel.ConstructorOptions);
 
   /**
-   * An immutable reverse-reference to the Document to which this data belongs, possibly null.
+   * The source data object for this DataModel instance.
+   * Once constructed, the source object is sealed such that no keys may be added nor removed.
    */
-  readonly document: ConcreteDocument | null;
+  readonly _source: DataModel.SchemaToSource<ConcreteDataSchema> & ConcreteDataModelShims;
 
   /**
-   * The source data object. The contents of this object can be updated, but the object itself may not be replaced.
+   * The defined and cached Data Schema for all instances of this DataModel.
    */
-  readonly _source: SourceData;
+  private static readonly _schema: DataSchema;
 
   /**
-   * The primary identifier for the Document to which this data object applies.
-   * This identifier is unique within the parent collection which contains the Document.
-   * @defaultValue `null`
+   * A mapping of EmbeddedCollection instances which correspond to fields of this model.
    */
-  _id: string | null;
+  #collections: {
+    [K in keyof ConcreteDataSchema as ConcreteDataSchema[K] extends EmbeddedCollectionField<any, any>
+      ? K
+      : never]: ConcreteDataSchema[K];
+  };
+
+  /**
+   * An immutable reverse-reference to a parent DataModel to which this model belongs.
+   */
+  readonly parent: Parent;
+
+  /**
+   * Is the current state of the DataModel valid?
+   */
+  #valid: boolean;
+
+  /* ---------------------------------------- */
+  /*  Data Schema                             */
+  /* ---------------------------------------- */
 
   /**
    * Define the data schema for documents of this type.
    * The schema is populated the first time it is accessed and cached for future reuse.
+   * @virtual
    *
-   * @remarks This method needs to be implemented by subclasses.
+   * @remarks This method MUST be defined in subclasses as to not is a runtime error. To get runtime and compile time characteristics synced up the return type of `defineSchema` must be the same as `ConcreteDataSchema`. Unfortunately neither of these acn be ensured at compile-time.
    */
-  static defineSchema(): DocumentSchema;
+  static defineSchema(): DataSchema;
+
+  /* ---------------------------------------- */
 
   /**
    * Define the data schema for documents of this type.
    */
-  static get schema(): DocumentSchema;
+  static get schema(): DataSchema;
+
+  /* ---------------------------------------- */
 
   /**
    * Define the data schema for this document instance.
    */
-  get schema(): ConcreteDocumentSchema;
+  get schema(): ConcreteDataSchema;
+
+  /* ---------------------------------------- */
 
   /**
-   * Initialize the source data object in-place
+   * Is the current state of this DataModel invalid?
    */
-  _initializeSource(data: ConstructorData): SourceData;
+  get invalid(): boolean;
+
+  /* ---------------------------------------- */
 
   /**
-   * Get the default value for a schema field, conditional on the provided data
-   * @param field - The configured data field
-   * @param data  - The provided data object
-   * @returns The default value for the field
+   * Apply a certain transformation function to every field in the model's data schema.
+   * @param fn - A function to apply or a string which references a named function which must exist on every DataField subclass
+   * @param data - Input data which is passed to the applied function
+   * @param options - Options which are passed to the applied function
+   * @returns - An object with the hierarchical structure of the model schema containing the returned values of the applied function
    */
-  protected static _getFieldDefaultValue<ConcreteDocumentField extends DocumentField<any>>(
-    field: ConcreteDocumentField,
-    data: object
-  ): ConcreteDocumentField extends { default?: undefined }
-    ? undefined
-    : ConcreteDocumentField extends { default: (data?: object) => infer V }
-    ? V
-    : ConcreteDocumentField['default'];
+  static applyToSchema<Data extends Record<string, unknown> = {}, Options extends Record<string, unknown> = {}>(
+    fn: (data: Data[string], options: Options) => void | string,
+    data?: Data,
+    options?: Options
+  ): Record<string, unknown>;
+
+  /* ---------------------------------------- */
+  /*  Data Cleaning Methods                   */
+  /* ---------------------------------------- */
 
   /**
-   * Initialize the instance by copying data from the source object to instance attributes.
+   * Initialize the source data for a new DataModel instance.
+   * One-time migrations and initial cleaning operations are applied to the source data.
+   * @param data - The candidate source data from which the model will be constructed
+   * @param options - Options provided to the model constructor
+   *                  (default: `{}`)
+   * @returns Migrated and cleaned source data which will be stored to the model instance
    */
-  protected _initialize(): void;
+  protected _initializeSource(
+    data: DataModel.SchemaToSourceInput<this['schema']>,
+    options?: object
+  ): DataModel.SchemaToSource<this['schema']>;
+
+  /* ---------------------------------------- */
 
   /**
-   * Initialize the value for a given data type
-   * @param type  - The type of the data field
-   * @param value - The un-initialized value
-   * @returns The initialized value
+   * Clean a data source object to conform to a specific provided schema.
+   * @param source  - The source data object
+   *                  (default: `{}`)
+   * @param options - Additional options which are passed to SchemaField.cleanSchema
+   *                  (default: `{}`)
+   * @returns The cleaned source data
    */
-  protected _initializeType(type: undefined, value: unknown): void;
-  protected _initializeType<Value extends object>(type: typeof Object, value: Value): Value;
-  protected _initializeType<Type extends typeof String | typeof Number | typeof Boolean>(
-    type: Type,
-    value: ReturnType<Type> | Parameters<Type>[0]
-  ): ReturnType<Type>;
-  protected _initializeType<Value extends Array<any> | ConstructorParameters<typeof Array>>(
-    type: typeof Array,
-    value: Value
-  ): Value extends Array<any> ? Value : Array<any>;
-  protected _initializeType<Value extends number | string>(type: typeof Date, value: Value): number;
-  protected _initializeType<Type extends ConstructorOf<Document<any, any>>>(
-    type: Type,
-    value: ConstructorParameters<Type>[0]
-  ): InstanceType<Type>; // TODO: Actually this returns an instance of the subclass configured in CONFIG
-  protected _initializeType<Type extends ConstructorOf<AnyDocumentData>>(
-    type: Type,
-    value: ConstructorParameters<Type>[0]
-  ): InstanceType<Type>;
+  static cleanData(source?: Record<string, unknown>, options?: DataModel.CleanDataOptions): Record<string, unknown>;
+
+  /* ---------------------------------------- */
+  /*  Data Initialization                     */
+  /* ---------------------------------------- */
 
   /**
-   * Validate the data contained in the document to check for type and content
-   * This function throws an error if data within the document is not valid
-   *
-   * @param changes  - Only validate the keys of an object that was changed.
-   * @param children - Validate the data of child embedded documents? Default is true.
-   * @param clean    - Apply field-specific cleaning functions to the provided value.
-   * @param replace  - Replace any invalid values with valid defaults? Default is false.
-   * @param strict   - If strict, will throw errors for any invalid data. Default is false.
-   * @returns An indicator for whether or not the document contains valid data
+   * Initialize the instance by copying data from the source object to instance attributes.     Options provided to the model constructor
    */
-  validate({
-    changes,
-    children,
-    clean,
-    replace,
-    strict
-  }: {
-    changes?: DeepPartial<ConstructorData>;
-    children?: boolean;
-    clean?: boolean;
-    replace?: boolean;
-    strict?: boolean;
-  }): boolean;
+  protected _initialize(options: DataModel.InitializeOptions): void;
 
-  /**
-   * Build and return the error message for a Missing Field
-   * @param name  - The named field that is missing
-   * @param field - The configured DocumentField from the Schema
-   * @returns The error message
-   */
-  protected _getMissingFieldErrorMessage(name: string, field: DocumentField<unknown>): string;
-
-  /**
-   * Build and return the error message for an Invalid Field Value
-   * @param name  - The named field that is invalid
-   * @param field - The configured DocumentField from the Schema
-   * @param value - The value that is invalid
-   * @returns The error message
-   */
-  protected _getInvalidFieldValueErrorMessage(name: string, field: DocumentField<unknown>, value: unknown): string;
-
-  /**
-   * Validate a single field in the data object.
-   * Assert that required fields are present and that each value passes it's validator function if one is provided.
-   * @param name     - The named field being validated
-   * @param field    - The configured DocumentField from the Schema
-   * @param value    - The current field value
-   * @param children - Validate the data of child embedded documents? Default is true.
-   *                   (default: `true`)
-   */
-  protected _validateField<Name extends keyof ConcreteDocumentSchema>(
-    name: Name,
-    field: ConcreteDocumentSchema[Name],
-    value: unknown,
-    { children }: { children?: boolean }
-  ): void;
-
-  /**
-   * Jointly validate the overall document after each field has been individually validated.
-   * Throw an Error if any issue is encountered.
-   *
-   * @remarks
-   * The base implementation doesn't do anything. Supposedly, subclasses can implement their own validation here.
-   */
-  protected _validateDocument(): void;
+  /* ---------------------------------------- */
 
   /**
    * Reset the state of this data instance back to mirror the contained source data, erasing any changes.
@@ -244,73 +349,169 @@ declare abstract class DocumentData<
   reset(): void;
 
   /**
-   * Update the data by applying a new data object. Data is compared against and merged with the existing data.
-   * Updating data which already exists is strict - it must pass validation or else the update is rejected.
-   * An object is returned which documents the set of changes which were applied to the original data.
-   * @see foundry.utils.mergeObject
-   * @param data    - New values with which to update the Data object
+   * Validate the data contained in the document to check for type and content
+   * This function throws an error if data within the document is not valid
+   *
+   * @param options - Optional parameters which customize how validation occurs.
+   *                  (default: `{}`)
+   * @returns - An indicator for whether the document contains valid data
+   */
+  validate(options: DataModel.ValidateOptions<DataModel.SchemaToData<ConcreteDataSchema>>): boolean;
+
+  /* ---------------------------------------- */
+
+  /**
+   * Get an array of validation errors from the provided error structure
+   * @param options - (default: `{}`)
+   */
+  static formatValidationErrors(
+    errors: Record<string, Error>,
+    options?: DataModel.FormatValidationErrorsOptions
+  ): string;
+
+  /* ---------------------------------------- */
+
+  /**
+   * Jointly validate the overall data model after each field has been individually validated.
+   * @param data - The candidate data object to validate
+   * @throws - An error if a validation failure is detected
+   */
+  protected _validateModel(data: DataModel.SchemaToData<this['schema']>): void;
+
+  /* ---------------------------------------- */
+  /*  Data Management                         */
+  /* ---------------------------------------- */
+
+  /**
+   * Update the DataModel locally by applying an object of changes to its source data.
+   * The provided changes are cleaned, validated, and stored to the source data object for this model.
+   * The source data is then re-initialized to apply those changes to the prepared data.
+   * The method returns an object of differential changes which modified the original data.
+   *
+   * @param changes - New values which should be applied to the data model
    *                  (default: `{}`)
    * @param options - Options which determine how the new data is merged
    *                  (default: `{}`)
-   * @returns The changed keys and values which are different than the previous data
+   * @returns - An object containing the changed keys and values
    */
-  update<U>(
-    data?: Expanded<U> extends DeepPartial<ConstructorData> ? U : DeepPartial<ConstructorData>,
-    options?: UpdateOptions
-  ): Expanded<U> extends DeepPartial<SourceData> ? DeepPartial<U> : DeepPartial<SourceData>;
+  updateSource(
+    changes?: DeepPartial<DataModel.SchemaToSource<ConcreteDataSchema>>,
+    options?: DataModel.UpdateSourceOptions
+  ): Partial<DataModel.SchemaToSource<ConcreteDataSchema>>;
+
+  /* ---------------------------------------- */
 
   /**
-   * Update an EmbeddedCollection using an array of provided document data
-   * @param collection   - The EmbeddedCollection to update
-   * @param documentData - An array of provided Document data
-   * @param options      - Additional options which modify how the collection is updated
-   *                       (default: `{}`)
+   * Update the source data for a specific DataSchema.
+   * @param schema - The data schema to update
+   * @param source - Source data to be updated
+   * @param changes - Changes to apply to the source data
+   * @param options - Options which modify the update workflow
+   *                           (default: `{}`)
+   * @returns The updated source data
+   * @throws - An error if the update operation was unsuccessful
    */
-  updateCollection<T extends DocumentConstructor>(
-    collection: EmbeddedCollection<T, this>,
-    documentData: DeepPartial<InstanceType<T>['data']['_source']>[],
-    options?: UpdateOptions
-  ): void;
+  static #updateData(
+    schema: DataSchema,
+    source: Record<string, unknown>,
+    changes: Record<string, unknown>,
+    options: DataModel.UpdateDataOptions
+  ): Record<string, unknown>;
+
+  /* ---------------------------------------- */
 
   /**
-   * Copy and transform the DocumentData into a plain object.
+   * Update the source data for a specific DataField.
+   * @param name - The field name being updated
+   * @param field - The field definition being updated
+   * @param source - The source object being updated
+   * @param value - The new value for the field
+   * @param options - Options which modify the update workflow
+   * @throws - An error if the new candidate value is invalid
+   */
+  static #updateField(
+    name: string,
+    field: DataField.Any,
+    source: Record<string, unknown>,
+    value: unknown,
+    options: Record<string, unknown>
+  ): Record<string, unknown>;
+
+  /* ---------------------------------------- */
+  /*  Serialization and Storage               */
+  /* ---------------------------------------- */
+
+  /**
+   * Copy and transform the DataModel into a plain object.
    * Draw the values of the extracted object from the data source (by default) otherwise from its transformed values.
    * @param source - Draw values from the underlying data source rather than transformed values
    *                 (default: `true`)
    * @returns The extracted primitive object
    */
-  toObject(source?: true): ReturnType<this['toJSON']>;
+  toObject(source?: true): this['_source'];
+
+  // TODO
   toObject(source: false): {
-    [Key in keyof ConcreteDocumentSchema as string extends Key ? never : Key]: Key extends keyof this
-      ? ToObjectFalseType<this[Key]>
-      : unknown;
+    [K in keyof this['schema']]: ReturnType<this['schema'][K]['toObject']>;
   };
 
-  /**
-   * Extract the source data for the DocumentData into a simple object format that can be serialized.
-   * @returns The document source data expressed as a plain object
-   */
-  toJSON(): this['_id'] extends string ? this['_source'] & { _id: string } : this['_source'];
+  /* ---------------------------------------- */
 
   /**
-   * Create a DocumentData instance using a provided serialized JSON string.
+   * Extract the source data for the DataModel into a simple object format that can be serialized.
+   * @returns - The document source data expressed as a plain object
+   */
+  toJSON(): ToObjectType<this, true>;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Create a new instance of this DataModel from a source record.
+   * The source is presumed to be trustworthy and is not strictly validated.
+   * @param source - Initial document data which comes from a trusted source.
+   * @param context - Model construction context
+   */
+  protected static fromSource(source: object, context: DataModel.FromSourceContext): DataModel.Any;
+
+  /* ---------------------------------------- */
+
+  /**
+   * Create a DataModel instance using a provided serialized JSON string.
    * @param json - Serialized document data in string format
-   * @returns constructed data instance
+   * @returns - A constructed data model instance
    */
-  static fromJSON<ConcreteDocumentData extends AnyDocumentData>(
-    this: ConcreteDocumentData,
-    json: string
-  ): ConcreteDocumentData;
+  static fromJSON(json: string): DataModel.Any;
+
+  /* -------------------------------------------- */
+
+  /**
+   * View the schema of this data model in a representative "flattened" format.
+   */
+  static get flatSchema(): DataSchema;
+
+  /* -------------------------------------------- */
+  /*  Deprecations and Compatibility              */
+  /* -------------------------------------------- */
+
+  /**
+   * Migrate candidate source data for this DataModel which may require initial cleaning or transformations.
+   * @param source - The candidate source data from which the model will be constructed
+   * @returns Migrated source data, if necessary
+   */
+  static migrateData(source: Record<string, unknown>): Record<string, unknown>;
+
+  /* ---------------------------------------- */
+
+  /**
+   * Take data which conforms to the current data schema and add backwards-compatible accessors to it in order to support older code which uses this data.
+   * @param data - Data which matches the current schema
+   * @param options - Additional shimming options
+   *                  (default: `{}`)
+   * @returns - Data with added backwards-compatible properties
+   */
+  static shimData(data: Record<string, unknown>, options: DataModel.ShimDataOptions): Record<string, unknown>;
 }
 
-interface UpdateOptions {
-  diff?: boolean;
-  recursive?: boolean;
-  insertValues?: boolean;
-  insertKeys?: boolean;
-  enforceTypes?: boolean;
-}
+export default DataModel;
 
-export default DocumentData;
-
-export type AnyDocumentData = DocumentData<any, any, any, any, any>;
+export { DataModel };

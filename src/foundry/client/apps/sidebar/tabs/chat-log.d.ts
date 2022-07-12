@@ -1,5 +1,7 @@
 import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
-import type { ChatMessageDataConstructorData } from '../../../../common/data/data.mjs/chatMessageData';
+import type DataModel from '../../../../common/abstract/data.mjs';
+
+type Foo = ConfiguredDocumentClass<typeof ChatMessage>;
 
 declare global {
   interface ChatLogOptions extends ApplicationOptions {
@@ -187,7 +189,7 @@ declare global {
     protected _processDiceCommand(
       command: string,
       match: RegExpMatchArray,
-      chatData: ChatMessageDataConstructorData,
+      chatData: DataModel.SchemaToSourceInput<foundry.documents.BaseChatMessage['schema']>,
       createOptions: DocumentModificationContext
     ): void;
 
@@ -203,7 +205,7 @@ declare global {
     protected _processWhisperCommand(
       command: string,
       match: RegExpMatchArray,
-      chatData: ChatMessageDataConstructorData,
+      chatData: DataModel.SchemaToSourceInput<foundry.documents.BaseChatMessage['schema']>,
       createOptions: DocumentModificationContext
     ): void;
 
@@ -218,7 +220,7 @@ declare global {
     protected _processChatCommand(
       command: string,
       match: RegExpMatchArray,
-      chatData: ChatMessageDataConstructorData,
+      chatData: DataModel.SchemaToSourceInput<foundry.documents.BaseChatMessage['schema']>,
       createOptions: DocumentModificationContext
     ): void;
 

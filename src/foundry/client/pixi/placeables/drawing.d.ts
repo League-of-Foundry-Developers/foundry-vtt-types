@@ -184,7 +184,7 @@ declare global {
      */
     protected _onDrawingTextKeydown(event: KeyboardEvent): void;
 
-    protected override _onUpdate(data: DeepPartial<foundry.data.DrawingData['_source']>): void;
+    protected override _onUpdate(data: DeepPartial<foundry.documents.BaseDrawing['_source']>): void;
 
     /**
      * @param event - unused
@@ -270,10 +270,10 @@ declare global {
      * @internal
      */
     protected _rescaleDimensions(
-      original: Pick<foundry.data.DrawingData['_source'], 'x' | 'y' | 'points' | 'width' | 'height'>,
+      original: Pick<foundry.documents.BaseDrawing['_source'], 'x' | 'y' | 'shape'>,
       dx: number,
       dy: number
-    ): Pick<foundry.data.DrawingData['_source'], 'x' | 'y' | 'width' | 'height' | 'points'>;
+    ): Pick<foundry.documents.BaseDrawing['_source'], 'x' | 'y' | 'shape'>;
 
     /**
      * Adjust the location, dimensions, and points of the Drawing before committing the change
@@ -283,7 +283,7 @@ declare global {
      * @internal
      */
     static normalizeShape(
-      data: Pick<foundry.data.DrawingData['_source'], 'x' | 'y' | 'width' | 'height' | 'points'>
-    ): Pick<foundry.data.DrawingData['_source'], 'x' | 'y' | 'width' | 'height' | 'points'>;
+      data: Pick<foundry.documents.BaseDrawing['_source'], 'x' | 'y' | 'shape'>
+    ): Pick<foundry.documents.BaseDrawing['_source'], 'x' | 'y' | 'shape'>;
   }
 }

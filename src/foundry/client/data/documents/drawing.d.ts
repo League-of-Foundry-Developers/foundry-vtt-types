@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -11,9 +11,16 @@ declare global {
    */
   class DrawingDocument extends CanvasDocumentMixin(foundry.documents.BaseDrawing) {
     /**
-     * A reference to the User who created the Drawing document.
-     * @remarks Will return undefined if the user has been deleted
+     * Define an elevation property on the Drawing Document which in the future will become a part of its data schema.
      */
-    get author(): InstanceType<ConfiguredDocumentClass<typeof User>> | undefined;
+    get elevation(): number;
+
+    /**
+     * Define a sort property on the Drawing Document which in the future will become a core part of its data schema.
+     */
+    get sort(): number;
+
+    /** {@inheritdoc} */
+    override prepareBaseData(): void;
   }
 }

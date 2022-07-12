@@ -48,7 +48,7 @@ declare global {
     /**
      * @defaultValue `null`
      */
-    protected _related: foundry.abstract.Document<any, any> | null;
+    protected _related: AnyDocument | null;
 
     /**
      * @defaultValue
@@ -77,7 +77,7 @@ declare global {
     /**
      * Provide a reference to the Document referenced by this popout, if one exists
      */
-    getRelatedObject(): Promise<foundry.abstract.Document<any, any> | null>;
+    getRelatedObject(): Promise<AnyDocument | null>;
 
     protected override _render(
       force?: boolean,

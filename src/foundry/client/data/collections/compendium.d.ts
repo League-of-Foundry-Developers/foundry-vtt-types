@@ -1,5 +1,5 @@
 import { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import { DocumentModificationOptions } from '../../../common/abstract/document.mjs.js';
+import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
 declare global {
   /**
@@ -54,31 +54,31 @@ declare global {
      */
     static INDEX_FIELDS: {
       /** @defaultValue `["name", "img", "type"]` */
-      Actor: (keyof foundry.data.ActorData['_source'])[];
+      Actor: (keyof Actor['_source'])[];
 
       /** @defaultValue `["name", "img"]` */
-      Adventure: (keyof foundry.data.AdventureData['_source'])[];
+      Adventure: (keyof Adventure['_source'])[];
 
       /** @defaultValue `["name", "img", "type"]` */
-      Item: (keyof foundry.data.ItemData['_source'])[];
+      Item: (keyof Item['_source'])[];
 
       /** @defaultValue `["name", "img", "type"]` */
-      Cards: (keyof foundry.data.CardsData['_source'])[];
+      Cards: (keyof Cards['_source'])[];
 
       /** @defaultValue `["name", "thumb"]` */
-      Scene: (keyof foundry.data.SceneData['_source'])[];
+      Scene: (keyof Scene['_source'])[];
 
       /** @defaultValue `["name", "img"]` */
-      JournalEntry: (keyof foundry.data.JournalEntryData['_source'])[];
+      JournalEntry: (keyof JournalEntry['_source'])[];
 
       /** @defaultValue `["name", "img"]` */
-      Macro: (keyof foundry.data.MacroData['_source'])[];
+      Macro: (keyof Macro['_source'])[];
 
       /** @defaultValue `["name", "img"]` */
-      RollTable: (keyof foundry.data.RollTableData['_source'])[];
+      RollTable: (keyof RollTable['_source'])[];
 
       /** @defaultValue `["name"]` */
-      Playlist: (keyof foundry.data.PlaylistData['_source'])[];
+      Playlist: (keyof Playlist['_source'])[];
     };
 
     /** The canonical Compendium name - comprised of the originating package and the pack name */

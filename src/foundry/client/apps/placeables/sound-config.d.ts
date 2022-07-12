@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import type { AmbientSoundDataConstructorData } from '../../../common/data/data.mjs/ambientSoundData';
+import type DataModel from '../../../common/abstract/data.mjs';
 
 declare global {
   /**
@@ -39,8 +39,8 @@ declare global {
       gridUnits: string;
     }
 
-    type FormData = Pick<foundry.data.AmbientSoundData, 'easing' | 'path' | 'volume'> &
-      Pick<AmbientSoundDataConstructorData, 'radius' | 'x' | 'y'>;
+    type FormData = Pick<foundry.documents.BaseAmbientSound['data'], 'easing' | 'path' | 'volume'> &
+      Pick<DataModel.SchemaToSourceInput<foundry.documents.BaseAmbientSound['schema']>, 'radius' | 'x' | 'y'>;
 
     type Options = DocumentSheetOptions;
   }

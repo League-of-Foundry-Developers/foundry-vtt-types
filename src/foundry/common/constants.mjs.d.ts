@@ -137,6 +137,18 @@ export const COMPENDIUM_DOCUMENT_TYPES: readonly [
 export type COMPENDIUM_DOCUMENT_TYPES = ValueOf<typeof COMPENDIUM_DOCUMENT_TYPES>;
 
 /**
+ * Define the allowed ownership levels for a Document.
+ * Each level is assigned a value in ascending order.
+ * Higher levels grant more permissions.
+ */
+export const DOCUMENT_OWNERSHIP_LEVELS: Readonly<{
+  NONE: 0;
+  LIMITED: 1;
+  OBSERVER: 2;
+  OWNER: 3;
+}>;
+
+/**
  * Define the allowed permission levels for a non-user Document.
  * Each level is assigned a value in ascending order. Higher levels grant more permissions.
  */
@@ -346,6 +358,15 @@ declare const tableResultTypes: Readonly<{
  */
 export const TABLE_RESULT_TYPES: typeof tableResultTypes;
 export type TABLE_RESULT_TYPES = ValueOf<typeof TABLE_RESULT_TYPES>;
+
+/**
+ * The allowed formats of a Journal Entry Page.
+ */
+export const JOURNAL_ENTRY_PAGE_FORMATS: Readonly<{
+  HTML: 1;
+  MARKDOWN: 2;
+}>;
+export type JOURNAL_ENTRY_PAGE_FORMATS = ValueOf<typeof JOURNAL_ENTRY_PAGE_FORMATS>;
 
 /**
  * Define the valid anchor locations for a Tooltip displayed on a Placeable Object
@@ -854,6 +875,18 @@ export const MEDIA_MIME_TYPES: readonly [
   'application/pdf',
   'text/plain'
 ];
+
+/**
+ * An enumeration of file type categories which can be selected
+ */
+export const FILE_CATEGORIES: {
+  HTML: typeof HTML_FILE_EXTENSIONS;
+  IMAGE: typeof IMAGE_FILE_EXTENSIONS;
+  VIDEO: typeof VIDEO_FILE_EXTENSIONS;
+  AUDIO: typeof AUDIO_FILE_EXTENSIONS;
+  TEXT: typeof TEXT_FILE_EXTENSIONS;
+  MEDIA: typeof MEDIA_MIME_TYPES;
+};
 
 /**
  * Stores shared commonly used timeouts, measured in MS

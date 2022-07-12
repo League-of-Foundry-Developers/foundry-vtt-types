@@ -6,7 +6,7 @@ import {
   ToObjectFalseType
 } from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
-import { EffectChangeData } from '../../common/data/data.mjs/effectChangeData';
+import type { EffectChangeData } from '../../common/documents/active-effect.mjs';
 import { DropData } from '../data/abstract/client-document';
 
 declare global {
@@ -610,7 +610,7 @@ declare global {
        */
       updateCompendium: (
         pack: CompendiumCollection<any>,
-        documents: foundry.abstract.Document<any, any>[],
+        documents: AnyDocument[],
         options: DocumentModificationOptions,
         userId: string
       ) => void;

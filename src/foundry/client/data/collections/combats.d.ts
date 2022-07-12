@@ -31,7 +31,7 @@ declare global {
     /**
      * The currently viewed Combat encounter
      */
-    get viewed(): StoredDocument<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseCombat>>> | null;
+    get viewed(): StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combat>>> | null;
 
     /**
      * When a Token is deleted, remove it as a combatant from any combat encounters which included the Token

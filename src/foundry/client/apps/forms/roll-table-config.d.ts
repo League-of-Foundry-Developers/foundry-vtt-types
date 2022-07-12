@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClassForName, ToObjectFalseType } from '../../../../types/helperTypes';
-import type { TableResultDataConstructorData } from '../../../common/data/data.mjs/tableResultData';
+import type DataModel from '../../../common/abstract/data.mjs';
 
 declare global {
   /**
@@ -42,7 +42,7 @@ declare global {
      */
     protected _onCreateResult(
       event: JQuery.ClickEvent | DragEvent,
-      resultData?: TableResultDataConstructorData
+      resultData?: DataModel.SchemaToSourceInput<foundry.documents.BaseTableResult['schema']>
     ): Promise<ConfiguredDocumentClassForName<'TableResult'>[]>;
 
     /**
@@ -131,7 +131,7 @@ declare global {
   namespace RollTableConfig {
     interface Data<Options extends DocumentSheetOptions = DocumentSheetOptions>
       extends DocumentSheet.Data<RollTable, Options> {
-      results: ToObjectFalseType<foundry.data.TableResultData> & {
+      results: ToObjectFalseType<foundry.documents.BaseTableResult['data']> & {
         isText: boolean;
         isDocument: boolean;
         isCompendium: boolean;

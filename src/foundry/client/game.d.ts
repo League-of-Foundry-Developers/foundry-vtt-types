@@ -44,6 +44,10 @@ declare global {
      */
     system: this['data']['system'];
 
+    documentTypes?: this['data']['documentTypes'];
+    template?: this['data']['template'];
+    model?: this['data']['model'];
+
     /**
      * A Map of active modules which are currently enabled in this World
      * @remarks
@@ -610,7 +614,7 @@ declare global {
         } | null;
         storages: ('public' | 'data' | 's3')[];
       };
-      modules: ModuleData<foundry.packages.ModuleData>[];
+      modules: ModuleData<foundry.packages.BaseModule>[];
       options: {
         demo: boolean;
         language: string;
@@ -643,12 +647,12 @@ declare global {
         notes: string;
         time: number;
       };
-      system: SystemData<foundry.packages.SystemData>;
+      system: System & SystemData<foundry.packages.BaseSystem['_source']>;
       systemUpdate: string | null;
       userId: string;
       /** @deprecated since V9 */
       version?: string;
-      world: WorldData<foundry.packages.WorldData>;
+      world: WorldData<foundry.packages.BaseWorld>;
     } & {
       [DocumentType in
         | foundry.CONST.DOCUMENT_TYPES
@@ -658,9 +662,9 @@ declare global {
     };
 
     type ConstructorData = Omit<Data, 'world' | 'system' | 'modules'> & {
-      world: WorldData<foundry.packages.WorldData['_source']>;
-      system: SystemData<foundry.packages.SystemData['_source']>;
-      modules: ModuleData<foundry.packages.ModuleData['_source']>[];
+      world: WorldData<foundry.packages.BaseWorld['_source']>;
+      system: SystemData<foundry.packages.BaseSystem['_source']>;
+      modules: ModuleData<foundry.packages.BaseModule['_source']>[];
     };
 
     type Permissions = {

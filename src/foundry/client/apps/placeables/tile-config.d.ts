@@ -1,5 +1,5 @@
 import { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import type { TileDataConstructorData } from '../../../common/data/data.mjs/tileData';
+import type DataModel from '../../../common/abstract/data.mjs';
 
 declare global {
   /**
@@ -43,7 +43,7 @@ declare global {
       occlusionModes: Record<foundry.CONST.TILE_OCCLUSION_MODES, string>;
     }
 
-    type FormData = Pick<TileDataConstructorData, 'height' | 'img' | 'rotation' | 'width' | 'x' | 'y'>;
+    type FormData = DataModel.SchemaToSourceInput<foundry.documents.BaseTile['schema']>;
 
     interface Options extends DocumentSheetOptions {
       /**

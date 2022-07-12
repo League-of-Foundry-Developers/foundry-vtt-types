@@ -1,7 +1,7 @@
 import type {
   EffectChangeData,
   EffectChangeDataProperties
-} from '../../../../src/foundry/common/data/data.mjs/effectChangeData';
+} from '../../../../src/foundry/common/data/data.mjs.d.ts/effectChangeData';
 
 import { expectError, expectType } from 'tsd';
 import '../../../../index';

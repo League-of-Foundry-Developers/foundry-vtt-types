@@ -77,8 +77,8 @@ declare global {
      * @internal
      */
     Adventure: {
-      /** @defaultValue `foundry.documents.BaseAdventure` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseAdventure>;
+      /** @defaultValue `Adventure` */
+      documentClass: ConfiguredDocumentClassOrDefault<typeof Adventure>;
     };
 
     /**
@@ -228,6 +228,7 @@ declare global {
     Item: {
       /** @defaultValue `Item` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof Item>;
+      //   documentClass: any;
 
       /** @defaultValue `Items` */
       collection: ConstructorOf<Items>;
@@ -334,6 +335,18 @@ declare global {
 
       /** @defaultValue `'fas fa-book-open'` */
       sidebarIcon: string;
+    };
+
+    /**
+     * Configuration for the JournalEntryPage embedded document type.
+     */
+    JournalEntryPage: {
+      /** @defaultValue `JournalEntryPage` */
+      documentClass: ConfiguredDocumentClassOrDefault<typeof JournalEntryPage>;
+
+      typeLabels: { pdf: 'JOURNALENTRYPAGE.TypePDF' };
+
+      defaultType: 'text';
     };
 
     /**

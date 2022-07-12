@@ -1,4 +1,4 @@
-import { DocumentDataType, DocumentModificationOptions } from '../../../common/abstract/document.mjs';
+import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
 declare global {
   /**
@@ -45,7 +45,7 @@ declare global {
     panToNote(options?: PanToNoteOptions): Promise<void>;
 
     protected override _onUpdate(
-      data: DeepPartial<DocumentDataType<foundry.documents.BaseJournalEntry>>,
+      data: DeepPartial<foundry.documents.BaseJournalEntry['data']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;

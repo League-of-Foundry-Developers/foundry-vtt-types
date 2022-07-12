@@ -7,7 +7,16 @@
  * @see {@link applications.TileConfig}       The Tile configuration application
  */
 declare class TileDocument extends CanvasDocumentMixin(foundry.documents.BaseTile) {
-  override prepareDerivedData(): void;
+  /**
+   * Define an elevation property on the Tile Document which in the future will become a core part of its data schema.
+   */
+  get elevation(): number;
 
-  override get layer(): ForegroundLayer | BackgroundLayer;
+  /**
+   * Define a sort property on the Tile Document which in the future will become a core part of its data schema.
+   */
+  get sort(): number;
+
+  /** {@inheritdoc} */
+  override prepareDerivedData(): void;
 }

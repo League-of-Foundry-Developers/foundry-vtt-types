@@ -2,9 +2,9 @@ import {
   DataSourceForPlaceable,
   ConfiguredObjectClassForName,
   ConfiguredDocumentClassForName,
-  PlaceableDocumentType,
-  ConstructorDataType
+  PlaceableDocumentType
 } from '../../../types/helperTypes';
+import type DataModel from '../../common/abstract/data.mjs';
 import EmbeddedCollection from '../../common/abstract/embedded-collection.mjs';
 
 type ConcretePlaceableOrPlaceableObject<T> = T extends PlaceableObject ? T : PlaceableObject;
@@ -92,7 +92,7 @@ declare global {
      */
     get documentCollection(): EmbeddedCollection<
       ConfiguredDocumentClassForName<DocumentName>,
-      foundry.data.SceneData
+      foundry.documents.BaseScene
     > | null;
 
     /**
@@ -303,7 +303,7 @@ declare global {
      * @param position   - The position to render the sheet at.
      */
     protected _createPreview(
-      createData: ConstructorDataType<InstanceType<ConfiguredDocumentClassForName<DocumentName>>['data']>,
+      createData: DataModel.SchemaToSourceInput<InstanceType<ConfiguredDocumentClassForName<DocumentName>>['schema']>,
       { top, left }: { top: number; left: number }
     ): Promise<void>;
 

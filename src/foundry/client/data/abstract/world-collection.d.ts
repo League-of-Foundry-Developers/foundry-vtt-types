@@ -1,5 +1,5 @@
 import { ConfiguredDocumentClass, DocumentConstructor } from '../../../../types/helperTypes';
-import type { DOCUMENT_TYPES } from '../../../common/constants.mjs.js';
+import type { DOCUMENT_TYPES } from '../../../common/constants.mjs';
 
 declare global {
   /**

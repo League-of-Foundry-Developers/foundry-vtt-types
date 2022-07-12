@@ -1,7 +1,6 @@
 import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import type DataModel from '../../../common/abstract/data.mjs';
 import type { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
-import type { ChatMessageDataConstructorData } from '../../../common/data/data.mjs/chatMessageData';
-import type { CombatantDataSource } from '../../../common/data/data.mjs/combatantData';
 
 declare global {
   /**
@@ -44,23 +43,11 @@ declare global {
     /** Get the Combatant who has the current turn. */
     get combatant(): this['turns'][number] | undefined;
 
-    /** The numeric round of the Combat encounter */
-    get round(): number;
-
-    /**
-     * A reference to the Scene document within which this Combat encounter occurs.
-     * If a specific Scene is not set in the Combat Data, the currently viewed scene is assumed instead.
-     */
-    get scene(): InstanceType<ConfiguredDocumentClass<typeof Scene>> | undefined;
-
     /** Return the object of settings which modify the Combat Tracker behavior */
     get settings(): typeof CombatEncounters['settings'];
 
     /** Has this combat encounter been started? */
     get started(): boolean;
-
-    /** The numeric turn of the combat round in the Combat encounter */
-    get turn(): number | null;
 
     get visible(): true;
 
@@ -176,7 +163,7 @@ declare global {
     protected override _onCreateEmbeddedDocuments(
       type: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
-      result: CombatantDataSource[],
+      result: foundry.documents.BaseCombatant['_source'][],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -184,7 +171,7 @@ declare global {
     protected override _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
-      result: CombatantDataSource[],
+      result: foundry.documents.BaseCombatant['_source'][],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -216,7 +203,7 @@ interface InitiativeOptions {
    * Additional options with which to customize created Chat Messages
    * @defaultValue `{}`
    */
-  messageOptions?: ChatMessageDataConstructorData;
+  messageOptions?: DataModel.SchemaToSourceInput<foundry.documents.BaseChatMessage['schema']>;
 }
 
 interface RoundData {

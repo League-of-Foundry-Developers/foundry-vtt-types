@@ -44,6 +44,6 @@ declare global {
       Options
     >;
 
-    type FormData = Pick<foundry.data.CombatantData, 'defeated' | 'hidden' | 'img' | 'initiative' | 'name'>;
+    type FormData = Pick<Combatant['data'], 'defeated' | 'hidden' | 'img' | 'initiative' | 'name'>;
   }
 }

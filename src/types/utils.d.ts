@@ -137,7 +137,117 @@ type TemporaryDocument<D> = D extends StoredDocument<infer U> ? U : D;
 
 type PropertyTypeOrFallback<T, Key extends string, Fallback> = Key extends keyof T ? T[Key] : Fallback;
 
+type SimpleMerge<T, U> = Omit<T, keyof U> & U;
+
 /**
  * Makes the given keys `K` of the type `T` required
  */
-type RequiredProps<T, K extends keyof T> = Required<Pick<T, K>> & Omit<T, K>;
+type RequiredProps<T, K extends keyof T> = SimpleMerge<T, Required<Pick<T, K>>>;
+
+/**
+ * Makes the given keys `K` of the type `T` partial.
+ */
+type PartialProps<T, K extends keyof T> = SimpleMerge<T, Partial<Pick<T, K>>>;
+
+/**
+ * Makes the given keys `K` of the type `T` readonly.
+ */
+type ReadonlyProps<T, K extends keyof T> = SimpleMerge<T, Readonly<Pick<T, K>>>;
+
+/**
+ * Return whether the value `V` is in the union `U`.
+ */
+type InUnion<V, U> = Equals<V extends U ? true : never, true>;
+
+/**
+ * Returns whether `T` loosely equals `U`. This equality is looser than `Equals` because if `T` or `U` are `any` it will always return true.
+ */
+type LooseEquals<T, U> = [T] extends [U] ? ([U] extends [T] ? true : false) : false;
+
+/**
+ * Built as a analog to `&&`. Returns whether both `T` and `U` are true.
+ */
+type And<T extends boolean, U extends boolean> = LooseEquals<T, true> extends true ? LooseEquals<U, true> : false;
+
+/**
+ * @see {@link And}
+ *
+ * @remarks Trying to express something like `A && B && C && ...` quickly becomes unwieldy with just `And` so this function becomes more convenient to call.
+ */
+type AndList<T extends boolean[]> = LooseEquals<T[number] extends false ? false : never, never>;
+
+/**
+ * Built as a analog to `||`. Returns whether either `T` or `U` is true.
+ */
+type Or<T extends boolean, U extends boolean> = LooseEquals<T, true> extends true ? true : LooseEquals<U, true>;
+
+/**
+ * @see {@link Or}
+ *
+ * @remarks Trying to express something like `A || B || C || ...` quickly becomes unwieldy with just `Or` so this function becomes more convenient to call.
+ */
+type OrList<T extends boolean[]> = LooseEquals<T[number] extends true ? true : never, true>;
+
+/**
+ * Returns whether `T` is _exactly_ `any`.
+ *
+ * @privateRemarks
+ * This type works because of specific unsoundness of `any` specifically that `any` breaks transitivity. If Typescript were fully sound when a given `T` extends `U` and `U` extends `T` they would have to be strictly equal. This is in short because extends is similar to `>=` or `⊆` (notation for is a subset of or equal to) where a condition like `a >= b && b >= a` can be true is if `a === b`. However `any` will always extend `T` and vice versa unless `T` is `never` which nothing extends except `never`.
+ * For this reason `LooseEquals<0, T>` will be true if `T` is `0` or `any`. `0` is an entirely arbitrary choice but for any arbitrary choice like it `IsAny<0>` should return false. To ensure this we use another property of `any` which is that `any | T` strictly equals `any`. We chose `1` here leading to the full type `LooseEquals<0, 1 | T>`. With this neither `0`, `1`, `number`, nor any other existing type can meet this condition except `any`.
+ */
+type IsAny<T> = LooseEquals<0, 1 | T>;
+
+/**
+ * Returns whether `T` is exactly `U`. Unlike `LooseEquals` if `T` or `U` are `any` while the other is not this will return false.
+ */
+type Equals<T, U> = And<LooseEquals<T, U>, LooseEquals<IsAny<T>, IsAny<U>>>;
+
+/**
+ * An analog to `!`. Returns true if `T` is false and returns false otherwise.
+ */
+type Not<T extends boolean> = LooseEquals<T, true> extends true ? false : true;
+
+/**
+ * Returns whether the key `K` is in `T`.
+ */
+type KeyIn<K, T> = SingleExtends<K extends keyof T ? true : never, true>;
+
+type SingleExtends<T, U> = T extends U ? true : false;
+type Extends<T, U> = SingleExtends<T extends U ? true : never, true>;
+
+/**
+ * Makes `T` partial if `B` is true and returns `T` otherwise.
+ */
+type PartialIf<T, B extends boolean> = Extends<B, true> extends true ? Partial<T> : T;
+
+type GetKey<T, K extends T extends unknown ? keyof T : never> = T extends unknown
+  ? K extends keyof T
+    ? T[K]
+    : undefined
+  : never;
+
+type NullishCoalesce<T, D> = T extends unknown ? (T extends undefined | null ? D : T) : never;
+
+type RemoveIndex<T> = {
+  [K in keyof T as string extends K ? never : number extends K ? never : symbol extends K ? never : K]: T[K];
+};
+
+type OptionalChaining<T, K extends string | number | symbol> = T extends unknown
+  ? K extends keyof T
+    ? T[K]
+    : undefined
+  : never;
+
+type IsPropertyOptional<T, K extends keyof T> = { [_ in K]?: any } extends T ? true : false;
+
+type OptionalProperties<T> = keyof T extends unknown
+  ? IsPropertyOptional<T, keyof T> extends true
+    ? keyof T
+    : never
+  : never;
+
+type RequiredProperties<T> = keyof T extends unknown
+  ? IsPropertyOptional<T, keyof T> extends true
+    ? never
+    : keyof T
+  : never;

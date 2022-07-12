@@ -7,9 +7,11 @@ declare global {
    * An Abstract Base Class which defines a Placeable Object which represents a Document placed on the Canvas
    */
   abstract class PlaceableObject<
-    D extends Document<any, InstanceType<ConfiguredDocumentClass<typeof Scene>>> = Document<
+    D extends Document<any, InstanceType<ConfiguredDocumentClass<typeof Scene>>, any, any> = Document<
       any,
-      InstanceType<ConfiguredDocumentClass<typeof Scene>>
+      InstanceType<ConfiguredDocumentClass<typeof Scene>>,
+      any,
+      any
     >
   > extends PIXI.Container {
     /**

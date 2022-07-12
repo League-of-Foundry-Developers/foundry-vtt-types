@@ -5,6 +5,7 @@ import './keybindings';
 import './keyboard';
 import './mouse';
 import './nue';
+import './packages';
 import './settings';
 import './socket';
 import './sorting';

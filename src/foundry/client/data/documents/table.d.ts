@@ -33,9 +33,9 @@ declare global {
      * @param options - Additional options which modify message creation
      */
     toMessage(
-      results: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseTableResult>>[],
+      results: InstanceType<ConfiguredDocumentClass<typeof TableResult>>[],
       options?: Partial<RollTable.ToMessageOptions>
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseChatMessage>> | undefined>;
+    ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined>;
 
     /**
      * Draw a result from the RollTable based on the table formula or a provided Roll instance
@@ -62,7 +62,7 @@ declare global {
      * @remarks Actually, returns list of TableEntries updated, not the RollTable.
      * As written, it force updates all records, not just the ones already drawn.
      */
-    reset(): Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseTableResult>>[]>;
+    reset(): Promise<InstanceType<ConfiguredDocumentClass<typeof TableResult>>[]>;
 
     /**
      * Evaluate a RollTable by rolling its formula and retrieving a drawn result.
@@ -94,7 +94,7 @@ declare global {
 
     protected override _onCreateEmbeddedDocuments(
       embeddedName: string,
-      documents: foundry.abstract.Document<any, any>[],
+      documents: AnyDocument[],
       result: Record<string, unknown>[],
       options: DocumentModificationOptions,
       userId: string
@@ -111,8 +111,8 @@ declare global {
     override toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocumentMixin.CompendiumExportOptions | undefined
-    ): Omit<foundry.data.RollTableData['_source'], '_id' | 'folder' | 'permission'> & {
-      permission?: foundry.data.RollTableData extends { toObject(): infer U } ? U : never;
+    ): Omit<foundry.documents.BaseRollTable['_source'], '_id' | 'folder' | 'permission'> & {
+      permission?: foundry.documents.BaseRollTable extends { toObject(): infer U } ? U : never;
     };
 
     /**
@@ -121,9 +121,9 @@ declare global {
      * @param options - Additional options passed to the RollTable.create method
      */
     static fromFolder(
-      folder: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseFolder>>,
+      folder: InstanceType<ConfiguredDocumentClass<typeof Folder>>,
       options?: DocumentModificationOptions
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseRollTable>> | undefined>;
+    ): Promise<InstanceType<ConfiguredDocumentClass<typeof RollTable>> | undefined>;
   }
 
   namespace RollTable {
@@ -146,7 +146,7 @@ declare global {
        * One or more table results which have been drawn
        * @defaultValue `[]`
        */
-      results: foundry.data.TableResultData[];
+      results: foundry.documents.BaseTableResult['data'][];
 
       /**
        * Whether to automatically display the results in chat
@@ -214,7 +214,7 @@ declare global {
     /**
      * An array of drawn TableResult documents
      */
-    results: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseTableResult>>[];
+    results: InstanceType<ConfiguredDocumentClass<typeof TableResult>>[];
   }
 }
 export {};

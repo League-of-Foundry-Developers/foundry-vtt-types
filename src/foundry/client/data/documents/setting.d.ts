@@ -8,24 +8,14 @@ declare global {
    * @see {@link documents.WorldSettings}       The world-level collection of Setting documents
    */
   class Setting extends ClientDocumentMixin(foundry.documents.BaseSetting) {
-    /**
-     * A convenient alias to the key attribute of the setting data
-     */
-    get key(): string;
-
-    /**
-     * A convenient alias to the parsed value attribute of the setting data.
-     */
-    get value(): unknown;
-
     protected override _onCreate(
-      data: foundry.data.SettingData['_source'],
+      data: foundry.documents.BaseSetting['_source'],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
     protected _onUpdate(
-      changed: DeepPartial<foundry.data.SettingData['_source']>,
+      changed: DeepPartial<foundry.documents.BaseSetting['_source']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;

@@ -1,6 +1,5 @@
 import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 import type { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
-import type { PlaylistDataConstructorData } from '../../../common/data/data.mjs/playlistData';
 
 declare global {
   /**
@@ -30,20 +29,10 @@ declare global {
     protected _playbackOrder: string[] | undefined;
 
     /**
-     * The playback mode for the Playlist instance
-     */
-    get mode(): foundry.CONST.PLAYLIST_MODES;
-
-    /**
      * The order in which sounds within this playlist will be played (if sequential or shuffled)
      * Uses a stored seed for randomization to guarantee that all clients generate the same random order.
      */
     get playbackOrder(): string[];
-
-    /**
-     * An indicator for whether any Sound within the Playlist is currently playing
-     */
-    get playing(): boolean;
 
     override get visible(): boolean;
 
@@ -120,13 +109,13 @@ declare global {
     ): number;
 
     protected override _preUpdate(
-      changed: DeepPartial<PlaylistDataConstructorData>,
+      changed: DeepPartial<foundry.documents.BasePlaylist['_source']>,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.PlaylistData['_source']>,
+      changed: DeepPartial<foundry.documents.BasePlaylist['_source']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -135,7 +124,7 @@ declare global {
 
     protected override _onCreateEmbeddedDocuments(
       embeddedName: string,
-      documents: foundry.abstract.Document<any, any>[],
+      documents: AnyDocument[],
       result: Record<string, unknown>[],
       options: DocumentModificationOptions,
       userId: string
@@ -143,7 +132,7 @@ declare global {
 
     protected override _onUpdateEmbeddedDocuments(
       embeddedName: string,
-      documents: foundry.abstract.Document<any, any>[],
+      documents: AnyDocument[],
       result: Record<string, unknown>[],
       options: DocumentModificationContext,
       userId: string
@@ -151,7 +140,7 @@ declare global {
 
     protected override _onDeleteEmbeddedDocuments(
       embeddedName: string,
-      documents: foundry.abstract.Document<any, any>[],
+      documents: AnyDocument[],
       result: string[],
       options: DocumentModificationContext,
       userId: string
@@ -175,8 +164,8 @@ declare global {
     override toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocumentMixin.CompendiumExportOptions | undefined
-    ): Omit<foundry.data.PlaylistData['_source'], '_id' | 'folder' | 'permission'> & {
-      permission?: foundry.data.PlaylistData['_source']['permission'];
+    ): Omit<foundry.documents.BasePlaylist['_source'], '_id' | 'folder' | 'permission'> & {
+      permission?: foundry.documents.BasePlaylist['_source']['permission'];
     };
   }
 

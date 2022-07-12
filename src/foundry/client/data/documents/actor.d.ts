@@ -3,9 +3,9 @@ import {
   ConfiguredObjectClassForName,
   DocumentConstructor
 } from '../../../../types/helperTypes';
+import type DataModel from '../../../common/abstract/data.mjs';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 import EmbeddedCollection from '../../../common/abstract/embedded-collection.mjs';
-import type { ActorDataConstructorData } from '../../../common/data/data.mjs/actorData.js';
 
 declare global {
   /**
@@ -60,11 +60,6 @@ declare global {
     protected _lastWildcard: string | null;
 
     /**
-     * A convenient reference to the file path of the Actor's profile image
-     */
-    get img(): this['data']['img'];
-
-    /**
      * Provide a thumbnail image path used to represent this document.
      */
     get thumbnail(): this['data']['img'];
@@ -74,7 +69,7 @@ declare global {
      */
     get itemTypes(): Record<
       foundry.documents.BaseItem['data']['type'],
-      Array<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseItem>>>
+      Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>
     >;
     /**
      * Test whether an Actor document is a synthetic representation of a Token (if true) or a full Document (if false)
@@ -129,7 +124,7 @@ declare global {
      * @param data - Additional data, such as x, y, rotation, etc. for the created token data (default: `{}`)
      * @returns The created TokenData instance
      */
-    getTokenData(data?: object): Promise<foundry.data.TokenData>;
+    getTokenData(data?: object): Promise<foundry.documents.BaseToken['data']>;
 
     /**
      * Get an Array of Token images which could represent this Actor
@@ -161,23 +156,23 @@ declare global {
 
     override getEmbeddedCollection(
       embeddedName: string
-    ): EmbeddedCollection<DocumentConstructor, foundry.data.ActorData>;
+    ): EmbeddedCollection<DocumentConstructor, foundry.documents.BaseActor>;
 
     protected override _preCreate(
-      data: ActorDataConstructorData,
+      data: DataModel.SchemaToSourceInput<foundry.documents.BaseActor['schema']>,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.ActorData['_source']>,
+      changed: DeepPartial<foundry.documents.BaseActor['data']['_source']>,
       options: DocumentModificationOptions,
       user: string
     ): void;
 
     protected override _onCreateEmbeddedDocuments(
       embeddedName: string,
-      documents: foundry.abstract.Document<any, any>[],
+      documents: AnyDocument[],
       result: Record<string, unknown>[],
       options: DocumentModificationOptions,
       userId: string
@@ -185,7 +180,7 @@ declare global {
 
     protected override _onUpdateEmbeddedDocuments(
       embeddedName: string,
-      documents: foundry.abstract.Document<any, any>[],
+      documents: AnyDocument[],
       result: Record<string, unknown>[],
       options: DocumentModificationOptions,
       userId: string
@@ -193,7 +188,7 @@ declare global {
 
     protected override _onDeleteEmbeddedDocuments(
       embeddedName: string,
-      documents: foundry.abstract.Document<any, any>[],
+      documents: AnyDocument[],
       result: string[],
       options: DocumentModificationContext,
       userId: string

@@ -1,5 +1,6 @@
-import { BaseUser } from '../documents.mjs';
-import { AnyDocumentData } from './data.mjs';
+import type { ConfiguredDocumentClassForName } from '../../../types/helperTypes.js';
+import type { BaseUser } from '../documents/module.mjs';
+import DataModel from './data.mjs';
 import Document from './document.mjs';
 
 /**
@@ -13,7 +14,7 @@ declare abstract class DatabaseBackend {
    * @param user          - The requesting User
    * @returns The created Document instances
    */
-  get<T extends Document<any, any>>(documentClass: ConstructorOf<T>, request: Request, user: BaseUser): T[];
+  get<T extends AnyDocument>(documentClass: ConstructorOf<T>, request: Request, user: BaseUser): T[];
 
   /**
    * Validate the arguments passed to the get operation
@@ -32,10 +33,10 @@ declare abstract class DatabaseBackend {
    * that's not how it is called and also not how the subclasses implement it.
    * See https://gitlab.com/foundrynet/foundryvtt/-/issues/6177
    */
-  protected abstract _getDocuments<T extends Document<any, any>>(
+  protected abstract _getDocuments<T extends AnyDocument>(
     documentClass: ConstructorOf<T>,
     request: Request,
-    user: BaseUser
+    user: InstanceType<ConfiguredDocumentClassForName<'User'>>
   ): Promise<T[]>;
 
   /**
@@ -45,11 +46,11 @@ declare abstract class DatabaseBackend {
    * `user` but that's not how it is called and also not how the subclasses implement it.
    * See https://gitlab.com/foundrynet/foundryvtt/-/issues/6177
    */
-  protected abstract _getEmbeddedDocuments<T extends Document<any, any>>(
+  protected abstract _getEmbeddedDocuments<T extends AnyDocument>(
     documentClass: ConstructorOf<T>,
-    parent: T extends Document<any, infer U> ? U : never,
+    parent: Document.ParentTypeFor<T>,
     request: Request,
-    user: BaseUser
+    user: InstanceType<ConfiguredDocumentClassForName<'User'>>
   ): Promise<T[]>;
 
   /**
@@ -59,7 +60,7 @@ declare abstract class DatabaseBackend {
    *
    * @remarks Actually, this returns `undefined` if  there is no parent, the JSDoc is incorrect.
    */
-  protected _getParent(request: Request): Promise<Document<any, any> | undefined>;
+  protected _getParent(request: Request): Promise<AnyDocument | undefined>;
 
   /**
    * Perform document creation operations
@@ -68,7 +69,7 @@ declare abstract class DatabaseBackend {
    * @param user          - The requesting User
    * @returns The created Document instances
    */
-  create<T extends Document<any, any>>(documentClass: ConstructorOf<T>, request: Request, user: BaseUser): Promise<T[]>;
+  create<T extends AnyDocument>(documentClass: ConstructorOf<T>, request: Request, user: BaseUser): Promise<T[]>;
 
   /**
    * Validate the arguments passed to the create operation
@@ -79,7 +80,7 @@ declare abstract class DatabaseBackend {
    * @param pack    - A Compendium pack identifier
    */
   protected _createArgs({ data, options, pack }?: Request): {
-    data: AnyDocumentData[];
+    data: DataModel.Any[];
     options: RequestOptions;
     pack?: string;
   };
@@ -87,20 +88,20 @@ declare abstract class DatabaseBackend {
   /**
    * Create primary Document instances
    */
-  protected abstract _createDocuments<T extends Document<any, any>>(
+  protected abstract _createDocuments<T extends AnyDocument>(
     documentClass: ConstructorOf<T>,
     request: Request,
-    user: BaseUser
+    user: InstanceType<ConfiguredDocumentClassForName<'User'>>
   ): Promise<T[]>;
 
   /**
    * Create embedded Document instances
    */
-  protected abstract _createEmbeddedDocuments<T extends Document<any, any>>(
+  protected abstract _createEmbeddedDocuments<T extends AnyDocument>(
     documentClass: ConstructorOf<T>,
-    parent: T extends Document<any, infer U> ? U : never,
+    parent: Document.ParentTypeFor<T>,
     request: Request,
-    user: BaseUser
+    user: InstanceType<ConfiguredDocumentClassForName<'User'>>
   ): Promise<T[]>;
 
   /**
@@ -110,7 +111,7 @@ declare abstract class DatabaseBackend {
    * @param user          - The requesting User
    * @returns The updated Document instances
    */
-  update<T extends Document<any, any>>(documentClass: ConstructorOf<T>, request: Request, user: BaseUser): Promise<T[]>;
+  update<T extends AnyDocument>(documentClass: ConstructorOf<T>, request: Request, user: BaseUser): Promise<T[]>;
 
   /**
    * Validate the arguments passed to the update operation
@@ -121,7 +122,7 @@ declare abstract class DatabaseBackend {
    * @param pack    - A Compendium pack identifier
    */
   protected _updateArgs({ updates, options, pack }?: Request): {
-    updates: AnyDocumentData[];
+    updates: DataModel.Any[];
     options: RequestOptions;
     pack?: string;
   };
@@ -129,20 +130,20 @@ declare abstract class DatabaseBackend {
   /**
    * Update primary Document instances
    */
-  protected abstract _updateDocuments<T extends Document<any, any>>(
+  protected abstract _updateDocuments<T extends AnyDocument>(
     documentClass: ConstructorOf<T>,
     request: Request,
-    user: BaseUser
+    user: InstanceType<ConfiguredDocumentClassForName<'User'>>
   ): Promise<T[]>;
 
   /**
    * Update embedded Document instances
    */
-  protected abstract _updateEmbeddedDocuments<T extends Document<any, any>>(
+  protected abstract _updateEmbeddedDocuments<T extends AnyDocument>(
     documentClass: ConstructorOf<T>,
-    parent: T extends Document<any, infer U> ? U : never,
+    parent: Document.ParentTypeFor<T>,
     request: Request,
-    user: BaseUser
+    user: InstanceType<ConfiguredDocumentClassForName<'User'>>
   ): Promise<T[]>;
 
   /**
@@ -152,7 +153,7 @@ declare abstract class DatabaseBackend {
    * @param user          - The requesting User
    * @returns The deleted Document instances
    */
-  delete<T extends Document<any, any>>(documentClass: ConstructorOf<T>, request: Request, user: BaseUser): Promise<T[]>;
+  delete<T extends AnyDocument>(documentClass: ConstructorOf<T>, request: Request, user: BaseUser): Promise<T[]>;
 
   /**
    * Validate the arguments passed to the delete operation
@@ -168,20 +169,20 @@ declare abstract class DatabaseBackend {
   /**
    * Delete primary Document instances
    */
-  protected abstract _deleteDocuments<T extends Document<any, any>>(
+  protected abstract _deleteDocuments<T extends AnyDocument>(
     documentClass: ConstructorOf<T>,
     request: Request,
-    user: BaseUser
+    user: InstanceType<ConfiguredDocumentClassForName<'User'>>
   ): Promise<T[]>;
 
   /**
    * Delete embedded Document instances
    */
-  protected abstract _deleteEmbeddedDocuments<T extends Document<any, any>>(
+  protected abstract _deleteEmbeddedDocuments<T extends AnyDocument>(
     documentClass: ConstructorOf<T>,
-    parent: T extends Document<any, infer U> ? U : never,
+    parent: Document.ParentTypeFor<T>,
     request: Request,
-    user: BaseUser
+    user: InstanceType<ConfiguredDocumentClassForName<'User'>>
   ): Promise<T[]>;
 
   /**
@@ -212,8 +213,8 @@ declare abstract class DatabaseBackend {
   protected _logOperation(
     action: string,
     type: string,
-    documents: Document<any, any>[],
-    { parent, pack, level }?: { parent?: Document<any, any>; pack?: string; level?: string }
+    documents: AnyDocument[],
+    { parent, pack, level }?: { parent?: AnyDocument; pack?: string; level?: string }
   ): void;
 
   /**
@@ -222,21 +223,21 @@ declare abstract class DatabaseBackend {
   protected _logError(
     user: BaseUser,
     action: string,
-    subject: Document<any, any> | string,
-    { parent, pack }?: { parent?: Document<any, any>; pack?: string }
+    subject: AnyDocument | string,
+    { parent, pack }?: { parent?: AnyDocument; pack?: string }
   ): string;
 
   /**
    * Determine a string suffix for a log message based on the parent and/or compendium context.
    */
-  protected _logContext({ parent, pack }?: { parent?: Document<any, any>; pack?: string }): string;
+  protected _logContext({ parent, pack }?: { parent?: AnyDocument; pack?: string }): string;
 }
 
 export interface Request {
-  data?: AnyDocumentData[];
-  updates?: AnyDocumentData[];
+  data?: DataModel.Any[];
+  updates?: DataModel.Any[];
   ids?: string[];
-  parent?: Document<any, any>;
+  parent?: AnyDocument;
   query?: Record<string, unknown>;
   options?: RequestOptions;
   pack?: string;

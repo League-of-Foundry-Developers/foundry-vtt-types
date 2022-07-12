@@ -17,7 +17,7 @@ declare function readTextFromFile(file: File): Promise<string>;
  * Retrieve an Entity or Embedded Entity by its Universally Unique Identifier (uuid).
  * @param uuid - The uuid of the Entity or Embedded Entity to retrieve
  */
-declare function fromUuid(uuid: string): Promise<foundry.abstract.Document<any, any> | null>;
+declare function fromUuid(uuid: string): Promise<AnyDocument | null>;
 
 /**
  * Return a reference to the Document class implementation which is configured for use.
