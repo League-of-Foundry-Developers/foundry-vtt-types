@@ -11,7 +11,7 @@ expectType<foundry.documents.BaseActiveEffect>((await config.getData()).data);
 expectType<boolean>((await config.getData()).isActorEffect);
 expectType<boolean>((await config.getData()).isItemEffect);
 expectType<string>((await config.getData()).submitText);
-expectType<Record<foundry.CONST.ACTIVE_EFFECT_MODES, string>>((await config.getData()).modes);
+expectType<Record<number, string>>((await config.getData()).modes);
 expectType<DocumentSheetOptions>(config.options);
 
 const withCustomOptions = new ActiveEffectConfig<DocumentSheetOptions & { custom: true }>(new ActiveEffect());

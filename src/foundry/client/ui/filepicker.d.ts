@@ -499,7 +499,7 @@ declare namespace FilePicker {
      * Display a UI notification when the upload is processed
      * @defaultValue `true`
      */
-    notify?: string | undefined;
+    notify?: boolean | undefined;
   }
 
   interface UploadResult {
