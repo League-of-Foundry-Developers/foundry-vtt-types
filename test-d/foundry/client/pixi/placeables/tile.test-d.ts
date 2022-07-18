@@ -1,7 +1,7 @@
 import { expectType } from 'tsd';
 
 expectType<'Tile'>(Tile.embeddedName);
-expectType<Tile>(Tile.createPreview({ x: 100, y: null }));
+expectType<Tile>(Tile.createPreview({ x: 100 }));
 
 declare const doc: TileDocument;
 const tile = new Tile(doc);

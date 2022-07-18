@@ -15,7 +15,7 @@ interface BaseFogExplorationSchema extends DataSchema {
    */
   scene: fields.ForeignDocumentField<
     typeof documents.BaseScene,
-    { initial: () => OptionalChaining<OptionalChaining<typeof canvas, 'scene'>, 'id'> }
+    { initial: () => OptionalChaining<Canvas['scene'], 'id'> }
   >;
 
   /**
@@ -90,11 +90,11 @@ declare class BaseFogExploration extends Document<BaseFogExplorationSchema, null
   /* ---------------------------------------- */
 
   /** {@inheritdoc} */
-  protected override _preUpdate(
-    changed: DeepPartial<DataModel.SchemaToSource<this['schema']>>,
-    options: DocumentModificationOptions,
-    user: documents.BaseUser
-  ): Promise<void>;
+  //   protected override _preUpdate(
+  //     changed: DeepPartial<DataModel.SchemaToSource<this['schema']>>,
+  //     options: DocumentModificationOptions,
+  //     user: documents.BaseUser
+  //   ): Promise<void>;
 }
 
 export default BaseFogExploration;

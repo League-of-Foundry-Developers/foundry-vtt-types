@@ -246,11 +246,7 @@ declare global {
     getGLParameter(parameter: string): unknown;
 
     /**
-     * Get the canvas active dimensions based on the size of the scene's map.
-     * We expand the image size by a factor of 1.5 and round to the nearest 2x grid size.
-     * The rounding accomplishes that the padding buffer around the map always contains whole grid spaces.
-     * @see {@link documents.BaseScene.getDimensions}
-     * @param data - The scene dimensions data being established
+     * @deprecated since v10 {@link Scene#getDimensions}
      */
     static getDimensions(data: Canvas.DimensionsData): Canvas.Dimensions;
 
@@ -509,13 +505,13 @@ declare global {
     }
 
     interface DimensionsData {
-      width?: number;
-      height?: number;
+      width?: number | undefined | null;
+      height?: number | undefined | null;
       grid: number;
       gridDistance: number;
       padding: number;
-      shiftX: number;
-      shiftY: number;
+      shiftX: number | undefined;
+      shiftY: number | undefined;
     }
 
     interface DropPosition {

@@ -7,7 +7,7 @@ expectType<ForegroundLayer | BackgroundLayer | undefined>(hud.layer);
 expectType<Tile | undefined>(hud.object);
 hud.bind(tile);
 expectType<
-  ReturnType<foundry.data.TileData['toJSON']> & {
+  ReturnType<foundry.documents.BaseTile['toJSON']> & {
     id: string;
     classes: string;
     appId: number;

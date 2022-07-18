@@ -647,7 +647,7 @@ declare global {
         notes: string;
         time: number;
       };
-      system: System & SystemData<foundry.packages.BaseSystem['_source']>;
+      system: System;
       systemUpdate: string | null;
       userId: string;
       /** @deprecated since V9 */
@@ -659,7 +659,7 @@ declare global {
         | 'Setting' as ConfiguredDocumentClassForName<DocumentType>['metadata']['collection']]?: InstanceType<
         ConfiguredDocumentClassForName<DocumentType>
       >['data']['_source'][];
-    };
+    } & Pick<SystemData<foundry.packages.BaseSystem['_source']>, 'documentTypes' | 'template' | 'model'>;
 
     type ConstructorData = Omit<Data, 'world' | 'system' | 'modules'> & {
       world: WorldData<foundry.packages.BaseWorld['_source']>;

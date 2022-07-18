@@ -9,12 +9,26 @@ export declare namespace FlagsField {
 
   export type ExtraOptions = ObjectField.ExtraOptions;
 
-  export type ExtendsOptions<DocumentName extends FlagsDocuments> = DocumentName extends keyof FlagConfig
-    ? SimpleMerge<
-        ObjectField.ExtendsOptions,
-        { SourceType: FlagConfig[DocumentName]; InitializedType: FlagConfig[DocumentName] }
-      >
-    : ObjectField.ExtendsOptions;
+  export type ExtendsOptions<DocumentName extends FlagsDocuments> = SimpleMerge<
+    ObjectField.ExtendsOptions,
+    { SourceType: FlagsType<DocumentName>; InitializedType: FlagsType<DocumentName> }
+  >;
+
+  type GetFlagsConfigProp<T, K> = K extends keyof T ? T[K] : {};
+
+  type Coalesce<T, C, D> = Equals<Required<T>, Required<C>> extends true ? D : T;
+
+  type FlagsType<DocumentName extends FlagsDocuments> = Coalesce<
+    GetFlagsConfigProp<FlagConfig, DocumentName> & GetFlagsConfigProp<CoreFlags, DocumentName>,
+    {},
+    Record<string, unknown>
+  >;
+
+  interface CoreFlags {
+    ActiveEffect: {
+      core?: { statusId?: string; overlay?: boolean };
+    };
+  }
 }
 
 type FlagsDocuments = Exclude<DocumentType, 'Setting'> | ValueOf<typeof CONST.PACKAGE_TYPES> | 'package';

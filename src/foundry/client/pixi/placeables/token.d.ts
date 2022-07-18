@@ -3,6 +3,7 @@ import {
   ConfiguredDocumentClassForName,
   ConfiguredObjectClassForName
 } from '../../../../types/helperTypes';
+import type DataModel from '../../../common/abstract/data.mjs';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
 declare global {
@@ -471,7 +472,7 @@ declare global {
      * @returns Was the texture applied (true) or removed (false)
      */
     toggleEffect(
-      effect: string | ConstructorParameters<ConfiguredDocumentClassForName<'ActiveEffect'>>[0],
+      effect: string | DataModel.SchemaToData<ConfiguredDocumentClassForName<'ActiveEffect'>['schema']>,
       options?: Token.EffectToggleOptions | undefined
     ): Promise<boolean>;
 

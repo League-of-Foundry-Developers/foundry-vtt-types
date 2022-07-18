@@ -1,5 +1,5 @@
 import { expectAssignable, expectType } from 'tsd';
-import { BaseAmbientLight } from '../../../../src/foundry/common/documents.mjs';
+import BaseAmbientLight from '../../../../src/foundry/common/documents/ambient-light.mjs';
 
 const app = new (class extends FormApplication<FormApplicationOptions, FormApplication.Data<{ foo: string }>> {
   protected _updateObject(): Promise<unknown> {

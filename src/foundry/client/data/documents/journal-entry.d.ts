@@ -44,11 +44,11 @@ declare global {
      */
     panToNote(options?: PanToNoteOptions): Promise<void>;
 
-    protected override _onUpdate(
-      data: DeepPartial<foundry.documents.BaseJournalEntry['data']>,
-      options: DocumentModificationOptions,
-      userId: string
-    ): void;
+    // protected override _onUpdate(
+    //   data: DeepPartial<foundry.documents.BaseJournalEntry['data']>,
+    //   options: DocumentModificationOptions,
+    //   userId: string
+    // ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
   }

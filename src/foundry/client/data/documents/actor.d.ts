@@ -35,10 +35,7 @@ declare global {
      * @param data    - Initial data provided to construct the Actor document
      * @param context - The document context, see {@link foundry.abstract.Document}
      */
-    constructor(
-      data: ConstructorParameters<typeof foundry.documents.BaseActor>[0],
-      context?: ConstructorParameters<typeof foundry.documents.BaseActor>[1]
-    );
+    constructor(...args: ConstructorParameters<typeof foundry.documents.BaseActor>);
 
     /**
      * An object that tracks which tracks the changes to the data model which were applied by active effects

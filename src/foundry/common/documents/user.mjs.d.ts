@@ -14,33 +14,86 @@ type HexadecimalCharacter =
 type RGB = `#${HexadecimalCharacter}${HexadecimalCharacter}${HexadecimalCharacter}`;
 
 type ValidateHotbar = (bar: Record<string, string>) => boolean;
-type ValidatePermissions = (perms: Record<string, string>) => boolean;
+type ValidatePermissions = (perms: Record<string, boolean>) => boolean;
 
 type BaseUserSchema = {
+  /**
+   * The _id which uniquely identifies this User document.
+   */
   _id: fields.DocumentIdField<{}>;
+
+  /**
+   * The user's name.
+   */
   name: fields.StringField<{ required: true; blank: false }>;
+
+  /**
+   * The user's role, see CONST.USER_ROLES.
+   */
   role: fields.NumberField<{
     required: true;
     choices: Array<typeof CONST.USER_ROLES[keyof typeof CONST.USER_ROLES]>;
     initial: typeof CONST.USER_ROLES.PLAYER;
     readonly: true;
   }>;
+
+  /**
+   * The user's password. Available only on the Server side for security.
+   */
   password: fields.StringField<{}>;
+
+  /**
+   * The user's password salt. Available only on the Server side for security.
+   */
   passwordSalt: fields.StringField<{}>;
+
+  /**
+   * The user's avatar image.
+   */
   avatar: fields.FilePathField<{ categories: ['IMAGE'] }>;
-  character: fields.ForeignDocumentField<typeof BaseActor, {}>;
+
+  /**
+   * A linked Actor document that is this user's impersonated character.
+   */
+  //   character: fields.ForeignDocumentField<typeof BaseActor, {}>;
+
+  /**
+   * A color to represent this user.
+   */
   color: fields.ColorField<{ required: true; nullable: false; initial: () => RGB }>;
+
+  /**
+   * A mapping of hotbar slot number to Macro id for the user.
+   */
   hotbar: fields.ObjectField<{
     required: true;
     validate: ValidateHotbar;
     validationError: 'must be a mapping of slots to macro identifiers';
   }>;
-  permissions: fields.ObjectField<{
-    required: true;
-    validate: ValidatePermissions;
-    validationError: 'must be a mapping of permission names to booleans';
-  }>;
+
+  /**
+   * The user's individual permission configuration, see CONST.USER_PERMISSIONS.
+   */
+  permissions: fields.ObjectField<
+    {
+      required: true;
+      validate: ValidatePermissions;
+      validationError: 'must be a mapping of permission names to booleans';
+    },
+    SimpleMerge<
+      fields.ObjectField.ExtendsOptions,
+      { SourceType: Record<string, boolean>; InitializedType: Record<string, boolean> }
+    >
+  >;
+
+  /**
+   * An object of optional key/value flags.
+   */
   flags: FlagsField<'User', {}>;
+
+  /**
+   * An object of creation and access information
+   */
   _stats: typeof DocumentStatsSchema;
 };
 
@@ -137,11 +190,6 @@ declare class BaseUser extends Document<BaseUserSchema, null, BaseUserMetadata> 
     role: ValueOf<typeof CONST.USER_ROLES> | keyof typeof CONST.USER_ROLES,
     { exact }?: { exact?: boolean }
   ): boolean;
-
-  /**
-   * Define an immutable property for the User's role
-   */
-  readonly role: ValueOf<typeof CONST.USER_ROLES>;
 
   static override get schema(): BaseUserSchema;
 

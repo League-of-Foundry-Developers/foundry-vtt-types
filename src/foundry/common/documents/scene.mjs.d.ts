@@ -142,14 +142,16 @@ interface BaseSceneSchema extends DataSchema {
         required: true;
         nullable: false;
         positive: true;
-        initial: () => JSOr<OptionalChaining<OptionalChaining<typeof game, 'system'>, 'gridDistance'>, 1>;
+        // TODO fix the circular reference here.
+        initial: () => number; // JSOr<OptionalChaining<OptionalChaining<typeof game, 'system'>, 'gridDistance'>, 1>;
       }>;
 
       /**
        * A label for the units of measure which are used for grid distance.
        */
       units: fields.StringField<{
-        initial: () => NullishCoalesce<OptionalChaining<OptionalChaining<typeof game, 'system'>, 'gridUnits'>, ''>;
+        // TODO fix the circular reference here.
+        initial: () => string; // NullishCoalesce<OptionalChaining<OptionalChaining<typeof game, 'system'>, 'gridUnits'>, ''>;
       }>;
     },
     {}
@@ -196,11 +198,12 @@ interface BaseSceneSchema extends DataSchema {
    */
   //   drawings: fields.EmbeddedCollectionField<typeof documents.BaseDrawing, {}>;
 
+  // TODO, causes circular reference in Scene
   /**
    * A collection of embedded Token objects.
    * (default: `[]`)
    */
-  tokens: fields.EmbeddedCollectionField<typeof documents.BaseToken, {}>;
+  //   tokens: fields.EmbeddedCollectionField<typeof documents.BaseToken, {}>;
 
   // TODO, causes circular reference in Scene
   /**

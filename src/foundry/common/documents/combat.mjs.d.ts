@@ -52,6 +52,7 @@ interface BaseCombatSchema extends DataSchema {
    * (default: `0`)
    */
   sort: typeof documents.BaseFolder.SORT_FIELD;
+
   /**
    * An object of optional key/value flags
    */

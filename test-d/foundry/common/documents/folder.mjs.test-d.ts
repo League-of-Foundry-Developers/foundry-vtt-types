@@ -1,4 +1,11 @@
-import { expectType } from 'tsd';
+import { expectError, expectType } from 'tsd';
+
+expectError(new foundry.documents.BaseFolder());
+expectError(new foundry.documents.BaseFolder({}));
+expectError(new foundry.documents.BaseFolder({ name: 'foo', type: 'JournalEntry' }));
+expectType<foundry.documents.BaseFolder>(
+  new foundry.documents.BaseFolder({ name: 'foo', type: foundry.CONST.FOLDER_ENTITY_TYPES[0] })
+);
 
 expectType<Promise<StoredDocument<Folder> | undefined>>(
   foundry.documents.BaseFolder.create({ name: 'Some Folder', type: 'Item' })

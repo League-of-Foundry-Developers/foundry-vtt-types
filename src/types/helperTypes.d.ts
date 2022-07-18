@@ -1,5 +1,6 @@
 import DataModel from '../foundry/common/abstract/data.mjs';
 import Document from '../foundry/common/abstract/document.mjs';
+import type { SubTypeShape } from './config.js';
 
 type ObjectToDeepPartial<T> = T extends object ? DeepPartial<T> : T;
 
@@ -15,6 +16,8 @@ export type PlaceableObjectConstructor = Pick<typeof PlaceableObject, keyof type
 export type ConfiguredDocumentClass<T extends DocumentConstructor> = ConfiguredDocumentClassForName<
   T['metadata']['name']
 >;
+
+export type SystemDocumentType = 'Actor' | 'Card' | 'Cards' | 'Item';
 
 export type DocumentType =
   | 'Actor'
@@ -67,9 +70,49 @@ export type ConfiguredDocumentClassForName<Name extends DocumentType> = CONFIG[N
 
 export type ConfiguredObjectClassForName<Name extends PlaceableDocumentType> = CONFIG[Name]['objectClass'];
 
-export type ConfiguredData<Name extends string> = Name extends keyof DataConfig ? DataConfig[Name] : {};
+type SubtypeData<SubType, SubTypeValue extends SubTypeShape | undefined> = SubTypeValue extends undefined
+  ? Record<string, unknown>
+  : (
+      | GetKey<SubTypeValue, 'data', never>
+      | DataModel.SchemaToData<GetKey<GetKey<SubTypeValue, 'model', never>, 'schema', never>>
+    ) & {
+      type: SubType;
+    };
 
-export type ConfiguredSource<Name extends string> = Name extends keyof SourceConfig ? SourceConfig[Name] : {};
+export type ConfiguredData<Name extends SystemDocumentType> = Coalesce<
+  | (Name extends keyof DataConfig ? DataConfig[Name] : never)
+  | (SystemConfig[Name] extends undefined
+      ? Record<string, unknown>
+      : {
+          [K in keyof SystemConfig[Name]]: SystemConfig[Name][K] extends SubTypeShape
+            ? SubtypeData<K, SystemConfig[Name][K]>
+            : never;
+        }[keyof SystemConfig[Name]]),
+  never,
+  {}
+>;
+
+type SubtypeSource<SubType, SubTypeValue extends SubTypeShape | undefined> = SubTypeValue extends undefined
+  ? Record<string, unknown>
+  : (
+      | GetKey<SubTypeValue, 'source', never>
+      | DataModel.SchemaToSource<GetKey<GetKey<SubTypeValue, 'model', never>, 'schema', never>>
+    ) & {
+      type: SubType;
+    };
+
+export type ConfiguredSource<Name extends SystemDocumentType> = Coalesce<
+  | (Name extends keyof SourceConfig ? SourceConfig[Name] : never)
+  | ([SystemConfig[Name]] extends [undefined]
+      ? never
+      : {
+          [K in keyof SystemConfig[Name]]: SystemConfig[Name][K] extends SubTypeShape
+            ? SubtypeSource<K, SystemConfig[Name][K]>
+            : never;
+        }[keyof SystemConfig[Name]]),
+  never,
+  {}
+>;
 
 export type ConfiguredFlags<T extends string> = T extends keyof FlagConfig
   ? FlagConfig[T] & Record<string, unknown>
@@ -116,4 +159,6 @@ export type JSOr<T, U> = T extends unknown ? (T extends Falsy ? U : T) : never;
  * We cannot use `RemoveIndex` within this type itself because then it becomes impossible to extend correctly because of extremely buggy behavior.
  * To work around this users of `StructuralClass` are recommended to have a generic parameter like `_ComputedInstance extends Record<string, unknown> = RemoveIndex<...>`
  */
-export const StructuralClass: new <Instance extends object>() => Instance;
+export const StructuralClass: new <Instance extends object, Args extends any[] = []>(...args: Args) => Instance;
+
+export type OmitByValue<T, ValueType> = { [Key in keyof T as T[Key] extends ValueType ? never : Key]: T[Key] };

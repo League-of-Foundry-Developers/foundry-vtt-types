@@ -1,4 +1,4 @@
-import { DocumentConstructor, PlaceableObjectConstructor } from '../../types/helperTypes';
+import { DocumentConstructor, OmitByValue, PlaceableObjectConstructor } from '../../types/helperTypes';
 import type { StatusEffect } from './data/documents/token';
 
 declare global {
@@ -68,6 +68,9 @@ declare global {
       sidebarIcon: string;
 
       /** @defaultValue `{}` */
+      systemDataModels: ConfiguredSystemDataModelsOrDefault<typeof Actor>;
+
+      /** @defaultValue `{}` */
       typeLabels: Record<string, string>;
     };
 
@@ -93,6 +96,9 @@ declare global {
 
       /** @defaultValue `"fas fa-id-badge"` */
       sidebarIcon: string;
+
+      /** @defaultValue `{}` */
+      systemDataModels: ConfiguredSystemDataModelsOrDefault<typeof Cards>;
 
       /**
        * @defaultValue
@@ -228,13 +234,15 @@ declare global {
     Item: {
       /** @defaultValue `Item` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof Item>;
-      //   documentClass: any;
 
       /** @defaultValue `Items` */
       collection: ConstructorOf<Items>;
 
       /** @defaultValue `'fas fa-suitcase'` */
       sidebarIcon: string;
+
+      /** @defaultValue `{}` */
+      systemDataModels: ConfiguredSystemDataModelsOrDefault<typeof Card>;
 
       /** @defaultValue `{}` */
       typeLabels: Record<string, string>;
@@ -1057,6 +1065,9 @@ declare global {
     Card: {
       /** @defaultValue `Card` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof Card>;
+
+      /** @defaultValue `{}` */
+      systemDataModels: ConfiguredSystemDataModelsOrDefault<typeof Card>;
     };
 
     /**
@@ -1422,6 +1433,16 @@ type ConfiguredObjectClassOrDefault<Fallback extends PlaceableObjectConstructor>
   Fallback['embeddedName'] extends keyof PlaceableObjectClassConfig
     ? PlaceableObjectClassConfig[Fallback['embeddedName']]
     : Fallback;
+
+type MapModels<T> = OmitByValue<
+  {
+    [K in keyof T]: Exclude<'model' extends keyof T[K] ? T[K]['model'] : never, undefined>;
+  },
+  never
+>;
+
+type ConfiguredSystemDataModelsOrDefault<Document extends DocumentConstructor> =
+  Document['metadata']['name'] extends keyof SystemConfig ? MapModels<SystemConfig[Document['metadata']['name']]> : {};
 
 type PixiContainerConstructor = typeof PIXI.Container;
 interface CanvasGroup extends PIXI.Container {

@@ -5,7 +5,26 @@ import { DataModel, DataSchema } from '../abstract/data.mjs';
 import { ConfiguredDocumentClass } from '../../../types/helperTypes.js';
 import { FlagsField } from '../data/flagsField';
 
-interface BaseCardSchema extends DataSchema {
+export interface BaseCardFaceSchema<
+  NameLabel extends string = string,
+  TextLabel extends string = string,
+  ImgLabel extends string = string
+> extends DataSchema {
+  /** A name for this card face */
+  name: fields.StringField<{ label: NameLabel }>;
+
+  /** Displayed text that belongs to this face */
+  text: fields.HTMLField<{ label: TextLabel }>;
+
+  /** A displayed image or video file which depicts the face */
+  img: fields.FilePathField<{
+    categories: ['IMAGE', 'VIDEO'];
+    initial: () => typeof BaseCard.DEFAULT_ICON;
+    label: ImgLabel;
+  }>;
+}
+
+export interface BaseCardSchema extends DataSchema {
   /**
    * The _id which uniquely identifies this Card document
    */
@@ -49,45 +68,13 @@ interface BaseCardSchema extends DataSchema {
   /**
    * An object of face data which describes the back of this card
    */
-  back: fields.SchemaField<
-    {
-      /** A name for this card face */
-      name: fields.StringField<{ label: 'CARD.BackName' }>;
-
-      /** Displayed text that belongs to this face */
-      text: fields.HTMLField<{ label: 'CARD.BackText' }>;
-
-      /** A displayed image or video file which depicts the face */
-      img: fields.FilePathField<{
-        categories: ['IMAGE', 'VIDEO'];
-        initial: () => typeof BaseCard.DEFAULT_ICON;
-        label: 'CARD.BackImage';
-      }>;
-    },
-    {}
-  >;
+  back: fields.SchemaField<BaseCardFaceSchema<'CARD.BackName', 'CARD.BackText', 'CARD.BackImage'>, {}>;
 
   /**
    * An array of face data which represent displayable faces of this card
    */
   faces: fields.ArrayField<
-    fields.SchemaField<
-      {
-        /** A name for this card face */
-        name: fields.StringField<{ label: 'CARD.FaceName' }>;
-
-        /** Displayed text that belongs to this face */
-        text: fields.HTMLField<{ label: 'CARD.FaceText' }>;
-
-        /** A displayed image or video file which depicts the face */
-        img: fields.FilePathField<{
-          categories: ['IMAGE', 'VIDEO'];
-          initial: () => typeof BaseCard.DEFAULT_ICON;
-          label: 'CARD.FaceImage';
-        }>;
-      },
-      {}
-    >,
+    fields.SchemaField<BaseCardFaceSchema<'CARD.FaceName', 'CARD.FaceText', 'CARD.FaceImage'>, {}>,
     {}
   >;
 

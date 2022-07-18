@@ -20,7 +20,7 @@ export interface BaseTokenBarSchema extends DataSchema {
     required: true;
     nullable: true;
     blank: false;
-    initial: () => Exclude<GetKey<GetKey<typeof game, 'system'>, 'primaryTokenAttribute'>, undefined> | null;
+    initial: () => null; // Exclude<GetKey<GetKey<typeof game, 'system'>, 'primaryTokenAttribute'>, undefined> | null;
   }>;
 }
 
@@ -190,7 +190,7 @@ export interface BaseTokenSchema extends DataSchema {
   >;
 
   /**
-   * light Configuration of the light source that this Token emits, if any
+   * Configuration of the light source that this Token emits, if any
    */
   light: fields.EmbeddedDataField<typeof LightData, {}>;
 
@@ -254,7 +254,7 @@ export type BaseTokenMetadata = Merge<
  */
 declare class BaseToken extends foundry.abstract.Document<
   BaseTokenSchema,
-  null, // InstanceType<ConfiguredDocumentClass<typeof Scene>>,
+  InstanceType<ConfiguredDocumentClass<typeof Scene>>,
   BaseTokenMetadata
 > {
   /* -------------------------------------------- */

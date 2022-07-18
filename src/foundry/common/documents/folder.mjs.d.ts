@@ -88,13 +88,7 @@ declare namespace BaseFolder {
  * The Document definition for a Folder.
  * Defines the DataSchema and common behaviors for a Folder which are shared between both client and server.
  */
-declare class BaseFolder extends Document<
-  BaseFolderSchema,
-  // BaseFolder,
-  null,
-  BaseFolderMetadata,
-  BaseFolderShims
-> {
+declare class BaseFolder extends Document<BaseFolderSchema, BaseFolder, BaseFolderMetadata, BaseFolderShims> {
   /* ---------------------------------------- */
   /*  Model Configuration                     */
   /* ---------------------------------------- */

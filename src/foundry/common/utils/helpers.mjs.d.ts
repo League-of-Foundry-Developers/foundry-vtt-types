@@ -1,3 +1,5 @@
+import type { OmitByValue } from '../../../types/helperTypes';
+
 /**
  * Benchmark the performance of a function, calling it a requested number of iterations.
  * @param func       - The function to benchmark
@@ -259,7 +261,6 @@ export declare function isNewerVersion(v1: number | string, v0: number | string)
  */
 export declare function isObjectEmpty(obj: object): boolean;
 
-type OmitByValue<T, ValueType> = { [Key in keyof T as T[Key] extends ValueType ? never : Key]: T[Key] };
 type RemoveNever<T> = OmitByValue<T, never>;
 type PropWithMinus<K> = K extends string ? `-=${K}` : never;
 type DeleteByObjectKeys<T, U> = RemoveNever<{

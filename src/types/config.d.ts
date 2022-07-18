@@ -1,3 +1,13 @@
+import type DataModel from '../foundry/common/abstract/data.mjs';
+import type { SystemDocumentType } from './helperTypes.js';
+
+export type SubTypeShape = Expand<
+  { derived: Record<string, unknown> } & (
+    | { source?: undefined; data?: undefined; model: DataModel.Any }
+    | { source: Record<string, unknown>; data: Record<string, unknown>; model?: undefined }
+  )
+>;
+
 declare global {
   /**
    * Some global variables (such as {@link game}) are only initialized after certain events have happened during the
@@ -166,12 +176,27 @@ declare global {
    * }
    * ```
    */
+  /**
+   * @deprecated Deprecated in favour of {@link SystemConfig}
+   */
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DataConfig {}
 
+  /**
+   * @deprecated Deprecated in favour of {@link SystemConfig}
+   */
   /** @see {@link DataConfig} */
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface SourceConfig {}
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface SystemConfig extends SourceConfigShape {}
+
+  type SourceConfigShape = {
+    [Type in SystemDocumentType]?: {
+      [SubType: string]: SubTypeShape;
+    };
+  };
 
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface FlagConfig {}

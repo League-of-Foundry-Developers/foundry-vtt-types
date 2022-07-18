@@ -186,7 +186,7 @@ type Or<T extends boolean, U extends boolean> = LooseEquals<T, true> extends tru
  *
  * @remarks Trying to express something like `A || B || C || ...` quickly becomes unwieldy with just `Or` so this function becomes more convenient to call.
  */
-type OrList<T extends boolean[]> = LooseEquals<T[number] extends true ? true : never, true>;
+type OrList<T extends boolean[]> = T[number] extends false ? false : true;
 
 /**
  * Returns whether `T` is _exactly_ `any`.
@@ -213,17 +213,19 @@ type Not<T extends boolean> = LooseEquals<T, true> extends true ? false : true;
 type KeyIn<K, T> = SingleExtends<K extends keyof T ? true : never, true>;
 
 type SingleExtends<T, U> = T extends U ? true : false;
-type Extends<T, U> = SingleExtends<T extends U ? true : never, true>;
+type Extends<T, U> = LooseEquals<T extends U ? true : never, true>;
 
 /**
  * Makes `T` partial if `B` is true and returns `T` otherwise.
  */
 type PartialIf<T, B extends boolean> = Extends<B, true> extends true ? Partial<T> : T;
 
-type GetKey<T, K extends T extends unknown ? keyof T : never> = T extends unknown
+type AllKeysOf<T> = T extends unknown ? keyof T : never;
+
+type GetKey<T, K extends string | number | symbol, D = undefined> = T extends unknown
   ? K extends keyof T
     ? T[K]
-    : undefined
+    : D
   : never;
 
 type NullishCoalesce<T, D> = T extends unknown ? (T extends undefined | null ? D : T) : never;
@@ -251,3 +253,24 @@ type RequiredProperties<T> = keyof T extends unknown
     ? never
     : keyof T
   : never;
+
+type ExpandDeep<T> = T extends Record<string | number | symbol, unknown>
+  ? T extends unknown
+    ? { [K in keyof T]: ExpandDeep<T[K]> }
+    : never
+  : T;
+
+/**
+ * Expands the type representation of a complex type such that the final result is computed and displayed, e.g. `{ foo: 123 } | { bar: 456 }` instead of `ComplexOperation<T>`.
+ *
+ * @privateRemarks the type representation of Typescript is undefined so it is possible at any moment that this method becomes unreliable.
+ */
+type Expand<T> = T extends unknown
+  ? {
+      [K in keyof T]: T[K];
+    }
+  : never;
+
+type ItemExtends<T, U> = T extends unknown ? LooseEquals<T extends U ? true : never, true> : never;
+
+type Coalesce<T, C, D> = T extends C ? D : T;

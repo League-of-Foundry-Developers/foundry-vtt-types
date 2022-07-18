@@ -8,14 +8,11 @@ import type { FlagsField } from '../data/flagsField.js';
 
 interface BaseMeasuredTemplateSchema extends DataSchema {
   /**
-   * _id                 The _id which uniquely identifies this BaseMeasuredTemplate embedded document
+   * The _id which uniquely identifies this BaseMeasuredTemplate embedded document
    */
   _id: fields.DocumentIdField<{}>;
 
-  user: fields.ForeignDocumentField<
-    typeof documents.BaseUser,
-    { initial: () => OptionalChaining<OptionalChaining<typeof game, 'user'>, 'id'> }
-  >;
+  user: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string | null }>;
 
   /**
    * The value in CONST.MEASURED_TEMPLATE_TYPES which defines the geometry type of this template

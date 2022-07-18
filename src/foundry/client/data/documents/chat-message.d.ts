@@ -17,25 +17,25 @@ declare global {
    * @param data - Initial data provided to construct the ChatMessage document
    */
   class ChatMessage extends ClientDocumentMixin(foundry.documents.BaseChatMessage) {
-    // /**
-    //  * The cached Roll instance that this message contains, if any
-    //  * @defaultValue `null`
-    //  * @internal
-    //  */
-    // protected _roll: Roll | null;
+    /**
+     * The cached Roll instance that this message contains, if any
+     * @defaultValue `null`
+     * @internal
+     */
+    protected _roll: Roll | null;
 
-    // /**
-    //  * Is the display of the roll in this message collapsed (false) or expanded (true)
-    //  * @defaultValue `false`
-    //  * @internal
-    //  */
-    // protected _rollExpanded: boolean;
+    /**
+     * Is the display of the roll in this message collapsed (false) or expanded (true)
+     * @defaultValue `false`
+     * @internal
+     */
+    protected _rollExpanded: boolean;
 
-    // /**
-    //  * Is this ChatMessage currently displayed in the sidebar ChatLog?
-    //  * @defaultValue `false`
-    //  */
-    // logged: boolean;
+    /**
+     * Is this ChatMessage currently displayed in the sidebar ChatLog?
+     * @defaultValue `false`
+     */
+    logged: boolean;
 
     /**
      * Return the recommended String alias for this message.
@@ -44,56 +44,56 @@ declare global {
      */
     get alias(): string;
 
-    // /**
-    //  * Is the current User the author of this message?
-    //  */
-    // get isAuthor(): boolean;
+    /**
+     * Is the current User the author of this message?
+     */
+    get isAuthor(): boolean;
 
-    // /**
-    //  * Return whether the content of the message is visible to the current user.
-    //  * For certain dice rolls, for example, the message itself may be visible while the content of that message is not.
-    //  */
-    // get isContentVisible(): boolean;
+    /**
+     * Return whether the content of the message is visible to the current user.
+     * For certain dice rolls, for example, the message itself may be visible while the content of that message is not.
+     */
+    get isContentVisible(): boolean;
 
-    // /**
-    //  * Test whether the chat message contains a dice roll
-    //  */
-    // get isRoll(): boolean;
+    /**
+     * Test whether the chat message contains a dice roll
+     */
+    get isRoll(): boolean;
 
-    // /**
-    //  * Return the Roll instance contained in this chat message, if one is present
-    //  */
-    // get roll(): Roll | null;
+    /**
+     * Return the Roll instance contained in this chat message, if one is present
+     */
+    get roll(): Roll | null;
 
-    // /**
-    //  * Return whether the ChatMessage is visible to the current User.
-    //  * Messages may not be visible if they are private whispers.
-    //  */
-    // get visible(): boolean;
+    /**
+     * Return whether the ChatMessage is visible to the current User.
+     * Messages may not be visible if they are private whispers.
+     */
+    get visible(): boolean;
 
-    // /**
-    //  * The User who created the chat message.
-    //  */
+    /**
+     * The User who created the chat message.
+     */
     // get user(): InstanceType<ConfiguredDocumentClass<typeof User>> | undefined;
 
-    // override prepareData(): void;
+    override prepareData(): void;
 
-    // /**
-    //  * Transform a provided object of ChatMessage data by applying a certain rollMode to the data object.
-    //  * @param chatData - The object of ChatMessage data prior to applying a rollMode preference
-    //  * @param rollMode - The rollMode preference to apply to this message data
-    //  * @returns The modified ChatMessage data with rollMode preferences applied
-    //  */
-    // static applyRollMode(
-    //   chatData: DataModel.SchemaToSourceInput<foundry.documents.BaseChatMessage['schema']>,
-    //   rollMode: keyof typeof CONFIG.Dice.rollModes | 'roll'
-    // ): DataModel.SchemaToSourceInput<foundry.documents.BaseChatMessage['schema']>;
+    /**
+     * Transform a provided object of ChatMessage data by applying a certain rollMode to the data object.
+     * @param chatData - The object of ChatMessage data prior to applying a rollMode preference
+     * @param rollMode - The rollMode preference to apply to this message data
+     * @returns The modified ChatMessage data with rollMode preferences applied
+     */
+    static applyRollMode(
+      chatData: DataModel.SchemaToSourceInput<foundry.documents.BaseChatMessage['schema']>,
+      rollMode: keyof typeof CONFIG.Dice.rollModes | 'roll'
+    ): DataModel.SchemaToSourceInput<foundry.documents.BaseChatMessage['schema']>;
 
-    // /**
-    //  * Update the data of a ChatMessage instance to apply a requested rollMode
-    //  * @param rollMode - The rollMode preference to apply to this message data
-    //  */
-    // applyRollMode(rollMode: keyof typeof CONFIG.Dice.rollModes | 'roll'): void;
+    /**
+     * Update the data of a ChatMessage instance to apply a requested rollMode
+     * @param rollMode - The rollMode preference to apply to this message data
+     */
+    applyRollMode(rollMode: keyof typeof CONFIG.Dice.rollModes | 'roll'): void;
 
     /**
      * Attempt to determine who is the speaking character (and token) for a certain Chat Message
@@ -212,11 +212,11 @@ declare global {
      */
     protected _renderRollContent(messageData: ChatMessage.MessageData): Promise<void>;
 
-    protected override _preCreate(
-      data: DataModel.SchemaToSourceInput<foundry.documents.BaseChatMessage['schema']>,
-      options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser
-    ): Promise<void>;
+    // protected override _preCreate(
+    //   data: DataModel.SchemaToSourceInput<foundry.documents.BaseChatMessage['schema']>,
+    //   options: DocumentModificationOptions,
+    //   user: foundry.documents.BaseUser
+    // ): Promise<void>;
 
     protected override _onCreate(
       data: foundry.documents.BaseChatMessage['_source'],

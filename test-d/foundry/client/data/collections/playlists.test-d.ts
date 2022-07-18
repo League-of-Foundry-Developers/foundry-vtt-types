@@ -1,7 +1,9 @@
 import { expectType } from 'tsd';
-import type { PlaylistDataSource } from '../../../../../src/foundry/common/data/data.mjs.d.ts/playlistData';
+import type DataModel from '../../../../../src/foundry/common/abstract/data.mjs';
 
 const playlists = new Playlists();
 expectType<StoredDocument<Playlist>>(playlists.get('', { strict: true }));
-expectType<(PlaylistDataSource & { _id: string })[]>(playlists.toJSON());
+expectType<(DataModel.SchemaToSource<foundry.documents.BasePlaylist['schema']> & { _id: string | null })[]>(
+  playlists.toJSON()
+);
 expectType<PlaylistDirectory | undefined>(playlists.directory);

@@ -103,7 +103,7 @@ type BaseActorShims = {
    * Rename data to system
    * @deprecated since v10
    */
-  //   data: BaseActor['system'];
+  data: BaseActor['system'];
 
   /**
    * Rename permission to ownership

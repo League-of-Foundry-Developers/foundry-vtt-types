@@ -4,13 +4,7 @@ import type DataModel from '../../../../src/foundry/common/abstract/data.mjs';
 import type EmbeddedCollection from '../../../../src/foundry/common/abstract/embedded-collection.mjs';
 import type { EffectDurationData } from '../../../../src/foundry/common/documents/active-effect.mjs.js';
 
-const baseActor = new foundry.documents.BaseActor();
-baseActor._id;
-
-expectType<EmbeddedCollection<typeof foundry.documents.BaseActiveEffect, DataModel.Any>>(baseActor.effects);
-expectType<EmbeddedCollection<typeof foundry.documents.BaseItem, DataModel.Any>>(baseActor.items);
-expectType<foundry.documents.BaseActiveEffect['_source']>(baseActor.data._source.effects[0]);
-expectType<DataModel.SchemaToSource<EffectDurationData>>(baseActor.data._source.effects[0].duration);
+import '../../../../../index';
 
 interface CharacterDataSourceData {
   health: number;
@@ -66,6 +60,45 @@ interface NPCDataProperties {
   data: NPCDataPropertiesData;
   flags: NPCFlags;
 }
+
+expectError(new foundry.documents.BaseActor());
+expectError(new foundry.documents.BaseActor({}));
+
+expectError(new foundry.documents.BaseActor({ name: 'Some Actor With Wrong Type', type: 'foo' }));
+
+const actorData = new foundry.documents.BaseActor({ name: 'Some Actor', type: 'character' });
+
+expectType<foundry.documents.BaseActor>(actorData);
+expectType<'character' | 'npc'>(actorData.type);
+if (actorData._source.type === 'character') {
+  expectType<number>(actorData._source.data.health);
+  expectError(actorData._source.data.movement);
+  expectType<number>(actorData._source.flags['my-module'].xp);
+} else {
+  expectType<string>(actorData._source.data.faction);
+  expectType<number>(actorData._source.data.challenge);
+  expectError(actorData._source.data.damage);
+  expectType<string>(actorData._source.flags['my-module']['hidden-name']);
+}
+
+if (actorData.type === 'character') {
+  expectType<number>(actorData.data.health);
+  expectType<number>(actorData.data.movement);
+  expectType<number>(actorData.flags['my-module'].xp);
+} else {
+  expectType<string>(actorData.data.faction);
+  expectType<number>(actorData.data.challenge);
+  expectType<number>(actorData.data.damage);
+  expectType<string>(actorData.flags['my-module']['hidden-name']);
+}
+
+const baseActor = new foundry.documents.BaseActor();
+baseActor._id;
+
+expectType<EmbeddedCollection<typeof foundry.documents.BaseActiveEffect, DataModel.Any>>(baseActor.effects);
+expectType<EmbeddedCollection<typeof foundry.documents.BaseItem, DataModel.Any>>(baseActor.items);
+expectType<foundry.documents.BaseActiveEffect['_source']>(baseActor.data._source.effects[0]);
+expectType<DataModel.SchemaToSource<EffectDurationData>>(baseActor.data._source.effects[0].duration);
 
 type MyActorDataSource = CharacterDataSource | NPCDataSource;
 type MyActorDataProperties = CharacterDataProperties | NPCDataProperties;

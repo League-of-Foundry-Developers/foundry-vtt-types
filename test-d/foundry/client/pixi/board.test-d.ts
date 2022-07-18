@@ -24,27 +24,37 @@ expectError(Canvas.getDimensions());
 expectError(Canvas.getDimensions({}));
 const scene = canvas?.scene;
 if (scene) {
-  expectType<Canvas.Dimensions>(Canvas.getDimensions(scene.data));
+  expectType<Canvas.Dimensions>(
+    Canvas.getDimensions({
+      width: scene.width,
+      height: scene.height,
+      grid: scene.grid.size,
+      gridDistance: scene.data.gridDistance,
+      padding: scene.padding,
+      shiftX: scene.data.shiftX,
+      shiftY: scene.data.shiftY
+    })
+  );
 }
 expectType<Canvas.Dimensions>(
   Canvas.getDimensions({
-    grid: 100,
+    grid: 5,
     gridDistance: 10,
     padding: 10,
     shiftX: 10,
     shiftY: 10
-  })
+  } as const)
 );
 expectType<Canvas.Dimensions>(
   Canvas.getDimensions({
     width: 100,
     height: 100,
-    grid: 100,
+    grid: 5,
     gridDistance: 10,
     padding: 0,
     shiftX: 0,
     shiftY: 0
-  })
+  } as const)
 );
 
 expectType<BackgroundLayer | null>(myCanvas.getLayerByEmbeddedName('Tile'));

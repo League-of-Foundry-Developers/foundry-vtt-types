@@ -19,9 +19,17 @@ interface BaseWallSchema extends DataSchema {
   c: fields.ArrayField<
     fields.NumberField<{ required: true; integer: true; nullable: false }>,
     {
-      validate: (c: Array<number>) => typeof c['length'] extends 4 ? true : false;
+      validate: (c: [number, number, number, number]) => boolean;
       validationError: 'must be a length-4 array of integer coordinates';
-    }
+    },
+    // Specialize the type to be a tuple of four elements.
+    SimpleMerge<
+      fields.ArrayField.ExtendsOptions<fields.DataField.Any>,
+      {
+        SourceType: [number, number, number, number];
+        InitializedType: [number, number, number, number];
+      }
+    >
   >;
 
   /**

@@ -10,22 +10,32 @@ declare namespace Document {
 
   export type AnyConstructor = Pick<typeof Document, keyof typeof Document> & (abstract new (...params: any[]) => Any);
 
-  export type DataType<ConcreteDocument extends Any, DocumentShims extends Record<string, unknown>> = {
-    constructor: typeof Document;
-    document: ConcreteDocument;
-    reset: () => ReturnType<ConcreteDocument['reset']>;
-    schema: ConcreteDocument['schema'];
-    update: ConcreteDocument['updateSource'];
-    validate: ConcreteDocument['validate'];
-    _source: ConcreteDocument['_source'];
-    toObject: ConcreteDocument['toObject'];
-    toJSON: ConcreteDocument['toJSON'];
-  } & DataModel.SchemaToData<ConcreteDocument['schema']> &
-    DocumentShims;
+  export type DataType<ConcreteDocument extends Any, DocumentShims extends Record<string, unknown>> = ExpandDeep<
+    {
+      constructor: typeof Document;
+      document: ConcreteDocument;
+      reset: () => ReturnType<ConcreteDocument['reset']>;
+      schema: ConcreteDocument['schema'];
+      update: ConcreteDocument['updateSource'];
+      validate: ConcreteDocument['validate'];
+      _source: ConcreteDocument['_source'];
+      toObject: ConcreteDocument['toObject'];
+      toJSON: ConcreteDocument['toJSON'];
+    } & DataModel.SchemaToData<ConcreteDocument['schema']> &
+      DocumentShims
+  >;
 
   export type ParentTypeFor<T extends AnyDocument> = T extends Document<any, infer U, any, any> ? U : never;
 
   export type ShimsFor<T extends AnyDocument> = T extends Document<any, any, any, infer U> ? U : never;
+
+  type ConstructorParameters<
+    ConcreteDataSchema extends DataSchema,
+    Parent extends AnyDocument | null = null
+  > = PartialIf<
+    [data: DataModel.SchemaToSourceInput<ConcreteDataSchema>, context?: Context<Parent>],
+    Equals<DataModel.SchemaToSourceInput<ConcreteDataSchema>, {}>
+  >;
 }
 
 type GetFlags<T extends AnyDocument> = 'flags' extends keyof T['_source']
@@ -46,12 +56,12 @@ declare abstract class Document<
    * @param data    - Initial data provided to construct the Document
    * @param context - Additional parameters which define Document context
    */
-  constructor(data?: DataModel.SchemaToData<ConcreteDataSchema>, context?: Context<Parent>);
+  constructor(...args: Document.ConstructorParameters<ConcreteDataSchema, Parent>);
 
   /**
    * An immutable reference to a containing Compendium collection to which this Document belongs.
    */
-  //   readonly pack: Context<Parent>['pack'];
+  readonly pack: Context<Parent>['pack'];
 
   /**
    * Perform one-time initialization tasks which only occur when the Document is first constructed.

@@ -317,7 +317,7 @@ declare global {
   abstract class DocumentSheet<
     Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends object = DocumentSheet.Data,
-    ConcreteDocument extends AnyDocument = Data extends DocumentSheet.Data<infer T> ? T : AnyDocument
+    ConcreteDocument extends AnyDocument = Data extends DocumentSheet.Data<infer T, any> ? T : AnyDocument
   > extends FormApplication<Options, Data, ConcreteDocument> {
     /**
      * @defaultValue

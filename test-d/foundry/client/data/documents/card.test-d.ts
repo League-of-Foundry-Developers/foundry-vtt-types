@@ -1,13 +1,15 @@
 import { expectError, expectType } from 'tsd';
+import type DataModel from '../../../../../src/foundry/common/abstract/data.mjs';
+import type { BaseCardFaceSchema } from '../../../../../src/foundry/common/documents/card.mjs.js';
 
 const card = new Card({ name: 'Just a deck of cards' });
 const cards = new Cards({ name: 'Some Card Deck', type: 'german' });
 
-expectType<foundry.data.CardFaceData>(card.back);
-expectType<foundry.data.CardFaceData | null>(card.face);
-expectType<string>(card.backImg);
+expectType<DataModel.SchemaToData<BaseCardFaceSchema>>(card.back);
+expectType<number | null>(card.face);
+expectType<string | null>(card.back.name);
+expectType<string>(card.back.img);
 expectType<string>(card.img);
-expectType<string>(card.name);
 expectType<Cards | undefined | null>(card.source);
 expectType<boolean>(card.isHome);
 expectType<boolean>(card.showFace);

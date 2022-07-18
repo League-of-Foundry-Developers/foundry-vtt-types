@@ -8,7 +8,7 @@ expectType<Token | undefined>(hud.object);
 hud.bind(token);
 
 expectType<
-  ReturnType<foundry.data.TokenData['toJSON']> & {
+  ReturnType<foundry.documents.BaseToken['toJSON']> & {
     id: string;
     classes: string;
     appId: number;

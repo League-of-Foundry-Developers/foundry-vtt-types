@@ -1,7 +1,9 @@
 import { expectType } from 'tsd';
-import type { RollTableDataSource } from '../../../../../src/foundry/common/data/data.mjs.d.ts/rollTableData';
+import type DataModel from '../../../../../src/foundry/common/abstract/data.mjs';
 
 const rollTables = new RollTables();
 expectType<StoredDocument<RollTable>>(rollTables.get('', { strict: true }));
-expectType<(RollTableDataSource & { _id: string })[]>(rollTables.toJSON());
+expectType<(DataModel.SchemaToSource<foundry.documents.BaseRollTable['schema']> & { _id: string })[]>(
+  rollTables.toJSON()
+);
 expectType<RollTableDirectory | undefined>(rollTables.directory);

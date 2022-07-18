@@ -8,7 +8,7 @@ expectType<boolean>(user.active);
 expectType<UserTargets>(user.targets);
 expectType<string | null>(user.id);
 expectType<string | null>(user.viewedScene);
-expectType<string>(user.avatar);
+expectType<string | undefined | null>(user.avatar);
 expectType<StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Actor>>> | undefined>(user.character);
 expectType<StoredDocument<Actor> | undefined>(user.character);
 expectAssignable<Partial<Record<string, boolean>>>(user.permissions);

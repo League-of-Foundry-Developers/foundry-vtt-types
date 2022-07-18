@@ -1,4 +1,3 @@
-import { DataField } from './fields.mjs.d';
 /**
  * The collection of data schema and document definitions for primary documents which are shared between the both the
  * client and the server.
@@ -7,15 +6,6 @@ import { DataField } from './fields.mjs.d';
 import { DataModel, DataSchema } from '../abstract/module.mjs';
 import * as fields from './fields.mjs';
 import * as documents from '../documents/module.mjs';
-
-type Foo = fields.StringField<{
-  nullable: true;
-  blank: false;
-  initial: null;
-  label: 'LIGHT.AnimationType';
-}> extends DataField.Any
-  ? true
-  : false;
 
 interface LightDataSchema extends DataSchema {
   /**
@@ -170,10 +160,6 @@ interface LightDataSchema extends DataSchema {
       validationError: 'darkness.max may not be less than darkness.min';
     }
   >;
-
-  /**
-   * Does this source invert the color of the background texture?
-   */
 }
 
 /**
@@ -243,8 +229,6 @@ declare class ShapeData extends DataModel<null, ShapeDataSchema> {
 
 /* ---------------------------------------- */
 
-type Coalesce<T, U> = T extends undefined ? U : T;
-
 type BaseOptions = Pick<fields.DataField.OptionsFor<typeof fields.FilePathField>, 'categories' | 'initial' | 'label'>;
 
 export type TextureDataOptions = {
@@ -263,7 +247,7 @@ export type TextureDataField<Options extends TextureDataOptions> = fields.Schema
      * The URL of the texture source.
      */
     src: fields.FilePathField<{
-      categories: Coalesce<Options['categories'], ['IMAGE', 'VIDEO']>;
+      categories: Coalesce<Options['categories'], undefined, ['IMAGE', 'VIDEO']>;
       initial: Options['initial'];
       label: Options['label'];
     }>;

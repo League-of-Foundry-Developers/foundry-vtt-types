@@ -30,7 +30,8 @@ interface BaseAmbientLightSchema extends DataSchema {
   rotation: fields.AngleField<{ label: 'LIGHT.Rotation' }>;
 
   /**
-   * [walls=true]       Whether or not this light source is constrained by Walls
+   * Whether or not this light source is constrained by Walls
+   * (default: `true`)
    */
   walls: fields.BooleanField<{ initial: true; label: 'LIGHT.Walls'; hint: 'LIGHT.WallsHint' }>;
 

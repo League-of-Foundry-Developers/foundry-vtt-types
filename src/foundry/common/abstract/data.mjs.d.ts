@@ -1,12 +1,6 @@
 import { StructuralClass } from './../../../types/helperTypes.d';
 import { ToObjectType } from '../../../types/helperTypes';
-import type {
-  DataField,
-  DataFieldChoicesOptions,
-  EmbeddedCollectionField,
-  NumberField,
-  StringField
-} from '../data/fields.mjs';
+import type { DataField, EmbeddedCollectionField, StringField } from '../data/fields.mjs';
 
 declare namespace DataModel {
   export type ConstructorOptions = InexactPartial<{
@@ -130,27 +124,17 @@ declare namespace DataModel {
     ConcreteDataSchema,
     {
       // Essentially tests this condition that will give if it's required:
-      //   (required === true && initial === undefined) ||
-      //   (nullable === false && initial === null) ||
-      //   ((field instanceof NumberField || field instanceof StringField) && choices !== undefined && !choices.includes(initial)) ||
+      //   !(initial in fieldTypes(field, 'SourceType')) ||
       //   (field instanceof StringField && blank === false && initial === '')
       // In every case validation will automatically fail if given no value thusly a value must be given to prevent this error.
-      [K in keyof ConcreteDataSchema]: OrList<
-        [
-          And<Extends<ConcreteDataSchema[K]['required'], true>, Equals<ConcreteDataSchema[K]['initial'], undefined>>,
-          And<Extends<ConcreteDataSchema[K]['nullable'], false>, Equals<ConcreteDataSchema[K]['initial'], null>>,
-          ConcreteDataSchema[K] extends NumberField<any, any> | StringField<any, any>
-            ? Equals<ConcreteDataSchema[K]['choices'], undefined> extends true
-              ? false
-              : Extends<
-                  ConcreteDataSchema[K]['initial'],
-                  DataFieldChoicesOptions<Exclude<ConcreteDataSchema[K]['choices'], undefined>>
-                >
-            : false,
-          ConcreteDataSchema[K] extends StringField<any, any>
-            ? And<Extends<ConcreteDataSchema[K]['blank'], false>, Equals<ConcreteDataSchema[K]['initial'], ''>>
-            : false
-        ]
+      [K in keyof ConcreteDataSchema]: Or<
+        // Check if the initial type is in any of the field source types
+        Not<
+          ItemExtends<DataField.InitialTypeFor<ConcreteDataSchema[K]>, FieldType<ConcreteDataSchema[K], 'SourceType'>>
+        >,
+        ConcreteDataSchema[K] extends StringField<any, any>
+          ? And<Extends<ConcreteDataSchema[K]['blank'], false>, Equals<ConcreteDataSchema[K]['initial'], ''>>
+          : false
       > extends false
         ? K
         : never;
@@ -162,12 +146,16 @@ declare namespace DataModel {
     'SourceType'
   >;
 
+  type FieldType<Field, Key extends keyof DataField.AnyExtendsOptions> = Field extends DataField.Any
+    ? DataField.ExtendsOptionsFor<Exclude<Field, undefined>>[Key] | DataField.ExtraTypes<Exclude<Field, undefined>>
+    : Field;
+
   export type GetSchemaValue<
-    ConcreteDataSchema extends DataSchema,
+    ConcreteDataSchema extends Partial<DataSchema>,
     ExtendsOptionsKey extends keyof DataField.AnyExtendsOptions
-  > = {
-    [K in keyof ConcreteDataSchema]: DataField.ExtendsOptionsFor<ConcreteDataSchema[K]>[ExtendsOptionsKey];
-  };
+  > = ExpandDeep<{
+    [K in keyof ConcreteDataSchema]: FieldType<ConcreteDataSchema[K], ExtendsOptionsKey>;
+  }>;
 
   export type ConstructReadonly<ConcreteDataSchema extends DataSchema> = ReadonlyProps<
     ConcreteDataSchema,
@@ -195,11 +183,29 @@ export type DataSchema = {
   [name: string]: DataField.Any;
 };
 
+type DataModelConstructorParameters<ConcreteDataSchema extends DataSchema> = PartialIf<
+  [
+    /**
+     * Initial data used to construct the data object
+     * (default: `{}`)
+     */
+    data: DataModel.SchemaToSourceInput<ConcreteDataSchema>,
+
+    /**
+     * Options which affect DataModel construction
+     * (default: `{}`)
+     */
+    options?: DataModel.ConstructorOptions
+  ],
+  Equals<DataModel.SchemaToSourceInput<ConcreteDataSchema>, {}>
+>;
+
 // @ts-expect-error subclassing StructuralClass gives an error
 declare abstract class _InternalDataModel<
   ConcreteDataSchema extends DataSchema,
-  _ComputedDataModel extends object = RemoveIndex<DataModel.SchemaToData<ConcreteDataSchema>>
-> extends StructuralClass<_ComputedDataModel> {}
+  _ComputedDataModel extends object = RemoveIndex<DataModel.SchemaToData<ConcreteDataSchema>>,
+  _ComputedArguments extends any[] = DataModelConstructorParameters<ConcreteDataSchema>
+> extends StructuralClass<_ComputedDataModel, _ComputedArguments> {}
 
 type DataModelShims = {
   /**
@@ -215,20 +221,12 @@ declare abstract class DataModel<
   Parent extends AnyDocument | null,
   ConcreteDataSchema extends DataSchema,
   ConcreteDataModelShims extends Record<string, unknown> = {}
-> extends _InternalDataModel<ConcreteDataSchema> {
-  /**
-   * @param data    - Initial data used to construct the data object
-   *                  (default: `{}`)
-   * @param options - Options which affect DataModel construction
-   *                   (default: `{}`)
-   */
-  constructor(data?: DataModel.SchemaToSourceInput<ConcreteDataSchema>, options?: DataModel.ConstructorOptions);
-
+> extends _InternalDataModel<ConcreteDataSchema & DataModelShims> {
   /**
    * The source data object for this DataModel instance.
    * Once constructed, the source object is sealed such that no keys may be added nor removed.
    */
-  readonly _source: DataModel.SchemaToSource<ConcreteDataSchema> & ConcreteDataModelShims;
+  readonly _source: DataModel.SchemaToSource<ConcreteDataSchema> & ConcreteDataModelShims & DataModelShims;
 
   /**
    * The defined and cached Data Schema for all instances of this DataModel.

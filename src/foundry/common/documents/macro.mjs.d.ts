@@ -10,7 +10,6 @@ interface BaseMacroSchema extends DataSchema {
   /**
    * The _id which uniquely identifies this Macro document
    */
-
   _id: fields.DocumentIdField<{}>;
 
   /**
@@ -145,7 +144,7 @@ declare class BaseMacro extends Document<BaseMacroSchema, null, BaseMacroMetadat
 
   /** {@inheritdoc} */
   protected override _preCreate(
-    data: DataModel.SchemaToSourceInput<Actor['schema']>,
+    data: DataModel.SchemaToSourceInput<this['schema']>,
     options: DocumentModificationOptions,
     user: foundry.documents.BaseUser
   ): Promise<void>;

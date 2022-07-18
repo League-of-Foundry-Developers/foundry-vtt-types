@@ -270,7 +270,9 @@ declare global {
      * @param data - Initial data with which to create the preview Tile
      */
     static createPreview(
-      data: DataModel.SchemaToSourceInput<foundry.documents.BaseTile['schema']>
+      data: Expand<
+        PartialProps<Omit<DataModel.SchemaToSourceInput<TileDocument['schema']>, 'width' | 'height'>, 'overhead'>
+      >
     ): InstanceType<ConfiguredObjectClassForName<'Tile'>>;
   }
 

@@ -8,7 +8,7 @@ declare global {
    * A specialized sub-class of the ClientDocumentMixin which is used for document types that are intended to be represented upon the game Canvas.
    */
 
-  const CanvasDocumentMixin: <T>(Base: T) => T; //CanvasDocumentConstructor<T>;
+  const CanvasDocumentMixin: <T extends ConstructorOf<AnyDocument>>(Base: T) => CanvasDocumentConstructor<T>;
 }
 
 type CanvasDocumentConstructor<T extends ConstructorOf<AnyDocument>> = Pick<T, keyof T> &

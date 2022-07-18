@@ -136,8 +136,6 @@ declare namespace BasePackage {
   };
 }
 
-type GetKey<T, K> = K extends keyof T ? T[K] : undefined;
-
 /**
  * The data schema used to define a Package manifest.
  * Specific types of packages extend this schema with additional fields.

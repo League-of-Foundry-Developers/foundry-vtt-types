@@ -8,10 +8,10 @@ expectType<Token[]>(actor.getActiveTokens(false, false));
 expectType<TokenDocument[]>(actor.getActiveTokens(false, true));
 expectType<Token[] | TokenDocument[]>(actor.getActiveTokens(false, document));
 
-expectAssignable<foundry.data.ItemData>(actor.itemTypes['armor'][0].data);
+expectAssignable<foundry.documents.BaseItem>(actor.itemTypes['armor'][0].data);
 
 interface CharacterActor {
-  data: foundry.data.ActorData & { type: 'character'; _source: { type: 'character' } };
+  data: foundry.documents.BaseActor['data'] & { type: 'character'; _source: { type: 'character' } };
 }
 class CharacterActor extends Actor {
   someCustomFunction() {
