@@ -3,7 +3,7 @@ description: Submit an issue for adding, updating or deleting something for Foun
 title: Update … for Foundry VTT v10.273
 labels:
   - version update
-  - foundry v10
+  - foundry V10
 body:
   - type: input
     id: to-change
