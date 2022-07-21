@@ -1,0 +1,32 @@
+name: Class Update
+description: Submit an issue for adding, updating or deleting something for Foundry VTT v10
+title: Update … for Foundry VTT v10.273
+labels:
+  - version update
+  - foundry v10
+body:
+  - type: input
+    id: to-change
+    attributes:
+      label: To Change
+      description: The thing to change (typically a class, function, or constant)
+    validations:
+      required: true
+  - type: dropdown
+    id: change-type
+    attributes:
+      label: Kind of Change
+      description: The kind of the change
+      options:
+        - Update
+        - Add
+        - Delete
+    validations:
+      required: true
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Info
+      description: Any additional info, e.g., details in what changed
+    validations:
+      required: false

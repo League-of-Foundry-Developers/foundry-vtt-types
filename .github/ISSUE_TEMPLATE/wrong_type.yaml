@@ -1,0 +1,45 @@
+name: Wrong Type
+description: Report an incorrect type to help us improve
+labels:
+  - bug
+body:
+  - type: input
+    id: foundry-version
+    attributes:
+      label: Foundry VTT Version
+      description: For which version of Foundry VTT does the problem occur?
+      placeholder: E.g., v9
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of what and where the wrong type is
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction Steps
+      description: Provide the minimal steps to show the wrong behavior
+      placeholder: >
+        1. …
+        2. …
+        3. …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: A clear and concise description of what you expected the type/behavior to be
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any additional context about the problem here
+    validations:
+      required: false

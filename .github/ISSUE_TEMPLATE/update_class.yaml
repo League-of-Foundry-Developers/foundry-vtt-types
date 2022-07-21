@@ -1,0 +1,28 @@
+name: Class Update
+description: Submit an issue for updating a class for a certain Foundry VTT version
+title: 'Update CLASS to Foundry VTT VERSION'
+labels:
+  - version update
+body:
+  - type: input
+    id: class
+    attributes:
+      label: Class to Update
+      description: Which class should be updated?
+    validations:
+      required: true
+  - type: input
+    id: foundry-version
+    attributes:
+      label: Foundry VTT Version
+      description: For which version of Foundry VTT should the class be updated?
+      placeholder: E.g., v9
+    validations:
+      required: true
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Info
+      description: Any additional info, e.g., details in what changed
+    validations:
+      required: false

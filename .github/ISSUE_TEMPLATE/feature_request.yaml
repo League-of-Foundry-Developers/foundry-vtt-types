@@ -1,0 +1,42 @@
+name: Feature Request
+description: Suggest an idea for this project beyond plain Foundry types
+labels:
+  - enhancement
+body:
+  - type: input
+    id: foundry-version
+    attributes:
+      label: Foundry VTT Version
+      description: The version(s) of Foundry VTT that this feature should be added for
+      placeholder: E.g., 0.8.x, v9
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Related Poblem
+      description: Is your feature request related to a problem? If so, please describe it here in a clear and concise way.
+      placeholder: E.g., I'm always frustrated when…
+    validations:
+      required: false
+  - type: textarea
+    id: solution
+    attributes:
+      label: Desired Solution
+      description: Please describe your desired solution
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternative
+      description: A clear and concise description of any alternative solutions or features you have considered
+    validations:
+      required: false
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any additional context or screenshots about the feature request here
+    validations:
+      required: false
