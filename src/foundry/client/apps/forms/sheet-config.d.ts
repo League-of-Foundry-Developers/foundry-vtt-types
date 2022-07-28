@@ -141,7 +141,7 @@ declare global {
       Options extends FormApplicationOptions = FormApplicationOptions
     > {
       isGM: boolean;
-      object: ConcreteDocument['data']['_source'];
+      object: ConcreteDocument['_source'];
       options: Options;
       sheetClass: string;
       sheetClasses: Record<string, string>;

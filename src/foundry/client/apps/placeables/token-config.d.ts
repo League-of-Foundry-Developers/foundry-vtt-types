@@ -106,7 +106,7 @@ declare global {
       isPrototype: boolean;
       hasAlternates: boolean;
       alternateImages: Record<string, string> | [];
-      object: foundry.data.PrototypeTokenData | foundry.documents.BaseToken['data'];
+      object: foundry.data.PrototypeTokenData | foundry.documents.BaseToken['_source'];
       options: Options;
       gridUnits: string;
       barAttributes: Record<string, string[]>;

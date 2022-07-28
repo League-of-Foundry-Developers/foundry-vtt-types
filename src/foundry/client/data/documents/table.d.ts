@@ -23,7 +23,7 @@ declare global {
     /**
      * Provide a thumbnail image path used to represent this document.
      */
-    get thumbnail(): this['data']['img'];
+    get thumbnail(): this['img'];
 
     /**
      * Display a result drawn from a RollTable in the Chat Log along.
@@ -146,7 +146,7 @@ declare global {
        * One or more table results which have been drawn
        * @defaultValue `[]`
        */
-      results: foundry.documents.BaseTableResult['data'][];
+      results: foundry.documents.BaseTableResult['_source'][];
 
       /**
        * Whether to automatically display the results in chat

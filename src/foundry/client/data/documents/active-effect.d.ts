@@ -141,7 +141,7 @@ declare global {
     ): void;
 
     protected override _onUpdate(
-      data: DeepPartial<this['data']['_source']>,
+      data: DeepPartial<this['_source']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;

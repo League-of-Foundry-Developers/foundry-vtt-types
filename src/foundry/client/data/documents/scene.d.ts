@@ -92,7 +92,7 @@ declare global {
     /**
      * Track whether the scene is the active view
      */
-    protected _view: this['data']['active'];
+    protected _view: this['active'];
 
     /**
      * Track the viewed position of each scene (while in memory only, not persisted)
@@ -105,7 +105,7 @@ declare global {
     /**
      * Provide a thumbnail image path used to represent this document.
      */
-    get thumbnail(): this['data']['thumb'];
+    get thumbnail(): this['thumb'];
 
     /**
      * A convenience accessor for whether the Scene is currently viewed
@@ -461,7 +461,7 @@ declare global {
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocumentMixin.CompendiumExportOptions | undefined
     ): Omit<foundry.documents.BaseScene['_source'], '_id' | 'folder' | 'permission'> & {
-      permission?: foundry.documents.BaseScene['data'] extends { toObject(): infer U } ? U : never;
+      permission?: foundry.documents.BaseScene['_source'] extends { toObject(): infer U } ? U : never;
     };
 
     /**

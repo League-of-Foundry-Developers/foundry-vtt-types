@@ -11,7 +11,7 @@ const metadata = {
 
 const compendiumCollection = new CompendiumCollection(metadata);
 expectType<StoredDocument<JournalEntry>>(compendiumCollection.get('', { strict: true }));
-expectType<Array<StoredDocument<foundry.documents.BaseJournalEntry>['data']['_source']>>(compendiumCollection.toJSON());
+expectType<Array<StoredDocument<foundry.documents.BaseJournalEntry>['_source']>>(compendiumCollection.toJSON());
 
 expectType<{ _id: string } & Partial<foundry.data.JournalEntryData['_source']>>(
   (await compendiumCollection.getIndex()).get('some id', { strict: true })

@@ -131,7 +131,7 @@ declare global {
   namespace RollTableConfig {
     interface Data<Options extends DocumentSheetOptions = DocumentSheetOptions>
       extends DocumentSheet.Data<RollTable, Options> {
-      results: ToObjectFalseType<foundry.documents.BaseTableResult['data']> & {
+      results: ToObjectFalseType<foundry.documents.BaseTableResult['_source']> & {
         isText: boolean;
         isDocument: boolean;
         isCompendium: boolean;

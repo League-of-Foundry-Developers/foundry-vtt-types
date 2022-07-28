@@ -13,7 +13,7 @@ declare global {
    * @see {@link SettingsConfig}
    */
   class ClientSettings {
-    constructor(worldSettings?: Setting['data']['_source'][]);
+    constructor(worldSettings?: Setting['_source'][]);
 
     /**
      * A object of registered game settings for this scope

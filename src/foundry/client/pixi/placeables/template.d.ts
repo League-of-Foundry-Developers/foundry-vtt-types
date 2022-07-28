@@ -127,7 +127,7 @@ declare global {
     protected override _canView(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
     protected override _onUpdate(
-      data: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>['data']['_source']>,
+      data: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>['_source']>,
       options?: DocumentModificationOptions,
       userId?: string
     ): void;

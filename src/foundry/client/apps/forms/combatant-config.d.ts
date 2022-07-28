@@ -44,6 +44,6 @@ declare global {
       Options
     >;
 
-    type FormData = Pick<Combatant['data'], 'defeated' | 'hidden' | 'img' | 'initiative' | 'name'>;
+    type FormData = Pick<Combatant['_source'], 'defeated' | 'hidden' | 'img' | 'initiative' | 'name'>;
   }
 }

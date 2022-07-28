@@ -325,7 +325,7 @@ type PrototypeTokenSchema = Omit<
 };
 
 type PrototypeTokenToObject<Token extends PrototypeToken> = {
-  baseId: Token['document']['id'];
+  baseId: Token['_id'];
 };
 
 /**

@@ -67,7 +67,7 @@ declare global {
      * @returns An array of translation file paths
      */
     protected _filterLanguagePaths(
-      pkg: foundry.packages.BaseModule['data'] | foundry.packages.BaseSystem['data'],
+      pkg: foundry.packages.BaseModule['_source'] | foundry.packages.BaseSystem['_source'],
       lang: string
     ): string[];
 

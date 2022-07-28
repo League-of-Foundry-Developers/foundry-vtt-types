@@ -16,9 +16,9 @@ declare global {
      * @param data - An array of data objects from which to create Document instances
      *               (default: `[]`)
      */
-    constructor(data?: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>['data']['_source'][]);
+    constructor(data?: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>['_source'][]);
 
-    readonly _source: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>['data']['_source'][];
+    readonly _source: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>['_source'][];
 
     /**
      * Initialize the WorldCollection object by constructing its contained Document instances
@@ -79,7 +79,7 @@ declare global {
         CompendiumCollection.Metadata & { type: ConfiguredDocumentClass<T>['metadata']['name'] }
       >,
       id: string,
-      updateData?: DeepPartial<InstanceType<ConfiguredDocumentClass<T>>['data']['_source']> | undefined,
+      updateData?: DeepPartial<InstanceType<ConfiguredDocumentClass<T>>['_source']> | undefined,
       options?: (DocumentModificationContext & WorldCollection.FromCompendiumOptions) | undefined
     ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>>;
 
@@ -91,9 +91,9 @@ declare global {
      * @returns The processed data ready for world Document creation
      */
     fromCompendium(
-      document: InstanceType<ConfiguredDocumentClass<T>> | InstanceType<ConfiguredDocumentClass<T>>['data']['_source'],
+      document: InstanceType<ConfiguredDocumentClass<T>> | InstanceType<ConfiguredDocumentClass<T>>['_source'],
       options?: WorldCollection.FromCompendiumOptions | undefined
-    ): Omit<InstanceType<ConfiguredDocumentClass<T>>['data']['_source'], '_id' | 'folder'>;
+    ): Omit<InstanceType<ConfiguredDocumentClass<T>>['_source'], '_id' | 'folder'>;
 
     /**
      * Prepare a document from an outside source for import into this collection.
@@ -101,8 +101,8 @@ declare global {
      * @returns The prepared data.
      */
     prepareForImport(
-      data: InstanceType<ConfiguredDocumentClass<T>>['data']['_source']
-    ): Omit<InstanceType<ConfiguredDocumentClass<T>>['data']['_source'], '_id' | 'folder'>;
+      data: InstanceType<ConfiguredDocumentClass<T>>['_source']
+    ): Omit<InstanceType<ConfiguredDocumentClass<T>>['_source'], '_id' | 'folder'>;
 
     /**
      * Register a Document sheet class as a candidate which can be used to display Documents of a given type.

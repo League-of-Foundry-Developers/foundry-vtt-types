@@ -137,7 +137,7 @@ declare global {
     interface Data {
       gridTypes: ReturnType<typeof SceneConfig['_getGridTypes']>;
       scale: number;
-      scene: foundry.documents.BaseScene['data'];
+      scene: foundry.documents.BaseScene['_source'];
     }
 
     type FormData = {

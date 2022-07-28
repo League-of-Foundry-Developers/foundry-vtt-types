@@ -50,16 +50,12 @@ declare class CanvasDocumentMixin<T extends AnyDocument> extends ClientDocumentM
   /**
    * @see abstract.Document#_onCreate
    */
-  protected _onCreate(data: T['data']['_source'], options: DocumentModificationOptions, userId: string): void;
+  protected _onCreate(data: T['_source'], options: DocumentModificationOptions, userId: string): void;
 
   /**
    * @see abstract.Document#_onUpdate
    */
-  protected _onUpdate(
-    data: DeepPartial<T['data']['_source']>,
-    options: DocumentModificationOptions,
-    userId: string
-  ): void;
+  protected _onUpdate(data: DeepPartial<T['_source']>, options: DocumentModificationOptions, userId: string): void;
 
   /**
    * @see abstract.Document#_onDelete

@@ -510,12 +510,12 @@ declare global {
     override rotate(...args: Parameters<PlaceableObject['rotate']>): Promise<this>;
 
     protected override _onCreate(
-      options: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>['data']['_source'],
+      options: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>['_source'],
       userId: DocumentModificationOptions
     ): void;
 
     protected override _onUpdate(
-      data?: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>['data']['_source']>,
+      data?: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>['_source']>,
       options?: DocumentModificationOptions & { animate?: boolean },
       userId?: string
     ): void;

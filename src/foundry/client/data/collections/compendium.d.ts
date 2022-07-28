@@ -228,24 +228,24 @@ declare global {
 
     override updateAll(
       transformation:
-        | DeepPartial<DocumentInstanceForCompendiumMetadata<T>['data']['_source']>
+        | DeepPartial<DocumentInstanceForCompendiumMetadata<T>['_source']>
         | ((
             doc: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>
-          ) => DeepPartial<DocumentInstanceForCompendiumMetadata<T>['data']['_source']>),
+          ) => DeepPartial<DocumentInstanceForCompendiumMetadata<T>['_source']>),
       condition?: ((obj: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>) => boolean) | null,
       options?: DocumentModificationContext
     ): ReturnType<this['documentClass']['updateDocuments']>;
 
     protected _onCreateDocuments(
       documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
-      result: (DocumentInstanceForCompendiumMetadata<T>['data']['_source'] & { _id: string })[],
+      result: (DocumentInstanceForCompendiumMetadata<T>['_source'] & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
     protected _onUpdateDocuments(
       documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
-      result: (DeepPartial<DocumentInstanceForCompendiumMetadata<T>['data']['_source']> & { _id: string })[],
+      result: (DeepPartial<DocumentInstanceForCompendiumMetadata<T>['_source']> & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -285,7 +285,7 @@ declare global {
 
     interface GetIndexOptions<T extends CompendiumCollection.Metadata> {
       /** An array of fields to return as part of the index */
-      fields?: (keyof DocumentInstanceForCompendiumMetadata<T>['data']['_source'])[];
+      fields?: (keyof DocumentInstanceForCompendiumMetadata<T>['_source'])[];
     }
   }
 }
@@ -317,5 +317,5 @@ type DocumentInstanceForCompendiumMetadata<T extends CompendiumCollection.Metada
 >;
 
 type IndexTypeForMetadata<T extends CompendiumCollection.Metadata> = foundry.utils.Collection<
-  { _id: string } & Partial<DocumentInstanceForCompendiumMetadata<T>['data']['_source']>
+  { _id: string } & Partial<DocumentInstanceForCompendiumMetadata<T>['_source']>
 >;

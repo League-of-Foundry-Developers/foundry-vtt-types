@@ -59,13 +59,13 @@ declare global {
     /**
      * Provide a thumbnail image path used to represent this document.
      */
-    get thumbnail(): this['data']['img'];
+    get thumbnail(): this['img'];
 
     /**
      * Provide an object which organizes all embedded Item instances by their type
      */
     get itemTypes(): Record<
-      foundry.documents.BaseItem['data']['type'],
+      foundry.documents.BaseItem['type'],
       Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>
     >;
     /**
@@ -121,7 +121,7 @@ declare global {
      * @param data - Additional data, such as x, y, rotation, etc. for the created token data (default: `{}`)
      * @returns The created TokenData instance
      */
-    getTokenData(data?: object): Promise<foundry.documents.BaseToken['data']>;
+    getTokenData(data?: object): Promise<foundry.documents.BaseToken['_source']>;
 
     /**
      * Get an Array of Token images which could represent this Actor
@@ -162,7 +162,7 @@ declare global {
     ): Promise<void>;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.documents.BaseActor['data']['_source']>,
+      changed: DeepPartial<foundry.documents.BaseActor['_source']>,
       options: DocumentModificationOptions,
       user: string
     ): void;

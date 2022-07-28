@@ -39,7 +39,7 @@ declare global {
       gridUnits: string;
     }
 
-    type FormData = Pick<foundry.documents.BaseAmbientSound['data'], 'easing' | 'path' | 'volume'> &
+    type FormData = Pick<foundry.documents.BaseAmbientSound['_source'], 'easing' | 'path' | 'volume'> &
       Pick<DataModel.SchemaToSourceInput<foundry.documents.BaseAmbientSound['schema']>, 'radius' | 'x' | 'y'>;
 
     type Options = DocumentSheetOptions;

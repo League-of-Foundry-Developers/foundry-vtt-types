@@ -161,7 +161,7 @@ declare global {
         id: StoredDocument<globalThis.User>['id'];
         local: StoredDocument<globalThis.User>['isSelf'];
         name: StoredDocument<globalThis.User>['name'];
-        color: StoredDocument<globalThis.User>['data']['color'];
+        color: StoredDocument<globalThis.User>['color'];
         colorAlpha: `rgba(${number}, ${number}, ${number})`;
         charname: string;
         avatar: StoredDocument<globalThis.User>['avatar'];

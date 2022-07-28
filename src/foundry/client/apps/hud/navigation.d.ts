@@ -87,7 +87,7 @@ declare global {
   namespace SceneNavigation {
     interface Data {
       collapsed: boolean;
-      scenes: (ToObjectFalseType<foundry.documents.BaseScene['data']> & {
+      scenes: (ToObjectFalseType<foundry.documents.BaseScene['_source']> & {
         name: string;
         users: { letter: string; color: string };
         visible: boolean;

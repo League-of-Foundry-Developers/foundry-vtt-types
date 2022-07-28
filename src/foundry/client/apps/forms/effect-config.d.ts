@@ -52,8 +52,8 @@ declare global {
 
   namespace ActiveEffectConfig {
     interface Data {
-      effect: ActiveEffectConfig['object']['data'];
-      data: ActiveEffectConfig['object']['data'];
+      effect: ActiveEffectConfig['object']['_source'];
+      data: ActiveEffectConfig['object']['_source'];
       isActorEffect: boolean;
       isItemEffect: boolean;
       submitText: string;

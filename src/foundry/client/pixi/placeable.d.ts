@@ -35,7 +35,7 @@ declare global {
     /**
      * The underlying data object which provides the basis for this placeable object
      */
-    data: D['data'];
+    data: D['_source'];
 
     /**
      * Track the field of vision for the placeable object.
@@ -202,14 +202,14 @@ declare global {
     /**
      * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
      */
-    protected _onCreate(data: D['data']['_source'], options: DocumentModificationOptions, userId: string): void;
+    protected _onCreate(data: D['_source'], options: DocumentModificationOptions, userId: string): void;
 
     /**
      * Define additional steps taken when an existing placeable object of this type is updated with new data
      * @remarks Called without options and userId in Drowing._onUpdate
      */
     protected _onUpdate(
-      changed: DeepPartial<D['data']['_source']>,
+      changed: DeepPartial<D['_source']>,
       options?: DocumentModificationOptions,
       userId?: string
     ): void;

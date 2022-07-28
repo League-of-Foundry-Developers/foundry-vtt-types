@@ -144,14 +144,14 @@ declare global {
      * @param a - The card being sorted
      * @param b - Another card being sorted against
      */
-    protected sortStandard(a: foundry.documents.BaseCard['data'], b: foundry.documents.BaseCard['data']): number;
+    protected sortStandard(a: foundry.documents.BaseCard['_source'], b: foundry.documents.BaseCard['_source']): number;
 
     /**
      * A sorting function that is used to determine the order of Card documents within a shuffled stack.
      * @param a - The card being sorted
      * @param b - Another card being sorted against
      */
-    protected sortShuffled(a: foundry.documents.BaseCard['data'], b: foundry.documents.BaseCard['data']): number;
+    protected sortShuffled(a: foundry.documents.BaseCard['_source'], b: foundry.documents.BaseCard['_source']): number;
 
     /**
      * An internal helper method for drawing a certain number of Card documents from this Cards stack.
@@ -180,7 +180,7 @@ declare global {
     ): Promise<InstanceType<ConfiguredDocumentClassForName<'ChatMessage'>> | undefined>;
 
     protected override _onUpdate(
-      data: DeepPartial<foundry.documents.BaseCards['data']>,
+      data: DeepPartial<foundry.documents.BaseCards['_source']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;

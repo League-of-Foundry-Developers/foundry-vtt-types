@@ -52,8 +52,8 @@ declare global {
     override fromCompendium(
       document:
         | InstanceType<ConfiguredDocumentClass<typeof Scene>>
-        | InstanceType<ConfiguredDocumentClass<typeof Scene>>['data']['_source'],
+        | InstanceType<ConfiguredDocumentClass<typeof Scene>>['_source'],
       options?: WorldCollection.FromCompendiumOptions | undefined
-    ): Omit<InstanceType<ConfiguredDocumentClass<typeof Scene>>['data']['_source'], '_id' | 'folder'>;
+    ): Omit<InstanceType<ConfiguredDocumentClass<typeof Scene>>['_source'], '_id' | 'folder'>;
   }
 }

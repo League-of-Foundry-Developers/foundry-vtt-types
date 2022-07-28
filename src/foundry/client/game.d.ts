@@ -658,7 +658,7 @@ declare global {
         | foundry.CONST.DOCUMENT_TYPES
         | 'Setting' as ConfiguredDocumentClassForName<DocumentType>['metadata']['collection']]?: InstanceType<
         ConfiguredDocumentClassForName<DocumentType>
-      >['data']['_source'][];
+      >['_source'][];
     } & Pick<SystemData<foundry.packages.BaseSystem['_source']>, 'documentTypes' | 'template' | 'model'>;
 
     type ConstructorData = Omit<Data, 'world' | 'system' | 'modules'> & {

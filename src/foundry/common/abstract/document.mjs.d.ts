@@ -38,9 +38,7 @@ declare namespace Document {
   >;
 }
 
-type GetFlags<T extends AnyDocument> = 'flags' extends keyof T['_source']
-  ? T['_source']['flags']
-  : Record<string, unknown>;
+type GetFlags<T extends AnyDocument> = 'flags' extends keyof T['_source'] ? T['flags'] : Record<string, unknown>;
 
 /**
  * The abstract base class shared by both client and server-side which defines the model for a single document type.
@@ -823,7 +821,7 @@ export interface Metadata<ConcreteDocument extends AnyDocument> {
   types?: readonly string[];
   embedded: Record<string, string>;
   permissions: {
-    create: string | ((user: BaseUser, doc: ConcreteDocument, data: ConcreteDocument['data']['_source']) => boolean);
+    create: string | ((user: BaseUser, doc: ConcreteDocument, data: ConcreteDocument['_source']) => boolean);
     update:
       | string
       | ((

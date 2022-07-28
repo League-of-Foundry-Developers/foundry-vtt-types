@@ -43,7 +43,7 @@ declare global {
     interface Data {
       name: string;
       newName: string;
-      folder: BaseFolder['data'];
+      folder: BaseFolder['_source'];
       safeColor: string;
       sortingModes: BaseFolder.SortingModes;
       submitText: string;

@@ -104,8 +104,8 @@ declare global {
       options: Parameters<this['update']>[1]
     ): Promise<[this['actor']]>;
 
-    override getEmbeddedCollection(embeddedName: 'Item'): foundry.documents.BaseActor['data']['items'];
-    getEmbeddedCollection(embeddedName: 'ActiveEffect'): foundry.documents.BaseActor['data']['effects'];
+    override getEmbeddedCollection(embeddedName: 'Item'): foundry.documents.BaseActor['_source']['items'];
+    getEmbeddedCollection(embeddedName: 'ActiveEffect'): foundry.documents.BaseActor['_source']['effects'];
 
     /**
      * Redirect creation of Documents within a synthetic Token Actor to instead update the tokenData override object.
@@ -190,7 +190,7 @@ declare global {
      */
     protected _onUpdateBaseActor(
       update?: Parameters<foundry.documents.BaseActor['_onUpdate']>[0],
-      options?: Parameters<foundry.documents.BaseActor['data']['update']>[1]
+      options?: Parameters<foundry.documents.BaseActor['updateSource']>[1]
     ): void;
 
     /**
@@ -208,7 +208,7 @@ declare global {
      * @param _path - (default: `[]`)
      */
     static getTrackedAttributes(
-      data?: InstanceType<ConfiguredDocumentClass<typeof Actor>>['data']['data'],
+      data?: InstanceType<ConfiguredDocumentClass<typeof Actor>>['system'],
       _path?: string[]
     ): TrackedAttributes;
 

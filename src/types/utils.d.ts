@@ -125,12 +125,9 @@ type Merge<T, U> = T extends object
  */
 type PromisedType<T> = T extends Promise<infer TResult> ? TResult : T;
 
-type StoredDocument<D extends { data: { _source: unknown } }> = D & {
+type StoredDocument<D extends { _source: unknown }> = D & {
   id: string;
-  data: D['data'] & {
-    _id: string;
-    _source: D['data']['_source'] & { _id: string };
-  };
+  _source: D['_source'] & { _id: string };
 };
 
 type TemporaryDocument<D> = D extends StoredDocument<infer U> ? U : D;

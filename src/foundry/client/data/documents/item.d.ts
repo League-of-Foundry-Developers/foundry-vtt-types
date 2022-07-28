@@ -21,7 +21,7 @@ declare global {
     /**
      * Provide a thumbnail image path used to represent this document.
      */
-    get thumbnail(): this['data']['img'];
+    get thumbnail(): this['img'];
 
     /**
      * A convenience alias of Item#isEmbedded which is preserves legacy support

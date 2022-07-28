@@ -126,7 +126,7 @@ declare global {
      * @param itemData - The item data requested for creation
      */
     protected _onDropItemCreate(
-      itemData: documents.BaseItem['data']['_source'][] | documents.BaseItem['data']['_source']
+      itemData: documents.BaseItem['_source'][] | documents.BaseItem['_source']
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
 
     /**
@@ -134,7 +134,7 @@ declare global {
      */
     protected _onSortItem(
       event: DragEvent,
-      itemData: documents.BaseItem['data']['_source']
+      itemData: documents.BaseItem['_source']
     ): undefined | Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
 
     /**
@@ -168,7 +168,7 @@ declare global {
         type: 'ActiveEffect';
         tokenId?: string;
         actorId?: string;
-        data: documents.BaseActiveEffect['data']['_source'];
+        data: documents.BaseActiveEffect['_source'];
       }
 
       interface Actor {

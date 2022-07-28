@@ -29,7 +29,7 @@ declare class EmbeddedCollection<
    */
   constructor(
     model: ConcreteDataModel,
-    sourceArray: DeepPartial<InstanceType<DocumentClass>['data']['_source']>[],
+    sourceArray: DeepPartial<InstanceType<DocumentClass>['_source']>[],
     documentClass: DocumentClass
   );
 
@@ -46,7 +46,7 @@ declare class EmbeddedCollection<
   /**
    * The source data array from which the embedded collection is created
    */
-  readonly _source: DeepPartial<InstanceType<DocumentClass>['data']['_source']>[];
+  readonly _source: DeepPartial<InstanceType<DocumentClass>['_source']>[];
 
   /**
    * Initialize the EmbeddedCollection object by constructing its contained Document instances

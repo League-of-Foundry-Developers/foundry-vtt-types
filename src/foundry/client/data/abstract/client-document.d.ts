@@ -200,16 +200,12 @@ export declare class ClientDocumentMixin<T extends AnyDocument> {
   /**
    * @see abstract.Document#_onCreate
    */
-  protected _onCreate(data: T['data']['_source'], options: DocumentModificationOptions, userId: string): void;
+  protected _onCreate(data: T['_source'], options: DocumentModificationOptions, userId: string): void;
 
   /**
    * @see abstract.Document#_onUpdate
    */
-  protected _onUpdate(
-    data: DeepPartial<T['data']['_source']>,
-    options: DocumentModificationOptions,
-    userId: string
-  ): void;
+  protected _onUpdate(data: DeepPartial<T['_source']>, options: DocumentModificationOptions, userId: string): void;
 
   /**
    * @see abstract.Document#_onDelete
@@ -382,8 +378,8 @@ export declare class ClientDocumentMixin<T extends AnyDocument> {
   toCompendium(
     pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
     options?: ClientDocumentMixin.CompendiumExportOptions | undefined
-  ): Omit<T['data']['_source'], '_id' | 'folder' | 'permission'> & {
-    permission?: T['data']['_source']['permission'];
+  ): Omit<T['_source'], '_id' | 'folder' | 'permission'> & {
+    permission?: T['_source']['permission'];
   };
 
   /**
@@ -423,7 +419,7 @@ export type DropData<T extends AnyDocument> = DropData.Data<T> | DropData.Pack |
 
 declare namespace DropData {
   interface Data<T extends AnyDocument> {
-    data: T['data']['_source'];
+    data: T['_source'];
   }
 
   interface Pack {

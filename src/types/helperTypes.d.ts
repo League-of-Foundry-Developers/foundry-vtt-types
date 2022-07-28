@@ -62,8 +62,8 @@ export type PlaceableDocumentType =
 
 export type DocumentSubTypes<T extends DocumentType> = 'type' extends keyof InstanceType<
   ConfiguredDocumentClassForName<T>
->['data']
-  ? InstanceType<ConfiguredDocumentClassForName<T>>['data']['type']
+>['_source']
+  ? InstanceType<ConfiguredDocumentClassForName<T>>['_source']['type']
   : typeof foundry.CONST.BASE_DOCUMENT_TYPE;
 
 export type ConfiguredDocumentClassForName<Name extends DocumentType> = CONFIG[Name]['documentClass'];
@@ -144,7 +144,7 @@ export type LayerClass<T extends DocumentConstructor> = T['metadata']['name'] ex
   : T;
 
 export type DataSourceForPlaceable<P extends PlaceableObject> = P extends PlaceableObject<infer Doc>
-  ? Doc['data']['_source']
+  ? Doc['_source']
   : never;
 
 export type Falsy = 0 | 0n | null | undefined | typeof NaN | '' | typeof document['all'];

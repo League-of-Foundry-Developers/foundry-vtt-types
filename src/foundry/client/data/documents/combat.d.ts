@@ -146,14 +146,10 @@ declare global {
       b: InstanceType<ConfiguredDocumentClass<typeof Combatant>>
     ): number;
 
-    protected override _onCreate(
-      data: this['data']['_source'],
-      options: DocumentModificationOptions,
-      userId: string
-    ): void;
+    protected override _onCreate(data: this['_source'], options: DocumentModificationOptions, userId: string): void;
 
     protected override _onUpdate(
-      changed: DeepPartial<this['data']['_source']>,
+      changed: DeepPartial<this['_source']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
