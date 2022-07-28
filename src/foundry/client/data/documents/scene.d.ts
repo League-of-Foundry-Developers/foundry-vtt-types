@@ -461,7 +461,7 @@ declare global {
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocumentMixin.CompendiumExportOptions | undefined
     ): Omit<foundry.documents.BaseScene['_source'], '_id' | 'folder' | 'permission'> & {
-      permission?: foundry.documents.BaseScene['_source'] extends { toObject(): infer U } ? U : never;
+      ownership?: foundry.documents.BaseScene['_source'] extends { toObject(): infer U } ? U : never;
     };
 
     /**
