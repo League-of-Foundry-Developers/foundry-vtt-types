@@ -28,10 +28,10 @@ declare global {
       clearSort?: boolean | undefined;
 
       /**
-       * Clear document permissions
+       * Clear document ownership
        * @defaultValue `true`
        */
-      clearPermissions?: boolean | undefined;
+      clearOwnership?: boolean | undefined;
 
       /**
        * Clear fields which store document state
@@ -379,7 +379,7 @@ export declare class ClientDocumentMixin<T extends AnyDocument> {
     pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
     options?: ClientDocumentMixin.CompendiumExportOptions | undefined
   ): Omit<T['_source'], '_id' | 'folder' | 'permission'> & {
-    permission?: T['_source']['permission'];
+    ownership?: T['_source']['ownership'];
   };
 
   /**

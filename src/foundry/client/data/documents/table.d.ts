@@ -112,7 +112,7 @@ declare global {
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocumentMixin.CompendiumExportOptions | undefined
     ): Omit<foundry.documents.BaseRollTable['_source'], '_id' | 'folder' | 'permission'> & {
-      permission?: foundry.documents.BaseRollTable extends { toObject(): infer U } ? U : never;
+      ownership?: foundry.documents.BaseRollTable extends { toObject(): infer U } ? U : never;
     };
 
     /**

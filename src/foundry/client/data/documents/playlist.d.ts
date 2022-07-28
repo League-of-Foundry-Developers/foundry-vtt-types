@@ -165,7 +165,7 @@ declare global {
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocumentMixin.CompendiumExportOptions | undefined
     ): Omit<foundry.documents.BasePlaylist['_source'], '_id' | 'folder' | 'permission'> & {
-      permission?: foundry.documents.BasePlaylist['_source']['permission'];
+      ownership?: foundry.documents.BasePlaylist['ownership'];
     };
   }
 
