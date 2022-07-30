@@ -1,3 +1,4 @@
+import type { EditorView } from 'prosemirror-view';
 import { ToObjectFalseType } from '../../../types/helperTypes';
 
 declare global {
@@ -171,6 +172,7 @@ declare global {
 
     /**
      * Handle the change of a color picker input which enters it's chosen value into a related input field
+     * @param event - The color picker change event
      */
     protected _onChangeColorPicker(event: JQuery.ChangeEvent): void;
 
@@ -203,7 +205,11 @@ declare global {
      * @param initialContent - Initial text content for the editor area.
      *                         (default: `""`)
      */
-    activateEditor(name: string, options?: TextEditor.Options, initialContent?: string): void;
+    activateEditor(
+      name: string,
+      options?: TextEditor.Options,
+      initialContent?: string
+    ): Promise<tinyMCE.Editor | EditorView>;
 
     /**
      * Handle saving the content of a specific editor by name
