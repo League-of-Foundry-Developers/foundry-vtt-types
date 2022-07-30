@@ -869,7 +869,7 @@ declare global {
      * @param data  - The object of data used when rendering the application
      * @typeParam A - the type of the Application
      * @remarks The name for this hook is dynamically created by joining 'render' with the type name of the Application.
-     * @remarks This is called by {@link Hooks.call}.
+     * @remarks This is called by {@link Hooks.callAll}.
      * @see {@link Application#_render}
      */
     type RenderApplication<A extends Application = Application> = (

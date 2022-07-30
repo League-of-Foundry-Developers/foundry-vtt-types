@@ -292,7 +292,7 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
    * An asynchronous inner function which handles the rendering of the Application
    * @param force   - Render and display the application even if it is not currently displayed.
    *                  (default: `false`)
-   * @param options - New Application options which update the current values of the Application#options object
+   * @param options - Additional options which update the current values of the Application#options object
    *                  (default: `{}`)
    * @returns A Promise that resolves to the Application once rendering is complete
    */
@@ -321,7 +321,6 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
   /**
    * Render the outer application wrapper
    * @returns A promise resolving to the constructed jQuery object
-   * @internal
    */
   protected _renderOuter(): Promise<JQuery>;
 
@@ -377,11 +376,29 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
   activateListeners(html: JQuery): void;
 
   /**
+   * Change the currently active tab
+   * @param tabName - The target tab name to switch to
+   * @param options - Options which configure changing the tab
+   *                  (default: `{}`)
+   */
+  activateTab(
+    tabName: string,
+    options?: {
+      /** A specific named tab group, useful if multiple sets of tabs are present */
+      group?: string;
+      /**
+       * Whether to trigger tab-change callback functions
+       * (default: `true`)
+       */
+      triggerCallback?: boolean;
+    }
+  ): void;
+
+  /**
    * Handle changes to the active tab in a configured Tabs controller
    * @param event  - A left click event
    * @param tabs   - The Tabs controller
    * @param active - The new active tab name
-   * @internal
    */
   protected _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: string): void;
 
@@ -391,7 +408,6 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
    * @param query - The regular expression to test against
    * @param rgx   - The regular expression to test against
    * @param html  - The HTML element which should be filtered
-   * @internal
    */
   protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
@@ -440,7 +456,8 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
   /**
    * Close the application and un-register references to it within UI mappings
    * This function returns a Promise which resolves once the window closing animation concludes
-   * @param options - (default: `{}`)
+   * @param options - Options which affect how the Application is closed
+   *                  (default: `{}`)
    * @returns A Promise which resolves once the application is closed
    */
   close(options?: Application.CloseOptions): Promise<void>;
@@ -461,20 +478,12 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
 
   /**
    * Set the application position and store it's new location.
-   * @param left   - The left offset position in pixels
-   * @param top    - The top offset position in pixels
-   * @param width  - The application width in pixels
-   * @param height - The application height in pixels
-   * @param scale  - The application scale as a numeric factor where 1.0 is default
-   * @returns The updated position object for the application containing the new values
+   * Returns the updated position object for the application containing the new values.
+   * @param position - Positional data
    */
-  setPosition({
-    left,
-    top,
-    width,
-    height,
-    scale
-  }?: Partial<Application.Position>): (Application.Position & { height: number }) | void;
+  setPosition(
+    position?: Partial<Omit<Application.Position, 'zIndex'>>
+  ): (Application.Position & { height: number }) | void;
 
   /**
    * Handle application minimization behavior - collapsing content and reducing the size of the header
@@ -500,11 +509,21 @@ declare namespace Application {
   }
 
   interface Position {
-    width: number | null;
-    height: number | null | 'auto';
+    /** The left offset position in pixels */
     left: number | null;
+
+    /** The top offset position in pixels */
     top: number | null;
+
+    /** The application width in pixels */
+    width: number | null;
+
+    /** The application height in pixels */
+    height: number | null | 'auto';
+
+    /** The application scale as a numeric factor where 1.0 is default */
     scale: number | null;
+
     /** @defaultValue `0` */
     zIndex: number;
   }
