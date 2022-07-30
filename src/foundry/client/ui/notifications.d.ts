@@ -3,7 +3,7 @@
  * Submitted notifications are added to a queue, and up to 3 notifications are displayed at once.
  * Each notification is displayed for 5 seconds at which point further notifications are pulled from the queue.
  *
- * @example
+ * @example Displaying Notification Messages
  * ```typescript
  * ui.notifications.info("This is an info message");
  * ui.notifications.warn("This is a warning message");
@@ -99,6 +99,12 @@ declare namespace Notifications {
      * @defaultValue `false`
      */
     localize?: boolean;
+
+    /**
+     * Whether to log the message to the console
+     * @defaultValue `true`
+     */
+    console?: boolean;
   }
 
   interface Notification {
@@ -106,5 +112,6 @@ declare namespace Notifications {
     type: 'info' | 'warning' | 'error';
     timestamp: number;
     permanent: boolean;
+    console: boolean;
   }
 }
