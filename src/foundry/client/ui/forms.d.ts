@@ -19,7 +19,7 @@ declare class FormDataExtended extends FormData {
    */
   constructor(
     form: HTMLFormElement,
-    { editors, dtypes }: { editors?: FormDataExtended['editors']; dtypes?: FormDataExtended['dtypes'] }
+    { editors, dtypes }?: { editors?: FormDataExtended['editors']; dtypes?: FormDataExtended['dtypes'] }
   );
 
   /**
