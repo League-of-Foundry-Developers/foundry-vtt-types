@@ -165,6 +165,7 @@ declare class FilePicker<
 
   /**
    * Parse a s3 key to learn the bucket and the key prefix used for the request
+   * @deprecated since v10, use `foundry.utils.parseS3URL` instead.
    * @param key - A fully qualified key name or prefix path
    */
   static parseS3URL(key: string): { bucket: string | null; keyPrefix: string };
@@ -241,6 +242,9 @@ declare class FilePicker<
   /**
    * General dispatcher method to submit file management commands to the server
    * @internal
+   * @param data    - Request data dispatched to the server
+   * @param options - Options dispatched to the server
+   * @returns The server response
    */
   protected static _manageFiles(
     data: FilePicker.BrowseFilesData,
@@ -484,7 +488,7 @@ declare namespace FilePicker {
     };
   }
 
-  type Type = 'any' | 'audio' | 'image' | 'video' | 'imagevideo' | 'folder';
+  type Type = 'any' | 'audio' | 'image' | 'video' | 'imagevideo' | 'folder' | 'font' | 'graphics' | 'text';
 
   interface UploadBody {
     /**
