@@ -7,4 +7,5 @@ import './filepicker';
 import './filter';
 import './forms';
 import './notifications';
+import './prosemirror';
 import './tabs';
