@@ -1,5 +1,11 @@
 import type { Socket } from 'socket.io-client';
-import { ConfiguredDocumentClass, ConfiguredDocumentClassForName, DocumentConstructor } from '../../types/helperTypes';
+import {
+  ConfiguredDocumentClass,
+  ConfiguredDocumentClassForName,
+  ConfiguredModule,
+  DocumentConstructor,
+  ModuleRequiredOrOptional
+} from '../../types/helperTypes';
 
 declare global {
   /**
@@ -50,7 +56,7 @@ declare global {
      * - This is actually defined twice. The second time it has the documentation "A mapping of installed modules".
      * - This includes _all_ modules that are installed, not only those that are enabled.
      */
-    modules: Map<string, this['data']['modules'][number]>;
+    modules: Game.ModuleMap;
 
     /**
      * A mapping of WorldCollection instances, one per primary Document type.
@@ -578,6 +584,18 @@ declare global {
     interface WorldData<T> extends PackageData<T> {
       _systemUpdateCheckTime: number;
       type: 'world';
+    }
+
+    interface ModuleMap extends Map<string, Game['data']['modules'][number]> {
+      /**
+       * Gets the module requested for by ID
+       * @see {@link ModuleConfig} to add custom properties to modules like APIs.
+       * @see {@link RequiredModules} to remove `undefined` from the return type for a given module
+       * @param id - The module ID to look up
+       */
+      get<T extends string>(
+        id: T
+      ): (Game['data']['modules'][number] & ConfiguredModule<T>) | ModuleRequiredOrOptional<T>;
     }
 
     type Data = {
