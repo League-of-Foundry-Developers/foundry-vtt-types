@@ -105,3 +105,29 @@ if (baseCard.data._source.type === 'old') {
 if (baseCard.data.type === 'uno') {
   expectType<never>(baseCard.getFlag('my-module', 'folded'));
 }
+
+expectError(new foundry.documents.BaseCard());
+expectError(new foundry.documents.BaseCard({}));
+expectType<foundry.documents.BaseCard>(new foundry.documents.BaseCard({ name: 'Some Card' }));
+
+expectError(new foundry.documents.BaseCard({ name: 'Some Card With Wrong Type', type: 'foo' }));
+
+const cardData = new foundry.documents.BaseCard({ name: 'Some Card', face: 42, type: 'old' });
+
+expectType<foundry.documents.BaseCard>(cardData);
+expectType<'old' | 'uno'>(cardData.type);
+if (cardData._source.type === 'old') {
+  expectType<'grubby'>(cardData._source.data.condition);
+  expectError(cardData._source.data.age);
+} else {
+  expectType<boolean>(cardData._source.data.special);
+  expectError(cardData._source.data.color);
+}
+
+if (cardData.type === 'old') {
+  expectType<'grubby'>(cardData.data.condition);
+  expectType<number>(cardData.data.age);
+} else {
+  expectType<boolean>(cardData.data.special);
+  expectType<string>(cardData.data.color);
+}

@@ -98,13 +98,13 @@ declare global {
     /** A convenience reference to the label which should be used as the title for the Compendium pack. */
     get title(): string;
 
-    get(key: string, { strict }: { strict: true }): StoredDocument<DocumentInstanceForCompendiumMetadata<T>>;
-    get(
-      key: string,
-      { strict }?: { strict?: false | undefined } | undefined
-    ): StoredDocument<DocumentInstanceForCompendiumMetadata<T>> | undefined;
+    // get(key: string, { strict }: { strict: true }): StoredDocument<DocumentInstanceForCompendiumMetadata<T>>;
+    // get(
+    //   key: string,
+    //   { strict }?: { strict?: false | undefined } | undefined
+    // ): StoredDocument<DocumentInstanceForCompendiumMetadata<T>> | undefined;
 
-    set(id: string, document: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>): this;
+    // set(id: string, document: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>): this;
 
     delete: (id: string) => boolean;
 

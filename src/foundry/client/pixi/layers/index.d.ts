@@ -11,5 +11,6 @@ import './notes';
 import './sight';
 import './sounds';
 import './templates';
+import './tile';
 import './tokens';
 import './walls';

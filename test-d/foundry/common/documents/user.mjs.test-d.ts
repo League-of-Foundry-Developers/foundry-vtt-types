@@ -12,7 +12,7 @@ expectType<Promise<InstanceType<ConfiguredDocumentClass<typeof User>>[]>>(
 
 const user = await foundry.documents.BaseUser.create({ name: 'Another User' }, { temporary: true });
 if (user) {
-  expectType<foundry.data.UserData>(user.data);
+  expectType<foundry.documents.BaseUser['data']>(user.data);
 }
 
 const baseUser = new foundry.documents.BaseUser();
@@ -90,3 +90,11 @@ expectError(baseUser.hasPermission('GAMEMASTER'));
 expectError(baseUser.hasPermission(CONST.USER_ROLES.GAMEMASTER));
 expectError(baseUser.hasPermission(10));
 expectError(baseUser.hasPermission('SHOW_RULERS'));
+
+expectError(new foundry.documents.BaseUser());
+expectError(new foundry.documents.BaseUser({}));
+expectType<foundry.documents.BaseUser>(new foundry.documents.BaseUser({ name: 'foo' }));
+expectType<foundry.documents.BaseUser>(new foundry.documents.BaseUser({ name: 'foo', hotbar: { 1: 'foo' } }));
+expectType<foundry.documents.BaseUser>(new foundry.documents.BaseUser({ name: 'foo', hotbar: { '1': 'foo' } }));
+expectType<foundry.documents.BaseUser>(new foundry.documents.BaseUser({ name: 'foo', hotbar: { ['1']: 'foo' } }));
+expectError(new foundry.documents.BaseUser({ name: 'foo', hotbar: { foo: 'foo' } }));

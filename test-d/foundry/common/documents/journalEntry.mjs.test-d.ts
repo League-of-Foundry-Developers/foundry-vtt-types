@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectError, expectType } from 'tsd';
 
 expectType<Promise<StoredDocument<JournalEntry> | undefined>>(
   foundry.documents.BaseJournalEntry.create({ name: 'Some JournalEntry' })
@@ -12,5 +12,9 @@ const journalEntry = await foundry.documents.BaseJournalEntry.create(
   { temporary: true }
 );
 if (journalEntry) {
-  expectType<foundry.data.JournalEntryData>(journalEntry.data);
+  expectType<foundry.documents.BaseJournalEntry['data']>(journalEntry.data);
 }
+
+expectError(new foundry.documents.BaseJournalEntryData());
+expectError(new foundry.documents.BaseJournalEntryData({}));
+expectType<foundry.documents.BaseJournalEntryData>(new foundry.documents.BaseJournalEntryData({ name: 'foo' }));

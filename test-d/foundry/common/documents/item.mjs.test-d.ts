@@ -5,8 +5,10 @@ import type BaseItem from '../../../../src/foundry/common/documents/item.mjs';
 import type BaseActiveEffect from '../../../../src/foundry/common/documents/active-effect.mjs';
 import type { EffectDurationDataProperties } from '../../../../src/foundry/common/data/data.mjs.d.ts/effectDurationData';
 
+import '../../../../../index';
+
 const baseItem = new foundry.documents.BaseItem();
-expectType<EmbeddedCollection<typeof ActiveEffect, foundry.data.ItemData>>(baseItem.effects);
+expectType<EmbeddedCollection<typeof ActiveEffect, foundry.documents.BaseItem>>(baseItem.effects);
 expectType<BaseActiveEffect['_source']>(baseItem.data._source.effects[0]);
 expectType<EffectDurationDataProperties>(baseItem.data._source.effects[0].duration);
 
@@ -102,3 +104,30 @@ expectType<Promise<BaseItem>>(baseItem.setFlag('my-system', 'countable', true));
 expectError(baseItem.setFlag('my-system', 'countable', 2));
 expectError(baseItem.setFlag('my-system', 'unknown-key', 2));
 expectType<Promise<BaseItem>>(baseItem.setFlag('another-system', 'value', true));
+
+expectError(new foundry.documents.BaseItem());
+expectError(new foundry.documents.BaseItem({}));
+
+expectError(new foundry.documents.BaseItem({ name: 'Some Item With Wrong Type', type: 'foo' }));
+
+const itemData = new foundry.documents.BaseItem({ name: 'Some Item', type: 'weapon' });
+
+expectType<foundry.documents.BaseItem>(itemData);
+expectType<'weapon' | 'armor'>(itemData.type);
+if (itemData._source.type === 'armor') {
+  expectType<number>(itemData._source.data.armorValue);
+  expectError(itemData._source.data.weight);
+} else {
+  expectType<number>(itemData._source.data.attackSpeed);
+  expectType<number>(itemData._source.data.damagePerHit);
+  expectError(itemData._source.data.damage);
+}
+
+if (itemData.type === 'armor') {
+  expectType<number>(itemData.data.armorValue);
+  expectType<number>(itemData.data.weight);
+} else {
+  expectType<number>(itemData.data.attackSpeed);
+  expectType<number>(itemData.data.damagePerHit);
+  expectType<number>(itemData.data.damage);
+}

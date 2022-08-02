@@ -32,7 +32,7 @@ declare global {
      * Return an array of the Active Effect instances which originated from this Item.
      * The returned instances are the ActiveEffect instances which exist on the Item itself.
      */
-    get transferredEffects(): ReturnType<this['effects']['filter']>;
+    get transferredEffects(): this['effects'];
 
     /**
      * Prepare a data object which defines the data schema used by dice roll commands against this Item

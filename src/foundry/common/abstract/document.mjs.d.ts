@@ -29,6 +29,8 @@ declare namespace Document {
 
   export type ShimsFor<T extends AnyDocument> = T extends Document<any, any, any, infer U> ? U : never;
 
+  export type MetadataFor<T extends AnyDocument> = T extends Document<any, any, infer M, any> ? M : never;
+
   type ConstructorParameters<
     ConcreteDataSchema extends DataSchema,
     Parent extends AnyDocument | null = null
@@ -55,6 +57,9 @@ declare abstract class Document<
    * @param context - Additional parameters which define Document context
    */
   constructor(...args: Document.ConstructorParameters<ConcreteDataSchema, Parent>);
+
+  // Allow the generic parameter to be inferred.
+  #metadata: ConcreteMetadata;
 
   /**
    * An immutable reference to a containing Compendium collection to which this Document belongs.
@@ -576,7 +581,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document update
    */
   protected _preUpdate(
-    changed: DeepPartial<DataModel.SchemaToSource<DataModel.SchemaFor<this>>>,
+    changed: DeepPartial<DataModel.SchemaToSource<this['schema']>>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
@@ -673,7 +678,7 @@ declare abstract class Document<
   /**
    * @deprecated since v10
    */
-  get data(): Document.DataType<this, ConcreteDocumentShims>;
+  get data(): any;
 
   // TODO basically just calls super
   //   /**

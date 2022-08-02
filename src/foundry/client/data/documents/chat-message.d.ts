@@ -61,7 +61,8 @@ declare global {
     get isRoll(): boolean;
 
     /**
-     * Return the Roll instance contained in this chat message, if one is present
+     * Return the first Roll instance contained in this chat message, if one is present
+     * @deprecated since v10
      */
     get roll(): Roll | null;
 
@@ -70,11 +71,6 @@ declare global {
      * Messages may not be visible if they are private whispers.
      */
     get visible(): boolean;
-
-    /**
-     * The User who created the chat message.
-     */
-    // get user(): InstanceType<ConfiguredDocumentClass<typeof User>> | undefined;
 
     override prepareData(): void;
 

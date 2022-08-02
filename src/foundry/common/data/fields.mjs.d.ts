@@ -1,6 +1,12 @@
 import { DOCUMENT_OWNERSHIP_LEVELS } from '../constants.mjs';
 import DataModel, { DataSchema } from '../abstract/data.mjs';
-import type { DocumentConstructor, StructuralClass } from '../../../types/helperTypes.js';
+import type {
+  ConfiguredSource,
+  ConfiguredData,
+  DocumentConstructor,
+  StructuralClass,
+  SystemDocumentType
+} from '../../../types/helperTypes.js';
 import EmbeddedCollection from '../abstract/embedded-collection.mjs';
 import type { Context } from '../abstract/document.mjs.js';
 
@@ -77,7 +83,7 @@ export declare namespace DataField {
     | ExtendsOptions['InitializedType']
     | ExtraTypes<Field>;
 
-  export type SourceTypeFor<Field extends Any> = InternalSourceTypeFor<Field, ExtendsOptionsFor<Field>>;
+  export type SourceTypeFor<Field extends Any> = ExpandDeep<InternalSourceTypeFor<Field, ExtendsOptionsFor<Field>>>;
 
   type InternalSourceTypeFor<Field extends Any, ExtendsOptions extends AnyExtendsOptions> =
     | Exclude<ExtendsOptions['SourceType'], undefined | null>
@@ -288,10 +294,10 @@ declare class _InternalDataField<
   _ExtendsOptions extends DataField.AnyExtendsOptions = RemoveIndex<
     IsAny<ExtendsOptions> extends true ? DataField.AnyExtendsOptions : ExtendsOptions
   >,
-  _ComputedDataField extends Record<string, unknown> = { options: _Options } & SimpleMerge<
-    _ExtendsOptions['DefaultOptionsValue'],
-    Pick<_Options, RequiredProperties<_Options>>
-  >
+  _ComputedDataField extends Record<string, unknown> = {
+    options: _Options;
+    computed: SimpleMerge<_ExtendsOptions['DefaultOptionsValue'], Pick<_Options, RequiredProperties<_Options>>>;
+  } & SimpleMerge<_ExtendsOptions['DefaultOptionsValue'], Pick<_Options, RequiredProperties<_Options>>>
 > extends StructuralClass<_ComputedDataField> {}
 
 type SimpleMerge<T, U> = Omit<T, keyof U> & U;
@@ -324,14 +330,16 @@ export declare class BooleanField<
 export type DataFieldChoices<T> =
   | readonly T[]
   | {
-      [label: string]: T;
+      [option in Extract<T, string | number | symbol>]: string;
     }
   | (() => T[]);
 
 export type DataFieldChoicesOptions<Choices extends DataFieldChoices<any>> = Choices extends unknown
-  ? Choices extends () => any[]
+  ? Choices extends () => readonly any[]
     ? ReturnType<Choices>[number]
-    : ValueOf<Choices>
+    : Choices extends readonly any[]
+    ? Choices[number]
+    : keyof Choices
   : never;
 
 export type ChoicesOptions<
@@ -845,11 +853,14 @@ export declare class EmbeddedDataField<
 export declare namespace EmbeddedCollectionField {
   export type Type = foundry.abstract.Document.AnyConstructor;
 
-  export type ExtendsOptions<Element extends Type> = ArrayField.AnyExtendsOptions & {
-    InputElement: Type;
-    SourceType: InstanceType<Element>['_source'][];
-    InitializedType: EmbeddedCollection<Element, DataModel.Any>;
-  };
+  export type ExtendsOptions<Element extends Type> = SimpleMerge<
+    ArrayField.AnyExtendsOptions,
+    {
+      InputElement: Type;
+      SourceType: InstanceType<Element>['_source'][];
+      InitializedType: EmbeddedCollection<Element, DataModel.Any>;
+    }
+  >;
 
   export type AnyExtendsOptions = ArrayField.AnyExtendsOptions;
 }
@@ -866,12 +877,12 @@ export declare class EmbeddedCollectionField<
   /**
    * A reference to the DataModel subclass of the embedded document element
    */
-  get model(): Extract<Element, EmbeddedCollectionField.Type>['implementation'];
+  get model(): Extract<InputElement, EmbeddedCollectionField.Type>['implementation'];
 
   /**
    * The DataSchema of the contained Document model.
    */
-  schema: Extract<Element, EmbeddedCollectionField.Type>['schema'];
+  schema: Extract<InputElement, EmbeddedCollectionField.Type>['schema'];
 }
 
 export declare namespace DocumentIdField {
@@ -958,11 +969,13 @@ export declare namespace SystemDataField {
 
   export type ExtraOptions = ObjectField.ExtraOptions;
 
-  export type ExtendsOptions<ConcreteDocument extends DocumentConstructor> = SimpleMerge<
+  export type ExtendsOptions<
+    ConcreteDocument extends DocumentConstructor & { metadata: { name: SystemDocumentType } }
+  > = SimpleMerge<
     ObjectField.ExtendsOptions,
     {
-      SourceType: ConcreteDocument;
-      InitializedType: ConcreteDocument;
+      SourceType: DeepPartial<ConfiguredSource<ConcreteDocument['metadata']['name']>>;
+      InitializedType: ConfiguredData<ConcreteDocument['metadata']['name']>;
     }
   >;
 }
@@ -972,7 +985,7 @@ export declare namespace SystemDataField {
  * The field may be initially null, but it must be non-null when it is saved to the database.
  */
 export declare class SystemDataField<
-  ConcreteDocument extends DocumentConstructor,
+  ConcreteDocument extends DocumentConstructor & { metadata: { name: SystemDocumentType } },
   Options extends DataField.Options<ExtendsOptions>,
   ExtendsOptions extends DataField.AnyExtendsOptions = SystemDataField.ExtendsOptions<ConcreteDocument>
 > extends ObjectField<Options, ExtendsOptions> {
@@ -1424,7 +1437,7 @@ export const VIDEO_FIELD: FilePathField<{ categories: ['IMAGE', 'VIDEO'] }>;
  * @deprecated since v10
  * @see SystemDataField
  */
-export function systemDataField<Document extends DocumentConstructor>(
+export function systemDataField<Document extends DocumentConstructor & { metadata: { name: SystemDocumentType } }>(
   document: Document
 ): SystemDataField<Document, {}>;
 

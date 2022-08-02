@@ -1,4 +1,6 @@
 import { expectType } from 'tsd';
+import type { DataField } from '../../../../../src/foundry/common/data/fields.mjs.js';
+import type { fields } from '../../../../../src/foundry/common/data/module.mjs';
 
 expectType<'Wall'>(Wall.embeddedName);
 

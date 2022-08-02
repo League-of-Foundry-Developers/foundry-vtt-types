@@ -180,7 +180,7 @@ declare global {
     ): Promise<InstanceType<ConfiguredDocumentClassForName<'ChatMessage'>> | undefined>;
 
     protected override _onUpdate(
-      data: DeepPartial<foundry.documents.BaseCards['_source']>,
+      data: DeepPartial<this['_source']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;

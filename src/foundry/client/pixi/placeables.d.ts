@@ -109,7 +109,7 @@ declare global {
      * If objects on this PlaceableLayer have a HUD UI, provide a reference to its instance
      * @remarks Returns `null` unless overridden
      */
-    get hud(): BasePlaceableHUD<InstanceType<ConfiguredObjectClassForName<DocumentName>>> | null;
+    get hud(): BasePlaceableHUD<InstanceType<ConfiguredObjectClassForName<DocumentName>>> | null | undefined;
 
     /**
      * A convenience method for accessing the placeable object instances contained in this layer

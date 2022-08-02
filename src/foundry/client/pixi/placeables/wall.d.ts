@@ -60,7 +60,7 @@ declare global {
     /**
      * A convenience reference to the coordinates Array for the Wall endpoints, [x0,y0,x1,y1].
      */
-    get coords(): Wall['data']['c'];
+    get coords(): foundry.documents.BaseWall['c'];
 
     /**
      * The initial endpoint of the Wall

@@ -1,5 +1,5 @@
 import DataModel from '../foundry/common/abstract/data.mjs';
-import Document from '../foundry/common/abstract/document.mjs';
+import Document, { Metadata } from '../foundry/common/abstract/document.mjs';
 import type { SubTypeShape } from './config.js';
 
 type ObjectToDeepPartial<T> = T extends object ? DeepPartial<T> : T;
@@ -60,11 +60,11 @@ export type PlaceableDocumentType =
   | 'Token'
   | 'Wall';
 
-export type DocumentSubTypes<T extends DocumentType> = 'type' extends keyof InstanceType<
-  ConfiguredDocumentClassForName<T>
->['_source']
-  ? InstanceType<ConfiguredDocumentClassForName<T>>['_source']['type']
-  : typeof foundry.CONST.BASE_DOCUMENT_TYPE;
+export type DocumentSubTypes<T extends DocumentType> = GetKey<
+  InstanceType<ConfiguredDocumentClassForName<T>>,
+  'type',
+  typeof foundry.CONST.BASE_DOCUMENT_TYPE
+>;
 
 export type ConfiguredDocumentClassForName<Name extends DocumentType> = CONFIG[Name]['documentClass'];
 
@@ -125,9 +125,9 @@ export type ToObjectType<T, Source extends boolean> = T extends {
   ? U
   : T;
 
-export type ConfiguredSheetClass<T extends DocumentConstructor> = T['metadata']['name'] extends keyof CONFIG
-  ? 'sheetClass' extends keyof CONFIG[T['metadata']['name']]
-    ? CONFIG[T['metadata']['name']]['sheetClass']
+export type ConfiguredSheetClass<T extends Metadata<any>> = T['name'] extends keyof CONFIG
+  ? 'sheetClass' extends keyof CONFIG[T['name']]
+    ? CONFIG[T['name']]['sheetClass']
     : never
   : T;
 
@@ -137,11 +137,15 @@ export type ObjectClass<T extends DocumentConstructor> = T['metadata']['name'] e
     : never
   : T;
 
-export type LayerClass<T extends DocumentConstructor> = T['metadata']['name'] extends keyof CONFIG
-  ? 'layerClass' extends keyof CONFIG[T['metadata']['name']]
-    ? CONFIG[T['metadata']['name']]['layerClass']
-    : never
-  : T;
+/**
+ * @privateRemarks
+ * Making LayerClass work with AnyDocument instead of DocumentConstructor is a bit strange.
+ *
+ * However this is a downstream effect of the circular reference in CanvasDocumentMixin.
+ */
+export type LayerClass<T extends Metadata<any>> = T['name'] extends keyof CONFIG
+  ? GetKey<CONFIG[T['name']], 'layerClass', never>
+  : never;
 
 export type DataSourceForPlaceable<P extends PlaceableObject> = P extends PlaceableObject<infer Doc>
   ? Doc['_source']

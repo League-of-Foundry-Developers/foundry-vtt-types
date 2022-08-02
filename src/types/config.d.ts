@@ -176,15 +176,9 @@ declare global {
    * }
    * ```
    */
-  /**
-   * @deprecated Deprecated in favour of {@link SystemConfig}
-   */
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DataConfig {}
 
-  /**
-   * @deprecated Deprecated in favour of {@link SystemConfig}
-   */
   /** @see {@link DataConfig} */
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface SourceConfig {}

@@ -13,14 +13,10 @@ interface BaseDrawingSchema extends DataSchema {
    */
   _id: fields.DocumentIdField<{}>;
 
-  // TODO, causes circular reference on DrawingDocument
   /**
    * The _id of the user who created the drawing
    */
-  //   author: fields.ForeignDocumentField<
-  //     typeof documents.BaseUser,
-  //     { nullable: false; initial: () => OptionalChaining<OptionalChaining<typeof game, 'user'>, 'id'> }
-  //   >;
+  author: fields.ForeignDocumentField<typeof documents.BaseUser, { nullable: false; initial: () => string }>;
 
   /**
    * The geometric shape of the drawing

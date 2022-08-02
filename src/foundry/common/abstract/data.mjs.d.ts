@@ -124,15 +124,15 @@ declare namespace DataModel {
     ConcreteDataSchema,
     {
       // Essentially tests this condition that will give if it's required:
-      //   !(initial in fieldTypes(field, 'SourceType')) ||
+      //   !fieldTypes(field, 'SourceType').includes(initial) ||
       //   (field instanceof StringField && blank === false && initial === '')
-      // In every case validation will automatically fail if given no value thusly a value must be given to prevent this error.
+      // In both cases validation will automatically fail if given no value thusly a value must be given to prevent this error.
       [K in keyof ConcreteDataSchema]: Or<
         // Check if the initial type is in any of the field source types
         Not<
           ItemExtends<DataField.InitialTypeFor<ConcreteDataSchema[K]>, FieldType<ConcreteDataSchema[K], 'SourceType'>>
         >,
-        ConcreteDataSchema[K] extends StringField<any, any>
+        ConcreteDataSchema[K] extends StringField<any, any, any>
           ? And<Extends<ConcreteDataSchema[K]['blank'], false>, Equals<ConcreteDataSchema[K]['initial'], ''>>
           : false
       > extends false
@@ -146,7 +146,7 @@ declare namespace DataModel {
     'SourceType'
   >;
 
-  type FieldType<Field, Key extends keyof DataField.AnyExtendsOptions> = Field extends DataField.Any
+  export type FieldType<Field, Key extends keyof DataField.AnyExtendsOptions> = Field extends DataField.Any
     ? DataField.ExtendsOptionsFor<Exclude<Field, undefined>>[Key] | DataField.ExtraTypes<Exclude<Field, undefined>>
     : Field;
 
@@ -183,7 +183,9 @@ export type DataSchema = {
   [name: string]: DataField.Any;
 };
 
-type DataModelConstructorParameters<ConcreteDataSchema extends DataSchema> = PartialIf<
+type Identity<T> = T;
+
+type DataModelConstructorParameters<ConcreteDataSchema extends DataSchema> = Identity<
   [
     /**
      * Initial data used to construct the data object
@@ -191,13 +193,14 @@ type DataModelConstructorParameters<ConcreteDataSchema extends DataSchema> = Par
      */
     data: DataModel.SchemaToSourceInput<ConcreteDataSchema>,
 
+    data: ConcreteDataSchema,
+
     /**
      * Options which affect DataModel construction
      * (default: `{}`)
      */
     options?: DataModel.ConstructorOptions
-  ],
-  Equals<DataModel.SchemaToSourceInput<ConcreteDataSchema>, {}>
+  ]
 >;
 
 // @ts-expect-error subclassing StructuralClass gives an error
@@ -221,7 +224,7 @@ declare abstract class DataModel<
   Parent extends AnyDocument | null,
   ConcreteDataSchema extends DataSchema,
   ConcreteDataModelShims extends Record<string, unknown> = {}
-> extends _InternalDataModel<ConcreteDataSchema & DataModelShims> {
+> extends _InternalDataModel<ConcreteDataSchema> {
   /**
    * The source data object for this DataModel instance.
    * Once constructed, the source object is sealed such that no keys may be added nor removed.
@@ -448,7 +451,6 @@ declare abstract class DataModel<
    */
   toObject(source?: true): this['_source'];
 
-  // TODO
   toObject(source: false): {
     [K in keyof this['schema']]: ReturnType<this['schema'][K]['toObject']>;
   };

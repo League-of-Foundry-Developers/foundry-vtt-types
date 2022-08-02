@@ -5,7 +5,7 @@ import type { CardDataSource } from '../../../../src/foundry/common/data/data.mj
 import type { CardFaceDataSource } from '../../../../src/foundry/common/data/data.mjs.d.ts/cardFaceData';
 
 const baseCards = new foundry.documents.BaseCards();
-expectType<EmbeddedCollection<typeof Card, foundry.data.CardsData>>(baseCards.cards);
+expectType<EmbeddedCollection<typeof Card, foundry.documents.BaseCards>>(baseCards.cards);
 expectType<CardDataSource>(baseCards.data._source.cards[0]);
 expectType<CardFaceDataSource>(baseCards.data._source.cards[0].faces[0]);
 
@@ -76,4 +76,30 @@ if (baseCards.data.type === 'french') {
 } else {
   expectType<'Skat'>(baseCards.data.data.mostUsedGame);
   expectType<'older players'>(baseCards.data.data.mostUsedBy);
+}
+
+expectError(new foundry.documents.BaseCards());
+expectError(new foundry.documents.BaseCards({}));
+expectType<foundry.documents.BaseCards>(new foundry.documents.BaseCards({ name: 'Some Cards' }));
+
+expectError(new foundry.documents.BaseCards({ name: 'Some Cards With Wrong Type', type: 'foo' }));
+
+const cardsData = new foundry.documents.BaseCards({ name: 'Some Deck', type: 'french' });
+
+expectType<foundry.documents.BaseCards>(cardsData);
+expectType<'french' | 'german'>(cardsData.type);
+if (cardsData._source.type === 'french') {
+  expectType<'throwing cards'>(cardsData._source.data.coolUse);
+  expectError(cardsData._source.data.possibleInjuries);
+} else {
+  expectType<'Skat'>(cardsData._source.data.mostUsedGame);
+  expectError(cardsData._source.data.mostUsedBy);
+}
+
+if (cardsData.type === 'french') {
+  expectType<'throwing cards'>(cardsData.data.coolUse);
+  expectType<'card stuck in eye'>(cardsData.data.possibleInjuries);
+} else {
+  expectType<'Skat'>(cardsData.data.mostUsedGame);
+  expectType<'older players'>(cardsData.data.mostUsedBy);
 }

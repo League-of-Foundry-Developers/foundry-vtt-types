@@ -1196,8 +1196,8 @@ declare global {
       /** @defaultValue `Tile` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Tile>;
 
-      /** @defaultValue `BackgroundLayer` */
-      layerClass: typeof BackgroundLayer;
+      /** @defaultValue `TileLayer` */
+      layerClass: typeof TileLayer;
     };
 
     /**

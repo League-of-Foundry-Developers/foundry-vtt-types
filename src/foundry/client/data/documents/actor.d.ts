@@ -6,6 +6,7 @@ import {
 import type DataModel from '../../../common/abstract/data.mjs';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 import EmbeddedCollection from '../../../common/abstract/embedded-collection.mjs';
+import type { BaseUser } from '../../../common/documents/module.mjs';
 
 declare global {
   /**
@@ -76,7 +77,7 @@ declare global {
     /**
      * An array of ActiveEffect instances which are present on the Actor which have a limited duration.
      */
-    get temporaryEffects(): ReturnType<this['effects']['filter']>;
+    get temporaryEffects(): this['effects'];
 
     /**
      * Return a reference to the TokenDocument which owns this Actor as a synthetic override
@@ -156,9 +157,9 @@ declare global {
     ): EmbeddedCollection<DocumentConstructor, foundry.documents.BaseActor>;
 
     protected override _preCreate(
-      data: DataModel.SchemaToSourceInput<foundry.documents.BaseActor['schema']>,
+      data: DataModel.SchemaToSourceInput<this['schema']>,
       options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser
+      user: BaseUser
     ): Promise<void>;
 
     protected override _onUpdate(

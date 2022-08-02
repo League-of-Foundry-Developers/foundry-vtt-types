@@ -28,11 +28,6 @@ declare global {
     protected _sourceName: string | null;
 
     /**
-     * A cached reference to the ActiveEffectConfig instance which configures this effect
-     */
-    protected _sheet: FormApplication | null; // TODO: Actually an ActiveEffectConfig according to foundry but this is a problem with ClientDocumentMixins _sheet, this should actually be inferred from the CONFIG
-
-    /**
      * Is there some system logic that makes this active effect ineligible for application?
      */
     get isSuppressed(): boolean;

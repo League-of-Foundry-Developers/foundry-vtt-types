@@ -1,7 +1,6 @@
 import { ContextType, DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 import { ConfiguredDocumentClass, DocumentConstructor } from '../../../../types/helperTypes';
 import type DataModel from '../../../common/abstract/data.mjs.js';
-import type { documents } from '../../../common/module.mjs.js';
 
 declare global {
   // TODO: Replace ConstructorOf<…> with DocumentConstructor once the problem with circular reference has been solved
@@ -379,7 +378,7 @@ export declare class ClientDocumentMixin<T extends AnyDocument> {
     pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
     options?: ClientDocumentMixin.CompendiumExportOptions | undefined
   ): Omit<T['_source'], '_id' | 'folder' | 'permission'> & {
-    ownership?: T['_source']['ownership'];
+    ownership?: GetKey<T['_source'], 'ownership', never>;
   };
 
   /**

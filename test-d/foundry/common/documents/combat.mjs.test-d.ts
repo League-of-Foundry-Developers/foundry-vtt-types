@@ -9,5 +9,9 @@ expectType<Promise<Combat[]>>(foundry.documents.BaseCombat.deleteDocuments([]));
 
 const combat = await foundry.documents.BaseCombat.create({ scene: 'foo', active: true }, { temporary: true });
 if (combat) {
-  expectType<foundry.data.CombatData>(combat.data);
+  expectType<foundry.documents.BaseCombat['data']>(combat.data);
 }
+
+expectType<foundry.documents.BaseCombat>(new foundry.documents.BaseCombat());
+expectType<foundry.documents.BaseCombat>(new foundry.documents.BaseCombat({}));
+expectType<foundry.documents.BaseCombat>(new foundry.documents.BaseCombat({ scene: 'foo', active: true }));

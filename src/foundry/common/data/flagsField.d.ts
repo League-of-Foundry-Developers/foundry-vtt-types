@@ -11,7 +11,7 @@ export declare namespace FlagsField {
 
   export type ExtendsOptions<DocumentName extends FlagsDocuments> = SimpleMerge<
     ObjectField.ExtendsOptions,
-    { SourceType: FlagsType<DocumentName>; InitializedType: FlagsType<DocumentName> }
+    { SourceType: DeepPartial<FlagsType<DocumentName>>; InitializedType: FlagsType<DocumentName> }
   >;
 
   type GetFlagsConfigProp<T, K> = K extends keyof T ? T[K] : {};

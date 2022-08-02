@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectType, expectError } from 'tsd';
 import '../../../index';
 
 const macro = new Macro({ name: 'my macro', scope: 'global', type: 'script' });
@@ -28,3 +28,6 @@ expectType<Promise<StoredDocument<Macro> | undefined>>(Macro.create({ name: 'Som
 expectType<Promise<StoredDocument<Macro>[]>>(Macro.createDocuments([]));
 expectType<Promise<Macro[]>>(Macro.updateDocuments([]));
 expectType<Promise<Macro[]>>(Macro.deleteDocuments([]));
+
+expectError(new foundry.documents.BaseMacro());
+expectError(new foundry.documents.BaseMacro({}));

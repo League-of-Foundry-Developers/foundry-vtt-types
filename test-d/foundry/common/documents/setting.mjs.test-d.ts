@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectError, expectType } from 'tsd';
 
 expectType<Promise<StoredDocument<Setting> | undefined>>(
   foundry.documents.BaseSetting.create({ key: 'foo.bar', value: 'bar' })
@@ -12,5 +12,16 @@ const settingData = await foundry.documents.BaseSetting.create(
   { temporary: true }
 );
 if (settingData) {
-  expectType<foundry.data.SettingData>(settingData.data);
+  expectType<foundry.documents.BaseSetting['data']>(settingData.data);
 }
+
+expectError(new foundry.documents.BaseSetting());
+expectError(new foundry.documents.BaseSetting({}));
+expectError(new foundry.documents.BaseSetting({ key: 'foo', value: 'bar' }));
+expectType<foundry.documents.BaseSetting>(new foundry.documents.BaseSetting({ key: 'foo.bar', value: 'bar' }));
+const namespace = 'foo';
+const key = 'bar';
+expectType<foundry.documents.BaseSetting>(
+  new foundry.documents.BaseSetting({ key: `${namespace}.${key}`, value: 'bar' })
+);
+expectError(new foundry.documents.BaseSetting({ key: namespace + '.' + key, value: 'bar' }));

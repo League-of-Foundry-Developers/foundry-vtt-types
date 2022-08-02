@@ -12,5 +12,9 @@ const combatant = await foundry.documents.BaseCombatant.create(
   { temporary: true }
 );
 if (combatant) {
-  expectType<foundry.data.CombatantData>(combatant.data);
+  expectType<foundry.documents.BaseCombatant['data']>(combatant.data);
 }
+
+expectType<foundry.documents.BaseCombatant>(new foundry.documents.BaseCombatant());
+expectType<foundry.documents.BaseCombatant>(new foundry.documents.BaseCombatant({}));
+expectType<foundry.documents.BaseCombatant>(new foundry.documents.BaseCombatant({ tokenId: 'foo', actorId: 'bar' }));

@@ -192,13 +192,13 @@ declare class BaseActor extends Document<
   #canUpdate: CanUpdate;
 
   protected override _preCreate(
-    data: DataModel.SchemaToSourceInput<BaseActorSchema>,
+    data: DataModel.SchemaToSourceInput<this['schema']>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: DataModel.SchemaToSourceInput<BaseActorSchema>,
+    changed: DeepPartial<DataModel.SchemaToSource<this['schema']>>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;

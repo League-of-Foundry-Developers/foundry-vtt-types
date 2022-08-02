@@ -19,3 +19,48 @@ expectType<PIXI.Container>(sound.drawField());
 expectType<AmbientSound>(sound.refresh());
 expectType<void>(sound.refreshControl());
 expectType<void>(sound.updateSource());
+
+expectType<foundry.documents.AmbientSound>(new foundry.documents.AmbientSound());
+expectType<foundry.documents.AmbientSound>(new foundry.documents.AmbientSound({}));
+expectType<foundry.documents.AmbientSound>(
+  new foundry.documents.AmbientSound({
+    _id: null,
+    x: 10,
+    y: 10,
+    hidden: true,
+    radius: 100,
+    darkness: { min: 10, max: 90 },
+    easing: true,
+    path: 'path/to/file',
+    repeat: true,
+    volume: 100
+  })
+);
+expectType<foundry.documents.AmbientSound>(
+  new foundry.documents.AmbientSound({
+    _id: null,
+    x: null,
+    y: null,
+    hidden: null,
+    radius: null,
+    darkness: null,
+    easing: null,
+    path: null,
+    repeat: null,
+    volume: null
+  })
+);
+expectType<foundry.documents.AmbientSound>(
+  new foundry.documents.AmbientSound({
+    _id: undefined,
+    x: undefined,
+    y: undefined,
+    hidden: undefined,
+    radius: undefined,
+    darkness: undefined,
+    easing: undefined,
+    path: undefined,
+    repeat: undefined,
+    volume: undefined
+  })
+);

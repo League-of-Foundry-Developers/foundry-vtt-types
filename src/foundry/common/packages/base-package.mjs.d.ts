@@ -1,6 +1,6 @@
 import DataModel, { DataSchema } from '../abstract/data.mjs';
 import * as fields from '../data/fields.mjs';
-import { COMPENDIUM_DOCUMENT_TYPES, PACKAGE_AVAILABILITY_CODES, PACKAGE_TYPES } from '../constants.mjs';
+import { COMPENDIUM_DOCUMENT_TYPES, PACKAGE_TYPES } from '../constants.mjs';
 import { CONST } from '../module.mjs';
 import { CompatibilitySchema } from '../data/data.mjs';
 import type { FlagsField } from '../data/flagsField.js';
