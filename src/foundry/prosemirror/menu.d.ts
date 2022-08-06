@@ -85,15 +85,6 @@ export default class ProseMirrorMenu extends ProseMirrorPlugin {
   readonly id: `prosemirror-menu-${string}`;
 
   /**
-   * An enumeration of editor scopes in which a menu item can appear
-   */
-  static MENU_ITEM_SCOPES: {
-    BOTH: '';
-    TEXT: 'text';
-    HTML: 'html';
-  };
-
-  /**
    * Additional options to configure the plugin's behaviour.
    */
   options: ProseMirrorMenu.Options;

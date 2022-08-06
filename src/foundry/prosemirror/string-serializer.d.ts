@@ -29,10 +29,14 @@ export default class StringSerializer {
 
   /**
    * Create a StringNode from a ProseMirror DOMOutputSpec.
-   * @param spec - The specification.
+   * @param spec   - The specification.
+   * @param inline - Whether this is a block or inline node.
    * @returns An object describing the outer node, and a reference to the child node where content should be appended, if applicable.
    */
-  protected _specToStringNode(spec: DOMOutputSpec | string): { outer: StringNode; content?: StringNode };
+  protected _specToStringNode(
+    spec: DOMOutputSpec | string,
+    inline: boolean
+  ): { outer: StringNode; content?: StringNode };
 
   /**
    * Serialize a ProseMirror fragment into an HTML string.
@@ -61,10 +65,11 @@ export default class StringSerializer {
  */
 declare class StringNode {
   /**
-   * @param tag - The tag name. If none is provided, this node's children will not be wrapped in an outer tag.
-   * @param attrs - The tag attributes.
+   * @param tag    - The tag name. If none is provided, this node's children will not be wrapped in an outer tag.
+   * @param attrs  - The tag attributes.
+   * @param inline - Whether the node appears inline or as a block.
    */
-  constructor(tag?: string, attrs?: Record<string, string>);
+  constructor(tag?: string, attrs?: Record<string, string>, inline?: boolean);
 
   /**
    * The tag name.
@@ -77,11 +82,35 @@ declare class StringNode {
   readonly attrs: Record<string, string> | undefined;
 
   /**
+   * Whether the node appears inline or as a block.
+   */
+  get inline(): boolean;
+
+  /**
    * Append a child to this string node.
    * @param child - The child node or string.
    * @throws If attempting to append a child to a void element.
    */
   appendChild(child: StringNode | string): void;
+
+  /**
+   * Serialize the StringNode structure into a single string.
+   * @param spaces - The number of spaces to use for indentation (maximum 10). If this value is a string,
+   *                 that string is used as indentation instead (or the first 10 characters if it is
+   *                 longer). (default: `0`)
+   */
+  toString(
+    spaces?: string | number,
+    {
+      _depth,
+      _inlineParent
+    }?: {
+      /** @internal (default: `0`) */
+      _depth?: number;
+      /** @internal (default: `false`) */
+      _inlineParent?: boolean;
+    }
+  ): string;
 }
 
 export type { StringNode };

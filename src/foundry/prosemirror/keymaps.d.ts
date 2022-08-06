@@ -14,11 +14,27 @@ export type ProseMirrorCommand = (
   dispatch: (transaction: Transaction) => void,
   view: EditorView
 ) => boolean;
-
+export namespace ProseMirrorKeyMaps {
+  export interface Options {
+    /** The parent sheet that houses the ProseMirror instance. */
+    sheet?: FormApplication;
+  }
+}
 /**
  * A class responsible for building the keyboard commands for the ProseMirror editor.
  */
 export default class ProseMirrorKeyMaps extends ProseMirrorPlugin {
+  /**
+   * @param schema  - The ProseMirror schema to build keymaps for.
+   * @param options - Additional options to configure the plugin's behaviour.
+   */
+  constructor(schema: Schema, options?: ProseMirrorKeyMaps.Options);
+
+  /**
+   * The parent sheet that houses the ProseMirror instance.
+   */
+  readonly sheet: FormApplication;
+
   /** {@inheritdoc} */
   static build(schema: Schema): Plugin;
 

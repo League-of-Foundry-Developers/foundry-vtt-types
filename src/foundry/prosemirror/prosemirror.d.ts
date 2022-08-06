@@ -2,12 +2,14 @@ import { EditorState, AllSelection, Plugin } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { Schema, DOMParser, DOMSerializer } from 'prosemirror-model';
 import ProseMirrorInputRules from './input-rules';
+import ProseMirrorKeyMaps from './keymaps';
 import ProseMirrorMenu from './menu';
 import './extensions';
 import * as collab from 'prosemirror-collab';
 import { Step } from 'prosemirror-transform';
 import { parseHTMLString, serializeHTMLString } from './util';
 import { schema as defaultSchema } from './schema';
+import ProseMirrorImagePlugin from './image-plugin';
 import ProseMirrorDirtyPlugin from './dirty-plugin';
 import ProseMirrorContentLinkPlugin from './content-link-plugin';
 
@@ -38,5 +40,7 @@ export {
   ProseMirrorMenu,
   ProseMirrorDirtyPlugin,
   ProseMirrorContentLinkPlugin,
-  ProseMirrorInputRules
+  ProseMirrorInputRules,
+  ProseMirrorKeyMaps,
+  ProseMirrorImagePlugin
 };
