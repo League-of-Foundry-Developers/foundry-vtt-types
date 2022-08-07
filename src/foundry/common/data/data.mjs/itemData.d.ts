@@ -78,9 +78,9 @@ interface ItemDataBaseProperties {
 
   /**
    * An object which configures user permissions to this Item
-   * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
+   * @defaultValue `{ default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE }`
    */
-  permission: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>>;
+  permission: Partial<Record<string, foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS>>;
 
   /**
    * An object of optional key/value flags
@@ -138,9 +138,9 @@ interface ItemDataConstructorData {
 
   /**
    * An object which configures user permissions to this Item
-   * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
+   * @defaultValue `{ default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE }`
    */
-  permission?: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>> | null | undefined;
+  permission?: Partial<Record<string, foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS>> | null | undefined;
 
   /**
    * An object of optional key/value flags

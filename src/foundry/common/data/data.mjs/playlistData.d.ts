@@ -94,9 +94,9 @@ interface PlaylistDataProperties {
 
   /**
    * An object which configures user permissions to this playlist
-   * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
+   * @defaultValue `{ default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE }`
    */
-  permission: Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>;
+  permission: Record<string, foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS>;
 
   /**
    * An object of optional key/value flags
@@ -170,9 +170,9 @@ interface PlaylistDataConstructorData {
 
   /**
    * An object which configures user permissions to this playlist
-   * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
+   * @defaultValue `{ default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE }`
    */
-  permission?: Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS> | null | undefined;
+  permission?: Record<string, foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS> | null | undefined;
 
   /**
    * An object of optional key/value flags

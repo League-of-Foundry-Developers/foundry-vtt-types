@@ -298,9 +298,9 @@ declare global {
   interface DocumentSheetOptions extends FormApplicationOptions {
     /**
      * The default permissions required to view this Document sheet.
-     * @defaultValue {@link CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED}
+     * @defaultValue {@link CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED}
      */
-    viewPermission: foundry.CONST.DOCUMENT_PERMISSION_LEVELS;
+    viewPermission: foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
   }
 
   /**
@@ -327,7 +327,7 @@ declare global {
      * foundry.utils.mergeObject(super.defaultOptions, {
      *   classes: ["sheet"],
      *   template: `templates/sheets/${this.name.toLowerCase()}.html`,
-     *   viewPermission: CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED,
+     *   viewPermission: CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED,
      *   sheetConfig: true
      * });
      * ```
