@@ -17,7 +17,7 @@ declare class AudioHelper {
   /**
    * The set of AudioBuffer objects which are cached for different audio paths
    */
-  buffers: Map<string, AudioBuffer>;
+  buffers: Map<string, { buffer: AudioBuffer; lastAccessed: number; playing: boolean; size: number }>;
 
   /**
    * The set of singleton Sound instances which are cached for different audio paths
@@ -90,11 +90,23 @@ declare class AudioHelper {
   protected _fftArray: Float32Array | null;
 
   /**
+   * A Promise which resolves once the game audio API is unlocked and ready to use.
+   */
+  unlock: ReturnType<this['awaitFirstGesture']>;
+
+  /**
    * The Native interval for the AudioHelper to analyse audio levels from streams
    * Any interval passed to startLevelReports() would need to be a multiple of this value.
    * @defaultValue `50`
    */
   static levelAnalyserNativeInterval: number;
+
+  /**
+   * The cache size threshold after which audio buffers will be expired from the cache to make more room.
+   * 1 gigabyte, by default.
+   * @defaultValue `Math.pow(1024, 3)`
+   */
+  static THRESHOLD_CACHE_SIZE_BYTES: number;
 
   /**
    * Register client-level settings for global volume overrides
@@ -131,8 +143,9 @@ declare class AudioHelper {
 
   /**
    * Register an event listener to await the first mousemove gesture and begin playback once observed
+   * @returns The unlocked audio context
    */
-  awaitFirstGesture(): void;
+  awaitFirstGesture(): Promise<AudioContext>;
 
   /**
    * Request that other connected clients begin preloading a certain sound path.
@@ -140,6 +153,28 @@ declare class AudioHelper {
    * @returns A Promise which resolves once the preload is complete
    */
   preload(src: string): Promise<Sound>;
+
+  /**
+   * Retrieve an AudioBuffer from the buffers cache, if it is available
+   * @param src - The buffer audio source path
+   * @returns The AudioBuffer instance if cached, otherwise undefined
+   */
+  getCache(src: string): AudioBuffer | undefined;
+
+  /**
+   * Update the last accessed time and playing status of a cached buffer.
+   * @param src     - The buffer audio source path
+   * @param playing - Is the buffer currently playing? (default: `false`)
+   */
+  updateCache(src: string, playing: boolean): void;
+
+  /**
+   * Insert an AudioBuffer into the buffers cache.
+   * See https://padenot.github.io/web-audio-perf/#memory-profiling
+   * @param src    - The buffer audio source path
+   * @param buffer - The AudioBuffer instance
+   */
+  setCache(src: string, buffer: AudioBuffer): void;
 
   /**
    * Open socket listeners which transact ChatMessage data
@@ -156,9 +191,8 @@ declare class AudioHelper {
    *
    * @returns A Sound instance which controls audio playback.
    *
-   * @example
+   * @example Play the sound of a locked door for all players
    * ```typescript
-   * // Play the sound of a locked door for all players
    * AudioHelper.play({src: "sounds/lock.wav", volume: 0.8, loop: false}, true);
    * ```
    */
@@ -257,10 +291,11 @@ declare class AudioHelper {
 
   /**
    * Handle the first observed user gesture
-   * @param event - The mouse-move event which enables playback
+   * @param event   - The mouse-move event which enables playback
+   * @param resolve - The Promise resolution function
    * @internal
    */
-  protected _onFirstGesture(event: Event): void;
+  protected _onFirstGesture(event: Event, resolve: () => void): void;
 
   /**
    * Additional standard callback events that occur whenever a global volume slider is adjusted

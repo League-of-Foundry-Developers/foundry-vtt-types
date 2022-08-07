@@ -2,7 +2,7 @@
  * The Sound class is used to control the playback of audio sources using the Web Audio API.
  */
 declare class Sound {
-  constructor(src: string);
+  constructor(src: string, options?: { container?: AudioContainer });
 
   /**
    * The numeric identifier for accessing this node
@@ -158,7 +158,7 @@ declare class Sound {
    * @param playbackTime - The desired playback time at which the function should be called
    * @returns A Promise which resolves once the scheduled function has been called
    *
-   * @example
+   * @example Schedule audio playback changes
    * ```typescript
    * sound.schedule(() => console.log("Do something exactly 30 seconds into the track"), 30);
    * sound.schedule(() => console.log("Do something next time the track loops back to the beginning"), 0);
