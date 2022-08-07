@@ -27,7 +27,7 @@ interface DragDropConfiguration {
  * The controller manages the following actions: dragstart, dragover, drop
  * @see {@link Application}
  *
- * @example
+ * @example Activate drag-and-drop handling for a certain set of elements
  * ```typescript
  * const dragDrop = new DragDrop({
  *   dragSelector: ".item",
