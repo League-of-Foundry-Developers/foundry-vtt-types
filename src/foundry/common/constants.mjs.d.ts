@@ -14,6 +14,11 @@ export const VTT: 'Foundry Virtual Tabletop';
 export const WEBSITE_URL: 'https://foundryvtt.com';
 
 /**
+ * The serverless API URL
+ */
+export const WEBSITE_API_URL: 'https://api.foundryvtt.com';
+
+/**
  * An ASCII greeting displayed to the client
  */
 export const ASCII = `_______________________________________________________________
@@ -85,21 +90,24 @@ export type CHAT_MESSAGE_TYPES = ValueOf<typeof CHAT_MESSAGE_TYPES>;
 export const CORE_SUPPORTED_LANGUAGES: readonly ['en'];
 
 /**
+ * Configure the severity of compatibility warnings.
+ * If SILENT, nothing will be logged
+ * If WARNING, a message will be logged at the "warn" level
+ * If ERROR, a message will be logged at the "error" level
+ * If FAILURE, an Error will be thrown
+ */
+export const COMPATIBILITY_MODES: Readonly<{
+  SILENT: 0;
+  WARNING: 1;
+  ERROR: 2;
+  FAILURE: 3;
+}>;
+export type COMPATIBILITY_MODES = ValueOf<typeof COMPATIBILITY_MODES>;
+
+/**
  * The default artwork used for Token images if none is provided
  */
 export const DEFAULT_TOKEN: 'icons/svg/mystery-man.svg';
-
-/**
- * The default artwork used for Note placeables if none is provided
- * @deprecated since v9, use NoteData.DEFAULT_ICON instead.
- */
-export const DEFAULT_NOTE_ICON: 'icons/svg/book.svg';
-
-/**
- * The default icon image used for Macro documents if no other image is provided
- * @deprecated since v9, use MacroData.DEFAULT_ICON instead.
- */
-export const DEFAULT_MACRO_ICON: 'icons/svg/dice-target.svg';
 
 /**
  * Define the allowed Document class types.
@@ -137,16 +145,33 @@ export const COMPENDIUM_DOCUMENT_TYPES: readonly [
 export type COMPENDIUM_DOCUMENT_TYPES = ValueOf<typeof COMPENDIUM_DOCUMENT_TYPES>;
 
 /**
- * Define the allowed permission levels for a non-user Document.
- * Each level is assigned a value in ascending order. Higher levels grant more permissions.
+ * Define the allowed ownership levels for a Document.
+ * Each level is assigned a value in ascending order.
+ * Higher levels grant more permissions.
  */
-export const DOCUMENT_PERMISSION_LEVELS: Readonly<{
+export const DOCUMENT_OWNERSHIP_LEVELS: Readonly<{
   NONE: 0;
   LIMITED: 1;
   OBSERVER: 2;
   OWNER: 3;
 }>;
-export type DOCUMENT_PERMISSION_LEVELS = ValueOf<typeof DOCUMENT_PERMISSION_LEVELS>;
+export type DOCUMENT_OWNERSHIP_LEVELS = ValueOf<typeof DOCUMENT_OWNERSHIP_LEVELS>;
+
+/**
+ * Meta ownership levels that are used in the UI but never stored.
+ */
+export const DOCUMENT_META_OWNERSHIP_LEVELS: Readonly<{
+  DEFAULT: -20;
+  NOCHANGE: -10;
+}>;
+export type DOCUMENT_META_OWNERSHIP_LEVELS = ValueOf<typeof DOCUMENT_META_OWNERSHIP_LEVELS>;
+
+/**
+ * @deprecated since v10
+ * @see CONST.DOCUMENT_OWNERSHIP_LEVELS
+ */
+export const DOCUMENT_PERMISSION_LEVELS: typeof DOCUMENT_OWNERSHIP_LEVELS;
+export type DOCUMENT_PERMISSION_LEVELS = DOCUMENT_OWNERSHIP_LEVELS;
 
 /**
  * Define the allowed Document types which may be dynamically linked in chat
@@ -173,18 +198,6 @@ export const DICE_ROLL_MODES: Readonly<{
   SELF: 'selfroll';
 }>;
 export type DICE_ROLL_MODES = ValueOf<typeof DICE_ROLL_MODES>;
-
-/**
- * The allowed Drawing types which may be saved
- */
-export const DRAWING_TYPES: Readonly<{
-  RECTANGLE: 'r';
-  ELLIPSE: 'e';
-  TEXT: 't';
-  POLYGON: 'p';
-  FREEHAND: 'f';
-}>;
-export type DRAWING_TYPES = ValueOf<typeof DRAWING_TYPES>;
 
 /**
  * The allowed fill types which a Drawing object may display
@@ -303,7 +316,8 @@ export const PACKAGE_AVAILABILITY_CODES: Readonly<{
   AVAILABLE: 1;
   REQUIRES_SYSTEM: 2;
   REQUIRES_DEPENDENCY: 3;
-  REQUIRES_CORE: 4;
+  REQUIRES_CORE_UPGRADE: 4;
+  REQUIRES_CORE_DOWNGRADE: 5;
 }>;
 export type PACKAGE_AVAILABILITY_CODES = ValueOf<typeof PACKAGE_AVAILABILITY_CODES>;
 
@@ -331,21 +345,20 @@ export const SORT_INTEGER_DENSITY: 100000;
 /**
  * The allowed types of a TableResult document
  */
-declare const tableResultTypes: Readonly<{
+export const TABLE_RESULT_TYPES: Readonly<{
   TEXT: 0;
   DOCUMENT: 1;
   COMPENDIUM: 2;
-  /**
-   * @deprecated TABLE_RESULT_TYPES.ENTITY is deprecated. Please use TABLE_RESULT_TYPES.DOCUMENT instead.
-   */
-  get ENTITY(): 1;
 }>;
+export type TABLE_RESULT_TYPES = ValueOf<typeof TABLE_RESULT_TYPES>;
 
 /**
- * The allowed types of a TableResult document
+ * The allowed formats of a Journal Entry Page.
  */
-export const TABLE_RESULT_TYPES: typeof tableResultTypes;
-export type TABLE_RESULT_TYPES = ValueOf<typeof TABLE_RESULT_TYPES>;
+export const JOURNAL_ENTRY_PAGE_FORMATS: Readonly<{
+  HTML: 1;
+  MARKDOWN: 2;
+}>;
 
 /**
  * Define the valid anchor locations for a Tooltip displayed on a Placeable Object
@@ -365,8 +378,9 @@ export type TEXT_ANCHOR_POINTS = ValueOf<typeof TEXT_ANCHOR_POINTS>;
 export const TILE_OCCLUSION_MODES: Readonly<{
   NONE: 0;
   FADE: 1;
-  ROOF: 2;
+  // ROOF: 2;  This mode is no longer supported so we don't use 2 for any other mode
   RADIAL: 3;
+  VISION: 4;
 }>;
 export type TILE_OCCLUSION_MODES = ValueOf<typeof TILE_OCCLUSION_MODES>;
 
@@ -432,7 +446,7 @@ export const MEASURED_TEMPLATE_TYPES: Readonly<{
 }>;
 export type MEASURED_TEMPLATE_TYPES = ValueOf<typeof MEASURED_TEMPLATE_TYPES>;
 
-export interface UserCapability {
+export interface UserPermission {
   disableGM: boolean;
   hint: string;
   label: string;
@@ -454,7 +468,7 @@ export const USER_PERMISSIONS: Readonly<{
    * }
    * ```
    */
-  ACTOR_CREATE: UserCapability;
+  ACTOR_CREATE: UserPermission;
 
   /**
    * @defaultValue
@@ -467,7 +481,7 @@ export const USER_PERMISSIONS: Readonly<{
    * }
    * ```
    */
-  BROADCAST_AUDIO: UserCapability;
+  BROADCAST_AUDIO: UserPermission;
 
   /**
    * @defaultValue
@@ -480,7 +494,7 @@ export const USER_PERMISSIONS: Readonly<{
    * }
    * ```
    */
-  BROADCAST_VIDEO: UserCapability;
+  BROADCAST_VIDEO: UserPermission;
 
   /**
    * @defaultValue
@@ -493,7 +507,7 @@ export const USER_PERMISSIONS: Readonly<{
    * }
    * ```
    */
-  DRAWING_CREATE: UserCapability;
+  DRAWING_CREATE: UserPermission;
 
   /**
    * @defaultValue
@@ -506,7 +520,7 @@ export const USER_PERMISSIONS: Readonly<{
    * }
    * ```
    */
-  ITEM_CREATE: UserCapability;
+  ITEM_CREATE: UserPermission;
 
   /**
    * @defaultValue
@@ -519,7 +533,7 @@ export const USER_PERMISSIONS: Readonly<{
    * }
    * ```
    */
-  FILES_BROWSE: UserCapability;
+  FILES_BROWSE: UserPermission;
 
   /**
    * @defaultValue
@@ -532,7 +546,7 @@ export const USER_PERMISSIONS: Readonly<{
    * }
    * ```
    */
-  FILES_UPLOAD: UserCapability;
+  FILES_UPLOAD: UserPermission;
 
   /**
    * @defaultValue
@@ -545,7 +559,7 @@ export const USER_PERMISSIONS: Readonly<{
    * }
    * ```
    */
-  JOURNAL_CREATE: UserCapability;
+  JOURNAL_CREATE: UserPermission;
 
   /**
    * @defaultValue
@@ -558,7 +572,7 @@ export const USER_PERMISSIONS: Readonly<{
    * }
    * ```
    */
-  MACRO_SCRIPT: UserCapability;
+  MACRO_SCRIPT: UserPermission;
 
   /**
    * @defaultValue
@@ -571,7 +585,7 @@ export const USER_PERMISSIONS: Readonly<{
    * }
    * ```
    */
-  MESSAGE_WHISPER: UserCapability;
+  MESSAGE_WHISPER: UserPermission;
 
   /**
    * @defaultValue
@@ -584,7 +598,7 @@ export const USER_PERMISSIONS: Readonly<{
    * }
    * ```
    */
-  NOTE_CREATE: UserCapability;
+  NOTE_CREATE: UserPermission;
 
   /**
    * @defaultValue
@@ -597,7 +611,7 @@ export const USER_PERMISSIONS: Readonly<{
    * }
    * ```
    */
-  SETTINGS_MODIFY: UserCapability;
+  SETTINGS_MODIFY: UserPermission;
 
   /**
    * @defaultValue
@@ -610,7 +624,7 @@ export const USER_PERMISSIONS: Readonly<{
    * }
    * ```
    */
-  SHOW_CURSOR: UserCapability;
+  SHOW_CURSOR: UserPermission;
 
   /**
    * @defaultValue
@@ -623,7 +637,7 @@ export const USER_PERMISSIONS: Readonly<{
    * }
    * ```
    */
-  SHOW_RULER: UserCapability;
+  SHOW_RULER: UserPermission;
 
   /**
    * @defaultValue
@@ -636,7 +650,7 @@ export const USER_PERMISSIONS: Readonly<{
    * }
    * ```
    */
-  TEMPLATE_CREATE: UserCapability;
+  TEMPLATE_CREATE: UserPermission;
 
   /**
    * @defaultValue
@@ -649,7 +663,7 @@ export const USER_PERMISSIONS: Readonly<{
    * }
    * ```
    */
-  TOKEN_CREATE: UserCapability;
+  TOKEN_CREATE: UserPermission;
 
   /**
    * @defaultValue
@@ -662,7 +676,7 @@ export const USER_PERMISSIONS: Readonly<{
    * }
    * ```
    */
-  TOKEN_CONFIGURE: UserCapability;
+  TOKEN_CONFIGURE: UserPermission;
 
   /**
    * @defaultValue
@@ -675,7 +689,7 @@ export const USER_PERMISSIONS: Readonly<{
    * }
    * ```
    */
-  WALL_DOORS: UserCapability;
+  WALL_DOORS: UserPermission;
 }>;
 
 /**
@@ -765,10 +779,7 @@ export type KEYBINDING_PRECEDENCE = ValueOf<typeof KEYBINDING_PRECEDENCE>;
  */
 export const HTML_FILE_EXTENSIONS: readonly ['html', 'handlebars', 'hbs'];
 
-/**
- * The supported file extensions for image-type files, and their corresponding mime types.
- */
-export const IMAGE_FILE_EXTENSIONS: Readonly<{
+interface _IMAGE_FILE_EXTENSIONS {
   apng: 'image/apng';
   avif: 'image/avif';
   bmp: 'image/bmp';
@@ -779,24 +790,28 @@ export const IMAGE_FILE_EXTENSIONS: Readonly<{
   svg: 'image/svg+xml';
   tiff: 'image/tiff';
   webp: 'image/webp';
-}>;
-export type IMAGE_FILE_EXTENSIONS = ValueOf<typeof IMAGE_FILE_EXTENSIONS>;
+}
 
 /**
- * The supported file extensions for video-type files, and their corresponding mime types.
+ * The supported file extensions for image-type files, and their corresponding mime types.
  */
-export const VIDEO_FILE_EXTENSIONS: Readonly<{
+export const IMAGE_FILE_EXTENSIONS: Readonly<_IMAGE_FILE_EXTENSIONS>;
+export type IMAGE_FILE_EXTENSIONS = ValueOf<_IMAGE_FILE_EXTENSIONS>;
+
+interface _VIDEO_FILE_EXTENSIONS {
   m4v: 'video/mp4';
   mp4: 'video/mp4';
   ogg: 'video/ogg';
   webm: 'video/webm';
-}>;
-export type VIDEO_FILE_EXTENSIONS = ValueOf<typeof VIDEO_FILE_EXTENSIONS>;
+}
 
 /**
- * The supported file extensions for audio-type files, and their corresponding mime types.
+ * The supported file extensions for video-type files, and their corresponding mime types.
  */
-export const AUDIO_FILE_EXTENSIONS: Readonly<{
+export const VIDEO_FILE_EXTENSIONS: Readonly<_VIDEO_FILE_EXTENSIONS>;
+export type VIDEO_FILE_EXTENSIONS = ValueOf<_VIDEO_FILE_EXTENSIONS>;
+
+interface _AUDIO_FILE_EXTENSIONS {
   aac: 'audio/aac';
   flac: 'audio/flac';
   m4a: 'audio/mp4';
@@ -806,54 +821,101 @@ export const AUDIO_FILE_EXTENSIONS: Readonly<{
   opus: 'audio/opus';
   wav: 'audio/wav';
   webm: 'audio/webm';
-}>;
-export type AUDIO_FILE_EXTENSIONS = ValueOf<typeof AUDIO_FILE_EXTENSIONS>;
-
+}
 /**
- * The supported file extensions for text files, and their corresponding mime types.
+ * The supported file extensions for audio-type files, and their corresponding mime types.
  */
-export const TEXT_FILE_EXTENSIONS: Readonly<{
+export const AUDIO_FILE_EXTENSIONS: Readonly<_AUDIO_FILE_EXTENSIONS>;
+export type AUDIO_FILE_EXTENSIONS = ValueOf<_AUDIO_FILE_EXTENSIONS>;
+
+interface _TEXT_FILE_EXTENSIONS {
+  csv: 'text/csv';
   json: 'application/json';
   md: 'text/markdown';
   pdf: 'application/pdf';
+  tsv: 'text/tab-separated-values';
   txt: 'text/plain';
   xml: 'application/xml';
-}>;
-export type TEXT_FILE_EXTENSIONS = ValueOf<typeof TEXT_FILE_EXTENSIONS>;
+  yml: 'application/yaml';
+  yaml: 'application/yaml';
+}
+/**
+ * The supported file extensions for text files, and their corresponding mime types.
+ */
+export const TEXT_FILE_EXTENSIONS: Readonly<_TEXT_FILE_EXTENSIONS>;
+export type TEXT_FILE_EXTENSIONS = ValueOf<_TEXT_FILE_EXTENSIONS>;
+
+interface _FONT_FILE_EXTENSIONS {
+  ttf: 'font/ttf';
+  otf: 'font/otf';
+  woff: 'font/woff';
+  woff2: 'font/woff2';
+}
+/**
+ * Supported file extensions for font files, and their corresponding mime types.
+ */
+export const FONT_FILE_EXTENSIONS: Readonly<_FONT_FILE_EXTENSIONS>;
+export type FONT_FILE_EXTENSIONS = ValueOf<_FONT_FILE_EXTENSIONS>;
+
+interface _GRAPHICS_FILE_EXTENSIONS {
+  fbx: 'application/octet-stream';
+  glb: 'model/gltf-binary';
+  gltf: 'model/gltf+json';
+  mtl: 'model/mtl';
+  obj: 'model/obj';
+  stl: 'model/stl';
+  usdz: 'model/vnd.usdz+zip';
+}
+/**
+ * Supported file extensions for 3D files, and their corresponding mime types.
+ */
+export const GRAPHICS_FILE_EXTENSIONS: Readonly<_GRAPHICS_FILE_EXTENSIONS>;
+export type GRAPHICS_FILE_EXTENSIONS = ValueOf<_GRAPHICS_FILE_EXTENSIONS>;
+
+interface _UPLOADABLE_FILE_EXTENSIONS
+  extends _IMAGE_FILE_EXTENSIONS,
+    Omit<_VIDEO_FILE_EXTENSIONS, 'ogg' | 'webm'>,
+    _AUDIO_FILE_EXTENSIONS,
+    _TEXT_FILE_EXTENSIONS,
+    _FONT_FILE_EXTENSIONS,
+    _GRAPHICS_FILE_EXTENSIONS {}
+
+export const UPLOADABLE_FILE_EXTENSIONS: _UPLOADABLE_FILE_EXTENSIONS;
 
 /**
  * A list of MIME types which are treated as uploaded "media", which are allowed to overwrite existing files.
  * Any non-media MIME type is not allowed to replace an existing file.
  */
-export const MEDIA_MIME_TYPES: readonly [
-  'image/apng',
-  'image/avif',
-  'image/bmp',
-  'image/gif',
-  'image/jpeg',
-  'image/jpeg',
-  'image/png',
-  'image/svg+xml',
-  'image/tiff',
-  'image/webp',
-  'video/mp4',
-  'video/mp4',
-  'video/ogg',
-  'video/webm',
-  'audio/aac',
-  'audio/flac',
-  'audio/mp4',
-  'audio/midi',
-  'audio/mpeg',
-  'audio/ogg',
-  'audio/opus',
-  'audio/wav',
-  'audio/webm',
-  'application/json',
-  'text/markdown',
-  'application/pdf',
-  'text/plain'
-];
+export const MEDIA_MIME_TYPES: ValueOf<_UPLOADABLE_FILE_EXTENSIONS>;
+
+/**
+ * An enumeration of file type categories which can be selected
+ */
+export const FILE_CATEGORIES: {
+  HTML: typeof HTML_FILE_EXTENSIONS;
+  IMAGE: _IMAGE_FILE_EXTENSIONS;
+  VIDEO: _VIDEO_FILE_EXTENSIONS;
+  AUDIO: _AUDIO_FILE_EXTENSIONS;
+  TEXT: _TEXT_FILE_EXTENSIONS;
+  FONT: _FONT_FILE_EXTENSIONS;
+  GRAPHICS: _GRAPHICS_FILE_EXTENSIONS;
+  MEDIA: typeof MEDIA_MIME_TYPES;
+};
+
+/**
+ * A font weight to name mapping.
+ */
+export const FONT_WEIGHTS: {
+  Thin: 100;
+  ExtraLight: 200;
+  Light: 300;
+  Regular: 400;
+  Medium: 500;
+  SemiBold: 600;
+  Bold: 700;
+  ExtraBold: 800;
+  Black: 900;
+};
 
 /**
  * Stores shared commonly used timeouts, measured in MS
@@ -866,75 +928,18 @@ export const TIMEOUTS: Readonly<{
 export type TIMEOUTS = ValueOf<typeof TIMEOUTS>;
 
 /**
- * Enumerate the source types which can be used for an AmbientLight placeable object
- * @deprecated since v9
+ * @deprecated since v10.
+ * TODO: make a real link
+ * @see data.ShapeData.TYPES
  */
-export const SOURCE_TYPES: Readonly<{
-  LOCAL: 'l';
-  GLOBAL: 'g';
-  UNIVERSAL: 'u';
+export const DRAWING_TYPES: Readonly<{
+  RECTANGLE: 'r';
+  ELLIPSE: 'e';
+  TEXT: 't';
+  POLYGON: 'p';
+  FREEHAND: 'f';
 }>;
 /**
- * Enumerate the source types which can be used for an AmbientLight placeable object
- * @deprecated since v9
+ * @deprecated since v10.
  */
-export type SOURCE_TYPES = ValueOf<typeof SOURCE_TYPES>;
-
-/**
- * Define the allowed Entity class types
- * @deprecated since v9 - use CONST.DOCUMENT_TYPES instead.
- */
-export const ENTITY_TYPES: typeof DOCUMENT_TYPES;
-/**
- * Define the allowed Entity class types
- * @deprecated since v9 - use CONST.DOCUMENT_TYPES instead.
- */
-export type ENTITY_TYPES = ValueOf<typeof ENTITY_TYPES>;
-
-/**
- * Define the allowed Document types which Folders may contain
- * @deprecated since v9 - use CONST.FOLDER_DOCUMENT_TYPES instead.
- */
-export const FOLDER_ENTITY_TYPES: typeof FOLDER_DOCUMENT_TYPES;
-/**
- * Define the allowed Document types which Folders may contain
- * @deprecated since v9 - use CONST.FOLDER_DOCUMENT_TYPES instead.
- */
-export type FOLDER_ENTITY_TYPES = ValueOf<typeof FOLDER_ENTITY_TYPES>;
-
-/**
- * Define the allowed permission levels for a non-user Entity.
- * Each level is assigned a value in ascending order. Higher levels grant more permissions.
- * @deprecated since v9 - use CONST.DOCUMENT_PERMISSION_LEVELS instead.
- */
-export const ENTITY_PERMISSIONS: typeof DOCUMENT_PERMISSION_LEVELS;
-/**
- * Define the allowed permission levels for a non-user Entity.
- * Each level is assigned a value in ascending order. Higher levels grant more permissions.
- * @deprecated since v9 - use CONST.DOCUMENT_PERMISSION_LEVELS instead.
- */
-export type ENTITY_PERMISSIONS = ValueOf<typeof ENTITY_PERMISSIONS>;
-
-/**
- * Define the allowed Entity types which may be dynamically linked in chat
- * @deprecated since v9 - use CONST.DOCUMENT_LINK_TYPES instead.
- */
-export const ENTITY_LINK_TYPES: typeof DOCUMENT_LINK_TYPES;
-/**
- * Define the allowed Entity types which may be dynamically linked in chat
- * @deprecated since v9 - use CONST.DOCUMENT_LINK_TYPES instead.
- */
-export type ENTITY_LINK_TYPES = ValueOf<typeof ENTITY_LINK_TYPES>;
-
-/**
- * The allowed Entity types which may exist within a Compendium pack
- * This is a subset of ENTITY_TYPES
- * @deprecated sinve v9 - use CONST.COMPENDIUM_DOCUMENT_TYPES instead.
- */
-export const COMPENDIUM_ENTITY_TYPES: typeof COMPENDIUM_DOCUMENT_TYPES;
-/**
- * The allowed Entity types which may exist within a Compendium pack
- * This is a subset of ENTITY_TYPES
- * @deprecated sinve v9 - use CONST.COMPENDIUM_DOCUMENT_TYPES instead.
- */
-export type COMPENDIUM_ENTITY_TYPES = ValueOf<typeof COMPENDIUM_ENTITY_TYPES>;
+export type DRAWING_TYPES = ValueOf<typeof DRAWING_TYPES>;
