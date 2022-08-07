@@ -59,7 +59,7 @@ declare class WorldConfig<
     name: string,
     options?: TextEditor.Options | undefined,
     initialContent?: string | undefined
-  ): void;
+  ): ReturnType<FormApplication['activateEditor']>;
 }
 
 declare namespace WorldConfig {
