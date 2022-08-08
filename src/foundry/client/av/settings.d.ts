@@ -53,11 +53,6 @@ declare class AVSettings {
     audioSink: string;
 
     /**
-     * @defaultValue
-     */
-    dockSize: 'large' | 'medium' | 'small';
-
-    /**
      * @defaultValue `'bottom'`
      */
     dockPosition: string;
@@ -71,6 +66,11 @@ declare class AVSettings {
      * @defaultValue `false`
      */
     muteAll: boolean;
+
+    /**
+     * @defaultValue `false`
+     */
+    borderColors: boolean;
 
     voice: {
       /**
@@ -177,6 +177,11 @@ declare class AVSettings {
      * @defaultValue `false`
      */
     blocked: boolean;
+
+    /**
+     * @defaultValue `240`
+     */
+    dockWidth: number;
   };
 
   /**
