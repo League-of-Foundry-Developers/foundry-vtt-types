@@ -120,6 +120,18 @@ export type ConfiguredFlags<T extends string> = T extends keyof FlagConfig
   ? FlagConfig[T] & Record<string, unknown>
   : Record<string, unknown>;
 
+export type ModuleRequiredOrOptional<Name extends string> = Name extends keyof RequiredModules ? never : undefined;
+
+export type ConfiguredModuleData<Name extends string> = Name extends keyof ModuleConfig ? ModuleConfig[Name] : {};
+
+export type ConfiguredModule<Name extends string> = ModuleRequiredOrOptional<Name> extends never
+  ? ConfiguredModuleData<Name>
+  :
+      | (ConfiguredModuleData<Name> & { active: true })
+      // flawed, can't use `key in module` this way, but omitting the Partial Record type kills nullish
+      // collocating, which is probably the better DX.
+      | ({ active: false } & Record<keyof ConfiguredModuleData<Name>, undefined>);
+
 export type ToObjectFalseType<T> = T extends {
   toObject: (source: false) => infer U;
 }
