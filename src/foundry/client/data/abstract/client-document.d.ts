@@ -119,7 +119,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
 
   /**
    * Return the permission level that the current game User has over this Document.
-   * See the CONST.DOCUMENT_PERMISSION_LEVELS object for an enumeration of these levels.
+   * See the CONST.DOCUMENT_OWNERSHIP_LEVELS object for an enumeration of these levels.
    *
    * @example
    * ```typescript
@@ -128,7 +128,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * actor.permission; // 2
    * ```
    */
-  get permission(): ValueOf<typeof CONST.DOCUMENT_PERMISSION_LEVELS>;
+  get permission(): ValueOf<typeof CONST.DOCUMENT_OWNERSHIP_LEVELS>;
 
   /**
    * Lazily obtain a FormApplication instance used to configure this Document, or null if no sheet is available.

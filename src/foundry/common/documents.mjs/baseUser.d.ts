@@ -79,7 +79,7 @@ export declare class BaseUser extends Document<data.UserData, null, UserMetadata
 
   override getUserLevel(
     user: BaseUser
-  ): typeof CONST.DOCUMENT_PERMISSION_LEVELS.OWNER | typeof CONST.DOCUMENT_PERMISSION_LEVELS.NONE;
+  ): typeof CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER | typeof CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE;
 
   /**
    * Test whether the User has at least a specific permission
