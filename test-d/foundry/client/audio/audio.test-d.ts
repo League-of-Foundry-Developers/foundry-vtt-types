@@ -3,7 +3,9 @@ import { expectType } from 'tsd';
 const audioHelper = new AudioHelper();
 expectType<AudioHelper>(audioHelper);
 expectType<AudioContext | undefined>(audioHelper.context);
-expectType<Map<string, AudioBuffer>>(audioHelper.buffers);
+expectType<Map<string, { buffer: AudioBuffer; lastAccessed: number; playing: boolean; size: number }>>(
+  audioHelper.buffers
+);
 expectType<Map<string, Sound>>(audioHelper.sounds);
 expectType<Map<number, Sound>>(audioHelper.playing);
 expectType<(() => void)[]>(audioHelper.pending);
@@ -26,7 +28,7 @@ expectType<Promise<Sound>>(audioHelper.play('a/path/to/some/sound/file.ogg'));
 expectType<Promise<Sound>>(
   audioHelper.play('a/path/to/some/sound/file.ogg', { loop: true, offset: 42, volume: 0.5, fade: 3 })
 );
-expectType<void>(audioHelper.awaitFirstGesture());
+expectType<Promise<AudioContext>>(audioHelper.awaitFirstGesture());
 expectType<Promise<Sound>>(audioHelper.preload('a/path/to/some/sound/file.ogg'));
 
 declare const socket: io.Socket;
