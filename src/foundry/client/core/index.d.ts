@@ -1,3 +1,4 @@
+import './document-index';
 import './gamepad';
 import './hooks';
 import './image';
@@ -9,5 +10,9 @@ import './settings';
 import './socket';
 import './sorting';
 import './time';
+import './tooltip';
+import './tour';
+import './tours';
 import './utils';
 import './video';
+import './workers';

@@ -1,3 +1,5 @@
+import type { DocumentModificationOptions } from '../../common/abstract/document.mjs';
+
 /**
  * A singleton class {@link game#time} which keeps the official Server and World time stamps.
  * Uses a basic implementation of https://www.geeksforgeeks.org/cristians-algorithm/ for synchronization.
@@ -42,12 +44,14 @@ declare class GameTime {
   /**
    * Advance the game time by a certain number of seconds
    * @param seconds - The number of seconds to advance (or rewind if negative) by
+   * @param options - Additional options passed to game.settings.set
    * @returns The new game time
    */
-  advance(seconds: number): Promise<number>;
+  advance(seconds: number, options?: DocumentModificationOptions): Promise<number>;
 
   /**
    * Synchronize the local client game time with the official time kept by the server
+   * @param socket - The connected server Socket instance
    */
   sync(socket?: io.Socket | null): Promise<this>;
 

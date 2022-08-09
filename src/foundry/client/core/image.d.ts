@@ -15,8 +15,6 @@ declare class ImageHelper {
     options?: ImageHelper.CompositeOptions & ImageHelper.TextureToImageOptions
   ): Promise<ImageHelper.ThumbnailReturn>;
 
-  /* -------------------------------------------- */
-
   /**
    * Composite a canvas object by rendering it to a single texture
    * @param object  - The DisplayObject to render to a texture
@@ -25,8 +23,6 @@ declare class ImageHelper {
    * @returns The composite Texture object
    */
   static compositeCanvasTexture(object: PIXI.DisplayObject, options?: ImageHelper.CompositeOptions): PIXI.Texture;
-
-  /* -------------------------------------------- */
 
   /**
    * Extract a texture to a base64 PNG string
@@ -44,6 +40,26 @@ declare class ImageHelper {
    * @returns A processed base64 string
    */
   static pixiToBase64(target: PIXI.DisplayObject, type: string, quality: number): Promise<string>;
+
+  /**
+   * Upload a base64 image string to a persisted data storage location
+   * @param base64   - The base64 string
+   * @param fileName - The file name to upload
+   * @param filePath - The file path where the file should be uploaded
+   * @param options  - Additional options which affect uploading
+   * @returns A promise which resolves to the FilePicker upload response
+   */
+  static uploadBase64(
+    base64: string,
+    fileName: string,
+    filePath: string,
+    options?: {
+      /** The data storage location to which the file should be uploaded (default: `'data'`) */
+      storage: string;
+      /** The MIME type of the file being uploaded */
+      type?: string;
+    }
+  ): Promise<ReturnType<FilePicker['upload']>>;
 }
 
 declare namespace ImageHelper {
