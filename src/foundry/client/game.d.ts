@@ -69,6 +69,11 @@ declare global {
     packs: foundry.utils.Collection<CompendiumCollection<CompendiumCollection.Metadata>>;
 
     /**
+     * A singleton web Worker manager.
+     */
+    workers: WorkerManager;
+
+    /**
      * Localization support
      */
     i18n: Localization;
@@ -145,6 +150,21 @@ declare global {
      * A singleton instance of the Video Helper class
      */
     video: VideoHelper;
+
+    /**
+     * A singleton instance of the TooltipManager class
+     */
+    tooltip: TooltipManager;
+
+    /**
+     * A singleton instance of the Tour collection class
+     */
+    tours: Tours;
+
+    /**
+     * The global document index.
+     */
+    documentIndex: DocumentIndex;
 
     /**
      * Whether the Game is running in debug mode
