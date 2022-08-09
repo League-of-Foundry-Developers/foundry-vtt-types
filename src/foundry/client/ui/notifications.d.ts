@@ -57,28 +57,28 @@ declare class Notifications<Options extends ApplicationOptions = ApplicationOpti
    * @param options   - Additional options which affect the notification
    *                    (default: `{}`)
    */
-  notify(message: string, type?: 'info' | 'warning' | 'error', options?: Notifications.Options): void;
+  notify(message: string, type?: 'info' | 'warning' | 'error', options?: Notifications.NotifyOptions): void;
 
   /**
    * Display a notification with the "info" type
    * @param message - The content of the notification message
    * @param options - Notification options passed to the notify function
    */
-  info(message: string, options?: Notifications.Options): void;
+  info(message: string, options?: Notifications.NotifyOptions): void;
 
   /**
    * Display a notification with the "warning" type
    * @param message - The content of the notification message
    * @param options - Notification options passed to the notify function
    */
-  warn(message: string, options?: Notifications.Options): void;
+  warn(message: string, options?: Notifications.NotifyOptions): void;
 
   /**
    * Display a notification with the "error" type
    * @param message - The content of the notification message
    * @param options - Notification options passed to the notify function
    */
-  error(message: string, options?: Notifications.Options): void;
+  error(message: string, options?: Notifications.NotifyOptions): void;
 
   /**
    * Retrieve a pending notification from the queue and display it
@@ -87,7 +87,7 @@ declare class Notifications<Options extends ApplicationOptions = ApplicationOpti
 }
 
 declare namespace Notifications {
-  interface Options {
+  interface NotifyOptions {
     /**
      * Whether the notification should be permanently displayed unless otherwise dismissed
      * @defaultValue `false`

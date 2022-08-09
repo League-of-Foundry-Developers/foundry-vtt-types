@@ -11,7 +11,7 @@ interface DialogOptions extends ApplicationOptions {
 /**
  * Create a modal dialog window displaying a title, a message, and a set of buttons which trigger callback functions.
  *
- * @example <caption>Constructing a custom dialog instance</caption>
+ * @example Constructing a custom dialog instance
  * ```typescript
  * let d = new Dialog({
  *  title: "Test Dialog",
@@ -77,6 +77,8 @@ declare class Dialog<Options extends DialogOptions = DialogOptions> extends Appl
   protected _onKeyDown(event: KeyboardEvent & { key: 'Escape' }): Promise<void>;
   protected _onKeyDown(event: KeyboardEvent): void;
 
+  _renderOuter(): ReturnType<Application['_renderOuter']>;
+
   /**
    * Submit the Dialog by selecting one of its buttons
    * @param button - The configuration of the chosen button
@@ -89,11 +91,10 @@ declare class Dialog<Options extends DialogOptions = DialogOptions> extends Appl
    * A helper factory method to create simple confirmation dialog windows which consist of simple yes/no prompts.
    * If you require more flexibility, a custom Dialog instance is preferred.
    *
-   * @param config - Confirmation dialog configuration
-   *                 (defaultValue: `{}`)
-   * @returns A promise which resolves once the user makes a choice or closes the window
+   * @param config - Confirmation dialog configuration (defaultValue: `{}`)
+   * @returns A promise which resolves once the user makes a choice or closes the window.
    *
-   * @example
+   * @example Prompt the user with a yes or no question
    * ```typescript
    * let d = Dialog.confirm({
    *  title: "A Yes or No Question",
@@ -160,12 +161,12 @@ declare namespace Dialog {
 
   interface Data {
     /**
-     * The window title
+     * The window title displayed in the dialog header
      */
     title: string;
 
     /**
-     * HTML content
+     * HTML content for the dialog form
      */
     content: string;
 
@@ -185,7 +186,7 @@ declare namespace Dialog {
     buttons: Record<string, Button>;
 
     /**
-     * The name of the default button which should be triggered on Enter
+     * The name of the default button which should be triggered on Enter keypress
      */
     default?: string | undefined;
   }

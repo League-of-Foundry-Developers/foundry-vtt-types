@@ -4,7 +4,7 @@ declare global {
   const ROUTE_PREFIX: string;
 
   const MESSAGES:
-    | { type: Notifications.Notification['type']; message: string; options: Notifications.Options }[]
+    | { type: Notifications.Notification['type']; message: string; options: Notifications.NotifyOptions }[]
     | null;
 }
 
