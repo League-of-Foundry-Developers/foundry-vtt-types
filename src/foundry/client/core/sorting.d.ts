@@ -54,7 +54,9 @@ declare class SortingHelpers {
       sortKey?: SortKey;
 
       /**
-       * Whether to sort before the target (if true) or after (if false)
+       * Whether to explicitly sort before (true) or sort after (false). If nothing is passed
+       * the sort order will be automatically determined, preferring before.
+       *
        * @defaultValue `true`
        */
       sortBefore?: boolean;

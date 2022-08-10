@@ -35,9 +35,17 @@ declare global {
     storage: Map<string, Storage | WorldSettings>;
 
     /**
-     * The types of settings which should be constructed as a primitive type
+     * The types of settings which should be constructed as a function call rather than as a class constructor.
+     * @internal
      */
-    protected static PRIMITIVE_TYPES: [typeof String, typeof Number, typeof Boolean, typeof Array];
+    protected static PRIMITIVE_TYPES: [
+      typeof String,
+      typeof Number,
+      typeof Boolean,
+      typeof Array,
+      typeof Symbol,
+      typeof BigInt
+    ];
 
     /**
      * Return a singleton instance of the Game Settings Configuration app
@@ -54,9 +62,8 @@ declare global {
      * @typeParam K     - The key name for the setting under the namespace module, as a type
      * @typeParam T     - The type of the setting value
      *
-     * @example
+     * @example Register a client setting
      * ```typescript
-     * // Register a client setting
      * game.settings.register("myModule", "myClientSetting", {
      *   name: "Register a Module Setting with Choices",
      *   hint: "A description of the registered setting and its behavior.",
@@ -74,9 +81,8 @@ declare global {
      * });
      * ```
      *
-     * @example
+     * @example Register a world setting
      * ```typescript
-     * // Register a world setting
      * game.settings.register("myModule", "myWorldSetting", {
      *   name: "Register a Module Setting with a Range slider",
      *   hint: "A description of the registered setting and its behavior.",
@@ -112,9 +118,8 @@ declare global {
      * @typeParam N     - The namespace under which the menu is registered, as a type
      * @typeParam K     - The key name for the setting under the namespace module, as a type
      *
-     * @example
+     * @example Define a settings submenu which handles advanced configuration needs
      * ```typescript
-     * // Define a settings submenu which handles advanced configuration needs
      * game.settings.registerMenu("myModule", "mySettingsMenu", {
      *   name: "My Settings Submenu",
      *   label: "Settings Menu Label",      // The text label used in the button
@@ -139,9 +144,8 @@ declare global {
      * @typeParam N     - The namespace under which the setting is registered, as a type
      * @typeParam K     - The setting key to retrieve, as a type
      *
-     * @example
+     * @example Retrieve the current setting value
      * ```typescript
-     * // Retrieve the current setting value
      * game.settings.get("myModule", "myClientSetting");
      * ```
      */
@@ -153,6 +157,7 @@ declare global {
      * @param namespace - The namespace under which the setting is registered
      * @param key       - The setting key to retrieve
      * @param value     - The data to assign to the setting key
+     * @param options   - Additional options passed to the server when updating world-scope settings
      * @typeParam N     - The namespace under which the setting is registered, as a type
      * @typeParam K     - The setting key to retrieve, as a type
      * @typeParam V     - The type of the value being set
@@ -166,7 +171,8 @@ declare global {
     set<N extends string, K extends string, V extends ClientSettings.Values[`${N}.${K}`]>(
       namespace: N,
       key: K,
-      value: V
+      value: V,
+      options?: DocumentModificationContext
     ): Promise<V>;
   }
 

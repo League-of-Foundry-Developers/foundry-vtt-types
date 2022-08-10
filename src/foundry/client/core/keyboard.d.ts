@@ -46,17 +46,21 @@ declare class KeyboardManager {
    * Values in this configuration object override any other display formatting rules which may be applied.
    */
   static KEYCODE_DISPLAY_MAPPING: {
-    ArrowLeft: '🡸';
-    ArrowRight: '🡺';
-    ArrowUp: '🡹';
-    ArrowDown: '🡻';
+    ArrowLeft: '←' | '🡸';
+    ArrowRight: '→' | '🡺';
+    ArrowUp: '↑' | '🡹';
+    ArrowDown: '↓' | '🡻';
     Backquote: '`';
     Backslash: '\\';
     BracketLeft: '[';
     BracketRight: ']';
     Comma: ',';
+    Control: typeof KeyboardManager['CONTROL_KEY_STRING'];
     Equal: '=';
     MetaLeft: '⌘' | '⊞';
+    MetaRight: '⌘' | '⊞';
+    OsLeft: '⌘' | '⊞';
+    OsRight: '⌘' | '⊞';
     Minus: '-';
     NumpadAdd: 'Numpad+';
     NumpadSubtract: 'Numpad-';
@@ -134,8 +138,9 @@ declare class KeyboardManager {
    * Given a standardized pressed key, find all matching registered Keybind Actions.
    * @param context - A standardized keyboard event context
    * @returns The matched Keybind Actions. May be empty.
+   * @internal
    */
-  protected static _getMatchingActions(context: KeyboardEventContext): KeybindingAction[];
+  static _getMatchingActions(context: KeyboardEventContext): KeybindingAction[];
 
   /**
    * Test whether a keypress context matches the registration for a keybinding action
@@ -182,66 +187,4 @@ declare class KeyboardManager {
    * See: https://github.com/w3c/uievents/issues/202
    */
   protected _onCompositionEnd(event: CompositionEvent): void;
-
-  /** @deprecated since v9, will be removed in v10 */
-  static get MOUSE_WHEEL_RATE_LIMIT(): number;
-
-  /**
-   * @deprecated since V9, will be removed in V10
-   * Return whether the key code is currently in the DOWN state
-   * @param code - The key code to test
-   */
-  isDown(code: string): boolean;
-
-  /** @deprecated since v9, will be removed in v10 */
-  static isControl(event: KeyboardEvent | PIXI.InteractionEvent): boolean;
-
-  /**
-   * @deprecated since v9, will be removed in v10
-   * @see KeyboardManager.isControl
-   */
-  isCtrl(event: Event | PIXI.InteractionEvent): boolean;
-
-  /** @deprecated since v9, will be removed in v10 */
-  get _downKeys(): Set<string>;
-
-  /** @deprecated since v9, will be removed in v10 */
-  static DIGIT_KEYS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
-
-  /** @deprecated since v9, will be removed in v10 */
-  static MOVEMENT_KEYS: {
-    W: ['up'];
-    A: ['left'];
-    S: ['down'];
-    D: ['right'];
-    ARROWUP: ['up'];
-    ARROWRIGHT: ['right'];
-    ARROWDOWN: ['down'];
-    ARROWLEFT: ['left'];
-    NUMPAD1: ['down', 'left'];
-    NUMPAD2: ['down'];
-    NUMPAD3: ['down', 'right'];
-    NUMPAD4: ['left'];
-    NUMPAD6: ['right'];
-    NUMPAD7: ['up', 'left'];
-    NUMPAD8: ['up'];
-    NUMPAD9: ['up', 'right'];
-  };
-
-  /** @deprecated since v9, will be removed in v10 */
-  static ZOOM_KEYS: {
-    PAGEUP: 'in';
-    PAGEDOWN: 'out';
-    NUMPADADD: 'in';
-    NUMPADSUBTRACT: 'out';
-  };
-
-  /** @deprecated since v9, will be removed in v10 */
-  static standardizeKey(key: string): string;
-
-  /** @deprecated since v9, will be removed in v10 */
-  get digitKeys(): typeof KeyboardManager.DIGIT_KEYS;
-
-  /** @deprecated since v9, will be removed in v10 */
-  get zoomKeys(): KeybindingActionBinding[];
 }
