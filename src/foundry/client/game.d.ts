@@ -41,20 +41,18 @@ declare global {
     userId: string | null;
 
     /**
-     * The game World which is currently active
+     * The game World which is currently active.
      */
     world: this['data']['world'];
 
     /**
-     * The System which is used to power this game world
+     * The System which is used to power this game World.
      */
     system: this['data']['system'];
 
     /**
-     * A Map of active modules which are currently enabled in this World
-     * @remarks
-     * - This is actually defined twice. The second time it has the documentation "A mapping of installed modules".
-     * - This includes _all_ modules that are installed, not only those that are enabled.
+     * A Map of active Modules which are currently eligible to be enabled in this World.
+     * The subset of Modules which are designated as active are currently enabled.
      */
     modules: Game.ModuleMap;
 
@@ -183,9 +181,6 @@ declare global {
      * @defaultValue `false`
      */
     ready: boolean;
-
-    /** Returns the current version of the Release, usable for comparisons using isNewerVersion */
-    get version(): string;
 
     /**
      * Fetch World data and return a Game instance
@@ -349,14 +344,6 @@ declare global {
     initializeCanvas(): Promise<void>;
 
     /**
-     * Ensure that necessary fonts have loaded and are ready for use
-     * Enforce a maximum timeout in milliseconds.
-     * Proceed with rendering after that point even if fonts are not yet available.
-     * @param ms - The timeout to delay
-     */
-    protected _checkFontsReady(ms: number): Promise<void>;
-
-    /**
      * Initialize Keyboard controls
      */
     initializeKeyboard(): void;
@@ -377,6 +364,11 @@ declare global {
     registerSettings(): void;
 
     /**
+     * Register core Tours
+     */
+    registerTours(): Promise<void>;
+
+    /**
      * Is the current session user authenticated as an application administrator?
      */
     get isAdmin(): boolean;
@@ -392,7 +384,7 @@ declare global {
     get combat(): CombatEncounters['viewed'];
 
     /**
-     * A state variable which tracks whether or not the game session is currently paused
+     * A state variable which tracks whether the game session is currently paused
      */
     get paused(): boolean;
 
@@ -404,9 +396,10 @@ declare global {
     /**
      * Toggle the pause state of the game
      * Trigger the `pauseGame` Hook when the paused state changes
-     * @param pause - The desired pause state. When true, the game will be paused, when false the game will be un-paused.
+     * @param pause - The desired pause state; true for paused, false for un-paused
      * @param push  - Push the pause state change to other connected clients? Requires an GM user.
      *                (default: `false`)
+     * @returns The new paused state
      */
     togglePause(pause: boolean, push?: boolean): void;
 
@@ -515,11 +508,6 @@ declare global {
      * Initialization steps for the Stream helper view
      */
     protected _initializeStreamView(): Promise<void>;
-
-    /**
-     * @deprecated since v9 - Use initializeDocuments instead.
-     */
-    initializeEntities(): void;
   }
 
   namespace Game {
