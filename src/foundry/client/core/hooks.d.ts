@@ -1,3 +1,4 @@
+import type { EditorState, Plugin } from 'prosemirror-state';
 import {
   ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
@@ -323,6 +324,21 @@ declare global {
        * @see {@link Sidebar#collapse}
        */
       collapseSidebar: (sidebar: Sidebar, collapsed: boolean) => void;
+
+      /**
+       * A hook event that fires whenever a ProseMirror editor is created.
+       * The hook provides the ProseMirror instance UUID, a list of plugins, and an object containing the provisional
+       * editor state, and a reference to the menu plugin.
+       * Hooked functions may append their own plugins or replace the state or menu plugin by replacing their references
+       * in the final argument.
+       *
+       * @param uuid    - A UUID that uniquely identifies this ProseMirror instance.
+       * @param plugins - A list of plugins that will be loaded.
+       * @param options - The provisional EditorState and ProseMirrorMenuPlugin.
+       * @remarks This is called by {@link Hooks.callAll}.
+       * @see {@link ProseMirrorEditor.create}
+       */
+      createProseMirrorEditor: (uuid: string, plugins: Record<string, Plugin>, options: { state: EditorState }) => void;
 
       /**
        * A hook event that fires when Cards are dealt from a deck to other hands
