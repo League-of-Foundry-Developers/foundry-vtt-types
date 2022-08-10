@@ -7,9 +7,8 @@ declare global {
    *
    * @typeParam D - the type of data object against which to parse attributes within the formula
    *
-   * @example
+   * @example Attack with advantage!
    * ```typescript
-   * // Attack with advantage!
    * let r = new Roll("2d20kh + @prof + @strMod", {prof: 2, strMod: 4});
    *
    * // The parsed terms of the roll formula
@@ -139,7 +138,7 @@ declare global {
      *                  (default: `{}`)
      * @returns The evaluated Roll instance
      *
-     * @example
+     * @example Evaluate a Roll expression
      * ```typescript
      * let r = new Roll("2d6 + 4 + 1d4");
      * await r.evaluate();
@@ -154,12 +153,15 @@ declare global {
     /**
      * Evaluate the roll asynchronously.
      * A temporary helper method used to migrate behavior from 0.7.x (sync by default) to 0.9.x (async by default).
+     * @param options - Options which inform how evaluation is performed
+     * @internal
      */
     protected _evaluate(options?: InexactPartial<Omit<Options, 'async'>>): Promise<Evaluated<this>>;
 
     /**
      * Evaluate the roll synchronously.
      * A temporary helper method used to migrate behavior from 0.7.x (sync by default) to 0.9.x (async by default).
+     * @param options - Options which inform how evaluation is performed
      */
     protected _evaluateSync(options?: InexactPartial<Omit<Options, 'async'>>): Evaluated<this>;
 
@@ -200,6 +202,11 @@ declare global {
       data?: D,
       options?: InexactPartial<Options>
     ): typeof CONFIG.Dice.rolls extends [infer T] ? T : Roll<D>;
+
+    /**
+     * Get the default configured Roll class.
+     */
+    static get defaultImplementation(): typeof Roll;
 
     /**
      * Transform an array of RollTerm objects into a cleaned string formula representation.
@@ -416,6 +423,13 @@ declare global {
     static collapseInlineResult(a: HTMLAnchorElement): void;
 
     /**
+     * Construct an inline roll link for this Roll.
+     * @param object - Additional options to configure how the link is constructed.
+
+     */
+    toAnchor(options?: InexactPartial<ToAnchorOptions>): HTMLAnchorElement;
+
+    /**
      * Represent the data of the Roll as an object suitable for JSON serialization.
      * @returns Structured data which can be serialized into JSON
      */
@@ -449,7 +463,7 @@ declare global {
      * @param options - Additional options passed to the Roll constructor
      * @returns The constructed Roll instance
      *
-     * @example
+     * @example Construct a Roll instance from an array of component terms
      * ```typescript
      * const t1 = new Die({number: 4, faces: 8};
      * const plus = new OperatorTerm({operator: "+"});
@@ -474,6 +488,24 @@ interface SplitGroupOptions {
   openSymbol: string;
   closeSymbol: string;
   onClose: (group: { open: string; terms: string[]; close: string }) => string[];
+}
+
+/** Additional options to configure how the link is constructed. */
+interface ToAnchorOptions {
+  /** A custom label for the total. */
+  label: string;
+
+  /** Attributes to set on the link. (default: `{}`) */
+  attrs: Record<string, string>;
+
+  /** Custom data- attributes to set on the link. (default: `{}`) */
+  dataset: Record<string, string | undefined>;
+
+  /** Classes to add to the link. (default: `[]`) */
+  classes: string[];
+
+  /** A font-awesome icon class to use as the icon instead of a d20. */
+  icon: string;
 }
 
 interface Data {

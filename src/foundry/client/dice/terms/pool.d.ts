@@ -6,9 +6,8 @@ declare global {
    * across all Rolls in the pool. The final total for the pool is defined as the sum over kept rolls, relative to any
    * success count or margin.
    *
-   * @example
+   * @example Keep the highest of the 3 roll expressions
    * ```typescript
-   * // Keep the highest of the 3 roll expressions
    * let pool = new PoolTerm({
    *   rolls: ["4d6", "3d8 - 1", "2d10 + 3"],
    *   modifiers: ["kh"]
@@ -54,13 +53,17 @@ declare global {
      * A regular expression pattern used to identify the closing of a dice pool expression
      * @defaultValue
      * ```typescript
-     * new RegExp(`}${DiceTerm.MODIFIERS_REGEXP_STRING}?(?:%F[0-9]+%)?`, "g")
+     * new RegExp(`}${DiceTerm.MODIFIERS_REGEXP_STRING}?(?:\\$\\$F[0-9]+\\$\\$)?`, "g");
      * ```
      */
     static CLOSE_REGEXP: RegExp;
 
     /**
      * A regular expression pattern used to match the entirety of a DicePool expression.
+     * @defaultValue
+     * ```typescript
+     * new RegExp(`{([^}]+)}${DiceTerm.MODIFIERS_REGEXP_STRING}?(?:\\$\\$F[0-9]+\\$\\$)?`);
+     * ```
      */
     static REGEXP: RegExp;
 
