@@ -59,7 +59,7 @@ declare class ImageHelper {
       /** The MIME type of the file being uploaded */
       type?: string;
     }
-  ): Promise<ReturnType<FilePicker['upload']>>;
+  ): Promise<ReturnType<typeof FilePicker['upload']>>;
 }
 
 declare namespace ImageHelper {
