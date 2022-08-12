@@ -581,7 +581,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document update
    */
   protected _preUpdate(
-    changed: DeepPartial<DataModel.SchemaToSource<this['schema']>>,
+    changed: DeepPartial<DataModel.SchemaToSourceInput<this['schema']>>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
@@ -679,6 +679,7 @@ declare abstract class Document<
    * @deprecated since v10
    */
   get data(): any;
+  //   get data(): Document.DataType<this, ConcreteDocumentShims>;
 
   // TODO basically just calls super
   //   /**

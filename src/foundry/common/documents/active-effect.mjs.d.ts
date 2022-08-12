@@ -72,10 +72,11 @@ export interface EffectDurationData extends DataSchema {
    */
   seconds: fields.NumberField<{ integer: true; min: 0; label: 'EFFECT.DurationSecs' }>;
 
-  /**
-   * The _id of the CombatEncounter in which the effect first started
-   */
-  combat: fields.ForeignDocumentField<typeof documents.BaseCombat, { label: 'EFFECT.Combat' }>;
+  // TODO causes circular issue
+  //   /**
+  //    * The _id of the CombatEncounter in which the effect first started
+  //    */
+  //   combat: fields.ForeignDocumentField<typeof documents.BaseCombat, { label: 'EFFECT.Combat' }>;
 
   /**
    * The maximum duration of the effect, in combat rounds

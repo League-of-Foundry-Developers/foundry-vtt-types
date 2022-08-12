@@ -24,7 +24,7 @@ interface BaseWallSchema extends DataSchema {
     },
     // Specialize the type to be a tuple of four elements.
     SimpleMerge<
-      fields.ArrayField.ExtendsOptions<fields.DataField.Any>,
+      fields.ArrayField.ExtendsOptions<fields.DataField.Any, any>,
       {
         SourceType: [number, number, number, number];
         InitializedType: [number, number, number, number];

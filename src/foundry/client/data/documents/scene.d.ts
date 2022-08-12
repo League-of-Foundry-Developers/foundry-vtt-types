@@ -145,25 +145,21 @@ declare global {
     getDimensions(): SceneDimensions;
 
     protected override _preCreate(
-      data: DataModel.SchemaToSourceInput<foundry.documents.BaseScene['schema']>,
+      data: DataModel.SchemaToSourceInput<this['schema']>,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;
 
-    protected override _onCreate(
-      data: foundry.documents.BaseScene['_source'],
-      options: DocumentModificationOptions,
-      userId: string
-    ): void;
+    protected override _onCreate(data: this['_source'], options: DocumentModificationOptions, userId: string): void;
 
     protected override _preUpdate(
-      changed: DeepPartial<DataModel.SchemaToSourceInput<foundry.documents.BaseScene['schema']>>,
+      changed: DeepPartial<DataModel.SchemaToSourceInput<this['schema']>>,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.documents.BaseScene['_source']> & Record<string, unknown>,
+      changed: DeepPartial<this['_source']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;

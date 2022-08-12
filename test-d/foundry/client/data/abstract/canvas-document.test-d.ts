@@ -13,7 +13,7 @@ expectType<boolean>(doc.isGlobal); // class itself
 
 // Test the inheritance of static members
 expectType<string>(AmbientLightDocument.documentName); // Document
-expectType<typeof data.AmbientLightData>(AmbientLightDocument.schema); // Base-Document
+expectType<BaseAmbientLightSchema>(AmbientLightDocument.schema); // Base-Document
 expectType<Promise<AmbientLightDocument | null | undefined>>(AmbientLightDocument.createDialog()); // ClientDocumentMixin
 
 // Test the props

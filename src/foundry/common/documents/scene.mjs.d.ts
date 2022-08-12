@@ -267,10 +267,11 @@ interface BaseSceneSchema extends DataSchema {
    */
   weather: fields.StringField<{}>;
 
+  // todo circularly references
   /**
    * The _id of a Folder which contains this Actor
    */
-  folder: fields.ForeignDocumentField<typeof documents.BaseFolder, {}>;
+  //   folder: fields.ForeignDocumentField<typeof documents.BaseFolder, {}>;
 
   /**
    * The numeric sort value which orders this Actor relative to its siblings

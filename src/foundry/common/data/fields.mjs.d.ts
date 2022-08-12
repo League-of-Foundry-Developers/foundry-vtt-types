@@ -276,7 +276,16 @@ export declare abstract class DataField<
   ): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
 }
 
-type JSONValue = object | number | string | boolean | null | undefined;
+type JSONValue =
+  | {
+      [K: string]: JSONValue;
+    }
+  | JSONValue[]
+  | number
+  | string
+  | boolean
+  | null
+  | undefined;
 
 // `_InternalDataField` exists so that on `DataField` the extra generic parameters are not visible.
 // These generic parameter to do the calculations seems to HAVE to exist to work around extremely buggy behavior between forms that should be equivalent;
@@ -431,7 +440,7 @@ export type CoalesceUnknown<T, D> = [unknown] extends [T] ? D : T;
  */
 export declare class NumberField<
   Options extends ChoicesOptions<ExtendsOptions, CoalesceUnknown<Choices, undefined>>,
-  Choices extends DataFieldChoices<NumberField.Type> | undefined = Options['choices'],
+  Choices extends DataFieldChoices<ExtendsOptions['SourceType']> | undefined = Options['choices'],
   ExtendsOptions extends DataField.AnyExtendsOptions = NumberField.ExtendsOptions<CoalesceUnknown<Choices, undefined>>
 > extends DataField<Options, ExtendsOptions> {
   constructor(options: Options & { choices?: Choices });
@@ -471,9 +480,12 @@ export namespace StringField {
     choices: DataFieldChoices<string>;
   }>;
 
-  export type ExtendsOptions<Choices extends DataFieldChoices<StringField.Type> | undefined> = SimpleMerge<
+  export type ExtendsOptions<
+    Choices extends DataFieldChoices<Type> | undefined,
+    Type extends JSONValue = StringField.Type
+  > = SimpleMerge<
     DataField.ExtendsOptions<
-      Choices extends undefined ? StringField.Type : DataFieldChoicesOptions<Exclude<Choices, undefined>>,
+      Choices extends undefined ? Type : DataFieldChoicesOptions<Exclude<Choices, undefined>>,
       any,
       StringField.ExtraOptions
     >,
@@ -497,7 +509,7 @@ export namespace StringField {
  */
 export declare class StringField<
   Options extends ChoicesOptions<ExtendsOptions, CoalesceUnknown<Choices, undefined>>,
-  Choices extends DataFieldChoices<StringField.Type> | undefined = Options['choices'],
+  Choices extends DataFieldChoices<ExtendsOptions['SourceType']> | undefined = Options['choices'],
   ExtendsOptions extends DataField.AnyExtendsOptions = StringField.ExtendsOptions<CoalesceUnknown<Choices, undefined>>
 > extends DataField<Options, ExtendsOptions> {
   // This constructor overload is not a mistake. Yes `Options & { choices: Choices }` should be functionally equivalent to `Options`. However by explicitly including Choices in the type this seems to be enough to get Typescript to infer Choices concretely rather than always being EXACTLY `DataFieldChoices<StringField.Type> | undefined` when inferring.
@@ -515,7 +527,7 @@ export declare class StringField<
 }
 
 export declare namespace ObjectField {
-  export type Type = Record<string, unknown>;
+  export type Type = Record<string, JSONValue>;
 
   export type DefaultOptionsValue = SimpleMerge<
     DataField.FoundryDefaultOptions,
@@ -556,8 +568,12 @@ export declare namespace ArrayField {
   export type AnyExtendsOptions = DataField.ExtendsOptions<any, any, any, any> & {
     InputElement: any;
   };
-  export type ExtendsOptions<Element> = DataField.ExtendsOptions<Array<Element>, DefaultOptionsValue, ExtraOptions> & {
-    InputElement: Element;
+  export type ExtendsOptions<InputElement, Element extends JSONValue> = DataField.ExtendsOptions<
+    Array<Element>,
+    DefaultOptionsValue,
+    ExtraOptions
+  > & {
+    InputElement: InputElement;
   };
 }
 
@@ -570,9 +586,8 @@ export declare class ArrayField<
   InputElement extends ExtendsOptions['InputElement'],
   Options extends DataField.Options<ExtendsOptions>,
   ExtendsOptions extends ArrayField.AnyExtendsOptions = SimpleMerge<
-    ArrayField.ExtendsOptions<DataField.Any>,
+    ArrayField.ExtendsOptions<DataField.Any, DataField.SourceTypeFor<InputElement>>,
     {
-      SourceType: Array<DataField.SourceTypeFor<InputElement>>;
       InitializedType: Array<DataField.InitializedTypeFor<InputElement>>;
     }
   >
@@ -618,7 +633,10 @@ export declare namespace SetField {
   export type DefaultOptionsValue = ArrayField.DefaultOptionsValue;
   export type ExtraOptions = ArrayField.ExtraOptions;
   export type AnyExtendsOptions = ArrayField.AnyExtendsOptions;
-  export type ExtendsOptions<Element> = ArrayField.ExtendsOptions<Element>;
+  export type ExtendsOptions<InputElement, Element extends JSONValue> = ArrayField.ExtendsOptions<
+    InputElement,
+    Element
+  >;
 }
 
 /**
@@ -629,9 +647,8 @@ export declare class SetField<
   InputElement extends ExtendsOptions['InputElement'],
   Options extends DataField.Options<ExtendsOptions>,
   ExtendsOptions extends SetField.AnyExtendsOptions = SimpleMerge<
-    SetField.ExtendsOptions<InputElement>,
+    SetField.ExtendsOptions<DataField.Any, DataField.ExtendsOptionsFor<InputElement>['SourceType']>,
     {
-      InputElement: DataField.Any;
       InitializedType: Set<DataField.ExtendsOptionsFor<InputElement>['InitializedType']>;
     }
   >
@@ -943,7 +960,11 @@ export declare namespace ForeignDocumentField {
       DefaultOptionsValue: DefaultOptionsValue;
       ExtraOptions: ExtraOptions;
       SourceType: DocumentIdField.Type;
-      InitializedType: 'idOnly' extends keyof Options ? (Options['idOnly'] extends true ? string : Model) : Model;
+      InitializedType: 'idOnly' extends keyof Options
+        ? Options['idOnly'] extends true
+          ? string
+          : InstanceType<Model>
+        : InstanceType<Model>;
     }
   >;
 }
@@ -1189,7 +1210,7 @@ export declare class DocumentOwnershipField<
 > extends ObjectField<Options> {}
 
 export declare namespace JSONField {
-  export type Type = StringField.Type;
+  export type Type = JSONValue;
 
   export type DefaultOptionsValue = SimpleMerge<
     StringField.DefaultOptionsValue,
@@ -1201,8 +1222,11 @@ export declare namespace JSONField {
 
   export type ExtraOptions = StringField.ExtraOptions;
 
-  export type ExtendsOptions<Choices extends DataFieldChoices<JSONField.Type> | undefined = undefined> = SimpleMerge<
-    StringField.ExtendsOptions<Choices>,
+  export type ExtendsOptions<
+    Choices extends DataFieldChoices<Type> | undefined = undefined,
+    Type extends JSONValue = JSONField.Type
+  > = SimpleMerge<
+    StringField.ExtendsOptions<Choices, Type>,
     {
       DefaultOptionsValue: DefaultOptionsValue;
     }
@@ -1214,9 +1238,15 @@ export declare namespace JSONField {
  */
 export declare class JSONField<
   Options extends ChoicesOptions<ExtendsOptions, CoalesceUnknown<Choices, undefined>>,
-  Choices extends DataFieldChoices<JSONField.Type> | undefined = Options['choices'],
+  Choices extends DataFieldChoices<ExtendsOptions['SourceType']> | undefined = Options['choices'],
   ExtendsOptions extends DataField.AnyExtendsOptions = JSONField.ExtendsOptions<CoalesceUnknown<Choices, undefined>>
-> extends StringField<Options, Choices, ExtendsOptions> {}
+> extends StringField<Options, Choices, ExtendsOptions> {
+  override clean(
+    value: undefined | string | JSONField.Type,
+    data: Record<string, unknown>,
+    options: Record<string, unknown>
+  ): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
+}
 
 export namespace HTMLField {
   export type Type = StringField.Type;

@@ -52,10 +52,11 @@ type BaseUserSchema = {
    */
   avatar: fields.FilePathField<{ categories: ['IMAGE'] }>;
 
+  // TODO, circularly references on Scene
   /**
    * A linked Actor document that is this user's impersonated character.
    */
-  character: fields.ForeignDocumentField<typeof BaseActor, {}>;
+  //   character: fields.ForeignDocumentField<typeof BaseActor, {}>;
 
   /**
    * A color to represent this user.

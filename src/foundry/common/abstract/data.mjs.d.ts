@@ -1,6 +1,6 @@
 import { StructuralClass } from './../../../types/helperTypes.d';
 import { ToObjectType } from '../../../types/helperTypes';
-import type { DataField, EmbeddedCollectionField, StringField } from '../data/fields.mjs';
+import type { DataField, EmbeddedCollectionField } from '../data/fields.mjs';
 
 declare namespace DataModel {
   export type ConstructorOptions = InexactPartial<{
@@ -132,7 +132,7 @@ declare namespace DataModel {
         Not<
           ItemExtends<DataField.InitialTypeFor<ConcreteDataSchema[K]>, FieldType<ConcreteDataSchema[K], 'SourceType'>>
         >,
-        ConcreteDataSchema[K] extends StringField<any, any, any>
+        'blank' extends keyof ConcreteDataSchema[K]
           ? And<Extends<ConcreteDataSchema[K]['blank'], false>, Equals<ConcreteDataSchema[K]['initial'], ''>>
           : false
       > extends false
@@ -183,9 +183,7 @@ export type DataSchema = {
   [name: string]: DataField.Any;
 };
 
-type Identity<T> = T;
-
-type DataModelConstructorParameters<ConcreteDataSchema extends DataSchema> = Identity<
+type DataModelConstructorParameters<ConcreteDataSchema extends DataSchema> = PartialIf<
   [
     /**
      * Initial data used to construct the data object
@@ -193,14 +191,13 @@ type DataModelConstructorParameters<ConcreteDataSchema extends DataSchema> = Ide
      */
     data: DataModel.SchemaToSourceInput<ConcreteDataSchema>,
 
-    data: ConcreteDataSchema,
-
     /**
      * Options which affect DataModel construction
      * (default: `{}`)
      */
     options?: DataModel.ConstructorOptions
-  ]
+  ],
+  Equals<DataModel.SchemaToSourceInput<ConcreteDataSchema>, {}>
 >;
 
 // @ts-expect-error subclassing StructuralClass gives an error
