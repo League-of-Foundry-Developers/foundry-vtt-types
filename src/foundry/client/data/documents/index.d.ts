@@ -12,6 +12,7 @@ import './fog-exploration';
 import './folder';
 import './item';
 import './journal-entry';
+import './journal-entry-page';
 import './macro';
 import './measured-template';
 import './note';

@@ -13,6 +13,7 @@ export { BaseFogExploration } from './baseFogExploration';
 export { BaseFolder } from './baseFolder';
 export { BaseItem } from './baseItem';
 export { BaseJournalEntry } from './baseJournalEntry';
+export { BaseJournalEntryPage } from './baseJournalEntryPage';
 export { BaseMacro } from './baseMacro';
 export { BaseMeasuredTemplate } from './baseMeasuredTemplate';
 export { BaseNote } from './baseNote';

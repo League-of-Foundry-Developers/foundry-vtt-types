@@ -1463,6 +1463,17 @@ declare global {
     };
 
     /**
+     * Configuration for the JournalEntryPage embedded document type.
+     */
+    JournalEntryPage: {
+      /** @defaultValue `JournalEntryPage` */
+      documentClass: ConfiguredDocumentClassOrDefault<typeof JournalEntryPage>;
+      typeLabels: { pdf: 'JOURNALENTRYPAGE.TypePDF' };
+      defaultType: 'text';
+      sidebarIcon: 'fas fa-book-open';
+    };
+
+    /**
      * Configuration for the ActiveEffect embedded document type
      */
     PlaylistSound: {
