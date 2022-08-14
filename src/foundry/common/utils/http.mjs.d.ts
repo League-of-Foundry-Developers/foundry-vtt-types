@@ -14,7 +14,7 @@ export function fetchWithTimeout(
 ): Promise<Response>;
 
 /**
- * A small wrapper that automatically asks for JSON
+ * A small wrapper that automatically asks for JSON with a Timeout
  * @param url            - The URL to make the Request to
  * @param data           - The data of the Request
  *                         (defalt: `{}`)

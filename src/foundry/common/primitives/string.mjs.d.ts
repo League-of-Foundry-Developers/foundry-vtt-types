@@ -17,7 +17,7 @@ interface String {
   /**
    * Transform any string into a url-viable slug string
    * @param options - Optional arguments which customize how the slugify operation is performed
-   * @returns The cleaned slug string
+   * @returns The slugified input string
    */
   slugify(options?: String.SlugifyOptions): string;
 }

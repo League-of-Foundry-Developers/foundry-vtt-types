@@ -10,7 +10,9 @@ interface Array<T> {
   deepFlatten(): Array<Array.Flattened<T>>;
 
   /**
-   * Test equality of the values of this array against the values of some other Array
+   * Test element-wise equality of the values of this array against the values of another array
+   * @param other - Some other array against which to test equality
+   * @returns Are the two arrays element-wise equal?
    */
   equals(other: T[]): boolean;
 
@@ -31,7 +33,7 @@ interface Array<T> {
 
   /**
    * Find an element within the Array and remove it from the array
-   * @param find - A function to use as input to findIndex
+   * @param find    - A function to use as input to findIndex
    * @param replace - A replacement for the spliced element
    * @returns The replacement element, the removed element, or null if no element was found.
    */
@@ -41,8 +43,9 @@ interface Array<T> {
 interface ArrayConstructor {
   /**
    * Create and initialize an array of length n with integers from 0 to n-1
-   * @param n - The desired array length
-   * @returns An array of integers from 0 to n
+   * @param n   - The desired array length
+   * @param min - A desired minimum number from which the created array starts (default: `0`)
+   * @returns An array of integers from min to min+n
    */
-  fromRange(n: number): number[];
+  fromRange(n: number, min?: number): number[];
 }

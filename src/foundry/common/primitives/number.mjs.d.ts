@@ -39,7 +39,7 @@ interface Number {
    *                   (default: `'round'`)
    * @returns The rounded number
    *
-   * @example
+   * @example Round a number to the nearest step interval
    * ```typescript
    * let n = 17.18;
    * n.toNearest(5); // 15
@@ -52,18 +52,19 @@ interface Number {
   toNearest(interval?: number, method?: 'round' | 'ceil' | 'floor'): number;
 
   /**
-   * A faster numeric between check which avoids type coercion to the Number object
+   * A faster numeric between check which avoids type coercion to the Number object.
    * Since this avoids coercion, if non-numbers are passed in unpredictable results will occur. Use with caution.
-   * @param inclusive - (default: `true`)
+   * @param a         - The lower-bound
+   * @param b         - The upper-bound
+   * @param inclusive - Include the bounding values as a true result?
+   * @returns Is the number between the two bounds?
    */
   between(a: number, b: number, inclusive?: boolean): boolean;
 }
 
 interface NumberConstructor {
   /**
-   * A faster numeric between check which avoids type coercion to the Number object
-   * Since this avoids coercion, if non-numbers are passed in unpredictable results will occur. Use with caution.
-   * @param inclusive - (default: `true`)
+   * @see {@link Number#between}
    */
   between(num: number, a: number, b: number, inclusive?: boolean): boolean;
 
