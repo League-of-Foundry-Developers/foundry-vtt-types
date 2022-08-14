@@ -51,7 +51,7 @@ declare class SnowWeatherEffect extends SpecialEffect {
    * }
    * ```
    */
-  static SNOW_CONFIG: PIXI.particles.EmitterConfig | PIXI.particles.OldEmitterConfig;
+  static SNOW_CONFIG: PIXI.particles.EmitterConfigV3;
 
   getParticleEmitters(): PIXI.particles.Emitter[];
 

@@ -14,8 +14,8 @@ updates:
       - dependency-name: '@types/simple-peer'
         update-types: ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: '@pixi/graphics-smooth'
+      - dependency-name: '@pixi/particle-emitter'
       - dependency-name: 'handlebars'
-      - dependency-name: 'pixi-particles'
       - dependency-name: 'pixi.js'
       - dependency-name: 'prosemirror-collab'
       - dependency-name: 'prosemirror-inputrules'

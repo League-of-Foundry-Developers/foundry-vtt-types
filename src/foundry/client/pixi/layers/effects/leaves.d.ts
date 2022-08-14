@@ -51,7 +51,7 @@ declare class AutumnLeavesWeatherEffect extends SpecialEffect {
    * }
    * ```
    */
-  static LEAF_CONFIG: PIXI.particles.EmitterConfig | PIXI.particles.OldEmitterConfig;
+  static LEAF_CONFIG: PIXI.particles.EmitterConfigV3;
 
   /**
    * @defaultValue
