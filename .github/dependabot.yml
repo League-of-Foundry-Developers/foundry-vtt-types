@@ -11,6 +11,8 @@ updates:
     ignore:
       - dependency-name: '@types/jquery'
         update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: '@types/showdown'
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: '@types/simple-peer'
         update-types: ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: '@pixi/graphics-smooth'
