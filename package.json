@@ -61,7 +61,7 @@
     "@types/jquery": "~3.5.9",
     "@types/simple-peer": "~9.11.1",
     "handlebars": "4.7.7",
-    "pixi.js": "5.3.11",
+    "pixi.js": "6.5.1",
     "prosemirror-collab": "1.3.0",
     "prosemirror-inputrules": "1.2.0",
     "prosemirror-model": "1.18.1",
