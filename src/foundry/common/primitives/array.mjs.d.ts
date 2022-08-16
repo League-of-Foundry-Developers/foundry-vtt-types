@@ -22,6 +22,7 @@ interface Array<T> {
    * @param rule - The rule to partition by
    * @returns An Array of length two whose elements are the partitioned pieces of the original
    */
+  partition<S extends T>(rule: (val: T) => val is S): [Exclude<T, S>[], S[]];
   partition(rule: (val: T) => boolean): [T[], T[]];
 
   /**

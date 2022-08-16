@@ -1,3 +1,5 @@
+import type { TypeOfTag } from 'typescript/lib/typescript';
+
 /**
  * Benchmark the performance of a function, calling it a requested number of iterations.
  * @param func       - The function to benchmark
@@ -74,7 +76,7 @@ interface DiffObjectOptions {
  * @param a - The first object.
  * @param b - The second object.
  */
-export function objectsEqual(a: Record<string, unknown>, b: Record<string, unknown>): boolean;
+export function objectsEqual(a: object, b: object): boolean;
 
 /**
  * A cheap data duplication trick which is relatively robust.
@@ -219,7 +221,7 @@ export declare function getParentClasses(cls: ConstructorOf<any>): Array<Constru
  * @param key    - An object property with notation a.b.c
  * @returns The value of the found property
  */
-export declare function getProperty(object: object, key: string): any | undefined;
+export declare function getProperty(object: object, key: string): any;
 
 /**
  * Get the URL route for a certain path which includes a path prefix, if one is set
@@ -244,7 +246,9 @@ export declare function getRoute(
  * @param variable - A provided variable
  * @returns The named type of the token
  */
-export function getType(variable: unknown): string;
+export function getType(
+  variable: unknown
+): Exclude<TypeOfTag, 'object'> | 'null' | 'Object' | 'Array' | 'Set' | 'Map' | 'Promise' | 'Error' | 'HTMLElement';
 
 /**
  * A helper function which tests whether an object has a property or nested property given a string key.
@@ -286,9 +290,7 @@ export declare function isObjectEmpty(obj: object): boolean;
  * @param value - The value to test
  * @returns Is the value empty-like?
  */
-export function isEmpty(
-  value: undefined | unknown[] | Record<string, unknown> | Set<unknown> | Map<unknown, unknown>
-): boolean;
+export function isEmpty(value: undefined | null | unknown[] | object | Set<unknown> | Map<unknown, unknown>): boolean;
 
 type OmitByValue<T, ValueType> = { [Key in keyof T as T[Key] extends ValueType ? never : Key]: T[Key] };
 type RemoveNever<T> = OmitByValue<T, never>;

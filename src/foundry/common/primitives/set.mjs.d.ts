@@ -62,6 +62,7 @@ interface Set<T> {
    * @param test - The test criterion to apply. Positional arguments are the value, the index of iteration, and the set being filtered.
    * @returns A new Set containing only elements which satisfy the test criterion.
    */
+  filter<F extends T>(test: (value: T, index: number, set: Set<T>) => value is F): Set<F>;
   filter(test: (value: T, index: number, set: Set<T>) => boolean): Set<T>;
 
   /**
@@ -70,6 +71,7 @@ interface Set<T> {
    * @param test - The test criterion to apply. Positional arguments are the value, the index of iteration, and the set being searched.
    * @returns The first element in the set which satisfies the test criterion, or undefined.
    */
+  find<F extends T>(test: (value: T, index: number, set: Set<T>) => value is F): F | undefined;
   find(test: (value: T, index: number, set: Set<T>) => boolean): T | undefined;
 
   /**

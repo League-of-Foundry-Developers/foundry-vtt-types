@@ -63,7 +63,7 @@ export default class Color extends Number {
    * @param other - Some other color or hex number
    * @returns Are the colors equal?
    */
-  equals(other: Color | number): string;
+  equals(other: Color | number): boolean;
 
   /**
    * Get a CSS-compatible RGBA color string.
@@ -125,7 +125,7 @@ export default class Color extends Number {
    * @param color - A color input
    * @returns The hex color instance or NaN
    */
-  static from(color: null | string | number | RGBColorVector | Color): Color | typeof NaN;
+  static from(color: null | string | number | RGBColorVector | Color): Color | number;
 
   /**
    * Create a Color instance from a color string which either includes or does not include a leading #.
