@@ -1,6 +1,6 @@
 import './pixiGraphicsSmooth';
 import './pixiLegacyGraphics';
-import './pixiParticles';
+import './pixiParticleEmitter';
 import './simple-peer';
 import './socket.io-client';
 import './tinyMCE';
