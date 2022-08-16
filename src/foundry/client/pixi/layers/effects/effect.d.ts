@@ -39,7 +39,7 @@ declare class SpecialEffect {
    * }
    * ```
    */
-  static DEFAULT_CONFIG: PIXI.particles.EmitterConfig | PIXI.particles.OldEmitterConfig;
+  static DEFAULT_CONFIG: PIXI.particles.EmitterConfigV3;
 
   /**
    * @defaultValue `'Special Effect'`
