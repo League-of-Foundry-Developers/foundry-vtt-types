@@ -83,15 +83,15 @@ export declare namespace DataField {
     | ExtendsOptions['InitializedType']
     | ExtraTypes<Field>;
 
-  export type SourceTypeFor<Field extends Any> = ExpandDeep<InternalSourceTypeFor<Field, ExtendsOptionsFor<Field>>>;
+  export type SourceTypeFor<Field extends Any> = InternalSourceTypeFor<Field, ExtendsOptionsFor<Field>>;
 
   type InternalSourceTypeFor<Field extends Any, ExtendsOptions extends AnyExtendsOptions> =
     | Exclude<ExtendsOptions['SourceType'], undefined | null>
     | ExtraTypes<Field>;
 
-  type ExtraTypes<Field extends Any> =
-    | (false extends ('required' extends keyof Field ? Field['required'] : never) ? undefined : never)
-    | (true extends ('nullable' extends keyof Field ? Field['nullable'] : never) ? null : never);
+  export type ExtraTypes<Field extends Any> =
+    | (false extends Field['required'] ? undefined : never)
+    | (true extends Field['nullable'] ? null : never);
 
   export type OptionsFor<Field extends typeof DataField> = Field extends abstract new (...args: any[]) => DataField<
     infer Options,
@@ -114,13 +114,13 @@ export declare namespace DataField {
   export type ExtendsOptions<
     SourceType extends JSONValue,
     DefaultOptionsValue extends DataField.DefaultOptions<SourceType> & InexactPartial<ExtraOptions>,
-    ExtraOptions extends object = {},
+    ExtraOptions extends Record<string, unknown> = {},
     OptionalOptions extends OptionalExtendsOptions = {}
   > = {
     SourceType: SourceType;
     ExtraOptions: ExtraOptions;
 
-    DefaultOptionsValue: DefaultOptionsValue;
+    DefaultOptionsValue: IsAny<DefaultOptionsValue> extends true ? DataField.DefaultOptions<any> : DefaultOptionsValue;
   } & SimpleMerge<
     {
       InitializedType: SourceType;
@@ -300,16 +300,18 @@ declare class _InternalDataField<
   _Options extends DataField.Options<ExtendsOptions> = RemoveIndex<
     IsAny<Options> extends true ? DataField.Options<ExtendsOptions> : Options
   >,
-  _ExtendsOptions extends DataField.AnyExtendsOptions = RemoveIndex<
-    IsAny<ExtendsOptions> extends true ? DataField.AnyExtendsOptions : ExtendsOptions
+  DefaultOptionsValue extends DataField.DefaultOptions<any> = RemoveIndex<
+    IsAny<ExtendsOptions['DefaultOptionsValue']> extends true
+      ? DataField.DefaultOptions<any>
+      : ExtendsOptions['DefaultOptionsValue']
   >,
+  // Merging in `DataField.DefaultOptions<any>` shouldn't have any effect on the final type as `DefaultOptionsValue` is a subtype.
+  // It's here to remind inference that properties like `nullable` exist on ANY `DataField`, it seems to disallow it on `this` if not reminded.
   _ComputedDataField extends Record<string, unknown> = {
     options: _Options;
-    computed: SimpleMerge<_ExtendsOptions['DefaultOptionsValue'], Pick<_Options, RequiredProperties<_Options>>>;
-  } & SimpleMerge<_ExtendsOptions['DefaultOptionsValue'], Pick<_Options, RequiredProperties<_Options>>>
+  } & SimpleMerge<DefaultOptionsValue, Pick<_Options, RequiredProperties<_Options>>> &
+    DataField.DefaultOptions<any>
 > extends StructuralClass<_ComputedDataField> {}
-
-type SimpleMerge<T, U> = Omit<T, keyof U> & U;
 
 export namespace BooleanField {
   export type Type = boolean;
@@ -332,7 +334,7 @@ export namespace BooleanField {
 export declare class BooleanField<
   Options extends DataField.Options<ExtendsOptions>,
   ExtendsOptions extends DataField.AnyExtendsOptions = BooleanField.ExtendsOptions
-> extends DataField<Options, ExtendsOptions> {
+> extends DataField<Options, BooleanField.ExtendsOptions> {
   _cast(value: string | object | any): DataField.SourceTypeFor<this>;
 }
 
@@ -359,7 +361,7 @@ export type ChoicesOptions<
   CalculateChoicesMerge<
     [Choices] extends [undefined]
       ? 'choices' extends keyof ExtendsOptions['DefaultOptionsValue']
-        ? ExtendsOptions['DefaultOptionsValue']['choices']
+        ? Extract<ExtendsOptions['DefaultOptionsValue']['choices'], DataFieldChoices<any> | undefined>
         : undefined
       : Choices
   >
@@ -421,14 +423,15 @@ export namespace NumberField {
     // When `choices` is defined this is not always true.
     {
       // If choices are provided, the field should not be null by default
-      DefaultOptionsValue: SimpleMerge<
-        NumberField.DefaultOptionsValue,
-        Choices extends undefined
-          ? {}
-          : {
-              nullable: false;
-            }
-      >;
+      DefaultOptionsValue: DataField.AnyExtendsOptions['DefaultOptionsValue'] &
+        SimpleMerge<
+          NumberField.DefaultOptionsValue,
+          Choices extends undefined
+            ? {}
+            : {
+                nullable: false;
+              }
+        >;
     }
   >;
 }
@@ -491,15 +494,16 @@ export namespace StringField {
     >,
     {
       // If choices are provided, the field should not be null or blank by default
-      DefaultOptionsValue: SimpleMerge<
-        StringField.DefaultOptionsValue,
-        Choices extends undefined
-          ? {}
-          : {
-              nullable: false;
-              blank: false;
-            }
-      >;
+      DefaultOptionsValue: DataField.AnyExtendsOptions['DefaultOptionsValue'] &
+        SimpleMerge<
+          StringField.DefaultOptionsValue,
+          Choices extends undefined
+            ? {}
+            : {
+                nullable: false;
+                blank: false;
+              }
+        >;
     }
   >;
 }
@@ -550,7 +554,7 @@ export declare class ObjectField<
   Options extends DataField.Options<ExtendsOptions>,
   ExtendsOptions extends DataField.AnyExtendsOptions = ObjectField.ExtendsOptions
 > extends DataField<Options, ExtendsOptions> {
-  _cast(value: object): DataField.SourceTypeFor<this>;
+  _cast(value: ObjectField.Type): DataField.SourceTypeFor<this>;
 }
 
 export declare namespace ArrayField {
@@ -659,7 +663,7 @@ export declare namespace SchemaField {
 
   export type ExtraOptions = ObjectField.ExtraOptions;
 
-  export type OptionalDataSchema = Record<string, DataField<any, any> & RequiredProps<DataField<any, any>, 'initial'>>;
+  //   export type OptionalDataSchema = Record<string, DataField<any, any> & RequiredProps<DataField<any, any>, 'initial'>>;
 
   export type ExtendsOptions<Schema extends DataSchema> = DataField.ExtendsOptions<
     Partial<DataModel.SchemaToSourceInput<Schema>>,
@@ -871,9 +875,8 @@ export declare namespace EmbeddedCollectionField {
   export type Type = foundry.abstract.Document.AnyConstructor;
 
   export type ExtendsOptions<Element extends Type> = SimpleMerge<
-    ArrayField.AnyExtendsOptions,
+    ArrayField.ExtendsOptions<Type, any>,
     {
-      InputElement: Type;
       SourceType: InstanceType<Element>['_source'][];
       InitializedType: EmbeddedCollection<Element, DataModel.Any>;
     }
@@ -960,11 +963,7 @@ export declare namespace ForeignDocumentField {
       DefaultOptionsValue: DefaultOptionsValue;
       ExtraOptions: ExtraOptions;
       SourceType: DocumentIdField.Type;
-      InitializedType: 'idOnly' extends keyof Options
-        ? Options['idOnly'] extends true
-          ? string
-          : InstanceType<Model>
-        : InstanceType<Model>;
+      InitializedType: GetKey<Options, 'idOnly'> extends true ? string : InstanceType<Model>;
     }
   >;
 }
@@ -1131,6 +1130,7 @@ export declare namespace AngleField {
   export type ExtendsOptions<Choices extends DataFieldChoices<AngleField.Type> | undefined> = SimpleMerge<
     NumberField.ExtendsOptions<Choices>,
     {
+      SourceType: number;
       DefaultOptionsValue: DefaultOptionsValue;
       ExtraOptions: ExtraOptions;
     }

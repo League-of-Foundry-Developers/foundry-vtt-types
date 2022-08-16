@@ -88,19 +88,6 @@ export declare class ClientDocumentMixin<T extends AnyDocument> {
   get compendium(): any; // TODO: CompendiumCollection<this>
 
   /**
-   * Return a reference to the Folder to which this Document belongs, if any.
-   *
-   * @example <caption>A Document may belong to a Folder</caption>
-   * ```typescript
-   * let folder = game.folders.contents[0];
-   * let actor = await Actor.create({name: "New Actor", folder: folder.id});
-   * console.log(actor.data.folder); // folder.id;
-   * console.log(actor.folder); // folder;
-   * ```
-   */
-  get folder(): Folder | null;
-
-  /**
    * A boolean indicator for whether or not the current game User has ownership rights for this Document.
    * Different Document types may have more specialized rules for what constitutes ownership.
    */

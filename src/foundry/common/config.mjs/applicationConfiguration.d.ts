@@ -2,6 +2,8 @@ import { SOFTWARE_UPDATE_CHANNELS } from '../constants.mjs';
 import type { DataModel, DataSchema } from '../abstract/data.mjs';
 import * as fields from '../data/fields.mjs';
 
+export type ValidatePort = (port: number) => void;
+
 interface ApplicationConfigurationSchema extends DataSchema {
   /**
    * The server administrator password (obscured)
@@ -73,7 +75,7 @@ interface ApplicationConfigurationSchema extends DataSchema {
     nullable: false;
     integer: true;
     initial: 30000;
-    validate: typeof ApplicationConfiguration._validatePort;
+    validate: ValidatePort;
     label: 'SETUP.PortLabel';
     hint: 'SETUP.PortHint';
   }>;
@@ -151,7 +153,7 @@ declare class ApplicationConfiguration extends DataModel<null, ApplicationConfig
    * @param port - The requested port
    * @throws - An error if the requested port is invalid
    */
-  private static _validatePort(port: number): void;
+  private static _validatePort: ValidatePort;
 }
 
 export { ApplicationConfiguration };

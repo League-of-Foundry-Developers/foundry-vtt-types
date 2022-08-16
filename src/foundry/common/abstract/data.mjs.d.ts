@@ -153,9 +153,9 @@ declare namespace DataModel {
   export type GetSchemaValue<
     ConcreteDataSchema extends Partial<DataSchema>,
     ExtendsOptionsKey extends keyof DataField.AnyExtendsOptions
-  > = ExpandDeep<{
+  > = {
     [K in keyof ConcreteDataSchema]: FieldType<ConcreteDataSchema[K], ExtendsOptionsKey>;
-  }>;
+  };
 
   export type ConstructReadonly<ConcreteDataSchema extends DataSchema> = ReadonlyProps<
     ConcreteDataSchema,

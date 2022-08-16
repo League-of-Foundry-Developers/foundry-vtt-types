@@ -68,8 +68,6 @@ type BaseAmbientLightMetadata = Merge<
   }
 >;
 
-type Foo = ConfiguredDocumentClass<typeof Scene>;
-
 /**
  * The Document definition for an AmbientLight.
  * Defines the DataSchema and common behaviors for an AmbientLight which are shared between both client and server.

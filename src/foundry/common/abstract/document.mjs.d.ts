@@ -10,20 +10,18 @@ declare namespace Document {
 
   export type AnyConstructor = Pick<typeof Document, keyof typeof Document> & (abstract new (...params: any[]) => Any);
 
-  export type DataType<ConcreteDocument extends Any, DocumentShims extends Record<string, unknown>> = ExpandDeep<
-    {
-      constructor: typeof Document;
-      document: ConcreteDocument;
-      reset: () => ReturnType<ConcreteDocument['reset']>;
-      schema: ConcreteDocument['schema'];
-      update: ConcreteDocument['updateSource'];
-      validate: ConcreteDocument['validate'];
-      _source: ConcreteDocument['_source'];
-      toObject: ConcreteDocument['toObject'];
-      toJSON: ConcreteDocument['toJSON'];
-    } & DataModel.SchemaToData<ConcreteDocument['schema']> &
-      DocumentShims
-  >;
+  export type DataType<ConcreteDocument extends Any, DocumentShims extends Record<string, unknown>> = {
+    constructor: typeof Document;
+    document: ConcreteDocument;
+    reset: () => ReturnType<ConcreteDocument['reset']>;
+    schema: ConcreteDocument['schema'];
+    update: ConcreteDocument['updateSource'];
+    validate: ConcreteDocument['validate'];
+    _source: ConcreteDocument['_source'];
+    toObject: ConcreteDocument['toObject'];
+    toJSON: ConcreteDocument['toJSON'];
+  } & DataModel.SchemaToData<ConcreteDocument['schema']> &
+    DocumentShims;
 
   export type ParentTypeFor<T extends AnyDocument> = T extends Document<any, infer U, any, any> ? U : never;
 
@@ -46,7 +44,7 @@ type GetFlags<T extends AnyDocument> = 'flags' extends keyof T['_source'] ? T['f
  * The abstract base class shared by both client and server-side which defines the model for a single document type.
  */
 declare abstract class Document<
-  ConcreteDataSchema extends DataSchema = DataSchema,
+  ConcreteDataSchema extends DataSchema = {},
   Parent extends AnyDocument | null = null,
   ConcreteMetadata extends Metadata<any> = Metadata<any>,
   ConcreteDocumentShims extends Record<string, unknown> = {}
