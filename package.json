@@ -56,7 +56,7 @@
     "typscript"
   ],
   "dependencies": {
-    "@pixi/graphics-smooth": "0.0.22",
+    "@pixi/graphics-smooth": "0.0.30",
     "@pixi/particle-emitter": "5.0.7",
     "@types/jquery": "~3.5.9",
     "@types/simple-peer": "~9.11.1",
