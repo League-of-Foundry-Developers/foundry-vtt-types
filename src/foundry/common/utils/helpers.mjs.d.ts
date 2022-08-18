@@ -13,6 +13,14 @@ export declare function benchmark<F extends (...args: any[]) => unknown>(
 ): Promise<void>;
 
 /**
+ * A debugging function to test latency or timeouts by forcibly locking the thread for an amount of time.
+ * @param ms - A number of milliseconds to lock
+ * @param debug - (default: `false`)
+ * @returns
+ */
+export function threadLock(ms: number, debug: boolean): Promise<void>;
+
+/**
  * Wrap a callback in a debounced timeout.
  * Delay execution of the callback function until the function has not been called for delay milliseconds
  * @param callback - A function to execute once the debounced threshold has been passed
@@ -215,15 +223,6 @@ export declare function flattenObject(obj: object, _d?: number): any;
 export declare function getParentClasses(cls: ConstructorOf<any>): Array<ConstructorOf<any>>;
 
 /**
- * A helper function which searches through an object to retrieve a value by a string key.
- * The string key supports the notation a.b.c which would return object[a][b][c]
- * @param object - The object to traverse
- * @param key    - An object property with notation a.b.c
- * @returns The value of the found property
- */
-export declare function getProperty(object: object, key: string): any;
-
-/**
  * Get the URL route for a certain path which includes a path prefix, if one is set
  * @param path   - The Foundry URL path
  * @param prefix - A path prefix to apply
@@ -258,6 +257,25 @@ export function getType(
  * @returns An indicator for whether the property exists
  */
 export declare function hasProperty(object: object, key: string): boolean;
+
+/**
+ * A helper function which searches through an object to retrieve a value by a string key.
+ * The string key supports the notation a.b.c which would return object[a][b][c]
+ * @param object - The object to traverse
+ * @param key    - An object property with notation a.b.c
+ * @returns The value of the found property
+ */
+export declare function getProperty(object: object, key: string): any;
+
+/**
+ * A helper function which searches through an object to assign a value using a string key
+ * This string key supports the notation a.b.c which would target object[a][b][c]
+ * @param object - The object to update
+ * @param key    - The string key
+ * @param value  - The value to be assigned
+ * @returns Whether the value was changed from its previous value
+ */
+export declare function setProperty(object: object, key: string, value: any): boolean;
 
 /**
  * Invert an object by assigning its values as keys and its keys as values.
@@ -481,16 +499,6 @@ export function parseS3URL(key: string): { bucket: string | null; keyPrefix: str
  * @returns Return a string containing random letters and numbers
  */
 export declare function randomID(length?: number): string;
-
-/**
- * A helper function which searches through an object to assign a value using a string key
- * This string key supports the notation a.b.c which would target object[a][b][c]
- * @param object - The object to update
- * @param key    - The string key
- * @param value  - The value to be assigned
- * @returns Whether the value was changed from its previous value
- */
-export declare function setProperty(object: object, key: string, value: any): boolean;
 
 /**
  * Express a timestamp as a relative string
