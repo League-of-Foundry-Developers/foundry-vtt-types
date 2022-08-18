@@ -46,11 +46,10 @@ interface BaseCardsSchema extends DataSchema {
    */
   system: fields.SystemDataField<typeof BaseCards, {}>;
 
-  // TODO circularly references on Cards
   /**
    * A collection of Card documents which currently belong to this stack
    */
-  //   cards: fields.EmbeddedCollectionField<typeof documents.BaseCard, {}>;
+  cards: fields.EmbeddedCollectionField<typeof documents.BaseCard, {}>;
 
   /**
    * The visible width of this stack

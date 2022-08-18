@@ -3,7 +3,6 @@ import Document, { DocumentMetadata } from '../abstract/document.mjs';
 import * as CONST from '../constants.mjs';
 import * as fields from '../data/fields.mjs';
 import { DataModel, DataSchema } from '../abstract/module.mjs';
-import type BaseRollTable from './roll-table.mjs';
 import type { BaseUser } from './module.mjs';
 import type { FlagsField } from '../data/flagsField';
 
@@ -98,7 +97,7 @@ type BaseTableResultShims = {
    * Rename collection to resultCollection
    * @deprecated since v10
    */
-  //   collection: BaseTableResult['documentCollection'];
+  collection: BaseTableResult['documentCollection'];
 
   /**
    * Rename collection to resultCollection
@@ -119,7 +118,7 @@ type BaseTableResultShims = {
  */
 declare class BaseTableResult extends Document<
   BaseTableResultSchema,
-  null, // InstanceType<ConfiguredDocumentClass<typeof RollTable>>,
+  InstanceType<ConfiguredDocumentClass<typeof RollTable>>,
   BaseTableResultMetadata,
   BaseTableResultShims
 > {

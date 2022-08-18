@@ -142,16 +142,14 @@ interface BaseSceneSchema extends DataSchema {
         required: true;
         nullable: false;
         positive: true;
-        // TODO fix the circular reference here.
-        initial: () => number; // JSOr<OptionalChaining<OptionalChaining<typeof game, 'system'>, 'gridDistance'>, 1>;
+        initial: () => JSOr<OptionalChaining<OptionalChaining<typeof game, 'system'>, 'gridDistance'>, 1>;
       }>;
 
       /**
        * A label for the units of measure which are used for grid distance.
        */
       units: fields.StringField<{
-        // TODO fix the circular reference here.
-        initial: () => string; // NullishCoalesce<OptionalChaining<OptionalChaining<typeof game, 'system'>, 'gridUnits'>, ''>;
+        initial: () => NullishCoalesce<OptionalChaining<OptionalChaining<typeof game, 'system'>, 'gridUnits'>, ''>;
       }>;
     },
     {}
@@ -191,61 +189,53 @@ interface BaseSceneSchema extends DataSchema {
    */
   darkness: fields.AlphaField<{ initial: 0 }>;
 
-  // TODO, causes circular reference in Scene
   /**
    * A collection of embedded Drawing objects.
    * (default: `[]`)
    */
-  //   drawings: fields.EmbeddedCollectionField<typeof documents.BaseDrawing, {}>;
+  drawings: fields.EmbeddedCollectionField<typeof documents.BaseDrawing, {}>;
 
-  // TODO, causes circular reference in Scene
   /**
    * A collection of embedded Token objects.
    * (default: `[]`)
    */
-  //   tokens: fields.EmbeddedCollectionField<typeof documents.BaseToken, {}>;
+  tokens: fields.EmbeddedCollectionField<typeof documents.BaseToken, {}>;
 
-  // TODO, causes circular reference in Scene
   /**
    * A collection of embedded AmbientLight objects.
    * (default: `[]`)
    */
-  //   lights: fields.EmbeddedCollectionField<typeof documents.BaseAmbientLight, {}>;
+  lights: fields.EmbeddedCollectionField<typeof documents.BaseAmbientLight, {}>;
 
-  // TODO Causes circularly references on Sound
   /**
    * A collection of embedded Note objects.
    * (default: `[]`)
    */
-  //   notes: fields.EmbeddedCollectionField<typeof documents.BaseNote, {}>;
+  notes: fields.EmbeddedCollectionField<typeof documents.BaseNote, {}>;
 
-  // TODO Causes circularly references on Scene
   /**
    * A collection of embedded AmbientSound objects.
    * (default: `[]`)
    */
-  //   sounds: fields.EmbeddedCollectionField<typeof documents.BaseAmbientSound, {}>;
+  sounds: fields.EmbeddedCollectionField<typeof documents.BaseAmbientSound, {}>;
 
-  // TODO causes circularly references in Scene
   /**
    * A collection of embedded MeasuredTemplate objects.
    * (default: `[]`)
    */
-  //   templates: fields.EmbeddedCollectionField<typeof documents.BaseMeasuredTemplate, {}>;
+  templates: fields.EmbeddedCollectionField<typeof documents.BaseMeasuredTemplate, {}>;
 
-  // TODO causes circularly references in Scene
   /**
    * A collection of embedded Tile objects.
    * (default: `[]`)
    */
-  //   tiles: fields.EmbeddedCollectionField<typeof documents.BaseTile, {}>;
+  tiles: fields.EmbeddedCollectionField<typeof documents.BaseTile, {}>;
 
-  // TODO circularly references
   /**
    * A collection of embedded Wall objects
    * (default: `[]`)
    */
-  //   walls: fields.EmbeddedCollectionField<typeof documents.BaseWall, {}>;
+  walls: fields.EmbeddedCollectionField<typeof documents.BaseWall, {}>;
 
   /**
    * A linked Playlist document which should begin automatically playing when this Scene becomes active.
@@ -267,11 +257,10 @@ interface BaseSceneSchema extends DataSchema {
    */
   weather: fields.StringField<{}>;
 
-  // todo circularly references
   /**
    * The _id of a Folder which contains this Actor
    */
-  //   folder: fields.ForeignDocumentField<typeof documents.BaseFolder, {}>;
+  folder: fields.ForeignDocumentField<typeof documents.BaseFolder, {}>;
 
   /**
    * The numeric sort value which orders this Actor relative to its siblings

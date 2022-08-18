@@ -58,17 +58,15 @@ interface BaseAdventureSchema extends DataSchema {
    */
   tables: fields.SetField<fields.EmbeddedDataField<typeof documents.BaseRollTable, {}>, {}>;
 
-  // TODO causes excessively deep
   /**
    * An array of Macro documents which are included in the adventure
    */
-  //   macros: fields.SetField<fields.EmbeddedDataField<typeof documents.BaseMacro, {}>, {}>;
+  macros: fields.SetField<fields.EmbeddedDataField<typeof documents.BaseMacro, {}>, {}>;
 
-  // TODO causes circular reference
   /**
    * An array of Cards documents which are included in the adventure
    */
-  //   cards: fields.SetField<fields.EmbeddedDataField<typeof documents.BaseCards, {}>, {}>;
+  cards: fields.SetField<fields.EmbeddedDataField<typeof documents.BaseCards, {}>, {}>;
 
   /**
    * An array of Playlist documents which are included in the adventure

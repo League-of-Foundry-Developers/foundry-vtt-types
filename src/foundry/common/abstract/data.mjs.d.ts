@@ -116,21 +116,27 @@ declare namespace DataModel {
     : never;
 
   export type SchemaToSourceInput<ConcreteDataSchema extends DataSchema> = GetSchemaValue<
-    ConstructPartial<ConstructReadonly<RemoveIndex<ConcreteDataSchema>>>,
+    ConstructReadonly<RemoveIndex<ConcreteDataSchema>>,
     'SourceType'
   >;
 
-  export type ConstructPartial<ConcreteDataSchema extends DataSchema> = PartialProps<
+  type ConstructPartial<
+    ConcreteDataSchema extends DataSchema,
+    ExtendsOptionsKey extends keyof DataField.AnyExtendsOptions
+  > = PartialProps<
     ConcreteDataSchema,
     {
       // Essentially tests this condition that will give if it's required:
-      //   !fieldTypes(field, 'SourceType').includes(initial) ||
+      //   !fieldTypes(field, ExtendsOptionsKey).includes(initial) ||
       //   (field instanceof StringField && blank === false && initial === '')
       // In both cases validation will automatically fail if given no value thusly a value must be given to prevent this error.
       [K in keyof ConcreteDataSchema]: Or<
         // Check if the initial type is in any of the field source types
         Not<
-          ItemExtends<DataField.InitialTypeFor<ConcreteDataSchema[K]>, FieldType<ConcreteDataSchema[K], 'SourceType'>>
+          ItemExtends<
+            DataField.InitialTypeFor<ConcreteDataSchema[K]>,
+            FieldType<ConcreteDataSchema[K], ExtendsOptionsKey>
+          >
         >,
         'blank' extends keyof ConcreteDataSchema[K]
           ? And<Extends<ConcreteDataSchema[K]['blank'], false>, Equals<ConcreteDataSchema[K]['initial'], ''>>

@@ -271,6 +271,6 @@ type Expand<T> = T extends unknown
     }
   : never;
 
-type ItemExtends<T, U> = T extends unknown ? LooseEquals<T extends U ? true : never, true> : never;
+type ItemExtends<T, U> = T extends unknown ? Extends<T, U> : never;
 
 type Coalesce<T, C, D> = T extends C ? D : T;

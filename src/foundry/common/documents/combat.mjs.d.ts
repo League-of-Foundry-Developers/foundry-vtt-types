@@ -16,11 +16,10 @@ interface BaseCombatSchema extends DataSchema {
    */
   scene: fields.ForeignDocumentField<typeof documents.BaseScene, {}>;
 
-  // TODO causes combatants on Combat
   /**
    * A Collection of Combatant embedded Documents
    */
-  //   combatants: fields.EmbeddedCollectionField<typeof documents.BaseCombatant, {}>;
+  combatants: fields.EmbeddedCollectionField<typeof documents.BaseCombatant, {}>;
 
   /**
    * Is the Combat encounter currently active?

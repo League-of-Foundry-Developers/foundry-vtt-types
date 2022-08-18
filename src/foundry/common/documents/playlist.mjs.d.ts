@@ -22,11 +22,10 @@ interface BasePlaylistSchema extends DataSchema {
    */
   description: fields.StringField<{}>;
 
-  // TODO causes circularly references in Playlist
   /**
    * A Collection of PlaylistSounds embedded documents which belong to this playlist
    */
-  //   sounds: fields.EmbeddedCollectionField<typeof documents.BasePlaylistSound, {}>;
+  sounds: fields.EmbeddedCollectionField<typeof documents.BasePlaylistSound, {}>;
 
   /**
    * The playback mode for sounds in this playlist

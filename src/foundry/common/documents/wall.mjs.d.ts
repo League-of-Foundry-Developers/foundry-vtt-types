@@ -4,7 +4,6 @@ import * as fields from '../data/fields.mjs';
 import { DataModel, DataSchema } from '../abstract/module.mjs';
 import BaseUser from './user.mjs.js';
 import { ConfiguredDocumentClass } from '../../../types/helperTypes.js';
-import type BaseScene from './scene.mjs.js';
 import type { FlagsField } from '../data/flagsField.js';
 
 interface BaseWallSchema extends DataSchema {

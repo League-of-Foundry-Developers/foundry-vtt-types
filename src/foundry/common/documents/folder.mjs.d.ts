@@ -26,11 +26,10 @@ interface BaseFolderSchema extends DataSchema {
    */
   description: fields.StringField<{}>;
 
-  // TODO, causes circularly references on Scene
   /**
    * The _id of a parent Folder which contains this Folder
    */
-  //   folder: fields.ForeignDocumentField<typeof BaseFolder, {}>;
+  folder: fields.ForeignDocumentField<typeof BaseFolder, {}>;
 
   /**
    * The sorting mode used to organize documents within this Folder, in ["a", "m"]
