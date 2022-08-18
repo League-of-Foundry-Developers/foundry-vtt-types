@@ -227,7 +227,6 @@ expectAssignable<{ k1: { i2: string } }>(
 expectAssignable<{ k1: { i1: string; i2: string } }>(
   foundry.utils.mergeObject({ k1: { i1: 'v1' } }, { k1: { i2: 'v2' } }, { recursive: true })
 );
-expectAssignable<{ k2: string }>(foundry.utils.mergeObject({ k1: 'v1', k2: 'v2' }, { '-=k1': null }));
 
 // mergeObject (2): more simple tests
 
@@ -339,6 +338,48 @@ expectAssignable<{ a: { b: string } }>(
 expectAssignable<never>(foundry.utils.mergeObject({ a: { b: 'foo' } }, { a: ['foo'] }, { enforceTypes: true }));
 expectAssignable<{ a: string[] }>(
   foundry.utils.mergeObject({ a: { b: 'foo' } }, { a: ['foo'] }, { enforceTypes: false })
+);
+
+// performDeletions
+// v10, `-=` prefixed keys are no longer auto removed
+expectAssignable<{ k1: string; k2: string; '-=k1': null }>(
+  foundry.utils.mergeObject({ k1: 'v1', k2: 'v2' }, { '-=k1': null })
+);
+expectAssignable<{ k1: string; k2: string; '-=k1': null }>(
+  foundry.utils.mergeObject({ k1: 'v1', k2: 'v2' }, { '-=k1': null }, { performDeletions: false })
+);
+expectAssignable<{ k2: string; '-=k1': null }>(foundry.utils.mergeObject({ k2: 'v2' }, { '-=k1': null }));
+expectAssignable<{ k1: string; k2: string; '-=k1': null }>(
+  foundry.utils.mergeObject({ k1: 'v1', k2: 'v2' }, { '-=k1': null })
+);
+
+expectAssignable<{ k2: string }>(
+  foundry.utils.mergeObject({ k1: 'v1', k2: 'v2' }, { '-=k1': null }, { performDeletions: true })
+);
+expectNotAssignable<{ k1: string; k2: string; '-=k1': null }>(
+  foundry.utils.mergeObject({ k1: 'v1', k2: 'v2' }, { '-=k1': null }, { performDeletions: true })
+);
+expectNotAssignable<{ k2: string; '-=k1': null }>(
+  foundry.utils.mergeObject({ k1: 'v1', k2: 'v2' }, { '-=k1': null }, { performDeletions: true })
+);
+expectNotAssignable<{ k1: string; k2: string }>(
+  foundry.utils.mergeObject({ k1: 'v1', k2: 'v2' }, { '-=k1': null }, { performDeletions: true })
+);
+
+expectAssignable<{ k2: string }>(foundry.utils.mergeObject({ k2: 'v2' }, { '-=k1': null }, { insertKeys: false }));
+expectNotAssignable<{ k2: string; '-=k1': null }>(
+  foundry.utils.mergeObject({ k2: 'v2' }, { '-=k1': null }, { insertKeys: false })
+);
+
+expectAssignable<{ wrapper: { k2: string } }>(
+  foundry.utils.mergeObject(
+    { wrapper: { k1: 'v1', k2: 'v2' } },
+    { wrapper: { '-=k1': null } },
+    { recursive: true, performDeletions: true }
+  )
+);
+expectAssignable<{ wrapper: { k1: string; k2: string; '-=k1': null } }>(
+  foundry.utils.mergeObject({ wrapper: { k1: 'v1', k2: 'v2' } }, { wrapper: { '-=k1': null } }, { recursive: true })
 );
 
 // bonus round

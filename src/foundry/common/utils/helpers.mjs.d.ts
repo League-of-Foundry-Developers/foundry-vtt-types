@@ -295,12 +295,16 @@ export function isEmpty(value: undefined | null | unknown[] | object | Set<unkno
 type OmitByValue<T, ValueType> = { [Key in keyof T as T[Key] extends ValueType ? never : Key]: T[Key] };
 type RemoveNever<T> = OmitByValue<T, never>;
 type PropWithMinus<K> = K extends string ? `-=${K}` : never;
-type DeleteByObjectKeys<T, U> = RemoveNever<{
-  [K in keyof T]: PropWithMinus<K> extends keyof U ? (U[PropWithMinus<K>] extends null ? never : T[K]) : T[K];
-}>;
-type RemoveDeletingObjectKeys<T> = RemoveNever<{
-  [K in keyof T]: K extends string ? (Capitalize<K> extends K ? (T[K] extends null ? never : T[K]) : T[K]) : T[K];
-}>;
+type DeleteByObjectKeys<T, U, M extends MergeObjectOptions> = M['performDeletions'] extends true
+  ? RemoveNever<{
+      [K in keyof T]: PropWithMinus<K> extends keyof U ? (U[PropWithMinus<K>] extends null ? never : T[K]) : T[K];
+    }>
+  : T;
+type RemoveDeletingObjectKeys<T, M extends MergeObjectOptions> = M['performDeletions'] extends true
+  ? RemoveNever<{
+      [K in keyof T]: K extends string ? (Capitalize<K> extends K ? (T[K] extends null ? never : T[K]) : T[K]) : T[K];
+    }>
+  : T;
 
 type MergeObjectProperty<T, U, M extends MergeObjectOptions> = T extends Array<any>
   ? U
@@ -308,7 +312,14 @@ type MergeObjectProperty<T, U, M extends MergeObjectOptions> = T extends Array<a
   ? U extends Record<string, any>
     ? M extends { recursive: false }
       ? U
-      : Result<T, U, Omit<M, 'insertKeys' | 'performDeletions'> & { insertKeys: M['insertValues'] }>
+      : Result<
+          T,
+          U,
+          Omit<M, 'insertKeys' | 'performDeletions'> & {
+            insertKeys: M['insertValues'];
+            performDeletions: M['performDeletions'] extends true ? true : false;
+          }
+        >
     : U
   : U;
 type UpdateKeys<T, U, M extends MergeObjectOptions> = M extends { overwrite: false }
@@ -319,8 +330,8 @@ type UpdateInsert<T, U, M extends MergeObjectOptions> = M extends { insertKeys: 
   ? UpdateKeys<T, U, M>
   : InsertKeys<UpdateKeys<T, U, M>, U>;
 type Result<T, U, M extends MergeObjectOptions> = UpdateInsert<
-  DeleteByObjectKeys<T, U>,
-  RemoveDeletingObjectKeys<U>,
+  DeleteByObjectKeys<T, U, M>,
+  RemoveDeletingObjectKeys<U, M>,
   M
 >;
 
