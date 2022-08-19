@@ -18,7 +18,7 @@ export declare function benchmark<F extends (...args: any[]) => unknown>(
  * @param debug - (default: `false`)
  * @returns
  */
-export function threadLock(ms: number, debug: boolean): Promise<void>;
+export function threadLock(ms: number, debug?: boolean): Promise<void>;
 
 /**
  * Wrap a callback in a debounced timeout.
