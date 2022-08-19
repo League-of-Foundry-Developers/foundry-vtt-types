@@ -59,8 +59,11 @@ declare global {
 
   /**
    * A simple window application which shows the built documentation pages within an iframe
+   * @typeParam Options - the type of the options object
    */
-  class FrameViewer extends Application {
+  class FrameViewer<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
+    constructor(url: string, options?: Partial<Options>);
+
     url: string;
 
     /**
@@ -78,7 +81,7 @@ declare global {
      */
     static override get defaultOptions(): typeof Application['defaultOptions'];
 
-    override getData(options?: Partial<ApplicationOptions>): Promise<{ src: string }>;
+    override getData(options?: Partial<Options>): Promise<{ src: string }>;
 
     override close(options?: Application.CloseOptions): ReturnType<Application['close']>;
   }
