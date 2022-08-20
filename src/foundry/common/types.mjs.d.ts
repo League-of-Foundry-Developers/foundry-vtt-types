@@ -1,3 +1,23 @@
+interface DocumentConstructionContext {
+  /**
+   * The parent Document of this one, if this one is embedded
+   * @defaultValue `null`
+   */
+  parent?: Document | null;
+
+  /**
+   * The compendium collection ID which contains this Document, if any
+   * @defaultValue `null`
+   */
+  pack?: string | null;
+
+  /**
+   * Whether to validate initial data strictly?
+   * @defaultValue `true`
+   */
+  strict?: boolean;
+}
+
 interface DocumentModificationContext {
   /**
    * A parent Document within which these Documents should be embedded
