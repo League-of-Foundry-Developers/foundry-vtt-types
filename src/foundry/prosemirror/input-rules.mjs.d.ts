@@ -2,7 +2,7 @@ import type { InputRule } from 'prosemirror-inputrules';
 import type { Schema } from 'prosemirror-model';
 import type { Plugin } from 'prosemirror-state';
 import type { Options } from '../client/dice/roll';
-import ProseMirrorPlugin from './plugin';
+import ProseMirrorPlugin from './plugin.mjs';
 
 export namespace ProseMirrorInputRules {
   export interface Options {

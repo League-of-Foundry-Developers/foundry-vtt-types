@@ -1,4 +1,4 @@
-import type ProseMirrorPlugin from './plugin';
+import type ProseMirrorPlugin from './plugin.mjs';
 import type { Plugin } from 'prosemirror-state';
 import type { ClientDocumentMixin } from '../client/data/abstract/client-document';
 import type { Schema, Slice } from 'prosemirror-model';

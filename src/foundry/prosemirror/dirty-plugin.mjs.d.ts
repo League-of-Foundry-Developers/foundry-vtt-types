@@ -1,4 +1,4 @@
-import ProseMirrorPlugin from './plugin';
+import ProseMirrorPlugin from './plugin.mjs';
 import { Plugin } from 'prosemirror-state';
 import type { Schema } from 'prosemirror-model';
 

@@ -1,4 +1,4 @@
-import * as ProseMirrorObject from '../prosemirror/prosemirror';
+export {};
 
 declare global {
   /**
@@ -61,8 +61,6 @@ declare global {
    * The client side console logger
    */
   let logger: typeof console;
-
-  let ProseMirror: typeof ProseMirrorObject;
 
   /**
    * The Color management and manipulation class

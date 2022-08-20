@@ -1,6 +1,6 @@
 import type { Plugin } from 'prosemirror-state';
 import type { Schema, Slice } from 'prosemirror-model';
-import ProseMirrorPlugin from './plugin';
+import ProseMirrorPlugin from './plugin.mjs';
 import type { EditorView } from 'prosemirror-view';
 
 /**
