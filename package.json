@@ -59,6 +59,7 @@
     "@pixi/graphics-smooth": "0.0.30",
     "@pixi/particle-emitter": "5.0.7",
     "@types/jquery": "~3.5.9",
+    "@types/showdown": "~2.0.0",
     "@types/simple-peer": "~9.11.1",
     "handlebars": "4.7.7",
     "pixi.js": "5.3.11",
