@@ -1,14 +1,35 @@
 import * as ProseMirrorObject from '../prosemirror/prosemirror';
 
 declare global {
-  let vtt: 'Foundry VTT';
+  /**
+   * The string prefix used to prepend console logging
+   */
+  const vtt: 'Foundry VTT';
 
   /**
+   * The singleton Game instance
    * @defaultValue `{}`
    * @remarks
    * Initialized between the `'DOMContentLoaded'` event and the `'init'` hook event.
    */
   let game: 'game' extends keyof LenientGlobalVariableTypes ? Game : Game | {};
+
+  /**
+   * The global boolean for whether the EULA is signed
+   */
+  let SIGNED_EULA: boolean;
+
+  /**
+   * The global route prefix which is applied to this game
+   */
+  let ROUTE_PREFIX: string;
+
+  /**
+   * Critical server-side startup messages which need to be displayed to the client.
+   */
+  let MESSAGES:
+    | { type: Notifications.Notification['type']; message: string; options: Notifications.NotifyOptions }[]
+    | null;
 
   /**
    * @defaultValue `null`
@@ -36,9 +57,17 @@ declare global {
     windows: Record<number, Application>;
   } & ('ui' extends keyof LenientGlobalVariableTypes ? UiApplications : Partial<UiApplications>);
 
+  /**
+   * The client side console logger
+   */
   let logger: typeof console;
 
   let ProseMirror: typeof ProseMirrorObject;
+
+  /**
+   * The Color management and manipulation class
+   */
+  let Color: unknown; // foundry.utils.Color;
 }
 
 type UiApplications = {
