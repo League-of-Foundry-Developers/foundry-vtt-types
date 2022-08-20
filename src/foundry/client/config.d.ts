@@ -1618,7 +1618,7 @@ declare global {
     /**
      * Default configuration options for TinyMCE editors
      */
-    TinyMCE: tinyMCE.RawEditorSettings;
+    TinyMCE: tinyMCE.RawEditorOptions;
 
     /**
      * Rich text editing configuration.
