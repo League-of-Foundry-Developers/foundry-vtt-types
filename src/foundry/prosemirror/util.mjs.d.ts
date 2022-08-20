@@ -1,7 +1,7 @@
 import type { Node, Schema } from 'prosemirror-model';
 // Fixes VSC not finding it for the @link TSDoc directive.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { StringNode } from './string-serializer';
+import type { StringNode } from './string-serializer.mjs';
 
 /**
  * Use the DOM and ProseMirror's DOMParser to construct a ProseMirror document state from an HTML string. This cannot be

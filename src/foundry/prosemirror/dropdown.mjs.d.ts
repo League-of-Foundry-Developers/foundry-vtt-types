@@ -1,4 +1,4 @@
-import { ProseMirrorDropDown as ProseMirrorDropDownMenu } from './menu';
+import { ProseMirrorDropDown as ProseMirrorDropDownMenu } from './menu.mjs';
 
 export namespace ProseMirrorDropDown {
   export interface Options {

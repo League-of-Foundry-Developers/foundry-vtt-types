@@ -1,4 +1,4 @@
-import type ProseMirrorPlugin from './plugin';
+import type ProseMirrorPlugin from './plugin.mjs';
 import type { Schema } from 'prosemirror-model';
 import type { EditorState, Plugin, Transaction } from 'prosemirror-state';
 import type { EditorView } from 'prosemirror-view';

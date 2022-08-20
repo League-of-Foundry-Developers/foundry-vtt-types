@@ -1,4 +1,4 @@
-import * as ProseMirrorObject from '../prosemirror/prosemirror';
+export {};
 
 declare global {
   let vtt: 'Foundry VTT';
@@ -37,8 +37,6 @@ declare global {
   } & ('ui' extends keyof LenientGlobalVariableTypes ? UiApplications : Partial<UiApplications>);
 
   let logger: typeof console;
-
-  let ProseMirror: typeof ProseMirrorObject;
 }
 
 type UiApplications = {

@@ -1,9 +1,9 @@
 import type { Plugin } from 'prosemirror-state';
-import type ProseMirrorPlugin from './plugin';
-import type ProseMirrorDropDown from './dropdown';
+import type ProseMirrorPlugin from './plugin.mjs';
+import type ProseMirrorDropDown from './dropdown.mjs';
 import type { Attrs, MarkType, NodeType, Schema } from 'prosemirror-model';
 import type { EditorView } from 'prosemirror-view';
-import type { ProseMirrorCommand } from './keymaps';
+import type { ProseMirrorCommand } from './keymaps.mjs';
 
 export namespace ProseMirrorMenu {
   export interface Options {
