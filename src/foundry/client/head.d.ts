@@ -4,7 +4,7 @@ declare global {
   /**
    * The string prefix used to prepend console logging
    */
-  let vtt: 'Foundry VTT';
+  const vtt: 'Foundry VTT';
 
   /**
    * The singleton Game instance
