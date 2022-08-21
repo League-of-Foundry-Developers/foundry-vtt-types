@@ -45,7 +45,7 @@ declare global {
      *   resizable: true,
      *   closeOnSubmit: false,
      *   submitOnClose: true,
-     *   viewPermission: CONST.DOCUMENT_PERMISSION_LEVELS.NONE
+     *   viewPermission: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE
      * })
      * ```
      */

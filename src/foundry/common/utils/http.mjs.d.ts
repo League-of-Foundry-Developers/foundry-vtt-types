@@ -14,7 +14,7 @@ export function fetchWithTimeout(
 ): Promise<Response>;
 
 /**
- * A small wrapper that automatically asks for JSON
+ * A small wrapper that automatically asks for JSON with a Timeout
  * @param url            - The URL to make the Request to
  * @param data           - The data of the Request
  *                         (defalt: `{}`)
@@ -39,10 +39,10 @@ export class HttpError extends Error {
 
 interface TimeoutOptions {
   /**
-   * How long to wait for a Response before cleanly aborting
+   * How long to wait for a Response before cleanly aborting. If null, no timeout is applied
    * @defaultValue `30000`
    */
-  timeoutMs?: number | undefined;
+  timeoutMs?: number | undefined | null;
 
   /**
    * A method to invoke if and when the timeout is reached

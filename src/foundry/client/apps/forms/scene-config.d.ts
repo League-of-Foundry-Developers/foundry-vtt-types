@@ -136,7 +136,7 @@ declare global {
       navName: string;
       navigation: boolean;
       padding: number;
-      'permission.default': foundry.CONST.DOCUMENT_PERMISSION_LEVELS;
+      'permission.default': foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
       playlist: string;
       shiftX: number | null;
       shiftY: number | null;

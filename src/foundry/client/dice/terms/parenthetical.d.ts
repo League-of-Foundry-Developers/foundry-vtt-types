@@ -13,10 +13,20 @@ declare class ParentheticalTerm extends RollTerm {
   /**
    * The regular expression pattern used to identify the opening of a parenthetical expression.
    * This could also identify the opening of a math function.
+   * @defaultValue
+   * ```typescript
+   * /([A-z][A-z0-9]+)?\(/g;
+   * ```
    */
   static OPEN_REGEXP: RegExp;
 
-  /** A regular expression pattern used to identify the closing of a parenthetical expression. */
+  /**
+   * A regular expression pattern used to identify the closing of a parenthetical expression.
+   * @defaultValue
+   * ```typescript
+   * new RegExp("\\)(?:\\$\\$F[0-9]+\\$\\$)?", "g");
+   * ```
+   */
   static CLOSE_REGEXP: RegExp;
 
   /** An array of evaluated DiceTerm instances that should be bubbled up to the parent Roll */
@@ -30,7 +40,7 @@ declare class ParentheticalTerm extends RollTerm {
    * @param options - Additional options passed to the ParentheticalTerm constructor
    * @returns  The constructed ParentheticalTerm instance
    *
-   * @example <caption>Create a Parenthetical Term from an array of component RollTerm instances</caption>
+   * @example Create a Parenthetical Term from an array of component RollTerm instances
    * ```typescript
    * const d6 = new Die({number: 4, faces: 6});
    * const plus = new OperatorTerm({operator: "+"});

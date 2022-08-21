@@ -1,3 +1,4 @@
+import type { EditorState, Plugin } from 'prosemirror-state';
 import {
   ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
@@ -17,20 +18,29 @@ declare global {
    */
   class Hooks {
     /**
+     * A mapping of hook events which have functions registered to them.
+     */
+    static get events(): Hooks.HookedFunction[];
+
+    /**
      * Register a callback handler which should be triggered when a hook is triggered.
      *
-     * @param hook - The unique name of the hooked event
-     * @param fn   - The callback function which should be triggered when the hook event occurs
+     * @param hook    - The unique name of the hooked event
+     * @param fn      - The callback function which should be triggered when the hook event occurs
+     * @param options - Options which customize hook registration
      * @returns An ID number of the hooked function which can be used to turn off the hook later
      */
-    static on<K extends keyof Hooks.StaticCallbacks>(hook: K, fn: Hooks.StaticCallbacks[K]): number;
-    static on<H extends Hooks.DynamicCallbacks>(hook: string, fn: H): number;
-    static on<H extends (...args: any) => any>(hook: string, fn: H): number;
+    static on<K extends keyof Hooks.StaticCallbacks>(
+      hook: K,
+      fn: Hooks.StaticCallbacks[K],
+      options?: Hooks.OnOptions
+    ): number;
+    static on<H extends Hooks.DynamicCallbacks>(hook: string, fn: H, options?: Hooks.OnOptions): number;
+    static on<H extends (...args: any) => any>(hook: string, fn: H, options?: Hooks.OnOptions): number;
 
     /**
      * Register a callback handler for an event which is only triggered once the first time the event occurs.
-     * After a "once" hook is triggered the hook is automatically removed.
-     *
+     * An alias for Hooks.on with `{once: true}`
      * @param hook - The unique name of the hooked event
      * @param fn   - The callback function which should be triggered when the hook event occurs
      * @returns An ID number of the hooked function which can be used to turn off the hook later
@@ -78,33 +88,14 @@ declare global {
     static call<H extends (...args: any) => any>(hook: string, ...args: Parameters<H>): boolean;
 
     /**
-     * Call a hooked function using provided arguments and perhaps unregister it.
-     */
-    protected static _call<K extends keyof Hooks.StaticCallbacks>(
-      hook: K,
-      fn: Hooks.StaticCallbacks[K],
-      ...args: Parameters<Hooks.StaticCallbacks[K]>
-    ): ReturnType<Hooks.StaticCallbacks[K]> | undefined;
-    protected static _call<H extends Hooks.DynamicCallbacks>(
-      hook: string,
-      fn: H,
-      ...args: Parameters<H>
-    ): ReturnType<H> | undefined;
-    protected static _call<H extends (...args: any) => any>(
-      hook: string,
-      fn: H,
-      ...args: Parameters<H>
-    ): ReturnType<H> | undefined;
-
-    /**
      * Notify subscribers that an error has occurred within foundry.
      * @param location - The method where the error was caught.
-     * @param err      - The error.
+     * @param error    - The error.
      * @param options  - Additional options to configure behaviour.
      */
     static onError(
       location: string,
-      err: Error,
+      error: Error,
       {
         msg,
         notify,
@@ -118,7 +109,7 @@ declare global {
         [key: string]: unknown;
 
         /**
-         * A message to prefix the caught error with and/or to use in the notification.
+         * A message which should prefix the resulting error or notification.
          * @defaultValue `""`
          */
         msg?: string | undefined;
@@ -136,26 +127,6 @@ declare global {
         log?: keyof typeof console | null | undefined;
       }
     ): void;
-
-    /**
-     * @defaultValue `{}`
-     */
-    protected static _hooks: Record<string, (...args: any) => any>;
-
-    /**
-     * @defaultValue `[]`
-     */
-    protected static _once: Array<(...args: any) => any>;
-
-    /**
-     * @defaultValue `{}`
-     */
-    protected static _ids: Record<number, Array<(...args: any) => any>>;
-
-    /**
-     * @defaultValue `1`
-     */
-    protected static _id: number;
   }
 
   /**
@@ -197,6 +168,18 @@ declare global {
    * ```
    */
   namespace Hooks {
+    interface HookedFunction {
+      hook: string;
+      id: number;
+      fn: Function;
+      once: boolean;
+    }
+
+    interface OnOptions {
+      /** Only trigger the hooked function once */
+      once?: boolean;
+    }
+
     interface StaticCallbacks {
       /**
        * A hook event that fires when a custom active effect is applied.
@@ -323,6 +306,21 @@ declare global {
        * @see {@link Sidebar#collapse}
        */
       collapseSidebar: (sidebar: Sidebar, collapsed: boolean) => void;
+
+      /**
+       * A hook event that fires whenever a ProseMirror editor is created.
+       * The hook provides the ProseMirror instance UUID, a list of plugins, and an object containing the provisional
+       * editor state, and a reference to the menu plugin.
+       * Hooked functions may append their own plugins or replace the state or menu plugin by replacing their references
+       * in the final argument.
+       *
+       * @param uuid    - A UUID that uniquely identifies this ProseMirror instance.
+       * @param plugins - A list of plugins that will be loaded.
+       * @param options - The provisional EditorState and ProseMirrorMenuPlugin.
+       * @remarks This is called by {@link Hooks.callAll}.
+       * @see {@link ProseMirrorEditor.create}
+       */
+      createProseMirrorEditor: (uuid: string, plugins: Record<string, Plugin>, options: { state: EditorState }) => void;
 
       /**
        * A hook event that fires when Cards are dealt from a deck to other hands

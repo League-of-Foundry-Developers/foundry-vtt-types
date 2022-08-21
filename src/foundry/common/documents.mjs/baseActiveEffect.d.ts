@@ -38,7 +38,7 @@ export declare class BaseActiveEffect extends Document<
 
   override testUserPermission(
     user: BaseUser,
-    permission: keyof typeof foundry.CONST.ENTITY_PERMISSIONS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,
+    permission: keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
     { exact }: { exact?: boolean }
   ): boolean;
 }

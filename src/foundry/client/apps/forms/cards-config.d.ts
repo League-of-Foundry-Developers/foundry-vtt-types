@@ -29,7 +29,7 @@ declare global {
      *   width: 620,
      *   height: "auto",
      *   closeOnSubmit: false,
-     *   viewPermission: CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER,
+     *   viewPermission: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
      *   dragDrop: [{dragSelector: "ol.cards li.card", dropSelector: "ol.cards"}],
      *   tabs: [{navSelector: ".tabs", contentSelector: "form", initial: "cards"}],
      *   scrollY: ["ol.cards"]

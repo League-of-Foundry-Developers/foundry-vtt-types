@@ -1,5 +1,5 @@
 interface FilePickerOptions extends ApplicationOptions {
-  /** A type of file to target, in "audio", "image", "video", "imagevideo" or "folder" */
+  /** A type of file to target, in "audio", "image", "video", "imagevideo", "folder", "font", "graphics", "text", or "any" */
   type?: FilePicker.Type | undefined;
 
   /** The current file path being modified, if any */
@@ -28,8 +28,8 @@ interface FilePickerOptions extends ApplicationOptions {
 }
 
 /**
- * The FilePicker application renders contents of the server-side public directory
- * This app allows for navigating and uploading files to the public path
+ * The FilePicker application renders contents of the server-side public directory.
+ * This app allows for navigating and uploading files to the public path.
  * @typeParam Options - the type of the options object
  * @typeParam Data    - The data structure used to render the handlebars template.
  */
@@ -165,6 +165,7 @@ declare class FilePicker<
 
   /**
    * Parse a s3 key to learn the bucket and the key prefix used for the request
+   * @deprecated since v10, use `foundry.utils.parseS3URL` instead.
    * @param key - A fully qualified key name or prefix path
    */
   static parseS3URL(key: string): { bucket: string | null; keyPrefix: string };
@@ -241,6 +242,9 @@ declare class FilePicker<
   /**
    * General dispatcher method to submit file management commands to the server
    * @internal
+   * @param data    - Request data dispatched to the server
+   * @param options - Options dispatched to the server
+   * @returns The server response
    */
   protected static _manageFiles(
     data: FilePicker.BrowseFilesData,
@@ -322,22 +326,25 @@ declare class FilePicker<
   protected _onPick(event: JQuery.ClickEvent): void;
 
   /**
-   * Handle backwards navigation of the fol6der structure
+   * Handle backwards navigation of the fol6der structure.
+   * @param event - The triggering click event
    * @internal
    */
-  protected _onClickDirectoryControl(event: JQuery.ClickEvent): void;
+  protected _onClickDirectoryControl(event: PointerEvent): void;
 
   /**
-   * Present the user with a dialog to create a subdirectory within their currently browsed file storate location.
+   * Present the user with a dialog to create a subdirectory within their currently browsed file storage location.
+   * @param source - The data source being browsed
    * @internal
    */
   protected _createDirectoryDialog(source: FilePicker.Source): void;
 
   /**
    * Handle changes to the bucket selector
+   * @param event - The S3 bucket select change event
    * @internal
    */
-  protected _onChangeBucket(event: JQuery.ChangeEvent): void;
+  protected _onChangeBucket(event: Event): void;
 
   /** */
 
@@ -484,7 +491,7 @@ declare namespace FilePicker {
     };
   }
 
-  type Type = 'any' | 'audio' | 'image' | 'video' | 'imagevideo' | 'folder';
+  type Type = 'any' | 'audio' | 'image' | 'video' | 'imagevideo' | 'folder' | 'font' | 'graphics' | 'text';
 
   interface UploadBody {
     /**

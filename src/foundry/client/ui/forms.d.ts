@@ -19,29 +19,35 @@ declare class FormDataExtended extends FormData {
    */
   constructor(
     form: HTMLFormElement,
-    { editors, dtypes }: { editors?: FormDataExtended['editors']; dtypes?: FormDataExtended['dtypes'] }
+    { editors, dtypes }?: { editors?: FormDataExtended['editors']; dtypes?: FormDataExtended['dtypes'] }
   );
 
   /**
-   * A mapping of data types requested for each form field
+   * A mapping of data types requested for each form field.
    * @defaultValue `{}`
    */
   dtypes: Partial<Record<string, string>>;
 
   /**
-   * A record of TinyMCE editors which are linked to this form
+   * A record of TinyMCE editors which are linked to this form.
    * @defaultValue `{}`
    */
   editors: Partial<Record<string, FormApplication.FormApplicationEditor>>;
 
   /**
+   * The object representation of the form data, available once processed.
+   */
+  get object(): Record<string, string | number>;
+
+  /**
    * Process the HTML form element to populate the FormData instance.
-   * @param form - The HTML form
+   * @param form - The HTML form being processed
    */
   process(form: HTMLFormElement): void;
 
   /**
    * Export the FormData as an object
+   * @deprecated since v10, use `FormDataExtended#object` instead.
    */
-  toObject(): Record<string, unknown>;
+  toObject(): FormDataExtended['object'];
 }

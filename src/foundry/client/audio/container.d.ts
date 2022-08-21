@@ -54,7 +54,7 @@ declare class AudioContainer {
 
   /**
    * The maximum duration, in seconds, for which an AudioBuffer will be used.
-   * Otherwise a streaming media element will be used.
+   * Otherwise, a streaming media element will be used.
    * @defaultValue `10 * 60`
    */
   static MAX_BUFFER_DURATION: number;
@@ -141,12 +141,6 @@ declare class AudioContainer {
    * @param onended - A callback function for when playback concludes naturally
    */
   play(offset: number, onended: () => void): void;
-
-  /**
-   * Pre-playback actions that are needed depending on the node type
-   * @internal
-   */
-  protected _configureNode(): void;
 
   /**
    * Terminate playback for the source node.

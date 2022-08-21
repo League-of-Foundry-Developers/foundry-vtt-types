@@ -1,9 +1,8 @@
 /**
  * A type of DiceTerm used to represent rolling a fair n-sided die.
  *
- * @example
+ * @example Roll 4 six-sided dice
  * ```typescript
- * // Roll 4 six-sided dice
  * let die = new Die({faces: 6, number: 4}).evaluate();
  * ```
  */

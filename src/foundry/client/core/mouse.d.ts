@@ -12,6 +12,7 @@ declare class MouseManager {
 
   /**
    * Master mouse-wheel event handler
+   * @param event - The mouse wheel event
    * @internal
    */
   protected _onWheel(event: MouseEvent): void;

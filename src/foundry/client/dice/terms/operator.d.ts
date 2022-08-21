@@ -7,7 +7,7 @@ declare class OperatorTerm extends RollTerm {
   operator: OperatorTerm.TermData['operator'];
 
   /** An array of operators which represent arithmetic operations */
-  static OPERATORS: ['+', '-', '*', '/'];
+  static OPERATORS: ['+', '-', '*', '/', '%'];
 }
 
 declare namespace OperatorTerm {

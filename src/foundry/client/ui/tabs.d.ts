@@ -1,5 +1,10 @@
 declare interface TabsConfiguration {
   /**
+   * The name of the tabs group
+   */
+  group?: string;
+
+  /**
    * The CSS selector used to target the navigation element for these tabs
    */
   navSelector: string;
@@ -24,7 +29,7 @@ declare interface TabsConfiguration {
  * A controller class for managing tabbed navigation within an Application instance.
  * @see {@link Application}
  *
- * @example
+ * @example Configure tab-control for a set of HTML elements
  * ```html
  * <!-- Example HTML -->
  * <nav class="tabs" data-group="primary-tabs">
@@ -37,7 +42,7 @@ declare interface TabsConfiguration {
  *   <div class="tab" data-tab="tab2" data-group="primary-tabs">Content 2</div>
  * </section>
  * ```
- * @example
+ * Activate tab control in JavaScript
  * ```typescript
  * // JavaScript
  * const tabs = new Tabs({navSelector: ".tabs", contentSelector: ".content", initial: "tab1"});
@@ -49,6 +54,11 @@ declare class Tabs {
    * @param config - The Tabs Configuration to use for this tabbed container
    */
   constructor(config: TabsConfiguration);
+
+  /**
+   * The name of the tabs group
+   */
+  group: TabsConfiguration['group'];
 
   /**
    * The value of the active tab

@@ -1,3 +1,6 @@
+//TODO: remove when created
+type InteractionLayer = unknown;
+
 /**
  * A class responsible for managing defined game keybinding.
  * Each keybinding is a string key/value pair belonging to a certain namespace and a certain store scope.
@@ -5,7 +8,7 @@
  * When Foundry Virtual Tabletop is initialized, a singleton instance of this class is constructed within the global
  * Game object as as game.keybindings.
  *
- * @see {@link Game#keybindings}
+ * @see {@link Game.keybindings}
  * @see {@link SettingKeybindingConfig}
  * @see {@link KeybindingsConfig}
  */
@@ -57,7 +60,7 @@ declare class ClientKeybindings {
    * @param action    - A unique machine-readable id for the Keybinding Action
    * @param data      - Configuration for keybinding data
    *
-   * @example <caption>Define a keybinding which shows a notification</caption>
+   * @example Define a keybinding which shows a notification
    * ```typescript
    * game.keybindings.register("myModule", "showNotification", {
    *   name: "My Settings Keybinding",
@@ -90,7 +93,7 @@ declare class ClientKeybindings {
    * @param namespace - The namespace under which the setting is registered
    * @param action    - The keybind action to retrieve
    *
-   * @example <caption>Retrieve the current Keybinding Action Bindings</caption>
+   * @example Retrieve the current Keybinding Action Bindings
    * ```typescript
    * game.keybindings.get("myModule", "showNotification");
    * ```
@@ -104,7 +107,7 @@ declare class ClientKeybindings {
    * @param action    - The Keybinding action to set
    * @param bindings  - The Bindings to assign to the Keybinding
    *
-   * @example <caption>Update the current value of a keybinding</caption>
+   * @example Update the current value of a keybinding
    * ```typescript
    * game.keybindings.set("myModule", "showNotification", [
    *     {
@@ -140,8 +143,9 @@ declare class ClientKeybindings {
    * Compares two Keybinding Actions based on their Order
    * @param a - The first Keybinding Action
    * @param b - the second Keybinding Action
+   * @internal
    */
-  protected static _compareActions(a: KeybindingAction, b: KeybindingAction): number;
+  static _compareActions(a: KeybindingAction, b: KeybindingAction): number;
 
   /** Register core keybindings */
   protected _registerCoreKeybindings(): void;
@@ -194,10 +198,10 @@ declare class ClientKeybindings {
   /**
    * Handle keyboard movement once a small delay has elapsed to allow for multiple simultaneous key-presses.
    * @param context - The context data of the event
-   * @param layer   - The Placeables layer
+   * @param layer   - The active InteractionLayer instance
    * @internal
    */
-  protected _handleMovement(context: KeyboardEventContext, layer: TokenLayer | BackgroundLayer): void;
+  protected _handleMovement(context: KeyboardEventContext, layer: InteractionLayer): void;
 
   /** Handle panning the canvas using CTRL + directional keys */
   protected _handleCanvasPan(): ReturnType<Canvas['animatePan']>;
@@ -279,6 +283,13 @@ declare class ClientKeybindings {
     context: KeyboardEventContext | unknown,
     zoomDirection: ClientKeybindings.ZoomDirection
   ): boolean;
+
+  /**
+   * Bring the chat window into view and focus the input
+   * @param context - The context data of the event
+   * @internal
+   */
+  static _onFocusChat(context: KeyboardEventContext): boolean;
 }
 
 declare namespace ClientKeybindings {

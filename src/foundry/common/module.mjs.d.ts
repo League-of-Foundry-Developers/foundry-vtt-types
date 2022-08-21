@@ -1,5 +1,5 @@
 import './types.mjs';
-import './utils/primitives.mjs';
+import './primitives/module.mjs';
 import * as _CONST from './constants.mjs';
 import * as _abstract from './abstract/module.mjs';
 import * as _data from './data/module.mjs';

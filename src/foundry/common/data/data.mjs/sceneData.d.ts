@@ -353,9 +353,9 @@ interface SceneDataProperties {
 
   /**
    * An object which configures user permissions to this Scene
-   * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
+   * @defaultValue `{ default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE }`
    */
-  permission: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>>;
+  permission: Partial<Record<string, foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS>>;
 
   /**
    * An object of optional key/value flags
@@ -619,9 +619,9 @@ interface SceneDataConstructorData {
 
   /**
    * An object which configures user permissions to this Scene
-   * @defaultValue `{ default: CONST.ENTITY_PERMISSIONS.NONE }`
+   * @defaultValue `{ default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE }`
    */
-  permission?: Partial<Record<string, foundry.CONST.DOCUMENT_PERMISSION_LEVELS>> | null | undefined;
+  permission?: Partial<Record<string, foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS>> | null | undefined;
 
   /**
    * An object of optional key/value flags

@@ -51,7 +51,7 @@ declare class RainWeatherEffect extends SpecialEffect {
    * }
    * ```
    */
-  static RAIN_CONFIG: PIXI.particles.EmitterConfig | PIXI.particles.OldEmitterConfig;
+  static RAIN_CONFIG: PIXI.particles.EmitterConfigV3;
 
   /**
    * @defaultValue
@@ -91,7 +91,7 @@ declare class RainWeatherEffect extends SpecialEffect {
    * }
    * ```
    */
-  static SPLASH_CONFIG: PIXI.particles.EmitterConfig | PIXI.particles.OldEmitterConfig;
+  static SPLASH_CONFIG: PIXI.particles.EmitterConfigV3;
 
   getParticleEmitters(): PIXI.particles.Emitter[];
 

@@ -150,11 +150,11 @@ declare abstract class Document<
   ): TemporaryDocument<this> | Promise<TemporaryDocument<this> | undefined>;
 
   /**
-   * Get the permission level that a specific User has over this Document, a value in CONST.DOCUMENT_PERMISSION_LEVELS.
+   * Get the permission level that a specific User has over this Document, a value in CONST.DOCUMENT_OWNERSHIP_LEVELS.
    * @param user - The User being tested
-   * @returns A numeric permission level from CONST.DOCUMENT_PERMISSION_LEVELS or null
+   * @returns A numeric permission level from CONST.DOCUMENT_OWNERSHIP_LEVELS or null
    */
-  getUserLevel(user: BaseUser): foundry.CONST.DOCUMENT_PERMISSION_LEVELS | null;
+  getUserLevel(user: BaseUser): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document
@@ -166,7 +166,7 @@ declare abstract class Document<
    */
   testUserPermission(
     user: BaseUser,
-    permission: keyof typeof foundry.CONST.DOCUMENT_PERMISSION_LEVELS | foundry.CONST.DOCUMENT_PERMISSION_LEVELS,
+    permission: keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
     { exact }?: { exact?: boolean }
   ): boolean;
 

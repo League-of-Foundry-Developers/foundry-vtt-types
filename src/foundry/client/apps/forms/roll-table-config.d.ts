@@ -20,7 +20,7 @@ declare global {
      *   width: 720,
      *   height: "auto",
      *   closeOnSubmit: false,
-     *   viewPermission: CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER,
+     *   viewPermission: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
      *   scrollY: ["ol.table-results"],
      *   dragDrop: [{ dragSelector: null, dropSelector: null }],
      * })

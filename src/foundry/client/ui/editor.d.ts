@@ -1,6 +1,26 @@
+import type { EditorView } from 'prosemirror-view';
 import type { ConfiguredDocumentClassForName } from '../../../types/helperTypes';
-
+import type { ClientDocumentMixin } from '../data/abstract/client-document';
 declare global {
+  namespace TextEditor {
+    export interface GetContentLinkOptions {
+      /** A document to generate the link relative to. */
+      relativeTo?: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
+
+      /** A custom label to use instead of the document's name. */
+      label?: string;
+    }
+
+    export interface CreateContentLinkOptions {
+      /**
+       * If asynchronous evaluation is enabled, fromUuid will be called, allowing comprehensive UUID lookup,
+       * otherwise fromUuidSync will be used. (default: `false`)
+       */
+      async?: boolean;
+      /** A document to resolve relative UUIDs against.*/
+      relativeTo?: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
+    }
+  }
   /**
    * A collection of helper functions and utility methods related to the rich text editor
    */
@@ -12,7 +32,7 @@ declare global {
      *                  (default: `""`)
      * @returns The editor instance.
      */
-    static create(options: TextEditor.Options, content: string): Promise<tinyMCE.Editor>;
+    static create(options?: TextEditor.Options, content?: string): Promise<tinyMCE.Editor | EditorView>;
 
     /**
      * A list of elements that are retained when truncating HTML.
@@ -35,6 +55,65 @@ declare global {
      * @returns The enriched HTML content
      */
     static enrichHTML(content: string, options?: Partial<TextEditor.EnrichOptions>): string;
+
+    /**
+     * Convert text of the form `@UUID[uuid]{name}` to anchor elements.
+     * @param text    - The existing text content
+     * @param options - Options provided to customize text enrichment
+     * @returns Whether any content links were replaced and the text nodes need to be updated.
+     */
+    protected static _enrichContentLinks(
+      text: Text[],
+      options?: Partial<
+        TextEditor.EnrichOptions & {
+          /** Whether to resolve UUIDs asynchronously */
+          async: boolean;
+          /** A document to resolve relative UUIDs against. */
+          relativeTo: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
+        }
+      >
+    ): Promise<boolean> | boolean;
+
+    /**
+     * Convert URLs into anchor elements.
+     * @param text    - The existing text content
+     * @param options - Options provided to customize text enrichment
+     * @returns Whether any hyperlinks were replaced and the text nodes need to be updated
+     */
+    protected static _enrichHyperlinks(text: Text[], options?: TextEditor.EnrichOptions): boolean;
+
+    /**
+     * Convert text of the form [[roll]] to anchor elements.
+     * @param rollData - The data object providing context for inline rolls.
+     * @param text     - The existing text content.
+     * @param options  - Options provided to customize text enrichment
+     * @returns Whether any inline rolls were replaced and the text nodes need to be updated.
+     */
+    protected static _enrichInlineRolls(
+      rollData: TextEditor.EnrichOptions['rollData'],
+      text: Text[],
+      options?: Partial<
+        TextEditor.EnrichOptions & {
+          /** Whether to resolve immediate inline rolls asynchronously. */
+          async: boolean;
+        }
+      >
+    ): Promise<boolean> | boolean;
+
+    /**
+     * Match any custom registered regex patterns and apply their replacements.
+     * @param pattern - The pattern to match against.
+     * @param enricher - The function that will be run for each match.
+     * @param text - The existing text content.
+     * @param options - Options provided to customize text enrichment
+     * @returns Whether any replacements were made, requiring the text nodes to be updated.
+     */
+    static _applyCustomEnrichers(
+      pattern: RegExp,
+      enricher: CONFIG.TextEditor.Enricher,
+      text: Text[],
+      options?: TextEditor.EnrichOptions
+    ): Promise<boolean>;
 
     /**
      * Preview an HTML fragment by constructing a substring of a given length from its inner text.
@@ -92,14 +171,15 @@ declare global {
 
     /**
      * Create a dynamic document link from a regular expression match
-     * @param match  - The full matched string
-     * @param type   - The matched document type or "Compendium"
-     * @param target - The requested match target (_id or name)
-     * @param name   - A customized or over-ridden display name for the link
-     * @returns An HTML element for the document link
-     * @internal
+     * @param match   - The regular expression match
+     * @param options - Additional options to configure enrichment behaviour
+     * @returns An HTML element for the document link, returned as a Promise if async was true
+     *          and the message contained a UUID link.
      */
-    protected static _createContentLink(match: string, type: string, target: string, name: string): HTMLAnchorElement;
+    protected static _createContentLink(
+      match: RegExpMatchArray,
+      options?: TextEditor.CreateContentLinkOptions
+    ): HTMLAnchorElement | Promise<HTMLAnchorElement>;
 
     /**
      * Replace a hyperlink-like string with an actual HTML &lt;a&gt; tag
@@ -185,17 +265,19 @@ declare global {
     /**
      * Given a Drop event, returns a Content link if possible such as `@Actor[ABC123]`, else null
      * @param eventData - The parsed object of data provided by the transfer event
+     * @param options   - Additional options to configure link creation.
      */
     // TODO: improve as part of https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/928
-    static getContentLink(eventData: object): Promise<string | null>;
+    static getContentLink(eventData: object, options?: TextEditor.GetContentLinkOptions): Promise<string | null>;
 
     /**
-     * @deprecated since v9 - Use _onDragContentLink instead.
+     * Upload an image to a document's asset path.
+     * @param uuid - The document's UUID.
+     * @param file - The image file to upload.
+     * @returns The path to the uploaded image.
      * @internal
      */
-    protected static _onDragEntityLink(
-      ...args: Parameters<typeof TextEditor['_onDragContentLink']>
-    ): ReturnType<typeof TextEditor['_onDragContentLink']>;
+    static _uploadImage(uuid: string, file: File): Promise<string>;
 
     /**
      * Singleton decoder area
@@ -206,6 +288,13 @@ declare global {
 
   namespace TextEditor {
     interface Options {
+      /**
+       * Which rich text editor engine to use, "tinymce" or "prosemirror". TinyMCE
+       * is deprecated and will be removed in a later version.
+       * @defaultValue "tinymce"
+       */
+      engine?: 'tinymce' | 'prosemirror';
+
       /**
        * @defaultValue `false`
        */

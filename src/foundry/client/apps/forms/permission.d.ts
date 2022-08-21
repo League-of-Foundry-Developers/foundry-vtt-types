@@ -35,14 +35,14 @@ declare global {
 
   namespace PermissionControl {
     interface Data {
-      currentDefault: foundry.CONST.DOCUMENT_PERMISSION_LEVELS | '-1';
+      currentDefault: foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | '-1';
       instructions: string;
-      defaultLevels: Record<foundry.CONST.DOCUMENT_PERMISSION_LEVELS, string> & { '-1'?: string };
-      playerLevels: Record<foundry.CONST.DOCUMENT_PERMISSION_LEVELS | '-1', string> & { '-2'?: string };
+      defaultLevels: Record<foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS, string> & { '-1'?: string };
+      playerLevels: Record<foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | '-1', string> & { '-2'?: string };
       isFolder: boolean;
       users: {
         user: InstanceType<ConfiguredDocumentClassForName<'User'>>;
-        level: foundry.CONST.DOCUMENT_PERMISSION_LEVELS | '-1';
+        level: foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | '-1';
       }[];
     }
 
@@ -52,7 +52,7 @@ declare global {
     }
 
     namespace FormData {
-      type InputPermissionLevel = foundry.CONST.DOCUMENT_PERMISSION_LEVELS | -1 | -2;
+      type InputPermissionLevel = foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | -1 | -2;
     }
   }
 }
