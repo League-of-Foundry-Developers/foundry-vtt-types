@@ -1,10 +1,8 @@
 export {};
 
-/**
- * Allows for viewing and managing Tours
- */
 declare global {
-  class ToursManagement extends PackageConfiguration<ToursManagement.TourCategory> {
+  /** A management app for configuring which Tours are available or have been completed. */
+  class ToursManagement extends PackageConfiguration {
     /** @remarks This is not implemented in {@link ToursManagement} and will throw. */
     protected override _updateObject(event: Event, formData?: object | undefined): Promise<never>;
 
@@ -20,7 +18,7 @@ declare global {
      */
     static override get defaultOptions(): PackageConfiguration.Options;
 
-    override _prepareCategoryData(): PackageConfiguration.Categories<ToursManagement.TourCategory>;
+    override _prepareCategoryData(): ToursManagement.TourCategory;
 
     override activateListeners(html: JQuery<HTMLElement>): void;
 
@@ -28,7 +26,7 @@ declare global {
      * Handle Control clicks
      * @internal
      */
-    protected _onClickControl(event: MouseEvent): void;
+    protected _onClickControl(event: JQuery.ClickEvent): void;
   }
 
   namespace ToursManagement {
