@@ -1,4 +1,4 @@
-import { expectError, expectType } from 'tsd';
+import { expectError, expectType } from "tsd";
 
 expectType<foundry.data.NoteData>(new foundry.data.NoteData());
 
@@ -42,18 +42,18 @@ expectType<foundry.data.NoteData>(
 
 expectType<foundry.data.NoteData>(
   new foundry.data.NoteData({
-    _id: 'bfeabfiea',
-    entryId: 'bebfegibefaei',
+    _id: "bfeabfiea",
+    entryId: "bebfegibefaei",
     x: 100,
     y: 300,
-    icon: 'path/to/some/icon.svg',
+    icon: "path/to/some/icon.svg",
     iconSize: 100,
-    iconTint: '#FFFFFF',
-    text: 'Some text',
-    fontFamily: 'Comic Sans',
+    iconTint: "#FFFFFF",
+    text: "Some text",
+    fontFamily: "Comic Sans",
     fontSize: 50,
     textAnchor: foundry.CONST.TEXT_ANCHOR_POINTS.TOP,
-    textColor: '#FF0000',
+    textColor: "#FF0000",
     flags: {}
   })
 );

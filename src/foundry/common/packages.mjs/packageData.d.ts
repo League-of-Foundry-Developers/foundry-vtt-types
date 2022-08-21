@@ -1,11 +1,11 @@
-import { FieldReturnType, PropertiesToSource } from '../../../types/helperTypes';
-import { DocumentData } from '../abstract/module.mjs';
-import type { PACKAGE_AVAILABILITY_CODES } from '../constants.mjs';
-import * as fields from '../data/fields.mjs';
-import { PackageAuthorData, PackageAuthorDataConstructorData } from './packageAuthorData';
-import { PackageCompendiumData, PackageCompendiumDataConstructorData } from './packageCompendiumData';
-import { PackageDependencyData, PackageDependencyDataConstructorData } from './packageDependencyData';
-import { PackageLanguageData, PackageLanguageDataConstructorData } from './packageLanguageData';
+import { FieldReturnType, PropertiesToSource } from "../../../types/helperTypes";
+import { DocumentData } from "../abstract/module.mjs";
+import type { PACKAGE_AVAILABILITY_CODES } from "../constants.mjs";
+import * as fields from "../data/fields.mjs";
+import { PackageAuthorData, PackageAuthorDataConstructorData } from "./packageAuthorData";
+import { PackageCompendiumData, PackageCompendiumDataConstructorData } from "./packageCompendiumData";
+import { PackageDependencyData, PackageDependencyDataConstructorData } from "./packageDependencyData";
+import { PackageLanguageData, PackageLanguageDataConstructorData } from "./packageLanguageData";
 
 /**
  * A helper field used for string arrays
@@ -40,7 +40,7 @@ type IncludeArrayFieldReturnType<T extends ConstructorOf<DocumentData<any, any>>
   type: [T];
   required: true;
   default: [];
-  clean: (v: unknown) => InstanceType<T>['_source'][];
+  clean: (v: unknown) => InstanceType<T>["_source"][];
 };
 
 interface PackageDataSchema extends DocumentSchema {
@@ -55,7 +55,7 @@ interface PackageDataSchema extends DocumentSchema {
   bugs: fields.StringField;
   changelog: fields.StringField;
   flags: fields.ObjectField;
-  version: FieldReturnType<fields.RequiredString, { default: '1.0.0' }>;
+  version: FieldReturnType<fields.RequiredString, { default: "1.0.0" }>;
   minimumCoreVersion: fields.StringField;
   compatibleCoreVersion: fields.StringField;
   scripts: StringArrayField;
@@ -301,11 +301,11 @@ interface PackageDataConstructorData {
  * Specific types of packages extend this schema with additional fields.
  */
 export class PackageData<
-  Schema extends Omit<PackageDataSchema, 'system'>,
-  Properties extends Omit<PackageDataProperties, 'system'>,
-  ConstructorData extends Omit<PackageDataConstructorData, 'system'>
+  Schema extends Omit<PackageDataSchema, "system">,
+  Properties extends Omit<PackageDataProperties, "system">,
+  ConstructorData extends Omit<PackageDataConstructorData, "system">
 > extends DocumentData<Schema, Properties, PropertiesToSource<Properties>, ConstructorData> {
-  static override defineSchema(): Omit<PackageDataSchema, 'system'>;
+  static override defineSchema(): Omit<PackageDataSchema, "system">;
 
   override _initializeSource(data: ConstructorData): PropertiesToSource<Properties>;
 

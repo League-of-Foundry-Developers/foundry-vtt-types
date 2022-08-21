@@ -1,5 +1,5 @@
-import type { Schema } from 'prosemirror-model';
-import type { Plugin } from 'prosemirror-state';
+import type { Schema } from "prosemirror-model";
+import type { Plugin } from "prosemirror-state";
 
 export default abstract class ProseMirrorPlugin {
   /**

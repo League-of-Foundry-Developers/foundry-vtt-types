@@ -1,14 +1,14 @@
-import { DocumentMetadata } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import * as data from '../data/data.mjs';
+import { DocumentMetadata } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import * as data from "../data/data.mjs";
 
 type AdventureMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'Adventure';
-    collection: 'adventures';
-    label: 'DOCUMENT.Adventure';
-    labelPlural: 'DOCUMENT.Adventures';
+    name: "Adventure";
+    collection: "adventures";
+    label: "DOCUMENT.Adventure";
+    labelPlural: "DOCUMENT.Adventures";
     isPrimary: false;
     isEmbedded: false;
   }

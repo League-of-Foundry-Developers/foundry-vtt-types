@@ -1,4 +1,4 @@
-import { expectAssignable, expectType } from 'tsd';
+import { expectAssignable, expectType } from "tsd";
 
 const container = new CachedContainer();
 expectAssignable<PIXI.Container>(container);

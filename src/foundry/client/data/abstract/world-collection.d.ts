@@ -1,5 +1,5 @@
-import { ConfiguredDocumentClass, DocumentConstructor } from '../../../../types/helperTypes';
-import type { DOCUMENT_TYPES } from '../../../common/constants.mjs.js';
+import { ConfiguredDocumentClass, DocumentConstructor } from "../../../../types/helperTypes";
+import type { DOCUMENT_TYPES } from "../../../common/constants.mjs.js";
 
 declare global {
   /**
@@ -16,9 +16,9 @@ declare global {
      * @param data - An array of data objects from which to create Document instances
      *               (default: `[]`)
      */
-    constructor(data?: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>['data']['_source'][]);
+    constructor(data?: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>["data"]["_source"][]);
 
-    readonly _source: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>['data']['_source'][];
+    readonly _source: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>["data"]["_source"][];
 
     /**
      * Initialize the WorldCollection object by constructing its contained Document instances
@@ -29,7 +29,7 @@ declare global {
     /**
      * @remarks In the abstract {@link WorldCollection}, this actually returns `null` but all deriving classes implement it properly.
      */
-    get documentName(): ConfiguredDocumentClass<T>['metadata']['name'];
+    get documentName(): ConfiguredDocumentClass<T>["metadata"]["name"];
 
     /**
      * The base Document type which is contained within this WorldCollection
@@ -49,8 +49,8 @@ declare global {
     get directory(): Lowercase<Name> extends keyof typeof ui
       ? typeof ui[Lowercase<Name>]
       :
-          | (ConfiguredDocumentClass<T>['metadata']['name'] extends DOCUMENT_TYPES
-              ? SidebarDirectory<ConfiguredDocumentClass<T>['metadata']['name']>
+          | (ConfiguredDocumentClass<T>["metadata"]["name"] extends DOCUMENT_TYPES
+              ? SidebarDirectory<ConfiguredDocumentClass<T>["metadata"]["name"]>
               : never)
           | SidebarTab
           | undefined;
@@ -76,10 +76,10 @@ declare global {
      */
     importFromCompendium(
       pack: CompendiumCollection<
-        CompendiumCollection.Metadata & { type: ConfiguredDocumentClass<T>['metadata']['name'] }
+        CompendiumCollection.Metadata & { type: ConfiguredDocumentClass<T>["metadata"]["name"] }
       >,
       id: string,
-      updateData?: DeepPartial<InstanceType<ConfiguredDocumentClass<T>>['data']['_source']> | undefined,
+      updateData?: DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["data"]["_source"]> | undefined,
       options?: (DocumentModificationContext & WorldCollection.FromCompendiumOptions) | undefined
     ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>>;
 
@@ -91,9 +91,9 @@ declare global {
      * @returns The processed data ready for world Document creation
      */
     fromCompendium(
-      document: InstanceType<ConfiguredDocumentClass<T>> | InstanceType<ConfiguredDocumentClass<T>>['data']['_source'],
+      document: InstanceType<ConfiguredDocumentClass<T>> | InstanceType<ConfiguredDocumentClass<T>>["data"]["_source"],
       options?: WorldCollection.FromCompendiumOptions | undefined
-    ): Omit<InstanceType<ConfiguredDocumentClass<T>>['data']['_source'], '_id' | 'folder'>;
+    ): Omit<InstanceType<ConfiguredDocumentClass<T>>["data"]["_source"], "_id" | "folder">;
 
     /**
      * Prepare a document from an outside source for import into this collection.
@@ -101,8 +101,8 @@ declare global {
      * @returns The prepared data.
      */
     prepareForImport(
-      data: InstanceType<ConfiguredDocumentClass<T>>['data']['_source']
-    ): Omit<InstanceType<ConfiguredDocumentClass<T>>['data']['_source'], '_id' | 'folder'>;
+      data: InstanceType<ConfiguredDocumentClass<T>>["data"]["_source"]
+    ): Omit<InstanceType<ConfiguredDocumentClass<T>>["data"]["_source"], "_id" | "folder">;
 
     /**
      * Register a Document sheet class as a candidate which can be used to display Documents of a given type.

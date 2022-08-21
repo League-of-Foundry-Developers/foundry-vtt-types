@@ -1,13 +1,13 @@
-import type { ConfiguredDocumentClassForName, ConfiguredObjectClassForName } from '../../../../../types/helperTypes';
+import type { ConfiguredDocumentClassForName, ConfiguredObjectClassForName } from "../../../../../types/helperTypes";
 
 declare global {
   /**
    * An icon representing a Door Control
    */
   class DoorControl extends PIXI.Container {
-    constructor(wall: InstanceType<ConfiguredObjectClassForName<'Wall'>>);
+    constructor(wall: InstanceType<ConfiguredObjectClassForName<"Wall">>);
 
-    wall: InstanceType<ConfiguredObjectClassForName<'Wall'>>;
+    wall: InstanceType<ConfiguredObjectClassForName<"Wall">>;
 
     /**
      * Draw the DoorControl icon, displaying it's icon texture and border
@@ -53,7 +53,7 @@ declare global {
      */
     protected _onMouseDown(
       event: PIXI.InteractionEvent
-    ): false | void | Promise<InstanceType<ConfiguredDocumentClassForName<'Wall'>> | undefined>;
+    ): false | void | Promise<InstanceType<ConfiguredDocumentClassForName<"Wall">> | undefined>;
 
     /**
      * Handle right mouse down events on the door control icon
@@ -62,6 +62,6 @@ declare global {
      */
     protected _onRightDown(
       event: PIXI.InteractionEvent
-    ): void | Promise<InstanceType<ConfiguredDocumentClassForName<'Wall'>> | undefined>;
+    ): void | Promise<InstanceType<ConfiguredDocumentClassForName<"Wall">> | undefined>;
   }
 }

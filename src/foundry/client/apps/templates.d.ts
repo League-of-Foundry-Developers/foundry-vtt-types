@@ -359,7 +359,7 @@ declare global {
     interface RangePickerOptions extends Handlebars.HelperOptions {
       /**
        * The name of the field to create
-       * @defaultValue `'range'`
+       * @defaultValue `"range"`
        */
       name?: string;
 

@@ -50,11 +50,11 @@ declare global {
      * The directions in which a tooltip can extend, relative to its tool-tipped element.
      */
     static TOOLTIP_DIRECTIONS: {
-      UP: 'UP';
-      DOWN: 'DOWN';
-      LEFT: 'LEFT';
-      RIGHT: 'RIGHT';
-      CENTER: 'CENTER';
+      UP: "UP";
+      DOWN: "DOWN";
+      LEFT: "LEFT";
+      RIGHT: "RIGHT";
+      CENTER: "CENTER";
     };
 
     /**
@@ -96,7 +96,7 @@ declare global {
      * of the target element and the screen.
      * @internal
      */
-    protected _determineDirection(): ValueOf<Pick<typeof TooltipManager.TOOLTIP_DIRECTIONS, 'UP' | 'DOWN'>>;
+    protected _determineDirection(): ValueOf<Pick<typeof TooltipManager.TOOLTIP_DIRECTIONS, "UP" | "DOWN">>;
 
     /**
      * Set tooltip position relative to an HTML element using an explicitly provided data-tooltip-direction.
@@ -123,6 +123,6 @@ declare global {
     /**
      * The directions in which a tooltip can extend, relative to its tool-tipped element.
      */
-    type TOOLTIP_DIRECTIONS = ValueOf<typeof TooltipManager['TOOLTIP_DIRECTIONS']>;
+    type TOOLTIP_DIRECTIONS = ValueOf<typeof TooltipManager["TOOLTIP_DIRECTIONS"]>;
   }
 }

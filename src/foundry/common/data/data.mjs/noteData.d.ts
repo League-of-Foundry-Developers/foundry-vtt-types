@@ -3,10 +3,10 @@ import {
   ConfiguredFlags,
   FieldReturnType,
   PropertiesToSource
-} from '../../../../types/helperTypes';
-import DocumentData from '../../abstract/data.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
+} from "../../../../types/helperTypes";
+import DocumentData from "../../abstract/data.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
 
 interface NoteDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -19,7 +19,7 @@ interface NoteDataSchema extends DocumentSchema {
     {
       default: 40;
       validate: (n: unknown) => n is number;
-      validationError: 'Invalid {name} {field} which must be an integer greater than 32';
+      validationError: "Invalid {name} {field} which must be an integer greater than 32";
     }
   >;
   iconTint: fields.ColorField;
@@ -27,7 +27,7 @@ interface NoteDataSchema extends DocumentSchema {
   fontFamily: FieldReturnType<
     fields.RequiredString,
     {
-      default: () => typeof CONFIG['defaultFontFamily'];
+      default: () => typeof CONFIG["defaultFontFamily"];
     }
   >;
   fontSize: FieldReturnType<
@@ -35,7 +35,7 @@ interface NoteDataSchema extends DocumentSchema {
     {
       default: 48;
       validate: (n: unknown) => n is number;
-      validationError: 'Invalid {name} {field} which must be an integer between 8 and 128';
+      validationError: "Invalid {name} {field} which must be an integer between 8 and 128";
     }
   >;
   textAnchor: DocumentField<typeof foundry.CONST.TEXT_ANCHOR_POINTS> & {
@@ -43,9 +43,9 @@ interface NoteDataSchema extends DocumentSchema {
     required: true;
     default: typeof foundry.CONST.TEXT_ANCHOR_POINTS.BOTTOM;
     validate: (p: unknown) => p is foundry.CONST.TEXT_ANCHOR_POINTS;
-    validationError: 'Invalid {name} {field} which must be a value in CONST.TEXT_ANCHOR_POINTS';
+    validationError: "Invalid {name} {field} which must be a value in CONST.TEXT_ANCHOR_POINTS";
   };
-  textColor: FieldReturnType<fields.ColorField, { default: '#FFFFFF' }>;
+  textColor: FieldReturnType<fields.ColorField, { default: "#FFFFFF" }>;
   flags: fields.ObjectField;
 }
 
@@ -125,7 +125,7 @@ interface NoteDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'Note'>;
+  flags: ConfiguredFlags<"Note">;
 }
 
 interface NoteDataConstructorData {
@@ -204,7 +204,7 @@ interface NoteDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Note'> | null | undefined;
+  flags?: ConfiguredFlags<"Note"> | null | undefined;
 }
 
 type NoteDataSource = PropertiesToSource<NoteDataProperties>;

@@ -4,8 +4,8 @@
  */
 declare class JournalDirectory<
   Options extends SidebarDirectory.Options = SidebarDirectory.Options
-> extends SidebarDirectory<'JournalEntry', Options> {
-  static override documentName: 'JournalEntry';
+> extends SidebarDirectory<"JournalEntry", Options> {
+  static override documentName: "JournalEntry";
 
   protected override _getEntryContextOptions(): ContextMenuEntry[];
 }

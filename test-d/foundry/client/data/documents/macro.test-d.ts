@@ -1,7 +1,7 @@
-import { expectType } from 'tsd';
-import '../../../index';
+import { expectType } from "tsd";
+import "../../../index";
 
-const macro = new Macro({ name: 'my macro', scope: 'global', type: 'script' });
+const macro = new Macro({ name: "my macro", scope: "global", type: "script" });
 
 // properties and functions added by the concrete `Macro` class
 expectType<boolean>(macro.isAuthor);
@@ -24,7 +24,7 @@ expectType<null>(macro.parent);
 expectType<string | null>(macro.pack);
 
 // static properties of `Document`
-expectType<Promise<StoredDocument<Macro> | undefined>>(Macro.create({ name: 'Some Macro' }));
+expectType<Promise<StoredDocument<Macro> | undefined>>(Macro.create({ name: "Some Macro" }));
 expectType<Promise<StoredDocument<Macro>[]>>(Macro.createDocuments([]));
 expectType<Promise<Macro[]>>(Macro.updateDocuments([]));
 expectType<Promise<Macro[]>>(Macro.deleteDocuments([]));

@@ -1,16 +1,16 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
-import { DocumentMetadata } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import * as data from '../data/data.mjs';
-import { BaseScene } from './baseScene';
+import { ConfiguredDocumentClass } from "../../../types/helperTypes";
+import { DocumentMetadata } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import * as data from "../data/data.mjs";
+import { BaseScene } from "./baseScene";
 
 type AmbientSoundMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'AmbientSound';
-    collection: 'sounds';
-    label: 'DOCUMENT.AmbientSound';
-    labelPlural: 'DOCUMENT.AmbientSounds';
+    name: "AmbientSound";
+    collection: "sounds";
+    label: "DOCUMENT.AmbientSound";
+    labelPlural: "DOCUMENT.AmbientSounds";
     isEmbedded: true;
   }
 >;

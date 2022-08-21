@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from '../../../../../types/helperTypes';
+import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../../types/helperTypes";
 
 declare global {
   /**
@@ -12,7 +12,7 @@ declare global {
      * @defaultValue `null`
      * @internal
      */
-    protected _highlighted: ConfiguredObjectClassForName<'Token'> | null;
+    protected _highlighted: ConfiguredObjectClassForName<"Token"> | null;
 
     /**
      * Record the currently tracked Combat encounter
@@ -152,8 +152,8 @@ declare global {
   namespace CombatTracker {
     type Data =
       | {
-          user: Game['user'];
-          combats: CombatTracker['combats'];
+          user: Game["user"];
+          combats: CombatTracker["combats"];
           combatCount: number;
           started: boolean;
           settings: ClientSettings.Values[`core.${typeof Combat.CONFIG_SETTING}`];
@@ -168,8 +168,8 @@ declare global {
           control: false;
         }
       | {
-          user: Game['user'];
-          combats: CombatTracker['combats'];
+          user: Game["user"];
+          combats: CombatTracker["combats"];
           combatCount: number;
           started: boolean;
           settings: ClientSettings.Values[`core.${typeof Combat.CONFIG_SETTING}`];

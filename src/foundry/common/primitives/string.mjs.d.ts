@@ -26,7 +26,7 @@ declare namespace String {
   interface SlugifyOptions {
     /**
      * The replacement character to separate terms
-     * @defaultValue `'-'`
+     * @defaultValue `"-"`
      */
     replacement?: string;
 

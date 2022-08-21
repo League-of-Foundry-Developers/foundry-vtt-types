@@ -1,8 +1,8 @@
-import type { ConfiguredDocumentClass } from '../../../../../src/types/helperTypes';
+import type { ConfiguredDocumentClass } from "../../../../../src/types/helperTypes";
 
-import { expectAssignable, expectType } from 'tsd';
+import { expectAssignable, expectType } from "tsd";
 
-const user = new User({ name: 'Test' });
+const user = new User({ name: "Test" });
 
 expectType<boolean>(user.active);
 expectType<UserTargets>(user.targets);

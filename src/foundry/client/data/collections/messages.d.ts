@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -8,8 +8,8 @@ declare global {
    * @see {@link ChatMessage} The ChatMessage document
    * @see {@link ChatLog} The ChatLog sidebar directory
    */
-  class Messages extends WorldCollection<typeof foundry.documents.BaseChatMessage, 'Messages'> {
-    static override documentName: 'ChatMessage';
+  class Messages extends WorldCollection<typeof foundry.documents.BaseChatMessage, "Messages"> {
+    static override documentName: "ChatMessage";
 
     override get directory(): typeof ui.chat;
 

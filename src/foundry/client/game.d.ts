@@ -1,11 +1,11 @@
-import type { Socket } from 'socket.io-client';
+import type { Socket } from "socket.io-client";
 import {
   ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
   ConfiguredModule,
   DocumentConstructor,
   ModuleRequiredOrOptional
-} from '../../types/helperTypes';
+} from "../../types/helperTypes";
 
 declare global {
   /**
@@ -19,7 +19,7 @@ declare global {
      * @param sessionId - The ID of the currently active client session retrieved from the browser cookie
      * @param socket    - The open web-socket which should be used to transact game-state data
      */
-    constructor(view: Game['view'], data: Game.ConstructorData, sessionId: Game['sessionId'], socket: Game['socket']);
+    constructor(view: Game["view"], data: Game.ConstructorData, sessionId: Game["sessionId"], socket: Game["socket"]);
 
     /**
      * The named view which is currently active.
@@ -43,12 +43,12 @@ declare global {
     /**
      * The game World which is currently active.
      */
-    world: this['data']['world'];
+    world: this["data"]["world"];
 
     /**
      * The System which is used to power this game World.
      */
-    system: this['data']['system'];
+    system: this["data"]["system"];
 
     /**
      * A Map of active Modules which are currently eligible to be enabled in this World.
@@ -78,21 +78,21 @@ declare global {
 
     /**
      * The Keyboard Manager
-     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     * @remarks Initialized between the `"setup"` and `"ready"` hook events.
      * @defaultValue `null`
      */
     keyboard: KeyboardManager | null;
 
     /**
      * The Mouse Manager
-     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     * @remarks Initialized between the `"setup"` and `"ready"` hook events.
      * @defaultValue `null`
      */
     mouse: MouseManager | null;
 
     /**
      * The Gamepad Manager
-     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     * @remarks Initialized between the `"setup"` and `"ready"` hook events.
      * @defaultValue `null`
      */
     gamepad: GamepadManager | null;
@@ -104,7 +104,7 @@ declare global {
 
     /**
      * The user role permissions setting
-     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     * @remarks Initialized between the `"setup"` and `"ready"` hook events.
      * @defaultValue `null`
      */
     permissions: Game.Permissions | null;
@@ -258,70 +258,70 @@ declare global {
     initializeDocuments(): void;
 
     /**
-     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     * @remarks Initialized between the `"setup"` and `"ready"` hook events.
      */
-    users?: ConfiguredCollectionClassForName<'User'>;
+    users?: ConfiguredCollectionClassForName<"User">;
 
     /**
-     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     * @remarks Initialized between the `"setup"` and `"ready"` hook events.
      */
-    folders?: ConfiguredCollectionClassForName<'Folder'>;
+    folders?: ConfiguredCollectionClassForName<"Folder">;
 
     /**
-     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     * @remarks Initialized between the `"setup"` and `"ready"` hook events.
      */
-    actors?: ConfiguredCollectionClassForName<'Actor'>;
+    actors?: ConfiguredCollectionClassForName<"Actor">;
 
     /**
-     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     * @remarks Initialized between the `"setup"` and `"ready"` hook events.
      */
-    items?: ConfiguredCollectionClassForName<'Item'>;
+    items?: ConfiguredCollectionClassForName<"Item">;
 
     /**
-     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     * @remarks Initialized between the `"setup"` and `"ready"` hook events.
      */
-    scenes?: ConfiguredCollectionClassForName<'Scene'>;
+    scenes?: ConfiguredCollectionClassForName<"Scene">;
 
     /**
-     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     * @remarks Initialized between the `"setup"` and `"ready"` hook events.
      */
-    combats?: ConfiguredCollectionClassForName<'Combat'>;
+    combats?: ConfiguredCollectionClassForName<"Combat">;
 
     /**
-     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     * @remarks Initialized between the `"setup"` and `"ready"` hook events.
      */
-    journal?: ConfiguredCollectionClassForName<'JournalEntry'>;
+    journal?: ConfiguredCollectionClassForName<"JournalEntry">;
 
     /**
-     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     * @remarks Initialized between the `"setup"` and `"ready"` hook events.
      */
-    macros?: ConfiguredCollectionClassForName<'Macro'>;
+    macros?: ConfiguredCollectionClassForName<"Macro">;
 
     /**
-     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     * @remarks Initialized between the `"setup"` and `"ready"` hook events.
      */
-    playlists?: ConfiguredCollectionClassForName<'Playlist'>;
+    playlists?: ConfiguredCollectionClassForName<"Playlist">;
 
     /**
-     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     * @remarks Initialized between the `"setup"` and `"ready"` hook events.
      */
-    tables?: ConfiguredCollectionClassForName<'RollTable'>;
+    tables?: ConfiguredCollectionClassForName<"RollTable">;
 
     /**
-     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     * @remarks Initialized between the `"setup"` and `"ready"` hook events.
      */
-    cards?: ConfiguredCollectionClassForName<'Cards'>;
+    cards?: ConfiguredCollectionClassForName<"Cards">;
 
     /**
-     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     * @remarks Initialized between the `"setup"` and `"ready"` hook events.
      */
-    messages?: ConfiguredCollectionClassForName<'ChatMessage'>;
+    messages?: ConfiguredCollectionClassForName<"ChatMessage">;
 
     /**
      * Initialize the Compendium packs which are present within this Game
      * Create a Collection which maps each Compendium pack using it's collection ID
      */
-    initializePacks(): Promise<this['packs']>;
+    initializePacks(): Promise<this["packs"]>;
 
     /**
      * Initialize the WebRTC implementation
@@ -329,7 +329,7 @@ declare global {
     initializeRTC(): Promise<boolean>;
 
     /**
-     * @remarks Initialized between the `'setup'` and `'ready'` hook events.
+     * @remarks Initialized between the `"setup"` and `"ready"` hook events.
      */
     webrtc?: AVMaster;
 
@@ -381,7 +381,7 @@ declare global {
     /**
      * A convenience accessor for the currently viewed Combat encounter
      */
-    get combat(): CombatEncounters['viewed'];
+    get combat(): CombatEncounters["viewed"];
 
     /**
      * A state variable which tracks whether the game session is currently paused
@@ -538,14 +538,14 @@ declare global {
       }[];
       scripts: string[];
       styles: string[];
-      type: 'world' | 'system' | 'module';
+      type: "world" | "system" | "module";
       unavailable: boolean;
     }
 
     interface ModuleData<T> extends PackageData<T> {
       active: boolean;
       path: string;
-      type: 'module';
+      type: "module";
     }
 
     interface SystemData<T> extends PackageData<T> {
@@ -553,22 +553,22 @@ declare global {
       documentTypes: {
         [Key in
           | foundry.CONST.DOCUMENT_TYPES
-          | 'ActiveEffect'
-          | 'Adventure'
-          | 'AmbientLight'
-          | 'AmbientSound'
-          | 'Card'
-          | 'Combatant'
-          | 'Drawing'
-          | 'FogExploration'
-          | 'MeasuredTemplate'
-          | 'Note'
-          | 'PlaylistSound'
-          | 'Setting'
-          | 'TableResult'
-          | 'Tile'
-          | 'Token'
-          | 'Wall']: string[];
+          | "ActiveEffect"
+          | "Adventure"
+          | "AmbientLight"
+          | "AmbientSound"
+          | "Card"
+          | "Combatant"
+          | "Drawing"
+          | "FogExploration"
+          | "MeasuredTemplate"
+          | "Note"
+          | "PlaylistSound"
+          | "Setting"
+          | "TableResult"
+          | "Tile"
+          | "Token"
+          | "Wall"]: string[];
       };
       model: {
         Actor: Record<string, Record<string, unknown>>;
@@ -586,15 +586,15 @@ declare global {
           templates?: Record<string, unknown>;
         } & Record<string, unknown>;
       };
-      type: 'system';
+      type: "system";
     }
 
     interface WorldData<T> extends PackageData<T> {
       _systemUpdateCheckTime: number;
-      type: 'world';
+      type: "world";
     }
 
-    interface ModuleMap extends Map<string, Game['data']['modules'][number]> {
+    interface ModuleMap extends Map<string, Game["data"]["modules"][number]> {
       /**
        * Gets the module requested for by ID
        * @see {@link ModuleConfig} to add custom properties to modules like APIs.
@@ -603,7 +603,7 @@ declare global {
        */
       get<T extends string>(
         id: T
-      ): (Game['data']['modules'][number] & ConfiguredModule<T>) | ModuleRequiredOrOptional<T>;
+      ): (Game["data"]["modules"][number] & ConfiguredModule<T>) | ModuleRequiredOrOptional<T>;
     }
 
     type Data = {
@@ -634,7 +634,7 @@ declare global {
           };
           buckets: string[];
         } | null;
-        storages: ('public' | 'data' | 's3')[];
+        storages: ("public" | "data" | "s3")[];
       };
       modules: ModuleData<foundry.packages.ModuleData>[];
       options: {
@@ -663,7 +663,7 @@ declare global {
       paused: boolean;
       release: {
         build: number;
-        channel: 'Stable' | 'Testing' | 'Development' | 'Prototype';
+        channel: "Stable" | "Testing" | "Development" | "Prototype";
         download: string;
         generation: string;
         notes: string;
@@ -678,15 +678,15 @@ declare global {
     } & {
       [DocumentType in
         | foundry.CONST.DOCUMENT_TYPES
-        | 'Setting' as ConfiguredDocumentClassForName<DocumentType>['metadata']['collection']]?: InstanceType<
+        | "Setting" as ConfiguredDocumentClassForName<DocumentType>["metadata"]["collection"]]?: InstanceType<
         ConfiguredDocumentClassForName<DocumentType>
-      >['data']['_source'][];
+      >["data"]["_source"][];
     };
 
-    type ConstructorData = Omit<Data, 'world' | 'system' | 'modules'> & {
-      world: WorldData<foundry.packages.WorldData['_source']>;
-      system: SystemData<foundry.packages.SystemData['_source']>;
-      modules: ModuleData<foundry.packages.ModuleData['_source']>[];
+    type ConstructorData = Omit<Data, "world" | "system" | "modules"> & {
+      world: WorldData<foundry.packages.WorldData["_source"]>;
+      system: SystemData<foundry.packages.SystemData["_source"]>;
+      modules: ModuleData<foundry.packages.ModuleData["_source"]>[];
     };
 
     type Permissions = {
@@ -698,11 +698,11 @@ declare global {
 
   /**
    * @defaultValue `undefined`
-   * Initialized between the `'DOMContentLoaded'` event and the `'init'` hook event.
+   * Initialized between the `"DOMContentLoaded"` event and the `"init"` hook event.
    */
-  let canvas: 'canvas' extends keyof LenientGlobalVariableTypes ? Canvas : Canvas | undefined;
+  let canvas: "canvas" extends keyof LenientGlobalVariableTypes ? Canvas : Canvas | undefined;
 }
 
 type ConfiguredCollectionClassForName<Name extends foundry.CONST.DOCUMENT_TYPES> = InstanceType<
-  CONFIG[Name]['collection']
+  CONFIG[Name]["collection"]
 >;

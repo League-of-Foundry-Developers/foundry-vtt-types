@@ -1,18 +1,18 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
-import { DocumentMetadata } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import * as data from '../data/data.mjs';
-import type { CardDataConstructorData, CardDataSource } from '../data/data.mjs/cardData';
-import { BaseCards } from './baseCards';
-import { BaseUser } from './baseUser';
+import { ConfiguredDocumentClass } from "../../../types/helperTypes";
+import { DocumentMetadata } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import * as data from "../data/data.mjs";
+import type { CardDataConstructorData, CardDataSource } from "../data/data.mjs/cardData";
+import { BaseCards } from "./baseCards";
+import { BaseUser } from "./baseUser";
 
 type CardMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'Card';
-    collection: 'cards';
-    label: 'DOCUMENT.Card';
-    labelPlural: 'DOCUMENT.Cards';
+    name: "Card";
+    collection: "cards";
+    label: "DOCUMENT.Card";
+    labelPlural: "DOCUMENT.Cards";
     isEmbedded: true;
     types: string[];
     hasSystemData: true;
@@ -38,7 +38,7 @@ export declare class BaseCard extends Document<
   /**
    * The sub-type of Card.
    */
-  get type(): data.CardData['type'];
+  get type(): data.CardData["type"];
 
   /**
    * Is a User able to create a new embedded Card document within this parent?

@@ -1,6 +1,6 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
-expectType<'MeasuredTemplate'>(MeasuredTemplate.embeddedName);
+expectType<"MeasuredTemplate">(MeasuredTemplate.embeddedName);
 
 const template = new MeasuredTemplate(new MeasuredTemplateDocument());
 expectType<Promise<MeasuredTemplate>>(template.draw());

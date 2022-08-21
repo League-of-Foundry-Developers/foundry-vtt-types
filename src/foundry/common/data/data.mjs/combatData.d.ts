@@ -3,12 +3,12 @@ import {
   ConfiguredFlags,
   FieldReturnType,
   PropertiesToSource
-} from '../../../../types/helperTypes';
-import EmbeddedCollection from '../../abstract/embedded-collection.mjs';
-import { DocumentData } from '../../abstract/module.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
-import { CombatantDataConstructorData } from './combatantData';
+} from "../../../../types/helperTypes";
+import EmbeddedCollection from "../../abstract/embedded-collection.mjs";
+import { DocumentData } from "../../abstract/module.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
+import { CombatantDataConstructorData } from "./combatantData";
 
 interface CombatDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -76,7 +76,7 @@ interface CombatDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'Combat'>;
+  flags: ConfiguredFlags<"Combat">;
 }
 
 interface CombatDataConstructorData {
@@ -126,7 +126,7 @@ interface CombatDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Combat'> | null | undefined;
+  flags?: ConfiguredFlags<"Combat"> | null | undefined;
 }
 
 type CombatDataSource = PropertiesToSource<CombatDataProperties>;

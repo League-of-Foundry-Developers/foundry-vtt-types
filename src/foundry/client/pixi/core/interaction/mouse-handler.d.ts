@@ -41,10 +41,10 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
    */
   constructor(
     object: Object,
-    layer: MouseInteractionManager['layer'],
-    permissions?: MouseInteractionManager['permissions'],
-    callbacks?: MouseInteractionManager['callbacks'],
-    options?: MouseInteractionManager['options']
+    layer: MouseInteractionManager["layer"],
+    permissions?: MouseInteractionManager["permissions"],
+    callbacks?: MouseInteractionManager["callbacks"],
+    options?: MouseInteractionManager["options"]
   );
 
   object: Object;
@@ -57,7 +57,7 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
   permissions: Partial<
     Record<
       MouseInteractionManager.PermissionAction,
-      ((user: Game['user'], event: PIXI.InteractionEvent) => boolean) | boolean
+      ((user: Game["user"], event: PIXI.InteractionEvent) => boolean) | boolean
     >
   >;
 
@@ -75,7 +75,7 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
    * The current interaction state
    * @defaultValue `MouseInteractionManager.INTERACTION_STATES.NONE`
    */
-  state: ValueOf<typeof MouseInteractionManager['INTERACTION_STATES']>;
+  state: ValueOf<typeof MouseInteractionManager["INTERACTION_STATES"]>;
 
   /**
    * Bound handlers which can be added and removed
@@ -83,7 +83,7 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
    */
   handlers: Partial<
     Record<
-      'contextmenu' | 'mousedown' | 'mousemove' | 'mouseout' | 'mouseover' | 'mouseup' | 'rightdown',
+      "contextmenu" | "mousedown" | "mousemove" | "mouseout" | "mouseover" | "mouseup" | "rightdown",
       (event: PIXI.InteractionEvent | MouseEvent) => void
     >
   >;
@@ -168,7 +168,7 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
   /**
    * A reference to the possible interaction states which can be observed
    */
-  get states(): typeof MouseInteractionManager['INTERACTION_STATES'];
+  get states(): typeof MouseInteractionManager["INTERACTION_STATES"];
 
   /**
    * Activate a set of listeners which handle hover events on the target object
@@ -295,20 +295,20 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
 
 declare namespace MouseInteractionManager {
   type PermissionAction =
-    | 'clickLeft'
-    | 'clickLeft2'
-    | 'clickRight'
-    | 'clickRight2'
-    | 'dragLeftDrop'
-    | 'dragLeftMove'
-    | 'dragLeftStart'
-    | 'dragRightDrop'
-    | 'dragRightMove'
-    | 'dragRightStart'
-    | 'hoverIn'
-    | 'hoverOut';
+    | "clickLeft"
+    | "clickLeft2"
+    | "clickRight"
+    | "clickRight2"
+    | "dragLeftDrop"
+    | "dragLeftMove"
+    | "dragLeftStart"
+    | "dragRightDrop"
+    | "dragRightMove"
+    | "dragRightStart"
+    | "hoverIn"
+    | "hoverOut";
 
-  type Action = PermissionAction | 'dragLeftCancel' | 'dragRightCancel';
+  type Action = PermissionAction | "dragLeftCancel" | "dragRightCancel";
 
   interface Options {
     /**

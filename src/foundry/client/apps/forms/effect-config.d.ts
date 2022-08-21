@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -46,14 +46,14 @@ declare global {
     /**
      * @param updateData - (default: `{}`)
      */
-    override _getSubmitData(updateData?: FormApplication.OnSubmitOptions['updateData']): Record<string, unknown>;
+    override _getSubmitData(updateData?: FormApplication.OnSubmitOptions["updateData"]): Record<string, unknown>;
     // TODO: Can we type this better?
   }
 
   namespace ActiveEffectConfig {
     interface Data {
-      effect: ActiveEffectConfig['object']['data'];
-      data: ActiveEffectConfig['object']['data'];
+      effect: ActiveEffectConfig["object"]["data"];
+      data: ActiveEffectConfig["object"]["data"];
       isActorEffect: boolean;
       isItemEffect: boolean;
       submitText: string;

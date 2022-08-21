@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -16,28 +16,28 @@ declare global {
     /**
      * A convenience alias of Item#parent which is more semantically intuitive
      */
-    get actor(): this['parent'];
+    get actor(): this["parent"];
 
     /**
      * A convenience reference to the image path (data.img) used to represent this Item
      */
-    get img(): this['data']['img'];
+    get img(): this["data"]["img"];
 
     /**
      * Provide a thumbnail image path used to represent this document.
      */
-    get thumbnail(): this['data']['img'];
+    get thumbnail(): this["data"]["img"];
 
     /**
      * A convenience alias of Item#isEmbedded which is preserves legacy support
      */
-    get isOwned(): this['isEmbedded'];
+    get isOwned(): this["isEmbedded"];
 
     /**
      * Return an array of the Active Effect instances which originated from this Item.
      * The returned instances are the ActiveEffect instances which exist on the Item itself.
      */
-    get transferredEffects(): ReturnType<this['effects']['filter']>;
+    get transferredEffects(): ReturnType<this["effects"]["filter"]>;
 
     /**
      * Prepare a data object which defines the data schema used by dice roll commands against this Item

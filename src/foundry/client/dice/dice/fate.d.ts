@@ -8,7 +8,7 @@ declare class FateDie extends DiceTerm {
   faces: 3;
 
   /**
-   * @defaultValue `'f'`
+   * @defaultValue `"f"`
    */
   static DENOMINATION: string;
 
@@ -21,17 +21,17 @@ declare class FateDie extends DiceTerm {
 
 declare namespace FateDie {
   interface TermData extends DiceTerm.TermData {
-    modifiers: Array<keyof typeof FateDie['MODIFIERS']>;
+    modifiers: Array<keyof typeof FateDie["MODIFIERS"]>;
   }
 
   interface Modifiers {
-    r: Die['reroll'];
-    rr: Die['rerollRecursive'];
-    k: Die['keep'];
-    kh: Die['keep'];
-    kl: Die['keep'];
-    d: Die['drop'];
-    dh: Die['drop'];
-    dl: Die['drop'];
+    r: Die["reroll"];
+    rr: Die["rerollRecursive"];
+    k: Die["keep"];
+    kh: Die["keep"];
+    kl: Die["keep"];
+    d: Die["drop"];
+    dh: Die["drop"];
+    dl: Die["drop"];
   }
 }

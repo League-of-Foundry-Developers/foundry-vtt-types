@@ -3,10 +3,10 @@ import {
   ConfiguredFlags,
   FieldReturnType,
   PropertiesToSource
-} from '../../../../types/helperTypes';
-import { DocumentData } from '../../abstract/module.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
+} from "../../../../types/helperTypes";
+import { DocumentData } from "../../abstract/module.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
 
 interface MacroDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -16,11 +16,11 @@ interface MacroDataSchema extends DocumentSchema {
     required: true;
     default: typeof foundry.CONST.MACRO_TYPES.CHAT;
     validate: (t: unknown) => t is foundry.CONST.MACRO_TYPES;
-    validationError: 'The provided Macro type must be in CONST.MACRO_TYPES';
+    validationError: "The provided Macro type must be in CONST.MACRO_TYPES";
   };
   author: fields.ForeignDocumentField<{
     type: typeof documents.BaseUser;
-    default: () => Game['user'];
+    default: () => Game["user"];
   }>;
   img: FieldReturnType<fields.ImageField, { required: true; default: typeof MacroData.DEFAULT_ICON }>;
   scope: DocumentField<foundry.CONST.MACRO_SCOPES> & {
@@ -28,7 +28,7 @@ interface MacroDataSchema extends DocumentSchema {
     required: true;
     default: typeof foundry.CONST.MACRO_SCOPES[0];
     validate: (t: unknown) => t is foundry.CONST.MACRO_SCOPES;
-    validationError: 'The provided Macro scope must be in CONST.MACRO_SCOPES';
+    validationError: "The provided Macro scope must be in CONST.MACRO_SCOPES";
   };
   command: fields.BlankString;
   folder: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
@@ -101,7 +101,7 @@ interface MacroDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'Macro'>;
+  flags: ConfiguredFlags<"Macro">;
 }
 
 interface MacroDataConstructorData {
@@ -168,7 +168,7 @@ interface MacroDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Macro'> | null | undefined;
+  flags?: ConfiguredFlags<"Macro"> | null | undefined;
 }
 
 type MacroDataSource = PropertiesToSource<MacroDataProperties>;

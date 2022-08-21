@@ -1,7 +1,7 @@
-import { ConfiguredDocumentClass, ConfiguredFlags, PropertiesToSource } from '../../../../types/helperTypes';
-import { DocumentData } from '../../abstract/module.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
+import { ConfiguredDocumentClass, ConfiguredFlags, PropertiesToSource } from "../../../../types/helperTypes";
+import { DocumentData } from "../../abstract/module.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
 
 interface JournalEntryDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -59,7 +59,7 @@ interface JournalEntryDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'JournalEntry'>;
+  flags: ConfiguredFlags<"JournalEntry">;
 }
 
 interface JournalEntryDataConstructorData {
@@ -107,7 +107,7 @@ interface JournalEntryDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'JournalEntry'> | null | undefined;
+  flags?: ConfiguredFlags<"JournalEntry"> | null | undefined;
 }
 
 type JournalEntryDataSource = PropertiesToSource<JournalEntryDataProperties>;

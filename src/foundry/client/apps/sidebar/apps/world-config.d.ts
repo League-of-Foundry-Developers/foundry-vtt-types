@@ -31,7 +31,7 @@ declare class WorldConfig<
    */
   static override get defaultOptions(): WorldConfigOptions;
 
-  static WORLD_KB_URL: 'https://foundryvtt.com/article/game-worlds/';
+  static WORLD_KB_URL: "https://foundryvtt.com/article/game-worlds/";
 
   override get title(): string;
 
@@ -59,7 +59,7 @@ declare class WorldConfig<
     name: string,
     options?: TextEditor.Options | undefined,
     initialContent?: string | undefined
-  ): ReturnType<FormApplication['activateEditor']>;
+  ): ReturnType<FormApplication["activateEditor"]>;
 }
 
 declare namespace WorldConfig {
@@ -69,7 +69,7 @@ declare namespace WorldConfig {
     submitText: string;
     nextDate: string;
     nextTime: string;
-    worldKbUrl: typeof WorldConfig['WORLD_KB_URL'];
+    worldKbUrl: typeof WorldConfig["WORLD_KB_URL"];
     inWorld: boolean;
     showEditFields: boolean;
     systems?: Game.SystemData<foundry.packages.SystemData>[];

@@ -1,6 +1,6 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
-import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
-import { Document } from '../../common/abstract/module.mjs';
+import { ConfiguredDocumentClass } from "../../../types/helperTypes";
+import { DocumentModificationOptions } from "../../common/abstract/document.mjs";
+import { Document } from "../../common/abstract/module.mjs";
 
 declare global {
   /**
@@ -33,7 +33,7 @@ declare global {
     /**
      * The underlying data object which provides the basis for this placeable object
      */
-    data: D['data'];
+    data: D["data"];
 
     /**
      * Track the field of vision for the placeable object.
@@ -93,23 +93,23 @@ declare global {
     /**
      * The field-of-vision polygon for the object, if it has been computed
      */
-    get fov(): this['vision']['fov'];
+    get fov(): this["vision"]["fov"];
 
     /**
      * Provide a reference to the CanvasLayer which contains this PlaceableObject.
      */
-    get layer(): 'layer' extends keyof D ? D['layer'] : PIXI.Container;
+    get layer(): "layer" extends keyof D ? D["layer"] : PIXI.Container;
 
     /**
      * The line-of-sight polygon for the object, if it has been computed
      */
-    get los(): this['vision']['los'];
+    get los(): this["vision"]["los"];
 
     /**
      * A Form Application which is used to configure the properties of this Placeable Object or the Document it
      * represents.
      */
-    get sheet(): 'sheet' extends keyof D ? D['sheet'] : FormApplication | null;
+    get sheet(): "sheet" extends keyof D ? D["sheet"] : FormApplication | null;
 
     /**
      * Test whether a user can perform a certain interaction with regards to a Placeable Object
@@ -119,7 +119,7 @@ declare global {
      */
     can(
       user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      action: 'HUD' | 'configure' | 'control' | 'view' | 'create' | 'drag' | 'hover' | 'update' | 'delete' | string
+      action: "HUD" | "configure" | "control" | "view" | "create" | "drag" | "hover" | "update" | "delete" | string
     ): boolean;
 
     /**
@@ -182,7 +182,7 @@ declare global {
      */
     clone(): this;
 
-    override destroy(options?: Parameters<PIXI.Container['destroy']>[0]): void;
+    override destroy(options?: Parameters<PIXI.Container["destroy"]>[0]): void;
 
     /**
      * Draw the placeable object into its parent container
@@ -200,14 +200,14 @@ declare global {
     /**
      * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
      */
-    protected _onCreate(data: D['data']['_source'], options: DocumentModificationOptions, userId: string): void;
+    protected _onCreate(data: D["data"]["_source"], options: DocumentModificationOptions, userId: string): void;
 
     /**
      * Define additional steps taken when an existing placeable object of this type is updated with new data
      * @remarks Called without options and userId in Drowing._onUpdate
      */
     protected _onUpdate(
-      changed: DeepPartial<D['data']['_source']>,
+      changed: DeepPartial<D["data"]["_source"]>,
       options?: DocumentModificationOptions,
       userId?: string
     ): void;
@@ -282,7 +282,7 @@ declare global {
     /**
      * Create a standard MouseInteractionManager for the PlaceableObject
      */
-    protected _createInteractionManager(): NonNullable<this['mouseInteractionManager']>;
+    protected _createInteractionManager(): NonNullable<this["mouseInteractionManager"]>;
 
     /**
      * Actions that should be taken for this Placeable Object when a mouseover event occurs

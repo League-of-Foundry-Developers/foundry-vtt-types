@@ -1,7 +1,7 @@
-import { ConfiguredFlags, PropertiesToSource } from '../../../../types/helperTypes';
-import DocumentData from '../../abstract/data.mjs';
-import { BaseTableResult } from '../../documents.mjs';
-import { fields } from '../module.mjs';
+import { ConfiguredFlags, PropertiesToSource } from "../../../../types/helperTypes";
+import DocumentData from "../../abstract/data.mjs";
+import { BaseTableResult } from "../../documents.mjs";
+import { fields } from "../module.mjs";
 
 interface TableResultDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -9,7 +9,7 @@ interface TableResultDataSchema extends DocumentSchema {
     type: typeof Number;
     default: typeof foundry.CONST.TABLE_RESULT_TYPES.TEXT;
     validate: (t: unknown) => t is foundry.CONST.TABLE_RESULT_TYPES;
-    validationError: 'Invalid TableResult type provided';
+    validationError: "Invalid TableResult type provided";
   };
   text: fields.BlankString;
   img: fields.ImageField;
@@ -21,7 +21,7 @@ interface TableResultDataSchema extends DocumentSchema {
     required: true;
     default: [];
     validate: typeof _isValidResultRange;
-    validationError: 'Invalid TableResult range which must be a length-2 array of ascending integers';
+    validationError: "Invalid TableResult range which must be a length-2 array of ascending integers";
   };
   drawn: fields.BooleanField;
   flags: fields.ObjectField;
@@ -90,7 +90,7 @@ interface TableResultDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'TableResult'>;
+  flags: ConfiguredFlags<"TableResult">;
 }
 
 interface TableResultDataConstructorData {
@@ -148,7 +148,7 @@ interface TableResultDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'TableResult'> | null | undefined;
+  flags?: ConfiguredFlags<"TableResult"> | null | undefined;
 }
 
 type TableResultDataSource = PropertiesToSource<TableResultDataProperties>;

@@ -1,11 +1,11 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 const hotbar = new Hotbar();
 expectType<number>(hotbar.page);
 expectType<Macro[]>(hotbar.macros);
 expectType<
-  | { page: number; macros: Macro[]; barClass: 'collapsed' | '' }
-  | Promise<{ page: number; macros: Macro[]; barClass: 'collapsed' | '' }>
+  | { page: number; macros: Macro[]; barClass: "collapsed" | "" }
+  | Promise<{ page: number; macros: Macro[]; barClass: "collapsed" | "" }>
 >(hotbar.getData());
 
 expectType<Promise<boolean>>(hotbar.collapse());

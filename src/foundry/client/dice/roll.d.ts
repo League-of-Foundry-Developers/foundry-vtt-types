@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
+import { ConfiguredDocumentClass } from "../../../types/helperTypes";
 
 declare global {
   /**
@@ -31,7 +31,7 @@ declare global {
      *                  (default: `{}`)
      * @param options - (default: `{}`)
      */
-    constructor(formula: string, data?: D, options?: Roll['options']);
+    constructor(formula: string, data?: D, options?: Roll["options"]);
 
     /**
      * The original provided data object which substitutes into attributes of the roll formula
@@ -76,13 +76,13 @@ declare global {
 
     /**
      * The HTML template path used to render a complete Roll object to the chat log
-     * @defaultValue `'templates/dice/roll.html'`
+     * @defaultValue `"templates/dice/roll.html"`
      */
     static CHAT_TEMPLATE: string;
 
     /**
      * The HTML template used to render an expanded Roll tooltip to the chat log
-     * @defaultValue `'templates/dice/tooltip.html'`
+     * @defaultValue `"templates/dice/tooltip.html"`
      */
     static TOOLTIP_TEMPLATE: string;
 
@@ -156,14 +156,14 @@ declare global {
      * @param options - Options which inform how evaluation is performed
      * @internal
      */
-    protected _evaluate(options?: InexactPartial<Omit<Options, 'async'>>): Promise<Evaluated<this>>;
+    protected _evaluate(options?: InexactPartial<Omit<Options, "async">>): Promise<Evaluated<this>>;
 
     /**
      * Evaluate the roll synchronously.
      * A temporary helper method used to migrate behavior from 0.7.x (sync by default) to 0.9.x (async by default).
      * @param options - Options which inform how evaluation is performed
      */
-    protected _evaluateSync(options?: InexactPartial<Omit<Options, 'async'>>): Evaluated<this>;
+    protected _evaluateSync(options?: InexactPartial<Omit<Options, "async">>): Evaluated<this>;
 
     /**
      * Safely evaluate the final total result for the Roll using its component terms.
@@ -399,15 +399,15 @@ declare global {
      */
     toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
       messageData?: T,
-      { rollMode, create }?: { rollMode?: keyof CONFIG.Dice.RollModes | 'roll'; create?: true }
+      { rollMode, create }?: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create?: true }
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined>;
     toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
       messageData: T,
-      { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | 'roll'; create: false }
+      { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create: false }
     ): MessageData<T>;
     toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
       messageData: T,
-      { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | 'roll'; create: boolean }
+      { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create: boolean }
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined> | MessageData<T>;
 
     /**
@@ -519,7 +519,7 @@ type Flavor = Record<`%F${number}%`, string>;
 
 type MessageData<T extends DeepPartial<ConstructorParameters<typeof ChatMessage>[0]>> = {
   user: string;
-  type: typeof foundry.CONST.CHAT_MESSAGE_TYPES['ROLL'];
+  type: typeof foundry.CONST.CHAT_MESSAGE_TYPES["ROLL"];
   content: number;
   sound: typeof CONFIG.sounds.dice;
 } & T;

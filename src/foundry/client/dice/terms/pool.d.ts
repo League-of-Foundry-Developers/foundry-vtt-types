@@ -21,22 +21,22 @@ declare global {
     /**
      * The original provided terms to the Dice Pool
      */
-    terms: PoolTerm.TermData['terms'];
+    terms: PoolTerm.TermData["terms"];
 
     /**
      * The string modifiers applied to resolve the pool
      */
-    modifiers: PoolTerm.TermData['modifiers'];
+    modifiers: PoolTerm.TermData["modifiers"];
 
     /**
      * Each component term of a dice pool is evaluated as a Roll instance
      */
-    rolls: PoolTerm.TermData['rolls'];
+    rolls: PoolTerm.TermData["rolls"];
 
     /**
      * The array of dice pool results which have been rolled
      */
-    results: PoolTerm.TermData['results'];
+    results: PoolTerm.TermData["results"];
 
     /**
      * Define the modifiers that can be used for this particular DiceTerm type.
@@ -91,7 +91,7 @@ declare global {
      * @param args - Arguments passed to each contained Roll#alter method.
      * @returns The altered pool
      */
-    alter(...args: Parameters<Roll['alter']>): this;
+    alter(...args: Parameters<Roll["alter"]>): this;
 
     protected _evaluateSync({ minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): this;
 
@@ -141,7 +141,7 @@ declare global {
      *
      * @param modifier - The matched modifier query
      */
-    keep(modifier: string): ReturnType<Die['keep']>;
+    keep(modifier: string): ReturnType<Die["keep"]>;
 
     /**
      * Keep a certain number of highest or lowest dice rolls from the result set.
@@ -152,7 +152,7 @@ declare global {
      *
      * @param modifier - The matched modifier query
      */
-    drop(modifier: string): ReturnType<Die['drop']>;
+    drop(modifier: string): ReturnType<Die["drop"]>;
 
     /**
      * Count the number of successful results which occurred in the pool.
@@ -167,7 +167,7 @@ declare global {
      *
      * @param modifier - The matched modifier query
      */
-    countSuccess(modifier: string): ReturnType<Die['countSuccess']>;
+    countSuccess(modifier: string): ReturnType<Die["countSuccess"]>;
 
     /**
      * Count the number of failed results which occurred in a given result set.
@@ -182,7 +182,7 @@ declare global {
      *
      * @param modifier - The matched modifier query
      */
-    countFailures(modifier: string): ReturnType<Die['countFailures']>;
+    countFailures(modifier: string): ReturnType<Die["countFailures"]>;
   }
 
   namespace PoolTerm {
@@ -192,14 +192,14 @@ declare global {
      * enabling them to add additional modifiers for {@link PoolTerm}s.
      */
     interface Modifiers {
-      k: 'keep';
-      kh: 'keep';
-      kl: 'keep';
-      d: 'drop';
-      dh: 'drop';
-      dl: 'drop';
-      cs: 'countSuccess';
-      cf: 'countFailures';
+      k: "keep";
+      kh: "keep";
+      kl: "keep";
+      d: "drop";
+      dh: "drop";
+      dl: "drop";
+      cs: "countSuccess";
+      cf: "countFailures";
     }
 
     type TermData = Required<PoolTermConstructorData>;

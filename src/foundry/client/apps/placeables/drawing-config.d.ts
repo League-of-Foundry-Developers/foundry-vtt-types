@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
 
 declare global {
   interface DrawingConfigOptions extends FormApplicationOptions {
@@ -17,7 +17,7 @@ declare global {
   class DrawingConfig<
     Options extends DrawingConfigOptions = DrawingConfigOptions,
     Data extends object = DrawingConfig.Data<Options>
-  > extends FormApplication<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Drawing'>>> {
+  > extends FormApplication<Options, Data, InstanceType<ConfiguredDocumentClassForName<"Drawing">>> {
     /**
      * @defaultValue
      * ```typescript
@@ -65,13 +65,13 @@ declare global {
       isDefault: boolean;
       fillTypes: DrawingConfig.FillTypes;
       fontFamilies: Record<string, string>;
-      object: foundry.data.DrawingData['_source'];
+      object: foundry.data.DrawingData["_source"];
       options: Options;
       submitText: string;
     }
 
     type FillTypes = {
-      [Key in keyof typeof foundry.CONST['DRAWING_FILL_TYPES'] as typeof foundry.CONST['DRAWING_FILL_TYPES'][Key]]: `DRAWING.FillType${Titlecase<Key>}`;
+      [Key in keyof typeof foundry.CONST["DRAWING_FILL_TYPES"] as typeof foundry.CONST["DRAWING_FILL_TYPES"][Key]]: `DRAWING.FillType${Titlecase<Key>}`;
     };
 
     interface FormData {

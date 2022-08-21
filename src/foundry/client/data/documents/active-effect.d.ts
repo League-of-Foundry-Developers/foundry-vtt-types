@@ -1,7 +1,7 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
-import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
-import type { ActiveEffectDataConstructorData } from '../../../common/data/data.mjs/activeEffectData';
-import { EffectChangeData } from '../../../common/data/data.mjs/effectChangeData';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
+import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
+import type { ActiveEffectDataConstructorData } from "../../../common/data/data.mjs/activeEffectData";
+import { EffectChangeData } from "../../../common/data/data.mjs/effectChangeData";
 
 declare global {
   /**
@@ -139,13 +139,13 @@ declare global {
     ): Promise<void>;
 
     protected override _onCreate(
-      data: foundry.data.ActiveEffectData['_source'],
+      data: foundry.data.ActiveEffectData["_source"],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
     protected override _onUpdate(
-      data: DeepPartial<foundry.data.ActiveEffectData['_source']>,
+      data: DeepPartial<foundry.data.ActiveEffectData["_source"]>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -161,7 +161,7 @@ declare global {
 }
 
 interface DurationSummary {
-  type: 'seconds' | 'turns' | 'none';
+  type: "seconds" | "turns" | "none";
   duration: number | null;
   remaining: number | null;
   label: string;

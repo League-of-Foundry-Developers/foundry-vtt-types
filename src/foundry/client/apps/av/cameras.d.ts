@@ -25,7 +25,7 @@ declare global {
     /**
      * A reference to the master AV orchestrator instance
      */
-    get webrtc(): Game['webrtc'];
+    get webrtc(): Game["webrtc"];
 
     /**
      * Obtain a reference to the div.camera-view which is used to portray a given Foundry User.
@@ -141,7 +141,7 @@ declare global {
      * @param container - The container for which to show/hide control elements
      * @param show      - Whether to show or hide the controls
      * @param selector  - Override selector to specify which controls to show or hide
-     *                    (default: `'.control-bar'`)
+     *                    (default: `".control-bar"`)
      * @internal
      */
     protected _toggleControlVisibility(container: HTMLElement, show: boolean, selector?: string): void;
@@ -149,7 +149,7 @@ declare global {
 
   namespace CameraViews {
     interface Data {
-      self: Game['user'];
+      self: Game["user"];
       users: Data.User[];
       dockClass: string;
       muteAll: boolean;
@@ -158,13 +158,13 @@ declare global {
     namespace Data {
       interface User {
         user: StoredDocument<globalThis.User>;
-        id: StoredDocument<globalThis.User>['id'];
-        local: StoredDocument<globalThis.User>['isSelf'];
-        name: StoredDocument<globalThis.User>['name'];
-        color: StoredDocument<globalThis.User>['data']['color'];
+        id: StoredDocument<globalThis.User>["id"];
+        local: StoredDocument<globalThis.User>["isSelf"];
+        name: StoredDocument<globalThis.User>["name"];
+        color: StoredDocument<globalThis.User>["data"]["color"];
         colorAlpha: `rgba(${number}, ${number}, ${number})`;
         charname: string;
-        avatar: StoredDocument<globalThis.User>['avatar'];
+        avatar: StoredDocument<globalThis.User>["avatar"];
         settings: AVSettings.UserSettings;
         volume: number;
         cameraViewClass: string;

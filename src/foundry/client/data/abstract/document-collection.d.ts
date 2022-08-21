@@ -1,5 +1,5 @@
-import { ConfiguredDocumentClass, DocumentConstructor } from '../../../../types/helperTypes';
-import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
+import { ConfiguredDocumentClass, DocumentConstructor } from "../../../../types/helperTypes";
+import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
 declare global {
   /**
@@ -29,7 +29,7 @@ declare global {
      * A reference to the named Document class which is contained within this DocumentCollection.
      * @remarks This accessor is abstract: A subclass of DocumentCollection must implement the documentName getter
      */
-    get documentName(): ConfiguredDocumentClass<T>['metadata']['name'];
+    get documentName(): ConfiguredDocumentClass<T>["metadata"]["name"];
 
     /**
      * @remarks The parameter `id` is ignored, instead `document.id` is used as the key.
@@ -53,13 +53,13 @@ declare global {
      */
     updateAll(
       transformation:
-        | DeepPartial<InstanceType<ConfiguredDocumentClass<T>>['data']['_source']>
+        | DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["data"]["_source"]>
         | ((
             doc: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>
-          ) => DeepPartial<InstanceType<ConfiguredDocumentClass<T>>['data']['_source']>),
+          ) => DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["data"]["_source"]>),
       condition?: ((obj: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>) => boolean) | null,
       options?: DocumentModificationContext
-    ): ReturnType<this['documentClass']['updateDocuments']>;
+    ): ReturnType<this["documentClass"]["updateDocuments"]>;
 
     /**
      * Preliminary actions taken before a set of Documents in this Collection are created.
@@ -68,7 +68,7 @@ declare global {
      * @param userId  - The ID of the User who triggered the operation
      */
     protected _preCreateDocuments(
-      result: (InstanceType<T>['data']['_source'] & { _id: string })[],
+      result: (InstanceType<T>["data"]["_source"] & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -82,7 +82,7 @@ declare global {
      */
     protected _onCreateDocuments(
       documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
-      result: (InstanceType<T>['data']['_source'] & { _id: string })[],
+      result: (InstanceType<T>["data"]["_source"] & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -94,7 +94,7 @@ declare global {
      * @param userId  - The ID of the User who triggered the operation
      */
     protected _preUpdateDocuments(
-      result: (DeepPartial<InstanceType<T>['data']['_source']> & { _id: string })[],
+      result: (DeepPartial<InstanceType<T>["data"]["_source"]> & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -108,7 +108,7 @@ declare global {
      */
     protected _onUpdateDocuments(
       documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
-      result: (DeepPartial<InstanceType<T>['data']['_source']> & { _id: string })[],
+      result: (DeepPartial<InstanceType<T>["data"]["_source"]> & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -144,17 +144,17 @@ declare global {
      * @internal
      */
     protected _getRenderContext(
-      action: DocumentCollection.RenderContext.Create<T>['action'],
+      action: DocumentCollection.RenderContext.Create<T>["action"],
       documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
-      data: (InstanceType<T>['data']['_source'] & { _id: string })[]
+      data: (InstanceType<T>["data"]["_source"] & { _id: string })[]
     ): DocumentCollection.RenderContext.Create<T>;
     protected _getRenderContext(
-      action: DocumentCollection.RenderContext.Update<T>['action'],
+      action: DocumentCollection.RenderContext.Update<T>["action"],
       documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
-      data: (DeepPartial<InstanceType<T>['data']['_source']> & { _id: string })[]
+      data: (DeepPartial<InstanceType<T>["data"]["_source"]> & { _id: string })[]
     ): DocumentCollection.RenderContext.Update<T>;
     protected _getRenderContext(
-      action: DocumentCollection.RenderContext.Delete<T>['action'],
+      action: DocumentCollection.RenderContext.Delete<T>["action"],
       documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
       data: string[]
     ): DocumentCollection.RenderContext.Delete<T>;
@@ -163,28 +163,28 @@ declare global {
   namespace DocumentCollection {
     namespace RenderContext {
       interface Base<T extends DocumentConstructor> {
-        documentType: T['metadata']['name'];
+        documentType: T["metadata"]["name"];
         documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[];
 
-        /** @deprecated The 'entities' render context is deprecated. Please use 'documents' instead. */
-        get entities(): this['documents'];
+        /** @deprecated The "entities" render context is deprecated. Please use "documents" instead. */
+        get entities(): this["documents"];
 
-        /** @deprecated The 'entityType' render context is deprecated. Please use 'documentType' instead. */
-        get entityType(): this['documentType'];
+        /** @deprecated The "entityType" render context is deprecated. Please use "documentType" instead. */
+        get entityType(): this["documentType"];
       }
 
       interface Create<T extends DocumentConstructor> extends Base<T> {
-        action: 'create';
-        data: (InstanceType<T>['data']['_source'] & { _id: string })[];
+        action: "create";
+        data: (InstanceType<T>["data"]["_source"] & { _id: string })[];
       }
 
       interface Update<T extends DocumentConstructor> extends Base<T> {
-        action: 'update';
-        data: (DeepPartial<InstanceType<T>['data']['_source']> & { _id: string })[];
+        action: "update";
+        data: (DeepPartial<InstanceType<T>["data"]["_source"]> & { _id: string })[];
       }
 
       interface Delete<T extends DocumentConstructor> extends Base<T> {
-        action: 'delete';
+        action: "delete";
         data: string[];
       }
     }

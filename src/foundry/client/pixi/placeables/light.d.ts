@@ -1,12 +1,12 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
+import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
 declare global {
   /**
    * An AmbientLight is an implementation of PlaceableObject which represents a dynamic light source within the Scene.
    */
-  class AmbientLight extends PlaceableObject<InstanceType<ConfiguredDocumentClassForName<'AmbientLight'>>> {
-    constructor(document: InstanceType<ConfiguredDocumentClassForName<'AmbientLight'>>);
+  class AmbientLight extends PlaceableObject<InstanceType<ConfiguredDocumentClassForName<"AmbientLight">>> {
+    constructor(document: InstanceType<ConfiguredDocumentClassForName<"AmbientLight">>);
 
     /**
      * A reference to the PointSource object which defines this light source area of effect
@@ -19,7 +19,7 @@ declare global {
      */
     controlIcon: ControlIcon | undefined;
 
-    static override embeddedName: 'AmbientLight';
+    static override embeddedName: "AmbientLight";
 
     override get bounds(): NormalizedRectangle;
 
@@ -55,7 +55,7 @@ declare global {
 
     override draw(): Promise<this>;
 
-    override destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
+    override destroy(options?: Parameters<PlaceableObject["destroy"]>[0]): void;
 
     /**
      * Draw the ControlIcon for the AmbientLight
@@ -82,22 +82,22 @@ declare global {
     updateSource(options?: AmbientLight.UpdateSourceOptions | undefined): void;
 
     protected override _onCreate(
-      data: foundry.data.AmbientLightData['_source'],
+      data: foundry.data.AmbientLightData["_source"],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.AmbientLightData['_source']>,
+      changed: DeepPartial<foundry.data.AmbientLightData["_source"]>,
       options?: DocumentModificationOptions,
       userId?: string
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
-    protected override _canHUD(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
+    protected override _canHUD(user: InstanceType<ConfiguredDocumentClassForName<"User">>, event?: any): boolean;
 
-    protected override _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
+    protected override _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<"User">>, event?: any): boolean;
 
     protected override _onClickRight(event: PIXI.InteractionEvent): Promise<this>;
 

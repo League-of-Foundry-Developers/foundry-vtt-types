@@ -1,5 +1,5 @@
-import * as fields from '../data/fields.mjs';
-import { PackageData, PackageDataConstructorData, PackageDataProperties, PackageDataSchema } from './packageData';
+import * as fields from "../data/fields.mjs";
+import { PackageData, PackageDataConstructorData, PackageDataProperties, PackageDataSchema } from "./packageData";
 
 interface SystemDataSchema extends PackageDataSchema {
   background: fields.StringField;

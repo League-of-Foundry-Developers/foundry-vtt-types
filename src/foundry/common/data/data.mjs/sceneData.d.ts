@@ -3,19 +3,19 @@ import {
   ConfiguredFlags,
   FieldReturnType,
   PropertiesToSource
-} from '../../../../types/helperTypes';
-import EmbeddedCollection from '../../abstract/embedded-collection.mjs';
-import { DocumentData } from '../../abstract/module.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
-import { AmbientLightDataConstructorData } from './ambientLightData';
-import { AmbientSoundDataConstructorData } from './ambientSoundData';
-import { DrawingDataConstructorData } from './drawingData';
-import { MeasuredTemplateDataConstructorData } from './measuredTemplateData';
-import { NoteDataConstructorData } from './noteData';
-import { TileDataConstructorData } from './tileData';
-import { TokenDataConstructorData } from './tokenData';
-import { WallDataConstructorData } from './wallData';
+} from "../../../../types/helperTypes";
+import EmbeddedCollection from "../../abstract/embedded-collection.mjs";
+import { DocumentData } from "../../abstract/module.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
+import { AmbientLightDataConstructorData } from "./ambientLightData";
+import { AmbientSoundDataConstructorData } from "./ambientSoundData";
+import { DrawingDataConstructorData } from "./drawingData";
+import { MeasuredTemplateDataConstructorData } from "./measuredTemplateData";
+import { NoteDataConstructorData } from "./noteData";
+import { TileDataConstructorData } from "./tileData";
+import { TokenDataConstructorData } from "./tokenData";
+import { WallDataConstructorData } from "./wallData";
 
 interface SceneDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -34,7 +34,7 @@ interface SceneDataSchema extends DocumentSchema {
     required: true;
     default: 0.25;
     validate: (p: unknown) => boolean;
-    validation: 'Invalid {name} {field} which must be a number between 0 and 0.5';
+    validation: "Invalid {name} {field} which must be a number between 0 and 0.5";
   };
   initial: DocumentField<Object> & {
     type: typeof Object;
@@ -42,15 +42,15 @@ interface SceneDataSchema extends DocumentSchema {
     nullable: true;
     default: null;
     validate: typeof _validateInitialViewPosition;
-    validationError: 'Invalid initial view position object provided for Scene';
+    validationError: "Invalid initial view position object provided for Scene";
   };
-  backgroundColor: FieldReturnType<fields.ColorField, { required: true; default: '#999999' }>;
+  backgroundColor: FieldReturnType<fields.ColorField, { required: true; default: "#999999" }>;
   gridType: FieldReturnType<
     fields.RequiredNumber,
     {
       default: typeof foundry.CONST.GRID_TYPES.SQUARE;
       validate: (t: unknown) => t is foundry.CONST.GRID_TYPES;
-      validationError: 'Invalid {name } {field} which must be a value in CONST.GRID_TYPES';
+      validationError: "Invalid {name } {field} which must be a value in CONST.GRID_TYPES";
     }
   >;
   grid: DocumentField<Number> & {
@@ -62,7 +62,7 @@ interface SceneDataSchema extends DocumentSchema {
   };
   shiftX: FieldReturnType<fields.IntegerField, { required: true; default: 0 }>;
   shiftY: FieldReturnType<fields.IntegerField, { required: true; default: 0 }>;
-  gridColor: FieldReturnType<fields.ColorField, { required: true; default: '#000000' }>;
+  gridColor: FieldReturnType<fields.ColorField, { required: true; default: "#000000" }>;
   gridAlpha: FieldReturnType<fields.AlphaField, { required: true; default: 0.2 }>;
   gridDistance: FieldReturnType<fields.RequiredPositiveNumber, { default: () => number }>;
   gridUnits: FieldReturnType<fields.BlankString, { default: () => string }>;
@@ -76,7 +76,7 @@ interface SceneDataSchema extends DocumentSchema {
     nullable: true;
     default: null;
     validate: (n: unknown) => boolean;
-    validationError: 'Invalid {name} {field} which must be null, or a number between 0 and 1';
+    validationError: "Invalid {name} {field} which must be null, or a number between 0 and 1";
   };
   darkness: FieldReturnType<fields.AlphaField, { default: 0 }>;
   drawings: fields.EmbeddedCollectionField<typeof documents.BaseDrawing>;
@@ -175,7 +175,7 @@ interface SceneDataProperties {
 
   /**
    * The color of the canvas which is displayed behind the scene background
-   * @defaultValue `'#999999'`
+   * @defaultValue `"#999999"`
    */
   backgroundColor: string | null;
 
@@ -205,7 +205,7 @@ interface SceneDataProperties {
 
   /**
    * A string representing the color used to render the grid lines
-   * @defaultValue `'#000000'`
+   * @defaultValue `"#000000"`
    */
   gridColor: string | null;
 
@@ -360,7 +360,7 @@ interface SceneDataProperties {
   /**
    * An object of optional key/value flags
    */
-  flags: ConfiguredFlags<'Scene'>;
+  flags: ConfiguredFlags<"Scene">;
 }
 
 interface SceneDataConstructorData {
@@ -626,7 +626,7 @@ interface SceneDataConstructorData {
   /**
    * An object of optional key/value flags
    */
-  flags?: ConfiguredFlags<'Scene'> | null | undefined;
+  flags?: ConfiguredFlags<"Scene"> | null | undefined;
 }
 
 type SceneDataSource = PropertiesToSource<SceneDataProperties>;

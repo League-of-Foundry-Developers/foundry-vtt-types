@@ -1,4 +1,4 @@
-import type { DOMOutputSpec, Fragment, Mark, Schema } from 'prosemirror-model';
+import type { DOMOutputSpec, Fragment, Mark, Schema } from "prosemirror-model";
 
 /**
  * @param node - The ProseMirror node.
@@ -57,7 +57,7 @@ export default class StringSerializer {
    * @param mark   - The ProseMirror mark.
    * @param inline - Does the mark appear in an inline context?
    */
-  protected _serializeMark(mark: Mark, inline: boolean): ReturnType<StringSerializer['_specToStringNode']>;
+  protected _serializeMark(mark: Mark, inline: boolean): ReturnType<StringSerializer["_specToStringNode"]>;
 }
 
 /**

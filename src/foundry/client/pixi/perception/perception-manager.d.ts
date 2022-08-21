@@ -58,12 +58,12 @@ declare class PerceptionManager {
   /**
    * A helper function to perform an immediate initialization plus incremental refresh.
    */
-  initialize(): ReturnType<this['update']>;
+  initialize(): ReturnType<this["update"]>;
 
   /**
    * A helper function to perform an incremental refresh only.
    */
-  refresh(): ReturnType<this['update']>;
+  refresh(): ReturnType<this["update"]>;
 
   /**
    * Set option flags which configure the next perception update

@@ -1,11 +1,11 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 expectType<GridLayer | undefined>(GridLayer.instance);
 expectType<GridLayer.LayerOptions>(GridLayer.layerOptions);
-expectType<'grid'>(GridLayer.layerOptions.name);
+expectType<"grid">(GridLayer.layerOptions.name);
 
 const layer = new GridLayer();
-expectType<'grid'>(layer.options.name);
+expectType<"grid">(layer.options.name);
 expectType<BaseGrid | undefined>(layer.grid);
 expectType<PIXI.Container | undefined>(layer.highlight);
 expectType<Record<string, GridHighlight>>(layer.highlightLayers);
@@ -19,7 +19,7 @@ expectType<Promise<GridLayer>>(layer.draw({}));
 expectType<Promise<GridLayer>>(layer.draw({ type: null, dimensions: null, gridColor: null, gridAlpha: null }));
 expectType<Promise<GridLayer>>(layer.draw({ type: foundry.CONST.GRID_TYPES.GRIDLESS }));
 expectType<Promise<GridLayer>>(layer.draw({ dimensions: (canvas as Canvas).dimensions }));
-expectType<Promise<GridLayer>>(layer.draw({ gridColor: '#000000' }));
+expectType<Promise<GridLayer>>(layer.draw({ gridColor: "#000000" }));
 expectType<Promise<GridLayer>>(layer.draw({ gridColor: 0x000000 }));
 expectType<Promise<GridLayer>>(layer.draw({ gridAlpha: 0.2 }));
 expectType<{ x: number; y: number }>(layer.getSnappedPosition(10, 100));
@@ -32,13 +32,13 @@ expectType<number[]>(layer.measureDistances([{ ray: new Ray({ x: 8, y: 17 }, { x
 expectType<number[]>(
   layer.measureDistances([{ ray: new Ray({ x: 8, y: 17 }, { x: 1100, y: 1200 }) }], { gridSpaces: true })
 );
-expectType<GridHighlight>(layer.addHighlightLayer('some'));
-expectType<GridHighlight | undefined>(layer.getHighlightLayer('some'));
-expectType<void>(layer.clearHighlightLayer('some'));
-expectType<void>(layer.destroyHighlightLayer('some'));
-expectType<void | false>(layer.highlightPosition('some'));
+expectType<GridHighlight>(layer.addHighlightLayer("some"));
+expectType<GridHighlight | undefined>(layer.getHighlightLayer("some"));
+expectType<void>(layer.clearHighlightLayer("some"));
+expectType<void>(layer.destroyHighlightLayer("some"));
+expectType<void | false>(layer.highlightPosition("some"));
 expectType<void | false>(
-  layer.highlightPosition('some', {
+  layer.highlightPosition("some", {
     x: 10,
     y: 100,
     color: 0x33bbff,

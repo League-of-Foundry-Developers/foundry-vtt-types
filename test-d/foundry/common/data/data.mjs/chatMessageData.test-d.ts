@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 expectType<foundry.data.ChatMessageData>(new foundry.data.ChatMessageData());
 expectType<foundry.data.ChatMessageData>(new foundry.data.ChatMessageData({}));
@@ -70,11 +70,11 @@ expectType<foundry.data.ChatMessageData>(
 );
 expectType<foundry.data.ChatMessageData>(
   new foundry.data.ChatMessageData({
-    whisper: ['someId']
+    whisper: ["someId"]
   })
 );
 expectType<foundry.data.ChatMessageData>(
   new foundry.data.ChatMessageData({
-    whisper: [{ id: 'someId' }]
+    whisper: [{ id: "someId" }]
   })
 );

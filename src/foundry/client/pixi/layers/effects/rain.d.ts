@@ -4,7 +4,7 @@
 declare class RainWeatherEffect extends SpecialEffect {
   /**
    * Configuration for the particle emitter for rain
-   * @defaultValue `'Rain'`
+   * @defaultValue `"Rain"`
    */
   static get label(): string;
 
@@ -14,13 +14,13 @@ declare class RainWeatherEffect extends SpecialEffect {
    * {
    *   maxSpeed: 0,
    *   noRotation: false,
-   *   blendMode: 'normal',
+   *   blendMode: "normal",
    *   emitterLifetime: -1,
    *   pos: {
    *     x: 0,
    *     y: 0
    *   },
-   *   spawnType: 'rect',
+   *   spawnType: "rect",
    *   alpha: {
    *     start: 0.7,
    *     end: 0.1
@@ -59,13 +59,13 @@ declare class RainWeatherEffect extends SpecialEffect {
    * {
    *   maxSpeed: 0,
    *   noRotation: false,
-   *   blendMode: 'normal',
+   *   blendMode: "normal",
    *   emitterLifetime: -1,
    *   pos: {
    *     x: 0,
    *     y: 0
    *   },
-   *   spawnType: 'rect',
+   *   spawnType: "rect",
    *   alpha: {
    *     start: 1,
    *     end: 1

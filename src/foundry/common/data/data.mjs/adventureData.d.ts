@@ -1,17 +1,17 @@
-import type { PropertiesToSource } from '../../../../types/helperTypes';
-import type DocumentData from '../../abstract/data.mjs';
-import { AnyDocumentData } from '../../abstract/data.mjs';
-import * as fields from '../fields.mjs';
-import type { ActorData, ActorDataConstructorData } from './actorData';
-import type { CardsData, CardsDataConstructorData } from './cardsData';
-import type { CombatData, CombatDataConstructorData } from './combatData';
-import type { FolderData, FolderDataConstructorData } from './folderData';
-import type { ItemData, ItemDataConstructorData } from './itemData';
-import type { JournalEntryData, JournalEntryDataConstructorData } from './journalEntryData';
-import type { MacroData, MacroDataConstructorData } from './macroData';
-import type { PlaylistData, PlaylistDataConstructorData } from './playlistData';
-import type { RollTableData, RollTableDataConstructorData } from './rollTableData';
-import type { SceneData, SceneDataConstructorData } from './sceneData';
+import type { PropertiesToSource } from "../../../../types/helperTypes";
+import type DocumentData from "../../abstract/data.mjs";
+import { AnyDocumentData } from "../../abstract/data.mjs";
+import * as fields from "../fields.mjs";
+import type { ActorData, ActorDataConstructorData } from "./actorData";
+import type { CardsData, CardsDataConstructorData } from "./cardsData";
+import type { CombatData, CombatDataConstructorData } from "./combatData";
+import type { FolderData, FolderDataConstructorData } from "./folderData";
+import type { ItemData, ItemDataConstructorData } from "./itemData";
+import type { JournalEntryData, JournalEntryDataConstructorData } from "./journalEntryData";
+import type { MacroData, MacroDataConstructorData } from "./macroData";
+import type { PlaylistData, PlaylistDataConstructorData } from "./playlistData";
+import type { RollTableData, RollTableDataConstructorData } from "./rollTableData";
+import type { SceneData, SceneDataConstructorData } from "./sceneData";
 
 interface AdventureDataSchema extends DocumentSchema {
   _id: fields.DocumentId;

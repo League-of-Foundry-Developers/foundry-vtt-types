@@ -1,11 +1,11 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 expectType<WeatherLayer | undefined>(WeatherLayer.instance);
 expectType<WeatherLayer.LayerOptions>(WeatherLayer.layerOptions);
-expectType<'effects'>(WeatherLayer.layerOptions.name);
+expectType<"effects">(WeatherLayer.layerOptions.name);
 
 const layer = new WeatherLayer();
-expectType<'effects'>(layer.options.name);
+expectType<"effects">(layer.options.name);
 expectType<PIXI.Container | undefined>(layer.weather);
 expectType<SpecialEffect | undefined>(layer.weatherEffect);
 expectType<PIXI.particles.Emitter[]>(layer.emitters);

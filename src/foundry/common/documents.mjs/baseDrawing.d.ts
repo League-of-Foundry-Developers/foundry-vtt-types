@@ -1,18 +1,18 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
-import { DocumentMetadata } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import * as data from '../data/data.mjs';
-import type { CONST } from '../module.mjs';
-import { BaseScene } from './baseScene';
-import { BaseUser } from './baseUser';
+import { ConfiguredDocumentClass } from "../../../types/helperTypes";
+import { DocumentMetadata } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import * as data from "../data/data.mjs";
+import type { CONST } from "../module.mjs";
+import { BaseScene } from "./baseScene";
+import { BaseUser } from "./baseUser";
 
 type DrawingMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'Drawing';
-    collection: 'drawings';
-    label: 'DOCUMENT.Drawing';
-    labelPlural: 'DOCUMENT.Drawings';
+    name: "Drawing";
+    collection: "drawings";
+    label: "DOCUMENT.Drawing";
+    labelPlural: "DOCUMENT.Drawings";
     isEmbedded: true;
     types: [
       typeof CONST.DRAWING_TYPES.RECTANGLE,
@@ -22,7 +22,7 @@ type DrawingMetadata = Merge<
       typeof CONST.DRAWING_TYPES.FREEHAND
     ];
     permissions: {
-      create: 'DRAWING_CREATE';
+      create: "DRAWING_CREATE";
       update: (user: BaseUser, doc: BaseDrawing, data?: object) => boolean;
       delete: (user: BaseUser, doc: BaseDrawing, data?: object) => boolean;
     };

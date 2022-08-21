@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName, ToObjectFalseType } from '../../../../types/helperTypes';
+import type { ConfiguredDocumentClassForName, ToObjectFalseType } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -35,7 +35,7 @@ declare global {
     /**
      * Return an Array of Scenes which are displayed in the Navigation bar
      */
-    get scenes(): InstanceType<ConfiguredDocumentClassForName<'Scene'>>[];
+    get scenes(): InstanceType<ConfiguredDocumentClassForName<"Scene">>[];
 
     override render(force?: boolean, context?: Application.RenderOptions<Options>): this | void;
 

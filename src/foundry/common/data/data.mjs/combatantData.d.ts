@@ -1,7 +1,7 @@
-import { ConfiguredDocumentClass, ConfiguredFlags, PropertiesToSource } from '../../../../types/helperTypes';
-import { DocumentData } from '../../abstract/module.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
+import { ConfiguredDocumentClass, ConfiguredFlags, PropertiesToSource } from "../../../../types/helperTypes";
+import { DocumentData } from "../../abstract/module.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
 
 interface CombatantDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -63,7 +63,7 @@ interface CombatantDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'Combatant'>;
+  flags: ConfiguredFlags<"Combatant">;
 }
 
 interface CombatantDataConstructorData {
@@ -113,7 +113,7 @@ interface CombatantDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Combatant'> | null | undefined;
+  flags?: ConfiguredFlags<"Combatant"> | null | undefined;
 }
 
 type CombatantDataSource = PropertiesToSource<CombatantDataProperties>;

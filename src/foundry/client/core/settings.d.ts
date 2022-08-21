@@ -1,6 +1,6 @@
-import type { DocumentSubTypes, DocumentType } from '../../../types/helperTypes';
+import type { DocumentSubTypes, DocumentType } from "../../../types/helperTypes";
 
-import type { TokenDataSource } from '../../common/data/data.mjs/tokenData';
+import type { TokenDataSource } from "../../common/data/data.mjs/tokenData";
 
 declare global {
   /**
@@ -15,7 +15,7 @@ declare global {
    * @see {@link SettingsConfig}
    */
   class ClientSettings {
-    constructor(worldSettings?: Setting['data']['_source'][]);
+    constructor(worldSettings?: Setting["data"]["_source"][]);
 
     /**
      * A object of registered game settings for this scope
@@ -177,51 +177,51 @@ declare global {
   }
 
   namespace ClientSettings {
-    type PartialSettingConfig<T = unknown> = InexactPartial<Omit<SettingConfig<T>, 'key' | 'namespace'>>;
+    type PartialSettingConfig<T = unknown> = InexactPartial<Omit<SettingConfig<T>, "key" | "namespace">>;
 
-    type PartialSettingSubmenuConfig = Omit<SettingSubmenuConfig, 'key' | 'namespace'>;
+    type PartialSettingSubmenuConfig = Omit<SettingSubmenuConfig, "key" | "namespace">;
 
     interface Values {
-      'core.animateRollTable': boolean;
-      'core.chatBubbles': boolean;
-      'core.chatBubblesPan': boolean;
-      'core.combatTrackerConfig': { resource: string; skipDefeated: boolean } | {};
-      'core.compendiumConfiguration': Partial<Record<string, CompendiumCollection.Configuration>>;
-      'core.coneTemplateType': 'round' | 'flat';
-      'core.defaultDrawingConfig': foundry.data.DrawingData['_source'] | {};
-      'core.defaultToken': DeepPartial<TokenDataSource>;
-      'core.disableResolutionScaling': boolean;
-      'core.fontSize': number;
-      'core.fpsMeter': boolean;
-      'core.globalAmbientVolume': number;
-      'core.globalInterfaceVolume': number;
-      'core.globalPlaylistVolume': number;
-      'core.keybindings': Record<string, KeybindingActionBinding[]>;
-      'core.language': string;
-      'core.leftClickRelease': boolean;
-      'core.lightAnimation': boolean;
-      'core.maxFPS': number;
-      'core.mipmap': boolean;
-      'core.moduleConfiguration': Record<string, boolean>;
-      'core.noCanvas': boolean;
-      'core.notesDisplayToggle': boolean;
-      'core.nue.shownTips': boolean;
-      'core.performanceMode': boolean;
-      'core.permissions': Game.Permissions;
-      'core.playlist.playingLocation': 'top' | 'bottom';
-      'core.rollMode': keyof CONFIG.Dice.RollModes;
-      'core.rtcClientSettings': typeof AVSettings.DEFAULT_CLIENT_SETTINGS;
-      'core.rtcWorldSettings': typeof AVSettings.DEFAULT_WORLD_SETTINGS;
-      'core.scrollingStatusText': boolean;
-      'core.sheetClasses': {
+      "core.animateRollTable": boolean;
+      "core.chatBubbles": boolean;
+      "core.chatBubblesPan": boolean;
+      "core.combatTrackerConfig": { resource: string; skipDefeated: boolean } | {};
+      "core.compendiumConfiguration": Partial<Record<string, CompendiumCollection.Configuration>>;
+      "core.coneTemplateType": "round" | "flat";
+      "core.defaultDrawingConfig": foundry.data.DrawingData["_source"] | {};
+      "core.defaultToken": DeepPartial<TokenDataSource>;
+      "core.disableResolutionScaling": boolean;
+      "core.fontSize": number;
+      "core.fpsMeter": boolean;
+      "core.globalAmbientVolume": number;
+      "core.globalInterfaceVolume": number;
+      "core.globalPlaylistVolume": number;
+      "core.keybindings": Record<string, KeybindingActionBinding[]>;
+      "core.language": string;
+      "core.leftClickRelease": boolean;
+      "core.lightAnimation": boolean;
+      "core.maxFPS": number;
+      "core.mipmap": boolean;
+      "core.moduleConfiguration": Record<string, boolean>;
+      "core.noCanvas": boolean;
+      "core.notesDisplayToggle": boolean;
+      "core.nue.shownTips": boolean;
+      "core.performanceMode": boolean;
+      "core.permissions": Game.Permissions;
+      "core.playlist.playingLocation": "top" | "bottom";
+      "core.rollMode": keyof CONFIG.Dice.RollModes;
+      "core.rtcClientSettings": typeof AVSettings.DEFAULT_CLIENT_SETTINGS;
+      "core.rtcWorldSettings": typeof AVSettings.DEFAULT_WORLD_SETTINGS;
+      "core.scrollingStatusText": boolean;
+      "core.sheetClasses": {
         [Key in DocumentType as DocumentSubTypes<Key> extends string ? Key : never]?: Record<
           DocumentSubTypes<Key> & string,
           string
         >;
       };
-      'core.time': number;
-      'core.tokenDragPreview': boolean;
-      'core.visionAnimation': boolean;
+      "core.time": number;
+      "core.tokenDragPreview": boolean;
+      "core.visionAnimation": boolean;
       [key: string]: unknown;
     }
   }

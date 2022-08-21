@@ -1,8 +1,8 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 declare const doc: AmbientLightDocument;
 
-expectType<'AmbientLight'>(AmbientLight.embeddedName);
+expectType<"AmbientLight">(AmbientLight.embeddedName);
 
 const light = new AmbientLight(doc);
 expectType<LightSource>(light.source);

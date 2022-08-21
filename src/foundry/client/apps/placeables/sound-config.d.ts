@@ -1,5 +1,5 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import type { AmbientSoundDataConstructorData } from '../../../common/data/data.mjs/ambientSoundData';
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
+import type { AmbientSoundDataConstructorData } from "../../../common/data/data.mjs/ambientSoundData";
 
 declare global {
   /**
@@ -10,7 +10,7 @@ declare global {
   class AmbientSoundConfig<
     Options extends DocumentSheetOptions = AmbientSoundConfig.Options,
     Data extends object = AmbientSoundConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'AmbientSound'>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<"AmbientSound">>> {
     /**
      * @defaultValue
      * ```typescript
@@ -34,13 +34,13 @@ declare global {
 
   namespace AmbientSoundConfig {
     interface Data<Options extends DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'AmbientSound'>>, Options> {
+      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<"AmbientSound">>, Options> {
       submitText: string;
       gridUnits: string;
     }
 
-    type FormData = Pick<foundry.data.AmbientSoundData, 'easing' | 'path' | 'volume'> &
-      Pick<AmbientSoundDataConstructorData, 'radius' | 'x' | 'y'>;
+    type FormData = Pick<foundry.data.AmbientSoundData, "easing" | "path" | "volume"> &
+      Pick<AmbientSoundDataConstructorData, "radius" | "x" | "y">;
 
     type Options = DocumentSheetOptions;
   }

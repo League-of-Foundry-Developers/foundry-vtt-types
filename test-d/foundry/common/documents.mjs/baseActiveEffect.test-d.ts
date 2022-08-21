@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 expectType<Promise<StoredDocument<ActiveEffect> | undefined>>(foundry.documents.BaseActiveEffect.create({}));
 expectType<Promise<StoredDocument<ActiveEffect>[]>>(foundry.documents.BaseActiveEffect.createDocuments([]));

@@ -1,5 +1,5 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
-import { DocumentDataType, DocumentModificationOptions } from '../../../common/abstract/document.mjs';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
+import { DocumentDataType, DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
 declare global {
   interface ActivityData {
@@ -71,12 +71,12 @@ declare global {
     /**
      * Return the Actor instance of the user's impersonated character (or undefined)
      */
-    get character(): ReturnType<Exclude<Game['actors'], undefined>['get']>;
+    get character(): ReturnType<Exclude<Game["actors"], undefined>["get"]>;
 
     /**
      * A convenience shortcut for the permissions object of the current User
      */
-    get permissions(): foundry.data.UserData['permissions'];
+    get permissions(): foundry.data.UserData["permissions"];
 
     /**
      * A flag for whether the current User is a Trusted Player

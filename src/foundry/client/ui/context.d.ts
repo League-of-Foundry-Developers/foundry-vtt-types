@@ -31,7 +31,7 @@ declare class ContextMenu {
    * @param selector  - A CSS selector which activates the context menu.
    * @param menuItems - An Array of entries to display in the menu
    * @param eventName - Optionally override the triggering event which can spawn the menu
-   *                    (default: `'contextmenu'`)
+   *                    (default: `"contextmenu"`)
    */
   constructor(
     element: JQuery,
@@ -79,7 +79,7 @@ declare class ContextMenu {
    * @param selector  - The target CSS selector which activates the menu.
    * @param menuItems - The array of menu items being rendered.
    * @param hookName  - The name of the hook to call.
-   *                    (default: `'EntryContext'`)
+   *                    (default: `"EntryContext"`)
    */
   static create(
     app: Application,

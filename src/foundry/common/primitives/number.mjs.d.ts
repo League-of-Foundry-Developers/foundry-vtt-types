@@ -36,7 +36,7 @@ interface Number {
    * @param interval - The interval to round the number to the nearest multiple of
    *                   (default: `1`)
    * @param method   - The rounding method in: round, ceil, floor
-   *                   (default: `'round'`)
+   *                   (default: `"round"`)
    * @returns The rounded number
    *
    * @example Round a number to the nearest step interval
@@ -49,7 +49,7 @@ interface Number {
    * n.toNearest(0.25); // 17.25
    * ```
    */
-  toNearest(interval?: number, method?: 'round' | 'ceil' | 'floor'): number;
+  toNearest(interval?: number, method?: "round" | "ceil" | "floor"): number;
 
   /**
    * A faster numeric between check which avoids type coercion to the Number object.

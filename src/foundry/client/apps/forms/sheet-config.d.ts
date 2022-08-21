@@ -1,4 +1,4 @@
-import type { DocumentConstructor, DocumentType } from '../../../../types/helperTypes';
+import type { DocumentConstructor, DocumentType } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -76,7 +76,7 @@ declare global {
       sheetClass,
       types,
       makeDefault
-    }: Omit<DocumentSheetConfig.SheetRegistration, 'action'>): void;
+    }: Omit<DocumentSheetConfig.SheetRegistration, "action">): void;
 
     /**
      * Unregister a sheet class, removing it from the list of available Applications to use for a Document type
@@ -100,7 +100,7 @@ declare global {
       documentClass,
       id,
       types
-    }: Omit<DocumentSheetConfig.SheetUnregistration, 'action'>): void;
+    }: Omit<DocumentSheetConfig.SheetUnregistration, "action">): void;
 
     /**
      * Update the currently default Sheets using a new core world setting
@@ -116,7 +116,7 @@ declare global {
 
   namespace DocumentSheetConfig {
     type SheetRegistration = {
-      action: 'register';
+      action: "register";
       documentClass: DocumentConstructor;
       id: string;
       label: string;
@@ -126,7 +126,7 @@ declare global {
     };
 
     type SheetUnregistration = {
-      action: 'unregister';
+      action: "unregister";
       documentClass: DocumentConstructor;
       id: string;
       types: string[];
@@ -143,7 +143,7 @@ declare global {
       Options extends FormApplicationOptions = FormApplicationOptions
     > {
       isGM: boolean;
-      object: ConcreteDocument['data']['_source'];
+      object: ConcreteDocument["data"]["_source"];
       options: Options;
       sheetClass: string;
       sheetClasses: Record<string, string>;

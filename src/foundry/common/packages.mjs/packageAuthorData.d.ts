@@ -1,6 +1,6 @@
-import { PropertiesToSource } from '../../../types/helperTypes';
-import { DocumentData } from '../abstract/module.mjs';
-import * as fields from '../data/fields.mjs';
+import { PropertiesToSource } from "../../../types/helperTypes";
+import { DocumentData } from "../abstract/module.mjs";
+import * as fields from "../data/fields.mjs";
 
 interface PackageAuthorDataSchema extends DocumentSchema {
   name: fields.RequiredString;

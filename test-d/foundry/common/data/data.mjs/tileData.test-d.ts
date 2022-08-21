@@ -1,4 +1,4 @@
-import { expectError, expectType } from 'tsd';
+import { expectError, expectType } from "tsd";
 
 expectType<foundry.data.TileData>(new foundry.data.TileData());
 
@@ -48,8 +48,8 @@ expectType<foundry.data.TileData>(
 
 expectType<foundry.data.TileData>(
   new foundry.data.TileData({
-    _id: 'BGBEITBTEIGE',
-    img: 'path/to/some/image.png',
+    _id: "BGBEITBTEIGE",
+    img: "path/to/some/image.png",
     width: 100,
     height: 200,
     x: 300,
@@ -57,7 +57,7 @@ expectType<foundry.data.TileData>(
     z: 100,
     rotation: 0,
     alpha: 0,
-    tint: '#FF0000',
+    tint: "#FF0000",
     hidden: true,
     locked: false,
     overhead: true,

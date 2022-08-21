@@ -1,5 +1,5 @@
-import { ContextType, DocumentModificationOptions } from '../../../common/abstract/document.mjs';
-import { ConfiguredDocumentClass, ConstructorDataType, DocumentConstructor } from '../../../../types/helperTypes';
+import { ContextType, DocumentModificationOptions } from "../../../common/abstract/document.mjs";
+import { ConfiguredDocumentClass, ConstructorDataType, DocumentConstructor } from "../../../../types/helperTypes";
 
 declare global {
   // TODO: Replace ConstructorOf<…> with DocumentConstructor once the problem with circular reference has been solved
@@ -52,7 +52,7 @@ type ClientDocumentConstructor<T extends ConstructorOf<foundry.abstract.Document
   };
 
 export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>> {
-  constructor(data?: ConstructorDataType<T['data']>, context?: ContextType<T>);
+  constructor(data?: ConstructorDataType<T["data"]>, context?: ContextType<T>);
 
   /**
    * A collection of Application instances which should be re-rendered whenever this document is updated.
@@ -195,13 +195,13 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
   /**
    * @see abstract.Document#_onCreate
    */
-  protected _onCreate(data: T['data']['_source'], options: DocumentModificationOptions, userId: string): void;
+  protected _onCreate(data: T["data"]["_source"], options: DocumentModificationOptions, userId: string): void;
 
   /**
    * @see abstract.Document#_onUpdate
    */
   protected _onUpdate(
-    data: DeepPartial<T['data']['_source']>,
+    data: DeepPartial<T["data"]["_source"]>,
     options: DocumentModificationOptions,
     userId: string
   ): void;
@@ -315,11 +315,11 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
     this: T,
     data?:
       | DeepPartial<
-          | ConstructorDataType<InstanceType<T>['data']>
-          | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
+          | ConstructorDataType<InstanceType<T>["data"]>
+          | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>)
         >
       | undefined,
-    context?: (Pick<DocumentModificationContext, 'parent' | 'pack'> & Partial<DialogOptions>) | undefined
+    context?: (Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>) | undefined
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
 
   /**
@@ -377,8 +377,8 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
   toCompendium(
     pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
     options?: ClientDocumentMixin.CompendiumExportOptions | undefined
-  ): Omit<T['data']['_source'], '_id' | 'folder' | 'permission'> & {
-    permission?: T['data']['_source']['permission'];
+  ): Omit<T["data"]["_source"], "_id" | "folder" | "permission"> & {
+    permission?: T["data"]["_source"]["permission"];
   };
 
   /**
@@ -399,7 +399,7 @@ interface SortOptions<T> {
   sortBefore?: boolean;
 
   /**
-   * @defaultValue `'sort'`
+   * @defaultValue `"sort"`
    */
   sortKey?: string;
 
@@ -418,7 +418,7 @@ export type DropData<T extends foundry.abstract.Document<any, any>> = DropData.D
 
 declare namespace DropData {
   interface Data<T extends foundry.abstract.Document<any, any>> {
-    data: T['data']['_source'];
+    data: T["data"]["_source"];
   }
 
   interface Pack {

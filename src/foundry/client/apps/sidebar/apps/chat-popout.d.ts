@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
+import type { ConfiguredDocumentClass } from "../../../../../types/helperTypes";
 
 declare global {
   /**

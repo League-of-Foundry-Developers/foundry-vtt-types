@@ -3,13 +3,13 @@ import {
   ConfiguredFlags,
   FieldReturnType,
   PropertiesToSource
-} from '../../../../types/helperTypes';
-import DocumentData from '../../abstract/data.mjs';
-import { documents } from '../../module.mjs';
-import * as fields from '../fields.mjs';
-import { ActorDataSource } from './actorData';
-import { LightData, LightDataConstructorData } from './lightData';
-import { TokenBarData, TokenBarDataConstructorData } from './tokenBarData';
+} from "../../../../types/helperTypes";
+import DocumentData from "../../abstract/data.mjs";
+import { documents } from "../../module.mjs";
+import * as fields from "../fields.mjs";
+import { ActorDataSource } from "./actorData";
+import { LightData, LightDataConstructorData } from "./lightData";
+import { TokenBarData, TokenBarDataConstructorData } from "./tokenBarData";
 
 interface TokenDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -19,7 +19,7 @@ interface TokenDataSchema extends DocumentSchema {
     required: true;
     default: typeof foundry.CONST.TOKEN_DISPLAY_MODES.NONE;
     validate: (m: any) => boolean;
-    validationError: 'Invalid {name} {field} which must be a value in CONST.TOKEN_DISPLAY_MODES';
+    validationError: "Invalid {name} {field} which must be a value in CONST.TOKEN_DISPLAY_MODES";
   };
   actorId: fields.ForeignDocumentField<{ type: documents.BaseActor; required: true }>;
   actorLink: fields.BooleanField;
@@ -33,7 +33,7 @@ interface TokenDataSchema extends DocumentSchema {
     required: true;
     default: 1;
     validate: (s: unknown) => boolean;
-    validationError: 'Invalid {name} {field} which must be a number between 0.25 and 10';
+    validationError: "Invalid {name} {field} which must be a number between 0.25 and 10";
   };
   mirrorX: fields.BooleanField;
   mirrorY: fields.BooleanField;
@@ -68,24 +68,24 @@ interface TokenDataSchema extends DocumentSchema {
     required: true;
     default: typeof foundry.CONST.TOKEN_DISPOSITIONS.HOSTILE;
     validate: (n: any) => boolean;
-    validationError: 'Invalid {name} {field} which must be a value in CONST.TOKEN_DISPOSITIONS';
+    validationError: "Invalid {name} {field} which must be a value in CONST.TOKEN_DISPOSITIONS";
   };
   displayBars: DocumentField<foundry.CONST.TOKEN_DISPLAY_MODES> & {
     type: typeof Number;
     required: true;
     default: typeof foundry.CONST.TOKEN_DISPLAY_MODES.NONE;
     validate: (m: any) => boolean;
-    validationError: 'Invalid {name} {field} which must be a value in CONST.TOKEN_DISPLAY_MODES';
+    validationError: "Invalid {name} {field} which must be a value in CONST.TOKEN_DISPLAY_MODES";
   };
   bar1: DocumentField<TokenBarData> & {
     type: typeof TokenBarData;
     required: true;
-    default: () => { attribute: Game['system']['data']['primaryTokenAttribute'] | null };
+    default: () => { attribute: Game["system"]["data"]["primaryTokenAttribute"] | null };
   };
   bar2: DocumentField<TokenBarData> & {
     type: typeof TokenBarData;
     required: true;
-    default: () => { attribute: Game['system']['data']['secondaryTokenAttribute'] | null };
+    default: () => { attribute: Game["system"]["data"]["secondaryTokenAttribute"] | null };
   };
   flags: fields.ObjectField;
 }
@@ -278,7 +278,7 @@ interface TokenDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'Token'>;
+  flags: ConfiguredFlags<"Token">;
 }
 
 interface TokenDataConstructorData {
@@ -469,7 +469,7 @@ interface TokenDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Token'> | null | undefined;
+  flags?: ConfiguredFlags<"Token"> | null | undefined;
 }
 
 type TokenDataSource = PropertiesToSource<TokenDataProperties>;

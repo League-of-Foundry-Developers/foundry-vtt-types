@@ -92,7 +92,7 @@ declare class AudioHelper {
   /**
    * A Promise which resolves once the game audio API is unlocked and ready to use.
    */
-  unlock: ReturnType<this['awaitFirstGesture']>;
+  unlock: ReturnType<this["awaitFirstGesture"]>;
 
   /**
    * The Native interval for the AudioHelper to analyse audio levels from streams

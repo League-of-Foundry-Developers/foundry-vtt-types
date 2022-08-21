@@ -58,22 +58,22 @@ declare class Tabs {
   /**
    * The name of the tabs group
    */
-  group: TabsConfiguration['group'];
+  group: TabsConfiguration["group"];
 
   /**
    * The value of the active tab
    */
-  active: TabsConfiguration['initial'];
+  active: TabsConfiguration["initial"];
 
   /**
    * A callback function to trigger when the tab is changed
    */
-  callback: TabsConfiguration['callback'];
+  callback: TabsConfiguration["callback"];
 
   /**
    * The CSS selector used to target the tab navigation element
    */
-  protected _navSelector: TabsConfiguration['navSelector'];
+  protected _navSelector: TabsConfiguration["navSelector"];
 
   /**
    * A reference to the HTML navigation element the tab controller is bound to
@@ -84,7 +84,7 @@ declare class Tabs {
   /**
    * The CSS selector used to target the tab content element
    */
-  protected _contentSelector: TabsConfiguration['contentSelector'];
+  protected _contentSelector: TabsConfiguration["contentSelector"];
 
   /**
    * A reference to the HTML container element of the tab content

@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 class MyPlaceableHud extends BasePlaceableHUD<Token> {}
 
@@ -12,7 +12,7 @@ expectType<void>(hud.bind(token));
 expectType<void>(hud.clear());
 
 expectType<
-  ReturnType<foundry.data.TokenData['toJSON']> & {
+  ReturnType<foundry.data.TokenData["toJSON"]> & {
     id: string;
     classes: string;
     appId: number;

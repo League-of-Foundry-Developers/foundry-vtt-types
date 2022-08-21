@@ -45,7 +45,7 @@ declare global {
 
     /**
      * A path reference to the JavaScript file which provides companion worker-side functionality.
-     * @defaultValue `'scripts/worker.js'`
+     * @defaultValue `"scripts/worker.js"`
      */
     static WORKER_HARNESS_JS: string;
 
@@ -119,9 +119,9 @@ declare global {
      * Supported worker task actions
      */
     static WORKER_TASK_ACTIONS: Readonly<{
-      INIT: 'init';
-      LOAD: 'load';
-      EXECUTE: 'execute';
+      INIT: "init";
+      LOAD: "load";
+      EXECUTE: "execute";
     }>;
 
     /**

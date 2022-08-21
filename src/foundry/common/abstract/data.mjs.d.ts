@@ -1,11 +1,11 @@
-import Document from './document.mjs';
-import EmbeddedCollection from './embedded-collection.mjs';
+import Document from "./document.mjs";
+import EmbeddedCollection from "./embedded-collection.mjs";
 import {
   DocumentConstructor,
   PropertiesToSource,
   PropertyTypeToSourceParameterType,
   ToObjectFalseType
-} from '../../../types/helperTypes';
+} from "../../../types/helperTypes";
 
 declare global {
   /**
@@ -138,7 +138,7 @@ declare abstract class DocumentData<
     ? undefined
     : ConcreteDocumentField extends { default: (data?: object) => infer V }
     ? V
-    : ConcreteDocumentField['default'];
+    : ConcreteDocumentField["default"];
 
   /**
    * Initialize the instance by copying data from the source object to instance attributes.
@@ -268,7 +268,7 @@ declare abstract class DocumentData<
    */
   updateCollection<T extends DocumentConstructor>(
     collection: EmbeddedCollection<T, this>,
-    documentData: DeepPartial<InstanceType<T>['data']['_source']>[],
+    documentData: DeepPartial<InstanceType<T>["data"]["_source"]>[],
     options?: UpdateOptions
   ): void;
 
@@ -279,7 +279,7 @@ declare abstract class DocumentData<
    *                 (default: `true`)
    * @returns The extracted primitive object
    */
-  toObject(source?: true): ReturnType<this['toJSON']>;
+  toObject(source?: true): ReturnType<this["toJSON"]>;
   toObject(source: false): {
     [Key in keyof ConcreteDocumentSchema as string extends Key ? never : Key]: Key extends keyof this
       ? ToObjectFalseType<this[Key]>
@@ -290,7 +290,7 @@ declare abstract class DocumentData<
    * Extract the source data for the DocumentData into a simple object format that can be serialized.
    * @returns The document source data expressed as a plain object
    */
-  toJSON(): this['_id'] extends string ? this['_source'] & { _id: string } : this['_source'];
+  toJSON(): this["_id"] extends string ? this["_source"] & { _id: string } : this["_source"];
 
   /**
    * Create a DocumentData instance using a provided serialized JSON string.

@@ -204,7 +204,7 @@ declare class ClientKeybindings {
   protected _handleMovement(context: KeyboardEventContext, layer: InteractionLayer): void;
 
   /** Handle panning the canvas using CTRL + directional keys */
-  protected _handleCanvasPan(): ReturnType<Canvas['animatePan']>;
+  protected _handleCanvasPan(): ReturnType<Canvas["animatePan"]>;
 
   /**
    * Handle Measured Ruler Movement Action
@@ -294,16 +294,16 @@ declare class ClientKeybindings {
 
 declare namespace ClientKeybindings {
   type MovementDirections = {
-    UP: 'up';
-    LEFT: 'left';
-    DOWN: 'down';
-    RIGHT: 'right';
+    UP: "up";
+    LEFT: "left";
+    DOWN: "down";
+    RIGHT: "right";
   };
   type MovementDirection = ValueOf<MovementDirections>;
 
   type ZoomDirections = {
-    IN: 'in';
-    OUT: 'out';
+    IN: "in";
+    OUT: "out";
   };
   type ZoomDirection = ValueOf<ZoomDirections>;
 }

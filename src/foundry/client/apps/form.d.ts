@@ -1,5 +1,5 @@
-import type { EditorView } from 'prosemirror-view';
-import { ToObjectFalseType } from '../../../types/helperTypes';
+import type { EditorView } from "prosemirror-view";
+import { ToObjectFalseType } from "../../../types/helperTypes";
 
 declare global {
   interface FormApplicationOptions extends ApplicationOptions {

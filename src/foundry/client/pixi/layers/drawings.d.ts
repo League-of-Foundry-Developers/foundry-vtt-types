@@ -2,11 +2,11 @@
  * The DrawingsLayer subclass of PlaceablesLayer.
  * This layer implements a container for drawings which are rendered immediately above the BackgroundLayer.
  */
-declare class DrawingsLayer extends PlaceablesLayer<'Drawing', DrawingsLayer.LayerOptions> {
+declare class DrawingsLayer extends PlaceablesLayer<"Drawing", DrawingsLayer.LayerOptions> {
   /**
    * @remarks This is not overridden in foundry but reflects the real behavior.
    */
-  static get instance(): Canvas['drawings'];
+  static get instance(): Canvas["drawings"];
 
   /**
    * @defaultValue
@@ -22,19 +22,19 @@ declare class DrawingsLayer extends PlaceablesLayer<'Drawing', DrawingsLayer.Lay
    */
   static override get layerOptions(): DrawingsLayer.LayerOptions;
 
-  static override documentName: 'Drawing';
+  static override documentName: "Drawing";
 
   /**
    * The named game setting which persists default drawing configuration for the User
    */
-  static DEFAULT_CONFIG_SETTING: 'defaultDrawingConfig';
+  static DEFAULT_CONFIG_SETTING: "defaultDrawingConfig";
 
   /**
    * Use an adaptive precision depending on the size of the grid
    */
   get gridPrecision(): 0 | 8 | 16;
 
-  override get hud(): Exclude<Canvas['hud'], null>['drawing'];
+  override get hud(): Exclude<Canvas["hud"], null>["drawing"];
 
   /**
    * Render a configuration sheet to configure the default Drawing settings
@@ -60,7 +60,7 @@ declare class DrawingsLayer extends PlaceablesLayer<'Drawing', DrawingsLayer.Lay
 
   protected override _onClickLeft2(event: PIXI.InteractionEvent): void | Promise<void>;
 
-  protected override _onDragLeftStart(event: PIXI.InteractionEvent): ReturnType<Drawing['draw']>;
+  protected override _onDragLeftStart(event: PIXI.InteractionEvent): ReturnType<Drawing["draw"]>;
 
   protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
@@ -75,8 +75,8 @@ declare class DrawingsLayer extends PlaceablesLayer<'Drawing', DrawingsLayer.Lay
 }
 
 declare namespace DrawingsLayer {
-  interface LayerOptions extends PlaceablesLayer.LayerOptions<'Drawing'> {
-    name: 'drawings';
+  interface LayerOptions extends PlaceablesLayer.LayerOptions<"Drawing"> {
+    name: "drawings";
     canDragCreate: true;
     controllableObjects: true;
     rotatableObjects: true;
@@ -84,7 +84,7 @@ declare namespace DrawingsLayer {
   }
 }
 
-type NewDrawingData = ClientSettings.Values['core.defaultDrawingConfig'] &
+type NewDrawingData = ClientSettings.Values["core.defaultDrawingConfig"] &
   (
     | {
         type: typeof foundry.CONST.DRAWING_TYPES.RECTANGLE | typeof foundry.CONST.DRAWING_TYPES.ELLIPSE;

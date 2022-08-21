@@ -1,5 +1,5 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
-import { BaseScene } from '../../common/documents.mjs';
+import { ConfiguredDocumentClass } from "../../../types/helperTypes";
+import { BaseScene } from "../../common/documents.mjs";
 
 declare global {
   /**
@@ -335,7 +335,7 @@ declare global {
      * Otherwise, pan the stage to put the top-left corner of the map in the top-left corner of the window
      * @returns A Promise which resolves once the animation has been completed
      */
-    recenter(coordinates?: PanView): ReturnType<this['animatePan']>;
+    recenter(coordinates?: PanView): ReturnType<this["animatePan"]>;
 
     /**
      * Highlight objects on any layers which are visible
@@ -409,7 +409,7 @@ declare global {
      */
     protected _onDragLeftDrop(
       event: PIXI.InteractionEvent
-    ): ReturnType<PlaceablesLayer<any>['selectObjects']> | ReturnType<TokenLayer['targetObjects']> | void;
+    ): ReturnType<PlaceablesLayer<any>["selectObjects"]> | ReturnType<TokenLayer["targetObjects"]> | void;
 
     /**
      * Handle the cancellation of a left-mouse drag workflow
@@ -444,7 +444,7 @@ declare global {
      * Pan the canvas view when the cursor position gets close to the edge of the frame
      * @param event - The originating mouse movement event
      */
-    protected _onDragCanvasPan(event: MouseEvent): ReturnType<this['animatePan']> | void;
+    protected _onDragCanvasPan(event: MouseEvent): ReturnType<this["animatePan"]> | void;
 
     /**
      * Handle window resizing with the dimensions of the window viewport change
@@ -487,23 +487,23 @@ declare global {
      * @deprecated since v9, will be deleted in v10
      */
     getLayer(layerName: any): {
-      BackgroundLayer: Canvas['background'];
-      DrawingsLayer: Canvas['drawings'];
-      GridLayer: Canvas['grid'];
-      TemplateLayer: Canvas['templates'];
-      TokenLayer: Canvas['tokens'];
-      WallsLayer: Canvas['walls'];
-      LightingLayer: Canvas['lighting'];
-      WeatherLayer: Canvas['weather'];
-      SightLayer: Canvas['sight'];
-      SoundsLayer: Canvas['sounds'];
-      NotesLayer: Canvas['notes'];
-      ControlsLayer: Canvas['controls'];
+      BackgroundLayer: Canvas["background"];
+      DrawingsLayer: Canvas["drawings"];
+      GridLayer: Canvas["grid"];
+      TemplateLayer: Canvas["templates"];
+      TokenLayer: Canvas["tokens"];
+      WallsLayer: Canvas["walls"];
+      LightingLayer: Canvas["lighting"];
+      WeatherLayer: Canvas["weather"];
+      SightLayer: Canvas["sight"];
+      SoundsLayer: Canvas["sounds"];
+      NotesLayer: Canvas["notes"];
+      ControlsLayer: Canvas["controls"];
     };
   }
 
   namespace Canvas {
-    interface Dimensions extends ReturnType<typeof BaseScene['getDimensions']> {
+    interface Dimensions extends ReturnType<typeof BaseScene["getDimensions"]> {
       rect: PIXI.Rectangle;
       sceneRect: PIXI.Rectangle;
       maxR: number;
@@ -538,7 +538,7 @@ interface PerformanceSettings {
     enabled: boolean;
     illumination: boolean;
   };
-  mipmap: 'ON' | 'OFF';
+  mipmap: "ON" | "OFF";
   msaa: boolean;
   fps: number;
   tokenAnimation: boolean;
@@ -600,27 +600,27 @@ interface AnimatedPanView {
 }
 
 interface EmbeddedEntityNameToLayerMap {
-  AmbientLight: Canvas['lighting'];
-  AmbientSound: Canvas['sounds'];
-  Drawing: Canvas['drawings'];
-  Note: Canvas['notes'];
-  MeasuredTemplate: Canvas['templates'];
-  Tile: Canvas['background'];
-  Token: Canvas['tokens'];
-  Wall: Canvas['walls'];
+  AmbientLight: Canvas["lighting"];
+  AmbientSound: Canvas["sounds"];
+  Drawing: Canvas["drawings"];
+  Note: Canvas["notes"];
+  MeasuredTemplate: Canvas["templates"];
+  Tile: Canvas["background"];
+  Token: Canvas["tokens"];
+  Wall: Canvas["walls"];
 }
 
 type LayerName =
-  | 'grid'
-  | 'sight'
-  | 'effects'
-  | 'controls'
-  | 'lighting'
-  | 'sounds'
-  | 'drawings'
-  | 'notes'
-  | 'templates'
-  | 'background'
-  | 'foreground'
-  | 'tokens'
-  | 'walls';
+  | "grid"
+  | "sight"
+  | "effects"
+  | "controls"
+  | "lighting"
+  | "sounds"
+  | "drawings"
+  | "notes"
+  | "templates"
+  | "background"
+  | "foreground"
+  | "tokens"
+  | "walls";

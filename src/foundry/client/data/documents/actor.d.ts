@@ -2,10 +2,10 @@ import {
   ConfiguredDocumentClass,
   ConfiguredObjectClassForName,
   DocumentConstructor
-} from '../../../../types/helperTypes';
-import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
-import EmbeddedCollection from '../../../common/abstract/embedded-collection.mjs';
-import type { ActorDataConstructorData } from '../../../common/data/data.mjs/actorData.js';
+} from "../../../../types/helperTypes";
+import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
+import EmbeddedCollection from "../../../common/abstract/embedded-collection.mjs";
+import type { ActorDataConstructorData } from "../../../common/data/data.mjs/actorData.js";
 
 declare global {
   /**
@@ -62,18 +62,18 @@ declare global {
     /**
      * A convenient reference to the file path of the Actor's profile image
      */
-    get img(): this['data']['img'];
+    get img(): this["data"]["img"];
 
     /**
      * Provide a thumbnail image path used to represent this document.
      */
-    get thumbnail(): this['data']['img'];
+    get thumbnail(): this["data"]["img"];
 
     /**
      * Provide an object which organizes all embedded Item instances by their type
      */
     get itemTypes(): Record<
-      foundry.documents.BaseItem['data']['type'],
+      foundry.documents.BaseItem["data"]["type"],
       Array<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseItem>>>
     >;
     /**
@@ -84,7 +84,7 @@ declare global {
     /**
      * An array of ActiveEffect instances which are present on the Actor which have a limited duration.
      */
-    get temporaryEffects(): ReturnType<this['effects']['filter']>;
+    get temporaryEffects(): ReturnType<this["effects"]["filter"]>;
 
     /**
      * Return a reference to the TokenDocument which owns this Actor as a synthetic override
@@ -111,12 +111,12 @@ declare global {
       linked: boolean,
       document: true
     ): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>>[];
-    getActiveTokens(linked?: boolean, document?: false): InstanceType<ConfiguredObjectClassForName<'Token'>>[];
+    getActiveTokens(linked?: boolean, document?: false): InstanceType<ConfiguredObjectClassForName<"Token">>[];
     getActiveTokens(
       linked: boolean,
       document: boolean
     ):
-      | InstanceType<ConfiguredObjectClassForName<'Token'>>[]
+      | InstanceType<ConfiguredObjectClassForName<"Token">>[]
       | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>>[];
 
     /**
@@ -170,7 +170,7 @@ declare global {
     ): Promise<void>;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.ActorData['_source']>,
+      changed: DeepPartial<foundry.data.ActorData["_source"]>,
       options: DocumentModificationOptions,
       user: string
     ): void;

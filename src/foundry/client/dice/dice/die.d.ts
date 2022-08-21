@@ -18,25 +18,25 @@ declare class Die extends DiceTerm {
    * @defaultValue
    * ```typescript
    * {
-   *   r: 'reroll';
-   *   rr: 'rerollRecursive';
-   *   x: 'explode';
-   *   xo: 'explodeOnce';
-   *   k: 'keep';
-   *   kh: 'keep';
-   *   kl: 'keep';
-   *   d: 'drop';
-   *   dh: 'drop';
-   *   dl: 'drop';
-   *   min: 'minimum';
-   *   max: 'maximum';
-   *   even: 'countEven';
-   *   odd: 'countOdd';
-   *   cs: 'countSuccess';
-   *   cf: 'countFailures';
-   *   df: 'deductFailures';
-   *   sf: 'subtractFailures';
-   *   ms: 'marginSuccess';
+   *   r: "reroll";
+   *   rr: "rerollRecursive";
+   *   x: "explode";
+   *   xo: "explodeOnce";
+   *   k: "keep";
+   *   kh: "keep";
+   *   kl: "keep";
+   *   d: "drop";
+   *   dh: "drop";
+   *   dl: "drop";
+   *   min: "minimum";
+   *   max: "maximum";
+   *   even: "countEven";
+   *   odd: "countOdd";
+   *   cs: "countSuccess";
+   *   cf: "countFailures";
+   *   df: "deductFailures";
+   *   sf: "subtractFailures";
+   *   ms: "marginSuccess";
    * }
    * ```
    */
@@ -202,28 +202,28 @@ declare class Die extends DiceTerm {
 
 declare namespace Die {
   interface TermData extends DiceTerm.TermData {
-    modifiers: Array<keyof typeof Die['MODIFIERS']>;
+    modifiers: Array<keyof typeof Die["MODIFIERS"]>;
   }
 
   interface Modifiers {
-    r: 'reroll';
-    rr: 'rerollRecursive';
-    x: 'explode';
-    xo: 'explodeOnce';
-    k: 'keep';
-    kh: 'keep';
-    kl: 'keep';
-    d: 'drop';
-    dh: 'drop';
-    dl: 'drop';
-    min: 'minimum';
-    max: 'maximum';
-    even: 'countEven';
-    odd: 'countOdd';
-    cs: 'countSuccess';
-    cf: 'countFailures';
-    df: 'deductFailures';
-    sf: 'subtractFailures';
-    ms: 'marginSuccess';
+    r: "reroll";
+    rr: "rerollRecursive";
+    x: "explode";
+    xo: "explodeOnce";
+    k: "keep";
+    kh: "keep";
+    kl: "keep";
+    d: "drop";
+    dh: "drop";
+    dl: "drop";
+    min: "minimum";
+    max: "maximum";
+    even: "countEven";
+    odd: "countOdd";
+    cs: "countSuccess";
+    cf: "countFailures";
+    df: "deductFailures";
+    sf: "subtractFailures";
+    ms: "marginSuccess";
   }
 }

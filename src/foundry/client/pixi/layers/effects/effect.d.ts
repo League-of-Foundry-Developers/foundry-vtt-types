@@ -29,20 +29,20 @@ declare class SpecialEffect {
    * {
    *   maxSpeed: 0,
    *   noRotation: false,
-   *   blendMode: 'normal',
+   *   blendMode: "normal",
    *   emitterLifetime: -1,
    *   pos: {
    *     x: 0,
    *     y: 0
    *   },
-   *   spawnType: 'rect'
+   *   spawnType: "rect"
    * }
    * ```
    */
   static DEFAULT_CONFIG: PIXI.particles.EmitterConfigV3;
 
   /**
-   * @defaultValue `'Special Effect'`
+   * @defaultValue `"Special Effect"`
    */
   static get label(): string;
 
@@ -79,14 +79,14 @@ declare namespace SpecialEffect {
   interface Options {
     density: {
       /**
-       * @defaultValue `'Particle Density'`
+       * @defaultValue `"Particle Density"`
        */
       label: string;
 
       /**
        * @defaultValue `SpecialEffect.OPTION_TYPES.RANGE`
        */
-      type: ValueOf<typeof SpecialEffect['OPTION_TYPES']>;
+      type: ValueOf<typeof SpecialEffect["OPTION_TYPES"]>;
 
       /**
        * @defaultValue `0.5`
@@ -111,23 +111,23 @@ declare namespace SpecialEffect {
   }
 
   type BlendMode =
-    | 'normal'
-    | 'add'
-    | 'multiply'
-    | 'screen'
-    | 'overlay'
-    | 'darken'
-    | 'lighten'
-    | 'color_dodge'
-    | 'color_burn'
-    | 'hard_light'
-    | 'soft_light'
-    | 'difference'
-    | 'exclusion'
-    | 'hue'
-    | 'saturation'
-    | 'color'
-    | 'luminosity';
+    | "normal"
+    | "add"
+    | "multiply"
+    | "screen"
+    | "overlay"
+    | "darken"
+    | "lighten"
+    | "color_dodge"
+    | "color_burn"
+    | "hard_light"
+    | "soft_light"
+    | "difference"
+    | "exclusion"
+    | "hue"
+    | "saturation"
+    | "color"
+    | "luminosity";
 
-  type SpawnType = 'point' | 'rect' | 'circle' | 'ring' | 'burst';
+  type SpawnType = "point" | "rect" | "circle" | "ring" | "burst";
 }

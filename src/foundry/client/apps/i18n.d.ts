@@ -1,4 +1,4 @@
-import { ModuleData, SystemData } from '../../common/packages.mjs';
+import { ModuleData, SystemData } from "../../common/packages.mjs";
 
 declare global {
   /**
@@ -12,13 +12,13 @@ declare global {
 
     /**
      * The target language for localization
-     * @defaultValue `'en'`
+     * @defaultValue `"en"`
      */
     lang: string;
 
     /**
      * The package authorized to provide default language configurations
-     * @defaultValue `'core'`
+     * @defaultValue `"core"`
      */
     defaultModule: string;
 

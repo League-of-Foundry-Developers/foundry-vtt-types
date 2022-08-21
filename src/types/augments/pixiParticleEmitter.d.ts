@@ -1,4 +1,4 @@
-import * as pixiParticles from '@pixi/particle-emitter';
+import * as pixiParticles from "@pixi/particle-emitter";
 
 declare global {
   namespace PIXI {

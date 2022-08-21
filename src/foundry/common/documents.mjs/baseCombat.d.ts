@@ -1,17 +1,17 @@
-import { DocumentMetadata } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import type { CombatDataConstructorData } from '../data/data.mjs/combatData';
-import { data } from '../module.mjs';
-import { BaseCombatant } from './baseCombatant';
-import { BaseUser } from './baseUser';
+import { DocumentMetadata } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import type { CombatDataConstructorData } from "../data/data.mjs/combatData";
+import { data } from "../module.mjs";
+import { BaseCombatant } from "./baseCombatant";
+import { BaseUser } from "./baseUser";
 
 type CombatMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'Combat';
-    collection: 'combats';
-    label: 'DOCUMENT.Combat';
-    labelPlural: 'DOCUMENT.Combats';
+    name: "Combat";
+    collection: "combats";
+    label: "DOCUMENT.Combat";
+    labelPlural: "DOCUMENT.Combats";
     embedded: {
       Combatant: typeof BaseCombatant;
     };
@@ -31,7 +31,7 @@ export declare class BaseCombat extends Document<data.CombatData, null, CombatMe
   static override get metadata(): CombatMetadata;
 
   /** A reference to the Collection of Combatant instances in the Combat document, indexed by id. */
-  get combatants(): this['data']['combatants'];
+  get combatants(): this["data"]["combatants"];
 
   /**
    * Is a user able to update an existing Combat?

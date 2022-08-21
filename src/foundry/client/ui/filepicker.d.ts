@@ -54,7 +54,7 @@ declare class FilePicker<
 
   /**
    * Track the active source tab which is being browsed
-   * @defaultValue `'data'`
+   * @defaultValue `"data"`
    */
   activeSource: FilePicker.SourceType;
 
@@ -111,14 +111,14 @@ declare class FilePicker<
 
   /**
    * Record the last-configured display mode so that re-opening a different FilePicker instance uses the same mode.
-   * @defaultValue `'list'`
+   * @defaultValue `"list"`
    */
   static LAST_DISPLAY_MODE: FilePicker.DisplayMode;
 
   /**
    * Enumerate the allowed FilePicker display modes
    */
-  static DISPLAY_MODES: ['list', 'thumbs', 'tiles', 'images'];
+  static DISPLAY_MODES: ["list", "thumbs", "tiles", "images"];
 
   /**
    * Cache the names of S3 buckets which can be used
@@ -292,7 +292,7 @@ declare class FilePicker<
    */
   protected _onChangeDisplayMode(event: JQuery.ClickEvent): void;
 
-  protected override _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: this['activeSource']): void;
+  protected override _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: this["activeSource"]): void;
 
   protected override _canDragStart(selector: string | null): boolean;
 
@@ -316,7 +316,7 @@ declare class FilePicker<
    * Handle requests from the IntersectionObserver to lazily load an image file
    * @internal
    */
-  protected _onLazyLoadImages(...args: Parameters<SidebarTab['_onLazyLoadImage']>): void;
+  protected _onLazyLoadImages(...args: Parameters<SidebarTab["_onLazyLoadImage"]>): void;
 
   /**
    * Handle file or folder selection within the file picker
@@ -439,11 +439,11 @@ declare namespace FilePicker {
     sources: Sources;
     target: string;
     tileSize: number | null;
-    user: Game['user'];
+    user: Game["user"];
     submitText: string;
   }
 
-  type SourceType = 'data' | 'public' | 's3';
+  type SourceType = "data" | "public" | "s3";
 
   interface Dir {
     name: string;
@@ -451,7 +451,7 @@ declare namespace FilePicker {
     private: boolean;
   }
 
-  type DisplayMode = ValueOf<typeof FilePicker['DISPLAY_MODES']>;
+  type DisplayMode = ValueOf<typeof FilePicker["DISPLAY_MODES"]>;
 
   interface File {
     name: string;
@@ -465,15 +465,15 @@ declare namespace FilePicker {
   }
 
   interface BrowseFilesData extends ManageFilesDataBase {
-    action: 'browseFiles';
+    action: "browseFiles";
   }
 
   interface ConfigurePathData extends ManageFilesDataBase {
-    action: 'configurePath';
+    action: "configurePath";
   }
 
   interface CreateDirectoryData extends ManageFilesDataBase {
-    action: 'createDirectory';
+    action: "createDirectory";
   }
 
   interface Source {
@@ -491,7 +491,7 @@ declare namespace FilePicker {
     };
   }
 
-  type Type = 'any' | 'audio' | 'image' | 'video' | 'imagevideo' | 'folder' | 'font' | 'graphics' | 'text';
+  type Type = "any" | "audio" | "image" | "video" | "imagevideo" | "folder" | "font" | "graphics" | "text";
 
   interface UploadBody {
     /**
@@ -512,6 +512,6 @@ declare namespace FilePicker {
   interface UploadResult {
     message: string;
     path: string;
-    status: 'success';
+    status: "success";
   }
 }

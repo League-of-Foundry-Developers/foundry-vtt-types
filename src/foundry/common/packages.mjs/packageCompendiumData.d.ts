@@ -1,6 +1,6 @@
-import { FieldReturnType, PropertiesToSource } from '../../../types/helperTypes';
-import { DocumentData } from '../abstract/module.mjs';
-import * as fields from '../data/fields.mjs';
+import { FieldReturnType, PropertiesToSource } from "../../../types/helperTypes";
+import { DocumentData } from "../abstract/module.mjs";
+import * as fields from "../data/fields.mjs";
 
 interface PackageCompendiumDataSchema extends DocumentSchema {
   name: FieldReturnType<
@@ -18,7 +18,7 @@ interface PackageCompendiumDataSchema extends DocumentSchema {
     fields.RequiredString,
     {
       validate: (v: string) => v is foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
-      validationError: 'Invalid package compendium document type provided which must be a value in CONST.COMPENDIUM_DOCUMENT_TYPES';
+      validationError: "Invalid package compendium document type provided which must be a value in CONST.COMPENDIUM_DOCUMENT_TYPES";
     }
   >;
   system: fields.StringField;

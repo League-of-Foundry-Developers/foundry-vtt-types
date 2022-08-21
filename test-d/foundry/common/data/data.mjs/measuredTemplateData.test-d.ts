@@ -1,6 +1,6 @@
-import { expectError, expectType } from 'tsd';
+import { expectError, expectType } from "tsd";
 
-const scene = new Scene({ name: 'My scene' });
+const scene = new Scene({ name: "My scene" });
 
 expectError<foundry.data.MeasuredTemplateData>(new foundry.data.MeasuredTemplateData());
 expectError<foundry.data.MeasuredTemplateData>(new foundry.data.MeasuredTemplateData({ x: 100, y: 100 }));
@@ -49,17 +49,17 @@ expectType<foundry.data.MeasuredTemplateData>(
 expectType<foundry.data.MeasuredTemplateData>(
   new foundry.data.MeasuredTemplateData(
     {
-      _id: '10',
-      user: '11',
-      t: 'ray',
+      _id: "10",
+      user: "11",
+      t: "ray",
       x: 0,
       y: 0,
       distance: 10,
       angle: 360,
       width: 10,
-      borderColor: '#000000',
-      fillColor: '#ffffff',
-      texture: 'path/to/a/texture',
+      borderColor: "#000000",
+      fillColor: "#ffffff",
+      texture: "path/to/a/texture",
       flags: {}
     },
     scene

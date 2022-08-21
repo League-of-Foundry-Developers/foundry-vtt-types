@@ -4,15 +4,15 @@ declare global {
   /**
    * The string prefix used to prepend console logging
    */
-  const vtt: 'Foundry VTT';
+  const vtt: "Foundry VTT";
 
   /**
    * The singleton Game instance
    * @defaultValue `{}`
    * @remarks
-   * Initialized between the `'DOMContentLoaded'` event and the `'init'` hook event.
+   * Initialized between the `"DOMContentLoaded"` event and the `"init"` hook event.
    */
-  let game: 'game' extends keyof LenientGlobalVariableTypes ? Game : Game | {};
+  let game: "game" extends keyof LenientGlobalVariableTypes ? Game : Game | {};
 
   /**
    * The global boolean for whether the EULA is signed
@@ -28,20 +28,20 @@ declare global {
    * Critical server-side startup messages which need to be displayed to the client.
    */
   let MESSAGES:
-    | { type: Notifications.Notification['type']; message: string; options: Notifications.NotifyOptions }[]
+    | { type: Notifications.Notification["type"]; message: string; options: Notifications.NotifyOptions }[]
     | null;
 
   /**
    * @defaultValue `null`
    * @remarks
-   * Initialized between the `'DOMContentLoaded'` event and the `'init'` hook event.
+   * Initialized between the `"DOMContentLoaded"` event and the `"init"` hook event.
    */
-  let socket: 'socket' extends keyof LenientGlobalVariableTypes ? io.Socket : io.Socket | null;
+  let socket: "socket" extends keyof LenientGlobalVariableTypes ? io.Socket : io.Socket | null;
 
   /**
    * A collection of application instances
    * @remarks
-   * - All of the elements of {@link ui} except for `context` and `window` are initialized between the `'setup'` and `'ready'` hook events.
+   * - All of the elements of {@link ui} except for `context` and `window` are initialized between the `"setup"` and `"ready"` hook events.
    * - In the `/stream` view, only `chat` is initialized but none of the other {@link Application}s.
    */
   let ui: {
@@ -55,7 +55,7 @@ declare global {
      * @defaultValue `{}`
      */
     windows: Record<number, Application>;
-  } & ('ui' extends keyof LenientGlobalVariableTypes ? UiApplications : Partial<UiApplications>);
+  } & ("ui" extends keyof LenientGlobalVariableTypes ? UiApplications : Partial<UiApplications>);
 
   /**
    * The client side console logger
@@ -69,5 +69,5 @@ declare global {
 }
 
 type UiApplications = {
-  [Key in keyof CONFIG['ui']]: InstanceType<CONFIG['ui'][Key]>;
+  [Key in keyof CONFIG["ui"]]: InstanceType<CONFIG["ui"][Key]>;
 };

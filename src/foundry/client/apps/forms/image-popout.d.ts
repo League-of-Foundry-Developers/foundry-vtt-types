@@ -126,12 +126,12 @@ declare global {
   namespace ImagePopout {
     interface Options extends FormApplicationOptions {
       /**
-       * @defaultValue `'templates/apps/image-popout.html'`
+       * @defaultValue `"templates/apps/image-popout.html"`
        */
       template: string;
 
       /**
-       * @defaultValue `['image-popout', 'dark']`
+       * @defaultValue `["image-popout", "dark"]`
        */
       classes: string[];
 

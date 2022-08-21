@@ -2,24 +2,24 @@ interface DragDropConfiguration {
   /**
    * The CSS selector used to target draggable elements.
    */
-  dragSelector?: DragDrop['dragSelector'];
+  dragSelector?: DragDrop["dragSelector"];
 
   /**
    * The CSS selector used to target viable drop targets.
    */
-  dropSelector?: DragDrop['dropSelector'];
+  dropSelector?: DragDrop["dropSelector"];
 
   /**
    * An object of permission test functions for each action
    * @defaultValue `{}`
    */
-  permissions?: DragDrop['permissions'];
+  permissions?: DragDrop["permissions"];
 
   /**
    * An object of callback functions for each action
    * @defaultValue `{}`
    */
-  callbacks?: DragDrop['callbacks'];
+  callbacks?: DragDrop["callbacks"];
 }
 
 /**
@@ -114,5 +114,5 @@ declare class DragDrop {
 }
 
 declare namespace DragDrop {
-  type Action = 'dragstart' | 'dragover' | 'drop';
+  type Action = "dragstart" | "dragover" | "drop";
 }

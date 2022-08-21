@@ -28,7 +28,7 @@ declare namespace SocketInterface {
     }
 
     // TODO: add remaining actions
-    type Action = 'create' | 'update' | 'delete';
+    type Action = "create" | "update" | "delete";
   }
 
   namespace Responses {

@@ -21,7 +21,7 @@
  * Hooks.on("sightRefresh", layer => {});
  * ```
  */
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   class SightLayer extends CanvasLayer<SightLayer.LayerOptions> {
@@ -63,7 +63,7 @@ declare global {
     /**
      * A debounced function to save fog of war exploration once a stream of updates have stopped
      */
-    debounceSaveFog: (...args: Parameters<this['saveFog']>) => void;
+    debounceSaveFog: (...args: Parameters<this["saveFog"]>) => void;
 
     /**
      * The current vision container which provides line-of-sight for vision sources and field-of-view of light sources.
@@ -148,13 +148,13 @@ declare global {
     /**
      * @remarks This is not overridden in foundry but reflects the real behavior.
      */
-    static get instance(): Canvas['sight'];
+    static get instance(): Canvas["sight"];
 
     /**
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.layerOptions, {
-     *  name: 'sight',
+     *  name: "sight",
      *  zIndex: 400
      * })
      * ```
@@ -221,7 +221,7 @@ declare global {
        * (default: `false`)
        */
       skipUpdateFog?: boolean;
-    }): void | ReturnType<this['restrictVisibility']>;
+    }): void | ReturnType<this["restrictVisibility"]>;
 
     /**
      * Restrict the visibility of certain canvas assets (like Tokens or DoorControls) based on the visibility polygon
@@ -307,7 +307,7 @@ declare global {
 
   namespace SightLayer {
     interface LayerOptions extends CanvasLayer.LayerOptions {
-      name: 'sight';
+      name: "sight";
     }
   }
 }

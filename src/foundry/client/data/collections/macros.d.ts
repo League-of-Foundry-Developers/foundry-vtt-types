@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -8,19 +8,19 @@ declare global {
    * @see {@link Macro} The Macro document
    * @see {@link MacroDirectory} The MacroDirectory sidebar directory
    */
-  class Macros extends WorldCollection<typeof foundry.documents.BaseMacro, 'Macros'> {
-    static override documentName: 'Macro';
+  class Macros extends WorldCollection<typeof foundry.documents.BaseMacro, "Macros"> {
+    static override documentName: "Macro";
 
     override get directory(): typeof ui.macros;
 
     override fromCompendium(
       document:
         | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseMacro>>
-        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseMacro>>['data']['_source'],
+        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseMacro>>["data"]["_source"],
       options?: WorldCollection.FromCompendiumOptions | undefined
     ): Omit<
-      InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseMacro>>['data']['_source'],
-      '_id' | 'folder'
+      InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseMacro>>["data"]["_source"],
+      "_id" | "folder"
     >;
   }
 }

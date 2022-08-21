@@ -1,6 +1,6 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
-const sound = new Sound('a/path/to/some/sound/file.ogg');
+const sound = new Sound("a/path/to/some/sound/file.ogg");
 
 expectType<Sound>(sound);
 expectType<number>(sound.id);
@@ -21,7 +21,7 @@ expectType<boolean>(sound.playing);
 expectType<boolean>(sound.loop);
 expectType<number | undefined>(sound.volume);
 expectType<Promise<void>>(sound.fade(0));
-expectType<Promise<void>>(sound.fade(0, { duration: 42, from: 0.5, type: 'exponential' }));
+expectType<Promise<void>>(sound.fade(0, { duration: 42, from: 0.5, type: "exponential" }));
 expectType<Promise<Sound>>(sound.load());
 expectType<Promise<Sound>>(
   sound.load({ autoplay: true, autoplayOptions: { loop: true, offset: 2, volume: 0.7, fade: 3 } })
@@ -34,7 +34,7 @@ expectType<void>(sound.stop());
 declare const soundCallback: (sound: Sound) => void;
 
 expectType<Promise<void>>(sound.schedule(soundCallback, 42));
-expectType<void>(sound.emit('pause'));
-expectType<void>(sound.off('end', 42));
-expectType<void>(sound.off('start', soundCallback));
-expectType<number>(sound.on('stop', soundCallback));
+expectType<void>(sound.emit("pause"));
+expectType<void>(sound.off("end", 42));
+expectType<void>(sound.off("start", soundCallback));
+expectType<number>(sound.on("stop", soundCallback));

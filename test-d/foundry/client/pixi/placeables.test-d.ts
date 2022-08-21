@@ -1,12 +1,12 @@
-import type EmbeddedCollection from '../../../../src/foundry/common/abstract/embedded-collection.mjs';
-import { expectError, expectType } from 'tsd';
+import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.mjs";
+import { expectError, expectType } from "tsd";
 
-declare class SomeLightLayer extends PlaceablesLayer<'AmbientLight', PlaceablesLayer.LayerOptions<'AmbientLight'>> {}
+declare class SomeLightLayer extends PlaceablesLayer<"AmbientLight", PlaceablesLayer.LayerOptions<"AmbientLight">> {}
 
 expectType<CanvasLayer | undefined>(SomeLightLayer.instance);
 expectType<PlaceablesLayer.LayerOptions<any>>(SomeLightLayer.layerOptions);
 expectType<any>(SomeLightLayer.layerOptions.objectClass); // TODO: Can this be typed to DocumentConstructor?
-expectType<'AmbientLight' | 'AmbientSound' | 'Drawing' | 'MeasuredTemplate' | 'Note' | 'Tile' | 'Token' | 'Wall'>(
+expectType<"AmbientLight" | "AmbientSound" | "Drawing" | "MeasuredTemplate" | "Note" | "Tile" | "Token" | "Wall">(
   PlaceablesLayer.documentName
 );
 expectType<ConstructorOf<PlaceableObject>>(PlaceablesLayer.placeableClass);
@@ -15,7 +15,7 @@ const layer = new SomeLightLayer();
 expectType<typeof AmbientLight>(layer.options.objectClass);
 expectType<PIXI.Container | null>(layer.objects);
 expectType<PIXI.Container | null>(layer.preview);
-expectType<Array<{ type: 'create' | 'update' | 'delete'; data: Array<foundry.data.AmbientLightData['_source']> }>>(
+expectType<Array<{ type: "create" | "update" | "delete"; data: Array<foundry.data.AmbientLightData["_source"]> }>>(
   layer.history
 );
 expectType<Quadtree<AmbientLight> | null>(layer.quadtree);
@@ -34,7 +34,7 @@ expectError(layer.createObject());
 expectType<Promise<SomeLightLayer>>(layer.tearDown());
 expectType<SomeLightLayer>(layer.activate());
 expectType<SomeLightLayer>(layer.deactivate());
-expectType<AmbientLight | undefined>(layer.get('id'));
+expectType<AmbientLight | undefined>(layer.get("id"));
 expectType<AmbientLight[]>(layer.controlAll());
 expectType<AmbientLight[]>(layer.controlAll({}));
 expectType<AmbientLight[]>(layer.controlAll({ releaseOthers: true }));
@@ -43,18 +43,18 @@ expectType<number>(layer.releaseAll({}));
 expectType<number>(layer.releaseAll({ trigger: true }));
 expectType<Promise<AmbientLight[]>>(layer.rotateMany());
 expectType<Promise<AmbientLight[]>>(layer.rotateMany({}));
-expectType<Promise<AmbientLight[]>>(layer.rotateMany({ angle: 10, delta: 20, snap: 20, ids: ['abc', 'def'] }));
+expectType<Promise<AmbientLight[]>>(layer.rotateMany({ angle: 10, delta: 20, snap: 20, ids: ["abc", "def"] }));
 expectType<Promise<AmbientLight[]> | undefined>(layer.moveMany());
 expectType<Promise<AmbientLight[]> | undefined>(layer.moveMany({}));
 expectType<Promise<AmbientLight[]> | undefined>(
-  layer.moveMany({ dx: 100, dy: 100, rotate: true, ids: ['abc', 'def'] })
+  layer.moveMany({ dx: 100, dy: 100, rotate: true, ids: ["abc", "def"] })
 );
 expectType<Promise<AmbientLightDocument[]>>(layer.undoHistory());
 expectType<Promise<AmbientLightDocument[] | false | null>>(layer.deleteAll());
-expectType<void>(layer.storeHistory('create', new AmbientLightDocument().data));
-expectType<void>(layer.storeHistory('update', new AmbientLightDocument().data));
-expectType<void>(layer.storeHistory('delete', new AmbientLightDocument().data));
-expectError(layer.storeHistory('new', new AmbientLightDocument().data));
+expectType<void>(layer.storeHistory("create", new AmbientLightDocument().data));
+expectType<void>(layer.storeHistory("update", new AmbientLightDocument().data));
+expectType<void>(layer.storeHistory("delete", new AmbientLightDocument().data));
+expectError(layer.storeHistory("new", new AmbientLightDocument().data));
 expectType<AmbientLight[]>(layer.copyObjects());
 expectType<Promise<AmbientLightDocument[]>>(layer.pasteObjects({ x: 10, y: 10 }));
 expectType<Promise<AmbientLightDocument[]>>(layer.pasteObjects({ x: 10, y: 10 }, { hidden: true, snap: false }));

@@ -1,19 +1,19 @@
-import { DocumentMetadata } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import * as data from '../data/data.mjs';
+import { DocumentMetadata } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import * as data from "../data/data.mjs";
 
 type SettingMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'Setting';
-    collection: 'settings';
-    label: 'DOCUMENT.Setting';
-    labelPlural: 'DOCUMENT.Settings';
+    name: "Setting";
+    collection: "settings";
+    label: "DOCUMENT.Setting";
+    labelPlural: "DOCUMENT.Settings";
     isPrimary: true;
     permissions: {
-      create: 'SETTINGS_MODIFY';
-      update: 'SETTINGS_MODIFY';
-      delete: 'SETTINGS_MODIFY';
+      create: "SETTINGS_MODIFY";
+      update: "SETTINGS_MODIFY";
+      delete: "SETTINGS_MODIFY";
     };
   }
 >;

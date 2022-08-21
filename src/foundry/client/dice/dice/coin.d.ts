@@ -44,6 +44,6 @@ declare namespace Coin {
   }
 
   interface Modifiers {
-    c: 'call';
+    c: "call";
   }
 }

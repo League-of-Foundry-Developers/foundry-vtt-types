@@ -81,7 +81,7 @@ declare abstract class PointSource {
   /**
    * The type of source represented by this data structure.
    */
-  get sourceType(): typeof PointSource['sourceType'];
+  get sourceType(): typeof PointSource["sourceType"];
 
   /**
    * A point is contained with the area of the source if it is within both the FOV circle as well as the LOS polygon.

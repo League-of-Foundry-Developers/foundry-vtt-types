@@ -1,20 +1,20 @@
-import { DropData } from '../../data/abstract/client-document';
+import { DropData } from "../../data/abstract/client-document";
 
 declare global {
   /**
    * The Notes Layer which contains Note canvas objects
    */
-  class NotesLayer extends PlaceablesLayer<'Note', NotesLayer.LayerOptions> {
+  class NotesLayer extends PlaceablesLayer<"Note", NotesLayer.LayerOptions> {
     /**
      * @remarks This is not overridden in foundry but reflects the real behavior.
      */
-    static get instance(): Canvas['notes'];
+    static get instance(): Canvas["notes"];
 
     /**
      * @defaultValue
      * ```
      * foundry.utils.mergeObject(super.layerOptions, {
-     *  name: 'notes',
+     *  name: "notes",
      *  canDragCreate: false,
      *  sortActiveTop: true,
      *  zIndex: 60
@@ -23,12 +23,12 @@ declare global {
      */
     static override get layerOptions(): NotesLayer.LayerOptions;
 
-    static override documentName: 'Note';
+    static override documentName: "Note";
 
     /**
      * The named core setting which tracks the toggled visibility state of map notes
      */
-    static TOGGLE_SETTING: 'notesDisplayToggle';
+    static TOGGLE_SETTING: "notesDisplayToggle";
 
     override activate(): this;
 
@@ -49,15 +49,15 @@ declare global {
   }
 
   namespace NotesLayer {
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<'Note'> {
-      name: 'notes';
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<"Note"> {
+      name: "notes";
       canDragCreate: false;
       sortActiveTop: true;
       zIndex: 60;
     }
 
     type DropData = {
-      type?: 'JournalEntry';
+      type?: "JournalEntry";
     } & Canvas.DropPosition &
       DeepPartial<any>; // TODO: Update this
   }

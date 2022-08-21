@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -86,7 +86,7 @@ declare global {
     /**
      * Update the value of the tracked resource for this Combatant.
      */
-    updateResource(): this['resource'];
+    updateResource(): this["resource"];
 
     /**
      * Acquire the default dice formula which should be used to roll initiative for this combatant.

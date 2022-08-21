@@ -1,5 +1,5 @@
-import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from '../../../../types/helperTypes';
-import { PasteOptions } from '../placeables';
+import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../types/helperTypes";
+import { PasteOptions } from "../placeables";
 
 declare global {
   /**
@@ -7,7 +7,7 @@ declare global {
    * @see {@link WallDocument}
    * @see {@link Wall}
    */
-  class WallsLayer extends PlaceablesLayer<'Wall', WallsLayer.LayerOptions> {
+  class WallsLayer extends PlaceablesLayer<"Wall", WallsLayer.LayerOptions> {
     constructor();
 
     /**
@@ -39,7 +39,7 @@ declare global {
      * @defaultValue `null`
      * @remarks This is intentional `public` because it is accessed from Wall
      */
-    _cloneType: ReturnType<foundry.documents.BaseWall['toJSON']> | null;
+    _cloneType: ReturnType<foundry.documents.BaseWall["toJSON"]> | null;
 
     /**
      * Reference the last interacted wall endpoint for the purposes of chaining
@@ -57,7 +57,7 @@ declare global {
     /**
      * @remarks This is not overridden in foundry but reflects the real behavior.
      */
-    static get instance(): Canvas['walls'];
+    static get instance(): Canvas["walls"];
 
     /**
      * @defaultValue
@@ -72,12 +72,12 @@ declare global {
      */
     static override get layerOptions(): WallsLayer.LayerOptions;
 
-    static override documentName: 'Wall';
+    static override documentName: "Wall";
 
     /**
      * An Array of Wall instances in the current Scene which act as Doors.
      */
-    get doors(): InstanceType<ConfiguredObjectClassForName<'Wall'>>[];
+    get doors(): InstanceType<ConfiguredObjectClassForName<"Wall">>[];
 
     /**
      * Gate the precision of wall snapping to become less precise for small scale maps.
@@ -112,7 +112,7 @@ declare global {
      * @param wall  - The existing Wall object being chained to
      * @returns The [x,y] coordinates of the starting endpoint
      */
-    static getClosestEndpoint(point: Point, wall: InstanceType<ConfiguredObjectClassForName<'Wall'>>): PointArray;
+    static getClosestEndpoint(point: Point, wall: InstanceType<ConfiguredObjectClassForName<"Wall">>): PointArray;
 
     /**
      * Test whether movement along a given Ray collides with a Wall.
@@ -124,10 +124,10 @@ declare global {
      *          An array of collisions, if mode is "all"
      *          The closest collision, if mode is "closest"
      */
-    checkCollision(ray: Ray, options: CollisionOptions & { mode: 'all' }): boolean | PolygonVertex[];
-    checkCollision(ray: Ray, options: CollisionOptions & { mode: 'closest' }): boolean | PolygonVertex;
-    checkCollision(ray: Ray, options: CollisionOptions & { mode: 'any' }): boolean;
-    checkCollision(ray: Ray, options: Omit<CollisionOptions, 'mode'>): boolean;
+    checkCollision(ray: Ray, options: CollisionOptions & { mode: "all" }): boolean | PolygonVertex[];
+    checkCollision(ray: Ray, options: CollisionOptions & { mode: "closest" }): boolean | PolygonVertex;
+    checkCollision(ray: Ray, options: CollisionOptions & { mode: "any" }): boolean;
+    checkCollision(ray: Ray, options: Omit<CollisionOptions, "mode">): boolean;
     checkCollision(ray: Ray, options: CollisionOptions): boolean | PolygonVertex;
     checkCollision(ray: Ray, options?: CollisionOptions): boolean;
 
@@ -155,7 +155,7 @@ declare global {
      * @param x     - The x-coordinate
      * @param y     - The y-coordinate
      */
-    protected _panCanvasEdge(event: MouseEvent, x: number, y: number): void | ReturnType<Canvas['animatePan']>;
+    protected _panCanvasEdge(event: MouseEvent, x: number, y: number): void | ReturnType<Canvas["animatePan"]>;
 
     /**
      * Get the endpoint coordinates for a wall placement, snapping to grid at a specified precision
@@ -180,7 +180,7 @@ declare global {
           move: foundry.CONST.WALL_SENSE_TYPES;
           door?: foundry.CONST.WALL_DOOR_TYPES;
         }
-      | this['_cloneType'];
+      | this["_cloneType"];
 
     protected override _onDragLeftStart(event: PIXI.InteractionEvent): void;
 
@@ -200,10 +200,10 @@ declare global {
     ): { rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon };
 
     /** @deprecated since v9 */
-    getRayCollisions(ray: Ray, options: RayCollisionsOptions & { mode: 'all' }): RayIntersection[];
-    getRayCollisions(ray: Ray, options: RayCollisionsOptions & { mode: 'closest' }): RayIntersection | null;
-    getRayCollisions(ray: Ray, options: RayCollisionsOptions & { mode: 'any' }): boolean;
-    getRayCollisions(ray: Ray, options?: Partial<Omit<RayCollisionsOptions, 'mode'>>): RayIntersection[];
+    getRayCollisions(ray: Ray, options: RayCollisionsOptions & { mode: "all" }): RayIntersection[];
+    getRayCollisions(ray: Ray, options: RayCollisionsOptions & { mode: "closest" }): RayIntersection | null;
+    getRayCollisions(ray: Ray, options: RayCollisionsOptions & { mode: "any" }): boolean;
+    getRayCollisions(ray: Ray, options?: Partial<Omit<RayCollisionsOptions, "mode">>): RayIntersection[];
     getRayCollisions(ray: Ray, options?: RayCollisionsOptions): RayIntersection[] | RayIntersection | boolean | null;
 
     /**
@@ -223,15 +223,15 @@ declare global {
      */
     static getUniqueEndpoints(
       walls:
-        | InstanceType<ConfiguredObjectClassForName<'Wall'>>[]
-        | Set<InstanceType<ConfiguredObjectClassForName<'Wall'>>>,
+        | InstanceType<ConfiguredObjectClassForName<"Wall">>[]
+        | Set<InstanceType<ConfiguredObjectClassForName<"Wall">>>,
       options?: EndpointOptions
     ): PointArray[];
   }
 
   namespace WallsLayer {
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<'Wall'> {
-      name: 'walls';
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<"Wall"> {
+      name: "walls";
       controllableObjects: true;
       objectClass: typeof Wall;
       quadtree: true;
@@ -250,31 +250,31 @@ interface EndpointOptions {
 
   /**
    * The type of polygon being computed: "movement", "sight", or "sound"
-   * @defaultValue `'movement'`
+   * @defaultValue `"movement"`
    */
-  type?: 'movement' | 'sight' | 'sound';
+  type?: "movement" | "sight" | "sound";
 }
 
 interface CollisionOptions {
   /**
    * Which collision type to check: movement, sight, sound
-   * @defaultValue `'move'`
+   * @defaultValue `"move"`
    */
-  type?: 'move' | 'sight' | 'sound';
+  type?: "move" | "sight" | "sound";
 
   /**
    * Which type of collisions are returned: any, closest, all
-   * @defaultValue `'any'`
+   * @defaultValue `"any"`
    */
-  mode?: 'any' | 'closest' | 'all';
+  mode?: "any" | "closest" | "all";
 }
 
 interface ComputePolygonOptions {
   /**
    * The type of polygon being computed: "movement", "sight", or "sound"
-   * @defaultValue `'sight'`
+   * @defaultValue `"sight"`
    */
-  type?: 'movement' | 'sight' | 'sound';
+  type?: "movement" | "sight" | "sound";
 
   /**
    * An optional limited angle of emission with which to restrict polygons
@@ -304,13 +304,13 @@ interface ComputePolygonOptions {
 interface RayCollisionsOptions {
   /**
    * Which collision type to check: movement, sight, sound
-   * @defaultValue `'movement'`
+   * @defaultValue `"movement"`
    */
-  type?: 'movement' | 'sight' | 'sound';
+  type?: "movement" | "sight" | "sound";
 
   /**
    * Which type of collisions are returned: any, closest, all
-   * @defaultValue `'all'`
+   * @defaultValue `"all"`
    */
   mode?: `any` | `closest` | `all`;
 

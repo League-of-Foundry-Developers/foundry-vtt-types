@@ -1,4 +1,4 @@
-import { expectError, expectType } from 'tsd';
+import { expectError, expectType } from "tsd";
 
 expectError<UserConfig>(new UserConfig());
 expectError<UserConfig>(new UserConfig(undefined, { width: 100 }));

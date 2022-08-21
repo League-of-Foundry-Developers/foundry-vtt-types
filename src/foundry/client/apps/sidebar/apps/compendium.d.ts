@@ -39,7 +39,7 @@ declare class Compendium<
   /**
    * A convenience redirection back to the metadata object of the associated CompendiumCollection
    */
-  get metadata(): this['collection']['metadata'];
+  get metadata(): this["collection"]["metadata"];
 
   override getData(options?: Partial<Options>): Promise<Data> | Data;
 
@@ -80,7 +80,7 @@ declare namespace Compendium {
   interface Data<Metadata extends CompendiumCollection.Metadata> {
     collection: CompendiumCollection<Metadata>;
     documentCls: string;
-    index: CompendiumCollection<Metadata>['index'];
+    index: CompendiumCollection<Metadata>["index"];
     documentPartial: string;
   }
 }

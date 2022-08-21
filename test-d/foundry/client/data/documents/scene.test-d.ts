@@ -1,9 +1,9 @@
-import { expectError, expectType } from 'tsd';
+import { expectError, expectType } from "tsd";
 
 expectError(new Scene());
 expectError(new Scene({}));
 
-const scene = new Scene({ name: 'My scene' });
+const scene = new Scene({ name: "My scene" });
 expectType<Scene>(scene);
 
 expectType<Canvas.Dimensions | {}>(scene.dimensions);
@@ -19,6 +19,6 @@ expectType<Scene | Promise<Scene | undefined>>(scene.clone());
 expectType<void>(scene.prepareBaseData());
 expectType<Promise<ImageHelper.ThumbnailReturn>>(scene.createThumbnail());
 expectType<Promise<ImageHelper.ThumbnailReturn>>(scene.createThumbnail({}));
-expectType<Promise<ImageHelper.ThumbnailReturn>>(scene.createThumbnail({ img: 'path/to/my/img.png' }));
+expectType<Promise<ImageHelper.ThumbnailReturn>>(scene.createThumbnail({ img: "path/to/my/img.png" }));
 expectType<Promise<ImageHelper.ThumbnailReturn>>(scene.createThumbnail({ width: 300 }));
 expectType<Promise<ImageHelper.ThumbnailReturn>>(scene.createThumbnail({ height: 100 }));

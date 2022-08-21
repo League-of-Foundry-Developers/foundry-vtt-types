@@ -1,9 +1,9 @@
-import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from '../../../../../types/helperTypes';
+import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../../types/helperTypes";
 
 declare global {
   interface RulerData {
     /** The ruler measurement state. */
-    _state: Ruler['_state'];
+    _state: Ruler["_state"];
 
     /** A unique name for the ruler containing the owning user's ID. */
     name: string;
@@ -76,7 +76,7 @@ declare global {
      * Track the current measurement state
      * @defaultValue `Ruler.STATES.INACTIVE`
      */
-    protected _state: ValueOf<typeof Ruler['STATES']>;
+    protected _state: ValueOf<typeof Ruler["STATES"]>;
 
     /**
      * An enumeration of the possible Ruler measurement states.
@@ -122,7 +122,7 @@ declare global {
     /**
      * Acquire a Token, if any, which is eligible to perform a movement based on the starting point of the Ruler
      */
-    protected _getMovementToken(): InstanceType<ConfiguredObjectClassForName<'Token'>> | null | undefined;
+    protected _getMovementToken(): InstanceType<ConfiguredObjectClassForName<"Token">> | null | undefined;
 
     /**
      * A helper method to return an Array of Ray objects constructed from the waypoints of the measurement
@@ -192,7 +192,7 @@ declare global {
      * Update a Ruler instance using data provided through the cursor activity socket
      * @param data - Ruler data with which to update the display
      */
-    update(data: ReturnType<Ruler['toJSON']>): void;
+    update(data: ReturnType<Ruler["toJSON"]>): void;
   }
 
   namespace Ruler {

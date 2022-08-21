@@ -1,15 +1,15 @@
-import * as data from '../data/data.mjs';
-import { Document } from '../abstract/module.mjs';
-import { DocumentMetadata } from '../abstract/document.mjs';
-import * as CONST from '../constants.mjs';
+import * as data from "../data/data.mjs";
+import { Document } from "../abstract/module.mjs";
+import { DocumentMetadata } from "../abstract/document.mjs";
+import * as CONST from "../constants.mjs";
 
 type FolderMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'Folder';
-    collection: 'folders';
-    label: 'DOCUMENT.Folder';
-    labelPlural: 'DOCUMENT.Folders';
+    name: "Folder";
+    collection: "folders";
+    label: "DOCUMENT.Folder";
+    labelPlural: "DOCUMENT.Folders";
     isPrimary: true;
     types: typeof CONST.FOLDER_DOCUMENT_TYPES;
   }

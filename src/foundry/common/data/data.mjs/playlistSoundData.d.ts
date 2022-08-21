@@ -1,7 +1,7 @@
-import type { ConfiguredFlags, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
-import type DocumentData from '../../abstract/data.mjs';
-import type { documents } from '../../module.mjs';
-import * as fields from '../fields.mjs';
+import type { ConfiguredFlags, FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes";
+import type DocumentData from "../../abstract/data.mjs";
+import type { documents } from "../../module.mjs";
+import * as fields from "../fields.mjs";
 
 interface PlaylistSoundDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -74,7 +74,7 @@ interface PlaylistSoundDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'PlaylistSound'>;
+  flags: ConfiguredFlags<"PlaylistSound">;
 }
 
 interface PlaylistSoundDataConstructorData {
@@ -134,7 +134,7 @@ interface PlaylistSoundDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'PlaylistSound'> | null | undefined;
+  flags?: ConfiguredFlags<"PlaylistSound"> | null | undefined;
 }
 
 type PlaylistSoundDataSource = PropertiesToSource<PlaylistSoundDataProperties>;

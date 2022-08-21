@@ -7,7 +7,7 @@ declare class ChatBubbles {
   constructor();
 
   /**
-   * @defaultValue `'templates/hud/chat-bubble.html'`
+   * @defaultValue `"templates/hud/chat-bubble.html"`
    */
   template: string;
 

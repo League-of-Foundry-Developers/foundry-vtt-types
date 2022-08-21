@@ -5,8 +5,8 @@
  * @see {@link JournalEntry} The JournalEntry document
  * @see {@link JournalDirectory} The JournalDirectory sidebar directory
  */
-declare class Journal extends WorldCollection<typeof foundry.documents.BaseJournalEntry, 'Journal'> {
-  static override documentName: 'JournalEntry';
+declare class Journal extends WorldCollection<typeof foundry.documents.BaseJournalEntry, "Journal"> {
+  static override documentName: "JournalEntry";
 
   /**
    * Open Socket listeners which transact JournalEntry data
@@ -18,9 +18,9 @@ declare class Journal extends WorldCollection<typeof foundry.documents.BaseJourn
    * Handle a received request to show a JournalEntry to the current client
    * @param entryId - The ID of the journal entry to display for other players
    * @param mode    - The JournalEntry mode to display
-   *                  (default: `'text'`)
+   *                  (default: `"text"`)
    * @param force   - Display the entry to all players regardless of normal permissions
    *                  (default: `true`)
    */
-  protected static _showEntry(entryId: string, mode?: 'text' | 'image', force?: boolean): Promise<void>;
+  protected static _showEntry(entryId: string, mode?: "text" | "image", force?: boolean): Promise<void>;
 }

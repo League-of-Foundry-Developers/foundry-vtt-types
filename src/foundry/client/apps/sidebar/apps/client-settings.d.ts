@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
+import type { ConfiguredDocumentClass } from "../../../../../types/helperTypes";
 
 declare global {
   /**
@@ -26,7 +26,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): typeof FormApplication['defaultOptions'];
+    static override get defaultOptions(): typeof FormApplication["defaultOptions"];
 
     override getData(options?: Partial<Options>): Data | Promise<Data>;
 
@@ -62,7 +62,7 @@ declare global {
     interface Data {
       user: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof User>>>;
       canConfigure: boolean;
-      systemTitle: Game['system']['data']['title'];
+      systemTitle: Game["system"]["data"]["title"];
       data: Data.Data;
     }
 
@@ -75,7 +75,7 @@ declare global {
           none: boolean;
         };
         system: {
-          title: Game['system']['data']['title'];
+          title: Game["system"]["data"]["title"];
           menus: SettingSubmenuConfig[];
           settings: Setting[];
           none: boolean;
@@ -83,7 +83,7 @@ declare global {
         modules: { title: string; menus: SettingSubmenuConfig[]; settings: Setting[] }[];
       }
 
-      interface Setting extends Omit<SettingConfig, 'type'> {
+      interface Setting extends Omit<SettingConfig, "type"> {
         id: string;
         name: string;
         hint: string;
@@ -97,19 +97,19 @@ declare global {
     }
 
     interface FormData {
-      'core.animateRollTable': boolean;
-      'core.chatBubbles': boolean;
-      'core.chatBubblesPan': boolean;
-      'core.coneTemplateType': 'round' | 'flat';
-      'core.language': string;
-      'core.leftClickRelease': boolean;
-      'core.lightAnimation': boolean;
-      'core.maxFPS': number;
-      'core.mipmap': boolean;
-      'core.noCanvas': boolean;
-      'core.softShadows': boolean;
-      'core.tokenDragPreview': boolean;
-      'core.visionAnimation': boolean;
+      "core.animateRollTable": boolean;
+      "core.chatBubbles": boolean;
+      "core.chatBubblesPan": boolean;
+      "core.coneTemplateType": "round" | "flat";
+      "core.language": string;
+      "core.leftClickRelease": boolean;
+      "core.lightAnimation": boolean;
+      "core.maxFPS": number;
+      "core.mipmap": boolean;
+      "core.noCanvas": boolean;
+      "core.softShadows": boolean;
+      "core.tokenDragPreview": boolean;
+      "core.visionAnimation": boolean;
       [key: string]: unknown;
     }
   }

@@ -1,7 +1,7 @@
-import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
-import DocumentData from '../../abstract/data.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
+import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes";
+import DocumentData from "../../abstract/data.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
 
 interface WallDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -9,14 +9,14 @@ interface WallDataSchema extends DocumentSchema {
     type: [typeof Number];
     required: true;
     validate: (c: unknown) => c is [x0: number, y0: number, x1: number, y1: number];
-    validationError: 'Invalid {name} coordinates provided which must be a length-4 array of finite numbers';
+    validationError: "Invalid {name} coordinates provided which must be a length-4 array of finite numbers";
   };
   light: FieldReturnType<
     fields.RequiredNumber,
     {
       default: typeof foundry.CONST.WALL_SENSE_TYPES.NORMAL;
       validate: (v: unknown) => v is foundry.CONST.WALL_SENSE_TYPES;
-      validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_SENSE_TYPES';
+      validationError: "Invalid {name} {field} which must be a value in CONST.WALL_SENSE_TYPES";
     }
   >;
   move: FieldReturnType<
@@ -24,7 +24,7 @@ interface WallDataSchema extends DocumentSchema {
     {
       default: typeof foundry.CONST.WALL_MOVEMENT_TYPES.NORMAL;
       validate: (v: unknown) => v is foundry.CONST.WALL_MOVEMENT_TYPES;
-      validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_MOVEMENT_TYPES';
+      validationError: "Invalid {name} {field} which must be a value in CONST.WALL_MOVEMENT_TYPES";
     }
   >;
   sight: FieldReturnType<
@@ -32,7 +32,7 @@ interface WallDataSchema extends DocumentSchema {
     {
       default: typeof foundry.CONST.WALL_SENSE_TYPES.NORMAL;
       validate: (v: unknown) => v is foundry.CONST.WALL_SENSE_TYPES;
-      validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_SENSE_TYPES';
+      validationError: "Invalid {name} {field} which must be a value in CONST.WALL_SENSE_TYPES";
     }
   >;
   sound: FieldReturnType<
@@ -40,7 +40,7 @@ interface WallDataSchema extends DocumentSchema {
     {
       default: typeof foundry.CONST.WALL_SENSE_TYPES.NORMAL;
       validate: (v: unknown) => v is foundry.CONST.WALL_SENSE_TYPES;
-      validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_SENSE_TYPES';
+      validationError: "Invalid {name} {field} which must be a value in CONST.WALL_SENSE_TYPES";
     }
   >;
   dir: FieldReturnType<
@@ -48,7 +48,7 @@ interface WallDataSchema extends DocumentSchema {
     {
       default: typeof foundry.CONST.WALL_DIRECTIONS.BOTH;
       validate: (v: unknown) => v is foundry.CONST.WALL_DIRECTIONS;
-      validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_DIRECTIONS';
+      validationError: "Invalid {name} {field} which must be a value in CONST.WALL_DIRECTIONS";
     }
   >;
   door: FieldReturnType<
@@ -56,7 +56,7 @@ interface WallDataSchema extends DocumentSchema {
     {
       default: typeof foundry.CONST.WALL_DOOR_TYPES.NONE;
       validate: (v: unknown) => v is foundry.CONST.WALL_DOOR_TYPES;
-      validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_DOOR_TYPES';
+      validationError: "Invalid {name} {field} which must be a value in CONST.WALL_DOOR_TYPES";
     }
   >;
   ds: FieldReturnType<
@@ -64,7 +64,7 @@ interface WallDataSchema extends DocumentSchema {
     {
       default: typeof foundry.CONST.WALL_DOOR_STATES.CLOSED;
       validate: (v: unknown) => v is foundry.CONST.WALL_DOOR_STATES;
-      validationError: 'Invalid {name} {field} which must be a value in CONST.WALL_DOOR_STATES';
+      validationError: "Invalid {name} {field} which must be a value in CONST.WALL_DOOR_STATES";
     }
   >;
   flags: fields.ObjectField;
@@ -128,7 +128,7 @@ interface WallDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'Wall'>;
+  flags: ConfiguredFlags<"Wall">;
 }
 
 interface WallDataConstructorData {
@@ -189,7 +189,7 @@ interface WallDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Wall'> | null | undefined;
+  flags?: ConfiguredFlags<"Wall"> | null | undefined;
 }
 
 type WallDataSource = PropertiesToSource<WallDataProperties>;

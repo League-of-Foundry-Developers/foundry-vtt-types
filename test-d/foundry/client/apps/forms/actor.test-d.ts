@@ -1,8 +1,8 @@
-import type { ToObjectFalseType } from '../../../../../src/types/helperTypes';
+import type { ToObjectFalseType } from "../../../../../src/types/helperTypes";
 
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
-const actorSheet = new ActorSheet(new Actor({ name: 'Some dude', type: 'character' }));
+const actorSheet = new ActorSheet(new Actor({ name: "Some dude", type: "character" }));
 expectType<Actor>(actorSheet.object);
 expectType<Actor>(actorSheet.actor);
 expectType<Actor>((await actorSheet.getData()).actor);

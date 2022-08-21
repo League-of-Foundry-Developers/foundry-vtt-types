@@ -27,7 +27,7 @@ declare abstract class BasePlaceableHUD<
   /**
    * Convenience access for the canvas layer which this HUD modifies
    */
-  get layer(): Object['layer'] | undefined;
+  get layer(): Object["layer"] | undefined;
 
   /**
    * Bind the HUD to a new PlaceableObject and display it
@@ -40,14 +40,14 @@ declare abstract class BasePlaceableHUD<
    */
   clear(): void;
 
-  override _render(...args: Parameters<Application<Options>['_render']>): Promise<void>;
+  override _render(...args: Parameters<Application<Options>["_render"]>): Promise<void>;
 
-  override getData(options?: Partial<Options>): ReturnType<Object['data']['toJSON']> & {
+  override getData(options?: Partial<Options>): ReturnType<Object["data"]["toJSON"]> & {
     id: string;
     classes: string;
     appId: number;
     isGM: boolean;
-    icons: typeof CONFIG['controlIcons'];
+    icons: typeof CONFIG["controlIcons"];
   };
 
   override setPosition({ left, top, width, height, scale }?: Partial<Application.Position>): void;
@@ -66,19 +66,19 @@ declare abstract class BasePlaceableHUD<
    * @param event - The originating click event
    * @internal
    */
-  protected _onToggleVisibility(event: JQuery.ClickEvent): Promise<Array<Object['document']>>;
+  protected _onToggleVisibility(event: JQuery.ClickEvent): Promise<Array<Object["document"]>>;
 
   /**
    * Toggle locked state of all controlled objects in the Layer
    * @param event - The originating click event
    * @internal
    */
-  protected _onToggleLocked(event: JQuery.ClickEvent): Promise<Array<Object['document']>>;
+  protected _onToggleLocked(event: JQuery.ClickEvent): Promise<Array<Object["document"]>>;
 
   /**
    * Handle sorting the z-order of the object
    * @param up    - Move the object upwards in the vertical stack?
    * @param event - The originating mouse click event
    */
-  protected _onSort(up: boolean, event: JQuery.ClickEvent): Promise<Array<Object['document']>>;
+  protected _onSort(up: boolean, event: JQuery.ClickEvent): Promise<Array<Object["document"]>>;
 }

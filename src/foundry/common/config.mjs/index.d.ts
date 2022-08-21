@@ -1,1 +1,1 @@
-export { ReleaseData } from './releaseData';
+export { ReleaseData } from "./releaseData";

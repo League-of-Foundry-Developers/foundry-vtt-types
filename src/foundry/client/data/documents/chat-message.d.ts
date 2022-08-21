@@ -2,9 +2,9 @@ import {
   ConfiguredDocumentClass,
   ConfiguredObjectClassForName,
   ToObjectFalseType
-} from '../../../../types/helperTypes';
-import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
-import type { ChatMessageDataConstructorData } from '../../../common/data/data.mjs/chatMessageData';
+} from "../../../../types/helperTypes";
+import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
+import type { ChatMessageDataConstructorData } from "../../../common/data/data.mjs/chatMessageData";
 
 declare global {
   /**
@@ -86,14 +86,14 @@ declare global {
      */
     static applyRollMode(
       chatData: ChatMessageDataConstructorData,
-      rollMode: keyof typeof CONFIG.Dice.rollModes | 'roll'
+      rollMode: keyof typeof CONFIG.Dice.rollModes | "roll"
     ): ChatMessageDataConstructorData;
 
     /**
      * Update the data of a ChatMessage instance to apply a requested rollMode
      * @param rollMode - The rollMode preference to apply to this message data
      */
-    applyRollMode(rollMode: keyof typeof CONFIG.Dice.rollModes | 'roll'): void;
+    applyRollMode(rollMode: keyof typeof CONFIG.Dice.rollModes | "roll"): void;
 
     /**
      * Attempt to determine who is the speaking character (and token) for a certain Chat Message
@@ -105,7 +105,7 @@ declare global {
      */
     static getSpeaker(
       options?: ChatMessage.GetSpeakerOptions | undefined
-    ): foundry.data.ChatMessageData['speaker']['_source'];
+    ): foundry.data.ChatMessageData["speaker"]["_source"];
 
     /**
      * A helper to prepare the speaker object based on a target TokenDocument
@@ -121,7 +121,7 @@ declare global {
 
       /** The name of the speaker to display */
       alias?: string | undefined;
-    }): foundry.data.ChatMessageData['speaker']['_source'];
+    }): foundry.data.ChatMessageData["speaker"]["_source"];
     /**
      * A helper to prepare the speaker object based on a target TokenDocument
      *
@@ -133,11 +133,11 @@ declare global {
       alias
     }: {
       /** The TokenDocument of the speaker */
-      token: InstanceType<ConfiguredObjectClassForName<'Token'>>;
+      token: InstanceType<ConfiguredObjectClassForName<"Token">>;
 
       /** The name of the speaker to display */
       alias?: string | undefined;
-    }): foundry.data.ChatMessageData['speaker']['_source'];
+    }): foundry.data.ChatMessageData["speaker"]["_source"];
 
     /**
      * A helper to prepare the speaker object based on a target Actor
@@ -157,7 +157,7 @@ declare global {
 
       /** The name of the speaker to display */
       alias?: string | undefined;
-    }): foundry.data.ChatMessageData['speaker']['_source'];
+    }): foundry.data.ChatMessageData["speaker"]["_source"];
 
     /**
      * A helper to prepare the speaker object based on a target User
@@ -177,14 +177,14 @@ declare global {
 
       /** The name of the speaker to display */
       alias?: string | undefined;
-    }): foundry.data.ChatMessageData['speaker']['_source'];
+    }): foundry.data.ChatMessageData["speaker"]["_source"];
 
     /**
      * Obtain an Actor instance which represents the speaker of this message (if any)
      * @param speaker - The speaker data object
      */
     static getSpeakerActor(
-      speaker: foundry.data.ChatMessageData['speaker']['_source']
+      speaker: foundry.data.ChatMessageData["speaker"]["_source"]
     ): InstanceType<ConfiguredDocumentClass<typeof Actor>> | null;
 
     /**
@@ -219,13 +219,13 @@ declare global {
     ): Promise<void>;
 
     protected override _onCreate(
-      data: foundry.data.ChatMessageData['_source'],
+      data: foundry.data.ChatMessageData["_source"],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
     protected override _onUpdate(
-      data: DeepPartial<foundry.data.ChatMessageData['_source']>,
+      data: DeepPartial<foundry.data.ChatMessageData["_source"]>,
       options: DocumentModificationOptions,
       userId: string
     ): void;

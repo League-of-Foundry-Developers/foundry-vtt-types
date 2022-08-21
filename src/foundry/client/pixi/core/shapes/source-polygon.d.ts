@@ -60,7 +60,7 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
    */
   static benchmark(
     iterations: number,
-    ...args: Parameters<typeof PointSourcePolygon['create']>
+    ...args: Parameters<typeof PointSourcePolygon["create"]>
   ): ReturnType<typeof foundry.utils.benchmark>;
 
   /**
@@ -72,8 +72,8 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
    */
   static create(
     origin: Point,
-    config?: Parameters<PointSourcePolygon['initialize']>[1] | undefined
-  ): ReturnType<PointSourcePolygon['compute']>;
+    config?: Parameters<PointSourcePolygon["initialize"]>[1] | undefined
+  ): ReturnType<PointSourcePolygon["compute"]>;
 
   /**
    * Compute the polygon using the origin and configuration options.
@@ -106,5 +106,5 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
  */
 declare function benchmarkSight(
   n: number,
-  ...args: Parameters<typeof ClockwiseSweepPolygon['benchmark']>
+  ...args: Parameters<typeof ClockwiseSweepPolygon["benchmark"]>
 ): Promise<void>;

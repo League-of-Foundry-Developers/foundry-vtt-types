@@ -49,7 +49,7 @@ declare global {
      */
     constructor(
       config: Tour.Config,
-      { id, namespace }?: { id?: Tour.Config['id']; namespace?: Tour.Config['namespace'] }
+      { id, namespace }?: { id?: Tour.Config["id"]; namespace?: Tour.Config["namespace"] }
     );
     /**
      * The configuration of the tour. Cloned to avoid mutating the original configuration.
@@ -57,9 +57,9 @@ declare global {
     config: Tour.Config;
 
     static STATUS: Readonly<{
-      UNSTARTED: 'unstarted';
-      IN_PROGRESS: 'in-progress';
-      COMPLETED: 'completed';
+      UNSTARTED: "unstarted";
+      IN_PROGRESS: "in-progress";
+      COMPLETED: "completed";
     }>;
 
     /**

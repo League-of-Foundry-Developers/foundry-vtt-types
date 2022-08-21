@@ -1,7 +1,7 @@
-import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
-import { DocumentData } from '../../abstract/module.mjs';
-import { documents } from '../../module.mjs';
-import * as fields from '../fields.mjs';
+import { FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes";
+import { DocumentData } from "../../abstract/module.mjs";
+import { documents } from "../../module.mjs";
+import * as fields from "../fields.mjs";
 
 interface TileOcclusionSchema extends DocumentSchema {
   mode: FieldReturnType<
@@ -9,7 +9,7 @@ interface TileOcclusionSchema extends DocumentSchema {
     {
       default: typeof foundry.CONST.TILE_OCCLUSION_MODES.FADE;
       validate: (m: unknown) => m is foundry.CONST.TILE_OCCLUSION_MODES;
-      validationError: 'Invalid {name} {field} which must be a value in CONST.TILE_OCCLUSION_MODES';
+      validationError: "Invalid {name} {field} which must be a value in CONST.TILE_OCCLUSION_MODES";
     }
   >;
   alpha: FieldReturnType<fields.AlphaField, { default: 0 }>;

@@ -25,7 +25,7 @@ declare class GridLayer extends CanvasLayer<GridLayer.LayerOptions> {
   /**
    * @remarks This is not overridden in foundry but reflects the real behavior.
    */
-  static get instance(): Canvas['grid'];
+  static get instance(): Canvas["grid"];
 
   /**
    * @defaultValue
@@ -51,12 +51,12 @@ declare class GridLayer extends CanvasLayer<GridLayer.LayerOptions> {
   /**
    * Get grid unit width
    */
-  get w(): BaseGrid['w'];
+  get w(): BaseGrid["w"];
 
   /**
    * Get grid unit height
    */
-  get h(): BaseGrid['h'];
+  get h(): BaseGrid["h"];
 
   /**
    * A boolean flag for whether the current grid is hexagonal
@@ -152,7 +152,7 @@ declare class GridLayer extends CanvasLayer<GridLayer.LayerOptions> {
    * @param name    - The name for the referenced highlight layer
    * @param options - Options for the grid position that should be highlighted
    */
-  highlightPosition(name: string, options?: Parameters<BaseGrid['highlightGridPosition']>[1]): false | void;
+  highlightPosition(name: string, options?: Parameters<BaseGrid["highlightGridPosition"]>[1]): false | void;
 
   /**
    * Test if a specific row and column position is a neighboring location to another row and column coordinate
@@ -166,13 +166,13 @@ declare class GridLayer extends CanvasLayer<GridLayer.LayerOptions> {
 
 declare namespace GridLayer {
   interface LayerOptions extends CanvasLayer.LayerOptions {
-    name: 'grid';
+    name: "grid";
     zIndex: 30;
   }
 
   interface Segment {
     ray: Ray;
-    label?: Ruler['labels']['children'][number];
+    label?: Ruler["labels"]["children"][number];
   }
 }
 
@@ -185,7 +185,7 @@ interface DrawOptions {
   /**
    * @defaultValue `null`
    */
-  dimensions?: Canvas['dimensions'] | null;
+  dimensions?: Canvas["dimensions"] | null;
 
   /**
    * @defaultValue `null`

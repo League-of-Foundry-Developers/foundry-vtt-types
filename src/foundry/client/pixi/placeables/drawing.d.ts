@@ -1,5 +1,5 @@
-import { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
+import { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
+import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
 declare global {
   /**
@@ -57,7 +57,7 @@ declare global {
      */
     protected _fixedPoints: Array<[x: number, y: number]>;
 
-    static override embeddedName: 'Drawing';
+    static override embeddedName: "Drawing";
 
     /**
      * The rate at which points are sampled (in milliseconds) during a freehand drawing workflow
@@ -184,18 +184,18 @@ declare global {
      */
     protected _onDrawingTextKeydown(event: KeyboardEvent): void;
 
-    protected override _onUpdate(data: DeepPartial<foundry.data.DrawingData['_source']>): void;
+    protected override _onUpdate(data: DeepPartial<foundry.data.DrawingData["_source"]>): void;
 
     /**
      * @param event - unused
      */
-    protected override _canControl(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
+    protected override _canControl(user: InstanceType<ConfiguredDocumentClassForName<"User">>, event?: any): boolean;
 
     /**
      * @param user  - unused
      * @param event - unused
      */
-    protected override _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
+    protected override _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<"User">>, event?: any): boolean;
 
     override activateListeners(): void;
 
@@ -254,7 +254,7 @@ declare global {
      */
     protected _onHandleDragDrop(
       event: PIXI.InteractionEvent
-    ): ReturnType<InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>['update']>;
+    ): ReturnType<InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>["update"]>;
 
     /**
      * Handle cancellation of a drag event for one of the resizing handles
@@ -270,10 +270,10 @@ declare global {
      * @internal
      */
     protected _rescaleDimensions(
-      original: Pick<foundry.data.DrawingData['_source'], 'x' | 'y' | 'points' | 'width' | 'height'>,
+      original: Pick<foundry.data.DrawingData["_source"], "x" | "y" | "points" | "width" | "height">,
       dx: number,
       dy: number
-    ): Pick<foundry.data.DrawingData['_source'], 'x' | 'y' | 'width' | 'height' | 'points'>;
+    ): Pick<foundry.data.DrawingData["_source"], "x" | "y" | "width" | "height" | "points">;
 
     /**
      * Adjust the location, dimensions, and points of the Drawing before committing the change
@@ -283,7 +283,7 @@ declare global {
      * @internal
      */
     static normalizeShape(
-      data: Pick<foundry.data.DrawingData['_source'], 'x' | 'y' | 'width' | 'height' | 'points'>
-    ): Pick<foundry.data.DrawingData['_source'], 'x' | 'y' | 'width' | 'height' | 'points'>;
+      data: Pick<foundry.data.DrawingData["_source"], "x" | "y" | "width" | "height" | "points">
+    ): Pick<foundry.data.DrawingData["_source"], "x" | "y" | "width" | "height" | "points">;
   }
 }

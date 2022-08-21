@@ -1,11 +1,11 @@
-import { expectAssignable, expectType } from 'tsd';
-import { BaseAmbientLight } from '../../../../src/foundry/common/documents.mjs';
+import { expectAssignable, expectType } from "tsd";
+import { BaseAmbientLight } from "../../../../src/foundry/common/documents.mjs";
 
 const app = new (class extends FormApplication<FormApplicationOptions, FormApplication.Data<{ foo: string }>> {
   protected _updateObject(): Promise<unknown> {
     return Promise.resolve(undefined);
   }
-})({ foo: 'bar' });
+})({ foo: "bar" });
 
 expectAssignable<Application>(app);
 expectType<boolean>(app.isEditable);

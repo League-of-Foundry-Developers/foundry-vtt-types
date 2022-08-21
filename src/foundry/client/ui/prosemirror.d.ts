@@ -1,8 +1,8 @@
-import type { Step } from 'prosemirror-transform';
-import type { EditorView } from 'prosemirror-view';
-import type { EditorState, Plugin } from 'prosemirror-state';
-import type { ClientDocumentMixin } from '../data/abstract/client-document';
-import type { Socket } from 'socket.io-client';
+import type { Step } from "prosemirror-transform";
+import type { EditorView } from "prosemirror-view";
+import type { EditorState, Plugin } from "prosemirror-state";
+import type { ClientDocumentMixin } from "../data/abstract/client-document";
+import type { Socket } from "socket.io-client";
 
 declare global {
   interface ProseMirrorHistory {
@@ -115,7 +115,7 @@ declare global {
       options?: Partial<ProseMirrorEditor.CreateOptions> &
         (
           | { collaborate?: false }
-          | ({ collaborate: true } & Pick<ProseMirrorEditor.CreateOptions, 'document' | 'fieldName'>)
+          | ({ collaborate: true } & Pick<ProseMirrorEditor.CreateOptions, "document" | "fieldName">)
         )
     ): Promise<ProseMirrorEditor>;
 

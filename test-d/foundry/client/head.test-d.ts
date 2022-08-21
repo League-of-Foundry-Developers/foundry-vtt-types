@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 expectType<Game | {}>(game);
 expectType<io.Socket | null>(socket);

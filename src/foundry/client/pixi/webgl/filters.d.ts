@@ -11,19 +11,19 @@ declare abstract class AbstractBaseMaskFilter extends PIXI.Filter {
    * The fragment shader which renders this filter.
    * A subclass of AbstractBaseMaskFilter must implement the fragmentShader(channel) static field.
    */
-  static fragmentShader: ((channel: 'r' | 'g' | 'b') => string) | null;
+  static fragmentShader: ((channel: "r" | "g" | "b") => string) | null;
 
   /**
    * A factory method for creating the filter using its defined default values
    * @param defaultUniforms - Initial uniforms provided to the filter
    *                          (default: `{}`)
    * @param channel         - A color channel to target for masking.
-   *                          (default: `'r'`)
+   *                          (default: `"r"`)
    */
   static create<T extends AbstractBaseMaskFilter>(
     this: ConstructorOf<T>,
     defaultUniforms?: ConstructorParameters<typeof PIXI.Filter>[2],
-    channel?: 'r' | 'g' | 'b'
+    channel?: "r" | "g" | "b"
   ): T;
 
   override apply(
@@ -41,16 +41,16 @@ declare abstract class AbstractBaseMaskFilter extends PIXI.Filter {
  * Contributed by SecretFire#4843
  */
 declare class InverseOcclusionMaskFilter extends AbstractBaseMaskFilter {
-  static fragmentShader(channel: 'r' | 'g' | 'b'): string;
+  static fragmentShader(channel: "r" | "g" | "b"): string;
 
   /**
    * @param defaultUniforms - (default: `{}`)
-   * @param channel  - (default `'r'`)
+   * @param channel  - (default `"r"`)
    */
   static create<T extends InverseOcclusionMaskFilter>(
     this: ConstructorOf<T>,
     defaultUniforms?: ConstructorParameters<typeof PIXI.Filter>[2],
-    channel?: 'r' | 'g' | 'b'
+    channel?: "r" | "g" | "b"
   ): T;
 }
 

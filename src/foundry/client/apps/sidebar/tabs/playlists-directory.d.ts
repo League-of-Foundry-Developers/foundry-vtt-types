@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass, ToObjectFalseType } from '../../../../../types/helperTypes';
+import type { ConfiguredDocumentClass, ToObjectFalseType } from "../../../../../types/helperTypes";
 
 declare global {
   /**
@@ -6,7 +6,7 @@ declare global {
    * @typeParam Options - The type of the options object
    */
   class PlaylistDirectory<Options extends SidebarDirectory.Options = SidebarDirectory.Options> extends SidebarDirectory<
-    'Playlist',
+    "Playlist",
     Options
   > {
     constructor(options?: Partial<Options>);
@@ -45,10 +45,10 @@ declare global {
      */
     protected _playingSoundsData?: PlaylistDirectory.Data.Sound[] | undefined;
 
-    static override documentName: 'Playlist';
+    static override documentName: "Playlist";
 
     /**
-     * @defaultValue `'templates/sidebar/playlist-partial.html'`
+     * @defaultValue `"templates/sidebar/playlist-partial.html"`
      */
     static override documentPartial: string;
 
@@ -77,10 +77,10 @@ declare global {
     get playing(): InstanceType<ConfiguredDocumentClass<typeof Playlist>>[];
 
     /**
-     * Whether the 'currently playing' element is pinned to the top or bottom of the display.
+     * Whether the "currently playing" element is pinned to the top or bottom of the display.
      * @internal
      */
-    protected get _playingLocation(): 'top' | 'bottom';
+    protected get _playingLocation(): "top" | "bottom";
 
     override getData(options?: Partial<Options>): PlaylistDirectory.Data | Promise<PlaylistDirectory.Data>;
 
@@ -262,14 +262,14 @@ declare global {
       interfaceModifier: number;
       volumeExpanded: boolean;
       currentlyPlaying: {
-        class: `location-${'top' | 'bottom'}`;
+        class: `location-${"top" | "bottom"}`;
         location: {
           top: boolean;
           bottom: boolean;
         };
         pin: {
           label: string;
-          caret: 'down' | 'up';
+          caret: "down" | "up";
         };
       };
     }

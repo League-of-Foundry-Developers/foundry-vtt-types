@@ -3,10 +3,10 @@ import {
   ConfiguredFlags,
   FieldReturnType,
   PropertiesToSource
-} from '../../../../types/helperTypes';
-import { DocumentData } from '../../abstract/module.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
+} from "../../../../types/helperTypes";
+import { DocumentData } from "../../abstract/module.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
 
 interface MeasuredTemplateDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -16,7 +16,7 @@ interface MeasuredTemplateDataSchema extends DocumentSchema {
     required: true;
     default: typeof foundry.CONST.MEASURED_TEMPLATE_TYPES.CIRCLE;
     validate: (t: unknown) => t is typeof foundry.CONST.MEASURED_TEMPLATE_TYPES;
-    validationError: 'Invalid {name} {field} which must be a value in CONST.MEASURED_TEMPLATE_TYPES';
+    validationError: "Invalid {name} {field} which must be a value in CONST.MEASURED_TEMPLATE_TYPES";
   };
   x: fields.RequiredNumber;
   y: fields.RequiredNumber;
@@ -24,8 +24,8 @@ interface MeasuredTemplateDataSchema extends DocumentSchema {
   direction: FieldReturnType<fields.AngleField, { default: 0 }>;
   angle: fields.AngleField;
   width: FieldReturnType<fields.RequiredPositiveNumber, { default: 1 }>;
-  borderColor: FieldReturnType<fields.ColorField, { required: true; default: '#000000' }>;
-  fillColor: FieldReturnType<fields.ColorField, { required: true; default: '#FF0000' }>;
+  borderColor: FieldReturnType<fields.ColorField, { required: true; default: "#000000" }>;
+  fillColor: FieldReturnType<fields.ColorField, { required: true; default: "#FF0000" }>;
   texture: fields.VideoField;
   flags: fields.ObjectField;
 }
@@ -83,13 +83,13 @@ interface MeasuredTemplateDataProperties {
 
   /**
    * A color string used to tint the border of the template shape
-   * @defaultValue `'#000000'`
+   * @defaultValue `"#000000"`
    */
   borderColor: string | null;
 
   /**
    * A color string used to tint the fill of the template shape
-   * @defaultValue `'#FF0000'`
+   * @defaultValue `"#FF0000"`
    */
   fillColor: string | null;
 
@@ -102,7 +102,7 @@ interface MeasuredTemplateDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'MeasuredTemplate'>;
+  flags: ConfiguredFlags<"MeasuredTemplate">;
 }
 
 interface MeasuredTemplateDataConstructorData {
@@ -158,13 +158,13 @@ interface MeasuredTemplateDataConstructorData {
 
   /**
    * A color string used to tint the border of the template shape
-   * @defaultValue `'#000000'`
+   * @defaultValue `"#000000"`
    */
   borderColor?: string | null | undefined;
 
   /**
    * A color string used to tint the fill of the template shape
-   * @defaultValue `'#FF0000'`
+   * @defaultValue `"#FF0000"`
    */
   fillColor?: string | null | undefined;
 
@@ -177,7 +177,7 @@ interface MeasuredTemplateDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'MeasuredTemplate'> | null | undefined;
+  flags?: ConfiguredFlags<"MeasuredTemplate"> | null | undefined;
 }
 
 type MeasuredTemplateDataSource = PropertiesToSource<MeasuredTemplateDataProperties>;

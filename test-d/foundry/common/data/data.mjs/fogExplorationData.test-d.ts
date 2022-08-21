@@ -1,17 +1,17 @@
-import { expectError, expectType } from 'tsd';
+import { expectError, expectType } from "tsd";
 
 declare const scene: Scene;
 declare const user: User;
 
 new foundry.data.FogExplorationData({});
 new foundry.data.FogExplorationData({
-  explored: 'data:image/png;base64,[…]',
+  explored: "data:image/png;base64,[…]",
   positions: {
     1350_1050: { radius: 0, limit: false }
   },
-  scene: 'Wr9wnTV5otwMKAil',
+  scene: "Wr9wnTV5otwMKAil",
   timestamp: 1626341030569,
-  user: 'NlBhrPq62QrMErNh'
+  user: "NlBhrPq62QrMErNh"
 });
 new foundry.data.FogExplorationData({
   scene: scene

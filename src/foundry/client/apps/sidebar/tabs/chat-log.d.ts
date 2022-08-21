@@ -1,5 +1,5 @@
-import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
-import type { ChatMessageDataConstructorData } from '../../../../common/data/data.mjs/chatMessageData';
+import { ConfiguredDocumentClass } from "../../../../../types/helperTypes";
+import type { ChatMessageDataConstructorData } from "../../../../common/data/data.mjs/chatMessageData";
 
 declare global {
   interface ChatLogOptions extends ApplicationOptions {
@@ -120,7 +120,7 @@ declare global {
      *          is an exception: Its third value is the target user name (optionally in brackets) and the fourth value is
      *          the message text.
      */
-    static parse<S extends string>(message: S): [ChatLog.Command, RegExpMatchArray] | ['none', [S, '', S]];
+    static parse<S extends string>(message: S): [ChatLog.Command, RegExpMatchArray] | ["none", [S, "", S]];
 
     /**
      * Post a single chat message to the log
@@ -309,26 +309,26 @@ declare global {
 
   namespace ChatLog {
     type Command =
-      | 'roll'
-      | 'gmroll'
-      | 'blindroll'
-      | 'selfroll'
-      | 'publicroll'
-      | 'ic'
-      | 'ooc'
-      | 'emote'
-      | 'whisper'
-      | 'reply'
-      | 'gm'
-      | 'players'
-      | 'macro'
-      | 'invalid'
-      | 'none';
+      | "roll"
+      | "gmroll"
+      | "blindroll"
+      | "selfroll"
+      | "publicroll"
+      | "ic"
+      | "ooc"
+      | "emote"
+      | "whisper"
+      | "reply"
+      | "gm"
+      | "players"
+      | "macro"
+      | "invalid"
+      | "none";
 
     interface Data {
       user: InstanceType<ConfiguredDocumentClass<typeof User>>;
       rollMode: keyof CONFIG.Dice.RollModes;
-      rollModes: typeof CONFIG['Dice']['rollModes'];
+      rollModes: typeof CONFIG["Dice"]["rollModes"];
       isStream: boolean;
     }
 

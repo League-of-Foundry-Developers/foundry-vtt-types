@@ -1,6 +1,6 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
-expectType<'Drawing'>(Drawing.embeddedName);
+expectType<"Drawing">(Drawing.embeddedName);
 
 const drawing = new Drawing(new DrawingDocument());
 

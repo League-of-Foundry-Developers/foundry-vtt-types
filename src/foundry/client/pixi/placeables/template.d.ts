@@ -1,5 +1,5 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
-import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
+import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
 declare global {
   /**
@@ -40,7 +40,7 @@ declare global {
      */
     protected _borderThickness: number;
 
-    static override embeddedName: 'MeasuredTemplate';
+    static override embeddedName: "MeasuredTemplate";
 
     override get bounds(): Rectangle;
 
@@ -61,7 +61,7 @@ declare global {
 
     override draw(): Promise<this>;
 
-    override destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
+    override destroy(options?: Parameters<PlaceableObject["destroy"]>[0]): void;
 
     /**
      * Draw the HUD container which provides an interface for managing this template
@@ -127,7 +127,7 @@ declare global {
     protected override _canView(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
     protected override _onUpdate(
-      data: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>['data']['_source']>,
+      data: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>["data"]["_source"]>,
       options?: DocumentModificationOptions,
       userId?: string
     ): void;
@@ -148,6 +148,6 @@ declare global {
       ruler?: PreciseText;
     }
 
-    type InitializedObjectHUD = RequiredProps<ObjectHUD, 'icon' | 'ruler'>;
+    type InitializedObjectHUD = RequiredProps<ObjectHUD, "icon" | "ruler">;
   }
 }

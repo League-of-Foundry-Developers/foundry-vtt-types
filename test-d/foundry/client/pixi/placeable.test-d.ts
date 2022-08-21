@@ -1,8 +1,8 @@
-import type { ConfiguredDocumentClass } from '../../../../src/types/helperTypes';
+import type { ConfiguredDocumentClass } from "../../../../src/types/helperTypes";
 
-import { expectAssignable, expectType } from 'tsd';
-import '../../../../index';
-import { Document } from '../../../../src/foundry/common/abstract/module.mjs.js';
+import { expectAssignable, expectType } from "tsd";
+import "../../../../index";
+import { Document } from "../../../../src/foundry/common/abstract/module.mjs.js";
 
 class EmbeddedOfSceneDocument extends Document<any, InstanceType<ConfiguredDocumentClass<typeof Scene>>> {
   get sheet(): DocumentSheet {
@@ -31,7 +31,7 @@ expectType<DocumentSheet>(placeable.sheet);
 
 class ConcretePlaceableObject extends PlaceableObject<EmbeddedOfSceneDocument> {
   get bounds(): NormalizedRectangle {
-    throw new Error('Not implemented');
+    throw new Error("Not implemented");
   }
   async draw() {
     return this;

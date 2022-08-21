@@ -1,16 +1,16 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
-import { DocumentMetadata } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import * as data from '../data/data.mjs';
-import { BaseScene } from './baseScene';
+import { ConfiguredDocumentClass } from "../../../types/helperTypes";
+import { DocumentMetadata } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import * as data from "../data/data.mjs";
+import { BaseScene } from "./baseScene";
 
 type AmbientLightMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'AmbientLight';
-    collection: 'lights';
-    label: 'DOCUMENT.AmbientLight';
-    labelPlural: 'DOCUMENT.AmbientLights';
+    name: "AmbientLight";
+    collection: "lights";
+    label: "DOCUMENT.AmbientLight";
+    labelPlural: "DOCUMENT.AmbientLights";
     isEmbedded: true;
   }
 >;

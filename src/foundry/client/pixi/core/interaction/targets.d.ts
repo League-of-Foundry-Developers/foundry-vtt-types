@@ -1,5 +1,5 @@
-import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
-import { ObjectClass } from '../../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from "../../../../../types/helperTypes";
+import { ObjectClass } from "../../../../../types/helperTypes";
 
 interface SetReplacementMembers<T> {
   add(value: T): void;
@@ -7,7 +7,7 @@ interface SetReplacementMembers<T> {
   clear(): void;
 }
 
-type PatchedSet<T> = Omit<Set<T>, 'add' | 'delete' | 'clear'> & SetReplacementMembers<T>;
+type PatchedSet<T> = Omit<Set<T>, "add" | "delete" | "clear"> & SetReplacementMembers<T>;
 
 interface PatchedSetConstructor {
   new <T = any>(values?: readonly T[] | null): PatchedSet<T>;
@@ -22,7 +22,7 @@ declare global {
    * @see User#targets
    */
   class UserTargets extends Set<InstanceType<ObjectClass<typeof TokenDocument>>> {
-    constructor(user: UserTargets['user']);
+    constructor(user: UserTargets["user"]);
 
     user: InstanceType<ConfiguredDocumentClass<typeof User>>;
 

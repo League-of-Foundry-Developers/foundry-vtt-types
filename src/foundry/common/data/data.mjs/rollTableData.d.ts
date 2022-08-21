@@ -3,11 +3,11 @@ import {
   ConfiguredFlags,
   FieldReturnType,
   PropertiesToSource
-} from '../../../../types/helperTypes';
-import EmbeddedCollection from '../../abstract/embedded-collection.mjs';
-import { DocumentData } from '../../abstract/module.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
+} from "../../../../types/helperTypes";
+import EmbeddedCollection from "../../abstract/embedded-collection.mjs";
+import { DocumentData } from "../../abstract/module.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
 
 interface RollTableDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -91,7 +91,7 @@ interface RollTableDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'RollTable'>;
+  flags: ConfiguredFlags<"RollTable">;
 }
 
 interface RollTableDataConstructorData {
@@ -159,7 +159,7 @@ interface RollTableDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'RollTable'> | null | undefined;
+  flags?: ConfiguredFlags<"RollTable"> | null | undefined;
 }
 
 type RollTableDataSource = PropertiesToSource<RollTableDataProperties>;
@@ -180,7 +180,7 @@ export class RollTableData extends DocumentData<
   /**
    * The default icon used for newly created Macro documents
    * @remarks Incorrect description, really for the RollTables.
-   * @defaultValue `'icons/svg/d20-grey.svg'`
+   * @defaultValue `"icons/svg/d20-grey.svg"`
    */
   static DEFAULT_ICON: string;
 }

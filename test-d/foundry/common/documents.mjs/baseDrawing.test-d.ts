@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 expectType<Promise<StoredDocument<DrawingDocument> | undefined>>(foundry.documents.BaseDrawing.create({}));
 expectType<Promise<StoredDocument<DrawingDocument>[]>>(foundry.documents.BaseDrawing.createDocuments([]));

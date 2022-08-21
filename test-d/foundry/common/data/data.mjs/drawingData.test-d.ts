@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 expectType<foundry.data.DrawingData>(new foundry.data.DrawingData());
 expectType<foundry.data.DrawingData>(new foundry.data.DrawingData({}));
@@ -66,10 +66,10 @@ expectType<foundry.data.DrawingData>(
     author: new User(),
     bezierFactor: 0,
     fillAlpha: 0.5,
-    fillColor: '#FFFFFF',
+    fillColor: "#FFFFFF",
     fillType: 0,
     flags: {},
-    fontFamily: 'Signika',
+    fontFamily: "Signika",
     fontSize: 48,
     height: 0,
     hidden: false,
@@ -77,16 +77,16 @@ expectType<foundry.data.DrawingData>(
     points: [],
     rotation: 0,
     strokeAlpha: 1,
-    strokeColor: '#FFFFFF',
+    strokeColor: "#FFFFFF",
     strokeWidth: 0,
-    text: 'Hello World',
-    textColor: '#FFFFFF',
-    texture: 'path/to/a/texture.png',
-    type: 'p',
+    text: "Hello World",
+    textColor: "#FFFFFF",
+    texture: "path/to/a/texture.png",
+    type: "p",
     width: 0,
     x: 0,
     y: 0,
     z: 0,
-    _id: 'NlBhrPq62QrMErNh'
+    _id: "NlBhrPq62QrMErNh"
   })
 );
