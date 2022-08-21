@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import type { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -37,7 +37,7 @@ declare global {
      * Handle changing the actor profile image by opening a FilePicker
      * @internal
      */
-    protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
+    protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker["browse"]>;
 
     /**
      * Save and execute the macro using the button on the configuration sheet
@@ -58,7 +58,7 @@ declare global {
     interface Data<Options extends DocumentSheetOptions>
       extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Macro>>, Options> {
       macroTypes: Array<ValueOf<typeof CONST.MACRO_TYPES>>;
-      macroScopes: typeof foundry.CONST['MACRO_SCOPES'];
+      macroScopes: typeof foundry.CONST["MACRO_SCOPES"];
     }
 
     type FormData = {

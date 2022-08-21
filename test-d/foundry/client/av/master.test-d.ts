@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 declare class CustomAVCLient extends AVClient {
   updateLocalStream(): Promise<void>;

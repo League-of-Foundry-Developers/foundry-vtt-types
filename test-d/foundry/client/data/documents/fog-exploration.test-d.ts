@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 declare const pointSource: PointSource;
 declare const scene: Scene;

@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes.js';
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.js";
 
 declare global {
   /**
@@ -10,8 +10,8 @@ declare global {
   class CardsConfig<
     Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends CardsConfig.Data<Options> = CardsConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Cards'>>> {
-    constructor(object: ConfiguredDocumentClassForName<'Cards'>, options: Options);
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<"Cards">>> {
+    constructor(object: ConfiguredDocumentClassForName<"Cards">, options: Options);
 
     /**
      * The sorting mode used to display the sheet, "standard" if true, otherwise "shuffled"
@@ -71,8 +71,8 @@ declare global {
      */
     protected _onSortCard(
       event: DragEvent,
-      card: InstanceType<ConfiguredDocumentClassForName<'Card'>>
-    ): ReturnType<InstanceType<ConfiguredDocumentClassForName<'Cards'>>['updateEmbeddedDocuments']>;
+      card: InstanceType<ConfiguredDocumentClassForName<"Card">>
+    ): ReturnType<InstanceType<ConfiguredDocumentClassForName<"Cards">>["updateEmbeddedDocuments"]>;
   }
 
   /**
@@ -119,8 +119,8 @@ declare global {
 
   namespace CardsConfig {
     interface Data<Options extends DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Cards'>>, Options> {
-      cards: InstanceType<ConfiguredDocumentClassForName<'Card'>>[];
+      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<"Cards">>, Options> {
+      cards: InstanceType<ConfiguredDocumentClassForName<"Card">>[];
       types: Record<string, string>;
       inCompendium: boolean;
     }

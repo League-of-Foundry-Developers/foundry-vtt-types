@@ -1,4 +1,4 @@
-import { expectError, expectType } from 'tsd';
+import { expectError, expectType } from "tsd";
 
 declare const wall: Wall;
 

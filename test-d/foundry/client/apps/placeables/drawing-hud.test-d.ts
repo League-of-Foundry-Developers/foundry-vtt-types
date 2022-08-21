@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 declare const drawing: Drawing;
 
@@ -7,7 +7,7 @@ expectType<PlaceablesLayer<any> | undefined>(hud.layer);
 expectType<Drawing | undefined>(hud.object);
 hud.bind(drawing);
 expectType<
-  ReturnType<foundry.data.DrawingData['toJSON']> & {
+  ReturnType<foundry.data.DrawingData["toJSON"]> & {
     id: string;
     classes: string;
     appId: number;

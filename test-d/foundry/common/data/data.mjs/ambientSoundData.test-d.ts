@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 expectType<foundry.data.AmbientSoundData>(new foundry.data.AmbientSoundData());
 expectType<foundry.data.AmbientSoundData>(new foundry.data.AmbientSoundData({}));
@@ -11,7 +11,7 @@ expectType<foundry.data.AmbientSoundData>(
     radius: 100,
     darkness: { min: 10, max: 90 },
     easing: true,
-    path: 'path/to/file',
+    path: "path/to/file",
     repeat: true,
     volume: 100
   })

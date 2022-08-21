@@ -20,14 +20,14 @@ declare class SortingHelpers {
    * @param siblings   - The sorted Array of siblings which share the same sorted container
    *                     (default: `[]`)
    * @param sortKey    - The name of the data property within the source object which defines the sort key
-   *                     (default: `'sort'`)
+   *                     (default: `"sort"`)
    * @param sortBefore - Whether to sort before the target (if true) or after (if false)
    *                     (default: `true`)
    * @typeParam T      - the type of the source and target object
    *
    * @returns An Array of updates for the caller of the helper function to perform
    */
-  static performIntegerSort<T, SortKey extends string = 'sort'>(
+  static performIntegerSort<T, SortKey extends string = "sort">(
     source: T,
     {
       target,
@@ -49,7 +49,7 @@ declare class SortingHelpers {
 
       /**
        * The name of the data property within the source object which defines the sort key
-       * @defaultValue `'sort'`
+       * @defaultValue `"sort"`
        */
       sortKey?: SortKey;
 

@@ -13,13 +13,13 @@ interface SearchFilterConfiguration {
   /**
    * A callback function which executes when the filter changes.
    */
-  callback?: SearchFilter['callback'];
+  callback?: SearchFilter["callback"];
 
   /**
    * The initial value of the search query.
    * @defaultValue `""`
    */
-  initial?: SearchFilter['query'] | undefined;
+  initial?: SearchFilter["query"] | undefined;
 
   /**
    * The number of milliseconds to wait for text input before processing.
@@ -82,7 +82,7 @@ declare class SearchFilter {
    * A debounced function which applies the search filtering
    * @internal
    */
-  protected _filter: (...args: Parameters<this['callback']>) => void;
+  protected _filter: (...args: Parameters<this["callback"]>) => void;
 
   /**
    * Bind the SearchFilter controller to an HTML application

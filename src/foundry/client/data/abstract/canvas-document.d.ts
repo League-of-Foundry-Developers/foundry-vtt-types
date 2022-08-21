@@ -1,6 +1,6 @@
-import { ConstructorDataType } from '../../../../types/helperTypes';
-import { ContextType, DocumentModificationOptions } from '../../../common/abstract/document.mjs';
-import { ClientDocumentMixin } from './client-document';
+import { ConstructorDataType } from "../../../../types/helperTypes";
+import { ContextType, DocumentModificationOptions } from "../../../common/abstract/document.mjs";
+import { ClientDocumentMixin } from "./client-document";
 
 declare global {
   // TODO: Replace ConstructorOf<…> with DocumentConstructor once the problem with circular reference has been solved
@@ -19,7 +19,7 @@ type CanvasDocumentConstructor<T extends ConstructorOf<foundry.abstract.Document
   };
 
 declare class CanvasDocumentMixin<T extends foundry.abstract.Document<any, any>> extends ClientDocumentMixin<T> {
-  constructor(data?: ConstructorDataType<T['data']>, context?: ContextType<T>);
+  constructor(data?: ConstructorDataType<T["data"]>, context?: ContextType<T>);
 
   /**
    * A reference to the PlaceableObject instance which represents this Embedded Document.
@@ -52,13 +52,13 @@ declare class CanvasDocumentMixin<T extends foundry.abstract.Document<any, any>>
   /**
    * @see abstract.Document#_onCreate
    */
-  protected _onCreate(data: T['data']['_source'], options: DocumentModificationOptions, userId: string): void;
+  protected _onCreate(data: T["data"]["_source"], options: DocumentModificationOptions, userId: string): void;
 
   /**
    * @see abstract.Document#_onUpdate
    */
   protected _onUpdate(
-    data: DeepPartial<T['data']['_source']>,
+    data: DeepPartial<T["data"]["_source"]>,
     options: DocumentModificationOptions,
     userId: string
   ): void;

@@ -1,8 +1,8 @@
-import type ProseMirrorPlugin from './plugin.mjs';
-import type { Plugin } from 'prosemirror-state';
-import type { ClientDocumentMixin } from '../client/data/abstract/client-document';
-import type { Schema, Slice } from 'prosemirror-model';
-import type { EditorView } from 'prosemirror-view';
+import type ProseMirrorPlugin from "./plugin.mjs";
+import type { Plugin } from "prosemirror-state";
+import type { ClientDocumentMixin } from "../client/data/abstract/client-document";
+import type { Schema, Slice } from "prosemirror-model";
+import type { EditorView } from "prosemirror-view";
 
 interface ProseMirrorContentLinkOptions {
   /** The parent document housing this editor. */

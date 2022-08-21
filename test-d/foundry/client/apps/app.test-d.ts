@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 expectType<ApplicationOptions>(Application.defaultOptions);
 
@@ -18,4 +18,4 @@ expectType<Promise<void>>(app.close({ force: false }));
 expectType<Promise<void>>(app.close());
 expectType<unknown>(app.render());
 expectType<unknown>(app.render(true));
-expectType<unknown>(app.render(false, { height: 'auto' }));
+expectType<unknown>(app.render(false, { height: "auto" }));

@@ -1,6 +1,6 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import type { Request } from '../../../common/abstract/backend.mjs.js';
-import type Document from '../../../common/abstract/document.mjs.js';
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
+import type { Request } from "../../../common/abstract/backend.mjs.js";
+import type Document from "../../../common/abstract/document.mjs.js";
 
 declare global {
   /**
@@ -16,7 +16,7 @@ declare global {
     protected override _getDocuments<T extends Document<any, any>>(
       documentClass: ConstructorOf<T>,
       request: Request,
-      user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+      user: InstanceType<ConfiguredDocumentClassForName<"User">>
     ): Promise<T[]>;
 
     /**
@@ -28,20 +28,20 @@ declare global {
       documentClass: ConstructorOf<T>,
       parent: T extends Document<any, infer U> ? U : never,
       request: Request,
-      user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+      user: InstanceType<ConfiguredDocumentClassForName<"User">>
     ): Promise<never>;
 
     protected override _createDocuments<T extends Document<any, any>>(
       documentClass: ConstructorOf<T>,
       request: Request,
-      user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+      user: InstanceType<ConfiguredDocumentClassForName<"User">>
     ): Promise<T[]>;
 
     protected override _createEmbeddedDocuments<T extends Document<any, any>>(
       documentClass: ConstructorOf<T>,
       parent: T extends Document<any, infer U> ? U : never,
       request: Request,
-      user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+      user: InstanceType<ConfiguredDocumentClassForName<"User">>
     ): Promise<T[]>;
 
     /**
@@ -56,8 +56,8 @@ declare global {
         pack,
         parent,
         user
-      }: Pick<Request, 'data' | 'pack' | 'parent' | 'options'> & {
-        user: InstanceType<ConfiguredDocumentClassForName<'User'>>;
+      }: Pick<Request, "data" | "pack" | "parent" | "options"> & {
+        user: InstanceType<ConfiguredDocumentClassForName<"User">>;
       }
     ): Promise<T[]>;
 
@@ -86,20 +86,20 @@ declare global {
       type: string,
       collection: Collection<foundry.abstract.Document<any, any>>,
       result: object[],
-      { options, userId, parent, pack }: Pick<Request, 'options' | 'parent' | 'pack'> & { userId?: string }
+      { options, userId, parent, pack }: Pick<Request, "options" | "parent" | "pack"> & { userId?: string }
     ): (() => void)[];
 
     protected override _updateDocuments<T extends Document<any, any>>(
       documentClass: ConstructorOf<T>,
       request: Request,
-      user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+      user: InstanceType<ConfiguredDocumentClassForName<"User">>
     ): Promise<T[]>;
 
     protected override _updateEmbeddedDocuments<T extends Document<any, any>>(
       documentClass: ConstructorOf<T>,
       parent: T extends Document<any, infer U> ? U : never,
       request: Request,
-      user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+      user: InstanceType<ConfiguredDocumentClassForName<"User">>
     ): Promise<T[]>;
 
     /**
@@ -112,8 +112,8 @@ declare global {
         updates,
         options,
         user
-      }: Pick<Request, 'updates' | 'options'> & {
-        user: InstanceType<ConfiguredDocumentClassForName<'User'>>;
+      }: Pick<Request, "updates" | "options"> & {
+        user: InstanceType<ConfiguredDocumentClassForName<"User">>;
       }
     ): Promise<T[]>;
 
@@ -141,20 +141,20 @@ declare global {
     protected _postUpdateDocumentCallbacks(
       collection: Collection<foundry.abstract.Document<any, any>>,
       result: object[],
-      { options, userId }: Pick<Request, 'options'> & { userId?: string }
+      { options, userId }: Pick<Request, "options"> & { userId?: string }
     ): () => void;
 
     protected override _deleteDocuments<T extends Document<any, any>>(
       documentClass: ConstructorOf<T>,
       request: Request,
-      user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+      user: InstanceType<ConfiguredDocumentClassForName<"User">>
     ): Promise<T[]>;
 
     protected override _deleteEmbeddedDocuments<T extends Document<any, any>>(
       documentClass: ConstructorOf<T>,
       parent: T extends Document<any, infer U> ? U : never,
       request: Request,
-      user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+      user: InstanceType<ConfiguredDocumentClassForName<"User">>
     ): Promise<T[]>;
 
     /**
@@ -167,7 +167,7 @@ declare global {
         ids,
         options,
         user
-      }: Pick<Request, 'ids' | 'options'> & { user: InstanceType<ConfiguredDocumentClassForName<'User'>> }
+      }: Pick<Request, "ids" | "options"> & { user: InstanceType<ConfiguredDocumentClassForName<"User">> }
     ): Promise<T[]>;
 
     /**
@@ -194,7 +194,7 @@ declare global {
     protected _postDeleteDocumentCallbacks(
       collection: Collection<foundry.abstract.Document<any, any>>,
       result: object[],
-      { options, userId }: Pick<Request, 'options'> & { userId?: string }
+      { options, userId }: Pick<Request, "options"> & { userId?: string }
     ): (() => void)[];
 
     override getFlagScopes(): string[];

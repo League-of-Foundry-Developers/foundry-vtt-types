@@ -4,11 +4,11 @@ import type {
   ConfiguredSource,
   FieldReturnType,
   PropertiesToSource
-} from '../../../../types/helperTypes';
-import type DocumentData from '../../abstract/data.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
-import type { CardFaceData, CardFaceDataConstructorData } from './cardFaceData';
+} from "../../../../types/helperTypes";
+import type DocumentData from "../../abstract/data.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
+import type { CardFaceData, CardFaceDataConstructorData } from "./cardFaceData";
 
 interface CardDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -44,7 +44,7 @@ interface CardDataSchema extends DocumentSchema {
     validationError: '{name} {field} "{value}" must have a non-negative integer value or null';
   };
   drawn: fields.BooleanField;
-  origin: Omit<fields.DocumentId, 'nullable'> & { nullable: true };
+  origin: Omit<fields.DocumentId, "nullable"> & { nullable: true };
   width: fields.PositiveIntegerField;
   height: fields.PositiveIntegerField;
   rotation: fields.AngleField;
@@ -141,7 +141,7 @@ interface CardDataBaseProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'Card'>;
+  flags: ConfiguredFlags<"Card">;
 }
 
 interface CardDataConstructorData {
@@ -164,13 +164,13 @@ interface CardDataConstructorData {
    * A category of card (for example, a suit) to which this card belongs
    * @defaultValue `game.system.documentTypes.Card[0]`
    */
-  type?: CardDataSource['type'] | null | undefined;
+  type?: CardDataSource["type"] | null | undefined;
 
   /**
    * Game system data which is defined by the system template.json model
    * @defaultValue template from template.json for type or `{}`
    */
-  data?: DeepPartial<CardDataSource['data']> | null | undefined;
+  data?: DeepPartial<CardDataSource["data"]> | null | undefined;
 
   /**
    * An optional suit designation which is used by default sorting
@@ -233,12 +233,12 @@ interface CardDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Card'> | null | undefined;
+  flags?: ConfiguredFlags<"Card"> | null | undefined;
 }
 
 type CardDataBaseSource = PropertiesToSource<CardDataBaseProperties>;
-type CardDataProperties = CardDataBaseProperties & ConfiguredData<'Card'>;
-type CardDataSource = CardDataBaseSource & ConfiguredSource<'Card'>;
+type CardDataProperties = CardDataBaseProperties & ConfiguredData<"Card">;
+type CardDataSource = CardDataBaseSource & ConfiguredSource<"Card">;
 
 type DocumentDataConstructor = Pick<typeof DocumentData, keyof typeof DocumentData>;
 

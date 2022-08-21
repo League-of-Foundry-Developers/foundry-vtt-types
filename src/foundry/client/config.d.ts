@@ -1,6 +1,6 @@
-import { DocumentConstructor, PlaceableObjectConstructor } from '../../types/helperTypes';
-import type { StatusEffect } from './data/documents/token';
-import * as CONST from '../common/constants.mjs';
+import { DocumentConstructor, PlaceableObjectConstructor } from "../../types/helperTypes";
+import type { StatusEffect } from "./data/documents/token";
+import * as CONST from "../common/constants.mjs";
 
 //TODO: Replace with imports for for the right things when implemented
 type VisionMode = unknown;
@@ -120,7 +120,7 @@ declare global {
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
 
-      /** @defaultValue `'fas fa-user'` */
+      /** @defaultValue `"fas fa-user"` */
       sidebarIcon: string;
 
       /** @defaultValue `{}` */
@@ -142,7 +142,7 @@ declare global {
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
 
-      /** @defaultValue `'fa-solid fa-folder-tree'` */
+      /** @defaultValue `"fa-solid fa-folder-tree"` */
       sidebarIcon: string;
     };
 
@@ -195,10 +195,10 @@ declare global {
       /** @defaultValue `Messages` */
       collection: ConstructorOf<Messages>;
 
-      /** @defaultValue `'templates/sidebar/chat-message.html'` */
+      /** @defaultValue `"templates/sidebar/chat-message.html"` */
       template: string;
 
-      /** @defaultValue `'fas fa-comments'` */
+      /** @defaultValue `"fas fa-comments"` */
       sidebarIcon: string;
 
       /** @defaultValue `100` */
@@ -215,7 +215,7 @@ declare global {
       /** @defaultValue `CombatEncounters` */
       collection: ConstructorOf<CombatEncounters>;
 
-      /** @defaultValue `'fas fa-swords'` */
+      /** @defaultValue `"fas fa-swords"` */
       sidebarIcon: string;
 
       initiative: {
@@ -307,7 +307,7 @@ declare global {
       /** @defaultValue `Folders` */
       collection: ConstructorOf<Folders>;
 
-      /** @defaultValue `'fas fa-folder'` */
+      /** @defaultValue `"fas fa-folder"` */
       sidebarIcon: string;
     };
 
@@ -324,7 +324,7 @@ declare global {
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
 
-      /** @defaultValue `'fas fa-suitcase'` */
+      /** @defaultValue `"fas fa-suitcase"` */
       sidebarIcon: string;
 
       /** @defaultValue `{}` */
@@ -345,89 +345,89 @@ declare global {
       collection: ConstructorOf<Journal>;
 
       noteIcons: {
-        /** @defaultValue `'icons/svg/anchor.svg'` */
+        /** @defaultValue `"icons/svg/anchor.svg"` */
         Anchor: string;
 
-        /** @defaultValue `'icons/svg/barrel.svg'` */
+        /** @defaultValue `"icons/svg/barrel.svg"` */
         Barrel: string;
 
-        /** @defaultValue `'icons/svg/book.svg'` */
+        /** @defaultValue `"icons/svg/book.svg"` */
         Book: string;
 
-        /** @defaultValue `'icons/svg/bridge.svg'` */
+        /** @defaultValue `"icons/svg/bridge.svg"` */
         Bridge: string;
 
-        /** @defaultValue `'icons/svg/cave.svg'` */
+        /** @defaultValue `"icons/svg/cave.svg"` */
         Cave: string;
 
-        /** @defaultValue `'icons/svg/castle.svg` */
+        /** @defaultValue `"icons/svg/castle.svg"` */
         Castle: string;
 
-        /** @defaultValue `'icons/svg/chest.svg'` */
+        /** @defaultValue `"icons/svg/chest.svg"` */
         Chest: string;
 
-        /** @defaultValue `'icons/svg/city.svg'` */
+        /** @defaultValue `"icons/svg/city.svg"` */
         City: string;
 
-        /** @defaultValue `'icons/svg/coins.svg'` */
+        /** @defaultValue `"icons/svg/coins.svg"` */
         Coins: string;
 
-        /** @defaultValue `'icons/svg/fire.svg'` */
+        /** @defaultValue `"icons/svg/fire.svg"` */
         Fire: string;
 
-        /** @defaultValue `'icons/svg/hanging-sign.svg'` */
-        'Hanging Sign': string;
+        /** @defaultValue `"icons/svg/hanging-sign.svg"` */
+        "Hanging Sign": string;
 
-        /** @defaultValue `'icons/svg/house.svg'` */
+        /** @defaultValue `"icons/svg/house.svg"` */
         House: string;
 
-        /** @defaultValue `'icons/svg/mountain.svg'` */
+        /** @defaultValue `"icons/svg/mountain.svg"` */
         Mountain: string;
 
-        /** @defaultValue `'icons/svg/oak.svg'` */
-        'Oak Tree': string;
+        /** @defaultValue `"icons/svg/oak.svg"` */
+        "Oak Tree": string;
 
-        /** @defaultValue `'icons/svg/obelisk.svg'` */
+        /** @defaultValue `"icons/svg/obelisk.svg"` */
         Obelisk: string;
 
-        /** @defaultValue `'icons/svg/pawprint.svg'` */
+        /** @defaultValue `"icons/svg/pawprint.svg"` */
         Pawprint: string;
 
-        /** @defaultValue `'icons/svg/ruins.svg'` */
+        /** @defaultValue `"icons/svg/ruins.svg"` */
         Ruins: string;
 
-        /** @defaultValue `'icons/svg/skull.svg'` */
+        /** @defaultValue `"icons/svg/skull.svg"` */
         Skull: string;
 
-        /** @defaultValue `'icons/svg/statue.svg'` */
+        /** @defaultValue `"icons/svg/statue.svg"` */
         Statue: string;
 
-        /** @defaultValue `'icons/svg/sword.svg'` */
+        /** @defaultValue `"icons/svg/sword.svg"` */
         Sword: string;
 
-        /** @defaultValue `'icons/svg/tankard.svg'` */
+        /** @defaultValue `"icons/svg/tankard.svg"` */
         Tankard: string;
 
-        /** @defaultValue `'icons/svg/temple.svg'` */
+        /** @defaultValue `"icons/svg/temple.svg"` */
         Temple: string;
 
-        /** @defaultValue `'icons/svg/tower.svg'` */
+        /** @defaultValue `"icons/svg/tower.svg"` */
         Tower: string;
 
-        /** @defaultValue `'icons/svg/trap.svg'` */
+        /** @defaultValue `"icons/svg/trap.svg"` */
         Trap: string;
 
-        /** @defaultValue `'icons/svg/village.svg'` */
+        /** @defaultValue `"icons/svg/village.svg"` */
         Village: string;
 
-        /** @defaultValue `'icons/svg/waterfall.svg'` */
+        /** @defaultValue `"icons/svg/waterfall.svg"` */
         Waterfall: string;
 
-        /** @defaultValue `'icons/svg/windmill.svg'` */
+        /** @defaultValue `"icons/svg/windmill.svg"` */
         Windmill: string;
       } & Record<string, string>;
 
-      /** @defaultValue `'fas fa-book-open'` */
+      /** @defaultValue `"fas fa-book-open"` */
       sidebarIcon: string;
     };
 
@@ -444,7 +444,7 @@ declare global {
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
 
-      /** @defaultValue `'fas fa-code'` */
+      /** @defaultValue `"fas fa-code"` */
       sidebarIcon: string;
     };
 
@@ -461,7 +461,7 @@ declare global {
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
 
-      /** @defaultValue `'fas fa-music'` */
+      /** @defaultValue `"fas fa-music"` */
       sidebarIcon: string;
 
       /** @defaultValue `20` */
@@ -481,13 +481,13 @@ declare global {
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
 
-      /** @defaultValue `'fas fa-th-list'` */
+      /** @defaultValue `"fas fa-th-list"` */
       sidebarIcon: string;
 
-      /** @defaultValue `'icons/svg/d20-black.svg'` */
+      /** @defaultValue `"icons/svg/d20-black.svg"` */
       resultIcon: string;
 
-      /** @defaultValue `'templates/dice/table-result.html'` */
+      /** @defaultValue `"templates/dice/table-result.html"` */
       resultTemplate: string;
     };
 
@@ -504,7 +504,7 @@ declare global {
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
 
-      /** @defaultValue `'fas fa-map'` */
+      /** @defaultValue `"fas fa-map"` */
       sidebarIcon: string;
     };
 
@@ -615,7 +615,7 @@ declare global {
 
       lightAnimations: {
         flame: {
-          /** @defaultValue `'LIGHT.AnimationFame'` */
+          /** @defaultValue `"LIGHT.AnimationFame"` */
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateFlickering` */
@@ -629,7 +629,7 @@ declare global {
         };
 
         torch: {
-          /** @defaultValue `'LIGHT.AnimationTorch'` */
+          /** @defaultValue `"LIGHT.AnimationTorch"` */
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTorch` */
@@ -643,7 +643,7 @@ declare global {
         };
 
         pulse: {
-          /** @defaultValue `'LIGHT.AnimationPulse'` */
+          /** @defaultValue `"LIGHT.AnimationPulse"` */
           label: string;
 
           /** @defaultValue `LightSource.prototype.animatePulse` */
@@ -657,7 +657,7 @@ declare global {
         };
 
         chroma: {
-          /** @defaultValue `'LIGHT.AnimationChroma'` */
+          /** @defaultValue `"LIGHT.AnimationChroma"` */
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
@@ -668,7 +668,7 @@ declare global {
         };
 
         wave: {
-          /** @defaultValue `'LIGHT.AnimationWave'` */
+          /** @defaultValue `"LIGHT.AnimationWave"` */
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
@@ -682,7 +682,7 @@ declare global {
         };
 
         fog: {
-          /** @defaultValue `'LIGHT.AnimationFog'` */
+          /** @defaultValue `"LIGHT.AnimationFog"` */
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
@@ -693,7 +693,7 @@ declare global {
         };
 
         sunburst: {
-          /** @defaultValue `'LIGHT.AnimationSunburst'` */
+          /** @defaultValue `"LIGHT.AnimationSunburst"` */
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
@@ -707,7 +707,7 @@ declare global {
         };
 
         dome: {
-          /** @defaultValue `'LIGHT.AnimationLightDome'` */
+          /** @defaultValue `"LIGHT.AnimationLightDome"` */
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
@@ -718,7 +718,7 @@ declare global {
         };
 
         emanation: {
-          /** @defaultValue `'LIGHT.AnimationEmanation'` */
+          /** @defaultValue `"LIGHT.AnimationEmanation"` */
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
@@ -729,7 +729,7 @@ declare global {
         };
 
         hexa: {
-          /** @defaultValue `'LIGHT.AnimationHexaDome';` */
+          /** @defaultValue `"LIGHT.AnimationHexaDome";` */
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
@@ -740,7 +740,7 @@ declare global {
         };
 
         ghost: {
-          /** @defaultValue `'LIGHT.AnimationGhostLight'` */
+          /** @defaultValue `"LIGHT.AnimationGhostLight"` */
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
@@ -754,7 +754,7 @@ declare global {
         };
 
         energy: {
-          /** @defaultValue `'LIGHT.AnimationEnergyField'` */
+          /** @defaultValue `"LIGHT.AnimationEnergyField"` */
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
@@ -765,7 +765,7 @@ declare global {
         };
 
         roiling: {
-          /** @defaultValue `'LIGHT.AnimationRoilingMass'` */
+          /** @defaultValue `"LIGHT.AnimationRoilingMass"` */
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
@@ -776,7 +776,7 @@ declare global {
         };
 
         hole: {
-          /** @defaultValue `'LIGHT.AnimationBlackHole'` */
+          /** @defaultValue `"LIGHT.AnimationBlackHole"` */
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
@@ -787,7 +787,7 @@ declare global {
         };
 
         vortex: {
-          /** @defaultValue `'LIGHT.AnimationVortex'` */
+          /** @defaultValue `"LIGHT.AnimationVortex"` */
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
@@ -801,7 +801,7 @@ declare global {
         };
 
         witchwave: {
-          /** @defaultValue `'LIGHT.AnimationBewitchingWave'` */
+          /** @defaultValue `"LIGHT.AnimationBewitchingWave"` */
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
@@ -815,7 +815,7 @@ declare global {
         };
 
         rainbowswirl: {
-          /** @defaultValue `'LIGHT.AnimationSwirlingRainbow'` */
+          /** @defaultValue `"LIGHT.AnimationSwirlingRainbow"` */
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
@@ -826,7 +826,7 @@ declare global {
         };
 
         radialrainbow: {
-          /** @defaultValue `'LIGHT.AnimationRadialRainbow'` */
+          /** @defaultValue `"LIGHT.AnimationRadialRainbow"` */
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
@@ -837,7 +837,7 @@ declare global {
         };
 
         fairy: {
-          /** @defaultValue `'LIGHT.AnimationFairyLight'` */
+          /** @defaultValue `"LIGHT.AnimationFairyLight"` */
           label: string;
 
           /** @defaultValue `LightSource.prototype.animateTime` */
@@ -861,16 +861,16 @@ declare global {
 
       pings: {
         types: {
-          /** @defaultValue `'pulse'` */
+          /** @defaultValue `"pulse"` */
           PULSE: string;
 
-          /** @defaultValue `'alert'` */
+          /** @defaultValue `"alert"` */
           ALERT: string;
 
-          /** @defaultValue `'chevron'` */
+          /** @defaultValue `"chevron"` */
           PULL: string;
 
-          /** @defaultValue `'arrow'` */
+          /** @defaultValue `"arrow"` */
           ARROW: string;
         };
         styles: {
@@ -1089,17 +1089,17 @@ declare global {
      * @defaultValue
      * ```typescript
      * new PIXI.TextStyle({
-     *   fontFamily: 'Signika',
+     *   fontFamily: "Signika",
      *   fontSize: 36,
-     *   fill: '#FFFFFF',
-     *   stroke: '#111111',
+     *   fill: "#FFFFFF",
+     *   stroke: "#111111",
      *   strokeThickness: 1,
      *   dropShadow: true,
-     *   dropShadowColor: '#000000',
+     *   dropShadowColor: "#000000",
      *   dropShadowBlur: 2,
      *   dropShadowAngle: 0,
      *   dropShadowDistance: 0,
-     *   align: 'center',
+     *   align: "center",
      *   wordWrap: false,
      *   padding: 1
      * })
@@ -1125,52 +1125,52 @@ declare global {
      * The control icons used for rendering common HUD operations
      */
     controlIcons: {
-      /** @defaultValue `'icons/svg/combat.svg'` */
+      /** @defaultValue `"icons/svg/combat.svg"` */
       combat: string;
 
-      /** @defaultValue `'icons/svg/cowled.svg'` */
+      /** @defaultValue `"icons/svg/cowled.svg"` */
       visibility: string;
 
-      /** @defaultValue `'icons/svg/aura.svg'` */
+      /** @defaultValue `"icons/svg/aura.svg"` */
       effects: string;
 
-      /** @defaultValue `'icons/svg/padlock.svg'` */
+      /** @defaultValue `"icons/svg/padlock.svg"` */
       lock: string;
 
-      /** @defaultValue `'icons/svg/up.svg'` */
+      /** @defaultValue `"icons/svg/up.svg"` */
       up: string;
 
-      /** @defaultValue `'icons/svg/down.svg'` */
+      /** @defaultValue `"icons/svg/down.svg"` */
       down: string;
 
-      /** @defaultValue `'icons/svg/skull.svg'` */
+      /** @defaultValue `"icons/svg/skull.svg"` */
       defeated: string;
 
-      /** @defaultValue `'icons/svg/light.svg'` */
+      /** @defaultValue `"icons/svg/light.svg"` */
       light: string;
 
-      /** @defaultValue `'icons/svg/light-off.svg'` */
+      /** @defaultValue `"icons/svg/light-off.svg"` */
       lightOff: string;
 
-      /** @defaultValue `'icons/svg/explosion.svg'` */
+      /** @defaultValue `"icons/svg/explosion.svg"` */
       template: string;
 
-      /** @defaultValue `'icons/svg/sound.svg'` */
+      /** @defaultValue `"icons/svg/sound.svg"` */
       sound: string;
 
-      /** @defaultValue `'icons/svg/sound-off.svg'` */
+      /** @defaultValue `"icons/svg/sound-off.svg"` */
       soundOff: string;
 
-      /** @defaultValue `'icons/svg/door-closed-outline.svg'` */
+      /** @defaultValue `"icons/svg/door-closed-outline.svg"` */
       doorClosed: string;
 
-      /** @defaultValue `'icons/svg/door-open-outline.svg'` */
+      /** @defaultValue `"icons/svg/door-open-outline.svg"` */
       doorOpen: string;
 
-      /** @defaultValue `'icons/svg/door-secret-outline.svg'` */
+      /** @defaultValue `"icons/svg/door-secret-outline.svg"` */
       doorSecret: string;
 
-      /** @defaultValue `'icons/svg/door-locked-outline.svg'` */
+      /** @defaultValue `"icons/svg/door-locked-outline.svg"` */
       doorLocked: string;
     } & Record<string, string>;
 
@@ -1181,23 +1181,23 @@ declare global {
      * {
      *   Arial: { editor: true; fonts: [] };
      *   Courier: { editor: true; fonts: [] };
-     *   'Courier New': { editor: true; fonts: [] };
-     *   'Modesto Condensed': {
+     *   "Courier New": { editor: true; fonts: [] };
+     *   "Modesto Condensed": {
      *     editor: true;
      *     fonts: [
-     *       { urls: ['fonts/modesto-condensed/modesto-condensed.woff2'] },
-     *       { urls: ['fonts/modesto-condensed/modesto-condensed-bold.woff2']; weight: 700 }
+     *       { urls: ["fonts/modesto-condensed/modesto-condensed.woff2"] },
+     *       { urls: ["fonts/modesto-condensed/modesto-condensed-bold.woff2"]; weight: 700 }
      *     ];
      *   };
      *   Signika: {
      *     editor: true;
      *     fonts: [
-     *       { urls: ['fonts/signika/signika-regular.woff2'] },
-     *       { urls: ['fonts/signika/signika-bold.woff2']; weight: 700 }
+     *       { urls: ["fonts/signika/signika-regular.woff2"] },
+     *       { urls: ["fonts/signika/signika-bold.woff2"]; weight: 700 }
      *     ];
      *   };
      *   Times: { editor: true; fonts: [] };
-     *   'Times New Roman': { editor: true; fonts: [] };
+     *   "Times New Roman": { editor: true; fonts: [] };
      * }
      * ```
      */
@@ -1215,11 +1215,11 @@ declare global {
      * @defaultValue `Object.keys(CONFIG.fontDefinitions)`
      * @deprecated since v10.
      */
-    get fontFamilies(): CONFIG['_fontFamilies'];
+    get fontFamilies(): CONFIG["_fontFamilies"];
 
     /**
      * The default font family used for text labels on the PIXI Canvas
-     * @defaultValue `'Signika'`
+     * @defaultValue `"Signika"`
      */
     defaultFontFamily: string;
 
@@ -1229,124 +1229,124 @@ declare global {
      * ```typescript
      * [
      *   {
-     *     id: 'dead';
-     *     label: 'EFFECT.StatusDead';
-     *     icon: 'icons/svg/skull.svg';
+     *     id: "dead";
+     *     label: "EFFECT.StatusDead";
+     *     icon: "icons/svg/skull.svg";
      *   },
      *   {
-     *     id: 'unconscious';
-     *     label: 'EFFECT.StatusUnconscious';
-     *     icon: 'icons/svg/unconscious.svg';
+     *     id: "unconscious";
+     *     label: "EFFECT.StatusUnconscious";
+     *     icon: "icons/svg/unconscious.svg";
      *   },
      *   {
-     *     id: 'sleep';
-     *     label: 'EFFECT.StatusAsleep';
-     *     icon: 'icons/svg/sleep.svg';
+     *     id: "sleep";
+     *     label: "EFFECT.StatusAsleep";
+     *     icon: "icons/svg/sleep.svg";
      *   },
      *   {
-     *     id: 'stun';
-     *     label: 'EFFECT.StatusStunned';
-     *     icon: 'icons/svg/daze.svg';
+     *     id: "stun";
+     *     label: "EFFECT.StatusStunned";
+     *     icon: "icons/svg/daze.svg";
      *   },
      *   {
-     *     id: 'prone';
-     *     label: 'EFFECT.StatusProne';
-     *     icon: 'icons/svg/falling.svg';
+     *     id: "prone";
+     *     label: "EFFECT.StatusProne";
+     *     icon: "icons/svg/falling.svg";
      *   },
      *   {
-     *     id: 'restrain';
-     *     label: 'EFFECT.StatusRestrained';
-     *     icon: 'icons/svg/net.svg';
+     *     id: "restrain";
+     *     label: "EFFECT.StatusRestrained";
+     *     icon: "icons/svg/net.svg";
      *   },
      *   {
-     *     id: 'paralysis';
-     *     label: 'EFFECT.StatusParalysis';
-     *     icon: 'icons/svg/paralysis.svg';
+     *     id: "paralysis";
+     *     label: "EFFECT.StatusParalysis";
+     *     icon: "icons/svg/paralysis.svg";
      *   },
      *   {
-     *     id: 'fly';
-     *     label: 'EFFECT.StatusFlying';
-     *     icon: 'icons/svg/wing.svg';
+     *     id: "fly";
+     *     label: "EFFECT.StatusFlying";
+     *     icon: "icons/svg/wing.svg";
      *   },
      *   {
-     *     id: 'blind';
-     *     label: 'EFFECT.StatusBlind';
-     *     icon: 'icons/svg/blind.svg';
+     *     id: "blind";
+     *     label: "EFFECT.StatusBlind";
+     *     icon: "icons/svg/blind.svg";
      *   },
      *   {
-     *     id: 'deaf';
-     *     label: 'EFFECT.StatusDeaf';
-     *     icon: 'icons/svg/deaf.svg';
+     *     id: "deaf";
+     *     label: "EFFECT.StatusDeaf";
+     *     icon: "icons/svg/deaf.svg";
      *   },
      *   {
-     *     id: 'silence';
-     *     label: 'EFFECT.StatusSilenced';
-     *     icon: 'icons/svg/silenced.svg';
+     *     id: "silence";
+     *     label: "EFFECT.StatusSilenced";
+     *     icon: "icons/svg/silenced.svg";
      *   },
      *   {
-     *     id: 'fear';
-     *     label: 'EFFECT.StatusFear';
-     *     icon: 'icons/svg/terror.svg';
+     *     id: "fear";
+     *     label: "EFFECT.StatusFear";
+     *     icon: "icons/svg/terror.svg";
      *   },
      *   {
-     *     id: 'burning';
-     *     label: 'EFFECT.StatusBurning';
-     *     icon: 'icons/svg/fire.svg';
+     *     id: "burning";
+     *     label: "EFFECT.StatusBurning";
+     *     icon: "icons/svg/fire.svg";
      *   },
      *   {
-     *     id: 'frozen';
-     *     label: 'EFFECT.StatusFrozen';
-     *     icon: 'icons/svg/frozen.svg';
+     *     id: "frozen";
+     *     label: "EFFECT.StatusFrozen";
+     *     icon: "icons/svg/frozen.svg";
      *   },
      *   {
-     *     id: 'shock';
-     *     label: 'EFFECT.StatusShocked';
-     *     icon: 'icons/svg/lightning.svg';
+     *     id: "shock";
+     *     label: "EFFECT.StatusShocked";
+     *     icon: "icons/svg/lightning.svg";
      *   },
      *   {
-     *     id: 'corrode';
-     *     label: 'EFFECT.StatusCorrode';
-     *     icon: 'icons/svg/acid.svg';
+     *     id: "corrode";
+     *     label: "EFFECT.StatusCorrode";
+     *     icon: "icons/svg/acid.svg";
      *   },
      *   {
-     *     id: 'bleeding';
-     *     label: 'EFFECT.StatusBleeding';
-     *     icon: 'icons/svg/blood.svg';
+     *     id: "bleeding";
+     *     label: "EFFECT.StatusBleeding";
+     *     icon: "icons/svg/blood.svg";
      *   },
      *   {
-     *     id: 'disease';
-     *     label: 'EFFECT.StatusDisease';
-     *     icon: 'icons/svg/biohazard.svg';
+     *     id: "disease";
+     *     label: "EFFECT.StatusDisease";
+     *     icon: "icons/svg/biohazard.svg";
      *   },
      *   {
-     *     id: 'poison';
-     *     label: 'EFFECT.StatusPoison';
-     *     icon: 'icons/svg/poison.svg';
+     *     id: "poison";
+     *     label: "EFFECT.StatusPoison";
+     *     icon: "icons/svg/poison.svg";
      *   },
      *   {
-     *     id: 'curse';
-     *     label: 'EFFECT.StatusCursed';
-     *     icon: 'icons/svg/sun.svg';
+     *     id: "curse";
+     *     label: "EFFECT.StatusCursed";
+     *     icon: "icons/svg/sun.svg";
      *   },
      *   {
-     *     id: 'regen';
-     *     label: 'EFFECT.StatusRegen';
-     *     icon: 'icons/svg/regen.svg';
+     *     id: "regen";
+     *     label: "EFFECT.StatusRegen";
+     *     icon: "icons/svg/regen.svg";
      *   },
      *   {
-     *     id: 'degen';
-     *     label: 'EFFECT.StatusDegen';
-     *     icon: 'icons/svg/degen.svg';
+     *     id: "degen";
+     *     label: "EFFECT.StatusDegen";
+     *     icon: "icons/svg/degen.svg";
      *   },
      *   {
-     *     id: 'upgrade';
-     *     label: 'EFFECT.StatusUpgrade';
-     *     icon: 'icons/svg/upgrade.svg';
+     *     id: "upgrade";
+     *     label: "EFFECT.StatusUpgrade";
+     *     icon: "icons/svg/upgrade.svg";
      *   },
      *   {
-     *     id: 'downgrade';
-     *     label: 'EFFECT.StatusDowngrade';
-     *     icon: 'icons/svg/downgrade.svg';
+     *     id: "downgrade";
+     *     label: "EFFECT.StatusDowngrade";
+     *     icon: "icons/svg/downgrade.svg";
      *   },
      *   {
      *     id: "invisible",
@@ -1354,39 +1354,39 @@ declare global {
      *     icon: "icons/svg/invisible.svg"
      *   },
      *   {
-     *     id: 'target';
-     *     label: 'EFFECT.StatusTarget';
-     *     icon: 'icons/svg/target.svg';
+     *     id: "target";
+     *     label: "EFFECT.StatusTarget";
+     *     icon: "icons/svg/target.svg";
      *   },
      *   {
-     *     id: 'eye';
-     *     label: 'EFFECT.StatusMarked';
-     *     icon: 'icons/svg/eye.svg';
+     *     id: "eye";
+     *     label: "EFFECT.StatusMarked";
+     *     icon: "icons/svg/eye.svg";
      *   },
      *   {
-     *     id: 'bless';
-     *     label: 'EFFECT.StatusBlessed';
-     *     icon: 'icons/svg/angel.svg';
+     *     id: "bless";
+     *     label: "EFFECT.StatusBlessed";
+     *     icon: "icons/svg/angel.svg";
      *   },
      *   {
-     *     id: 'fireShield';
-     *     label: 'EFFECT.StatusFireShield';
-     *     icon: 'icons/svg/fire-shield.svg';
+     *     id: "fireShield";
+     *     label: "EFFECT.StatusFireShield";
+     *     icon: "icons/svg/fire-shield.svg";
      *   },
      *   {
-     *     id: 'coldShield';
-     *     label: 'EFFECT.StatusIceShield';
-     *     icon: 'icons/svg/ice-shield.svg';
+     *     id: "coldShield";
+     *     label: "EFFECT.StatusIceShield";
+     *     icon: "icons/svg/ice-shield.svg";
      *   },
      *   {
-     *     id: 'magicShield';
-     *     label: 'EFFECT.StatusMagicShield';
-     *     icon: 'icons/svg/mage-shield.svg';
+     *     id: "magicShield";
+     *     label: "EFFECT.StatusMagicShield";
+     *     icon: "icons/svg/mage-shield.svg";
      *   },
      *   {
-     *     id: 'holyShield';
-     *     label: 'EFFECT.StatusHolyShield';
-     *     icon: 'icons/svg/holy-shield.svg';
+     *     id: "holyShield";
+     *     label: "EFFECT.StatusHolyShield";
+     *     icon: "icons/svg/holy-shield.svg";
      *   }
      * ]
      * ```
@@ -1397,28 +1397,28 @@ declare global {
      * A mapping of status effect IDs which provide some additional mechanical integration.
      * @defaultValue `{ DEFEATED: "dead", INVISIBLE: "invisible", BLIND: "blind" }`
      */
-    specialStatusEffects: Record<'DEFEATED' | 'INVISIBLE' | 'BLIND', string>;
+    specialStatusEffects: Record<"DEFEATED" | "INVISIBLE" | "BLIND", string>;
 
     /**
      * A mapping of core audio effects used which can be replaced by systems or mods
      */
     sounds: {
-      /** @defaultValue `'sounds/dice.wav'` */
+      /** @defaultValue `"sounds/dice.wav"` */
       dice: string;
 
-      /** @defaultValue `'sounds/lock.wav'` */
+      /** @defaultValue `"sounds/lock.wav"` */
       lock: string;
 
-      /** @defaultValue `'sounds/notify.wav'` */
+      /** @defaultValue `"sounds/notify.wav"` */
       notification: string;
 
-      /** @defaultValue `'sounds/drums.wav'` */
+      /** @defaultValue `"sounds/drums.wav"` */
       combat: string;
     };
 
     /**
      * Define the set of supported languages for localization
-     * @defaultValue `{ en: 'English' }`
+     * @defaultValue `{ en: "English" }`
      */
     supportedLanguages: {
       en: string;
@@ -1533,16 +1533,16 @@ declare global {
       };
 
       types: {
-        /** @defaultValue `'Circle'` */
+        /** @defaultValue `"Circle"` */
         circle: string;
 
-        /** @defaultValue `'Cone'` */
+        /** @defaultValue `"Cone"` */
         cone: string;
 
-        /** @defaultValue `'Rectangle'` */
+        /** @defaultValue `"Rectangle"` */
         rect: string;
 
-        /** @defaultValue `'Ray'` */
+        /** @defaultValue `"Ray"` */
         ray: string;
       };
 
@@ -1636,7 +1636,7 @@ declare global {
      */
     WebRTC: {
       /** @defaultValue `SimplePeerAVClient` */
-      clientClass: PropertyTypeOrFallback<WebRTCConfig, 'clientClass', typeof AVClient>;
+      clientClass: PropertyTypeOrFallback<WebRTCConfig, "clientClass", typeof AVClient>;
 
       /** @defaultValue `50` */
       detectPeerVolumeInterval: number;
@@ -1796,7 +1796,7 @@ declare global {
 
       interface LayerDefinition<LayerClass extends ConstructorOf<CanvasLayer> = ConstructorOf<CanvasLayer>> {
         layerClass: LayerClass;
-        group: keyof CONFIG['Canvas']['groups'];
+        group: keyof CONFIG["Canvas"]["groups"];
       }
 
       type LightAnimationFunction = (
@@ -1874,13 +1874,13 @@ declare global {
 }
 
 type ConfiguredDocumentClassOrDefault<Fallback extends DocumentConstructor> =
-  Fallback['metadata']['name'] extends keyof DocumentClassConfig
-    ? DocumentClassConfig[Fallback['metadata']['name']]
+  Fallback["metadata"]["name"] extends keyof DocumentClassConfig
+    ? DocumentClassConfig[Fallback["metadata"]["name"]]
     : Fallback;
 
 type ConfiguredObjectClassOrDefault<Fallback extends PlaceableObjectConstructor> =
-  Fallback['embeddedName'] extends keyof PlaceableObjectClassConfig
-    ? PlaceableObjectClassConfig[Fallback['embeddedName']]
+  Fallback["embeddedName"] extends keyof PlaceableObjectClassConfig
+    ? PlaceableObjectClassConfig[Fallback["embeddedName"]]
     : Fallback;
 
 type PixiContainerConstructor = typeof PIXI.Container;

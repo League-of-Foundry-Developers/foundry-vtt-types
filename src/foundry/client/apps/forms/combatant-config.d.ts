@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -32,7 +32,7 @@ declare global {
 
   namespace CombatantConfig {
     interface Options extends DocumentSheetOptions {
-      id: 'combatant-config';
+      id: "combatant-config";
       title: string;
       classes: string[];
       template: string;
@@ -44,6 +44,6 @@ declare global {
       Options
     >;
 
-    type FormData = Pick<foundry.data.CombatantData, 'defeated' | 'hidden' | 'img' | 'initiative' | 'name'>;
+    type FormData = Pick<foundry.data.CombatantData, "defeated" | "hidden" | "img" | "initiative" | "name">;
   }
 }

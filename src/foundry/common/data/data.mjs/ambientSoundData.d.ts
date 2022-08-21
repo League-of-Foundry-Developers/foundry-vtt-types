@@ -1,8 +1,8 @@
-import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
-import DocumentData from '../../abstract/data.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
-import { DarknessActivation, DarknessActivationConstructorData } from './darknessActivation';
+import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes";
+import DocumentData from "../../abstract/data.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
+import { DarknessActivation, DarknessActivationConstructorData } from "./darknessActivation";
 
 interface AmbientSoundDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -94,7 +94,7 @@ interface AmbientSoundDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'AmbientSound'>;
+  flags: ConfiguredFlags<"AmbientSound">;
 }
 
 interface AmbientSoundDataConstructorData {
@@ -168,7 +168,7 @@ interface AmbientSoundDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'AmbientSound'> | null | undefined;
+  flags?: ConfiguredFlags<"AmbientSound"> | null | undefined;
 }
 
 type AmbientSoundDataSource = PropertiesToSource<AmbientSoundDataProperties>;

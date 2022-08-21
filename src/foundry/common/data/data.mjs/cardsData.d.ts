@@ -5,11 +5,11 @@ import {
   ConfiguredSource,
   FieldReturnType,
   PropertiesToSource
-} from '../../../../types/helperTypes';
-import type EmbeddedCollection from '../../abstract/embedded-collection.mjs';
-import { DocumentData } from '../../abstract/module.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
+} from "../../../../types/helperTypes";
+import type EmbeddedCollection from "../../abstract/embedded-collection.mjs";
+import { DocumentData } from "../../abstract/module.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
 
 interface CardsDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -116,7 +116,7 @@ interface CardsDataBaseProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'Cards'>;
+  flags: ConfiguredFlags<"Cards">;
 }
 
 interface CardsDataConstructorData {
@@ -133,7 +133,7 @@ interface CardsDataConstructorData {
    * The type of this stack, in BaseCards.metadata.types
    * @defaultValue `game.system.documentTypes.Cards[0]`
    */
-  type?: CardsDataSource['type'] | null | undefined;
+  type?: CardsDataSource["type"] | null | undefined;
 
   /**
    * A text description of this stack
@@ -151,7 +151,7 @@ interface CardsDataConstructorData {
    * Game system data which is defined by the system template.json model
    * @defaultValue template from template.json for type or `{}`
    */
-  data?: DeepPartial<CardsDataSource['data']> | null | undefined;
+  data?: DeepPartial<CardsDataSource["data"]> | null | undefined;
 
   /**
    * A collection of Card documents which currently belong to this stack
@@ -199,12 +199,12 @@ interface CardsDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Cards'> | null | undefined;
+  flags?: ConfiguredFlags<"Cards"> | null | undefined;
 }
 
 type CardsDataBaseSource = PropertiesToSource<CardsDataBaseProperties>;
-type CardsDataProperties = CardsDataBaseProperties & ConfiguredData<'Cards'>;
-type CardsDataSource = CardsDataBaseSource & ConfiguredSource<'Cards'>;
+type CardsDataProperties = CardsDataBaseProperties & ConfiguredData<"Cards">;
+type CardsDataSource = CardsDataBaseSource & ConfiguredSource<"Cards">;
 
 type DocumentDataConstructor = Pick<typeof DocumentData, keyof typeof DocumentData>;
 

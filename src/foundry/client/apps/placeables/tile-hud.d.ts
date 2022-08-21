@@ -1,4 +1,4 @@
-import { ConfiguredObjectClassForName } from '../../../../types/helperTypes';
+import { ConfiguredObjectClassForName } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -20,7 +20,7 @@ declare global {
      */
     static override get defaultOptions(): ApplicationOptions;
 
-    override getData(options?: Partial<Options>): ReturnType<BasePlaceableHUD<ConcreteTile>['getData']> & {
+    override getData(options?: Partial<Options>): ReturnType<BasePlaceableHUD<ConcreteTile>["getData"]> & {
       isVideo: boolean;
       lockedClass: string;
       visibilityClass: string;
@@ -34,4 +34,4 @@ declare global {
   }
 }
 
-type ConcreteTile = InstanceType<ConfiguredObjectClassForName<'Tile'>>;
+type ConcreteTile = InstanceType<ConfiguredObjectClassForName<"Tile">>;

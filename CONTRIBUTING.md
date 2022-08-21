@@ -131,13 +131,13 @@ declare class ActorSheet<
    * foundry.utils.mergeObject(super.defaultOptions, {
    *   height: 720,
    *   width: 800,
-   *   template: 'templates/sheets/actor-sheet.html',
+   *   template: "templates/sheets/actor-sheet.html",
    *   closeOnSubmit: false,
    *   submitOnClose: true,
    *   submitOnChange: true,
    *   resizable: true,
-   *   baseApplication: 'ActorSheet',
-   *   dragDrop: [{ dragSelector: '.item-list .item', dropSelector: null }],
+   *   baseApplication: "ActorSheet",
+   *   dragDrop: [{ dragSelector: ".item-list .item", dropSelector: null }],
    *   token: null,
    * });
    * ```

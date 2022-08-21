@@ -1,4 +1,4 @@
-import type { COMPATIBILITY_MODES } from '../constants.mjs';
+import type { COMPATIBILITY_MODES } from "../constants.mjs";
 
 /**
  * Log a compatibility warning which is filtered based on the client's defined compatibility settings.

@@ -1,6 +1,6 @@
-import { expectError, expectType } from 'tsd';
+import { expectError, expectType } from "tsd";
 
-const cards = new Cards({ name: 'Just a deck of cards', type: 'german' });
+const cards = new Cards({ name: "Just a deck of cards", type: "german" });
 
 expectType<string | null>(cards.thumbnail);
 expectType<Card[]>(cards.availableCards);
@@ -12,7 +12,7 @@ expectType<Promise<Cards>>(cards.deal([cards], 2));
 expectType<Promise<Cards>>(
   cards.deal([cards], 2, {
     how: foundry.CONST.CARD_DRAW_MODES.RANDOM,
-    action: 'some custom action',
+    action: "some custom action",
     updateData: { value: 3 },
     chatNotification: true
   })
@@ -20,7 +20,7 @@ expectType<Promise<Cards>>(
 expectType<Promise<Cards>>(
   cards.deal([cards], undefined, {
     how: foundry.CONST.CARD_DRAW_MODES.RANDOM,
-    action: 'some custom action',
+    action: "some custom action",
     updateData: { value: 3 },
     chatNotification: true
   })
@@ -30,16 +30,16 @@ expectError(cards.deal([cards], undefined, { updateData: { unknownProp: 3 } }));
 
 // pass
 expectError(cards.pass(cards));
-expectType<Promise<Card[]>>(cards.pass(cards, ['foo']));
+expectType<Promise<Card[]>>(cards.pass(cards, ["foo"]));
 expectType<Promise<Card[]>>(
-  cards.pass(cards, ['foo'], {
-    action: 'some custom action',
+  cards.pass(cards, ["foo"], {
+    action: "some custom action",
     updateData: { value: 3 },
     chatNotification: true
   })
 );
-expectError(cards.pass(cards, ['foo'], { unknownProp: 0 }));
-expectError(cards.pass(cards, ['foo'], { updateData: { unknownProp: 0 } }));
+expectError(cards.pass(cards, ["foo"], { unknownProp: 0 }));
+expectError(cards.pass(cards, ["foo"], { updateData: { unknownProp: 0 } }));
 
 // draw
 expectType<Promise<Card[]>>(cards.draw(cards));
@@ -47,14 +47,14 @@ expectType<Promise<Card[]>>(cards.draw(cards, 2));
 expectType<Promise<Card[]>>(
   cards.draw(cards, 2, {
     how: foundry.CONST.CARD_DRAW_MODES.RANDOM,
-    action: 'some custom action',
+    action: "some custom action",
     updateData: { value: 3 }
   })
 );
 expectType<Promise<Card[]>>(
   cards.draw(cards, undefined, {
     how: foundry.CONST.CARD_DRAW_MODES.RANDOM,
-    action: 'some custom action',
+    action: "some custom action",
     updateData: { value: 3 }
   })
 );
@@ -97,7 +97,7 @@ expectType<Promise<Card[] | null>>(cards.drawDialog());
 expectType<Promise<Cards | null>>(cards.passDialog());
 
 // playDialog
-expectType<Promise<Card[] | void | null>>(cards.playDialog(new Card({ name: 'Some Card' })));
+expectType<Promise<Card[] | void | null>>(cards.playDialog(new Card({ name: "Some Card" })));
 
 // resetDialog
 expectType<Promise<Cards | false | null>>(cards.resetDialog());

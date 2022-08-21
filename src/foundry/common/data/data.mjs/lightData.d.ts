@@ -1,9 +1,9 @@
-import type { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
-import { DocumentData } from '../../abstract/module.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
-import type { AnimationData, AnimationDataConstructorData } from './animationData';
-import type { DarknessActivation, DarknessActivationConstructorData } from './darknessActivation';
+import type { FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes";
+import { DocumentData } from "../../abstract/module.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
+import type { AnimationData, AnimationDataConstructorData } from "./animationData";
+import type { DarknessActivation, DarknessActivationConstructorData } from "./darknessActivation";
 
 interface LightDataSchema extends DocumentSchema {
   alpha: FieldReturnType<fields.AlphaField, { default: 0.5 }>;

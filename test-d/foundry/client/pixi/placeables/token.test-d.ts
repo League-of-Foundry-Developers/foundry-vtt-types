@@ -1,6 +1,6 @@
-import type { ConfiguredDocumentClass } from '../../../../../src/types/helperTypes';
+import type { ConfiguredDocumentClass } from "../../../../../src/types/helperTypes";
 
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 const token = new Token(new TokenDocument());
 expectType<string>(token.id);
@@ -14,4 +14,4 @@ expectType<boolean>(token.emitsLight);
 expectType<Promise<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>[]>>(token.toggleVisibility());
 expectType<Promise<boolean>>(token.toggleEffect(CONFIG.statusEffects[0]));
 expectType<Promise<boolean>>(token.toggleEffect(new ActiveEffect().data));
-expectType<Promise<boolean>>(token.toggleEffect('path/to/my/image.png'));
+expectType<Promise<boolean>>(token.toggleEffect("path/to/my/image.png"));

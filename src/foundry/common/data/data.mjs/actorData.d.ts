@@ -5,13 +5,13 @@ import {
   ConfiguredSource,
   FieldReturnType,
   PropertiesToSource
-} from '../../../../types/helperTypes';
-import EmbeddedCollection from '../../abstract/embedded-collection.mjs';
-import { DocumentData } from '../../abstract/module.mjs';
-import * as documents from '../../documents.mjs';
-import { PrototypeTokenData } from '../data.mjs';
-import * as fields from '../fields.mjs';
-import { PrototypeTokenDataConstructorData } from './prototypeTokenData';
+} from "../../../../types/helperTypes";
+import EmbeddedCollection from "../../abstract/embedded-collection.mjs";
+import { DocumentData } from "../../abstract/module.mjs";
+import * as documents from "../../documents.mjs";
+import { PrototypeTokenData } from "../data.mjs";
+import * as fields from "../fields.mjs";
+import { PrototypeTokenDataConstructorData } from "./prototypeTokenData";
 
 interface ActorDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -20,7 +20,7 @@ interface ActorDataSchema extends DocumentSchema {
     type: typeof String;
     required: true;
     validate: (t: unknown) => boolean;
-    validationError: 'The provided Actor type must be in the array of types defined by the game system';
+    validationError: "The provided Actor type must be in the array of types defined by the game system";
   };
   img: FieldReturnType<fields.ImageField, { default: () => string }>;
   data: fields.SystemDataField;
@@ -106,7 +106,7 @@ interface ActorDataBaseProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'Actor'>;
+  flags: ConfiguredFlags<"Actor">;
 }
 
 interface ActorDataConstructorData {
@@ -124,7 +124,7 @@ interface ActorDataConstructorData {
   /**
    * An Actor subtype which configures the system data model applied
    */
-  type: ActorDataSource['type'];
+  type: ActorDataSource["type"];
 
   /**
    * An image file path which provides the artwork for this Actor
@@ -136,7 +136,7 @@ interface ActorDataConstructorData {
    * The system data object which is defined by the system template.json model
    * @defaultValue template from template.json for type or `{}`
    */
-  data?: DeepPartial<ActorDataSource['data']> | null | undefined;
+  data?: DeepPartial<ActorDataSource["data"]> | null | undefined;
 
   /**
    * Default Token settings which are used for Tokens created from this Actor
@@ -178,12 +178,12 @@ interface ActorDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Actor'> | null | undefined;
+  flags?: ConfiguredFlags<"Actor"> | null | undefined;
 }
 
 type ActorDataBaseSource = PropertiesToSource<ActorDataBaseProperties>;
-type ActorDataProperties = ActorDataBaseProperties & ConfiguredData<'Actor'>;
-type ActorDataSource = ActorDataBaseSource & ConfiguredSource<'Actor'>;
+type ActorDataProperties = ActorDataBaseProperties & ConfiguredData<"Actor">;
+type ActorDataSource = ActorDataBaseSource & ConfiguredSource<"Actor">;
 
 type DocumentDataConstructor = Pick<typeof DocumentData, keyof typeof DocumentData>;
 

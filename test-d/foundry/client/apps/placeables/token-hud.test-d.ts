@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 declare const token: Token;
 
@@ -8,7 +8,7 @@ expectType<Token | undefined>(hud.object);
 hud.bind(token);
 
 expectType<
-  ReturnType<foundry.data.TokenData['toJSON']> & {
+  ReturnType<foundry.data.TokenData["toJSON"]> & {
     id: string;
     classes: string;
     appId: number;
@@ -18,9 +18,9 @@ expectType<
     canConfigure: boolean;
     canToggleCombat: boolean;
     displayBar1: boolean;
-    bar1Data: ReturnType<TokenDocument['getBarAttribute']>;
+    bar1Data: ReturnType<TokenDocument["getBarAttribute"]>;
     displayBar2: boolean;
-    bar2Data: ReturnType<TokenDocument['getBarAttribute']>;
+    bar2Data: ReturnType<TokenDocument["getBarAttribute"]>;
     visibilityClass: string;
     effectsClass: string;
     combatClass: string;

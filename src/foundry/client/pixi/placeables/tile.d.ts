@@ -1,6 +1,6 @@
-import type { ConfiguredDocumentClass, ConfiguredObjectClassForName } from '../../../../types/helperTypes';
-import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
-import type { TileDataConstructorData } from '../../../common/data/data.mjs/tileData';
+import type { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../types/helperTypes";
+import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
+import type { TileDataConstructorData } from "../../../common/data/data.mjs/tileData";
 
 declare global {
   /**
@@ -76,7 +76,7 @@ declare global {
      */
     playing: boolean;
 
-    static override embeddedName: 'Tile';
+    static override embeddedName: "Tile";
 
     /**
      * Get the native aspect ratio of the base texture for the Tile sprite
@@ -107,7 +107,7 @@ declare global {
 
     override draw(): Promise<this>;
 
-    override destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
+    override destroy(options?: Parameters<PlaceableObject["destroy"]>[0]): void;
 
     /**
      * @param options - (default: `{}`) */
@@ -145,7 +145,7 @@ declare global {
      * Update the occlusion rendering for this overhead Tile for a given controlled Token.
      * @param tokens - The set of currently controlled Token objects
      */
-    updateOcclusion(tokens: Array<InstanceType<ConfiguredObjectClassForName<'Token'>>>): void;
+    updateOcclusion(tokens: Array<InstanceType<ConfiguredObjectClassForName<"Token">>>): void;
 
     /**
      * Test whether a specific Token occludes this overhead tile.
@@ -155,7 +155,7 @@ declare global {
      * @returns Is the Token occluded by the Tile?
      */
     testOcclusion(
-      token: InstanceType<ConfiguredObjectClassForName<'Token'>>,
+      token: InstanceType<ConfiguredObjectClassForName<"Token">>,
       options?: Tile.OcclusionOptions | undefined
     ): boolean;
 
@@ -182,7 +182,7 @@ declare global {
      * @param options - Options which customize the return value
      * @internal
      */
-    protected _createAlphaMap(options: Tile.AlphaMapOptions): Exclude<Tile['_alphaMap'], undefined>;
+    protected _createAlphaMap(options: Tile.AlphaMapOptions): Exclude<Tile["_alphaMap"], undefined>;
 
     /**
      * Compute the alpha-based bounding box for the tile, including an angle of rotation.
@@ -197,7 +197,7 @@ declare global {
     protected _createOcclusionFilter(): AbstractBaseMaskFilter;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.TileData['_source']>,
+      changed: DeepPartial<foundry.data.TileData["_source"]>,
       options?: DocumentModificationOptions,
       userId?: string
     ): Promise<this> | void;
@@ -269,7 +269,7 @@ declare global {
      * Create a preview tile with a background texture instead of an image
      * @param data - Initial data with which to create the preview Tile
      */
-    static createPreview(data: TileDataConstructorData): InstanceType<ConfiguredObjectClassForName<'Tile'>>;
+    static createPreview(data: TileDataConstructorData): InstanceType<ConfiguredObjectClassForName<"Tile">>;
   }
 
   namespace Tile {

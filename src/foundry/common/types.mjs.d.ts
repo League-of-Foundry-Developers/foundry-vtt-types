@@ -137,9 +137,9 @@ interface SettingConfig<T = unknown> {
 
   /**
    * The scope the Setting is stored in, either World or Client
-   * @defaultValue `'client'`
+   * @defaultValue `"client"`
    */
-  scope: 'world' | 'client';
+  scope: "world" | "client";
 
   /** Indicates if this Setting should render in the Config application */
   config?: boolean | undefined;
@@ -175,7 +175,7 @@ interface SettingConfig<T = unknown> {
   /** Executes when the value of this Setting changes */
   onChange?: (value: T) => void;
 
-  filePicker?: (T extends string ? true | 'audio' | 'image' | 'video' | 'imagevideo' | 'folder' : never) | undefined;
+  filePicker?: (T extends string ? true | "audio" | "image" | "video" | "imagevideo" | "folder" : never) | undefined;
 }
 
 interface SettingSubmenuConfig {

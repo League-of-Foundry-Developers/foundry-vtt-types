@@ -1,6 +1,6 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 const items = new Items();
-expectType<StoredDocument<Item>>(items.get('', { strict: true }));
-expectType<StoredDocument<Item>['data']['_source'][]>(items.toJSON());
+expectType<StoredDocument<Item>>(items.get("", { strict: true }));
+expectType<StoredDocument<Item>["data"]["_source"][]>(items.toJSON());
 expectType<ItemDirectory | undefined>(items.directory);

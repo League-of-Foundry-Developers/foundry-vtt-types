@@ -4,8 +4,8 @@ import {
   ConfiguredDocumentClassForName,
   PlaceableDocumentType,
   ConstructorDataType
-} from '../../../types/helperTypes';
-import EmbeddedCollection from '../../common/abstract/embedded-collection.mjs';
+} from "../../../types/helperTypes";
+import EmbeddedCollection from "../../common/abstract/embedded-collection.mjs";
 
 type ConcretePlaceableOrPlaceableObject<T> = T extends PlaceableObject ? T : PlaceableObject;
 
@@ -125,7 +125,7 @@ declare global {
      * Obtain an iterable of objects which should be added to this PlaceableLayer
      */
     getDocuments():
-      | Exclude<this['documentCollection'], null>
+      | Exclude<this["documentCollection"], null>
       | InstanceType<ConfiguredDocumentClassForName<DocumentName>>[];
 
     /**
@@ -303,7 +303,7 @@ declare global {
      * @param position   - The position to render the sheet at.
      */
     protected _createPreview(
-      createData: ConstructorDataType<InstanceType<ConfiguredDocumentClassForName<DocumentName>>['data']>,
+      createData: ConstructorDataType<InstanceType<ConfiguredDocumentClassForName<DocumentName>>["data"]>,
       { top, left }: { top: number; left: number }
     ): Promise<void>;
 
@@ -376,9 +376,9 @@ declare global {
   }
 
   namespace PlaceablesLayer {
-    type HistoryEventType = 'create' | 'update' | 'delete';
+    type HistoryEventType = "create" | "update" | "delete";
 
-    type CreationState = ValueOf<typeof PlaceablesLayer['CREATION_STATES']>;
+    type CreationState = ValueOf<typeof PlaceablesLayer["CREATION_STATES"]>;
 
     /**
      * @typeParam DocumentName - The key of the configuration which defines the object and document class.

@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -137,7 +137,7 @@ declare global {
     interface Data {
       page: number;
       macros: Macro[];
-      barClass: 'collapsed' | '';
+      barClass: "collapsed" | "";
     }
   }
 }

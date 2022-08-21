@@ -1,7 +1,7 @@
-import { expectError, expectType } from 'tsd';
+import { expectError, expectType } from "tsd";
 
-const card = new Card({ name: 'Just a deck of cards' });
-const cards = new Cards({ name: 'Some Card Deck', type: 'german' });
+const card = new Card({ name: "Just a deck of cards" });
+const cards = new Cards({ name: "Some Card Deck", type: "german" });
 
 expectType<foundry.data.CardFaceData>(card.back);
 expectType<foundry.data.CardFaceData | null>(card.face);
@@ -24,7 +24,7 @@ expectType<Promise<Card | undefined>>(card.flip(undefined));
 expectType<Promise<Card | undefined>>(card.pass(cards));
 expectType<Promise<Card | undefined>>(
   card.pass(cards, {
-    action: 'some custom action',
+    action: "some custom action",
     updateData: { value: 3 },
     chatNotification: true
   })
@@ -36,7 +36,7 @@ expectError(card.pass(cards, { updateData: { unknownProp: 0 } }));
 expectType<Promise<Card | undefined>>(card.play(cards));
 expectType<Promise<Card | undefined>>(
   card.play(cards, {
-    action: 'some custom action',
+    action: "some custom action",
     updateData: { value: 3 },
     chatNotification: true
   })
@@ -48,7 +48,7 @@ expectError(card.play(cards, { updateData: { unknownProp: 0 } }));
 expectType<Promise<Card | undefined>>(card.discard(cards));
 expectType<Promise<Card | undefined>>(
   card.discard(cards, {
-    action: 'some custom action',
+    action: "some custom action",
     updateData: { value: 3 },
     chatNotification: true
   })
@@ -73,7 +73,7 @@ expectType<Promise<ChatMessage | undefined>>(
   card.toMessage(
     {
       speaker: {
-        alias: 'The Speaker'
+        alias: "The Speaker"
       }
     },
     {

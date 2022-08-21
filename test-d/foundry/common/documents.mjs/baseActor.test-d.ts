@@ -1,8 +1,8 @@
-import { expectError, expectType } from 'tsd';
+import { expectError, expectType } from "tsd";
 
-import type EmbeddedCollection from '../../../../src/foundry/common/abstract/embedded-collection.mjs';
-import type { ActiveEffectDataSource } from '../../../../src/foundry/common/data/data.mjs/activeEffectData';
-import type { EffectDurationDataProperties } from '../../../../src/foundry/common/data/data.mjs/effectDurationData';
+import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.mjs";
+import type { ActiveEffectDataSource } from "../../../../src/foundry/common/data/data.mjs/activeEffectData";
+import type { EffectDurationDataProperties } from "../../../../src/foundry/common/data/data.mjs/effectDurationData";
 
 const baseActor = new foundry.documents.BaseActor();
 expectType<EmbeddedCollection<typeof ActiveEffect, foundry.data.ActorData>>(baseActor.effects);
@@ -15,14 +15,14 @@ interface CharacterDataSourceData {
 }
 
 interface CharacterFlags {
-  'my-module': {
+  "my-module": {
     known: boolean;
     xp: number;
   };
 }
 
 interface CharacterDataSource {
-  type: 'character';
+  type: "character";
   data: CharacterDataSourceData;
   flags: CharacterFlags;
 }
@@ -32,7 +32,7 @@ interface CharacterDataPropertiesData extends CharacterDataSourceData {
 }
 
 interface CharacterDataProperties {
-  type: 'character';
+  type: "character";
   data: CharacterDataPropertiesData;
   flags: CharacterFlags;
 }
@@ -43,14 +43,14 @@ interface NPCDataSourceData {
 }
 
 interface NPCFlags {
-  'my-module': {
-    'hidden-name': string;
+  "my-module": {
+    "hidden-name": string;
     known: boolean;
   };
 }
 
 interface NPCDataSource {
-  type: 'npc';
+  type: "npc";
   data: NPCDataSourceData;
   flags: NPCFlags;
 }
@@ -60,7 +60,7 @@ interface NPCDataPropertiesData extends NPCDataSourceData {
 }
 
 interface NPCDataProperties {
-  type: 'npc';
+  type: "npc";
   data: NPCDataPropertiesData;
   flags: NPCFlags;
 }
@@ -78,10 +78,10 @@ declare global {
   }
 }
 
-expectType<'character' | 'npc'>(baseActor.data.type);
-expectType<Actor | null>(baseActor.items.get('', { strict: true }).parent);
+expectType<"character" | "npc">(baseActor.data.type);
+expectType<Actor | null>(baseActor.items.get("", { strict: true }).parent);
 
-if (baseActor.data._source.type === 'character') {
+if (baseActor.data._source.type === "character") {
   expectType<number>(baseActor.data._source.data.health);
   expectError(baseActor.data._source.data.movement);
 } else {
@@ -90,7 +90,7 @@ if (baseActor.data._source.type === 'character') {
   expectError(baseActor.data._source.data.damage);
 }
 
-if (baseActor.data.type === 'character') {
+if (baseActor.data.type === "character") {
   expectType<number>(baseActor.data.data.health);
   expectType<number>(baseActor.data.data.movement);
 } else {
@@ -102,15 +102,15 @@ if (baseActor.data.type === 'character') {
 // Flags for Actor, Items, Card, and Cards documents can be configured via the SourceConfig. This is tested here.
 // For configuring flags for actors and items via FlagConfig please have a look into baseItem.test-d.ts.
 // shared flags are available
-expectType<boolean>(baseActor.getFlag('my-module', 'known'));
+expectType<boolean>(baseActor.getFlag("my-module", "known"));
 // non shared flags are not available
-expectType<never>(baseActor.getFlag('my-module', 'xp'));
-expectType<never>(baseActor.getFlag('my-module', 'hidden-name'));
+expectType<never>(baseActor.getFlag("my-module", "xp"));
+expectType<never>(baseActor.getFlag("my-module", "hidden-name"));
 // non shared flags are also not available if the type is known
-if (baseActor.data._source.type === 'character') {
-  expectType<never>(baseActor.getFlag('my-module', 'xp'));
+if (baseActor.data._source.type === "character") {
+  expectType<never>(baseActor.getFlag("my-module", "xp"));
 }
-if (baseActor.data.type === 'character') {
-  expectType<never>(baseActor.getFlag('my-module', 'xp'));
+if (baseActor.data.type === "character") {
+  expectType<never>(baseActor.getFlag("my-module", "xp"));
 }
-expectType<'Actor'>(baseActor.documentName);
+expectType<"Actor">(baseActor.documentName);

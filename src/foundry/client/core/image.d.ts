@@ -54,12 +54,12 @@ declare class ImageHelper {
     fileName: string,
     filePath: string,
     options?: {
-      /** The data storage location to which the file should be uploaded (default: `'data'`) */
+      /** The data storage location to which the file should be uploaded (default: `"data"`) */
       storage: string;
       /** The MIME type of the file being uploaded */
       type?: string;
     }
-  ): Promise<ReturnType<typeof FilePicker['upload']>>;
+  ): Promise<ReturnType<typeof FilePicker["upload"]>>;
 }
 
 declare namespace ImageHelper {

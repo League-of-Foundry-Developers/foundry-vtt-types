@@ -1,4 +1,4 @@
-import './index';
+import "./index";
 
 declare global {
   interface LenientGlobalVariableTypes {

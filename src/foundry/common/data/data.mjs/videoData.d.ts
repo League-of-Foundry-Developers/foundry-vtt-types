@@ -1,7 +1,7 @@
-import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
-import { DocumentData } from '../../abstract/module.mjs';
-import { documents } from '../../module.mjs';
-import * as fields from '../fields.mjs';
+import { FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes";
+import { DocumentData } from "../../abstract/module.mjs";
+import { documents } from "../../module.mjs";
+import * as fields from "../fields.mjs";
 
 interface VideoDataSchema extends DocumentSchema {
   loop: FieldReturnType<fields.BooleanField, { default: true }>;

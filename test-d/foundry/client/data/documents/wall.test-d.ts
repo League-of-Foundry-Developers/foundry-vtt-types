@@ -1,4 +1,4 @@
-import { expectError } from 'tsd';
+import { expectError } from "tsd";
 
 declare const scene: Scene;
 

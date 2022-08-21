@@ -27,7 +27,7 @@ declare class InvitationLinks<
 }
 
 declare namespace InvitationLinks {
-  type Adddresses = Game.Data['addresses'];
+  type Adddresses = Game.Data["addresses"];
   interface Data extends Adddresses {
     remoteClass?: string;
     remoteTitle?: string;

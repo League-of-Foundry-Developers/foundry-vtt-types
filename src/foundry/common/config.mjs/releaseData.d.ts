@@ -1,6 +1,6 @@
-import { PropertiesToSource } from '../../../types/helperTypes';
-import { DocumentData } from '../abstract/module.mjs';
-import * as fields from '../data/fields.mjs';
+import { PropertiesToSource } from "../../../types/helperTypes";
+import { DocumentData } from "../abstract/module.mjs";
+import * as fields from "../data/fields.mjs";
 
 export interface ReleaseDataSchema extends DocumentSchema {
   generation: typeof fields.REQUIRED_NUMBER;

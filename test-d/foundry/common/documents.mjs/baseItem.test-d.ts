@@ -1,9 +1,9 @@
-import { expectError, expectType } from 'tsd';
+import { expectError, expectType } from "tsd";
 
-import type EmbeddedCollection from '../../../../src/foundry/common/abstract/embedded-collection.mjs';
-import type { BaseItem } from '../../../../src/foundry/common/documents.mjs';
-import type { ActiveEffectDataSource } from '../../../../src/foundry/common/data/data.mjs/activeEffectData';
-import type { EffectDurationDataProperties } from '../../../../src/foundry/common/data/data.mjs/effectDurationData';
+import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.mjs";
+import type { BaseItem } from "../../../../src/foundry/common/documents.mjs";
+import type { ActiveEffectDataSource } from "../../../../src/foundry/common/data/data.mjs/activeEffectData";
+import type { EffectDurationDataProperties } from "../../../../src/foundry/common/data/data.mjs/effectDurationData";
 
 const baseItem = new foundry.documents.BaseItem();
 expectType<EmbeddedCollection<typeof ActiveEffect, foundry.data.ItemData>>(baseItem.effects);
@@ -15,7 +15,7 @@ interface ArmorDataSourceData {
 }
 
 interface ArmorDataSource {
-  type: 'armor';
+  type: "armor";
   data: ArmorDataSourceData;
 }
 
@@ -25,7 +25,7 @@ interface WeaponDataSourceData {
 }
 
 interface WeaponDataSource {
-  type: 'weapon';
+  type: "weapon";
   data: WeaponDataSourceData;
 }
 
@@ -34,7 +34,7 @@ interface ArmorDataPropertiesData extends ArmorDataSourceData {
 }
 
 interface ArmorDataProperties {
-  type: 'armor';
+  type: "armor";
   data: ArmorDataPropertiesData;
 }
 
@@ -43,7 +43,7 @@ interface WeaponDataPropertiesData extends WeaponDataSourceData {
 }
 
 interface WeaponDataProperties {
-  type: 'weapon';
+  type: "weapon";
   data: WeaponDataPropertiesData;
 }
 
@@ -60,10 +60,10 @@ declare global {
   }
 }
 
-expectType<'weapon' | 'armor'>(baseItem.data.type);
-expectType<Item | undefined>(baseItem.parent?.items.get('', { strict: true }));
+expectType<"weapon" | "armor">(baseItem.data.type);
+expectType<Item | undefined>(baseItem.parent?.items.get("", { strict: true }));
 
-if (baseItem.data._source.type === 'armor') {
+if (baseItem.data._source.type === "armor") {
   expectType<number>(baseItem.data._source.data.armorValue);
   expectError(baseItem.data._source.data.weight);
 } else {
@@ -72,7 +72,7 @@ if (baseItem.data._source.type === 'armor') {
   expectError(baseItem.data._source.data.damage);
 }
 
-if (baseItem.data.type === 'armor') {
+if (baseItem.data.type === "armor") {
   expectType<number>(baseItem.data.data.armorValue);
   expectType<number>(baseItem.data.data.weight);
 } else {
@@ -86,19 +86,19 @@ if (baseItem.data.type === 'armor') {
 declare global {
   interface FlagConfig {
     Item: {
-      'my-system': {
+      "my-system": {
         countable: boolean;
       };
     };
   }
 }
-expectType<{ countable: boolean }>(baseItem.data.flags['my-system']);
+expectType<{ countable: boolean }>(baseItem.data.flags["my-system"]);
 
-expectType<boolean>(baseItem.getFlag('my-system', 'countable'));
-expectType<never>(baseItem.getFlag('my-system', 'unknown-key'));
-expectType<unknown>(baseItem.getFlag('another-system', 'value'));
+expectType<boolean>(baseItem.getFlag("my-system", "countable"));
+expectType<never>(baseItem.getFlag("my-system", "unknown-key"));
+expectType<unknown>(baseItem.getFlag("another-system", "value"));
 
-expectType<Promise<BaseItem>>(baseItem.setFlag('my-system', 'countable', true));
-expectError(baseItem.setFlag('my-system', 'countable', 2));
-expectError(baseItem.setFlag('my-system', 'unknown-key', 2));
-expectType<Promise<BaseItem>>(baseItem.setFlag('another-system', 'value', true));
+expectType<Promise<BaseItem>>(baseItem.setFlag("my-system", "countable", true));
+expectError(baseItem.setFlag("my-system", "countable", 2));
+expectError(baseItem.setFlag("my-system", "unknown-key", 2));
+expectType<Promise<BaseItem>>(baseItem.setFlag("another-system", "value", true));

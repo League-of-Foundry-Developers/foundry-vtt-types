@@ -36,5 +36,5 @@ declare class PrimaryCanvasGroup extends CachedContainer {
    */
   protected _createLayers(): void;
 
-  override render(renderer: Parameters<PIXI.Container['render']>[0]): void;
+  override render(renderer: Parameters<PIXI.Container["render"]>[0]): void;
 }

@@ -112,9 +112,9 @@ declare class BaseGrid extends PIXI.Container {
 
 declare namespace BaseGrid {
   interface GridOptions {
-    dimensions: Canvas['dimensions'];
+    dimensions: Canvas["dimensions"];
     color: string;
-    alpha: Scene['data']['gridAlpha'];
+    alpha: Scene["data"]["gridAlpha"];
     columns?: boolean;
     even?: boolean;
   }

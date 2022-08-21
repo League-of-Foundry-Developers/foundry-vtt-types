@@ -1,13 +1,13 @@
-import { FieldReturnType, PropertiesToSource } from '../../../types/helperTypes';
-import { DocumentData } from '../abstract/module.mjs';
-import * as fields from '../data/fields.mjs';
+import { FieldReturnType, PropertiesToSource } from "../../../types/helperTypes";
+import { DocumentData } from "../abstract/module.mjs";
+import * as fields from "../data/fields.mjs";
 
 interface PackageLanguageDataSchema extends DocumentSchema {
   lang: FieldReturnType<
     fields.RequiredString,
     {
       validate: (lang: string) => boolean;
-      validationError: 'Invalid language code provided which is not supported by Intl.getCanonicalLocales';
+      validationError: "Invalid language code provided which is not supported by Intl.getCanonicalLocales";
     }
   >;
   name: fields.StringField;

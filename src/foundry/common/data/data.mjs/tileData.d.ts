@@ -1,9 +1,9 @@
-import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
-import DocumentData from '../../abstract/data.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
-import { TileOcclusion, TileOcclusionConstructorData } from './tileOcclusion';
-import { VideoData, VideoDataConstructorData } from './videoData';
+import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes";
+import DocumentData from "../../abstract/data.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
+import { TileOcclusion, TileOcclusionConstructorData } from "./tileOcclusion";
+import { VideoData, VideoDataConstructorData } from "./videoData";
 
 interface TileDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -125,7 +125,7 @@ interface TileDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'Tile'>;
+  flags: ConfiguredFlags<"Tile">;
 }
 
 interface TileDataConstructorData {
@@ -221,7 +221,7 @@ interface TileDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Tile'> | null | undefined;
+  flags?: ConfiguredFlags<"Tile"> | null | undefined;
 }
 
 type TileDataSource = PropertiesToSource<TileDataProperties>;

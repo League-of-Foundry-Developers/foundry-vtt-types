@@ -1,6 +1,6 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
-const itemSheet = new ItemSheet(new Item({ name: 'Heavy armor', type: 'armor' }));
+const itemSheet = new ItemSheet(new Item({ name: "Heavy armor", type: "armor" }));
 expectType<Item>(itemSheet.object);
 expectType<Item>(itemSheet.item);
 expectType<Item>((await itemSheet.getData()).item);

@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName, DocumentConstructor } from '../../../../types/helperTypes';
+import type { ConfiguredDocumentClassForName, DocumentConstructor } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -9,7 +9,7 @@ declare global {
   class SceneConfig<
     Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends object = SceneConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Scene'>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<"Scene">>> {
     /**
      * @defaultValue
      * ```typescript
@@ -97,14 +97,14 @@ declare global {
 
   namespace SceneConfig {
     interface Data<Options extends DocumentSheetOptions = DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Scene'>>, Options> {
-      gridTypes: ReturnType<typeof SceneConfig['_getGridTypes']>;
-      weatherTypes: ReturnType<SceneConfig['_getWeatherTypes']>;
-      playlists: ReturnType<SceneConfig['_getDocuments']>;
-      sounds: ReturnType<SceneConfig['_getDocuments']>;
-      journals: ReturnType<SceneConfig['_getDocuments']>;
+      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<"Scene">>, Options> {
+      gridTypes: ReturnType<typeof SceneConfig["_getGridTypes"]>;
+      weatherTypes: ReturnType<SceneConfig["_getWeatherTypes"]>;
+      playlists: ReturnType<SceneConfig["_getDocuments"]>;
+      sounds: ReturnType<SceneConfig["_getDocuments"]>;
+      journals: ReturnType<SceneConfig["_getDocuments"]>;
       hasGlobalThreshold: boolean;
-      data: DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Scene'>>, Options>['data'] & {
+      data: DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<"Scene">>, Options>["data"] & {
         /**
          * @defaultValue `0`
          */
@@ -128,15 +128,15 @@ declare global {
       hasGlobalThreshold: boolean;
       height: number | null;
       img: string;
-      'initial.scale': number | null;
-      'initial.x': number | null;
-      'initial.y': number | null;
+      "initial.scale": number | null;
+      "initial.x": number | null;
+      "initial.y": number | null;
       journal: string;
       name: string;
       navName: string;
       navigation: boolean;
       padding: number;
-      'permission.default': foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
+      "permission.default": foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
       playlist: string;
       shiftX: number | null;
       shiftY: number | null;

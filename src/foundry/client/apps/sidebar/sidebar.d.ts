@@ -97,6 +97,6 @@ declare namespace Sidebar {
   interface Data {
     coreUpdate: string | false;
     systemUpdate: string | false;
-    user: Game['user'];
+    user: Game["user"];
   }
 }

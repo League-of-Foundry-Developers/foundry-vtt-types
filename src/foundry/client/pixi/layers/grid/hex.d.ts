@@ -59,7 +59,7 @@ declare class HexagonalGrid extends BaseGrid {
    *                 (default: `"floor"`)
    * @returns The row, column combination
    */
-  getGridPositionFromPixels(x: number, y: number, method?: 'floor' | 'ceil' | 'round'): PointArray;
+  getGridPositionFromPixels(x: number, y: number, method?: "floor" | "ceil" | "round"): PointArray;
 
   override getPixelsFromGridPosition(row: number, col: number): PointArray;
 

@@ -1,12 +1,12 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 const someRay = new Ray({ x: 0, y: 0 }, { x: 0, y: 0 });
 const somePolygonRay: PolygonRay = someRay as PolygonRay;
 somePolygonRay.result = new CollisionResult();
 
-expectType<boolean>(ClockwiseSweepPolygon.getRayCollisions(somePolygonRay, { mode: 'any' }));
-expectType<PolygonVertex>(ClockwiseSweepPolygon.getRayCollisions(somePolygonRay, { mode: 'closest' }));
-expectType<PolygonVertex[]>(ClockwiseSweepPolygon.getRayCollisions(somePolygonRay, { mode: 'all' }));
+expectType<boolean>(ClockwiseSweepPolygon.getRayCollisions(somePolygonRay, { mode: "any" }));
+expectType<PolygonVertex>(ClockwiseSweepPolygon.getRayCollisions(somePolygonRay, { mode: "closest" }));
+expectType<PolygonVertex[]>(ClockwiseSweepPolygon.getRayCollisions(somePolygonRay, { mode: "all" }));
 
 declare const initializedConfig: ClockwiseSweepPolygon.InitializedConfig;
 expectType<boolean>(initializedConfig.hasLimitedRadius);

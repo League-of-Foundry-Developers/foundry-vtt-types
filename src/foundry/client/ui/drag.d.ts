@@ -9,7 +9,7 @@ declare class Draggable<R extends boolean | Draggable.Resizable = false> {
    * @param resizable - Is the application resizable? Supply an object to configure resizing behaviour
    *                    or true to have it automatically configured.
    */
-  constructor(app: Draggable['app'], element: JQuery, handle: Draggable['handle'], resizable?: R);
+  constructor(app: Draggable["app"], element: JQuery, handle: Draggable["handle"], resizable?: R);
 
   app: Application;
 
@@ -32,9 +32,9 @@ declare class Draggable<R extends boolean | Draggable.Resizable = false> {
    * Remember event handlers associated with this Draggable class so they may be later unregistered
    */
   // prettier-ignore
-  handlers: this['resizable'] extends true
+  handlers: this["resizable"] extends true
     ? Draggable.ResizableHandlers
-    : this['resizable'] extends false
+    : this["resizable"] extends false
       ? Draggable.Handlers
       : Draggable.Handlers | Draggable.ResizableHandlers;
 
@@ -109,16 +109,16 @@ declare namespace Draggable {
   }
 
   interface Handlers {
-    click: ['click', (e: Event) => void, { capture: boolean; passive: boolean }];
+    click: ["click", (e: Event) => void, { capture: boolean; passive: boolean }];
 
-    dragDown: ['mousedown', (e: Event) => void, false];
-    dragMove: ['mousemove', (e: Event) => void, false];
-    dragUp: ['mouseup', (e: Event) => void, false];
+    dragDown: ["mousedown", (e: Event) => void, false];
+    dragMove: ["mousemove", (e: Event) => void, false];
+    dragUp: ["mouseup", (e: Event) => void, false];
   }
 
   interface ResizableHandlers extends Handlers {
-    resizeDown: ['mousedown', (e: Event) => void, false];
-    resizeMove: ['mousemove', (e: Event) => void, false];
-    resizeUp: ['mouseup', (e: Event) => void, false];
+    resizeDown: ["mousedown", (e: Event) => void, false];
+    resizeMove: ["mousemove", (e: Event) => void, false];
+    resizeUp: ["mouseup", (e: Event) => void, false];
   }
 }

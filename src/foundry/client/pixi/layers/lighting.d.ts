@@ -14,7 +14,7 @@
  * Hooks.on("lightingRefresh", layer => {});
  * ```
  */
-declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLayer.LayerOptions> {
+declare class LightingLayer extends PlaceablesLayer<"AmbientLight", LightingLayer.LayerOptions> {
   constructor();
 
   /**
@@ -71,12 +71,12 @@ declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLaye
    */
   channels: ChannelConfig | undefined;
 
-  static override documentName: 'AmbientLight';
+  static override documentName: "AmbientLight";
 
   /**
    * @remarks This is not overridden in foundry but reflects the real behavior.
    */
-  static get instance(): Canvas['lighting'];
+  static get instance(): Canvas["lighting"];
 
   /**
    * @defaultValue
@@ -210,16 +210,16 @@ declare class LightingLayer extends PlaceablesLayer<'AmbientLight', LightingLaye
 
   protected override _onDragLeftCancel(event: PointerEvent): void;
 
-  protected override _onMouseWheel(event: WheelEvent): void | ReturnType<AmbientLight['rotate']>;
+  protected override _onMouseWheel(event: WheelEvent): void | ReturnType<AmbientLight["rotate"]>;
 }
 
 declare namespace LightingLayer {
-  interface LayerOptions extends PlaceablesLayer.LayerOptions<'AmbientLight'> {
-    name: 'lighting';
+  interface LayerOptions extends PlaceablesLayer.LayerOptions<"AmbientLight"> {
+    name: "lighting";
   }
 }
 
-type ChannelConfig = Record<'canvas' | 'background' | 'black' | 'bright' | 'dark' | 'dim', LightChannel> & {
+type ChannelConfig = Record<"canvas" | "background" | "black" | "bright" | "dark" | "dim", LightChannel> & {
   darkness: { level: number; rgb: [r: number, g: number, b: number] };
 };
 

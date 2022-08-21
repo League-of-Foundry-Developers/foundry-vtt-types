@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 declare const tile: Tile;
 
@@ -7,7 +7,7 @@ expectType<ForegroundLayer | BackgroundLayer | undefined>(hud.layer);
 expectType<Tile | undefined>(hud.object);
 hud.bind(tile);
 expectType<
-  ReturnType<foundry.data.TileData['toJSON']> & {
+  ReturnType<foundry.data.TileData["toJSON"]> & {
     id: string;
     classes: string;
     appId: number;

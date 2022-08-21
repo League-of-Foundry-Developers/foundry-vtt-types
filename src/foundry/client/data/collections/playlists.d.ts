@@ -1,5 +1,5 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
-import type { SceneDataConstructorData } from '../../../common/data/data.mjs/sceneData';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
+import type { SceneDataConstructorData } from "../../../common/data/data.mjs/sceneData";
 
 declare global {
   /**
@@ -9,19 +9,19 @@ declare global {
    * @see {@link Playlist} The Playlist document
    * @see {@link PlaylistDirectory} The PlaylistDirectory sidebar directory
    */
-  class Playlists extends WorldCollection<typeof foundry.documents.BasePlaylist, 'Playlists'> {
+  class Playlists extends WorldCollection<typeof foundry.documents.BasePlaylist, "Playlists"> {
     constructor(
       data?: StoredDocument<
         InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BasePlaylist>>
-      >['data']['_source'][]
+      >["data"]["_source"][]
     );
 
-    static override documentName: 'Playlist';
+    static override documentName: "Playlist";
 
     /**
      * Return the subset of Playlist documents which are currently playing
      */
-    get playing(): ReturnType<this['filter']>;
+    get playing(): ReturnType<this["filter"]>;
 
     /**
      * Perform one-time initialization to begin playback of audio

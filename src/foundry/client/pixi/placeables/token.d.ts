@@ -2,8 +2,8 @@ import {
   ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
   ConfiguredObjectClassForName
-} from '../../../../types/helperTypes';
-import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
+} from "../../../../types/helperTypes";
+import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
 declare global {
   /**
@@ -58,7 +58,7 @@ declare global {
     /** @defaultValue `undefined` */
     icon?: PIXI.Sprite;
 
-    static override embeddedName: 'Token';
+    static override embeddedName: "Token";
 
     /**
      * Establish an initial velocity of the token based on it's direction of facing.
@@ -69,7 +69,7 @@ declare global {
     /**
      * A convenient reference to the Actor object associated with the Token embedded document.
      */
-    get actor(): this['document']['actor'];
+    get actor(): this["document"]["actor"];
 
     /**
      * A convenient reference for whether the current User has full control over the Token document.
@@ -110,7 +110,7 @@ declare global {
     /**
      * The Token's current central position
      */
-    get center(): ReturnType<this['getCenter']>;
+    get center(): ReturnType<this["getCenter"]>;
 
     /**
      * The HTML source element for the primary Tile texture
@@ -219,7 +219,7 @@ declare global {
      */
     protected _drawHUD(): Token.InitializedObjectHUD;
 
-    override destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
+    override destroy(options?: Parameters<PlaceableObject["destroy"]>[0]): void;
 
     /**
      * Apply initial sanitizations to the provided input data to ensure that a Token has valid required attributes.
@@ -301,7 +301,7 @@ declare global {
      * @param bar    - The Bar container
      * @param data   - Resource data for this bar
      */
-    protected _drawBar(number: number, bar: PIXI.Graphics, data: ReturnType<TokenDocument['getBarAttribute']>): void;
+    protected _drawBar(number: number, bar: PIXI.Graphics, data: ReturnType<TokenDocument["getBarAttribute"]>): void;
 
     /**
      * Draw the token's nameplate as a text object
@@ -471,7 +471,7 @@ declare global {
      * @returns Was the texture applied (true) or removed (false)
      */
     toggleEffect(
-      effect: string | ConstructorParameters<ConfiguredDocumentClassForName<'ActiveEffect'>>[0],
+      effect: string | ConstructorParameters<ConfiguredDocumentClassForName<"ActiveEffect">>[0],
       options?: Token.EffectToggleOptions | undefined
     ): Promise<boolean>;
 
@@ -506,15 +506,15 @@ declare global {
 
     protected override _getShiftedPosition(dx: number, dy: number): { x: number; y: number };
 
-    override rotate(...args: Parameters<PlaceableObject['rotate']>): Promise<this>;
+    override rotate(...args: Parameters<PlaceableObject["rotate"]>): Promise<this>;
 
     protected override _onCreate(
-      options: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>['data']['_source'],
+      options: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>["data"]["_source"],
       userId: DocumentModificationOptions
     ): void;
 
     protected override _onUpdate(
-      data?: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>['data']['_source']>,
+      data?: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>["data"]["_source"]>,
       options?: DocumentModificationOptions & { animate?: boolean },
       userId?: string
     ): void;
@@ -602,7 +602,7 @@ declare global {
       target?: PIXI.Graphics;
     }
 
-    type InitializedObjectHUD = RequiredProps<ObjectHUD, 'bars' | 'nameplate' | 'tooltip' | 'effects' | 'target'>;
+    type InitializedObjectHUD = RequiredProps<ObjectHUD, "bars" | "nameplate" | "tooltip" | "effects" | "target">;
 
     interface UpdateLightSourceOptions {
       /**
@@ -718,5 +718,5 @@ declare global {
    * A "secret" global to help debug attributes of the currently controlled Token.
    * This is only for debugging, and may be removed in the future, so it's not safe to use.
    */
-  let _token: InstanceType<ConfiguredObjectClassForName<'Token'>> | null;
+  let _token: InstanceType<ConfiguredObjectClassForName<"Token">> | null;
 }

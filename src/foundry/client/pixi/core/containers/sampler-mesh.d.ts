@@ -7,8 +7,8 @@ declare class SamplerMesh extends PIXI.Mesh {
    * @defaultValue
    * ```javascript
    * new PIXI.Geometry()
-   *   .addAttribute('aVertexPosition', [0, 0, 1, 0, 1, 1, 0, 1], 2)
-   *   .addAttribute('aUvs', [0, 0, 1, 0, 1, 1, 0, 1], 2)
+   *   .addAttribute("aVertexPosition", [0, 0, 1, 0, 1, 1, 0, 1], 2)
+   *   .addAttribute("aUvs", [0, 0, 1, 0, 1, 1, 0, 1], 2)
    *   .addIndex([0, 1, 2, 0, 2, 3])
    * ```
    */

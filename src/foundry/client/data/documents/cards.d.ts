@@ -3,8 +3,8 @@ import type {
   ConfiguredDocumentClassForName,
   ConstructorDataType,
   DocumentConstructor
-} from '../../../../types/helperTypes';
-import type { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
+} from "../../../../types/helperTypes";
+import type { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
 declare global {
   /**
@@ -23,12 +23,12 @@ declare global {
     /**
      * The Card documents within this stack which are able to be drawn.
      */
-    get availableCards(): InstanceType<ConfiguredDocumentClassForName<'Card'>>[];
+    get availableCards(): InstanceType<ConfiguredDocumentClassForName<"Card">>[];
 
     /**
      * The Card documents which belong to this stack but have already been drawn.
      */
-    get drawnCards(): InstanceType<ConfiguredDocumentClassForName<'Card'>>[];
+    get drawnCards(): InstanceType<ConfiguredDocumentClassForName<"Card">>[];
 
     /**
      * Returns the localized Label for the type of Card Stack this is
@@ -41,21 +41,21 @@ declare global {
         | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
       >,
       context: DocumentModificationContext & { temporary: false }
-    ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClassForName<'Cards'>>>[]>;
+    ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClassForName<"Cards">>>[]>;
     static createDocuments(
       data: Array<
         | ConstructorDataType<foundry.data.CardsData>
         | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
       >,
       context: DocumentModificationContext & { temporary: boolean }
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Cards'>>[]>;
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">>[]>;
     static createDocuments(
       data: Array<
         | ConstructorDataType<foundry.data.CardsData>
         | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
       >,
       context?: DocumentModificationContext
-    ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClassForName<'Cards'>>>[]>;
+    ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClassForName<"Cards">>>[]>;
 
     /**
      * Deal one or more cards from this Cards document to each of a provided array of Cards destinations.
@@ -67,10 +67,10 @@ declare global {
      * @returns This Cards document after the deal operation has completed
      */
     deal(
-      to: InstanceType<ConfiguredDocumentClassForName<'Cards'>>[],
+      to: InstanceType<ConfiguredDocumentClassForName<"Cards">>[],
       number?: number | undefined,
       options?: Cards.DealOptions | undefined
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Cards'>>>;
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">>>;
 
     /**
      * Pass an array of specific Card documents from this document to some other Cards stack.
@@ -81,10 +81,10 @@ declare global {
      * @returns An array of the Card embedded documents created within the destination stack
      */
     pass(
-      to: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
+      to: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
       ids: string[],
       options?: Cards.PassOptions | undefined
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>>[]>;
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">>[]>;
 
     /**
      * Draw one or more cards from some other Cards document.
@@ -95,17 +95,17 @@ declare global {
      * @returns An array of the Card documents which were drawn
      */
     draw(
-      from: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
+      from: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
       number?: number | undefined,
       options?: Cards.DrawOptions | undefined
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>>[]>;
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">>[]>;
 
     /**
      * Shuffle this Cards stack, randomizing the sort order of all the cards it contains.
      * @param options - (default: `{}`)
      * @returns The Cards document after the shuffle operation has completed
      */
-    shuffle(options?: Cards.ShuffleOptions | undefined): Promise<InstanceType<ConfiguredDocumentClassForName<'Cards'>>>;
+    shuffle(options?: Cards.ShuffleOptions | undefined): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">>>;
 
     /**
      * Reset the Cards stack, retrieving all original cards from other stacks where they may have been drawn if this is a
@@ -114,7 +114,7 @@ declare global {
      *                  (default: `{}`)
      * @returns The Cards document after the reset operation has completed
      */
-    reset(options?: Cards.ResetOptions | undefined): Promise<InstanceType<ConfiguredDocumentClassForName<'Cards'>>>;
+    reset(options?: Cards.ResetOptions | undefined): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">>>;
 
     /**
      * Perform a reset operation for a deck, retrieving all original cards from other stacks where they may have been
@@ -126,7 +126,7 @@ declare global {
      */
     protected _resetDeck(
       options?: Cards.ResetOptions | undefined
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Cards'>>>;
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">>>;
 
     /**
      * Return all cards in this stack to their original decks.
@@ -137,7 +137,7 @@ declare global {
      */
     protected _resetStack(
       options?: Cards.ResetOptions | undefined
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Cards'>>>;
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">>>;
 
     /**
      * A sorting function that is used to determine the standard order of Card documents within an un-shuffled stack.
@@ -162,7 +162,7 @@ declare global {
     protected _drawCards(
       number: number,
       how: foundry.CONST.CARD_DRAW_MODES
-    ): InstanceType<ConfiguredDocumentClassForName<'Card'>>[];
+    ): InstanceType<ConfiguredDocumentClassForName<"Card">>[];
 
     /**
      * Create a ChatMessage which provides a notification of the cards operation which was just performed.
@@ -174,10 +174,10 @@ declare global {
      * @internal
      */
     protected _postChatNotification(
-      source: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
+      source: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
       action: string,
       context: Record<string, unknown>
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'ChatMessage'>> | undefined>;
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<"ChatMessage">> | undefined>;
 
     protected override _onUpdate(
       data: DeepPartial<foundry.data.CardsData>,
@@ -201,19 +201,19 @@ declare global {
      * Display a dialog which prompts the user to deal cards to some number of hand-type Cards documents.
      * @see {@link Cards#deal}
      */
-    dealDialog(): Promise<InstanceType<ConfiguredDocumentClassForName<'Cards'>> | null>;
+    dealDialog(): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">> | null>;
 
     /**
      * Display a dialog which prompts the user to draw cards from some other deck-type Cards documents.
      * @see {@link Cards#draw}
      */
-    drawDialog(): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>>[] | null>;
+    drawDialog(): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">>[] | null>;
 
     /**
      * Display a dialog which prompts the user to pass cards from this document to some other other Cards document.
      * @see {@link Cards#deal}
      */
-    passDialog(): Promise<InstanceType<ConfiguredDocumentClassForName<'Cards'>> | null>;
+    passDialog(): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">> | null>;
 
     /**
      * Display a dialog which prompts the user to play a specific Card to some other Cards document
@@ -221,14 +221,14 @@ declare global {
      * @param card - The specific card being played as part of this dialog
      */
     playDialog(
-      card: InstanceType<ConfiguredDocumentClassForName<'Card'>>
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>>[] | void | null>;
+      card: InstanceType<ConfiguredDocumentClassForName<"Card">>
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">>[] | void | null>;
 
     /**
      * Display a confirmation dialog for whether or not the user wishes to reset a Cards stack
      * @see {@link Cards#reset}
      */
-    resetDialog(): Promise<InstanceType<ConfiguredDocumentClassForName<'Cards'>> | false | null>;
+    resetDialog(): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">> | false | null>;
 
     override deleteDialog(options?: Partial<DialogOptions> | undefined): Promise<this | false | null | undefined>;
 
@@ -241,7 +241,7 @@ declare global {
             | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
           >
         | undefined,
-      context?: (Pick<DocumentModificationContext, 'parent' | 'pack'> & Partial<DialogOptions>) | undefined
+      context?: (Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>) | undefined
     ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
   }
 
@@ -270,7 +270,7 @@ declare global {
 
       /**
        * The name of the action being performed, used as part of the dispatched Hook event
-       * @defaultValue `'deal'`
+       * @defaultValue `"deal"`
        */
       action?: string | undefined;
     }
@@ -300,7 +300,7 @@ declare global {
 
       /**
        * The name of the action being performed, used as part of the dispatched Hook event
-       * @defaultValue `'pass'`
+       * @defaultValue `"pass"`
        */
       action?: string | undefined;
     }

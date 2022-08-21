@@ -1,1 +1,1 @@
-import './clipper';
+import "./clipper";

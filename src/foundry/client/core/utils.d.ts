@@ -1,4 +1,4 @@
-import { ClientDocumentMixin } from '../data/abstract/client-document';
+import { ClientDocumentMixin } from "../data/abstract/client-document";
 
 declare global {
   /**
@@ -95,8 +95,8 @@ declare global {
   function getDocumentClass<DocumentName extends string>(
     documentName: DocumentName
   ): DocumentName extends keyof CONFIG
-    ? 'documentClass' extends keyof CONFIG[DocumentName]
-      ? CONFIG[DocumentName]['documentClass']
+    ? "documentClass" extends keyof CONFIG[DocumentName]
+      ? CONFIG[DocumentName]["documentClass"]
       : undefined
     : undefined;
 }

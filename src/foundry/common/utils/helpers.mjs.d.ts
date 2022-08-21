@@ -1,4 +1,4 @@
-import type { TypeOfTag } from 'typescript/lib/typescript';
+import type { TypeOfTag } from "typescript/lib/typescript";
 
 /**
  * Benchmark the performance of a function, calling it a requested number of iterations.
@@ -123,7 +123,7 @@ type InnerDuplicated<T> = T extends { toJSON(): infer U }
    ? U extends Array<unknown>
      ? InnerDuplicated<U>
      : U extends object
-       ? InnerDuplicated<Omit<U, 'toJSON'>>
+       ? InnerDuplicated<Omit<U, "toJSON">>
        : InnerDuplicated<U>
    : T extends NonStringifiable
      ? undefined
@@ -247,7 +247,7 @@ export declare function getRoute(
  */
 export function getType(
   variable: unknown
-): Exclude<TypeOfTag, 'object'> | 'null' | 'Object' | 'Array' | 'Set' | 'Map' | 'Promise' | 'Error' | 'HTMLElement';
+): Exclude<TypeOfTag, "object"> | "null" | "Object" | "Array" | "Set" | "Map" | "Promise" | "Error" | "HTMLElement";
 
 /**
  * A helper function which tests whether an object has a property or nested property given a string key.
@@ -313,12 +313,12 @@ export function isEmpty(value: undefined | null | unknown[] | object | Set<unkno
 type OmitByValue<T, ValueType> = { [Key in keyof T as T[Key] extends ValueType ? never : Key]: T[Key] };
 type RemoveNever<T> = OmitByValue<T, never>;
 type PropWithMinus<K> = K extends string ? `-=${K}` : never;
-type DeleteByObjectKeys<T, U, M extends MergeObjectOptions> = M['performDeletions'] extends true
+type DeleteByObjectKeys<T, U, M extends MergeObjectOptions> = M["performDeletions"] extends true
   ? RemoveNever<{
       [K in keyof T]: PropWithMinus<K> extends keyof U ? (U[PropWithMinus<K>] extends null ? never : T[K]) : T[K];
     }>
   : T;
-type RemoveDeletingObjectKeys<T, M extends MergeObjectOptions> = M['performDeletions'] extends true
+type RemoveDeletingObjectKeys<T, M extends MergeObjectOptions> = M["performDeletions"] extends true
   ? RemoveNever<{
       [K in keyof T]: K extends string ? (Capitalize<K> extends K ? (T[K] extends null ? never : T[K]) : T[K]) : T[K];
     }>
@@ -333,9 +333,9 @@ type MergeObjectProperty<T, U, M extends MergeObjectOptions> = T extends Array<a
       : Result<
           T,
           U,
-          Omit<M, 'insertKeys' | 'performDeletions'> & {
-            insertKeys: M['insertValues'];
-            performDeletions: M['performDeletions'] extends true ? true : false;
+          Omit<M, "insertKeys" | "performDeletions"> & {
+            insertKeys: M["insertValues"];
+            performDeletions: M["performDeletions"] extends true ? true : false;
           }
         >
     : U
@@ -470,7 +470,7 @@ declare function _mergeInsert(
   original: object,
   k: string,
   v: unknown,
-  options: Pick<MergeObjectOptions, 'insertKeys' | 'insertValues' | 'performDeletions'> | undefined,
+  options: Pick<MergeObjectOptions, "insertKeys" | "insertValues" | "performDeletions"> | undefined,
   _d: number
 ): void;
 

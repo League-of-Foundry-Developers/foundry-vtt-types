@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -38,13 +38,13 @@ declare global {
     /**
      * A convenience reference to the Item document
      */
-    get item(): this['object'];
+    get item(): this["object"];
 
     /**
      * The Actor instance which owns this item. This may be null if the item is
      * unowned.
      */
-    get actor(): this['item']['actor'];
+    get actor(): this["item"]["actor"];
 
     override getData(options?: Partial<Options>): Data | Promise<Data>;
 
@@ -54,7 +54,7 @@ declare global {
      * Handle changing the item image
      * @internal
      */
-    protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
+    protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker["browse"]>;
   }
 
   namespace ItemSheet {
@@ -63,7 +63,7 @@ declare global {
      */
     interface Data<Options extends ItemSheet.Options = ItemSheet.Options>
       extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Item>>, Options> {
-      item: this['document'];
+      item: this["document"];
     }
 
     type Options = DocumentSheetOptions;

@@ -28,13 +28,13 @@ declare global {
 
     protected override _updateObject(
       event: Event,
-      formData: ClientSettings.Values['core.combatTrackerConfig']
+      formData: ClientSettings.Values["core.combatTrackerConfig"]
     ): Promise<unknown>;
   }
 
   namespace CombatTrackerConfig {
     interface Data {
-      settings: ClientSettings.Values['core.combatTrackerConfig'];
+      settings: ClientSettings.Values["core.combatTrackerConfig"];
       attributeChoices: Record<string, string[]>;
     }
   }

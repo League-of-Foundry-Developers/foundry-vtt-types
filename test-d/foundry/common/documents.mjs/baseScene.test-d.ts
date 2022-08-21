@@ -1,6 +1,6 @@
-import type EmbeddedCollection from '../../../../src/foundry/common/abstract/embedded-collection.mjs';
+import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.mjs";
 
-import { expectError, expectType } from 'tsd';
+import { expectError, expectType } from "tsd";
 
 expectType<{
   distance: number;
@@ -57,16 +57,16 @@ expectError(foundry.documents.BaseScene.create());
 
 expectError(foundry.documents.BaseScene.create({}));
 
-expectType<Promise<StoredDocument<Scene> | undefined>>(foundry.documents.BaseScene.create({ name: 'My scene' }));
+expectType<Promise<StoredDocument<Scene> | undefined>>(foundry.documents.BaseScene.create({ name: "My scene" }));
 
-const myScene = await foundry.documents.BaseScene.create({ name: 'My second scene' }, { temporary: true });
+const myScene = await foundry.documents.BaseScene.create({ name: "My second scene" }, { temporary: true });
 if (myScene) {
   expectType<foundry.data.SceneData>(myScene.data);
 }
 
 expectError(new foundry.documents.BaseScene({}));
 
-const scene = new foundry.documents.BaseScene({ name: 'My third scene' });
+const scene = new foundry.documents.BaseScene({ name: "My third scene" });
 expectType<foundry.documents.BaseScene>(scene);
 
 expectType<EmbeddedCollection<typeof DrawingDocument, foundry.data.SceneData>>(scene.drawings);

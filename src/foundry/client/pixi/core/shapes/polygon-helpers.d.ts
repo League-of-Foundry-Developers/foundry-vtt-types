@@ -1,4 +1,4 @@
-import type { ConfiguredObjectClassForName } from '../../../../../types/helperTypes';
+import type { ConfiguredObjectClassForName } from "../../../../../types/helperTypes";
 
 declare global {
   /**
@@ -84,8 +84,8 @@ declare global {
   }
 
   interface PolygonVertexOptions {
-    distance: PolygonVertex['_distance'];
-    index: PolygonVertex['_index'];
+    distance: PolygonVertex["_distance"];
+    index: PolygonVertex["_index"];
   }
 
   /**
@@ -106,7 +106,7 @@ declare global {
      * @param type - The type of polygon being constructed
      */
     static fromWall(
-      wall: ConfiguredObjectClassForName<'Wall'> | WallDocument,
+      wall: ConfiguredObjectClassForName<"Wall"> | WallDocument,
       type: foundry.CONST.WALL_RESTRICTION_TYPES
     ): PolygonEdge;
   }
@@ -200,7 +200,7 @@ declare global {
     /**
      * Record the set of walls which connect to this Endpoint
      */
-    walls: Set<ConfiguredObjectClassForName<'Wall'>>;
+    walls: Set<ConfiguredObjectClassForName<"Wall">>;
 
     /**
      * Record whether this point is the endpoint of any Wall
@@ -237,7 +237,7 @@ declare global {
      */
     protected _c: { left: boolean; right: boolean } | undefined;
 
-    attachWall(wall: ConfiguredObjectClassForName<'Wall'>): this;
+    attachWall(wall: ConfiguredObjectClassForName<"Wall">): this;
 
     /**
      * Does this endpoint equal some other endpoint?

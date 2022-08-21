@@ -1,5 +1,5 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import type { TokenBarData } from '../../../common/data/data.mjs/tokenBarData';
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
+import type { TokenBarData } from "../../../common/data/data.mjs/tokenBarData";
 
 declare global {
   /**
@@ -15,16 +15,16 @@ declare global {
   > extends FormApplication<
     Options,
     Data,
-    InstanceType<ConfiguredDocumentClassForName<'Token'>> | InstanceType<ConfiguredDocumentClassForName<'Actor'>>
+    InstanceType<ConfiguredDocumentClassForName<"Token">> | InstanceType<ConfiguredDocumentClassForName<"Actor">>
   > {
     constructor(
       object:
-        | InstanceType<ConfiguredDocumentClassForName<'Token'>>
-        | InstanceType<ConfiguredDocumentClassForName<'Actor'>>,
+        | InstanceType<ConfiguredDocumentClassForName<"Token">>
+        | InstanceType<ConfiguredDocumentClassForName<"Actor">>,
       options?: Partial<Options>
     );
 
-    token: InstanceType<ConfiguredDocumentClassForName<'Token'>> | PrototypeTokenDocument;
+    token: InstanceType<ConfiguredDocumentClassForName<"Token">> | PrototypeTokenDocument;
 
     /**
      * @defaultValue
@@ -54,7 +54,7 @@ declare global {
     /**
      * Convenience access to the Actor document that this Token represents
      */
-    get actor(): InstanceType<ConfiguredDocumentClassForName<'Actor'>>;
+    get actor(): InstanceType<ConfiguredDocumentClassForName<"Actor">>;
 
     override get title(): string;
 
@@ -111,13 +111,13 @@ declare global {
       options: Options;
       gridUnits: string;
       barAttributes: Record<string, string[]>;
-      bar1: ReturnType<TokenDocument['getBarAttribute']> | undefined;
-      bar2: ReturnType<TokenDocument['getBarAttribute']> | undefined;
+      bar1: ReturnType<TokenDocument["getBarAttribute"]> | undefined;
+      bar2: ReturnType<TokenDocument["getBarAttribute"]> | undefined;
       colorationTechniques: AdaptiveLightingShader.ColorationTechniques;
       displayModes: Record<foundry.CONST.TOKEN_DISPLAY_MODES, string>;
       actors: { _id: string; name: string }[];
       dispositions: Record<foundry.CONST.TOKEN_DISPOSITIONS, string>;
-      lightAnimations: { [Key in keyof typeof CONFIG.Canvas.lightAnimations]: string } & { '': string };
+      lightAnimations: { [Key in keyof typeof CONFIG.Canvas.lightAnimations]: string } & { "": string };
       isGM: boolean;
     }
 
@@ -126,8 +126,8 @@ declare global {
       actorLink: boolean;
       alternateImages?: string;
       alpha: number;
-      'bar1.attribute': string;
-      'bar2.attribute': string;
+      "bar1.attribute": string;
+      "bar2.attribute": string;
       brightLight: number | null;
       brightSight: number | null;
       dimLight: number | null;
@@ -140,9 +140,9 @@ declare global {
       img: string;
       lightAlpha: number;
       lightAngle: number | null;
-      'lightAnimation.intensity': number;
-      'lightAnimation.speed': number;
-      'lightAnimation.type': string;
+      "lightAnimation.intensity": number;
+      "lightAnimation.speed": number;
+      "lightAnimation.type": string;
       lightColor: string;
       lockRotation: boolean;
       mirrorX: boolean;
@@ -170,9 +170,9 @@ declare global {
 
     data: foundry.data.TokenData;
 
-    object: InstanceType<ConfiguredDocumentClassForName<'Token'>>;
+    object: InstanceType<ConfiguredDocumentClassForName<"Token">>;
 
-    token: InstanceType<ConfiguredDocumentClassForName<'Token'>>;
+    token: InstanceType<ConfiguredDocumentClassForName<"Token">>;
 
     /**
      * The named world setting that stores the default Token configuration
@@ -198,8 +198,8 @@ declare global {
     override getData(options: unknown): Data | Promise<Data>;
 
     override _getSubmitData(
-      updateData?: Parameters<TokenConfig['_getSubmitData']>[0]
-    ): ReturnType<TokenConfig['_getSubmitData']>;
+      updateData?: Parameters<TokenConfig["_getSubmitData"]>[0]
+    ): ReturnType<TokenConfig["_getSubmitData"]>;
 
     override _updateObject(event: Event, formData?: object): Promise<unknown>;
 
@@ -215,10 +215,10 @@ declare global {
 
   namespace DefaultTokenConfig {
     interface Data<Options extends FormApplicationOptions = FormApplicationOptions>
-      extends Omit<TokenConfig.Data<Options>, 'object' | 'bar1' | 'bar2'> {
-      object: foundry.data.TokenData['_source'];
+      extends Omit<TokenConfig.Data<Options>, "object" | "bar1" | "bar2"> {
+      object: foundry.data.TokenData["_source"];
       isDefault: true;
-      barAttributes: ReturnType<typeof TokenDocument['getTrackedAttributeChoices']>;
+      barAttributes: ReturnType<typeof TokenDocument["getTrackedAttributeChoices"]>;
       bar1: TokenBarData;
       bar2: TokenBarData;
     }

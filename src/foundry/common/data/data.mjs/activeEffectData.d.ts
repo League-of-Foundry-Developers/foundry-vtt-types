@@ -1,9 +1,9 @@
-import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
-import { DocumentData } from '../../abstract/module.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
-import { EffectChangeData, EffectChangeDataConstructorData } from './effectChangeData';
-import { EffectDurationData, EffectDurationDataConstructorData } from './effectDurationData';
+import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes";
+import { DocumentData } from "../../abstract/module.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
+import { EffectChangeData, EffectChangeDataConstructorData } from "./effectChangeData";
+import { EffectDurationData, EffectDurationDataConstructorData } from "./effectDurationData";
 
 interface ActiveEffectDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -86,7 +86,7 @@ interface ActiveEffectDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'ActiveEffect'> & CoreFlags;
+  flags: ConfiguredFlags<"ActiveEffect"> & CoreFlags;
 }
 
 interface ActiveEffectDataConstructorData {
@@ -145,7 +145,7 @@ interface ActiveEffectDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: (ConfiguredFlags<'ActiveEffect'> & CoreFlags) | null | undefined;
+  flags?: (ConfiguredFlags<"ActiveEffect"> & CoreFlags) | null | undefined;
 }
 
 type ActiveEffectDataSource = PropertiesToSource<ActiveEffectDataProperties>;

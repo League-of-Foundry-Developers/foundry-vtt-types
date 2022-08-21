@@ -1,12 +1,12 @@
-import { expectError, expectType } from 'tsd';
+import { expectError, expectType } from "tsd";
 
 expectError(new foundry.data.SceneData());
 expectError(new foundry.data.SceneData({}));
-expectType<foundry.data.SceneData>(new foundry.data.SceneData({ name: 'A long expected journey' }));
+expectType<foundry.data.SceneData>(new foundry.data.SceneData({ name: "A long expected journey" }));
 expectType<foundry.data.SceneData>(
   new foundry.data.SceneData({
     _id: undefined,
-    name: 'A long expected journey',
+    name: "A long expected journey",
     active: undefined,
     navigation: undefined,
     navOrder: undefined,
@@ -54,7 +54,7 @@ expectType<foundry.data.SceneData>(
 expectType<foundry.data.SceneData>(
   new foundry.data.SceneData({
     _id: null,
-    name: 'A long expected journey',
+    name: "A long expected journey",
     active: null,
     navigation: null,
     navOrder: null,

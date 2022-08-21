@@ -45,9 +45,9 @@ declare global {
    * class MyActor extends Actor {}
    *
    * // entryPoint.ts
-   * import { MyActor } from './myActor'
+   * import { MyActor } from "./myActor"
    *
-   * hooks.once('init', () => {
+   * hooks.once("init", () => {
    *   CONFIG.Actor.documentClass = typeof MyActor;
    * });
    *
@@ -74,9 +74,9 @@ declare global {
    * class MyToken extends Token {}
    *
    * // entryPoint.ts
-   * import { MyToken } from './myToken'
+   * import { MyToken } from "./myToken"
    *
-   * Hooks.once('init', () => {
+   * Hooks.once("init", () => {
    *   CONFIG.Token.objectClass = MyToken;
    * });
    *
@@ -106,7 +106,7 @@ declare global {
    * }
    *
    * interface ArmorDataSource {
-   *   type: 'armor';
+   *   type: "armor";
    *   data: ArmorDataSourceData;
    * }
    *
@@ -116,7 +116,7 @@ declare global {
    * }
    *
    * interface WeaponDataSource {
-   *   type: 'weapon';
+   *   type: "weapon";
    *   data: WeaponDataSourceData;
    * }
    *
@@ -125,7 +125,7 @@ declare global {
    * }
    *
    * interface ArmorDataProperties {
-   *   type: 'armor';
+   *   type: "armor";
    *   data: ArmorDataPropertiesData;
    * }
    *
@@ -134,7 +134,7 @@ declare global {
    * }
    *
    * interface WeaponDataProperties {
-   *   type: 'weapon';
+   *   type: "weapon";
    *   data: WeaponDataPropertiesData;
    * }
    *
@@ -151,17 +151,17 @@ declare global {
    *   }
    * }
    * const item = await Item.create({
-   *   name: 'Axe',
-   *   type: 'weapon',
+   *   name: "Axe",
+   *   type: "weapon",
    *   attackSpeed: 1,
    *   damage: 5
    * });
    *
-   * if(item.data.type === 'weapon') {
+   * if(item.data.type === "weapon") {
    *   const damage: number = item.data.data.damage;
    * }
    *
-   * if(item.data._source.type === 'armor') {
+   * if(item.data._source.type === "armor") {
    *   const armorValue = item.data._source.data.armorValue;
    * }
    * ```
@@ -180,16 +180,16 @@ declare global {
   interface WebRTCConfig {}
 
   /**
-   * Injects extra data for modules from `game.module.get('module-id')`.
+   * Injects extra data for modules from `game.module.get("module-id")`.
    * @see {@link RequiredModules} for removing the `undefined` type for required modules.
    *  @example
    * ```typescript
    * interface ModuleConfig {
-   *   'module-id': {
+   *   "module-id": {
    *     api: APIObject;
    *   };
    * }
-   * const moduleApi: APIObject | undefined = game.module.get('module-id')?.api;
+   * const moduleApi: APIObject | undefined = game.module.get("module-id")?.api;
    * ```
    */
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -202,9 +202,9 @@ declare global {
    * @example
    * ```typescript
    * interface RequiredModules {
-   *   'module-id': true;
+   *   "module-id": true;
    * }
-   * const module: Game.ModuleData<foundry.packages.ModuleData> = game.module.get('module-id');
+   * const module: Game.ModuleData<foundry.packages.ModuleData> = game.module.get("module-id");
    * ```
    */
   // eslint-disable-next-line @typescript-eslint/no-empty-interface

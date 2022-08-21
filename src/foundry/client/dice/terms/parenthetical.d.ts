@@ -5,10 +5,10 @@ declare class ParentheticalTerm extends RollTerm {
   constructor({ term, roll, options }: ParentheticalTerm.TermData);
 
   /** The original provided string term used to construct the parenthetical */
-  term: ParentheticalTerm.TermData['term'];
+  term: ParentheticalTerm.TermData["term"];
 
   /** Alternatively, an already-evaluated Roll instance may be passed directly */
-  roll: ParentheticalTerm.TermData['roll'];
+  roll: ParentheticalTerm.TermData["roll"];
 
   /**
    * The regular expression pattern used to identify the opening of a parenthetical expression.

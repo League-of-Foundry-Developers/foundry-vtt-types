@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 const display = new HeadsUpDisplay();
 expectType<TokenHUD>(display.token);

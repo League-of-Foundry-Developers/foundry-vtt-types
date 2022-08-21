@@ -2,10 +2,10 @@ import type {
   ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
   ConfiguredObjectClassForName
-} from '../../../../types/helperTypes';
-import type { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
-import type { LineIntersection } from '../../../common/utils/geometry.mjs';
-import type { HoverInOptions } from '../placeable';
+} from "../../../../types/helperTypes";
+import type { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
+import type { LineIntersection } from "../../../common/utils/geometry.mjs";
+import type { HoverInOptions } from "../placeable";
 
 declare global {
   /**
@@ -34,12 +34,12 @@ declare global {
      * A reference to an overhead Tile that is a roof, interior to which this wall is contained
      * @defaultValue `undefined`
      */
-    roof: InstanceType<ConfiguredObjectClassForName<'Tile'>> | undefined;
+    roof: InstanceType<ConfiguredObjectClassForName<"Tile">> | undefined;
 
     /**
      * A set which tracks other Wall instances that this Wall intersects with (excluding shared endpoints)
      */
-    intersectsWith: Map<InstanceType<ConfiguredObjectClassForName<'Wall'>>, LineIntersection>;
+    intersectsWith: Map<InstanceType<ConfiguredObjectClassForName<"Wall">>, LineIntersection>;
 
     /**
      * Cached representation of this wall's endpoints as {@link PolygonVertex}es.
@@ -55,12 +55,12 @@ declare global {
      */
     protected _wallKeys: Set<string> | null;
 
-    static override embeddedName: 'Wall';
+    static override embeddedName: "Wall";
 
     /**
      * A convenience reference to the coordinates Array for the Wall endpoints, [x0,y0,x1,y1].
      */
-    get coords(): Wall['data']['c'];
+    get coords(): Wall["data"]["c"];
 
     /**
      * The initial endpoint of the Wall
@@ -133,7 +133,7 @@ declare global {
      */
     orientPoint(point: Point): number;
 
-    protected override _createInteractionManager(): NonNullable<this['mouseInteractionManager']>;
+    protected override _createInteractionManager(): NonNullable<this["mouseInteractionManager"]>;
 
     override activateListeners(): void;
 
@@ -168,7 +168,7 @@ declare global {
 
     protected override _onRelease(options?: PlaceableObject.ReleaseOptions): void;
 
-    override destroy(options?: Parameters<PlaceableObject['destroy']>[0]): void;
+    override destroy(options?: Parameters<PlaceableObject["destroy"]>[0]): void;
 
     /**
      * Test whether the Wall direction lies between two provided angles
@@ -191,7 +191,7 @@ declare global {
      */
     getLinkedSegments(): {
       ids: string[];
-      walls: WallsLayer['placeables'];
+      walls: WallsLayer["placeables"];
       endpoints: Array<[x: number, y: number]>;
     };
 
@@ -209,7 +209,7 @@ declare global {
      * Record the intersection points between this wall and another, if any.
      * @param other - The other wall.
      */
-    protected _identifyIntersectionsWith(other: InstanceType<ConfiguredDocumentClassForName<'Wall'>>): void;
+    protected _identifyIntersectionsWith(other: InstanceType<ConfiguredDocumentClassForName<"Wall">>): void;
 
     /**
      * Remove this wall's intersections.
@@ -218,13 +218,13 @@ declare global {
     protected _removeIntersections(): void;
 
     protected override _onCreate(
-      data: foundry.data.WallData['_source'],
+      data: foundry.data.WallData["_source"],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.WallData['_source']>,
+      changed: DeepPartial<foundry.data.WallData["_source"]>,
       options?: DocumentModificationOptions,
       userId?: string
     ): void;

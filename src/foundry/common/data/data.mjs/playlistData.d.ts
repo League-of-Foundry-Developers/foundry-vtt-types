@@ -1,8 +1,8 @@
-import type { ConfiguredDocumentClass, ConfiguredFlags, PropertiesToSource } from '../../../../types/helperTypes';
-import type DocumentData from '../../abstract/data.mjs';
-import type EmbeddedCollection from '../../abstract/embedded-collection.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
+import type { ConfiguredDocumentClass, ConfiguredFlags, PropertiesToSource } from "../../../../types/helperTypes";
+import type DocumentData from "../../abstract/data.mjs";
+import type EmbeddedCollection from "../../abstract/embedded-collection.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
 
 interface PlaylistDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -14,7 +14,7 @@ interface PlaylistDataSchema extends DocumentSchema {
     required: true;
     default: typeof foundry.CONST.PLAYLIST_MODES.SEQUENTIAL;
     validate: (m: unknown) => m is foundry.CONST.PLAYLIST_MODES;
-    validationError: 'Invalid {name} {field} provided which must be a value from CONST.PLAYLIST_MODES';
+    validationError: "Invalid {name} {field} provided which must be a value from CONST.PLAYLIST_MODES";
   };
   playing: fields.BooleanField;
   fade: fields.IntegerField;
@@ -24,7 +24,7 @@ interface PlaylistDataSchema extends DocumentSchema {
     required: true;
     default: typeof foundry.CONST.PLAYLIST_SORT_MODES.ALPHABETICAL;
     validate: (m: unknown) => m is foundry.CONST.PLAYLIST_SORT_MODES;
-    validationError: 'Invalid Playlist sorting mode';
+    validationError: "Invalid Playlist sorting mode";
   };
   sort: fields.IntegerSortField;
   seed: fields.NonnegativeIntegerField;
@@ -102,7 +102,7 @@ interface PlaylistDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'Playlist'>;
+  flags: ConfiguredFlags<"Playlist">;
 }
 
 interface PlaylistDataConstructorData {
@@ -178,7 +178,7 @@ interface PlaylistDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Playlist'> | null | undefined;
+  flags?: ConfiguredFlags<"Playlist"> | null | undefined;
 }
 
 type PlaylistDataSource = PropertiesToSource<PlaylistDataProperties>;

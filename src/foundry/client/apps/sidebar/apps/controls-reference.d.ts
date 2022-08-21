@@ -25,6 +25,6 @@ declare class ControlsReference<
 
 declare namespace ControlsReference {
   interface Data {
-    controlKey: '⌘' | 'Control';
+    controlKey: "⌘" | "Control";
   }
 }

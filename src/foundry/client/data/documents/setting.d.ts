@@ -1,4 +1,4 @@
-import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
+import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 declare global {
   /**
    * The client-side Setting document which extends the common BaseSetting model.
@@ -19,13 +19,13 @@ declare global {
     get value(): unknown;
 
     protected override _onCreate(
-      data: foundry.data.SettingData['_source'],
+      data: foundry.data.SettingData["_source"],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
     protected _onUpdate(
-      changed: DeepPartial<foundry.data.SettingData['_source']>,
+      changed: DeepPartial<foundry.data.SettingData["_source"]>,
       options: DocumentModificationOptions,
       userId: string
     ): void;

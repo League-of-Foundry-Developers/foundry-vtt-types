@@ -1,17 +1,17 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
-import { DocumentMetadata } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import type { TableResultDataConstructorData } from '../data/data.mjs/tableResultData';
-import { BaseRollTable } from './baseRollTable';
-import { BaseUser } from './baseUser';
+import { ConfiguredDocumentClass } from "../../../types/helperTypes";
+import { DocumentMetadata } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import type { TableResultDataConstructorData } from "../data/data.mjs/tableResultData";
+import { BaseRollTable } from "./baseRollTable";
+import { BaseUser } from "./baseUser";
 
 type TableResultMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'TableResult';
-    collection: 'results';
-    label: 'DOCUMENT.TableResult';
-    labelPlural: 'DOCUMENT.TableResults';
+    name: "TableResult";
+    collection: "results";
+    label: "DOCUMENT.TableResult";
+    labelPlural: "DOCUMENT.TableResults";
     types: [
       `${typeof CONST.TABLE_RESULT_TYPES.TEXT}`,
       `${typeof CONST.TABLE_RESULT_TYPES.DOCUMENT}`,

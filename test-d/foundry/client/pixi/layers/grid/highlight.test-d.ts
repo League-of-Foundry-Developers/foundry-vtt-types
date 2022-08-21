@@ -1,8 +1,8 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
-expectType<GridHighlight>(new GridHighlight(''));
+expectType<GridHighlight>(new GridHighlight(""));
 
-const grid = new GridHighlight('', new PIXI.GraphicsGeometry());
+const grid = new GridHighlight("", new PIXI.GraphicsGeometry());
 expectType<string>(grid.name);
 expectType<Set<string>>(grid.positions);
 expectType<boolean>(grid.highlight(100, 100));

@@ -53,11 +53,11 @@ declare class Notifications<Options extends ApplicationOptions = ApplicationOpti
    * Push a new notification into the queue
    * @param message   - The content of the notification message
    * @param type      - The type of notification, currently "info", "warning", and "error" are supported
-   *                    (default: `'info'`)
+   *                    (default: `"info"`)
    * @param options   - Additional options which affect the notification
    *                    (default: `{}`)
    */
-  notify(message: string, type?: 'info' | 'warning' | 'error', options?: Notifications.NotifyOptions): void;
+  notify(message: string, type?: "info" | "warning" | "error", options?: Notifications.NotifyOptions): void;
 
   /**
    * Display a notification with the "info" type
@@ -109,7 +109,7 @@ declare namespace Notifications {
 
   interface Notification {
     message: string;
-    type: 'info' | 'warning' | 'error';
+    type: "info" | "warning" | "error";
     timestamp: number;
     permanent: boolean;
     console: boolean;

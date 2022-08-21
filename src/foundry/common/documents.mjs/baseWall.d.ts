@@ -1,18 +1,18 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
-import { Context, DocumentMetadata } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import * as data from '../data/data.mjs';
-import type { WallDataConstructorData } from '../data/data.mjs/wallData';
-import { BaseScene } from './baseScene';
-import { BaseUser } from './baseUser';
+import { ConfiguredDocumentClass } from "../../../types/helperTypes";
+import { Context, DocumentMetadata } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import * as data from "../data/data.mjs";
+import type { WallDataConstructorData } from "../data/data.mjs/wallData";
+import { BaseScene } from "./baseScene";
+import { BaseUser } from "./baseUser";
 
 type WallMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'Wall';
-    collection: 'walls';
-    label: 'DOCUMENT.Wall';
-    labelPlural: 'DOCUMENT.Walls';
+    name: "Wall";
+    collection: "walls";
+    label: "DOCUMENT.Wall";
+    labelPlural: "DOCUMENT.Walls";
     isEmbedded: true;
     permissions: {
       update: (user: BaseUser, doc: BaseWall, data: DeepPartial<WallDataConstructorData>) => boolean;

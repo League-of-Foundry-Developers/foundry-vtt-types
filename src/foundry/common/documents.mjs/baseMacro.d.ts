@@ -1,21 +1,21 @@
-import { DocumentMetadata, DocumentModificationOptions } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import * as CONST from '../constants.mjs';
-import * as data from '../data/data.mjs';
-import type { MacroDataConstructorData } from '../data/data.mjs/macroData';
-import { BaseUser } from './baseUser';
+import { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import * as CONST from "../constants.mjs";
+import * as data from "../data/data.mjs";
+import type { MacroDataConstructorData } from "../data/data.mjs/macroData";
+import { BaseUser } from "./baseUser";
 
 type MacroMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'Macro';
-    collection: 'macros';
-    label: 'DOCUMENT.Macro';
-    labelPlural: 'DOCUMENT.Macros';
+    name: "Macro";
+    collection: "macros";
+    label: "DOCUMENT.Macro";
+    labelPlural: "DOCUMENT.Macros";
     isPrimary: true;
     types: [typeof CONST.MACRO_TYPES.SCRIPT, typeof CONST.MACRO_TYPES.CHAT];
     permissions: {
-      create: 'PLAYER';
+      create: "PLAYER";
     };
   }
 >;

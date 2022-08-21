@@ -1,15 +1,15 @@
-import { DocumentMetadata } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import * as data from '../data/data.mjs';
-import { BaseCard } from './baseCard';
+import { DocumentMetadata } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import * as data from "../data/data.mjs";
+import { BaseCard } from "./baseCard";
 
 type CardsMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'Cards';
-    collection: 'cards';
-    label: 'DOCUMENT.Cards';
-    labelPlural: 'DOCUMENT.CardsPlural';
+    name: "Cards";
+    collection: "cards";
+    label: "DOCUMENT.Cards";
+    labelPlural: "DOCUMENT.CardsPlural";
     isPrimary: true;
     types: string[];
     hasSystemData: true;
@@ -30,10 +30,10 @@ export declare class BaseCards extends Document<data.CardsData, null, CardsMetad
   /**
    * A reference to the Collection of Card documents contained within this Cards stack, indexed by _id.
    */
-  get cards(): this['data']['cards'];
+  get cards(): this["data"]["cards"];
 
   /**
    * The sub-type of Cards.
    */
-  get type(): data.CardsData['type'];
+  get type(): data.CardsData["type"];
 }

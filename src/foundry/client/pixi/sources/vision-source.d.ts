@@ -1,7 +1,7 @@
-import type { ConfiguredObjectClassForName } from '../../../../types/helperTypes';
+import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes";
 
 declare global {
-  interface VisionSourceData extends Exclude<PointSource.Data, 'walls'> {
+  interface VisionSourceData extends Exclude<PointSource.Data, "walls"> {
     x: number;
 
     y: number;
@@ -27,7 +27,7 @@ declare global {
    */
   class VisionSource extends PointSource {
     /** @param object - The Token object that generates this vision source */
-    constructor(object: InstanceType<ConfiguredObjectClassForName<'Token'>>);
+    constructor(object: InstanceType<ConfiguredObjectClassForName<"Token">>);
 
     /**
      * The current vision mesh for this source
@@ -35,7 +35,7 @@ declare global {
      */
     illumination: PIXI.Mesh;
 
-    static override sourceType: 'vision';
+    static override sourceType: "vision";
 
     /**
      * Keys in the VisionSourceData structure which, when modified, change the appearance of the source

@@ -1,5 +1,5 @@
-import _tinymce from 'tinymce';
-import type * as _tinymceTypes from 'tinymce';
+import _tinymce from "tinymce";
+import type * as _tinymceTypes from "tinymce";
 
 declare global {
   let tinyMCE: typeof _tinymce;

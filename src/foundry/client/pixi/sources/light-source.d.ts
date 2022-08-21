@@ -1,4 +1,4 @@
-import type { ConfiguredObjectClassForName } from '../../../../types/helperTypes';
+import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes";
 
 declare global {
   /** @see {@link foundry.data.LightData} */
@@ -140,7 +140,7 @@ declare global {
    */
   class LightSource extends PointSource {
     /** @param object - The light-emitting object that generates this light source */
-    constructor(object: InstanceType<ConfiguredObjectClassForName<'AmbientLight' | 'Token'>>);
+    constructor(object: InstanceType<ConfiguredObjectClassForName<"AmbientLight" | "Token">>);
 
     /**
      * The light or darkness container for this source
@@ -160,7 +160,7 @@ declare global {
      */
     coloration: PIXI.Mesh;
 
-    static override sourceType: 'light';
+    static override sourceType: "light";
 
     /**
      * Strength of the blur for light source edges
@@ -275,9 +275,9 @@ declare global {
      * Render the containers used to represent this light source within the LightingLayer
      */
     drawMeshes(): {
-      background: ReturnType<LightSource['drawBackground']>;
-      light: ReturnType<LightSource['drawLight']>;
-      color: ReturnType<LightSource['drawColor']>;
+      background: ReturnType<LightSource["drawBackground"]>;
+      light: ReturnType<LightSource["drawLight"]>;
+      color: ReturnType<LightSource["drawColor"]>;
     };
 
     /**

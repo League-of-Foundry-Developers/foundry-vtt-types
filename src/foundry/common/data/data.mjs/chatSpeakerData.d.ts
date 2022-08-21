@@ -1,8 +1,8 @@
-import { ConfiguredDocumentClass, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
-import { DocumentData } from '../../abstract/module.mjs';
-import { BaseActor, BaseChatMessage, BaseScene } from '../../documents.mjs';
-import * as fields from '../fields.mjs';
-import { ForeignDocumentField } from '../fields.mjs';
+import { ConfiguredDocumentClass, FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes";
+import { DocumentData } from "../../abstract/module.mjs";
+import { BaseActor, BaseChatMessage, BaseScene } from "../../documents.mjs";
+import * as fields from "../fields.mjs";
+import { ForeignDocumentField } from "../fields.mjs";
 
 interface ChatSpeakerDataSchema extends DocumentSchema {
   scene: ForeignDocumentField<{ type: typeof BaseScene; required: false }>;

@@ -1,5 +1,5 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
-import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
+import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
 declare global {
   /**
@@ -23,7 +23,7 @@ declare global {
     /**
      * Provide a thumbnail image path used to represent this document.
      */
-    get thumbnail(): this['data']['img'];
+    get thumbnail(): this["data"]["img"];
 
     /**
      * Display a result drawn from a RollTable in the Chat Log along.
@@ -111,7 +111,7 @@ declare global {
     override toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocumentMixin.CompendiumExportOptions | undefined
-    ): Omit<foundry.data.RollTableData['_source'], '_id' | 'folder' | 'permission'> & {
+    ): Omit<foundry.data.RollTableData["_source"], "_id" | "folder" | "permission"> & {
       permission?: foundry.data.RollTableData extends { toObject(): infer U } ? U : never;
     };
 
@@ -157,7 +157,7 @@ declare global {
       /**
        * The chat roll mode to use when displaying the result
        */
-      rollMode: keyof CONFIG.Dice.RollModes | 'roll';
+      rollMode: keyof CONFIG.Dice.RollModes | "roll";
     }
 
     /**
@@ -179,7 +179,7 @@ declare global {
        * Additional options which customize the created messages
        * @defaultValue `{}`
        */
-      messageOptions: DocumentModificationContext & { rollMode: keyof CONFIG.Dice.RollModes | 'roll' };
+      messageOptions: DocumentModificationContext & { rollMode: keyof CONFIG.Dice.RollModes | "roll" };
     }
 
     interface RollOptions {

@@ -1,8 +1,8 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
-import { DocumentModificationOptions } from '../../../common/abstract/document.mjs.js';
-import type { ActiveEffectDataConstructorData } from '../../../common/data/data.mjs/activeEffectData';
-import * as data from '../../../common/data/data.mjs/index.js';
-import type { PrototypeTokenDataConstructorData } from '../../../common/data/data.mjs/prototypeTokenData';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
+import { DocumentModificationOptions } from "../../../common/abstract/document.mjs.js";
+import type { ActiveEffectDataConstructorData } from "../../../common/data/data.mjs/activeEffectData";
+import * as data from "../../../common/data/data.mjs/index.js";
+import type { PrototypeTokenDataConstructorData } from "../../../common/data/data.mjs/prototypeTokenData";
 
 declare global {
   /**
@@ -67,8 +67,8 @@ declare global {
      * @param options - (default: `{}`, unused)
      */
     override clone(
-      data?: Parameters<foundry.documents.BaseToken['clone']>[0],
-      options?: Parameters<foundry.documents.BaseToken['clone']>[1]
+      data?: Parameters<foundry.documents.BaseToken["clone"]>[0],
+      options?: Parameters<foundry.documents.BaseToken["clone"]>[1]
     ): TemporaryDocument<this>;
 
     /**
@@ -107,12 +107,12 @@ declare global {
      * @returns The updated un-linked Actor instance
      */
     modifyActorDocument(
-      update: Parameters<InstanceType<ConfiguredDocumentClass<typeof Actor>>['update']>[0],
-      options: Parameters<this['update']>[1]
-    ): Promise<[this['actor']]>;
+      update: Parameters<InstanceType<ConfiguredDocumentClass<typeof Actor>>["update"]>[0],
+      options: Parameters<this["update"]>[1]
+    ): Promise<[this["actor"]]>;
 
-    override getEmbeddedCollection(embeddedName: 'Item'): data.ActorData['items'];
-    getEmbeddedCollection(embeddedName: 'ActiveEffect'): data.ActorData['effects'];
+    override getEmbeddedCollection(embeddedName: "Item"): data.ActorData["items"];
+    getEmbeddedCollection(embeddedName: "ActiveEffect"): data.ActorData["effects"];
 
     /**
      * Redirect creation of Documents within a synthetic Token Actor to instead update the tokenData override object.
@@ -122,14 +122,14 @@ declare global {
      * @returns The created Embedded Document instances
      */
     createActorEmbeddedDocuments(
-      embeddedName: 'Item',
+      embeddedName: "Item",
       data: Array<ConstructorParameters<ConfiguredDocumentClass<typeof Item>>[0] | Record<string, unknown>>,
-      options: Parameters<this['update']>[1]
+      options: Parameters<this["update"]>[1]
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
     createActorEmbeddedDocuments(
-      embeddedName: 'ActiveEffect',
+      embeddedName: "ActiveEffect",
       data: Array<ConstructorParameters<ConfiguredDocumentClass<typeof ActiveEffect>>[0] | Record<string, unknown>>,
-      options: Parameters<this['update']>[1]
+      options: Parameters<this["update"]>[1]
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>[]>;
 
     /**
@@ -140,14 +140,14 @@ declare global {
      * @returns The updated Embedded Document instances
      */
     updateActorEmbeddedDocuments(
-      embeddedName: 'Item',
+      embeddedName: "Item",
       updates: Array<ConstructorParameters<ConfiguredDocumentClass<typeof Item>>[0] | Record<string, unknown>>,
-      options: Parameters<this['update']>[1]
+      options: Parameters<this["update"]>[1]
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
     updateActorEmbeddedDocuments(
-      embeddedName: 'ActiveEffect',
+      embeddedName: "ActiveEffect",
       updates: Array<ConstructorParameters<ConfiguredDocumentClass<typeof ActiveEffect>>[0] | Record<string, unknown>>,
-      options: Parameters<this['update']>[1]
+      options: Parameters<this["update"]>[1]
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>[]>;
 
     /**
@@ -158,18 +158,18 @@ declare global {
      * @returns The deleted Embedded Document instances
      */
     deleteActorEmbeddedDocuments(
-      embeddedName: 'Item',
+      embeddedName: "Item",
       ids: string[],
-      options: Parameters<this['update']>[1]
+      options: Parameters<this["update"]>[1]
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
     deleteActorEmbeddedDocuments(
-      embeddedName: 'ActiveEffect',
+      embeddedName: "ActiveEffect",
       ids: string[],
-      options: Parameters<this['update']>[1]
+      options: Parameters<this["update"]>[1]
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>[]>;
 
     protected override _preUpdate(
-      data: Parameters<foundry.documents.BaseToken['_preUpdate']>[0],
+      data: Parameters<foundry.documents.BaseToken["_preUpdate"]>[0],
       options: DocumentModificationOptions,
       user: InstanceType<ConfiguredDocumentClass<typeof User>>
     ): Promise<void>;
@@ -179,13 +179,13 @@ declare global {
      * @internal
      */
     protected _preUpdateTokenActor(
-      data: Parameters<foundry.documents.BaseActor['_preUpdate']>[0],
+      data: Parameters<foundry.documents.BaseActor["_preUpdate"]>[0],
       options: DocumentModificationOptions,
       user: InstanceType<ConfiguredDocumentClass<typeof User>>
     ): Promise<void>;
 
     protected override _onUpdate(
-      data: Parameters<foundry.documents.BaseToken['_onUpdate']>[0],
+      data: Parameters<foundry.documents.BaseToken["_onUpdate"]>[0],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -196,8 +196,8 @@ declare global {
      * @internal
      */
     protected _onUpdateBaseActor(
-      update?: Parameters<foundry.documents.BaseActor['_onUpdate']>[0],
-      options?: Parameters<foundry.data.ActorData['update']>[1]
+      update?: Parameters<foundry.documents.BaseActor["_onUpdate"]>[0],
+      options?: Parameters<foundry.data.ActorData["update"]>[1]
     ): void;
 
     /**
@@ -205,7 +205,7 @@ declare global {
      * @internal
      */
     protected _onUpdateTokenActor(
-      data: Parameters<foundry.documents.BaseActor['_onUpdate']>[0],
+      data: Parameters<foundry.documents.BaseActor["_onUpdate"]>[0],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -215,7 +215,7 @@ declare global {
      * @param _path - (default: `[]`)
      */
     static getTrackedAttributes(
-      data?: InstanceType<ConfiguredDocumentClass<typeof Actor>>['data']['data'],
+      data?: InstanceType<ConfiguredDocumentClass<typeof Actor>>["data"]["data"],
       _path?: string[]
     ): TrackedAttributes;
 
@@ -248,14 +248,14 @@ declare global {
 }
 
 interface SingleAttributeBar {
-  type: 'value';
+  type: "value";
   attribute: string;
   value: number;
   editable: boolean;
 }
 
 interface ObjectAttributeBar {
-  type: 'bar';
+  type: "bar";
   attribute: string;
   value: number;
   max: number;

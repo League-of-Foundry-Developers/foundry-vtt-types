@@ -1,5 +1,5 @@
-import { ConfiguredDocumentClass, ConstructorDataType, DocumentConstructor } from '../../../../types/helperTypes';
-import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
+import { ConfiguredDocumentClass, ConstructorDataType, DocumentConstructor } from "../../../../types/helperTypes";
+import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
 declare global {
   /**
@@ -24,7 +24,7 @@ declare global {
     /**
      * Return an array of the Document instances which are contained within this Folder.
      */
-    get contents(): InstanceType<typeof CONFIG[this['data']['type']]['documentClass']>[];
+    get contents(): InstanceType<typeof CONFIG[this["data"]["type"]]["documentClass"]>[];
 
     /**
      * Return whether the folder is displayed in the sidebar to the current user
@@ -34,12 +34,12 @@ declare global {
     /**
      * Return a reference to the Document type which is contained within this Folder.
      */
-    get documentClass(): typeof CONFIG[this['data']['type']]['documentClass'];
+    get documentClass(): typeof CONFIG[this["data"]["type"]]["documentClass"];
 
     /**
      * Return a reference to the WorldCollection instance which provides Documents to this Folder.
      */
-    get documentCollection(): Collection<InstanceType<typeof CONFIG[this['data']['type']]['documentClass']>>; // TODO: WorldCollection or ReturnType<Game['collections]['get]>
+    get documentCollection(): Collection<InstanceType<typeof CONFIG[this["data"]["type"]]["documentClass"]>>; // TODO: WorldCollection or ReturnType<Game["collections"]["get"]>
 
     /**
      * Return whether the folder is currently expanded within the sidebar interface.
@@ -66,11 +66,11 @@ declare global {
       this: T,
       data?:
         | DeepPartial<
-            | ConstructorDataType<InstanceType<T>['data']>
-            | (ConstructorDataType<InstanceType<T>['data']> & Record<string, unknown>)
+            | ConstructorDataType<InstanceType<T>["data"]>
+            | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>)
           >
         | undefined,
-      context?: Partial<Omit<FolderConfig.Options, 'resolve'>>
+      context?: Partial<Omit<FolderConfig.Options, "resolve">>
     ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
 
     /**

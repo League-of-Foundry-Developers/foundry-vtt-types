@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 expectType<Promise<StoredDocument<ChatMessage> | undefined>>(foundry.documents.BaseChatMessage.create({}));
 expectType<Promise<StoredDocument<ChatMessage>[]>>(foundry.documents.BaseChatMessage.createDocuments([]));

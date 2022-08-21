@@ -1,7 +1,7 @@
-import { PropertiesToSource } from '../../../../types/helperTypes';
-import { DocumentData } from '../../abstract/module.mjs';
-import { BaseAmbientLight } from '../../documents.mjs';
-import * as fields from '../fields.mjs';
+import { PropertiesToSource } from "../../../../types/helperTypes";
+import { DocumentData } from "../../abstract/module.mjs";
+import { BaseAmbientLight } from "../../documents.mjs";
+import * as fields from "../fields.mjs";
 
 interface AnimationDataSchema extends DocumentSchema {
   type: fields.StringField;
@@ -10,14 +10,14 @@ interface AnimationDataSchema extends DocumentSchema {
     required: false;
     default: 5;
     validate: (a: number) => boolean;
-    validationError: 'Light animation speed must be an integer between 0 and 10';
+    validationError: "Light animation speed must be an integer between 0 and 10";
   };
   intensity: DocumentField<number> & {
     type: typeof Number;
     required: false;
     default: 5;
     validate: (a: number) => boolean;
-    validationError: 'Light animation intensity must be an integer between 1 and 10';
+    validationError: "Light animation intensity must be an integer between 1 and 10";
   };
   reverse: fields.BooleanField;
 }

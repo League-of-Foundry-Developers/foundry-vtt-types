@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from "../../../../../types/helperTypes";
 
 declare global {
   /**
@@ -43,9 +43,9 @@ declare global {
   namespace Settings {
     interface Data {
       user: InstanceType<ConfiguredDocumentClass<typeof User>>;
-      system: Game['system'];
-      release: Game['data']['release'];
-      versionDisplay: Game['release']['display'];
+      system: Game["system"];
+      release: Game["data"]["release"];
+      versionDisplay: Game["release"]["display"];
       isDemo: boolean;
       canConfigure: boolean;
       canEditWorld: boolean;
@@ -79,10 +79,10 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): typeof Application['defaultOptions'];
+    static override get defaultOptions(): typeof Application["defaultOptions"];
 
     override getData(options?: Partial<Options>): Promise<{ src: string }>;
 
-    override close(options?: Application.CloseOptions): ReturnType<Application['close']>;
+    override close(options?: Application.CloseOptions): ReturnType<Application["close"]>;
   }
 }

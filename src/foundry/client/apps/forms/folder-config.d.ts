@@ -1,5 +1,5 @@
-import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
-import type { SortingModes } from '../../../common/data/data.mjs/folderData';
+import type { ConfiguredDocumentClass } from "../../../../types/helperTypes";
+import type { SortingModes } from "../../../common/data/data.mjs/folderData";
 
 declare global {
   /**
@@ -46,8 +46,8 @@ declare global {
       folder: foundry.data.FolderData;
       safeColor: string;
       sortingModes: {
-        a: 'FOLDER.SortAlphabetical';
-        m: 'FOLDER.SortManual';
+        a: "FOLDER.SortAlphabetical";
+        m: "FOLDER.SortManual";
       };
       submitText: string;
     }

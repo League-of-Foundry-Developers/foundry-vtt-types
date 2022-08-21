@@ -1,5 +1,5 @@
-import type { ConfiguredDocumentClassForName, ToObjectFalseType } from '../../../../types/helperTypes';
-import type { TableResultDataConstructorData } from '../../../common/data/data.mjs/tableResultData';
+import type { ConfiguredDocumentClassForName, ToObjectFalseType } from "../../../../types/helperTypes";
+import type { TableResultDataConstructorData } from "../../../common/data/data.mjs/tableResultData";
 
 declare global {
   /**
@@ -10,7 +10,7 @@ declare global {
   class RollTableConfig<
     Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends object = RollTableConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'RollTable'>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<"RollTable">>> {
     /**
      * @defaultValue
      * ```typescript
@@ -43,7 +43,7 @@ declare global {
     protected _onCreateResult(
       event: JQuery.ClickEvent | DragEvent,
       resultData?: TableResultDataConstructorData
-    ): Promise<ConfiguredDocumentClassForName<'TableResult'>[]>;
+    ): Promise<ConfiguredDocumentClassForName<"TableResult">[]>;
 
     /**
      * Submit the entire form when a table result type is changed, in case there are other active changes
@@ -59,7 +59,7 @@ declare global {
      */
     protected _onDeleteResult(
       event: JQuery.ClickEvent
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'TableResult'>> | undefined>;
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<"TableResult">> | undefined>;
 
     protected override _onDrop(event: DragEvent): void;
 
@@ -107,7 +107,7 @@ declare global {
      * @param results - An Array of drawn table results to highlight
      * @returns A Promise which resolves once the animation is complete
      */
-    protected _animateRoll(results: InstanceType<ConfiguredDocumentClassForName<'TableResult'>>[]): Promise<void[]>;
+    protected _animateRoll(results: InstanceType<ConfiguredDocumentClassForName<"TableResult">>[]): Promise<void[]>;
 
     /**
      * Animate a "roulette" through the table until arriving at the final loop and a drawn result

@@ -1,8 +1,8 @@
-import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import type { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   interface JournalSheetOptions extends DocumentSheetOptions {
-    /** The current display mode of the journal. Either 'text' or 'image'. */
+    /** The current display mode of the journal. Either "text" or "image". */
     sheetMode?: JournalSheet.SheetMode | null;
   }
 
@@ -22,7 +22,7 @@ declare global {
     constructor(object: ConcreteJournalEntry, options?: Partial<Options>);
 
     /**
-     * The current display mode of the journal. Either 'text' or 'image'.
+     * The current display mode of the journal. Either "text" or "image".
      * @internal
      */
     protected _sheetMode: JournalSheet.SheetMode | null;
@@ -91,10 +91,10 @@ declare global {
     interface Data<Options extends JournalSheetOptions = JournalSheetOptions>
       extends DocumentSheet.Data<ConcreteJournalEntry, Options> {
       image: string;
-      folders: ReturnType<NonNullable<Game['folders']>['filter']>;
+      folders: ReturnType<NonNullable<Game["folders"]>["filter"]>;
     }
 
-    type SheetMode = 'text' | 'image';
+    type SheetMode = "text" | "image";
 
     interface FormData {
       content: string;

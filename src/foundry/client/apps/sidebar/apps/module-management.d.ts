@@ -21,7 +21,7 @@ declare class ModuleManagement<
   /**
    * The named game setting which persists module configuration.
    */
-  static CONFIG_SETTING: 'moduleConfiguration';
+  static CONFIG_SETTING: "moduleConfiguration";
 
   /**
    * @defaultValue
@@ -81,7 +81,7 @@ declare class ModuleManagement<
 declare namespace ModuleManagement {
   interface Data {
     editable: boolean;
-    filters: [Data.Filter<'all'>, Data.Filter<'active'>, Data.Filter<'inactive'>];
+    filters: [Data.Filter<"all">, Data.Filter<"active">, Data.Filter<"inactive">];
     modules: Data.Module[];
     expanded: boolean;
   }
@@ -90,11 +90,11 @@ declare namespace ModuleManagement {
     interface Filter<F extends FilterName> {
       id: F;
       label: string;
-      css: ' active' | '';
+      css: " active" | "";
       count: number;
     }
 
-    type Module = Exclude<foundry.packages.ModuleData['_source'], 'authors'> & {
+    type Module = Exclude<foundry.packages.ModuleData["_source"], "authors"> & {
       active: boolean;
       availability: number;
       data: foundry.packages.ModuleData;
@@ -103,7 +103,7 @@ declare namespace ModuleManagement {
       hasScripts: boolean;
       hasStyles: boolean;
       systemOnly: boolean;
-      systemTag: Game['system']['id'];
+      systemTag: Game["system"]["id"];
       dependencies: string[] | null;
       unavailable?: string;
       incompatible?: string;
@@ -112,7 +112,7 @@ declare namespace ModuleManagement {
     };
   }
 
-  type FilterName = 'all' | 'active' | 'inactive';
+  type FilterName = "all" | "active" | "inactive";
 
   type FormData = Record<string, boolean> & {
     search: string;

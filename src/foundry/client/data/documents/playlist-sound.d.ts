@@ -1,5 +1,5 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import type { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
+import type { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
 declare global {
   /**
@@ -71,13 +71,13 @@ declare global {
     sync(): void | Promise<void> | Promise<Sound>;
 
     override _onCreate(
-      data: foundry.data.PlaylistSoundData['_source'],
+      data: foundry.data.PlaylistSoundData["_source"],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.PlaylistSoundData['_source']>,
+      changed: DeepPartial<foundry.data.PlaylistSoundData["_source"]>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -88,7 +88,7 @@ declare global {
      * Special handling that occurs when a PlaylistSound reaches the natural conclusion of its playback.
      * @internal
      */
-    protected _onEnd(): Promise<void | InstanceType<ConfiguredDocumentClassForName<'Playlist'>> | undefined>;
+    protected _onEnd(): Promise<void | InstanceType<ConfiguredDocumentClassForName<"Playlist">> | undefined>;
 
     /**
      * Special handling that occurs when playback of a PlaylistSound is started.

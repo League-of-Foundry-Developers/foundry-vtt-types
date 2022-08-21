@@ -1,4 +1,4 @@
-import type { AnyDocumentData } from '../../common/abstract/data.mjs';
+import type { AnyDocumentData } from "../../common/abstract/data.mjs";
 
 declare global {
   /**

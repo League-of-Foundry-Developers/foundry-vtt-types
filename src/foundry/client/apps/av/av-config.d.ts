@@ -54,7 +54,7 @@ declare global {
 
   namespace AVConfig {
     interface Data {
-      user: Game['user'];
+      user: Game["user"];
       modes: {
         [Key in ValueOf<typeof AVSettings.AV_MODES>]: string;
       };

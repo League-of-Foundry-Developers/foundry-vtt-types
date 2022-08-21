@@ -1,5 +1,5 @@
 declare namespace ClipperLib {
-  let version: '6.4.2.2';
+  let version: "6.4.2.2";
 
   /**
    * Enables open path clipping. Adds a very minor cost to performance.

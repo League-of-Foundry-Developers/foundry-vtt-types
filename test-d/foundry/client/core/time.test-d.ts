@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 expectType<number>(GameTime.SYNC_INTERVAL_MS);
 new GameTime(undefined);
@@ -15,4 +15,4 @@ if (socket) {
   expectType<void>(time.onUpdateWorldTime(100));
 }
 
-expectType<number>((game as Game).settings.get('core', 'time'));
+expectType<number>((game as Game).settings.get("core", "time"));

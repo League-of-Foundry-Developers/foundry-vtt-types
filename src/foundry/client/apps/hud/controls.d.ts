@@ -89,7 +89,7 @@ declare class SceneControls<Options extends ApplicationOptions = ApplicationOpti
 
   override getData(options?: Partial<Options>): {
     active: boolean;
-    cssClass: '' | 'disabled';
+    cssClass: "" | "disabled";
     controls: SceneControl[];
   };
 

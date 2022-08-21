@@ -3,12 +3,12 @@ import {
   ConfiguredFlags,
   FieldReturnType,
   PropertiesToSource
-} from '../../../../types/helperTypes';
-import DocumentData from '../../abstract/data.mjs';
-import * as documents from '../../documents.mjs';
-import { BaseUser } from '../../documents.mjs';
-import * as fields from '../fields.mjs';
-import { ForeignDocumentField } from '../fields.mjs';
+} from "../../../../types/helperTypes";
+import DocumentData from "../../abstract/data.mjs";
+import * as documents from "../../documents.mjs";
+import { BaseUser } from "../../documents.mjs";
+import * as fields from "../fields.mjs";
+import { ForeignDocumentField } from "../fields.mjs";
 
 interface DrawingDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -18,7 +18,7 @@ interface DrawingDataSchema extends DocumentSchema {
     required: true;
     default: typeof foundry.CONST.DRAWING_TYPES.POLYGON;
     validate: (t: unknown) => t is foundry.CONST.DRAWING_TYPES;
-    validationError: 'Invalid {name} {field} which must be a value in CONST.DRAWING_TYPES';
+    validationError: "Invalid {name} {field} which must be a value in CONST.DRAWING_TYPES";
   };
   x: fields.RequiredNumber;
   y: fields.RequiredNumber;
@@ -31,7 +31,7 @@ interface DrawingDataSchema extends DocumentSchema {
     required: true;
     default: [];
     validate: typeof _validateDrawingPoints;
-    validationError: 'Invalid {name} {field} which must be an array of points [x,y]';
+    validationError: "Invalid {name} {field} which must be an array of points [x,y]";
   };
   bezierFactor: FieldReturnType<fields.AlphaField, { default: 0 }>;
   fillType: FieldReturnType<
@@ -39,7 +39,7 @@ interface DrawingDataSchema extends DocumentSchema {
     {
       default: typeof foundry.CONST.DRAWING_FILL_TYPES.NONE;
       validate: (v: unknown) => v is foundry.CONST.DRAWING_FILL_TYPES;
-      validationError: 'Invalid {name} {field} which must be a value in CONST.DRAWING_FILL_TYPES';
+      validationError: "Invalid {name} {field} which must be a value in CONST.DRAWING_FILL_TYPES";
     }
   >;
   fillColor: fields.ColorField;
@@ -49,16 +49,16 @@ interface DrawingDataSchema extends DocumentSchema {
   strokeAlpha: fields.AlphaField;
   texture: fields.ImageField;
   text: fields.StringField;
-  fontFamily: FieldReturnType<fields.RequiredString, { default: 'Signika' }>;
+  fontFamily: FieldReturnType<fields.RequiredString, { default: "Signika" }>;
   fontSize: FieldReturnType<
     fields.PositiveIntegerField,
     {
       default: 48;
       validate: (n: unknown) => boolean;
-      validationError: 'Invalid {name} {field} which must be an integer between 8 and 256';
+      validationError: "Invalid {name} {field} which must be an integer between 8 and 256";
     }
   >;
-  textColor: FieldReturnType<fields.ColorField, { default: '#FFFFFF' }>;
+  textColor: FieldReturnType<fields.ColorField, { default: "#FFFFFF" }>;
   textAlpha: fields.AlphaField;
   hidden: fields.BooleanField;
   locked: fields.BooleanField;
@@ -178,7 +178,7 @@ interface DrawingDataProperties {
 
   /**
    * The font family used to display text within this drawing
-   * @defaultValue `'Signika'`
+   * @defaultValue `"Signika"`
    */
   fontFamily: string;
 
@@ -190,7 +190,7 @@ interface DrawingDataProperties {
 
   /**
    * The color of text displayed within this drawing
-   * @defaultValue `'#FFFFFF'`
+   * @defaultValue `"#FFFFFF"`
    */
   textColor: string | null;
 
@@ -216,7 +216,7 @@ interface DrawingDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'Drawing'>;
+  flags: ConfiguredFlags<"Drawing">;
 }
 
 interface DrawingDataConstructorData {
@@ -332,7 +332,7 @@ interface DrawingDataConstructorData {
 
   /**
    * The font family used to display text within this drawing
-   * @defaultValue `'Signika'`
+   * @defaultValue `"Signika"`
    */
   fontFamily?: string | null | undefined;
 
@@ -344,7 +344,7 @@ interface DrawingDataConstructorData {
 
   /**
    * The color of text displayed within this drawing
-   * @defaultValue `'#FFFFFF'`
+   * @defaultValue `"#FFFFFF"`
    */
   textColor?: string | null | undefined;
 
@@ -370,7 +370,7 @@ interface DrawingDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Drawing'> | null | undefined;
+  flags?: ConfiguredFlags<"Drawing"> | null | undefined;
 }
 
 type DrawingDataSource = PropertiesToSource<DrawingDataProperties>;

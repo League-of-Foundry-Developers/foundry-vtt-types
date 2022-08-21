@@ -1,5 +1,5 @@
-import type { ConfiguredDocumentClassForName, ConstructorDataType } from '../../../../types/helperTypes.js';
-import type { CardFaceData } from '../../../common/data/module.mjs.js';
+import type { ConfiguredDocumentClassForName, ConstructorDataType } from "../../../../types/helperTypes.js";
+import type { CardFaceData } from "../../../common/data/module.mjs.js";
 
 declare global {
   /**
@@ -11,7 +11,7 @@ declare global {
   class CardConfig<
     Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends CardConfig.Data<Options> = CardConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Card'>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<"Card">>> {
     /**
      * @defaultValue
      * ```typescript
@@ -44,7 +44,7 @@ declare global {
 
   namespace CardConfig {
     interface Data<Options extends DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Card'>>, Options> {
+      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<"Card">>, Options> {
       types: Record<string, string>;
     }
   }

@@ -1,16 +1,16 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
-import { DocumentMetadata } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import * as data from '../data/data.mjs';
-import { BaseScene } from './baseScene';
+import { ConfiguredDocumentClass } from "../../../types/helperTypes";
+import { DocumentMetadata } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import * as data from "../data/data.mjs";
+import { BaseScene } from "./baseScene";
 
 type TileMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'Tile';
-    collection: 'tiles';
-    label: 'DOCUMENT.Tile';
-    labelPlural: 'DOCUMENT.Tiles';
+    name: "Tile";
+    collection: "tiles";
+    label: "DOCUMENT.Tile";
+    labelPlural: "DOCUMENT.Tiles";
     isEmbedded: true;
   }
 >;

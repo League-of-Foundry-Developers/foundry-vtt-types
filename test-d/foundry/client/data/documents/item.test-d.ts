@@ -1,11 +1,11 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 interface ArmorDataSourceData {
   armorValue: number;
 }
 
 interface ArmorDataSource {
-  type: 'armor';
+  type: "armor";
   data: ArmorDataSourceData;
 }
 
@@ -15,7 +15,7 @@ interface WeaponDataSourceData {
 }
 
 interface WeaponDataSource {
-  type: 'weapon';
+  type: "weapon";
   data: WeaponDataSourceData;
 }
 
@@ -24,7 +24,7 @@ interface ArmorDataPropertiesData extends ArmorDataSourceData {
 }
 
 interface ArmorDataProperties {
-  type: 'armor';
+  type: "armor";
   data: ArmorDataPropertiesData;
 }
 
@@ -33,7 +33,7 @@ interface WeaponDataPropertiesData extends WeaponDataSourceData {
 }
 
 interface WeaponDataProperties {
-  type: 'weapon';
+  type: "weapon";
   data: WeaponDataPropertiesData;
 }
 
@@ -50,12 +50,12 @@ declare global {
   }
 }
 
-const item = await Item.create({ name: 'Mighty Axe of Killing', type: 'weapon' });
+const item = await Item.create({ name: "Mighty Axe of Killing", type: "weapon" });
 if (item) {
   expectType<Actor | null>(item.actor);
   expectType<string | null>(item.img);
   expectType<boolean>(item.isOwned);
   expectType<ActiveEffect[]>(item.transferredEffects);
-  expectType<'weapon' | 'armor'>(item.type);
+  expectType<"weapon" | "armor">(item.type);
   expectType<object>(item.getRollData());
 }

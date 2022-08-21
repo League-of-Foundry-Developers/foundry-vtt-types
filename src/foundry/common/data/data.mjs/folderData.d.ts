@@ -1,7 +1,7 @@
-import { ConfiguredDocumentClass, ConfiguredFlags, PropertiesToSource } from '../../../../types/helperTypes';
-import DocumentData from '../../abstract/data.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
+import { ConfiguredDocumentClass, ConfiguredFlags, PropertiesToSource } from "../../../../types/helperTypes";
+import DocumentData from "../../abstract/data.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
 
 interface FolderDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -10,16 +10,16 @@ interface FolderDataSchema extends DocumentSchema {
     type: String;
     required: true;
     validate: (t: unknown) => t is foundry.CONST.FOLDER_DOCUMENT_TYPES;
-    validationError: 'Invalid Folder type provided';
+    validationError: "Invalid Folder type provided";
   };
   description: fields.StringField;
   parent: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
   sorting: DocumentField<SortingModes> & {
     type: String;
     required: true;
-    default: 'a';
+    default: "a";
     validate: (mode: unknown) => mode is SortingModes;
-    validationError: 'Invalid Folder sorting mode';
+    validationError: "Invalid Folder sorting mode";
   };
   sort: fields.IntegerSortField;
   color: fields.ColorField;
@@ -56,7 +56,7 @@ interface FolderDataProperties {
 
   /**
    * The sorting mode used to organize documents within this Folder, in ["a", "m"]
-   * @defaultValue `'a'`
+   * @defaultValue `"a"`
    */
   sorting: SortingModes;
 
@@ -75,7 +75,7 @@ interface FolderDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'Folder'>;
+  flags: ConfiguredFlags<"Folder">;
 }
 
 interface FolderDataConstructorData {
@@ -108,7 +108,7 @@ interface FolderDataConstructorData {
 
   /**
    * The sorting mode used to organize documents within this Folder, in ["a", "m"]
-   * @defaultValue `'a'`
+   * @defaultValue `"a"`
    */
   sorting?: SortingModes | null | undefined;
 
@@ -127,7 +127,7 @@ interface FolderDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Folder'> | null | undefined;
+  flags?: ConfiguredFlags<"Folder"> | null | undefined;
 }
 
 type FolderDataSource = PropertiesToSource<FolderDataProperties>;
@@ -146,7 +146,7 @@ export class FolderData extends DocumentData<
 
   static override defineSchema(): FolderDataSchema;
 
-  static SORTING_MODES: ['a', 'm'];
+  static SORTING_MODES: ["a", "m"];
 }
 
 export type SortingModes = ValueOf<typeof FolderData.SORTING_MODES>;

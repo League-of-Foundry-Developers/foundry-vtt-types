@@ -1,10 +1,10 @@
 import type {
   EffectChangeData,
   EffectChangeDataProperties
-} from '../../../../src/foundry/common/data/data.mjs/effectChangeData';
+} from "../../../../src/foundry/common/data/data.mjs/effectChangeData";
 
-import { expectError, expectType } from 'tsd';
-import '../../../../index';
+import { expectError, expectType } from "tsd";
+import "../../../../index";
 
 expectError(new foundry.data.ActorData());
 expectError(new foundry.data.ActorData({}));

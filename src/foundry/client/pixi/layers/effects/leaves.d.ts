@@ -3,7 +3,7 @@
  */
 declare class AutumnLeavesWeatherEffect extends SpecialEffect {
   /**
-   * @defaultValue `'Autumn Leaves'`
+   * @defaultValue `"Autumn Leaves"`
    */
   static get label(): string;
 
@@ -14,13 +14,13 @@ declare class AutumnLeavesWeatherEffect extends SpecialEffect {
    * {
    *   maxSpeed: 0,
    *   noRotation: false,
-   *   blendMode: 'normal',
+   *   blendMode: "normal",
    *   emitterLifetime: -1,
    *   pos: {
    *     x: 0,
    *     y: 0
    *   },
-   *   spawnType: 'rect',
+   *   spawnType: "rect",
    *   alpha: {
    *     start: 0.9,
    *     end: 0.5

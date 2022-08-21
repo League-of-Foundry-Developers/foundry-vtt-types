@@ -38,22 +38,22 @@ declare class AVSettings {
 
   static DEFAULT_CLIENT_SETTINGS: {
     /**
-     * @defaultValue `'default'`
+     * @defaultValue `"default"`
      */
     videoSrc: string;
 
     /**
-     * @defaultValue `'default'`
+     * @defaultValue `"default"`
      */
     audioSrc: string;
 
     /**
-     * @defaultValue `'default'`
+     * @defaultValue `"default"`
      */
     audioSink: string;
 
     /**
-     * @defaultValue `'bottom'`
+     * @defaultValue `"bottom"`
      */
     dockPosition: string;
 
@@ -74,7 +74,7 @@ declare class AVSettings {
 
     voice: {
       /**
-       * @defaultValue `'AVSettings.VOICE_MODES.PTT'`
+       * @defaultValue `"AVSettings.VOICE_MODES.PTT"`
        */
       mode: AVSettings.VOICE_MODES;
 
@@ -111,7 +111,7 @@ declare class AVSettings {
 
     turn: {
       /**
-       * @defaultValue `'server'`
+       * @defaultValue `"server"`
        */
       type: string;
 
@@ -193,11 +193,11 @@ declare class AVSettings {
 
   changed(): void;
 
-  get<S extends 'client' | 'world'>(scope: S, setting: string): unknown; // TODO: Improve once we have proper typing for dot notation
+  get<S extends "client" | "world">(scope: S, setting: string): unknown; // TODO: Improve once we have proper typing for dot notation
 
   getUser(userId: string): AVSettings.UserSettings | null;
 
-  set<S extends 'client' | 'world'>(scope: S, setting: string, value: unknown): void; // TODO: Improve once we have proper typing for dot notation
+  set<S extends "client" | "world">(scope: S, setting: string, value: unknown): void; // TODO: Improve once we have proper typing for dot notation
 
   /**
    * Return a mapping of AV settings for each game User.
@@ -229,13 +229,13 @@ declare namespace AVSettings {
   type UserSettings = StoredUserSettings & { canBroadcastAudio: boolean; canBroadcastVideo: boolean };
   type Settings = { client: ClientSettings; world: WorldSettings };
   interface DefaultVoiceModes {
-    ALWAYS: 'always';
-    ACTIVITY: 'activity';
-    PTT: 'ptt';
+    ALWAYS: "always";
+    ACTIVITY: "activity";
+    PTT: "ptt";
   }
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface Overrides {}
-  type VoiceModes = PropertyTypeOrFallback<AVSettings.Overrides, 'VoiceModes', DefaultVoiceModes>;
+  type VoiceModes = PropertyTypeOrFallback<AVSettings.Overrides, "VoiceModes", DefaultVoiceModes>;
   type VOICE_MODES = ValueOf<VoiceModes>;
   type AV_MODES = ValueOf<typeof AVSettings.AV_MODES>;
 }

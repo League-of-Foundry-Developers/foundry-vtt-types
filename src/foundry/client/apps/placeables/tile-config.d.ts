@@ -1,5 +1,5 @@
-import { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import type { TileDataConstructorData } from '../../../common/data/data.mjs/tileData';
+import { ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
+import type { TileDataConstructorData } from "../../../common/data/data.mjs/tileData";
 
 declare global {
   /**
@@ -10,7 +10,7 @@ declare global {
   class TileConfig<
     Options extends TileConfig.Options = TileConfig.Options,
     Data extends object = TileConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Tile'>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<"Tile">>> {
     /**
      * @defaultValue
      * ```typescript
@@ -38,12 +38,12 @@ declare global {
 
   namespace TileConfig {
     interface Data<Options extends DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Tile'>>, Options> {
+      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<"Tile">>, Options> {
       submitText: string;
       occlusionModes: Record<foundry.CONST.TILE_OCCLUSION_MODES, string>;
     }
 
-    type FormData = Pick<TileDataConstructorData, 'height' | 'img' | 'rotation' | 'width' | 'x' | 'y'>;
+    type FormData = Pick<TileDataConstructorData, "height" | "img" | "rotation" | "width" | "x" | "y">;
 
     interface Options extends DocumentSheetOptions {
       /**

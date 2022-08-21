@@ -1,22 +1,22 @@
 /**
  * The shortened software name
  */
-export const vtt: 'Foundry VTT';
+export const vtt: "Foundry VTT";
 
 /**
  * The full software name
  */
-export const VTT: 'Foundry Virtual Tabletop';
+export const VTT: "Foundry Virtual Tabletop";
 
 /**
  * The software website URL
  */
-export const WEBSITE_URL: 'https://foundryvtt.com';
+export const WEBSITE_URL: "https://foundryvtt.com";
 
 /**
  * The serverless API URL
  */
-export const WEBSITE_API_URL: 'https://api.foundryvtt.com';
+export const WEBSITE_API_URL: "https://api.foundryvtt.com";
 
 /**
  * An ASCII greeting displayed to the client
@@ -45,7 +45,7 @@ export type ACTIVE_EFFECT_MODES = ValueOf<typeof ACTIVE_EFFECT_MODES>;
 /**
  * Define the string name used for the base document type when specific sub-types are not defined by the system
  */
-export const BASE_DOCUMENT_TYPE: 'base';
+export const BASE_DOCUMENT_TYPE: "base";
 
 /**
  * Define the methods by which a Card can be drawn from a Cards stack
@@ -87,7 +87,7 @@ export type CHAT_MESSAGE_TYPES = ValueOf<typeof CHAT_MESSAGE_TYPES>;
 /**
  * Define the set of languages which have built-in support in the core software
  */
-export const CORE_SUPPORTED_LANGUAGES: readonly ['en'];
+export const CORE_SUPPORTED_LANGUAGES: readonly ["en"];
 
 /**
  * Configure the severity of compatibility warnings.
@@ -107,24 +107,24 @@ export type COMPATIBILITY_MODES = ValueOf<typeof COMPATIBILITY_MODES>;
 /**
  * The default artwork used for Token images if none is provided
  */
-export const DEFAULT_TOKEN: 'icons/svg/mystery-man.svg';
+export const DEFAULT_TOKEN: "icons/svg/mystery-man.svg";
 
 /**
  * Define the allowed Document class types.
  */
 export const DOCUMENT_TYPES: readonly [
-  'Actor',
-  'Cards',
-  'ChatMessage',
-  'Combat',
-  'Item',
-  'Folder',
-  'JournalEntry',
-  'Macro',
-  'Playlist',
-  'RollTable',
-  'Scene',
-  'User'
+  "Actor",
+  "Cards",
+  "ChatMessage",
+  "Combat",
+  "Item",
+  "Folder",
+  "JournalEntry",
+  "Macro",
+  "Playlist",
+  "RollTable",
+  "Scene",
+  "User"
 ];
 export type DOCUMENT_TYPES = ValueOf<typeof DOCUMENT_TYPES>;
 
@@ -132,15 +132,15 @@ export type DOCUMENT_TYPES = ValueOf<typeof DOCUMENT_TYPES>;
  * The allowed Document types which may exist within a Compendium pack.
  */
 export const COMPENDIUM_DOCUMENT_TYPES: readonly [
-  'Actor',
-  'Cards',
-  'Item',
-  'JournalEntry',
-  'Macro',
-  'Playlist',
-  'RollTable',
-  'Scene',
-  'Adventure'
+  "Actor",
+  "Cards",
+  "Item",
+  "JournalEntry",
+  "Macro",
+  "Playlist",
+  "RollTable",
+  "Scene",
+  "Adventure"
 ];
 export type COMPENDIUM_DOCUMENT_TYPES = ValueOf<typeof COMPENDIUM_DOCUMENT_TYPES>;
 
@@ -177,14 +177,14 @@ export type DOCUMENT_PERMISSION_LEVELS = DOCUMENT_OWNERSHIP_LEVELS;
  * Define the allowed Document types which may be dynamically linked in chat
  */
 export const DOCUMENT_LINK_TYPES: readonly [
-  'Actor',
-  'Cards',
-  'Item',
-  'Scene',
-  'JournalEntry',
-  'Macro',
-  'RollTable',
-  'PlaylistSound'
+  "Actor",
+  "Cards",
+  "Item",
+  "Scene",
+  "JournalEntry",
+  "Macro",
+  "RollTable",
+  "PlaylistSound"
 ];
 export type DOCUMENT_LINK_TYPES = ValueOf<typeof DOCUMENT_LINK_TYPES>;
 
@@ -192,10 +192,10 @@ export type DOCUMENT_LINK_TYPES = ValueOf<typeof DOCUMENT_LINK_TYPES>;
  * The supported dice roll visibility modes
  */
 export const DICE_ROLL_MODES: Readonly<{
-  PUBLIC: 'publicroll';
-  PRIVATE: 'gmroll';
-  BLIND: 'blindroll';
-  SELF: 'selfroll';
+  PUBLIC: "publicroll";
+  PRIVATE: "gmroll";
+  BLIND: "blindroll";
+  SELF: "selfroll";
 }>;
 export type DICE_ROLL_MODES = ValueOf<typeof DICE_ROLL_MODES>;
 
@@ -216,14 +216,14 @@ export type DRAWING_FILL_TYPES = ValueOf<typeof DRAWING_FILL_TYPES>;
  * Define the allowed Document types which Folders may contain
  */
 export const FOLDER_DOCUMENT_TYPES: readonly [
-  'Actor',
-  'Item',
-  'Scene',
-  'JournalEntry',
-  'Playlist',
-  'RollTable',
-  'Cards',
-  'Macro'
+  "Actor",
+  "Item",
+  "Scene",
+  "JournalEntry",
+  "Playlist",
+  "RollTable",
+  "Cards",
+  "Macro"
 ];
 export type FOLDER_DOCUMENT_TYPES = ValueOf<typeof FOLDER_DOCUMENT_TYPES>;
 
@@ -235,7 +235,7 @@ export const FOLDER_MAX_DEPTH: 3;
 /**
  * A list of allowed game URL names
  */
-export const GAME_VIEWS: readonly ['game', 'stream'];
+export const GAME_VIEWS: readonly ["game", "stream"];
 
 /**
  * The minimum allowed grid size which is supported by the software
@@ -258,20 +258,20 @@ export type GRID_TYPES = ValueOf<typeof GRID_TYPES>;
 /**
  * A list of supported setup URL names
  */
-export const SETUP_VIEWS: readonly ['license', 'setup', 'players', 'join', 'auth'];
+export const SETUP_VIEWS: readonly ["license", "setup", "players", "join", "auth"];
 
 /**
  * An Array of valid MacroAction scope values
  */
-export const MACRO_SCOPES: readonly ['global', 'actors', 'actor'];
+export const MACRO_SCOPES: readonly ["global", "actors", "actor"];
 export type MACRO_SCOPES = ValueOf<typeof MACRO_SCOPES>;
 
 /**
  * An enumeration of valid Macro types
  */
 export const MACRO_TYPES: Readonly<{
-  SCRIPT: 'script';
-  CHAT: 'chat';
+  SCRIPT: "script";
+  CHAT: "chat";
 }>;
 export type MACRO_TYPES = ValueOf<typeof MACRO_TYPES>;
 
@@ -296,15 +296,15 @@ export type PLAYLIST_MODES = ValueOf<typeof PLAYLIST_MODES>;
  * MANUAL: Sort sounds by manual drag-and-drop.
  */
 export const PLAYLIST_SORT_MODES: Readonly<{
-  ALPHABETICAL: 'a';
-  MANUAL: 'm';
+  ALPHABETICAL: "a";
+  MANUAL: "m";
 }>;
 export type PLAYLIST_SORT_MODES = ValueOf<typeof PLAYLIST_SORT_MODES>;
 
 /**
  * The allowed package types
  */
-export const PACKAGE_TYPES: readonly ['world', 'system', 'module'];
+export const PACKAGE_TYPES: readonly ["world", "system", "module"];
 export type PACKAGE_TYPES = ValueOf<typeof PACKAGE_TYPES>;
 
 /**
@@ -324,16 +324,16 @@ export type PACKAGE_AVAILABILITY_CODES = ValueOf<typeof PACKAGE_AVAILABILITY_COD
 /**
  * A safe password string which can be displayed
  */
-export const PASSWORD_SAFE_STRING: '••••••••••••••••';
+export const PASSWORD_SAFE_STRING: "••••••••••••••••";
 
 /**
  * The allowed software update channels
  */
 export const SOFTWARE_UPDATE_CHANNELS: Readonly<{
-  stable: 'SETUP.UpdateStable';
-  testing: 'SETUP.UpdateTesting';
-  development: 'SETUP.UpdateDevelopment';
-  prototype: 'SETUP.UpdatePrototype';
+  stable: "SETUP.UpdateStable";
+  testing: "SETUP.UpdateTesting";
+  development: "SETUP.UpdateDevelopment";
+  prototype: "SETUP.UpdatePrototype";
 }>;
 export type SOFTWARE_UPDATE_CHANNELS = ValueOf<typeof SOFTWARE_UPDATE_CHANNELS>;
 
@@ -439,10 +439,10 @@ export type USER_ROLE_NAMES = ValueOf<typeof USER_ROLE_NAMES>;
  * An enumeration of the allowed types for a MeasuredTemplate embedded document
  */
 export const MEASURED_TEMPLATE_TYPES: Readonly<{
-  CIRCLE: 'circle';
-  CONE: 'cone';
-  RECTANGLE: 'rect';
-  RAY: 'ray';
+  CIRCLE: "circle";
+  CONE: "cone";
+  RECTANGLE: "rect";
+  RAY: "ray";
 }>;
 export type MEASURED_TEMPLATE_TYPES = ValueOf<typeof MEASURED_TEMPLATE_TYPES>;
 
@@ -734,7 +734,7 @@ export type WALL_DOOR_STATES = ValueOf<typeof WALL_DOOR_STATES>;
 /**
  * The wall properties which restrict the way interaction occurs with a specific wall
  */
-export const WALL_RESTRICTION_TYPES: readonly ['light', 'sight', 'sound', 'move'];
+export const WALL_RESTRICTION_TYPES: readonly ["light", "sight", "sound", "move"];
 export type WALL_RESTRICTION_TYPES = ValueOf<typeof WALL_RESTRICTION_TYPES>;
 
 /**
@@ -777,19 +777,19 @@ export type KEYBINDING_PRECEDENCE = ValueOf<typeof KEYBINDING_PRECEDENCE>;
 /**
  * The allowed set of HTML template extensions
  */
-export const HTML_FILE_EXTENSIONS: readonly ['html', 'handlebars', 'hbs'];
+export const HTML_FILE_EXTENSIONS: readonly ["html", "handlebars", "hbs"];
 
 interface _IMAGE_FILE_EXTENSIONS {
-  apng: 'image/apng';
-  avif: 'image/avif';
-  bmp: 'image/bmp';
-  gif: 'image/gif';
-  jpg: 'image/jpeg';
-  jpeg: 'image/jpeg';
-  png: 'image/png';
-  svg: 'image/svg+xml';
-  tiff: 'image/tiff';
-  webp: 'image/webp';
+  apng: "image/apng";
+  avif: "image/avif";
+  bmp: "image/bmp";
+  gif: "image/gif";
+  jpg: "image/jpeg";
+  jpeg: "image/jpeg";
+  png: "image/png";
+  svg: "image/svg+xml";
+  tiff: "image/tiff";
+  webp: "image/webp";
 }
 
 /**
@@ -799,10 +799,10 @@ export const IMAGE_FILE_EXTENSIONS: Readonly<_IMAGE_FILE_EXTENSIONS>;
 export type IMAGE_FILE_EXTENSIONS = ValueOf<_IMAGE_FILE_EXTENSIONS>;
 
 interface _VIDEO_FILE_EXTENSIONS {
-  m4v: 'video/mp4';
-  mp4: 'video/mp4';
-  ogg: 'video/ogg';
-  webm: 'video/webm';
+  m4v: "video/mp4";
+  mp4: "video/mp4";
+  ogg: "video/ogg";
+  webm: "video/webm";
 }
 
 /**
@@ -812,15 +812,15 @@ export const VIDEO_FILE_EXTENSIONS: Readonly<_VIDEO_FILE_EXTENSIONS>;
 export type VIDEO_FILE_EXTENSIONS = ValueOf<_VIDEO_FILE_EXTENSIONS>;
 
 interface _AUDIO_FILE_EXTENSIONS {
-  aac: 'audio/aac';
-  flac: 'audio/flac';
-  m4a: 'audio/mp4';
-  mid: 'audio/midi';
-  mp3: 'audio/mpeg';
-  ogg: 'audio/ogg';
-  opus: 'audio/opus';
-  wav: 'audio/wav';
-  webm: 'audio/webm';
+  aac: "audio/aac";
+  flac: "audio/flac";
+  m4a: "audio/mp4";
+  mid: "audio/midi";
+  mp3: "audio/mpeg";
+  ogg: "audio/ogg";
+  opus: "audio/opus";
+  wav: "audio/wav";
+  webm: "audio/webm";
 }
 /**
  * The supported file extensions for audio-type files, and their corresponding mime types.
@@ -829,15 +829,15 @@ export const AUDIO_FILE_EXTENSIONS: Readonly<_AUDIO_FILE_EXTENSIONS>;
 export type AUDIO_FILE_EXTENSIONS = ValueOf<_AUDIO_FILE_EXTENSIONS>;
 
 interface _TEXT_FILE_EXTENSIONS {
-  csv: 'text/csv';
-  json: 'application/json';
-  md: 'text/markdown';
-  pdf: 'application/pdf';
-  tsv: 'text/tab-separated-values';
-  txt: 'text/plain';
-  xml: 'application/xml';
-  yml: 'application/yaml';
-  yaml: 'application/yaml';
+  csv: "text/csv";
+  json: "application/json";
+  md: "text/markdown";
+  pdf: "application/pdf";
+  tsv: "text/tab-separated-values";
+  txt: "text/plain";
+  xml: "application/xml";
+  yml: "application/yaml";
+  yaml: "application/yaml";
 }
 /**
  * The supported file extensions for text files, and their corresponding mime types.
@@ -846,10 +846,10 @@ export const TEXT_FILE_EXTENSIONS: Readonly<_TEXT_FILE_EXTENSIONS>;
 export type TEXT_FILE_EXTENSIONS = ValueOf<_TEXT_FILE_EXTENSIONS>;
 
 interface _FONT_FILE_EXTENSIONS {
-  ttf: 'font/ttf';
-  otf: 'font/otf';
-  woff: 'font/woff';
-  woff2: 'font/woff2';
+  ttf: "font/ttf";
+  otf: "font/otf";
+  woff: "font/woff";
+  woff2: "font/woff2";
 }
 /**
  * Supported file extensions for font files, and their corresponding mime types.
@@ -858,13 +858,13 @@ export const FONT_FILE_EXTENSIONS: Readonly<_FONT_FILE_EXTENSIONS>;
 export type FONT_FILE_EXTENSIONS = ValueOf<_FONT_FILE_EXTENSIONS>;
 
 interface _GRAPHICS_FILE_EXTENSIONS {
-  fbx: 'application/octet-stream';
-  glb: 'model/gltf-binary';
-  gltf: 'model/gltf+json';
-  mtl: 'model/mtl';
-  obj: 'model/obj';
-  stl: 'model/stl';
-  usdz: 'model/vnd.usdz+zip';
+  fbx: "application/octet-stream";
+  glb: "model/gltf-binary";
+  gltf: "model/gltf+json";
+  mtl: "model/mtl";
+  obj: "model/obj";
+  stl: "model/stl";
+  usdz: "model/vnd.usdz+zip";
 }
 /**
  * Supported file extensions for 3D files, and their corresponding mime types.
@@ -874,7 +874,7 @@ export type GRAPHICS_FILE_EXTENSIONS = ValueOf<_GRAPHICS_FILE_EXTENSIONS>;
 
 interface _UPLOADABLE_FILE_EXTENSIONS
   extends _IMAGE_FILE_EXTENSIONS,
-    Omit<_VIDEO_FILE_EXTENSIONS, 'ogg' | 'webm'>,
+    Omit<_VIDEO_FILE_EXTENSIONS, "ogg" | "webm">,
     _AUDIO_FILE_EXTENSIONS,
     _TEXT_FILE_EXTENSIONS,
     _FONT_FILE_EXTENSIONS,
@@ -933,11 +933,11 @@ export type TIMEOUTS = ValueOf<typeof TIMEOUTS>;
  * @see data.ShapeData.TYPES
  */
 export const DRAWING_TYPES: Readonly<{
-  RECTANGLE: 'r';
-  ELLIPSE: 'e';
-  TEXT: 't';
-  POLYGON: 'p';
-  FREEHAND: 'f';
+  RECTANGLE: "r";
+  ELLIPSE: "e";
+  TEXT: "t";
+  POLYGON: "p";
+  FREEHAND: "f";
 }>;
 /**
  * @deprecated since v10.

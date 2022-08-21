@@ -1,9 +1,9 @@
-import type { Plugin } from 'prosemirror-state';
-import type ProseMirrorPlugin from './plugin.mjs';
-import type ProseMirrorDropDown from './dropdown.mjs';
-import type { Attrs, MarkType, NodeType, Schema } from 'prosemirror-model';
-import type { EditorView } from 'prosemirror-view';
-import type { ProseMirrorCommand } from './keymaps.mjs';
+import type { Plugin } from "prosemirror-state";
+import type ProseMirrorPlugin from "./plugin.mjs";
+import type ProseMirrorDropDown from "./dropdown.mjs";
+import type { Attrs, MarkType, NodeType, Schema } from "prosemirror-model";
+import type { EditorView } from "prosemirror-view";
+import type { ProseMirrorCommand } from "./keymaps.mjs";
 
 export namespace ProseMirrorMenu {
   export interface Options {
@@ -170,7 +170,7 @@ export default class ProseMirrorMenu extends ProseMirrorPlugin {
   /**
    * Handle requests to save the editor contents
    */
-  protected _handleSave(): ReturnType<FormApplication['_onSubmit']>;
+  protected _handleSave(): ReturnType<FormApplication["_onSubmit"]>;
 
   /**
    * Display the insert image prompt.

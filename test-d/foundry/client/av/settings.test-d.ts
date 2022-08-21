@@ -1,7 +1,7 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 interface CustomVoiceModes {
-  SOME_CUSTOM_MODE: 'custom';
+  SOME_CUSTOM_MODE: "custom";
 }
 
 declare global {
@@ -14,10 +14,10 @@ declare global {
 }
 
 AVSettings.VOICE_MODES = {
-  SOME_CUSTOM_MODE: 'custom'
+  SOME_CUSTOM_MODE: "custom"
 };
 
 expectType<CustomVoiceModes>(AVSettings.VOICE_MODES);
 
 const avMaster = new AVMaster();
-expectType<'custom'>(avMaster.settings.client.voice.mode);
+expectType<"custom">(avMaster.settings.client.voice.mode);

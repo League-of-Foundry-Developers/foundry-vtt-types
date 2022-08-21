@@ -1,8 +1,8 @@
-import { FieldReturnType } from '../../../types/helperTypes';
-import * as fields from '../data/fields.mjs';
-import { PackageData, PackageDataConstructorData, PackageDataProperties, PackageDataSchema } from './packageData';
+import { FieldReturnType } from "../../../types/helperTypes";
+import * as fields from "../data/fields.mjs";
+import { PackageData, PackageDataConstructorData, PackageDataProperties, PackageDataSchema } from "./packageData";
 
-interface WorldDataSchema extends Omit<PackageDataSchema, 'system'> {
+interface WorldDataSchema extends Omit<PackageDataSchema, "system"> {
   system: fields.RequiredString;
   background: fields.StringField;
   coreVersion: fields.RequiredString;
@@ -12,7 +12,7 @@ interface WorldDataSchema extends Omit<PackageDataSchema, 'system'> {
   systemVersion: FieldReturnType<fields.RequiredString, { default: () => string }>;
 }
 
-interface WorldDataProperties extends Omit<PackageDataProperties, 'system'> {
+interface WorldDataProperties extends Omit<PackageDataProperties, "system"> {
   /** The game system name which this world relies upon */
   system: string;
 
@@ -38,7 +38,7 @@ interface WorldDataProperties extends Omit<PackageDataProperties, 'system'> {
   systemVersion: string;
 }
 
-interface WorldDataConstructorData extends Omit<PackageDataConstructorData, 'system'> {
+interface WorldDataConstructorData extends Omit<PackageDataConstructorData, "system"> {
   /** The game system name which this world relies upon */
   system: string;
 

@@ -1,7 +1,7 @@
-import type { Plugin } from 'prosemirror-state';
-import type { Schema, Slice } from 'prosemirror-model';
-import ProseMirrorPlugin from './plugin.mjs';
-import type { EditorView } from 'prosemirror-view';
+import type { Plugin } from "prosemirror-state";
+import type { Schema, Slice } from "prosemirror-model";
+import ProseMirrorPlugin from "./plugin.mjs";
+import type { EditorView } from "prosemirror-view";
 
 /**
  * A class responsible for handle drag-and-drop and pasting of image content. Ensuring no base64 data is injected

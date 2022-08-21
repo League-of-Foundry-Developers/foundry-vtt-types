@@ -1,18 +1,18 @@
-import { expectError, expectType } from 'tsd';
+import { expectError, expectType } from "tsd";
 
 interface OldCardDataSourceData {
-  condition: 'grubby';
+  condition: "grubby";
 }
 
 interface OldCardFlags {
-  'my-module': {
+  "my-module": {
     someProp: boolean;
     marked: boolean;
   };
 }
 
 interface OldCardDataSource {
-  type: 'old';
+  type: "old";
   data: OldCardDataSourceData;
   flags: OldCardFlags;
 }
@@ -22,14 +22,14 @@ interface UnoCardDataSourceData {
 }
 
 interface UnoCardFlags {
-  'my-module': {
+  "my-module": {
     someProp: boolean;
     folded: boolean;
   };
 }
 
 interface UnoCardDataSource {
-  type: 'uno';
+  type: "uno";
   data: UnoCardDataSourceData;
   flags: UnoCardFlags;
 }
@@ -39,7 +39,7 @@ interface OldCardDataPropertiesData extends OldCardDataSourceData {
 }
 
 interface OldCardDataProperties {
-  type: 'old';
+  type: "old";
   data: OldCardDataPropertiesData;
   flags: OldCardFlags;
 }
@@ -49,7 +49,7 @@ interface UnoCardDataPropertiesData extends UnoCardDataSourceData {
 }
 
 interface UnoCardDataProperties {
-  type: 'uno';
+  type: "uno";
   data: UnoCardDataPropertiesData;
   flags: UnoCardFlags;
 }
@@ -69,24 +69,24 @@ declare global {
 
 expectError(new foundry.data.CardData());
 expectError(new foundry.data.CardData({}));
-expectType<foundry.data.CardData>(new foundry.data.CardData({ name: 'Some Card' }));
+expectType<foundry.data.CardData>(new foundry.data.CardData({ name: "Some Card" }));
 
-expectError(new foundry.data.CardData({ name: 'Some Card With Wrong Type', type: 'foo' }));
+expectError(new foundry.data.CardData({ name: "Some Card With Wrong Type", type: "foo" }));
 
-const cardData = new foundry.data.CardData({ name: 'Some Card', face: 42, type: 'old' });
+const cardData = new foundry.data.CardData({ name: "Some Card", face: 42, type: "old" });
 
 expectType<foundry.data.CardData>(cardData);
-expectType<'old' | 'uno'>(cardData.type);
-if (cardData._source.type === 'old') {
-  expectType<'grubby'>(cardData._source.data.condition);
+expectType<"old" | "uno">(cardData.type);
+if (cardData._source.type === "old") {
+  expectType<"grubby">(cardData._source.data.condition);
   expectError(cardData._source.data.age);
 } else {
   expectType<boolean>(cardData._source.data.special);
   expectError(cardData._source.data.color);
 }
 
-if (cardData.type === 'old') {
-  expectType<'grubby'>(cardData.data.condition);
+if (cardData.type === "old") {
+  expectType<"grubby">(cardData.data.condition);
   expectType<number>(cardData.data.age);
 } else {
   expectType<boolean>(cardData.data.special);

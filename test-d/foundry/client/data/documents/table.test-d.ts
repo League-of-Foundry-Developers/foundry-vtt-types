@@ -1,10 +1,10 @@
-import { expectError, expectType } from 'tsd';
+import { expectError, expectType } from "tsd";
 
-const table = new RollTable({ name: '' });
+const table = new RollTable({ name: "" });
 
 expectError(new RollTable({}));
 
-expectType<TableResult | undefined>(table.results.get('testing'));
+expectType<TableResult | undefined>(table.results.get("testing"));
 
 expectType<RollTableDraw>(await table.draw());
 expectType<TableResult>((await table.roll()).results[0]);
