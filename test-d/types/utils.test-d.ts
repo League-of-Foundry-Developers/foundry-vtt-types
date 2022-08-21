@@ -50,6 +50,9 @@ expectType<number>(promisedTypeOfNumProm);
 const promisedTypeOfNumber: PromisedType<number> = 0;
 expectType<number>(promisedTypeOfNumber);
 
+const numberMaybePromise: MaybePromise<number> = 0;
+expectType<number>(await numberMaybePromise);
+
 declare const user: User;
 expectType<string | null>(user.id);
 expectType<string | null>(user.data._id);

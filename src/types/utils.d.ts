@@ -125,6 +125,12 @@ type Merge<T, U> = T extends object
  */
 type PromisedType<T> = T extends Promise<infer TResult> ? TResult : T;
 
+/**
+ * Instance of `T`, which may or may not be in a promise.
+ * @typeParam T - the type which might be wrapped in a promise.
+ */
+type MaybePromise<T> = T | Promise<T>;
+
 type StoredDocument<D extends { data: { _source: unknown } }> = D & {
   id: string;
   data: D['data'] & {
