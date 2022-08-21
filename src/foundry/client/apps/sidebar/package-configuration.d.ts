@@ -1,13 +1,10 @@
 export {};
 
-/**
- * An application for configuring data across all installed and active packages.
- */
 declare global {
-  abstract class PackageConfiguration<ConcreteCategory extends PackageConfiguration.Category> extends FormApplication<
-    PackageConfiguration.Options,
-    PackageConfiguration.Data<ConcreteCategory>
-  > {
+  /** An application for configuring data across all installed and active packages. */
+  abstract class PackageConfiguration<
+    Options extends PackageConfiguration.Options = PackageConfiguration.Options
+  > extends FormApplication<Options, object> {
     static get categoryOrder(): string[];
 
     /**
@@ -28,11 +25,9 @@ declare global {
      */
     static override get defaultOptions(): PackageConfiguration.Options;
 
-    override getData():
-      | PackageConfiguration.Data<ConcreteCategory>
-      | Promise<PackageConfiguration.Data<ConcreteCategory>>;
+    override getData(): object | Promise<object>;
 
-    abstract _prepareCategoryData(): PackageConfiguration.Categories<ConcreteCategory>;
+    abstract _prepareCategoryData(): PackageConfiguration.Category;
 
     /**
      * Classify what Category an Action belongs to
@@ -46,7 +41,7 @@ declare global {
 
     protected override _render(
       force?: boolean | undefined,
-      options?: Application.RenderOptions<PackageConfiguration.Options> | undefined
+      options?: Application.RenderOptions<Options> | undefined
     ): Promise<void>;
 
     override activateListeners(html: JQuery<HTMLElement>): void;
@@ -55,7 +50,7 @@ declare global {
      * Handle left-click events to filter to a certain category
      * @internal
      */
-    protected _onClickCategoryFilter(event: MouseEvent): void;
+    protected _onClickCategoryFilter(event: JQuery.ClickEvent): void;
 
     protected override _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
@@ -63,30 +58,19 @@ declare global {
      * Handle left-click events to show / hide a certain category
      * @internal
      */
-    protected _onClickCategoryCollapse(event: MouseEvent): void;
+    protected _onClickCategoryCollapse(event: JQuery.ClickEvent): void;
 
     /**
      * Handle button click to reset default settings
      * @param event - The initial button click event
      */
-    protected _onResetDefaults(event: Event): void;
+    protected _onResetDefaults(event: JQuery.ClickEvent): void;
   }
 
   namespace PackageConfiguration {
     interface Options extends FormApplicationOptions {
       categoryTemplate: string | undefined;
       submitButton: boolean;
-    }
-
-    interface Data<ConcreteCategory extends Category> extends Categories<ConcreteCategory> {
-      allActive: boolean;
-      categoryTemplate: string | undefined;
-      submitButton: boolean;
-    }
-
-    interface Categories<ConcreteCategory extends Category> {
-      categories: ConcreteCategory[];
-      total: number;
     }
 
     interface Category {
