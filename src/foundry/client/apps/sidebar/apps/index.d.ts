@@ -7,4 +7,5 @@ import './keybindings-config';
 import './module-management';
 import './permission-config';
 import './support-details';
+import './tours-management';
 import './world-config';
