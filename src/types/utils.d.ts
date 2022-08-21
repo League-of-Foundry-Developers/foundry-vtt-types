@@ -120,12 +120,6 @@ type Merge<T, U> = T extends object
   : U;
 
 /**
- * If `T` is `Promise<TResult>` then `TResult`; otherwise `T`.
- * @typeParam T - the type which, if a Promise, will be unwrapped.
- */
-type PromisedType<T> = T extends Promise<infer TResult> ? TResult : T;
-
-/**
  * Instance of `T`, which may or may not be in a promise.
  * @typeParam T - the type which might be wrapped in a promise.
  */
