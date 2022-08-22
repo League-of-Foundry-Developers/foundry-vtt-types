@@ -31,12 +31,8 @@ interface FilePickerOptions extends ApplicationOptions {
  * The FilePicker application renders contents of the server-side public directory.
  * This app allows for navigating and uploading files to the public path.
  * @typeParam Options - the type of the options object
- * @typeParam Data    - The data structure used to render the handlebars template.
  */
-declare class FilePicker<
-  Options extends FilePickerOptions = FilePickerOptions,
-  Data extends object = FilePicker.Data
-> extends Application<Options> {
+declare class FilePicker<Options extends FilePickerOptions = FilePickerOptions> extends Application<Options> {
   /**
    * @param options - Options that configure the behavior of the FilePicker
    */
@@ -192,7 +188,7 @@ declare class FilePicker<
    */
   static get uploadURL(): string;
 
-  override getData(options?: Partial<Options> | undefined): Data | Promise<Data>;
+  override getData(options?: Partial<Options> | undefined): MaybePromise<object>;
 
   /**
    * Browse to a specific location for this FilePicker instance
@@ -422,27 +418,6 @@ declare namespace FilePicker {
     bucket?: string | null;
   }
 
-  interface Data {
-    bucket: string | null;
-    canGoBack: boolean;
-    canUpload: boolean;
-    canSelect: boolean;
-    cssClass: string;
-    dirs: Dir[];
-    displayMode: FilePicker.DisplayMode;
-    extensions: string[] | undefined;
-    files: File[];
-    isS3: boolean;
-    noResults: boolean;
-    selected: string | undefined;
-    source: Source;
-    sources: Sources;
-    target: string;
-    tileSize: number | null;
-    user: Game["user"];
-    submitText: string;
-  }
-
   type SourceType = "data" | "public" | "s3";
 
   interface Dir {
@@ -452,12 +427,6 @@ declare namespace FilePicker {
   }
 
   type DisplayMode = ValueOf<typeof FilePicker["DISPLAY_MODES"]>;
-
-  interface File {
-    name: string;
-    url: string;
-    img: string;
-  }
 
   interface ManageFilesDataBase {
     source: string;

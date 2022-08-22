@@ -21,7 +21,6 @@ declare global {
    * Furthermore, this application allows for sharing the display of an image with other connected players.
    *
    * @typeParam Options - The type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    *
    * @example
    * ```typescript
@@ -39,10 +38,7 @@ declare global {
    * ip.share();
    * ```
    */
-  class ImagePopout<
-    Options extends ImagePopoutOptions = ImagePopoutOptions,
-    Data extends object = ImagePopout.Data
-  > extends FormApplication<Options, Data, string> {
+  class ImagePopout<Options extends ImagePopoutOptions = ImagePopoutOptions> extends FormApplication<Options, string> {
     constructor(src: string, options?: Partial<ImagePopout.Options>);
 
     /**
@@ -67,7 +63,7 @@ declare global {
 
     override get title(): string;
 
-    override getData(options?: Partial<Options> | undefined): Promise<Data>;
+    override getData(options?: Partial<Options> | undefined): MaybePromise<object>;
 
     /**
      * Test whether the title of the image popout should be visible to the user
@@ -154,13 +150,6 @@ declare global {
        * @defaultValue `null`
        */
       uuid: string | null;
-    }
-
-    interface Data {
-      image: string;
-      options: Options;
-      title: string;
-      showTitle: boolean;
     }
   }
 }

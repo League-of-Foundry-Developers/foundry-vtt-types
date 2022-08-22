@@ -271,7 +271,7 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
    * If undefined, the default implementation will return an empty object allowing only for rendering of static HTML
    * @param options - (unused, default: `{}`)
    */
-  getData(options?: Partial<Options>): object | Promise<object>;
+  getData(options?: Partial<Options>): MaybePromise<object>;
 
   /**
    * Render the Application by evaluating it's HTML template against the object of data provided by the getData method

@@ -7,7 +7,6 @@ declare global {
    */
   class GridConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
     Options,
-    GridConfig.Data,
     InstanceType<ConfiguredDocumentClass<typeof Scene>>
   > {
     constructor(
@@ -58,7 +57,7 @@ declare global {
      */
     static override get defaultOptions(): typeof FormApplication["defaultOptions"];
 
-    override getData(options?: Partial<Options>): GridConfig.Data;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
@@ -134,12 +133,6 @@ declare global {
   }
 
   namespace GridConfig {
-    interface Data {
-      gridTypes: ReturnType<typeof SceneConfig["_getGridTypes"]>;
-      scale: number;
-      scene: foundry.data.SceneData;
-    }
-
     type FormData = {
       gridType: foundry.CONST.GRID_TYPES;
       grid: number | null;

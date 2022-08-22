@@ -49,7 +49,7 @@ declare class MainMenu extends Application {
    */
   get items(): MainMenu.MenuStructure;
 
-  override getData(options?: Partial<ApplicationOptions>): { items: MainMenu.MenuStructure };
+  override getData(options?: Partial<ApplicationOptions>): MaybePromise<object>;
 
   override activateListeners(html: JQuery): void;
 

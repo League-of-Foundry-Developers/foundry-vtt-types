@@ -121,10 +121,10 @@ In both cases, provide the default value for `getDefaultOptions` in TSDoc.
 Example:
 
 ```typescript
-declare class ActorSheet<
-    Options extends ActorSheet.Options = ActorSheet.Options,
-    Data extends object = ActorSheet.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Actor>>> {
+declare class ActorSheet<Options extends ActorSheet.Options = ActorSheet.Options> extends DocumentSheet<
+  Options,
+  InstanceType<ConfiguredDocumentClass<typeof Actor>>
+> {
   /**
    * @defaultValue
    * ```typescript

@@ -8,12 +8,11 @@ declare global {
   /**
    * The Application responsible for configuring a single AmbientLight document within a parent Scene.
    * @typeParam Options - the type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class AmbientLightConfig<
-    Options extends DocumentSheetOptions = DocumentSheetOptions,
-    Data extends object = AmbientLightConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<"AmbientLight">>> {
+  class AmbientLightConfig<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<
+    Options,
+    InstanceType<ConfiguredDocumentClassForName<"AmbientLight">>
+  > {
     /**
      * @defaultValue
      * ```typescript
@@ -30,7 +29,7 @@ declare global {
      */
     static override get defaultOptions(): DocumentSheetOptions;
 
-    override getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     override close(options?: Application.CloseOptions): Promise<void>;
 
@@ -55,16 +54,6 @@ declare global {
   }
 
   namespace AmbientLightConfig {
-    interface Data<Options extends DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<"AmbientLight">>, Options> {
-      isAdvanced: boolean;
-      colorationTechniques: typeof AdaptiveLightingShader.COLORATION_TECHNIQUES;
-      lightAnimations: Record<string, string> & {
-        "": "None";
-      };
-      submitText: string;
-    }
-
     interface FormData extends Pick<AmbientLightDataConstructorData, "x" | "y" | "rotation" | "walls" | "vision"> {
       "config.dim": LightDataConstructorData["dim"];
       "config.bright": LightDataConstructorData["bright"];

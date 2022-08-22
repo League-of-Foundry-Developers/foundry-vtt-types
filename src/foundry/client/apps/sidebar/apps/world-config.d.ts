@@ -11,12 +11,11 @@ interface WorldConfigOptions extends FormApplicationOptions {
 /**
  * The World Management setup application
  * @typeParam Options - The type of the options object
- * @typeParam Data    - The data structure used to render the handlebars template.
  */
-declare class WorldConfig<
-  Options extends WorldConfigOptions = WorldConfigOptions,
-  Data extends object = WorldConfig.Data
-> extends FormApplication<Options, Data, Game.WorldData<foundry.packages.WorldData>> {
+declare class WorldConfig<Options extends WorldConfigOptions = WorldConfigOptions> extends FormApplication<
+  Options,
+  Game.WorldData<foundry.packages.WorldData>
+> {
   /**
    * @defaultValue
    * ```typescript
@@ -37,7 +36,7 @@ declare class WorldConfig<
 
   override activateListeners(html: JQuery): void;
 
-  override getData(options?: Partial<Options>): Data | Promise<Data>;
+  override getData(options?: Partial<Options>): MaybePromise<object>;
 
   /**
    * @remarks This method returns `Promise<void>`.
@@ -60,18 +59,4 @@ declare class WorldConfig<
     options?: TextEditor.Options | undefined,
     initialContent?: string | undefined
   ): ReturnType<FormApplication["activateEditor"]>;
-}
-
-declare namespace WorldConfig {
-  interface Data {
-    world: Game.WorldData<foundry.packages.WorldData>;
-    isCreate: boolean;
-    submitText: string;
-    nextDate: string;
-    nextTime: string;
-    worldKbUrl: typeof WorldConfig["WORLD_KB_URL"];
-    inWorld: boolean;
-    showEditFields: boolean;
-    systems?: Game.SystemData<foundry.packages.SystemData>[];
-  }
 }

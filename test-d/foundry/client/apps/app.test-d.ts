@@ -12,7 +12,7 @@ expectType<string>(app.title);
 expectType<boolean>(app.rendered);
 
 expectType<void>(app.bringToTop());
-expectType<object | Promise<object>>(app.getData());
+expectType<MaybePromise<object>>(app.getData());
 expectType<ApplicationOptions>(app.options);
 expectType<Promise<void>>(app.close({ force: false }));
 expectType<Promise<void>>(app.close());

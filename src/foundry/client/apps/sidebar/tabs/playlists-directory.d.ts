@@ -43,7 +43,7 @@ declare global {
      * @defaultValue `undefined`
      * @remarks This is only initialized and set in `getData`.
      */
-    protected _playingSoundsData?: PlaylistDirectory.Data.Sound[] | undefined;
+    protected _playingSoundsData?: PlaylistDirectory.SoundData[] | undefined;
 
     static override documentName: "Playlist";
 
@@ -82,7 +82,7 @@ declare global {
      */
     protected get _playingLocation(): "top" | "bottom";
 
-    override getData(options?: Partial<Options>): PlaylistDirectory.Data | Promise<PlaylistDirectory.Data>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     /**
      * Augment the tree directory structure with playlist-level data objects for rendering
@@ -101,7 +101,7 @@ declare global {
      */
     protected _preparePlaylistData(
       playlist: InstanceType<ConfiguredDocumentClass<typeof Playlist>>
-    ): PlaylistDirectory.Data.Playlist;
+    ): PlaylistDirectory.PlaylistData;
 
     /**
      * Get the icon used to represent the "play/stop" icon for the PlaylistSound
@@ -254,53 +254,27 @@ declare global {
   }
 
   namespace PlaylistDirectory {
-    interface Data extends SidebarDirectory.Data<PlaylistDirectory.Data.Tree> {
-      playingSounds: PlaylistDirectory.Data.Sound[];
-      showPlaying: boolean;
-      playlistModifier: number;
-      ambientModifier: number;
-      interfaceModifier: number;
-      volumeExpanded: boolean;
-      currentlyPlaying: {
-        class: `location-${"top" | "bottom"}`;
-        location: {
-          top: boolean;
-          bottom: boolean;
-        };
-        pin: {
-          label: string;
-          caret: "down" | "up";
-        };
-      };
-    }
+    type PlaylistData = ToObjectFalseType<foundry.data.PlaylistData> & {
+      modeTooltip: string;
+      modeIcon: string;
+      disabled: boolean;
+      expanded: boolean;
+      css: string;
+      controlCSS: string;
+      sounds: SoundData[];
+    };
 
-    namespace Data {
-      interface Tree extends SidebarDirectory.Tree<InstanceType<ConfiguredDocumentClass<typeof Playlist>>> {
-        playlists: PlaylistDirectory.Data.Playlist[];
-      }
-
-      type Playlist = ToObjectFalseType<foundry.data.PlaylistData> & {
-        modeTooltip: string;
-        modeIcon: string;
-        disabled: boolean;
-        expanded: boolean;
-        css: string;
-        controlCSS: string;
-        sounds: PlaylistDirectory.Data.Sound[];
-      };
-
-      type Sound = ToObjectFalseType<foundry.data.PlaylistSoundData> & {
-        playlistId: string | null;
-        css: string;
-        controlCSS: string;
-        playIcon: string;
-        playTitle: string;
-        isPaused?: boolean;
-        pauseIcon?: string;
-        lvolume?: number;
-        currentTime?: string;
-        durationTime?: string;
-      };
-    }
+    type SoundData = ToObjectFalseType<foundry.data.PlaylistSoundData> & {
+      playlistId: string | null;
+      css: string;
+      controlCSS: string;
+      playIcon: string;
+      playTitle: string;
+      isPaused?: boolean;
+      pauseIcon?: string;
+      lvolume?: number;
+      currentTime?: string;
+      durationTime?: string;
+    };
   }
 }

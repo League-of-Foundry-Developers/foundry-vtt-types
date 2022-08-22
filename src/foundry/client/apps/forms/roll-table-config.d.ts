@@ -1,16 +1,15 @@
-import type { ConfiguredDocumentClassForName, ToObjectFalseType } from "../../../../types/helperTypes";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
 import type { TableResultDataConstructorData } from "../../../common/data/data.mjs/tableResultData";
 
 declare global {
   /**
    * The Application responsible for displaying and editing a single RollTable document.
    * @typeParam Options - the type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class RollTableConfig<
-    Options extends DocumentSheetOptions = DocumentSheetOptions,
-    Data extends object = RollTableConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<"RollTable">>> {
+  class RollTableConfig<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<
+    Options,
+    InstanceType<ConfiguredDocumentClassForName<"RollTable">>
+  > {
     /**
      * @defaultValue
      * ```typescript
@@ -30,7 +29,7 @@ declare global {
 
     override get title(): string;
 
-    override getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     override activateListeners(html: JQuery): void;
 
@@ -129,22 +128,6 @@ declare global {
   }
 
   namespace RollTableConfig {
-    interface Data<Options extends DocumentSheetOptions = DocumentSheetOptions>
-      extends DocumentSheet.Data<RollTable, Options> {
-      results: ToObjectFalseType<foundry.data.TableResultData> & {
-        isText: boolean;
-        isDocument: boolean;
-        isCompendium: boolean;
-        img: string;
-        text: string;
-      };
-      resultTypes: {
-        [Key in keyof typeof foundry.CONST.TABLE_RESULT_TYPES as typeof foundry.CONST.TABLE_RESULT_TYPES[Key]]: Titlecase<Key>;
-      };
-      documentTypes: typeof foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
-      compendiumPacks: string[];
-    }
-
     type FormData = {
       description: string;
       displayRoll: boolean;

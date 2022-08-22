@@ -5,12 +5,11 @@ declare global {
    * A DocumentSheet application responsible for displaying and editing a single Cards stack.
    *
    * @typeParam Options - The type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class CardsConfig<
-    Options extends DocumentSheetOptions = DocumentSheetOptions,
-    Data extends CardsConfig.Data<Options> = CardsConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<"Cards">>> {
+  class CardsConfig<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<
+    Options,
+    InstanceType<ConfiguredDocumentClassForName<"Cards">>
+  > {
     constructor(object: ConfiguredDocumentClassForName<"Cards">, options: Options);
 
     /**
@@ -38,7 +37,7 @@ declare global {
      */
     static override get defaultOptions(): DocumentSheetOptions;
 
-    override getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     override activateListeners(html: JQuery): void;
 
@@ -79,12 +78,8 @@ declare global {
    * A subclass of CardsConfig which provides a sheet representation for Cards documents with the "hand" type.
    *
    * @typeParam Options - The type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class CardsHand<
-    Options extends DocumentSheetOptions = DocumentSheetOptions,
-    Data extends CardsConfig.Data<Options> = CardsConfig.Data<Options>
-  > extends CardsConfig<Options, Data> {
+  class CardsHand<Options extends DocumentSheetOptions = DocumentSheetOptions> extends CardsConfig<Options> {
     /**
      * @defaultValue
      * ```typescript
@@ -100,12 +95,8 @@ declare global {
    * A subclass of CardsConfig which provides a sheet representation for Cards documents with the "pile" type.
    *
    * @typeParam Options - The type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class CardsPile<
-    Options extends DocumentSheetOptions = DocumentSheetOptions,
-    Data extends CardsConfig.Data<Options> = CardsConfig.Data<Options>
-  > extends CardsConfig<Options, Data> {
+  class CardsPile<Options extends DocumentSheetOptions = DocumentSheetOptions> extends CardsConfig<Options> {
     /**
      * @defaultValue
      * ```typescript
@@ -115,14 +106,5 @@ declare global {
      * ```
      */
     static override get defaultOptions(): DocumentSheetOptions;
-  }
-
-  namespace CardsConfig {
-    interface Data<Options extends DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<"Cards">>, Options> {
-      cards: InstanceType<ConfiguredDocumentClassForName<"Card">>[];
-      types: Record<string, string>;
-      inCompendium: boolean;
-    }
   }
 }

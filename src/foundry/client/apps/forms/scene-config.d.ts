@@ -4,12 +4,11 @@ declare global {
   /**
    * The Application responsible for configuring a single Scene document.   *
    * @typeParam Options - the type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class SceneConfig<
-    Options extends DocumentSheetOptions = DocumentSheetOptions,
-    Data extends object = SceneConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<"Scene">>> {
+  class SceneConfig<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<
+    Options,
+    InstanceType<ConfiguredDocumentClassForName<"Scene">>
+  > {
     /**
      * @defaultValue
      * ```typescript
@@ -31,7 +30,7 @@ declare global {
 
     override render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 
-    override getData(options?: Partial<DocumentSheetOptions>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     /**
      * Get an enumeration of the available grid types which can be applied to this Scene
@@ -96,22 +95,6 @@ declare global {
   }
 
   namespace SceneConfig {
-    interface Data<Options extends DocumentSheetOptions = DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<"Scene">>, Options> {
-      gridTypes: ReturnType<typeof SceneConfig["_getGridTypes"]>;
-      weatherTypes: ReturnType<SceneConfig["_getWeatherTypes"]>;
-      playlists: ReturnType<SceneConfig["_getDocuments"]>;
-      sounds: ReturnType<SceneConfig["_getDocuments"]>;
-      journals: ReturnType<SceneConfig["_getDocuments"]>;
-      hasGlobalThreshold: boolean;
-      data: DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<"Scene">>, Options>["data"] & {
-        /**
-         * @defaultValue `0`
-         */
-        globalLightThreshold: number;
-      };
-    }
-
     type FormData = {
       backgroundColor: string;
       darkness: number;

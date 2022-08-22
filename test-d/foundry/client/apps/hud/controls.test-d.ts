@@ -2,7 +2,7 @@ import { expectAssignable, expectNotAssignable, expectType } from "tsd";
 
 expectType<SceneControls>(new SceneControls());
 expectType<SceneControls>(new SceneControls({ width: null }));
-expectType<number>(SceneControls.defaultOptions.width);
+expectType<number | null>(SceneControls.defaultOptions.width);
 
 const controls = new SceneControls();
 expectType<void>(controls.initialize());

@@ -83,11 +83,11 @@ declare global {
      */
     get collection(): Messages;
 
-    override getData(options?: Partial<ChatLogOptions>): ChatLog.Data;
+    override getData(options?: Partial<ChatLogOptions>): MaybePromise<object>;
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<ChatLogOptions>): Promise<void>;
 
-    protected override _renderInner(data: ChatLog.Data): Promise<JQuery>;
+    protected override _renderInner(data: object): Promise<JQuery>;
 
     /**
      * Render a batch of additional messages, prepending them to the top of the log
@@ -324,13 +324,6 @@ declare global {
       | "macro"
       | "invalid"
       | "none";
-
-    interface Data {
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>;
-      rollMode: keyof CONFIG.Dice.RollModes;
-      rollModes: typeof CONFIG["Dice"]["rollModes"];
-      isStream: boolean;
-    }
 
     interface ScrollBottomOptions {
       /**

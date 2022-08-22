@@ -1,19 +1,14 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
-
+export {};
 declare global {
   /**
    * A generic application for configuring permissions for various Document types
    * @typeParam Options          - the type of the options object
-   * @typeParam Data             - The data structure used to render the handlebars template.
    * @typeParam ConcreteDocument - the type of the Document which should be managed by this form sheet
    */
   class PermissionControl<
     Options extends DocumentSheetOptions = DocumentSheetOptions,
-    Data extends object = PermissionControl.Data,
-    ConcreteDocument extends foundry.abstract.Document<any, any> = Data extends DocumentSheet.Data<infer T>
-      ? T
-      : foundry.abstract.Document<any, any>
-  > extends DocumentSheet<Options, PermissionControl.Data, ConcreteDocument> {
+    ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>
+  > extends DocumentSheet<Options, ConcreteDocument> {
     /**
      * @defaultValue
      * ```typescript
@@ -28,24 +23,12 @@ declare global {
 
     override get title(): string;
 
-    override getData(options?: Partial<Options> | undefined): PermissionControl.Data | Promise<PermissionControl.Data>;
+    override getData(options?: Partial<Options> | undefined): MaybePromise<object>;
 
     protected override _updateObject(event: Event, formData: PermissionControl.FormData): Promise<unknown>;
   }
 
   namespace PermissionControl {
-    interface Data {
-      currentDefault: foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | "-1";
-      instructions: string;
-      defaultLevels: Record<foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS, string> & { "-1"?: string };
-      playerLevels: Record<foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | "-1", string> & { "-2"?: string };
-      isFolder: boolean;
-      users: {
-        user: InstanceType<ConfiguredDocumentClassForName<"User">>;
-        level: foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | "-1";
-      }[];
-    }
-
     interface FormData {
       [userId: string]: FormData.InputPermissionLevel;
       default: FormData.InputPermissionLevel;

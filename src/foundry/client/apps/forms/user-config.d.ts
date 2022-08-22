@@ -4,12 +4,11 @@ declare global {
   /**
    * The Application responsible for configuring a single User document.
    * @typeParam Options - the type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class UserConfig<
-    Options extends DocumentSheetOptions = UserConfig.Options,
-    Data extends object = UserConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof User>>> {
+  class UserConfig<Options extends DocumentSheetOptions = UserConfig.Options> extends DocumentSheet<
+    Options,
+    InstanceType<ConfiguredDocumentClass<typeof User>>
+  > {
     /**
      * @defaultValue
      * ```typescript
@@ -25,7 +24,7 @@ declare global {
 
     override get title(): string;
 
-    override getData(options?: Partial<Options>): Data;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     override activateListeners(html: JQuery): void;
 
@@ -41,12 +40,6 @@ declare global {
   }
 
   namespace UserConfig {
-    interface Data<Options extends DocumentSheetOptions> {
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>;
-      actors: InstanceType<ConfiguredDocumentClass<typeof Actor>>[];
-      options: Options;
-    }
-
     interface Options extends DocumentSheetOptions {
       /**
        * @defaultValue `["sheet", "user-config"]`
