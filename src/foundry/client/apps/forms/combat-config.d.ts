@@ -4,12 +4,11 @@ declare global {
   /**
    * The Application responsible for configuring the CombatTracker and its contents.
    * @typeParam Options - The type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class CombatTrackerConfig<
-    Options extends FormApplicationOptions = FormApplicationOptions,
-    Data extends object = CombatTrackerConfig.Data
-  > extends FormApplication<Options, Data, undefined> {
+  class CombatTrackerConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
+    Options,
+    undefined
+  > {
     /**
      * @defaultValue
      * ```typescript
@@ -24,18 +23,11 @@ declare global {
      */
     static override get defaultOptions(): FormApplicationOptions;
 
-    override getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     protected override _updateObject(
       event: Event,
       formData: ClientSettings.Values["core.combatTrackerConfig"]
     ): Promise<unknown>;
-  }
-
-  namespace CombatTrackerConfig {
-    interface Data {
-      settings: ClientSettings.Values["core.combatTrackerConfig"];
-      attributeChoices: Record<string, string[]>;
-    }
   }
 }

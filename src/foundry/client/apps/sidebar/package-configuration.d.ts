@@ -25,7 +25,7 @@ declare global {
      */
     static override get defaultOptions(): PackageConfiguration.Options;
 
-    override getData(): object | Promise<object>;
+    override getData(): MaybePromise<object>;
 
     abstract _prepareCategoryData(): PackageConfiguration.Category;
 

@@ -11,12 +11,4 @@ expectType<PlaceablesLayer<any> | undefined>(hud.layer);
 expectType<void>(hud.bind(token));
 expectType<void>(hud.clear());
 
-expectType<
-  ReturnType<foundry.data.TokenData["toJSON"]> & {
-    id: string;
-    classes: string;
-    appId: number;
-    isGM: boolean;
-    icons: typeof CONFIG.controlIcons;
-  }
->(hud.getData());
+expectType<MaybePromise<object>>(hud.getData());

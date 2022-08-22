@@ -5,12 +5,11 @@ declare global {
    * The Application responsible for configuring a single Combatant document within a parent Combat.
    *
    * @typeParam Options - the type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class CombatantConfig<
-    Options extends DocumentSheetOptions = CombatantConfig.Options,
-    Data extends CombatantConfig.Data<Options> = CombatantConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Combatant>>> {
+  class CombatantConfig<Options extends DocumentSheetOptions = CombatantConfig.Options> extends DocumentSheet<
+    Options,
+    InstanceType<ConfiguredDocumentClass<typeof Combatant>>
+  > {
     /**
      * @defaultValue
      * ```typescript
@@ -38,11 +37,6 @@ declare global {
       template: string;
       width: number;
     }
-
-    type Data<Options extends DocumentSheetOptions> = DocumentSheet.Data<
-      InstanceType<ConfiguredDocumentClass<typeof Combatant>>,
-      Options
-    >;
 
     type FormData = Pick<foundry.data.CombatantData, "defeated" | "hidden" | "img" | "initiative" | "name">;
   }

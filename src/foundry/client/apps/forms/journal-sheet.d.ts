@@ -9,12 +9,11 @@ declare global {
   /**
    * The Application responsible for displaying and editing a single JournalEntry document.
    * @typeParam Options - the type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class JournalSheet<
-    Options extends JournalSheetOptions = JournalSheetOptions,
-    Data extends object = JournalSheet.Data<Options>
-  > extends DocumentSheet<Options, Data> {
+  class JournalSheet<Options extends JournalSheetOptions = JournalSheetOptions> extends DocumentSheet<
+    Options,
+    ConcreteJournalEntry
+  > {
     /**
      * @param object  - The JournalEntry instance which is being edited
      * @param options - Application options
@@ -65,7 +64,7 @@ declare global {
 
     protected override _getHeaderButtons(): Application.HeaderButton[];
 
-    override getData(options?: Partial<Options>): Promise<Data> | Data;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     protected override _updateObject(event: Event, formData: JournalSheet.FormData): Promise<unknown>;
 
@@ -88,12 +87,6 @@ declare global {
   }
 
   namespace JournalSheet {
-    interface Data<Options extends JournalSheetOptions = JournalSheetOptions>
-      extends DocumentSheet.Data<ConcreteJournalEntry, Options> {
-      image: string;
-      folders: ReturnType<NonNullable<Game["folders"]>["filter"]>;
-    }
-
     type SheetMode = "text" | "image";
 
     interface FormData {

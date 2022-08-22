@@ -35,7 +35,7 @@ declare class HeadsUpDisplay<Options extends ApplicationOptions = ApplicationOpt
    */
   static override get defaultOptions(): ApplicationOptions;
 
-  override getData(options?: Partial<Options>): {} | { width: number; height: number };
+  override getData(options?: Partial<Options>): MaybePromise<object>;
 
   protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 

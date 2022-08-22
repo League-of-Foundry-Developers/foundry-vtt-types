@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass, ToObjectFalseType } from "../../../../types/helperTypes";
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 import { DropData as ClientDocumentMixinDropData } from "../../data/abstract/client-document";
 
 declare global {
@@ -9,12 +9,11 @@ declare global {
    * @param options - Additional application configuration options.
    *
    * @typeParam Options - the type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class ActorSheet<
-    Options extends ActorSheet.Options = ActorSheet.Options,
-    Data extends object = ActorSheet.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Actor>>> {
+  class ActorSheet<Options extends ActorSheet.Options = ActorSheet.Options> extends DocumentSheet<
+    Options,
+    InstanceType<ConfiguredDocumentClass<typeof Actor>>
+  > {
     /**
      * @defaultValue
      * ```typescript
@@ -50,7 +49,7 @@ declare global {
 
     override close(options?: FormApplication.CloseOptions): Promise<void>;
 
-    override getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     protected override _getHeaderButtons(): Application.HeaderButton[];
 
@@ -145,16 +144,6 @@ declare global {
   }
 
   namespace ActorSheet {
-    /**
-     * @typeParam Options - the type of the options object
-     */
-    interface Data<Options extends ActorSheet.Options = ActorSheet.Options>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Actor>>, Options> {
-      actor: this["document"];
-      items: ToObjectFalseType<foundry.data.ActorData>["items"];
-      effects: ToObjectFalseType<foundry.data.ActorData>["effects"];
-    }
-
     type DropData =
       | DropData.ActiveEffect
       | DropData.Actor

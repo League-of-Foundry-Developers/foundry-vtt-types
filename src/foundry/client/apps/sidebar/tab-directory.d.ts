@@ -107,9 +107,7 @@ declare global {
 
     override render(force?: boolean, context?: SidebarDirectory.RenderContext<Options>): this | void;
 
-    override getData(
-      options?: Partial<Options>
-    ): SidebarDirectory.Data<this["tree"]> | Promise<SidebarDirectory.Data<this["tree"]>>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     protected override _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
@@ -208,13 +206,6 @@ declare global {
   }
 
   namespace SidebarDirectory {
-    interface Data<ConcreteTree extends Tree<foundry.abstract.Document<any, any>>> {
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>;
-      tree: ConcreteTree;
-      canCreate: boolean;
-      sidebarIcon: string;
-    }
-
     interface Options extends ApplicationOptions {
       renderUpdateKeys: string[];
       contextMenuSelector: string;

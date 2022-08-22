@@ -1,7 +1,7 @@
 import { expectAssignable, expectType } from "tsd";
 import { BaseAmbientLight } from "../../../../src/foundry/common/documents.mjs";
 
-const app = new (class extends FormApplication<FormApplicationOptions, FormApplication.Data<{ foo: string }>> {
+const app = new (class extends FormApplication<FormApplicationOptions, { foo: string }> {
   protected _updateObject(): Promise<unknown> {
     return Promise.resolve(undefined);
   }
@@ -10,11 +10,10 @@ const app = new (class extends FormApplication<FormApplicationOptions, FormAppli
 expectAssignable<Application>(app);
 expectType<boolean>(app.isEditable);
 expectType<{ foo: string }>(app.object);
-expectType<FormApplication.Data<{ foo: string }> | Promise<FormApplication.Data<{ foo: string }>>>(app.getData());
 
 const doc = new BaseAmbientLight();
-const sheet = new (class extends DocumentSheet<DocumentSheetOptions, DocumentSheet.Data<BaseAmbientLight>> {})(doc);
+const sheet = new (class extends DocumentSheet<DocumentSheetOptions, BaseAmbientLight> {})(doc);
 
-expectAssignable<FormApplication<DocumentSheetOptions, DocumentSheet.Data<BaseAmbientLight>>>(sheet);
+expectAssignable<FormApplication<DocumentSheetOptions, BaseAmbientLight>>(sheet);
 expectType<boolean>(sheet.isEditable);
 expectType<BaseAmbientLight>(sheet.document);

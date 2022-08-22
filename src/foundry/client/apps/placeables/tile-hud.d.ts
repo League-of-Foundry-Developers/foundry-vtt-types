@@ -20,15 +20,7 @@ declare global {
      */
     static override get defaultOptions(): ApplicationOptions;
 
-    override getData(options?: Partial<Options>): ReturnType<BasePlaceableHUD<ConcreteTile>["getData"]> & {
-      isVideo: boolean;
-      lockedClass: string;
-      visibilityClass: string;
-      overheadClass: string;
-      underfootClass: string;
-      videoIcon: string;
-      videoTitle: string;
-    };
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     override setPosition(options?: Partial<Application.Position>): void;
   }

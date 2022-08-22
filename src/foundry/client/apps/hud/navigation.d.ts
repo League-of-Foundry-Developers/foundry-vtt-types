@@ -1,16 +1,12 @@
-import type { ConfiguredDocumentClassForName, ToObjectFalseType } from "../../../../types/helperTypes";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
 
 declare global {
   /**
    * The UI element which displays the Scene documents which are currently enabled for quick navigation.
    *
    * @typeParam Options - the type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class SceneNavigation<
-    Options extends ApplicationOptions = ApplicationOptions,
-    Data extends object = SceneNavigation.Data
-  > extends Application<Options> {
+  class SceneNavigation<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
     constructor(options?: Partial<Options>);
 
     /**
@@ -41,7 +37,7 @@ declare global {
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
-    override getData(options?: Partial<ApplicationOptions>): Data | Promise<Data>;
+    override getData(options?: Partial<ApplicationOptions>): MaybePromise<object>;
 
     /**
      * Expand the SceneNavigation menu, sliding it down if it is currently collapsed
@@ -85,16 +81,6 @@ declare global {
   }
 
   namespace SceneNavigation {
-    interface Data {
-      collapsed: boolean;
-      scenes: (ToObjectFalseType<foundry.data.SceneData> & {
-        name: string;
-        users: { letter: string; color: string };
-        visible: boolean;
-        css: string;
-      })[];
-    }
-
     interface DisplayProgressBarOptions {
       /**
        * A text label to display

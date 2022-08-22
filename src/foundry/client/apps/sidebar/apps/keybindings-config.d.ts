@@ -2,9 +2,8 @@
  * Allows for viewing and editing of Keybinding Actions
  */
 declare class KeybindingsConfig<
-  Options extends FormApplicationOptions = FormApplicationOptions,
-  Data extends KeybindingsConfig.Data = KeybindingsConfig.Data
-> extends FormApplication<Options, Data> {
+  Options extends FormApplicationOptions = FormApplicationOptions
+> extends FormApplication<Options> {
   /**
    * A cached copy of the Categories
    */
@@ -38,7 +37,7 @@ declare class KeybindingsConfig<
    */
   static override get defaultOptions(): FormApplicationOptions;
 
-  override getData(options?: Partial<Options>): Data;
+  override getData(options?: Partial<Options>): MaybePromise<object>;
 
   /**
    * Builds the set of Bindings into a form usable for display and configuration
@@ -196,16 +195,6 @@ declare class KeybindingsConfig<
 }
 
 declare namespace KeybindingsConfig {
-  interface Data extends CategoryData {
-    categories: DataCategory[];
-    allActive: boolean;
-  }
-
-  interface DataCategory extends Category {
-    active: boolean;
-    hidden: boolean;
-  }
-
   interface CategoryData {
     categories: Category[];
     totalActions: number;

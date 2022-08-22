@@ -58,7 +58,7 @@ declare class SceneControls<Options extends ApplicationOptions = ApplicationOpti
    * })
    * ```
    */
-  static override get defaultOptions(): SceneControls.Options;
+  static override get defaultOptions(): ApplicationOptions;
 
   /**
    * Return the active control set
@@ -112,30 +112,6 @@ declare class SceneControls<Options extends ApplicationOptions = ApplicationOpti
    * These controls may be extended using the "getSceneControlButtons" Hook.
    */
   protected _getControlButtons(): SceneControl[];
-}
-
-declare namespace SceneControls {
-  export interface Options extends ApplicationOptions {
-    /**
-     * @defaultValue `100`
-     */
-    width: number;
-
-    /**
-     * @defaultValue `"controls"`
-     */
-    id: string;
-
-    /**
-     * @defaultValue `"templates/hud/controls.html"`
-     */
-    template: string;
-
-    /**
-     * @defaultValue `false`
-     */
-    popOut: boolean;
-  }
 }
 
 interface InitializeOptions {

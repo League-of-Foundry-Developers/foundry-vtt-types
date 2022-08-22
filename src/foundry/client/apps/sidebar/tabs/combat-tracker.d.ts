@@ -55,7 +55,7 @@ declare global {
      */
     scrollToTurn(): void;
 
-    override getData(options?: Partial<Options>): Promise<CombatTracker.Data>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     override activateListeners(html: JQuery): void;
 
@@ -147,59 +147,5 @@ declare global {
      * @internal
      */
     protected _onConfigureCombatant(li: JQuery): void;
-  }
-
-  namespace CombatTracker {
-    type Data =
-      | {
-          user: Game["user"];
-          combats: CombatTracker["combats"];
-          combatCount: number;
-          started: boolean;
-          settings: ClientSettings.Values[`core.${typeof Combat.CONFIG_SETTING}`];
-          linked: boolean;
-          labels: { scoped: string };
-          currentIndex: -1;
-          hasCombat: false;
-          combat: null;
-          turns: [];
-          previousId: null;
-          nextId: null;
-          control: false;
-        }
-      | {
-          user: Game["user"];
-          combats: CombatTracker["combats"];
-          combatCount: number;
-          started: boolean;
-          settings: ClientSettings.Values[`core.${typeof Combat.CONFIG_SETTING}`];
-          linked: boolean;
-          labels: { scoped: string };
-          currentIndex: number;
-          hasCombat: true;
-          combat: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combat>>>;
-          turns: Turn[];
-          previousId: string | null;
-          nextId: string | null;
-          control: boolean;
-          round: number;
-          turn: number;
-        };
-
-    type Turn = {
-      id: string;
-      name: string;
-      img: string;
-      active: boolean;
-      owner: boolean;
-      defeated: boolean;
-      hidden: boolean;
-      initiative: number | null;
-      hasRolled: boolean;
-      hasResource: boolean;
-      ressource: `${number}` | number | boolean | null;
-      css: string;
-      effects: Set<string>;
-    };
   }
 }
