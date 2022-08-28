@@ -71,9 +71,9 @@ declare global {
       element: HTMLElement,
       options?: {
         /**
-         * Explicit tooltip text to display. If this is not provided the tooltip text is acquired from
-         * the elements data-tooltip attribute. This text is not automatically localized, any required
-         * localization should be applied to the text input before calling this method.
+         * Explicit tooltip text to display. If this is not provided the tooltip text is
+         * acquired from the elements data-tooltip attribute. This text will be
+         * automatically localized
          */
         text?: string;
         /**
@@ -90,6 +90,12 @@ declare global {
      * Deactivate the tooltip from a previously hovered HTML element.
      */
     deactivate(): void;
+
+    /**
+     * Clear any pending activation workflow.
+     * @internal
+     */
+    clearPending(): void;
 
     /**
      * If an explicit tooltip expansion direction was not specified, figure out a valid direction based on the bounds
