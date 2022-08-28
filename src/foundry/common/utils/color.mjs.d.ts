@@ -55,8 +55,7 @@ export default class Color extends Number {
    */
   get hsv(): HSVColorVector;
 
-  /** @override */
-  toString(): string;
+  override toString(): string;
 
   /**
    * Test whether this color equals some other color

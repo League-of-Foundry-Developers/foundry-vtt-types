@@ -1,42 +1,64 @@
 export {};
 
 declare global {
-  namespace Tour {
-    /** A step in a Tour */
-    interface Step {
-      /** A machine-friendly id of the Tour Step */
-      id: string;
-      /** A DOM selector which denotes an element to highlight during this step */
-      selector: string;
-      /** The title of the step, displayed in the tooltip header */
-      title: string;
-      /** Raw HTML content displayed during the step */
-      content: string;
-      /** How the tooltip for the step should be */
-      tooltipDirection: string;
-    }
+  /** A step in a Tour */
+  interface TourStep {
+    /** A machine-friendly id of the Tour Step */
+    id: string;
 
-    /** Tour configuration data */
-    interface Config {
-      /** The namespace this Tour belongs to. Typically, the name of the package which implements the tour should be used */
-      namespace: string;
-      /** A machine-friendly id of the Tour, must be unique within the provided namespace */
-      id: string;
-      /** A human-readable name for this Tour */
-      title: string;
-      /** A human-readable description of this Tour */
-      description: string;
-      /** The list of Tour Steps */
-      steps: Tour.Step[];
-      /** A map of translations for the Tour that should be merged into the default translations */
-      translations: object;
-      /** Whether the Tour is restricted to the GM only */
-      restricted: boolean;
-      /** Whether the Tour should be displayed in the Manage Tours UI */
-      display: boolean;
-      /** Whether the Tour can be resumed or if it always needs to start from the beginning */
-      canBeResumed: boolean;
-    }
+    /** A DOM selector which denotes an element to highlight during this step */
+    selector?: string;
+
+    /** The title of the step, displayed in the tooltip header */
+    title: string;
+
+    /** Raw HTML content displayed during the step */
+    content: string;
+
+    /** How the tooltip for the step should be displayed relative to the target elemen */
+    tooltipDirection?: TooltipManager.TOOLTIP_DIRECTIONS;
+
+    /** Whether the Step is restricted to the GM only */
+    restricted?: boolean;
+  }
+
+  /** Tour configuration data */
+  interface TourConfig {
+    /** The namespace this Tour belongs to. Typically, the name of the package which implements the tour should be used */
+    namespace?: string;
+
+    /** A machine-friendly id of the Tour, must be unique within the provided namespace */
+    id?: string;
+
+    /** A human-readable name for this Tour */
+    title: string;
+
+    /** A human-readable description of this Tour */
+    description?: string;
+
+    /** The list of Tour Steps */
+    steps: TourStep[];
+
+    /** A map of translations for the Tour that should be merged into the default translations */
+    localization?: Localization.Translations;
+
+    /** Whether the Tour is restricted to the GM only */
+    restricted?: boolean;
+
+    /** Whether the Tour should be displayed in the Manage Tours UI */
+    display?: boolean;
+
+    /** Whether the Tour can be resumed or if it always needs to start from the beginning */
+    canBeResumed?: boolean;
+
+    /**
+     * A list of namespaced Tours that might be suggested to the user when this Tour is completed.
+     * The first non-completed Tour in the array will be recommended.
+     */
+    suggestedNextTours?: string[];
+  }
+
+  namespace Tour {
     type STATUS = ValueOf<typeof Tour.STATUS>;
   }
 
@@ -47,20 +69,22 @@ declare global {
     /**
      * @param config - The configuration of the Tour
      */
-    constructor(
-      config: Tour.Config,
-      { id, namespace }?: { id?: Tour.Config["id"]; namespace?: Tour.Config["namespace"] }
-    );
+    constructor(config: TourConfig, { id, namespace }?: { id?: TourConfig["id"]; namespace?: TourConfig["namespace"] });
     /**
      * The configuration of the tour. Cloned to avoid mutating the original configuration.
      */
-    config: Tour.Config;
+    config: TourConfig;
 
     static STATUS: Readonly<{
       UNSTARTED: "unstarted";
       IN_PROGRESS: "in-progress";
       COMPLETED: "completed";
     }>;
+
+    /**
+     * Indicates if a Tour is currently in progress.
+     */
+    static get tourInProgress(): boolean;
 
     /**
      * The HTMLElement which is the focus of the current tour step.
@@ -84,14 +108,11 @@ declare global {
     static HIGHLIGHT_PADDING: number;
 
     /**
-     * The identifier of the tour.
+     * The unique identifier of the tour.
      */
-    get id(): string;
+    get id(): string | undefined;
 
-    /**
-     * The identifier of the tour.
-     */
-    set id(value: string);
+    set id(value: string | undefined);
 
     /**
      * The human-readable title for the tour.
@@ -101,17 +122,14 @@ declare global {
     /**
      * The human-readable description of the tour.
      */
-    get description(): string;
+    get description(): string | undefined;
 
     /**
      * The package namespace for the tour.
      */
-    get namespace(): string;
+    get namespace(): string | undefined;
 
-    /**
-     * The package namespace for the tour.
-     */
-    set namespace(value: string);
+    set namespace(value: string | undefined);
 
     /**
      * The key the Tour is stored under in game.tours, of the form `${namespace}.${id}`
@@ -121,12 +139,12 @@ declare global {
     /**
      * The configuration of tour steps
      */
-    get steps(): Tour.Step[];
+    get steps(): TourStep[];
 
     /**
      * Return the current Step, or null if the tour has not yet started.
      */
-    get currentStep(): Tour.Step | null;
+    get currentStep(): TourStep | null;
 
     /**
      * The index of the current step; -1 if the tour has not yet started, or null if the tour is finished.
@@ -142,6 +160,12 @@ declare global {
      * Returns True if there is a previous TourStep
      */
     get hasPrevious(): boolean;
+
+    /**
+     * Return whether this Tour is currently eligible to be started?
+     * This is useful for tours which can only be used in certain circumstances, like if the canvas is active.
+     */
+    get canStart(): boolean;
 
     /**
      * The current status of the Tour
@@ -183,6 +207,13 @@ declare global {
      * @param stepIndex - The step to progress to
      */
     progress(stepIndex: number): Promise<void>;
+
+    /**
+     * Query the DOM for the target element using the provided selector
+     * @param selector - A CSS selector
+     * @returns The target element, or null if not found
+     */
+    protected _getTargetElement(selector: string): Element | null;
 
     /**
      * Creates and returns a Tour by loading a JSON file
