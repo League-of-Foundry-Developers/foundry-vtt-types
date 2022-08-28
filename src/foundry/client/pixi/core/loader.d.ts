@@ -2,14 +2,9 @@ import type { ConfiguredDocumentClassForName } from '../../../../types/helperTyp
 
 declare global {
   /**
-   * A Loader class which helps with loading video and image textures
+   * A Loader class which helps with loading video and image textures.
    */
   class TextureLoader {
-    /**
-     * The cached mapping of textures
-     */
-    cache: Map<string, { tex: PIXI.BaseTexture; time: number }>;
-
     /**
      * The duration in milliseconds for which a texture will remain cached
      * @defaultValue `1000 * 60 * 15`
@@ -43,51 +38,26 @@ declare global {
     loadTexture(src: string): Promise<PIXI.BaseTexture>;
 
     /**
-     * Log texture loading progress in the console and in the Scene loading bar
-     * @internal
-     */
-    protected _onProgress(src: string, progress: TextureLoader.Progress): void;
-
-    /**
-     * Log failed texture loading
-     * @internal
-     */
-    protected _onError(src: string, progress: TextureLoader.Progress, error: Error): void;
-
-    /**
-     * Load an image texture from a provided source url
+     * Load an image texture from a provided source url.
+     * @param src - The source image URL
+     * @returns The loaded BaseTexture
      */
     loadImageTexture(src: string): Promise<PIXI.BaseTexture>;
 
     /**
-     * Use the Fetch API to retrieve a resource and return a Blob instance for it.
-     * @param options - Options to configure the loading behaviour.
-     *                  (default: `{}`)
-     * @internal
-     */
-    protected _fetchResource(
-      src: string,
-      options?: {
-        /**
-         * Append a cache-busting query parameter to the request.
-         * @defaultValue `false`
-         */
-        bustCache?: boolean | undefined;
-      }
-    ): Promise<Blob>;
-
-    /**
-     * Return a URL with a cache-busting query parameter appended.
-     * @param src - The source URL being attempted
-     * @returns The new URL, or false on a failure.
-     * @internal
-     */
-    protected _getCacheBustURL(src: string): string | false;
-
-    /**
-     * Load a video texture from a provided source url
+     * @param src - The source video URL
+     * @returns The loaded BaseTexture
      */
     loadVideoTexture(src: string): Promise<PIXI.BaseTexture>;
+
+    /**
+     * Use the Fetch API to retrieve a resource and return a Blob instance for it.
+     * @param src     -
+     * @param options - Options to configure the loading behaviour.
+     *                  (default: `{}`)
+     * @returns A Blob containing the loaded data
+     */
+    static fetchResource(src: string, options?: TextureLoader.FetchResourceOptions): Promise<Blob>;
 
     /**
      * Add an image url to the texture cache
@@ -106,6 +76,13 @@ declare global {
      * Expire (and destroy) textures from the cache which have not been used for more than CACHE_TTL milliseconds.
      */
     expireCache(): void;
+
+    /**
+     * Return a URL with a cache-busting query parameter appended.
+     * @param  src - The source URL being attempted
+     * @returns The new URL, or false on a failure.
+     */
+    static getCacheBustURL(src: string): string | false;
 
     /**
      * A global reference to the singleton texture loader
@@ -142,6 +119,14 @@ declare global {
       total: number;
       pct: number;
     }
+
+    interface FetchResourceOptions {
+      /**
+       * Append a cache-busting query parameter to the request.
+       * @defaultValue `false`
+       */
+      bustCache?: boolean;
+    }
   }
 
   /**
@@ -160,11 +145,12 @@ declare global {
    * Load a single texture and return a Promise which resolves once the texture is ready to use
    * @param src      - The requested texture source
    * @param options  - Additional options which modify texture loading
+   * @returns The loaded Texture, or null if loading failed with no fallback
    */
   function loadTexture(
     src: string,
     options?: {
-      /** A fallback texture to use if the requested source is unavailable or invalid */
+      /** A fallback texture URL to use if the requested source is unavailable */
       fallback?: string | undefined;
     }
   ): Promise<PIXI.Texture | null>;
