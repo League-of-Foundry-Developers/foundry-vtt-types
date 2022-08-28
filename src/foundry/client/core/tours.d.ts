@@ -13,6 +13,5 @@ declare class Tours extends foundry.utils.Collection<Tour> {
    */
   register(namespace: string, id: string, tour: Tour): void;
 
-  /** @override */
-  set(key: string, tour: Tour): this;
+  override set(key: string, tour: Tour): this;
 }
