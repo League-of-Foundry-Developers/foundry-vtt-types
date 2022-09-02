@@ -18,6 +18,7 @@
     "eslint:report": "eslint --output-file eslint_report.json --format json --ext .d.ts,.test-d.ts .",
     "test": "tsd",
     "typecheck": "./node_modules/typescript/bin/tsc",
+    "postinstall": "patch-package",
     "prepare": "husky install"
   },
   "repository": {
@@ -84,6 +85,7 @@
     "eslint-plugin-tsdoc": "^0.2.14",
     "husky": "^8.0.0",
     "lint-staged": "^13.0.0",
+    "patch-package": "^6.4.7",
     "prettier": "^2.5.1",
     "tsd": "^0.22.0",
     "typescript": "~4.7.2"
