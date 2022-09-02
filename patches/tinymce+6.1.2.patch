@@ -1,0 +1,62 @@
+diff --git a/node_modules/tinymce/tinymce.d.ts b/node_modules/tinymce/tinymce.d.ts
+index 1d41803..5ba0857 100644
+--- a/node_modules/tinymce/tinymce.d.ts
++++ b/node_modules/tinymce/tinymce.d.ts
+@@ -672,12 +672,12 @@ interface DialogTabChangeDetails {
+     newTabName: string;
+     oldTabName: string;
+ }
+-declare type DialogActionHandler<T> = (api: DialogInstanceApi<T>, details: DialogActionDetails) => void;
+-declare type DialogChangeHandler<T> = (api: DialogInstanceApi<T>, details: DialogChangeDetails<T>) => void;
+-declare type DialogSubmitHandler<T> = (api: DialogInstanceApi<T>) => void;
++declare type DialogActionHandler<T extends DialogData> = (api: DialogInstanceApi<T>, details: DialogActionDetails) => void;
++declare type DialogChangeHandler<T extends DialogData> = (api: DialogInstanceApi<T>, details: DialogChangeDetails<T>) => void;
++declare type DialogSubmitHandler<T extends DialogData> = (api: DialogInstanceApi<T>) => void;
+ declare type DialogCloseHandler = () => void;
+-declare type DialogCancelHandler<T> = (api: DialogInstanceApi<T>) => void;
+-declare type DialogTabChangeHandler<T> = (api: DialogInstanceApi<T>, details: DialogTabChangeDetails) => void;
++declare type DialogCancelHandler<T extends DialogData> = (api: DialogInstanceApi<T>) => void;
++declare type DialogTabChangeHandler<T extends DialogData> = (api: DialogInstanceApi<T>, details: DialogTabChangeDetails) => void;
+ declare type DialogSize = 'normal' | 'medium' | 'large';
+ interface DialogSpec<T extends DialogData> {
+     title: string;
+@@ -950,8 +950,8 @@ type PublicDialog_d_CustomEditorInit = CustomEditorInit;
+ type PublicDialog_d_CustomEditorInitFn = CustomEditorInitFn;
+ type PublicDialog_d_DialogData = DialogData;
+ type PublicDialog_d_DialogSize = DialogSize;
+-type PublicDialog_d_DialogSpec<_0> = DialogSpec<_0>;
+-type PublicDialog_d_DialogInstanceApi<_0> = DialogInstanceApi<_0>;
++type PublicDialog_d_DialogSpec<_0 extends DialogData> = DialogSpec<_0>;
++type PublicDialog_d_DialogInstanceApi<_0 extends DialogData> = DialogInstanceApi<_0>;
+ type PublicDialog_d_DialogFooterButtonSpec = DialogFooterButtonSpec;
+ type PublicDialog_d_DialogActionDetails = DialogActionDetails;
+ type PublicDialog_d_DialogChangeDetails<_0> = DialogChangeDetails<_0>;
+@@ -1295,16 +1295,16 @@ interface WindowParams {
+     readonly inline?: 'cursor' | 'toolbar';
+     readonly ariaAttrs?: boolean;
+ }
+-declare type InstanceApi<T> = UrlDialogInstanceApi | DialogInstanceApi<T>;
++declare type InstanceApi<T extends DialogData> = UrlDialogInstanceApi | DialogInstanceApi<T>;
+ interface WindowManagerImpl {
+-    open: <T>(config: DialogSpec<T>, params: WindowParams, closeWindow: (dialog: DialogInstanceApi<T>) => void) => DialogInstanceApi<T>;
++    open: <T extends DialogData>(config: DialogSpec<T>, params: WindowParams, closeWindow: (dialog: DialogInstanceApi<T>) => void) => DialogInstanceApi<T>;
+     openUrl: (config: UrlDialogSpec, closeWindow: (dialog: UrlDialogInstanceApi) => void) => UrlDialogInstanceApi;
+     alert: (message: string, callback: () => void) => void;
+     confirm: (message: string, callback: (state: boolean) => void) => void;
+     close: (dialog: InstanceApi<any>) => void;
+ }
+ interface WindowManager {
+-    open: <T>(config: DialogSpec<T>, params?: WindowParams) => DialogInstanceApi<T>;
++    open: <T extends DialogData>(config: DialogSpec<T>, params?: WindowParams) => DialogInstanceApi<T>;
+     openUrl: (config: UrlDialogSpec) => UrlDialogInstanceApi;
+     alert: (message: string, callback?: () => void, scope?: any) => void;
+     confirm: (message: string, callback?: (state: boolean) => void, scope?: any) => void;
+@@ -1532,7 +1532,7 @@ type EventTypes_d_ShowCaretEvent = ShowCaretEvent;
+ type EventTypes_d_SwitchModeEvent = SwitchModeEvent;
+ type EventTypes_d_AddUndoEvent = AddUndoEvent;
+ type EventTypes_d_UndoRedoEvent = UndoRedoEvent;
+-type EventTypes_d_WindowEvent<_0> = WindowEvent<_0>;
++type EventTypes_d_WindowEvent<_0 extends DialogData> = WindowEvent<_0>;
+ type EventTypes_d_ProgressStateEvent = ProgressStateEvent;
+ type EventTypes_d_AfterProgressStateEvent = AfterProgressStateEvent;
+ type EventTypes_d_PlaceholderToggleEvent = PlaceholderToggleEvent;
