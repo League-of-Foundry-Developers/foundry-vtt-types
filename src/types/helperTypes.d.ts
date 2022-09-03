@@ -161,3 +161,95 @@ export type DataSourceForPlaceable<P extends PlaceableObject> = P extends Placea
     ? D["_source"]
     : never
   : never;
+
+type EndValue = string | bigint | number | boolean | null | undefined;
+export type InputValue = object | Array<unknown>;
+
+type Split<S extends string, D extends string> = string extends S
+  ? string[]
+  : S extends ""
+  ? []
+  : S extends `${infer T}${D}${infer U}`
+  ? [T, ...Split<U, D>]
+  : [S];
+
+type JoinParts<T extends (string | number)[], D extends string> = T extends []
+  ? never
+  : T extends [infer F]
+  ? `${F & (number | string)}`
+  : T extends [infer F, ...infer R]
+  ? F extends EndValue
+    ? `${F}${D}${JoinParts<Extract<R, (string | number)[]>, D>}`
+    : never
+  : string;
+// TODO: fix for TS4.8 for tuples, string to number literal cast
+export type ArrayOrTupleKey<T> = StringNumber<keyof T & string> extends never ? number : StringNumber<keyof T & string>;
+
+type GetPathParts<T, LeafsOnly extends boolean = false> = T extends EndValue
+  ? []
+  : Exclude<
+      T extends Array<unknown>
+        ?
+            | {
+                [K in ArrayOrTupleKey<T>]: [K, ...GetPathParts<T[K], LeafsOnly>];
+              }[ArrayOrTupleKey<T>]
+            | (LeafsOnly extends true ? never : [ArrayOrTupleKey<T>])
+        :
+            | {
+                [K in Extract<keyof T, EndValue>]: [K, ...GetPathParts<T[K], LeafsOnly>];
+              }[Extract<keyof T, EndValue>]
+            | (LeafsOnly extends true ? never : [Extract<keyof T, EndValue>]),
+      never
+    >;
+
+type GetPathPartsObjectOnly<T extends object> = T extends EndValue
+  ? []
+  : Exclude<
+      {
+        [K in Extract<keyof T, EndValue>]: [K, ...GetPathParts<T[K]>];
+      }[Extract<keyof T, EndValue>],
+      never
+    >;
+
+export type GetValueFromDotKey<T, P extends string> = InnerGetValueFromDotKey<T, Split<P, ".">>;
+type InnerGetValueFromDotKey<T, P extends string[]> = T extends Array<unknown>
+  ? InnerGetValueFromDotKeyArray<T, P>
+  : T extends object
+  ? InnerGetValueFromDotKeyObject<T, P>
+  : never;
+// TODO: fix for TS4.8 for tuples, string to number literal cast
+type InnerGetValueFromDotKeyArray<T extends Array<unknown>, P extends string[]> = P extends [string]
+  ? T[number]
+  : P extends [string, ...infer R]
+  ? InnerGetValueFromDotKey<T[number], Extract<R, string[]>>
+  : never;
+type InnerGetValueFromDotKeyObject<T extends object, P extends string[]> = P extends [infer K]
+  ? T[K & keyof T]
+  : P extends [keyof T, ...infer R]
+  ? InnerGetValueFromDotKey<T[P[0] & keyof T], Extract<R, string[]>>
+  : never;
+
+/** @internal exported for tests */
+export type DotNotationKeys<T extends InputValue, LeafsOnly extends boolean = false> = JoinParts<
+  GetPathParts<T, LeafsOnly>,
+  "."
+>;
+
+export type DotNotationObject<T extends InputValue> = {
+  [K in DotNotationKeys<T>]: GetValueFromDotKey<T, K>;
+};
+
+export type FlatObject<T extends Record<string, unknown>> = {
+  [K in JoinParts<GetPathPartsObjectOnly<T>, ".">]: GetValueFromDotKey<T, K>;
+};
+
+type AddDeletionMarkToLastPart<T> = T extends [...infer L, infer B]
+  ? L extends (string | number)[]
+    ? [...L, `-=${B & (string | number)}`]
+    : never
+  : never;
+/** @internal exported for tests */
+export type DeleteKeys<T> = JoinParts<AddDeletionMarkToLastPart<GetPathParts<T>>, ".">;
+export type DeletionUpdate<T extends InputValue> = {
+  [K in DeleteKeys<T> | DotNotationKeys<T>]?: K extends DeleteKeys<T> ? unknown : GetValueFromDotKey<T, K>;
+};

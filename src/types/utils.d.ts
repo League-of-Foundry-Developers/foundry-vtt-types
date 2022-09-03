@@ -141,3 +141,5 @@ type PropertyTypeOrFallback<T, Key extends string, Fallback> = Key extends keyof
  * Makes the given keys `K` of the type `T` required
  */
 type RequiredProps<T, K extends keyof T> = Required<Pick<T, K>> & Omit<T, K>;
+
+type StringNumber<S extends string> = S extends `${number}` ? S : never;
