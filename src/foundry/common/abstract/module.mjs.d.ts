@@ -12,6 +12,4 @@ export { default as EmbeddedCollection } from './embedded-collection.mjs';
 export class DocumentData<Parent extends AnyDocument | null, ConcreteDataSchema extends DataSchema> extends DataModel<
   Parent,
   ConcreteDataSchema
-> {
-  constructor(data?: DataModel.SchemaToSourceInput<ConcreteDataSchema>, options?: DataModel.ConstructorOptions);
-}
+> {}

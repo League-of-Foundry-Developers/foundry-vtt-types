@@ -1,3 +1,4 @@
+import { DataSchema } from './../abstract/data.mjs';
 import Document, { DocumentMetadata } from '../abstract/document.mjs';
 import * as documents from './module.mjs';
 import * as fields from '../data/fields.mjs';
@@ -6,7 +7,7 @@ import type BaseUser from './user.mjs';
 import type { ConfiguredDocumentClass } from '../../../types/helperTypes.js';
 import type { FlagsField } from '../data/flagsField.js';
 
-type BaseItemSchema = {
+interface BaseItemSchema extends DataSchema {
   /** The _id which uniquely identifies this Item document */
   _id: fields.DocumentIdField<{}>;
 
@@ -43,7 +44,7 @@ type BaseItemSchema = {
 
   /** An object of creation and access information */
   _stats: typeof DocumentStatsSchema;
-};
+}
 
 type BaseItemMetadata = Merge<
   DocumentMetadata,

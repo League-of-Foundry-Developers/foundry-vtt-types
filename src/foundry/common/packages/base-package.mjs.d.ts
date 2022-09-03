@@ -149,7 +149,7 @@ declare class BasePackage<
    * @param options - Options which affect DataModel construction
    *                  (default: `{}`)
    */
-  constructor(data: DataModel.SchemaToSourceInput<Schema>, options?: DataModel.ConstructorOptions);
+  //   constructor(data: DataModel.SchemaToSourceInput<Schema>, options?: DataModel.ConstructorOptions);
 
   //   /**
   //    * An availability code in PACKAGE_AVAILABILITY_CODES which defines whether this package can be used.

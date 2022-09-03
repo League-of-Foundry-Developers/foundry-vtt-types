@@ -161,11 +161,11 @@ declare global {
       options: Parameters<this['update']>[1]
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>[]>;
 
-    protected override _preUpdate(
-      data: Parameters<foundry.documents.BaseToken['_preUpdate']>[0],
-      options: DocumentModificationOptions,
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>
-    ): Promise<void>;
+    // protected override _preUpdate(
+    //   data: Parameters<foundry.documents.BaseToken['_preUpdate']>[0],
+    //   options: DocumentModificationOptions,
+    //   user: InstanceType<ConfiguredDocumentClass<typeof User>>
+    // ): Promise<void>;
 
     /**
      * When the Actor data overrides change for an un-linked Token Actor, simulate the pre-update process.

@@ -1,7 +1,10 @@
+import { BaseActiveEffectSchema } from './../documents/active-effect.mjs.d';
 import DataModel, { DataSchema } from './data.mjs';
 import { ConfiguredDocumentClass, DocumentConstructor, DocumentType } from '../../../types/helperTypes';
 import EmbeddedCollection from './embedded-collection.mjs';
 import type BaseUser from '../documents/user.mjs';
+import type { DataField } from '../data/fields.mjs.js';
+import { ToObjectFalseType } from '../../../types/helperTypes';
 
 export type ContextType<T extends AnyDocument> = Context<Document.ParentTypeFor<T>>;
 
@@ -33,12 +36,21 @@ declare namespace Document {
     ConcreteDataSchema extends DataSchema,
     Parent extends AnyDocument | null = null
   > = PartialIf<
-    [data: DataModel.SchemaToSourceInput<ConcreteDataSchema>, context?: Context<Parent>],
-    Equals<DataModel.SchemaToSourceInput<ConcreteDataSchema>, {}>
+    /**
+     * Create a new Document by providing an initial data object.
+     */
+    [
+      /** Initial data provided to construct the Document */
+      data: DataModel.SchemaToSourceInputSimple<ConcreteDataSchema>,
+
+      /** Additional parameters which define Document context */
+      context?: Context<Parent>
+    ],
+    Equals<DataModel.SchemaToSourceInputSimple<ConcreteDataSchema>, {}>
   >;
 }
 
-type GetFlags<T extends AnyDocument> = 'flags' extends keyof T['_source'] ? T['flags'] : Record<string, unknown>;
+type GetFlags<T extends AnyDocument> = GetKey<T, 'flags', Record<string, unknown>>;
 
 /**
  * The abstract base class shared by both client and server-side which defines the model for a single document type.
@@ -54,7 +66,17 @@ declare abstract class Document<
    * @param data    - Initial data provided to construct the Document
    * @param context - Additional parameters which define Document context
    */
+  //   constructor(data: DataModel.ConstructPartial<RemoveIndex<ConcreteDataSchema>, 'SourceType'>);
   constructor(...args: Document.ConstructorParameters<ConcreteDataSchema, Parent>);
+  //   //   constructor(data: {
+  //   //     [K in keyof ConcreteDataSchema]: ConcreteDataSchema[K] extends DataField<infer A, infer ExtendsOptions>
+  //   //       ? ExtendsOptions
+  //   //       : never;
+  //   //   });
+  //   constructor(data: DataModel.GetSchemaValue<ConcreteDataSchema, 'SourceType'>);
+  //   //   constructor(data: {
+  //   //     [K in keyof ConcreteDataSchema]: DataModel.GetFieldType<ConcreteDataSchema[K], 'SourceType'>;
+  //   //   });
 
   // Allow the generic parameter to be inferred.
   #metadata: ConcreteMetadata;
@@ -676,18 +698,18 @@ declare abstract class Document<
   /**
    * @deprecated since v10
    */
-  get data(): any;
-  //   get data(): Document.DataType<this, ConcreteDocumentShims>;
+  //   get data(): any;
+  get data(): Document.DataType<this, ConcreteDocumentShims>;
 
   // TODO basically just calls super
-  //   /**
-  //    * Transform the Document instance into a plain object.
-  //    * The created object is an independent copy of the original data.
-  //    * See DocumentData#toObject
-  //    * @param source - Draw values from the underlying data source rather than transformed values
-  //    * @returns The extracted primitive object
-  //    */
-  //   toObject(
+  /**
+   * Transform the Document instance into a plain object.
+   * The created object is an independent copy of the original data.
+   * See DocumentData#toObject
+   * @param source - Draw values from the underlying data source rather than transformed values
+   * @returns The extracted primitive object
+   */
+  //   override toObject(
   //     source?: true
   //   ): this['id'] extends string
   //     ? ReturnType<this['data']['toJSON']> & { _id: string }
@@ -695,8 +717,8 @@ declare abstract class Document<
   //   toObject(
   //     source: false
   //   ): this['id'] extends string
-  //     ? ToObjectFalseType<ConcreteDocumentData> & { _id: string }
-  //     : ToObjectFalseType<ConcreteDocumentData>;
+  //     ? ToObjectFalseType<ConcreteDataSchema> & { _id: string }
+  //     : ToObjectFalseType<ConcreteDataSchema>;
 
   //   /**
   //    * Convert the Document instance to a primitive object which can be serialized.

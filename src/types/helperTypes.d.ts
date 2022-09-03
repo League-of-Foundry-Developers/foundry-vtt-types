@@ -72,14 +72,13 @@ export type ConfiguredObjectClassForName<Name extends PlaceableDocumentType> = C
 
 type SubtypeData<SubType, SubTypeValue extends SubTypeShape | undefined> = SubTypeValue extends undefined
   ? Record<string, unknown>
-  : (
-      | GetKey<SubTypeValue, 'data', never>
-      | DataModel.SchemaToData<GetKey<GetKey<SubTypeValue, 'model', never>, 'schema', never>>
-    ) & {
+  : ([GetKey<SubTypeValue, 'model'>] extends [undefined]
+      ? GetKey<SubTypeValue, 'data', never>
+      : DataModel.SchemaToData<GetKey<GetKey<SubTypeValue, 'model'>, 'schema'>>) & {
       type: SubType;
     };
 
-export type ConfiguredData<Name extends SystemDocumentType> = Coalesce<
+export type SystemDataByType<Name extends SystemDocumentType> = Coalesce<
   | (Name extends keyof DataConfig ? DataConfig[Name] : never)
   | (SystemConfig[Name] extends undefined
       ? Record<string, unknown>
@@ -94,14 +93,13 @@ export type ConfiguredData<Name extends SystemDocumentType> = Coalesce<
 
 type SubtypeSource<SubType, SubTypeValue extends SubTypeShape | undefined> = SubTypeValue extends undefined
   ? Record<string, unknown>
-  : (
-      | GetKey<SubTypeValue, 'source', never>
-      | DataModel.SchemaToSource<GetKey<GetKey<SubTypeValue, 'model', never>, 'schema', never>>
-    ) & {
+  : ([GetKey<SubTypeValue, 'model'>] extends [undefined]
+      ? GetKey<SubTypeValue, 'source', never>
+      : DataModel.SchemaToSource<GetKey<GetKey<SubTypeValue, 'model'>, 'schema'>>) & {
       type: SubType;
     };
 
-export type ConfiguredSource<Name extends SystemDocumentType> = Coalesce<
+export type SystemSourceByType<Name extends SystemDocumentType> = Coalesce<
   | (Name extends keyof SourceConfig ? SourceConfig[Name] : never)
   | ([SystemConfig[Name]] extends [undefined]
       ? never

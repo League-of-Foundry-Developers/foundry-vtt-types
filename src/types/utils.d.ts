@@ -254,11 +254,7 @@ type RequiredProperties<T> = keyof T extends unknown
     : keyof T
   : never;
 
-type ExpandDeep<T> = T extends Record<string | number | symbol, unknown>
-  ? T extends unknown
-    ? { [K in keyof T]: ExpandDeep<T[K]> }
-    : never
-  : T;
+type ExpandDeep<T> = T extends object ? (T extends infer O ? { [K in keyof O]: ExpandDeep<O[K]> } : never) : T;
 
 /**
  * Expands the type representation of a complex type such that the final result is computed and displayed, e.g. `{ foo: 123 } | { bar: 456 }` instead of `ComplexOperation<T>`.

@@ -13,10 +13,7 @@ interface BaseFogExplorationSchema extends DataSchema {
   /**
    * The _id of the Scene document to which this fog applies
    */
-  scene: fields.ForeignDocumentField<
-    typeof documents.BaseScene,
-    { initial: () => OptionalChaining<Canvas['scene'], 'id'> }
-  >;
+  scene: fields.ForeignDocumentField<typeof documents.BaseScene, { initial: () => string }>;
 
   /**
    * The _id of the User document to which this fog applies

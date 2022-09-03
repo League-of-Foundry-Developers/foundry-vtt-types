@@ -1,11 +1,11 @@
 import { DOCUMENT_OWNERSHIP_LEVELS } from '../constants.mjs';
 import DataModel, { DataSchema } from '../abstract/data.mjs';
 import type {
-  ConfiguredSource,
-  ConfiguredData,
   DocumentConstructor,
   StructuralClass,
-  SystemDocumentType
+  SystemDocumentType,
+  SystemSourceByType,
+  SystemDataByType
 } from '../../../types/helperTypes.js';
 import EmbeddedCollection from '../abstract/embedded-collection.mjs';
 import type { Context } from '../abstract/document.mjs.js';
@@ -516,7 +516,7 @@ export declare class StringField<
   Choices extends DataFieldChoices<ExtendsOptions['SourceType']> | undefined = Options['choices'],
   ExtendsOptions extends DataField.AnyExtendsOptions = StringField.ExtendsOptions<CoalesceUnknown<Choices, undefined>>
 > extends DataField<Options, ExtendsOptions> {
-  // This constructor overload is not a mistake. Yes `Options & { choices: Choices }` should be functionally equivalent to `Options`. However by explicitly including Choices in the type this seems to be enough to get Typescript to infer Choices concretely rather than always being EXACTLY `DataFieldChoices<StringField.Type> | undefined` when inferring.
+  // This constructor overload is not a mistake. Yes `Options & { choices: Choices }` should be functionally equivalent to `Options`. However by explicitly including Choices in the type this seems to be enough to get Typescript to infer Choices concretely rather than always being EXACTLY the constraint, `DataFieldChoices<StringField.Type> | undefined` when inferring.
   // See: https://tsplay.dev/N91BqN
   constructor(options: Options & { choices?: Choices });
 
@@ -590,9 +590,9 @@ export declare class ArrayField<
   InputElement extends ExtendsOptions['InputElement'],
   Options extends DataField.Options<ExtendsOptions>,
   ExtendsOptions extends ArrayField.AnyExtendsOptions = SimpleMerge<
-    ArrayField.ExtendsOptions<DataField.Any, DataField.SourceTypeFor<InputElement>>,
+    ArrayField.ExtendsOptions<DataField.Any, Expand<DataField.SourceTypeFor<InputElement>>>,
     {
-      InitializedType: Array<DataField.InitializedTypeFor<InputElement>>;
+      InitializedType: Array<Expand<DataField.InitializedTypeFor<InputElement>>>;
     }
   >
 > extends DataField<Options, ExtendsOptions> {
@@ -637,9 +637,12 @@ export declare namespace SetField {
   export type DefaultOptionsValue = ArrayField.DefaultOptionsValue;
   export type ExtraOptions = ArrayField.ExtraOptions;
   export type AnyExtendsOptions = ArrayField.AnyExtendsOptions;
-  export type ExtendsOptions<InputElement, Element extends JSONValue> = ArrayField.ExtendsOptions<
-    InputElement,
-    Element
+  export type ExtendsOptions<Field extends DataField.Any> = SimpleMerge<
+    ArrayField.ExtendsOptions<DataField.Any, DataField.ExtendsOptionsFor<Field>['SourceType']>,
+    {
+      InputElement: DataField.Any;
+      InitializedType: Set<DataField.ExtendsOptionsFor<Field>['InitializedType']>;
+    }
   >;
 }
 
@@ -650,12 +653,7 @@ export declare namespace SetField {
 export declare class SetField<
   InputElement extends ExtendsOptions['InputElement'],
   Options extends DataField.Options<ExtendsOptions>,
-  ExtendsOptions extends SetField.AnyExtendsOptions = SimpleMerge<
-    SetField.ExtendsOptions<DataField.Any, DataField.ExtendsOptionsFor<InputElement>['SourceType']>,
-    {
-      InitializedType: Set<DataField.ExtendsOptionsFor<InputElement>['InitializedType']>;
-    }
-  >
+  ExtendsOptions extends SetField.AnyExtendsOptions = SetField.ExtendsOptions<InputElement>
 > extends ArrayField<InputElement, Options, ExtendsOptions> {}
 
 export declare namespace SchemaField {
@@ -663,13 +661,10 @@ export declare namespace SchemaField {
 
   export type ExtraOptions = ObjectField.ExtraOptions;
 
-  //   export type OptionalDataSchema = Record<string, DataField<any, any> & RequiredProps<DataField<any, any>, 'initial'>>;
-
-  export type ExtendsOptions<Schema extends DataSchema> = DataField.ExtendsOptions<
-    Partial<DataModel.SchemaToSourceInput<Schema>>,
-    DefaultOptionsValue,
-    ExtraOptions,
+  export type ExtendsOptions<Schema extends DataSchema> = SimpleMerge<
+    ObjectField.ExtendsOptions,
     {
+      SourceType: DataModel.SchemaToSourceInput<Schema>;
       ValidateType: Record<string, Error> | Error;
       InitializedType: DataModel.SchemaToData<Schema>;
     }
@@ -994,8 +989,10 @@ export declare namespace SystemDataField {
   > = SimpleMerge<
     ObjectField.ExtendsOptions,
     {
-      SourceType: DeepPartial<ConfiguredSource<ConcreteDocument['metadata']['name']>>;
-      InitializedType: ConfiguredData<ConcreteDocument['metadata']['name']>;
+      //   SourceType: SystemSourceByType<ConcreteDocument['metadata']['name']>;
+      //   InitializedType: SystemDataByType<ConcreteDocument['metadata']['name']>;
+      SourceType: {};
+      InitializedType: {};
     }
   >;
 }
@@ -1025,10 +1022,16 @@ export declare class SystemDataField<
    * @param type - The Document instance type
    * @returns - The DataModel class, or null
    */
-  getModelForType(type: string): typeof DataModel | null;
+  getModelForType<SubType extends keyof SystemConfig[ConcreteDocument['metadata']['name']]>(
+    type: SubType
+  ): SystemConfig[ConcreteDocument['metadata']['name']][SubType] | null;
 
   /** @override */
-  //   override getInitialValue(data: Record<string, unknown>): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
+  //   override getInitialValue<
+  //     SubType extends
+  //       | SystemConfig[ConcreteDocument['metadata']['name']]
+  //       | GetKey<DataConfig, ConcreteDocument['metadata']['name'], never>
+  //   >(data: { type: SubType }): ConfiguredData<ConcreteDocument['metadata']['name']>;
 }
 
 export declare namespace ColorField {

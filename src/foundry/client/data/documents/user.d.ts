@@ -120,11 +120,11 @@ declare global {
      */
     updateTokenTargets(targetIds?: string[]): void;
 
-    override _onUpdate(
-      data: DeepPartial<foundry.documents.BaseUser['data']>,
-      options: DocumentModificationOptions,
-      userId: string
-    ): void;
+    // override _onUpdate(
+    //   data: DeepPartial<foundry.documents.BaseUser['data']>,
+    //   options: DocumentModificationOptions,
+    //   userId: string
+    // ): void;
 
     override _onDelete(options: DocumentModificationOptions, userId: string): void;
 

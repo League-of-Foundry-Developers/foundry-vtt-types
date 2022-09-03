@@ -186,7 +186,7 @@ interface ShapeDataSchema extends DataSchema {
   type: fields.StringField<{
     required: true;
     blank: false;
-    choices: ValueOf<typeof ShapeData.TYPES>[];
+    choices: ValueOf<ShapeData.TYPES>[];
     initial: 'r';
   }>;
 
@@ -211,6 +211,15 @@ interface ShapeDataSchema extends DataSchema {
   points: fields.ArrayField<fields.NumberField<{ nullable: false; integer: true }>, {}>;
 }
 
+declare namespace ShapeData {
+  export type TYPES = {
+    RECTANGLE: 'r';
+    CIRCLE: 'c';
+    ELLIPSE: 'e';
+    POLYGON: 'p';
+  };
+}
+
 /**
  * A data model intended to be used as an inner EmbeddedDataField which defines a geometric shape.
  */
@@ -220,12 +229,7 @@ declare class ShapeData extends DataModel<null, ShapeDataSchema> {
   /**
    * The primitive shape types which are supported
    */
-  static TYPES: {
-    RECTANGLE: 'r';
-    CIRCLE: 'c';
-    ELLIPSE: 'e';
-    POLYGON: 'p';
-  };
+  static TYPES: ShapeData.TYPES;
 }
 
 /* ---------------------------------------- */

@@ -31,7 +31,7 @@ interface BaseAdventureSchema extends DataSchema {
   /**
    * An array of Actor documents which are included in the adventure
    */
-  //   actors: fields.SetField<fields.EmbeddedDataField<typeof documents.BaseActor, {}>, {}>;
+  actors: fields.SetField<fields.EmbeddedDataField<typeof documents.BaseActor, {}>, {}>;
 
   /**
    * An array of Combat documents which are included in the adventure

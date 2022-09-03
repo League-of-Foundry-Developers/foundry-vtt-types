@@ -198,7 +198,7 @@ declare class BaseActor extends Document<
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: DeepPartial<DataModel.SchemaToSource<this['schema']>>,
+    changed: DeepPartial<DataModel.SchemaToSourceInput<this['schema']>>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;

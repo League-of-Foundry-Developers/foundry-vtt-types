@@ -126,8 +126,6 @@ type BaseActiveEffectMetadata = Merge<
   }
 >;
 
-type Foo = typeof Actor['metadata'];
-
 /**
  * The data schema for an ActiveEffect document.
  */
