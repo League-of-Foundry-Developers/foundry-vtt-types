@@ -1,316 +1,250 @@
-import Document from "./document.mjs";
-import EmbeddedCollection from "./embedded-collection.mjs";
-import {
-  DocumentConstructor,
-  PropertiesToSource,
-  PropertyTypeToSourceParameterType,
-  ToObjectFalseType
-} from "../../../types/helperTypes";
+import type { DataModel } from "../../client/config.js";
 
-declare global {
+export interface DataFieldOptions<T> {
   /**
-   * A schema entry which describes a field of DocumentData
-   * @typeparam T - the inner type of the document field
+   * Is this field required to be populated?
+   * Default: false
    */
-  interface DocumentField<T> {
-    /**
-     * An object which defines the data type of this field
-     */
-    type: object;
-
-    /**
-     * Is this field required to have an assigned value? Default is false.
-     */
-    required: boolean;
-
-    /**
-     * Can the field be populated by a null value? Default is true.
-     */
-    nullable?: boolean;
-
-    /**
-     * A static default value or a function which assigns a default value
-     */
-    default?: PropertyTypeToSourceParameterType<T> | ((data?: object) => T);
-
-    collection?: boolean;
-
-    /**
-     * An optional cleaning function which sanitizes input data to this field
-     */
-    clean?: (input: unknown) => T;
-
-    /**
-     * A function which asserts that the value of this field is valid
-     */
-    validate?: (value: T) => boolean;
-
-    /**
-     * An error message which is displayed if validation fails
-     */
-    validationError?: string;
-
-    /**
-     * Is the field an embedded Document collection?
-     */
-    isCollection?: boolean;
-  }
+  required: boolean;
 
   /**
-   * The schema of a Document
+   * Can this field have null values?
+   * Default: false
    */
-  type DocumentSchema = Partial<Record<string, DocumentField<any>>>;
+  nullable: boolean;
+
+  /**
+   * The initial value of a field, or a function which assigns that initial
+   * value.
+   * Default: undefined
+   */
+  initial: T | (() => T);
+
+  /**
+   * A data validation function which accepts one argument with the current
+   * value.
+   */
+  validate: (value: any, options: any) => boolean;
+
+  /**
+   * Should the prepared value of the field be read-only, preventing it from
+   * being changed unless a change to the _source data is applied.
+   * Default: false
+   */
+  readonly: boolean;
+
+  /**
+   * A localizable label displayed on forms which render this field.
+   * Default: ""
+   */
+  label: string;
+
+  /**
+   * Localizable help text displayed on forms which render this field.
+   * Default: ""
+   */
+  hint: string;
+
+  /**
+   * A custom validation error string. When displayed will be prepended with
+   * the document name, field name, and candidate value.
+   * Default: "is not a valid value"
+   */
+  validationError: string;
+}
+
+export class ModelValidationError extends Error {
+  constructor(errors: any);
+
+  errors: any;
+
+  /**
+   * Collect all the errors into a single message for consumers who do not
+   * handle the ModelValidationError specially.
+   *
+   * @param errors - The raw error structure
+   * @returns A formatted error message
+   */
+  static formatErrors(errors: any): string;
 }
 
 /**
- * The abstract base class which defines the data schema contained within a Document.
- * @typeParam ConcreteDocumentSchema - the schema of the document data
- * @typeParam PropertiesData - the runtime document properties of the the DocumentData
- * @typeParam SourceData - the type of the `_source` property
- * @typeParam ConstructorData - the data to construct a new instance of this DocumentData
- * @typeParam ConcreteDocument - the document, the document data belongs to
+ * An abstract class that defines the base pattern for a data field within a
+ * data schema.
+ * @typeparam T - the inner type of the document field
  */
-declare abstract class DocumentData<
-  ConcreteDocumentSchema extends DocumentSchema,
-  PropertiesData extends object,
-  SourceData extends object = PropertiesToSource<PropertiesData>,
-  ConstructorData extends object = DeepPartial<SourceData>,
-  ConcreteDocument extends Document<any, any> | null = null
-> {
-  /**
-   * @param data     - Initial data used to construct the data object
-   *                   (default: `{}`)
-   * @param document - The document to which this data object belongs
-   *                   (default: `null`)
-   */
-  constructor(data?: ConstructorData, document?: ConcreteDocument | null);
+export abstract class DataField<T> {
+  constructor(options: DataFieldOptions<T>);
 
   /**
-   * An immutable reverse-reference to the Document to which this data belongs, possibly null.
+   * The initially provided options which configure the data field
    */
-  readonly document: ConcreteDocument | null;
+  options: DataFieldOptions<T>;
 
   /**
-   * The source data object. The contents of this object can be updated, but the object itself may not be replaced.
+   * The field name of this DataField instance. This is assigned by
+   * SchemaField#initialize.
    */
-  readonly _source: SourceData;
+  name: any;
 
   /**
-   * The primary identifier for the Document to which this data object applies.
-   * This identifier is unique within the parent collection which contains the Document.
-   * @defaultValue `null`
+   * A reference to the parent schema to which this DataField belongs. This is
+   * assigned by SchemaField#initialize.
    */
-  _id: string | null;
+  parent: any;
 
   /**
-   * Define the data schema for documents of this type.
-   * The schema is populated the first time it is accessed and cached for future reuse.
+   * Is this field required to be populated?
+   */
+  required: boolean;
+
+  /**
+   * Can this field have null values?
+   */
+  nullable: boolean;
+
+  /**
+   * The initial value of a field, or a function which assigns that initial
+   * value.
+   */
+  initial: T | (() => T);
+
+  /**
+   * Should the prepared value of the field be read-only, preventing it from
+   * being changed unless a change to the _source data is applied.
+   */
+  readonly: boolean;
+
+  /**
+   * A localizable label displayed on forms which render this field.
+   */
+  label: string;
+
+  /**
+   * Localizable help text displayed on forms which render this field.
+   */
+  hint: string;
+
+  /**
+   * A custom validation error string. When displayed will be prepended with
+   * the document name, field name, and candidate value.
+   */
+  validationError: string;
+
+  /**
+   * A dot-separated string representation of the field path within the parent
+   * schema.
+   */
+  get fieldPath(): string;
+
+  /**
+   * Default parameters for this field type
+   */
+  protected static get _defaults(): DataFieldOptions<unknown>;
+
+  /**
+   * Apply a function to this DataField which propagates through recursively
+   * to any contained data schema.
    *
-   * @remarks This method needs to be implemented by subclasses.
-   */
-  static defineSchema(): DocumentSchema;
-
-  /**
-   * Define the data schema for documents of this type.
-   */
-  static get schema(): DocumentSchema;
-
-  /**
-   * Define the data schema for this document instance.
-   */
-  get schema(): ConcreteDocumentSchema;
-
-  /**
-   * Initialize the source data object in-place
-   */
-  _initializeSource(data: ConstructorData): SourceData;
-
-  /**
-   * Get the default value for a schema field, conditional on the provided data
-   * @param field - The configured data field
-   * @param data  - The provided data object
-   * @returns The default value for the field
-   */
-  protected static _getFieldDefaultValue<ConcreteDocumentField extends DocumentField<any>>(
-    field: ConcreteDocumentField,
-    data: object
-  ): ConcreteDocumentField extends { default?: undefined }
-    ? undefined
-    : ConcreteDocumentField extends { default: (data?: object) => infer V }
-    ? V
-    : ConcreteDocumentField["default"];
-
-  /**
-   * Initialize the instance by copying data from the source object to instance attributes.
-   */
-  protected _initialize(): void;
-
-  /**
-   * Initialize the value for a given data type
-   * @param type  - The type of the data field
-   * @param value - The un-initialized value
-   * @returns The initialized value
-   */
-  protected _initializeType(type: undefined, value: unknown): void;
-  protected _initializeType<Value extends object>(type: typeof Object, value: Value): Value;
-  protected _initializeType<Type extends typeof String | typeof Number | typeof Boolean>(
-    type: Type,
-    value: ReturnType<Type> | Parameters<Type>[0]
-  ): ReturnType<Type>;
-  protected _initializeType<Value extends Array<any> | ConstructorParameters<typeof Array>>(
-    type: typeof Array,
-    value: Value
-  ): Value extends Array<any> ? Value : Array<any>;
-  protected _initializeType<Value extends number | string>(type: typeof Date, value: Value): number;
-  protected _initializeType<Type extends ConstructorOf<Document<any, any>>>(
-    type: Type,
-    value: ConstructorParameters<Type>[0]
-  ): InstanceType<Type>; // TODO: Actually this returns an instance of the subclass configured in CONFIG
-  protected _initializeType<Type extends ConstructorOf<AnyDocumentData>>(
-    type: Type,
-    value: ConstructorParameters<Type>[0]
-  ): InstanceType<Type>;
-
-  /**
-   * Validate the data contained in the document to check for type and content
-   * This function throws an error if data within the document is not valid
-   *
-   * @param changes  - Only validate the keys of an object that was changed.
-   * @param children - Validate the data of child embedded documents? Default is true.
-   * @param clean    - Apply field-specific cleaning functions to the provided value.
-   * @param replace  - Replace any invalid values with valid defaults? Default is false.
-   * @param strict   - If strict, will throw errors for any invalid data. Default is false.
-   * @returns An indicator for whether or not the document contains valid data
-   */
-  validate({
-    changes,
-    children,
-    clean,
-    replace,
-    strict
-  }: {
-    changes?: DeepPartial<ConstructorData>;
-    children?: boolean;
-    clean?: boolean;
-    replace?: boolean;
-    strict?: boolean;
-  }): boolean;
-
-  /**
-   * Build and return the error message for a Missing Field
-   * @param name  - The named field that is missing
-   * @param field - The configured DocumentField from the Schema
-   * @returns The error message
-   */
-  protected _getMissingFieldErrorMessage(name: string, field: DocumentField<unknown>): string;
-
-  /**
-   * Build and return the error message for an Invalid Field Value
-   * @param name  - The named field that is invalid
-   * @param field - The configured DocumentField from the Schema
-   * @param value - The value that is invalid
-   * @returns The error message
-   */
-  protected _getInvalidFieldValueErrorMessage(name: string, field: DocumentField<unknown>, value: unknown): string;
-
-  /**
-   * Validate a single field in the data object.
-   * Assert that required fields are present and that each value passes it's validator function if one is provided.
-   * @param name     - The named field being validated
-   * @param field    - The configured DocumentField from the Schema
-   * @param value    - The current field value
-   * @param children - Validate the data of child embedded documents? Default is true.
-   *                   (default: `true`)
-   */
-  protected _validateField<Name extends keyof ConcreteDocumentSchema>(
-    name: Name,
-    field: ConcreteDocumentSchema[Name],
-    value: unknown,
-    { children }: { children?: boolean }
-  ): void;
-
-  /**
-   * Jointly validate the overall document after each field has been individually validated.
-   * Throw an Error if any issue is encountered.
-   *
-   * @remarks
-   * The base implementation doesn't do anything. Supposedly, subclasses can implement their own validation here.
-   */
-  protected _validateDocument(): void;
-
-  /**
-   * Reset the state of this data instance back to mirror the contained source data, erasing any changes.
-   */
-  reset(): void;
-
-  /**
-   * Update the data by applying a new data object. Data is compared against and merged with the existing data.
-   * Updating data which already exists is strict - it must pass validation or else the update is rejected.
-   * An object is returned which documents the set of changes which were applied to the original data.
-   * @see foundry.utils.mergeObject
-   * @param data    - New values with which to update the Data object
+   * @param fn      - The function to apply
+   * @param value   - The current value of the field
+   * @param options - Additional options passed to the applied function
    *                  (default: `{}`)
-   * @param options - Options which determine how the new data is merged
+   * @returns The results object
+   */
+  apply(fn: string | ((value: T, options: any) => any), value: T, options?: any): any;
+
+  /**
+   * Coerce source data to ensure that it conforms to the correct data type
+   * for the field. Data coercion operations should be simple and synchronous
+   * as these are applied whenever a DataModel is constructed. For one-off
+   * cleaning of user-provided input the sanitize method should be used.
+   *
+   * @param value           - The initial value
+   * @param options         - Additional options for how the field is cleaned
+   * @param options.partial - Whether to perform partial cleaning?
+   * @param options.source  - The root data model being cleaned
+   * @returns The cast value
+   */
+  clean(value: any, options: { partial: boolean; source: any }): T;
+
+  /**
+   * Apply any cleaning logic specific to this DataField type.
+   *
+   * @param value   - The appropriately coerced value.
+   * @param options - Additional options for how the field is cleaned.
+   * @returns The cleaned value.
+   */
+  protected _cleanType(value: T, options: any): T;
+
+  /**
+   * Cast a non-default value to ensure it is the correct type for the field
+   *
+   * @param value - The provided non-default value
+   * @returns The standardized value
+   */
+  protected _cast(value: any): T;
+
+  /**
+   * Attempt to retrieve a valid initial value for the DataField.
+   *
+   * @param data - The source data object for which an initial value is required
+   * @returns A valid initial value
+   * @throws An error if there is no valid initial value defined
+   */
+  getInitialValue(data: any): T;
+
+  /**
+   * Validate a candidate input for this field, ensuring it meets the field
+   * requirements. A validation failure can be provided as a raised Error
+   * (with a string message) or by returning false. A validator which returns
+   * true denotes that the result is certainly valid and further validations
+   * are unnecessary.
+   *
+   * @param value   - The initial value
+   * @param options - Options which affect validation behavior
    *                  (default: `{}`)
-   * @returns The changed keys and values which are different than the previous data
+   * @returns Returns a ModelValidationError if a validation failure occurred
    */
-  update<U>(
-    data?: Expanded<U> extends DeepPartial<ConstructorData> ? U : DeepPartial<ConstructorData>,
-    options?: UpdateOptions
-  ): Expanded<U> extends DeepPartial<SourceData> ? DeepPartial<U> : DeepPartial<SourceData>;
+  validate(value: any, options?: any): ModelValidationError | undefined;
 
   /**
-   * Update an EmbeddedCollection using an array of provided document data
-   * @param collection   - The EmbeddedCollection to update
-   * @param documentData - An array of provided Document data
-   * @param options      - Additional options which modify how the collection is updated
-   *                       (default: `{}`)
+   * Special validation rules which supersede regular field validation. This
+   * validator screens for certain values which are otherwise incompatible
+   * with this field like null or undefined.
+   *
+   * @param value - The candidate value
+   * @returns A boolean to indicate with certainty whether the value is valid.
+   *          Otherwise, return undefined
+   * @throws  May throw a specific error if the value is not valid
    */
-  updateCollection<T extends DocumentConstructor>(
-    collection: EmbeddedCollection<T, this>,
-    documentData: DeepPartial<InstanceType<T>["data"]["_source"]>[],
-    options?: UpdateOptions
-  ): void;
+  protected _validateSpecial(value: any): boolean | undefined;
 
   /**
-   * Copy and transform the DocumentData into a plain object.
-   * Draw the values of the extracted object from the data source (by default) otherwise from its transformed values.
-   * @param source - Draw values from the underlying data source rather than transformed values
-   *                 (default: `true`)
-   * @returns The extracted primitive object
+   * A default type-specific validator that can be overridden by child classes
+   *
+   * @param value   - The candidate value
+   * @param options - Options which affect validation behavior
+   *                  (default: `{}`)
+   * @returns A boolean to indicate with certainty whether the value is valid.
+   *          Otherwise, return undefined.
+   * @throws  May throw a specific error if the value is not valid
    */
-  toObject(source?: true): ReturnType<this["toJSON"]>;
-  toObject(source: false): {
-    [Key in keyof ConcreteDocumentSchema as string extends Key ? never : Key]: Key extends keyof this
-      ? ToObjectFalseType<this[Key]>
-      : unknown;
-  };
+  protected _validateType(value: T, options?: any): boolean | undefined;
 
   /**
-   * Extract the source data for the DocumentData into a simple object format that can be serialized.
-   * @returns The document source data expressed as a plain object
+   * Initialize the original source data into a mutable copy for the DataModel
+   * instance.
+   *
+   * @param value - The source value of the field
+   * @param model - The DataModel instance that this field belongs to
+   * @returns An initialized copy of the source data
    */
-  toJSON(): this["_id"] extends string ? this["_source"] & { _id: string } : this["_source"];
+  initialize(value: T, model: DataModel): T;
 
   /**
-   * Create a DocumentData instance using a provided serialized JSON string.
-   * @param json - Serialized document data in string format
-   * @returns constructed data instance
+   * @param value - The initialized value of the field
+   * @returns An exported representation of the field
    */
-  static fromJSON<ConcreteDocumentData extends AnyDocumentData>(
-    this: ConcreteDocumentData,
-    json: string
-  ): ConcreteDocumentData;
+  toObject(value: T): T;
 }
-
-interface UpdateOptions {
-  diff?: boolean;
-  recursive?: boolean;
-  insertValues?: boolean;
-  insertKeys?: boolean;
-  enforceTypes?: boolean;
-}
-
-export default DocumentData;
-
-export type AnyDocumentData = DocumentData<any, any, any, any, any>;
