@@ -104,7 +104,7 @@ declare global {
     register<N extends string, K extends string, T>(
       namespace: N,
       key: K,
-      data: ClientSettings.Values[`${N}.${K}`] extends string | number | boolean | Array<any> | object
+      data: ClientSettings.Values[`${N}.${K}`] extends string | number | boolean | Array<any> | object | null
         ? ClientSettings.PartialSettingConfig<ClientSettings.Values[`${N}.${K}`]>
         : ClientSettings.PartialSettingConfig<T>
     ): void;

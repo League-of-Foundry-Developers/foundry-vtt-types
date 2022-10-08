@@ -159,18 +159,19 @@ interface SettingConfig<T = unknown> {
   choices?: (T extends number | string ? Record<T, string> : never) | undefined;
 
   /** For numeric Types, defines the allowable range */
-  range?:
-    | (T extends number
-        ? {
-            max: number;
-            min: number;
-            step: number;
-          }
-        : never)
-    | undefined;
+  range?: T extends number
+    ? {
+        max: number;
+        min: number;
+        step: number;
+      }
+    : never;
 
   /** The default value */
-  default?: T;
+  default: T;
+
+  /** Whether setting requires Foundry to be reloaded on change  */
+  requiresReload?: boolean;
 
   /** Executes when the value of this Setting changes */
   onChange?: (value: T) => void;
