@@ -26,7 +26,7 @@ declare global {
      * An array of pending sheet assignments which are submitted before other elements of the framework are ready.
      * @internal
      */
-    protected static _pending: Array<DocumentSheetConfig.SheetAssignment>;
+    static #pending: Array<DocumentSheetConfig.SheetAssignment>;
 
     override get title(): string;
 
@@ -62,23 +62,17 @@ declare global {
     ): void;
 
     /**
-     * Perform the sheet registration
+     * Perform the sheet registration.
+     * @param config - Configuration for how the sheet should be un-registered
      * @internal
      */
-    protected static _registerSheet({
-      documentClass,
-      id,
-      label,
-      sheetClass,
-      types,
-      makeDefault
-    }: Omit<DocumentSheetConfig.SheetRegistration, "action">): void;
+    static #registerSheet(config: Omit<DocumentSheetConfig.SheetRegistration, "action">): void;
 
     /**
      * Unregister a sheet class, removing it from the list of available Applications to use for a Document type
      * @param documentClass - The Document class for which to register a new Sheet option
      * @param scope         - Provide a unique namespace scope for this sheet
-     * @param sheetClass    - A defined Application class used to render the sheet
+     * @param sheetClass    - A defined DocumentSheet subclass used to render the sheet
      * @param types         - An Array of types for which this sheet should be removed
      */
     static unregisterSheet(
@@ -90,16 +84,13 @@ declare global {
 
     /**
      * Perform the sheet de-registration
+     * @param config - Configuration for how the sheet should be un-registered
      * @internal
      */
-    protected static _unregisterSheet({
-      documentClass,
-      id,
-      types
-    }: Omit<DocumentSheetConfig.SheetUnregistration, "action">): void;
+    static #unregisterSheet(config: Omit<DocumentSheetConfig.SheetUnregistration, "action">): void;
 
     /**
-     * Update the currently default Sheets using a new core world setting
+     * Update the current default Sheets using a new core world setting.
      */
     static updateDefaultSheets(setting?: Record<DocumentType, Record<string, string>>): void;
 
@@ -113,18 +104,36 @@ declare global {
   namespace DocumentSheetConfig {
     type SheetRegistration = {
       action: "register";
+
+      /** The Document class being registered */
       documentClass: DocumentConstructor;
+
+      /** The sheet ID being registered */
       id: string;
+
+      /** The human-readable sheet label */
       label: string;
+
+      /** The sheet class definition being registered */
       sheetClass: ConstructorOf<Application>;
+
+      /** An array of types for which this sheet is added */
       types: string[];
+
+      /** Make this sheet the default for provided types? */
       makeDefault: boolean;
     };
 
     type SheetUnregistration = {
       action: "unregister";
+
+      /** The Document class being unregistered */
       documentClass: DocumentConstructor;
+
+      /** The sheet ID being unregistered */
       id: string;
+
+      /** An array of types for which this sheet is removed */
       types: string[];
     };
 
@@ -136,7 +145,7 @@ declare global {
     }
 
     interface RegisterSheetOptions {
-      /** A human readable label for the sheet name, which will be localized */
+      /** A human-readable label for the sheet name, which will be localized */
       label?: string;
 
       /** An array of document types for which this sheet should be used */
@@ -149,12 +158,4 @@ declare global {
       makeDefault?: boolean;
     }
   }
-
-  /**
-   * @deprecated since v9
-   */
-  class EntitySheetConfig<
-    Options extends FormApplicationOptions = FormApplicationOptions,
-    ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>
-  > extends DocumentSheetConfig<Options, ConcreteDocument> {}
 }
