@@ -1,4 +1,5 @@
 import type { EditorView } from "prosemirror-view";
+import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "../../prosemirror/prosemirror.mjs";
 
 declare global {
   interface FormApplicationOptions extends ApplicationOptions {
@@ -197,7 +198,7 @@ declare global {
     /**
      * Activate a named TinyMCE text editor
      * @param name           - The named data field which the editor modifies.
-     * @param options        - TinyMCE initialization options passed to TextEditor.create
+     * @param options        - Editor initialization options passed to {@link TextEditor.create}.
      *                         (default: `{}`)
      * @param initialContent - Initial text content for the editor area.
      *                         (default: `""`)
@@ -217,9 +218,26 @@ declare global {
     saveEditor(name: string, { remove }?: { remove?: boolean }): Promise<void>;
 
     /**
-     * Activate a TinyMCE editor instance present within the form
+     * Activate an editor instance present within the form
+     * @param div - The element which contains the editor
      */
     protected _activateEditor(div: HTMLElement): void;
+
+    /**
+     * Configure ProseMirror plugins for this sheet.
+     * @param name    - The name of the editor.
+     * @param options - Additional options to configure the plugins.
+     */
+    protected _configureProseMirrorPlugins(
+      name: string,
+      options: {
+        /** Whether the editor should destroy itself on save. */
+        remove: boolean;
+      }
+    ): {
+      menu: ReturnType<typeof ProseMirrorMenu["build"]>;
+      keyMaps: ReturnType<typeof ProseMirrorKeyMaps["build"]>;
+    };
 
     /**
      * Activate a FilePicker instance present within the form
@@ -258,7 +276,8 @@ declare global {
       target: string;
       button: HTMLElement;
       hasButton: boolean;
-      mce: tinyMCE.Editor | null;
+      instance: Awaited<ReturnType<typeof TextEditor["create"]>> | null;
+      mce: Awaited<ReturnType<typeof TextEditor["create"]>> | null;
       active: boolean;
       changed: boolean;
       options: TextEditor.Options;

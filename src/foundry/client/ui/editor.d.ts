@@ -374,6 +374,10 @@ declare global {
        * @defaultValue `"styleselect bullist numlist image table hr link removeformat code save"`
        */
       toolbar?: string;
+
+      fitToSize?: boolean; // TODO: update when updating TextEditor
+
+      height?: number; // TODO: update when updating TextEditor
     }
 
     interface EnrichOptions {
