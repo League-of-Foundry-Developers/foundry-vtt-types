@@ -1,7 +1,7 @@
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
-  interface JournalSheetOptions extends DocumentSheetOptions {
+  interface JournalSheetOptions extends DocumentSheetOptions<JournalEntry> {
     /** The current display mode of the journal. Either "text" or "image". */
     sheetMode?: JournalSheet.SheetMode | null;
   }

@@ -5,7 +5,7 @@ declare global {
    * The Application responsible for configuring a single Scene document.   *
    * @typeParam Options - the type of the options object
    */
-  class SceneConfig<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<
+  class SceneConfig<Options extends DocumentSheetOptions<Scene> = DocumentSheetOptions<Scene>> extends DocumentSheet<
     Options,
     InstanceType<ConfiguredDocumentClassForName<"Scene">>
   > {
@@ -22,7 +22,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): DocumentSheetOptions<Scene>;
 
     override get title(): string;
 

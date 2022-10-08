@@ -6,7 +6,7 @@ declare global {
    *
    * @typeParam Options - The type of the options object
    */
-  class CardsConfig<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<
+  class CardsConfig<Options extends DocumentSheetOptions<Cards> = DocumentSheetOptions<Cards>> extends DocumentSheet<
     Options,
     InstanceType<ConfiguredDocumentClassForName<"Cards">>
   > {
@@ -35,7 +35,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): DocumentSheetOptions<Cards>;
 
     override getData(options?: Partial<Options>): MaybePromise<object>;
 
@@ -79,7 +79,9 @@ declare global {
    *
    * @typeParam Options - The type of the options object
    */
-  class CardsHand<Options extends DocumentSheetOptions = DocumentSheetOptions> extends CardsConfig<Options> {
+  class CardsHand<
+    Options extends DocumentSheetOptions<Cards> = DocumentSheetOptions<Cards>
+  > extends CardsConfig<Options> {
     /**
      * @defaultValue
      * ```typescript
@@ -88,7 +90,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): DocumentSheetOptions<Cards>;
   }
 
   /**
@@ -96,7 +98,9 @@ declare global {
    *
    * @typeParam Options - The type of the options object
    */
-  class CardsPile<Options extends DocumentSheetOptions = DocumentSheetOptions> extends CardsConfig<Options> {
+  class CardsPile<
+    Options extends DocumentSheetOptions<Cards> = DocumentSheetOptions<Cards>
+  > extends CardsConfig<Options> {
     /**
      * @defaultValue
      * ```typescript
@@ -105,6 +109,6 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): DocumentSheetOptions<Cards>;
   }
 }

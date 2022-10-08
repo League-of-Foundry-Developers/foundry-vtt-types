@@ -12,7 +12,7 @@ expectType<boolean>(app.isEditable);
 expectType<{ foo: string }>(app.object);
 
 const doc = new BaseAmbientLight();
-const sheet = new (class extends DocumentSheet<DocumentSheetOptions, BaseAmbientLight> {})(doc);
+const sheet = new (class extends DocumentSheet<DocumentSheetOptions<BaseAmbientLight>, BaseAmbientLight> {})(doc);
 
 expectAssignable<FormApplication<DocumentSheetOptions, BaseAmbientLight>>(sheet);
 expectType<boolean>(sheet.isEditable);

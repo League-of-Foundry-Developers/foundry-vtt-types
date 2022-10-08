@@ -174,7 +174,7 @@ declare global {
       }
     }
 
-    interface Options extends DocumentSheetOptions {
+    interface Options extends DocumentSheetOptions<Actor> {
       token?: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>> | null;
     }
   }

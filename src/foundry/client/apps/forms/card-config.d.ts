@@ -7,7 +7,7 @@ declare global {
    *
    * @typeParam Options - The type of the options object
    */
-  class CardConfig<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<
+  class CardConfig<Options extends DocumentSheetOptions<Card> = DocumentSheetOptions<Card>> extends DocumentSheet<
     Options,
     InstanceType<ConfiguredDocumentClassForName<"Card">>
   > {
@@ -23,7 +23,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): DocumentSheetOptions<Card>;
 
     override getData(options?: Partial<Options>): MaybePromise<object>;
 

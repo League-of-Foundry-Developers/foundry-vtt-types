@@ -5,7 +5,7 @@ declare global {
    * The Application responsible for configuring a single User document.
    * @typeParam Options - the type of the options object
    */
-  class UserConfig<Options extends DocumentSheetOptions = UserConfig.Options> extends DocumentSheet<
+  class UserConfig<Options extends UserConfig.Options = UserConfig.Options> extends DocumentSheet<
     Options,
     InstanceType<ConfiguredDocumentClass<typeof User>>
   > {
@@ -40,7 +40,7 @@ declare global {
   }
 
   namespace UserConfig {
-    interface Options extends DocumentSheetOptions {
+    interface Options extends DocumentSheetOptions<User> {
       /**
        * @defaultValue `["sheet", "user-config"]`
        */

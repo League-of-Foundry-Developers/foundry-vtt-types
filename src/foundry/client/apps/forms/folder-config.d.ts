@@ -21,7 +21,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): FolderConfig.Options;
 
     override get id(): string;
 
@@ -35,7 +35,7 @@ declare global {
   }
 
   namespace FolderConfig {
-    interface Options extends DocumentSheetOptions {
+    interface Options extends DocumentSheetOptions<Folder> {
       resolve?: (doc: InstanceType<ConfiguredDocumentClass<typeof Folder>>) => void;
     }
 

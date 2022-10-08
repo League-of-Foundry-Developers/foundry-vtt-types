@@ -6,7 +6,7 @@ declare global {
    *
    * @typeParam Options - the type of the options object
    */
-  class CombatantConfig<Options extends DocumentSheetOptions = CombatantConfig.Options> extends DocumentSheet<
+  class CombatantConfig<Options extends CombatantConfig.Options = CombatantConfig.Options> extends DocumentSheet<
     Options,
     InstanceType<ConfiguredDocumentClass<typeof Combatant>>
   > {
@@ -30,7 +30,7 @@ declare global {
   }
 
   namespace CombatantConfig {
-    interface Options extends DocumentSheetOptions {
+    interface Options extends DocumentSheetOptions<Combatant> {
       id: "combatant-config";
       title: string;
       classes: string[];

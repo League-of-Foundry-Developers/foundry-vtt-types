@@ -8,10 +8,9 @@ declare global {
    * @param options - Additional application rendering options
    * @typeParam Options - the type of the options object
    */
-  class PlaylistSoundConfig<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<
-    Options,
-    InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>
-  > {
+  class PlaylistSoundConfig<
+    Options extends DocumentSheetOptions<PlaylistSound> = DocumentSheetOptions<PlaylistSound>
+  > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>> {
     /**
      * @defaultValue
      * ```typescript
@@ -22,7 +21,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): DocumentSheetOptions<PlaylistSound>;
 
     override get title(): string;
 
