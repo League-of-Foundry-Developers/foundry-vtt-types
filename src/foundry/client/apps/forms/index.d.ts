@@ -9,6 +9,7 @@ import "./grid-config";
 import "./image-popout";
 import "./item";
 import "./journal-sheet";
+import "./journal-page-sheet";
 import "./macro-config";
 import "./measure-template";
 import "./permission";
