@@ -1,4 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes";
+import type { JOURNAL_ENTRY_PAGE_FORMATS } from "../../../common/constants.mjs.js";
 
 declare global {
   /**
@@ -39,7 +40,25 @@ declare global {
    * The Application responsible for displaying and editing a single {@link JournalEntryPage} text document.
    */
   class JournalTextPageSheet extends JournalPageSheet {
-    // TODO: type declarations for this class
+    /**
+     * Bi-directional HTML <-> Markdown converter.
+     */
+    static get _converter(): showdown.Converter;
+    /**
+     * Declare the format that we edit text content in for this sheet so we can perform conversions as necessary.
+     */
+    static get format(): typeof JOURNAL_ENTRY_PAGE_FORMATS.HTML;
+    /**
+     * @defaultValue
+     * ```typescript
+     * const options = super.defaultOptions;
+     * options.classes.push("text");
+     * options.secrets.push({parentSelector: "section"});
+     * ```
+     */
+    static get defaultOptions(): JournalPageSheet.Options;
+
+    // TODO: remaining type declarations for this class
   }
   /**
    * The Application responsible for displaying and editing a single {@link JournalEntryPage} image document.
