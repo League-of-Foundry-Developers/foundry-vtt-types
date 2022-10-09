@@ -68,7 +68,7 @@ declare global {
        */
       level: number;
       /**
-       * The heading level, 1-6.
+       * The raw heading text with any internal tags omitted.
        */
       text: string;
       /**
