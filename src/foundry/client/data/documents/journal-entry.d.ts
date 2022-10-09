@@ -3,13 +3,10 @@ import { DocumentDataType, DocumentModificationOptions } from "../../../common/a
 declare global {
   /**
    * The client-side JournalEntry document which extends the common BaseJournalEntry model.
-   * Each JournalEntry document contains JournalEntryData which defines its data schema.
    *
-   * @see {@link data.JournalEntryData}              The JournalEntry data schema
-   * @see {@link documents.Journal}                  The world-level collection of JournalEntry documents
-   * @see {@link applications.JournalSheet}          The JournalEntry configuration application
+   * @see {@link Journal}                       The world-level collection of JournalEntry documents
+   * @see {@link JournalSheet}                  The JournalEntry configuration application
    *
-   * @param data - Initial data provided to construct the JournalEntry document
    */
   class JournalEntry extends ClientDocumentMixin(foundry.documents.BaseJournalEntry) {
     /**
