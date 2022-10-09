@@ -37,15 +37,21 @@ declare global {
     /**
      * @defaultValue
      * ```ts
-     * foundry.utils.mergeObject(super.defaultOptions, {
-     *   classes: ["sheet", "journal-sheet"],
-     *   width: 720,
-     *   height: 800,
-     *   resizable: true,
-     *   closeOnSubmit: false,
-     *   submitOnClose: true,
-     *   viewPermission: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE
-     * })
+     * return foundry.utils.mergeObject(super.defaultOptions, {
+     * classes: ["sheet", "journal-sheet", "journal-entry"],
+     * template: "templates/journal/sheet.html",
+     * width: 960,
+     * height: 800,
+     * resizable: true,
+     * submitOnChange: true,
+     * submitOnClose: true,
+     * closeOnSubmit: false,
+     * viewPermission: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE,
+     * scrollY: [".scrollable"],
+     * filters: [{inputSelector: 'input[name="search"]', contentSelector: ".directory-list"}],
+     * dragDrop: [{dragSelector: ".directory-item, .heading-link", dropSelector: ".directory-list"}]
+     * });
+     * }
      * ```
      */
     static override get defaultOptions(): JournalSheetOptions;
