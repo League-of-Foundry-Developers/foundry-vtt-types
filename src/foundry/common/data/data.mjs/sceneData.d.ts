@@ -90,6 +90,7 @@ interface SceneDataSchema extends DocumentSchema {
   playlist: fields.ForeignDocumentField<{ type: typeof documents.BasePlaylist; required: false }>;
   playlistSound: fields.ForeignDocumentField<{ type: typeof documents.BasePlaylistSound; required: false }>;
   journal: fields.ForeignDocumentField<{ type: typeof documents.BaseJournalEntry; required: false }>;
+  journalEntryPage: fields.ForeignDocumentField<{ type: typeof documents.BaseJournalEntryPage; required: false }>;
   weather: fields.BlankString;
   folder: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
   sort: fields.IntegerSortField;
