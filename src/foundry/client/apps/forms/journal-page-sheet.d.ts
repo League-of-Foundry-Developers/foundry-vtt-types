@@ -1,21 +1,24 @@
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
-  class JournalPageSheet<Options extends JournalSheetOptions = JournalSheetOptions> extends DocumentSheet<
+  /**
+   * The Application responsible for displaying and editing a single JournalEntryPage document.
+   */
+  abstract class JournalPageSheet<Options extends JournalSheetOptions = JournalSheetOptions> extends DocumentSheet<
     Options,
     ConcreteJournalPage
   > {
     /**
      * @default
      * ```typescript
-     * return foundry.utils.mergeObject(super.defaultOptions, {
-     *  classes: ["sheet", "journal-sheet", "journal-entry-page"],
-     *  width: 600,
-     *  height: 680,
-     *  resizable: true,
-     *  closeOnSubmit: false,
-     *  submitOnClose: true,
-     *  viewPermission: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER
+     * foundry.utils.mergeObject(super.defaultOptions, {
+     *   classes: ["sheet", "journal-sheet", "journal-entry-page"],
+     *   width: 600,
+     *   height: 680,
+     *   resizable: true,
+     *   closeOnSubmit: false,
+     *   submitOnClose: true,
+     *   viewPermission: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER
      * });
      * ```
      */
@@ -25,6 +28,42 @@ declare global {
   namespace JournalPageSheet {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface Options extends DocumentSheetOptions {}
+  }
+  /**
+   * The Application responsible for displaying and editing a single JournalEntryPage text document.
+   */
+  abstract class JournalTextPageSheet extends JournalPageSheet {
+    // TODO: type declarations for this class
+  }
+  /**
+   * The Application responsible for displaying and editing a single JournalEntryPage image document.
+   */
+  class JournalImagePageSheet extends JournalPageSheet {
+    // TODO: type declarations for this class
+  }
+  /**
+   * The Application responsible for displaying and editing a single JournalEntryPage video document.
+   */
+  class JournalVideoPageSheet extends JournalPageSheet {
+    // TODO: type declarations for this class
+  }
+  /**
+   * The Application responsible for displaying and editing a single JournalEntryPage PDF document.
+   */
+  class JournalPDFPageSheet extends JournalPageSheet {
+    // TODO: type declarations for this class
+  }
+  /**
+   * A subclass of {@link JournalTextPageSheet} that implements a TinyMCE editor.
+   */
+  class JournalTextTinyMCESheet extends JournalTextPageSheet {
+    // TODO: type declarations for this class
+  }
+  /**
+   * A subclass of {@link JournalTextPageSheet} that implements a markdown editor for editing the text content.
+   */
+  class MarkdownJournalPageSheet extends JournalTextPageSheet {
+    // TODO: type declarations for this class
   }
 }
 
