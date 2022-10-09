@@ -8,6 +8,12 @@ declare global {
     Options extends JournalPageSheet.Options = JournalPageSheet.Options
   > extends DocumentSheet<Options, ConcreteJournalPage> {
     /**
+     * @param object - The JournalEntryPage instance which is being edited.
+     * @param options - Application options
+     */
+    constructor(object: ConcreteJournalPage, options?: Partial<Options>);
+
+    /**
      * @default
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
