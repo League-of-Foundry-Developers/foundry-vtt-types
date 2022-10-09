@@ -4,10 +4,9 @@ declare global {
   /**
    * The Application responsible for displaying and editing a single JournalEntryPage document.
    */
-  abstract class JournalPageSheet<Options extends JournalSheetOptions = JournalSheetOptions> extends DocumentSheet<
-    Options,
-    ConcreteJournalPage
-  > {
+  abstract class JournalPageSheet<
+    Options extends JournalPageSheet.Options = JournalPageSheet.Options
+  > extends DocumentSheet<Options, ConcreteJournalPage> {
     /**
      * @default
      * ```typescript
