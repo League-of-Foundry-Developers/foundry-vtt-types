@@ -4,9 +4,10 @@ declare global {
   /**
    * The Application responsible for displaying and editing a single {@link JournalEntryPage} document.
    */
-  abstract class JournalPageSheet<
-    Options extends JournalPageSheet.Options = JournalPageSheet.Options
-  > extends DocumentSheet<Options, ConcreteJournalPage> {
+  class JournalPageSheet<Options extends JournalPageSheet.Options = JournalPageSheet.Options> extends DocumentSheet<
+    Options,
+    ConcreteJournalPage
+  > {
     /**
      * @param object - The JournalEntryPage instance which is being edited.
      * @param options - Application options
@@ -37,7 +38,7 @@ declare global {
   /**
    * The Application responsible for displaying and editing a single {@link JournalEntryPage} text document.
    */
-  abstract class JournalTextPageSheet extends JournalPageSheet {
+  class JournalTextPageSheet extends JournalPageSheet {
     // TODO: type declarations for this class
   }
   /**
