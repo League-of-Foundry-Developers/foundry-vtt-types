@@ -69,7 +69,7 @@ interface JournalEntryDataConstructorData
   /**
    * The pages contained within this JournalEntry document
    */
-  pages: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseJournalEntryPage>>[] | null | undefined;
+  pages?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseJournalEntryPage>>[] | null | undefined;
 
   /**
    * The _id of a Folder which contains this JournalEntry
