@@ -29,7 +29,7 @@ declare class WeatherLayer extends CanvasLayer<WeatherLayer.LayerOptions> {
   /**
    * @remarks This is not overridden in foundry but reflects the real behavior.
    */
-  static get instance(): Canvas['weather'];
+  static get instance(): Canvas["weather"];
 
   /**
    * @defaultValue
@@ -50,12 +50,12 @@ declare class WeatherLayer extends CanvasLayer<WeatherLayer.LayerOptions> {
    * Draw the weather container.
    * @returns The weather container, or null if no effect is present
    */
-  drawWeather(): Exclude<this['weather'], undefined> | null;
+  drawWeather(): Exclude<this["weather"], undefined> | null;
 }
 
 declare namespace WeatherLayer {
   interface LayerOptions extends CanvasLayer.LayerOptions {
-    name: 'effects';
+    name: "effects";
     zIndex: 700;
   }
 }

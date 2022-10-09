@@ -1,24 +1,24 @@
-import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
-import type { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
+import type { ConfiguredDocumentClass } from "../../../../types/helperTypes";
+import type { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 import type {
   AmbientLightDataConstructorData,
   AmbientLightDataSource
-} from '../../../common/data/data.mjs/ambientLightData';
+} from "../../../common/data/data.mjs/ambientLightData";
 import type {
   AmbientSoundDataConstructorData,
   AmbientSoundDataSource
-} from '../../../common/data/data.mjs/ambientSoundData';
-import type { DrawingDataConstructorData, DrawingDataSource } from '../../../common/data/data.mjs/drawingData';
+} from "../../../common/data/data.mjs/ambientSoundData";
+import type { DrawingDataConstructorData, DrawingDataSource } from "../../../common/data/data.mjs/drawingData";
 import type {
   MeasuredTemplateDataConstructorData,
   MeasuredTemplateDataSource
-} from '../../../common/data/data.mjs/measuredTemplateData';
-import type { NoteDataConstructorData, NoteDataSource } from '../../../common/data/data.mjs/noteData';
-import type { TileDataConstructorData, TileDataSource } from '../../../common/data/data.mjs/tileData';
-import type { TokenDataConstructorData, TokenDataSource } from '../../../common/data/data.mjs/tokenData';
-import type { WallDataConstructorData, WallDataSource } from '../../../common/data/data.mjs/wallData';
+} from "../../../common/data/data.mjs/measuredTemplateData";
+import type { NoteDataConstructorData, NoteDataSource } from "../../../common/data/data.mjs/noteData";
+import type { TileDataConstructorData, TileDataSource } from "../../../common/data/data.mjs/tileData";
+import type { TokenDataConstructorData, TokenDataSource } from "../../../common/data/data.mjs/tokenData";
+import type { WallDataConstructorData, WallDataSource } from "../../../common/data/data.mjs/wallData";
 
-import type { SceneDataConstructorData } from '../../../common/data/data.mjs/sceneData';
+import type { SceneDataConstructorData } from "../../../common/data/data.mjs/sceneData";
 
 declare global {
   /**
@@ -48,7 +48,7 @@ declare global {
     /**
      * Track whether the scene is the active view
      */
-    protected _view: this['data']['active'];
+    protected _view: this["data"]["active"];
 
     /**
      * Track the viewed position of each scene (while in memory only, not persisted)
@@ -61,17 +61,17 @@ declare global {
     /**
      * A convenience accessor for whether the Scene is currently active
      */
-    get active(): this['data']['active'];
+    get active(): this["data"]["active"];
 
     /**
      * A convenience accessor for the background image of the Scene
      */
-    get img(): this['data']['img'];
+    get img(): this["data"]["img"];
 
     /**
      * Provide a thumbnail image path used to represent this document.
      */
-    get thumbnail(): this['data']['thumb'];
+    get thumbnail(): this["data"]["thumb"];
 
     /**
      * A convenience accessor for whether the Scene is currently viewed
@@ -122,7 +122,7 @@ declare global {
     ): Promise<void>;
 
     protected override _onCreate(
-      data: foundry.data.SceneData['_source'],
+      data: foundry.data.SceneData["_source"],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -134,7 +134,7 @@ declare global {
     ): Promise<void>;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.SceneData['_source']> & Record<string, unknown>,
+      changed: DeepPartial<foundry.data.SceneData["_source"]> & Record<string, unknown>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -150,7 +150,7 @@ declare global {
      * Handle Scene activation workflow if the active state is changed to true
      * @param active - Is the scene now active?
      */
-    protected _onActivate(active: boolean): ReturnType<this['view']> | ReturnType<Canvas['draw']> | void;
+    protected _onActivate(active: boolean): ReturnType<this["view"]> | ReturnType<Canvas["draw"]> | void;
 
     override _preCreateEmbeddedDocuments(
       embeddedName: string,
@@ -431,7 +431,7 @@ declare global {
     override toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocumentMixin.CompendiumExportOptions | undefined
-    ): Omit<foundry.data.SceneData['_source'], '_id' | 'folder' | 'permission'> & {
+    ): Omit<foundry.data.SceneData["_source"], "_id" | "folder" | "permission"> & {
       permission?: foundry.data.SceneData extends { toObject(): infer U } ? U : never;
     };
 
@@ -440,7 +440,7 @@ declare global {
      * @param data - (default: `{}`)
      * @returns The created thumbnail data.
      */
-    createThumbnail(data?: Partial<ThumbnailCreationData>): ReturnType<typeof ImageHelper['createThumbnail']>;
+    createThumbnail(data?: Partial<ThumbnailCreationData>): ReturnType<typeof ImageHelper["createThumbnail"]>;
   }
 }
 

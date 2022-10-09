@@ -1,19 +1,19 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
-import { DocumentMetadata, DocumentModificationOptions } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import * as data from '../data/data.mjs';
-import type { ActiveEffectDataConstructorData } from '../data/data.mjs/activeEffectData';
-import { BaseActor } from './baseActor';
-import { BaseItem } from './baseItem';
-import { BaseUser } from './baseUser';
+import { ConfiguredDocumentClass } from "../../../types/helperTypes";
+import { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import * as data from "../data/data.mjs";
+import type { ActiveEffectDataConstructorData } from "../data/data.mjs/activeEffectData";
+import { BaseActor } from "./baseActor";
+import { BaseItem } from "./baseItem";
+import { BaseUser } from "./baseUser";
 
 type ActiveEffectMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'ActiveEffect';
-    collection: 'effects';
-    label: 'DOCUMENT.ActiveEffect';
-    labelPlural: 'DOCUMENT.ActiveEffects';
+    name: "ActiveEffect";
+    collection: "effects";
+    label: "DOCUMENT.ActiveEffect";
+    labelPlural: "DOCUMENT.ActiveEffects";
     isEmbedded: true;
   }
 >;

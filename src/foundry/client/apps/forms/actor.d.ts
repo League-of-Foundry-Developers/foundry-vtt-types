@@ -1,5 +1,5 @@
-import { ConfiguredDocumentClass, ToObjectFalseType } from '../../../../types/helperTypes';
-import { DropData as ClientDocumentMixinDropData } from '../../data/abstract/client-document';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
+import { DropData as ClientDocumentMixinDropData } from "../../data/abstract/client-document";
 
 declare global {
   /**
@@ -9,25 +9,24 @@ declare global {
    * @param options - Additional application configuration options.
    *
    * @typeParam Options - the type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class ActorSheet<
-    Options extends ActorSheet.Options = ActorSheet.Options,
-    Data extends object = ActorSheet.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Actor>>> {
+  class ActorSheet<Options extends ActorSheet.Options = ActorSheet.Options> extends DocumentSheet<
+    Options,
+    InstanceType<ConfiguredDocumentClass<typeof Actor>>
+  > {
     /**
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
      *   height: 720,
      *   width: 800,
-     *   template: 'templates/sheets/actor-sheet.html',
+     *   template: "templates/sheets/actor-sheet.html",
      *   closeOnSubmit: false,
      *   submitOnClose: true,
      *   submitOnChange: true,
      *   resizable: true,
-     *   baseApplication: 'ActorSheet',
-     *   dragDrop: [{ dragSelector: '.item-list .item', dropSelector: null }],
+     *   baseApplication: "ActorSheet",
+     *   dragDrop: [{ dragSelector: ".item-list .item", dropSelector: null }],
      *   token: null,
      * });
      * ```
@@ -41,16 +40,16 @@ declare global {
     /**
      * A convenience reference to the Actor document
      */
-    get actor(): this['object'];
+    get actor(): this["object"];
 
     /**
      * If this Actor Sheet represents a synthetic Token actor, reference the active Token
      */
-    get token(): Exclude<this['object']['token'] | this['options']['token'], undefined> | null;
+    get token(): Exclude<this["object"]["token"] | this["options"]["token"], undefined> | null;
 
     override close(options?: FormApplication.CloseOptions): Promise<void>;
 
-    override getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     protected override _getHeaderButtons(): Application.HeaderButton[];
 
@@ -66,7 +65,7 @@ declare global {
     /**
      * Handle changing the actor profile image by opening a FilePicker
      */
-    protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
+    protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker["browse"]>;
 
     protected override _canDragStart(selector: string): boolean;
 
@@ -125,7 +124,7 @@ declare global {
      * @param itemData - The item data requested for creation
      */
     protected _onDropItemCreate(
-      itemData: foundry.data.ItemData['_source'][] | foundry.data.ItemData['_source']
+      itemData: foundry.data.ItemData["_source"][] | foundry.data.ItemData["_source"]
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
 
     /**
@@ -133,7 +132,7 @@ declare global {
      */
     protected _onSortItem(
       event: DragEvent,
-      itemData: foundry.data.ItemData['_source']
+      itemData: foundry.data.ItemData["_source"]
     ): undefined | Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
 
     /**
@@ -145,16 +144,6 @@ declare global {
   }
 
   namespace ActorSheet {
-    /**
-     * @typeParam Options - the type of the options object
-     */
-    interface Data<Options extends ActorSheet.Options = ActorSheet.Options>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Actor>>, Options> {
-      actor: this['document'];
-      items: ToObjectFalseType<foundry.data.ActorData>['items'];
-      effects: ToObjectFalseType<foundry.data.ActorData>['effects'];
-    }
-
     type DropData =
       | DropData.ActiveEffect
       | DropData.Actor
@@ -164,22 +153,22 @@ declare global {
 
     namespace DropData {
       interface ActiveEffect {
-        type: 'ActiveEffect';
+        type: "ActiveEffect";
         tokenId?: string;
         actorId?: string;
-        data: foundry.data.ActiveEffectData['_source'];
+        data: foundry.data.ActiveEffectData["_source"];
       }
 
       interface Actor {
-        type: 'Actor';
+        type: "Actor";
       }
 
       type Item = ClientDocumentMixinDropData<InstanceType<ConfiguredDocumentClass<typeof Item>>> & {
-        type: 'Item';
+        type: "Item";
       };
 
       interface Folder {
-        type: 'Folder';
+        type: "Folder";
         documentName: foundry.CONST.FOLDER_DOCUMENT_TYPES;
         id: string;
       }

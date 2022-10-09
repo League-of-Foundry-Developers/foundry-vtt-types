@@ -41,9 +41,9 @@ declare class CachedContainer extends PIXI.Container {
   /** @internal */
   protected _sprite: PIXI.Sprite | undefined;
 
-  destroy(options?: Parameters<PIXI.Container['destroy']>[0]): ReturnType<PIXI.Container['destroy']>;
+  destroy(options?: Parameters<PIXI.Container["destroy"]>[0]): ReturnType<PIXI.Container["destroy"]>;
 
-  render(renderer: Parameters<PIXI.Container['render']>[0]): void;
+  render(renderer: Parameters<PIXI.Container["render"]>[0]): void;
 
   /**
    * Bind our cached RenderTexture to the Renderer, replacing the original target.

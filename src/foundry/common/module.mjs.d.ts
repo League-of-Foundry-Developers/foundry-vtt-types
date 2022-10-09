@@ -1,42 +1,42 @@
-import './types.mjs';
-import './utils/primitives.mjs';
-import * as _CONST from './constants.mjs';
-import * as _abstract from './abstract/module.mjs';
-import * as _data from './data/module.mjs';
-import * as _documents from './documents.mjs';
-import * as _packages from './packages.mjs';
-import * as _utils from './utils/module.mjs';
-import * as _config from './config.mjs';
+import "./types.mjs";
+import "./primitives/module.mjs";
+import * as _CONST from "./constants.mjs";
+import * as _abstract from "./abstract/module.mjs";
+import * as _data from "./data/module.mjs";
+import * as _documents from "./documents.mjs";
+import * as _packages from "./packages.mjs";
+import * as _utils from "./utils/module.mjs";
+import * as _config from "./config.mjs";
 
 /**
  * Constant definitions used throughout the Foundry Virtual Tabletop framework.
  */
-export * as CONST from './constants.mjs';
+export * as CONST from "./constants.mjs";
 
 /**
  * Abstract class definitions providing fundamental interfaces used throughout the Foundry Virtual Tabletop framework.
  */
-export * as abstract from './abstract/module.mjs';
+export * as abstract from "./abstract/module.mjs";
 
 /**
  * Data schema definitions providing structure for Documents used throughout the Foundry Virtual Tabletop framework.
  */
-export * as data from './data/module.mjs';
+export * as data from "./data/module.mjs";
 
 /**
  * Document definitions used throughout the Foundry Virtual Tabletop framework.
  */
-export * as documents from './documents.mjs';
+export * as documents from "./documents.mjs";
 
 /**
  * Package data definitions, validations, and schema
  */
-export * as packages from './packages.mjs';
+export * as packages from "./packages.mjs";
 
 /**
  * Utility functions providing helpful functionality.
  */
-export * as utils from './utils/module.mjs';
+export * as utils from "./utils/module.mjs";
 
 declare global {
   namespace foundry {

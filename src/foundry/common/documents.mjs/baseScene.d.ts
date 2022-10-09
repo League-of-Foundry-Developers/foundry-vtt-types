@@ -1,22 +1,22 @@
-import { DocumentMetadata } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import * as data from '../data/data.mjs';
-import { BaseAmbientLight } from './baseAmbientLight';
-import { BaseAmbientSound } from './baseAmbientSound';
-import { BaseDrawing } from './baseDrawing';
-import { BaseMeasuredTemplate } from './baseMeasuredTemplate';
-import { BaseNote } from './baseNote';
-import { BaseTile } from './baseTile';
-import { BaseToken } from './baseToken';
-import { BaseWall } from './baseWall';
+import { DocumentMetadata } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import * as data from "../data/data.mjs";
+import { BaseAmbientLight } from "./baseAmbientLight";
+import { BaseAmbientSound } from "./baseAmbientSound";
+import { BaseDrawing } from "./baseDrawing";
+import { BaseMeasuredTemplate } from "./baseMeasuredTemplate";
+import { BaseNote } from "./baseNote";
+import { BaseTile } from "./baseTile";
+import { BaseToken } from "./baseToken";
+import { BaseWall } from "./baseWall";
 
 type SceneMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'Scene';
-    collection: 'scenes';
-    label: 'DOCUMENT.Scene';
-    labelPlural: 'DOCUMENT.Scenes';
+    name: "Scene";
+    collection: "scenes";
+    label: "DOCUMENT.Scene";
+    labelPlural: "DOCUMENT.Scenes";
     isPrimary: true;
     embedded: {
       AmbientLight: typeof BaseAmbientLight;
@@ -42,42 +42,42 @@ export declare class BaseScene extends Document<data.SceneData, null, SceneMetad
   /**
    * A reference to the Collection of Drawing instances in the Scene document, indexed by _id.
    */
-  get drawings(): this['data']['drawings'];
+  get drawings(): this["data"]["drawings"];
 
   /**
    * A reference to the Collection of AmbientLight instances in the Scene document, indexed by _id.
    */
-  get lights(): this['data']['lights'];
+  get lights(): this["data"]["lights"];
 
   /**
    * A reference to the Collection of Note instances in the Scene document, indexed by _id.
    */
-  get notes(): this['data']['notes'];
+  get notes(): this["data"]["notes"];
 
   /**
    * A reference to the Collection of AmbientSound instances in the Scene document, indexed by _id.
    */
-  get sounds(): this['data']['sounds'];
+  get sounds(): this["data"]["sounds"];
 
   /**
    * A reference to the Collection of MeasuredTemplate instances in the Scene document, indexed by _id.
    */
-  get templates(): this['data']['templates'];
+  get templates(): this["data"]["templates"];
 
   /**
    * A reference to the Collection of Token instances in the Scene document, indexed by _id.
    */
-  get tokens(): this['data']['tokens'];
+  get tokens(): this["data"]["tokens"];
 
   /**
    * A reference to the Collection of Tile instances in the Scene document, indexed by _id.
    */
-  get tiles(): this['data']['tiles'];
+  get tiles(): this["data"]["tiles"];
 
   /**
    * A reference to the Collection of Wall instances in the Scene document, indexed by _id.
    */
-  get walls(): this['data']['walls'];
+  get walls(): this["data"]["walls"];
 
   /**
    * Get the Canvas dimensions which would be used to display this Scene.

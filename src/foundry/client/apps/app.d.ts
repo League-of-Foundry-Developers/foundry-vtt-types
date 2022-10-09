@@ -28,7 +28,7 @@ interface ApplicationOptions {
    * The default pixel height for the rendered HTML
    * @defaultValue `null`
    */
-  height: number | 'auto' | null;
+  height: number | "auto" | null;
 
   /**
    * The default offset-top position for the rendered HTML
@@ -102,17 +102,17 @@ interface ApplicationOptions {
    * for the application.
    * @defaultValue `[]`
    */
-  tabs: Omit<TabsConfiguration, 'callback'>[];
+  tabs: Omit<TabsConfiguration, "callback">[];
 
   /**
    * @defaultValue `[]`
    */
-  dragDrop: Omit<DragDropConfiguration, 'permissions' | 'callbacks'>[];
+  dragDrop: Omit<DragDropConfiguration, "permissions" | "callbacks">[];
 
   /**
    * @defaultValue `[]`
    */
-  filters: Omit<SearchFilterConfiguration, 'callback'>[];
+  filters: Omit<SearchFilterConfiguration, "callback">[];
 }
 
 /**
@@ -271,7 +271,7 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
    * If undefined, the default implementation will return an empty object allowing only for rendering of static HTML
    * @param options - (unused, default: `{}`)
    */
-  getData(options?: Partial<Options>): object | Promise<object>;
+  getData(options?: Partial<Options>): MaybePromise<object>;
 
   /**
    * Render the Application by evaluating it's HTML template against the object of data provided by the getData method
@@ -482,7 +482,7 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
    * @param position - Positional data
    */
   setPosition(
-    position?: Partial<Omit<Application.Position, 'zIndex'>>
+    position?: Partial<Omit<Application.Position, "zIndex">>
   ): (Application.Position & { height: number }) | void;
 
   /**
@@ -519,7 +519,7 @@ declare namespace Application {
     width: number | null;
 
     /** The application height in pixels */
-    height: number | null | 'auto';
+    height: number | null | "auto";
 
     /** The application scale as a numeric factor where 1.0 is default */
     scale: number | null;
@@ -547,7 +547,7 @@ declare namespace Application {
     /**
      * The rendered height
      */
-    height?: number | 'auto' | null | undefined;
+    height?: number | "auto" | null | undefined;
 
     /**
      * The rendered transformation scale
@@ -575,5 +575,5 @@ declare namespace Application {
   /**
    * @see {@link Application.RENDER_STATES}
    */
-  type RenderState = ValueOf<typeof Application['RENDER_STATES']>;
+  type RenderState = ValueOf<typeof Application["RENDER_STATES"]>;
 }

@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -8,8 +8,8 @@ declare global {
    * @see {@link Scene} The Scene document
    * @see {@link SceneDirectory} The SceneDirectory sidebar directory
    */
-  class Scenes extends WorldCollection<typeof foundry.documents.BaseScene, 'Scenes'> {
-    static override documentName: 'Scene';
+  class Scenes extends WorldCollection<typeof foundry.documents.BaseScene, "Scenes"> {
+    static override documentName: "Scene";
 
     /**
      * Return a reference to the Scene which is currently active
@@ -52,11 +52,11 @@ declare global {
     override fromCompendium(
       document:
         | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>
-        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>['data']['_source'],
+        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>["data"]["_source"],
       options?: WorldCollection.FromCompendiumOptions | undefined
     ): Omit<
-      InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>['data']['_source'],
-      '_id' | 'folder'
+      InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>["data"]["_source"],
+      "_id" | "folder"
     >;
   }
 }

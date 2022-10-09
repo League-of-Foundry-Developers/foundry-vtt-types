@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -29,7 +29,7 @@ declare global {
 
     override render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 
-    override getData(options?: Partial<Options>): PlayerList.Data | Promise<PlayerList.Data>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     override activateListeners(html: JQuery): void;
 

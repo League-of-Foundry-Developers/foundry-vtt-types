@@ -121,23 +121,23 @@ In both cases, provide the default value for `getDefaultOptions` in TSDoc.
 Example:
 
 ```typescript
-declare class ActorSheet<
-    Options extends ActorSheet.Options = ActorSheet.Options,
-    Data extends object = ActorSheet.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Actor>>> {
+declare class ActorSheet<Options extends ActorSheet.Options = ActorSheet.Options> extends DocumentSheet<
+  Options,
+  InstanceType<ConfiguredDocumentClass<typeof Actor>>
+> {
   /**
    * @defaultValue
    * ```typescript
    * foundry.utils.mergeObject(super.defaultOptions, {
    *   height: 720,
    *   width: 800,
-   *   template: 'templates/sheets/actor-sheet.html',
+   *   template: "templates/sheets/actor-sheet.html",
    *   closeOnSubmit: false,
    *   submitOnClose: true,
    *   submitOnChange: true,
    *   resizable: true,
-   *   baseApplication: 'ActorSheet',
-   *   dragDrop: [{ dragSelector: '.item-list .item', dropSelector: null }],
+   *   baseApplication: "ActorSheet",
+   *   dragDrop: [{ dragSelector: ".item-list .item", dropSelector: null }],
    *   token: null,
    * });
    * ```

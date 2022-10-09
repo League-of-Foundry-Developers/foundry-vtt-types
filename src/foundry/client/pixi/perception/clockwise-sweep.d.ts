@@ -1,4 +1,4 @@
-import type { ConfiguredObjectClassForName } from '../../../../types/helperTypes';
+import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes";
 
 declare global {
   type VertexMap = Map<number, PolygonVertex>;
@@ -105,13 +105,13 @@ declare global {
 
     static benchmark(
       iterations: number,
-      ...args: Parameters<typeof ClockwiseSweepPolygon['create']>
+      ...args: Parameters<typeof ClockwiseSweepPolygon["create"]>
     ): ReturnType<typeof foundry.utils.benchmark>;
 
     static create(
       origin: Point,
-      config: Parameters<ClockwiseSweepPolygon['initialize']>[1]
-    ): ReturnType<ClockwiseSweepPolygon['compute']>;
+      config: Parameters<ClockwiseSweepPolygon["initialize"]>[1]
+    ): ReturnType<ClockwiseSweepPolygon["compute"]>;
 
     /**
      * @param origin - The provided polygon origin
@@ -139,7 +139,7 @@ declare global {
      * Get the super-set of walls which could potentially apply to this polygon.
      * @internal
      */
-    protected _getWalls(): ConfiguredObjectClassForName<'Wall'>[];
+    protected _getWalls(): ConfiguredObjectClassForName<"Wall">[];
 
     /**
      * Restrict the set of candidate edges to those which appear within the limited angle of emission.
@@ -326,7 +326,7 @@ declare global {
      *
      */
     static testWallInclusion(
-      wall: ConfiguredObjectClassForName<'Wall'>,
+      wall: ConfiguredObjectClassForName<"Wall">,
       origin: Point,
       type: foundry.CONST.WALL_RESTRICTION_TYPES
     ): boolean;
@@ -351,7 +351,7 @@ declare global {
      *          An array of collisions, if mode is "all"
      *          The closest collision, if mode is "closest"
      */
-    static getRayCollisions<Mode extends 'any' | 'closest' | 'all'>(
+    static getRayCollisions<Mode extends "any" | "closest" | "all">(
       ray: PolygonRay,
       options?: {
         /**
@@ -372,7 +372,7 @@ declare global {
          */
         debug?: boolean;
       }
-    ): Mode extends 'any' ? boolean : Mode extends 'closest' ? PolygonVertex : PolygonVertex[];
+    ): Mode extends "any" ? boolean : Mode extends "closest" ? PolygonVertex : PolygonVertex[];
 
     /**
      * Visualize the polygon, displaying its computed area, rays, and collision points
@@ -382,7 +382,7 @@ declare global {
   }
 
   namespace ClockwiseSweepPolygon {
-    type InitConfig = Partial<Pick<ClockwiseSweepPolygonConfig, 'radius' | 'angle' | 'rotation' | 'density'>>;
+    type InitConfig = Partial<Pick<ClockwiseSweepPolygonConfig, "radius" | "angle" | "rotation" | "density">>;
 
     interface InitializedConfig extends ClockwiseSweepPolygonConfig {
       hasLimitedRadius: boolean;

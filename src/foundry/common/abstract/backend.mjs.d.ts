@@ -1,6 +1,6 @@
-import { BaseUser } from '../documents.mjs';
-import { AnyDocumentData } from './data.mjs';
-import Document from './document.mjs';
+import { BaseUser } from "../documents.mjs";
+import { AnyDocumentData } from "./data.mjs";
+import Document from "./document.mjs";
 
 /**
  * An interface shared by both the client and server-side which defines how creation, update, and deletion operations are transacted.
@@ -205,7 +205,7 @@ declare abstract class DatabaseBackend {
    * @param type      - The document type
    * @param documents - The documents modified
    * @param level     - The logging level
-   *                    (default: `'info'`)
+   *                    (default: `"info"`)
    * @param parent    - A parent document
    * @param pack      - A compendium pack within which the operation occurred
    */

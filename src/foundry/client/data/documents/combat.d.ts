@@ -1,7 +1,7 @@
-import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
-import type { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
-import type { ChatMessageDataConstructorData } from '../../../common/data/data.mjs/chatMessageData';
-import type { CombatantDataSource } from '../../../common/data/data.mjs/combatantData';
+import type { ConfiguredDocumentClass } from "../../../../types/helperTypes";
+import type { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
+import type { ChatMessageDataConstructorData } from "../../../common/data/data.mjs/chatMessageData";
+import type { CombatantDataSource } from "../../../common/data/data.mjs/combatantData";
 
 declare global {
   /**
@@ -39,10 +39,10 @@ declare global {
     protected _soundPlaying: boolean;
 
     /** The configuration setting used to record Combat preferences */
-    static CONFIG_SETTING: 'combatTrackerConfig';
+    static CONFIG_SETTING: "combatTrackerConfig";
 
     /** Get the Combatant who has the current turn. */
-    get combatant(): this['turns'][number] | undefined;
+    get combatant(): this["turns"][number] | undefined;
 
     /** The numeric round of the Combat encounter */
     get round(): number;
@@ -54,7 +54,7 @@ declare global {
     get scene(): InstanceType<ConfiguredDocumentClass<typeof Scene>> | undefined;
 
     /** Return the object of settings which modify the Combat Tracker behavior */
-    get settings(): typeof CombatEncounters['settings'];
+    get settings(): typeof CombatEncounters["settings"];
 
     /** Has this combat encounter been started? */
     get started(): boolean;
@@ -143,7 +143,7 @@ declare global {
     setInitiative(id: string, value: number): Promise<void>;
 
     /** Return the Array of combatants sorted into initiative order, breaking ties alphabetically by name. */
-    setupTurns(): this['turns'];
+    setupTurns(): this["turns"];
 
     /** Begin the combat encounter, advancing to round 1 and turn 1 */
     startCombat(): Promise<this | undefined>;
@@ -160,13 +160,13 @@ declare global {
     ): number;
 
     protected override _onCreate(
-      data: this['data']['_source'],
+      data: this["data"]["_source"],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
     protected override _onUpdate(
-      changed: DeepPartial<this['data']['_source']>,
+      changed: DeepPartial<this["data"]["_source"]>,
       options: DocumentModificationOptions,
       userId: string
     ): void;

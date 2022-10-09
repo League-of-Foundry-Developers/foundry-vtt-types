@@ -4,12 +4,8 @@ declare global {
   /**
    * The Camera UI View that displays all the camera feeds as individual video elements.
    * @typeParam Options - the type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class CameraViews<
-    Options extends ApplicationOptions = ApplicationOptions,
-    Data extends object = CameraViews.Data
-  > extends Application<Options> {
+  class CameraViews<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
     /**
      * @defaultValue
      * ```typescript
@@ -25,7 +21,7 @@ declare global {
     /**
      * A reference to the master AV orchestrator instance
      */
-    get webrtc(): Game['webrtc'];
+    get webrtc(): Game["webrtc"];
 
     /**
      * Obtain a reference to the div.camera-view which is used to portray a given Foundry User.
@@ -56,7 +52,7 @@ declare global {
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
-    override getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     /** @defaultValue `undefined` */
     maxZ?: number;
@@ -65,13 +61,13 @@ declare global {
      * Prepare rendering data for a single user
      * @internal
      */
-    protected _getDataForUser(userId: string, settings: AVSettings.UserSettings): CameraViews.Data.User | null;
+    protected _getDataForUser(userId: string, settings: AVSettings.UserSettings): CameraViews.User | null;
 
     /**
      * A custom sorting function that orders/arranges the user display frames
      * @internal
      */
-    protected static _sortUsers(a: CameraViews.Data.User, b: CameraViews.Data.User): number;
+    protected static _sortUsers(a: CameraViews.User, b: CameraViews.User): number;
 
     override activateListeners(html: JQuery): void;
 
@@ -141,34 +137,25 @@ declare global {
      * @param container - The container for which to show/hide control elements
      * @param show      - Whether to show or hide the controls
      * @param selector  - Override selector to specify which controls to show or hide
-     *                    (default: `'.control-bar'`)
+     *                    (default: `".control-bar"`)
      * @internal
      */
     protected _toggleControlVisibility(container: HTMLElement, show: boolean, selector?: string): void;
   }
 
   namespace CameraViews {
-    interface Data {
-      self: Game['user'];
-      users: Data.User[];
-      dockClass: string;
-      muteAll: boolean;
-    }
-
-    namespace Data {
-      interface User {
-        user: StoredDocument<globalThis.User>;
-        id: StoredDocument<globalThis.User>['id'];
-        local: StoredDocument<globalThis.User>['isSelf'];
-        name: StoredDocument<globalThis.User>['name'];
-        color: StoredDocument<globalThis.User>['data']['color'];
-        colorAlpha: `rgba(${number}, ${number}, ${number})`;
-        charname: string;
-        avatar: StoredDocument<globalThis.User>['avatar'];
-        settings: AVSettings.UserSettings;
-        volume: number;
-        cameraViewClass: string;
-      }
+    interface User {
+      user: StoredDocument<globalThis.User>;
+      id: StoredDocument<globalThis.User>["id"];
+      local: StoredDocument<globalThis.User>["isSelf"];
+      name: StoredDocument<globalThis.User>["name"];
+      color: StoredDocument<globalThis.User>["data"]["color"];
+      colorAlpha: `rgba(${number}, ${number}, ${number})`;
+      charname: string;
+      avatar: StoredDocument<globalThis.User>["avatar"];
+      settings: AVSettings.UserSettings;
+      volume: number;
+      cameraViewClass: string;
     }
   }
 }

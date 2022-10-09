@@ -3,11 +3,11 @@ import {
   ConfiguredFlags,
   FieldReturnType,
   PropertiesToSource
-} from '../../../../types/helperTypes';
-import { DocumentData } from '../../abstract/module.mjs';
-import { documents } from '../../module.mjs';
-import * as fields from '../fields.mjs';
-import { ChatSpeakerData, ChatSpeakerDataConstructorData } from './chatSpeakerData';
+} from "../../../../types/helperTypes";
+import { DocumentData } from "../../abstract/module.mjs";
+import { documents } from "../../module.mjs";
+import * as fields from "../fields.mjs";
+import { ChatSpeakerData, ChatSpeakerDataConstructorData } from "./chatSpeakerData";
 
 interface ChatMessageDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -16,7 +16,7 @@ interface ChatMessageDataSchema extends DocumentSchema {
     required: true;
     default: typeof foundry.CONST.CHAT_MESSAGE_TYPES.OTHER;
     validate: typeof _validateChatMessageType;
-    validationError: 'The provided ChatMessage type must be in CONST.CHAT_MESSAGE_TYPES';
+    validationError: "The provided ChatMessage type must be in CONST.CHAT_MESSAGE_TYPES";
   };
   user: fields.ForeignDocumentField<{ type: typeof documents.BaseUser; required: true }>;
   timestamp: FieldReturnType<fields.TimestampField, { required: true }>;
@@ -114,7 +114,7 @@ interface ChatMessageDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'ChatMessage'>;
+  flags: ConfiguredFlags<"ChatMessage">;
 }
 
 interface ChatMessageDataConstructorData {
@@ -191,7 +191,7 @@ interface ChatMessageDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'ChatMessage'> | null | undefined;
+  flags?: ConfiguredFlags<"ChatMessage"> | null | undefined;
 }
 
 type ChatMessageDataSource = PropertiesToSource<ChatMessageDataProperties>;

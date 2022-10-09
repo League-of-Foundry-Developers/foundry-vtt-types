@@ -40,7 +40,7 @@ declare class Sidebar<Options extends ApplicationOptions = ApplicationOptions> e
    */
   get popouts(): Partial<Record<string, SidebarTab>>;
 
-  override getData(options?: Partial<Options>): Sidebar.Data;
+  override getData(options?: Partial<Options>): MaybePromise<object>;
 
   /**
    * @internal
@@ -91,12 +91,4 @@ declare class Sidebar<Options extends ApplicationOptions = ApplicationOptions> e
    * @internal
    */
   protected _onToggleCollapse(event: MouseEvent): void;
-}
-
-declare namespace Sidebar {
-  interface Data {
-    coreUpdate: string | false;
-    systemUpdate: string | false;
-    user: Game['user'];
-  }
 }

@@ -60,7 +60,7 @@ declare class Dialog<Options extends DialogOptions = DialogOptions> extends Appl
 
   static get title(): string;
 
-  override getData(options?: Partial<Options>): { content: string; buttons: Record<string, Dialog.Button> };
+  override getData(options?: Partial<Options>): MaybePromise<object>;
 
   override activateListeners(html: JQuery): void;
 
@@ -74,10 +74,10 @@ declare class Dialog<Options extends DialogOptions = DialogOptions> extends Appl
    * Handle a keydown event while the dialog is active
    * @param event - The keydown event
    */
-  protected _onKeyDown(event: KeyboardEvent & { key: 'Escape' }): Promise<void>;
+  protected _onKeyDown(event: KeyboardEvent & { key: "Escape" }): Promise<void>;
   protected _onKeyDown(event: KeyboardEvent): void;
 
-  _renderOuter(): ReturnType<Application['_renderOuter']>;
+  _renderOuter(): ReturnType<Application["_renderOuter"]>;
 
   /**
    * Submit the Dialog by selecting one of its buttons

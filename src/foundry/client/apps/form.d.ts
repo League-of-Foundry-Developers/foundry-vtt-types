@@ -1,5 +1,4 @@
-import type { EditorView } from 'prosemirror-view';
-import { ToObjectFalseType } from '../../../types/helperTypes';
+import type { EditorView } from "prosemirror-view";
 
 declare global {
   interface FormApplicationOptions extends ApplicationOptions {
@@ -48,13 +47,11 @@ declare global {
    * 3) This abstract layer has no knowledge of what is being updated, so the implementation must define _updateObject
    *
    * @typeParam Options        - the type of the options object
-   * @typeParam Data           - The data structure used to render the handlebars template.
    * @typeParam ConcreteObject - the type of the object or {@link foundry.abstract.Document} which is modified by this form
    */
   abstract class FormApplication<
     Options extends FormApplicationOptions = FormApplicationOptions,
-    Data extends object = FormApplication.Data<{}, Options>,
-    ConcreteObject = Data extends FormApplication.Data<infer T, Options> ? T : {}
+    ConcreteObject = unknown
   > extends Application<Options> {
     /**
      * @param object  - Some object or entity which is the target to be updated.
@@ -120,11 +117,11 @@ declare global {
     /**
      * @param options - (default: `{}`)
      */
-    override getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
-    protected override _renderInner(data: Data): Promise<JQuery>;
+    protected override _renderInner(data: object): Promise<JQuery>;
 
     protected override _activateCoreListeners(html: JQuery): void;
 
@@ -257,16 +254,6 @@ declare global {
       submit?: boolean;
     }
 
-    /**
-     * @typeParam ConcreteObject - the type of the object
-     * @typeParam Options        - the type of the options object
-     */
-    interface Data<ConcreteObject, Options extends FormApplicationOptions = FormApplicationOptions> {
-      object: ConcreteObject;
-      options: Options;
-      title: string;
-    }
-
     interface FormApplicationEditor {
       target: string;
       button: HTMLElement;
@@ -317,16 +304,12 @@ declare global {
    *                  (default: `{}`)
    *
    * @typeParam Options          - the type of the options object
-   * @typeParam Data             - The data structure used to render the handlebars template.
    * @typeParam ConcreteDocument - the type of the Document which should be managed by this form sheet
    */
   abstract class DocumentSheet<
     Options extends DocumentSheetOptions = DocumentSheetOptions,
-    Data extends object = DocumentSheet.Data,
-    ConcreteDocument extends foundry.abstract.Document<any, any> = Data extends DocumentSheet.Data<infer T>
-      ? T
-      : foundry.abstract.Document<any, any>
-  > extends FormApplication<Options, Data, ConcreteDocument> {
+    ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>
+  > extends FormApplication<Options, ConcreteDocument> {
     /**
      * @defaultValue
      * ```typescript
@@ -353,7 +336,7 @@ declare global {
 
     override close(options?: FormApplication.CloseOptions): Promise<void>;
 
-    override getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     override render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 
@@ -366,25 +349,5 @@ declare global {
     protected _onConfigureSheet(event: JQuery.ClickEvent): void;
 
     protected override _updateObject(event: Event, formData: object): Promise<unknown>;
-  }
-
-  namespace DocumentSheet {
-    /**
-     * @typeParam ConcreteDocument - the type of the {@link foundry.abstract.Document} which should be managed by this form sheet
-     * @typeParam Options          - the type of the options object
-     */
-    interface Data<
-      ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>,
-      Options extends DocumentSheetOptions = DocumentSheetOptions
-    > {
-      cssClass: string;
-      editable: boolean;
-      document: ConcreteDocument;
-      data: ToObjectFalseType<ConcreteDocument>;
-      limited: boolean;
-      options: Options;
-      owner: boolean;
-      title: string;
-    }
   }
 }

@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -76,7 +76,7 @@ declare global {
     /**
      * A convenience accessor to the Ruler for the active game user
      */
-    get ruler(): ReturnType<ControlsLayer['getRulerForUser']>;
+    get ruler(): ReturnType<ControlsLayer["getRulerForUser"]>;
 
     /**
      * Get the Ruler display for a specific User ID
@@ -131,13 +131,13 @@ declare global {
      */
     updateRuler(
       user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      rulerData: Parameters<Ruler['update']>[0] | null
+      rulerData: Parameters<Ruler["update"]>[0] | null
     ): void;
   }
 
   namespace ControlsLayer {
     interface LayerOptions extends CanvasLayer.LayerOptions {
-      name: 'controls';
+      name: "controls";
       zIndex: 1000;
     }
   }

@@ -19,55 +19,55 @@ declare class KeyboardManager {
    * Allowed modifier keys
    */
   static MODIFIER_KEYS: {
-    CONTROL: 'Control';
-    SHIFT: 'Shift';
-    ALT: 'Alt';
+    CONTROL: "Control";
+    SHIFT: "Shift";
+    ALT: "Alt";
   };
 
   /**
    * Track which KeyboardEvent#code presses associate with each modifier
    */
   static MODIFIER_CODES: {
-    Alt: ['AltLeft', 'AltRight'];
-    Control: ['ControlLeft', 'ControlRight', 'MetaLeft', 'MetaRight'];
-    Shift: ['ShiftLeft', 'ShiftRight'];
+    Alt: ["AltLeft", "AltRight"];
+    Control: ["ControlLeft", "ControlRight", "MetaLeft", "MetaRight"];
+    Shift: ["ShiftLeft", "ShiftRight"];
   };
 
   /**
    * Key codes which are "protected" and should not be used because they are reserved for browser-level actions.
    */
-  static PROTECTED_KEYS: ['F5', 'F11', 'F12', 'PrintScreen', 'ScrollLock', 'NumLock', 'CapsLock'];
+  static PROTECTED_KEYS: ["F5", "F11", "F12", "PrintScreen", "ScrollLock", "NumLock", "CapsLock"];
 
   /** The OS-specific string display for what their Command key is */
-  static CONTROL_KEY_STRING: '⌘' | 'Control';
+  static CONTROL_KEY_STRING: "⌘" | "Control";
 
   /**
    * An special mapping of how special KeyboardEvent#code values should map to displayed strings or symbols.
    * Values in this configuration object override any other display formatting rules which may be applied.
    */
   static KEYCODE_DISPLAY_MAPPING: {
-    ArrowLeft: '←' | '🡸';
-    ArrowRight: '→' | '🡺';
-    ArrowUp: '↑' | '🡹';
-    ArrowDown: '↓' | '🡻';
-    Backquote: '`';
-    Backslash: '\\';
-    BracketLeft: '[';
-    BracketRight: ']';
-    Comma: ',';
-    Control: typeof KeyboardManager['CONTROL_KEY_STRING'];
-    Equal: '=';
-    MetaLeft: '⌘' | '⊞';
-    MetaRight: '⌘' | '⊞';
-    OsLeft: '⌘' | '⊞';
-    OsRight: '⌘' | '⊞';
-    Minus: '-';
-    NumpadAdd: 'Numpad+';
-    NumpadSubtract: 'Numpad-';
-    Period: '.';
+    ArrowLeft: "←" | "🡸";
+    ArrowRight: "→" | "🡺";
+    ArrowUp: "↑" | "🡹";
+    ArrowDown: "↓" | "🡻";
+    Backquote: "`";
+    Backslash: "\\";
+    BracketLeft: "[";
+    BracketRight: "]";
+    Comma: ",";
+    Control: typeof KeyboardManager["CONTROL_KEY_STRING"];
+    Equal: "=";
+    MetaLeft: "⌘" | "⊞";
+    MetaRight: "⌘" | "⊞";
+    OsLeft: "⌘" | "⊞";
+    OsRight: "⌘" | "⊞";
+    Minus: "-";
+    NumpadAdd: "Numpad+";
+    NumpadSubtract: "Numpad-";
+    Period: ".";
     Quote: "'";
-    Semicolon: ';';
-    Slash: '/';
+    Semicolon: ";";
+    Slash: "/";
   };
 
   /**

@@ -1,11 +1,11 @@
-import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from '../../../../types/helperTypes';
-import { SelectOptions } from '../placeables';
+import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../types/helperTypes";
+import { SelectOptions } from "../placeables";
 
 declare global {
   /**
    * The Tokens Container
    */
-  class TokenLayer extends PlaceablesLayer<'Token', TokenLayer.LayerOptions> {
+  class TokenLayer extends PlaceablesLayer<"Token", TokenLayer.LayerOptions> {
     constructor();
 
     /**
@@ -23,7 +23,7 @@ declare global {
     /**
      * @remarks This is not overridden in foundry but reflects the real behavior.
      */
-    static get instance(): Canvas['tokens'];
+    static get instance(): Canvas["tokens"];
 
     /**
      * @defaultValue
@@ -39,7 +39,7 @@ declare global {
      */
     static override get layerOptions(): TokenLayer.LayerOptions;
 
-    static override documentName: 'Token';
+    static override documentName: "Token";
 
     override get gridPrecision(): 1;
 
@@ -51,7 +51,7 @@ declare global {
     /**
      * An Array of tokens which belong to actors which are owned
      */
-    get ownedTokens(): ReturnType<this['placeables']['filter']>;
+    get ownedTokens(): ReturnType<this["placeables"]["filter"]>;
 
     override tearDown(): Promise<this>;
 
@@ -106,7 +106,7 @@ declare global {
      * @param reset    - Restart the cycle order back at the beginning?
      * @returns The Token object which was cycled to, or null
      */
-    cycleTokens(forwards: boolean, reset: boolean): InstanceType<ConfiguredObjectClassForName<'Token'>> | null;
+    cycleTokens(forwards: boolean, reset: boolean): InstanceType<ConfiguredObjectClassForName<"Token">> | null;
 
     /**
      * Add or remove the set of currently controlled Tokens from the active combat encounter
@@ -126,14 +126,14 @@ declare global {
          * A specific Token which is the origin of the group toggle request
          * @defaultValue `null`
          */
-        token?: InstanceType<ConfiguredObjectClassForName<'Token'>> | null;
+        token?: InstanceType<ConfiguredObjectClassForName<"Token">> | null;
       }
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Combatant>>[]>;
 
     /**
      * Get the tab cycle order for tokens by sorting observable tokens based on their distance from top-left.
      */
-    protected _getCycleOrder(): InstanceType<ConfiguredObjectClassForName<'Token'>>[];
+    protected _getCycleOrder(): InstanceType<ConfiguredObjectClassForName<"Token">>[];
 
     /**
      * Immediately conclude the animation of any/all tokens
@@ -146,14 +146,14 @@ declare global {
     protected _onDropActorData(
       event: DragEvent,
       data: TokenLayer.DropData
-    ): Promise<void | false | InstanceType<ConfiguredObjectClassForName<'Token'>>>;
+    ): Promise<void | false | InstanceType<ConfiguredObjectClassForName<"Token">>>;
 
     protected override _onClickLeft(event: PIXI.InteractionEvent): void;
   }
 
   namespace TokenLayer {
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<'Token'> {
-      name: 'tokens';
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<"Token"> {
+      name: "tokens";
       canDragCreate: false;
       controllableObjects: true;
       rotatableObjects: true;
@@ -162,7 +162,7 @@ declare global {
 
     interface DropData extends Canvas.DropPosition {
       id?: string;
-      type?: 'Actor';
+      type?: "Actor";
       pack?: string;
     }
   }

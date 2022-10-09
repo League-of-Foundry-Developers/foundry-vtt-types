@@ -1,19 +1,19 @@
-import { DocumentMetadata, DocumentModificationOptions } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import * as data from '../data/data.mjs';
-import type { FogExplorationDataConstructorData } from '../data/data.mjs/fogExplorationData';
-import { BaseUser } from './baseUser';
+import { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import * as data from "../data/data.mjs";
+import type { FogExplorationDataConstructorData } from "../data/data.mjs/fogExplorationData";
+import { BaseUser } from "./baseUser";
 
 type FogExplorationMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'FogExploration';
-    collection: 'fog';
-    label: 'DOCUMENT.FogExploration';
-    labelPlural: 'DOCUMENT.FogExplorations';
+    name: "FogExploration";
+    collection: "fog";
+    label: "DOCUMENT.FogExploration";
+    labelPlural: "DOCUMENT.FogExplorations";
     isPrimary: true;
     permissions: {
-      create: 'PLAYER';
+      create: "PLAYER";
       update: (user: BaseUser, doc: BaseFogExploration) => boolean;
       delete: (user: BaseUser, doc: BaseFogExploration) => boolean;
     };

@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 if (game instanceof Game) {
   expectType<Ruler>(new Ruler(undefined));

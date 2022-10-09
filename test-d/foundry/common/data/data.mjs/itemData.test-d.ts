@@ -1,12 +1,12 @@
-import { expectError, expectType } from 'tsd';
-import '../../../../../index';
+import { expectError, expectType } from "tsd";
+import "../../../../../index";
 
 interface ArmorDataSourceData {
   armorValue: number;
 }
 
 interface ArmorDataSource {
-  type: 'armor';
+  type: "armor";
   data: ArmorDataSourceData;
 }
 
@@ -16,7 +16,7 @@ interface WeaponDataSourceData {
 }
 
 interface WeaponDataSource {
-  type: 'weapon';
+  type: "weapon";
   data: WeaponDataSourceData;
 }
 
@@ -25,7 +25,7 @@ interface ArmorDataPropertiesData extends ArmorDataSourceData {
 }
 
 interface ArmorDataProperties {
-  type: 'armor';
+  type: "armor";
   data: ArmorDataPropertiesData;
 }
 
@@ -34,7 +34,7 @@ interface WeaponDataPropertiesData extends WeaponDataSourceData {
 }
 
 interface WeaponDataProperties {
-  type: 'weapon';
+  type: "weapon";
   data: WeaponDataPropertiesData;
 }
 
@@ -54,13 +54,13 @@ declare global {
 expectError(new foundry.data.ItemData());
 expectError(new foundry.data.ItemData({}));
 
-expectError(new foundry.data.ItemData({ name: 'Some Item With Wrong Type', type: 'foo' }));
+expectError(new foundry.data.ItemData({ name: "Some Item With Wrong Type", type: "foo" }));
 
-const itemData = new foundry.data.ItemData({ name: 'Some Item', type: 'weapon' });
+const itemData = new foundry.data.ItemData({ name: "Some Item", type: "weapon" });
 
 expectType<foundry.data.ItemData>(itemData);
-expectType<'weapon' | 'armor'>(itemData.type);
-if (itemData._source.type === 'armor') {
+expectType<"weapon" | "armor">(itemData.type);
+if (itemData._source.type === "armor") {
   expectType<number>(itemData._source.data.armorValue);
   expectError(itemData._source.data.weight);
 } else {
@@ -69,7 +69,7 @@ if (itemData._source.type === 'armor') {
   expectError(itemData._source.data.damage);
 }
 
-if (itemData.type === 'armor') {
+if (itemData.type === "armor") {
   expectType<number>(itemData.data.armorValue);
   expectType<number>(itemData.data.weight);
 } else {

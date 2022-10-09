@@ -1,4 +1,4 @@
-import { ModuleData, SystemData } from '../../common/packages.mjs';
+import { ModuleData, SystemData } from "../../common/packages.mjs";
 
 declare global {
   /**
@@ -12,13 +12,13 @@ declare global {
 
     /**
      * The target language for localization
-     * @defaultValue `'en'`
+     * @defaultValue `"en"`
      */
     lang: string;
 
     /**
      * The package authorized to provide default language configurations
-     * @defaultValue `'core'`
+     * @defaultValue `"core"`
      */
     defaultModule: string;
 
@@ -26,13 +26,13 @@ declare global {
      * The translation dictionary for the target language
      * @defaultValue `{}`
      */
-    translations: Translations;
+    translations: Localization.Translations;
 
     /**
      * Fallback translations if the target keys are not found
      * @defaultValue `{}`
      */
-    protected _fallback: Translations;
+    protected _fallback: Localization.Translations;
 
     /**
      * Initialize the Localization module
@@ -58,7 +58,7 @@ declare global {
      * @param lang - The language for which to load translations
      * @returns The retrieved translations object
      */
-    protected _getTranslations(lang: string): Promise<Translations>;
+    protected _getTranslations(lang: string): Promise<Localization.Translations>;
 
     /**
      * Reduce the languages array provided by a package to an array of file paths of translations to load
@@ -73,7 +73,7 @@ declare global {
      * @param src - The translation file path to load
      * @returns The loaded translation dictionary
      */
-    protected _loadTranslationFile(src: string): Promise<Translations>;
+    protected _loadTranslationFile(src: string): Promise<Localization.Translations>;
 
     /**
      * Return whether a certain string has a known translation defined.
@@ -129,8 +129,10 @@ declare global {
      */
     format(stringId: string, data?: Record<string, unknown>): string;
   }
-}
 
-type Translations = {
-  [K: string]: string | Translations;
-};
+  namespace Localization {
+    type Translations = {
+      [K: string]: string | Translations;
+    };
+  }
+}

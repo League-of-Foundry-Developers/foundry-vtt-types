@@ -1,13 +1,13 @@
-import { FieldReturnType, PropertiesToSource } from '../../../types/helperTypes';
-import { DocumentData } from '../abstract/module.mjs';
-import * as fields from '../data/fields.mjs';
+import { FieldReturnType, PropertiesToSource } from "../../../types/helperTypes";
+import { DocumentData } from "../abstract/module.mjs";
+import * as fields from "../data/fields.mjs";
 
 interface PackageDependencyDataSchema extends DocumentSchema {
   name: fields.RequiredString;
   type: FieldReturnType<
     fields.RequiredString,
     {
-      default: 'module';
+      default: "module";
       validate: (v: unknown) => boolean;
       validationError: 'Invalid package type "{value}" which must be a value from CONST.PACKAGE_TYPES';
     }

@@ -1,4 +1,4 @@
-import { expectAssignable, expectType } from 'tsd';
+import { expectAssignable, expectType } from "tsd";
 
 const rectangle = new NormalizedRectangle(100, 300, 500, 400);
 expectAssignable<PIXI.Rectangle>(rectangle);

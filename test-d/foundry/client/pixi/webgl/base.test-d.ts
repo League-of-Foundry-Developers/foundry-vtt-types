@@ -1,4 +1,4 @@
-import { expectError, expectType } from 'tsd';
+import { expectError, expectType } from "tsd";
 
 class TestShader extends AbstractBaseShader {
   constructor(program: PIXI.Program, uniforms: AbstractBaseShader.Uniforms) {
@@ -6,7 +6,7 @@ class TestShader extends AbstractBaseShader {
     this.defaults = this._defaults;
   }
 
-  defaults: AbstractBaseShader['_defaults'];
+  defaults: AbstractBaseShader["_defaults"];
 }
 
 const testShader = TestShader.create();
@@ -23,4 +23,4 @@ const testShader2 = TestShader.create({
 });
 testShader2.defaults.darkness = false;
 
-expectError(TestShader.create({ foo: 'bar' }));
+expectError(TestShader.create({ foo: "bar" }));

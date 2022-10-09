@@ -1,16 +1,15 @@
-import { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import type { TileDataConstructorData } from '../../../common/data/data.mjs/tileData';
+import { ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
+import type { TileDataConstructorData } from "../../../common/data/data.mjs/tileData";
 
 declare global {
   /**
    * The Application responsible for configuring a single Tile document within a parent Scene.
    * @typeParam Options - the type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class TileConfig<
-    Options extends TileConfig.Options = TileConfig.Options,
-    Data extends object = TileConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Tile'>>> {
+  class TileConfig<Options extends TileConfig.Options = TileConfig.Options> extends DocumentSheet<
+    Options,
+    InstanceType<ConfiguredDocumentClassForName<"Tile">>
+  > {
     /**
      * @defaultValue
      * ```typescript
@@ -29,7 +28,7 @@ declare global {
 
     override close(options?: Application.CloseOptions | undefined): Promise<void>;
 
-    override getData(options?: Partial<Options> | undefined): Data | Promise<Data>;
+    override getData(options?: Partial<Options> | undefined): MaybePromise<object>;
 
     protected override _onChangeInput(event: JQuery.ChangeEvent): void;
 
@@ -37,13 +36,7 @@ declare global {
   }
 
   namespace TileConfig {
-    interface Data<Options extends DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Tile'>>, Options> {
-      submitText: string;
-      occlusionModes: Record<foundry.CONST.TILE_OCCLUSION_MODES, string>;
-    }
-
-    type FormData = Pick<TileDataConstructorData, 'height' | 'img' | 'rotation' | 'width' | 'x' | 'y'>;
+    type FormData = Pick<TileDataConstructorData, "height" | "img" | "rotation" | "width" | "x" | "y">;
 
     interface Options extends DocumentSheetOptions {
       /**

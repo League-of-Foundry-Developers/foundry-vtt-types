@@ -1,5 +1,5 @@
-import { expectType } from 'tsd';
-import '../../index';
+import { expectType } from "tsd";
+import "../../index";
 
 const App = class extends Application {};
 const resizableUndefined = new Draggable(new App(), $(), new HTMLElement());

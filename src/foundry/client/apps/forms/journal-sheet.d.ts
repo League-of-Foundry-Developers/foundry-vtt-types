@@ -1,20 +1,19 @@
-import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import type { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   interface JournalSheetOptions extends DocumentSheetOptions {
-    /** The current display mode of the journal. Either 'text' or 'image'. */
+    /** The current display mode of the journal. Either "text" or "image". */
     sheetMode?: JournalSheet.SheetMode | null;
   }
 
   /**
    * The Application responsible for displaying and editing a single JournalEntry document.
    * @typeParam Options - the type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class JournalSheet<
-    Options extends JournalSheetOptions = JournalSheetOptions,
-    Data extends object = JournalSheet.Data<Options>
-  > extends DocumentSheet<Options, Data> {
+  class JournalSheet<Options extends JournalSheetOptions = JournalSheetOptions> extends DocumentSheet<
+    Options,
+    ConcreteJournalEntry
+  > {
     /**
      * @param object  - The JournalEntry instance which is being edited
      * @param options - Application options
@@ -22,7 +21,7 @@ declare global {
     constructor(object: ConcreteJournalEntry, options?: Partial<Options>);
 
     /**
-     * The current display mode of the journal. Either 'text' or 'image'.
+     * The current display mode of the journal. Either "text" or "image".
      * @internal
      */
     protected _sheetMode: JournalSheet.SheetMode | null;
@@ -65,7 +64,7 @@ declare global {
 
     protected override _getHeaderButtons(): Application.HeaderButton[];
 
-    override getData(options?: Partial<Options>): Promise<Data> | Data;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     protected override _updateObject(event: Event, formData: JournalSheet.FormData): Promise<unknown>;
 
@@ -88,13 +87,7 @@ declare global {
   }
 
   namespace JournalSheet {
-    interface Data<Options extends JournalSheetOptions = JournalSheetOptions>
-      extends DocumentSheet.Data<ConcreteJournalEntry, Options> {
-      image: string;
-      folders: ReturnType<NonNullable<Game['folders']>['filter']>;
-    }
-
-    type SheetMode = 'text' | 'image';
+    type SheetMode = "text" | "image";
 
     interface FormData {
       content: string;

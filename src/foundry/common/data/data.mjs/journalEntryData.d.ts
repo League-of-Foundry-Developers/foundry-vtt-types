@@ -1,9 +1,8 @@
-import { ConfiguredDocumentClass, ConfiguredFlags, PropertiesToSource } from '../../../../types/helperTypes';
-import type EmbeddedCollection from '../../abstract/embedded-collection.mjs.js';
-import { DocumentData } from '../../abstract/module.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
-import type { JournalEntryPageData } from './journalEntryPageData.js';
+import { ConfiguredDocumentClass, ConfiguredFlags, PropertiesToSource } from "../../../../types/helperTypes";
+import type EmbeddedCollection from "../../abstract/embedded-collection.mjs";
+import { DocumentData } from "../../abstract/module.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
 
 interface JournalEntryDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -54,7 +53,7 @@ interface JournalEntryDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'JournalEntry'>;
+  flags: ConfiguredFlags<"JournalEntry">;
 }
 
 type ConstructorDataOf<T> = {
@@ -62,10 +61,10 @@ type ConstructorDataOf<T> = {
 };
 
 interface JournalEntryDataConstructorData
-  extends Omit<ConstructorDataOf<JournalEntryDataProperties>, 'pages' | 'folder'> {
-  _id?: JournalEntryDataProperties['_id'] | undefined;
+  extends Omit<ConstructorDataOf<JournalEntryDataProperties>, "pages" | "folder"> {
+  _id?: JournalEntryDataProperties["_id"] | undefined;
 
-  name: JournalEntryDataProperties['name'];
+  name: JournalEntryDataProperties["name"];
 
   /**
    * The pages contained within this JournalEntry document
@@ -78,11 +77,15 @@ interface JournalEntryDataConstructorData
    */
   folder?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseFolder>> | string | null | undefined;
 
-  sort?: JournalEntryDataProperties['sort'] | null | undefined;
+  sort?: JournalEntryDataProperties["sort"] | null | undefined;
 
-  ownership?: JournalEntryDataProperties['ownership'] | null | undefined;
+  ownership?: JournalEntryDataProperties["ownership"] | null | undefined;
 
-  flags?: JournalEntryDataProperties['flags'] | null | undefined;
+  /**
+   * An object of optional key/value flags
+   * @defaultValue `{}`
+   */
+  flags?: ConfiguredFlags<"JournalEntry"> | null | undefined;
 }
 
 type JournalEntryDataSource = PropertiesToSource<JournalEntryDataProperties>;

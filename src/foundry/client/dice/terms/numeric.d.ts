@@ -5,7 +5,7 @@ declare global {
   class NumericTerm extends RollTerm {
     constructor({ number, options }: NumericTermData);
 
-    number: NumericTermData['number'];
+    number: NumericTermData["number"];
 
     /**
      * @defaultValue
@@ -16,7 +16,7 @@ declare global {
     static REGEXP: RegExp;
 
     /**
-     * @defaultValue `['number']`
+     * @defaultValue `["number"]`
      */
     static SERIALIZE_ATTRIBUTES: string[];
 

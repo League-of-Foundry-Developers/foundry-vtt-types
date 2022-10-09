@@ -1,8 +1,8 @@
-import { expectError, expectType } from 'tsd';
+import { expectError, expectType } from "tsd";
 
 declare const doc: AmbientSoundDocument;
 
-expectType<'AmbientSound'>(AmbientSound.embeddedName);
+expectType<"AmbientSound">(AmbientSound.embeddedName);
 
 expectError(new AmbientSound());
 

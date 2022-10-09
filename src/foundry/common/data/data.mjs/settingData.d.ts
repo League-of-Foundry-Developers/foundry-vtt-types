@@ -1,7 +1,7 @@
-import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
-import { DocumentData } from '../../abstract/module.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
+import { FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes";
+import { DocumentData } from "../../abstract/module.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
 
 interface SettingDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -9,7 +9,7 @@ interface SettingDataSchema extends DocumentSchema {
     type: typeof String;
     required: true;
     validate: typeof _validateKeyFormat;
-    validationError: 'Invalid setting key format which should be {scope}.{field}';
+    validationError: "Invalid setting key format which should be {scope}.{field}";
   };
   value: FieldReturnType<fields.JsonField, { required: true }>;
 }

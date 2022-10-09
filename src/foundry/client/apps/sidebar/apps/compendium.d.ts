@@ -2,12 +2,10 @@
  * An interface for displaying the content of a CompendiumCollection.
  * @typeParam Metadata - The metadata of the compendium
  * @typeParam Options  - The type of the options object
- * @typeParam Data    - The data structure used to render the handlebars template.
  */
 declare class Compendium<
   Metadata extends CompendiumCollection.Metadata,
-  Options extends ApplicationOptions = ApplicationOptions,
-  Data extends object = Compendium.Data<Metadata>
+  Options extends ApplicationOptions = ApplicationOptions
 > extends Application<Options> {
   /**
    * @param collection - The {@link CompendiumCollection} object represented by this interface.
@@ -39,9 +37,9 @@ declare class Compendium<
   /**
    * A convenience redirection back to the metadata object of the associated CompendiumCollection
    */
-  get metadata(): this['collection']['metadata'];
+  get metadata(): this["collection"]["metadata"];
 
-  override getData(options?: Partial<Options>): Promise<Data> | Data;
+  override getData(options?: Partial<Options>): MaybePromise<object>;
 
   override close(options?: Application.CloseOptions): Promise<void>;
 
@@ -74,13 +72,4 @@ declare class Compendium<
    * @internal
    */
   protected _getEntryContextOptions(): ContextMenuEntry;
-}
-
-declare namespace Compendium {
-  interface Data<Metadata extends CompendiumCollection.Metadata> {
-    collection: CompendiumCollection<Metadata>;
-    documentCls: string;
-    index: CompendiumCollection<Metadata>['index'];
-    documentPartial: string;
-  }
 }

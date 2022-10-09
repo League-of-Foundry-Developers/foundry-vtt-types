@@ -1,7 +1,7 @@
-import type { ChatSpeakerData } from '../../../../../src/foundry/common/data/data.mjs/chatSpeakerData';
-import type { ConstructorDataType } from '../../../../../src/types/helperTypes';
+import type { ChatSpeakerData } from "../../../../../src/foundry/common/data/data.mjs/chatSpeakerData";
+import type { ConstructorDataType } from "../../../../../src/types/helperTypes";
 
-import { expectError, expectType } from 'tsd';
+import { expectError, expectType } from "tsd";
 
 expectType<ChatMessage>(new ChatMessage());
 expectType<ChatMessage>(new ChatMessage({}));
@@ -20,7 +20,7 @@ expectType<ConstructorDataType<foundry.data.ChatMessageData>>(
 );
 
 expectType<ConstructorDataType<foundry.data.ChatMessageData>>(
-  ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), 'roll')
+  ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), "roll")
 );
 
 declare global {
@@ -29,37 +29,37 @@ declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace Dice {
       interface RollModes {
-        'custom-roll-mode': 'Some Custom Roll Mode';
+        "custom-roll-mode": "Some Custom Roll Mode";
       }
     }
   }
 }
 
 expectType<ConstructorDataType<foundry.data.ChatMessageData>>(
-  ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), 'custom-roll-mode')
+  ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), "custom-roll-mode")
 );
 
-expectError(ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), 'unknown-roll-mode'));
+expectError(ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), "unknown-roll-mode"));
 
-expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker());
-expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({}));
+expectType<ChatSpeakerData["_source"]>(ChatMessage.getSpeaker());
+expectType<ChatSpeakerData["_source"]>(ChatMessage.getSpeaker({}));
 if (game instanceof Game) {
-  expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({ scene: game.scenes?.active }));
-  expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({ actor: game.user?.character }));
-  expectType<ChatSpeakerData['_source']>(
+  expectType<ChatSpeakerData["_source"]>(ChatMessage.getSpeaker({ scene: game.scenes?.active }));
+  expectType<ChatSpeakerData["_source"]>(ChatMessage.getSpeaker({ actor: game.user?.character }));
+  expectType<ChatSpeakerData["_source"]>(
     ChatMessage.getSpeaker({
       scene: game.scenes?.active,
       actor: game.user?.character,
       token: new TokenDocument(),
-      alias: 'Mario'
+      alias: "Mario"
     })
   );
 }
-expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({ token: new TokenDocument() }));
-expectType<ChatSpeakerData['_source']>(ChatMessage.getSpeaker({ alias: 'Mario' }));
+expectType<ChatSpeakerData["_source"]>(ChatMessage.getSpeaker({ token: new TokenDocument() }));
+expectType<ChatSpeakerData["_source"]>(ChatMessage.getSpeaker({ alias: "Mario" }));
 
 expectType<Actor | null>(ChatMessage.getSpeakerActor(ChatMessage.getSpeaker()));
-expectType<StoredDocument<User>[]>(ChatMessage.getWhisperRecipients('Mario'));
+expectType<StoredDocument<User>[]>(ChatMessage.getWhisperRecipients("Mario"));
 
 const chat = new ChatMessage();
 expectType<string>(chat.alias);
@@ -74,9 +74,9 @@ expectType<void>(chat.applyRollMode(CONST.DICE_ROLL_MODES.BLIND));
 expectType<void>(chat.applyRollMode(CONST.DICE_ROLL_MODES.PRIVATE));
 expectType<void>(chat.applyRollMode(CONST.DICE_ROLL_MODES.PUBLIC));
 expectType<void>(chat.applyRollMode(CONST.DICE_ROLL_MODES.SELF));
-expectType<void>(chat.applyRollMode('roll'));
-expectType<void>(chat.applyRollMode('custom-roll-mode'));
-expectError(chat.applyRollMode('unknown-roll-mode'));
+expectType<void>(chat.applyRollMode("roll"));
+expectType<void>(chat.applyRollMode("custom-roll-mode"));
+expectError(chat.applyRollMode("unknown-roll-mode"));
 expectType<object>(chat.getRollData());
 expectType<Promise<JQuery>>(chat.getHTML());
 expectType<string>(chat.export());

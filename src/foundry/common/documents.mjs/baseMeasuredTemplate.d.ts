@@ -1,18 +1,18 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
-import * as data from '../data/data.mjs';
-import { DocumentMetadata } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import { BaseScene } from './baseScene';
-import { BaseUser } from './baseUser';
-import type { MeasuredTemplateDataConstructorData } from '../data/data.mjs/measuredTemplateData';
+import { ConfiguredDocumentClass } from "../../../types/helperTypes";
+import * as data from "../data/data.mjs";
+import { DocumentMetadata } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import { BaseScene } from "./baseScene";
+import { BaseUser } from "./baseUser";
+import type { MeasuredTemplateDataConstructorData } from "../data/data.mjs/measuredTemplateData";
 
 type MeasuredTemplateMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'MeasuredTemplate';
-    collection: 'templates';
-    label: 'DOCUMENT.MeasuredTemplate';
-    labelPlural: 'DOCUMENT.MeasuredTemplates';
+    name: "MeasuredTemplate";
+    collection: "templates";
+    label: "DOCUMENT.MeasuredTemplate";
+    labelPlural: "DOCUMENT.MeasuredTemplates";
     isEmbedded: true;
     permissions: {
       create: (user: BaseUser, doc: BaseMeasuredTemplate) => boolean;

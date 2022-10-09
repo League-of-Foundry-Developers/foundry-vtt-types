@@ -5,11 +5,11 @@ import {
   ConfiguredSource,
   FieldReturnType,
   PropertiesToSource
-} from '../../../../types/helperTypes';
-import EmbeddedCollection from '../../abstract/embedded-collection.mjs';
-import { DocumentData } from '../../abstract/module.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
+} from "../../../../types/helperTypes";
+import EmbeddedCollection from "../../abstract/embedded-collection.mjs";
+import { DocumentData } from "../../abstract/module.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
 
 interface ItemDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -18,7 +18,7 @@ interface ItemDataSchema extends DocumentSchema {
     type: typeof String;
     required: true;
     validate: (t: unknown) => boolean;
-    validationError: 'The provided Item type must be in the array of types defined by the game system';
+    validationError: "The provided Item type must be in the array of types defined by the game system";
   };
   img: FieldReturnType<fields.ImageField, { default: () => typeof ItemData.DEFAULT_ICON }>;
   data: fields.SystemDataField;
@@ -86,7 +86,7 @@ interface ItemDataBaseProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'Item'>;
+  flags: ConfiguredFlags<"Item">;
 }
 
 interface ItemDataConstructorData {
@@ -104,7 +104,7 @@ interface ItemDataConstructorData {
   /**
    * An Item subtype which configures the system data model applied
    */
-  type: ItemDataSource['type'];
+  type: ItemDataSource["type"];
 
   /**
    * An image file path which provides the artwork for this Item
@@ -116,7 +116,7 @@ interface ItemDataConstructorData {
    * The system data object which is defined by the system template.json model
    * @defaultValue template from template.json for type or `{}`
    */
-  data?: DeepPartial<ItemDataSource['data']> | null | undefined;
+  data?: DeepPartial<ItemDataSource["data"]> | null | undefined;
 
   /**
    * A collection of ActiveEffect embedded Documents
@@ -146,12 +146,12 @@ interface ItemDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'Item'> | null | undefined;
+  flags?: ConfiguredFlags<"Item"> | null | undefined;
 }
 
 type ItemDataBaseSource = PropertiesToSource<ItemDataBaseProperties>;
-type ItemDataProperties = ItemDataBaseProperties & ConfiguredData<'Item'>;
-type ItemDataSource = ItemDataBaseSource & ConfiguredSource<'Item'>;
+type ItemDataProperties = ItemDataBaseProperties & ConfiguredData<"Item">;
+type ItemDataSource = ItemDataBaseSource & ConfiguredSource<"Item">;
 
 type DocumentDataConstructor = Pick<typeof DocumentData, keyof typeof DocumentData>;
 

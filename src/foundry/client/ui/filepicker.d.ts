@@ -31,12 +31,8 @@ interface FilePickerOptions extends ApplicationOptions {
  * The FilePicker application renders contents of the server-side public directory.
  * This app allows for navigating and uploading files to the public path.
  * @typeParam Options - the type of the options object
- * @typeParam Data    - The data structure used to render the handlebars template.
  */
-declare class FilePicker<
-  Options extends FilePickerOptions = FilePickerOptions,
-  Data extends object = FilePicker.Data
-> extends Application<Options> {
+declare class FilePicker<Options extends FilePickerOptions = FilePickerOptions> extends Application<Options> {
   /**
    * @param options - Options that configure the behavior of the FilePicker
    */
@@ -54,7 +50,7 @@ declare class FilePicker<
 
   /**
    * Track the active source tab which is being browsed
-   * @defaultValue `'data'`
+   * @defaultValue `"data"`
    */
   activeSource: FilePicker.SourceType;
 
@@ -111,14 +107,14 @@ declare class FilePicker<
 
   /**
    * Record the last-configured display mode so that re-opening a different FilePicker instance uses the same mode.
-   * @defaultValue `'list'`
+   * @defaultValue `"list"`
    */
   static LAST_DISPLAY_MODE: FilePicker.DisplayMode;
 
   /**
    * Enumerate the allowed FilePicker display modes
    */
-  static DISPLAY_MODES: ['list', 'thumbs', 'tiles', 'images'];
+  static DISPLAY_MODES: ["list", "thumbs", "tiles", "images"];
 
   /**
    * Cache the names of S3 buckets which can be used
@@ -192,7 +188,7 @@ declare class FilePicker<
    */
   static get uploadURL(): string;
 
-  override getData(options?: Partial<Options> | undefined): Data | Promise<Data>;
+  override getData(options?: Partial<Options> | undefined): MaybePromise<object>;
 
   /**
    * Browse to a specific location for this FilePicker instance
@@ -292,7 +288,7 @@ declare class FilePicker<
    */
   protected _onChangeDisplayMode(event: JQuery.ClickEvent): void;
 
-  protected override _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: this['activeSource']): void;
+  protected override _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: this["activeSource"]): void;
 
   protected override _canDragStart(selector: string | null): boolean;
 
@@ -316,7 +312,7 @@ declare class FilePicker<
    * Handle requests from the IntersectionObserver to lazily load an image file
    * @internal
    */
-  protected _onLazyLoadImages(...args: Parameters<SidebarTab['_onLazyLoadImage']>): void;
+  protected _onLazyLoadImages(...args: Parameters<SidebarTab["_onLazyLoadImage"]>): void;
 
   /**
    * Handle file or folder selection within the file picker
@@ -422,28 +418,7 @@ declare namespace FilePicker {
     bucket?: string | null;
   }
 
-  interface Data {
-    bucket: string | null;
-    canGoBack: boolean;
-    canUpload: boolean;
-    canSelect: boolean;
-    cssClass: string;
-    dirs: Dir[];
-    displayMode: FilePicker.DisplayMode;
-    extensions: string[] | undefined;
-    files: File[];
-    isS3: boolean;
-    noResults: boolean;
-    selected: string | undefined;
-    source: Source;
-    sources: Sources;
-    target: string;
-    tileSize: number | null;
-    user: Game['user'];
-    submitText: string;
-  }
-
-  type SourceType = 'data' | 'public' | 's3';
+  type SourceType = "data" | "public" | "s3";
 
   interface Dir {
     name: string;
@@ -451,13 +426,7 @@ declare namespace FilePicker {
     private: boolean;
   }
 
-  type DisplayMode = ValueOf<typeof FilePicker['DISPLAY_MODES']>;
-
-  interface File {
-    name: string;
-    url: string;
-    img: string;
-  }
+  type DisplayMode = ValueOf<typeof FilePicker["DISPLAY_MODES"]>;
 
   interface ManageFilesDataBase {
     source: string;
@@ -465,15 +434,15 @@ declare namespace FilePicker {
   }
 
   interface BrowseFilesData extends ManageFilesDataBase {
-    action: 'browseFiles';
+    action: "browseFiles";
   }
 
   interface ConfigurePathData extends ManageFilesDataBase {
-    action: 'configurePath';
+    action: "configurePath";
   }
 
   interface CreateDirectoryData extends ManageFilesDataBase {
-    action: 'createDirectory';
+    action: "createDirectory";
   }
 
   interface Source {
@@ -491,7 +460,7 @@ declare namespace FilePicker {
     };
   }
 
-  type Type = 'any' | 'audio' | 'image' | 'video' | 'imagevideo' | 'folder' | 'font' | 'graphics' | 'text';
+  type Type = "any" | "audio" | "image" | "video" | "imagevideo" | "folder" | "font" | "graphics" | "text";
 
   interface UploadBody {
     /**
@@ -512,6 +481,6 @@ declare namespace FilePicker {
   interface UploadResult {
     message: string;
     path: string;
-    status: 'success';
+    status: "success";
   }
 }

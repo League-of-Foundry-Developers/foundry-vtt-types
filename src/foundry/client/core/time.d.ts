@@ -1,4 +1,4 @@
-import type { DocumentModificationOptions } from '../../common/abstract/document.mjs';
+import type { DocumentModificationOptions } from "../../common/abstract/document.mjs";
 
 declare global {
   /**

@@ -1,6 +1,6 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
-const audioContainer = new AudioContainer('a/path/to/some/sound/file.ogg');
+const audioContainer = new AudioContainer("a/path/to/some/sound/file.ogg");
 expectType<AudioContainer>(audioContainer);
 expectType<string>(audioContainer.src);
 expectType<AudioBufferSourceNode | MediaElementAudioSourceNode | undefined>(audioContainer.sourceNode);

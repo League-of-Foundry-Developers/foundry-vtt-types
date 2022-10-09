@@ -1,16 +1,15 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   /**
    * The Application responsible for configuring a single ActiveEffect document within a parent Actor or Item.
    *
    * @typeParam Options - the type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class ActiveEffectConfig<
-    Options extends DocumentSheetOptions = ActiveEffectConfig.Options,
-    Data extends object = ActiveEffectConfig.Data
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>> {
+  class ActiveEffectConfig<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<
+    Options,
+    InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>
+  > {
     /**
      * @defaultValue
      * ```typescript
@@ -23,11 +22,11 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): ActiveEffectConfig.Options;
+    static override get defaultOptions(): DocumentSheetOptions;
 
     override get title(): string;
 
-    override getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     override activateListeners(html: JQuery): void;
 
@@ -46,20 +45,7 @@ declare global {
     /**
      * @param updateData - (default: `{}`)
      */
-    override _getSubmitData(updateData?: FormApplication.OnSubmitOptions['updateData']): Record<string, unknown>;
+    override _getSubmitData(updateData?: FormApplication.OnSubmitOptions["updateData"]): Record<string, unknown>;
     // TODO: Can we type this better?
-  }
-
-  namespace ActiveEffectConfig {
-    interface Data {
-      effect: ActiveEffectConfig['object']['data'];
-      data: ActiveEffectConfig['object']['data'];
-      isActorEffect: boolean;
-      isItemEffect: boolean;
-      submitText: string;
-      modes: Record<number, string>;
-    }
-
-    type Options = DocumentSheetOptions;
   }
 }

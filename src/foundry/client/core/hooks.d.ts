@@ -1,14 +1,14 @@
-import type { EditorState, Plugin } from 'prosemirror-state';
+import type { EditorState, Plugin } from "prosemirror-state";
 import {
   ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
   ConfiguredObjectClassForName,
   DocumentConstructor,
   ToObjectFalseType
-} from '../../../types/helperTypes';
-import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
-import { EffectChangeData } from '../../common/data/data.mjs/effectChangeData';
-import { DropData } from '../data/abstract/client-document';
+} from "../../../types/helperTypes";
+import { DocumentModificationOptions } from "../../common/abstract/document.mjs";
+import { EffectChangeData } from "../../common/data/data.mjs/effectChangeData";
+import { DropData } from "../data/abstract/client-document";
 
 declare global {
   /**
@@ -48,9 +48,9 @@ declare global {
     static once<K extends keyof Hooks.StaticCallbacks>(
       hook: K,
       fn: Hooks.StaticCallbacks[K]
-    ): ReturnType<typeof Hooks['on']>;
-    static once<H extends Hooks.DynamicCallbacks>(hook: string, fn: H): ReturnType<typeof Hooks['on']>;
-    static once<H extends (...args: any) => any>(hook: string, fn: H): ReturnType<typeof Hooks['on']>;
+    ): ReturnType<typeof Hooks["on"]>;
+    static once<H extends Hooks.DynamicCallbacks>(hook: string, fn: H): ReturnType<typeof Hooks["on"]>;
+    static once<H extends (...args: any) => any>(hook: string, fn: H): ReturnType<typeof Hooks["on"]>;
 
     /**
      * Unregister a callback handler for a particular hook event
@@ -118,7 +118,7 @@ declare global {
          * The level at which to log the error to console (if at all).
          * @defaultValue `null`
          */
-        notify?: keyof NonNullable<typeof ui['notifications']> | null | undefined;
+        notify?: keyof NonNullable<typeof ui["notifications"]> | null | undefined;
 
         /**
          * The level at which to spawn a notification in the UI (if at all).
@@ -283,7 +283,7 @@ declare global {
           user: string;
 
           /** The identified speaker data, see {@link ChatMessage.getSpeaker} */
-          speaker: ReturnType<ConfiguredDocumentClass<typeof ChatMessage>['getSpeaker']>;
+          speaker: ReturnType<ConfiguredDocumentClass<typeof ChatMessage>["getSpeaker"]>;
         }
       ) => boolean | void;
 
@@ -331,8 +331,8 @@ declare global {
        * @remarks An explicit return value of `false` prevents the operation.
        */
       dealCards: (
-        origin: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
-        destinations: InstanceType<ConfiguredDocumentClassForName<'Cards'>>[],
+        origin: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
+        destinations: InstanceType<ConfiguredDocumentClassForName<"Cards">>[],
         context: Cards.DealContext
       ) => boolean | void;
 
@@ -499,8 +499,8 @@ declare global {
        * @remarks An explicit return value of `false` prevents the operation.
        */
       passCards: (
-        origin: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
-        destination: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
+        origin: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
+        destination: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
         context: Cards.DealContext
       ) => boolean | void;
 
@@ -533,9 +533,9 @@ declare global {
         html: JQuery,
         data: {
           message: ToObjectFalseType<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>>;
-          user: Game['user'];
-          author: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>['user'];
-          alias: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>['alias'];
+          user: Game["user"];
+          author: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>["user"];
+          alias: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>["alias"];
           cssClass: string;
           isWhisper: boolean;
           whisperTo: string;
@@ -550,8 +550,8 @@ declare global {
        * @param context  - Additional context which describes the operation.
        */
       returnCards: (
-        origin: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
-        returned: InstanceType<ConfiguredDocumentClassForName<'Card'>>[],
+        origin: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
+        returned: InstanceType<ConfiguredDocumentClassForName<"Card">>[],
         context: Cards.ReturnContext
       ) => boolean | void;
 
@@ -591,7 +591,7 @@ declare global {
        */
       targetToken: (
         user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-        token: ConfiguredObjectClassForName<'Token'>,
+        token: ConfiguredObjectClassForName<"Token">,
         targeted: boolean
       ) => void;
 
@@ -628,7 +628,7 @@ declare global {
      * @param app   - The Application instance being closed
      * @param html  - The application HTML when it is closed
      * @typeParam A - the type of the Application
-     * @remarks The name for this hook is dynamically created by joining 'close' with the type name of the Application.
+     * @remarks The name for this hook is dynamically created by joining "close" with the type name of the Application.
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link Application#close}
      */
@@ -641,7 +641,7 @@ declare global {
      * @param object     - The PlaceableObject
      * @param controlled - Whether the PlaceableObject is selected or not
      * @typeParam P      - the type of the PlaceableObject
-     * @remarks The name for this hook is dynamically created by joining 'control' and the type name of the
+     * @remarks The name for this hook is dynamically created by joining "control" and the type name of the
      * PlaceableObject.
      * @remarks This is called by {@link Hooks.callAll}.
      * @see {@link PlaceableObject#control}
@@ -658,7 +658,7 @@ declare global {
      * @param options  - Additional options which modified the creation request
      * @param userId   - The ID of the User who triggered the creation workflow
      * @typeParam D    - the type of the Document constructor
-     * @remarks The name for this hook is dynamically created by joining 'create' and the type name of the Document.
+     * @remarks The name for this hook is dynamically created by joining "create" and the type name of the Document.
      * @remarks This is called by {@link Hooks.callAll}.
      * @see {@link ClientDatabaseBackend#_postCreateDocumentCallbacks}
      * @see {@link TokenDocument#_onUpdateTokenActor}
@@ -678,7 +678,7 @@ declare global {
      * @param options  - Additional options which modified the deletion request
      * @param userId   - The ID of the User who triggered the deletion workflow
      * @typeParam D    - the type of the Document constructor
-     * @remarks The name for this hook is dynamically created by joining 'delete' with the type name of the Document.
+     * @remarks The name for this hook is dynamically created by joining "delete" with the type name of the Document.
      * @remarks This is called by {@link Hooks.callAll}.
      * @see {@link ClientDatabaseBackend#_postDeleteDocumentCallbacks}
      * @see {@link TokenDocument#_onUpdateTokenActor}
@@ -694,8 +694,8 @@ declare global {
      * @param app     - The Application instance being rendered
      * @param buttons - The array of header buttons which will be displayed
      * @typeParam A   - the type of the Application
-     * @remarks The name for this hook is dynamically created by joining 'get' with the type name of the Application and
-     * 'HeaderButtons'.
+     * @remarks The name for this hook is dynamically created by joining "get" with the type name of the Application and
+     * "HeaderButtons".
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link Application#_getHeaderButtons}
      */
@@ -719,8 +719,8 @@ declare global {
      * A hook event that fires when the context menu for a Sound in the PlaylistDirectory is constructed.
      * @param html         - The HTML element to which the context options are attached
      * @param entryOptions - The context menu entries
-     * @remarks The name for this hook is dynamically created by joining 'get' with the type name of the PlaylistDirectory
-     * and 'SoundContext'.
+     * @remarks The name for this hook is dynamically created by joining "get" with the type name of the PlaylistDirectory
+     * and "SoundContext".
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link PlaylistDirectory#_contextMenu}
      */
@@ -732,8 +732,8 @@ declare global {
      * a specific SidebarTab, for example "getActorDirectoryFolderContext".
      * @param html         - The HTML element to which the context options are attached
      * @param entryOptions - The context menu entries
-     * @remarks The name for this hook is dynamically created by joining 'get' with the type name of the SidebarDirectory
-     * and 'FolderContext'.
+     * @remarks The name for this hook is dynamically created by joining "get" with the type name of the SidebarDirectory
+     * and "FolderContext".
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link SidebarDirectory#_contextMenu}
      */
@@ -744,7 +744,7 @@ declare global {
      * The hook name needs to be customized to include the type of global volume being changed, one of:
      * `globalPlaylistVolumeChanged`, `globalAmbientVolumeChanged`, or `globalInterfaceVolumeChanged`.
      * @param volume - The new volume level
-     * @remarks The name for this hook is dynamically created by joining the name of the volume with 'Changed'.
+     * @remarks The name for this hook is dynamically created by joining the name of the volume with "Changed".
      * @remarks This is called by {@link Hooks.callAll}.
      * @see {@link AudioHelper#_onChangeGlobalVolume}
      */
@@ -757,7 +757,7 @@ declare global {
      * @param object - The PlaceableObject
      * @param hover  - Whether the PlaceableObject is hovered over or not
      * @typeParam P  - the type of the PlaceableObject
-     * @remarks The name for this hook is dynamically created by joining 'hover' and the type name of the PlaceableObject.
+     * @remarks The name for this hook is dynamically created by joining "hover" and the type name of the PlaceableObject.
      * @remarks This is called by {@link Hooks.callAll}.
      * @see {@link PlaceableObject#_onHoverIn}
      * @see {@link PlaceableObject#_onHoverOut}
@@ -771,14 +771,14 @@ declare global {
      * @param copied     - The PlaceableObjects that were copied
      * @param createData - The new objects that will be added to the Scene
      * @typeParam P      - the type of the PlaceableObject
-     * @remarks The name for this hook is dynamically created by joining 'paste' with the type name of the
+     * @remarks The name for this hook is dynamically created by joining "paste" with the type name of the
      * PlaceableObject.
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link PlaceablesLayer#pasteObjects}
      */
     type PastePlaceableObject<P extends PlaceableObject = PlaceableObject> = (
       copied: P[],
-      createData: Array<P['document']['data']['_source']>
+      createData: Array<P["document"]["data"]["_source"]>
     ) => boolean | void;
 
     /**
@@ -795,7 +795,7 @@ declare global {
      * @param userId   - The ID of the requesting user, always game.user.id
      * @typeParam D    - the type of the Document constructor
      * @returns Explicitly return false to prevent creation of this Document
-     * @remarks The name for this hook is dynamically created by joining 'preCreate' with the name of the Document.
+     * @remarks The name for this hook is dynamically created by joining "preCreate" with the name of the Document.
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link ClientDatabaseBackend#_preCreateDocumentArray}
      * @see {@link TokenDocument#_preUpdateTokenActor}
@@ -820,7 +820,7 @@ declare global {
      * @param userId   - The ID of the requesting user, always game.user.id
      * @typeParam D    - the type of the Document constructor
      * @returns Explicitly return false to prevent deletion of this Document
-     * @remarks The name for this hook is dynamically created by joining 'preDelete' with the type name of the Document.
+     * @remarks The name for this hook is dynamically created by joining "preDelete" with the type name of the Document.
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link ClientDatabaseBackend#_preDeleteDocumentArray}.
      * @see {@link TokenDocument#_preUpdateTokenActor}
@@ -845,7 +845,7 @@ declare global {
      * @param userId   - The ID of the requesting user, always game.user.id
      * @typeParam D    - the type of the Document constructor
      * @returns Explicitly return false to prevent update of this Document
-     * @remarks The name for this hook is dynamically created by joining 'preUpdate' with the type name of the Document.
+     * @remarks The name for this hook is dynamically created by joining "preUpdate" with the type name of the Document.
      * @remarks This is called {@link Hooks.call}.
      * @see {@link ClientDatabaseBackend#_preUpdateDocumentArray}
      * @see {@link TokenDocument#_preUpdateTokenActor}
@@ -866,14 +866,14 @@ declare global {
      * @param html  - The inner HTML of the document that will be displayed and may be modified
      * @param data  - The object of data used when rendering the application
      * @typeParam A - the type of the Application
-     * @remarks The name for this hook is dynamically created by joining 'render' with the type name of the Application.
+     * @remarks The name for this hook is dynamically created by joining "render" with the type name of the Application.
      * @remarks This is called by {@link Hooks.callAll}.
      * @see {@link Application#_render}
      */
     type RenderApplication<A extends Application = Application> = (
       app: A,
       html: JQuery,
-      data: ReturnType<A['getData']> extends Promise<infer T> ? T : ReturnType<A['getData']>
+      data: ReturnType<A["getData"]> extends Promise<infer T> ? T : ReturnType<A["getData"]>
     ) => boolean | void;
 
     /**
@@ -886,7 +886,7 @@ declare global {
      * @param options  - Additional options which modified the update request
      * @param userId   - The ID of the User who triggered the update workflow
      * @typeParam D    - the type of the Document constructor
-     * @remarks The name for this hook is dynamically created by joining 'update' with the type name of the Document.
+     * @remarks The name for this hook is dynamically created by joining "update" with the type name of the Document.
      * @remarks This is called by {@link Hooks.callAll}.
      * @see {@link ClientDatabaseBackend#_postUpdateDocumentCallbacks}
      * @see {@link TokenDocument#_onUpdateTokenActor}
@@ -916,47 +916,47 @@ declare global {
       | UpdateDocument;
 
     interface ErrorCallbackParameters {
-      'Canvas#draw': [location: 'Canvas#draw', err: Error, data: { layer: CanvasLayer }];
-      'Application#render': [location: 'Application#render', err: Error, data: Application.RenderOptions];
-      'Localization#_loadTranslationFile': [
-        location: 'Localization#_loadTranslationFile',
+      "Canvas#draw": [location: "Canvas#draw", err: Error, data: { layer: CanvasLayer }];
+      "Application#render": [location: "Application#render", err: Error, data: Application.RenderOptions];
+      "Localization#_loadTranslationFile": [
+        location: "Localization#_loadTranslationFile",
         err: Error,
         data: { src: string }
       ];
-      'ClientDatabaseBackend#_preCreateDocumentArray': [
-        location: 'ClientDatabaseBackend#_preCreateDocumentArray',
+      "ClientDatabaseBackend#_preCreateDocumentArray": [
+        location: "ClientDatabaseBackend#_preCreateDocumentArray",
         err: Error,
         data: { id: string }
       ];
-      'ClientDatabaseBackend#_preUpdateDocumentArray': [
-        location: 'ClientDatabaseBackend#_preUpdateDocumentArray',
+      "ClientDatabaseBackend#_preUpdateDocumentArray": [
+        location: "ClientDatabaseBackend#_preUpdateDocumentArray",
         err: Error,
         data: { id: string }
       ];
-      'WorldCollection#_initialize': [location: 'WorldCollection#_initialize', err: Error, data: { id: string }];
-      'ClientDocumentMixin#_initialize': [
-        location: 'ClientDocumentMixin#_initialize',
+      "WorldCollection#_initialize": [location: "WorldCollection#_initialize", err: Error, data: { id: string }];
+      "ClientDocumentMixin#_initialize": [
+        location: "ClientDocumentMixin#_initialize",
         err: Error,
         data: { id: string }
       ];
-      'Actor#getTokenImages': [location: 'Actor#getTokenImages', err: Error, data: Record<string, never>];
-      'Macro#executeChat': [location: 'Macro#executeChat', err: Error, data: { command: string }];
-      'ChatMessage#roll': [location: 'ChatMessage#roll', err: Error, data: { command: string }];
-      'DefaultTokenConfig#_updateObject': [
-        location: 'DefaultTokenConfig#_updateObject',
+      "Actor#getTokenImages": [location: "Actor#getTokenImages", err: Error, data: Record<string, never>];
+      "Macro#executeChat": [location: "Macro#executeChat", err: Error, data: { command: string }];
+      "ChatMessage#roll": [location: "ChatMessage#roll", err: Error, data: { command: string }];
+      "DefaultTokenConfig#_updateObject": [
+        location: "DefaultTokenConfig#_updateObject",
         err: Error,
         data: Record<string, never>
       ];
-      'SceneConfig#_updateObject': [location: 'SceneConfig#_updateObject', err: Error, data: { scene: string }];
-      'SidebarDirectory.setupFolders': [
-        location: 'SidebarDirectory.setupFolders',
+      "SceneConfig#_updateObject": [location: "SceneConfig#_updateObject", err: Error, data: { scene: string }];
+      "SidebarDirectory.setupFolders": [
+        location: "SidebarDirectory.setupFolders",
         err: Error,
         data: Record<string, never>
       ];
-      'Sidebar#_render': [location: 'Sidebar#_render', err: Error, data: { name: string }];
-      'Game#initializeCanvas': [location: 'Game#initializeCanvas', err: Error, data: Record<string, never>];
-      'EmbeddedCollection#_initialize': [
-        location: 'EmbeddedCollection#_initialize',
+      "Sidebar#_render": [location: "Sidebar#_render", err: Error, data: { name: string }];
+      "Game#initializeCanvas": [location: "Game#initializeCanvas", err: Error, data: Record<string, never>];
+      "EmbeddedCollection#_initialize": [
+        location: "EmbeddedCollection#_initialize",
         err: Error,
         data: { id: string; documentName: string }
       ];

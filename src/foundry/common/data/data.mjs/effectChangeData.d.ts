@@ -1,7 +1,7 @@
-import { FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
-import { DocumentData } from '../../abstract/module.mjs';
-import { BaseActiveEffect } from '../../documents.mjs';
-import * as fields from '../fields.mjs';
+import { FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes";
+import { DocumentData } from "../../abstract/module.mjs";
+import { BaseActiveEffect } from "../../documents.mjs";
+import * as fields from "../fields.mjs";
 
 interface EffectChangeDataSchema extends DocumentSchema {
   key: fields.BlankString;

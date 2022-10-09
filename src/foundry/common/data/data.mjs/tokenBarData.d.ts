@@ -1,6 +1,6 @@
-import { PropertiesToSource } from '../../../../types/helperTypes';
-import { DocumentData } from '../../abstract/module.mjs';
-import { documents } from '../../module.mjs';
+import { PropertiesToSource } from "../../../../types/helperTypes";
+import { DocumentData } from "../../abstract/module.mjs";
+import { documents } from "../../module.mjs";
 
 interface TokenBarDataSchema extends DocumentSchema {
   attribute: DocumentField<string> & {

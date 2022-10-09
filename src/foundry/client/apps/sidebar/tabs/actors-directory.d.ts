@@ -1,10 +1,10 @@
 /**
  * The sidebar directory which organizes and displays world-level Actor documents.
  */
-declare class ActorDirectory extends SidebarDirectory<'Actor'> {
+declare class ActorDirectory extends SidebarDirectory<"Actor"> {
   constructor(...args: ConstructorParameters<typeof SidebarDirectory>);
 
-  static override documentName: 'Actor';
+  static override documentName: "Actor";
 
   protected override _canDragStart(selector: string): boolean;
 

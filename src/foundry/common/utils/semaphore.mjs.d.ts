@@ -1,9 +1,8 @@
 /**
  * A simple Semaphore implementation which provides a limited queue for ensuring proper concurrency.
  *
- * @example
+ * @example Some async function that takes time to execute
  * ```typescript
- * // Some async function that takes time to execute
  * function fn(x: string): Promise<string> {
  *   return new Promise(resolve => {
  *     setTimeout(() => {

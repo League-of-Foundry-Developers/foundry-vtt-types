@@ -1,6 +1,6 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
-expectType<'Wall'>(Wall.embeddedName);
+expectType<"Wall">(Wall.embeddedName);
 
 declare const doc: WallDocument;
 declare const ray: Ray;

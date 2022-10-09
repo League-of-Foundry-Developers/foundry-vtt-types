@@ -2,7 +2,7 @@ declare class ResizeHandle extends PIXI.Graphics {
   /**
    * @param handlers - (default: `{}`)
    */
-  constructor(offset: ResizeHandle['offset'], handlers?: ResizeHandle['handlers']);
+  constructor(offset: ResizeHandle["offset"], handlers?: ResizeHandle["handlers"]);
 
   offset: [widthOffset: number, heightOffset: number];
 

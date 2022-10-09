@@ -1,19 +1,19 @@
-import { expectError, expectType } from 'tsd';
-import '../../../../../index';
+import { expectError, expectType } from "tsd";
+import "../../../../../index";
 
 interface CharacterDataSourceData {
   health: number;
 }
 
 interface CharacterFlags {
-  'my-module': {
+  "my-module": {
     known: boolean;
     xp: number;
   };
 }
 
 interface CharacterDataSource {
-  type: 'character';
+  type: "character";
   data: CharacterDataSourceData;
   flags: CharacterFlags;
 }
@@ -23,7 +23,7 @@ interface CharacterDataPropertiesData extends CharacterDataSourceData {
 }
 
 interface CharacterDataProperties {
-  type: 'character';
+  type: "character";
   data: CharacterDataPropertiesData;
   flags: CharacterFlags;
 }
@@ -34,14 +34,14 @@ interface NPCDataSourceData {
 }
 
 interface NPCFlags {
-  'my-module': {
-    'hidden-name': string;
+  "my-module": {
+    "hidden-name": string;
     known: boolean;
   };
 }
 
 interface NPCDataSource {
-  type: 'npc';
+  type: "npc";
   data: NPCDataSourceData;
   flags: NPCFlags;
 }
@@ -51,7 +51,7 @@ interface NPCDataPropertiesData extends NPCDataSourceData {
 }
 
 interface NPCDataProperties {
-  type: 'npc';
+  type: "npc";
   data: NPCDataPropertiesData;
   flags: NPCFlags;
 }
@@ -72,30 +72,30 @@ declare global {
 expectError(new foundry.data.ActorData());
 expectError(new foundry.data.ActorData({}));
 
-expectError(new foundry.data.ActorData({ name: 'Some Actor With Wrong Type', type: 'foo' }));
+expectError(new foundry.data.ActorData({ name: "Some Actor With Wrong Type", type: "foo" }));
 
-const actorData = new foundry.data.ActorData({ name: 'Some Actor', type: 'character' });
+const actorData = new foundry.data.ActorData({ name: "Some Actor", type: "character" });
 
 expectType<foundry.data.ActorData>(actorData);
-expectType<'character' | 'npc'>(actorData.type);
-if (actorData._source.type === 'character') {
+expectType<"character" | "npc">(actorData.type);
+if (actorData._source.type === "character") {
   expectType<number>(actorData._source.data.health);
   expectError(actorData._source.data.movement);
-  expectType<number>(actorData._source.flags['my-module'].xp);
+  expectType<number>(actorData._source.flags["my-module"].xp);
 } else {
   expectType<string>(actorData._source.data.faction);
   expectType<number>(actorData._source.data.challenge);
   expectError(actorData._source.data.damage);
-  expectType<string>(actorData._source.flags['my-module']['hidden-name']);
+  expectType<string>(actorData._source.flags["my-module"]["hidden-name"]);
 }
 
-if (actorData.type === 'character') {
+if (actorData.type === "character") {
   expectType<number>(actorData.data.health);
   expectType<number>(actorData.data.movement);
-  expectType<number>(actorData.flags['my-module'].xp);
+  expectType<number>(actorData.flags["my-module"].xp);
 } else {
   expectType<string>(actorData.data.faction);
   expectType<number>(actorData.data.challenge);
   expectType<number>(actorData.data.damage);
-  expectType<string>(actorData.flags['my-module']['hidden-name']);
+  expectType<string>(actorData.flags["my-module"]["hidden-name"]);
 }

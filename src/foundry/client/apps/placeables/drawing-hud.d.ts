@@ -1,4 +1,4 @@
-import { ConfiguredObjectClassForName } from '../../../../types/helperTypes';
+import { ConfiguredObjectClassForName } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -20,13 +20,10 @@ declare global {
      */
     static override get defaultOptions(): ApplicationOptions;
 
-    override getData(options?: Partial<Options>): ReturnType<BasePlaceableHUD<ConcreteDrawing>['getData']> & {
-      lockedClass: string;
-      visibilityClass: string;
-    };
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     override setPosition(options?: Partial<Application.Position>): void;
   }
 }
 
-type ConcreteDrawing = InstanceType<ConfiguredObjectClassForName<'Drawing'>>;
+type ConcreteDrawing = InstanceType<ConfiguredObjectClassForName<"Drawing">>;

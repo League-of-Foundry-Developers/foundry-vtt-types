@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -8,25 +8,25 @@ declare global {
    * @see {@link Combat} The Combat document
    * @see {@link CombatTracker} The CombatTracker sidebar directory
    */
-  class CombatEncounters extends WorldCollection<typeof foundry.documents.BaseCombat, 'CombatEncounters'> {
-    static override documentName: 'Combat';
+  class CombatEncounters extends WorldCollection<typeof foundry.documents.BaseCombat, "CombatEncounters"> {
+    static override documentName: "Combat";
 
     /**
      * Provide the settings object which configures the Combat document
      */
-    static get settings(): ClientSettings.Values[`core.${typeof Combat['CONFIG_SETTING']}`];
+    static get settings(): ClientSettings.Values[`core.${typeof Combat["CONFIG_SETTING"]}`];
 
-    override get directory(): typeof ui['combat'];
+    override get directory(): typeof ui["combat"];
 
     /**
      * Get an Array of Combat instances which apply to the current canvas scene
      */
-    get combats(): ReturnType<this['filter']>;
+    get combats(): ReturnType<this["filter"]>;
 
     /**
      * The currently active Combat instance
      */
-    get active(): ReturnType<this['find']>;
+    get active(): ReturnType<this["find"]>;
 
     /**
      * The currently viewed Combat encounter

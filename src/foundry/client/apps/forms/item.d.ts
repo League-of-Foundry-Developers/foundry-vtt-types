@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -8,12 +8,11 @@ declare global {
    * @param options - Additional application configuration options.
    *
    * @typeParam Options - the type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class ItemSheet<
-    Options extends ItemSheet.Options = ItemSheet.Options,
-    Data extends object = ItemSheet.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Item>>> {
+  class ItemSheet<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<
+    Options,
+    InstanceType<ConfiguredDocumentClass<typeof Item>>
+  > {
     /**
      * @defaultValue
      * ```typescript
@@ -29,7 +28,7 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): ItemSheet.Options;
+    static get defaultOptions(): DocumentSheetOptions;
 
     override get id(): string;
 
@@ -38,15 +37,15 @@ declare global {
     /**
      * A convenience reference to the Item document
      */
-    get item(): this['object'];
+    get item(): this["object"];
 
     /**
      * The Actor instance which owns this item. This may be null if the item is
      * unowned.
      */
-    get actor(): this['item']['actor'];
+    get actor(): this["item"]["actor"];
 
-    override getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     override activateListeners(html: JQuery): void;
 
@@ -54,18 +53,6 @@ declare global {
      * Handle changing the item image
      * @internal
      */
-    protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
-  }
-
-  namespace ItemSheet {
-    /**
-     * @typeParam Options - the type of the options object
-     */
-    interface Data<Options extends ItemSheet.Options = ItemSheet.Options>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Item>>, Options> {
-      item: this['document'];
-    }
-
-    type Options = DocumentSheetOptions;
+    protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker["browse"]>;
   }
 }

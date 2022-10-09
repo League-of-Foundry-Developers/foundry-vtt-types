@@ -5,8 +5,8 @@
  * @see {@link Macro}         The Macro Document
  * @see {@link MacroConfig}   The Macro Configuration Sheet
  */
-declare class MacroDirectory extends SidebarDirectory<'Macro'> {
+declare class MacroDirectory extends SidebarDirectory<"Macro"> {
   constructor(options?: Partial<SidebarDirectory.Options>);
 
-  static override documentName: 'Macro';
+  static override documentName: "Macro";
 }

@@ -1,20 +1,20 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
-import { DocumentMetadata } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import * as data from '../data/data.mjs';
-import type { TokenDataConstructorData } from '../data/data.mjs/tokenData';
-import { BaseUser } from './baseUser';
+import { ConfiguredDocumentClass } from "../../../types/helperTypes";
+import { DocumentMetadata } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import * as data from "../data/data.mjs";
+import type { TokenDataConstructorData } from "../data/data.mjs/tokenData";
+import { BaseUser } from "./baseUser";
 
 type TokenMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'Token';
-    collection: 'tokens';
-    label: 'DOCUMENT.Token';
-    labelPlural: 'DOCUMENT.Tokens';
+    name: "Token";
+    collection: "tokens";
+    label: "DOCUMENT.Token";
+    labelPlural: "DOCUMENT.Tokens";
     isEmbedded: true;
     permissions: {
-      create: 'TOKEN_CREATE';
+      create: "TOKEN_CREATE";
       update: (user: BaseUser, doc: BaseToken, data: DeepPartial<TokenDataConstructorData>) => boolean;
     };
   }

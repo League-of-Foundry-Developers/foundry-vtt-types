@@ -94,7 +94,7 @@ declare class CanvasAnimation {
    */
   protected static _animateFrame(
     deltaTime: number,
-    resolve: CanvasAnimationData['resolve'],
+    resolve: CanvasAnimationData["resolve"],
     reject: (reason?: any) => void,
     attributes: CanvasAnimation.Attribute[],
     duration: number,
@@ -140,7 +140,7 @@ interface LinearAnimationOptions {
 type TickFunction = (dt: number, attributes: CanvasAnimation.Attribute[]) => void;
 type TransitionFunction = (
   dt: number,
-  resolve: CanvasAnimationData['resolve'],
+  resolve: CanvasAnimationData["resolve"],
   reject: (reason?: any) => void,
   attributes: CanvasAnimation.Attribute[],
   duration: number,

@@ -1,6 +1,6 @@
-import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
-import type { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
-import type { PlaylistDataConstructorData } from '../../../common/data/data.mjs/playlistData';
+import type { ConfiguredDocumentClass } from "../../../../types/helperTypes";
+import type { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
+import type { PlaylistDataConstructorData } from "../../../common/data/data.mjs/playlistData";
 
 declare global {
   /**
@@ -126,7 +126,7 @@ declare global {
     ): Promise<void>;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.PlaylistData['_source']>,
+      changed: DeepPartial<foundry.data.PlaylistData["_source"]>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -175,8 +175,8 @@ declare global {
     override toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocumentMixin.CompendiumExportOptions | undefined
-    ): Omit<foundry.data.PlaylistData['_source'], '_id' | 'folder' | 'permission'> & {
-      permission?: foundry.data.PlaylistData['_source']['permission'];
+    ): Omit<foundry.data.PlaylistData["_source"], "_id" | "folder" | "permission"> & {
+      permission?: foundry.data.PlaylistData["_source"]["permission"];
     };
   }
 

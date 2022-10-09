@@ -1,5 +1,5 @@
-import './dice';
-import './roll';
-import './term';
-import './terms';
-import './twister';
+import "./dice";
+import "./roll";
+import "./term";
+import "./terms";
+import "./twister";

@@ -5,12 +5,11 @@ declare global {
    * Audio/Video Conferencing Configuration Sheet
    *
    * @typeParam Options - The type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class AVConfig<
-    Options extends FormApplicationOptions = FormApplicationOptions,
-    Data extends object = AVConfig.Data
-  > extends FormApplication<Options, Data, AVMaster> {
+  class AVConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
+    Options,
+    AVMaster
+  > {
     /**
      * @param object  - The {@link AVMaster} instance being configured.
      * @param options - Application configuration options.
@@ -19,7 +18,7 @@ declare global {
 
     static override get defaultOptions(): FormApplicationOptions;
 
-    override getData(options: Partial<Options>): Promise<Data>;
+    override getData(options: Partial<Options>): MaybePromise<object>;
 
     override activateListeners(html: JQuery): void;
 
@@ -50,36 +49,5 @@ declare global {
     protected _onTurnTypeChanged(event: JQuery.ChangeEvent): void;
 
     protected override _updateObject(event: Event, formData?: object): Promise<unknown>;
-  }
-
-  namespace AVConfig {
-    interface Data {
-      user: Game['user'];
-      modes: {
-        [Key in ValueOf<typeof AVSettings.AV_MODES>]: string;
-      };
-      voiceModes: {
-        [Key in ValueOf<typeof AVSettings.VOICE_MODES>]: string;
-      };
-      serverTypes: {
-        FVTT: string;
-        custom: string;
-      };
-      turnTypes: {
-        FVTT: string;
-        custom: string;
-      };
-      settings: AVSettings;
-      canSelectMode: boolean;
-      noSSL: boolean;
-      videoSources: Record<string, string>;
-      audioSources: Record<string, string>;
-      audioSinks: Record<string, string> | false;
-      videoSrcUnavailable: boolean;
-      audioSrcUnavailable: boolean;
-      audioSinkUnavailable: boolean;
-      audioDisabled: boolean;
-      videoDisabled: boolean;
-    }
   }
 }

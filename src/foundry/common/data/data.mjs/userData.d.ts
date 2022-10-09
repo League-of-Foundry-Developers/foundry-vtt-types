@@ -3,10 +3,10 @@ import {
   ConfiguredFlags,
   FieldReturnType,
   PropertiesToSource
-} from '../../../../types/helperTypes';
-import DocumentData from '../../abstract/data.mjs';
-import * as documents from '../../documents.mjs';
-import * as fields from '../fields.mjs';
+} from "../../../../types/helperTypes";
+import DocumentData from "../../abstract/data.mjs";
+import * as documents from "../../documents.mjs";
+import * as fields from "../fields.mjs";
 
 interface UserDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -17,7 +17,7 @@ interface UserDataSchema extends DocumentSchema {
     required: true;
     default: Record<number | `${number}`, never>;
     validate: typeof _validateHotbar;
-    validationError: 'Invalid User hotbar data structure';
+    validationError: "Invalid User hotbar data structure";
   };
   name: fields.RequiredString;
   password: fields.BlankString;
@@ -88,7 +88,7 @@ interface UserDataProperties {
    * An object of optional key/value flags.
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'User'>;
+  flags: ConfiguredFlags<"User">;
 }
 
 interface UserDataConstructorData {
@@ -141,7 +141,7 @@ interface UserDataConstructorData {
    * An object of optional key/value flags.
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'User'> | null | undefined;
+  flags?: ConfiguredFlags<"User"> | null | undefined;
 }
 
 type UserDataSource = PropertiesToSource<UserDataProperties>;

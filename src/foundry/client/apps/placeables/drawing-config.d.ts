@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
 
 declare global {
   interface DrawingConfigOptions extends FormApplicationOptions {
@@ -12,12 +12,11 @@ declare global {
   /**
    * The Application responsible for configuring a single Drawing document within a parent Scene.
    * @typeParam Options - the type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class DrawingConfig<
-    Options extends DrawingConfigOptions = DrawingConfigOptions,
-    Data extends object = DrawingConfig.Data<Options>
-  > extends FormApplication<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Drawing'>>> {
+  class DrawingConfig<Options extends DrawingConfigOptions = DrawingConfigOptions> extends FormApplication<
+    Options,
+    InstanceType<ConfiguredDocumentClassForName<"Drawing">>
+  > {
     /**
      * @defaultValue
      * ```typescript
@@ -38,7 +37,7 @@ declare global {
 
     override get id(): string;
 
-    override getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     /**
      * Get the names and labels of fill type choices which can be applied
@@ -60,18 +59,8 @@ declare global {
   }
 
   namespace DrawingConfig {
-    interface Data<Options extends DrawingConfigOptions = DrawingConfigOptions> {
-      author: string;
-      isDefault: boolean;
-      fillTypes: DrawingConfig.FillTypes;
-      fontFamilies: Record<string, string>;
-      object: foundry.data.DrawingData['_source'];
-      options: Options;
-      submitText: string;
-    }
-
     type FillTypes = {
-      [Key in keyof typeof foundry.CONST['DRAWING_FILL_TYPES'] as typeof foundry.CONST['DRAWING_FILL_TYPES'][Key]]: `DRAWING.FillType${Titlecase<Key>}`;
+      [Key in keyof typeof foundry.CONST["DRAWING_FILL_TYPES"] as typeof foundry.CONST["DRAWING_FILL_TYPES"][Key]]: `DRAWING.FillType${Titlecase<Key>}`;
     };
 
     interface FormData {

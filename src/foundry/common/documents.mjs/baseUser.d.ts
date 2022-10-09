@@ -1,15 +1,15 @@
-import { DocumentMetadata } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import * as data from '../data/data.mjs';
-import type { UserDataConstructorData, UserDataSource } from '../data/data.mjs/userData';
+import { DocumentMetadata } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import * as data from "../data/data.mjs";
+import type { UserDataConstructorData, UserDataSource } from "../data/data.mjs/userData";
 
 type UserMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'User';
-    collection: 'users';
-    label: 'DOCUMENT.User';
-    labelPlural: 'DOCUMENT.Users';
+    name: "User";
+    collection: "users";
+    label: "DOCUMENT.User";
+    labelPlural: "DOCUMENT.Users";
     isPrimary: true;
     permissions: {
       create: (user: BaseUser, doc: BaseUser, data: UserDataSource) => boolean;

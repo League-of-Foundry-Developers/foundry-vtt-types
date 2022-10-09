@@ -1,15 +1,14 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   /**
    * The Application responsible for configuring a single User document.
    * @typeParam Options - the type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class UserConfig<
-    Options extends DocumentSheetOptions = UserConfig.Options,
-    Data extends object = UserConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof User>>> {
+  class UserConfig<Options extends DocumentSheetOptions = UserConfig.Options> extends DocumentSheet<
+    Options,
+    InstanceType<ConfiguredDocumentClass<typeof User>>
+  > {
     /**
      * @defaultValue
      * ```typescript
@@ -25,14 +24,14 @@ declare global {
 
     override get title(): string;
 
-    override getData(options?: Partial<Options>): Data;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     override activateListeners(html: JQuery): void;
 
     /**
      * Handle changing the user avatar image by opening a FilePicker
      */
-    protected _onEditAvatar(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
+    protected _onEditAvatar(event: JQuery.ClickEvent): ReturnType<FilePicker["browse"]>;
 
     /**
      * @remarks This method not overridden in foundry but added to provide types when overriding the UserConfig.
@@ -41,34 +40,28 @@ declare global {
   }
 
   namespace UserConfig {
-    interface Data<Options extends DocumentSheetOptions> {
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>;
-      actors: InstanceType<ConfiguredDocumentClass<typeof Actor>>[];
-      options: Options;
-    }
-
     interface Options extends DocumentSheetOptions {
       /**
        * @defaultValue `["sheet", "user-config"]`
        */
-      classes: DocumentSheetOptions['classes'];
+      classes: DocumentSheetOptions["classes"];
 
       /**
        * @defaultValue `"templates/user/user-config.html"`
        */
-      template: DocumentSheetOptions['template'];
+      template: DocumentSheetOptions["template"];
 
       /**
        * @defaultValue `400`
        */
-      width: DocumentSheetOptions['width'];
+      width: DocumentSheetOptions["width"];
 
       /**
        * @defaultValue `auto`
        */
-      height: DocumentSheetOptions['height'];
+      height: DocumentSheetOptions["height"];
     }
   }
 }
 
-type FormData = Pick<foundry.data.UserData, 'avatar' | 'character' | 'color'>;
+type FormData = Pick<foundry.data.UserData, "avatar" | "character" | "color">;

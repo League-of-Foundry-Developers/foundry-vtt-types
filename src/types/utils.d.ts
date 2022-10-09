@@ -120,16 +120,16 @@ type Merge<T, U> = T extends object
   : U;
 
 /**
- * If `T` is `Promise<TResult>` then `TResult`; otherwise `T`.
- * @typeParam T - the type which, if a Promise, will be unwrapped.
+ * Instance of `T`, which may or may not be in a promise.
+ * @typeParam T - the type which might be wrapped in a promise.
  */
-type PromisedType<T> = T extends Promise<infer TResult> ? TResult : T;
+type MaybePromise<T> = T | Promise<T>;
 
 type StoredDocument<D extends { data: { _source: unknown } }> = D & {
   id: string;
-  data: D['data'] & {
+  data: D["data"] & {
     _id: string;
-    _source: D['data']['_source'] & { _id: string };
+    _source: D["data"]["_source"] & { _id: string };
   };
 };
 

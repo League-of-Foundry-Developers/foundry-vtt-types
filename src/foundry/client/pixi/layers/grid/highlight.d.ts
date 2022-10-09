@@ -24,5 +24,5 @@ declare class GridHighlight extends PIXI.Graphics {
 
   override clear(): this;
 
-  override destroy(...args: Parameters<PIXI.Graphics['destroy']>): void;
+  override destroy(...args: Parameters<PIXI.Graphics["destroy"]>): void;
 }

@@ -1,8 +1,8 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 declare const doc: NoteDocument;
 
-expectType<'Note'>(Note.embeddedName);
+expectType<"Note">(Note.embeddedName);
 
 const note = new Note(doc);
 expectType<JournalEntry>(note.entry);

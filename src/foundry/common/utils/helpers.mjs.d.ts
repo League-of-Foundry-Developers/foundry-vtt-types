@@ -1,3 +1,5 @@
+import type { TypeOfTag } from "typescript/lib/typescript";
+
 /**
  * Benchmark the performance of a function, calling it a requested number of iterations.
  * @param func       - The function to benchmark
@@ -11,6 +13,14 @@ export declare function benchmark<F extends (...args: any[]) => unknown>(
 ): Promise<void>;
 
 /**
+ * A debugging function to test latency or timeouts by forcibly locking the thread for an amount of time.
+ * @param ms - A number of milliseconds to lock
+ * @param debug - (default: `false`)
+ * @returns
+ */
+export function threadLock(ms: number, debug?: boolean): Promise<void>;
+
+/**
  * Wrap a callback in a debounced timeout.
  * Delay execution of the callback function until the function has not been called for delay milliseconds
  * @param callback - A function to execute once the debounced threshold has been passed
@@ -21,6 +31,11 @@ export declare function debounce<T extends (...args: any[]) => unknown>(
   callback: T,
   delay: number
 ): (...args: Parameters<T>) => void;
+
+/**
+ * A utility function to reload the page with a debounce.
+ */
+export const debouncedReload: VoidFunction;
 
 /**
  * Quickly clone a simple piece of data, returning a copy which can be mutated safely.
@@ -47,7 +62,7 @@ interface DeepCloneOptions {
  * @param options  - Additional options which configure the diff operation
  * @returns An object of the data in other which differs from that in original.
  */
-export declare function diffObject(original: object, other: object, { inner }?: DiffObjectOptions): object;
+export declare function diffObject(original: object, other: object, options?: DiffObjectOptions): object;
 
 interface DiffObjectOptions {
   /**
@@ -55,7 +70,21 @@ interface DiffObjectOptions {
    * @defaultValue `false`
    */
   inner?: boolean;
+
+  /**
+   * Apply special logic to deletion keys. They will only be kept if the original object has a
+   * corresponding key that could be deleted.
+   * @defaultValue `false`
+   */
+  deletionKeys?: boolean;
 }
+
+/**
+ * Test if two objects contain the same enumerable keys and values.
+ * @param a - The first object.
+ * @param b - The second object.
+ */
+export function objectsEqual(a: object, b: object): boolean;
 
 /**
  * A cheap data duplication trick which is relatively robust.
@@ -94,7 +123,7 @@ type InnerDuplicated<T> = T extends { toJSON(): infer U }
    ? U extends Array<unknown>
      ? InnerDuplicated<U>
      : U extends object
-       ? InnerDuplicated<Omit<U, 'toJSON'>>
+       ? InnerDuplicated<Omit<U, "toJSON">>
        : InnerDuplicated<U>
    : T extends NonStringifiable
      ? undefined
@@ -117,6 +146,7 @@ export type Duplicated<T> = T extends NonStringifiable ? never : InnerDuplicated
 
 /**
  * Test whether some class is a subclass of a parent.
+ * Returns true if the classes are identical.
  * @param cls    - The class to test
  * @param parent - Some other class which may be a parent
  * @returns Is the class a subclass of the parent?
@@ -153,7 +183,7 @@ export declare function expandObject(obj: object, _d?: number): any;
  * @param options  - Additional options which customize the filtration
  *                   (default: `{}`)
  *
- * @example
+ * @example Filter an object
  * ```typescript
  * const source = {foo: {number: 1, name: "Tim", topping: "olives"}, bar: "baz"};
  * const template = {foo: {number: 0, name: "Mit", style: "bold"}, other: 72};
@@ -165,10 +195,10 @@ export declare function filterObject(source: object, template: object, options?:
 
 interface FilterObjectOptions {
   /**
-   * Whether to keep special tokens like deletion keys
+   * Whether to keep deletion keys
    * @defaultValue `false`
    */
-  keepSpecial?: boolean;
+  deletionKeys?: boolean;
 
   /**
    * Instead of keeping values from the source, instead draw values from the template
@@ -193,16 +223,6 @@ export declare function flattenObject(obj: object, _d?: number): any;
 export declare function getParentClasses(cls: ConstructorOf<any>): Array<ConstructorOf<any>>;
 
 /**
- * A helper function which searches through an object to retrieve a value by a string key.
- * The string key supports the notation a.b.c which would return object[a][b][c]
- * @param object - The object to traverse
- * @param key    - An object property with notation a.b.c
- * @returns The value of the found property
- * @throws {@link Error} Throws an Error if the object is not in fact an object
- */
-export declare function getProperty(object: object, key: string): any;
-
-/**
  * Get the URL route for a certain path which includes a path prefix, if one is set
  * @param path   - The Foundry URL path
  * @param prefix - A path prefix to apply
@@ -219,11 +239,15 @@ export declare function getRoute(
 ): string;
 
 /**
- * Learn the named type of a token - extending the functionality of typeof to recognize some core Object types
- * @param token - Some passed token
+ * Learn the underlying data type of some variable. Supported identifiable types include:
+ * undefined, null, number, string, boolean, function, Array, Set, Map, Promise, Error,
+ * HTMLElement (client side only), Object (catchall for other object types)
+ * @param variable - A provided variable
  * @returns The named type of the token
  */
-export declare function getType(token: unknown): string;
+export function getType(
+  variable: unknown
+): Exclude<TypeOfTag, "object"> | "null" | "Object" | "Array" | "Set" | "Map" | "Promise" | "Error" | "HTMLElement";
 
 /**
  * A helper function which tests whether an object has a property or nested property given a string key.
@@ -235,6 +259,25 @@ export declare function getType(token: unknown): string;
 export declare function hasProperty(object: object, key: string): boolean;
 
 /**
+ * A helper function which searches through an object to retrieve a value by a string key.
+ * The string key supports the notation a.b.c which would return object[a][b][c]
+ * @param object - The object to traverse
+ * @param key    - An object property with notation a.b.c
+ * @returns The value of the found property
+ */
+export declare function getProperty(object: object, key: string): any;
+
+/**
+ * A helper function which searches through an object to assign a value using a string key
+ * This string key supports the notation a.b.c which would target object[a][b][c]
+ * @param object - The object to update
+ * @param key    - The string key
+ * @param value  - The value to be assigned
+ * @returns Whether the value was changed from its previous value
+ */
+export declare function setProperty(object: object, key: string, value: any): boolean;
+
+/**
  * Invert an object by assigning its values as keys and its keys as values.
  * @param obj - The original object to invert
  * @returns The inverted object with keys and values swapped
@@ -244,7 +287,7 @@ export declare function invertObject<T extends Record<string | number | symbol, 
 ): { [Key in keyof T as T[Key]]: Key };
 
 /**
- * Return whether or not a target version (v1) is more advanced than some other reference version (v0).
+ * Return whether a target version (v1) is more advanced than some other reference version (v0).
  * Supports either numeric or string version comparison with version parts separated by periods.
  * @param v1 - The target version
  * @param v0 - The reference version
@@ -253,21 +296,33 @@ export declare function invertObject<T extends Record<string | number | symbol, 
 export declare function isNewerVersion(v1: number | string, v0: number | string): boolean;
 
 /**
- * A simple function to test whether or not an Object is empty
+ * A simple function to test whether an Object is empty
  * @param obj - The object to test
  * @returns Is the object empty?
+ * @deprecated since v10, will be removed in v11 - Use isEmpty instead.
  */
 export declare function isObjectEmpty(obj: object): boolean;
+
+/**
+ * Test whether a value is empty-like; either undefined or a content-less object.
+ * @param value - The value to test
+ * @returns Is the value empty-like?
+ */
+export function isEmpty(value: undefined | null | unknown[] | object | Set<unknown> | Map<unknown, unknown>): boolean;
 
 type OmitByValue<T, ValueType> = { [Key in keyof T as T[Key] extends ValueType ? never : Key]: T[Key] };
 type RemoveNever<T> = OmitByValue<T, never>;
 type PropWithMinus<K> = K extends string ? `-=${K}` : never;
-type DeleteByObjectKeys<T, U> = RemoveNever<{
-  [K in keyof T]: PropWithMinus<K> extends keyof U ? (U[PropWithMinus<K>] extends null ? never : T[K]) : T[K];
-}>;
-type RemoveDeletingObjectKeys<T> = RemoveNever<{
-  [K in keyof T]: K extends string ? (Capitalize<K> extends K ? (T[K] extends null ? never : T[K]) : T[K]) : T[K];
-}>;
+type DeleteByObjectKeys<T, U, M extends MergeObjectOptions> = M["performDeletions"] extends true
+  ? RemoveNever<{
+      [K in keyof T]: PropWithMinus<K> extends keyof U ? (U[PropWithMinus<K>] extends null ? never : T[K]) : T[K];
+    }>
+  : T;
+type RemoveDeletingObjectKeys<T, M extends MergeObjectOptions> = M["performDeletions"] extends true
+  ? RemoveNever<{
+      [K in keyof T]: K extends string ? (Capitalize<K> extends K ? (T[K] extends null ? never : T[K]) : T[K]) : T[K];
+    }>
+  : T;
 
 type MergeObjectProperty<T, U, M extends MergeObjectOptions> = T extends Array<any>
   ? U
@@ -275,7 +330,14 @@ type MergeObjectProperty<T, U, M extends MergeObjectOptions> = T extends Array<a
   ? U extends Record<string, any>
     ? M extends { recursive: false }
       ? U
-      : Result<T, U, Omit<M, 'insertKeys'> & { insertKeys: M['insertValues'] }>
+      : Result<
+          T,
+          U,
+          Omit<M, "insertKeys" | "performDeletions"> & {
+            insertKeys: M["insertValues"];
+            performDeletions: M["performDeletions"] extends true ? true : false;
+          }
+        >
     : U
   : U;
 type UpdateKeys<T, U, M extends MergeObjectOptions> = M extends { overwrite: false }
@@ -286,8 +348,8 @@ type UpdateInsert<T, U, M extends MergeObjectOptions> = M extends { insertKeys: 
   ? UpdateKeys<T, U, M>
   : InsertKeys<UpdateKeys<T, U, M>, U>;
 type Result<T, U, M extends MergeObjectOptions> = UpdateInsert<
-  DeleteByObjectKeys<T, U>,
-  RemoveDeletingObjectKeys<U>,
+  DeleteByObjectKeys<T, U, M>,
+  RemoveDeletingObjectKeys<U, M>,
   M
 >;
 
@@ -309,7 +371,7 @@ type WithWidenedArrayTypes<T> = T extends Array<any>
  *                   (default: `0`)
  * @returns The original source object including updated, inserted, or overwritten records.
  *
- * @example <caption>Control how new keys and values are added</caption>
+ * @example Control how new keys and values are added
  * ```typescript
  * mergeObject({k1: "v1"}, {k2: "v2"}, {insertKeys: false}); // {k1: "v1"}
  * mergeObject({k1: "v1"}, {k2: "v2"}, {insertKeys: true});  // {k1: "v1", k2: "v2"}
@@ -317,19 +379,19 @@ type WithWidenedArrayTypes<T> = T extends Array<any>
  * mergeObject({k1: {i1: "v1"}}, {k1: {i2: "v2"}}, {insertValues: true}); // {k1: {i1: "v1", i2: "v2"}}
  * ```
  *
- * @example <caption>Control how existing data is overwritten</caption>
+ * @example Control how existing data is overwritten
  * ```typescript
  * mergeObject({k1: "v1"}, {k1: "v2"}, {overwrite: true}); // {k1: "v2"}
  * mergeObject({k1: "v1"}, {k1: "v2"}, {overwrite: false}); // {k1: "v1"}
  * ```
  *
- * @example <caption>Control whether merges are performed recursively</caption>
+ * @example Control whether merges are performed recursively
  * ```typescript
  * mergeObject({k1: {i1: "v1"}}, {k1: {i2: "v2"}}, {recursive: false}); // {k1: {i1: "v2"}}
  * mergeObject({k1: {i1: "v1"}}, {k1: {i2: "v2"}}, {recursive: true}); // {k1: {i1: "v1", i2: "v2"}}
  * ```
  *
- * @example <caption>Deleting an existing object key</caption>
+ * @example Deleting an existing object key
  * ```typescript
  * mergeObject({k1: "v1", k2: "v2"}, {"-=k1": null});   // {k2: "v2"}
  * ```
@@ -392,35 +454,43 @@ interface MergeObjectOptions {
    * @defaultValue `false`
    */
   enforceTypes?: boolean | undefined;
+
+  /**
+   * Control whether to perform deletions on the original object if deletion keys are present in the other object.
+   * @defaultValue `false`
+   */
+  performDeletions?: boolean; //TODO: implement this in the mergeObject return type
 }
 
 /**
  * A helper function for merging objects when the target key does not exist in the original
+ * @internal
  */
 declare function _mergeInsert(
   original: object,
   k: string,
   v: unknown,
-  { insertKeys, insertValues }: { insertKeys?: boolean; insertValues?: boolean },
+  options: Pick<MergeObjectOptions, "insertKeys" | "insertValues" | "performDeletions"> | undefined,
   _d: number
 ): void;
 
 /**
  * A helper function for merging objects when the target key exists in the original
+ * @internal
  */
 declare function _mergeUpdate(
   original: object,
   k: string,
   v: unknown,
-  {
-    insertKeys,
-    insertValues,
-    enforceTypes,
-    overwrite,
-    recursive
-  }: { insertKeys?: boolean; insertValues?: boolean; enforceTypes?: boolean; overwrite?: boolean; recursive?: boolean },
+  options: MergeObjectOptions | undefined,
   _d: number
 ): void;
+
+/**
+ * Parse an S3 key to learn the bucket and the key prefix used for the request.
+ * @param key - A fully qualified key name or prefix path.
+ */
+export function parseS3URL(key: string): { bucket: string | null; keyPrefix: string };
 
 /**
  * Generate a random string ID of a given requested length.
@@ -429,16 +499,6 @@ declare function _mergeUpdate(
  * @returns Return a string containing random letters and numbers
  */
 export declare function randomID(length?: number): string;
-
-/**
- * A helper function which searches through an object to assign a value using a string key
- * This string key supports the notation a.b.c which would target object[a][b][c]
- * @param object - The object to update
- * @param key    - The string key
- * @param value  - The value to be assigned
- * @returns Whether the value was changed from its previous value
- */
-export declare function setProperty(object: object, key: string, value: any): boolean;
 
 /**
  * Express a timestamp as a relative string
@@ -454,6 +514,7 @@ export declare function timeSince(timeStamp: Date | string): string;
  * @param g - The green color value
  * @param b - The blue color value
  * @returns The HSV representation
+ * @deprecated since v10, rgbToHsv is deprecated in favor of {@link foundry.utils.Color#hsv}
  */
 export declare function rgbToHsv(r: number, g: number, b: number): [h: number, s: number, v: number];
 
@@ -464,6 +525,7 @@ export declare function rgbToHsv(r: number, g: number, b: number): [h: number, s
  * @param s - The saturation
  * @param v - The value
  * @returns The RGB representation
+ * @deprecated since v10, hsvToRgb is deprecated in favor of {@link foundry.utils.Color.fromHSV}
  */
 export declare function hsvToRgb(h: number, s: number, v: number): [r: number, g: number, b: number];
 
@@ -471,6 +533,7 @@ export declare function hsvToRgb(h: number, s: number, v: number): [r: number, g
  * Converts a color as an [R, G, B] array of normalized floats to a hexadecimal number.
  * @param rgb - Array of numbers where all values are normalized floats from 0.0 to 1.0.
  * @returns The numeric color as hexadecimal
+ * @deprecated since v10, rgbToHex is deprecated in favor of {@link foundry.utils.Color.fromRGB}
  */
 export declare function rgbToHex(rgb: [r: number, g: number, b: number]): number;
 
@@ -478,6 +541,7 @@ export declare function rgbToHex(rgb: [r: number, g: number, b: number]): number
  * Convert a hex color code to an RGB array
  * @param hex - A hex color number
  * @returns An array of [r,g,b] colors normalized on the range of [0,1]
+ * @deprecated since v10, hexToRGB is deprecated in favor of {@link foundry.utils.Color#rgb}
  */
 export declare function hexToRGB(hex: number): [r: number, g: number, b: number];
 
@@ -487,6 +551,7 @@ export declare function hexToRGB(hex: number): [r: number, g: number, b: number]
  * @param alpha - An optional level of transparency
  *                (default: `1.0`)
  * @returns An rgba style string
+ * @deprecated since v10, hexToRGBAString is deprecated in favor of {@link foundry.utils.Color#toRGBA}
  */
 export declare function hexToRGBAString(hex: number, alpha?: number): `rgba(${number}, ${number}, ${number})`;
 
@@ -494,5 +559,6 @@ export declare function hexToRGBAString(hex: number, alpha?: number): `rgba(${nu
  * Convert a string color to a hex integer
  * @param color - The string color
  * @returns The hexadecimal color code
+ * @deprecated since v10, colorStringToHex is deprecated in favor of {@link foundry.utils.Color.from}
  */
 export declare function colorStringToHex(color: string): number | null;

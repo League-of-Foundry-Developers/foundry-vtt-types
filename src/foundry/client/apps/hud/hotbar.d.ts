@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -56,7 +56,7 @@ declare global {
      */
     static override get defaultOptions(): ApplicationOptions;
 
-    override getData(options?: Partial<Options>): Hotbar.Data | Promise<Hotbar.Data>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     /**
      * Get the Array of Macro (or null) values that should be displayed on a numbered page of the bar
@@ -131,13 +131,5 @@ declare global {
      * @param event -
      */
     protected _onToggleBar(event: JQuery.ClickEvent): void;
-  }
-
-  namespace Hotbar {
-    interface Data {
-      page: number;
-      macros: Macro[];
-      barClass: 'collapsed' | '';
-    }
   }
 }

@@ -1,5 +1,5 @@
-import { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import { DocumentModificationOptions } from '../../../common/abstract/document.mjs.js';
+import { ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
+import { DocumentModificationOptions } from "../../../common/abstract/document.mjs.js";
 
 declare global {
   /**
@@ -10,15 +10,15 @@ declare global {
    */
   class CompendiumCollection<T extends CompendiumCollection.Metadata> extends DocumentCollection<
     DocumentClassForCompendiumMetadata<T>,
-    'CompendiumCollection'
+    "CompendiumCollection"
   > {
     /** @param metadata - The compendium metadata, an object provided by game.data */
     constructor(metadata: T);
 
     /** The compendium metadata which defines the compendium content and location */
     metadata: T & {
-      /** @deprecated "The 'entity' field of compendium metadata is deprecated. Please use CompendiumCollection#documentName instead." */
-      get entity(): T['type'];
+      /** @deprecated "The "entity" field of compendium metadata is deprecated. Please use CompendiumCollection#documentName instead." */
+      get entity(): T["type"];
     };
 
     /**  A subsidiary collection which contains the more minimal index of the pack */
@@ -46,7 +46,7 @@ declare global {
     /**
      * The named game setting which contains Compendium configurations.
      */
-    static CONFIG_SETTING: 'compendiumConfiguration';
+    static CONFIG_SETTING: "compendiumConfiguration";
 
     /**
      * The default index fields which should be retrieved for each Compendium document type
@@ -54,31 +54,31 @@ declare global {
      */
     static INDEX_FIELDS: {
       /** @defaultValue `["name", "img", "type"]` */
-      Actor: (keyof foundry.data.ActorData['_source'])[];
+      Actor: (keyof foundry.data.ActorData["_source"])[];
 
       /** @defaultValue `["name", "img"]` */
-      Adventure: (keyof foundry.data.AdventureData['_source'])[];
+      Adventure: (keyof foundry.data.AdventureData["_source"])[];
 
       /** @defaultValue `["name", "img", "type"]` */
-      Item: (keyof foundry.data.ItemData['_source'])[];
+      Item: (keyof foundry.data.ItemData["_source"])[];
 
       /** @defaultValue `["name", "img", "type"]` */
-      Cards: (keyof foundry.data.CardsData['_source'])[];
+      Cards: (keyof foundry.data.CardsData["_source"])[];
 
       /** @defaultValue `["name", "thumb"]` */
-      Scene: (keyof foundry.data.SceneData['_source'])[];
+      Scene: (keyof foundry.data.SceneData["_source"])[];
 
       /** @defaultValue `["name", "img"]` */
-      JournalEntry: (keyof foundry.data.JournalEntryData['_source'])[];
+      JournalEntry: (keyof foundry.data.JournalEntryData["_source"])[];
 
       /** @defaultValue `["name", "img"]` */
-      Macro: (keyof foundry.data.MacroData['_source'])[];
+      Macro: (keyof foundry.data.MacroData["_source"])[];
 
       /** @defaultValue `["name", "img"]` */
-      RollTable: (keyof foundry.data.RollTableData['_source'])[];
+      RollTable: (keyof foundry.data.RollTableData["_source"])[];
 
       /** @defaultValue `["name"]` */
-      Playlist: (keyof foundry.data.PlaylistData['_source'])[];
+      Playlist: (keyof foundry.data.PlaylistData["_source"])[];
     };
 
     /** The canonical Compendium name - comprised of the originating package and the pack name */
@@ -87,7 +87,7 @@ declare global {
     /** Access the compendium configuration data for this pack */
     get config(): CompendiumCollection.Configuration | {};
 
-    get documentName(): this['metadata']['type'];
+    get documentName(): this["metadata"]["type"];
 
     /** Track whether the Compendium Collection is locked for editing */
     get locked(): boolean;
@@ -112,7 +112,7 @@ declare global {
      * Load the Compendium index and cache it as the keys and values of the Collection.
      * @param options - Options which customize how the index is created
      */
-    getIndex(options?: CompendiumCollection.GetIndexOptions<T> | undefined): Promise<this['index']>;
+    getIndex(options?: CompendiumCollection.GetIndexOptions<T> | undefined): Promise<this["index"]>;
 
     /**
      * Get a single Document from this Compendium by ID.
@@ -149,7 +149,7 @@ declare global {
      * @param folderId   - An existing Folder _id to use.
      *                     (default: `null`)
      * @param folderName - A new Folder name to create.
-     *                     (default: `''`)
+     *                     (default: `""`)
      * @param options    - Additional options forwarded to {@link WorldCollection#fromCompendium} and {@link Document.createDocuments}
      *                     (default: `{}`)
      * @returns The imported Documents, now existing within the World
@@ -228,24 +228,24 @@ declare global {
 
     override updateAll(
       transformation:
-        | DeepPartial<DocumentInstanceForCompendiumMetadata<T>['data']['_source']>
+        | DeepPartial<DocumentInstanceForCompendiumMetadata<T>["data"]["_source"]>
         | ((
             doc: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>
-          ) => DeepPartial<DocumentInstanceForCompendiumMetadata<T>['data']['_source']>),
+          ) => DeepPartial<DocumentInstanceForCompendiumMetadata<T>["data"]["_source"]>),
       condition?: ((obj: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>) => boolean) | null,
       options?: DocumentModificationContext
-    ): ReturnType<this['documentClass']['updateDocuments']>;
+    ): ReturnType<this["documentClass"]["updateDocuments"]>;
 
     protected _onCreateDocuments(
       documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
-      result: (DocumentInstanceForCompendiumMetadata<T>['data']['_source'] & { _id: string })[],
+      result: (DocumentInstanceForCompendiumMetadata<T>["data"]["_source"] & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
     protected _onUpdateDocuments(
       documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
-      result: (DeepPartial<DocumentInstanceForCompendiumMetadata<T>['data']['_source']> & { _id: string })[],
+      result: (DeepPartial<DocumentInstanceForCompendiumMetadata<T>["data"]["_source"]> & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -285,7 +285,7 @@ declare global {
 
     interface GetIndexOptions<T extends CompendiumCollection.Metadata> {
       /** An array of fields to return as part of the index */
-      fields?: (keyof DocumentInstanceForCompendiumMetadata<T>['data']['_source'])[];
+      fields?: (keyof DocumentInstanceForCompendiumMetadata<T>["data"]["_source"])[];
     }
   }
 }
@@ -309,7 +309,7 @@ interface ImportAllOptions {
 }
 
 type DocumentClassForCompendiumMetadata<T extends CompendiumCollection.Metadata> = ConfiguredDocumentClassForName<
-  T['type']
+  T["type"]
 >;
 
 type DocumentInstanceForCompendiumMetadata<T extends CompendiumCollection.Metadata> = InstanceType<
@@ -317,5 +317,5 @@ type DocumentInstanceForCompendiumMetadata<T extends CompendiumCollection.Metada
 >;
 
 type IndexTypeForMetadata<T extends CompendiumCollection.Metadata> = foundry.utils.Collection<
-  { _id: string } & Partial<DocumentInstanceForCompendiumMetadata<T>['data']['_source']>
+  { _id: string } & Partial<DocumentInstanceForCompendiumMetadata<T>["data"]["_source"]>
 >;

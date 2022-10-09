@@ -1,5 +1,5 @@
-import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
-import type { ChatMessageDataConstructorData } from '../../../../common/data/data.mjs/chatMessageData';
+import { ConfiguredDocumentClass } from "../../../../../types/helperTypes";
+import type { ChatMessageDataConstructorData } from "../../../../common/data/data.mjs/chatMessageData";
 
 declare global {
   interface ChatLogOptions extends ApplicationOptions {
@@ -83,11 +83,11 @@ declare global {
      */
     get collection(): Messages;
 
-    override getData(options?: Partial<ChatLogOptions>): ChatLog.Data;
+    override getData(options?: Partial<ChatLogOptions>): MaybePromise<object>;
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<ChatLogOptions>): Promise<void>;
 
-    protected override _renderInner(data: ChatLog.Data): Promise<JQuery>;
+    protected override _renderInner(data: object): Promise<JQuery>;
 
     /**
      * Render a batch of additional messages, prepending them to the top of the log
@@ -120,7 +120,7 @@ declare global {
      *          is an exception: Its third value is the target user name (optionally in brackets) and the fourth value is
      *          the message text.
      */
-    static parse<S extends string>(message: S): [ChatLog.Command, RegExpMatchArray] | ['none', [S, '', S]];
+    static parse<S extends string>(message: S): [ChatLog.Command, RegExpMatchArray] | ["none", [S, "", S]];
 
     /**
      * Post a single chat message to the log
@@ -309,28 +309,21 @@ declare global {
 
   namespace ChatLog {
     type Command =
-      | 'roll'
-      | 'gmroll'
-      | 'blindroll'
-      | 'selfroll'
-      | 'publicroll'
-      | 'ic'
-      | 'ooc'
-      | 'emote'
-      | 'whisper'
-      | 'reply'
-      | 'gm'
-      | 'players'
-      | 'macro'
-      | 'invalid'
-      | 'none';
-
-    interface Data {
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>;
-      rollMode: keyof CONFIG.Dice.RollModes;
-      rollModes: typeof CONFIG['Dice']['rollModes'];
-      isStream: boolean;
-    }
+      | "roll"
+      | "gmroll"
+      | "blindroll"
+      | "selfroll"
+      | "publicroll"
+      | "ic"
+      | "ooc"
+      | "emote"
+      | "whisper"
+      | "reply"
+      | "gm"
+      | "players"
+      | "macro"
+      | "invalid"
+      | "none";
 
     interface ScrollBottomOptions {
       /**

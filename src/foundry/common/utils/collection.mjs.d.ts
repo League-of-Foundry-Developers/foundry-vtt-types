@@ -2,7 +2,7 @@ interface MapReplacementMembers<K, V> {
   set(key: K, value: V): this;
 }
 
-type PatchedMap<K, V> = Omit<Map<K, V>, 'forEach' | typeof Symbol.iterator | 'get' | 'set'> &
+type PatchedMap<K, V> = Omit<Map<K, V>, "forEach" | typeof Symbol.iterator | "get" | "set"> &
   MapReplacementMembers<K, V>;
 
 interface PatchedMapConstructor {
@@ -37,40 +37,42 @@ declare class Collection<T> extends Map<string, T> {
    * Find an entry in the Map using an functional condition.
    * @see {@link Array#find}
    *
-   * @param condition - The functional condition to test
+   * @param condition - The functional condition to test. Positional arguments are the value, the index of
+   *                    iteration, and the collection being searched.
    * @returns The value, if found, otherwise undefined
    *
-   * @example
+   * @example Create a new Collection and reference its contents
    * ```typescript
    * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
-   * let a = c.find(entry => entry === "A");
+   * c.get("a") === c.find(entry => entry === "A"); // true
    * ```
    */
-  find<S extends T>(condition: (e: T) => e is S): S | undefined;
-  find(condition: (e: T) => boolean): T | undefined;
+  find<S extends T>(condition: (e: T, index: number, collection: Collection<T>) => e is S): S | undefined;
+  find(condition: (e: T, index: number, collection: Collection<T>) => boolean): T | undefined;
 
   /**
    * Filter the Collection, returning an Array of entries which match a functional condition.
    * @see {@link Array#filter}
    *
-   * @param condition - The functional condition to test
+   * @param condition - The functional condition to test. Positional arguments are the value, the
+   *                    index of iteration, and the collection being filtered.
    * @returns An Array of matched values
    *
-   * @example
+   * @example Filter the Collection for specific entries
    * ```typescript
    * let c = new Collection([["a", "AA"], ["b", "AB"], ["c", "CC"]]);
    * let hasA = c.filters(entry => entry.slice(0) === "A");
    * ```
    */
-  filter<S extends T>(condition: (e: T) => e is S): S[];
-  filter(condition: (e: T) => boolean): T[];
+  filter<S extends T>(condition: (e: T, index: number, collection: Collection<T>) => e is S): S[];
+  filter(condition: (e: T, index: number, collection: Collection<T>) => boolean): T[];
 
   /**
    * Apply a function to each element of the collection
    * @see Array#forEach
-   * @param fn - The function to apply
+   * @param fn - The function to apply to each element
    *
-   * @example
+   * @example Apply a function to each value in the collection
    * ```typescript
    * let c = new Collection([["a", {active: false}], ["b", {active: false}], ["c", {active: false}]]);
    * c.forEach(e => e.active = true);
@@ -84,7 +86,8 @@ declare class Collection<T> extends Map<string, T> {
    * @param strict  - Throw an Error if the requested id does not exist, otherwise
    *                  (default: `false`)
    * @returns The retrieved entry value, if the key exists, otherwise undefined
-   * @example
+   *
+   * @example Get an element from the Collection by key
    * ```typescript
    * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
    * c.get("a"); // "A"
@@ -103,27 +106,37 @@ declare class Collection<T> extends Map<string, T> {
    *                  otherwise return null.
    *                  (default: `false`)
    * @returns The retrieved Entity, if one was found, otherwise undefined
+   *
+   * @example Get an element from the Collection by name (if applicable)
+   * ```typescript
+   * let c = new Collection([["a", "Alfred"], ["b", "Bob"], ["c", "Cynthia"]]);
+   * c.getName("Alfred"); // "Alfred"
+   * c.getName("D"); // undefined
+   * c.getName("D", {strict: true}); // throws Error
+   * ```
    */
   getName(name: string, { strict }: { strict: true }): T;
   getName(name: string, { strict }?: { strict?: false }): T | undefined;
 
   /**
    * Transform each element of the Collection into a new form, returning an Array of transformed values
-   * @param transformer - The transformation function to apply to each entry value
+   * @param transformer - A transformation function applied to each entry value. Positional arguments are the value, the
+   *                      index of iteration, and the collection being mapped.
    * @typeParam M       - The type of the mapped values
    * @returns An Array of transformed values
    */
-  map<M>(transformer: (entity: T) => M): M[];
+  map<M>(transformer: (entity: T, index: number, collection: Collection<T>) => M): M[];
 
   /**
    * Reduce the Collection by applying an evaluator function and accumulating entries
    * @see {@link Array#reduce}
-   * @param evaluator - A function which mutates the accumulator each iteration
+   * @param reducer   - A reducer function applied to each entry value. Positional arguments are the accumulator, the
+   *                    value, the index of iteration, and the collection being reduced.
    * @param initial   - An initial value which accumulates with each iteration
    * @typeParam A     - The type of the accumulator and the return value
    * @returns The accumulated result
    *
-   * @example
+   * @example Reduce a collection to an array of transformed values
    * ```typescript
    * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
    * let letters = c.reduce((s, l) => {
@@ -131,15 +144,16 @@ declare class Collection<T> extends Map<string, T> {
    * }, ""); // "ABC"
    * ```
    */
-  reduce<A>(evaluator: (accumulator: A, entity: T) => A, initial: A): A;
+  reduce<A>(evaluator: (accumulator: A, entity: T, index: number, collection: Collection<T>) => A, initial: A): A;
 
   /**
-   * Test whether a condition is met by some entry in the Collection
+   * Test whether a condition is met by some entry in the Collection.
    * @see Array#some
-   * @param condition - A test condition to apply to each entry
+   * @param condition - The functional condition to test. Positional arguments are the value, the index of iteration,
+   *                    and the collection being tested.
    * @returns Was the test condition passed by at least one entry?
    */
-  some(condition: (e: T) => boolean): boolean;
+  some(condition: (e: T, index: number, collection: Collection<T>) => boolean): boolean;
 
   /**
    * Convert the Collection to a primitive array of its contents.

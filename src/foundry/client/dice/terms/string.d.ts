@@ -5,7 +5,7 @@ declare global {
   class StringTerm extends RollTerm {
     constructor({ term, options }: StringTermConstructorData);
 
-    term: StringTermConstructorData['term'];
+    term: StringTermConstructorData["term"];
 
     /**
      * @defaultValue `["term"]`

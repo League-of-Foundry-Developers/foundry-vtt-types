@@ -50,11 +50,11 @@ declare global {
      * The directions in which a tooltip can extend, relative to its tool-tipped element.
      */
     static TOOLTIP_DIRECTIONS: {
-      UP: 'UP';
-      DOWN: 'DOWN';
-      LEFT: 'LEFT';
-      RIGHT: 'RIGHT';
-      CENTER: 'CENTER';
+      UP: "UP";
+      DOWN: "DOWN";
+      LEFT: "LEFT";
+      RIGHT: "RIGHT";
+      CENTER: "CENTER";
     };
 
     /**
@@ -71,9 +71,9 @@ declare global {
       element: HTMLElement,
       options?: {
         /**
-         * Explicit tooltip text to display. If this is not provided the tooltip text is acquired from
-         * the elements data-tooltip attribute. This text is not automatically localized, any required
-         * localization should be applied to the text input before calling this method.
+         * Explicit tooltip text to display. If this is not provided the tooltip text is
+         * acquired from the elements data-tooltip attribute. This text will be
+         * automatically localized
          */
         text?: string;
         /**
@@ -92,11 +92,17 @@ declare global {
     deactivate(): void;
 
     /**
+     * Clear any pending activation workflow.
+     * @internal
+     */
+    clearPending(): void;
+
+    /**
      * If an explicit tooltip expansion direction was not specified, figure out a valid direction based on the bounds
      * of the target element and the screen.
      * @internal
      */
-    protected _determineDirection(): ValueOf<Pick<typeof TooltipManager.TOOLTIP_DIRECTIONS, 'UP' | 'DOWN'>>;
+    protected _determineDirection(): ValueOf<Pick<typeof TooltipManager.TOOLTIP_DIRECTIONS, "UP" | "DOWN">>;
 
     /**
      * Set tooltip position relative to an HTML element using an explicitly provided data-tooltip-direction.
@@ -123,6 +129,6 @@ declare global {
     /**
      * The directions in which a tooltip can extend, relative to its tool-tipped element.
      */
-    type TOOLTIP_DIRECTIONS = ValueOf<typeof TooltipManager['TOOLTIP_DIRECTIONS']>;
+    type TOOLTIP_DIRECTIONS = ValueOf<typeof TooltipManager["TOOLTIP_DIRECTIONS"]>;
   }
 }

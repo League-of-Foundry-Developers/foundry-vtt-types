@@ -1,12 +1,8 @@
 /**
  * Support Info and Report
  * @typeParam Options - the type of the options object
- * @typeParam Data    - The data structure used to render the handlebars template.
  */
-declare class SupportDetails<
-  Options extends ApplicationOptions = ApplicationOptions,
-  Data extends object = SupportDetails.Data
-> extends Application<Options> {
+declare class SupportDetails<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
   /**
    * @defaultValue
    * ```typescript
@@ -24,7 +20,7 @@ declare class SupportDetails<
   /**
    * Returns the support report data
    */
-  getData(options?: Partial<Options> | undefined): Data | Promise<Data>;
+  getData(options?: Partial<Options> | undefined): MaybePromise<object>;
 
   /**
    * Binds the Support Report copy button
@@ -67,10 +63,4 @@ interface SupportReportData {
   playlists: number;
   packs: number;
   messages: number;
-}
-
-declare namespace SupportDetails {
-  interface Data {
-    report: SupportReportData;
-  }
 }

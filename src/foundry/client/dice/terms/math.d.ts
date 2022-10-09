@@ -8,10 +8,10 @@ declare global {
     /**
      * The named function in the Math environment which should be applied to the term
      */
-    fn: MathTermData['fn'];
+    fn: MathTermData["fn"];
 
     /** An array of string argument terms for the function */
-    terms: NonNullable<MathTermData['terms']>;
+    terms: NonNullable<MathTermData["terms"]>;
 
     /**
      * The cached Roll instances for each function argument

@@ -1,14 +1,14 @@
-import { DocumentMetadata } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import { BaseTableResult } from './baseTableResult';
+import { DocumentMetadata } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import { BaseTableResult } from "./baseTableResult";
 
 type RollTableMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'RollTable';
-    collection: 'tables';
-    label: 'DOCUMENT.RollTable';
-    labelPlural: 'DOCUMENT.RollTables';
+    name: "RollTable";
+    collection: "tables";
+    label: "DOCUMENT.RollTable";
+    labelPlural: "DOCUMENT.RollTables";
     embedded: {
       TableResult: typeof BaseTableResult;
     };
@@ -27,5 +27,5 @@ export declare class BaseRollTable extends Document<foundry.data.RollTableData, 
   /**
    * A reference to the Collection of TableResult instances in this document, indexed by _id.
    */
-  get results(): this['data']['results'];
+  get results(): this["data"]["results"];
 }

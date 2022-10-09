@@ -1,19 +1,15 @@
-import type { DocumentConstructor, DocumentType } from '../../../../types/helperTypes';
+import type { DocumentConstructor, DocumentType } from "../../../../types/helperTypes";
 
 declare global {
   /**
    * Document Sheet Configuration Application
    * @typeParam Options          - The type of the options object
-   * @typeParam Data             - The data structure used to render the handlebars template.
    * @typeParam ConcreteDocument - The type of the Document which is being managed
    */
   class DocumentSheetConfig<
     Options extends FormApplicationOptions = FormApplicationOptions,
-    Data extends object = DocumentSheetConfig.Data<foundry.abstract.Document<any, any>, Options>,
-    ConcreteDocument extends foundry.abstract.Document<any, any> = Data extends DocumentSheetConfig.Data<infer T>
-      ? T
-      : foundry.abstract.Document<any, any>
-  > extends FormApplication<Options, Data, ConcreteDocument> {
+    ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>
+  > extends FormApplication<Options, ConcreteDocument> {
     /**
      * @defaultValue
      * ```typescript
@@ -34,7 +30,7 @@ declare global {
 
     override get title(): string;
 
-    override getData(options?: Partial<Options>): Data | Promise<Data>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     protected override _updateObject(event: Event, formData: DocumentSheetConfig.FormData): Promise<unknown>;
 
@@ -61,7 +57,7 @@ declare global {
     static registerSheet(
       documentClass: DocumentConstructor,
       scope: string,
-      sheetClass: ConstructorOf<FormApplication<FormApplicationOptions, any, any>>,
+      sheetClass: ConstructorOf<FormApplication<FormApplicationOptions, any>>,
       { label, types, makeDefault }?: DocumentSheetConfig.RegisterSheetOptions | undefined
     ): void;
 
@@ -76,7 +72,7 @@ declare global {
       sheetClass,
       types,
       makeDefault
-    }: Omit<DocumentSheetConfig.SheetRegistration, 'action'>): void;
+    }: Omit<DocumentSheetConfig.SheetRegistration, "action">): void;
 
     /**
      * Unregister a sheet class, removing it from the list of available Applications to use for a Document type
@@ -88,7 +84,7 @@ declare global {
     static unregisterSheet(
       documentClass: DocumentConstructor,
       scope: string,
-      sheetClass: ConstructorOf<FormApplication<FormApplicationOptions, any, any>>,
+      sheetClass: ConstructorOf<FormApplication<FormApplicationOptions, any>>,
       { types }?: { types?: string[] }
     ): void;
 
@@ -100,7 +96,7 @@ declare global {
       documentClass,
       id,
       types
-    }: Omit<DocumentSheetConfig.SheetUnregistration, 'action'>): void;
+    }: Omit<DocumentSheetConfig.SheetUnregistration, "action">): void;
 
     /**
      * Update the currently default Sheets using a new core world setting
@@ -116,7 +112,7 @@ declare global {
 
   namespace DocumentSheetConfig {
     type SheetRegistration = {
-      action: 'register';
+      action: "register";
       documentClass: DocumentConstructor;
       id: string;
       label: string;
@@ -126,30 +122,13 @@ declare global {
     };
 
     type SheetUnregistration = {
-      action: 'unregister';
+      action: "unregister";
       documentClass: DocumentConstructor;
       id: string;
       types: string[];
     };
 
     type SheetAssignment = SheetRegistration | SheetUnregistration;
-
-    /**
-     * @typeParam ConcreteDocument - The type of the Document which is being managed
-     * @typeParam Options          - The type of the options object
-     */
-    interface Data<
-      ConcreteDocument extends foundry.abstract.Document<any, any>,
-      Options extends FormApplicationOptions = FormApplicationOptions
-    > {
-      isGM: boolean;
-      object: ConcreteDocument['data']['_source'];
-      options: Options;
-      sheetClass: string;
-      sheetClasses: Record<string, string>;
-      defaultClass: string;
-      blankLabel: string;
-    }
 
     interface FormData {
       defaultClass: string;
@@ -176,9 +155,6 @@ declare global {
    */
   class EntitySheetConfig<
     Options extends FormApplicationOptions = FormApplicationOptions,
-    Data extends object = DocumentSheetConfig.Data<foundry.abstract.Document<any, any>, Options>,
-    ConcreteDocument extends foundry.abstract.Document<any, any> = Data extends DocumentSheetConfig.Data<infer T>
-      ? T
-      : foundry.abstract.Document<any, any>
-  > extends DocumentSheetConfig<Options, Data, ConcreteDocument> {}
+    ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>
+  > extends DocumentSheetConfig<Options, ConcreteDocument> {}
 }

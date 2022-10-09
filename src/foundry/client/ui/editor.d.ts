@@ -1,6 +1,6 @@
-import type { EditorView } from 'prosemirror-view';
-import type { ConfiguredDocumentClassForName } from '../../../types/helperTypes';
-import type { ClientDocumentMixin } from '../data/abstract/client-document';
+import type { EditorView } from "prosemirror-view";
+import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes";
+import type { ClientDocumentMixin } from "../data/abstract/client-document";
 declare global {
   namespace TextEditor {
     export interface GetContentLinkOptions {
@@ -90,7 +90,7 @@ declare global {
      * @returns Whether any inline rolls were replaced and the text nodes need to be updated.
      */
     protected static _enrichInlineRolls(
-      rollData: TextEditor.EnrichOptions['rollData'],
+      rollData: TextEditor.EnrichOptions["rollData"],
       text: Text[],
       options?: Partial<
         TextEditor.EnrichOptions & {
@@ -138,7 +138,7 @@ declare global {
      * @param splitWords - Whether to truncate by splitting on white space (if true) or breaking words.
      *                     (default: `true`)
      * @param suffix     - A suffix string to append to denote that the text was truncated.
-     *                     (default: `'…'`)
+     *                     (default: `"…"`)
      */
     static truncateText(
       text: string,
@@ -228,7 +228,7 @@ declare global {
      * @param doc - The PlaylistSound document to play/stop.
      * @internal
      */
-    protected static _onPlaySound(doc: InstanceType<ConfiguredDocumentClassForName<'PlaylistSound'>>): void;
+    protected static _onPlaySound(doc: InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">>): void;
 
     /**
      * Find all content links belonging to a given {@link PlaylistSound}.
@@ -236,7 +236,7 @@ declare global {
      * @internal
      */
     protected static _getSoundContentLinks(
-      doc: InstanceType<ConfiguredDocumentClassForName<'PlaylistSound'>>
+      doc: InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">>
     ): NodeListOf<Element>;
 
     /**
@@ -293,7 +293,7 @@ declare global {
        * is deprecated and will be removed in a later version.
        * @defaultValue "tinymce"
        */
-      engine?: 'tinymce' | 'prosemirror';
+      engine?: "tinymce" | "prosemirror";
 
       /**
        * @defaultValue `false`
@@ -301,7 +301,7 @@ declare global {
       branding?: boolean;
 
       /**
-       * @defaultValue `['/css/mce.css']`
+       * @defaultValue `["/css/mce.css"]`
        */
       content_css?: string[];
 
@@ -311,7 +311,7 @@ declare global {
       menubar?: boolean;
 
       /**
-       * @defaultValue `'lists image table hr code save link'`
+       * @defaultValue `"lists image table hr code save link"`
        */
       plugins?: string;
 
@@ -330,17 +330,17 @@ declare global {
           items?: [
             {
               /**
-               * @defaultValue `'section'`
+               * @defaultValue `"section"`
                */
               block?: string;
 
               /**
-               * @defaultValue `'secrect'`
+               * @defaultValue `"secrect"`
                */
               classes?: string;
 
               /**
-               * @defaultValue `'Secret'`
+               * @defaultValue `"Secret"`
                */
               title?: string;
 
@@ -352,7 +352,7 @@ declare global {
           ];
 
           /**
-           * @defaultValue `'Custom'`
+           * @defaultValue `"Custom"`
            */
           title?: string;
         }
@@ -371,7 +371,7 @@ declare global {
       target: HTMLElement;
 
       /**
-       * @defaultValue `'styleselect bullist numlist image table hr link removeformat code save'`
+       * @defaultValue `"styleselect bullist numlist image table hr link removeformat code save"`
        */
       toolbar?: string;
     }

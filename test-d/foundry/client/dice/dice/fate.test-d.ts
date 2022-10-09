@@ -1,4 +1,4 @@
-import '../../../index';
+import "../../../index";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

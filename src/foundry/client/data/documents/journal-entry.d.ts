@@ -1,4 +1,4 @@
-import { DocumentDataType, DocumentModificationOptions } from '../../../common/abstract/document.mjs';
+import { DocumentDataType, DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
 declare global {
   /**
@@ -29,12 +29,12 @@ declare global {
      * If the parameter force is passed, the entry will be shown to all players regardless of normal permission.
      *
      * @param mode  - Which JournalEntry mode to display? Default is text.
-     *                (default: `'text'`)
+     *                (default: `"text"`)
      * @param force - Display the entry to all players regardless of normal permissions
      *                (default: `false`)
      * @returns A Promise that resolves back to the shown entry once the request is processed
      */
-    show(mode?: 'text' | 'image', force?: boolean): Promise<this>;
+    show(mode?: "text" | "image", force?: boolean): Promise<this>;
 
     /**
      * If the JournalEntry has a pinned note on the canvas, this method will animate to that note

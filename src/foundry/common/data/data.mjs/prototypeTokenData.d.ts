@@ -1,20 +1,20 @@
-import { FieldReturnType, PropertiesToSource, ToObjectFalseType } from '../../../../types/helperTypes';
-import DocumentData from '../../abstract/data.mjs';
-import { documents } from '../../module.mjs';
-import * as fields from '../fields.mjs';
-import { TokenDataConstructorData, TokenDataProperties, TokenDataSchema } from './tokenData';
+import { FieldReturnType, PropertiesToSource, ToObjectFalseType } from "../../../../types/helperTypes";
+import DocumentData from "../../abstract/data.mjs";
+import { documents } from "../../module.mjs";
+import * as fields from "../fields.mjs";
+import { TokenDataConstructorData, TokenDataProperties, TokenDataSchema } from "./tokenData";
 
 type FieldExclusions =
-  | '_id'
-  | 'actorId'
-  | 'actorData'
-  | 'img'
-  | 'x'
-  | 'y'
-  | 'elevation'
-  | 'effects'
-  | 'overlayEffect'
-  | 'hidden';
+  | "_id"
+  | "actorId"
+  | "actorData"
+  | "img"
+  | "x"
+  | "y"
+  | "elevation"
+  | "effects"
+  | "overlayEffect"
+  | "hidden";
 
 interface PrototypeTokenDataSchema extends Omit<TokenDataSchema, FieldExclusions> {
   randomImg: fields.BooleanField;
@@ -63,12 +63,12 @@ export class PrototypeTokenData extends DocumentData<
 > {
   override _initialize(): void;
 
-  override toObject(source?: true): ReturnType<this['toJSON']> & { actorId: documents.BaseActor['id'] };
+  override toObject(source?: true): ReturnType<this["toJSON"]> & { actorId: documents.BaseActor["id"] };
   toObject(source: false): {
     [Key in keyof PrototypeTokenDataSchema as string extends Key ? never : Key]: Key extends keyof this
       ? ToObjectFalseType<this[Key]>
       : undefined;
-  } & { actorId: documents.BaseActor['id'] };
+  } & { actorId: documents.BaseActor["id"] };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

@@ -1,8 +1,8 @@
-import type { Step } from 'prosemirror-transform';
-import type { EditorView } from 'prosemirror-view';
-import type { EditorState, Plugin } from 'prosemirror-state';
-import type { ClientDocumentMixin } from '../data/abstract/client-document';
-import type { Socket } from 'socket.io-client';
+import type { Step } from "prosemirror-transform";
+import type { EditorView } from "prosemirror-view";
+import type { EditorState, Plugin } from "prosemirror-state";
+import type { ClientDocumentMixin } from "../data/abstract/client-document";
+import type { Socket } from "socket.io-client";
 
 declare global {
   interface ProseMirrorHistory {
@@ -99,9 +99,9 @@ declare global {
 
     /**
      * Handle users joining or leaving collaborative editing.
-     * @param count - The new number of users (including ourselves).
+     * @param users - The IDs of users currently editing (including ourselves).
      */
-    protected _updateUserCount(count: number): void;
+    protected _updateUserDisplay(users: string[]): void;
 
     /**
      * Create a ProseMirror editor instance.
@@ -115,7 +115,7 @@ declare global {
       options?: Partial<ProseMirrorEditor.CreateOptions> &
         (
           | { collaborate?: false }
-          | ({ collaborate: true } & Pick<ProseMirrorEditor.CreateOptions, 'document' | 'fieldName'>)
+          | ({ collaborate: true } & Pick<ProseMirrorEditor.CreateOptions, "document" | "fieldName">)
         )
     ): Promise<ProseMirrorEditor>;
 
@@ -157,10 +157,10 @@ declare global {
 
     /**
      * Handle users joining or leaving collaborative editing.
-     * @param uuid      - The UUID that uniquely identifies the ProseMirror instance.
-     * @param userCount - The new number of users editing (including ourselves).
+     * @param uuid  - The UUID that uniquely identifies the ProseMirror instance.
+     * @param users - The IDs of the users currently editing (including ourselves).
      */
-    protected static _onUsersEditing(uuid: string, userCount: number): void;
+    protected static _onUsersEditing(uuid: string, users: string[]): void;
 
     /**
      * Listen for ProseMirror collaboration events.

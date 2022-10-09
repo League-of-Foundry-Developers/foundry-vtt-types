@@ -1,3 +1,3 @@
-import './coin';
-import './die';
-import './fate';
+import "./coin";
+import "./die";
+import "./fate";

@@ -1,8 +1,8 @@
-import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from '../../../../types/helperTypes';
-import { DocumentData } from '../../abstract/module.mjs';
-import { BaseAmbientLight } from '../../documents.mjs';
-import * as fields from '../fields.mjs';
-import type { LightData, LightDataConstructorData } from './lightData';
+import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes";
+import { DocumentData } from "../../abstract/module.mjs";
+import { BaseAmbientLight } from "../../documents.mjs";
+import * as fields from "../fields.mjs";
+import type { LightData, LightDataConstructorData } from "./lightData";
 
 interface AmbientLightDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -72,7 +72,7 @@ interface AmbientLightDataProperties {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags: ConfiguredFlags<'AmbientLight'>;
+  flags: ConfiguredFlags<"AmbientLight">;
 }
 
 interface AmbientLightDataConstructorData {
@@ -127,7 +127,7 @@ interface AmbientLightDataConstructorData {
    * An object of optional key/value flags
    * @defaultValue `{}`
    */
-  flags?: ConfiguredFlags<'AmbientLight'> | null | undefined;
+  flags?: ConfiguredFlags<"AmbientLight"> | null | undefined;
 }
 
 type AmbientLightDataSource = PropertiesToSource<AmbientLightDataProperties>;

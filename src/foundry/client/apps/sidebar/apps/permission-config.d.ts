@@ -1,7 +1,7 @@
 /**
  * An application for configuring the permissions which are available to each User role.
  */
-declare class PermissionConfig extends FormApplication<FormApplicationOptions, PermissionConfig.Data> {
+declare class PermissionConfig extends FormApplication<FormApplicationOptions, undefined> {
   /**
    * @defaultValue
    * ```typescript
@@ -16,9 +16,9 @@ declare class PermissionConfig extends FormApplication<FormApplicationOptions, P
    * })
    * ```
    */
-  static override get defaultOptions(): typeof FormApplication['defaultOptions'];
+  static override get defaultOptions(): typeof FormApplication["defaultOptions"];
 
-  override getData(options?: Partial<FormApplicationOptions>): PermissionConfig.Data;
+  override getData(options?: Partial<FormApplicationOptions>): MaybePromise<object>;
 
   /**
    * Prepare the permissions object used to render the configuration template
@@ -36,17 +36,12 @@ declare class PermissionConfig extends FormApplication<FormApplicationOptions, P
   protected override _onSubmit(
     event: Event,
     options?: FormApplication.OnSubmitOptions
-  ): ReturnType<FormApplication['_onSubmit']>;
+  ): ReturnType<FormApplication["_onSubmit"]>;
 
   protected override _updateObject(event: Event, formData: PermissionConfig.FormData): Promise<unknown>;
 }
 
 declare namespace PermissionConfig {
-  interface Data {
-    roles: { [Key in Exclude<keyof typeof foundry.CONST['USER_ROLES'], 'NONE'>]: `USER.Role${Titlecase<Key>}` };
-    permissions: ReturnType<PermissionConfig['_getPermissions']>;
-  }
-
   type FormData = Record<string, boolean>;
 
   interface Permission extends foundry.CONST.UserPermission {

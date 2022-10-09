@@ -1,6 +1,6 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
-expectType<'Scene'>(Scenes.documentName);
+expectType<"Scene">(Scenes.documentName);
 
 const scenes = new Scenes();
 expectType<StoredDocument<Scene> | undefined>(scenes.active);

@@ -230,11 +230,11 @@ declare class Sound {
 declare namespace Sound {
   type Callback = (sound: Sound) => void;
 
-  type EventName = 'end' | 'pause' | 'start' | 'stop' | 'load';
+  type EventName = "end" | "pause" | "start" | "stop" | "load";
 
   type EventCallbacks = Record<EventName, Partial<Record<number, Callback>>>;
 
-  type FadeType = 'linear' | 'exponential';
+  type FadeType = "linear" | "exponential";
 
   interface FadeOptions {
     /**
@@ -249,8 +249,8 @@ declare namespace Sound {
     from?: number;
 
     /**
-     * The type of fade easing, 'linear' or 'exponential'
-     * @defaultValue `'linear'`
+     * The type of fade easing, "linear" or "exponential"
+     * @defaultValue `"linear"`
      */
     type?: FadeType;
   }

@@ -10,7 +10,7 @@ declare class NoteDocument extends CanvasDocumentMixin(foundry.documents.BaseNot
   /**
    * The associated JournalEntry which is referenced by this Note
    */
-  get entry(): ReturnType<Journal['get']>;
+  get entry(): ReturnType<Journal["get"]>;
 
   /**
    * The text label used to annotate this Note

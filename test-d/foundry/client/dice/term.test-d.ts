@@ -1,5 +1,5 @@
-import { expectType } from 'tsd';
-import '../../index';
+import { expectType } from "tsd";
+import "../../index";
 
 class CustomRollTerm extends RollTerm {
   someProperty = 42;

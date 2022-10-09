@@ -19,7 +19,7 @@ declare class FormDataExtended extends FormData {
    */
   constructor(
     form: HTMLFormElement,
-    { editors, dtypes }?: { editors?: FormDataExtended['editors']; dtypes?: FormDataExtended['dtypes'] }
+    { editors, dtypes }?: { editors?: FormDataExtended["editors"]; dtypes?: FormDataExtended["dtypes"] }
   );
 
   /**
@@ -49,5 +49,5 @@ declare class FormDataExtended extends FormData {
    * Export the FormData as an object
    * @deprecated since v10, use `FormDataExtended#object` instead.
    */
-  toObject(): FormDataExtended['object'];
+  toObject(): FormDataExtended["object"];
 }

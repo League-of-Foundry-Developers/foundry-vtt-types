@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 expectType<foundry.documents.BaseFogExploration>(new foundry.documents.BaseFogExploration());
 expectType<foundry.documents.BaseFogExploration>(new foundry.documents.BaseFogExploration({}));

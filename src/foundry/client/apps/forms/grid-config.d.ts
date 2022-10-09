@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import type { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -7,12 +7,11 @@ declare global {
    */
   class GridConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
     Options,
-    GridConfig.Data,
     InstanceType<ConfiguredDocumentClass<typeof Scene>>
   > {
     constructor(
       scene: InstanceType<ConfiguredDocumentClass<typeof Scene>>,
-      sheet: GridConfig['sheet'],
+      sheet: GridConfig["sheet"],
       options?: Partial<Options>
     );
 
@@ -56,15 +55,15 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): typeof FormApplication['defaultOptions'];
+    static override get defaultOptions(): typeof FormApplication["defaultOptions"];
 
-    override getData(options?: Partial<Options>): GridConfig.Data;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
     override activateListeners(html: JQuery): void;
 
-    override close(options?: FormApplication.CloseOptions): ReturnType<FormApplication['close']>;
+    override close(options?: FormApplication.CloseOptions): ReturnType<FormApplication["close"]>;
 
     /**
      * Handle keyboard events.
@@ -116,7 +115,7 @@ declare global {
     }?: {
       deltaX?: number;
       deltaY?: number;
-    }): ReturnType<GridConfig['_refresh']>;
+    }): ReturnType<GridConfig["_refresh"]>;
 
     /**
      * Temporarily refresh the display of the BackgroundLayer and GridLayer for the new pending dimensions
@@ -134,12 +133,6 @@ declare global {
   }
 
   namespace GridConfig {
-    interface Data {
-      gridTypes: ReturnType<typeof SceneConfig['_getGridTypes']>;
-      scale: number;
-      scene: foundry.data.SceneData;
-    }
-
     type FormData = {
       gridType: foundry.CONST.GRID_TYPES;
       grid: number | null;

@@ -1,11 +1,11 @@
-import type * as data from '../../../../../src/foundry/common/data/data.mjs';
+import type * as data from "../../../../../src/foundry/common/data/data.mjs";
 
-import { expectAssignable, expectType } from 'tsd';
+import { expectAssignable, expectType } from "tsd";
 
 const doc = new AmbientLightDocument();
 
 // Test the inheritance
-expectType<'AmbientLight'>(doc.documentName); // Document
+expectType<"AmbientLight">(doc.documentName); // Document
 expectType<string>(doc.uuid); // clientDocumentMixin
 // TODO: change to <InstanceType<ObjectClass<AmbientLightDocument>> | null>  once the circular reference problem has been solved
 expectType<PlaceableObject | null>(doc.object); // canvasDocumentMixin

@@ -1,18 +1,18 @@
-import * as data from '../data/data.mjs';
-import { Document } from '../abstract/module.mjs';
-import { DocumentMetadata } from '../abstract/document.mjs';
-import { BaseActor } from './baseActor';
-import { BaseActiveEffect } from './baseActiveEffect';
-import { BaseUser } from './baseUser';
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
+import * as data from "../data/data.mjs";
+import { Document } from "../abstract/module.mjs";
+import { DocumentMetadata } from "../abstract/document.mjs";
+import { BaseActor } from "./baseActor";
+import { BaseActiveEffect } from "./baseActiveEffect";
+import { BaseUser } from "./baseUser";
+import { ConfiguredDocumentClass } from "../../../types/helperTypes";
 
 type ItemMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'Item';
-    collection: 'items';
-    label: 'DOCUMENT.Item';
-    labelPlural: 'DOCUMENT.Items';
+    name: "Item";
+    collection: "items";
+    label: "DOCUMENT.Item";
+    labelPlural: "DOCUMENT.Items";
     embedded: {
       ActiveEffect: typeof BaseActiveEffect;
     };
@@ -20,7 +20,7 @@ type ItemMetadata = Merge<
     hasSystemData: true;
     types: string[];
     permissions: {
-      create: 'ITEM_CREATE';
+      create: "ITEM_CREATE";
     };
   }
 >;
@@ -40,14 +40,14 @@ export declare class BaseItem extends Document<
   /**
    * A reference to the Collection of ActiveEffect instances in the Item document, indexed by _id.
    */
-  get effects(): this['data']['effects'];
+  get effects(): this["data"]["effects"];
 
   /**
    * The sub-type of Item.
    */
-  get type(): this['data']['type'];
+  get type(): this["data"]["type"];
 
-  override canUserModify(user: BaseUser, action: 'create' | 'update' | 'delete', data?: object): boolean;
+  override canUserModify(user: BaseUser, action: "create" | "update" | "delete", data?: object): boolean;
 
   override testUserPermission(
     user: BaseUser,

@@ -1,4 +1,4 @@
-import type { ConfiguredObjectClassForName } from '../../../../types/helperTypes';
+import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes";
 
 declare global {
   interface SoundSourceData extends PointSource.Data {
@@ -17,9 +17,9 @@ declare global {
    */
   class SoundSource extends PointSource {
     /** @param object - The AmbientSound object that generates this sound source */
-    constructor(object: InstanceType<ConfiguredObjectClassForName<'AmbientSound'>>);
+    constructor(object: InstanceType<ConfiguredObjectClassForName<"AmbientSound">>);
 
-    static override sourceType: 'sound';
+    static override sourceType: "sound";
 
     /**
      * The object of data which configures how the source is rendered

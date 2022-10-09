@@ -3,6 +3,6 @@
  * This Collection is accessible within the Game object as game.cards.
  * @see {@link Cards} The Cards document
  */
-declare class CardStacks extends WorldCollection<typeof foundry.documents.BaseCards, 'Cards'> {
-  static override documentName: 'Cards';
+declare class CardStacks extends WorldCollection<typeof foundry.documents.BaseCards, "Cards"> {
+  static override documentName: "Cards";
 }

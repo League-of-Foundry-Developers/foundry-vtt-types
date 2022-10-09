@@ -1,1 +1,1 @@
-import './simplepeer';
+import "./simplepeer";

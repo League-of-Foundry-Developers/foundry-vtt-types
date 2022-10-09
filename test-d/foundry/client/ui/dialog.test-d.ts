@@ -1,9 +1,9 @@
-import { expectType } from 'tsd';
-import '../../../index';
+import { expectType } from "tsd";
+import "../../../index";
 
-const title = 'title';
-const content = 'content';
-const label = 'label';
+const title = "title";
+const content = "content";
+const label = "label";
 
 expectType<Promise<true | false | null>>(
   Dialog.confirm({
@@ -67,7 +67,7 @@ expectType<Promise<string | number | null>>(
     content: content,
     yes: (html) => {
       expectType<JQuery>(html);
-      return 'foo';
+      return "foo";
     },
     no: (html) => {
       expectType<JQuery>(html);
@@ -89,7 +89,7 @@ expectType<Promise<string | number | null>>(
     },
     no: (html) => {
       expectType<JQuery>(html);
-      return 'foo';
+      return "foo";
     },
     render: (html) => {
       expectType<JQuery>(html);
@@ -103,11 +103,11 @@ expectType<Promise<string | null>>(
     content: content,
     yes: (html) => {
       expectType<JQuery>(html);
-      return 'foo';
+      return "foo";
     },
     no: (html) => {
       expectType<JQuery>(html);
-      return 'bar';
+      return "bar";
     },
     render: (html) => {
       expectType<JQuery>(html);
@@ -172,7 +172,7 @@ expectType<Promise<string | number | null>>(
     content: content,
     yes: (html) => {
       expectType<JQuery>(html);
-      return 'foo';
+      return "foo";
     },
     no: (html) => {
       expectType<JQuery>(html);
@@ -195,7 +195,7 @@ expectType<Promise<string | number | null>>(
     },
     no: (html) => {
       expectType<JQuery>(html);
-      return 'foo';
+      return "foo";
     },
     render: (html) => {
       expectType<JQuery>(html);
@@ -210,11 +210,11 @@ expectType<Promise<string | null>>(
     content: content,
     yes: (html) => {
       expectType<JQuery>(html);
-      return 'foo';
+      return "foo";
     },
     no: (html) => {
       expectType<JQuery>(html);
-      return 'bar';
+      return "bar";
     },
     render: (html) => {
       expectType<JQuery>(html);
@@ -285,7 +285,7 @@ expectType<Promise<string | number | null>>(
     content: content,
     yes: (html) => {
       expectType<JQuery | HTMLElement>(html);
-      return 'foo';
+      return "foo";
     },
     no: (html) => {
       expectType<JQuery | HTMLElement>(html);
@@ -308,7 +308,7 @@ expectType<Promise<string | number | null>>(
     },
     no: (html) => {
       expectType<JQuery | HTMLElement>(html);
-      return 'foo';
+      return "foo";
     },
     render: (html) => {
       expectType<JQuery | HTMLElement>(html);
@@ -323,11 +323,11 @@ expectType<Promise<string | null>>(
     content: content,
     yes: (html) => {
       expectType<JQuery | HTMLElement>(html);
-      return 'foo';
+      return "foo";
     },
     no: (html) => {
       expectType<JQuery | HTMLElement>(html);
-      return 'bar';
+      return "bar";
     },
     render: (html) => {
       expectType<JQuery | HTMLElement>(html);
@@ -426,7 +426,7 @@ expectType<Promise<string>>(
     label: label,
     callback: (html) => {
       expectType<JQuery>(html);
-      return 'string';
+      return "string";
     },
     render: (html) => {
       expectType<JQuery>(html);
@@ -458,7 +458,7 @@ expectType<Promise<string>>(
     label: label,
     callback: (html) => {
       expectType<JQuery | HTMLElement>(html);
-      return 'string';
+      return "string";
     },
     render: (html) => {
       expectType<JQuery | HTMLElement>(html);
@@ -467,8 +467,8 @@ expectType<Promise<string>>(
   })
 );
 
-// everything without 'rejectClose' is tested above
-// now we need to test an explicitly given 'rejectClose'
+// everything without "rejectClose" is tested above
+// now we need to test an explicitly given "rejectClose"
 
 expectType<Promise<string | null>>(
   Dialog.prompt({
@@ -477,7 +477,7 @@ expectType<Promise<string | null>>(
     label: label,
     callback: (html) => {
       expectType<JQuery>(html);
-      return 'string';
+      return "string";
     },
     rejectClose: false
   })
@@ -489,7 +489,7 @@ expectType<Promise<string | null>>(
     label: label,
     callback: (html) => {
       expectType<JQuery>(html);
-      return 'string';
+      return "string";
     },
     options: { jQuery: true },
     rejectClose: false
@@ -502,7 +502,7 @@ expectType<Promise<string | null>>(
     label: label,
     callback: (html) => {
       expectType<HTMLElement>(html);
-      return 'string';
+      return "string";
     },
     options: { jQuery: false },
     rejectClose: false
@@ -515,7 +515,7 @@ expectType<Promise<string | null>>(
     label: label,
     callback: (html) => {
       expectType<JQuery | HTMLElement>(html);
-      return 'string';
+      return "string";
     },
     options: optionsWithJQueryUnknown,
     rejectClose: false
@@ -528,7 +528,7 @@ expectType<Promise<string>>(
     label: label,
     callback: (html) => {
       expectType<JQuery>(html);
-      return 'string';
+      return "string";
     },
     rejectClose: true
   })
@@ -540,7 +540,7 @@ expectType<Promise<string>>(
     label: label,
     callback: (html) => {
       expectType<JQuery>(html);
-      return 'string';
+      return "string";
     },
     options: { jQuery: true },
     rejectClose: true
@@ -553,7 +553,7 @@ expectType<Promise<string>>(
     label: label,
     callback: (html) => {
       expectType<HTMLElement>(html);
-      return 'string';
+      return "string";
     },
     options: { jQuery: false },
     rejectClose: true
@@ -566,7 +566,7 @@ expectType<Promise<string>>(
     label: label,
     callback: (html) => {
       expectType<JQuery | HTMLElement>(html);
-      return 'string';
+      return "string";
     },
     options: optionsWithJQueryUnknown,
     rejectClose: true
@@ -579,7 +579,7 @@ expectType<Promise<string>>(
     content: content,
     label: label,
     callback: () => {
-      return 'string';
+      return "string";
     },
     rejectClose: true
   })
@@ -590,7 +590,7 @@ expectType<Promise<string | null>>(
     content: content,
     label: label,
     callback: () => {
-      return 'string';
+      return "string";
     },
     rejectClose: false
   })
@@ -601,7 +601,7 @@ expectType<Promise<string>>(
     content: content,
     label: label,
     callback: () => {
-      return 'string';
+      return "string";
     },
     rejectClose: true
   })
@@ -612,7 +612,7 @@ expectType<Promise<string | null>>(
     content: content,
     label: label,
     callback: () => {
-      return 'string';
+      return "string";
     },
     rejectClose: false
   })
@@ -623,7 +623,7 @@ expectType<Promise<string>>(
     content: content,
     label: label,
     callback: () => {
-      return 'string';
+      return "string";
     },
     rejectClose: true
   })

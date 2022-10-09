@@ -2,12 +2,8 @@
  * Game Invitation Links Reference
  *
  * @typeParam Options - the type of the options object
- * @typeParam Data    - The data structure used to render the handlebars template.
  */
-declare class InvitationLinks<
-  Options extends ApplicationOptions = ApplicationOptions,
-  Data extends object = InvitationLinks.Data
-> extends Application<Options> {
+declare class InvitationLinks<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
   /**
    * @defaultValue
    * ```typescript
@@ -21,17 +17,7 @@ declare class InvitationLinks<
    */
   static override get defaultOptions(): ApplicationOptions;
 
-  override getData(options?: Partial<Options> | undefined): Promise<Data>;
+  override getData(options?: Partial<Options> | undefined): MaybePromise<object>;
 
   override activateListeners(html: JQuery): void;
-}
-
-declare namespace InvitationLinks {
-  type Adddresses = Game.Data['addresses'];
-  interface Data extends Adddresses {
-    remoteClass?: string;
-    remoteTitle?: string;
-    failedCheck?: boolean;
-    canConnect?: boolean;
-  }
 }

@@ -1,7 +1,7 @@
-import { DOCUMENT_PERMISSION_LEVELS } from '../constants.mjs';
-import { hasImageExtension, isColorString, isJSON } from './validators.mjs';
-import { Document } from '../abstract/module.mjs';
-import { FieldReturnType } from '../../../types/helperTypes';
+import { DOCUMENT_PERMISSION_LEVELS } from "../constants.mjs";
+import { hasImageExtension, isColorString, isJSON } from "./validators.mjs";
+import { Document } from "../abstract/module.mjs";
+import { FieldReturnType } from "../../../types/helperTypes";
 
 /**
  * A required boolean field which may be used in a Document.
@@ -304,7 +304,7 @@ interface BlankString extends DocumentField<string> {
   required: true;
   nullable: false;
   clean: (v: unknown) => string;
-  default: '';
+  default: "";
 }
 
 /**
@@ -442,7 +442,7 @@ interface ForeignDocumentField<T extends ForeignDocumentFieldOptions> extends Do
     : null;
   clean: (d: unknown) => string | null;
   validate: typeof _validateId;
-  validationError: `{name} {field} "{value}" is not a valid ${T['type']['documentName']} id`;
+  validationError: `{name} {field} "{value}" is not a valid ${T["type"]["documentName"]} id`;
 }
 
 interface EmbeddedCollectionFieldOptions {
@@ -496,7 +496,7 @@ interface EmbeddedCollectionField<
  * @param document - The Document class definition
  */
 export function systemDataField<
-  DocumentSpecifier extends { readonly documentName: keyof Game.SystemData<any>['model'] }
+  DocumentSpecifier extends { readonly documentName: keyof Game.SystemData<any>["model"] }
 >(document: DocumentSpecifier): SystemDataField;
 /**
  * Default config:

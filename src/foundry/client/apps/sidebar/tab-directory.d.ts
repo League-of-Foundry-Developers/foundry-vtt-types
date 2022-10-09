@@ -1,5 +1,5 @@
-import { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-import { DropData } from '../../data/abstract/client-document';
+import { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
+import { DropData } from "../../data/abstract/client-document";
 
 declare global {
   /**
@@ -25,7 +25,7 @@ declare global {
 
     /**
      * A reference to the named Document type that this Sidebar Directory instance displays
-     * @defaultValue `'Document'`
+     * @defaultValue `"Document"`
      */
     static documentName: string;
 
@@ -65,7 +65,7 @@ declare global {
      * The WorldCollection instance which this Sidebar Directory displays.
      */
     static get collection(): WorldCollection<
-      ConfiguredDocumentClassForName<foundry.CONST.DOCUMENT_TYPES | 'FogExploration'>,
+      ConfiguredDocumentClassForName<foundry.CONST.DOCUMENT_TYPES | "FogExploration">,
       string
     >;
 
@@ -74,7 +74,7 @@ declare global {
      */
     initialize(): void;
 
-    tree: SidebarDirectory.Tree<this['documents'][number]>;
+    tree: SidebarDirectory.Tree<this["documents"][number]>;
 
     /**
      * Given an entity type and a list of entities, set up the folder tree for that entity
@@ -84,9 +84,9 @@ declare global {
      */
     static setupFolders<T extends SidebarDirectory<any, any>>(
       this: ConstructorOf<T>,
-      folders: T['folders'],
-      entities: T['documents']
-    ): SidebarDirectory.Tree<T['documents'][number]>;
+      folders: T["folders"],
+      entities: T["documents"]
+    ): SidebarDirectory.Tree<T["documents"][number]>;
 
     /**
      * Populate a single folder with child folders and content
@@ -95,21 +95,19 @@ declare global {
      */
     protected static _populate<T extends SidebarDirectory<any, any>>(
       this: ConstructorOf<T>,
-      folder: T['folders'][number],
-      folders: T['folders'],
-      entities: T['documents'],
+      folder: T["folders"][number],
+      folders: T["folders"],
+      entities: T["documents"],
       {
         allowChildren
       }?: {
         allowChildren: boolean;
       }
-    ): [T['folders'], T['documents']];
+    ): [T["folders"], T["documents"]];
 
     override render(force?: boolean, context?: SidebarDirectory.RenderContext<Options>): this | void;
 
-    override getData(
-      options?: Partial<Options>
-    ): SidebarDirectory.Data<this['tree']> | Promise<SidebarDirectory.Data<this['tree']>>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     protected override _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
@@ -204,17 +202,10 @@ declare global {
     /**
      * @deprecated since 0.8.0
      */
-    get entities(): this['documents'];
+    get entities(): this["documents"];
   }
 
   namespace SidebarDirectory {
-    interface Data<ConcreteTree extends Tree<foundry.abstract.Document<any, any>>> {
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>;
-      tree: ConcreteTree;
-      canCreate: boolean;
-      sidebarIcon: string;
-    }
-
     interface Options extends ApplicationOptions {
       renderUpdateKeys: string[];
       contextMenuSelector: string;

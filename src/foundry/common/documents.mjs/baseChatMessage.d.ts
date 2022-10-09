@@ -1,16 +1,16 @@
-import { DocumentMetadata } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import { BaseUser } from './baseUser';
-import * as data from '../data/data.mjs';
-import type { ChatMessageDataConstructorData } from '../data/data.mjs/chatMessageData';
+import { DocumentMetadata } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import { BaseUser } from "./baseUser";
+import * as data from "../data/data.mjs";
+import type { ChatMessageDataConstructorData } from "../data/data.mjs/chatMessageData";
 
 type ChatMessageMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'ChatMessage';
-    collection: 'messages';
-    label: 'DOCUMENT.ChatMessage';
-    labelPlural: 'DOCUMENT.ChatMessages';
+    name: "ChatMessage";
+    collection: "messages";
+    label: "DOCUMENT.ChatMessage";
+    labelPlural: "DOCUMENT.ChatMessages";
     isPrimary: true;
     permissions: {
       create: (user: BaseUser, doc: BaseChatMessage) => boolean;

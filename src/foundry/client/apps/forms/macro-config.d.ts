@@ -1,16 +1,15 @@
-import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+import type { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   /**
    * A Macro configuration sheet
    *
    * @typeParam Options - the type of the options object
-   * @typeParam Data    - The data structure used to render the handlebars template.
    */
-  class MacroConfig<
-    Options extends DocumentSheetOptions = MacroConfig.Options,
-    Data extends object = MacroConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Macro>>> {
+  class MacroConfig<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<
+    Options,
+    InstanceType<ConfiguredDocumentClass<typeof Macro>>
+  > {
     /**
      * @defaultValue
      * ```typescript
@@ -23,11 +22,11 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): MacroConfig.Options;
+    static override get defaultOptions(): DocumentSheetOptions;
 
     override get id(): string;
 
-    override getData(options?: Partial<Options>): Data;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     override activateListeners(html: JQuery): void;
 
@@ -37,7 +36,7 @@ declare global {
      * Handle changing the actor profile image by opening a FilePicker
      * @internal
      */
-    protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker['browse']>;
+    protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker["browse"]>;
 
     /**
      * Save and execute the macro using the button on the configuration sheet
@@ -50,17 +49,6 @@ declare global {
   }
 
   namespace MacroConfig {
-    type Options = DocumentSheetOptions;
-
-    /**
-     * @typeParam Options - the type of the options object
-     */
-    interface Data<Options extends DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Macro>>, Options> {
-      macroTypes: Array<ValueOf<typeof CONST.MACRO_TYPES>>;
-      macroScopes: typeof foundry.CONST['MACRO_SCOPES'];
-    }
-
     type FormData = {
       command: string;
       img: string;

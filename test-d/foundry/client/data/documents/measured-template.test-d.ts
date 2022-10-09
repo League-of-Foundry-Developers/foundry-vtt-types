@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import { expectType } from "tsd";
 
 const doc = new MeasuredTemplateDocument();
 

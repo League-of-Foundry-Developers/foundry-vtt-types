@@ -1,23 +1,23 @@
-import { expectError, expectType } from 'tsd';
+import { expectError, expectType } from "tsd";
 
-import type { CardFaceDataSource } from '../../../../src/foundry/common/data/data.mjs/cardFaceData';
+import type { CardFaceDataSource } from "../../../../src/foundry/common/data/data.mjs/cardFaceData";
 
 const baseCard = new foundry.documents.BaseCard();
 expectType<CardFaceDataSource>(baseCard.data._source.faces[0]);
 
 interface OldCardDataSourceData {
-  condition: 'grubby';
+  condition: "grubby";
 }
 
 interface OldCardFlags {
-  'my-module': {
+  "my-module": {
     someProp: boolean;
     marked: boolean;
   };
 }
 
 interface OldCardDataSource {
-  type: 'old';
+  type: "old";
   data: OldCardDataSourceData;
   flags: OldCardFlags;
 }
@@ -27,14 +27,14 @@ interface UnoCardDataSourceData {
 }
 
 interface UnoCardFlags {
-  'my-module': {
+  "my-module": {
     someProp: boolean;
     folded: boolean;
   };
 }
 
 interface UnoCardDataSource {
-  type: 'uno';
+  type: "uno";
   data: UnoCardDataSourceData;
   flags: UnoCardFlags;
 }
@@ -44,7 +44,7 @@ interface OldCardDataPropertiesData extends OldCardDataSourceData {
 }
 
 interface OldCardDataProperties {
-  type: 'old';
+  type: "old";
   data: OldCardDataPropertiesData;
   flags: OldCardFlags;
 }
@@ -54,7 +54,7 @@ interface UnoCardDataPropertiesData extends UnoCardDataSourceData {
 }
 
 interface UnoCardDataProperties {
-  type: 'uno';
+  type: "uno";
   data: UnoCardDataPropertiesData;
   flags: UnoCardFlags;
 }
@@ -72,19 +72,19 @@ declare global {
   }
 }
 
-expectType<'old' | 'uno'>(baseCard.data.type);
+expectType<"old" | "uno">(baseCard.data.type);
 expectType<Cards | null>(baseCard.parent);
 
-if (baseCard.data._source.type === 'old') {
-  expectType<'grubby'>(baseCard.data._source.data.condition);
+if (baseCard.data._source.type === "old") {
+  expectType<"grubby">(baseCard.data._source.data.condition);
   expectError(baseCard.data._source.data.age);
 } else {
   expectType<boolean>(baseCard.data._source.data.special);
   expectError(baseCard.data._source.data.color);
 }
 
-if (baseCard.data.type === 'old') {
-  expectType<'grubby'>(baseCard.data.data.condition);
+if (baseCard.data.type === "old") {
+  expectType<"grubby">(baseCard.data.data.condition);
   expectType<number>(baseCard.data.data.age);
 } else {
   expectType<boolean>(baseCard.data.data.special);
@@ -94,14 +94,14 @@ if (baseCard.data.type === 'old') {
 // Flags for Actor, Items, Card, and Cards documents can be configured via the SourceConfig. This is tested here.
 // For configuring flags via FlagConfig please take a look into baseItem.test-d.ts.
 // shared flags are available
-expectType<boolean>(baseCard.getFlag('my-module', 'someProp'));
+expectType<boolean>(baseCard.getFlag("my-module", "someProp"));
 // non shared flags are not available
-expectType<never>(baseCard.getFlag('my-module', 'marked'));
-expectType<never>(baseCard.getFlag('my-module', 'folded'));
+expectType<never>(baseCard.getFlag("my-module", "marked"));
+expectType<never>(baseCard.getFlag("my-module", "folded"));
 // non shared flags are also not available if the type is known
-if (baseCard.data._source.type === 'old') {
-  expectType<never>(baseCard.getFlag('my-module', 'marked'));
+if (baseCard.data._source.type === "old") {
+  expectType<never>(baseCard.getFlag("my-module", "marked"));
 }
-if (baseCard.data.type === 'uno') {
-  expectType<never>(baseCard.getFlag('my-module', 'folded'));
+if (baseCard.data.type === "uno") {
+  expectType<never>(baseCard.getFlag("my-module", "folded"));
 }

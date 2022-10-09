@@ -1,4 +1,4 @@
-import * as graphicsSmooth from '@pixi/graphics-smooth';
+import * as graphicsSmooth from "@pixi/graphics-smooth";
 
 declare global {
   namespace PIXI {

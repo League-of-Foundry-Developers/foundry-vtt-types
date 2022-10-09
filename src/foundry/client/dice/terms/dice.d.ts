@@ -21,17 +21,17 @@ declare abstract class DiceTerm extends RollTerm {
   /**
    * The number of dice of this term to roll, before modifiers are applied
    */
-  number: DiceTerm.TermData['number'];
+  number: DiceTerm.TermData["number"];
 
   /**
    * The number of faces on the die
    */
-  faces: DiceTerm.TermData['faces'];
+  faces: DiceTerm.TermData["faces"];
 
   /**
    * An Array of dice term modifiers which are applied
    */
-  modifiers: DiceTerm.TermData['modifiers'];
+  modifiers: DiceTerm.TermData["modifiers"];
 
   /**
    * The array of dice term results which have been rolled

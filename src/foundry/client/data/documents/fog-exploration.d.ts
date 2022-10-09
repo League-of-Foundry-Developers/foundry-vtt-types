@@ -1,5 +1,5 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
-import { RequestOptions } from '../../../common/abstract/backend.mjs';
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
+import { RequestOptions } from "../../../common/abstract/backend.mjs";
 
 declare global {
   /**

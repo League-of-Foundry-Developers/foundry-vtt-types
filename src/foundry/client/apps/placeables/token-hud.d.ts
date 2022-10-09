@@ -1,4 +1,4 @@
-import type { ConfiguredObjectClassForName } from '../../../../types/helperTypes';
+import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes";
 
 declare global {
   /**
@@ -37,19 +37,7 @@ declare global {
 
     override setPosition(_position?: Partial<Application.Position>): void;
 
-    override getData(options?: Partial<ApplicationOptions>): ReturnType<BasePlaceableHUD<ConcreteToken>['getData']> & {
-      canConfigure: boolean;
-      canToggleCombat: boolean;
-      displayBar1: boolean;
-      bar1Data: ReturnType<ConcreteToken['document']['getBarAttribute']>;
-      displayBar2: boolean;
-      bar2Data: ReturnType<ConcreteToken['document']['getBarAttribute']>;
-      visibilityClass: string;
-      effectsClass: string;
-      combatClass: string;
-      targetClass: string;
-      statusEffects: ReturnType<TokenHUD['_getStatusEffectChoices']>;
-    };
+    override getData(options?: Partial<ApplicationOptions>): MaybePromise<object>;
 
     /**
      * Get an array of icon paths which represent valid status effect choices
@@ -137,4 +125,4 @@ declare global {
   }
 }
 
-type ConcreteToken = InstanceType<ConfiguredObjectClassForName<'Token'>>;
+type ConcreteToken = InstanceType<ConfiguredObjectClassForName<"Token">>;

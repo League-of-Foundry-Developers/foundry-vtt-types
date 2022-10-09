@@ -7,8 +7,8 @@ declare class MainMenu extends Application {
    * ```typescript
    * {
    *   ...super.defaultOptions,
-   *   id: 'menu',
-   *   template: 'templates/hud/menu.html',
+   *   id: "menu",
+   *   template: "templates/hud/menu.html",
    *   popOut: false
    * }
    * ```
@@ -21,26 +21,26 @@ declare class MainMenu extends Application {
    * ```typescript
    * {
    *   reload: {
-   *     label: 'MENU.Reload',
-   *     icon: '<i class="fas fa-redo"></i>',
+   *     label: "MENU.Reload",
+   *     icon: "<i class="fas fa-redo"></i>",
    *     enabled: true,
    *     onClick: () => window.location.reload()
    *   },
    *   logout: {
-   *     label: 'MENU.Logout',
-   *     icon: '<i class="fas fa-user"></i>',
+   *     label: "MENU.Logout",
+   *     icon: "<i class="fas fa-user"></i>",
    *     enabled: true,
    *     onClick: () => game.logOut()
    *   },
    *   players: {
-   *     label: 'MENU.Players',
-   *     icon: '<i class="fas fa-users"></i>',
+   *     label: "MENU.Players",
+   *     icon: "<i class="fas fa-users"></i>",
    *     enabled: game.user.isGM && !game.data.options.demo,
-   *     onClick: () => (window.location.href = './players')
+   *     onClick: () => (window.location.href = "./players")
    *   },
    *   world: {
-   *     label: 'MENU.Setup',
-   *     icon: '<i class="fas fa-globe"></i>',
+   *     label: "MENU.Setup",
+   *     icon: "<i class="fas fa-globe"></i>",
    *     enabled: game.user.hasRole("GAMEMASTER")  && !game.data.options.demo,
    *     onClick: () => game.shutDown()
    *   }
@@ -49,7 +49,7 @@ declare class MainMenu extends Application {
    */
   get items(): MainMenu.MenuStructure;
 
-  override getData(options?: Partial<ApplicationOptions>): { items: MainMenu.MenuStructure };
+  override getData(options?: Partial<ApplicationOptions>): MaybePromise<object>;
 
   override activateListeners(html: JQuery): void;
 

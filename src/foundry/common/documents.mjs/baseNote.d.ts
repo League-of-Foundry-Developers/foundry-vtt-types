@@ -1,20 +1,20 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
-import { DocumentMetadata } from '../abstract/document.mjs';
-import { Document } from '../abstract/module.mjs';
-import * as data from '../data/data.mjs';
-import { BaseScene } from './baseScene';
-import { BaseUser } from './baseUser';
+import { ConfiguredDocumentClass } from "../../../types/helperTypes";
+import { DocumentMetadata } from "../abstract/document.mjs";
+import { Document } from "../abstract/module.mjs";
+import * as data from "../data/data.mjs";
+import { BaseScene } from "./baseScene";
+import { BaseUser } from "./baseUser";
 
 type NoteMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'Note';
-    collection: 'notes';
-    label: 'DOCUMENT.Note';
-    labelPlural: 'DOCUMENT.Notes';
+    name: "Note";
+    collection: "notes";
+    label: "DOCUMENT.Note";
+    labelPlural: "DOCUMENT.Notes";
     isEmbedded: true;
     permissions: {
-      create: 'NOTE_CREATE';
+      create: "NOTE_CREATE";
     };
   }
 >;

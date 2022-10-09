@@ -1,6 +1,6 @@
-import DocumentData, { AnyDocumentData } from '../foundry/common/abstract/data.mjs';
-import Document from '../foundry/common/abstract/document.mjs';
-import EmbeddedCollection from '../foundry/common/abstract/embedded-collection.mjs';
+import DocumentData, { AnyDocumentData } from "../foundry/common/abstract/data.mjs";
+import Document from "../foundry/common/abstract/document.mjs";
+import EmbeddedCollection from "../foundry/common/abstract/embedded-collection.mjs";
 
 export type PropertiesDataType<T extends Document<any, any> | AnyDocumentData> = T extends DocumentData<
   any,
@@ -40,7 +40,7 @@ type SourceDataType<T extends Document<any, any> | AnyDocumentData> = T extends 
 /**
  * Returns the type of the constructor data for the given {@link DocumentData}.
  */
-export type ConstructorDataType<T extends AnyDocumentData> = T['_initializeSource'] extends (data: infer U) => any
+export type ConstructorDataType<T extends AnyDocumentData> = T["_initializeSource"] extends (data: infer U) => any
   ? U
   : never;
 
@@ -50,7 +50,7 @@ export type PropertyTypeToSourceParameterType<T> = ObjectToDeepPartial<PropertyT
 
 // TODO: Find a way to avoid this helper
 export type FieldReturnType<T extends DocumentField<any>, U extends Partial<DocumentField<any>>> = Omit<T, keyof U> &
-  Exclude<U, 'undefined'>;
+  Exclude<U, "undefined">;
 
 export type DocumentConstructor = Pick<typeof Document, keyof typeof Document> &
   (new (...args: any[]) => Document<any, any>);
@@ -59,59 +59,59 @@ export type PlaceableObjectConstructor = Pick<typeof PlaceableObject, keyof type
   (new (...args: any[]) => PlaceableObject<any>);
 
 export type ConfiguredDocumentClass<T extends DocumentConstructor> = ConfiguredDocumentClassForName<
-  T['metadata']['name']
+  T["metadata"]["name"]
 >;
 
 export type DocumentType =
-  | 'Actor'
-  | 'Adventure'
-  | 'Cards'
-  | 'ChatMessage'
-  | 'Combat'
-  | 'FogExploration'
-  | 'Folder'
-  | 'Item'
-  | 'JournalEntry'
-  | 'JournalEntryPage'
-  | 'Macro'
-  | 'Playlist'
-  | 'RollTable'
-  | 'Scene'
-  | 'Setting'
-  | 'User'
-  | 'ActiveEffect'
-  | 'Card'
-  | 'TableResult'
-  | 'PlaylistSound'
-  | 'AmbientLight'
-  | 'AmbientSound'
-  | 'Combatant'
-  | 'Drawing'
-  | 'MeasuredTemplate'
-  | 'Note'
-  | 'Tile'
-  | 'Token'
-  | 'Wall';
+  | "Actor"
+  | "Adventure"
+  | "Cards"
+  | "ChatMessage"
+  | "Combat"
+  | "FogExploration"
+  | "Folder"
+  | "Item"
+  | "JournalEntry"
+  | "JournalEntryPage"
+  | "Macro"
+  | "Playlist"
+  | "RollTable"
+  | "Scene"
+  | "Setting"
+  | "User"
+  | "ActiveEffect"
+  | "Card"
+  | "TableResult"
+  | "PlaylistSound"
+  | "AmbientLight"
+  | "AmbientSound"
+  | "Combatant"
+  | "Drawing"
+  | "MeasuredTemplate"
+  | "Note"
+  | "Tile"
+  | "Token"
+  | "Wall";
 
 export type PlaceableDocumentType =
-  | 'AmbientLight'
-  | 'AmbientSound'
-  | 'Drawing'
-  | 'MeasuredTemplate'
-  | 'Note'
-  | 'Tile'
-  | 'Token'
-  | 'Wall';
+  | "AmbientLight"
+  | "AmbientSound"
+  | "Drawing"
+  | "MeasuredTemplate"
+  | "Note"
+  | "Tile"
+  | "Token"
+  | "Wall";
 
-export type DocumentSubTypes<T extends DocumentType> = 'type' extends keyof InstanceType<
+export type DocumentSubTypes<T extends DocumentType> = "type" extends keyof InstanceType<
   ConfiguredDocumentClassForName<T>
->['data']
-  ? InstanceType<ConfiguredDocumentClassForName<T>>['data']['type']
+>["data"]
+  ? InstanceType<ConfiguredDocumentClassForName<T>>["data"]["type"]
   : typeof foundry.CONST.BASE_DOCUMENT_TYPE;
 
-export type ConfiguredDocumentClassForName<Name extends DocumentType> = CONFIG[Name]['documentClass'];
+export type ConfiguredDocumentClassForName<Name extends DocumentType> = CONFIG[Name]["documentClass"];
 
-export type ConfiguredObjectClassForName<Name extends PlaceableDocumentType> = CONFIG[Name]['objectClass'];
+export type ConfiguredObjectClassForName<Name extends PlaceableDocumentType> = CONFIG[Name]["objectClass"];
 
 export type ConfiguredData<Name extends string> = Name extends keyof DataConfig ? DataConfig[Name] : {};
 
@@ -139,26 +139,26 @@ export type ToObjectFalseType<T> = T extends {
   ? U
   : T;
 
-export type ConfiguredSheetClass<T extends DocumentConstructor> = T['metadata']['name'] extends keyof CONFIG
-  ? 'sheetClass' extends keyof CONFIG[T['metadata']['name']]
-    ? CONFIG[T['metadata']['name']]['sheetClass']
+export type ConfiguredSheetClass<T extends DocumentConstructor> = T["metadata"]["name"] extends keyof CONFIG
+  ? "sheetClass" extends keyof CONFIG[T["metadata"]["name"]]
+    ? CONFIG[T["metadata"]["name"]]["sheetClass"]
     : never
   : T;
 
-export type ObjectClass<T extends DocumentConstructor> = T['metadata']['name'] extends keyof CONFIG
-  ? 'objectClass' extends keyof CONFIG[T['metadata']['name']]
-    ? CONFIG[T['metadata']['name']]['objectClass']
+export type ObjectClass<T extends DocumentConstructor> = T["metadata"]["name"] extends keyof CONFIG
+  ? "objectClass" extends keyof CONFIG[T["metadata"]["name"]]
+    ? CONFIG[T["metadata"]["name"]]["objectClass"]
     : never
   : T;
 
-export type LayerClass<T extends DocumentConstructor> = T['metadata']['name'] extends keyof CONFIG
-  ? 'layerClass' extends keyof CONFIG[T['metadata']['name']]
-    ? CONFIG[T['metadata']['name']]['layerClass']
+export type LayerClass<T extends DocumentConstructor> = T["metadata"]["name"] extends keyof CONFIG
+  ? "layerClass" extends keyof CONFIG[T["metadata"]["name"]]
+    ? CONFIG[T["metadata"]["name"]]["layerClass"]
     : never
   : T;
 
 export type DataSourceForPlaceable<P extends PlaceableObject> = P extends PlaceableObject<infer Doc>
   ? Doc extends Document<infer D, any>
-    ? D['_source']
+    ? D["_source"]
     : never
   : never;

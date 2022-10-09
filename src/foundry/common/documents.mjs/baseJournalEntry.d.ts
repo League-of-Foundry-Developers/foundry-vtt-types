@@ -1,17 +1,17 @@
-import * as data from '../data/data.mjs';
-import { Document } from '../abstract/module.mjs';
-import { DocumentMetadata } from '../abstract/document.mjs';
+import * as data from "../data/data.mjs";
+import { Document } from "../abstract/module.mjs";
+import { DocumentMetadata } from "../abstract/document.mjs";
 
 type JournalEntryMetadata = Merge<
   DocumentMetadata,
   {
-    name: 'JournalEntry';
-    collection: 'journal';
-    label: 'DOCUMENT.JournalEntry';
-    labelPlural: 'DOCUMENT.JournalEntries';
+    name: "JournalEntry";
+    collection: "journal";
+    label: "DOCUMENT.JournalEntry";
+    labelPlural: "DOCUMENT.JournalEntries";
     isPrimary: true;
     permissions: {
-      create: 'JOURNAL_CREATE';
+      create: "JOURNAL_CREATE";
     };
   }
 >;

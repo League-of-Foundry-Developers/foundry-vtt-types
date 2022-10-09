@@ -1,18 +1,18 @@
-import type { Evaluated, MessageData } from '../../../../src/foundry/client/dice/roll';
+import type { Evaluated, MessageData } from "../../../../src/foundry/client/dice/roll";
 
-import { expectType } from 'tsd';
-import '../../index';
+import { expectType } from "tsd";
+import "../../index";
 
 class CustomRoll<D extends object = {}> extends Roll<D> {}
 
 CONFIG.Dice.rolls = [CustomRoll, Roll];
 
 // Attack with advantage!
-const r = new Roll('2d20kh + @prof + @strMod', { prof: 2, strMod: 4 });
+const r = new Roll("2d20kh + @prof + @strMod", { prof: 2, strMod: 4 });
 
 // create the configured roll instance
-expectType<CustomRoll<{}>>(Roll.create('1d20'));
-expectType<CustomRoll<{ prof: number }>>(Roll.create('1d20 + @prof', { prof: 2 }));
+expectType<CustomRoll<{}>>(Roll.create("1d20"));
+expectType<CustomRoll<{ prof: number }>>(Roll.create("1d20 + @prof", { prof: 2 }));
 expectType<Roll<object>>(Roll.fromTerms([]));
 expectType<CustomRoll<object>>(CustomRoll.fromTerms([]));
 
