@@ -42,7 +42,7 @@ declare global {
      * @param options - Options which modify the pan operation
      * @returns A Promise which resolves once the pan animation has concluded
      */
-    panToNote(options?: PanToNoteOptions): Promise<void>;
+    panToNote(options?: JournalEntry.PanToNoteOptions): Promise<void>;
 
     protected override _onUpdate(
       data: DeepPartial<DocumentDataType<foundry.documents.BaseJournalEntry>>,
@@ -52,20 +52,21 @@ declare global {
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
   }
-}
+  namespace JournalEntry {
+    interface PanToNoteOptions {
+      /**
+       * The speed of the pan animation in milliseconds
+       * @defaultValue `250`
+       */
+      duration?: number;
 
-interface PanToNoteOptions {
-  /**
-   * The speed of the pan animation in milliseconds
-   * @defaultValue `250`
-   */
-  duration?: number;
-
-  /**
-   * The resulting zoom level
-   * @defaultValue `1.5`
-   */
-  scale?: number;
+      /**
+       * The resulting zoom level
+       * @defaultValue `1.5`
+       */
+      scale?: number;
+    }
+  }
 }
 
 export {};
