@@ -1,16 +1,11 @@
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
-  interface JournalSheetOptions extends DocumentSheetOptions {
-    /** The current display mode of the journal. Either "text" or "image". */
-    sheetMode?: JournalSheet.SheetMode | null;
-  }
-
   /**
    * The Application responsible for displaying and editing a single JournalEntry document.
    * @typeParam Options - the type of the options object
    */
-  class JournalSheet<Options extends JournalSheetOptions = JournalSheetOptions> extends DocumentSheet<
+  class JournalSheet<Options extends JournalSheet.Options = JournalSheet.Options> extends DocumentSheet<
     Options,
     ConcreteJournalEntry
   > {
@@ -53,7 +48,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): JournalSheetOptions;
+    static override get defaultOptions(): JournalSheet.Options;
 
     override get template(): string;
 
@@ -92,6 +87,10 @@ declare global {
   }
 
   namespace JournalSheet {
+    interface Options extends DocumentSheetOptions {
+      /** The current display mode of the journal. Either "text" or "image". */
+      sheetMode?: JournalSheet.SheetMode | null;
+    }
     type SheetMode = "text" | "image";
 
     interface FormData {
