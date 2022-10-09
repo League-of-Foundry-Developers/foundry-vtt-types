@@ -2,7 +2,7 @@ import type { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 
 declare global {
   /**
-   * The Application responsible for displaying and editing a single JournalEntryPage document.
+   * The Application responsible for displaying and editing a single {@link JournalEntryPage} document.
    */
   abstract class JournalPageSheet<
     Options extends JournalPageSheet.Options = JournalPageSheet.Options
@@ -29,25 +29,25 @@ declare global {
     interface Options extends DocumentSheetOptions {}
   }
   /**
-   * The Application responsible for displaying and editing a single JournalEntryPage text document.
+   * The Application responsible for displaying and editing a single {@link JournalEntryPage} text document.
    */
   abstract class JournalTextPageSheet extends JournalPageSheet {
     // TODO: type declarations for this class
   }
   /**
-   * The Application responsible for displaying and editing a single JournalEntryPage image document.
+   * The Application responsible for displaying and editing a single {@link JournalEntryPage} image document.
    */
   class JournalImagePageSheet extends JournalPageSheet {
     // TODO: type declarations for this class
   }
   /**
-   * The Application responsible for displaying and editing a single JournalEntryPage video document.
+   * The Application responsible for displaying and editing a single {@link JournalEntryPage} video document.
    */
   class JournalVideoPageSheet extends JournalPageSheet {
     // TODO: type declarations for this class
   }
   /**
-   * The Application responsible for displaying and editing a single JournalEntryPage PDF document.
+   * The Application responsible for displaying and editing a single {@link JournalEntryPage} PDF document.
    */
   class JournalPDFPageSheet extends JournalPageSheet {
     // TODO: type declarations for this class
