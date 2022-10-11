@@ -72,8 +72,8 @@ declare global {
    * The Application responsible for displaying and editing a single {@link JournalEntryPage} text document.
    */
   class JournalTextPageSheet<
-    TOptions extends JournalTextPageSheet.Options = JournalTextPageSheet.Options
-  > extends JournalPageSheet<TOptions> {
+    ConcreteOptions extends JournalTextPageSheet.Options = JournalTextPageSheet.Options
+  > extends JournalPageSheet<ConcreteOptions> {
     /**
      * Bi-directional HTML \<-\> Markdown converter.
      */
@@ -99,13 +99,15 @@ declare global {
      */
     toc: ReturnType<typeof JournalEntryPage["buildTOC"]>;
 
-    override getData(options?: Partial<TOptions> | undefined): Promise<JournalPageSheet.SheetData<TOptions>>;
+    override getData(
+      options?: Partial<ConcreteOptions> | undefined
+    ): Promise<JournalPageSheet.SheetData<ConcreteOptions>>;
 
     close(options?: FormApplication.CloseOptions | undefined): Promise<void>;
 
     protected _render(
       force?: boolean | undefined,
-      options?: Application.RenderOptions<TOptions> | undefined
+      options?: Application.RenderOptions<ConcreteOptions> | undefined
     ): Promise<void>;
 
     /**

@@ -3,17 +3,17 @@ import type { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 declare global {
   /**
    * The Application responsible for displaying and editing a single JournalEntry document.
-   * @typeParam TOptions - the type of the options object
+   * @typeParam ConcreteOptions - the type of the options object
    */
-  class JournalSheet<TOptions extends JournalSheet.Options = JournalSheet.Options> extends DocumentSheet<
-    TOptions,
+  class JournalSheet<ConcreteOptions extends JournalSheet.Options = JournalSheet.Options> extends DocumentSheet<
+    ConcreteOptions,
     ConcreteJournalEntry
   > {
     /**
      * @param object  - The JournalEntry instance which is being edited
      * @param options - Application options
      */
-    constructor(object: ConcreteJournalEntry, options?: Partial<TOptions>);
+    constructor(object: ConcreteJournalEntry, options?: Partial<ConcreteOptions>);
 
     /**
      * The current display mode of the journal. Either "text" or "image".
@@ -60,11 +60,11 @@ declare global {
      */
     protected _inferDefaultMode(): JournalSheet.SheetMode | null;
 
-    protected override _render(force?: boolean, options?: Application.RenderOptions<TOptions>): Promise<void>;
+    protected override _render(force?: boolean, options?: Application.RenderOptions<ConcreteOptions>): Promise<void>;
 
     protected override _getHeaderButtons(): Application.HeaderButton[];
 
-    override getData(options?: Partial<TOptions>): MaybePromise<object>;
+    override getData(options?: Partial<ConcreteOptions>): MaybePromise<object>;
 
     protected override _updateObject(event: Event, formData: JournalSheet.FormData): Promise<unknown>;
 
