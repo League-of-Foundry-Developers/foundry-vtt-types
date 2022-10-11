@@ -357,7 +357,13 @@ export type TABLE_RESULT_TYPES = ValueOf<typeof TABLE_RESULT_TYPES>;
  * The allowed formats of a Journal Entry Page.
  */
 export const JOURNAL_ENTRY_PAGE_FORMATS: Readonly<{
+  /**
+   * The page is formatted as HTML.
+   */
   HTML: 1;
+  /**
+   * The page is formatted as Markdown.
+   */
   MARKDOWN: 2;
 }>;
 export type JOURNAL_ENTRY_PAGE_FORMATS = ValueOf<typeof JOURNAL_ENTRY_PAGE_FORMATS>;
