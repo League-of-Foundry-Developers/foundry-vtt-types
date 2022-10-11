@@ -1,8 +1,8 @@
 import type { EditorView } from "prosemirror-view";
 import type Showdown from "showdown";
 import type { Editor } from "tinymce";
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 import type { JOURNAL_ENTRY_PAGE_FORMATS } from "../../../common/constants.mjs.js";
+import type { CONST } from "../../../common/module.mjs.js";
 
 declare global {
   /**
@@ -10,13 +10,13 @@ declare global {
    */
   class JournalPageSheet<TOptions extends JournalPageSheet.Options = JournalPageSheet.Options> extends DocumentSheet<
     TOptions,
-    ConcreteJournalPage
+    JournalEntryPage
   > {
     /**
      * @param object - The JournalEntryPage instance which is being edited.
      * @param options - Application options
      */
-    constructor(object: ConcreteJournalPage, options?: Partial<TOptions>);
+    constructor(object: JournalEntryPage, options?: Partial<TOptions>);
 
     /**
      * {@inheritdoc}
@@ -53,11 +53,11 @@ declare global {
     interface SheetData<T extends JournalPageSheet.Options | undefined = JournalPageSheet.Options | undefined> {
       cssClass: string;
       editable: boolean;
-      document: ConcreteJournalPage;
-      data: ReturnType<ConcreteJournalPage["toObject"]>;
-      limited: ConcreteJournalPage["limited"];
+      document: JournalEntryPage;
+      data: ReturnType<JournalEntryPage["toObject"]>;
+      limited: JournalEntryPage["limited"];
       options?: Partial<T>;
-      owner: ConcreteJournalPage["isOwner"];
+      owner: JournalEntryPage["isOwner"];
       title: string;
     }
   }
@@ -74,7 +74,7 @@ declare global {
     /**
      * Declare the format that we edit text content in for this sheet so we can perform conversions as necessary.
      */
-    static get format(): typeof JOURNAL_ENTRY_PAGE_FORMATS.HTML;
+    static get format(): JOURNAL_ENTRY_PAGE_FORMATS;
     /**
      * @defaultValue
      * ```typescript
@@ -88,7 +88,7 @@ declare global {
     /**
      * The table of contents for this JournalTextPageSheet.
      */
-    toc: JournalEntryPage.Heading;
+    toc: ReturnType<typeof JournalEntryPage["buildTOC"]>;
 
     // FIXME: this should be async once the parent classes are updated
     override getData(options?: Partial<TOptions> | undefined): JournalPageSheet.SheetData<TOptions>;
@@ -215,7 +215,11 @@ declare global {
    * The Application responsible for displaying and editing a single {@link JournalEntryPage} PDF document.
    */
   class JournalPDFPageSheet extends JournalPageSheet<JournalPDFPageSheet.Options> {
-    // TODO: type declarations for this class
+    /**
+     * Maintain a cache of PDF sizes to avoid making HEAD requests every render.
+     */
+    protected static _sizes: Record<string, number>;
+    activateListeners(html: JQuery<HTMLElement>): void;
   }
   namespace JournalPDFPageSheet {
     type Options = JournalPageSheet.Options;
@@ -224,7 +228,14 @@ declare global {
    * A subclass of {@link JournalTextPageSheet} that implements a TinyMCE editor.
    */
   class JournalTextTinyMCESheet extends JournalTextPageSheet<JournalTextTinyMCESheet.Options> {
-    // TODO: type declarations for this class
+    // FIXME: should be async
+    close(options?: FormApplication.CloseOptions | undefined): Promise<void>;
+    static get format(): typeof CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML;
+    // FIXME: should be async
+    protected _render(
+      force?: boolean | undefined,
+      options?: Application.RenderOptions<JournalTextTinyMCESheet.Options> | undefined
+    ): Promise<void>;
   }
 
   namespace JournalTextTinyMCESheet {
@@ -239,6 +250,36 @@ declare global {
    */
   class MarkdownJournalPageSheet extends JournalTextPageSheet<MarkdownJournalPageSheet.Options> {
     // TODO: type declarations for this class
+    /**
+     * Store the dirty flag for this editor.
+     */
+    protected _isDirty: boolean;
+    static get format(): typeof CONST.JOURNAL_ENTRY_PAGE_FORMATS.MARKDOWN;
+    /**
+     * {@inheritDoc}
+     * @defaultValue
+     * ```typescript
+     * const options = super.defaultOptions;
+     * options.dragDrop = [{dropSelector: "textarea"}];
+     * options.classes.push("markdown");
+     * ```
+     */
+    static get defaultOptions(): JournalTextPageSheet.Options;
+    get template(): string;
+    // FIXME: should be async once ancestor types updated
+    getData(
+      options?: Partial<MarkdownJournalPageSheet.Options> | undefined
+    ): JournalPageSheet.SheetData<MarkdownJournalPageSheet.Options>;
+    activateListeners(html: JQuery<HTMLElement>): void;
+    isEditorDirty(): boolean;
+    // FIXME: should be async once ancestor types updated
+    protected _updateObject(event: Event, formData: object): Promise<unknown>;
+    protected _onDrop(event: DragEvent): void;
+    /**
+     * Handle dropping a content link onto the editor.
+     * @param eventData - The parsed event data.
+     */
+    protected _onDropContentLink(eventData: DragEvent): void;
   }
   namespace MarkdownJournalPageSheet {
     interface Options extends JournalTextPageSheet.Options {
@@ -248,5 +289,3 @@ declare global {
     }
   }
 }
-
-type ConcreteJournalPage = InstanceType<ConfiguredDocumentClass<typeof JournalEntryPage>>;
