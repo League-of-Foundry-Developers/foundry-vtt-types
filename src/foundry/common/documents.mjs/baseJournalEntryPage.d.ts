@@ -1,7 +1,6 @@
 import * as data from "../data/data.mjs";
 import { Document } from "../abstract/module.mjs";
 import { DocumentMetadata } from "../abstract/document.mjs";
-import type { CONST } from "../module.mjs.js";
 import type { BaseJournalEntry } from "./baseJournalEntry.js";
 import type { ConfiguredDocumentClass } from "../../../types/helperTypes.js";
 

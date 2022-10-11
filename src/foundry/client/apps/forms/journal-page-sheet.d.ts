@@ -70,7 +70,7 @@ declare global {
     TOptions extends JournalTextPageSheet.Options = JournalTextPageSheet.Options
   > extends JournalPageSheet<TOptions> {
     /**
-     * Bi-directional HTML <-> Markdown converter.
+     * Bi-directional HTML \<-\> Markdown converter.
      */
     static get _converter(): Showdown.Converter;
     /**

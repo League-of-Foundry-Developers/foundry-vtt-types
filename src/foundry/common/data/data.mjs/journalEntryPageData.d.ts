@@ -3,7 +3,6 @@ import { DocumentData } from "../../abstract/module.mjs.js";
 import * as documents from "../../documents.mjs/index.js";
 import { CONST } from "../../module.mjs.js";
 import type { SystemData } from "../../packages.mjs/systemData.js";
-import type { RequiredPositiveNumber } from "../fields.mjs.js";
 import * as fields from "../fields.mjs.js";
 
 declare global {
