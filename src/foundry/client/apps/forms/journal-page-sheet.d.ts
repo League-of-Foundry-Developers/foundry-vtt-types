@@ -7,6 +7,8 @@ import type { CONST } from "../../../common/module.mjs.js";
 declare global {
   /**
    * The Application responsible for displaying and editing a single {@link JournalEntryPage} document.
+   *
+   * @typeParam TOptions - The type of the options object
    */
   class JournalPageSheet<TOptions extends JournalPageSheet.Options = JournalPageSheet.Options> extends DocumentSheet<
     TOptions,
