@@ -30,12 +30,14 @@ interface ShareImageConfig {
  */
 declare class Journal extends WorldCollection<typeof foundry.documents.BaseJournalEntry, "Journal"> {
   static override documentName: "JournalEntry";
+
   // FIXME: should be Async
   /**
    * Display a dialog which prompts the user to show a JournalEntry or JournalEntryPage to other players.
    * @param doc - The JournalEntry or JournalEntryPage to show.
    */
   static showDialog(doc: JournalEntry | JournalEntryPage): Promise<JournalEntry | JournalEntryPage | void>;
+
   /**
    * Show the JournalEntry or JournalEntryPage to connected players.
    * By default, the document will only be shown to players who have permission to observe it.

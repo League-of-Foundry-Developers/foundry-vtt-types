@@ -13,6 +13,7 @@ declare global {
      * The table of contents for this JournalEntryPage.
      */
     get toc(): JournalEntryPage.Heading;
+
     /**
      * Return a reference to the Note instance for this Journal Entry Page in the current Scene, if any.
      * If multiple notes are placed for this Journal Entry, only the first will be returned.
@@ -40,11 +41,13 @@ declare global {
           }
         | undefined
     ): JournalEntryPage.Heading;
+
     /**
      * Flatten the tree structure into a single object with each node's slug as the key.
      * @param nodes - The root ToC nodes.
      */
     static _flattenTOC(nodes: JournalEntryPage.Heading[]): JournalEntryPage.Heading;
+
     /**
      * Construct a table of contents node from a heading element.
      * @param heading - The heading element.

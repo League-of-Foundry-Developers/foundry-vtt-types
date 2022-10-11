@@ -283,6 +283,7 @@ export class JournalEntryPageData extends DocumentData<
   documents.BaseJournalEntryPage
 > {
   constructor(data: JournalEntryPageData.ConstructorData, document?: documents.BaseJournalEntryPage | null);
+
   static override defineSchema(): JournalEntryPageDataSchema;
 }
 

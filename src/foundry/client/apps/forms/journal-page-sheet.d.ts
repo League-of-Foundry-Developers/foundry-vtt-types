@@ -36,16 +36,21 @@ declare global {
      * ```
      */
     static get defaultOptions(): JournalPageSheet.Options;
+
     get template(): string;
+
     get title(): string;
+
     // FIXME: this should be async, but the parent classes would need to be updated first
     activateEditor(
       name: string,
       options?: TextEditor.Options | undefined,
       initialContent?: string | undefined
     ): Promise<Editor | EditorView>;
+
     // FIXME: this should be async, but the parent classes would need to be updated first
     override getData(options?: Partial<TOptions> | undefined): JournalPageSheet.SheetData<TOptions>;
+
     // FIXME: this should be private async, but the parent classes would need to be updated first
     protected _renderInner(data: object): Promise<JQuery<HTMLElement>>;
   }
@@ -73,10 +78,12 @@ declare global {
      * Bi-directional HTML \<-\> Markdown converter.
      */
     static get _converter(): Showdown.Converter;
+
     /**
      * Declare the format that we edit text content in for this sheet so we can perform conversions as necessary.
      */
     static get format(): JOURNAL_ENTRY_PAGE_FORMATS;
+
     /**
      * @defaultValue
      * ```typescript
@@ -115,13 +122,18 @@ declare global {
       options?: TextEditor.Options | undefined,
       initialContent?: string | undefined
     ): Promise<Editor | EditorView>;
+
     // FIXME: this should be async once the parent classes are updated
     protected _renderInner(data: object): Promise<JQuery<HTMLElement>>;
+
     _getSecretContent(secret: HTMLElement): string;
+
     // FIXME: revisit this when it's added to its ancestor classes
     _updateSecret(secret: HTMLElement, content: string): Promise<typeof this>;
+
     // FIXME: this should be async once the parent classes are updated
     protected _updateObject(event: Event, formData: object): Promise<unknown>;
+
     /**
      * Lazily convert text formats if we detect the document being saved in a different format.
      * @param renderData - Render data.
@@ -169,17 +181,21 @@ declare global {
    */
   class JournalVideoPageSheet extends JournalPageSheet<JournalVideoPageSheet.Options> {
     activateListeners(html: JQuery<HTMLElement>): void;
+
     /**
      * Get the YouTube player parameters depending on whether the sheet is being viewed or edited.
      */
     protected _getYouTubeVars(): JournalVideoPageSheet.YouTubeVars;
+
     protected _getSubmitData(updateData?: object | null | undefined): Record<string, unknown>;
+
     /**
      * Convert time components to a timestamp in seconds.
      * @param param0 - The time components.
      * @returns The timestamp, in seconds.
      */
     protected _timeComponentsToTimestamp({ h, m, s }: Partial<JournalVideoPageSheet.TimeComponents>): number;
+
     /**
      * Convert a timestamp in seconds into separate time components.
      * @param timestamp - The timestamp, in seconds.
@@ -221,6 +237,7 @@ declare global {
      * Maintain a cache of PDF sizes to avoid making HEAD requests every render.
      */
     protected static _sizes: Record<string, number>;
+
     activateListeners(html: JQuery<HTMLElement>): void;
   }
   namespace JournalPDFPageSheet {
@@ -232,7 +249,9 @@ declare global {
   class JournalTextTinyMCESheet extends JournalTextPageSheet<JournalTextTinyMCESheet.Options> {
     // FIXME: should be async
     close(options?: FormApplication.CloseOptions | undefined): Promise<void>;
+
     static get format(): typeof CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML;
+
     // FIXME: should be async
     protected _render(
       force?: boolean | undefined,
@@ -255,7 +274,9 @@ declare global {
      * Store the dirty flag for this editor.
      */
     protected _isDirty: boolean;
+
     static get format(): typeof CONST.JOURNAL_ENTRY_PAGE_FORMATS.MARKDOWN;
+
     /**
      * {@inheritDoc}
      * @defaultValue
@@ -266,16 +287,23 @@ declare global {
      * ```
      */
     static get defaultOptions(): JournalTextPageSheet.Options;
+
     get template(): string;
+
     // FIXME: should be async once ancestor types updated
     getData(
       options?: Partial<MarkdownJournalPageSheet.Options> | undefined
     ): JournalPageSheet.SheetData<MarkdownJournalPageSheet.Options>;
+
     activateListeners(html: JQuery<HTMLElement>): void;
+
     isEditorDirty(): boolean;
+
     // FIXME: should be async once ancestor types updated
     protected _updateObject(event: Event, formData: object): Promise<unknown>;
+
     protected _onDrop(event: DragEvent): void;
+
     /**
      * Handle dropping a content link onto the editor.
      * @param eventData - The parsed event data.
