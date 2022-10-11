@@ -4,8 +4,8 @@ declare global {
   /**
    * The client-side JournalEntry document which extends the common BaseJournalEntry model.
    *
-   * @see {@link Journal}                       The world-level collection of JournalEntry documents
-   * @see {@link JournalSheet}                  The JournalEntry configuration application
+   * @see {@link Journal} The world-level collection of JournalEntry documents
+   * @see {@link JournalSheet} The JournalEntry configuration application
    *
    */
   class JournalEntry extends ClientDocumentMixin(foundry.documents.BaseJournalEntry) {
