@@ -50,7 +50,7 @@ declare global {
       options?: Partial<ConcreteOptions> | undefined
     ): Promise<JournalPageSheet.SheetData<ConcreteOptions>>;
 
-    // TODO: this should be private, but that needs to change on the ancestor classes, first.
+    // FIXME: this should be private, but that needs to change on the ancestor classes, first.
     protected _renderInner(data: object): Promise<JQuery<HTMLElement>>;
   }
 
