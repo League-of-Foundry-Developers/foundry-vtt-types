@@ -218,6 +218,7 @@ declare global {
      */
     flags: ConfiguredFlags<"JournalEntryPage">;
   }
+
   namespace JournalEntryPageDataProperties {
     interface Image {
       /**
@@ -285,6 +286,7 @@ declare global {
       level: number;
     }
   }
+
   namespace JournalEntryPageData {
     type ConstructorDataOf<T> = {
       [P in keyof T]?: T[P] | undefined | null;

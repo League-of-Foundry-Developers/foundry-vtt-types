@@ -49,6 +49,7 @@ declare global {
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
   }
+
   namespace JournalEntry {
     interface PanToNoteOptions {
       /**

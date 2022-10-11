@@ -53,6 +53,7 @@ declare global {
     // TODO: this should be private, but that needs to change on the ancestor classes, first.
     protected _renderInner(data: object): Promise<JQuery<HTMLElement>>;
   }
+
   namespace JournalPageSheet {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface Options extends DocumentSheetOptions {}
@@ -138,6 +139,7 @@ declare global {
      */
     onNewSteps(): void;
   }
+
   namespace JournalTextPageSheet {
     interface Options extends JournalPageSheet.Options {
       editor: {
@@ -162,9 +164,11 @@ declare global {
      */
     static override get defaultOptions(): JournalImagePageSheet.Options;
   }
+
   namespace JournalImagePageSheet {
     type Options = JournalPageSheet.Options;
   }
+
   /**
    * The Application responsible for displaying and editing a single {@link JournalEntryPage} video document.
    */
@@ -234,6 +238,7 @@ declare global {
 
     activateListeners(html: JQuery<HTMLElement>): void;
   }
+
   namespace JournalPDFPageSheet {
     type Options = JournalPageSheet.Options;
   }
@@ -300,6 +305,7 @@ declare global {
      */
     protected _onDropContentLink(eventData: DragEvent): void;
   }
+
   namespace MarkdownJournalPageSheet {
     interface Options extends JournalTextPageSheet.Options {
       editor: JournalTextPageSheet.Options["editor"] & {

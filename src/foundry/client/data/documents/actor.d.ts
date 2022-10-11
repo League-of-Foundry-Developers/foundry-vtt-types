@@ -76,6 +76,7 @@ declare global {
       foundry.documents.BaseItem["data"]["type"],
       Array<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseItem>>>
     >;
+
     /**
      * Test whether an Actor document is a synthetic representation of a Token (if true) or a full Document (if false)
      */
@@ -111,7 +112,9 @@ declare global {
       linked: boolean,
       document: true
     ): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>>[];
+
     getActiveTokens(linked?: boolean, document?: false): InstanceType<ConfiguredObjectClassForName<"Token">>[];
+
     getActiveTokens(
       linked: boolean,
       document: boolean
@@ -206,6 +209,7 @@ declare global {
      */
     protected _onEmbeddedDocumentChange(embeddedName: string): void;
   }
+
   namespace Actor {
     interface RollInitiativeOptions {
       /**
