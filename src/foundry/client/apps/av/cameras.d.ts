@@ -6,13 +6,17 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class CameraViews<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
+    constructor(options: Options);
+
     /**
      * @defaultValue
      * ```typescript
      * return foundry.utils.mergeObject(super.defaultOptions, {
      *   id: "camera-views",
      *   template: "templates/hud/camera-views.html",
-     *   popOut: false
+     *   popOut: false,
+     *   width: 240,
+     *   resizable: {selector: ".camera-view-width-control, resizeY: false}
      * })
      * ```
      */
@@ -22,6 +26,11 @@ declare global {
      * A reference to the master AV orchestrator instance
      */
     get webrtc(): Game["webrtc"];
+
+    /**
+     * If all camera views are popped out, hide the dock.
+     */
+    get hidden(): boolean;
 
     /**
      * Obtain a reference to the div.camera-view which is used to portray a given Foundry User.
@@ -51,6 +60,10 @@ declare global {
     render(force?: boolean, context?: Application.RenderOptions<Options>): this | void;
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
+
+    override setPosition(
+      position?: Partial<Omit<Application.Position, "zIndex">> | undefined
+    ): void | (Application.Position & { height: number });
 
     override getData(options?: Partial<Options>): MaybePromise<object>;
 
@@ -94,10 +107,9 @@ declare global {
 
     /**
      * Dynamically refresh the state of a single camera view
-     * @param view - The view container div
-     * @internal
+     * @param userId - The ID of the user whose view we want to refresh.
      */
-    protected _refreshView(view: HTMLElement): void;
+    protected _refreshView(userId: string): void;
 
     /**
      * Render changes needed to the PlayerList ui.
@@ -113,7 +125,6 @@ declare global {
      * @param action - The named av-control button action
      * @param state  - The CURRENT action state.
      * @returns The icon that represents the NEXT action state.
-     * @internal
      */
     protected _getToggleIcon(action: string, state: boolean): string | null;
 
@@ -124,7 +135,6 @@ declare global {
      * @param action - The named av-control button action
      * @param state - The CURRENT action state.
      * @returns The icon that represents the NEXT action state.
-     * @internal
      */
     protected _getToggleTooltip(action: string, state: boolean): string;
 
@@ -146,14 +156,9 @@ declare global {
   namespace CameraViews {
     interface User {
       user: StoredDocument<globalThis.User>;
-      id: StoredDocument<globalThis.User>["id"];
-      local: StoredDocument<globalThis.User>["isSelf"];
-      name: StoredDocument<globalThis.User>["name"];
-      color: StoredDocument<globalThis.User>["data"]["color"];
-      colorAlpha: `rgba(${number}, ${number}, ${number})`;
-      charname: string;
-      avatar: StoredDocument<globalThis.User>["avatar"];
       settings: AVSettings.UserSettings;
+      local: StoredDocument<globalThis.User>["isSelf"];
+      charname: string;
       volume: number;
       cameraViewClass: string;
     }
