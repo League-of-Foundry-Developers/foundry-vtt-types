@@ -126,7 +126,7 @@ declare global {
     _getSecretContent(secret: HTMLElement): string;
 
     // FIXME: revisit this when it's added to its ancestor classes
-    _updateSecret(secret: HTMLElement, content: string): Promise<typeof this>;
+    _updateSecret(secret: HTMLElement, content: string): Promise<this>;
 
     protected _updateObject(event: Event, formData: object): Promise<unknown>;
 
