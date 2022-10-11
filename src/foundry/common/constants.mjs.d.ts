@@ -937,7 +937,7 @@ export type TIMEOUTS = ValueOf<typeof TIMEOUTS>;
 
 /**
  * @deprecated since v10.
- * @see {data.ShapeData.TYPES}
+ * @see {@link data.ShapeData.TYPES}
  */
 export const DRAWING_TYPES: Readonly<{
   RECTANGLE: "r";
