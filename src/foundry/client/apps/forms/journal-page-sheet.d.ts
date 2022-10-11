@@ -67,6 +67,7 @@ declare global {
       title: string;
     }
   }
+
   /**
    * The Application responsible for displaying and editing a single {@link JournalEntryPage} text document.
    */
@@ -122,10 +123,10 @@ declare global {
 
     protected _renderInner(data: object): Promise<JQuery<HTMLElement>>;
 
-    _getSecretContent(secret: HTMLElement): string;
+    protected _getSecretContent(secret: HTMLElement): string;
 
     // FIXME: revisit this when it's added to its ancestor classes
-    _updateSecret(secret: HTMLElement, content: string): Promise<this>;
+    protected _updateSecret(secret: HTMLElement, content: string): Promise<this>;
 
     protected _updateObject(event: Event, formData: object): Promise<unknown>;
 
@@ -228,6 +229,7 @@ declare global {
       url: string;
     }
   }
+
   /**
    * The Application responsible for displaying and editing a single {@link JournalEntryPage} PDF document.
    */
@@ -271,6 +273,7 @@ declare global {
       params: ReturnType<JournalPDFPageSheet["_getViewerParams"]>;
     };
   }
+
   /**
    * A subclass of {@link JournalTextPageSheet} that implements a TinyMCE editor.
    */
@@ -292,6 +295,7 @@ declare global {
       };
     }
   }
+
   /**
    * A subclass of {@link JournalTextPageSheet} that implements a markdown editor for editing the text content.
    */
