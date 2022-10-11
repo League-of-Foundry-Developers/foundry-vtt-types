@@ -15,7 +15,7 @@ declare global {
     JournalEntryPage
   > {
     /**
-     * @param object - The JournalEntryPage instance which is being edited.
+     * @param object  - The JournalEntryPage instance which is being edited.
      * @param options - Application options
      */
     constructor(object: JournalEntryPage, options?: Partial<TOptions>);
@@ -41,17 +41,15 @@ declare global {
 
     get title(): string;
 
-    // FIXME: this should be async, but the parent classes would need to be updated first
     activateEditor(
       name: string,
       options?: TextEditor.Options | undefined,
       initialContent?: string | undefined
     ): Promise<Editor | EditorView>;
 
-    // FIXME: this should be async, but the parent classes would need to be updated first
-    override getData(options?: Partial<TOptions> | undefined): JournalPageSheet.SheetData<TOptions>;
+    override getData(options?: Partial<TOptions> | undefined): Promise<JournalPageSheet.SheetData<TOptions>>;
 
-    // FIXME: this should be private async, but the parent classes would need to be updated first
+    // TODO: this should be private, but that needs to change on the ancestor classes, first.
     protected _renderInner(data: object): Promise<JQuery<HTMLElement>>;
   }
   namespace JournalPageSheet {
@@ -99,13 +97,10 @@ declare global {
      */
     toc: ReturnType<typeof JournalEntryPage["buildTOC"]>;
 
-    // FIXME: this should be async once the parent classes are updated
-    override getData(options?: Partial<TOptions> | undefined): JournalPageSheet.SheetData<TOptions>;
+    override getData(options?: Partial<TOptions> | undefined): Promise<JournalPageSheet.SheetData<TOptions>>;
 
-    // FIXME: this should be async once the parent classes are updated
     close(options?: FormApplication.CloseOptions | undefined): Promise<void>;
 
-    // FIXME: this should be async once the parent classes are updated
     protected _render(
       force?: boolean | undefined,
       options?: Application.RenderOptions<TOptions> | undefined
@@ -116,14 +111,12 @@ declare global {
      */
     isEditorDirty(): boolean;
 
-    // FIXME: this should be async once the parent classes are updated
     activateEditor(
       name: string,
       options?: TextEditor.Options | undefined,
       initialContent?: string | undefined
     ): Promise<Editor | EditorView>;
 
-    // FIXME: this should be async once the parent classes are updated
     protected _renderInner(data: object): Promise<JQuery<HTMLElement>>;
 
     _getSecretContent(secret: HTMLElement): string;
@@ -131,7 +124,6 @@ declare global {
     // FIXME: revisit this when it's added to its ancestor classes
     _updateSecret(secret: HTMLElement, content: string): Promise<typeof this>;
 
-    // FIXME: this should be async once the parent classes are updated
     protected _updateObject(event: Event, formData: object): Promise<unknown>;
 
     /**
@@ -247,13 +239,11 @@ declare global {
    * A subclass of {@link JournalTextPageSheet} that implements a TinyMCE editor.
    */
   class JournalTextTinyMCESheet extends JournalTextPageSheet<JournalTextTinyMCESheet.Options> {
-    // FIXME: should be async
     close(options?: FormApplication.CloseOptions | undefined): Promise<void>;
 
     static get format(): typeof CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML;
 
-    // FIXME: should be async
-    protected _render(
+    protected override _render(
       force?: boolean | undefined,
       options?: Application.RenderOptions<JournalTextTinyMCESheet.Options> | undefined
     ): Promise<void>;
@@ -290,16 +280,14 @@ declare global {
 
     get template(): string;
 
-    // FIXME: should be async once ancestor types updated
     getData(
       options?: Partial<MarkdownJournalPageSheet.Options> | undefined
-    ): JournalPageSheet.SheetData<MarkdownJournalPageSheet.Options>;
+    ): Promise<JournalPageSheet.SheetData<MarkdownJournalPageSheet.Options>>;
 
     activateListeners(html: JQuery<HTMLElement>): void;
 
     isEditorDirty(): boolean;
 
-    // FIXME: should be async once ancestor types updated
     protected _updateObject(event: Event, formData: object): Promise<unknown>;
 
     protected _onDrop(event: DragEvent): void;
