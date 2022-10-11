@@ -8,17 +8,16 @@ declare global {
   /**
    * The Application responsible for displaying and editing a single {@link JournalEntryPage} document.
    *
-   * @typeParam TOptions - The type of the options object
+   * @typeParam ConcreteOptions - The type of the options object
    */
-  class JournalPageSheet<TOptions extends JournalPageSheet.Options = JournalPageSheet.Options> extends DocumentSheet<
-    TOptions,
-    JournalEntryPage
-  > {
+  class JournalPageSheet<
+    ConcreteOptions extends JournalPageSheet.Options = JournalPageSheet.Options
+  > extends DocumentSheet<ConcreteOptions, JournalEntryPage> {
     /**
      * @param object  - The JournalEntryPage instance which is being edited.
      * @param options - Application options
      */
-    constructor(object: JournalEntryPage, options?: Partial<TOptions>);
+    constructor(object: JournalEntryPage, options?: Partial<ConcreteOptions>);
 
     /**
      * {@inheritdoc}
@@ -47,7 +46,9 @@ declare global {
       initialContent?: string | undefined
     ): Promise<Editor | EditorView>;
 
-    override getData(options?: Partial<TOptions> | undefined): Promise<JournalPageSheet.SheetData<TOptions>>;
+    override getData(
+      options?: Partial<ConcreteOptions> | undefined
+    ): Promise<JournalPageSheet.SheetData<ConcreteOptions>>;
 
     // TODO: this should be private, but that needs to change on the ancestor classes, first.
     protected _renderInner(data: object): Promise<JQuery<HTMLElement>>;
