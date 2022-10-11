@@ -148,8 +148,16 @@ declare global {
   /**
    * The Application responsible for displaying and editing a single {@link JournalEntryPage} image document.
    */
-  class JournalImagePageSheet extends JournalPageSheet {
-    // TODO: type declarations for this class
+  class JournalImagePageSheet extends JournalPageSheet<JournalImagePageSheet.Options> {
+    /**
+     * @defaultValue
+     * ```typescript
+     * const options = super.defaultOptions;
+     * options.classes.push("image");
+     * options.height = "auto";
+     * ```
+     */
+    static override get defaultOptions(): JournalImagePageSheet.Options;
   }
   namespace JournalImagePageSheet {
     type Options = JournalPageSheet.Options;
@@ -158,10 +166,50 @@ declare global {
    * The Application responsible for displaying and editing a single {@link JournalEntryPage} video document.
    */
   class JournalVideoPageSheet extends JournalPageSheet<JournalVideoPageSheet.Options> {
-    // TODO: type declarations for this class
+    activateListeners(html: JQuery<HTMLElement>): void;
+    /**
+     * Get the YouTube player parameters depending on whether the sheet is being viewed or edited.
+     */
+    protected _getYouTubeVars(): JournalVideoPageSheet.YouTubeVars;
+    protected _getSubmitData(updateData?: object | null | undefined): Record<string, unknown>;
+    /**
+     * Convert time components to a timestamp in seconds.
+     * @param param0 - The time components.
+     * @returns The timestamp, in seconds.
+     */
+    protected _timeComponentsToTimestamp({ h, m, s }: Partial<JournalVideoPageSheet.TimeComponents>): number;
+    /**
+     * Convert a timestamp in seconds into separate time components.
+     * @param timestamp - The timestamp, in seconds.
+     * @returns The individual time components
+     */
+    protected _timestampToTimeComponents(timestamp: number): JournalVideoPageSheet.TimeComponents;
   }
   namespace JournalVideoPageSheet {
     type Options = JournalPageSheet.Options;
+    interface SheetData extends JournalPageSheet.SheetData {
+      flexRatio: boolean;
+      isYoutube: boolean;
+      timestamp: TimeComponents;
+      yt: YouTube;
+    }
+    interface YouTubeVars {
+      playsinline: 1;
+      modestbranding: 1;
+      controls: 0 | 1;
+      autoplay: 0 | 1;
+      loop: 0 | 1;
+      start: TimeComponents;
+    }
+    interface TimeComponents {
+      h: number;
+      m: number;
+      s: number;
+    }
+    interface YouTube {
+      id: string;
+      url: string;
+    }
   }
   /**
    * The Application responsible for displaying and editing a single {@link JournalEntryPage} PDF document.
