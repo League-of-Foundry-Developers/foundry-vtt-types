@@ -1,30 +1,3 @@
-interface ShareImageConfig {
-  /**
-   * The image URL to share.
-   */
-  image: string;
-
-  /**
-   * The image title.
-   */
-  title: string;
-
-  /**
-   * The UUID of a Document related to the image, used to determine permission to see the image title.
-   */
-  uuid?: string | undefined;
-
-  /**
-   * If this is provided, the permissions of the related Document will be ignored and the title will be shown based on this parameter.
-   */
-  showTitle?: boolean | undefined;
-
-  /**
-   * A list of user IDs to show the image to.
-   */
-  users?: string[] | undefined;
-}
-
 /**
  * The singleton collection of JournalEntry documents which exist within the active World.
  * This Collection is accessible within the Game object as game.journal.
@@ -72,7 +45,7 @@ declare class Journal extends WorldCollection<typeof foundry.documents.BaseJourn
    * @param src - The image URL to share.
    * @param config - Image sharing configuration.
    */
-  static showImage(src: string, config: ShareImageConfig): void;
+  static showImage(src: string, config: Journal.ShareImageConfig): void;
 
   /**
    * Open Socket listeners which transact JournalEntry data
@@ -87,4 +60,33 @@ declare class Journal extends WorldCollection<typeof foundry.documents.BaseJourn
    * @internal
    */
   static _showEntry(uuid: string, force: boolean): Promise<void>;
+}
+declare namespace Journal {
+  // FIXME: use image-popout's ShareImageConfig interface for config once it's available
+  interface ShareImageConfig {
+    /**
+     * The image URL to share.
+     */
+    image: string;
+
+    /**
+     * The image title.
+     */
+    title: string;
+
+    /**
+     * The UUID of a Document related to the image, used to determine permission to see the image title.
+     */
+    uuid?: string | undefined;
+
+    /**
+     * If this is provided, the permissions of the related Document will be ignored and the title will be shown based on this parameter.
+     */
+    showTitle?: boolean | undefined;
+
+    /**
+     * A list of user IDs to show the image to.
+     */
+    users?: string[] | undefined;
+  }
 }
