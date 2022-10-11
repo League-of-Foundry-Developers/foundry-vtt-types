@@ -1,4 +1,6 @@
 import { DocumentDataType, DocumentModificationOptions } from "../../../common/abstract/document.mjs";
+import type { JournalEntryDataConstructorData } from "../../../common/data/data.mjs/journalEntryData.js";
+import type { BaseUser } from "../../../common/documents.mjs/baseUser.js";
 
 declare global {
   /**
@@ -6,7 +8,6 @@ declare global {
    *
    * @see {@link Journal} The world-level collection of JournalEntry documents
    * @see {@link JournalSheet} The JournalEntry configuration application
-   *
    */
   class JournalEntry extends ClientDocumentMixin(foundry.documents.BaseJournalEntry) {
     /**
@@ -40,6 +41,18 @@ declare global {
      * @returns A Promise which resolves once the pan animation has concluded
      */
     panToNote(options?: JournalEntry.PanToNoteOptions): Promise<void>;
+
+    protected _preCreate(
+      data: JournalEntryDataConstructorData,
+      options: DocumentModificationOptions,
+      user: BaseUser
+    ): Promise<void>;
+
+    protected _preUpdate(
+      changed: DeepPartial<JournalEntryDataConstructorData>,
+      options: DocumentModificationOptions,
+      user: BaseUser
+    ): Promise<void>;
 
     protected override _onUpdate(
       data: DeepPartial<DocumentDataType<foundry.documents.BaseJournalEntry>>,
