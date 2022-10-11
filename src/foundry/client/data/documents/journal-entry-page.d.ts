@@ -1,3 +1,5 @@
+import type { PropertiesToSource } from "../../../../types/helperTypes.js";
+import type { DocumentModificationOptions } from "../../../common/abstract/document.mjs.js";
 import "./utils/primitives.mjs";
 
 declare global {
@@ -10,9 +12,17 @@ declare global {
    */
   class JournalEntryPage extends ClientDocumentMixin(foundry.documents.BaseJournalEntryPage) {
     /**
+     * The cached table of contents for this JournalEntryPage.
+     */
+    protected _toc: Record<string, JournalEntryPage.Heading>;
+
+    /**
      * The table of contents for this JournalEntryPage.
      */
-    get toc(): JournalEntryPage.Heading;
+    get toc(): Record<string, JournalEntryPage.Heading>;
+
+    // FIXME: This should become ValueOf<DOCUMENT_OWNERSHIP_LEVELS>, once ClientDocumentMixin is updated.
+    get permission(): 0 | 1 | -1 | 2 | 3;
 
     /**
      * Return a reference to the Note instance for this Journal Entry Page in the current Scene, if any.
@@ -40,13 +50,13 @@ declare global {
             includeElement?: boolean | undefined;
           }
         | undefined
-    ): JournalEntryPage.Heading;
+    ): Record<string, JournalEntryPage.Heading>;
 
     /**
      * Flatten the tree structure into a single object with each node's slug as the key.
      * @param nodes - The root ToC nodes.
      */
-    static _flattenTOC(nodes: JournalEntryPage.Heading[]): JournalEntryPage.Heading;
+    static _flattenTOC(nodes: JournalEntryPage.Heading[]): Record<string, JournalEntryPage.Heading>;
 
     /**
      * Construct a table of contents node from a heading element.
@@ -63,6 +73,16 @@ declare global {
           }
         | undefined
     ): JournalEntryPage.Heading;
+
+    // FIXME: '_createDocumentLink' should be inherited from ClientDocument once it's updated
+
+    // FIXME: '_onClickDocumentLink' should be inherited from ClientDocument once it's updated
+
+    protected _onUpdate(
+      changed: DeepPartial<PropertiesToSource<JournalEntryPageDataProperties>>,
+      options: DocumentModificationOptions,
+      userId: string
+    ): void;
   }
 
   namespace JournalEntryPage {

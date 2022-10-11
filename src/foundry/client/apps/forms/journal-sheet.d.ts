@@ -270,22 +270,27 @@ declare global {
          * Render the sheet in a given view mode, see {@link JournalSheet.VIEW_MODES}.
          */
         mode?: ValueOf<typeof JournalSheet.VIEW_MODES> | undefined;
+
         /**
          * Render the sheet with the page with the given ID in view.
          */
         pageId?: string | undefined;
+
         /**
          * Render the sheet with the page at the given index in view.
          */
         pageIndex?: number | undefined;
+
         /**
          * Render the sheet with the given anchor for the given page in view.
          */
         anchor?: string | undefined;
+
         /**
          * Whether the journal entry or one of its pages is being shown to players who might otherwise not have permission to view it.
          */
         tempOwnership?: boolean | undefined;
+
         /**
          * Render the sheet with the TOC sidebar collapsed?
          */
