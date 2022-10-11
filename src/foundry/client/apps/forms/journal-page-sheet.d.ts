@@ -20,7 +20,6 @@ declare global {
     constructor(object: JournalEntryPage, options?: Partial<ConcreteOptions>);
 
     /**
-     * {@inheritdoc}
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -234,15 +233,43 @@ declare global {
    */
   class JournalPDFPageSheet extends JournalPageSheet<JournalPDFPageSheet.Options> {
     /**
+     * @defaultValue
+     * ```typescript
+     * const options = super.defaultOptions;
+     * options.classes.push("pdf");
+     * options.height = "auto";
+     * ```
+     */
+    static get defaultOptions(): JournalPDFPageSheet.Options;
+
+    /**
      * Maintain a cache of PDF sizes to avoid making HEAD requests every render.
      */
     protected static _sizes: Record<string, number>;
 
     activateListeners(html: JQuery<HTMLElement>): void;
+
+    getData(options?: Partial<JournalPDFPageSheet.Options> | undefined): Promise<JournalPDFPageSheet.SheetData>;
+
+    protected _renderInner(data: object): Promise<JQuery<HTMLElement>>;
+
+    /**
+     * Handle a request to load a PDF.
+     * @param event - The triggering event.
+     */
+    protected _onLoadPDF(event: MouseEvent): void;
+
+    /**
+     * Retrieve parameters to pass to the PDF viewer.
+     */
+    protected _getViewerParams(): URLSearchParams;
   }
 
   namespace JournalPDFPageSheet {
     type Options = JournalPageSheet.Options;
+    type SheetData = JournalPageSheet.SheetData<JournalPDFPageSheet.Options> & {
+      params: ReturnType<JournalPDFPageSheet["_getViewerParams"]>;
+    };
   }
   /**
    * A subclass of {@link JournalTextPageSheet} that implements a TinyMCE editor.
@@ -277,7 +304,6 @@ declare global {
     static get format(): typeof CONST.JOURNAL_ENTRY_PAGE_FORMATS.MARKDOWN;
 
     /**
-     * {@inheritDoc}
      * @defaultValue
      * ```typescript
      * const options = super.defaultOptions;
