@@ -3,18 +3,22 @@ interface ShareImageConfig {
    * The image URL to share.
    */
   image: string;
+
   /**
    * The image title.
    */
   title: string;
+
   /**
    * The UUID of a Document related to the image, used to determine permission to see the image title.
    */
   uuid?: string | undefined;
+
   /**
    * If this is provided, the permissions of the related Document will be ignored and the title will be shown based on this parameter.
    */
   showTitle?: boolean | undefined;
+
   /**
    * A list of user IDs to show the image to.
    */

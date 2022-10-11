@@ -64,24 +64,29 @@ declare global {
         | undefined
     ): JournalEntryPage.Heading;
   }
+
   namespace JournalEntryPage {
     interface Heading {
       /**
        * The heading level, 1-6.
        */
       level: number;
+
       /**
        * The raw heading text with any internal tags omitted.
        */
       text: string;
+
       /**
        * The generated slug for this heading.
        */
       slug: string;
+
       /**
        * The currently rendered element for this heading, if it exists.
        */
       element?: HTMLHeadingElement | undefined;
+
       /**
        * Any child headings of this one.
        */

@@ -11,6 +11,7 @@ declare global {
      * The _id which uniquely identifies this JournalEntryPage embedded document.
      */
     _id: fields.DocumentId;
+
     /**
      * The text name of this page.
      */
@@ -21,39 +22,48 @@ declare global {
      * The type of this page, in {@link BaseJournalEntryPage.TYPES}.
      */
     type: fields.StringField;
+
     /**
      * Data that control's the display of this page's title.
      */
     title: DocumentField<JournalEntryPageDataSchema.Title>;
+
     /**
      * Data particular to image journal entry pages.
      */
     image: DocumentField<JournalEntryPageDataSchema.Image>;
+
     /**
      * Data particular to text journal entry pages.
      */
     text: DocumentField<JournalEntryPageDataSchema.Text>;
+
     /**
      *  Data particular to video journal entry pages.
      */
     video: DocumentField<JournalEntryPageDataSchema.Video>;
+
     /**
      * The URI of the image or other external media to be used for this page.
      */
     src: fields.StringField;
+
     /**
      * System-specific data.
      */
     system: fields.SystemDataField;
+
     /**
      * The numeric sort value which orders this page relative to its siblings.
      */
     sort: fields.IntegerSortField;
+
     // FIXME: This should be a DocumentOwnershipField once the relevant update is in place
     /**
      * An object which configures the ownership of this page.
      */
     ownership: fields.DocumentPermissions;
+
     /**
      * An object of optional key/value flags.
      */
@@ -69,6 +79,7 @@ declare global {
        * Whether to render the page's title in the overall journal view.
        */
       show: fields.BooleanField;
+
       /**
        * The heading level to render this page's title at in the overall journal view.
        */
@@ -91,15 +102,18 @@ declare global {
        */
       caption: fields.StringField;
     }
+
     interface Text extends DocumentSchema {
       /**
        * The content of the JournalEntryPage in a format appropriate for its type.
        */
       content: fields.StringField;
+
       /**
        * The original markdown source, if applicable.
        */
       markdown: fields.StringField;
+
       /**
        * The format of the page's content, in {@link CONST.JOURNAL_ENTRY_PAGE_FORMATS }.
        */
@@ -111,22 +125,27 @@ declare global {
        * Automatically loop the video?
        */
       loop: fields.BooleanField;
+
       /**
        * Should the video play automatically?
        */
       autoplay: fields.BooleanField;
+
       /**
        * The volume level of any audio that the video file contains.
        */
       volume: fields.AlphaField;
+
       /**
        * The starting point of the video, in seconds.
        */
       timestamp: fields.TimestampField;
+
       /**
        * The width of the video, otherwise it will fill the available container width.
        */
       width: fields.PositiveIntegerField;
+
       /**
        * The height of the video, otherwise it will use the aspect ratio of the source video,
        * or 16:9 if that aspect ratio is not available.
@@ -212,10 +231,12 @@ declare global {
        * The content of the JournalEntryPage in a format appropriate for its type.
        */
       content?: string | undefined;
+
       /**
        * The original markdown source, if applicable.
        */
       markdown?: string | undefined;
+
       /**
        * The format of the page's content, in {@link CONST.JOURNAL_ENTRY_PAGE_FORMATS}.
        */
@@ -227,18 +248,22 @@ declare global {
        * Automatically loop the video?
        */
       loop?: boolean | undefined;
+
       /**
        * Should the video play automatically?
        */
       autoplay?: boolean | undefined;
+
       /**
        * The volume level of any audio that the video file contains.
        */
       volume?: number | undefined;
+
       /**
        * The starting point of the video, in seconds.
        */
       timestamp?: number | undefined;
+
       /**
        * The width of the video, otherwise it will fill the available container width.
        */

@@ -133,10 +133,6 @@ declare global {
      */
     protected _convertFormats(renderData: ReturnType<typeof this["getData"]>): void;
 
-    /* -------------------------------------------- */
-    /*  HTML Editing                                */
-    /* -------------------------------------------- */
-
     /**
      * Update the UI appropriately when receiving new steps from another client.
      */
@@ -196,14 +192,17 @@ declare global {
      */
     protected _timestampToTimeComponents(timestamp: number): JournalVideoPageSheet.TimeComponents;
   }
+
   namespace JournalVideoPageSheet {
     type Options = JournalPageSheet.Options;
+
     interface SheetData extends JournalPageSheet.SheetData {
       flexRatio: boolean;
       isYoutube: boolean;
       timestamp: TimeComponents;
       yt: YouTube;
     }
+
     interface YouTubeVars {
       playsinline: 1;
       modestbranding: 1;
@@ -212,11 +211,13 @@ declare global {
       loop: 0 | 1;
       start: TimeComponents;
     }
+
     interface TimeComponents {
       h: number;
       m: number;
       s: number;
     }
+
     interface YouTube {
       id: string;
       url: string;
