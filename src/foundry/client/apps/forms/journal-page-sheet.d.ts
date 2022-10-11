@@ -249,7 +249,6 @@ declare global {
    * A subclass of {@link JournalTextPageSheet} that implements a markdown editor for editing the text content.
    */
   class MarkdownJournalPageSheet extends JournalTextPageSheet<MarkdownJournalPageSheet.Options> {
-    // TODO: type declarations for this class
     /**
      * Store the dirty flag for this editor.
      */
