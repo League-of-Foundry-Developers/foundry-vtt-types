@@ -1,10 +1,5 @@
-import {
-  ConfiguredDocumentClass,
-  ConfiguredObjectClassForName,
-  DocumentConstructor
-} from "../../../../types/helperTypes";
-import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
-import EmbeddedCollection from "../../../common/abstract/embedded-collection.mjs";
+import { ConfiguredData, ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../types/helperTypes";
+import { DocumentDataType, DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 import type { ActorDataConstructorData } from "../../../common/data/data.mjs/actorData.js";
 
 declare global {
@@ -12,9 +7,9 @@ declare global {
    * The client-side Actor document which extends the common BaseActor model.
    * Each Actor document contains ActorData which defines its data schema.
    *
-   * @see {@link data.ActorData}              The Actor data schema
-   * @see {@link documents.Actors}            The world-level collection of Actor documents
-   * @see {@link applications.ActorSheet}     The Actor configuration application
+   * @see {@link data.ActorData} The Actor data schema
+   * @see {@link documents.Actors} The world-level collection of Actor documents
+   * @see {@link applications.ActorSheet} The Actor configuration application
    *
    * @example <caption>Create a new Actor</caption>
    * ```typescript
@@ -60,11 +55,6 @@ declare global {
     protected _lastWildcard: string | null;
 
     /**
-     * A convenient reference to the file path of the Actor's profile image
-     */
-    get img(): this["data"]["img"];
-
-    /**
      * Provide a thumbnail image path used to represent this document.
      */
     get thumbnail(): this["data"]["img"];
@@ -76,15 +66,17 @@ declare global {
       foundry.documents.BaseItem["data"]["type"],
       Array<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseItem>>>
     >;
+
     /**
      * Test whether an Actor document is a synthetic representation of a Token (if true) or a full Document (if false)
      */
     get isToken(): boolean;
 
     /**
-     * An array of ActiveEffect instances which are present on the Actor which have a limited duration.
+     * An array of {@link ActiveEffect} instances which are present on the Actor which have a limited duration.
      */
-    get temporaryEffects(): ReturnType<this["effects"]["filter"]>;
+    // FIXME: once the data models are updated, this type should be: ReturnType<this["effects"]["filter"]>
+    get temporaryEffects(): (ActiveEffect & { isTemporary: true; disabled?: false | undefined })[];
 
     /**
      * Return a reference to the TokenDocument which owns this Actor as a synthetic override
@@ -92,6 +84,16 @@ declare global {
     get token(): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>> | null;
 
     override get uuid(): string;
+
+    /**
+     * Request wildcard token images from the server and return them.
+     * @param actorId - The actor whose prototype token contains the wildcard image path.
+     * @returns The list of filenames to token images that match the wildcard search.
+     */
+    protected static _requestTokenImages(
+      actorId: string,
+      options: Actor.RequestTokenImagesOptions | undefined
+    ): Promise<string[]>;
 
     /**
      * Apply any transformations to the Actor data which are caused by ActiveEffects.
@@ -122,14 +124,15 @@ declare global {
     /**
      * Prepare a data object which defines the data schema used by dice roll commands against this Actor
      */
-    getRollData(): object;
+    // FIXME this should be typed as: typeof this["system"]
+    getRollData(): DocumentDataType<this>;
 
     /**
-     * Create a new TokenData object which can be used to create a Token representation of the Actor.
+     * Create a new Token document, not yet saved to the database, which represents the Actor.
      * @param data - Additional data, such as x, y, rotation, etc. for the created token data (default: `{}`)
-     * @returns The created TokenData instance
+     * @returns The created TokenDocument instances
      */
-    getTokenData(data?: object): Promise<foundry.data.TokenData>;
+    getTokenDocument(data?: DeepPartial<DocumentDataType<TokenDocument>> | undefined): Promise<TokenDocument>;
 
     /**
      * Get an Array of Token images which could represent this Actor
@@ -157,11 +160,7 @@ declare global {
      * @param options - Configuration for how initiative for this Actor is rolled.
      * @returns A promise which resolves to the Combat document once rolls are complete.
      */
-    rollInitiative(options?: Actor.RollInitiativeOptions): Promise<void>;
-
-    override getEmbeddedCollection(
-      embeddedName: string
-    ): EmbeddedCollection<DocumentConstructor, foundry.data.ActorData>;
+    rollInitiative(options?: Actor.RollInitiativeOptions): Promise<Combat | null>;
 
     protected override _preCreate(
       data: ActorDataConstructorData,
@@ -169,10 +168,17 @@ declare global {
       user: foundry.documents.BaseUser
     ): Promise<void>;
 
+    /**
+     * When an Actor is being created, apply default token configuration settings to its prototype token.
+     * @param data - Data explicitly provided to the creation workflow
+     * @param options - Options which configure creation
+     */
+    protected _applyDefaultTokenSettings(data: object, options: Actor.ApplyDefaultTokenSettingsOptions): void;
+
     protected override _onUpdate(
       changed: DeepPartial<foundry.data.ActorData["_source"]>,
       options: DocumentModificationOptions,
-      user: string
+      userId: string
     ): void;
 
     protected override _onCreateEmbeddedDocuments(
@@ -205,8 +211,21 @@ declare global {
      * @internal
      */
     protected _onEmbeddedDocumentChange(embeddedName: string): void;
+
+    /**
+     * @deprecated since v10
+     * @see {@link Actor.getTokenDocument}
+     */
+    getTokenData(data?: DeepPartial<ConfiguredData<"Token">> | undefined): Promise<TokenDocument>;
   }
+
   namespace Actor {
+    interface RequestTokenImagesOptions {
+      /**
+       * The name of the compendium the actor is in.
+       */
+      pack: string;
+    }
     interface RollInitiativeOptions {
       /**
        * Create new Combatant entries for Tokens associated with this actor.
@@ -226,6 +245,14 @@ declare global {
        * TODO: Solve once Combat is more fleshed out. @see Combat#rollInitiative
        */
       initiativeOptions?: object;
+    }
+
+    interface ApplyDefaultTokenSettingsOptions {
+      /**
+       * Does this creation workflow originate via compendium import?
+       * @defaultValue `false`
+       */
+      fromCompendium?: boolean;
     }
   }
 }
