@@ -24,13 +24,12 @@ declare global {
      *   submitOnChange: true,
      *   resizable: true,
      *   baseApplication: "ItemSheet",
-     *   id: "item"
+     *   id: "item",
+     *   secrets: [{parentSelector: ".editor"}]
      * })
      * ```
      */
     static get defaultOptions(): DocumentSheetOptions;
-
-    override get id(): string;
 
     override get title(): string;
 
