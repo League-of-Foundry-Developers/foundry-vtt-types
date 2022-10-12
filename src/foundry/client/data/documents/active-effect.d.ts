@@ -9,8 +9,8 @@ declare global {
    * Each ActiveEffect belongs to the effects collection of its parent Document.
    * Each ActiveEffect contains a ActiveEffectData object which provides its source data.
    *
-   * @see {@link documents.Actor}                     The Actor document which contains ActiveEffect embedded documents
-   * @see {@link documents.Item}                      The Item document which contains ActiveEffect embedded documents
+   * @see {@link documents.Actor} The Actor document which contains ActiveEffect embedded documents
+   * @see {@link documents.Item} The Item document which contains ActiveEffect embedded documents
    */
   class ActiveEffect extends ClientDocumentMixin(foundry.documents.BaseActiveEffect) {
     /**
@@ -83,11 +83,14 @@ declare global {
     apply(actor: ConfiguredActor, change: EffectChangeData): ConfiguredActor;
 
     /**
-     * Cast a raw EffectChangeData change string to an Array of an inner type.
+     * Cast a raw EffectChangeData change string to the desired data type.
      * @param raw  - The raw string value
-     * @param type - The target data type of inner array elements
+     * @param type - The target data type that the raw value should be cast to match
      * @returns The parsed delta cast to the target data type
      */
+    protected _castDelta(raw: string, type: "string"): string;
+    protected _castDelta(raw: string, type: "boolean"): boolean;
+    protected _castDelta(raw: string, type: "number"): number;
     protected _castDelta<T extends string>(
       raw: string,
       type: T
@@ -105,6 +108,9 @@ declare global {
      * @param type - The target data type of inner array elements
      * @returns The parsed delta cast as a typed array
      */
+    protected _castArray(raw: string, type: "string"): Array<string>;
+    protected _castArray(raw: string, type: "boolean"): Array<boolean>;
+    protected _castArray(raw: string, type: "number"): Array<number>;
     protected _castArray<T extends string>(raw: string, type: T): Array<ReturnType<typeof this._castDelta<T>>>;
 
     /**
@@ -129,12 +135,16 @@ declare global {
      * @param delta   - The parsed value of the change object
      * @param changes - An object which accumulates changes to be applied
      */
-    protected _applyAdd<T, K extends string>(
+    protected _applyAdd<
+      ValueType,
+      Key extends string,
+      ChangeObject extends object & { [P in Key]?: ValueType | undefined }
+    >(
       actor: ConfiguredActor,
-      change: EffectChangeData & { key: K },
-      current: T,
-      delta: T,
-      changes: object & { [P in K]?: T | undefined }
+      change: EffectChangeData & { key: Key },
+      current: ValueType | null,
+      delta: ValueType,
+      changes: ChangeObject
     ): void;
 
     /**
@@ -146,12 +156,16 @@ declare global {
      * @param delta   - The parsed value of the change object
      * @param changes - An object which accumulates changes to be applied
      */
-    protected _applyMultiply<T, K extends string>(
+    protected _applyMultiply<
+      ValueType,
+      Key extends string,
+      ChangeObject extends object & { [P in Key]?: ValueType | undefined }
+    >(
       actor: ConfiguredActor,
-      change: EffectChangeData & { key: K },
-      current: T,
-      delta: T,
-      changes: object & { [P in K]?: T | undefined }
+      change: EffectChangeData & { key: Key },
+      current: ValueType | null,
+      delta: ValueType,
+      changes: ChangeObject
     ): void;
 
     /**
@@ -163,12 +177,16 @@ declare global {
      * @param delta   - The parsed value of the change object
      * @param changes - An object which accumulates changes to be applied
      */
-    protected _applyOverride<T, K extends string>(
+    protected _applyOverride<
+      ValueType,
+      Key extends string,
+      ChangeObject extends object & { [P in Key]?: ValueType | undefined }
+    >(
       actor: ConfiguredActor,
-      change: EffectChangeData & { key: K },
-      current: T,
-      delta: T,
-      changes: object & { [P in K]?: T | undefined }
+      change: EffectChangeData & { key: Key },
+      current: ValueType | null,
+      delta: ValueType,
+      changes: ChangeObject
     ): void;
 
     /**
@@ -180,12 +198,16 @@ declare global {
      * @param delta   - The parsed value of the change object
      * @param changes - An object which accumulates changes to be applied
      */
-    protected _applyUpgrade<T, K extends string>(
+    protected _applyUpgrade<
+      ValueType,
+      Key extends string,
+      ChangeObject extends object & { [P in Key]?: ValueType | undefined }
+    >(
       actor: ConfiguredActor,
-      change: EffectChangeData & { key: K },
-      current: T,
-      delta: T,
-      changes: object & { [P in K]?: T | undefined }
+      change: EffectChangeData & { key: Key },
+      current: ValueType | null,
+      delta: ValueType,
+      changes: ChangeObject
     ): void;
 
     /**
@@ -196,12 +218,16 @@ declare global {
      * @param delta   - The parsed value of the change object
      * @param changes - An object which accumulates changes to be applied
      */
-    protected _applyCustom<T, K extends string>(
+    protected _applyCustom<
+      ValueType,
+      Key extends string,
+      ChangeObject extends object & { [P in Key]?: ValueType | undefined }
+    >(
       actor: ConfiguredActor,
-      change: EffectChangeData & { key: K },
-      current: T,
-      delta: T,
-      changes: object & { [P in K]?: T | undefined }
+      change: EffectChangeData & { key: Key },
+      current: ValueType | null,
+      delta: ValueType,
+      changes: ChangeObject
     ): void;
 
     /**
