@@ -30,6 +30,8 @@ export declare class BaseActiveEffect extends Document<
 
   static override get metadata(): ActiveEffectMetadata;
 
+  static defineSchema(): ConstructorOf<data.ActiveEffectData>;
+
   protected override _preCreate(
     data: ActiveEffectDataConstructorData,
     options: DocumentModificationOptions,
@@ -41,4 +43,7 @@ export declare class BaseActiveEffect extends Document<
     permission: keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
     { exact }: { exact?: boolean }
   ): boolean;
+
+  // FIXME: this will probably inherit a better typing once it's ancestor classes are updated for v10.
+  static migrateData(data: object): typeof data;
 }
