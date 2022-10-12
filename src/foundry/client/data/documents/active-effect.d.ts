@@ -41,7 +41,7 @@ declare global {
      * Prepare derived data related to active effect duration
      * @internal
      */
-    protected _prepareDuration(): DurationSummary;
+    protected _prepareDuration(): ActiveEffect.DurationSummary;
 
     /**
      * Format a round+turn combination as a decimal
@@ -262,13 +262,15 @@ declare global {
      */
     protected _displayScrollingStatus(enabled: boolean): void;
   }
-}
 
-interface DurationSummary {
-  type: "seconds" | "turns" | "none";
-  duration: number | null;
-  remaining: number | null;
-  label: string;
+  namespace ActiveEffect {
+    interface DurationSummary {
+      type: "seconds" | "turns" | "none";
+      duration: number | null;
+      remaining: number | null;
+      label: string;
+    }
+  }
 }
 
 type ConfiguredActor = InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>;
