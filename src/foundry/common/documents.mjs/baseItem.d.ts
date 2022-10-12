@@ -54,4 +54,13 @@ export declare class BaseItem extends Document<
     permission: keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
     { exact }: { exact?: boolean }
   ): boolean;
+
+  static defineSchema(): typeof data.ItemData;
+
+  /**
+   * @defaultValue `"icons/svg/item-bag.svg"`
+   */
+  static DEFAULT_ICON: string;
+
+  static get TYPES(): string[];
 }
