@@ -1,7 +1,6 @@
 import type { EditorView } from "prosemirror-view";
 import type Showdown from "showdown";
 import type { Editor } from "tinymce";
-import type { JOURNAL_ENTRY_PAGE_FORMATS } from "../../../common/constants.mjs.js";
 import type { CONST } from "../../../common/module.mjs.js";
 
 declare global {
@@ -45,9 +44,7 @@ declare global {
       initialContent?: string | undefined
     ): Promise<Editor | EditorView>;
 
-    override getData(
-      options?: Partial<ConcreteOptions> | undefined
-    ): Promise<JournalPageSheet.SheetData<ConcreteOptions>>;
+    override getData(options?: Partial<ConcreteOptions> | undefined): Promise<JournalPageSheet.Data<ConcreteOptions>>;
 
     // FIXME: this should be private, but that needs to change on the ancestor classes, first.
     protected _renderInner(data: object): Promise<JQuery<HTMLElement>>;
@@ -56,7 +53,7 @@ declare global {
   namespace JournalPageSheet {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface Options extends DocumentSheetOptions {}
-    interface SheetData<T extends JournalPageSheet.Options | undefined = JournalPageSheet.Options | undefined> {
+    interface Data<T extends JournalPageSheet.Options | undefined = JournalPageSheet.Options | undefined> {
       cssClass: string;
       editable: boolean;
       document: JournalEntryPage;
@@ -77,12 +74,13 @@ declare global {
     /**
      * Bi-directional HTML \<-\> Markdown converter.
      */
-    static get _converter(): Showdown.Converter;
+    static _converter: Showdown.Converter;
 
     /**
      * Declare the format that we edit text content in for this sheet so we can perform conversions as necessary.
+     * @remarks {@link JournalTextPageSheet} always returns this as 2, but its descendant classes return 1 or 2.
      */
-    static get format(): JOURNAL_ENTRY_PAGE_FORMATS;
+    static get format(): ValueOf<typeof CONST.JOURNAL_ENTRY_PAGE_FORMATS>;
 
     /**
      * @defaultValue
@@ -99,9 +97,7 @@ declare global {
      */
     toc: ReturnType<typeof JournalEntryPage["buildTOC"]>;
 
-    override getData(
-      options?: Partial<ConcreteOptions> | undefined
-    ): Promise<JournalPageSheet.SheetData<ConcreteOptions>>;
+    override getData(options?: Partial<ConcreteOptions> | undefined): Promise<JournalPageSheet.Data<ConcreteOptions>>;
 
     close(options?: FormApplication.CloseOptions | undefined): Promise<void>;
 
@@ -175,6 +171,12 @@ declare global {
    * The Application responsible for displaying and editing a single {@link JournalEntryPage} video document.
    */
   class JournalVideoPageSheet extends JournalPageSheet<JournalVideoPageSheet.Options> {
+    static get defaultOptions(): JournalVideoPageSheet.Options;
+
+    getData(
+      options?: Partial<JournalVideoPageSheet.Options> | undefined
+    ): Promise<JournalPageSheet.Data<JournalVideoPageSheet.Options>>;
+
     activateListeners(html: JQuery<HTMLElement>): void;
 
     /**
@@ -202,9 +204,12 @@ declare global {
   namespace JournalVideoPageSheet {
     type Options = JournalPageSheet.Options;
 
-    interface SheetData extends JournalPageSheet.SheetData {
+    interface Data extends JournalPageSheet.Data {
       flexRatio: boolean;
-      isYoutube: boolean;
+      isYouTube: boolean;
+      /**
+       * @remarks The name 'timestamp' here is inconsistent (elsewhere it refers only to a `number` value representing seconds), but this is what FVTT's source does 🤷
+       */
       timestamp: TimeComponents;
       yt: YouTube;
     }
@@ -269,31 +274,9 @@ declare global {
 
   namespace JournalPDFPageSheet {
     type Options = JournalPageSheet.Options;
-    type SheetData = JournalPageSheet.SheetData<JournalPDFPageSheet.Options> & {
+    type SheetData = JournalPageSheet.Data<JournalPDFPageSheet.Options> & {
       params: ReturnType<JournalPDFPageSheet["_getViewerParams"]>;
     };
-  }
-
-  /**
-   * A subclass of {@link JournalTextPageSheet} that implements a TinyMCE editor.
-   */
-  class JournalTextTinyMCESheet extends JournalTextPageSheet<JournalTextTinyMCESheet.Options> {
-    close(options?: FormApplication.CloseOptions | undefined): Promise<void>;
-
-    static get format(): typeof CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML;
-
-    protected override _render(
-      force?: boolean | undefined,
-      options?: Application.RenderOptions<JournalTextTinyMCESheet.Options> | undefined
-    ): Promise<void>;
-  }
-
-  namespace JournalTextTinyMCESheet {
-    interface Options extends JournalTextPageSheet.Options {
-      editor: JournalTextPageSheet.Options["editor"] & {
-        engine: "tinymce";
-      };
-    }
   }
 
   /**
@@ -305,7 +288,7 @@ declare global {
      */
     protected _isDirty: boolean;
 
-    static get format(): typeof CONST.JOURNAL_ENTRY_PAGE_FORMATS.MARKDOWN;
+    static override get format(): typeof CONST.JOURNAL_ENTRY_PAGE_FORMATS.MARKDOWN;
 
     /**
      * @defaultValue
@@ -315,13 +298,13 @@ declare global {
      * options.classes.push("markdown");
      * ```
      */
-    static get defaultOptions(): JournalTextPageSheet.Options;
+    static get defaultOptions(): MarkdownJournalPageSheet.Options;
 
     get template(): string;
 
     getData(
       options?: Partial<MarkdownJournalPageSheet.Options> | undefined
-    ): Promise<JournalPageSheet.SheetData<MarkdownJournalPageSheet.Options>>;
+    ): Promise<JournalPageSheet.Data<MarkdownJournalPageSheet.Options>>;
 
     activateListeners(html: JQuery<HTMLElement>): void;
 
@@ -342,6 +325,35 @@ declare global {
     interface Options extends JournalTextPageSheet.Options {
       editor: JournalTextPageSheet.Options["editor"] & {
         engine: "prosemirror";
+      };
+    }
+  }
+
+  /**
+   * A subclass of {@link JournalTextPageSheet} that implements a TinyMCE editor.
+   */
+  class JournalTextTinyMCESheet extends JournalTextPageSheet<JournalTextTinyMCESheet.Options> {
+    getData(
+      options?: Partial<JournalTextTinyMCESheet.Options> | undefined
+    ): Promise<JournalPageSheet.Data<JournalTextTinyMCESheet.Options>>;
+
+    close(options?: FormApplication.CloseOptions | undefined): Promise<void>;
+    protected override _render(
+      force?: boolean | undefined,
+      options?: Application.RenderOptions<JournalTextTinyMCESheet.Options> | undefined
+    ): Promise<void>;
+
+    /**
+     * @remarks This isn't present in FVTT's source, but is present to provide a more accurate representation of the typing.
+     * @see {@link JournalTextPageSheet.format}
+     */
+    static get format(): typeof CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML;
+  }
+
+  namespace JournalTextTinyMCESheet {
+    interface Options extends JournalTextPageSheet.Options {
+      editor: JournalTextPageSheet.Options["editor"] & {
+        engine: "tinymce";
       };
     }
   }
