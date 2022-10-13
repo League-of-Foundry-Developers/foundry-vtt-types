@@ -25,19 +25,10 @@ declare class Journal extends WorldCollection<typeof foundry.documents.BaseJourn
    * @returns A Promise that resolves back to the shown document once the request is processed.
    * @throws If the user does not own the document they are trying to show.
    */
-  static show(
-    doc: JournalEntry | JournalEntryPage,
-    options: {
-      /**
-       * Display the entry to all players regardless of normal permissions.
-       */
-      force: boolean;
-      /**
-       * An optional list of user IDs to show the document to. Otherwise it will be shown to all connected clients.
-       */
-      users?: string[] | undefined;
-    }
-  ): Promise<JournalEntry | JournalEntryPage>;
+  static show<T extends JournalEntry | JournalEntryPage = JournalEntry | JournalEntryPage>(
+    doc: T,
+    options: Journal.ShowOptions
+  ): Promise<T>;
 
   // FIXME: use image-popout's ShareImageConfig interface for config once it's available
   /**
@@ -62,6 +53,17 @@ declare class Journal extends WorldCollection<typeof foundry.documents.BaseJourn
   static _showEntry(uuid: string, force: boolean): Promise<void>;
 }
 declare namespace Journal {
+  interface ShowOptions {
+    /**
+     * Display the entry to all players regardless of normal permissions.
+     * @defaultValue `false`
+     */
+    force?: boolean | undefined;
+    /**
+     * An optional list of user IDs to show the document to. Otherwise it will be shown to all connected clients.
+     */
+    users?: string[] | undefined;
+  }
   // FIXME: use image-popout's ShareImageConfig interface for config once it's available
   interface ShareImageConfig {
     /**
