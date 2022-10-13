@@ -71,7 +71,7 @@ declare global {
 
     /**
      * Declare the format that we edit text content in for this sheet so we can perform conversions as necessary.
-     * @remarks {@link JournalTextPageSheet} always returns this as 2, but its descendant classes return 1 or 2.
+     * @defaultValue {@link CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML}
      */
     static get format(): ValueOf<typeof CONST.JOURNAL_ENTRY_PAGE_FORMATS>;
 
