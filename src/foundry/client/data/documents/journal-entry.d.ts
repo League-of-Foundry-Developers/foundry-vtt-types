@@ -11,7 +11,7 @@ declare global {
    */
   class JournalEntry extends ClientDocumentMixin(foundry.documents.BaseJournalEntry) {
     /**
-     * A boolean indicator for whether or not the JournalEntry is visible to the current user in the directory sidebar
+     * A boolean indicator for whether the JournalEntry is visible to the current user in the directory sidebar
      */
     get visible(): boolean;
 
@@ -23,21 +23,19 @@ declare global {
 
     /**
      * Show the JournalEntry to connected players.
-     * By default the entry will only be shown to players who have permission to observe it.
+     * By default, the entry will only be shown to players who have permission to observe it.
      * If the parameter force is passed, the entry will be shown to all players regardless of normal permission.
      *
-     * @param mode  - Which JournalEntry mode to display? Default is text.
-     *                (default: `"text"`)
-     * @param force - Display the entry to all players regardless of normal permissions
-     *                (default: `false`)
+     * @param force - Display the entry to all players regardless of normal permissions (default: `false`)
      * @returns A Promise that resolves back to the shown entry once the request is processed
+     * @remarks Alias for {@link Journal.show}.
      */
-    show(mode?: "text" | "image", force?: boolean): Promise<this>;
+    show(force?: boolean): ReturnType<typeof Journal.show<typeof this>>;
 
     /**
      * If the JournalEntry has a pinned note on the canvas, this method will animate to that note
      * The note will also be highlighted as if hovered upon by the mouse
-     * @param options - Options which modify the pan operation
+     * @param options - Options which modify the pan operation (default: `{}`)
      * @returns A Promise which resolves once the pan animation has concluded
      */
     panToNote(options?: JournalEntry.PanToNoteOptions): Promise<void>;
