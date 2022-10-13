@@ -1,5 +1,6 @@
 import type { PropertiesToSource } from "../../../../types/helperTypes.js";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.mjs.js";
+import type { CONST } from "../../../common/module.mjs.js";
 import "./utils/primitives.mjs";
 
 declare global {
@@ -7,8 +8,6 @@ declare global {
    * The client-side JournalEntryPage document which extends the common BaseJournalEntryPage document model.
    *
    * @see {@link JournalEntry} The JournalEntry document type which contains JournalEntryPage embedded documents.
-   *
-   * @param data - Initial data provided to construct the JournalEntry document
    */
   class JournalEntryPage extends ClientDocumentMixin(foundry.documents.BaseJournalEntryPage) {
     /**
@@ -21,8 +20,8 @@ declare global {
      */
     get toc(): Record<string, JournalEntryPage.Heading>;
 
-    // FIXME: This should become ValueOf<DOCUMENT_OWNERSHIP_LEVELS>, once ClientDocumentMixin is updated.
-    get permission(): 0 | 1 | -1 | 2 | 3;
+    // FIXME This should be inherited from this class's ancestor, once it's updated to v10.
+    get permission(): ValueOf<typeof CONST.DOCUMENT_OWNERSHIP_LEVELS>;
 
     /**
      * Return a reference to the Note instance for this Journal Entry Page in the current Scene, if any.
@@ -43,13 +42,7 @@ declare global {
      */
     static buildTOC(
       html: HTMLElement[],
-      {
-        includeElement
-      }?:
-        | {
-            includeElement?: boolean | undefined;
-          }
-        | undefined
+      options: JournalEntryPage.MakeHeadingNodeOptions | undefined
     ): Record<string, JournalEntryPage.Heading>;
 
     /**
@@ -65,18 +58,29 @@ declare global {
      */
     static _makeHeadingNode(
       heading: HTMLHeadingElement,
-      {
-        includeElement
-      }?:
-        | {
-            includeElement?: boolean | undefined;
-          }
-        | undefined
+      options: JournalEntryPage.MakeHeadingNodeOptions | undefined
     ): JournalEntryPage.Heading;
 
-    // FIXME: '_createDocumentLink' should be inherited from ClientDocument once it's updated
+    /**
+     * Create a content link for this document.
+     * @param eventData - The parsed object of data provided by the drop transfer event.
+     * @param options - Additional options to configure link generation.
+     * @internal
+     */
+    // FIXME Adjust once this class can properly inherit this member.
+    // @ts-expect-error This should be inherited from its ancestor class, which hasn't be updated for v10 yet.
+    protected override _createDocumentLink(
+      eventData: DragEvent,
+      options?: JournalEntryPage.CreateDocumentLinkOptions | undefined
+    ): string;
 
-    // FIXME: '_onClickDocumentLink' should be inherited from ClientDocument once it's updated
+    /**
+     * Handle clicking on a content link for this document.
+     * @param event - The triggering click event.
+     */
+    // FIXME Adjust once this class can properly inherit this member.
+    // @ts-expect-error This should be inherited from its ancestor class, which hasn't be updated for v10 yet.
+    protected override _onClickDocumentLink(event: MouseEvent): ReturnType<NonNullable<typeof this.sheet>["render"]>;
 
     protected _onUpdate(
       changed: DeepPartial<PropertiesToSource<JournalEntryPageDataProperties>>,
@@ -86,6 +90,17 @@ declare global {
   }
 
   namespace JournalEntryPage {
+    // FIXME The referenced type in TextEditor should live in the Document namespace as of v10, so it should be changed once TextEditor is updated.
+    type CreateDocumentLinkOptions = TextEditor.GetContentLinkOptions;
+
+    interface MakeHeadingNodeOptions {
+      /**
+       * Whether to include the DOM element in the returned ToC node.
+       * @defaultValue `true`
+       */
+      includeElement?: boolean | undefined;
+    }
+
     interface Heading {
       /**
        * The heading level, 1-6.
