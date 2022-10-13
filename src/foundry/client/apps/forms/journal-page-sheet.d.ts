@@ -13,12 +13,6 @@ declare global {
     ConcreteOptions extends JournalPageSheet.Options = JournalPageSheet.Options
   > extends DocumentSheet<ConcreteOptions, JournalEntryPage> {
     /**
-     * @param object  - The JournalEntryPage instance which is being edited.
-     * @param options - Application options
-     */
-    constructor(object: JournalEntryPage, options?: Partial<ConcreteOptions>);
-
-    /**
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
