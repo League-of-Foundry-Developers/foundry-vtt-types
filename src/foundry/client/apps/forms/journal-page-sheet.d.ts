@@ -46,7 +46,6 @@ declare global {
 
     override getData(options?: Partial<ConcreteOptions> | undefined): Promise<JournalPageSheet.Data<ConcreteOptions>>;
 
-    // FIXME: this should be private, but that needs to change on the ancestor classes, first.
     protected _renderInner(data: object): Promise<JQuery<HTMLElement>>;
   }
 
@@ -94,6 +93,7 @@ declare global {
 
     /**
      * The table of contents for this JournalTextPageSheet.
+     * @defaultValue `{}`
      */
     toc: ReturnType<typeof JournalEntryPage["buildTOC"]>;
 
@@ -285,6 +285,7 @@ declare global {
   class MarkdownJournalPageSheet extends JournalTextPageSheet<MarkdownJournalPageSheet.Options> {
     /**
      * Store the dirty flag for this editor.
+     * @defaultValue `false`
      */
     protected _isDirty: boolean;
 
