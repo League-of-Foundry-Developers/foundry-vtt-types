@@ -339,7 +339,7 @@ declare global {
     ): Promise<void>;
 
     /**
-     * @remarks This isn't present in FVTT's source, but is present to provide a more accurate representation of the typing.
+     * @remarks This isn't explicitly present in FVTT's source, but is present to provide a more accurate representation of the typing.
      * @see {@link JournalTextPageSheet.format}
      */
     static get format(): typeof CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML;
