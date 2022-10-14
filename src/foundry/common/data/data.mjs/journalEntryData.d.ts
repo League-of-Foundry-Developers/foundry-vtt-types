@@ -1,5 +1,4 @@
 import { ConfiguredDocumentClass, ConfiguredFlags, PropertiesToSource } from "../../../../types/helperTypes";
-import type EmbeddedCollection from "../../abstract/embedded-collection.mjs";
 import { DocumentData } from "../../abstract/module.mjs";
 import * as documents from "../../documents.mjs";
 import * as fields from "../fields.mjs";
@@ -7,10 +6,11 @@ import * as fields from "../fields.mjs";
 interface JournalEntryDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
   name: fields.RequiredString;
-  pages: fields.EmbeddedCollectionField<typeof documents.BaseJournalEntryPage>;
+  content: fields.BlankString;
+  img: fields.ImageField;
   folder: fields.ForeignDocumentField<{ type: typeof documents.BaseFolder }>;
   sort: fields.IntegerSortField;
-  ownership: fields.DocumentPermissions;
+  permission: fields.DocumentPermissions;
   flags: fields.ObjectField;
 }
 
@@ -27,9 +27,15 @@ interface JournalEntryDataProperties {
   name: string;
 
   /**
-   * The pages contained within this JournalEntry document
+   * The HTML content of the JournalEntry
+   * @defaultValue `""`
    */
-  pages: EmbeddedCollection<ConfiguredDocumentClass<typeof documents.BaseJournalEntryPage>, JournalEntryData>;
+  content: string;
+
+  /**
+   * An image file path which provides the artwork for this JournalEntry
+   */
+  img: string | null | undefined;
 
   /**
    * The _id of a Folder which contains this JournalEntry
@@ -47,7 +53,7 @@ interface JournalEntryDataProperties {
    * An object which configures user permissions to this JournalEntry
    * @defaultValue `{ default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE }`
    */
-  ownership: Partial<Record<string, foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS>>;
+  permission: Partial<Record<string, foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS>>;
 
   /**
    * An object of optional key/value flags
@@ -56,20 +62,28 @@ interface JournalEntryDataProperties {
   flags: ConfiguredFlags<"JournalEntry">;
 }
 
-type ConstructorDataOf<T> = {
-  [P in keyof T]?: T[P] | undefined | null;
-};
-
-interface JournalEntryDataConstructorData
-  extends Omit<ConstructorDataOf<JournalEntryDataProperties>, "pages" | "folder"> {
-  _id?: JournalEntryDataProperties["_id"] | undefined;
-
-  name: JournalEntryDataProperties["name"];
+interface JournalEntryDataConstructorData {
+  /**
+   * The _id which uniquely identifies this JournalEntry document
+   * @defaultValue `null`
+   */
+  _id?: string | null | undefined;
 
   /**
-   * The pages contained within this JournalEntry document
+   * The name of this JournalEntry
    */
-  pages?: ConstructorParameters<ConfiguredDocumentClass<typeof documents.BaseJournalEntryPage>>[] | null | undefined;
+  name: string;
+
+  /**
+   * The HTML content of the JournalEntry
+   * @defaultValue `""`
+   */
+  content?: string | null | undefined;
+
+  /**
+   * An image file path which provides the artwork for this JournalEntry
+   */
+  img?: string | null | undefined;
 
   /**
    * The _id of a Folder which contains this JournalEntry
@@ -77,9 +91,17 @@ interface JournalEntryDataConstructorData
    */
   folder?: InstanceType<ConfiguredDocumentClass<typeof documents.BaseFolder>> | string | null | undefined;
 
-  sort?: JournalEntryDataProperties["sort"] | null | undefined;
+  /**
+   * The numeric sort value which orders this JournalEntry relative to its siblings
+   * @defaultValue `0`
+   */
+  sort?: number | null | undefined;
 
-  ownership?: JournalEntryDataProperties["ownership"] | null | undefined;
+  /**
+   * An object which configures user permissions to this JournalEntry
+   * @defaultValue `{ default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE }`
+   */
+  permission?: Partial<Record<string, foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS>> | null | undefined;
 
   /**
    * An object of optional key/value flags
