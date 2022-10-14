@@ -53,7 +53,7 @@ declare global {
 const item = await Item.create({ name: "Mighty Axe of Killing", type: "weapon" });
 if (item) {
   expectType<Actor | null>(item.actor);
-  expectType<string | null>(item.img);
+  expectType<string | null>(item.thumbnail);
   expectType<boolean>(item.isOwned);
   expectType<ActiveEffect[]>(item.transferredEffects);
   expectType<"weapon" | "armor">(item.type);

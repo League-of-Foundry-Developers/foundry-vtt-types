@@ -16,7 +16,8 @@ declare global {
     /**
      * Provide a thumbnail image path used to represent this document.
      */
-    get thumbnail(): this["data"]["img"];
+    // FIXME: this should be typed as `this["img"]`, but this won't be possible until its ancestor class is updated for v10.
+    get thumbnail(): string | null;
 
     /**
      * A convenience alias of Item#isEmbedded which is preserves legacy support
