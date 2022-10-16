@@ -20,7 +20,7 @@ declare class Journal extends WorldCollection<typeof foundry.documents.BaseJourn
    * Show the JournalEntry or JournalEntryPage to connected players.
    * By default, the document will only be shown to players who have permission to observe it.
    * If the force parameter is passed, the document will be shown to all players regardless of normal permission.
-   * @param doc - The JournalEntry or JournalEntryPage to show.
+   * @param doc     - The JournalEntry or JournalEntryPage to show.
    * @param options - Additional options to configure behaviour.
    * @returns A Promise that resolves back to the shown document once the request is processed.
    * @throws If the user does not own the document they are trying to show.
