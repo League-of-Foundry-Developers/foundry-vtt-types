@@ -64,7 +64,7 @@ declare global {
     /**
      * Create a content link for this document.
      * @param eventData - The parsed object of data provided by the drop transfer event.
-     * @param options - Additional options to configure link generation.
+     * @param options   - Additional options to configure link generation.
      * @internal
      */
     // FIXME Adjust once this class can properly inherit this member.
