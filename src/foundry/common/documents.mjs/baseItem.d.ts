@@ -39,7 +39,7 @@ export declare class BaseItem extends Document<
    * @param data    - Initial data from which to construct the Item
    * @param context - Construction context options
    */
-  constructor(data: data.ItemData, context: DocumentConstructionContext);
+  constructor(data: DeepPartial<data.ItemData>, context: DocumentConstructionContext);
 
   static override readonly metadata: Readonly<ItemMetadata>;
 
