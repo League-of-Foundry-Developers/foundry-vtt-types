@@ -4,7 +4,8 @@ import { DocumentMetadata } from "../abstract/document.mjs";
 import { BaseActor } from "./baseActor";
 import { BaseActiveEffect } from "./baseActiveEffect";
 import { BaseUser } from "./baseUser";
-import { ConfiguredDocumentClass } from "../../../types/helperTypes";
+import { ConfiguredDocumentClass, DocumentSubTypes } from "../../../types/helperTypes";
+import type { ItemDataSchema } from "../data/data.mjs/itemData.js";
 
 type ItemMetadata = Merge<
   DocumentMetadata,
@@ -26,26 +27,34 @@ type ItemMetadata = Merge<
 >;
 
 /**
- * The base Item model definition which defines common behavior of an Item document between both client and server.
+ * The Document definition for an Item.
+ * Defines the DataSchema and common behaviors for an Item which are shared between both client and server.
  */
 export declare class BaseItem extends Document<
   data.ItemData,
   InstanceType<ConfiguredDocumentClass<typeof BaseActor>>,
   ItemMetadata
 > {
-  static override get schema(): typeof data.ItemData;
+  /**
+   * @param data    - Initial data from which to construct the Item
+   * @param context - Construction context options
+   */
+  constructor(data: data.ItemData, context: DocumentConstructionContext);
 
-  static override get metadata(): ItemMetadata;
+  static override readonly metadata: Readonly<ItemMetadata>;
+
+  static defineSchema(): ItemDataSchema;
 
   /**
-   * A reference to the Collection of ActiveEffect instances in the Item document, indexed by _id.
+   * The default icon used for newly created Item documents
+   * @defaultValue `"icons/svg/item-bag.svg"`
    */
-  get effects(): this["data"]["effects"];
+  static DEFAULT_ICON: string;
 
   /**
-   * The sub-type of Item.
+   * The allowed set of Item types which may exist.
    */
-  get type(): this["data"]["type"];
+  static get TYPES(): DocumentSubTypes<"Item">[];
 
   override canUserModify(user: BaseUser, action: "create" | "update" | "delete", data?: object): boolean;
 
@@ -55,12 +64,9 @@ export declare class BaseItem extends Document<
     { exact }: { exact?: boolean }
   ): boolean;
 
-  static defineSchema(): typeof data.ItemData;
+  // FIXME: inherit from ancestor class once it's updated
+  static migrateData(data: object): data.ItemData;
 
-  /**
-   * @defaultValue `"icons/svg/item-bag.svg"`
-   */
-  static DEFAULT_ICON: string;
-
-  static get TYPES(): string[];
+  // FIXME: inherit from ancestor class once it's updated; 'options' should point to a namespaced interface for the shimData options object
+  static shimData(data: data.ItemData, options: object): object;
 }
