@@ -1,6 +1,11 @@
 import * as data from "../data/data.mjs";
 import { Document } from "../abstract/module.mjs";
 import { DocumentMetadata } from "../abstract/document.mjs";
+import type {
+  JournalEntryDataConstructorData,
+  JournalEntryDataSchema,
+  JournalEntryDataSource
+} from "../data/data.mjs/journalEntryData.js";
 
 type JournalEntryMetadata = Merge<
   DocumentMetadata,
@@ -22,30 +27,27 @@ type JournalEntryMetadata = Merge<
  */
 export declare class BaseJournalEntry extends Document<data.JournalEntryData, null, JournalEntryMetadata> {
   /**
-   * @param data    - Initial data from which to construct the JournalEntry
-   * @param context - Construction context options
+   * @param data    - Initial data from which to construct the JournalEntry (default: `{}`)
+   * @param context - Construction context options (default: `{}`)
    */
-  constructor(data: data.JournalEntryData, context: DocumentConstructionContext);
+  constructor(data?: DeepPartial<data.JournalEntryData>, context?: DocumentConstructionContext);
 
-  static override get schema(): typeof data.JournalEntryData;
+  static readonly metadata: Readonly<JournalEntryMetadata>;
 
-  static override get metadata(): JournalEntryMetadata;
+  static defineSchema(): JournalEntryDataSchema;
 
-  // FIXME when DataModel is updated for v10
-  // @ts-expect-error inherit from DataModel once complete
-  static defineSchema();
+  static migrateData(data: object): data.JournalEntryData;
 
   // FIXME when DataModel is updated for v10
-  // @ts-expect-error inherit from DataModel once complete
-  static migrateData(data);
+  // @ts-expect-error use options type from DataModel once it's updated
+  static shimData(data: data.JournalEntryData, options): object;
 
   // FIXME when DataModel is updated for v10
-  // @ts-expect-error inherit from DataModel once complete
-  static shimData(data, options);
-
-  // FIXME when DataModel is updated for v10
-  // @ts-expect-error inherit from DataModel once complete
-  _initializeSource(source, options);
+  // @ts-expect-error use options type from DataModel once it's updated
+  protected override _initializeSource(
+    source: JournalEntryDataConstructorData,
+    options?: object
+  ): JournalEntryDataSource;
 
   /**
    * Migrate old content and img field to individual pages.

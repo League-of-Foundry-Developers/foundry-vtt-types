@@ -2,7 +2,7 @@ import * as data from "../data/data.mjs";
 import { Document } from "../abstract/module.mjs";
 import { DocumentMetadata } from "../abstract/document.mjs";
 import type { BaseJournalEntry } from "./baseJournalEntry.js";
-import type { ConfiguredDocumentClass } from "../../../types/helperTypes.js";
+import type { ConfiguredDocumentClass, DocumentSubTypes } from "../../../types/helperTypes.js";
 import type { BaseUser } from "./baseUser.js";
 import type { CONST } from "../module.mjs.js";
 
@@ -28,24 +28,19 @@ export declare class BaseJournalEntryPage extends Document<
   JournalEntryPageMetadata
 > {
   /**
-   * @param data    - Initial data from which to construct the JournalEntryPage.
-   * @param context - Construction context options
+   * @param data    - Initial data from which to construct the JournalEntryPage. (default: `{}`)
+   * @param context - Construction context options (default: `{}`)
    */
-  constructor(data: data.JournalEntryPageData, context: DocumentConstructionContext);
+  constructor(data?: DeepPartial<data.JournalEntryPageData>, context?: DocumentConstructionContext);
 
-  static override get schema(): typeof data.JournalEntryPageData;
+  static readonly metadata: Readonly<JournalEntryPageMetadata>;
 
-  static override get metadata(): JournalEntryPageMetadata;
-
-  // FIXME when DataModel is updated for v10
-  // @ts-expect-error inherit from DataModel once complete
-  static defineSchema();
+  static defineSchema(): JournalEntryPageDataSchema;
 
   /**
    * The allowed set of JournalEntryPageData types which may exist.
    */
-  // FIXME: this should be typed as Game['documentTypes']['JournalEntryPage'], but this doesn't exist yet.
-  static get TYPES(): string[];
+  static get TYPES(): DocumentSubTypes<"JournalEntryPage">[];
 
   getUserLevel(user: BaseUser): ValueOf<typeof CONST.DOCUMENT_OWNERSHIP_LEVELS> | null;
 }
