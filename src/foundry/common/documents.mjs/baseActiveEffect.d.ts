@@ -2,7 +2,7 @@ import { ConfiguredDocumentClass } from "../../../types/helperTypes";
 import { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mjs";
 import { Document } from "../abstract/module.mjs";
 import * as data from "../data/data.mjs";
-import type { ActiveEffectDataConstructorData } from "../data/data.mjs/activeEffectData";
+import type { ActiveEffectDataConstructorData, ActiveEffectDataSchema } from "../data/data.mjs/activeEffectData";
 import { BaseActor } from "./baseActor";
 import { BaseItem } from "./baseItem";
 import { BaseUser } from "./baseUser";
@@ -26,17 +26,9 @@ export declare class BaseActiveEffect extends Document<
   InstanceType<ConfiguredDocumentClass<typeof BaseActor>> | InstanceType<ConfiguredDocumentClass<typeof BaseItem>>,
   ActiveEffectMetadata
 > {
-  static override get schema(): ConstructorOf<data.ActiveEffectData>;
+  static override readonly metadata: Readonly<ActiveEffectMetadata>;
 
-  static override get metadata(): ActiveEffectMetadata;
-
-  static defineSchema(): ConstructorOf<data.ActiveEffectData>;
-
-  protected override _preCreate(
-    data: ActiveEffectDataConstructorData,
-    options: DocumentModificationOptions,
-    user: BaseUser
-  ): Promise<void>;
+  static defineSchema(): ActiveEffectDataSchema;
 
   override testUserPermission(
     user: BaseUser,
@@ -44,6 +36,11 @@ export declare class BaseActiveEffect extends Document<
     { exact }: { exact?: boolean }
   ): boolean;
 
-  // FIXME: this will probably inherit a better typing once it's ancestor classes are updated for v10.
-  static migrateData(data: object): typeof data;
+  protected override _preCreate(
+    data: ActiveEffectDataConstructorData,
+    options: DocumentModificationOptions,
+    user: BaseUser
+  ): Promise<void>;
+
+  static migrateData(data: object): data.ActiveEffectData;
 }
