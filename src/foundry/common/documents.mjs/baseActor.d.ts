@@ -43,7 +43,7 @@ export declare class BaseActor extends Document<
    * @param data    - Initial data provided to construct the Actor document (default: `{}`)
    * @param context - The document context, see {@link foundry.abstract.Document} (default: `{}`)
    */
-  constructor(data?: DeepPartial<data.ActorData>, context?: DocumentConstructionContext);
+  constructor(data?: ActorDataConstructorData, context?: DocumentConstructionContext);
 
   static readonly metadata: Readonly<ActorMetadata>;
 
