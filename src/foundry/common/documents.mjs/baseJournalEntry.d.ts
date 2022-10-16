@@ -30,7 +30,7 @@ export declare class BaseJournalEntry extends Document<data.JournalEntryData, nu
    * @param data    - Initial data from which to construct the JournalEntry (default: `{}`)
    * @param context - Construction context options (default: `{}`)
    */
-  constructor(data?: DeepPartial<data.JournalEntryData>, context?: DocumentConstructionContext);
+  constructor(data?: JournalEntryDataConstructorData, context?: DocumentConstructionContext);
 
   static readonly metadata: Readonly<JournalEntryMetadata>;
 
