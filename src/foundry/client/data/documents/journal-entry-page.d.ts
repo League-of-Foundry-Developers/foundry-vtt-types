@@ -37,7 +37,7 @@ declare global {
 
     /**
      * Build a table of contents for the given HTML content.
-     * @param html - The HTML content to generate a ToC outline for.
+     * @param html    - The HTML content to generate a ToC outline for.
      * @param options - Additional options to configure ToC generation.
      */
     static buildTOC(
