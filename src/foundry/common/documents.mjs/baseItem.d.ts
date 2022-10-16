@@ -5,7 +5,7 @@ import { BaseActor } from "./baseActor";
 import { BaseActiveEffect } from "./baseActiveEffect";
 import { BaseUser } from "./baseUser";
 import { ConfiguredDocumentClass, DocumentSubTypes } from "../../../types/helperTypes";
-import type { ItemDataSchema } from "../data/data.mjs/itemData.js";
+import type { ItemDataConstructorData, ItemDataSchema } from "../data/data.mjs/itemData.js";
 
 type ItemMetadata = Merge<
   DocumentMetadata,
@@ -36,10 +36,10 @@ export declare class BaseItem extends Document<
   ItemMetadata
 > {
   /**
-   * @param data    - Initial data from which to construct the Item
-   * @param context - Construction context options
+   * @param data    - Initial data from which to construct the Item (default `{}`)
+   * @param context - Construction context options (default `{}`)
    */
-  constructor(data: DeepPartial<data.ItemData>, context: DocumentConstructionContext);
+  constructor(data?: ItemDataConstructorData, context?: DocumentConstructionContext);
 
   static override readonly metadata: Readonly<ItemMetadata>;
 
