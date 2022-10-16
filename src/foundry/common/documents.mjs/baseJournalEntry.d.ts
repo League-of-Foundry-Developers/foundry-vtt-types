@@ -17,23 +17,34 @@ type JournalEntryMetadata = Merge<
 >;
 
 /**
- * The base JournalEntry model definition which defines common behavior of an JournalEntry document between both client and server.
+ * The Document definition for a JournalEntry.
+ * Defines the DataSchema and common behaviors for a JournalEntry which are shared between both client and server.
  */
 export declare class BaseJournalEntry extends Document<data.JournalEntryData, null, JournalEntryMetadata> {
+  /**
+   * @param data    - Initial data from which to construct the JournalEntry
+   * @param context - Construction context options
+   */
+  constructor(data: data.JournalEntryData, context: DocumentConstructionContext);
+
   static override get schema(): typeof data.JournalEntryData;
 
   static override get metadata(): JournalEntryMetadata;
 
   // FIXME when DataModel is updated for v10
-  // @ts-expect-error inherit from DataModel
+  // @ts-expect-error inherit from DataModel once complete
+  static defineSchema();
+
+  // FIXME when DataModel is updated for v10
+  // @ts-expect-error inherit from DataModel once complete
   static migrateData(data);
 
   // FIXME when DataModel is updated for v10
-  // @ts-expect-error inherit from DataModel
+  // @ts-expect-error inherit from DataModel once complete
   static shimData(data, options);
 
   // FIXME when DataModel is updated for v10
-  // @ts-expect-error inherit from DataModel
+  // @ts-expect-error inherit from DataModel once complete
   _initializeSource(source, options);
 
   /**

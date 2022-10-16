@@ -27,12 +27,19 @@ export declare class BaseJournalEntryPage extends Document<
   InstanceType<ConfiguredDocumentClass<typeof BaseJournalEntry>>,
   JournalEntryPageMetadata
 > {
+  /**
+   * @param data    - Initial data from which to construct the JournalEntryPage.
+   * @param context - Construction context options
+   */
+  constructor(data: data.JournalEntryPageData, context: DocumentConstructionContext);
+
   static override get schema(): typeof data.JournalEntryPageData;
 
   static override get metadata(): JournalEntryPageMetadata;
 
-  // FIXME: this should be a journal entry page schema, but that's outside the scope of this PR.
-  static defineSchema(): DocumentSchema;
+  // FIXME when DataModel is updated for v10
+  // @ts-expect-error inherit from DataModel once complete
+  static defineSchema();
 
   /**
    * The allowed set of JournalEntryPageData types which may exist.
