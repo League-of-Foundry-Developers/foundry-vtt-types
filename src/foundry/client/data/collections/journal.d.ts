@@ -46,7 +46,7 @@ declare class Journal extends WorldCollection<typeof foundry.documents.BaseJourn
 
   /**
    * Handle a received request to show a JournalEntry or JournalEntryPage to the current client
-   * @param uuid - The UUID of the document to display for other players
+   * @param uuid  - The UUID of the document to display for other players
    * @param force - Display the document regardless of normal permissions (default: `false`)
    * @internal
    */
