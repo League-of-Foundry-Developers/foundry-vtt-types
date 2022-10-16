@@ -19,13 +19,19 @@ type ActiveEffectMetadata = Merge<
 >;
 
 /**
- * The base ActiveEffect model definition which defines common behavior of an ActiveEffect document between both client and server.
+ * The data schema for an ActiveEffect document.
  */
 export declare class BaseActiveEffect extends Document<
   data.ActiveEffectData,
   InstanceType<ConfiguredDocumentClass<typeof BaseActor>> | InstanceType<ConfiguredDocumentClass<typeof BaseItem>>,
   ActiveEffectMetadata
 > {
+  /**
+   * @param data    - Initial data from which to construct the ActiveEffect (default `{}`)
+   * @param context - Construction context options (default `{}`)
+   */
+  constructor(data?: ActiveEffectDataConstructorData, context?: DocumentConstructionContext);
+
   static override readonly metadata: Readonly<ActiveEffectMetadata>;
 
   static defineSchema(): ActiveEffectDataSchema;
