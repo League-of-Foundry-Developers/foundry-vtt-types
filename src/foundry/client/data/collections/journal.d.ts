@@ -33,7 +33,7 @@ declare class Journal extends WorldCollection<typeof foundry.documents.BaseJourn
   // FIXME: use image-popout's ShareImageConfig interface for config once it's available
   /**
    * Share an image with connected players.
-   * @param src - The image URL to share.
+   * @param src    - The image URL to share.
    * @param config - Image sharing configuration.
    */
   static showImage(src: string, config: Journal.ShareImageConfig): void;
