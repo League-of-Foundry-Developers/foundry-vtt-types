@@ -201,20 +201,38 @@ declare global {
     interface Data extends JournalPageSheet.Data {
       flexRatio: boolean;
       isYouTube: boolean;
-      /**
-       * @remarks The name 'timestamp' here is inconsistent (elsewhere it refers only to a `number` value representing seconds), but this is what FVTT's source does 🤷
-       */
       timestamp: TimeComponents;
       yt: YouTube;
     }
 
+    /**
+     * Variables to be passed to YouTube's API.
+     * @see https://developers.google.com/youtube/player_parameters#Parameters
+     * @remarks Note that the `start` parameter diverges from its API description linked above. It isn't a number to be passed to the API directly, but a {@link TimeComponents} object (that FVTT converts into a number).
+     */
+    // Adapted from @types/youtube-player
     interface YouTubeVars {
-      playsinline: 1;
-      modestbranding: 1;
-      controls: 0 | 1;
-      autoplay: 0 | 1;
-      loop: 0 | 1;
-      start: TimeComponents;
+      autoplay?: 0 | 1 | undefined;
+      cc_lang_pref?: string | undefined;
+      cc_load_policy?: 1 | undefined;
+      color?: "red" | "white" | undefined;
+      controls?: 0 | 1 | undefined;
+      disablekb?: 0 | 1 | undefined;
+      enablejsapi?: 0 | 1 | undefined;
+      end?: number | undefined;
+      fs?: 0 | 1 | undefined;
+      hl?: string | undefined;
+      iv_load_policy?: 1 | 3 | undefined;
+      list?: string | undefined;
+      listType?: "playlist" | "search" | "user_uploads" | undefined;
+      loop?: 0 | 1 | undefined;
+      modestbranding?: 0 | 1 | undefined;
+      origin?: string | undefined;
+      playlist?: string | undefined;
+      playsinline?: 0 | 1 | undefined;
+      rel?: 0 | 1 | undefined;
+      start?: TimeComponents | undefined;
+      widget_referrer?: string | undefined;
     }
 
     interface TimeComponents {
@@ -250,7 +268,7 @@ declare global {
 
     activateListeners(html: JQuery<HTMLElement>): void;
 
-    getData(options?: Partial<JournalPDFPageSheet.Options> | undefined): Promise<JournalPDFPageSheet.SheetData>;
+    getData(options?: Partial<JournalPDFPageSheet.Options> | undefined): Promise<JournalPDFPageSheet.Data>;
 
     protected _renderInner(data: object): Promise<JQuery<HTMLElement>>;
 
@@ -268,7 +286,7 @@ declare global {
 
   namespace JournalPDFPageSheet {
     type Options = JournalPageSheet.Options;
-    type SheetData = JournalPageSheet.Data<JournalPDFPageSheet.Options> & {
+    type Data = JournalPageSheet.Data<JournalPDFPageSheet.Options> & {
       params: ReturnType<JournalPDFPageSheet["_getViewerParams"]>;
     };
   }
