@@ -3,7 +3,7 @@ import { DocumentMetadata, DocumentModificationOptions } from "../abstract/docum
 import { Document } from "../abstract/module.mjs";
 import type { DEFAULT_TOKEN } from "../constants.mjs.js";
 import * as data from "../data/data.mjs";
-import type { ActorDataConstructorData, ActorDataSource } from "../data/data.mjs/actorData";
+import type { ActorDataConstructorData, ActorDataSchema, ActorDataSource } from "../data/data.mjs/actorData";
 import { BaseActiveEffect } from "./baseActiveEffect";
 import { BaseItem } from "./baseItem";
 import { BaseToken } from "./baseToken";
@@ -45,50 +45,44 @@ export declare class BaseActor extends Document<
    */
   constructor(data?: DeepPartial<data.ActorData>, context?: DocumentConstructionContext);
 
-  static get schema(): ConstructorOf<data.ActorData>;
+  static readonly metadata: Readonly<ActorMetadata>;
 
-  static override get metadata(): ActorMetadata;
-
-  get effects(): data.ActorData["effects"];
-
-  get items(): data.ActorData["items"];
-
-  get type(): data.ActorData["type"];
-
-  // FIXME: this should be an override once the Document class is updated for v10.
-  static defineSchema(): typeof data.ActorData;
+  // FIXME: removed once ancestor classes are updated for v10
+  // @ts-expect-error an override, once ancestor classes are updated for v10
+  static override defineSchema(): ActorDataSchema;
 
   /**
    * The default icon used for newly created Actor documents.
+   * @defaultValue {@link CONST.DEFAULT_TOKEN}
    */
-  static DEFAULT_ICON: typeof DEFAULT_TOKEN;
+  static DEFAULT_ICON: string;
 
   /**
    * The allowed set of Actor types which may exist.
    */
   static get TYPES(): DocumentSubTypes<"Actor">[];
 
-  // FIXME: inherit _initializeSource from Document once it's updated for v10
   protected _initializeSource(data: ActorDataConstructorData): ActorDataSource;
 
-  // FIXME: inherit canUserCreate from Document once it's updated for v10
-  static canUserCreate(user: BaseUser): boolean;
+  static canUserCreate(user: BaseUser): ReturnType<BaseUser["hasPermission"]>;
 
-  // FIXME: inherit migrateData from Document once it's updated for v10
+  static #canCreate(user: User, doc: Actor): ReturnType<User["hasPermission"]>;
 
-  // FIXME: inherit shimData from Document once it's updated for v10
+  static #canUpdate(user: User, doc: Actor, data: DeepPartial<Actor["toObject"]>);
 
-  // FIXME: inherit _preCreate from Document once it's updated for v10
   protected override _preCreate(
     data: ActorDataConstructorData,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
 
-  // FIXME: inherit _preUpdate from Document once it's updated for v10
   protected override _preUpdate(
     changed: DeepPartial<ActorDataConstructorData>,
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
+
+  static migrateData(data: object): ActorDataSource;
+
+  static shimData(data: ActorDataSource): object;
 }
