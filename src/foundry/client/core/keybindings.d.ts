@@ -1,5 +1,4 @@
-//TODO: remove when created
-type InteractionLayer = unknown;
+type InteractionLayer = unknown; // FIXME: remove when created
 
 /**
  * A class responsible for managing defined game keybinding.
