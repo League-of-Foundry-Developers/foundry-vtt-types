@@ -375,9 +375,9 @@ declare global {
        */
       toolbar?: string;
 
-      fitToSize?: boolean; // TODO: update when updating TextEditor
+      fitToSize?: boolean;
 
-      height?: number; // TODO: update when updating TextEditor
+      height?: number;
     }
 
     interface EnrichOptions {
