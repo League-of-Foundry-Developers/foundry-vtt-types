@@ -367,6 +367,7 @@ interface DocumentId extends DocumentField<string | null> {
 
 /**
  * The standard permissions object which may be included by a Document.
+ * FIXME: should be migrated to new 'ownership' model for v10
  */
 export const DOCUMENT_PERMISSIONS: DocumentPermissions;
 /**

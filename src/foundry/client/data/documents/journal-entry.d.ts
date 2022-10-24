@@ -1,19 +1,17 @@
 import { DocumentDataType, DocumentModificationOptions } from "../../../common/abstract/document.mjs";
+import type { JournalEntryDataConstructorData } from "../../../common/data/data.mjs/journalEntryData.js";
+import type { BaseUser } from "../../../common/documents.mjs/baseUser.js";
 
 declare global {
   /**
    * The client-side JournalEntry document which extends the common BaseJournalEntry model.
-   * Each JournalEntry document contains JournalEntryData which defines its data schema.
    *
-   * @see {@link data.JournalEntryData}              The JournalEntry data schema
-   * @see {@link documents.Journal}                  The world-level collection of JournalEntry documents
-   * @see {@link applications.JournalSheet}          The JournalEntry configuration application
-   *
-   * @param data - Initial data provided to construct the JournalEntry document
+   * @see {@link Journal} The world-level collection of JournalEntry documents
+   * @see {@link JournalSheet} The JournalEntry configuration application
    */
   class JournalEntry extends ClientDocumentMixin(foundry.documents.BaseJournalEntry) {
     /**
-     * A boolean indicator for whether or not the JournalEntry is visible to the current user in the directory sidebar
+     * A boolean indicator for whether the JournalEntry is visible to the current user in the directory sidebar
      */
     get visible(): boolean;
 
@@ -25,24 +23,34 @@ declare global {
 
     /**
      * Show the JournalEntry to connected players.
-     * By default the entry will only be shown to players who have permission to observe it.
+     * By default, the entry will only be shown to players who have permission to observe it.
      * If the parameter force is passed, the entry will be shown to all players regardless of normal permission.
      *
-     * @param mode  - Which JournalEntry mode to display? Default is text.
-     *                (default: `"text"`)
-     * @param force - Display the entry to all players regardless of normal permissions
-     *                (default: `false`)
+     * @param force - Display the entry to all players regardless of normal permissions (default: `false`)
      * @returns A Promise that resolves back to the shown entry once the request is processed
+     * @remarks Alias for {@link Journal.show}.
      */
-    show(mode?: "text" | "image", force?: boolean): Promise<this>;
+    show(force?: boolean): ReturnType<typeof Journal.show<typeof this>>;
 
     /**
      * If the JournalEntry has a pinned note on the canvas, this method will animate to that note
      * The note will also be highlighted as if hovered upon by the mouse
-     * @param options - Options which modify the pan operation
+     * @param options - Options which modify the pan operation (default: `{}`)
      * @returns A Promise which resolves once the pan animation has concluded
      */
-    panToNote(options?: PanToNoteOptions): Promise<void>;
+    panToNote(options?: JournalEntry.PanToNoteOptions): Promise<void>;
+
+    protected _preCreate(
+      data: JournalEntryDataConstructorData,
+      options: DocumentModificationOptions,
+      user: BaseUser
+    ): Promise<void>;
+
+    protected _preUpdate(
+      changed: DeepPartial<JournalEntryDataConstructorData>,
+      options: DocumentModificationOptions,
+      user: BaseUser
+    ): Promise<void>;
 
     protected override _onUpdate(
       data: DeepPartial<DocumentDataType<foundry.documents.BaseJournalEntry>>,
@@ -52,20 +60,22 @@ declare global {
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
   }
-}
 
-interface PanToNoteOptions {
-  /**
-   * The speed of the pan animation in milliseconds
-   * @defaultValue `250`
-   */
-  duration?: number;
+  namespace JournalEntry {
+    interface PanToNoteOptions {
+      /**
+       * The speed of the pan animation in milliseconds
+       * @defaultValue `250`
+       */
+      duration?: number;
 
-  /**
-   * The resulting zoom level
-   * @defaultValue `1.5`
-   */
-  scale?: number;
+      /**
+       * The resulting zoom level
+       * @defaultValue `1.5`
+       */
+      scale?: number;
+    }
+  }
 }
 
 export {};

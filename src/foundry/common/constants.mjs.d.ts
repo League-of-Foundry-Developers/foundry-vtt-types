@@ -150,6 +150,7 @@ export type COMPENDIUM_DOCUMENT_TYPES = ValueOf<typeof COMPENDIUM_DOCUMENT_TYPES
  * Higher levels grant more permissions.
  */
 export const DOCUMENT_OWNERSHIP_LEVELS: Readonly<{
+  INHERIT: -1;
   NONE: 0;
   LIMITED: 1;
   OBSERVER: 2;
@@ -312,8 +313,8 @@ export type PACKAGE_TYPES = ValueOf<typeof PACKAGE_TYPES>;
  */
 export const PACKAGE_AVAILABILITY_CODES: Readonly<{
   UNKNOWN: -1;
-  REQUIRES_UPDATE: 0;
-  AVAILABLE: 1;
+  AVAILABLE: 0;
+  REQUIRES_UPDATE: 1;
   REQUIRES_SYSTEM: 2;
   REQUIRES_DEPENDENCY: 3;
   REQUIRES_CORE_UPGRADE: 4;
@@ -356,9 +357,16 @@ export type TABLE_RESULT_TYPES = ValueOf<typeof TABLE_RESULT_TYPES>;
  * The allowed formats of a Journal Entry Page.
  */
 export const JOURNAL_ENTRY_PAGE_FORMATS: Readonly<{
+  /**
+   * The page is formatted as HTML.
+   */
   HTML: 1;
+  /**
+   * The page is formatted as Markdown.
+   */
   MARKDOWN: 2;
 }>;
+export type JOURNAL_ENTRY_PAGE_FORMATS = ValueOf<typeof JOURNAL_ENTRY_PAGE_FORMATS>;
 
 /**
  * Define the valid anchor locations for a Tooltip displayed on a Placeable Object
@@ -929,8 +937,7 @@ export type TIMEOUTS = ValueOf<typeof TIMEOUTS>;
 
 /**
  * @deprecated since v10.
- * TODO: make a real link
- * @see data.ShapeData.TYPES
+ * @see {@link data.ShapeData.TYPES}
  */
 export const DRAWING_TYPES: Readonly<{
   RECTANGLE: "r";

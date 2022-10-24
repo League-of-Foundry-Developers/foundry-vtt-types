@@ -344,6 +344,9 @@ declare global {
       /** @defaultValue `Journal` */
       collection: ConstructorOf<Journal>;
 
+      /** @defaultValue `[]` */
+      compendiumIndexFields: string[];
+
       noteIcons: {
         /** @defaultValue `"icons/svg/anchor.svg"` */
         Anchor: string;
@@ -1460,6 +1463,28 @@ declare global {
     TableResult: {
       /** @defaultValue `TableResult` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof TableResult>;
+    };
+
+    /**
+     * Configuration for the JournalEntryPage embedded document type.
+     */
+    JournalEntryPage: {
+      /** @defaultValue `JournalEntryPage` */
+      documentClass: ConfiguredDocumentClassOrDefault<typeof JournalEntryPage>;
+      typeLabels: {
+        image: "JOURNALENTRYPAGE.TypeImage";
+        pdf: "JOURNALENTRYPAGE.TypePDF";
+        text: "JOURNALENTRYPAGE.TypeText";
+        video: "JOURNALENTRYPAGE.TypeVideo";
+      };
+      typeIcons: {
+        image: "fas fa-file-image";
+        pdf: "fas fa-file-pdf";
+        text: "fas fa-file-lines";
+        video: "fas fa-file-video";
+      };
+      defaultType: "text";
+      sidebarIcon: "fas fa-book-open";
     };
 
     /**
