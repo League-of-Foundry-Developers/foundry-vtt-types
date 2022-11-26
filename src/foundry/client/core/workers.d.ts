@@ -1,37 +1,27 @@
 export {};
 
-//TODO: smarter types for named functions
+// TODO: smarter types for named functions
 declare global {
-  namespace AsyncWorker {
-    interface Task {
-      [key: string]: unknown;
+  interface WorkerTask {
+    [key: string]: unknown;
 
-      /** An incrementing task ID used to reference task progress */
-      taskId?: number;
+    /** An incrementing task ID used to reference task progress */
+    taskId?: number;
 
-      /** The task action being performed, from WorkerManager.WORKER_TASK_ACTIONS */
-      action: ValueOf<typeof WorkerManager.WORKER_TASK_ACTIONS>;
+    /** The task action being performed, from WorkerManager.WORKER_TASK_ACTIONS */
+    action: ValueOf<typeof WorkerManager.WORKER_TASK_ACTIONS>;
 
-      /** A Promise resolution handler */
-      resolve?: VoidFunction;
+    /** A Promise resolution handler */
+    resolve?: VoidFunction;
 
-      /** A Promise rejection handler */
-      reject?: VoidFunction;
-    }
-
-    interface Options {
-      /** Should the worker run in debug mode? (default: `false`) */
-      debug: boolean;
-
-      /** Should the worker automatically load the primitives library? (default: `false`)*/
-      loadPrimitives: boolean;
-    }
+    /** A Promise rejection handler */
+    reject?: VoidFunction;
   }
 
   /**
    * An asynchronous web Worker which can load user-defined functions and await execution using Promises.
    * @param name    - The worker name to be initialized
-   * @param options - Worker initialization options
+   * @param options - Worker initialization options (default: `{}`)
    */
   class AsyncWorker extends Worker {
     constructor(name: string, options?: Partial<AsyncWorker.Options>);
@@ -52,7 +42,7 @@ declare global {
     /**
      * A queue of active tasks that this Worker is executing.
      */
-    tasks: Map<number, AsyncWorker.Task>;
+    tasks: Map<number, WorkerTask>;
 
     /**
      * An auto-incrementing task index.
@@ -84,7 +74,7 @@ declare global {
      * @returns A Promise which wraps the task transaction.
      * @internal
      */
-    protected _dispatchTask(taskData?: AsyncWorker.Task): Promise<unknown>;
+    protected _dispatchTask(taskData?: WorkerTask): Promise<unknown>;
 
     /**
      * Handle messages emitted by the Worker thread.
@@ -145,5 +135,21 @@ declare global {
      * @param name - The named worker to terminate
      */
     retireWorker(name: string): void;
+  }
+
+  namespace AsyncWorker {
+    interface Options {
+      /**
+       * Should the worker run in debug mode?
+       * @defaultValue `false`
+       */
+      debug: boolean;
+
+      /**
+       * Should the worker automatically load the primitives library?
+       * @defaultValue `false`
+       */
+      loadPrimitives: boolean;
+    }
   }
 }

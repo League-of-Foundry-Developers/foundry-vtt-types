@@ -1,3 +1,4 @@
+import "./pixiGraphics";
 import "./pixiGraphicsSmooth";
 import "./pixiLegacyGraphics";
 import "./pixiParticleEmitter";

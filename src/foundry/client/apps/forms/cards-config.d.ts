@@ -6,18 +6,19 @@ declare global {
    *
    * @typeParam Options - The type of the options object
    */
-  class CardsConfig<Options extends DocumentSheetOptions<Cards> = DocumentSheetOptions<Cards>> extends DocumentSheet<
+  class CardsConfig<Options extends CardsConfig.Options = CardsConfig.Options> extends DocumentSheet<
     Options,
     InstanceType<ConfiguredDocumentClassForName<"Cards">>
   > {
     constructor(object: ConfiguredDocumentClassForName<"Cards">, options: Options);
 
     /**
-     * The sorting mode used to display the sheet, "standard" if true, otherwise "shuffled"
-     * @internal
-     * @defaultValue `false`
+     * The allowed sorting methods which can be used for this sheet
      */
-    protected _sortStandard: boolean;
+    static SORT_TYPES: {
+      STANDARD: "standard";
+      SHUFFLED: "shuffled";
+    };
 
     /**
      * @defaultValue
@@ -31,11 +32,12 @@ declare global {
      *   viewPermission: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
      *   dragDrop: [{dragSelector: "ol.cards li.card", dropSelector: "ol.cards"}],
      *   tabs: [{navSelector: ".tabs", contentSelector: "form", initial: "cards"}],
-     *   scrollY: ["ol.cards"]
+     *   scrollY: ["ol.cards"],
+     *   sort: this.SORT_TYPES.SHUFFLED
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<Cards>;
+    static override get defaultOptions(): CardsConfig.Options;
 
     override getData(options?: Partial<Options>): MaybePromise<object>;
 
@@ -51,6 +53,8 @@ declare global {
     /**
      * Handle lazy-loading card face images.
      * See {@link SidebarTab#_onLazyLoadImage}
+     * @param entries  - The entries which are now in the observer frame
+     * @param observer - The intersection observer instance
      */
     protected _onLazyLoadImage(entries: IntersectionObserverEntry[], observer: IntersectionObserver): void;
 
@@ -60,7 +64,7 @@ declare global {
 
     protected override _canDragDrop(selector: string): boolean;
 
-    protected override _onDrop(event: DragEvent): void;
+    protected override _onDrop(event: DragEvent): Promise<void>;
 
     /**
      * Handle sorting a Card relative to other siblings within this document
@@ -79,9 +83,7 @@ declare global {
    *
    * @typeParam Options - The type of the options object
    */
-  class CardsHand<
-    Options extends DocumentSheetOptions<Cards> = DocumentSheetOptions<Cards>
-  > extends CardsConfig<Options> {
+  class CardsHand<Options extends CardsConfig.Options = CardsConfig.Options> extends CardsConfig<Options> {
     /**
      * @defaultValue
      * ```typescript
@@ -90,7 +92,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<Cards>;
+    static override get defaultOptions(): CardsConfig.Options;
   }
 
   /**
@@ -98,9 +100,7 @@ declare global {
    *
    * @typeParam Options - The type of the options object
    */
-  class CardsPile<
-    Options extends DocumentSheetOptions<Cards> = DocumentSheetOptions<Cards>
-  > extends CardsConfig<Options> {
+  class CardsPile<Options extends CardsConfig.Options = CardsConfig.Options> extends CardsConfig<Options> {
     /**
      * @defaultValue
      * ```typescript
@@ -109,6 +109,12 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<Cards>;
+    static override get defaultOptions(): CardsConfig.Options;
+  }
+
+  namespace CardsConfig {
+    interface Options extends DocumentSheetOptions<Cards> {
+      sort: string;
+    }
   }
 }

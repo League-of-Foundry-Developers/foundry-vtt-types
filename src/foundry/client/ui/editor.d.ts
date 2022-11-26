@@ -1,26 +1,6 @@
 import type { EditorView } from "prosemirror-view";
-import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes";
 import type { ClientDocumentMixin } from "../data/abstract/client-document";
 declare global {
-  namespace TextEditor {
-    export interface GetContentLinkOptions {
-      /** A document to generate the link relative to. */
-      relativeTo?: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
-
-      /** A custom label to use instead of the document's name. */
-      label?: string;
-    }
-
-    export interface CreateContentLinkOptions {
-      /**
-       * If asynchronous evaluation is enabled, fromUuid will be called, allowing comprehensive UUID lookup,
-       * otherwise fromUuidSync will be used. (default: `false`)
-       */
-      async?: boolean;
-      /** A document to resolve relative UUIDs against.*/
-      relativeTo?: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
-    }
-  }
   /**
    * A collection of helper functions and utility methods related to the rich text editor
    */
@@ -54,7 +34,7 @@ declare global {
      *                   (default: `{}`)
      * @returns The enriched HTML content
      */
-    static enrichHTML(content: string, options?: Partial<TextEditor.EnrichOptions>): string;
+    static enrichHTML(content: string, options?: Partial<TextEditor.EnrichOptions>): MaybePromise<string>;
 
     /**
      * Convert text of the form `@UUID[uuid]{name}` to anchor elements.
@@ -64,15 +44,8 @@ declare global {
      */
     protected static _enrichContentLinks(
       text: Text[],
-      options?: Partial<
-        TextEditor.EnrichOptions & {
-          /** Whether to resolve UUIDs asynchronously */
-          async: boolean;
-          /** A document to resolve relative UUIDs against. */
-          relativeTo: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
-        }
-      >
-    ): Promise<boolean> | boolean;
+      options?: Partial<TextEditor.EnrichOptions>
+    ): MaybePromise<boolean>;
 
     /**
      * Convert URLs into anchor elements.
@@ -80,7 +53,7 @@ declare global {
      * @param options - Options provided to customize text enrichment
      * @returns Whether any hyperlinks were replaced and the text nodes need to be updated
      */
-    protected static _enrichHyperlinks(text: Text[], options?: TextEditor.EnrichOptions): boolean;
+    protected static _enrichHyperlinks(text: Text[], options?: Partial<TextEditor.EnrichOptions>): boolean;
 
     /**
      * Convert text of the form [[roll]] to anchor elements.
@@ -92,13 +65,8 @@ declare global {
     protected static _enrichInlineRolls(
       rollData: TextEditor.EnrichOptions["rollData"],
       text: Text[],
-      options?: Partial<
-        TextEditor.EnrichOptions & {
-          /** Whether to resolve immediate inline rolls asynchronously. */
-          async: boolean;
-        }
-      >
-    ): Promise<boolean> | boolean;
+      options?: Partial<TextEditor.EnrichOptions>
+    ): MaybePromise<boolean>;
 
     /**
      * Match any custom registered regex patterns and apply their replacements.
@@ -112,7 +80,7 @@ declare global {
       pattern: RegExp,
       enricher: CONFIG.TextEditor.Enricher,
       text: Text[],
-      options?: TextEditor.EnrichOptions
+      options?: Partial<TextEditor.EnrichOptions>
     ): Promise<boolean>;
 
     /**
@@ -160,8 +128,8 @@ declare global {
     protected static _replaceTextContent(
       text: Text[],
       rgx: RegExp,
-      func: (...match: RegExpMatchArray) => Node
-    ): boolean;
+      func: (...match: RegExpMatchArray) => MaybePromise<HTMLElement>
+    ): MaybePromise<boolean>;
 
     /**
      * Replace a matched portion of a Text node with a replacement Node
@@ -178,36 +146,47 @@ declare global {
      */
     protected static _createContentLink(
       match: RegExpMatchArray,
-      options?: TextEditor.CreateContentLinkOptions
-    ): HTMLAnchorElement | Promise<HTMLAnchorElement>;
+      options?: Partial<TextEditor.CreateContentLinkOptions>
+    ): MaybePromise<HTMLAnchorElement>;
+
+    /**
+     * Create a dynamic document link from an old-form document link expression
+     * @param type   - The matched document type or "Compendium".
+     * @param target - The requested match target (_id or name).
+     * @param name   - A customized or overridden display name for the link.
+     * @param data   - Data containing the properties of the resulting link element.
+     * @returns Whether the resulting link is broken or not.
+     * @internal
+     */
+    protected static _createLegacyContentLink(type: string, target: string, name: string, data: object): boolean;
 
     /**
      * Replace a hyperlink-like string with an actual HTML &lt;a&gt; tag
-     * @param match - The full matched string
+     * @param match   - The regular expression match
+     * @param options - Additional options to configure enrichment behavior
      * @returns An HTML element for the document link
      * @internal
      */
-    protected static _createHyperlink(match: string): HTMLAnchorElement;
+    protected static _createHyperlink(match: RegExpMatchArray, options?: object): HTMLAnchorElement;
 
     /**
      * Replace an inline roll formula with a rollable &lt;a&gt; element or an eagerly evaluated roll result
-     * @param match   - The matched string
-     * @param command - An optional command
-     * @param formula - The matched formula
-     * @param closing - The closing brackets for the inline roll
-     * @param label   - An optional label which configures the button text
-     * @returns The replaced match
+     * @param match    - The regular expression match array
+     * @param rollData - Provided roll data for use in roll evaluation
+     * @param options  - Additional options to configure enrichment behavior
+     * @returns The replaced match, returned as a Promise if async was true and the message contained an
+     *          immediate inline roll.
      * @internal
      */
     protected static _createInlineRoll(
-      match: string,
-      command: string,
-      formula: string,
-      closing: string,
-      label?: string,
-      ...args: object[]
-    ): HTMLAnchorElement | null;
+      match: RegExpMatchArray,
+      rollData: object,
+      options: TextEditor.CreateInlineRollOptions
+    ): MaybePromise<HTMLAnchorElement | null>;
 
+    /**
+     * Activate listeners for the interior content of the editor frame.
+     */
     static activateListeners(): void;
 
     /**
@@ -222,22 +201,6 @@ declare global {
      * @internal
      */
     protected static _onClickInlineRoll(event: MouseEvent): void;
-
-    /**
-     * Toggle playing or stopping an embedded {@link PlaylistSound} link.
-     * @param doc - The PlaylistSound document to play/stop.
-     * @internal
-     */
-    protected static _onPlaySound(doc: InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">>): void;
-
-    /**
-     * Find all content links belonging to a given {@link PlaylistSound}.
-     * @param doc - The PlaylistSound.
-     * @internal
-     */
-    protected static _getSoundContentLinks(
-      doc: InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">>
-    ): NodeListOf<Element>;
 
     /**
      * Begin a Drag+Drop workflow for a dynamic content link
@@ -278,12 +241,6 @@ declare global {
      * @internal
      */
     static _uploadImage(uuid: string, file: File): Promise<string>;
-
-    /**
-     * Singleton decoder area
-     * @internal
-     */
-    protected static _decoder: HTMLTextAreaElement;
   }
 
   namespace TextEditor {
@@ -406,9 +363,44 @@ declare global {
       rolls: boolean;
 
       /**
-       * The data object providing context for inline rolls
+       * The data object providing context for inline rolls, or a function that produces it.
        */
       rollData: object | (() => object);
+
+      /**
+       * Perform the operation asynchronously, receiving a Promise as the returned
+       * value. This will become the default behaviour in v11.
+       * @defaultValue `false`
+       */
+      async: boolean;
+
+      /**
+       * A document to resolve relative UUIDs against.
+       */
+      relativeTo: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
+    }
+
+    interface GetContentLinkOptions {
+      /** A document to generate the link relative to. */
+      relativeTo?: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
+
+      /** A custom label to use instead of the document's name. */
+      label?: string;
+    }
+
+    interface CreateContentLinkOptions {
+      /**
+       * If asynchronous evaluation is enabled, fromUuid will be called, allowing comprehensive UUID lookup,
+       * otherwise fromUuidSync will be used. (default: `false`)
+       */
+      async?: boolean;
+
+      /** A document to resolve relative UUIDs against.*/
+      relativeTo?: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
+    }
+
+    interface CreateInlineRollOptions {
+      async: boolean;
     }
   }
 }
