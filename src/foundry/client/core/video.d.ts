@@ -23,14 +23,69 @@ declare class VideoHelper {
    */
   locked: boolean;
 
+  /**
+   * Store a Promise while the YouTube API is initializing.
+   */
+  #youTubeReady: Promise<void>;
+
+  /**
+   * The YouTube URL regex.
+   */
+  #youTubeRegex: RegExp;
+
+  /**
+   * Return the HTML element which provides the source for a loaded texture.
+   * @param mesh - The rendered mesh
+   * @returns The source HTML element
+   */
+  // FIXME: mesh can also be `SpriteMesh` (not typed yet)
+  getSourceElement(mesh: PIXI.Sprite): HTMLImageElement | HTMLVideoElement | null;
+
+  /**
+   * Get the video element source corresponding to a Sprite or SpriteMesh.
+   * @param object - The PIXI source
+   * @returns The source video element or null
+   */
+  // FIXME: mesh can also be `SpriteMesh` (not typed yet)
+  getVideoSource(object: PIXI.Sprite | PIXI.Texture): HTMLVideoElement | null;
+
+  /**
+   * Clone a video texture so that it can be played independently of the original base texture.
+   * @param source - The video element source
+   * @returns An unlinked PIXI.Texture which can be played independently
+   */
+  cloneTexture(source: HTMLVideoElement): Promise<PIXI.Texture>;
+
   static hasVideoExtension(src: string): boolean;
 
   /**
    * Play a single video source
    * If playback is not yet enabled, add the video to the pending queue
-   * @param video - The VIDEO element to play
+   * @param video   - The VIDEO element to play
+   * @param options - Additional options for modifying video playback (default: `{}`)
    */
-  play(video: HTMLVideoElement): void;
+  play(
+    video: HTMLVideoElement,
+    options?: {
+      /**
+       * Should the video be playing? Otherwise, it will be paused
+       * @defaultValue `true`
+       */
+      playing?: boolean;
+
+      /**
+       * Should the video loop?
+       * @defaultValue `true`
+       */
+      loop?: boolean;
+
+      /** A specific timestamp between 0 and the video duration to begin playback */
+      offset?: number;
+
+      /** Desired volume level of the video's audio channel (if any) */
+      volume?: number;
+    }
+  ): void;
 
   /**
    * Stop a single video source
@@ -62,4 +117,37 @@ declare class VideoHelper {
    *          disabled and no thumbnail can be generated.
    */
   createThumbnail(src: string, options: ImageHelper.CompositeOptions): Promise<string>;
+
+  /**
+   * Lazily-load the YouTube API and retrieve a Player instance for a given iframe.
+   * @param id     - The iframe ID.
+   * @param config - A player config object. See {@link https://developers.google.com/youtube/iframe_api_reference} for reference.
+   */
+  getYouTubePlayer(id: string, config?: YT.PlayerOptions): Promise<YT.Player>;
+
+  /**
+   * Retrieve a YouTube video ID from a URL.
+   * @param url - The URL.
+   */
+  getYouTubeId(url: string): string;
+
+  /**
+   * Take a URL to a YouTube video and convert it into a URL suitable for embedding in a YouTube iframe.
+   * @param url  - The URL to convert.
+   * @param vars - YouTube player parameters. (default: `{}`)
+   * @returns The YouTube embed URL.
+   */
+  getYouTubeEmbedURL(url: string, vars?: YT.PlayerVars): string;
+
+  /**
+   * Test a URL to see if it points to a YouTube video.
+   * @param url - The URL to test. (default: `""`)
+   */
+  isYouTubeURL(url?: string): boolean;
+
+  /**
+   * Inject the YouTube API into the page.
+   * @returns A Promise that resolves when the API has initialized.
+   */
+  #injectYouTubeAPI(): Promise<void>;
 }
