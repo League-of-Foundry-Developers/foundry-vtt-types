@@ -32,13 +32,6 @@ declare global {
     | null;
 
   /**
-   * @defaultValue `null`
-   * @remarks
-   * Initialized between the `"DOMContentLoaded"` event and the `"init"` hook event.
-   */
-  let socket: "socket" extends keyof LenientGlobalVariableTypes ? io.Socket : io.Socket | null;
-
-  /**
    * A collection of application instances
    * @remarks
    * - All of the elements of {@link ui} except for `context` and `window` are initialized between the `"setup"` and `"ready"` hook events.
@@ -65,7 +58,7 @@ declare global {
   /**
    * The Color management and manipulation class
    */
-  let Color: unknown; // foundry.utils.Color;
+  let Color: foundry.utils.Color;
 }
 
 type UiApplications = {
