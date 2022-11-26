@@ -8,4 +8,5 @@ import "./filter";
 import "./forms";
 import "./notifications";
 import "./prosemirror";
+import "./secrets";
 import "./tabs";

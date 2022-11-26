@@ -6,10 +6,9 @@ declare global {
    *
    * @typeParam Options - the type of the options object
    */
-  class ActiveEffectConfig<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<
-    Options,
-    InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>
-  > {
+  class ActiveEffectConfig<
+    Options extends DocumentSheetOptions<ActiveEffect> = DocumentSheetOptions<ActiveEffect>
+  > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>> {
     /**
      * @defaultValue
      * ```typescript
@@ -22,7 +21,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): DocumentSheetOptions<ActiveEffect>;
 
     override get title(): string;
 

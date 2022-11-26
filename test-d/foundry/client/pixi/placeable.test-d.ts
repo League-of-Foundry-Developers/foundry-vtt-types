@@ -4,13 +4,21 @@ import { expectAssignable, expectType } from "tsd";
 import "../../../../index";
 import { Document } from "../../../../src/foundry/common/abstract/module.mjs.js";
 
-class EmbeddedOfSceneDocument extends Document<any, InstanceType<ConfiguredDocumentClass<typeof Scene>>> {
-  get sheet(): DocumentSheet {
-    return null as unknown as DocumentSheet;
+type EmbeddedInSceneDocumentSheetOptions = DocumentSheetOptions<
+  Document<any, InstanceType<ConfiguredDocumentClass<typeof Scene>>>
+>;
+
+class EmbeddedInSceneDocumentSheet<
+  Options extends EmbeddedInSceneDocumentSheetOptions = EmbeddedInSceneDocumentSheetOptions
+> extends DocumentSheet<Options, Document<any, InstanceType<ConfiguredDocumentClass<typeof Scene>>>> {}
+
+class EmbeddedInSceneDocument extends Document<any, InstanceType<ConfiguredDocumentClass<typeof Scene>>> {
+  get sheet(): EmbeddedInSceneDocumentSheet {
+    return null as unknown as EmbeddedInSceneDocumentSheet;
   }
 }
 
-class OnePlaceable extends PlaceableObject<EmbeddedOfSceneDocument> {
+class OnePlaceable extends PlaceableObject<EmbeddedInSceneDocument> {
   get bounds(): Rectangle {
     return null as unknown as Rectangle;
   }
@@ -24,12 +32,12 @@ class OnePlaceable extends PlaceableObject<EmbeddedOfSceneDocument> {
   }
 }
 
-const placeable = new OnePlaceable(new EmbeddedOfSceneDocument());
+const placeable = new OnePlaceable(new EmbeddedInSceneDocument());
 expectAssignable<Document<any, any>>(placeable.document);
-expectType<EmbeddedOfSceneDocument>(placeable.document);
-expectType<DocumentSheet>(placeable.sheet);
+expectType<EmbeddedInSceneDocument>(placeable.document);
+expectType<EmbeddedInSceneDocumentSheet>(placeable.sheet);
 
-class ConcretePlaceableObject extends PlaceableObject<EmbeddedOfSceneDocument> {
+class ConcretePlaceableObject extends PlaceableObject<EmbeddedInSceneDocument> {
   get bounds(): NormalizedRectangle {
     throw new Error("Not implemented");
   }
@@ -41,5 +49,5 @@ class ConcretePlaceableObject extends PlaceableObject<EmbeddedOfSceneDocument> {
   }
 }
 expectType<MouseInteractionManager<ConcretePlaceableObject> | null>(
-  new ConcretePlaceableObject(new EmbeddedOfSceneDocument()).mouseInteractionManager
+  new ConcretePlaceableObject(new EmbeddedInSceneDocument()).mouseInteractionManager
 );

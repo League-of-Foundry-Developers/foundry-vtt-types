@@ -5,10 +5,9 @@ declare global {
    * The Application responsible for configuring a single Wall document within a parent Scene.
    * @typeParam Options - The type of the options object
    */
-  class WallConfig<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<
-    Options,
-    InstanceType<ConfiguredDocumentClassForName<"Wall">>
-  > {
+  class WallConfig<
+    Options extends DocumentSheetOptions<WallDocument> = DocumentSheetOptions<WallDocument>
+  > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClassForName<"Wall">>> {
     /**
      * @defaultValue
      * ```typescript
@@ -17,7 +16,7 @@ declare global {
      * options.width = 400;
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions;
+    static get defaultOptions(): DocumentSheetOptions<WallDocument>;
 
     /**
      * An array of Wall ids that should all be edited when changes to this config form are submitted

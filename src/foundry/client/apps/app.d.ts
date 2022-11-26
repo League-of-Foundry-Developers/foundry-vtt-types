@@ -307,14 +307,12 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
   /**
    * Persist the scroll positions of containers within the app before re-rendering the content
    * @param html - The HTML object being traversed
-   * @internal
    */
   protected _saveScrollPositions(html: JQuery): void;
 
   /**
    * Restore the scroll positions of containers within the app after re-rendering the content
    * @param html - The HTML object being traversed
-   * @internal
    */
   protected _restoreScrollPositions(html: JQuery): void;
 
@@ -415,7 +413,6 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
    * Define whether a user is able to begin a dragstart workflow for a given drag selector
    * @param selector - The candidate HTML selector for dragging
    * @returns Can the current user drag this selector?
-   * @internal
    */
   protected _canDragStart(selector: string): boolean;
 
@@ -423,28 +420,24 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
    * Define whether a user is able to conclude a drag-and-drop workflow for a given drop selector
    * @param selector - The candidate HTML selector for the drop target
    * @returns Can the current user drop on this selector?
-   * @internal
    */
   protected _canDragDrop(selector: string): boolean;
 
   /**
    * Callback actions which occur at the beginning of a drag start workflow.
    * @param event - The originating DragEvent
-   * @internal
    */
   protected _onDragStart(event: DragEvent): void;
 
   /**
    * Callback actions which occur when a dragged element is over a drop target.
    * @param event - originating DragEvent
-   * @internal
    */
   protected _onDragOver(event: DragEvent): void;
 
   /**
    * Callback actions which occur when a dragged element is dropped on a target.
    * @param event - The originating DragEvent
-   * @internal
    */
   protected _onDrop(event: DragEvent): void;
 

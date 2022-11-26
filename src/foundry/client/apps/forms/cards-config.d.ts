@@ -113,7 +113,7 @@ declare global {
   }
 
   namespace CardsConfig {
-    interface Options extends DocumentSheetOptions {
+    interface Options extends DocumentSheetOptions<Cards> {
       sort: string;
     }
   }

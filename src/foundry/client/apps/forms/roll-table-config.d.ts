@@ -6,10 +6,9 @@ declare global {
    * The Application responsible for displaying and editing a single RollTable document.
    * @typeParam Options - the type of the options object
    */
-  class RollTableConfig<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<
-    Options,
-    InstanceType<ConfiguredDocumentClassForName<"RollTable">>
-  > {
+  class RollTableConfig<
+    Options extends DocumentSheetOptions<RollTable> = DocumentSheetOptions<RollTable>
+  > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClassForName<"RollTable">>> {
     /**
      * @defaultValue
      * ```typescript
@@ -25,7 +24,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): DocumentSheetOptions<RollTable>;
 
     override get title(): string;
 

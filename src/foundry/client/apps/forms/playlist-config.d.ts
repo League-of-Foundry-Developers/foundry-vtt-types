@@ -5,10 +5,9 @@ declare global {
    * The Application responsible for configuring a single Playlist document.
    * @typeParam Options - the type of the options object
    */
-  class PlaylistConfig<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<
-    Options,
-    InstanceType<ConfiguredDocumentClass<typeof Playlist>>
-  > {
+  class PlaylistConfig<
+    Options extends DocumentSheetOptions<Playlist> = DocumentSheetOptions<Playlist>
+  > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClass<typeof Playlist>>> {
     /**
      * @defaultValue
      * ```typescript
@@ -18,7 +17,7 @@ declare global {
      * options.width = 360;
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions;
+    static get defaultOptions(): DocumentSheetOptions<Playlist>;
 
     override get title(): string;
 

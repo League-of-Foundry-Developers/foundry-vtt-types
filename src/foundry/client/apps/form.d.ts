@@ -1,4 +1,6 @@
 import type { EditorView } from "prosemirror-view";
+import type { Editor } from "tinymce";
+import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "../../prosemirror/prosemirror.mjs";
 
 declare global {
   interface FormApplicationOptions extends ApplicationOptions {
@@ -197,7 +199,7 @@ declare global {
     /**
      * Activate a named TinyMCE text editor
      * @param name           - The named data field which the editor modifies.
-     * @param options        - TinyMCE initialization options passed to TextEditor.create
+     * @param options        - Editor initialization options passed to {@link TextEditor.create}.
      *                         (default: `{}`)
      * @param initialContent - Initial text content for the editor area.
      *                         (default: `""`)
@@ -217,9 +219,26 @@ declare global {
     saveEditor(name: string, { remove }?: { remove?: boolean }): Promise<void>;
 
     /**
-     * Activate a TinyMCE editor instance present within the form
+     * Activate an editor instance present within the form
+     * @param div - The element which contains the editor
      */
     protected _activateEditor(div: HTMLElement): void;
+
+    /**
+     * Configure ProseMirror plugins for this sheet.
+     * @param name    - The name of the editor.
+     * @param options - Additional options to configure the plugins.
+     */
+    protected _configureProseMirrorPlugins(
+      name: string,
+      options: {
+        /** Whether the editor should destroy itself on save. */
+        remove: boolean;
+      }
+    ): {
+      menu: ReturnType<typeof ProseMirrorMenu["build"]>;
+      keyMaps: ReturnType<typeof ProseMirrorKeyMaps["build"]>;
+    };
 
     /**
      * Activate a FilePicker instance present within the form
@@ -258,7 +277,8 @@ declare global {
       target: string;
       button: HTMLElement;
       hasButton: boolean;
-      mce: tinyMCE.Editor | null;
+      instance: Awaited<ReturnType<typeof TextEditor["create"]>> | null;
+      mce: Awaited<ReturnType<typeof TextEditor["create"]>> | null;
       active: boolean;
       changed: boolean;
       options: TextEditor.Options;
@@ -288,28 +308,41 @@ declare global {
     }
   }
 
-  interface DocumentSheetOptions extends FormApplicationOptions {
+  interface DocumentSheetOptions<
+    ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>
+  > extends FormApplicationOptions {
     /**
      * The default permissions required to view this Document sheet.
      * @defaultValue {@link CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED}
      */
     viewPermission: foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+    /** An array of {@link HTMLSecret} configuration objects. */
+    secrets: HTMLSecretConfiguration<ConcreteDocument>[];
   }
 
   /**
    * Extend the FormApplication pattern to incorporate specific logic for viewing or editing Document instances.
    * See the FormApplication documentation for more complete description of this interface.
-   * @param object  - A Document instance which should be managed by this form.
-   * @param options - Optional configuration parameters for how the form behaves.
-   *                  (default: `{}`)
    *
    * @typeParam Options          - the type of the options object
    * @typeParam ConcreteDocument - the type of the Document which should be managed by this form sheet
    */
   abstract class DocumentSheet<
-    Options extends DocumentSheetOptions = DocumentSheetOptions,
+    Options extends DocumentSheetOptions<ConcreteDocument>,
     ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>
   > extends FormApplication<Options, ConcreteDocument> {
+    /**
+     * @param object  - A Document instance which should be managed by this form.
+     *                  (default: `{}`)
+     * @param options - Optional configuration parameters for how the form behaves.
+     *                  (default: `{}`)
+     */
+    constructor(object?: ConcreteDocument, options?: Partial<Options>);
+
+    /** The list of handlers for secret block functionality. */
+    protected _secrets: HTMLSecret<ConcreteDocument>[];
+
     /**
      * @defaultValue
      * ```typescript
@@ -317,7 +350,8 @@ declare global {
      *   classes: ["sheet"],
      *   template: `templates/sheets/${this.name.toLowerCase()}.html`,
      *   viewPermission: CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED,
-     *   sheetConfig: true
+     *   sheetConfig: true,
+     *   secrets: []
      * });
      * ```
      */
@@ -338,9 +372,50 @@ declare global {
 
     override getData(options?: Partial<Options>): MaybePromise<object>;
 
+    protected override _activateCoreListeners(html: JQuery<HTMLElement>): void;
+
+    override activateEditor(
+      name: string,
+      options?: TextEditor.Options | undefined,
+      initialContent?: string | undefined
+    ): Promise<Editor | EditorView>;
+
     override render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 
+    protected override _renderOuter(): Promise<JQuery<HTMLElement>>;
+
+    /**
+     * Create an ID link button in the document sheet header which displays the document ID and copies to clipboard
+     */
+    protected _createDocumentIdLink(html: JQuery<HTMLElement>): void;
+
+    /**
+     * Test whether a certain User has permission to view this Document Sheet.
+     * @param user - The user requesting to render the sheet
+     * @returns Does the User have permission to view this sheet?
+     */
+    protected _canUserView(user: User): boolean;
+
+    /**
+     * Create objects for managing the functionality of secret blocks within this Document's content.
+     */
+    protected _createSecretHandlers(): HTMLSecret[];
+
     protected override _getHeaderButtons(): Application.HeaderButton[];
+
+    /**
+     * Get the HTML content that a given secret block is embedded in.
+     * @param secret - The secret block.
+     */
+    protected _getSecretContent(secret: HTMLElement): string;
+
+    /**
+     * Update the HTML content that a given secret block is embedded in.
+     * @param secret  - The secret block.
+     * @param content - The new content.
+     * @returns The updated Document.
+     */
+    protected _updateSecret(secret: HTMLElement, content: string): Promise<ConcreteDocument | void>;
 
     /**
      * Handle requests to configure the default sheet used by this Document

@@ -6,7 +6,7 @@ declare global {
    *
    * @typeParam Options - the type of the options object
    */
-  class MacroConfig<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<
+  class MacroConfig<Options extends DocumentSheetOptions<Macro> = DocumentSheetOptions<Macro>> extends DocumentSheet<
     Options,
     InstanceType<ConfiguredDocumentClass<typeof Macro>>
   > {
@@ -22,7 +22,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): DocumentSheetOptions<Macro>;
 
     override get id(): string;
 

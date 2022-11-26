@@ -331,6 +331,10 @@ declare global {
        * @defaultValue `"styleselect bullist numlist image table hr link removeformat code save"`
        */
       toolbar?: string;
+
+      fitToSize?: boolean;
+
+      height?: number;
     }
 
     interface EnrichOptions {

@@ -38,7 +38,7 @@ declare global {
   namespace TileConfig {
     type FormData = Pick<TileDataConstructorData, "height" | "img" | "rotation" | "width" | "x" | "y">;
 
-    interface Options extends DocumentSheetOptions {
+    interface Options extends DocumentSheetOptions<TileDocument> {
       /**
        * Configure a preview version of a tile which is not yet saved
        */

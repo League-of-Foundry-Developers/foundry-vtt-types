@@ -9,7 +9,7 @@ declare global {
    *
    * @typeParam Options - the type of the options object
    */
-  class ItemSheet<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<
+  class ItemSheet<Options extends DocumentSheetOptions<Item> = DocumentSheetOptions<Item>> extends DocumentSheet<
     Options,
     InstanceType<ConfiguredDocumentClass<typeof Item>>
   > {
@@ -28,7 +28,7 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions;
+    static get defaultOptions(): DocumentSheetOptions<Item>;
 
     override get id(): string;
 

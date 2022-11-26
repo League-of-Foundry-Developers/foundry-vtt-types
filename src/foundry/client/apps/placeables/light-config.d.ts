@@ -9,10 +9,9 @@ declare global {
    * The Application responsible for configuring a single AmbientLight document within a parent Scene.
    * @typeParam Options - the type of the options object
    */
-  class AmbientLightConfig<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<
-    Options,
-    InstanceType<ConfiguredDocumentClassForName<"AmbientLight">>
-  > {
+  class AmbientLightConfig<
+    Options extends DocumentSheetOptions<AmbientLightDocument> = DocumentSheetOptions<AmbientLightDocument>
+  > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClassForName<"AmbientLight">>> {
     /**
      * @defaultValue
      * ```typescript
@@ -27,7 +26,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): DocumentSheetOptions<AmbientLightDocument>;
 
     override getData(options?: Partial<Options>): MaybePromise<object>;
 

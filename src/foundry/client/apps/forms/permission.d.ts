@@ -6,7 +6,7 @@ declare global {
    * @typeParam ConcreteDocument - the type of the Document which should be managed by this form sheet
    */
   class PermissionControl<
-    Options extends DocumentSheetOptions = DocumentSheetOptions,
+    Options extends DocumentSheetOptions<ConcreteDocument>,
     ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>
   > extends DocumentSheet<Options, ConcreteDocument> {
     /**

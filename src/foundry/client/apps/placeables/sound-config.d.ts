@@ -6,10 +6,9 @@ declare global {
    * The Application responsible for configuring a single AmbientSound document within a parent Scene.
    * @typeParam Options - the type of the options object
    */
-  class AmbientSoundConfig<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<
-    Options,
-    InstanceType<ConfiguredDocumentClassForName<"AmbientSound">>
-  > {
+  class AmbientSoundConfig<
+    Options extends DocumentSheetOptions<AmbientSoundDocument> = DocumentSheetOptions<AmbientSoundDocument>
+  > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClassForName<"AmbientSound">>> {
     /**
      * @defaultValue
      * ```typescript
@@ -20,7 +19,7 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions;
+    static get defaultOptions(): DocumentSheetOptions<AmbientSoundDocument>;
 
     override get title(): string;
 

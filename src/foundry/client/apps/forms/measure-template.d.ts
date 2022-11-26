@@ -5,10 +5,9 @@ declare global {
    * The Application responsible for configuring a single MeasuredTemplate document within a parent Scene.
    * @typeParam Options - the type of the options object
    */
-  class MeasuredTemplateConfig<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<
-    Options,
-    InstanceType<ConfiguredDocumentClassForName<"MeasuredTemplate">>
-  > {
+  class MeasuredTemplateConfig<
+    Options extends DocumentSheetOptions<MeasuredTemplateDocument> = DocumentSheetOptions<MeasuredTemplateDocument>
+  > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClassForName<"MeasuredTemplate">>> {
     /**
      * @defaultValue
      * ```typescript
@@ -21,7 +20,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): DocumentSheetOptions<MeasuredTemplateDocument>;
 
     override getData(): MaybePromise<object>;
 
