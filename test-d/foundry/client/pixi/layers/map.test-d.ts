@@ -6,7 +6,6 @@ expectType<"Tile">(MapLayer.documentName);
 expectType<MapLayer.LayerOptions>(MapLayer.layerOptions);
 expectType<"background" | "foreground">(MapLayer.layerOptions.name);
 expectType<typeof Tile>(MapLayer.layerOptions.objectClass);
-expectType<BackgroundLayer | ForegroundLayer | undefined>(MapLayer.instance);
 
 expectType<MapLayer>(new MapLayer());
 expectType<MapLayer>(new MapLayer({ bgPath: "/path/to/an/image.png", level: 1 }));
@@ -25,7 +24,6 @@ expectType<MapLayer>(layer.deactivate());
 expectType<Promise<MapLayer>>(layer.tearDown());
 expectType<Promise<MapLayer | undefined>>(layer.draw());
 
-expectType<BackgroundLayer | undefined>(BackgroundLayer.instance);
 expectType<MapLayer.LayerOptions<"background">>(BackgroundLayer.layerOptions);
 
 const bgLayer = new BackgroundLayer();
@@ -36,7 +34,6 @@ expectType<void>(bgLayer.storeHistory("update", new TileDocument().data));
 expectType<void>(bgLayer.storeHistory("delete", new TileDocument().data));
 expectError(bgLayer.storeHistory("new", new TileDocument().data));
 
-expectType<ForegroundLayer | undefined>(ForegroundLayer.instance);
 expectType<MapLayer.LayerOptions<"foreground">>(ForegroundLayer.layerOptions);
 
 const fgLayer = new ForegroundLayer();

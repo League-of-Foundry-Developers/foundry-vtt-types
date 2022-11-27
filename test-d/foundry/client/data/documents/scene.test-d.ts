@@ -6,7 +6,7 @@ expectError(new Scene({}));
 const scene = new Scene({ name: "My scene" });
 expectType<Scene>(scene);
 
-expectType<Canvas.Dimensions | {}>(scene.dimensions);
+expectType<SceneDimensions | Record<string, never>>(scene.dimensions);
 expectType<boolean>(scene.active);
 expectType<string | null | undefined>(scene.img);
 expectType<boolean>(scene.isView);

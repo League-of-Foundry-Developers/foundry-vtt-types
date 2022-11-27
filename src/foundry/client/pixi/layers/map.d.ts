@@ -39,6 +39,7 @@ declare global {
      * @remarks This is not overridden in foundry but reflects the real behavior.
      * It returns the BackgroundLayer but ForegroundLayer has been added for subclasses.
      */
+    // @ts-expect-error FIXME: MapLayer does not exist anymore, should be removed.
     static get instance(): Canvas["background"] | Canvas["foreground"];
 
     /**
@@ -136,6 +137,7 @@ declare global {
     /**
      * @remarks This is not overridden in foundry but reflects the real behavior.
      */
+    // @ts-expect-error FIXME: BackgroundLayer does not exist anymore, should be removed.
     static get instance(): Canvas["background"];
 
     /**
@@ -182,6 +184,7 @@ declare global {
     /**
      * @remarks This is not overridden in foundry but reflects the real behavior.
      */
+    // @ts-expect-error FIXME: ForegroundLayer does not exist anymore, should be removed.
     static get instance(): Canvas["foreground"];
 
     /**

@@ -25,7 +25,7 @@ declare global {
      * @defaultValue `{}`
      * @internal
      */
-    protected _dimensions: Canvas.Dimensions | {};
+    protected _dimensions: ReturnType<Scene["getDimensions"]> | Record<string, never>;
 
     /**
      * A reference to the bound key handler function so it can be removed
@@ -103,29 +103,45 @@ declare global {
 
     /**
      * Shift the background image relative to the grid layer
-     * @param deltaX - The number of pixels to shift in the x-direction
-     *                 (default: `0`)
-     * @param deltaY - The number of pixels to shift in the y-direction
-     *                 (default: `0`)
      * @internal
      */
     protected _shiftBackground({
       deltaX,
       deltaY
     }?: {
+      /**
+       * The number of pixels to shift in the x-direction
+       * @defaultValue `0`
+       */
       deltaX?: number;
+
+      /**
+       * The number of pixels to shift in the y-direction
+       * @defaultValue `0`
+       */
       deltaY?: number;
     }): ReturnType<GridConfig["_refresh"]>;
 
     /**
      * Temporarily refresh the display of the BackgroundLayer and GridLayer for the new pending dimensions
-     * @param background - Refresh the background display?
-     *                     (default: `false`)
-     * @param grid       - Refresh the grid display?
-     *                     (default: `false`)
      * @internal
      */
-    protected _refresh({ background, grid }?: { background?: boolean; grid?: boolean }): void;
+    protected _refresh({
+      background,
+      grid
+    }?: {
+      /**
+       * Refresh the background display?
+       * @defaultValue `false`
+       */
+      background?: boolean;
+
+      /**
+       * Refresh the grid display?
+       * @defaultValue `false`
+       */
+      grid?: boolean;
+    }): void;
 
     protected override _onChangeInput(event: JQuery.ChangeEvent): void;
 

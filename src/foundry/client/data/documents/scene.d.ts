@@ -43,7 +43,7 @@ declare global {
      * Determine the canvas dimensions this Scene would occupy, if rendered
      * @defaultValue `{}`
      */
-    dimensions: ReturnType<typeof Canvas.getDimensions> | {};
+    dimensions: ReturnType<this["getDimensions"]> | Record<string, never>;
 
     /**
      * Track whether the scene is the active view
@@ -114,6 +114,13 @@ declare global {
     ): TemporaryDocument<this> | Promise<TemporaryDocument<this | undefined>>;
 
     override prepareBaseData(): void;
+
+    /**
+     * Get the Canvas dimensions which would be used to display this Scene.
+     * Apply padding to enlarge the playable space and round to the nearest 2x grid size to ensure symmetry.
+     * The rounding accomplishes that the padding buffer around the map always contains whole grid spaces.
+     */
+    getDimensions(): SceneDimensions;
 
     protected override _preCreate(
       data: SceneDataConstructorData,
@@ -441,6 +448,44 @@ declare global {
      * @returns The created thumbnail data.
      */
     createThumbnail(data?: Partial<ThumbnailCreationData>): ReturnType<typeof ImageHelper["createThumbnail"]>;
+  }
+
+  interface SceneDimensions {
+    /** The width of the canvas. */
+    width: number;
+
+    /** The height of the canvas. */
+    height: number;
+
+    /** The grid size. */
+    size: number;
+
+    /** The canvas rectangle. */
+    rect: Rectangle;
+
+    /** The X coordinate of the scene rectangle within the larger canvas. */
+    sceneX: number;
+
+    /** The Y coordinate of the scene rectangle within the larger canvas. */
+    sceneY: number;
+
+    /** The width of the scene. */
+    sceneWidth: number;
+
+    /** The height of the scene. */
+    sceneHeight: number;
+
+    /** The scene rectangle. */
+    sceneRect: Rectangle;
+
+    /** The number of distance units in a single grid space. */
+    distance: number;
+
+    /** The aspect ratio of the scene rectangle. */
+    ratio: number;
+
+    /** The length of the longest line that can be drawn on the canvas. */
+    maxR: number;
   }
 }
 

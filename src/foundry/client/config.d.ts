@@ -2,7 +2,7 @@ import { DocumentConstructor, PlaceableObjectConstructor } from "../../types/hel
 import type { StatusEffect } from "./data/documents/token";
 import * as CONST from "../common/constants.mjs";
 
-//TODO: Replace with imports for for the right things when implemented
+// FIXME: Replace with imports for for the right things or remove when implemented
 type VisionMode = unknown;
 type DetectInvisibilityVisionMode = VisionMode;
 type TremorSenseVisionMode = VisionMode;
@@ -12,6 +12,7 @@ declare const ColorManager: unknown;
 declare const TilesLayer: ConstructorOf<CanvasLayer>;
 declare const HiddenCanvasGroup: CanvasGroupConstructor;
 declare const RenderedCanvasGroup: CanvasGroupConstructor;
+declare const EnvironmentCanvasGroup: CanvasGroupConstructor;
 
 declare global {
   /**
@@ -1738,7 +1739,7 @@ declare global {
         rendered: CONFIG.Canvas.GroupDefinition<typeof RenderedCanvasGroup>;
 
         /** @defaultValue `{ groupClass: EnvironmentCanvasGroup, parent: "rendered" }` */
-        environment: CONFIG.Canvas.GroupDefinition<typeof RenderedCanvasGroup>;
+        environment: CONFIG.Canvas.GroupDefinition<typeof EnvironmentCanvasGroup>;
 
         /** @defaultValue `{ groupClass: PrimaryCanvasGroup, parent: "environment" }` */
         primary: CONFIG.Canvas.GroupDefinition<typeof PrimaryCanvasGroup>;
@@ -1774,11 +1775,11 @@ declare global {
         /** @defaultValue `{ layerClass: TokenLayer, group: "interface" }` */
         tokens: LayerDefinition<typeof TokenLayer>;
 
-        /** @defaultValue `{ layerClass: LightingLayer, group: "interface" }` */
-        lighting: LayerDefinition<typeof LightingLayer>;
-
         /** @defaultValue `{ layerClass: SoundsLayer, group: "interface" }` */
         sounds: LayerDefinition<typeof SoundsLayer>;
+
+        /** @defaultValue `{ layerClass: LightingLayer, group: "interface" }` */
+        lighting: LayerDefinition<typeof LightingLayer>;
 
         /** @defaultValue `{ layerClass: NotesLayer, group: "interface" }` */
         notes: LayerDefinition<typeof NotesLayer>;

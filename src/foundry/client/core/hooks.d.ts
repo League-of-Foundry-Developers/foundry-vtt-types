@@ -198,17 +198,7 @@ declare global {
        * @param canvasConfig - Canvas configuration parameters that will be used
        * @remarks This is called by {@link Hooks.callAll}.
        */
-      canvasConfig: (canvasConfig: {
-        view: HTMLCanvasElement;
-        width: number;
-        height: number;
-        transparent: boolean;
-        resolution: number;
-        autoDensity: boolean;
-        backgroundColor: string | null;
-        antialias: boolean;
-        powerPreference: string;
-      }) => void;
+      canvasConfig: (canvasConfig: ConstructorParameters<typeof PIXI.Application>[0]) => void;
 
       /**
        * A hook event that fires when the Canvas is initialized.
@@ -227,7 +217,7 @@ declare global {
        * @see {@link Canvas#pan}
        * @see {@link Canvas#animatePan}
        */
-      canvasPan: (canvas: Canvas, view: Canvas.View) => void;
+      canvasPan: (canvas: Canvas, view: CanvasViewPosition) => void;
 
       /**
        * A hook event that fires when the Canvas is ready.

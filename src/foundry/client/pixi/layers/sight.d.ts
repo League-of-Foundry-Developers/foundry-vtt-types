@@ -148,6 +148,7 @@ declare global {
     /**
      * @remarks This is not overridden in foundry but reflects the real behavior.
      */
+    // @ts-expect-error FIXME: SightLayer does not exist anymore, should be removed.
     static get instance(): Canvas["sight"];
 
     /**
