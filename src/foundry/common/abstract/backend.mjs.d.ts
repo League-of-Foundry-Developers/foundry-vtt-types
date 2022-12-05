@@ -13,15 +13,10 @@ declare abstract class DatabaseBackend {
    * @param user          - The requesting User
    * @returns The created Document instances
    */
-  get<T extends Document<any, any>>(documentClass: ConstructorOf<T>, request: Request, user: BaseUser): T[];
+  get<T extends Document<any, any>>(documentClass: ConstructorOf<T>, request: Request, user?: BaseUser): Promise<T>[];
 
   /**
    * Validate the arguments passed to the get operation
-   * @param query   - A document search query to execute
-   *                  (default: `{}`)
-   * @param options - Operation options
-   *                  (default: `{}`)
-   * @param pack    - A Compendium pack identifier
    */
   protected _getArgs({ query, options, pack }?: Request): { query: object; options: RequestOptions; pack?: string };
 
@@ -68,15 +63,14 @@ declare abstract class DatabaseBackend {
    * @param user          - The requesting User
    * @returns The created Document instances
    */
-  create<T extends Document<any, any>>(documentClass: ConstructorOf<T>, request: Request, user: BaseUser): Promise<T[]>;
+  create<T extends Document<any, any>>(
+    documentClass: ConstructorOf<T>,
+    request: Request,
+    user?: BaseUser
+  ): Promise<T[]>;
 
   /**
    * Validate the arguments passed to the create operation
-   * @param data    - An array of document data
-   *                  (default: `[]`)
-   * @param options - Operation options
-   *                  (default: `{}`)
-   * @param pack    - A Compendium pack identifier
    */
   protected _createArgs({ data, options, pack }?: Request): {
     data: AnyDocumentData[];
@@ -110,15 +104,14 @@ declare abstract class DatabaseBackend {
    * @param user          - The requesting User
    * @returns The updated Document instances
    */
-  update<T extends Document<any, any>>(documentClass: ConstructorOf<T>, request: Request, user: BaseUser): Promise<T[]>;
+  update<T extends Document<any, any>>(
+    documentClass: ConstructorOf<T>,
+    request: Request,
+    user?: BaseUser
+  ): Promise<T[]>;
 
   /**
    * Validate the arguments passed to the update operation
-   * @param updates - An array of document data
-   *                  (default: `[]`)
-   * @param options - Operation options
-   *                  (default: `{}`)
-   * @param pack    - A Compendium pack identifier
    */
   protected _updateArgs({ updates, options, pack }?: Request): {
     updates: AnyDocumentData[];
@@ -152,16 +145,15 @@ declare abstract class DatabaseBackend {
    * @param user          - The requesting User
    * @returns The deleted Document instances
    */
-  delete<T extends Document<any, any>>(documentClass: ConstructorOf<T>, request: Request, user: BaseUser): Promise<T[]>;
+  delete<T extends Document<any, any>>(
+    documentClass: ConstructorOf<T>,
+    request: Request,
+    user?: BaseUser
+  ): Promise<T[]>;
 
   /**
    * Validate the arguments passed to the delete operation
    * @param request - The requested operation
-   * @param ids     - An array of document ids
-   *                  (default: `[]`)
-   * @param options - Operation options
-   *                  (default: `{}`)
-   * @param pack    - A Compendium pack identifier
    */
   protected _deleteArgs({ ids, options, pack }?: Request): { ids: string[]; options: RequestOptions; pack?: string };
 
@@ -187,12 +179,12 @@ declare abstract class DatabaseBackend {
   /**
    * Describe the scopes which are suitable as the namespace for a flag key
    */
-  protected getFlagScopes(): string[];
+  getFlagScopes(): string[];
 
   /**
    * Describe the scopes which are suitable as the namespace for a flag key
    */
-  protected getCompendiumScopes(): string[];
+  getCompendiumScopes(): string[];
 
   /**
    * Provide the Logger implementation that should be used for database operations
@@ -204,16 +196,28 @@ declare abstract class DatabaseBackend {
    * @param action    - The action performed
    * @param type      - The document type
    * @param documents - The documents modified
-   * @param level     - The logging level
-   *                    (default: `"info"`)
-   * @param parent    - A parent document
-   * @param pack      - A compendium pack within which the operation occurred
    */
   protected _logOperation(
     action: string,
     type: string,
     documents: Document<any, any>[],
-    { parent, pack, level }?: { parent?: Document<any, any>; pack?: string; level?: string }
+    {
+      parent,
+      pack,
+      level
+    }?: {
+      /** A parent document */
+      parent?: Document<any, any>;
+
+      /** A compendium pack within which the operation occurred */
+      pack?: string;
+
+      /**
+       * The logging level
+       * @defaultValue `"info"`
+       */
+      level?: string;
+    }
   ): void;
 
   /**
@@ -233,12 +237,30 @@ declare abstract class DatabaseBackend {
 }
 
 export interface Request {
+  /** An array of document data */
   data?: AnyDocumentData[];
+
+  /** An array of document data */
   updates?: AnyDocumentData[];
+
+  /** An array of document ids */
   ids?: string[];
+
   parent?: Document<any, any>;
+
+  /**
+   * A document search query to execute
+   * @defaultValue `{}`
+   */
   query?: Record<string, unknown>;
+
+  /**
+   * Operation options
+   * @defaultValue `{}`
+   */
   options?: RequestOptions;
+
+  /** A Compendium pack identifier */
   pack?: string;
 }
 
