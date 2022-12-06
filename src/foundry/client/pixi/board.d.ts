@@ -31,14 +31,14 @@ declare global {
    * {@link hookEvents.canvasTearDown}
    *
    * @example Canvas State
-   * ```javascript
+   * ```typescript
    * canvas.ready; // Is the canvas ready for use?
    * canvas.scene; // The currently viewed Scene document.
    * canvas.dimensions; // The dimensions of the current Scene.
    * ```
    *
    * @example Canvas Methods
-   * ```javascript
+   * ```typescript
    * canvas.draw(); // Completely re-draw the game canvas (this is usually unnecessary).
    * canvas.pan(x, y, zoom); // Pan the canvas to new coordinates and scale.
    * canvas.recenter(); // Re-center the canvas on the currently controlled Token.
