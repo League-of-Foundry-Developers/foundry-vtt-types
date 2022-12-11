@@ -7,10 +7,7 @@ declare global {
    * be changed in v10.
    * @typeParam Options - The type of the options object
    */
-  class TokenConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
-    Options,
-    InstanceType<ConfiguredDocumentClassForName<"Token">> | InstanceType<ConfiguredDocumentClassForName<"Actor">>
-  > {
+  class TokenConfig<Options extends DocumentSheetOptions = DocumentSheetOptions> extends DocumentSheet<Options> {
     constructor(
       object:
         | InstanceType<ConfiguredDocumentClassForName<"Token">>
@@ -18,7 +15,15 @@ declare global {
       options?: Partial<Options>
     );
 
+    /** The placed Token object in the Scene */
     token: InstanceType<ConfiguredDocumentClassForName<"Token">> | PrototypeTokenDocument;
+    /** A reference to the Actor which the token depicts */
+    actor: InstanceType<ConfiguredDocumentClassForName<"Actor">>;
+    /** Preserve a copy of the original document before any changes are made. */
+    // TODO: what should the type of this be? It's used as a DeepPartial in
+    // _onUpdate, but I can't figure out what the exact type would be. So it
+    // should be un-DeepPartial'ed
+    original: InstanceType<ConfiguredDocumentClassForName<"Token">>;
 
     /**
      * @defaultValue
@@ -36,25 +41,22 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): FormApplicationOptions;
-
-    override get id(): string;
+    static override get defaultOptions(): DocumentSheetOptions;
 
     /**
      * A convenience accessor to test whether we are configuring the prototype Token for an Actor.
      */
     get isPrototype(): boolean;
 
-    /**
-     * Convenience access to the Actor document that this Token represents
-     */
-    get actor(): InstanceType<ConfiguredDocumentClassForName<"Actor">>;
+    override get id(): string;
 
     override get title(): string;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 
-    override render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<this>;
+    protected override _canUserView(user: User): boolean;
+
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     protected override _renderInner(args: object): Promise<JQuery>;
 
@@ -64,15 +66,25 @@ declare global {
      */
     protected _getAlternateTokenImages(): Promise<Record<string, string>>;
 
-    protected override _getHeaderButtons(): Application.HeaderButton[];
+    override activateListeners(html: JQuery): void;
+
+    override close(options?: FormApplication.CloseOptions | undefined): Promise<void>;
+
+    protected override _getSubmitData(updateData?: object | null | undefined): Record<string, unknown>;
+
+    protected override _onChangeInput(event: JQuery.ChangeEvent<any, any, any, any>): Promise<void>;
 
     /**
-     * Shim for {@link DocumentSheet#_onConfigureSheet} that will be replaced in v10 when this class subclasses it.
-     * @internal
+     * Mimic changes to the Token document as if they were true document updates.
+     * @param change - Data which simulates a document update
+     * @param reset - To know if this preview change is a reset. Defaults to false.
      */
-    protected _onConfigureSheet(event: JQuery.ClickEvent): void;
+    protected _previewChanges(change: Parameters<foundry.documents.BaseToken["_onUpdate"]>[0], reset?: boolean): void;
 
-    override activateListeners(html: JQuery): void;
+    /**
+     * Reset the temporary preview of the Token when the form is submitted or closed.
+     */
+    protected _resetPreview(): void;
 
     protected override _updateObject(event: Event, formData: TokenConfig.FormData): Promise<unknown>;
 
@@ -87,7 +99,16 @@ declare global {
      * Handle changing the attribute bar in the drop-down selector to update the default current and max value
      * @internal
      */
-    protected _onBarChange(ev: JQuery.ChangeEvent): void;
+    protected _onBarChange(event: JQuery.ChangeEvent): void;
+
+    /**
+     * Handle click events on a token configuration sheet action button
+     * @param event - The originating click event */
+    protected _onClickActionButton(event: JQuery.ClickEvent): void;
+    /**
+     * Disable the user's ability to edit the token image field if wildcard images are enabled and that user does not have
+     * file browser permissions. */
+    private _disableEditImage(): void;
   }
 
   namespace TokenConfig {
@@ -132,9 +153,7 @@ declare global {
   /**
    * A sheet that alters the values of the default Token configuration used when new Token documents are created.
    */
-  class DefaultTokenConfig<
-    Options extends FormApplicationOptions = FormApplicationOptions
-  > extends TokenConfig<Options> {
+  class DefaultTokenConfig<Options extends DocumentSheetOptions> extends TokenConfig<Options> {
     constructor(object: unknown, options?: Partial<Options> | undefined);
 
     data: foundry.data.TokenData;
@@ -158,7 +177,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): FormApplicationOptions;
+    static override get defaultOptions(): DocumentSheetOptions;
 
     override get id(): string;
 
