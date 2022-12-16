@@ -1,4 +1,5 @@
 import "./actor";
+import "./adventure-exporter";
 import "./card-config";
 import "./cards-config";
 import "./combat-config";
