@@ -1,4 +1,5 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
+import type { TokenData } from "../../../common/data/module.mjs";
 
 declare global {
   /**
@@ -20,10 +21,8 @@ declare global {
     /** A reference to the Actor which the token depicts */
     actor: InstanceType<ConfiguredDocumentClassForName<"Actor">>;
     /** Preserve a copy of the original document before any changes are made. */
-    // TODO: what should the type of this be? It's used as a DeepPartial in
-    // _onUpdate, but I can't figure out what the exact type would be. So it
-    // should be un-DeepPartial'ed
-    original: InstanceType<ConfiguredDocumentClassForName<"Token">>;
+    // TODO: unsure about this type.
+    original: TokenData["_source"];
 
     /**
      * @defaultValue
