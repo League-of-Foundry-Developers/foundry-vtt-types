@@ -4,6 +4,8 @@ import type { CONST } from "../module.mjs.js";
 import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.mjs.js";
 import type { AnyDocument } from "../abstract/document.mjs.js";
 
+// FIXME: Document all helper types and type params
+
 /**
  * @typeParam InitializedType - the type of the initialized value of the field
  */
@@ -15,11 +17,11 @@ interface BaseTypeExtendingOptions {
   initial?: InitialType<any>;
 }
 
+export type AnyDataFieldOptions = DataFieldOptions<any, any>;
+export type HomogenousDataFieldOptions<T> = DataFieldOptions<DataField.AssignmentType<T>, DataField.InitializedType<T>>;
+
 declare global {
-  /**
-   * @typeParam BaseType - the base type of the associated DataField, without `null` or `undefined`
-   */
-  interface DataFieldOptions<BaseType> {
+  interface DataFieldOptions<AssignmentType, InitializedType> {
     /** Is this field required to be populated? */
     required?: boolean;
 
@@ -27,10 +29,10 @@ declare global {
     nullable?: boolean;
 
     /** The initial value of a field, or a function which assigns that initial value. */
-    initial?: InitialType<DataField.InitializedType<BaseType, this>>;
+    initial?: InitialType<InitializedType>;
 
     /** A data validation function which accepts one argument with the current value. */
-    validate?: (value: DataField.AssignmentType<BaseType, this>) => void;
+    validate?: (value: AssignmentType) => void;
 
     /** A localizable label displayed on forms which render this field. */
     label?: string;
@@ -46,32 +48,22 @@ declare global {
   }
 }
 
-declare namespace DataField {
-  /** A type to infer the possible assignment type to a DataField, based on the options of the field. */
-  type AssignmentType<BaseType, Options extends BaseTypeExtendingOptions> =
-    | BaseType
-    | (Options["nullable"] extends true
-        ? null
-        : Options["required"] extends true
-        ? undefined extends Options["initial"]
-          ? never
-          : null
-        : null)
-    | (Options["required"] extends false ? undefined : undefined extends Options["initial"] ? never : undefined);
-
-  /** A type to infer the possible initialized type of a DataField, based on the options of the field. */
-  type InitializedType<BaseType, Options extends BaseTypeExtendingOptions> =
-    | BaseType
-    | (Options["nullable"] extends true ? null : never)
-    | (Options["required"] extends true ? never : undefined extends Options["initial"] ? undefined : never);
-}
+export type AnyDataField = DataField<any, any>;
+export type UnknownDataField = DataField<AnyDataFieldOptions, unknown>;
 
 /**
  * An abstract class that defines the base pattern for a data field within a data schema.
- * @typeParam Value         - the type of the value of the field
- * @typeParam PersistedType - the type of the persisted value of the field
  */
-declare abstract class DataField<BaseType, Options extends DataFieldOptions<BaseType>, Value, PersistedType = Value> {
+declare abstract class DataField<
+  Options extends DataFieldOptions<DataField.AssignmentType<any, Options>, DataField.InitializedType<any, Options>> = {
+    required: false;
+    nullable: false;
+    initial: undefined;
+  },
+  AssignmentType extends DataField.AssignmentType<any, Options> = DataField.InferredAssignmentType<any, Options>,
+  InitializedType extends DataField.InitializedType<any, Options> = DataField.InferredInitializedType<any, Options>,
+  PersistedType = InitializedType
+> {
   /**
    * @param options - Options which configure the behavior of the field
    */
@@ -96,7 +88,7 @@ declare abstract class DataField<BaseType, Options extends DataFieldOptions<Base
    * The initial value of a field, or a function which assigns that initial value.
    * @defaultValue `undefined`
    */
-  initial: ((data: any) => Value) | Value | null | undefined;
+  initial: InitialType<InitializedType>;
 
   /**
    * Should the prepared value of the field be read-only, preventing it from being
@@ -138,13 +130,13 @@ declare abstract class DataField<BaseType, Options extends DataFieldOptions<Base
    * This is assigned by SchemaField#initialize.
    * @internal
    */
-  parent: DataField<any> | undefined;
+  parent: AnyDataField | undefined;
 
   /**
    * Default parameters for this field type
    * @remarks This is not entirely type-safe, overrides should specifiy a more concrete return type.
    */
-  protected static get _defaults(): DataFieldOptions<any>;
+  protected static get _defaults(): AnyDataFieldOptions;
 
   /**
    * A dot-separated string representation of the field path within the parent schema.
@@ -160,7 +152,7 @@ declare abstract class DataField<BaseType, Options extends DataFieldOptions<Base
    * @returns The results object
    */
   apply<Value, Options, Return>(
-    fn: keyof this | ((this: DataField<any>, value: Value, options: Options) => Return),
+    fn: keyof this | ((this: this, value: Value, options: Options) => Return),
     value: Value,
     options?: Options
   ): Return;
@@ -173,7 +165,7 @@ declare abstract class DataField<BaseType, Options extends DataFieldOptions<Base
    * @param options - Additional options for how the field is cleaned
    * @returns The cast value
    */
-  clean(value: any | null | undefined, options?: DataField.CleanOptions): Value;
+  clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
 
   /**
    * Apply any cleaning logic specific to this DataField type.
@@ -181,14 +173,14 @@ declare abstract class DataField<BaseType, Options extends DataFieldOptions<Base
    * @param options - Additional options for how the field is cleaned.
    * @returns The cleaned value.
    */
-  protected _cleanType(value: Value, options?: DataField.CleanOptions): Value;
+  protected _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
   /**
    * Cast a non-default value to ensure it is the correct type for the field
    * @param value - The provided non-default value
    * @returns The standardized value
    */
-  protected abstract _cast(value: any): Value;
+  protected abstract _cast(value: AssignmentType): InitializedType;
 
   /**
    * Attempt to retrieve a valid initial value for the DataField.
@@ -196,7 +188,7 @@ declare abstract class DataField<BaseType, Options extends DataFieldOptions<Base
    * @returns A valid initial value
    * @throws An error if there is no valid initial value defined
    */
-  getInitialValue(data: DataField.CleanOptions["source"]): Value;
+  getInitialValue(data: DataField.CleanOptions["source"]): InitializedType;
 
   /**
    * Validate a candidate input for this field, ensuring it meets the field requirements.
@@ -207,7 +199,10 @@ declare abstract class DataField<BaseType, Options extends DataFieldOptions<Base
    *                  (default: `{}`)
    * @returns Returns a ModelValidationError if a validation failure occurred
    */
-  validate(value: any, options?: DataField.ValidationOptions<DataField<any>>): ModelValidationError | undefined;
+  validate(
+    value: AssignmentType,
+    options?: DataField.ValidationOptions<AnyDataField>
+  ): ModelValidationError | undefined;
 
   /**
    * Special validation rules which supersede regular field validation.
@@ -217,7 +212,7 @@ declare abstract class DataField<BaseType, Options extends DataFieldOptions<Base
    *          Otherwise, return void.
    * @throws May throw a specific error if the value is not valid
    */
-  protected _validateSpecial(value: any): boolean | void;
+  protected _validateSpecial(value: AssignmentType): boolean | void;
 
   /**
    * A default type-specific validator that can be overridden by child classes
@@ -227,7 +222,7 @@ declare abstract class DataField<BaseType, Options extends DataFieldOptions<Base
    *          Otherwise, return void.
    * @throws May throw a specific error if the value is not valid
    */
-  protected _validateType(value: any, options?: DataField.ValidationOptions<DataField<any>>): boolean | void;
+  protected _validateType(value: InitializedType, options?: DataField.ValidationOptions<AnyDataField>): boolean | void;
 
   /**
    * Initialize the original source data into a mutable copy for the DataModel instance.
@@ -235,17 +230,47 @@ declare abstract class DataField<BaseType, Options extends DataFieldOptions<Base
    * @param model - The DataModel instance that this field belongs to
    * @returns An initialized copy of the source data
    */
-  initialize(value: PersistedType, model: AnyDataModel): (() => Value | null) | Value;
+  initialize(value: PersistedType, model: AnyDataModel): (() => InitializedType | null) | InitializedType;
 
   /**
    * Export the current value of the field into a serializable object.
    * @param value - The initialized value of the field
    * @returns An exported representation of the field
    */
-  toObject(value: Value): PersistedType;
+  toObject(value: InitializedType): PersistedType;
 }
 
 declare namespace DataField {
+  /** A type to infer the possible assignment type to a DataField, based on the options of the field. */
+  type AssignmentType<BaseType, Options extends BaseTypeExtendingOptions = BaseTypeExtendingOptions> =
+    | BaseType
+    | (Options["nullable"] extends true
+        ? null
+        : Options["required"] extends true
+        ? undefined extends Options["initial"]
+          ? never
+          : null
+        : null)
+    | (Options["required"] extends false ? undefined : undefined extends Options["initial"] ? never : undefined);
+
+  /** A type to infer the possible initialized type of a DataField, based on the options of the field. */
+  type InitializedType<BaseType, Options extends BaseTypeExtendingOptions = BaseTypeExtendingOptions> =
+    | BaseType
+    | (Options["nullable"] extends true ? null : never)
+    | (Options["required"] extends true ? never : undefined extends Options["initial"] ? undefined : never);
+
+  /** A type to infer the concrete assignment type from the given base and options. */
+  type InferredAssignmentType<
+    BaseAssignmentType,
+    Options extends DataFieldOptions<any, any>
+  > = Options extends DataFieldOptions<infer A extends AssignmentType<BaseAssignmentType, Options>, any> ? A : never;
+
+  /** A type to infer the concrete initialized type from the given base and options. */
+  type InferredInitializedType<
+    BaseInitializedType,
+    Options extends DataFieldOptions<any, any>
+  > = Options extends DataFieldOptions<any, infer I extends InitializedType<BaseInitializedType, Options>> ? I : never;
+
   interface CleanOptions {
     /** Whether to perform partial cleaning? */
     partial?: boolean;
@@ -264,18 +289,28 @@ declare namespace DataField {
 
 /**
  * A special class of {@link DataField} which defines a data schema.
- * @typeParam Value         - the type of the value of the field
- * @typeParam PersistedType - the type of the persisted value of the field
  */
 declare class SchemaField<
-  Value extends Record<string, DataField<any>> | null | undefined,
-  PersistedType extends object | null | undefined = object | null | undefined
-> extends DataField<Value, PersistedType> {
+  Options extends DataFieldOptions<
+    DataField.AssignmentType<object, Options>,
+    DataField.InitializedType<object, Options>
+  > = {
+    required: true;
+    nullable: false;
+    initial: object;
+  },
+  AssignmentType extends DataField.AssignmentType<object, Options> = DataField.InferredAssignmentType<object, Options>,
+  InitializedType extends DataField.InitializedType<object, Options> = DataField.InferredInitializedType<
+    object,
+    Options
+  >,
+  PersistedType = DataField.InitializedType<object, Options>
+> extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param fields  - The contained field definitions
    * @param options - Options which configure the behavior of the field
    */
-  constructor(fields: DataSchema, options?: DataFieldOptions<DataSchema>);
+  constructor(fields: DataSchema, options?: Options);
 
   /** @defaultValue `true` */
   override required: boolean;
@@ -284,9 +319,9 @@ declare class SchemaField<
   override nullable: boolean;
 
   /** @defaultValue `() => this.clean({})` */
-  override initial: Value | ((data: any) => Value) | null | undefined;
+  override initial: InitialType<InitializedType>;
 
-  protected static override get _defaults(): DataFieldOptions<DataSchema>;
+  protected static override get _defaults(): HomogenousDataFieldOptions<object>;
 
   /**
    * The contained field definitions.
@@ -303,7 +338,7 @@ declare class SchemaField<
   /**
    * Iterate over a SchemaField by iterating over its fields.
    */
-  [Symbol.iterator](): Iterable<DataField<unknown>>;
+  [Symbol.iterator](): Iterable<UnknownDataField>;
 
   /**
    * An array of field names which are present in the schema.
@@ -332,23 +367,23 @@ declare class SchemaField<
    * @param fieldName - The field name
    * @returns The DataField instance or undefined
    */
-  get(fieldName: string): DataField<unknown> | undefined;
+  get(fieldName: string): UnknownDataField | undefined;
 
-  protected override _cast(value: any): Value;
+  protected override _cast(value: AssignmentType): InitializedType;
 
-  protected override _cleanType(value: Value, options?: DataField.CleanOptions | undefined): Value;
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | undefined): InitializedType;
 
-  override initialize(value: PersistedType, model: AnyDataModel): Value;
+  override initialize(value: PersistedType, model: AnyDataModel): InitializedType | (() => InitializedType | null);
 
   protected override _validateType(
-    value: any,
-    options?: DataField.ValidationOptions<DataField<any>> | undefined
+    value: InitializedType,
+    options?: DataField.ValidationOptions<AnyDataField> | undefined
   ): boolean | void;
 
-  override toObject(value: Value): PersistedType;
+  override toObject(value: InitializedType): PersistedType;
 
   override apply<Value, Options, Return>(
-    fn: keyof this | ((this: DataField<any>, value: Value, options: Options) => Return),
+    fn: keyof this | ((this: this, value: Value, options: Options) => Return),
     value: Value,
     options?: Options | undefined
   ): Return;
@@ -356,13 +391,26 @@ declare class SchemaField<
 
 /**
  * A subclass of [DataField]{@link DataField} which deals with boolean-typed data.
- * @typeParam Value         - the type of the value of the field
- * @typeParam PersistedType - the type of the persisted value of the field
  */
 declare class BooleanField<
-  Value extends boolean | null | undefined = boolean,
-  PersistedType extends boolean | null | undefined = Value
-> extends DataField<Value, PersistedType> {
+  Options extends DataFieldOptions<
+    DataField.AssignmentType<BooleanField.BaseAssignmentType, Options>,
+    DataField.InitializedType<boolean, Options>
+  > = {
+    required: true;
+    nullable: false;
+    initial: false;
+  },
+  AssignmentType extends DataField.AssignmentType<
+    BooleanField.BaseAssignmentType,
+    Options
+  > = DataField.InferredAssignmentType<BooleanField.BaseAssignmentType, Options>,
+  InitializedType extends DataField.InitializedType<boolean, Options> = DataField.InferredInitializedType<
+    boolean,
+    Options
+  >,
+  PersistedType = DataField.InitializedType<boolean, Options>
+> extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override required: boolean;
 
@@ -370,21 +418,31 @@ declare class BooleanField<
   override nullable: boolean;
 
   /** @defaultValue `false` */
-  override initial: Value | ((data: any) => Value) | null | undefined;
+  override initial: InitialType<InitializedType>;
 
-  protected static override get _defaults(): DataFieldOptions<boolean | null | undefined>;
+  protected static override get _defaults(): DataFieldOptions<
+    BooleanField.BaseAssignmentType | null | undefined,
+    boolean | null | undefined
+  >;
 
-  protected override _cast(value: any): Value;
+  protected override _cast(value: AssignmentType): InitializedType;
 
-  protected override _validateType(value: any): boolean | void;
+  protected override _validateType(
+    value: InitializedType,
+    options?: DataField.ValidationOptions<AnyDataField> | undefined
+  ): boolean | void;
+}
+
+declare namespace BooleanField {
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean#boolean_coercion
+   */
+  type BaseAssignmentType = boolean | number | object | string;
 }
 
 declare global {
-  /**
-   * @typeParam Value - the type of the value of the field
-   */
-  interface NumberFieldOptions<Value extends number | null | undefined = number | null | undefined>
-    extends DataFieldOptions<Value> {
+  interface NumberFieldOptions<AssignmentType, InitializedType>
+    extends DataFieldOptions<AssignmentType, InitializedType> {
     /** A minimum allowed value */
     min?: number;
 
@@ -417,20 +475,33 @@ declare global {
 
 /**
  * A subclass of [DataField]{@link DataField} which deals with number-typed data.
- * @typeParam Value         - the type of the value of the field
- * @typeParam PersistedType - the type of the persisted value of the field
  */
 declare class NumberField<
-  Value extends number | null | undefined = number | null | undefined,
-  PersistedType extends number | null | undefined = Value
-> extends DataField<Value, PersistedType> {
+  Options extends NumberFieldOptions<
+    DataField.AssignmentType<NumberField.BaseAssignmentType, Options>,
+    DataField.InitializedType<number, Options>
+  > = {
+    required: false;
+    initial: null;
+    nullable: true;
+  },
+  AssignmentType extends DataField.AssignmentType<
+    NumberField.BaseAssignmentType,
+    Options
+  > = DataField.InferredAssignmentType<NumberField.BaseAssignmentType, Options>,
+  InitializedType extends DataField.InitializedType<number, Options> = DataField.InferredInitializedType<
+    number,
+    Options
+  >,
+  PersistedType = DataField.InitializedType<number, Options>
+> extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param options - Options which configure the behavior of the field
    */
-  constructor(options?: NumberFieldOptions<Value>);
+  constructor(options?: Options);
 
   /** @defaultValue `null` */
-  override initial: Value | ((data: any) => Value) | null | undefined;
+  override initial: InitialType<InitializedType>;
 
   /** @defaultValue `true` */
   override nullable: boolean;
@@ -473,15 +544,18 @@ declare class NumberField<
    */
   choices: number[] | Record<number, string> | (() => number[] | Record<number, string>) | undefined;
 
-  protected static override get _defaults(): DataFieldOptions<number | null | undefined>;
+  protected static override get _defaults(): DataFieldOptions<
+    NumberField.BaseAssignmentType | null | undefined,
+    number | null | undefined
+  >;
 
-  protected override _cast(value: any): Value;
+  protected override _cast(value: AssignmentType): InitializedType;
 
-  protected override _cleanType(value: Value, options?: DataField.CleanOptions | undefined): Value;
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | undefined): InitializedType;
 
   protected override _validateType(
-    value: any,
-    options?: DataField.ValidationOptions<DataField<any>> | undefined
+    value: InitializedType,
+    options?: DataField.ValidationOptions<AnyDataField> | undefined
   ): boolean | void;
 
   /**
@@ -489,15 +563,22 @@ declare class NumberField<
    * @param value - The provided value
    * @returns Is the choice valid?
    */
-  #isValidChoice(value: number): boolean;
+  #isValidChoice(value: AssignmentType): boolean;
+}
+
+declare namespace NumberField {
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number#number_coercion
+   */
+  type BaseAssignmentType = number | boolean | string | BigInt | object;
 }
 
 declare global {
   /**
    * @typeParam Value - the type of the value of the field
    */
-  interface StringFieldOptions<Value extends object | string | null | undefined = string | undefined>
-    extends DataFieldOptions<Value> {
+  interface StringFieldOptions<AssignmentType, InitializedType>
+    extends DataFieldOptions<AssignmentType, InitializedType> {
     /** Is the string allowed to be blank (empty)? */
     blank?: boolean;
 
@@ -515,20 +596,33 @@ declare global {
 
 /**
  * A subclass of [DataField]{@link DataField} which deals with string-typed data.
- * @typeParam Value         - the type of the value of the field
- * @typeParam PersistedType - the type of the persisted value of the field
  */
 declare class StringField<
-  Value extends object | string | null | undefined = string | undefined,
-  PersistedType extends string | null | undefined = string | undefined
-> extends DataField<Value, PersistedType> {
+  Options extends StringFieldOptions<
+    DataField.AssignmentType<StringField.BaseAssignmentType, Options>,
+    DataField.InitializedType<string | object | AnyDocument, Options>
+  > = {
+    required: false;
+    initial: string;
+    nullable: false;
+  },
+  AssignmentType extends DataField.AssignmentType<
+    StringField.BaseAssignmentType,
+    Options
+  > = DataField.InferredAssignmentType<StringField.BaseAssignmentType, Options>,
+  InitializedType extends DataField.InitializedType<
+    string | object | AnyDocument,
+    Options
+  > = DataField.InferredInitializedType<string | object | AnyDocument, Options>,
+  PersistedType = DataField.InitializedType<string, Options>
+> extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param options - Options which configure the behavior of the field
    */
-  constructor(options?: StringFieldOptions<Value>);
+  constructor(options?: Options);
 
   /** @defaultValue `""` */
-  override initial: Value | ((data: any) => Value) | null | undefined;
+  override initial: InitialType<InitializedType>;
 
   /**
    * Is the string allowed to be blank (empty)?
@@ -553,17 +647,20 @@ declare class StringField<
    */
   choices: string[] | Record<string, string> | (() => string[] | Record<string, string>) | undefined;
 
-  protected static override get _defaults(): DataFieldOptions<object | string | null | undefined>;
+  protected static override get _defaults(): DataFieldOptions<
+    StringField.BaseAssignmentType | AnyDocument | null | undefined,
+    string | AnyDocument | null | undefined
+  >;
 
-  override clean(value: any, options?: DataField.CleanOptions | undefined): Value;
+  override clean(value: AssignmentType, options?: DataField.CleanOptions | undefined): InitializedType;
 
-  protected override _cast(value: any): Value;
+  protected override _cast(value: AssignmentType): InitializedType;
 
-  protected override _validateSpecial(value: any): boolean | void;
+  protected override _validateSpecial(value: AssignmentType): boolean | void;
 
   protected override _validateType(
-    value: any,
-    options?: DataField.ValidationOptions<DataField<any>> | undefined
+    value: InitializedType,
+    options?: DataField.ValidationOptions<AnyDataField> | undefined
   ): boolean | void;
 
   /**
@@ -571,18 +668,35 @@ declare class StringField<
    * @param value - The provided value
    * @returns Is the choice valid?
    */
-  #isValidChoice(value: string): boolean;
+  #isValidChoice(value: AssignmentType): boolean;
+}
+
+declare namespace StringField {
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String#string_coercion
+   */
+  type BaseAssignmentType = string | boolean | number | BigInt | symbol | object;
 }
 
 /**
  * A subclass of [DataField]{@link DataField} which deals with object-typed data.
- * @typeParam Value         - the type of the value of the field
- * @typeParam PersistedType - the type of the persisted value of the field
  */
 declare class ObjectField<
-  Value extends object | null | undefined = object,
-  PersistedType extends object | null | undefined = Value
-> extends DataField<Value, PersistedType> {
+  Options extends DataFieldOptions<
+    DataField.AssignmentType<object, Options>,
+    DataField.InitializedType<object, Options>
+  > = {
+    required: true;
+    nullable: false;
+    initial: () => object;
+  },
+  AssignmentType extends DataField.AssignmentType<object, Options> = DataField.InferredAssignmentType<object, Options>,
+  InitializedType extends DataField.InitializedType<object, Options> = DataField.InferredInitializedType<
+    object,
+    Options
+  >,
+  PersistedType = DataField.InitializedType<object, Options>
+> extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override required: boolean;
 
@@ -590,42 +704,59 @@ declare class ObjectField<
   override nullable: boolean;
 
   /** @defaultValue `() => ({})` */
-  override initial: Value | ((data: any) => Value) | null | undefined;
+  override initial: InitialType<InitializedType>;
 
-  protected static override get _defaults(): DataFieldOptions<object | null | undefined>;
+  protected static override get _defaults(): DataFieldOptions<object | null | undefined, object | null | undefined>;
 
-  protected override _cast(value: any): Value;
+  protected override _cast(value: AssignmentType): InitializedType;
 
-  override initialize(value: PersistedType, model: AnyDataModel): Value;
+  override initialize(value: PersistedType, model: AnyDataModel): InitializedType | (() => InitializedType | null);
 
-  override toObject(value: Value): PersistedType;
+  override toObject(value: InitializedType): PersistedType;
 
   protected override _validateType(
-    value: any,
-    options?: DataField.ValidationOptions<DataField<any>> | undefined
+    value: InitializedType,
+    options?: DataField.ValidationOptions<AnyDataField> | undefined
   ): boolean | void;
 }
 
 /**
  * A subclass of [DataField]{@link DataField} which deals with array-typed data.
- * @typeParam ElementType           - the type of the DataField or Document of the field's elements
- * @typeParam ElementValue          - the type of the field's elements' values
- * @typeParam PersistedElementValue - the type of the field's elements' persisted values
- * @typeParam Value                 - the type of the value of the field
- * @typeParam PersistedType         - the type of the persisted value of the field
  */
 declare class ArrayField<
-  ElementType extends DataField<any> | typeof Document,
-  ElementValue,
-  PersistedElementValue = ElementValue,
-  Value extends Collection<ElementValue> | Set<ElementValue> | ElementValue[] | null | undefined = ElementValue[],
-  PersistedType extends PersistedElementValue[] | null | undefined = PersistedElementValue[]
-> extends DataField<Value, PersistedType> {
+  ElementFieldType extends AnyDataField | typeof Document,
+  AssignmentElementType,
+  InitializedElementType,
+  Options extends DataFieldOptions<
+    DataField.AssignmentType<ArrayField.BaseAssignmentType<AssignmentElementType>, Options>,
+    DataField.InitializedType<
+      InitializedElementType[] | Set<InitializedElementType> | Collection<InitializedElementType>,
+      Options
+    >
+  > = {
+    required: true;
+    nullable: false;
+    initial: () => InitializedElementType[];
+  },
+  AssignmentType extends DataField.AssignmentType<
+    ArrayField.BaseAssignmentType<AssignmentElementType>,
+    Options
+  > = DataField.InferredAssignmentType<ArrayField.BaseAssignmentType<AssignmentElementType>, Options>,
+  InitializedType extends DataField.InitializedType<
+    InitializedElementType[] | Set<InitializedElementType> | Collection<InitializedElementType>,
+    Options
+  > = DataField.InferredInitializedType<
+    InitializedElementType[] | Set<InitializedElementType> | Collection<InitializedElementType>,
+    Options
+  >,
+  PersistedElementType = InitializedElementType,
+  PersistedType = DataField.InitializedType<PersistedElementType[]>
+> extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param element - A DataField instance which defines the type of element contained in the Array.
    * @param options - Options which configure the behavior of the field
    */
-  constructor(element: ElementType, options?: DataFieldOptions<ElementValue>);
+  constructor(element: ElementFieldType, options?: Options);
 
   /** @defaultValue `true` */
   override required: boolean;
@@ -634,12 +765,12 @@ declare class ArrayField<
   override nullable: boolean;
 
   /** @defaultValue `() => []` */
-  override initial: Value | ((data: any) => Value) | null | undefined;
+  override initial: InitialType<InitializedType>;
 
   /**
    * The data type of each element in this array
    */
-  element: ElementType;
+  element: ElementFieldType;
 
   /**
    * Validate the contained element type of the ArrayField
@@ -647,17 +778,17 @@ declare class ArrayField<
    * @returns The validated element type
    * @throws An error if the element is not a valid type
    */
-  protected static _validateElementType<T extends DataField<any> | typeof Document>(element: T): T;
+  protected static _validateElementType<T extends AnyDataField>(element: T): T;
 
-  protected static override get _defaults(): DataFieldOptions<any[]>;
+  protected static override get _defaults(): HomogenousDataFieldOptions<any[] | null | undefined>;
 
-  protected override _cast(value: any): Value;
+  protected override _cast(value: AssignmentType): InitializedType;
 
-  protected override _cleanType(value: Value, options?: DataField.CleanOptions | undefined): Value;
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | undefined): InitializedType;
 
   protected override _validateType(
-    value: any,
-    options?: DataField.ValidationOptions<DataField<any>> | undefined
+    value: InitializedType,
+    options?: DataField.ValidationOptions<AnyDataField> | undefined
   ): boolean | void;
 
   /**
@@ -668,61 +799,104 @@ declare class ArrayField<
    */
   protected _validateElements(
     value: any[],
-    options?: DataField.ValidationOptions<DataField<any>>
+    options?: DataField.ValidationOptions<AnyDataField>
   ): ModelValidationError[];
 
-  override initialize(value: PersistedType, model: AnyDataModel): Value;
+  override initialize(value: PersistedType, model: AnyDataModel): InitializedType | (() => InitializedType | null);
 
-  override toObject(value: Value): PersistedType;
+  override toObject(value: InitializedType): PersistedType;
 
   override apply<Value, Options, Return>(
-    fn: keyof this | ((this: DataField<any>, value: Value, options: Options) => Return),
+    fn: keyof this | ((this: this, value: Value, options: Options) => Return),
     value: Value,
     options?: Options | undefined
   ): Return;
 }
 
+declare namespace ArrayField {
+  type BaseAssignmentType<AssignmentElementType> =
+    | Record<number | string, AssignmentElementType>
+    | AssignmentElementType[]
+    | AssignmentElementType;
+}
+
 /**
  * A subclass of [ArrayField]{@link ArrayField} which supports a set of contained elements.
  * Elements in this set are treated as fungible and may be represented in any order or discarded if invalid.
- * @typeParam ElementType           - the type of the DataField or Document of the field's elements
- * @typeParam ElementValue          - the type of the field's elements' values
- * @typeParam PersistedElementValue - the type of the field's elements' persisted values
- * @typeParam Value                 - the type of the value of the field
- * @typeParam PersistedType         - the type of the persisted value of the field
  */
 declare class SetField<
-  ElementType extends DataField<any> | typeof Document,
-  ElementValue,
-  PersistedElementValue = ElementValue,
-  Value extends Set<ElementValue> | null | undefined = Set<ElementValue>,
-  PersistedType extends PersistedElementValue[] | null | undefined = PersistedElementValue[]
-> extends ArrayField<ElementType, ElementValue, PersistedElementValue, Value, PersistedType> {
+  ElementFieldType extends AnyDataField,
+  AssignmentElementType,
+  InitializedElementType,
+  Options extends DataFieldOptions<
+    DataField.AssignmentType<ArrayField.BaseAssignmentType<AssignmentElementType>, Options>,
+    DataField.InitializedType<Set<InitializedElementType>, Options>
+  > = {
+    required: true;
+    nullable: false;
+    initial: () => InitializedElementType[];
+  },
+  AssignmentType extends DataField.AssignmentType<
+    ArrayField.BaseAssignmentType<AssignmentElementType>,
+    Options
+  > = DataField.InferredAssignmentType<ArrayField.BaseAssignmentType<AssignmentElementType>, Options>,
+  InitializedType extends DataField.InitializedType<
+    Set<InitializedElementType>,
+    Options
+  > = DataField.InferredInitializedType<Set<InitializedElementType>, Options>,
+  PersistedElementType = InitializedElementType,
+  PersistedType = DataField.InitializedType<PersistedElementType[]>
+> extends ArrayField<
+  ElementFieldType,
+  AssignmentElementType,
+  InitializedElementType,
+  Options,
+  AssignmentType,
+  InitializedType,
+  PersistedElementType,
+  PersistedType
+> {
   protected override _validateElements(
     value: any[],
-    options?: DataField.ValidationOptions<DataField<any>> | undefined
+    options?: DataField.ValidationOptions<AnyDataField> | undefined
   ): ModelValidationError<ModelValidationError.Errors>[];
 
-  override initialize(value: PersistedType, model: AnyDataModel): Value;
+  override initialize(value: PersistedType, model: AnyDataModel): InitializedType | (() => InitializedType | null);
 
-  override toObject(value: Value): PersistedType;
+  override toObject(value: InitializedType): PersistedType;
+}
+
+declare namespace SetField {
+  type BaseAssignmentType<AssignmentElementType> =
+    | ArrayField.BaseAssignmentType<AssignmentElementType>
+    | Iterable<AssignmentElementType>;
 }
 
 /**
  * A subclass of [ObjectField]{@link ObjectField} which embeds some other DataModel definition as an inner object.
- * @typeParam Value         - the type of the value of the field
- * @typeParam PersistedType - the type of the persisted value of the field
  */
 declare class EmbeddedDataField<
   ModelType extends typeof DataModel,
-  Value extends InstanceType<ModelType>["schema"]["fields"] | null | undefined,
-  PersistedType extends object | null | undefined = object | null | undefined
-> extends SchemaField<Value, PersistedType> {
+  Options extends DataFieldOptions<
+    DataField.AssignmentType<object, Options>,
+    DataField.InitializedType<object, Options>
+  > = {
+    required: true;
+    nullable: false;
+    initial: object;
+  },
+  AssignmentType extends DataField.AssignmentType<object, Options> = DataField.AssignmentType<object, Options>,
+  InitializedType extends DataField.InitializedType<
+    InstanceType<ModelType>["schema"]["fields"],
+    Options
+  > = DataField.InferredInitializedType<InstanceType<ModelType>["schema"]["fields"], Options>,
+  PersistedType = DataField.InitializedType<object, Options>
+> extends SchemaField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param model   - The class of DataModel which should be embedded in this field
    * @param options - Options which configure the behavior of the field
    */
-  constructor(model: ModelType, options?: DataFieldOptions<ModelType>);
+  constructor(model: ModelType, options?: Options);
 
   /**
    * The embedded DataModel definition which is contained in this field.
@@ -731,37 +905,57 @@ declare class EmbeddedDataField<
 
   protected override _initialize(fields: DataSchema): DataSchema;
 
-  override initialize(value: PersistedType, model: AnyDataModel): Value;
+  override initialize(value: PersistedType, model: AnyDataModel): InitializedType | (() => InitializedType | null);
 
-  override toObject(value: Value): PersistedType;
+  override toObject(value: InitializedType): PersistedType;
 }
 
 /**
  * A subclass of [ArrayField]{@link ArrayField} which supports an embedded Document collection.
  * Invalid elements will be dropped from the collection during validation rather than failing for the field entirely.
- * @typeParam ElementType           - the type of the DataField or Document of the field's elements
- * @typeParam ElementValue          - the type of the field's elements' values
- * @typeParam PersistedElementValue - the type of the field's elements' persisted values
- * @typeParam Value                 - the type of the value of the field
- * @typeParam PersistedType         - the type of the persisted value of the field
  */
 declare class EmbeddedCollectionField<
-  ElementType extends typeof Document,
-  ElementValue,
-  PersistedElementValue = ElementValue,
-  Value extends Collection<ElementValue> | null | undefined = Collection<ElementValue>,
-  PersistedType extends PersistedElementValue[] | null | undefined = PersistedElementValue[]
-> extends ArrayField<ElementType, ElementValue, PersistedElementValue, Value, PersistedType> {
+  ElementFieldType extends typeof Document,
+  AssignmentElementType,
+  InitializedElementType,
+  Options extends DataFieldOptions<
+    DataField.AssignmentType<ArrayField.BaseAssignmentType<AssignmentElementType>, Options>,
+    DataField.InitializedType<Collection<InitializedElementType>, Options>
+  > = {
+    required: true;
+    nullable: false;
+    initial: () => InitializedElementType[];
+  },
+  AssignmentType extends DataField.AssignmentType<
+    ArrayField.BaseAssignmentType<AssignmentElementType>,
+    Options
+  > = DataField.InferredAssignmentType<ArrayField.BaseAssignmentType<AssignmentElementType>, Options>,
+  InitializedType extends DataField.InitializedType<
+    Collection<InitializedElementType>,
+    Options
+  > = DataField.InferredInitializedType<Collection<InitializedElementType>, Options>,
+  PersistedElementType = InitializedElementType,
+  PersistedType = DataField.InitializedType<PersistedElementType[]>
+> extends ArrayField<
+  ElementFieldType,
+  AssignmentElementType,
+  InitializedElementType,
+  Options,
+  AssignmentType,
+  InitializedType,
+  PersistedElementType,
+  PersistedType
+> {
   /**
    * @param element - The type of Document which belongs to this embedded collection
    * @param options - Options which configure the behavior of the field
    */
-  constructor(element: ElementType, options?: DataFieldOptions<ElementValue>);
+  constructor(element: ElementFieldType, options?: Options);
 
   /** @defaultValue `true` */
   override readonly: true;
 
-  protected static override _validateElementType<T extends DataField<any> | typeof Document>(element: T): T;
+  protected static override _validateElementType<T extends AnyDataField | typeof Document>(element: T): T;
 
   /**
    * A reference to the DataModel subclass of the embedded document element
@@ -773,19 +967,19 @@ declare class EmbeddedCollectionField<
    */
   get schema(): this["element"]["schema"];
 
-  protected override _cleanType(value: Value, options?: DataField.CleanOptions | undefined): Value;
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | undefined): InitializedType;
 
   protected override _validateElements(
     value: any[],
-    options?: DataField.ValidationOptions<DataField<any>> | undefined
+    options?: DataField.ValidationOptions<AnyDataField> | undefined
   ): ModelValidationError<ModelValidationError.Errors>[];
 
-  override initialize(value: PersistedType, model: AnyDataModel): Value;
+  override initialize(value: PersistedType, model: AnyDataModel): InitializedType | (() => InitializedType | null);
 
-  override toObject(value: Value): PersistedType;
+  override toObject(value: InitializedType): PersistedType;
 
   override apply<Value, Options, Return>(
-    fn: keyof this | ((this: DataField<any>, value: Value, options: Options) => Return),
+    fn: keyof this | ((this: this, value: Value, options: Options) => Return),
     value: Value,
     options?: Options | undefined
   ): Return;
@@ -794,13 +988,26 @@ declare class EmbeddedCollectionField<
 /**
  * A subclass of [StringField]{@link StringField} which provides the primary _id for a Document.
  * The field may be initially null, but it must be non-null when it is saved to the database.
- * @typeParam Value         - the type of the value of the field
- * @typeParam PersistedType - the type of the persisted value of the field
  */
 declare class DocumentIdField<
-  Value extends AnyDocument | string | null | undefined = string | null,
-  PersistedType extends string | null | undefined = string | null
-> extends StringField<Value, PersistedType> {
+  Options extends StringFieldOptions<
+    DataField.AssignmentType<StringField.BaseAssignmentType, Options>,
+    DataField.InitializedType<string | AnyDocument, Options>
+  > = {
+    required: true;
+    nullable: true;
+    initial: null;
+  },
+  AssignmentType extends DataField.AssignmentType<
+    StringField.BaseAssignmentType | AnyDocument,
+    Options
+  > = DataField.InferredAssignmentType<StringField.BaseAssignmentType | AnyDocument, Options>,
+  InitializedType extends DataField.InitializedType<string | AnyDocument, Options> = DataField.InferredInitializedType<
+    string | AnyDocument,
+    Options
+  >,
+  PersistedType = DataField.InitializedType<string, Options>
+> extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override required: boolean;
 
@@ -811,7 +1018,7 @@ declare class DocumentIdField<
   override nullable: boolean;
 
   /** @defaultValue `null` */
-  override initial: Value | ((data: any) => Value) | null | undefined;
+  override initial: InitialType<InitializedType>;
 
   /** @defaultValue `true` */
   override readonly: boolean;
@@ -819,33 +1026,48 @@ declare class DocumentIdField<
   /** @defaultValue `"is not a valid Document ID string"` */
   override validationError: string;
 
-  protected static override get _defaults(): DataFieldOptions<string | object | null | undefined>;
+  protected static override get _defaults(): DataFieldOptions<
+    StringField.BaseAssignmentType | AnyDocument | null | undefined,
+    string | AnyDocument | null | undefined
+  >;
 
-  protected override _cast(value: any): Value;
+  protected override _cast(value: AssignmentType): InitializedType;
 
   protected override _validateType(
-    value: any,
-    options?: DataField.ValidationOptions<DataField<any>> | undefined
+    value: InitializedType,
+    options?: DataField.ValidationOptions<AnyDataField> | undefined
   ): boolean | void;
 }
 
 /**
  * A special class of [StringField]{@link StringField} field which references another DataModel by its id.
  * This field may also be null to indicate that no foreign model is linked.
- * @typeParam DocumentType  - the type of the document of the field
- * @typeParam Value         - the type of the value of the field
- * @typeParam PersistedType - the type of the persisted value of the field
  */
 declare class ForeignDocumentField<
   DocumentType extends typeof Document,
-  Value extends InstanceType<DocumentType> | string | null | undefined = InstanceType<DocumentType> | null,
-  PersistedType extends string | null | undefined = string | null
-> extends DocumentIdField<Value, PersistedType> {
+  Options extends StringFieldOptions<
+    DataField.AssignmentType<StringField.BaseAssignmentType | InstanceType<DocumentType>, Options>,
+    DataField.InitializedType<string | InstanceType<DocumentType>, Options>
+  > = {
+    required: true;
+    nullable: true;
+    initial: null;
+  },
+  AssignmentType extends DataField.AssignmentType<
+    StringField.BaseAssignmentType | InstanceType<DocumentType>,
+    Options
+  > = DataField.InferredAssignmentType<StringField.BaseAssignmentType | InstanceType<DocumentType>, Options>,
+  InitializedType extends DataField.InitializedType<
+    string | InstanceType<DocumentType>,
+    Options
+  > = DataField.InferredInitializedType<string | InstanceType<DocumentType>, Options>,
+  PersistedType = DataField.InitializedType<string, Options>
+> extends DocumentIdField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param model   - The foreign DataModel class definition which this field should link to.
    * @param options - Options which configure the behavior of the field
    */
-  constructor(model: DocumentType, options?: StringFieldOptions<Value> & { idOnly?: boolean });
+  constructor(model: DocumentType, options?: Options & { idOnly?: boolean });
 
   /** @defaultValue `true` */
   override nullable: boolean;
@@ -861,31 +1083,46 @@ declare class ForeignDocumentField<
    */
   model: DocumentType;
 
-  protected static override get _defaults(): DataFieldOptions<string | object | null | undefined>;
+  protected static override get _defaults(): DataFieldOptions<
+    StringField.BaseAssignmentType | AnyDocument | null | undefined,
+    string | AnyDocument | null | undefined
+  >;
 
-  protected override _cast(value: any): Value;
+  protected override _cast(value: AssignmentType): InitializedType;
 
-  override initialize(value: PersistedType, model: AnyDataModel): Value | (() => Value | null);
+  override initialize(value: PersistedType, model: AnyDataModel): InitializedType | (() => InitializedType | null);
 
-  override toObject(value: Value): PersistedType;
+  override toObject(value: InitializedType): PersistedType;
 }
 
 /**
  * A subclass of [ObjectField]{@link ObjectField} which supports a system-level data object.
- * @typeParam DocumentType  - the type of the document of the field
- * @typeParam Value         - the type of the value of the field
- * @typeParam PersistedType - the type of the persisted value of the field
  */
 declare class SystemDataField<
   DocumentType extends typeof Document,
-  Value extends AnyDataModel | object | null | undefined = object,
-  PersistedType extends object | null | undefined = Value
-> extends ObjectField<Value, PersistedType> {
+  Options extends DataFieldOptions<
+    DataField.AssignmentType<AnyDataModel | object, Options>,
+    DataField.InitializedType<object, Options>
+  > = {
+    required: true;
+    nullable: false;
+    initial: () => object;
+  },
+  AssignmentType extends DataField.AssignmentType<AnyDataModel | object, Options> = DataField.InferredAssignmentType<
+    AnyDataModel | object,
+    Options
+  >,
+  InitializedType extends DataField.InitializedType<object, Options> = DataField.InferredInitializedType<
+    object,
+    Options
+  >,
+  PersistedType = DataField.InitializedType<object, Options>
+> extends ObjectField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param document - The base document class which belongs in this field
    * @param options  - Options which configure the behavior of the field
    */
-  constructor(document: DocumentType, options?: DataFieldOptions<DocumentType>);
+  constructor(document: DocumentType, options?: Options);
 
   /** @defaultValue `true` */
   override required: boolean;
@@ -907,29 +1144,42 @@ declare class SystemDataField<
    */
   getModelForType(type: string): typeof DataModel | null;
 
-  override getInitialValue(data: { type?: string } | undefined): Value;
+  override getInitialValue(data: { type?: string } | undefined): InitializedType;
 
-  protected override _cleanType(value: Value, options?: DataField.CleanOptions | undefined): Value;
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | undefined): InitializedType;
 
-  override initialize(value: PersistedType, model: AnyDataModel): Value;
+  override initialize(value: PersistedType, model: AnyDataModel): InitializedType | (() => InitializedType | null);
 
-  override toObject(value: Value): PersistedType;
+  override toObject(value: InitializedType): PersistedType;
 }
 
 /**
  * A special [StringField]{@link StringField} which records a standardized CSS color string.
- * @typeParam Value         - the type of the value of the field
- * @typeParam PersistedType - the type of the persisted value of the field
  */
 declare class ColorField<
-  Value extends string | null | undefined = string | null | undefined,
-  PersistedType extends string | null | undefined = Value
-> extends StringField<Value, PersistedType> {
+  Options extends StringFieldOptions<
+    DataField.AssignmentType<StringField.BaseAssignmentType, Options>,
+    DataField.InitializedType<string, Options>
+  > = {
+    required: false;
+    initial: null;
+    nullable: true;
+  },
+  AssignmentType extends DataField.AssignmentType<string | object, Options> = DataField.InferredAssignmentType<
+    string | object,
+    Options
+  >,
+  InitializedType extends DataField.InitializedType<string, Options> = DataField.InferredInitializedType<
+    string,
+    Options
+  >,
+  PersistedType = DataField.InitializedType<string, Options>
+> extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override nullable: boolean;
 
   /** @defaultValue `null` */
-  override initial: Value | ((data: any) => Value) | null | undefined;
+  override initial: InitialType<InitializedType>;
 
   /** @defaultValue `false` */
   override blank: boolean;
@@ -937,13 +1187,16 @@ declare class ColorField<
   /** @defaultValue `"is not a valid hexadecimal color string"` */
   override validationError: string;
 
-  protected static override get _defaults(): DataFieldOptions<string | object | null | undefined>;
+  protected static override get _defaults(): DataFieldOptions<
+    StringField.BaseAssignmentType | null | undefined,
+    string | null | undefined
+  >;
 
-  override clean(value: any, options?: DataField.CleanOptions | undefined): Value;
+  override clean(value: AssignmentType, options?: DataField.CleanOptions | undefined): InitializedType;
 
   protected override _validateType(
-    value: any,
-    options?: DataField.ValidationOptions<DataField<any>> | undefined
+    value: InitializedType,
+    options?: DataField.ValidationOptions<AnyDataField> | undefined
   ): boolean | void;
 }
 
@@ -951,8 +1204,8 @@ declare global {
   /**
    * @typeParam Value  - the type of the value of the field
    */
-  interface FilePathFieldOptions<Value extends string | null | undefined = string | undefined>
-    extends StringFieldOptions<Value> {
+  interface FilePathFieldOptions<AssignmentType, InitializedType>
+    extends StringFieldOptions<AssignmentType, InitializedType> {
     /** A set of categories in CONST.FILE_CATEGORIES which this field supports */
     categories?: (keyof typeof CONST.FILE_CATEGORIES)[];
 
@@ -966,17 +1219,30 @@ declare global {
 
 /**
  * A special [StringField]{@link StringField} which records a file path or inline base64 data.
- * @typeParam Value         - the type of the value of the field
- * @typeParam PersistedType - the type of the persisted value of the field
  */
 declare class FilePathField<
-  Value extends string | null | undefined = string | null | undefined,
-  PersistedType extends string | null | undefined = string | null | undefined
-> extends StringField<Value, PersistedType> {
+  Options extends FilePathFieldOptions<
+    DataField.AssignmentType<StringField.BaseAssignmentType, Options>,
+    DataField.InitializedType<string, Options>
+  > = {
+    required: false;
+    nullable: true;
+    initial: null;
+  },
+  AssignmentType extends DataField.AssignmentType<
+    StringField.BaseAssignmentType,
+    Options
+  > = DataField.InferredAssignmentType<StringField.BaseAssignmentType, Options>,
+  InitializedType extends DataField.InitializedType<string, Options> = DataField.InferredInitializedType<
+    string,
+    Options
+  >,
+  PersistedType = DataField.InitializedType<string, Options>
+> extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param options - Options which configure the behavior of the field
    */
-  constructor(options?: FilePathFieldOptions<Value>);
+  constructor(options?: Options);
 
   /**
    * A set of categories in CONST.FILE_CATEGORIES which this field supports
@@ -1003,25 +1269,41 @@ declare class FilePathField<
   override blank: boolean;
 
   /** @defaultValue `null` */
-  override initial: Value | ((data: any) => Value) | null | undefined;
+  override initial: InitialType<InitializedType>;
 
-  protected static override get _defaults(): DataFieldOptions<string | object | null | undefined>;
+  protected static override get _defaults(): DataFieldOptions<
+    StringField.BaseAssignmentType | null | undefined,
+    string | null | undefined
+  >;
 
   protected override _validateType(
-    value: any,
-    options?: DataField.ValidationOptions<DataField<any>> | undefined
+    value: InitializedType,
+    options?: DataField.ValidationOptions<AnyDataField> | undefined
   ): boolean | void;
 }
 
 /**
  * A special [NumberField]{@link NumberField} which represents an angle of rotation in degrees between 0 and 360.
- * @typeParam Value         - the type of the value of the field
- * @typeParam PersistedType - the type of the persisted value of the field
  */
 declare class AngleField<
-  Value extends number | null | undefined = number,
-  PersistedType extends number | null | undefined = Value
-> extends NumberField<Value, PersistedType> {
+  Options extends NumberFieldOptions<
+    DataField.AssignmentType<NumberField.BaseAssignmentType, Options>,
+    DataField.InitializedType<number, Options>
+  > = {
+    required: true;
+    nullable: false;
+    initial: number;
+  },
+  AssignmentType extends DataField.AssignmentType<
+    NumberField.BaseAssignmentType,
+    Options
+  > = DataField.InferredAssignmentType<NumberField.BaseAssignmentType, Options>,
+  InitializedType extends DataField.InitializedType<number, Options> = DataField.InferredInitializedType<
+    number,
+    Options
+  >,
+  PersistedType = DataField.InitializedType<number, Options>
+> extends NumberField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override required: boolean;
 
@@ -1029,7 +1311,7 @@ declare class AngleField<
   override nullable: boolean;
 
   /** @defaultValue `0` */
-  override initial: Value | ((data: any) => Value) | null | undefined;
+  override initial: InitialType<InitializedType>;
 
   /** @defaultValue `0` */
   base: number;
@@ -1043,20 +1325,36 @@ declare class AngleField<
   /** @defaultValue `"is not a number between 0 and 360"` */
   override validationError: string;
 
-  protected static override get _defaults(): DataFieldOptions<number | null | undefined>;
+  protected static override get _defaults(): DataFieldOptions<
+    NumberField.BaseAssignmentType | null | undefined,
+    number | null | undefined
+  >;
 
-  protected override _cast(value: any): Value;
+  protected override _cast(value: AssignmentType): InitializedType;
 }
 
 /**
  * A special [NumberField]{@link NumberField} represents a number between 0 and 1.
- * @typeParam Value         - the type of the value of the field
- * @typeParam PersistedType - the type of the persisted value of the field
  */
 declare class AlphaField<
-  Value extends number | null | undefined = number,
-  PersistedType extends number | null | undefined = Value
-> extends NumberField<Value, PersistedType> {
+  Options extends NumberFieldOptions<
+    DataField.AssignmentType<NumberField.BaseAssignmentType, Options>,
+    DataField.InitializedType<number, Options>
+  > = {
+    required: true;
+    nullable: false;
+    initial: number;
+  },
+  AssignmentType extends DataField.AssignmentType<
+    NumberField.BaseAssignmentType,
+    Options
+  > = DataField.InferredAssignmentType<NumberField.BaseAssignmentType, Options>,
+  InitializedType extends DataField.InitializedType<number, Options> = DataField.InferredInitializedType<
+    number,
+    Options
+  >,
+  PersistedType = DataField.InitializedType<number, Options>
+> extends NumberField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override required: boolean;
 
@@ -1064,7 +1362,7 @@ declare class AlphaField<
   override nullable: boolean;
 
   /** @defaultValue `1` */
-  override initial: Value | ((data: any) => Value) | null | undefined;
+  override initial: InitialType<InitializedType>;
 
   /** @defaultValue `0` */
   override min: number | undefined;
@@ -1075,96 +1373,151 @@ declare class AlphaField<
   /** @defaultValue `"is not a number between 0 and 1"` */
   override validationError: string;
 
-  protected static override get _defaults(): DataFieldOptions<number | null | undefined>;
+  protected static override get _defaults(): DataFieldOptions<
+    NumberField.BaseAssignmentType | null | undefined,
+    number | null | undefined
+  >;
 }
 
 /**
  * A special [ObjectField]{@link ObjectField} which captures a mapping of User IDs to Document permission levels.
- * @typeParam Value         - the type of the value of the field
- * @typeParam PersistedType - the type of the persisted value of the field
  */
 declare class DocumentOwnershipField<
-  Value extends Record<string, DOCUMENT_OWNERSHIP_LEVELS> | null | undefined = Record<
-    string,
-    DOCUMENT_OWNERSHIP_LEVELS
-  >,
-  PersistedType extends Record<string, DOCUMENT_OWNERSHIP_LEVELS> | null | undefined = Value
-> extends ObjectField<Value, PersistedType> {
+  Options extends DataFieldOptions<
+    DataField.AssignmentType<object, Options>,
+    DataField.InitializedType<Record<string, DOCUMENT_OWNERSHIP_LEVELS>, Options>
+  > = {
+    required: true;
+    nullable: false;
+    initial: Record<string, DOCUMENT_OWNERSHIP_LEVELS>;
+  },
+  AssignmentType extends DataField.AssignmentType<
+    Record<string, DOCUMENT_OWNERSHIP_LEVELS>,
+    Options
+  > = DataField.InferredAssignmentType<Record<string, DOCUMENT_OWNERSHIP_LEVELS>, Options>,
+  InitializedType extends DataField.InitializedType<
+    Record<string, DOCUMENT_OWNERSHIP_LEVELS>,
+    Options
+  > = DataField.InferredInitializedType<Record<string, DOCUMENT_OWNERSHIP_LEVELS>, Options>,
+  PersistedType = DataField.InitializedType<object, Options>
+> extends ObjectField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `{"default": DOCUMENT_OWNERSHIP_LEVELS.NONE}` */
-  override initial: Value | ((data: any) => Value) | null | undefined;
+  override initial: InitialType<InitializedType>;
 
   /** @defaultValue `"is not a mapping of user IDs and document permission levels"` */
   override validationError: string;
 
-  protected static override get _defaults(): DataFieldOptions<object | null | undefined>;
+  protected static override get _defaults(): DataFieldOptions<object | null | undefined, object | null | undefined>;
 
   protected override _validateType(
-    value: any,
-    options?: DataField.ValidationOptions<DataField<any>> | undefined
+    value: InitializedType,
+    options?: DataField.ValidationOptions<AnyDataField> | undefined
   ): boolean | void;
 }
 
 /**
  * A special [StringField]{@link StringField} which contains serialized JSON data.
- * @typeParam Value         - the type of the value of the field
- * @typeParam PersistedType - the type of the persisted value of the field
  */
 declare class JSONField<
-  Value extends object | null | undefined = object | undefined,
-  PersistedType extends string | null | undefined = string | undefined
-> extends StringField<Value, PersistedType> {
+  Options extends StringFieldOptions<
+    DataField.AssignmentType<StringField.BaseAssignmentType, Options>,
+    DataField.InitializedType<object, Options>
+  > = {
+    required: false;
+    nullable: false;
+    initial: undefined;
+  },
+  AssignmentType extends DataField.AssignmentType<string, Options> = DataField.InferredAssignmentType<string, Options>,
+  InitializedType extends DataField.InitializedType<object, Options> = DataField.InferredInitializedType<
+    object,
+    Options
+  >,
+  PersistedType = DataField.InitializedType<string, Options>
+> extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `false` */
   override blank: boolean;
 
   /** @defaultValue `undefined` */
-  override initial: Value | ((data: any) => Value) | null | undefined;
+  override initial: InitialType<InitializedType>;
 
   /** @defaultValue `"is not a valid JSON string"` */
   override validationError: string;
 
-  protected static override get _defaults(): DataFieldOptions<string | object | null | undefined>;
+  protected static override get _defaults(): DataFieldOptions<
+    StringField.BaseAssignmentType | null | undefined,
+    string | null | undefined
+  >;
 
-  override clean(value: any, options?: DataField.CleanOptions | undefined): Value;
+  override clean(value: AssignmentType, options?: DataField.CleanOptions | undefined): InitializedType;
 
   protected override _validateType(
-    value: any,
-    options?: DataField.ValidationOptions<DataField<any>> | undefined
+    value: InitializedType,
+    options?: DataField.ValidationOptions<AnyDataField> | undefined
   ): boolean | void;
 
-  override initialize(value: PersistedType, model: AnyDataModel): Value;
+  override initialize(value: PersistedType, model: AnyDataModel): InitializedType | (() => InitializedType | null);
 
-  override toObject(value: Value): PersistedType;
+  override toObject(value: InitializedType): PersistedType;
 }
 
 /**
  * A subclass of [StringField]{@link StringField} which contains a sanitized HTML string.
  * This class does not override any StringField behaviors, but is used by the server-side to identify fields which
  * require sanitization of user input.
- * @typeParam Value         - the type of the value of the field
- * @typeParam PersistedType - the type of the persisted value of the field
  */
 declare class HTMLField<
-  Value extends string | null | undefined = string,
-  PersistedType extends string | null | undefined = Value
-> extends StringField<Value, PersistedType> {
+  Options extends StringFieldOptions<
+    DataField.AssignmentType<StringField.BaseAssignmentType, Options>,
+    DataField.InitializedType<string | object | AnyDocument, Options>
+  > = {
+    required: true;
+    nullable: false;
+    initial: string;
+  },
+  AssignmentType extends DataField.AssignmentType<
+    StringField.BaseAssignmentType,
+    Options
+  > = DataField.InferredAssignmentType<StringField.BaseAssignmentType, Options>,
+  InitializedType extends DataField.InitializedType<
+    string | object | AnyDocument,
+    Options
+  > = DataField.InferredInitializedType<string | object | AnyDocument, Options>,
+  PersistedType = DataField.InitializedType<string, Options>
+> extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override required: boolean;
 
   /** @defaultValue `true` */
   override blank: boolean;
 
-  protected static override get _defaults(): DataFieldOptions<string | object | null | undefined>;
+  protected static override get _defaults(): DataFieldOptions<
+    StringField.BaseAssignmentType | null | undefined,
+    string | null | undefined
+  >;
 }
 
 /**
  * A subclass of {@link NumberField} which is used for storing integer sort keys.
- * @typeParam Value         - the type of the value of the field
- * @typeParam PersistedType - the type of the persisted value of the field
  */
 declare class IntegerSortField<
-  Value extends number | null | undefined = number,
-  PersistedType extends number | null | undefined = Value
-> extends NumberField<Value, PersistedType> {
+  Options extends NumberFieldOptions<
+    DataField.AssignmentType<NumberField.BaseAssignmentType, Options>,
+    DataField.InitializedType<number, Options>
+  > = {
+    required: true;
+    nullable: false;
+    initial: 0;
+  },
+  AssignmentType extends DataField.AssignmentType<
+    NumberField.BaseAssignmentType,
+    Options
+  > = DataField.InferredAssignmentType<NumberField.BaseAssignmentType, Options>,
+  InitializedType extends DataField.InitializedType<number, Options> = DataField.InferredInitializedType<
+    number,
+    Options
+  >,
+  PersistedType = DataField.InitializedType<number, Options>
+> extends NumberField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override required: boolean;
 
@@ -1175,7 +1528,7 @@ declare class IntegerSortField<
   override integer: boolean;
 
   /** @defaultValue `0` */
-  override initial: Value | ((data: any) => Value) | null | undefined;
+  override initial: InitialType<InitializedType>;
 
   /** @defaultValue `"FOLDER.DocumentSort"` */
   override label: string;
@@ -1207,12 +1560,12 @@ declare global {
 }
 
 interface DocumentStatsFieldDataSchema extends DataSchema {
-  systemId: StringField<string | null, string | null>;
-  systemVersion: StringField<string | null, string | null>;
-  coreVersion: StringField<string | null, string | null>;
+  systemId: StringField<{ required: true; blank: false; nullable: true; initial: null }>;
+  systemVersion: StringField<{ required: true; blank: false; nullable: true; initial: null }>;
+  coreVersion: StringField<{ required: true; blank: false; nullable: true; initial: null }>;
   createdTime: NumberField;
   modifiedTime: NumberField;
-  lastModifiedBy: ForeignDocumentField<typeof foundry.documents.BaseUser>;
+  lastModifiedBy: ForeignDocumentField<foundry.documents.BaseUser, { idOnly: true }>;
 }
 
 /**
@@ -1221,9 +1574,21 @@ interface DocumentStatsFieldDataSchema extends DataSchema {
  * @typeParam PersistedType - the type of the persisted value of the field
  */
 declare class DocumentStatsField<
-  Value extends DocumentStatsFieldDataSchema | null | undefined,
-  PersistedType extends object | null | undefined = object | null | undefined
-> extends SchemaField<Value, PersistedType> {
+  Options extends DataFieldOptions<
+    DataField.AssignmentType<DocumentStats, Options>,
+    DataField.InitializedType<DocumentStats, Options>
+  > = {
+    required: true;
+    nullable: false;
+    initial: object;
+  },
+  AssignmentType extends DataField.AssignmentType<object, Options> = DataField.InferredAssignmentType<object, Options>,
+  InitializedType extends DataField.InitializedType<object, Options> = DataField.InferredInitializedType<
+    object,
+    Options
+  >,
+  PersistedType = DataField.InitializedType<object, Options>
+> extends SchemaField<Options, AssignmentType, InitializedType, PersistedType> {
   constructor(options?: DataFieldOptions<DocumentStats>);
 }
 
