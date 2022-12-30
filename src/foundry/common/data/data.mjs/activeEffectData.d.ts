@@ -1,5 +1,5 @@
 import { ConfiguredFlags, FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes";
-import { DocumentData } from "../../abstract/module.mjs";
+import { DataModel } from "../../abstract/module.mjs";
 import * as documents from "../../documents.mjs";
 import * as fields from "../fields.mjs";
 import { EffectChangeData, EffectChangeDataConstructorData } from "./effectChangeData";

@@ -1,23 +1,19 @@
-import DocumentData, { AnyDocumentData } from "../foundry/common/abstract/data.mjs";
-import Document from "../foundry/common/abstract/document.mjs";
+import type { AnyDataModel, DataModel } from "../foundry/common/abstract/data.mjs.js";
+import Document, { type AnyDocument } from "../foundry/common/abstract/document.mjs";
 import EmbeddedCollection from "../foundry/common/abstract/embedded-collection.mjs";
+import type { SchemaField } from "../foundry/common/data/fields.mjs.js";
 
-export type PropertiesDataType<T extends Document<any, any> | AnyDocumentData> = T extends DocumentData<
-  any,
-  infer U,
-  any,
-  any
->
-  ? U
-  : T extends Document<infer U, any>
-  ? PropertiesDataType<U>
+export type PropertiesDataType<D extends AnyDataModel> = D extends DataModel<infer Schema, any>
+  ? Schema extends SchemaField<infer Value>
+    ? Value
+    : never
   : never;
 
 type PropertyTypeToSourceType<T> = T extends EmbeddedCollection<infer U, any>
   ? SourceDataType<InstanceType<U>>[]
   : T extends Array<infer U>
   ? Array<PropertyTypeToSourceType<U>>
-  : T extends AnyDocumentData
+  : T extends AnyDataModel
   ? SourceDataType<T>
   : T;
 
@@ -25,23 +21,13 @@ export type PropertiesToSource<T extends object> = {
   [Key in keyof T]: PropertyTypeToSourceType<T[Key]>;
 };
 
-type SourceDataType<T extends Document<any, any> | AnyDocumentData> = T extends DocumentData<
-  any,
-  any,
-  infer U,
-  any,
-  any
->
-  ? U
-  : T extends Document<infer U, any>
-  ? SourceDataType<U>
-  : never;
+type SourceDataType<D extends AnyDataModel> = D extends DataModel<any, infer SourceData> ? SourceData : never;
 
 /**
- * Returns the type of the constructor data for the given {@link DocumentData}.
+ * Returns the type of the constructor data for the given {@link DataModel}.
  */
-export type ConstructorDataType<T extends AnyDocumentData> = T["_initializeSource"] extends (data: infer U) => any
-  ? U
+export type ConstructorDataType<D extends AnyDataModel> = D extends DataModel<any, any, infer ConstructorData>
+  ? ConstructorData
   : never;
 
 type ObjectToDeepPartial<T> = T extends object ? DeepPartial<T> : T;
@@ -52,8 +38,7 @@ export type PropertyTypeToSourceParameterType<T> = ObjectToDeepPartial<PropertyT
 export type FieldReturnType<T extends DocumentField<any>, U extends Partial<DocumentField<any>>> = Omit<T, keyof U> &
   Exclude<U, "undefined">;
 
-export type DocumentConstructor = Pick<typeof Document, keyof typeof Document> &
-  (new (...args: any[]) => Document<any, any>);
+export type DocumentConstructor = Pick<typeof Document, keyof typeof Document> & (new (...args: any[]) => AnyDocument);
 
 export type PlaceableObjectConstructor = Pick<typeof PlaceableObject, keyof typeof PlaceableObject> &
   (new (...args: any[]) => PlaceableObject<any>);

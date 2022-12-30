@@ -120,17 +120,22 @@ type Merge<T, U> = T extends object
   : U;
 
 /**
+ * A simple, non-recursive merge type.
+ * @typeParam Target - the target type to merge into
+ * @typeParam Override - the type whose properties override the ones in Target
+ */
+type SimpleMerge<Target, Override> = Omit<Target, keyof Override> & Override;
+
+/**
  * Instance of `T`, which may or may not be in a promise.
  * @typeParam T - the type which might be wrapped in a promise.
  */
 type MaybePromise<T> = T | Promise<T>;
 
-type StoredDocument<D extends { data: { _source: unknown } }> = D & {
+type StoredDocument<D extends { _source: unknown }> = D & {
   id: string;
-  data: D["data"] & {
-    _id: string;
-    _source: D["data"]["_source"] & { _id: string };
-  };
+  _id: string;
+  _source: D["_source"] & { _id: string };
 };
 
 type TemporaryDocument<D> = D extends StoredDocument<infer U> ? U : D;

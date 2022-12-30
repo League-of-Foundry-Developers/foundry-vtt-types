@@ -1,61 +1,45 @@
-import { BaseUser } from "../documents.mjs";
-import { AnyDocumentData } from "./data.mjs";
 import {
   ConfiguredDocumentClass,
+  ConstructorDataType,
   DocumentConstructor,
-  ToObjectFalseType,
-  DocumentType,
-  ConstructorDataType
+  DocumentType
 } from "../../../types/helperTypes";
+import type { SchemaField } from "../data/fields.mjs.js";
+import type { LogCompatibilityWarningOptions } from "../utils/logging.mjs";
+import DataModel from "./data.mjs";
 import EmbeddedCollection from "./embedded-collection.mjs";
 
-type ParentType<T extends Document<any, any>> = T extends Document<any, infer U> ? U : never;
-export type ContextType<T extends Document<any, any>> = Context<ParentType<T>>;
-export type DocumentDataType<T extends Document<any, any>> = T extends Document<infer U, any> ? U : never;
+export type AnyDocument = Document<any, any, any, any, any>;
+export type AnyChildDocument<Parent extends AnyDocument | null> = Document<any, any, any, any, Parent>;
 
+export default Document;
 /**
- * The abstract base class shared by both client and server-side which defines the model for a single document type.
+ * An extension of the base DataModel which defines a Document.
+ * Documents are special in that they are persisted to the database and referenced by _id.
  */
 declare abstract class Document<
-  ConcreteDocumentData extends AnyDocumentData,
-  Parent extends Document<any, any> | null = null,
-  ConcreteMetadata extends Metadata<any> = Metadata<any>
-> {
+  Schema extends SchemaField<any>,
+  SourceData extends { flags: Record<string, unknown> },
+  ConstructorData extends SourceData = SourceData,
+  ConcreteMetadata extends AnyMetadata = AnyMetadata,
+  Parent extends AnyDocument | null = null
+> extends DataModel<Schema, SourceData, ConstructorData, Parent> {
   /**
-   * Create a new Document by providing an initial data object.
    * @param data    - Initial data provided to construct the Document
-   * @param context - Additional parameters which define Document context
+   * @param context - Construction context options
    */
-  constructor(data?: ConstructorDataType<ConcreteDocumentData>, context?: Context<Parent>);
+  constructor(data?: ConstructorData, context?: DocumentConstructionContext);
 
-  /**
-   * An immutable reverse-reference to the parent Document to which this embedded Document belongs.
-   */
-  readonly parent: Parent | null;
+  override parent: Parent;
+
+  protected override _configure(options?: { pack?: string | null } | undefined): void;
 
   /**
    * An immutable reference to a containing Compendium collection to which this Document belongs.
    */
   readonly pack: string | null;
 
-  /**
-   * The base data object for this Document which persists both the original source and any derived data.
-   */
-  readonly data: ConcreteDocumentData;
-
-  /**
-   * Perform one-time initialization tasks which only occur when the Document is first constructed.
-   */
-  protected _initialize(): void;
-
-  /**
-   * Every document must define an object which represents its data schema.
-   * This must be a subclass of the DocumentData interface.
-   *
-   * @remarks
-   * This method is abstract and needs to be implemented by inheriting classes.
-   */
-  static get schema(): ConstructorOf<AnyDocumentData>;
+  readonly collections: Record<string, EmbeddedCollection<ConstructorOf<AnyDocument>, this>>;
 
   /**
    * Default metadata which applies to each instance of this Document type.
@@ -64,20 +48,21 @@ declare abstract class Document<
    * {
    *   name: "Document",
    *   collection: "documents",
+   *   indexed: false,
+   *   compendiumIndexFields: [],
    *   label: "DOCUMENT.Document",
-   *   types: [],
+   *   coreTypes: [],
    *   embedded: {},
-   *   hasSystemData: false,
    *   permissions: {
    *     create: "ASSISTANT",
    *     update: "ASSISTANT",
    *     delete: "ASSISTANT"
    *   },
-   *   pack: null
+   *   preserveOnImport: ["_id", "sort", "ownership"]
    * }
    * ```
    */
-  static get metadata(): Metadata<any>;
+  static metadata: Metadata<any>;
 
   /**
    * The database backend used to execute operations and handle results
@@ -87,17 +72,14 @@ declare abstract class Document<
   /**
    * Return a reference to the implemented subclass of this base document type.
    */
-  static get implementation(): ConstructorOf<Document<any, any>>; // Referencing the concrete class the config is not possible because accessors cannot be generic and there is not static polymorphic this type
+  // Referencing the concrete class the config is not possible because accessors cannot be generic and there is not
+  // static polymorphic this type
+  static get implementation(): ConstructorOf<AnyDocument>;
 
   /**
    * The named collection to which this Document belongs.
    */
   static get collectionName(): string;
-
-  /**
-   * The canonical name of this Document type, for example "Actor".
-   */
-  static get documentName(): string;
 
   /**
    * The named collection to which this Document belongs.
@@ -107,7 +89,17 @@ declare abstract class Document<
   /**
    * The canonical name of this Document type, for example "Actor".
    */
+  static get documentName(): string;
+
+  /**
+   * The canonical name of this Document type, for example "Actor".
+   */
   get documentName(): ConcreteMetadata["name"];
+
+  /**
+   * Does this Document definition include a SystemDataField?
+   */
+  static get hasSystemData(): boolean;
 
   /**
    * The canonical identifier for this Document
@@ -120,54 +112,38 @@ declare abstract class Document<
   get isEmbedded(): boolean;
 
   /**
-   * The name of this Document, if it has one assigned
-   */
-  get name(): string | null;
-
-  /**
    * Test whether a given User has a sufficient role in order to create Documents of this type in general.
    * @param user - The User being tested
    * @returns Does the User have a sufficient role to create?
    */
-  static canUserCreate(user: BaseUser): boolean;
-
-  /**
-   * Clone a document, creating a new document by combining current data with provided overrides.
-   * The cloned document is ephemeral and not yet saved to the database.
-   * @param data   - Additional data which overrides current document data at the time of creation
-   *                 (default: `{}`)
-   * @param save   - Save the clone to the World database?
-   *                 (default: `false`)
-   * @param context - Additional context options passed to the create method
-   *                 (default: `{}`)
-   * @returns The cloned Document instance
-   */
-  clone(
-    data?: DeepPartial<
-      ConstructorDataType<ConcreteDocumentData> | (ConstructorDataType<ConcreteDocumentData> & Record<string, unknown>)
-    >,
-    { save, ...context }?: { save: boolean } & DocumentModificationContext
-  ): TemporaryDocument<this> | Promise<TemporaryDocument<this> | undefined>;
+  static canUserCreate(user: foundry.documents.BaseUser): boolean;
 
   /**
    * Get the permission level that a specific User has over this Document, a value in CONST.DOCUMENT_OWNERSHIP_LEVELS.
    * @param user - The User being tested
    * @returns A numeric permission level from CONST.DOCUMENT_OWNERSHIP_LEVELS or null
    */
-  getUserLevel(user: BaseUser): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  getUserLevel(user: foundry.documents.BaseUser): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document
    * @param user       - The User being tested
    * @param permission - The permission level from DOCUMENT_PERMISSION_LEVELS to test
-   * @param exact      - Require the exact permission level requested?
-   *                     (default: `false`)
+   * @param options    - Additional options involved in the permission test
    * @returns Does the user have this permission level over the Document?
    */
   testUserPermission(
-    user: BaseUser,
+    user: foundry.documents.BaseUser,
     permission: keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    { exact }?: { exact?: boolean }
+    {
+      exact
+    }?: {
+      /**
+       * Require the exact permission level requested?
+       * @defaultValue `false`
+       */
+      exact?: boolean;
+    }
   ): boolean;
 
   /**
@@ -176,9 +152,43 @@ declare abstract class Document<
    * @param action - The attempted action
    * @param data   - Data involved in the attempted action
    *                 (default: `{}`)
-   * @returns  Does the User have permission?
+   * @returns Does the User have permission?
    */
-  canUserModify(user: BaseUser, action: "create" | "update" | "delete", data?: object): boolean;
+  canUserModify(user: foundry.documents.BaseUser, action: "create" | "update" | "delete", data?: object): boolean;
+
+  /**
+   * Clone a document, creating a new document by combining current data with provided overrides.
+   * The cloned document is ephemeral and not yet saved to the database.
+   * @param data    - Additional data which overrides current document data at the time of creation
+   * @param context - Additional context options passed to the create method
+   * @returns The cloned Document instance
+   */
+  override clone(
+    data?: DeepPartial<ConstructorData>,
+    {
+      save,
+      ...context
+    }?: {
+      /**
+       * Save the clone to the World database?
+       * @defaultValue `false`
+       */
+      save?: boolean;
+
+      /**
+       * Keep the same ID of the original document
+       * @defaultValue `false`
+       */
+      keepId?: boolean;
+    } & DocumentConstructionContext
+  ): this | Promise<this>;
+
+  /**
+   * For Documents which include game system data, migrate the system data object to conform to its latest data model.
+   * The data model is defined by the template.json specification included by the game system.
+   * @returns The migrated system data object
+   */
+  migrateSystemData(): object;
 
   /**
    * Create multiple Documents using provided input data.
@@ -189,27 +199,27 @@ declare abstract class Document<
    * @param context - Additional context which customizes the creation workflow
    *                  (default: `{}`)
    * @returns An array of created Document instances
-   *Additional context which customizes the creation workflow
-   * @example <caption>Create a single Document</caption>
+   *
+   * @example Create a single Document
    * ```typescript
    * const data = [{name: "New Actor", type: "character", img: "path/to/profile.jpg"}];
    * const created = await Actor.createDocuments(data);
    * ```
    *
-   * @example <caption>Create multiple Documents</caption>
+   * @example Create multiple Documents
    * ```typescript
    * const data = [{name: "Tim", type: "npc"], [{name: "Tom", type: "npc"}];
    * const created = await Actor.createDocuments(data);
    * ```
    *
-   * @example <caption>Create multiple embedded Documents within a parent</caption>
+   * @example Create multiple embedded Documents within a parent
    * ```typescript
    * const actor = game.actors.getName("Tim");
    * const data = [{name: "Sword", type: "weapon"}, {name: "Breastplate", type: "equipment"}];
    * const created = await Item.createDocuments(data, {parent: actor});this
    * ```
    *
-   * @example <caption>Create a Document within a Compendium pack</caption>
+   * @example Create a Document within a Compendium pack
    * ```typescript
    * const data = [{name: "Compendium Actor", type: "character", img: "path/to/profile.jpg"}];
    * const created = await Actor.createDocuments(data, {pack: "mymodule.mypack"});
@@ -218,24 +228,21 @@ declare abstract class Document<
   static createDocuments<T extends DocumentConstructor>(
     this: T,
     data: Array<
-      | ConstructorDataType<InstanceType<T>["data"]>
-      | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>)
+      ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>)
     >,
     context: DocumentModificationContext & { temporary: false }
   ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[]>;
   static createDocuments<T extends DocumentConstructor>(
     this: T,
     data: Array<
-      | ConstructorDataType<InstanceType<T>["data"]>
-      | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>)
+      ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>)
     >,
     context: DocumentModificationContext & { temporary: boolean }
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
   static createDocuments<T extends DocumentConstructor>(
     this: T,
     data?: Array<
-      | ConstructorDataType<InstanceType<T>["data"]>
-      | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>)
+      ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>)
     >,
     context?: DocumentModificationContext
   ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[]>;
@@ -250,26 +257,26 @@ declare abstract class Document<
    *                  (default: `{}`)
    * @returns An array of updated Document instances
    *
-   * @example <caption>Update a single Document</caption>
+   * @example Update a single Document
    * ```typescript
    * const updates = [{_id: "12ekjf43kj2312ds", name: "Timothy"}];
    * const updated = await Actor.updateDocuments(updates);
    * ```
    *
-   * @example <caption>Update multiple Documents</caption>
+   * @example Update multiple Documents
    * ```typescript
    * const updates = [{_id: "12ekjf43kj2312ds", name: "Timothy"}, {_id: "kj549dk48k34jk34", name: "Thomas"}]};
    * const updated = await Actor.updateDocuments(updates);
    * ```
    *
-   * @example <caption>Update multiple embedded Documents within a parent</caption>
+   * @example Update multiple embedded Documents within a parent
    * ```typescript
    * const actor = game.actors.getName("Timothy");
    * const updates = [{_id: sword.id, name: "Magic Sword"}, {_id: shield.id, name: "Magic Shield"}];
    * const updated = await Item.updateDocuments(updates, {parent: actor});
    * ```
    *
-   * @example <caption>Update Documents within a Compendium pack</caption>
+   * @example Update Documents within a Compendium pack
    * ```typescript
    * const actor = await pack.getDocument(documentId);
    * const updated = await Actor.updateDocuments([{_id: actor.id, name: "New Name"}], {pack: "mymodule.mypack"});
@@ -279,8 +286,7 @@ declare abstract class Document<
     this: T,
     updates?: Array<
       DeepPartial<
-        | ConstructorDataType<InstanceType<T>["data"]>
-        | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>)
+        ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>)
       >
     >,
     context?: DocumentModificationContext & foundry.utils.MergeObjectOptions
@@ -296,20 +302,20 @@ declare abstract class Document<
    *                  (default: `{}`)
    * @returns An array of deleted Document instances
    *
-   * @example <caption>Delete a single Document</caption>
+   * @example Delete a single Document
    * ```typescript
    * const tim = game.actors.getName("Tim");
    * const deleted = await Actor.deleteDocuments([tim.id]);
    * ```
    *
-   * @example <caption>Delete multiple Documents</caption>
+   * @example Delete multiple Documents
    * ```typescript
    * const tim = game.actors.getName("Tim");
    * const tom = game.actors.getName("Tom");
    * const deleted = await Actor.deleteDocuments([tim.id, tom.id]);
    * ```
    *
-   * @example <caption>Delete multiple embedded Documents within a parent</caption>
+   * @example Delete multiple embedded Documents within a parent
    * ```typescript
    * const tim = game.actors.getName("Tim");
    * const sword = tim.items.getName("Sword");
@@ -317,7 +323,7 @@ declare abstract class Document<
    * const deleted = await Item.deleteDocuments([sword.id, shield.id], parent: actor});
    * ```
    *
-   * @example <caption>Delete Documents within a Compendium pack</caption>
+   * @example Delete Documents within a Compendium pack
    * ```typescript
    * const actor = await pack.getDocument(documentId);
    * const deleted = await Actor.deleteDocuments([actor.id], {pack: "mymodule.mypack"});
@@ -337,20 +343,20 @@ declare abstract class Document<
    *                  (default: `{}`)
    * @returns The created Document instance
    *
-   * @example <caption>Create a World-level Item</caption>
+   * @example Create a World-level Item
    * ```typescript
    * const data = [{name: "Special Sword", type: "weapon"}];
    * const created = await Item.create(data);
    * ```
    *
-   * @example <caption>Create an Actor-owned Item</caption>
+   * @example Create an Actor-owned Item
    * ```typescript
    * const data = [{name: "Special Sword", type: "weapon"}];
    * const actor = game.actors.getName("My Hero");
    * const created = await Item.create(data, {parent: actor});
    * ```
    *
-   * @example <caption>Create an Item in a Compendium pack</caption>
+   * @example Create an Item in a Compendium pack
    * ```typescript
    * const data = [{name: "Special Sword", type: "weapon"}];
    * const created = await Item.create(data, {pack: "mymodule.mypack"});
@@ -360,23 +366,17 @@ declare abstract class Document<
    */
   static create<T extends DocumentConstructor>(
     this: T,
-    data:
-      | ConstructorDataType<InstanceType<T>["data"]>
-      | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>),
+    data: ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>),
     context: DocumentModificationContext & { temporary: false }
   ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>> | undefined>;
   static create<T extends DocumentConstructor>(
     this: T,
-    data:
-      | ConstructorDataType<InstanceType<T>["data"]>
-      | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>),
+    data: ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>),
     context: DocumentModificationContext & { temporary: boolean }
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
   static create<T extends DocumentConstructor>(
     this: T,
-    data:
-      | ConstructorDataType<InstanceType<T>["data"]>
-      | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>),
+    data: ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>),
     context?: DocumentModificationContext
   ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>> | undefined>;
 
@@ -391,10 +391,8 @@ declare abstract class Document<
    *
    * @remarks If no document has actually been updated, the returned {@link Promise} resolves to `undefined`.
    */
-  update(
-    data?: DeepPartial<
-      ConstructorDataType<ConcreteDocumentData> | (ConstructorDataType<ConcreteDocumentData> & Record<string, unknown>)
-    >,
+  override update(
+    data?: DeepPartial<ConstructorData | (ConstructorData & Record<string, unknown>)>,
     context?: DocumentModificationContext & foundry.utils.MergeObjectOptions
   ): Promise<this | undefined>;
 
@@ -410,26 +408,39 @@ declare abstract class Document<
   delete(context?: DocumentModificationContext): Promise<this | undefined>;
 
   /**
+   * Get a World-level Document of this type by its id.
+   * @param documentId - The Document ID
+   * @returns The retrieved Document, or null
+   */
+  static get(documentId: string): AnyDocument | null;
+
+  /**
    * Obtain a reference to the Array of source data within the data object for a certain embedded Document name
    * @param embeddedName - The name of the embedded Document type
    * @returns The Collection instance of embedded Documents of the requested type
    */
-  getEmbeddedCollection(embeddedName: string): EmbeddedCollection<DocumentConstructor, AnyDocumentData>; // TODO: Improve
+  getEmbeddedCollection(embeddedName: string): EmbeddedCollection<ConstructorOf<AnyDocument>, this>; // TODO: Improve
 
   /**
    * Get an embedded document by it's id from a named collection in the parent document.
    * @param embeddedName - The name of the embedded Document type
    * @param id           - The id of the child document to retrieve
    * @param options      - Additional options which modify how embedded documents are retrieved
-   * @param strict       - Throw an Error if the requested id does not exist. See Collection#get
-   *                       (default: `false`)
    * @returns The retrieved embedded Document instance, or undefined
    */
   getEmbeddedDocument(
     embeddedName: string,
     id: string,
-    { strict }?: { strict?: boolean }
-  ): Document<any, this> | undefined;
+    {
+      strict
+    }?: {
+      /**
+       * Throw an Error if the requested id does not exist. See Collection#get
+       * @defaultValue `false`
+       */
+      strict?: boolean;
+    }
+  ): AnyChildDocument<this> | undefined;
 
   /**
    * Create multiple embedded Document instances within this parent Document using provided input data.
@@ -445,17 +456,17 @@ declare abstract class Document<
     embeddedName: string,
     data: Array<Record<string, unknown>>,
     context: DocumentModificationContext & { temporary: false }
-  ): Promise<Array<StoredDocument<Document<any, this>>>>;
+  ): Promise<Array<StoredDocument<AnyChildDocument<this>>>>;
   createEmbeddedDocuments(
     embeddedName: string,
     data: Array<Record<string, unknown>>,
     context: DocumentModificationContext & { temporary: boolean }
-  ): Promise<Array<Document<any, this>>>;
+  ): Promise<Array<AnyChildDocument<this>>>;
   createEmbeddedDocuments(
     embeddedName: string,
     data: Array<Record<string, unknown>>,
     context?: DocumentModificationContext
-  ): Promise<Array<StoredDocument<Document<any, this>>>>;
+  ): Promise<Array<StoredDocument<AnyChildDocument<this>>>>;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
@@ -471,7 +482,7 @@ declare abstract class Document<
     embeddedName: string,
     updates?: Array<Record<string, unknown>>,
     context?: DocumentModificationContext
-  ): Promise<Array<Document<any, this>>>;
+  ): Promise<Array<AnyChildDocument<this>>>;
 
   /**
    * Delete multiple embedded Document instances within a parent Document using provided string ids.
@@ -486,7 +497,7 @@ declare abstract class Document<
     embeddedName: string,
     ids: Array<string>,
     context?: DocumentModificationContext
-  ): Promise<Array<Document<any, this>>>;
+  ): Promise<Array<AnyChildDocument<this>>>;
 
   /**
    * Get the value of a "flag" for this document
@@ -496,18 +507,18 @@ declare abstract class Document<
    * @param key   - The flag key
    * @returns The flag value
    */
-  getFlag<
-    S extends keyof ConcreteDocumentData["_source"]["flags"],
-    K extends keyof ConcreteDocumentData["_source"]["flags"][S]
-  >(scope: S, key: K): ConcreteDocumentData["_source"]["flags"][S][K];
-  getFlag<
-    S extends keyof ConcreteDocumentData["_source"]["flags"],
-    K extends keyof Required<ConcreteDocumentData["_source"]["flags"]>[S]
-  >(scope: S, key: K): Required<ConcreteDocumentData["_source"]["flags"]>[S][K] | undefined;
-  getFlag<S extends keyof ConcreteDocumentData["_source"]["flags"]>(
+  getFlag<S extends keyof SourceData["flags"], K extends keyof SourceData["flags"][S]>(
+    scope: S,
+    key: K
+  ): SourceData["flags"][S][K];
+  getFlag<S extends keyof SourceData["flags"], K extends keyof Required<SourceData["flags"]>[S]>(
+    scope: S,
+    key: K
+  ): Required<SourceData["flags"]>[S][K] | undefined;
+  getFlag<S extends keyof SourceData["flags"]>(
     scope: S,
     key: string
-  ): unknown extends ConcreteDocumentData["_source"]["flags"][S] ? unknown : never;
+  ): unknown extends SourceData["flags"][S] ? unknown : never;
   getFlag(scope: string, key: string): unknown;
 
   /**
@@ -529,14 +540,14 @@ declare abstract class Document<
    * @returns A Promise resolving to the updated document
    */
   setFlag<
-    S extends keyof ConcreteDocumentData["_source"]["flags"],
-    K extends keyof Required<ConcreteDocumentData["_source"]["flags"]>[S],
-    V extends Required<ConcreteDocumentData["_source"]["flags"]>[S][K]
+    S extends keyof SourceData["flags"],
+    K extends keyof Required<SourceData["flags"]>[S],
+    V extends Required<SourceData["flags"]>[S][K]
   >(scope: S, key: K, value: V): Promise<this>;
-  setFlag<S extends keyof ConcreteDocumentData["_source"]["flags"], K extends string>(
+  setFlag<S extends keyof SourceData["flags"], K extends string>(
     scope: S,
     key: K,
-    v: unknown extends ConcreteDocumentData["_source"]["flags"][S] ? unknown : never
+    v: unknown extends SourceData["flags"][S] ? unknown : never
   ): Promise<this>;
 
   /**
@@ -550,14 +561,15 @@ declare abstract class Document<
   /**
    * Perform preliminary operations before a Document of this type is created.
    * Pre-creation operations only occur for the client which requested the operation.
+   * Modifications to the pending document before it is persisted should be performed with this.updateSource().
    * @param data    - The initial data used to create the document
    * @param options - Additional options which modify the creation request
    * @param user    - The User requesting the document creation
    */
   protected _preCreate(
-    data: ConstructorDataType<ConcreteDocumentData>,
+    data: ConstructorData,
     options: DocumentModificationOptions,
-    user: BaseUser
+    user: foundry.documents.BaseUser
   ): Promise<void>;
 
   /**
@@ -568,9 +580,9 @@ declare abstract class Document<
    * @param user    - The User requesting the document update
    */
   protected _preUpdate(
-    changed: DeepPartial<ConstructorDataType<ConcreteDocumentData>>,
+    changed: DeepPartial<ConstructorData>,
     options: DocumentModificationOptions,
-    user: BaseUser
+    user: foundry.documents.BaseUser
   ): Promise<void>;
 
   /**
@@ -579,39 +591,31 @@ declare abstract class Document<
    * @param options - Additional options which modify the deletion request
    * @param user    - The User requesting the document deletion
    */
-  protected _preDelete(options: DocumentModificationOptions, user: BaseUser): Promise<void>;
+  protected _preDelete(options: DocumentModificationOptions, user: foundry.documents.BaseUser): Promise<void>;
 
   /**
    * Perform follow-up operations after a Document of this type is created.
    * Post-creation operations occur for all clients after the creation is broadcast.
-   * @param data   - The data from which the document was created
-   * @param options- Additional options which modify the creation request
-   * @param user   - The id of the User requesting the document update
+   * @param data    - The data from which the document was created
+   * @param options - Additional options which modify the creation request
+   * @param userId  - The id of the User requesting the document update
    */
-  protected _onCreate(
-    data: ConcreteDocumentData["_source"],
-    options: DocumentModificationOptions,
-    userId: string
-  ): void;
+  protected _onCreate(data: SourceData, options: DocumentModificationOptions, userId: string): void;
 
   /**
    * Perform follow-up operations after a Document of this type is updated.
    * Post-update operations occur for all clients after the update is broadcast.
    * @param changed - The differential data that was changed relative to the documents prior values
    * @param options - Additional options which modify the update request
-   * @param user    - The id of the User requesting the document update
+   * @param userId  - The id of the User requesting the document update
    */
-  protected _onUpdate(
-    changed: DeepPartial<ConcreteDocumentData["_source"]>,
-    options: DocumentModificationOptions,
-    userId: string
-  ): void;
+  protected _onUpdate(changed: DeepPartial<SourceData>, options: DocumentModificationOptions, userId: string): void;
 
   /**
    * Perform follow-up operations after a Document of this type is deleted.
    * Post-deletion operations occur for all clients after the deletion is broadcast.
-   * @param options- Additional options which modify the deletion request
-   * @param user   - The id of the User requesting the document update
+   * @param options - Additional options which modify the deletion request
+   * @param userId  - The id of the User requesting the document update
    */
   protected _onDelete(options: DocumentModificationOptions, userId: string): void;
 
@@ -619,8 +623,8 @@ declare abstract class Document<
    * Perform follow-up operations when a set of Documents of this type are created.
    * This is where side effects of creation should be implemented.
    * Post-creation side effects are performed only for the client which requested the operation.
-   * @param documents- The Document instances which were created
-   * @param context  - The context for the modification operation
+   * @param documents - The Document instances which were created
+   * @param context   - The context for the modification operation
    *
    * @remarks The base implementation returns `void` but it is typed as
    * `unknown` to allow deriving classes to return whatever they want. The
@@ -667,43 +671,56 @@ declare abstract class Document<
   ): Promise<unknown>;
 
   /**
-   * Transform the Document instance into a plain object.
-   * The created object is an independent copy of the original data.
-   * See DocumentData#toObject
-   * @param source - Draw values from the underlying data source rather than transformed values
-   * @returns The extracted primitive object
+   * Configure whether V10 Document Model migration warnings should be logged for this class.
    */
-  toObject(
-    source?: true
-  ): this["id"] extends string
-    ? ReturnType<this["data"]["toJSON"]> & { _id: string }
-    : ReturnType<this["data"]["toJSON"]>;
-  toObject(
-    source: false
-  ): this["id"] extends string
-    ? ToObjectFalseType<ConcreteDocumentData> & { _id: string }
-    : ToObjectFalseType<ConcreteDocumentData>;
+  static LOG_V10_COMPATIBILITY_WARNINGS: boolean;
 
   /**
-   * Convert the Document instance to a primitive object which can be serialized.
-   * See DocumentData#toJSON
-   * @returns The document data expressed as a plain object
+   * @deprecated since v10
    */
-  toJSON(): this["id"] extends string
-    ? ReturnType<this["data"]["toJSON"]> & { _id: string }
-    : ReturnType<this["data"]["toJSON"]>;
+  get data(): unknown;
+
+  override toObject(source: true): this["_source"];
+  override toObject(source?: boolean | undefined): ReturnType<this["schema"]["toObject"]>;
 
   /**
-   * For Documents which include game system data, migrate the system data object to conform to its latest data model.
-   * The data model is defined by the template.json specification included by the game system.
-   * @returns The migrated system data object
+   * A reusable helper for adding migration shims.
    */
-  migrateSystemData(): object;
+  protected static _addDataFieldShims(data: object, shims: object, options: object): unknown;
+
+  /**
+   * A reusable helper for adding a migration shim
+   */
+  protected static _addDataFieldShim(data: object, oldKey: string, newKey: string, options?: object): unknown;
+
+  /**
+   * Define a simple migration from one field name to another.
+   * The value of the data can be transformed during the migration by an optional application function.
+   * @param data   - The data object being migrated
+   * @param oldKey - The old field name
+   * @param newKey - The new field name
+   * @param apply  - An application function, otherwise the old value is applied
+   * @internal
+   */
+  protected static _addDataFieldMigration(
+    data: object,
+    oldKey: string,
+    newKey: string,
+    apply?: (data: object) => any
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions
+  ): void;
+
+  protected static _logV10CompatibilityWarning(options?: LogCompatibilityWarningOptions): void;
 }
 
 export type DocumentModificationOptions = Omit<DocumentModificationContext, "parent" | "pack">;
 
-export interface Context<Parent extends Document<any, any> | null> {
+export interface Context<Parent extends AnyDocument | null> {
   /**
    * A parent document within which this Document is embedded
    */
@@ -715,25 +732,28 @@ export interface Context<Parent extends Document<any, any> | null> {
   pack?: string;
 }
 
-export interface Metadata<ConcreteDocument extends Document<any, any>> {
+export type AnyMetadata = Metadata<AnyDocument>;
+
+export interface Metadata<ConcreteDocument extends AnyDocument> {
   name: DocumentType;
   collection: string;
+  indexed: boolean;
+  compendiumIndexFields: string[];
   label: string;
+  coreTypes: string[];
+  embedded: Record<string, ConstructorOf<AnyDocument>>;
+  permissions: {
+    create:
+      | string
+      | ((user: foundry.documents.BaseUser, doc: ConcreteDocument, data: ConcreteDocument["_source"]) => boolean);
+    update: string | ((user: foundry.documents.BaseUser, doc: ConcreteDocument, data: object) => boolean);
+    delete: string | ((user: foundry.documents.BaseUser, doc: ConcreteDocument, data: {}) => boolean);
+  };
+  preserveOnImport: string[];
+
   labelPlural: string; // This is not set for the Document class but every class that implements Document actually provides it.
   types: readonly string[];
-  embedded: Record<string, ConstructorOf<Document<any, any>>>;
   hasSystemData: boolean;
-  permissions: {
-    create: string | ((user: BaseUser, doc: ConcreteDocument, data: ConcreteDocument["data"]["_source"]) => boolean);
-    update:
-      | string
-      | ((
-          user: BaseUser,
-          doc: ConcreteDocument,
-          data: DeepPartial<ConstructorDataType<ConcreteDocument["data"]>>
-        ) => boolean);
-    delete: string | ((user: BaseUser, doc: ConcreteDocument, data: {}) => boolean);
-  };
   pack: any;
 }
 
@@ -751,5 +771,3 @@ export interface DocumentMetadata {
   };
   pack: null;
 }
-
-export default Document;

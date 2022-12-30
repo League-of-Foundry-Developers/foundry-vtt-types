@@ -505,13 +505,13 @@ declare global {
   interface NumberFieldOptions<AssignmentType, InitializedType>
     extends DataFieldOptions<AssignmentType, InitializedType> {
     /** A minimum allowed value */
-    min?: number;
+    min?: number | undefined;
 
     /** A maximum allowed value */
-    max?: number;
+    max?: number | undefined;
 
     /** A permitted step size */
-    step?: number;
+    step?: number | undefined;
 
     /**
      * Must the number be an integer?
@@ -530,7 +530,7 @@ declare global {
      * allowed choices for the field. A function may be provided which dynamically
      * returns the array of choices.
      */
-    choices?: number[] | Record<number, string> | (() => number[] | Record<number, string>);
+    choices?: number[] | Record<number, string> | (() => number[] | Record<number, string>) | undefined;
   }
 }
 
@@ -675,11 +675,11 @@ declare global {
  */
 declare class StringField<
   Options extends StringFieldOptions<
-    DataField.AssignmentType<StringField.BaseAssignmentType, StringField.MergedOptions<Options>>,
+    DataField.AssignmentType<StringField.BaseAssignmentType | AnyDocument, StringField.MergedOptions<Options>>,
     DataField.InitializedType<string | object | AnyDocument, StringField.MergedOptions<Options>>
   > = StringField.DefaultOptions,
   AssignmentType extends DataField.AssignmentType<
-    StringField.BaseAssignmentType,
+    StringField.BaseAssignmentType | AnyDocument,
     StringField.MergedOptions<Options>
   > = DataField.InferredAssignmentType<StringField.BaseAssignmentType, StringField.MergedOptions<Options>>,
   InitializedType extends DataField.InitializedType<
@@ -832,7 +832,7 @@ declare class ArrayField<
   Options extends DataFieldOptions<
     DataField.AssignmentType<
       ArrayField.BaseAssignmentType<AssignmentElementType>,
-      ArrayField.MergedOptions<InitializedElementType, Options>
+      ArrayField.MergedOptions<AssignmentElementType, Options>
     >,
     DataField.InitializedType<
       ArrayField.BaseInitializedType<InitializedElementType>,
@@ -841,10 +841,10 @@ declare class ArrayField<
   > = ArrayField.DefaultOptions<InitializedElementType>,
   AssignmentType extends DataField.AssignmentType<
     ArrayField.BaseAssignmentType<AssignmentElementType>,
-    ArrayField.MergedOptions<InitializedElementType, Options>
+    ArrayField.MergedOptions<AssignmentElementType, Options>
   > = DataField.InferredAssignmentType<
     ArrayField.BaseAssignmentType<AssignmentElementType>,
-    ArrayField.MergedOptions<InitializedElementType, Options>
+    ArrayField.MergedOptions<AssignmentElementType, Options>
   >,
   InitializedType extends DataField.InitializedType<
     ArrayField.BaseInitializedType<InitializedElementType>,
@@ -958,16 +958,16 @@ declare class SetField<
   Options extends DataFieldOptions<
     DataField.AssignmentType<
       ArrayField.BaseAssignmentType<AssignmentElementType>,
-      SetField.MergedOptions<InitializedElementType, Options>
+      SetField.MergedOptions<AssignmentElementType, Options>
     >,
     DataField.InitializedType<Set<InitializedElementType>, SetField.MergedOptions<InitializedElementType, Options>>
   > = SetField.DefaultOptions<InitializedElementType>,
   AssignmentType extends DataField.AssignmentType<
     ArrayField.BaseAssignmentType<AssignmentElementType>,
-    SetField.MergedOptions<InitializedElementType, Options>
+    SetField.MergedOptions<AssignmentElementType, Options>
   > = DataField.InferredAssignmentType<
     ArrayField.BaseAssignmentType<AssignmentElementType>,
-    SetField.MergedOptions<InitializedElementType, Options>
+    SetField.MergedOptions<AssignmentElementType, Options>
   >,
   InitializedType extends DataField.InitializedType<
     Set<InitializedElementType>,
@@ -1923,25 +1923,25 @@ interface DocumentStatsFieldDataSchema extends DataSchema {
  */
 declare class DocumentStatsField<
   Options extends DataFieldOptions<
-    DataField.AssignmentType<DocumentStats, DocumentStatsField.MergedOptions<Options>>,
-    DataField.InitializedType<DocumentStats, DocumentStatsField.MergedOptions<Options>>
+    DataField.AssignmentType<Partial<DocumentStats>, DocumentStatsField.MergedOptions<Options>>,
+    DataField.InitializedType<Partial<DocumentStats>, DocumentStatsField.MergedOptions<Options>>
   > = DocumentStatsField.DefaultOptions,
   AssignmentType extends DataField.AssignmentType<
-    object,
+    Partial<DocumentStats>,
     DocumentStatsField.MergedOptions<Options>
-  > = DataField.InferredAssignmentType<object, DocumentStatsField.MergedOptions<Options>>,
+  > = DataField.InferredAssignmentType<Partial<DocumentStats>, DocumentStatsField.MergedOptions<Options>>,
   InitializedType extends DataField.InitializedType<
-    object,
+    DocumentStats,
     DocumentStatsField.MergedOptions<Options>
-  > = DataField.InferredInitializedType<object, DocumentStatsField.MergedOptions<Options>>,
-  PersistedType = DataField.InitializedType<object, DocumentStatsField.MergedOptions<Options>>
+  > = DataField.InferredInitializedType<DocumentStats, DocumentStatsField.MergedOptions<Options>>,
+  PersistedType = DataField.InitializedType<DocumentStats, DocumentStatsField.MergedOptions<Options>>
 > extends SchemaField<Options, AssignmentType, InitializedType, PersistedType> {
-  constructor(options?: DataFieldOptions<DocumentStats>);
+  constructor(options?: Options);
 }
 
 declare namespace DocumentStatsField {
   /** The type of the default options for the {@link DocumentStatsField} class. */
-  type DefaultOptions = SchemaField.DefaultOptions;
+  type DefaultOptions = SimpleMerge<SchemaField.DefaultOptions, { initial?: Partial<DocumentStats> }>;
 
   /**
    * A helper type for the given options type merged into the default options of the {@link DocumentStatsField} class.
@@ -1993,18 +1993,18 @@ export function foreignDocumentField<T extends typeof Document>(options: {
  * @deprecated since v10 and replaced by the EmbeddedCollectionField class
  * @see EmbeddedCollectionField
  */
-export function embeddedCollectionField<E extends typeof Document, O extends DataFieldOptions<any>>(
+export function embeddedCollectionField<E extends typeof Document, O extends AnyDataFieldOptions>(
   document: E,
   options?: O
-): EmbeddedCollectionField<E, O extends DataFieldOptions<infer V> ? V : never>;
+): EmbeddedCollectionField<E, any, InstanceType<E>, O>;
 
 /**
  * @deprecated since v10 and should be replaced with explicit use of new field classes
  */
 export function field(
   field: { type: typeof String | typeof Number | typeof Boolean | typeof Object | Array<any> | object },
-  options?: DataFieldOptions<any>
-): DataField<unknown>;
+  options?: AnyDataFieldOptions
+): AnyDataField;
 
 export {
   AlphaField,

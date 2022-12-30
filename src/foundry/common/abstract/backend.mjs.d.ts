@@ -1,5 +1,5 @@
 import { BaseUser } from "../documents.mjs";
-import { AnyDocumentData } from "./data.mjs";
+import { AnyDataModel } from "./data.mjs";
 import Document from "./document.mjs";
 
 /**
@@ -73,7 +73,7 @@ declare abstract class DatabaseBackend {
    * Validate the arguments passed to the create operation
    */
   protected _createArgs({ data, options, pack }?: Request): {
-    data: AnyDocumentData[];
+    data: AnyDataModel[];
     options: RequestOptions;
     pack?: string;
   };
@@ -114,7 +114,7 @@ declare abstract class DatabaseBackend {
    * Validate the arguments passed to the update operation
    */
   protected _updateArgs({ updates, options, pack }?: Request): {
-    updates: AnyDocumentData[];
+    updates: AnyDataModel[];
     options: RequestOptions;
     pack?: string;
   };
@@ -238,10 +238,10 @@ declare abstract class DatabaseBackend {
 
 export interface Request {
   /** An array of document data */
-  data?: AnyDocumentData[];
+  data?: AnyDataModel[];
 
   /** An array of document data */
-  updates?: AnyDocumentData[];
+  updates?: AnyDataModel[];
 
   /** An array of document ids */
   ids?: string[];

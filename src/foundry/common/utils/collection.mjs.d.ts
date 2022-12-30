@@ -34,7 +34,7 @@ declare class Collection<T> extends Map<string, T> {
   get contents(): T[];
 
   /**
-   * Find an entry in the Map using an functional condition.
+   * Find an entry in the Map using a functional condition.
    * @see {@link Array#find}
    *
    * @param condition - The functional condition to test. Positional arguments are the value, the index of
@@ -144,7 +144,7 @@ declare class Collection<T> extends Map<string, T> {
    * }, ""); // "ABC"
    * ```
    */
-  reduce<A>(evaluator: (accumulator: A, entity: T, index: number, collection: Collection<T>) => A, initial: A): A;
+  reduce<A>(reducer: (accumulator: A, entity: T, index: number, collection: Collection<T>) => A, initial: A): A;
 
   /**
    * Test whether a condition is met by some entry in the Collection.

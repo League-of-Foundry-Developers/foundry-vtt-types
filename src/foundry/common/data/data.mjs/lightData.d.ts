@@ -1,32 +1,66 @@
 import type { FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes";
-import { DocumentData } from "../../abstract/module.mjs";
+import { DataModel, DocumentData } from "../../abstract/module.mjs";
 import * as documents from "../../documents.mjs";
 import * as fields from "../fields.mjs";
 import type { AnimationData, AnimationDataConstructorData } from "./animationData";
 import type { DarknessActivation, DarknessActivationConstructorData } from "./darknessActivation";
 
-interface LightDataSchema extends DocumentSchema {
-  alpha: FieldReturnType<fields.AlphaField, { default: 0.5 }>;
+declare global {
+  interface LightAnimationData {
+    /**
+     * The animation type which is applied
+     * @defaultValue `null`
+     */
+    type: string | null;
+
+    /**
+     * The speed of the animation, a number between 0 and 10
+     * @defaultValue `5`
+     */
+    speed: number;
+
+    /**
+     * The intensity of the animation, a number between 1 and 10
+     * @defaultValue `5`
+     */
+    intensity: number;
+
+    /**
+     * Reverse the direction of animation.
+     * @defaultValue `false`
+     */
+    reverse: boolean;
+  }
+}
+
+interface LightDataSchema extends DataSchema {
+  alpha: fields.AlphaField;
   angle: fields.AngleField;
-  bright: fields.NonnegativeNumberField;
+  bright: fields.NumberField<number | null, number>;
   color: fields.ColorField;
-  coloration: FieldReturnType<fields.NonnegativeIntegerField, { default: 1 }>;
-  dim: fields.NonnegativeNumberField;
-  gradual: FieldReturnType<fields.BooleanField, { default: true }>;
-  luminosity: FieldReturnType<LightData.LightUniformField, { default: 0.5 }>;
-  saturation: LightData.LightUniformField;
-  contrast: LightData.LightUniformField;
-  shadows: LightData.LightUniformField;
-  animation: DocumentField<AnimationData> & {
-    type: typeof AnimationData;
-    required: true;
-    default: Record<string, never>;
-  };
-  darkness: DocumentField<DarknessActivation> & {
-    type: typeof DarknessActivation;
-    required: true;
-    default: Record<string, never>;
-  };
+  coloration: fields.NumberField<number | null, number>;
+  dim: fields.NumberField<number | null, number>;
+  attenuation: fields.AlphaField;
+  luminosity: fields.NumberField<number>;
+  saturation: fields.NumberField<number>;
+  contrast: fields.NumberField<number>;
+  shadows: fields.NumberField<number>;
+  animation: fields.SchemaField<
+    {
+      type: fields.StringField<string | null | undefined, string | null>;
+      speed: fields.NumberField<number | null, number>;
+      intensity: fields.NumberField<number | null, number>;
+      reverse: fields.BooleanField;
+    },
+    LightAnimationData
+  >;
+  darkness: fields.SchemaField<
+    {
+      min: fields.AlphaField;
+      max: fields.AlphaField;
+    },
+    { min: number; max: number }
+  >;
 }
 
 interface LightDataProperties {
@@ -65,9 +99,9 @@ interface LightDataProperties {
 
   /**
    * Fade the difference between bright, dim, and dark gradually?
-   * @defaultValue `true`
+   * @defaultValue `0.5`
    */
-  gradual: boolean;
+  attenuation: number;
 
   /**
    * The luminosity applied in the shader
@@ -95,15 +129,14 @@ interface LightDataProperties {
 
   /**
    * An animation configuration for the source
-   * @defaultValue `new AnimationData({})`
    */
-  animation: AnimationData;
+  animation: LightAnimationData;
 
   /**
    * A darkness range (min and max) for which the source should be active
-   * @defaultValue `new DarknessActivation({})`
+   * @defaultValue `{ min: 0; max: 1 }`
    */
-  darkness: DarknessActivation;
+  darkness: { min: number; max: number };
 }
 
 interface LightDataConstructorData {
@@ -189,38 +222,15 @@ type LightDataSource = PropertiesToSource<LightDataProperties>;
  * A reusable document structure for the internal data used to render the appearance of a light source.
  * This is re-used by both the AmbientLightData and TokenData classes.
  */
-export class LightData extends DocumentData<
-  LightDataSchema,
-  LightDataProperties,
+export class LightData extends DataModel<
+  fields.SchemaField<LightDataSchema>,
   LightDataSource,
   LightDataConstructorData,
   documents.BaseAmbientLight | documents.BaseToken
 > {
   static override defineSchema(): LightDataSchema;
 
-  /**
-   * A reusable field definition for uniform fields used by LightData
-   */
-  static LIGHT_UNIFORM_FIELD: LightData.LightUniformField;
-
-  override _initializeSource(data: LightDataConstructorData): LightDataSource;
-
-  protected override _initialize(): void;
-}
-
-declare namespace LightData {
-  /**
-   * Property type: `number`
-   * Constructor type: `number | null | undefined`
-   * Default: `0`
-   */
-  interface LightUniformField {
-    type: typeof Number;
-    required: true;
-    default: 0;
-    validate: (n: number) => boolean;
-    validationError: '{name} {field} "{value}" is not a number between -1 and 1';
-  }
+  static override migrateData(source: object): object;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
