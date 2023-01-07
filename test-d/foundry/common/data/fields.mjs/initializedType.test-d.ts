@@ -43,6 +43,45 @@ expectType<number>(withInitialRequired);
 declare const withInitialOptional: DataField.AssignmentType<number, { initial: 42; required: false }>;
 expectType<number>(withInitialOptional);
 
+declare const withInitialFunction: DataField.InitializedType<number, { initial: () => 42 }>;
+expectType<number>(withInitialFunction);
+
+declare const withInitialFunctionNullable: DataField.InitializedType<number, { initial: () => 42; nullable: true }>;
+expectType<number | null>(withInitialFunctionNullable);
+
+declare const withInitialFunctionNullableRequired: DataField.InitializedType<
+  number,
+  { initial: () => 42; nullable: true; required: true }
+>;
+expectType<number | null>(withInitialFunctionNullableRequired);
+
+declare const withInitialFunctionNullableOptional: DataField.InitializedType<
+  number,
+  { initial: () => 42; nullable: true; required: false }
+>;
+expectType<number | null>(withInitialFunctionNullableOptional);
+
+declare const withInitialFunctionNonNullable: DataField.InitializedType<number, { initial: () => 42; nullable: false }>;
+expectType<number>(withInitialFunctionNonNullable);
+
+declare const withInitialFunctionNonNullableRequired: DataField.InitializedType<
+  number,
+  { initial: () => 42; nullable: false; required: true }
+>;
+expectType<number>(withInitialFunctionNonNullableRequired);
+
+declare const withInitialFunctionNonNullableOptional: DataField.InitializedType<
+  number,
+  { initial: () => 42; nullable: false; required: false }
+>;
+expectType<number | null | undefined>(withInitialFunctionNonNullableOptional);
+
+declare const withInitialFunctionRequired: DataField.AssignmentType<number, { initial: () => 42; required: true }>;
+expectType<number>(withInitialFunctionRequired);
+
+declare const withInitialFunctionOptional: DataField.AssignmentType<number, { initial: () => 42; required: false }>;
+expectType<number>(withInitialFunctionOptional);
+
 declare const withoutInitialNullable: DataField.InitializedType<number, { nullable: true }>;
 expectType<number | null | undefined>(withoutInitialNullable);
 

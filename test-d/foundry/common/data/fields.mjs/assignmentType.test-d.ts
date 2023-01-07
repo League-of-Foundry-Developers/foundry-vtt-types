@@ -43,6 +43,45 @@ expectType<number | null | undefined>(withInitialRequired);
 declare const withInitialOptional: DataField.AssignmentType<number, { initial: 42; required: false }>;
 expectType<number | null | undefined>(withInitialOptional);
 
+declare const withInitialFunction: DataField.AssignmentType<number, { initial: () => 42 }>;
+expectType<number | null | undefined>(withInitialFunction);
+
+declare const withInitialFunctionNullable: DataField.AssignmentType<number, { initial: () => 42; nullable: true }>;
+expectType<number | null | undefined>(withInitialFunctionNullable);
+
+declare const withInitialFunctionNullableRequired: DataField.AssignmentType<
+  number,
+  { initial: () => 42; nullable: true; required: true }
+>;
+expectType<number | null | undefined>(withInitialFunctionNullableRequired);
+
+declare const withInitialFunctionNullableOptional: DataField.AssignmentType<
+  number,
+  { initial: () => 42; nullable: true; required: false }
+>;
+expectType<number | null | undefined>(withInitialFunctionNullableOptional);
+
+declare const withInitialFunctionNonNullable: DataField.AssignmentType<number, { initial: () => 42; nullable: false }>;
+expectType<number | null | undefined>(withInitialFunctionNonNullable);
+
+declare const withInitialFunctionNonNullableRequired: DataField.AssignmentType<
+  number,
+  { initial: () => 42; nullable: false; required: true }
+>;
+expectType<number | null | undefined>(withInitialFunctionNonNullableRequired);
+
+declare const withInitialFunctionNonNullableOptional: DataField.AssignmentType<
+  number,
+  { initial: () => 42; nullable: false; required: false }
+>;
+expectType<number | null | undefined>(withInitialFunctionNonNullableOptional);
+
+declare const withInitialFunctionRequired: DataField.AssignmentType<number, { initial: () => 42; required: true }>;
+expectType<number | null | undefined>(withInitialFunctionRequired);
+
+declare const withInitialFunctionOptional: DataField.AssignmentType<number, { initial: () => 42; required: false }>;
+expectType<number | null | undefined>(withInitialFunctionOptional);
+
 declare const withoutInitialNullable: DataField.AssignmentType<number, { nullable: true }>;
 expectType<number | null | undefined>(withoutInitialNullable);
 
