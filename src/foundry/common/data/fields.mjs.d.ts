@@ -58,7 +58,7 @@ declare global {
 }
 
 /** Any {@link DataField}. */
-export type AnyDataField = DataField<any, any>;
+export type AnyDataField = DataField;
 
 /** A {@link DataField} with unknown inner types. */
 export type UnknownDataField = DataField<AnyDataFieldOptions, unknown, unknown>;
@@ -71,18 +71,9 @@ export type UnknownDataField = DataField<AnyDataFieldOptions, unknown, unknown>;
  * @typeParam PersistedType   - the type of the persisted values of the DataField
  */
 declare abstract class DataField<
-  Options extends DataFieldOptions<
-    DataField.AssignmentType<any, DataField.MergedOptions<Options>>,
-    DataField.InitializedType<any, DataField.MergedOptions<Options>>
-  > = DataField.DefaultOptions,
-  AssignmentType extends DataField.AssignmentType<
-    any,
-    DataField.MergedOptions<Options>
-  > = DataField.InferredAssignmentType<any, DataField.MergedOptions<Options>>,
-  InitializedType extends DataField.InitializedType<
-    any,
-    DataField.MergedOptions<Options>
-  > = DataField.InferredInitializedType<any, DataField.MergedOptions<Options>>,
+  Options extends AnyDataFieldOptions = DataField.DefaultOptions,
+  AssignmentType = DataField.InferredAssignmentType<any, DataField.MergedOptions<Options>>,
+  InitializedType = DataField.InferredInitializedType<any, DataField.MergedOptions<Options>>,
   PersistedType = InitializedType
 > {
   /**
@@ -278,19 +269,23 @@ declare namespace DataField {
   type InitializedType<BaseType, Options extends BaseTypeExtendingOptions = BaseTypeExtendingOptions> =
     | BaseType
     | (Options["nullable"] extends true ? null : never)
-    | (Options["required"] extends true ? never : undefined extends Options["initial"] ? undefined : never);
+    | (Options["required"] extends true ? never : Options["initial"] extends undefined ? undefined : never);
 
   /** A type to infer the concrete assignment type from the given base and options. */
   type InferredAssignmentType<
     BaseAssignmentType,
     Options extends AnyDataFieldOptions
-  > = Options extends DataFieldOptions<infer A extends AssignmentType<BaseAssignmentType, Options>, any> ? A : never;
+  > = Options extends DataFieldOptions<infer AssignType extends AssignmentType<BaseAssignmentType, Options>, any>
+    ? AssignType
+    : never;
 
   /** A type to infer the concrete initialized type from the given base and options. */
   type InferredInitializedType<
     BaseInitializedType,
     Options extends AnyDataFieldOptions
-  > = Options extends DataFieldOptions<any, infer I extends InitializedType<BaseInitializedType, Options>> ? I : never;
+  > = Options extends DataFieldOptions<any, infer InitType extends InitializedType<BaseInitializedType, Options>>
+    ? InitType
+    : never;
 
   /** The type of the default options for the {@link DataField} class. */
   type DefaultOptions = {
@@ -324,29 +319,33 @@ declare namespace DataField {
   }
 }
 
+/** Any {@link SchemaField}. */
+export type AnySchemaField = SchemaField<{}>;
+
 /**
  * A special class of {@link DataField} which defines a data schema.
  */
 declare class SchemaField<
-  Options extends DataFieldOptions<
-    DataField.AssignmentType<object, SchemaField.MergedOptions<Options>>,
-    DataField.InitializedType<object, SchemaField.MergedOptions<Options>>
-  > = SchemaField.DefaultOptions,
-  AssignmentType extends DataField.AssignmentType<
-    object,
+  Fields extends DataSchema,
+  Options extends AnyDataFieldOptions = SchemaField.DefaultOptions,
+  AssignmentType = DataField.InferredAssignmentType<
+    SchemaField.AssignmentType<Fields>,
     SchemaField.MergedOptions<Options>
-  > = DataField.InferredAssignmentType<object, SchemaField.MergedOptions<Options>>,
-  InitializedType extends DataField.InitializedType<
-    object,
+  >,
+  InitializedType = DataField.InferredInitializedType<
+    SchemaField.InitializedType<Fields>,
     SchemaField.MergedOptions<Options>
-  > = DataField.InferredInitializedType<object, SchemaField.MergedOptions<Options>>,
-  PersistedType = DataField.InitializedType<object, SchemaField.MergedOptions<Options>>
+  >,
+  PersistedType = DataField.InferredInitializedType<
+    SchemaField.PersistedType<Fields>,
+    SchemaField.MergedOptions<Options>
+  >
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param fields  - The contained field definitions
    * @param options - Options which configure the behavior of the field
    */
-  constructor(fields: DataSchema, options?: Options);
+  constructor(fields: Fields, options?: Options);
 
   /** @defaultValue `true` */
   override required: boolean;
@@ -362,14 +361,14 @@ declare class SchemaField<
   /**
    * The contained field definitions.
    */
-  fields: DataSchema;
+  fields: Fields;
 
   /**
    * Initialize and validate the structure of the provided field definitions.
    * @param fields - The provided field definitions
    * @returns The validated schema
    */
-  protected _initialize(fields: DataSchema): DataSchema;
+  protected _initialize(fields: Fields): Fields;
 
   /**
    * Iterate over a SchemaField by iterating over its fields.
@@ -426,6 +425,33 @@ declare class SchemaField<
 }
 
 declare namespace SchemaField {
+  /** Get the inferred assignment type for the given DataSchema. */
+  type AssignmentType<Schema extends DataSchema> = {
+    [Key in keyof Schema]?: Schema[Key] extends DataField<any, infer AssignType>
+      ? Schema[Key] extends SchemaField<infer SubSchema>
+        ? AssignmentType<SubSchema>
+        : AssignType
+      : never;
+  };
+
+  /** Get the inferred initialized type for the given DataSchema. */
+  type InitializedType<Schema extends DataSchema> = {
+    [Key in keyof Schema]: Schema[Key] extends DataField<any, any, infer InitType>
+      ? Schema[Key] extends SchemaField<infer SubSchema>
+        ? InitializedType<SubSchema>
+        : InitType
+      : never;
+  };
+
+  /** Get the inferred persisted type for the given DataSchema. */
+  type PersistedType<Schema extends DataSchema> = {
+    [Key in keyof Schema]: Schema[Key] extends DataField<any, any, any, infer PersistType>
+      ? Schema[Key] extends SchemaField<infer SubSchema>
+        ? PersistedType<SubSchema>
+        : PersistType
+      : never;
+  };
+
   /** The type of the default options for the {@link SchemaField} class. */
   type DefaultOptions = SimpleMerge<
     DataField.DefaultOptions,
@@ -444,18 +470,12 @@ declare namespace SchemaField {
  * A subclass of [DataField]{@link DataField} which deals with boolean-typed data.
  */
 declare class BooleanField<
-  Options extends DataFieldOptions<
-    DataField.AssignmentType<BooleanField.BaseAssignmentType, BooleanField.MergedOptions<Options>>,
-    DataField.InitializedType<boolean, BooleanField.MergedOptions<Options>>
-  > = BooleanField.DefaultOptions,
-  AssignmentType extends DataField.AssignmentType<
+  Options extends AnyDataFieldOptions = BooleanField.DefaultOptions,
+  AssignmentType = DataField.InferredAssignmentType<
     BooleanField.BaseAssignmentType,
     BooleanField.MergedOptions<Options>
-  > = DataField.InferredAssignmentType<BooleanField.BaseAssignmentType, BooleanField.MergedOptions<Options>>,
-  InitializedType extends DataField.InitializedType<
-    boolean,
-    BooleanField.MergedOptions<Options>
-  > = DataField.InferredInitializedType<boolean, BooleanField.MergedOptions<Options>>,
+  >,
+  InitializedType = DataField.InferredInitializedType<boolean, BooleanField.MergedOptions<Options>>,
   PersistedType = DataField.InitializedType<boolean, BooleanField.MergedOptions<Options>>
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
@@ -501,6 +521,9 @@ declare namespace BooleanField {
   type MergedOptions<Options> = SimpleMerge<DefaultOptions, Options>;
 }
 
+/** Any {@link NumberFieldOptions}. */
+export type AnyNumberFieldOptions = NumberFieldOptions<any, any>;
+
 declare global {
   interface NumberFieldOptions<AssignmentType, InitializedType>
     extends DataFieldOptions<AssignmentType, InitializedType> {
@@ -538,18 +561,9 @@ declare global {
  * A subclass of [DataField]{@link DataField} which deals with number-typed data.
  */
 declare class NumberField<
-  Options extends NumberFieldOptions<
-    DataField.AssignmentType<NumberField.BaseAssignmentType, NumberField.MergedOptions<Options>>,
-    DataField.InitializedType<number, NumberField.MergedOptions<Options>>
-  > = NumberField.DefaultOptions,
-  AssignmentType extends DataField.AssignmentType<
-    NumberField.BaseAssignmentType,
-    NumberField.MergedOptions<Options>
-  > = DataField.InferredAssignmentType<NumberField.BaseAssignmentType, NumberField.MergedOptions<Options>>,
-  InitializedType extends DataField.InitializedType<
-    number,
-    NumberField.MergedOptions<Options>
-  > = DataField.InferredInitializedType<number, NumberField.MergedOptions<Options>>,
+  Options extends AnyNumberFieldOptions = NumberField.DefaultOptions,
+  AssignmentType = DataField.InferredAssignmentType<NumberField.BaseAssignmentType, NumberField.MergedOptions<Options>>,
+  InitializedType = DataField.InferredInitializedType<number, NumberField.MergedOptions<Options>>,
   PersistedType = DataField.InitializedType<number, NumberField.MergedOptions<Options>>
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
@@ -649,6 +663,9 @@ declare namespace NumberField {
   type MergedOptions<Options> = SimpleMerge<DefaultOptions, Options>;
 }
 
+/** Any {@link StringFieldOptions}. */
+export type AnyStringFieldOptions = StringFieldOptions<any, any>;
+
 declare global {
   /**
    * @typeParam Value - the type of the value of the field
@@ -674,18 +691,9 @@ declare global {
  * A subclass of [DataField]{@link DataField} which deals with string-typed data.
  */
 declare class StringField<
-  Options extends StringFieldOptions<
-    DataField.AssignmentType<StringField.BaseAssignmentType | AnyDocument, StringField.MergedOptions<Options>>,
-    DataField.InitializedType<string | object | AnyDocument, StringField.MergedOptions<Options>>
-  > = StringField.DefaultOptions,
-  AssignmentType extends DataField.AssignmentType<
-    StringField.BaseAssignmentType | AnyDocument,
-    StringField.MergedOptions<Options>
-  > = DataField.InferredAssignmentType<StringField.BaseAssignmentType, StringField.MergedOptions<Options>>,
-  InitializedType extends DataField.InitializedType<
-    string | object | AnyDocument,
-    StringField.MergedOptions<Options>
-  > = DataField.InferredInitializedType<string | object | AnyDocument, StringField.MergedOptions<Options>>,
+  Options extends AnyStringFieldOptions = StringField.DefaultOptions,
+  AssignmentType = DataField.InferredAssignmentType<StringField.BaseAssignmentType, StringField.MergedOptions<Options>>,
+  InitializedType = DataField.InferredInitializedType<string, StringField.MergedOptions<Options>>,
   PersistedType = DataField.InitializedType<string, StringField.MergedOptions<Options>>
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
@@ -770,18 +778,9 @@ declare namespace StringField {
  * A subclass of [DataField]{@link DataField} which deals with object-typed data.
  */
 declare class ObjectField<
-  Options extends DataFieldOptions<
-    DataField.AssignmentType<object, ObjectField.MergedOptions<Options>>,
-    DataField.InitializedType<object, ObjectField.MergedOptions<Options>>
-  > = ObjectField.DefaultOptions,
-  AssignmentType extends DataField.AssignmentType<
-    object,
-    ObjectField.MergedOptions<Options>
-  > = DataField.InferredAssignmentType<object, ObjectField.MergedOptions<Options>>,
-  InitializedType extends DataField.InitializedType<
-    object,
-    ObjectField.MergedOptions<Options>
-  > = DataField.InferredInitializedType<object, ObjectField.MergedOptions<Options>>,
+  Options extends AnyDataFieldOptions = ObjectField.DefaultOptions,
+  AssignmentType = DataField.InferredAssignmentType<object, ObjectField.MergedOptions<Options>>,
+  InitializedType = DataField.InferredInitializedType<object, ObjectField.MergedOptions<Options>>,
   PersistedType = DataField.InitializedType<object, ObjectField.MergedOptions<Options>>
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
@@ -829,28 +828,13 @@ declare class ArrayField<
   ElementFieldType extends AnyDataField | typeof Document,
   AssignmentElementType,
   InitializedElementType,
-  Options extends DataFieldOptions<
-    DataField.AssignmentType<
-      ArrayField.BaseAssignmentType<AssignmentElementType>,
-      ArrayField.MergedOptions<AssignmentElementType, Options>
-    >,
-    DataField.InitializedType<
-      ArrayField.BaseInitializedType<InitializedElementType>,
-      ArrayField.MergedOptions<InitializedElementType, Options>
-    >
-  > = ArrayField.DefaultOptions<InitializedElementType>,
-  AssignmentType extends DataField.AssignmentType<
-    ArrayField.BaseAssignmentType<AssignmentElementType>,
-    ArrayField.MergedOptions<AssignmentElementType, Options>
-  > = DataField.InferredAssignmentType<
+  Options extends AnyDataFieldOptions = ArrayField.DefaultOptions<InitializedElementType>,
+  AssignmentType = DataField.InferredAssignmentType<
     ArrayField.BaseAssignmentType<AssignmentElementType>,
     ArrayField.MergedOptions<AssignmentElementType, Options>
   >,
-  InitializedType extends DataField.InitializedType<
-    ArrayField.BaseInitializedType<InitializedElementType>,
-    ArrayField.MergedOptions<InitializedElementType, Options>
-  > = DataField.InferredInitializedType<
-    ArrayField.BaseInitializedType<InitializedElementType>,
+  InitializedType = DataField.InferredInitializedType<
+    InitializedElementType[],
     ArrayField.MergedOptions<InitializedElementType, Options>
   >,
   PersistedElementType = InitializedElementType,
@@ -927,12 +911,6 @@ declare namespace ArrayField {
     | AssignmentElementType[]
     | AssignmentElementType;
 
-  /** The base initialized type for the {@link ArrayField} class. */
-  type BaseInitializedType<InitializedElementType> =
-    | InitializedElementType[]
-    | Set<InitializedElementType>
-    | Collection<InitializedElementType>;
-
   /** The type of the default options for the {@link ArrayField} class. */
   type DefaultOptions<InitializedElementType> = SimpleMerge<
     DataField.DefaultOptions,
@@ -955,24 +933,12 @@ declare class SetField<
   ElementFieldType extends AnyDataField,
   AssignmentElementType,
   InitializedElementType,
-  Options extends DataFieldOptions<
-    DataField.AssignmentType<
-      ArrayField.BaseAssignmentType<AssignmentElementType>,
-      SetField.MergedOptions<AssignmentElementType, Options>
-    >,
-    DataField.InitializedType<Set<InitializedElementType>, SetField.MergedOptions<InitializedElementType, Options>>
-  > = SetField.DefaultOptions<InitializedElementType>,
-  AssignmentType extends DataField.AssignmentType<
-    ArrayField.BaseAssignmentType<AssignmentElementType>,
-    SetField.MergedOptions<AssignmentElementType, Options>
-  > = DataField.InferredAssignmentType<
+  Options extends AnyDataFieldOptions = SetField.DefaultOptions<InitializedElementType>,
+  AssignmentType = DataField.InferredAssignmentType<
     ArrayField.BaseAssignmentType<AssignmentElementType>,
     SetField.MergedOptions<AssignmentElementType, Options>
   >,
-  InitializedType extends DataField.InitializedType<
-    Set<InitializedElementType>,
-    SetField.MergedOptions<InitializedElementType, Options>
-  > = DataField.InferredInitializedType<
+  InitializedType = DataField.InferredInitializedType<
     Set<InitializedElementType>,
     SetField.MergedOptions<InitializedElementType, Options>
   >,
@@ -1008,12 +974,7 @@ declare namespace SetField {
     | Iterable<AssignmentElementType>;
 
   /** The type of the default options for the {@link SetField} class. */
-  type DefaultOptions<InitializedElementType> = SimpleMerge<
-    ArrayField.DefaultOptions<InitializedElementType>,
-    {
-      initial: () => Set<InitializedElementType>; // FIXME: This is not actually true in the options
-    }
-  >;
+  type DefaultOptions<InitializedElementType> = ArrayField.DefaultOptions<InitializedElementType>;
 
   /** A helper type for the given options type merged into the default options of the {@link SetField} class. */
   type MergedOptions<InitializedElementType, Options> = SimpleMerge<DefaultOptions<InitializedElementType>, Options>;
@@ -1024,23 +985,20 @@ declare namespace SetField {
  */
 declare class EmbeddedDataField<
   ModelType extends typeof DataModel,
-  Options extends DataFieldOptions<
-    DataField.AssignmentType<object, EmbeddedDataField.MergedOptions<Options>>,
-    DataField.InitializedType<object, EmbeddedDataField.MergedOptions<Options>>
-  > = EmbeddedDataField.DefaultOptions,
-  AssignmentType extends DataField.AssignmentType<
-    object,
-    EmbeddedDataField.MergedOptions<Options>
-  > = DataField.AssignmentType<object, EmbeddedDataField.MergedOptions<Options>>,
-  InitializedType extends DataField.InitializedType<
-    InstanceType<ModelType>["schema"]["fields"],
-    EmbeddedDataField.MergedOptions<Options>
-  > = DataField.InferredInitializedType<
+  Options extends AnyDataFieldOptions = EmbeddedDataField.DefaultOptions,
+  AssignmentType = DataField.AssignmentType<object, EmbeddedDataField.MergedOptions<Options>>,
+  InitializedType = DataField.InferredInitializedType<
     InstanceType<ModelType>["schema"]["fields"],
     EmbeddedDataField.MergedOptions<Options>
   >,
   PersistedType = DataField.InitializedType<object, EmbeddedDataField.MergedOptions<Options>>
-> extends SchemaField<Options, AssignmentType, InitializedType, PersistedType> {
+> extends SchemaField<
+  InstanceType<ModelType>["schema"]["fields"],
+  Options,
+  AssignmentType,
+  InitializedType,
+  PersistedType
+> {
   /**
    * @param model   - The class of DataModel which should be embedded in this field
    * @param options - Options which configure the behavior of the field
@@ -1077,27 +1035,12 @@ declare class EmbeddedCollectionField<
   ElementFieldType extends typeof Document,
   AssignmentElementType,
   InitializedElementType,
-  Options extends DataFieldOptions<
-    DataField.AssignmentType<
-      ArrayField.BaseAssignmentType<AssignmentElementType>,
-      EmbeddedCollectionField.MergedOptions<InitializedElementType, Options>
-    >,
-    DataField.InitializedType<
-      Collection<InitializedElementType>,
-      EmbeddedCollectionField.MergedOptions<InitializedElementType, Options>
-    >
-  > = EmbeddedCollectionField.DefaultOptions<InitializedElementType>,
-  AssignmentType extends DataField.AssignmentType<
-    ArrayField.BaseAssignmentType<AssignmentElementType>,
-    EmbeddedCollectionField.MergedOptions<InitializedElementType, Options>
-  > = DataField.InferredAssignmentType<
+  Options extends AnyDataFieldOptions = EmbeddedCollectionField.DefaultOptions<InitializedElementType>,
+  AssignmentType = DataField.InferredAssignmentType<
     ArrayField.BaseAssignmentType<AssignmentElementType>,
     EmbeddedCollectionField.MergedOptions<InitializedElementType, Options>
   >,
-  InitializedType extends DataField.InitializedType<
-    Collection<InitializedElementType>,
-    EmbeddedCollectionField.MergedOptions<InitializedElementType, Options>
-  > = DataField.InferredInitializedType<
+  InitializedType = DataField.InferredInitializedType<
     Collection<InitializedElementType>,
     EmbeddedCollectionField.MergedOptions<InitializedElementType, Options>
   >,
@@ -1157,12 +1100,7 @@ declare class EmbeddedCollectionField<
 
 declare namespace EmbeddedCollectionField {
   /** The type of the default options for the {@link EmbeddedCollectionField} class. */
-  type DefaultOptions<InitializedElementType> = SimpleMerge<
-    ArrayField.DefaultOptions<InitializedElementType>,
-    {
-      initial: () => Collection<InitializedElementType>; // FIXME: This is not actually true in the options
-    }
-  >;
+  type DefaultOptions<InitializedElementType> = ArrayField.DefaultOptions<InitializedElementType>;
 
   /**
    * A helper type for the given options type merged into the default options of the {@link EmbeddedCollectionField}
@@ -1176,21 +1114,12 @@ declare namespace EmbeddedCollectionField {
  * The field may be initially null, but it must be non-null when it is saved to the database.
  */
 declare class DocumentIdField<
-  Options extends StringFieldOptions<
-    DataField.AssignmentType<StringField.BaseAssignmentType, DocumentIdField.MergedOptions<Options>>,
-    DataField.InitializedType<string | AnyDocument, DocumentIdField.MergedOptions<Options>>
-  > = DocumentIdField.DefaultOptions,
-  AssignmentType extends DataField.AssignmentType<
-    StringField.BaseAssignmentType | AnyDocument,
-    DocumentIdField.MergedOptions<Options>
-  > = DataField.InferredAssignmentType<
+  Options extends AnyStringFieldOptions = DocumentIdField.DefaultOptions,
+  AssignmentType = DataField.InferredAssignmentType<
     StringField.BaseAssignmentType | AnyDocument,
     DocumentIdField.MergedOptions<Options>
   >,
-  InitializedType extends DataField.InitializedType<
-    string | AnyDocument,
-    DocumentIdField.MergedOptions<Options>
-  > = DataField.InferredInitializedType<string | AnyDocument, DocumentIdField.MergedOptions<Options>>,
+  InitializedType = DataField.InferredInitializedType<string, DocumentIdField.MergedOptions<Options>>,
   PersistedType = DataField.InitializedType<string, DocumentIdField.MergedOptions<Options>>
 > extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
@@ -1248,24 +1177,12 @@ declare namespace DocumentIdField {
  */
 declare class ForeignDocumentField<
   DocumentType extends typeof Document,
-  Options extends StringFieldOptions<
-    DataField.AssignmentType<
-      StringField.BaseAssignmentType | InstanceType<DocumentType>,
-      ForeignDocumentField.MergedOptions<Options>
-    >,
-    DataField.InitializedType<string | InstanceType<DocumentType>, ForeignDocumentField.MergedOptions<Options>>
-  > = ForeignDocumentField.DefaultOptions,
-  AssignmentType extends DataField.AssignmentType<
-    StringField.BaseAssignmentType | InstanceType<DocumentType>,
-    ForeignDocumentField.MergedOptions<Options>
-  > = DataField.InferredAssignmentType<
+  Options extends AnyStringFieldOptions = ForeignDocumentField.DefaultOptions,
+  AssignmentType = DataField.InferredAssignmentType<
     StringField.BaseAssignmentType | InstanceType<DocumentType>,
     ForeignDocumentField.MergedOptions<Options>
   >,
-  InitializedType extends DataField.InitializedType<
-    string | InstanceType<DocumentType>,
-    ForeignDocumentField.MergedOptions<Options>
-  > = DataField.InferredInitializedType<
+  InitializedType = DataField.InferredInitializedType<
     string | InstanceType<DocumentType>,
     ForeignDocumentField.MergedOptions<Options>
   >,
@@ -1325,18 +1242,9 @@ declare namespace ForeignDocumentField {
  */
 declare class SystemDataField<
   DocumentType extends typeof Document,
-  Options extends DataFieldOptions<
-    DataField.AssignmentType<AnyDataModel | object, SystemDataField.MergedOptions<Options>>,
-    DataField.InitializedType<object, SystemDataField.MergedOptions<Options>>
-  > = SystemDataField.DefaultOptions,
-  AssignmentType extends DataField.AssignmentType<
-    AnyDataModel | object,
-    SystemDataField.MergedOptions<Options>
-  > = DataField.InferredAssignmentType<AnyDataModel | object, SystemDataField.MergedOptions<Options>>,
-  InitializedType extends DataField.InitializedType<
-    object,
-    SystemDataField.MergedOptions<Options>
-  > = DataField.InferredInitializedType<object, SystemDataField.MergedOptions<Options>>,
+  Options extends AnyDataFieldOptions = SystemDataField.DefaultOptions,
+  AssignmentType = DataField.InferredAssignmentType<AnyDataModel | object, SystemDataField.MergedOptions<Options>>,
+  InitializedType = DataField.InferredInitializedType<object, SystemDataField.MergedOptions<Options>>,
   PersistedType = DataField.InitializedType<object, SystemDataField.MergedOptions<Options>>
 > extends ObjectField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
@@ -1391,18 +1299,9 @@ declare namespace SystemDataField {
  * A special [StringField]{@link StringField} which records a standardized CSS color string.
  */
 declare class ColorField<
-  Options extends StringFieldOptions<
-    DataField.AssignmentType<StringField.BaseAssignmentType, ColorField.MergedOptions<Options>>,
-    DataField.InitializedType<string, ColorField.MergedOptions<Options>>
-  > = ColorField.DefaultOptions,
-  AssignmentType extends DataField.AssignmentType<
-    string | object,
-    ColorField.MergedOptions<Options>
-  > = DataField.InferredAssignmentType<string | object, ColorField.MergedOptions<Options>>,
-  InitializedType extends DataField.InitializedType<
-    string,
-    ColorField.MergedOptions<Options>
-  > = DataField.InferredInitializedType<string, ColorField.MergedOptions<Options>>,
+  Options extends AnyStringFieldOptions = ColorField.DefaultOptions,
+  AssignmentType = DataField.InferredAssignmentType<string | object, ColorField.MergedOptions<Options>>,
+  InitializedType = DataField.InferredInitializedType<string, ColorField.MergedOptions<Options>>,
   PersistedType = DataField.InitializedType<string, ColorField.MergedOptions<Options>>
 > extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
@@ -1446,6 +1345,9 @@ declare namespace ColorField {
   type MergedOptions<Options> = SimpleMerge<DefaultOptions, Options>;
 }
 
+/** Any {@link FilePathFieldOptions}. */
+export type AnyFilePathFieldOptions = FilePathFieldOptions<any, any>;
+
 declare global {
   /**
    * @typeParam Value  - the type of the value of the field
@@ -1467,18 +1369,12 @@ declare global {
  * A special [StringField]{@link StringField} which records a file path or inline base64 data.
  */
 declare class FilePathField<
-  Options extends FilePathFieldOptions<
-    DataField.AssignmentType<StringField.BaseAssignmentType, FilePathField.MergedOptions<Options>>,
-    DataField.InitializedType<string, FilePathField.MergedOptions<Options>>
-  > = FilePathField.DefaultOptions,
-  AssignmentType extends DataField.AssignmentType<
+  Options extends AnyFilePathFieldOptions = FilePathField.DefaultOptions,
+  AssignmentType = DataField.InferredAssignmentType<
     StringField.BaseAssignmentType,
     FilePathField.MergedOptions<Options>
-  > = DataField.InferredAssignmentType<StringField.BaseAssignmentType, FilePathField.MergedOptions<Options>>,
-  InitializedType extends DataField.InitializedType<
-    string,
-    FilePathField.MergedOptions<Options>
-  > = DataField.InferredInitializedType<string, FilePathField.MergedOptions<Options>>,
+  >,
+  InitializedType = DataField.InferredInitializedType<string, FilePathField.MergedOptions<Options>>,
   PersistedType = DataField.InitializedType<string, FilePathField.MergedOptions<Options>>
 > extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
@@ -1546,18 +1442,9 @@ declare namespace FilePathField {
  * A special [NumberField]{@link NumberField} which represents an angle of rotation in degrees between 0 and 360.
  */
 declare class AngleField<
-  Options extends NumberFieldOptions<
-    DataField.AssignmentType<NumberField.BaseAssignmentType, AngleField.MergedOptions<Options>>,
-    DataField.InitializedType<number, AngleField.MergedOptions<Options>>
-  > = AngleField.DefaultOptions,
-  AssignmentType extends DataField.AssignmentType<
-    NumberField.BaseAssignmentType,
-    AngleField.MergedOptions<Options>
-  > = DataField.InferredAssignmentType<NumberField.BaseAssignmentType, AngleField.MergedOptions<Options>>,
-  InitializedType extends DataField.InitializedType<
-    number,
-    AngleField.MergedOptions<Options>
-  > = DataField.InferredInitializedType<number, AngleField.MergedOptions<Options>>,
+  Options extends AnyNumberFieldOptions = AngleField.DefaultOptions,
+  AssignmentType = DataField.InferredAssignmentType<NumberField.BaseAssignmentType, AngleField.MergedOptions<Options>>,
+  InitializedType = DataField.InferredInitializedType<number, AngleField.MergedOptions<Options>>,
   PersistedType = DataField.InitializedType<number, AngleField.MergedOptions<Options>>
 > extends NumberField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
@@ -1612,18 +1499,9 @@ declare namespace AngleField {
  * A special [NumberField]{@link NumberField} represents a number between 0 and 1.
  */
 declare class AlphaField<
-  Options extends NumberFieldOptions<
-    DataField.AssignmentType<NumberField.BaseAssignmentType, AlphaField.MergedOptions<Options>>,
-    DataField.InitializedType<number, AlphaField.MergedOptions<Options>>
-  > = AlphaField.DefaultOptions,
-  AssignmentType extends DataField.AssignmentType<
-    NumberField.BaseAssignmentType,
-    AlphaField.MergedOptions<Options>
-  > = DataField.InferredAssignmentType<NumberField.BaseAssignmentType, AlphaField.MergedOptions<Options>>,
-  InitializedType extends DataField.InitializedType<
-    number,
-    AlphaField.MergedOptions<Options>
-  > = DataField.InferredInitializedType<number, AlphaField.MergedOptions<Options>>,
+  Options extends AnyNumberFieldOptions = AlphaField.DefaultOptions,
+  AssignmentType = DataField.InferredAssignmentType<NumberField.BaseAssignmentType, AlphaField.MergedOptions<Options>>,
+  InitializedType = DataField.InferredInitializedType<number, AlphaField.MergedOptions<Options>>,
   PersistedType = DataField.InitializedType<number, AlphaField.MergedOptions<Options>>
 > extends NumberField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
@@ -1672,21 +1550,12 @@ declare namespace AlphaField {
  * A special [ObjectField]{@link ObjectField} which captures a mapping of User IDs to Document permission levels.
  */
 declare class DocumentOwnershipField<
-  Options extends DataFieldOptions<
-    DataField.AssignmentType<object, DocumentOwnershipField.MergedOptions<Options>>,
-    DataField.InitializedType<Record<string, DOCUMENT_OWNERSHIP_LEVELS>, DocumentOwnershipField.MergedOptions<Options>>
-  > = DocumentOwnershipField.DefaultOptions,
-  AssignmentType extends DataField.AssignmentType<
-    Record<string, DOCUMENT_OWNERSHIP_LEVELS>,
-    DocumentOwnershipField.MergedOptions<Options>
-  > = DataField.InferredAssignmentType<
+  Options extends AnyDataFieldOptions = DocumentOwnershipField.DefaultOptions,
+  AssignmentType = DataField.InferredAssignmentType<
     Record<string, DOCUMENT_OWNERSHIP_LEVELS>,
     DocumentOwnershipField.MergedOptions<Options>
   >,
-  InitializedType extends DataField.InitializedType<
-    Record<string, DOCUMENT_OWNERSHIP_LEVELS>,
-    DocumentOwnershipField.MergedOptions<Options>
-  > = DataField.InferredInitializedType<
+  InitializedType = DataField.InferredInitializedType<
     Record<string, DOCUMENT_OWNERSHIP_LEVELS>,
     DocumentOwnershipField.MergedOptions<Options>
   >,
@@ -1727,18 +1596,9 @@ declare namespace DocumentOwnershipField {
  * A special [StringField]{@link StringField} which contains serialized JSON data.
  */
 declare class JSONField<
-  Options extends StringFieldOptions<
-    DataField.AssignmentType<StringField.BaseAssignmentType, JSONField.MergedOptions<Options>>,
-    DataField.InitializedType<object, JSONField.MergedOptions<Options>>
-  > = JSONField.DefaultOptions,
-  AssignmentType extends DataField.AssignmentType<
-    string,
-    JSONField.MergedOptions<Options>
-  > = DataField.InferredAssignmentType<string, JSONField.MergedOptions<Options>>,
-  InitializedType extends DataField.InitializedType<
-    object,
-    JSONField.MergedOptions<Options>
-  > = DataField.InferredInitializedType<object, JSONField.MergedOptions<Options>>,
+  Options extends AnyStringFieldOptions = JSONField.DefaultOptions,
+  AssignmentType = DataField.InferredAssignmentType<string, JSONField.MergedOptions<Options>>,
+  InitializedType = DataField.InferredInitializedType<object, JSONField.MergedOptions<Options>>,
   PersistedType = DataField.InitializedType<string, JSONField.MergedOptions<Options>>
 > extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `false` */
@@ -1788,18 +1648,9 @@ declare namespace JSONField {
  * require sanitization of user input.
  */
 declare class HTMLField<
-  Options extends StringFieldOptions<
-    DataField.AssignmentType<StringField.BaseAssignmentType, HTMLField.MergedOptions<Options>>,
-    DataField.InitializedType<string | object | AnyDocument, HTMLField.MergedOptions<Options>>
-  > = HTMLField.DefaultOptions,
-  AssignmentType extends DataField.AssignmentType<
-    StringField.BaseAssignmentType,
-    HTMLField.MergedOptions<Options>
-  > = DataField.InferredAssignmentType<StringField.BaseAssignmentType, HTMLField.MergedOptions<Options>>,
-  InitializedType extends DataField.InitializedType<
-    string | object | AnyDocument,
-    HTMLField.MergedOptions<Options>
-  > = DataField.InferredInitializedType<string | object | AnyDocument, HTMLField.MergedOptions<Options>>,
+  Options extends AnyStringFieldOptions = HTMLField.DefaultOptions,
+  AssignmentType = DataField.InferredAssignmentType<StringField.BaseAssignmentType, HTMLField.MergedOptions<Options>>,
+  InitializedType = DataField.InferredInitializedType<string, HTMLField.MergedOptions<Options>>,
   PersistedType = DataField.InitializedType<string, HTMLField.MergedOptions<Options>>
 > extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
@@ -1832,18 +1683,12 @@ declare namespace HTMLField {
  * A subclass of {@link NumberField} which is used for storing integer sort keys.
  */
 declare class IntegerSortField<
-  Options extends NumberFieldOptions<
-    DataField.AssignmentType<NumberField.BaseAssignmentType, IntegerSortField.MergedOptions<Options>>,
-    DataField.InitializedType<number, IntegerSortField.MergedOptions<Options>>
-  > = IntegerSortField.DefaultOptions,
-  AssignmentType extends DataField.AssignmentType<
+  Options extends AnyNumberFieldOptions = IntegerSortField.DefaultOptions,
+  AssignmentType = DataField.InferredAssignmentType<
     NumberField.BaseAssignmentType,
     IntegerSortField.MergedOptions<Options>
-  > = DataField.InferredAssignmentType<NumberField.BaseAssignmentType, IntegerSortField.MergedOptions<Options>>,
-  InitializedType extends DataField.InitializedType<
-    number,
-    IntegerSortField.MergedOptions<Options>
-  > = DataField.InferredInitializedType<number, IntegerSortField.MergedOptions<Options>>,
+  >,
+  InitializedType = DataField.InferredInitializedType<number, IntegerSortField.MergedOptions<Options>>,
   PersistedType = DataField.InitializedType<number, IntegerSortField.MergedOptions<Options>>
 > extends NumberField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
@@ -1922,20 +1767,11 @@ interface DocumentStatsFieldDataSchema extends DataSchema {
  * @typeParam PersistedType - the type of the persisted value of the field
  */
 declare class DocumentStatsField<
-  Options extends DataFieldOptions<
-    DataField.AssignmentType<Partial<DocumentStats>, DocumentStatsField.MergedOptions<Options>>,
-    DataField.InitializedType<Partial<DocumentStats>, DocumentStatsField.MergedOptions<Options>>
-  > = DocumentStatsField.DefaultOptions,
-  AssignmentType extends DataField.AssignmentType<
-    Partial<DocumentStats>,
-    DocumentStatsField.MergedOptions<Options>
-  > = DataField.InferredAssignmentType<Partial<DocumentStats>, DocumentStatsField.MergedOptions<Options>>,
-  InitializedType extends DataField.InitializedType<
-    DocumentStats,
-    DocumentStatsField.MergedOptions<Options>
-  > = DataField.InferredInitializedType<DocumentStats, DocumentStatsField.MergedOptions<Options>>,
+  Options extends AnyDataFieldOptions = DocumentStatsField.DefaultOptions,
+  AssignmentType = DataField.InferredAssignmentType<Partial<DocumentStats>, DocumentStatsField.MergedOptions<Options>>,
+  InitializedType = DataField.InferredInitializedType<DocumentStats, DocumentStatsField.MergedOptions<Options>>,
   PersistedType = DataField.InitializedType<DocumentStats, DocumentStatsField.MergedOptions<Options>>
-> extends SchemaField<Options, AssignmentType, InitializedType, PersistedType> {
+> extends SchemaField<DocumentStatsFieldDataSchema, Options, AssignmentType, InitializedType, PersistedType> {
   constructor(options?: Options);
 }
 

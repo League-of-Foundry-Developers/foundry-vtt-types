@@ -1,5 +1,5 @@
 import { expectType } from "tsd";
-import type { DataField } from "../../../../../src/foundry/common/data/fields.mjs";
+import type { DataField } from "../../../../../../src/foundry/common/data/fields.mjs";
 
 declare const allOmitted: DataField.AssignmentType<number, {}>;
 expectType<number | null | undefined>(allOmitted);

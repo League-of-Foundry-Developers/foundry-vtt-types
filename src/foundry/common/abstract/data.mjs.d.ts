@@ -1,8 +1,8 @@
-import type { DataField, SchemaField } from "../data/fields.mjs.js";
+import type { AnyDataField, AnySchemaField, UnknownDataField } from "../data/fields.mjs.js";
 
 declare global {
   interface DataSchema {
-    [name: string]: DataField<any>;
+    [name: string]: UnknownDataField;
   }
 
   interface DataValidationOptions {
@@ -20,6 +20,7 @@ declare global {
   }
 }
 
+/** Any {@link DataModel}. */
 export type AnyDataModel = DataModel<any, any, any, any>;
 
 export default DataModel;
@@ -27,7 +28,7 @@ export default DataModel;
  * The abstract base class which defines the data schema contained within a Document.
  */
 declare abstract class DataModel<
-  Schema extends SchemaField<any>,
+  Schema extends AnySchemaField,
   SourceData extends object,
   ConstructorData extends SourceData = SourceData,
   Parent extends AnyDataModel | null = null
@@ -54,7 +55,7 @@ declare abstract class DataModel<
    * The defined and cached Data Schema for all instances of this DataModel.
    * @internal
    */
-  protected static _schema: SchemaField<any>;
+  protected static _schema: AnySchemaField;
 
   /**
    * An immutable reverse-reference to a parent DataModel to which this model belongs.
@@ -76,7 +77,7 @@ declare abstract class DataModel<
   /**
    * Define the data schema for documents of this type.
    */
-  static get schema(): SchemaField<any>;
+  static get schema(): AnySchemaField;
 
   /**
    * Define the data schema for this document instance.
@@ -104,7 +105,7 @@ declare abstract class DataModel<
    * @param options - Additional options which are passed to field cleaning methods
    * @returns The cleaned source data
    */
-  static cleanData(source?: object, options?: Parameters<SchemaField<any>["clean"]>[1]): object;
+  static cleanData(source?: object, options?: Parameters<AnySchemaField["clean"]>[1]): object;
 
   /**
    * Initialize the instance by copying data from the source object to instance attributes.
@@ -229,7 +230,7 @@ declare abstract class DataModel<
    * @throws An error if the update operation was unsuccessful
    */
   static #updateData(
-    schema: SchemaField<any>,
+    schema: AnySchemaField,
     source: object,
     changes: object,
     options: { fallback?: boolean; recursive?: boolean; _backup: object; _collections: unknown[]; _diff: object }
@@ -246,7 +247,7 @@ declare abstract class DataModel<
    */
   static #updateField(
     name: string,
-    field: DataField<any>,
+    field: AnyDataField,
     source: object,
     value: any,
     options: { fallback?: boolean; recursive?: boolean; _collections: unknown[]; _diff: object }
@@ -276,7 +277,7 @@ declare abstract class DataModel<
    * @remarks The generic parameters should fit the DataModel implementation that this method is called on.
    */
   static fromSource<
-    Schema extends SchemaField<any>,
+    Schema extends AnySchemaField,
     SourceData extends object,
     ConstructorData extends SourceData = SourceData
   >(

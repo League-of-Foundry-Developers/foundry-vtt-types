@@ -34,189 +34,155 @@ declare global {
 }
 
 interface LightDataSchema extends DataSchema {
-  alpha: fields.AlphaField;
-  angle: fields.AngleField;
-  bright: fields.NumberField<number | null, number>;
-  color: fields.ColorField;
-  coloration: fields.NumberField<number | null, number>;
-  dim: fields.NumberField<number | null, number>;
-  attenuation: fields.AlphaField;
-  luminosity: fields.NumberField<number>;
-  saturation: fields.NumberField<number>;
-  contrast: fields.NumberField<number>;
-  shadows: fields.NumberField<number>;
-  animation: fields.SchemaField<
-    {
-      type: fields.StringField<string | null | undefined, string | null>;
-      speed: fields.NumberField<number | null, number>;
-      intensity: fields.NumberField<number | null, number>;
-      reverse: fields.BooleanField;
-    },
-    LightAnimationData
-  >;
+  /** An opacity for the emitted light, if any */
+  alpha: fields.AlphaField<{ initial: 0.5; label: "LIGHT.Alpha" }>;
+
+  /** The angle of emission for this point source */
+  angle: fields.AngleField<{ initial: 360; base: 360; label: "LIGHT.Angle" }>;
+
+  /** The allowed radius of bright vision or illumination */
+  bright: fields.NumberField<{ required: true; initial: 0; min: 0; step: 0.01; label: "LIGHT.Bright" }>;
+
+  /** A tint color for the emitted light, if any */
+  color: fields.ColorField<{ label: "LIGHT.Color" }>;
+
+  /** The coloration technique applied in the shader */
+  coloration: fields.NumberField<{
+    required: true;
+    integer: true;
+    initial: 1;
+    label: "LIGHT.ColorationTechnique";
+    hint: "LIGHT.ColorationTechniqueHint";
+  }>;
+
+  /** The allowed radius of dim vision or illumination */
+  dim: fields.NumberField<{ required: true; initial: 0; min: 0; step: 0.01; label: "LIGHT.Dim" }>;
+
+  /** Fade the difference between bright, dim, and dark gradually? */
+  attenuation: fields.AlphaField<{ initial: 0.5; label: "LIGHT.Attenuation"; hint: "LIGHT.AttenuationHint" }>;
+
+  /** The luminosity applied in the shader */
+  luminosity: fields.NumberField<{
+    required: true;
+    nullable: false;
+    initial: 0.5;
+    min: -1;
+    max: 1;
+    label: "LIGHT.Luminosity";
+    hint: "LIGHT.LuminosityHint";
+  }>;
+
+  /** The amount of color saturation this light applies to the background texture */
+  saturation: fields.NumberField<{
+    required: true;
+    nullable: false;
+    initial: 0;
+    min: -1;
+    max: 1;
+    label: "LIGHT.Saturation";
+    hint: "LIGHT.SaturationHint";
+  }>;
+
+  /** The amount of contrast this light applies to the background texture */
+  contrast: fields.NumberField<{
+    required: true;
+    nullable: false;
+    initial: 0;
+    min: -1;
+    max: 1;
+    label: "LIGHT.Contrast";
+    hint: "LIGHT.ContrastHint";
+  }>;
+
+  /** The depth of shadows this light applies to the background texture */
+  shadows: fields.NumberField<{
+    required: true;
+    nullable: false;
+    initial: 0;
+    min: 0;
+    max: 1;
+    label: "LIGHT.Shadows";
+    hint: "LIGHT.ShadowsHint";
+  }>;
+
+  /** An animation configuration for the source */
+  animation: fields.SchemaField<{
+    /**
+     * The animation type which is applied
+     * @defaultValue `null`
+     */
+    type: fields.StringField<{ nullable: true; blank: false; initial: null; label: "LIGHT.AnimationType" }>;
+
+    /**
+     * The speed of the animation, a number between 0 and 10
+     * @defaultValue `5`
+     */
+    speed: fields.NumberField<{
+      required: true;
+      integer: true;
+      initial: 5;
+      min: 0;
+      max: 10;
+      label: "LIGHT.AnimationSpeed";
+      validationError: "Light animation speed must be an integer between 0 and 10";
+    }>;
+
+    /**
+     * The intensity of the animation, a number between 1 and 10
+     * @defaultValue `5`
+     */
+    intensity: fields.NumberField<{
+      required: true;
+      integer: true;
+      initial: 5;
+      min: 0;
+      max: 10;
+      label: "LIGHT.AnimationIntensity";
+      validationError: "Light animation intensity must be an integer between 1 and 10";
+    }>;
+
+    /**
+     * Reverse the direction of animation.
+     * @defaultValue `false`
+     */
+    reverse: fields.BooleanField<{ label: "LIGHT.AnimationReverse" }>;
+  }>;
+
+  /** A darkness range (min and max) for which the source should be active */
   darkness: fields.SchemaField<
     {
-      min: fields.AlphaField;
-      max: fields.AlphaField;
+      min: fields.AlphaField<{ initial: 0 }>;
+      max: fields.AlphaField<{ initial: 1 }>;
     },
-    { min: number; max: number }
+    {
+      label: "LIGHT.DarknessRange";
+      hint: "LIGHT.DarknessRangeHint";
+      validate: (d: { min?: number | null | undefined; max?: number | null | undefined }) => boolean;
+      validationError: "darkness.max may not be less than darkness.min";
+    }
   >;
 }
 
-interface LightDataProperties {
-  /**
-   * An opacity for the emitted light, if any
-   * @defaultValue `0.5`
-   */
-  alpha: number;
+type LightDataConstructorData = fields.SchemaField.AssignmentType<LightDataSchema>;
+type LightDataProperties = fields.SchemaField.InitializedType<LightDataSchema>;
+type LightDataSource = fields.SchemaField.PersistedType<LightDataSchema>;
 
-  /**
-   * The angle of emission for this point source
-   * @defaultValue `360`
-   */
-  angle: number;
+type A = LightDataConstructorData["animation"];
+type a = LightDataConstructorData["darkness"];
+type B = LightDataProperties["animation"];
+type b = LightDataProperties["darkness"];
+type C = LightDataSource["animation"];
+type c = LightDataSource["darkness"];
 
-  /**
-   * The allowed radius of bright vision or illumination
-   * @defaultValue `0`
-   */
-  bright: number;
+type I = LightDataSchema["animation"]["initial"];
+type i = LightDataSchema["darkness"]["initial"];
 
-  /** A tint color for the emitted light, if any */
-  color: string | null | undefined;
-
-  /**
-   * The coloration technique applied in the shader
-   * @defaultValue `1`
-   */
-  coloration: number;
-
-  /**
-   * The allowed radius of dim vision or illumination
-   * @defaultValue `0`
-   */
-  dim: number;
-
-  /**
-   * Fade the difference between bright, dim, and dark gradually?
-   * @defaultValue `0.5`
-   */
-  attenuation: number;
-
-  /**
-   * The luminosity applied in the shader
-   * @defaultValue `0.5`
-   */
-  luminosity: number;
-
-  /**
-   * The amount of color saturation this light applies to the background texture
-   * @defaultValue `0`
-   */
-  saturation: number;
-
-  /**
-   * The amount of contrast this light applies to the background texture
-   * @defaultValue `0`
-   */
-  contrast: number;
-
-  /**
-   * The depth of shadows this light applies to the background texture
-   * @defaultValue `0`
-   */
-  shadows: number;
-
-  /**
-   * An animation configuration for the source
-   */
-  animation: LightAnimationData;
-
-  /**
-   * A darkness range (min and max) for which the source should be active
-   * @defaultValue `{ min: 0; max: 1 }`
-   */
-  darkness: { min: number; max: number };
-}
-
-interface LightDataConstructorData {
-  /**
-   * An opacity for the emitted light, if any
-   * @defaultValue `0.5`
-   */
-  alpha?: number | null | undefined;
-
-  /**
-   * The angle of emission for this point source
-   * @defaultValue `360`
-   */
-  angle?: number | null | undefined;
-
-  /**
-   * The allowed radius of bright vision or illumination
-   * @defaultValue `0`
-   */
-  bright?: number | null | undefined;
-
-  /** A tint color for the emitted light, if any */
-  color?: string | null | undefined;
-
-  /**
-   * The coloration technique applied in the shader
-   * @defaultValue `1`
-   */
-  coloration?: number | null | undefined;
-
-  /**
-   * The allowed radius of dim vision or illumination
-   * @defaultValue `0`
-   */
-  dim?: number | null | undefined;
-
-  /**
-   * Fade the difference between bright, dim, and dark gradually?
-   * @defaultValue `true`
-   */
-  gradual?: boolean | null | undefined;
-
-  /**
-   * The luminosity applied in the shader
-   * @defaultValue `0.5`
-   */
-  luminosity?: number | null | undefined;
-
-  /**
-   * The amount of color saturation this light applies to the background texture
-   * @defaultValue `0`
-   */
-  saturation?: number | null | undefined;
-
-  /**
-   * The amount of contrast this light applies to the background texture
-   * @defaultValue `0`
-   */
-  contrast?: number | null | undefined;
-
-  /**
-   * The depth of shadows this light applies to the background texture
-   * @defaultValue `0`
-   */
-  shadows?: number | null | undefined;
-
-  /**
-   * An animation configuration for the source
-   * @defaultValue `new AnimationData({})`
-   */
-  animation?: AnimationDataConstructorData | null | undefined;
-
-  /**
-   * A darkness range (min and max) for which the source should be active
-   * @defaultValue `new DarknessActivation({})`
-   */
-  darkness?: DarknessActivationConstructorData | null | undefined;
-}
-
-type LightDataSource = PropertiesToSource<LightDataProperties>;
+const foo: LightData;
+type one = typeof foo.alpha;
+type two = typeof foo.coloration;
+type three = typeof foo.animation;
+type four = typeof foo.animation.reverse;
+type five = typeof foo.darkness;
 
 /**
  * A reusable document structure for the internal data used to render the appearance of a light source.
