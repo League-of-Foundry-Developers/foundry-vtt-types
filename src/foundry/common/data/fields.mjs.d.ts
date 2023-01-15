@@ -255,21 +255,58 @@ declare abstract class DataField<
 declare namespace DataField {
   /** A type to infer the possible assignment type to a DataField, based on the options of the field. */
   type AssignmentType<BaseType, Options extends BaseTypeExtendingOptions = BaseTypeExtendingOptions> =
-    | BaseType
-    | (Options["nullable"] extends true
-        ? null
-        : Options["required"] extends true
-        ? undefined extends Options["initial"]
-          ? never
-          : null
-        : null)
-    | (Options["required"] extends false ? undefined : undefined extends Options["initial"] ? never : undefined);
+    | BaseType // Always include the base type
+    | (Options["nullable"] extends true // determine whether null is in the union
+        ? // when nullable, null is always allowed
+          null
+        : // otherwise, it depends on required
+        Options["required"] extends true
+        ? // when required and not nullable, null can only be passed when initial is present
+          "initial" extends keyof Options
+          ? // when initial is present, it depends on its value
+            Options["initial"] extends undefined
+            ? // without initial, null can not be passed
+              never
+            : // with initial, null can be passed as it will be replaced by initial
+              null
+          : // when initial is not in the options, then null can not be passed
+            never
+        : // when not required, null can safely be passed
+          null)
+    | (Options["required"] extends true // determine whether undefined is in the union
+        ? // when required, it depends on initial
+          "initial" extends keyof Options
+          ? // when initial is in the options, it depends on its value
+            Options["initial"] extends undefined
+            ? // when there is no initial, we can not pass undefined, as it is not overwritten by initial
+              never
+            : // when there is an initial, undefined can be passed, as it is overwritten by initial
+              undefined
+          : // when initial is not in the options, then undefined is not allowed
+            never
+        : // when not required, undefined can safely be passed
+          undefined);
 
   /** A type to infer the possible initialized type of a DataField, based on the options of the field. */
   type InitializedType<BaseType, Options extends BaseTypeExtendingOptions = BaseTypeExtendingOptions> =
-    | BaseType
-    | (Options["nullable"] extends true ? null : never)
-    | (Options["required"] extends true ? never : Options["initial"] extends undefined ? undefined : never);
+    | BaseType // Always include the base type
+    | (Options["nullable"] extends true // determine whether null is in the union
+        ? // when nullable, then yes
+          null
+        : // when not nullable, then not
+          never)
+    | (Options["required"] extends true // determine whether undefined is in the union
+        ? never // when required, then not
+        : // otherwise it depends on initial
+        "initial" extends keyof Options
+        ? // when initial is present, it depends on its value
+          Options["initial"] extends undefined
+          ? // if initial is undefined, then undefined is in the union
+            undefined
+          : // when it is something else, then undefined is not in the union
+            never
+        : // when initial is not present, then undefined is in the union
+          undefined);
 
   /** A type to infer the concrete assignment type from the given base and options. */
   type InferredAssignmentType<
