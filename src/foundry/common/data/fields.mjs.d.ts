@@ -376,8 +376,8 @@ declare class SchemaField<
 declare namespace SchemaField {
   /** Get the inferred assignment type for the given DataSchema. */
   type AssignmentType<Schema extends DataSchema> = {
-    [Key in keyof Schema]?: Schema[Key] extends DataField<any, infer AssignType>
-      ? Schema[Key] extends SchemaField<infer SubSchema>
+    [Key in keyof Schema]?: Schema[Key] extends DataField<any, infer AssignType, any, any>
+      ? Schema[Key] extends SchemaField<infer SubSchema, any, any, any, any>
         ? AssignmentType<SubSchema>
         : AssignType
       : never;
@@ -385,8 +385,8 @@ declare namespace SchemaField {
 
   /** Get the inferred initialized type for the given DataSchema. */
   type InitializedType<Schema extends DataSchema> = {
-    [Key in keyof Schema]: Schema[Key] extends DataField<any, any, infer InitType>
-      ? Schema[Key] extends SchemaField<infer SubSchema>
+    [Key in keyof Schema]: Schema[Key] extends DataField<any, any, infer InitType, any>
+      ? Schema[Key] extends SchemaField<infer SubSchema, any, any, any, any>
         ? InitializedType<SubSchema>
         : InitType
       : never;
@@ -395,7 +395,7 @@ declare namespace SchemaField {
   /** Get the inferred persisted type for the given DataSchema. */
   type PersistedType<Schema extends DataSchema> = {
     [Key in keyof Schema]: Schema[Key] extends DataField<any, any, any, infer PersistType>
-      ? Schema[Key] extends SchemaField<infer SubSchema>
+      ? Schema[Key] extends SchemaField<infer SubSchema, any, any, any, any>
         ? PersistedType<SubSchema>
         : PersistType
       : never;
