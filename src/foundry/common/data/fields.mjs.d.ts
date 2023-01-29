@@ -798,12 +798,12 @@ declare namespace ObjectField {
  */
 declare class ArrayField<
   ElementFieldType extends AnyDataField | typeof Document,
-  AssignmentElementType,
-  InitializedElementType,
+  AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
+  InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
   Options extends DataFieldOptions = ArrayField.DefaultOptions<InitializedElementType>,
   AssignmentType = ArrayField.DefaultAssignmentType<AssignmentElementType>,
   InitializedType = ArrayField.DefaultInitializedType<InitializedElementType>,
-  PersistedElementType = InitializedElementType,
+  PersistedElementType = ArrayField.PersistedElementType<ElementFieldType>,
   PersistedType extends
     | PersistedElementType[]
     | null
@@ -887,6 +887,30 @@ declare namespace ArrayField {
     }
   >;
 
+  /** A type to infer the assignment element type of an ArrayField from its ElementType. */
+  type AssignmentElementType<ElementFieldType extends AnyDataField | typeof Document> =
+    ElementFieldType extends DataField<any, infer Assign, any, any>
+      ? Assign
+      : ElementFieldType extends typeof Document<infer Schema extends AnySchemaField, any, any, any, any>
+      ? SchemaField.AssignmentType<Schema["fields"]>
+      : never;
+
+  /** A type to infer the initialized element type of an ArrayField from its ElementType. */
+  type InitializedElementType<ElementFieldType extends AnyDataField | typeof Document> =
+    ElementFieldType extends DataField<any, any, infer Init, any>
+      ? Init
+      : ElementFieldType extends typeof Document<infer Schema extends AnySchemaField, any, any, any, any>
+      ? SchemaField.InitializedType<Schema["fields"]>
+      : never;
+
+  /** A type to infer the initialized element type of an ArrayField from its ElementType. */
+  type PersistedElementType<ElementFieldType extends AnyDataField | typeof Document> =
+    ElementFieldType extends DataField<any, any, any, infer Persist>
+      ? Persist
+      : ElementFieldType extends typeof Document<infer Schema extends AnySchemaField, any, any, any, any>
+      ? SchemaField.PersistedType<Schema["fields"]>
+      : never;
+
   /** The default AssignmentType for the ArrayField class. */
   type DefaultAssignmentType<AssignmentElementType> = BaseAssignmentType<AssignmentElementType> | null | undefined;
 
@@ -908,12 +932,12 @@ declare namespace ArrayField {
  */
 declare class SetField<
   ElementFieldType extends AnyDataField,
-  AssignmentElementType,
-  InitializedElementType,
+  AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
+  InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
   Options extends DataFieldOptions = SetField.DefaultOptions<InitializedElementType>,
   AssignmentType = SetField.DefaultAssignmentType<AssignmentElementType>,
   InitializedType = SetField.DefaultInitializedType<InitializedElementType>,
-  PersistedElementType = InitializedElementType,
+  PersistedElementType = ArrayField.PersistedElementType<ElementFieldType>,
   PersistedType extends PersistedElementType[] | null | undefined = SetField.DefaultPersistedType<PersistedElementType>
 > extends ArrayField<
   ElementFieldType,
@@ -1018,12 +1042,12 @@ declare namespace EmbeddedDataField {
  */
 declare class EmbeddedCollectionField<
   ElementFieldType extends typeof Document,
-  AssignmentElementType,
-  InitializedElementType,
+  AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
+  InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
   Options extends DataFieldOptions = EmbeddedCollectionField.DefaultOptions<InitializedElementType>,
   AssignmentType = EmbeddedCollectionField.DefaultAssignmentType<AssignmentElementType>,
   InitializedType = EmbeddedCollectionField.DefaultInitializedType<InitializedElementType>,
-  PersistedElementType = InitializedElementType,
+  PersistedElementType = ArrayField.PersistedElementType<ElementFieldType>,
   PersistedType extends
     | PersistedElementType[]
     | null
