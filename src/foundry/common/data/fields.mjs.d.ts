@@ -62,9 +62,9 @@ export type UnknownDataField = DataField<DataFieldOptions, unknown, unknown>;
  */
 declare abstract class DataField<
   Options extends DataFieldOptions = DataField.DefaultOptions,
-  AssignmentType = any | null | undefined,
-  InitializedType = unknown | undefined,
-  PersistedType extends unknown | null | undefined = unknown | undefined
+  AssignmentType = DataField.DefaultAssignmentType,
+  InitializedType = DataField.DefaultInitializedType,
+  PersistedType extends unknown | null | undefined = DataField.DefaultPersistedType
 > {
   /**
    * @param options - Options which configure the behavior of the field
@@ -254,6 +254,15 @@ declare namespace DataField {
     validationError: "is not a valid value";
   };
 
+  /** The default AssignmentType for the DataField class. */
+  type DefaultAssignmentType = any | null | undefined;
+
+  /** The default InitializedType for the DataField class. */
+  type DefaultInitializedType = unknown | undefined;
+
+  /** The default PersistedType for the DataField class. */
+  type DefaultPersistedType = unknown | undefined;
+
   /** An interface for the options of the {@link DataField} clean functions. */
   interface CleanOptions {
     /** Whether to perform partial cleaning? */
@@ -286,9 +295,9 @@ export type AnySchemaField = SchemaField<any>;
 declare class SchemaField<
   Fields extends DataSchema,
   Options extends DataFieldOptions = SchemaField.DefaultOptions,
-  AssignmentType = object | null | undefined,
-  InitializedType = object,
-  PersistedType extends object | null | undefined = object
+  AssignmentType = SchemaField.DefaultAssignmentType,
+  InitializedType = SchemaField.DefaultInitializedType,
+  PersistedType extends object | null | undefined = SchemaField.DefaultPersistedType
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param fields  - The contained field definitions
@@ -410,21 +419,30 @@ declare namespace SchemaField {
       initial: object;
     }
   >;
+
+  /** The default AssignmentType for the SchemaField class. */
+  type DefaultAssignmentType = object | null | undefined;
+
+  /** The default InitializedType for the SchemaField class. */
+  type DefaultInitializedType = object;
+
+  /** The default PersistedType for the SchemaField class. */
+  type DefaultPersistedType = object;
 }
 
 /**
  * A subclass of [DataField]{@link DataField} which deals with boolean-typed data.
  * @remarks
  * Defaults:
- * AssignmentType: `BooleanField.BaseAssignmentType | null | undefined`
+ * AssignmentType: `boolean | null | undefined`
  * InitializedType: `boolean`
  * PersistedType: `boolean`
  */
 declare class BooleanField<
   Options extends DataFieldOptions = BooleanField.DefaultOptions,
-  AssignmentType = BooleanField.BaseAssignmentType | null | undefined,
-  InitializedType = boolean,
-  PersistedType extends boolean | null | undefined = boolean
+  AssignmentType = BooleanField.DefaultAssignmentType,
+  InitializedType = BooleanField.DefaultInitializedType,
+  PersistedType extends boolean | null | undefined = BooleanField.DefaultPersistedType
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override required: boolean;
@@ -446,12 +464,6 @@ declare class BooleanField<
 }
 
 declare namespace BooleanField {
-  /**
-   * The base assignment type for the {@link BooleanField} class.
-   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean#boolean_coercion
-   */
-  type BaseAssignmentType = boolean | number | object | string;
-
   /** The type of the default options for the {@link BooleanField} class. */
   type DefaultOptions = SimpleMerge<
     DataField.DefaultOptions,
@@ -461,6 +473,15 @@ declare namespace BooleanField {
       initial: boolean;
     }
   >;
+
+  /** The default AssignmentType for the BooleanField class. */
+  type DefaultAssignmentType = boolean | null | undefined;
+
+  /** The default InitializedType for the BooleanField class. */
+  type DefaultInitializedType = boolean;
+
+  /** The default PersistedType for the BooleanField class. */
+  type DefaultPersistedType = boolean;
 }
 
 declare global {
@@ -499,15 +520,15 @@ declare global {
  * A subclass of [DataField]{@link DataField} which deals with number-typed data.
  * @remarks
  * Defaults:
- * AssignmentType: `NumberField.BaseAssignmentType | null | undefined`
+ * AssignmentType: `number | null | undefined`
  * InitializedType: `number | null`
  * PersistedType: `number | null`
  */
 declare class NumberField<
   Options extends NumberFieldOptions = NumberField.DefaultOptions,
-  AssignmentType = NumberField.BaseAssignmentType | null | undefined,
-  InitializedType = number | null,
-  PersistedType extends number | null | undefined = number | null
+  AssignmentType = NumberField.DefaultAssignmentType,
+  InitializedType = NumberField.DefaultInitializedType,
+  PersistedType extends number | null | undefined = NumberField.DefaultPersistedType
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param options - Options which configure the behavior of the field
@@ -578,12 +599,6 @@ declare class NumberField<
 }
 
 declare namespace NumberField {
-  /**
-   * The base assignment type for the {@link NumberField} class.
-   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number#number_coercion
-   */
-  type BaseAssignmentType = number | boolean | string | BigInt | object;
-
   /** The type of the default options for the {@link NumberField} class. */
   type DefaultOptions = SimpleMerge<
     DataField.DefaultOptions,
@@ -598,12 +613,18 @@ declare namespace NumberField {
       choices: undefined;
     }
   >;
+
+  /** The default AssignmentType for the NumberField class. */
+  type DefaultAssignmentType = number | null | undefined;
+
+  /** The default InitializedType for the NumberField class. */
+  type DefaultInitializedType = number | null;
+
+  /** The default PersistedType for the NumberField class. */
+  type DefaultPersistedType = number | null;
 }
 
 declare global {
-  /**
-   * @typeParam Value - the type of the value of the field
-   */
   interface StringFieldOptions extends DataFieldOptions {
     /** Is the string allowed to be blank (empty)? */
     blank?: boolean;
@@ -624,15 +645,15 @@ declare global {
  * A subclass of [DataField]{@link DataField} which deals with string-typed data.
  * @remarks
  * Defaults:
- * AssignmentType: `StringField.BaseAssignmentType | null | undefined`
+ * AssignmentType: `string | null | undefined`
  * InitializedType: `string`
  * PersistedType: `string`
  */
 declare class StringField<
   Options extends StringFieldOptions = StringField.DefaultOptions,
-  AssignmentType = StringField.BaseAssignmentType | null | undefined,
-  InitializedType = string,
-  PersistedType extends string | null | undefined = string
+  AssignmentType = StringField.DefaultAssignmentType,
+  InitializedType = StringField.DefaultInitializedType,
+  PersistedType extends string | null | undefined = StringField.DefaultPersistedType
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param options - Options which configure the behavior of the field
@@ -687,12 +708,6 @@ declare class StringField<
 }
 
 declare namespace StringField {
-  /**
-   * The base assignment type for the {@link StringField} class.
-   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String#string_coercion
-   */
-  type BaseAssignmentType = string | boolean | number | BigInt | symbol | object;
-
   /** The type of the default options for the {@link StringField} class. */
   type DefaultOptions = SimpleMerge<
     DataField.DefaultOptions,
@@ -704,6 +719,15 @@ declare namespace StringField {
       choices: undefined;
     }
   >;
+
+  /** The default AssignmentType for the StringField class. */
+  type DefaultAssignmentType = string | null | undefined;
+
+  /** The default InitializedType for the StringField class. */
+  type DefaultInitializedType = string;
+
+  /** The default PersistedType for the StringField class. */
+  type DefaultPersistedType = string;
 }
 
 /**
@@ -716,9 +740,9 @@ declare namespace StringField {
  */
 declare class ObjectField<
   Options extends DataFieldOptions = ObjectField.DefaultOptions,
-  AssignmentType = object | null | undefined,
-  InitializedType = object,
-  PersistedType extends object | null | undefined = object
+  AssignmentType = ObjectField.DefaultAssignmentType,
+  InitializedType = ObjectField.DefaultInitializedType,
+  PersistedType extends object | null | undefined = ObjectField.DefaultPersistedType
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override required: boolean;
@@ -753,6 +777,15 @@ declare namespace ObjectField {
       initial: () => object;
     }
   >;
+
+  /** The default AssignmentType for the ObjectField class. */
+  type DefaultAssignmentType = object | null | undefined;
+
+  /** The default InitializedType for the ObjectField class. */
+  type DefaultInitializedType = object;
+
+  /** The default PersistedType for the ObjectField class. */
+  type DefaultPersistedType = object;
 }
 
 /**
@@ -768,10 +801,13 @@ declare class ArrayField<
   AssignmentElementType,
   InitializedElementType,
   Options extends DataFieldOptions = ArrayField.DefaultOptions<InitializedElementType>,
-  AssignmentType = ArrayField.BaseAssignmentType<AssignmentElementType> | null | undefined,
-  InitializedType = InitializedElementType[],
+  AssignmentType = ArrayField.DefaultAssignmentType<AssignmentElementType>,
+  InitializedType = ArrayField.DefaultInitializedType<InitializedElementType>,
   PersistedElementType = InitializedElementType,
-  PersistedType extends PersistedElementType[] | null | undefined = PersistedElementType[]
+  PersistedType extends
+    | PersistedElementType[]
+    | null
+    | undefined = ArrayField.DefaultPersistedType<PersistedElementType>
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param element - A DataField instance which defines the type of element contained in the Array.
@@ -850,6 +886,15 @@ declare namespace ArrayField {
       initial: () => InitializedElementType[];
     }
   >;
+
+  /** The default AssignmentType for the ArrayField class. */
+  type DefaultAssignmentType<AssignmentElementType> = BaseAssignmentType<AssignmentElementType> | null | undefined;
+
+  /** The default InitializedType for the ArrayField class. */
+  type DefaultInitializedType<InitializedElementType> = InitializedElementType[];
+
+  /** The default PersistedType for the ArrayField class. */
+  type DefaultPersistedType<PersistedElementType> = PersistedElementType[];
 }
 
 /**
@@ -857,7 +902,7 @@ declare namespace ArrayField {
  * Elements in this set are treated as fungible and may be represented in any order or discarded if invalid.
  * @remarks
  * Defaults:
- * AssignmentType: `ArrayField.BaseAssignmentType<AssignmentElementType> | null | undefined`
+ * AssignmentType: `SetField.BaseAssignmentType<AssignmentElementType> | null | undefined`
  * InitializedType: `Set<InitializedElementType>`
  * PersistedType: `PersistedElementType[]`
  */
@@ -866,10 +911,10 @@ declare class SetField<
   AssignmentElementType,
   InitializedElementType,
   Options extends DataFieldOptions = SetField.DefaultOptions<InitializedElementType>,
-  AssignmentType = ArrayField.BaseAssignmentType<AssignmentElementType> | null | undefined,
-  InitializedType = Set<InitializedElementType>,
+  AssignmentType = SetField.DefaultAssignmentType<AssignmentElementType>,
+  InitializedType = SetField.DefaultInitializedType<InitializedElementType>,
   PersistedElementType = InitializedElementType,
-  PersistedType extends PersistedElementType[] | null | undefined = PersistedElementType[]
+  PersistedType extends PersistedElementType[] | null | undefined = SetField.DefaultPersistedType<PersistedElementType>
 > extends ArrayField<
   ElementFieldType,
   AssignmentElementType,
@@ -898,6 +943,15 @@ declare namespace SetField {
 
   /** The type of the default options for the {@link SetField} class. */
   type DefaultOptions<InitializedElementType> = ArrayField.DefaultOptions<InitializedElementType>;
+
+  /** The default AssignmentType for the SetField class. */
+  type DefaultAssignmentType<AssignmentElementType> = BaseAssignmentType<AssignmentElementType> | null | undefined;
+
+  /** The default InitializedType for the SetField class. */
+  type DefaultInitializedType<InitializedElementType> = Set<InitializedElementType>;
+
+  /** The default PersistedType for the SetField class. */
+  type DefaultPersistedType<PersistedElementType> = PersistedElementType[];
 }
 
 /**
@@ -911,9 +965,9 @@ declare namespace SetField {
 declare class EmbeddedDataField<
   ModelType extends typeof DataModel,
   Options extends DataFieldOptions = EmbeddedDataField.DefaultOptions,
-  AssignmentType = object | null | undefined,
-  InitializedType = InstanceType<ModelType>["schema"]["fields"],
-  PersistedType extends object | null | undefined = object
+  AssignmentType = EmbeddedDataField.DefaultAssignmentType,
+  InitializedType = EmbeddedDataField.DefaultInitializedType<ModelType>,
+  PersistedType extends object | null | undefined = EmbeddedDataField.DefaultPersistedType
 > extends SchemaField<
   InstanceType<ModelType>["schema"]["fields"],
   Options,
@@ -942,6 +996,15 @@ declare class EmbeddedDataField<
 declare namespace EmbeddedDataField {
   /** The type of the default options for the {@link EmbeddedDataField} class. */
   type DefaultOptions = SchemaField.DefaultOptions;
+
+  /** The default AssignmentType for the EmbeddedDataField class. */
+  type DefaultAssignmentType = object | null | undefined;
+
+  /** The default InitializedType for the EmbeddedDataField class. */
+  type DefaultInitializedType<ModelType extends typeof DataModel> = InstanceType<ModelType>["schema"]["fields"];
+
+  /** The default PersistedType for the EmbeddedDataField class. */
+  type DefaultPersistedType = object;
 }
 
 /**
@@ -958,10 +1021,13 @@ declare class EmbeddedCollectionField<
   AssignmentElementType,
   InitializedElementType,
   Options extends DataFieldOptions = EmbeddedCollectionField.DefaultOptions<InitializedElementType>,
-  AssignmentType = ArrayField.BaseAssignmentType<AssignmentElementType> | null | undefined,
-  InitializedType = Collection<InitializedElementType>,
+  AssignmentType = EmbeddedCollectionField.DefaultAssignmentType<AssignmentElementType>,
+  InitializedType = EmbeddedCollectionField.DefaultInitializedType<InitializedElementType>,
   PersistedElementType = InitializedElementType,
-  PersistedType extends PersistedElementType[] | null | undefined = PersistedElementType[]
+  PersistedType extends
+    | PersistedElementType[]
+    | null
+    | undefined = EmbeddedCollectionField.DefaultPersistedType<PersistedElementType>
 > extends ArrayField<
   ElementFieldType,
   AssignmentElementType,
@@ -1014,6 +1080,18 @@ declare class EmbeddedCollectionField<
 declare namespace EmbeddedCollectionField {
   /** The type of the default options for the {@link EmbeddedCollectionField} class. */
   type DefaultOptions<InitializedElementType> = ArrayField.DefaultOptions<InitializedElementType>;
+
+  /** The default AssignmentType for the EmbeddedCollectionField class. */
+  type DefaultAssignmentType<AssignmentElementType> =
+    | ArrayField.BaseAssignmentType<AssignmentElementType>
+    | null
+    | undefined;
+
+  /** The default InitializedType for the EmbeddedCollectionField class. */
+  type DefaultInitializedType<InitializedElementType> = Collection<InitializedElementType>;
+
+  /** The default PersistedType for the EmbeddedCollectionField class. */
+  type DefaultPersistedType<PersistedElementType> = PersistedElementType[];
 }
 
 /**
@@ -1021,15 +1099,15 @@ declare namespace EmbeddedCollectionField {
  * The field may be initially null, but it must be non-null when it is saved to the database.
  * @remarks
  * Defaults:
- * AssignmentType: `StringField.BaseAssignmentType | AnyDocument | null | undefined`
+ * AssignmentType: `string | AnyDocument | null | undefined`
  * InitializedType: `string | null`
  * PersistedType: `string | null`
  */
 declare class DocumentIdField<
   Options extends StringFieldOptions = DocumentIdField.DefaultOptions,
-  AssignmentType = StringField.BaseAssignmentType | AnyDocument | null | undefined,
-  InitializedType = string | null,
-  PersistedType extends string | null | undefined = string | null
+  AssignmentType = DocumentIdField.DefaultAssignmentType,
+  InitializedType = DocumentIdField.DefaultInitializedType,
+  PersistedType extends string | null | undefined = DocumentIdField.DefaultPersistedType
 > extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override required: boolean;
@@ -1072,6 +1150,15 @@ declare namespace DocumentIdField {
       validationError: "is not a valid Document ID string";
     }
   >;
+
+  /** The default AssignmentType for the DocumentIdField class. */
+  type DefaultAssignmentType = string | AnyDocument | null | undefined;
+
+  /** The default InitializedType for the DocumentIdField class. */
+  type DefaultInitializedType = string | null;
+
+  /** The default PersistedType for the DocumentIdField class. */
+  type DefaultPersistedType = string | null;
 }
 
 /**
@@ -1079,22 +1166,24 @@ declare namespace DocumentIdField {
  * This field may also be null to indicate that no foreign model is linked.
  * @remarks
  * Defaults:
- * AssignmentType: `StringField.BaseAssignmentType | InstanceType<DocumentType> | null | undefined`
+ * AssignmentType: `string | InstanceType<DocumentType> | null | undefined`
  * InitializedType: `InstanceType<DocumentType> | null`
  * PersistedType: `string | null`
  */
 declare class ForeignDocumentField<
   DocumentType extends typeof Document,
-  Options extends StringFieldOptions = ForeignDocumentField.DefaultOptions,
-  AssignmentType = StringField.BaseAssignmentType | InstanceType<DocumentType> | null | undefined,
-  InitializedType = InstanceType<DocumentType> | null,
-  PersistedType extends string | null | undefined = string | null
+  Options extends ForeignDocumentField.Options = ForeignDocumentField.DefaultOptions,
+  AssignmentType = ForeignDocumentField.DefaultAssignmentType<DocumentType>,
+  InitializedType = Options["idOnly"] extends true
+    ? ForeignDocumentField.IdOnlyInitializedType
+    : ForeignDocumentField.DefaultInitializedType<DocumentType>,
+  PersistedType extends string | null | undefined = ForeignDocumentField.DefaultPersistedType
 > extends DocumentIdField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param model   - The foreign DataModel class definition which this field should link to.
    * @param options - Options which configure the behavior of the field
    */
-  constructor(model: DocumentType, options?: Options & { idOnly?: boolean });
+  constructor(model: DocumentType, options?: Options);
 
   /** @defaultValue `true` */
   override nullable: boolean;
@@ -1120,6 +1209,10 @@ declare class ForeignDocumentField<
 }
 
 declare namespace ForeignDocumentField {
+  interface Options extends StringFieldOptions {
+    idOnly?: boolean;
+  }
+
   /** The type of the default options for the {@link ForeignDocumentField} class. */
   type DefaultOptions = SimpleMerge<
     DocumentIdField.DefaultOptions,
@@ -1129,22 +1222,38 @@ declare namespace ForeignDocumentField {
       idOnly: false;
     }
   >;
+
+  /** The default AssignmentType for the ForeignDocumentField class. */
+  type DefaultAssignmentType<DocumentType extends typeof Document> =
+    | string
+    | InstanceType<DocumentType>
+    | null
+    | undefined;
+
+  /** The default InitializedType for the ForeignDocumentField class. */
+  type DefaultInitializedType<DocumentType extends typeof Document> = InstanceType<DocumentType> | null;
+
+  /** The idOnly InitializedType for the ForeignDocumentField class. */
+  type IdOnlyInitializedType = string | null;
+
+  /** The default PersistedType for the ForeignDocumentField class. */
+  type DefaultPersistedType = string | null;
 }
 
 /**
  * A subclass of [ObjectField]{@link ObjectField} which supports a system-level data object.
  * @remarks
  * Defaults:
- * AssignmentType: `AnyDataModel | object | null | undefined`
+ * AssignmentType: `object | AnyDataModel | null | undefined`
  * InitializedType: `object`
  * PersistedType: `object`
  */
 declare class SystemDataField<
   DocumentType extends typeof Document,
   Options extends DataFieldOptions = SystemDataField.DefaultOptions,
-  AssignmentType = AnyDataModel | object | null | undefined,
-  InitializedType = object,
-  PersistedType extends object | null | undefined = object
+  AssignmentType = SystemDataField.DefaultAssignmentType,
+  InitializedType = SystemDataField.DefaultInitializedType,
+  PersistedType extends object | null | undefined = SystemDataField.DefaultPersistedType
 > extends ObjectField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param document - The base document class which belongs in this field
@@ -1189,21 +1298,30 @@ declare namespace SystemDataField {
       required: true;
     }
   >;
+
+  /** The default AssignmentType for the SystemDataField class. */
+  type DefaultAssignmentType = object | AnyDataModel | null | undefined;
+
+  /** The default InitializedType for the SystemDataField class. */
+  type DefaultInitializedType = object;
+
+  /** The default PersistedType for the SystemDataField class. */
+  type DefaultPersistedType = object;
 }
 
 /**
  * A special [StringField]{@link StringField} which records a standardized CSS color string.
  * @remarks
  * Defaults:
- * AssignmentType: `string | object | null | undefined`
+ * AssignmentType: `string | null | undefined`
  * InitializedType: `string | null`
  * PersistedType: `string | null`
  */
 declare class ColorField<
   Options extends StringFieldOptions = ColorField.DefaultOptions,
-  AssignmentType = string | object | null | undefined,
-  InitializedType = string | null,
-  PersistedType extends string | null | undefined = string | null
+  AssignmentType = ColorField.DefaultAssignmentType,
+  InitializedType = ColorField.DefaultInitializedType,
+  PersistedType extends string | null | undefined = ColorField.DefaultPersistedType
 > extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override nullable: boolean;
@@ -1238,6 +1356,15 @@ declare namespace ColorField {
       validationError: "is not a valid hexadecimal color string";
     }
   >;
+
+  /** The default AssignmentType for the ColorField class. */
+  type DefaultAssignmentType = string | null | undefined;
+
+  /** The default InitializedType for the ColorField class. */
+  type DefaultInitializedType = string | null;
+
+  /** The default PersistedType for the ColorField class. */
+  type DefaultPersistedType = string | null;
 }
 
 declare global {
@@ -1260,15 +1387,15 @@ declare global {
  * A special [StringField]{@link StringField} which records a file path or inline base64 data.
  * @remarks
  * Defaults:
- * AssignmentType: `StringField.BaseAssignmentType | null | undefined`
+ * AssignmentType: `string | null | undefined`
  * InitializedType: `string | null`
  * PersistedType: `string | null`
  */
 declare class FilePathField<
   Options extends FilePathFieldOptions = FilePathField.DefaultOptions,
-  AssignmentType = StringField.BaseAssignmentType | null | undefined,
-  InitializedType = string | null,
-  PersistedType extends string | null | undefined = string | null
+  AssignmentType = FilePathField.DefaultAssignmentType,
+  InitializedType = FilePathField.DefaultInitializedType,
+  PersistedType extends string | null | undefined = FilePathField.DefaultPersistedType
 > extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param options - Options which configure the behavior of the field
@@ -1323,21 +1450,30 @@ declare namespace FilePathField {
       initial: null;
     }
   >;
+
+  /** The default AssignmentType for the FilePathField class. */
+  type DefaultAssignmentType = string | null | undefined;
+
+  /** The default InitializedType for the FilePathField class. */
+  type DefaultInitializedType = string | null;
+
+  /** The default PersistedType for the FilePathField class. */
+  type DefaultPersistedType = string | null;
 }
 
 /**
  * A special [NumberField]{@link NumberField} which represents an angle of rotation in degrees between 0 and 360.
  * @remarks
  * Defaults:
- * AssignmentType: `NumberField.BaseAssignmentType | null | undefined`
+ * AssignmentType: `number | null | undefined`
  * InitializedType: `number`
  * PersistedType: `number`
  */
 declare class AngleField<
   Options extends NumberFieldOptions = AngleField.DefaultOptions,
-  AssignmentType = NumberField.BaseAssignmentType | null | undefined,
-  InitializedType = number,
-  PersistedType extends number | null | undefined = number
+  AssignmentType = AngleField.DefaultAssignmentType,
+  InitializedType = AngleField.DefaultInitializedType,
+  PersistedType extends number | null | undefined = AngleField.DefaultPersistedType
 > extends NumberField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override required: boolean;
@@ -1379,21 +1515,30 @@ declare namespace AngleField {
       validationError: "is not a number between 0 and 360";
     }
   >;
+
+  /** The default AssignmentType for the AngleField class. */
+  type DefaultAssignmentType = number | null | undefined;
+
+  /** The default InitializedType for the AngleField class. */
+  type DefaultInitializedType = number;
+
+  /** The default PersistedType for the AngleField class. */
+  type DefaultPersistedType = number;
 }
 
 /**
  * A special [NumberField]{@link NumberField} represents a number between 0 and 1.
  * @remarks
  * Defaults:
- * AssignmentType: `NumberField.BaseAssignmentType | null | undefined`
+ * AssignmentType: `number | null | undefined`
  * InitializedType: `number`
  * PersistedType: `number`
  */
 declare class AlphaField<
   Options extends NumberFieldOptions = AlphaField.DefaultOptions,
-  AssignmentType = NumberField.BaseAssignmentType | null | undefined,
-  InitializedType = number,
-  PersistedType extends number | null | undefined = number
+  AssignmentType = AlphaField.DefaultAssignmentType,
+  InitializedType = AlphaField.DefaultInitializedType,
+  PersistedType extends number | null | undefined = AlphaField.DefaultPersistedType
 > extends NumberField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override required: boolean;
@@ -1429,19 +1574,33 @@ declare namespace AlphaField {
       validationError: "is not a number between 0 and 1";
     }
   >;
+
+  /** The default AssignmentType for the AlphaField class. */
+  type DefaultAssignmentType = number | null | undefined;
+
+  /** The default InitializedType for the AlphaField class. */
+  type DefaultInitializedType = number;
+
+  /** The default PersistedType for the AlphaField class. */
+  type DefaultPersistedType = number;
 }
 
 /**
  * A special [ObjectField]{@link ObjectField} which captures a mapping of User IDs to Document permission levels.
+ * @remarks
+ * Defaults:
+ * AssignmentType: `Record<string, DOCUMENT_OWNERSHIP_LEVELS> | null | undefined`
+ * InitializedType: `Record<string, DOCUMENT_OWNERSHIP_LEVELS>`
+ * PersistedType: `Record<string, DOCUMENT_OWNERSHIP_LEVELS>`
  */
 declare class DocumentOwnershipField<
   Options extends DataFieldOptions = DocumentOwnershipField.DefaultOptions,
-  AssignmentType = Record<string, DOCUMENT_OWNERSHIP_LEVELS> | null | undefined,
-  InitializedType = Record<string, DOCUMENT_OWNERSHIP_LEVELS>,
-  PersistedType extends Record<string, DOCUMENT_OWNERSHIP_LEVELS> | null | undefined = Record<
-    string,
-    DOCUMENT_OWNERSHIP_LEVELS
-  >
+  AssignmentType = DocumentOwnershipField.DefaultAssignmentType,
+  InitializedType = DocumentOwnershipField.DefaultInitializedType,
+  PersistedType extends
+    | Record<string, DOCUMENT_OWNERSHIP_LEVELS>
+    | null
+    | undefined = DocumentOwnershipField.DefaultPersistedType
 > extends ObjectField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `{"default": DOCUMENT_OWNERSHIP_LEVELS.NONE}` */
   override initial: InitialType<InitializedType>;
@@ -1466,6 +1625,15 @@ declare namespace DocumentOwnershipField {
       validationError: "is not a mapping of user IDs and document permission levels";
     }
   >;
+
+  /** The default AssignmentType for the DocumentOwnershipField class. */
+  type DefaultAssignmentType = Record<string, DOCUMENT_OWNERSHIP_LEVELS> | null | undefined;
+
+  /** The default InitializedType for the DocumentOwnershipField class. */
+  type DefaultInitializedType = Record<string, DOCUMENT_OWNERSHIP_LEVELS>;
+
+  /** The default PersistedType for the DocumentOwnershipField class. */
+  type DefaultPersistedType = Record<string, DOCUMENT_OWNERSHIP_LEVELS>;
 }
 
 /**
@@ -1478,9 +1646,9 @@ declare namespace DocumentOwnershipField {
  */
 declare class JSONField<
   Options extends StringFieldOptions = JSONField.DefaultOptions,
-  AssignmentType = string | null | undefined,
-  InitializedType = object | undefined,
-  PersistedType extends string | null | undefined = string | undefined
+  AssignmentType = JSONField.DefaultAssignmentType,
+  InitializedType = JSONField.DefaultInitializedType,
+  PersistedType extends string | null | undefined = JSONField.DefaultPersistedType
 > extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `false` */
   override blank: boolean;
@@ -1515,6 +1683,15 @@ declare namespace JSONField {
       validationError: "is not a valid JSON string";
     }
   >;
+
+  /** The default AssignmentType for the JSONField class. */
+  type DefaultAssignmentType = string | null | undefined;
+
+  /** The default InitializedType for the JSONField class. */
+  type DefaultInitializedType = object | undefined;
+
+  /** The default PersistedType for the JSONField class. */
+  type DefaultPersistedType = string | undefined;
 }
 
 /**
@@ -1523,15 +1700,15 @@ declare namespace JSONField {
  * require sanitization of user input.
  * @remarks
  * Defaults:
- * AssignmentType: `StringField.BaseAssignmentType | null | undefined`
+ * AssignmentType: `string | null | undefined`
  * InitializedType: `string`
  * PersistedType: `string`
  */
 declare class HTMLField<
   Options extends StringFieldOptions = HTMLField.DefaultOptions,
-  AssignmentType = StringField.BaseAssignmentType | null | undefined,
-  InitializedType = string,
-  PersistedType extends string | null | undefined = string
+  AssignmentType = HTMLField.DefaultAssignmentType,
+  InitializedType = HTMLField.DefaultInitializedType,
+  PersistedType extends string | null | undefined = HTMLField.DefaultPersistedType
 > extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override required: boolean;
@@ -1551,21 +1728,30 @@ declare namespace HTMLField {
       blank: true;
     }
   >;
+
+  /** The default AssignmentType for the HTMLField class. */
+  type DefaultAssignmentType = string | null | undefined;
+
+  /** The default InitializedType for the HTMLField class. */
+  type DefaultInitializedType = string;
+
+  /** The default PersistedType for the HTMLField class. */
+  type DefaultPersistedType = string;
 }
 
 /**
  * A subclass of {@link NumberField} which is used for storing integer sort keys.
  * @remarks
  * Defaults:
- * AssignmentType: `NumberField.BaseAssignmentType | null | undefined`
+ * AssignmentType: `number | null | undefined`
  * InitializedType: `number`
  * PersistedType: `number`
  */
 declare class IntegerSortField<
   Options extends NumberFieldOptions = IntegerSortField.DefaultOptions,
-  AssignmentType = NumberField.BaseAssignmentType | null | undefined,
-  InitializedType = number,
-  PersistedType extends number | null | undefined = number
+  AssignmentType = IntegerSortField.DefaultAssignmentType,
+  InitializedType = IntegerSortField.DefaultInitializedType,
+  PersistedType extends number | null | undefined = IntegerSortField.DefaultPersistedType
 > extends NumberField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override required: boolean;
@@ -1599,6 +1785,15 @@ declare namespace IntegerSortField {
       hint: "FOLDER.DocumentSortHint";
     }
   >;
+
+  /** The default AssignmentType for the IntegerSortField class. */
+  type DefaultAssignmentType = number | null | undefined;
+
+  /** The default InitializedType for the IntegerSortField class. */
+  type DefaultInitializedType = number;
+
+  /** The default PersistedType for the IntegerSortField class. */
+  type DefaultPersistedType = number;
 }
 
 declare global {
@@ -1624,12 +1819,27 @@ declare global {
 }
 
 interface DocumentStatsFieldDataSchema extends DataSchema {
-  systemId: StringField<{ required: true; blank: false; nullable: true; initial: null }>;
-  systemVersion: StringField<{ required: true; blank: false; nullable: true; initial: null }>;
-  coreVersion: StringField<{ required: true; blank: false; nullable: true; initial: null }>;
+  systemId: StringField<
+    { required: true; blank: false; nullable: true; initial: null },
+    StringField.DefaultAssignmentType,
+    StringField.DefaultInitializedType | null,
+    StringField.DefaultPersistedType | null
+  >;
+  systemVersion: StringField<
+    { required: true; blank: false; nullable: true; initial: null },
+    StringField.DefaultAssignmentType,
+    StringField.DefaultInitializedType | null,
+    StringField.DefaultPersistedType | null
+  >;
+  coreVersion: StringField<
+    { required: true; blank: false; nullable: true; initial: null },
+    StringField.DefaultAssignmentType,
+    StringField.DefaultInitializedType | null,
+    StringField.DefaultPersistedType | null
+  >;
   createdTime: NumberField;
   modifiedTime: NumberField;
-  lastModifiedBy: ForeignDocumentField<foundry.documents.BaseUser, { idOnly: true }>;
+  lastModifiedBy: ForeignDocumentField<typeof foundry.documents.BaseUser, { idOnly: true }>;
 }
 
 /**

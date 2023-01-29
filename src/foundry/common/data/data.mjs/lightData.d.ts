@@ -90,9 +90,9 @@ interface LightDataSchema extends DataSchema {
       label: "LIGHT.Luminosity";
       hint: "LIGHT.LuminosityHint";
     },
-    fields.NumberField.BaseAssignmentType | null | undefined,
-    number,
-    number
+    fields.NumberField.DefaultAssignmentType,
+    Exclude<fields.NumberField.DefaultInitializedType, null>,
+    Exclude<fields.NumberField.DefaultPersistedType, null>
   >;
 
   /**
@@ -109,9 +109,9 @@ interface LightDataSchema extends DataSchema {
       label: "LIGHT.Saturation";
       hint: "LIGHT.SaturationHint";
     },
-    fields.NumberField.BaseAssignmentType | null | undefined,
-    number,
-    number
+    fields.NumberField.DefaultAssignmentType,
+    Exclude<fields.NumberField.DefaultInitializedType, null>,
+    Exclude<fields.NumberField.DefaultPersistedType, null>
   >;
 
   /**
@@ -128,9 +128,9 @@ interface LightDataSchema extends DataSchema {
       label: "LIGHT.Contrast";
       hint: "LIGHT.ContrastHint";
     },
-    fields.NumberField.BaseAssignmentType | null | undefined,
-    number,
-    number
+    fields.NumberField.DefaultAssignmentType,
+    Exclude<fields.NumberField.DefaultInitializedType, null>,
+    Exclude<fields.NumberField.DefaultPersistedType, null>
   >;
 
   /**
@@ -147,9 +147,9 @@ interface LightDataSchema extends DataSchema {
       label: "LIGHT.Shadows";
       hint: "LIGHT.ShadowsHint";
     },
-    fields.NumberField.BaseAssignmentType | null | undefined,
-    number,
-    number
+    fields.NumberField.DefaultAssignmentType,
+    Exclude<fields.NumberField.DefaultInitializedType, null>,
+    Exclude<fields.NumberField.DefaultPersistedType, null>
   >;
 
   /** An animation configuration for the source */
@@ -160,9 +160,9 @@ interface LightDataSchema extends DataSchema {
      */
     type: fields.StringField<
       { nullable: true; blank: false; initial: null; label: "LIGHT.AnimationType" },
-      fields.StringField.BaseAssignmentType | null | undefined,
-      string | null,
-      string | null
+      fields.StringField.DefaultAssignmentType,
+      fields.StringField.DefaultInitializedType | null,
+      fields.StringField.DefaultPersistedType | null
     >;
 
     /**
