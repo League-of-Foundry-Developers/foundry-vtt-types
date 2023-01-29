@@ -43,7 +43,7 @@ declare global {
 }
 
 /** Any {@link DataField}. */
-export type AnyDataField = DataField;
+export type AnyDataField = DataField<any, any, any, any>;
 
 /** A {@link DataField} with unknown inner types. */
 export type UnknownDataField = DataField<DataFieldOptions, unknown, unknown>;
@@ -282,7 +282,7 @@ declare namespace DataField {
 }
 
 /** Any {@link SchemaField}. */
-export type AnySchemaField = SchemaField<any>;
+export type AnySchemaField = SchemaField<any, any, any, any, any>;
 
 /**
  * A special class of {@link DataField} which defines a data schema.
