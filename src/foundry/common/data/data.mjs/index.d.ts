@@ -26,6 +26,7 @@ export { SceneData } from "./sceneData";
 export { ShapeData } from "./shapeData";
 export { SettingData } from "./settingData";
 export { TableResultData } from "./tableResultData";
+export { TextureData } from "./textureData";
 export { TileData } from "./tileData";
 export { TokenData } from "./tokenData";
 export { UserData } from "./userData";
