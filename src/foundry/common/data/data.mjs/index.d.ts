@@ -23,6 +23,7 @@ export { PlaylistSoundData } from "./playlistSoundData";
 export { PrototypeTokenData } from "./prototypeTokenData";
 export { RollTableData } from "./rollTableData";
 export { SceneData } from "./sceneData";
+export { ShapeData } from "./shapeData";
 export { SettingData } from "./settingData";
 export { TableResultData } from "./tableResultData";
 export { TileData } from "./tileData";
