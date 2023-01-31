@@ -46,6 +46,11 @@ declare class Dialog<Options extends DialogOptions = DialogOptions> extends Appl
   data: Dialog.Data;
 
   /**
+   * A bound instance of the _onKeyDown method which is used to listen to keypress events while the Dialog is active.
+   */
+  #onKeyDown: (event: KeyboardEvent) => void | Promise<void>;
+
+  /**
    * @defaultValue
    * ```typescript
    * foundry.utils.mergeObject(super.defaultOptions, {
