@@ -77,7 +77,7 @@ declare class Dialog<Options extends DialogOptions = DialogOptions> extends Appl
   protected _onKeyDown(event: KeyboardEvent & { key: "Escape" }): ReturnType<Dialog["close"]>;
   protected _onKeyDown(event: KeyboardEvent): void;
 
-  _renderOuter(): ReturnType<Application["_renderOuter"]>;
+  override _renderOuter(): ReturnType<Application["_renderOuter"]>;
 
   /**
    * Submit the Dialog by selecting one of its buttons
