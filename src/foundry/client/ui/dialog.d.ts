@@ -87,8 +87,9 @@ declare class Dialog<Options extends DialogOptions = DialogOptions> extends Appl
   /**
    * Submit the Dialog by selecting one of its buttons
    * @param button - The configuration of the chosen button
+   * @param event - The originating click event
    */
-  protected submit(button: Dialog.Button): void;
+  protected submit(button: Dialog.Button, event?: MouseEvent): void;
 
   override close(options?: Application.CloseOptions): Promise<void>;
 
@@ -166,7 +167,7 @@ declare namespace Dialog {
     /**
      * A callback function that fires when the button is clicked
      */
-    callback?: (html: JQuery | HTMLElement) => T;
+    callback?: (html: JQuery | HTMLElement, event?: MouseEvent) => T;
   }
 
   interface Data {
