@@ -145,10 +145,33 @@ declare class Dialog<Options extends DialogOptions = DialogOptions> extends Appl
   static prompt<T>(config: PromptConfig<T, HTMLElement> & { options: { jQuery: false } }): Promise<T>;
   static prompt<T>(config: PromptConfig<T, JQuery | HTMLElement> & { rejectClose: false }): Promise<T | null>;
   static prompt<T>(config: PromptConfig<T, JQuery | HTMLElement>): Promise<T>;
+
+  /**
+   * Wrap the Dialog with an enclosing Promise which resolves or rejects when the client makes a choice.
+   * @param data - Data passed to the Dialog constructor
+   * @param options - Options passed to the Dialog constructor
+   * @param renderOptions - Options passed to the Dialog render call
+   * @return A promise which resolves to the dialogs result.
+   */
+  static wait<Options extends DialogOptions = DialogOptions>(
+    data: Dialog.Data<JQuery>,
+    options?: Partial<DialogOptions> & { jQuery?: true },
+    renderOptions?: Application.RenderOptions<Options>
+  ): Promise<unknown>;
+  static wait<Options extends DialogOptions = DialogOptions>(
+    data: Dialog.Data<HTMLElement>,
+    options?: Partial<DialogOptions> & { jQuery?: false },
+    renderOptions?: Application.RenderOptions<Options>
+  ): Promise<unknown>;
+  static wait<Options extends DialogOptions = DialogOptions>(
+    data: Dialog.Data<JQuery | HTMLElement>,
+    options?: Partial<DialogOptions>,
+    renderOptions?: Application.RenderOptions<Options>
+  ): Promise<unknown>;
 }
 
 declare namespace Dialog {
-  interface Button<T = unknown> {
+  interface Button<T = unknown, JQueryOrHtml = JQuery | HTMLElement> {
     /**
      * A Font Awesome icon for the button
      */
@@ -167,10 +190,10 @@ declare namespace Dialog {
     /**
      * A callback function that fires when the button is clicked
      */
-    callback?: (html: JQuery | HTMLElement, event?: MouseEvent) => T;
+    callback?: (html: JQueryOrHtml, event?: MouseEvent) => T;
   }
 
-  interface Data {
+  interface Data<JQueryOrHtml = JQuery | HTMLElement> {
     /**
      * The window title displayed in the dialog header
      */
@@ -184,17 +207,17 @@ declare namespace Dialog {
     /**
      * A callback function invoked when the dialog is rendered
      */
-    render?: (element: JQuery | HTMLElement) => void;
+    render?: (element: JQueryOrHtml) => void;
 
     /**
      * Common callback operations to perform when the dialog is closed
      */
-    close?: (element: JQuery | HTMLElement) => void;
+    close?: (element: JQueryOrHtml) => void;
 
     /**
      * The buttons which are displayed as action choices for the dialog
      */
-    buttons: Record<string, Button>;
+    buttons: Record<string, Button<unknown, JQueryOrHtml>>;
 
     /**
      * The name of the default button which should be triggered on Enter keypress

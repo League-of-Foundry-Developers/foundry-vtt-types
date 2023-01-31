@@ -628,3 +628,55 @@ expectType<Promise<string>>(
     rejectClose: true
   })
 );
+
+expectType<Promise<unknown>>(
+  Dialog.wait({
+    title: title,
+    content: content,
+    buttons: {
+      button: {
+        callback: (jqOrHtml: JQuery | HTMLElement) => {
+          expectType<JQuery | HTMLElement>(jqOrHtml);
+        }
+      }
+    }
+  })
+);
+
+expectType<Promise<unknown>>(
+  Dialog.wait(
+    {
+      title: title,
+      content: content,
+      buttons: {
+        button: {
+          callback: (jq) => {
+            expectType<JQuery>(jq);
+          }
+        }
+      }
+    },
+    {
+      jQuery: true
+    }
+  )
+);
+
+expectType<Promise<unknown>>(
+  Dialog.wait(
+    {
+      title: title,
+      content: content,
+      buttons: {
+        button: {
+          callback: (html) => {
+            expectType<HTMLElement>(html);
+          }
+        }
+      }
+    },
+    {
+      jQuery: false
+    }
+  )
+);
