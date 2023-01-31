@@ -60,7 +60,7 @@ declare class Dialog<Options extends DialogOptions = DialogOptions> extends Appl
 
   override get title(): string;
 
-  override getData(options?: Partial<Options>): MaybePromise<object>;
+  override getData(options?: Partial<Options>): { content: string; buttons: Record<string, Dialog.Button> };
 
   override activateListeners(html: JQuery): void;
 
