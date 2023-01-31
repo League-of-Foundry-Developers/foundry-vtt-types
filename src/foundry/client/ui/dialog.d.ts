@@ -154,6 +154,11 @@ declare namespace Dialog {
     label?: string;
 
     /**
+     * Whether the button is disabled
+     */
+    disabled?: boolean;
+
+    /**
      * A callback function that fires when the button is clicked
      */
     callback?: (html: JQuery | HTMLElement) => T;
