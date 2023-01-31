@@ -58,7 +58,7 @@ declare class Dialog<Options extends DialogOptions = DialogOptions> extends Appl
    */
   static override get defaultOptions(): DialogOptions;
 
-  static get title(): string;
+  override get title(): string;
 
   override getData(options?: Partial<Options>): MaybePromise<object>;
 
