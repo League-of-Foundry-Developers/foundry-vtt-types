@@ -1,5 +1,5 @@
 import { DOCUMENT_PERMISSION_LEVELS } from "../constants.mjs";
-import { hasImageExtension, isColorString, isJSON } from "./validators.mjs";
+import { isColorString, isJSON } from "./validators.mjs";
 import { Document } from "../abstract/module.mjs";
 import { FieldReturnType } from "../../../types/helperTypes";
 
@@ -46,7 +46,7 @@ interface ImageField extends DocumentField<string> {
   type: typeof String;
   required: false;
   nullable: true;
-  validate: typeof hasImageExtension;
+  validate: (path: string) => boolean;
   validationError: '{name} {field} "{value}" does not have a valid image file extension';
 }
 
