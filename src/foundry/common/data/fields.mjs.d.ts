@@ -59,6 +59,7 @@ export type UnknownDataField = DataField<DataFieldOptions, unknown, unknown>;
  * AssignmentType: `any | null | undefined`
  * InitializedType: `unknown | undefined`
  * PersistedType: `unknown | undefined`
+ * InitialValue: `undefined`
  */
 declare abstract class DataField<
   Options extends DataFieldOptions = DataField.DefaultOptions,
@@ -291,6 +292,7 @@ export type AnySchemaField = SchemaField<any, any, any, any, any>;
  * AssignmentType: `object | null | undefined`
  * InitializedType: `object`
  * PersistedType: `object`
+ * InitialValue: `{}`
  */
 declare class SchemaField<
   Fields extends DataSchema,
@@ -437,6 +439,7 @@ declare namespace SchemaField {
  * AssignmentType: `boolean | null | undefined`
  * InitializedType: `boolean`
  * PersistedType: `boolean`
+ * InitialValue: `false`
  */
 declare class BooleanField<
   Options extends DataFieldOptions = BooleanField.DefaultOptions,
@@ -523,6 +526,7 @@ declare global {
  * AssignmentType: `number | null | undefined`
  * InitializedType: `number | null`
  * PersistedType: `number | null`
+ * InitialValue: `null`
  */
 declare class NumberField<
   Options extends NumberFieldOptions = NumberField.DefaultOptions,
@@ -648,6 +652,7 @@ declare global {
  * AssignmentType: `string | null | undefined`
  * InitializedType: `string`
  * PersistedType: `string`
+ * InitialValue: `""`
  */
 declare class StringField<
   Options extends StringFieldOptions = StringField.DefaultOptions,
@@ -737,6 +742,7 @@ declare namespace StringField {
  * AssignmentType: `object | null | undefined`
  * InitializedType: `object`
  * PersistedType: `object`
+ * InitialValue: `{}`
  */
 declare class ObjectField<
   Options extends DataFieldOptions = ObjectField.DefaultOptions,
@@ -795,6 +801,7 @@ declare namespace ObjectField {
  * AssignmentType: `ArrayField.BaseAssignmentType<AssignmentElementType> | null | undefined`
  * InitializedType: `InitializedElementType[]`
  * PersistedType: `PersistedElementType[]`
+ * InitialValue: `[]`
  */
 declare class ArrayField<
   ElementFieldType extends AnyDataField | typeof Document,
@@ -929,6 +936,7 @@ declare namespace ArrayField {
  * AssignmentType: `SetField.BaseAssignmentType<AssignmentElementType> | null | undefined`
  * InitializedType: `Set<InitializedElementType>`
  * PersistedType: `PersistedElementType[]`
+ * InitialValue: `new Set()`
  */
 declare class SetField<
   ElementFieldType extends AnyDataField,
@@ -985,6 +993,7 @@ declare namespace SetField {
  * AssignmentType: `object | null | undefined`
  * InitializedType: `InstanceType<ModelType>["schema"]["fields"]`
  * PersistedType: `object`
+ * InitialValue: `{}`
  */
 declare class EmbeddedDataField<
   ModelType extends typeof DataModel,
@@ -1039,6 +1048,7 @@ declare namespace EmbeddedDataField {
  * AssignmentType: `ArrayField.BaseAssignmentType<AssignmentElementType> | null | undefined`
  * InitializedType: `Collection<InitializedElementType>`
  * PersistedType: `PersistedElementType[]`
+ * InitialValue: `[]`
  */
 declare class EmbeddedCollectionField<
   ElementFieldType extends typeof Document,
@@ -1126,6 +1136,7 @@ declare namespace EmbeddedCollectionField {
  * AssignmentType: `string | AnyDocument | null | undefined`
  * InitializedType: `string | null`
  * PersistedType: `string | null`
+ * InitialValue: `null`
  */
 declare class DocumentIdField<
   Options extends StringFieldOptions = DocumentIdField.DefaultOptions,
@@ -1193,6 +1204,7 @@ declare namespace DocumentIdField {
  * AssignmentType: `string | InstanceType<DocumentType> | null | undefined`
  * InitializedType: `InstanceType<DocumentType> | null`
  * PersistedType: `string | null`
+ * InitialValue: `null`
  */
 declare class ForeignDocumentField<
   DocumentType extends typeof Document,
@@ -1271,6 +1283,7 @@ declare namespace ForeignDocumentField {
  * AssignmentType: `object | AnyDataModel | null | undefined`
  * InitializedType: `object`
  * PersistedType: `object`
+ * InitialValue: `{}`
  */
 declare class SystemDataField<
   DocumentType extends typeof Document,
@@ -1340,6 +1353,7 @@ declare namespace SystemDataField {
  * AssignmentType: `string | null | undefined`
  * InitializedType: `string | null`
  * PersistedType: `string | null`
+ * InitialValue: `null`
  */
 declare class ColorField<
   Options extends StringFieldOptions = ColorField.DefaultOptions,
@@ -1414,6 +1428,7 @@ declare global {
  * AssignmentType: `string | null | undefined`
  * InitializedType: `string | null`
  * PersistedType: `string | null`
+ * InitialValue: `null`
  */
 declare class FilePathField<
   Options extends FilePathFieldOptions = FilePathField.DefaultOptions,
@@ -1492,6 +1507,7 @@ declare namespace FilePathField {
  * AssignmentType: `number | null | undefined`
  * InitializedType: `number`
  * PersistedType: `number`
+ * InitialValue: `0`
  */
 declare class AngleField<
   Options extends NumberFieldOptions = AngleField.DefaultOptions,
@@ -1557,6 +1573,7 @@ declare namespace AngleField {
  * AssignmentType: `number | null | undefined`
  * InitializedType: `number`
  * PersistedType: `number`
+ * InitialValue: `1`
  */
 declare class AlphaField<
   Options extends NumberFieldOptions = AlphaField.DefaultOptions,
@@ -1616,6 +1633,7 @@ declare namespace AlphaField {
  * AssignmentType: `Record<string, DOCUMENT_OWNERSHIP_LEVELS> | null | undefined`
  * InitializedType: `Record<string, DOCUMENT_OWNERSHIP_LEVELS>`
  * PersistedType: `Record<string, DOCUMENT_OWNERSHIP_LEVELS>`
+ * InitialValue: `{ default: DOCUMENT_OWNERSHIP_LEVELS.NONE }`
  */
 declare class DocumentOwnershipField<
   Options extends DataFieldOptions = DocumentOwnershipField.DefaultOptions,
@@ -1667,6 +1685,7 @@ declare namespace DocumentOwnershipField {
  * AssignmentType: `string | null | undefined`
  * InitializedType: `object | undefined`
  * PersistedType: `string | undefined`
+ * InitialValue: `undefined`
  */
 declare class JSONField<
   Options extends StringFieldOptions = JSONField.DefaultOptions,
@@ -1727,6 +1746,7 @@ declare namespace JSONField {
  * AssignmentType: `string | null | undefined`
  * InitializedType: `string`
  * PersistedType: `string`
+ * InitialValue: `""`
  */
 declare class HTMLField<
   Options extends StringFieldOptions = HTMLField.DefaultOptions,
@@ -1770,6 +1790,7 @@ declare namespace HTMLField {
  * AssignmentType: `number | null | undefined`
  * InitializedType: `number`
  * PersistedType: `number`
+ * InitialValue: `0`
  */
 declare class IntegerSortField<
   Options extends NumberFieldOptions = IntegerSortField.DefaultOptions,
@@ -1875,6 +1896,17 @@ interface DocumentStatsFieldDataSchema extends DataSchema {
  * AssignmentType: `Partial<DocumentStats> | null | undefined`
  * InitializedType: `DocumentStats`
  * PersistedType: `object`
+ * InitialValue:
+ * ```javascript
+ * {
+ *   systemId: null,
+ *   systemVersion: null,
+ *   coreVersion: null,
+ *   createdTime: null,
+ *   modifiedTime: null,
+ *   lastModifiedBy: null
+ * }
+ * ```
  */
 declare class DocumentStatsField<
   Options extends DataFieldOptions = DocumentStatsField.DefaultOptions,
