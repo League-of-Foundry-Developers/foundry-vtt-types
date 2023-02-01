@@ -8,6 +8,60 @@ interface DialogOptions extends ApplicationOptions {
   jQuery: boolean;
 }
 
+interface DialogButton<T = unknown, JQueryOrHtml = JQuery | HTMLElement> {
+  /**
+   * A Font Awesome icon for the button
+   */
+  icon?: string;
+
+  /**
+   * The label for the button
+   */
+  label?: string;
+
+  /**
+   * Whether the button is disabled
+   */
+  disabled?: boolean;
+
+  /**
+   * A callback function that fires when the button is clicked
+   */
+  callback?: (html: JQueryOrHtml, event?: MouseEvent) => T;
+}
+
+interface DialogData<JQueryOrHtml = JQuery | HTMLElement> {
+  /**
+   * The window title displayed in the dialog header
+   */
+  title: string;
+
+  /**
+   * HTML content for the dialog form
+   */
+  content: string;
+
+  /**
+   * The buttons which are displayed as action choices for the dialog
+   */
+  buttons: Record<string, DialogButton<unknown, JQueryOrHtml>>;
+
+  /**
+   * The name of the default button which should be triggered on Enter keypress
+   */
+  default?: string | undefined;
+
+  /**
+   * A callback function invoked when the dialog is rendered
+   */
+  render?: (element: JQueryOrHtml) => void;
+
+  /**
+   * Common callback operations to perform when the dialog is closed
+   */
+  close?: (element: JQueryOrHtml) => void;
+}
+
 /**
  * Create a modal dialog window displaying a title, a message, and a set of buttons which trigger callback functions.
  *
@@ -41,20 +95,21 @@ declare class Dialog<Options extends DialogOptions = DialogOptions> extends Appl
    * @param data    - An object of dialog data which configures how the modal window is rendered
    * @param options - Dialog rendering options, see {@link Application}
    */
-  constructor(data: Dialog.Data, options?: Partial<Options>);
+  constructor(data: DialogData, options?: Partial<Options>);
 
-  data: Dialog.Data;
+  data: DialogData;
 
   /**
    * A bound instance of the _onKeyDown method which is used to listen to keypress events while the Dialog is active.
    */
-  #onKeyDown: (event: KeyboardEvent) => void | Promise<void>;
+  #onKeyDown: ((event: KeyboardEvent) => MaybePromise<void>) | undefined;
 
   /**
    * @defaultValue
    * ```typescript
    * foundry.utils.mergeObject(super.defaultOptions, {
    *   template: "templates/hud/dialog.html",
+   *   focus: true,
    *   classes: ["dialog"],
    *   width: 400,
    *   jQuery: true
@@ -65,7 +120,7 @@ declare class Dialog<Options extends DialogOptions = DialogOptions> extends Appl
 
   override get title(): string;
 
-  override getData(options?: Partial<Options>): { content: string; buttons: Record<string, Dialog.Button> };
+  override getData(options?: Partial<Options>): MaybePromise<object>;
 
   override activateListeners(html: JQuery): void;
 
@@ -89,7 +144,7 @@ declare class Dialog<Options extends DialogOptions = DialogOptions> extends Appl
    * @param button - The configuration of the chosen button
    * @param event - The originating click event
    */
-  protected submit(button: Dialog.Button, event?: MouseEvent): void;
+  protected submit(button: DialogButton, event?: MouseEvent): void;
 
   override close(options?: Application.CloseOptions): Promise<void>;
 
@@ -151,79 +206,23 @@ declare class Dialog<Options extends DialogOptions = DialogOptions> extends Appl
    * @param data - Data passed to the Dialog constructor
    * @param options - Options passed to the Dialog constructor
    * @param renderOptions - Options passed to the Dialog render call
-   * @return A promise which resolves to the dialogs result.
+   * @returns A promise which resolves to the dialogs result.
    */
   static wait<Options extends DialogOptions = DialogOptions>(
-    data: Dialog.Data<JQuery>,
+    data: DialogData<JQuery>,
     options?: Partial<DialogOptions> & { jQuery?: true },
     renderOptions?: Application.RenderOptions<Options>
   ): Promise<unknown>;
   static wait<Options extends DialogOptions = DialogOptions>(
-    data: Dialog.Data<HTMLElement>,
+    data: DialogData<HTMLElement>,
     options?: Partial<DialogOptions> & { jQuery?: false },
     renderOptions?: Application.RenderOptions<Options>
   ): Promise<unknown>;
   static wait<Options extends DialogOptions = DialogOptions>(
-    data: Dialog.Data<JQuery | HTMLElement>,
+    data: DialogData<JQuery | HTMLElement>,
     options?: Partial<DialogOptions>,
     renderOptions?: Application.RenderOptions<Options>
   ): Promise<unknown>;
-}
-
-declare namespace Dialog {
-  interface Button<T = unknown, JQueryOrHtml = JQuery | HTMLElement> {
-    /**
-     * A Font Awesome icon for the button
-     */
-    icon?: string;
-
-    /**
-     * The label for the button
-     */
-    label?: string;
-
-    /**
-     * Whether the button is disabled
-     */
-    disabled?: boolean;
-
-    /**
-     * A callback function that fires when the button is clicked
-     */
-    callback?: (html: JQueryOrHtml, event?: MouseEvent) => T;
-  }
-
-  interface Data<JQueryOrHtml = JQuery | HTMLElement> {
-    /**
-     * The window title displayed in the dialog header
-     */
-    title: string;
-
-    /**
-     * HTML content for the dialog form
-     */
-    content: string;
-
-    /**
-     * A callback function invoked when the dialog is rendered
-     */
-    render?: (element: JQueryOrHtml) => void;
-
-    /**
-     * Common callback operations to perform when the dialog is closed
-     */
-    close?: (element: JQueryOrHtml) => void;
-
-    /**
-     * The buttons which are displayed as action choices for the dialog
-     */
-    buttons: Record<string, Button<unknown, JQueryOrHtml>>;
-
-    /**
-     * The name of the default button which should be triggered on Enter keypress
-     */
-    default?: string | undefined;
-  }
 }
 
 /**
