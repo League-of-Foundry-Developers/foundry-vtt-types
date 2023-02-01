@@ -3,7 +3,6 @@ import DocumentData from "../../abstract/data.mjs";
 import * as documents from "../../documents.mjs";
 import * as fields from "../fields.mjs";
 import { ForeignDocumentField } from "../fields.mjs";
-import { isBase64Image } from "../validators.mjs";
 
 interface FogExplorationDataSchema extends DocumentSchema {
   _id: fields.DocumentId;
@@ -14,7 +13,7 @@ interface FogExplorationDataSchema extends DocumentSchema {
     required: true;
     nullable: true;
     default: null;
-    validate: typeof isBase64Image;
+    validate: (data: string) => boolean;
     validationError: "The provided FogExploration explored image is not a valid base64 image string";
   };
   positions: fields.ObjectField;
