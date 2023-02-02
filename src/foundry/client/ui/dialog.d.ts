@@ -8,19 +8,19 @@ declare global {
      * future will become false by default.
      * @defaultValue `true`
      */
-    jQuery: boolean;
+    jQuery?: boolean;
   }
 
   interface DialogButton<T = unknown, JQueryOrHtml = JQuery | HTMLElement> {
     /**
      * A Font Awesome icon for the button
      */
-    icon?: string;
+    icon: string;
 
     /**
      * The label for the button
      */
-    label?: string;
+    label: string;
 
     /**
      * Whether the button is disabled
