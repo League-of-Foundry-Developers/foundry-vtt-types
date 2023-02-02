@@ -170,22 +170,22 @@ declare global {
      * ```
      */
     static confirm<Yes = true, No = false>(
-      config: ConfirmConfig<Yes, No, JQuery> & { options?: { jQuery?: true }; rejectClose: true }
+      config: Dialog.ConfirmConfig<Yes, No, JQuery> & { options?: { jQuery?: true }; rejectClose: true }
     ): Promise<Yes | No>;
     static confirm<Yes = true, No = false>(
-      config: ConfirmConfig<Yes, No, JQuery> & { options?: { jQuery?: true } }
+      config: Dialog.ConfirmConfig<Yes, No, JQuery> & { options?: { jQuery?: true } }
     ): Promise<Yes | No | null>;
     static confirm<Yes = true, No = false>(
-      config: ConfirmConfig<Yes, No, HTMLElement> & { options: { jQuery: false }; rejectClose: true }
+      config: Dialog.ConfirmConfig<Yes, No, HTMLElement> & { options: { jQuery: false }; rejectClose: true }
     ): Promise<Yes | No>;
     static confirm<Yes = true, No = false>(
-      config: ConfirmConfig<Yes, No, HTMLElement> & { options: { jQuery: false } }
+      config: Dialog.ConfirmConfig<Yes, No, HTMLElement> & { options: { jQuery: false } }
     ): Promise<Yes | No | null>;
     static confirm<Yes = true, No = false>(
-      config: ConfirmConfig<Yes, No, JQuery | HTMLElement> & { rejectClose: true }
+      config: Dialog.ConfirmConfig<Yes, No, JQuery | HTMLElement> & { rejectClose: true }
     ): Promise<Yes | No>;
     static confirm<Yes = true, No = false>(
-      config?: ConfirmConfig<Yes, No, JQuery | HTMLElement>
+      config?: Dialog.ConfirmConfig<Yes, No, JQuery | HTMLElement>
     ): Promise<Yes | No | null>;
 
     /**
@@ -194,15 +194,15 @@ declare global {
      * @returns A promise which resolves when clicked, or rejects if closed
      */
     static prompt<T>(
-      config: PromptConfig<T, JQuery> & { options?: { jQuery?: true }; rejectClose: false }
+      config: Dialog.PromptConfig<T, JQuery> & { options?: { jQuery?: true }; rejectClose: false }
     ): Promise<T | null>;
-    static prompt<T>(config: PromptConfig<T, JQuery> & { options?: { jQuery?: true } }): Promise<T>;
+    static prompt<T>(config: Dialog.PromptConfig<T, JQuery> & { options?: { jQuery?: true } }): Promise<T>;
     static prompt<T>(
-      config: PromptConfig<T, HTMLElement> & { options: { jQuery: false }; rejectClose: false }
+      config: Dialog.PromptConfig<T, HTMLElement> & { options: { jQuery: false }; rejectClose: false }
     ): Promise<T | null>;
-    static prompt<T>(config: PromptConfig<T, HTMLElement> & { options: { jQuery: false } }): Promise<T>;
-    static prompt<T>(config: PromptConfig<T, JQuery | HTMLElement> & { rejectClose: false }): Promise<T | null>;
-    static prompt<T>(config: PromptConfig<T, JQuery | HTMLElement>): Promise<T>;
+    static prompt<T>(config: Dialog.PromptConfig<T, HTMLElement> & { options: { jQuery: false } }): Promise<T>;
+    static prompt<T>(config: Dialog.PromptConfig<T, JQuery | HTMLElement> & { rejectClose: false }): Promise<T | null>;
+    static prompt<T>(config: Dialog.PromptConfig<T, JQuery | HTMLElement>): Promise<T>;
 
     /**
      * Wrap the Dialog with an enclosing Promise which resolves or rejects when the client makes a choice.
@@ -228,97 +228,99 @@ declare global {
     ): Promise<unknown>;
   }
 
-  /**
-   * @typeParam Yes          - The value returned by the yes callback
-   * @typeParam No           - The value returned by the no callback
-   * @typeParam JQueryOrHtml - The parameter passed to the callbacks, either JQuery or HTMLElement
-   */
-  interface ConfirmConfig<Yes, No, JQueryOrHtml> {
+  namespace Dialog {
     /**
-     * The confirmation window title
+     * @typeParam Yes          - The value returned by the yes callback
+     * @typeParam No           - The value returned by the no callback
+     * @typeParam JQueryOrHtml - The parameter passed to the callbacks, either JQuery or HTMLElement
      */
-    title?: string;
+    interface ConfirmConfig<Yes, No, JQueryOrHtml> {
+      /**
+       * The confirmation window title
+       */
+      title?: string;
+
+      /**
+       * The confirmation message
+       */
+      content?: string;
+
+      /**
+       * Callback function upon yes
+       */
+      yes?: (html: JQueryOrHtml) => Yes;
+
+      /**
+       * Callback function upon no
+       */
+      no?: (html: JQueryOrHtml) => No;
+
+      /**
+       * A function to call when the dialog is rendered
+       */
+      render?: (html: JQueryOrHtml) => void;
+
+      /**
+       * Make "yes" the default choice?
+       * @defaultValue `true`
+       */
+      defaultYes?: boolean;
+
+      /**
+       * Reject the Promise if the Dialog is closed without making a choice.
+       * @defaultValue `false`
+       */
+      rejectClose?: boolean;
+
+      /**
+       * Additional rendering options passed to the Dialog
+       * @defaultValue `{}`
+       */
+      options?: Partial<DialogOptions>;
+    }
 
     /**
-     * The confirmation message
+     * @typeParam Value        - The value returned by the callback function
+     * @typeParam JQueryOrHtml - The parameter passed to the callbacks, either JQuery or HTMLElement
      */
-    content?: string;
+    interface PromptConfig<Value, JQueryOrHtml> {
+      /**
+       * The confirmation window title
+       */
+      title?: string;
 
-    /**
-     * Callback function upon yes
-     */
-    yes?: (html: JQueryOrHtml) => Yes;
+      /**
+       * The confirmation message
+       */
+      content?: string;
 
-    /**
-     * Callback function upon no
-     */
-    no?: (html: JQueryOrHtml) => No;
+      /**
+       * The confirmation button text
+       */
+      label?: string;
 
-    /**
-     * A function to call when the dialog is rendered
-     */
-    render?: (html: JQueryOrHtml) => void;
+      /**
+       * A callback function to fire when the button is clicked
+       */
+      callback: (html: JQueryOrHtml) => Value;
 
-    /**
-     * Make "yes" the default choice?
-     * @defaultValue `true`
-     */
-    defaultYes?: boolean;
+      /**
+       * A function that fires after the dialog is rendered
+       */
+      render?: (html: JQueryOrHtml) => void;
 
-    /**
-     * Reject the Promise if the Dialog is closed without making a choice.
-     * @defaultValue `false`
-     */
-    rejectClose?: boolean;
+      /**
+       * Reject the promise if the dialog is closed without confirming the
+       * choice, otherwise resolve as null
+       * @defaultValue `true`
+       */
+      rejectClose?: boolean;
 
-    /**
-     * Additional rendering options passed to the Dialog
-     * @defaultValue `{}`
-     */
-    options?: Partial<DialogOptions>;
-  }
-
-  /**
-   * @typeParam Value        - The value returned by the callback function
-   * @typeParam JQueryOrHtml - The parameter passed to the callbacks, either JQuery or HTMLElement
-   */
-  interface PromptConfig<Value, JQueryOrHtml> {
-    /**
-     * The confirmation window title
-     */
-    title?: string;
-
-    /**
-     * The confirmation message
-     */
-    content?: string;
-
-    /**
-     * The confirmation button text
-     */
-    label?: string;
-
-    /**
-     * A callback function to fire when the button is clicked
-     */
-    callback: (html: JQueryOrHtml) => Value;
-
-    /**
-     * A function that fires after the dialog is rendered
-     */
-    render?: (html: JQueryOrHtml) => void;
-
-    /**
-     * Reject the promise if the dialog is closed without confirming the
-     * choice, otherwise resolve as null
-     * @defaultValue `true`
-     */
-    rejectClose?: boolean;
-
-    /**
-     * Additional rendering options
-     * @defaultValue `{}`
-     */
-    options?: Partial<DialogOptions>;
+      /**
+       * Additional rendering options
+       * @defaultValue `{}`
+       */
+      options?: Partial<DialogOptions>;
+    }
   }
 }
