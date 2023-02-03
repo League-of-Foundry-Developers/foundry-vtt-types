@@ -23,5 +23,4 @@ export { BaseScene } from "./baseScene";
 export { BaseSetting } from "./baseSetting";
 export { BaseTableResult } from "./baseTableResult";
 export { BaseTile } from "./baseTile";
-export { BaseUser } from "./baseUser";
 export { BaseWall } from "./baseWall";

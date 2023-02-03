@@ -29,5 +29,4 @@ export { SettingData } from "./settingData";
 export { TableResultData } from "./tableResultData";
 export { TextureData } from "./textureData";
 export { TileData } from "./tileData";
-export { UserData } from "./userData";
 export { WallData } from "./wallData";
