@@ -1,4 +1,5 @@
 import type { AnyDataField, AnySchemaField, UnknownDataField } from "../data/fields.mjs.js";
+import type { fields } from "../data/module.mjs.js";
 
 declare global {
   interface DataSchema {
@@ -21,24 +22,22 @@ declare global {
 }
 
 /** Any {@link DataModel}. */
-export type AnyDataModel = DataModel<any, any, any, any>;
+export type AnyDataModel = DataModel<any, any>;
 
 export default DataModel;
 /**
  * The abstract base class which defines the data schema contained within a Document.
  */
-declare abstract class DataModel<
-  Schema extends AnySchemaField,
-  SourceData extends object,
-  ConstructorData extends object = SourceData,
-  Parent extends AnyDataModel | null = null
-> {
+declare abstract class DataModel<SchemaField extends AnySchemaField, Parent extends AnyDataModel | null = null> {
   /**
    * @param data    - Initial data used to construct the data object. The provided object will be owned
    *                  by the constructed model instance and may be mutated.
    * @param options - Options which affect DataModel construction
    */
-  constructor(data?: ConstructorData, { parent, strict, ...options }?: DataModel.ConstructorOptions<Parent>);
+  constructor(
+    data?: fields.SchemaField.AssignmentType<SchemaField["fields"]>,
+    { parent, strict, ...options }?: DataModel.ConstructorOptions<Parent>
+  );
 
   /**
    * Configure the data model instance before validation and initialization workflows are performed.
@@ -49,7 +48,7 @@ declare abstract class DataModel<
    * The source data object for this DataModel instance.
    * Once constructed, the source object is sealed such that no keys may be added nor removed.
    */
-  _source: SourceData;
+  _source: fields.SchemaField.PersistedType<SchemaField["fields"]>;
 
   /**
    * The defined and cached Data Schema for all instances of this DataModel.
@@ -82,7 +81,7 @@ declare abstract class DataModel<
   /**
    * Define the data schema for this document instance.
    */
-  get schema(): Schema;
+  get schema(): SchemaField;
 
   /**
    * Is the current state of this DataModel invalid?
@@ -97,7 +96,10 @@ declare abstract class DataModel<
    *                  (unused)
    * @returns Migrated and cleaned source data which will be stored to the model instance
    */
-  protected _initializeSource(data: ConstructorData | this, options?: any): SourceData;
+  protected _initializeSource(
+    data: fields.SchemaField.AssignmentType<SchemaField["fields"]> | this,
+    options?: any
+  ): fields.SchemaField.PersistedType<SchemaField["fields"]>;
 
   /**
    * Clean a data source object to conform to a specific provided schema.
@@ -128,7 +130,10 @@ declare abstract class DataModel<
    * @param context - Context options passed to the data model constructor
    * @returns The cloned Document instance
    */
-  clone(data?: DeepPartial<ConstructorData>, context?: DataModel.ConstructorOptions): this | Promise<this>;
+  clone(
+    data?: fields.SchemaField.AssignmentType<SchemaField["fields"]>,
+    context?: DataModel.ConstructorOptions
+  ): this | Promise<this>;
 
   /**
    * Validate the data contained in the document to check for type and content
@@ -148,7 +153,7 @@ declare abstract class DataModel<
     /**
      * A specific set of proposed changes to validate, rather than the full source data of the model.
      */
-    changes?: DeepPartial<ConstructorData>;
+    changes?: fields.SchemaField.AssignmentType<SchemaField["fields"]>;
 
     /**
      * If changes are provided, attempt to clean the changes before validating them?
@@ -206,7 +211,7 @@ declare abstract class DataModel<
    * @param data - The candidate data object to validate
    * @throws An error if a validation failure is detected
    */
-  protected _validateModel(data: DeepPartial<ConstructorData>): void;
+  protected _validateModel(data: fields.SchemaField.AssignmentType<SchemaField["fields"]>): void;
 
   /**
    * Update the DataModel locally by applying an object of changes to its source data.
@@ -218,7 +223,10 @@ declare abstract class DataModel<
    * @param options - Options which determine how the new data is merged
    * @returns An object containing the changed keys and values
    */
-  updateSource(changes?: DeepPartial<ConstructorData>, options?: { fallback?: boolean; recursive?: boolean }): object;
+  updateSource(
+    changes?: fields.SchemaField.AssignmentType<SchemaField["fields"]>,
+    options?: { fallback?: boolean; recursive?: boolean }
+  ): object;
 
   /**
    * Update the source data for a specific DataSchema.
@@ -276,12 +284,8 @@ declare abstract class DataModel<
    * @param context - Model construction context
    * @remarks The generic parameters should fit the DataModel implementation that this method is called on.
    */
-  static fromSource<
-    Schema extends AnySchemaField,
-    SourceData extends object,
-    ConstructorData extends SourceData = SourceData
-  >(
-    source: ConstructorData,
+  static fromSource<SchemaField extends AnySchemaField>(
+    source: fields.SchemaField.AssignmentType<SchemaField["fields"]>,
     {
       strict,
       ...context
@@ -292,7 +296,7 @@ declare abstract class DataModel<
        */
       strict?: boolean;
     }
-  ): DataModel<Schema, SourceData, ConstructorData>;
+  ): DataModel<SchemaField, AnyDataModel | null>;
 
   /**
    * Create a DataModel instance using a provided serialized JSON string.

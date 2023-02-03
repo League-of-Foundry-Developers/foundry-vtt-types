@@ -7,7 +7,7 @@ import { BaseDrawing } from "./baseDrawing";
 import { BaseMeasuredTemplate } from "./baseMeasuredTemplate";
 import { BaseNote } from "./baseNote";
 import { BaseTile } from "./baseTile";
-import { BaseToken } from "./baseToken";
+import { BaseToken } from "../documents/token";
 import { BaseWall } from "./baseWall";
 
 type SceneMetadata = Merge<

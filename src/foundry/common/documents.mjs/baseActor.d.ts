@@ -5,7 +5,7 @@ import * as data from "../data/data.mjs";
 import type { ActorDataConstructorData } from "../data/data.mjs/actorData";
 import { BaseActiveEffect } from "./baseActiveEffect";
 import { BaseItem } from "./baseItem";
-import { BaseToken } from "./baseToken";
+import { BaseToken } from "../documents/token";
 import { BaseUser } from "./baseUser";
 
 type ActorMetadata = Merge<

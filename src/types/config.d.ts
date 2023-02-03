@@ -173,6 +173,10 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface SourceConfig {}
 
+  /**
+   * An extendable interface to define object flags in a type safe way. The first level keys of this interface should be
+   * class names, pointing to the flag definitions for the respective class.
+   */
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface FlagConfig {}
 

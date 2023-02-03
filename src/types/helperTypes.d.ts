@@ -116,8 +116,12 @@ export type ConfiguredData<Name extends string> = Name extends keyof DataConfig 
 
 export type ConfiguredSource<Name extends string> = Name extends keyof SourceConfig ? SourceConfig[Name] : {};
 
-export type ConfiguredFlags<T extends string> = T extends keyof FlagConfig
-  ? FlagConfig[T] & Record<string, unknown>
+/**
+ * A helper to get the configured flags for the given key in the {@link FlagConfig}.
+ * @typeParam Key - the key to look for in the FlagConfig.
+ */
+export type ConfiguredFlags<Key extends string> = Key extends keyof FlagConfig
+  ? FlagConfig[Key] & Record<string, unknown>
   : Record<string, unknown>;
 
 export type ModuleRequiredOrOptional<Name extends string> = Name extends keyof RequiredModules ? never : undefined;

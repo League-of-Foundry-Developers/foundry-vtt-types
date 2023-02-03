@@ -4,13 +4,33 @@ import {
   DocumentConstructor,
   DocumentType
 } from "../../../types/helperTypes";
-import type { AnySchemaField } from "../data/fields.mjs.js";
+import * as CONST from "../constants.mjs";
+import type { fields } from "../data/module.mjs";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mjs";
 import DataModel from "./data.mjs";
 import EmbeddedCollection from "./embedded-collection.mjs";
 
-export type AnyDocument = Document<any, any, any, any, any>;
-export type AnyChildDocument<Parent extends AnyDocument | null> = Document<any, any, any, any, Parent>;
+/** Any {@link Document} */
+export type AnyDocument = Document<any, any, any>;
+
+/** Any {@link Document}, that is a child of the given parent Document. */
+export type AnyChildDocument<Parent extends AnyDocument | null> = Document<any, any, Parent>;
+
+/** Any {@link fields.SchemaField} with flags. */
+export type AnySchemaFieldWithFlags = fields.SchemaField<
+  {
+    flags: fields.ObjectField<
+      {},
+      Record<string, unknown> | null | undefined,
+      Record<string, unknown>,
+      Record<string, unknown>
+    >;
+  },
+  any,
+  any,
+  any,
+  any
+>;
 
 export default Document;
 /**
@@ -18,17 +38,18 @@ export default Document;
  * Documents are special in that they are persisted to the database and referenced by _id.
  */
 declare abstract class Document<
-  Schema extends AnySchemaField,
-  SourceData extends { flags: Record<string, unknown> },
-  ConstructorData extends SourceData = SourceData,
+  SchemaField extends AnySchemaFieldWithFlags,
   ConcreteMetadata extends AnyMetadata = AnyMetadata,
   Parent extends AnyDocument | null = null
-> extends DataModel<Schema, SourceData, ConstructorData, Parent> {
+> extends DataModel<SchemaField, Parent> {
   /**
    * @param data    - Initial data provided to construct the Document
    * @param context - Construction context options
    */
-  constructor(data?: ConstructorData, context?: DocumentConstructionContext);
+  constructor(
+    data?: fields.SchemaField.DefaultAssignmentType<SchemaField["fields"]>,
+    context?: DocumentConstructionContext
+  );
 
   override parent: Parent;
 
@@ -123,7 +144,7 @@ declare abstract class Document<
    * @param user - The User being tested
    * @returns A numeric permission level from CONST.DOCUMENT_OWNERSHIP_LEVELS or null
    */
-  getUserLevel(user: foundry.documents.BaseUser): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  getUserLevel(user: foundry.documents.BaseUser): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document
@@ -134,7 +155,7 @@ declare abstract class Document<
    */
   testUserPermission(
     user: foundry.documents.BaseUser,
-    permission: keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
+    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     {
       exact
     }?: {
@@ -164,7 +185,7 @@ declare abstract class Document<
    * @returns The cloned Document instance
    */
   override clone(
-    data?: DeepPartial<ConstructorData>,
+    data?: fields.SchemaField.DefaultAssignmentType<SchemaField["fields"]>,
     {
       save,
       ...context
@@ -392,7 +413,9 @@ declare abstract class Document<
    * @remarks If no document has actually been updated, the returned {@link Promise} resolves to `undefined`.
    */
   override update(
-    data?: DeepPartial<ConstructorData | (ConstructorData & Record<string, unknown>)>,
+    data?:
+      | fields.SchemaField.DefaultAssignmentType<SchemaField["fields"]>
+      | (fields.SchemaField.DefaultAssignmentType<SchemaField["fields"]> & Record<string, unknown>),
     context?: DocumentModificationContext & foundry.utils.MergeObjectOptions
   ): Promise<this | undefined>;
 
@@ -507,18 +530,21 @@ declare abstract class Document<
    * @param key   - The flag key
    * @returns The flag value
    */
-  getFlag<S extends keyof SourceData["flags"], K extends keyof SourceData["flags"][S]>(
+  getFlag<
+    S extends keyof fields.SchemaField.DefaultPersistedType<SchemaField["fields"]>["flags"],
+    K extends keyof fields.SchemaField.DefaultPersistedType<SchemaField["fields"]>["flags"][S]
+  >(scope: S, key: K): fields.SchemaField.DefaultPersistedType<SchemaField["fields"]>["flags"][S][K];
+  getFlag<
+    S extends keyof fields.SchemaField.DefaultPersistedType<SchemaField["fields"]>["flags"],
+    K extends keyof Required<fields.SchemaField.DefaultPersistedType<SchemaField["fields"]>["flags"]>[S]
+  >(
     scope: S,
     key: K
-  ): SourceData["flags"][S][K];
-  getFlag<S extends keyof SourceData["flags"], K extends keyof Required<SourceData["flags"]>[S]>(
-    scope: S,
-    key: K
-  ): Required<SourceData["flags"]>[S][K] | undefined;
-  getFlag<S extends keyof SourceData["flags"]>(
+  ): Required<fields.SchemaField.DefaultPersistedType<SchemaField["fields"]>["flags"]>[S][K] | undefined;
+  getFlag<S extends keyof fields.SchemaField.DefaultPersistedType<SchemaField["fields"]>["flags"]>(
     scope: S,
     key: string
-  ): unknown extends SourceData["flags"][S] ? unknown : never;
+  ): unknown extends fields.SchemaField.DefaultPersistedType<SchemaField["fields"]>["flags"][S] ? unknown : never;
   getFlag(scope: string, key: string): unknown;
 
   /**
@@ -540,14 +566,14 @@ declare abstract class Document<
    * @returns A Promise resolving to the updated document
    */
   setFlag<
-    S extends keyof SourceData["flags"],
-    K extends keyof Required<SourceData["flags"]>[S],
-    V extends Required<SourceData["flags"]>[S][K]
+    S extends keyof fields.SchemaField.DefaultPersistedType<SchemaField["fields"]>["flags"],
+    K extends keyof Required<fields.SchemaField.DefaultPersistedType<SchemaField["fields"]>["flags"]>[S],
+    V extends Required<fields.SchemaField.DefaultPersistedType<SchemaField["fields"]>["flags"]>[S][K]
   >(scope: S, key: K, value: V): Promise<this>;
-  setFlag<S extends keyof SourceData["flags"], K extends string>(
+  setFlag<S extends keyof fields.SchemaField.DefaultPersistedType<SchemaField["fields"]>["flags"], K extends string>(
     scope: S,
     key: K,
-    v: unknown extends SourceData["flags"][S] ? unknown : never
+    v: unknown extends fields.SchemaField.DefaultPersistedType<SchemaField["fields"]>["flags"][S] ? unknown : never
   ): Promise<this>;
 
   /**
@@ -567,7 +593,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document creation
    */
   protected _preCreate(
-    data: ConstructorData,
+    data: fields.SchemaField.DefaultAssignmentType<SchemaField["fields"]>,
     options: DocumentModificationOptions,
     user: foundry.documents.BaseUser
   ): Promise<void>;
@@ -580,7 +606,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document update
    */
   protected _preUpdate(
-    changed: DeepPartial<ConstructorData>,
+    changed: fields.SchemaField.DefaultAssignmentType<SchemaField["fields"]>,
     options: DocumentModificationOptions,
     user: foundry.documents.BaseUser
   ): Promise<void>;
@@ -600,7 +626,11 @@ declare abstract class Document<
    * @param options - Additional options which modify the creation request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onCreate(data: SourceData, options: DocumentModificationOptions, userId: string): void;
+  protected _onCreate(
+    data: fields.SchemaField.DefaultPersistedType<SchemaField["fields"]>,
+    options: DocumentModificationOptions,
+    userId: string
+  ): void;
 
   /**
    * Perform follow-up operations after a Document of this type is updated.
@@ -609,7 +639,11 @@ declare abstract class Document<
    * @param options - Additional options which modify the update request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onUpdate(changed: DeepPartial<SourceData>, options: DocumentModificationOptions, userId: string): void;
+  protected _onUpdate(
+    changed: DeepPartial<fields.SchemaField.DefaultPersistedType<SchemaField["fields"]>>,
+    options: DocumentModificationOptions,
+    userId: string
+  ): void;
 
   /**
    * Perform follow-up operations after a Document of this type is deleted.
@@ -737,20 +771,29 @@ export type AnyMetadata = Metadata<AnyDocument>;
 export interface Metadata<ConcreteDocument extends AnyDocument> {
   name: DocumentType;
   collection: string;
-  indexed: boolean;
-  compendiumIndexFields: string[];
+  indexed?: boolean;
+  compendiumIndexFields?: string[];
   label: string;
-  coreTypes: string[];
+  coreTypes?: string[];
   embedded: Record<string, ConstructorOf<AnyDocument>>;
   permissions: {
     create:
       | string
-      | ((user: foundry.documents.BaseUser, doc: ConcreteDocument, data: ConcreteDocument["_source"]) => boolean);
-    update: string | ((user: foundry.documents.BaseUser, doc: ConcreteDocument, data: object) => boolean);
+      | ((
+          user: foundry.documents.BaseUser,
+          doc: ConcreteDocument,
+          data: fields.SchemaField.AssignmentType<ConcreteDocument["schema"]["fields"]>
+        ) => boolean);
+    update:
+      | string
+      | ((
+          user: foundry.documents.BaseUser,
+          doc: ConcreteDocument,
+          data: fields.SchemaField.AssignmentType<ConcreteDocument["schema"]["fields"]>
+        ) => boolean);
     delete: string | ((user: foundry.documents.BaseUser, doc: ConcreteDocument, data: {}) => boolean);
   };
-  preserveOnImport: string[];
-
+  preserveOnImport?: string[];
   labelPlural: string; // This is not set for the Document class but every class that implements Document actually provides it.
   types: readonly string[];
   hasSystemData: boolean;

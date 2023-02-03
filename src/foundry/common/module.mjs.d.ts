@@ -3,7 +3,7 @@ import "./primitives/module.mjs";
 import * as _CONST from "./constants.mjs";
 import * as _abstract from "./abstract/module.mjs";
 import * as _data from "./data/module.mjs";
-import * as _documents from "./documents.mjs";
+import * as _documents from "./documents/module.mjs";
 import * as _packages from "./packages.mjs";
 import * as _utils from "./utils/module.mjs";
 import * as _config from "./config.mjs";
@@ -26,7 +26,7 @@ export * as data from "./data/module.mjs";
 /**
  * Document definitions used throughout the Foundry Virtual Tabletop framework.
  */
-export * as documents from "./documents.mjs";
+export * as documents from "./documents/module.mjs";
 
 /**
  * Package data definitions, validations, and schema

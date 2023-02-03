@@ -1,14 +1,15 @@
-import { AnyDataModel, Document } from "../abstract/module.mjs";
+import type { ConfiguredFlags } from "../../../types/helperTypes.js";
 import type DataModel from "../abstract/data.mjs.js";
-import type { CONST } from "../module.mjs.js";
-import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.mjs.js";
 import type { AnyDocument } from "../abstract/document.mjs.js";
+import { type AnyDataModel, type Document } from "../abstract/module.mjs";
+import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.mjs.js";
+import type { CONST } from "../module.mjs.js";
 
 /**
  * A helper type for the initial option type of {@link DataField} classes.
  * @typeParam InitializedType - the type of the initialized value of the field
  */
-type InitialType<InitializedType> = InitializedType | ((initialData: unknown) => InitializedType);
+export type InitialType<InitializedType> = InitializedType | ((initialData: unknown) => InitializedType);
 
 declare global {
   /**
@@ -26,7 +27,7 @@ declare global {
     initial?: InitialType<unknown>;
 
     /** A data validation function which accepts one argument with the current value. */
-    validate?: (value: any) => void;
+    validate?: (this: AnyDataField, value: any, options?: DataField.ValidationOptions<AnyDataField>) => boolean | void;
 
     /** A localizable label displayed on forms which render this field. */
     label?: string;
@@ -46,7 +47,7 @@ declare global {
 export type AnyDataField = DataField<any, any, any, any>;
 
 /** A {@link DataField} with unknown inner types. */
-export type UnknownDataField = DataField<DataFieldOptions, unknown, unknown>;
+export type UnknownDataField = DataField<any, unknown, unknown, unknown>;
 
 /**
  * An abstract class that defines the base pattern for a data field within a data schema.
@@ -289,17 +290,17 @@ export type AnySchemaField = SchemaField<any, any, any, any, any>;
  * A special class of {@link DataField} which defines a data schema.
  * @remarks
  * Defaults:
- * AssignmentType: `object | null | undefined`
- * InitializedType: `object`
- * PersistedType: `object`
+ * AssignmentType: `SchemaField.AssignmentType<Fields> | null | undefined`
+ * InitializedType: `SchemaField.InitializedType<Fields>`
+ * PersistedType: `SchemaField.PersistedType<Fields>`
  * InitialValue: `{}`
  */
 declare class SchemaField<
   Fields extends DataSchema,
   Options extends DataFieldOptions = SchemaField.DefaultOptions,
-  AssignmentType = SchemaField.DefaultAssignmentType,
-  InitializedType = SchemaField.DefaultInitializedType,
-  PersistedType extends object | null | undefined = SchemaField.DefaultPersistedType
+  AssignmentType = SchemaField.DefaultAssignmentType<Fields>,
+  InitializedType = SchemaField.DefaultInitializedType<Fields>,
+  PersistedType extends object | null | undefined = SchemaField.DefaultPersistedType<Fields>
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param fields  - The contained field definitions
@@ -338,17 +339,17 @@ declare class SchemaField<
   /**
    * An array of field names which are present in the schema.
    */
-  keys(): keyof this["fields"];
+  keys(): string[];
 
   /**
    * An array of DataField instances which are present in the schema.
    */
-  values(): ValueOf<this["fields"]>;
+  values(): unknown;
 
   /**
    * An array of [name, DataField] tuples which define the schema.
    */
-  entries(): [name: keyof this["fields"], dataField: ValueOf<this["fields"]>][];
+  entries(): [name: string, dataField: unknown][];
 
   /**
    * Test whether a certain field name belongs to this schema definition.
@@ -423,13 +424,13 @@ declare namespace SchemaField {
   >;
 
   /** The default AssignmentType for the SchemaField class. */
-  type DefaultAssignmentType = object | null | undefined;
+  type DefaultAssignmentType<Fields extends DataSchema> = AssignmentType<Fields> | null | undefined;
 
   /** The default InitializedType for the SchemaField class. */
-  type DefaultInitializedType = object;
+  type DefaultInitializedType<Fields extends DataSchema> = InitializedType<Fields>;
 
   /** The default PersistedType for the SchemaField class. */
-  type DefaultPersistedType = object;
+  type DefaultPersistedType<Fields extends DataSchema> = PersistedType<Fields>;
 }
 
 /**
@@ -792,6 +793,17 @@ declare namespace ObjectField {
 
   /** The default PersistedType for the ObjectField class. */
   type DefaultPersistedType = object;
+
+  /**
+   * A helper to create a flags object field for the given key in the {@link FlagConfig}.
+   * @typeParam Key - the key to look for in the FlagConfig.
+   */
+  type FlagsField<Key extends string> = ObjectField<
+    {},
+    ConfiguredFlags<Key> | null | undefined,
+    ConfiguredFlags<Key>,
+    Record<string, unknown>
+  >;
 }
 
 /**
@@ -898,7 +910,7 @@ declare namespace ArrayField {
   type AssignmentElementType<ElementFieldType extends AnyDataField | typeof Document> =
     ElementFieldType extends DataField<any, infer Assign, any, any>
       ? Assign
-      : ElementFieldType extends typeof Document<infer Schema extends AnySchemaField, any, any, any, any>
+      : ElementFieldType extends typeof Document<infer Schema extends AnySchemaField, any, any>
       ? SchemaField.AssignmentType<Schema["fields"]>
       : never;
 
@@ -906,7 +918,7 @@ declare namespace ArrayField {
   type InitializedElementType<ElementFieldType extends AnyDataField | typeof Document> =
     ElementFieldType extends DataField<any, any, infer Init, any>
       ? Init
-      : ElementFieldType extends typeof Document<infer Schema extends AnySchemaField, any, any, any, any>
+      : ElementFieldType extends typeof Document<infer Schema extends AnySchemaField, any, any>
       ? SchemaField.InitializedType<Schema["fields"]>
       : never;
 
@@ -914,7 +926,7 @@ declare namespace ArrayField {
   type PersistedElementType<ElementFieldType extends AnyDataField | typeof Document> =
     ElementFieldType extends DataField<any, any, any, infer Persist>
       ? Persist
-      : ElementFieldType extends typeof Document<infer Schema extends AnySchemaField, any, any, any, any>
+      : ElementFieldType extends typeof Document<infer Schema extends AnySchemaField, any, any>
       ? SchemaField.PersistedType<Schema["fields"]>
       : never;
 
@@ -990,34 +1002,28 @@ declare namespace SetField {
  * A subclass of [ObjectField]{@link ObjectField} which embeds some other DataModel definition as an inner object.
  * @remarks
  * Defaults:
- * AssignmentType: `object | null | undefined`
- * InitializedType: `InstanceType<ModelType>["schema"]["fields"]`
- * PersistedType: `object`
+ * AssignmentType: `SchemaField.AssignmentType<ModelType["schema"]["fields"]> | null | undefined`
+ * InitializedType: `SchemaField.InitializedType<ModelType["schema"]["fields"]>`
+ * PersistedType: `SchemaField.PersistedType<ModelType["schema"]["fields"]>`
  * InitialValue: `{}`
  */
 declare class EmbeddedDataField<
-  ModelType extends typeof DataModel,
+  ModelType extends AnyDataModel,
   Options extends DataFieldOptions = EmbeddedDataField.DefaultOptions,
-  AssignmentType = EmbeddedDataField.DefaultAssignmentType,
+  AssignmentType = EmbeddedDataField.DefaultAssignmentType<ModelType>,
   InitializedType = EmbeddedDataField.DefaultInitializedType<ModelType>,
-  PersistedType extends object | null | undefined = EmbeddedDataField.DefaultPersistedType
-> extends SchemaField<
-  InstanceType<ModelType>["schema"]["fields"],
-  Options,
-  AssignmentType,
-  InitializedType,
-  PersistedType
-> {
+  PersistedType extends object | null | undefined = EmbeddedDataField.DefaultPersistedType<ModelType>
+> extends SchemaField<ModelType["schema"]["fields"], Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param model   - The class of DataModel which should be embedded in this field
    * @param options - Options which configure the behavior of the field
    */
-  constructor(model: ModelType, options?: Options);
+  constructor(model: ConstructorOf<ModelType>, options?: Options);
 
   /**
    * The embedded DataModel definition which is contained in this field.
    */
-  model: ModelType;
+  model: ConstructorOf<ModelType>;
 
   protected override _initialize(fields: DataSchema): DataSchema;
 
@@ -1031,13 +1037,19 @@ declare namespace EmbeddedDataField {
   type DefaultOptions = SchemaField.DefaultOptions;
 
   /** The default AssignmentType for the EmbeddedDataField class. */
-  type DefaultAssignmentType = object | null | undefined;
+  type DefaultAssignmentType<ModelType extends AnyDataModel> = SchemaField.DefaultAssignmentType<
+    ModelType["schema"]["fields"]
+  >;
 
   /** The default InitializedType for the EmbeddedDataField class. */
-  type DefaultInitializedType<ModelType extends typeof DataModel> = InstanceType<ModelType>["schema"]["fields"];
+  type DefaultInitializedType<ModelType extends AnyDataModel> = SchemaField.DefaultInitializedType<
+    ModelType["schema"]["fields"]
+  >;
 
   /** The default PersistedType for the EmbeddedDataField class. */
-  type DefaultPersistedType = object;
+  type DefaultPersistedType<ModelType extends AnyDataModel> = SchemaField.DefaultPersistedType<
+    ModelType["schema"]["fields"]
+  >;
 }
 
 /**
@@ -1842,49 +1854,7 @@ declare namespace IntegerSortField {
 }
 
 declare global {
-  interface DocumentStats {
-    /** The package name of the system the Document was created in. */
-    systemId: string;
-
-    /** The version of the system the Document was created in. */
-    systemVersion: string;
-
-    /** The core version the Document was created in. */
-    coreVersion: string;
-
-    /** A timestamp of when the Document was created. */
-    createdTime: number;
-
-    /** A timestamp of when the Document was last modified. */
-    modifiedTime: number;
-
-    /** The ID of the user who last modified the Document. */
-    lastModifiedBy: string;
-  }
-}
-
-interface DocumentStatsFieldDataSchema extends DataSchema {
-  systemId: StringField<
-    { required: true; blank: false; nullable: true; initial: null },
-    StringField.DefaultAssignmentType,
-    StringField.DefaultInitializedType | null,
-    StringField.DefaultPersistedType | null
-  >;
-  systemVersion: StringField<
-    { required: true; blank: false; nullable: true; initial: null },
-    StringField.DefaultAssignmentType,
-    StringField.DefaultInitializedType | null,
-    StringField.DefaultPersistedType | null
-  >;
-  coreVersion: StringField<
-    { required: true; blank: false; nullable: true; initial: null },
-    StringField.DefaultAssignmentType,
-    StringField.DefaultInitializedType | null,
-    StringField.DefaultPersistedType | null
-  >;
-  createdTime: NumberField;
-  modifiedTime: NumberField;
-  lastModifiedBy: ForeignDocumentField<typeof foundry.documents.BaseUser, { idOnly: true }>;
+  type DocumentStats = DocumentStatsField.Properties;
 }
 
 /**
@@ -1897,7 +1867,7 @@ interface DocumentStatsFieldDataSchema extends DataSchema {
  * InitializedType: `DocumentStats`
  * PersistedType: `object`
  * InitialValue:
- * ```javascript
+ * ```typescript
  * {
  *   systemId: null,
  *   systemVersion: null,
@@ -1910,10 +1880,10 @@ interface DocumentStatsFieldDataSchema extends DataSchema {
  */
 declare class DocumentStatsField<
   Options extends DataFieldOptions = DocumentStatsField.DefaultOptions,
-  AssignmentType = Partial<DocumentStats> | null | undefined,
-  InitializedType = DocumentStats,
-  PersistedType extends object | null | undefined = object
-> extends SchemaField<DocumentStatsFieldDataSchema, Options, AssignmentType, InitializedType, PersistedType> {
+  AssignmentType = SchemaField.DefaultAssignmentType<DocumentStatsField.Schema>,
+  InitializedType = SchemaField.DefaultInitializedType<DocumentStatsField.Schema>,
+  PersistedType extends object | null | undefined = SchemaField.DefaultPersistedType<DocumentStatsField.Schema>
+> extends SchemaField<DocumentStatsField.Schema, Options, AssignmentType, InitializedType, PersistedType> {
   constructor(options?: Options);
 }
 
@@ -1925,6 +1895,63 @@ declare namespace DocumentStatsField {
    * A helper type for the given options type merged into the default options of the {@link DocumentStatsField} class.
    */
   type MergedOptions<Options> = SimpleMerge<DefaultOptions, Options>;
+
+  type ConstructorData = SchemaField.AssignmentType<Schema>;
+  type Properties = SchemaField.InitializedType<Schema>;
+  type Source = SchemaField.PersistedType<Schema>;
+
+  interface Schema extends DataSchema {
+    /**
+     * The package name of the system the Document was created in.
+     * @defaultValue `null`
+     */
+    systemId: StringField<
+      { required: true; blank: false; nullable: true; initial: null },
+      StringField.DefaultAssignmentType,
+      StringField.DefaultInitializedType | null,
+      StringField.DefaultPersistedType | null
+    >;
+
+    /**
+     * The version of the system the Document was created in.
+     * @defaultValue `null`
+     */
+    systemVersion: StringField<
+      { required: true; blank: false; nullable: true; initial: null },
+      StringField.DefaultAssignmentType,
+      StringField.DefaultInitializedType | null,
+      StringField.DefaultPersistedType | null
+    >;
+
+    /**
+     * The core version the Document was created in.
+     * @defaultValue `null`
+     */
+    coreVersion: StringField<
+      { required: true; blank: false; nullable: true; initial: null },
+      StringField.DefaultAssignmentType,
+      StringField.DefaultInitializedType | null,
+      StringField.DefaultPersistedType | null
+    >;
+
+    /**
+     * A timestamp of when the Document was created.
+     * @defaultValue `null`
+     */
+    createdTime: NumberField;
+
+    /**
+     * A timestamp of when the Document was last modified.
+     * @defaultValue `null`
+     */
+    modifiedTime: NumberField;
+
+    /**
+     * The ID of the user who last modified the Document.
+     * @defaultValue `null`
+     */
+    lastModifiedBy: ForeignDocumentField<typeof foundry.documents.BaseUser, { idOnly: true }>;
+  }
 }
 
 /**
