@@ -33,6 +33,6 @@ declare global {
      * @param event - The originating click event
      * @returns A Promise which resolves once the handler has completed
      */
-    protected _onFaceControl(event: JQuery.ClickEvent): Promise<void>;
+    protected _onFaceControl(event: JQuery.ClickEvent): Promise<unknown>;
   }
 }
