@@ -4,6 +4,7 @@ import "../../../index";
 const title = "title";
 const content = "content";
 const label = "label";
+const icon = "<i class='fas fa-bug-slash'>";
 
 expectType<Promise<true | false | null>>(
   Dialog.confirm({
@@ -627,4 +628,62 @@ expectType<Promise<string>>(
     },
     rejectClose: true
   })
+);
+
+expectType<Promise<unknown>>(
+  Dialog.wait({
+    title: title,
+    content: content,
+    buttons: {
+      button: {
+        icon: icon,
+        label: label,
+        callback: (jqOrHtml: JQuery | HTMLElement) => {
+          expectType<JQuery | HTMLElement>(jqOrHtml);
+        }
+      }
+    }
+  })
+);
+
+expectType<Promise<unknown>>(
+  Dialog.wait(
+    {
+      title: title,
+      content: content,
+      buttons: {
+        button: {
+          icon: icon,
+          label: label,
+          callback: (jq) => {
+            expectType<JQuery>(jq);
+          }
+        }
+      }
+    },
+    {
+      jQuery: true
+    }
+  )
+);
+
+expectType<Promise<unknown>>(
+  Dialog.wait(
+    {
+      title: title,
+      content: content,
+      buttons: {
+        button: {
+          icon: icon,
+          label: label,
+          callback: (html) => {
+            expectType<HTMLElement>(html);
+          }
+        }
+      }
+    },
+    {
+      jQuery: false
+    }
+  )
 );
