@@ -52,15 +52,13 @@ declare class BaseToken extends Document<
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     {
       exact
-    }?:
-      | {
-          /**
-           * Require the exact permission level requested?
-           * @defaultValue `false`
-           */
-          exact?: boolean;
-        }
-      | undefined
+    }?: {
+      /**
+       * Require the exact permission level requested?
+       * @defaultValue `false`
+       */
+      exact?: boolean;
+    }
   ): boolean;
 
   static override cleanData(source?: object | undefined, options?: fields.DataField.CleanOptions | undefined): object;
