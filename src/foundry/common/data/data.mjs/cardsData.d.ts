@@ -1,5 +1,5 @@
 import {
-  ConfiguredData,
+  ConfiguredProperties,
   ConfiguredDocumentClass,
   ConfiguredFlags,
   ConfiguredSource,
@@ -203,7 +203,7 @@ interface CardsDataConstructorData {
 }
 
 type CardsDataBaseSource = PropertiesToSource<CardsDataBaseProperties>;
-type CardsDataProperties = CardsDataBaseProperties & ConfiguredData<"Cards">;
+type CardsDataProperties = CardsDataBaseProperties & ConfiguredProperties<"Cards">;
 type CardsDataSource = CardsDataBaseSource & ConfiguredSource<"Cards">;
 
 type DocumentDataConstructor = Pick<typeof DocumentData, keyof typeof DocumentData>;

@@ -40,7 +40,7 @@ type MyCardsDataSource = GermanDeckDataSource | FrenchDeckDataSource;
 type MyCardsDataProperties = GermanDeckDataProperties | FrenchDeckDataProperties;
 
 declare global {
-  interface DataConfig {
+  interface PropertiesConfig {
     Cards: MyCardsDataProperties;
   }
 

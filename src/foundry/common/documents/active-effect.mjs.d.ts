@@ -1,6 +1,5 @@
-import type { ConfiguredDocumentClass } from "../../../types/helperTypes.js";
 import type Document from "../abstract/document.mjs";
-import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mjs";
+import type { AnyDocument, DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mjs";
 import type * as CONST from "../constants.mjs";
 import type * as fields from "../data/fields.mjs";
 import type * as documents from "./module.mjs";
@@ -17,11 +16,10 @@ export default BaseActiveEffect;
 /**
  * The data schema for an ActiveEffect document.
  */
-declare class BaseActiveEffect extends Document<
+declare class BaseActiveEffect<Parent extends AnyDocument | null = null> extends Document<
   BaseActiveEffect.SchemaField,
   BaseActiveEffect.Metadata,
-  | InstanceType<ConfiguredDocumentClass<typeof documents.BaseActor>>
-  | InstanceType<ConfiguredDocumentClass<typeof documents.BaseItem>>
+  Parent
 > {
   /**
    * @param data    - Initial data from which to construct the ActiveEffect
@@ -68,7 +66,8 @@ declare namespace BaseActiveEffect {
   >;
 
   type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.AssignmentType<Schema>;
+  type ConstructorData = UpdateData;
+  type UpdateData = fields.SchemaField.AssignmentType<Schema>;
   type Properties = fields.SchemaField.InitializedType<Schema>;
   type Source = fields.SchemaField.PersistedType<Schema>;
 
@@ -153,7 +152,7 @@ declare namespace BaseActiveEffect {
        * The _id of the CombatEncounter in which the effect first started
        * @defaultValue `null`
        */
-      combat: fields.ForeignDocumentField<documents.BaseCombat, { label: "EFFECT.Combat" }>;
+      combat: fields.ForeignDocumentField<typeof documents.BaseCombat, { label: "EFFECT.Combat" }>;
 
       /**
        * The maximum duration of the effect, in combat rounds

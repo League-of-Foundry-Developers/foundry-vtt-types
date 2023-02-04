@@ -775,7 +775,7 @@ export interface Metadata<ConcreteDocument extends AnyDocument> {
   compendiumIndexFields?: string[];
   label: string;
   coreTypes?: string[];
-  embedded: Record<string, ConstructorOf<AnyDocument>>;
+  embedded: Record<string, string>;
   permissions: {
     create:
       | string

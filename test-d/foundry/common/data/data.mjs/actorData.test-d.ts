@@ -60,7 +60,7 @@ type MyActorDataSource = CharacterDataSource | NPCDataSource;
 type MyActorDataProperties = CharacterDataProperties | NPCDataProperties;
 
 declare global {
-  interface DataConfig {
+  interface PropertiesConfig {
     Actor: MyActorDataProperties;
   }
 

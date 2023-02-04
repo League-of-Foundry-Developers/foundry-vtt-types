@@ -63,7 +63,7 @@ type MyCardDataSource = OldCardDataSource | UnoCardDataSource;
 type MyCardDataProperties = OldCardDataProperties | UnoCardDataProperties;
 
 declare global {
-  interface DataConfig {
+  interface PropertiesConfig {
     Card: MyCardDataProperties;
   }
 

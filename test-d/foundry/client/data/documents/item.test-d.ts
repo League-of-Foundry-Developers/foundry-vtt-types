@@ -1,52 +1,31 @@
 import { expectType } from "tsd";
 
-interface ArmorDataSourceData {
+interface ArmorSystemSource {
   armorValue: number;
 }
 
-interface ArmorDataSource {
-  type: "armor";
-  data: ArmorDataSourceData;
-}
-
-interface WeaponDataSourceData {
+interface WeaponSystemSource {
   damagePerHit: number;
   attackSpeed: number;
 }
 
-interface WeaponDataSource {
-  type: "weapon";
-  data: WeaponDataSourceData;
-}
-
-interface ArmorDataPropertiesData extends ArmorDataSourceData {
+interface ArmorSystemProperties extends ArmorSystemSource {
   weight: number;
 }
 
-interface ArmorDataProperties {
-  type: "armor";
-  data: ArmorDataPropertiesData;
-}
-
-interface WeaponDataPropertiesData extends WeaponDataSourceData {
+interface WeaponSystemProperties extends WeaponSystemSource {
   damage: number;
 }
 
-interface WeaponDataProperties {
-  type: "weapon";
-  data: WeaponDataPropertiesData;
-}
-
-type MyItemDataSource = ArmorDataSource | WeaponDataSource;
-type MyItemDataProperties = ArmorDataProperties | WeaponDataProperties;
-
 declare global {
-  interface DataConfig {
-    Item: MyItemDataProperties;
+  interface ItemPropertiesConfig {
+    armor: ArmorSystemProperties;
+    weapon: WeaponSystemProperties;
   }
 
-  interface SourceConfig {
-    Item: MyItemDataSource;
+  interface ItemSourceConfig {
+    armor: ArmorSystemSource;
+    weapon: WeaponSystemSource;
   }
 }
 

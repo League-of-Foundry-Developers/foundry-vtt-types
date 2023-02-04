@@ -1,5 +1,5 @@
 import {
-  ConfiguredData,
+  ConfiguredProperties,
   ConfiguredDocumentClass,
   ConfiguredFlags,
   ConfiguredSource,
@@ -150,7 +150,7 @@ interface ItemDataConstructorData {
 }
 
 type ItemDataBaseSource = PropertiesToSource<ItemDataBaseProperties>;
-type ItemDataProperties = ItemDataBaseProperties & ConfiguredData<"Item">;
+type ItemDataProperties = ItemDataBaseProperties & ConfiguredProperties<"Item">;
 type ItemDataSource = ItemDataBaseSource & ConfiguredSource<"Item">;
 
 type DocumentDataConstructor = Pick<typeof DocumentData, keyof typeof DocumentData>;

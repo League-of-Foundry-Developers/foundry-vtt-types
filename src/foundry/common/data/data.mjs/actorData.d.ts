@@ -1,5 +1,5 @@
 import {
-  ConfiguredData,
+  ConfiguredProperties,
   ConfiguredDocumentClass,
   ConfiguredFlags,
   ConfiguredSource,
@@ -182,7 +182,7 @@ interface ActorDataConstructorData {
 }
 
 type ActorDataBaseSource = PropertiesToSource<ActorDataBaseProperties>;
-type ActorDataProperties = ActorDataBaseProperties & ConfiguredData<"Actor">;
+type ActorDataProperties = ActorDataBaseProperties & ConfiguredProperties<"Actor">;
 type ActorDataSource = ActorDataBaseSource & ConfiguredSource<"Actor">;
 
 type DocumentDataConstructor = Pick<typeof DocumentData, keyof typeof DocumentData>;

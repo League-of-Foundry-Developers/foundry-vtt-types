@@ -1,4 +1,4 @@
-import type { ConfiguredFlags } from "../../../types/helperTypes.js";
+import type { ConfiguredFlags, DocumentConstructor } from "../../../types/helperTypes.js";
 import type DataModel from "../abstract/data.mjs.js";
 import type { AnyDocument } from "../abstract/document.mjs.js";
 import { type AnyDataModel, type Document } from "../abstract/module.mjs";
@@ -817,7 +817,7 @@ declare namespace ObjectField {
  * InitialValue: `[]`
  */
 declare class ArrayField<
-  ElementFieldType extends AnyDataField | typeof Document,
+  ElementFieldType extends AnyDataField | DocumentConstructor,
   AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
   InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
   Options extends DataFieldOptions = ArrayField.DefaultOptions<InitializedElementType>,
@@ -908,26 +908,26 @@ declare namespace ArrayField {
   >;
 
   /** A type to infer the assignment element type of an ArrayField from its ElementType. */
-  type AssignmentElementType<ElementFieldType extends AnyDataField | typeof Document> =
+  type AssignmentElementType<ElementFieldType extends AnyDataField | DocumentConstructor> =
     ElementFieldType extends DataField<any, infer Assign, any, any>
       ? Assign
-      : ElementFieldType extends typeof Document<infer Schema extends AnySchemaField, any, any>
+      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends AnySchemaField, any, any>
       ? SchemaField.AssignmentType<Schema["fields"]>
       : never;
 
   /** A type to infer the initialized element type of an ArrayField from its ElementType. */
-  type InitializedElementType<ElementFieldType extends AnyDataField | typeof Document> =
+  type InitializedElementType<ElementFieldType extends AnyDataField | DocumentConstructor> =
     ElementFieldType extends DataField<any, any, infer Init, any>
       ? Init
-      : ElementFieldType extends typeof Document<infer Schema extends AnySchemaField, any, any>
+      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends AnySchemaField, any, any>
       ? SchemaField.InitializedType<Schema["fields"]>
       : never;
 
   /** A type to infer the initialized element type of an ArrayField from its ElementType. */
-  type PersistedElementType<ElementFieldType extends AnyDataField | typeof Document> =
+  type PersistedElementType<ElementFieldType extends AnyDataField | DocumentConstructor> =
     ElementFieldType extends DataField<any, any, any, infer Persist>
       ? Persist
-      : ElementFieldType extends typeof Document<infer Schema extends AnySchemaField, any, any>
+      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends AnySchemaField, any, any>
       ? SchemaField.PersistedType<Schema["fields"]>
       : never;
 
@@ -1064,13 +1064,13 @@ declare namespace EmbeddedDataField {
  * InitialValue: `[]`
  */
 declare class EmbeddedCollectionField<
-  ElementFieldType extends typeof Document,
-  AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
-  InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
+  ElementFieldType extends DocumentConstructor,
+  AssignmentElementType = EmbeddedCollectionField.AssignmentElementType<ElementFieldType>,
+  InitializedElementType = EmbeddedCollectionField.InitializedElementType<ElementFieldType>,
   Options extends DataFieldOptions = EmbeddedCollectionField.DefaultOptions<InitializedElementType>,
   AssignmentType = EmbeddedCollectionField.DefaultAssignmentType<AssignmentElementType>,
   InitializedType = EmbeddedCollectionField.DefaultInitializedType<InitializedElementType>,
-  PersistedElementType = ArrayField.PersistedElementType<ElementFieldType>,
+  PersistedElementType = EmbeddedCollectionField.PersistedElementType<ElementFieldType>,
   PersistedType extends
     | PersistedElementType[]
     | null
@@ -1094,7 +1094,7 @@ declare class EmbeddedCollectionField<
   /** @defaultValue `true` */
   override readonly: true;
 
-  protected static override _validateElementType<T extends AnyDataField | typeof Document>(element: T): T;
+  protected static override _validateElementType<T extends AnyDataField | DocumentConstructor>(element: T): T;
 
   /**
    * A reference to the DataModel subclass of the embedded document element
@@ -1127,6 +1127,23 @@ declare class EmbeddedCollectionField<
 declare namespace EmbeddedCollectionField {
   /** The type of the default options for the {@link EmbeddedCollectionField} class. */
   type DefaultOptions<InitializedElementType> = ArrayField.DefaultOptions<InitializedElementType>;
+
+  /** A type to infer the assignment element type of an EmbeddedCollectionField from its ElementFieldType. */
+  type AssignmentElementType<ElementFieldType extends DocumentConstructor> = ElementFieldType extends new (
+    ...args: any[]
+  ) => Document<infer Schema extends AnySchemaField, any, any>
+    ? SchemaField.AssignmentType<Schema["fields"]>
+    : never;
+
+  /** A type to infer the initialized element type of an EmbeddedCollectionField from its ElementFieldType. */
+  type InitializedElementType<ElementFieldType extends DocumentConstructor> = InstanceType<ElementFieldType>;
+
+  /** A type to infer the initialized element type of an EmbeddedCollectionField from its ElementFieldType. */
+  type PersistedElementType<ElementFieldType extends DocumentConstructor> = ElementFieldType extends new (
+    ...args: any[]
+  ) => Document<infer Schema extends AnySchemaField, any, any>
+    ? SchemaField.PersistedType<Schema["fields"]>
+    : never;
 
   /** The default AssignmentType for the EmbeddedCollectionField class. */
   type DefaultAssignmentType<AssignmentElementType> =
@@ -1220,7 +1237,7 @@ declare namespace DocumentIdField {
  * InitialValue: `null`
  */
 declare class ForeignDocumentField<
-  DocumentType extends typeof Document,
+  DocumentType extends DocumentConstructor,
   Options extends ForeignDocumentField.Options = ForeignDocumentField.DefaultOptions,
   AssignmentType = ForeignDocumentField.DefaultAssignmentType<DocumentType>,
   InitializedType = Options["idOnly"] extends true
@@ -1273,14 +1290,14 @@ declare namespace ForeignDocumentField {
   >;
 
   /** The default AssignmentType for the ForeignDocumentField class. */
-  type DefaultAssignmentType<DocumentType extends typeof Document> =
+  type DefaultAssignmentType<DocumentType extends DocumentConstructor> =
     | string
     | InstanceType<DocumentType>
     | null
     | undefined;
 
   /** The default InitializedType for the ForeignDocumentField class. */
-  type DefaultInitializedType<DocumentType extends typeof Document> = InstanceType<DocumentType> | null;
+  type DefaultInitializedType<DocumentType extends DocumentConstructor> = InstanceType<DocumentType> | null;
 
   /** The idOnly InitializedType for the ForeignDocumentField class. */
   type IdOnlyInitializedType = string | null;
@@ -1299,7 +1316,7 @@ declare namespace ForeignDocumentField {
  * InitialValue: `{}`
  */
 declare class SystemDataField<
-  DocumentType extends typeof Document,
+  DocumentType extends DocumentConstructor,
   Options extends DataFieldOptions = SystemDataField.DefaultOptions,
   AssignmentType = SystemDataField.DefaultAssignmentType,
   InitializedType = SystemDataField.DefaultInitializedType,
@@ -1985,13 +2002,13 @@ declare namespace ModelValidationError {
  * @deprecated since v10 and replaced by the SystemDataField class
  * @see SystemDataField
  */
-export function systemDataField<T extends typeof Document>(document: InstanceType<T>): SystemDataField<T>;
+export function systemDataField<T extends DocumentConstructor>(document: InstanceType<T>): SystemDataField<T>;
 
 /**
  * @deprecated since v10 and replaced by the ForeignDocumentField class
  * @see ForeignDocumentField
  */
-export function foreignDocumentField<T extends typeof Document>(options: {
+export function foreignDocumentField<T extends DocumentConstructor>(options: {
   type: { model: T };
 }): ForeignDocumentField<T>;
 
@@ -1999,10 +2016,15 @@ export function foreignDocumentField<T extends typeof Document>(options: {
  * @deprecated since v10 and replaced by the EmbeddedCollectionField class
  * @see EmbeddedCollectionField
  */
-export function embeddedCollectionField<E extends typeof Document, O extends DataFieldOptions>(
+export function embeddedCollectionField<E extends DocumentConstructor, O extends DataFieldOptions>(
   document: E,
   options?: O
-): EmbeddedCollectionField<E, any, InstanceType<E>, O>;
+): EmbeddedCollectionField<
+  E,
+  EmbeddedCollectionField.AssignmentElementType<E>,
+  EmbeddedCollectionField.InitializedElementType<E>,
+  O
+>;
 
 /**
  * @deprecated since v10 and should be replaced with explicit use of new field classes

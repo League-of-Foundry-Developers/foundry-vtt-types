@@ -1,15 +1,11 @@
-import DocumentData, { AnyDocumentData } from "../foundry/common/abstract/data.mjs";
-import Document from "../foundry/common/abstract/document.mjs";
+import DocumentData, { AnyDataModel, DataModel } from "../foundry/common/abstract/data.mjs";
+import Document, { AnyDocument, AnyMetadata } from "../foundry/common/abstract/document.mjs";
 import EmbeddedCollection from "../foundry/common/abstract/embedded-collection.mjs";
+import type { fields } from "../foundry/common/data/module.mjs.js";
 
-export type PropertiesDataType<T extends Document<any, any> | AnyDocumentData> = T extends DocumentData<
-  any,
-  infer U,
-  any,
-  any
->
+export type PropertiesDataType<T extends AnyDocument | AnyDataModel> = T extends DocumentData<any, infer U>
   ? U
-  : T extends Document<infer U, any>
+  : T extends Document<infer U, any, any>
   ? PropertiesDataType<U>
   : never;
 
@@ -17,7 +13,7 @@ type PropertyTypeToSourceType<T> = T extends EmbeddedCollection<infer U, any>
   ? SourceDataType<InstanceType<U>>[]
   : T extends Array<infer U>
   ? Array<PropertyTypeToSourceType<U>>
-  : T extends AnyDocumentData
+  : T extends AnyDataModel
   ? SourceDataType<T>
   : T;
 
@@ -25,23 +21,17 @@ export type PropertiesToSource<T extends object> = {
   [Key in keyof T]: PropertyTypeToSourceType<T[Key]>;
 };
 
-type SourceDataType<T extends Document<any, any> | AnyDocumentData> = T extends DocumentData<
-  any,
-  any,
-  infer U,
-  any,
-  any
->
+type SourceDataType<T extends AnyDocument | AnyDataModel> = T extends DocumentData<any, any, infer U>
   ? U
-  : T extends Document<infer U, any>
+  : T extends Document<infer U, any, any>
   ? SourceDataType<U>
   : never;
 
 /**
- * Returns the type of the constructor data for the given {@link DocumentData}.
+ * Returns the type of the constructor data for the given {@link DataModel}.
  */
-export type ConstructorDataType<T extends AnyDocumentData> = T["_initializeSource"] extends (data: infer U) => any
-  ? U
+export type ConstructorDataType<DM extends AnyDataModel> = DM extends DataModel<any, any, infer ConstructorData>
+  ? ConstructorData
   : never;
 
 type ObjectToDeepPartial<T> = T extends object ? DeepPartial<T> : T;
@@ -52,13 +42,12 @@ export type PropertyTypeToSourceParameterType<T> = ObjectToDeepPartial<PropertyT
 export type FieldReturnType<T extends DocumentField<any>, U extends Partial<DocumentField<any>>> = Omit<T, keyof U> &
   Exclude<U, "undefined">;
 
-export type DocumentConstructor = Pick<typeof Document, keyof typeof Document> &
-  (new (...args: any[]) => Document<any, any>);
+export type DocumentConstructor = Pick<typeof Document, keyof typeof Document> & (new (...args: any[]) => AnyDocument);
 
 export type PlaceableObjectConstructor = Pick<typeof PlaceableObject, keyof typeof PlaceableObject> &
   (new (...args: any[]) => PlaceableObject<any>);
 
-export type ConfiguredDocumentClass<T extends DocumentConstructor> = ConfiguredDocumentClassForName<
+export type ConfiguredDocumentClass<T extends { metadata: AnyMetadata }> = ConfiguredDocumentClassForName<
   T["metadata"]["name"]
 >;
 
@@ -112,7 +101,9 @@ export type ConfiguredDocumentClassForName<Name extends DocumentType> = CONFIG[N
 
 export type ConfiguredObjectClassForName<Name extends PlaceableDocumentType> = CONFIG[Name]["objectClass"];
 
-export type ConfiguredData<Name extends string> = Name extends keyof DataConfig ? DataConfig[Name] : {};
+export type ConfiguredProperties<Name extends string> = Name extends keyof PropertiesConfig
+  ? PropertiesConfig[Name]
+  : {};
 
 export type ConfiguredSource<Name extends string> = Name extends keyof SourceConfig ? SourceConfig[Name] : {};
 
@@ -161,7 +152,7 @@ export type LayerClass<T extends DocumentConstructor> = T["metadata"]["name"] ex
   : T;
 
 export type DataSourceForPlaceable<P extends PlaceableObject> = P extends PlaceableObject<infer Doc>
-  ? Doc extends Document<infer D, any>
-    ? D["_source"]
+  ? Doc extends Document<infer D, any, any>
+    ? fields.SchemaField.PersistedType<D["fields"]>
     : never
   : never;

@@ -117,8 +117,6 @@ declare abstract class DataModel<SchemaField extends AnySchemaField, Parent exte
    */
   protected _initialize(options?: any): void;
 
-  readonly _id?: string | null;
-
   /**
    * Reset the state of this data instance back to mirror the contained source data, erasing any changes.
    */

@@ -22,7 +22,7 @@ declare global {
 declare class BaseToken extends Document<
   BaseToken.SchemaField,
   BaseToken.Metadata,
-  InstanceType<ConfiguredDocumentClass<typeof documents.BaseScene>>
+  InstanceType<ConfiguredDocumentClass<typeof documents.BaseScene>> | null
 > {
   static override metadata: Readonly<BaseToken.Metadata>;
 
@@ -45,7 +45,7 @@ declare class BaseToken extends Document<
    * Is a user able to update an existing Token?
    * @internal
    */
-  static #canUpdate(user: documents.BaseUser, doc: BaseToken, data: BaseToken.ConstructorData): boolean;
+  static #canUpdate(user: documents.BaseUser, doc: BaseToken, data: BaseToken.UpdateData): boolean;
 
   override testUserPermission(
     user: documents.BaseUser,
@@ -80,14 +80,15 @@ declare namespace BaseToken {
       isEmbedded: true;
       permissions: {
         create: "TOKEN_CREATE";
-        update: (user: documents.BaseUser, doc: AnyDocument, data: ConstructorData) => boolean;
+        update: (user: documents.BaseUser, doc: AnyDocument, data: UpdateData) => boolean;
         delete: "TOKEN_DELETE";
       };
     }
   >;
 
   type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.AssignmentType<Schema>;
+  type ConstructorData = UpdateData;
+  type UpdateData = fields.SchemaField.AssignmentType<Schema>;
   type Properties = fields.SchemaField.InitializedType<Schema>;
   type Source = fields.SchemaField.PersistedType<Schema>;
 
@@ -124,7 +125,7 @@ declare namespace BaseToken {
      * The _id of an Actor document which this Token represents
      * @defaultValue `null`
      */
-    actorId: fields.ForeignDocumentField<documents.BaseActor, { idOnly: true }>;
+    actorId: fields.ForeignDocumentField<typeof documents.BaseActor, { idOnly: true }>;
 
     /**
      * Does this Token uniquely represent a singular Actor, or is it one of many?

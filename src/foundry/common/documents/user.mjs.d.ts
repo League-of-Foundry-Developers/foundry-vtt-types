@@ -1,5 +1,5 @@
 import type Document from "../abstract/document.mjs";
-import { type AnyDocument, type DocumentMetadata } from "../abstract/document.mjs";
+import type { AnyDocument, DocumentMetadata } from "../abstract/document.mjs";
 import type * as CONST from "../constants.mjs";
 import type * as fields from "../data/fields.mjs";
 import type BaseActor from "./actor.mjs";
@@ -17,7 +17,7 @@ declare class BaseUser extends Document<BaseUser.SchemaField, BaseUser.Metadata>
    * @param data    - Initial data from which to construct the User
    * @param context - Construction context options
    */
-  constructor(data?: BaseUser.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data: BaseUser.ConstructorData, context?: DocumentConstructionContext);
 
   static override metadata: Readonly<BaseUser.Metadata>;
 
@@ -117,8 +117,8 @@ declare namespace BaseUser {
       label: "DOCUMENT.User";
       labelPlural: "DOCUMENT.Users";
       permissions: {
-        create: (user: BaseUser, doc: AnyDocument, data?: ConstructorData) => boolean;
-        update: (user: BaseUser, doc: AnyDocument, changes: ConstructorData) => boolean;
+        create: (user: BaseUser, doc: AnyDocument, data?: UpdateData) => boolean;
+        update: (user: BaseUser, doc: AnyDocument, changes: UpdateData) => boolean;
         delete: (user: BaseUser, doc: AnyDocument) => boolean;
       };
     }
@@ -128,7 +128,8 @@ declare namespace BaseUser {
   type Permissions = Record<keyof typeof CONST.USER_PERMISSIONS, boolean>;
 
   type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.AssignmentType<Schema>;
+  type ConstructorData = UpdateData & Required<Pick<UpdateData, "name">>;
+  type UpdateData = fields.SchemaField.AssignmentType<Schema>;
   type Properties = fields.SchemaField.InitializedType<Schema>;
   type Source = fields.SchemaField.PersistedType<Schema>;
 
@@ -141,9 +142,8 @@ declare namespace BaseUser {
 
     /**
      * The user's name.
-     * @defaultValue `""`
      */
-    name: fields.StringField<{ required: true; blank: false }>;
+    name: fields.StringField<{ required: true; blank: false }, string>;
 
     /**
      * The user's role, see CONST.USER_ROLES.

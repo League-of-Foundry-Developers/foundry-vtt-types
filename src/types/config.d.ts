@@ -142,7 +142,7 @@ declare global {
    * type MyItemDataProperties = ArmorDataProperties | WeaponDataProperties;
    *
    * declare global {
-   *   interface DataConfig {
+   *   interface PropertiesConfig {
    *     Item: MyItemDataProperties;
    *   }
    *
@@ -167,9 +167,15 @@ declare global {
    * ```
    */
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface PropertiesConfig extends DataConfig {}
+
+  /**
+   * @deprecated DataConfig has been renamed to {@link PropertiesConfig}.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DataConfig {}
 
-  /** @see {@link DataConfig} */
+  /** @see {@link PropertiesConfig} */
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface SourceConfig {}
 
