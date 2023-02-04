@@ -796,12 +796,13 @@ declare namespace ObjectField {
 
   /**
    * A helper to create a flags object field for the given key in the {@link FlagConfig}.
-   * @typeParam Key - the key to look for in the FlagConfig.
+   * @typeParam Key - the key to look for in the FlagConfig
+   * @typeParam ExtensionFlags - additional flags besides the ones configured for the class
    */
-  type FlagsField<Key extends string> = ObjectField<
+  type FlagsField<Key extends string, ExtensionFlags extends object = {}> = ObjectField<
     {},
-    ConfiguredFlags<Key> | null | undefined,
-    ConfiguredFlags<Key>,
+    (ConfiguredFlags<Key> & ExtensionFlags) | null | undefined,
+    ConfiguredFlags<Key> & ExtensionFlags,
     Record<string, unknown>
   >;
 }

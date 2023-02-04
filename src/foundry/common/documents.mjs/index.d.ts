@@ -1,4 +1,3 @@
-export { BaseActiveEffect } from "./baseActiveEffect";
 export { BaseActor } from "./baseActor";
 export { BaseAdventure } from "./baseAdventure";
 export { BaseAmbientLight } from "./baseAmbientLight";
