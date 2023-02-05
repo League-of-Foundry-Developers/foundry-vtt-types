@@ -6,7 +6,7 @@ import type { CONST } from "../module.mjs.js";
 import type * as documents from "./module.mjs";
 
 declare global {
-  type ItemData<Name extends string> = BaseItem.Properties<Name>;
+  type ItemData<Name extends keyof ItemSourceConfig = keyof ItemSourceConfig> = BaseItem.Properties<Name>;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface ItemPropertiesConfig {}
@@ -19,8 +19,10 @@ declare global {
  * The Document definition for an Item.
  * Defines the DataSchema and common behaviors for an Item which are shared between both client and server.
  */
-declare class BaseItem<Name extends string = ""> extends Document<
-  BaseItem.SchemaField,
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface BaseItem<Name extends keyof ItemSourceConfig = keyof ItemSourceConfig> extends BaseItem.Properties<Name> {}
+declare class BaseItem<Name extends keyof ItemSourceConfig = keyof ItemSourceConfig> extends Document<
+  BaseItem.SchemaField<Name>,
   BaseItem.Metadata,
   InstanceType<ConfiguredDocumentClass<typeof documents.BaseActor>> | null
 > {
@@ -30,15 +32,11 @@ declare class BaseItem<Name extends string = ""> extends Document<
    */
   constructor(data: BaseItem.ConstructorData<Name>, context?: DocumentConstructionContext);
 
-  type: Name;
-
-  system: BaseItem.ConfiguredSystemProperties<Name>;
-
   _source: BaseItem.Source<Name>;
 
   static override metadata: Readonly<BaseItem.Metadata>;
 
-  static override defineSchema(): BaseItem.Schema;
+  static override defineSchema(): BaseItem.Schema<keyof ItemSourceConfig>;
 
   /**
    * The default icon used for newly created Item documents
@@ -77,17 +75,8 @@ declare class BaseItem<Name extends string = ""> extends Document<
 }
 export default BaseItem;
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface BaseItem extends BaseItem.StaticProperties {}
-
 declare namespace BaseItem {
   type ConfigName = "Item";
-
-  type ConfiguredSystemProperties<Name extends string> = Name extends keyof ItemPropertiesConfig
-    ? ItemPropertiesConfig[Name]
-    : {};
-
-  type ConfiguredSystemSource<Name extends string> = Name extends keyof ItemSourceConfig ? ItemSourceConfig[Name] : {};
 
   type Metadata = Merge<
     DocumentMetadata,
@@ -108,23 +97,14 @@ declare namespace BaseItem {
     }
   >;
 
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData<Name extends string> = UpdateData<Name> & Required<Pick<UpdateData<Name>, "name" | "type">>;
-  type UpdateData<Name extends string> = fields.SchemaField.AssignmentType<Schema> & {
-    type?: Name;
-    system?: DeepPartial<ConfiguredSystemSource<Name>>;
-  };
-  type Properties<Name extends string> = fields.SchemaField.InitializedType<Schema> & {
-    type: Name;
-    system: ConfiguredSystemProperties<Name>;
-  };
-  type StaticProperties = Omit<fields.SchemaField.InitializedType<Schema>, "name" | "system">;
-  type Source<Name extends string> = fields.SchemaField.PersistedType<Schema> & {
-    type: Name;
-    system: ConfiguredSystemSource<Name>;
-  };
+  type SchemaField<Name extends keyof ItemSourceConfig> = fields.SchemaField<Schema<Name>>;
+  type ConstructorData<Name extends keyof ItemSourceConfig> = UpdateData<Name> &
+    Required<Pick<UpdateData<Name>, "name" | "type">>;
+  type UpdateData<Name extends keyof ItemSourceConfig> = fields.SchemaField.AssignmentType<Schema<Name>>;
+  type Properties<Name extends keyof ItemSourceConfig> = fields.SchemaField.InitializedType<Schema<Name>>;
+  type Source<Name extends keyof ItemSourceConfig> = fields.SchemaField.PersistedType<Schema<Name>>;
 
-  interface Schema extends DataSchema {
+  interface Schema<Name extends keyof ItemSourceConfig = keyof ItemSourceConfig> extends DataSchema {
     /**
      * The _id which uniquely identifies this Item document
      * @defaultValue `null`
@@ -141,11 +121,16 @@ declare namespace BaseItem {
      * An Item subtype which configures the system data model applied
      * @defaultValue `""`
      */
-    type: fields.StringField<{
-      required: true;
-      choices: () => typeof BaseItem.TYPES;
-      validationError: "must be in the array of Item types defined by the game system";
-    }>;
+    type: fields.StringField<
+      {
+        required: true;
+        choices: () => typeof BaseItem.TYPES;
+        validationError: "must be in the array of Item types defined by the game system";
+      },
+      Name,
+      Name,
+      Name
+    >;
 
     /**
      * An image file path which provides the artwork for this Item
@@ -157,7 +142,13 @@ declare namespace BaseItem {
      * The system data object which is defined by the system template.json model
      * @defaultValue `{}`
      */
-    system: fields.SystemDataField<typeof BaseItem>;
+    system: fields.SystemDataField<
+      typeof BaseItem,
+      {},
+      DeepPartial<ItemSourceConfig[Name]>,
+      ItemPropertiesConfig[Name],
+      ItemSourceConfig[Name]
+    >;
 
     /**
      * A collection of ActiveEffect embedded Documents

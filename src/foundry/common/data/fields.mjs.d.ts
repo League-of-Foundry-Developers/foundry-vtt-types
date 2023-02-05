@@ -803,7 +803,7 @@ declare namespace ObjectField {
     {},
     (ConfiguredFlags<Key> & ExtensionFlags) | null | undefined,
     ConfiguredFlags<Key> & ExtensionFlags,
-    Record<string, unknown>
+    ConfiguredFlags<Key> & ExtensionFlags
   >;
 }
 

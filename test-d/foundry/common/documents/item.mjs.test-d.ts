@@ -3,11 +3,6 @@ import { expectError, expectType } from "tsd";
 import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.mjs";
 import type { BaseItem } from "../../../../src/foundry/common/documents/module.mjs";
 
-const baseItem = new foundry.documents.BaseItem({ name: "foo", type: "weapon" });
-expectType<EmbeddedCollection<typeof ActiveEffect, foundry.documents.BaseItem>>(baseItem.effects);
-expectType<ActiveEffectData>(baseItem._source.effects[0]);
-expectType<EffectDurationData>(baseItem._source.effects[0].duration);
-
 interface ArmorSystemSource {
   armorValue: number;
 }
@@ -37,25 +32,34 @@ declare global {
   }
 }
 
-expectType<"weapon" | "armor">(baseItem.type);
-expectType<Item | undefined>(baseItem.parent?.items.get("", { strict: true }));
+const armorItem = new foundry.documents.BaseItem({ name: "plate", type: "armor" });
+const weaponItem = new foundry.documents.BaseItem({ name: "sword", type: "weapon" });
 
-if (baseItem._source.type === "armor") {
-  expectType<number>(baseItem._source.system.armorValue);
-  expectError(baseItem._source.system.weight);
-} else {
-  expectType<number>(baseItem._source.system.attackSpeed);
-  expectType<number>(baseItem._source.system.damagePerHit);
-  expectError(baseItem._source.system.damage);
+expectType<EmbeddedCollection<typeof ActiveEffect, foundry.documents.BaseItem>>(weaponItem.effects);
+expectType<ActiveEffectData>(weaponItem._source.effects[0]);
+expectType<EffectDurationData>(weaponItem._source.effects[0].duration);
+expectType<Item | undefined>(weaponItem.parent?.items.get("", { strict: true }));
+
+expectType<"armor">(armorItem.type);
+expectType<number>(armorItem._source.system.armorValue);
+expectError(armorItem._source.system.weight);
+expectType<number>(armorItem.system.armorValue);
+expectType<number>(armorItem.system.weight);
+
+expectType<"weapon">(weaponItem.type);
+expectType<number>(weaponItem._source.system.attackSpeed);
+expectType<number>(weaponItem._source.system.damagePerHit);
+expectError(weaponItem._source.system.damage);
+expectType<number>(weaponItem.system.attackSpeed);
+expectType<number>(weaponItem.system.damagePerHit);
+expectType<number>(weaponItem.system.damage);
+
+declare const unknownItem: foundry.documents.BaseItem<"armor" | "weapon">;
+if ("attackSpeed" in unknownItem._source.system) {
+  expectType<WeaponSystemSource>(unknownItem._source.system);
 }
-
-if (baseItem.type === "armor") {
-  expectType<number>(baseItem.system.armorValue);
-  expectType<number>(baseItem.system.weight);
-} else {
-  expectType<number>(baseItem.system.attackSpeed);
-  expectType<number>(baseItem.system.damagePerHit);
-  expectType<number>(baseItem.system.damage);
+if ("attackSpeed" in unknownItem.system) {
+  expectType<WeaponSystemProperties>(unknownItem.system);
 }
 
 // Flags for Actor, Item, Card, and Cards documents can be configured via the FlagConfig. This is tested here.
@@ -69,13 +73,13 @@ declare global {
     };
   }
 }
-expectType<{ countable: boolean }>(baseItem.flags["my-system"]);
+expectType<{ countable: boolean }>(weaponItem.flags["my-system"]);
 
-expectType<boolean>(baseItem.getFlag("my-system", "countable"));
-expectType<never>(baseItem.getFlag("my-system", "unknown-key"));
-expectType<unknown>(baseItem.getFlag("another-system", "value"));
+expectType<boolean>(weaponItem.getFlag("my-system", "countable"));
+expectType<never>(weaponItem.getFlag("my-system", "unknown-key"));
+expectType<unknown>(weaponItem.getFlag("another-system", "value"));
 
-expectType<Promise<BaseItem>>(baseItem.setFlag("my-system", "countable", true));
-expectError(baseItem.setFlag("my-system", "countable", 2));
-expectError(baseItem.setFlag("my-system", "unknown-key", 2));
-expectType<Promise<BaseItem>>(baseItem.setFlag("another-system", "value", true));
+expectType<Promise<BaseItem>>(weaponItem.setFlag("my-system", "countable", true));
+expectError(weaponItem.setFlag("my-system", "countable", 2));
+expectError(weaponItem.setFlag("my-system", "unknown-key", 2));
+expectType<Promise<BaseItem>>(weaponItem.setFlag("another-system", "value", true));
