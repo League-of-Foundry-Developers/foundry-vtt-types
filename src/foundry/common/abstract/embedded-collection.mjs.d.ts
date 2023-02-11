@@ -1,6 +1,7 @@
+import { ToObjectFalseType } from "../../../types/helperTypes";
 import _Collection from "../utils/collection.mjs";
 import { AnyDocumentData } from "./data.mjs";
-import { DocumentConstructor, ToObjectFalseType } from "../../../types/helperTypes";
+import type Document from "./document.mjs.js";
 
 type Collection<T> = Omit<_Collection<T>, "set" | "delete">;
 
@@ -19,7 +20,7 @@ declare const Collection: CollectionConstructor;
  * Used for the specific task of containing embedded Document instances within a parent Document.
  */
 declare class EmbeddedCollection<
-  ContainedDocumentConstructor extends DocumentConstructor,
+  ContainedDocumentConstructor extends Document.Constructor,
   ParentDocumentData extends AnyDocumentData
 > extends Collection<InstanceType<ContainedDocumentConstructor>> {
   /**

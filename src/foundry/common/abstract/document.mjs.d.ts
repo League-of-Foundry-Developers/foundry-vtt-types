@@ -1,36 +1,9 @@
-import {
-  ConfiguredDocumentClass,
-  ConstructorDataType,
-  DocumentConstructor,
-  DocumentType
-} from "../../../types/helperTypes";
-import * as CONST from "../constants.mjs";
+import type { ConfiguredDocumentClass, ConstructorDataType } from "../../../types/helperTypes";
+import type * as CONST from "../constants.mjs";
 import type { fields } from "../data/module.mjs";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mjs";
-import DataModel from "./data.mjs";
-import EmbeddedCollection from "./embedded-collection.mjs";
-
-/** Any {@link Document} */
-export type AnyDocument = Document<any, any, any>;
-
-/** Any {@link Document}, that is a child of the given parent Document. */
-export type AnyChildDocument<Parent extends AnyDocument | null> = Document<any, any, Parent>;
-
-/** Any {@link fields.SchemaField} with flags. */
-export type AnySchemaFieldWithFlags = fields.SchemaField<
-  {
-    flags: fields.ObjectField<
-      {},
-      Record<string, unknown> | null | undefined,
-      Record<string, unknown>,
-      Record<string, unknown>
-    >;
-  },
-  any,
-  any,
-  any,
-  any
->;
+import type DataModel from "./data.mjs";
+import type EmbeddedCollection from "./embedded-collection.mjs";
 
 export default Document;
 /**
@@ -38,9 +11,9 @@ export default Document;
  * Documents are special in that they are persisted to the database and referenced by _id.
  */
 declare abstract class Document<
-  SchemaField extends AnySchemaFieldWithFlags,
+  SchemaField extends fields.SchemaField.AnyWithFlags,
   ConcreteMetadata extends AnyMetadata = AnyMetadata,
-  Parent extends AnyDocument | null = null
+  Parent extends Document.Any | null = null
 > extends DataModel<SchemaField, Parent> {
   /**
    * @param data    - Initial data provided to construct the Document
@@ -60,7 +33,7 @@ declare abstract class Document<
    */
   readonly pack: string | null;
 
-  readonly collections: Record<string, EmbeddedCollection<ConstructorOf<AnyDocument>, this>>;
+  readonly collections: Record<string, EmbeddedCollection<ConstructorOf<Document.Any>, this>>;
 
   /**
    * Default metadata which applies to each instance of this Document type.
@@ -95,7 +68,7 @@ declare abstract class Document<
    */
   // Referencing the concrete class the config is not possible because accessors cannot be generic and there is not
   // static polymorphic this type
-  static get implementation(): ConstructorOf<AnyDocument>;
+  static get implementation(): ConstructorOf<Document.Any>;
 
   /**
    * The named collection to which this Document belongs.
@@ -246,21 +219,21 @@ declare abstract class Document<
    * const created = await Actor.createDocuments(data, {pack: "mymodule.mypack"});
    * ```
    */
-  static createDocuments<T extends DocumentConstructor>(
+  static createDocuments<T extends Document.Constructor>(
     this: T,
     data: Array<
       ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>)
     >,
     context: DocumentModificationContext & { temporary: false }
   ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[]>;
-  static createDocuments<T extends DocumentConstructor>(
+  static createDocuments<T extends Document.Constructor>(
     this: T,
     data: Array<
       ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>)
     >,
     context: DocumentModificationContext & { temporary: boolean }
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
-  static createDocuments<T extends DocumentConstructor>(
+  static createDocuments<T extends Document.Constructor>(
     this: T,
     data?: Array<
       ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>)
@@ -303,7 +276,7 @@ declare abstract class Document<
    * const updated = await Actor.updateDocuments([{_id: actor.id, name: "New Name"}], {pack: "mymodule.mypack"});
    * ```
    */
-  static updateDocuments<T extends DocumentConstructor>(
+  static updateDocuments<T extends Document.Constructor>(
     this: T,
     updates?: Array<
       DeepPartial<
@@ -350,7 +323,7 @@ declare abstract class Document<
    * const deleted = await Actor.deleteDocuments([actor.id], {pack: "mymodule.mypack"});
    * ```
    */
-  static deleteDocuments<T extends DocumentConstructor>(
+  static deleteDocuments<T extends Document.Constructor>(
     this: T,
     ids?: string[],
     context?: DocumentModificationContext
@@ -385,17 +358,17 @@ declare abstract class Document<
    *
    * @remarks If no document has actually been created, the returned {@link Promise} resolves to `undefined`.
    */
-  static create<T extends DocumentConstructor>(
+  static create<T extends Document.Constructor>(
     this: T,
     data: ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>),
     context: DocumentModificationContext & { temporary: false }
   ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>> | undefined>;
-  static create<T extends DocumentConstructor>(
+  static create<T extends Document.Constructor>(
     this: T,
     data: ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>),
     context: DocumentModificationContext & { temporary: boolean }
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
-  static create<T extends DocumentConstructor>(
+  static create<T extends Document.Constructor>(
     this: T,
     data: ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>),
     context?: DocumentModificationContext
@@ -435,14 +408,14 @@ declare abstract class Document<
    * @param documentId - The Document ID
    * @returns The retrieved Document, or null
    */
-  static get(documentId: string): AnyDocument | null;
+  static get(documentId: string): Document.Any | null;
 
   /**
    * Obtain a reference to the Array of source data within the data object for a certain embedded Document name
    * @param embeddedName - The name of the embedded Document type
    * @returns The Collection instance of embedded Documents of the requested type
    */
-  getEmbeddedCollection(embeddedName: string): EmbeddedCollection<ConstructorOf<AnyDocument>, this>; // TODO: Improve
+  getEmbeddedCollection(embeddedName: string): EmbeddedCollection<ConstructorOf<Document.Any>, this>; // TODO: Improve
 
   /**
    * Get an embedded document by it's id from a named collection in the parent document.
@@ -463,7 +436,7 @@ declare abstract class Document<
        */
       strict?: boolean;
     }
-  ): AnyChildDocument<this> | undefined;
+  ): Document.AnyChild<this> | undefined;
 
   /**
    * Create multiple embedded Document instances within this parent Document using provided input data.
@@ -479,17 +452,17 @@ declare abstract class Document<
     embeddedName: string,
     data: Array<Record<string, unknown>>,
     context: DocumentModificationContext & { temporary: false }
-  ): Promise<Array<StoredDocument<AnyChildDocument<this>>>>;
+  ): Promise<Array<StoredDocument<Document.AnyChild<this>>>>;
   createEmbeddedDocuments(
     embeddedName: string,
     data: Array<Record<string, unknown>>,
     context: DocumentModificationContext & { temporary: boolean }
-  ): Promise<Array<AnyChildDocument<this>>>;
+  ): Promise<Array<Document.AnyChild<this>>>;
   createEmbeddedDocuments(
     embeddedName: string,
     data: Array<Record<string, unknown>>,
     context?: DocumentModificationContext
-  ): Promise<Array<StoredDocument<AnyChildDocument<this>>>>;
+  ): Promise<Array<StoredDocument<Document.AnyChild<this>>>>;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
@@ -505,7 +478,7 @@ declare abstract class Document<
     embeddedName: string,
     updates?: Array<Record<string, unknown>>,
     context?: DocumentModificationContext
-  ): Promise<Array<AnyChildDocument<this>>>;
+  ): Promise<Array<Document.AnyChild<this>>>;
 
   /**
    * Delete multiple embedded Document instances within a parent Document using provided string ids.
@@ -520,7 +493,7 @@ declare abstract class Document<
     embeddedName: string,
     ids: Array<string>,
     context?: DocumentModificationContext
-  ): Promise<Array<AnyChildDocument<this>>>;
+  ): Promise<Array<Document.AnyChild<this>>>;
 
   /**
    * Get the value of a "flag" for this document
@@ -664,7 +637,7 @@ declare abstract class Document<
    * `unknown` to allow deriving classes to return whatever they want. The
    * return type is not meant to be used.
    */
-  protected static _onCreateDocuments<T extends DocumentConstructor>(
+  protected static _onCreateDocuments<T extends Document.Constructor>(
     this: T,
     documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
     context: DocumentModificationContext
@@ -681,7 +654,7 @@ declare abstract class Document<
    * `unknown` to allow deriving classes to return whatever they want. The
    * return type is not meant to be used.
    */
-  protected static _onUpdateDocuments<T extends DocumentConstructor>(
+  protected static _onUpdateDocuments<T extends Document.Constructor>(
     this: T,
     documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
     context: DocumentModificationContext
@@ -698,7 +671,7 @@ declare abstract class Document<
    * `unknown` to allow deriving classes to return whatever they want. The
    * return type is not meant to be used.
    */
-  protected static _onDeleteDocuments<T extends DocumentConstructor>(
+  protected static _onDeleteDocuments<T extends Document.Constructor>(
     this: T,
     documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
     context: DocumentModificationContext
@@ -752,9 +725,63 @@ declare abstract class Document<
   protected static _logV10CompatibilityWarning(options?: LogCompatibilityWarningOptions): void;
 }
 
+declare namespace Document {
+  /** Any Document */
+  type Any = Document<any, any, any>;
+
+  /** Any Document, that is a child of the given parent Document. */
+  type AnyChild<Parent extends Any | null> = Document<any, any, Parent>;
+
+  type Constructor = Pick<typeof Document, keyof typeof Document> & (new (...args: any[]) => Document.Any);
+
+  type SystemConstructor = Constructor & { metadata: { name: SystemType } };
+
+  type SystemType = "Actor" | "Card" | "Cards" | "Item";
+
+  type TypeName =
+    | "Actor"
+    | "Adventure"
+    | "Cards"
+    | "ChatMessage"
+    | "Combat"
+    | "FogExploration"
+    | "Folder"
+    | "Item"
+    | "JournalEntry"
+    | "Macro"
+    | "Playlist"
+    | "RollTable"
+    | "Scene"
+    | "Setting"
+    | "User"
+    | "ActiveEffect"
+    | "Card"
+    | "TableResult"
+    | "PlaylistSound"
+    | "AmbientLight"
+    | "AmbientSound"
+    | "Combatant"
+    | "Drawing"
+    | "MeasuredTemplate"
+    | "Note"
+    | "Tile"
+    | "Token"
+    | "Wall";
+
+  type PlaceableTypeName =
+    | "AmbientLight"
+    | "AmbientSound"
+    | "Drawing"
+    | "MeasuredTemplate"
+    | "Note"
+    | "Tile"
+    | "Token"
+    | "Wall";
+}
+
 export type DocumentModificationOptions = Omit<DocumentModificationContext, "parent" | "pack">;
 
-export interface Context<Parent extends AnyDocument | null> {
+export interface Context<Parent extends Document.Any | null> {
   /**
    * A parent document within which this Document is embedded
    */
@@ -766,10 +793,10 @@ export interface Context<Parent extends AnyDocument | null> {
   pack?: string;
 }
 
-export type AnyMetadata = Metadata<AnyDocument>;
+export type AnyMetadata = Metadata<Document.Any>;
 
-export interface Metadata<ConcreteDocument extends AnyDocument> {
-  name: DocumentType;
+export interface Metadata<ConcreteDocument extends Document.Any> {
+  name: Document.TypeName;
   collection: string;
   indexed?: boolean;
   compendiumIndexFields?: string[];

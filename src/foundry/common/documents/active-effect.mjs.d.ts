@@ -1,5 +1,5 @@
 import type Document from "../abstract/document.mjs";
-import type { AnyDocument, DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mjs";
+import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mjs";
 import type * as CONST from "../constants.mjs";
 import type * as fields from "../data/fields.mjs";
 import type * as documents from "./module.mjs";
@@ -16,7 +16,7 @@ export default BaseActiveEffect;
 /**
  * The data schema for an ActiveEffect document.
  */
-declare class BaseActiveEffect<Parent extends AnyDocument | null = null> extends Document<
+declare class BaseActiveEffect<Parent extends Document.Any | null = null> extends Document<
   BaseActiveEffect.SchemaField,
   BaseActiveEffect.Metadata,
   Parent

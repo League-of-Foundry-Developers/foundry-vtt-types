@@ -1,9 +1,9 @@
-import DocumentData, { AnyDataModel, DataModel } from "../foundry/common/abstract/data.mjs";
-import Document, { AnyDocument, AnyMetadata } from "../foundry/common/abstract/document.mjs";
+import DocumentData, { DataModel } from "../foundry/common/abstract/data.mjs";
+import Document, { AnyMetadata } from "../foundry/common/abstract/document.mjs";
 import EmbeddedCollection from "../foundry/common/abstract/embedded-collection.mjs";
 import type { fields } from "../foundry/common/data/module.mjs.js";
 
-export type PropertiesDataType<T extends AnyDocument | AnyDataModel> = T extends DocumentData<any, infer U>
+export type PropertiesDataType<T extends Document.Any | DataModel.Any> = T extends DocumentData<any, infer U>
   ? U
   : T extends Document<infer U, any, any>
   ? PropertiesDataType<U>
@@ -13,7 +13,7 @@ type PropertyTypeToSourceType<T> = T extends EmbeddedCollection<infer U, any>
   ? SourceDataType<InstanceType<U>>[]
   : T extends Array<infer U>
   ? Array<PropertyTypeToSourceType<U>>
-  : T extends AnyDataModel
+  : T extends DataModel.Any
   ? SourceDataType<T>
   : T;
 
@@ -21,7 +21,7 @@ export type PropertiesToSource<T extends object> = {
   [Key in keyof T]: PropertyTypeToSourceType<T[Key]>;
 };
 
-type SourceDataType<T extends AnyDocument | AnyDataModel> = T extends DocumentData<any, any, infer U>
+type SourceDataType<T extends Document.Any | DataModel.Any> = T extends DocumentData<any, any, infer U>
   ? U
   : T extends Document<infer U, any, any>
   ? SourceDataType<U>
@@ -30,7 +30,7 @@ type SourceDataType<T extends AnyDocument | AnyDataModel> = T extends DocumentDa
 /**
  * Returns the type of the constructor data for the given {@link DataModel}.
  */
-export type ConstructorDataType<DM extends AnyDataModel> = DM extends DataModel<any, any, infer ConstructorData>
+export type ConstructorDataType<DM extends DataModel.Any> = DM extends DataModel<any, any, infer ConstructorData>
   ? ConstructorData
   : never;
 
@@ -42,8 +42,6 @@ export type PropertyTypeToSourceParameterType<T> = ObjectToDeepPartial<PropertyT
 export type FieldReturnType<T extends DocumentField<any>, U extends Partial<DocumentField<any>>> = Omit<T, keyof U> &
   Exclude<U, "undefined">;
 
-export type DocumentConstructor = Pick<typeof Document, keyof typeof Document> & (new (...args: any[]) => AnyDocument);
-
 export type PlaceableObjectConstructor = Pick<typeof PlaceableObject, keyof typeof PlaceableObject> &
   (new (...args: any[]) => PlaceableObject<any>);
 
@@ -51,55 +49,15 @@ export type ConfiguredDocumentClass<T extends { metadata: AnyMetadata }> = Confi
   T["metadata"]["name"]
 >;
 
-export type DocumentType =
-  | "Actor"
-  | "Adventure"
-  | "Cards"
-  | "ChatMessage"
-  | "Combat"
-  | "FogExploration"
-  | "Folder"
-  | "Item"
-  | "JournalEntry"
-  | "Macro"
-  | "Playlist"
-  | "RollTable"
-  | "Scene"
-  | "Setting"
-  | "User"
-  | "ActiveEffect"
-  | "Card"
-  | "TableResult"
-  | "PlaylistSound"
-  | "AmbientLight"
-  | "AmbientSound"
-  | "Combatant"
-  | "Drawing"
-  | "MeasuredTemplate"
-  | "Note"
-  | "Tile"
-  | "Token"
-  | "Wall";
-
-export type PlaceableDocumentType =
-  | "AmbientLight"
-  | "AmbientSound"
-  | "Drawing"
-  | "MeasuredTemplate"
-  | "Note"
-  | "Tile"
-  | "Token"
-  | "Wall";
-
-export type DocumentSubTypes<T extends DocumentType> = "type" extends keyof InstanceType<
+export type DocumentSubTypes<T extends Document.TypeName> = "type" extends keyof InstanceType<
   ConfiguredDocumentClassForName<T>
 >["data"]
   ? InstanceType<ConfiguredDocumentClassForName<T>>["data"]["type"]
   : typeof foundry.CONST.BASE_DOCUMENT_TYPE;
 
-export type ConfiguredDocumentClassForName<Name extends DocumentType> = CONFIG[Name]["documentClass"];
+export type ConfiguredDocumentClassForName<Name extends Document.TypeName> = CONFIG[Name]["documentClass"];
 
-export type ConfiguredObjectClassForName<Name extends PlaceableDocumentType> = CONFIG[Name]["objectClass"];
+export type ConfiguredObjectClassForName<Name extends Document.PlaceableTypeName> = CONFIG[Name]["objectClass"];
 
 export type ConfiguredProperties<Name extends string> = Name extends keyof PropertiesConfig
   ? PropertiesConfig[Name]
@@ -133,19 +91,19 @@ export type ToObjectFalseType<T> = T extends {
   ? U
   : T;
 
-export type ConfiguredSheetClass<T extends DocumentConstructor> = T["metadata"]["name"] extends keyof CONFIG
+export type ConfiguredSheetClass<T extends Document.Constructor> = T["metadata"]["name"] extends keyof CONFIG
   ? "sheetClass" extends keyof CONFIG[T["metadata"]["name"]]
     ? CONFIG[T["metadata"]["name"]]["sheetClass"]
     : never
   : T;
 
-export type ObjectClass<T extends DocumentConstructor> = T["metadata"]["name"] extends keyof CONFIG
+export type ObjectClass<T extends Document.Constructor> = T["metadata"]["name"] extends keyof CONFIG
   ? "objectClass" extends keyof CONFIG[T["metadata"]["name"]]
     ? CONFIG[T["metadata"]["name"]]["objectClass"]
     : never
   : T;
 
-export type LayerClass<T extends DocumentConstructor> = T["metadata"]["name"] extends keyof CONFIG
+export type LayerClass<T extends Document.Constructor> = T["metadata"]["name"] extends keyof CONFIG
   ? "layerClass" extends keyof CONFIG[T["metadata"]["name"]]
     ? CONFIG[T["metadata"]["name"]]["layerClass"]
     : never

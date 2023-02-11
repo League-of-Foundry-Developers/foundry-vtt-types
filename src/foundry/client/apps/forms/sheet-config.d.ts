@@ -1,4 +1,4 @@
-import type { DocumentConstructor, DocumentType } from "../../../../types/helperTypes";
+import type Document from "../../../common/abstract/document.mjs";
 
 declare global {
   /**
@@ -45,7 +45,7 @@ declare global {
     /**
      * @internal
      */
-    protected static _getDocumentTypes(cls: DocumentConstructor, types?: string[]): string[];
+    protected static _getDocumentTypes(cls: Document.Constructor, types?: string[]): string[];
 
     /**
      * Register a sheet class as a candidate which can be used to display documents of a given type
@@ -55,7 +55,7 @@ declare global {
      * @param options       - Additional options used for sheet registration
      */
     static registerSheet(
-      documentClass: DocumentConstructor,
+      documentClass: Document.Constructor,
       scope: string,
       sheetClass: ConstructorOf<FormApplication<FormApplicationOptions, any>>,
       { label, types, makeDefault }?: DocumentSheetConfig.RegisterSheetOptions | undefined
@@ -76,7 +76,7 @@ declare global {
      * @param types         - An Array of types for which this sheet should be removed
      */
     static unregisterSheet(
-      documentClass: DocumentConstructor,
+      documentClass: Document.Constructor,
       scope: string,
       sheetClass: ConstructorOf<FormApplication<FormApplicationOptions, any>>,
       { types }?: { types?: string[] }
@@ -92,7 +92,7 @@ declare global {
     /**
      * Update the current default Sheets using a new core world setting.
      */
-    static updateDefaultSheets(setting?: Record<DocumentType, Record<string, string>>): void;
+    static updateDefaultSheets(setting?: Record<Document.TypeName, Record<string, string>>): void;
 
     /**
      * Initialize default sheet configurations for all document types.
@@ -106,7 +106,7 @@ declare global {
       action: "register";
 
       /** The Document class being registered */
-      documentClass: DocumentConstructor;
+      documentClass: Document.Constructor;
 
       /** The sheet ID being registered */
       id: string;
@@ -128,7 +128,7 @@ declare global {
       action: "unregister";
 
       /** The Document class being unregistered */
-      documentClass: DocumentConstructor;
+      documentClass: Document.Constructor;
 
       /** The sheet ID being unregistered */
       id: string;

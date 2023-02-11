@@ -1,4 +1,5 @@
-import { ConfiguredDocumentClass, ConstructorDataType, DocumentConstructor } from "../../../../types/helperTypes";
+import { ConfiguredDocumentClass, ConstructorDataType } from "../../../../types/helperTypes";
+import type Document from "../../../common/abstract/document.mjs";
 import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
 declare global {
@@ -62,7 +63,7 @@ declare global {
      *
      * @remarks For weird reasons, we need to make this generic.
      */
-    static createDialog<T extends DocumentConstructor>(
+    static createDialog<T extends Document.Constructor>(
       this: T,
       data?:
         | DeepPartial<

@@ -1,10 +1,10 @@
-import type { AnyDataModel, DataModel } from "../../abstract/module.mjs";
+import type { DataModel } from "../../abstract/module.mjs";
 import type * as fields from "../fields.mjs";
 
 /**
  * A data model intended to be used as an inner EmbeddedDataField which defines a geometric shape.
  */
-export class ShapeData extends DataModel<ShapeData.SchemaField, AnyDataModel> {
+export class ShapeData extends DataModel<ShapeData.SchemaField, DataModel.Any> {
   static override defineSchema(): ShapeData.Schema;
 
   /**

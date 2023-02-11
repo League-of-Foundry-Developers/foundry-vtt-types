@@ -1,15 +1,8 @@
-import type { ConfiguredFlags, DocumentConstructor } from "../../../types/helperTypes.js";
+import type { ConfiguredFlags } from "../../../types/helperTypes.js";
 import type DataModel from "../abstract/data.mjs.js";
-import type { AnyDocument } from "../abstract/document.mjs.js";
-import { type AnyDataModel, type Document } from "../abstract/module.mjs";
+import { type Document } from "../abstract/module.mjs";
 import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.mjs.js";
 import type { CONST } from "../module.mjs.js";
-
-/**
- * A helper type for the initial option type of {@link DataField} classes.
- * @typeParam InitializedType - the type of the initialized value of the field
- */
-export type InitialType<InitializedType> = InitializedType | ((initialData: unknown) => InitializedType);
 
 declare global {
   /**
@@ -24,10 +17,14 @@ declare global {
     nullable?: boolean;
 
     /** The initial value of a field, or a function which assigns that initial value. */
-    initial?: InitialType<unknown>;
+    initial?: DataField.InitialType<unknown>;
 
     /** A data validation function which accepts one argument with the current value. */
-    validate?: (this: AnyDataField, value: any, options?: DataField.ValidationOptions<AnyDataField>) => boolean | void;
+    validate?: (
+      this: DataField.Any,
+      value: any,
+      options?: DataField.ValidationOptions<DataField.Any>
+    ) => boolean | void;
 
     /** A localizable label displayed on forms which render this field. */
     label?: string;
@@ -42,12 +39,6 @@ declare global {
     validationError?: string;
   }
 }
-
-/** Any {@link DataField}. */
-export type AnyDataField = DataField<any, any, any, any>;
-
-/** A {@link DataField} with unknown inner types. */
-export type UnknownDataField = DataField<any, unknown, unknown, unknown>;
 
 /**
  * An abstract class that defines the base pattern for a data field within a data schema.
@@ -92,7 +83,7 @@ declare abstract class DataField<
    * The initial value of a field, or a function which assigns that initial value.
    * @defaultValue `undefined`
    */
-  initial: InitialType<InitializedType>;
+  initial: DataField.InitialType<InitializedType>;
 
   /**
    * Should the prepared value of the field be read-only, preventing it from being
@@ -134,7 +125,7 @@ declare abstract class DataField<
    * This is assigned by SchemaField#initialize.
    * @internal
    */
-  parent: AnyDataField | undefined;
+  parent: DataField.Any | undefined;
 
   /**
    * Default parameters for this field type
@@ -205,7 +196,7 @@ declare abstract class DataField<
    */
   validate(
     value: AssignmentType,
-    options?: DataField.ValidationOptions<AnyDataField>
+    options?: DataField.ValidationOptions<DataField.Any>
   ): ModelValidationError | undefined;
 
   /**
@@ -226,7 +217,7 @@ declare abstract class DataField<
    *          Otherwise, return void.
    * @throws May throw a specific error if the value is not valid
    */
-  protected _validateType(value: InitializedType, options?: DataField.ValidationOptions<AnyDataField>): boolean | void;
+  protected _validateType(value: InitializedType, options?: DataField.ValidationOptions<DataField.Any>): boolean | void;
 
   /**
    * Initialize the original source data into a mutable copy for the DataModel instance.
@@ -234,7 +225,7 @@ declare abstract class DataField<
    * @param model - The DataModel instance that this field belongs to
    * @returns An initialized copy of the source data
    */
-  initialize(value: PersistedType, model: AnyDataModel): (() => InitializedType | null) | InitializedType;
+  initialize(value: PersistedType, model: DataModel.Any): (() => InitializedType | null) | InitializedType;
 
   /**
    * Export the current value of the field into a serializable object.
@@ -255,6 +246,18 @@ declare namespace DataField {
     hint: "";
     validationError: "is not a valid value";
   };
+
+  /** Any DataField. */
+  type Any = DataField<any, any, any, any>;
+
+  /** A DataField with unknown inner types. */
+  type Unknown = DataField<any, unknown, unknown, unknown>;
+
+  /**
+   * A helper type for the initial option type of {@link DataField} classes.
+   * @typeParam InitializedType - the type of the initialized value of the field
+   */
+  type InitialType<InitializedType> = InitializedType | ((initialData: unknown) => InitializedType);
 
   /** The default AssignmentType for the DataField class. */
   type DefaultAssignmentType = any | null | undefined;
@@ -282,9 +285,6 @@ declare namespace DataField {
     validate?: (this: DataField, value: unknown, options: ValidationOptions<DataField>) => boolean;
   }
 }
-
-/** Any {@link SchemaField}. */
-export type AnySchemaField = SchemaField<any, any, any, any, any>;
 
 /**
  * A special class of {@link DataField} which defines a data schema.
@@ -315,7 +315,7 @@ declare class SchemaField<
   override nullable: boolean;
 
   /** @defaultValue `() => this.clean({})` */
-  override initial: InitialType<InitializedType>;
+  override initial: DataField.InitialType<InitializedType>;
 
   protected static override get _defaults(): DataFieldOptions;
 
@@ -334,7 +334,7 @@ declare class SchemaField<
   /**
    * Iterate over a SchemaField by iterating over its fields.
    */
-  [Symbol.iterator](): Iterable<UnknownDataField>;
+  [Symbol.iterator](): Iterable<DataField.Unknown>;
 
   /**
    * An array of field names which are present in the schema.
@@ -363,17 +363,17 @@ declare class SchemaField<
    * @param fieldName - The field name
    * @returns The DataField instance or undefined
    */
-  get(fieldName: string): UnknownDataField | undefined;
+  get(fieldName: string): DataField.Unknown | undefined;
 
   protected override _cast(value: AssignmentType): InitializedType;
 
   protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | undefined): InitializedType;
 
-  override initialize(value: PersistedType, model: AnyDataModel): InitializedType | (() => InitializedType | null);
+  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<AnyDataField> | undefined
+    options?: DataField.ValidationOptions<DataField.Any> | undefined
   ): boolean | void;
 
   override toObject(value: InitializedType): PersistedType;
@@ -386,6 +386,25 @@ declare class SchemaField<
 }
 
 declare namespace SchemaField {
+  /** Any SchemaField. */
+  type Any = SchemaField<any, any, any, any, any>;
+
+  /** Any SchemaField with flags. */
+  type AnyWithFlags = SchemaField<
+    {
+      flags: ObjectField<
+        {},
+        Record<string, unknown> | null | undefined,
+        Record<string, unknown>,
+        Record<string, unknown>
+      >;
+    },
+    any,
+    any,
+    any,
+    any
+  >;
+
   /** Get the inferred assignment type for the given DataSchema. */
   type AssignmentType<Schema extends DataSchema> = {
     [Key in keyof Schema]?: Schema[Key] extends DataField<any, infer AssignType, any, any>
@@ -455,7 +474,7 @@ declare class BooleanField<
   override nullable: boolean;
 
   /** @defaultValue `false` */
-  override initial: InitialType<InitializedType>;
+  override initial: DataField.InitialType<InitializedType>;
 
   protected static override get _defaults(): DataFieldOptions;
 
@@ -463,7 +482,7 @@ declare class BooleanField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<AnyDataField> | undefined
+    options?: DataField.ValidationOptions<DataField.Any> | undefined
   ): boolean | void;
 }
 
@@ -541,7 +560,7 @@ declare class NumberField<
   constructor(options?: Options);
 
   /** @defaultValue `null` */
-  override initial: InitialType<InitializedType>;
+  override initial: DataField.InitialType<InitializedType>;
 
   /** @defaultValue `true` */
   override nullable: boolean;
@@ -592,7 +611,7 @@ declare class NumberField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<AnyDataField> | undefined
+    options?: DataField.ValidationOptions<DataField.Any> | undefined
   ): boolean | void;
 
   /**
@@ -667,7 +686,7 @@ declare class StringField<
   constructor(options?: Options);
 
   /** @defaultValue `""` */
-  override initial: InitialType<InitializedType>;
+  override initial: DataField.InitialType<InitializedType>;
 
   /**
    * Is the string allowed to be blank (empty)?
@@ -702,7 +721,7 @@ declare class StringField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<AnyDataField> | undefined
+    options?: DataField.ValidationOptions<DataField.Any> | undefined
   ): boolean | void;
 
   /**
@@ -758,19 +777,19 @@ declare class ObjectField<
   override nullable: boolean;
 
   /** @defaultValue `() => ({})` */
-  override initial: InitialType<InitializedType>;
+  override initial: DataField.InitialType<InitializedType>;
 
   protected static override get _defaults(): DataFieldOptions;
 
   protected override _cast(value: AssignmentType): InitializedType;
 
-  override initialize(value: PersistedType, model: AnyDataModel): InitializedType | (() => InitializedType | null);
+  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<AnyDataField> | undefined
+    options?: DataField.ValidationOptions<DataField.Any> | undefined
   ): boolean | void;
 }
 
@@ -817,7 +836,7 @@ declare namespace ObjectField {
  * InitialValue: `[]`
  */
 declare class ArrayField<
-  ElementFieldType extends AnyDataField | DocumentConstructor,
+  ElementFieldType extends DataField.Any | Document.Constructor,
   AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
   InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
   Options extends DataFieldOptions = ArrayField.DefaultOptions<InitializedElementType>,
@@ -842,7 +861,7 @@ declare class ArrayField<
   override nullable: boolean;
 
   /** @defaultValue `() => []` */
-  override initial: InitialType<InitializedType>;
+  override initial: DataField.InitialType<InitializedType>;
 
   /**
    * The data type of each element in this array
@@ -855,7 +874,7 @@ declare class ArrayField<
    * @returns The validated element type
    * @throws An error if the element is not a valid type
    */
-  protected static _validateElementType<T extends AnyDataField>(element: T): T;
+  protected static _validateElementType<T extends DataField.Any>(element: T): T;
 
   protected static override get _defaults(): DataFieldOptions;
 
@@ -865,7 +884,7 @@ declare class ArrayField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<AnyDataField> | undefined
+    options?: DataField.ValidationOptions<DataField.Any> | undefined
   ): boolean | void;
 
   /**
@@ -876,10 +895,10 @@ declare class ArrayField<
    */
   protected _validateElements(
     value: any[],
-    options?: DataField.ValidationOptions<AnyDataField>
+    options?: DataField.ValidationOptions<DataField.Any>
   ): ModelValidationError[];
 
-  override initialize(value: PersistedType, model: AnyDataModel): InitializedType | (() => InitializedType | null);
+  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
 
@@ -908,26 +927,26 @@ declare namespace ArrayField {
   >;
 
   /** A type to infer the assignment element type of an ArrayField from its ElementType. */
-  type AssignmentElementType<ElementFieldType extends AnyDataField | DocumentConstructor> =
+  type AssignmentElementType<ElementFieldType extends DataField.Any | Document.Constructor> =
     ElementFieldType extends DataField<any, infer Assign, any, any>
       ? Assign
-      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends AnySchemaField, any, any>
+      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends SchemaField.Any, any, any>
       ? SchemaField.AssignmentType<Schema["fields"]>
       : never;
 
   /** A type to infer the initialized element type of an ArrayField from its ElementType. */
-  type InitializedElementType<ElementFieldType extends AnyDataField | DocumentConstructor> =
+  type InitializedElementType<ElementFieldType extends DataField.Any | Document.Constructor> =
     ElementFieldType extends DataField<any, any, infer Init, any>
       ? Init
-      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends AnySchemaField, any, any>
+      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends SchemaField.Any, any, any>
       ? SchemaField.InitializedType<Schema["fields"]>
       : never;
 
   /** A type to infer the initialized element type of an ArrayField from its ElementType. */
-  type PersistedElementType<ElementFieldType extends AnyDataField | DocumentConstructor> =
+  type PersistedElementType<ElementFieldType extends DataField.Any | Document.Constructor> =
     ElementFieldType extends DataField<any, any, any, infer Persist>
       ? Persist
-      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends AnySchemaField, any, any>
+      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends SchemaField.Any, any, any>
       ? SchemaField.PersistedType<Schema["fields"]>
       : never;
 
@@ -952,7 +971,7 @@ declare namespace ArrayField {
  * InitialValue: `new Set()`
  */
 declare class SetField<
-  ElementFieldType extends AnyDataField,
+  ElementFieldType extends DataField.Any,
   AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
   InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
   Options extends DataFieldOptions = SetField.DefaultOptions<InitializedElementType>,
@@ -972,10 +991,10 @@ declare class SetField<
 > {
   protected override _validateElements(
     value: any[],
-    options?: DataField.ValidationOptions<AnyDataField> | undefined
+    options?: DataField.ValidationOptions<DataField.Any> | undefined
   ): ModelValidationError<ModelValidationError.Errors>[];
 
-  override initialize(value: PersistedType, model: AnyDataModel): InitializedType | (() => InitializedType | null);
+  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
 }
@@ -1009,7 +1028,7 @@ declare namespace SetField {
  * InitialValue: `{}`
  */
 declare class EmbeddedDataField<
-  ModelType extends AnyDataModel,
+  ModelType extends DataModel.Any,
   Options extends DataFieldOptions = EmbeddedDataField.DefaultOptions,
   AssignmentType = EmbeddedDataField.DefaultAssignmentType<ModelType>,
   InitializedType = EmbeddedDataField.DefaultInitializedType<ModelType>,
@@ -1028,7 +1047,7 @@ declare class EmbeddedDataField<
 
   protected override _initialize(fields: DataSchema): DataSchema;
 
-  override initialize(value: PersistedType, model: AnyDataModel): InitializedType | (() => InitializedType | null);
+  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
 }
@@ -1038,17 +1057,17 @@ declare namespace EmbeddedDataField {
   type DefaultOptions = SchemaField.DefaultOptions;
 
   /** The default AssignmentType for the EmbeddedDataField class. */
-  type DefaultAssignmentType<ModelType extends AnyDataModel> = SchemaField.DefaultAssignmentType<
+  type DefaultAssignmentType<ModelType extends DataModel.Any> = SchemaField.DefaultAssignmentType<
     ModelType["schema"]["fields"]
   >;
 
   /** The default InitializedType for the EmbeddedDataField class. */
-  type DefaultInitializedType<ModelType extends AnyDataModel> = SchemaField.DefaultInitializedType<
+  type DefaultInitializedType<ModelType extends DataModel.Any> = SchemaField.DefaultInitializedType<
     ModelType["schema"]["fields"]
   >;
 
   /** The default PersistedType for the EmbeddedDataField class. */
-  type DefaultPersistedType<ModelType extends AnyDataModel> = SchemaField.DefaultPersistedType<
+  type DefaultPersistedType<ModelType extends DataModel.Any> = SchemaField.DefaultPersistedType<
     ModelType["schema"]["fields"]
   >;
 }
@@ -1064,7 +1083,7 @@ declare namespace EmbeddedDataField {
  * InitialValue: `[]`
  */
 declare class EmbeddedCollectionField<
-  ElementFieldType extends DocumentConstructor,
+  ElementFieldType extends Document.Constructor,
   AssignmentElementType = EmbeddedCollectionField.AssignmentElementType<ElementFieldType>,
   InitializedElementType = EmbeddedCollectionField.InitializedElementType<ElementFieldType>,
   Options extends DataFieldOptions = EmbeddedCollectionField.DefaultOptions<InitializedElementType>,
@@ -1094,7 +1113,7 @@ declare class EmbeddedCollectionField<
   /** @defaultValue `true` */
   override readonly: true;
 
-  protected static override _validateElementType<T extends AnyDataField | DocumentConstructor>(element: T): T;
+  protected static override _validateElementType<T extends DataField.Any | Document.Constructor>(element: T): T;
 
   /**
    * A reference to the DataModel subclass of the embedded document element
@@ -1110,10 +1129,10 @@ declare class EmbeddedCollectionField<
 
   protected override _validateElements(
     value: any[],
-    options?: DataField.ValidationOptions<AnyDataField> | undefined
+    options?: DataField.ValidationOptions<DataField.Any> | undefined
   ): ModelValidationError<ModelValidationError.Errors>[];
 
-  override initialize(value: PersistedType, model: AnyDataModel): InitializedType | (() => InitializedType | null);
+  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
 
@@ -1129,19 +1148,19 @@ declare namespace EmbeddedCollectionField {
   type DefaultOptions<InitializedElementType> = ArrayField.DefaultOptions<InitializedElementType>;
 
   /** A type to infer the assignment element type of an EmbeddedCollectionField from its ElementFieldType. */
-  type AssignmentElementType<ElementFieldType extends DocumentConstructor> = ElementFieldType extends new (
+  type AssignmentElementType<ElementFieldType extends Document.Constructor> = ElementFieldType extends new (
     ...args: any[]
-  ) => Document<infer Schema extends AnySchemaField, any, any>
+  ) => Document<infer Schema extends SchemaField.Any, any, any>
     ? SchemaField.AssignmentType<Schema["fields"]>
     : never;
 
   /** A type to infer the initialized element type of an EmbeddedCollectionField from its ElementFieldType. */
-  type InitializedElementType<ElementFieldType extends DocumentConstructor> = InstanceType<ElementFieldType>;
+  type InitializedElementType<ElementFieldType extends Document.Constructor> = InstanceType<ElementFieldType>;
 
   /** A type to infer the initialized element type of an EmbeddedCollectionField from its ElementFieldType. */
-  type PersistedElementType<ElementFieldType extends DocumentConstructor> = ElementFieldType extends new (
+  type PersistedElementType<ElementFieldType extends Document.Constructor> = ElementFieldType extends new (
     ...args: any[]
-  ) => Document<infer Schema extends AnySchemaField, any, any>
+  ) => Document<infer Schema extends SchemaField.Any, any, any>
     ? SchemaField.PersistedType<Schema["fields"]>
     : never;
 
@@ -1184,7 +1203,7 @@ declare class DocumentIdField<
   override nullable: boolean;
 
   /** @defaultValue `null` */
-  override initial: InitialType<InitializedType>;
+  override initial: DataField.InitialType<InitializedType>;
 
   /** @defaultValue `true` */
   override readonly: boolean;
@@ -1198,7 +1217,7 @@ declare class DocumentIdField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<AnyDataField> | undefined
+    options?: DataField.ValidationOptions<DataField.Any> | undefined
   ): boolean | void;
 }
 
@@ -1217,7 +1236,7 @@ declare namespace DocumentIdField {
   >;
 
   /** The default AssignmentType for the DocumentIdField class. */
-  type DefaultAssignmentType = string | AnyDocument | null | undefined;
+  type DefaultAssignmentType = string | Document.Any | null | undefined;
 
   /** The default InitializedType for the DocumentIdField class. */
   type DefaultInitializedType = string | null;
@@ -1237,7 +1256,7 @@ declare namespace DocumentIdField {
  * InitialValue: `null`
  */
 declare class ForeignDocumentField<
-  DocumentType extends DocumentConstructor,
+  DocumentType extends Document.Constructor,
   Options extends ForeignDocumentField.Options = ForeignDocumentField.DefaultOptions,
   AssignmentType = ForeignDocumentField.DefaultAssignmentType<DocumentType>,
   InitializedType = Options["idOnly"] extends true
@@ -1269,7 +1288,7 @@ declare class ForeignDocumentField<
 
   protected override _cast(value: AssignmentType): InitializedType;
 
-  override initialize(value: PersistedType, model: AnyDataModel): InitializedType | (() => InitializedType | null);
+  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
 }
@@ -1290,14 +1309,14 @@ declare namespace ForeignDocumentField {
   >;
 
   /** The default AssignmentType for the ForeignDocumentField class. */
-  type DefaultAssignmentType<DocumentType extends DocumentConstructor> =
+  type DefaultAssignmentType<DocumentType extends Document.Constructor> =
     | string
     | InstanceType<DocumentType>
     | null
     | undefined;
 
   /** The default InitializedType for the ForeignDocumentField class. */
-  type DefaultInitializedType<DocumentType extends DocumentConstructor> = InstanceType<DocumentType> | null;
+  type DefaultInitializedType<DocumentType extends Document.Constructor> = InstanceType<DocumentType> | null;
 
   /** The idOnly InitializedType for the ForeignDocumentField class. */
   type IdOnlyInitializedType = string | null;
@@ -1316,7 +1335,7 @@ declare namespace ForeignDocumentField {
  * InitialValue: `{}`
  */
 declare class SystemDataField<
-  DocumentType extends DocumentConstructor,
+  DocumentType extends Document.SystemConstructor,
   Options extends DataFieldOptions = SystemDataField.DefaultOptions,
   AssignmentType = SystemDataField.DefaultAssignmentType,
   InitializedType = SystemDataField.DefaultInitializedType,
@@ -1352,7 +1371,7 @@ declare class SystemDataField<
 
   protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | undefined): InitializedType;
 
-  override initialize(value: PersistedType, model: AnyDataModel): InitializedType | (() => InitializedType | null);
+  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
 }
@@ -1395,7 +1414,7 @@ declare class ColorField<
   override nullable: boolean;
 
   /** @defaultValue `null` */
-  override initial: InitialType<InitializedType>;
+  override initial: DataField.InitialType<InitializedType>;
 
   /** @defaultValue `false` */
   override blank: boolean;
@@ -1409,7 +1428,7 @@ declare class ColorField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<AnyDataField> | undefined
+    options?: DataField.ValidationOptions<DataField.Any> | undefined
   ): boolean | void;
 }
 
@@ -1496,13 +1515,13 @@ declare class FilePathField<
   override blank: boolean;
 
   /** @defaultValue `null` */
-  override initial: InitialType<InitializedType>;
+  override initial: DataField.InitialType<InitializedType>;
 
   protected static override get _defaults(): FilePathFieldOptions;
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<AnyDataField> | undefined
+    options?: DataField.ValidationOptions<DataField.Any> | undefined
   ): boolean | void;
 }
 
@@ -1552,7 +1571,7 @@ declare class AngleField<
   override nullable: boolean;
 
   /** @defaultValue `0` */
-  override initial: InitialType<InitializedType>;
+  override initial: DataField.InitialType<InitializedType>;
 
   /** @defaultValue `0` */
   base: number;
@@ -1618,7 +1637,7 @@ declare class AlphaField<
   override nullable: boolean;
 
   /** @defaultValue `1` */
-  override initial: InitialType<InitializedType>;
+  override initial: DataField.InitialType<InitializedType>;
 
   /** @defaultValue `0` */
   override min: number | undefined;
@@ -1675,7 +1694,7 @@ declare class DocumentOwnershipField<
     | undefined = DocumentOwnershipField.DefaultPersistedType
 > extends ObjectField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `{"default": DOCUMENT_OWNERSHIP_LEVELS.NONE}` */
-  override initial: InitialType<InitializedType>;
+  override initial: DataField.InitialType<InitializedType>;
 
   /** @defaultValue `"is not a mapping of user IDs and document permission levels"` */
   override validationError: string;
@@ -1684,7 +1703,7 @@ declare class DocumentOwnershipField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<AnyDataField> | undefined
+    options?: DataField.ValidationOptions<DataField.Any> | undefined
   ): boolean | void;
 }
 
@@ -1727,7 +1746,7 @@ declare class JSONField<
   override blank: boolean;
 
   /** @defaultValue `undefined` */
-  override initial: InitialType<InitializedType>;
+  override initial: DataField.InitialType<InitializedType>;
 
   /** @defaultValue `"is not a valid JSON string"` */
   override validationError: string;
@@ -1738,10 +1757,10 @@ declare class JSONField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<AnyDataField> | undefined
+    options?: DataField.ValidationOptions<DataField.Any> | undefined
   ): boolean | void;
 
-  override initialize(value: PersistedType, model: AnyDataModel): InitializedType | (() => InitializedType | null);
+  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
 }
@@ -1838,7 +1857,7 @@ declare class IntegerSortField<
   override integer: boolean;
 
   /** @defaultValue `0` */
-  override initial: InitialType<InitializedType>;
+  override initial: DataField.InitialType<InitializedType>;
 
   /** @defaultValue `"FOLDER.DocumentSort"` */
   override label: string;
@@ -2002,13 +2021,13 @@ declare namespace ModelValidationError {
  * @deprecated since v10 and replaced by the SystemDataField class
  * @see SystemDataField
  */
-export function systemDataField<T extends DocumentConstructor>(document: InstanceType<T>): SystemDataField<T>;
+export function systemDataField<T extends Document.SystemConstructor>(document: InstanceType<T>): SystemDataField<T>;
 
 /**
  * @deprecated since v10 and replaced by the ForeignDocumentField class
  * @see ForeignDocumentField
  */
-export function foreignDocumentField<T extends DocumentConstructor>(options: {
+export function foreignDocumentField<T extends Document.Constructor>(options: {
   type: { model: T };
 }): ForeignDocumentField<T>;
 
@@ -2016,7 +2035,7 @@ export function foreignDocumentField<T extends DocumentConstructor>(options: {
  * @deprecated since v10 and replaced by the EmbeddedCollectionField class
  * @see EmbeddedCollectionField
  */
-export function embeddedCollectionField<E extends DocumentConstructor, O extends DataFieldOptions>(
+export function embeddedCollectionField<E extends Document.Constructor, O extends DataFieldOptions>(
   document: E,
   options?: O
 ): EmbeddedCollectionField<
@@ -2032,7 +2051,7 @@ export function embeddedCollectionField<E extends DocumentConstructor, O extends
 export function field(
   field: { type: typeof String | typeof Number | typeof Boolean | typeof Object | Array<any> | object },
   options?: DataFieldOptions
-): AnyDataField;
+): DataField.Any;
 
 export {
   AlphaField,

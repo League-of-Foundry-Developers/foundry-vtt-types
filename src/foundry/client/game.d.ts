@@ -3,9 +3,9 @@ import {
   ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
   ConfiguredModule,
-  DocumentConstructor,
   ModuleRequiredOrOptional
 } from "../../types/helperTypes";
+import type Document from "../common/abstract/document.mjs";
 
 declare global {
   /**
@@ -59,7 +59,7 @@ declare global {
     /**
      * A mapping of WorldCollection instances, one per primary Document type.
      */
-    collections: foundry.utils.Collection<WorldCollection<DocumentConstructor, string>>;
+    collections: foundry.utils.Collection<WorldCollection<Document.Constructor, string>>;
 
     /**
      * A mapping of CompendiumCollection instances, one per Compendium pack.

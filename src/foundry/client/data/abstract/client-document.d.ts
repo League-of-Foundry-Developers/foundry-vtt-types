@@ -1,5 +1,6 @@
+import { ConfiguredDocumentClass, ConstructorDataType } from "../../../../types/helperTypes";
+import type Document from "../../../common/abstract/document.mjs";
 import { ContextType, DocumentModificationOptions } from "../../../common/abstract/document.mjs";
-import { ConfiguredDocumentClass, ConstructorDataType, DocumentConstructor } from "../../../../types/helperTypes";
 
 declare global {
   // TODO: Replace ConstructorOf<…> with DocumentConstructor once the problem with circular reference has been solved
@@ -311,7 +312,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * @returns A Promise which resolves to the created Document, or null if the dialog was
    *          closed.
    */
-  static createDialog<T extends DocumentConstructor>(
+  static createDialog<T extends Document.Constructor>(
     this: T,
     data?:
       | DeepPartial<
@@ -347,7 +348,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * @param options - Additional options which configure data retrieval
    * @returns The Document data that should be handled by the drop handler
    */
-  static fromDropData<T extends DocumentConstructor>(
+  static fromDropData<T extends Document.Constructor>(
     this: T,
     data: DropData<InstanceType<T>>,
     options?: FromDropDataOptions

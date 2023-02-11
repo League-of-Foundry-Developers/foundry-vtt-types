@@ -1,5 +1,5 @@
-import type { DocumentSubTypes, DocumentType } from "../../../types/helperTypes";
-
+import type { DocumentSubTypes } from "../../../types/helperTypes";
+import type Document from "../../common/abstract/document.mjs";
 import type { TokenDataSource } from "../../common/data/data.mjs/tokenData";
 
 declare global {
@@ -214,7 +214,7 @@ declare global {
       "core.rtcWorldSettings": typeof AVSettings.DEFAULT_WORLD_SETTINGS;
       "core.scrollingStatusText": boolean;
       "core.sheetClasses": {
-        [Key in DocumentType as DocumentSubTypes<Key> extends string ? Key : never]?: Record<
+        [Key in Document.TypeName as DocumentSubTypes<Key> extends string ? Key : never]?: Record<
           DocumentSubTypes<Key> & string,
           string
         >;

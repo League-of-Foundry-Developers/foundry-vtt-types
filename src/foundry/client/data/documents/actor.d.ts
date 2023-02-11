@@ -1,8 +1,5 @@
-import {
-  ConfiguredDocumentClass,
-  ConfiguredObjectClassForName,
-  DocumentConstructor
-} from "../../../../types/helperTypes";
+import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../types/helperTypes";
+import type Document from "../../../common/abstract/document.mjs";
 import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 import EmbeddedCollection from "../../../common/abstract/embedded-collection.mjs";
 import type { ActorDataConstructorData } from "../../../common/data/data.mjs/actorData.js";
@@ -161,7 +158,7 @@ declare global {
 
     override getEmbeddedCollection(
       embeddedName: string
-    ): EmbeddedCollection<DocumentConstructor, foundry.data.ActorData>;
+    ): EmbeddedCollection<Document.Constructor, foundry.data.ActorData>;
 
     protected override _preCreate(
       data: ActorDataConstructorData,

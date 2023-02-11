@@ -2,9 +2,9 @@ import {
   DataSourceForPlaceable,
   ConfiguredObjectClassForName,
   ConfiguredDocumentClassForName,
-  PlaceableDocumentType,
   ConstructorDataType
 } from "../../../types/helperTypes";
+import type Document from "../../common/abstract/document.mjs";
 import EmbeddedCollection from "../../common/abstract/embedded-collection.mjs";
 
 type ConcretePlaceableOrPlaceableObject<T> = T extends PlaceableObject ? T : PlaceableObject;
@@ -17,7 +17,7 @@ declare global {
    * @typeParam Options      - The type of the options in this layer.
    */
   abstract class PlaceablesLayer<
-    DocumentName extends PlaceableDocumentType,
+    DocumentName extends Document.PlaceableTypeName,
     Options extends PlaceablesLayer.LayerOptions<DocumentName> = PlaceablesLayer.LayerOptions<DocumentName>
   > extends CanvasLayer<Options> {
     constructor();
@@ -75,7 +75,7 @@ declare global {
      * A reference to the named Document type which is contained within this Canvas Layer.
      * @remarks This getter is abstract in {@link PlaceablesLayer}.
      */
-    static documentName: PlaceableDocumentType;
+    static documentName: Document.PlaceableTypeName;
 
     /**
      * Creation states affected to placeables during their construction.
@@ -383,7 +383,7 @@ declare global {
     /**
      * @typeParam DocumentName - The key of the configuration which defines the object and document class.
      */
-    interface LayerOptions<DocumentName extends PlaceableDocumentType> extends CanvasLayer.LayerOptions {
+    interface LayerOptions<DocumentName extends Document.PlaceableTypeName> extends CanvasLayer.LayerOptions {
       /**
        * Does this layer support a mouse-drag workflow to create new objects?
        * @defaultValue `game.user.isGM`

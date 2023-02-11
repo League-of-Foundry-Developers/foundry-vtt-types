@@ -1,4 +1,5 @@
-import { ConfiguredDocumentClass, DocumentConstructor } from "../../../../types/helperTypes";
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
+import type Document from "../../../common/abstract/document.mjs";
 import type { DOCUMENT_TYPES } from "../../../common/constants.mjs.js";
 
 declare global {
@@ -7,7 +8,7 @@ declare global {
    * Each primary Document type has an associated subclass of WorldCollection which contains them.
    * @see {@link Game#collections}
    */
-  abstract class WorldCollection<T extends DocumentConstructor, Name extends string> extends DocumentCollection<
+  abstract class WorldCollection<T extends Document.Constructor, Name extends string> extends DocumentCollection<
     T,
     Name
   > {
@@ -58,7 +59,7 @@ declare global {
     /**
      * Return a reference to the singleton instance of this WorldCollection, or null if it has not yet been created.
      */
-    static get instance(): WorldCollection<DocumentConstructor, any>; // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class, which allows accessing the the static this type to use the `documentName`.
+    static get instance(): WorldCollection<Document.Constructor, any>; // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class, which allows accessing the the static this type to use the `documentName`.
 
     override set(id: string, document: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>): this;
 

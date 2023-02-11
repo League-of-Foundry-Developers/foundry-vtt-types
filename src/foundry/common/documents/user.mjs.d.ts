@@ -1,5 +1,5 @@
 import type Document from "../abstract/document.mjs";
-import type { AnyDocument, DocumentMetadata } from "../abstract/document.mjs";
+import type { DocumentMetadata } from "../abstract/document.mjs";
 import type * as CONST from "../constants.mjs";
 import type * as fields from "../data/fields.mjs";
 import type BaseActor from "./actor.mjs";
@@ -117,9 +117,9 @@ declare namespace BaseUser {
       label: "DOCUMENT.User";
       labelPlural: "DOCUMENT.Users";
       permissions: {
-        create: (user: BaseUser, doc: AnyDocument, data?: UpdateData) => boolean;
-        update: (user: BaseUser, doc: AnyDocument, changes: UpdateData) => boolean;
-        delete: (user: BaseUser, doc: AnyDocument) => boolean;
+        create: (user: BaseUser, doc: Document.Any, data?: UpdateData) => boolean;
+        update: (user: BaseUser, doc: Document.Any, changes: UpdateData) => boolean;
+        delete: (user: BaseUser, doc: Document.Any) => boolean;
       };
     }
   >;

@@ -3,9 +3,9 @@ import {
   ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
   ConfiguredObjectClassForName,
-  DocumentConstructor,
   ToObjectFalseType
 } from "../../../types/helperTypes";
+import type Document from "../../common/abstract/document.mjs";
 import { DocumentModificationOptions } from "../../common/abstract/document.mjs";
 import { EffectChangeData } from "../../common/data/data.mjs/effectChangeData";
 import { DropData } from "../data/abstract/client-document";
@@ -653,7 +653,7 @@ declare global {
      * @see {@link ClientDatabaseBackend#_postCreateDocumentCallbacks}
      * @see {@link TokenDocument#_onUpdateTokenActor}
      */
-    type CreateDocument<D extends DocumentConstructor = DocumentConstructor> = (
+    type CreateDocument<D extends Document.Constructor = Document.Constructor> = (
       document: InstanceType<ConfiguredDocumentClass<D>>,
       options: DocumentModificationOptions,
       userId: string
@@ -673,7 +673,7 @@ declare global {
      * @see {@link ClientDatabaseBackend#_postDeleteDocumentCallbacks}
      * @see {@link TokenDocument#_onUpdateTokenActor}
      */
-    type DeleteDocument<D extends DocumentConstructor = DocumentConstructor> = (
+    type DeleteDocument<D extends Document.Constructor = Document.Constructor> = (
       document: InstanceType<ConfiguredDocumentClass<D>>,
       options: DocumentModificationOptions,
       userId: string
@@ -790,7 +790,7 @@ declare global {
      * @see {@link ClientDatabaseBackend#_preCreateDocumentArray}
      * @see {@link TokenDocument#_preUpdateTokenActor}
      */
-    type PreCreateDocument<D extends DocumentConstructor = DocumentConstructor> = (
+    type PreCreateDocument<D extends Document.Constructor = Document.Constructor> = (
       document: InstanceType<ConfiguredDocumentClass<D>>,
       data: ConstructorParameters<D>[0],
       options: DocumentModificationOptions,
@@ -815,7 +815,7 @@ declare global {
      * @see {@link ClientDatabaseBackend#_preDeleteDocumentArray}.
      * @see {@link TokenDocument#_preUpdateTokenActor}
      */
-    type PreDeleteDocument<D extends DocumentConstructor = DocumentConstructor> = (
+    type PreDeleteDocument<D extends Document.Constructor = Document.Constructor> = (
       document: InstanceType<ConfiguredDocumentClass<D>>,
       options: DocumentModificationOptions,
       userId: string
@@ -840,7 +840,7 @@ declare global {
      * @see {@link ClientDatabaseBackend#_preUpdateDocumentArray}
      * @see {@link TokenDocument#_preUpdateTokenActor}
      */
-    type PreUpdateDocument<D extends DocumentConstructor = DocumentConstructor> = (
+    type PreUpdateDocument<D extends Document.Constructor = Document.Constructor> = (
       document: InstanceType<ConfiguredDocumentClass<D>>,
       change: DeepPartial<ConstructorParameters<D>[0]>,
       options: DocumentModificationOptions,
@@ -881,7 +881,7 @@ declare global {
      * @see {@link ClientDatabaseBackend#_postUpdateDocumentCallbacks}
      * @see {@link TokenDocument#_onUpdateTokenActor}
      */
-    type UpdateDocument<D extends DocumentConstructor = DocumentConstructor> = (
+    type UpdateDocument<D extends Document.Constructor = Document.Constructor> = (
       document: InstanceType<ConfiguredDocumentClass<D>>,
       change: DeepPartial<ConstructorParameters<D>[0]>,
       options: DocumentModificationOptions,

@@ -1,6 +1,7 @@
-import { DocumentConstructor, PlaceableObjectConstructor } from "../../types/helperTypes";
-import type { StatusEffect } from "./data/documents/token";
+import { PlaceableObjectConstructor } from "../../types/helperTypes";
+import type Document from "../common/abstract/document.mjs";
 import * as CONST from "../common/constants.mjs";
+import type { StatusEffect } from "./data/documents/token";
 
 // FIXME: Replace with imports for for the right things or remove when implemented
 type VisionMode = unknown;
@@ -1874,7 +1875,7 @@ declare global {
   const CONFIG: CONFIG;
 }
 
-type ConfiguredDocumentClassOrDefault<Fallback extends DocumentConstructor> =
+type ConfiguredDocumentClassOrDefault<Fallback extends Document.Constructor> =
   Fallback["metadata"]["name"] extends keyof DocumentClassConfig
     ? DocumentClassConfig[Fallback["metadata"]["name"]]
     : Fallback;

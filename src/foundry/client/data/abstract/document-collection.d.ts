@@ -1,11 +1,12 @@
-import { ConfiguredDocumentClass, DocumentConstructor } from "../../../../types/helperTypes";
+import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
+import type Document from "../../../common/abstract/document.mjs";
 import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
 declare global {
   /**
    * An abstract subclass of the Collection container which defines a collection of Document instances.
    */
-  abstract class DocumentCollection<T extends DocumentConstructor, Name extends string> extends foundry.utils
+  abstract class DocumentCollection<T extends Document.Constructor, Name extends string> extends foundry.utils
     .Collection<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>> {
     constructor();
 
@@ -162,7 +163,7 @@ declare global {
 
   namespace DocumentCollection {
     namespace RenderContext {
-      interface Base<T extends DocumentConstructor> {
+      interface Base<T extends Document.Constructor> {
         documentType: T["metadata"]["name"];
         documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[];
 
@@ -173,17 +174,17 @@ declare global {
         get entityType(): this["documentType"];
       }
 
-      interface Create<T extends DocumentConstructor> extends Base<T> {
+      interface Create<T extends Document.Constructor> extends Base<T> {
         action: "create";
         data: (InstanceType<T>["data"]["_source"] & { _id: string })[];
       }
 
-      interface Update<T extends DocumentConstructor> extends Base<T> {
+      interface Update<T extends Document.Constructor> extends Base<T> {
         action: "update";
         data: (DeepPartial<InstanceType<T>["data"]["_source"]> & { _id: string })[];
       }
 
-      interface Delete<T extends DocumentConstructor> extends Base<T> {
+      interface Delete<T extends Document.Constructor> extends Base<T> {
         action: "delete";
         data: string[];
       }

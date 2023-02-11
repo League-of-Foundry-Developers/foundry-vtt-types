@@ -3,7 +3,7 @@ import type * as fields from "../fields.mjs";
 interface SourceOptions {
   categories?: Exclude<FilePathFieldOptions["categories"], undefined>;
 
-  initial?: fields.InitialType<string | null | undefined>;
+  initial?: fields.DataField.InitialType<string | null | undefined>;
 
   wildcard?: boolean;
 

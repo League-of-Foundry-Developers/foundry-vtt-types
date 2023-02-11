@@ -1,6 +1,6 @@
 import type { ConfiguredDocumentClass } from "../../../types/helperTypes.js";
 import type Document from "../abstract/document.mjs";
-import { type AnyDocument, type DocumentMetadata } from "../abstract/document.mjs";
+import { type DocumentMetadata } from "../abstract/document.mjs";
 import type * as CONST from "../constants.mjs";
 import type { LightData, TextureData } from "../data/data.mjs";
 import type * as fields from "../data/fields.mjs";
@@ -80,7 +80,7 @@ declare namespace BaseToken {
       isEmbedded: true;
       permissions: {
         create: "TOKEN_CREATE";
-        update: (user: documents.BaseUser, doc: AnyDocument, data: UpdateData) => boolean;
+        update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
         delete: "TOKEN_DELETE";
       };
     }

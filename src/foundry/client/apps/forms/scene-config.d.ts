@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClassForName, DocumentConstructor } from "../../../../types/helperTypes";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
+import type Document from "../../../common/abstract/document.mjs";
 
 declare global {
   /**
@@ -48,7 +49,7 @@ declare global {
      * Get the alphabetized Documents which can be chosen as a configuration for the Scene
      * @internal
      */
-    protected _getDocuments(collection: WorldCollection<DocumentConstructor, string>): { _id: string; name: string }[];
+    protected _getDocuments(collection: WorldCollection<Document.Constructor, string>): { _id: string; name: string }[];
 
     override activateListeners(html: JQuery): void;
 

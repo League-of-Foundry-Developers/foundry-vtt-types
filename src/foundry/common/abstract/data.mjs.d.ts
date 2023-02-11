@@ -1,9 +1,10 @@
-import type { AnyDataField, AnySchemaField, UnknownDataField } from "../data/fields.mjs.js";
+import type { DataField, SchemaField } from "../data/fields.mjs.js";
 import type { fields } from "../data/module.mjs.js";
+import type Document from "./document.mjs.js";
 
 declare global {
   interface DataSchema {
-    [name: string]: UnknownDataField;
+    [name: string]: DataField.Unknown;
   }
 
   interface DataValidationOptions {
@@ -21,21 +22,18 @@ declare global {
   }
 }
 
-/** Any {@link DataModel}. */
-export type AnyDataModel = DataModel<any, any>;
-
 export default DataModel;
 /**
  * The abstract base class which defines the data schema contained within a Document.
  */
-declare abstract class DataModel<SchemaField extends AnySchemaField, Parent extends AnyDataModel | null = null> {
+declare abstract class DataModel<Schema extends SchemaField.Any, Parent extends DataModel.Any | null = null> {
   /**
    * @param data    - Initial data used to construct the data object. The provided object will be owned
    *                  by the constructed model instance and may be mutated.
    * @param options - Options which affect DataModel construction
    */
   constructor(
-    data?: fields.SchemaField.AssignmentType<SchemaField["fields"]>,
+    data?: fields.SchemaField.AssignmentType<Schema["fields"]>,
     { parent, strict, ...options }?: DataModel.ConstructorOptions<Parent>
   );
 
@@ -48,13 +46,13 @@ declare abstract class DataModel<SchemaField extends AnySchemaField, Parent exte
    * The source data object for this DataModel instance.
    * Once constructed, the source object is sealed such that no keys may be added nor removed.
    */
-  _source: fields.SchemaField.PersistedType<SchemaField["fields"]>;
+  _source: fields.SchemaField.PersistedType<Schema["fields"]>;
 
   /**
    * The defined and cached Data Schema for all instances of this DataModel.
    * @internal
    */
-  protected static _schema: AnySchemaField;
+  protected static _schema: SchemaField.Any;
 
   /**
    * An immutable reverse-reference to a parent DataModel to which this model belongs.
@@ -76,12 +74,12 @@ declare abstract class DataModel<SchemaField extends AnySchemaField, Parent exte
   /**
    * Define the data schema for documents of this type.
    */
-  static get schema(): AnySchemaField;
+  static get schema(): SchemaField.Any;
 
   /**
    * Define the data schema for this document instance.
    */
-  get schema(): SchemaField;
+  get schema(): Schema;
 
   /**
    * Is the current state of this DataModel invalid?
@@ -97,9 +95,9 @@ declare abstract class DataModel<SchemaField extends AnySchemaField, Parent exte
    * @returns Migrated and cleaned source data which will be stored to the model instance
    */
   protected _initializeSource(
-    data: fields.SchemaField.AssignmentType<SchemaField["fields"]> | this,
+    data: fields.SchemaField.AssignmentType<Schema["fields"]> | this,
     options?: any
-  ): fields.SchemaField.PersistedType<SchemaField["fields"]>;
+  ): fields.SchemaField.PersistedType<Schema["fields"]>;
 
   /**
    * Clean a data source object to conform to a specific provided schema.
@@ -107,7 +105,7 @@ declare abstract class DataModel<SchemaField extends AnySchemaField, Parent exte
    * @param options - Additional options which are passed to field cleaning methods
    * @returns The cleaned source data
    */
-  static cleanData(source?: object, options?: Parameters<AnySchemaField["clean"]>[1]): object;
+  static cleanData(source?: object, options?: Parameters<SchemaField.Any["clean"]>[1]): object;
 
   /**
    * Initialize the instance by copying data from the source object to instance attributes.
@@ -129,7 +127,7 @@ declare abstract class DataModel<SchemaField extends AnySchemaField, Parent exte
    * @returns The cloned Document instance
    */
   clone(
-    data?: fields.SchemaField.AssignmentType<SchemaField["fields"]>,
+    data?: fields.SchemaField.AssignmentType<Schema["fields"]>,
     context?: DataModel.ConstructorOptions
   ): this | Promise<this>;
 
@@ -151,7 +149,7 @@ declare abstract class DataModel<SchemaField extends AnySchemaField, Parent exte
     /**
      * A specific set of proposed changes to validate, rather than the full source data of the model.
      */
-    changes?: fields.SchemaField.AssignmentType<SchemaField["fields"]>;
+    changes?: fields.SchemaField.AssignmentType<Schema["fields"]>;
 
     /**
      * If changes are provided, attempt to clean the changes before validating them?
@@ -209,7 +207,7 @@ declare abstract class DataModel<SchemaField extends AnySchemaField, Parent exte
    * @param data - The candidate data object to validate
    * @throws An error if a validation failure is detected
    */
-  protected _validateModel(data: fields.SchemaField.AssignmentType<SchemaField["fields"]>): void;
+  protected _validateModel(data: fields.SchemaField.AssignmentType<Schema["fields"]>): void;
 
   /**
    * Update the DataModel locally by applying an object of changes to its source data.
@@ -222,7 +220,7 @@ declare abstract class DataModel<SchemaField extends AnySchemaField, Parent exte
    * @returns An object containing the changed keys and values
    */
   updateSource(
-    changes?: fields.SchemaField.AssignmentType<SchemaField["fields"]>,
+    changes?: fields.SchemaField.AssignmentType<Schema["fields"]>,
     options?: { fallback?: boolean; recursive?: boolean }
   ): object;
 
@@ -236,7 +234,7 @@ declare abstract class DataModel<SchemaField extends AnySchemaField, Parent exte
    * @throws An error if the update operation was unsuccessful
    */
   static #updateData(
-    schema: AnySchemaField,
+    schema: SchemaField.Any,
     source: object,
     changes: object,
     options: { fallback?: boolean; recursive?: boolean; _backup: object; _collections: unknown[]; _diff: object }
@@ -253,7 +251,7 @@ declare abstract class DataModel<SchemaField extends AnySchemaField, Parent exte
    */
   static #updateField(
     name: string,
-    field: AnyDataField,
+    field: DataField.Any,
     source: object,
     value: any,
     options: { fallback?: boolean; recursive?: boolean; _collections: unknown[]; _diff: object }
@@ -282,7 +280,7 @@ declare abstract class DataModel<SchemaField extends AnySchemaField, Parent exte
    * @param context - Model construction context
    * @remarks The generic parameters should fit the DataModel implementation that this method is called on.
    */
-  static fromSource<SchemaField extends AnySchemaField>(
+  static fromSource<SchemaField extends SchemaField.Any>(
     source: fields.SchemaField.AssignmentType<SchemaField["fields"]>,
     {
       strict,
@@ -294,7 +292,7 @@ declare abstract class DataModel<SchemaField extends AnySchemaField, Parent exte
        */
       strict?: boolean;
     }
-  ): DataModel<SchemaField, AnyDataModel | null>;
+  ): DataModel<SchemaField, DataModel.Any | null>;
 
   /**
    * Create a DataModel instance using a provided serialized JSON string.
@@ -346,7 +344,7 @@ declare abstract class DataModel<SchemaField extends AnySchemaField, Parent exte
 export { DataModel };
 
 declare namespace DataModel {
-  interface ConstructorOptions<Parent extends AnyDataModel | null = null> {
+  interface ConstructorOptions<Parent extends Any | null = null> {
     /**
      * A parent DataModel instance to which this DataModel belongs
      * @defaultValue `null`
@@ -365,4 +363,7 @@ declare namespace DataModel {
      */
     pack?: DocumentConstructionContext["pack"];
   }
+
+  /** Any DataModel. */
+  type Any = DataModel<any, any>;
 }

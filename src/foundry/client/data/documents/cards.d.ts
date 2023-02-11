@@ -1,9 +1,9 @@
 import type {
   ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
-  ConstructorDataType,
-  DocumentConstructor
+  ConstructorDataType
 } from "../../../../types/helperTypes";
+import type Document from "../../../common/abstract/document.mjs";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
 declare global {
@@ -191,7 +191,7 @@ declare global {
     ): Promise<void>;
 
     // TODO: It's a bit weird that we have to do it in this generic way but otherwise there is an error overriding this. Investigate later.
-    static override deleteDocuments<T extends DocumentConstructor>(
+    static override deleteDocuments<T extends Document.Constructor>(
       this: T,
       ids?: string[] | undefined,
       context?: DocumentModificationContext | undefined
@@ -233,7 +233,7 @@ declare global {
     override deleteDialog(options?: Partial<DialogOptions> | undefined): Promise<this | false | null | undefined>;
 
     // TODO: It's a bit weird that we have to do it in this generic way but otherwise there is an error overriding this. Investigate later.
-    static override createDialog<T extends DocumentConstructor>(
+    static override createDialog<T extends Document.Constructor>(
       this: T,
       data?:
         | DeepPartial<
