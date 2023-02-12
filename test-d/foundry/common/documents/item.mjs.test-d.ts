@@ -83,6 +83,20 @@ expectError(new foundry.documents.BaseItem({ name: "plate", type: "weapon", syst
 const armorItem = new foundry.documents.BaseItem({ name: "plate", type: "armor" });
 const weaponItem = new foundry.documents.BaseItem({ name: "sword", type: "weapon" });
 
+expectType<Promise<foundry.documents.BaseItem<"armor"> | undefined>>(
+  armorItem.update({ name: "plate", type: "armor", system: { armorValue: 24 } })
+);
+expectType<Promise<foundry.documents.BaseItem<"weapon"> | undefined>>(
+  weaponItem.update({ name: "plate", type: "weapon", system: { attackSpeed: 1, damagePerHit: 2 } })
+);
+expectError(weaponItem.update({ name: "plate", type: "weapon", system: { foo: "bar" } }));
+
+expectType<object>(armorItem.updateSource({ name: "plate", type: "armor", system: { armorValue: 24 } }));
+expectType<object>(
+  weaponItem.updateSource({ name: "plate", type: "weapon", system: { attackSpeed: 1, damagePerHit: 2 } })
+);
+expectError(weaponItem.updateSource({ name: "plate", type: "weapon", system: { foo: "bar" } }));
+
 expectType<EmbeddedCollection<typeof ActiveEffect, foundry.documents.BaseItem>>(weaponItem.effects);
 expectType<ActiveEffectData>(weaponItem._source.effects[0]);
 expectType<EffectDurationData>(weaponItem._source.effects[0].duration);
