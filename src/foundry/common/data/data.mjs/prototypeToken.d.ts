@@ -7,6 +7,8 @@ type TestUserPermParams = Parameters<documents.BaseActor["testUserPermission"]>;
 /**
  * Extend the base TokenData to define a PrototypeToken which exists within a parent Actor.
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface PrototypeToken extends PrototypeToken.Properties {}
 export class PrototypeToken extends DataModel<PrototypeToken.SchemaField, documents.BaseActor> {
   static override defineSchema(): PrototypeToken.Schema;
 
@@ -70,9 +72,6 @@ export class PrototypeToken extends DataModel<PrototypeToken.SchemaField, docume
    */
   get isOwner(): boolean;
 }
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface PrototypeToken extends PrototypeToken.Properties {}
 
 declare namespace PrototypeToken {
   type SchemaField = fields.SchemaField<Schema>;

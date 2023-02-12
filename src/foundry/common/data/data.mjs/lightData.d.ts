@@ -10,14 +10,13 @@ declare global {
  * A reusable document structure for the internal data used to render the appearance of a light source.
  * This is re-used by both the AmbientLightData and TokenData classes.
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface LightData extends LightData.Properties {}
 export class LightData extends DataModel<LightData.SchemaField, documents.BaseAmbientLight | documents.BaseToken> {
   static override defineSchema(): LightData.Schema;
 
   static override migrateData(source: object): object;
 }
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface LightData extends LightData.Properties {}
 
 declare namespace LightData {
   type SchemaField = fields.SchemaField<Schema>;

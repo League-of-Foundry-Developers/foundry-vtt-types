@@ -4,6 +4,8 @@ import type * as fields from "../fields.mjs";
 /**
  * A data model intended to be used as an inner EmbeddedDataField which defines a geometric shape.
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface ShapeData extends ShapeData.Properties {}
 export class ShapeData extends DataModel<ShapeData.SchemaField, DataModel.Any> {
   static override defineSchema(): ShapeData.Schema;
 
@@ -17,9 +19,6 @@ export class ShapeData extends DataModel<ShapeData.SchemaField, DataModel.Any> {
     POLYGON: "p";
   };
 }
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface ShapeData extends ShapeData.Properties {}
 
 declare namespace ShapeData {
   type TYPES = ValueOf<typeof ShapeData.TYPES>;
