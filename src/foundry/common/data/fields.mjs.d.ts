@@ -1329,17 +1329,17 @@ declare namespace ForeignDocumentField {
  * A subclass of [ObjectField]{@link ObjectField} which supports a system-level data object.
  * @remarks
  * Defaults:
- * AssignmentType: `object | AnyDataModel | null | undefined`
- * InitializedType: `object`
- * PersistedType: `object`
+ * AssignmentType: `SchemaField.AssignmentType<DataModelSchemas<DocumentType>["fields"]> | SystemDataField.DataModels<DocumentType> | null | undefined`
+ * InitializedType: `DataModels<DocumentType>`
+ * PersistedType: `SchemaField.PersistedType<DataModelSchemas<DocumentType>["fields"]>`
  * InitialValue: `{}`
  */
 declare class SystemDataField<
   DocumentType extends Document.SystemConstructor,
   Options extends DataFieldOptions = SystemDataField.DefaultOptions,
-  AssignmentType = SystemDataField.DefaultAssignmentType,
-  InitializedType = SystemDataField.DefaultInitializedType,
-  PersistedType extends object | null | undefined = SystemDataField.DefaultPersistedType
+  AssignmentType = SystemDataField.DefaultAssignmentType<DocumentType>,
+  InitializedType = SystemDataField.DefaultInitializedType<DocumentType>,
+  PersistedType extends object | null | undefined = SystemDataField.DefaultPersistedType<DocumentType>
 > extends ObjectField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param document - The base document class which belongs in this field
@@ -1365,13 +1365,18 @@ declare class SystemDataField<
    * @param type - The Document instance type
    * @returns The DataModel class, or null
    */
-  getModelForType(type: string): typeof DataModel | null;
+  getModelForType<SystemType extends SystemDataField.TypeNames<DocumentType>>(
+    type: SystemType
+  ): SystemDataField.ConcreteDataModel<DocumentType, SystemType> | null;
 
   override getInitialValue(data: { type?: string } | undefined): InitializedType;
 
   protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | undefined): InitializedType;
 
-  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+  override initialize(
+    value: PersistedType,
+    model: SystemDataField.DataModels<DocumentType>
+  ): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
 }
@@ -1385,14 +1390,68 @@ declare namespace SystemDataField {
     }
   >;
 
+  /** Get the system DataModel configuration for a specific document type. */
+  type Config<DocumentType extends Document.SystemConstructor> = SystemConfig[DocumentType["metadata"]["name"]];
+
+  /** Get the configured system type names for a specific document type. */
+  type TypeNames<DocumentType extends Document.SystemConstructor> = keyof Config<DocumentType>;
+
+  /** Get the configured DataModels for a specific document type. */
+  type DataModels<DocumentType extends Document.SystemConstructor> = ValueOf<Config<DocumentType>>;
+
+  /** Get the configured system DataModel for a specific document type and system type name. */
+  type ConcreteDataModel<
+    DocumentType extends Document.SystemConstructor,
+    TypeName extends TypeNames<DocumentType>
+  > = Config<DocumentType>[TypeName];
+
+  /** Get the configured DataModel schemas for the specified document type. */
+  type DataModelSchemas<DocumentType extends Document.SystemConstructor> = DataModels<DocumentType>["schema"];
+
+  /** Get the configured system DataSchema for a specific document type and system type name. */
+  type ConcreteDataModelSchema<
+    DocumentType extends Document.SystemConstructor,
+    TypeName extends TypeNames<DocumentType>
+  > = ConcreteDataModel<DocumentType, TypeName> extends DataModel.Any
+    ? ConcreteDataModel<DocumentType, TypeName>["schema"]
+    : never;
+
   /** The default AssignmentType for the SystemDataField class. */
-  type DefaultAssignmentType = object | AnyDataModel | null | undefined;
+  type DefaultAssignmentType<DocumentType extends Document.SystemConstructor> =
+    | SchemaField.AssignmentType<DataModelSchemas<DocumentType>["fields"]>
+    | DataModels<DocumentType>
+    | null
+    | undefined;
+
+  /** Get the configured system assignment type for a specific document type and system type name. */
+  type ConcreteAssignmentType<
+    DocumentType extends Document.SystemConstructor,
+    TypeName extends TypeNames<DocumentType>
+  > =
+    | SchemaField.AssignmentType<ConcreteDataModelSchema<DocumentType, TypeName>["fields"]>
+    | ConcreteDataModel<DocumentType, TypeName>
+    | null
+    | undefined;
 
   /** The default InitializedType for the SystemDataField class. */
-  type DefaultInitializedType = object;
+  type DefaultInitializedType<DocumentType extends Document.SystemConstructor> = DataModels<DocumentType>;
+
+  /** Get the configured system initialized type for a specific document type and system type name. */
+  type ConcreteInitializedType<
+    DocumentType extends Document.SystemConstructor,
+    TypeName extends TypeNames<DocumentType>
+  > = ConcreteDataModel<DocumentType, TypeName>;
 
   /** The default PersistedType for the SystemDataField class. */
-  type DefaultPersistedType = object;
+  type DefaultPersistedType<DocumentType extends Document.SystemConstructor> = SchemaField.PersistedType<
+    DataModelSchemas<DocumentType>["fields"]
+  >;
+
+  /** Get the configured system persisted type for a specific document type and system type name. */
+  type ConcretePersistedType<
+    DocumentType extends Document.SystemConstructor,
+    TypeName extends TypeNames<DocumentType>
+  > = SchemaField.PersistedType<ConcreteDataModelSchema<DocumentType, TypeName>["fields"]>;
 }
 
 /**

@@ -1,6 +1,5 @@
 import type { DataField, SchemaField } from "../data/fields.mjs.js";
 import type { fields } from "../data/module.mjs.js";
-import type Document from "./document.mjs.js";
 
 declare global {
   interface DataSchema {

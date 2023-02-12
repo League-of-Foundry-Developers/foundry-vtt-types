@@ -6,13 +6,7 @@ import type { CONST } from "../module.mjs.js";
 import type * as documents from "./module.mjs";
 
 declare global {
-  type ItemData<Name extends keyof ItemSourceConfig = keyof ItemSourceConfig> = BaseItem.Properties<Name>;
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface ItemPropertiesConfig {}
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface ItemSourceConfig {}
+  type ItemData<TypeName extends BaseItem.TypeNames = BaseItem.TypeNames> = BaseItem.Properties<TypeName>;
 }
 
 /**
@@ -20,9 +14,9 @@ declare global {
  * Defines the DataSchema and common behaviors for an Item which are shared between both client and server.
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface BaseItem<Name extends keyof ItemSourceConfig = keyof ItemSourceConfig> extends BaseItem.Properties<Name> {}
-declare class BaseItem<Name extends keyof ItemSourceConfig = keyof ItemSourceConfig> extends Document<
-  BaseItem.SchemaField<Name>,
+interface BaseItem<TypeName extends BaseItem.TypeNames = BaseItem.TypeNames> extends BaseItem.Properties<TypeName> {}
+declare class BaseItem<TypeName extends BaseItem.TypeNames = BaseItem.TypeNames> extends Document<
+  BaseItem.SchemaField<TypeName>,
   BaseItem.Metadata,
   InstanceType<ConfiguredDocumentClass<typeof documents.BaseActor>> | null
 > {
@@ -30,13 +24,13 @@ declare class BaseItem<Name extends keyof ItemSourceConfig = keyof ItemSourceCon
    * @param data    - Initial data from which to construct the Item
    * @param context - Construction context options
    */
-  constructor(data: BaseItem.ConstructorData<Name>, context?: DocumentConstructionContext);
+  constructor(data: BaseItem.ConstructorData<TypeName>, context?: DocumentConstructionContext);
 
-  _source: BaseItem.Source<Name>;
+  _source: BaseItem.Source<TypeName>;
 
   static override metadata: Readonly<BaseItem.Metadata>;
 
-  static override defineSchema(): BaseItem.Schema<keyof ItemSourceConfig>;
+  static override defineSchema(): BaseItem.Schema;
 
   /**
    * The default icon used for newly created Item documents
@@ -76,7 +70,8 @@ declare class BaseItem<Name extends keyof ItemSourceConfig = keyof ItemSourceCon
 export default BaseItem;
 
 declare namespace BaseItem {
-  type ConfigName = "Item";
+  type SystemConfig = fields.SystemDataField.Config<typeof BaseItem>;
+  type TypeNames = fields.SystemDataField.TypeNames<typeof BaseItem>;
 
   type Metadata = Merge<
     DocumentMetadata,
@@ -97,14 +92,14 @@ declare namespace BaseItem {
     }
   >;
 
-  type SchemaField<Name extends keyof ItemSourceConfig> = fields.SchemaField<Schema<Name>>;
-  type ConstructorData<Name extends keyof ItemSourceConfig> = UpdateData<Name> &
-    Required<Pick<UpdateData<Name>, "name" | "type">>;
-  type UpdateData<Name extends keyof ItemSourceConfig> = fields.SchemaField.AssignmentType<Schema<Name>>;
-  type Properties<Name extends keyof ItemSourceConfig> = fields.SchemaField.InitializedType<Schema<Name>>;
-  type Source<Name extends keyof ItemSourceConfig> = fields.SchemaField.PersistedType<Schema<Name>>;
+  type SchemaField<TypeName extends TypeNames> = fields.SchemaField<Schema<TypeName>>;
+  type ConstructorData<TypeName extends TypeNames> = UpdateData<TypeName> &
+    Required<Pick<UpdateData<TypeName>, "name" | "type">>;
+  type UpdateData<TypeName extends TypeNames> = fields.SchemaField.AssignmentType<Schema<TypeName>>;
+  type Properties<TypeName extends TypeNames> = fields.SchemaField.InitializedType<Schema<TypeName>>;
+  type Source<TypeName extends TypeNames> = fields.SchemaField.PersistedType<Schema<TypeName>>;
 
-  interface Schema<Name extends keyof ItemSourceConfig = keyof ItemSourceConfig> extends DataSchema {
+  interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
     /**
      * The _id which uniquely identifies this Item document
      * @defaultValue `null`
@@ -127,9 +122,9 @@ declare namespace BaseItem {
         choices: () => typeof BaseItem.TYPES;
         validationError: "must be in the array of Item types defined by the game system";
       },
-      Name,
-      Name,
-      Name
+      TypeName,
+      TypeName,
+      TypeName
     >;
 
     /**
@@ -144,10 +139,10 @@ declare namespace BaseItem {
      */
     system: fields.SystemDataField<
       typeof BaseItem,
-      {},
-      DeepPartial<ItemSourceConfig[Name]>,
-      ItemPropertiesConfig[Name],
-      ItemSourceConfig[Name]
+      fields.SystemDataField.DefaultOptions,
+      fields.SystemDataField.ConcreteAssignmentType<typeof BaseItem, TypeName>,
+      fields.SystemDataField.ConcreteInitializedType<typeof BaseItem, TypeName>,
+      fields.SystemDataField.ConcretePersistedType<typeof BaseItem, TypeName>
     >;
 
     /**

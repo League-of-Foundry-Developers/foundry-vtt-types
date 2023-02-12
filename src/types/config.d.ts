@@ -1,3 +1,6 @@
+import type { DataModel } from "../foundry/common/abstract/data.mjs";
+import type Document from "../foundry/common/abstract/document.mjs.js";
+
 declare global {
   /**
    * Some global variables (such as {@link game}) are only initialized after certain events have happened during the
@@ -179,6 +182,9 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface SourceConfig {}
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface SystemConfig extends SystemConfigShape {}
+
   /**
    * An extendable interface to define object flags in a type safe way. The first level keys of this interface should be
    * class names, pointing to the flag definitions for the respective class.
@@ -221,4 +227,8 @@ declare global {
   interface RequiredModules {}
 }
 
-export {};
+type SystemConfigShape = {
+  [DocumentType in Document.SystemType]?: {
+    [SubType: string]: DataModel.Any;
+  };
+};
