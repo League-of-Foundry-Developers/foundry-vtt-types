@@ -88,9 +88,9 @@ declare namespace BaseToken {
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = UpdateData;
-  type UpdateData = fields.SchemaField.AssignmentType<Schema>;
-  type Properties = fields.SchemaField.InitializedType<Schema>;
-  type Source = fields.SchemaField.PersistedType<Schema>;
+  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
+  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
+  type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
   interface Schema extends DataSchema {
     /**
@@ -166,34 +166,19 @@ declare namespace BaseToken {
      * The x-coordinate of the top-left corner of the Token
      * @defaultValue `0`
      */
-    x: fields.NumberField<
-      { required: true; integer: true; nullable: false; initial: 0; label: "XCoord" },
-      fields.NumberField.DefaultAssignmentType,
-      Exclude<fields.NumberField.DefaultInitializedType, null>,
-      Exclude<fields.NumberField.DefaultPersistedType, null>
-    >;
+    x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "XCoord" }>;
 
     /**
      * The y-coordinate of the top-left corner of the Token
      * @defaultValue `0`
      */
-    y: fields.NumberField<
-      { required: true; integer: true; nullable: false; initial: 0; label: "YCoord" },
-      fields.NumberField.DefaultAssignmentType,
-      Exclude<fields.NumberField.DefaultInitializedType, null>,
-      Exclude<fields.NumberField.DefaultPersistedType, null>
-    >;
+    y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "YCoord" }>;
 
     /**
      * The vertical elevation of the Token, in distance units
      * @defaultValue `0`
      */
-    elevation: fields.NumberField<
-      { required: true; nullable: false; initial: 0 },
-      fields.NumberField.DefaultAssignmentType,
-      Exclude<fields.NumberField.DefaultInitializedType, null>,
-      Exclude<fields.NumberField.DefaultPersistedType, null>
-    >;
+    elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
 
     /**
      * Prevent the Token image from visually rotating?
@@ -275,12 +260,7 @@ declare namespace BaseToken {
        * The attribute path within the Token's Actor data which should be displayed
        * @defaultValue `game?.system.primaryTokenAttribute || null`
        */
-      attribute: fields.StringField<
-        { required: true; nullable: true; blank: false; initial: () => string | null },
-        fields.StringField.DefaultAssignmentType,
-        fields.StringField.DefaultInitializedType | null,
-        fields.StringField.DefaultPersistedType | null
-      >;
+      attribute: fields.StringField<{ required: true; nullable: true; blank: false; initial: () => string | null }>;
     }>;
 
     /**
@@ -295,12 +275,7 @@ declare namespace BaseToken {
        * The attribute path within the Token's Actor data which should be displayed
        * @defaultValue `game?.system.secondaryTokenAttribute`
        */
-      attribute: fields.StringField<
-        { required: true; nullable: true; blank: false; initial: () => string | null },
-        fields.StringField.DefaultAssignmentType,
-        fields.StringField.DefaultInitializedType | null,
-        fields.StringField.DefaultPersistedType | null
-      >;
+      attribute: fields.StringField<{ required: true; nullable: true; blank: false; initial: () => string | null }>;
     }>;
 
     /**
@@ -401,58 +376,43 @@ declare namespace BaseToken {
        * An advanced customization for the perceived brightness of the visible area
        * @defaultValue `0`
        */
-      brightness: fields.NumberField<
-        {
-          required: true;
-          nullable: false;
-          initial: 0;
-          min: -1;
-          max: 1;
-          label: "TOKEN.VisionBrightness";
-          hint: "TOKEN.VisionBrightnessHint";
-        },
-        fields.NumberField.DefaultAssignmentType,
-        Exclude<fields.NumberField.DefaultInitializedType, null>,
-        Exclude<fields.NumberField.DefaultPersistedType, null>
-      >;
+      brightness: fields.NumberField<{
+        required: true;
+        nullable: false;
+        initial: 0;
+        min: -1;
+        max: 1;
+        label: "TOKEN.VisionBrightness";
+        hint: "TOKEN.VisionBrightnessHint";
+      }>;
 
       /**
        * An advanced customization of color saturation within the visible area
        * @defaultValue `0`
        */
-      saturation: fields.NumberField<
-        {
-          required: true;
-          nullable: false;
-          initial: 0;
-          min: -1;
-          max: 1;
-          label: "TOKEN.VisionSaturation";
-          hint: "TOKEN.VisionSaturationHint";
-        },
-        fields.NumberField.DefaultAssignmentType,
-        Exclude<fields.NumberField.DefaultInitializedType, null>,
-        Exclude<fields.NumberField.DefaultPersistedType, null>
-      >;
+      saturation: fields.NumberField<{
+        required: true;
+        nullable: false;
+        initial: 0;
+        min: -1;
+        max: 1;
+        label: "TOKEN.VisionSaturation";
+        hint: "TOKEN.VisionSaturationHint";
+      }>;
 
       /**
        * An advanced customization for contrast within the visible area
        * @defaultValue `0`
        */
-      contrast: fields.NumberField<
-        {
-          required: true;
-          nullable: false;
-          initial: 0;
-          min: -1;
-          max: 1;
-          label: "TOKEN.VisionContrast";
-          hint: "TOKEN.VisionContrastHint";
-        },
-        fields.NumberField.DefaultAssignmentType,
-        Exclude<fields.NumberField.DefaultInitializedType, null>,
-        Exclude<fields.NumberField.DefaultPersistedType, null>
-      >;
+      contrast: fields.NumberField<{
+        required: true;
+        nullable: false;
+        initial: 0;
+        min: -1;
+        max: 1;
+        label: "TOKEN.VisionContrast";
+        hint: "TOKEN.VisionContrastHint";
+      }>;
     }>;
 
     /**

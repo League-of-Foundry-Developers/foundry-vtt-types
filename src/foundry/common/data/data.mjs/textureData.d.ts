@@ -3,7 +3,7 @@ import type * as fields from "../fields.mjs";
 interface SourceOptions {
   categories?: Exclude<FilePathFieldOptions["categories"], undefined>;
 
-  initial?: fields.DataField.InitialType<string | null | undefined>;
+  initial?: DataFieldOptions.InitialType<string | null | undefined>;
 
   wildcard?: boolean;
 
@@ -25,9 +25,9 @@ export class TextureData<Options extends DataFieldOptions, SourceOpts extends So
 }
 
 declare namespace TextureData {
-  type ConstructorData<SourceOpts extends SourceOptions> = fields.SchemaField.AssignmentType<Schema<SourceOpts>>;
-  type Properties<SourceOpts extends SourceOptions> = fields.SchemaField.InitializedType<Schema<SourceOpts>>;
-  type Source<SourceOpts extends SourceOptions> = fields.SchemaField.PersistedType<Schema<SourceOpts>>;
+  type ConstructorData<SourceOpts extends SourceOptions> = fields.SchemaField.InnerAssignmentType<Schema<SourceOpts>>;
+  type Properties<SourceOpts extends SourceOptions> = fields.SchemaField.InnerInitializedType<Schema<SourceOpts>>;
+  type Source<SourceOpts extends SourceOptions> = fields.SchemaField.InnerPersistedType<Schema<SourceOpts>>;
 
   interface Schema<SourceOpts extends SourceOptions> extends DataSchema {
     /**
@@ -42,12 +42,7 @@ declare namespace TextureData {
      * The scale of the texture in the X dimension.
      * @defaultValue `1`
      */
-    scaleX: fields.NumberField<
-      { nullable: false; initial: 1 },
-      fields.NumberField.DefaultAssignmentType,
-      Exclude<fields.NumberField.DefaultInitializedType, null>,
-      Exclude<fields.NumberField.DefaultPersistedType, null>
-    >;
+    scaleX: fields.NumberField<{ nullable: false; initial: 1 }>;
 
     /**
      * The scale of the texture in the Y dimension.

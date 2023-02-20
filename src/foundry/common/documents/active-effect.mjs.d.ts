@@ -46,7 +46,7 @@ declare class BaseActiveEffect<Parent extends Document.Any | null = null> extend
   ): boolean;
 
   protected override _preCreate(
-    data: fields.SchemaField.DefaultAssignmentType<BaseActiveEffect.Schema>,
+    data: fields.SchemaField.AssignmentType<BaseActiveEffect.Schema, {}>,
     options: DocumentModificationOptions,
     user: documents.BaseUser
   ): Promise<void>;
@@ -67,9 +67,9 @@ declare namespace BaseActiveEffect {
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = UpdateData;
-  type UpdateData = fields.SchemaField.AssignmentType<Schema>;
-  type Properties = fields.SchemaField.InitializedType<Schema>;
-  type Source = fields.SchemaField.PersistedType<Schema>;
+  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
+  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
+  type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
   interface Schema extends DataSchema {
     /**

@@ -32,7 +32,7 @@ declare abstract class DataModel<Schema extends SchemaField.Any, Parent extends 
    * @param options - Options which affect DataModel construction
    */
   constructor(
-    data?: fields.SchemaField.AssignmentType<Schema["fields"]>,
+    data?: fields.SchemaField.InnerAssignmentType<Schema["fields"]>,
     { parent, strict, ...options }?: DataModel.ConstructorOptions<Parent>
   );
 
@@ -45,7 +45,7 @@ declare abstract class DataModel<Schema extends SchemaField.Any, Parent extends 
    * The source data object for this DataModel instance.
    * Once constructed, the source object is sealed such that no keys may be added nor removed.
    */
-  _source: fields.SchemaField.PersistedType<Schema["fields"]>;
+  _source: fields.SchemaField.InnerPersistedType<Schema["fields"]>;
 
   /**
    * The defined and cached Data Schema for all instances of this DataModel.
@@ -94,9 +94,9 @@ declare abstract class DataModel<Schema extends SchemaField.Any, Parent extends 
    * @returns Migrated and cleaned source data which will be stored to the model instance
    */
   protected _initializeSource(
-    data: fields.SchemaField.AssignmentType<Schema["fields"]> | this,
+    data: fields.SchemaField.InnerAssignmentType<Schema["fields"]> | this,
     options?: any
-  ): fields.SchemaField.PersistedType<Schema["fields"]>;
+  ): fields.SchemaField.InnerPersistedType<Schema["fields"]>;
 
   /**
    * Clean a data source object to conform to a specific provided schema.
@@ -126,7 +126,7 @@ declare abstract class DataModel<Schema extends SchemaField.Any, Parent extends 
    * @returns The cloned Document instance
    */
   clone(
-    data?: fields.SchemaField.AssignmentType<Schema["fields"]>,
+    data?: fields.SchemaField.InnerAssignmentType<Schema["fields"]>,
     context?: DataModel.ConstructorOptions
   ): this | Promise<this>;
 
@@ -148,7 +148,7 @@ declare abstract class DataModel<Schema extends SchemaField.Any, Parent extends 
     /**
      * A specific set of proposed changes to validate, rather than the full source data of the model.
      */
-    changes?: fields.SchemaField.AssignmentType<Schema["fields"]>;
+    changes?: fields.SchemaField.InnerAssignmentType<Schema["fields"]>;
 
     /**
      * If changes are provided, attempt to clean the changes before validating them?
@@ -206,7 +206,7 @@ declare abstract class DataModel<Schema extends SchemaField.Any, Parent extends 
    * @param data - The candidate data object to validate
    * @throws An error if a validation failure is detected
    */
-  protected _validateModel(data: fields.SchemaField.AssignmentType<Schema["fields"]>): void;
+  protected _validateModel(data: fields.SchemaField.InnerAssignmentType<Schema["fields"]>): void;
 
   /**
    * Update the DataModel locally by applying an object of changes to its source data.
@@ -219,7 +219,7 @@ declare abstract class DataModel<Schema extends SchemaField.Any, Parent extends 
    * @returns An object containing the changed keys and values
    */
   updateSource(
-    changes?: fields.SchemaField.AssignmentType<Schema["fields"]>,
+    changes?: fields.SchemaField.InnerAssignmentType<Schema["fields"]>,
     options?: { fallback?: boolean; recursive?: boolean }
   ): object;
 
@@ -280,7 +280,7 @@ declare abstract class DataModel<Schema extends SchemaField.Any, Parent extends 
    * @remarks The generic parameters should fit the DataModel implementation that this method is called on.
    */
   static fromSource<SchemaField extends SchemaField.Any>(
-    source: fields.SchemaField.AssignmentType<SchemaField["fields"]>,
+    source: fields.SchemaField.InnerAssignmentType<SchemaField["fields"]>,
     {
       strict,
       ...context

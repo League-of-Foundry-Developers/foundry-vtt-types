@@ -3,12 +3,6 @@ import Document, { AnyMetadata } from "../foundry/common/abstract/document.mjs";
 import EmbeddedCollection from "../foundry/common/abstract/embedded-collection.mjs";
 import type { fields } from "../foundry/common/data/module.mjs.js";
 
-export type PropertiesDataType<T extends Document.Any | DataModel.Any> = T extends DocumentData<any, infer U>
-  ? U
-  : T extends Document<infer U, any, any>
-  ? PropertiesDataType<U>
-  : never;
-
 type PropertyTypeToSourceType<T> = T extends EmbeddedCollection<infer U, any>
   ? SourceDataType<InstanceType<U>>[]
   : T extends Array<infer U>
@@ -33,10 +27,6 @@ type SourceDataType<T extends Document.Any | DataModel.Any> = T extends Document
 export type ConstructorDataType<DM extends DataModel.Any> = DM extends DataModel<any, any, infer ConstructorData>
   ? ConstructorData
   : never;
-
-type ObjectToDeepPartial<T> = T extends object ? DeepPartial<T> : T;
-
-export type PropertyTypeToSourceParameterType<T> = ObjectToDeepPartial<PropertyTypeToSourceType<T>>;
 
 // TODO: Find a way to avoid this helper
 export type FieldReturnType<T extends DocumentField<any>, U extends Partial<DocumentField<any>>> = Omit<T, keyof U> &
@@ -111,6 +101,6 @@ export type LayerClass<T extends Document.Constructor> = T["metadata"]["name"] e
 
 export type DataSourceForPlaceable<P extends PlaceableObject> = P extends PlaceableObject<infer Doc>
   ? Doc extends Document<infer D, any, any>
-    ? fields.SchemaField.PersistedType<D["fields"]>
+    ? fields.SchemaField.InnerPersistedType<D["fields"]>
     : never
   : never;

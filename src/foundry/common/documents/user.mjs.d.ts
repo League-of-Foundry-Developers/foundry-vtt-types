@@ -129,9 +129,9 @@ declare namespace BaseUser {
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = UpdateData & Required<Pick<UpdateData, "name">>;
-  type UpdateData = fields.SchemaField.AssignmentType<Schema>;
-  type Properties = fields.SchemaField.InitializedType<Schema>;
-  type Source = fields.SchemaField.PersistedType<Schema>;
+  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
+  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
+  type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
   interface Schema extends DataSchema {
     /**

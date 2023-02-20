@@ -95,9 +95,9 @@ declare namespace BaseItem {
   type SchemaField<TypeName extends TypeNames> = fields.SchemaField<Schema<TypeName>>;
   type ConstructorData<TypeName extends TypeNames> = UpdateData<TypeName> &
     Required<Pick<UpdateData<TypeName>, "name" | "type">>;
-  type UpdateData<TypeName extends TypeNames> = fields.SchemaField.AssignmentType<Schema<TypeName>>;
-  type Properties<TypeName extends TypeNames> = fields.SchemaField.InitializedType<Schema<TypeName>>;
-  type Source<TypeName extends TypeNames> = fields.SchemaField.PersistedType<Schema<TypeName>>;
+  type UpdateData<TypeName extends TypeNames> = fields.SchemaField.InnerAssignmentType<Schema<TypeName>>;
+  type Properties<TypeName extends TypeNames> = fields.SchemaField.InnerInitializedType<Schema<TypeName>>;
+  type Source<TypeName extends TypeNames> = fields.SchemaField.InnerPersistedType<Schema<TypeName>>;
 
   interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
     /**
@@ -137,13 +137,7 @@ declare namespace BaseItem {
      * The system data object which is defined by the system template.json model
      * @defaultValue `{}`
      */
-    system: fields.SystemDataField<
-      typeof BaseItem,
-      fields.SystemDataField.DefaultOptions,
-      fields.SystemDataField.ConcreteAssignmentType<typeof BaseItem, TypeName>,
-      fields.SystemDataField.ConcreteInitializedType<typeof BaseItem, TypeName>,
-      fields.SystemDataField.ConcretePersistedType<typeof BaseItem, TypeName>
-    >;
+    system: fields.SystemDataField<typeof BaseItem, TypeName>;
 
     /**
      * A collection of ActiveEffect embedded Documents

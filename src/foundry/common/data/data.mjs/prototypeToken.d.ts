@@ -75,9 +75,9 @@ export class PrototypeToken extends DataModel<PrototypeToken.SchemaField, docume
 
 declare namespace PrototypeToken {
   type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.AssignmentType<Schema>;
-  type Properties = fields.SchemaField.InitializedType<Schema>;
-  type Source = fields.SchemaField.PersistedType<Schema>;
+  type ConstructorData = fields.SchemaField.InnerAssignmentType<Schema>;
+  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
+  type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
   interface Schema
     extends Omit<

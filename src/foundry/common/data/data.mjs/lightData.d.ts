@@ -20,9 +20,9 @@ export class LightData extends DataModel<LightData.SchemaField, documents.BaseAm
 
 declare namespace LightData {
   type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.AssignmentType<Schema>;
-  type Properties = fields.SchemaField.InitializedType<Schema>;
-  type Source = fields.SchemaField.PersistedType<Schema>;
+  type ConstructorData = fields.SchemaField.InnerAssignmentType<Schema>;
+  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
+  type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
   interface Schema extends DataSchema {
     /**
@@ -77,77 +77,57 @@ declare namespace LightData {
      * The luminosity applied in the shader
      * @defaultValue `0.5`
      */
-    luminosity: fields.NumberField<
-      {
-        required: true;
-        nullable: false;
-        initial: 0.5;
-        min: -1;
-        max: 1;
-        label: "LIGHT.Luminosity";
-        hint: "LIGHT.LuminosityHint";
-      },
-      fields.NumberField.DefaultAssignmentType,
-      Exclude<fields.NumberField.DefaultInitializedType, null>,
-      Exclude<fields.NumberField.DefaultPersistedType, null>
-    >;
+    luminosity: fields.NumberField<{
+      required: true;
+      nullable: false;
+      initial: 0.5;
+      min: -1;
+      max: 1;
+      label: "LIGHT.Luminosity";
+      hint: "LIGHT.LuminosityHint";
+    }>;
 
     /**
      * The amount of color saturation this light applies to the background texture
      * @defaultValue `0`
      */
-    saturation: fields.NumberField<
-      {
-        required: true;
-        nullable: false;
-        initial: 0;
-        min: -1;
-        max: 1;
-        label: "LIGHT.Saturation";
-        hint: "LIGHT.SaturationHint";
-      },
-      fields.NumberField.DefaultAssignmentType,
-      Exclude<fields.NumberField.DefaultInitializedType, null>,
-      Exclude<fields.NumberField.DefaultPersistedType, null>
-    >;
+    saturation: fields.NumberField<{
+      required: true;
+      nullable: false;
+      initial: 0;
+      min: -1;
+      max: 1;
+      label: "LIGHT.Saturation";
+      hint: "LIGHT.SaturationHint";
+    }>;
 
     /**
      * The amount of contrast this light applies to the background texture
      * @defaultValue `0`
      */
-    contrast: fields.NumberField<
-      {
-        required: true;
-        nullable: false;
-        initial: 0;
-        min: -1;
-        max: 1;
-        label: "LIGHT.Contrast";
-        hint: "LIGHT.ContrastHint";
-      },
-      fields.NumberField.DefaultAssignmentType,
-      Exclude<fields.NumberField.DefaultInitializedType, null>,
-      Exclude<fields.NumberField.DefaultPersistedType, null>
-    >;
+    contrast: fields.NumberField<{
+      required: true;
+      nullable: false;
+      initial: 0;
+      min: -1;
+      max: 1;
+      label: "LIGHT.Contrast";
+      hint: "LIGHT.ContrastHint";
+    }>;
 
     /**
      * The depth of shadows this light applies to the background texture
      * @defaultValue `0`
      */
-    shadows: fields.NumberField<
-      {
-        required: true;
-        nullable: false;
-        initial: 0;
-        min: 0;
-        max: 1;
-        label: "LIGHT.Shadows";
-        hint: "LIGHT.ShadowsHint";
-      },
-      fields.NumberField.DefaultAssignmentType,
-      Exclude<fields.NumberField.DefaultInitializedType, null>,
-      Exclude<fields.NumberField.DefaultPersistedType, null>
-    >;
+    shadows: fields.NumberField<{
+      required: true;
+      nullable: false;
+      initial: 0;
+      min: 0;
+      max: 1;
+      label: "LIGHT.Shadows";
+      hint: "LIGHT.ShadowsHint";
+    }>;
 
     /**
      * An animation configuration for the source
@@ -166,12 +146,7 @@ declare namespace LightData {
        * The animation type which is applied
        * @defaultValue `null`
        */
-      type: fields.StringField<
-        { nullable: true; blank: false; initial: null; label: "LIGHT.AnimationType" },
-        fields.StringField.DefaultAssignmentType,
-        fields.StringField.DefaultInitializedType | null,
-        fields.StringField.DefaultPersistedType | null
-      >;
+      type: fields.StringField<{ nullable: true; blank: false; initial: null; label: "LIGHT.AnimationType" }>;
 
       /**
        * The speed of the animation, a number between 0 and 10

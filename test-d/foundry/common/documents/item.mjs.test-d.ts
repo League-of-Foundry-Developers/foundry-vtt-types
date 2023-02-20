@@ -5,7 +5,7 @@ import type { BaseItem } from "../../../../src/foundry/common/documents/module.m
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface ArmorModel
-  extends foundry.data.fields.SchemaField.InitializedType<ReturnType<typeof ArmorModel["defineSchema"]>> {}
+  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<typeof ArmorModel["defineSchema"]>> {}
 class ArmorModel extends foundry.abstract.DataModel<
   foundry.data.fields.SchemaField<ReturnType<typeof ArmorModel["defineSchema"]>>,
   foundry.documents.BaseActor | null
@@ -25,7 +25,7 @@ class ArmorModel extends foundry.abstract.DataModel<
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface WeaponModel
-  extends foundry.data.fields.SchemaField.InitializedType<ReturnType<typeof WeaponModel["defineSchema"]>> {}
+  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<typeof WeaponModel["defineSchema"]>> {}
 class WeaponModel extends foundry.abstract.DataModel<
   foundry.data.fields.SchemaField<ReturnType<typeof WeaponModel["defineSchema"]>>,
   foundry.documents.BaseActor | null
@@ -33,23 +33,9 @@ class WeaponModel extends foundry.abstract.DataModel<
   static override defineSchema() {
     return {
       /** The attack speed of the weapon */
-      attackSpeed: new foundry.data.fields.NumberField<
-        { nullable: false },
-        foundry.data.fields.NumberField.DefaultAssignmentType,
-        Exclude<foundry.data.fields.NumberField.DefaultInitializedType, null>,
-        Exclude<foundry.data.fields.NumberField.DefaultPersistedType, null>
-      >({
-        nullable: false
-      }),
+      attackSpeed: new foundry.data.fields.NumberField({ nullable: false, required: true }),
       /** The damage per hit of the weapon */
-      damagePerHit: new foundry.data.fields.NumberField<
-        { nullable: false },
-        foundry.data.fields.NumberField.DefaultAssignmentType,
-        Exclude<foundry.data.fields.NumberField.DefaultInitializedType, null>,
-        Exclude<foundry.data.fields.NumberField.DefaultPersistedType, null>
-      >({
-        nullable: false
-      })
+      damagePerHit: new foundry.data.fields.NumberField({ nullable: false, required: true })
     };
   }
 
@@ -122,10 +108,10 @@ expectType<Item | undefined>(weaponItem.parent?.items.get("", { strict: true }))
 
 expectType<"armor">(armorItem.type);
 expectType<ArmorModel>(armorItem.system);
-expectType<number | null>(armorItem._source.system.armorValue);
-expectType<number | null>(armorItem.system._source.armorValue);
+expectType<number | null | undefined>(armorItem._source.system.armorValue);
+expectType<number | null | undefined>(armorItem.system._source.armorValue);
 expectError(armorItem._source.system.weight);
-expectType<number | null>(armorItem.system.armorValue);
+expectType<number | null | undefined>(armorItem.system.armorValue);
 expectType<number>(armorItem.system.weight);
 
 expectType<"weapon">(weaponItem.type);

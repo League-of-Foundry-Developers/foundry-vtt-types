@@ -24,9 +24,9 @@ declare namespace ShapeData {
   type TYPES = ValueOf<typeof ShapeData.TYPES>;
 
   type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.AssignmentType<Schema>;
-  type Properties = fields.SchemaField.InitializedType<Schema>;
-  type Source = fields.SchemaField.PersistedType<Schema>;
+  type ConstructorData = fields.SchemaField.InnerAssignmentType<Schema>;
+  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
+  type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
   interface Schema extends DataSchema {
     /**
@@ -65,13 +65,6 @@ declare namespace ShapeData {
      * For polygons, the array of polygon coordinates which comprise the shape.
      * @defaultValue `[]`
      */
-    points: fields.ArrayField<
-      fields.NumberField<
-        { nullable: false },
-        Exclude<fields.NumberField.DefaultAssignmentType, null | undefined>,
-        Exclude<fields.NumberField.DefaultInitializedType, null>,
-        Exclude<fields.NumberField.DefaultPersistedType, null>
-      >
-    >;
+    points: fields.ArrayField<fields.NumberField<{ nullable: false }>>;
   }
 }
