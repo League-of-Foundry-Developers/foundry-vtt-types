@@ -802,7 +802,7 @@ export interface Metadata<ConcreteDocument extends Document.Any> {
   indexed?: boolean;
   compendiumIndexFields?: string[];
   label: string;
-  coreTypes?: string[];
+  coreTypes?: readonly string[];
   embedded: Record<string, string>;
   permissions: {
     create:
