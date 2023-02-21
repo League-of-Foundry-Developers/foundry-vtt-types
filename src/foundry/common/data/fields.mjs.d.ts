@@ -60,6 +60,26 @@ declare global {
       | Exclude<BaseAssignmentType, null | undefined>
       | (NullableOption extends true ? null : never)
       | (RequiredOption extends true ? never : undefined);
+
+    /**
+     * A helper type to extract the allowed choices out of options for a NumberField or StringField.
+     * @typeParam ChoicesOpt - the type of the choices option
+     */
+    type Choices<
+      ChoicesOpt extends
+        | number[]
+        | string[]
+        | Record<number, string>
+        | Record<string, string>
+        | (() => number[] | Record<number, string>)
+        | (() => string[] | Record<string, string>)
+    > = ChoicesOpt extends () => any
+      ? Choices<ReturnType<ChoicesOpt>>
+      : ChoicesOpt extends number[] | string[]
+      ? ValueOf<ChoicesOpt>
+      : ChoicesOpt extends Record<number, string> | Record<string, string>
+      ? keyof ChoicesOpt
+      : never;
   }
 }
 
@@ -779,7 +799,14 @@ declare namespace NumberField {
    * A helper type for the given options type merged into the default options of the NumberField class.
    * @typeParam Options - the options that override the default options
    */
-  type MergedOptions<Options extends NumberFieldOptions> = SimpleMerge<DefaultOptions, Options>;
+  type MergedOptions<Options extends NumberFieldOptions> = SimpleMerge<
+    DefaultOptions,
+    Options["choices"] extends undefined
+      ? Options
+      : Options["nullable"] extends boolean
+      ? Options
+      : Options & { nullable: false }
+  >;
 
   /**
    * A shorthand for the assignment type of a NumberField class.
@@ -905,7 +932,14 @@ declare namespace StringField {
    * A helper type for the given options type merged into the default options of the StringField class.
    * @typeParam Options - the options that override the default options
    */
-  type MergedOptions<Options extends StringFieldOptions> = SimpleMerge<DefaultOptions, Options>;
+  type MergedOptions<Options extends StringFieldOptions> = SimpleMerge<
+    DefaultOptions,
+    Options["choices"] extends undefined
+      ? Options
+      : "nullable" extends keyof Options
+      ? Options
+      : Options & { nullable: false }
+  >;
 
   /**
    * A shorthand for the assignment type of a StringField class.
