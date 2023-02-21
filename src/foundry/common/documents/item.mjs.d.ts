@@ -41,7 +41,7 @@ declare class BaseItem<TypeName extends BaseItem.TypeNames = BaseItem.TypeNames>
   /**
    * The allowed set of Item types which may exist.
    */
-  static get TYPES(): string[];
+  static get TYPES(): BaseItem.TypeNames[];
 
   override canUserModify(
     user: documents.BaseUser,
@@ -70,7 +70,6 @@ declare class BaseItem<TypeName extends BaseItem.TypeNames = BaseItem.TypeNames>
 export default BaseItem;
 
 declare namespace BaseItem {
-  type SystemConfig = fields.SystemDataField.Config<typeof BaseItem>;
   type TypeNames = fields.SystemDataField.TypeNames<typeof BaseItem>;
 
   type Metadata = Merge<
@@ -106,16 +105,10 @@ declare namespace BaseItem {
      */
     _id: fields.DocumentIdField;
 
-    /**
-     * The name of this Item
-     * @defaultValue `""`
-     */
+    /** The name of this Item */
     name: fields.StringField<{ required: true; blank: false }>;
 
-    /**
-     * An Item subtype which configures the system data model applied
-     * @defaultValue `""`
-     */
+    /** An Item subtype which configures the system data model applied */
     type: fields.StringField<
       {
         required: true;
