@@ -795,17 +795,16 @@ declare namespace NumberField {
     }
   >;
 
+  /** The type of the default options for the {@link NumberField} class when choices are provided. */
+  type DefaultOptionsWhenChoicesProvided = SimpleMerge<DefaultOptions, { nullable: false }>;
+
   /**
    * A helper type for the given options type merged into the default options of the NumberField class.
    * @typeParam Options - the options that override the default options
    */
   type MergedOptions<Options extends NumberFieldOptions> = SimpleMerge<
-    DefaultOptions,
-    Options["choices"] extends undefined
-      ? Options
-      : Options["nullable"] extends boolean
-      ? Options
-      : Options & { nullable: false }
+    undefined extends Options["choices"] ? DefaultOptions : DefaultOptionsWhenChoicesProvided,
+    Options
   >;
 
   /**
@@ -928,18 +927,18 @@ declare namespace StringField {
     }
   >;
 
+  /** The type of the default options for the {@link StringField} class when choices are provided. */
+  type DefaultOptionsWhenChoicesProvided = SimpleMerge<DefaultOptions, { nullable: false; blank: false }>;
+
   /**
    * A helper type for the given options type merged into the default options of the StringField class.
    * @typeParam Options - the options that override the default options
    */
-  type MergedOptions<Options extends StringFieldOptions> = SimpleMerge<
-    DefaultOptions,
-    Options["choices"] extends undefined
-      ? Options
-      : "nullable" extends keyof Options
-      ? Options
-      : Options & { nullable: false }
-  >;
+  type MergedOptions<Options extends StringFieldOptions> = SimpleMerge<_OptionsForChoices<Options["choices"]>, Options>;
+
+  type _OptionsForChoices<Choices extends StringFieldOptions["choices"]> = undefined extends Choices
+    ? DefaultOptions
+    : DefaultOptionsWhenChoicesProvided;
 
   /**
    * A shorthand for the assignment type of a StringField class.

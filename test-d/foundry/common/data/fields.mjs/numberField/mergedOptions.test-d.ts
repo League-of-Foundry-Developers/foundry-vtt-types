@@ -7,6 +7,9 @@ expectType<boolean | undefined>(nonSpecific.nullable);
 declare const empty: NumberField.MergedOptions<{}>;
 expectType<true>(empty.nullable);
 
+declare const undef: NumberField.MergedOptions<{ choices: undefined }>;
+expectType<true>(undef.nullable);
+
 declare const notNull: NumberField.MergedOptions<{ nullable: false }>;
 expectType<false>(notNull.nullable);
 
