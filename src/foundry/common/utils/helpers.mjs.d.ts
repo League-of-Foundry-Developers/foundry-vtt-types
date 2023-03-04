@@ -1,4 +1,11 @@
 import type { TypeOfTag } from "typescript/lib/typescript";
+import type {
+  DotNotationKeys,
+  DotNotationObject,
+  FlatObject,
+  GetValueFromDotKey,
+  InputValue
+} from "../../../types/helperTypes";
 
 /**
  * Benchmark the performance of a function, calling it a requested number of iterations.
@@ -172,6 +179,7 @@ export declare function encodeURL(path: string): string;
  *              (default: `0`)
  * @returns An expanded object
  */
+export declare function expandObject<T extends Record<string, unknown>>(obj: FlatObject<T>, _d?: number): T;
 export declare function expandObject(obj: object, _d?: number): any;
 
 /**
@@ -213,6 +221,7 @@ interface FilterObjectOptions {
  * @param d   - Track the recursion depth to prevent overflow
  * @returns A flattened object
  */
+export declare function flattenObject<T extends Record<string, unknown>>(obj: T, _d?: number): FlatObject<T>;
 export declare function flattenObject(obj: object, _d?: number): any;
 
 /**
@@ -256,7 +265,7 @@ export function getType(
  * @param key    - An object property with notation a.b.c
  * @returns An indicator for whether the property exists
  */
-export declare function hasProperty(object: object, key: string): boolean;
+export declare function hasProperty<T extends InputValue, key extends DotNotationKeys<T>>(object: T, key: key): boolean;
 
 /**
  * A helper function which searches through an object to retrieve a value by a string key.
@@ -265,7 +274,10 @@ export declare function hasProperty(object: object, key: string): boolean;
  * @param key    - An object property with notation a.b.c
  * @returns The value of the found property
  */
-export declare function getProperty(object: object, key: string): any;
+export declare function getProperty<T extends InputValue, K extends DotNotationKeys<T>>(
+  object: T,
+  key: K
+): GetValueFromDotKey<T, K>;
 
 /**
  * A helper function which searches through an object to assign a value using a string key
@@ -275,7 +287,11 @@ export declare function getProperty(object: object, key: string): any;
  * @param value  - The value to be assigned
  * @returns Whether the value was changed from its previous value
  */
-export declare function setProperty(object: object, key: string, value: any): boolean;
+export declare function setProperty<T extends InputValue, K extends DotNotationKeys<T>>(
+  object: T,
+  key: K,
+  value: GetValueFromDotKey<T, K>
+): boolean;
 
 /**
  * Invert an object by assigning its values as keys and its keys as values.

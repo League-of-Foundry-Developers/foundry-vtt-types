@@ -202,6 +202,44 @@ declare class ClassWithConstructorParameters {
 expectType<boolean>(foundry.utils.isSubclass(ClassWithNoConstructorParameters, ClassWithConstructorParameters));
 expectType<boolean>(foundry.utils.isSubclass(ClassWithConstructorParameters, ClassWithNoConstructorParameters));
 
+// expandObject
+// hard to infer back
+expectType<{}>(foundry.utils.expandObject({}));
+expectType<{ test: number }>(foundry.utils.expandObject({ test: 1 }));
+expectType<{ test: number; deep: { value: number } }>(
+  foundry.utils.expandObject<{ test: number; deep: { value: number } }>({
+    test: 1,
+    "deep.value": 1
+  })
+);
+expectType<{ "0": number }>(foundry.utils.expandObject<{ "0": number }>({ "0": 1 }));
+
+// hasProperty
+expectType<boolean>(foundry.utils.hasProperty({ k1: 1 }, "k1"));
+expectError(foundry.utils.hasProperty({ k1: 1 }, "k2"));
+expectType<boolean>(foundry.utils.hasProperty({ deep: { value: 1 } }, "deep"));
+expectType<boolean>(foundry.utils.hasProperty({ deep: { value: 1 } }, "deep.value"));
+expectError(foundry.utils.hasProperty({ deep: { key: 1 } }, "deep.value"));
+
+// getProperty
+expectType<number>(foundry.utils.getProperty({ k1: 1, k2: "a" }, "k1"));
+expectType<string>(foundry.utils.getProperty({ k1: 1, k2: "a" }, "k2"));
+expectError(foundry.utils.getProperty({ k1: 1, k2: "a" }, "k3"));
+expectType<{ value: number }>(foundry.utils.getProperty({ deep: { value: 1 } }, "deep"));
+expectType<number>(foundry.utils.getProperty({ deep: { value: 1 } }, "deep.value"));
+expectType<1>(foundry.utils.getProperty({ deep: { value: 1 as const } }, "deep.value"));
+
+// setProperty
+expectType<boolean>(foundry.utils.setProperty({ k1: 1, k2: "a" }, "k1", 2));
+expectType<boolean>(foundry.utils.setProperty({ k1: 1, k2: "a" }, "k2", "b"));
+expectError(foundry.utils.setProperty({ k1: 1, k2: "a" }, "k3", null));
+expectType<boolean>(foundry.utils.setProperty({ deep: { value: 0 } }, "deep", { value: 1 }));
+expectType<boolean>(foundry.utils.setProperty({ deep: { value: 0 } }, "deep.value", 1));
+expectType<boolean>(foundry.utils.setProperty({ deep: { value: 1 as 0 | 1 | -1 } }, "deep.value", -1));
+expectError(foundry.utils.setProperty({ deep: { value: 1 as 0 | 1 | -1 } }, "deep.value", 2));
+expectType<boolean>(foundry.utils.setProperty({ other: 1 } as Record<string, number>, "test", 3));
+expectType<boolean>(foundry.utils.setProperty({ other: 1 } as Record<"test" | "other", number>, "test", 3));
+
 // invertObject
 expectType<{ readonly 1: "a"; readonly foo: "b" }>(foundry.utils.invertObject({ a: 1, b: "foo" } as const));
 
