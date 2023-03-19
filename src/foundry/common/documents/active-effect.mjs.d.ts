@@ -16,6 +16,8 @@ export default BaseActiveEffect;
 /**
  * The data schema for an ActiveEffect document.
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface BaseActiveEffect extends BaseActiveEffect.Properties {}
 declare class BaseActiveEffect<Parent extends Document.Any | null = null> extends Document<
   BaseActiveEffect.SchemaField,
   BaseActiveEffect.Metadata,
