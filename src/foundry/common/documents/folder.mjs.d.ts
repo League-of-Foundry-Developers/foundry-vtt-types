@@ -36,7 +36,18 @@ declare class BaseFolder extends Document<BaseFolder.SchemaField, BaseFolder.Met
 
   static override migrateData(source: object): object;
 
-  static override shimData(data: object, { embedded }?: { embedded?: boolean } | undefined): object;
+  static override shimData(
+    data: object,
+    {
+      embedded
+    }?: {
+      /**
+       * Apply shims to embedded models?
+       * @defaultValue `true`
+       */
+      embedded?: boolean;
+    }
+  ): object;
 }
 export default BaseFolder;
 
