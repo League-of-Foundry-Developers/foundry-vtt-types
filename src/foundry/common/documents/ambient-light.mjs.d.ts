@@ -18,7 +18,7 @@ declare class BaseAmbientLight extends Document<BaseAmbientLight.SchemaField, Ba
    * @param data    - Initial data from which to construct the AmbientLight
    * @param context - Construction context options
    */
-  constructor(data: AmbientLightData, context?: DocumentConstructionContext);
+  constructor(data: BaseAmbientLight.ConstructorData, context?: DocumentConstructionContext);
 
   static override metadata: Readonly<BaseAmbientLight.Metadata>;
 
