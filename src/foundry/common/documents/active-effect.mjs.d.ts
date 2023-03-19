@@ -124,18 +124,7 @@ declare namespace BaseActiveEffect {
 
     /**
      * An EffectDurationData object which describes the duration of the ActiveEffect
-     * @defaultValue
-     * ```typescript
-     * {
-     *   startTime: null,
-     *   seconds: null,
-     *   combat: null,
-     *   rounds: null,
-     *   turns: null,
-     *   startRound: null,
-     *   startTurn: null
-     * }
-     * ```
+     * @defaultValue see properties
      */
     duration: fields.SchemaField<{
       /**

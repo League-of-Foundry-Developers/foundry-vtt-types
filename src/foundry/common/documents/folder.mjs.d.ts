@@ -109,17 +109,7 @@ declare namespace BaseFolder {
 
     /**
      * An object of creation and access information
-     * @defaultValue
-     * ```typescript
-     * {
-     *   systemId: null,
-     *   systemVersion: null,
-     *   coreVersion: null,
-     *   createdTime: null,
-     *   modifiedTime: null,
-     *   lastModifiedBy: null
-     * }
-     * ```
+     * @defaultValue see {@link fields.DocumentStatsField}
      */
     _stats: fields.DocumentStatsField;
   }

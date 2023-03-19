@@ -152,60 +152,7 @@ declare namespace BaseActor {
 
     /**
      * Default Token settings which are used for Tokens created from this Actor
-     * @defaultValue
-     * ```typescript
-     * {
-     *   displayName: CONST.TOKEN_DISPLAY_MODES.NONE,
-     *   actorLink: false,
-     *   texture: BaseToken.DEFAULT_ICON,
-     *   width: 1,
-     *   height: 1,
-     *   lockRotation: false,
-     *   rotation: 0,
-     *   alpha: 1,
-     *   disposition: CONST.TOKEN_DISPOSITIONS.HOSTILE,
-     *   displayBars: CONST.TOKEN_DISPLAY_MODES.NONE,
-     *   bar1: { attribute: null },
-     *   bar2: { attribute: null },
-     *   light: {
-     *     alpha: 0.5,
-     *     angle: 360,
-     *     bright: 0,
-     *     color: null,
-     *     coloration: 1,
-     *     dim: 0,
-     *     attenuation: 0.5,
-     *     luminosity: 0.5,
-     *     saturation: 0,
-     *     contrast: 0,
-     *     shadows: 0,
-     *     animation: {
-     *       type: null,
-     *       speed: 5,
-     *       intensity: 5,
-     *       reverse: false
-     *     },
-     *     darkness: {
-     *       min: 0,
-     *       max: 1
-     *     }
-     *   },
-     *   sight: {
-     *     enabled: false,
-     *     range: null,
-     *     angle: 360,
-     *     visionMode: "basic",
-     *     color: null,
-     *     attenuation: 0,
-     *     brightness: 0,
-     *     saturation: 0
-     *   }
-     *   detectionModes: [],
-     *   flags: {},
-     *   name: "",
-     *   randomImg: false
-     * }
-     * ```
+     * @defaultValue see {@link PrototypeToken}
      */
     prototypeToken: fields.EmbeddedDataField<PrototypeToken>;
 
@@ -247,17 +194,7 @@ declare namespace BaseActor {
 
     /**
      * An object of creation and access information
-     * @defaultValue
-     * ```typescript
-     * {
-     *   systemId: null,
-     *   systemVersion: null,
-     *   coreVersion: null,
-     *   createdTime: null,
-     *   modifiedTime: null,
-     *   lastModifiedBy: null
-     * }
-     * ```
+     * @defaultValue see {@link fields.DocumentStatsField}
      */
     _stats: fields.DocumentStatsField;
   }

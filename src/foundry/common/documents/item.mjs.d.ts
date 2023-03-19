@@ -152,7 +152,7 @@ declare namespace BaseItem {
 
     /**
      * An object which configures ownership of this Item
-     * @defaultValue `{ default: DOCUMENT_OWNERSHIP_LEVELS.NONE }`
+     * @defaultValue see {@link fields.DocumentOwnershipField}
      */
     ownership: fields.DocumentOwnershipField;
 
@@ -164,17 +164,7 @@ declare namespace BaseItem {
 
     /**
      * An object of creation and access information
-     * @defaultValue
-     * ```typescript
-     * {
-     *   systemId: null,
-     *   systemVersion: null,
-     *   coreVersion: null,
-     *   createdTime: null,
-     *   modifiedTime: null,
-     *   lastModifiedBy: null
-     * }
-     * ```
+     * @defaultValue see {@link fields.DocumentStatsField}
      */
     _stats: fields.DocumentStatsField;
   }
