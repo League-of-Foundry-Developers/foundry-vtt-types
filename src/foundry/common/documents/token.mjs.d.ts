@@ -137,13 +137,34 @@ declare namespace BaseToken {
 
     /**
      * Token-level data which overrides the base data of the associated Actor
-     * @defaultValue `{}` // FIXME: Actor defaults
+     * @defaultValue
+     * ```typescript
+     * {
+     *   _id: null,
+     *   img: null,
+     *   system: {},
+     *   items: [],
+     *   effects: [],
+     *   folder: null,
+     *   sort: 0,
+     *   ownership: { default: DOCUMENT_OWNERSHIP_LEVELS.NONE },
+     *   flags: {},
+     *   _stats: {
+     *     systemId: null,
+     *     systemVersion: null,
+     *     coreVersion: null,
+     *     createdTime: null,
+     *     modifiedTime: null,
+     *     lastModifiedBy: null
+     *   }
+     * }
+     * ```
      */
     actorData: fields.ObjectField<
       {},
-      documents.BaseActor.ConstructorData,
-      documents.BaseActor.Properties,
-      documents.BaseActor.Source
+      documents.BaseActor.ConstructorData<documents.BaseActor.TypeNames>,
+      documents.BaseActor.Properties<documents.BaseActor.TypeNames>,
+      documents.BaseActor.Source<documents.BaseActor.TypeNames>
     >;
 
     /**

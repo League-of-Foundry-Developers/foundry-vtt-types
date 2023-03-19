@@ -1,4 +1,3 @@
-export { BaseActor } from "./baseActor";
 export { BaseAdventure } from "./baseAdventure";
 export { BaseAmbientLight } from "./baseAmbientLight";
 export { BaseAmbientSound } from "./baseAmbientSound";
@@ -9,8 +8,6 @@ export { BaseCombatant } from "./baseCombatant";
 export { BaseChatMessage } from "./baseChatMessage";
 export { BaseDrawing } from "./baseDrawing";
 export { BaseFogExploration } from "./baseFogExploration";
-export { BaseFolder } from "./baseFolder";
-export { BaseItem } from "./baseItem";
 export { BaseJournalEntry } from "./baseJournalEntry";
 export { BaseMacro } from "./baseMacro";
 export { BaseMeasuredTemplate } from "./baseMeasuredTemplate";
