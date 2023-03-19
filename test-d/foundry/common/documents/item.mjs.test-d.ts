@@ -54,57 +54,49 @@ declare global {
   }
 }
 
-expectType<foundry.documents.BaseItem<"armor">>(new foundry.documents.BaseItem({ name: "plate", type: "armor" }));
-expectType<foundry.documents.BaseItem<"weapon">>(new foundry.documents.BaseItem({ name: "plate", type: "weapon" }));
-expectError(new foundry.documents.BaseItem({ name: "plate", type: "foo" }));
+expectType<foundry.documents.BaseItem<"armor">>(new foundry.documents.BaseItem({ name: "Plate", type: "armor" }));
+expectType<foundry.documents.BaseItem<"weapon">>(new foundry.documents.BaseItem({ name: "Sword", type: "weapon" }));
+expectError(new foundry.documents.BaseItem({ name: "Junk", type: "foo" }));
 
 const armorModel = new ArmorModel();
 const weaponModel = new WeaponModel();
 
 expectType<foundry.documents.BaseItem<"armor">>(
-  new foundry.documents.BaseItem({ name: "plate", type: "armor", system: { armorValue: 42 } })
+  new foundry.documents.BaseItem({ name: "Plate", type: "armor", system: { armorValue: 42 } })
 );
 expectType<foundry.documents.BaseItem<"armor">>(
-  new foundry.documents.BaseItem({ name: "plate", type: "armor", system: armorModel })
+  new foundry.documents.BaseItem({ name: "Plate", type: "armor", system: armorModel })
 );
 expectType<foundry.documents.BaseItem<"weapon">>(
-  new foundry.documents.BaseItem({ name: "plate", type: "weapon", system: { attackSpeed: 1, damagePerHit: 2 } })
+  new foundry.documents.BaseItem({ name: "Sword", type: "weapon", system: { attackSpeed: 1, damagePerHit: 2 } })
 );
 expectType<foundry.documents.BaseItem<"weapon">>(
-  new foundry.documents.BaseItem({ name: "plate", type: "weapon", system: weaponModel })
+  new foundry.documents.BaseItem({ name: "Sword", type: "weapon", system: weaponModel })
 );
-expectError(new foundry.documents.BaseItem({ name: "plate", type: "weapon", system: { damage: 34 } }));
-expectError(new foundry.documents.BaseItem({ name: "plate", type: "weapon", system: { foo: "bar" } }));
+expectError(new foundry.documents.BaseItem({ name: "Sword", type: "weapon", system: { damage: 34 } }));
+expectError(new foundry.documents.BaseItem({ name: "Sword", type: "weapon", system: { foo: "bar" } }));
 
-const armorItem = new foundry.documents.BaseItem({ name: "plate", type: "armor" });
-const weaponItem = new foundry.documents.BaseItem({ name: "sword", type: "weapon" });
+const armorItem = new foundry.documents.BaseItem({ name: "Plate", type: "armor" });
+const weaponItem = new foundry.documents.BaseItem({ name: "Sword", type: "weapon" });
 
-expectType<Promise<foundry.documents.BaseItem<"armor"> | undefined>>(
-  armorItem.update({ name: "plate", type: "armor", system: { armorValue: 24 } })
-);
-expectType<Promise<foundry.documents.BaseItem<"armor"> | undefined>>(
-  armorItem.update({ name: "plate", type: "armor", system: armorModel })
-);
+expectType<Promise<foundry.documents.BaseItem<"armor"> | undefined>>(armorItem.update({ system: { armorValue: 24 } }));
+expectType<Promise<foundry.documents.BaseItem<"armor"> | undefined>>(armorItem.update({ system: armorModel }));
 expectType<Promise<foundry.documents.BaseItem<"weapon"> | undefined>>(
-  weaponItem.update({ name: "plate", type: "weapon", system: { attackSpeed: 1, damagePerHit: 2 } })
+  weaponItem.update({ system: { attackSpeed: 1, damagePerHit: 2 } })
 );
-expectType<Promise<foundry.documents.BaseItem<"weapon"> | undefined>>(
-  weaponItem.update({ name: "plate", type: "weapon", system: weaponModel })
-);
-expectError(weaponItem.update({ name: "plate", type: "weapon", system: { foo: "bar" } }));
+expectType<Promise<foundry.documents.BaseItem<"weapon"> | undefined>>(weaponItem.update({ system: weaponModel }));
+expectError(weaponItem.update({ system: { foo: "bar" } }));
 
-expectType<object>(armorItem.updateSource({ name: "plate", type: "armor", system: { armorValue: 24 } }));
-expectType<object>(armorItem.updateSource({ name: "plate", type: "armor", system: armorModel }));
-expectType<object>(
-  weaponItem.updateSource({ name: "plate", type: "weapon", system: { attackSpeed: 1, damagePerHit: 2 } })
-);
-expectType<object>(weaponItem.updateSource({ name: "plate", type: "weapon", system: weaponModel }));
-expectError(weaponItem.updateSource({ name: "plate", type: "weapon", system: { foo: "bar" } }));
+expectType<object>(armorItem.updateSource({ system: { armorValue: 24 } }));
+expectType<object>(armorItem.updateSource({ system: armorModel }));
+expectType<object>(weaponItem.updateSource({ system: { attackSpeed: 1, damagePerHit: 2 } }));
+expectType<object>(weaponItem.updateSource({ system: weaponModel }));
+expectError(weaponItem.updateSource({ system: { foo: "bar" } }));
 
 expectType<EmbeddedCollection<typeof ActiveEffect, foundry.documents.BaseItem>>(weaponItem.effects);
 expectType<ActiveEffectData>(weaponItem._source.effects[0]);
 expectType<EffectDurationData>(weaponItem._source.effects[0].duration);
-expectType<Item | undefined>(weaponItem.parent?.items.get("", { strict: true }));
+expectType<BaseItem | undefined>(weaponItem.parent?.items.get("", { strict: true }));
 
 expectType<"armor">(armorItem.type);
 expectType<ArmorModel>(armorItem.system);
@@ -125,12 +117,11 @@ expectType<number>(weaponItem.system.attackSpeed);
 expectType<number>(weaponItem.system.damagePerHit);
 expectType<number>(weaponItem.system.damage);
 
-declare const unknownItem: foundry.documents.BaseItem<"armor" | "weapon">;
+declare const unknownItem: foundry.documents.BaseItem;
 expectType<"armor" | "weapon">(unknownItem.type);
 expectType<ArmorModel | WeaponModel>(unknownItem.system);
 
 // Flags for Actor, Item, Card, and Cards documents can be configured via the FlagConfig. This is tested here.
-// For configuring flags for actors and items via SourceConfig please have a look into baseActor.test-d.ts.
 declare global {
   interface FlagConfig {
     Item: {

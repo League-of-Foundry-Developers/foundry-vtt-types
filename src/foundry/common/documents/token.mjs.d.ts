@@ -162,9 +162,9 @@ declare namespace BaseToken {
      */
     actorData: fields.ObjectField<
       {},
-      documents.BaseActor.ConstructorData<documents.BaseActor.TypeNames>,
-      documents.BaseActor.Properties<documents.BaseActor.TypeNames>,
-      documents.BaseActor.Source<documents.BaseActor.TypeNames>
+      Exclude<documents.BaseActor.ConstructorData<documents.BaseActor.TypeNames>, "prototypeToken" | "token">,
+      Exclude<documents.BaseActor.Properties<documents.BaseActor.TypeNames>, "prototypeToken" | "token">,
+      Exclude<documents.BaseActor.Source<documents.BaseActor.TypeNames>, "prototypeToken" | "token">
     >;
 
     /**
