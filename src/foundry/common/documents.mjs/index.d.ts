@@ -1,11 +1,6 @@
 export { BaseAdventure } from "./baseAdventure";
-export { BaseAmbientLight } from "./baseAmbientLight";
-export { BaseAmbientSound } from "./baseAmbientSound";
-export { BaseCard } from "./baseCard";
-export { BaseCards } from "./baseCards";
 export { BaseCombat } from "./baseCombat";
 export { BaseCombatant } from "./baseCombatant";
-export { BaseChatMessage } from "./baseChatMessage";
 export { BaseDrawing } from "./baseDrawing";
 export { BaseFogExploration } from "./baseFogExploration";
 export { BaseJournalEntry } from "./baseJournalEntry";
