@@ -1,5 +1,4 @@
 export { BaseAdventure } from "./baseAdventure";
-export { BaseCombat } from "./baseCombat";
 export { BaseDrawing } from "./baseDrawing";
 export { BaseFogExploration } from "./baseFogExploration";
 export { BaseJournalEntry } from "./baseJournalEntry";
