@@ -58,27 +58,21 @@ declare namespace BaseWall {
     _id: fields.DocumentIdField;
 
     /**
-     * A length-4 array of integer coordinates which determine where the wall endpoints are located on the canvas.
-     *
-     * The coordinates are:
-     * - 0: x1
-     * - 1: y1
-     * - 2: x2
-     * - 3: y2
+     * The wall coordinates, a length-4 array of finite numbers [x0,y0,x1,y1]
      */
     c: fields.ArrayField<
       fields.NumberField<{
         required: true;
         integer: true;
         nullable: false;
-        validate: (c: number[]) => boolean;
+        validate: (c: [x0: number, y0: number, x1: number, y1: number]) => boolean;
         validationError: "must be a length-4 array of integer coordinates";
       }>
     >;
 
     /**
-     * The type of sensory collision which this Wall may impose on light.
-     * @defaultValue `20`
+     * The illumination restriction type of this wall
+     * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
      */
     light: fields.NumberField<{
       required: true;
@@ -88,8 +82,8 @@ declare namespace BaseWall {
     }>;
 
     /**
-     * The types of movement collision which this Wall may impose
-     * @defaultValue `20`
+     * The movement restriction type of this wall
+     * @defaultValue `CONST.WALL_MOVEMENT_TYPES.NORMAL`
      */
     move: fields.NumberField<{
       required: true;
@@ -99,8 +93,8 @@ declare namespace BaseWall {
     }>;
 
     /**
-     * The type of sensory collision which this Wall may impose on sight.
-     * @defaultValue `20`
+     * The visual restriction type of this wall
+     * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
      */
     sight: fields.NumberField<{
       required: true;
@@ -110,8 +104,8 @@ declare namespace BaseWall {
     }>;
 
     /**
-     * The type of sensory collision which this Wall may impose on sound.
-     * @defaultValue `20`
+     * The auditory restriction type of this wall
+     * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
      */
     sound: fields.NumberField<{
       required: true;
@@ -121,8 +115,8 @@ declare namespace BaseWall {
     }>;
 
     /**
-     * The direction(s) of effect that this Wall can have.
-     * @defaultValue `0`
+     * The direction of effect imposed by this wall
+     * @defaultValue `CONST.WALL_DIRECTIONS.BOTH`
      */
     dir: fields.NumberField<{
       required: true;
@@ -132,8 +126,8 @@ declare namespace BaseWall {
     }>;
 
     /**
-     * The door type of this Wall.
-     * @defaultValue `0`
+     * The type of door which this wall contains, if any
+     * @defaultValue `CONST.WALL_DOOR_TYPES.NONE`
      */
     door: fields.NumberField<{
       required: true;
@@ -143,8 +137,8 @@ declare namespace BaseWall {
     }>;
 
     /**
-     * The door state of this Wall.
-     * @defaultValue `0`
+     * The state of the door this wall contains, if any
+     * @defaultValue `CONST.WALL_DOOR_STATES.CLOSED`
      */
     ds: fields.NumberField<{
       required: true;
