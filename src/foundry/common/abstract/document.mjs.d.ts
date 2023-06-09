@@ -739,7 +739,7 @@ declare namespace Document {
 
   type ConfiguredClassForName<Name extends TypeName> = CONFIG[Name]["documentClass"];
 
-  type SystemType = "Actor" | "Card" | "Cards" | "Item";
+  type SystemType = "Actor" | "Card" | "Cards" | "Item" | "JournalEntryPage";
 
   type TypeName =
     | "Actor"
@@ -751,6 +751,7 @@ declare namespace Document {
     | "Folder"
     | "Item"
     | "JournalEntry"
+    | "JournalEntryPage"
     | "Macro"
     | "Playlist"
     | "RollTable"
