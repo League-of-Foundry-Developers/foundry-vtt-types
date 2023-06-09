@@ -1,3 +1,5 @@
+// FOUNDRY_VERSION: 10.291
+
 import type { DataField, SchemaField } from "../data/fields.mjs.js";
 import type { fields } from "../data/module.mjs.js";
 

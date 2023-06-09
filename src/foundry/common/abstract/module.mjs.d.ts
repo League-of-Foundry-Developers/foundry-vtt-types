@@ -1,4 +1,6 @@
-import DataModel from "./data.mjs";
+// FOUNDRY_VERSION: 10.291
+
+import type DataModel from "./data.mjs";
 
 export * from "./data.mjs";
 export { default as Document } from "./document.mjs";

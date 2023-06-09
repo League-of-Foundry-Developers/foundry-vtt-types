@@ -1,3 +1,5 @@
+// FOUNDRY_VERSION: 10.291
+
 import type { ConfiguredFlags } from "../../../types/helperTypes.js";
 import type DataModel from "../abstract/data.mjs.js";
 import { type Document } from "../abstract/module.mjs";

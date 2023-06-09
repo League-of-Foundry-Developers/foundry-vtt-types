@@ -1,3 +1,5 @@
+// FOUNDRY_VERSION: 10.291
+
 /**
  * Test whether a string is a valid 16 character UID
  */

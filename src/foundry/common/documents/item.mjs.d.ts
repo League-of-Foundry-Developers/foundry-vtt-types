@@ -1,3 +1,5 @@
+// FOUNDRY_VERSION: 10.291
+
 import type { ConfiguredDocumentClass } from "../../../types/helperTypes.js";
 import type Document from "../abstract/document.mjs";
 import type { DocumentMetadata } from "../abstract/document.mjs";

@@ -1,3 +1,5 @@
+// FOUNDRY_VERSION: 10.291
+
 import type Document from "../abstract/document.mjs";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mjs";
 import type * as fields from "../data/fields.mjs";

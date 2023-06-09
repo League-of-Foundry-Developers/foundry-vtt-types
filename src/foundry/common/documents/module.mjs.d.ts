@@ -1,3 +1,5 @@
+// FOUNDRY_VERSION: 10.291
+
 export { default as BaseActiveEffect } from "./active-effect.mjs";
 export { default as BaseActor } from "./actor.mjs";
 export { default as BaseAdventure } from "./adventure.mjs";

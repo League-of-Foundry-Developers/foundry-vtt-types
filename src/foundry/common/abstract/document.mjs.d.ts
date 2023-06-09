@@ -1,3 +1,5 @@
+// FOUNDRY_VERSION: 10.291
+
 import type { ConfiguredDocumentClass, ConstructorDataType } from "../../../types/helperTypes";
 import type * as CONST from "../constants.mjs";
 import type { fields } from "../data/module.mjs";
