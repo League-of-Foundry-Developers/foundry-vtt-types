@@ -26,7 +26,7 @@ declare class BaseCombat<Parent extends Document.Any | null = null> extends Docu
    */
   constructor(data: BaseCombat.ConstructorData, context?: DocumentConstructionContext);
 
-  static override metadata: BaseCombat.Metadata;
+  static override metadata: Readonly<BaseCombat.Metadata>;
 
   static override defineSchema(): BaseCombat.Schema;
 

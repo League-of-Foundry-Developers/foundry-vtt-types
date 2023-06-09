@@ -1,16 +1,18 @@
+// FOUNDRY_VERSION: 10.291
+
 import { PlaceableObjectConstructor } from "../../types/helperTypes";
 import type Document from "../common/abstract/document.mjs";
+import type { DataModel } from "../common/abstract/module.mjs";
 import * as CONST from "../common/constants.mjs";
-import type { StatusEffect } from "./data/documents/token";
 
 // FIXME: Replace with imports for for the right things or remove when implemented
 type VisionMode = unknown;
-type DetectInvisibilityVisionMode = VisionMode;
-type TremorSenseVisionMode = VisionMode;
-type DataModel = unknown;
+type DetectionMode = unknown;
+type WeatherEffect = unknown;
 declare const FogManager: unknown;
-declare const ColorManager: unknown;
+declare const CanvasColorManager: unknown;
 declare const TilesLayer: ConstructorOf<CanvasLayer>;
+declare const WeatherEffects: ConstructorOf<CanvasLayer>;
 declare const HiddenCanvasGroup: CanvasGroupConstructor;
 declare const RenderedCanvasGroup: CanvasGroupConstructor;
 declare const EnvironmentCanvasGroup: CanvasGroupConstructor;
@@ -98,6 +100,7 @@ declare global {
      * ```
      */
     compatibility: {
+      /** @defaultValue `CONST.COMPATIBILITY_MODES.WARNING` */
       mode: CONST.COMPATIBILITY_MODES;
       includePatterns: RegExp[];
       excludePatterns: RegExp[];
@@ -114,7 +117,7 @@ declare global {
      */
     Actor: {
       /** @defaultValue `Actor` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Actor>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseActor>;
 
       /** @defaultValue `Actors` */
       collection: ConstructorOf<Actors>;
@@ -126,10 +129,13 @@ declare global {
       sidebarIcon: string;
 
       /** @defaultValue `{}` */
-      systemDataModels: Record<string, DataModel>;
+      systemDataModels: Record<string, DataModel.Any>;
 
       /** @defaultValue `{}` */
       typeLabels: Record<string, string>;
+
+      /** @defaultValue `{}` */
+      typeIcons: Record<string, string>;
     };
 
     /**
@@ -159,13 +165,13 @@ declare global {
       compendiumIndexFields: string[];
 
       /** @defaultValue `Cards` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Cards>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseCards>;
 
       /** @defaultValue `"fa-solid fa-cards"` */
       sidebarIcon: string;
 
       /** @defaultValue `{}` */
-      systemDataModels: Record<string, DataModel>;
+      systemDataModels: Record<string, DataModel.Any>;
 
       /**
        * @defaultValue
@@ -185,6 +191,30 @@ declare global {
        * ```
        */
       presets: Record<string, CONFIG.Cards.Preset>;
+
+      /**
+       * @defaultValue
+       * ```typescript
+       * {
+       *   deck: "CARDS.CardsDeck",
+       *   hand: "CARDS.CardsHand",
+       *   pile: "CARDS.CardsPile",
+       * }
+       * ```
+       */
+      typeLabels: Record<string, string>;
+
+      /**
+       * @defaultValue
+       * ```typescript
+       *   typeIcons: {
+       *     deck: "fas fa-cards",
+       *     hand: "fa-duotone fa-cards",
+       *     pile: "fa-duotone fa-layer-group"
+       *   }
+       * ```
+       */
+      typeIcons: Record<string, string>;
     };
 
     /**
@@ -192,7 +222,7 @@ declare global {
      */
     ChatMessage: {
       /** @defaultValue `ChatMessage` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof ChatMessage>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseChatMessage>;
 
       /** @defaultValue `Messages` */
       collection: ConstructorOf<Messages>;
@@ -212,7 +242,7 @@ declare global {
      */
     Combat: {
       /** @defaultValue `Combat` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Combat>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseCombat>;
 
       /** @defaultValue `CombatEncounters` */
       collection: ConstructorOf<CombatEncounters>;
@@ -251,7 +281,7 @@ declare global {
     };
 
     /**
-     * Configuration for dice rolling behaviors in the Foundry VTT client
+     * Configuration for dicecoin rolling behaviors in the Foundry VTT client
      */
     Dice: {
       /** @defaultValue `[Die, FateDie]` */
@@ -293,18 +323,18 @@ declare global {
      */
     FogExploration: {
       /** @defaultValue `FogExploration` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof FogExploration>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseFogExploration>;
 
       /** @defaultValue `FogExplorations` */
       collection: ConstructorOf<FogExplorations>;
     };
 
     /**
-     * Configuration for the Folder entity
+     * Configuration for the Folder document
      */
     Folder: {
       /** @defaultValue `Folder` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Folder>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseFolder>;
 
       /** @defaultValue `Folders` */
       collection: ConstructorOf<Folders>;
@@ -314,11 +344,11 @@ declare global {
     };
 
     /**
-     * Configuration for the default Item entity class
+     * Configuration for the Item document
      */
     Item: {
       /** @defaultValue `Item` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Item>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseItem>;
 
       /** @defaultValue `Items` */
       collection: ConstructorOf<Items>;
@@ -330,18 +360,21 @@ declare global {
       sidebarIcon: string;
 
       /** @defaultValue `{}` */
-      systemDataModels: Record<string, DataModel>;
+      systemDataModels: Record<string, DataModel.Any>;
 
       /** @defaultValue `{}` */
       typeLabels: Record<string, string>;
+
+      /** @defaultValue `{}` */
+      typeIcons: Record<string, string>;
     };
 
     /**
-     * Configuration for the JournalEntry entity
+     * Configuration for the JournalEntry document
      */
     JournalEntry: {
       /** @defaultValue `JournalEntry` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof JournalEntry>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseJournalEntry>;
 
       /** @defaultValue `Journal` */
       collection: ConstructorOf<Journal>;
@@ -434,11 +467,11 @@ declare global {
     };
 
     /**
-     * Configuration for the Macro entity
+     * Configuration for the Macro document
      */
     Macro: {
       /** @defaultValue `Macro` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Macro>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseMacro>;
 
       /** @defaultValue `Macros` */
       collection: ConstructorOf<Macros>;
@@ -451,11 +484,11 @@ declare global {
     };
 
     /**
-     * Configuration for the default Playlist entity class
+     * Configuration for the Playlist document
      */
     Playlist: {
       /** @defaultValue `Playlist` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Playlist>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BasePlaylist>;
 
       /** @defaultValue `Playlists` */
       collection: ConstructorOf<Playlists>;
@@ -475,12 +508,12 @@ declare global {
      */
     RollTable: {
       /** @defaultValue `RollTable` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof RollTable>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseRollTable>;
 
       /** @defaultValue `RollTables` */
       collection: ConstructorOf<RollTables>;
 
-      /** @defaultValue `[]` */
+      /** @defaultValue `["formula"]` */
       compendiumIndexFields: string[];
 
       /** @defaultValue `"fas fa-th-list"` */
@@ -494,11 +527,11 @@ declare global {
     };
 
     /**
-     * Configuration for the default Scene entity class
+     * Configuration for the Scene document
      */
     Scene: {
       /** @defaultValue `Scene` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Scene>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseScene>;
 
       /** @defaultValue `Scenes` */
       collection: ConstructorOf<Scenes>;
@@ -512,18 +545,18 @@ declare global {
 
     Setting: {
       /** @defaultValue `Setting` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Setting>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseSetting>;
 
       /** @defaultValue `WorldSettings` */
       collection: ConstructorOf<WorldSettings>;
     };
 
     /**
-     * Configuration for the User entity, it's roles, and permissions
+     * Configuration for the User document
      */
     User: {
       /** @defaultValue `User` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof User>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseUser>;
 
       /** @defaultValue `Users` */
       collection: ConstructorOf<Users>;
@@ -539,32 +572,32 @@ declare global {
       /** @defaultValue `0x242448` */
       darknessColor: number;
 
-      /** @defaultValue `0xeeeeee` */
+      /** @defaultValue `0xEEEEEE` */
       daylightColor: number;
 
-      /** @defaultValue `0xffffff` */
+      /** @defaultValue `0xFFFFFF` */
       brightestColor: number;
 
       /** @defaultValue `0.25` */
       darknessLightPenalty: number;
 
       dispositionColors: {
-        /** @defaultValue `0xe72124` */
+        /** @defaultValue `0xE72124` */
         HOSTILE: number;
 
-        /** @defaultValue `0xf1d836` */
+        /** @defaultValue `0xF1D836` */
         NEUTRAL: number;
 
-        /** @defaultValue `0x43dfdf` */
+        /** @defaultValue `0x43DFDF` */
         FRIENDLY: number;
 
         /** @defaultValue `0x555555` */
         INACTIVE: number;
 
-        /** @defaultValue `0x33bc4e` */
+        /** @defaultValue `0x33BC4E` */
         PARTY: number;
 
-        /** @defaultValue `0xff9829` */
+        /** @defaultValue `0xFF9829` */
         CONTROLLED: number;
       };
 
@@ -595,8 +628,8 @@ declare global {
       /** @defaultValue `FogManager` */
       fogManager: typeof FogManager;
 
-      /** @defaultValue `ColorManager` */
-      colorManager: typeof ColorManager;
+      /** @defaultValue `CanvasColorManager` */
+      colorManager: typeof CanvasColorManager;
 
       /** @defaultValue `ClockwiseSweepPolygon` */
       losBackend: typeof PointSourcePolygon;
@@ -851,6 +884,42 @@ declare global {
           /** @defaultValue `FairyLightColorationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
         };
+
+        grid: {
+          /** @defaultValue `"LIGHT.AnimationForceGrid"` */
+          label: string;
+
+          /** @defaultValue `LightSource.prototype.animateTime` */
+          animation: CONFIG.Canvas.LightAnimationFunction;
+
+          /** @defaultValue `ForceGridColorationShader` */
+          colorationShader: ConstructorOf<AbstractBaseShader>;
+        };
+
+        starlight: {
+          /** @defaultValue `"LIGHT.AnimationStarLight"` */
+          label: string;
+
+          /** @defaultValue `LightSource.prototype.animateTime` */
+          animation: CONFIG.Canvas.LightAnimationFunction;
+
+          /** @defaultValue `StarLightColorationShader` */
+          colorationShader: ConstructorOf<AbstractBaseShader>;
+        };
+
+        smokepatch: {
+          /** @defaultValue `"LIGHT.AnimationSmokePatch"` */
+          label: string;
+
+          /** @defaultValue `LightSource.prototype.animateTime` */
+          animation: CONFIG.Canvas.LightAnimationFunction;
+
+          /** @defaultValue `SmokePatchIlluminationShader` */
+          illuminationShader: ConstructorOf<AbstractBaseShader>;
+
+          /** @defaultValue `SmokePatchColorationShader` */
+          colorationShader: ConstructorOf<AbstractBaseShader>;
+        };
       } & Record<
         string,
         {
@@ -887,9 +956,7 @@ declare global {
 
           /** @defaultValue `{ class: PulsePing, size: 1.5, duration: 900 }` */
           pulse: CONFIG.Canvas.Pings.Style;
-
-          [key: string]: CONFIG.Canvas.Pings.Style;
-        };
+        } & Record<string, CONFIG.Canvas.Pings.Style>;
 
         /** @defaultValue `700` */
         pullSpeed: number;
@@ -903,8 +970,6 @@ declare global {
        * The set of VisionMode definitions which are available to be used for Token vision.
        */
       visionModes: {
-        [key: string]: VisionMode;
-
         /**
          * Default (Basic) Vision
          * @defaultValue
@@ -913,28 +978,13 @@ declare global {
          *   id: "basic",
          *   label: "VISION.ModeBasicVision",
          *   vision: {
-         *     defaults: { attenuation: 0, contrast: 0, saturation: 0, brightness: 0 }
+         *     defaults: { attenuation: 0, contrast: 0, saturation: 0, brightness: 0 },
+         *     preferred: true // Takes priority over other vision modes
          *   }
          * })
          * ```
          */
         basic: VisionMode;
-
-        /**
-         * Detect Invisibility
-         * @defaultValue
-         * ```typescript
-         * new DetectInvisibilityVisionMode({
-         *   id: "detectInvisibility",
-         *   label: "VISION.ModeDetectInvisibility",
-         *   vision: {
-         *     darkness: { adaptive: false },
-         *     defaults: { attenuation: 0, contrast: 0, saturation: 0, brightness: 0 }
-         *   }
-         * })
-         * ```
-         */
-        detectInvisibility: DetectInvisibilityVisionMode;
 
         /**
          * Darkvision
@@ -943,17 +993,18 @@ declare global {
          * new VisionMode({
          *   id: "darkvision",
          *   label: "VISION.ModeDarkvision",
-         *     canvas: {
-         *       shader: ColorAdjustmentsSamplerShader,
-         *       uniforms: { enable: true, contrast: 0, saturation: -1.0, brightness: 0 }
+         *   canvas: {
+         *     shader: ColorAdjustmentsSamplerShader,
+         *     uniforms: { contrast: 0, saturation: -1.0, brightness: 0 }
          *   },
          *   lighting: {
          *     levels: {
          *       [VisionMode.LIGHTING_LEVELS.DIM]: VisionMode.LIGHTING_LEVELS.BRIGHT
          *     },
-         *   background: { visibility: VisionMode.LIGHTING_VISIBILITY.REQUIRED }
+         *     background: { visibility: VisionMode.LIGHTING_VISIBILITY.REQUIRED }
          *   },
          *   vision: {
+         *     darkness: { adaptive: false },
          *     defaults: { attenuation: 0, contrast: 0, saturation: -1.0, brightness: 0 }
          *   }
          * })
@@ -970,20 +1021,20 @@ declare global {
          *   label: "VISION.ModeMonochromatic",
          *   canvas: {
          *     shader: ColorAdjustmentsSamplerShader,
-         *     uniforms: { enable: true, contrast: 0, saturation: -1.0, brightness: 0 }
+         *     uniforms: { contrast: 0, saturation: -1.0, brightness: 0 }
          *   },
          *   lighting: {
          *     background: {
          *       postProcessingModes: ["SATURATION"],
-         *       uniforms: { saturation: -1.0 }
+         *       uniforms: { saturation: -1.0, tint: [1, 1, 1] }
          *     },
          *     illumination: {
          *       postProcessingModes: ["SATURATION"],
-         *       uniforms: { saturation: -1.0 }
+         *       uniforms: { saturation: -1.0, tint: [1, 1, 1] }
          *     },
          *     coloration: {
          *       postProcessingModes: ["SATURATION"],
-         *       uniforms: { saturation: -1.0 }
+         *       uniforms: { saturation: -1.0, tint: [1, 1, 1] }
          *     }
          *   },
          *   vision: {
@@ -1005,7 +1056,7 @@ declare global {
          *   tokenConfig: false,
          *   canvas: {
          *     shader: ColorAdjustmentsSamplerShader,
-         *     uniforms: { enable: true, contrast: -0.75, saturation: -1, exposure: -0.3 }
+         *     uniforms: { contrast: -0.75, saturation: -1, exposure: -0.3 }
          *   },
          *   lighting: {
          *     background: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
@@ -1030,7 +1081,7 @@ declare global {
          *   label: "VISION.ModeTremorsense",
          *   canvas: {
          *     shader: ColorAdjustmentsSamplerShader,
-         *     uniforms: { enable: true, contrast: 0, saturation: -0.8, exposure: -0.65 }
+         *     uniforms: { contrast: 0, saturation: -0.8, exposure: -0.65 }
          *   },
          *   lighting: {
          *     background: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
@@ -1046,7 +1097,7 @@ declare global {
          * })
          * ```
          */
-        tremorsense: TremorSenseVisionMode;
+        tremorsense: VisionMode;
 
         /**
          * Light Amplification
@@ -1057,17 +1108,21 @@ declare global {
          *   label: "VISION.ModeLightAmplification",
          *   canvas: {
          *     shader: AmplificationSamplerShader,
-         *     uniforms: { enable: true, contrast: 0, saturation: -0.5, exposure: -0.25, tint: [0.48, 1.0, 0.48] }
+         *     uniforms: { saturation: -0.5, tint: [0.38, 0.8, 0.38] }
          *   },
          *   lighting: {
-         *     background: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
+         *     background: {
+         *       visibility: VisionMode.LIGHTING_VISIBILITY.REQUIRED,
+         *       postProcessingModes: ["SATURATION", "EXPOSURE"],
+         *       uniforms: { saturation: -0.5, exposure: 1.5, tint: [0.38, 0.8, 0.38] }
+         *     },
          *     illumination: {
-         *       postProcessingModes: ["EXPOSURE"],
-         *       uniforms: { exposure: 0.8 }
+         *       postProcessingModes: ["SATURATION"],
+         *       uniforms: { saturation: -0.5 }
          *     },
          *     coloration: {
-         *       postProcessingModes: ["SATURATION", "TINT", "EXPOSURE"],
-         *       uniforms: { saturation: -0.75, exposure: 8.0, tint: [0.48, 1.0, 0.48] }
+         *       postProcessingModes: ["SATURATION", "EXPOSURE"],
+         *       uniforms: { saturation: -0.5, exposure: 1.5, tint: [0.38, 0.8, 0.38] }
          *     },
          *     levels: {
          *       [VisionMode.LIGHTING_LEVELS.DIM]: VisionMode.LIGHTING_LEVELS.BRIGHT,
@@ -1083,7 +1138,87 @@ declare global {
          * ```
          */
         lightAmplification: VisionMode;
-      };
+      } & Record<string, VisionMode>;
+
+      /**
+       * The set of DetectionMode definitions which are available to be used for visibility detection.
+       */
+      detectionModes: {
+        /**
+         * @defaultValue
+         * ```typescript
+         * new DetectionModeBasicSight({
+         *   id: "basicSight",
+         *   label: "DETECTION.BasicSight",
+         *   type: DetectionMode.DETECTION_TYPES.SIGHT
+         * })
+         * ```
+         */
+        basicSight: DetectionMode;
+
+        /**
+         * @defaultValue
+         * ```typescript
+         * new DetectionModeInvisibility({
+         *   id: "seeInvisibility",
+         *   label: "DETECTION.SeeInvisibility",
+         *   type: DetectionMode.DETECTION_TYPES.SIGHT
+         * })
+         * ```
+         */
+        seeInvisibility: DetectionMode;
+
+        /**
+         * @defaultValue
+         * ```typescript
+         * new DetectionModeInvisibility({
+         *   id: "senseInvisibility",
+         *   label: "DETECTION.SenseInvisibility",
+         *   walls: false,
+         *   type: DetectionMode.DETECTION_TYPES.OTHER
+         * })
+         * ```
+         */
+        senseInvisibility: DetectionMode;
+
+        /**
+         * @defaultValue
+         * ```typescript
+         * new DetectionModeTremor({
+         *   id: "feelTremor",
+         *   label: "DETECTION.FeelTremor",
+         *   walls: false,
+         *   type: DetectionMode.DETECTION_TYPES.MOVE
+         * })
+         * ```
+         */
+        feelTremor: DetectionMode;
+
+        /**
+         * @defaultValue
+         * ```typescript
+         * new DetectionModeAll({
+         *   id: "seeAll",
+         *   label: "DETECTION.SeeAll",
+         *   type: DetectionMode.DETECTION_TYPES.SIGHT
+         * })
+         * ```
+         */
+        seeAll: DetectionMode;
+
+        /**
+         * @defaultValue
+         * ```typescript
+         * new DetectionModeAll({
+         *   id: "senseAll",
+         *   label: "DETECTION.SenseAll",
+         *   walls: false,
+         *   type: DetectionMode.DETECTION_TYPES.OTHER
+         * })
+         * ```
+         */
+        senseAll: DetectionMode;
+      } & Record<string, DetectionMode>;
     };
 
     /**
@@ -1114,14 +1249,14 @@ declare global {
      */
     weatherEffects: {
       /** @defaultValue `AutumnLeavesWeatherEffect` */
-      leaves: ConstructorOf<SpecialEffect>;
+      leaves: ConstructorOf<WeatherEffect>;
 
       /** @defaultValue `RainWeatherEffect` */
-      rain: ConstructorOf<SpecialEffect>;
+      rain: ConstructorOf<WeatherEffect>;
 
       /** @defaultValue `SnowWeatherEffect` */
-      snow: ConstructorOf<SpecialEffect>;
-    } & Record<string, ConstructorOf<SpecialEffect>>;
+      snow: ConstructorOf<WeatherEffect>;
+    } & Record<string, ConstructorOf<WeatherEffect>>;
 
     /**
      * The control icons used for rendering common HUD operations
@@ -1203,7 +1338,7 @@ declare global {
      * }
      * ```
      */
-    fontDefinitions: Record<string, CONFIG.Font.FamilyDefinition>;
+    fontDefinitions: Record<string, FontFamilyDefinition>;
 
     /**
      * @deprecated since v10.
@@ -1215,7 +1350,7 @@ declare global {
     /**
      * @see {@link CONFIG.fontDefinitions}
      * @defaultValue `Object.keys(CONFIG.fontDefinitions)`
-     * @deprecated since v10.
+     * @deprecated CONFIG.fontFamilies is deprecated. Please use CONFIG.fontDefinitions instead..
      */
     get fontFamilies(): CONFIG["_fontFamilies"];
 
@@ -1231,124 +1366,124 @@ declare global {
      * ```typescript
      * [
      *   {
-     *     id: "dead";
-     *     label: "EFFECT.StatusDead";
-     *     icon: "icons/svg/skull.svg";
+     *     id: "dead",
+     *     label: "EFFECT.StatusDead",
+     *     icon: "icons/svg/skull.svg"
      *   },
      *   {
-     *     id: "unconscious";
-     *     label: "EFFECT.StatusUnconscious";
-     *     icon: "icons/svg/unconscious.svg";
+     *     id: "unconscious",
+     *     label: "EFFECT.StatusUnconscious",
+     *     icon: "icons/svg/unconscious.svg"
      *   },
      *   {
-     *     id: "sleep";
-     *     label: "EFFECT.StatusAsleep";
-     *     icon: "icons/svg/sleep.svg";
+     *     id: "sleep",
+     *     label: "EFFECT.StatusAsleep",
+     *     icon: "icons/svg/sleep.svg"
      *   },
      *   {
-     *     id: "stun";
-     *     label: "EFFECT.StatusStunned";
-     *     icon: "icons/svg/daze.svg";
+     *     id: "stun",
+     *     label: "EFFECT.StatusStunned",
+     *     icon: "icons/svg/daze.svg"
      *   },
      *   {
-     *     id: "prone";
-     *     label: "EFFECT.StatusProne";
-     *     icon: "icons/svg/falling.svg";
+     *     id: "prone",
+     *     label: "EFFECT.StatusProne",
+     *     icon: "icons/svg/falling.svg"
      *   },
      *   {
-     *     id: "restrain";
-     *     label: "EFFECT.StatusRestrained";
-     *     icon: "icons/svg/net.svg";
+     *     id: "restrain",
+     *     label: "EFFECT.StatusRestrained",
+     *     icon: "icons/svg/net.svg"
      *   },
      *   {
-     *     id: "paralysis";
-     *     label: "EFFECT.StatusParalysis";
-     *     icon: "icons/svg/paralysis.svg";
+     *     id: "paralysis",
+     *     label: "EFFECT.StatusParalysis",
+     *     icon: "icons/svg/paralysis.svg"
      *   },
      *   {
-     *     id: "fly";
-     *     label: "EFFECT.StatusFlying";
-     *     icon: "icons/svg/wing.svg";
+     *     id: "fly",
+     *     label: "EFFECT.StatusFlying",
+     *     icon: "icons/svg/wing.svg"
      *   },
      *   {
-     *     id: "blind";
-     *     label: "EFFECT.StatusBlind";
-     *     icon: "icons/svg/blind.svg";
+     *     id: "blind",
+     *     label: "EFFECT.StatusBlind",
+     *     icon: "icons/svg/blind.svg"
      *   },
      *   {
-     *     id: "deaf";
-     *     label: "EFFECT.StatusDeaf";
-     *     icon: "icons/svg/deaf.svg";
+     *     id: "deaf",
+     *     label: "EFFECT.StatusDeaf",
+     *     icon: "icons/svg/deaf.svg"
      *   },
      *   {
-     *     id: "silence";
-     *     label: "EFFECT.StatusSilenced";
-     *     icon: "icons/svg/silenced.svg";
+     *     id: "silence",
+     *     label: "EFFECT.StatusSilenced",
+     *     icon: "icons/svg/silenced.svg"
      *   },
      *   {
-     *     id: "fear";
-     *     label: "EFFECT.StatusFear";
-     *     icon: "icons/svg/terror.svg";
+     *     id: "fear",
+     *     label: "EFFECT.StatusFear",
+     *     icon: "icons/svg/terror.svg"
      *   },
      *   {
-     *     id: "burning";
-     *     label: "EFFECT.StatusBurning";
-     *     icon: "icons/svg/fire.svg";
+     *     id: "burning",
+     *     label: "EFFECT.StatusBurning",
+     *     icon: "icons/svg/fire.svg"
      *   },
      *   {
-     *     id: "frozen";
-     *     label: "EFFECT.StatusFrozen";
-     *     icon: "icons/svg/frozen.svg";
+     *     id: "frozen",
+     *     label: "EFFECT.StatusFrozen",
+     *     icon: "icons/svg/frozen.svg"
      *   },
      *   {
-     *     id: "shock";
-     *     label: "EFFECT.StatusShocked";
-     *     icon: "icons/svg/lightning.svg";
+     *     id: "shock",
+     *     label: "EFFECT.StatusShocked",
+     *     icon: "icons/svg/lightning.svg"
      *   },
      *   {
-     *     id: "corrode";
-     *     label: "EFFECT.StatusCorrode";
-     *     icon: "icons/svg/acid.svg";
+     *     id: "corrode",
+     *     label: "EFFECT.StatusCorrode",
+     *     icon: "icons/svg/acid.svg"
      *   },
      *   {
-     *     id: "bleeding";
-     *     label: "EFFECT.StatusBleeding";
-     *     icon: "icons/svg/blood.svg";
+     *     id: "bleeding",
+     *     label: "EFFECT.StatusBleeding",
+     *     icon: "icons/svg/blood.svg"
      *   },
      *   {
-     *     id: "disease";
-     *     label: "EFFECT.StatusDisease";
-     *     icon: "icons/svg/biohazard.svg";
+     *     id: "disease",
+     *     label: "EFFECT.StatusDisease",
+     *     icon: "icons/svg/biohazard.svg"
      *   },
      *   {
-     *     id: "poison";
-     *     label: "EFFECT.StatusPoison";
-     *     icon: "icons/svg/poison.svg";
+     *     id: "poison",
+     *     label: "EFFECT.StatusPoison",
+     *     icon: "icons/svg/poison.svg"
      *   },
      *   {
-     *     id: "curse";
-     *     label: "EFFECT.StatusCursed";
-     *     icon: "icons/svg/sun.svg";
+     *     id: "curse",
+     *     label: "EFFECT.StatusCursed",
+     *     icon: "icons/svg/sun.svg"
      *   },
      *   {
-     *     id: "regen";
-     *     label: "EFFECT.StatusRegen";
-     *     icon: "icons/svg/regen.svg";
+     *     id: "regen",
+     *     label: "EFFECT.StatusRegen",
+     *     icon: "icons/svg/regen.svg"
      *   },
      *   {
-     *     id: "degen";
-     *     label: "EFFECT.StatusDegen";
-     *     icon: "icons/svg/degen.svg";
+     *     id: "degen",
+     *     label: "EFFECT.StatusDegen",
+     *     icon: "icons/svg/degen.svg"
      *   },
      *   {
-     *     id: "upgrade";
-     *     label: "EFFECT.StatusUpgrade";
-     *     icon: "icons/svg/upgrade.svg";
+     *     id: "upgrade",
+     *     label: "EFFECT.StatusUpgrade",
+     *     icon: "icons/svg/upgrade.svg"
      *   },
      *   {
-     *     id: "downgrade";
-     *     label: "EFFECT.StatusDowngrade";
-     *     icon: "icons/svg/downgrade.svg";
+     *     id: "downgrade",
+     *     label: "EFFECT.StatusDowngrade",
+     *     icon: "icons/svg/downgrade.svg"
      *   },
      *   {
      *     id: "invisible",
@@ -1356,44 +1491,44 @@ declare global {
      *     icon: "icons/svg/invisible.svg"
      *   },
      *   {
-     *     id: "target";
-     *     label: "EFFECT.StatusTarget";
-     *     icon: "icons/svg/target.svg";
+     *     id: "target",
+     *     label: "EFFECT.StatusTarget",
+     *     icon: "icons/svg/target.svg"
      *   },
      *   {
-     *     id: "eye";
-     *     label: "EFFECT.StatusMarked";
-     *     icon: "icons/svg/eye.svg";
+     *     id: "eye",
+     *     label: "EFFECT.StatusMarked",
+     *     icon: "icons/svg/eye.svg"
      *   },
      *   {
-     *     id: "bless";
-     *     label: "EFFECT.StatusBlessed";
-     *     icon: "icons/svg/angel.svg";
+     *     id: "bless",
+     *     label: "EFFECT.StatusBlessed",
+     *     icon: "icons/svg/angel.svg"
      *   },
      *   {
-     *     id: "fireShield";
-     *     label: "EFFECT.StatusFireShield";
-     *     icon: "icons/svg/fire-shield.svg";
+     *     id: "fireShield",
+     *     label: "EFFECT.StatusFireShield",
+     *     icon: "icons/svg/fire-shield.svg"
      *   },
      *   {
-     *     id: "coldShield";
-     *     label: "EFFECT.StatusIceShield";
-     *     icon: "icons/svg/ice-shield.svg";
+     *     id: "coldShield",
+     *     label: "EFFECT.StatusIceShield",
+     *     icon: "icons/svg/ice-shield.svg"
      *   },
      *   {
-     *     id: "magicShield";
-     *     label: "EFFECT.StatusMagicShield";
-     *     icon: "icons/svg/mage-shield.svg";
+     *     id: "magicShield",
+     *     label: "EFFECT.StatusMagicShield",
+     *     icon: "icons/svg/mage-shield.svg"
      *   },
      *   {
-     *     id: "holyShield";
-     *     label: "EFFECT.StatusHolyShield";
-     *     icon: "icons/svg/holy-shield.svg";
+     *     id: "holyShield",
+     *     label: "EFFECT.StatusHolyShield",
+     *     icon: "icons/svg/holy-shield.svg"
      *   }
      * ]
      * ```
      */
-    statusEffects: StatusEffect[];
+    statusEffects: (string | (ActiveEffectData & { id: string }))[];
 
     /**
      * A mapping of status effect IDs which provide some additional mechanical integration.
@@ -1442,7 +1577,7 @@ declare global {
      */
     ActiveEffect: {
       /** @defaultValue `ActiveEffect` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof ActiveEffect>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseActiveEffect>;
     };
 
     /**
@@ -1450,10 +1585,10 @@ declare global {
      */
     Card: {
       /** @defaultValue `Card` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Card>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseCard>;
 
       /** @defaultValue `{}` */
-      systemDataModels: Record<string, DataModel>;
+      systemDataModels: Record<string, DataModel.Any>;
     };
 
     /**
@@ -1461,15 +1596,60 @@ declare global {
      */
     TableResult: {
       /** @defaultValue `TableResult` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof TableResult>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseTableResult>;
     };
 
     /**
-     * Configuration for the ActiveEffect embedded document type
+     * Configuration for the JournalEntryPage embedded document type.
+     */
+    JournalEntryPage: {
+      /** @defaultValue `JournalEntryPage` */
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseJournalEntryPage>;
+
+      typeLabels: {
+        /** @defaultValue `"JOURNALENTRYPAGE.TypeImage"` */
+        image: string;
+
+        /** @defaultValue `"JOURNALENTRYPAGE.TypePDF"` */
+        pdf: string;
+
+        /** @defaultValue `"JOURNALENTRYPAGE.TypeText"` */
+        text: string;
+
+        /** @defaultValue `"JOURNALENTRYPAGE.TypeVideo"` */
+        video: string;
+      };
+
+      typeIcons: {
+        /** @defaultValue `"fas fa-file-image"` */
+        image: string;
+
+        /** @defaultValue `"fas fa-file-pdf"` */
+        pdf: string;
+
+        /** @defaultValue `"fas fa-file-lines"` */
+        text: string;
+
+        /** @defaultValue `"fas fa-file-video"` */
+        video: string;
+      };
+
+      /** @defaultValue `"text"` */
+      defaultType: string;
+
+      /** @defaultValue `"fas fa-book-open"` */
+      sidebarIcon: string;
+    };
+
+    /**
+     * Configuration for the PlaylistSound embedded document type
      */
     PlaylistSound: {
       /** @defaultValue `PlaylistSound` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof PlaylistSound>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BasePlaylistSound>;
+
+      /** @defaultValue `"fas fa-music"` */
+      sidebarIcon: string;
     };
 
     /**
@@ -1477,12 +1657,12 @@ declare global {
      */
     AmbientLight: {
       /** @defaultValue `AmbientLightDocument` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof AmbientLightDocument>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseAmbientLight>;
 
-      /** @defaultValue `AmbientLightDocument` */
+      /** @defaultValue `AmbientLight` */
       objectClass: ConfiguredObjectClassOrDefault<typeof AmbientLight>;
 
-      /** @defaultValue `AmbientLightDocument` */
+      /** @defaultValue `LightingLayer` */
       layerClass: typeof LightingLayer;
     };
 
@@ -1491,7 +1671,7 @@ declare global {
      */
     AmbientSound: {
       /** @defaultValue `AmbientSoundDocument` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof AmbientSoundDocument>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseAmbientSound>;
 
       /** @defaultValue `AmbientSound` */
       objectClass: ConfiguredObjectClassOrDefault<typeof AmbientSound>;
@@ -1505,7 +1685,7 @@ declare global {
      */
     Combatant: {
       /** @defaultValue `Combatant` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Combatant>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseCombatant>;
     };
 
     /**
@@ -1513,7 +1693,7 @@ declare global {
      */
     Drawing: {
       /** @defaultValue `DrawingDocument` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof DrawingDocument>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseDrawing>;
 
       /** @defaultValue `Drawing` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Drawing>;
@@ -1549,7 +1729,7 @@ declare global {
       };
 
       /** @defaultValue `MeasuredTemplateDocument` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof MeasuredTemplateDocument>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseMeasuredTemplate>;
 
       /** @defaultValue `MeasuredTemplate` */
       objectClass: ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
@@ -1563,7 +1743,7 @@ declare global {
      */
     Note: {
       /** @defaultValue `NoteDocument` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof NoteDocument>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseNote>;
 
       /** @defaultValue `Note` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Note>;
@@ -1577,7 +1757,7 @@ declare global {
      */
     Tile: {
       /** @defaultValue `TileDocument` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof TileDocument>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseTile>;
 
       /** @defaultValue `Tile` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Tile>;
@@ -1591,7 +1771,7 @@ declare global {
      */
     Token: {
       /** @defaultValue `TokenDocument` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof TokenDocument>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseToken>;
 
       /** @defaultValue `Token` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Token>;
@@ -1608,7 +1788,7 @@ declare global {
      */
     Wall: {
       /** @defaultValue `WallDocument` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof WallDocument>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseWall>;
 
       /** @defaultValue `Wall` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Wall>;
@@ -1630,7 +1810,7 @@ declare global {
        * A collection of custom enrichers that can be applied to text content, allowing for the matching and handling of
        * custom patterns.
        */
-      enrichers: CONFIG.TextEditor.EnricherConfig[];
+      enrichers: TextEditorEnricherConfig[];
     };
 
     /**
@@ -1755,8 +1935,8 @@ declare global {
       }
 
       interface Layers {
-        /** @defaultValue `{ layerClass: WeatherLayer, group: "primary" }` */
-        weather: LayerDefinition<typeof WeatherLayer>;
+        /** @defaultValue `{ layerClass: WeatherEffects, group: "primary" }` */
+        weather: LayerDefinition<typeof WeatherEffects>;
 
         /** @defaultValue `{ layerClass: GridLayer, group: "interface" }` */
         grid: LayerDefinition<typeof GridLayer>;
@@ -1767,7 +1947,7 @@ declare global {
         /** @defaultValue `{ layerClass: TemplateLayer, group: "interface" }` */
         templates: LayerDefinition<typeof TemplateLayer>;
 
-        /** @defaultValue `{ layerClass: TokenLayer, group: "interface" }` */
+        /** @defaultValue `{ layerClass: TilesLayer, group: "interface" }` */
         tiles: LayerDefinition<typeof TilesLayer>;
 
         /** @defaultValue `{ layerClass: WallsLayer, group: "interface" }` */
@@ -1833,39 +2013,6 @@ declare global {
       }
     }
 
-    namespace Font {
-      interface Definition extends FontFaceDescriptors {
-        url: string[];
-      }
-      interface FamilyDefinition {
-        editor: boolean;
-        fonts: Definition[];
-      }
-    }
-
-    namespace TextEditor {
-      /**
-       * @param match   - The regular expression match result
-       * @param options - Options provided to customize text enrichment
-       * @returns An HTML element to insert in place of the matched text or null to indicate that
-       *          no replacement should be made.
-       */
-      type Enricher = (
-        match: RegExpMatchArray,
-        options?: globalThis.TextEditor.EnrichOptions
-      ) => Promise<HTMLElement | null>;
-
-      interface EnricherConfig {
-        /** The string pattern to match. Must be flagged as global. */
-        pattern: RegExp;
-
-        /**
-         * The function that will be called on each match. It is expected that this returns an HTML element
-         * to be inserted into the final enriched content.
-         */
-        enricher: Enricher;
-      }
-    }
     namespace Dice {
       // eslint-disable-next-line @typescript-eslint/no-empty-interface
       interface RollModes extends Record<foundry.CONST.DICE_ROLL_MODES, string> {}
@@ -1873,6 +2020,44 @@ declare global {
   }
 
   const CONFIG: CONFIG;
+
+  interface FontDefinition extends FontFaceDescriptors {
+    /** An array of remote URLs the font files exist at. */
+    urls: string[];
+  }
+
+  interface FontFamilyDefinition {
+    /** Whether the font is available in the rich text editor. This will also enable it for notes and drawings. */
+    editor: boolean;
+
+    /**
+     * Individual font face definitions for this font family. If this is empty, the font family may only be loaded
+     * from the client's OS-installed fonts.
+     */
+    fonts: FontDefinition[];
+  }
+
+  /**
+   * @param match   - The regular expression match result
+   * @param options - Options provided to customize text enrichment
+   * @returns An HTML element to insert in place of the matched text or null to indicate that
+   *          no replacement should be made.
+   */
+  type TextEditorEnricher = (
+    match: RegExpMatchArray,
+    options?: globalThis.TextEditor.EnrichOptions
+  ) => Promise<HTMLElement | null>;
+
+  interface TextEditorEnricherConfig {
+    /** The string pattern to match. Must be flagged as global. */
+    pattern: RegExp;
+
+    /**
+     * The function that will be called on each match. It is expected that this returns an HTML element
+     * to be inserted into the final enriched content.
+     */
+    enricher: TextEditorEnricher;
+  }
 }
 
 type ConfiguredDocumentClassOrDefault<Fallback extends Document.Constructor> =

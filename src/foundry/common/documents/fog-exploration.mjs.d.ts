@@ -22,7 +22,7 @@ declare class BaseFogExploration extends Document<BaseFogExploration.SchemaField
    */
   constructor(data: BaseFogExploration.ConstructorData, context?: DocumentConstructionContext);
 
-  static override metadata: BaseFogExploration.Metadata;
+  static override metadata: Readonly<BaseFogExploration.Metadata>;
 
   static override defineSchema(): BaseFogExploration.Schema;
 
