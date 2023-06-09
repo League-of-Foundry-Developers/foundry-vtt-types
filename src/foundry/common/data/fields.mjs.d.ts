@@ -1311,6 +1311,9 @@ declare class SetField<
 }
 
 declare namespace SetField {
+  /** Any SetField */
+  type Any = SetField<any, any, any, any, any, any, any, any>;
+
   /**
    * A shorthand for the options of a SetField class.
    * @typeParam AssignmentElementType - the assignment type of the elements in the array
