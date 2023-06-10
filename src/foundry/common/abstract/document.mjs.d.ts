@@ -733,7 +733,7 @@ declare namespace Document {
 
   type Constructor = Pick<typeof Document, keyof typeof Document> & (new (...args: any[]) => Document.Any);
 
-  type SystemConstructor = Constructor & { metadata: { name: SystemType } };
+  type SystemConstructor = Constructor & { metadata: { name: SystemType; coreTypes?: string[] } };
 
   type ConfiguredClass<T extends { metadata: AnyMetadata }> = ConfiguredClassForName<T["metadata"]["name"]>;
 

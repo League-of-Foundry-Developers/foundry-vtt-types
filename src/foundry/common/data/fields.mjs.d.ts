@@ -1953,10 +1953,25 @@ declare namespace SystemDataField {
   type Config<DocumentType extends Document.SystemConstructor> = SystemConfig[DocumentType["metadata"]["name"]];
 
   /**
+   * Get the configured core and system type names for a specific document type.
+   * @typeParam DocumentType - the type of the Document this data is for
+   */
+  type TypeNames<DocumentType extends Document.SystemConstructor> =
+    | CoreTypeNames<DocumentType>
+    | SystemTypeNames<DocumentType>;
+
+  /**
+   * Get the core type names for a specific document type.
+   * @typeParam DocumentType - the type of the Document this data is for
+   */
+  type CoreTypeNames<DocumentType extends Document.SystemConstructor> =
+    DocumentType["metadata"]["coreTypes"] extends string[] ? DocumentType["metadata"]["coreTypes"][number] : never;
+
+  /**
    * Get the configured system type names for a specific document type.
    * @typeParam DocumentType - the type of the Document this system data is for
    */
-  type TypeNames<DocumentType extends Document.SystemConstructor> = keyof Config<DocumentType>;
+  type SystemTypeNames<DocumentType extends Document.SystemConstructor> = keyof Config<DocumentType>;
 
   /**
    * Get the configured DataModels for a specific document type.
@@ -1972,7 +1987,7 @@ declare namespace SystemDataField {
   type ConcreteDataModel<
     DocumentType extends Document.SystemConstructor,
     TypeName extends TypeNames<DocumentType>
-  > = Config<DocumentType>[TypeName];
+  > = TypeName extends SystemTypeNames<DocumentType> ? Config<DocumentType>[TypeName] : never;
 
   /**
    * Get the configured system DataSchema for a specific document type and system type name.
