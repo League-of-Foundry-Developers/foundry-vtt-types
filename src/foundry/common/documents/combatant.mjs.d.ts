@@ -24,7 +24,7 @@ declare class BaseCombatant<Parent extends Document.Any | null = null> extends D
    * @param data    - Initial data from which to construct the Combatant
    * @param context - Construction context options
    */
-  constructor(data: BaseCombatant.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data?: BaseCombatant.ConstructorData, context?: DocumentConstructionContext);
 
   static override metadata: Readonly<BaseCombatant.Metadata>;
 

@@ -21,7 +21,7 @@ declare class BaseMeasuredTemplate extends Document<BaseMeasuredTemplate.SchemaF
    * @param data    - Initial data from which to construct the MeasuredTemplate
    * @param context - Construction context options
    */
-  constructor(data: BaseMeasuredTemplate.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data?: BaseMeasuredTemplate.ConstructorData, context?: DocumentConstructionContext);
 
   static override metadata: BaseMeasuredTemplate.Metadata;
 

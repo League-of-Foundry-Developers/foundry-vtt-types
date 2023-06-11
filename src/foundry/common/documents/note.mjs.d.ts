@@ -22,7 +22,7 @@ declare class BaseNote extends Document<BaseNote.SchemaField, BaseNote.Metadata>
    * @param data    - Initial data from which to construct the Note
    * @param context - Construction context options
    */
-  constructor(data: BaseNote.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data?: BaseNote.ConstructorData, context?: DocumentConstructionContext);
 
   static override metadata: BaseNote.Metadata;
 
