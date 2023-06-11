@@ -25,12 +25,25 @@ declare class BaseRollTable extends Document<BaseRollTable.SchemaField, BaseRoll
 
   static override defineSchema(): BaseRollTable.Schema;
 
-  static override migrateData(source: object): object;
-
   /**
    * The default icon used for newly created Macro documents
    */
   static DEFAULT_ICON: "icons/svg/d20-grey.svg";
+
+  static override migrateData(source: object): object;
+
+  static override shimData(
+    data: object,
+    {
+      embedded
+    }?: {
+      /**
+       * Apply shims to embedded models?
+       * @defaultValue `true`
+       */
+      embedded?: boolean;
+    }
+  ): object;
 }
 export default BaseRollTable;
 
