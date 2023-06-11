@@ -67,7 +67,7 @@ declare namespace BaseJournalEntryPage {
 
   type SchemaField<TypeName extends TypeNames> = fields.SchemaField<Schema<TypeName>>;
   type ConstructorData<TypeName extends TypeNames> = UpdateData<TypeName> &
-    Required<Pick<UpdateData<TypeName>, "name" | "type">>;
+    Required<Pick<UpdateData<TypeName>, "name">>;
   type UpdateData<TypeName extends TypeNames> = fields.SchemaField.InnerAssignmentType<Schema<TypeName>>;
   type Properties<TypeName extends TypeNames> = fields.SchemaField.InnerInitializedType<Schema<TypeName>>;
   type Source<TypeName extends TypeNames> = fields.SchemaField.InnerPersistedType<Schema<TypeName>>;
