@@ -352,7 +352,7 @@ declare namespace BaseScene {
 
     /**
      * An object of creation and access information
-     * @defaultValue ``
+     * @defaultValue see {@link fields.DocumentStatsField}
      */
     _stats: fields.DocumentStatsField;
   }
