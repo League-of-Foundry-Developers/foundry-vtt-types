@@ -26,12 +26,39 @@ declare class BaseMacro extends Document<BaseMacro.SchemaField, BaseMacro.Metada
 
   static override defineSchema(): BaseMacro.Schema;
 
-  static override migrateData(source: object): object;
-
   /**
    * The default icon used for newly created Macro documents.
    */
   static DEFAULT_ICON: "icons/svg/dice-target.svg";
+
+  override testUserPermission(
+    user: documents.BaseUser,
+    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
+    {
+      exact
+    }?: {
+      /**
+       * Require the exact permission level requested?
+       * @defaultValue `false`
+       */
+      exact?: boolean;
+    }
+  ): boolean;
+
+  static override migrateData(source: object): object;
+
+  static override shimData(
+    data: object,
+    {
+      embedded
+    }?: {
+      /**
+       * Apply shims to embedded models?
+       * @defaultValue `true`
+       */
+      embedded?: boolean;
+    }
+  ): object;
 }
 export default BaseMacro;
 
