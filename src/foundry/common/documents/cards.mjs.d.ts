@@ -26,6 +26,8 @@ declare class BaseCards<TypeName extends BaseCards.TypeNames = BaseCards.TypeNam
    */
   constructor(data: BaseCards.ConstructorData<TypeName>, context?: DocumentConstructionContext);
 
+  override _source: BaseCards.Source<TypeName>;
+
   static override metadata: Readonly<BaseCards.Metadata>;
 
   static override defineSchema(): BaseCards.Schema;

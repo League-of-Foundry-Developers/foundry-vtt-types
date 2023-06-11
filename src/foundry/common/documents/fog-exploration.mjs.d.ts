@@ -20,7 +20,7 @@ declare class BaseFogExploration extends Document<BaseFogExploration.SchemaField
    * @param data    - Initial data from which to construct the FogExploration
    * @param context - Construction context options
    */
-  constructor(data: BaseFogExploration.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data?: BaseFogExploration.ConstructorData, context?: DocumentConstructionContext);
 
   static override metadata: Readonly<BaseFogExploration.Metadata>;
 
