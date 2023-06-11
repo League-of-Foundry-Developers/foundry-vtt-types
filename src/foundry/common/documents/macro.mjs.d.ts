@@ -17,7 +17,7 @@ declare global {
 interface BaseMacro extends BaseMacro.Properties {}
 declare class BaseMacro extends Document<BaseMacro.SchemaField, BaseMacro.Metadata> {
   /**
-   * @param data    - Initial data from which to construct the Wall
+   * @param data    - Initial data from which to construct the Macro
    * @param context - Construction context options
    */
   constructor(data: BaseMacro.ConstructorData, context?: DocumentConstructionContext);
