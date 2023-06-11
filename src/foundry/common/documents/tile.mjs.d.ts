@@ -25,6 +25,25 @@ declare class BaseTile extends Document<BaseTile.SchemaField, BaseTile.Metadata>
    * @param context - Construction context options
    */
   constructor(data: BaseTile.ConstructorData, context?: DocumentConstructionContext);
+
+  static override metadata: Readonly<BaseTile.Metadata>;
+
+  static override defineSchema(): BaseTile.Schema;
+
+  static override migrateData(source: object): object;
+
+  static override shimData(
+    data: object,
+    {
+      embedded
+    }?: {
+      /**
+       * Apply shims to embedded models?
+       * @defaultValue `true`
+       */
+      embedded?: boolean;
+    }
+  ): object;
 }
 export default BaseTile;
 
