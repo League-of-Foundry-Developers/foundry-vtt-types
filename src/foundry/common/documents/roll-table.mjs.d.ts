@@ -16,7 +16,7 @@ declare global {
 interface BaseRollTable extends BaseRollTable.Properties {}
 declare class BaseRollTable extends Document<BaseRollTable.SchemaField, BaseRollTable.Metadata> {
   /**
-   * @param data    - Initial data from which to construct the Wall
+   * @param data    - Initial data from which to construct the Roll Table
    * @param context - Construction context options
    */
   constructor(data: BaseRollTable.ConstructorData, context?: DocumentConstructionContext);
