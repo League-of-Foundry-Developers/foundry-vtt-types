@@ -1,6 +1,6 @@
 // FOUNDRY_VERSION: 10.291
 
-import Document, { DocumentMetadata } from "../abstract/document.mjs";
+import Document, { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mjs";
 import * as CONST from "../constants.mjs";
 import * as documents from "./module.mjs";
 import * as fields from "../data/fields.mjs";
@@ -44,6 +44,12 @@ declare class BaseMacro extends Document<BaseMacro.SchemaField, BaseMacro.Metada
       exact?: boolean;
     }
   ): boolean;
+
+  protected override _preCreate(
+    data: BaseMacro.Properties,
+    options: DocumentModificationOptions,
+    user: foundry.documents.BaseUser
+  ): Promise<void>;
 
   static override migrateData(source: object): object;
 
