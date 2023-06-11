@@ -98,7 +98,7 @@ declare namespace BaseMacro {
 
     /**
      * An image file path which provides the thumbnail artwork for this Macro
-     * @defaultValue `null`
+     * @defaultValue `BaseMacro.DEFAULT_ICON`
      */
     img: fields.FilePathField<{
       categories: ["IMAGE"];
