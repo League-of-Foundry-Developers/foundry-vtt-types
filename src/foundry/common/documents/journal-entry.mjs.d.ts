@@ -22,7 +22,7 @@ declare class BaseJournalEntry extends Document<BaseJournalEntry.SchemaField, Ba
    */
   constructor(data: BaseJournalEntry.ConstructorData, context?: DocumentConstructionContext);
 
-  static override metadata: BaseJournalEntry.Metadata;
+  static override metadata: Readonly<BaseJournalEntry.Metadata>;
 
   static override defineSchema(): BaseJournalEntry.Schema;
 

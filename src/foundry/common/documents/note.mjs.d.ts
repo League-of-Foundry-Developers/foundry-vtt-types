@@ -24,7 +24,7 @@ declare class BaseNote extends Document<BaseNote.SchemaField, BaseNote.Metadata>
    */
   constructor(data?: BaseNote.ConstructorData, context?: DocumentConstructionContext);
 
-  static override metadata: BaseNote.Metadata;
+  static override metadata: Readonly<BaseNote.Metadata>;
 
   static override defineSchema(): BaseNote.Schema;
 

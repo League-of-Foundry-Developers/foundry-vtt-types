@@ -22,7 +22,7 @@ declare class BasePlaylistSound extends Document<BasePlaylistSound.SchemaField, 
    */
   constructor(data: BasePlaylistSound.ConstructorData, context?: DocumentConstructionContext);
 
-  static override metadata: BasePlaylistSound.Metadata;
+  static override metadata: Readonly<BasePlaylistSound.Metadata>;
 
   static override defineSchema(): BasePlaylistSound.Schema;
 

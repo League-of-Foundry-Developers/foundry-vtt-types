@@ -23,7 +23,7 @@ declare class BaseMeasuredTemplate extends Document<BaseMeasuredTemplate.SchemaF
    */
   constructor(data?: BaseMeasuredTemplate.ConstructorData, context?: DocumentConstructionContext);
 
-  static override metadata: BaseMeasuredTemplate.Metadata;
+  static override metadata: Readonly<BaseMeasuredTemplate.Metadata>;
 
   static override defineSchema(): BaseMeasuredTemplate.Schema;
 
