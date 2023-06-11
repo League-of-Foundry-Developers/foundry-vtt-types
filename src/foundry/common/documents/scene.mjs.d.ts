@@ -340,7 +340,7 @@ declare namespace BaseScene {
 
     /**
      * An object which configures ownership of this Scene
-     * @defaultValue ``
+     * @defaultValue see {@link fields.DocumentOwnershipField}
      */
     ownership: fields.DocumentOwnershipField;
 
