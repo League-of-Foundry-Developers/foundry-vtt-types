@@ -17,7 +17,7 @@ declare global {
 interface BaseTableResult extends BaseTableResult.Properties {}
 declare class BaseTableResult extends Document<BaseTableResult.SchemaField, BaseTableResult.Metadata> {
   /**
-   * @param data    - Initial data from which to construct the Wall
+   * @param data    - Initial data from which to construct the Table Result
    * @param context - Construction context options
    */
   constructor(data: BaseTableResult.ConstructorData, context?: DocumentConstructionContext);
