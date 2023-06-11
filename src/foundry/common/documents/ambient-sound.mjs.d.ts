@@ -19,7 +19,7 @@ declare class BaseAmbientSound extends Document<BaseAmbientSound.SchemaField, Ba
    * @param data    - Initial data from which to construct the AmbientSound
    * @param context - Construction context options
    */
-  constructor(data: BaseAmbientSound.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data?: BaseAmbientSound.ConstructorData, context?: DocumentConstructionContext);
 
   static override metadata: Readonly<BaseAmbientSound.Metadata>;
 

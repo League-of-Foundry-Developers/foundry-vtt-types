@@ -24,7 +24,7 @@ declare class BaseCombat<Parent extends Document.Any | null = null> extends Docu
    * @param data    - Initial data from which to construct the Combat
    * @param context - Construction context options
    */
-  constructor(data: BaseCombat.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data?: BaseCombat.ConstructorData, context?: DocumentConstructionContext);
 
   static override metadata: Readonly<BaseCombat.Metadata>;
 

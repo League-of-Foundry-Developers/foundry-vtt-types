@@ -26,7 +26,7 @@ declare class BaseDrawing<Parent extends Document.Any | null = null> extends Doc
    * @param data    - Initial data from which to construct the Drawing
    * @param context - Construction context options
    */
-  constructor(data: BaseDrawing.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data?: BaseDrawing.ConstructorData, context?: DocumentConstructionContext);
 
   static override metadata: Readonly<BaseDrawing.Metadata>;
 

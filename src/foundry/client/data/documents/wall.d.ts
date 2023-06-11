@@ -1,9 +1,9 @@
+// FOUNDRY_VERSION: 10.291
+
 /**
- * The client-side Wall document which extends the common BaseWall model.
- * Each Wall document contains WallData which defines its data schema.
+ * The client-side Wall document which extends the common BaseWall document model.
  *
- * @see {@link data.WallData}                 The Wall data schema
- * @see {@link documents.Scene}               The Scene document type which contains Wall embedded documents
- * @see {@link applications.WallConfig}       The Wall configuration application
+ * @see {@link Scene}                     The Scene document type which contains Wall documents
+ * @see {@link WallConfig}                The Wall configuration application
  */
 declare class WallDocument extends CanvasDocumentMixin(foundry.documents.BaseWall) {}

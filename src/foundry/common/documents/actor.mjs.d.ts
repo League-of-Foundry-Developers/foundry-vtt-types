@@ -27,7 +27,7 @@ declare class BaseActor<TypeName extends BaseActor.TypeNames = BaseActor.TypeNam
    */
   constructor(data: BaseActor.ConstructorData<TypeName>, context?: DocumentConstructionContext);
 
-  _source: BaseActor.Source<TypeName>;
+  override _source: BaseActor.Source<TypeName>;
 
   static override metadata: Readonly<BaseActor.Metadata>;
 
