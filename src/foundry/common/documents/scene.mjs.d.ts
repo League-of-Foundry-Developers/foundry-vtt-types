@@ -28,6 +28,19 @@ declare class BaseScene extends Document<BaseScene.SchemaField, BaseScene.Metada
   static override defineSchema(): BaseScene.Schema;
 
   static override migrateData(source: object): object;
+
+  static override shimData(
+    data: object,
+    {
+      embedded
+    }?: {
+      /**
+       * Apply shims to embedded models?
+       * @defaultValue `true`
+       */
+      embedded?: boolean;
+    }
+  ): object;
 }
 export default BaseScene;
 
