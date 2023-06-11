@@ -7,7 +7,9 @@ import { TextureData } from "../data/data.mjs";
 
 declare global {
   type TileData = BaseTile.Properties;
+
   type TileOcclusionData = BaseTile.Properties["occlusion"];
+
   type TileVideoData = BaseTile.Properties["video"];
 }
 
@@ -124,7 +126,7 @@ declare namespace BaseTile {
 
     /**
      * The tile's occlusion settings
-     * @defaultValue `null`
+     * @defaultValue `{ mode: CONST.TILE_OCCLUSION_MODES.FADE, alpha: 0, radius: null }`
      */
     occlusion: fields.SchemaField<{
       /**
