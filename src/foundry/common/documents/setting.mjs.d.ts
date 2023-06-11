@@ -23,8 +23,6 @@ declare class BaseSetting extends Document<BaseSetting.SchemaField, BaseSetting.
   static override metadata: Readonly<BaseSetting.Metadata>;
 
   static override defineSchema(): BaseSetting.Schema;
-
-  static override migrateData(source: object): object;
 }
 export default BaseSetting;
 
