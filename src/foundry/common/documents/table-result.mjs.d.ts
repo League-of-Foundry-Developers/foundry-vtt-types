@@ -26,7 +26,34 @@ declare class BaseTableResult extends Document<BaseTableResult.SchemaField, Base
 
   static override defineSchema(): BaseTableResult.Schema;
 
+  override testUserPermission(
+    user: foundry.documents.BaseUser,
+    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
+    {
+      exact
+    }?: {
+      /**
+       * Require the exact permission level requested?
+       * @defaultValue `false`
+       */
+      exact?: boolean;
+    }
+  ): boolean;
+
   static override migrateData(source: object): object;
+
+  static override shimData(
+    data: object,
+    {
+      embedded
+    }?: {
+      /**
+       * Apply shims to embedded models?
+       * @defaultValue `true`
+       */
+      embedded?: boolean;
+    }
+  ): object;
 }
 export default BaseTableResult;
 
