@@ -28,7 +28,7 @@ declare class BaseItem<TypeName extends BaseItem.TypeNames = BaseItem.TypeNames>
    */
   constructor(data: BaseItem.ConstructorData<TypeName>, context?: DocumentConstructionContext);
 
-  _source: BaseItem.Source<TypeName>;
+  override _source: BaseItem.Source<TypeName>;
 
   static override metadata: Readonly<BaseItem.Metadata>;
 

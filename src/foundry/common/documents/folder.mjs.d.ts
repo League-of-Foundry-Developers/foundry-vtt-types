@@ -22,8 +22,6 @@ declare class BaseFolder extends Document<BaseFolder.SchemaField, BaseFolder.Met
    */
   constructor(data: BaseFolder.ConstructorData, context?: DocumentConstructionContext);
 
-  _source: BaseFolder.Source;
-
   static override metadata: Readonly<BaseFolder.Metadata>;
 
   static override defineSchema(): BaseFolder.Schema;
