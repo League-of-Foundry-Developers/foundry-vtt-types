@@ -1,25 +1,27 @@
+// FOUNDRY_VERSION: 10.291
+
 import { ClientDocumentMixin } from "../data/abstract/client-document";
 
 declare global {
   /**
    * Export data content to be saved to a local file
-   * @param data      Data content converted to a string
-   * @param type      The type of
-   * @param filename  The filename of the resulting download
+   * @param data      - Data content converted to a string
+   * @param type      - The type of
+   * @param filename  - The filename of the resulting download
    */
   function saveDataToFile(data: string, type: string, filename: string): void;
 
   /**
    * Read text data from a user provided File object
-   * @param file  A File object
+   * @param file  - A File object
    * @returns     A Promise which resolves to the loaded text data
    */
   function readTextFromFile(file: File): Promise<string>;
 
   /**
    * Retrieve a Document by its Universally Unique Identifier (uuid).
-   * @param uuid      The uuid of the Document to retrieve.
-   * @param relative  A document to resolve relative UUIDs against.
+   * @param uuid      - The uuid of the Document to retrieve.
+   * @param relative  - A document to resolve relative UUIDs against.
    * @returns         Returns the Document if it could be found, otherwise null.
    */
   function fromUuid(
@@ -30,8 +32,8 @@ declare global {
   /**
    * Retrieve a Document by its Universally Unique Identifier (uuid) synchronously. If the uuid resolves to a compendium
    * document, that document's index entry will be returned instead.
-   * @param uuid      The uuid of the Document to retrieve.
-   * @param relative  A document to resolve relative UUIDs against.
+   * @param uuid      - The uuid of the Document to retrieve.
+   * @param relative  - A document to resolve relative UUIDs against.
    * @returns          The Document or its index entry if it resides in a Compendium, otherwise null.
    * @throws If the uuid resolves to a Document that cannot be retrieved synchronously.
    */
@@ -53,8 +55,8 @@ declare global {
 
   /**
    * Parse a UUID into its constituent parts.
-   * @param uuid      The UUID to parse.
-   * @param relative  A document to resolve relative UUIDs against.
+   * @param uuid      - The UUID to parse.
+   * @param relative  - A document to resolve relative UUIDs against.
    * @returns          Returns the Collection and the Document ID to resolve the parent document, as
    *                  well as the remaining Embedded Document parts, if any.
    * @internal
@@ -63,8 +65,8 @@ declare global {
 
   /**
    * Resolve a series of embedded document UUID parts against a parent Document.
-   * @param parent  The parent Document.
-   * @param parts   A series of Embedded Document UUID parts.
+   * @param parent  - The parent Document.
+   * @param parts   - A series of Embedded Document UUID parts.
    * @returns       The resolved Embedded Document.
    * @internal
    */
@@ -79,8 +81,8 @@ declare global {
    * 1. If the number of parts is odd, remove the first part and resolve it against the current document and update the
    *    current document.
    * 2. If the number of parts is even, resolve embedded documents against the current document.
-   * @param uuid      The UUID to resolve.
-   * @param relative  The document to resolve against.
+   * @param uuid      - The UUID to resolve.
+   * @param relative  - The document to resolve against.
    * @internal
    */
   function _resolveRelativeUuid(
@@ -90,7 +92,7 @@ declare global {
 
   /**
    * Return a reference to the Document class implementation which is configured for use.
-   * @param documentName  The canonical Document name, for example "Actor"
+   * @param documentName  - The canonical Document name, for example "Actor"
    * @returns             The configured Document class implementation
    */
   function getDocumentClass<DocumentName extends string>(
