@@ -54,7 +54,7 @@ declare namespace BaseTile {
   >;
 
   type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = UpdateData;
+  type ConstructorData = UpdateData & Required<Pick<UpdateData, "width" | "height">>;
   type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
@@ -70,11 +70,11 @@ declare namespace BaseTile {
      * An image or video texture which this tile displays.
      * @defaultValue `null`
      */
-    texture: TextureData<{}, { categories: ["IMAGE", "VIDEO"]; initial: null; wildcard: false }>;
+    texture: TextureData<{}, { categories: ("IMAGE" | "VIDEO")[]; initial: null; wildcard: false }>;
 
     /**
      * The pixel width of the tile
-     * @defaultValue `0`
+     * @defaultValue `null`
      */
     width: fields.NumberField<{
       required: true;
@@ -85,7 +85,7 @@ declare namespace BaseTile {
 
     /**
      * The pixel height of the tile
-     * @defaultValue `0`
+     * @defaultValue `null`
      */
     height: fields.NumberField<{ required: true; min: 0; nullable: false; step: 0.1 }>;
 
@@ -145,7 +145,7 @@ declare namespace BaseTile {
 
     /**
      * The tile's occlusion settings
-     * @defaultValue `{ mode: CONST.TILE_OCCLUSION_MODES.FADE, alpha: 0, radius: null }`
+     * @defaultValue see properties
      */
     occlusion: fields.SchemaField<{
       /**
@@ -173,7 +173,7 @@ declare namespace BaseTile {
 
     /**
      * The tile's video settings
-     * @defaultValue `null`
+     * @defaultValue see properties
      */
     video: fields.SchemaField<{
       /**
@@ -197,7 +197,7 @@ declare namespace BaseTile {
 
     /**
      * An object of optional key/value flags
-     * @defaultValue `null`
+     * @defaultValue `{}`
      */
     flags: fields.ObjectField.FlagsField<"Tile">;
   }
