@@ -172,17 +172,7 @@ declare namespace BaseScene {
 
     /**
      * Grid configuration for the scene
-     * @defaultValue
-     * ```typescript
-     * {
-     *    type: CONST.GRID_TYPES.SQUARE,
-     *    size: 100,
-     *    color: "#000000",
-     *    alpha: 0.2,
-     *    distance: game.system.gridDistance || 1,
-     *    units: game.system.gridUnits ?? ""
-     * }
-     * ```
+     * @defaultValue see properties
      */
     grid: fields.SchemaField<{
       /**
