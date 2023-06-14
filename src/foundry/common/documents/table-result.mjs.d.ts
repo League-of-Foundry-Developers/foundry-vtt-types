@@ -73,7 +73,7 @@ declare namespace BaseTableResult {
   >;
 
   type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = UpdateData;
+  type ConstructorData = UpdateData & Required<Pick<UpdateData, "range">>;
   type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
@@ -98,7 +98,7 @@ declare namespace BaseTableResult {
 
     /**
      * The text which describes the table result
-     * @defaultValue see {@link fields.HTMLField}
+     * @defaultValue `""`
      */
     text: fields.HTMLField;
 
@@ -122,7 +122,7 @@ declare namespace BaseTableResult {
 
     /**
      * The probabilistic weight of this result relative to other results
-     * @defaultValue `1`
+     * @defaultValue `null`
      */
     weight: fields.NumberField<{ required: true; integer: true; positive: true }>;
 
