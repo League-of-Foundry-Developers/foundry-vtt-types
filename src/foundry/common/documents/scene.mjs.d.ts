@@ -172,15 +172,34 @@ declare namespace BaseScene {
 
     /**
      * Grid configuration for the scene
-     * @defaultValue `CONST.GRID_TYPES.SQUARE`
+     * @defaultValue
+     * ```typescript
+     * {
+     *    type: CONST.GRID_TYPES.SQUARE,
+     *    size: 100,
+     *    color: "#000000",
+     *    alpha: 0.2,
+     *    distance: game.system.gridDistance || 1,
+     *    units: game.system.gridUnits ?? ""
+     * }
+     * ```
      */
     grid: fields.SchemaField<{
+      /**
+       * The type of grid, a number from CONST.GRID_TYPES.
+       * @defaultValue `CONST.GRID_TYPES.SQUARE`
+       */
       type: fields.NumberField<{
         required: true;
         choices: CONST.GRID_TYPES[];
         initial: typeof CONST.GRID_TYPES.SQUARE;
         validationError: "must be a value in CONST.GRID_TYPES";
       }>;
+
+      /**
+       * The grid size which represents the width (or height) of a single grid space.
+       * @defaultValue `100`
+       */
       size: fields.NumberField<{
         required: true;
         nullable: false;
@@ -189,9 +208,29 @@ declare namespace BaseScene {
         initial: 100;
         validationError: `must be an integer number of pixels, ${typeof CONST.GRID_MIN_SIZE} or greater`;
       }>;
+
+      /**
+       * A string representing the color used to render the grid lines.
+       * @defaultValue `"#000000"`
+       */
       color: fields.ColorField<{ required: true; nullable: false; initial: "#000000" }>;
+
+      /**
+       * A number between 0 and 1 for the opacity of the grid lines.
+       * @defaultValue `0.2`
+       */
       alpha: fields.AlphaField<{ initial: 0.2 }>;
+
+      /**
+       * The number of distance units which are represented by a single grid space.
+       * @defaultValue `game.system.gridDistance || 1`
+       */
       distance: fields.NumberField<{ required: true; nullable: false; positive: true; initial: () => number }>;
+
+      /**
+       * A label for the units of measure which are used for grid distance.
+       * @defaultValue `game.system.gridUnits ?? ""`
+       */
       units: fields.StringField<{ initial: () => string }>;
     }>;
 
@@ -238,7 +277,7 @@ declare namespace BaseScene {
      * A special overlay image or video texture which is used for fog of war
      * @defaultValue `null`
      */
-    fogOverlay: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"] }>;
+    fogOverlay: fields.FilePathField<{ categories: ("IMAGE" | "VIDEO")[] }>;
 
     /**
      * A color tint applied to explored regions of fog of war
@@ -252,7 +291,6 @@ declare namespace BaseScene {
      */
     fogUnexploredColor: fields.ColorField<{ label: "SCENES.FogUnexploredColor" }>;
 
-    // Embedded Collections
     /**
      * A collection of embedded Drawing objects.
      * @defaultValue `[]`
@@ -301,7 +339,6 @@ declare namespace BaseScene {
      */
     walls: fields.EmbeddedCollectionField<typeof documents.BaseWall>;
 
-    // Linked Documents
     /**
      * A linked Playlist document which should begin automatically playing when this
      * Scene becomes active.
@@ -334,7 +371,6 @@ declare namespace BaseScene {
      */
     weather: fields.StringField;
 
-    // Permissions
     /**
      * The _id of a Folder which contains this Actor
      * @defaultValue `null`
