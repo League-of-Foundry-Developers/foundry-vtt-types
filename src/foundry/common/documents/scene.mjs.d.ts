@@ -69,7 +69,7 @@ declare namespace BaseScene {
   >;
 
   type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = UpdateData;
+  type ConstructorData = UpdateData & Required<Pick<UpdateData, "name">>;
   type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
@@ -87,7 +87,6 @@ declare namespace BaseScene {
      */
     name: fields.StringField<{ required: true; blank: false }>;
 
-    // Navigation
     /**
      * Is this scene currently active? Only one scene may be active at a given time
      * @defaultValue `false`
@@ -112,7 +111,6 @@ declare namespace BaseScene {
      */
     navName: fields.HTMLField;
 
-    // Canvas Dimensions
     /**
      * An image or video file that provides the background texture for the scene.
      * @defaultValue see {@link TextureData}
@@ -172,7 +170,6 @@ declare namespace BaseScene {
      */
     backgroundColor: fields.ColorField<{ initial: "#999999" }>;
 
-    // Grid Configuration
     /**
      * Grid configuration for the scene
      * @defaultValue `CONST.GRID_TYPES.SQUARE`
@@ -198,7 +195,6 @@ declare namespace BaseScene {
       units: fields.StringField<{ initial: () => string }>;
     }>;
 
-    // Vision and Lighting Configuration
     /**
      * Do Tokens require vision in order to see the Scene environment?
      * @defaultValue `true`
