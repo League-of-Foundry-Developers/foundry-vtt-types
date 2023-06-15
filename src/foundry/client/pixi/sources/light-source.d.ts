@@ -202,6 +202,7 @@ declare global {
 
     /**
      * Record the current visibility state of this LightSource and its respective channels.
+     * @internal
      * @defaultValue
      * ```typescript
      * {
