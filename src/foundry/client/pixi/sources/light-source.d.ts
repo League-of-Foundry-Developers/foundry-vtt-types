@@ -1,6 +1,6 @@
 // FOUNDRY_VERSION: 10.291
 
-import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes";
+export {};
 
 declare global {
   /** @see {@link foundry.data.LightData} */
