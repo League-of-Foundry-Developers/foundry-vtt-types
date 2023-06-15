@@ -42,6 +42,7 @@ declare class EffectsCanvasGroup extends PIXI.Container {
 
   /**
    * Create the child layers of the effects group.
+   * @internal
    */
   #createLayers(): void;
 
@@ -62,6 +63,7 @@ declare class EffectsCanvasGroup extends PIXI.Container {
 
   /**
    * Update the global light source which provide global illumination to the Scene.
+   * @internal
    */
   protected _updateGlobalLightSource(): GlobalLightSource;
 
@@ -82,6 +84,7 @@ declare class EffectsCanvasGroup extends PIXI.Container {
 
   /**
    * Add effect meshes for active vision sources.
+   * @internal
    */
   #addVisionEffects(): void;
 
@@ -125,6 +128,7 @@ declare class EffectsCanvasGroup extends PIXI.Container {
   /**
    * The ticker handler which manages animation delegation
    * @param dt    - Delta time
+   * @internal
    */
   #animateSources(dt: number): void;
 
