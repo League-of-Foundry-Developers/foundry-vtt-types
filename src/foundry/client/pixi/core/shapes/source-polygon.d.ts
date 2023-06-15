@@ -6,7 +6,6 @@ interface PointSourcePolygonConfig {
 
   /**
    * The angle of emission, if limited
-   * @defaultValue `360`
    */
   angle?: number;
 
