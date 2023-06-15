@@ -1,3 +1,5 @@
+// FOUNDRY_VERSION: 10.291
+
 import type BaseCard from "../../../common/documents/card.mjs";
 
 declare global {
