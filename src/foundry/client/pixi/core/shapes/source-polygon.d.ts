@@ -50,6 +50,7 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
    * Compute the rectangular bounds for the Polygon.
    * @param points - The initially provided array of coordinates
    * @returns The computed Rectangular bounds
+   * @internal
    */
   protected _getBounds(points: number[]): PIXI.Rectangle;
 
@@ -83,6 +84,7 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
 
   /**
    * Perform the implementation-specific computation
+   * @internal
    */
   protected abstract _compute(): void;
 
