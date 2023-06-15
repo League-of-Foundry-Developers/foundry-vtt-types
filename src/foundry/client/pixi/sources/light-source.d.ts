@@ -275,7 +275,6 @@ declare global {
      */
     protected _initializeBlending(): void;
 
-    /** @override */
     override refreshSource(): void;
 
     /**
@@ -504,16 +503,12 @@ declare global {
    * @param object    - The linked scene.
    */
   class GlobalLightSource extends LightSource {
-    /** @override */
     override get elevation(): number;
 
-    /** @override */
     protected override _createPolygon(): PointSourcePolygon | PIXI.Polygon;
 
-    /** @override */
     protected override _initializeFlags(): void;
 
-    /** @override */
     protected override _isSuppressed(): boolean;
   }
 }
