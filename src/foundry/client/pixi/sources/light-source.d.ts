@@ -1,12 +1,20 @@
+// FOUNDRY_VERSION: 10.291
+
 import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes";
 
 declare global {
   /** @see {@link foundry.data.LightData} */
   interface LightSourceData extends PointSource.Data {
-    /** @defaultValue `0` */
+    /**
+     * The x-coordinate of the source location
+     * @defaultValue `0`
+     */
     x: number;
 
-    /** @defaultValue `0` */
+    /**
+     * The y-coordinate of the source location
+     * @defaultValue `0`
+     */
     y: number;
 
     /**
@@ -75,8 +83,10 @@ declare global {
      */
     dim: number;
 
-    /** Fade the difference between bright, dim, and dark gradually? */
-    gradual: boolean;
+    /**
+     * Strength of the attenuation between bright, dim, and dark
+     */
+    attenuation: number;
 
     /**
      * The luminosity applied in the shader
@@ -96,7 +106,10 @@ declare global {
      */
     shadows: number;
 
-    /** @defaultValue `true` */
+    /**
+     * Whether or not the source is constrained by walls
+     * @defaultValue `true`
+     */
     walls: boolean;
 
     /**
@@ -105,105 +118,54 @@ declare global {
      */
     vision: boolean;
 
-    /** An integer seed to synchronize (or de-synchronize) animations */
+    /**
+     * An integer seed to synchronize (or de-synchronize) animations
+     */
     seed: number;
-  }
-
-  interface LightAnimationConfiguration {
-    /** The human-readable (localized) label for the animation */
-    label: string;
-
-    /** The animation function that runs every frame */
-    animation: (this: LightSource, dt: number, animation: LightAnimationConfiguration) => void;
-
-    /** A custom illumination shader used by this animation */
-    illuminationShader: AdaptiveIlluminationShader;
-
-    /** A custom coloration shader used by this animation */
-    colorationShader: AdaptiveColorationShader;
-
-    /** A custom background shader used by this animation */
-    backgroundShader: AdaptiveBackgroundShader;
-
-    /** The animation seed */
-    seed?: number;
-
-    /** The animation time */
-    time?: number;
-
-    /** @defaultValue `null` */
-    type?: keyof typeof CONFIG.Canvas.lightAnimations | null;
   }
 
   /**
    * A specialized subclass of the PointSource abstraction which is used to control the rendering of light sources.
+   * @param object  - The light-emitting object that generates this light source
    */
   class LightSource extends PointSource {
-    /** @param object - The light-emitting object that generates this light source */
-    constructor(object: InstanceType<ConfiguredObjectClassForName<"AmbientLight" | "Token">>);
+    constructor(object: AmbientLight | Token);
 
-    /**
-     * The light or darkness container for this source
-     * @defaultValue `this._createMesh(AdaptiveBackgroundShader)`
-     */
-    background: PIXI.Mesh;
-
-    /**
-     * The light or darkness container for this source
-     * @defaultValue `this._createMesh(AdaptiveIlluminationShader)`
-     */
-    illumination: PIXI.Mesh;
-
-    /**
-     * This visible color container for this source
-     * @defaultValue `this._createMesh(AdaptiveColorationShader)`
-     */
-    coloration: PIXI.Mesh;
-
-    static override sourceType: "light";
-
-    /**
-     * Strength of the blur for light source edges
-     * @defaultValue `3`
-     */
-    static BLUR_STRENGTH: number;
+    /** {@inheritdoc} */
+    static sourceType: "light";
 
     /**
      * Keys in the LightSourceData structure which, when modified, change the appearance of the light
-     * @internal
-     * @defaultValue
-     * ```javascript
-     * [
-     *   "dim", "bright", "gradual", "alpha", "coloration", "color",
-     *   "contrast", "saturation", "shadows", "luminosity"
-     * ]
-     * ```
      */
-    protected static _appearanceKeys: string[];
+    static readonly _appearanceKeys: [
+      "dim",
+      "bright",
+      "attenuation",
+      "alpha",
+      "coloration",
+      "color",
+      "contrast",
+      "saturation",
+      "shadows",
+      "luminosity"
+    ];
+
+    /**
+     * The computed polygon which expresses the area of effect of this light source
+     */
+    los: PointSourcePolygon | PIXI.Polygon;
 
     /**
      * The object of data which configures how the source is rendered
      * @defaultValue `{}`
      */
-    data: Partial<LightSourceData>;
-
-    /**
-     * The animation configuration applied to this source
-     * @defaultValue `{}`
-     */
-    animation: LightAnimationConfiguration;
+    data: LightSourceData;
 
     /**
      * Internal flag for whether this is a darkness source
      * @defaultValue `false`
      */
     isDarkness: boolean;
-
-    /**
-     * The rendered field-of-vision texture for the source for use within shaders.
-     * @defaultValue `undefined`
-     */
-    fovTexture: PIXI.RenderTexture | undefined;
 
     /**
      * To know if a light source is a preview or not. False by default.
@@ -213,15 +175,13 @@ declare global {
 
     /**
      * The ratio of dim:bright as part of the source radius
-     * @defaultValue `undefined`
      */
-    ratio: number | undefined;
+    ratio: number;
 
     /**
      * Track which uniforms need to be reset
-     * @internal
      * @defaultValue
-     * ```javascript
+     * ```typescript
      * {
      *   background: true,
      *   illumination: true,
@@ -229,185 +189,311 @@ declare global {
      * }
      * ```
      */
-    protected _resetUniforms: {
-      background: boolean;
-      illumination: boolean;
-      coloration: boolean;
-    };
+    _resetUniforms: { background: boolean; illumination: boolean; coloration: boolean };
 
     /**
      * To track if a source is temporarily shutdown to avoid glitches
      * @defaultValue `{ illumination: false }`
-     * @internal
      */
-    protected _shutdown: { illumination: boolean };
+    _shutdown: { illumination: boolean };
+
+    /**
+     * Record the current visibility state of this LightSource and its respective channels.
+     * @defaultValue
+     * ```typescript
+     * {
+     *   background: true,
+     *   illumination: true,
+     *   coloration: true,
+     *   any: true
+     * }
+     * ```
+     */
+    #visibility: { background: boolean; illumination: boolean; coloration: boolean; any: boolean };
+
+    /**
+     * To know if a light source is completely disabled.
+     */
+    get disabled(): boolean;
+
+    override get isAnimated(): boolean;
 
     /**
      * Initialize the source with provided object data.
-     * @param data - Initial data provided to the point source
-     * @returns A reference to the initialized source
+     * @param data  - Initial data provided to the point source.
+     *              (default: `{}`)
+     * @returns     A reference to the initialized source.
      */
-    initialize(data?: Partial<LightSourceData> & { color?: string | number | null }): this;
+    initialize(data: object): this;
+
+    override _getPolygonConfiguration(): PointSourcePolygonConfig;
+
+    /** {@inheritdoc} */
+    _createMeshes(): void;
+
+    /* -------------------------------------------- */
+
+    /** {@inheritdoc} */
+    destroy(): void;
 
     /**
      * Initialize the PointSource with new input data
-     * @param data - Initial data provided to the light source
-     * @returns The changes compared to the prior data
-     * @internal
+     * @param data  - Initial data provided to the light source
+     * @returns     The changes compared to the prior data
      */
     protected _initializeData(
       data: Partial<LightSourceData> & { color?: string | number | null }
     ): Partial<LightSourceData>;
 
+    /* -------------------------------------------- */
+
+    /**
+     * Record internal status flags which modify how the light source is rendered
+     */
+    protected _initializeFlags(): void;
+
     /**
      * Initialize the shaders used for this source, swapping to a different shader if the animation has changed.
-     * @internal
      */
-    protected _initializeShaders(): void;
+    _initializeShaders(): void;
 
     /**
      * Initialize the blend mode and vertical sorting of this source relative to others in the container.
-     * @internal
      */
-    protected _initializeBlending(): void;
+    _initializeBlending(): void;
+
+    /** @override */
+    override refreshSource(): void;
+
+    /**
+     * Update the visible state of the component channels of this LightSource.
+     * @returns   Is any channel of this light source active?
+     */
+    updateVisibility(): boolean;
+
+    /**
+     * Test whether this light source is currently suppressed?
+     */
+    _isSuppressed(): boolean;
 
     /**
      * Render the containers used to represent this light source within the LightingLayer
      */
-    drawMeshes(): {
-      background: ReturnType<LightSource["drawBackground"]>;
-      light: ReturnType<LightSource["drawLight"]>;
-      color: ReturnType<LightSource["drawColor"]>;
-    };
+    drawMeshes(): { background: PIXI.Mesh; light: PIXI.Mesh; color: PIXI.Mesh };
 
     /**
-     * Draw the display of this source for background container.
-     * @returns The rendered light container
+     * Create a Mesh for the background component of this source which will be added to CanvasBackgroundEffects.
+     * @returns   The background mesh for this LightSource, or null
      */
-    drawBackground(): PIXI.Container | null;
+    drawBackground(): PIXI.Mesh | null;
 
     /**
-     * Draw the display of this source for the darkness/light container of the SightLayer.
-     * @returns The rendered light container
+     * Create a Mesh for the illumination component of this source which will be added to CanvasIlluminationEffects.
+     * @returns   The illumination mesh for this LightSource, or null
      */
-    drawLight(): PIXI.Container | null;
+    drawLight(): PIXI.Mesh | null;
 
     /**
-     * Draw and return a container used to depict the visible color tint of the light source on the LightingLayer
-     * @returns An updated color container for the source
+     * Create a Mesh for the coloration component of this source which will be added to CanvasColorationEffects.
+     * @returns   The coloration mesh for this LightSource, or null
      */
-    drawColor(): PIXI.Container | null;
+    drawColor(): PIXI.Mesh | null;
 
     /**
-     * Update shader uniforms by providing data from this PointSource
-     * @param shader - The shader being updated
-     * @internal
+     * Update all layer uniforms.
      */
-    protected _updateColorationUniforms(shader: AdaptiveColorationShader): void;
+    protected _updateUniforms(): void;
 
     /**
      * Update shader uniforms by providing data from this PointSource
-     * @param shader - The shader being updated
-     * @internal
      */
-    protected _updateIlluminationUniforms(shader: AdaptiveIlluminationShader): void;
+    _updateColorationUniforms(): void;
 
     /**
      * Update shader uniforms by providing data from this PointSource
-     * @param shader - The shader being updated
-     * @internal
      */
-    protected _updateBackgroundUniforms(shader: AdaptiveBackgroundShader): void;
+    _updateIlluminationUniforms(): void;
+
+    /**
+     * Update shader uniforms by providing data from this PointSource
+     */
+    _updateBackgroundUniforms(): void;
 
     /**
      * Update shader uniforms shared by all shader types
-     * @param shader - The shader being updated
-     * @internal
+     * @param shader    - The shader being updated
      */
-    protected _updateCommonUniforms(shader: AdaptiveLightingShader): void;
+    _updateCommonUniforms(shader: AdaptiveLightingShader): void;
 
     /**
      * Map luminosity value to exposure value
-     * luminosity[-1  , 0  [ =\> Darkness =\> map to exposure ]   0, 1]
-     * luminosity[ 0  , 0.5[ =\> Light    =\> map to exposure [-0.5, 0[
-     * luminosity[ 0.5, 1  ] =\> Light    =\> map to exposure [   0, 1]
-     * @param lum - The luminosity value
-     * @returns The exposure value
-     * @internal
+     * luminosity[-1  , 0  [ =&gt; Darkness =&gt; map to exposure ]   0, 1]
+     * luminosity[ 0  , 0.5[ =&gt; Light    =&gt; map to exposure [-0.5, 0[
+     * luminosity[ 0.5, 1  ] =&gt; Light    =&gt; map to exposure [   0, 1]
+     * @param lum   - The luminosity value
+     * @returns     The exposure value
      */
-    protected _mapLuminosity(lum: number): number;
+    _mapLuminosity(lum: number): number;
 
     /**
-     * Animate the PointSource, if an animation is enabled and if it currently has rendered containers.
-     * @param dt - Delta time
-     */
-    animate(dt: number): void;
-
-    /**
-     * A torch animation where the luminosity and coloration decays each frame and is revitalized by flashes
+     * An animation with flickering ratio and light intensity
      * @param dt        - Delta time
-     * @param speed     - The animation speed, from 1 to 10
-     *                    (default: `5`)
-     * @param intensity - The animation intensity, from 1 to 10
-     *                    (default: `5`)
+     * @param options   - Additional options which modify the flame animation
+     *                  (default: `{}`)
      */
-    animateTorch(dt: number, { speed, intensity }?: { speed: number; intensity: number }): void;
+    animateTorch(
+      dt: number,
+      options?: {
+        /**
+         * The animation speed, from 1 to 10
+         * @defaultValue `5`
+         */
+        speed: number;
+
+        /**
+         * The animation intensity, from 1 to 10
+         * @defaultValue `5`
+         */
+        intensity: number;
+
+        /**
+         * Reverse the animation direction
+         * @defaultValue `false`
+         */
+        reverse: boolean;
+      }
+    ): void;
+
+    /**
+     * An animation with flickering ratio and light intensity
+     * @param dt        - Delta time
+     * @param options   - Additional options which modify the flame animation
+     */
+    animateFlickering(
+      dt: number,
+      options?: {
+        /**
+         * The animation speed, from 1 to 10
+         * @defaultValue `5`
+         */
+        speed: number;
+
+        /**
+         * The animation intensity, from 1 to 10
+         * @defaultValue `5`
+         */
+        intensity: number;
+
+        /**
+         * Reverse the animation direction
+         * @defaultValue `false`
+         */
+        reverse: boolean;
+
+        /**
+         * Noise amplification (\>1) or dampening (\<1)
+         * @defaultValue `1`
+         */
+        amplification: number;
+      }
+    ): void;
 
     /**
      * A basic "pulse" animation which expands and contracts.
-     * @param dt        - Delta time
-     * @param speed     - The animation speed, from 1 to 10
-     *                    (default: `5`)
-     * @param intensity - The animation intensity, from 1 to 10
-     *                    (default: `5`)
-     * @param reverse   - Is the animation reversed?
-     *                    (default: `false`)
+     * @param dt         - Delta time
+     * @param options    - Additional options which modify the pulse animation
+     *                  (default: `{}`)
      */
     animatePulse(
       dt: number,
-      { speed, intensity, reverse }?: { speed?: number; intensity?: number; reverse?: boolean }
+      options?: {
+        /**
+         * The animation speed, from 1 to 10
+         * @defaultValue `5`
+         */
+        speed: number;
+
+        /**
+         * The animation intensity, from 1 to 10
+         * @defaultValue `5`
+         */
+        intensity: number;
+
+        /**
+         * Reverse the animation direction
+         * @defaultValue `false`
+         */
+        reverse: boolean;
+      }
     ): void;
 
     /**
      * Emanate waves of light from the source origin point
-     * @param dt        - Delta time
-     * @param speed     - The animation speed, from 1 to 10
-     *                    (default: `5`)
-     * @param intensity - The animation intensity, from 1 to 10
-     *                    (default: `5`)
-     * @param reverse   - Is the animation reversed?
-     *                    (default: `false`)
+     * @param dt         - Delta time
+     * @param options    - Additional options which modify the animation
+     *                  (default: `{}`)
      */
     animateTime(
       dt: number,
-      { speed, intensity, reverse }?: { speed?: number; intensity?: number; reverse?: boolean }
+      options?: {
+        /**
+         * The animation speed, from 1 to 10
+         * @defaultValue `5`
+         */
+        speed: number;
+
+        /**
+         * The animation intensity, from 1 to 10
+         * @defaultValue `5`
+         */
+        intensity: number;
+
+        /**
+         * Reverse the animation direction
+         * @defaultValue `false`
+         */
+        reverse: boolean;
+      }
     ): void;
 
     /**
-     * Evolve a value using a stochastic AR(1) process
-     * @param y      - The current value
-     * @param phi    - The decay rate of prior values
-     *                 (default: `0.5`)
-     * @param center - The stationary mean of the series
-     *                 (default: `0`)
-     * @param sigma  - The volatility of the process - standard deviation of the error term
-     *                 (default: `0.1`)
-     * @param max    - The maximum allowed outcome, or null
-     *                 (default: `null`)
-     * @param min    - The minimum allowed outcome, or null
-     *                 (default: `null`)
-     * @returns The new value of the process
-     * @internal
+     * Test whether this LightSource provides visibility to see a certain target object.
+     * @param config    - The visibility test configuration
+     * @returns         Is the target object visible to this source?
      */
-    protected _ar1(
-      y: number,
-      {
-        phi,
-        center,
-        sigma,
-        max,
-        min
-      }?: { phi?: number; center?: number; sigma?: number; max?: number | null; min?: number | null }
-    ): number;
+    testVisibility(config?: {
+      /**
+       * The sequence of tests to perform
+       */
+      tests: CanvasVisibilityTest[];
+      object: PlaceableObject;
+    }): boolean;
+
+    /**
+     * Can this LightSource theoretically detect a certain object based on its properties?
+     * This check should not consider the relative positions of either object, only their state.
+     * @param target    - The target object being tested
+     * @returns         Can the target object theoretically be detected by this vision source?
+     */
+    _canDetectObject(target: PlaceableObject): boolean;
+  }
+
+  /**
+   * A specialized subclass of the LightSource which is used to render global light source linked to the scene.
+   * @see LightSource
+   * @param object    - The linked scene.
+   */
+  class GlobalLightSource extends LightSource {
+    /** @override */
+    override get elevation(): number;
+
+    /** @override */
+    override _createPolygon(): PointSourcePolygon | PIXI.Polygon;
+
+    /** @override */
+    override _initializeFlags(): void;
+
+    /** @override */
+    override _isSuppressed(): boolean;
   }
 }
