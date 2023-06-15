@@ -187,7 +187,7 @@ declare global {
      * ```
      * @internal
      */
-    _resetUniforms: {
+    protected _resetUniforms: {
       background: boolean;
       illumination: boolean;
       coloration: boolean;
@@ -198,7 +198,7 @@ declare global {
      * @defaultValue `{ illumination: false }`
      * @internal
      */
-    _shutdown: { illumination: boolean };
+    protected _shutdown: { illumination: boolean };
 
     /**
      * Record the current visibility state of this LightSource and its respective channels.
@@ -235,10 +235,10 @@ declare global {
      */
     initialize(data: object): this;
 
-    override _getPolygonConfiguration(): PointSourcePolygonConfig;
+    protected override _getPolygonConfiguration(): PointSourcePolygonConfig;
 
     /** {@inheritdoc} */
-    _createMeshes(): void;
+    protected _createMeshes(): void;
 
     /* -------------------------------------------- */
 
@@ -267,13 +267,13 @@ declare global {
      * Initialize the shaders used for this source, swapping to a different shader if the animation has changed.
      * @internal
      */
-    _initializeShaders(): void;
+    protected _initializeShaders(): void;
 
     /**
      * Initialize the blend mode and vertical sorting of this source relative to others in the container.
      * @internal
      */
-    _initializeBlending(): void;
+    protected _initializeBlending(): void;
 
     /** @override */
     override refreshSource(): void;
@@ -288,7 +288,7 @@ declare global {
      * Test whether this light source is currently suppressed?
      * @internal
      */
-    _isSuppressed(): boolean;
+    protected _isSuppressed(): boolean;
 
     /**
      * Render the containers used to represent this light source within the LightingLayer
@@ -323,26 +323,26 @@ declare global {
      * Update shader uniforms by providing data from this PointSource
      * @internal
      */
-    _updateColorationUniforms(): void;
+    protected _updateColorationUniforms(): void;
 
     /**
      * Update shader uniforms by providing data from this PointSource
      * @internal
      */
-    _updateIlluminationUniforms(): void;
+    protected _updateIlluminationUniforms(): void;
 
     /**
      * Update shader uniforms by providing data from this PointSource
      * @internal
      */
-    _updateBackgroundUniforms(): void;
+    protected _updateBackgroundUniforms(): void;
 
     /**
      * Update shader uniforms shared by all shader types
      * @param shader    - The shader being updated
      * @internal
      */
-    _updateCommonUniforms(shader: AdaptiveLightingShader): void;
+    protected _updateCommonUniforms(shader: AdaptiveLightingShader): void;
 
     /**
      * Map luminosity value to exposure value
@@ -353,7 +353,7 @@ declare global {
      * @returns     The exposure value
      * @internal
      */
-    _mapLuminosity(lum: number): number;
+    protected _mapLuminosity(lum: number): number;
 
     /**
      * An animation with flickering ratio and light intensity
@@ -495,7 +495,7 @@ declare global {
      * @param target    - The target object being tested
      * @returns         Can the target object theoretically be detected by this vision source?
      */
-    _canDetectObject(target: PlaceableObject): boolean;
+    protected _canDetectObject(target: PlaceableObject): boolean;
   }
 
   /**
@@ -508,12 +508,12 @@ declare global {
     override get elevation(): number;
 
     /** @override */
-    override _createPolygon(): PointSourcePolygon | PIXI.Polygon;
+    protected override _createPolygon(): PointSourcePolygon | PIXI.Polygon;
 
     /** @override */
-    override _initializeFlags(): void;
+    protected override _initializeFlags(): void;
 
     /** @override */
-    override _isSuppressed(): boolean;
+    protected override _isSuppressed(): boolean;
   }
 }
