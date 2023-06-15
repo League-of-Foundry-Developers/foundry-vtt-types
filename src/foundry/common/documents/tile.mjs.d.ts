@@ -74,7 +74,6 @@ declare namespace BaseTile {
 
     /**
      * The pixel width of the tile
-     * @defaultValue `null`
      */
     width: fields.NumberField<{
       required: true;
@@ -85,7 +84,6 @@ declare namespace BaseTile {
 
     /**
      * The pixel height of the tile
-     * @defaultValue `null`
      */
     height: fields.NumberField<{ required: true; min: 0; nullable: false; step: 0.1 }>;
 
