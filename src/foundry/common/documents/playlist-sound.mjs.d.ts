@@ -69,7 +69,6 @@ declare namespace BasePlaylistSound {
 
     /**
      * The name of this sound
-     * @defaultValue `""`
      */
     name: fields.StringField<{ required: true; blank: false }>;
 

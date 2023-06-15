@@ -73,7 +73,6 @@ declare namespace BasePlaylist {
 
     /**
      * The name of this playlist
-     * @defaultValue `""`
      */
     name: fields.StringField<{ required: true; blank: false }>;
 

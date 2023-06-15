@@ -1,13 +1,25 @@
+// FOUNDRY_VERSION: 10.291
+
+import type { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
+import type { fields } from "../../../common/data/module.mjs";
+
 declare global {
   /**
-   * The client-side AmbientLight document which extends the common BaseAmbientLight model.
-   * Each AmbientLight document contains AmbientLightData which defines its data schema.
+   * The client-side AmbientLight document which extends the common BaseAmbientLight document model.
    *
-   * @see {@link data.AmbientLightData}             The AmbientLight data schema
-   * @see {@link documents.Scene}                   The Scene document type which contains AmbientLight embedded documents
-   * @see {@link applications.LightConfig}          The AmbientLight configuration application
+   * @see {@link Scene}                 The Scene document type which contains AmbientLight documents
+   * @see {@link AmbientLightConfig}    The AmbientLight configuration application
    */
   class AmbientLightDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientLight) {
+    /**
+     * @internal
+     */
+    protected _onUpdate(
+      changed: DeepPartial<fields.SchemaField.PersistedType<fields.SchemaField.AnyWithFlags["fields"], {}>>,
+      options: DocumentModificationOptions,
+      userId: string
+    ): foundry.documents.BaseAmbientLight["_onUpdate"];
+
     /**
      * Is this ambient light source global in nature?
      */
