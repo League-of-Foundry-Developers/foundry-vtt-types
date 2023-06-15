@@ -15,6 +15,7 @@ declare global {
 
     /**
      * The cached mapping of textures
+     * @internal
      */
     #cache: Map<string, { tex: PIXI.BaseTexture; time: number }>;
 
@@ -61,7 +62,7 @@ declare global {
 
     /**
      * Use the Fetch API to retrieve a resource and return a Blob instance for it.
-     * @param options  Options to configure the loading behaviour.
+     * @param options  - Options to configure the loading behaviour.
      *                 (default `{}`)
      * @returns        A Blob containing the loaded data
      */
