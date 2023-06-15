@@ -1,3 +1,5 @@
+// FOUNDRY_VERSION: 10.291
+
 /**
  * The client-side AmbientSound document which extends the common BaseAmbientSound document model.
  *
