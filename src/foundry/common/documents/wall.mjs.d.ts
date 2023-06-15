@@ -45,7 +45,7 @@ declare namespace BaseWall {
   >;
 
   type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = UpdateData;
+  type ConstructorData = UpdateData & Required<Pick<UpdateData, "c">>;
   type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
