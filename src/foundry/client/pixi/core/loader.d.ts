@@ -17,7 +17,7 @@ declare global {
      * The cached mapping of textures
      * @internal
      */
-    #cache: Map<string, { tex: PIXI.BaseTexture; time: number }>;
+    protected #cache: Map<string, { tex: PIXI.BaseTexture; time: number }>;
 
     /**
      * Load all the textures which are required for a particular Scene
@@ -74,7 +74,7 @@ declare global {
      * @param progress  - Loading progress
      * @internal
      */
-    static #onProgress(src: string, progress: TextureLoader.Progress): void;
+    protected static #onProgress(src: string, progress: TextureLoader.Progress): void;
 
     /**
      * Log failed texture loading
@@ -83,7 +83,7 @@ declare global {
      * @param error     - The error which occurred
      * @internal
      */
-    static #onError(src: string, progress: TextureLoader.Progress, error: Error): void;
+    protected static #onError(src: string, progress: TextureLoader.Progress, error: Error): void;
 
     /**
      * Add an image url to the texture cache
