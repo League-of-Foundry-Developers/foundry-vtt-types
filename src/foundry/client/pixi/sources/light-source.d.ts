@@ -136,19 +136,16 @@ declare global {
 
     /**
      * Keys in the LightSourceData structure which, when modified, change the appearance of the light
+     * @internal
+     * @defaultValue
+     * ```javascript
+     * [
+     *   "dim", "bright", "gradual", "alpha", "coloration", "color",
+     *   "contrast", "saturation", "shadows", "luminosity"
+     * ]
+     * ```
      */
-    static readonly _appearanceKeys: [
-      "dim",
-      "bright",
-      "attenuation",
-      "alpha",
-      "coloration",
-      "color",
-      "contrast",
-      "saturation",
-      "shadows",
-      "luminosity"
-    ];
+    protected static _appearanceKeys: string[];
 
     /**
      * The computed polygon which expresses the area of effect of this light source
@@ -188,12 +185,18 @@ declare global {
      *   coloration: true
      * }
      * ```
+     * @internal
      */
-    _resetUniforms: { background: boolean; illumination: boolean; coloration: boolean };
+    _resetUniforms: {
+      background: boolean;
+      illumination: boolean;
+      coloration: boolean;
+    };
 
     /**
      * To track if a source is temporarily shutdown to avoid glitches
      * @defaultValue `{ illumination: false }`
+     * @internal
      */
     _shutdown: { illumination: boolean };
 
@@ -209,7 +212,12 @@ declare global {
      * }
      * ```
      */
-    #visibility: { background: boolean; illumination: boolean; coloration: boolean; any: boolean };
+    #visibility: {
+      background: boolean;
+      illumination: boolean;
+      coloration: boolean;
+      any: boolean;
+    };
 
     /**
      * To know if a light source is completely disabled.
@@ -240,6 +248,7 @@ declare global {
      * Initialize the PointSource with new input data
      * @param data  - Initial data provided to the light source
      * @returns     The changes compared to the prior data
+     * @internal
      */
     protected _initializeData(
       data: Partial<LightSourceData> & { color?: string | number | null }
@@ -249,16 +258,19 @@ declare global {
 
     /**
      * Record internal status flags which modify how the light source is rendered
+     * @internal
      */
     protected _initializeFlags(): void;
 
     /**
      * Initialize the shaders used for this source, swapping to a different shader if the animation has changed.
+     * @internal
      */
     _initializeShaders(): void;
 
     /**
      * Initialize the blend mode and vertical sorting of this source relative to others in the container.
+     * @internal
      */
     _initializeBlending(): void;
 
@@ -273,6 +285,7 @@ declare global {
 
     /**
      * Test whether this light source is currently suppressed?
+     * @internal
      */
     _isSuppressed(): boolean;
 
@@ -301,27 +314,32 @@ declare global {
 
     /**
      * Update all layer uniforms.
+     * @internal
      */
     protected _updateUniforms(): void;
 
     /**
      * Update shader uniforms by providing data from this PointSource
+     * @internal
      */
     _updateColorationUniforms(): void;
 
     /**
      * Update shader uniforms by providing data from this PointSource
+     * @internal
      */
     _updateIlluminationUniforms(): void;
 
     /**
      * Update shader uniforms by providing data from this PointSource
+     * @internal
      */
     _updateBackgroundUniforms(): void;
 
     /**
      * Update shader uniforms shared by all shader types
      * @param shader    - The shader being updated
+     * @internal
      */
     _updateCommonUniforms(shader: AdaptiveLightingShader): void;
 
@@ -332,6 +350,7 @@ declare global {
      * luminosity[ 0.5, 1  ] =&gt; Light    =&gt; map to exposure [   0, 1]
      * @param lum   - The luminosity value
      * @returns     The exposure value
+     * @internal
      */
     _mapLuminosity(lum: number): number;
 
