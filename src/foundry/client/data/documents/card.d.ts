@@ -47,7 +47,6 @@ declare global {
      */
     get hasPreviousFace(): boolean;
 
-    /** @override */
     override prepareDerivedData(): void;
 
     /**
