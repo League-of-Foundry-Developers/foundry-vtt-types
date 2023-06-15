@@ -81,7 +81,6 @@ declare namespace BaseJournalEntryPage {
 
     /**
      * The text name of this page.
-     * @defaultValue `""`
      */
     name: fields.StringField<{ required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle" }>;
 
