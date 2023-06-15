@@ -71,14 +71,12 @@ declare global {
     /**
      * @alias Card#pass
      * @see Card#pass
-     * {@inheritdoc}
      */
     play(to: Cards, options?: Cards.PassOptions | undefined): Promise<Card>;
 
     /**
      * @alias Card#pass
      * @see Card#pass
-     * @inheritdoc
      */
     discard(to: Cards, options?: Cards.PassOptions | undefined): Promise<Card>;
 
