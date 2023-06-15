@@ -69,13 +69,11 @@ declare global {
     pass(to: Cards, options?: Cards.PassOptions | undefined): Promise<Card>;
 
     /**
-     * @alias Card#pass
      * @see Card#pass
      */
     play(to: Cards, options?: Cards.PassOptions | undefined): Promise<Card>;
 
     /**
-     * @alias Card#pass
      * @see Card#pass
      */
     discard(to: Cards, options?: Cards.PassOptions | undefined): Promise<Card>;
