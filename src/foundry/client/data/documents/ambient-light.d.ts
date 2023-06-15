@@ -12,10 +12,9 @@ declare global {
    */
   class AmbientLightDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientLight) {
     /**
-     * {@inheritdoc}
      * @internal
      */
-    _onUpdate(
+    protected _onUpdate(
       changed: DeepPartial<fields.SchemaField.PersistedType<fields.SchemaField.AnyWithFlags["fields"], {}>>,
       options: DocumentModificationOptions,
       userId: string
