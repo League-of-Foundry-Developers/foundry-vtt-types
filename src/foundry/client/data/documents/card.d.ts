@@ -115,7 +115,7 @@ declare global {
      *                  (default: `{}`)
      * @returns A reference to the reset card belonging to its original parent
      */
-    reset(options?: Cards.ResetOptions | undefined): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">>>;
+    reset(options?: Cards.RecallOptions | undefined): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">>>;
 
     /**
      * Create a chat message which displays this Card.
