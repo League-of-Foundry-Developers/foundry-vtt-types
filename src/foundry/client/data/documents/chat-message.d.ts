@@ -201,7 +201,7 @@ declare global {
 
     /** @internal */
     protected override _onUpdate(
-      data: BaseChatMessage.ConstructorData,
+      data: DeepPartial<BaseChatMessage.UpdateData>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
