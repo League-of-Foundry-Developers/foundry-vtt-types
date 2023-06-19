@@ -82,7 +82,6 @@ declare namespace BaseAdventure {
 
     /**
      * The human-readable name of the Adventure
-     * @defaultValue `""`
      */
     name: fields.StringField<{ required: true; blank: false; label: "ADVENTURE.Name"; hint: "ADVENTURE.NameHint" }>;
 

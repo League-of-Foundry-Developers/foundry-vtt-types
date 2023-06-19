@@ -91,7 +91,6 @@ declare namespace BaseJournalEntry {
 
     /**
      * The name of this JournalEntry
-     * @defaultValue `""`
      */
     name: fields.StringField<{ required: true; blank: false }>;
 

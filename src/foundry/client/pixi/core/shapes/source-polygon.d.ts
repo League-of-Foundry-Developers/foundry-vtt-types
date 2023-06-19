@@ -1,8 +1,12 @@
+// FOUNDRY_VERSION: 10.291
+
 interface PointSourcePolygonConfig {
   /** The type of polygon being computed */
   type?: foundry.CONST.WALL_RESTRICTION_TYPES;
 
-  /** The angle of emission, if limited */
+  /**
+   * The angle of emission, if limited
+   */
   angle?: number;
 
   /** The desired density of padding rays, a number per PI */
@@ -22,12 +26,40 @@ interface PointSourcePolygonConfig {
 
   /** The object (if any) that spawned this polygon. */
   source?: PointSource;
+
+  /** Limiting polygon boundary shapes */
+  boundaryShapes?: (PIXI.Rectangle | PIXI.Circle | PIXI.Polygon)[];
 }
+interface IntersectPolygonOptions {
+  /**
+   * The clipper clip type
+   */
+  clipType?: number;
+
+  /**
+   * A scaling factor passed to Polygon#toClipperPoints to preserve precision
+   */
+  scalingFactor?: number;
+}
+
+interface IntersectCirclePolygonOptions extends IntersectPolygonOptions {
+  /**
+   * The number of points which defines the density of approximation
+   */
+  density?: number;
+}
+
+type CollisionMode = "any" | "all" | "closest";
 
 /**
  * An extension of the default PIXI.Polygon which is used to represent the line of sight for a point source.
  */
 declare abstract class PointSourcePolygon extends PIXI.Polygon {
+  /**
+   * The rectangular bounds of this polygon
+   */
+  bounds: PIXI.Rectangle;
+
   /**
    * The origin point of the source polygon.
    */
@@ -42,25 +74,24 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
   /**
    * A cached array of SightRay objects used to compute the polygon.
    * @defaultValue `[]`
-   * @remarks This is documented as `SightRay[]` but that's only correct for the {@link RadialSweepPolygon}
    */
-  rays: Ray[];
+  rays: PolygonRay[];
 
   /**
-   * Compute the rectangular bounds for the Polygon.
-   * @param points - The initially provided array of coordinates
-   * @returns The computed Rectangular bounds
+   * An indicator for whether this polygon is constrained by some boundary shape?
    */
-  protected _getBounds(points: number[]): PIXI.Rectangle;
+  get isConstrained(): boolean;
 
   /**
    * Benchmark the performance of polygon computation for this source
-   * @param iterations - The number of test iterations to perform
-   * @param args       - Arguments passed to the compute method
+   * @param iterations  - The number of test iterations to perform
+   * @param origin      - The origin point to benchmark
+   * @param config      - The polygon configuration to benchmark
    */
   static benchmark(
     iterations: number,
-    ...args: Parameters<typeof PointSourcePolygon["create"]>
+    origin: Point,
+    config: PointSourcePolygonConfig
   ): ReturnType<typeof foundry.utils.benchmark>;
 
   /**
@@ -72,8 +103,11 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
    */
   static create(
     origin: Point,
-    config?: Parameters<PointSourcePolygon["initialize"]>[1] | undefined
+    config?: PointSourcePolygonConfig | undefined
   ): ReturnType<PointSourcePolygon["compute"]>;
+
+  /** {@inheritDoc} */
+  contains(x: number, y: number): boolean;
 
   /**
    * Compute the polygon using the origin and configuration options.
@@ -94,17 +128,52 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
   initialize(origin: Point, config: PointSourcePolygonConfig): void;
 
   /**
+   * Apply a constraining boundary shape to an existing PointSourcePolygon.
+   * Return a new instance of the polygon with the constraint applied.
+   * The new instance is only a "shallow clone", as it shares references to component properties with the original.
+   * @param constraint            - The constraining boundary shape
+   * @param intersectionOptions   - Options passed to the shape intersection method
+   *                              (default: `{}`)
+   * @returns                     A new constrained polygon
+   */
+  applyConstraint<T extends PIXI.Circle | PIXI.Rectangle | PIXI.Polygon>(
+    constraint: T,
+    intersectionOptions?: T extends PIXI.Circle ? IntersectCirclePolygonOptions : IntersectPolygonOptions
+  ): PointSourcePolygon;
+
+  /**
+   * Test whether a Ray between the origin and destination points would collide with a boundary of this Polygon.
+   * A valid wall restriction type is compulsory and must be passed into the config options.
+   * @param origin       - An origin point
+   * @param destination  - A destination point
+   * @param config       - The configuration that defines a certain Polygon type
+   *                    (default `{}`)
+   * @returns           The collision result depends on the mode of the test:
+   *                    * any: returns a boolean for whether any collision occurred
+   *                    * all: returns a sorted array of PolygonVertex instances
+   *                    * closest: returns a PolygonVertex instance or null
+   */
+  static testCollision(
+    origin: Point,
+    destination: Point,
+    config?: PointSourcePolygonConfig & {
+      /**
+       * The collision mode to test: "any", "all", or "closest"
+       */
+      mode?: CollisionMode;
+    }
+  ): boolean | PolygonVertex | PolygonVertex[] | null;
+
+  /**
+   * Determine the set of collisions which occurs for a Ray.
+   * @param ray   - The Ray to test
+   * @param mode  - The collision mode being tested
+   * @returns     The collision test result
+   */
+  protected abstract _testCollision(ray: Ray, mode: CollisionMode): boolean | PolygonVertex | PolygonVertex[] | null;
+
+  /**
    * Visualize the polygon, displaying its computed area, rays, and collision points
    */
   visualize(): void;
 }
-
-/**
- * Compare sight performance between different algorithms
- * @param n    - The number of iterations
- * @param args - Arguments passed to the polygon compute function
- */
-declare function benchmarkSight(
-  n: number,
-  ...args: Parameters<typeof ClockwiseSweepPolygon["benchmark"]>
-): Promise<void>;
