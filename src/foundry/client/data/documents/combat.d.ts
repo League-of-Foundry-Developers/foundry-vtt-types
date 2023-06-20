@@ -112,7 +112,7 @@ declare global {
 
     /**
      * Roll initiative for one or multiple Combatants within the Combat document
-     * @param ids   - A Combatant id or Array of ids for which to roll
+     * @param ids       - A Combatant id or Array of ids for which to roll
      * @param options   - Additional options which modify how initiative rolls are created or presented.
      *                  (default: `{}`)
      * @returns A promise which resolves to the updated Combat document once updates are complete.
