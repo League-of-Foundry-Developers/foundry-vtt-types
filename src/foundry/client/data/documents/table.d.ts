@@ -25,7 +25,7 @@ declare global {
      * Optionally also display the Roll which produced the result and configure aspects of the displayed messages.
      *
      * @param results   - An Array of one or more TableResult Documents which were drawn and should
-     *                                        be displayed.
+     *                  be displayed.
      * @param options   - Additional options which modify message creation
      *                  (default: `{}`)
      */
@@ -87,13 +87,13 @@ declare global {
 
     /**
      * Get an Array of valid results for a given rolled total
-     * @param {number} value    The rolled value
-     * @returns {TableResult[]} An Array of results
+     * @param value   - The rolled value
+     * @returns An Array of results
      */
     getResultsForRoll(value: number): InstanceType<ConfiguredDocumentClass<typeof TableResult>>[];
 
     /** @internal */
-    protected _onCreateEmbeddedDocuments(
+    protected override _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: foundry.abstract.Document<any, any>[],
       result: Record<string, unknown>[],
@@ -110,8 +110,7 @@ declare global {
       userId: string
     ): void;
 
-    /** @override */
-    toCompendium(
+    override toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocumentMixin.CompendiumExportOptions | undefined
     ): Omit<RollTableData["_source"], "_id" | "folder" | "permission"> & {
