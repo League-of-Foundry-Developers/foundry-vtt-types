@@ -172,8 +172,6 @@ declare global {
       sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
 
-    /* -------------------------------------------- */
-
     /**
      * Update the playing status of this Playlist in content links.
      * @param changed    - The data changes.
