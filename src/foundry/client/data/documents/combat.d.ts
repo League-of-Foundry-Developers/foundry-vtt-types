@@ -90,8 +90,6 @@ declare global {
      */
     nextTurn(): Promise<Combat>;
 
-    /* -------------------------------------------- */
-
     /**
      * Rewind the combat to the previous turn
      */
@@ -128,8 +126,6 @@ declare global {
      */
     rollAll(options?: RollInitiativeOptions): Promise<Combat>;
 
-    /* -------------------------------------------- */
-
     /**
      * Roll initiative for all non-player actors who have not already rolled
      * @param options   - Additional options forwarded to the Combat.rollInitiative method
@@ -155,8 +151,6 @@ declare global {
      */
     updateEffectDurations(): void;
 
-    /* -------------------------------------------- */
-
     /**
      * Loads the registered Combat Theme (if any) and plays the requested type of sound.
      * If multiple exist for that type, one is chosen at random.
@@ -178,16 +172,12 @@ declare global {
     /** @internal */
     protected _onCreate(data: BaseCombat.ConstructorData, options: DocumentModificationOptions, userId: string): void;
 
-    /* -------------------------------------------- */
-
     /** @internal */
     protected _onUpdate(
       data: DeepPartial<BaseCombat.UpdateData>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
-
-    /* -------------------------------------------- */
 
     /** @internal */
     protected _onDelete(options: DocumentModificationOptions, userId: string): void;
@@ -201,8 +191,6 @@ declare global {
       userId: string
     ): void;
 
-    /* -------------------------------------------- */
-
     /** @internal */
     protected _onUpdateEmbeddedDocuments(
       embeddedName: string,
@@ -211,8 +199,6 @@ declare global {
       options: DocumentModificationContext,
       userId: string
     ): void;
-
-    /* -------------------------------------------- */
 
     /** @internal */
     protected _onDeleteEmbeddedDocuments(
