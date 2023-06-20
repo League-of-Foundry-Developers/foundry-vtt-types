@@ -1,38 +1,23 @@
+// FOUNDRY_VERSION: 10.291
+
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
-import type { PlaylistDataConstructorData } from "../../../common/data/data.mjs/playlistData";
+import type BasePlaylist from "../../../common/documents/playlist.mjs";
 
 declare global {
   /**
    * The client-side Playlist document which extends the common BasePlaylist model.
-   * Each Playlist document contains PlaylistData which defines its data schema.
    *
-   * @see {@link data.PlaylistData}               The Playlist data schema
-   * @see {@link documents.Playlists}             The world-level collection of Playlist documents
-   * @see {@link embedded.PlaylistSound}          The PlaylistSound embedded document within a parent Playlist
-   * @see {@link applications.PlaylistConfig}     The Playlist configuration application
-   *
+   * @see {@link Playlists}             The world-level collection of Playlist documents
+   * @see {@link PlaylistSound}         The PlaylistSound embedded document within a parent Playlist
+   * @see {@link PlaylistConfig}        The Playlist configuration application
    */
-  class Playlist extends ClientDocumentMixin(foundry.documents.BasePlaylist) {
-    /**
-     * @param data - Initial data provided to construct the Playlist document
-     */
-    constructor(
-      data: ConstructorParameters<typeof foundry.documents.BasePlaylist>[0],
-      context?: ConstructorParameters<typeof foundry.documents.BasePlaylist>[1]
-    );
-
+  class Playlist extends ClientDocumentMixin(BasePlaylist) {
     /**
      * Playlists may have a playback order which defines the sequence of Playlist Sounds
-     * @defaultValue `undefined`
      * @internal
      */
-    protected _playbackOrder: string[] | undefined;
-
-    /**
-     * The playback mode for the Playlist instance
-     */
-    get mode(): foundry.CONST.PLAYLIST_MODES;
+    protected _playbackOrder: string[];
 
     /**
      * The order in which sounds within this playlist will be played (if sequential or shuffled)
@@ -40,61 +25,59 @@ declare global {
      */
     get playbackOrder(): string[];
 
-    /**
-     * An indicator for whether any Sound within the Playlist is currently playing
-     */
-    get playing(): boolean;
+    get visible(): boolean;
 
-    override get visible(): boolean;
+    /**
+     * Find all content links belonging to a given {@link Playlist} or {@link PlaylistSound}.
+     * @param doc   - The Playlist or PlaylistSound.
+     * @internal
+     */
+    protected static _getSoundContentLinks(doc: Playlist | PlaylistSound): NodeListOf<Element>;
+
+    prepareDerivedData(): void;
 
     /**
      * Begin simultaneous playback for all sounds in the Playlist.
      * @returns The updated Playlist document
      */
-    playAll(): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    playAll(): Promise<Playlist>;
 
     /**
      * Play the next Sound within the sequential or shuffled Playlist.
-     * @param soundId - The currently playing sound ID, if known
-     * @param options - Additional options which configure the next track
+     * @param soundId   - The currently playing sound ID, if known
+     * @param options   - Additional options which configure the next track
+     *                  (default: `{}`)
      * @returns The updated Playlist document
      */
-    playNext(
-      soundId?: string,
-      options?: Partial<Playlist.PlayNextOptions>
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined | null>;
+    playNext(soundId: string, options?: Playlist.PlayNextOptions): Promise<Playlist>;
 
     /**
      * Begin playback of a specific Sound within this Playlist.
      * Determine which other sounds should remain playing, if any.
-     * @param sound - The desired sound that should play
+     * @param sound   - The desired sound that should play
      * @returns The updated Playlist
      */
-    playSound(
-      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    playSound(sound: PlaylistSound): Promise<Playlist>;
 
     /**
      * Stop playback of a specific Sound within this Playlist.
      * Determine which other sounds should remain playing, if any.
-     * @param sound - The desired sound that should play
+     * @param sound   - The desired sound that should play
      * @returns The updated Playlist
      */
-    stopSound(
-      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    stopSound(sound: PlaylistSound): Promise<Playlist>;
 
     /**
      * End playback for any/all currently playing sounds within the Playlist.
      * @returns The updated Playlist document
      */
-    stopAll(): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    stopAll(): Promise<Playlist>;
 
     /**
      * Cycle the playlist mode
-     * @returns A promise which resolves to the updated Playlist instance
+     * @return A promise which resolves to the updated Playlist instance
      */
-    cycleMode(): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    cycleMode(): Promise<Playlist>;
 
     /**
      * Get the next sound in the cached playback order. For internal use.
@@ -119,20 +102,33 @@ declare global {
       b: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>
     ): number;
 
-    protected override _preUpdate(
-      changed: DeepPartial<PlaylistDataConstructorData>,
+    /**
+     * Create a content link for this Document.
+     * @param options   - Additional options to configure how the link is constructed.
+     */
+    toAnchor(options: Playlist.ToAnchorOptions): HTMLAnchorElement;
+
+    /** @internal */
+    protected _onClickDocumentLink(event: unknown): Promise<Playlist>;
+
+    /** @internal */
+    protected _preUpdate(
+      changed: DeepPartial<BasePlaylist.UpdateData>,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser
     ): Promise<void>;
 
-    protected override _onUpdate(
-      changed: DeepPartial<foundry.data.PlaylistData["_source"]>,
+    /** @internal */
+    protected _onUpdate(
+      changed: DeepPartial<PlaylistData["_source"]>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
-    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
+    /** @internal */
+    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
 
+    /** @internal */
     protected override _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: foundry.abstract.Document<any, any>[],
@@ -141,6 +137,7 @@ declare global {
       userId: string
     ): void;
 
+    /** @internal */
     protected override _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: foundry.abstract.Document<any, any>[],
@@ -149,6 +146,7 @@ declare global {
       userId: string
     ): void;
 
+    /** @internal */
     protected override _onDeleteEmbeddedDocuments(
       embeddedName: string,
       documents: foundry.abstract.Document<any, any>[],
@@ -161,7 +159,7 @@ declare global {
      * Handle callback logic when an individual sound within the Playlist concludes playback naturally
      * @internal
      */
-    _onSoundEnd(
+    protected _onSoundEnd(
       sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
 
@@ -170,13 +168,25 @@ declare global {
      * Schedule auto-preload of next track
      * @internal
      */
-    _onSoundStart(sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>): Promise<void>;
+    protected _onSoundStart(
+      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>
+    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
 
-    override toCompendium(
+    /* -------------------------------------------- */
+
+    /**
+     * Update the playing status of this Playlist in content links.
+     * @param {object} changed  The data changes.
+     * @internal
+     */
+    protected _updateContentLinkPlaying(changed: DeepPartial<BasePlaylist.UpdateData>): void;
+
+    /** @inheritdoc */
+    toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocumentMixin.CompendiumExportOptions | undefined
-    ): Omit<foundry.data.PlaylistData["_source"], "_id" | "folder" | "permission"> & {
-      permission?: foundry.data.PlaylistData["_source"]["permission"];
+    ): Omit<PlaylistData["_source"], "_id" | "folder" | "permission"> & {
+      permission?: PlaylistData extends { toObject(): infer U } ? U : never;
     };
   }
 
@@ -187,6 +197,21 @@ declare global {
        * @defaultValue `1`
        */
       direction: 1 | -1;
+    }
+
+    interface ToAnchorOptions {
+      /** Attributes to set on the link. (default: `{}`) */
+      attrs: Record<string, string>;
+
+      /** Custom data- attributes to set on the link. (default: `{}`) */
+      dataset: Record<string, string | undefined>;
+
+      /** Classes to add to the link. (default: `[]`) */
+      classes: string[];
+
+      /** A font-awesome icon class to use as the icon, if different to the
+       *  Document's configured sidebarIcon. */
+      icon: string;
     }
   }
 }
