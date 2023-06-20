@@ -75,7 +75,7 @@ declare global {
 
     /**
      * Cycle the playlist mode
-     * @return A promise which resolves to the updated Playlist instance
+     * @returns A promise which resolves to the updated Playlist instance
      */
     cycleMode(): Promise<Playlist>;
 
@@ -176,12 +176,11 @@ declare global {
 
     /**
      * Update the playing status of this Playlist in content links.
-     * @param {object} changed  The data changes.
+     * @param changed    - The data changes.
      * @internal
      */
     protected _updateContentLinkPlaying(changed: DeepPartial<BasePlaylist.UpdateData>): void;
 
-    /** @inheritdoc */
     toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocumentMixin.CompendiumExportOptions | undefined
