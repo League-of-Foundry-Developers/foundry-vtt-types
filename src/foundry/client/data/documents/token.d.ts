@@ -155,8 +155,8 @@ declare global {
      * Redirect updating of Documents within a synthetic Token Actor to instead update the tokenData override object.
      * @param embeddedName    - The named embedded Document type being modified
      * @param updates         - The provided differential data with which to update the embedded Documents
-     * @param {object} options        Provided options which modify the update request
-     * @returns {Promise<Document[]>} The updated Embedded Document instances
+     * @param options         - Provided options which modify the update request
+     * @returns The updated Embedded Document instances
      */
     updateActorEmbeddedDocuments(
       embeddedName: string,
@@ -229,8 +229,8 @@ declare global {
 
     /**
      * Inspect the Actor data model and identify the set of attributes which could be used for a Token Bar
-     * @param {object} attributes       The tracked attributes which can be chosen from
-     * @returns {object}                A nested object of attribute choices to display
+     * @param attributes    - The tracked attributes which can be chosen from
+     * @returns A nested object of attribute choices to display
      */
     static getTrackedAttributeChoices(attributes: TrackedAttributes): Record<string, string[]>;
   }
