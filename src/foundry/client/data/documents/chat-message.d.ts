@@ -64,13 +64,13 @@ declare global {
      * @param rollMode     - The rollMode preference to apply to this message data
      * @returns The modified ChatMessage data with rollMode preferences applied
      */
-    static applyRollMode(chatData: ChatMessageData, rollMode: string): ChatMessageData;
+    static applyRollMode(chatData: BaseChatMessage.ConstructorData, rollMode: string): ChatMessageData;
 
     /**
      * Update the data of a ChatMessage instance to apply a requested rollMode
      * @param rollMode    - The rollMode preference to apply to this message data
      */
-    applyRollMode(rollMode: string): void;
+    applyRollMode(rollMode: keyof typeof CONFIG.Dice.rollModes | "roll"): void;
 
     /**
      * Attempt to determine who is the speaking character (and token) for a certain Chat Message
@@ -194,7 +194,7 @@ declare global {
 
     /** @internal */
     protected override _onCreate(
-      data: BaseChatMessage.ConstructorData,
+      data: BaseChatMessage.Source,
       options: DocumentModificationOptions,
       userId: string
     ): Promise<void>;
@@ -224,13 +224,13 @@ declare global {
   namespace ChatMessage {
     interface GetSpeakerOptions {
       /** The Scene in which the speaker resides */
-      scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>> | undefined;
+      scene?: Scene | undefined;
 
       /** The Actor whom is speaking */
-      actor?: InstanceType<ConfiguredDocumentClass<typeof Actor>> | undefined;
+      actor?: Actor | undefined;
 
       /** The Token whom is speaking */
-      token?: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>> | undefined;
+      token?: TokenDocument | undefined;
 
       /** The name of the speaker to display */
       alias?: string | undefined;
@@ -238,13 +238,13 @@ declare global {
 
     interface SpeakerData {
       /** The Scene in which the speaker resides */
-      scene: InstanceType<ConfiguredDocumentClass<typeof Scene>> | null;
+      scene: Scene | null;
 
       /** The Actor whom is speaking */
-      actor: InstanceType<ConfiguredDocumentClass<typeof Actor>> | null;
+      actor: Actor | null;
 
       /** The Token whom is speaking */
-      token: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>> | null;
+      token: TokenDocument | null;
 
       /** The name of the speaker to display */
       alias: string | null;
