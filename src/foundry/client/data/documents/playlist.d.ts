@@ -182,7 +182,7 @@ declare global {
     toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocumentMixin.CompendiumExportOptions | undefined
-    ): Omit<PlaylistData["_source"], "_id" | "folder" | "permission"> & {
+    ): Omit<BasePlaylist.Source, "_id" | "folder" | "permission"> & {
       permission?: PlaylistData extends { toObject(): infer U } ? U : never;
     };
   }
