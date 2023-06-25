@@ -120,7 +120,7 @@ declare global {
 
     /** @internal */
     protected _onUpdate(
-      changed: DeepPartial<PlaylistData["_source"]>,
+      changed: BasePlaylist.Source,
       options: DocumentModificationOptions,
       userId: string
     ): void;
