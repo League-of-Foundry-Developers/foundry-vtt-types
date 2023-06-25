@@ -11,7 +11,7 @@ declare global {
    */
   class Setting extends ClientDocumentMixin(BaseSetting) {
     protected override _onCreate(
-      data: SettingData["_source"],
+      data: BaseSetting.Source,
       options: DocumentModificationOptions,
       userId: string
     ): void;
