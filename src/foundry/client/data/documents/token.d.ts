@@ -243,6 +243,12 @@ declare interface PrototypeToken {
   ): ReturnType<TokenDocument["getBarAttribute"]>;
 }
 
+/**
+ * @deprecated since v10
+ * @see PrototypeToken
+ */
+declare class PrototypeTokenDocument extends PrototypeToken {}
+
 interface SingleAttributeBar {
   type: "value";
   attribute: string;
