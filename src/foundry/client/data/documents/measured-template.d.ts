@@ -1,21 +1,23 @@
-import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
+// FOUNDRY_VERSION: 10.291
+
+import type BaseMeasuredTemplate from "../../../common/documents/measured-template.mjs";
 
 declare global {
   /**
-   * The client-side MeasuredTemplate embedded document which extends the common BaseMeasuredTemplate abstraction.
-   * Each MeasuredTemplate document contains MeasuredTemplateData which defines its data schema.
+   * The client-side MeasuredTemplate document which extends the common BaseMeasuredTemplate document model.
    *
-   * @see {@link data.MeasuredTemplateData}              The MeasuredTemplate data schema
-   * @see {@link documents.Scene}               The Scene document type which contains MeasuredTemplate embedded documents
-   * @see {@link applications.MeasuredTemplateConfig}    The MeasuredTemplate configuration application
+   * @see {@link Scene}               The Scene document type which contains MeasuredTemplate embedded documents
+   * @see {@link MeasuredTemplateConfig}    The MeasuredTemplate configuration application
    */
-  class MeasuredTemplateDocument extends CanvasDocumentMixin(foundry.documents.BaseMeasuredTemplate) {
+  class MeasuredTemplateDocument extends CanvasDocumentMixin(BaseMeasuredTemplate) {
     /**
      * A reference to the User who created the MeasuredTemplate document.
-     * @remarks Will return undefined if the user has been deleted
      */
-    get author(): InstanceType<ConfiguredDocumentClass<typeof User>> | undefined;
+    get author(): User;
+
+    /**
+     * Rotation is an alias for direction
+     */
+    get rotation(): number;
   }
 }
-
-export {};
