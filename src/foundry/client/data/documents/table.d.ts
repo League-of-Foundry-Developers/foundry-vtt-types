@@ -113,7 +113,7 @@ declare global {
     override toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocumentMixin.CompendiumExportOptions | undefined
-    ): Omit<RollTableData["_source"], "_id" | "folder" | "permission"> & {
+    ): Omit<BaseRollTable.Source, "_id" | "folder" | "permission"> & {
       permission?: RollTableData extends { toObject(): infer U } ? U : never;
     };
 
