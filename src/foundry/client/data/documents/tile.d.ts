@@ -27,7 +27,7 @@ declare class TileDocument extends CanvasDocumentMixin(BaseTile) {
 
   /** @internal */
   protected override _onUpdate(
-    changed: DeepPartial<BaseTile["_source"]>,
+    changed: BaseTile.UpdateData,
     options: DocumentModificationOptions,
     userId: string
   ): void;
