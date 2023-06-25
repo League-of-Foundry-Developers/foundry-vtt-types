@@ -76,7 +76,7 @@ declare global {
 
     /** @internal */
     protected override_onUpdate(
-      changed: DeepPartial<PlaylistSoundData["_source"]>,
+      changed: BasePlaylistSound.UpdateData,
       options: DocumentModificationOptions,
       userId: string
     ): void;
