@@ -69,7 +69,7 @@ declare global {
 
     /** @internal */
     protected override _onCreate(
-      data: PlaylistSoundData["_source"],
+      data: BasePlaylistSound.Source,
       options: DocumentModificationOptions,
       userId: string
     ): void;
