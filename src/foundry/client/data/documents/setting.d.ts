@@ -17,7 +17,7 @@ declare global {
     ): void;
 
     protected override _onUpdate(
-      changed: DeepPartial<SettingData["_source"]>,
+      changed: BaseSetting.UpdateData,
       options: DocumentModificationOptions,
       userId: string
     ): void;
