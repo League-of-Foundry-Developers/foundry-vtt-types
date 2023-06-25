@@ -13,6 +13,7 @@ import type BaseAmbientSound from "../../../common/documents/ambient-sound.mjs";
 import type BaseTile from "../../../common/documents/tile.mjs";
 import type BaseWall from "../../../common/documents/wall.mjs";
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes";
+import type { NoteDocument } from "./note";
 
 declare global {
   /**
@@ -117,7 +118,7 @@ declare global {
 
     /** @override */
     protected override _onUpdate(
-      data: DeepPartial<fields.SchemaField.PersistedType<BaseScene.SchemaField["fields"], {}>>,
+      data: DeepPartial<BaseScene.Source>,
       options: { fallback?: boolean; recursive?: boolean },
       userId: string
     ): void;
@@ -196,7 +197,7 @@ declare global {
     protected override _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>[],
-      result: DeepPartial<BaseDrawing.ConstructorData>[],
+      result: BaseDrawing.ConstructorData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -204,7 +205,7 @@ declare global {
     protected override _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>[],
-      result: DeepPartial<BaseToken.ConstructorData>[],
+      result: BaseToken.ConstructorData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -212,7 +213,7 @@ declare global {
     protected override _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof AmbientLightDocument>>[],
-      result: DeepPartial<BaseAmbientLight.ConstructorData>[],
+      result: BaseAmbientLight.ConstructorData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -220,7 +221,7 @@ declare global {
     protected override _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>[],
-      result: DeepPartial<BaseNote.ConstructorData>[],
+      result: BaseNote.ConstructorData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -228,7 +229,7 @@ declare global {
     protected override _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof AmbientSoundDocument>>[],
-      result: DeepPartial<BaseAmbientSound.ConstructorData>[],
+      result: BaseAmbientSound.ConstructorData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -236,7 +237,7 @@ declare global {
     protected override _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>[],
-      result: DeepPartial<BaseMeasuredTemplate.ConstructorData>[],
+      result: BaseMeasuredTemplate.ConstructorData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -244,7 +245,7 @@ declare global {
     protected override _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof TileDocument>>[],
-      result: DeepPartial<BaseTile.ConstructorData>[],
+      result: BaseTile.ConstructorData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -252,7 +253,7 @@ declare global {
     protected override _onCreateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof WallDocument>>[],
-      result: DeepPartial<BaseWall.ConstructorData>[],
+      result: BaseWall.ConstructorData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -260,56 +261,56 @@ declare global {
     /** @internal */
     protected override _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<BaseDrawing.UpdateData>[],
+      result: BaseDrawing.UpdateData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     /** @internal */
     protected override _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<BaseToken.UpdateData>[],
+      result: BaseToken.UpdateData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     /** @internal */
     protected override _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<BaseAmbientLight.UpdateData>[],
+      result: BaseAmbientLight.UpdateData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     /** @internal */
     protected override _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<BaseNote.UpdateData>[],
+      result: BaseNote.UpdateData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     /** @internal */
     protected override _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<BaseAmbientSound.UpdateData>[],
+      result: BaseAmbientSound.UpdateData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     /** @internal */
     protected override _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<BaseMeasuredTemplate.UpdateData>[],
+      result: BaseMeasuredTemplate.UpdateData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     /** @internal */
     protected override _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<BaseTile.UpdateData>[],
+      result: BaseTile.UpdateData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     /** @internal */
     protected override _preUpdateEmbeddedDocuments(
       embeddedName: string,
-      result: DeepPartial<BaseWall.UpdateData>[],
+      result: BaseWall.UpdateData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -318,7 +319,7 @@ declare global {
     protected override _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>[],
-      result: DeepPartial<BaseDrawing.UpdateData>[],
+      result: BaseDrawing.UpdateData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -326,7 +327,7 @@ declare global {
     protected override _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>[],
-      result: DeepPartial<BaseToken.UpdateData>[],
+      result: BaseToken.UpdateData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -334,7 +335,7 @@ declare global {
     protected override _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof AmbientLightDocument>>[],
-      result: DeepPartial<BaseAmbientLight.UpdateData>[],
+      result: BaseAmbientLight.UpdateData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -342,7 +343,7 @@ declare global {
     protected override _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>[],
-      result: DeepPartial<BaseNote.UpdateData>[],
+      result: BaseNote.UpdateData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -350,7 +351,7 @@ declare global {
     protected override _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof AmbientSoundDocument>>[],
-      result: DeepPartial<BaseAmbientSound.UpdateData>[],
+      result: BaseAmbientSound.UpdateData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -358,7 +359,7 @@ declare global {
     protected override _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>[],
-      result: DeepPartial<BaseMeasuredTemplate.UpdateData>[],
+      result: BaseMeasuredTemplate.UpdateData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -366,7 +367,7 @@ declare global {
     protected override _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof TileDocument>>[],
-      result: DeepPartial<BaseTile.UpdateData>[],
+      result: BaseTile.UpdateData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -374,7 +375,7 @@ declare global {
     protected override _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof WallDocument>>[],
-      result: DeepPartial<BaseWall.UpdateData>[],
+      result: BaseWall.UpdateData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
@@ -455,7 +456,7 @@ declare global {
     toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocumentMixin.CompendiumExportOptions | undefined
-    ): Omit<SceneData["_source"], "_id" | "folder" | "permission"> & {
+    ): Omit<BaseScene.Source, "_id" | "folder" | "permission"> & {
       permission?: SceneData extends { toObject(): infer U } ? U : never;
     };
 
