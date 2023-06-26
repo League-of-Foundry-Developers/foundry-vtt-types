@@ -67,7 +67,7 @@ declare global {
     view(): Promise<Scene>;
 
     override clone(
-      data?: fields.SchemaField.AssignmentType<BaseScene.SchemaField["fields"], {}>,
+      data?: BaseScene.UpdateData,
       options?: {
         /**
          * Save the clone to the World database?
