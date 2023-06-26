@@ -174,7 +174,7 @@ declare global {
 
     /** @internal */
     protected _onUpdate(
-      data: DeepPartial<BaseCombat.UpdateData>,
+      data: BaseCombat.UpdateData,
       options: DocumentModificationOptions,
       userId: string
     ): void;
