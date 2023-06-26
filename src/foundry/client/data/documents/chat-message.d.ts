@@ -64,7 +64,7 @@ declare global {
      * @param rollMode     - The rollMode preference to apply to this message data
      * @returns The modified ChatMessage data with rollMode preferences applied
      */
-    static applyRollMode(chatData: BaseChatMessage.ConstructorData, rollMode: string): ChatMessageData;
+    static applyRollMode(chatData: BaseChatMessage.ConstructorData, rollMode: string): BaseChatMessage.ConstructorData;
 
     /**
      * Update the data of a ChatMessage instance to apply a requested rollMode
@@ -201,7 +201,7 @@ declare global {
 
     /** @internal */
     protected override _onUpdate(
-      data: DeepPartial<BaseChatMessage.UpdateData>,
+      data: BaseChatMessage.UpdateData,
       options: DocumentModificationOptions,
       userId: string
     ): void;
