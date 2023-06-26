@@ -174,7 +174,7 @@ declare global {
     protected _onCreate(data: BaseCombat.ConstructorData, options: DocumentModificationOptions, userId: string): void;
 
     /** @internal */
-    protected _onUpdate(data: BaseCombat.UpdateData, options: DocumentModificationOptions, userId: string): void;
+    protected _onUpdate(data: BaseCombat.Source, options: DocumentModificationOptions, userId: string): void;
 
     /** @internal */
     protected _onDelete(options: DocumentModificationOptions, userId: string): void;
