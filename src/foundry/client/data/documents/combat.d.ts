@@ -195,7 +195,7 @@ declare global {
     protected _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
-      result: DeepPartial<Combatant>[],
+      result: BaseCombatant.UpdateData[],
       options: DocumentModificationContext,
       userId: string
     ): void;
