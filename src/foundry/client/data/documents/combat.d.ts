@@ -186,7 +186,7 @@ declare global {
     protected _onCreateEmbeddedDocuments(
       type: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
-      result: CombatantData[],
+      result: BaseCombatant.ConstructorData[],
       options: DocumentModificationOptions,
       userId: string
     ): void;
