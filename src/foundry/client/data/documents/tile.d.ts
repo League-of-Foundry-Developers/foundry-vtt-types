@@ -1,13 +1,34 @@
+// FOUNDRY_VERSION: 10.291
+
+import type { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
+import type BaseTile from "../../../common/documents/tile.mjs";
+
 /**
- * The client-side Tile document which extends the common BaseTile model.
- * Each Tile document contains TileData which defines its data schema.
+ * The client-side Tile document which extends the common BaseTile document model.
  *
- * @see {@link data.TileData}                 The Tile data schema
- * @see {@link documents.Scene}               The Scene document type which contains Tile embedded documents
- * @see {@link applications.TileConfig}       The Tile configuration application
+ * @see {@link Scene}                     The Scene document type which contains Tile documents
+ * @see {@link TileConfig}                The Tile configuration application
  */
-declare class TileDocument extends CanvasDocumentMixin(foundry.documents.BaseTile) {
+declare class TileDocument extends CanvasDocumentMixin(BaseTile) {
+  /**
+   * Define an elevation property on the Tile Document which in the future will become a core part of its data schema.
+   */
+  get elevation(): number;
+
+  /** @internal */
+  #elevation: number;
+
+  /**
+   * Define a sort property on the Tile Document which in the future will become a core part of its data schema.
+   */
+  get sort(): number;
+
   override prepareDerivedData(): void;
 
-  override get layer(): ForegroundLayer | BackgroundLayer;
+  /** @internal */
+  protected override _onUpdate(
+    changed: BaseTile.UpdateData,
+    options: DocumentModificationOptions,
+    userId: string
+  ): void;
 }
