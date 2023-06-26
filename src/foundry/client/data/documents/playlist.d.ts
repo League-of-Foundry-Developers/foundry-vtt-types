@@ -119,11 +119,7 @@ declare global {
     ): Promise<void>;
 
     /** @internal */
-    protected _onUpdate(
-      changed: BasePlaylist.Source,
-      options: DocumentModificationOptions,
-      userId: string
-    ): void;
+    protected _onUpdate(changed: BasePlaylist.Source, options: DocumentModificationOptions, userId: string): void;
 
     /** @internal */
     protected _onDelete(options: DocumentModificationOptions, userId: string): void;
