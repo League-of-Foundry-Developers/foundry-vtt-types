@@ -10,11 +10,7 @@ declare global {
    * @see {@link WorldSettings}       The world-level collection of Setting documents
    */
   class Setting extends ClientDocumentMixin(BaseSetting) {
-    protected override _onCreate(
-      data: BaseSetting.Source,
-      options: DocumentModificationOptions,
-      userId: string
-    ): void;
+    protected override _onCreate(data: BaseSetting.Source, options: DocumentModificationOptions, userId: string): void;
 
     protected override _onUpdate(
       changed: BaseSetting.UpdateData,
