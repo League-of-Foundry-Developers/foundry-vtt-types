@@ -1,15 +1,17 @@
+// FOUNDRY_VERSION: 10.291
+
+import type BaseMacro from "../../../common/documents/macro.mjs";
+
 declare global {
   /**
    * The client-side Macro document which extends the common BaseMacro model.
-   * Each Macro document contains MacroData which defines its data schema.
    *
-   * @see {@link data.MacroData}              The Macro data schema
-   * @see {@link documents.Macros}            The world-level collection of Macro documents
-   * @see {@link applications.MacroConfig}    The Macro configuration application
+   * @see {@link Macros}            The world-level collection of Macro documents
+   * @see {@link MacroConfig}    The Macro configuration application
    *
    * @param data - Initial data provided to construct the Macro document
    */
-  class Macro extends ClientDocumentMixin(foundry.documents.BaseMacro) {
+  class Macro extends ClientDocumentMixin(BaseMacro) {
     /**
      * Is the current User the author of this macro?
      */
@@ -23,7 +25,7 @@ declare global {
     /**
      * Provide a thumbnail image path used to represent this document.
      */
-    get thumbnail(): string | null;
+    get thumbnail(): string;
 
     /**
      * Execute the Macro command.
@@ -35,13 +37,15 @@ declare global {
      * Execute the command as a chat macro.
      * Chat macros simulate the process of the command being entered into the Chat Log input textarea.
      */
-    protected _executeChat({ actor, token }?: Scope): void;
+    protected _executeChat(): void;
 
     /**
      * Execute the command as a script macro.
      * Script Macros are wrapped in an async IIFE to allow the use of asynchronous commands and await statements.
      */
     protected _executeScript({ actor, token }?: Scope): void;
+
+    protected _onClickDocumentLink(event: unknown): void;
   }
 }
 
@@ -56,5 +60,3 @@ interface Scope {
    */
   token?: Token;
 }
-
-export {};
