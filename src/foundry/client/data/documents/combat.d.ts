@@ -1,6 +1,7 @@
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 import type BaseCombat from "../../../common/documents/combat.mjs";
+import type BaseCombatant from "../../../common/documents/combatant.mjs";
 
 declare global {
   /**
@@ -173,17 +174,13 @@ declare global {
     protected _onCreate(data: BaseCombat.ConstructorData, options: DocumentModificationOptions, userId: string): void;
 
     /** @internal */
-    protected _onUpdate(
-      data: BaseCombat.UpdateData,
-      options: DocumentModificationOptions,
-      userId: string
-    ): void;
+    protected _onUpdate(data: BaseCombat.UpdateData, options: DocumentModificationOptions, userId: string): void;
 
     /** @internal */
     protected _onDelete(options: DocumentModificationOptions, userId: string): void;
 
     /** @internal */
-    protected _onCreateEmbeddedDocuments(
+    protected override _onCreateEmbeddedDocuments(
       type: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
       result: BaseCombatant.ConstructorData[],
@@ -192,7 +189,7 @@ declare global {
     ): void;
 
     /** @internal */
-    protected _onUpdateEmbeddedDocuments(
+    protected override _onUpdateEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
       result: BaseCombatant.UpdateData[],
@@ -201,10 +198,10 @@ declare global {
     ): void;
 
     /** @internal */
-    protected _onDeleteEmbeddedDocuments(
+    protected override _onDeleteEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
-      result: DeepPartial<Combatant>[],
+      result: BaseCombatant.Source[],
       options: DocumentModificationContext,
       userId: string
     ): void;
