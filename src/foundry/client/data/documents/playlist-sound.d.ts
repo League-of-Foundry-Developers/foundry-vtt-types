@@ -1,22 +1,19 @@
+// FOUNDRY_VERSION: 10.291
+
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
+import type BasePlaylistSound from "../../../common/documents/playlist-sound.mjs";
 
 declare global {
   /**
    * The client-side PlaylistSound document which extends the common BasePlaylistSound model.
    * Each PlaylistSound belongs to the sounds collection of a Playlist document.
-   * Each PlaylistSound contains a PlaylistSoundData object which provides its source data.
    *
-   * @see {@link foundry.data.PlaylistSoundData} The PlaylistSound data schema
-   * @see {@link Playlist}                       The Playlist document which contains PlaylistSound embedded documents
-   * @see {@link Sound}                          The Sound API which manages web audio playback
-   *
+   * @see {@link Playlist}              The Playlist document which contains PlaylistSound embedded documents
+   * @see {@link PlaylistSoundConfig}   The PlaylistSound configuration application
+   * @see {@link Sound}                 The Sound API which manages web audio playback
    */
-  class PlaylistSound extends ClientDocumentMixin(foundry.documents.BasePlaylistSound) {
-    /**
-     * @param data   - Initial data provided to construct the PlaylistSound document
-     * @param parent - The parent Playlist document to which this result belongs
-     */
+  class PlaylistSound extends ClientDocumentMixin(BasePlaylistSound) {
     constructor(
       data: ConstructorParameters<typeof foundry.documents.BasePlaylistSound>[0],
       context?: ConstructorParameters<typeof foundry.documents.BasePlaylistSound>[1]
@@ -29,7 +26,7 @@ declare global {
 
     /**
      * A debounced function, accepting a single volume parameter to adjust the volume of this sound
-     * @param volume - The desired volume level
+     * @param volume    - The desired volume level
      */
     debounceVolume: (volume: number) => void;
 
@@ -46,19 +43,9 @@ declare global {
     protected _createSound(): Sound | null;
 
     /**
-     * A convenience reference to the HTTP path to the source audio file
+     * The effective volume at which this playlist sound is played, incorporating the global playlist volume setting.
      */
-    get path(): string | undefined | null;
-
-    /**
-     * A convenience indicator for whether this sound is currently playing.
-     */
-    get playing(): boolean;
-
-    /**
-     * The effective volume at which this PlaylistSound should be playing, including the global playlist volume modifier
-     */
-    get volume(): number;
+    get effectiveVolume(): number;
 
     /**
      * Determine the fade duration for this PlaylistSound based on its own configuration and that of its parent.
@@ -68,20 +55,33 @@ declare global {
     /**
      * Synchronize playback for this particular PlaylistSound instance
      */
-    sync(): void | Promise<void> | Promise<Sound>;
+    sync(): void;
 
-    override _onCreate(
-      data: foundry.data.PlaylistSoundData["_source"],
+    /**
+     * Create a content link for this Document.
+     * @param options   - Additional options to configure how the link is constructed.
+     *                  (default: `{}`)
+     */
+    toAnchor(options: PlaylistSound.ToAnchorOptions): HTMLAnchorElement;
+
+    /** @internal */
+    protected _onClickDocumentLink(event: unknown): Promise<Playlist>;
+
+    /** @internal */
+    protected override _onCreate(
+      data: BasePlaylistSound.Source,
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
-    protected override _onUpdate(
-      changed: DeepPartial<foundry.data.PlaylistSoundData["_source"]>,
+    /** @internal */
+    protected override_onUpdate(
+      changed: BasePlaylistSound.UpdateData,
       options: DocumentModificationOptions,
       userId: string
     ): void;
 
+    /** @internal */
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
     /**
@@ -104,14 +104,33 @@ declare global {
 
     /**
      * Handle fading in the volume for this sound when it begins to play (or loop)
+     * @param sound   - The sound fading-in
      * @internal
      */
     protected _fadeIn(sound: Sound): void;
 
     /**
      * Handle fading out the volume for this sound when it begins to play (or loop)
+     * @param sound   - The sound fading-out
      * @internal
      */
     protected _fadeOut(sound: Sound): void;
+  }
+
+  namespace PlaylistSound {
+    interface ToAnchorOptions {
+      /** Attributes to set on the link. (default: `{}`) */
+      attrs: Record<string, string>;
+
+      /** Custom data- attributes to set on the link. (default: `{}`) */
+      dataset: Record<string, string | undefined>;
+
+      /** Classes to add to the link. (default: `[]`) */
+      classes: string[];
+
+      /** A font-awesome icon class to use as the icon, if different to the
+       *  Document's configured sidebarIcon. */
+      icon: string;
+    }
   }
 }
