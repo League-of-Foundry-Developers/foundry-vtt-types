@@ -201,7 +201,7 @@ declare global {
     protected override _onDeleteEmbeddedDocuments(
       embeddedName: string,
       documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
-      result: BaseCombatant.Source[],
+      result: string[],
       options: DocumentModificationContext,
       userId: string
     ): void;
