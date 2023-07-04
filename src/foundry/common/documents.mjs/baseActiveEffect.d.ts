@@ -2,7 +2,7 @@ import { ConfiguredDocumentClass } from "../../../types/helperTypes";
 import { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mjs";
 import { Document } from "../abstract/module.mjs";
 import * as data from "../data/data.mjs";
-import type { ActiveEffectDataConstructorData } from "../data/data.mjs/activeEffectData";
+import type { ActiveEffectDataConstructorData, ActiveEffectDataSchema } from "../data/data.mjs/activeEffectData";
 import { BaseActor } from "./baseActor";
 import { BaseItem } from "./baseItem";
 import { BaseUser } from "./baseUser";
@@ -19,16 +19,28 @@ type ActiveEffectMetadata = Merge<
 >;
 
 /**
- * The base ActiveEffect model definition which defines common behavior of an ActiveEffect document between both client and server.
+ * The data schema for an ActiveEffect document.
  */
 export declare class BaseActiveEffect extends Document<
   data.ActiveEffectData,
   InstanceType<ConfiguredDocumentClass<typeof BaseActor>> | InstanceType<ConfiguredDocumentClass<typeof BaseItem>>,
   ActiveEffectMetadata
 > {
-  static override get schema(): ConstructorOf<data.ActiveEffectData>;
+  /**
+   * @param data    - Initial data from which to construct the ActiveEffect (default `{}`)
+   * @param context - Construction context options (default `{}`)
+   */
+  constructor(data?: ActiveEffectDataConstructorData, context?: DocumentConstructionContext);
 
-  static override get metadata(): ActiveEffectMetadata;
+  static override readonly metadata: Readonly<ActiveEffectMetadata>;
+
+  static defineSchema(): ActiveEffectDataSchema;
+
+  override testUserPermission(
+    user: BaseUser,
+    permission: keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
+    { exact }: { exact?: boolean }
+  ): boolean;
 
   protected override _preCreate(
     data: ActiveEffectDataConstructorData,
@@ -36,9 +48,5 @@ export declare class BaseActiveEffect extends Document<
     user: BaseUser
   ): Promise<void>;
 
-  override testUserPermission(
-    user: BaseUser,
-    permission: keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    { exact }: { exact?: boolean }
-  ): boolean;
+  static migrateData(data: object): data.ActiveEffectData;
 }
