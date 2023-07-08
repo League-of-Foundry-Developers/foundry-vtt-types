@@ -1,7 +1,6 @@
 // FOUNDRY_VERSION: 10.291
 
 import type { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
-import type { fields } from "../../../common/data/module.mjs";
 import type BaseDrawing from "../../../common/documents/drawing.mjs";
 import type BaseMeasuredTemplate from "../../../common/documents/measured-template.mjs";
 import type BaseNote from "../../../common/documents/note.mjs";
