@@ -349,6 +349,17 @@ declare namespace Hooks {
     /* -------------------------------------------- */
 
     /**
+     * A hook event that fires whenever a map note is double-clicked.
+     * The hook provides the note placeable and the arguments passed to the associated {@link JournalSheet} render call.
+     * Hooked functions may modify the render arguments or cancel the render by returning false.
+     *
+     * @param note    - The note that was activated.
+     * @param options - Options for rendering the associated {@link JournalSheet}.
+     * @remarks This is called by {@link Hooks.call}.
+     */
+    activateNote: (note: Note, options: JournalSheetOptions) => boolean | void;
+
+    /**
      * A hook event that fires when a custom active effect is applied.
      * @param actor  - The actor the active effect is being applied to
      * @param change - The change data being applied
@@ -589,6 +600,13 @@ declare namespace Hooks {
       destination: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
       context: Cards.DealContext
     ) => boolean | void;
+
+    /**
+     * This hook is called here redundantly as a special case to allow modules to react when rendered occlusion changes
+     * @param tile - The ChatMessage document being rendered
+     * @remarks This is called by {@link Hooks.callAll}.
+     */
+    refreshTile: (tile: Tile) => void;
 
     /**
      * A hook event that fires for each ChatMessage which is rendered for addition to the ChatLog.
@@ -949,7 +967,7 @@ declare namespace Hooks {
    * @remarks This is called by {@link Hooks.call}.
    * @see {@link ContextMenu.create}
    */
-  type GetEntryContext = (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
+  type GetApplicationEntryContext = (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
 
   /**
    * A hook event that fires when the context menu for a Sound in the PlaylistDirectory is constructed.
@@ -1023,7 +1041,7 @@ declare namespace Hooks {
     | CreateDocument
     | DeleteDocument
     | GetApplicationHeaderButtons
-    | GetEntryContext
+    | GetApplicationEntryContext
     | GetPlaylistDirectorySoundContext
     | GetSidebarDirectoryFolderContext
     | HoverPlaceableObject
