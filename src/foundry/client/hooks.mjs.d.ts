@@ -312,7 +312,7 @@ declare namespace Hooks {
      * @param config  - The drop-down config.
      * @remarks This is called by {@link Hooks.callAll}.
      */
-    // TODO: Figure out the dropdown config typing
+    // TODO: Figure out the dropdown config typing {format: ProseMirrorDropDownConfig, fonts: ProseMirrorDropDownConfig}
     // getProseMirrorMenuDropDowns: (menu: ProseMirrorMenu, config) => void;
 
     /* -------------------------------------------- */
