@@ -83,7 +83,7 @@ declare global {
      *                    (default: `{}`)
      * @returns           A reference to the recalled card belonging to its original parent
      */
-    recall(options?: object): Promise<Card>;
+    recall(options?: Cards.RecallOptions): Promise<Card>;
 
     /**
      * Create a chat message which displays this Card.
