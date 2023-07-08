@@ -712,22 +712,22 @@ declare namespace Hooks {
   /* -------------------------------------------- */
   /*  CanvasLayer                                 */
   /* -------------------------------------------- */
-  // TODO: Turn into properly dynamic callback
-  // /**
-  //  * A hook event that fires with a {@link CanvasLayer} is initially drawn.
-  //  * The dispatched event name replaces "Layer" with the named CanvasLayer subclass, i.e. "drawTokensLayer".
-  //  * @param layer - The layer being drawn
-  //  * @remarks This is called by {@link Hooks.callAll}.
-  //  */
-  // drawLayer: (layer: CanvasLayer) => void;
 
-  // /**
-  //  * A hook event that fires with a {@link CanvasLayer} is deconstructed.
-  //  * The dispatched event name replaces "Layer" with the named CanvasLayer subclass, i.e. "tearDownTokensLayer".
-  //  * @param layer - The layer being deconstructed
-  //  * @remarks This is called by {@link Hooks.callAll}.
-  //  */
-  // tearDownLayer: (layer: CanvasLayer) => void;
+  /**
+   * A hook event that fires with a {@link CanvasLayer} is initially drawn.
+   * The dispatched event name replaces "Layer" with the named CanvasLayer subclass, i.e. "drawTokensLayer".
+   * @param layer - The layer being drawn
+   * @remarks This is called by {@link Hooks.callAll}.
+   */
+  type DrawLayer<L extends CanvasLayer = CanvasLayer> = (layer: L) => void;
+
+  /**
+   * A hook event that fires with a {@link CanvasLayer} is deconstructed.
+   * The dispatched event name replaces "Layer" with the named CanvasLayer subclass, i.e. "tearDownTokensLayer".
+   * @param layer - The layer being deconstructed
+   * @remarks This is called by {@link Hooks.callAll}.
+   */
+  type TearDownLayer<L extends CanvasLayer = CanvasLayer> = (layer: L) => void;
 
   /* -------------------------------------------- */
   /*  Document                                    */
@@ -874,59 +874,30 @@ declare namespace Hooks {
   /* -------------------------------------------- */
   /*  PlaceableObject                             */
   /* -------------------------------------------- */
-  // TODO: Rewrite as dynamic hook
-  // /**
-  //  * A hook event that fires when a {@link PlaceableObject} is initially drawn.
-  //  * The dispatched event name replaces "Object" with the named PlaceableObject subclass, i.e. "drawToken".
-  //  * @param object -   The object instance being drawn
-  //  * @remarks This is called by {@link Hooks.callAll}.
-  //  */
-  // drawObject: (object: PlaceableObject) => void;
-
-  // /**
-  //  * A hook event that fires when a {@link PlaceableObject} is incrementally refreshed.
-  //  * The dispatched event name replaces "Object" with the named PlaceableObject subclass, i.e. "refreshToken".
-  //  * @param object -   The object instance being refreshed
-  //  * @remarks This is called by {@link Hooks.callAll}.
-  //  */
-  // refreshObject: (object: PlaceableObject) => void;
-
-  // /**
-  //  * A hook event that fires when a {@link PlaceableObject} is destroyed.
-  //  * The dispatched event name replaces "Object" with the named PlaceableObject subclass, i.e. "destroyToken".
-  //  * @param object -   The object instance being refreshed
-  //  * @remarks This is called by {@link Hooks.callAll}.
-  //  */
-  // destroyObject: (object: PlaceableObject) => void;
-
-  // /* -------------------------------------------- */
-  // /*  InteractionLayer                            */
-  // /* -------------------------------------------- */
-  // TODO: Rewrite as dynamic hook
-  // /**
-  //  * A hook event that fires with a {@link InteractionLayer} becomes active.
-  //  * The dispatched event name replaces "Layer" with the named InteractionLayer subclass, i.e. "activateTokensLayer".
-  //  * @param layer - The layer becoming active
-  //  */
-  // activateLayer: (layer: InteractionLayer) => boolean | void;
-
-  // /**
-  //  * A hook event that fires with a {@link InteractionLayer} becomes inactive.
-  //  * The dispatched event name replaces "Layer" with the named InteractionLayer subclass, i.e. "deactivateTokensLayer".
-  //  * @param layer - The layer becoming inactive
-  //  */
-  // deactivateLayer: (layer: InteractionLayer) => boolean | void;
 
   /**
-   * A hook event that fires whenever this Application is closed.
-   * @param app   - The Application instance being closed
-   * @param html  - The application HTML when it is closed
-   * @typeParam A - the type of the Application
-   * @remarks The name for this hook is dynamically created by joining "close" with the type name of the Application.
+   * A hook event that fires when a {@link PlaceableObject} is initially drawn.
+   * The dispatched event name replaces "Object" with the named PlaceableObject subclass, i.e. "drawToken".
+   * @param object -   The object instance being drawn
    * @remarks This is called by {@link Hooks.callAll}.
-   * @see {@link Application#close}
    */
-  type CloseApplication<A extends Application = Application> = (app: A, html: JQuery) => boolean | void;
+  type DrawObject<P extends PlaceableObject = PlaceableObject> = (object: P) => void;
+
+  /**
+   * A hook event that fires when a {@link PlaceableObject} is incrementally refreshed.
+   * The dispatched event name replaces "Object" with the named PlaceableObject subclass, i.e. "refreshToken".
+   * @param object -   The object instance being refreshed
+   * @remarks This is called by {@link Hooks.callAll}.
+   */
+  type RefreshObject<P extends PlaceableObject = PlaceableObject> = (object: P) => void;
+
+  /**
+   * A hook event that fires when a {@link PlaceableObject} is destroyed.
+   * The dispatched event name replaces "Object" with the named PlaceableObject subclass, i.e. "destroyToken".
+   * @param object -   The object instance being refreshed
+   * @remarks This is called by {@link Hooks.callAll}.
+   */
+  type DestroyObject<P extends PlaceableObject = PlaceableObject> = (object: P) => void;
 
   /**
    * A hook event that fires when any PlaceableObject is selected or
@@ -942,6 +913,68 @@ declare namespace Hooks {
    * @see {@link PlaceableObject#release}
    */
   type ControlPlaceableObject<P extends PlaceableObject = PlaceableObject> = (object: P, controlled: boolean) => void;
+
+  /**
+   * A hook event that fires when any PlaceableObject is hovered over or out.
+   * Substitute the PlaceableObject name in the hook event to target a specific
+   * PlaceableObject type, for example "hoverToken".
+   * @param object - The PlaceableObject
+   * @param hover  - Whether the PlaceableObject is hovered over or not
+   * @typeParam P  - the type of the PlaceableObject
+   * @remarks The name for this hook is dynamically created by joining "hover" and the type name of the PlaceableObject.
+   * @remarks This is called by {@link Hooks.callAll}.
+   * @see {@link PlaceableObject#_onHoverIn}
+   * @see {@link PlaceableObject#_onHoverOut}
+   */
+  type HoverPlaceableObject<P extends PlaceableObject = PlaceableObject> = (object: P, hover: boolean) => void;
+
+  /**
+   * A hook event that fires when any PlaceableObject is pasted onto the
+   * Scene. Substitute the PlaceableObject name in the hook event to target a
+   * specific PlaceableObject type, for example "pasteToken".
+   * @param copied     - The PlaceableObjects that were copied
+   * @param createData - The new objects that will be added to the Scene
+   * @typeParam P      - the type of the PlaceableObject
+   * @remarks The name for this hook is dynamically created by joining "paste" with the type name of the
+   * PlaceableObject.
+   * @remarks This is called by {@link Hooks.call}.
+   * @see {@link PlaceablesLayer#pasteObjects}
+   */
+  type PastePlaceableObject<P extends PlaceableObject = PlaceableObject> = (
+    copied: P[],
+    createData: Array<P["document"]["data"]["_source"]>
+  ) => boolean | void;
+
+  /* -------------------------------------------- */
+  /*  InteractionLayer                            */
+  /* -------------------------------------------- */
+
+  /**
+   * A hook event that fires with a {@link InteractionLayer} becomes active.
+   * The dispatched event name replaces "Layer" with the named InteractionLayer subclass, i.e. "activateTokensLayer".
+   * @param layer - The layer becoming active
+   * @remarks This is called by {@link Hooks.callAll}.
+   */
+  type ActivateLayer<L extends InteractionLayer = InteractionLayer> = (layer: L) => void;
+
+  /**
+   * A hook event that fires with a {@link InteractionLayer} becomes inactive.
+   * The dispatched event name replaces "Layer" with the named InteractionLayer subclass, i.e. "deactivateTokensLayer".
+   * @param layer - The layer becoming inactive
+   * @remarks This is called by {@link Hooks.callAll}.
+   */
+  type DeactivateLayer<L extends InteractionLayer = InteractionLayer> = (layer: L) => void;
+
+  /**
+   * A hook event that fires whenever this Application is closed.
+   * @param app   - The Application instance being closed
+   * @param html  - The application HTML when it is closed
+   * @typeParam A - the type of the Application
+   * @remarks The name for this hook is dynamically created by joining "close" with the type name of the Application.
+   * @remarks This is called by {@link Hooks.callAll}.
+   * @see {@link Application#close}
+   */
+  type CloseApplication<A extends Application = Application> = (app: A, html: JQuery) => boolean | void;
 
   /**
    * A hook event that fires whenever this Application is first rendered to add buttons to its header.
@@ -1004,53 +1037,26 @@ declare namespace Hooks {
    */
   type GlobalVolumeChanged = (volume: number) => void;
 
-  /**
-   * A hook event that fires when any PlaceableObject is hovered over or out.
-   * Substitute the PlaceableObject name in the hook event to target a specific
-   * PlaceableObject type, for example "hoverToken".
-   * @param object - The PlaceableObject
-   * @param hover  - Whether the PlaceableObject is hovered over or not
-   * @typeParam P  - the type of the PlaceableObject
-   * @remarks The name for this hook is dynamically created by joining "hover" and the type name of the PlaceableObject.
-   * @remarks This is called by {@link Hooks.callAll}.
-   * @see {@link PlaceableObject#_onHoverIn}
-   * @see {@link PlaceableObject#_onHoverOut}
-   */
-  type HoverPlaceableObject<P extends PlaceableObject = PlaceableObject> = (object: P, hover: boolean) => void;
-
-  /**
-   * A hook event that fires when any PlaceableObject is pasted onto the
-   * Scene. Substitute the PlaceableObject name in the hook event to target a
-   * specific PlaceableObject type, for example "pasteToken".
-   * @param copied     - The PlaceableObjects that were copied
-   * @param createData - The new objects that will be added to the Scene
-   * @typeParam P      - the type of the PlaceableObject
-   * @remarks The name for this hook is dynamically created by joining "paste" with the type name of the
-   * PlaceableObject.
-   * @remarks This is called by {@link Hooks.call}.
-   * @see {@link PlaceablesLayer#pasteObjects}
-   */
-  type PastePlaceableObject<P extends PlaceableObject = PlaceableObject> = (
-    copied: P[],
-    createData: Array<P["document"]["data"]["_source"]>
-  ) => boolean | void;
-
   type DynamicCallbacks =
-    | CloseApplication
-    | ControlPlaceableObject
+    | RenderApplication
+    | PreCreateDocument
+    | PreUpdateDocument
+    | PreDeleteDocument
     | CreateDocument
+    | UpdateDocument
     | DeleteDocument
+    | DrawObject
+    | RefreshObject
+    | ControlPlaceableObject
+    | HoverPlaceableObject
+    | PastePlaceableObject
+    | ActivateLayer
+    | DeactivateLayer
+    | CloseApplication
     | GetApplicationHeaderButtons
     | GetApplicationEntryContext
     | GetPlaylistDirectorySoundContext
-    | GetSidebarDirectoryFolderContext
-    | HoverPlaceableObject
-    | PastePlaceableObject
-    | PreCreateDocument
-    | PreDeleteDocument
-    | PreUpdateDocument
-    | RenderApplication
-    | UpdateDocument;
+    | GetSidebarDirectoryFolderContext;
 
   interface ErrorCallbackParameters {
     "Canvas#draw": [location: "Canvas#draw", err: Error, data: { layer: CanvasLayer }];
