@@ -88,6 +88,13 @@ declare namespace Hooks {
      */
     setup: () => void;
 
+    /**
+     * A hook event that fires when the game is fully ready.
+     * @remarks This is called by {@link Hooks.callAll}.
+     * @see {@link Game#setupGame}
+     */
+    ready: () => void;
+
     /* -------------------------------------------- */
     /*  Game                                        */
     /* -------------------------------------------- */
@@ -582,13 +589,6 @@ declare namespace Hooks {
       destination: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
       context: Cards.DealContext
     ) => boolean | void;
-
-    /**
-     * A hook event that fires when the game is fully ready.
-     * @remarks This is called by {@link Hooks.callAll}.
-     * @see {@link Game#setupGame}
-     */
-    ready: () => void;
 
     /**
      * A hook event that fires for each ChatMessage which is rendered for addition to the ChatLog.
