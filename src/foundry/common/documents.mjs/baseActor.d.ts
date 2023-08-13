@@ -1,8 +1,9 @@
-import { ConfiguredDocumentClass } from "../../../types/helperTypes";
+import { ConfiguredDocumentClass, DocumentSubTypes } from "../../../types/helperTypes";
 import { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mjs";
 import { Document } from "../abstract/module.mjs";
+import type { DEFAULT_TOKEN } from "../constants.mjs.js";
 import * as data from "../data/data.mjs";
-import type { ActorDataConstructorData } from "../data/data.mjs/actorData";
+import type { ActorDataConstructorData, ActorDataSchema, ActorDataSource } from "../data/data.mjs/actorData";
 import { BaseActiveEffect } from "./baseActiveEffect";
 import { BaseItem } from "./baseItem";
 import { BaseToken } from "./baseToken";
@@ -13,18 +14,20 @@ type ActorMetadata = Merge<
   {
     name: "Actor";
     collection: "actors";
-    label: "DOCUMENT.Actor";
-    labelPlural: "DOCUMENT.Actors";
+    indexed: true;
+    compendiumIndexFields: ["_id", "name", "img", "type", "sort"];
     embedded: {
       ActiveEffect: typeof BaseActiveEffect;
       Item: typeof BaseItem;
     };
+    label: "DOCUMENT.Actor";
+    labelPlural: "DOCUMENT.Actors";
     isPrimary: true;
     hasSystemData: true;
     permissions: {
       create: "ACTOR_CREATE";
+      update: "ACTOR_UPDATE";
     };
-    types: string[];
   }
 >;
 
@@ -36,23 +39,36 @@ export declare class BaseActor extends Document<
   InstanceType<ConfiguredDocumentClass<typeof BaseToken>>,
   ActorMetadata
 > {
-  static override get schema(): typeof data.ActorData;
-
-  static override get metadata(): ActorMetadata;
-  /*
-   * A reference to the Collection of embedded ActiveEffect instances in the Actor document, indexed by _id.
+  /**
+   * @param data    - Initial data provided to construct the Actor document (default: `{}`)
+   * @param context - The document context, see {@link foundry.abstract.Document} (default: `{}`)
    */
-  get effects(): this["data"]["effects"];
+  constructor(data?: ActorDataConstructorData, context?: DocumentConstructionContext);
+
+  static readonly metadata: Readonly<ActorMetadata>;
+
+  // FIXME: removed once ancestor classes are updated for v10
+  // @ts-expect-error an override, once ancestor classes are updated for v10
+  static override defineSchema(): ActorDataSchema;
 
   /**
-   * A reference to the Collection of embedded Item instances in the Actor document, indexed by _id.
+   * The default icon used for newly created Actor documents.
+   * @defaultValue {@link CONST.DEFAULT_TOKEN}
    */
-  get items(): this["data"]["items"];
+  static DEFAULT_ICON: string;
 
   /**
-   * The sub-type of Actor.
+   * The allowed set of Actor types which may exist.
    */
-  get type(): data.ActorData["type"];
+  static get TYPES(): DocumentSubTypes<"Actor">[];
+
+  protected _initializeSource(data: ActorDataConstructorData): ActorDataSource;
+
+  static canUserCreate(user: BaseUser): ReturnType<BaseUser["hasPermission"]>;
+
+  static #canCreate(user: User, doc: Actor): ReturnType<User["hasPermission"]>;
+
+  static #canUpdate(user: User, doc: Actor, data: DeepPartial<Actor["toObject"]>);
 
   protected override _preCreate(
     data: ActorDataConstructorData,
@@ -65,4 +81,8 @@ export declare class BaseActor extends Document<
     options: DocumentModificationOptions,
     user: BaseUser
   ): Promise<void>;
+
+  static migrateData(data: object): ActorDataSource;
+
+  static shimData(data: ActorDataSource): object;
 }
