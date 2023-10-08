@@ -15,7 +15,7 @@ declare global {
      */
     constructor(
       data?: ConstructorParameters<ConstructorOf<foundry.documents.BaseFogExploration>>[0],
-      context?: ConstructorParameters<ConstructorOf<foundry.documents.BaseFogExploration>>[1]
+      context?: ConstructorParameters<ConstructorOf<foundry.documents.BaseFogExploration>>[1],
     );
 
     /**
@@ -34,12 +34,12 @@ declare global {
     static get(
       {
         scene,
-        user
+        user,
       }?: {
         scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>>;
         user?: InstanceType<ConfiguredDocumentClass<typeof User>>;
       },
-      options?: RequestOptions
+      options?: RequestOptions,
     ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<typeof FogExploration>>> | null>;
 
     /**

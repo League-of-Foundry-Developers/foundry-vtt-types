@@ -1,7 +1,7 @@
 import { expectAssignable, expectError } from "tsd";
 
 expectAssignable<typeof ProseMirrorEditor>(ProseMirrorEditor);
-type ProseMirrorEditorCreateFuncOptions = Parameters<typeof ProseMirrorEditor["create"]>[2];
+type ProseMirrorEditorCreateFuncOptions = Parameters<(typeof ProseMirrorEditor)["create"]>[2];
 declare const document: Actor;
 
 // if collaborate is true, both document and fieldName are expected to be present.

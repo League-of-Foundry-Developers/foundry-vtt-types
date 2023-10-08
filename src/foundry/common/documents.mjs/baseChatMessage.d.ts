@@ -39,7 +39,7 @@ export declare class BaseChatMessage extends Document<data.ChatMessageData, null
   protected static _canUpdate(
     user: BaseUser,
     doc: BaseChatMessage,
-    data: DeepPartial<ChatMessageDataConstructorData>
+    data: DeepPartial<ChatMessageDataConstructorData>,
   ): boolean;
 
   /**

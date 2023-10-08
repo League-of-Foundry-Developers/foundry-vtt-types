@@ -5,7 +5,7 @@ import {
   DocumentConstructor,
   ToObjectFalseType,
   DocumentType,
-  ConstructorDataType
+  ConstructorDataType,
 } from "../../../types/helperTypes";
 import EmbeddedCollection from "./embedded-collection.mjs";
 
@@ -19,7 +19,7 @@ export type DocumentDataType<T extends Document<any, any>> = T extends Document<
 declare abstract class Document<
   ConcreteDocumentData extends AnyDocumentData,
   Parent extends Document<any, any> | null = null,
-  ConcreteMetadata extends Metadata<any> = Metadata<any>
+  ConcreteMetadata extends Metadata<any> = Metadata<any>,
 > {
   /**
    * Create a new Document by providing an initial data object.
@@ -146,7 +146,7 @@ declare abstract class Document<
     data?: DeepPartial<
       ConstructorDataType<ConcreteDocumentData> | (ConstructorDataType<ConcreteDocumentData> & Record<string, unknown>)
     >,
-    { save, ...context }?: { save: boolean } & DocumentModificationContext
+    { save, ...context }?: { save: boolean } & DocumentModificationContext,
   ): TemporaryDocument<this> | Promise<TemporaryDocument<this> | undefined>;
 
   /**
@@ -167,7 +167,7 @@ declare abstract class Document<
   testUserPermission(
     user: BaseUser,
     permission: keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    { exact }?: { exact?: boolean }
+    { exact }?: { exact?: boolean },
   ): boolean;
 
   /**
@@ -221,7 +221,7 @@ declare abstract class Document<
       | ConstructorDataType<InstanceType<T>["data"]>
       | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>)
     >,
-    context: DocumentModificationContext & { temporary: false }
+    context: DocumentModificationContext & { temporary: false },
   ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[]>;
   static createDocuments<T extends DocumentConstructor>(
     this: T,
@@ -229,7 +229,7 @@ declare abstract class Document<
       | ConstructorDataType<InstanceType<T>["data"]>
       | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>)
     >,
-    context: DocumentModificationContext & { temporary: boolean }
+    context: DocumentModificationContext & { temporary: boolean },
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
   static createDocuments<T extends DocumentConstructor>(
     this: T,
@@ -237,7 +237,7 @@ declare abstract class Document<
       | ConstructorDataType<InstanceType<T>["data"]>
       | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>)
     >,
-    context?: DocumentModificationContext
+    context?: DocumentModificationContext,
   ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[]>;
 
   /**
@@ -283,7 +283,7 @@ declare abstract class Document<
         | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>)
       >
     >,
-    context?: DocumentModificationContext & foundry.utils.MergeObjectOptions
+    context?: DocumentModificationContext & foundry.utils.MergeObjectOptions,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
@@ -326,7 +326,7 @@ declare abstract class Document<
   static deleteDocuments<T extends DocumentConstructor>(
     this: T,
     ids?: string[],
-    context?: DocumentModificationContext
+    context?: DocumentModificationContext,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
@@ -363,21 +363,21 @@ declare abstract class Document<
     data:
       | ConstructorDataType<InstanceType<T>["data"]>
       | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>),
-    context: DocumentModificationContext & { temporary: false }
+    context: DocumentModificationContext & { temporary: false },
   ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>> | undefined>;
   static create<T extends DocumentConstructor>(
     this: T,
     data:
       | ConstructorDataType<InstanceType<T>["data"]>
       | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>),
-    context: DocumentModificationContext & { temporary: boolean }
+    context: DocumentModificationContext & { temporary: boolean },
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
   static create<T extends DocumentConstructor>(
     this: T,
     data:
       | ConstructorDataType<InstanceType<T>["data"]>
       | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>),
-    context?: DocumentModificationContext
+    context?: DocumentModificationContext,
   ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>> | undefined>;
 
   /**
@@ -395,7 +395,7 @@ declare abstract class Document<
     data?: DeepPartial<
       ConstructorDataType<ConcreteDocumentData> | (ConstructorDataType<ConcreteDocumentData> & Record<string, unknown>)
     >,
-    context?: DocumentModificationContext & foundry.utils.MergeObjectOptions
+    context?: DocumentModificationContext & foundry.utils.MergeObjectOptions,
   ): Promise<this | undefined>;
 
   /**
@@ -428,7 +428,7 @@ declare abstract class Document<
   getEmbeddedDocument(
     embeddedName: string,
     id: string,
-    { strict }?: { strict?: boolean }
+    { strict }?: { strict?: boolean },
   ): Document<any, this> | undefined;
 
   /**
@@ -444,17 +444,17 @@ declare abstract class Document<
   createEmbeddedDocuments(
     embeddedName: string,
     data: Array<Record<string, unknown>>,
-    context: DocumentModificationContext & { temporary: false }
+    context: DocumentModificationContext & { temporary: false },
   ): Promise<Array<StoredDocument<Document<any, this>>>>;
   createEmbeddedDocuments(
     embeddedName: string,
     data: Array<Record<string, unknown>>,
-    context: DocumentModificationContext & { temporary: boolean }
+    context: DocumentModificationContext & { temporary: boolean },
   ): Promise<Array<Document<any, this>>>;
   createEmbeddedDocuments(
     embeddedName: string,
     data: Array<Record<string, unknown>>,
-    context?: DocumentModificationContext
+    context?: DocumentModificationContext,
   ): Promise<Array<StoredDocument<Document<any, this>>>>;
 
   /**
@@ -470,7 +470,7 @@ declare abstract class Document<
   updateEmbeddedDocuments(
     embeddedName: string,
     updates?: Array<Record<string, unknown>>,
-    context?: DocumentModificationContext
+    context?: DocumentModificationContext,
   ): Promise<Array<Document<any, this>>>;
 
   /**
@@ -485,7 +485,7 @@ declare abstract class Document<
   deleteEmbeddedDocuments(
     embeddedName: string,
     ids: Array<string>,
-    context?: DocumentModificationContext
+    context?: DocumentModificationContext,
   ): Promise<Array<Document<any, this>>>;
 
   /**
@@ -498,15 +498,15 @@ declare abstract class Document<
    */
   getFlag<
     S extends keyof ConcreteDocumentData["_source"]["flags"],
-    K extends keyof ConcreteDocumentData["_source"]["flags"][S]
+    K extends keyof ConcreteDocumentData["_source"]["flags"][S],
   >(scope: S, key: K): ConcreteDocumentData["_source"]["flags"][S][K];
   getFlag<
     S extends keyof ConcreteDocumentData["_source"]["flags"],
-    K extends keyof Required<ConcreteDocumentData["_source"]["flags"]>[S]
+    K extends keyof Required<ConcreteDocumentData["_source"]["flags"]>[S],
   >(scope: S, key: K): Required<ConcreteDocumentData["_source"]["flags"]>[S][K] | undefined;
   getFlag<S extends keyof ConcreteDocumentData["_source"]["flags"]>(
     scope: S,
-    key: string
+    key: string,
   ): unknown extends ConcreteDocumentData["_source"]["flags"][S] ? unknown : never;
   getFlag(scope: string, key: string): unknown;
 
@@ -531,12 +531,12 @@ declare abstract class Document<
   setFlag<
     S extends keyof ConcreteDocumentData["_source"]["flags"],
     K extends keyof Required<ConcreteDocumentData["_source"]["flags"]>[S],
-    V extends Required<ConcreteDocumentData["_source"]["flags"]>[S][K]
+    V extends Required<ConcreteDocumentData["_source"]["flags"]>[S][K],
   >(scope: S, key: K, value: V): Promise<this>;
   setFlag<S extends keyof ConcreteDocumentData["_source"]["flags"], K extends string>(
     scope: S,
     key: K,
-    v: unknown extends ConcreteDocumentData["_source"]["flags"][S] ? unknown : never
+    v: unknown extends ConcreteDocumentData["_source"]["flags"][S] ? unknown : never,
   ): Promise<this>;
 
   /**
@@ -557,7 +557,7 @@ declare abstract class Document<
   protected _preCreate(
     data: ConstructorDataType<ConcreteDocumentData>,
     options: DocumentModificationOptions,
-    user: BaseUser
+    user: BaseUser,
   ): Promise<void>;
 
   /**
@@ -570,7 +570,7 @@ declare abstract class Document<
   protected _preUpdate(
     changed: DeepPartial<ConstructorDataType<ConcreteDocumentData>>,
     options: DocumentModificationOptions,
-    user: BaseUser
+    user: BaseUser,
   ): Promise<void>;
 
   /**
@@ -591,7 +591,7 @@ declare abstract class Document<
   protected _onCreate(
     data: ConcreteDocumentData["_source"],
     options: DocumentModificationOptions,
-    userId: string
+    userId: string,
   ): void;
 
   /**
@@ -604,7 +604,7 @@ declare abstract class Document<
   protected _onUpdate(
     changed: DeepPartial<ConcreteDocumentData["_source"]>,
     options: DocumentModificationOptions,
-    userId: string
+    userId: string,
   ): void;
 
   /**
@@ -629,7 +629,7 @@ declare abstract class Document<
   protected static _onCreateDocuments<T extends DocumentConstructor>(
     this: T,
     documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
-    context: DocumentModificationContext
+    context: DocumentModificationContext,
   ): Promise<unknown>;
 
   /**
@@ -646,7 +646,7 @@ declare abstract class Document<
   protected static _onUpdateDocuments<T extends DocumentConstructor>(
     this: T,
     documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
-    context: DocumentModificationContext
+    context: DocumentModificationContext,
   ): Promise<unknown>;
 
   /**
@@ -663,7 +663,7 @@ declare abstract class Document<
   protected static _onDeleteDocuments<T extends DocumentConstructor>(
     this: T,
     documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
-    context: DocumentModificationContext
+    context: DocumentModificationContext,
   ): Promise<unknown>;
 
   /**
@@ -674,12 +674,12 @@ declare abstract class Document<
    * @returns The extracted primitive object
    */
   toObject(
-    source?: true
+    source?: true,
   ): this["id"] extends string
     ? ReturnType<this["data"]["toJSON"]> & { _id: string }
     : ReturnType<this["data"]["toJSON"]>;
   toObject(
-    source: false
+    source: false,
   ): this["id"] extends string
     ? ToObjectFalseType<ConcreteDocumentData> & { _id: string }
     : ToObjectFalseType<ConcreteDocumentData>;
@@ -730,7 +730,7 @@ export interface Metadata<ConcreteDocument extends Document<any, any>> {
       | ((
           user: BaseUser,
           doc: ConcreteDocument,
-          data: DeepPartial<ConstructorDataType<ConcreteDocument["data"]>>
+          data: DeepPartial<ConstructorDataType<ConcreteDocument["data"]>>,
         ) => boolean);
     delete: string | ((user: BaseUser, doc: ConcreteDocument, data: {}) => boolean);
   };

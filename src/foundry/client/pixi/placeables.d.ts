@@ -3,7 +3,7 @@ import {
   ConfiguredObjectClassForName,
   ConfiguredDocumentClassForName,
   PlaceableDocumentType,
-  ConstructorDataType
+  ConstructorDataType,
 } from "../../../types/helperTypes";
 import EmbeddedCollection from "../../common/abstract/embedded-collection.mjs";
 
@@ -18,7 +18,7 @@ declare global {
    */
   abstract class PlaceablesLayer<
     DocumentName extends PlaceableDocumentType,
-    Options extends PlaceablesLayer.LayerOptions<DocumentName> = PlaceablesLayer.LayerOptions<DocumentName>
+    Options extends PlaceablesLayer.LayerOptions<DocumentName> = PlaceablesLayer.LayerOptions<DocumentName>,
   > extends CanvasLayer<Options> {
     constructor();
 
@@ -137,7 +137,7 @@ declare global {
      * Draw a single placeable object
      */
     createObject(
-      data: InstanceType<ConfiguredDocumentClassForName<DocumentName>>
+      data: InstanceType<ConfiguredDocumentClassForName<DocumentName>>,
     ): InstanceType<ConfiguredObjectClassForName<DocumentName>> | null;
 
     override tearDown(): Promise<this>;
@@ -198,7 +198,7 @@ declare global {
      * @returns An array of objects which were moved during the operation
      */
     moveMany(
-      options?: MovementOptions
+      options?: MovementOptions,
     ): Promise<InstanceType<ConfiguredObjectClassForName<DocumentName>>[]> | undefined;
 
     /**
@@ -223,7 +223,7 @@ declare global {
       type: PlaceablesLayer.HistoryEventType,
       data: DataSourceForPlaceable<
         ConcretePlaceableOrPlaceableObject<InstanceType<ConfiguredObjectClassForName<DocumentName>>>
-      >
+      >,
     ): void;
 
     /**
@@ -240,7 +240,7 @@ declare global {
      */
     pasteObjects(
       position: Point,
-      options?: PasteOptions
+      options?: PasteOptions,
     ): Promise<InstanceType<ConfiguredDocumentClassForName<DocumentName>>[]>;
 
     /**
@@ -263,7 +263,7 @@ declare global {
     updateAll(
       transformation:
         | ((
-            placeable: InstanceType<ConfiguredObjectClassForName<DocumentName>>
+            placeable: InstanceType<ConfiguredObjectClassForName<DocumentName>>,
           ) => Partial<
             DataSourceForPlaceable<
               ConcretePlaceableOrPlaceableObject<InstanceType<ConfiguredObjectClassForName<DocumentName>>>
@@ -275,7 +275,7 @@ declare global {
             >
           >,
       condition?: ((placeable: InstanceType<ConfiguredObjectClassForName<DocumentName>>) => boolean) | null,
-      options?: DocumentModificationContext
+      options?: DocumentModificationContext,
     ): Promise<Array<InstanceType<ConfiguredDocumentClassForName<DocumentName>>>>;
 
     /**
@@ -285,7 +285,7 @@ declare global {
     protected _canvasCoordinatesFromDrop(
       event: DragEvent,
       {
-        center
+        center,
       }?:
         | {
             /**
@@ -294,7 +294,7 @@ declare global {
              */
             center?: boolean | undefined;
           }
-        | undefined
+        | undefined,
     ): [tx: number, ty: number] | false;
 
     /**
@@ -304,7 +304,7 @@ declare global {
      */
     protected _createPreview(
       createData: ConstructorDataType<InstanceType<ConfiguredDocumentClassForName<DocumentName>>["data"]>,
-      { top, left }: { top: number; left: number }
+      { top, left }: { top: number; left: number },
     ): Promise<void>;
 
     /**
@@ -378,7 +378,7 @@ declare global {
   namespace PlaceablesLayer {
     type HistoryEventType = "create" | "update" | "delete";
 
-    type CreationState = ValueOf<typeof PlaceablesLayer["CREATION_STATES"]>;
+    type CreationState = ValueOf<(typeof PlaceablesLayer)["CREATION_STATES"]>;
 
     /**
      * @typeParam DocumentName - The key of the configuration which defines the object and document class.

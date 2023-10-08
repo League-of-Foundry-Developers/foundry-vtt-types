@@ -141,7 +141,7 @@ declare global {
       factor: number,
       previous: [number, number],
       point: [number, number],
-      next: [number, number]
+      next: [number, number],
     ): {
       cp1: {
         x: number;
@@ -253,7 +253,7 @@ declare global {
      * @internal
      */
     protected _onHandleDragDrop(
-      event: PIXI.InteractionEvent
+      event: PIXI.InteractionEvent,
     ): ReturnType<InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>["update"]>;
 
     /**
@@ -272,7 +272,7 @@ declare global {
     protected _rescaleDimensions(
       original: Pick<foundry.data.DrawingData["_source"], "x" | "y" | "points" | "width" | "height">,
       dx: number,
-      dy: number
+      dy: number,
     ): Pick<foundry.data.DrawingData["_source"], "x" | "y" | "width" | "height" | "points">;
 
     /**
@@ -283,7 +283,7 @@ declare global {
      * @internal
      */
     static normalizeShape(
-      data: Pick<foundry.data.DrawingData["_source"], "x" | "y" | "width" | "height" | "points">
+      data: Pick<foundry.data.DrawingData["_source"], "x" | "y" | "width" | "height" | "points">,
     ): Pick<foundry.data.DrawingData["_source"], "x" | "y" | "width" | "height" | "points">;
   }
 }

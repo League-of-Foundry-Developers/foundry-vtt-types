@@ -16,8 +16,8 @@ expectType<foundry.data.ChatMessageData>(
     type: null,
     user: null,
     whisper: null,
-    _id: null
-  })
+    _id: null,
+  }),
 );
 expectType<foundry.data.ChatMessageData>(
   new foundry.data.ChatMessageData({
@@ -33,8 +33,8 @@ expectType<foundry.data.ChatMessageData>(
     type: undefined,
     user: undefined,
     whisper: undefined,
-    _id: undefined
-  })
+    _id: undefined,
+  }),
 );
 
 expectType<foundry.data.ChatMessageData>(
@@ -43,14 +43,14 @@ expectType<foundry.data.ChatMessageData>(
       scene: null,
       actor: null,
       token: null,
-      alias: null
-    }
-  })
+      alias: null,
+    },
+  }),
 );
 expectType<foundry.data.ChatMessageData>(
   new foundry.data.ChatMessageData({
-    speaker: {}
-  })
+    speaker: {},
+  }),
 );
 expectType<foundry.data.ChatMessageData>(
   new foundry.data.ChatMessageData({
@@ -58,23 +58,23 @@ expectType<foundry.data.ChatMessageData>(
       scene: undefined,
       actor: undefined,
       token: undefined,
-      alias: undefined
-    }
-  })
+      alias: undefined,
+    },
+  }),
 );
 
 expectType<foundry.data.ChatMessageData>(
   new foundry.data.ChatMessageData({
-    whisper: null
-  })
+    whisper: null,
+  }),
 );
 expectType<foundry.data.ChatMessageData>(
   new foundry.data.ChatMessageData({
-    whisper: ["someId"]
-  })
+    whisper: ["someId"],
+  }),
 );
 expectType<foundry.data.ChatMessageData>(
   new foundry.data.ChatMessageData({
-    whisper: [{ id: "someId" }]
-  })
+    whisper: [{ id: "someId" }],
+  }),
 );

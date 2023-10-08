@@ -140,7 +140,7 @@ declare global {
 
     override pasteObjects(
       position: Point,
-      options?: PasteOptions
+      options?: PasteOptions,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseWall>>[]>;
 
     /**
@@ -196,7 +196,7 @@ declare global {
     computePolygon(
       origin: Point,
       radius: number,
-      options?: ComputePolygonOptions
+      options?: ComputePolygonOptions,
     ): { rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon };
 
     /** @deprecated since v9 */
@@ -225,7 +225,7 @@ declare global {
       walls:
         | InstanceType<ConfiguredObjectClassForName<"Wall">>[]
         | Set<InstanceType<ConfiguredObjectClassForName<"Wall">>>,
-      options?: EndpointOptions
+      options?: EndpointOptions,
     ): PointArray[];
   }
 

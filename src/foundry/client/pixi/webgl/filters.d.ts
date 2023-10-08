@@ -23,7 +23,7 @@ declare abstract class AbstractBaseMaskFilter extends PIXI.Filter {
   static create<T extends AbstractBaseMaskFilter>(
     this: ConstructorOf<T>,
     defaultUniforms?: ConstructorParameters<typeof PIXI.Filter>[2],
-    channel?: "r" | "g" | "b"
+    channel?: "r" | "g" | "b",
   ): T;
 
   override apply(
@@ -31,7 +31,7 @@ declare abstract class AbstractBaseMaskFilter extends PIXI.Filter {
     input: PIXI.RenderTexture,
     output: PIXI.RenderTexture,
     clear: PIXI.CLEAR_MODES,
-    currentState: any
+    currentState: any,
   ): void;
 }
 
@@ -50,7 +50,7 @@ declare class InverseOcclusionMaskFilter extends AbstractBaseMaskFilter {
   static create<T extends InverseOcclusionMaskFilter>(
     this: ConstructorOf<T>,
     defaultUniforms?: ConstructorParameters<typeof PIXI.Filter>[2],
-    channel?: "r" | "g" | "b"
+    channel?: "r" | "g" | "b",
   ): T;
 }
 

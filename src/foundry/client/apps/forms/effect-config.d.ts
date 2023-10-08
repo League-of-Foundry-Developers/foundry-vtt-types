@@ -7,7 +7,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class ActiveEffectConfig<
-    Options extends DocumentSheetOptions<ActiveEffect> = DocumentSheetOptions<ActiveEffect>
+    Options extends DocumentSheetOptions<ActiveEffect> = DocumentSheetOptions<ActiveEffect>,
   > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>> {
     /**
      * @defaultValue

@@ -85,13 +85,13 @@ declare global {
     protected override _onCreate(
       data: foundry.data.AmbientSoundData["_source"],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected override _onUpdate(
       changed: DeepPartial<foundry.data.AmbientSoundData["_source"]>,
       options?: DocumentModificationOptions,
-      userId?: string
+      userId?: string,
     ): void;
 
     protected override _onDelete(...args: Parameters<PlaceableObject["_onDelete"]>): void;

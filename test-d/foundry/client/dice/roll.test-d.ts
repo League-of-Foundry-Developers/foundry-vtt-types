@@ -27,14 +27,14 @@ expectType<Evaluated<TypeOfR>>(r.evaluate({ async: false }));
 expectType<Promise<Evaluated<TypeOfR>>>(r.evaluate());
 expectType<Evaluated<TypeOfR>>(r.evaluate({ minimize: true, maximize: true }));
 expectType<Evaluated<TypeOfR> | Promise<Evaluated<TypeOfR>>>(
-  r.evaluate({ minimize: true, maximize: true, async: false as boolean })
+  r.evaluate({ minimize: true, maximize: true, async: false as boolean }),
 );
 expectType<Evaluated<TypeOfR> | Promise<Evaluated<TypeOfR>>>(
-  r.evaluate({ minimize: true, maximize: true, async: false as boolean | undefined })
+  r.evaluate({ minimize: true, maximize: true, async: false as boolean | undefined }),
 );
 expectType<Evaluated<TypeOfR>>(r.evaluate({ minimize: true, maximize: true, async: false as false | undefined }));
 expectType<Evaluated<TypeOfR> | Promise<Evaluated<TypeOfR>>>(
-  r.evaluate({ minimize: true, maximize: true, async: false as true | undefined })
+  r.evaluate({ minimize: true, maximize: true, async: false as true | undefined }),
 );
 expectType<number>((await r.evaluate()).total);
 
@@ -43,14 +43,14 @@ expectType<Evaluated<TypeOfR>>(r.roll({ async: false }));
 expectType<Promise<Evaluated<TypeOfR>>>(r.roll());
 expectType<Evaluated<TypeOfR>>(r.roll({ minimize: true, maximize: true }));
 expectType<Evaluated<TypeOfR> | Promise<Evaluated<TypeOfR>>>(
-  r.roll({ minimize: true, maximize: true, async: false as boolean })
+  r.roll({ minimize: true, maximize: true, async: false as boolean }),
 );
 expectType<Evaluated<TypeOfR> | Promise<Evaluated<TypeOfR>>>(
-  r.roll({ minimize: true, maximize: true, async: false as boolean | undefined })
+  r.roll({ minimize: true, maximize: true, async: false as boolean | undefined }),
 );
 expectType<Evaluated<TypeOfR>>(r.roll({ minimize: true, maximize: true, async: false as false | undefined }));
 expectType<Evaluated<TypeOfR> | Promise<Evaluated<TypeOfR>>>(
-  r.roll({ minimize: true, maximize: true, async: false as true | undefined })
+  r.roll({ minimize: true, maximize: true, async: false as true | undefined }),
 );
 expectType<number>((await r.roll()).total);
 
@@ -59,14 +59,14 @@ expectType<Evaluated<TypeOfR>>(r.reroll({ async: false }));
 expectType<Promise<Evaluated<TypeOfR>>>(r.reroll());
 expectType<Evaluated<TypeOfR>>(r.reroll({ minimize: true, maximize: true }));
 expectType<Evaluated<TypeOfR> | Promise<Evaluated<TypeOfR>>>(
-  r.reroll({ minimize: true, maximize: true, async: false as boolean })
+  r.reroll({ minimize: true, maximize: true, async: false as boolean }),
 );
 expectType<Evaluated<TypeOfR> | Promise<Evaluated<TypeOfR>>>(
-  r.reroll({ minimize: true, maximize: true, async: false as boolean | undefined })
+  r.reroll({ minimize: true, maximize: true, async: false as boolean | undefined }),
 );
 expectType<Evaluated<TypeOfR>>(r.reroll({ minimize: true, maximize: true, async: false as false | undefined }));
 expectType<Evaluated<TypeOfR> | Promise<Evaluated<TypeOfR>>>(
-  r.reroll({ minimize: true, maximize: true, async: false as true | undefined })
+  r.reroll({ minimize: true, maximize: true, async: false as true | undefined }),
 );
 expectType<number>((await r.reroll()).total);
 

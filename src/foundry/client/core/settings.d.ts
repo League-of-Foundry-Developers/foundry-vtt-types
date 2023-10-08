@@ -44,7 +44,7 @@ declare global {
       typeof Boolean,
       typeof Array,
       typeof Symbol,
-      typeof BigInt
+      typeof BigInt,
     ];
 
     /**
@@ -106,7 +106,7 @@ declare global {
       key: K,
       data: ClientSettings.Values[`${N}.${K}`] extends string | number | boolean | Array<any> | object | null
         ? ClientSettings.PartialSettingConfig<ClientSettings.Values[`${N}.${K}`]>
-        : ClientSettings.PartialSettingConfig<T>
+        : ClientSettings.PartialSettingConfig<T>,
     ): void;
 
     /**
@@ -133,7 +133,7 @@ declare global {
     registerMenu<N extends string, K extends string>(
       namespace: N,
       key: K,
-      data: ClientSettings.PartialSettingSubmenuConfig
+      data: ClientSettings.PartialSettingSubmenuConfig,
     ): void;
 
     /**
@@ -172,7 +172,7 @@ declare global {
       namespace: N,
       key: K,
       value: V,
-      options?: DocumentModificationContext
+      options?: DocumentModificationContext,
     ): Promise<V>;
   }
 

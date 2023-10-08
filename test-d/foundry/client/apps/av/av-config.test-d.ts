@@ -5,6 +5,6 @@ if (game instanceof Game) {
     hint: "WEBRTC.MenuHint",
     icon: "fas fa-headset",
     type: AVConfig,
-    restricted: false
+    restricted: false,
   });
 }

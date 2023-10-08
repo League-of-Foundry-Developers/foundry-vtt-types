@@ -8,7 +8,7 @@ declare class SquareGrid extends BaseGrid {
   protected _drawLine(
     points: [x1: number, y1: number, x2: number, y2: number],
     lineColor: number,
-    lineAlpha: number
+    lineAlpha: number,
   ): PIXI.Graphics;
 
   override getCenter(x: number, y: number): PointArray;

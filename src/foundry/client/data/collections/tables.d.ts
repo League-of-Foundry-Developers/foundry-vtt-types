@@ -8,7 +8,7 @@
 declare class RollTables extends WorldCollection<typeof foundry.documents.BaseRollTable, "RollTables"> {
   static override documentName: "RollTable";
 
-  override get directory(): typeof ui["tables"];
+  override get directory(): (typeof ui)["tables"];
 
   /**
    * Register world settings related to RollTable documents

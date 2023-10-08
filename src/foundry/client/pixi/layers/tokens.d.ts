@@ -73,7 +73,7 @@ declare global {
         x,
         y,
         width,
-        height
+        height,
       }: {
         /** The top-left x-coordinate of the selection rectangle */
         x: number;
@@ -88,14 +88,14 @@ declare global {
         height: number;
       },
       {
-        releaseOthers
+        releaseOthers,
       }?: {
         /**
          * Whether or not to release other targeted tokens
          * @defaultValue `true`
          */
         releaseOthers?: boolean;
-      }
+      },
     ): number;
 
     /**
@@ -120,14 +120,14 @@ declare global {
       state?: boolean,
       combat?: InstanceType<ConfiguredDocumentClass<typeof Combat>> | null,
       {
-        token
+        token,
       }?: {
         /**
          * A specific Token which is the origin of the group toggle request
          * @defaultValue `null`
          */
         token?: InstanceType<ConfiguredObjectClassForName<"Token">> | null;
-      }
+      },
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Combatant>>[]>;
 
     /**
@@ -145,7 +145,7 @@ declare global {
      */
     protected _onDropActorData(
       event: DragEvent,
-      data: TokenLayer.DropData
+      data: TokenLayer.DropData,
     ): Promise<void | false | InstanceType<ConfiguredObjectClassForName<"Token">>>;
 
     protected override _onClickLeft(event: PIXI.InteractionEvent): void;

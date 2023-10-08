@@ -6,7 +6,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class MeasuredTemplateConfig<
-    Options extends DocumentSheetOptions<MeasuredTemplateDocument> = DocumentSheetOptions<MeasuredTemplateDocument>
+    Options extends DocumentSheetOptions<MeasuredTemplateDocument> = DocumentSheetOptions<MeasuredTemplateDocument>,
   > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClassForName<"MeasuredTemplate">>> {
     /**
      * @defaultValue

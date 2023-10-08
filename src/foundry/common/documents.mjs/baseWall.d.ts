@@ -29,7 +29,7 @@ export declare class BaseWall extends Document<data.WallData, InstanceType<Confi
    */
   constructor(
     data: WallDataConstructorData,
-    context?: Context<InstanceType<ConfiguredDocumentClass<typeof BaseScene>>>
+    context?: Context<InstanceType<ConfiguredDocumentClass<typeof BaseScene>>>,
   );
 
   static override get schema(): typeof data.WallData;

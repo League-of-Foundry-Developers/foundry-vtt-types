@@ -21,10 +21,10 @@ expectType<foundry.data.MeasuredTemplateData>(
       borderColor: null,
       fillColor: null,
       texture: null,
-      flags: null
+      flags: null,
     },
-    scene
-  )
+    scene,
+  ),
 );
 expectType<foundry.data.MeasuredTemplateData>(
   new foundry.data.MeasuredTemplateData(
@@ -40,10 +40,10 @@ expectType<foundry.data.MeasuredTemplateData>(
       borderColor: undefined,
       fillColor: undefined,
       texture: undefined,
-      flags: undefined
+      flags: undefined,
     },
-    scene
-  )
+    scene,
+  ),
 );
 
 expectType<foundry.data.MeasuredTemplateData>(
@@ -60,8 +60,8 @@ expectType<foundry.data.MeasuredTemplateData>(
       borderColor: "#000000",
       fillColor: "#ffffff",
       texture: "path/to/a/texture",
-      flags: {}
+      flags: {},
     },
-    scene
-  )
+    scene,
+  ),
 );

@@ -17,39 +17,39 @@ expectAssignable<SceneControlTool>({
   name: "foo",
   title: "bar",
   icon: "baz",
-  onClick: () => undefined
+  onClick: () => undefined,
 });
 expectAssignable<SceneControlTool>({
   name: "foo",
   title: "bar",
   icon: "baz",
   toggle: false,
-  onClick: () => undefined
+  onClick: () => undefined,
 });
 expectAssignable<SceneControlTool>({
   name: "foo",
   title: "bar",
   icon: "baz",
   button: true,
-  onClick: () => undefined
+  onClick: () => undefined,
 });
 expectAssignable<SceneControlTool>({
   name: "foo",
   title: "bar",
   icon: "baz",
   toggle: true,
-  onClick: (toggle: boolean) => toggle
+  onClick: (toggle: boolean) => toggle,
 });
 expectNotAssignable<SceneControlTool>({
   name: "foo",
   title: "bar",
   icon: "baz",
   toggle: false,
-  onClick: (toggle: boolean) => toggle
+  onClick: (toggle: boolean) => toggle,
 });
 expectNotAssignable<SceneControlTool>({
   name: "foo",
   title: "bar",
   icon: "baz",
-  onClick: (toggle: boolean) => toggle
+  onClick: (toggle: boolean) => toggle,
 });

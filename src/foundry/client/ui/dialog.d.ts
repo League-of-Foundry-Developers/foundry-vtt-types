@@ -170,22 +170,22 @@ declare global {
      * ```
      */
     static confirm<Yes = true, No = false>(
-      config: Dialog.ConfirmConfig<Yes, No, JQuery> & { options?: { jQuery?: true }; rejectClose: true }
+      config: Dialog.ConfirmConfig<Yes, No, JQuery> & { options?: { jQuery?: true }; rejectClose: true },
     ): Promise<Yes | No>;
     static confirm<Yes = true, No = false>(
-      config: Dialog.ConfirmConfig<Yes, No, JQuery> & { options?: { jQuery?: true } }
+      config: Dialog.ConfirmConfig<Yes, No, JQuery> & { options?: { jQuery?: true } },
     ): Promise<Yes | No | null>;
     static confirm<Yes = true, No = false>(
-      config: Dialog.ConfirmConfig<Yes, No, HTMLElement> & { options: { jQuery: false }; rejectClose: true }
+      config: Dialog.ConfirmConfig<Yes, No, HTMLElement> & { options: { jQuery: false }; rejectClose: true },
     ): Promise<Yes | No>;
     static confirm<Yes = true, No = false>(
-      config: Dialog.ConfirmConfig<Yes, No, HTMLElement> & { options: { jQuery: false } }
+      config: Dialog.ConfirmConfig<Yes, No, HTMLElement> & { options: { jQuery: false } },
     ): Promise<Yes | No | null>;
     static confirm<Yes = true, No = false>(
-      config: Dialog.ConfirmConfig<Yes, No, JQuery | HTMLElement> & { rejectClose: true }
+      config: Dialog.ConfirmConfig<Yes, No, JQuery | HTMLElement> & { rejectClose: true },
     ): Promise<Yes | No>;
     static confirm<Yes = true, No = false>(
-      config?: Dialog.ConfirmConfig<Yes, No, JQuery | HTMLElement>
+      config?: Dialog.ConfirmConfig<Yes, No, JQuery | HTMLElement>,
     ): Promise<Yes | No | null>;
 
     /**
@@ -194,11 +194,11 @@ declare global {
      * @returns A promise which resolves when clicked, or rejects if closed
      */
     static prompt<T>(
-      config: Dialog.PromptConfig<T, JQuery> & { options?: { jQuery?: true }; rejectClose: false }
+      config: Dialog.PromptConfig<T, JQuery> & { options?: { jQuery?: true }; rejectClose: false },
     ): Promise<T | null>;
     static prompt<T>(config: Dialog.PromptConfig<T, JQuery> & { options?: { jQuery?: true } }): Promise<T>;
     static prompt<T>(
-      config: Dialog.PromptConfig<T, HTMLElement> & { options: { jQuery: false }; rejectClose: false }
+      config: Dialog.PromptConfig<T, HTMLElement> & { options: { jQuery: false }; rejectClose: false },
     ): Promise<T | null>;
     static prompt<T>(config: Dialog.PromptConfig<T, HTMLElement> & { options: { jQuery: false } }): Promise<T>;
     static prompt<T>(config: Dialog.PromptConfig<T, JQuery | HTMLElement> & { rejectClose: false }): Promise<T | null>;
@@ -214,17 +214,17 @@ declare global {
     static wait<Options extends DialogOptions = DialogOptions>(
       data: DialogData<JQuery>,
       options?: Partial<DialogOptions> & { jQuery?: true },
-      renderOptions?: Application.RenderOptions<Options>
+      renderOptions?: Application.RenderOptions<Options>,
     ): Promise<unknown>;
     static wait<Options extends DialogOptions = DialogOptions>(
       data: DialogData<HTMLElement>,
       options?: Partial<DialogOptions> & { jQuery?: false },
-      renderOptions?: Application.RenderOptions<Options>
+      renderOptions?: Application.RenderOptions<Options>,
     ): Promise<unknown>;
     static wait<Options extends DialogOptions = DialogOptions>(
       data: DialogData<JQuery | HTMLElement>,
       options?: Partial<DialogOptions>,
-      renderOptions?: Application.RenderOptions<Options>
+      renderOptions?: Application.RenderOptions<Options>,
     ): Promise<unknown>;
   }
 

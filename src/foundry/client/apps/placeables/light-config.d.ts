@@ -10,7 +10,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class AmbientLightConfig<
-    Options extends DocumentSheetOptions<AmbientLightDocument> = DocumentSheetOptions<AmbientLightDocument>
+    Options extends DocumentSheetOptions<AmbientLightDocument> = DocumentSheetOptions<AmbientLightDocument>,
   > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClassForName<"AmbientLight">>> {
     /**
      * @defaultValue

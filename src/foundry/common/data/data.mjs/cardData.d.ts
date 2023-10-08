@@ -3,7 +3,7 @@ import type {
   ConfiguredFlags,
   ConfiguredSource,
   FieldReturnType,
-  PropertiesToSource
+  PropertiesToSource,
 } from "../../../../types/helperTypes";
 import type DocumentData from "../../abstract/data.mjs";
 import * as documents from "../../documents.mjs";

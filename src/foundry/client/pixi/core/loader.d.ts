@@ -24,7 +24,7 @@ declare global {
      */
     static loadSceneTextures(
       scene: InstanceType<ConfiguredDocumentClassForName<"Scene">>,
-      options?: Partial<TextureLoader.LoadSceneTextureOptions>
+      options?: Partial<TextureLoader.LoadSceneTextureOptions>,
     ): Promise<void[]>;
 
     /**
@@ -73,7 +73,7 @@ declare global {
          * @defaultValue `false`
          */
         bustCache?: boolean | undefined;
-      }
+      },
     ): Promise<Blob>;
 
     /**
@@ -166,6 +166,6 @@ declare global {
     options?: {
       /** A fallback texture to use if the requested source is unavailable or invalid */
       fallback?: string | undefined;
-    }
+    },
   ): Promise<PIXI.Texture | null>;
 }

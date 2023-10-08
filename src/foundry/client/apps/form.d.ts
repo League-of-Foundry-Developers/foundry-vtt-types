@@ -53,7 +53,7 @@ declare global {
    */
   abstract class FormApplication<
     Options extends FormApplicationOptions = FormApplicationOptions,
-    ConcreteObject = unknown
+    ConcreteObject = unknown,
   > extends Application<Options> {
     /**
      * @param object  - Some object or entity which is the target to be updated.
@@ -150,7 +150,7 @@ declare global {
      */
     protected _onSubmit(
       event: Event,
-      { updateData, preventClose, preventRender }?: FormApplication.OnSubmitOptions
+      { updateData, preventClose, preventRender }?: FormApplication.OnSubmitOptions,
     ): Promise<Partial<Record<string, unknown>>>;
 
     /**
@@ -207,7 +207,7 @@ declare global {
     activateEditor(
       name: string,
       options?: TextEditor.Options,
-      initialContent?: string
+      initialContent?: string,
     ): Promise<tinyMCE.Editor | EditorView>;
 
     /**
@@ -234,10 +234,10 @@ declare global {
       options: {
         /** Whether the editor should destroy itself on save. */
         remove: boolean;
-      }
+      },
     ): {
-      menu: ReturnType<typeof ProseMirrorMenu["build"]>;
-      keyMaps: ReturnType<typeof ProseMirrorKeyMaps["build"]>;
+      menu: ReturnType<(typeof ProseMirrorMenu)["build"]>;
+      keyMaps: ReturnType<(typeof ProseMirrorKeyMaps)["build"]>;
     };
 
     /**
@@ -277,8 +277,8 @@ declare global {
       target: string;
       button: HTMLElement;
       hasButton: boolean;
-      instance: Awaited<ReturnType<typeof TextEditor["create"]>> | null;
-      mce: Awaited<ReturnType<typeof TextEditor["create"]>> | null;
+      instance: Awaited<ReturnType<(typeof TextEditor)["create"]>> | null;
+      mce: Awaited<ReturnType<(typeof TextEditor)["create"]>> | null;
       active: boolean;
       changed: boolean;
       options: TextEditor.Options;
@@ -309,7 +309,7 @@ declare global {
   }
 
   interface DocumentSheetOptions<
-    ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>
+    ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>,
   > extends FormApplicationOptions {
     /**
      * The default permissions required to view this Document sheet.
@@ -330,7 +330,7 @@ declare global {
    */
   abstract class DocumentSheet<
     Options extends DocumentSheetOptions<ConcreteDocument>,
-    ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>
+    ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>,
   > extends FormApplication<Options, ConcreteDocument> {
     /**
      * @param object  - A Document instance which should be managed by this form.
@@ -377,7 +377,7 @@ declare global {
     override activateEditor(
       name: string,
       options?: TextEditor.Options | undefined,
-      initialContent?: string | undefined
+      initialContent?: string | undefined,
     ): Promise<Editor | EditorView>;
 
     override render(force?: boolean, options?: Application.RenderOptions<Options>): this;

@@ -208,7 +208,7 @@ declare class FilePicker<Options extends FilePickerOptions = FilePickerOptions> 
   static browse(
     source: FilePicker.SourceType,
     target: string,
-    options?: FilePicker.BrowseOptions | undefined
+    options?: FilePicker.BrowseOptions | undefined,
   ): Promise<FilePicker.BrowseResult>;
 
   /**
@@ -220,7 +220,7 @@ declare class FilePicker<Options extends FilePickerOptions = FilePickerOptions> 
   static configurePath(
     source: FilePicker.SourceType,
     target: string,
-    options?: FilePicker.ConfigurePathOptions | undefined
+    options?: FilePicker.ConfigurePathOptions | undefined,
   ): Promise<FilePicker.ConfigurePathResult>;
 
   /**
@@ -232,7 +232,7 @@ declare class FilePicker<Options extends FilePickerOptions = FilePickerOptions> 
   static createDirectory(
     source: FilePicker.SourceType,
     target: string,
-    options?: FilePicker.CreateDirectoryOptions | undefined
+    options?: FilePicker.CreateDirectoryOptions | undefined,
   ): Promise<string>;
 
   /**
@@ -244,15 +244,15 @@ declare class FilePicker<Options extends FilePickerOptions = FilePickerOptions> 
    */
   protected static _manageFiles(
     data: FilePicker.BrowseFilesData,
-    options?: FilePicker.BrowseOptions | undefined
+    options?: FilePicker.BrowseOptions | undefined,
   ): Promise<FilePicker.BrowseResult>;
   protected static _manageFiles(
     data: FilePicker.ConfigurePathData,
-    options?: FilePicker.ConfigurePathOptions | undefined
+    options?: FilePicker.ConfigurePathOptions | undefined,
   ): Promise<FilePicker.ConfigurePathResult>;
   protected static _manageFiles(
     data: FilePicker.CreateDirectoryData,
-    options?: FilePicker.CreateDirectoryOptions | undefined
+    options?: FilePicker.CreateDirectoryOptions | undefined,
   ): Promise<string>;
 
   /**
@@ -271,7 +271,7 @@ declare class FilePicker<Options extends FilePickerOptions = FilePickerOptions> 
     path: string,
     file: File,
     body?: FilePicker.UploadBody | undefined,
-    options?: FilePicker.UploadOptions | undefined
+    options?: FilePicker.UploadOptions | undefined,
   ): Promise<FilePicker.UploadResult | false | void | {}>;
 
   /**
@@ -426,7 +426,7 @@ declare namespace FilePicker {
     private: boolean;
   }
 
-  type DisplayMode = ValueOf<typeof FilePicker["DISPLAY_MODES"]>;
+  type DisplayMode = ValueOf<(typeof FilePicker)["DISPLAY_MODES"]>;
 
   interface ManageFilesDataBase {
     source: string;

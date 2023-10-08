@@ -13,8 +13,8 @@ expectType<foundry.data.AmbientSoundData>(
     easing: true,
     path: "path/to/file",
     repeat: true,
-    volume: 100
-  })
+    volume: 100,
+  }),
 );
 expectType<foundry.data.AmbientSoundData>(
   new foundry.data.AmbientSoundData({
@@ -27,8 +27,8 @@ expectType<foundry.data.AmbientSoundData>(
     easing: null,
     path: null,
     repeat: null,
-    volume: null
-  })
+    volume: null,
+  }),
 );
 expectType<foundry.data.AmbientSoundData>(
   new foundry.data.AmbientSoundData({
@@ -41,6 +41,6 @@ expectType<foundry.data.AmbientSoundData>(
     easing: undefined,
     path: undefined,
     repeat: undefined,
-    volume: undefined
-  })
+    volume: undefined,
+  }),
 );

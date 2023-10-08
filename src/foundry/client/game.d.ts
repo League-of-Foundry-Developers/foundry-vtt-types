@@ -4,7 +4,7 @@ import {
   ConfiguredDocumentClassForName,
   ConfiguredModule,
   DocumentConstructor,
-  ModuleRequiredOrOptional
+  ModuleRequiredOrOptional,
 } from "../../types/helperTypes";
 
 declare global {
@@ -602,7 +602,7 @@ declare global {
        * @param id - The module ID to look up
        */
       get<T extends string>(
-        id: T
+        id: T,
       ): (Game["data"]["modules"][number] & ConfiguredModule<T>) | ModuleRequiredOrOptional<T>;
     }
 

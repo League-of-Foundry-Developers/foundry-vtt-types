@@ -74,11 +74,11 @@ export declare class BaseUser extends Document<data.UserData, null, UserMetadata
    * @returns Does the user have the ability to perform this action?
    */
   can(
-    action: ValueOf<typeof CONST.USER_ROLES> | keyof typeof CONST.USER_ROLES | keyof typeof CONST.USER_PERMISSIONS
+    action: ValueOf<typeof CONST.USER_ROLES> | keyof typeof CONST.USER_ROLES | keyof typeof CONST.USER_PERMISSIONS,
   ): boolean;
 
   override getUserLevel(
-    user: BaseUser
+    user: BaseUser,
   ): typeof CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER | typeof CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE;
 
   /**
@@ -97,6 +97,6 @@ export declare class BaseUser extends Document<data.UserData, null, UserMetadata
    */
   hasRole(
     role: ValueOf<typeof CONST.USER_ROLES> | keyof typeof CONST.USER_ROLES,
-    { exact }?: { exact?: boolean }
+    { exact }?: { exact?: boolean },
   ): boolean;
 }

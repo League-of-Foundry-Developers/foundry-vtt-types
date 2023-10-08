@@ -43,7 +43,7 @@ declare global {
      */
     constructor(
       data?: ConstructorParameters<ConstructorOf<foundry.documents.BaseUser>>[0],
-      context?: ConstructorParameters<ConstructorOf<foundry.documents.BaseUser>>[1]
+      context?: ConstructorParameters<ConstructorOf<foundry.documents.BaseUser>>[1],
     );
 
     /**
@@ -98,7 +98,7 @@ declare global {
     assignHotbarMacro(
       macro: InstanceType<ConfiguredDocumentClass<typeof Macro>> | null,
       slot: string | number,
-      { fromSlot }?: { fromSlot: number }
+      { fromSlot }?: { fromSlot: number },
     ): Promise<this>;
 
     /**
@@ -125,7 +125,7 @@ declare global {
      *               (default: `1`)
      */
     getHotbarMacros(
-      page?: number
+      page?: number,
     ): Array<{ slot: number; macro: InstanceType<ConfiguredDocumentClass<typeof Macro>> | null }>;
 
     /**
@@ -138,7 +138,7 @@ declare global {
     override _onUpdate(
       data: DeepPartial<DocumentDataType<foundry.documents.BaseUser>>,
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     override _onDelete(options: DocumentModificationOptions, userId: string): void;

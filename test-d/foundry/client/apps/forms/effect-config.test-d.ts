@@ -7,6 +7,6 @@ expectType<ActiveEffect>(config.object);
 expectType<DocumentSheetOptions<ActiveEffect>>(config.options);
 
 const withCustomOptions = new ActiveEffectConfig<DocumentSheetOptions<ActiveEffect> & { custom: true }>(
-  new ActiveEffect()
+  new ActiveEffect(),
 );
 expectType<DocumentSheetOptions<ActiveEffect> & { custom: true }>(withCustomOptions.options);

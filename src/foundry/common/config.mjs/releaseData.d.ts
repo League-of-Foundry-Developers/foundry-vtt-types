@@ -71,7 +71,7 @@ type ReleaseDataSource = PropertiesToSource<ReleaseDataProperties>;
 export declare class ReleaseData<
   Schema extends ReleaseDataSchema = ReleaseDataSchema,
   Properties extends ReleaseDataProperties = ReleaseDataProperties,
-  ConstructorData extends ReleaseDataConstructorData = ReleaseDataConstructorData
+  ConstructorData extends ReleaseDataConstructorData = ReleaseDataConstructorData,
 > extends DocumentData<Schema, Properties, ReleaseDataSource, ConstructorData> {
   static defineSchema(): ReleaseDataSchema;
 

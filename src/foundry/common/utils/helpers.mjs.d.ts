@@ -1,5 +1,3 @@
-import type { TypeOfTag } from "typescript/lib/typescript";
-
 /**
  * Benchmark the performance of a function, calling it a requested number of iterations.
  * @param func       - The function to benchmark
@@ -29,7 +27,7 @@ export function threadLock(ms: number, debug?: boolean): Promise<void>;
  */
 export declare function debounce<T extends (...args: any[]) => unknown>(
   callback: T,
-  delay: number
+  delay: number,
 ): (...args: Parameters<T>) => void;
 
 /**
@@ -153,7 +151,7 @@ export type Duplicated<T> = T extends NonStringifiable ? never : InnerDuplicated
  */
 export declare function isSubclass(
   cls: new (...args: any[]) => unknown,
-  parent: new (...args: any[]) => unknown
+  parent: new (...args: any[]) => unknown,
 ): boolean;
 
 /**
@@ -232,10 +230,10 @@ export declare function getParentClasses(cls: ConstructorOf<any>): Array<Constru
 export declare function getRoute(
   path: string,
   {
-    prefix
+    prefix,
   }?: {
     prefix?: string | null;
-  }
+  },
 ): string;
 
 /**
@@ -246,8 +244,23 @@ export declare function getRoute(
  * @returns The named type of the token
  */
 export function getType(
-  variable: unknown
-): Exclude<TypeOfTag, "object"> | "null" | "Object" | "Array" | "Set" | "Map" | "Promise" | "Error" | "HTMLElement";
+  variable: unknown,
+):
+  | "Array"
+  | "Error"
+  | "HTMLElement"
+  | "Map"
+  | "Object"
+  | "Promise"
+  | "Set"
+  | "bigint"
+  | "boolean"
+  | "function"
+  | "null"
+  | "number"
+  | "string"
+  | "symbol"
+  | "undefined";
 
 /**
  * A helper function which tests whether an object has a property or nested property given a string key.
@@ -283,7 +296,7 @@ export declare function setProperty(object: object, key: string, value: any): bo
  * @returns The inverted object with keys and values swapped
  */
 export declare function invertObject<T extends Record<string | number | symbol, string | number | symbol>>(
-  obj: T
+  obj: T,
 ): { [Key in keyof T as T[Key]]: Key };
 
 /**
@@ -399,23 +412,23 @@ type WithWidenedArrayTypes<T> = T extends Array<any>
 export declare function mergeObject<
   T extends object,
   U extends DeepPartial<WithWidenedArrayTypes<T>>,
-  M extends MergeObjectOptions & { enforceTypes: true }
+  M extends MergeObjectOptions & { enforceTypes: true },
 >(original: T, other?: U, options?: M, _d?: number): Result<T, U, M>;
 export declare function mergeObject<
   T extends object,
   U extends DeepPartial<Record<keyof T, never>> & object,
-  M extends MergeObjectOptions & { enforceTypes: true }
+  M extends MergeObjectOptions & { enforceTypes: true },
 >(original: T, other?: U, options?: M, _d?: number): Result<T, U, M>;
 export declare function mergeObject<
   T extends object,
   U extends object,
-  M extends MergeObjectOptions & { enforceTypes: true }
+  M extends MergeObjectOptions & { enforceTypes: true },
 >(original: T, other?: U, options?: M, _d?: number): never;
 export declare function mergeObject<T extends object, U extends object, M extends MergeObjectOptions>(
   original: T,
   other?: U,
   options?: M,
-  _d?: number
+  _d?: number,
 ): Result<T, U, M>;
 
 interface MergeObjectOptions {
@@ -471,7 +484,7 @@ declare function _mergeInsert(
   k: string,
   v: unknown,
   options: Pick<MergeObjectOptions, "insertKeys" | "insertValues" | "performDeletions"> | undefined,
-  _d: number
+  _d: number,
 ): void;
 
 /**
@@ -483,7 +496,7 @@ declare function _mergeUpdate(
   k: string,
   v: unknown,
   options: MergeObjectOptions | undefined,
-  _d: number
+  _d: number,
 ): void;
 
 /**

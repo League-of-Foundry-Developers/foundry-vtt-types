@@ -8,7 +8,7 @@ declare global {
    */
   class DocumentSheetConfig<
     Options extends FormApplicationOptions = FormApplicationOptions,
-    ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>
+    ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>,
   > extends FormApplication<Options, ConcreteDocument> {
     /**
      * @defaultValue
@@ -58,7 +58,7 @@ declare global {
       documentClass: DocumentConstructor,
       scope: string,
       sheetClass: ConstructorOf<FormApplication<FormApplicationOptions, any>>,
-      { label, types, makeDefault }?: DocumentSheetConfig.RegisterSheetOptions | undefined
+      { label, types, makeDefault }?: DocumentSheetConfig.RegisterSheetOptions | undefined,
     ): void;
 
     /**
@@ -79,7 +79,7 @@ declare global {
       documentClass: DocumentConstructor,
       scope: string,
       sheetClass: ConstructorOf<FormApplication<FormApplicationOptions, any>>,
-      { types }?: { types?: string[] }
+      { types }?: { types?: string[] },
     ): void;
 
     /**

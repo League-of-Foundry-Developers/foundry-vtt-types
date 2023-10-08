@@ -97,7 +97,7 @@ declare class LightingLayer extends PlaceablesLayer<"AmbientLight", LightingLaye
    */
   protected _configureChannels({
     darkness,
-    backgroundColor
+    backgroundColor,
   }?: {
     /** Darkness level override. */
     darkness?: number;
@@ -145,7 +145,7 @@ declare class LightingLayer extends PlaceablesLayer<"AmbientLight", LightingLaye
    */
   refresh({
     darkness,
-    backgroundColor
+    backgroundColor,
   }?: {
     /**
      * An override darkness level to which the layer should be temporarily
@@ -186,14 +186,14 @@ declare class LightingLayer extends PlaceablesLayer<"AmbientLight", LightingLaye
   animateDarkness(
     target?: number,
     {
-      duration
+      duration,
     }?: {
       /**
        * The desired animation time in milliseconds. Default is 10 seconds
        * @defaultValue `10000`
        */
       duration?: number;
-    }
+    },
   ): Promise<void>;
 
   /**

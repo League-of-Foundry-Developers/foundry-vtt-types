@@ -17,8 +17,8 @@ declare global {
 expectError(
   clientSettings.register("foo", "bar", {
     scope: "world",
-    type: String
-  })
+    type: String,
+  }),
 );
 expectError(clientSettings.set("foo", "bar", "true"));
 
@@ -26,7 +26,7 @@ clientSettings.register("foo", "bar", {
   scope: "world",
   type: Boolean,
   config: true,
-  default: true
+  default: true,
 });
 clientSettings.set("foo", "bar", false);
 expectType<boolean>(clientSettings.get("foo", "bar"));
@@ -41,9 +41,9 @@ expectError(
     range: {
       min: 0,
       max: 42,
-      step: 1
-    }
-  })
+      step: 1,
+    },
+  }),
 );
 
 clientSettings.register("some", "numberSetting", {
@@ -52,8 +52,8 @@ clientSettings.register("some", "numberSetting", {
   range: {
     min: 0,
     max: 42,
-    step: 1
-  }
+    step: 1,
+  },
 });
 
 // can only use filePicker for string settings
@@ -61,20 +61,20 @@ expectError(
   clientSettings.register("some", "numberSetting", {
     scope: "world",
     type: Number,
-    filePicker: "audio"
-  })
+    filePicker: "audio",
+  }),
 );
 
 clientSettings.register("some", "stringSetting", {
   scope: "world",
   type: String,
-  filePicker: "audio"
+  filePicker: "audio",
 });
 
 // core settings
 
 expectType<{ resource: string; skipDefeated: boolean } | {}>(clientSettings.get("core", "combatTrackerConfig"));
 expectType<Partial<Record<string, CompendiumCollection.Configuration>>>(
-  clientSettings.get("core", "compendiumConfiguration")
+  clientSettings.get("core", "compendiumConfiguration"),
 );
 expectType<keyof CONFIG.Dice.RollModes>(clientSettings.get("core", "rollMode"));

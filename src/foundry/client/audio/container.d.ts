@@ -165,5 +165,5 @@ declare class AudioContainer {
 }
 
 declare namespace AudioContainer {
-  type LOAD_STATES = ValueOf<typeof AudioContainer["LOAD_STATES"]>;
+  type LOAD_STATES = ValueOf<(typeof AudioContainer)["LOAD_STATES"]>;
 }

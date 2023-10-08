@@ -124,7 +124,7 @@ export const DOCUMENT_TYPES: readonly [
   "Playlist",
   "RollTable",
   "Scene",
-  "User"
+  "User",
 ];
 export type DOCUMENT_TYPES = ValueOf<typeof DOCUMENT_TYPES>;
 
@@ -140,7 +140,7 @@ export const COMPENDIUM_DOCUMENT_TYPES: readonly [
   "Playlist",
   "RollTable",
   "Scene",
-  "Adventure"
+  "Adventure",
 ];
 export type COMPENDIUM_DOCUMENT_TYPES = ValueOf<typeof COMPENDIUM_DOCUMENT_TYPES>;
 
@@ -184,7 +184,7 @@ export const DOCUMENT_LINK_TYPES: readonly [
   "JournalEntry",
   "Macro",
   "RollTable",
-  "PlaylistSound"
+  "PlaylistSound",
 ];
 export type DOCUMENT_LINK_TYPES = ValueOf<typeof DOCUMENT_LINK_TYPES>;
 
@@ -223,7 +223,7 @@ export const FOLDER_DOCUMENT_TYPES: readonly [
   "Playlist",
   "RollTable",
   "Cards",
-  "Macro"
+  "Macro",
 ];
 export type FOLDER_DOCUMENT_TYPES = ValueOf<typeof FOLDER_DOCUMENT_TYPES>;
 
@@ -432,7 +432,7 @@ export type USER_ROLES = ValueOf<typeof USER_ROLES>;
 /**
  * Invert the User Role mapping to recover role names from a role integer
  */
-export const USER_ROLE_NAMES: Readonly<{ [Key in keyof typeof USER_ROLES as typeof USER_ROLES[Key]]: Key }>;
+export const USER_ROLE_NAMES: Readonly<{ [Key in keyof typeof USER_ROLES as (typeof USER_ROLES)[Key]]: Key }>;
 export type USER_ROLE_NAMES = ValueOf<typeof USER_ROLE_NAMES>;
 
 /**

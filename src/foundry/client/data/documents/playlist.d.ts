@@ -19,7 +19,7 @@ declare global {
      */
     constructor(
       data: ConstructorParameters<typeof foundry.documents.BasePlaylist>[0],
-      context?: ConstructorParameters<typeof foundry.documents.BasePlaylist>[1]
+      context?: ConstructorParameters<typeof foundry.documents.BasePlaylist>[1],
     );
 
     /**
@@ -61,7 +61,7 @@ declare global {
      */
     playNext(
       soundId?: string,
-      options?: Partial<Playlist.PlayNextOptions>
+      options?: Partial<Playlist.PlayNextOptions>,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined | null>;
 
     /**
@@ -71,7 +71,7 @@ declare global {
      * @returns The updated Playlist
      */
     playSound(
-      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>
+      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
 
     /**
@@ -81,7 +81,7 @@ declare global {
      * @returns The updated Playlist
      */
     stopSound(
-      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>
+      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
 
     /**
@@ -107,7 +107,7 @@ declare global {
      * @internal
      */
     protected _getPreviousSound(
-      soundId: string
+      soundId: string,
     ): InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>> | undefined;
 
     /**
@@ -116,19 +116,19 @@ declare global {
      */
     protected _sortSounds(
       a: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>,
-      b: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>
+      b: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>,
     ): number;
 
     protected override _preUpdate(
       changed: DeepPartial<PlaylistDataConstructorData>,
       options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser
+      user: foundry.documents.BaseUser,
     ): Promise<void>;
 
     protected override _onUpdate(
       changed: DeepPartial<foundry.data.PlaylistData["_source"]>,
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
@@ -138,7 +138,7 @@ declare global {
       documents: foundry.abstract.Document<any, any>[],
       result: Record<string, unknown>[],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected override _onUpdateEmbeddedDocuments(
@@ -146,7 +146,7 @@ declare global {
       documents: foundry.abstract.Document<any, any>[],
       result: Record<string, unknown>[],
       options: DocumentModificationContext,
-      userId: string
+      userId: string,
     ): void;
 
     protected override _onDeleteEmbeddedDocuments(
@@ -154,7 +154,7 @@ declare global {
       documents: foundry.abstract.Document<any, any>[],
       result: string[],
       options: DocumentModificationContext,
-      userId: string
+      userId: string,
     ): void;
 
     /**
@@ -162,7 +162,7 @@ declare global {
      * @internal
      */
     _onSoundEnd(
-      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>
+      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
 
     /**
@@ -174,7 +174,7 @@ declare global {
 
     override toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
-      options?: ClientDocumentMixin.CompendiumExportOptions | undefined
+      options?: ClientDocumentMixin.CompendiumExportOptions | undefined,
     ): Omit<foundry.data.PlaylistData["_source"], "_id" | "folder" | "permission"> & {
       permission?: foundry.data.PlaylistData["_source"]["permission"];
     };

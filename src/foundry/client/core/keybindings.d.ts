@@ -241,7 +241,7 @@ declare class ClientKeybindings {
    */
   protected static _onMacroExecute(
     context: KeyboardEventContext,
-    number: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0
+    number: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0,
   ): boolean;
 
   /**
@@ -280,7 +280,7 @@ declare class ClientKeybindings {
    */
   protected static _onZoom(
     context: KeyboardEventContext | unknown,
-    zoomDirection: ClientKeybindings.ZoomDirection
+    zoomDirection: ClientKeybindings.ZoomDirection,
   ): boolean;
 
   /**

@@ -435,7 +435,7 @@ declare global {
      * Given an embedded object name, get the canvas layer for that object
      */
     getLayerByEmbeddedName<T extends string>(
-      embeddedName: T
+      embeddedName: T,
     ): T extends keyof EmbeddedEntityNameToLayerMap ? Exclude<EmbeddedEntityNameToLayerMap[T], undefined> | null : null;
 
     /**
@@ -472,7 +472,7 @@ declare global {
       y,
       scale,
       duration,
-      speed
+      speed,
     }?: CanvasViewPosition & {
       /**
        * The total duration of the animation in milliseconds; used if speed is not set
@@ -616,7 +616,7 @@ declare global {
      * @internal
      */
     protected _onDragLeftDrop(
-      event: PIXI.InteractionEvent
+      event: PIXI.InteractionEvent,
     ): ReturnType<PlaceablesLayer<any>["selectObjects"]> | ReturnType<TokenLayer["targetObjects"]> | void;
 
     /**
@@ -726,7 +726,7 @@ declare global {
         | "background"
         | "foreground"
         | "tokens"
-        | "walls"
+        | "walls",
     ): void;
 
     /**

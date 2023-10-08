@@ -131,7 +131,7 @@ declare global {
      */
     updateRuler(
       user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      rulerData: Parameters<Ruler["update"]>[0] | null
+      rulerData: Parameters<Ruler["update"]>[0] | null,
     ): void;
   }
 

@@ -4,10 +4,10 @@ import { expectError, expectType } from "tsd";
 expectType<Promise<StoredDocument<User> | undefined>>(foundry.documents.BaseUser.create({ name: "SomeUser" }));
 expectType<Promise<StoredDocument<User>[]>>(foundry.documents.BaseUser.createDocuments([]));
 expectType<Promise<InstanceType<ConfiguredDocumentClass<typeof User>>[]>>(
-  foundry.documents.BaseUser.updateDocuments([])
+  foundry.documents.BaseUser.updateDocuments([]),
 );
 expectType<Promise<InstanceType<ConfiguredDocumentClass<typeof User>>[]>>(
-  foundry.documents.BaseUser.deleteDocuments([])
+  foundry.documents.BaseUser.deleteDocuments([]),
 );
 
 const user = await foundry.documents.BaseUser.create({ name: "Another User" }, { temporary: true });

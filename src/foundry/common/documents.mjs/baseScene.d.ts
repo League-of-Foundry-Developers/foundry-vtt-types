@@ -91,7 +91,7 @@ export declare class BaseScene extends Document<data.SceneData, null, SceneMetad
     gridDistance,
     padding,
     shiftX,
-    shiftY
+    shiftY,
   }?: Partial<DimensionsArguments>): Dimensions;
 }
 

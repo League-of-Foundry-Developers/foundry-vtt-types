@@ -4,7 +4,7 @@ import {
   DocumentConstructor,
   PropertiesToSource,
   PropertyTypeToSourceParameterType,
-  ToObjectFalseType
+  ToObjectFalseType,
 } from "../../../types/helperTypes";
 
 declare global {
@@ -75,7 +75,7 @@ declare abstract class DocumentData<
   PropertiesData extends object,
   SourceData extends object = PropertiesToSource<PropertiesData>,
   ConstructorData extends object = DeepPartial<SourceData>,
-  ConcreteDocument extends Document<any, any> | null = null
+  ConcreteDocument extends Document<any, any> | null = null,
 > {
   /**
    * @param data     - Initial data used to construct the data object
@@ -133,7 +133,7 @@ declare abstract class DocumentData<
    */
   protected static _getFieldDefaultValue<ConcreteDocumentField extends DocumentField<any>>(
     field: ConcreteDocumentField,
-    data: object
+    data: object,
   ): ConcreteDocumentField extends { default?: undefined }
     ? undefined
     : ConcreteDocumentField extends { default: (data?: object) => infer V }
@@ -155,20 +155,20 @@ declare abstract class DocumentData<
   protected _initializeType<Value extends object>(type: typeof Object, value: Value): Value;
   protected _initializeType<Type extends typeof String | typeof Number | typeof Boolean>(
     type: Type,
-    value: ReturnType<Type> | Parameters<Type>[0]
+    value: ReturnType<Type> | Parameters<Type>[0],
   ): ReturnType<Type>;
   protected _initializeType<Value extends Array<any> | ConstructorParameters<typeof Array>>(
     type: typeof Array,
-    value: Value
+    value: Value,
   ): Value extends Array<any> ? Value : Array<any>;
   protected _initializeType<Value extends number | string>(type: typeof Date, value: Value): number;
   protected _initializeType<Type extends ConstructorOf<Document<any, any>>>(
     type: Type,
-    value: ConstructorParameters<Type>[0]
+    value: ConstructorParameters<Type>[0],
   ): InstanceType<Type>; // TODO: Actually this returns an instance of the subclass configured in CONFIG
   protected _initializeType<Type extends ConstructorOf<AnyDocumentData>>(
     type: Type,
-    value: ConstructorParameters<Type>[0]
+    value: ConstructorParameters<Type>[0],
   ): InstanceType<Type>;
 
   /**
@@ -187,7 +187,7 @@ declare abstract class DocumentData<
     children,
     clean,
     replace,
-    strict
+    strict,
   }: {
     changes?: DeepPartial<ConstructorData>;
     children?: boolean;
@@ -226,7 +226,7 @@ declare abstract class DocumentData<
     name: Name,
     field: ConcreteDocumentSchema[Name],
     value: unknown,
-    { children }: { children?: boolean }
+    { children }: { children?: boolean },
   ): void;
 
   /**
@@ -256,7 +256,7 @@ declare abstract class DocumentData<
    */
   update<U>(
     data?: Expanded<U> extends DeepPartial<ConstructorData> ? U : DeepPartial<ConstructorData>,
-    options?: UpdateOptions
+    options?: UpdateOptions,
   ): Expanded<U> extends DeepPartial<SourceData> ? DeepPartial<U> : DeepPartial<SourceData>;
 
   /**
@@ -269,7 +269,7 @@ declare abstract class DocumentData<
   updateCollection<T extends DocumentConstructor>(
     collection: EmbeddedCollection<T, this>,
     documentData: DeepPartial<InstanceType<T>["data"]["_source"]>[],
-    options?: UpdateOptions
+    options?: UpdateOptions,
   ): void;
 
   /**
@@ -299,7 +299,7 @@ declare abstract class DocumentData<
    */
   static fromJSON<ConcreteDocumentData extends AnyDocumentData>(
     this: ConcreteDocumentData,
-    json: string
+    json: string,
   ): ConcreteDocumentData;
 }
 

@@ -1,7 +1,7 @@
 import {
   ConfiguredDocumentClassForName,
   ConfiguredObjectClassForName,
-  DataSourceForPlaceable
+  DataSourceForPlaceable,
 } from "../../../../types/helperTypes";
 
 declare global {
@@ -104,7 +104,7 @@ declare global {
       event: DragEvent,
       data:
         | { type: "Tile"; img: string; tileSize?: number; x: number; y: number }
-        | ({ type: string } & Partial<Record<string, unknown>>)
+        | ({ type: string } & Partial<Record<string, unknown>>),
     ): Promise<InstanceType<ConfiguredDocumentClassForName<"Tile">> | undefined>;
 
     /**
@@ -115,7 +115,7 @@ declare global {
      */
     protected _getDropData(
       event: DragEvent,
-      data: MapLayer.DropData
+      data: MapLayer.DropData,
     ): Promise<ConstructorParameters<typeof foundry.documents.BaseTile>[0]>;
   }
 
@@ -163,7 +163,7 @@ declare global {
 
     storeHistory(
       type: PlaceablesLayer.HistoryEventType,
-      data: DataSourceForPlaceable<InstanceType<ConfiguredObjectClassForName<"Tile">>>
+      data: DataSourceForPlaceable<InstanceType<ConfiguredObjectClassForName<"Tile">>>,
     ): void;
   }
 
@@ -252,7 +252,7 @@ declare global {
       event: DragEvent,
       data:
         | { type: "Tile"; img: string; tileSize?: number; x: number; y: number }
-        | ({ type: string } & Partial<Record<string, unknown>>)
+        | ({ type: string } & Partial<Record<string, unknown>>),
     ): Promise<ConstructorParameters<typeof foundry.documents.BaseTile>[0]>;
   }
 }

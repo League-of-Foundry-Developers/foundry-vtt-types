@@ -7,7 +7,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class AmbientSoundConfig<
-    Options extends DocumentSheetOptions<AmbientSoundDocument> = DocumentSheetOptions<AmbientSoundDocument>
+    Options extends DocumentSheetOptions<AmbientSoundDocument> = DocumentSheetOptions<AmbientSoundDocument>,
   > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClassForName<"AmbientSound">>> {
     /**
      * @defaultValue

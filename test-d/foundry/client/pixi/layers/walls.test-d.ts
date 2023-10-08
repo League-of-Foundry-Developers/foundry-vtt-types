@@ -15,10 +15,10 @@ expectType<boolean>(layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y
 expectType<boolean>(layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y: 100 }), { mode: "any" }));
 
 expectType<PolygonVertex | boolean>(
-  layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y: 100 }), { mode: "closest" })
+  layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y: 100 }), { mode: "closest" }),
 );
 expectType<PolygonVertex[] | boolean>(
-  layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y: 100 }), { mode: "all" })
+  layer.checkCollision(new Ray({ x: 100, y: 100 }, { x: 100, y: 100 }), { mode: "all" }),
 );
 
 expectType<Promise<WallDocument[]>>(layer.pasteObjects({ x: 900, y: 800 }));

@@ -57,12 +57,12 @@ export declare class BaseActor extends Document<
   protected override _preCreate(
     data: ActorDataConstructorData,
     options: DocumentModificationOptions,
-    user: BaseUser
+    user: BaseUser,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: DeepPartial<ActorDataConstructorData>,
     options: DocumentModificationOptions,
-    user: BaseUser
+    user: BaseUser,
   ): Promise<void>;
 }

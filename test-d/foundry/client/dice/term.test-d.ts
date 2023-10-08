@@ -12,12 +12,12 @@ expectType<CustomRollTerm>(r.evaluate({ async: false }));
 expectType<CustomRollTerm>(r.evaluate());
 expectType<CustomRollTerm>(r.evaluate({ minimize: true, maximize: true }));
 expectType<CustomRollTerm | Promise<CustomRollTerm>>(
-  r.evaluate({ minimize: true, maximize: true, async: false as boolean })
+  r.evaluate({ minimize: true, maximize: true, async: false as boolean }),
 );
 expectType<CustomRollTerm | Promise<CustomRollTerm>>(
-  r.evaluate({ minimize: true, maximize: true, async: false as boolean | undefined })
+  r.evaluate({ minimize: true, maximize: true, async: false as boolean | undefined }),
 );
 expectType<CustomRollTerm>(r.evaluate({ minimize: true, maximize: true, async: false as false | undefined }));
 expectType<CustomRollTerm | Promise<CustomRollTerm>>(
-  r.evaluate({ minimize: true, maximize: true, async: false as true | undefined })
+  r.evaluate({ minimize: true, maximize: true, async: false as true | undefined }),
 );

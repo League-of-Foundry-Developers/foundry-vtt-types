@@ -14,7 +14,7 @@ expectType<StoredDocument<Actor> | undefined>(user.character);
 expectAssignable<Partial<Record<string, boolean>>>(user.permissions);
 expectType<Array<Macro | null>>(user.getHotbarMacros().map((each) => each.macro));
 expectType<Array<InstanceType<ConfiguredDocumentClass<typeof Macro>> | null>>(
-  user.getHotbarMacros().map((each) => each.macro)
+  user.getHotbarMacros().map((each) => each.macro),
 );
 
 user.assignHotbarMacro(new Macro(), 1);

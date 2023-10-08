@@ -1,7 +1,7 @@
 import {
   ConfiguredDocumentClass,
   ConfiguredObjectClassForName,
-  DocumentConstructor
+  DocumentConstructor,
 } from "../../../../types/helperTypes";
 import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 import EmbeddedCollection from "../../../common/abstract/embedded-collection.mjs";
@@ -37,7 +37,7 @@ declare global {
      */
     constructor(
       data: ConstructorParameters<typeof foundry.documents.BaseActor>[0],
-      context?: ConstructorParameters<typeof foundry.documents.BaseActor>[1]
+      context?: ConstructorParameters<typeof foundry.documents.BaseActor>[1],
     );
 
     /**
@@ -109,12 +109,12 @@ declare global {
      */
     getActiveTokens(
       linked: boolean,
-      document: true
+      document: true,
     ): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>>[];
     getActiveTokens(linked?: boolean, document?: false): InstanceType<ConfiguredObjectClassForName<"Token">>[];
     getActiveTokens(
       linked: boolean,
-      document: boolean
+      document: boolean,
     ):
       | InstanceType<ConfiguredObjectClassForName<"Token">>[]
       | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>>[];
@@ -160,19 +160,19 @@ declare global {
     rollInitiative(options?: Actor.RollInitiativeOptions): Promise<void>;
 
     override getEmbeddedCollection(
-      embeddedName: string
+      embeddedName: string,
     ): EmbeddedCollection<DocumentConstructor, foundry.data.ActorData>;
 
     protected override _preCreate(
       data: ActorDataConstructorData,
       options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser
+      user: foundry.documents.BaseUser,
     ): Promise<void>;
 
     protected override _onUpdate(
       changed: DeepPartial<foundry.data.ActorData["_source"]>,
       options: DocumentModificationOptions,
-      user: string
+      user: string,
     ): void;
 
     protected override _onCreateEmbeddedDocuments(
@@ -180,7 +180,7 @@ declare global {
       documents: foundry.abstract.Document<any, any>[],
       result: Record<string, unknown>[],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected override _onUpdateEmbeddedDocuments(
@@ -188,7 +188,7 @@ declare global {
       documents: foundry.abstract.Document<any, any>[],
       result: Record<string, unknown>[],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected override _onDeleteEmbeddedDocuments(
@@ -196,7 +196,7 @@ declare global {
       documents: foundry.abstract.Document<any, any>[],
       result: string[],
       options: DocumentModificationContext,
-      userId: string
+      userId: string,
     ): void;
 
     /**

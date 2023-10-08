@@ -2,7 +2,7 @@
  * Allows for viewing and editing of Keybinding Actions
  */
 declare class KeybindingsConfig<
-  Options extends FormApplicationOptions = FormApplicationOptions
+  Options extends FormApplicationOptions = FormApplicationOptions,
 > extends FormApplication<Options> {
   /**
    * A cached copy of the Categories
@@ -63,7 +63,7 @@ declare class KeybindingsConfig<
   protected _detectConflictingActions(
     actionId: string,
     action: KeybindingActionConfig,
-    binding: KeybindingActionBinding
+    binding: KeybindingActionBinding,
   ): KeybindingAction[];
 
   /**
@@ -138,7 +138,7 @@ declare class KeybindingsConfig<
     namespace: string,
     action: string,
     bindingIndex: number,
-    binding: KeybindingsConfig.PendingBinding
+    binding: KeybindingsConfig.PendingBinding,
   ): void;
 
   /**

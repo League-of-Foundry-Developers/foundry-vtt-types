@@ -21,7 +21,7 @@ declare global {
      */
     constructor(
       data?: ConstructorParameters<ConstructorOf<foundry.documents.BaseToken>>[0],
-      context?: ConstructorParameters<ConstructorOf<foundry.documents.BaseToken>>[1]
+      context?: ConstructorParameters<ConstructorOf<foundry.documents.BaseToken>>[1],
     );
 
     /**
@@ -68,7 +68,7 @@ declare global {
      */
     override clone(
       data?: Parameters<foundry.documents.BaseToken["clone"]>[0],
-      options?: Parameters<foundry.documents.BaseToken["clone"]>[1]
+      options?: Parameters<foundry.documents.BaseToken["clone"]>[1],
     ): TemporaryDocument<this>;
 
     /**
@@ -86,7 +86,7 @@ declare global {
      */
     getBarAttribute(
       barName: string,
-      { alternative }?: { alternative?: string }
+      { alternative }?: { alternative?: string },
     ): SingleAttributeBar | ObjectAttributeBar | null;
 
     /**
@@ -108,7 +108,7 @@ declare global {
      */
     modifyActorDocument(
       update: Parameters<InstanceType<ConfiguredDocumentClass<typeof Actor>>["update"]>[0],
-      options: Parameters<this["update"]>[1]
+      options: Parameters<this["update"]>[1],
     ): Promise<[this["actor"]]>;
 
     override getEmbeddedCollection(embeddedName: "Item"): data.ActorData["items"];
@@ -124,12 +124,12 @@ declare global {
     createActorEmbeddedDocuments(
       embeddedName: "Item",
       data: Array<ConstructorParameters<ConfiguredDocumentClass<typeof Item>>[0] | Record<string, unknown>>,
-      options: Parameters<this["update"]>[1]
+      options: Parameters<this["update"]>[1],
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
     createActorEmbeddedDocuments(
       embeddedName: "ActiveEffect",
       data: Array<ConstructorParameters<ConfiguredDocumentClass<typeof ActiveEffect>>[0] | Record<string, unknown>>,
-      options: Parameters<this["update"]>[1]
+      options: Parameters<this["update"]>[1],
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>[]>;
 
     /**
@@ -142,12 +142,12 @@ declare global {
     updateActorEmbeddedDocuments(
       embeddedName: "Item",
       updates: Array<ConstructorParameters<ConfiguredDocumentClass<typeof Item>>[0] | Record<string, unknown>>,
-      options: Parameters<this["update"]>[1]
+      options: Parameters<this["update"]>[1],
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
     updateActorEmbeddedDocuments(
       embeddedName: "ActiveEffect",
       updates: Array<ConstructorParameters<ConfiguredDocumentClass<typeof ActiveEffect>>[0] | Record<string, unknown>>,
-      options: Parameters<this["update"]>[1]
+      options: Parameters<this["update"]>[1],
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>[]>;
 
     /**
@@ -160,18 +160,18 @@ declare global {
     deleteActorEmbeddedDocuments(
       embeddedName: "Item",
       ids: string[],
-      options: Parameters<this["update"]>[1]
+      options: Parameters<this["update"]>[1],
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
     deleteActorEmbeddedDocuments(
       embeddedName: "ActiveEffect",
       ids: string[],
-      options: Parameters<this["update"]>[1]
+      options: Parameters<this["update"]>[1],
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>[]>;
 
     protected override _preUpdate(
       data: Parameters<foundry.documents.BaseToken["_preUpdate"]>[0],
       options: DocumentModificationOptions,
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
     ): Promise<void>;
 
     /**
@@ -181,13 +181,13 @@ declare global {
     protected _preUpdateTokenActor(
       data: Parameters<foundry.documents.BaseActor["_preUpdate"]>[0],
       options: DocumentModificationOptions,
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
     ): Promise<void>;
 
     protected override _onUpdate(
       data: Parameters<foundry.documents.BaseToken["_onUpdate"]>[0],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     /**
@@ -197,7 +197,7 @@ declare global {
      */
     protected _onUpdateBaseActor(
       update?: Parameters<foundry.documents.BaseActor["_onUpdate"]>[0],
-      options?: Parameters<foundry.data.ActorData["update"]>[1]
+      options?: Parameters<foundry.data.ActorData["update"]>[1],
     ): void;
 
     /**
@@ -207,7 +207,7 @@ declare global {
     protected _onUpdateTokenActor(
       data: Parameters<foundry.documents.BaseActor["_onUpdate"]>[0],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     /**
@@ -216,7 +216,7 @@ declare global {
      */
     static getTrackedAttributes(
       data?: InstanceType<ConfiguredDocumentClass<typeof Actor>>["data"]["data"],
-      _path?: string[]
+      _path?: string[],
     ): TrackedAttributes;
 
     /**
@@ -242,7 +242,7 @@ declare global {
 
     override update(
       data?: DeepPartial<PrototypeTokenDataConstructorData> | undefined,
-      context?: (DocumentModificationContext & foundry.utils.MergeObjectOptions) | undefined
+      context?: (DocumentModificationContext & foundry.utils.MergeObjectOptions) | undefined,
     ): Promise<this | undefined>;
   }
 }

@@ -27,9 +27,9 @@ const complexObject = {
       c: undefined,
       d: ((): boolean | symbol => false)(),
       e: [true],
-      f: { g: 0, h: ((): number | undefined => 0)() }
-    }
-  ]
+      f: { g: 0, h: ((): number | undefined => 0)() },
+    },
+  ],
 };
 
 expectType<string>(foundry.utils.deepClone("abc" as string));
@@ -163,7 +163,7 @@ expectType<{ a: "a" | "b" }>(foundry.utils.duplicate({ a: ((): "a" | "b" => "a")
 expectType<string>(foundry.utils.duplicate({ a: 0, b: "", c: false, toJSON: (): string => "" }));
 
 expectType<{ foo: string; bar: boolean }>(
-  foundry.utils.duplicate({ a: 0, b: "", c: false, toJSON: () => ({ foo: "", bar: ((): boolean => false)() }) })
+  foundry.utils.duplicate({ a: 0, b: "", c: false, toJSON: () => ({ foo: "", bar: ((): boolean => false)() }) }),
 );
 
 expectType<{ foo: string; bar: boolean }>(
@@ -171,12 +171,17 @@ expectType<{ foo: string; bar: boolean }>(
     a: 0,
     b: "",
     c: false,
-    toJSON: () => ({ foo: "", bar: ((): boolean => false)(), toJSON: () => "" })
-  })
+    toJSON: () => ({ foo: "", bar: ((): boolean => false)(), toJSON: () => "" }),
+  }),
 );
 
 expectType<{ foo: string; bar: false }>(
-  foundry.utils.duplicate({ a: 0, b: "", c: false, toJSON: () => ({ foo: "", bar: { baz: "", toJSON: () => false } }) })
+  foundry.utils.duplicate({
+    a: 0,
+    b: "",
+    c: false,
+    toJSON: () => ({ foo: "", bar: { baz: "", toJSON: () => false } }),
+  }),
 );
 
 expectType<
@@ -209,23 +214,23 @@ expectType<{ readonly 1: "a"; readonly foo: "b" }>(foundry.utils.invertObject({ 
 // mergeObject (1): tests from the docs
 expectAssignable<{ k1: string }>(foundry.utils.mergeObject({ k1: "v1" }, { k2: "v2" }, { insertKeys: false }));
 expectAssignable<{ k1: string; k2: string }>(
-  foundry.utils.mergeObject({ k1: "v1" }, { k2: "v2" }, { insertKeys: true })
+  foundry.utils.mergeObject({ k1: "v1" }, { k2: "v2" }, { insertKeys: true }),
 );
 expectAssignable<{ k1: { i1: string } }>(
-  foundry.utils.mergeObject({ k1: { i1: "v1" } }, { k1: { i2: "v2" } }, { insertValues: false })
+  foundry.utils.mergeObject({ k1: { i1: "v1" } }, { k1: { i2: "v2" } }, { insertValues: false }),
 );
 expectAssignable<{ k1: { i1: string; i2: string } }>(
-  foundry.utils.mergeObject({ k1: { i1: "v1" } }, { k1: { i2: "v2" } }, { insertValues: true })
+  foundry.utils.mergeObject({ k1: { i1: "v1" } }, { k1: { i2: "v2" } }, { insertValues: true }),
 );
 
 expectAssignable<{ k1: string }>(foundry.utils.mergeObject({ k1: "v1" }, { k1: "v2" }, { overwrite: true }));
 expectAssignable<{ k1: string }>(foundry.utils.mergeObject({ k1: "v1" }, { k1: "v2" }, { overwrite: false }));
 
 expectAssignable<{ k1: { i2: string } }>(
-  foundry.utils.mergeObject({ k1: { i1: "v1" } }, { k1: { i2: "v2" } }, { recursive: false })
+  foundry.utils.mergeObject({ k1: { i1: "v1" } }, { k1: { i2: "v2" } }, { recursive: false }),
 );
 expectAssignable<{ k1: { i1: string; i2: string } }>(
-  foundry.utils.mergeObject({ k1: { i1: "v1" } }, { k1: { i2: "v2" } }, { recursive: true })
+  foundry.utils.mergeObject({ k1: { i1: "v1" } }, { k1: { i2: "v2" } }, { recursive: true }),
 );
 
 // mergeObject (2): more simple tests
@@ -244,54 +249,54 @@ expectAssignable<{ k1: number; k2: string }>(foundry.utils.mergeObject({ k1: "" 
 expectAssignable<{ k1: number; k2: string }>(foundry.utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, {}));
 expectAssignable<{ k1: number }>(foundry.utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { insertKeys: false }));
 expectAssignable<{ k1: number; k2: string }>(
-  foundry.utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { insertKeys: true })
+  foundry.utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { insertKeys: true }),
 );
 
 expectAssignable<never>(foundry.utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { enforceTypes: true }));
 expectAssignable<{ k1: number; k2: string }>(
-  foundry.utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { enforceTypes: false })
+  foundry.utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { enforceTypes: false }),
 );
 expectAssignable<never>(
-  foundry.utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { enforceTypes: true, insertKeys: false })
+  foundry.utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { enforceTypes: true, insertKeys: false }),
 );
 expectAssignable<never>(
-  foundry.utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { enforceTypes: true, insertKeys: true })
+  foundry.utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { enforceTypes: true, insertKeys: true }),
 );
 
 expectAssignable<{ k1: string; k2: string }>(
-  foundry.utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { overwrite: false })
+  foundry.utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { overwrite: false }),
 );
 expectAssignable<{ k1: number; k2: string }>(
-  foundry.utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { overwrite: true })
+  foundry.utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { overwrite: true }),
 );
 expectAssignable<{ k1: number; k2: string }>(foundry.utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, {}));
 expectAssignable<{ k1: string }>(
-  foundry.utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { overwrite: false, insertKeys: false })
+  foundry.utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { overwrite: false, insertKeys: false }),
 );
 expectAssignable<{ k1: string; k2: string }>(
-  foundry.utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { overwrite: false, insertKeys: true })
+  foundry.utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { overwrite: false, insertKeys: true }),
 );
 
 // mergeObject (3): more complex examples
 expectAssignable<{ k1: { i1: string; i2: string }; k2: number; k3: number }>(
-  foundry.utils.mergeObject({ k1: { i1: "foo" }, k2: 2 }, { k1: { i2: "bar" }, k3: 3 })
+  foundry.utils.mergeObject({ k1: { i1: "foo" }, k2: 2 }, { k1: { i2: "bar" }, k3: 3 }),
 );
 expectAssignable<{ k1: { i1: string; i2: string; i3: number }; k2: number; k3: number }>(
-  foundry.utils.mergeObject({ k1: { i1: "foo", i3: { j1: 0 } }, k2: 2 }, { k1: { i2: "bar", i3: 2 }, k3: 3 })
+  foundry.utils.mergeObject({ k1: { i1: "foo", i3: { j1: 0 } }, k2: 2 }, { k1: { i2: "bar", i3: 2 }, k3: 3 }),
 );
 expectAssignable<{ k1: { i2: string; i3: number }; k2: number; k3: number }>(
   foundry.utils.mergeObject(
     { k1: { i1: "foo", i3: { j1: 0 } }, k2: 2 },
     { k1: { i2: "bar", i3: 2 }, k3: 3 },
-    { recursive: false }
-  )
+    { recursive: false },
+  ),
 );
 expectType<{ i2: string; i3: number }>(
   foundry.utils.mergeObject(
     { k1: { i1: "foo", i3: { j1: 0 } }, k2: 2 },
     { k1: { i2: "bar", i3: 2 }, k3: 3 },
-    { recursive: false }
-  ).k1
+    { recursive: false },
+  ).k1,
 );
 expectAssignable<{
   k1: { i1: string; i2: string; i3: { j1: string; j2: number; j3: string } };
@@ -300,30 +305,30 @@ expectAssignable<{
 }>(
   foundry.utils.mergeObject(
     { k1: { i1: "foo", i3: { j1: 1, j2: 2 } }, k2: 2 },
-    { k1: { i2: "bar", i3: { j1: "1", j3: "3" } }, k3: 3 }
-  )
+    { k1: { i2: "bar", i3: { j1: "1", j3: "3" } }, k3: 3 },
+  ),
 );
 expectAssignable<{ k1: { i1: string; i3: { j1: string; j2: number } }; k2: number; k3: number }>(
   foundry.utils.mergeObject(
     { k1: { i1: "foo", i3: { j1: 1, j2: 2 } }, k2: 2 },
     { k1: { i2: "bar", i3: { j1: "1", j3: "3" } }, k3: 3 },
-    { insertValues: false }
-  )
+    { insertValues: false },
+  ),
 );
 expectAssignable<{ k1: { i2: string; i3: { j1: string; j3: string } }; k2: number; k3: number }>(
   foundry.utils.mergeObject(
     { k1: { i1: "foo", i3: { j1: 1, j2: 2 } }, k2: 2 },
     { k1: { i2: "bar", i3: { j1: "1", j3: "3" } }, k3: 3 },
-    { recursive: false }
-  )
+    { recursive: false },
+  ),
 );
 
 // Array merging
 
 expectAssignable<FormApplicationOptions>(
   foundry.utils.mergeObject(FormApplication.defaultOptions, {
-    classes: ["my", "custom", "css"]
-  })
+    classes: ["my", "custom", "css"],
+  }),
 );
 expectAssignable<{ a: number[] }>(foundry.utils.mergeObject({ a: ["foo"] }, { a: [0] }));
 expectAssignable<{ a: number[] }>(foundry.utils.mergeObject({ a: ["foo"] }, { a: [0] }, { insertKeys: true }));
@@ -333,53 +338,53 @@ expectAssignable<{ a: number[] }>(foundry.utils.mergeObject({ a: ["foo"] }, { a:
 expectAssignable<{ a: number[] }>(foundry.utils.mergeObject({ a: ["foo"] }, { a: [0] }, { enforceTypes: true }));
 expectAssignable<never>(foundry.utils.mergeObject({ a: ["foo"] }, { a: { b: "foo" } }, { enforceTypes: true }));
 expectAssignable<{ a: { b: string } }>(
-  foundry.utils.mergeObject({ a: ["foo"] }, { a: { b: "foo" } }, { enforceTypes: false })
+  foundry.utils.mergeObject({ a: ["foo"] }, { a: { b: "foo" } }, { enforceTypes: false }),
 );
 expectAssignable<never>(foundry.utils.mergeObject({ a: { b: "foo" } }, { a: ["foo"] }, { enforceTypes: true }));
 expectAssignable<{ a: string[] }>(
-  foundry.utils.mergeObject({ a: { b: "foo" } }, { a: ["foo"] }, { enforceTypes: false })
+  foundry.utils.mergeObject({ a: { b: "foo" } }, { a: ["foo"] }, { enforceTypes: false }),
 );
 
 // performDeletions
 // v10, `-=` prefixed keys are no longer auto removed
 expectAssignable<{ k1: string; k2: string; "-=k1": null }>(
-  foundry.utils.mergeObject({ k1: "v1", k2: "v2" }, { "-=k1": null })
+  foundry.utils.mergeObject({ k1: "v1", k2: "v2" }, { "-=k1": null }),
 );
 expectAssignable<{ k1: string; k2: string; "-=k1": null }>(
-  foundry.utils.mergeObject({ k1: "v1", k2: "v2" }, { "-=k1": null }, { performDeletions: false })
+  foundry.utils.mergeObject({ k1: "v1", k2: "v2" }, { "-=k1": null }, { performDeletions: false }),
 );
 expectAssignable<{ k2: string; "-=k1": null }>(foundry.utils.mergeObject({ k2: "v2" }, { "-=k1": null }));
 expectAssignable<{ k1: string; k2: string; "-=k1": null }>(
-  foundry.utils.mergeObject({ k1: "v1", k2: "v2" }, { "-=k1": null })
+  foundry.utils.mergeObject({ k1: "v1", k2: "v2" }, { "-=k1": null }),
 );
 
 expectAssignable<{ k2: string }>(
-  foundry.utils.mergeObject({ k1: "v1", k2: "v2" }, { "-=k1": null }, { performDeletions: true })
+  foundry.utils.mergeObject({ k1: "v1", k2: "v2" }, { "-=k1": null }, { performDeletions: true }),
 );
 expectNotAssignable<{ k1: string; k2: string; "-=k1": null }>(
-  foundry.utils.mergeObject({ k1: "v1", k2: "v2" }, { "-=k1": null }, { performDeletions: true })
+  foundry.utils.mergeObject({ k1: "v1", k2: "v2" }, { "-=k1": null }, { performDeletions: true }),
 );
 expectNotAssignable<{ k2: string; "-=k1": null }>(
-  foundry.utils.mergeObject({ k1: "v1", k2: "v2" }, { "-=k1": null }, { performDeletions: true })
+  foundry.utils.mergeObject({ k1: "v1", k2: "v2" }, { "-=k1": null }, { performDeletions: true }),
 );
 expectNotAssignable<{ k1: string; k2: string }>(
-  foundry.utils.mergeObject({ k1: "v1", k2: "v2" }, { "-=k1": null }, { performDeletions: true })
+  foundry.utils.mergeObject({ k1: "v1", k2: "v2" }, { "-=k1": null }, { performDeletions: true }),
 );
 
 expectAssignable<{ k2: string }>(foundry.utils.mergeObject({ k2: "v2" }, { "-=k1": null }, { insertKeys: false }));
 expectNotAssignable<{ k2: string; "-=k1": null }>(
-  foundry.utils.mergeObject({ k2: "v2" }, { "-=k1": null }, { insertKeys: false })
+  foundry.utils.mergeObject({ k2: "v2" }, { "-=k1": null }, { insertKeys: false }),
 );
 
 expectAssignable<{ wrapper: { k2: string } }>(
   foundry.utils.mergeObject(
     { wrapper: { k1: "v1", k2: "v2" } },
     { wrapper: { "-=k1": null } },
-    { recursive: true, performDeletions: true }
-  )
+    { recursive: true, performDeletions: true },
+  ),
 );
 expectAssignable<{ wrapper: { k1: string; k2: string; "-=k1": null } }>(
-  foundry.utils.mergeObject({ wrapper: { k1: "v1", k2: "v2" } }, { wrapper: { "-=k1": null } }, { recursive: true })
+  foundry.utils.mergeObject({ wrapper: { k1: "v1", k2: "v2" } }, { wrapper: { "-=k1": null } }, { recursive: true }),
 );
 
 // bonus round
@@ -387,15 +392,15 @@ expectAssignable<{ a: number; b: number }>(foundry.utils.mergeObject({ a: 1 }, {
 expectNotAssignable<never>(foundry.utils.mergeObject({ a: 1 }, { b: 2 }, { enforceTypes: true }));
 
 expectAssignable<{ a: { a: number; b: number } }>(
-  foundry.utils.mergeObject({ a: { a: 1 } }, { a: { b: 2 } }, { enforceTypes: true })
+  foundry.utils.mergeObject({ a: { a: 1 } }, { a: { b: 2 } }, { enforceTypes: true }),
 );
 expectNotAssignable<never>(foundry.utils.mergeObject({ a: { a: 1 } }, { b: { a: 2 } }, { enforceTypes: true }));
 
 expectAssignable<{ a: { a: number }; b: { a: number }; c: number }>(
-  foundry.utils.mergeObject({ a: { a: 1 }, c: 1 }, { b: { a: 2 }, c: 1 }, { enforceTypes: true })
+  foundry.utils.mergeObject({ a: { a: 1 }, c: 1 }, { b: { a: 2 }, c: 1 }, { enforceTypes: true }),
 );
 expectNotAssignable<never>(
-  foundry.utils.mergeObject({ a: { a: 1 }, c: 1 }, { b: { a: 2 }, c: 1 }, { enforceTypes: true })
+  foundry.utils.mergeObject({ a: { a: 1 }, c: 1 }, { b: { a: 2 }, c: 1 }, { enforceTypes: true }),
 );
 
 expectError(foundry.utils.mergeObject(1, 2));

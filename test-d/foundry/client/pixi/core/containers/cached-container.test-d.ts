@@ -10,7 +10,7 @@ expectType<void>(
   container.destroy({
     children: false,
     texture: false,
-    baseTexture: false
-  })
+    baseTexture: false,
+  }),
 );
 expectType<void>(container.render(new PIXI.Renderer()));

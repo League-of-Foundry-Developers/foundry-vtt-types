@@ -57,6 +57,6 @@ declare class WorldConfig<Options extends WorldConfigOptions = WorldConfigOption
   override activateEditor(
     name: string,
     options?: TextEditor.Options | undefined,
-    initialContent?: string | undefined
+    initialContent?: string | undefined,
   ): ReturnType<FormApplication["activateEditor"]>;
 }

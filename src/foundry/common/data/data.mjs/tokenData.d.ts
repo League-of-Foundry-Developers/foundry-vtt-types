@@ -2,7 +2,7 @@ import {
   ConfiguredDocumentClass,
   ConfiguredFlags,
   FieldReturnType,
-  PropertiesToSource
+  PropertiesToSource,
 } from "../../../../types/helperTypes";
 import DocumentData from "../../abstract/data.mjs";
 import { documents } from "../../module.mjs";

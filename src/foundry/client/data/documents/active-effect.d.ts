@@ -135,19 +135,19 @@ declare global {
     protected _preCreate(
       data: ActiveEffectDataConstructorData,
       options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser
+      user: foundry.documents.BaseUser,
     ): Promise<void>;
 
     protected override _onCreate(
       data: foundry.data.ActiveEffectData["_source"],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected override _onUpdate(
       data: DeepPartial<foundry.data.ActiveEffectData["_source"]>,
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;

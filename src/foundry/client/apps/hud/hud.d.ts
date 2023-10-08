@@ -5,7 +5,7 @@
  */
 declare abstract class BasePlaceableHUD<
   Object extends PlaceableObject<any> = PlaceableObject,
-  Options extends ApplicationOptions = ApplicationOptions
+  Options extends ApplicationOptions = ApplicationOptions,
 > extends Application<Options> {
   /**
    * Reference a PlaceableObject this HUD is currently bound to

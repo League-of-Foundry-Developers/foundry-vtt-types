@@ -4,7 +4,7 @@ import {
   ConfiguredFlags,
   ConfiguredSource,
   FieldReturnType,
-  PropertiesToSource
+  PropertiesToSource,
 } from "../../../../types/helperTypes";
 import EmbeddedCollection from "../../abstract/embedded-collection.mjs";
 import { DocumentData } from "../../abstract/module.mjs";

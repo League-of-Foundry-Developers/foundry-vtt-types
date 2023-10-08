@@ -23,7 +23,7 @@ declare global {
    */
   function fromUuid(
     uuid: string,
-    relative?: ClientDocumentMixin<foundry.abstract.Document<any, any>>
+    relative?: ClientDocumentMixin<foundry.abstract.Document<any, any>>,
   ): Promise<foundry.abstract.Document<any, any> | null>;
 
   /**
@@ -36,7 +36,7 @@ declare global {
    */
   function fromUuidSync(
     uuid: string,
-    relative?: ClientDocumentMixin<foundry.abstract.Document<any, any>>
+    relative?: ClientDocumentMixin<foundry.abstract.Document<any, any>>,
   ): foundry.abstract.Document<any, any> | Record<string, unknown> | null;
 
   export interface ResolvedUUID {
@@ -69,7 +69,7 @@ declare global {
    */
   function _resolveEmbedded(
     parent: foundry.abstract.Document<any, any>,
-    parts: string[]
+    parts: string[],
   ): foundry.abstract.Document<any, any>;
 
   /**
@@ -84,7 +84,7 @@ declare global {
    */
   function _resolveRelativeUuid(
     uuid: string,
-    relative: ClientDocumentMixin<foundry.abstract.Document<any, any>>
+    relative: ClientDocumentMixin<foundry.abstract.Document<any, any>>,
   ): ResolvedUUID;
 
   /**
@@ -93,7 +93,7 @@ declare global {
    * @returns configured Document class implementation
    */
   function getDocumentClass<DocumentName extends string>(
-    documentName: DocumentName
+    documentName: DocumentName,
   ): DocumentName extends keyof CONFIG
     ? "documentClass" extends keyof CONFIG[DocumentName]
       ? CONFIG[DocumentName]["documentClass"]

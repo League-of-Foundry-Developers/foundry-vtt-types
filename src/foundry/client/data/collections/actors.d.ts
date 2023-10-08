@@ -26,7 +26,7 @@ declare global {
       document:
         | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>
         | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>["data"]["_source"],
-      options?: WorldCollection.FromCompendiumOptions | undefined
+      options?: WorldCollection.FromCompendiumOptions | undefined,
     ): Omit<
       InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>["data"]["_source"],
       "_id" | "folder"

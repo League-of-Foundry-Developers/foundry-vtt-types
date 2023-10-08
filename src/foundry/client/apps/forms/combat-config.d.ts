@@ -27,7 +27,7 @@ declare global {
 
     protected override _updateObject(
       event: Event,
-      formData: ClientSettings.Values["core.combatTrackerConfig"]
+      formData: ClientSettings.Values["core.combatTrackerConfig"],
     ): Promise<unknown>;
   }
 }

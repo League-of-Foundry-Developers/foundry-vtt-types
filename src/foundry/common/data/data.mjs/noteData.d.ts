@@ -2,7 +2,7 @@ import {
   ConfiguredDocumentClass,
   ConfiguredFlags,
   FieldReturnType,
-  PropertiesToSource
+  PropertiesToSource,
 } from "../../../../types/helperTypes";
 import DocumentData from "../../abstract/data.mjs";
 import * as documents from "../../documents.mjs";
@@ -27,7 +27,7 @@ interface NoteDataSchema extends DocumentSchema {
   fontFamily: FieldReturnType<
     fields.RequiredString,
     {
-      default: () => typeof CONFIG["defaultFontFamily"];
+      default: () => (typeof CONFIG)["defaultFontFamily"];
     }
   >;
   fontSize: FieldReturnType<

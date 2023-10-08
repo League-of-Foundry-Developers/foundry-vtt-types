@@ -26,8 +26,8 @@ expectType<Promise<Card | undefined>>(
   card.pass(cards, {
     action: "some custom action",
     updateData: { value: 3 },
-    chatNotification: true
-  })
+    chatNotification: true,
+  }),
 );
 expectError(card.pass(cards, { unknownProp: 0 }));
 expectError(card.pass(cards, { updateData: { unknownProp: 0 } }));
@@ -38,8 +38,8 @@ expectType<Promise<Card | undefined>>(
   card.play(cards, {
     action: "some custom action",
     updateData: { value: 3 },
-    chatNotification: true
-  })
+    chatNotification: true,
+  }),
 );
 expectError(card.play(cards, { unknownProp: 0 }));
 expectError(card.play(cards, { updateData: { unknownProp: 0 } }));
@@ -50,8 +50,8 @@ expectType<Promise<Card | undefined>>(
   card.discard(cards, {
     action: "some custom action",
     updateData: { value: 3 },
-    chatNotification: true
-  })
+    chatNotification: true,
+  }),
 );
 expectError(card.discard(cards, { unknownProp: 0 }));
 expectError(card.discard(cards, { updateData: { unknownProp: 0 } }));
@@ -61,8 +61,8 @@ expectType<Promise<Card>>(card.reset());
 expectType<Promise<Card>>(
   card.reset({
     updateData: { value: 3 },
-    chatNotification: true
-  })
+    chatNotification: true,
+  }),
 );
 expectError(card.reset({ unknownProp: 0 }));
 expectError(card.reset({ updateData: { unknownProp: 0 } }));
@@ -73,11 +73,11 @@ expectType<Promise<ChatMessage | undefined>>(
   card.toMessage(
     {
       speaker: {
-        alias: "The Speaker"
-      }
+        alias: "The Speaker",
+      },
     },
     {
-      noHook: true
-    }
-  )
+      noHook: true,
+    },
+  ),
 );

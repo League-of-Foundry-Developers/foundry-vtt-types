@@ -99,7 +99,7 @@ declare global {
      * @internal
      */
     protected _onToggleDefeatedStatus(
-      combatant: InstanceType<ConfiguredDocumentClass<typeof Combatant>>
+      combatant: InstanceType<ConfiguredDocumentClass<typeof Combatant>>,
     ): Promise<void>;
 
     /**

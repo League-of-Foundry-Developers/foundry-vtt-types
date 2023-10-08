@@ -28,7 +28,7 @@ declare global {
      */
     constructor(
       user?: InstanceType<ConfiguredDocumentClass<typeof User>> | null,
-      { color }?: { color?: number | null }
+      { color }?: { color?: number | null },
     );
 
     /**
@@ -76,7 +76,7 @@ declare global {
      * Track the current measurement state
      * @defaultValue `Ruler.STATES.INACTIVE`
      */
-    protected _state: ValueOf<typeof Ruler["STATES"]>;
+    protected _state: ValueOf<(typeof Ruler)["STATES"]>;
 
     /**
      * An enumeration of the possible Ruler measurement states.

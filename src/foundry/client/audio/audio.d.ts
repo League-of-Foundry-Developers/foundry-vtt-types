@@ -251,7 +251,7 @@ declare class AudioHelper {
     stream: MediaStream,
     callback: (maxDecibel: number, fftArray: Float32Array) => void,
     interval?: number,
-    smoothing?: number
+    smoothing?: number,
   ): boolean | undefined;
 
   /**

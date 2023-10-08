@@ -31,7 +31,7 @@ export declare class BaseFogExploration extends Document<data.FogExplorationData
   protected override _preUpdate(
     changed: DeepPartial<FogExplorationDataConstructorData>,
     options: DocumentModificationOptions,
-    user: BaseUser
+    user: BaseUser,
   ): Promise<void>;
 
   /**

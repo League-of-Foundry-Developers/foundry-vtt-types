@@ -9,7 +9,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class PlaylistSoundConfig<
-    Options extends DocumentSheetOptions<PlaylistSound> = DocumentSheetOptions<PlaylistSound>
+    Options extends DocumentSheetOptions<PlaylistSound> = DocumentSheetOptions<PlaylistSound>,
   > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>> {
     /**
      * @defaultValue

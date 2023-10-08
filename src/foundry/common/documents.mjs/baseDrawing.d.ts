@@ -19,7 +19,7 @@ type DrawingMetadata = Merge<
       typeof CONST.DRAWING_TYPES.ELLIPSE,
       typeof CONST.DRAWING_TYPES.TEXT,
       typeof CONST.DRAWING_TYPES.POLYGON,
-      typeof CONST.DRAWING_TYPES.FREEHAND
+      typeof CONST.DRAWING_TYPES.FREEHAND,
     ];
     permissions: {
       create: "DRAWING_CREATE";
@@ -44,7 +44,7 @@ export declare class BaseDrawing extends Document<
   override testUserPermission(
     user: BaseUser,
     permission: keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    { exact }?: { exact?: boolean }
+    { exact }?: { exact?: boolean },
   ): boolean;
 
   /**

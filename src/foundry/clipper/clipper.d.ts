@@ -635,7 +635,7 @@ declare namespace ClipperLib {
 
     GetHorzDirection(
       HorzEdge: TEdge,
-      $val: { Left?: number | undefined; Right?: number | undefined; Dir?: Direction }
+      $val: { Left?: number | undefined; Right?: number | undefined; Dir?: Direction },
     ): void;
 
     ProcessHorizontal(horzEdge: TEdge): void;
@@ -695,7 +695,7 @@ declare namespace ClipperLib {
       a2: IntPoint,
       b1: IntPoint,
       b2: IntPoint,
-      $val: { Left?: number | undefined; Right?: number | undefined }
+      $val: { Left?: number | undefined; Right?: number | undefined },
     ): boolean;
 
     JoinHorz(op1: OutPt, op1b: OutPt, op2: OutPt, op2b: OutPt, pt: IntPoint, DiscardLeft: boolean): boolean;

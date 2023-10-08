@@ -24,7 +24,7 @@ expectType<Promise<void>>(sound.fade(0));
 expectType<Promise<void>>(sound.fade(0, { duration: 42, from: 0.5, type: "exponential" }));
 expectType<Promise<Sound>>(sound.load());
 expectType<Promise<Sound>>(
-  sound.load({ autoplay: true, autoplayOptions: { loop: true, offset: 2, volume: 0.7, fade: 3 } })
+  sound.load({ autoplay: true, autoplayOptions: { loop: true, offset: 2, volume: 0.7, fade: 3 } }),
 );
 expectType<void>(sound.play());
 expectType<void>(sound.play({ loop: true, offset: 2, volume: 0.7, fade: 3 }));

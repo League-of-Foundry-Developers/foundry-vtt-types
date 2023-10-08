@@ -112,7 +112,7 @@ declare class GridLayer extends CanvasLayer<GridLayer.LayerOptions> {
       x: number;
       y: number;
     },
-    options?: MeasureDistancesOptions | undefined
+    options?: MeasureDistancesOptions | undefined,
   ): number;
 
   /**

@@ -58,7 +58,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): typeof Application["defaultOptions"];
+    static override get defaultOptions(): (typeof Application)["defaultOptions"];
 
     override getData(options?: Partial<Options>): MaybePromise<object>;
 

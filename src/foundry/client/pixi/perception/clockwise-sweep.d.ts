@@ -105,12 +105,12 @@ declare global {
 
     static benchmark(
       iterations: number,
-      ...args: Parameters<typeof ClockwiseSweepPolygon["create"]>
+      ...args: Parameters<(typeof ClockwiseSweepPolygon)["create"]>
     ): ReturnType<typeof foundry.utils.benchmark>;
 
     static create(
       origin: Point,
-      config: Parameters<ClockwiseSweepPolygon["initialize"]>[1]
+      config: Parameters<ClockwiseSweepPolygon["initialize"]>[1],
     ): ReturnType<ClockwiseSweepPolygon["compute"]>;
 
     /**
@@ -197,7 +197,7 @@ declare global {
     protected _isVertexBehindActiveEdges(
       ray: PolygonRay,
       vertex: PolygonVertex,
-      activeEdges: EdgeSet
+      activeEdges: EdgeSet,
     ): { isBehind: boolean; wasLimited: boolean };
 
     /**
@@ -212,7 +212,7 @@ declare global {
       ray: PolygonRay,
       vertex: PolygonVertex,
       result: CollisionResult,
-      activeEdges: EdgeSet
+      activeEdges: EdgeSet,
     ): void;
 
     /**
@@ -233,7 +233,7 @@ declare global {
       result: CollisionResult,
       activeEdges: EdgeSet,
       isBinding: boolean,
-      secondaryBefore?: boolean
+      secondaryBefore?: boolean,
     ): void;
 
     /**
@@ -251,7 +251,7 @@ declare global {
       ray: PolygonRay,
       result: CollisionResult,
       activeEdges: EdgeSet,
-      isBinding: boolean
+      isBinding: boolean,
     ): void;
 
     /**
@@ -285,14 +285,14 @@ declare global {
       ray: PolygonRay,
       activeEdges: EdgeSet,
       {
-        minimumDistance
+        minimumDistance,
       }?: {
         /**
          * Require collisions to exceed some minimum distance
          * @defaultValue `0`
          */
         minimumDistance?: number;
-      }
+      },
     ): PolygonVertex[];
 
     /**
@@ -328,7 +328,7 @@ declare global {
     static testWallInclusion(
       wall: ConfiguredObjectClassForName<"Wall">,
       origin: Point,
-      type: foundry.CONST.WALL_RESTRICTION_TYPES
+      type: foundry.CONST.WALL_RESTRICTION_TYPES,
     ): boolean;
 
     /**
@@ -371,7 +371,7 @@ declare global {
          * @defaultValue `false`
          */
         debug?: boolean;
-      }
+      },
     ): Mode extends "any" ? boolean : Mode extends "closest" ? PolygonVertex : PolygonVertex[];
 
     /**

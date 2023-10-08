@@ -11,7 +11,7 @@ declare class ControlIcon extends PIXI.Container {
     texture,
     size,
     borderColor,
-    tint
+    tint,
   }: {
     texture: string;
     size?: number;

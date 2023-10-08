@@ -26,5 +26,5 @@ expectType<Promise<boolean | void>>(myCanvas.recenter({ x: null, y: null, scale:
 expectType<Promise<boolean | void>>(myCanvas.recenter({ x: 100, y: 100, scale: 1 }));
 
 expectType<void>(
-  myCanvas.addPendingOperation("Canvas.recenter", myCanvas.recenter, myCanvas, { x: 100, y: 100, scale: 1 })
+  myCanvas.addPendingOperation("Canvas.recenter", myCanvas.recenter, myCanvas, { x: 100, y: 100, scale: 1 }),
 );

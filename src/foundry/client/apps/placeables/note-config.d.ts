@@ -6,7 +6,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class NoteConfig<
-    Options extends DocumentSheetOptions<NoteDocument> = DocumentSheetOptions<NoteDocument>
+    Options extends DocumentSheetOptions<NoteDocument> = DocumentSheetOptions<NoteDocument>,
   > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClassForName<"Note">>> {
     /**
      * @defaultValue

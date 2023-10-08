@@ -15,7 +15,7 @@ type TableResultMetadata = Merge<
     types: [
       `${typeof CONST.TABLE_RESULT_TYPES.TEXT}`,
       `${typeof CONST.TABLE_RESULT_TYPES.DOCUMENT}`,
-      `${typeof CONST.TABLE_RESULT_TYPES.COMPENDIUM}`
+      `${typeof CONST.TABLE_RESULT_TYPES.COMPENDIUM}`,
     ];
     permissions: {
       update: (user: BaseUser, doc: BaseTableResult, data: DeepPartial<TableResultDataConstructorData>) => boolean;
@@ -41,12 +41,12 @@ export declare class BaseTableResult extends Document<
   protected static _canUpdate(
     user: BaseUser,
     doc: BaseTableResult,
-    data: DeepPartial<TableResultDataConstructorData>
+    data: DeepPartial<TableResultDataConstructorData>,
   ): boolean;
 
   override testUserPermission(
     user: BaseUser,
     permission: keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    { exact }?: { exact?: boolean }
+    { exact }?: { exact?: boolean },
   ): boolean;
 }

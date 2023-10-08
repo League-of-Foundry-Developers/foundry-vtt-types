@@ -18,8 +18,8 @@ expectType<foundry.data.NoteData>(
     fontSize: undefined,
     textAnchor: undefined,
     textColor: undefined,
-    flags: undefined
-  })
+    flags: undefined,
+  }),
 );
 
 expectType<foundry.data.NoteData>(
@@ -36,8 +36,8 @@ expectType<foundry.data.NoteData>(
     fontSize: null,
     textAnchor: null,
     textColor: null,
-    flags: null
-  })
+    flags: null,
+  }),
 );
 
 expectType<foundry.data.NoteData>(
@@ -54,8 +54,8 @@ expectType<foundry.data.NoteData>(
     fontSize: 50,
     textAnchor: foundry.CONST.TEXT_ANCHOR_POINTS.TOP,
     textColor: "#FF0000",
-    flags: {}
-  })
+    flags: {},
+  }),
 );
 
 expectError(new foundry.data.NoteData({ textAnchor: 999 }));

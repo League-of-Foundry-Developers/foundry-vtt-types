@@ -9,7 +9,7 @@ declare global {
    */
   abstract class SidebarDirectory<
     Name extends foundry.CONST.DOCUMENT_TYPES,
-    Options extends SidebarDirectory.Options = SidebarDirectory.Options
+    Options extends SidebarDirectory.Options = SidebarDirectory.Options,
   > extends SidebarTab<Options> {
     constructor(options?: Partial<SidebarDirectory.Options>);
 
@@ -85,7 +85,7 @@ declare global {
     static setupFolders<T extends SidebarDirectory<any, any>>(
       this: ConstructorOf<T>,
       folders: T["folders"],
-      entities: T["documents"]
+      entities: T["documents"],
     ): SidebarDirectory.Tree<T["documents"][number]>;
 
     /**
@@ -99,10 +99,10 @@ declare global {
       folders: T["folders"],
       entities: T["documents"],
       {
-        allowChildren
+        allowChildren,
       }?: {
         allowChildren: boolean;
-      }
+      },
     ): [T["folders"], T["documents"]];
 
     override render(force?: boolean, context?: SidebarDirectory.RenderContext<Options>): this | void;
@@ -132,7 +132,7 @@ declare global {
      * @param event - The originating button click event
      */
     protected _onCreateDocument(
-      event: JQuery.ClickEvent
+      event: JQuery.ClickEvent,
     ): Promise<InstanceType<ConfiguredDocumentClassForName<Name>> | undefined>;
 
     /**
@@ -168,7 +168,7 @@ declare global {
      */
     protected _handleDroppedDocument(
       target: HTMLElement,
-      data: DropData<InstanceType<ConfiguredDocumentClassForName<Name>>>
+      data: DropData<InstanceType<ConfiguredDocumentClassForName<Name>>>,
     ): Promise<InstanceType<ConfiguredDocumentClassForName<Name>> | undefined>;
 
     /**
@@ -178,7 +178,7 @@ declare global {
      */
     protected _handleDroppedFolder(
       target: HTMLElement,
-      data: DropData<InstanceType<ConfiguredDocumentClass<typeof Folder>>>
+      data: DropData<InstanceType<ConfiguredDocumentClass<typeof Folder>>>,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Folder>> | undefined>;
 
     /**

@@ -21,8 +21,8 @@ expectType<foundry.data.TileData>(
     overhead: undefined,
     occlusion: undefined,
     video: undefined,
-    flags: undefined
-  })
+    flags: undefined,
+  }),
 );
 
 expectType<foundry.data.TileData>(
@@ -42,8 +42,8 @@ expectType<foundry.data.TileData>(
     overhead: null,
     occlusion: null,
     video: null,
-    flags: null
-  })
+    flags: null,
+  }),
 );
 
 expectType<foundry.data.TileData>(
@@ -63,31 +63,31 @@ expectType<foundry.data.TileData>(
     overhead: true,
     occlusion: {
       mode: foundry.CONST.TILE_OCCLUSION_MODES.FADE,
-      alpha: 1
+      alpha: 1,
     },
     video: {
       loop: true,
       autoplay: true,
-      volume: 0.5
+      volume: 0.5,
     },
-    flags: {}
-  })
+    flags: {},
+  }),
 );
 
 expectType<foundry.data.TileData>(
   new foundry.data.TileData({
-    occlusion: {}
-  })
+    occlusion: {},
+  }),
 );
 
 expectError<foundry.data.TileData>(
   new foundry.data.TileData({
-    occlusion: { mode: 999 }
-  })
+    occlusion: { mode: 999 },
+  }),
 );
 
 expectType<foundry.data.TileData>(
   new foundry.data.TileData({
-    video: {}
-  })
+    video: {},
+  }),
 );

@@ -47,13 +47,13 @@ declare global {
     // @ts-expect-error For some reason, proctected static methods from Document are lost, so ts complains that this isn't actually an override
     protected static override _onCreateDocuments(
       items: Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>,
-      context: DocumentModificationContext
+      context: DocumentModificationContext,
     ): Promise<unknown>;
 
     // @ts-expect-error For some reason, proctected static methods from Document are lost, so ts complains that this isn't actually an override
     protected static override _onDeleteDocuments(
       items: Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>,
-      context: DocumentModificationContext
+      context: DocumentModificationContext,
     ): Promise<unknown>;
   }
 }

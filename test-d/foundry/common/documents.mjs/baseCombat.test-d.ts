@@ -1,7 +1,7 @@
 import { expectType } from "tsd";
 
 expectType<Promise<StoredDocument<Combat> | undefined>>(
-  foundry.documents.BaseCombat.create({ scene: "foo", active: true, sort: 1 })
+  foundry.documents.BaseCombat.create({ scene: "foo", active: true, sort: 1 }),
 );
 expectType<Promise<StoredDocument<Combat>[]>>(foundry.documents.BaseCombat.createDocuments([]));
 expectType<Promise<Combat[]>>(foundry.documents.BaseCombat.updateDocuments([]));

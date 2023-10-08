@@ -83,7 +83,7 @@ declare global {
         direction?: TooltipManager.TOOLTIP_DIRECTIONS;
         /** An optional CSS class to apply to the activated tooltip. */
         cssClass?: string;
-      }
+      },
     ): void;
 
     /**
@@ -129,6 +129,6 @@ declare global {
     /**
      * The directions in which a tooltip can extend, relative to its tool-tipped element.
      */
-    type TOOLTIP_DIRECTIONS = ValueOf<typeof TooltipManager["TOOLTIP_DIRECTIONS"]>;
+    type TOOLTIP_DIRECTIONS = ValueOf<(typeof TooltipManager)["TOOLTIP_DIRECTIONS"]>;
   }
 }

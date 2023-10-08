@@ -124,7 +124,7 @@ declare global {
      * @param itemData - The item data requested for creation
      */
     protected _onDropItemCreate(
-      itemData: foundry.data.ItemData["_source"][] | foundry.data.ItemData["_source"]
+      itemData: foundry.data.ItemData["_source"][] | foundry.data.ItemData["_source"],
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
 
     /**
@@ -132,7 +132,7 @@ declare global {
      */
     protected _onSortItem(
       event: DragEvent,
-      itemData: foundry.data.ItemData["_source"]
+      itemData: foundry.data.ItemData["_source"],
     ): undefined | Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
 
     /**

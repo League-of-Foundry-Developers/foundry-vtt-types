@@ -17,7 +17,7 @@ declare global {
      */
     constructor(
       data: ConstructorParameters<typeof foundry.documents.BaseRollTable>[0],
-      context?: ConstructorParameters<typeof foundry.documents.BaseRollTable>[1]
+      context?: ConstructorParameters<typeof foundry.documents.BaseRollTable>[1],
     );
 
     /**
@@ -34,7 +34,7 @@ declare global {
      */
     toMessage(
       results: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseTableResult>>[],
-      options?: Partial<RollTable.ToMessageOptions>
+      options?: Partial<RollTable.ToMessageOptions>,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseChatMessage>> | undefined>;
 
     /**
@@ -97,7 +97,7 @@ declare global {
       documents: foundry.abstract.Document<any, any>[],
       result: Record<string, unknown>[],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     override _onDeleteEmbeddedDocuments(
@@ -105,12 +105,12 @@ declare global {
       documents: InstanceType<ConfiguredDocumentClass<typeof TableResult>>[],
       result: string[],
       options: DocumentModificationContext,
-      userId: string
+      userId: string,
     ): void;
 
     override toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
-      options?: ClientDocumentMixin.CompendiumExportOptions | undefined
+      options?: ClientDocumentMixin.CompendiumExportOptions | undefined,
     ): Omit<foundry.data.RollTableData["_source"], "_id" | "folder" | "permission"> & {
       permission?: foundry.data.RollTableData extends { toObject(): infer U } ? U : never;
     };
@@ -122,7 +122,7 @@ declare global {
      */
     static fromFolder(
       folder: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseFolder>>,
-      options?: DocumentModificationOptions
+      options?: DocumentModificationOptions,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseRollTable>> | undefined>;
   }
 

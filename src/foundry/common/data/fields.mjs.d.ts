@@ -457,10 +457,10 @@ interface EmbeddedCollectionFieldOptions {
  */
 export function embeddedCollectionField<
   ConcreteDocumentConstructor extends { readonly documentName: string } & ConstructorOf<Document<any, any>>,
-  Options extends EmbeddedCollectionFieldOptions
+  Options extends EmbeddedCollectionFieldOptions,
 >(
   document: ConcreteDocumentConstructor,
-  options?: Options
+  options?: Options,
 ): EmbeddedCollectionField<ConcreteDocumentConstructor, Options>;
 /**
  * Default config:
@@ -482,7 +482,7 @@ export function embeddedCollectionField<
 // TODO: Improve
 interface EmbeddedCollectionField<
   ConcreteDocumentConstructor extends ConstructorOf<Document<any, any>>,
-  Options extends EmbeddedCollectionFieldOptions = {}
+  Options extends EmbeddedCollectionFieldOptions = {},
 > extends DocumentField<any> {
   type: Partial<Record<string, ConcreteDocumentConstructor>>;
   required: Options extends { required?: true } ? true : Options extends { required: false } ? false : boolean;
@@ -495,7 +495,7 @@ interface EmbeddedCollectionField<
  * @param document - The Document class definition
  */
 export function systemDataField<
-  DocumentSpecifier extends { readonly documentName: keyof Game.SystemData<any>["model"] }
+  DocumentSpecifier extends { readonly documentName: keyof Game.SystemData<any>["model"] },
 >(document: DocumentSpecifier): SystemDataField;
 /**
  * Default config:
@@ -522,5 +522,5 @@ interface SystemDataField extends DocumentField<any> {
  */
 export function field<T extends DocumentField<any>, U extends Partial<DocumentField<any>>>(
   field: T,
-  options?: U
+  options?: U,
 ): FieldReturnType<T, U>;

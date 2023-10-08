@@ -1,7 +1,7 @@
 import {
   ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
-  ConfiguredObjectClassForName
+  ConfiguredObjectClassForName,
 } from "../../../../types/helperTypes";
 import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
@@ -369,7 +369,7 @@ declare global {
         duration: number;
         ontick: (dt: number, attributes: CanvasAnimation.Attribute[]) => void;
       }>,
-      config: { fog?: boolean; sound?: boolean; source?: boolean }
+      config: { fog?: boolean; sound?: boolean; source?: boolean },
     ): void;
 
     /**
@@ -382,7 +382,7 @@ declare global {
     protected _animatePerceptionFrame({
       source,
       sound,
-      fog
+      fog,
     }?: {
       source?: boolean;
       sound?: boolean;
@@ -408,7 +408,7 @@ declare global {
     protected override _onControl({ releaseOthers, pan }?: { releaseOthers?: boolean; pan?: boolean }): void;
 
     protected override _onRelease(
-      options: PlaceableObject.ReleaseOptions
+      options: PlaceableObject.ReleaseOptions,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>> | undefined;
 
     /**
@@ -419,7 +419,7 @@ declare global {
      */
     getCenter(
       x: number,
-      y: number
+      y: number,
     ): {
       x: number;
       y: number;
@@ -472,7 +472,7 @@ declare global {
      */
     toggleEffect(
       effect: string | ConstructorParameters<ConfiguredDocumentClassForName<"ActiveEffect">>[0],
-      options?: Token.EffectToggleOptions | undefined
+      options?: Token.EffectToggleOptions | undefined,
     ): Promise<boolean>;
 
     /**
@@ -510,45 +510,45 @@ declare global {
 
     protected override _onCreate(
       options: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>["data"]["_source"],
-      userId: DocumentModificationOptions
+      userId: DocumentModificationOptions,
     ): void;
 
     protected override _onUpdate(
       data?: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>["data"]["_source"]>,
       options?: DocumentModificationOptions & { animate?: boolean },
-      userId?: string
+      userId?: string,
     ): void;
 
     protected override _onDelete(options?: DocumentModificationOptions, userId?: string): void;
 
     protected override _canControl(
       user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.InteractionEvent
+      event?: PIXI.InteractionEvent,
     ): boolean;
 
     protected override _canHUD(
       user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.InteractionEvent
+      event?: PIXI.InteractionEvent,
     ): boolean;
 
     protected override _canConfigure(
       user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.InteractionEvent
+      event?: PIXI.InteractionEvent,
     ): true;
 
     protected override _canHover(
       user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.InteractionEvent
+      event?: PIXI.InteractionEvent,
     ): true;
 
     protected override _canView(
       user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.InteractionEvent
+      event?: PIXI.InteractionEvent,
     ): boolean;
 
     protected override _canDrag(
       user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event: PIXI.InteractionEvent
+      event: PIXI.InteractionEvent,
     ): boolean;
 
     protected override _onHoverIn(event: PIXI.InteractionEvent, options?: { hoverOutOthers?: boolean }): void;

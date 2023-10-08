@@ -110,11 +110,11 @@ declare global {
     protected _onToggleEffect(
       event: JQuery.ClickEvent | JQuery.ContextMenuEvent,
       {
-        overlay
+        overlay,
       }?: {
         /** @defaultValue `@false` */
         overlay?: boolean;
-      }
+      },
     ): Promise<boolean>;
 
     /**

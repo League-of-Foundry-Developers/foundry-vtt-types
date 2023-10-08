@@ -21,8 +21,8 @@ expectType<Promise<true | false | null>>(
     render: (html) => {
       expectType<JQuery>(html);
     },
-    options: {}
-  })
+    options: {},
+  }),
 );
 
 expectType<Promise<true | false | null>>(
@@ -40,112 +40,8 @@ expectType<Promise<true | false | null>>(
     render: (html) => {
       expectType<HTMLElement>(html);
     },
-    options: { jQuery: false }
-  })
-);
-
-expectType<Promise<true | false | null>>(
-  Dialog.confirm({
-    title: title,
-    content: content,
-    yes: (html) => {
-      expectType<JQuery>(html);
-      return true;
-    },
-    no: (html) => {
-      expectType<JQuery>(html);
-      return false;
-    },
-    render: (html) => {
-      expectType<JQuery>(html);
-    }
-  })
-);
-
-expectType<Promise<string | number | null>>(
-  Dialog.confirm({
-    title: title,
-    content: content,
-    yes: (html) => {
-      expectType<JQuery>(html);
-      return "foo";
-    },
-    no: (html) => {
-      expectType<JQuery>(html);
-      return 0;
-    },
-    render: (html) => {
-      expectType<JQuery>(html);
-    }
-  })
-);
-
-expectType<Promise<string | number | null>>(
-  Dialog.confirm({
-    title: title,
-    content: content,
-    yes: (html) => {
-      expectType<JQuery>(html);
-      return 0;
-    },
-    no: (html) => {
-      expectType<JQuery>(html);
-      return "foo";
-    },
-    render: (html) => {
-      expectType<JQuery>(html);
-    }
-  })
-);
-
-expectType<Promise<string | null>>(
-  Dialog.confirm({
-    title: title,
-    content: content,
-    yes: (html) => {
-      expectType<JQuery>(html);
-      return "foo";
-    },
-    no: (html) => {
-      expectType<JQuery>(html);
-      return "bar";
-    },
-    render: (html) => {
-      expectType<JQuery>(html);
-    }
-  })
-);
-
-expectType<Promise<true | false>>(
-  Dialog.confirm({
-    title: title,
-    content: content,
-    render: (html) => {
-      expectType<JQuery>(html);
-    },
-    rejectClose: true
-  })
-);
-
-expectType<Promise<true | false | null>>(
-  Dialog.confirm({
-    title: title,
-    content: content,
-    render: (html) => {
-      expectType<JQuery>(html);
-    },
-    rejectClose: false
-  })
-);
-
-expectType<Promise<true | false | null>>(
-  Dialog.confirm({
-    title: title,
-    content: content,
-    render: (html) => {
-      expectType<JQuery>(html);
-    }
-  })
+    options: { jQuery: false },
+  }),
 );
 
 expectType<Promise<true | false | null>>(
@@ -163,8 +59,7 @@ expectType<Promise<true | false | null>>(
     render: (html) => {
       expectType<JQuery>(html);
     },
-    options: {}
-  })
+  }),
 );
 
 expectType<Promise<string | number | null>>(
@@ -182,8 +77,7 @@ expectType<Promise<string | number | null>>(
     render: (html) => {
       expectType<JQuery>(html);
     },
-    options: {}
-  })
+  }),
 );
 
 expectType<Promise<string | number | null>>(
@@ -201,8 +95,7 @@ expectType<Promise<string | number | null>>(
     render: (html) => {
       expectType<JQuery>(html);
     },
-    options: {}
-  })
+  }),
 );
 
 expectType<Promise<string | null>>(
@@ -220,8 +113,7 @@ expectType<Promise<string | null>>(
     render: (html) => {
       expectType<JQuery>(html);
     },
-    options: {}
-  })
+  }),
 );
 
 expectType<Promise<true | false>>(
@@ -232,8 +124,7 @@ expectType<Promise<true | false>>(
       expectType<JQuery>(html);
     },
     rejectClose: true,
-    options: {}
-  })
+  }),
 );
 
 expectType<Promise<true | false | null>>(
@@ -244,8 +135,7 @@ expectType<Promise<true | false | null>>(
       expectType<JQuery>(html);
     },
     rejectClose: false,
-    options: {}
-  })
+  }),
 );
 
 expectType<Promise<true | false | null>>(
@@ -255,8 +145,118 @@ expectType<Promise<true | false | null>>(
     render: (html) => {
       expectType<JQuery>(html);
     },
-    options: {}
-  })
+  }),
+);
+
+expectType<Promise<true | false | null>>(
+  Dialog.confirm({
+    title: title,
+    content: content,
+    yes: (html) => {
+      expectType<JQuery>(html);
+      return true;
+    },
+    no: (html) => {
+      expectType<JQuery>(html);
+      return false;
+    },
+    render: (html) => {
+      expectType<JQuery>(html);
+    },
+    options: {},
+  }),
+);
+
+expectType<Promise<string | number | null>>(
+  Dialog.confirm({
+    title: title,
+    content: content,
+    yes: (html) => {
+      expectType<JQuery>(html);
+      return "foo";
+    },
+    no: (html) => {
+      expectType<JQuery>(html);
+      return 0;
+    },
+    render: (html) => {
+      expectType<JQuery>(html);
+    },
+    options: {},
+  }),
+);
+
+expectType<Promise<string | number | null>>(
+  Dialog.confirm({
+    title: title,
+    content: content,
+    yes: (html) => {
+      expectType<JQuery>(html);
+      return 0;
+    },
+    no: (html) => {
+      expectType<JQuery>(html);
+      return "foo";
+    },
+    render: (html) => {
+      expectType<JQuery>(html);
+    },
+    options: {},
+  }),
+);
+
+expectType<Promise<string | null>>(
+  Dialog.confirm({
+    title: title,
+    content: content,
+    yes: (html) => {
+      expectType<JQuery>(html);
+      return "foo";
+    },
+    no: (html) => {
+      expectType<JQuery>(html);
+      return "bar";
+    },
+    render: (html) => {
+      expectType<JQuery>(html);
+    },
+    options: {},
+  }),
+);
+
+expectType<Promise<true | false>>(
+  Dialog.confirm({
+    title: title,
+    content: content,
+    render: (html) => {
+      expectType<JQuery>(html);
+    },
+    rejectClose: true,
+    options: {},
+  }),
+);
+
+expectType<Promise<true | false | null>>(
+  Dialog.confirm({
+    title: title,
+    content: content,
+    render: (html) => {
+      expectType<JQuery>(html);
+    },
+    rejectClose: false,
+    options: {},
+  }),
+);
+
+expectType<Promise<true | false | null>>(
+  Dialog.confirm({
+    title: title,
+    content: content,
+    render: (html) => {
+      expectType<JQuery>(html);
+    },
+    options: {},
+  }),
 );
 
 const optionsWithJQueryUnknown = ((): Partial<DialogOptions> => ({}))();
@@ -276,8 +276,8 @@ expectType<Promise<true | false | null>>(
     render: (html) => {
       expectType<JQuery | HTMLElement>(html);
     },
-    options: optionsWithJQueryUnknown
-  })
+    options: optionsWithJQueryUnknown,
+  }),
 );
 
 expectType<Promise<string | number | null>>(
@@ -295,8 +295,8 @@ expectType<Promise<string | number | null>>(
     render: (html) => {
       expectType<JQuery | HTMLElement>(html);
     },
-    options: optionsWithJQueryUnknown
-  })
+    options: optionsWithJQueryUnknown,
+  }),
 );
 
 expectType<Promise<string | number | null>>(
@@ -314,8 +314,8 @@ expectType<Promise<string | number | null>>(
     render: (html) => {
       expectType<JQuery | HTMLElement>(html);
     },
-    options: optionsWithJQueryUnknown
-  })
+    options: optionsWithJQueryUnknown,
+  }),
 );
 
 expectType<Promise<string | null>>(
@@ -333,8 +333,8 @@ expectType<Promise<string | null>>(
     render: (html) => {
       expectType<JQuery | HTMLElement>(html);
     },
-    options: optionsWithJQueryUnknown
-  })
+    options: optionsWithJQueryUnknown,
+  }),
 );
 
 expectType<Promise<true | false>>(
@@ -345,8 +345,8 @@ expectType<Promise<true | false>>(
       expectType<JQuery | HTMLElement>(html);
     },
     rejectClose: true,
-    options: optionsWithJQueryUnknown
-  })
+    options: optionsWithJQueryUnknown,
+  }),
 );
 
 expectType<Promise<true | false | null>>(
@@ -357,8 +357,8 @@ expectType<Promise<true | false | null>>(
       expectType<JQuery | HTMLElement>(html);
     },
     rejectClose: false,
-    options: optionsWithJQueryUnknown
-  })
+    options: optionsWithJQueryUnknown,
+  }),
 );
 
 expectType<Promise<true | false | null>>(
@@ -368,8 +368,8 @@ expectType<Promise<true | false | null>>(
     render: (html) => {
       expectType<JQuery | HTMLElement>(html);
     },
-    options: optionsWithJQueryUnknown
-  })
+    options: optionsWithJQueryUnknown,
+  }),
 );
 
 expectType<Promise<number>>(
@@ -384,8 +384,8 @@ expectType<Promise<number>>(
     render: (html) => {
       expectType<JQuery>(html);
     },
-    options: { jQuery: true }
-  })
+    options: { jQuery: true },
+  }),
 );
 
 expectType<Promise<number>>(
@@ -400,8 +400,8 @@ expectType<Promise<number>>(
     render: (html) => {
       expectType<HTMLElement>(html);
     },
-    options: { jQuery: false }
-  })
+    options: { jQuery: false },
+  }),
 );
 
 expectType<Promise<number>>(
@@ -416,8 +416,8 @@ expectType<Promise<number>>(
     render: (html) => {
       expectType<JQuery>(html);
     },
-    options: {}
-  })
+    options: {},
+  }),
 );
 
 expectType<Promise<string>>(
@@ -432,8 +432,8 @@ expectType<Promise<string>>(
     render: (html) => {
       expectType<JQuery>(html);
     },
-    options: {}
-  })
+    options: {},
+  }),
 );
 
 expectType<Promise<number>>(
@@ -448,8 +448,8 @@ expectType<Promise<number>>(
     render: (html) => {
       expectType<JQuery | HTMLElement>(html);
     },
-    options: optionsWithJQueryUnknown
-  })
+    options: optionsWithJQueryUnknown,
+  }),
 );
 
 expectType<Promise<string>>(
@@ -464,8 +464,8 @@ expectType<Promise<string>>(
     render: (html) => {
       expectType<JQuery | HTMLElement>(html);
     },
-    options: optionsWithJQueryUnknown
-  })
+    options: optionsWithJQueryUnknown,
+  }),
 );
 
 // everything without "rejectClose" is tested above
@@ -480,8 +480,8 @@ expectType<Promise<string | null>>(
       expectType<JQuery>(html);
       return "string";
     },
-    rejectClose: false
-  })
+    rejectClose: false,
+  }),
 );
 expectType<Promise<string | null>>(
   Dialog.prompt({
@@ -493,8 +493,8 @@ expectType<Promise<string | null>>(
       return "string";
     },
     options: { jQuery: true },
-    rejectClose: false
-  })
+    rejectClose: false,
+  }),
 );
 expectType<Promise<string | null>>(
   Dialog.prompt({
@@ -506,8 +506,8 @@ expectType<Promise<string | null>>(
       return "string";
     },
     options: { jQuery: false },
-    rejectClose: false
-  })
+    rejectClose: false,
+  }),
 );
 expectType<Promise<string | null>>(
   Dialog.prompt({
@@ -519,8 +519,8 @@ expectType<Promise<string | null>>(
       return "string";
     },
     options: optionsWithJQueryUnknown,
-    rejectClose: false
-  })
+    rejectClose: false,
+  }),
 );
 expectType<Promise<string>>(
   Dialog.prompt({
@@ -531,8 +531,8 @@ expectType<Promise<string>>(
       expectType<JQuery>(html);
       return "string";
     },
-    rejectClose: true
-  })
+    rejectClose: true,
+  }),
 );
 expectType<Promise<string>>(
   Dialog.prompt({
@@ -544,8 +544,8 @@ expectType<Promise<string>>(
       return "string";
     },
     options: { jQuery: true },
-    rejectClose: true
-  })
+    rejectClose: true,
+  }),
 );
 expectType<Promise<string>>(
   Dialog.prompt({
@@ -557,8 +557,8 @@ expectType<Promise<string>>(
       return "string";
     },
     options: { jQuery: false },
-    rejectClose: true
-  })
+    rejectClose: true,
+  }),
 );
 expectType<Promise<string>>(
   Dialog.prompt({
@@ -570,8 +570,8 @@ expectType<Promise<string>>(
       return "string";
     },
     options: optionsWithJQueryUnknown,
-    rejectClose: true
-  })
+    rejectClose: true,
+  }),
 );
 
 expectType<Promise<string>>(
@@ -582,8 +582,8 @@ expectType<Promise<string>>(
     callback: () => {
       return "string";
     },
-    rejectClose: true
-  })
+    rejectClose: true,
+  }),
 );
 expectType<Promise<string | null>>(
   Dialog.prompt({
@@ -593,8 +593,8 @@ expectType<Promise<string | null>>(
     callback: () => {
       return "string";
     },
-    rejectClose: false
-  })
+    rejectClose: false,
+  }),
 );
 expectType<Promise<string>>(
   Dialog.prompt({
@@ -604,8 +604,8 @@ expectType<Promise<string>>(
     callback: () => {
       return "string";
     },
-    rejectClose: true
-  })
+    rejectClose: true,
+  }),
 );
 expectType<Promise<string | null>>(
   Dialog.prompt({
@@ -615,8 +615,8 @@ expectType<Promise<string | null>>(
     callback: () => {
       return "string";
     },
-    rejectClose: false
-  })
+    rejectClose: false,
+  }),
 );
 expectType<Promise<string>>(
   Dialog.prompt({
@@ -626,8 +626,8 @@ expectType<Promise<string>>(
     callback: () => {
       return "string";
     },
-    rejectClose: true
-  })
+    rejectClose: true,
+  }),
 );
 
 expectType<Promise<unknown>>(
@@ -640,10 +640,10 @@ expectType<Promise<unknown>>(
         label: label,
         callback: (jqOrHtml: JQuery | HTMLElement) => {
           expectType<JQuery | HTMLElement>(jqOrHtml);
-        }
-      }
-    }
-  })
+        },
+      },
+    },
+  }),
 );
 
 expectType<Promise<unknown>>(
@@ -657,14 +657,14 @@ expectType<Promise<unknown>>(
           label: label,
           callback: (jq) => {
             expectType<JQuery>(jq);
-          }
-        }
-      }
+          },
+        },
+      },
     },
     {
-      jQuery: true
-    }
-  )
+      jQuery: true,
+    },
+  ),
 );
 
 expectType<Promise<unknown>>(
@@ -678,12 +678,12 @@ expectType<Promise<unknown>>(
           label: label,
           callback: (html) => {
             expectType<HTMLElement>(html);
-          }
-        }
-      }
+          },
+        },
+      },
     },
     {
-      jQuery: false
-    }
-  )
+      jQuery: false,
+    },
+  ),
 );

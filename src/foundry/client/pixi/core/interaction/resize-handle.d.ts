@@ -23,7 +23,7 @@ declare class ResizeHandle extends PIXI.Graphics {
     current: Rectangle,
     origin: Rectangle,
     destination: Rectangle,
-    { aspectRatio }?: { aspectRatio?: number | null }
+    { aspectRatio }?: { aspectRatio?: number | null },
   ): Rectangle;
 
   activateListeners(): void;

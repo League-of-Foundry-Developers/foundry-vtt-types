@@ -14,9 +14,9 @@ declare global {
     /**
      * Provide the settings object which configures the Combat document
      */
-    static get settings(): ClientSettings.Values[`core.${typeof Combat["CONFIG_SETTING"]}`];
+    static get settings(): ClientSettings.Values[`core.${(typeof Combat)["CONFIG_SETTING"]}`];
 
-    override get directory(): typeof ui["combat"];
+    override get directory(): (typeof ui)["combat"];
 
     /**
      * Get an Array of Combat instances which apply to the current canvas scene

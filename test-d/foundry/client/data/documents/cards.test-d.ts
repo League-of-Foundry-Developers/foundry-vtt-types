@@ -14,16 +14,16 @@ expectType<Promise<Cards>>(
     how: foundry.CONST.CARD_DRAW_MODES.RANDOM,
     action: "some custom action",
     updateData: { value: 3 },
-    chatNotification: true
-  })
+    chatNotification: true,
+  }),
 );
 expectType<Promise<Cards>>(
   cards.deal([cards], undefined, {
     how: foundry.CONST.CARD_DRAW_MODES.RANDOM,
     action: "some custom action",
     updateData: { value: 3 },
-    chatNotification: true
-  })
+    chatNotification: true,
+  }),
 );
 expectError(cards.deal([cards], undefined, { unknownProp: 0 }));
 expectError(cards.deal([cards], undefined, { updateData: { unknownProp: 3 } }));
@@ -35,8 +35,8 @@ expectType<Promise<Card[]>>(
   cards.pass(cards, ["foo"], {
     action: "some custom action",
     updateData: { value: 3 },
-    chatNotification: true
-  })
+    chatNotification: true,
+  }),
 );
 expectError(cards.pass(cards, ["foo"], { unknownProp: 0 }));
 expectError(cards.pass(cards, ["foo"], { updateData: { unknownProp: 0 } }));
@@ -48,15 +48,15 @@ expectType<Promise<Card[]>>(
   cards.draw(cards, 2, {
     how: foundry.CONST.CARD_DRAW_MODES.RANDOM,
     action: "some custom action",
-    updateData: { value: 3 }
-  })
+    updateData: { value: 3 },
+  }),
 );
 expectType<Promise<Card[]>>(
   cards.draw(cards, undefined, {
     how: foundry.CONST.CARD_DRAW_MODES.RANDOM,
     action: "some custom action",
-    updateData: { value: 3 }
-  })
+    updateData: { value: 3 },
+  }),
 );
 expectError(cards.draw(cards, undefined, { unknownProp: 0 }));
 expectError(cards.draw(cards, undefined, { updateData: { unknownProp: 3 } }));
@@ -66,10 +66,10 @@ expectType<Promise<Cards>>(cards.shuffle());
 expectType<Promise<Cards>>(
   cards.shuffle({
     updateData: {
-      value: 1
+      value: 1,
     },
-    chatNotification: true
-  })
+    chatNotification: true,
+  }),
 );
 expectError(cards.shuffle({ unknownProp: 0 }));
 expectError(cards.shuffle({ updateData: { unknownProp: 3 } }));
@@ -79,10 +79,10 @@ expectType<Promise<Cards>>(cards.reset());
 expectType<Promise<Cards>>(
   cards.reset({
     updateData: {
-      value: 1
+      value: 1,
     },
-    chatNotification: true
-  })
+    chatNotification: true,
+  }),
 );
 expectError(cards.reset({ unknownProp: 0 }));
 expectError(cards.reset({ updateData: { unknownProp: 3 } }));

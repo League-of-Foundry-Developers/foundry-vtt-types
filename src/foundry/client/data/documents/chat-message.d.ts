@@ -1,7 +1,7 @@
 import {
   ConfiguredDocumentClass,
   ConfiguredObjectClassForName,
-  ToObjectFalseType
+  ToObjectFalseType,
 } from "../../../../types/helperTypes";
 import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 import type { ChatMessageDataConstructorData } from "../../../common/data/data.mjs/chatMessageData";
@@ -86,7 +86,7 @@ declare global {
      */
     static applyRollMode(
       chatData: ChatMessageDataConstructorData,
-      rollMode: keyof typeof CONFIG.Dice.rollModes | "roll"
+      rollMode: keyof typeof CONFIG.Dice.rollModes | "roll",
     ): ChatMessageDataConstructorData;
 
     /**
@@ -104,7 +104,7 @@ declare global {
      * @returns The identified speaker data
      */
     static getSpeaker(
-      options?: ChatMessage.GetSpeakerOptions | undefined
+      options?: ChatMessage.GetSpeakerOptions | undefined,
     ): foundry.data.ChatMessageData["speaker"]["_source"];
 
     /**
@@ -114,7 +114,7 @@ declare global {
      */
     protected static _getSpeakerFromToken({
       token,
-      alias
+      alias,
     }: {
       /** The TokenDocument of the speaker */
       token: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>;
@@ -130,7 +130,7 @@ declare global {
      */
     protected static _getSpeakerFromToken({
       token,
-      alias
+      alias,
     }: {
       /** The TokenDocument of the speaker */
       token: InstanceType<ConfiguredObjectClassForName<"Token">>;
@@ -147,7 +147,7 @@ declare global {
     protected static _getSpeakerFromActor({
       scene,
       actor,
-      alias
+      alias,
     }: {
       /** The Scene is which the speaker resides */
       scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>> | undefined;
@@ -167,7 +167,7 @@ declare global {
     protected static _getSpeakerFromUser({
       scene,
       user,
-      alias
+      alias,
     }: {
       /** The Scene in which the speaker resides */
       scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>> | undefined;
@@ -184,7 +184,7 @@ declare global {
      * @param speaker - The speaker data object
      */
     static getSpeakerActor(
-      speaker: foundry.data.ChatMessageData["speaker"]["_source"]
+      speaker: foundry.data.ChatMessageData["speaker"]["_source"],
     ): InstanceType<ConfiguredDocumentClass<typeof Actor>> | null;
 
     /**
@@ -215,19 +215,19 @@ declare global {
     protected override _preCreate(
       data: ChatMessageDataConstructorData,
       options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser
+      user: foundry.documents.BaseUser,
     ): Promise<void>;
 
     protected override _onCreate(
       data: foundry.data.ChatMessageData["_source"],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected override _onUpdate(
       data: DeepPartial<foundry.data.ChatMessageData["_source"]>,
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;

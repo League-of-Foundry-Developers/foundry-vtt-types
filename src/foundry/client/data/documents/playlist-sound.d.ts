@@ -19,7 +19,7 @@ declare global {
      */
     constructor(
       data: ConstructorParameters<typeof foundry.documents.BasePlaylistSound>[0],
-      context?: ConstructorParameters<typeof foundry.documents.BasePlaylistSound>[1]
+      context?: ConstructorParameters<typeof foundry.documents.BasePlaylistSound>[1],
     );
 
     /**
@@ -73,13 +73,13 @@ declare global {
     override _onCreate(
       data: foundry.data.PlaylistSoundData["_source"],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected override _onUpdate(
       changed: DeepPartial<foundry.data.PlaylistSoundData["_source"]>,
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;

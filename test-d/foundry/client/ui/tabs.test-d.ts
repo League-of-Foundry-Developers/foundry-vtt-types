@@ -9,7 +9,7 @@ const tabs = new Tabs({
   initial: "tab1",
   callback: (event: MouseEvent | null, tabs: Tabs, active: string): void => {
     console.log(active);
-  }
+  },
 });
 
 expectType<string | undefined>(tabs.active);

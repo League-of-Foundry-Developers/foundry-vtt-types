@@ -48,8 +48,8 @@ expectType<foundry.data.SceneData>(
     folder: undefined,
     sort: undefined,
     permission: undefined,
-    flags: undefined
-  })
+    flags: undefined,
+  }),
 );
 expectType<foundry.data.SceneData>(
   new foundry.data.SceneData({
@@ -96,6 +96,6 @@ expectType<foundry.data.SceneData>(
     folder: null,
     sort: null,
     permission: null,
-    flags: null
-  })
+    flags: null,
+  }),
 );

@@ -13,33 +13,33 @@ expectType<TokenDocument>(doc.clone());
 expectType<TokenDocument>(doc.clone({}, { save: true }));
 expectType<InstanceType<ConfiguredDocumentClass<typeof Actor>> | null>(doc.getActor());
 expectType<Promise<[InstanceType<ConfiguredDocumentClass<typeof Actor>> | null]>>(
-  doc.modifyActorDocument({ actorLink: true, "lightAnimation.speed": 5 }, {})
+  doc.modifyActorDocument({ actorLink: true, "lightAnimation.speed": 5 }, {}),
 );
 
 expectType<EmbeddedCollection<ConfiguredDocumentClass<typeof foundry.documents.BaseItem>, foundry.data.ActorData>>(
-  doc.getEmbeddedCollection("Item")
+  doc.getEmbeddedCollection("Item"),
 );
 expectType<
   EmbeddedCollection<ConfiguredDocumentClass<typeof foundry.documents.BaseActiveEffect>, foundry.data.ActorData>
 >(doc.getEmbeddedCollection("ActiveEffect"));
 
 expectType<Promise<Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>>>(
-  doc.createActorEmbeddedDocuments("Item", [{ name: "My Item", "effects.": 5 }], { noHook: true })
+  doc.createActorEmbeddedDocuments("Item", [{ name: "My Item", "effects.": 5 }], { noHook: true }),
 );
 expectType<Promise<Array<InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>>>>(
-  doc.createActorEmbeddedDocuments("ActiveEffect", [{ icon: "path/to/my/icon", "flags.my-system.something": "6" }], {})
+  doc.createActorEmbeddedDocuments("ActiveEffect", [{ icon: "path/to/my/icon", "flags.my-system.something": "6" }], {}),
 );
 
 expectType<Promise<Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>>>(
-  doc.updateActorEmbeddedDocuments("Item", [{ name: "My Item", "data.something": 5 }], { noHook: true })
+  doc.updateActorEmbeddedDocuments("Item", [{ name: "My Item", "data.something": 5 }], { noHook: true }),
 );
 expectType<Promise<Array<InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>>>>(
-  doc.updateActorEmbeddedDocuments("ActiveEffect", [{ icon: "path/to/my/icon", "flags.my-system.something": "6" }], {})
+  doc.updateActorEmbeddedDocuments("ActiveEffect", [{ icon: "path/to/my/icon", "flags.my-system.something": "6" }], {}),
 );
 
 expectType<Promise<Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>>>(
-  doc.deleteActorEmbeddedDocuments("Item", ["BRBEA"], {})
+  doc.deleteActorEmbeddedDocuments("Item", ["BRBEA"], {}),
 );
 expectType<Promise<Array<InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>>>>(
-  doc.deleteActorEmbeddedDocuments("ActiveEffect", ["BRBEA"], { noHook: true })
+  doc.deleteActorEmbeddedDocuments("ActiveEffect", ["BRBEA"], { noHook: true }),
 );

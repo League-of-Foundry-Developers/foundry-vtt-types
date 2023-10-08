@@ -13,8 +13,8 @@ const contextMenu = new ContextMenu(element, ".some-class", [
     condition: () => true,
     callback: (target: JQuery) => {
       console.log(target);
-    }
-  }
+    },
+  },
 ]);
 
 expectType<void>(contextMenu.bind());

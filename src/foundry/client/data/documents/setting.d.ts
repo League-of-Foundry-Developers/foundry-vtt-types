@@ -21,13 +21,13 @@ declare global {
     protected override _onCreate(
       data: foundry.data.SettingData["_source"],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected _onUpdate(
       changed: DeepPartial<foundry.data.SettingData["_source"]>,
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
   }
 }

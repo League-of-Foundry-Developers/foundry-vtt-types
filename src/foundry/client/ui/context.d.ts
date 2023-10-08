@@ -37,7 +37,7 @@ declare class ContextMenu {
     element: JQuery,
     selector: string | null | undefined,
     menuItems: ContextMenuEntry[],
-    { eventName }?: { eventName?: string }
+    { eventName }?: { eventName?: string },
   );
 
   /**
@@ -86,7 +86,7 @@ declare class ContextMenu {
     html: JQuery,
     selector: string,
     menuItems: ContextMenuEntry[],
-    hookName?: string
+    hookName?: string,
   ): ContextMenu;
 
   /**

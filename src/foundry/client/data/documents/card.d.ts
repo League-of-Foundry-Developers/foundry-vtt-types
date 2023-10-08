@@ -86,7 +86,7 @@ declare global {
      */
     pass(
       to: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
-      options?: Cards.PassOptions | undefined
+      options?: Cards.PassOptions | undefined,
     ): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">> | undefined>;
 
     /**
@@ -96,7 +96,7 @@ declare global {
      */
     play(
       to: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
-      options?: Cards.PassOptions | undefined
+      options?: Cards.PassOptions | undefined,
     ): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">> | undefined>;
 
     /**
@@ -106,7 +106,7 @@ declare global {
      */
     discard(
       to: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
-      options?: Cards.PassOptions | undefined
+      options?: Cards.PassOptions | undefined,
     ): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">> | undefined>;
 
     /**
@@ -127,7 +127,7 @@ declare global {
      */
     toMessage(
       messageData?: ConstructorDataType<foundry.data.ChatMessageData> | undefined,
-      options?: DocumentModificationContext | undefined
+      options?: DocumentModificationContext | undefined,
     ): Promise<InstanceType<ConfiguredDocumentClassForName<"ChatMessage">> | undefined>;
   }
 }

@@ -4,7 +4,7 @@ import {
   ConfiguredDocumentClassForName,
   ConfiguredObjectClassForName,
   DocumentConstructor,
-  ToObjectFalseType
+  ToObjectFalseType,
 } from "../../../types/helperTypes";
 import { DocumentModificationOptions } from "../../common/abstract/document.mjs";
 import { EffectChangeData } from "../../common/data/data.mjs/effectChangeData";
@@ -33,7 +33,7 @@ declare global {
     static on<K extends keyof Hooks.StaticCallbacks>(
       hook: K,
       fn: Hooks.StaticCallbacks[K],
-      options?: Hooks.OnOptions
+      options?: Hooks.OnOptions,
     ): number;
     static on<H extends Hooks.DynamicCallbacks>(hook: string, fn: H, options?: Hooks.OnOptions): number;
     static on<H extends (...args: any) => any>(hook: string, fn: H, options?: Hooks.OnOptions): number;
@@ -47,10 +47,10 @@ declare global {
      */
     static once<K extends keyof Hooks.StaticCallbacks>(
       hook: K,
-      fn: Hooks.StaticCallbacks[K]
-    ): ReturnType<typeof Hooks["on"]>;
-    static once<H extends Hooks.DynamicCallbacks>(hook: string, fn: H): ReturnType<typeof Hooks["on"]>;
-    static once<H extends (...args: any) => any>(hook: string, fn: H): ReturnType<typeof Hooks["on"]>;
+      fn: Hooks.StaticCallbacks[K],
+    ): ReturnType<(typeof Hooks)["on"]>;
+    static once<H extends Hooks.DynamicCallbacks>(hook: string, fn: H): ReturnType<(typeof Hooks)["on"]>;
+    static once<H extends (...args: any) => any>(hook: string, fn: H): ReturnType<(typeof Hooks)["on"]>;
 
     /**
      * Unregister a callback handler for a particular hook event
@@ -118,14 +118,14 @@ declare global {
          * The level at which to log the error to console (if at all).
          * @defaultValue `null`
          */
-        notify?: keyof NonNullable<typeof ui["notifications"]> | null | undefined;
+        notify?: keyof NonNullable<(typeof ui)["notifications"]> | null | undefined;
 
         /**
          * The level at which to spawn a notification in the UI (if at all).
          * @defaultValue `null`
          */
         log?: keyof typeof console | null | undefined;
-      }
+      },
     ): void;
   }
 
@@ -190,7 +190,7 @@ declare global {
        */
       applyActiveEffect: (
         actor: InstanceType<ConfiguredDocumentClass<typeof Actor>>,
-        change: EffectChangeData
+        change: EffectChangeData,
       ) => boolean | void;
 
       /**
@@ -253,7 +253,7 @@ declare global {
         options: {
           /** Whether to style the speech bubble as an emote */
           emote: boolean;
-        }
+        },
       ) => boolean | void;
 
       /**
@@ -274,7 +274,7 @@ declare global {
 
           /** The identified speaker data, see {@link ChatMessage.getSpeaker} */
           speaker: ReturnType<ConfiguredDocumentClass<typeof ChatMessage>["getSpeaker"]>;
-        }
+        },
       ) => boolean | void;
 
       /**
@@ -323,7 +323,7 @@ declare global {
       dealCards: (
         origin: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
         destinations: InstanceType<ConfiguredDocumentClassForName<"Cards">>[],
-        context: Cards.DealContext
+        context: Cards.DealContext,
       ) => boolean | void;
 
       /**
@@ -338,7 +338,7 @@ declare global {
       dropActorSheetData: (
         actor: InstanceType<ConfiguredDocumentClass<typeof Actor>>,
         sheet: ActorSheet,
-        data: ActorSheet.DropData
+        data: ActorSheet.DropData,
       ) => boolean | void;
 
       /**
@@ -351,7 +351,7 @@ declare global {
        */
       dropCanvasData: (
         canvas: Canvas,
-        data: TokenLayer.DropData | NotesLayer.DropData | MapLayer.DropData
+        data: TokenLayer.DropData | NotesLayer.DropData | MapLayer.DropData,
       ) => boolean | void;
 
       /**
@@ -366,7 +366,7 @@ declare global {
       dropRollTableSheetData: (
         table: InstanceType<ConfiguredDocumentClass<typeof RollTable>>,
         config: RollTableConfig,
-        data: object
+        data: object,
       ) => boolean | void;
 
       /**
@@ -421,7 +421,7 @@ declare global {
       hotbarDrop: (
         hotbar: Hotbar,
         data: DropData<InstanceType<ConfiguredDocumentClass<typeof Macro>>>,
-        slot: number
+        slot: number,
       ) => boolean | void;
 
       /**
@@ -477,7 +477,7 @@ declare global {
           /** Whether the new value is part of an attribute bar, or just a direct value */
           isBar: boolean;
         },
-        updates: Record<string, number>
+        updates: Record<string, number>,
       ) => boolean;
 
       /**
@@ -491,7 +491,7 @@ declare global {
       passCards: (
         origin: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
         destination: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
-        context: Cards.DealContext
+        context: Cards.DealContext,
       ) => boolean | void;
 
       /**
@@ -530,7 +530,7 @@ declare global {
           isWhisper: boolean;
           whisperTo: string;
           borderColor?: string;
-        }
+        },
       ) => boolean | void;
 
       /**
@@ -542,7 +542,7 @@ declare global {
       returnCards: (
         origin: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
         returned: InstanceType<ConfiguredDocumentClassForName<"Card">>[],
-        context: Cards.ReturnContext
+        context: Cards.ReturnContext,
       ) => boolean | void;
 
       /**
@@ -582,7 +582,7 @@ declare global {
       targetToken: (
         user: InstanceType<ConfiguredDocumentClass<typeof User>>,
         token: ConfiguredObjectClassForName<"Token">,
-        targeted: boolean
+        targeted: boolean,
       ) => void;
 
       /**
@@ -600,7 +600,7 @@ declare global {
         pack: CompendiumCollection<any>,
         documents: foundry.abstract.Document<any, any>[],
         options: DocumentModificationOptions,
-        userId: string
+        userId: string,
       ) => void;
 
       /**
@@ -656,7 +656,7 @@ declare global {
     type CreateDocument<D extends DocumentConstructor = DocumentConstructor> = (
       document: InstanceType<ConfiguredDocumentClass<D>>,
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ) => void;
 
     /**
@@ -676,7 +676,7 @@ declare global {
     type DeleteDocument<D extends DocumentConstructor = DocumentConstructor> = (
       document: InstanceType<ConfiguredDocumentClass<D>>,
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ) => void;
 
     /**
@@ -691,7 +691,7 @@ declare global {
      */
     type GetApplicationHeaderButtons<A extends Application = Application> = (
       app: A,
-      buttons: Application.HeaderButton[]
+      buttons: Application.HeaderButton[],
     ) => boolean | void;
 
     /**
@@ -768,7 +768,7 @@ declare global {
      */
     type PastePlaceableObject<P extends PlaceableObject = PlaceableObject> = (
       copied: P[],
-      createData: Array<P["document"]["data"]["_source"]>
+      createData: Array<P["document"]["data"]["_source"]>,
     ) => boolean | void;
 
     /**
@@ -794,7 +794,7 @@ declare global {
       document: InstanceType<ConfiguredDocumentClass<D>>,
       data: ConstructorParameters<D>[0],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ) => boolean | void;
 
     /**
@@ -818,7 +818,7 @@ declare global {
     type PreDeleteDocument<D extends DocumentConstructor = DocumentConstructor> = (
       document: InstanceType<ConfiguredDocumentClass<D>>,
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ) => boolean | void;
 
     /**
@@ -844,7 +844,7 @@ declare global {
       document: InstanceType<ConfiguredDocumentClass<D>>,
       change: DeepPartial<ConstructorParameters<D>[0]>,
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ) => boolean | void;
 
     /**
@@ -863,7 +863,7 @@ declare global {
     type RenderApplication<A extends Application = Application> = (
       app: A,
       html: JQuery,
-      data: ReturnType<A["getData"]> extends Promise<infer T> ? T : ReturnType<A["getData"]>
+      data: ReturnType<A["getData"]> extends Promise<infer T> ? T : ReturnType<A["getData"]>,
     ) => boolean | void;
 
     /**
@@ -885,7 +885,7 @@ declare global {
       document: InstanceType<ConfiguredDocumentClass<D>>,
       change: DeepPartial<ConstructorParameters<D>[0]>,
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ) => void;
 
     type DynamicCallbacks =
@@ -911,23 +911,23 @@ declare global {
       "Localization#_loadTranslationFile": [
         location: "Localization#_loadTranslationFile",
         err: Error,
-        data: { src: string }
+        data: { src: string },
       ];
       "ClientDatabaseBackend#_preCreateDocumentArray": [
         location: "ClientDatabaseBackend#_preCreateDocumentArray",
         err: Error,
-        data: { id: string }
+        data: { id: string },
       ];
       "ClientDatabaseBackend#_preUpdateDocumentArray": [
         location: "ClientDatabaseBackend#_preUpdateDocumentArray",
         err: Error,
-        data: { id: string }
+        data: { id: string },
       ];
       "WorldCollection#_initialize": [location: "WorldCollection#_initialize", err: Error, data: { id: string }];
       "ClientDocumentMixin#_initialize": [
         location: "ClientDocumentMixin#_initialize",
         err: Error,
-        data: { id: string }
+        data: { id: string },
       ];
       "Actor#getTokenImages": [location: "Actor#getTokenImages", err: Error, data: Record<string, never>];
       "Macro#executeChat": [location: "Macro#executeChat", err: Error, data: { command: string }];
@@ -935,20 +935,20 @@ declare global {
       "DefaultTokenConfig#_updateObject": [
         location: "DefaultTokenConfig#_updateObject",
         err: Error,
-        data: Record<string, never>
+        data: Record<string, never>,
       ];
       "SceneConfig#_updateObject": [location: "SceneConfig#_updateObject", err: Error, data: { scene: string }];
       "SidebarDirectory.setupFolders": [
         location: "SidebarDirectory.setupFolders",
         err: Error,
-        data: Record<string, never>
+        data: Record<string, never>,
       ];
       "Sidebar#_render": [location: "Sidebar#_render", err: Error, data: { name: string }];
       "Game#initializeCanvas": [location: "Game#initializeCanvas", err: Error, data: Record<string, never>];
       "EmbeddedCollection#_initialize": [
         location: "EmbeddedCollection#_initialize",
         err: Error,
-        data: { id: string; documentName: string }
+        data: { id: string; documentName: string },
       ];
     }
   }

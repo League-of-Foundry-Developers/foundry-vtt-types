@@ -19,7 +19,7 @@ declare global {
      */
     constructor(
       data?: ConstructorParameters<ConstructorOf<foundry.documents.BaseCombat>>[0],
-      context?: ConstructorParameters<ConstructorOf<foundry.documents.BaseCombat>>[1]
+      context?: ConstructorParameters<ConstructorOf<foundry.documents.BaseCombat>>[1],
     );
 
     /** Track the sorted turn order of this combat encounter */
@@ -54,7 +54,7 @@ declare global {
     get scene(): InstanceType<ConfiguredDocumentClass<typeof Scene>> | undefined;
 
     /** Return the object of settings which modify the Combat Tracker behavior */
-    get settings(): typeof CombatEncounters["settings"];
+    get settings(): (typeof CombatEncounters)["settings"];
 
     /** Has this combat encounter been started? */
     get started(): boolean;
@@ -73,7 +73,7 @@ declare global {
      * @param options - Additional context to customize the update workflow
      */
     activate(
-      options?: DocumentModificationContext & foundry.utils.MergeObjectOptions
+      options?: DocumentModificationContext & foundry.utils.MergeObjectOptions,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Combat>>[]>;
 
     /** Display a dialog querying the GM whether they wish to end the combat encounter and empty the tracker */
@@ -156,19 +156,19 @@ declare global {
      */
     protected _sortCombatants(
       a: InstanceType<ConfiguredDocumentClass<typeof Combatant>>,
-      b: InstanceType<ConfiguredDocumentClass<typeof Combatant>>
+      b: InstanceType<ConfiguredDocumentClass<typeof Combatant>>,
     ): number;
 
     protected override _onCreate(
       data: this["data"]["_source"],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected override _onUpdate(
       changed: DeepPartial<this["data"]["_source"]>,
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
@@ -178,7 +178,7 @@ declare global {
       documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
       result: CombatantDataSource[],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected override _onUpdateEmbeddedDocuments(
@@ -186,7 +186,7 @@ declare global {
       documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
       result: CombatantDataSource[],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected override _onDeleteEmbeddedDocuments(
@@ -194,7 +194,7 @@ declare global {
       documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
       result: string[],
       options: DocumentModificationContext,
-      userId: string
+      userId: string,
     ): void;
   }
 }

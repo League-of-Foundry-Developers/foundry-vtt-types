@@ -15,8 +15,8 @@ expectType<foundry.data.WallData>(
     dir: null,
     door: null,
     ds: null,
-    flags: null
-  })
+    flags: null,
+  }),
 );
 expectType<foundry.data.WallData>(
   new foundry.data.WallData({
@@ -29,8 +29,8 @@ expectType<foundry.data.WallData>(
     dir: undefined,
     door: undefined,
     ds: undefined,
-    flags: undefined
-  })
+    flags: undefined,
+  }),
 );
 expectType<foundry.data.WallData>(
   new foundry.data.WallData({
@@ -42,50 +42,50 @@ expectType<foundry.data.WallData>(
     dir: foundry.CONST.WALL_DIRECTIONS.BOTH,
     door: foundry.CONST.WALL_DOOR_TYPES.NONE,
     ds: foundry.CONST.WALL_DOOR_STATES.CLOSED,
-    flags: {}
-  })
+    flags: {},
+  }),
 );
 expectError(
   new foundry.data.WallData({
     c: [10, 20, 30, 40],
-    light: 9999
-  })
+    light: 9999,
+  }),
 );
 expectError(
   new foundry.data.WallData({
     c: [10, 20, 30, 40],
-    move: 9999
-  })
+    move: 9999,
+  }),
 );
 expectError(
   new foundry.data.WallData({
     c: [10, 20, 30, 40],
-    sight: 9999
-  })
+    sight: 9999,
+  }),
 );
 expectError(
   new foundry.data.WallData({
     c: [10, 20, 30, 40],
-    sound: 9999
-  })
-);
-
-expectError(
-  new foundry.data.WallData({
-    c: [10, 20, 30, 40],
-    dir: 9999
-  })
-);
-expectError(
-  new foundry.data.WallData({
-    c: [10, 20, 30, 40],
-    door: 9999
-  })
+    sound: 9999,
+  }),
 );
 
 expectError(
   new foundry.data.WallData({
     c: [10, 20, 30, 40],
-    ds: 9999
-  })
+    dir: 9999,
+  }),
+);
+expectError(
+  new foundry.data.WallData({
+    c: [10, 20, 30, 40],
+    door: 9999,
+  }),
+);
+
+expectError(
+  new foundry.data.WallData({
+    c: [10, 20, 30, 40],
+    ds: 9999,
+  }),
 );

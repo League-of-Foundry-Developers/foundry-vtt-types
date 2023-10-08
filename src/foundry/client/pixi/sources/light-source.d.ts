@@ -256,7 +256,7 @@ declare global {
      * @internal
      */
     protected _initializeData(
-      data: Partial<LightSourceData> & { color?: string | number | null }
+      data: Partial<LightSourceData> & { color?: string | number | null },
     ): Partial<LightSourceData>;
 
     /**
@@ -365,7 +365,7 @@ declare global {
      */
     animatePulse(
       dt: number,
-      { speed, intensity, reverse }?: { speed?: number; intensity?: number; reverse?: boolean }
+      { speed, intensity, reverse }?: { speed?: number; intensity?: number; reverse?: boolean },
     ): void;
 
     /**
@@ -380,7 +380,7 @@ declare global {
      */
     animateTime(
       dt: number,
-      { speed, intensity, reverse }?: { speed?: number; intensity?: number; reverse?: boolean }
+      { speed, intensity, reverse }?: { speed?: number; intensity?: number; reverse?: boolean },
     ): void;
 
     /**
@@ -406,8 +406,8 @@ declare global {
         center,
         sigma,
         max,
-        min
-      }?: { phi?: number; center?: number; sigma?: number; max?: number | null; min?: number | null }
+        min,
+      }?: { phi?: number; center?: number; sigma?: number; max?: number | null; min?: number | null },
     ): number;
   }
 }

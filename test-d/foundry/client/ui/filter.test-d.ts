@@ -8,8 +8,8 @@ expectType<SearchFilter>(
     contentSelector: ".my-class",
     callback: (event: KeyboardEvent, query: string, rgx: RegExp, content: string): void => {
       rgx.exec(content);
-    }
-  })
+    },
+  }),
 );
 const filter = new SearchFilter({
   inputSelector: "input",
@@ -18,7 +18,7 @@ const filter = new SearchFilter({
     rgx.exec(content);
   },
   initial: "Type here",
-  delay: 100
+  delay: 100,
 });
 
 expectType<string>(filter.query);

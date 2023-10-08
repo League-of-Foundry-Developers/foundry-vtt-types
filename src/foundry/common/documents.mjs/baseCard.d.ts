@@ -53,6 +53,6 @@ export declare class BaseCard extends Document<
   override testUserPermission(
     user: BaseUser,
     permission: keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    { exact }: { exact?: boolean }
+    { exact }: { exact?: boolean },
   ): boolean;
 }

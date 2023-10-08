@@ -202,7 +202,7 @@ declare class Die extends DiceTerm {
 
 declare namespace Die {
   interface TermData extends DiceTerm.TermData {
-    modifiers: Array<keyof typeof Die["MODIFIERS"]>;
+    modifiers: Array<keyof (typeof Die)["MODIFIERS"]>;
   }
 
   interface Modifiers {

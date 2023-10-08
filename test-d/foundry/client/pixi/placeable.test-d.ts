@@ -9,7 +9,7 @@ type EmbeddedInSceneDocumentSheetOptions = DocumentSheetOptions<
 >;
 
 class EmbeddedInSceneDocumentSheet<
-  Options extends EmbeddedInSceneDocumentSheetOptions = EmbeddedInSceneDocumentSheetOptions
+  Options extends EmbeddedInSceneDocumentSheetOptions = EmbeddedInSceneDocumentSheetOptions,
 > extends DocumentSheet<Options, Document<any, InstanceType<ConfiguredDocumentClass<typeof Scene>>>> {}
 
 class EmbeddedInSceneDocument extends Document<any, InstanceType<ConfiguredDocumentClass<typeof Scene>>> {
@@ -49,5 +49,5 @@ class ConcretePlaceableObject extends PlaceableObject<EmbeddedInSceneDocument> {
   }
 }
 expectType<MouseInteractionManager<ConcretePlaceableObject> | null>(
-  new ConcretePlaceableObject(new EmbeddedInSceneDocument()).mouseInteractionManager
+  new ConcretePlaceableObject(new EmbeddedInSceneDocument()).mouseInteractionManager,
 );

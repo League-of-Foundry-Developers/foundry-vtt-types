@@ -44,7 +44,7 @@ declare global {
      */
     protected static _enrichContentLinks(
       text: Text[],
-      options?: Partial<TextEditor.EnrichOptions>
+      options?: Partial<TextEditor.EnrichOptions>,
     ): MaybePromise<boolean>;
 
     /**
@@ -65,7 +65,7 @@ declare global {
     protected static _enrichInlineRolls(
       rollData: TextEditor.EnrichOptions["rollData"],
       text: Text[],
-      options?: Partial<TextEditor.EnrichOptions>
+      options?: Partial<TextEditor.EnrichOptions>,
     ): MaybePromise<boolean>;
 
     /**
@@ -80,7 +80,7 @@ declare global {
       pattern: RegExp,
       enricher: CONFIG.TextEditor.Enricher,
       text: Text[],
-      options?: Partial<TextEditor.EnrichOptions>
+      options?: Partial<TextEditor.EnrichOptions>,
     ): Promise<boolean>;
 
     /**
@@ -110,7 +110,7 @@ declare global {
      */
     static truncateText(
       text: string,
-      { maxLength, splitWords, suffix }?: { maxLength?: number; splitWords?: boolean; suffix?: string }
+      { maxLength, splitWords, suffix }?: { maxLength?: number; splitWords?: boolean; suffix?: string },
     ): string;
 
     /**
@@ -128,7 +128,7 @@ declare global {
     protected static _replaceTextContent(
       text: Text[],
       rgx: RegExp,
-      func: (...match: RegExpMatchArray) => MaybePromise<HTMLElement>
+      func: (...match: RegExpMatchArray) => MaybePromise<HTMLElement>,
     ): MaybePromise<boolean>;
 
     /**
@@ -146,7 +146,7 @@ declare global {
      */
     protected static _createContentLink(
       match: RegExpMatchArray,
-      options?: Partial<TextEditor.CreateContentLinkOptions>
+      options?: Partial<TextEditor.CreateContentLinkOptions>,
     ): MaybePromise<HTMLAnchorElement>;
 
     /**
@@ -181,7 +181,7 @@ declare global {
     protected static _createInlineRoll(
       match: RegExpMatchArray,
       rollData: object,
-      options: TextEditor.CreateInlineRollOptions
+      options: TextEditor.CreateInlineRollOptions,
     ): MaybePromise<HTMLAnchorElement | null>;
 
     /**
@@ -305,14 +305,14 @@ declare global {
                * @defaultValue `true`
                */
               wrapper?: boolean;
-            }
+            },
           ];
 
           /**
            * @defaultValue `"Custom"`
            */
           title?: string;
-        }
+        },
       ];
 
       /**

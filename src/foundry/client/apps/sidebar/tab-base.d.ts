@@ -3,7 +3,7 @@
  * @typeParam Options - The type of the options object
  */
 declare abstract class SidebarTab<
-  Options extends ApplicationOptions = ApplicationOptions
+  Options extends ApplicationOptions = ApplicationOptions,
 > extends Application<Options> {
   constructor(...args: ConstructorParameters<typeof Application>);
   /**

@@ -33,7 +33,7 @@ declare class SortingHelpers {
       target,
       siblings,
       sortKey,
-      sortBefore
+      sortBefore,
     }?: {
       /**
        * The target object relative which to sort
@@ -60,7 +60,7 @@ declare class SortingHelpers {
        * @defaultValue `true`
        */
       sortBefore?: boolean;
-    }
+    },
   ): Array<{
     target: T;
     update: {

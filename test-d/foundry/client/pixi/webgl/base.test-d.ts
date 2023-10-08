@@ -19,7 +19,7 @@ const testShader2 = TestShader.create({
   colorDim: [0.5, 0.5, 0.5],
   colorBright: [1.0, 1.0, 1.0],
   time: 0,
-  intensity: 5
+  intensity: 5,
 });
 testShader2.defaults.darkness = false;
 

@@ -52,7 +52,7 @@ declare global {
      * @param event - The originating interaction event
      */
     protected _onMouseDown(
-      event: PIXI.InteractionEvent
+      event: PIXI.InteractionEvent,
     ): false | void | Promise<InstanceType<ConfiguredDocumentClassForName<"Wall">> | undefined>;
 
     /**
@@ -61,7 +61,7 @@ declare global {
      * @param event - The originating interaction event
      */
     protected _onRightDown(
-      event: PIXI.InteractionEvent
+      event: PIXI.InteractionEvent,
     ): void | Promise<InstanceType<ConfiguredDocumentClassForName<"Wall">> | undefined>;
   }
 }

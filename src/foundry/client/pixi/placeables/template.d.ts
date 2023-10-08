@@ -129,7 +129,7 @@ declare global {
     protected override _onUpdate(
       data: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>["data"]["_source"]>,
       options?: DocumentModificationOptions,
-      userId?: string
+      userId?: string,
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;

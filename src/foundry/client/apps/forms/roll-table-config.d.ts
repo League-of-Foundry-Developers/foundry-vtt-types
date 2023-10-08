@@ -7,7 +7,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class RollTableConfig<
-    Options extends DocumentSheetOptions<RollTable> = DocumentSheetOptions<RollTable>
+    Options extends DocumentSheetOptions<RollTable> = DocumentSheetOptions<RollTable>,
   > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClassForName<"RollTable">>> {
     /**
      * @defaultValue
@@ -40,7 +40,7 @@ declare global {
      */
     protected _onCreateResult(
       event: JQuery.ClickEvent | DragEvent,
-      resultData?: TableResultDataConstructorData
+      resultData?: TableResultDataConstructorData,
     ): Promise<ConfiguredDocumentClassForName<"TableResult">[]>;
 
     /**
@@ -56,7 +56,7 @@ declare global {
      * @internal
      */
     protected _onDeleteResult(
-      event: JQuery.ClickEvent
+      event: JQuery.ClickEvent,
     ): Promise<InstanceType<ConfiguredDocumentClassForName<"TableResult">> | undefined>;
 
     protected override _onDrop(event: DragEvent): void;
@@ -115,7 +115,7 @@ declare global {
       drawnIds: Set<string>,
       nLoops: number,
       animTime: number,
-      animOffset: number
+      animOffset: number,
     ): Promise<void>;
 
     /**

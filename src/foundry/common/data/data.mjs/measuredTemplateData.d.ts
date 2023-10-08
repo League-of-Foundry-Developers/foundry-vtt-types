@@ -2,7 +2,7 @@ import {
   ConfiguredDocumentClass,
   ConfiguredFlags,
   FieldReturnType,
-  PropertiesToSource
+  PropertiesToSource,
 } from "../../../../types/helperTypes";
 import { DocumentData } from "../../abstract/module.mjs";
 import * as documents from "../../documents.mjs";
@@ -198,7 +198,7 @@ export class MeasuredTemplateData extends DocumentData<
    */
   constructor(
     data: MeasuredTemplateDataConstructorData | undefined,
-    document: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>
+    document: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>,
   );
 
   static override defineSchema(): MeasuredTemplateDataSchema;

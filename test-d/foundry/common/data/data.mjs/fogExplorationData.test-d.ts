@@ -7,14 +7,14 @@ new foundry.data.FogExplorationData({});
 new foundry.data.FogExplorationData({
   explored: "data:image/png;base64,[…]",
   positions: {
-    1350_1050: { radius: 0, limit: false }
+    1350_1050: { radius: 0, limit: false },
   },
   scene: "Wr9wnTV5otwMKAil",
   timestamp: 1626341030569,
-  user: "NlBhrPq62QrMErNh"
+  user: "NlBhrPq62QrMErNh",
 });
 new foundry.data.FogExplorationData({
-  scene: scene
+  scene: scene,
 });
 expectError(foundry.data.FogExplorationData({ user: user }));
 new foundry.data.FogExplorationData({
@@ -23,7 +23,7 @@ new foundry.data.FogExplorationData({
   scene: null,
   timestamp: null,
   user: null,
-  _id: null
+  _id: null,
 });
 new foundry.data.FogExplorationData({
   explored: undefined,
@@ -31,7 +31,7 @@ new foundry.data.FogExplorationData({
   scene: undefined,
   timestamp: undefined,
   user: undefined,
-  _id: undefined
+  _id: undefined,
 });
 new foundry.data.FogExplorationData({});
 const data = new foundry.data.FogExplorationData();

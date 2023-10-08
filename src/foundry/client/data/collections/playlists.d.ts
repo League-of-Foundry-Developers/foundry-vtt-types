@@ -13,7 +13,7 @@ declare global {
     constructor(
       data?: StoredDocument<
         InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BasePlaylist>>
-      >["data"]["_source"][]
+      >["data"]["_source"][],
     );
 
     static override documentName: "Playlist";
@@ -35,7 +35,7 @@ declare global {
      */
     protected _onChangeScene(
       scene: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>>,
-      data: DeepPartial<SceneDataConstructorData>
+      data: DeepPartial<SceneDataConstructorData>,
     ): Promise<void>;
   }
 }

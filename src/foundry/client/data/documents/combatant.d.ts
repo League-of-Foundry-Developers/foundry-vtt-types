@@ -17,7 +17,7 @@ declare global {
      */
     constructor(
       data: ConstructorParameters<typeof foundry.documents.BaseCombatant>[0],
-      context: ConstructorParameters<typeof foundry.documents.BaseCombatant>[1]
+      context: ConstructorParameters<typeof foundry.documents.BaseCombatant>[1],
     );
 
     /** The current value of the special tracked resource which pertains to this Combatant */
@@ -64,7 +64,7 @@ declare global {
     override testUserPermission(
       user: foundry.documents.BaseUser,
       permission: keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
-      { exact }?: { exact?: boolean }
+      { exact }?: { exact?: boolean },
     ): boolean;
 
     /**

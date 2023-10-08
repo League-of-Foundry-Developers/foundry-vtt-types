@@ -10,7 +10,7 @@ declare global {
     D extends Document<any, InstanceType<ConfiguredDocumentClass<typeof Scene>>> = Document<
       any,
       InstanceType<ConfiguredDocumentClass<typeof Scene>>
-    >
+    >,
   > extends PIXI.Container {
     /**
      * @param document - The Document instance which is represented by this object
@@ -119,7 +119,7 @@ declare global {
      */
     can(
       user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      action: "HUD" | "configure" | "control" | "view" | "create" | "drag" | "hover" | "update" | "delete" | string
+      action: "HUD" | "configure" | "control" | "view" | "create" | "drag" | "hover" | "update" | "delete" | string,
     ): boolean;
 
     /**
@@ -209,7 +209,7 @@ declare global {
     protected _onUpdate(
       changed: DeepPartial<D["data"]["_source"]>,
       options?: DocumentModificationOptions,
-      userId?: string
+      userId?: string,
     ): void;
 
     /**

@@ -30,7 +30,7 @@ expectType<number>(layer.measureDistance({ x: 8, y: 17 }, { x: 1100, y: 1200 }))
 expectType<number[]>(layer.measureDistances([{ ray: new Ray({ x: 8, y: 17 }, { x: 1100, y: 1200 }) }]));
 expectType<number[]>(layer.measureDistances([{ ray: new Ray({ x: 8, y: 17 }, { x: 1100, y: 1200 }) }], {}));
 expectType<number[]>(
-  layer.measureDistances([{ ray: new Ray({ x: 8, y: 17 }, { x: 1100, y: 1200 }) }], { gridSpaces: true })
+  layer.measureDistances([{ ray: new Ray({ x: 8, y: 17 }, { x: 1100, y: 1200 }) }], { gridSpaces: true }),
 );
 expectType<GridHighlight>(layer.addHighlightLayer("some"));
 expectType<GridHighlight | undefined>(layer.getHighlightLayer("some"));
@@ -44,7 +44,7 @@ expectType<void | false>(
     color: 0x33bbff,
     border: null,
     alpha: 0.25,
-    shape: new PIXI.Polygon()
-  })
+    shape: new PIXI.Polygon(),
+  }),
 );
 expectType<boolean>(layer.isNeighbor(0, 1, 2, 3));

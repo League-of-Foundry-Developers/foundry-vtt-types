@@ -28,8 +28,8 @@ expectType<foundry.data.DrawingData>(
     x: null,
     y: null,
     z: null,
-    _id: null
-  })
+    _id: null,
+  }),
 );
 expectType<foundry.data.DrawingData>(
   new foundry.data.DrawingData({
@@ -57,8 +57,8 @@ expectType<foundry.data.DrawingData>(
     x: undefined,
     y: undefined,
     z: undefined,
-    _id: undefined
-  })
+    _id: undefined,
+  }),
 );
 
 expectType<foundry.data.DrawingData>(
@@ -87,6 +87,6 @@ expectType<foundry.data.DrawingData>(
     x: 0,
     y: 0,
     z: 0,
-    _id: "NlBhrPq62QrMErNh"
-  })
+    _id: "NlBhrPq62QrMErNh",
+  }),
 );

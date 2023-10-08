@@ -14,7 +14,7 @@ declare global {
 }
 
 AVSettings.VOICE_MODES = {
-  SOME_CUSTOM_MODE: "custom"
+  SOME_CUSTOM_MODE: "custom",
 };
 
 expectType<CustomVoiceModes>(AVSettings.VOICE_MODES);

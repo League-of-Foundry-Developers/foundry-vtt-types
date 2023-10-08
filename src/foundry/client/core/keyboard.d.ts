@@ -55,7 +55,7 @@ declare class KeyboardManager {
     BracketLeft: "[";
     BracketRight: "]";
     Comma: ",";
-    Control: typeof KeyboardManager["CONTROL_KEY_STRING"];
+    Control: (typeof KeyboardManager)["CONTROL_KEY_STRING"];
     Equal: "=";
     MetaLeft: "⌘" | "⊞";
     MetaRight: "⌘" | "⊞";
@@ -95,8 +95,8 @@ declare class KeyboardManager {
       altKey,
       ctrlKey,
       shiftKey,
-      repeat
-    }?: { altKey?: boolean; ctrlKey?: boolean; shiftKey?: boolean; repeat?: boolean }
+      repeat,
+    }?: { altKey?: boolean; ctrlKey?: boolean; shiftKey?: boolean; repeat?: boolean },
   ): KeyboardEventContext;
 
   /**

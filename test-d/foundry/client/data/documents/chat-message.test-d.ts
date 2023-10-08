@@ -7,20 +7,20 @@ expectType<ChatMessage>(new ChatMessage());
 expectType<ChatMessage>(new ChatMessage({}));
 
 expectType<ConstructorDataType<foundry.data.ChatMessageData>>(
-  ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.BLIND)
+  ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.BLIND),
 );
 expectType<ConstructorDataType<foundry.data.ChatMessageData>>(
-  ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.PRIVATE)
+  ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.PRIVATE),
 );
 expectType<ConstructorDataType<foundry.data.ChatMessageData>>(
-  ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.PUBLIC)
+  ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.PUBLIC),
 );
 expectType<ConstructorDataType<foundry.data.ChatMessageData>>(
-  ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.SELF)
+  ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.SELF),
 );
 
 expectType<ConstructorDataType<foundry.data.ChatMessageData>>(
-  ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), "roll")
+  ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), "roll"),
 );
 
 declare global {
@@ -36,7 +36,7 @@ declare global {
 }
 
 expectType<ConstructorDataType<foundry.data.ChatMessageData>>(
-  ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), "custom-roll-mode")
+  ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), "custom-roll-mode"),
 );
 
 expectError(ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), "unknown-roll-mode"));
@@ -51,8 +51,8 @@ if (game instanceof Game) {
       scene: game.scenes?.active,
       actor: game.user?.character,
       token: new TokenDocument(),
-      alias: "Mario"
-    })
+      alias: "Mario",
+    }),
   );
 }
 expectType<ChatSpeakerData["_source"]>(ChatMessage.getSpeaker({ token: new TokenDocument() }));

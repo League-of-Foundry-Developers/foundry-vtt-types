@@ -1,7 +1,7 @@
 import type { ActiveEffectDataSource } from "../../../../src/foundry/common/data/data.mjs/activeEffectData";
 import type {
   EffectChangeData,
-  EffectChangeDataProperties
+  EffectChangeDataProperties,
 } from "../../../../src/foundry/common/data/data.mjs/effectChangeData";
 import { expectError, expectType } from "tsd";
 
@@ -24,7 +24,7 @@ expectType<Promise<Macro | undefined>>(foundry.documents.BaseMacro.create({ name
 expectType<Promise<Macro | undefined>>(foundry.documents.BaseMacro.create({ name: "" }, { temporary: true }));
 expectType<Promise<StoredDocument<Macro> | undefined>>(foundry.documents.BaseMacro.create({ name: "" }));
 expectType<Promise<StoredDocument<Macro> | undefined>>(
-  foundry.documents.BaseMacro.create({ name: "" }, { temporary: false })
+  foundry.documents.BaseMacro.create({ name: "" }, { temporary: false }),
 );
 
 expectType<Promise<Macro[]>>(foundry.documents.BaseMacro.createDocuments([], { temporary: bool }));
@@ -45,16 +45,16 @@ if (user) {
 // test creation of embedded documents
 declare const actor: Actor;
 expectType<Promise<foundry.abstract.Document<any, Actor>[]>>(
-  actor.createEmbeddedDocuments("ActiveEffect", [], { temporary: true })
+  actor.createEmbeddedDocuments("ActiveEffect", [], { temporary: true }),
 );
 expectType<Promise<foundry.abstract.Document<any, Actor>[]>>(
-  actor.createEmbeddedDocuments("ActiveEffect", [], { temporary: bool })
+  actor.createEmbeddedDocuments("ActiveEffect", [], { temporary: bool }),
 );
 expectType<Promise<StoredDocument<foundry.abstract.Document<any, Actor>>[]>>(
-  actor.createEmbeddedDocuments("ActiveEffect", [], { temporary: false })
+  actor.createEmbeddedDocuments("ActiveEffect", [], { temporary: false }),
 );
 expectType<Promise<StoredDocument<foundry.abstract.Document<any, Actor>>[]>>(
-  actor.createEmbeddedDocuments("ActiveEffect", [])
+  actor.createEmbeddedDocuments("ActiveEffect", []),
 );
 
 // verify that document lifecycle methods work with source data is possible

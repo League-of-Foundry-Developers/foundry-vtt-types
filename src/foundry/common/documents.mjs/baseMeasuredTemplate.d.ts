@@ -19,12 +19,12 @@ type MeasuredTemplateMetadata = Merge<
       update: (
         user: BaseUser,
         doc: BaseMeasuredTemplate,
-        data: DeepPartial<MeasuredTemplateDataConstructorData> | {}
+        data: DeepPartial<MeasuredTemplateDataConstructorData> | {},
       ) => boolean;
       delete: (
         user: BaseUser,
         doc: BaseMeasuredTemplate,
-        data: DeepPartial<MeasuredTemplateDataConstructorData> | {}
+        data: DeepPartial<MeasuredTemplateDataConstructorData> | {},
       ) => boolean;
     };
   }
@@ -45,7 +45,7 @@ export declare class BaseMeasuredTemplate extends Document<
   override testUserPermission(
     user: BaseUser,
     permission: keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    { exact }?: { exact?: boolean }
+    { exact }?: { exact?: boolean },
   ): boolean;
 
   /**
@@ -61,6 +61,6 @@ export declare class BaseMeasuredTemplate extends Document<
   protected static _canModify(
     user: BaseUser,
     doc: BaseMeasuredTemplate,
-    data: DeepPartial<MeasuredTemplateDataConstructorData> | {}
+    data: DeepPartial<MeasuredTemplateDataConstructorData> | {},
   ): boolean;
 }

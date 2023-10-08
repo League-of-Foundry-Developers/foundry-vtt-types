@@ -74,7 +74,7 @@ declare global {
      */
     protected _onSortCard(
       event: DragEvent,
-      card: InstanceType<ConfiguredDocumentClassForName<"Card">>
+      card: InstanceType<ConfiguredDocumentClassForName<"Card">>,
     ): ReturnType<InstanceType<ConfiguredDocumentClassForName<"Cards">>["updateEmbeddedDocuments"]>;
   }
 

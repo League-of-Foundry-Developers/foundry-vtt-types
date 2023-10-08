@@ -194,7 +194,7 @@ export default class ProseMirrorMenu extends ProseMirrorPlugin {
     options?: {
       /** Data to pass to the template. (default: `{}`) */
       data: Record<string, unknown>;
-    }
+    },
   ): Promise<HTMLDialogElement>;
 
   /**

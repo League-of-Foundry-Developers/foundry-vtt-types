@@ -40,7 +40,7 @@ export declare class BaseCombatant extends Document<
   protected static _canUpdate(
     user: BaseUser,
     doc: BaseCombatant,
-    data: DeepPartial<CombatantDataConstructorData>
+    data: DeepPartial<CombatantDataConstructorData>,
   ): boolean;
 
   /** Is a user able to create this Combatant? */

@@ -1,6 +1,6 @@
 import type {
   EffectChangeData,
-  EffectChangeDataProperties
+  EffectChangeDataProperties,
 } from "../../../../src/foundry/common/data/data.mjs/effectChangeData";
 
 import { expectError, expectType } from "tsd";

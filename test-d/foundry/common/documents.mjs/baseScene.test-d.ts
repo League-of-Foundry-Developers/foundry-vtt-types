@@ -49,8 +49,8 @@ expectType<{
     gridDistance: 100,
     padding: 10,
     shiftX: 0,
-    shiftY: 0
-  })
+    shiftY: 0,
+  }),
 );
 
 expectError(foundry.documents.BaseScene.create());

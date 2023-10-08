@@ -33,12 +33,12 @@ export declare class BaseActiveEffect extends Document<
   protected override _preCreate(
     data: ActiveEffectDataConstructorData,
     options: DocumentModificationOptions,
-    user: BaseUser
+    user: BaseUser,
   ): Promise<void>;
 
   override testUserPermission(
     user: BaseUser,
     permission: keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    { exact }: { exact?: boolean }
+    { exact }: { exact?: boolean },
   ): boolean;
 }

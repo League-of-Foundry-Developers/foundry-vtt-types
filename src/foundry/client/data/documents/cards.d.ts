@@ -2,7 +2,7 @@ import type {
   ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
   ConstructorDataType,
-  DocumentConstructor
+  DocumentConstructor,
 } from "../../../../types/helperTypes";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
@@ -40,21 +40,21 @@ declare global {
         | ConstructorDataType<foundry.data.CardsData>
         | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
       >,
-      context: DocumentModificationContext & { temporary: false }
+      context: DocumentModificationContext & { temporary: false },
     ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClassForName<"Cards">>>[]>;
     static createDocuments(
       data: Array<
         | ConstructorDataType<foundry.data.CardsData>
         | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
       >,
-      context: DocumentModificationContext & { temporary: boolean }
+      context: DocumentModificationContext & { temporary: boolean },
     ): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">>[]>;
     static createDocuments(
       data: Array<
         | ConstructorDataType<foundry.data.CardsData>
         | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
       >,
-      context?: DocumentModificationContext
+      context?: DocumentModificationContext,
     ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClassForName<"Cards">>>[]>;
 
     /**
@@ -69,7 +69,7 @@ declare global {
     deal(
       to: InstanceType<ConfiguredDocumentClassForName<"Cards">>[],
       number?: number | undefined,
-      options?: Cards.DealOptions | undefined
+      options?: Cards.DealOptions | undefined,
     ): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">>>;
 
     /**
@@ -83,7 +83,7 @@ declare global {
     pass(
       to: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
       ids: string[],
-      options?: Cards.PassOptions | undefined
+      options?: Cards.PassOptions | undefined,
     ): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">>[]>;
 
     /**
@@ -97,7 +97,7 @@ declare global {
     draw(
       from: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
       number?: number | undefined,
-      options?: Cards.DrawOptions | undefined
+      options?: Cards.DrawOptions | undefined,
     ): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">>[]>;
 
     /**
@@ -125,7 +125,7 @@ declare global {
      * @internal
      */
     protected _resetDeck(
-      options?: Cards.ResetOptions | undefined
+      options?: Cards.ResetOptions | undefined,
     ): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">>>;
 
     /**
@@ -136,7 +136,7 @@ declare global {
      * @internal
      */
     protected _resetStack(
-      options?: Cards.ResetOptions | undefined
+      options?: Cards.ResetOptions | undefined,
     ): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">>>;
 
     /**
@@ -161,7 +161,7 @@ declare global {
      */
     protected _drawCards(
       number: number,
-      how: foundry.CONST.CARD_DRAW_MODES
+      how: foundry.CONST.CARD_DRAW_MODES,
     ): InstanceType<ConfiguredDocumentClassForName<"Card">>[];
 
     /**
@@ -176,25 +176,25 @@ declare global {
     protected _postChatNotification(
       source: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
       action: string,
-      context: Record<string, unknown>
+      context: Record<string, unknown>,
     ): Promise<InstanceType<ConfiguredDocumentClassForName<"ChatMessage">> | undefined>;
 
     protected override _onUpdate(
       data: DeepPartial<foundry.data.CardsData>,
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected override _preDelete(
       options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser
+      user: foundry.documents.BaseUser,
     ): Promise<void>;
 
     // TODO: It's a bit weird that we have to do it in this generic way but otherwise there is an error overriding this. Investigate later.
     static override deleteDocuments<T extends DocumentConstructor>(
       this: T,
       ids?: string[] | undefined,
-      context?: DocumentModificationContext | undefined
+      context?: DocumentModificationContext | undefined,
     ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
     /**
@@ -221,7 +221,7 @@ declare global {
      * @param card - The specific card being played as part of this dialog
      */
     playDialog(
-      card: InstanceType<ConfiguredDocumentClassForName<"Card">>
+      card: InstanceType<ConfiguredDocumentClassForName<"Card">>,
     ): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">>[] | void | null>;
 
     /**
@@ -241,7 +241,7 @@ declare global {
             | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
           >
         | undefined,
-      context?: (Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>) | undefined
+      context?: (Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>) | undefined,
     ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
   }
 
