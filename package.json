@@ -18,7 +18,7 @@
     "eslint:report": "eslint --output-file eslint_report.json --format json --ext .d.ts,.test-d.ts .",
     "test": "tsd",
     "typecheck": "./node_modules/typescript/bin/tsc",
-    "prepare": "husky install"
+    "prepare": "is-ci || husky install"
   },
   "repository": {
     "type": "git",
@@ -84,6 +84,7 @@
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-tsdoc": "^0.2.14",
     "husky": "^8.0.0",
+    "is-ci": "^3.0.1",
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
     "tsd": "~0.29",
