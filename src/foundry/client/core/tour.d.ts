@@ -1,4 +1,4 @@
-export {};
+export { Tour };
 
 declare global {
   /** A step in a Tour */
