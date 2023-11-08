@@ -8,5 +8,6 @@ import "./dice";
 import "./game";
 import "./head";
 import "./pixi";
+import "./tours";
 import "./tail";
 import "./ui";
