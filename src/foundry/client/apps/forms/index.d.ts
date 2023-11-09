@@ -11,7 +11,7 @@ import "./item";
 import "./journal-sheet";
 import "./macro-config";
 import "./measure-template";
-import "./permission";
+import "./ownership";
 import "./playlist-config";
 import "./playlist-sound-config";
 import "./roll-table-config";
