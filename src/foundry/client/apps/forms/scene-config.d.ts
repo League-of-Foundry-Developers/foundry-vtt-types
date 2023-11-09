@@ -86,6 +86,12 @@ declare global {
     _onChangePlaylist(event: JQuery.ChangeEvent): void;
 
     /**
+     * Handle updating the select menu of JournalEntryPage options when the JournalEntry is changed.
+     * @param event - The initiating select change event.
+     */
+    protected _onChangeJournal(event: JQuery.ChangeEvent): void;
+
+    /**
      * Handle click events to open the grid configuration application
      * @param event - The originating click event
      */
@@ -115,6 +121,7 @@ declare global {
       "initial.x": number | null;
       "initial.y": number | null;
       journal: string;
+      journalEntryPage: string;
       name: string;
       navName: string;
       navigation: boolean;
