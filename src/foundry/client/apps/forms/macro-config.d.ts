@@ -36,14 +36,14 @@ declare global {
      * Handle changing the actor profile image by opening a FilePicker
      * @internal
      */
-    protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker["browse"]>;
+    protected _onEditImage(event: MouseEvent): ReturnType<FilePicker["browse"]>;
 
     /**
      * Save and execute the macro using the button on the configuration sheet
      * @param event - The originating click event
      * @internal
      */
-    protected _onExecute(event: JQuery.ClickEvent): Promise<void>;
+    protected _onExecute(event: MouseEvent): Promise<void>;
 
     protected override _updateObject(event: Event, formData: MacroConfig.FormData): Promise<unknown>;
   }
