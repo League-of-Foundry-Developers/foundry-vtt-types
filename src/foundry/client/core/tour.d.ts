@@ -87,6 +87,17 @@ declare global {
     static get tourInProgress(): boolean;
 
     /**
+     * Returns the active tour, if any.
+     */
+    static get activeTour(): Tour | null;
+
+    /**
+     * Handle a movement action to either progress or regress the Tour.
+     * @param movementDirections - The Directions being moved in
+     */
+    static onMovementAction(movementDirections: string[]): boolean;
+
+    /**
      * The HTMLElement which is the focus of the current tour step.
      */
     targetElement: HTMLElement | undefined;
