@@ -28,6 +28,9 @@ declare global {
     protected override _updateObject(event: Event, formData: DocumentOwnershipConfig.FormData): Promise<unknown>;
   }
 
+  /**
+   * @deprecated since v10.
+   */
   class PermissionControl extends DocumentOwnershipConfig {}
 
   namespace DocumentOwnershipConfig {
