@@ -34,6 +34,7 @@ declare global {
       direction: number | null;
       distance: number | null;
       fillColor: string;
+      hidden: boolean;
       t: ValueOf<foundry.CONST.MEASURED_TEMPLATE_TYPES>;
       texture: string;
       width: number | null;
