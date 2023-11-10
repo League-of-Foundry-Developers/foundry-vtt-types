@@ -1,0 +1,12 @@
+// @ts-check
+
+import { defineConfig } from "vitest/config";
+
+export default defineConfig({
+  test: {
+    typecheck: {
+      tsconfig: "./tests/tsconfig.json",
+    },
+    setupFiles: ["./tests/setup.d.ts"],
+  },
+});
