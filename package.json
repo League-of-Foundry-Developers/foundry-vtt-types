@@ -16,7 +16,7 @@
     "lint:fix": "eslint --fix --ext .d.ts,.test-d.ts .",
     "lint:ci": "eslint --ext .d.ts,.test-d.ts .",
     "eslint:report": "eslint --output-file eslint_report.json --format json --ext .d.ts,.test-d.ts .",
-    "test": "tsd",
+    "test": "vitest typecheck",
     "typecheck": "./node_modules/typescript/bin/tsc",
     "prepare": "is-ci || husky install"
   },
@@ -87,8 +87,8 @@
     "is-ci": "^3.0.1",
     "lint-staged": "^15.0.1",
     "prettier": "^3.0.3",
-    "tsd": "~0.29",
-    "typescript": "~5.2"
+    "typescript": "~5.2",
+    "vitest": "^0.34.6"
   },
   "husky": {
     "hooks": {
