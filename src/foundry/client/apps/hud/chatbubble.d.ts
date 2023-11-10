@@ -1,3 +1,5 @@
+import type { Socket } from "socket.io-client";
+
 /**
  * The Chat Bubble Class
  * This application displays a temporary message sent from a particular Token in the active Scene.
@@ -32,6 +34,14 @@ declare class ChatBubbles {
   get container(): JQuery;
 
   /**
+   * Create a chat bubble message for a certain token which is synchronized for display across all connected clients.
+   * @param token   - The speaking Token Document
+   * @param message - The spoken message text
+   * @param options - Options which affect the bubble appearance
+   */
+  broadcast(token: TokenDocument, message: string, options: ChatBubbles.ChatBubbleOptions): Promise<JQuery | null>;
+
+  /**
    * Speak a message as a particular Token, displaying it as a chat bubble
    * @param token   - The speaking Token
    * @param message - The spoken message text
@@ -39,6 +49,12 @@ declare class ChatBubbles {
    * @returns A Promise which resolves once the chat bubble has been created
    */
   say(token: Token, message: string, { emote }?: { emote?: boolean }): Promise<void>;
+
+  /**
+   * Activate Socket event listeners which apply to the ChatBubbles UI.
+   * @param socket - The active web socket connection
+   */
+  protected static _activateSocketListeners(socket: Socket): Promise<void>;
 
   /**
    * Clear any existing chat bubble for a certain Token
@@ -85,5 +101,11 @@ declare namespace ChatBubbles {
     width: number;
     height: number;
     unconstrained: number;
+  }
+
+  interface ChatBubbleOptions {
+    cssClasses?: string;
+    pan: boolean;
+    requireVisible: false;
   }
 }
