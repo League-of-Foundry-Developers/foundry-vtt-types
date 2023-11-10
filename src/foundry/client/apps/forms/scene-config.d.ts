@@ -86,6 +86,12 @@ declare global {
     _onChangePlaylist(event: JQuery.ChangeEvent): void;
 
     /**
+     * Handle updating the select menu of JournalEntryPage options when the JournalEntry is changed.
+     * @param event - The initiating select change event.
+     */
+    protected _onChangeJournal(event: JQuery.ChangeEvent): void;
+
+    /**
      * Handle click events to open the grid configuration application
      * @param event - The originating click event
      */
@@ -97,17 +103,23 @@ declare global {
   namespace SceneConfig {
     type FormData = {
       backgroundColor: string;
+      "background.src": string;
+      "background.offsetX": number;
+      "background.offsetY": number;
       darkness: number;
       fogExploration: boolean;
+      fogOverlay: string;
+      fogUnexploredColor: string;
       foreground: string;
+      foregroundElevation: number;
       globalLight: boolean;
       globalLightThreshold: number;
       grid: number | null;
-      gridAlpha: number;
-      gridColor: string;
-      gridDistance: number | null;
-      gridType: foundry.CONST.GRID_TYPES;
-      gridUnits: string;
+      "grid.alpha": number;
+      "grid.color": string;
+      "grid.distance": number | null;
+      "grid.type": foundry.CONST.GRID_TYPES;
+      "grid.units": string;
       hasGlobalThreshold: boolean;
       height: number | null;
       img: string;
@@ -115,12 +127,14 @@ declare global {
       "initial.x": number | null;
       "initial.y": number | null;
       journal: string;
+      journalEntryPage: string;
       name: string;
       navName: string;
       navigation: boolean;
       padding: number;
       "permission.default": foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
       playlist: string;
+      playlistSound: string;
       shiftX: number | null;
       shiftY: number | null;
       tokenVision: boolean;
