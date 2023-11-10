@@ -59,7 +59,7 @@ declare global {
       event: JQuery.ClickEvent,
     ): Promise<InstanceType<ConfiguredDocumentClassForName<"TableResult">> | undefined>;
 
-    protected override _onDrop(event: DragEvent): void;
+    protected override _onDrop(event: DragEvent): Promise<ConfiguredDocumentClassForName<"TableResult">[]> | void;
 
     /**
      * Handle changing the actor profile image by opening a FilePicker
@@ -138,6 +138,10 @@ declare global {
 
     type FormDataResults = {
       [Key in number as `results.${number}._id`]: string;
+    } & {
+      [Key in number as `results.${number}.documentCollection`]: string;
+    } & {
+      [Key in number as `results.${number}.documentId`]: string;
     } & {
       [Key in number as `results.${number}.drawn`]: boolean;
     } & {
