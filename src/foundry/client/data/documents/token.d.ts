@@ -104,8 +104,8 @@ declare global {
       options: Parameters<this['update']>[1]
     ): Promise<[this['actor']]>;
 
-    override getEmbeddedCollection(embeddedName: 'Item'): foundry.documents.BaseActor['items'];
-    getEmbeddedCollection(embeddedName: 'ActiveEffect'): foundry.documents.BaseActor['effects'];
+    // override getEmbeddedCollection(embeddedName: 'Item'): foundry.documents.BaseActor['items'];
+    // getEmbeddedCollection(embeddedName: 'ActiveEffect'): foundry.documents.BaseActor['effects'];
 
     /**
      * Redirect creation of Documents within a synthetic Token Actor to instead update the tokenData override object.

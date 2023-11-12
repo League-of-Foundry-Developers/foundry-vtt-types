@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "5.0",
     "exactOptionalPropertyTypes": true,
     "importsNotUsedAsValues": "error",
     "lib": ["DOM", "ES2020"],

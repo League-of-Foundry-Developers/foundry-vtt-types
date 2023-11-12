@@ -76,10 +76,10 @@ interface BaseDrawingSchema extends DataSchema {
   /**
    * An optional color string with which to fill the drawing geometry
    */
-  fillColor: fields.ColorField<{
-    initial: () => OptionalChaining<OptionalChaining<typeof game, 'user'>, 'color'>;
-    label: 'DRAWING.FillColor';
-  }>;
+  //   fillColor: fields.ColorField<{
+  //     initial: () => OptionalChaining<OptionalChaining<typeof game, 'user'>, 'color'>;
+  //     label: 'DRAWING.FillColor';
+  //   }>;
 
   /**
    * The opacity of the fill applied to the drawing geometry
@@ -96,10 +96,10 @@ interface BaseDrawingSchema extends DataSchema {
   /**
    * The color of the boundary lines of the drawing geometry
    */
-  strokeColor: fields.ColorField<{
-    initial: () => OptionalChaining<OptionalChaining<typeof game, 'user'>, 'color'>;
-    label: 'DRAWING.StrokeColor';
-  }>;
+  //   strokeColor: fields.ColorField<{
+  //     initial: () => OptionalChaining<OptionalChaining<typeof game, 'user'>, 'color'>;
+  //     label: 'DRAWING.StrokeColor';
+  //   }>;
 
   /**
    * The opacity of the boundary lines of the drawing geometry

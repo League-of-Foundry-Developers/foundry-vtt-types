@@ -330,7 +330,7 @@ type PrototypeTokenSchema = Omit<
 };
 
 type PrototypeTokenToObject<Token extends PrototypeToken> = {
-  actorId: Token['document']['id'];
+  //   actorId: Token['document']['id'];
 };
 
 /**

@@ -77,7 +77,7 @@ declare namespace BasePackage {
           lang: fields.StringField<{
             required: true;
             blank: false;
-            validate: typeof Intl.getCanonicalLocales;
+            // validate: typeof Intl.getCanonicalLocales;
             validationError: 'must be supported by the Intl.getCanonicalLocales function';
           }>;
           name: fields.StringField<{}>;

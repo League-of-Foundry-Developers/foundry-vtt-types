@@ -12,7 +12,7 @@ declare global {
      *                  (default: `""`)
      * @returns The editor instance.
      */
-    static create(options: TextEditor.Options, content: string): Promise<tinyMCE.Editor>;
+    // static create(options: TextEditor.Options, content: string): Promise<tinyMCE.Editor>;
 
     /**
      * A list of elements that are retained when truncating HTML.
@@ -172,7 +172,7 @@ declare global {
      * @param editor - The TinyMCE editor instance being dropped on
      * @internal
      */
-    protected static _onDropEditorData(event: DragEvent, editor: tinyMCE.Editor): void;
+    // protected static _onDropEditorData(event: DragEvent, editor: tinyMCE.Editor): void;
 
     /**
      * Extract JSON data from a drag/drop event.
