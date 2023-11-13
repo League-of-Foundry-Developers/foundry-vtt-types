@@ -28,7 +28,7 @@ declare global {
     type EditorSelection = _tinymceTypes.EditorSelection;
     type Entities = _tinymceTypes.Entities;
     type Env = _tinymceTypes.Env;
-    type EventDispatcher<T> = _tinymceTypes.EventDispatcher<T>;
+    type EventDispatcher<T extends {}> = _tinymceTypes.EventDispatcher<T>;
     type EventUtils = _tinymceTypes.EventUtils;
     type FakeClipboard = _tinymceTypes.FakeClipboard;
     type FocusManager = _tinymceTypes.FocusManager;
@@ -43,7 +43,7 @@ declare global {
     type NotificationApi = _tinymceTypes.NotificationApi;
     type NotificationManager = _tinymceTypes.NotificationManager;
     type NotificationSpec = _tinymceTypes.NotificationSpec;
-    type Observable<T> = _tinymceTypes.Observable<T>;
+    type Observable<T extends {}> = _tinymceTypes.Observable<T>;
     type Plugin = _tinymceTypes.Plugin;
     type PluginManager = _tinymceTypes.PluginManager;
     type RangeUtils = _tinymceTypes.RangeUtils;

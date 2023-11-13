@@ -31,7 +31,7 @@ declare global {
   /**
    * @deprecated since v10.
    */
-  class PermissionControl extends DocumentOwnershipConfig {}
+  class PermissionControl extends DocumentOwnershipConfig<any, any> {}
 
   namespace DocumentOwnershipConfig {
     interface FormData {
