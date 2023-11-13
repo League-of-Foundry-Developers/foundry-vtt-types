@@ -1,5 +1,7 @@
 import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes";
 import type { VisionMode } from "../../config";
+// TODO: After #2084
+// import type { AdaptiveVisionShader } from "../webgl/shaders/vision"
 
 declare global {
   interface VisionSourceData extends Exclude<PointSource.Data, "walls"> {
