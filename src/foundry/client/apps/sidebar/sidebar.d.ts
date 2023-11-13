@@ -12,7 +12,6 @@ declare class Sidebar<Options extends ApplicationOptions = ApplicationOptions> e
   /**
    * Track whether the sidebar container is currently collapsed
    * @defaultValue `false`
-   * @internal
    */
   protected _collapsed: boolean;
 
@@ -46,12 +45,6 @@ declare class Sidebar<Options extends ApplicationOptions = ApplicationOptions> e
    * @internal
    */
   protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
-
-  /**
-   * Activate a Sidebar tab by it's name
-   * @param tabName - The tab name corresponding to it's "data-tab" attribute
-   */
-  activateTab(tabName: string): void;
 
   /**
    * Expand the Sidebar container from a collapsed state.
