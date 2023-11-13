@@ -312,7 +312,7 @@ export declare function isNewerVersion(v1: number | string, v0: number | string)
  * A simple function to test whether an Object is empty
  * @param obj - The object to test
  * @returns Is the object empty?
- * @deprecated since v10, will be removed in v11 - Use isEmpty instead.
+ * @deprecated since v10 until v12, will be removed in v11 - Use isEmpty instead.
  */
 export declare function isObjectEmpty(obj: object): boolean;
 
@@ -527,7 +527,7 @@ export declare function timeSince(timeStamp: Date | string): string;
  * @param g - The green color value
  * @param b - The blue color value
  * @returns The HSV representation
- * @deprecated since v10, rgbToHsv is deprecated in favor of {@link foundry.utils.Color#hsv}
+ * @deprecated since v10 until v12, rgbToHsv is deprecated in favor of {@link foundry.utils.Color#hsv}
  */
 export declare function rgbToHsv(r: number, g: number, b: number): [h: number, s: number, v: number];
 
@@ -538,7 +538,7 @@ export declare function rgbToHsv(r: number, g: number, b: number): [h: number, s
  * @param s - The saturation
  * @param v - The value
  * @returns The RGB representation
- * @deprecated since v10, hsvToRgb is deprecated in favor of {@link foundry.utils.Color.fromHSV}
+ * @deprecated since v10 until v12, hsvToRgb is deprecated in favor of {@link foundry.utils.Color.fromHSV}
  */
 export declare function hsvToRgb(h: number, s: number, v: number): [r: number, g: number, b: number];
 
@@ -546,7 +546,7 @@ export declare function hsvToRgb(h: number, s: number, v: number): [r: number, g
  * Converts a color as an [R, G, B] array of normalized floats to a hexadecimal number.
  * @param rgb - Array of numbers where all values are normalized floats from 0.0 to 1.0.
  * @returns The numeric color as hexadecimal
- * @deprecated since v10, rgbToHex is deprecated in favor of {@link foundry.utils.Color.fromRGB}
+ * @deprecated since v10 until v12, rgbToHex is deprecated in favor of {@link foundry.utils.Color.fromRGB}
  */
 export declare function rgbToHex(rgb: [r: number, g: number, b: number]): number;
 
@@ -554,7 +554,7 @@ export declare function rgbToHex(rgb: [r: number, g: number, b: number]): number
  * Convert a hex color code to an RGB array
  * @param hex - A hex color number
  * @returns An array of [r,g,b] colors normalized on the range of [0,1]
- * @deprecated since v10, hexToRGB is deprecated in favor of {@link foundry.utils.Color#rgb}
+ * @deprecated since v10 until v12, hexToRGB is deprecated in favor of {@link foundry.utils.Color#rgb}
  */
 export declare function hexToRGB(hex: number): [r: number, g: number, b: number];
 
@@ -564,7 +564,7 @@ export declare function hexToRGB(hex: number): [r: number, g: number, b: number]
  * @param alpha - An optional level of transparency
  *                (default: `1.0`)
  * @returns An rgba style string
- * @deprecated since v10, hexToRGBAString is deprecated in favor of {@link foundry.utils.Color#toRGBA}
+ * @deprecated since v10 until v12, hexToRGBAString is deprecated in favor of {@link foundry.utils.Color#toRGBA}
  */
 export declare function hexToRGBAString(hex: number, alpha?: number): `rgba(${number}, ${number}, ${number})`;
 
@@ -572,6 +572,6 @@ export declare function hexToRGBAString(hex: number, alpha?: number): `rgba(${nu
  * Convert a string color to a hex integer
  * @param color - The string color
  * @returns The hexadecimal color code
- * @deprecated since v10, colorStringToHex is deprecated in favor of {@link foundry.utils.Color.from}
+ * @deprecated since v10 until v12, colorStringToHex is deprecated in favor of {@link foundry.utils.Color.from}
  */
 export declare function colorStringToHex(color: string): number | null;
