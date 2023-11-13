@@ -61,4 +61,15 @@ interface Math {
    * @returns An angle in radians
    */
   toRadians(angle: number): number;
+
+  /**
+   * Get an oscillation between lVal and hVal according to t
+   * @param  minVal - The minimal value of the oscillation.
+   * @param  maxVal - The maximum value of the oscillation.
+   * @param  t      - The time value.
+   * @param  p      - The period (can't be equal to 0).
+   * @param  func   - The optional math function to use for oscillation.
+   * @returns The oscillation according to t.
+   */
+  oscillation(minVal: number, maxVal: number, t: number, p: number = 1, func: Function = Math.cos): number;
 }
