@@ -68,8 +68,10 @@ interface Math {
    * @param  maxVal - The maximum value of the oscillation.
    * @param  t      - The time value.
    * @param  p      - The period (can't be equal to 0).
+   *                  (default: `1`)
    * @param  func   - The optional math function to use for oscillation.
+   *                  (default: `Math.cos`)
    * @returns The oscillation according to t.
    */
-  oscillation(minVal: number, maxVal: number, t: number, p: number = 1, func: Function = Math.cos): number;
+  oscillation(minVal: number, maxVal: number, t: number, p: number, func: (radians: number) => number): number;
 }
