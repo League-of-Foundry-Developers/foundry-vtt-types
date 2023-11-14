@@ -5,7 +5,8 @@ declare global {
   abstract class PackageConfiguration<
     Options extends PackageConfiguration.Options = PackageConfiguration.Options,
   > extends FormApplication<Options, object> {
-    static get categoryOrder(): ["all", "core", "system", "module", "unmapped"];
+    /** @returns ["all", "core", "system", "module", "unmapped"] */
+    static get categoryOrder(): string[];
 
     /** The name of the currently active tab. */
     get activeCategory(): string;
