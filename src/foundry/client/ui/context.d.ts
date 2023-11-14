@@ -155,12 +155,11 @@ declare namespace ContextMenu {
     animate?: boolean;
   }
 
-  interface ContextMenuCallback extends Function {
+  type ContextMenuCallback =
     /**
-     * The element that the context menu has been triggered for.
+     * @param target - The element that the context menu has been triggered for.
      */
-    target: HTMLElement;
-  }
+    (target: HTMLElement) => void;
 
   interface ConstructorOptions {
     /**
