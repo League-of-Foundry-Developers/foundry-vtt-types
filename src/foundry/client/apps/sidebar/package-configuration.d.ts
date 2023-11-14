@@ -5,7 +5,10 @@ declare global {
   abstract class PackageConfiguration<
     Options extends PackageConfiguration.Options = PackageConfiguration.Options,
   > extends FormApplication<Options, object> {
-    static get categoryOrder(): string[];
+    static get categoryOrder(): ["all", "core", "system", "module", "unmapped"];
+
+    /** The name of the currently active tab. */
+    get activeCategory(): string;
 
     /**
      * @defaultValue
@@ -18,6 +21,7 @@ declare global {
      *   height: 680,
      *   resizable: true,
      *   scrollY: [".filters", ".categories"],
+     *   tabs: [{navSelector: ".tabs", contentSelector: "form .scrollable", initial: "all"}],
      *   filters: [{inputSelector: 'input[name="filter"]', contentSelector: ".categories"}],
      *   submitButton: false
      * });
@@ -27,6 +31,7 @@ declare global {
 
     override getData(): MaybePromise<object>;
 
+    /** Prepare the structure of category data which is rendered in this configuration form. */
     abstract _prepareCategoryData(): PackageConfiguration.Category;
 
     /**
@@ -39,26 +44,15 @@ declare global {
     /** Reusable logic for how categories are sorted in relation to each other. */
     protected _sortCategories(a: PackageConfiguration.Category, b: PackageConfiguration.Category): number;
 
-    protected override _render(
-      force?: boolean | undefined,
-      options?: Application.RenderOptions<Options> | undefined,
-    ): Promise<void>;
+    /** {@inheritdoc} */
+    protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
+    /** {@inheritdoc} */
     override activateListeners(html: JQuery<HTMLElement>): void;
 
-    /**
-     * Handle left-click events to filter to a certain category
-     * @internal
-     */
-    protected _onClickCategoryFilter(event: JQuery.ClickEvent): void;
+    protected override _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: string): void;
 
     protected override _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
-
-    /**
-     * Handle left-click events to show / hide a certain category
-     * @internal
-     */
-    protected _onClickCategoryCollapse(event: JQuery.ClickEvent): void;
 
     /**
      * Handle button click to reset default settings
@@ -69,8 +63,8 @@ declare global {
 
   namespace PackageConfiguration {
     interface Options extends FormApplicationOptions {
-      categoryTemplate: string | undefined;
-      submitButton: boolean;
+      categoryTemplate?: string;
+      submitButton?: boolean;
     }
 
     interface Category {
