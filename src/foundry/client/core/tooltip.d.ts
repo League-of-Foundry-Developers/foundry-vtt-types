@@ -88,6 +88,7 @@ declare global {
 
     /**
      * Deactivate the tooltip from a previously hovered HTML element.
+     * @internal
      */
     deactivate(): void;
 
