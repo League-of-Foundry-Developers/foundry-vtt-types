@@ -56,7 +56,7 @@ declare class KeybindingsConfig<
 
   override activateListeners(html: JQuery): void;
 
-  protected override _onResetDefaults(event: JQuery.ClickEvent<any, any, any, any>): void;
+  protected override _onResetDefaults(event: JQuery.ClickEvent<any, any, any, any>): Promise<any>;
 
   /**
    * Handle Control clicks
@@ -110,9 +110,10 @@ declare class KeybindingsConfig<
    * @internal
    */
   protected _getParentAction(event: KeyboardEvent | MouseEvent): {
+    actionId: string;
+    actionHtml: HTMLElement;
     namespace: string;
     action: string;
-    actionHtml: HTMLElement;
   };
 
   /**
@@ -133,8 +134,6 @@ declare class KeybindingsConfig<
    * @internal
    */
   protected _onKeydownBindingInput(event: KeyboardEvent): void;
-
-  protected override _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
   /** @remarks KeybindingsConfig does not implement this method. */
   protected _updateObject(event?: unknown, formData?: unknown): Promise<never>;
