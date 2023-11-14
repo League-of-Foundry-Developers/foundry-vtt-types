@@ -167,10 +167,12 @@ declare namespace ContextMenu {
      * @defaultValue `EntryContext`
      */
     hookName?: string;
+
     /**
      * A function to call when the context menu is opened.
      */
     onOpen?: ContextMenuCallback;
+
     /**
      * A function to call when the context menu is closed.
      */
