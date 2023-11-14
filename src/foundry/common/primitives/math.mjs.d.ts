@@ -73,5 +73,5 @@ interface Math {
    *                  (default: `Math.cos`)
    * @returns The oscillation according to t.
    */
-  oscillation(minVal: number, maxVal: number, t: number, p: number, func: (radians: number) => number): number;
+  oscillation(minVal: number, maxVal: number, t: number, p?: number, func?: (radians: number) => number): number;
 }
