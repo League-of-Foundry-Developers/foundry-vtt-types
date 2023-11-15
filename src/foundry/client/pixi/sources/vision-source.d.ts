@@ -195,7 +195,7 @@ declare global {
      * Generic time animation with Vision Sources.
      * @param  dt - Delta time.
      */
-    animateTime(dt): void;
+    animateTime(dt: number): void;
   }
 }
 

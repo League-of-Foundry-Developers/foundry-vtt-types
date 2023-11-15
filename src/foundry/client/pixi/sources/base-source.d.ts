@@ -3,7 +3,7 @@
  */
 declare abstract class PointSource {
   /**
-   * @param object - The object responsible for the PointSource
+   * @param object - The PlaceableObject which is the origin of this PointSource.
    */
   constructor(object: PlaceableObject);
 
@@ -20,15 +20,16 @@ declare abstract class PointSource {
   static sourceType: string | undefined;
 
   /**
-   * The default Geometry stored in the GPU for all Point Source meshes.
-   */
-  static GEOMETRY: PIXI.Geometry;
-
-  /**
-   * A flag for whether this source is currently active (rendered) or not
+   * A flag for whether this source is currently rendered or not.
    * @defaultValue `false`
    */
   active: boolean;
+
+  /**
+   * The animation configuration applied to this source
+   * @defaultValue `{}`
+   */
+  animation: PointSource.PointSourceAnimationConfiguration;
 
   /**
    * The object of data which configures how this source is rendered
@@ -49,24 +50,37 @@ declare abstract class PointSource {
   los: PointSourcePolygon | undefined;
 
   /**
+   * PIXI Geometry generated to draw meshes.
+   * @defaultValue `null`
+   * @internal
+   */
+  _sourceGeometry: PIXI.Geometry | null;
+
+  /**
    * A Graphics object with pre-computed geometry used for masking based on line-of-sight.
    * @defaultValue `new PIXI.LegacyGraphics()`
    */
   losMask: PIXI.Graphics;
 
   /**
-   * Is the angle of emission for this source limited?
-   * @defaultValue `false`
-   */
-  limited: boolean;
-
-  /**
-   * Boolean flags which control whether certain behaviors of the source must be enforced
+   * Additional information which controls whether certain behaviors of the source must be enforced
    * @defaultValue `{}`
    */
   protected _flags: {
     renderFOV?: boolean;
   } & Record<string, boolean>;
+
+  /**
+   * To track meshes initialization
+   * @defaultValue `false`
+   */
+  protected _meshesInit: boolean;
+
+  /**
+   * The offset in pixels applied to create soft edges.
+   * @defaultValue `-8`
+   */
+  static EDGE_OFFSET: number;
 
   /**
    * The x-coordinate of the point source origin.
@@ -84,7 +98,18 @@ declare abstract class PointSource {
   get sourceType(): (typeof PointSource)["sourceType"];
 
   /**
-   * A point is contained with the area of the source if it is within both the FOV circle as well as the LOS polygon.
+   * The elevation of the object bound to this base source, if any.
+   * Returns the canvas primary background elevation otherwise.
+   */
+  get elevation(): number;
+
+  /**
+   * If the source is animated or not.
+   */
+  get isAnimated(): boolean;
+
+  /**
+   * A point is contained with the area of the source if it is within both the FOV circle and the LOS polygon.
    * @param point - The point to test
    * @returns Is the point contained
    */
@@ -100,10 +125,32 @@ declare abstract class PointSource {
   abstract initialize(data?: Partial<PointSource.Data>): this;
 
   /**
-   * Get power of 2 size pertaining to base-source radius and performance modes
-   * @returns The computed power of 2 size
+   * Refresh the state and uniforms of the BaseSource
    */
-  getPowerOf2Size(): number;
+  abstract refreshSource(): void;
+
+  /**
+   * Create or update the source geometry with a polygon shape
+   * Triangulate the form and create buffers
+   * @param polygon- The pixi polygon
+   */
+  protected _updateLosGeometry(polygon: PIXI.Polygon): void;
+
+  /**
+   * Configure the parameters of the polygon that is generated for this source.
+   */
+  protected abstract _getPolygonConfiguration(): PointSourcePolygonConfig;
+
+  /**
+   * Create the LOS polygon for this Light Source instance using provided parameters.
+   */
+  protected _createPolygon(): PointSourcePolygon | PIXI.Polygon;
+
+  /**
+   * Create or update the source geometry and create meshes if necessary
+   * @param polygon - A pixi polygon
+   */
+  protected _initializeMeshes(polygon: PIXI.Polygon): void;
 
   /**
    * Create a new Mesh for this source using a provided shader class
@@ -113,6 +160,11 @@ declare abstract class PointSource {
   protected _createMesh(shaderCls: ConstructorOf<AdaptiveLightingShader>): PIXI.Mesh;
 
   /**
+   * Create all meshes needed with this PointSource
+   */
+  abstract _createMeshes(): void;
+
+  /**
    * Update the position and size of the mesh each time it is drawn.
    * @param mesh - The Mesh being updated
    * @returns The updated Mesh
@@ -120,18 +172,30 @@ declare abstract class PointSource {
   protected _updateMesh(mesh: PIXI.Mesh): PIXI.Mesh;
 
   /**
-   * Render this source to a texture which can be used for masking and blurring.
+   * Animate the BaseSource, if an animation is enabled and if it currently has rendered containers.
+   * @param dt - Delta time.
    */
-  protected _renderTexture(): PIXI.RenderTexture;
-
-  /**
-   * Create a container that should be rendered to the fov texture for this source
-   * @returns The drawn container for the render texture
-   */
-  protected _drawRenderTextureContainer(): PIXI.Container;
+  animate(dt: number): void;
 }
 
 declare namespace PointSource {
+  interface PointSourceAnimationConfiguration {
+    /** The human-readable (localized) label for the animation */
+    label?: string;
+    /** The animation function that runs every frame */
+    animation?: Function;
+    /** A custom illumination shader used by this animation */
+    illuminationShader?: AdaptiveIlluminationShader;
+    /** A custom coloration shader used by this animation */
+    colorationShader?: AdaptiveColorationShader;
+    /** A custom background shader used by this animation */
+    backgroundShader?: AdaptiveBackgroundShader;
+    /** The animation seed */
+    seed?: number;
+    /** The animation time */
+    time?: number;
+  }
+
   interface Data {
     /** The x-coordinate of the source location */
     x?: number;
