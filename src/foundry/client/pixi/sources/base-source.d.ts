@@ -176,6 +176,21 @@ declare abstract class PointSource {
    * @param dt - Delta time.
    */
   animate(dt: number): void;
+
+  /**
+   * Get power of 2 size pertaining to base-source radius and performance modes
+   * @returns The computed power of 2 size
+   * @deprecated since v10, will be removed in v11.
+   */
+  getPowerOf2Size(): number;
+
+  /**
+   * Is the angle of emission for this source limited?
+   * @defaultValue `false`
+   * @deprecated since v10, will be removed in v12
+   * @remarks `PointSource#limited is deprecated in favor of PointSourcePolygon#isConstrained.`
+   */
+  limited: boolean;
 }
 
 declare namespace PointSource {
