@@ -139,7 +139,11 @@ declare global {
     /**
      * Render the containers used to represent this light source within the LightingLayer.
      */
-    drawMeshes(): VisionSource.LightContainer;
+    drawMeshes(): {
+      background: ReturnType<VisionSource["drawBackground"]>;
+      vision: ReturnType<VisionSource["drawVision"]>;
+      color: ReturnType<VisionSource["drawColor"]>;
+    };
 
     /**
      * Draw the background mesh which provide special vision.
@@ -196,13 +200,5 @@ declare global {
      * @param  dt - Delta time.
      */
     animateTime(dt: number): void;
-  }
-}
-
-declare namespace VisionSource {
-  interface LightContainer {
-    background: PIXI.Mesh | null;
-    vision: PIXI.Mesh | null;
-    color: PIXI.Mesh | null;
   }
 }
