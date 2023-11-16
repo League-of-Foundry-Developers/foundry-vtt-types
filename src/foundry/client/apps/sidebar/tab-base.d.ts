@@ -39,7 +39,7 @@ declare abstract class SidebarTab<
 
   override get id(): string;
 
-  override getData(options?: Partial<Options> | undefined): Promise<object>;
+  override getData(options?: Partial<Options> | undefined): MaybePromise<object>;
 
   protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
