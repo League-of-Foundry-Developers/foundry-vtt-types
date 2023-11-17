@@ -1,6 +1,6 @@
 name: Class Update
 description: Submit an issue for updating a class for a certain Foundry VTT version
-title: 'Update CLASS to Foundry VTT VERSION'
+title: "Update CLASS to Foundry VTT VERSION"
 labels:
   - version update
 body:

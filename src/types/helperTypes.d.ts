@@ -10,16 +10,16 @@ export type PropertiesDataType<T extends Document<any, any> | AnyDocumentData> =
 >
   ? U
   : T extends Document<infer U, any>
-  ? PropertiesDataType<U>
-  : never;
+    ? PropertiesDataType<U>
+    : never;
 
 type PropertyTypeToSourceType<T> = T extends EmbeddedCollection<infer U, any>
   ? SourceDataType<InstanceType<U>>[]
   : T extends Array<infer U>
-  ? Array<PropertyTypeToSourceType<U>>
-  : T extends AnyDocumentData
-  ? SourceDataType<T>
-  : T;
+    ? Array<PropertyTypeToSourceType<U>>
+    : T extends AnyDocumentData
+      ? SourceDataType<T>
+      : T;
 
 export type PropertiesToSource<T extends object> = {
   [Key in keyof T]: PropertyTypeToSourceType<T[Key]>;
@@ -34,8 +34,8 @@ type SourceDataType<T extends Document<any, any> | AnyDocumentData> = T extends 
 >
   ? U
   : T extends Document<infer U, any>
-  ? SourceDataType<U>
-  : never;
+    ? SourceDataType<U>
+    : never;
 
 /**
  * Returns the type of the constructor data for the given {@link DocumentData}.
