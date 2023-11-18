@@ -1,5 +1,4 @@
 import { Tour } from "../core/tour";
-import { Application } from "../apps/app";
 
 declare global {
   class SetupTour extends Tour {

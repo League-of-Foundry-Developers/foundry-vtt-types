@@ -6,7 +6,7 @@ declare global {
    * This application displays a temporary message sent from a particular Token in the active Scene.
    * The message is displayed on the HUD layer just above the Token.
    */
-  declare class ChatBubbles {
+  class ChatBubbles {
     constructor();
 
     /**
@@ -97,7 +97,7 @@ declare global {
     protected _getDuration(html: JQuery): number;
   }
 
-  declare namespace ChatBubbles {
+  namespace ChatBubbles {
     interface Dimensions {
       width: number;
       height: number;
