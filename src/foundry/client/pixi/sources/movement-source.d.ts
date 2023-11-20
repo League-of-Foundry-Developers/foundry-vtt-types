@@ -1,6 +1,5 @@
 declare class MovementSource extends PointSource {
-  /** @defaultValue `"move"` */
-  static override sourceType: string | undefined;
+  static override sourceType: "move";
 
   /** @remarks Not implemented */
   protected _refresh(): void;
