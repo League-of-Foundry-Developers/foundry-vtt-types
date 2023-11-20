@@ -179,8 +179,9 @@ declare class RenderedPointSource extends PointSource {
   /**
    * Animate the PointSource, if an animation is enabled and if it currently has rendered containers.
    * @param dt - Delta time.
+   * @remarks Returns `this.animation.call(this, dt, options)`
    */
-  animate(dt: number): ReturnType<RenderedPointSource.RenderedPointSourceAnimationConfig["animation"]> | undefined;
+  animate(dt: number): any;
 
   /**
    * Generic time-based animation used for Rendered Point Sources.
