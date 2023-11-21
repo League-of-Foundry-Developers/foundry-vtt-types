@@ -148,8 +148,11 @@ declare global {
 
     /**
      * Create the polygon shape for this source using configured data.
+     * @remarks Listed return type is PointSourcePolygon
+     * @remarks Actual return: CONFIG.Canvas.polygonBackends[this.constructor.sourceType].create(...)
+     *          It might be possible to derive the exact polygon type based on that.
      */
-    protected _createPolygon(): PointSourcePolygon;
+    protected _createPolygon(): PIXI.Polygon;
 
     /**
      * The type of source represented by this data structure.

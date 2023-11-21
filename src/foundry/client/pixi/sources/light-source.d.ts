@@ -214,7 +214,6 @@ declare global {
    * A specialized subclass of the LightSource which is used to render global light source linked to the scene.
    */
   class GlobalLightSource extends LightSource {
-    //@ts-expect-error Typing issue on Foundry's end
     override _createPolygon(): PIXI.Polygon;
 
     protected override _configureSoftEdges(): void;
