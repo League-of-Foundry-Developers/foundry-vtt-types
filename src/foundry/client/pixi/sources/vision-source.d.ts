@@ -120,7 +120,7 @@ declare global {
     ): void;
   }
 
-  interface VisionSourceData extends RenderedPointSource.RenderedPointSourceData {
+  interface VisionSourceData extends RenderedPointSourceData {
     /**
      * The amount of contrast
      * @defaultValue `0`
