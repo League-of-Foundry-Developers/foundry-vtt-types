@@ -15,7 +15,7 @@ declare namespace RenderedPointSource {
     /** The human-readable (localized) label for the animation */
     label?: string;
     /** The animation function that runs every frame */
-    animation?: Function;
+    animation?: (dt: number, options: Partial<RenderedPointSourceAnimationConfig>) => any;
     /** A custom illumination shader used by this animation */
     illuminationShader?: AdaptiveIlluminationShader;
     /** A custom coloration shader used by this animation */
@@ -172,7 +172,7 @@ declare class RenderedPointSource extends PointSource {
   /**
    * Update shader uniforms used for the illumination layer.
    */
-  _updateIlluminationUniforms(): void;
+  protected _updateIlluminationUniforms(): void;
 
   protected override _destroy(): void;
 
@@ -181,7 +181,7 @@ declare class RenderedPointSource extends PointSource {
    * @param dt - Delta time.
    * @remarks Returns `this.animation.call(this, dt, options)`
    */
-  animate(dt: number): any;
+  animate(dt: number): ReturnType<Exclude<this["animation"]["animation"], undefined>>;
 
   /**
    * Generic time-based animation used for Rendered Point Sources.
