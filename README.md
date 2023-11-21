@@ -50,16 +50,21 @@ You can then update foundry-vtt-types using the regular update mechanism for npm
 
 The versions of the foundry-vtt-types correspond to the releases of Foundry VTT. The versioning scheme of Foundry VTT
 changed with version 9, so the versioning scheme for the foundry-vtt-types also changes with that version:
-* For Foundry VTT version 0.7 and 0.8, the versioning scheme is
-  ```
+
+- For Foundry VTT version 0.7 and 0.8, the versioning scheme is
+
+  ```text
   0.<foundy-minor-version>.<foundry-patch-version>-<increment>
   ```
-* For Foundry VTT version 9 and onwards, the versioning scheme is
-  ```
+
+- For Foundry VTT version 9 and onwards, the versioning scheme is
+
+  ```text
   <foundry-version>.<foundry-build>.<increment>
   ```
-In both cases, `increment` is a number that increases with every individual release of the foundry-vtt-types for that
-Foundry VTT release.
+
+  In both cases, `increment` is a number that increases with every individual release of the foundry-vtt-types for that
+  Foundry VTT release.
 
 ## Usage
 
@@ -70,7 +75,7 @@ Add foundry-vtt-types to your types section in your `tsconfig.json`:
   "compilerOptions": {
     "types": ["@league-of-foundry-developers/foundry-vtt-types"],
     "moduleResolution": "node",
-    "strictNullChecks": true,
+    "strictNullChecks": true
   }
 }
 ```
@@ -116,13 +121,13 @@ for the CI.
 
 You can run type checking and linting with the following command:
 
-```
+```shell
 npm run lint
 ```
 
 You can run the tests with
 
-```
+```shell
 npm run test
 ```
 
@@ -131,7 +136,7 @@ npm run test
 To create a release, you have to create a new release commit, tag it and create a GitHub release from that. The CI will
 handle the rest.
 
-```
+```shell
 npm version <release-type>
 git push --follow-tags
 ```

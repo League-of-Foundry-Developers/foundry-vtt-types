@@ -39,7 +39,7 @@ declare class ContextMenu {
     element: JQuery,
     selector: string | null | undefined,
     menuItems: ContextMenuEntry[],
-    { eventName, onOpen, onClose }?: ContextMenu.ConstructorOptions,
+    { hookName, onOpen, onClose }?: ContextMenu.ConstructorOptions,
   );
 
   /**

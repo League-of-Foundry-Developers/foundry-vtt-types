@@ -120,7 +120,7 @@ In both cases, provide the default value for `getDefaultOptions` in TSDoc.
 
 Example:
 
-```typescript
+````typescript
 declare class ActorSheet<Options extends ActorSheet.Options = ActorSheet.Options> extends DocumentSheet<
   Options,
   InstanceType<ConfiguredDocumentClass<typeof Actor>>
@@ -145,7 +145,7 @@ declare class ActorSheet<Options extends ActorSheet.Options = ActorSheet.Options
   static get defaultOptions(): ActorSheet.Options;
   /* ... */
 }
-```
+````
 
 #### Type for a class being used as a value (e.g. assigned to a variable)
 
@@ -154,21 +154,22 @@ allow deriving classes to be used as value. In rare occasions (i.e. when really 
 may be assigned, no deriving classes), `typeof NameOfTheClass` can be used.
 
 Example (`documentClass` is configurable, `collection` is not):
-```typescript
-    /**
-     * Configuration for the Actor document
-     */
-    Actor: {
-      /**
-       * @defaultValue `Actor`
-       */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Actor>;
 
-      /**
-       * @defaultValue `Actors`
-       */
-      collection: ConstructorOf<Actors>;
-    };
+```typescript
+/**
+ * Configuration for the Actor document
+ */
+Actor: {
+  /**
+   * @defaultValue `Actor`
+   */
+  documentClass: ConfiguredDocumentClassOrDefault<typeof Actor>;
+
+  /**
+   * @defaultValue `Actors`
+   */
+  collection: ConstructorOf<Actors>;
+}
 ```
 
 #### A property in `SCREAMING_SNAKE_CASE` is being assigned to a class after its definition in Foundry VTT
@@ -178,6 +179,7 @@ This is just a static property of the class. Add it to the class at the very bot
 Example:
 
 In Foundry VTT
+
 ```javascript
 class AVSettings {
   /* ... */
@@ -187,11 +189,12 @@ AVSettings.AV_MODES = {
   DISABLED: 0,
   AUDIO: 1,
   VIDEO: 2,
-  AUDIO_VIDEO: 3
+  AUDIO_VIDEO: 3,
 };
 ```
 
 Type definition
+
 ```typescript
 declare class AVSettings {
   /* ... */
@@ -209,6 +212,7 @@ declare class AVSettings {
 
 There are some comments we use to mark places in the code, where we should have a look later on. For things that could
 be extended or improved later, but are not needed for the proper functioning of the types, TODO comments can be used.
+
 ```typescript
 // TODO: Some description to explain what should be done
 ```
@@ -217,6 +221,7 @@ When updating types, especially between major Foundry versions, it happens that 
 are not defined or updated yet. In those cases FIXME comments should be used. Ideally those should also have the final
 type code in their description. In general it is favorable to have these places just commented instead of the types not
 compiling.
+
 ```typescript
 // FIXME: SomeNotYetExistingType // This will be added in PR #...
 ```

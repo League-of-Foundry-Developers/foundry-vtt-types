@@ -429,9 +429,7 @@ interface ForeignDocumentField<T extends ForeignDocumentFieldOptions> extends Do
     nullable?: true;
   }
     ? true
-    : T extends {
-        nullable: false;
-      }
+    : T extends { nullable: false }
     ? false
     : boolean;
   default: T extends {
