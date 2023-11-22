@@ -14,10 +14,10 @@ declare global {
    * ```
    */
   abstract class PointSource {
-    /**
-     * @param object - Some other object which is responsible for this source
-     */
-    constructor({ object }?: { object: PlaceableObject });
+    constructor(options?: {
+      /** Some other object which is responsible for this source */
+      object: PlaceableObject;
+    });
 
     /**
      * The type of source represented by this data structure.

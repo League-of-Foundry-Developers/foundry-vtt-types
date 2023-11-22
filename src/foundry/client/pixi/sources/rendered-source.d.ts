@@ -187,17 +187,28 @@ declare global {
 
     /**
      * Generic time-based animation used for Rendered Point Sources.
-     * @param dt          - Delta time.
-     * @param speed       - The animation speed, from 1 to 10
-     *                      (default: 5)
-     * @param intensity   - The animation intensity, from 1 to 10
-     *                      (default: 5)
-     * @param reverse     - Reverse the animation direction
-     *                      (default: false)
+     * @param dt      - Delta time.
+     * @param options - Options which affect the time animation
      */
     animateTime(
       dt: number,
-      { speed, intensity, reverse }: { speed: number; intensity: number; reverse: boolean },
+      options?: {
+        /**
+         * The animation speed, from 1 to 10
+         * (default: `5`)
+         */
+        speed: number;
+        /**
+         * The animation intensity, from 1 to 10
+         * (default: `5`)
+         */
+        intensity: number;
+        /**
+         * Reverse the animation direction
+         * (default: `false`)
+         */
+        reverse: boolean;
+      },
     ): void;
 
     /**
