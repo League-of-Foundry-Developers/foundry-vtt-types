@@ -148,12 +148,12 @@ interface SettingConfig<T = unknown> {
   type?: T extends string
     ? typeof String
     : T extends number
-    ? typeof Number
-    : T extends boolean
-    ? typeof Boolean
-    : T extends Array<any>
-    ? typeof Array
-    : ConstructorOf<T>;
+      ? typeof Number
+      : T extends boolean
+        ? typeof Boolean
+        : T extends Array<any>
+          ? typeof Array
+          : ConstructorOf<T>;
 
   /** For string Types, defines the allowable values */
   choices?: (T extends number | string ? Record<T, string> : never) | undefined;
