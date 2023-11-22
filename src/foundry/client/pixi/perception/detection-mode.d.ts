@@ -8,6 +8,13 @@ type CanvasVisibilityTestConfig = {
   tests: CanvasVisibilityTest[];
 };
 
+// TODO: Remove after foundry.abstract.DataModel is defined
+declare namespace foundry {
+  namespace abstract {
+    class DataModel {}
+  }
+}
+
 declare global {
   /**
    * A Detection Mode which can be associated with any kind of sense/vision/perception.

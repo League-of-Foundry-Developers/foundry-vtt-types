@@ -1,5 +1,21 @@
 export {};
 
+// TODO: Remove after DataField && DataModel are implemented
+declare namespace foundry {
+  namespace data {
+    namespace fields {
+      class DataField {
+        static get _defaults(): Record<string, unknown>;
+
+        _cast(value: any): any;
+      }
+    }
+  }
+  namespace abstract {
+    class DataModel {}
+  }
+}
+
 declare global {
   class ShaderField extends foundry.data.fields.DataField {
     /**
