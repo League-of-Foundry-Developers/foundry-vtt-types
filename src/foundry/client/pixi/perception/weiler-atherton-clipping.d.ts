@@ -29,12 +29,11 @@ declare global {
     /**
      * The supported clip types.
      * Values are equivalent to those in ClipperLib.ClipType.
-     * @readOnly
      */
-    static CLIP_TYPES: {
+    static CLIP_TYPES: Readonly<{
       INTERSECT: 0;
       UNION: 1;
-    };
+    }>;
 
     /**
      * The supported intersection types.
@@ -58,7 +57,7 @@ declare global {
      * @defaultValue `{}`
      */
     config: {
-      clipType?: WeilerAthertonClipper["CLIP_TYPES"];
+      clipType?: typeof WeilerAthertonClipper.CLIP_TYPES;
       clipOpts?: Record<string, unknown>;
     };
 
@@ -109,7 +108,7 @@ declare global {
         clipType,
         canMutate,
         ...clipOpts
-      }?: { clipType: WeilerAthertonClipper["CLIP_TYPE"]; canMutate: boolean; clipOpts: Record<string, unknown> },
+      }?: { clipType: typeof WeilerAthertonClipper.CLIP_TYPES; canMutate: boolean; clipOpts: Record<string, unknown> },
     ): PIXI.Polygon[];
 
     /**
@@ -126,7 +125,7 @@ declare global {
     static testForEnvelopment(
       polygon: PIXI.Polygon,
       clipObject: PIXI.Rectangle | PIXI.Circle,
-      clipType: WeilerAthertonClipper["CLIP_TYPE"],
+      clipType: typeof WeilerAthertonClipper.CLIP_TYPES,
       clipOpts: Record<string, unknown>,
     ): PIXI.Polygon[];
   }
