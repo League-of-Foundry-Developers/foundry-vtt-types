@@ -183,7 +183,18 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
   static testCollision(
     origin: Point,
     destination: Point,
-    { mode, ...config }: { mode?: string; config: PointSourcePolygonConfig },
+    {
+      mode,
+      ...config
+    }: {
+      /**
+       * The collision mode to test: "any", "all", or "closest"
+       * (default: "all")
+       */
+      mode?: string;
+      /** The configuration that defines a certain Polygon type */
+      config: PointSourcePolygonConfig;
+    },
   ): boolean | PolygonVertex | PolygonVertex[] | null;
 
   /**
