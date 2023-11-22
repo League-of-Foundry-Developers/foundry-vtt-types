@@ -21,7 +21,7 @@ declare global {
    * A Vision Mode which can be selected for use by a Token.
    * The selected Vision Mode alters the appearance of various aspects of the canvas while that Token is the POV.
    */
-  class VisionMode extends foundry.abstract.DataModel {
+  abstract class VisionMode extends foundry.abstract.DataModel {
     /**
      * Construct a Vision Mode using provided configuration parameters and callback functions.
      * @param data    - Data which fulfills the model defined by the VisionMode schema.
