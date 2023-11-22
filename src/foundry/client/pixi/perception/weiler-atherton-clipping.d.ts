@@ -39,11 +39,11 @@ declare global {
      * The supported intersection types.
      * @readOnly
      */
-    static INTERSECTION_TYPES: {
+    static INTERSECTION_TYPES: Readonly<{
       OUT_IN: -1;
       IN_OUT: 1;
       TANGENT: 0;
-    };
+    }>;
 
     polygon: PIXI.Polygon;
 

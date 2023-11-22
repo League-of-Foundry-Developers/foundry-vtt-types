@@ -2,9 +2,9 @@ export {};
 
 /** RenderFlags and RenderFlagObject are defined in client/pixi/core/interaction/render-flags */
 type RenderFlags = Set<unknown>;
-interface RenderFlagObject {}
+declare class RenderFlagObject {}
 declare global {
-  interface PerceptionManagerFlags extends RenderFlagObject {
+  interface PerceptionManagerFlags extends RenderFlags {
     /** Re-initialize the entire lighting configuration */
     initializeLighting: boolean;
     /** Refresh the rendered appearance of lighting */
@@ -35,7 +35,7 @@ declare global {
    * A singleton instance is available as canvas#perception.
    * @see Canvas#perception
    */
-  class PerceptionManager implements RenderFlagObject {
+  class PerceptionManager extends RenderFlagObject {
     static RENDER_FLAGS: {
       initializeLighting: { propagate: ["refreshLighting", "refreshVision"] };
       refreshLighting: { propagate: ["refreshLightSources"] };
