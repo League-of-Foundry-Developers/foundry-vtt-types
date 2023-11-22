@@ -7,7 +7,7 @@ declare global {
   class SoundSource extends PointSource {
     static override sourceType: "sound";
 
-    protected override _getPolygonConfiguration(): PointSourcePolygonConfig;
+    protected override _getPolygonConfiguration(): PointSourcePolygonConfig & { useThreshold: true };
 
     /** @remarks Not implemented */
     protected _refresh(): void;

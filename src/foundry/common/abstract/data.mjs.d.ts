@@ -137,8 +137,8 @@ declare abstract class DocumentData<
   ): ConcreteDocumentField extends { default?: undefined }
     ? undefined
     : ConcreteDocumentField extends { default: (data?: object) => infer V }
-    ? V
-    : ConcreteDocumentField["default"];
+      ? V
+      : ConcreteDocumentField["default"];
 
   /**
    * Initialize the instance by copying data from the source object to instance attributes.

@@ -143,63 +143,98 @@ declare global {
 
     /**
      * A torch animation where the luminosity and coloration decays each frame and is revitalized by flashes
-     * @param dt        - Delta time
-     * @param speed     - The animation speed, from 1 to 10
-     *                    (default: `5`)
-     * @param intensity - The animation intensity, from 1 to 10
-     *                    (default: `5`)
-     * @param reverse   - Reverse the animation direction
-     *                    (default: `false`)
+     * @param dt      - Delta time
+     * @param options - Additional options which modify the flame animation
      */
     animateTorch(
       dt: number,
-      { speed, intensity, reverse }?: { speed: number; intensity: number; reverse: boolean },
+      options?: {
+        /**
+         * The animation speed, from 1 to 10
+         * (default: `5`)
+         */
+        speed: number;
+        /**
+         * The animation intensity, from 1 to 10
+         * (default: `5`)
+         */
+        intensity: number;
+        /**
+         * Reverse the animation direction
+         * (default: `false`)
+         */
+        reverse: boolean;
+      },
     ): void;
 
     /**
      * An animation with flickering ratio and light intensity
-     * @param dt            - Delta time
-     * @param speed         - The animation speed, from 1 to 10
-     *                        (default: 5)
-     * @param intensity     - The animation intensity, from 1 to 10
-     *                        (default: 5)
-     * @param amplification - Noise amplification (\>1) or dampening (\<1)
-     *                        (default: 1)
-     * @param reverse       - Reverse the animation direction
-     *                        (default: false)
+     * @param dt      - Delta time
+     * @param options - Additional options which modify the flame animation
      */
     animateFlickering(
       dt: number,
-      {
-        speed,
-        intensity,
-        amplification,
-        reverse,
-      }?: { speed: number; intensity: number; amplification: number; reverse: boolean },
+      options?: {
+        /**
+         * The animation speed, from 1 to 10
+         * (default: `5`)
+         */
+        speed: number;
+        /**
+         * The animation intensity, from 1 to 10
+         * (default: `5`)
+         */
+        intensity: number;
+        /**
+         * Noise amplification (\>1) or dampening (\<1)
+         * (default: 1)
+         */
+        amplification: number;
+        /**
+         * Reverse the animation direction
+         * (default: `false`)
+         */
+        reverse: boolean;
+      },
     ): void;
 
     /**
      * A basic "pulse" animation which expands and contracts.
      * @param dt        - Delta time
-     * @param speed     - The animation speed, from 1 to 10
-     *                    (default: `5`)
-     * @param intensity - The animation intensity, from 1 to 10
-     *                    (default: `5`)
-     * @param reverse   - Is the animation reversed?
-     *                    (default: `false`)
+     * @param options - Additional options which modify the flame animation
      */
     animatePulse(
       dt: number,
-      { speed, intensity, reverse }?: { speed?: number; intensity?: number; reverse?: boolean },
+      options?: {
+        /**
+         * The animation speed, from 1 to 10
+         * (default: `5`)
+         */
+        speed: number;
+        /**
+         * The animation intensity, from 1 to 10
+         * (default: `5`)
+         */
+        intensity: number;
+        /**
+         * Reverse the animation direction
+         * (default: `false`)
+         */
+        reverse: boolean;
+      },
     ): void;
 
     /**
      * Test whether this LightSource provides visibility to see a certain target object.
-     * @param tests  - The sequence of tests to perform
-     * @param object - The target object being tested
+     * @param config - The visibility test configuration
      * @returns Is the target object visible to this source?
      */
-    testVisibility({ tests, object }: { tests: CanvasVisibilityTest[]; object: PlaceableObject }): boolean;
+    testVisibility(config: {
+      /** The sequence of tests to perform */
+      tests: CanvasVisibilityTest[];
+      /** The target object being tested */
+      object: PlaceableObject;
+    }): boolean;
 
     /**
      * Can this LightSource theoretically detect a certain object based on its properties?
