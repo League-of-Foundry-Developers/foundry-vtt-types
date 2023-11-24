@@ -108,6 +108,7 @@ declare global {
   }
 
   namespace PerceptionManager {
+    /** @deprecated Old flag structure */
     interface Options {
       lighting: {
         initialize: boolean;

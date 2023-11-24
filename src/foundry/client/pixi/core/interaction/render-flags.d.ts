@@ -93,7 +93,7 @@ declare global {
     applyRenderFlags(): void;
   }
 
-  function RenderFlagsMixin<BaseClass extends PIXI.DisplayObject>(
+  function RenderFlagsMixin<BaseClass extends new (...args: any[]) => any>(
     Base: BaseClass,
   ): Pick<BaseClass, keyof BaseClass> &
     typeof RenderFlagObject & {

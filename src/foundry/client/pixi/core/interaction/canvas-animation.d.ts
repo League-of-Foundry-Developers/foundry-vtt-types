@@ -19,6 +19,9 @@ declare global {
 
     /** The amount of the total delta which has been animated */
     done?: number;
+
+    /** Is this a color animation that applies to RGB channels */
+    color?: boolean;
   }
 
   interface CanvasAnimationOptions {

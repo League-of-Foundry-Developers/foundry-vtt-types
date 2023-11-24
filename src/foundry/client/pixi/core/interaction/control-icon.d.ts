@@ -33,9 +33,9 @@ declare class ControlIcon extends PIXI.Container {
   tintColor: number | null;
 
   /**
-   * @defaultValue `true`
+   * @defaultValue `static`
    */
-  interactive: boolean;
+  eventMode: string;
 
   /**
    * @defaultValue `false`
@@ -48,11 +48,28 @@ declare class ControlIcon extends PIXI.Container {
 
   icon: PIXI.Sprite;
 
+  /**
+   * @defaultValue `border.visible = false`
+   */
   border: PIXI.Graphics;
 
+  /**
+   * Initial drawing of the ControlIcon
+   */
   draw(): Promise<this>;
 
-  protected _onHoverIn(event: PIXI.InteractionEvent): void;
-
-  protected _onHoverOut(event: PIXI.InteractionEvent): void;
+  /**
+   * Incremental refresh for ControlIcon appearance.
+   */
+  refresh({
+    visible,
+    iconColor,
+    borderColor,
+    borderVisible,
+  }?: {
+    visible?: boolean;
+    iconColor?: number;
+    borderColor?: number;
+    borderVisible?: boolean;
+  }): this;
 }

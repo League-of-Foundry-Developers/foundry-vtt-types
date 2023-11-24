@@ -1,3 +1,8 @@
+declare namespace PIXI {
+  // TODO: Update the PIXI dependency
+  interface FederatedEvent {}
+}
+
 /**
  * Handle mouse interaction events for a Canvas object.
  * There are three phases of events: hover, click, and drag
@@ -21,9 +26,9 @@
  * Drag and Drop
  * _handleMouseMove
  *  action: dragLeftStart
- *  action: dragLeftMove
  *  action: dragRightStart
  *  action: dragLeftMove
+ *  action: dragRightMove
  * _handleMouseUp
  *  action: dragLeftDrop
  *  action: dragRightDrop
@@ -81,25 +86,13 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
    * Bound handlers which can be added and removed
    * @defaultValue `{}`
    */
-  handlers: Partial<
-    Record<
-      "contextmenu" | "mousedown" | "mousemove" | "mouseout" | "mouseover" | "mouseup" | "rightdown",
-      (event: PIXI.InteractionEvent | MouseEvent) => void
-    >
-  >;
+  interactionData: Partial<Record<string, unknown>>;
 
   /**
    * The drag handling time
    * @defaultValue `0`
    */
   dragTime: number;
-
-  /**
-   * The throttling time below which a mouse move event will not be handled
-   * @defaultValue `Math.ceil(1000 / (canvas.app.ticker.maxFPS || 60));`
-   * @internal
-   */
-  protected _dragThrottleMS: number;
 
   /**
    * The time of the last left-click event
@@ -125,6 +118,12 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
   controlIcon: ControlIcon | undefined;
 
   /**
+   * The view id pertaining to the PIXI Application.
+   * If not provided, default to canvas.app.view.id
+   */
+  viewId: ControlIcon;
+
+  /**
    * Enumerate the states of a mouse interaction workflow.
    * 0: NONE - the object is inactive
    * 1: HOVER - the mouse is hovered over the object
@@ -141,9 +140,26 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
   };
 
   /**
-   * Get the target
+   * The number of milliseconds of mouse click depression to consider it a long press.
+   * @defaultValue `500`
    */
-  get target(): PIXI.Container;
+  static LONG_PRESS_DURATION_MS: number;
+
+  /**
+   * Global timeout for the long-press event.
+   * @defaultValue `null`
+   */
+  static longPressTimeout: number | null;
+
+  /**
+   * Get the target.
+   */
+  get target(): PIXI.DisplayObject;
+
+  /**
+   * Is this mouse manager in a dragging state?
+   */
+  get isDragging(): boolean;
 
   /**
    * Activate interactivity for the handled object
@@ -156,14 +172,17 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
    * @param event  - The event being handled
    * @returns Can the action be performed?
    */
-  can(action: MouseInteractionManager.PermissionAction, event: Event | PIXI.InteractionEvent): boolean;
+  can(action: MouseInteractionManager.PermissionAction, event: Event | PIXI.FederatedEvent): boolean;
 
   /**
    * Execute a callback function associated with a certain action in the workflow
    * @param action - The action being attempted
    * @param event  - The event being handled
+   * @param args   - Additional callback arguments.
+   * @returns A boolean which may indicate that the event was handled by the callback.
+   *          Events which do not specify a callback are assumed to have been handled as no-op.
    */
-  callback(action: MouseInteractionManager.Action, event: Event | PIXI.InteractionEvent): unknown;
+  callback(action: MouseInteractionManager.Action, event: Event | PIXI.FederatedEvent, ...args: any[]): boolean;
 
   /**
    * A reference to the possible interaction states which can be observed
@@ -171,129 +190,51 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
   get states(): (typeof MouseInteractionManager)["INTERACTION_STATES"];
 
   /**
-   * Activate a set of listeners which handle hover events on the target object
-   * @internal
+   * A reference to the possible interaction states which can be observed
    */
-  protected _activateHoverEvents(): void;
+  get handlerOutcomes(): ValueOf<MouseInteractionManager.HANDLER_OUTCOME>;
 
   /**
-   * Activate a new set of listeners for click events on the target object
-   * @internal
+   * A public method to handle directly an event into this manager, according to its type.
+   * Note: drag events are not handled.
+   * @param event - No comment
+   * @returns Has the event been processed?
    */
-  protected _activateClickEvents(): void;
-
-  /**
-   * Deactivate event listeners for click events on the target object
-   * @internal
-   */
-  protected _deactivateClickEvents(): void;
-
-  /**
-   * Activate events required for handling a drag-and-drop workflow
-   * @internal
-   */
-  protected _activateDragEvents(): void;
-
-  /**
-   * Deactivate events required for handling drag-and-drop workflow.
-   * @internal
-   */
-  protected _deactivateDragEvents(): void;
-
-  /**
-   * Handle mouse-over events which activate downstream listeners and do not stop propagation.
-   * @internal
-   */
-  protected _handleMouseOver(event: PIXI.InteractionEvent): unknown;
-
-  /**
-   * Handle mouse-out events which terminate hover workflows and do not stop propagation.
-   * @internal
-   */
-  protected _handleMouseOut(event: PIXI.InteractionEvent): unknown;
-
-  /**
-   * Handle mouse-down events which activate downstream listeners.
-   * Stop further propagation only if the event is allowed by either single or double-click.
-   * @internal
-   */
-  protected _handleMouseDown(event: PIXI.InteractionEvent): unknown;
-
-  /**
-   * Handle mouse-down which trigger a single left-click workflow.
-   * @internal
-   */
-  protected _handleClickLeft(event: PIXI.InteractionEvent): void;
-
-  /**
-   * Handle mouse-down which trigger a single left-click workflow.
-   * @internal
-   */
-  protected _handleClickLeft2(event: PIXI.InteractionEvent): unknown;
-
-  /**
-   * Handle right-click mouse-down events.
-   * Stop further propagation only if the event is allowed by either single or double-click.
-   * @internal
-   */
-  protected _handleRightDown(event: PIXI.InteractionEvent): unknown;
-
-  /**
-   * Handle single right-click actions.
-   * @internal
-   */
-  protected _handleClickRight(event: PIXI.InteractionEvent): void;
-
-  /**
-   * Handle double right-click actions.
-   * @internal
-   */
-  protected _handleClickRight2(event: PIXI.InteractionEvent): unknown;
-
-  /**
-   * Handle mouse movement during a drag workflow
-   * @internal
-   */
-  protected _handleMouseMove(event: PIXI.InteractionEvent): unknown;
-
-  /**
-   * Handle the beginning of a new drag start workflow, moving all controlled objects on the layer
-   * @internal
-   */
-  protected _handleDragStart(event: PIXI.InteractionEvent): unknown;
-
-  /**
-   * Handle the continuation of a drag workflow, moving all controlled objects on the layer
-   * @internal
-   */
-  protected _handleDragMove(event: PIXI.InteractionEvent): unknown;
-
-  /**
-   * Handle mouse up events which may optionally conclude a drag workflow
-   * @internal
-   */
-  protected _handleMouseUp(event: PIXI.InteractionEvent): void;
-
-  /**
-   * Handle the conclusion of a drag workflow, placing all dragged objects back on the layer
-   * @internal
-   */
-  protected _handleDragDrop(event: PIXI.InteractionEvent): void;
-
-  /**
-   * Handle the cancellation of a drag workflow, resetting back to the original state
-   * @internal
-   */
-  protected _handleDragCancel(event: MouseEvent): void;
+  handleEvent(event: PIXI.FederatedEvent): boolean;
 
   /**
    * A public method to cancel a current interaction workflow from this manager.
    * @param event - The event that initiates the cancellation
    */
-  cancel(event: Event): void;
+  cancel(event: PIXI.FederatedEvent): void;
+
+  /**
+   * Reset the mouse manager.
+   * @param options - No comment
+   */
+  reset(options?: {
+    /** Reset the interaction data? */
+    interactionData: boolean;
+    /** Reset the state? */
+    state: boolean;
+  }): void;
 }
 
 declare namespace MouseInteractionManager {
+  /**
+   * Enumerate the states of handle outcome.
+   */
+  type HANDLER_OUTCOME = {
+    /** -2: SKIPPED - the handler has been skipped by previous logic */
+    SKIPPED: -2;
+    /** -1: DISALLOWED - the handler has dissallowed further process */
+    DISALLOWED: -1;
+    /** 1: REFUSED - the handler callback has been processed and is refusing further process */
+    REFUSED: 1;
+    /** 2: ACCEPTED - the handler callback has been processed and is accepting further process */
+    ACCEPTED: 2;
+  };
+
   type PermissionAction =
     | "clickLeft"
     | "clickLeft2"
@@ -311,10 +252,7 @@ declare namespace MouseInteractionManager {
   type Action = PermissionAction | "dragLeftCancel" | "dragRightCancel";
 
   interface Options {
-    /**
-     * @remarks If set, this must be the name of a property of the object that is a {@link PIXI.Container}.
-     */
-    target?: string | null;
+    target?: PIXI.DisplayObject;
 
     dragResistance?: number;
   }
