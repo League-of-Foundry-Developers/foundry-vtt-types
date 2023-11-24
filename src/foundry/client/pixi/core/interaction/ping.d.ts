@@ -25,4 +25,31 @@ declare global {
      */
     name?: string;
   }
+
+  /**
+   * A class to manage a user ping on the canvas.
+   */
+  class Ping extends PIXI.Container {
+    /**
+     * @param origin  - The canvas co-ordinates of the origin of the ping.
+     * @param options - Additional options to configure the ping animation.
+     */
+    constructor(origin: PIXI.Point, options?: PingOptions);
+
+    /** {@inheritdoc} */
+    destroy(options?: Record<string, unknown>): void;
+
+    /**
+     * Start the ping animation.
+     * @returns Returns true if the animation ran to completion, false otherwise.
+     */
+    animate(): Promise<boolean>;
+
+    /**
+     * On each tick, advance the animation.
+     * @param dt        - The number of ms that elapsed since the previous frame.
+     * @param animation - The animation state.
+     */
+    protected _animateFrame(dt: number, animation: CanvasAnimationData): void;
+  }
 }
