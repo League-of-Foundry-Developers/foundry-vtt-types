@@ -372,10 +372,10 @@ declare global {
 
 interface Vision {
   /**
-   * @remarks
-   * This is required but has been set to optional because of PointSource
+   * @remarks Documentation says PIXI.Circle, but determined by Atropos to be out of date.
+   * Likely to be removed in future version as it's no longer used generally.
    */
-  fov?: PIXI.Circle | undefined;
+  fov?: PIXI.Polygon | undefined;
 
   /**
    * @remarks
