@@ -1,4 +1,4 @@
-import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes";
+export {};
 
 declare global {
   type VertexMap = Map<number, PolygonVertex>;
@@ -28,12 +28,10 @@ declare global {
     /**
      * A collection of rays which are fired at vertices
      */
+    //@ts-expect-error Getter/setter routine is deprecated functionality as of v11, removed in v13
     rays: PolygonRay[];
 
-    /**
-     * @param origin - The provided polygon origin
-     * @param config - The provided configuration object
-     */
+    /** {@inheritdoc} */
     override initialize(origin: Point, config: PointSourcePolygonConfig): void;
 
     /** {@inheritDoc} */
@@ -46,24 +44,6 @@ declare global {
      * @internal
      */
     protected _identifyEdges(): void;
-
-    /**
-     * Get the super-set of walls which could potentially apply to this polygon.
-     * @internal
-     */
-    protected _getWalls(): ConfiguredObjectClassForName<"Wall">[];
-
-    /**
-     * Restrict the set of candidate edges to those which appear within the limited angle of emission.
-     * @internal
-     */
-    protected _restrictEdgesByAngle(): void;
-
-    /**
-     * Process the candidate edges to further constrain them using a circular radius of effect.
-     * @internal
-     */
-    protected _constrainEdgesByRadius(): void;
 
     /**
      * Consolidate all vertices from identified edges and register them as part of the vertex mapping.
@@ -83,6 +63,15 @@ declare global {
      * @internal
      */
     protected _executeSweep(): void;
+
+    /**
+     * Update active edges at a given vertex
+     * Must delete first, in case the edge is in both sets.
+     * @param vertex      - The current vertex
+     * @param activeEdges - A set of currently active edges
+     * @internal
+     */
+    protected _updateActiveEdges(vertex: PolygonVertex, activeEdges: EdgeSet): void;
 
     /**
      * Determine the initial set of active edges as those which intersect with the initial ray
@@ -155,5 +144,23 @@ declare global {
       ray: PolygonRay,
       config: PointSourcePolygonConfig,
     ): boolean | PolygonVertex | PolygonVertex[] | null;
+
+    /**
+     * Determine the set of collisions which occurs for a Ray.
+     * @param ray  - The Ray to test
+     * @param mode - The collision mode being tested
+     * @returns The collision test result
+     */
+    protected override _testCollision(ray: Ray, mode: string): boolean | PolygonVertex | PolygonVertex[] | null;
+
+    override visualize(): PIXI.Graphics | undefined;
+
+    /**
+     * Visualize the polygon, displaying its computed area, rays, and collision points
+     * @param ray         - No comments
+     * @param collisions  - No comments
+     * @internal
+     */
+    protected _visualizeCollision(ray: Ray, collisions: PolygonVertex[]): void;
   }
 }
