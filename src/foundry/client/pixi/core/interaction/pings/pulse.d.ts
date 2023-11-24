@@ -90,13 +90,33 @@ declare global {
     /**
      * @param origin - The canvas co-ordinates of the origin of the ping. This becomes the arrow's tip.
      * @param options - Additional options to configure the ping animation.
+     * @param rotation - The angle of the arrow in radians.
      */
     constructor(
       origin: PIXI.Point,
       options: PulsePingOptions & {
-        /** The angle of the arrow in radians. */
+        /**
+         * The angle of the arrow in radians.
+         * (default: `0`)
+         */
         rotation: number;
       },
     );
+
+    /** {@inheritdoc} */
+    protected override _drawShape(g: PIXI.Graphics, color: number, alph: number, size: number): void;
+  }
+  /**
+   * A type of ping that produces a pulse warning sign animation.
+   */
+  class AlertPing extends PulsePing {
+    /**
+     * @param origin  - The canvas co-ordinates of the origin of the ping.
+     * @param options - Additional options to configure the ping animation.
+     */
+    constructor(origin: PIXI.Point, options: PulsePingOptions);
+
+    /** {@inheritdoc} */
+    protected override _drawShape(g: PIXI.Graphics, color: number, alph: number, size: number): void;
   }
 }
