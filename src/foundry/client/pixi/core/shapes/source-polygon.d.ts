@@ -193,7 +193,7 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
        */
       mode?: string;
       /** The configuration that defines a certain Polygon type */
-      config: PointSourcePolygonConfig;
+      config?: PointSourcePolygonConfig;
     },
   ): boolean | PolygonVertex | PolygonVertex[] | null;
 
