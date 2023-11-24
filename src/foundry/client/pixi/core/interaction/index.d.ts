@@ -1,3 +1,4 @@
+import "./pings";
 import "./canvas-animation";
 import "./control-icon";
 import "./mouse-handler";

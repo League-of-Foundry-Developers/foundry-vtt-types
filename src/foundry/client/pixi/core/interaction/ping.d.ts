@@ -1,5 +1,8 @@
 export {};
 
+// TODO: Remove once color export is fixed
+type Color = number;
+
 declare global {
   interface PingOptions {
     /**
@@ -35,6 +38,10 @@ declare global {
      * @param options - Additional options to configure the ping animation.
      */
     constructor(origin: PIXI.Point, options?: PingOptions);
+
+    options: PingOptions;
+
+    _color: Color | number;
 
     /** {@inheritdoc} */
     destroy(options?: Record<string, unknown>): void;
