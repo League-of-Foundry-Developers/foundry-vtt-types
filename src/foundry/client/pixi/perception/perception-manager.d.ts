@@ -1,8 +1,5 @@
 export {};
 
-/** RenderFlags and RenderFlagObject are defined in client/pixi/core/interaction/render-flags */
-type RenderFlags = Set<unknown>;
-declare class RenderFlagObject {}
 declare global {
   interface PerceptionManagerFlags extends RenderFlags {
     /** Re-initialize the entire lighting configuration */
@@ -35,7 +32,7 @@ declare global {
    * A singleton instance is available as canvas#perception.
    * @see Canvas#perception
    */
-  class PerceptionManager extends RenderFlagObject {
+  class PerceptionManager extends RenderFlagsMixin(Object) {
     static RENDER_FLAGS: {
       initializeLighting: { propagate: ["refreshLighting", "refreshVision"] };
       refreshLighting: { propagate: ["refreshLightSources"] };
@@ -78,7 +75,7 @@ declare global {
      * @param v2    - Opt-in to passing v2 flags, otherwise a backwards compatibility shim will be applied
      *                (default: `true`)
      */
-    update(flags: Partial<RenderFlagObject>, v2?: boolean): void;
+    update(flags: Partial<PerceptionManagerFlags>, v2?: boolean): void;
 
     /**
      * A helper function to perform an immediate initialization plus incremental refresh.
@@ -92,7 +89,8 @@ declare global {
 
     /**
      * @deprecated since v10, will be removed in v12
-     * @remarks PerceptionManager#cancel is renamed to PerceptionManager#deactivate
+     * @remarks "PerceptionManager#cancel is renamed to PerceptionManager#deactivate"
+     * @remarks PerceptionManager#deactivate does not actually exist as of v11
      */
     cancel(): void;
 
