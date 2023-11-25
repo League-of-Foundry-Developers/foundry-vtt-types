@@ -97,6 +97,8 @@ declare global {
     Base: BaseClass,
   ): Pick<BaseClass, keyof BaseClass> &
     typeof RenderFlagObject & {
-      new (...args: ConstructorParameters<Package>): InstanceType<Package> & RenderFlagObject;
+      new (
+        ...args: ConstructorParameters<typeof RenderFlagObject>
+      ): InstanceType<typeof RenderFlagObject> & RenderFlagObject;
     };
 }
