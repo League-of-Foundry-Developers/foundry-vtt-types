@@ -49,7 +49,8 @@ declare class ControlIcon extends PIXI.Container {
   icon: PIXI.Sprite;
 
   /**
-   * @defaultValue `border.visible = false`
+   * @defaultValue
+   * The `visible` property is true.
    */
   border: PIXI.Graphics;
 
