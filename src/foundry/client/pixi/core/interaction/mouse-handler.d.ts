@@ -81,7 +81,11 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
    * Bound handlers which can be added and removed
    * @defaultValue `{}`
    */
-  interactionData: Partial<Record<string, unknown>>;
+  interactionData: {
+    origin?: PIXI.Point;
+    destination?: PIXI.Point;
+    object?: Object;
+  } & Partial<Record<string, unknown>>;
 
   /**
    * The drag handling time
@@ -210,6 +214,7 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
   reset(options?: {
     /** Reset the interaction data? */
     interactionData: boolean;
+
     /** Reset the state? */
     state: boolean;
   }): void;

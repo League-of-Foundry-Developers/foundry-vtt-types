@@ -53,7 +53,6 @@ declare global {
      *  Stage 2.2: Fade out.
      * 1/5th of the animation time is allocated to Stage 1. 4/5ths are allocated to Stage 2. Of those 4/5ths, 2/5ths
      * are allocated to Stage 2.1, and 2/5ths are allocated to Stage 2.2.
-     * @internal
      */
     protected _computeTimeSlices(): void;
 
