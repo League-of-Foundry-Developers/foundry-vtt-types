@@ -48,7 +48,7 @@ declare global {
        * @param options - Options passed on to the pointsForArc method
        * @returns An array of points arranged clockwise from start to end
        */
-      pointsBetween(a: Point, b: Point, options?: Record<string, unknown>): Point[];
+      pointsBetween(a: Point, b: Point, options?: Circle.PointsForArcOptions): Point[];
 
       /**
        * Get the points that would approximate a circular arc along this circle, given a starting and ending angle.
@@ -58,23 +58,14 @@ declare global {
        * @param options   - Options which affect how the circle is converted
        * @returns An array of points along the requested arc
        */
-      pointsForArc(
-        fromAngle: number,
-        toAngle: number,
-        options?: {
-          /** The number of points which defines the density of approximation */
-          density: number;
-          /** Whether to include points at the circle where the arc starts and ends */
-          includeEndpoints: boolean;
-        },
-      ): Point[];
+      pointsForArc(fromAngle: number, toAngle: number, options?: Circle.PointsForArcOptions): Point[];
 
       /**
        * Approximate this PIXI.Circle as a PIXI.Polygon
        * @param options - Options forwarded on to the pointsForArc method
        * @returns The Circle expressed as a PIXI.Polygon
        */
-      toPolygon(options?: Record<string, unknown>): PIXI.Polygon;
+      toPolygon(options?: Circle.PointsForArcOptions): PIXI.Polygon;
 
       /**
        * The recommended vertex density for the regular polygon approximation of a circle of a given radius.
@@ -99,8 +90,10 @@ declare global {
         options?: {
           /** The number of points which defines the density of approximation */
           density: number;
+
           /** The clipper clip type */
           clipType: number;
+
           /**
            * Use the Weiler-Atherton algorithm. Otherwise, use Clipper.
            * (default: `true`)
@@ -124,6 +117,16 @@ declare global {
           density: number;
         },
       ): PIXI.Polygon;
+    }
+
+    namespace Circle {
+      type PointsForArcOptions = {
+        /** The number of points which defines the density of approximation */
+        density: number;
+
+        /** Whether to include points at the circle where the arc starts and ends */
+        includeEndpoints: boolean;
+      };
     }
   }
 }

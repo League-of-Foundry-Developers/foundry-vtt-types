@@ -291,62 +291,62 @@ declare global {
      * @param options - Options which customize event handling
      *                  (default: `{}`)
      */
-    protected _onHoverIn(event: PIXI.InteractionEvent, options?: HoverInOptions): false | void;
+    protected _onHoverIn(event: PIXI.FederatedEvent, options?: HoverInOptions): false | void;
 
     /**
      * Actions that should be taken for this Placeable Object when a mouseout event occurs
      * @param event - The triggering canvas interaction event
      */
-    protected _onHoverOut(event: PIXI.InteractionEvent): false | void;
+    protected _onHoverOut(event: PIXI.FederatedEvent): false | void;
 
     /**
      * Callback actions which occur on a single left-click event to assume control of the object
      * @see MouseInteractionManager#_handleClickLeft
      * @param event - The triggering canvas interaction event
      */
-    protected _onClickLeft(event: PIXI.InteractionEvent): boolean | void;
+    protected _onClickLeft(event: PIXI.FederatedEvent): boolean | void;
 
     /**
      * Callback actions which occur on a double left-click event to activate
      * @see MouseInteractionManager#_handleClickLeft2
      * @param event - The triggering canvas interaction event
      */
-    protected _onClickLeft2(event: PIXI.InteractionEvent): void;
+    protected _onClickLeft2(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a single right-click event to configure properties of the object
      * @see MouseInteractionManager#_handleClickRight
      * @param event - The triggering canvas interaction event
      */
-    protected _onClickRight(event: PIXI.InteractionEvent): void;
+    protected _onClickRight(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a double right-click event to configure properties of the object
      * @see MouseInteractionManager#_handleClickRight2
      * @param event - The triggering canvas interaction event
      */
-    protected _onClickRight2(event: PIXI.InteractionEvent): void;
+    protected _onClickRight2(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur when a mouse-drag action is first begun.
      * @see MouseInteractionManager#_handleDragStart
      * @param event - The triggering canvas interaction event
      */
-    protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
+    protected _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a mouse-move operation.
      * @see MouseInteractionManager#_handleDragMove
      * @param event - The triggering canvas interaction event
      */
-    protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+    protected _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a mouse-move operation.
      * @see MouseInteractionManager#_handleDragDrop
      * @param event - The triggering canvas interaction event
      */
-    protected _onDragLeftDrop(event: PIXI.InteractionEvent): unknown;
+    protected _onDragLeftDrop(event: PIXI.FederatedEvent): unknown;
 
     /**
      * Callback actions which occur on a mouse-move operation.
@@ -372,7 +372,7 @@ declare global {
 
 interface Vision {
   /**
-   * @remarks Documentation says PIXI.Circle, but determined by Atropos to be out of date.
+   * @privateRemarks Documentation says PIXI.Circle, but determined by Atropos to be out of date.
    * Likely to be removed in future version as it's no longer used generally.
    */
   fov?: PIXI.Polygon | undefined;

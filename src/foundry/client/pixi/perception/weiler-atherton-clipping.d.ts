@@ -30,16 +30,15 @@ declare global {
      * The supported clip types.
      * Values are equivalent to those in ClipperLib.ClipType.
      */
-    static CLIP_TYPES: Readonly<{
+    static readonly CLIP_TYPES: Readonly<{
       INTERSECT: 0;
       UNION: 1;
     }>;
 
     /**
      * The supported intersection types.
-     * @readOnly
      */
-    static INTERSECTION_TYPES: Readonly<{
+    static readonly INTERSECTION_TYPES: Readonly<{
       OUT_IN: -1;
       IN_OUT: 1;
       TANGENT: 0;

@@ -4,24 +4,34 @@ declare global {
   interface PerceptionManagerFlags extends RenderFlags {
     /** Re-initialize the entire lighting configuration */
     initializeLighting: boolean;
+
     /** Refresh the rendered appearance of lighting */
     refreshLighting: boolean;
+
     /** Update the configuration of light sources */
     refreshLightSources: boolean;
+
     /** Re-initialize the entire vision configuration */
     initializeVision: boolean;
+
     /** Update the configuration of vision sources */
     refreshVisionSources: boolean;
+
     /** Refresh the rendered appearance of vision */
     refreshVision: boolean;
+
     /** Re-initialize the entire ambient sound configuration */
     initializeSounds: boolean;
+
     /** Refresh the audio state of ambient sounds */
     refreshSounds: boolean;
+
     /** Apply a fade duration to sound refresh workflow */
     soundFadeDuration: boolean;
+
     /** Refresh the visual appearance of tiles */
     refreshTiles: boolean;
+
     /** Refresh the contents of the PrimaryCanvasGroup mesh */
     refreshPrimary: boolean;
   }
@@ -36,9 +46,9 @@ declare global {
     static RENDER_FLAGS: {
       initializeLighting: { propagate: ["refreshLighting", "refreshVision"] };
       refreshLighting: { propagate: ["refreshLightSources"] };
-      refreshLightSources: {};
-      refreshVisionSources: {};
-      refreshPrimary: {};
+      refreshLightSources: Record<string, never>;
+      refreshVisionSources: Record<string, never>;
+      refreshPrimary: Record<string, never>;
       initializeVision: {
         propagate: ["refreshVision", "refreshTiles", "refreshLighting", "refreshLightSources", "refreshPrimary"];
       };
@@ -89,7 +99,7 @@ declare global {
 
     /**
      * @deprecated since v10, will be removed in v12
-     * @remarks "PerceptionManager#cancel is renamed to PerceptionManager#deactivate"
+     * @remarks PerceptionManager#cancel is renamed to PerceptionManager#deactivate
      * @remarks PerceptionManager#deactivate does not actually exist as of v11
      */
     cancel(): void;

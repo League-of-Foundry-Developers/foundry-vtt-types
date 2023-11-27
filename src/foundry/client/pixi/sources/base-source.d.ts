@@ -190,22 +190,31 @@ declare global {
   interface PointSourceData {
     /** The x-coordinate of the source location */
     x: number;
+
     /** The y-coordinate of the source location */
     y: number;
+
     /** The elevation of the point source */
     elevation: number;
+
     /** An index for sorting the source relative to others at the same elevation */
     z: number | null;
+
     /** The radius of the source */
     radius: number;
+
     /** A secondary radius used for limited angles */
     externalRadius: number;
+
     /** The angle of rotation for this point source */
     rotation: number;
+
     /** The angle of emission for this point source */
     angle: number;
+
     /** Whether or not the source is constrained by walls */
     walls: boolean;
+
     /** Whether or not the source is disabled */
     disabled: boolean;
   }

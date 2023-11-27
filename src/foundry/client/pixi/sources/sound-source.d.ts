@@ -9,10 +9,10 @@ declare global {
 
     protected override _getPolygonConfiguration(): PointSourcePolygonConfig & { useThreshold: true };
 
-    /** @remarks Not implemented */
+    /** @remarks A no-op */
     protected _refresh(): void;
 
-    /** @remarks Not implemented */
+    /** @remarks A no-op */
     protected _destroy(): void;
   }
 }

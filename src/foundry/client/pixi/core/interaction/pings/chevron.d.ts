@@ -12,12 +12,12 @@ declare global {
      */
     constructor(origin: PIXI.Point, options?: PingOptions);
 
-    /** @defaultValue (this.options.size / 2) * .75 */
+    /** @defaultValue `(this.options.size / 2) * .75` */
     _r: number;
 
     /**
      * The inner ring is 3/4s the size of the outer.
-     * @defaultValue this._r * .75
+     * @defaultValue `this._r * .75`
      */
     _rInner: number;
 
@@ -25,19 +25,19 @@ declare global {
      * The animation is split into three stages. First, the chevron fades in and moves downwards, then the rings fade
      * in, then everything fades out as the chevron moves back up.
      * Store the 1/4 time slice.
-     * @defaultValue this.options.duration * .25
+     * @defaultValue `this.options.duration * .25`
      */
     _t14: number;
 
     /**
      * Store the 1/2 time slice.
-     * @defaultValue this.options.duration * .5
+     * @defaultValue `this.options.duration * .5`
      */
     _t12: number;
 
     /**
      * Store the 3/4s time slice.
-     * @defaultValue this._t14 * 3
+     * @defaultValue `this._t14 * 3`
      */
     _t34: number;
 
@@ -52,6 +52,7 @@ declare global {
 
     /** {@inheritdoc} */
     override _animateFrame(dt: number, animation: CanvasAnimationData): void;
+
     /**
      * Draw the outer and inner rings.
      * @param a - The alpha.
@@ -64,6 +65,7 @@ declare global {
      * @internal
      */
     protected _loadChevron(): Promise<PIXI.Sprite>;
+
     /**
      * Draw the two rings that are used as part of the ping animation.
      * @internal

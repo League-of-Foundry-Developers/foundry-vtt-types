@@ -30,16 +30,16 @@ interface PointSourcePolygonConfig {
   boundaryShapes?: Array<PIXI.Rectangle | PIXI.Circle | PIXI.Polygon>;
 
   /** Does this polygon use the Scene inner or outer bounding rectangle */
-  useInnerBounds?: Readonly<boolean>;
+  readonly useInnerBounds?: boolean;
 
   /** Does this polygon have a limited radius? */
-  hasLimitedRadius?: Readonly<boolean>;
+  readonly hasLimitedRadius?: boolean;
 
   /** Does this polygon have a limited angle? */
-  hasLimitedAngle?: Readonly<boolean>;
+  readonly hasLimitedAngle?: boolean;
 
   /** The computed bounding box for the polygon */
-  boundingBox?: Readonly<PIXI.Rectangle>;
+  readonly boundingBox?: PIXI.Rectangle;
 }
 
 /**
@@ -49,7 +49,7 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
   /**
    * Customize how wall direction of one-way walls is applied
    */
-  static WALL_DIRECTION_MODES: Readonly<{
+  static readonly WALL_DIRECTION_MODES: Readonly<{
     NORMAL: 0;
     REVERSED: 1;
     BOTH: 2;
@@ -192,6 +192,7 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
        * (default: "all")
        */
       mode?: string;
+
       /** The configuration that defines a certain Polygon type */
       config?: PointSourcePolygonConfig;
     },

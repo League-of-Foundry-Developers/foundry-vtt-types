@@ -1,8 +1,3 @@
-declare namespace PIXI {
-  // TODO: Update the PIXI dependency
-  interface FederatedEvent {}
-}
-
 /**
  * Handle mouse interaction events for a Canvas object.
  * There are three phases of events: hover, click, and drag
@@ -62,14 +57,14 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
   permissions: Partial<
     Record<
       MouseInteractionManager.PermissionAction,
-      ((user: Game["user"], event: PIXI.InteractionEvent) => boolean) | boolean
+      ((user: Game["user"], event: PIXI.FederatedEvent) => boolean) | boolean
     >
   >;
 
   /**
    * @defaultValue `{}`
    */
-  callbacks: Partial<Record<MouseInteractionManager.Action, ((event: Event | PIXI.InteractionEvent) => void) | null>>;
+  callbacks: Partial<Record<MouseInteractionManager.Action, ((event: Event | PIXI.FederatedEvent) => void) | null>>;
 
   /**
    * @defaultValue `{}`

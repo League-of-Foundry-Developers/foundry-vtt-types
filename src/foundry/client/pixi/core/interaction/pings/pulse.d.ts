@@ -10,6 +10,7 @@ declare global {
      * (default: `3`)
      */
     rings?: number;
+
     /**
      * The alternate color that the rings begin at. Use white for a 'flashing' effect.
      * (default: `#ffffff`)
@@ -31,13 +32,13 @@ declare global {
 
     /**
      * The radius is half the diameter.
-     * @defaultValue this.options.size / 2
+     * @defaultValue `this.options.size / 2`
      */
     _r: number;
 
     /**
      * This is the radius that the rings initially begin at. It's set to 1/5th of the maximum radius.
-     * @defaultValue this._r / 5
+     * @defaultValue `this._r / 5`
      */
     _r0: number;
 

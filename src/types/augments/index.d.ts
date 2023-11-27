@@ -1,3 +1,4 @@
+import "./pixiGlobal";
 import "./pixiGraphics";
 import "./pixiGraphicsSmooth";
 import "./pixiLegacyGraphics";

@@ -1,8 +1,19 @@
 export {};
 
-type TokenDetectionMode = unknown;
-// TODO: Define in client/pixi/layers/effects/visibility.js
-type CanvasVisibilityTest = unknown;
+// TODO: Move to common/documents/token
+type TokenDetectionMode = {
+  /** The id of the detection mode, a key from CONFIG.Canvas.detectionModes */
+  id: string;
+  /** Whether or not this detection mode is presently enabled */
+  enabled: boolean;
+  /** The maximum range in distance units at which this mode can detect targets */
+  range: number;
+};
+// TODO: Move to client/pixi/layers/effects/visibility.js
+type CanvasVisibilityTest = {
+  point: PIXI.Point;
+  los: Map<VisionSource, boolean>;
+};
 type CanvasVisibilityTestConfig = {
   object: PlaceableObject;
   tests: CanvasVisibilityTest[];

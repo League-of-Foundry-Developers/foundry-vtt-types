@@ -3,7 +3,6 @@ import type { StatusEffect } from "./data/documents/token";
 import * as CONST from "../common/constants.mjs";
 
 // FIXME: Replace with imports for for the right things or remove when implemented
-type VisionMode = unknown;
 type DetectInvisibilityVisionMode = VisionMode;
 type TremorSenseVisionMode = VisionMode;
 type DataModel = unknown;

@@ -1,7 +1,7 @@
 export {};
 
 declare global {
-  /** @remarks Values are marked as optional here based on use, foundry docs incomplete */
+  /** @privateRemarks Values are marked as optional here based on use, foundry docs incomplete */
   type RenderFlag = {
     /** Activating this flag also sets these flags to true */
     propagate?: string[];

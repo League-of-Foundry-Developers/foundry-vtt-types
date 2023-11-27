@@ -158,8 +158,10 @@ declare global {
         options?: {
           /** The number of points which defines the density of approximation */
           density: number;
+
           /** The clipper clip type */
           clipType: number;
+
           /**
            * Use the Weiler-Atherton algorithm. Otherwise, use Clipper.
            * (default: `true`)

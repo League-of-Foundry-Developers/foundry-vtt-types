@@ -49,48 +49,41 @@ declare global {
       fogExplored: 0x000000;
     };
 
-    /* -------------------------------------------- */
-
     /**
      * Returns the darkness penalty for the actual scene configuration.
      */
     get darknessPenalty(): number;
-
-    /* -------------------------------------------- */
 
     /**
      * Get the darkness level of this scene.
      */
     get darknessLevel(): number;
 
-    /* -------------------------------------------- */
-
     /**
      * Initialize color space pertaining to a specific scene.
-     * @param backgroundColor     - The background canvas color
-     * @param brightestColor      - The brightest ambient color
-     * @param darknessColor       - The color of darkness
-     * @param darknessLevel       - A preview darkness level
-     * @param daylightColor       - The ambient daylight color
-     * @param fogExploredColor    - The color applied to explored areas
-     * @param fogUnexploredColor  - The color applied to unexplored areas
+     * @param colors - No comment
      */
-    initialize({
-      backgroundColor,
-      brightestColor,
-      darknessColor,
-      darknessLevel,
-      daylightColor,
-      fogExploredColor,
-      fogUnexploredColor,
-    }?: {
-      backgroundColor: Color | number | string;
-      brightestColor: Color | number | string;
-      darknessColor: Color | number | string;
-      darknessLevel: number;
-      daylightColor: Color | number | string;
-      fogExploredColor: number;
-      fogUnexploredColor: number;
+    initialize(colors?: {
+      /** The background canvas color */
+      backgroundColor?: Color | number | string;
+
+      /** The brightest ambient color */
+      brightestColor?: Color | number | string;
+
+      /** The color of darkness */
+      darknessColor?: Color | number | string;
+
+      /** A preview darkness level */
+      darknessLevel?: number;
+
+      /** The ambient daylight color */
+      daylightColor?: Color | number | string;
+
+      /** The color applied to explored areas */
+      fogExploredColor?: number;
+
+      /** The color applied to unexplored areas */
+      fogUnexploredColor?: number;
     }): void;
   }
 }

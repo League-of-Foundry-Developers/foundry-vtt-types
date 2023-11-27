@@ -7,25 +7,34 @@ declare global {
   interface RenderedPointSourceData extends PointSourceData {
     /** A color applied to the rendered effect */
     color: number | null;
+
     /** An integer seed to synchronize (or de-synchronize) animations */
     seed: number | null;
+
     /** Is this source a temporary preview? */
     preview: boolean;
   }
+
   namespace RenderedPointSource {
     type RenderedPointSourceAnimationConfig = {
       /** The human-readable (localized) label for the animation */
       label?: string;
+
       /** The animation function that runs every frame */
       animation?: (dt: number, options: Partial<RenderedPointSourceAnimationConfig>) => any;
+
       /** A custom illumination shader used by this animation */
       illuminationShader?: AdaptiveIlluminationShader;
+
       /** A custom coloration shader used by this animation */
       colorationShader?: AdaptiveColorationShader;
+
       /** A custom background shader used by this animation */
       backgroundShader?: AdaptiveBackgroundShader;
+
       /** The animation seed */
       seed?: number;
+
       /** The animation time */
       time?: number;
     };
@@ -198,11 +207,13 @@ declare global {
          * (default: `5`)
          */
         speed: number;
+
         /**
          * The animation intensity, from 1 to 10
          * (default: `5`)
          */
         intensity: number;
+
         /**
          * Reverse the animation direction
          * (default: `false`)
