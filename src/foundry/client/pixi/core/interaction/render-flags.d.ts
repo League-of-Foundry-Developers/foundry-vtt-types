@@ -23,11 +23,13 @@ declare global {
       config?: {
         /** The object which owns this RenderFlags instance */
         object?: RenderFlagObject;
+
         /**
-         * The ticker priority at which these render flags are handled
-         * (default: `PIXI.UPDATE_PRIORITY.OBJECTS`)
+         * The update priority when these render flags are applied.
+         * Valid options are OBJECTS or PERCEPTION.
+         * @defaultValue `PIXI.UPDATE_PRIORITY.OBJECTS`
          */
-        priority?: number;
+        priority?: "OBJECT" | "PERCEPTION";
       },
     );
 
@@ -58,7 +60,7 @@ declare global {
    * @param Base - The base class being mixed
    * @returns The mixed class definition
    */
-  class RenderFlagObject extends PIXI.DisplayObject {
+  class RenderFlagObject {
     constructor(...args: any[]);
 
     /**

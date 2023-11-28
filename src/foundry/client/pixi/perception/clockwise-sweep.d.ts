@@ -151,7 +151,10 @@ declare global {
      * @param mode - The collision mode being tested
      * @returns The collision test result
      */
-    protected override _testCollision(ray: Ray, mode: string): boolean | PolygonVertex | PolygonVertex[] | null;
+    protected override _testCollision<Mode extends PointSourcePolygon.CollisionModes>(
+      ray: Ray,
+      mode: Mode,
+    ): Mode extends "any" ? boolean : Mode extends "closest" ? PolygonVertex : PolygonVertex[] | null;
 
     override visualize(): PIXI.Graphics | undefined;
 
