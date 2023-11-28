@@ -35,7 +35,7 @@ declare class ControlIcon extends PIXI.Container {
   /**
    * @defaultValue `static`
    */
-  eventMode: string;
+  eventMode: "static";
 
   /**
    * @defaultValue `false`
