@@ -84,7 +84,7 @@ declare global {
      * An set of blur filter instances which are modified by the zoom level and the "soft shadows" setting
      * @defaultValue `[]`
      */
-    blurFilters: Set<PIXI.filters.BlurFilter>;
+    blurFilters: Set<PIXI.BlurFilter>;
 
     /**
      * A reference to the MouseInteractionManager that is currently controlling pointer-based interaction, or null.
@@ -519,14 +519,14 @@ declare global {
      * @param blurStrength - The desired blur strength to use for this filter
      *                       (default: `CONFIG.Canvas.blurStrength`)
      */
-    createBlurFilter(blurStrength?: number): PIXI.filters.BlurFilter;
+    createBlurFilter(blurStrength?: number): PIXI.BlurFilter;
 
     /**
      * Add a filter to the blur filter list. The filter must have the blur property
      * @param filter - The Filter instance to add
      * @returns The added filter for method chaining
      */
-    addBlurFilter(filter: PIXI.filters.BlurFilter): PIXI.filters.BlurFilter;
+    addBlurFilter(filter: PIXI.BlurFilter): PIXI.BlurFilter;
 
     /**
      * Update the blur strength depending on the scale of the canvas stage

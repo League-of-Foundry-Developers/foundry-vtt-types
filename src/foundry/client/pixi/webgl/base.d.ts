@@ -2,9 +2,6 @@
  * This class defines an interface which all shaders utilize
  */
 declare abstract class AbstractBaseShader extends PIXI.Shader {
-  /** The current uniforms of the Shader */
-  uniforms: AbstractBaseShader.Uniforms;
-
   constructor(program: PIXI.Program, uniforms: AbstractBaseShader.Uniforms);
 
   /**
