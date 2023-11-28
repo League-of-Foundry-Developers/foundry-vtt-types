@@ -203,13 +203,13 @@ declare global {
      * Handle mouse movement which modifies the dimensions of the drawn shape
      * @internal
      */
-    protected _onMouseDraw(event: PIXI.InteractionEvent): void;
+    protected _onMouseDraw(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftStart(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<unknown>;
+    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<unknown>;
 
     protected override _onDragLeftCancel(event: MouseEvent): void;
 
@@ -218,34 +218,34 @@ declare global {
      * @param event - The mouseover event
      * @internal
      */
-    protected _onHandleHoverIn(event: PIXI.InteractionEvent): void;
+    protected _onHandleHoverIn(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle mouse-out event on a control handle
      * @param event - The mouseout event
      * @internal
      */
-    protected _onHandleHoverOut(event: PIXI.InteractionEvent): void;
+    protected _onHandleHoverOut(event: PIXI.FederatedEvent): void;
 
     /**
      * When we start a drag event - create a preview copy of the Tile for re-positioning
      * @param event - The mousedown event
      * @internal
      */
-    protected _onHandleMouseDown(event: PIXI.InteractionEvent): void;
+    protected _onHandleMouseDown(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle the beginning of a drag event on a resize handle
      * @internal
      */
-    protected _onHandleDragStart(event: PIXI.InteractionEvent): void;
+    protected _onHandleDragStart(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle mousemove while dragging a tile scale handler
      * @param event - The mousemove event
      * @internal
      */
-    protected _onHandleDragMove(event: PIXI.InteractionEvent): void;
+    protected _onHandleDragMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle mouseup after dragging a tile scale handler
@@ -253,14 +253,14 @@ declare global {
      * @internal
      */
     protected _onHandleDragDrop(
-      event: PIXI.InteractionEvent,
+      event: PIXI.FederatedEvent,
     ): ReturnType<InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>["update"]>;
 
     /**
      * Handle cancellation of a drag event for one of the resizing handles
      * @internal
      */
-    protected _onHandleDragCancel(event: PIXI.InteractionEvent): void;
+    protected _onHandleDragCancel(event: PIXI.FederatedEvent): void;
 
     /**
      * Apply a vectorized rescaling transformation for the drawing data

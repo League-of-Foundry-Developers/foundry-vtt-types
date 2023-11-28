@@ -86,13 +86,13 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound", SoundsLayer.La
    * Handle mouse cursor movements which may cause ambient audio previews to occur
    * @param event - The initiating mouse move interaction event
    */
-  protected _onMouseMove(event: PIXI.InteractionEvent): void;
+  protected _onMouseMove(event: PIXI.FederatedEvent): void;
 
-  protected override _onDragLeftStart(event: PIXI.InteractionEvent): ReturnType<AmbientSound["draw"]>;
+  protected override _onDragLeftStart(event: PIXI.FederatedEvent): ReturnType<AmbientSound["draw"]>;
 
-  protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
+  protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-  protected override _onDragLeftDrop(event: PIXI.InteractionEvent): void;
+  protected override _onDragLeftDrop(event: PIXI.FederatedEvent): void;
 
   protected override _onDragLeftCancel(event: PointerEvent): void;
 

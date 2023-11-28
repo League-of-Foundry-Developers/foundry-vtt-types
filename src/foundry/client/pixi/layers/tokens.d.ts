@@ -148,7 +148,7 @@ declare global {
       data: TokenLayer.DropData,
     ): Promise<void | false | InstanceType<ConfiguredObjectClassForName<"Token">>>;
 
-    protected override _onClickLeft(event: PIXI.InteractionEvent): void;
+    protected override _onClickLeft(event: PIXI.FederatedEvent): void;
   }
 
   namespace TokenLayer {

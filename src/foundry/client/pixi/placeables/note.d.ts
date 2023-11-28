@@ -58,10 +58,10 @@ declare global {
 
     protected override _canView(user: InstanceType<ConfiguredDocumentClassForName<"User">>): boolean;
 
-    protected override _onHoverIn(event: PIXI.InteractionEvent, options?: HoverInOptions): false | void;
+    protected override _onHoverIn(event: PIXI.FederatedEvent, options?: HoverInOptions): false | void;
 
-    protected override _onHoverOut(event: PIXI.InteractionEvent): false | void;
+    protected override _onHoverOut(event: PIXI.FederatedEvent): false | void;
 
-    protected override _onClickLeft2(event: PIXI.InteractionEvent): void;
+    protected override _onClickLeft2(event: PIXI.FederatedEvent): void;
   }
 }

@@ -141,31 +141,31 @@ declare global {
      * Handle the beginning of a new Ruler measurement workflow
      * @see Canvas._onDragLeftStart
      */
-    protected _onDragStart(event: PIXI.InteractionEvent): void;
+    protected _onDragStart(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle left-click events on the Canvas during Ruler measurement.
      * @see Canvas._onClickLeft
      */
-    protected _onClickLeft(event: PIXI.InteractionEvent): void;
+    protected _onClickLeft(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle right-click events on the Canvas during Ruler measurement.
      * @see Canvas._onClickRight
      */
-    protected _onClickRight(event: PIXI.InteractionEvent): boolean | void;
+    protected _onClickRight(event: PIXI.FederatedEvent): boolean | void;
 
     /**
      * Continue a Ruler measurement workflow for left-mouse movements on the Canvas.
      * @see Canvas._onDragLeftMove
      */
-    protected _onMouseMove(event: PIXI.InteractionEvent): void;
+    protected _onMouseMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Conclude a Ruler measurement workflow by releasing the left-mouse button.
      * @see Canvas._onDragLeftDrop
      */
-    protected _onMouseUp(event: PIXI.InteractionEvent): void;
+    protected _onMouseUp(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle the addition of a new waypoint in the Ruler measurement path

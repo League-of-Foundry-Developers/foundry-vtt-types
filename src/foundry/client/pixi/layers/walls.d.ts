@@ -182,15 +182,15 @@ declare global {
         }
       | this["_cloneType"];
 
-    protected override _onDragLeftStart(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftDrop(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): void;
 
     protected override _onDragLeftCancel(event: PointerEvent): void;
 
-    protected override _onClickRight(event: PIXI.InteractionEvent): void;
+    protected override _onClickRight(event: PIXI.FederatedEvent): void;
 
     /** @deprecated since v9 */
     computePolygon(

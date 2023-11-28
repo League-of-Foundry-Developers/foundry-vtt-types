@@ -311,31 +311,31 @@ declare global {
      * Handle left mouse-click events which originate from the Canvas stage and are dispatched to this Layer.
      * @see {@link Canvas#_onClickLeft}
      */
-    protected _onClickLeft(event: PIXI.InteractionEvent): void;
+    protected _onClickLeft(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle double left-click events which originate from the Canvas stage and are dispatched to this Layer.
      * @see {@link Canvas#_onClickLeft2}
      */
-    protected _onClickLeft2(event: PIXI.InteractionEvent): void;
+    protected _onClickLeft2(event: PIXI.FederatedEvent): void;
 
     /**
      * Start a left-click drag workflow originating from the Canvas stage.
      * @see {@link Canvas#_onDragLeftStart}
      */
-    protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
+    protected _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
     /**
      * Continue a left-click drag workflow originating from the Canvas stage.
      * @see {@link Canvas#_onDragLeftMove}
      */
-    protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+    protected _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Conclude a left-click drag workflow originating from the Canvas stage.
      * @see {@link Canvas#_onDragLeftDrop}
      */
-    protected _onDragLeftDrop(event: PIXI.InteractionEvent): void;
+    protected _onDragLeftDrop(event: PIXI.FederatedEvent): void;
 
     /**
      * Cancel a left-click drag workflow originating from the Canvas stage.
@@ -347,7 +347,7 @@ declare global {
      * Handle right mouse-click events which originate from the Canvas stage and are dispatched to this Layer.
      * @see {@link Canvas#_onClickRight}
      */
-    protected _onClickRight(event: PIXI.InteractionEvent): void;
+    protected _onClickRight(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle mouse-wheel events at the PlaceableObjects layer level to rotate multiple objects at once.

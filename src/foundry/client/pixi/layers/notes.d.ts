@@ -40,7 +40,7 @@ declare global {
     static registerSettings(): void;
 
     /** @remarks this method seems to be unused, see https://gitlab.com/foundrynet/foundryvtt/-/issues/7004 */
-    protected _onMouseDown(event: PIXI.InteractionEvent): void;
+    protected _onMouseDown(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle JournalEntry document drop data

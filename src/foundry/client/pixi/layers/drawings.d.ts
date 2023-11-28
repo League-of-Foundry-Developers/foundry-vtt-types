@@ -56,22 +56,22 @@ declare class DrawingsLayer extends PlaceablesLayer<"Drawing", DrawingsLayer.Lay
    */
   _getNewDrawingData(origin: Point | {}): NewDrawingData;
 
-  protected override _onClickLeft(event: PIXI.InteractionEvent): void;
+  protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
-  protected override _onClickLeft2(event: PIXI.InteractionEvent): void | Promise<void>;
+  protected override _onClickLeft2(event: PIXI.FederatedEvent): void | Promise<void>;
 
-  protected override _onDragLeftStart(event: PIXI.InteractionEvent): ReturnType<Drawing["draw"]>;
+  protected override _onDragLeftStart(event: PIXI.FederatedEvent): ReturnType<Drawing["draw"]>;
 
-  protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
+  protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
   /**
    * Handling of mouse-up events which conclude a new object creation after dragging
    */
-  protected _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<void>;
+  protected _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<void>;
 
   protected override _onDragLeftCancel(event: PointerEvent): void;
 
-  protected override _onClickRight(event: PIXI.InteractionEvent): void;
+  protected override _onClickRight(event: PIXI.FederatedEvent): void;
 }
 
 declare namespace DrawingsLayer {
