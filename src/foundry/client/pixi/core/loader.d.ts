@@ -6,15 +6,22 @@ declare global {
    */
   class TextureLoader {
     /**
-     * The cached mapping of textures
-     */
-    cache: Map<string, { tex: PIXI.BaseTexture; time: number }>;
-
-    /**
      * The duration in milliseconds for which a texture will remain cached
      * @defaultValue `1000 * 60 * 15`
      */
     static CACHE_TTL: number;
+
+    /**
+     * A mapping of url to cached texture buffer data
+     */
+    static textureBufferDataMap: Map<string, object>;
+
+    /**
+     * Check if a source has a text file extension.
+     * @param src - The source.
+     * @returns If the source has a text extension or not.
+     */
+    static hasTextExtension(src: string): boolean;
 
     /**
      * Load all the textures which are required for a particular Scene
@@ -31,6 +38,7 @@ declare global {
      * Load an Array of provided source URL paths
      * @param sources - The source URLs to load
      * @param options - Additional options which modify loading
+     *                  (default: `{}`)
      * @returns A Promise which resolves once all textures are loaded
      */
     load(sources: string[], options?: Partial<TextureLoader.LoadOptions>): Promise<PIXI.BaseTexture | void[]>;
@@ -40,7 +48,7 @@ declare global {
      * @param src - The source texture path to load
      * @returns The loaded texture object
      */
-    loadTexture(src: string): Promise<PIXI.BaseTexture>;
+    loadTexture(src: string): Promise<PIXI.BaseTexture | PIXI.Spritesheet | null>;
 
     /**
      * Log texture loading progress in the console and in the Scene loading bar
@@ -53,11 +61,6 @@ declare global {
      * @internal
      */
     protected _onError(src: string, progress: TextureLoader.Progress, error: Error): void;
-
-    /**
-     * Load an image texture from a provided source url
-     */
-    loadImageTexture(src: string): Promise<PIXI.BaseTexture>;
 
     /**
      * Use the Fetch API to retrieve a resource and return a Blob instance for it.
@@ -85,27 +88,40 @@ declare global {
     protected _getCacheBustURL(src: string): string | false;
 
     /**
-     * Load a video texture from a provided source url
-     */
-    loadVideoTexture(src: string): Promise<PIXI.BaseTexture>;
-
-    /**
-     * Add an image url to the texture cache
+     * Add an image or a sprite sheet url to the assets cache.
      * @param src - The source URL
      * @param tex - The readied texture
      */
-    setCache(src: string, tex: PIXI.BaseTexture): void;
+    setCache(src: string, tex: PIXI.BaseTexture | PIXI.Spritesheet): void;
 
     /**
-     * Retrieve a texture from the texture cache
+     * Retrieve a texture or a sprite sheet from the assets cache
      * @param src - The source URL
      */
-    getCache(src: string): PIXI.BaseTexture | undefined;
+    getCache(src: string): PIXI.BaseTexture | PIXI.Spritesheet | null;
 
     /**
-     * Expire (and destroy) textures from the cache which have not been used for more than CACHE_TTL milliseconds.
+     * Expire and unload assets from the cache which have not been used for more than CACHE_TTL milliseconds.
      */
     expireCache(): void;
+    /**
+     * Return a URL with a cache-busting query parameter appended.
+     * @param src - The source URL being attempted
+     * @returns The new URL, or false on a failure.
+     */
+    static getCacheBustURL(src: string): string | boolean;
+
+    /**
+     * @deprecated since v11, will be removed in v13
+     * @remarks TextureLoader#loadImageTexture is deprecated. Use TextureLoader#loadTexture instead.
+     */
+    loadImageTexture(src: string): Promise<PIXI.BaseTexture>;
+
+    /**
+     * @deprecated since v11, will be removed in v13
+     * @remarks TextureLoader#loadVideoTexture is deprecated. Use TextureLoader#loadTexture instead.
+     */
+    loadVideoTexture(src: string): Promise<PIXI.BaseTexture>;
 
     /**
      * A global reference to the singleton texture loader
@@ -119,7 +135,18 @@ declare global {
        * Destroy other expired textures
        * @defaultValue `true`
        */
-      expireCache: boolean;
+      expireCache?: boolean;
+
+      /**
+       * Additional sources to load during canvas initialize
+       * @defaultValue `[]`
+       */
+      additionalSource?: Array<boolean>;
+
+      /**
+       * The maximum number of textures that can be loaded concurrently
+       */
+      maxConcurrent?: number;
     }
 
     interface LoadOptions {
@@ -132,7 +159,12 @@ declare global {
        * Expire other cached textures?
        * @defaultValue `true`
        */
-      expireCache: boolean;
+      expireCache?: boolean;
+
+      /**
+       * The maximum number of textures that can be loaded concurrently
+       */
+      maxConcurrent?: number;
     }
 
     interface Progress {
@@ -152,20 +184,23 @@ declare global {
   function srcExists(src: string): Promise<boolean>;
 
   /**
-   * Get a single texture from the cache
+   * Get a single texture or sprite sheet from the cache.
+   * @param src - The texture path to load.
+   * @returns A texture, a sprite sheet or null if not found in cache.
    */
   function getTexture(src: string): PIXI.Texture | null;
 
   /**
-   * Load a single texture and return a Promise which resolves once the texture is ready to use
-   * @param src      - The requested texture source
-   * @param options  - Additional options which modify texture loading
+   * Load a single asset and return a Promise which resolves once the asset is ready to use
+   * @param src      - The requested asset source
+   * @param options  - Additional options which modify assset loading
+   * @returns The loaded Texture or sprite sheet, or null if loading failed with no fallback
    */
   function loadTexture(
     src: string,
     options?: {
-      /** A fallback texture to use if the requested source is unavailable or invalid */
-      fallback?: string | undefined;
+      /** A fallback texture URL to use if the requested source is unavailable */
+      fallback?: string;
     },
-  ): Promise<PIXI.Texture | null>;
+  ): Promise<PIXI.Texture | PIXI.Spritesheet | null>;
 }
