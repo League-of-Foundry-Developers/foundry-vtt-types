@@ -20,6 +20,7 @@ type CanvasVisibilityTestConfig = {
 };
 
 // TODO: Remove after foundry.abstract.DataModel is defined
+// Currently that is in PR #2331 (branch v10/non-inferring-data-fields)
 declare namespace foundry {
   namespace abstract {
     class DataModel {}

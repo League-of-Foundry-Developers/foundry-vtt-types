@@ -190,9 +190,9 @@ declare global {
     /**
      * Animate the PointSource, if an animation is enabled and if it currently has rendered containers.
      * @param dt - Delta time.
-     * @remarks Returns `this.animation.call(this, dt, options)`
+     * @remarks Returns `this.animation.animation.call(this, dt, options)`
      */
-    animate(dt: number): ReturnType<Exclude<this["animation"]["animation"], undefined>>;
+    animate(dt: number): ReturnType<Exclude<this["animation"]["animation"], undefined>> | undefined;
 
     /**
      * Generic time-based animation used for Rendered Point Sources.
