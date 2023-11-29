@@ -94,6 +94,9 @@
     "typescript": "~5.3",
     "vitest": "^0.34.6"
   },
+  "overrides": {
+    "@types/css-font-loading-module": "^0.0.12s"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
