@@ -24,10 +24,5 @@ declare class GridHighlight extends PIXI.Graphics {
 
   override clear(): this;
 
-  /**
-   * @privateRemarks The parameter should be PIXI.Graphics["destroy"]
-   * or something to that effect since this is inheriting from that
-   * but I'm not sure why the reference isn't working
-   */
-  override destroy(...args: Parameters<PIXI.smooth.SmoothGraphics["destroy"]>): void;
+  override destroy(...args: Parameters<PIXI.Graphics["destroy"]>): void;
 }
