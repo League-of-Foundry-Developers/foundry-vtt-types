@@ -61,7 +61,6 @@ declare global {
 
     /**
      * Initialize color space pertaining to a specific scene.
-     * @param colors - No comment
      */
     initialize(colors?: {
       /** The background canvas color */

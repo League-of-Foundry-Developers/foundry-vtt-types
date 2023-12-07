@@ -199,7 +199,7 @@ declare global {
         /** The configuration that defines a certain Polygon type */
         config?: PointSourcePolygonConfig;
       },
-    ): Mode extends "any" ? boolean : Mode extends "closest" ? PolygonVertex : PolygonVertex[] | null;
+    ): PointSourcePolygon.TestCollision<Mode>;
 
     /**
      * Determine the set of collisions which occurs for a Ray.
@@ -243,5 +243,13 @@ declare global {
 
   namespace PointSourcePolygon {
     type CollisionModes = "any" | "all" | "closest";
+
+    type CollisionTypes = {
+      any: boolean;
+      closest: PolygonVertex;
+      all: PolygonVertex[] | null;
+    };
+
+    type TestCollision<Mode extends CollisionModes> = CollisionTypes[Mode];
   }
 }

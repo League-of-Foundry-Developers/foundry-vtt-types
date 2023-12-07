@@ -160,8 +160,6 @@ declare global {
 
     /**
      * Visualize the polygon, displaying its computed area, rays, and collision points
-     * @param ray         - No comments
-     * @param collisions  - No comments
      * @internal
      */
     protected _visualizeCollision(ray: Ray, collisions: PolygonVertex[]): void;

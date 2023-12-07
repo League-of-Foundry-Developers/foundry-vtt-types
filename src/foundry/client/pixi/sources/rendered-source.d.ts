@@ -16,28 +16,31 @@ declare global {
   }
 
   namespace RenderedPointSource {
-    type RenderedPointSourceAnimationConfig = {
+    type RenderedPointSourceAnimationConfig<AnimationValue> = InexactPartial<{
       /** The human-readable (localized) label for the animation */
-      label?: string;
+      label: string;
 
       /** The animation function that runs every frame */
-      animation?: (dt: number, options: Partial<RenderedPointSourceAnimationConfig>) => any;
+      animation: (
+        dt: number,
+        options: InexactPartial<RenderedPointSourceAnimationConfig<AnimationValue>>,
+      ) => AnimationValue;
 
       /** A custom illumination shader used by this animation */
-      illuminationShader?: AdaptiveIlluminationShader;
+      illuminationShader: AdaptiveIlluminationShader;
 
       /** A custom coloration shader used by this animation */
-      colorationShader?: AdaptiveColorationShader;
+      colorationShader: AdaptiveColorationShader;
 
       /** A custom background shader used by this animation */
-      backgroundShader?: AdaptiveBackgroundShader;
+      backgroundShader: AdaptiveBackgroundShader;
 
       /** The animation seed */
-      seed?: number;
+      seed: number;
 
       /** The animation time */
-      time?: number;
-    };
+      time: number;
+    }>;
 
     type RenderedPointSourceLayer = {
       /** Is this layer actively rendered? */
@@ -53,7 +56,7 @@ declare global {
     };
   }
 
-  class RenderedPointSource extends PointSource {
+  class RenderedPointSource<AnimationValue> extends PointSource {
     /**
      * Keys of the data object which require shaders to be re-initialized.
      */
@@ -74,7 +77,7 @@ declare global {
      * The animation configuration applied to this source
      * @defaultValue `{}`
      */
-    animation: Partial<RenderedPointSource.RenderedPointSourceAnimationConfig>;
+    animation: Partial<RenderedPointSource.RenderedPointSourceAnimationConfig<AnimationValue>>;
 
     /**
      * The object of data which configures how the source is rendered

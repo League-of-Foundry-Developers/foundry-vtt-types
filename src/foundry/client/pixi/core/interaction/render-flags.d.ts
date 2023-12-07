@@ -42,13 +42,11 @@ declare global {
     /**
      * Allow for handling one single flag at a time.
      * This function returns whether the flag needs to be handled and removes it from the pending set.
-     * @param flag - No comment
      */
     handle(flag: string): boolean;
 
     /**
      * Activate certain flags, also toggling propagation and reset behaviors
-     * @param changes - No comment
      */
     set(changes: Record<string, boolean>): void;
   }
@@ -65,13 +63,7 @@ declare global {
 
     /**
      * Configure the render flags used for this class.
-     * @defaultValue
-     * ```ts
-     * {
-     *   object: this,
-     *   priority: this.constructor.RENDER_FLAG_PRIORITY
-     * }
-     * ```
+     * @defaultValue `{}`
      */
     static RENDER_FLAGS: Record<string, RenderFlag>;
 

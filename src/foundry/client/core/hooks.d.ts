@@ -444,7 +444,7 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link LightSource#_initializeShaders}
        */
-      initializeLightSourceShaders: (source: LightSource) => void;
+      initializeLightSourceShaders: (source: LightSource<any>) => void;
 
       /**
        * A hook event that fires when the LightingLayer is refreshed.

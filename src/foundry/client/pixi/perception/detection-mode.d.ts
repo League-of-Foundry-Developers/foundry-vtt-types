@@ -12,7 +12,7 @@ type TokenDetectionMode = {
 // TODO: Move to client/pixi/layers/effects/visibility.js
 type CanvasVisibilityTest = {
   point: PIXI.Point;
-  los: Map<VisionSource, boolean>;
+  los: Map<VisionSource<any>, boolean>;
 };
 type CanvasVisibilityTestConfig = {
   object: PlaceableObject;
@@ -75,7 +75,7 @@ declare global {
      * @returns   Is the test target visible?
      */
     testVisibility(
-      visionSource: VisionSource,
+      visionSource: VisionSource<any>,
       mode: TokenDetectionMode,
       { object, tests }: CanvasVisibilityTestConfig,
     ): boolean;
@@ -87,7 +87,7 @@ declare global {
      * @param target       - The target object being tested
      * @returns Can the target object theoretically be detected by this vision source?
      */
-    protected _canDetect(visionSource: VisionSource, target: PlaceableObject): boolean;
+    protected _canDetect(visionSource: VisionSource<any>, target: PlaceableObject): boolean;
 
     /**
      * Evaluate a single test point to confirm whether it is visible.
@@ -98,7 +98,7 @@ declare global {
      * @param test         - The test case being evaluated
      */
     protected _testPoint(
-      visionSource: VisionSource,
+      visionSource: VisionSource<any>,
       mode: TokenDetectionMode,
       target: PlaceableObject,
       test: CanvasVisibilityTest,
@@ -115,7 +115,7 @@ declare global {
      * @returns Is the LOS requirement satisfied for this test?
      */
     protected _testLOS(
-      visionSource: VisionSource,
+      visionSource: VisionSource<any>,
       mode: TokenDetectionMode,
       target: PlaceableObject,
       test: CanvasVisibilityTest,
@@ -130,7 +130,7 @@ declare global {
      * @returns Is the point within the vision angle?
      */
     protected _testAngle(
-      visionSource: VisionSource,
+      visionSource: VisionSource<any>,
       mode: TokenDetectionMode,
       target: PlaceableObject,
       test: CanvasVisibilityTest,
@@ -145,7 +145,7 @@ declare global {
      * @returns Is the target within range?
      */
     protected _testRange(
-      visionSource: VisionSource,
+      visionSource: VisionSource<any>,
       mode: TokenDetectionMode,
       target: PlaceableObject,
       test: CanvasVisibilityTest,
@@ -159,7 +159,7 @@ declare global {
    */
   class DetectionModeBasicSight extends DetectionMode {
     override _testPoint(
-      visionSource: VisionSource,
+      visionSource: VisionSource<any>,
       mode: TokenDetectionMode,
       target: PlaceableObject,
       test: CanvasVisibilityTest,
@@ -175,7 +175,7 @@ declare global {
   class DetectionModeInvisibility extends DetectionMode {
     static override getDetectionFilter(): PIXI.Filter | undefined;
 
-    protected override _canDetect(visionSource: VisionSource, target: PlaceableObject): boolean;
+    protected override _canDetect(visionSource: VisionSource<any>, target: PlaceableObject): boolean;
   }
 
   /**
@@ -184,7 +184,7 @@ declare global {
   class DetectionModeTremor extends DetectionMode {
     static override getDetectionFilter(): PIXI.Filter | undefined;
 
-    protected override _canDetect(visionSource: VisionSource, target: PlaceableObject): boolean;
+    protected override _canDetect(visionSource: VisionSource<any>, target: PlaceableObject): boolean;
   }
 
   /**
@@ -194,6 +194,6 @@ declare global {
   class DetectionModeAll extends DetectionMode {
     static override getDetectionFilter(): PIXI.Filter | undefined;
 
-    protected override _canDetect(visionSource: VisionSource, target: PlaceableObject): boolean;
+    protected override _canDetect(visionSource: VisionSource<any>, target: PlaceableObject): boolean;
   }
 }

@@ -11,7 +11,7 @@ declare global {
     /**
      * A reference to the PointSource object which defines this light source area of effect
      */
-    source: LightSource;
+    source: LightSource<any>;
 
     /**
      * A reference to the ControlIcon used to configure this light

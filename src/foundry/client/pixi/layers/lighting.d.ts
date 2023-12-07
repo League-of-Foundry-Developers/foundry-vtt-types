@@ -20,7 +20,7 @@ declare class LightingLayer extends PlaceablesLayer<"AmbientLight", LightingLaye
   /**
    * A mapping of light sources which are active within the rendered Scene
    */
-  sources: foundry.utils.Collection<LightSource>;
+  sources: foundry.utils.Collection<LightSource<any>>;
 
   /**
    * Increment this whenever lighting channels are re-configured.
@@ -63,7 +63,7 @@ declare class LightingLayer extends PlaceablesLayer<"AmbientLight", LightingLaye
    * An array of light sources which are currently animated
    * @internal
    */
-  protected _animatedSources: LightSource[];
+  protected _animatedSources: LightSource<any>[];
 
   /**
    * A mapping of different light level channels

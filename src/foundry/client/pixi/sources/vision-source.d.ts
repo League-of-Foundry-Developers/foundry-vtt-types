@@ -10,7 +10,7 @@ declare global {
   /**
    * A specialized subclass of the PointSource abstraction which is used to control the rendering of vision sources.
    */
-  class VisionSource extends RenderedPointSource {
+  class VisionSource<AnimationConfig> extends RenderedPointSource<AnimationConfig> {
     static override sourceType: "sight";
 
     static override _refreshUniformsKeys: [
