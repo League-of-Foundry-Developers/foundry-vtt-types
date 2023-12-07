@@ -95,6 +95,7 @@ declare global {
         options: {
           /** The clipper clip type */
           clipType?: number;
+
           /** A scaling factor passed to Polygon#toClipperPoints to preserve precision */
           scalingFactor?: number;
         },
@@ -110,6 +111,7 @@ declare global {
         options?: {
           /** The clipper clip type */
           clipType?: number;
+
           /** A scaling factor passed to Polygon#toClipperPoints to preserve precision */
           scalingFactor?: number;
         },

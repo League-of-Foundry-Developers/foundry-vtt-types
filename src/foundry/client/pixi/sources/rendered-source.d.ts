@@ -128,9 +128,9 @@ declare global {
      */
     get isPreview(): boolean;
 
-    protected override _initialize(data: Partial<PointSourceData>): void;
+    protected override _initialize(data: InexactPartial<PointSourceData>): void;
 
-    protected override _configure(changes: Partial<PointSourceData>): void;
+    protected override _configure(changes: InexactPartial<PointSourceData>): void;
 
     /**
      * Decide whether to render soft edges with a blur.

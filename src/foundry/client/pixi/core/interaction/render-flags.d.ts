@@ -2,11 +2,11 @@ export {};
 
 declare global {
   /** @privateRemarks Values are marked as optional here based on use, foundry docs incomplete */
-  type RenderFlag = {
+  type RenderFlag<Flags> = {
     /** Activating this flag also sets these flags to true */
-    propagate?: string[];
+    propagate?: Array<Partial<keyof Flags>>;
     /** Activating this flag resets these flags to false */
-    reset?: string[];
+    reset?: Array<Partial<keyof Flags>>;
   };
 
   /**
@@ -19,7 +19,7 @@ declare global {
      * @param config - Optional configuration
      */
     constructor(
-      flags: Record<string, RenderFlag>,
+      flags: Record<string, RenderFlag<Record<string, boolean>>>,
       config?: {
         /** The object which owns this RenderFlags instance */
         object?: RenderFlagObject;
@@ -65,7 +65,7 @@ declare global {
      * Configure the render flags used for this class.
      * @defaultValue `{}`
      */
-    static RENDER_FLAGS: Record<string, RenderFlag>;
+    static RENDER_FLAGS: Record<string, RenderFlag<any>>;
 
     /**
      * The ticker priority when RenderFlags of this class are handled.

@@ -30,7 +30,7 @@ declare global {
      */
     static override get _defaults(): Record<string, unknown>;
 
-    /** @remarks "The value provided to a ShaderField must be an AbstractBaseShader subclass." */
+    /** @remarks The value provided to a ShaderField must be an AbstractBaseShader subclass. */
     override _cast(value: any): AbstractBaseShader | Error;
   }
 
