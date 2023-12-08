@@ -93,6 +93,6 @@ declare global {
     typeof RenderFlagObject & {
       new (
         ...args: ConstructorParameters<typeof RenderFlagObject>
-      ): InstanceType<typeof RenderFlagObject> & RenderFlagObject;
+      ): InstanceType<typeof RenderFlagObject> & InstanceType<BaseClass>;
     };
 }

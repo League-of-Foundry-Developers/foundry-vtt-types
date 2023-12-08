@@ -1,4 +1,8 @@
+import "./base-canvas-group";
 import "./cached-container";
-import "./quadtree";
-import "./sampler-mesh";
 import "./full-canvas-container";
+import "./point-source-mesh";
+import "./quad-mesh";
+import "./quadtree";
+import "./sprite-mesh";
+import "./unbound-container";
