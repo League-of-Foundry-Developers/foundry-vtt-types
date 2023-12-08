@@ -1,7 +1,7 @@
 export {};
 
 // TODO: Define Color in common/utils/color.mjs
-type Color = Number;
+type Color = number;
 declare global {
   /**
    * A singleton class dedicated to manage the color spaces associated with the scene and the canvas.
@@ -61,7 +61,6 @@ declare global {
 
     /**
      * Initialize color space pertaining to a specific scene.
-     * @param colors - No comment
      */
     initialize(colors?: {
       /** The background canvas color */

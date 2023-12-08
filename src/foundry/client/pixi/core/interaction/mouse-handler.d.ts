@@ -84,7 +84,7 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
   interactionData: {
     origin?: PIXI.Point;
     destination?: PIXI.Point;
-    object?: Object;
+    object?: Record<string, unknown>;
   } & Partial<Record<string, unknown>>;
 
   /**
@@ -196,7 +196,6 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
   /**
    * A public method to handle directly an event into this manager, according to its type.
    * Note: drag events are not handled.
-   * @param event - No comment
    * @returns Has the event been processed?
    */
   handleEvent(event: PIXI.FederatedEvent): boolean;
@@ -209,7 +208,6 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
 
   /**
    * Reset the mouse manager.
-   * @param options - No comment
    */
   reset(options?: {
     /** Reset the interaction data? */
@@ -227,10 +225,13 @@ declare namespace MouseInteractionManager {
   type HANDLER_OUTCOME = {
     /** -2: SKIPPED - the handler has been skipped by previous logic */
     SKIPPED: -2;
+
     /** -1: DISALLOWED - the handler has dissallowed further process */
     DISALLOWED: -1;
+
     /** 1: REFUSED - the handler callback has been processed and is refusing further process */
     REFUSED: 1;
+
     /** 2: ACCEPTED - the handler callback has been processed and is accepting further process */
     ACCEPTED: 2;
   };

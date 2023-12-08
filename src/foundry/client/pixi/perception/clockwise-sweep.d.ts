@@ -154,14 +154,12 @@ declare global {
     protected override _testCollision<Mode extends PointSourcePolygon.CollisionModes>(
       ray: Ray,
       mode: Mode,
-    ): Mode extends "any" ? boolean : Mode extends "closest" ? PolygonVertex : PolygonVertex[] | null;
+    ): PointSourcePolygon.TestCollision<Mode>;
 
     override visualize(): PIXI.Graphics | undefined;
 
     /**
      * Visualize the polygon, displaying its computed area, rays, and collision points
-     * @param ray         - No comments
-     * @param collisions  - No comments
      * @internal
      */
     protected _visualizeCollision(ray: Ray, collisions: PolygonVertex[]): void;
