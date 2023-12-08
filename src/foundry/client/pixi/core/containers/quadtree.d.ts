@@ -1,7 +1,7 @@
 export {};
 
 declare global {
-  interface QuadTreeObject<T> {
+  interface QuadtreeObject<T> {
     r: Rectangle;
     t: T;
     n: Set<Quadtree<T>>;
@@ -44,7 +44,7 @@ declare global {
      * The objects contained at this level of the tree
      * @defaultValue `[]`
      */
-    objects: QuadTreeObject<T>[];
+    objects: QuadtreeObject<T>[];
 
     /**
      * Children of this node
@@ -70,7 +70,7 @@ declare global {
     /**
      * Return an array of all the objects in the Quadtree (recursive)
      */
-    get all(): QuadTreeObject<T>[];
+    get all(): QuadtreeObject<T>[];
 
     /**
      * Split this node into 4 sub-nodes.
@@ -89,7 +89,7 @@ declare global {
      * @param obj - The object being inserted
      * @returns The Quadtree nodes the object was added to.
      */
-    insert(obj: QuadTreeObject<T>): Quadtree<T>[];
+    insert(obj: QuadtreeObject<T>): Quadtree<T>[];
 
     /**
      * Remove an object from the quadtree
@@ -103,7 +103,7 @@ declare global {
      * @param obj - The object being inserted
      * @returns The Quadtree nodes the object was added to
      */
-    update(obj: QuadTreeObject<T>): Quadtree<T>[];
+    update(obj: QuadtreeObject<T>): Quadtree<T>[];
 
     /**
      * Get all the objects which could collide with the provided rectangle
@@ -118,7 +118,7 @@ declare global {
          * after a potential collision is found. Parameters are the object and rect, and the
          * function should return true if the object should be added to the result set.
          */
-        collisionTest: (o: QuadTreeObject<T>, rect: Rectangle) => boolean;
+        collisionTest: (o: QuadtreeObject<T>, rect: Rectangle) => boolean;
 
         /** The existing result set, for internal use.
          *  (default: `new Set<T>()`)
