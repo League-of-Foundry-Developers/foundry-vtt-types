@@ -12,7 +12,7 @@ declare global {
    * @param Base - Any PIXI DisplayObject subclass
    * @returns The decorated subclass with full canvas bounds
    */
-  function FullCanvasObjectMixin<BaseClass extends new (...args: any[]) => typeof PIXI.DisplayObject>(
+  function FullCanvasObjectMixin<BaseClass extends new (...args: any[]) => PIXI.DisplayObject>(
     Base: BaseClass,
   ): Pick<BaseClass, keyof BaseClass> &
     typeof FullCanvasObject & {
