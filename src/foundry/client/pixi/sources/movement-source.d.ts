@@ -4,10 +4,10 @@ declare global {
   class MovementSource extends PointSource {
     static override sourceType: "move";
 
-    /** @remarks Not implemented */
+    /** @remarks A no-op */
     protected _refresh(): void;
 
-    /** @remarks Not implemented */
+    /** @remarks A no-op */
     protected _destroy(): void;
   }
 }

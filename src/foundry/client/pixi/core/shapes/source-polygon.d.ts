@@ -210,7 +210,7 @@ declare global {
     protected abstract _testCollision<Mode extends PointSourcePolygon.CollisionModes>(
       ray: Ray,
       mode: Mode,
-    ): Mode extends "any" ? boolean : Mode extends "closest" ? PolygonVertex : PolygonVertex[] | null;
+    ): PointSourcePolygon.TestCollision<Mode>;
 
     /**
      * Visualize the polygon, displaying its computed area, rays, and collision points
