@@ -1,6 +1,14 @@
 export {};
 
+declare class BaseShaderMixinClass {}
+
+declare class AdaptiveFragmentChannelMixin {}
+
 declare global {
+  function BaseShaderMixin(ShaderClass: any): any;
+
+  function AdaptiveFragmentChannelMixin(ShaderClass: any): any;
+
   /**
    * This class defines an interface which all shaders utilize
    */
@@ -71,9 +79,13 @@ declare global {
     type Uniforms = Record<string, AbstractBaseShader.UniformValue>;
   }
   /**
+   * An abstract filter which provides a framework for reusable definition
+   */
+  class AbstractBaseFilter extends BaseShaderMixin(PIXI.Filter) {}
+  /**
    * A simple shader to emulate a PIXI.Sprite with a PIXI.Mesh (but faster!)
    */
-  declare class BaseSamplerShader extends AbstractBaseShader {
+  class BaseSamplerShader extends AbstractBaseShader {
     static override vertexShader: string;
 
     static override fragmentShader: string;
