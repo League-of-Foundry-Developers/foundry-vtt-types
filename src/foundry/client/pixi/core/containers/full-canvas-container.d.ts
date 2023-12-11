@@ -1,11 +1,10 @@
 export {};
+declare class FullCanvasObject {
+  /** @remarks Overrides the mixed in class */
+  calculateBounds(): void;
+}
 
 declare global {
-  class FullCanvasObject {
-    /** @remarks Overrides the mixed in class */
-    calculateBounds(): void;
-  }
-
   /**
    * Augment any PIXI.DisplayObject to assume bounds that are always aligned with the full visible screen.
    * The bounds of this container do not depend on its children but always fill the entire canvas.
@@ -15,7 +14,7 @@ declare global {
   function FullCanvasObjectMixin<BaseClass extends typeof PIXI.DisplayObject>(
     Base: BaseClass,
   ): Pick<BaseClass, keyof BaseClass> &
-    typeof FullCanvasObject & {
+    Pick<typeof FullCanvasObject, keyof typeof FullCanvasObject> & {
       new (
         ...args: ConstructorParameters<typeof FullCanvasObject>
       ): InstanceType<typeof FullCanvasObject> & InstanceType<BaseClass>;
