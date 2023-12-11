@@ -246,7 +246,7 @@ interface EndpointOptions {
   /**
    * An optional bounding rectangle within which the endpoint must lie.
    */
-  bounds?: NormalizedRectangle;
+  bounds?: PIXI.Rectangle;
 
   /**
    * The type of polygon being computed: "movement", "sight", or "sound"

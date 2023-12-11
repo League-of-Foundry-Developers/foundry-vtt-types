@@ -82,7 +82,7 @@ declare global {
      */
     get wallKeys(): Set<string>;
 
-    override get bounds(): NormalizedRectangle;
+    override get bounds(): PIXI.Rectangle;
 
     /**
      * A boolean for whether this wall contains a door

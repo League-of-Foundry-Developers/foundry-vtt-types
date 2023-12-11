@@ -21,7 +21,7 @@ declare global {
 
     static override embeddedName: "AmbientLight";
 
-    override get bounds(): NormalizedRectangle;
+    override get bounds(): PIXI.Rectangle;
 
     /**
      * A convenience accessor to the LightData configuration object
