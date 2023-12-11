@@ -1,9 +1,19 @@
+import type { TEXT_ANCHOR_POINTS } from "../../../../common/constants.mjs";
+
 /**
  * An extension of the default PIXI.Text object which forces double resolution.
  * At default resolution Text often looks blurry or fuzzy.
  */
 declare class PreciseText extends PIXI.Text {
-  constructor(...args: ConstructorParameters<typeof PIXI.Text>);
+  /**
+   * @param options - Additional options merged with the default TextStyle
+   */
+  constructor(
+    options: {
+      /** A text anchor point from CONST.TEXT_ANCHOR_POINTS */
+      anchor: TEXT_ANCHOR_POINTS;
+    } & ConstructorParameters<typeof PIXI.Text>,
+  );
 
   /**
    * Prepare a TextStyle object which merges the canvas defaults with user-provided options
