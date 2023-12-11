@@ -1,5 +1,3 @@
-import type { TEXT_ANCHOR_POINTS } from "../../../../common/constants.mjs";
-
 export {};
 
 declare global {
@@ -14,7 +12,7 @@ declare global {
     constructor(
       options: {
         /** A text anchor point from CONST.TEXT_ANCHOR_POINTS */
-        anchor: TEXT_ANCHOR_POINTS;
+        anchor: foundry.CONST.TEXT_ANCHOR_POINTS;
       } & ConstructorParameters<typeof PIXI.Text>,
     );
 
