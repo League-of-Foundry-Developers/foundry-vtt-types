@@ -1,5 +1,3 @@
-import "./base";
-import "./blend_modes";
-import "./filters";
-import "./lighting";
-import "./sampler";
+import "./extensions";
+import "./helpers";
+import "./shaders";
