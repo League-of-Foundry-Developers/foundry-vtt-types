@@ -30,4 +30,20 @@ declare const BLEND_MODES: {
    * ```
    */
   MIN_COLOR: [GLenum, GLenum, GLenum, GLenum, GLenum, GLenum];
+
+  /**
+   * A custom blend mode equation which chooses the minimum color for color channels and min alpha from alpha channel.
+   * @defaultValue
+   * ```typescript
+   * [
+   *   WebGL2RenderingContext.ONE,
+   *   WebGL2RenderingContext.ONE,
+   *   WebGL2RenderingContext.ONE,
+   *   WebGL2RenderingContext.ONE,
+   *   WebGL2RenderingContext.MIN,
+   *   WebGL2RenderingContext.MIN,
+   * ]
+   * ```
+   */
+  MIN_ALL: [GLenum, GLenum, GLenum, GLenum, GLenum, GLenum];
 };
