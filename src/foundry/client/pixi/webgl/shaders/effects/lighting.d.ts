@@ -1,15 +1,21 @@
 export {};
 
 declare global {
-  interface LightingTechnique {
+  interface ShaderTechnique {
     /** The numeric identifier of the technique */
     id: number;
 
     /** The localization string that labels the technique */
     label: string;
 
-    /** The shader fragment when the technique is used */
-    shader: string;
+    /**  The coloration shader fragment when the technique is used */
+    coloration: string | undefined;
+
+    /** The illumination shader fragment when the technique is used */
+    illumination: string | undefined;
+
+    /** The background shader fragment when the technique is used */
+    background: string | undefined;
   }
 
   /**
@@ -19,60 +25,65 @@ declare global {
     static override vertexShader: string;
 
     /**
-     * Useful constant values computed at compile time
+     * Determine the correct penalty to apply for a given darkness level and luminosity
+     * @param darknessLevel - The current darkness level on [0,1]
+     * @param luminosity    - The light source luminosity on [-1,1]
+     * @returns The amount of penalty to apply on [0,1]
      */
-    static CONSTANTS: string;
+    getDarknessPenalty(darknessLevel: number, luminosity: number): number;
 
     /**
-     * The coloration technique shader fragment
+     * Construct adaptive shader according to shader type
+     * @param shaderType - shader type to construct : coloration, illumination, background, etc.
+     * @returns the constructed shader adaptive block
      */
-    static get ADAPTIVE_COLORATION(): string;
+    static getShaderTechniques(shaderType: AdaptiveLightingShader.ShaderTypes): string;
 
     /**
-     * Fade easing to use with distance in interval [0,1]
-     * @param amp  - (default: `3`)
-     * @param coef - (default: `0.80`)
+     * The coloration technique coloration shader fragment
      */
-    static FADE(amp?: number, coef?: number): string;
+    static get COLORATION_TECHNIQUES(): ReturnType<(typeof AdaptiveLightingShader)["getShaderTechniques"]>;
 
     /**
-     * Fractional Brownian Motion for a given number of octaves
-     * @param octaves - (default: `4`)
-     * @param amp     - (default: `1.0`)
+     * The coloration technique illumination shader fragment
      */
-    static FBM(octaves?: number, amp?: number): string;
+    static get ILLUMINATION_TECHNIQUES(): ReturnType<(typeof AdaptiveLightingShader)["getShaderTechniques"]>;
 
     /**
-     * A conventional pseudo-random number generator with the "golden" numbers, based on uv position
+     * The coloration technique background shader fragment
      */
-    static PRNG: string;
+    static get BACKGROUND_TECHNIQUES(): ReturnType<(typeof AdaptiveLightingShader)["getShaderTechniques"]>;
 
     /**
-     * A Vec3 pseudo-random generator, based on uv position
+     * The adjustments made into fragment shaders
      */
-    static PRNG3D: string;
+    static get ADJUSTMENTS(): string;
 
     /**
-     * A conventional noise generator
+     * Contrast adjustment
      */
-    static NOISE: string;
+    static CONTRAST: string;
 
     /**
-     * Convert a Hue-Saturation-Brightness color to RGB - useful to convert polar coordinates to RGB
+     * Saturation adjustment
      */
-    static HSB2RGB: string;
+    static SATURATION: string;
 
     /**
-     * Fast approximate perceived brightness computation
-     * Using Digital ITU BT.709 : Exact luminance factors
+     * Exposure adjustment
      */
-    static PERCEIVED_BRIGHTNESS: string;
+    static EXPOSURE: string;
 
     /**
      * Switch between an inner and outer color, by comparing distance from center to ratio
-     * Apply a strong gradient between the two areas if gradual uniform is set to true
+     * Apply a strong gradient between the two areas if attenuation uniform is set to true
      */
     static SWITCH_COLOR: string;
+
+    /**
+     * Shadow adjustment
+     */
+    static SHADOW: string;
 
     /**
      * Transition between bright and dim colors, if requested
@@ -80,38 +91,41 @@ declare global {
     static TRANSITION: string;
 
     /**
-     * Constrain light to LOS
-     */
-    static CONSTRAIN_TO_LOS: string;
-
-    /**
-     * Incorporate falloff if a gradual uniform is requested
+     * Incorporate falloff if a attenuation uniform is requested
      */
     static FALLOFF: string;
 
     /**
-     * Compute distance from the light center
+     * Initialize fragment with common properties
      */
-    static DISTANCE: string;
+    static FRAGMENT_BEGIN: string;
+
+    /**
+     * Shader final
+     */
+    static FRAGMENT_END: string;
 
     /**
      * A mapping of available coloration techniques
      */
-    static COLORATION_TECHNIQUES: AdaptiveLightingShader.ColorationTechniques;
+    static SHADER_TECHNIQUES: AdaptiveLightingShader.ShaderTechniques;
   }
 
   namespace AdaptiveLightingShader {
-    interface ColorationTechniques extends Record<string, LightingTechnique> {
-      LEGACY: LightingTechnique;
-      LUMINANCE: LightingTechnique;
-      INTERNAL_HALO: LightingTechnique;
-      EXTERNAL_HALO: LightingTechnique;
-      COLOR_BURN: LightingTechnique;
-      INTERNAL_BURN: LightingTechnique;
-      EXTERNAL_BURN: LightingTechnique;
-      LOW_ABSORPTION: LightingTechnique;
-      HIGH_ABSORPTION: LightingTechnique;
-      INVERT_ABSORPTION: LightingTechnique;
+    type ShaderTypes = "coloration" | "illumination" | "background" | string;
+
+    interface ShaderTechniques extends Record<string, ShaderTechnique> {
+      LEGACY: ShaderTechnique;
+      LUMINANCE: ShaderTechnique;
+      INTERNAL_HALO: ShaderTechnique;
+      EXTERNAL_HALO: ShaderTechnique;
+      COLOR_BURN: ShaderTechnique;
+      INTERNAL_BURN: ShaderTechnique;
+      EXTERNAL_BURN: ShaderTechnique;
+      LOW_ABSORPTION: ShaderTechnique;
+      HIGH_ABSORPTION: ShaderTechnique;
+      INVERT_ABSORPTION: ShaderTechnique;
+      NATURAL_LIGHT: ShaderTechnique;
     }
   }
 
@@ -121,14 +135,9 @@ declare global {
    */
   class AdaptiveBackgroundShader extends AdaptiveLightingShader {
     /**
-     * Constrain light to LOS
+     * Shader final
      */
-    static CONSTRAIN_TO_LOS: string;
-
-    /**
-     * Color adjustments : exposure, contrast and shadows
-     */
-    static ADJUSTMENTS: string;
+    static FRAGMENT_END: string;
 
     /**
      * Incorporate falloff if a gradual uniform is requested
@@ -146,27 +155,35 @@ declare global {
      * @defaultValue
      * ```javascript
      * {
-     *   shadows: 0.0,
-     *   contrast: 0.0,
-     *   exposure: 0.0,
-     *   saturation: 0.0,
-     *   alpha: 1.0,
-     *   ratio: 0.5,
-     *   time: 0,
-     *   screenDimensions: [1, 1],
-     *   uBkgSampler: 0,
-     *   fovTexture: 0,
-     *   darkness: false,
-     *   gradual: false,
-     *   useFov: true
-     * }
+     *  const initial = foundry.data.LightData.cleanData();
+     *     return {
+     *       technique: initial.coloration,
+     *       contrast: initial.contrast,
+     *       shadows: initial.shadows,
+     *       saturation: initial.saturation,
+     *       intensity: initial.animation.intensity,
+     *       attenuation: initial.attenuation,
+     *       exposure: 0,
+     *       ratio: 0.5,
+     *       darkness: false,
+     *       color: [1, 1, 1],
+     *       colorBackground: [1, 1, 1],
+     *       screenDimensions: [1, 1],
+     *       time: 0,
+     *       useSampler: true,
+     *       primaryTexture: null,
+     *       depthTexture: null,
+     *       depthElevation: 1
+     *     };
+     *   }
      * ```
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
     /**
      * Flag whether the background shader is currently required.
-     * If key uniforms are at their default values, we don't need to render the background container.
+     * Check vision modes requirements first, then
+     * if key uniforms are at their default values, we don't need to render the background container.
      */
     get isRequired(): boolean;
   }
@@ -176,10 +193,9 @@ declare global {
    * A fragment shader which creates a solid light source.
    */
   class AdaptiveIlluminationShader extends AdaptiveLightingShader {
-    /**
-     * Constrain light to LOS
-     */
-    static CONSTRAIN_TO_LOS: string;
+    static override FRAGMENT_BEGIN: string;
+
+    static override FRAGMENT_END: string;
 
     /**
      * Incorporate falloff if a gradual uniform is requested
@@ -187,9 +203,11 @@ declare global {
     static FALLOFF: string;
 
     /**
-     * Color adjustments : exposure, contrast and shadows
+     * The adjustments made into fragment shaders
      */
-    static ADJUSTMENTS: string;
+    static get ADJUSTMENTS(): string;
+
+    static override EXPOSURE: string;
 
     /**
      * Memory allocations for the Adaptive Illumination Shader
@@ -200,37 +218,40 @@ declare global {
 
     /**
      * @defaultValue
-     * ```javascript
-     * {
-     *   alpha: 1.0,
-     *   ratio: 0.5,
-     *   color: [0.9333333333333333, 0.9333333333333333, 0.9333333333333333],
-     *   colorDim: [0.5, 0.5, 0.5],
-     *   colorBright: [1.0, 1.0, 1.0],
-     *   colorBackground: [1.0, 1.0, 1.0],
-     *   darkness: false,
-     *   exposure: 0.0,
-     *   fovTexture: 0,
-     *   gradual: false,
-     *   intensity: 5,
-     *   saturation: 0.0,
-     *   screenDimensions: [1, 1],
-     *   shadows: 0.0,
-     *   time: 0,
-     *   uBkgSampler: 0,
-     *   useFov: true
-     * }
+     * ```javascript{
+     *    const initial = foundry.data.LightData.cleanData();
+     *    return {
+     *      technique: initial.coloration,
+     *      shadows: initial.shadows,
+     *      saturation: initial.saturation,
+     *      intensity: initial.animation.intensity,
+     *      attenuation: initial.attenuation,
+     *      contrast: initial.contrast,
+     *      exposure: 0,
+     *      ratio: 0.5,
+     *      darkness: false,
+     *      darknessLevel: 0,
+     *      color: [1, 1, 1],
+     *      colorBackground: [1, 1, 1],
+     *      colorDim: [1, 1, 1],
+     *      colorBright: [1, 1, 1],
+     *      screenDimensions: [1, 1],
+     *      time: 0,
+     *      useSampler: false,
+     *      primaryTexture: null,
+     *      framebufferTexture: null,
+     *      depthTexture: null,
+     *      depthElevation: 1
+     *    };
+     *  }
      * ```
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
     /**
-     * Determine the correct illumination penalty to apply for a given darkness level and luminosity
-     * @param darknessLevel - The current darkness level on [0,1]
-     * @param luminosity    - The light source luminosity on [-1,1]
-     * @returns The amount of penalty to apply on [0,1]
+     * Flag whether the illumination shader is currently required.
      */
-    getDarknessPenalty(darknessLevel: number, luminosity: number): number;
+    get isRequired(): boolean;
   }
 
   /**
@@ -239,14 +260,21 @@ declare global {
    */
   class AdaptiveColorationShader extends AdaptiveLightingShader {
     /**
-     * Incorporate falloff if a falloff uniform is requested
+     * Shader final
      */
-    static FALLOFF: string;
+    static FRAGMENT_END: string;
 
     /**
-     * Color adjustments : exposure, contrast and shadows
+     * The adjustments made into fragment shaders
      */
-    static ADJUSTMENTS: string;
+    static override get ADJUSTMENTS(): string;
+
+    static override SHADOW: string;
+
+    /**
+     * Incorporate falloff if a falloff uniform is requested
+     */
+    static override FALLOFF: string;
 
     /**
      * Memory allocations for the Adaptive Coloration Shader
@@ -259,24 +287,34 @@ declare global {
      * @defaultValue
      * ```javascript
      * {
-     *   technique: 1,
-     *   ratio: 0.0,
-     *   shadows: 0.0,
-     *   saturation: 0.0,
-     *   alpha: 1.0,
-     *   color: [1.0, 1.0, 1.0],
-     *   time: 0,
-     *   intensity: 5,
-     *   darkness: false,
-     *   screenDimensions: [1, 1],
-     *   uBkgSampler: 0,
-     *   fovTexture: 0,
-     *   gradual: true,
-     *   useFov: true
-     * }
+     *   const initial = foundry.data.LightData.cleanData();
+     *     return {
+     *       technique: initial.coloration,
+     *       shadows: initial.shadows,
+     *       saturation: initial.saturation,
+     *       colorationAlpha: 1,
+     *       intensity: initial.animation.intensity,
+     *       attenuation: initial.attenuation,
+     *       ratio: 0.5,
+     *       color: [1, 1, 1],
+     *       time: 0,
+     *       darkness: false,
+     *       hasColor: false,
+     *       screenDimensions: [1, 1],
+     *       useSampler: false,
+     *       primaryTexture: null,
+     *       depthTexture: null,
+     *       depthElevation: 1
+     *     };
+     *   }
      * ```
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
+
+    /**
+     * Flag whether the coloration shader is currently required.
+     */
+    get isRequired(): boolean;
   }
 
   /**
@@ -294,11 +332,8 @@ declare global {
 
     /**
      * @defaultValue
-     * ```typescript
-     * Object.assign({}, super.defaultUniforms, {
-     *   ratio: 0,
-     *   brightnessPulse: 1
-     * })
+     * ```javascript
+     * {...super.defaultUniforms, ratio: 0, brightnessPulse: 1}
      * ```
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
@@ -319,10 +354,8 @@ declare global {
 
     /**
      * @defaultValue
-     * ```typescript
-     * Object.assign({}, super.defaultUniforms, {
-     *   pulse: 0
-     * })
+     * ```javascript
+     * {...super.defaultUniforms, pulse: 0}
      * ```
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
@@ -480,5 +513,125 @@ declare global {
    */
   class FairyLightIlluminationShader extends AdaptiveIlluminationShader {
     static fragmentShader: string;
+  }
+
+  /**
+   * Alternative torch illumination shader
+   */
+  class FlameIlluminationShader extends AdaptiveIlluminationShader {
+    static fragmentShader: string;
+
+    /**
+     * @defaultValue
+     * ```js
+     * {...super.defaultUniforms, brightnessPulse: 1}
+     * ```
+     */
+    static defaultUniforms: AbstractBaseShader.Uniforms;
+  }
+
+  /**
+   * Alternative torch coloration shader
+   */
+  class FlameColorationShader extends AdaptiveColorationShader {
+    static fragmentShader: string;
+
+    /**
+     * @defaultValue
+     * ```js
+     * { ...super.defaultUniforms, brightnessPulse: 1}
+     * ```
+     */
+    static defaultUniforms: AbstractBaseShader.Uniforms;
+  }
+
+  /**
+   * A futuristic Force Grid animation.
+   */
+  class ForceGridColorationShader extends AdaptiveColorationShader {
+    static fragmentShader: string;
+  }
+
+  /**
+   * A disco like star light.
+   */
+  class StarLightColorationShader extends AdaptiveColorationShader {
+    static fragmentShader: string;
+  }
+
+  /**
+   * A patch of smoke
+   */
+  class SmokePatchColorationShader extends AdaptiveColorationShader {
+    static fragmentShader: string;
+  }
+
+  /**
+   * A patch of smoke
+   */
+  class SmokePatchIlluminationShader extends AdaptiveIlluminationShader {
+    static fragmentShader: string;
+  }
+
+  /**
+   * Revolving animation coloration shader
+   */
+  class RevolvingColorationShader extends AdaptiveColorationShader {
+    static fragmentShader: string;
+
+    /**
+     * @defaultValue
+     * ```js
+     * {
+     *   ...super.defaultUniforms,
+     *   angle: 0,
+     *   gradientFade: 0.15,
+     *   beamLength: 1
+     * }
+     * ```
+     */
+    static defaultUniforms: AbstractBaseShader.Uniforms;
+  }
+
+  /**
+   * Siren light animation coloration shader
+   */
+  class SirenColorationShader extends AdaptiveColorationShader {
+    static fragmentShader: string;
+
+    /**
+     * @defaultValue
+     * ```js
+     * {
+     *   ...super.defaultUniforms,
+     *   ratio: 0,
+     *   brightnessPulse: 1,
+     *   angle: 0,
+     *   gradientFade: 0.15,
+     *   beamLength: 1
+     * }
+     * ```
+     */
+    static defaultUniforms: AbstractBaseShader.Uniforms;
+  }
+
+  /**
+   * Siren light animation illumination shader
+   */
+  class SirenIlluminationShader extends AdaptiveIlluminationShader {
+    static fragmentShader: string;
+
+    /**
+     * @defaultValue
+     * ```js
+     * {
+     *   ...super.defaultUniforms,
+     *   angle: 0,
+     *   gradientFade: 0.45,
+     *   beamLength: 1
+     * }
+     * ```
+     */
+    static defaultUniforms: AbstractBaseShader.Uniforms;
   }
 }
