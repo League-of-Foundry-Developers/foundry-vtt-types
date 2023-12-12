@@ -641,12 +641,12 @@ declare global {
     /**
      * The batch renderer to use.
      */
-    static batchRendererClass: typeof PIXI.BatchRenderer;
+    static batchRendererClass: typeof BatchRenderer;
 
     /**
      * The batch generator to use.
      */
-    static batchShaderGeneratorClass: typeof PIXI.BatchShaderGenerator;
+    static batchShaderGeneratorClass: typeof BatchShaderGenerator;
     /**
      * Create a batch plugin for this sampler class.
      * @returns - The batch plugin class linked to this sampler class.
