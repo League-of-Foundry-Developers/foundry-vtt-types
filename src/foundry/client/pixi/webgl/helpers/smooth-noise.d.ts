@@ -9,6 +9,32 @@ declare global {
      * @param options - Configuration options for the noise process.
      */
     constructor(options: SmoothNoise.ConstructorOptions);
+
+    /**
+     * Amplitude of the generated noise output
+     * The noise output is multiplied by this value
+     */
+    get amplitude(): number;
+
+    set amplitude(amplitude);
+
+    _amplitude: number;
+
+    /**
+     * Scale factor of the random indices
+     */
+    get scale(): number;
+
+    set scale(scale);
+
+    _scale: number;
+
+    /**
+     * Generate the noise value corresponding to a provided numeric x value.
+     * @param x - Any finite number
+     * @returns The corresponding smoothed noise value
+     */
+    generate(x: number): number;
   }
   namespace SmoothNoise {
     interface ConstructorOptions {
