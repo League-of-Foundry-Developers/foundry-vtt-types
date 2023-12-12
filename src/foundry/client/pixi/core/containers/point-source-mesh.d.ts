@@ -1,5 +1,3 @@
-import type { Rectangle, Renderer } from "pixi.js";
-
 export {};
 
 declare global {
@@ -45,13 +43,13 @@ declare global {
      */
     addChildren(): never;
 
-    protected override _render(renderer: Renderer): void;
+    protected override _render(renderer: PIXI.Renderer): void;
 
     override calculateBounds(): void;
 
     protected override _calculateBounds(): void;
 
     /** The local bounds need to be drawn from the underlying geometry. */
-    override getLocalBounds(rect?: Rectangle | undefined): Rectangle;
+    override getLocalBounds(rect?: PIXI.Rectangle | undefined): PIXI.Rectangle;
   }
 }

@@ -1,5 +1,3 @@
-import type { IDestroyOptions, Renderer } from "pixi.js";
-
 export {};
 
 declare global {
@@ -44,7 +42,7 @@ declare global {
      */
     setShaderClass(shaderCls: typeof AbstractBaseShader): void;
 
-    protected override _render(_renderer: Renderer): void;
+    protected override _render(_renderer: PIXI.Renderer): void;
 
     override get width(): number;
     override set width(value: number);
@@ -63,6 +61,6 @@ declare global {
      */
     containsPoint(point: PIXI.IPointData): boolean;
 
-    override destroy(options?: boolean | IDestroyOptions | undefined): void;
+    override destroy(options?: boolean | PIXI.IDestroyOptions | undefined): void;
   }
 }
