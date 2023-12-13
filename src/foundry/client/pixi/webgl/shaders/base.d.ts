@@ -430,10 +430,7 @@ declare global {
     /**
      * A factory method for creating the shader using its defined default values
      */
-    static create<T extends AbstractBaseShader>(
-      this: ConstructorOf<T>,
-      defaultUniforms?: AbstractBaseShader.Uniforms,
-    ): T;
+    static create(defaultUniforms?: AbstractBaseShader.Uniforms): AbstractBaseShader;
 
     /**
      * Reset the shader uniforms back to their provided default values
@@ -465,7 +462,7 @@ declare global {
 
     /**
      * A factory method for creating the filter using its defined default values.
-     * @param uniforms -Initial uniform values which override filter defaults
+     * @param uniforms - Initial uniform values which override filter defaults
      * @returns The constructed AbstractFilter instance.
      */
     static create<T extends AbstractBaseFilter>(this: ConstructorOf<T>, uniforms?: AbstractBaseShader.Uniforms): T;
@@ -487,6 +484,11 @@ declare global {
    * A simple shader to emulate a PIXI.Sprite with a PIXI.Mesh (but faster!)
    */
   class BaseSamplerShader extends AbstractBaseShader {
+    static override create<T extends BaseSamplerShader>(
+      this: ConstructorOf<T>,
+      defaultUniforms?: AbstractBaseShader.Uniforms | undefined,
+    ): T;
+
     /**
      * The plugin name associated for this instance.
      */

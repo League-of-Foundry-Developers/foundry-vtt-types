@@ -22,6 +22,11 @@ declare global {
    * This class defines an interface which all adaptive lighting shaders extend.
    */
   class AdaptiveLightingShader extends AbstractBaseShader {
+    static override create<T extends AdaptiveLightingShader>(
+      this: ConstructorOf<T>,
+      defaultUniforms?: AbstractBaseShader.Uniforms | undefined,
+    ): T;
+
     static override vertexShader: string;
 
     /**
