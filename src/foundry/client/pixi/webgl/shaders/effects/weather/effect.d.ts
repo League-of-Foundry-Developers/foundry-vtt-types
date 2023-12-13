@@ -8,6 +8,31 @@ declare global {
     /**
      * @param config - The config object to create the shader effect
      */
-    constructor(config: any);
+    constructor(config: WeatherShaderEffect.WeatherShaderEffectConfig, shaderClass: typeof AbstractBaseShader);
+
+    /**
+     * Set shader parameters.
+     */
+    configure(config?: WeatherShaderEffect.WeatherShaderEffectConfig): void;
+
+    /**
+     * Begin animation
+     */
+    play(): void;
+
+    /**
+     * Stop animation
+     */
+    stop(): void;
+
+    /**
+     * Initialize the weather effect.
+     * @param config - Config object.
+     */
+    protected _initialize(config: WeatherShaderEffect.WeatherShaderEffectConfig): void;
+  }
+
+  namespace WeatherShaderEffect {
+    type WeatherShaderEffectConfig = AbstractBaseShader.Uniforms & WeatherShaderEffect["shader"];
   }
 }
