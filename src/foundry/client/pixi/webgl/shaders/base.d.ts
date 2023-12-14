@@ -496,7 +496,7 @@ declare global {
      * The named batch sampler plugin that is used by this shader, or null if no batching is used.
      * @defaultValue `"batch"`
      */
-    static classPluginName: string;
+    static classPluginName: string | null;
 
     /**
      * Activate or deactivate this sampler. If set to false, the batch rendering is redirected to "batch".
@@ -576,6 +576,16 @@ declare global {
     static override fragmentShader: string;
 
     /**
+     * Batch default vertex
+     */
+    static batchVertexShader: string;
+
+    /**
+     * Batch default fragment
+     */
+    static batchFragmentShader: string;
+
+    /**
      * @defaultValue
      * ```javascript
      * {
@@ -600,7 +610,13 @@ declare global {
     /**
      * Pack interleaved geometry custom function.
      */
-    protected static _packInterleavedGeometry: (...args: any[]) => any | undefined;
+    protected static _packInterleavedGeometry: (
+      element: PIXI.IBatchableElement,
+      attributeBuffer: PIXI.ViewableBuffer,
+      indexBuffer: Uint16Array,
+      aIndex: number,
+      iIndex: number,
+    ) => void | undefined;
 
     /**
      * A prerender function happening just before the batch renderer is flushed.

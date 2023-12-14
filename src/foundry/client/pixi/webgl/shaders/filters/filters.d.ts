@@ -76,9 +76,11 @@ declare global {
   namespace VisualEffectsMaskingFilter {
     type PostProcessModes = Array<keyof (typeof VisualEffectsMaskingFilter)["POST_PROCESS_TECHNIQUES"]>;
 
+    type FilterMode = ValueOf<(typeof VisualEffectsMaskingFilter)["FILTER_MODES"]>;
+
     type CreateOptions = {
-      filterMode?: string;
-      postProcessModes?: VisualEffectsMaskingFilter.PostProcessModes;
+      filterMode?: FilterMode;
+      postProcessModes?: PostProcessModes;
     } & AbstractBaseShader.Uniforms;
   }
 
@@ -86,7 +88,12 @@ declare global {
    * This filter handles masking and post-processing for visual effects.
    */
   class VisualEffectsMaskingFilter extends AbstractBaseMaskFilter {
-    constructor(vertex: string, fragment: string, uniforms: AbstractBaseShader.Uniforms, filterMode: string);
+    constructor(
+      vertex: string,
+      fragment: string,
+      uniforms: AbstractBaseShader.Uniforms,
+      filterMode: VisualEffectsMaskingFilter.FilterMode,
+    );
 
     static create<T extends VisualEffectsMaskingFilter>(
       this: ConstructorOf<T>,
@@ -96,7 +103,7 @@ declare global {
     /**
      * The filter mode.
      */
-    filterMode: string;
+    filterMode: VisualEffectsMaskingFilter.FilterMode;
 
     /**
      * Update the filter shader with new post-process modes.
@@ -153,14 +160,14 @@ declare global {
      * @param filterMode - Filter mode.
      * @returns The replacement color.
      */
-    static replacementColor(filterMode: ValueOf<(typeof VisualEffectsMaskingFilter)["FILTER_MODES"]>): string;
+    static replacementColor(filterMode: VisualEffectsMaskingFilter.FilterMode): string;
 
     /**
      * Memory allocations and headers for the VisualEffectsMaskingFilter
      * @param filterMode - Filter mode.
      * @returns The filter header according to the filter mode.
      */
-    static fragmentHeader(filterMode: ValueOf<(typeof VisualEffectsMaskingFilter)["FILTER_MODES"]>): string;
+    static fragmentHeader(filterMode: VisualEffectsMaskingFilter.FilterMode): string;
 
     static fragmentCore: string;
 
@@ -178,7 +185,7 @@ declare global {
      * @override
      */
     static fragmentShader(
-      filterMode?: ValueOf<(typeof VisualEffectsMaskingFilter)["FILTER_MODES"]>,
+      filterMode?: VisualEffectsMaskingFilter.FilterMode,
       postProcessModes?: VisualEffectsMaskingFilter.PostProcessModes,
     ): string;
   }
