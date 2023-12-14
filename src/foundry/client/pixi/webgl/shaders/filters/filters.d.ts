@@ -5,6 +5,8 @@ declare global {
    * This class defines an interface for masked custom filters
    */
   class AbstractBaseMaskFilter extends AbstractBaseFilter {
+    static create(uniforms?: AbstractBaseShader.Uniforms): AbstractBaseMaskFilter;
+
     /**
      * The default vertex shader used by all instances of AbstractBaseMaskFilter
      */
@@ -25,6 +27,11 @@ declare global {
    * Contributed by SecretFire#4843
    */
   class InverseOcclusionMaskFilter extends AbstractBaseMaskFilter {
+    static create<T extends InverseOcclusionMaskFilter>(
+      this: ConstructorOf<T>,
+      uniforms?: AbstractBaseShader.Uniforms,
+    ): T;
+
     static adaptiveFragmentShader(channel: "r" | "g" | "b"): string;
 
     /**
@@ -61,25 +68,31 @@ declare global {
    * A minimalist filter (just used for blending)
    */
   class VoidFilter extends AbstractBaseFilter {
+    static create<T extends VoidFilter>(this: ConstructorOf<T>, uniforms?: AbstractBaseShader.Uniforms): T;
+
     static override fragmentShader: string;
+  }
+
+  namespace VisualEffectsMaskingFilter {
+    type PostProcessModes = Array<keyof (typeof VisualEffectsMaskingFilter)["POST_PROCESS_TECHNIQUES"]>;
+
+    type CreateOptions = {
+      filterMode: string;
+      postProcessModes: VisualEffectsMaskingFilter.PostProcessModes;
+      [uniform: string]: AbstractBaseShader.UniformValue;
+    };
   }
 
   /**
    * This filter handles masking and post-processing for visual effects.
    */
-  //@ts-expect-error Foundry really did overload create like that
   class VisualEffectsMaskingFilter extends AbstractBaseMaskFilter {
     constructor(vertex: string, fragment: string, uniforms: AbstractBaseShader.Uniforms, filterMode: string);
 
-    static create({
-      filterMode,
-      postProcessModes,
-      ...uniforms
-    }?: {
-      filterMode: string;
-      postProcessModes: string[];
-      uniforms: AbstractBaseShader.Uniforms;
-    }): VisualEffectsMaskingFilter;
+    static create<T extends VisualEffectsMaskingFilter>(
+      this: ConstructorOf<T>,
+      { filterMode, postProcessModes, ...uniforms }?: VisualEffectsMaskingFilter.CreateOptions,
+    ): T;
 
     /**
      * The filter mode.
@@ -91,7 +104,10 @@ declare global {
      * @param postProcessModes - New modes to apply.
      * @param uniforms         - Uniforms value to update.
      */
-    updatePostprocessModes(postProcessModes?: string[], uniforms?: AbstractBaseShader.Uniforms): void;
+    updatePostprocessModes(
+      postProcessModes?: VisualEffectsMaskingFilter.PostProcessModes,
+      uniforms?: AbstractBaseShader.Uniforms,
+    ): void;
 
     /**
      * Remove all post-processing modes and reset some key uniforms.
@@ -154,7 +170,7 @@ declare global {
      * @param postProcessModes - Post-process modes to construct techniques.
      * @returns The constructed shader code for post-process techniques.
      */
-    static fragmentPostProcess(postProcessModes?: string[]): string;
+    static fragmentPostProcess(postProcessModes?: VisualEffectsMaskingFilter.PostProcessModes): string;
 
     /**
      * Specify the fragment shader to use according to mode
@@ -164,7 +180,7 @@ declare global {
      */
     static fragmentShader(
       filterMode?: ValueOf<(typeof VisualEffectsMaskingFilter)["FILTER_MODES"]>,
-      postProcessModes?: string[],
+      postProcessModes?: VisualEffectsMaskingFilter.PostProcessModes,
     ): string;
   }
 
@@ -226,6 +242,8 @@ declare global {
    * A filter which forces all non-transparent pixels to a specific color and transparency.
    */
   class ForceColorFilter extends AbstractBaseFilter {
+    static create<T extends ForceColorFilter>(this: ConstructorOf<T>, uniforms?: AbstractBaseShader.Uniforms): T;
+
     /**
      * @defaultValue
      * ```js
@@ -246,6 +264,8 @@ declare global {
    * The alpha [threshold,1] is re-mapped to [0,1] with an hermite interpolation slope to prevent pixelation.
    */
   class RoofMaskFilter extends AbstractBaseFilter {
+    static create<T extends RoofMaskFilter>(this: ConstructorOf<T>, uniforms?: AbstractBaseShader.Uniforms): T;
+
     /**
      * @defaultValue
      * ```js
@@ -304,7 +324,10 @@ declare global {
 
     static override vertexShader: string;
 
-    static override create(uniforms: AbstractBaseShader.Uniforms): GlowOverlayFilter;
+    static override create<T extends GlowOverlayFilter>(
+      this: ConstructorOf<T>,
+      uniforms: AbstractBaseShader.Uniforms,
+    ): T;
 
     override apply(
       filterManager: PIXI.FilterSystem,

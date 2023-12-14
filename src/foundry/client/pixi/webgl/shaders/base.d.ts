@@ -450,7 +450,7 @@ declare global {
      * The fragment shader which renders this filter.
      * @defaultValue `undefined`
      */
-    static fragmentShader: string | undefined;
+    static fragmentShader: string | ((...args: any[]) => string) | undefined;
 
     /**
      * The vertex shader which renders this filter.
@@ -463,7 +463,7 @@ declare global {
      * @param uniforms - Initial uniform values which override filter defaults
      * @returns The constructed AbstractFilter instance.
      */
-    static create<T extends AbstractBaseFilter>(this: ConstructorOf<T>, uniforms?: AbstractBaseShader.Uniforms): T;
+    static create(uniforms?: AbstractBaseShader.Uniforms): AbstractBaseFilter;
 
     /**
      * Always target the resolution of the render texture or renderer
