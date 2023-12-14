@@ -77,10 +77,9 @@ declare global {
     type PostProcessModes = Array<keyof (typeof VisualEffectsMaskingFilter)["POST_PROCESS_TECHNIQUES"]>;
 
     type CreateOptions = {
-      filterMode: string;
-      postProcessModes: VisualEffectsMaskingFilter.PostProcessModes;
-      [uniform: string]: AbstractBaseShader.UniformValue;
-    };
+      filterMode?: string;
+      postProcessModes?: VisualEffectsMaskingFilter.PostProcessModes;
+    } & AbstractBaseShader.Uniforms;
   }
 
   /**
