@@ -4,7 +4,6 @@ declare global {
   /**
    * Fog shader effect.
    */
-  //@ts-expect-error Foundry did in fact override a static property with a method
   class FogShader extends AbstractWeatherShader {
     /**
      * @defaultValue

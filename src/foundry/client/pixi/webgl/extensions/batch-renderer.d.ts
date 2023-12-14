@@ -8,12 +8,18 @@ declare global {
     /**
      * The PackInterleavedGeometry function provided by the sampler.
      */
-    protected _packInterleavedGeometry: (...args: any[]) => any;
+    protected _packInterleavedGeometry: (
+      element: PIXI.IBatchableElement,
+      attributeBuffer: PIXI.ViewableBuffer,
+      indexBuffer: Uint16Array,
+      aIndex: number,
+      iIndex: number,
+    ) => void;
 
     /**
      * The preRender function provided by the sampler and that is called just before a flush.
      */
-    protected _preRenderBatch: (...args: any[]) => any;
+    protected _preRenderBatch: (...args: any[]) => void;
 
     get uniforms(): AbstractBaseShader.Uniforms;
 

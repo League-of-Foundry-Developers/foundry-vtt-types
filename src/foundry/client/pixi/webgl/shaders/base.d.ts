@@ -333,7 +333,7 @@ declare class AdaptiveFragmentChannelMixinClass {
    * A subclass of AdaptiveFragmentChannelMixin must implement the fragmentShader static field.
    * @defaultValue `null`
    */
-  static adaptiveFragmentShader: (...args: any[]) => any | null;
+  static adaptiveFragmentShader: ((channel: AdaptiveFragmentChannel.Channel) => string) | null;
 
   /**
    * A factory method for creating the filter using its defined default values
@@ -380,6 +380,10 @@ declare global {
       ): InstanceType<typeof BaseShaderMixinClass> & InstanceType<BaseClass>;
     };
 
+  namespace AdaptiveFragmentChannel {
+    type Channel = "r" | "g" | "b";
+  }
+
   function AdaptiveFragmentChannelMixin<BaseClass extends typeof PIXI.Shader | typeof PIXI.Filter>(
     ShaderClass: BaseClass,
   ): Pick<BaseClass, keyof BaseClass> &
@@ -414,7 +418,7 @@ declare global {
      * A subclass of AbstractBaseShader must implement the fragmentShader static field.
      * @remarks This is abstract, subclasses must implement it.
      */
-    static fragmentShader: string;
+    static fragmentShader: string | ((...args: any[]) => string);
 
     /**
      * The default uniform values for the shader.
@@ -621,13 +625,15 @@ declare global {
     /**
      * A prerender function happening just before the batch renderer is flushed.
      */
-    protected static _preRenderBatch(): (...args: any[]) => any;
+    protected static _preRenderBatch(): (...args: any[]) => void;
 
     /**
      * A function that returns default uniforms associated with the batched version of this sampler.
      * @remarks Foundry annotated this as abstract
      */
-    static batchDefaultUniforms: (...args: any[]) => any | undefined;
+    static batchDefaultUniforms:
+      | ((maxTextures: AbstractBaseShader.UniformValue) => AbstractBaseShader.Uniforms)
+      | undefined;
 
     /**
      * The number of reserved texture units for this shader that cannot be used by the batch renderer.
