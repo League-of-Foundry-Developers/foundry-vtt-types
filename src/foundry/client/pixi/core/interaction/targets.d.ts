@@ -42,10 +42,5 @@ declare global {
      * @remarks Returns void, but Set<T>.delete returns boolean
      */
     override delete(token: InstanceType<ObjectClass<typeof TokenDocument>>): void;
-
-    /**
-     * Dispatch the targetToken hook whenever the user's target set changes
-     */
-    protected _hook(token: InstanceType<ObjectClass<typeof TokenDocument>>, targeted: boolean): void;
   }
 }
