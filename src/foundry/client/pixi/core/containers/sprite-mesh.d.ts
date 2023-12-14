@@ -1,6 +1,3 @@
-import { IBaseTextureOptions } from "@pixi/core";
-import { IPointData } from "@pixi/math";
-
 export {};
 
 declare global {
@@ -145,9 +142,9 @@ declare global {
 
     override getLocalBounds(rect: PIXI.Rectangle): PIXI.Rectangle;
 
-    override containsPoint(point: IPointData): boolean;
+    override containsPoint(point: PIXI.IPointData): boolean;
 
-    override destroy(...args: any[]): void;
+    override destroy(options: PIXI.IDestroyOptions | boolean): void;
 
     /**
      * Create a SpriteMesh from another source.
@@ -158,7 +155,7 @@ declare global {
      */
     static from(
       source: string | PIXI.Texture | HTMLCanvasElement | HTMLVideoElement,
-      textureOptions?: IBaseTextureOptions,
+      textureOptions?: PIXI.IBaseTextureOptions,
       shaderCls?: typeof AbstractBaseShader,
     ): SpriteMesh;
   }

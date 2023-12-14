@@ -60,7 +60,7 @@ declare global {
     /**
      * A constant that enumerates the index order of the quadtree nodes from top-left to bottom-right.
      */
-    static INDICES: {
+    static readonly INDICES: {
       tl: 0;
       tr: 1;
       bl: 2;

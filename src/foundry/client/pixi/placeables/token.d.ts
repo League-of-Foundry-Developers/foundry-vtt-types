@@ -358,21 +358,6 @@ declare global {
     animateMovement(ray: Ray): Promise<void>;
 
     /**
-     * Animate the continual revealing of Token vision during a movement animation
-     * @internal
-     */
-    protected _onMovementFrame(
-      dt: number,
-      anim: Array<{
-        context: unknown;
-        name: string | null;
-        duration: number;
-        ontick: (dt: number, attributes: CanvasAnimation.Attribute[]) => void;
-      }>,
-      config: { fog?: boolean; sound?: boolean; source?: boolean },
-    ): void;
-
-    /**
      * Update perception each frame depending on the animation configuration
      * @param source - (default: `false`)
      * @param sound  - (default: `false`)

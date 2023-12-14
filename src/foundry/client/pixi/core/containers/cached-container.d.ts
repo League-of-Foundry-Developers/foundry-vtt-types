@@ -74,11 +74,9 @@ declare global {
      */
     clear(destroy?: boolean): CachedContainer;
 
-    /** {@inheritdoc} */
-    destroy(options?: Parameters<PIXI.Container["destroy"]>[0]): ReturnType<PIXI.Container["destroy"]>;
+    override destroy(options?: boolean | PIXI.IDestroyOptions): void;
 
-    /** {@inheritdoc} */
-    render(renderer: Parameters<PIXI.Container["render"]>[0]): void;
+    override render(renderer: PIXI.Renderer): void;
 
     /**
      * Resize a render texture passed as a parameter with the renderer.
@@ -91,7 +89,7 @@ declare global {
   namespace CachedContainer {
     type RenderOptions = {
       /** Render function that will be called to render into the RT. */
-      renderFunction?: (...args: any[]) => any;
+      renderFunction?: (renderer: PIXI.Renderer) => void;
       /** An optional clear color to clear the RT before rendering into it. */
       clearColor?: number[];
     };
