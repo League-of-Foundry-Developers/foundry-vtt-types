@@ -1,182 +1,413 @@
-/**
- * This class defines an interface for masked custom filters
- */
-declare abstract class AbstractBaseMaskFilter extends PIXI.Filter {
+export {};
+
+declare global {
   /**
-   * The default vertex shader used by all instances of AbstractBaseMaskFilter
+   * This class defines an interface for masked custom filters
    */
-  static vertexShader: string;
+  class AbstractBaseMaskFilter extends AbstractBaseFilter {
+    /**
+     * The default vertex shader used by all instances of AbstractBaseMaskFilter
+     */
+    static vertexShader: string;
 
-  /**
-   * The fragment shader which renders this filter.
-   * A subclass of AbstractBaseMaskFilter must implement the fragmentShader(channel) static field.
-   */
-  static fragmentShader: ((channel: "r" | "g" | "b") => string) | null;
-
-  /**
-   * A factory method for creating the filter using its defined default values
-   * @param defaultUniforms - Initial uniforms provided to the filter
-   *                          (default: `{}`)
-   * @param channel         - A color channel to target for masking.
-   *                          (default: `"r"`)
-   */
-  static create<T extends AbstractBaseMaskFilter>(
-    this: ConstructorOf<T>,
-    defaultUniforms?: ConstructorParameters<typeof PIXI.Filter>[2],
-    channel?: "r" | "g" | "b",
-  ): T;
-
-  override apply(
-    filterManager: PIXI.FilterSystem,
-    input: PIXI.RenderTexture,
-    output: PIXI.RenderTexture,
-    clear: PIXI.CLEAR_MODES,
-    currentState: any,
-  ): void;
-}
-
-/**
- * A filter used to control channels intensity using an externally provided mask texture.
- * The mask channel used must be provided at filter creation.
- * Contributed by SecretFire#4843
- */
-declare class InverseOcclusionMaskFilter extends AbstractBaseMaskFilter {
-  static fragmentShader(channel: "r" | "g" | "b"): string;
+    override apply(
+      filterManager: PIXI.FilterSystem,
+      input: PIXI.RenderTexture,
+      output: PIXI.RenderTexture,
+      clear: PIXI.CLEAR_MODES,
+      currentState: any,
+    ): void;
+  }
 
   /**
-   * @param defaultUniforms - (default: `{}`)
-   * @param channel  - (default `"r"`)
+   * A filter used to control channels intensity using an externally provided mask texture.
+   * The mask channel used must be provided at filter creation.
+   * Contributed by SecretFire#4843
    */
-  static create<T extends InverseOcclusionMaskFilter>(
-    this: ConstructorOf<T>,
-    defaultUniforms?: ConstructorParameters<typeof PIXI.Filter>[2],
-    channel?: "r" | "g" | "b",
-  ): T;
-}
+  class InverseOcclusionMaskFilter extends AbstractBaseMaskFilter {
+    static adaptiveFragmentShader(channel: "r" | "g" | "b"): string;
 
-/**
- * An abstract filter which provides a framework for reusable definition
- */
-declare abstract class AbstractFilter extends PIXI.Filter {
-  /**
-   * The default uniforms used by the filter
-   * @defaultValue `{}`
-   */
-  static defaultUniforms: AbstractBaseShader.Uniforms;
-
-  /**
-   * The fragment shader which renders this filter.
-   * @defaultValue `undefined`
-   * @remarks This is a function in {@link GlowFilter}. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6937
-   */
-  static fragmentShader: string | ((quality: number, distance: number) => string) | undefined;
+    /**
+     * @defaultValue
+     * ```js
+     * {
+     *  uMaskSampler: null,
+     *  alphaOcclusion: 0,
+     *  alpha: 1,
+     *  depthElevation: 0
+     * }
+     * ```
+     */
+    static override defaultUniforms: AbstractBaseShader.Uniforms;
+  }
 
   /**
-   * The vertex shader which renders this filter.
-   * @defaultValue `undefined`
+   * A filter used to apply a reverse mask on the target display object.
+   * The caller must choose a channel to use (alpha is a good candidate).
    */
-  static vertexShader: string | undefined;
+  class ReverseMaskFilter extends AdaptiveFragmentChannelMixin(AbstractBaseMaskFilter) {
+    static override adaptiveFragmentShader(channel: "r" | "g" | "b"): string;
+
+    /**
+     * @defaultValue
+     * ```js
+     * { uMaskSampler: null }
+     * ```
+     */
+    static defaultUniforms: AbstractBaseShader.Uniforms;
+  }
 
   /**
-   * A factory method for creating the filter using its defined default values
-   * @param uniforms - (default: `{}`)
+   * A minimalist filter (just used for blending)
    */
-  static create(uniforms: AbstractBaseShader.Uniforms): AbstractFilter;
+  class VoidFilter extends AbstractBaseFilter {
+    static override fragmentShader: string;
+  }
 
   /**
-   * Always target the resolution of the render texture or renderer
+   * This filter handles masking and post-processing for visual effects.
    */
-  get resolution(): number;
-  set resolution(value: number);
+  //@ts-expect-error Foundry really did overload create like that
+  class VisualEffectsMaskingFilter extends AbstractBaseMaskFilter {
+    constructor(vertex: string, fragment: string, uniforms: AbstractBaseShader.Uniforms, filterMode: string);
+
+    static create({
+      filterMode,
+      postProcessModes,
+      ...uniforms
+    }?: {
+      filterMode: string;
+      postProcessModes: string[];
+      uniforms: AbstractBaseShader.Uniforms;
+    }): VisualEffectsMaskingFilter;
+
+    /**
+     * The filter mode.
+     */
+    filterMode: string;
+
+    /**
+     * Update the filter shader with new post-process modes.
+     * @param postProcessModes - New modes to apply.
+     * @param uniforms         - Uniforms value to update.
+     */
+    updatePostprocessModes(postProcessModes?: string[], uniforms?: AbstractBaseShader.Uniforms): void;
+
+    /**
+     * Remove all post-processing modes and reset some key uniforms.
+     */
+    reset(): void;
+
+    /**
+     * Masking modes.
+     */
+    static readonly FILTER_MODES: {
+      BACKGROUND: "background";
+      ILLUMINATION: "illumination";
+      COLORATION: "coloration";
+    };
+
+    /**
+     * @defaultValue
+     * ```js
+     * {
+     *    replacementColor: [0, 0, 0],
+     *    tint: [1, 1, 1],
+     *    screenDimensions: [1, 1],
+     *    enableVisionMasking: true,
+     *    uVisionSampler: null,
+     *    exposure: 0,
+     *    contrast: 0,
+     *    saturation: 0
+     * }
+     * ```
+     */
+    static override defaultUniforms: AbstractBaseShader.Uniforms;
+
+    /**
+     * Filter post-process techniques.
+     */
+    static readonly POST_PROCESS_TECHNIQUES: {
+      EXPOSURE: { id: "EXPOSURE"; glsl: string };
+      CONTRAST: { id: "CONTRAST"; glsl: string };
+      SATURATION: { id: "SATURATION"; glsl: string };
+    };
+
+    /**
+     * Assign the replacement color according to the filter mode.
+     * @param filterMode - Filter mode.
+     * @returns The replacement color.
+     */
+    static replacementColor(filterMode: ValueOf<(typeof VisualEffectsMaskingFilter)["FILTER_MODES"]>): string;
+
+    /**
+     * Memory allocations and headers for the VisualEffectsMaskingFilter
+     * @param filterMode - Filter mode.
+     * @returns The filter header according to the filter mode.
+     */
+    static fragmentHeader(filterMode: ValueOf<(typeof VisualEffectsMaskingFilter)["FILTER_MODES"]>): string;
+
+    static fragmentCore: string;
+
+    /**
+     * Construct filter post-processing code according to provided value.
+     * @param postProcessModes - Post-process modes to construct techniques.
+     * @returns The constructed shader code for post-process techniques.
+     */
+    static fragmentPostProcess(postProcessModes?: string[]): string;
+
+    /**
+     * Specify the fragment shader to use according to mode
+     * @param filterMode - (default: this.FILTER_MODES.BACKGROUND)
+     * @param postProcessModes - (default: [])
+     * @override
+     */
+    static fragmentShader(
+      filterMode?: ValueOf<(typeof VisualEffectsMaskingFilter)["FILTER_MODES"]>,
+      postProcessModes?: string[],
+    ): string;
+  }
 
   /**
-   * Always target the MSAA level of the render texture or renderer
+   * Apply visibility coloration according to the baseLine color.
+   * Uses very lightweight gaussian vertical and horizontal blur filter passes.
    */
-  // @ts-expect-error this is a property on PIXI.Filter
-  get multisample(): PIXI.MSAA_QUALITY;
-  set multisample(value: PIXI.MSAA_QUALITY);
-}
+  class VisibilityFilter extends AbstractBaseMaskFilter {
+    constructor(...args: ConstructorParameters<typeof AbstractBaseMaskFilter>);
 
-/**
- * A filter which forces all non-transparent pixels to a specific color and transparency.
- */
-declare class ForceColorFilter extends AbstractFilter {
-  /**
-   * @defaultValue
-   * ```typescript
-   * {
-   *   color: [1, 1, 1],
-   *   alpha: 1.0
-   * }
-   * ```
-   */
-  static defaultUniforms: AbstractBaseShader.Uniforms;
+    /**
+     * @defaultValue
+     * ```js
+     * {
+     *    exploredColor: [1, 1, 1],
+     *    unexploredColor: [0, 0, 0],
+     *    screenDimensions: [1, 1],
+     *    visionTexture: null,
+     *    primaryTexture: null,
+     *    overlayTexture: null,
+     *    overlayMatrix: new PIXI.Matrix(),
+     *    hasOverlayTexture: false
+     * }
+     * ```
+     */
+    static override defaultUniforms: AbstractBaseShader.Uniforms;
 
-  static fragmentShader: string;
-}
+    static override create(
+      uniforms?: AbstractBaseShader.Uniforms | undefined,
+      options?: Parameters<(typeof VisibilityFilter)["fragmentShader"]>,
+    ): VisibilityFilter;
 
-/**
- * A filter which is rendering explored color according to FoW intensity.
- */
-declare class FogColorFilter extends AbstractFilter {
-  /**
-   * @defaultValue
-   * ```typescript
-   * {
-   *   exploredColor: [1, 1, 1]
-   * }
-   * ```
-   */
-  static defaultUniforms: AbstractBaseShader.Uniforms;
+    static override vertexShader: string;
 
-  static fragmentShader: string;
-}
+    static override fragmentShader(options: { persistentVision: boolean }): string;
 
-/**
- * This filter turns pixels with an alpha channel &lt; alphaThreshold in transparent pixels
- * Then, optionally, it can turn the result in the chosen color (default: pure white).
- * The alpha [threshold,1] is re-mapped to [0,1] with an hermite interpolation slope to prevent pixelation.
- */
-declare class RoofMaskFilter extends AbstractFilter {
-  /**
-   * @defaultValue
-   * ```typescript
-   * {
-   *   alphaThreshold: 0.75,
-   *   turnToColor: false,
-   *   color: [1, 1, 1]
-   * }
-   * ```
-   */
-  static defaultUniforms: AbstractBaseShader.Uniforms;
+    /**
+     * Set the blur strength
+     * @param value - blur strength
+     */
+    set blur(value: number);
 
-  static fragmentShader: string;
-}
+    get blur();
 
-/**
- * A filter which implements an inner or outer glow around the source texture.
- * Incorporated from https://github.com/pixijs/filters/tree/main/filters/glow
- */
-declare class GlowFilter extends AbstractFilter {
-  /**
-   * @defaultValue
-   * ```typescript
-   * {
-   *   distance: 10,
-   *   innerStrength: 0,
-   *   glowColor: [1, 1, 1, 1],
-   *   quality: 0.1,
-   * }
-   * ```
-   */
-  static override defaultUniforms: AbstractBaseShader.Uniforms & { distance: number; quality: number };
+    override apply(
+      filterManager: PIXI.FilterSystem,
+      input: PIXI.RenderTexture,
+      output: PIXI.RenderTexture,
+      clear: PIXI.CLEAR_MODES,
+    ): void;
+
+    /**
+     * Calculate the fog overlay sprite matrix.
+     */
+    calculateMatrix(filterManager: PIXI.FilterSystem): void;
+  }
 
   /**
-   * @remarks This could change, see https://gitlab.com/foundrynet/foundryvtt/-/issues/6937
+   * A filter which forces all non-transparent pixels to a specific color and transparency.
    */
-  static override fragmentShader(quality: number, distance: number): string;
+  class ForceColorFilter extends AbstractBaseFilter {
+    /**
+     * @defaultValue
+     * ```js
+     * {
+     *   color: [1, 1, 1],
+     *   alpha: 1.0
+     * }
+     * ```
+     */
+    static override defaultUniforms: AbstractBaseShader.Uniforms;
 
-  static override vertexShader: string;
+    static override fragmentShader: string;
+  }
 
-  static override create(uniforms: AbstractBaseShader.Uniforms): GlowFilter;
+  /**
+   * This filter turns pixels with an alpha channel &lt; alphaThreshold in transparent pixels
+   * Then, optionally, it can turn the result in the chosen color (default: pure white).
+   * The alpha [threshold,1] is re-mapped to [0,1] with an hermite interpolation slope to prevent pixelation.
+   */
+  class RoofMaskFilter extends AbstractBaseFilter {
+    /**
+     * @defaultValue
+     * ```js
+     * {
+     *   alphaThreshold: 0.75,
+     *   turnToColor: false,
+     *   color: [1, 1, 1]
+     * }
+     * ```
+     */
+    static override defaultUniforms: AbstractBaseShader.Uniforms;
+
+    static override fragmentShader: string;
+  }
+
+  /**
+   * A filter which implements an inner or outer glow around the source texture.
+   * Inspired from https://github.com/pixijs/filters/tree/main/filters/glow
+   * @remarks MIT License
+   */
+  class GlowOverlayFilter extends AbstractBaseFilter {
+    override padding: number;
+
+    /**
+     * The inner strength of the glow.
+     * @defaultValue `3`
+     */
+    innerStrength: number;
+
+    /**
+     * The outer strength of the glow.
+     * @defaultValue `3`
+     */
+    outerStrength: number;
+
+    /**
+     * Should this filter auto-animate?
+     * @defaultValue `true`
+     */
+    animated: number;
+
+    /**
+     * @defaultValue
+     * ```typescript
+     * {
+     *   distance: 10,
+     *   innerStrength: 0,
+     *   glowColor: [1, 1, 1, 1],
+     *   quality: 0.1,
+     * }
+     * ```
+     */
+    static override defaultUniforms: AbstractBaseShader.Uniforms & { distance: number; quality: number };
+
+    static createFragmentShader(quality: number, distance: number): string;
+
+    static override vertexShader: string;
+
+    static override create(uniforms: AbstractBaseShader.Uniforms): GlowOverlayFilter;
+
+    override apply(
+      filterManager: PIXI.FilterSystem,
+      input: PIXI.RenderTexture,
+      output: PIXI.RenderTexture,
+      clear: PIXI.CLEAR_MODES,
+    ): void;
+  }
+
+  /**
+   * A filter which implements an outline.
+   * Inspired from https://github.com/pixijs/filters/tree/main/filters/outline
+   * @remarks MIT License
+   */
+  class OutlineOverlayFilter extends AbstractBaseFilter {
+    override padding: number;
+
+    override autoFit: boolean;
+
+    /**
+     * If the filter is animated or not.
+     * @defaultValue `true`
+     */
+    animate: boolean;
+
+    /**
+     * @defaultValue
+     * ```js
+     * {
+     *    outlineColor: [1, 1, 1, 1],
+     *    thickness: [1, 1],
+     *    alphaThreshold: 0.60,
+     *    knockout: true,
+     *    wave: false
+     * }
+     * ```
+     */
+    static override defaultUniforms: AbstractBaseShader.Uniforms;
+
+    static override vertexShader: string;
+
+    static createFragmentShader(): string;
+
+    /**
+     * The thickness of the outline.
+     */
+    get thickness(): number;
+
+    set thickness(value);
+
+    static override create<T extends OutlineOverlayFilter>(
+      this: ConstructorOf<T>,
+      uniforms?: AbstractBaseShader.Uniforms | undefined,
+    ): T;
+
+    override apply(
+      filterManager: PIXI.FilterSystem,
+      input: PIXI.RenderTexture,
+      output: PIXI.RenderTexture,
+      clear: PIXI.CLEAR_MODES,
+    ): void;
+  }
+
+  /**
+   * The filter used by the weather layer to mask weather above occluded roofs.
+   * @see {@link WeatherEffects}
+   */
+  class WeatherOcclusionMaskFilter extends AbstractBaseMaskFilter {
+    /**
+     * Elevation of this weather occlusion mask filter.
+     * @defaultValue `Infinity`
+     */
+    elevation: number;
+
+    static override vertexShader: string;
+
+    static override fragmentShader: string;
+
+    /**
+     * @defaultValue
+     * ```js
+     * {
+     *    depthElevation: 0,
+     *    useOcclusion: true,
+     *    occlusionTexture: null,
+     *    reverseOcclusion: false,
+     *    occlusionWeights: [0, 0, 1, 0],
+     *    useTerrain: false,
+     *    terrainTexture: null,
+     *    reverseTerrain: false,
+     *    terrainWeights: [1, 0, 0, 0],
+     *    sceneDimensions: [0, 0],
+     *    sceneAnchor: [0, 0]
+     * }
+     * ```
+     */
+    static override defaultUniforms: AbstractBaseShader.Uniforms;
+
+    override apply(
+      filterManager: PIXI.FilterSystem,
+      input: PIXI.RenderTexture,
+      output: PIXI.RenderTexture,
+      clear: PIXI.CLEAR_MODES,
+    ): void;
+  }
 }

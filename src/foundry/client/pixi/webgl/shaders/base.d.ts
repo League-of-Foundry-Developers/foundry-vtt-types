@@ -412,8 +412,6 @@ declare global {
     /**
      * The raw fragment shader used by this class.
      * A subclass of AbstractBaseShader must implement the fragmentShader static field.
-     * @defaultValue `""`
-     *
      * @remarks This is abstract, subclasses must implement it.
      */
     static fragmentShader: string;
@@ -575,19 +573,6 @@ declare global {
      */
     static override vertexShader: string;
 
-    /**
-     * @defaultValue
-     * ```js
-     * `precision ${PIXI.settings.PRECISION_FRAGMENT} float;
-     * uniform sampler2D sampler;
-     * uniform vec4 tintAlpha;
-     * varying vec2 vUvs;
-     *
-     * void main() {
-     * gl_FragColor = texture2D(sampler, vUvs) * tintAlpha;
-     * }`
-     * ```
-     */
     static override fragmentShader: string;
 
     /**
