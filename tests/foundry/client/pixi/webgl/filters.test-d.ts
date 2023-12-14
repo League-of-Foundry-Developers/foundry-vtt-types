@@ -6,7 +6,7 @@ expectTypeOf(CustomMaskFilter.create()).toEqualTypeOf<CustomMaskFilter>();
 
 expectTypeOf(InverseOcclusionMaskFilter.create()).toEqualTypeOf<InverseOcclusionMaskFilter>();
 
-const x: VisualEffectsMaskingFilter.CreateOptions = {
+const x = {
   filterMode: "background",
   postProcessModes: ["CONTRAST"],
   foobar: 3,

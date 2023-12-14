@@ -78,10 +78,20 @@ declare global {
 
     type FilterMode = ValueOf<(typeof VisualEffectsMaskingFilter)["FILTER_MODES"]>;
 
-    type CreateOptions = {
+    /**
+     * @privateRemarks Attempting to implement https://stackoverflow.com/a/61434547
+     */
+    type CreateOptionsIntersection = {
       filterMode?: FilterMode;
       postProcessModes?: PostProcessModes;
     } & AbstractBaseShader.Uniforms;
+
+    type CreateOptions<T> = {
+      filterMode?: FilterMode;
+      postProcessModes?: PostProcessModes;
+    } & {
+      [K in keyof T]: K extends "filterMode" | "postProcessModes" ? unknown : AbstractBaseShader.UniformValue;
+    };
   }
 
   /**
@@ -95,9 +105,13 @@ declare global {
       filterMode: VisualEffectsMaskingFilter.FilterMode,
     );
 
+    static create<T1 extends VisualEffectsMaskingFilter, T2 extends VisualEffectsMaskingFilter.CreateOptions<T2>>(
+      this: ConstructorOf<T1>,
+      { filterMode, postProcessModes, ...uniforms }?: T2,
+    ): T1;
     static create<T extends VisualEffectsMaskingFilter>(
       this: ConstructorOf<T>,
-      { filterMode, postProcessModes, ...uniforms }?: VisualEffectsMaskingFilter.CreateOptions,
+      { filterMode, postProcessModes, ...uniforms }?: VisualEffectsMaskingFilter.CreateOptionsIntersection,
     ): T;
 
     /**
