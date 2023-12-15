@@ -79,7 +79,7 @@ declare global {
     type FilterMode = ValueOf<(typeof VisualEffectsMaskingFilter)["FILTER_MODES"]>;
 
     /**
-     * @privateRemarks Attempting to implement https://stackoverflow.com/a/61434547
+     * @privateRemarks Implementation taken from https://stackoverflow.com/a/61434547
      */
     type CreateOptionsIntersection = {
       filterMode?: FilterMode;
