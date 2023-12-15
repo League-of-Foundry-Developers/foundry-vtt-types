@@ -105,6 +105,10 @@ declare global {
       filterMode: VisualEffectsMaskingFilter.FilterMode,
     );
 
+    /**
+     * @remarks This method has been overloaded to accurately type the object input.
+     * The input cannot be separately typed, it must be fed directly into this method
+     */
     static create<T1 extends VisualEffectsMaskingFilter, T2 extends VisualEffectsMaskingFilter.CreateOptions<T2>>(
       this: ConstructorOf<T1>,
       { filterMode, postProcessModes, ...uniforms }?: T2,
