@@ -1,3 +1,5 @@
+import type { DisplayObject } from "pixi.js";
+
 export {};
 
 type ClientDocument = unknown;
@@ -139,7 +141,10 @@ declare global {
    * @param DisplayObject - The parent DisplayObject class being mixed
    * @returns A DisplayObject subclass mixed with PrimaryCanvasObject features
    */
-  function PrimaryCanvasObjectMixin<BaseClass extends typeof PIXI.DisplayObject>(
+  function PrimaryCanvasObjectMixin<
+    BaseClass extends Pick<typeof PIXI.DisplayObject, keyof typeof PIXI.DisplayObject> &
+      (new (...args: any[]) => PIXI.DisplayObject),
+  >(
     DisplayObject: BaseClass,
   ): Pick<BaseClass, keyof BaseClass> &
     typeof PrimaryCanvasObject & {
