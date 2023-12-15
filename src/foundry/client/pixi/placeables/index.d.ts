@@ -1,3 +1,4 @@
+import "./primary-canvas-objects";
 import "./drawing";
 import "./light";
 import "./note";
