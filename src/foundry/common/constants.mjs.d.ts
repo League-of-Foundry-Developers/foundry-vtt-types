@@ -372,16 +372,19 @@ export const TEXT_ANCHOR_POINTS: Readonly<{
 }>;
 export type TEXT_ANCHOR_POINTS = ValueOf<typeof TEXT_ANCHOR_POINTS>;
 
-/**
- * Define the valid occlusion modes which an overhead tile can use
- */
-export const TILE_OCCLUSION_MODES: Readonly<{
+export const OCCLUSION_MODES: Readonly<{
   NONE: 0;
   FADE: 1;
-  // ROOF: 2;  This mode is no longer supported so we don't use 2 for any other mode
+  // ROOF: 2,  This mode is no longer supported so we don't use 2 for any other mode
   RADIAL: 3;
   VISION: 4;
 }>;
+export type OCCLUSION_MODES = ValueOf<typeof OCCLUSION_MODES>;
+
+/**
+ * Alias for old tile occlusion modes definition
+ */
+export const TILE_OCCLUSION_MODES: typeof OCCLUSION_MODES;
 export type TILE_OCCLUSION_MODES = ValueOf<typeof TILE_OCCLUSION_MODES>;
 
 /**

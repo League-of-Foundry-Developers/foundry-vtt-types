@@ -1,3 +1,5 @@
+import type { OCCLUSION_MODES } from "../../../../common/constants.mjs";
+
 export {};
 
 declare class OccludableObject {
@@ -141,7 +143,7 @@ declare global {
 
       /** The occlusion object for this PCO */
       occlusion: {
-        mode: foundry.CONST.OCCLUSION_MODES;
+        mode: OCCLUSION_MODES;
         alpha: number;
         radius: number | null;
       };
