@@ -131,7 +131,7 @@ declare global {
       sort: number;
 
       /** The data texture values */
-      texture: Record<string, unknown>;
+      texture: PIXI.RenderTexture;
     };
   }
   /**
