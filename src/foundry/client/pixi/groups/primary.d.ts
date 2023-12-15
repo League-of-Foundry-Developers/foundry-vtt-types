@@ -21,7 +21,10 @@ declare global {
      */
     override eventMode: PIXI.EventMode;
 
-    clearColor: number[];
+    /**
+     * @defaultValue `[0, 0, 0, 0]`
+     */
+    override clearColor: [r: number, g: number, b: number, a: number];
 
     /**
      * Track the set of HTMLVideoElements which are currently playing as part of this group.
