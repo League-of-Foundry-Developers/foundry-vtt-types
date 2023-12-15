@@ -8,12 +8,12 @@ declare global {
     /**
      * @defaultValue `"interface"`
      */
-    static groupName: string;
+    static override groupName: string;
 
     /**
      * Draw the canvas group and all its component layers.
      */
-    draw(): Promise<void>;
+    override draw(): Promise<void>;
 
     /**
      * Display scrolling status text originating from this ObjectHUD container.
