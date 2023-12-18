@@ -373,12 +373,7 @@ declare global {
 
   function BaseShaderMixin<BaseClass extends typeof PIXI.Shader | typeof PIXI.Filter>(
     ShaderClass: BaseClass,
-  ): Pick<BaseClass, keyof BaseClass> &
-    Pick<typeof BaseShaderMixinClass, keyof typeof BaseShaderMixinClass> & {
-      new (
-        ...args: ConstructorParameters<typeof BaseShaderMixinClass>
-      ): InstanceType<typeof BaseShaderMixinClass> & InstanceType<BaseClass>;
-    };
+  ): Mixin<typeof BaseShaderMixinClass, BaseClass>;
 
   namespace AdaptiveFragmentChannel {
     type Channel = "r" | "g" | "b";
@@ -386,12 +381,7 @@ declare global {
 
   function AdaptiveFragmentChannelMixin<BaseClass extends typeof PIXI.Shader | typeof PIXI.Filter>(
     ShaderClass: BaseClass,
-  ): Pick<BaseClass, keyof BaseClass> &
-    Pick<typeof AdaptiveFragmentChannelMixinClass, keyof typeof AdaptiveFragmentChannelMixinClass> & {
-      new (
-        ...args: ConstructorParameters<typeof AdaptiveFragmentChannelMixinClass>
-      ): InstanceType<typeof AdaptiveFragmentChannelMixinClass> & InstanceType<BaseClass>;
-    };
+  ): Mixin<typeof AdaptiveFragmentChannelMixinClass, BaseClass>;
 
   /**
    * This class defines an interface which all shaders utilize
