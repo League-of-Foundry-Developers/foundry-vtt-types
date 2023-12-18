@@ -11,7 +11,7 @@ declare global {
       any,
       InstanceType<ConfiguredDocumentClass<typeof Scene>>
     >,
-  > extends PIXI.Container {
+  > extends RenderFlagsMixin(PIXI.Container) {
     /**
      * @param document - The Document instance which is represented by this object
      */
@@ -32,6 +32,7 @@ declare global {
 
     /**
      * The underlying data object which provides the basis for this placeable object
+     * @deprecated since v10, will be removed in v12
      */
     data: D["data"];
 
@@ -56,22 +57,18 @@ declare global {
     mouseInteractionManager: MouseInteractionManager<this> | null;
 
     /**
-     * An indicator for whether the object is currently controlled
+     * Allow objects to be culled when off-screen
      * @defaultValue `false`
      */
-    protected _controlled: boolean;
-
-    /**
-     * An indicator for whether the object is currently a hover target
-     * @defaultValue `false`
-     */
-    protected _hover: boolean;
+    cullable: boolean;
 
     /**
      * Identify the official Document name for this PlaceableObject class
      * @remarks This is abstract in {@link PlaceableObject}.
      */
     static embeddedName: string;
+
+    static RENDER_FLAGS;
 
     /**
      * The bounding box for this PlaceableObject.
