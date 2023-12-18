@@ -38,7 +38,7 @@ expectTypeOf(placeable.document).toEqualTypeOf<EmbeddedInSceneDocument>();
 expectTypeOf(placeable.sheet).toEqualTypeOf<EmbeddedInSceneDocumentSheet>();
 
 class ConcretePlaceableObject extends PlaceableObject<EmbeddedInSceneDocument> {
-  get bounds(): NormalizedRectangle {
+  get bounds(): PIXI.Rectangle {
     throw new Error("Not implemented");
   }
   async draw() {
