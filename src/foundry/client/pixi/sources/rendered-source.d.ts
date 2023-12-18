@@ -191,7 +191,7 @@ declare global {
      * @param dt - Delta time.
      * @remarks Returns `this.animation.animation.call(this, dt, options)`
      */
-    animate(dt: number): ReturnType<Exclude<this["animation"]["animation"], undefined>> | undefined;
+    animate(dt: number): number | undefined;
 
     /**
      * Generic time-based animation used for Rendered Point Sources.
