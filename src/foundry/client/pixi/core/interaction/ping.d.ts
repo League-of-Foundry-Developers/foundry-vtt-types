@@ -43,7 +43,6 @@ declare global {
 
     _color: Color | number;
 
-    /** {@inheritdoc} */
     destroy(options?: Record<string, unknown>): void;
 
     /**

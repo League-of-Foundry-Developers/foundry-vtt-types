@@ -167,7 +167,6 @@ declare global {
 
     override _refresh(): void;
 
-    /** {@inheritDoc} */
     protected _isActive(): boolean;
 
     /**

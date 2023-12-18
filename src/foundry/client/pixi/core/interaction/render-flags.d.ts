@@ -70,7 +70,6 @@ declare global {
     );
 
     /**
-     * {@inheritDoc}
      * @returns The flags which were previously set that have been cleared.
      */
     clear(): Record<string, boolean>;

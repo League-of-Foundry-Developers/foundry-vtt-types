@@ -1,8 +1,5 @@
 export {};
 
-// TODO: Define in client/pixi/perception/vision-mode
-type VisionMode = unknown;
-
 // TODO: Define in client/pixi/webgl/shaders/effects/vision
 type AdaptiveVisionShader = unknown;
 
@@ -10,7 +7,7 @@ declare global {
   /**
    * A specialized subclass of the PointSource abstraction which is used to control the rendering of vision sources.
    */
-  class VisionSource<AnimationConfig> extends RenderedPointSource<AnimationConfig> {
+  class VisionSource extends RenderedPointSource {
     static override sourceType: "sight";
 
     static override _refreshUniformsKeys: [
@@ -68,7 +65,6 @@ declare global {
     /** Responsible for assigning the Vision Mode and handling exceptions based on vision special status. */
     protected _initializeVisionMode(): void;
 
-    /** {@inheritdoc} */
     override _getPolygonConfiguration(): PointSourcePolygonConfig;
 
     /** Create a restricted FOV polygon by limiting the radius of the unrestricted LOS polygon. */
@@ -103,8 +99,8 @@ declare global {
     _updateCommonUniforms(shader: AdaptiveVisionShader): void;
 
     /**
-     * TODO: Replace any with the type inherited from _configureLayer
-     * ```
+     * TODO: Replace unknown with the type inherited from _configureLayer
+     * ```ts
      * const vmUniforms = this.visionMode.vision[layerId].uniforms;
      * layer.vmUniforms = Object.entries(vmUniforms);
      * ```
@@ -118,7 +114,7 @@ declare global {
      */
     _updateVisionModeUniforms(
       shader: AdaptiveVisionShader,
-      vmUniforms: Array<Array<{ uniform: string; value: Array<any> }>>,
+      vmUniforms: Array<Array<{ uniform: string; value: Array<unknown> }>>,
     ): void;
   }
 
