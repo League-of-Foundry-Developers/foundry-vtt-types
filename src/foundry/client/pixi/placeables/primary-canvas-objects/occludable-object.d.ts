@@ -18,7 +18,7 @@ declare class OccludableObject {
    * })
    * ```
    */
-  static get defaultData(): OccludableObject.Data & Record<string, unknown>;
+  static get defaultData(): OccludableObject.Data;
 
   /**
    * Contains :
@@ -138,16 +138,22 @@ declare class OccludableObject {
 declare global {
   namespace OccludableObject {
     type Data = {
-      /** The PCO is considered as a roof? */
+      /**
+       * The PCO is considered as a roof?
+       * @defaultValue false
+       */
       roof: boolean;
 
       /** The occlusion object for this PCO */
       occlusion: {
+        /** @defaultValue `CONST.OCCLUSION_MODES.NONE` */
         mode: OCCLUSION_MODES;
+        /** @defaultValue `0` */
         alpha: number;
+        /** @defaultValue `null` */
         radius: number | null;
       };
-    };
+    } & PrimaryCanvasObject.Data;
   }
 
   /**
@@ -162,5 +168,5 @@ declare global {
       new (
         ...args: ConstructorParameters<typeof OccludableObject>
       ): InstanceType<typeof OccludableObject> & InstanceType<BaseClass>;
-    };
+    } & ReturnType<typeof PrimaryCanvasObjectMixin<BaseClass>>;
 }

@@ -91,7 +91,7 @@ declare class PrimaryCanvasObject {
    * Synchronize the position of the ObjectMesh using the position of its represented Document.
    * @remarks Marked as abstract
    */
-  setPosition(): void;
+  setPosition(...args: any[]): void;
 
   /**
    * Synchronize the bounds of the ObjectMesh into the primary group quadtree.
