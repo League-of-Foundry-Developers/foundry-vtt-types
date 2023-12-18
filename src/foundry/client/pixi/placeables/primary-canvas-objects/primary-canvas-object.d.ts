@@ -144,12 +144,5 @@ declare global {
   function PrimaryCanvasObjectMixin<
     BaseClass extends Pick<typeof PIXI.DisplayObject, keyof typeof PIXI.DisplayObject> &
       (new (...args: any[]) => PIXI.DisplayObject),
-  >(
-    DisplayObject: BaseClass,
-  ): Pick<BaseClass, keyof BaseClass> &
-    typeof PrimaryCanvasObject & {
-      new (
-        ...args: ConstructorParameters<typeof PrimaryCanvasObject>
-      ): InstanceType<typeof PrimaryCanvasObject> & InstanceType<BaseClass>;
-    };
+  >(DisplayObject: BaseClass): Mixin<typeof PrimaryCanvasObject, BaseClass>;
 }

@@ -163,10 +163,5 @@ declare global {
    */
   function OccludableObjectMixin<BaseClass extends typeof SpriteMesh>(
     DisplayObject: BaseClass,
-  ): Pick<BaseClass, keyof BaseClass> &
-    typeof OccludableObject & {
-      new (
-        ...args: ConstructorParameters<typeof OccludableObject>
-      ): InstanceType<typeof OccludableObject> & InstanceType<BaseClass>;
-    } & ReturnType<typeof PrimaryCanvasObjectMixin<BaseClass>>;
+  ): Mixin<typeof OccludableObject, BaseClass> & ReturnType<typeof PrimaryCanvasObjectMixin<BaseClass>>;
 }
