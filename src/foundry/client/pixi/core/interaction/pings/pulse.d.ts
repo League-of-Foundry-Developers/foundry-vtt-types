@@ -1,7 +1,6 @@
-export {};
+import Color from "../../../../../common/utils/color.mjs";
 
-// TODO: Remove once color export is fixed
-type Color = number;
+export {};
 
 declare global {
   interface PulsePingOptions extends PingOptions {
