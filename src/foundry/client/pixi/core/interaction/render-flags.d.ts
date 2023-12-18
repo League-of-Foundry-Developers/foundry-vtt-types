@@ -89,10 +89,5 @@ declare global {
 
   function RenderFlagsMixin<BaseClass extends new (...args: any[]) => any>(
     Base: BaseClass,
-  ): Pick<BaseClass, keyof BaseClass> &
-    typeof RenderFlagObject & {
-      new (
-        ...args: ConstructorParameters<typeof RenderFlagObject>
-      ): InstanceType<typeof RenderFlagObject> & InstanceType<BaseClass>;
-    };
+  ): Mixin<typeof RenderFlagObject, BaseClass>;
 }
