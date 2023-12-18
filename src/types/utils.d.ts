@@ -141,3 +141,11 @@ type PropertyTypeOrFallback<T, Key extends string, Fallback> = Key extends keyof
  * Makes the given keys `K` of the type `T` required
  */
 type RequiredProps<T, K extends keyof T> = Required<Pick<T, K>> & Omit<T, K>;
+
+type Mixin<
+  MixinClass extends new (...args: any[]) => any,
+  BaseClass extends abstract new (...args: any[]) => any,
+> = Pick<BaseClass, keyof BaseClass> &
+  Pick<MixinClass, keyof MixinClass> & {
+    new (...args: ConstructorParameters<MixinClass>): InstanceType<BaseClass> & InstanceType<MixinClass>;
+  };

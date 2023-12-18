@@ -37,12 +37,5 @@ declare global {
   function BaseCanvasMixin<
     BaseClass extends Pick<typeof PIXI.Container, keyof typeof PIXI.Container> &
       (new (...args: any[]) => PIXI.Container),
-  >(
-    ContainerClass: BaseClass,
-  ): Pick<BaseClass, keyof BaseClass> &
-    Pick<typeof BaseCanvasMixinClass, keyof typeof BaseCanvasMixinClass> & {
-      new (
-        ...args: ConstructorParameters<typeof BaseCanvasMixinClass>
-      ): InstanceType<typeof BaseCanvasMixinClass> & InstanceType<BaseClass>;
-    };
+  >(ContainerClass: BaseClass): Mixin<typeof BaseCanvasMixinClass, BaseClass>;
 }

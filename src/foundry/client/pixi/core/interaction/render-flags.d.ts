@@ -1,5 +1,41 @@
 export {};
 
+/**
+ * Add RenderFlags functionality to some other object.
+ * This mixin standardizes the interface for such functionality.
+ * @remarks Actually a function `RenderFlagsMixin(Base)`
+ * @param Base - The base class being mixed
+ * @returns The mixed class definition
+ */
+declare class RenderFlagObject {
+  constructor(...args: any[]);
+
+  /**
+   * Configure the render flags used for this class.
+   * @defaultValue `{}`
+   */
+  static RENDER_FLAGS: Record<string, RenderFlag<any>>;
+
+  /**
+   * The ticker priority when RenderFlags of this class are handled.
+   * Valid values are OBJECTS or PERCEPTION.
+   * @defaultValue "OBJECTS"
+   */
+  static RENDER_FLAG_PRIORITY: "OBJECTS" | "PERCEPTION";
+
+  /**
+   * Status flags which are applied at render-time to update the PlaceableObject.
+   * If an object defines RenderFlags, it should at least include flags for "redraw" and "refresh".
+   */
+  renderFlags: RenderFlags;
+
+  /**
+   * Apply any current render flags, clearing the renderFlags set.
+   * Subclasses should override this method to define behavior.
+   */
+  applyRenderFlags(): void;
+}
+
 declare global {
   /** @privateRemarks Values are marked as optional here based on use, foundry docs incomplete */
   type RenderFlag<Flags> = {
@@ -51,48 +87,7 @@ declare global {
     set(changes: Record<string, boolean>): void;
   }
 
-  /**
-   * Add RenderFlags functionality to some other object.
-   * This mixin standardizes the interface for such functionality.
-   * @remarks Actually a function `RenderFlagsMixin(Base)`
-   * @param Base - The base class being mixed
-   * @returns The mixed class definition
-   */
-  class RenderFlagObject {
-    constructor(...args: any[]);
-
-    /**
-     * Configure the render flags used for this class.
-     * @defaultValue `{}`
-     */
-    static RENDER_FLAGS: Record<string, RenderFlag<any>>;
-
-    /**
-     * The ticker priority when RenderFlags of this class are handled.
-     * Valid values are OBJECTS or PERCEPTION.
-     * @defaultValue "OBJECTS"
-     */
-    static RENDER_FLAG_PRIORITY: "OBJECTS" | "PERCEPTION";
-
-    /**
-     * Status flags which are applied at render-time to update the PlaceableObject.
-     * If an object defines RenderFlags, it should at least include flags for "redraw" and "refresh".
-     */
-    renderFlags: RenderFlags;
-
-    /**
-     * Apply any current render flags, clearing the renderFlags set.
-     * Subclasses should override this method to define behavior.
-     */
-    applyRenderFlags(): void;
-  }
-
   function RenderFlagsMixin<BaseClass extends new (...args: any[]) => any>(
     Base: BaseClass,
-  ): Pick<BaseClass, keyof BaseClass> &
-    typeof RenderFlagObject & {
-      new (
-        ...args: ConstructorParameters<typeof RenderFlagObject>
-      ): InstanceType<typeof RenderFlagObject> & InstanceType<BaseClass>;
-    };
+  ): Mixin<typeof RenderFlagObject, BaseClass>;
 }
