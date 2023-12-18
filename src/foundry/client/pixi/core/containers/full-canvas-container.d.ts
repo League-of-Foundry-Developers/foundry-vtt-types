@@ -13,12 +13,7 @@ declare global {
    */
   function FullCanvasObjectMixin<BaseClass extends typeof PIXI.DisplayObject>(
     Base: BaseClass,
-  ): Pick<BaseClass, keyof BaseClass> &
-    Pick<typeof FullCanvasObject, keyof typeof FullCanvasObject> & {
-      new (
-        ...args: ConstructorParameters<typeof FullCanvasObject>
-      ): InstanceType<typeof FullCanvasObject> & InstanceType<BaseClass>;
-    };
+  ): Mixin<typeof FullCanvasObject, BaseClass>;
 
   /**
    * @deprecated since v11, will be removed in v13
