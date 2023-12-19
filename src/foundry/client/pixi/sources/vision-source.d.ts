@@ -114,7 +114,7 @@ declare global {
      */
     _updateVisionModeUniforms(
       shader: AdaptiveVisionShader,
-      vmUniforms: Array<Array<{ uniform: string; value: Array<unknown> }>>,
+      vmUniforms: Array<[uniform: string, value: AbstractBaseShader.UniformValue]>,
     ): void;
   }
 
