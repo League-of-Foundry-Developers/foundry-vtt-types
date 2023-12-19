@@ -49,7 +49,7 @@ declare global {
    * A data structure for tracking a set of boolean status flags.
    * This is a restricted set which can only accept flag values which are pre-defined.
    */
-  class RenderFlags extends Set {
+  class RenderFlags extends Set<string> {
     /**
      * @param flags  - An object which defines the flags which are supported for tracking
      * @param config - Optional configuration
@@ -65,12 +65,17 @@ declare global {
          * Valid options are OBJECTS or PERCEPTION.
          * @defaultValue `PIXI.UPDATE_PRIORITY.OBJECTS`
          */
-        priority?: "OBJECT" | "PERCEPTION";
+        priority?: PIXI.UPDATE_PRIORITY.OBJECTS | PIXI.UPDATE_PRIORITY.PERCEPTION;
       },
     );
 
+    readonly flags: Record<string, RenderFlag<Record<string, boolean>>>;
+
+    readonly object: RenderFlagObject;
+
+    readonly priority: "OBJECT" | "PERCEPTION";
+
     /**
-     * {@inheritDoc}
      * @returns The flags which were previously set that have been cleared.
      */
     clear(): Record<string, boolean>;
@@ -85,6 +90,42 @@ declare global {
      * Activate certain flags, also toggling propagation and reset behaviors
      */
     set(changes: Record<string, boolean>): void;
+  }
+
+  /**
+   * Add RenderFlags functionality to some other object.
+   * This mixin standardizes the interface for such functionality.
+   * @remarks Actually a function `RenderFlagsMixin(Base)`
+   * @param Base - The base class being mixed
+   * @returns The mixed class definition
+   */
+  class RenderFlagObject {
+    constructor(...args: any[]);
+
+    /**
+     * Configure the render flags used for this class.
+     * @defaultValue `{}`
+     */
+    static RENDER_FLAGS: Record<string, RenderFlag<any>>;
+
+    /**
+     * The ticker priority when RenderFlags of this class are handled.
+     * Valid values are OBJECTS or PERCEPTION.
+     * @defaultValue "OBJECTS"
+     */
+    static RENDER_FLAG_PRIORITY: "OBJECTS" | "PERCEPTION";
+
+    /**
+     * Status flags which are applied at render-time to update the PlaceableObject.
+     * If an object defines RenderFlags, it should at least include flags for "redraw" and "refresh".
+     */
+    renderFlags: RenderFlags;
+
+    /**
+     * Apply any current render flags, clearing the renderFlags set.
+     * Subclasses should override this method to define behavior.
+     */
+    applyRenderFlags(): void;
   }
 
   function RenderFlagsMixin<BaseClass extends new (...args: any[]) => any>(

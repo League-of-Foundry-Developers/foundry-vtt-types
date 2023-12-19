@@ -47,10 +47,8 @@ declare global {
      */
     protected static _CHEVRON_PATH: "icons/pings/chevron.webp";
 
-    /** {@inheritdoc} */
     override animate(): Promise<boolean>;
 
-    /** {@inheritdoc} */
     override _animateFrame(dt: number, animation: CanvasAnimationData): void;
 
     /**

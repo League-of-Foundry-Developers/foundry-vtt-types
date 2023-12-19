@@ -1,3 +1,5 @@
+import type { IDestroyOptions } from "pixi.js";
+
 export {};
 
 // TODO: Remove once color export is fixed
@@ -43,8 +45,7 @@ declare global {
 
     _color: Color | number;
 
-    /** {@inheritdoc} */
-    destroy(options?: Record<string, unknown>): void;
+    destroy(options?: IDestroyOptions | boolean): void;
 
     /**
      * Start the ping animation.
