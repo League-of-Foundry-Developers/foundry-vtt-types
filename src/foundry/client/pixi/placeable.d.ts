@@ -73,24 +73,16 @@ declare global {
 
     /**
      * The flags declared here are required for all PlaceableObject subclasses to also support.
-     * @defaultValue
-     * ```js
-     * {
-     *    redraw: {propagate: ["refresh"]},
-     *    refresh: {propagate: ["refreshState"], alias: true},
-     *    refreshState: {}
-     *  }
-     * ```
      */
     static override RENDER_FLAGS: {
       /** @defaultValue `{propagate: ["refresh"]}` */
-      redraw: RenderFlag<PlaceableObject.PlaceableObjectFlags>;
+      redraw: RenderFlag<PlaceableObject.PlaceableObjectRenderFlags>;
 
       /** @defaultValue `{propagate: ["refreshState"], alias: true}` */
-      refresh: RenderFlag<PlaceableObject.PlaceableObjectFlags>;
+      refresh: RenderFlag<PlaceableObject.PlaceableObjectRenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshState: RenderFlag<PlaceableObject.PlaceableObjectFlags>;
+      refreshState: RenderFlag<PlaceableObject.PlaceableObjectRenderFlags>;
     };
 
     /**
@@ -187,7 +179,7 @@ declare global {
      * Apply render flags before a render occurs.
      * @param flags - The render flags which must be applied
      */
-    protected _applyRenderFlags(flags: PlaceableObject.PlaceableObjectFlags): void;
+    protected _applyRenderFlags(flags: PlaceableObject.PlaceableObjectRenderFlags): void;
 
     /**
      * Clear the display of the existing object
@@ -207,7 +199,7 @@ declare global {
      * Draw the placeable object into its parent container
      * @returns The drawn object
      */
-    abstract draw(options: Record<string, unknown>): Promise<this>;
+    draw(options: Record<string, unknown>): Promise<this>;
 
     /**
      * The inner _draw method which must be defined by each PlaceableObject subclass.
@@ -500,7 +492,7 @@ declare global {
      * @see MouseInteractionManager##handleDragCancel
      * @param event - The triggering mouse click event
      */
-    protected _onDragLeftCancel(event: MouseEvent): void;
+    protected _onDragLeftCancel(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback action which occurs on a long press.
@@ -512,7 +504,7 @@ declare global {
   }
 
   namespace PlaceableObject {
-    interface PlaceableObjectFlags {
+    interface PlaceableObjectRenderFlags {
       redraw: boolean;
 
       refresh: boolean;
