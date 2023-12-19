@@ -1,4 +1,5 @@
 export {};
+
 declare class RenderFlagObject {
   constructor(...args: any[]);
 
