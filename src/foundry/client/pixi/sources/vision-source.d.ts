@@ -99,14 +99,6 @@ declare global {
     _updateCommonUniforms(shader: AdaptiveVisionShader): void;
 
     /**
-     * TODO: Replace unknown with the type inherited from _configureLayer
-     * ```ts
-     * const vmUniforms = this.visionMode.vision[layerId].uniforms;
-     * layer.vmUniforms = Object.entries(vmUniforms);
-     * ```
-     */
-
-    /**
      * Update layer uniforms according to vision mode uniforms, if any.
      * @param shader      - The shader being updated.
      * @param vmUniforms  - The targeted layer.
