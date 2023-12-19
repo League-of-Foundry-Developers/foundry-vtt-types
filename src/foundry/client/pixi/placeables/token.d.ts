@@ -36,12 +36,12 @@ declare global {
     /**
      * A reference to the VisionSource object which defines this vision source area of effect
      */
-    vision: VisionSource<any>;
+    vision: VisionSource;
 
     /**
      * A reference to the LightSource object which defines this light source area of effect
      */
-    light: LightSource<any>;
+    light: LightSource;
 
     /**
      * A linked ObjectHUD element which is synchronized with the location and visibility of this Token

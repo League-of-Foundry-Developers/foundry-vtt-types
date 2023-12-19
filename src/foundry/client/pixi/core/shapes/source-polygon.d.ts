@@ -162,7 +162,6 @@ declare global {
       intersectionOptions?: Record<string, unknown>,
     ): PointSourcePolygon;
 
-    /** {@inheritDoc} */
     contains(x: number, y: number): boolean;
 
     /**
