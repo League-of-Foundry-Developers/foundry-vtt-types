@@ -31,10 +31,8 @@ declare global {
     //@ts-expect-error Getter/setter routine is deprecated functionality as of v11, removed in v13
     rays: PolygonRay[];
 
-    /** {@inheritdoc} */
     override initialize(origin: Point, config: PointSourcePolygonConfig): void;
 
-    /** {@inheritDoc} */
     clone(): ClockwiseSweepPolygon;
 
     protected override _compute(): void;

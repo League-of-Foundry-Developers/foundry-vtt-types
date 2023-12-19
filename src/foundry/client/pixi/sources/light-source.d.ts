@@ -15,7 +15,7 @@ declare global {
      * An animation configuration for the source
      * @defaultValue `{}`
      */
-    animation: RenderedPointSource.RenderedPointSourceAnimationConfig<any>;
+    animation: RenderedPointSource.RenderedPointSourceAnimationConfig;
 
     /**
      * The allowed radius of bright vision or illumination
@@ -75,8 +75,7 @@ declare global {
   /**
    * A specialized subclass of the PointSource abstraction which is used to control the rendering of light sources.
    */
-  class LightSource<AnimationConfig> extends RenderedPointSource<AnimationConfig> {
-    /** {@inheritdoc} */
+  class LightSource extends RenderedPointSource {
     static override sourceType: "light";
 
     protected static _initializeShaderKeys: ["animation.type", "walls"];
@@ -248,7 +247,7 @@ declare global {
   /**
    * A specialized subclass of the LightSource which is used to render global light source linked to the scene.
    */
-  class GlobalLightSource<AnimationConfig> extends LightSource<AnimationConfig> {
+  class GlobalLightSource extends LightSource {
     override _createPolygon(): PIXI.Polygon;
 
     protected override _configureSoftEdges(): void;
