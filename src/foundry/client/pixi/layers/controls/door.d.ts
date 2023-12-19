@@ -38,13 +38,13 @@ declare global {
      * Handle mouse over events on a door control icon.
      * @param event - The originating interaction event
      */
-    protected _onMouseOver(event: PIXI.InteractionEvent): false | void;
+    protected _onMouseOver(event: PIXI.FederatedEvent): false | void;
 
     /**
      * Handle mouse out events on a door control icon.
      * @param event - The originating interaction event
      */
-    protected _onMouseOut(event: PIXI.InteractionEvent): false | void;
+    protected _onMouseOut(event: PIXI.FederatedEvent): false | void;
 
     /**
      * Handle left mouse down events on a door control icon.
@@ -52,7 +52,7 @@ declare global {
      * @param event - The originating interaction event
      */
     protected _onMouseDown(
-      event: PIXI.InteractionEvent,
+      event: PIXI.FederatedEvent,
     ): false | void | Promise<InstanceType<ConfiguredDocumentClassForName<"Wall">> | undefined>;
 
     /**
@@ -61,7 +61,7 @@ declare global {
      * @param event - The originating interaction event
      */
     protected _onRightDown(
-      event: PIXI.InteractionEvent,
+      event: PIXI.FederatedEvent,
     ): void | Promise<InstanceType<ConfiguredDocumentClassForName<"Wall">> | undefined>;
   }
 }

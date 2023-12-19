@@ -87,11 +87,11 @@ declare global {
      */
     protected _drawBackground(): PIXI.Sprite | undefined;
 
-    protected _onDragLeftStart(event: PIXI.InteractionEvent): Promise<void>;
+    protected _onDragLeftStart(event: PIXI.FederatedEvent): Promise<void>;
 
-    protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+    protected _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    protected _onDragLeftDrop(event: PIXI.InteractionEvent): void;
+    protected _onDragLeftDrop(event: PIXI.FederatedEvent): void;
 
     protected _onDragLeftCancel(event: PointerEvent): void;
 

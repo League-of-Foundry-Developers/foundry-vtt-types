@@ -56,25 +56,29 @@
     "typscript"
   ],
   "dependencies": {
-    "@pixi/graphics-smooth": "^0.0.30",
-    "@pixi/particle-emitter": "^5.0.7",
+    "@pixi/graphics-smooth": "^1.1.0",
+    "@pixi/particle-emitter": "^5.0.8",
     "@types/jquery": "~3.5.22",
     "@types/showdown": "~2.0.2",
     "@types/simple-peer": "~9.11.1",
     "@types/youtube": "~0.0.48",
     "handlebars": "^4.7.7",
-    "pixi.js": "^5.3.11",
+    "pixi.js": "^7.2.4",
     "prosemirror-collab": "^1.3.0",
-    "prosemirror-commands": "^1.3.0",
+    "prosemirror-commands": "^1.5.1",
+    "prosemirror-dropcursor": "^1.8.0",
+    "prosemirror-gapcursor": "^1.3.1",
+    "prosemirror-history": "^1.3.0",
     "prosemirror-inputrules": "^1.2.0",
-    "prosemirror-keymap": "^1.2.0",
-    "prosemirror-model": "^1.18.1",
-    "prosemirror-schema-list": "^1.2.1",
-    "prosemirror-state": "^1.4.1",
-    "prosemirror-transform": "^1.7.0",
-    "prosemirror-view": "^1.27.2",
-    "socket.io-client": "^4.5.1",
-    "tinymce": "^6.7.0"
+    "prosemirror-keymap": "^1.2.1",
+    "prosemirror-model": "^1.19.0",
+    "prosemirror-schema-list": "^1.2.2",
+    "prosemirror-state": "^1.4.2",
+    "prosemirror-tables": "^1.3.2",
+    "prosemirror-transform": "^1.7.1",
+    "prosemirror-view": "^1.30.2",
+    "socket.io-client": "^4.6.1",
+    "tinymce": "^6.7.1"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.7.4",
@@ -89,6 +93,9 @@
     "prettier": "^3.0.3",
     "typescript": "~5.3",
     "vitest": "^0.34.6"
+  },
+  "overrides": {
+    "@types/css-font-loading-module": "^0.0.12s"
   },
   "husky": {
     "hooks": {

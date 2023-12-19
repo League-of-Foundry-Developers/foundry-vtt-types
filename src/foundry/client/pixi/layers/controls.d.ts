@@ -111,7 +111,7 @@ declare global {
     /**
      * Handle mousemove events on the game canvas to broadcast activity of the user's cursor position
      */
-    protected _onMoveCursor(event: PIXI.InteractionEvent): void;
+    protected _onMoveCursor(event: PIXI.FederatedEvent): void;
 
     /**
      * Create and draw the Cursor object for a given User

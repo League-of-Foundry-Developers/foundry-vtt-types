@@ -241,27 +241,27 @@ declare global {
 
     protected override _canControl(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
-    protected override _onHoverIn(event: PIXI.InteractionEvent, options?: HoverInOptions): false | void;
+    protected override _onHoverIn(event: PIXI.FederatedEvent, options?: HoverInOptions): false | void;
 
-    protected override _onHoverOut(event: PIXI.InteractionEvent): false | void;
+    protected override _onHoverOut(event: PIXI.FederatedEvent): false | void;
 
     /**
      * Handle mouse-hover events on the line segment itself, pulling the Wall to the front of the container stack
      * @internal
      */
-    protected _onMouseOverLine(event: PIXI.InteractionEvent): void;
+    protected _onMouseOverLine(event: PIXI.FederatedEvent): void;
 
-    protected override _onClickLeft(event: PIXI.InteractionEvent): boolean;
+    protected override _onClickLeft(event: PIXI.FederatedEvent): boolean;
 
-    protected override _onClickLeft2(event: PIXI.InteractionEvent): void;
+    protected override _onClickLeft2(event: PIXI.FederatedEvent): void;
 
-    protected override _onClickRight2(event: PIXI.InteractionEvent): void;
+    protected override _onClickRight2(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftStart(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<any>;
+    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<any>;
   }
 }
 

@@ -523,47 +523,47 @@ declare global {
 
     protected override _canControl(
       user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.InteractionEvent,
+      event?: PIXI.FederatedEvent,
     ): boolean;
 
     protected override _canHUD(
       user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.InteractionEvent,
+      event?: PIXI.FederatedEvent,
     ): boolean;
 
     protected override _canConfigure(
       user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.InteractionEvent,
+      event?: PIXI.FederatedEvent,
     ): true;
 
     protected override _canHover(
       user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.InteractionEvent,
+      event?: PIXI.FederatedEvent,
     ): true;
 
     protected override _canView(
       user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.InteractionEvent,
+      event?: PIXI.FederatedEvent,
     ): boolean;
 
     protected override _canDrag(
       user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event: PIXI.InteractionEvent,
+      event: PIXI.FederatedEvent,
     ): boolean;
 
-    protected override _onHoverIn(event: PIXI.InteractionEvent, options?: { hoverOutOthers?: boolean }): void;
+    protected override _onHoverIn(event: PIXI.FederatedEvent, options?: { hoverOutOthers?: boolean }): void;
 
-    protected override _onHoverOut(event: PIXI.InteractionEvent): false | void;
+    protected override _onHoverOut(event: PIXI.FederatedEvent): false | void;
 
-    protected override _onClickLeft(event: PIXI.InteractionEvent): void;
+    protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
-    protected override _onClickLeft2(event?: PIXI.InteractionEvent): void;
+    protected override _onClickLeft2(event?: PIXI.FederatedEvent): void;
 
-    protected override _onClickRight2(event: PIXI.InteractionEvent): void;
+    protected override _onClickRight2(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftDrop(event: PIXI.InteractionEvent): Promise<any>;
+    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<any>;
 
-    protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
     protected override _onDragLeftCancel(event: MouseEvent): void;
     /**

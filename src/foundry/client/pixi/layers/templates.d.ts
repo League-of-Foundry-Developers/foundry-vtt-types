@@ -33,9 +33,9 @@ declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate", Template
    */
   static registerSettings(): void;
 
-  protected override _onDragLeftStart(event: PIXI.InteractionEvent): Promise<MeasuredTemplate>;
+  protected override _onDragLeftStart(event: PIXI.FederatedEvent): Promise<MeasuredTemplate>;
 
-  protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
+  protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
   protected override _onMouseWheel(event: WheelEvent): void | ReturnType<MeasuredTemplate["rotate"]>;
 }

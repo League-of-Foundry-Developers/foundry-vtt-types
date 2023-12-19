@@ -1,4 +1,9 @@
+import type { IDestroyOptions } from "pixi.js";
+
 export {};
+
+// TODO: Remove once color export is fixed
+type Color = number;
 
 declare global {
   interface PingOptions {
@@ -24,5 +29,35 @@ declare global {
      * The name for the ping animation to pass to {@link CanvasAnimation.animate}.
      */
     name?: string;
+  }
+
+  /**
+   * A class to manage a user ping on the canvas.
+   */
+  class Ping extends PIXI.Container {
+    /**
+     * @param origin  - The canvas co-ordinates of the origin of the ping.
+     * @param options - Additional options to configure the ping animation.
+     */
+    constructor(origin: PIXI.Point, options?: PingOptions);
+
+    options: PingOptions;
+
+    _color: Color | number;
+
+    destroy(options?: IDestroyOptions | boolean): void;
+
+    /**
+     * Start the ping animation.
+     * @returns Returns true if the animation ran to completion, false otherwise.
+     */
+    animate(): Promise<boolean>;
+
+    /**
+     * On each tick, advance the animation.
+     * @param dt        - The number of ms that elapsed since the previous frame.
+     * @param animation - The animation state.
+     */
+    protected _animateFrame(dt: number, animation: CanvasAnimationData): void;
   }
 }

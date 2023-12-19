@@ -84,7 +84,7 @@ declare global {
      * An set of blur filter instances which are modified by the zoom level and the "soft shadows" setting
      * @defaultValue `[]`
      */
-    blurFilters: Set<PIXI.filters.BlurFilter>;
+    blurFilters: Set<PIXI.BlurFilter>;
 
     /**
      * A reference to the MouseInteractionManager that is currently controlling pointer-based interaction, or null.
@@ -173,7 +173,7 @@ declare global {
      * A debounced function which tracks movements of the mouse on the game canvas.
      * @defaultValue `foundry.utils.debounce(this._onMouseMove.bind(this), this.#mouseMoveDebounceMS)`
      */
-    #debounceMouseMove: (event: PIXI.InteractionEvent) => void;
+    #debounceMouseMove: (event: PIXI.FederatedEvent) => void;
 
     /**
      * The singleton PIXI.Application instance rendered on the Canvas.
@@ -519,14 +519,14 @@ declare global {
      * @param blurStrength - The desired blur strength to use for this filter
      *                       (default: `CONFIG.Canvas.blurStrength`)
      */
-    createBlurFilter(blurStrength?: number): PIXI.filters.BlurFilter;
+    createBlurFilter(blurStrength?: number): PIXI.BlurFilter;
 
     /**
      * Add a filter to the blur filter list. The filter must have the blur property
      * @param filter - The Filter instance to add
      * @returns The added filter for method chaining
      */
-    addBlurFilter(filter: PIXI.filters.BlurFilter): PIXI.filters.BlurFilter;
+    addBlurFilter(filter: PIXI.BlurFilter): PIXI.BlurFilter;
 
     /**
      * Update the blur strength depending on the scale of the canvas stage
@@ -574,19 +574,19 @@ declare global {
      * Handle mouse movement on the game canvas.
      * This handler fires on both a throttle and a debounce, ensuring that the final update is always recorded.
      */
-    protected _onMouseMove(event: PIXI.InteractionEvent): void;
+    protected _onMouseMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle left mouse-click events occurring on the Canvas.
      * @see {@link MouseInteractionManager#_handleClickLeft}
      */
-    protected _onClickLeft(event: PIXI.InteractionEvent): void;
+    protected _onClickLeft(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle double left-click events occurring on the Canvas stage.
      * @see {@link MouseInteractionManager#_handleClickLeft2}
      */
-    protected _onClickLeft2(event: PIXI.InteractionEvent): void;
+    protected _onClickLeft2(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle long press events occurring on the Canvas.
@@ -594,21 +594,21 @@ declare global {
      * @param event  - The triggering canvas interaction event.
      * @param origin - The local canvas coordinates of the mousepress.
      */
-    protected _onLongPress(event: PIXI.InteractionEvent, origin: PIXI.Point): void;
+    protected _onLongPress(event: PIXI.FederatedEvent, origin: PIXI.Point): void;
 
     /**
      * Handle the beginning of a left-mouse drag workflow on the Canvas stage or its active Layer.
      * @see {@link MouseInteractionManager#_handleDragStart}
      * @internal
      */
-    protected _onDragLeftStart(event: PIXI.InteractionEvent): void;
+    protected _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle mouse movement events occurring on the Canvas.
      * @see {@link MouseInteractionManager#_handleDragMove}
      * @internal
      */
-    protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
+    protected _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle the conclusion of a left-mouse drag workflow when the mouse button is released.
@@ -616,7 +616,7 @@ declare global {
      * @internal
      */
     protected _onDragLeftDrop(
-      event: PIXI.InteractionEvent,
+      event: PIXI.FederatedEvent,
     ): ReturnType<PlaceablesLayer<any>["selectObjects"]> | ReturnType<TokenLayer["targetObjects"]> | void;
 
     /**
@@ -630,31 +630,31 @@ declare global {
      * Handle right mouse-click events occurring on the Canvas stage or it's active layer
      * @see {@link MouseInteractionManager#_handleClickRight}
      */
-    protected _onClickRight(event: PIXI.InteractionEvent): void;
+    protected _onClickRight(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle double right-click events occurring on the Canvas.
      * @see {@link MouseInteractionManager#_handleClickRight}
      * @internal
      */
-    protected _onClickRight2(event: PIXI.InteractionEvent): void;
+    protected _onClickRight2(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle right-mouse drag events occurring on the Canvas.
      * @see {@link MouseInteractionManager#_handleDragMove}
      */
-    protected _onDragRightMove(event: PIXI.InteractionEvent): void;
+    protected _onDragRightMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle the conclusion of a right-mouse drag workflow the Canvas stage.
      * @see {@link MouseInteractionManager#_handleDragDrop}
      */
-    protected _onDragRightDrop(event: PIXI.InteractionEvent): void;
+    protected _onDragRightDrop(event: PIXI.FederatedEvent): void;
 
     /**
      * Determine selection coordinate rectangle during a mouse-drag workflow
      */
-    protected _onDragSelect(event: PIXI.InteractionEvent): void;
+    protected _onDragSelect(event: PIXI.FederatedEvent): void;
 
     /**
      * Pan the canvas view when the cursor position gets close to the edge of the frame

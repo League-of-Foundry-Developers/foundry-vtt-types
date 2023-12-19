@@ -4,6 +4,7 @@
     "exactOptionalPropertyTypes": true,
     "lib": ["DOM", "ES2020"],
     "moduleResolution": "Node",
+    "esModuleInterop": true,
     "noEmit": true,
     "strict": true,
     "target": "ES2020",

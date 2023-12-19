@@ -1,107 +1,166 @@
-/**
- * A helper class which manages the refresh workflow for perception layers on the canvas.
- * This controls the logic which batches multiple requested updates to minimize the amount of work required.
- * A singleton instance is available as canvas#perception.
- * @see Canvas#perception
- */
-declare class PerceptionManager {
-  constructor();
+export {};
+
+declare global {
+  interface PerceptionManagerFlags {
+    /** Re-initialize the entire lighting configuration */
+    initializeLighting: boolean;
+
+    /** Refresh the rendered appearance of lighting */
+    refreshLighting: boolean;
+
+    /** Update the configuration of light sources */
+    refreshLightSources: boolean;
+
+    /** Re-initialize the entire vision configuration */
+    initializeVision: boolean;
+
+    /** Update the configuration of vision sources */
+    refreshVisionSources: boolean;
+
+    /** Refresh the rendered appearance of vision */
+    refreshVision: boolean;
+
+    /** Re-initialize the entire ambient sound configuration */
+    initializeSounds: boolean;
+
+    /** Refresh the audio state of ambient sounds */
+    refreshSounds: boolean;
+
+    /** Apply a fade duration to sound refresh workflow */
+    soundFadeDuration: boolean;
+
+    /** Refresh the visual appearance of tiles */
+    refreshTiles: boolean;
+
+    /** Refresh the contents of the PrimaryCanvasGroup mesh */
+    refreshPrimary: boolean;
+  }
 
   /**
-   * The number of milliseconds by which to throttle non-immediate refreshes
+   * A helper class which manages the refresh workflow for perception layers on the canvas.
+   * This controls the logic which batches multiple requested updates to minimize the amount of work required.
+   * A singleton instance is available as canvas#perception.
+   * @see Canvas#perception
    */
-  protected _throttleMS: number | undefined;
+  class PerceptionManager extends RenderFlagsMixin(Object) {
+    static RENDER_FLAGS: {
+      /** @defaultValue `{propagate: ["refreshLighting", "refreshVision"]}` */
+      initializeLighting: RenderFlag<PerceptionManagerFlags>;
 
-  /**
-   * An internal tracker for the last time that a perception refresh was executed
-   */
-  protected _refreshTime: number | undefined;
+      /** @defaultValue `{propagate: ["refreshLightSources"]}` */
+      refreshLighting: RenderFlag<PerceptionManagerFlags>;
 
-  /**
-   * An internal tracker for the window timeout that applies a debounce to the refresh
-   */
-  protected _timeout: number | undefined;
+      /** @defaultValue `{}` */
+      refreshLightSources: RenderFlag<PerceptionManagerFlags>;
 
-  /**
-   * Cache a reference to the canvas scene to avoid attempting scheduled refreshes after the scene is changed
-   */
-  protected _scene: string | undefined;
+      /** @defaultValue `{}` */
+      refreshVisionSources: RenderFlag<PerceptionManagerFlags>;
 
-  /**
-   * The default values of update parameters.
-   * When a refresh occurs, the staged parameters are reset to these initial values.
-   */
-  static DEFAULTS: PerceptionManager.Options;
+      /** @defaultValue `{}` */
+      refreshPrimary: RenderFlag<PerceptionManagerFlags>;
 
-  /**
-   * The configured parameters for the next refresh.
-   */
-  params: PerceptionManager.Options;
+      /** @defaultValue `{propagate: ["refreshVision", "refreshTiles", "refreshLighting", "refreshLightSources", "refreshPrimary"]}` */
+      initializeVision: RenderFlag<PerceptionManagerFlags>;
 
-  /**
-   * Cancel any pending perception refresh.
-   */
-  cancel(): void;
+      /** @defaultValue `{propagate: ["refreshVisionSources"]}` */
+      refreshVision: RenderFlag<PerceptionManagerFlags>;
 
-  /**
-   * Schedule a perception update with requested parameters.
-   * @param options - (default: `{}`)
-   */
-  schedule(options?: DeepPartial<PerceptionManager.Options>): void;
+      /** @defaultValue `{propagate: ["refreshSounds"]}` */
+      initializeSounds: RenderFlag<PerceptionManagerFlags>;
 
-  /**
-   * Perform an immediate perception update.
-   * @param options - (default: `{}`)
-   */
-  update(options?: DeepPartial<PerceptionManager.Options>): void;
+      /** @defaultValue `{}` */
+      refreshSounds: RenderFlag<PerceptionManagerFlags>;
 
-  /**
-   * A helper function to perform an immediate initialization plus incremental refresh.
-   */
-  initialize(): ReturnType<this["update"]>;
+      /** @defaultValue `{propagate: ["refreshLightSources", "refreshVisionSources"]}` */
+      refreshTiles: RenderFlag<PerceptionManagerFlags>;
 
-  /**
-   * A helper function to perform an incremental refresh only.
-   */
-  refresh(): ReturnType<this["update"]>;
+      /** @defaultValue `{}` */
+      soundFadeDuration: RenderFlag<PerceptionManagerFlags>;
 
-  /**
-   * Set option flags which configure the next perception update
-   */
-  protected _set(options: DeepPartial<PerceptionManager.Options>): void;
+      /** @defaultValue `{propagate: ["initializeLighting", "initializeVision"]}` */
+      identifyInteriorWalls: RenderFlag<PerceptionManagerFlags>;
 
-  /**
-   * Perform the perception update workflow
-   * @param immediate - Perform the workflow immediately, otherwise it is throttled
-   *                    (default: `false`)
-   */
-  protected _update(immediate?: boolean): void;
-
-  /**
-   * Reset the values of a pending refresh back to their default states.
-   */
-  protected _reset(): void;
-}
-
-declare namespace PerceptionManager {
-  interface Options {
-    lighting: {
-      initialize: boolean;
-      refresh: boolean;
+      /** @defaultValue `{propagate: ["refreshVision"]}` */
+      forceUpdateFog: RenderFlag<PerceptionManagerFlags>;
     };
-    sight: {
-      initialize: boolean;
-      refresh: boolean;
-      skipUpdateFog: boolean;
-      forceUpdateFog: boolean;
+
+    static RENDER_FLAG_PRIORITY: "PERCEPTION";
+
+    applyRenderFlags(): void;
+
+    /**
+     * A shim mapping which supports backwards compatibility for old-style (V9 and before) perception manager flags.
+     */
+    static COMPATIBILITY_MAPPING: {
+      "lighting.initialize": "initializeLighting";
+      "lighting.refresh": "refreshLighting";
+      "sight.initialize": "initializeVision";
+      "sight.refresh": "refreshVision";
+      "sounds.initialize": "initializeSounds";
+      "sounds.refresh": "refreshSounds";
+      "sounds.fade": "soundFadeDuration";
+      "foreground.refresh": "refreshTiles";
     };
-    sounds: {
-      initialize: boolean;
-      refresh: boolean;
-      fade: boolean;
-    };
-    foreground: {
-      refresh: boolean;
-    };
+
+    /**
+     * Update perception manager flags which configure which behaviors occur on the next frame render.
+     * @param flags - Flag values (true) to assign where the keys belong to PerceptionManager.FLAGS
+     * @param v2    - Opt-in to passing v2 flags, otherwise a backwards compatibility shim will be applied
+     *                (default: `true`)
+     */
+    update(flags: Partial<PerceptionManagerFlags>, v2?: boolean): void;
+
+    /**
+     * A helper function to perform an immediate initialization plus incremental refresh.
+     */
+    initialize(): ReturnType<this["update"]>;
+
+    /**
+     * A helper function to perform an incremental refresh only.
+     */
+    refresh(): ReturnType<this["update"]>;
+
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks PerceptionManager#cancel is renamed to PerceptionManager#deactivate
+     * @remarks PerceptionManager#deactivate does not actually exist as of v11
+     */
+    cancel(): void;
+
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks PerceptionManager#schedule is replaced by PerceptionManager#update
+     */
+    schedule(options?: DeepPartial<PerceptionManager.Options>): void;
+
+    /**
+     * @deprecated since v11
+     * @remarks forceUpdateFog flag is now obsolete and has no replacement. The fog is now always updated when the visibility is refreshed
+     */
+    static forceUpdateFog(): void;
+  }
+
+  namespace PerceptionManager {
+    /** @deprecated Old flag structure */
+    interface Options {
+      lighting: {
+        initialize: boolean;
+        refresh: boolean;
+      };
+      sight: {
+        initialize: boolean;
+        refresh: boolean;
+        skipUpdateFog: boolean;
+        forceUpdateFog: boolean;
+      };
+      sounds: {
+        initialize: boolean;
+        refresh: boolean;
+        fade: boolean;
+      };
+      foreground: {
+        refresh: boolean;
+      };
+    }
   }
 }

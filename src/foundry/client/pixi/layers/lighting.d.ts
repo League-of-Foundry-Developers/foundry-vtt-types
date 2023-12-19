@@ -204,9 +204,9 @@ declare class LightingLayer extends PlaceablesLayer<"AmbientLight", LightingLaye
    */
   protected _onDarknessChange(darkness: number, prior: number): void;
 
-  protected override _onDragLeftStart(event: PIXI.InteractionEvent): Promise<AmbientLight>;
+  protected override _onDragLeftStart(event: PIXI.FederatedEvent): Promise<AmbientLight>;
 
-  protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
+  protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
   protected override _onDragLeftCancel(event: PointerEvent): void;
 

@@ -99,11 +99,11 @@ declare global {
 
     protected override _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<"User">>, event?: any): boolean;
 
-    protected override _onClickRight(event: PIXI.InteractionEvent): Promise<this>;
+    protected override _onClickRight(event: PIXI.FederatedEvent): Promise<this>;
 
-    protected override _onDragLeftStart(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftMove(event: PIXI.InteractionEvent): void;
+    protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
     protected override _onDragLeftCancel(event: MouseEvent): void;
   }

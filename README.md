@@ -75,6 +75,7 @@ Add foundry-vtt-types to your types section in your `tsconfig.json`:
   "compilerOptions": {
     "types": ["@league-of-foundry-developers/foundry-vtt-types"],
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "strictNullChecks": true
   }
 }
