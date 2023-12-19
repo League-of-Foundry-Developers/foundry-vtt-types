@@ -23,10 +23,10 @@ declare global {
 
     static override RENDER_FLAGS: {
       /** @defaultValue `{propagate: ["refresh"]}` */
-      redraw: RenderFlag<PlaceableObject.PlaceableObjectRenderFlags>;
+      redraw: RenderFlag<AmbientLight.AmbientLightRenderFlags>;
 
       /** @defaultValue `{propagate: ["refreshField"], alias: true}` */
-      refresh: RenderFlag<PlaceableObject.PlaceableObjectRenderFlags>;
+      refresh: RenderFlag<AmbientLight.AmbientLightRenderFlags>;
 
       /** @defaultValue `{propagate: ["refreshPosition", "refreshState"]}` */
       refreshField: RenderFlag<AmbientLight.AmbientLightRenderFlags>;

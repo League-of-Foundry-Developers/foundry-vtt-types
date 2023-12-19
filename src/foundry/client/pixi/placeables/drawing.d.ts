@@ -8,10 +8,6 @@ declare global {
    */
   class Drawing extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>> {
     constructor(document: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>);
-    /**
-     * @remarks Not used for `Drawing`
-     */
-    controlIcon: null;
 
     /**
      * Each Drawing object belongs to the DrawingsLayer
