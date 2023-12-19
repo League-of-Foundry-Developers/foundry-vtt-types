@@ -205,7 +205,7 @@ declare global {
      * The inner _draw method which must be defined by each PlaceableObject subclass.
      * @param options - Options which may modify the draw workflow
      */
-    protected abstract _draw(options: Record<string, unknown>): void;
+    protected abstract _draw(options: Record<string, unknown>): Promise<void>;
 
     /**
      * Refresh all incremental render flags for the PlaceableObject.
