@@ -205,7 +205,7 @@ declare global {
      * The inner _draw method which must be defined by each PlaceableObject subclass.
      * @param options - Options which may modify the draw workflow
      */
-    protected abstract _draw(options: Record<string, unknown>): Promise<void>;
+    protected abstract _draw(options?: Record<string, unknown>): Promise<void>;
 
     /**
      * Refresh all incremental render flags for the PlaceableObject.
@@ -401,16 +401,7 @@ declare global {
      *                  (default: `{}`)
      * @returns True if the event was handled, otherwise false
      */
-    protected _onHoverIn(
-      event: PIXI.FederatedEvent,
-      options?: {
-        /**
-         * Trigger hover-out behavior on sibling objects
-         * @defaultValue `false`
-         */
-        hoverOutOthers: boolean;
-      },
-    ): false | void;
+    protected _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): false | void;
 
     /**
      * Actions that should be taken for this Placeable Object when a mouseout event occurs
@@ -521,6 +512,14 @@ declare global {
 
     interface ReleaseOptions {
       trigger?: boolean;
+    }
+
+    interface HoverInOptions {
+      /**
+       * Trigger hover-out behavior on sibling objects
+       * @defaultValue `false`
+       */
+      hoverOutOthers: boolean;
     }
   }
 }

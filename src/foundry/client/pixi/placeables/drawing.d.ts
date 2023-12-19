@@ -113,7 +113,7 @@ declare global {
     /**
      * @param options - unused
      */
-    protected override _draw(options: Record<string, unknown>): Promise<void>;
+    protected override _draw(options?: Record<string, unknown>): Promise<void>;
 
     /**
      * Prepare the text style used to instantiate a PIXI.Text or PreciseText instance for this Drawing document.

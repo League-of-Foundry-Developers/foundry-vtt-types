@@ -21,9 +21,6 @@ declare global {
 
     static override embeddedName: "AmbientLight";
 
-    /**
-     * The flags declared here are required for all PlaceableObject subclasses to also support.
-     */
     static override RENDER_FLAGS: {
       /** @defaultValue `{propagate: ["refresh"]}` */
       redraw: RenderFlag<PlaceableObject.PlaceableObjectRenderFlags>;
@@ -87,7 +84,7 @@ declare global {
     /**
      * @param options - unused
      */
-    protected override _draw(options: Record<string, unknown>): Promise<void>;
+    protected override _draw(options?: Record<string, unknown>): Promise<void>;
 
     protected override _applyRenderFlags(flags: AmbientLight.AmbientLightRenderFlags): void;
 
