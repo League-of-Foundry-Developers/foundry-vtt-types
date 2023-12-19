@@ -1,7 +1,6 @@
-export {};
+import Color from "../../../../../common/utils/color.mjs";
 
-// TODO: Remove once color export is fixed
-type Color = number;
+export {};
 
 declare global {
   interface PulsePingOptions extends PingOptions {
@@ -56,10 +55,8 @@ declare global {
      */
     protected _computeTimeSlices(): void;
 
-    /** {@inheritdoc} */
     override animate(): Promise<boolean>;
 
-    /** {@inheritdoc} */
     override _animateFrame(dt: number, animation: CanvasAnimationData): void;
 
     /**
@@ -102,7 +99,6 @@ declare global {
       },
     );
 
-    /** {@inheritdoc} */
     protected override _drawShape(g: PIXI.Graphics, color: number, alph: number, size: number): void;
   }
 
@@ -116,7 +112,6 @@ declare global {
      */
     constructor(origin: PIXI.Point, options: PulsePingOptions);
 
-    /** {@inheritdoc} */
     protected override _drawShape(g: PIXI.Graphics, color: number, alph: number, size: number): void;
   }
 }

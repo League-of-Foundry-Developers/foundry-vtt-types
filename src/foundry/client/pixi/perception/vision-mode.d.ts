@@ -46,7 +46,6 @@ declare global {
      */
     constructor(data: Partial<any>, options?: object);
 
-    /** {@inheritDoc} */
     static defineSchema(): any;
 
     /** The lighting illumination levels which are supported. */
@@ -81,25 +80,25 @@ declare global {
      * Special activation handling that could be implemented by VisionMode subclasses
      * @param source - Activate this VisionMode for a specific source
      */
-    abstract _activate(source: VisionSource<any>): void;
+    abstract _activate(source: VisionSource): void;
 
     /**
      * Special deactivation handling that could be implemented by VisionMode subclasses
      * @param source - Deactivate this VisionMode for a specific source
      */
-    abstract _deactivate(source: VisionSource<any>): void;
+    abstract _deactivate(source: VisionSource): void;
 
     /**
      * Special handling which is needed when this Vision Mode is activated for a VisionSource.
      * @param source - Activate this VisionMode for a specific source
      */
-    activate(source: VisionSource<any>): void;
+    activate(source: VisionSource): void;
 
     /**
      * Special handling which is needed when this Vision Mode is deactivated for a VisionSource.
      * @param source - Deactivate this VisionMode for a specific source
      */
-    deactivate(source: VisionSource<any>): void;
+    deactivate(source: VisionSource): void;
 
     /**
      * An animation function which runs every frame while this Vision Mode is active.

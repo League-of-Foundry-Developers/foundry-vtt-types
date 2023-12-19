@@ -16,15 +16,12 @@ declare global {
   }
 
   namespace RenderedPointSource {
-    type RenderedPointSourceAnimationConfig<AnimationValue> = InexactPartial<{
+    type RenderedPointSourceAnimationConfig = InexactPartial<{
       /** The human-readable (localized) label for the animation */
       label: string;
 
       /** The animation function that runs every frame */
-      animation: (
-        dt: number,
-        options: InexactPartial<RenderedPointSourceAnimationConfig<AnimationValue>>,
-      ) => AnimationValue;
+      animation: (dt: number, options: RenderedPointSourceAnimationConfig) => number;
 
       /** A custom illumination shader used by this animation */
       illuminationShader: AdaptiveIlluminationShader;
@@ -56,7 +53,7 @@ declare global {
     };
   }
 
-  class RenderedPointSource<AnimationValue> extends PointSource {
+  class RenderedPointSource extends PointSource {
     /**
      * Keys of the data object which require shaders to be re-initialized.
      */
@@ -77,7 +74,7 @@ declare global {
      * The animation configuration applied to this source
      * @defaultValue `{}`
      */
-    animation: Partial<RenderedPointSource.RenderedPointSourceAnimationConfig<AnimationValue>>;
+    animation: RenderedPointSource.RenderedPointSourceAnimationConfig;
 
     /**
      * The object of data which configures how the source is rendered
@@ -170,7 +167,6 @@ declare global {
 
     override _refresh(): void;
 
-    /** {@inheritDoc} */
     protected _isActive(): boolean;
 
     /**
@@ -195,7 +191,7 @@ declare global {
      * @param dt - Delta time.
      * @remarks Returns `this.animation.animation.call(this, dt, options)`
      */
-    animate(dt: number): ReturnType<Exclude<this["animation"]["animation"], undefined>> | undefined;
+    animate(dt: number): number | undefined;
 
     /**
      * Generic time-based animation used for Rendered Point Sources.
