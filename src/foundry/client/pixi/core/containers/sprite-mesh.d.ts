@@ -4,7 +4,7 @@ declare global {
   /**
    * An extension of PIXI.Mesh which emulate a PIXI.Sprite with a specific shader.
    */
-  // @ts-expect-error Foundry incorrectly overrode a private property
+  // @ts-expect-error Foundry incorrectly overrode the private property _transformID
   class SpriteMesh extends PIXI.Mesh {
     /**
      * @param texture   - Texture bound to this sprite mesh.

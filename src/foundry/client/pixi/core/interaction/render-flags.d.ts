@@ -91,7 +91,7 @@ declare global {
    * @param Base - The base class being mixed
    * @returns The mixed class definition
    */
-  function RenderFlagsMixin<BaseClass extends new (...args: any[]) => any>(
+  function RenderFlagsMixin<BaseClass extends abstract new (...args: any[]) => any>(
     Base: BaseClass,
   ): Mixin<typeof RenderFlagObject, BaseClass>;
 }

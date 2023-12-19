@@ -31,10 +31,10 @@ declare global {
 
     set geometry(value: PIXI.Geometry);
 
-    /** @throws You can't add children to a PointSourceMesh.  */
+    /** @throws You can't add children to a PointSourceMesh. */
     override addChild(): never;
 
-    /** @throws You can't add children to a PointSourceMesh.  */
+    /** @throws You can't add children to a PointSourceMesh. */
     override addChildAt(): never;
 
     /**
