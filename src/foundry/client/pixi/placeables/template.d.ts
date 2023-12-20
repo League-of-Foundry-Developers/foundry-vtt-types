@@ -49,28 +49,28 @@ declare global {
 
     static override RENDER_FLAGS: {
       /** @defaultValue `{propagate: ["refresh"]}` */
-      redraw: RenderFlag<MeasuredTemplate.RenderFlags>;
+      redraw: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
 
       /** @defaultValue `{propagate: ["refreshState", "refreshShape"], alias: true}` */
-      refresh: RenderFlag<MeasuredTemplate.RenderFlags>;
+      refresh: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
 
       /** @defaultValue `{}` */
-      refreshState: RenderFlag<MeasuredTemplate.RenderFlags>;
+      refreshState: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
 
       /** @defaultValue `{propagate: ["refreshPosition", "refreshGrid", "refreshText", "refreshTemplate"]}` */
-      refreshShape: RenderFlag<MeasuredTemplate.RenderFlags>;
+      refreshShape: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
 
       /** @defaultValue `{}` */
-      refreshTemplate: RenderFlag<MeasuredTemplate.RenderFlags>;
+      refreshTemplate: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
 
       /** @defaultValue `{propagate: ["refreshGrid"]}` */
-      refreshPosition: RenderFlag<MeasuredTemplate.RenderFlags>;
+      refreshPosition: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
 
       /** @defaultValue `{}` */
-      refreshGrid: RenderFlag<MeasuredTemplate.RenderFlags>;
+      refreshGrid: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
 
       /** @defaultValue `{}` */
-      refreshText: RenderFlag<MeasuredTemplate.RenderFlags>;
+      refreshText: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
     };
 
     override get bounds(): Rectangle;

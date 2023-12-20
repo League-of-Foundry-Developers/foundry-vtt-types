@@ -26,19 +26,19 @@ declare global {
 
     static override RENDER_FLAGS: {
       /** @defaultValue `{propagate: ["refresh"]}` */
-      redraw: RenderFlag<AmbientSound.RenderFlags>;
+      redraw: RenderFlag<Partial<AmbientSound.RenderFlags>>;
 
       /** @defaultValue `{propagate: ["refreshField"], alias: true}` */
-      refresh: RenderFlag<AmbientSound.RenderFlags>;
+      refresh: RenderFlag<Partial<AmbientSound.RenderFlags>>;
 
       /** @defaultValue `{propagate: ["refreshPosition", "refreshState"]}` */
-      refreshField: RenderFlag<AmbientSound.RenderFlags>;
+      refreshField: RenderFlag<Partial<AmbientSound.RenderFlags>>;
 
       /** @defaultValue `{}` */
-      refreshPosition: RenderFlag<AmbientSound.RenderFlags>;
+      refreshPosition: RenderFlag<Partial<AmbientSound.RenderFlags>>;
 
       /** @defaultValue `{}` */
-      refreshState: RenderFlag<AmbientSound.RenderFlags>;
+      refreshState: RenderFlag<Partial<AmbientSound.RenderFlags>>;
     };
 
     /**

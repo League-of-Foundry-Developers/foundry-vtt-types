@@ -16,22 +16,22 @@ declare global {
 
     static override RENDER_FLAGS: {
       /** @defaultValue `{propagate: ["refresh"]}` */
-      redraw: RenderFlag<Note.RenderFlags>;
+      redraw: RenderFlag<Partial<Note.RenderFlags>>;
 
       /** @defaultValue `{propagate: ["refreshState", "refreshPosition", "refreshText"], alias: true}` */
-      refresh: RenderFlag<Note.RenderFlags>;
+      refresh: RenderFlag<Partial<Note.RenderFlags>>;
 
       /** @defaultValue `{propagate: ["refreshVisibility"]}` */
-      refreshPosition: RenderFlag<Note.RenderFlags>;
+      refreshPosition: RenderFlag<Partial<Note.RenderFlags>>;
 
       /** @defaultValue `{propagate: ["refreshVisibility"]}` */
-      refreshState: RenderFlag<Note.RenderFlags>;
+      refreshState: RenderFlag<Partial<Note.RenderFlags>>;
 
       /** @defaultValue `{}` */
-      refreshVisibility: RenderFlag<Note.RenderFlags>;
+      refreshVisibility: RenderFlag<Partial<Note.RenderFlags>>;
 
       /** @defaultValue `{}` */
-      refreshText: RenderFlag<Note.RenderFlags>;
+      refreshText: RenderFlag<Partial<Note.RenderFlags>>;
     };
 
     override get bounds(): Rectangle;

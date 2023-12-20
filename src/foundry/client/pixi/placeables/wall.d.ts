@@ -23,25 +23,25 @@ declare global {
 
     static override RENDER_FLAGS: {
       /** @defaultValue `{propagate: ["refresh"]}` */
-      redraw: RenderFlag<Wall.RenderFlags>;
+      redraw: RenderFlag<Partial<Wall.RenderFlags>>;
 
       /** @defaultValue `{propagate: ["refreshState", "refreshLine"], alias: true}` */
-      refresh: RenderFlag<Wall.RenderFlags>;
+      refresh: RenderFlag<Partial<Wall.RenderFlags>>;
 
       /** @defaultValue `{propagate: ["refreshEndpoints", "refreshHighlight"]}` */
-      refreshState: RenderFlag<Wall.RenderFlags>;
+      refreshState: RenderFlag<Partial<Wall.RenderFlags>>;
 
       /** @defaultValue `{propagate: ["refreshEndpoints", "refreshHighlight", "refreshDirection"]}` */
-      refreshLine: RenderFlag<Wall.RenderFlags>;
+      refreshLine: RenderFlag<Partial<Wall.RenderFlags>>;
 
       /** @defaultValue `{}` */
-      refreshEndpoints: RenderFlag<Wall.RenderFlags>;
+      refreshEndpoints: RenderFlag<Partial<Wall.RenderFlags>>;
 
       /** @defaultValue `{}` */
-      refreshDirection: RenderFlag<Wall.RenderFlags>;
+      refreshDirection: RenderFlag<Partial<Wall.RenderFlags>>;
 
       /** @defaultValue `{}` */
-      refreshHighlight: RenderFlag<Wall.RenderFlags>;
+      refreshHighlight: RenderFlag<Partial<Wall.RenderFlags>>;
     };
 
     /**
