@@ -61,7 +61,7 @@ declare global {
       view: EditorView,
       isDirtyPlugin: Plugin,
       collaborate: boolean,
-      options?: ProseMirrorEditor.Options
+      options?: ProseMirrorEditor.Options,
     );
 
     /**
@@ -116,7 +116,7 @@ declare global {
         (
           | { collaborate?: false }
           | ({ collaborate: true } & Pick<ProseMirrorEditor.CreateOptions, "document" | "fieldName">)
-        )
+        ),
     ): Promise<ProseMirrorEditor>;
 
     /**
@@ -130,7 +130,7 @@ declare global {
       uuid: string,
       target: HTMLElement,
       state: EditorState,
-      plugins: Plugin[]
+      plugins: Plugin[],
     ): Promise<EditorView>;
 
     /**

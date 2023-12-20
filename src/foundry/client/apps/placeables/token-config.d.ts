@@ -15,7 +15,7 @@ declare global {
       object:
         | InstanceType<ConfiguredDocumentClassForName<"Token">>
         | InstanceType<ConfiguredDocumentClassForName<"Actor">>,
-      options?: Partial<Options>
+      options?: Partial<Options>,
     );
 
     token: InstanceType<ConfiguredDocumentClassForName<"Token">> | PrototypeTokenDocument;
@@ -133,7 +133,7 @@ declare global {
    * A sheet that alters the values of the default Token configuration used when new Token documents are created.
    */
   class DefaultTokenConfig<
-    Options extends FormApplicationOptions = FormApplicationOptions
+    Options extends FormApplicationOptions = FormApplicationOptions,
   > extends TokenConfig<Options> {
     constructor(object: unknown, options?: Partial<Options> | undefined);
 
@@ -167,7 +167,7 @@ declare global {
     override getData(options: unknown): MaybePromise<object>;
 
     override _getSubmitData(
-      updateData?: Parameters<TokenConfig["_getSubmitData"]>[0]
+      updateData?: Parameters<TokenConfig["_getSubmitData"]>[0],
     ): ReturnType<TokenConfig["_getSubmitData"]>;
 
     override _updateObject(event: Event, formData?: object): Promise<unknown>;

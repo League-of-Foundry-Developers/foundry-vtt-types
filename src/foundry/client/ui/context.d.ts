@@ -32,12 +32,14 @@ declare class ContextMenu {
    * @param menuItems - An Array of entries to display in the menu
    * @param eventName - Optionally override the triggering event which can spawn the menu
    *                    (default: `"contextmenu"`)
+   * @param onOpen    - A function to call when the context menu is opened.
+   * @param onClose   - A function to call when the context menu is closed.
    */
   constructor(
     element: JQuery,
     selector: string | null | undefined,
     menuItems: ContextMenuEntry[],
-    { eventName }?: { eventName?: string }
+    { hookName, onOpen, onClose }?: ContextMenu.ConstructorOptions,
   );
 
   /**
@@ -62,6 +64,16 @@ declare class ContextMenu {
   menuItems: ContextMenuEntry[];
 
   /**
+   * A function to call when the context menu is opened.
+   */
+  onOpen: ContextMenu.ContextMenuCallback;
+
+  /**
+   * A function to call when the context menu is closed.
+   */
+  onClose: ContextMenu.ContextMenuCallback;
+
+  /**
    * Track which direction the menu is expanded in
    * @defaultValue `false`
    */
@@ -78,7 +90,7 @@ declare class ContextMenu {
    * @param html      - The Application's rendered HTML.
    * @param selector  - The target CSS selector which activates the menu.
    * @param menuItems - The array of menu items being rendered.
-   * @param hookName  - The name of the hook to call.
+   * @param options   - Additional options to configure context menu initialization.
    *                    (default: `"EntryContext"`)
    */
   static create(
@@ -86,7 +98,7 @@ declare class ContextMenu {
     html: JQuery,
     selector: string,
     menuItems: ContextMenuEntry[],
-    hookName?: string
+    options?: ContextMenu.ConstructorOptions,
   ): ContextMenu;
 
   /**
@@ -122,6 +134,15 @@ declare class ContextMenu {
    */
   protected _setPosition(html: JQuery, target: JQuery): void;
 
+  /**
+   * Local listeners which apply to each ContextMenu instance which is created.
+   * @param html - The ContextMenu
+   */
+  activateListeners(html: JQuery): void;
+
+  /**
+   * Global listeners which apply once only to the document.
+   */
   static eventListeners(): void;
 }
 
@@ -132,5 +153,29 @@ declare namespace ContextMenu {
      * @defaultValue `true`
      */
     animate?: boolean;
+  }
+
+  type ContextMenuCallback =
+    /**
+     * @param target - The element that the context menu has been triggered for.
+     */
+    (target: HTMLElement) => void;
+
+  interface ConstructorOptions {
+    /**
+     * The name of the hook to call
+     * @defaultValue `EntryContext`
+     */
+    hookName?: string;
+
+    /**
+     * A function to call when the context menu is opened.
+     */
+    onOpen?: ContextMenuCallback;
+
+    /**
+     * A function to call when the context menu is closed.
+     */
+    onClose?: ContextMenuCallback;
   }
 }

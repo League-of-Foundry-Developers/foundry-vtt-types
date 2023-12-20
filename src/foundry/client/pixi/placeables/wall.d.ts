@@ -1,7 +1,7 @@
 import type {
   ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
-  ConfiguredObjectClassForName
+  ConfiguredObjectClassForName,
 } from "../../../../types/helperTypes";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 import type { LineIntersection } from "../../../common/utils/geometry.mjs";
@@ -220,13 +220,13 @@ declare global {
     protected override _onCreate(
       data: foundry.data.WallData["_source"],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected override _onUpdate(
       changed: DeepPartial<foundry.data.WallData["_source"]>,
       options?: DocumentModificationOptions,
-      userId?: string
+      userId?: string,
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;

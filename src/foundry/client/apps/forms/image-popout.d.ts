@@ -77,7 +77,7 @@ declare global {
 
     protected override _render(
       force?: boolean,
-      options?: Application.RenderOptions<Options> | undefined
+      options?: Application.RenderOptions<Options> | undefined,
     ): Promise<void>;
 
     protected override _getHeaderButtons(): Application.HeaderButton[];
@@ -87,7 +87,7 @@ declare global {
      * @returns The positioning object which should be used for rendering
      */
     protected static getPosition(
-      img: string
+      img: string,
     ): Promise<{ width: number; height: number } | { width: number; height: number; top: number; left: number }>;
 
     /**
@@ -106,7 +106,7 @@ declare global {
     protected static _handleShareImage({
       image,
       title,
-      uuid
+      uuid,
     }?: {
       image: string;
       title: string;

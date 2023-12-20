@@ -48,5 +48,5 @@ export {
   ProseMirrorInputRules,
   ProseMirrorKeyMaps,
   ProseMirrorImagePlugin,
-  keymap
+  keymap,
 };

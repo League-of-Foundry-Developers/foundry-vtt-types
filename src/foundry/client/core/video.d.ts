@@ -84,7 +84,7 @@ declare class VideoHelper {
 
       /** Desired volume level of the video's audio channel (if any) */
       volume?: number;
-    }
+    },
   ): void;
 
   /**

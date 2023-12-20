@@ -12,7 +12,7 @@ declare global {
     constructor(
       scene: InstanceType<ConfiguredDocumentClass<typeof Scene>>,
       sheet: GridConfig["sheet"],
-      options?: Partial<Options>
+      options?: Partial<Options>,
     );
 
     /**
@@ -55,7 +55,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): typeof FormApplication["defaultOptions"];
+    static override get defaultOptions(): (typeof FormApplication)["defaultOptions"];
 
     override getData(options?: Partial<Options>): MaybePromise<object>;
 
@@ -107,7 +107,7 @@ declare global {
      */
     protected _shiftBackground({
       deltaX,
-      deltaY
+      deltaY,
     }?: {
       /**
        * The number of pixels to shift in the x-direction
@@ -128,7 +128,7 @@ declare global {
      */
     protected _refresh({
       background,
-      grid
+      grid,
     }?: {
       /**
        * Refresh the background display?

@@ -48,7 +48,7 @@ declare global {
      * but {@link RollTables} overrides this, so we need to allow a wider return type.
      */
     get directory(): Lowercase<Name> extends keyof typeof ui
-      ? typeof ui[Lowercase<Name>]
+      ? (typeof ui)[Lowercase<Name>]
       :
           | (ConfiguredDocumentClass<T>["metadata"]["name"] extends DOCUMENT_TYPES
               ? SidebarDirectory<ConfiguredDocumentClass<T>["metadata"]["name"]>
@@ -81,7 +81,7 @@ declare global {
       >,
       id: string,
       updateData?: DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["data"]["_source"]> | undefined,
-      options?: (DocumentModificationContext & WorldCollection.FromCompendiumOptions) | undefined
+      options?: (DocumentModificationContext & WorldCollection.FromCompendiumOptions) | undefined,
     ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>>;
 
     /**
@@ -93,7 +93,7 @@ declare global {
      */
     fromCompendium(
       document: InstanceType<ConfiguredDocumentClass<T>> | InstanceType<ConfiguredDocumentClass<T>>["data"]["_source"],
-      options?: WorldCollection.FromCompendiumOptions | undefined
+      options?: WorldCollection.FromCompendiumOptions | undefined,
     ): Omit<InstanceType<ConfiguredDocumentClass<T>>["data"]["_source"], "_id" | "folder">;
 
     /**
@@ -102,7 +102,7 @@ declare global {
      * @returns The prepared data.
      */
     prepareForImport(
-      data: InstanceType<ConfiguredDocumentClass<T>>["data"]["_source"]
+      data: InstanceType<ConfiguredDocumentClass<T>>["data"]["_source"],
     ): Omit<InstanceType<ConfiguredDocumentClass<T>>["data"]["_source"], "_id" | "folder">;
 
     /**

@@ -2,48 +2,28 @@
  * Allows for viewing and editing of Keybinding Actions
  */
 declare class KeybindingsConfig<
-  Options extends FormApplicationOptions = FormApplicationOptions
-> extends FormApplication<Options> {
-  /**
-   * A cached copy of the Categories
-   */
-  protected _cachedData: KeybindingsConfig.CategoryData | null;
-
-  /**
-   * The category being filtered for
-   */
-  protected _category: string;
-
-  /**
-   * A Map of pending Edits. The Keys are bindingIds
-   * @internal
-   */
-  protected _pendingEdits: Map<string, KeybindingsConfig.PendingBinding[]>;
-
+  Options extends FormApplicationOptions = FormApplicationOptions,
+> extends PackageConfiguration<Options> {
   /**
    * @defaultValue
    * ```typescript
    * foundry.utils.mergeObject(super.defaultOptions, {
    *   title: game.i18n.localize("SETTINGS.Keybindings"),
    *   id: "keybindings",
-   *   template: "templates/sidebar/apps/keybindings-config.html",
-   *   width: 750,
-   *   height: 600,
-   *   resizable: true,
-   *   scrollY: [".filters", ".category-list"],
-   *   filters: [{inputSelector: 'input[name="filter"]', contentSelector: ".category-list"}]
+   *   categoryTemplate: "templates/sidebar/apps/keybindings-config-category.html"
    * })
    * ```
    */
   static override get defaultOptions(): FormApplicationOptions;
 
-  override getData(options?: Partial<Options>): MaybePromise<object>;
+  /** {@inheritdoc} */
+  static override get categoryOrder(): string[];
 
-  /**
-   * Builds the set of Bindings into a form usable for display and configuration
-   * @internal
-   */
-  protected _getCategoryData(): KeybindingsConfig.CategoryData;
+  /** {@inheritdoc} */
+  protected _categorizeEntry(namespace: string): PackageConfiguration.Category;
+
+  /** {@inheritdoc} */
+  _prepareCategoryData(): PackageConfiguration.Category;
 
   /**
    * Add faux-keybind actions that represent the possible Mouse Controls
@@ -63,7 +43,7 @@ declare class KeybindingsConfig<
   protected _detectConflictingActions(
     actionId: string,
     action: KeybindingActionConfig,
-    binding: KeybindingActionBinding
+    binding: KeybindingActionBinding,
   ): KeybindingAction[];
 
   /**
@@ -74,43 +54,9 @@ declare class KeybindingsConfig<
    */
   protected static _humanizeBinding(binding: KeybindingActionBinding): string;
 
-  /**
-   * Compares two Category Filters for rendering
-   * This method ignores cases of equality because we know our categories are unique
-   * @param a - The first Category
-   * @param b - The second Category
-   * @returns A number for usage in the Sort method
-   * @internal
-   */
-  protected static _sortCategories(a: KeybindingsConfig.Category, b: KeybindingsConfig.Category): number;
-
-  /**
-   * Classify what Category an Action belongs to
-   * @param action - The Action to classify
-   * @returns The category the Action belongs to
-   * @internal
-   */
-  protected _categorizeAction(action: KeybindingsConfig): KeybindingsConfig.BaseCategory;
-
   override activateListeners(html: JQuery): void;
 
-  /**
-   * Handle left-click events to filter to a certain category
-   * @internal
-   */
-  protected _onClickCategoryFilter(event: MouseEvent): void;
-
-  /**
-   * Handle left-click events to show / hide a certain category
-   * @internal
-   */
-  protected _onClickCategoryCollapse(event: MouseEvent): void;
-
-  /**
-   * Handle left-click events to reset all Actions to Default
-   * @internal
-   */
-  protected _onClickResetActions(event: MouseEvent): Promise<void>;
+  protected override _onResetDefaults(event: JQuery.ClickEvent<any, any, any, any>): Promise<any>;
 
   /**
    * Handle Control clicks
@@ -138,7 +84,7 @@ declare class KeybindingsConfig<
     namespace: string,
     action: string,
     bindingIndex: number,
-    binding: KeybindingsConfig.PendingBinding
+    binding: KeybindingsConfig.PendingBinding,
   ): void;
 
   /**
@@ -164,9 +110,10 @@ declare class KeybindingsConfig<
    * @internal
    */
   protected _getParentAction(event: KeyboardEvent | MouseEvent): {
+    actionId: string;
+    actionHtml: HTMLElement;
     namespace: string;
     action: string;
-    actionHtml: HTMLElement;
   };
 
   /**
@@ -187,8 +134,6 @@ declare class KeybindingsConfig<
    * @internal
    */
   protected _onKeydownBindingInput(event: KeyboardEvent): void;
-
-  protected override _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
   /** @remarks KeybindingsConfig does not implement this method. */
   protected _updateObject(event?: unknown, formData?: unknown): Promise<never>;

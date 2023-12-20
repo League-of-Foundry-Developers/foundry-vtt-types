@@ -6,7 +6,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class NoteConfig<
-    Options extends DocumentSheetOptions<NoteDocument> = DocumentSheetOptions<NoteDocument>
+    Options extends DocumentSheetOptions<NoteDocument> = DocumentSheetOptions<NoteDocument>,
   > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClassForName<"Note">>> {
     /**
      * @defaultValue
@@ -21,6 +21,22 @@ declare global {
     static override get defaultOptions(): DocumentSheetOptions<NoteDocument>;
 
     override getData(options?: Partial<Options>): MaybePromise<object>;
+
+    activateListeners(html: JQuery<HTMLElement>): void;
+
+    protected _onChangeInput(event: JQuery.ChangeEvent<any, any, any, any>): void;
+
+    /**
+     * Update disabled state of the custom icon field.
+     */
+    protected _updateCustomIcon(): void;
+
+    /**
+     * Update the list of pages.
+     */
+    protected _updatePageList(): void;
+
+    protected _getSubmitData(updateData?: object | null | undefined): Record<string, unknown>;
 
     protected override _updateObject(event: Event, formData: NoteConfig.FormData): Promise<unknown>;
 

@@ -21,7 +21,7 @@ declare const Collection: CollectionConstructor;
  */
 declare class EmbeddedCollection<
   ContainedDocumentConstructor extends Document.Constructor,
-  ParentDocumentData extends AnyDocumentData
+  ParentDocumentData extends AnyDocumentData,
 > extends Collection<InstanceType<ContainedDocumentConstructor>> {
   /**
    * @param documentData  - The parent DocumentData instance to which this collection belongs
@@ -31,7 +31,7 @@ declare class EmbeddedCollection<
   constructor(
     documentData: ParentDocumentData,
     sourceArray: ConstructorParameters<ContainedDocumentConstructor>[0][],
-    documentClass: ContainedDocumentConstructor
+    documentClass: ContainedDocumentConstructor,
   );
 
   /**
@@ -62,7 +62,7 @@ declare class EmbeddedCollection<
   set(
     key: string,
     value: InstanceType<ContainedDocumentConstructor>,
-    { modifySource }: { modifySource?: boolean }
+    { modifySource }: { modifySource?: boolean },
   ): this;
 
   delete(key: string, { modifySource }: { modifySource?: boolean }): boolean;

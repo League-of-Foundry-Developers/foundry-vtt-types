@@ -1,4 +1,4 @@
-export {};
+export { Tour };
 
 declare global {
   /** A step in a Tour */
@@ -85,6 +85,17 @@ declare global {
      * Indicates if a Tour is currently in progress.
      */
     static get tourInProgress(): boolean;
+
+    /**
+     * Returns the active tour, if any.
+     */
+    static get activeTour(): Tour | null;
+
+    /**
+     * Handle a movement action to either progress or regress the Tour.
+     * @param movementDirections - The Directions being moved in
+     */
+    static onMovementAction(movementDirections: string[]): boolean;
 
     /**
      * The HTMLElement which is the focus of the current tour step.

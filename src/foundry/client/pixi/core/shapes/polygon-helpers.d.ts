@@ -107,7 +107,7 @@ declare global {
      */
     static fromWall(
       wall: ConfiguredObjectClassForName<"Wall"> | WallDocument,
-      type: foundry.CONST.WALL_RESTRICTION_TYPES
+      type: foundry.CONST.WALL_RESTRICTION_TYPES,
     ): PolygonEdge;
   }
 

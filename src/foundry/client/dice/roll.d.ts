@@ -200,7 +200,7 @@ declare global {
     static create<D extends Record<string, unknown> = {}>(
       formula: string,
       data?: D,
-      options?: InexactPartial<Options>
+      options?: InexactPartial<Options>,
     ): typeof CONFIG.Dice.rolls extends [infer T] ? T : Roll<D>;
 
     /**
@@ -270,11 +270,11 @@ declare global {
       data: D,
       {
         missing,
-        warn
+        warn,
       }?: {
         missing?: string;
         warn?: boolean;
-      }
+      },
     ): string;
 
     /**
@@ -347,7 +347,7 @@ declare global {
      */
     protected static _classifyStringTerm(
       term: string,
-      { intermediate, prior, next }?: { intermediate?: boolean; prior?: RollTerm | string; next?: RollTerm | string }
+      { intermediate, prior, next }?: { intermediate?: boolean; prior?: RollTerm | string; next?: RollTerm | string },
     ): RollTerm;
 
     /**
@@ -399,15 +399,15 @@ declare global {
      */
     toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
       messageData?: T,
-      { rollMode, create }?: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create?: true }
+      { rollMode, create }?: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create?: true },
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined>;
     toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
       messageData: T,
-      { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create: false }
+      { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create: false },
     ): MessageData<T>;
     toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
       messageData: T,
-      { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create: boolean }
+      { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create: boolean },
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined> | MessageData<T>;
 
     /**
@@ -475,7 +475,7 @@ declare global {
     static fromTerms<T extends ConstructorOf<Roll<any>>>(
       this: T,
       terms: RollTerm[],
-      options?: InexactPartial<Options>
+      options?: InexactPartial<Options>,
     ): InstanceType<T>;
   }
 }
@@ -519,7 +519,7 @@ type Flavor = Record<`%F${number}%`, string>;
 
 type MessageData<T extends DeepPartial<ConstructorParameters<typeof ChatMessage>[0]>> = {
   user: string;
-  type: typeof foundry.CONST.CHAT_MESSAGE_TYPES["ROLL"];
+  type: (typeof foundry.CONST.CHAT_MESSAGE_TYPES)["ROLL"];
   content: number;
   sound: typeof CONFIG.sounds.dice;
 } & T;

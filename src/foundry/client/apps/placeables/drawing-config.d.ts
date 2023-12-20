@@ -60,7 +60,7 @@ declare global {
 
   namespace DrawingConfig {
     type FillTypes = {
-      [Key in keyof typeof foundry.CONST["DRAWING_FILL_TYPES"] as typeof foundry.CONST["DRAWING_FILL_TYPES"][Key]]: `DRAWING.FillType${Titlecase<Key>}`;
+      [Key in keyof (typeof foundry.CONST)["DRAWING_FILL_TYPES"] as (typeof foundry.CONST)["DRAWING_FILL_TYPES"][Key]]: `DRAWING.FillType${Titlecase<Key>}`;
     };
 
     interface FormData {

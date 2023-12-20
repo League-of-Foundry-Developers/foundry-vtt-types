@@ -6,7 +6,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class PlaylistConfig<
-    Options extends DocumentSheetOptions<Playlist> = DocumentSheetOptions<Playlist>
+    Options extends DocumentSheetOptions<Playlist> = DocumentSheetOptions<Playlist>,
   > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClass<typeof Playlist>>> {
     /**
      * @defaultValue

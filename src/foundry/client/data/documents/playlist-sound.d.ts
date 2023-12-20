@@ -16,7 +16,7 @@ declare global {
   class PlaylistSound extends ClientDocumentMixin(BasePlaylistSound) {
     constructor(
       data: ConstructorParameters<typeof foundry.documents.BasePlaylistSound>[0],
-      context?: ConstructorParameters<typeof foundry.documents.BasePlaylistSound>[1]
+      context?: ConstructorParameters<typeof foundry.documents.BasePlaylistSound>[1],
     );
 
     /**
@@ -71,14 +71,14 @@ declare global {
     protected override _onCreate(
       data: BasePlaylistSound.Source,
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     /** @internal */
     protected override_onUpdate(
       changed: BasePlaylistSound.UpdateData,
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     /** @internal */

@@ -35,7 +35,7 @@ declare abstract class DataModel<Schema extends SchemaField.Any, Parent extends 
    */
   constructor(
     data?: fields.SchemaField.InnerAssignmentType<Schema["fields"]>,
-    { parent, strict, ...options }?: DataModel.ConstructorOptions<Parent>
+    { parent, strict, ...options }?: DataModel.ConstructorOptions<Parent>,
   );
 
   /**
@@ -97,7 +97,7 @@ declare abstract class DataModel<Schema extends SchemaField.Any, Parent extends 
    */
   protected _initializeSource(
     data: fields.SchemaField.InnerAssignmentType<Schema["fields"]> | this,
-    options?: any
+    options?: any,
   ): fields.SchemaField.InnerPersistedType<Schema["fields"]>;
 
   /**
@@ -129,7 +129,7 @@ declare abstract class DataModel<Schema extends SchemaField.Any, Parent extends 
    */
   clone(
     data?: fields.SchemaField.InnerAssignmentType<Schema["fields"]>,
-    context?: DataModel.ConstructorOptions
+    context?: DataModel.ConstructorOptions,
   ): this | Promise<this>;
 
   /**
@@ -145,7 +145,7 @@ declare abstract class DataModel<Schema extends SchemaField.Any, Parent extends 
     fallback,
     strict,
     fields,
-    joint
+    joint,
   }?: {
     /**
      * A specific set of proposed changes to validate, rather than the full source data of the model.
@@ -193,14 +193,14 @@ declare abstract class DataModel<Schema extends SchemaField.Any, Parent extends 
     errors: any,
     {
       label,
-      namespace
+      namespace,
     }?: {
       /** A prefix label that should prepend any error messages */
       label?: string;
 
       /** A field namespace that should prepend key names with dot-notation */
       namespace?: string;
-    }
+    },
   ): string;
 
   /**
@@ -222,7 +222,7 @@ declare abstract class DataModel<Schema extends SchemaField.Any, Parent extends 
    */
   updateSource(
     changes?: fields.SchemaField.InnerAssignmentType<Schema["fields"]>,
-    options?: { fallback?: boolean; recursive?: boolean }
+    options?: { fallback?: boolean; recursive?: boolean },
   ): object;
 
   /**
@@ -238,7 +238,7 @@ declare abstract class DataModel<Schema extends SchemaField.Any, Parent extends 
     schema: SchemaField.Any,
     source: object,
     changes: object,
-    options: { fallback?: boolean; recursive?: boolean; _backup: object; _collections: unknown[]; _diff: object }
+    options: { fallback?: boolean; recursive?: boolean; _backup: object; _collections: unknown[]; _diff: object },
   ): object;
 
   /**
@@ -255,7 +255,7 @@ declare abstract class DataModel<Schema extends SchemaField.Any, Parent extends 
     field: DataField.Any,
     source: object,
     value: any,
-    options: { fallback?: boolean; recursive?: boolean; _collections: unknown[]; _diff: object }
+    options: { fallback?: boolean; recursive?: boolean; _collections: unknown[]; _diff: object },
   ): object;
 
   /**
@@ -292,7 +292,7 @@ declare abstract class DataModel<Schema extends SchemaField.Any, Parent extends 
        * @defaultValue `false`
        */
       strict?: boolean;
-    }
+    },
   ): DataModel<SchemaField, DataModel.Any | null>;
 
   /**
@@ -300,7 +300,7 @@ declare abstract class DataModel<Schema extends SchemaField.Any, Parent extends 
    * @param json - Serialized document data in string format
    * @returns A constructed data model instance
    */
-  static fromJSON(json: string): ReturnType<typeof DataModel["fromSource"]>;
+  static fromJSON(json: string): ReturnType<(typeof DataModel)["fromSource"]>;
 
   /**
    * Migrate candidate source data for this DataModel which may require initial cleaning or transformations.
@@ -326,14 +326,14 @@ declare abstract class DataModel<Schema extends SchemaField.Any, Parent extends 
   static shimData(
     data: object,
     {
-      embedded
+      embedded,
     }?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`
        */
       embedded?: boolean;
-    }
+    },
   ): object;
 
   /**

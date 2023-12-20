@@ -16,7 +16,7 @@ declare global {
   class TokenDocument extends CanvasDocumentMixin(BaseToken) {
     constructor(
       data?: ConstructorParameters<ConstructorOf<BaseToken>>[0],
-      context?: ConstructorParameters<ConstructorOf<BaseToken>>[1]
+      context?: ConstructorParameters<ConstructorOf<BaseToken>>[1],
     );
 
     /**
@@ -77,7 +77,7 @@ declare global {
 
     override clone(
       data?: Parameters<BaseToken["clone"]>[0],
-      options?: Parameters<BaseToken["clone"]>[1]
+      options?: Parameters<BaseToken["clone"]>[1],
     ): this | Promise<this>;
 
     /**
@@ -95,7 +95,7 @@ declare global {
      */
     getBarAttribute(
       barName: string,
-      { alternative }?: { alternative?: string }
+      { alternative }?: { alternative?: string },
     ): SingleAttributeBar | ObjectAttributeBar | null;
 
     /**
@@ -132,7 +132,7 @@ declare global {
      */
     modifyActorDocument(
       update: Parameters<InstanceType<ConfiguredDocumentClass<typeof Actor>>["update"]>[0],
-      options: Parameters<this["update"]>[1]
+      options: Parameters<this["update"]>[1],
     ): Promise<[this["actor"]]>;
 
     override getEmbeddedCollection(embeddedName: "Item"): ActorData["items"];
@@ -148,7 +148,7 @@ declare global {
     createActorEmbeddedDocuments(
       embeddedName: string,
       data: InstanceType<typeof foundry.abstract.DataModel>[],
-      options: Parameters<this["update"]>[1]
+      options: Parameters<this["update"]>[1],
     ): Promise<InstanceType<typeof foundry.abstract.DataModel>[]>;
 
     /**
@@ -161,7 +161,7 @@ declare global {
     updateActorEmbeddedDocuments(
       embeddedName: string,
       data: InstanceType<typeof foundry.abstract.DataModel>[],
-      options: Parameters<this["update"]>[1]
+      options: Parameters<this["update"]>[1],
     ): Promise<InstanceType<typeof foundry.abstract.DataModel>[]>;
 
     /**
@@ -174,14 +174,14 @@ declare global {
     deleteActorEmbeddedDocuments(
       embeddedName: string,
       ids: string[],
-      options: Parameters<this["update"]>[1]
+      options: Parameters<this["update"]>[1],
     ): Promise<InstanceType<typeof foundry.abstract.DataModel>[]>;
 
     /** @internal */
     protected override _preUpdate(
       data: Parameters<BaseToken["_preUpdate"]>[0],
       options: DocumentModificationOptions,
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
     ): Promise<void>;
 
     /**
@@ -191,14 +191,14 @@ declare global {
     protected _preUpdateTokenActor(
       data: Parameters<BaseActor["_preUpdate"]>[0],
       options: DocumentModificationOptions,
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
     ): Promise<void>;
 
     /** @internal */
     protected _onUpdate(
       data: Parameters<BaseToken["_onUpdate"]>[0],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     /**
@@ -208,7 +208,7 @@ declare global {
      */
     protected _onUpdateBaseActor(
       update?: Parameters<BaseActor["_onUpdate"]>[0],
-      options?: Parameters<BaseActor["update"]>[1]
+      options?: Parameters<BaseActor["update"]>[1],
     ): void;
 
     /**
@@ -218,7 +218,7 @@ declare global {
     protected _onUpdateTokenActor(
       data: Parameters<BaseActor["_onUpdate"]>[0],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     /**
@@ -239,7 +239,7 @@ declare global {
 declare interface PrototypeToken {
   getBarAttribute(
     barName: Parameters<TokenDocument["getBarAttribute"]>[0],
-    { alternative }?: Parameters<TokenDocument["getBarAttribute"]>[1]
+    { alternative }?: Parameters<TokenDocument["getBarAttribute"]>[1],
   ): ReturnType<TokenDocument["getBarAttribute"]>;
 }
 

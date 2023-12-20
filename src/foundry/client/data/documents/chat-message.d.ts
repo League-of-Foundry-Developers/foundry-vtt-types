@@ -102,7 +102,7 @@ declare global {
              */
             alias?: string | undefined;
           }
-        | undefined
+        | undefined,
     ): ChatMessage.GetSpeakerOptions;
 
     /* -------------------------------------------- */
@@ -189,21 +189,21 @@ declare global {
     protected override _preCreate(
       data: BaseChatMessage.ConstructorData,
       options: DocumentModificationOptions,
-      user: BaseUser
+      user: BaseUser,
     ): Promise<void>;
 
     /** @internal */
     protected override _onCreate(
       data: BaseChatMessage.Source,
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): Promise<void>;
 
     /** @internal */
     protected override _onUpdate(
       data: BaseChatMessage.UpdateData,
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     /** @internal */

@@ -6,7 +6,7 @@ declare global {
    * @typeParam Options - The type of the options object
    */
   class WallConfig<
-    Options extends DocumentSheetOptions<WallDocument> = DocumentSheetOptions<WallDocument>
+    Options extends DocumentSheetOptions<WallDocument> = DocumentSheetOptions<WallDocument>,
   > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClassForName<"Wall">>> {
     /**
      * @defaultValue
@@ -30,7 +30,7 @@ declare global {
       force?: boolean,
       options?: Application.RenderOptions<Options> & {
         walls?: InstanceType<ConfiguredObjectClassForName<"Wall">>[] | undefined;
-      }
+      },
     ): this;
 
     override getData(): MaybePromise<object>;

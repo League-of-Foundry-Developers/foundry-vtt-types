@@ -15,7 +15,7 @@ export default Document;
 declare abstract class Document<
   SchemaField extends fields.SchemaField.AnyWithFlags,
   ConcreteMetadata extends AnyMetadata = AnyMetadata,
-  Parent extends Document.Any | null = null
+  Parent extends Document.Any | null = null,
 > extends DataModel<SchemaField, Parent> {
   /**
    * @param data    - Initial data provided to construct the Document
@@ -129,14 +129,14 @@ declare abstract class Document<
     user: foundry.documents.BaseUser,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     {
-      exact
+      exact,
     }?: {
       /**
        * Require the exact permission level requested?
        * @defaultValue `false`
        */
       exact?: boolean;
-    }
+    },
   ): boolean;
 
   /**
@@ -173,7 +173,7 @@ declare abstract class Document<
        * @defaultValue `false`
        */
       keepId?: boolean;
-    } & DocumentConstructionContext
+    } & DocumentConstructionContext,
   ): this | Promise<this>;
 
   /**
@@ -224,7 +224,7 @@ declare abstract class Document<
       | fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]>
       | (fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>)
     >,
-    context: DocumentModificationContext & { temporary: false }
+    context: DocumentModificationContext & { temporary: false },
   ): Promise<StoredDocument<InstanceType<Document.ConfiguredClass<T>>>[]>;
   static createDocuments<T extends Document.Constructor>(
     this: T,
@@ -232,7 +232,7 @@ declare abstract class Document<
       | fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]>
       | (fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>)
     >,
-    context: DocumentModificationContext & { temporary: boolean }
+    context: DocumentModificationContext & { temporary: boolean },
   ): Promise<InstanceType<Document.ConfiguredClass<T>>[]>;
   static createDocuments<T extends Document.Constructor>(
     this: T,
@@ -240,7 +240,7 @@ declare abstract class Document<
       | fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]>
       | (fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>)
     >,
-    context?: DocumentModificationContext
+    context?: DocumentModificationContext,
   ): Promise<StoredDocument<InstanceType<Document.ConfiguredClass<T>>>[]>;
 
   /**
@@ -285,7 +285,7 @@ declare abstract class Document<
         ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>)
       >
     >,
-    context?: DocumentModificationContext & foundry.utils.MergeObjectOptions
+    context?: DocumentModificationContext & foundry.utils.MergeObjectOptions,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
@@ -328,7 +328,7 @@ declare abstract class Document<
   static deleteDocuments<T extends Document.Constructor>(
     this: T,
     ids?: string[],
-    context?: DocumentModificationContext
+    context?: DocumentModificationContext,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
@@ -363,17 +363,17 @@ declare abstract class Document<
   static create<T extends Document.Constructor>(
     this: T,
     data: ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>),
-    context: DocumentModificationContext & { temporary: false }
+    context: DocumentModificationContext & { temporary: false },
   ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>> | undefined>;
   static create<T extends Document.Constructor>(
     this: T,
     data: ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>),
-    context: DocumentModificationContext & { temporary: boolean }
+    context: DocumentModificationContext & { temporary: boolean },
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
   static create<T extends Document.Constructor>(
     this: T,
     data: ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>),
-    context?: DocumentModificationContext
+    context?: DocumentModificationContext,
   ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>> | undefined>;
 
   /**
@@ -391,7 +391,7 @@ declare abstract class Document<
     data?:
       | fields.SchemaField.AssignmentType<SchemaField["fields"], {}>
       | (fields.SchemaField.AssignmentType<SchemaField["fields"], {}> & Record<string, unknown>),
-    context?: DocumentModificationContext & foundry.utils.MergeObjectOptions
+    context?: DocumentModificationContext & foundry.utils.MergeObjectOptions,
   ): Promise<this | undefined>;
 
   /**
@@ -430,14 +430,14 @@ declare abstract class Document<
     embeddedName: string,
     id: string,
     {
-      strict
+      strict,
     }?: {
       /**
        * Throw an Error if the requested id does not exist. See Collection#get
        * @defaultValue `false`
        */
       strict?: boolean;
-    }
+    },
   ): Document.AnyChild<this> | undefined;
 
   /**
@@ -453,17 +453,17 @@ declare abstract class Document<
   createEmbeddedDocuments(
     embeddedName: string,
     data: Array<Record<string, unknown>>,
-    context: DocumentModificationContext & { temporary: false }
+    context: DocumentModificationContext & { temporary: false },
   ): Promise<Array<StoredDocument<Document.AnyChild<this>>>>;
   createEmbeddedDocuments(
     embeddedName: string,
     data: Array<Record<string, unknown>>,
-    context: DocumentModificationContext & { temporary: boolean }
+    context: DocumentModificationContext & { temporary: boolean },
   ): Promise<Array<Document.AnyChild<this>>>;
   createEmbeddedDocuments(
     embeddedName: string,
     data: Array<Record<string, unknown>>,
-    context?: DocumentModificationContext
+    context?: DocumentModificationContext,
   ): Promise<Array<StoredDocument<Document.AnyChild<this>>>>;
 
   /**
@@ -479,7 +479,7 @@ declare abstract class Document<
   updateEmbeddedDocuments(
     embeddedName: string,
     updates?: Array<Record<string, unknown>>,
-    context?: DocumentModificationContext
+    context?: DocumentModificationContext,
   ): Promise<Array<Document.AnyChild<this>>>;
 
   /**
@@ -494,7 +494,7 @@ declare abstract class Document<
   deleteEmbeddedDocuments(
     embeddedName: string,
     ids: Array<string>,
-    context?: DocumentModificationContext
+    context?: DocumentModificationContext,
   ): Promise<Array<Document.AnyChild<this>>>;
 
   /**
@@ -507,15 +507,15 @@ declare abstract class Document<
    */
   getFlag<
     S extends keyof fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"],
-    K extends keyof fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"][S]
+    K extends keyof fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"][S],
   >(scope: S, key: K): fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"][S][K];
   getFlag<
     S extends keyof fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"],
-    K extends keyof Required<fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"]>[S]
+    K extends keyof Required<fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"]>[S],
   >(scope: S, key: K): Required<fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"]>[S][K] | undefined;
   getFlag<S extends keyof fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"]>(
     scope: S,
-    key: string
+    key: string,
   ): unknown extends fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"][S] ? unknown : never;
   getFlag(scope: string, key: string): unknown;
 
@@ -540,12 +540,12 @@ declare abstract class Document<
   setFlag<
     S extends keyof fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"],
     K extends keyof Required<fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"]>[S],
-    V extends Required<fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"]>[S][K]
+    V extends Required<fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"]>[S][K],
   >(scope: S, key: K, value: V): Promise<this>;
   setFlag<S extends keyof fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"], K extends string>(
     scope: S,
     key: K,
-    v: unknown extends fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"][S] ? unknown : never
+    v: unknown extends fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"][S] ? unknown : never,
   ): Promise<this>;
 
   /**
@@ -567,7 +567,7 @@ declare abstract class Document<
   protected _preCreate(
     data: fields.SchemaField.AssignmentType<SchemaField["fields"], {}>,
     options: DocumentModificationOptions,
-    user: foundry.documents.BaseUser
+    user: foundry.documents.BaseUser,
   ): Promise<void>;
 
   /**
@@ -580,7 +580,7 @@ declare abstract class Document<
   protected _preUpdate(
     changed: fields.SchemaField.AssignmentType<SchemaField["fields"], {}>,
     options: DocumentModificationOptions,
-    user: foundry.documents.BaseUser
+    user: foundry.documents.BaseUser,
   ): Promise<void>;
 
   /**
@@ -601,7 +601,7 @@ declare abstract class Document<
   protected _onCreate(
     data: fields.SchemaField.PersistedType<SchemaField["fields"], {}>,
     options: DocumentModificationOptions,
-    userId: string
+    userId: string,
   ): void;
 
   /**
@@ -614,7 +614,7 @@ declare abstract class Document<
   protected _onUpdate(
     changed: DeepPartial<fields.SchemaField.PersistedType<SchemaField["fields"], {}>>,
     options: DocumentModificationOptions,
-    userId: string
+    userId: string,
   ): void;
 
   /**
@@ -639,7 +639,7 @@ declare abstract class Document<
   protected static _onCreateDocuments<T extends Document.Constructor>(
     this: T,
     documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
-    context: DocumentModificationContext
+    context: DocumentModificationContext,
   ): Promise<unknown>;
 
   /**
@@ -656,7 +656,7 @@ declare abstract class Document<
   protected static _onUpdateDocuments<T extends Document.Constructor>(
     this: T,
     documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
-    context: DocumentModificationContext
+    context: DocumentModificationContext,
   ): Promise<unknown>;
 
   /**
@@ -673,7 +673,7 @@ declare abstract class Document<
   protected static _onDeleteDocuments<T extends Document.Constructor>(
     this: T,
     documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
-    context: DocumentModificationContext
+    context: DocumentModificationContext,
   ): Promise<unknown>;
 
   /**
@@ -712,13 +712,13 @@ declare abstract class Document<
     data: object,
     oldKey: string,
     newKey: string,
-    apply?: (data: object) => any
+    apply?: (data: object) => any,
   ): unknown;
 
   protected static _logDataFieldMigration(
     oldKey: string,
     newKey: string,
-    options?: LogCompatibilityWarningOptions
+    options?: LogCompatibilityWarningOptions,
   ): void;
 
   protected static _logV10CompatibilityWarning(options?: LogCompatibilityWarningOptions): void;
@@ -813,14 +813,14 @@ export interface Metadata<ConcreteDocument extends Document.Any> {
       | ((
           user: foundry.documents.BaseUser,
           doc: ConcreteDocument,
-          data: fields.SchemaField.InnerAssignmentType<ConcreteDocument["schema"]["fields"]>
+          data: fields.SchemaField.InnerAssignmentType<ConcreteDocument["schema"]["fields"]>,
         ) => boolean);
     update:
       | string
       | ((
           user: foundry.documents.BaseUser,
           doc: ConcreteDocument,
-          data: fields.SchemaField.InnerAssignmentType<ConcreteDocument["schema"]["fields"]>
+          data: fields.SchemaField.InnerAssignmentType<ConcreteDocument["schema"]["fields"]>,
         ) => boolean);
     delete: string | ((user: foundry.documents.BaseUser, doc: ConcreteDocument, data: {}) => boolean);
   };

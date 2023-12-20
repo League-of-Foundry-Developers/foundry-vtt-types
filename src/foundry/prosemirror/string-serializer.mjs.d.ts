@@ -35,7 +35,7 @@ export default class StringSerializer {
    */
   protected _specToStringNode(
     spec: DOMOutputSpec | string,
-    inline: boolean
+    inline: boolean,
   ): { outer: StringNode; content?: StringNode };
 
   /**
@@ -103,13 +103,13 @@ declare class StringNode {
     spaces?: string | number,
     {
       _depth,
-      _inlineParent
+      _inlineParent,
     }?: {
       /** @internal (default: `0`) */
       _depth?: number;
       /** @internal (default: `false`) */
       _inlineParent?: boolean;
-    }
+    },
   ): string;
 }
 

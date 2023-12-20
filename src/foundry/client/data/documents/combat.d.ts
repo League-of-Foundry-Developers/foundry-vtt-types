@@ -14,7 +14,7 @@ declare global {
   class Combat extends ClientDocumentMixin(BaseCombat) {
     constructor(
       data?: ConstructorParameters<ConstructorOf<BaseCombat>>[0],
-      context?: ConstructorParameters<ConstructorOf<BaseCombat>>[1]
+      context?: ConstructorParameters<ConstructorOf<BaseCombat>>[1],
     );
 
     /**
@@ -185,7 +185,7 @@ declare global {
       documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
       result: BaseCombatant.ConstructorData[],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     /** @internal */
@@ -194,7 +194,7 @@ declare global {
       documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
       result: BaseCombatant.UpdateData[],
       options: DocumentModificationContext,
-      userId: string
+      userId: string,
     ): void;
 
     /** @internal */
@@ -203,7 +203,7 @@ declare global {
       documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
       result: string[],
       options: DocumentModificationContext,
-      userId: string
+      userId: string,
     ): void;
   }
 }

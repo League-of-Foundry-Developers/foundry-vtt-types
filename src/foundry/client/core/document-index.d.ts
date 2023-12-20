@@ -34,7 +34,7 @@ declare global {
          * very short prefixes will naturally match large numbers of entries. (default: `10`)
          */
         limit: number;
-      }
+      },
     ): WordTree.Entry[];
 
     /**
@@ -59,7 +59,7 @@ declare global {
       options?: {
         /** The maximum number of entries to retrieve before stopping. (default: `10`) */
         limit: 10;
-      }
+      },
     ): void;
   }
   export namespace WordTree {
@@ -137,7 +137,7 @@ declare global {
          * will be searched for. (default: `[]`)
          */
         documentTypes?: string[];
-      }
+      },
     ): Record<string, WordTree.Entry[]>;
 
     /**
@@ -169,7 +169,7 @@ declare global {
       options?: {
         /** The compendium that the index belongs to. */
         pack?: CompendiumCollection<any>;
-      }
+      },
     ): void;
 
     /**

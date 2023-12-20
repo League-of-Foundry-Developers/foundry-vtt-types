@@ -48,7 +48,7 @@ declare global {
      * @internal
      */
     protected _onDeleteCompendium(
-      pack: CompendiumCollection<CompendiumCollection.Metadata>
+      pack: CompendiumCollection<CompendiumCollection.Metadata>,
     ): Promise<CompendiumCollection<CompendiumCollection.Metadata> | void>;
 
     /**

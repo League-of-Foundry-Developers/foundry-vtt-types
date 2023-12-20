@@ -9,7 +9,7 @@ declare global {
    * This mixin defines the client-side interface for database operations and common document behaviors.
    */
   const ClientDocumentMixin: <T extends ConstructorOf<foundry.abstract.Document<any, any>>>(
-    Base: T
+    Base: T,
   ) => ClientDocumentConstructor<T>;
 
   namespace ClientDocumentMixin {
@@ -204,7 +204,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
   protected _onUpdate(
     data: DeepPartial<T["data"]["_source"]>,
     options: DocumentModificationOptions,
-    userId: string
+    userId: string,
   ): void;
 
   /**
@@ -223,7 +223,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
     embeddedName: string,
     result: Record<string, unknown>[],
     options: DocumentModificationOptions,
-    userId: string
+    userId: string,
   ): void;
 
   /**
@@ -239,7 +239,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
     documents: foundry.abstract.Document<any, any>[],
     result: Record<string, unknown>[],
     options: DocumentModificationOptions,
-    userId: string
+    userId: string,
   ): void;
 
   /**
@@ -253,7 +253,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
     embeddedName: string,
     result: Record<string, unknown>[],
     options: DocumentModificationOptions,
-    userId: string
+    userId: string,
   ): void;
 
   /**
@@ -269,7 +269,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
     documents: foundry.abstract.Document<any, any>[],
     result: Record<string, unknown>[],
     options: DocumentModificationContext,
-    userId: string
+    userId: string,
   ): void;
 
   /**
@@ -283,7 +283,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
     embeddedName: string,
     result: string[],
     options: DocumentModificationContext,
-    userId: string
+    userId: string,
   ): void;
 
   /**
@@ -299,7 +299,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
     documents: foundry.abstract.Document<any, any>[],
     result: string[],
     options: DocumentModificationContext,
-    userId: string
+    userId: string,
   ): void;
 
   /**
@@ -320,7 +320,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
           | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>)
         >
       | undefined,
-    context?: (Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>) | undefined
+    context?: (Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>) | undefined,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
 
   /**
@@ -351,7 +351,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
   static fromDropData<T extends Document.Constructor>(
     this: T,
     data: DropData<InstanceType<T>>,
-    options?: FromDropDataOptions
+    options?: FromDropDataOptions,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
 
   /**
@@ -377,7 +377,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    */
   toCompendium(
     pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
-    options?: ClientDocumentMixin.CompendiumExportOptions | undefined
+    options?: ClientDocumentMixin.CompendiumExportOptions | undefined,
   ): Omit<T["data"]["_source"], "_id" | "folder" | "permission"> & {
     permission?: T["data"]["_source"]["permission"];
   };

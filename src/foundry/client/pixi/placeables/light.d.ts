@@ -84,13 +84,13 @@ declare global {
     protected override _onCreate(
       data: foundry.data.AmbientLightData["_source"],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected override _onUpdate(
       changed: DeepPartial<foundry.data.AmbientLightData["_source"]>,
       options?: DocumentModificationOptions,
-      userId?: string
+      userId?: string,
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;

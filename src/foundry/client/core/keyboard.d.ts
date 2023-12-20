@@ -29,7 +29,7 @@ declare class KeyboardManager {
    */
   static MODIFIER_CODES: {
     Alt: ["AltLeft", "AltRight"];
-    Control: ["ControlLeft", "ControlRight", "MetaLeft", "MetaRight"];
+    Control: ["ControlLeft", "ControlRight", "MetaLeft", "MetaRight", "Meta", "OsLeft", "OsRight"];
     Shift: ["ShiftLeft", "ShiftRight"];
   };
 
@@ -55,8 +55,9 @@ declare class KeyboardManager {
     BracketLeft: "[";
     BracketRight: "]";
     Comma: ",";
-    Control: typeof KeyboardManager["CONTROL_KEY_STRING"];
+    Control: (typeof KeyboardManager)["CONTROL_KEY_STRING"];
     Equal: "=";
+    Meta: "⌘" | "⊞";
     MetaLeft: "⌘" | "⊞";
     MetaRight: "⌘" | "⊞";
     OsLeft: "⌘" | "⊞";
@@ -87,6 +88,8 @@ declare class KeyboardManager {
    *                   (default: `false`)
    * @param repeat   - Emulate this as a repeat event
    *                   (default: `false`)
+   * @param force    - Force the event to be handled.
+   *                   (default: `false`)
    */
   static emulateKeypress(
     up: boolean,
@@ -95,8 +98,9 @@ declare class KeyboardManager {
       altKey,
       ctrlKey,
       shiftKey,
-      repeat
-    }?: { altKey?: boolean; ctrlKey?: boolean; shiftKey?: boolean; repeat?: boolean }
+      repeat,
+      force,
+    }?: { altKey?: boolean; ctrlKey?: boolean; shiftKey?: boolean; repeat?: boolean; force?: boolean },
   ): KeyboardEventContext;
 
   /**
@@ -175,6 +179,13 @@ declare class KeyboardManager {
   protected _reset(): void;
 
   /**
+   * Emulate a key-up event for any currently down keys. When emulating, we go backwards such that combinations such as
+   * "CONTROL + S" emulate the "S" first in order to capture modifiers.
+   * @param force - Force the keyup events to be handled.
+   */
+  releaseKeys({ force }?: { force: boolean }): void;
+
+  /**
    * Handle a key press into the down position
    * @param event - The originating keyboard event
    * @param up    - A flag for whether the key is down or up
@@ -187,4 +198,10 @@ declare class KeyboardManager {
    * See: https://github.com/w3c/uievents/issues/202
    */
   protected _onCompositionEnd(event: CompositionEvent): void;
+
+  /**
+   * Release any down keys when focusing a form element.
+   * @param event - The focus event.
+   */
+  protected _onFocusIn(event: FocusEvent): void;
 }

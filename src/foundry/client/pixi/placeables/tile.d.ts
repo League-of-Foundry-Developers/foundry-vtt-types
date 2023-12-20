@@ -156,7 +156,7 @@ declare global {
      */
     testOcclusion(
       token: InstanceType<ConfiguredObjectClassForName<"Token">>,
-      options?: Tile.OcclusionOptions | undefined
+      options?: Tile.OcclusionOptions | undefined,
     ): boolean;
 
     /**
@@ -199,7 +199,7 @@ declare global {
     protected override _onUpdate(
       changed: DeepPartial<foundry.data.TileData["_source"]>,
       options?: DocumentModificationOptions,
-      userId?: string
+      userId?: string,
     ): Promise<this> | void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;

@@ -8,7 +8,7 @@ declare global {
    * A specialized sub-class of the ClientDocumentMixin which is used for document types that are intended to be represented upon the game Canvas.
    */
   const CanvasDocumentMixin: <T extends ConstructorOf<foundry.abstract.Document<any, any>>>(
-    Base: T
+    Base: T,
   ) => CanvasDocumentConstructor<T>;
 }
 
@@ -60,7 +60,7 @@ declare class CanvasDocumentMixin<T extends foundry.abstract.Document<any, any>>
   protected _onUpdate(
     data: DeepPartial<T["data"]["_source"]>,
     options: DocumentModificationOptions,
-    userId: string
+    userId: string,
   ): void;
 
   /**

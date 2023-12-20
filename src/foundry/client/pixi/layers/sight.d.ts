@@ -209,7 +209,7 @@ declare global {
      */
     refresh({
       forceUpdateFog,
-      skipUpdateFog
+      skipUpdateFog,
     }?: {
       /**
        * Always update the Fog exploration progress for this update
@@ -240,7 +240,7 @@ declare global {
       point: Point,
       {
         tolerance,
-        object
+        object,
       }?: {
         /**
          * A numeric radial offset which allows for a non-exact match. For example, if
@@ -255,7 +255,7 @@ declare global {
          * (defaultValue: `null`)
          */
         object?: PIXI.DisplayObject | null;
-      }
+      },
     ): boolean;
 
     /** @internal */

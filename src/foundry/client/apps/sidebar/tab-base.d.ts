@@ -3,7 +3,7 @@
  * @typeParam Options - The type of the options object
  */
 declare abstract class SidebarTab<
-  Options extends ApplicationOptions = ApplicationOptions
+  Options extends ApplicationOptions = ApplicationOptions,
 > extends Application<Options> {
   constructor(...args: ConstructorParameters<typeof Application>);
   /**
@@ -19,7 +19,7 @@ declare abstract class SidebarTab<
   protected _popout: this | null;
 
   /**
-   * Denote whether or not this is the original version of the sidebar tab, or a pop-out variant
+   * Denote whether this is the original version of the sidebar tab, or a pop-out variant
    * @defaultValue `null`
    */
   protected _original: this | null;
@@ -36,6 +36,10 @@ declare abstract class SidebarTab<
    * ```
    */
   static override get defaultOptions(): ApplicationOptions;
+
+  override get id(): string;
+
+  override getData(options?: Partial<Options> | undefined): MaybePromise<object>;
 
   protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 

@@ -70,7 +70,7 @@ declare class ObjectHUD extends PIXI.Container {
    */
   createScrollingText(
     content: string,
-    options?: ObjectHUD.CreateScrollingTextOptions | undefined
+    options?: ObjectHUD.CreateScrollingTextOptions | undefined,
   ): Promise<PreciseText | null>;
 
   /**

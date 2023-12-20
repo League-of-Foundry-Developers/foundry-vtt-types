@@ -108,7 +108,7 @@ declare global {
      */
     static animate(
       attributes: CanvasAnimationAttribute[],
-      { context, name, duration, easing, ontick, priority }?: CanvasAnimationOptions
+      { context, name, duration, easing, ontick, priority }?: CanvasAnimationOptions,
     ): Promise<boolean | void>;
 
     /**
@@ -138,7 +138,7 @@ declare global {
      */
     static animateLinear(
       attributes: CanvasAnimation.Attribute[],
-      options?: InexactPartial<LinearAnimationOptions>
+      options?: InexactPartial<LinearAnimationOptions>,
     ): Promise<boolean>;
 
     /**
@@ -170,7 +170,7 @@ declare global {
       name: string,
       attributes: CanvasAnimation.Attribute[],
       duration: number,
-      ontick: TickFunction | undefined
+      ontick: TickFunction | undefined,
     ): Promise<boolean>;
 
     /**
@@ -185,7 +185,7 @@ declare global {
       reject: (reason?: any) => void,
       attributes: CanvasAnimation.Attribute[],
       duration: number,
-      ontick: TickFunction | undefined
+      ontick: TickFunction | undefined,
     ): void;
   }
 
@@ -232,5 +232,5 @@ type TransitionFunction = (
   reject: (reason?: any) => void,
   attributes: CanvasAnimation.Attribute[],
   duration: number,
-  ontick?: TickFunction
+  ontick?: TickFunction,
 ) => void;

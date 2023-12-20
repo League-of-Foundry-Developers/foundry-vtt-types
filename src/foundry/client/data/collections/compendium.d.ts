@@ -101,7 +101,7 @@ declare global {
     get(key: string, { strict }: { strict: true }): StoredDocument<DocumentInstanceForCompendiumMetadata<T>>;
     get(
       key: string,
-      { strict }?: { strict?: false | undefined } | undefined
+      { strict }?: { strict?: false | undefined } | undefined,
     ): StoredDocument<DocumentInstanceForCompendiumMetadata<T>> | undefined;
 
     set(id: string, document: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>): this;
@@ -129,7 +129,7 @@ declare global {
      * @returns The retrieved Document instances
      */
     getDocuments(
-      query?: Record<string, unknown> | undefined
+      query?: Record<string, unknown> | undefined,
     ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
 
     /**
@@ -141,7 +141,7 @@ declare global {
      */
     importDocument(
       document: DocumentInstanceForCompendiumMetadata<T>,
-      options?: ClientDocumentMixin.CompendiumExportOptions | undefined
+      options?: ClientDocumentMixin.CompendiumExportOptions | undefined,
     ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>> | undefined>;
 
     /**
@@ -157,7 +157,7 @@ declare global {
     importAll({
       folderId,
       folderName,
-      options
+      options,
     }?: ImportAllOptions | undefined): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
 
     /**
@@ -169,7 +169,7 @@ declare global {
      *          null if the dialog was closed without making a choice.
      */
     importDialog(
-      options?: DialogOptions | undefined
+      options?: DialogOptions | undefined,
     ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[] | null | false>;
 
     /**
@@ -186,7 +186,7 @@ declare global {
      */
     static createCompendium<T extends CompendiumCollection.Metadata>(
       metadata: T,
-      options?: Partial<DocumentModificationOptions> | undefined
+      options?: Partial<DocumentModificationOptions> | undefined,
     ): Promise<CompendiumCollection<T>>;
 
     /**
@@ -196,7 +196,7 @@ declare global {
      * @returns A Promise which resolves once the setting is updated
      */
     configure(
-      settings?: Partial<CompendiumCollection.Configuration> | undefined
+      settings?: Partial<CompendiumCollection.Configuration> | undefined,
     ): Promise<CompendiumCollection.Configuration>;
 
     /**
@@ -230,31 +230,31 @@ declare global {
       transformation:
         | DeepPartial<DocumentInstanceForCompendiumMetadata<T>["data"]["_source"]>
         | ((
-            doc: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>
+            doc: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>,
           ) => DeepPartial<DocumentInstanceForCompendiumMetadata<T>["data"]["_source"]>),
       condition?: ((obj: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>) => boolean) | null,
-      options?: DocumentModificationContext
+      options?: DocumentModificationContext,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
 
     protected _onCreateDocuments(
       documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
       result: (DocumentInstanceForCompendiumMetadata<T>["data"]["_source"] & { _id: string })[],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected _onUpdateDocuments(
       documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
       result: (DeepPartial<DocumentInstanceForCompendiumMetadata<T>["data"]["_source"]> & { _id: string })[],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected _onDeleteDocuments(
       documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
       result: string[],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     /**
@@ -264,7 +264,7 @@ declare global {
     protected _onModifyContents(
       documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
   }
 

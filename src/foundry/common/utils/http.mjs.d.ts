@@ -10,7 +10,7 @@
 export function fetchWithTimeout(
   url: string,
   data?: RequestInit | undefined,
-  { timeoutMs, onTimeout }?: TimeoutOptions | undefined
+  { timeoutMs, onTimeout }?: TimeoutOptions | undefined,
 ): Promise<Response>;
 
 /**
@@ -23,7 +23,7 @@ export function fetchWithTimeout(
 export function fetchJsonWithTimeout(
   url: string,
   data?: RequestInit | undefined,
-  { timeoutMs, onTimeout }?: TimeoutOptions | undefined
+  { timeoutMs, onTimeout }?: TimeoutOptions | undefined,
 ): Promise<unknown>;
 
 /**

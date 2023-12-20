@@ -30,7 +30,7 @@ declare abstract class DatabaseBackend {
   protected abstract _getDocuments<T extends Document<any, any>>(
     documentClass: ConstructorOf<T>,
     request: Request,
-    user: BaseUser
+    user: BaseUser,
   ): Promise<T[]>;
 
   /**
@@ -44,7 +44,7 @@ declare abstract class DatabaseBackend {
     documentClass: ConstructorOf<T>,
     parent: T extends Document<any, infer U> ? U : never,
     request: Request,
-    user: BaseUser
+    user: BaseUser,
   ): Promise<T[]>;
 
   /**
@@ -66,7 +66,7 @@ declare abstract class DatabaseBackend {
   create<T extends Document<any, any>>(
     documentClass: ConstructorOf<T>,
     request: Request,
-    user?: BaseUser
+    user?: BaseUser,
   ): Promise<T[]>;
 
   /**
@@ -84,7 +84,7 @@ declare abstract class DatabaseBackend {
   protected abstract _createDocuments<T extends Document<any, any>>(
     documentClass: ConstructorOf<T>,
     request: Request,
-    user: BaseUser
+    user: BaseUser,
   ): Promise<T[]>;
 
   /**
@@ -94,7 +94,7 @@ declare abstract class DatabaseBackend {
     documentClass: ConstructorOf<T>,
     parent: T extends Document<any, infer U> ? U : never,
     request: Request,
-    user: BaseUser
+    user: BaseUser,
   ): Promise<T[]>;
 
   /**
@@ -107,7 +107,7 @@ declare abstract class DatabaseBackend {
   update<T extends Document<any, any>>(
     documentClass: ConstructorOf<T>,
     request: Request,
-    user?: BaseUser
+    user?: BaseUser,
   ): Promise<T[]>;
 
   /**
@@ -125,7 +125,7 @@ declare abstract class DatabaseBackend {
   protected abstract _updateDocuments<T extends Document<any, any>>(
     documentClass: ConstructorOf<T>,
     request: Request,
-    user: BaseUser
+    user: BaseUser,
   ): Promise<T[]>;
 
   /**
@@ -135,7 +135,7 @@ declare abstract class DatabaseBackend {
     documentClass: ConstructorOf<T>,
     parent: T extends Document<any, infer U> ? U : never,
     request: Request,
-    user: BaseUser
+    user: BaseUser,
   ): Promise<T[]>;
 
   /**
@@ -148,7 +148,7 @@ declare abstract class DatabaseBackend {
   delete<T extends Document<any, any>>(
     documentClass: ConstructorOf<T>,
     request: Request,
-    user?: BaseUser
+    user?: BaseUser,
   ): Promise<T[]>;
 
   /**
@@ -163,7 +163,7 @@ declare abstract class DatabaseBackend {
   protected abstract _deleteDocuments<T extends Document<any, any>>(
     documentClass: ConstructorOf<T>,
     request: Request,
-    user: BaseUser
+    user: BaseUser,
   ): Promise<T[]>;
 
   /**
@@ -173,7 +173,7 @@ declare abstract class DatabaseBackend {
     documentClass: ConstructorOf<T>,
     parent: T extends Document<any, infer U> ? U : never,
     request: Request,
-    user: BaseUser
+    user: BaseUser,
   ): Promise<T[]>;
 
   /**
@@ -204,7 +204,7 @@ declare abstract class DatabaseBackend {
     {
       parent,
       pack,
-      level
+      level,
     }?: {
       /** A parent document */
       parent?: Document<any, any>;
@@ -217,7 +217,7 @@ declare abstract class DatabaseBackend {
        * @defaultValue `"info"`
        */
       level?: string;
-    }
+    },
   ): void;
 
   /**
@@ -227,7 +227,7 @@ declare abstract class DatabaseBackend {
     user: BaseUser,
     action: string,
     subject: Document<any, any> | string,
-    { parent, pack }?: { parent?: Document<any, any>; pack?: string }
+    { parent, pack }?: { parent?: Document<any, any>; pack?: string },
   ): string;
 
   /**

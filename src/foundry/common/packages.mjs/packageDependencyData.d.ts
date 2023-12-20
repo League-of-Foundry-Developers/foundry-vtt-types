@@ -61,7 +61,7 @@ export class PackageDependencyData extends DocumentData<
   protected override _getInvalidFieldValueErrorMessage(
     name: string,
     field: DocumentField<unknown>,
-    value: unknown
+    value: unknown,
   ): string;
 }
 

@@ -12,7 +12,7 @@ declare class ImageHelper {
    */
   static createThumbnail(
     src: string | PIXI.DisplayObject,
-    options?: ImageHelper.CompositeOptions & ImageHelper.TextureToImageOptions
+    options?: ImageHelper.CompositeOptions & ImageHelper.TextureToImageOptions,
   ): Promise<ImageHelper.ThumbnailReturn>;
 
   /**
@@ -58,8 +58,8 @@ declare class ImageHelper {
       storage: string;
       /** The MIME type of the file being uploaded */
       type?: string;
-    }
-  ): Promise<ReturnType<typeof FilePicker["upload"]>>;
+    },
+  ): Promise<ReturnType<(typeof FilePicker)["upload"]>>;
 }
 
 declare namespace ImageHelper {

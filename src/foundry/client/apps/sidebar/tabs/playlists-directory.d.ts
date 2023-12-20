@@ -90,7 +90,7 @@ declare global {
      * @internal
      */
     protected _prepareTreeData(
-      leaf: SidebarDirectory.Tree<InstanceType<ConfiguredDocumentClass<typeof Playlist>>>
+      leaf: SidebarDirectory.Tree<InstanceType<ConfiguredDocumentClass<typeof Playlist>>>,
     ): void;
 
     /**
@@ -100,7 +100,7 @@ declare global {
      * @internal
      */
     protected _preparePlaylistData(
-      playlist: InstanceType<ConfiguredDocumentClass<typeof Playlist>>
+      playlist: InstanceType<ConfiguredDocumentClass<typeof Playlist>>,
     ): PlaylistDirectory.PlaylistData;
 
     /**

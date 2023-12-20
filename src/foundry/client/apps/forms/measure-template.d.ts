@@ -6,7 +6,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class MeasuredTemplateConfig<
-    Options extends DocumentSheetOptions<MeasuredTemplateDocument> = DocumentSheetOptions<MeasuredTemplateDocument>
+    Options extends DocumentSheetOptions<MeasuredTemplateDocument> = DocumentSheetOptions<MeasuredTemplateDocument>,
   > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClassForName<"MeasuredTemplate">>> {
     /**
      * @defaultValue
@@ -34,6 +34,7 @@ declare global {
       direction: number | null;
       distance: number | null;
       fillColor: string;
+      hidden: boolean;
       t: ValueOf<foundry.CONST.MEASURED_TEMPLATE_TYPES>;
       texture: string;
       width: number | null;

@@ -3,7 +3,7 @@ import {
   ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
   ConfiguredModule,
-  ModuleRequiredOrOptional
+  ModuleRequiredOrOptional,
 } from "../../types/helperTypes";
 import type Document from "../common/abstract/document.mjs";
 
@@ -602,7 +602,7 @@ declare global {
        * @param id - The module ID to look up
        */
       get<T extends string>(
-        id: T
+        id: T,
       ): (Game["data"]["modules"][number] & ConfiguredModule<T>) | ModuleRequiredOrOptional<T>;
     }
 

@@ -27,7 +27,7 @@ type StringArrayField = DocumentField<string[]> & {
  * A helper field used for arrays of package include objects
  */
 declare const INCLUDE_ARRAY_FIELD: <T extends ConstructorOf<DocumentData<any, any>>>(
-  type: T
+  type: T,
 ) => IncludeArrayFieldReturnType<T>;
 /**
  * Property type: `T[]`
@@ -303,7 +303,7 @@ interface PackageDataConstructorData {
 export class PackageData<
   Schema extends Omit<PackageDataSchema, "system">,
   Properties extends Omit<PackageDataProperties, "system">,
-  ConstructorData extends Omit<PackageDataConstructorData, "system">
+  ConstructorData extends Omit<PackageDataConstructorData, "system">,
 > extends DocumentData<Schema, Properties, PropertiesToSource<Properties>, ConstructorData> {
   static override defineSchema(): Omit<PackageDataSchema, "system">;
 
@@ -314,6 +314,6 @@ export class PackageData<
    */
   static checkAvailability(
     minimumCoreVersion: number | string | null | undefined,
-    compatibleCoreVersion: number | string | null | undefined
+    compatibleCoreVersion: number | string | null | undefined,
   ): PACKAGE_AVAILABILITY_CODES;
 }

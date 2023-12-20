@@ -5,7 +5,7 @@
  */
 declare class Compendium<
   Metadata extends CompendiumCollection.Metadata,
-  Options extends ApplicationOptions = ApplicationOptions
+  Options extends ApplicationOptions = ApplicationOptions,
 > extends Application<Options> {
   /**
    * @param collection - The {@link CompendiumCollection} object represented by this interface.

@@ -44,7 +44,7 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
     layer: MouseInteractionManager["layer"],
     permissions?: MouseInteractionManager["permissions"],
     callbacks?: MouseInteractionManager["callbacks"],
-    options?: MouseInteractionManager["options"]
+    options?: MouseInteractionManager["options"],
   );
 
   object: Object;
@@ -75,7 +75,7 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
    * The current interaction state
    * @defaultValue `MouseInteractionManager.INTERACTION_STATES.NONE`
    */
-  state: ValueOf<typeof MouseInteractionManager["INTERACTION_STATES"]>;
+  state: ValueOf<(typeof MouseInteractionManager)["INTERACTION_STATES"]>;
 
   /**
    * Bound handlers which can be added and removed
@@ -168,7 +168,7 @@ declare class MouseInteractionManager<Object extends PIXI.Container = PIXI.Conta
   /**
    * A reference to the possible interaction states which can be observed
    */
-  get states(): typeof MouseInteractionManager["INTERACTION_STATES"];
+  get states(): (typeof MouseInteractionManager)["INTERACTION_STATES"];
 
   /**
    * Activate a set of listeners which handle hover events on the target object

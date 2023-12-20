@@ -47,7 +47,7 @@ declare global {
     protected override _onUpdate(
       data: DeepPartial<DocumentDataType<foundry.documents.BaseJournalEntry>>,
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;

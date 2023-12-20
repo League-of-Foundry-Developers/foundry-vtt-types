@@ -15,7 +15,7 @@ declare global {
     protected override _onUpdate(
       changed: BaseSetting.UpdateData,
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
   }
 }

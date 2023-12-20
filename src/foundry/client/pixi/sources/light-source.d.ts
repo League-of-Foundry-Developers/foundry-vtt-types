@@ -252,7 +252,7 @@ declare global {
      * @internal
      */
     protected _initializeData(
-      data: Partial<LightSourceData> & { color?: string | number | null }
+      data: Partial<LightSourceData> & { color?: string | number | null },
     ): Partial<LightSourceData>;
 
     /* -------------------------------------------- */
@@ -380,7 +380,7 @@ declare global {
          * @defaultValue `false`
          */
         reverse: boolean;
-      }
+      },
     ): void;
 
     /**
@@ -414,7 +414,7 @@ declare global {
          * @defaultValue `1`
          */
         amplification: number;
-      }
+      },
     ): void;
 
     /**
@@ -443,7 +443,7 @@ declare global {
          * @defaultValue `false`
          */
         reverse: boolean;
-      }
+      },
     ): void;
 
     /**
@@ -472,7 +472,7 @@ declare global {
          * @defaultValue `false`
          */
         reverse: boolean;
-      }
+      },
     ): void;
 
     /**

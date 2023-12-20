@@ -134,7 +134,7 @@ declare global {
     postOne(
       message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>,
       notify?: boolean | undefined,
-      options?: ChatLog.PostOneOptions | undefined
+      options?: ChatLog.PostOneOptions | undefined,
     ): Promise<void>;
 
     /**
@@ -173,7 +173,7 @@ declare global {
      *          a macro instead.
      */
     protected processMessage(
-      message: string
+      message: string,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined | void>;
 
     /**
@@ -188,7 +188,7 @@ declare global {
       command: string,
       match: RegExpMatchArray,
       chatData: ChatMessageDataConstructorData,
-      createOptions: DocumentModificationContext
+      createOptions: DocumentModificationContext,
     ): void;
 
     /**
@@ -204,7 +204,7 @@ declare global {
       command: string,
       match: RegExpMatchArray,
       chatData: ChatMessageDataConstructorData,
-      createOptions: DocumentModificationContext
+      createOptions: DocumentModificationContext,
     ): void;
 
     /**
@@ -219,7 +219,7 @@ declare global {
       command: string,
       match: RegExpMatchArray,
       chatData: ChatMessageDataConstructorData,
-      createOptions: DocumentModificationContext
+      createOptions: DocumentModificationContext,
     ): void;
 
     /**
@@ -271,7 +271,7 @@ declare global {
      * @internal
      */
     protected _onDeleteMessage(
-      event: JQuery.ClickEvent
+      event: JQuery.ClickEvent,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined>;
 
     /**

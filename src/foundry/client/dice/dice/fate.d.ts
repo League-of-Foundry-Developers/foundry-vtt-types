@@ -21,7 +21,7 @@ declare class FateDie extends DiceTerm {
 
 declare namespace FateDie {
   interface TermData extends DiceTerm.TermData {
-    modifiers: Array<keyof typeof FateDie["MODIFIERS"]>;
+    modifiers: Array<keyof (typeof FateDie)["MODIFIERS"]>;
   }
 
   interface Modifiers {

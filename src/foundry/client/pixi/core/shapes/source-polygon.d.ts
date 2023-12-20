@@ -91,7 +91,7 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
   static benchmark(
     iterations: number,
     origin: Point,
-    config: PointSourcePolygonConfig
+    config: PointSourcePolygonConfig,
   ): ReturnType<typeof foundry.utils.benchmark>;
 
   /**
@@ -103,7 +103,7 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
    */
   static create(
     origin: Point,
-    config?: PointSourcePolygonConfig | undefined
+    config?: PointSourcePolygonConfig | undefined,
   ): ReturnType<PointSourcePolygon["compute"]>;
 
   /** {@inheritDoc} */
@@ -138,7 +138,7 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
    */
   applyConstraint<T extends PIXI.Circle | PIXI.Rectangle | PIXI.Polygon>(
     constraint: T,
-    intersectionOptions?: T extends PIXI.Circle ? IntersectCirclePolygonOptions : IntersectPolygonOptions
+    intersectionOptions?: T extends PIXI.Circle ? IntersectCirclePolygonOptions : IntersectPolygonOptions,
   ): PointSourcePolygon;
 
   /**
@@ -161,7 +161,7 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
        * The collision mode to test: "any", "all", or "closest"
        */
       mode?: CollisionMode;
-    }
+    },
   ): boolean | PolygonVertex | PolygonVertex[] | null;
 
   /**

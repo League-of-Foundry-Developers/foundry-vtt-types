@@ -31,7 +31,7 @@ declare global {
      */
     toMessage(
       results: InstanceType<ConfiguredDocumentClass<typeof BaseTableResult>>[],
-      options?: Partial<RollTable.ToMessageOptions>
+      options?: Partial<RollTable.ToMessageOptions>,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof BaseChatMessage>> | undefined>;
 
     /**
@@ -98,7 +98,7 @@ declare global {
       documents: foundry.abstract.Document<any, any>[],
       result: Record<string, unknown>[],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     /** @internal */
@@ -107,12 +107,12 @@ declare global {
       documents: InstanceType<ConfiguredDocumentClass<typeof TableResult>>[],
       result: string[],
       options: DocumentModificationContext,
-      userId: string
+      userId: string,
     ): void;
 
     override toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
-      options?: ClientDocumentMixin.CompendiumExportOptions | undefined
+      options?: ClientDocumentMixin.CompendiumExportOptions | undefined,
     ): Omit<BaseRollTable.Source, "_id" | "folder" | "permission"> & {
       permission?: RollTableData extends { toObject(): infer U } ? U : never;
     };
@@ -124,7 +124,7 @@ declare global {
      */
     static fromFolder(
       folder: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseFolder>>,
-      options?: DocumentModificationOptions
+      options?: DocumentModificationOptions,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseRollTable>> | undefined>;
   }
 

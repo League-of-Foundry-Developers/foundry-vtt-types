@@ -167,11 +167,11 @@ declare abstract class DiceTerm extends RollTerm {
     number: number,
     {
       keep,
-      highest
+      highest,
     }?: {
       keep: boolean;
       highest: boolean;
-    }
+    },
   ): DiceTerm.Result;
 
   /* -------------------------------------------- */
@@ -187,11 +187,11 @@ declare abstract class DiceTerm extends RollTerm {
     target: number,
     {
       flagSuccess,
-      flagFailure
+      flagFailure,
     }?: {
       flagSuccess: boolean;
       flagFailure: boolean;
-    }
+    },
   ): void;
 
   /* -------------------------------------------- */
@@ -207,11 +207,11 @@ declare abstract class DiceTerm extends RollTerm {
     target: number,
     {
       deductFailure,
-      invertFailure
+      invertFailure,
     }?: {
       deductFailure: boolean;
       invertFailure: boolean;
-    }
+    },
   ): void;
 
   /* -------------------------------------------- */

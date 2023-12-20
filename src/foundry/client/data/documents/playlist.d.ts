@@ -90,7 +90,7 @@ declare global {
      * @internal
      */
     protected _getPreviousSound(
-      soundId: string
+      soundId: string,
     ): InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>> | undefined;
 
     /**
@@ -99,7 +99,7 @@ declare global {
      */
     protected _sortSounds(
       a: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>,
-      b: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>
+      b: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>,
     ): number;
 
     /**
@@ -115,7 +115,7 @@ declare global {
     protected _preUpdate(
       changed: DeepPartial<BasePlaylist.UpdateData>,
       options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser
+      user: foundry.documents.BaseUser,
     ): Promise<void>;
 
     /** @internal */
@@ -130,7 +130,7 @@ declare global {
       documents: foundry.abstract.Document<any, any>[],
       result: Record<string, unknown>[],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     /** @internal */
@@ -139,7 +139,7 @@ declare global {
       documents: foundry.abstract.Document<any, any>[],
       result: Record<string, unknown>[],
       options: DocumentModificationContext,
-      userId: string
+      userId: string,
     ): void;
 
     /** @internal */
@@ -148,7 +148,7 @@ declare global {
       documents: foundry.abstract.Document<any, any>[],
       result: string[],
       options: DocumentModificationContext,
-      userId: string
+      userId: string,
     ): void;
 
     /**
@@ -156,7 +156,7 @@ declare global {
      * @internal
      */
     protected _onSoundEnd(
-      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>
+      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
 
     /**
@@ -165,7 +165,7 @@ declare global {
      * @internal
      */
     protected _onSoundStart(
-      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>
+      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
 
     /**
@@ -177,7 +177,7 @@ declare global {
 
     toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
-      options?: ClientDocumentMixin.CompendiumExportOptions | undefined
+      options?: ClientDocumentMixin.CompendiumExportOptions | undefined,
     ): Omit<BasePlaylist.Source, "_id" | "folder" | "permission"> & {
       permission?: PlaylistData extends { toObject(): infer U } ? U : never;
     };

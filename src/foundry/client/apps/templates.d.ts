@@ -126,7 +126,7 @@ declare global {
     static radioBoxes(
       name: string,
       choices: Record<string, string>,
-      options: HandlebarsHelpers.RadioBoxesOptions
+      options: HandlebarsHelpers.RadioBoxesOptions,
     ): Handlebars.SafeString;
 
     /**
@@ -211,7 +211,7 @@ declare global {
      */
     static selectOptions(
       choices: Record<string, string>,
-      options: HandlebarsHelpers.SelectOptionsOptions
+      options: HandlebarsHelpers.SelectOptionsOptions,
     ): Handlebars.SafeString;
   }
 

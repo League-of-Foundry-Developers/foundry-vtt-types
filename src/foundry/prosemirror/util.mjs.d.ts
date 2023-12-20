@@ -25,5 +25,5 @@ export function serializeHTMLString(
     schema?: Schema;
     /** The number of spaces to use for indentation. See {@link StringNode#toString} for details. */
     spaces?: string | number;
-  }
+  },
 ): string;

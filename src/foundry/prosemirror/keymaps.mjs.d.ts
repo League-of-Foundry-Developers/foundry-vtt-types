@@ -12,7 +12,7 @@ import type { EditorView } from "prosemirror-view";
 export type ProseMirrorCommand = (
   state: EditorState,
   dispatch: (transaction: Transaction) => void,
-  view: EditorView
+  view: EditorView,
 ) => boolean;
 export namespace ProseMirrorKeyMaps {
   export interface Options {

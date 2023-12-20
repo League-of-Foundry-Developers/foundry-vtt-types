@@ -56,10 +56,10 @@ declare global {
       transformation:
         | DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["data"]["_source"]>
         | ((
-            doc: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>
+            doc: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>,
           ) => DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["data"]["_source"]>),
       condition?: ((obj: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>) => boolean) | null,
-      options?: DocumentModificationContext
+      options?: DocumentModificationContext,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
 
     /**
@@ -71,7 +71,7 @@ declare global {
     protected _preCreateDocuments(
       result: (InstanceType<T>["data"]["_source"] & { _id: string })[],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     /**
@@ -85,7 +85,7 @@ declare global {
       documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
       result: (InstanceType<T>["data"]["_source"] & { _id: string })[],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     /**
@@ -97,7 +97,7 @@ declare global {
     protected _preUpdateDocuments(
       result: (DeepPartial<InstanceType<T>["data"]["_source"]> & { _id: string })[],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     /**
@@ -111,7 +111,7 @@ declare global {
       documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
       result: (DeepPartial<InstanceType<T>["data"]["_source"]> & { _id: string })[],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     /**
@@ -133,7 +133,7 @@ declare global {
       documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
       result: string[],
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): void;
 
     /**
@@ -147,17 +147,17 @@ declare global {
     protected _getRenderContext(
       action: DocumentCollection.RenderContext.Create<T>["action"],
       documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
-      data: (InstanceType<T>["data"]["_source"] & { _id: string })[]
+      data: (InstanceType<T>["data"]["_source"] & { _id: string })[],
     ): DocumentCollection.RenderContext.Create<T>;
     protected _getRenderContext(
       action: DocumentCollection.RenderContext.Update<T>["action"],
       documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
-      data: (DeepPartial<InstanceType<T>["data"]["_source"]> & { _id: string })[]
+      data: (DeepPartial<InstanceType<T>["data"]["_source"]> & { _id: string })[],
     ): DocumentCollection.RenderContext.Update<T>;
     protected _getRenderContext(
       action: DocumentCollection.RenderContext.Delete<T>["action"],
       documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
-      data: string[]
+      data: string[],
     ): DocumentCollection.RenderContext.Delete<T>;
   }
 

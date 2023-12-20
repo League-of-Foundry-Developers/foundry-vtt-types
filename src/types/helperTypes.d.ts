@@ -6,10 +6,10 @@ import type { fields } from "../foundry/common/data/module.mjs.js";
 type PropertyTypeToSourceType<T> = T extends EmbeddedCollection<infer U, any>
   ? SourceDataType<InstanceType<U>>[]
   : T extends Array<infer U>
-  ? Array<PropertyTypeToSourceType<U>>
-  : T extends DataModel.Any
-  ? SourceDataType<T>
-  : T;
+    ? Array<PropertyTypeToSourceType<U>>
+    : T extends DataModel.Any
+      ? SourceDataType<T>
+      : T;
 
 export type PropertiesToSource<T extends object> = {
   [Key in keyof T]: PropertyTypeToSourceType<T[Key]>;
@@ -18,8 +18,8 @@ export type PropertiesToSource<T extends object> = {
 type SourceDataType<T extends Document.Any | DataModel.Any> = T extends DocumentData<any, any, infer U>
   ? U
   : T extends Document<infer U, any, any>
-  ? SourceDataType<U>
-  : never;
+    ? SourceDataType<U>
+    : never;
 
 /**
  * Returns the type of the constructor data for the given {@link DataModel}.

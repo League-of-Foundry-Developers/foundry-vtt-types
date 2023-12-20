@@ -62,7 +62,7 @@ declare global {
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
     override setPosition(
-      position?: Partial<Omit<Application.Position, "zIndex">> | undefined
+      position?: Partial<Omit<Application.Position, "zIndex">> | undefined,
     ): void | (Application.Position & { height: number });
 
     override getData(options?: Partial<Options>): MaybePromise<object>;

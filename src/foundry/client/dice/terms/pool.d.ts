@@ -122,7 +122,7 @@ declare global {
     static fromExpression<T extends RollTerm>(
       this: ConstructorOf<T>,
       formula: string,
-      options?: RollTerm.Options
+      options?: RollTerm.Options,
     ): T | null;
 
     /**

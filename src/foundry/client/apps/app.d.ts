@@ -302,7 +302,7 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
    * Return the inheritance chain for this Application class up to (and including) it's base Application class.
    * @internal
    */
-  protected static _getInheritanceChain(): typeof Application[];
+  protected static _getInheritanceChain(): (typeof Application)[];
 
   /**
    * Persist the scroll positions of containers within the app before re-rendering the content
@@ -389,7 +389,7 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
        * (default: `true`)
        */
       triggerCallback?: boolean;
-    }
+    },
   ): void;
 
   /**
@@ -475,7 +475,7 @@ declare abstract class Application<Options extends ApplicationOptions = Applicat
    * @param position - Positional data
    */
   setPosition(
-    position?: Partial<Omit<Application.Position, "zIndex">>
+    position?: Partial<Omit<Application.Position, "zIndex">>,
   ): (Application.Position & { height: number }) | void;
 
   /**
@@ -568,5 +568,5 @@ declare namespace Application {
   /**
    * @see {@link Application.RENDER_STATES}
    */
-  type RenderState = ValueOf<typeof Application["RENDER_STATES"]>;
+  type RenderState = ValueOf<(typeof Application)["RENDER_STATES"]>;
 }

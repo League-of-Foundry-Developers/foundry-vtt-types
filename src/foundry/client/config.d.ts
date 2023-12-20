@@ -1984,7 +1984,7 @@ declare global {
       type LightAnimationFunction = (
         this: PointSource,
         dt: number,
-        properties?: { speed?: number; intensity?: number; reverse?: false }
+        properties?: { speed?: number; intensity?: number; reverse?: false },
       ) => void;
 
       namespace Pings {
@@ -2045,7 +2045,7 @@ declare global {
    */
   type TextEditorEnricher = (
     match: RegExpMatchArray,
-    options?: globalThis.TextEditor.EnrichOptions
+    options?: globalThis.TextEditor.EnrichOptions,
   ) => Promise<HTMLElement | null>;
 
   interface TextEditorEnricherConfig {

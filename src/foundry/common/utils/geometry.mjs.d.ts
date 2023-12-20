@@ -42,18 +42,33 @@ interface LineIntersection {
   t1?: number;
 }
 
+interface LineIntersectionOptions {
+  /**
+   * Return the optional vector distance from C to D on CD
+   * @defaultValue `false`
+   */
+  t1?: boolean;
+}
+
 /**
  * An internal helper method for computing the intersection between two infinite-length lines.
  * Adapted from http://paulbourke.net/geometry/pointlineplane/
  *
- * @param a - The first endpoint of segment AB
- * @param b - The second endpoint of segment AB
- * @param c - The first endpoint of segment CD
- * @param d - The second endpoint of segment CD
+ * @param a       - The first endpoint of segment AB
+ * @param b       - The second endpoint of segment AB
+ * @param c       - The first endpoint of segment CD
+ * @param d       - The second endpoint of segment CD
+ * @param options - Options which affect the intersection test
  *
  * @returns An intersection point, or null if no intersection occurred
  */
-export function lineLineIntersection(a: Point, b: Point, c: Point, d: Point): LineIntersection | null;
+export function lineLineIntersection(
+  a: Point,
+  b: Point,
+  c: Point,
+  d: Point,
+  options: LineIntersectionOptions,
+): LineIntersection | null;
 
 /**
  * An internal helper method for computing the intersection between two finite line segments.
@@ -73,7 +88,7 @@ export function lineSegmentIntersection(
   b: Point,
   c: Point,
   d: Point,
-  epsilon?: number
+  epsilon?: number,
 ): LineIntersection | null;
 
 interface LineCircleIntersection {
@@ -113,7 +128,7 @@ export function lineCircleIntersection(
   b: Point,
   center: Point,
   radius: number,
-  epsilon?: number
+  epsilon?: number,
 ): LineCircleIntersection;
 
 /**
@@ -144,5 +159,5 @@ export function quadraticIntersection(
   p1: Point,
   center: Point,
   radius: number,
-  epsilon?: number
+  epsilon?: number,
 ): { x: number; y: number }[];
